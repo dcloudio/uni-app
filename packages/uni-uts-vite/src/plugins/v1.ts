@@ -1,21 +1,37 @@
 import type { Plugin } from 'vite'
-import fs from 'fs'
 import path from 'path'
-import { normalizePath, parseVueRequest } from '@dcloudio/uni-cli-shared'
+import { camelize } from '@vue/shared'
 import {
-  ExportDefaultDeclaration,
+  normalizePath,
+  parseVueRequest,
+  requireResolve,
+} from '@dcloudio/uni-cli-shared'
+import {
+  ClassDeclaration,
+  FunctionDeclaration,
   Module,
   TsFunctionType,
+  TsInterfaceDeclaration,
   TsType,
+  TsTypeAliasDeclaration,
   TsTypeAnnotation,
 } from '../../types/types'
-// 需要区分 android，iOS
+
 export function uniUtsV1Plugin(): Plugin {
-  let moduleCode: string
+  // 目前仅支持 app-android
+  process.env.UNI_APP_PLATFORM = 'app-android'
   return {
     name: 'uni:uts-v1',
     apply: 'build',
     enforce: 'pre',
+    resolveId(id, importer) {
+      if (isUtsModuleRoot(id)) {
+        return requireResolve(
+          id,
+          (importer && path.dirname(importer)) || process.env.UNI_INPUT_DIR
+        )
+      }
+    },
     async transform(code, id, opts) {
       if (opts && opts.ssr) {
         return
@@ -24,23 +40,19 @@ export function uniUtsV1Plugin(): Plugin {
       if (path.extname(filename) !== '.uts') {
         return
       }
-      const moduleName = parseModuleId(filename)
-      if (!moduleName) {
+      const pkg = parsePackage(filename)
+      if (!pkg) {
         return
       }
       // 懒加载 uts 编译器
       // eslint-disable-next-line no-restricted-globals
       const { parse } = require('@dcloudio/uts')
       const ast = await parse(code)
-      if (!moduleCode) {
-        moduleCode = fs.readFileSync(
-          path.resolve(__dirname, '../../lib/module.js'),
-          'utf8'
-        )
-      }
-      code = moduleCode
-        .replace(`__MODULE_NAME__`, moduleName)
-        .replace(`'__MODULE_DEFINE__'`, JSON.stringify(parseModuleDefines(ast)))
+      code = `
+import { initUtsProxyClass, initUtsProxyFunction } from '@dcloudio/uni-app'
+const pkg = '${pkg}'
+${genProxyCode(ast)}
+`
       // TODO compile uts
 
       return code
@@ -48,59 +60,147 @@ export function uniUtsV1Plugin(): Plugin {
   }
 }
 
-function parseModuleId(filepath: string) {
+// 仅限 uni_modules/test-plugin 格式
+function isUtsModuleRoot(id: string) {
+  const parts = normalizePath(id).split('/')
+  if (parts[parts.length - 2] === 'uni_modules') {
+    return true
+  }
+  return false
+}
+
+function parsePackage(filepath: string) {
   const parts = normalizePath(filepath).split('/')
   const index = parts.findIndex((part) => part === 'uni_modules')
   if (index > -1) {
-    return parts[index + 1]
+    return camelize(parts[index + 1])
   }
   return ''
 }
 
-function parseModuleDefines(ast: Module) {
-  const module: Record<string, { async: boolean }> = {}
-  const defaultDecl = ast.body.find(
-    (item) => item.type === 'ExportDefaultDeclaration'
-  ) as ExportDefaultDeclaration
-  if (!defaultDecl || defaultDecl.decl.type !== 'TsInterfaceDeclaration') {
-    return 'only support `export default interface Module {}`'
+function genProxyFunctionCode(
+  method: string,
+  async: boolean,
+  isDefault: boolean = false
+) {
+  if (isDefault) {
+    return `export default initUtsProxyFunction({ pkg, cls: '', method: '${method}', async: ${async} })`
   }
-  const body = defaultDecl.decl.body.body
-  body.forEach((item) => {
-    if (item.type === 'TsPropertySignature') {
-      const { key, typeAnnotation } = item
-      if (key.type !== 'Identifier') {
-        return
-      }
-      if (!typeAnnotation) {
-        return
-      }
-      const functionType = typeAnnotation.typeAnnotation
-      if (!isFunctionType(functionType)) {
-        return
-      }
-      const methodName = key.value
-      module[methodName] = {
-        async: isReturnPromise(functionType.typeAnnotation),
-      }
-    } else if (item.type === 'TsMethodSignature') {
-      if (item.key.type !== 'Identifier') {
-        return
-      }
-      const methodName = item.key.value
-      module[methodName] = {
-        async: item.typeAnn ? isReturnPromise(item.typeAnn) : false,
+  return `export const ${method} = initUtsProxyFunction({ pkg, cls: '', method: '${method}', async: ${async} })`
+}
+
+function genProxyClassCode(
+  cls: string,
+  methods: Record<string, any>,
+  isDefault: boolean = false
+) {
+  if (isDefault) {
+    return `export default initUtsProxyClass({ pkg, cls: '${cls}', methods: ${JSON.stringify(
+      methods
+    )} })`
+  }
+  return `export const ${cls} = initUtsProxyClass({ pkg, cls: '${cls}', methods: ${JSON.stringify(
+    methods
+  )} })`
+}
+
+function genTsTypeAliasDeclarationCode(decl: TsTypeAliasDeclaration) {
+  if (isFunctionType(decl.typeAnnotation)) {
+    return genProxyFunctionCode(
+      decl.id.value,
+      isReturnPromise(decl.typeAnnotation.typeAnnotation)
+    )
+  }
+}
+function genTsInterfaceDeclarationCode(
+  decl: TsInterfaceDeclaration,
+  isDefault: boolean = false
+) {
+  const cls = decl.id.value
+  const methods: Record<string, { async?: boolean }> = {}
+  decl.body.body.forEach((item) => {
+    if (item.type === 'TsMethodSignature') {
+      if (item.key.type === 'Identifier') {
+        methods[item.key.value] = {
+          async: isReturnPromise(item.typeAnn),
+        }
       }
     }
   })
-  return module
+  return genProxyClassCode(cls, methods, isDefault)
+}
+
+function genFunctionDeclarationCode(
+  decl: FunctionDeclaration,
+  isDefault: boolean = false
+) {
+  return genProxyFunctionCode(
+    decl.identifier.value,
+    decl.async || isReturnPromise(decl.returnType),
+    isDefault
+  )
+}
+
+function genClassDeclarationCode(
+  decl: ClassDeclaration,
+  isDefault: boolean = false
+) {
+  const cls = decl.identifier.value
+  const methods: Record<string, { async?: boolean }> = {}
+  decl.body.forEach((item) => {
+    if (item.type === 'ClassMethod') {
+      if (item.key.type === 'Identifier') {
+        methods[item.key.value] = {
+          async:
+            item.function.async || isReturnPromise(item.function.returnType),
+        }
+      }
+    }
+  })
+  return genProxyClassCode(cls, methods, isDefault)
+}
+
+function genProxyCode({ body }: Module) {
+  const codes: string[] = []
+  body.forEach((item) => {
+    let code: string | undefined
+    if (item.type === 'ExportDeclaration') {
+      const decl = item.declaration
+      switch (decl.type) {
+        case 'FunctionDeclaration':
+          code = genFunctionDeclarationCode(decl, false)
+          break
+        case 'ClassDeclaration':
+          code = genClassDeclarationCode(decl, false)
+          break
+        case 'TsTypeAliasDeclaration':
+          code = genTsTypeAliasDeclarationCode(decl)
+          break
+        case 'TsInterfaceDeclaration':
+          code = genTsInterfaceDeclarationCode(decl, false)
+          break
+      }
+    } else if (item.type === 'ExportDefaultDeclaration') {
+      if (item.decl.type === 'TsInterfaceDeclaration') {
+        code = genTsInterfaceDeclarationCode(item.decl, true)
+      }
+    }
+    if (code) {
+      codes.push(code)
+    }
+  })
+  return codes.join(`\n`)
 }
 
 function isFunctionType(type: TsType): type is TsFunctionType {
   return type.type === 'TsFunctionType'
 }
 
-function isReturnPromise({ typeAnnotation }: TsTypeAnnotation) {
+function isReturnPromise(anno?: TsTypeAnnotation) {
+  if (!anno) {
+    return false
+  }
+  const { typeAnnotation } = anno
   return (
     typeAnnotation.type === 'TsTypeReference' &&
     typeAnnotation.typeName.type === 'Identifier' &&

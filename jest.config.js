@@ -10,18 +10,6 @@ module.exports = {
     __GLOBAL__: false,
     __VUE_OPTIONS_API__: true,
     __VUE_PROD_DEVTOOLS__: false,
-    uni: {
-      requireNativePlugin(name) {
-        return {
-          invokeSync(args, callback) {
-            console.log(`invoke`, JSON.stringify(args))
-          },
-          invokeAsync(args, callback) {
-            console.log(`invokeAsync`, JSON.stringify(args))
-          },
-        }
-      },
-    },
   },
   coverageDirectory: 'coverage',
   coverageReporters: ['html', 'lcov', 'text'],

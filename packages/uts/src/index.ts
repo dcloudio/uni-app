@@ -5,11 +5,12 @@ import glob from 'fast-glob'
 import chokidar from 'chokidar'
 
 import { toKotlin, toSwift } from './api'
-import type {
+import {
   UtsInputOptions,
   UtsOptions,
   UtsOutputOptions,
   UtsResult,
+  UtsTarget,
 } from './types'
 import {
   printDone,
@@ -19,10 +20,7 @@ import {
   timeEnd,
 } from './utils'
 
-export enum UtsTarget {
-  KOTLIN = 'kotlin',
-  SWIFT = 'swift',
-}
+export { UtsTarget } from './types'
 
 export type UtsMode = 'dev' | 'build'
 
@@ -299,7 +297,7 @@ function buildFile(
   })
 }
 
-export { parse } from './api'
+export { parse, bundle } from './api'
 
 export function runDev(target: UtsTarget, opts: ToOptions) {
   opts = parseOptions('dev', target, opts)

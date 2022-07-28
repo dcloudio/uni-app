@@ -35,6 +35,10 @@ export declare function getCurrentSubNVue(): any;
 
 export declare function getSsrGlobalData(): any;
 
+export declare function initUtsProxyClass({ pkg, cls, methods, }: ProxyClassOptions): any;
+
+export declare function initUtsProxyFunction({ pkg, cls, method, async, }: ProxyFunctionOptions): (...args: unknown[]) => any;
+
 declare type LaunchOption = LaunchShowOption;
 
 declare interface LaunchShowOption {
@@ -159,6 +163,26 @@ declare interface PageNotFoundOption {
 
 declare interface PageScrollOption {
     scrollTop: number;
+}
+
+declare interface ProxyBaseOptions {
+    pkg: string;
+    cls: string;
+    method: string;
+}
+
+declare interface ProxyClassOptions {
+    pkg: string;
+    cls: string;
+    methods: {
+        [name: string]: {
+            async?: boolean;
+        };
+    };
+}
+
+declare interface ProxyFunctionOptions extends ProxyBaseOptions {
+    async?: boolean;
 }
 
 declare interface ReferrerInfo {

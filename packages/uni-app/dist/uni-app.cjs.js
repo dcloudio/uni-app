@@ -11,12 +11,12 @@ function assertKey(key, shallow = false) {
         throw new Error(`${shallow ? 'shallowSsrRef' : 'ssrRef'}: You must provide a key.`);
     }
 }
-function proxy(target, track, trigger) {
+function proxy$1(target, track, trigger) {
     return new Proxy(target, {
         get(target, prop) {
             track();
             if (shared.isObject(target[prop])) {
-                return proxy(target[prop], track, trigger);
+                return proxy$1(target[prop], track, trigger);
             }
             return Reflect.get(target, prop);
         },
@@ -48,7 +48,7 @@ const ssrServerRef = (value, key, shallow = false) => {
             get: () => {
                 track();
                 if (!shallow && shared.isObject(value)) {
-                    return proxy(value, track, customTrigger);
+                    return proxy$1(value, track, customTrigger);
                 }
                 return value;
             },
@@ -135,8 +135,91 @@ const onNavigationBarSearchInputConfirmed =
 const onNavigationBarSearchInputFocusChanged = 
 /*#__PURE__*/ createHook(uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED);
 
+let callbackId = 1;
+let proxy;
+const callbacks = {};
+function normalizeArg(arg) {
+    if (typeof arg === 'function') {
+        const id = callbackId++;
+        callbacks[id] = arg;
+        return id;
+    }
+    else if (shared.isPlainObject(arg)) {
+        Object.keys(arg).forEach((name) => {
+            arg[name] = normalizeArg(arg[name]);
+        });
+    }
+    return arg;
+}
+function isProxyInvokeCallbackResponse(res) {
+    return !!res.name;
+}
+function initUtsProxyFunction({ pkg, cls, method, async, }) {
+    const invokeCallback = ({ id, name, params, keepAlive, }) => {
+        const callback = callbacks[id];
+        if (callback) {
+            callback(...params);
+            if (!keepAlive) {
+                delete callbacks[id];
+            }
+        }
+        else {
+            console.error(`${pkg}${cls ? '.' + cls : ''}.${method} ${name} is not found`);
+        }
+    };
+    return (...args) => {
+        if (!proxy) {
+            proxy = uni.requireNativePlugin('ProxyModule');
+        }
+        const params = args.map((arg) => normalizeArg(arg));
+        const invokeArgs = { package: pkg, class: cls, method, params };
+        if (async) {
+            return new Promise((resolve, reject) => {
+                proxy.invokeAsync(invokeArgs, (res) => {
+                    if (isProxyInvokeCallbackResponse(res)) {
+                        invokeCallback(res);
+                    }
+                    else {
+                        if (res.errMsg) {
+                            reject(res.errMsg);
+                        }
+                        else {
+                            resolve(res.params);
+                        }
+                    }
+                });
+            });
+        }
+        return proxy.invokeSync(invokeArgs, invokeCallback);
+    };
+}
+function initUtsProxyClass({ pkg, cls, methods, }) {
+    return class ProxyClass {
+        constructor() {
+            const target = {};
+            return new Proxy(this, {
+                get(_, method) {
+                    if (!target[method]) {
+                        if (shared.hasOwn(methods, method)) {
+                            target[method] = initUtsProxyFunction({
+                                pkg,
+                                cls,
+                                method,
+                                async: methods[method].async,
+                            });
+                        }
+                        return target[method];
+                    }
+                },
+            });
+        }
+    };
+}
+
 exports.getCurrentSubNVue = getCurrentSubNVue;
 exports.getSsrGlobalData = getSsrGlobalData;
+exports.initUtsProxyClass = initUtsProxyClass;
+exports.initUtsProxyFunction = initUtsProxyFunction;
 exports.onAddToFavorites = onAddToFavorites;
 exports.onBackPress = onBackPress;
 exports.onError = onError;

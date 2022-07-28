@@ -1,5 +1,5 @@
 import { shallowRef, ref, getCurrentInstance, isInSSRComponentSetup, injectHook } from 'vue';
-import { hasOwn, isString } from '@vue/shared';
+import { hasOwn, isString, isPlainObject } from '@vue/shared';
 import { sanitise, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR, ON_SHOW, ON_HIDE, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, ON_INIT, ON_LOAD, ON_READY, ON_UNLOAD, ON_RESIZE, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SAVE_EXIT_STATE, ON_SHARE_TIMELINE, ON_ADD_TO_FAVORITES, ON_SHARE_APP_MESSAGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED } from '@dcloudio/uni-shared';
 
 function getSSRDataType() {
@@ -103,4 +103,85 @@ const onNavigationBarSearchInputConfirmed =
 const onNavigationBarSearchInputFocusChanged = 
 /*#__PURE__*/ createHook(ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED);
 
-export { getCurrentSubNVue, getSsrGlobalData, onAddToFavorites, onBackPress, onError, onHide, onInit, onLaunch, onLoad, onNavigationBarButtonTap, onNavigationBarSearchInputChanged, onNavigationBarSearchInputClicked, onNavigationBarSearchInputConfirmed, onNavigationBarSearchInputFocusChanged, onPageNotFound, onPageScroll, onPullDownRefresh, onReachBottom, onReady, onResize, onSaveExitState, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, requireNativePlugin, resolveEasycom, shallowSsrRef, ssrRef };
+let callbackId = 1;
+let proxy;
+const callbacks = {};
+function normalizeArg(arg) {
+    if (typeof arg === 'function') {
+        const id = callbackId++;
+        callbacks[id] = arg;
+        return id;
+    }
+    else if (isPlainObject(arg)) {
+        Object.keys(arg).forEach((name) => {
+            arg[name] = normalizeArg(arg[name]);
+        });
+    }
+    return arg;
+}
+function isProxyInvokeCallbackResponse(res) {
+    return !!res.name;
+}
+function initUtsProxyFunction({ pkg, cls, method, async, }) {
+    const invokeCallback = ({ id, name, params, keepAlive, }) => {
+        const callback = callbacks[id];
+        if (callback) {
+            callback(...params);
+            if (!keepAlive) {
+                delete callbacks[id];
+            }
+        }
+        else {
+            console.error(`${pkg}${cls ? '.' + cls : ''}.${method} ${name} is not found`);
+        }
+    };
+    return (...args) => {
+        if (!proxy) {
+            proxy = uni.requireNativePlugin('ProxyModule');
+        }
+        const params = args.map((arg) => normalizeArg(arg));
+        const invokeArgs = { package: pkg, class: cls, method, params };
+        if (async) {
+            return new Promise((resolve, reject) => {
+                proxy.invokeAsync(invokeArgs, (res) => {
+                    if (isProxyInvokeCallbackResponse(res)) {
+                        invokeCallback(res);
+                    }
+                    else {
+                        if (res.errMsg) {
+                            reject(res.errMsg);
+                        }
+                        else {
+                            resolve(res.params);
+                        }
+                    }
+                });
+            });
+        }
+        return proxy.invokeSync(invokeArgs, invokeCallback);
+    };
+}
+function initUtsProxyClass({ pkg, cls, methods, }) {
+    return class ProxyClass {
+        constructor() {
+            const target = {};
+            return new Proxy(this, {
+                get(_, method) {
+                    if (!target[method]) {
+                        if (hasOwn(methods, method)) {
+                            target[method] = initUtsProxyFunction({
+                                pkg,
+                                cls,
+                                method,
+                                async: methods[method].async,
+                            });
+                        }
+                        return target[method];
+                    }
+                },
+            });
+        }
+    };
+}
+
+export { getCurrentSubNVue, getSsrGlobalData, initUtsProxyClass, initUtsProxyFunction, onAddToFavorites, onBackPress, onError, onHide, onInit, onLaunch, onLoad, onNavigationBarButtonTap, onNavigationBarSearchInputChanged, onNavigationBarSearchInputClicked, onNavigationBarSearchInputConfirmed, onNavigationBarSearchInputFocusChanged, onPageNotFound, onPageScroll, onPullDownRefresh, onReachBottom, onReady, onResize, onSaveExitState, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, requireNativePlugin, resolveEasycom, shallowSsrRef, ssrRef };

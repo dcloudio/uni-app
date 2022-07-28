@@ -1,5 +1,10 @@
 import { resolve } from 'path'
-import type { UtsOptions, UtsParseOptions, UtsResult } from './types'
+import type {
+  UtsBundleOptions,
+  UtsOptions,
+  UtsParseOptions,
+  UtsResult,
+} from './types'
 import { normalizePath } from './utils'
 
 const bindingsOverride = process.env['UTS_BINARY_PATH']
@@ -63,6 +68,10 @@ export function toSwift(options: UtsOptions): Promise<UtsResult> {
   return bindings
     .toSwift(toBuffer(swiftOptions))
     .then((res: string) => JSON.parse(res))
+}
+
+export function bundle(options: UtsBundleOptions): Promise<UtsResult> {
+  return bindings.bundle(toBuffer(options)).then((res: string) => res)
 }
 
 function toBuffer(t: any): Buffer {

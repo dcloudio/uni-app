@@ -1,3 +1,7 @@
+export enum UtsTarget {
+  KOTLIN = 'kotlin',
+  SWIFT = 'swift',
+}
 export interface UtsParserConfig {
   /**
    * Defaults to `false`
@@ -32,4 +36,12 @@ export interface UtsResult {
   filename?: string
   time?: number
   error?: Error
+}
+
+export interface UtsBundleOptions {
+  target: UtsTarget
+  entry: Record<string, string>
+  output: {
+    path: string
+  }
 }

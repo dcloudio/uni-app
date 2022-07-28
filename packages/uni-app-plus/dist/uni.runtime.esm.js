@@ -11468,6 +11468,8 @@ const API_GET_SYSTEM_SETTING = 'getSystemSetting';
 
 const API_GET_APP_AUTHORIZE_SETTING = 'getAppAuthorizeSetting';
 
+const API_OPEN_APP_AUTHORIZE_SETTING = 'openAppAuthorizeSetting';
+
 const API_GET_STORAGE = 'getStorage';
 const GetStorageProtocol = {
     key: {
@@ -14125,6 +14127,19 @@ const getAppAuthorizeSetting = defineSyncApi(API_GET_APP_AUTHORIZE_SETTING, () =
     return appAuthorizeSetting;
 });
 
+const openAppAuthorizeSetting = defineAsyncApi(API_OPEN_APP_AUTHORIZE_SETTING, (_, { resolve, reject }) => {
+    const { openAppAuthorizeSetting } = weex.requireModule('plus');
+    const fn = openAppAuthorizeSetting;
+    fn((ret) => {
+        if (ret.type === 'success') {
+            resolve();
+        }
+        else {
+            reject();
+        }
+    });
+});
+
 const getImageInfo = defineAsyncApi(API_GET_IMAGE_INFO, (options, { resolve, reject }) => {
     const path = TEMP_PATH + '/download/';
     plus.io.getImageInfo(extend(options, {
@@ -15962,7 +15977,9 @@ const chooseLocation = defineAsyncApi(API_CHOOSE_LOCATION, (options, { resolve, 
     let result;
     const page = showPage({
         url: '__uniappchooselocation',
-        data: options,
+        data: extend({}, options, {
+            locale: getLocale(),
+        }),
         style: {
             // @ts-expect-error
             animationType: options.animationType || 'slide-in-bottom',
@@ -15999,7 +16016,9 @@ const chooseLocation = defineAsyncApi(API_CHOOSE_LOCATION, (options, { resolve, 
 const openLocation = defineAsyncApi(API_OPEN_LOCATION, (data, { resolve, reject }) => {
     showPage({
         url: '__uniappopenlocation',
-        data,
+        data: extend({}, data, {
+            locale: getLocale(),
+        }),
         style: {
             titleNView: {
                 type: 'transparent',
@@ -19227,6 +19246,7 @@ var uni$1 = {
   getWindowInfo: getWindowInfo,
   getSystemSetting: getSystemSetting,
   getAppAuthorizeSetting: getAppAuthorizeSetting,
+  openAppAuthorizeSetting: openAppAuthorizeSetting,
   getImageInfo: getImageInfo,
   getVideoInfo: getVideoInfo,
   previewImage: previewImage,

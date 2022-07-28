@@ -19,6 +19,22 @@ function resolveWithSymlinks(id: string, basedir: string): string {
     extensions,
     // necessary to work with pnpm
     preserveSymlinks: true,
+    pathFilter(pkg, filepath, relativePath) {
+      if (pkg.dcloudext && (pkg.dcloudext as any).type === 'native-uts') {
+        if (
+          process.env.UNI_APP_PLATFORM === 'app-android' ||
+          process.env.UNI_APP_PLATFORM === 'app-ios'
+        ) {
+          const file = process.env.UNI_APP_PLATFORM + '/index.uts'
+          if (
+            fs.existsSync(path.join(filepath.replace(relativePath, ''), file))
+          ) {
+            return file
+          }
+        }
+      }
+      return relativePath
+    },
   })
 }
 

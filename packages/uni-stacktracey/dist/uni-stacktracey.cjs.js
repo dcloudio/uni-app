@@ -214,16 +214,17 @@ var StackTracey$1 = StackTracey;
  * http://opensource.org/licenses/BSD-3-Clause
  */
 
-const intToCharMap = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".split("");
+const intToCharMap =
+  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'.split('');
 
 /**
  * Encode an integer in the range of 0 to 63 to a single base 64 digit.
  */
-var encode$1 = function(number) {
+var encode$1 = function (number) {
   if (0 <= number && number < intToCharMap.length) {
-    return intToCharMap[number];
+    return intToCharMap[number]
   }
-  throw new TypeError("Must be between 0 and 63: " + number);
+  throw new TypeError('Must be between 0 and 63: ' + number)
 };
 
 var base64$1 = {
@@ -302,16 +303,14 @@ const VLQ_CONTINUATION_BIT = VLQ_BASE;
  *   2 becomes 4 (100 binary), -2 becomes 5 (101 binary)
  */
 function toVLQSigned(aValue) {
-  return aValue < 0
-    ? ((-aValue) << 1) + 1
-    : (aValue << 1) + 0;
+  return aValue < 0 ? (-aValue << 1) + 1 : (aValue << 1) + 0
 }
 
 /**
  * Returns the base 64 VLQ encoded value.
  */
 var encode = function base64VLQ_encode(aValue) {
-  let encoded = "";
+  let encoded = '';
   let digit;
 
   let vlq = toVLQSigned(aValue);
@@ -325,9 +324,9 @@ var encode = function base64VLQ_encode(aValue) {
       digit |= VLQ_CONTINUATION_BIT;
     }
     encoded += base64.encode(digit);
-  } while (vlq > 0);
+  } while (vlq > 0)
 
-  return encoded;
+  return encoded
 };
 
 var base64Vlq = {
@@ -360,52 +359,52 @@ var util$1 = createCommonjsModule(function (module, exports) {
  */
 function getArg(aArgs, aName, aDefaultValue) {
   if (aName in aArgs) {
-    return aArgs[aName];
+    return aArgs[aName]
   } else if (arguments.length === 3) {
-    return aDefaultValue;
+    return aDefaultValue
   }
-    throw new Error('"' + aName + '" is a required argument.');
-
+  throw new Error('"' + aName + '" is a required argument.')
 }
 exports.getArg = getArg;
 
-const urlRegexp = /^(?:([\w+\-.]+):)?\/\/(?:(\w+:\w+)@)?([\w.-]*)(?::(\d+))?(.*)$/;
+const urlRegexp =
+  /^(?:([\w+\-.]+):)?\/\/(?:(\w+:\w+)@)?([\w.-]*)(?::(\d+))?(.*)$/;
 const dataUrlRegexp = /^data:.+\,.+$/;
 
 function urlParse(aUrl) {
   const match = aUrl.match(urlRegexp);
   if (!match) {
-    return null;
+    return null
   }
   return {
     scheme: match[1],
     auth: match[2],
     host: match[3],
     port: match[4],
-    path: match[5]
-  };
+    path: match[5],
+  }
 }
 exports.urlParse = urlParse;
 
 function urlGenerate(aParsedUrl) {
-  let url = "";
+  let url = '';
   if (aParsedUrl.scheme) {
-    url += aParsedUrl.scheme + ":";
+    url += aParsedUrl.scheme + ':';
   }
-  url += "//";
+  url += '//';
   if (aParsedUrl.auth) {
-    url += aParsedUrl.auth + "@";
+    url += aParsedUrl.auth + '@';
   }
   if (aParsedUrl.host) {
     url += aParsedUrl.host;
   }
   if (aParsedUrl.port) {
-    url += ":" + aParsedUrl.port;
+    url += ':' + aParsedUrl.port;
   }
   if (aParsedUrl.path) {
     url += aParsedUrl.path;
   }
-  return url;
+  return url
 }
 exports.urlGenerate = urlGenerate;
 
@@ -421,13 +420,13 @@ const MAX_CACHED_INPUTS = 32;
 function lruMemoize(f) {
   const cache = [];
 
-  return function(input) {
+  return function (input) {
     for (let i = 0; i < cache.length; i++) {
       if (cache[i].input === input) {
         const temp = cache[0];
         cache[0] = cache[i];
         cache[i] = temp;
-        return cache[0].result;
+        return cache[0].result
       }
     }
 
@@ -442,8 +441,8 @@ function lruMemoize(f) {
       cache.pop();
     }
 
-    return result;
-  };
+    return result
+  }
 }
 
 /**
@@ -462,7 +461,7 @@ const normalize = lruMemoize(function normalize(aPath) {
   const url = urlParse(aPath);
   if (url) {
     if (!url.path) {
-      return aPath;
+      return aPath
     }
     path = url.path;
   }
@@ -475,13 +474,13 @@ const normalize = lruMemoize(function normalize(aPath) {
   let i = 0;
   while (true) {
     start = i;
-    i = path.indexOf("/", start);
+    i = path.indexOf('/', start);
     if (i === -1) {
       parts.push(path.slice(start));
-      break;
+      break
     } else {
       parts.push(path.slice(start, i));
-      while (i < path.length && path[i] === "/") {
+      while (i < path.length && path[i] === '/') {
         i++;
       }
     }
@@ -490,12 +489,12 @@ const normalize = lruMemoize(function normalize(aPath) {
   let up = 0;
   for (i = parts.length - 1; i >= 0; i--) {
     const part = parts[i];
-    if (part === ".") {
+    if (part === '.') {
       parts.splice(i, 1);
-    } else if (part === "..") {
+    } else if (part === '..') {
       up++;
     } else if (up > 0) {
-      if (part === "") {
+      if (part === '') {
         // The first part is blank if the path is absolute. Trying to go
         // above the root is a no-op. Therefore we can remove all '..' parts
         // directly after the root.
@@ -507,17 +506,17 @@ const normalize = lruMemoize(function normalize(aPath) {
       }
     }
   }
-  path = parts.join("/");
+  path = parts.join('/');
 
-  if (path === "") {
-    path = isAbsolute ? "/" : ".";
+  if (path === '') {
+    path = isAbsolute ? '/' : '.';
   }
 
   if (url) {
     url.path = path;
-    return urlGenerate(url);
+    return urlGenerate(url)
   }
-  return path;
+  return path
 });
 exports.normalize = normalize;
 
@@ -538,16 +537,16 @@ exports.normalize = normalize;
  * - Joining for example 'http://' and 'www.example.com' is also supported.
  */
 function join(aRoot, aPath) {
-  if (aRoot === "") {
-    aRoot = ".";
+  if (aRoot === '') {
+    aRoot = '.';
   }
-  if (aPath === "") {
-    aPath = ".";
+  if (aPath === '') {
+    aPath = '.';
   }
   const aPathUrl = urlParse(aPath);
   const aRootUrl = urlParse(aRoot);
   if (aRootUrl) {
-    aRoot = aRootUrl.path || "/";
+    aRoot = aRootUrl.path || '/';
   }
 
   // `join(foo, '//www.example.org')`
@@ -555,33 +554,34 @@ function join(aRoot, aPath) {
     if (aRootUrl) {
       aPathUrl.scheme = aRootUrl.scheme;
     }
-    return urlGenerate(aPathUrl);
+    return urlGenerate(aPathUrl)
   }
 
   if (aPathUrl || aPath.match(dataUrlRegexp)) {
-    return aPath;
+    return aPath
   }
 
   // `join('http://', 'www.example.com')`
   if (aRootUrl && !aRootUrl.host && !aRootUrl.path) {
     aRootUrl.host = aPath;
-    return urlGenerate(aRootUrl);
+    return urlGenerate(aRootUrl)
   }
 
-  const joined = aPath.charAt(0) === "/"
-    ? aPath
-    : normalize(aRoot.replace(/\/+$/, "") + "/" + aPath);
+  const joined =
+    aPath.charAt(0) === '/'
+      ? aPath
+      : normalize(aRoot.replace(/\/+$/, '') + '/' + aPath);
 
   if (aRootUrl) {
     aRootUrl.path = joined;
-    return urlGenerate(aRootUrl);
+    return urlGenerate(aRootUrl)
   }
-  return joined;
+  return joined
 }
 exports.join = join;
 
-exports.isAbsolute = function(aPath) {
-  return aPath.charAt(0) === "/" || urlRegexp.test(aPath);
+exports.isAbsolute = function (aPath) {
+  return aPath.charAt(0) === '/' || urlRegexp.test(aPath)
 };
 
 /**
@@ -591,21 +591,21 @@ exports.isAbsolute = function(aPath) {
  * @param aPath The path or URL to be made relative to aRoot.
  */
 function relative(aRoot, aPath) {
-  if (aRoot === "") {
-    aRoot = ".";
+  if (aRoot === '') {
+    aRoot = '.';
   }
 
-  aRoot = aRoot.replace(/\/$/, "");
+  aRoot = aRoot.replace(/\/$/, '');
 
   // It is possible for the path to be above the root. In this case, simply
   // checking whether the root is a prefix of the path won't work. Instead, we
   // need to remove components from the root one by one, until either we find
   // a prefix that fits, or we run out of components to remove.
   let level = 0;
-  while (aPath.indexOf(aRoot + "/") !== 0) {
-    const index = aRoot.lastIndexOf("/");
+  while (aPath.indexOf(aRoot + '/') !== 0) {
+    const index = aRoot.lastIndexOf('/');
     if (index < 0) {
-      return aPath;
+      return aPath
     }
 
     // If the only part of the root that is left is the scheme (i.e. http://,
@@ -613,24 +613,24 @@ function relative(aRoot, aPath) {
     // have exhausted all components, so the path is not relative to the root.
     aRoot = aRoot.slice(0, index);
     if (aRoot.match(/^([^\/]+:\/)?\/*$/)) {
-      return aPath;
+      return aPath
     }
 
     ++level;
   }
 
   // Make sure we add a "../" for each component we removed from the root.
-  return Array(level + 1).join("../") + aPath.substr(aRoot.length + 1);
+  return Array(level + 1).join('../') + aPath.substr(aRoot.length + 1)
 }
 exports.relative = relative;
 
-const supportsNullProto = (function() {
+const supportsNullProto = (function () {
   const obj = Object.create(null);
-  return !("__proto__" in obj);
-}());
+  return !('__proto__' in obj)
+})();
 
 function identity(s) {
-  return s;
+  return s
 }
 
 /**
@@ -644,54 +644,56 @@ function identity(s) {
  */
 function toSetString(aStr) {
   if (isProtoString(aStr)) {
-    return "$" + aStr;
+    return '$' + aStr
   }
 
-  return aStr;
+  return aStr
 }
 exports.toSetString = supportsNullProto ? identity : toSetString;
 
 function fromSetString(aStr) {
   if (isProtoString(aStr)) {
-    return aStr.slice(1);
+    return aStr.slice(1)
   }
 
-  return aStr;
+  return aStr
 }
 exports.fromSetString = supportsNullProto ? identity : fromSetString;
 
 function isProtoString(s) {
   if (!s) {
-    return false;
+    return false
   }
 
   const length = s.length;
 
   if (length < 9 /* "__proto__".length */) {
-    return false;
+    return false
   }
 
   /* eslint-disable no-multi-spaces */
-  if (s.charCodeAt(length - 1) !== 95  /* '_' */ ||
-      s.charCodeAt(length - 2) !== 95  /* '_' */ ||
-      s.charCodeAt(length - 3) !== 111 /* 'o' */ ||
-      s.charCodeAt(length - 4) !== 116 /* 't' */ ||
-      s.charCodeAt(length - 5) !== 111 /* 'o' */ ||
-      s.charCodeAt(length - 6) !== 114 /* 'r' */ ||
-      s.charCodeAt(length - 7) !== 112 /* 'p' */ ||
-      s.charCodeAt(length - 8) !== 95  /* '_' */ ||
-      s.charCodeAt(length - 9) !== 95  /* '_' */) {
-    return false;
+  if (
+    s.charCodeAt(length - 1) !== 95 /* '_' */ ||
+    s.charCodeAt(length - 2) !== 95 /* '_' */ ||
+    s.charCodeAt(length - 3) !== 111 /* 'o' */ ||
+    s.charCodeAt(length - 4) !== 116 /* 't' */ ||
+    s.charCodeAt(length - 5) !== 111 /* 'o' */ ||
+    s.charCodeAt(length - 6) !== 114 /* 'r' */ ||
+    s.charCodeAt(length - 7) !== 112 /* 'p' */ ||
+    s.charCodeAt(length - 8) !== 95 /* '_' */ ||
+    s.charCodeAt(length - 9) !== 95 /* '_' */
+  ) {
+    return false
   }
   /* eslint-enable no-multi-spaces */
 
   for (let i = length - 10; i >= 0; i--) {
     if (s.charCodeAt(i) !== 36 /* '$' */) {
-      return false;
+      return false
     }
   }
 
-  return true;
+  return true
 }
 
 /**
@@ -705,30 +707,30 @@ function isProtoString(s) {
 function compareByOriginalPositions(mappingA, mappingB, onlyCompareOriginal) {
   let cmp = strcmp(mappingA.source, mappingB.source);
   if (cmp !== 0) {
-    return cmp;
+    return cmp
   }
 
   cmp = mappingA.originalLine - mappingB.originalLine;
   if (cmp !== 0) {
-    return cmp;
+    return cmp
   }
 
   cmp = mappingA.originalColumn - mappingB.originalColumn;
   if (cmp !== 0 || onlyCompareOriginal) {
-    return cmp;
+    return cmp
   }
 
   cmp = mappingA.generatedColumn - mappingB.generatedColumn;
   if (cmp !== 0) {
-    return cmp;
+    return cmp
   }
 
   cmp = mappingA.generatedLine - mappingB.generatedLine;
   if (cmp !== 0) {
-    return cmp;
+    return cmp
   }
 
-  return strcmp(mappingA.name, mappingB.name);
+  return strcmp(mappingA.name, mappingB.name)
 }
 exports.compareByOriginalPositions = compareByOriginalPositions;
 
@@ -741,54 +743,59 @@ exports.compareByOriginalPositions = compareByOriginalPositions;
  * source/name/original line and column the same. Useful when searching for a
  * mapping with a stubbed out mapping.
  */
-function compareByGeneratedPositionsDeflated(mappingA, mappingB, onlyCompareGenerated) {
+function compareByGeneratedPositionsDeflated(
+  mappingA,
+  mappingB,
+  onlyCompareGenerated
+) {
   let cmp = mappingA.generatedLine - mappingB.generatedLine;
   if (cmp !== 0) {
-    return cmp;
+    return cmp
   }
 
   cmp = mappingA.generatedColumn - mappingB.generatedColumn;
   if (cmp !== 0 || onlyCompareGenerated) {
-    return cmp;
+    return cmp
   }
 
   cmp = strcmp(mappingA.source, mappingB.source);
   if (cmp !== 0) {
-    return cmp;
+    return cmp
   }
 
   cmp = mappingA.originalLine - mappingB.originalLine;
   if (cmp !== 0) {
-    return cmp;
+    return cmp
   }
 
   cmp = mappingA.originalColumn - mappingB.originalColumn;
   if (cmp !== 0) {
-    return cmp;
+    return cmp
   }
 
-  return strcmp(mappingA.name, mappingB.name);
+  return strcmp(mappingA.name, mappingB.name)
 }
-exports.compareByGeneratedPositionsDeflated = compareByGeneratedPositionsDeflated;
+exports.compareByGeneratedPositionsDeflated =
+  compareByGeneratedPositionsDeflated;
 
 function strcmp(aStr1, aStr2) {
   if (aStr1 === aStr2) {
-    return 0;
+    return 0
   }
 
   if (aStr1 === null) {
-    return 1; // aStr2 !== null
+    return 1 // aStr2 !== null
   }
 
   if (aStr2 === null) {
-    return -1; // aStr1 !== null
+    return -1 // aStr1 !== null
   }
 
   if (aStr1 > aStr2) {
-    return 1;
+    return 1
   }
 
-  return -1;
+  return -1
 }
 
 /**
@@ -798,32 +805,33 @@ function strcmp(aStr1, aStr2) {
 function compareByGeneratedPositionsInflated(mappingA, mappingB) {
   let cmp = mappingA.generatedLine - mappingB.generatedLine;
   if (cmp !== 0) {
-    return cmp;
+    return cmp
   }
 
   cmp = mappingA.generatedColumn - mappingB.generatedColumn;
   if (cmp !== 0) {
-    return cmp;
+    return cmp
   }
 
   cmp = strcmp(mappingA.source, mappingB.source);
   if (cmp !== 0) {
-    return cmp;
+    return cmp
   }
 
   cmp = mappingA.originalLine - mappingB.originalLine;
   if (cmp !== 0) {
-    return cmp;
+    return cmp
   }
 
   cmp = mappingA.originalColumn - mappingB.originalColumn;
   if (cmp !== 0) {
-    return cmp;
+    return cmp
   }
 
-  return strcmp(mappingA.name, mappingB.name);
+  return strcmp(mappingA.name, mappingB.name)
 }
-exports.compareByGeneratedPositionsInflated = compareByGeneratedPositionsInflated;
+exports.compareByGeneratedPositionsInflated =
+  compareByGeneratedPositionsInflated;
 
 /**
  * Strip any JSON XSSI avoidance prefix from the string (as documented
@@ -831,7 +839,7 @@ exports.compareByGeneratedPositionsInflated = compareByGeneratedPositionsInflate
  * JSON.
  */
 function parseSourceMapInput(str) {
-  return JSON.parse(str.replace(/^\)]}'[^\n]*\n/, ""));
+  return JSON.parse(str.replace(/^\)]}'[^\n]*\n/, ''))
 }
 exports.parseSourceMapInput = parseSourceMapInput;
 
@@ -840,12 +848,12 @@ exports.parseSourceMapInput = parseSourceMapInput;
  * URL, and the source map's URL.
  */
 function computeSourceURL(sourceRoot, sourceURL, sourceMapURL) {
-  sourceURL = sourceURL || "";
+  sourceURL = sourceURL || '';
 
   if (sourceRoot) {
     // This follows what Chrome does.
-    if (sourceRoot[sourceRoot.length - 1] !== "/" && sourceURL[0] !== "/") {
-      sourceRoot += "/";
+    if (sourceRoot[sourceRoot.length - 1] !== '/' && sourceURL[0] !== '/') {
+      sourceRoot += '/';
     }
     // The spec says:
     //   Line 4: An optional source root, useful for relocating source
@@ -872,11 +880,11 @@ function computeSourceURL(sourceRoot, sourceURL, sourceMapURL) {
   if (sourceMapURL) {
     const parsed = urlParse(sourceMapURL);
     if (!parsed) {
-      throw new Error("sourceMapURL could not be parsed");
+      throw new Error('sourceMapURL could not be parsed')
     }
     if (parsed.path) {
       // Strip the last path component, but keep the "/".
-      const index = parsed.path.lastIndexOf("/");
+      const index = parsed.path.lastIndexOf('/');
       if (index >= 0) {
         parsed.path = parsed.path.substring(0, index + 1);
       }
@@ -884,7 +892,7 @@ function computeSourceURL(sourceRoot, sourceURL, sourceMapURL) {
     sourceURL = join(urlGenerate(parsed), sourceURL);
   }
 
-  return normalize(sourceURL);
+  return normalize(sourceURL)
 }
 exports.computeSourceURL = computeSourceURL;
 });
@@ -916,7 +924,7 @@ class ArraySet$2 {
     for (let i = 0, len = aArray.length; i < len; i++) {
       set.add(aArray[i], aAllowDuplicates);
     }
-    return set;
+    return set
   }
 
   /**
@@ -926,7 +934,7 @@ class ArraySet$2 {
    * @returns Number
    */
   size() {
-    return this._set.size;
+    return this._set.size
   }
 
   /**
@@ -951,7 +959,7 @@ class ArraySet$2 {
    * @param String aStr
    */
   has(aStr) {
-      return this._set.has(aStr);
+    return this._set.has(aStr)
   }
 
   /**
@@ -962,9 +970,9 @@ class ArraySet$2 {
   indexOf(aStr) {
     const idx = this._set.get(aStr);
     if (idx >= 0) {
-        return idx;
+      return idx
     }
-    throw new Error('"' + aStr + '" is not in the set.');
+    throw new Error('"' + aStr + '" is not in the set.')
   }
 
   /**
@@ -974,9 +982,9 @@ class ArraySet$2 {
    */
   at(aIdx) {
     if (aIdx >= 0 && aIdx < this._array.length) {
-      return this._array[aIdx];
+      return this._array[aIdx]
     }
-    throw new Error("No element indexed by " + aIdx);
+    throw new Error('No element indexed by ' + aIdx)
   }
 
   /**
@@ -985,7 +993,7 @@ class ArraySet$2 {
    * for storing the members so that no one can mess with internal state.
    */
   toArray() {
-    return this._array.slice();
+    return this._array.slice()
   }
 }
 var ArraySet_1 = ArraySet$2;
@@ -1016,8 +1024,11 @@ function generatedPositionAfter(mappingA, mappingB) {
   const lineB = mappingB.generatedLine;
   const columnA = mappingA.generatedColumn;
   const columnB = mappingB.generatedColumn;
-  return lineB > lineA || lineB == lineA && columnB >= columnA ||
-         util.compareByGeneratedPositionsInflated(mappingA, mappingB) <= 0;
+  return (
+    lineB > lineA ||
+    (lineB == lineA && columnB >= columnA) ||
+    util.compareByGeneratedPositionsInflated(mappingA, mappingB) <= 0
+  )
 }
 
 /**
@@ -1030,7 +1041,7 @@ class MappingList$1 {
     this._array = [];
     this._sorted = true;
     // Serves as infimum
-    this._last = {generatedLine: -1, generatedColumn: 0};
+    this._last = { generatedLine: -1, generatedColumn: 0 };
   }
 
   /**
@@ -1072,7 +1083,7 @@ class MappingList$1 {
       this._array.sort(util.compareByGeneratedPositionsInflated);
       this._sorted = true;
     }
-    return this._array;
+    return this._array
   }
 }
 
@@ -1114,9 +1125,9 @@ class SourceMapGenerator$1 {
     if (!aArgs) {
       aArgs = {};
     }
-    this._file = util.getArg(aArgs, "file", null);
-    this._sourceRoot = util.getArg(aArgs, "sourceRoot", null);
-    this._skipValidation = util.getArg(aArgs, "skipValidation", false);
+    this._file = util.getArg(aArgs, 'file', null);
+    this._sourceRoot = util.getArg(aArgs, 'sourceRoot', null);
+    this._skipValidation = util.getArg(aArgs, 'skipValidation', false);
     this._sources = new ArraySet$1();
     this._names = new ArraySet$1();
     this._mappings = new MappingList();
@@ -1132,14 +1143,14 @@ class SourceMapGenerator$1 {
     const sourceRoot = aSourceMapConsumer.sourceRoot;
     const generator = new SourceMapGenerator$1({
       file: aSourceMapConsumer.file,
-      sourceRoot
+      sourceRoot,
     });
-    aSourceMapConsumer.eachMapping(function(mapping) {
+    aSourceMapConsumer.eachMapping(function (mapping) {
       const newMapping = {
         generated: {
           line: mapping.generatedLine,
-          column: mapping.generatedColumn
-        }
+          column: mapping.generatedColumn,
+        },
       };
 
       if (mapping.source != null) {
@@ -1150,7 +1161,7 @@ class SourceMapGenerator$1 {
 
         newMapping.original = {
           line: mapping.originalLine,
-          column: mapping.originalColumn
+          column: mapping.originalColumn,
         };
 
         if (mapping.name != null) {
@@ -1160,7 +1171,7 @@ class SourceMapGenerator$1 {
 
       generator.addMapping(newMapping);
     });
-    aSourceMapConsumer.sources.forEach(function(sourceFile) {
+    aSourceMapConsumer.sources.forEach(function (sourceFile) {
       let sourceRelative = sourceFile;
       if (sourceRoot !== null) {
         sourceRelative = util.relative(sourceRoot, sourceFile);
@@ -1175,7 +1186,7 @@ class SourceMapGenerator$1 {
         generator.setSourceContent(sourceFile, content);
       }
     });
-    return generator;
+    return generator
   }
 
   /**
@@ -1189,10 +1200,10 @@ class SourceMapGenerator$1 {
    *   - name: An optional original token name for this mapping.
    */
   addMapping(aArgs) {
-    const generated = util.getArg(aArgs, "generated");
-    const original = util.getArg(aArgs, "original", null);
-    let source = util.getArg(aArgs, "source", null);
-    let name = util.getArg(aArgs, "name", null);
+    const generated = util.getArg(aArgs, 'generated');
+    const original = util.getArg(aArgs, 'original', null);
+    let source = util.getArg(aArgs, 'source', null);
+    let name = util.getArg(aArgs, 'name', null);
 
     if (!this._skipValidation) {
       this._validateMapping(generated, original, source, name);
@@ -1218,7 +1229,7 @@ class SourceMapGenerator$1 {
       originalLine: original != null && original.line,
       originalColumn: original != null && original.column,
       source,
-      name
+      name,
     });
   }
 
@@ -1270,9 +1281,9 @@ class SourceMapGenerator$1 {
     if (aSourceFile == null) {
       if (aSourceMapConsumer.file == null) {
         throw new Error(
-          "SourceMapGenerator.prototype.applySourceMap requires either an explicit source file, " +
-          'or the source map\'s "file" property. Both were omitted.'
-        );
+          'SourceMapGenerator.prototype.applySourceMap requires either an explicit source file, ' +
+            'or the source map\'s "file" property. Both were omitted.'
+        )
       }
       sourceFile = aSourceMapConsumer.file;
     }
@@ -1283,18 +1294,17 @@ class SourceMapGenerator$1 {
     }
     // Applying the SourceMap can add and remove items from the sources and
     // the names array.
-    const newSources = this._mappings.toArray().length > 0
-      ? new ArraySet$1()
-      : this._sources;
+    const newSources =
+      this._mappings.toArray().length > 0 ? new ArraySet$1() : this._sources;
     const newNames = new ArraySet$1();
 
     // Find mappings for the "sourceFile"
-    this._mappings.unsortedForEach(function(mapping) {
+    this._mappings.unsortedForEach(function (mapping) {
       if (mapping.source === sourceFile && mapping.originalLine != null) {
         // Check if it can be mapped by the source map, then update the mapping.
         const original = aSourceMapConsumer.originalPositionFor({
           line: mapping.originalLine,
-          column: mapping.originalColumn
+          column: mapping.originalColumn,
         });
         if (original.source != null) {
           // Copy mapping
@@ -1322,13 +1332,12 @@ class SourceMapGenerator$1 {
       if (name != null && !newNames.has(name)) {
         newNames.add(name);
       }
-
     }, this);
     this._sources = newSources;
     this._names = newNames;
 
     // Copy sourcesContents of applied map.
-    aSourceMapConsumer.sources.forEach(function(srcFile) {
+    aSourceMapConsumer.sources.forEach(function (srcFile) {
       const content = aSourceMapConsumer.sourceContentFor(srcFile);
       if (content != null) {
         if (aSourceMapPath != null) {
@@ -1358,27 +1367,49 @@ class SourceMapGenerator$1 {
     // it is most likely a programmer error. In this case we throw a very
     // specific error message to try to guide them the right way.
     // For example: https://github.com/Polymer/polymer-bundler/pull/519
-    if (aOriginal && typeof aOriginal.line !== "number" && typeof aOriginal.column !== "number") {
-        throw new Error(
-            "original.line and original.column are not numbers -- you probably meant to omit " +
-            "the original mapping entirely and only map the generated position. If so, pass " +
-            "null for the original mapping instead of an object with empty or null values."
-        );
+    if (
+      aOriginal &&
+      typeof aOriginal.line !== 'number' &&
+      typeof aOriginal.column !== 'number'
+    ) {
+      throw new Error(
+        'original.line and original.column are not numbers -- you probably meant to omit ' +
+          'the original mapping entirely and only map the generated position. If so, pass ' +
+          'null for the original mapping instead of an object with empty or null values.'
+      )
     }
 
-    if (aGenerated && "line" in aGenerated && "column" in aGenerated
-        && aGenerated.line > 0 && aGenerated.column >= 0
-        && !aOriginal && !aSource && !aName) ; else if (aGenerated && "line" in aGenerated && "column" in aGenerated
-             && aOriginal && "line" in aOriginal && "column" in aOriginal
-             && aGenerated.line > 0 && aGenerated.column >= 0
-             && aOriginal.line > 0 && aOriginal.column >= 0
-             && aSource) ; else {
-      throw new Error("Invalid mapping: " + JSON.stringify({
-        generated: aGenerated,
-        source: aSource,
-        original: aOriginal,
-        name: aName
-      }));
+    if (
+      aGenerated &&
+      'line' in aGenerated &&
+      'column' in aGenerated &&
+      aGenerated.line > 0 &&
+      aGenerated.column >= 0 &&
+      !aOriginal &&
+      !aSource &&
+      !aName
+    ) ; else if (
+      aGenerated &&
+      'line' in aGenerated &&
+      'column' in aGenerated &&
+      aOriginal &&
+      'line' in aOriginal &&
+      'column' in aOriginal &&
+      aGenerated.line > 0 &&
+      aGenerated.column >= 0 &&
+      aOriginal.line > 0 &&
+      aOriginal.column >= 0 &&
+      aSource
+    ) ; else {
+      throw new Error(
+        'Invalid mapping: ' +
+          JSON.stringify({
+            generated: aGenerated,
+            source: aSource,
+            original: aOriginal,
+            name: aName,
+          })
+      )
     }
   }
 
@@ -1393,7 +1424,7 @@ class SourceMapGenerator$1 {
     let previousOriginalLine = 0;
     let previousName = 0;
     let previousSource = 0;
-    let result = "";
+    let result = '';
     let next;
     let mapping;
     let nameIdx;
@@ -1402,23 +1433,26 @@ class SourceMapGenerator$1 {
     const mappings = this._mappings.toArray();
     for (let i = 0, len = mappings.length; i < len; i++) {
       mapping = mappings[i];
-      next = "";
+      next = '';
 
       if (mapping.generatedLine !== previousGeneratedLine) {
         previousGeneratedColumn = 0;
         while (mapping.generatedLine !== previousGeneratedLine) {
-          next += ";";
+          next += ';';
           previousGeneratedLine++;
         }
       } else if (i > 0) {
-        if (!util.compareByGeneratedPositionsInflated(mapping, mappings[i - 1])) {
-          continue;
+        if (
+          !util.compareByGeneratedPositionsInflated(mapping, mappings[i - 1])
+        ) {
+          continue
         }
-        next += ",";
+        next += ',';
       }
 
-      next += base64VLQ.encode(mapping.generatedColumn
-                                 - previousGeneratedColumn);
+      next += base64VLQ.encode(
+        mapping.generatedColumn - previousGeneratedColumn
+      );
       previousGeneratedColumn = mapping.generatedColumn;
 
       if (mapping.source != null) {
@@ -1427,12 +1461,14 @@ class SourceMapGenerator$1 {
         previousSource = sourceIdx;
 
         // lines are stored 0-based in SourceMap spec version 3
-        next += base64VLQ.encode(mapping.originalLine - 1
-                                   - previousOriginalLine);
+        next += base64VLQ.encode(
+          mapping.originalLine - 1 - previousOriginalLine
+        );
         previousOriginalLine = mapping.originalLine - 1;
 
-        next += base64VLQ.encode(mapping.originalColumn
-                                   - previousOriginalColumn);
+        next += base64VLQ.encode(
+          mapping.originalColumn - previousOriginalColumn
+        );
         previousOriginalColumn = mapping.originalColumn;
 
         if (mapping.name != null) {
@@ -1445,13 +1481,13 @@ class SourceMapGenerator$1 {
       result += next;
     }
 
-    return result;
+    return result
   }
 
   _generateSourcesContent(aSources, aSourceRoot) {
-    return aSources.map(function(source) {
+    return aSources.map(function (source) {
       if (!this._sourcesContents) {
-        return null;
+        return null
       }
       if (aSourceRoot != null) {
         source = util.relative(aSourceRoot, source);
@@ -1459,8 +1495,8 @@ class SourceMapGenerator$1 {
       const key = util.toSetString(source);
       return Object.prototype.hasOwnProperty.call(this._sourcesContents, key)
         ? this._sourcesContents[key]
-        : null;
-    }, this);
+        : null
+    }, this)
   }
 
   /**
@@ -1471,7 +1507,7 @@ class SourceMapGenerator$1 {
       version: this._version,
       sources: this._sources.toArray(),
       names: this._names.toArray(),
-      mappings: this._serializeMappings()
+      mappings: this._serializeMappings(),
     };
     if (this._file != null) {
       map.file = this._file;
@@ -1480,17 +1516,20 @@ class SourceMapGenerator$1 {
       map.sourceRoot = this._sourceRoot;
     }
     if (this._sourcesContents) {
-      map.sourcesContent = this._generateSourcesContent(map.sources, map.sourceRoot);
+      map.sourcesContent = this._generateSourcesContent(
+        map.sources,
+        map.sourceRoot
+      );
     }
 
-    return map;
+    return map
   }
 
   /**
    * Render the source map being generated to a string.
    */
   toString() {
-    return JSON.stringify(this.toJSON());
+    return JSON.stringify(this.toJSON())
   }
 }
 
@@ -1540,33 +1579,33 @@ function recursiveSearch(aLow, aHigh, aNeedle, aHaystack, aCompare, aBias) {
   const cmp = aCompare(aNeedle, aHaystack[mid], true);
   if (cmp === 0) {
     // Found the element we are looking for.
-    return mid;
+    return mid
   } else if (cmp > 0) {
     // Our needle is greater than aHaystack[mid].
     if (aHigh - mid > 1) {
       // The element is in the upper half.
-      return recursiveSearch(mid, aHigh, aNeedle, aHaystack, aCompare, aBias);
+      return recursiveSearch(mid, aHigh, aNeedle, aHaystack, aCompare, aBias)
     }
 
     // The exact needle element was not found in this haystack. Determine if
     // we are in termination case (3) or (2) and return the appropriate thing.
     if (aBias == exports.LEAST_UPPER_BOUND) {
-      return aHigh < aHaystack.length ? aHigh : -1;
+      return aHigh < aHaystack.length ? aHigh : -1
     }
-    return mid;
+    return mid
   }
 
   // Our needle is less than aHaystack[mid].
   if (mid - aLow > 1) {
     // The element is in the lower half.
-    return recursiveSearch(aLow, mid, aNeedle, aHaystack, aCompare, aBias);
+    return recursiveSearch(aLow, mid, aNeedle, aHaystack, aCompare, aBias)
   }
 
   // we are in termination case (3) or (2) and return the appropriate thing.
   if (aBias == exports.LEAST_UPPER_BOUND) {
-    return mid;
+    return mid
   }
-  return aLow < 0 ? -1 : aLow;
+  return aLow < 0 ? -1 : aLow
 }
 
 /**
@@ -1589,13 +1628,19 @@ function recursiveSearch(aLow, aHigh, aNeedle, aHaystack, aCompare, aBias) {
  */
 exports.search = function search(aNeedle, aHaystack, aCompare, aBias) {
   if (aHaystack.length === 0) {
-    return -1;
+    return -1
   }
 
-  let index = recursiveSearch(-1, aHaystack.length, aNeedle, aHaystack,
-                              aCompare, aBias || exports.GREATEST_LOWER_BOUND);
+  let index = recursiveSearch(
+    -1,
+    aHaystack.length,
+    aNeedle,
+    aHaystack,
+    aCompare,
+    aBias || exports.GREATEST_LOWER_BOUND
+  );
   if (index < 0) {
-    return -1;
+    return -1
   }
 
   // We have found either the exact element, or the next-closest element than
@@ -1603,12 +1648,12 @@ exports.search = function search(aNeedle, aHaystack, aCompare, aBias) {
   // element. Make sure we always return the smallest of these.
   while (index - 1 >= 0) {
     if (aCompare(aHaystack[index], aHaystack[index - 1], true) !== 0) {
-      break;
+      break
     }
     --index;
   }
 
-  return index;
+  return index
 };
 });
 
@@ -1622,20 +1667,26 @@ var readWasm$1 = createCommonjsModule(function (module) {
 
   module.exports = function readWasm() {
     return new Promise((resolve, reject) => {
-      const wasmPath = path.join(__dirname, "../lib/source-map/lib", "mappings.wasm");
+      const wasmPath = path.join(
+        __dirname,
+        '../lib/source-map/lib',
+        'mappings.wasm'
+      );
       fs.readFile(wasmPath, null, (error, data) => {
         if (error) {
           reject(error);
-          return;
+          return
         }
 
         resolve(data.buffer);
       });
-    });
+    })
   };
 
-  module.exports.initialize = _ => {
-    console.debug("SourceMapConsumer.initialize is a no-op when running in node.js");
+  module.exports.initialize = (_) => {
+    console.debug(
+      'SourceMapConsumer.initialize is a no-op when running in node.js'
+    );
   };
 }
 });
@@ -1659,12 +1710,13 @@ let cachedWasm = null;
 
 var wasm$1 = function wasm() {
   if (cachedWasm) {
-    return cachedWasm;
+    return cachedWasm
   }
 
   const callbackStack = [];
 
-  cachedWasm = readWasm().then(buffer => {
+  cachedWasm = readWasm()
+    .then((buffer) => {
       return WebAssembly.instantiate(buffer, {
         env: {
           mapping_callback(
@@ -1706,46 +1758,76 @@ var wasm$1 = function wasm() {
             callbackStack[callbackStack.length - 1](mapping);
           },
 
-          start_all_generated_locations_for() { console.time("all_generated_locations_for"); },
-          end_all_generated_locations_for() { console.timeEnd("all_generated_locations_for"); },
+          start_all_generated_locations_for() {
+            console.time('all_generated_locations_for');
+          },
+          end_all_generated_locations_for() {
+            console.timeEnd('all_generated_locations_for');
+          },
 
-          start_compute_column_spans() { console.time("compute_column_spans"); },
-          end_compute_column_spans() { console.timeEnd("compute_column_spans"); },
+          start_compute_column_spans() {
+            console.time('compute_column_spans');
+          },
+          end_compute_column_spans() {
+            console.timeEnd('compute_column_spans');
+          },
 
-          start_generated_location_for() { console.time("generated_location_for"); },
-          end_generated_location_for() { console.timeEnd("generated_location_for"); },
+          start_generated_location_for() {
+            console.time('generated_location_for');
+          },
+          end_generated_location_for() {
+            console.timeEnd('generated_location_for');
+          },
 
-          start_original_location_for() { console.time("original_location_for"); },
-          end_original_location_for() { console.timeEnd("original_location_for"); },
+          start_original_location_for() {
+            console.time('original_location_for');
+          },
+          end_original_location_for() {
+            console.timeEnd('original_location_for');
+          },
 
-          start_parse_mappings() { console.time("parse_mappings"); },
-          end_parse_mappings() { console.timeEnd("parse_mappings"); },
+          start_parse_mappings() {
+            console.time('parse_mappings');
+          },
+          end_parse_mappings() {
+            console.timeEnd('parse_mappings');
+          },
 
-          start_sort_by_generated_location() { console.time("sort_by_generated_location"); },
-          end_sort_by_generated_location() { console.timeEnd("sort_by_generated_location"); },
+          start_sort_by_generated_location() {
+            console.time('sort_by_generated_location');
+          },
+          end_sort_by_generated_location() {
+            console.timeEnd('sort_by_generated_location');
+          },
 
-          start_sort_by_original_location() { console.time("sort_by_original_location"); },
-          end_sort_by_original_location() { console.timeEnd("sort_by_original_location"); },
-        }
-      });
-  }).then(Wasm => {
-    return {
-      exports: Wasm.instance.exports,
-      withMappingCallback: (mappingCallback, f) => {
-        callbackStack.push(mappingCallback);
-        try {
-          f();
-        } finally {
-          callbackStack.pop();
-        }
+          start_sort_by_original_location() {
+            console.time('sort_by_original_location');
+          },
+          end_sort_by_original_location() {
+            console.timeEnd('sort_by_original_location');
+          },
+        },
+      })
+    })
+    .then((Wasm) => {
+      return {
+        exports: Wasm.instance.exports,
+        withMappingCallback: (mappingCallback, f) => {
+          callbackStack.push(mappingCallback);
+          try {
+            f();
+          } finally {
+            callbackStack.pop();
+          }
+        },
       }
-    };
-  }).then(null, e => {
-    cachedWasm = null;
-    throw e;
-  });
+    })
+    .then(null, (e) => {
+      cachedWasm = null;
+      throw e
+    });
 
-  return cachedWasm;
+  return cachedWasm
 };
 
 var binarySearch = binarySearch$1;
@@ -1767,7 +1849,7 @@ const ArraySet = require$$0$1.ArraySet;
 
 
 
-const INTERNAL = Symbol("smcInternal");
+const INTERNAL = Symbol('smcInternal');
 
 class SourceMapConsumer$1 {
   constructor(aSourceMap, aSourceMapURL) {
@@ -1775,18 +1857,18 @@ class SourceMapConsumer$1 {
     // Yes, this is a hack to retain the pre-existing API of the base-class
     // constructor also being an async factory function.
     if (aSourceMap == INTERNAL) {
-      return Promise.resolve(this);
+      return Promise.resolve(this)
     }
 
-    return _factory(aSourceMap, aSourceMapURL);
+    return _factory(aSourceMap, aSourceMapURL)
   }
 
   static initialize(opts) {
-    readWasm.initialize(opts["lib/mappings.wasm"]);
+    readWasm.initialize(opts['lib/mappings.wasm']);
   }
 
   static fromSourceMap(aSourceMap, aSourceMapURL) {
-    return _factoryBSM(aSourceMap, aSourceMapURL);
+    return _factoryBSM(aSourceMap, aSourceMapURL)
   }
 
   /**
@@ -1822,7 +1904,7 @@ class SourceMapConsumer$1 {
   static async with(rawSourceMap, sourceMapUrl, f) {
     const consumer = await new SourceMapConsumer$1(rawSourceMap, sourceMapUrl);
     try {
-      return await f(consumer);
+      return await f(consumer)
     } finally {
       consumer.destroy();
     }
@@ -1834,7 +1916,7 @@ class SourceMapConsumer$1 {
    * `this.__originalMappings` properties).
    */
   _parseMappings(aStr, aSourceRoot) {
-    throw new Error("Subclasses must implement _parseMappings");
+    throw new Error('Subclasses must implement _parseMappings')
   }
 
   /**
@@ -1854,7 +1936,7 @@ class SourceMapConsumer$1 {
    *        `SourceMapConsumer.GENERATED_ORDER`.
    */
   eachMapping(aCallback, aContext, aOrder) {
-    throw new Error("Subclasses must implement eachMapping");
+    throw new Error('Subclasses must implement eachMapping')
   }
 
   /**
@@ -1880,11 +1962,11 @@ class SourceMapConsumer$1 {
    *    The column number is 0-based.
    */
   allGeneratedPositionsFor(aArgs) {
-    throw new Error("Subclasses must implement allGeneratedPositionsFor");
+    throw new Error('Subclasses must implement allGeneratedPositionsFor')
   }
 
   destroy() {
-    throw new Error("Subclasses must implement destroy");
+    throw new Error('Subclasses must implement destroy')
   }
 }
 
@@ -1936,26 +2018,26 @@ var SourceMapConsumer_1 = SourceMapConsumer$1;
  */
 class BasicSourceMapConsumer extends SourceMapConsumer$1 {
   constructor(aSourceMap, aSourceMapURL) {
-    return super(INTERNAL).then(that => {
+    return super(INTERNAL).then((that) => {
       let sourceMap = aSourceMap;
-      if (typeof aSourceMap === "string") {
+      if (typeof aSourceMap === 'string') {
         sourceMap = util.parseSourceMapInput(aSourceMap);
       }
 
-      const version = util.getArg(sourceMap, "version");
-      let sources = util.getArg(sourceMap, "sources");
+      const version = util.getArg(sourceMap, 'version');
+      let sources = util.getArg(sourceMap, 'sources');
       // Sass 3.3 leaves out the 'names' array, so we deviate from the spec (which
       // requires the array) to play nice here.
-      const names = util.getArg(sourceMap, "names", []);
-      let sourceRoot = util.getArg(sourceMap, "sourceRoot", null);
-      const sourcesContent = util.getArg(sourceMap, "sourcesContent", null);
-      const mappings = util.getArg(sourceMap, "mappings");
-      const file = util.getArg(sourceMap, "file", null);
+      const names = util.getArg(sourceMap, 'names', []);
+      let sourceRoot = util.getArg(sourceMap, 'sourceRoot', null);
+      const sourcesContent = util.getArg(sourceMap, 'sourcesContent', null);
+      const mappings = util.getArg(sourceMap, 'mappings');
+      const file = util.getArg(sourceMap, 'file', null);
 
       // Once again, Sass deviates from the spec and supplies the version as a
       // string rather than a number, so we use loose equality checking here.
       if (version != that._version) {
-        throw new Error("Unsupported version: " + version);
+        throw new Error('Unsupported version: ' + version)
       }
 
       if (sourceRoot) {
@@ -1972,10 +2054,12 @@ class BasicSourceMapConsumer extends SourceMapConsumer$1 {
         // the source root, if the source root is absolute. Not doing this would
         // be particularly problematic when the source root is a prefix of the
         // source (valid, but why??). See github issue #199 and bugzil.la/1188982.
-        .map(function(source) {
-          return sourceRoot && util.isAbsolute(sourceRoot) && util.isAbsolute(source)
+        .map(function (source) {
+          return sourceRoot &&
+            util.isAbsolute(sourceRoot) &&
+            util.isAbsolute(source)
             ? util.relative(sourceRoot, source)
-            : source;
+            : source
         });
 
       // Pass `true` below to allow duplicate names and sources. While source maps
@@ -1985,8 +2069,8 @@ class BasicSourceMapConsumer extends SourceMapConsumer$1 {
       that._names = ArraySet.fromArray(names.map(String), true);
       that._sources = ArraySet.fromArray(sources, true);
 
-      that._absoluteSources = that._sources.toArray().map(function(s) {
-        return util.computeSourceURL(sourceRoot, s, aSourceMapURL);
+      that._absoluteSources = that._sources.toArray().map(function (s) {
+        return util.computeSourceURL(sourceRoot, s, aSourceMapURL)
       });
 
       that.sourceRoot = sourceRoot;
@@ -1999,11 +2083,11 @@ class BasicSourceMapConsumer extends SourceMapConsumer$1 {
       that._mappingsPtr = 0;
       that._wasm = null;
 
-      return wasm().then(w => {
+      return wasm().then((w) => {
         that._wasm = w;
-        return that;
-      });
-    });
+        return that
+      })
+    })
   }
 
   /**
@@ -2017,18 +2101,18 @@ class BasicSourceMapConsumer extends SourceMapConsumer$1 {
     }
 
     if (this._sources.has(relativeSource)) {
-      return this._sources.indexOf(relativeSource);
+      return this._sources.indexOf(relativeSource)
     }
 
     // Maybe aSource is an absolute URL as returned by |sources|.  In
     // this case we can't simply undo the transform.
     for (let i = 0; i < this._absoluteSources.length; ++i) {
       if (this._absoluteSources[i] == aSource) {
-        return i;
+        return i
       }
     }
 
-    return -1;
+    return -1
   }
 
   /**
@@ -2041,11 +2125,11 @@ class BasicSourceMapConsumer extends SourceMapConsumer$1 {
    * @returns BasicSourceMapConsumer
    */
   static fromSourceMap(aSourceMap, aSourceMapURL) {
-    return new BasicSourceMapConsumer(aSourceMap.toString());
+    return new BasicSourceMapConsumer(aSourceMap.toString())
   }
 
   get sources() {
-    return this._absoluteSources.slice();
+    return this._absoluteSources.slice()
   }
 
   _getMappingsPtr() {
@@ -2053,7 +2137,7 @@ class BasicSourceMapConsumer extends SourceMapConsumer$1 {
       this._parseMappings(this._mappings, this.sourceRoot);
     }
 
-    return this._mappingsPtr;
+    return this._mappingsPtr
   }
 
   /**
@@ -2065,7 +2149,11 @@ class BasicSourceMapConsumer extends SourceMapConsumer$1 {
     const size = aStr.length;
 
     const mappingsBufPtr = this._wasm.exports.allocate_mappings(size);
-    const mappingsBuf = new Uint8Array(this._wasm.exports.memory.buffer, mappingsBufPtr, size);
+    const mappingsBuf = new Uint8Array(
+      this._wasm.exports.memory.buffer,
+      mappingsBufPtr,
+      size
+    );
     for (let i = 0; i < size; i++) {
       mappingsBuf[i] = aStr.charCodeAt(i);
     }
@@ -2079,23 +2167,24 @@ class BasicSourceMapConsumer extends SourceMapConsumer$1 {
       // XXX: keep these error codes in sync with `fitzgen/source-map-mappings`.
       switch (error) {
         case 1:
-          msg += "the mappings contained a negative line, column, source index, or name index";
-          break;
+          msg +=
+            'the mappings contained a negative line, column, source index, or name index';
+          break
         case 2:
-          msg += "the mappings contained a number larger than 2**32";
-          break;
+          msg += 'the mappings contained a number larger than 2**32';
+          break
         case 3:
-          msg += "reached EOF while in the middle of parsing a VLQ";
-          break;
+          msg += 'reached EOF while in the middle of parsing a VLQ';
+          break
         case 4:
-          msg += "invalid base 64 character while parsing a VLQ";
-          break;
+          msg += 'invalid base 64 character while parsing a VLQ';
+          break
         default:
-          msg += "unknown error code";
-          break;
+          msg += 'unknown error code';
+          break
       }
 
-      throw new Error(msg);
+      throw new Error(msg)
     }
 
     this._mappingsPtr = mappingsPtr;
@@ -2107,10 +2196,14 @@ class BasicSourceMapConsumer extends SourceMapConsumer$1 {
     const sourceRoot = this.sourceRoot;
 
     this._wasm.withMappingCallback(
-      mapping => {
+      (mapping) => {
         if (mapping.source !== null) {
           mapping.source = this._sources.at(mapping.source);
-          mapping.source = util.computeSourceURL(sourceRoot, mapping.source, this._sourceMapURL);
+          mapping.source = util.computeSourceURL(
+            sourceRoot,
+            mapping.source,
+            this._sourceMapURL
+          );
 
           if (mapping.name !== null) {
             mapping.name = this._names.at(mapping.name);
@@ -2121,41 +2214,41 @@ class BasicSourceMapConsumer extends SourceMapConsumer$1 {
       },
       () => {
         switch (order) {
-        case SourceMapConsumer$1.GENERATED_ORDER:
-          this._wasm.exports.by_generated_location(this._getMappingsPtr());
-          break;
-        case SourceMapConsumer$1.ORIGINAL_ORDER:
-          this._wasm.exports.by_original_location(this._getMappingsPtr());
-          break;
-        default:
-          throw new Error("Unknown order of iteration.");
+          case SourceMapConsumer$1.GENERATED_ORDER:
+            this._wasm.exports.by_generated_location(this._getMappingsPtr());
+            break
+          case SourceMapConsumer$1.ORIGINAL_ORDER:
+            this._wasm.exports.by_original_location(this._getMappingsPtr());
+            break
+          default:
+            throw new Error('Unknown order of iteration.')
         }
       }
     );
   }
 
   allGeneratedPositionsFor(aArgs) {
-    let source = util.getArg(aArgs, "source");
-    const originalLine = util.getArg(aArgs, "line");
+    let source = util.getArg(aArgs, 'source');
+    const originalLine = util.getArg(aArgs, 'line');
     const originalColumn = aArgs.column || 0;
 
     source = this._findSourceIndex(source);
     if (source < 0) {
-      return [];
+      return []
     }
 
     if (originalLine < 1) {
-      throw new Error("Line numbers must be >= 1");
+      throw new Error('Line numbers must be >= 1')
     }
 
     if (originalColumn < 0) {
-      throw new Error("Column numbers must be >= 0");
+      throw new Error('Column numbers must be >= 0')
     }
 
     const mappings = [];
 
     this._wasm.withMappingCallback(
-      m => {
+      (m) => {
         let lastColumn = m.lastGeneratedColumn;
         if (this._computedColumnSpans && lastColumn === null) {
           lastColumn = Infinity;
@@ -2165,18 +2258,19 @@ class BasicSourceMapConsumer extends SourceMapConsumer$1 {
           column: m.generatedColumn,
           lastColumn,
         });
-      }, () => {
+      },
+      () => {
         this._wasm.exports.all_generated_locations_for(
           this._getMappingsPtr(),
           source,
           originalLine - 1,
-          "column" in aArgs,
+          'column' in aArgs,
           originalColumn
         );
       }
     );
 
-    return mappings;
+    return mappings
   }
 
   destroy() {
@@ -2192,7 +2286,7 @@ class BasicSourceMapConsumer extends SourceMapConsumer$1 {
    */
   computeColumnSpans() {
     if (this._computedColumnSpans) {
-      return;
+      return
     }
 
     this._wasm.exports.compute_column_spans(this._getMappingsPtr());
@@ -2225,52 +2319,63 @@ class BasicSourceMapConsumer extends SourceMapConsumer$1 {
    */
   originalPositionFor(aArgs) {
     const needle = {
-      generatedLine: util.getArg(aArgs, "line"),
-      generatedColumn: util.getArg(aArgs, "column")
+      generatedLine: util.getArg(aArgs, 'line'),
+      generatedColumn: util.getArg(aArgs, 'column'),
     };
 
     if (needle.generatedLine < 1) {
-      throw new Error("Line numbers must be >= 1");
+      throw new Error('Line numbers must be >= 1')
     }
 
     if (needle.generatedColumn < 0) {
-      throw new Error("Column numbers must be >= 0");
+      throw new Error('Column numbers must be >= 0')
     }
 
-    let bias = util.getArg(aArgs, "bias", SourceMapConsumer$1.GREATEST_LOWER_BOUND);
+    let bias = util.getArg(
+      aArgs,
+      'bias',
+      SourceMapConsumer$1.GREATEST_LOWER_BOUND
+    );
     if (bias == null) {
       bias = SourceMapConsumer$1.GREATEST_LOWER_BOUND;
     }
 
     let mapping;
-    this._wasm.withMappingCallback(m => mapping = m, () => {
-      this._wasm.exports.original_location_for(
-        this._getMappingsPtr(),
-        needle.generatedLine - 1,
-        needle.generatedColumn,
-        bias
-      );
-    });
+    this._wasm.withMappingCallback(
+      (m) => (mapping = m),
+      () => {
+        this._wasm.exports.original_location_for(
+          this._getMappingsPtr(),
+          needle.generatedLine - 1,
+          needle.generatedColumn,
+          bias
+        );
+      }
+    );
 
     if (mapping) {
       if (mapping.generatedLine === needle.generatedLine) {
-        let source = util.getArg(mapping, "source", null);
+        let source = util.getArg(mapping, 'source', null);
         if (source !== null) {
           source = this._sources.at(source);
-          source = util.computeSourceURL(this.sourceRoot, source, this._sourceMapURL);
+          source = util.computeSourceURL(
+            this.sourceRoot,
+            source,
+            this._sourceMapURL
+          );
         }
 
-        let name = util.getArg(mapping, "name", null);
+        let name = util.getArg(mapping, 'name', null);
         if (name !== null) {
           name = this._names.at(name);
         }
 
         return {
           source,
-          line: util.getArg(mapping, "originalLine", null),
-          column: util.getArg(mapping, "originalColumn", null),
-          name
-        };
+          line: util.getArg(mapping, 'originalLine', null),
+          column: util.getArg(mapping, 'originalColumn', null),
+          name,
+        }
       }
     }
 
@@ -2278,8 +2383,8 @@ class BasicSourceMapConsumer extends SourceMapConsumer$1 {
       source: null,
       line: null,
       column: null,
-      name: null
-    };
+      name: null,
+    }
   }
 
   /**
@@ -2288,10 +2393,14 @@ class BasicSourceMapConsumer extends SourceMapConsumer$1 {
    */
   hasContentsOfAllSources() {
     if (!this.sourcesContent) {
-      return false;
+      return false
     }
-    return this.sourcesContent.length >= this._sources.size() &&
-      !this.sourcesContent.some(function(sc) { return sc == null; });
+    return (
+      this.sourcesContent.length >= this._sources.size() &&
+      !this.sourcesContent.some(function (sc) {
+        return sc == null
+      })
+    )
   }
 
   /**
@@ -2301,12 +2410,12 @@ class BasicSourceMapConsumer extends SourceMapConsumer$1 {
    */
   sourceContentFor(aSource, nullOnMissing) {
     if (!this.sourcesContent) {
-      return null;
+      return null
     }
 
     const index = this._findSourceIndex(aSource);
     if (index >= 0) {
-      return this.sourcesContent[index];
+      return this.sourcesContent[index]
     }
 
     let relativeSource = aSource;
@@ -2315,21 +2424,21 @@ class BasicSourceMapConsumer extends SourceMapConsumer$1 {
     }
 
     let url;
-    if (this.sourceRoot != null
-        && (url = util.urlParse(this.sourceRoot))) {
+    if (this.sourceRoot != null && (url = util.urlParse(this.sourceRoot))) {
       // XXX: file:// URIs and absolute paths lead to unexpected behavior for
       // many users. We can help them out when they expect file:// URIs to
       // behave like it would if they were running a local HTTP server. See
       // https://bugzilla.mozilla.org/show_bug.cgi?id=885597.
-      const fileUriAbsPath = relativeSource.replace(/^file:\/\//, "");
-      if (url.scheme == "file"
-          && this._sources.has(fileUriAbsPath)) {
-        return this.sourcesContent[this._sources.indexOf(fileUriAbsPath)];
+      const fileUriAbsPath = relativeSource.replace(/^file:\/\//, '');
+      if (url.scheme == 'file' && this._sources.has(fileUriAbsPath)) {
+        return this.sourcesContent[this._sources.indexOf(fileUriAbsPath)]
       }
 
-      if ((!url.path || url.path == "/")
-          && this._sources.has("/" + relativeSource)) {
-        return this.sourcesContent[this._sources.indexOf("/" + relativeSource)];
+      if (
+        (!url.path || url.path == '/') &&
+        this._sources.has('/' + relativeSource)
+      ) {
+        return this.sourcesContent[this._sources.indexOf('/' + relativeSource)]
       }
     }
 
@@ -2338,10 +2447,10 @@ class BasicSourceMapConsumer extends SourceMapConsumer$1 {
     // don't want to throw if we can't find the source - we just want to
     // return null, so we provide a flag to exit gracefully.
     if (nullOnMissing) {
-      return null;
+      return null
     }
 
-    throw new Error('"' + relativeSource + '" is not in the SourceMap.');
+    throw new Error('"' + relativeSource + '" is not in the SourceMap.')
   }
 
   /**
@@ -2368,45 +2477,52 @@ class BasicSourceMapConsumer extends SourceMapConsumer$1 {
    *     The column number is 0-based.
    */
   generatedPositionFor(aArgs) {
-    let source = util.getArg(aArgs, "source");
+    let source = util.getArg(aArgs, 'source');
     source = this._findSourceIndex(source);
     if (source < 0) {
       return {
         line: null,
         column: null,
-        lastColumn: null
-      };
+        lastColumn: null,
+      }
     }
 
     const needle = {
       source,
-      originalLine: util.getArg(aArgs, "line"),
-      originalColumn: util.getArg(aArgs, "column")
+      originalLine: util.getArg(aArgs, 'line'),
+      originalColumn: util.getArg(aArgs, 'column'),
     };
 
     if (needle.originalLine < 1) {
-      throw new Error("Line numbers must be >= 1");
+      throw new Error('Line numbers must be >= 1')
     }
 
     if (needle.originalColumn < 0) {
-      throw new Error("Column numbers must be >= 0");
+      throw new Error('Column numbers must be >= 0')
     }
 
-    let bias = util.getArg(aArgs, "bias", SourceMapConsumer$1.GREATEST_LOWER_BOUND);
+    let bias = util.getArg(
+      aArgs,
+      'bias',
+      SourceMapConsumer$1.GREATEST_LOWER_BOUND
+    );
     if (bias == null) {
       bias = SourceMapConsumer$1.GREATEST_LOWER_BOUND;
     }
 
     let mapping;
-    this._wasm.withMappingCallback(m => mapping = m, () => {
-      this._wasm.exports.generated_location_for(
-        this._getMappingsPtr(),
-        needle.source,
-        needle.originalLine - 1,
-        needle.originalColumn,
-        bias
-      );
-    });
+    this._wasm.withMappingCallback(
+      (m) => (mapping = m),
+      () => {
+        this._wasm.exports.generated_location_for(
+          this._getMappingsPtr(),
+          needle.source,
+          needle.originalLine - 1,
+          needle.originalColumn,
+          bias
+        );
+      }
+    );
 
     if (mapping) {
       if (mapping.source === needle.source) {
@@ -2415,18 +2531,18 @@ class BasicSourceMapConsumer extends SourceMapConsumer$1 {
           lastColumn = Infinity;
         }
         return {
-          line: util.getArg(mapping, "generatedLine", null),
-          column: util.getArg(mapping, "generatedColumn", null),
+          line: util.getArg(mapping, 'generatedLine', null),
+          column: util.getArg(mapping, 'generatedColumn', null),
           lastColumn,
-        };
+        }
       }
     }
 
     return {
       line: null,
       column: null,
-      lastColumn: null
-    };
+      lastColumn: null,
+    }
   }
 }
 
@@ -2484,17 +2600,17 @@ var BasicSourceMapConsumer_1 = BasicSourceMapConsumer;
  */
 class IndexedSourceMapConsumer extends SourceMapConsumer$1 {
   constructor(aSourceMap, aSourceMapURL) {
-    return super(INTERNAL).then(that => {
+    return super(INTERNAL).then((that) => {
       let sourceMap = aSourceMap;
-      if (typeof aSourceMap === "string") {
+      if (typeof aSourceMap === 'string') {
         sourceMap = util.parseSourceMapInput(aSourceMap);
       }
 
-      const version = util.getArg(sourceMap, "version");
-      const sections = util.getArg(sourceMap, "sections");
+      const version = util.getArg(sourceMap, 'version');
+      const sections = util.getArg(sourceMap, 'sections');
 
       if (version != that._version) {
-        throw new Error("Unsupported version: " + version);
+        throw new Error('Unsupported version: ' + version)
       }
 
       that._sources = new ArraySet();
@@ -2506,41 +2622,52 @@ class IndexedSourceMapConsumer extends SourceMapConsumer$1 {
 
       let lastOffset = {
         line: -1,
-        column: 0
+        column: 0,
       };
-      return Promise.all(sections.map(s => {
-        if (s.url) {
-          // The url field will require support for asynchronicity.
-          // See https://github.com/mozilla/source-map/issues/16
-          throw new Error("Support for url field in sections not implemented.");
-        }
-        const offset = util.getArg(s, "offset");
-        const offsetLine = util.getArg(offset, "line");
-        const offsetColumn = util.getArg(offset, "column");
+      return Promise.all(
+        sections.map((s) => {
+          if (s.url) {
+            // The url field will require support for asynchronicity.
+            // See https://github.com/mozilla/source-map/issues/16
+            throw new Error(
+              'Support for url field in sections not implemented.'
+            )
+          }
+          const offset = util.getArg(s, 'offset');
+          const offsetLine = util.getArg(offset, 'line');
+          const offsetColumn = util.getArg(offset, 'column');
 
-        if (offsetLine < lastOffset.line ||
-            (offsetLine === lastOffset.line && offsetColumn < lastOffset.column)) {
-          throw new Error("Section offsets must be ordered and non-overlapping.");
-        }
-        lastOffset = offset;
+          if (
+            offsetLine < lastOffset.line ||
+            (offsetLine === lastOffset.line && offsetColumn < lastOffset.column)
+          ) {
+            throw new Error(
+              'Section offsets must be ordered and non-overlapping.'
+            )
+          }
+          lastOffset = offset;
 
-        const cons = new SourceMapConsumer$1(util.getArg(s, "map"), aSourceMapURL);
-        return cons.then(consumer => {
-          return {
-            generatedOffset: {
-              // The offset fields are 0-based, but we use 1-based indices when
-              // encoding/decoding from VLQ.
-              generatedLine: offsetLine + 1,
-              generatedColumn: offsetColumn + 1
-            },
-            consumer
-          };
-        });
-      })).then(s => {
+          const cons = new SourceMapConsumer$1(
+            util.getArg(s, 'map'),
+            aSourceMapURL
+          );
+          return cons.then((consumer) => {
+            return {
+              generatedOffset: {
+                // The offset fields are 0-based, but we use 1-based indices when
+                // encoding/decoding from VLQ.
+                generatedLine: offsetLine + 1,
+                generatedColumn: offsetColumn + 1,
+              },
+              consumer,
+            }
+          })
+        })
+      ).then((s) => {
         that._sections = s;
-        return that;
-      });
-    });
+        return that
+      })
+    })
   }
 
   // `__generatedMappings` and `__originalMappings` are arrays that hold the
@@ -2577,7 +2704,7 @@ class IndexedSourceMapConsumer extends SourceMapConsumer$1 {
       this._sortGeneratedMappings();
     }
 
-    return this.__generatedMappings;
+    return this.__generatedMappings
   }
 
   get _originalMappings() {
@@ -2585,7 +2712,7 @@ class IndexedSourceMapConsumer extends SourceMapConsumer$1 {
       this._sortOriginalMappings();
     }
 
-    return this.__originalMappings;
+    return this.__originalMappings
   }
 
   get _generatedMappingsUnsorted() {
@@ -2593,7 +2720,7 @@ class IndexedSourceMapConsumer extends SourceMapConsumer$1 {
       this._parseMappings(this._mappings, this.sourceRoot);
     }
 
-    return this.__generatedMappingsUnsorted;
+    return this.__generatedMappingsUnsorted
   }
 
   get _originalMappingsUnsorted() {
@@ -2601,7 +2728,7 @@ class IndexedSourceMapConsumer extends SourceMapConsumer$1 {
       this._parseMappings(this._mappings, this.sourceRoot);
     }
 
-    return this.__originalMappingsUnsorted;
+    return this.__originalMappingsUnsorted
   }
 
   _sortGeneratedMappings() {
@@ -2626,7 +2753,7 @@ class IndexedSourceMapConsumer extends SourceMapConsumer$1 {
         sources.push(this._sections[i].consumer.sources[j]);
       }
     }
-    return sources;
+    return sources
   }
 
   /**
@@ -2650,22 +2777,25 @@ class IndexedSourceMapConsumer extends SourceMapConsumer$1 {
    */
   originalPositionFor(aArgs) {
     const needle = {
-      generatedLine: util.getArg(aArgs, "line"),
-      generatedColumn: util.getArg(aArgs, "column")
+      generatedLine: util.getArg(aArgs, 'line'),
+      generatedColumn: util.getArg(aArgs, 'column'),
     };
 
     // Find the section containing the generated position we're trying to map
     // to an original position.
-    const sectionIndex = binarySearch.search(needle, this._sections,
-      function(aNeedle, section) {
-        const cmp = aNeedle.generatedLine - section.generatedOffset.generatedLine;
+    const sectionIndex = binarySearch.search(
+      needle,
+      this._sections,
+      function (aNeedle, section) {
+        const cmp =
+          aNeedle.generatedLine - section.generatedOffset.generatedLine;
         if (cmp) {
-          return cmp;
+          return cmp
         }
 
-        return (aNeedle.generatedColumn -
-                section.generatedOffset.generatedColumn);
-      });
+        return aNeedle.generatedColumn - section.generatedOffset.generatedColumn
+      }
+    );
     const section = this._sections[sectionIndex];
 
     if (!section) {
@@ -2673,19 +2803,19 @@ class IndexedSourceMapConsumer extends SourceMapConsumer$1 {
         source: null,
         line: null,
         column: null,
-        name: null
-      };
+        name: null,
+      }
     }
 
     return section.consumer.originalPositionFor({
-      line: needle.generatedLine -
-        (section.generatedOffset.generatedLine - 1),
-      column: needle.generatedColumn -
+      line: needle.generatedLine - (section.generatedOffset.generatedLine - 1),
+      column:
+        needle.generatedColumn -
         (section.generatedOffset.generatedLine === needle.generatedLine
-         ? section.generatedOffset.generatedColumn - 1
-         : 0),
-      bias: aArgs.bias
-    });
+          ? section.generatedOffset.generatedColumn - 1
+          : 0),
+      bias: aArgs.bias,
+    })
   }
 
   /**
@@ -2693,9 +2823,9 @@ class IndexedSourceMapConsumer extends SourceMapConsumer$1 {
    * map, false otherwise.
    */
   hasContentsOfAllSources() {
-    return this._sections.every(function(s) {
-      return s.consumer.hasContentsOfAllSources();
-    });
+    return this._sections.every(function (s) {
+      return s.consumer.hasContentsOfAllSources()
+    })
   }
 
   /**
@@ -2709,13 +2839,13 @@ class IndexedSourceMapConsumer extends SourceMapConsumer$1 {
 
       const content = section.consumer.sourceContentFor(aSource, true);
       if (content) {
-        return content;
+        return content
       }
     }
     if (nullOnMissing) {
-      return null;
+      return null
     }
-    throw new Error('"' + aSource + '" is not in the SourceMap.');
+    throw new Error('"' + aSource + '" is not in the SourceMap.')
   }
 
   /**
@@ -2742,27 +2872,31 @@ class IndexedSourceMapConsumer extends SourceMapConsumer$1 {
 
       // Only consider this section if the requested source is in the list of
       // sources of the consumer.
-      if (section.consumer._findSourceIndex(util.getArg(aArgs, "source")) === -1) {
-        continue;
+      if (
+        section.consumer._findSourceIndex(util.getArg(aArgs, 'source')) === -1
+      ) {
+        continue
       }
       const generatedPosition = section.consumer.generatedPositionFor(aArgs);
       if (generatedPosition) {
         const ret = {
-          line: generatedPosition.line +
+          line:
+            generatedPosition.line +
             (section.generatedOffset.generatedLine - 1),
-          column: generatedPosition.column +
+          column:
+            generatedPosition.column +
             (section.generatedOffset.generatedLine === generatedPosition.line
-             ? section.generatedOffset.generatedColumn - 1
-             : 0)
+              ? section.generatedOffset.generatedColumn - 1
+              : 0),
         };
-        return ret;
+        return ret
       }
     }
 
     return {
       line: null,
-      column: null
-    };
+      column: null,
+    }
   }
 
   /**
@@ -2771,13 +2905,13 @@ class IndexedSourceMapConsumer extends SourceMapConsumer$1 {
    * `this.__originalMappings` properties).
    */
   _parseMappings(aStr, aSourceRoot) {
-    const generatedMappings = this.__generatedMappingsUnsorted = [];
-    const originalMappings = this.__originalMappingsUnsorted = [];
+    const generatedMappings = (this.__generatedMappingsUnsorted = []);
+    const originalMappings = (this.__originalMappingsUnsorted = []);
     for (let i = 0; i < this._sections.length; i++) {
       const section = this._sections[i];
 
       const sectionMappings = [];
-      section.consumer.eachMapping(m => sectionMappings.push(m));
+      section.consumer.eachMapping((m) => sectionMappings.push(m));
 
       for (let j = 0; j < sectionMappings.length; j++) {
         const mapping = sectionMappings[j];
@@ -2786,7 +2920,11 @@ class IndexedSourceMapConsumer extends SourceMapConsumer$1 {
         // `source`, which would actually have gotten used as null because
         // var's get hoisted.
         // See: https://github.com/mozilla/source-map/issues/333
-        let source = util.computeSourceURL(section.consumer.sourceRoot, null, this._sourceMapURL);
+        let source = util.computeSourceURL(
+          section.consumer.sourceRoot,
+          null,
+          this._sourceMapURL
+        );
         this._sources.add(source);
         source = this._sources.indexOf(source);
 
@@ -2802,19 +2940,20 @@ class IndexedSourceMapConsumer extends SourceMapConsumer$1 {
         // generated file.
         const adjustedMapping = {
           source,
-          generatedLine: mapping.generatedLine +
-            (section.generatedOffset.generatedLine - 1),
-          generatedColumn: mapping.generatedColumn +
+          generatedLine:
+            mapping.generatedLine + (section.generatedOffset.generatedLine - 1),
+          generatedColumn:
+            mapping.generatedColumn +
             (section.generatedOffset.generatedLine === mapping.generatedLine
-            ? section.generatedOffset.generatedColumn - 1
-            : 0),
+              ? section.generatedOffset.generatedColumn - 1
+              : 0),
           originalLine: mapping.originalLine,
           originalColumn: mapping.originalColumn,
-          name
+          name,
         };
 
         generatedMappings.push(adjustedMapping);
-        if (typeof adjustedMapping.originalLine === "number") {
+        if (typeof adjustedMapping.originalLine === 'number') {
           originalMappings.push(adjustedMapping);
         }
       }
@@ -2827,91 +2966,96 @@ class IndexedSourceMapConsumer extends SourceMapConsumer$1 {
 
     let mappings;
     switch (order) {
-    case SourceMapConsumer$1.GENERATED_ORDER:
-      mappings = this._generatedMappings;
-      break;
-    case SourceMapConsumer$1.ORIGINAL_ORDER:
-      mappings = this._originalMappings;
-      break;
-    default:
-      throw new Error("Unknown order of iteration.");
+      case SourceMapConsumer$1.GENERATED_ORDER:
+        mappings = this._generatedMappings;
+        break
+      case SourceMapConsumer$1.ORIGINAL_ORDER:
+        mappings = this._originalMappings;
+        break
+      default:
+        throw new Error('Unknown order of iteration.')
     }
 
     const sourceRoot = this.sourceRoot;
-    mappings.map(function(mapping) {
-      let source = null;
-      if (mapping.source !== null) {
-        source = this._sources.at(mapping.source);
-        source = util.computeSourceURL(sourceRoot, source, this._sourceMapURL);
-      }
-      return {
-        source,
-        generatedLine: mapping.generatedLine,
-        generatedColumn: mapping.generatedColumn,
-        originalLine: mapping.originalLine,
-        originalColumn: mapping.originalColumn,
-        name: mapping.name === null ? null : this._names.at(mapping.name)
-      };
-    }, this).forEach(aCallback, context);
+    mappings
+      .map(function (mapping) {
+        let source = null;
+        if (mapping.source !== null) {
+          source = this._sources.at(mapping.source);
+          source = util.computeSourceURL(sourceRoot, source, this._sourceMapURL);
+        }
+        return {
+          source,
+          generatedLine: mapping.generatedLine,
+          generatedColumn: mapping.generatedColumn,
+          originalLine: mapping.originalLine,
+          originalColumn: mapping.originalColumn,
+          name: mapping.name === null ? null : this._names.at(mapping.name),
+        }
+      }, this)
+      .forEach(aCallback, context);
   }
 
   /**
    * Find the mapping that best matches the hypothetical "needle" mapping that
    * we are searching for in the given "haystack" of mappings.
    */
-  _findMapping(aNeedle, aMappings, aLineName,
-              aColumnName, aComparator, aBias) {
+  _findMapping(aNeedle, aMappings, aLineName, aColumnName, aComparator, aBias) {
     // To return the position we are searching for, we must first find the
     // mapping for the given position and then return the opposite position it
     // points to. Because the mappings are sorted, we can use binary search to
     // find the best mapping.
 
     if (aNeedle[aLineName] <= 0) {
-      throw new TypeError("Line must be greater than or equal to 1, got "
-                          + aNeedle[aLineName]);
+      throw new TypeError(
+        'Line must be greater than or equal to 1, got ' + aNeedle[aLineName]
+      )
     }
     if (aNeedle[aColumnName] < 0) {
-      throw new TypeError("Column must be greater than or equal to 0, got "
-                          + aNeedle[aColumnName]);
+      throw new TypeError(
+        'Column must be greater than or equal to 0, got ' + aNeedle[aColumnName]
+      )
     }
 
-    return binarySearch.search(aNeedle, aMappings, aComparator, aBias);
+    return binarySearch.search(aNeedle, aMappings, aComparator, aBias)
   }
 
   allGeneratedPositionsFor(aArgs) {
-    const line = util.getArg(aArgs, "line");
+    const line = util.getArg(aArgs, 'line');
 
     // When there is no exact match, BasicSourceMapConsumer.prototype._findMapping
     // returns the index of the closest mapping less than the needle. By
     // setting needle.originalColumn to 0, we thus find the last mapping for
     // the given line, provided such a mapping exists.
     const needle = {
-      source: util.getArg(aArgs, "source"),
+      source: util.getArg(aArgs, 'source'),
       originalLine: line,
-      originalColumn: util.getArg(aArgs, "column", 0)
+      originalColumn: util.getArg(aArgs, 'column', 0),
     };
 
     needle.source = this._findSourceIndex(needle.source);
     if (needle.source < 0) {
-      return [];
+      return []
     }
 
     if (needle.originalLine < 1) {
-      throw new Error("Line numbers must be >= 1");
+      throw new Error('Line numbers must be >= 1')
     }
 
     if (needle.originalColumn < 0) {
-      throw new Error("Column numbers must be >= 0");
+      throw new Error('Column numbers must be >= 0')
     }
 
     const mappings = [];
 
-    let index = this._findMapping(needle,
-                                  this._originalMappings,
-                                  "originalLine",
-                                  "originalColumn",
-                                  util.compareByOriginalPositions,
-                                  binarySearch.LEAST_UPPER_BOUND);
+    let index = this._findMapping(
+      needle,
+      this._originalMappings,
+      'originalLine',
+      'originalColumn',
+      util.compareByOriginalPositions,
+      binarySearch.LEAST_UPPER_BOUND
+    );
     if (index >= 0) {
       let mapping = this._originalMappings[index];
 
@@ -2928,8 +3072,8 @@ class IndexedSourceMapConsumer extends SourceMapConsumer$1 {
             lastColumn = Infinity;
           }
           mappings.push({
-            line: util.getArg(mapping, "generatedLine", null),
-            column: util.getArg(mapping, "generatedColumn", null),
+            line: util.getArg(mapping, 'generatedLine', null),
+            column: util.getArg(mapping, 'generatedColumn', null),
             lastColumn,
           });
 
@@ -2942,16 +3086,18 @@ class IndexedSourceMapConsumer extends SourceMapConsumer$1 {
         // a mapping for a different line than the one we were searching for.
         // Since mappings are sorted, this is guaranteed to find all mappings for
         // the line we are searching for.
-        while (mapping &&
-               mapping.originalLine === line &&
-               mapping.originalColumn == originalColumn) {
+        while (
+          mapping &&
+          mapping.originalLine === line &&
+          mapping.originalColumn == originalColumn
+        ) {
           let lastColumn = mapping.lastGeneratedColumn;
           if (this._computedColumnSpans && lastColumn === null) {
             lastColumn = Infinity;
           }
           mappings.push({
-            line: util.getArg(mapping, "generatedLine", null),
-            column: util.getArg(mapping, "generatedColumn", null),
+            line: util.getArg(mapping, 'generatedLine', null),
+            column: util.getArg(mapping, 'generatedColumn', null),
             lastColumn,
           });
 
@@ -2960,7 +3106,7 @@ class IndexedSourceMapConsumer extends SourceMapConsumer$1 {
       }
     }
 
-    return mappings;
+    return mappings
   }
 
   destroy() {
@@ -2977,18 +3123,19 @@ var IndexedSourceMapConsumer_1 = IndexedSourceMapConsumer;
  */
 function _factory(aSourceMap, aSourceMapURL) {
   let sourceMap = aSourceMap;
-  if (typeof aSourceMap === "string") {
+  if (typeof aSourceMap === 'string') {
     sourceMap = util.parseSourceMapInput(aSourceMap);
   }
 
-  const consumer = sourceMap.sections != null
+  const consumer =
+    sourceMap.sections != null
       ? new IndexedSourceMapConsumer(sourceMap, aSourceMapURL)
       : new BasicSourceMapConsumer(sourceMap, aSourceMapURL);
-  return Promise.resolve(consumer);
+  return Promise.resolve(consumer)
 }
 
 function _factoryBSM(aSourceMap, aSourceMapURL) {
-  return BasicSourceMapConsumer.fromSourceMap(aSourceMap, aSourceMapURL);
+  return BasicSourceMapConsumer.fromSourceMap(aSourceMap, aSourceMapURL)
 }
 
 var sourceMapConsumer = {
@@ -3020,7 +3167,7 @@ const NEWLINE_CODE = 10;
 // Private symbol for identifying `SourceNode`s when multiple versions of
 // the source-map library are loaded. This MUST NOT CHANGE across
 // versions!
-const isSourceNode = "$$$isSourceNode$$$";
+const isSourceNode = '$$$isSourceNode$$$';
 
 /**
  * SourceNodes provide a way to abstract over interpolating/concatenating
@@ -3054,7 +3201,11 @@ class SourceNode {
    * @param aRelativePath Optional. The path that relative sources in the
    *        SourceMapConsumer should be relative to.
    */
-  static fromStringWithSourceMap(aGeneratedCode, aSourceMapConsumer, aRelativePath) {
+  static fromStringWithSourceMap(
+    aGeneratedCode,
+    aSourceMapConsumer,
+    aRelativePath
+  ) {
     // The SourceNode we want to fill with the generated code
     // and the SourceMap
     const node = new SourceNode();
@@ -3065,20 +3216,22 @@ class SourceNode {
     // Processed fragments are accessed by calling `shiftNextLine`.
     const remainingLines = aGeneratedCode.split(REGEX_NEWLINE);
     let remainingLinesIndex = 0;
-    const shiftNextLine = function() {
+    const shiftNextLine = function () {
       const lineContents = getNextLine();
       // The last line of a file might not have a newline.
-      const newLine = getNextLine() || "";
-      return lineContents + newLine;
+      const newLine = getNextLine() || '';
+      return lineContents + newLine
 
       function getNextLine() {
-        return remainingLinesIndex < remainingLines.length ?
-            remainingLines[remainingLinesIndex++] : undefined;
+        return remainingLinesIndex < remainingLines.length
+          ? remainingLines[remainingLinesIndex++]
+          : undefined
       }
     };
 
     // We need to remember the position of "remainingLines"
-    let lastGeneratedLine = 1, lastGeneratedColumn = 0;
+    let lastGeneratedLine = 1,
+      lastGeneratedColumn = 0;
 
     // The generate SourceNodes we need a code range.
     // To extract it current and last mapping is used.
@@ -3086,7 +3239,7 @@ class SourceNode {
     let lastMapping = null;
     let nextLine;
 
-    aSourceMapConsumer.eachMapping(function(mapping) {
+    aSourceMapConsumer.eachMapping(function (mapping) {
       if (lastMapping !== null) {
         // We add the code from "lastMapping" to "mapping":
         // First check if there is a new line in between.
@@ -3100,16 +3253,19 @@ class SourceNode {
           // There is no new line in between.
           // Associate the code between "lastGeneratedColumn" and
           // "mapping.generatedColumn" with "lastMapping"
-          nextLine = remainingLines[remainingLinesIndex] || "";
-          const code = nextLine.substr(0, mapping.generatedColumn -
-                                        lastGeneratedColumn);
-          remainingLines[remainingLinesIndex] = nextLine.substr(mapping.generatedColumn -
-                                              lastGeneratedColumn);
+          nextLine = remainingLines[remainingLinesIndex] || '';
+          const code = nextLine.substr(
+            0,
+            mapping.generatedColumn - lastGeneratedColumn
+          );
+          remainingLines[remainingLinesIndex] = nextLine.substr(
+            mapping.generatedColumn - lastGeneratedColumn
+          );
           lastGeneratedColumn = mapping.generatedColumn;
           addMappingWithCode(lastMapping, code);
           // No more remaining code, continue
           lastMapping = mapping;
-          return;
+          return
         }
       }
       // We add the generated code until the first mapping
@@ -3120,9 +3276,11 @@ class SourceNode {
         lastGeneratedLine++;
       }
       if (lastGeneratedColumn < mapping.generatedColumn) {
-        nextLine = remainingLines[remainingLinesIndex] || "";
+        nextLine = remainingLines[remainingLinesIndex] || '';
         node.add(nextLine.substr(0, mapping.generatedColumn));
-        remainingLines[remainingLinesIndex] = nextLine.substr(mapping.generatedColumn);
+        remainingLines[remainingLinesIndex] = nextLine.substr(
+          mapping.generatedColumn
+        );
         lastGeneratedColumn = mapping.generatedColumn;
       }
       lastMapping = mapping;
@@ -3134,11 +3292,11 @@ class SourceNode {
         addMappingWithCode(lastMapping, shiftNextLine());
       }
       // and add the remaining lines without any mapping
-      node.add(remainingLines.splice(remainingLinesIndex).join(""));
+      node.add(remainingLines.splice(remainingLinesIndex).join(''));
     }
 
     // Copy sourcesContent into SourceNode
-    aSourceMapConsumer.sources.forEach(function(sourceFile) {
+    aSourceMapConsumer.sources.forEach(function (sourceFile) {
       const content = aSourceMapConsumer.sourceContentFor(sourceFile);
       if (content != null) {
         if (aRelativePath != null) {
@@ -3148,7 +3306,7 @@ class SourceNode {
       }
     });
 
-    return node;
+    return node
 
     function addMappingWithCode(mapping, code) {
       if (mapping === null || mapping.source === undefined) {
@@ -3157,11 +3315,15 @@ class SourceNode {
         const source = aRelativePath
           ? util.join(aRelativePath, mapping.source)
           : mapping.source;
-        node.add(new SourceNode(mapping.originalLine,
-                                mapping.originalColumn,
-                                source,
-                                code,
-                                mapping.name));
+        node.add(
+          new SourceNode(
+            mapping.originalLine,
+            mapping.originalColumn,
+            source,
+            code,
+            mapping.name
+          )
+        );
       }
     }
   }
@@ -3174,19 +3336,20 @@ class SourceNode {
    */
   add(aChunk) {
     if (Array.isArray(aChunk)) {
-      aChunk.forEach(function(chunk) {
+      aChunk.forEach(function (chunk) {
         this.add(chunk);
       }, this);
-    } else if (aChunk[isSourceNode] || typeof aChunk === "string") {
+    } else if (aChunk[isSourceNode] || typeof aChunk === 'string') {
       if (aChunk) {
         this.children.push(aChunk);
       }
     } else {
       throw new TypeError(
-        "Expected a SourceNode, string, or an array of SourceNodes and strings. Got " + aChunk
-      );
+        'Expected a SourceNode, string, or an array of SourceNodes and strings. Got ' +
+          aChunk
+      )
     }
-    return this;
+    return this
   }
 
   /**
@@ -3200,14 +3363,15 @@ class SourceNode {
       for (let i = aChunk.length - 1; i >= 0; i--) {
         this.prepend(aChunk[i]);
       }
-    } else if (aChunk[isSourceNode] || typeof aChunk === "string") {
+    } else if (aChunk[isSourceNode] || typeof aChunk === 'string') {
       this.children.unshift(aChunk);
     } else {
       throw new TypeError(
-        "Expected a SourceNode, string, or an array of SourceNodes and strings. Got " + aChunk
-      );
+        'Expected a SourceNode, string, or an array of SourceNodes and strings. Got ' +
+          aChunk
+      )
     }
-    return this;
+    return this
   }
 
   /**
@@ -3223,11 +3387,13 @@ class SourceNode {
       chunk = this.children[i];
       if (chunk[isSourceNode]) {
         chunk.walk(aFn);
-      } else if (chunk !== "") {
-        aFn(chunk, { source: this.source,
-                      line: this.line,
-                      column: this.column,
-                      name: this.name });
+      } else if (chunk !== '') {
+        aFn(chunk, {
+          source: this.source,
+          line: this.line,
+          column: this.column,
+          name: this.name,
+        });
       }
     }
   }
@@ -3251,7 +3417,7 @@ class SourceNode {
       newChildren.push(this.children[i]);
       this.children = newChildren;
     }
-    return this;
+    return this
   }
 
   /**
@@ -3265,12 +3431,15 @@ class SourceNode {
     const lastChild = this.children[this.children.length - 1];
     if (lastChild[isSourceNode]) {
       lastChild.replaceRight(aPattern, aReplacement);
-    } else if (typeof lastChild === "string") {
-      this.children[this.children.length - 1] = lastChild.replace(aPattern, aReplacement);
+    } else if (typeof lastChild === 'string') {
+      this.children[this.children.length - 1] = lastChild.replace(
+        aPattern,
+        aReplacement
+      );
     } else {
-      this.children.push("".replace(aPattern, aReplacement));
+      this.children.push(''.replace(aPattern, aReplacement));
     }
-    return this;
+    return this
   }
 
   /**
@@ -3308,11 +3477,11 @@ class SourceNode {
    * and concatenates all the various snippets together to one string.
    */
   toString() {
-    let str = "";
-    this.walk(function(chunk) {
+    let str = '';
+    this.walk(function (chunk) {
       str += chunk;
     });
-    return str;
+    return str
   }
 
   /**
@@ -3321,9 +3490,9 @@ class SourceNode {
    */
   toStringWithSourceMap(aArgs) {
     const generated = {
-      code: "",
+      code: '',
       line: 1,
-      column: 0
+      column: 0,
     };
     const map = new SourceMapGenerator(aArgs);
     let sourceMappingActive = false;
@@ -3331,26 +3500,30 @@ class SourceNode {
     let lastOriginalLine = null;
     let lastOriginalColumn = null;
     let lastOriginalName = null;
-    this.walk(function(chunk, original) {
+    this.walk(function (chunk, original) {
       generated.code += chunk;
-      if (original.source !== null
-          && original.line !== null
-          && original.column !== null) {
-        if (lastOriginalSource !== original.source
-          || lastOriginalLine !== original.line
-          || lastOriginalColumn !== original.column
-          || lastOriginalName !== original.name) {
+      if (
+        original.source !== null &&
+        original.line !== null &&
+        original.column !== null
+      ) {
+        if (
+          lastOriginalSource !== original.source ||
+          lastOriginalLine !== original.line ||
+          lastOriginalColumn !== original.column ||
+          lastOriginalName !== original.name
+        ) {
           map.addMapping({
             source: original.source,
             original: {
               line: original.line,
-              column: original.column
+              column: original.column,
             },
             generated: {
               line: generated.line,
-              column: generated.column
+              column: generated.column,
             },
-            name: original.name
+            name: original.name,
           });
         }
         lastOriginalSource = original.source;
@@ -3362,8 +3535,8 @@ class SourceNode {
         map.addMapping({
           generated: {
             line: generated.line,
-            column: generated.column
-          }
+            column: generated.column,
+          },
         });
         lastOriginalSource = null;
         sourceMappingActive = false;
@@ -3381,13 +3554,13 @@ class SourceNode {
               source: original.source,
               original: {
                 line: original.line,
-                column: original.column
+                column: original.column,
               },
               generated: {
                 line: generated.line,
-                column: generated.column
+                column: generated.column,
               },
-              name: original.name
+              name: original.name,
             });
           }
         } else {
@@ -3395,11 +3568,11 @@ class SourceNode {
         }
       }
     });
-    this.walkSourceContents(function(sourceFile, sourceContent) {
+    this.walkSourceContents(function (sourceFile, sourceContent) {
       map.setSourceContent(sourceFile, sourceContent);
     });
 
-    return { code: generated.code, map };
+    return { code: generated.code, map }
   }
 }
 
@@ -3420,7 +3593,8 @@ var require$$2 = sourceNode;
  */
 
 require$$0.SourceMapGenerator;
-var SourceMapConsumer = require$$1.SourceMapConsumer;
+var SourceMapConsumer =
+  require$$1.SourceMapConsumer;
 require$$2.SourceNode;
 
 const nixSlashes = (x) => x.replace(/\\/g, '/');
