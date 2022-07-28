@@ -67,6 +67,21 @@ export function getLocation ({
             reject(new Error('network error'))
           }
         })
+      } else if (mapInfo.type === MapType.AMAP) {
+        window.AMap.plugin('AMap.Geolocation', function () {
+          var geolocation = new window.AMap.Geolocation({})
+          geolocation.getCurrentPosition(function (status, res) {
+            if (status === 'complete') {
+              resolve({
+                latitude: res.position.lat,
+                longitude: res.position.lng,
+                accuracy: res.accuracy
+              })
+            } else {
+              reject(new Error((res.message) || JSON.stringify(res)))
+            }
+          })
+        })
       } else {
         reject(new Error('network error'))
       }
