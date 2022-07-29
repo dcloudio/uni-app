@@ -58,7 +58,9 @@ var index = () => [
                     isEnable = statConfig.enable === true;
                     if (isEnable) {
                         const uniCloudConfig = statConfig.uniCloud || {};
-                        statVersion = statConfig.version === '2' ? '2' : '1';
+                        // 获取manifest.json 统计配置，插入环境变量中
+                        process.env.UNI_STATISTICS_CONFIG = JSON.stringify(statConfig);
+                        statVersion = Number(statConfig.version) === 2 ? '2' : '1';
                         process.env.UNI_STAT_UNI_CLOUD = JSON.stringify(uniCloudConfig);
                         process.env.UNI_STAT_DEBUG = statConfig.debug ? 'true' : 'false';
                         if (process.env.NODE_ENV === 'production') {
@@ -91,8 +93,9 @@ var index = () => [
                 return {
                     define: {
                         'process.env.UNI_STAT_TITLE_JSON': process.env.UNI_STAT_TITLE_JSON,
-                        'process.env.UNI_STAT_UNI_CLOUD': process.env.UNI_STAT_UNI_CLOUD || JSON.stringify({}),
-                        'process.env.UNI_STAT_DEBUG': process.env.UNI_STAT_DEBUG || 'false',
+                        'process.env.UNI_STAT_UNI_CLOUD': process.env.UNI_STAT_UNI_CLOUD,
+                        'process.env.UNI_STAT_DEBUG': process.env.UNI_STAT_DEBUG,
+                        'process.env.UNI_STATISTICS_CONFIG': process.env.UNI_STATISTICS_CONFIG,
                     },
                 };
             },

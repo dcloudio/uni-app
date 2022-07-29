@@ -29,6 +29,7 @@ import {
   get_page_vm,
   is_debug,
   log,
+  get_report_Interval,
 } from '../utils/pageInfo.js'
 
 import { sys } from '../utils/util.js'
@@ -41,7 +42,7 @@ import {
 } from '../config.ts'
 
 import { dbSet, dbGet, dbRemove } from '../utils/db.js'
-
+const eport_Interval = get_report_Interval(OPERATING_TIME)
 // 统计数据默认值
 let statData = {
   uuid: get_uuid(), // 设备标识
@@ -508,7 +509,7 @@ export default class Report {
       log(data)
     }
     // 判断时候到达上报时间 ，默认 10 秒上报
-    if (page_residence_time < OPERATING_TIME && !type) return
+    if (page_residence_time < eport_Interval && !type) return
 
     // 时间超过，重新获取时间戳
     set_page_residence_time()
@@ -551,7 +552,9 @@ export default class Report {
   sendRequest(optionsData) {
     if (__STAT_VERSION__ === '2') {
       if (!uni.__stat_uniCloud_space) {
-        console.error('应用未关联服务空间，统计上报失败，请在uniCloud目录右键关联服务空间.')
+        console.error(
+          '应用未关联服务空间，统计上报失败，请在uniCloud目录右键关联服务空间.'
+        )
         return
       }
 
@@ -565,9 +568,7 @@ export default class Report {
         .report(optionsData)
         .then(() => {
           if (is_debug) {
-            console.log(`=== 统计队列数据上报 ===`)
-            console.log(optionsData)
-            console.log(`=== 上报结束 ===`)
+            log(optionsData, true)
           }
         })
         .catch((err) => {
@@ -586,9 +587,7 @@ export default class Report {
           data: optionsData,
           success: () => {
             if (is_debug) {
-              console.log(`=== 统计队列数据上报 ===`)
-              console.log(optionsData)
-              console.log(`=== 上报结束 ===`)
+              log(optionsData, true)
             }
           },
           fail: (e) => {
@@ -616,9 +615,7 @@ export default class Report {
       let options = get_sgin(get_encodeURIComponent_options(data)).options
       image.src = STAT_H5_URL + '?' + options
       if (is_debug) {
-        console.log(`=== 统计队列数据上报 ===`)
-        console.log(data)
-        console.log(`=== 上报结束 ===`)
+        log(data, true)
       }
     })
   }
