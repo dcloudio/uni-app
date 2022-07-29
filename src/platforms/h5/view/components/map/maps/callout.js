@@ -1,5 +1,11 @@
+import {
+  MapType,
+  getMapInfo
+} from '../../../../helpers/location'
+const mapInfo = getMapInfo()
+const ISAMAP = mapInfo.type === MapType.AMAP
+
 export function createCallout (maps) {
-  const overlay = new (maps.OverlayView || maps.Overlay)()
   function onAdd () {
     const div = this.div
     const panes = this.getPanes()
@@ -12,6 +18,38 @@ export function createCallout (maps) {
     }
   }
 
+  function createAMapText () {
+    const option = this.option
+    this.Text = new maps.Text({
+      text: option.content,
+      anchor: 'bottom-center', // 设置文本标记锚点
+      offset: new maps.Pixel(0, option.offsetY),
+      style: {
+        'margin-bottom': '1rem',
+        padding: (option.padding || 8) + 'px',
+        'line-height': (option.fontSize || 14) + 'px',
+        'border-radius': (option.borderRadius || 0) + 'px',
+        'border-color': `${option.bgColor || '#fff'} transparent transparent`,
+        'background-color': option.bgColor || '#fff',
+        'box-shadow': '0 2px 6px 0 rgba(114, 124, 245, .5)',
+        'text-align': 'center',
+        'font-size': (option.fontSize || 14) + 'px',
+        color: option.color || '#000'
+      },
+      position: option.position
+    })
+
+    maps.event.addListener(this.Text, 'click', () => {
+      this.callback(this.parent)
+    })
+
+    this.Text.setMap(option.map)
+  }
+
+  function removeAMapText () {
+    this.option.map.remove(this.Text)
+  }
+
   class Callout {
     option
     position
@@ -20,6 +58,9 @@ export function createCallout (maps) {
     alwaysVisible
     div
     triangle
+    callback
+    parent
+    Text
 
     set onclick (callback) {
       this.div.onclick = callback
@@ -29,43 +70,61 @@ export function createCallout (maps) {
       return this.div.onclick
     }
 
-    constructor (option = {}) {
+    constructor (option = {}, callback, parent) {
       this.option = option || {}
-      const map = option.map
-      this.position = option.position
-      this.index = 1
-      const visible = (this.visible = this.alwaysVisible = option.display === 'ALWAYS')
-      const div = (this.div = document.createElement('div'))
-      const divStyle = div.style
-      divStyle.position = 'absolute'
-      divStyle.whiteSpace = 'nowrap'
-      divStyle.transform = 'translateX(-50%) translateY(-100%)'
-      divStyle.zIndex = '1'
-      divStyle.boxShadow = option.boxShadow || 'none'
-      divStyle.display = visible ? 'block' : 'none'
-      const triangle = (this.triangle = document.createElement('div'))
-      triangle.setAttribute(
-        'style',
-        'position: absolute;white-space: nowrap;border-width: 4px;border-style: solid;border-color: #fff transparent transparent;border-image: initial;font-size: 12px;padding: 0px;background-color: transparent;width: 0px;height: 0px;transform: translate(-50%, 100%);left: 50%;bottom: 0;'
-      )
-      this.setStyle(option)
-      div.appendChild(triangle)
-      if (map) {
-        this.setMap(map)
+      this.visible = this.alwaysVisible = option.display === 'ALWAYS'
+      if (ISAMAP) {
+        this.callback = callback
+        this.parent = parent
+        if (this.visible) {
+          this.createAMapText()
+        }
+      } else {
+        const map = option.map
+        this.position = option.position
+        this.index = 1
+        const div = (this.div = document.createElement('div'))
+        const divStyle = div.style
+        divStyle.position = 'absolute'
+        divStyle.whiteSpace = 'nowrap'
+        divStyle.transform = 'translateX(-50%) translateY(-100%)'
+        divStyle.zIndex = '1'
+        divStyle.boxShadow = option.boxShadow || 'none'
+        divStyle.display = this.visible ? 'block' : 'none'
+        const triangle = (this.triangle = document.createElement('div'))
+        triangle.setAttribute(
+          'style',
+          'position: absolute;white-space: nowrap;border-width: 4px;border-style: solid;border-color: #fff transparent transparent;border-image: initial;font-size: 12px;padding: 0px;background-color: transparent;width: 0px;height: 0px;transform: translate(-50%, 100%);left: 50%;bottom: 0;'
+        )
+        this.setStyle(option)
+        div.appendChild(triangle)
+        if (map) {
+          this.setMap(map)
+        }
       }
     }
+
+    createAMapText = createAMapText
+    removeAMapText = removeAMapText
 
     onAdd = onAdd
     construct = onAdd
     setOption (option) {
       this.option = option
-      this.setPosition(option.position)
       if (option.display === 'ALWAYS') {
         this.alwaysVisible = this.visible = true
       } else {
         this.alwaysVisible = false
       }
-      this.setStyle(option)
+      if (ISAMAP) {
+        if (this.visible) {
+          this.removeAMapText()
+          this.createAMapText()
+        }
+      } else {
+        this.setPosition(option.position)
+        this.setStyle(option)
+      }
     }
 
     setStyle (option) {
@@ -107,11 +166,15 @@ export function createCallout (maps) {
 
     destroy = onRemove
   }
-  const prototype = Callout.prototype
-  for (const key in overlay) {
-    if (!(key in prototype)) {
-      prototype[key] = overlay[key]
+  if (!ISAMAP) {
+    const prototype = Callout.prototype
+    const overlay = new (maps.OverlayView || maps.Overlay)()
+    for (const key in overlay) {
+      if (!(key in prototype)) {
+        prototype[key] = overlay[key]
+      }
     }
   }
+
   return Callout
 }
