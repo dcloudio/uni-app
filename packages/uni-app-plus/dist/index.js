@@ -314,7 +314,7 @@ const promiseInterceptor = {
 };
 
 const SYNC_API_RE =
-  /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback|getWindowInfo|getDeviceInfo|getAppBaseInfo/;
+  /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback|getWindowInfo|getDeviceInfo|getAppBaseInfo|getSystemSetting|getAppAuthorizeSetting/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -322,7 +322,7 @@ const CONTEXT_API_RE = /^create|Manager$/;
 const CONTEXT_API_RE_EXC = ['createBLEConnection'];
 
 // 同步例外情况
-const ASYNC_API = ['createBLEConnection'];
+const ASYNC_API = ['createBLEConnection', 'createPushMessage'];
 
 const CALLBACK_API_RE = /^on|^off/;
 
@@ -1284,17 +1284,12 @@ function parsePropType (key, type, defaultValue, file) {
   return type
 }
 
-function initProperties (props, isBehavior = false, file = '') {
+function initProperties (props, isBehavior = false, file = '', options) {
   const properties = {};
   if (!isBehavior) {
     properties.vueId = {
       type: String,
       value: ''
-    };
-    // 用于字节跳动小程序模拟抽象节点
-    properties.generic = {
-      type: Object,
-      value: null
     };
     // scopedSlotsCompiler auto
     properties.scopedSlotsCompiler = {
@@ -1591,7 +1586,9 @@ function handleEvent (event) {
           }
           const handler = handlerCtx[methodName];
           if (!isFn(handler)) {
-            throw new Error(` _vm.${methodName} is not a function`)
+            const type = this.$vm.mpType === 'page' ? 'Page' : 'Component';
+            const path = this.route || this.is;
+            throw new Error(`${type} "${path}" does not have a method "${methodName}"`)
           }
           if (isOnce) {
             if (handler.once) {

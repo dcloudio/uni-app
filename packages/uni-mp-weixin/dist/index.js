@@ -324,7 +324,7 @@ const promiseInterceptor = {
 };
 
 const SYNC_API_RE =
-  /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback|getWindowInfo|getDeviceInfo|getAppBaseInfo/;
+  /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback|getWindowInfo|getDeviceInfo|getAppBaseInfo|getSystemSetting|getAppAuthorizeSetting/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -332,7 +332,7 @@ const CONTEXT_API_RE = /^create|Manager$/;
 const CONTEXT_API_RE_EXC = ['createBLEConnection'];
 
 // 同步例外情况
-const ASYNC_API = ['createBLEConnection'];
+const ASYNC_API = ['createBLEConnection', 'createPushMessage'];
 
 const CALLBACK_API_RE = /^on|^off/;
 
@@ -900,6 +900,19 @@ var getWindowInfo = {
   }
 };
 
+var getAppAuthorizeSetting = {
+  returnValue: function (result) {
+    const { locationReducedAccuracy } = result;
+
+    result.locationAccuracy = 'unsupported';
+    if (locationReducedAccuracy === true) {
+      result.locationAccuracy = 'reduced';
+    } else if (locationReducedAccuracy === false) {
+      result.locationAccuracy = 'full';
+    }
+  }
+};
+
 // import navigateTo from 'uni-helpers/navigate-to'
 
 const protocols = {
@@ -911,7 +924,8 @@ const protocols = {
   showActionSheet,
   getAppBaseInfo,
   getDeviceInfo,
-  getWindowInfo
+  getWindowInfo,
+  getAppAuthorizeSetting
 };
 const todos = [
   'vibrate',
@@ -1136,6 +1150,7 @@ function getApiCallbacks (params) {
 
 let cid;
 let cidErrMsg;
+let enabled;
 
 function normalizePushMessage (message) {
   try {
@@ -1147,17 +1162,25 @@ function normalizePushMessage (message) {
 function invokePushCallback (
   args
 ) {
-  if (args.type === 'clientId') {
+  if (args.type === 'enabled') {
+    enabled = true;
+  } else if (args.type === 'clientId') {
     cid = args.cid;
     cidErrMsg = args.errMsg;
     invokeGetPushCidCallbacks(cid, args.errMsg);
   } else if (args.type === 'pushMsg') {
-    onPushMessageCallbacks.forEach((callback) => {
-      callback({
-        type: 'receive',
-        data: normalizePushMessage(args.message)
-      });
-    });
+    const message = {
+      type: 'receive',
+      data: normalizePushMessage(args.message)
+    };
+    for (let i = 0; i < onPushMessageCallbacks.length; i++) {
+      const callback = onPushMessageCallbacks[i];
+      callback(message);
+      // 该消息已被阻止
+      if (message.stopped) {
+        break
+      }
+    }
   } else if (args.type === 'click') {
     onPushMessageCallbacks.forEach((callback) => {
       callback({
@@ -1177,7 +1200,7 @@ function invokeGetPushCidCallbacks (cid, errMsg) {
   getPushCidCallbacks.length = 0;
 }
 
-function getPushClientid (args) {
+function getPushClientId (args) {
   if (!isPlainObject(args)) {
     args = {};
   }
@@ -1189,25 +1212,32 @@ function getPushClientid (args) {
   const hasSuccess = isFn(success);
   const hasFail = isFn(fail);
   const hasComplete = isFn(complete);
-  getPushCidCallbacks.push((cid, errMsg) => {
-    let res;
-    if (cid) {
-      res = {
-        errMsg: 'getPushClientid:ok',
-        cid
-      };
-      hasSuccess && success(res);
-    } else {
-      res = {
-        errMsg: 'getPushClientid:fail' + (errMsg ? ' ' + errMsg : '')
-      };
-      hasFail && fail(res);
+  Promise.resolve().then(() => {
+    if (typeof enabled === 'undefined') {
+      enabled = false;
+      cid = '';
+      cidErrMsg = 'unipush is not enabled';
     }
-    hasComplete && complete(res);
+    getPushCidCallbacks.push((cid, errMsg) => {
+      let res;
+      if (cid) {
+        res = {
+          errMsg: 'getPushClientId:ok',
+          cid
+        };
+        hasSuccess && success(res);
+      } else {
+        res = {
+          errMsg: 'getPushClientId:fail' + (errMsg ? ' ' + errMsg : '')
+        };
+        hasFail && fail(res);
+      }
+      hasComplete && complete(res);
+    });
+    if (typeof cid !== 'undefined') {
+      invokeGetPushCidCallbacks(cid, cidErrMsg);
+    }
   });
-  if (typeof cid !== 'undefined') {
-    Promise.resolve().then(() => invokeGetPushCidCallbacks(cid, cidErrMsg));
-  }
 }
 
 const onPushMessageCallbacks = [];
@@ -1231,7 +1261,7 @@ const offPushMessage = (fn) => {
 
 var api = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  getPushClientid: getPushClientid,
+  getPushClientId: getPushClientId,
   onPushMessage: onPushMessage,
   offPushMessage: offPushMessage,
   invokePushCallback: invokePushCallback
@@ -1485,18 +1515,25 @@ function parsePropType (key, type, defaultValue, file) {
   return type
 }
 
-function initProperties (props, isBehavior = false, file = '') {
+function initProperties (props, isBehavior = false, file = '', options) {
   const properties = {};
   if (!isBehavior) {
     properties.vueId = {
       type: String,
       value: ''
     };
-    // 用于字节跳动小程序模拟抽象节点
-    properties.generic = {
-      type: Object,
-      value: null
-    };
+    {
+      if ( options.virtualHost) {
+        properties.virtualHostStyle = {
+          type: null,
+          value: ''
+        };
+        properties.virtualHostClass = {
+          type: null,
+          value: ''
+        };
+      }
+    }
     // scopedSlotsCompiler auto
     properties.scopedSlotsCompiler = {
       type: String,
@@ -1792,7 +1829,9 @@ function handleEvent (event) {
           }
           const handler = handlerCtx[methodName];
           if (!isFn(handler)) {
-            throw new Error(` _vm.${methodName} is not a function`)
+            const type = this.$vm.mpType === 'page' ? 'Page' : 'Component';
+            const path = this.route || this.is;
+            throw new Error(`${type} "${path}" does not have a method "${methodName}"`)
           }
           if (isOnce) {
             if (handler.once) {
@@ -2175,7 +2214,7 @@ function parseBaseComponent (vueComponentOptions, {
     options,
     data: initData(vueOptions, Vue.prototype),
     behaviors: initBehaviors(vueOptions, initBehavior),
-    properties: initProperties(vueOptions.props, false, vueOptions.__file),
+    properties: initProperties(vueOptions.props, false, vueOptions.__file, options),
     lifetimes: {
       attached () {
         const properties = this.properties;

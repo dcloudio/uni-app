@@ -446,10 +446,10 @@ const uni_cloud_config = () => {
 const get_space = (config) => {
   const uniCloudConfig = uni_cloud_config();
   const { spaceId, provider, clientSecret } = uniCloudConfig;
-  const space_type = ['tcb', 'aliyun'];
+  const space_type = ['tcb', 'tencent', 'aliyun'];
   const is_provider = space_type.indexOf(provider) !== -1;
   const is_aliyun = provider === 'aliyun' && spaceId && clientSecret;
-  const is_tcb = provider === 'tcb' && spaceId;
+  const is_tcb = (provider === 'tcb' || provider === 'tencent') && spaceId;
 
   if (is_provider && (is_aliyun || is_tcb)) {
     return uniCloudConfig
@@ -489,6 +489,9 @@ const log = (data) => {
       break
     case '31':
       msg_type = '应用错误';
+      break
+    case '101':
+      msg_type = 'PUSH';
       break
   }
   if (msg_type) {
@@ -914,8 +917,9 @@ class Report {
   /**
    * 发送请求,应用维度上报
    * @param {Object} options 页面信息
+   * @param {Boolean} type 是否立即上报
    */
-  sendReportRequest(options) {
+  sendReportRequest(options, type) {
     this._navigationBarTitle.lt = '1';
     this._navigationBarTitle.config = get_page_name(options.path);
     let is_opt = options.query && JSON.stringify(options.query) !== '{}';
@@ -932,9 +936,9 @@ class Report {
       cst: options.cst || 1,
     });
     if (get_platform_name() === 'n') {
-      this.getProperty();
+      this.getProperty(type);
     } else {
-      this.getNetworkInfo();
+      this.getNetworkInfo(type);
     }
   }
 
@@ -1015,24 +1019,59 @@ class Report {
     this.request(options);
   }
 
+  sendPushRequest(options, cid) {
+    let time = get_time();
+
+    const statData = {
+      lt: '101',
+      cid: cid,
+      t: time,
+      ut: this.statData.ut,
+    };
+
+    // debug 打印打点信息
+    if (is_debug) {
+      log(statData);
+    }
+
+    const stat_data = handle_data({
+      101: [statData],
+    });
+    let optionsData = {
+      usv: STAT_VERSION, //统计 SDK 版本号
+      t: time, //发送请求时的时间戮
+      requests: stat_data,
+    };
+
+    // XXX 安卓需要延迟上报 ，否则会有未知错误，需要验证处理
+    if (get_platform_name() === 'n' && this.statData.p === 'a') {
+      setTimeout(() => {
+        this.sendRequest(optionsData);
+      }, 200);
+      return
+    }
+
+    this.sendRequest(optionsData);
+  }
+
   /**
    * 获取wgt资源版本
    */
-  getProperty() {
+  getProperty(type) {
     plus.runtime.getProperty(plus.runtime.appid, (wgtinfo) => {
       this.statData.v = wgtinfo.version || '';
-      this.getNetworkInfo();
+      this.getNetworkInfo(type);
     });
   }
 
   /**
    * 获取网络信息
    */
-  getNetworkInfo() {
+  getNetworkInfo(type) {
     uni.getNetworkType({
       success: (result) => {
         this.statData.net = result.networkType;
-        this.getLocation();
+        this.getLocation(type);
       },
     });
   }
@@ -1040,7 +1079,7 @@ class Report {
   /**
    * 获取位置信息
    */
-  getLocation() {
+  getLocation(type) {
     if (stat_config.getLocation) {
       uni.getLocation({
         type: 'wgs84',
@@ -1054,13 +1093,13 @@ class Report {
 
           this.statData.lat = result.latitude;
           this.statData.lng = result.longitude;
-          this.request(this.statData);
+          this.request(this.statData, type);
         },
       });
     } else {
       this.statData.lat = 0;
       this.statData.lng = 0;
-      this.request(this.statData);
+      this.request(this.statData, type);
     }
   }
 
@@ -1128,7 +1167,7 @@ class Report {
   sendRequest(optionsData) {
     {
       if (!uni.__stat_uniCloud_space) {
-        console.error('当前尚未关联服务空间.');
+        console.error('应用未关联服务空间，统计上报失败，请在uniCloud目录右键关联服务空间.');
         return
       }
 
@@ -1205,9 +1244,9 @@ class Stat extends Report {
           let spaceData = {
             provider: space.provider,
             spaceId: space.spaceId,
-            clientSecret: space.clientSecret
+            clientSecret: space.clientSecret,
           };
-          if(space.endpoint){
+          if (space.endpoint) {
             spaceData.endpoint = space.endpoint;
           }
           uni.__stat_uniCloud_space = uniCloud.init(spaceData);
@@ -1215,8 +1254,6 @@ class Stat extends Report {
           //   '=== 当前绑定的统计服务空间spaceId：' +
           //     uni.__stat_uniCloud_space.config.spaceId
           // )
-        } else {
-          console.error('当前尚未关联统计服务空间，请先在manifest.json中配置服务空间！');
         }
       }
     }
@@ -1225,6 +1262,23 @@ class Stat extends Report {
   }
   constructor() {
     super();
+  }
+
+  /**
+   * 获取推送id
+   */
+  pushEvent(options) {
+    if (uni.getPushClientId) {
+      uni.getPushClientId({
+        success: (res) => {
+          const cid = res.cid || false;
+          //  只有获取到才会上传
+          if (cid) {
+            this.sendPushRequest(options,cid);
+          }
+        },
+      });
+    }
   }
 
   /**
@@ -1237,7 +1291,7 @@ class Stat extends Report {
     set_page_residence_time();
     this.__licationShow = true;
     dbSet('__launch_options', options);
-    // 应用初始上报参数为1 
+    // 应用初始上报参数为1
     options.cst = 1;
     this.sendReportRequest(options, true);
   }
@@ -1313,8 +1367,8 @@ class Stat extends Report {
 
     let route = '';
     try {
-      route =  get_route(); 
-    }catch(e){
+      route = get_route();
+    } catch (e) {
       // 未获取到页面路径
       route = '';
     }
@@ -1324,7 +1378,7 @@ class Stat extends Report {
       uuid: this.statData.uuid,
       p: this.statData.p,
       lt: '31',
-      url:route,
+      url: route,
       ut: this.statData.ut,
       ch: this.statData.ch,
       mpsdk: this.statData.mpsdk,
@@ -1348,6 +1402,8 @@ const lifecycle = {
   onLaunch(options) {
     // 进入应用上报数据
     stat.launch(options, this);
+    // 上报push推送id
+    stat.pushEvent(options);
   },
   onLoad(options) {
     stat.load(options, this);
@@ -1414,7 +1470,7 @@ function main() {
   if (is_debug) {
     {
       // #ifndef APP-NVUE
-      console.log('=== uni统计开启,version:2.0');
+      console.log('=== uni统计开启,version:2.0 ===');
       // #endif
     }
     load_stat();

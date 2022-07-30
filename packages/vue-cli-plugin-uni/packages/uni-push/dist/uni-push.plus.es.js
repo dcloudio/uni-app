@@ -1,13 +1,25 @@
+// @ts-expect-error
+uni.invokePushCallback({
+    type: 'enabled',
+});
 Promise.resolve().then(() => {
     plus.push.setAutoNotification && plus.push.setAutoNotification(false);
-    const info = plus.push.getClientInfo();
-    if (info.clientid) {
+    plus.push.getClientInfoAsync((info) => {
+        if (info.clientid) {
+            // @ts-expect-error
+            uni.invokePushCallback({
+                type: 'clientId',
+                cid: info.clientid,
+            });
+        }
+    }, (res) => {
         // @ts-expect-error
         uni.invokePushCallback({
             type: 'clientId',
-            cid: info.clientid,
+            cid: '',
+            errMsg: res.code + ': ' + res.message,
         });
-    }
+    });
     plus.push.addEventListener('click', (result) => {
         // @ts-expect-error
         uni.invokePushCallback({

@@ -35,7 +35,8 @@ module.exports = (api, options) => {
       '--auto-port': 'specify automator port',
       '--subpackage': 'specify subpackage',
       '--plugin': 'specify mp plugin',
-      '--manifest': 'build manifest.json'
+      '--manifest': 'build manifest.json',
+      '--sourcemap': 'generate sourcemap'
     }
   }, async (args) => {
     for (const key in defaults) {
@@ -71,6 +72,8 @@ module.exports = (api, options) => {
     args.entry = args.entry || args._[0]
 
     process.env.VUE_CLI_BUILD_TARGET = args.target
+
+    if (args['sourcemap']) process.env.SOURCEMAP = args['sourcemap']
 
     await build(args, api, options)
 

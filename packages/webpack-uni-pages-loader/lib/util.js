@@ -22,6 +22,7 @@ const alipayWindowMap = {
 }
 
 const alipayTabBarMap = {
+  customize: 'customize',
   textColor: 'color',
   selectedColor: 'selectedColor',
   backgroundColor: 'backgroundColor',
@@ -136,7 +137,8 @@ const NON_APP_JSON_KEYS = [
   'optimization',
   'scopedSlotsCompiler',
   'usingComponents',
-  'uniStatistics'
+  'uniStatistics',
+  'mergeVirtualHostAttributes'
 ]
 module.exports = {
   hasOwn,

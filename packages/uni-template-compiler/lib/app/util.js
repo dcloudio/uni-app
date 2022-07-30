@@ -15,6 +15,7 @@ const GET_CHANGE_DATA = '_$gc' // wxs
 const C_IS = 'is'
 const C_SLOT_TARGET = 'st'
 const C_REF = 'ref'
+const C_NAME = 'name'
 
 const V_FOR = 'f'
 const V_IF = 'i'
@@ -268,6 +269,7 @@ function addHandler (el, name, value, important) {
 module.exports = {
   C_IS,
   C_REF,
+  C_NAME,
   V_FOR,
   V_IF,
   V_ELSE_IF,

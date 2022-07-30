@@ -15,12 +15,13 @@ module.exports = {
   preTransformNode (el, {
     warn
   }) {
-    if (el.tag === 'slot' && !el.attrsMap.name) {
+    const attrsMap = el.attrsMap
+    if (el.tag === 'slot' && !(attrsMap.name || attrsMap[':name'])) {
       el.attrsList.push({
         name: 'SLOT_DEFAULT',
         value: true
       })
-      el.attrsMap.SLOT_DEFAULT = true
+      attrsMap.SLOT_DEFAULT = true
     }
     // 处理 attr
     el.attrsList.forEach(attr => {
@@ -31,11 +32,11 @@ module.exports = {
         const origName = attr.name
         const newName = origName.replace('.lazy', '')
         attr.name = newName
-        el.attrsMap[newName] = attr.value
-        delete el.attrsMap[origName]
+        attrsMap[newName] = attr.value
+        delete attrsMap[origName]
       } else if (onRE.test(attr.name) && !attr.value.trim()) { // 事件为空
         attr.value = '__HOLDER__'
-        el.attrsMap[attr.name] = attr.value
+        attrsMap[attr.name] = attr.value
       }
     })
     // 暂不支持的指令

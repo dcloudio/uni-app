@@ -1,7 +1,10 @@
 import {
+  invoke,
   publish
 } from '../../bridge'
-
+import {
+  getAppAuthorizeSetting
+} from '../device/get-app-authorize-setting'
 let onPushing
 
 let isListening = false
@@ -62,4 +65,20 @@ export function offPush (params) {
   return {
     errMsg: 'offPush:ok'
   }
+}
+
+export function createPushMessage (params, callbackId) {
+  const setting = getAppAuthorizeSetting()
+  if (setting.notificationAuthorized !== 'authorized') {
+    return invoke(callbackId, {
+      errMsg: 'createPushMessage:fail notificationAuthorized: ' + setting.notificationAuthorized
+    })
+  }
+  const options = Object.assign({}, params)
+  delete options.content
+  delete options.payload
+  plus.push.createMessage(params.content, params.payload, options)
+  invoke(callbackId, {
+    errMsg: 'createPushMessage:ok'
+  })
 }

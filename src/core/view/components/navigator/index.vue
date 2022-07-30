@@ -5,6 +5,8 @@
     @touchstart="_hoverTouchStart"
     @touchend="_hoverTouchEnd"
     @touchcancel="_hoverTouchCancel"
+    @mousedown="_hoverMousedown"
+    @mouseup="_hoverMouseup"
     @click="_onClick"
     v-on="$listeners"
   >
@@ -92,7 +94,8 @@ export default {
       type: String,
       validator (value) {
         return !value || ~ANIMATION_TYPE_IN.concat(ANIMATION_TYPE_OUT).indexOf(value)
-      }
+      },
+      default: ''
     },
     animationDuration: {
       type: [String, Number],

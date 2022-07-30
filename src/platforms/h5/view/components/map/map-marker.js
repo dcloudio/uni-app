@@ -95,7 +95,7 @@ export default {
       })
       this.$parent._markers[this.idString] = marker
       this.updateMarker(props)
-      maps.event.addListener(marker, 'click', () => {
+      maps.event.addListener(marker, 'click', (e) => {
         const callout = marker.callout
         if (callout) {
           const div = callout.div
@@ -110,9 +110,14 @@ export default {
         }
         if (this.idString) {
           this.$parent.$trigger('markertap', {}, {
-            markerId: Number(this.idString)
+            markerId: Number(this.idString),
+            latitude: typeof e.latLng.lat === 'function' ? e.latLng.lat() : e.latLng.lat,
+            longitude: typeof e.latLng.lat === 'function' ? e.latLng.lng() : e.latLng.lng
           })
         }
+
+        const event = e.event || e.domEvent
+        event.stopPropagation()
       })
     },
     updateMarker (option) {

@@ -87,8 +87,8 @@ const plugins = [
       UNICLOUD_DEBUG: process.env.UNICLOUD_DEBUG,
       RUN_BY_HBUILDERX: process.env.RUN_BY_HBUILDERX,
       UNI_AUTOMATOR_WS_ENDPOINT: JSON.stringify(process.env.UNI_AUTOMATOR_WS_ENDPOINT),
-      UNI_STAT_UNI_CLOUD: process.env.UNI_STAT_UNI_CLOUD || '',
-      UNI_STAT_DEBUG: process.env.UNI_STAT_DEBUG || ''
+      UNI_STAT_UNI_CLOUD: process.env.UNI_STAT_UNI_CLOUD || '""',
+      UNI_STAT_DEBUG: process.env.UNI_STAT_DEBUG || '""'
     }
   }),
   new webpack.BannerPlugin({
@@ -339,6 +339,9 @@ module.exports = function () {
     resolve: {
       extensions: ['.js', '.nvue', '.vue', '.json'],
       alias: {
+        '@/pages.json': path.resolve(process.env.UNI_INPUT_DIR, 'pages.json') + '?' + JSON.stringify({
+          type: 'origin-pages-json'
+        }),
         '@': process.env.UNI_INPUT_DIR,
         'uni-polyfill': require.resolve('@dcloudio/uni-cli-shared/lib/uni-polyfill.js'),
         'uni-pages': path.resolve(process.env.UNI_INPUT_DIR, 'pages.json'),

@@ -51,7 +51,12 @@ function replaceId (path, ids) {
 }
 
 module.exports = function getResolveScopedSlots (parent, state) {
-  const properties = parent.get('arguments.0.elements.0.properties')
+  let objectPath = parent.get('arguments.0.elements.0')
+  // TODO v-else
+  if (objectPath.isConditionalExpression()) {
+    objectPath = objectPath.get('consequent')
+  }
+  const properties = objectPath.get('properties')
   const fn = properties.find(path => path.get('key').isIdentifier({ name: 'fn' }))
   const params = fn.get('value.params.0')
   if (!params) {
@@ -83,7 +88,7 @@ module.exports = function getResolveScopedSlots (parent, state) {
       const test = t.callExpression(t.identifier('$hasScopedSlotsParams'), [vueId])
       orgin.replaceWith(t.arrayExpression([t.conditionalExpression(test, node, t.callExpression(t.identifier(METHOD_CREATE_EMPTY_VNODE), []))]))
       // scopedSlotsCompiler auto
-      parent.get('arguments.0.elements.0').node.scopedSlotsCompiler = 'augmented'
+      objectPath.node.scopedSlotsCompiler = 'augmented'
     }
   }
 }

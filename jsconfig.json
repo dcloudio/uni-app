@@ -14,6 +14,9 @@
       "uni-core/*": [
         "./src/core/*"
       ],
+      "uni-wrapper/*": [
+        "./src/core/runtime/wrapper/*"
+      ],
       "@dcloudio/*": [
         "./packages/*"
       ]

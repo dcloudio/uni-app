@@ -4,7 +4,7 @@ export {
   createMediaQueryObserver
 }
 export {
-  getPushClientid,
+  getPushClientId,
   onPushMessage,
   offPushMessage,
   invokePushCallback

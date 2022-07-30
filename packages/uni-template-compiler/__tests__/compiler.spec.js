@@ -1,13 +1,13 @@
 const compiler = require('../lib')
 
-function assertCodegen (template, templateCode, renderCode = 'with(this){}') {
+function assertCodegen (template, templateCode, renderCode = 'with(this){}', options = {}) {
   const res = compiler.compile(template, {
     resourcePath: 'test.wxml',
-    mp: {
+    mp: Object.assign({
       minified: true,
       isTest: true,
       platform: 'mp-weixin'
-    }
+    }, options)
   })
 
   expect(res.template).toBe(templateCode)
@@ -182,6 +182,30 @@ describe('mp:compiler', () => {
       '<view><slot name="one"></slot></view>',
       '<view><slot name="one"></slot></view>'
     )
+    assertCodegen(
+      '<view><slot :name="one"></slot></view>',
+      '<view><slot name="{{one}}"></slot></view>'
+    )
+    assertCodegen(
+      '<view><slot :name="one+\'test\'"></slot></view>',
+      '<view><slot name="{{one+\'test\'}}"></slot></view>'
+    )
+    assertCodegen(
+      '<view><slot :name="one" :test="test"></slot></view>',
+      '<view><slot name="{{one}}"></slot></view>',
+      'with(this){{$setScopedSlotsParams(one,{"test":test})}}',
+      {
+        scopedSlotsCompiler: 'augmented'
+      }
+    )
+    assertCodegen(
+      '<view><slot :name="one">text</slot></view>',
+      '<view><block wx:if="{{$slots[one]}}"><slot name="{{one}}"></slot></block><block wx:else>text</block></view>'
+    )
+    assertCodegen(
+      '<view><slot :name="one+\'test\'">text</slot></view>',
+      '<view><block wx:if="{{$slots[one+\'test\']}}"><slot name="{{one+\'test\'}}"></slot></block><block wx:else>text</block></view>'
+    )
   })
 
   // it('generate slot fallback content', () => {
@@ -253,6 +277,108 @@ describe('mp:compiler', () => {
     //     )
   })
 
+  it('generate attrs with mergeVirtualHostAttributes', () => {
+    assertCodegen(
+      '<view>hello world</view>',
+      '<view class="{{[virtualHostClass]}}" style="{{virtualHostStyle}}">hello world</view>',
+      'with(this){}',
+      {
+        mergeVirtualHostAttributes: true
+      }
+    )
+    assertCodegen(
+      '<view><view>hello world</view></view>',
+      '<view class="{{[virtualHostClass]}}" style="{{virtualHostStyle}}"><view>hello world</view></view>',
+      'with(this){}',
+      {
+        mergeVirtualHostAttributes: true
+      }
+    )
+    assertCodegen(
+      '<custom-view>hello world</custom-view>',
+      '<custom-view vue-id="551070e6-1" class="{{[virtualHostClass]}}" style="{{virtualHostStyle}}" bind:__l="__l" virtualHostStyle="{{virtualHostStyle}}" virtualHostClass="{{[virtualHostClass]}}" vue-slots="{{[\'default\']}}">hello world</custom-view>',
+      'with(this){}',
+      {
+        mergeVirtualHostAttributes: true
+      }
+    )
+    assertCodegen(
+      '<custom-view :class="class1" :style="style">hello world</custom-view>',
+      '<custom-view class="{{[class1,virtualHostClass]}}" style="{{(style)+virtualHostStyle}}" vue-id="551070e6-1" bind:__l="__l" virtualHostStyle="{{(style)+virtualHostStyle}}" virtualHostClass="{{[class1,virtualHostClass]}}" vue-slots="{{[\'default\']}}">hello world</custom-view>',
+      'with(this){}',
+      {
+        mergeVirtualHostAttributes: true
+      }
+    )
+    assertCodegen(
+      '<view><custom-view>hello world</custom-view></view>',
+      '<view class="{{[virtualHostClass]}}" style="{{virtualHostStyle}}"><custom-view vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}">hello world</custom-view></view>',
+      'with(this){}',
+      {
+        mergeVirtualHostAttributes: true
+      }
+    )
+    assertCodegen(
+      '<view><custom-view :class="class1" :style="style">hello world</custom-view></view>',
+      '<view class="{{[virtualHostClass]}}" style="{{virtualHostStyle}}"><custom-view class="{{[class1]}}" style="{{(style)}}" vue-id="551070e6-1" bind:__l="__l" virtualHostStyle="{{(style)}}" virtualHostClass="{{[class1]}}" vue-slots="{{[\'default\']}}">hello world</custom-view></view>',
+      'with(this){}',
+      {
+        mergeVirtualHostAttributes: true
+      }
+    )
+  })
+
+  it('generate class with mergeVirtualHostAttributes', () => {
+    assertCodegen(
+      '<view class="a">hello world</view>',
+      '<view class="{{[\'a\',virtualHostClass]}}" style="{{virtualHostStyle}}">hello world</view>',
+      'with(this){}',
+      {
+        mergeVirtualHostAttributes: true
+      }
+    )
+    assertCodegen(
+      '<view :class="class1">hello world</view>',
+      '<view class="{{[class1,virtualHostClass]}}" style="{{virtualHostStyle}}">hello world</view>',
+      'with(this){}',
+      {
+        mergeVirtualHostAttributes: true
+      }
+    )
+    assertCodegen(
+      '<view :class="[class1,class2]">hello world</view>',
+      '<view class="{{[class1,class2,virtualHostClass]}}" style="{{virtualHostStyle}}">hello world</view>',
+      'with(this){}',
+      {
+        mergeVirtualHostAttributes: true
+      }
+    )
+    assertCodegen(
+      '<view :class="{class1,class2}">hello world</view>',
+      '<view class="{{[(class1)?\'class1\':\'\',(class2)?\'class2\':\'\',virtualHostClass]}}" style="{{virtualHostStyle}}">hello world</view>',
+      'with(this){}',
+      {
+        mergeVirtualHostAttributes: true
+      }
+    )
+    assertCodegen(
+      '<view class="a external-class c" :class="class1">hello world</view>',
+      '<view class="{{[\'a\',\'external-class\',\'c\',class1,virtualHostClass]}}" style="{{virtualHostStyle}}">hello world</view>',
+      'with(this){}',
+      {
+        mergeVirtualHostAttributes: true
+      }
+    )
+    assertCodegen(
+      '<view class="a external-class c" :class="class1"><view class="a external-class c" :class="class1">hello world</view></view>',
+      '<view class="{{[\'a\',\'external-class\',\'c\',class1,virtualHostClass]}}" style="{{virtualHostStyle}}"><view class="{{[\'a\',\'external-class\',\'c\',class1]}}">hello world</view></view>',
+      'with(this){}',
+      {
+        mergeVirtualHostAttributes: true
+      }
+    )
+  })
+
   it('generate staticStyle', () => {
     assertCodegen(
       '<view style="height:400upx">hello world</view>',
@@ -270,6 +396,33 @@ describe('mp:compiler', () => {
     //       `<view style="{{$root.s0}}">hello world</view>`,
     //       `with(this){var s0=__get_style(error);$mp.data=Object.assign({},{$root:{s0:s0}})}`
     //     )
+  })
+
+  it('generate style with mergeVirtualHostAttributes', () => {
+    assertCodegen(
+      '<view style="color:red">hello world</view>',
+      '<view class="{{[virtualHostClass]}}" style="{{\'color:red;\'+virtualHostStyle}}">hello world</view>',
+      'with(this){}',
+      {
+        mergeVirtualHostAttributes: true
+      }
+    )
+    assertCodegen(
+      '<view :style="style">hello world</view>',
+      '<view style="{{(style)+virtualHostStyle}}" class="{{[virtualHostClass]}}">hello world</view>',
+      'with(this){}',
+      {
+        mergeVirtualHostAttributes: true
+      }
+    )
+    assertCodegen(
+      '<view :style="{color}">hello world</view>',
+      '<view style="{{\'color:\'+(color)+\';\'+virtualHostStyle}}" class="{{[virtualHostClass]}}">hello world</view>',
+      'with(this){}',
+      {
+        mergeVirtualHostAttributes: true
+      }
+    )
   })
 
   it('generate v-show directive', () => {

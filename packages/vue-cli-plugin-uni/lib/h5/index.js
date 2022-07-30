@@ -6,7 +6,8 @@ const {
   getMainEntry,
   getH5Options,
   getPlatformStat,
-  getPlatformPush
+  getPlatformPush,
+  getPlatformUniCloud
 } = require('@dcloudio/uni-cli-shared')
 
 const {
@@ -95,6 +96,7 @@ module.exports = {
 
     const statCode = getPlatformStat()
     const pushCode = getPlatformPush()
+    const uniCloudCode = getPlatformUniCloud()
     try {
       const babelConfig = require(path.resolve(process.env.UNI_CLI_CONTEXT, 'babel.config.js'))
       useBuiltIns = babelConfig.presets[0][1].useBuiltIns
@@ -118,7 +120,7 @@ module.exports = {
             loader: path.resolve(__dirname, '../../packages/wrap-loader'),
             options: {
               before: [
-                beforeCode + require('../util').getAutomatorCode() + statCode + pushCode +
+                beforeCode + require('../util').getAutomatorCode() + statCode + pushCode + uniCloudCode +
                 getGlobalUsingComponentsCode()
               ]
             }

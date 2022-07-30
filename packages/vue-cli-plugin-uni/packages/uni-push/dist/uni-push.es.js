@@ -100,9 +100,33 @@ e?.onClose(t);
 
 var GtPush = /*@__PURE__*/getDefaultExportFromCjs(gtpushMin);
 
+function initPushNotification() {
+    // 仅 App 端
+    if (typeof plus !== 'undefined' && plus.push) {
+        plus.push.addEventListener('click', (result) => {
+            // @ts-expect-error
+            uni.invokePushCallback({
+                type: 'click',
+                message: result,
+            });
+        });
+        uni.onPushMessage((res) => {
+            if (res.type === 'receive' && res.data && res.data.force_notification) {
+                // 创建通知栏
+                uni.createPushMessage(res.data);
+                res.stopped = true;
+            }
+        });
+    }
+}
+
 // if (process.env.UNI_PUSH_DEBUG) {
 //   GtPush.setDebugMode(true)
 // }
+// @ts-expect-error
+uni.invokePushCallback({
+    type: 'enabled',
+});
 const appid = process.env.UNI_APP_ID;
 if (!appid) {
     Promise.resolve().then(() => {
@@ -115,6 +139,7 @@ if (!appid) {
     });
 }
 else {
+    initPushNotification();
     GtPush.init({
         appid,
         onError: (res) => {

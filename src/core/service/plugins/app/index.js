@@ -10,6 +10,45 @@ export {
 }
   from './create-app'
 
+const extend = Object.assign
+
+function createLaunchOptions () {
+  return {
+    path: '',
+    query: {},
+    scene: 1001,
+    referrerInfo: {
+      appId: '',
+      extraData: {}
+    }
+  }
+}
+
+const enterOptions = createLaunchOptions()
+const launchOptions = createLaunchOptions()
+
+export function getLaunchOptions () {
+  return launchOptions
+}
+
+export function getEnterOptions () {
+  return enterOptions
+}
+
+export function initLaunchOptions ({
+  path,
+  query,
+  referrerInfo
+}) {
+  extend(launchOptions, {
+    path,
+    query: query || {},
+    referrerInfo: referrerInfo || {}
+  })
+  extend(enterOptions, launchOptions)
+  return launchOptions
+}
+
 export function createAppMixin (Vue, routes, entryRoute) {
   return {
     created: function AppCreated () {
@@ -31,13 +70,12 @@ export function createAppMixin (Vue, routes, entryRoute) {
     },
     mounted: function appMounted () {
       // 稍微靠后点，让 App 有机会在 mounted 事件前注册一些全局事件监听，如 UI 显示(showModal)
-      const args = {
+      initLaunchOptions({
         path: this.$route.meta && this.$route.meta.pagePath,
-        query: this.$route.query,
-        scene: 1001
-      }
-      callAppHook(this, 'onLaunch', args)
-      callAppHook(this, 'onShow', args)
+        query: this.$route.query
+      })
+      callAppHook(this, 'onLaunch', launchOptions)
+      callAppHook(this, 'onShow', enterOptions)
     }
   }
 }

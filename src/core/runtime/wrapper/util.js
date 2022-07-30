@@ -225,17 +225,31 @@ function parsePropType (key, type, defaultValue, file) {
   return type
 }
 
-export function initProperties (props, isBehavior = false, file = '') {
+export function initProperties (props, isBehavior = false, file = '', options) {
   const properties = {}
   if (!isBehavior) {
     properties.vueId = {
       type: String,
       value: ''
     }
-    // 用于字节跳动小程序模拟抽象节点
-    properties.generic = {
-      type: Object,
-      value: null
+    if (__PLATFORM__ === 'mp-toutiao' || __PLATFORM__ === 'mp-lark') {
+      // 用于字节跳动小程序模拟抽象节点
+      properties.generic = {
+        type: Object,
+        value: null
+      }
+    }
+    if (__PLATFORM__ === 'mp-weixin' || __PLATFORM__ === 'mp-alipay') {
+      if (__PLATFORM__ === 'mp-alipay' || options.virtualHost) {
+        properties.virtualHostStyle = {
+          type: null,
+          value: ''
+        }
+        properties.virtualHostClass = {
+          type: null,
+          value: ''
+        }
+      }
     }
     // scopedSlotsCompiler auto
     properties.scopedSlotsCompiler = {
@@ -542,7 +556,9 @@ export function handleEvent (event) {
           }
           const handler = handlerCtx[methodName]
           if (!isFn(handler)) {
-            throw new Error(` _vm.${methodName} is not a function`)
+            const type = this.$vm.mpType === 'page' ? 'Page' : 'Component'
+            const path = this.route || this.is
+            throw new Error(`${type} "${path}" does not have a method "${methodName}"`)
           }
           if (isOnce) {
             if (handler.once) {

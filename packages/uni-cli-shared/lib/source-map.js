@@ -46,14 +46,15 @@ function moduleFilenameTemplate (info) {
 const exclude = [/pages\.json/, /node_modules/, /vue&type=template/, /vue&type=style/]
 
 module.exports = {
-  createSourceMapDevToolPlugin (filename = false) {
+  createSourceMapDevToolPlugin (filename = false, args) {
     const options = {
       test: [/\.js$/],
       exclude,
-      moduleFilenameTemplate
+      moduleFilenameTemplate,
+      ...args
     }
     if (filename) {
-      options.filename = '../.sourcemap/' + process.env.UNI_PLATFORM + '/[name].js.map'
+      options.filename = '../.sourcemap/' + process.env.UNI_PLATFORM + '/[file].map'
     }
     return new webpack.SourceMapDevToolPlugin(options)
   },

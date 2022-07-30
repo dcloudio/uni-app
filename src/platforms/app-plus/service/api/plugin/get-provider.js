@@ -11,7 +11,7 @@ const providers = {
       }) => {
         provider.push(id)
       })
-      callback(null, provider)
+      callback(null, provider, services)
     }, err => {
       callback(err)
     })
@@ -24,7 +24,7 @@ const providers = {
       }) => {
         provider.push(id)
       })
-      callback(null, provider)
+      callback(null, provider, services)
     }, err => {
       callback(err)
     })
@@ -37,14 +37,15 @@ const providers = {
       }) => {
         provider.push(id)
       })
-      callback(null, provider)
+      callback(null, provider, services)
     }, err => {
       callback(err)
     })
   },
   push (callback) {
     if (typeof weex !== 'undefined' || typeof plus !== 'undefined') {
-      callback(null, [plus.push.getClientInfo().id])
+      const clientInfo = plus.push.getClientInfo()
+      callback(null, [clientInfo.id], [clientInfo])
     } else {
       callback(null, [])
     }
@@ -55,7 +56,7 @@ export function getProvider ({
   service
 }, callbackId) {
   if (providers[service]) {
-    providers[service]((err, provider) => {
+    providers[service]((err, provider, providers) => {
       if (err) {
         invoke(callbackId, {
           errMsg: 'getProvider:fail ' + err.message
@@ -64,7 +65,16 @@ export function getProvider ({
         invoke(callbackId, {
           errMsg: 'getProvider:ok',
           service,
-          provider
+          provider,
+          providers: providers.map((provider) => {
+            if (typeof provider.serviceReady === 'boolean') {
+              provider.isAppExist = provider.serviceReady
+            }
+            if (typeof provider.nativeClient === 'boolean') {
+              provider.isAppExist = provider.nativeClient
+            }
+            return provider
+          })
         })
       }
     })

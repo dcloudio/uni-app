@@ -69,6 +69,7 @@ module.exports = (api, options, rootOptions) => {
         '@dcloudio/uni-quickapp-webview': version,
         '@dcloudio/uni-stat': version,
         '@dcloudio/uni-i18n': version,
+        '@dcloudio/uni-stacktracey': version,
         '@vue/shared': '^3.0.0',
         flyio: '^0.6.2',
         vuex: '^3.2.0'

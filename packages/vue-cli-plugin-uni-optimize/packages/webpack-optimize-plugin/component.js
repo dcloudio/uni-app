@@ -25,7 +25,7 @@ module.exports = function updateComponents (tags) {
       autoloadTags.other[tagName].forEach(tag => tags.add(tag))
     }
   })
-  tags = [...tags]
+  tags = [...tags].sort() // 固定顺序，避免因顺序的变化导致内容变化，从而生成不同的 hash 文件名
   const importsStr = tags.map(tagName => {
     if (platformTags.indexOf(tagName) !== -1) {
       return `import ${capitalize(camelize(tagName))} from 'uni-platform/view/components/${tagName}'`

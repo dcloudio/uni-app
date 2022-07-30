@@ -32,7 +32,7 @@ module.exports = function getRenderSlot (path, state) {
     const scoped = state.scoped
     // TODO 判断是否包含作用域内变量
     const renderSlotStatementArray = scoped && scoped.length ? scoped[scoped.length - 1].renderSlotStatementArray : state.renderSlotStatementArray
-    renderSlotStatementArray.push(t.expressionStatement(t.callExpression(t.identifier('$setScopedSlotsParams'), [t.stringLiteral(name.node.value), valueNode])))
+    renderSlotStatementArray.push(t.expressionStatement(t.callExpression(t.identifier('$setScopedSlotsParams'), [name.node, valueNode])))
   }
   // TODO 组件嵌套
 }

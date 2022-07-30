@@ -6,6 +6,7 @@ import showActionSheet from '../../helpers/show-action-sheet'
 import getAppBaseInfo from '../../helpers/get-app-base-info'
 import getDeviceInfo from '../../helpers/get-device-info'
 import getWindowInfo from '../../helpers/get-window-info'
+import getAppAuthorizeSetting from '../../helpers/get-app-authorize-setting'
 
 export const protocols = {
   redirectTo,
@@ -16,7 +17,8 @@ export const protocols = {
   showActionSheet,
   getAppBaseInfo,
   getDeviceInfo,
-  getWindowInfo
+  getWindowInfo,
+  getAppAuthorizeSetting
 }
 export const todos = [
   'vibrate',

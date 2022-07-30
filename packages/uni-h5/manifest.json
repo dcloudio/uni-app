@@ -1011,7 +1011,19 @@
             ]
         ]
     ],
+    "getLaunchOptionsSync": [
+        "/platforms/h5/service/api/plugin/get-launch-options-sync.js",
+        []
+    ],
+    "getEnterOptionsSync": [
+        "/platforms/h5/service/api/plugin/get-launch-options-sync.js",
+        []
+    ],
     "invokePushCallback": [
+        "/core/service/api/plugin/push.js",
+        []
+    ],
+    "getPushClientId": [
         "/core/service/api/plugin/push.js",
         []
     ],

@@ -116,7 +116,7 @@ describe('mp:compiler-mp-alipay', () => {
     )
     assertCodegen(
       '<my-component><template v-slot="{item}">{{getValue(item)}}<template></my-component>',
-      '<my-component scoped-slots-compiler="augmented" vue-id="551070e6-1" onVueInit="__l"><block><block a:if="{{$root.m0}}">{{$root.m1}}</block></block></my-component>',
+      '<my-component scoped-slots-compiler="augmented" vue-id="551070e6-1" onVueInit="__l"><block a:if="{{$root.m0}}">{{$root.m1}}</block></my-component>',
       'with(this){var m0=$hasScopedSlotsParams("551070e6-1");var m1=m0?getValue($getScopedSlotsParams("551070e6-1","default","item")):null;$mp.data=Object.assign({},{$root:{m0:m0,m1:m1}})}',
       {
         scopedSlotsCompiler: 'auto'
@@ -124,7 +124,7 @@ describe('mp:compiler-mp-alipay', () => {
     )
     assertCodegen(
       '<my-component><template v-slot="item">{{getValue(item.text)}}<template></my-component>',
-      '<my-component scoped-slots-compiler="augmented" vue-id="551070e6-1" onVueInit="__l"><block><block a:if="{{$root.m0}}">{{$root.m1}}</block></block></my-component>',
+      '<my-component scoped-slots-compiler="augmented" vue-id="551070e6-1" onVueInit="__l"><block a:if="{{$root.m0}}">{{$root.m1}}</block></my-component>',
       'with(this){var m0=$hasScopedSlotsParams("551070e6-1");var m1=m0?getValue($getScopedSlotsParams("551070e6-1","default").text):null;$mp.data=Object.assign({},{$root:{m0:m0,m1:m1}})}',
       {
         scopedSlotsCompiler: 'auto'
@@ -201,6 +201,41 @@ describe('mp:compiler-mp-alipay', () => {
     assertCodegen(
       '<p class="a external-class c" :class="class1">hello world</p>',
       '<view class="{{(((((\'a\')+\' \'+\'external-class\')+\' \'+\'c\')+\' \'+\'_p\')+\' \'+class1)}}">hello world</view>'
+    )
+  })
+
+  it('generate attrs with mergeVirtualHostAttributes', () => {
+    assertCodegen(
+      '<custom-view>hello world</custom-view>',
+      '<custom-view vue-id="551070e6-1" onVueInit="__l" virtualHostStyle="{{virtualHostStyle}}" virtualHostClass="{{(virtualHostClass)}}">hello world</custom-view>',
+      'with(this){}',
+      {
+        mergeVirtualHostAttributes: true
+      }
+    )
+    assertCodegen(
+      '<custom-view :class="class1" :style="style">hello world</custom-view>',
+      '<custom-view vue-id="551070e6-1" onVueInit="__l" virtualHostStyle="{{(style)+virtualHostStyle}}" virtualHostClass="{{((class1)+\' \'+virtualHostClass)}}">hello world</custom-view>',
+      'with(this){}',
+      {
+        mergeVirtualHostAttributes: true
+      }
+    )
+    assertCodegen(
+      '<view><custom-view>hello world</custom-view></view>',
+      '<view class="{{(virtualHostClass)}}" style="{{virtualHostStyle}}"><custom-view vue-id="551070e6-1" onVueInit="__l">hello world</custom-view></view>',
+      'with(this){}',
+      {
+        mergeVirtualHostAttributes: true
+      }
+    )
+    assertCodegen(
+      '<view><custom-view :class="class1" :style="style">hello world</custom-view></view>',
+      '<view class="{{(virtualHostClass)}}" style="{{virtualHostStyle}}"><custom-view vue-id="551070e6-1" onVueInit="__l" virtualHostStyle="{{(style)}}" virtualHostClass="{{(class1)}}">hello world</custom-view></view>',
+      'with(this){}',
+      {
+        mergeVirtualHostAttributes: true
+      }
     )
   })
 

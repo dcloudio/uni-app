@@ -144,7 +144,10 @@ var serviceContext = (function () {
     'checkIsSoterEnrolledInDevice',
     'startSoterAuthentication',
     'onThemeChange',
-    'onUIStyleChange'
+    'onUIStyleChange',
+    'getSystemSetting',
+    'getAppAuthorizeSetting',
+    'openAppAuthorizeSetting'
   ];
 
   const keyboard = [
@@ -276,9 +279,10 @@ var serviceContext = (function () {
 
   const plugin = [
     'invokePushCallback',
-    'getPushCid',
+    'getPushClientId',
     'onPushMessage',
     'offPushMessage',
+    'createPushMessage'
   ];
 
   const apis = [
@@ -853,7 +857,7 @@ var serviceContext = (function () {
   };
 
   const SYNC_API_RE =
-    /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback|getWindowInfo|getDeviceInfo|getAppBaseInfo/;
+    /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback|getWindowInfo|getDeviceInfo|getAppBaseInfo|getSystemSetting|getAppAuthorizeSetting/;
 
   const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -863,7 +867,7 @@ var serviceContext = (function () {
   const TASK_APIS = ['request', 'downloadFile', 'uploadFile', 'connectSocket'];
 
   // 同步例外情况
-  const ASYNC_API = ['createBLEConnection'];
+  const ASYNC_API = ['createBLEConnection', 'createPushMessage'];
 
   const CALLBACK_API_RE = /^on|^off/;
 
@@ -3787,7 +3791,7 @@ var serviceContext = (function () {
     }
   }
   // 部分 API 直接实现
-  const unwrappers = ['getPushClientid', 'onPushMessage', 'offPushMessage'];
+  const unwrappers = ['getPushClientId', 'onPushMessage', 'offPushMessage'];
 
   function wrapper (name, invokeMethod, extras = {}) {
     if (unwrappers.indexOf(name) > -1 || !isFn(invokeMethod)) {
@@ -6616,6 +6620,48 @@ var serviceContext = (function () {
     }
   }
 
+  function getSystemSetting () {
+    const { getSystemSetting } = weex.requireModule('plus');
+    let systemSetting = getSystemSetting();
+    try {
+      if (typeof systemSetting === 'string') { systemSetting = JSON.parse(systemSetting); }
+    } catch (error) { }
+
+    return systemSetting
+  }
+
+  function getAppAuthorizeSetting () {
+    const { getAppAuthorizeSetting } = weex.requireModule('plus');
+    let appAuthorizeSetting = getAppAuthorizeSetting();
+    try {
+      if (typeof appAuthorizeSetting === 'string') { appAuthorizeSetting = JSON.parse(appAuthorizeSetting); }
+    } catch (error) { }
+
+    for (const key in appAuthorizeSetting) {
+      if (Object.hasOwnProperty.call(appAuthorizeSetting, key)) {
+        const value = appAuthorizeSetting[key];
+        if (value === 'undefined') appAuthorizeSetting[key] = undefined;
+      }
+    }
+
+    return appAuthorizeSetting
+  }
+
+  function openAppAuthorizeSetting (options, callbackId) {
+    const { openAppAuthorizeSetting } = weex.requireModule('plus');
+    openAppAuthorizeSetting(ret => {
+      if (ret.type === 'success') {
+        invoke$1(callbackId, {
+          errMsg: 'getClipboardData:ok'
+        });
+      } else {
+        invoke$1(callbackId, {
+          errMsg: 'getClipboardData:fail'
+        });
+      }
+    });
+  }
+
   const SAVED_DIR = 'uniapp_save';
   const SAVE_PATH = `_doc/${SAVED_DIR}`;
 
@@ -8056,7 +8102,7 @@ var serviceContext = (function () {
         }) => {
           provider.push(id);
         });
-        callback(null, provider);
+        callback(null, provider, services);
       }, err => {
         callback(err);
       });
@@ -8069,7 +8115,7 @@ var serviceContext = (function () {
         }) => {
           provider.push(id);
         });
-        callback(null, provider);
+        callback(null, provider, services);
       }, err => {
         callback(err);
       });
@@ -8082,14 +8128,15 @@ var serviceContext = (function () {
         }) => {
           provider.push(id);
         });
-        callback(null, provider);
+        callback(null, provider, services);
       }, err => {
         callback(err);
       });
     },
     push (callback) {
       if (typeof weex !== 'undefined' || typeof plus !== 'undefined') {
-        callback(null, [plus.push.getClientInfo().id]);
+        const clientInfo = plus.push.getClientInfo();
+        callback(null, [clientInfo.id], [clientInfo]);
       } else {
         callback(null, []);
       }
@@ -8100,7 +8147,7 @@ var serviceContext = (function () {
     service
   }, callbackId) {
     if (providers[service]) {
-      providers[service]((err, provider) => {
+      providers[service]((err, provider, providers) => {
         if (err) {
           invoke$1(callbackId, {
             errMsg: 'getProvider:fail ' + err.message
@@ -8109,7 +8156,16 @@ var serviceContext = (function () {
           invoke$1(callbackId, {
             errMsg: 'getProvider:ok',
             service,
-            provider
+            provider,
+            providers: providers.map((provider) => {
+              if (typeof provider.serviceReady === 'boolean') {
+                provider.isAppExist = provider.serviceReady;
+              }
+              if (typeof provider.nativeClient === 'boolean') {
+                provider.isAppExist = provider.nativeClient;
+              }
+              return provider
+            })
           });
         }
       });
@@ -8454,6 +8510,22 @@ var serviceContext = (function () {
     return {
       errMsg: 'offPush:ok'
     }
+  }
+
+  function createPushMessage (params, callbackId) {
+    const setting = getAppAuthorizeSetting();
+    if (setting.notificationAuthorized !== 'authorized') {
+      return invoke$1(callbackId, {
+        errMsg: 'createPushMessage:fail notificationAuthorized: ' + setting.notificationAuthorized
+      })
+    }
+    const options = Object.assign({}, params);
+    delete options.content;
+    delete options.payload;
+    plus.push.createMessage(params.content, params.payload, options);
+    invoke$1(callbackId, {
+      errMsg: 'createPushMessage:ok'
+    });
   }
 
   function requireNativePlugin$1 (name) {
@@ -9554,10 +9626,12 @@ var serviceContext = (function () {
         setStatusBarStyle(popStartStatusBarStyle);
       } else if (e.type === 'end' && e.result) {
         const pages = getCurrentPages();
+        const len = pages.length;
         const page = pages[pages.length - 1];
         page && page.$remove();
         setStatusBarStyle();
-        if (page && isDirectPage(page)) {
+        // 仅当存在一个页面，且是直达页面时，才 reLaunch 首页
+        if (page && len === 1 && isDirectPage(page)) {
           reLaunchEntryPage();
         } else {
           UniServiceJSBridge.emit('onAppRoute', {
@@ -12139,6 +12213,9 @@ var serviceContext = (function () {
     vibrateLong: vibrateLong,
     vibrateShort: vibrateShort,
     getWindowInfo: getWindowInfo,
+    getSystemSetting: getSystemSetting,
+    getAppAuthorizeSetting: getAppAuthorizeSetting,
+    openAppAuthorizeSetting: openAppAuthorizeSetting,
     saveFile: saveFile$1,
     getSavedFileList: getSavedFileList,
     getFileInfo: getFileInfo$1,
@@ -12188,6 +12265,7 @@ var serviceContext = (function () {
     unsubscribePush: unsubscribePush,
     onPush: onPush,
     offPush: offPush,
+    createPushMessage: createPushMessage,
     requireNativePlugin: requireNativePlugin$1,
     shareAppMessageDirectly: shareAppMessageDirectly,
     share: share,
@@ -21294,6 +21372,7 @@ var serviceContext = (function () {
 
   let cid;
   let cidErrMsg;
+  let enabled;
 
   function normalizePushMessage (message) {
     try {
@@ -21305,17 +21384,25 @@ var serviceContext = (function () {
   function invokePushCallback (
     args
   ) {
-    if (args.type === 'clientId') {
+    if (args.type === 'enabled') {
+      enabled = true;
+    } else if (args.type === 'clientId') {
       cid = args.cid;
       cidErrMsg = args.errMsg;
       invokeGetPushCidCallbacks(cid, args.errMsg);
     } else if (args.type === 'pushMsg') {
-      onPushMessageCallbacks.forEach((callback) => {
-        callback({
-          type: 'receive',
-          data: normalizePushMessage(args.message)
-        });
-      });
+      const message = {
+        type: 'receive',
+        data: normalizePushMessage(args.message)
+      };
+      for (let i = 0; i < onPushMessageCallbacks.length; i++) {
+        const callback = onPushMessageCallbacks[i];
+        callback(message);
+        // 该消息已被阻止
+        if (message.stopped) {
+          break
+        }
+      }
     } else if (args.type === 'click') {
       onPushMessageCallbacks.forEach((callback) => {
         callback({
@@ -21335,7 +21422,7 @@ var serviceContext = (function () {
     getPushCidCallbacks.length = 0;
   }
 
-  function getPushClientid (args) {
+  function getPushClientId (args) {
     if (!isPlainObject(args)) {
       args = {};
     }
@@ -21347,25 +21434,32 @@ var serviceContext = (function () {
     const hasSuccess = isFn(success);
     const hasFail = isFn(fail);
     const hasComplete = isFn(complete);
-    getPushCidCallbacks.push((cid, errMsg) => {
-      let res;
-      if (cid) {
-        res = {
-          errMsg: 'getPushClientid:ok',
-          cid
-        };
-        hasSuccess && success(res);
-      } else {
-        res = {
-          errMsg: 'getPushClientid:fail' + (errMsg ? ' ' + errMsg : '')
-        };
-        hasFail && fail(res);
+    Promise.resolve().then(() => {
+      if (typeof enabled === 'undefined') {
+        enabled = false;
+        cid = '';
+        cidErrMsg = 'unipush is not enabled';
       }
-      hasComplete && complete(res);
+      getPushCidCallbacks.push((cid, errMsg) => {
+        let res;
+        if (cid) {
+          res = {
+            errMsg: 'getPushClientId:ok',
+            cid
+          };
+          hasSuccess && success(res);
+        } else {
+          res = {
+            errMsg: 'getPushClientId:fail' + (errMsg ? ' ' + errMsg : '')
+          };
+          hasFail && fail(res);
+        }
+        hasComplete && complete(res);
+      });
+      if (typeof cid !== 'undefined') {
+        invokeGetPushCidCallbacks(cid, cidErrMsg);
+      }
     });
-    if (typeof cid !== 'undefined') {
-      Promise.resolve().then(() => invokeGetPushCidCallbacks(cid, cidErrMsg));
-    }
   }
 
   const onPushMessageCallbacks = [];
@@ -21390,7 +21484,7 @@ var serviceContext = (function () {
   var require_context_module_1_22 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     invokePushCallback: invokePushCallback,
-    getPushClientid: getPushClientid,
+    getPushClientId: getPushClientId,
     onPushMessage: onPushMessage,
     offPushMessage: offPushMessage
   });

@@ -8,6 +8,7 @@ import {
 
 let cid
 let cidErrMsg
+let enabled
 
 function normalizePushMessage (message) {
   try {
@@ -19,17 +20,25 @@ function normalizePushMessage (message) {
 export function invokePushCallback (
   args
 ) {
-  if (args.type === 'clientId') {
+  if (args.type === 'enabled') {
+    enabled = true
+  } else if (args.type === 'clientId') {
     cid = args.cid
     cidErrMsg = args.errMsg
     invokeGetPushCidCallbacks(cid, args.errMsg)
   } else if (args.type === 'pushMsg') {
-    onPushMessageCallbacks.forEach((callback) => {
-      callback({
-        type: 'receive',
-        data: normalizePushMessage(args.message)
-      })
-    })
+    const message = {
+      type: 'receive',
+      data: normalizePushMessage(args.message)
+    }
+    for (let i = 0; i < onPushMessageCallbacks.length; i++) {
+      const callback = onPushMessageCallbacks[i]
+      callback(message)
+      // 该消息已被阻止
+      if (message.stopped) {
+        break
+      }
+    }
   } else if (args.type === 'click') {
     onPushMessageCallbacks.forEach((callback) => {
       callback({
@@ -49,7 +58,7 @@ function invokeGetPushCidCallbacks (cid, errMsg) {
   getPushCidCallbacks.length = 0
 }
 
-export function getPushClientid (args) {
+export function getPushClientId (args) {
   if (!isPlainObject(args)) {
     args = {}
   }
@@ -61,25 +70,32 @@ export function getPushClientid (args) {
   const hasSuccess = isFn(success)
   const hasFail = isFn(fail)
   const hasComplete = isFn(complete)
-  getPushCidCallbacks.push((cid, errMsg) => {
-    let res
-    if (cid) {
-      res = {
-        errMsg: 'getPushClientid:ok',
-        cid
-      }
-      hasSuccess && success(res)
-    } else {
-      res = {
-        errMsg: 'getPushClientid:fail' + (errMsg ? ' ' + errMsg : '')
-      }
-      hasFail && fail(res)
+  Promise.resolve().then(() => {
+    if (typeof enabled === 'undefined') {
+      enabled = false
+      cid = ''
+      cidErrMsg = 'unipush is not enabled'
     }
-    hasComplete && complete(res)
+    getPushCidCallbacks.push((cid, errMsg) => {
+      let res
+      if (cid) {
+        res = {
+          errMsg: 'getPushClientId:ok',
+          cid
+        }
+        hasSuccess && success(res)
+      } else {
+        res = {
+          errMsg: 'getPushClientId:fail' + (errMsg ? ' ' + errMsg : '')
+        }
+        hasFail && fail(res)
+      }
+      hasComplete && complete(res)
+    })
+    if (typeof cid !== 'undefined') {
+      invokeGetPushCidCallbacks(cid, cidErrMsg)
+    }
   })
-  if (typeof cid !== 'undefined') {
-    Promise.resolve().then(() => invokeGetPushCidCallbacks(cid, cidErrMsg))
-  }
 }
 
 const onPushMessageCallbacks = []

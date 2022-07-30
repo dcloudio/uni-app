@@ -320,7 +320,9 @@ export default {
         if (id || id === 0) {
           nativeMarker.onclick = (e) => {
             this.$trigger('markertap', {}, {
-              markerId: id
+              markerId: id,
+              latitude,
+              longitude
             })
           }
           if (nativeBubble) {
@@ -501,7 +503,7 @@ export default {
     top: 0;
     left: 0;
     overflow: hidden;
-    background-color: black;
+    background-color: transparent;
   }
 
   .uni-map-slot {

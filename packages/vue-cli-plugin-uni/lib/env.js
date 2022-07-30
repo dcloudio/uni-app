@@ -22,6 +22,7 @@ process.env.UNI_INPUT_DIR = process.env.UNI_INPUT_DIR || path.resolve(process.cw
 
 const {
   getManifestJson,
+  isEnableUniPushV1,
   isEnableUniPushV2,
   isUniPushOffline
 } = require('@dcloudio/uni-cli-shared/lib/manifest')
@@ -47,6 +48,8 @@ if (isEnableUniPushV2(manifestJsonObj, process.env.UNI_PLATFORM)) {
   if (process.env.UNI_PLATFORM === 'app-plus' && isUniPushOffline(manifestJsonObj)) {
     process.env.UNI_PUSH_V2_OFFLINE = true
   }
+} else if (isEnableUniPushV1(manifestJsonObj, process.env.UNI_PLATFORM)) {
+  process.env.UNI_PUSH_V1 = true
 }
 
 // 初始化全局插件对象
@@ -63,8 +66,6 @@ process.env.VUE_APP_NAME = manifestJsonObj.name
 
 process.env.UNI_USING_V3_SCOPED = true
 
-process.env.UNI_CLOUD_PROVIDER = JSON.stringify([])
-
 // 导出到小程序插件
 process.env.UNI_MP_PLUGIN_EXPORT = JSON.stringify(Object.keys(platformOptions.plugins || {}).map(pluginName =>
   platformOptions.plugins[pluginName].export))
@@ -72,7 +73,9 @@ process.env.UNI_MP_PLUGIN_EXPORT = JSON.stringify(Object.keys(platformOptions.pl
 const isH5 = !process.env.UNI_SUB_PLATFORM && process.env.UNI_PLATFORM === 'h5'
 const isProduction = process.env.NODE_ENV === 'production'
 
-if (process.env.UNI_CLOUD_SPACES) {
+// uniCloud
+if (!process.env.UNI_CLOUD_PROVIDER && process.env.UNI_CLOUD_SPACES) {
+  process.env.UNI_CLOUD_PROVIDER = JSON.stringify([])
   try {
     const spaces = JSON.parse(process.env.UNI_CLOUD_SPACES)
     if (Array.isArray(spaces)) {
@@ -90,7 +93,7 @@ if (process.env.UNI_CLOUD_SPACES) {
         isProduction
       ) {
         console.warn(uniI18n.__('pluginUni.unicloudReleaseH5', {
-          0: 'https://uniapp.dcloud.io/uniCloud/quickstart?id=useinh5'
+          0: 'https://uniapp.dcloud.net.cn/uniCloud/publish.html#useinh5'
         }))
       } else if (
         hasUniCloudSpace &&
@@ -98,7 +101,7 @@ if (process.env.UNI_CLOUD_SPACES) {
         !isProduction
       ) {
         console.warn(uniI18n.__('pluginUni.unicloudShowedRunByHBuilderX', {
-          0: 'https://uniapp.dcloud.io/uniCloud/quickstart?id=useinh5'
+          0: 'https://uniapp.dcloud.net.cn/uniCloud/publish.html#useinh5'
         }))
       }
 
@@ -318,6 +321,8 @@ if ((process.env.UNI_PLATFORM === 'mp-kuaishou' || process.env.UNI_PLATFORM === 
   .SCOPED_SLOTS_COMPILER !== modes[0]) {
   process.env.SCOPED_SLOTS_COMPILER = modes[2]
 }
+
+process.env.MERGE_VIRTUAL_HOST_ATTRIBUTES = (!!platformOptions.mergeVirtualHostAttributes).toString()
 
 process.env.UNI_STAT_UNI_CLOUD = ''
 process.env.UNI_STAT_DEBUG = ''

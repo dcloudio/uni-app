@@ -5,6 +5,8 @@
     @touchstart="_hoverTouchStart"
     @touchend="_hoverTouchEnd"
     @touchcancel="_hoverTouchCancel"
+    @mousedown="_hoverMousedown"
+    @mouseup="_hoverMouseup"
     v-on="$listeners"
   >
     <slot />
