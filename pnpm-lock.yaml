@@ -798,12 +798,17 @@ importers:
       '@dcloudio/uni-cli-shared': 3.0.0-alpha-3050220220719003
       '@dcloudio/uni-shared': 3.0.0-alpha-3050220220719003
       '@dcloudio/uts': 3.0.0-alpha-3050220220719003
+      '@types/fs-extra': ^9.0.13
       execa: ^5.1.1
+      fs-extra: ^10.0.0
     dependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
       '@dcloudio/uni-shared': link:../uni-shared
       '@dcloudio/uts': link:../uts
       execa: 5.1.1
+      fs-extra: 10.1.0
+    devDependencies:
+      '@types/fs-extra': 9.0.13
 
   packages/uni-vue:
     specifiers:

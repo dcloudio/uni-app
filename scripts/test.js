@@ -30,6 +30,8 @@ bundle({
       projectDir,
       'unpackage/dist/app-plus/uni_modules/test-uniplugin/'
     ),
+    package: 'uts.modules.testUniPlugin',
+    imports: ['kotlinx.coroutines.*', 'io.dcloud.uts.runtime.*'],
     sourceMap: true,
     extname: 'kt',
   },

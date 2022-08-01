@@ -1,4 +1,4 @@
-import { isPlainObject, hasOwn } from '@vue/shared'
+import { isPlainObject, hasOwn, extend } from '@vue/shared'
 declare const uni: any
 let callbackId = 1
 let proxy: any
@@ -15,78 +15,154 @@ export function normalizeArg(arg: unknown) {
   }
   return arg
 }
-interface ProxyInvokeAsyncResponse {
-  errMsg: string
-  params: unknown
+
+interface ProxyBaseOptions {
+  /**
+   * 包名
+   */
+  package: string
+  /**
+   * 类名
+   */
+  class: string
+  /**
+   * 属性名或方法名
+   */
+  name: string
 }
-interface ProxyInvokeCallbackResponse {
+
+interface ProxyInstanceOptions extends ProxyBaseOptions {
+  id: number
+}
+
+/**
+ * 实例方法
+ */
+interface ProxyInstanceMethodOptions extends ProxyInstanceOptions {}
+
+function initUtsInstanceMethod(
+  async: boolean,
+  opts: ProxyInstanceMethodOptions
+) {
+  return initProxyFunction(async, opts)
+}
+interface ProxyClassOptions {
+  package: string
+  class: string
+  props: string[]
+  staticProps: string[]
+  methods: {
+    [name: string]: {
+      async?: boolean
+    }
+  }
+  staticMethods: {
+    [name: string]: {
+      async?: boolean
+    }
+  }
+}
+
+type InvokeInstanceArgs =
+  // prop
+  | { id: number; name: string }
+  // method
+  | { id: number; name: string; params: unknown[] }
+type InvokeArgs = (ProxyBaseOptions | InvokeInstanceArgs) & {
+  params?: unknown[]
+}
+
+interface InvokeCallbackReturnRes {
+  type: 'return'
+  params?: unknown[]
+  errMsg?: string
+}
+interface InvokeCallbackParamsRes {
+  type: 'params'
   id: number
   name: string
   params: unknown[]
-  keepAlive: boolean
-}
-type ProxyInvokeResponse =
-  | ProxyInvokeAsyncResponse
-  | ProxyInvokeCallbackResponse
-
-function isProxyInvokeCallbackResponse(
-  res: ProxyInvokeResponse
-): res is ProxyInvokeCallbackResponse {
-  return !!(res as ProxyInvokeCallbackResponse).name
+  keepAlive?: boolean
 }
 
-interface ProxyBaseOptions {
-  pkg: string
-  cls: string
-  method: string
+type InvokeSyncCallback = (res: InvokeCallbackParamsRes) => void
+type InvokeAsyncCallback = (
+  res: InvokeCallbackReturnRes | InvokeCallbackParamsRes
+) => void
+
+function getProxy(): {
+  invokeSync: (args: InvokeArgs, callback: InvokeSyncCallback) => unknown
+  invokeAsync: (args: InvokeArgs, callback: InvokeAsyncCallback) => void
+} {
+  if (!proxy) {
+    proxy = uni.requireNativePlugin('UTS-Proxy') as any
+  }
+  return proxy
 }
 
-interface ProxyFunctionOptions extends ProxyBaseOptions {
-  async?: boolean
+function invokePropGetter(args: InvokeArgs) {
+  return getProxy().invokeSync(args, () => {})
 }
 
-interface InvokeArgs {
+interface InitProxyFunctionOptions {
+  /**
+   * 包名
+   */
   package: string
+  /**
+   * 类名
+   */
   class: string
-  method: string
-  params: unknown[]
+  /**
+   * 属性名或方法名
+   */
+  name: string
+  /**
+   * 实例 ID
+   */
+  id?: number
 }
 
-export function initUtsProxyFunction({
-  pkg,
-  cls,
-  method,
-  async,
-}: ProxyFunctionOptions) {
+function initProxyFunction(
+  async: boolean,
+  {
+    package: pkg,
+    class: cls,
+    name: propOrMethod,
+    id: instanceId,
+  }: InitProxyFunctionOptions
+) {
   const invokeCallback = ({
     id,
     name,
     params,
     keepAlive,
-  }: ProxyInvokeCallbackResponse) => {
-    const callback = callbacks[id]
+  }: InvokeCallbackParamsRes) => {
+    const callback = callbacks[id!]
     if (callback) {
       callback(...params)
       if (!keepAlive) {
         delete callbacks[id]
       }
     } else {
-      console.error(
-        `${pkg}${cls ? '.' + cls : ''}.${method} ${name} is not found`
-      )
+      console.error(`${pkg}${cls}.${propOrMethod} ${name} is not found`)
     }
   }
-
+  const baseArgs: InvokeArgs = instanceId
+    ? { id: instanceId, name: propOrMethod }
+    : {
+        package: pkg,
+        class: cls,
+        name: propOrMethod,
+      }
   return (...args: unknown[]) => {
-    if (!proxy) {
-      proxy = uni.requireNativePlugin('ProxyModule') as any
-    }
-    const params = args.map((arg) => normalizeArg(arg))
-    const invokeArgs: InvokeArgs = { package: pkg, class: cls, method, params }
+    const invokeArgs = extend({}, baseArgs, {
+      params: args.map((arg) => normalizeArg(arg)),
+    })
     if (async) {
       return new Promise((resolve, reject) => {
-        proxy.invokeAsync(invokeArgs, (res: ProxyInvokeResponse) => {
-          if (isProxyInvokeCallbackResponse(res)) {
+        getProxy().invokeAsync(invokeArgs, (res) => {
+          if (res.type !== 'return') {
             invokeCallback(res)
           } else {
             if (res.errMsg) {
@@ -98,41 +174,67 @@ export function initUtsProxyFunction({
         })
       })
     }
-    return proxy.invokeSync(invokeArgs, invokeCallback)
+    return getProxy().invokeSync(invokeArgs, invokeCallback)
   }
 }
 
-interface ProxyClassOptions {
-  pkg: string
-  cls: string
-  methods: {
-    [name: string]: {
-      async?: boolean
-    }
-  }
+function initUtsStaticMethod(async: boolean, opts: ProxyBaseOptions) {
+  return initProxyFunction(async, opts)
 }
-
+export const initUtsProxyFunction = initUtsStaticMethod
 export function initUtsProxyClass({
-  pkg,
-  cls,
+  package: pkg,
+  class: cls,
   methods,
+  props,
+  staticProps,
+  staticMethods,
 }: ProxyClassOptions): any {
+  const baseOptions = {
+    package: pkg,
+    class: cls,
+  }
   return class ProxyClass {
-    constructor() {
+    constructor(...params: unknown[]) {
       const target: Record<string, Function> = {}
+      // 初始化实例 ID
+      const instanceId = initProxyFunction(
+        false,
+        extend({ name: 'constructor', params }, baseOptions)
+      ).apply(null, params) as number
+
       return new Proxy(this, {
-        get(_, method) {
-          if (!target[method as string]) {
-            if (hasOwn(methods, method)) {
-              target[method] = initUtsProxyFunction({
-                pkg,
-                cls,
-                method,
-                async: methods[method].async,
-              })
+        get(_, name) {
+          if (!target[name as string]) {
+            //实例方法
+            if (hasOwn(methods, name)) {
+              target[name] = initUtsInstanceMethod(
+                !!methods[name].async,
+                extend(
+                  {
+                    id: instanceId,
+                    name,
+                  },
+                  baseOptions
+                )
+              )
+            } else if (hasOwn(staticMethods, name)) {
+              // 静态方法
+              target[name] = initUtsStaticMethod(
+                !!staticMethods[name].async,
+                extend({ name }, baseOptions)
+              )
+            } else if (props.includes(name as string)) {
+              // 实例属性
+              return invokePropGetter({ id: instanceId, name: name as string })
+            } else if (staticProps.includes(name as string)) {
+              // 静态属性
+              return invokePropGetter(
+                extend({ name: name as string }, baseOptions)
+              )
             }
-            return target[method as string]
           }
+          return target[name as string]
         },
       })
     }

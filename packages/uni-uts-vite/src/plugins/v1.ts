@@ -1,6 +1,5 @@
 import type { Plugin } from 'vite'
 import path from 'path'
-import { camelize } from '@vue/shared'
 import {
   normalizePath,
   parseVueRequest,
@@ -8,15 +7,20 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import {
   ClassDeclaration,
+  ClassExpression,
+  Expression,
   FunctionDeclaration,
+  FunctionExpression,
+  Identifier,
   Module,
   TsFunctionType,
   TsInterfaceDeclaration,
   TsType,
   TsTypeAliasDeclaration,
   TsTypeAnnotation,
+  VariableDeclaration,
 } from '../../types/types'
-import { compile } from '../utils/compiler'
+import { compile, parsePackage } from '../utils/compiler'
 
 export function uniUtsV1Plugin(): Plugin {
   // 目前仅支持 app-android
@@ -52,6 +56,7 @@ export function uniUtsV1Plugin(): Plugin {
       code = `
 import { initUtsProxyClass, initUtsProxyFunction } from '@dcloudio/uni-app'
 const pkg = '${pkg}'
+const cls = 'IndexKt'
 ${genProxyCode(ast)}
 `
       await compile(id)
@@ -69,38 +74,34 @@ function isUtsModuleRoot(id: string) {
   return false
 }
 
-function parsePackage(filepath: string) {
-  const parts = normalizePath(filepath).split('/')
-  const index = parts.findIndex((part) => part === 'uni_modules')
-  if (index > -1) {
-    return camelize(parts[index + 1])
-  }
-  return ''
-}
-
 function genProxyFunctionCode(
   method: string,
   async: boolean,
   isDefault: boolean = false
 ) {
   if (isDefault) {
-    return `export default initUtsProxyFunction({ pkg, cls: '', method: '${method}', async: ${async} })`
+    return `export default initUtsProxyFunction(${async}, { package: pkg, class: cls, name: '${method}'})`
   }
-  return `export const ${method} = initUtsProxyFunction({ pkg, cls: '', method: '${method}', async: ${async} })`
+  return `export const ${method} = initUtsProxyFunction(${async}, { package: pkg, class: cls, name: '${method}'})`
 }
 
 function genProxyClassCode(
   cls: string,
-  methods: Record<string, any>,
+  options: {
+    methods: Record<string, any>
+    staticMethods: Record<string, any>
+    props: string[]
+    staticProps: string[]
+  },
   isDefault: boolean = false
 ) {
   if (isDefault) {
-    return `export default initUtsProxyClass({ pkg, cls: '${cls}', methods: ${JSON.stringify(
-      methods
+    return `export default initUtsProxyClass({ package: pkg, class: '${cls}', ...${JSON.stringify(
+      options
     )} })`
   }
-  return `export const ${cls} = initUtsProxyClass({ pkg, cls: '${cls}', methods: ${JSON.stringify(
-    methods
+  return `export const ${cls} = initUtsProxyClass({ package: pkg, class: '${cls}', ...${JSON.stringify(
+    options
   )} })`
 }
 
@@ -127,37 +128,98 @@ function genTsInterfaceDeclarationCode(
       }
     }
   })
-  return genProxyClassCode(cls, methods, isDefault)
+  return genProxyClassCode(
+    cls,
+    { methods, staticMethods: {}, props: [], staticProps: [] },
+    isDefault
+  )
 }
 
 function genFunctionDeclarationCode(
-  decl: FunctionDeclaration,
+  decl: FunctionDeclaration | FunctionExpression,
   isDefault: boolean = false
 ) {
   return genProxyFunctionCode(
-    decl.identifier.value,
+    decl.identifier!.value,
     decl.async || isReturnPromise(decl.returnType),
     isDefault
   )
 }
 
 function genClassDeclarationCode(
-  decl: ClassDeclaration,
+  decl: ClassDeclaration | ClassExpression,
   isDefault: boolean = false
 ) {
-  const cls = decl.identifier.value
+  const cls = decl.identifier!.value
   const methods: Record<string, { async?: boolean }> = {}
+  const staticMethods: Record<string, { async?: boolean }> = {}
+  const props: string[] = []
+  const staticProps: string[] = []
   decl.body.forEach((item) => {
     if (item.type === 'ClassMethod') {
       if (item.key.type === 'Identifier') {
-        methods[item.key.value] = {
+        const name = item.key.value
+        const value = {
           async:
             item.function.async || isReturnPromise(item.function.returnType),
+        }
+        if (item.isStatic) {
+          staticMethods[name] = value
+        } else {
+          methods[name] = value
+        }
+      }
+    } else if (item.type === 'ClassProperty') {
+      if (item.key.type === 'Identifier') {
+        if (item.isStatic) {
+          staticProps.push(item.key.value)
+        } else {
+          props.push(item.key.value)
         }
       }
     }
   })
-  return genProxyClassCode(cls, methods, isDefault)
+  return genProxyClassCode(
+    cls,
+    { methods, staticMethods, props, staticProps },
+    isDefault
+  )
+}
+
+function genInitCode(expr: Expression) {
+  switch (expr.type) {
+    case 'BooleanLiteral':
+      return expr.value + ''
+    case 'NumericLiteral':
+      return expr.value + ''
+    case 'StringLiteral':
+      return expr.value
+  }
+  return ''
+}
+
+function genVariableDeclarationCode(decl: VariableDeclaration) {
+  // 目前仅支持boolean,number,string
+  const lits = ['BooleanLiteral', 'NumericLiteral', 'StringLiteral']
+  if (
+    !decl.declarations.find((d) => {
+      if (d.id.type !== 'Identifier') {
+        return true
+      }
+      if (!d.init) {
+        return true
+      }
+      const type = d.init.type
+      if (!lits.includes(type)) {
+        return true
+      }
+      return false
+    })
+  ) {
+    return `${decl.kind} ${decl.declarations
+      .map((d) => `${(d.id as Identifier).value} = ${genInitCode(d.init!)}`)
+      .join(', ')}`
+  }
 }
 
 function genProxyCode({ body }: Module) {
@@ -179,10 +241,23 @@ function genProxyCode({ body }: Module) {
         case 'TsInterfaceDeclaration':
           code = genTsInterfaceDeclarationCode(decl, false)
           break
+        case 'VariableDeclaration':
+          code = genVariableDeclarationCode(decl)
+          break
       }
     } else if (item.type === 'ExportDefaultDeclaration') {
-      if (item.decl.type === 'TsInterfaceDeclaration') {
-        code = genTsInterfaceDeclarationCode(item.decl, true)
+      const decl = item.decl
+      if (decl.type === 'TsInterfaceDeclaration') {
+        code = genTsInterfaceDeclarationCode(decl, true)
+      } else if (decl.type === 'ClassExpression') {
+        if (decl.identifier) {
+          // export default class test{}
+          code = genClassDeclarationCode(decl, false)
+        }
+      } else if (decl.type === 'FunctionExpression') {
+        if (decl.identifier) {
+          code = genFunctionDeclarationCode(decl, false)
+        }
       }
     }
     if (code) {

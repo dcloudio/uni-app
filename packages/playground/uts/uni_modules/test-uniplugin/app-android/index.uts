@@ -1,6 +1,8 @@
+import Log from 'android.util.Log'
 import { login } from './login.uts'
 export class User {
   async login(name: string, pwd: string) {
     login(name, pwd)
+    Log.info('123')
   }
 }

@@ -35,9 +35,11 @@ export declare function getCurrentSubNVue(): any;
 
 export declare function getSsrGlobalData(): any;
 
-export declare function initUtsProxyClass({ pkg, cls, methods, }: ProxyClassOptions): any;
+export declare function initUtsProxyClass({ package: pkg, class: cls, methods, props, staticProps, staticMethods, }: ProxyClassOptions): any;
 
-export declare function initUtsProxyFunction({ pkg, cls, method, async, }: ProxyFunctionOptions): (...args: unknown[]) => any;
+export declare const initUtsProxyFunction: typeof initUtsStaticMethod;
+
+declare function initUtsStaticMethod(async: boolean, opts: ProxyBaseOptions): (...args: unknown[]) => unknown;
 
 declare type LaunchOption = LaunchShowOption;
 
@@ -166,23 +168,35 @@ declare interface PageScrollOption {
 }
 
 declare interface ProxyBaseOptions {
-    pkg: string;
-    cls: string;
-    method: string;
+    /**
+     * 包名
+     */
+    package: string;
+    /**
+     * 类名
+     */
+    class: string;
+    /**
+     * 属性名或方法名
+     */
+    name: string;
 }
 
 declare interface ProxyClassOptions {
-    pkg: string;
-    cls: string;
+    package: string;
+    class: string;
+    props: string[];
+    staticProps: string[];
     methods: {
         [name: string]: {
             async?: boolean;
         };
     };
-}
-
-declare interface ProxyFunctionOptions extends ProxyBaseOptions {
-    async?: boolean;
+    staticMethods: {
+        [name: string]: {
+            async?: boolean;
+        };
+    };
 }
 
 declare interface ReferrerInfo {

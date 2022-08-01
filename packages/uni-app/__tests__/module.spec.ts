@@ -39,11 +39,10 @@ describe('uts-module', () => {
   })
   test(`initProxyFunction`, () => {
     ;[true, false].forEach((async) => {
-      const preparePermission = initUtsProxyFunction({
-        pkg: 'testPlugin',
-        cls: '',
-        method: 'preparePermission',
-        async,
+      const preparePermission = initUtsProxyFunction(async, {
+        package: 'uts.modules.TestPlugin',
+        class: 'TestKt',
+        name: 'preparePermission',
       })
       /**
        * {"package":"testPlugin","class":"","method":"preparePermission","params":[{"name":"foo","age":10,"success":7,"fail":8},9]}
@@ -71,13 +70,23 @@ describe('uts-module', () => {
   })
   test(`initProxyClass`, () => {
     const WifiManager = initUtsProxyClass({
-      pkg: 'testPlugin',
-      cls: 'WifiManager',
+      package: 'uni.modules.TestPlugin',
+      class: 'WifiManager',
       methods: {
         preparePermission: {},
       },
+      staticMethods: {
+        staticPreparePermission: {
+          async: true,
+        },
+      },
+      props: ['count'],
+      staticProps: ['staticCount'],
     })
     const wifi = new WifiManager()
     wifi.preparePermission(1, 2, 3, () => {})
+    wifi.count
+    wifi.staticCount
+    wifi.staticPreparePermission(1)
   })
 })

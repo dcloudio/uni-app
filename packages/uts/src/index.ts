@@ -54,6 +54,14 @@ export interface ToOptions {
      */
     dir: string
     /**
+     * 包名
+     */
+    package?: string
+    /**
+     * 自动导入的包
+     */
+    imports?: string[]
+    /**
      * 是否生成 sourceMap，为 string 时，表示生成的 sourceMap 目标目录
      */
     sourceMap?: boolean | string
@@ -120,11 +128,15 @@ function initInputOptions(_: UtsTarget, root: string): UtsInputOptions {
 function initOutputOptions(
   target: UtsTarget,
   outDir: string,
+  pkg: string,
+  imports: string[] = [],
   sourceMap: string | boolean | undefined,
   inlineSourcesContent: boolean
 ): UtsOutputOptions {
   return {
     outDir,
+    package: pkg,
+    imports,
     sourceMap: sourceMap ? sourceMap : false,
     inlineSourcesContent,
     extname: UtsTargetExtNames[target],
@@ -135,7 +147,13 @@ function initOptions(
   target: UtsTarget,
   {
     input: { dir: inputDir },
-    output: { dir: outputDir, sourceMap, inlineSourcesContent },
+    output: {
+      dir: outputDir,
+      package: pkg,
+      imports,
+      sourceMap,
+      inlineSourcesContent,
+    },
   }: ToOptions
 ) {
   const inputSrcDir = resolveSrcDir(target, inputDir)
@@ -145,6 +163,8 @@ function initOptions(
   const output = initOutputOptions(
     target,
     outputSrcDir,
+    pkg || '',
+    imports,
     sourceMap,
     !!inlineSourcesContent
   )
@@ -282,7 +302,6 @@ function buildFile(
     input: {
       ...input,
       filename,
-      namespace: '',
     },
     output: {
       ...output,

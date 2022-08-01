@@ -1,9 +1,11 @@
 import os from 'os'
-import fs from 'fs'
+import fs from 'fs-extra'
 import path from 'path'
 import execa from 'execa'
 import { once } from '@dcloudio/uni-shared'
 import type { parse, bundle, UtsTarget } from '@dcloudio/uts'
+import { normalizePath } from '@dcloudio/uni-cli-shared'
+import { camelize } from '@vue/shared'
 
 export function getUtsCompiler(): {
   parse: typeof parse
@@ -29,21 +31,56 @@ export async function compile(filename: string) {
     },
     output: {
       outDir: outputDir,
+      package: parsePackage(filename),
       sourceMap: true,
       extname: 'kt',
+      imports: ['kotlinx.coroutines.*', 'io.dcloud.uts.runtime.*'],
     },
   })
   console.log('uts compile time: ' + (Date.now() - time) + 'ms')
   const kotlinFile = resolveKotlinFile(filename, inputDir, outputDir)
-  if (fs.existsSync(kotlinFile)) {
-    time = Date.now()
-    await compileKotlin(kotlinFile)
-    console.log('kotlin compile time: ' + (Date.now() - time) + 'ms')
-    const jarFile = resolveJarPath(kotlinFile)
-    if (fs.existsSync(jarFile)) {
+  if (process.env.NODE_ENV === 'production') {
+    // 生产模式下，需要将 kt 文件转移到 src 下
+    fs.mkdirSync(path.resolve(kotlinFile, '../src'))
+    if (fs.existsSync(kotlinFile)) {
+      fs.moveSync(kotlinFile, path.resolve(kotlinFile, '../src/index.kt'))
+    }
+    const kotlinMapFile = kotlinFile + '.map'
+    if (fs.existsSync(kotlinMapFile)) {
+      fs.moveSync(
+        kotlinMapFile,
+        path.resolve(kotlinFile, '../src/index.map.kt')
+      )
+    }
+
+    const copies = ['assets', 'libs', 'res']
+    const moduleDir = path.dirname(filename)
+    const outputModuleDir = path.dirname(kotlinFile)
+    fs.readdirSync(moduleDir).forEach((file) => {
+      if (copies.includes(file)) {
+        fs.copySync(
+          path.join(moduleDir, file),
+          path.join(outputModuleDir, file)
+        )
+      }
+    })
+  } else if (process.env.NODE_ENV === 'development') {
+    // 开发模式下，需要生成 dex
+    if (fs.existsSync(kotlinFile)) {
       time = Date.now()
-      await d8(jarFile)
-      console.log('d8 compile time: ' + (Date.now() - time) + 'ms')
+      await compileKotlin(kotlinFile)
+      console.log('kotlin compile time: ' + (Date.now() - time) + 'ms')
+      const jarFile = resolveJarPath(kotlinFile)
+      if (fs.existsSync(jarFile)) {
+        time = Date.now()
+        await d8(jarFile)
+        console.log('d8 compile time: ' + (Date.now() - time) + 'ms')
+        try {
+          fs.unlinkSync(jarFile)
+          // 短期内先不删除，方便排查问题
+          // fs.unlinkSync(kotlinFile)
+        } catch (e) {}
+      }
     }
   }
 }
@@ -139,3 +176,12 @@ const resolveD8Path = once(() => {
   const { d8 } = resolveDirs()
   return path.resolve(d8, 'd8.jar')
 })
+
+export function parsePackage(filepath: string) {
+  const parts = normalizePath(filepath).split('/')
+  const index = parts.findIndex((part) => part === 'uni_modules')
+  if (index > -1) {
+    return 'uts.modules.' + camelize(parts[index + 1])
+  }
+  return ''
+}

@@ -151,10 +151,19 @@ function normalizeArg(arg) {
     }
     return arg;
 }
-function isProxyInvokeCallbackResponse(res) {
-    return !!res.name;
+function initUtsInstanceMethod(async, opts) {
+    return initProxyFunction(async, opts);
 }
-function initUtsProxyFunction({ pkg, cls, method, async, }) {
+function getProxy() {
+    if (!proxy) {
+        proxy = uni.requireNativePlugin('UTS-Proxy');
+    }
+    return proxy;
+}
+function invokePropGetter(args) {
+    return getProxy().invokeSync(args, () => { });
+}
+function initProxyFunction(async, { package: pkg, class: cls, name: propOrMethod, id: instanceId, }) {
     const invokeCallback = ({ id, name, params, keepAlive, }) => {
         const callback = callbacks[id];
         if (callback) {
@@ -164,19 +173,24 @@ function initUtsProxyFunction({ pkg, cls, method, async, }) {
             }
         }
         else {
-            console.error(`${pkg}${cls ? '.' + cls : ''}.${method} ${name} is not found`);
+            console.error(`${pkg}${cls}.${propOrMethod} ${name} is not found`);
         }
     };
+    const baseArgs = instanceId
+        ? { id: instanceId, name: propOrMethod }
+        : {
+            package: pkg,
+            class: cls,
+            name: propOrMethod,
+        };
     return (...args) => {
-        if (!proxy) {
-            proxy = uni.requireNativePlugin('ProxyModule');
-        }
-        const params = args.map((arg) => normalizeArg(arg));
-        const invokeArgs = { package: pkg, class: cls, method, params };
+        const invokeArgs = shared.extend({}, baseArgs, {
+            params: args.map((arg) => normalizeArg(arg)),
+        });
         if (async) {
             return new Promise((resolve, reject) => {
-                proxy.invokeAsync(invokeArgs, (res) => {
-                    if (isProxyInvokeCallbackResponse(res)) {
+                getProxy().invokeAsync(invokeArgs, (res) => {
+                    if (res.type !== 'return') {
                         invokeCallback(res);
                     }
                     else {
@@ -190,26 +204,47 @@ function initUtsProxyFunction({ pkg, cls, method, async, }) {
                 });
             });
         }
-        return proxy.invokeSync(invokeArgs, invokeCallback);
+        return getProxy().invokeSync(invokeArgs, invokeCallback);
     };
 }
-function initUtsProxyClass({ pkg, cls, methods, }) {
+function initUtsStaticMethod(async, opts) {
+    return initProxyFunction(async, opts);
+}
+const initUtsProxyFunction = initUtsStaticMethod;
+function initUtsProxyClass({ package: pkg, class: cls, methods, props, staticProps, staticMethods, }) {
+    const baseOptions = {
+        package: pkg,
+        class: cls,
+    };
     return class ProxyClass {
-        constructor() {
+        constructor(...params) {
             const target = {};
+            // 初始化实例 ID
+            const instanceId = initProxyFunction(false, shared.extend({ name: 'constructor', params }, baseOptions)).apply(null, params);
             return new Proxy(this, {
-                get(_, method) {
-                    if (!target[method]) {
-                        if (shared.hasOwn(methods, method)) {
-                            target[method] = initUtsProxyFunction({
-                                pkg,
-                                cls,
-                                method,
-                                async: methods[method].async,
-                            });
+                get(_, name) {
+                    if (!target[name]) {
+                        //实例方法
+                        if (shared.hasOwn(methods, name)) {
+                            target[name] = initUtsInstanceMethod(!!methods[name].async, shared.extend({
+                                id: instanceId,
+                                name,
+                            }, baseOptions));
                         }
-                        return target[method];
+                        else if (shared.hasOwn(staticMethods, name)) {
+                            // 静态方法
+                            target[name] = initUtsStaticMethod(!!staticMethods[name].async, shared.extend({ name }, baseOptions));
+                        }
+                        else if (props.includes(name)) {
+                            // 实例属性
+                            return invokePropGetter({ id: instanceId, name: name });
+                        }
+                        else if (staticProps.includes(name)) {
+                            // 静态属性
+                            return invokePropGetter(shared.extend({ name: name }, baseOptions));
+                        }
                     }
+                    return target[name];
                 },
             });
         }

@@ -11453,6 +11453,7 @@ const ScanCodeProtocol = {
     scanType: Array,
     autoDecodeCharSet: Boolean,
     sound: String,
+    autoZoom: Boolean,
 };
 const SOUND = ['default', 'none'];
 const ScanCodeOptions = {
@@ -11460,6 +11461,10 @@ const ScanCodeOptions = {
         sound(value, params) {
             if (!SOUND.includes(value))
                 params.sound = 'none';
+        },
+        autoZoom(value, params) {
+            if (typeof value === 'undefined')
+                params.autoZoom = true;
         },
     },
 };

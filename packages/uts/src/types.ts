@@ -17,11 +17,11 @@ export type UtsParseOptions = UtsParserConfig & {
 export type UtsInputOptions = UtsParseOptions & {
   root: string
   filename: string
-  namespace?: string
 }
 
 export type UtsOutputOptions = {
   outDir: string
+  package: string
   imports?: string[]
   sourceMap?: boolean | string
   inlineSourcesContent?: boolean
