@@ -300,23 +300,30 @@ ${globalEnv}.__webpack_require_UNI_MP_PLUGIN__ = __webpack_require__;`
       process.env.NODE_ENV === 'production' &&
       process.env.UNI_PLATFORM !== 'app-plus'
     ) {
-      const OptimizeCssnanoPlugin = require('../../packages/@intervolga/optimize-cssnano-plugin/index.js')
-      webpackConfig.plugin('optimize-css')
-        .init((Plugin, args) => new OptimizeCssnanoPlugin({
-          sourceMap: false,
-          filter (assetName) {
-            return path.extname(assetName) === styleExt
-          },
-          cssnanoOptions: {
-            preset: [
-              'default',
-              Object.assign({}, getPlatformCssnano(), {
-                discardComments: true
-              })
-            ]
-          }
-
-        }))
+      // webpack5 不再使用 OptimizeCssnanoPlugin，改用 CssMinimizerPlugin
+      if (webpack.version[0] > 4) {
+        webpackConfig.optimization.minimizer('css').tap(args => {
+          args[0].test = new RegExp(`\\${styleExt}$`)
+          return args
+        })
+      } else {
+        const OptimizeCssnanoPlugin = require('../../packages/@intervolga/optimize-cssnano-plugin/index.js')
+        webpackConfig.plugin('optimize-css')
+          .init((Plugin, args) => new OptimizeCssnanoPlugin({
+            sourceMap: false,
+            filter (assetName) {
+              return path.extname(assetName) === styleExt
+            },
+            cssnanoOptions: {
+              preset: [
+                'default',
+                Object.assign({}, getPlatformCssnano(), {
+                  discardComments: true
+                })
+              ]
+            }
+          }))
+      }
     }
 
     if (process.env.UNI_SUBPACKGE || process.env.UNI_MP_PLUGIN) {
