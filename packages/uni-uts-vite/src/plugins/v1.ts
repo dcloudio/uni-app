@@ -25,6 +25,7 @@ import { compile, parsePackage } from '../utils/compiler'
 export function uniUtsV1Plugin(): Plugin {
   // 目前仅支持 app-android
   process.env.UNI_APP_PLATFORM = 'app-android'
+  let isFirst = true
   return {
     name: 'uni:uts-v1',
     apply: 'build',
@@ -59,8 +60,23 @@ const pkg = '${pkg}'
 const cls = 'IndexKt'
 ${genProxyCode(ast)}
 `
-      await compile(id)
+      const dexFile = await compile(id)
+      if (!isFirst && dexFile) {
+        const files = []
+        if (process.env.UNI_APP_CHANGED_DEX_FILES) {
+          try {
+            files.push(...JSON.parse(process.env.UNI_APP_CHANGED_DEX_FILES))
+          } catch (e) {}
+        }
+        files.push(dexFile)
+        process.env.UNI_APP_CHANGED_DEX_FILES = JSON.stringify([
+          ...new Set(files),
+        ])
+      }
       return code
+    },
+    buildEnd() {
+      isFirst = false
     },
   }
 }
@@ -216,7 +232,7 @@ function genVariableDeclarationCode(decl: VariableDeclaration) {
       return false
     })
   ) {
-    return `${decl.kind} ${decl.declarations
+    return `export ${decl.kind} ${decl.declarations
       .map((d) => `${(d.id as Identifier).value} = ${genInitCode(d.init!)}`)
       .join(', ')}`
   }

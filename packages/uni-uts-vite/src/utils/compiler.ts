@@ -80,9 +80,17 @@ export async function compile(filename: string) {
           // 短期内先不删除，方便排查问题
           // fs.unlinkSync(kotlinFile)
         } catch (e) {}
+        const dexFile = resolveDexFile(jarFile)
+        if (fs.existsSync(dexFile)) {
+          return normalizePath(path.relative(outputDir, dexFile))
+        }
       }
     }
   }
+}
+
+function resolveDexFile(jarFile: string) {
+  return normalizePath(path.resolve(path.dirname(jarFile), 'classes.dex'))
 }
 
 function resolveKotlinFile(
