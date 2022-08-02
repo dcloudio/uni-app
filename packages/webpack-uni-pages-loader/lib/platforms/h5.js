@@ -431,6 +431,12 @@ module.exports = function (pagesJson, manifestJson, loader) {
 
   const qqMapKey = sdkConfigs.maps && sdkConfigs.maps.qqmap && sdkConfigs.maps.qqmap.key
   const googleMapKey = sdkConfigs.maps && sdkConfigs.maps.google && sdkConfigs.maps.google.key
+  const AMapKey = sdkConfigs.maps && sdkConfigs.maps.AMap && sdkConfigs.maps.AMap.key
+  const AMapSecurityJsCode =
+        sdkConfigs.maps && sdkConfigs.maps.AMap && sdkConfigs.maps.AMap.securityJsCode
+
+  const AMapServiceHost =
+        sdkConfigs.maps && sdkConfigs.maps.AMap && sdkConfigs.maps.AMap.serviceHost
 
   let locale = manifestJson.locale
   locale = locale && locale.toUpperCase() !== 'AUTO' ? locale : ''
@@ -456,6 +462,9 @@ global.__uniConfig.networkTimeout = ${JSON.stringify(networkTimeoutConfig)};
 global.__uniConfig.sdkConfigs = ${JSON.stringify(sdkConfigs)};
 global.__uniConfig.qqMapKey = ${JSON.stringify(qqMapKey)};
 global.__uniConfig.googleMapKey = ${JSON.stringify(googleMapKey)};
+global.__uniConfig.AMapKey = ${JSON.stringify(AMapKey)};
+global.__uniConfig.AMapSecurityJsCode = ${JSON.stringify(AMapSecurityJsCode)};
+global.__uniConfig.AMapServiceHost = ${JSON.stringify(AMapServiceHost)};
 global.__uniConfig.locale = ${JSON.stringify(locale)};
 global.__uniConfig.fallbackLocale = ${JSON.stringify(manifestJson.fallbackLocale)};
 global.__uniConfig.locales = locales.keys().reduce((res,key)=>{const locale=key.replace(/\\.\\/(uni-app.)?(.*).json/,'$2');const messages = locales(key);Object.assign(res[locale]||(res[locale]={}),messages.common||messages);return res},{});

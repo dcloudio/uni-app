@@ -23,12 +23,12 @@ export function getMapInfo () {
       key: __uniConfig.googleMapKey
     }
   }
-  if (__uniConfig.sdkConfigs.maps.AMap && __uniConfig.sdkConfigs.maps.AMap.key) {
+  if (__uniConfig.AMapKey) {
     return {
       type: MapType.AMAP,
-      key: __uniConfig.sdkConfigs.maps.AMap.key,
-      securityJsCode: __uniConfig.sdkConfigs.maps.AMap.securityJsCode,
-      serviceHost: __uniConfig.sdkConfigs.maps.AMap.serviceHost
+      key: __uniConfig.AMapKey,
+      securityJsCode: __uniConfig.AMapSecurityJsCode,
+      serviceHost: __uniConfig.AMapServiceHost
     }
   }
   return {
