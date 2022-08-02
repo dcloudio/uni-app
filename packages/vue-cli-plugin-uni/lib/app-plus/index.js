@@ -70,7 +70,11 @@ const v3 = {
       webpackConfig.optimization = {}
     }
     // disable noEmitOnErrors
-    webpackConfig.optimization.noEmitOnErrors = false
+    if (webpack.version[0] > 4) {
+      webpackConfig.optimization.emitOnErrors = true
+    } else {
+      webpackConfig.optimization.noEmitOnErrors = false
+    }
 
     if (isAppService) {
       webpackConfig.optimization.runtimeChunk = {
@@ -134,7 +138,8 @@ const v3 = {
       output: {
         filename: '[name].js',
         chunkFilename: '[id].js',
-        globalObject: 'this'
+        // webpack5 use strict
+        globalObject: webpack.version[0] > 4 ? `(new Function("return this")())` : 'this'
       },
       performance: {
         hints: false
@@ -158,7 +163,7 @@ const v3 = {
               compiler: vueLoader.compiler,
               before: [
                 beforeCode + require('../util').getAutomatorCode() + statCode + pushCode + uniCloudCode +
-                  getGlobalUsingComponentsCode()
+                getGlobalUsingComponentsCode()
               ]
             }
           }]

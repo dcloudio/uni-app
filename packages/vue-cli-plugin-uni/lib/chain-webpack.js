@@ -1,4 +1,5 @@
 const path = require('path')
+const webpack = require('webpack')
 
 const {
   sassLoaderVersion
@@ -23,11 +24,22 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
     const urlLoader = require('@dcloudio/uni-cli-shared/lib/url-loader')
     const staticTypes = ['images', 'media', 'fonts']
     staticTypes.forEach(staticType => {
-      webpackConfig.module
-        .rule(staticType)
-        .use('url-loader')
-        .loader(urlLoader.loader)
-        .tap(options => Object.assign(options, urlLoader.options()))
+      const newOptions = urlLoader.options()
+      if (webpack.version[0] > 4) {
+        if ('limit' in newOptions) {
+          webpackConfig.module.rule(staticType).parser({
+            dataUrlCondition: {
+              maxSize: newOptions.limit
+            }
+          })
+        }
+      } else {
+        webpackConfig.module
+          .rule(staticType)
+          .use('url-loader')
+          .loader(urlLoader.loader)
+          .tap(options => Object.assign(options, newOptions))
+      }
     })
     // 条件编译 vue 文件统一直接过滤html,js,css三种类型,单独资源文件引用各自过滤
 

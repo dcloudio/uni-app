@@ -157,7 +157,11 @@ module.exports = {
       webpackConfig.optimization = {}
     }
     // disable noEmitOnErrors
-    webpackConfig.optimization.noEmitOnErrors = false
+    if (webpack.version[0] > 4) {
+      webpackConfig.optimization.emitOnErrors = true
+    } else {
+      webpackConfig.optimization.noEmitOnErrors = false
+    }
 
     webpackConfig.optimization.runtimeChunk = {
       name: 'common/runtime'

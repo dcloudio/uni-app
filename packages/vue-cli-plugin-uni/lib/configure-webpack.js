@@ -1,7 +1,6 @@
 const fs = require('fs')
 const path = require('path')
 const webpack = require('webpack')
-const RuleSet = require('webpack/lib/RuleSet')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 const merge = require('webpack-merge')
@@ -39,6 +38,37 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
     return (rule, i) => {
       const clone = Object.assign({}, rule)
       delete clone.include
+      if (webpack.version[0] > 4) {
+        const BasicEffectRulePlugin = require('webpack/lib/rules/BasicEffectRulePlugin')
+        const BasicMatcherRulePlugin = require('webpack/lib/rules/BasicMatcherRulePlugin')
+        const RuleSetCompiler = require('webpack/lib/rules/RuleSetCompiler')
+        const UseEffectRulePlugin = require('webpack/lib/rules/UseEffectRulePlugin')
+        const ruleSetCompiler = new RuleSetCompiler([
+          new BasicMatcherRulePlugin('test', 'resource'),
+          new BasicMatcherRulePlugin('include', 'resource'),
+          new BasicMatcherRulePlugin('exclude', 'resource', true),
+          new BasicMatcherRulePlugin('resource'),
+          new BasicMatcherRulePlugin('conditions'),
+          new BasicMatcherRulePlugin('resourceQuery'),
+          new BasicMatcherRulePlugin('realResource'),
+          new BasicMatcherRulePlugin('issuer'),
+          new BasicMatcherRulePlugin('compiler'),
+          new BasicEffectRulePlugin('type'),
+          new BasicEffectRulePlugin('sideEffects'),
+          new BasicEffectRulePlugin('parser'),
+          new BasicEffectRulePlugin('resolve'),
+          new BasicEffectRulePlugin('generator'),
+          new UseEffectRulePlugin()
+        ])
+        const ruleSet = ruleSetCompiler.compile([{
+          rules: [clone]
+        }])
+        const rules = ruleSet.exec({
+          resource: fakeFile
+        })
+        return rules.length > 0 && rule.use
+      } else {
+        const RuleSet = require('webpack/lib/RuleSet')
       const normalized = RuleSet.normalizeRule(clone, {}, '')
       return (
         !rule.enforce &&
@@ -46,6 +76,7 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
         normalized.resource(fakeFile)
       )
     }
+  }
   }
 
   function updateJsLoader (rawRules, fakeFile, checkLoaderRegex, loader) {
@@ -152,6 +183,7 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
       if (Array.isArray(uses)) {
         if (uses.find(use => babelLoaderRe.test(use.loader))) {
           const index = uses.findIndex(use => cacheLoaderRe.test(use.loader))
+          if (index >= 0) {
           if (process.env.UNI_USING_CACHE) {
             Object.assign(uses[index].options, api.genCacheConfig(
               'babel-loader/' + process.env.UNI_PLATFORM,
@@ -162,6 +194,7 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
           }
         }
       }
+    }
     }
 
     // js preprocess
