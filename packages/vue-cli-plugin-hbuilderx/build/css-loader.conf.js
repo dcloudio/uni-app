@@ -1,5 +1,6 @@
 const fs = require('fs')
 const path = require('path')
+const webpack = require('webpack')
 
 const {
   getPlatformScss,
@@ -20,27 +21,33 @@ const preprocessLoader = {
   options: nvueCssPreprocessOptions
 }
 
+const options = {
+  sourceMap: false
+}
+const plugins = [
+  require('postcss-import')({
+    resolve (id, basedir, importOptions) {
+      if (id.startsWith('~@/')) {
+        return path.resolve(process.env.UNI_INPUT_DIR, id.substr(3))
+      } else if (id.startsWith('@/')) {
+        return path.resolve(process.env.UNI_INPUT_DIR, id.substr(2))
+      } else if (id.startsWith('/') && !id.startsWith('//')) {
+        return path.resolve(process.env.UNI_INPUT_DIR, id.substr(1))
+      }
+      return id
+    }
+  }),
+  require('@dcloudio/vue-cli-plugin-uni/packages/postcss')
+]
+if (webpack.version[0] > 4) {
+  options.postcssOptions = { plugins }
+} else {
+  options.parser = require('postcss-comment')
+  options.plugins = plugins
+}
 const postcssLoader = {
   loader: 'postcss-loader',
-  options: {
-    sourceMap: false,
-    parser: require('postcss-comment'),
-    plugins: [
-      require('postcss-import')({
-        resolve (id, basedir, importOptions) {
-          if (id.startsWith('~@/')) {
-            return path.resolve(process.env.UNI_INPUT_DIR, id.substr(3))
-          } else if (id.startsWith('@/')) {
-            return path.resolve(process.env.UNI_INPUT_DIR, id.substr(2))
-          } else if (id.startsWith('/') && !id.startsWith('//')) {
-            return path.resolve(process.env.UNI_INPUT_DIR, id.substr(1))
-          }
-          return id
-        }
-      }),
-      require('@dcloudio/vue-cli-plugin-uni/packages/postcss')
-    ]
-  }
+  options
 }
 
 // sass 全局变量

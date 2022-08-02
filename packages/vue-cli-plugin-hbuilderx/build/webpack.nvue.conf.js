@@ -134,7 +134,7 @@ const rules = [{
       babelrc: false
     }
   },
-  jsPreprocessorLoader
+    jsPreprocessorLoader
   ]
   // exclude (modulePath) { // nvue js均提供babel，否则还得提供transpileDependencies配置
   //   return excludeModuleReg.test(modulePath) && modulePath.indexOf('@dcloudio') === -1
@@ -208,7 +208,7 @@ if (process.env.UNI_USING_V3_NATIVE) {
         return ''
       }
     }]))
-  } catch (e) {}
+  } catch (e) { }
 }
 
 if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
@@ -305,7 +305,7 @@ try {
       dir: process.env.UNI_INPUT_DIR
     }))
   }
-} catch (e) {}
+} catch (e) { }
 
 module.exports = function () {
   return {
@@ -322,8 +322,7 @@ module.exports = function () {
     performance: {
       hints: false
     },
-    optimization: {
-      namedModules: false,
+    optimization: Object.assign({
       minimizer: [
         new TerserPlugin({
           terserOptions: {
@@ -333,7 +332,7 @@ module.exports = function () {
           }
         })
       ]
-    },
+    }, webpack.version[0] > 4 ? {} : { namedModules: false }),
     output: {
       path: process.env.UNI_OUTPUT_DIR,
       filename: '[name].js'
@@ -377,7 +376,7 @@ module.exports = function () {
       reasons: true,
       errorDetails: true
     },
-    node: {
+    node: webpack.version[0] > 4 ? false : {
       global: false,
       Buffer: false,
       __filename: false,
