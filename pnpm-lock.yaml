@@ -443,6 +443,7 @@ importers:
 
   packages/uni-h5:
     specifiers:
+      '@amap/amap-jsapi-types': ^0.0.8
       '@dcloudio/uni-cli-i18n': ^2.0.0-32920211029004
       '@dcloudio/uni-cli-shared': 3.0.0-alpha-3050320220729002
       '@dcloudio/uni-h5-vite': 3.0.0-alpha-3050320220729002
@@ -471,6 +472,7 @@ importers:
       vue-router: 4.1.2_vue@3.2.37
       xmlhttprequest: 1.8.0
     devDependencies:
+      '@amap/amap-jsapi-types': 0.0.8
       '@dcloudio/uni-cli-i18n': 2.0.0-alpha-33020211130001
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
       '@types/google.maps': 3.49.2
@@ -924,6 +926,10 @@ importers:
       vue: 3.2.37
 
 packages:
+
+  /@amap/amap-jsapi-types/0.0.8:
+    resolution: {integrity: sha512-q0FyZDIJcXjsMLGc3oS9rjfJsErOvt9rcp6AgzY4k14vo7bBhdq4eKwoSdVp/pYjR/rfaKBns5v10ycZOFwf/A==}
+    dev: true
 
   /@ampproject/remapping/2.2.0:
     resolution: {integrity: sha512-qRmjj8nj9qmLTQXXmaR1cck3UXSRMPrbsLJAasZpF+t3riI71BXed5ebIOYwQntykeZuhjsdweEc9BxH5Jc26w==}
