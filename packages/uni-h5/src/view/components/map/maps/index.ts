@@ -1,4 +1,4 @@
-import { MapType, getMapInfo } from '../../../../helpers/location'
+import { MapType, getMapInfo, getIsAMap } from '../../../../helpers/location'
 export * from './types'
 import { QQMaps } from './qq/types'
 import { GoogleMaps } from './google/types'
@@ -16,7 +16,12 @@ interface GoogleMapsWithCallout extends GoogleMaps, MapsWithCallout {}
 
 interface QQMapsWithCallout extends QQMaps, MapsWithCallout {}
 
-export type Maps = GoogleMapsWithCallout | QQMapsWithCallout
+interface AMapMapsWithCallout extends AMap.NameSpace, MapsWithCallout {}
+
+export type Maps =
+  | GoogleMapsWithCallout
+  | QQMapsWithCallout
+  | AMapMapsWithCallout
 
 let maps: Maps
 const callbacksMap: Partial<Record<MapType, Array<(maps: Maps) => void>>> = {}
@@ -39,7 +44,9 @@ export function loadMaps(libraries: string[], callback: (maps: Maps) => void) {
     (window as WindowExt)[mapInfo.type] &&
     (window as WindowExt)[mapInfo.type].maps
   ) {
-    maps = (window as WindowExt)[mapInfo.type].maps
+    maps = getIsAMap()
+      ? (window as WindowExt)[mapInfo.type]
+      : (window as WindowExt)[mapInfo.type].maps
     maps.Callout = maps.Callout || createCallout(maps)
     callback(maps)
   } else if (callbacks.length) {
@@ -50,16 +57,21 @@ export function loadMaps(libraries: string[], callback: (maps: Maps) => void) {
     const callbackName = GOOGLE_MAP_CALLBACKNAME + mapInfo.type
     globalExt[callbackName] = function () {
       delete globalExt[callbackName]
-      maps = (window as WindowExt)[mapInfo.type].maps
+      maps = getIsAMap()
+        ? (window as WindowExt)[mapInfo.type]
+        : (window as WindowExt)[mapInfo.type].maps
       maps.Callout = createCallout(maps)
       callbacks.forEach((callback) => callback(maps))
       callbacks.length = 0
     }
+
+    if (getIsAMap()) {
+      handleAMapSecurityPolicy(mapInfo)
+    }
+
     const script = document.createElement('script')
-    let src =
-      mapInfo.type === MapType.GOOGLE
-        ? 'https://maps.googleapis.com/maps/api/js?'
-        : 'https://map.qq.com/api/js?v=2.exp&'
+    let src = getScriptBaseUrl(mapInfo.type)
+
     if (mapInfo.type === MapType.QQ) {
       libraries.push('geometry')
     }
@@ -71,5 +83,22 @@ export function loadMaps(libraries: string[], callback: (maps: Maps) => void) {
       console.error('Map load failed.')
     }
     document.body.appendChild(script)
+  }
+}
+
+const getScriptBaseUrl = (mapType: string): string => {
+  const urlMap: any = {
+    qq: 'https://map.qq.com/api/js?v=2.exp&',
+    google: 'https://maps.googleapis.com/maps/api/js?',
+    AMap: 'https://webapi.amap.com/maps?v=2.0&',
+  }
+
+  return urlMap[mapType]
+}
+
+function handleAMapSecurityPolicy(mapInfo: AnyObject) {
+  ;(window as any)._AMapSecurityConfig = {
+    securityJsCode: mapInfo.securityJsCode || '',
+    serviceHost: mapInfo.serviceHost || '',
   }
 }

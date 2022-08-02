@@ -3,7 +3,7 @@ import { Point } from './interface'
 
 // MapPolygon 组件的 props 属性配置
 export default {
-  // 边框虚线，腾讯地图支持，google 地图不支持，默认值为[0, 0] 为实线，非 [0, 0] 为虚线，H5 端无法像微信小程序一样控制虚线的间隔像素大小
+  // 边框虚线，腾讯地图支持，google 高德 地图不支持，默认值为[0, 0] 为实线，非 [0, 0] 为虚线，H5 端无法像微信小程序一样控制虚线的间隔像素大小
   dashArray: {
     type: Array as PropType<number[]>,
     default: () => [0, 0],
