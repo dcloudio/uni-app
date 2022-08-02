@@ -47,7 +47,9 @@ export function createCallout (maps) {
   }
 
   function removeAMapText () {
-    this.option.map.remove(this.Text)
+    if (this.Text) {
+      this.option.map.remove(this.Text)
+    }
   }
 
   class Callout {
@@ -118,7 +120,6 @@ export function createCallout (maps) {
       }
       if (ISAMAP) {
         if (this.visible) {
-          this.removeAMapText()
           this.createAMapText()
         }
       } else {
