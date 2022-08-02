@@ -59,6 +59,19 @@ export function uniManifestJsonPlugin(): Plugin {
           sdkConfigs.maps.google &&
           sdkConfigs.maps.google.key
 
+        const AMapKey =
+          sdkConfigs.maps && sdkConfigs.maps.AMap && sdkConfigs.maps.AMap.key
+
+        const AMapSecurityJsCode =
+          sdkConfigs.maps &&
+          sdkConfigs.maps.AMap &&
+          sdkConfigs.maps.AMap.securityJsCode
+
+        const AMapServiceHost =
+          sdkConfigs.maps &&
+          sdkConfigs.maps.AMap &&
+          sdkConfigs.maps.AMap.serviceHost
+
         let locale: string | null | undefined = manifest.locale
         locale = locale && locale.toUpperCase() !== 'AUTO' ? locale : ''
 
@@ -92,6 +105,9 @@ export function uniManifestJsonPlugin(): Plugin {
   export const async = ${JSON.stringify(async)}
   export const qqMapKey = ${JSON.stringify(qqMapKey)}
   export const googleMapKey = ${JSON.stringify(googleMapKey)}
+  export const AMapKey = ${JSON.stringify(AMapKey)}
+  export const AMapSecurityJsCode = ${JSON.stringify(AMapSecurityJsCode)}
+  export const AMapServiceHost = ${JSON.stringify(AMapServiceHost)}
   export const sdkConfigs = ${JSON.stringify(sdkConfigs)}
   export const locale = '${locale}'
   export const fallbackLocale = '${fallbackLocale}'

@@ -53,7 +53,7 @@ function generatePagesJsonCode(
   return `
 import { defineAsyncComponent, resolveComponent, createVNode, withCtx, openBlock, createBlock } from 'vue'
 import { PageComponent, AsyncLoadingComponent, AsyncErrorComponent, useI18n, setupWindow, setupPage } from '@dcloudio/uni-h5'
-import { appId, appName, appVersion, appVersionCode, debug, networkTimeout, router, async, sdkConfigs, qqMapKey, googleMapKey, nvue, locale, fallbackLocale } from './${MANIFEST_JSON_JS}'
+import { appId, appName, appVersion, appVersionCode, debug, networkTimeout, router, async, sdkConfigs, qqMapKey, googleMapKey, AMapKey, AMapSecurityJsCode, AMapServiceHost, nvue, locale, fallbackLocale } from './${MANIFEST_JSON_JS}'
 const locales = import.meta.globEager('./locale/*.json')
 ${importLayoutComponentsCode}
 const extend = Object.assign
@@ -255,13 +255,16 @@ function generateConfig(
   appId,
   appName,
   appVersion,
-  appVersionCode,    
+  appVersionCode,
   async,
   debug,
   networkTimeout,
   sdkConfigs,
   qqMapKey,
   googleMapKey,
+  AMapKey,
+  AMapSecurityJsCode,
+  AMapServiceHost,
   nvue,
   locale,
   fallbackLocale,

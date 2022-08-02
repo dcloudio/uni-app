@@ -66,6 +66,9 @@ declare namespace UniNamespace {
     subPackages?: { root: string }[]
     qqMapKey?: string
     googleMapKey?: string
+    AMapKey?: string
+    AMapServiceHost?: string
+    AMapSecurityJsCode?: string
     // app-plus
     referrerInfo?: {
       appId: string

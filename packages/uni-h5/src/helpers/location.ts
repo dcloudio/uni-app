@@ -14,21 +14,44 @@ export const ICON_PATH_TARGET =
 export enum MapType {
   QQ = 'qq',
   GOOGLE = 'google',
+  AMAP = 'AMap',
   UNKNOWN = '',
 }
 
 export function getMapInfo() {
-  let type: MapType = MapType.UNKNOWN
-  let key: string = ''
   if (__uniConfig.qqMapKey) {
-    type = MapType.QQ
-    key = __uniConfig.qqMapKey
-  } else if (__uniConfig.googleMapKey) {
-    type = MapType.GOOGLE
-    key = __uniConfig.googleMapKey
+    return {
+      type: MapType.QQ,
+      key: __uniConfig.qqMapKey,
+    }
+  }
+  if (__uniConfig.googleMapKey) {
+    return {
+      type: MapType.GOOGLE,
+      key: __uniConfig.googleMapKey,
+    }
+  }
+  if (__uniConfig.AMapKey) {
+    return {
+      type: MapType.AMAP,
+      key: __uniConfig.AMapKey,
+      securityJsCode: __uniConfig.AMapSecurityJsCode,
+      serviceHost: __uniConfig.AMapServiceHost,
+    }
   }
   return {
-    type,
-    key,
+    type: MapType.UNKNOWN,
+    key: '',
+  }
+}
+
+let IS_AMAP = false
+let hasGetIsAMap = false
+export const getIsAMap = () => {
+  if (hasGetIsAMap) {
+    return IS_AMAP
+  } else {
+    hasGetIsAMap = true
+    return (IS_AMAP = getMapInfo().type === MapType.AMAP)
   }
 }
