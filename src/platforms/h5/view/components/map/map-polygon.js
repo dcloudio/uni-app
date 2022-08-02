@@ -1,4 +1,8 @@
 import { hexToRgba } from 'uni-shared'
+import { MapType, getMapInfo } from '../../../helpers/location'
+
+const mapInfo = getMapInfo()
+const ISAMAP = mapInfo.type === MapType.AMAP
 
 export default {
   props: {
@@ -65,7 +69,7 @@ export default {
 
       const path = points.map(item => {
         const { latitude, longitude } = item
-        return new _maps.LatLng(latitude, longitude)
+        return ISAMAP ? [longitude, latitude] : new _maps.LatLng(latitude, longitude)
       })
 
       const { r: fcR, g: fcG, b: fcB, a: fcA } = hexToRgba(fillColor)
