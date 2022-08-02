@@ -215,9 +215,10 @@ function genInitCode(expr: Expression) {
 }
 
 function genVariableDeclarationCode(decl: VariableDeclaration) {
-  // 目前仅支持boolean,number,string
+  // 目前仅支持 const 的 boolean,number,string
   const lits = ['BooleanLiteral', 'NumericLiteral', 'StringLiteral']
   if (
+    decl.kind === 'const' &&
     !decl.declarations.find((d) => {
       if (d.id.type !== 'Identifier') {
         return true
