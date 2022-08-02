@@ -82,6 +82,24 @@ export const getLocation = <API_TYPE_GET_LOCATION>defineAsyncApi(
                 reject(new Error('network error'))
               },
             })
+          } else if (mapInfo.type === MapType.AMAP) {
+            window.AMap.plugin('AMap.Geolocation', function () {
+              var geolocation = new (window.AMap as any).Geolocation({})
+              geolocation.getCurrentPosition(function (
+                status: string,
+                res: any
+              ) {
+                if (status === 'complete') {
+                  resolve({
+                    latitude: res.position.lat,
+                    longitude: res.position.lng,
+                    accuracy: res.accuracy,
+                  } as GeolocationCoordinates)
+                } else {
+                  reject(new Error(res.message || JSON.stringify(res)))
+                }
+              })
+            })
           } else {
             reject(error)
           }
