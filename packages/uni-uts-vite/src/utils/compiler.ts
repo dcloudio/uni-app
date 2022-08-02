@@ -141,6 +141,7 @@ async function d8(filename: string) {
       d8,
       'com.android.tools.r8.D8',
       filename,
+      '--no-desugaring',
       '--min-api',
       '19',
       '--output',
