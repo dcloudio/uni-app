@@ -59,18 +59,18 @@ export function uniManifestJsonPlugin(): Plugin {
           sdkConfigs.maps.google &&
           sdkConfigs.maps.google.key
 
-        const AMapKey =
-          sdkConfigs.maps && sdkConfigs.maps.AMap && sdkConfigs.maps.AMap.key
+        const aMapKey =
+          sdkConfigs.maps && sdkConfigs.maps.amap && sdkConfigs.maps.amap.key
 
-        const AMapSecurityJsCode =
+        const aMapSecurityJsCode =
           sdkConfigs.maps &&
-          sdkConfigs.maps.AMap &&
-          sdkConfigs.maps.AMap.securityJsCode
+          sdkConfigs.maps.amap &&
+          sdkConfigs.maps.amap.securityJsCode
 
-        const AMapServiceHost =
+        const aMapServiceHost =
           sdkConfigs.maps &&
-          sdkConfigs.maps.AMap &&
-          sdkConfigs.maps.AMap.serviceHost
+          sdkConfigs.maps.amap &&
+          sdkConfigs.maps.amap.serviceHost
 
         let locale: string | null | undefined = manifest.locale
         locale = locale && locale.toUpperCase() !== 'AUTO' ? locale : ''
@@ -105,9 +105,9 @@ export function uniManifestJsonPlugin(): Plugin {
   export const async = ${JSON.stringify(async)}
   export const qqMapKey = ${JSON.stringify(qqMapKey)}
   export const googleMapKey = ${JSON.stringify(googleMapKey)}
-  export const AMapKey = ${JSON.stringify(AMapKey)}
-  export const AMapSecurityJsCode = ${JSON.stringify(AMapSecurityJsCode)}
-  export const AMapServiceHost = ${JSON.stringify(AMapServiceHost)}
+  export const aMapKey = ${JSON.stringify(aMapKey)}
+  export const aMapSecurityJsCode = ${JSON.stringify(aMapSecurityJsCode)}
+  export const aMapServiceHost = ${JSON.stringify(aMapServiceHost)}
   export const sdkConfigs = ${JSON.stringify(sdkConfigs)}
   export const locale = '${locale}'
   export const fallbackLocale = '${fallbackLocale}'
