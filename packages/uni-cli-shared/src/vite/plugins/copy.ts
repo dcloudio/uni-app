@@ -48,7 +48,7 @@ export function uniViteCopyPlugin({
                     // 生产模式下，延迟 close，否则会影响 chokidar 初始化的 add 等事件
                     setTimeout(() => {
                       watcher.close().then(() => resolve(void 0))
-                    }, 1000)
+                    }, 2000)
                   } else {
                     resolve(void 0)
                   }

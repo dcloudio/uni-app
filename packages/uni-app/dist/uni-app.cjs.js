@@ -160,8 +160,14 @@ function getProxy() {
     }
     return proxy;
 }
+function resolveSyncResult(res) {
+    if (res.errMsg) {
+        throw new Error(res.errMsg);
+    }
+    return res.params;
+}
 function invokePropGetter(args) {
-    return getProxy().invokeSync(args, () => { });
+    return resolveSyncResult(getProxy().invokeSync(args, () => { }));
 }
 function initProxyFunction(async, { package: pkg, class: cls, name: propOrMethod, id: instanceId, }) {
     const invokeCallback = ({ id, name, params, keepAlive, }) => {
@@ -204,7 +210,7 @@ function initProxyFunction(async, { package: pkg, class: cls, name: propOrMethod
                 });
             });
         }
-        return getProxy().invokeSync(invokeArgs, invokeCallback);
+        return resolveSyncResult(getProxy().invokeSync(invokeArgs, invokeCallback));
     };
 }
 function initUtsStaticMethod(async, opts) {

@@ -90,8 +90,13 @@ type InvokeAsyncCallback = (
   res: InvokeCallbackReturnRes | InvokeCallbackParamsRes
 ) => void
 
+interface InvokeSyncRes {
+  type: 'return'
+  errMsg?: string
+  params: unknown
+}
 function getProxy(): {
-  invokeSync: (args: InvokeArgs, callback: InvokeSyncCallback) => unknown
+  invokeSync: (args: InvokeArgs, callback: InvokeSyncCallback) => InvokeSyncRes
   invokeAsync: (args: InvokeArgs, callback: InvokeAsyncCallback) => void
 } {
   if (!proxy) {
@@ -100,8 +105,15 @@ function getProxy(): {
   return proxy
 }
 
+function resolveSyncResult(res: InvokeSyncRes) {
+  if (res.errMsg) {
+    throw new Error(res.errMsg)
+  }
+  return res.params
+}
+
 function invokePropGetter(args: InvokeArgs) {
-  return getProxy().invokeSync(args, () => {})
+  return resolveSyncResult(getProxy().invokeSync(args, () => {}))
 }
 
 interface InitProxyFunctionOptions {
@@ -174,7 +186,7 @@ function initProxyFunction(
         })
       })
     }
-    return getProxy().invokeSync(invokeArgs, invokeCallback)
+    return resolveSyncResult(getProxy().invokeSync(invokeArgs, invokeCallback))
   }
 }
 

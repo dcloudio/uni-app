@@ -33,7 +33,8 @@ const priority = {
   'uni-automator': 10,
   uts: 10,
   'uni-uts-vite': 10,
-  'size-check': 1,
+  'uni-stacktracey': 10,
+  'size-check': 0,
 }
 
 exports.priority = priority
