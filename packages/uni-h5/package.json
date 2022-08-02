@@ -45,6 +45,7 @@
     "@dcloudio/uni-cli-i18n": "^2.0.0-32920211029004",
     "@dcloudio/uni-cli-shared": "3.0.0-alpha-3050320220729002",
     "@types/google.maps": "^3.45.6",
+    "@amap/amap-jsapi-types": "^0.0.8",
     "acorn-loose": "^8.2.1",
     "acorn-walk": "^8.2.0",
     "vue": "3.2.37"
