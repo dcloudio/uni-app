@@ -1,6 +1,7 @@
 import {
   MapType,
-  getMapInfo
+  getMapInfo,
+  IS_AMAP
 } from '../../../../helpers/location'
 import { createCallout } from './callout'
 
@@ -10,7 +11,6 @@ const GOOGLE_MAP_CALLBACKNAME = '__map_callback__'
 
 export function loadMaps (libraries, callback) {
   const mapInfo = getMapInfo()
-  const ISAMAP = mapInfo.type === MapType.AMAP
   if (!mapInfo.key) {
     console.error('Map key not configured.')
     return
@@ -22,7 +22,7 @@ export function loadMaps (libraries, callback) {
     window[mapInfo.type] &&
     window[mapInfo.type].maps
   ) {
-    maps = ISAMAP ? window[mapInfo.type] : window[mapInfo.type].maps
+    maps = IS_AMAP ? window[mapInfo.type] : window[mapInfo.type].maps
     maps.Callout = maps.Callout || createCallout(maps)
     callback(maps)
   } else if (callbacks.length) {
@@ -33,7 +33,7 @@ export function loadMaps (libraries, callback) {
     const callbackName = GOOGLE_MAP_CALLBACKNAME + mapInfo.type
     globalExt[callbackName] = function () {
       delete globalExt[callbackName]
-      maps = ISAMAP ? window[mapInfo.type] : window[mapInfo.type].maps
+      maps = IS_AMAP ? window[mapInfo.type] : window[mapInfo.type].maps
       maps.Callout = createCallout(maps)
       callbacks.forEach((callback) => callback(maps))
       callbacks.length = 0
@@ -48,7 +48,7 @@ export function loadMaps (libraries, callback) {
       src += `libraries=${libraries.join('%2C')}&`
     }
 
-    if (ISAMAP) {
+    if (IS_AMAP) {
       handleAMapSecurityPolicy(mapInfo)
     }
     script.src = `${src}key=${mapInfo.key}&callback=${callbackName}`

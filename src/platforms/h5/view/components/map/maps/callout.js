@@ -1,9 +1,4 @@
-import {
-  MapType,
-  getMapInfo
-} from '../../../../helpers/location'
-const mapInfo = getMapInfo()
-const ISAMAP = mapInfo.type === MapType.AMAP
+import { IS_AMAP } from '../../../../helpers/location'
 
 export function createCallout (maps) {
   function onAdd () {
@@ -75,7 +70,7 @@ export function createCallout (maps) {
     constructor (option = {}, callback, parent) {
       this.option = option || {}
       this.visible = this.alwaysVisible = option.display === 'ALWAYS'
-      if (ISAMAP) {
+      if (IS_AMAP) {
         this.callback = callback
         this.parent = parent
         if (this.visible) {
@@ -118,7 +113,7 @@ export function createCallout (maps) {
       } else {
         this.alwaysVisible = false
       }
-      if (ISAMAP) {
+      if (IS_AMAP) {
         if (this.visible) {
           this.createAMapText()
         }
@@ -167,7 +162,7 @@ export function createCallout (maps) {
 
     destroy = onRemove
   }
-  if (!ISAMAP) {
+  if (!IS_AMAP) {
     const prototype = Callout.prototype
     const overlay = new (maps.OverlayView || maps.Overlay)()
     for (const key in overlay) {

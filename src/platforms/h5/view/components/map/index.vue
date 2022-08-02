@@ -48,10 +48,7 @@ import {
 import mapMarker from './map-marker'
 import mapPolygon from './map-polygon'
 
-import { ICON_PATH_ORIGIN, MapType, getMapInfo } from '../../../helpers/location'
-
-const mapInfo = getMapInfo()
-const ISAMAP = mapInfo.type === MapType.AMAP
+import { ICON_PATH_ORIGIN, IS_AMAP } from '../../../helpers/location'
 
 function getAMapPosition (maps, latitude, longitude) {
   return new maps.LngLat(longitude, latitude)
@@ -60,7 +57,7 @@ function getGoogleQQMapPosition (maps, latitude, longitude) {
   return new maps.LatLng(latitude, longitude)
 }
 function getMapPosition (maps, latitude, longitude) {
-  return ISAMAP ? getAMapPosition(maps, latitude, longitude) : getGoogleQQMapPosition(maps, latitude, longitude)
+  return IS_AMAP ? getAMapPosition(maps, latitude, longitude) : getGoogleQQMapPosition(maps, latitude, longitude)
 }
 
 function getLat (latLng) {
@@ -231,7 +228,7 @@ export default {
   },
   methods: {
     handleAMapClick (e) {
-      if (ISAMAP) {
+      if (IS_AMAP) {
         const { pageX, pageY } = e.changedTouches[0]
         this.$trigger('click', { x: pageX, y: pageY }, {})
         this.$trigger('tap', { x: pageX, y: pageY }, {})
@@ -370,7 +367,7 @@ export default {
                 }
               })
             })
-            if (ISAMAP) {
+            if (IS_AMAP) {
               this.isBoundsReady = true
               this.$emit('boundsready')
             }
@@ -492,7 +489,7 @@ export default {
         const path = []
 
         option.points.forEach(point => {
-          const pointPosition = ISAMAP ? [point.longitude, point.latitude] : getGoogleQQMapPosition(maps, point.latitude, point.longitude)
+          const pointPosition = IS_AMAP ? [point.longitude, point.latitude] : getGoogleQQMapPosition(maps, point.latitude, point.longitude)
           path.push(pointPosition)
         })
 
@@ -507,7 +504,7 @@ export default {
           strokeDashStyle: option.dottedLine ? 'dash' : 'solid'
         }
 
-        if (ISAMAP) {
+        if (IS_AMAP) {
           polylineOptions.strokeColor = option.strokeColor
           polylineOptions.strokeStyle = option.dottedLine ? 'dashed' : 'solid'
           polylineOptions.isOutline = !!option.borderWidth
@@ -535,7 +532,7 @@ export default {
           polyline.push(new maps.Polyline(polylineBorderOptions))
         }
         const _polyline = new maps.Polyline(polylineOptions)
-        if (ISAMAP) {
+        if (IS_AMAP) {
           map.add(_polyline)
         }
         polyline.push(_polyline)
@@ -554,7 +551,7 @@ export default {
       const circles = this.circlesSync
       this.removeCircles()
       this.circles.forEach(option => {
-        const center = ISAMAP ? [option.longitude, option.latitude] : getGoogleQQMapPosition(maps, option.latitude, option.longitude)
+        const center = IS_AMAP ? [option.longitude, option.latitude] : getGoogleQQMapPosition(maps, option.latitude, option.longitude)
         const circleOptions = {
           map,
           center,
@@ -564,7 +561,7 @@ export default {
           strokeDashStyle: 'solid'
         }
 
-        if (ISAMAP) {
+        if (IS_AMAP) {
           circleOptions.strokeColor = option.color
           circleOptions.fillColor = option.fillColor || '#000'
         } else {
@@ -584,7 +581,7 @@ export default {
         }
 
         const circle = new maps.Circle(circleOptions)
-        if (ISAMAP) {
+        if (IS_AMAP) {
           map.add(circle)
         }
         circles.push(circle)
@@ -636,7 +633,7 @@ export default {
           }
           $event.stopPropagation()
         }
-        if (ISAMAP) {
+        if (IS_AMAP) {
           this.$refs.mapContainer.appendChild(control)
         } else {
           map.controls[maps.ControlPosition.TOP_LEFT].push(control)
@@ -665,7 +662,7 @@ export default {
             return
           }
           const position = getMapPosition(maps, res.latitude, res.longitude)
-          if (ISAMAP) {
+          if (IS_AMAP) {
             location = new maps.Marker({
               position,
               map,
@@ -736,7 +733,7 @@ export default {
       this.boundsReady(() => {
         const map = this._map
 
-        if (ISAMAP) {
+        if (IS_AMAP) {
           const _points = []
           points.forEach(point => {
             _points.push([point.longitude, point.latitude])
@@ -759,7 +756,7 @@ export default {
         }
       })
 
-      if (ISAMAP) {
+      if (IS_AMAP) {
         this.isBoundsReady = true
         this.$emit('boundsready')
       }

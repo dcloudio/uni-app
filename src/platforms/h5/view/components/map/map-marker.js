@@ -1,11 +1,5 @@
-import {
-  MapType,
-  getMapInfo
-} from '../../../helpers/location'
+import { mapInfo, MapType, IS_AMAP } from '../../../helpers/location'
 import getRealPath from 'uni-platform/helpers/get-real-path'
-
-const mapInfo = getMapInfo()
-const ISAMAP = mapInfo.type === MapType.AMAP
 
 export default {
   props: {
@@ -105,7 +99,7 @@ export default {
       maps.event.addListener(marker, 'click', (e) => {
         const callout = marker.callout
         if (callout && !callout.alwaysVisible) {
-          if (ISAMAP) {
+          if (IS_AMAP) {
             callout.visible = !callout.visible
             if (callout.visible) {
               marker.callout.createAMapText()
@@ -140,7 +134,7 @@ export default {
       const maps = this._maps
       const marker = this._marker
       const title = option.title
-      const position = ISAMAP ? new maps.LngLat(option.longitude, option.latitude) : new maps.LatLng(option.latitude, option.longitude)
+      const position = IS_AMAP ? new maps.LngLat(option.longitude, option.latitude) : new maps.LatLng(option.latitude, option.longitude)
       const img = new Image()
       img.onload = () => {
         const anchor = option.anchor || {}
@@ -216,8 +210,7 @@ export default {
             })
             marker.label = label
           } else if ('setLabel' in marker) {
-            // 高德
-            if (ISAMAP) {
+            if (IS_AMAP) {
               const content =
               `<div style="
                 margin-left:${labelStyle.marginLeft};
@@ -280,7 +273,7 @@ export default {
           if (callout) {
             callout.setOption(calloutStyle)
           } else {
-            if (ISAMAP) {
+            if (IS_AMAP) {
               const callback = (self) => {
                 if (self.idString) {
                   self.$parent.$trigger('callouttap', {}, {
@@ -342,7 +335,7 @@ export default {
       let latitude
       let longitude
 
-      if (ISAMAP) {
+      if (IS_AMAP) {
         latitude = e.lnglat.lat
         longitude = e.lnglat.lng
       } else if (mapInfo.type === MapType.QQ) {
@@ -369,7 +362,7 @@ export default {
       this._marker = null
     },
     removeMarkerCallout (callout) {
-      if (ISAMAP) {
+      if (IS_AMAP) {
         callout.removeAMapText()
       } else {
         callout.setMap(null)

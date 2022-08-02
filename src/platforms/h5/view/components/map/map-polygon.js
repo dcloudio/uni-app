@@ -1,12 +1,9 @@
 import { hexToRgba } from 'uni-shared'
-import { MapType, getMapInfo } from '../../../helpers/location'
-
-const mapInfo = getMapInfo()
-const ISAMAP = mapInfo.type === MapType.AMAP
+import { IS_AMAP } from '../../../helpers/location'
 
 export default {
   props: {
-    // 边框虚线，腾讯地图支持，google 地图不支持，默认值为[0, 0] 为实线，非 [0, 0] 为虚线，H5 端无法像微信小程序一样控制虚线的间隔像素大小
+    // 边框虚线，腾讯地图支持，google 高德 地图不支持，默认值为[0, 0] 为实线，非 [0, 0] 为虚线，H5 端无法像微信小程序一样控制虚线的间隔像素大小
     dashArray: {
       type: Array,
       default: () => [0, 0]
@@ -69,7 +66,7 @@ export default {
 
       const path = points.map(item => {
         const { latitude, longitude } = item
-        return ISAMAP ? [longitude, latitude] : new _maps.LatLng(latitude, longitude)
+        return IS_AMAP ? [longitude, latitude] : new _maps.LatLng(latitude, longitude)
       })
 
       const { r: fcR, g: fcG, b: fcB, a: fcA } = hexToRgba(fillColor)

@@ -36,3 +36,5 @@ export function getMapInfo () {
     key: ''
   }
 }
+
+export const IS_AMAP = getMapInfo().type === MapType.AMAP
