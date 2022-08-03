@@ -7924,6 +7924,42 @@ var index$d = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const ICON_PATH_ORIGIN = "data:image/png;base64,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";
+function getMapInfo() {
+  if (__uniConfig.qqMapKey) {
+    return {
+      type: "qq",
+      key: __uniConfig.qqMapKey
+    };
+  }
+  if (__uniConfig.googleMapKey) {
+    return {
+      type: "google",
+      key: __uniConfig.googleMapKey
+    };
+  }
+  if (__uniConfig.aMapKey) {
+    return {
+      type: "AMap",
+      key: __uniConfig.aMapKey,
+      securityJsCode: __uniConfig.aMapSecurityJsCode,
+      serviceHost: __uniConfig.aMapServiceHost
+    };
+  }
+  return {
+    type: "",
+    key: ""
+  };
+}
+let IS_AMAP = false;
+let hasGetIsAMap = false;
+const getIsAMap = () => {
+  if (hasGetIsAMap) {
+    return IS_AMAP;
+  } else {
+    hasGetIsAMap = true;
+    return IS_AMAP = getMapInfo().type === "AMap";
+  }
+};
 const props$7 = {
   id: {
     type: [Number, String],
@@ -8013,10 +8049,17 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
     const onMapReady = vue.inject("onMapReady");
     const updateMarkerLabelStyle = useMarkerLabelStyle(id);
     let marker;
+    function removeMarkerCallout(callout) {
+      if (getIsAMap()) {
+        callout.removeAMapText();
+      } else {
+        callout.setMap(null);
+      }
+    }
     onMapReady((map, maps, trigger) => {
       function updateMarker(option) {
         const title = option.title;
-        const position = new maps.LatLng(option.latitude, option.longitude);
+        const position = getIsAMap() ? new maps.LngLat(option.longitude, option.latitude) : new maps.LatLng(option.latitude, option.longitude);
         const img = new Image();
         img.onload = () => {
           const anchor = option.anchor || {};
@@ -8036,6 +8079,13 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
           top = h - (h - y * h);
           if ("MarkerImage" in maps) {
             icon = new maps.MarkerImage(img.src, null, null, new maps.Point(x * w, y * h), new maps.Size(w, h));
+          } else if ("Icon" in maps) {
+            icon = new maps.Icon({
+              image: img.src,
+              size: new maps.Size(w, h),
+              imageSize: new maps.Size(w, h),
+              imageOffset: new maps.Pixel(x * w, y * h)
+            });
           } else {
             icon = {
               url: img.src,
@@ -8077,13 +8127,33 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
               });
               marker.label = label;
             } else if ("setLabel" in marker) {
-              const className = updateMarkerLabelStyle(labelStyle);
-              marker.setLabel({
-                text: labelOpt.content,
-                color: labelStyle.color,
-                fontSize: labelStyle.fontSize,
-                className
-              });
+              if (getIsAMap()) {
+                const content = `<div style="
+                  margin-left:${labelStyle.marginLeft};
+                  margin-top:${labelStyle.marginTop};
+                  padding:${labelStyle.padding};
+                  background-color:${labelStyle.backgroundColor};
+                  border-radius:${labelStyle.borderRadius};
+                  line-height:${labelStyle.lineHeight};
+                  color:${labelStyle.color};
+                  font-size:${labelStyle.fontSize};
+
+                  ">
+                  ${labelOpt.content}
+                <div>`;
+                marker.setLabel({
+                  content,
+                  direction: "bottom-right"
+                });
+              } else {
+                const className = updateMarkerLabelStyle(labelStyle);
+                marker.setLabel({
+                  text: labelOpt.content,
+                  color: labelStyle.color,
+                  fontSize: labelStyle.fontSize,
+                  className
+                });
+              }
             }
           }
           const calloutOpt = option.callout || {};
@@ -8095,6 +8165,7 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
               position,
               map,
               top,
+              offsetY: -option.height / 2,
               content: calloutOpt.content,
               color: calloutOpt.color,
               fontSize: calloutOpt.fontSize,
@@ -8107,26 +8178,38 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
               position,
               map,
               top,
+              offsetY: -option.height / 2,
               content: title,
               boxShadow
             };
             if (callout) {
               callout.setOption(calloutStyle);
             } else {
-              callout = marker.callout = new maps.Callout(calloutStyle);
-              callout.div.onclick = function($event) {
-                if (id !== "") {
-                  trigger("callouttap", $event, {
-                    markerId: Number(id)
-                  });
-                }
-                $event.stopPropagation();
-                $event.preventDefault();
-              };
+              if (getIsAMap()) {
+                const callback = (id2) => {
+                  if (id2 !== "") {
+                    trigger("callouttap", {}, {
+                      markerId: Number(id2)
+                    });
+                  }
+                };
+                callout = marker.callout = new maps.Callout(calloutStyle, callback);
+              } else {
+                callout = marker.callout = new maps.Callout(calloutStyle);
+                callout.div.onclick = function($event) {
+                  if (id !== "") {
+                    trigger("callouttap", $event, {
+                      markerId: Number(id)
+                    });
+                  }
+                  $event.stopPropagation();
+                  $event.preventDefault();
+                };
+              }
             }
           } else {
             if (callout) {
-              callout.setMap(null);
+              removeMarkerCallout(callout);
               delete marker.callout;
             }
           }
@@ -8144,17 +8227,25 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
           autoRotation: false
         });
         updateMarker(props3);
-        maps.event.addListener(marker, "click", () => {
+        const MapsEvent = maps.event || maps.Event;
+        MapsEvent.addListener(marker, "click", () => {
           const callout = marker.callout;
-          if (callout) {
-            const div = callout.div;
-            const parent = div.parentNode;
-            if (!callout.alwaysVisible) {
+          if (callout && !callout.alwaysVisible) {
+            if (getIsAMap()) {
+              callout.visible = !callout.visible;
+              if (callout.visible) {
+                marker.callout.createAMapText();
+              } else {
+                marker.callout.removeAMapText();
+              }
+            } else {
               callout.set("visible", !callout.visible);
-            }
-            if (callout.visible) {
-              parent.removeChild(div);
-              parent.appendChild(div);
+              if (callout.visible) {
+                const div = callout.div;
+                const parent = div.parentNode;
+                parent.removeChild(div);
+                parent.appendChild(div);
+              }
             }
           }
           if (id) {
@@ -8189,7 +8280,8 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
             const distance = maps.geometry.spherical.computeDistanceBetween(a, b) / 1e3;
             const time = (typeof duration === "number" ? duration : 1e3) / (1e3 * 60 * 60);
             const speed = distance / time;
-            const movingEvent = maps.event.addListener(marker, "moving", (e2) => {
+            const MapsEvent = maps.event || maps.Event;
+            const movingEvent = MapsEvent.addListener(marker, "moving", (e2) => {
               const latLng = e2.latLng;
               const label = marker.label;
               if (label) {
@@ -8200,7 +8292,7 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
                 callout.setPosition(latLng);
               }
             });
-            const event = maps.event.addListener(marker, "moveend", () => {
+            const event = MapsEvent.addListener(marker, "moveend", () => {
               event.remove();
               movingEvent.remove();
               marker.lastPosition = a;
@@ -8232,7 +8324,7 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
               marker.moveTo(b, speed);
             } else {
               marker.setPosition(b);
-              maps.event.trigger(marker, "moveend", {});
+              MapsEvent.trigger(marker, "moveend", {});
             }
           });
         }
@@ -8345,7 +8437,8 @@ var MapPolyline = /* @__PURE__ */ defineSystemComponent({
       function addPolyline(option) {
         const path = [];
         option.points.forEach((point) => {
-          path.push(new maps.LatLng(point.latitude, point.longitude));
+          const pointPosition = getIsAMap() ? [point.longitude, point.latitude] : new maps.LatLng(point.latitude, point.longitude);
+          path.push(pointPosition);
         });
         const strokeWeight = Number(option.width) || 1;
         const {
@@ -8446,7 +8539,7 @@ var MapCircle = /* @__PURE__ */ defineSystemComponent({
         addCircle(option);
       }
       function addCircle(option) {
-        const center = new maps.LatLng(option.latitude, option.longitude);
+        const center = getIsAMap() ? [option.longitude, option.latitude] : new maps.LatLng(option.latitude, option.longitude);
         const circleOptions = {
           map,
           center,
@@ -8455,28 +8548,37 @@ var MapCircle = /* @__PURE__ */ defineSystemComponent({
           strokeWeight: Number(option.strokeWidth) || 1,
           strokeDashStyle: "solid"
         };
-        const {
-          r: fr,
-          g: fg,
-          b: fb,
-          a: fa
-        } = hexToRgba(option.fillColor);
-        const {
-          r: sr,
-          g: sg,
-          b: sb,
-          a: sa
-        } = hexToRgba(option.color);
-        if ("Color" in maps) {
-          circleOptions.fillColor = new maps.Color(fr, fg, fb, fa);
-          circleOptions.strokeColor = new maps.Color(sr, sg, sb, sa);
+        if (getIsAMap()) {
+          circleOptions.strokeColor = option.color;
+          circleOptions.fillColor = option.fillColor || "#000";
+          circleOptions.fillOpacity = 1;
         } else {
-          circleOptions.fillColor = `rgb(${fr}, ${fg}, ${fb})`;
-          circleOptions.fillOpacity = fa;
-          circleOptions.strokeColor = `rgb(${sr}, ${sg}, ${sb})`;
-          circleOptions.strokeOpacity = sa;
+          const {
+            r: fr,
+            g: fg,
+            b: fb,
+            a: fa
+          } = hexToRgba(option.fillColor);
+          const {
+            r: sr,
+            g: sg,
+            b: sb,
+            a: sa
+          } = hexToRgba(option.color);
+          if ("Color" in maps) {
+            circleOptions.fillColor = new maps.Color(fr, fg, fb, fa);
+            circleOptions.strokeColor = new maps.Color(sr, sg, sb, sa);
+          } else {
+            circleOptions.fillColor = `rgb(${fr}, ${fg}, ${fb})`;
+            circleOptions.fillOpacity = fa;
+            circleOptions.strokeColor = `rgb(${sr}, ${sg}, ${sb})`;
+            circleOptions.strokeOpacity = sa;
+          }
         }
         circle = new maps.Circle(circleOptions);
+        if (getIsAMap()) {
+          map.add(circle);
+        }
       }
       addCircle(props2);
       vue.watch(props2, updateCircle);
@@ -8502,6 +8604,10 @@ const props$4 = {
   clickable: {
     type: [Boolean, String],
     default: ""
+  },
+  rootRef: {
+    type: Object,
+    default: null
   }
 };
 var MapControl = /* @__PURE__ */ defineSystemComponent({
@@ -8529,6 +8635,8 @@ var MapControl = /* @__PURE__ */ defineSystemComponent({
         style.position = "absolute";
         style.width = "0";
         style.height = "0";
+        style.top = "0";
+        style.left = "0";
         img.onload = () => {
           if (option.position.width) {
             img.width = option.position.width;
@@ -8550,7 +8658,11 @@ var MapControl = /* @__PURE__ */ defineSystemComponent({
             });
           }
         };
-        map.controls[maps.ControlPosition.TOP_LEFT].push(control);
+        if (getIsAMap()) {
+          props2.rootRef.value && props2.rootRef.value.appendChild(control);
+        } else {
+          map.controls[maps.ControlPosition.TOP_LEFT].push(control);
+        }
       }
       addControl(props2);
       vue.watch(props2, updateControl);
@@ -8629,7 +8741,7 @@ var MapPolygon = /* @__PURE__ */ defineSystemComponent({
             latitude,
             longitude
           } = item;
-          return new maps.LatLng(latitude, longitude);
+          return getIsAMap() ? [longitude, latitude] : new maps.LatLng(latitude, longitude);
         });
         const {
           r: fcR,
@@ -8753,6 +8865,15 @@ function getPoints(points) {
   }
   return newPoints;
 }
+function getAMapPosition(maps, latitude, longitude) {
+  return new maps.LngLat(longitude, latitude);
+}
+function getGoogleOrQQMapPosition(maps, latitude, longitude) {
+  return new maps.LatLng(latitude, longitude);
+}
+function getMapPosition(maps, latitude, longitude) {
+  return getIsAMap() ? getAMapPosition(maps, latitude, longitude) : getGoogleOrQQMapPosition(maps, latitude, longitude);
+}
 function getLat(latLng) {
   if ("getLat" in latLng) {
     return latLng.getLat();
@@ -8802,15 +8923,24 @@ function useMap(props2, rootRef, emit2) {
     deep: true
   });
   function updateBounds() {
-    const bounds = new maps.LatLngBounds();
-    state.includePoints.forEach(({
-      latitude,
-      longitude
-    }) => {
-      const latLng = new maps.LatLng(latitude, longitude);
-      bounds.extend(latLng);
-    });
-    map.fitBounds(bounds);
+    if (getIsAMap()) {
+      const points = [];
+      state.includePoints.forEach((point) => {
+        points.push([point.longitude, point.latitude]);
+      });
+      const bounds = new maps.Bounds(...points);
+      map.setBounds(bounds);
+    } else {
+      const bounds = new maps.LatLngBounds();
+      state.includePoints.forEach(({
+        latitude,
+        longitude
+      }) => {
+        const latLng = new maps.LatLng(latitude, longitude);
+        bounds.extend(latLng);
+      });
+      map.fitBounds(bounds);
+    }
   }
   try {
     const id = useContextInfo();
@@ -8932,7 +9062,9 @@ var index$c = /* @__PURE__ */ defineBuiltInComponent({
         "style": "width: 100%; height: 100%; position: relative; overflow: hidden"
       }, null, 512), props2.markers.map((item) => vue.createVNode(MapMarker, vue.mergeProps({
         "key": item.id
-      }, item), null, 16)), props2.polyline.map((item) => vue.createVNode(MapPolyline, item, null, 16)), props2.circles.map((item) => vue.createVNode(MapCircle, item, null, 16)), props2.controls.map((item) => vue.createVNode(MapControl, item, null, 16)), props2.showLocation && vue.createVNode(MapLocation, null, null), props2.polygons.map((item) => vue.createVNode(MapPolygon, item, null, 16)), vue.createVNode("div", {
+      }, item), null, 16)), props2.polyline.map((item) => vue.createVNode(MapPolyline, item, null, 16)), props2.circles.map((item) => vue.createVNode(MapCircle, item, null, 16)), props2.controls.map((item) => vue.createVNode(MapControl, vue.mergeProps(item, {
+        "rootRef": rootRef
+      }), null, 16, ["rootRef"])), props2.showLocation && vue.createVNode(MapLocation, null, null), props2.polygons.map((item) => vue.createVNode(MapPolygon, item, null, 16)), vue.createVNode("div", {
         "style": "position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"
       }, [slots.default && slots.default()])], 8, ["id"]);
     };
