@@ -16,6 +16,7 @@ import {
   Ref,
   watch,
   nextTick,
+  WritableComputedRef,
 } from 'vue'
 
 import { RouterView } from 'vue-router'
@@ -273,7 +274,7 @@ function useState() {
     () => layoutState.rightWindowWidth + layoutState.marginWidth,
     (value) => updateCssVar({ '--window-right': value + 'px' })
   )
-  const windowState: WindowState = reactive({
+  const windowState: WritableComputedRef<WindowState> = computed(() => ({
     matchTopWindow: layoutState.topWindowMediaQuery,
     showTopWindow: layoutState.showTopWindow || layoutState.apiShowTopWindow,
     matchLeftWindow: layoutState.leftWindowMediaQuery,
@@ -281,7 +282,7 @@ function useState() {
     matchRightWindow: layoutState.rightWindowMediaQuery,
     showRightWindow:
       layoutState.showRightWindow || layoutState.apiShowRightWindow,
-  })
+  }))
   return {
     layoutState,
     windowState,
@@ -291,7 +292,7 @@ function useState() {
 function createLayoutTsx(
   keepAliveRoute: KeepAliveRoute,
   layoutState?: LayoutState,
-  windowState?: WindowState,
+  windowState?: WritableComputedRef<WindowState>,
   topWindow?: unknown,
   leftWindow?: unknown,
   rightWindow?: unknown
@@ -304,13 +305,13 @@ function createLayoutTsx(
     return routerVNode
   }
   const topWindowTsx = __UNI_FEATURE_TOPWINDOW__
-    ? createTopWindowTsx(topWindow, layoutState!, windowState!)
+    ? createTopWindowTsx(topWindow, layoutState!, windowState!.value)
     : null
   const leftWindowTsx = __UNI_FEATURE_LEFTWINDOW__
-    ? createLeftWindowTsx(leftWindow, layoutState!, windowState!)
+    ? createLeftWindowTsx(leftWindow, layoutState!, windowState!.value)
     : null
   const rightWindowTsx = __UNI_FEATURE_RIGHTWINDOW__
-    ? createRightWindowTsx(rightWindow, layoutState!, windowState!)
+    ? createRightWindowTsx(rightWindow, layoutState!, windowState?.value!)
     : null
   return (
     <uni-layout
