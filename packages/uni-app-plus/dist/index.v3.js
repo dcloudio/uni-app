@@ -1246,6 +1246,10 @@ var serviceContext = (function () {
     sound: {
       type: String,
       default: 'none'
+    },
+    autoZoom: {
+      type: Boolean,
+      default: true
     }
   };
 
@@ -6874,7 +6878,9 @@ var serviceContext = (function () {
     let result;
     const page = showPage({
       url: '__uniappchooselocation',
-      data: options,
+      data: Object.assign({}, options, {
+        locale: getLocale()
+      }),
       style: {
         animationType: options.animationType || 'slide-in-bottom',
         titleNView: false,
@@ -7047,7 +7053,9 @@ var serviceContext = (function () {
   function openLocation$2 (data, callbackId) {
     showPage({
       url: '__uniappopenlocation',
-      data,
+      data: Object.assign({}, data, {
+        locale: getLocale()
+      }),
       style: {
         titleNView: {
           type: 'transparent'
