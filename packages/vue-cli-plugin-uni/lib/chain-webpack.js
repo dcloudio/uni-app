@@ -33,6 +33,22 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
             }
           })
         }
+        if (newOptions.fallback && newOptions.fallback.options) {
+          const generator = {}
+          const oldOptions = newOptions.fallback.options
+          const keys = ['publicPath', 'outputPath']
+          keys.forEach(key => {
+            generator[key] = pathData => {
+              const outputPath = oldOptions.outputPath(null, pathData.module.request)
+              const basename = path.basename(outputPath)
+              return outputPath.substring(0, outputPath.length - basename.length)
+            }
+          })
+          generator.filename = pathData => {
+            return path.basename(pathData.module.request)
+          }
+          webpackConfig.module.rule(staticType).set('generator', generator)
+        }
       } else {
         webpackConfig.module
           .rule(staticType)
@@ -67,6 +83,18 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
               getPartialIdentifier()
             ))
             .before('css-loader')
+        }
+        if (webpack.version[0] > 4) {
+          langRule.oneOf(type)
+            .use('css-loader')
+            .tap(options => {
+              options.url = {
+                filter: function (url) {
+                  return url[0] !== '/'
+                }
+              }
+              return options
+            })
         }
         langRule.oneOf(type)
           .use('uniapp-preprocss')
