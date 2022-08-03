@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-uts-vite",
-  "version": "3.0.0-alpha-3050320220729002",
+  "version": "3.0.0-alpha-3050420220803001",
   "description": "uni-uts-vite",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -25,9 +25,9 @@
     "main": "dist/index.js"
   },
   "dependencies": {
-    "@dcloudio/uni-cli-shared": "3.0.0-alpha-3050320220729002",
-    "@dcloudio/uni-shared": "3.0.0-alpha-3050320220729002",
-    "@dcloudio/uts": "3.0.0-alpha-3050320220729002",
+    "@dcloudio/uni-cli-shared": "3.0.0-alpha-3050420220803001",
+    "@dcloudio/uni-shared": "3.0.0-alpha-3050420220803001",
+    "@dcloudio/uts": "3.0.0-alpha-3050420220803001",
     "execa": "^5.1.1",
     "fs-extra": "^10.0.0"
   },
