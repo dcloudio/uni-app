@@ -6,21 +6,35 @@ export const ICON_PATH_TARGET =
 export const MapType = {
   QQ: 'qq',
   GOOGLE: 'google',
+  AMAP: 'AMap',
   UNKNOWN: ''
 }
 
 export function getMapInfo () {
-  let type = MapType.UNKNOWN
-  let key = ''
   if (__uniConfig.qqMapKey) {
-    type = MapType.QQ
-    key = __uniConfig.qqMapKey
-  } else if (__uniConfig.googleMapKey) {
-    type = MapType.GOOGLE
-    key = __uniConfig.googleMapKey
+    return {
+      type: MapType.QQ,
+      key: __uniConfig.qqMapKey
+    }
+  }
+  if (__uniConfig.googleMapKey) {
+    return {
+      type: MapType.GOOGLE,
+      key: __uniConfig.googleMapKey
+    }
+  }
+  if (__uniConfig.aMapKey) {
+    return {
+      type: MapType.AMAP,
+      key: __uniConfig.aMapKey,
+      securityJsCode: __uniConfig.aMapSecurityJsCode,
+      serviceHost: __uniConfig.aMapServiceHost
+    }
   }
   return {
-    type,
-    key
+    type: MapType.UNKNOWN,
+    key: ''
   }
 }
+
+export const IS_AMAP = getMapInfo().type === MapType.AMAP

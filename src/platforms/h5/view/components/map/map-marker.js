@@ -1,3 +1,4 @@
+import { mapInfo, MapType, IS_AMAP } from '../../../helpers/location'
 import getRealPath from 'uni-platform/helpers/get-real-path'
 
 export default {
@@ -97,26 +98,34 @@ export default {
       this.updateMarker(props)
       maps.event.addListener(marker, 'click', (e) => {
         const callout = marker.callout
-        if (callout) {
-          const div = callout.div
-          const parent = div.parentNode
-          if (!callout.alwaysVisible) {
+        if (callout && !callout.alwaysVisible) {
+          if (IS_AMAP) {
+            callout.visible = !callout.visible
+            if (callout.visible) {
+              marker.callout.createAMapText()
+            } else {
+              marker.callout.removeAMapText()
+            }
+          } else {
             callout.set('visible', !callout.visible)
-          }
-          if (callout.visible) {
-            parent.removeChild(div)
-            parent.appendChild(div)
+            if (callout.visible) {
+              const div = callout.div
+              const parent = div.parentNode
+              parent.removeChild(div)
+              parent.appendChild(div)
+            }
           }
         }
         if (this.idString) {
+          const { latitude, longitude } = this.getMarkerLatitudeLongitude(e)
           this.$parent.$trigger('markertap', {}, {
             markerId: Number(this.idString),
-            latitude: typeof e.latLng.lat === 'function' ? e.latLng.lat() : e.latLng.lat,
-            longitude: typeof e.latLng.lat === 'function' ? e.latLng.lng() : e.latLng.lng
+            latitude,
+            longitude
           })
         }
 
-        const event = e.event || e.domEvent
+        const event = e.event || e.domEvent || e.originEvent
         event.stopPropagation()
       })
     },
@@ -125,7 +134,7 @@ export default {
       const maps = this._maps
       const marker = this._marker
       const title = option.title
-      const position = new maps.LatLng(option.latitude, option.longitude)
+      const position = IS_AMAP ? new maps.LngLat(option.longitude, option.latitude) : new maps.LatLng(option.latitude, option.longitude)
       const img = new Image()
       img.onload = () => {
         const anchor = option.anchor || {}
@@ -143,6 +152,7 @@ export default {
         }
         const top = h - (h - y * h)
         if ('MarkerImage' in maps) {
+          // 腾讯 & google
           icon = new maps.MarkerImage(
             img.src,
             null,
@@ -150,6 +160,14 @@ export default {
             new maps.Point(x * w, y * h),
             new maps.Size(w, h)
           )
+        } else if ('Icon' in maps) {
+          // 高德
+          icon = new maps.Icon({
+            image: img.src,
+            size: new maps.Size(w, h),
+            imageSize: new maps.Size(w, h),
+            imageOffset: new maps.Pixel(x * w, y * h)
+          })
         } else {
           icon = {
             url: img.src,
@@ -182,8 +200,9 @@ export default {
             marginTop: (Number(labelOpt.anchorY || labelOpt.y) || 0) + 'px'
           }
           if ('Label' in maps) {
+            // 腾讯
             label = new maps.Label({
-              position: position,
+              position,
               map: map,
               clickable: false,
               content: labelOpt.content,
@@ -191,13 +210,35 @@ export default {
             })
             marker.label = label
           } else if ('setLabel' in marker) {
-            const className = this.updateMarkerLabelStyle(this.idString, labelStyle)
-            marker.setLabel({
-              text: labelOpt.content,
-              color: labelStyle.color,
-              fontSize: labelStyle.fontSize,
-              className
-            })
+            if (IS_AMAP) {
+              const content =
+              `<div style="
+                margin-left:${labelStyle.marginLeft};
+                margin-top:${labelStyle.marginTop};
+                padding:${labelStyle.padding};
+                background-color:${labelStyle.backgroundColor};
+                border-radius:${labelStyle.borderRadius};
+                line-height:${labelStyle.lineHeight};
+                color:${labelStyle.color};
+                font-size:${labelStyle.fontSize};
+
+                ">
+                ${labelOpt.content}
+              <div>`
+              marker.setLabel({
+                content,
+                direction: 'bottom-right'
+              })
+            } else {
+              // google
+              const className = this.updateMarkerLabelStyle(this.idString, labelStyle)
+              marker.setLabel({
+                text: labelOpt.content,
+                color: labelStyle.color,
+                fontSize: labelStyle.fontSize,
+                className
+              })
+            }
           }
         }
         const calloutOpt = option.callout || {}
@@ -210,6 +251,8 @@ export default {
               position,
               map,
               top,
+              // handle AMap callout offset
+              offsetY: -option.height / 2,
               content: calloutOpt.content,
               color: calloutOpt.color,
               fontSize: calloutOpt.fontSize,
@@ -223,26 +266,38 @@ export default {
               position,
               map,
               top,
+              offsetY: -option.height / 2,
               content: title,
               boxShadow: boxShadow
             }
           if (callout) {
             callout.setOption(calloutStyle)
           } else {
-            callout = marker.callout = new maps.Callout(calloutStyle)
-            callout.div.onclick = ($event) => {
-              if (this.idString) {
-                this.$parent.$trigger('callouttap', $event, {
-                  markerId: Number(this.idString)
-                })
+            if (IS_AMAP) {
+              const callback = (self) => {
+                if (self.idString) {
+                  self.$parent.$trigger('callouttap', {}, {
+                    markerId: Number(self.idString)
+                  })
+                }
               }
-              $event.stopPropagation()
-              $event.preventDefault()
+              callout = marker.callout = new maps.Callout(calloutStyle, callback, this)
+            } else {
+              callout = marker.callout = new maps.Callout(calloutStyle)
+              callout.div.onclick = ($event) => {
+                if (this.idString) {
+                  this.$parent.$trigger('callouttap', $event, {
+                    markerId: Number(this.idString)
+                  })
+                }
+                $event.stopPropagation()
+                $event.preventDefault()
+              }
             }
           }
         } else {
           if (callout) {
-            callout.setMap(null)
+            this.removeMarkerCallout(marker.callout)
             delete marker.callout
           }
         }
@@ -276,6 +331,22 @@ export default {
       styleEl.innerText = `.${className}{${div.getAttribute('style')}}`
       return className
     },
+    getMarkerLatitudeLongitude (e) {
+      let latitude
+      let longitude
+
+      if (IS_AMAP) {
+        latitude = e.lnglat.lat
+        longitude = e.lnglat.lng
+      } else if (mapInfo.type === MapType.QQ) {
+        latitude = e.latLng.lat
+        longitude = e.latLng.lng
+      } else if (mapInfo.type === MapType.GOOGLE) {
+        latitude = e.latLng.lat()
+        longitude = e.latLng.lng()
+      }
+      return { latitude, longitude }
+    },
     removeMarker () {
       const marker = this._marker
       if (marker) {
@@ -283,12 +354,19 @@ export default {
           marker.label.setMap(null)
         }
         if (marker.callout) {
-          marker.callout.setMap(null)
+          this.removeMarkerCallout(marker.callout)
         }
         marker.setMap(null)
       }
       delete this.$parent._markers[this.idString]
       this._marker = null
+    },
+    removeMarkerCallout (callout) {
+      if (IS_AMAP) {
+        callout.removeAMapText()
+      } else {
+        callout.setMap(null)
+      }
     }
   },
   render () {

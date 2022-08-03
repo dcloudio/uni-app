@@ -88,7 +88,9 @@ const plugins = [
       RUN_BY_HBUILDERX: process.env.RUN_BY_HBUILDERX,
       UNI_AUTOMATOR_WS_ENDPOINT: JSON.stringify(process.env.UNI_AUTOMATOR_WS_ENDPOINT),
       UNI_STAT_UNI_CLOUD: process.env.UNI_STAT_UNI_CLOUD || '""',
-      UNI_STAT_DEBUG: process.env.UNI_STAT_DEBUG || '""'
+      UNI_STATISTICS_CONFIG: process.env.UNI_STATISTICS_CONFIG || '""',
+      UNI_STAT_DEBUG: process.env.UNI_STAT_DEBUG || '""',
+      UNI_COMPILER_VERSION: JSON.stringify(process.env.UNI_COMPILER_VERSION)
     }
   }),
   new webpack.BannerPlugin({

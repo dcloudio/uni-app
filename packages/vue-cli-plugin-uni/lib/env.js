@@ -324,8 +324,9 @@ if ((process.env.UNI_PLATFORM === 'mp-kuaishou' || process.env.UNI_PLATFORM === 
 
 process.env.MERGE_VIRTUAL_HOST_ATTRIBUTES = (!!platformOptions.mergeVirtualHostAttributes).toString()
 
-process.env.UNI_STAT_UNI_CLOUD = ''
-process.env.UNI_STAT_DEBUG = ''
+process.env.UNI_STATISTICS_CONFIG = '""'
+process.env.UNI_STAT_UNI_CLOUD = '""'
+process.env.UNI_STAT_DEBUG = '""'
 if (
   process.env.UNI_USING_COMPONENTS ||
   process.env.UNI_PLATFORM === 'h5'
@@ -336,9 +337,10 @@ if (
   )
 
   if (uniStatistics.enable === true) {
-    process.env.UNI_USING_STAT = uniStatistics.version === '2' ? '2' : '1'
+    process.env.UNI_USING_STAT = Number(uniStatistics.version) === 2 ? '2' : '1'
     // 获取服务空间配置信息
     const uniCloudConfig = uniStatistics.uniCloud || {}
+    process.env.UNI_STATISTICS_CONFIG = JSON.stringify(uniStatistics)
     process.env.UNI_STAT_UNI_CLOUD = JSON.stringify(uniCloudConfig)
     process.env.UNI_STAT_DEBUG = uniStatistics.debug === true ? 'true' : 'false'
 

@@ -198,7 +198,7 @@ export default {
         this.list.push({
           name: item.title,
           address: item.address,
-          distance: item._distance,
+          distance: item._distance || item.distance,
           latitude: item.location.lat,
           longitude: item.location.lng
         })
@@ -264,6 +264,39 @@ export default {
           }
         }, () => {
           this.loading = false
+        })
+      } else if (mapInfo.type === MapType.AMAP) {
+        const self = this
+
+        window.AMap.plugin('AMap.PlaceSearch', function () {
+          var autoOptions = {
+            city: '全国',
+            pageSize: 10,
+            pageIndex: self.pageIndex
+          }
+          var placeSearch = new window.AMap.PlaceSearch(autoOptions)
+          if (self.searching) {
+            placeSearch.searchNearBy(self.keyword, [self.longitude, self.latitude], 50000, function (status, result) {
+              if (status === 'error') {
+                console.error(result)
+              } else if (status === 'no_data') {
+                self.hasNextPage = false
+              } else {
+                self.pushData(result.poiList.pois)
+              }
+            })
+          } else {
+            placeSearch.searchNearBy('', [self.longitude, self.latitude], 5000, function (status, result) {
+              if (status === 'error') {
+                console.error(result)
+              } else if (status === 'no_data') {
+                self.hasNextPage = false
+              } else {
+                self.pushData(result.poiList.pois)
+              }
+            })
+          }
+          self.loading = false
         })
       }
     },
