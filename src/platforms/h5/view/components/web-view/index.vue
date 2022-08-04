@@ -1,11 +1,16 @@
 <template>
-  <uni-web-view v-on="$listeners">
+  <uni-web-view
+    ref="webviewContainer"
+    :class="{'uni-webview--fullscreen':fullscreen}"
+    v-on="$listeners"
+  >
     <v-uni-resize-sensor
       ref="sensor"
       @resize="_resize"
     />
   </uni-web-view>
 </template>
+
 <script>
 export default {
   name: 'WebView',
@@ -13,6 +18,10 @@ export default {
     src: {
       type: String,
       default: ''
+    },
+    fullscreen: {
+      type: Boolean,
+      default: true
     }
   },
   watch: {
@@ -26,44 +35,56 @@ export default {
       this.iframe[key] = this.$attrs[key]
     })
     this.iframe.src = this.$getRealPath(this.src)
-    document.body.appendChild(this.iframe)
+    if (this.fullscreen) {
+      document.body.appendChild(this.iframe)
+    } else {
+      this.$refs.webviewContainer.appendChild(this.iframe)
+    }
     this._resize()
   },
   activated () {
-    this.iframe.style.display = 'block'
+    this.fullscreen && (this.iframe.style.display = 'block')
   },
   deactivated () {
-    this.iframe.style.display = 'none'
+    this.fullscreen && (this.iframe.style.display = 'none')
   },
   beforeDestroy () {
-    document.body.removeChild(this.iframe)
+    this.fullscreen && document.body.removeChild(this.iframe)
   },
   methods: {
     _resize () {
-      const {
-        top,
-        left,
-        width,
-        height
-      } = this.$el.getBoundingClientRect()
+      if (this.fullscreen) {
+        const {
+          top,
+          left,
+          width,
+          height
+        } = this.$el.getBoundingClientRect()
 
-      this.iframe.style.position = 'absolute'
-      this.iframe.style.display = 'block'
-      this.iframe.style.border = 0
-      this.iframe.style.top = top + 'px'
-      this.iframe.style.left = left + 'px'
-      this.iframe.style.width = width + 'px'
-      this.iframe.style.height = height + 'px'
+        this.iframe.style.position = 'absolute'
+        this.iframe.style.display = 'block'
+        this.iframe.style.border = 0
+        this.iframe.style.top = top + 'px'
+        this.iframe.style.left = left + 'px'
+        this.iframe.style.width = width + 'px'
+        this.iframe.style.height = height + 'px'
+      } else {
+        this.iframe.style.width = this.$refs.webviewContainer.style.width || '300px'
+        this.iframe.style.height = this.$refs.webviewContainer.style.height || '150px'
+      }
     }
   }
 }
 </script>
 <style>
-    uni-web-view {
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
-    }
+  uni-web-view {
+    display: flex;
+  }
+  uni-web-view.uni-webview--fullscreen {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+  }
 </style>
