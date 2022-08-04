@@ -29,6 +29,10 @@ interface ProxyBaseOptions {
    * 属性名或方法名
    */
   name: string
+  /**
+   * 是否是伴生对象
+   */
+  companion?: boolean
 }
 
 interface ProxyInstanceOptions extends ProxyBaseOptions {
@@ -234,7 +238,7 @@ export function initUtsProxyClass({
               // 静态方法
               target[name] = initUtsStaticMethod(
                 !!staticMethods[name].async,
-                extend({ name }, baseOptions)
+                extend({ name, companion: true }, baseOptions)
               )
             } else if (props.includes(name as string)) {
               // 实例属性
@@ -242,7 +246,7 @@ export function initUtsProxyClass({
             } else if (staticProps.includes(name as string)) {
               // 静态属性
               return invokePropGetter(
-                extend({ name: name as string }, baseOptions)
+                extend({ name: name as string, companion: true }, baseOptions)
               )
             }
           }

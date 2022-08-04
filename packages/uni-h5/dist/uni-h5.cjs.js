@@ -7896,6 +7896,10 @@ const props$8 = {
   src: {
     type: String,
     default: ""
+  },
+  fullscreen: {
+    type: Boolean,
+    default: true
   }
 };
 var index$d = /* @__PURE__ */ defineBuiltInComponent({
@@ -7915,7 +7919,9 @@ var index$d = /* @__PURE__ */ defineBuiltInComponent({
     });
     let _resize;
     return () => {
-      return vue.createVNode(vue.Fragment, null, [vue.createVNode("uni-web-view", vue.mergeProps($listeners.value, $excludeAttrs.value, {
+      return vue.createVNode(vue.Fragment, null, [vue.createVNode("uni-web-view", vue.mergeProps({
+        "class": props2.fullscreen ? "uni-webview--fullscreen" : ""
+      }, $listeners.value, $excludeAttrs.value, {
         "ref": rootRef
       }), [vue.createVNode(ResizeSensor, {
         "onResize": _resize
@@ -10700,7 +10706,8 @@ function useState() {
       "--window-margin": value + "px"
     }));
     return {
-      layoutState: layoutState2
+      layoutState: layoutState2,
+      windowState: vue.computed(() => ({}))
     };
   }
   const topWindowMediaQuery = vue.ref(false);
@@ -10749,14 +10756,14 @@ function useState() {
   vue.watch(() => layoutState.rightWindowWidth + layoutState.marginWidth, (value) => updateCssVar({
     "--window-right": value + "px"
   }));
-  const windowState = vue.reactive({
+  const windowState = vue.computed(() => ({
     matchTopWindow: layoutState.topWindowMediaQuery,
     showTopWindow: layoutState.showTopWindow || layoutState.apiShowTopWindow,
     matchLeftWindow: layoutState.leftWindowMediaQuery,
     showLeftWindow: layoutState.showLeftWindow || layoutState.apiShowLeftWindow,
     matchRightWindow: layoutState.rightWindowMediaQuery,
     showRightWindow: layoutState.showRightWindow || layoutState.apiShowRightWindow
-  });
+  }));
   return {
     layoutState,
     windowState
@@ -10767,9 +10774,9 @@ function createLayoutTsx(keepAliveRoute, layoutState, windowState, topWindow, le
   if (!__UNI_FEATURE_RESPONSIVE__) {
     return routerVNode;
   }
-  const topWindowTsx = __UNI_FEATURE_TOPWINDOW__ ? createTopWindowTsx(topWindow, layoutState, windowState) : null;
-  const leftWindowTsx = __UNI_FEATURE_LEFTWINDOW__ ? createLeftWindowTsx(leftWindow, layoutState, windowState) : null;
-  const rightWindowTsx = __UNI_FEATURE_RIGHTWINDOW__ ? createRightWindowTsx(rightWindow, layoutState, windowState) : null;
+  const topWindowTsx = __UNI_FEATURE_TOPWINDOW__ ? createTopWindowTsx(topWindow, layoutState, windowState.value) : null;
+  const leftWindowTsx = __UNI_FEATURE_LEFTWINDOW__ ? createLeftWindowTsx(leftWindow, layoutState, windowState.value) : null;
+  const rightWindowTsx = __UNI_FEATURE_RIGHTWINDOW__ ? createRightWindowTsx(rightWindow, layoutState, windowState.value) : null;
   return vue.createVNode("uni-layout", {
     "class": {
       "uni-app--showtopwindow": __UNI_FEATURE_TOPWINDOW__ && layoutState.showTopWindow,

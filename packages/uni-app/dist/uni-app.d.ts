@@ -180,6 +180,10 @@ declare interface ProxyBaseOptions {
      * 属性名或方法名
      */
     name: string;
+    /**
+     * 是否是伴生对象
+     */
+    companion?: boolean;
 }
 
 declare interface ProxyClassOptions {

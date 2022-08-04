@@ -717,6 +717,7 @@ function createVueComponent(mpType, mpInstance, vueOptions, parent) {
     }, {
         mpType,
         mpInstance,
+        slots: mpInstance.props.uS || {},
         parentComponent: parent && parent.$,
         onBeforeSetup(instance, options) {
             initMocks(instance, mpInstance, mocks);

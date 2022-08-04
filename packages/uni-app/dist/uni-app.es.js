@@ -207,7 +207,7 @@ function initUtsProxyClass({ package: pkg, class: cls, methods, props, staticPro
                         }
                         else if (hasOwn(staticMethods, name)) {
                             // 静态方法
-                            target[name] = initUtsStaticMethod(!!staticMethods[name].async, extend({ name }, baseOptions));
+                            target[name] = initUtsStaticMethod(!!staticMethods[name].async, extend({ name, companion: true }, baseOptions));
                         }
                         else if (props.includes(name)) {
                             // 实例属性
@@ -215,7 +215,7 @@ function initUtsProxyClass({ package: pkg, class: cls, methods, props, staticPro
                         }
                         else if (staticProps.includes(name)) {
                             // 静态属性
-                            return invokePropGetter(extend({ name: name }, baseOptions));
+                            return invokePropGetter(extend({ name: name, companion: true }, baseOptions));
                         }
                     }
                     return target[name];

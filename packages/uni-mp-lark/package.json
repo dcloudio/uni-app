@@ -3,6 +3,10 @@
   "version": "3.0.0-alpha-3050420220803001",
   "description": "uni-app mp-lark",
   "main": "dist/index.js",
+  "files": [
+    "dist",
+    "lib"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dcloudio/uni-app.git",

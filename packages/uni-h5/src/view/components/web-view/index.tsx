@@ -65,9 +65,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         iframe.src = getRealPath(props.src)
       })
       _resize = useWebViewSize(rootRef, iframe, props.fullscreen)
-      if(props.fullscreen){
+      if (props.fullscreen) {
         document.body.appendChild(iframe)
-      }else{
+      } else {
         iframeRef.value = iframe
       }
     }
@@ -94,7 +94,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       return (
         <>
           <uni-web-view
-            class={props.fullscreen ? 'uni-webview--fullscreen': ''}
+            class={props.fullscreen ? 'uni-webview--fullscreen' : ''}
             {...$listeners.value}
             {...$excludeAttrs.value}
             ref={rootRef}
@@ -117,10 +117,15 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   },
 })
 
-function useWebViewSize(rootRef: RootRef, iframe: HTMLIFrameElement, fullscreen:boolean) {
+function useWebViewSize(
+  rootRef: RootRef,
+  iframe: HTMLIFrameElement,
+  fullscreen: boolean
+) {
   const _resize = () => {
-    if(fullscreen){
-      const { top, left, width, height } = rootRef.value!.getBoundingClientRect()
+    if (fullscreen) {
+      const { top, left, width, height } =
+        rootRef.value!.getBoundingClientRect()
       updateElementStyle(iframe, {
         position: 'absolute',
         display: 'block',
@@ -130,7 +135,7 @@ function useWebViewSize(rootRef: RootRef, iframe: HTMLIFrameElement, fullscreen:
         width: width + 'px',
         height: height + 'px',
       })
-    }else{
+    } else {
       updateElementStyle(iframe, {
         width: rootRef.value?.style.width || '300px',
         height: rootRef.value?.style.height || '150px',

@@ -15304,6 +15304,10 @@ const props$f = {
   src: {
     type: String,
     default: ""
+  },
+  fullscreen: {
+    type: Boolean,
+    default: true
   }
 };
 var index$d = /* @__PURE__ */ defineBuiltInComponent({
@@ -15335,13 +15339,18 @@ var index$d = /* @__PURE__ */ defineBuiltInComponent({
       watchEffect(() => {
         iframe.src = getRealPath(props2.src);
       });
-      document.body.appendChild(iframe);
-      iframeRef.value = iframe;
-      _resize = useWebViewSize(rootRef, iframeRef);
+      _resize = useWebViewSize(rootRef, iframe, props2.fullscreen);
+      if (props2.fullscreen) {
+        document.body.appendChild(iframe);
+      } else {
+        iframeRef.value = iframe;
+      }
     };
     renderIframe();
     onMounted(() => {
+      var _a;
       _resize();
+      !props2.fullscreen && ((_a = rootRef.value) == null ? void 0 : _a.appendChild(iframeRef.value));
     });
     onActivated(() => {
       iframeRef.value && (iframeRef.value.style.display = "block");
@@ -15350,10 +15359,12 @@ var index$d = /* @__PURE__ */ defineBuiltInComponent({
       iframeRef.value && (iframeRef.value.style.display = "none");
     });
     onBeforeUnmount(() => {
-      document.body.removeChild(iframeRef.value);
+      iframeRef.value && document.body.removeChild(iframeRef.value);
     });
     return () => {
-      return createVNode(Fragment, null, [createVNode("uni-web-view", mergeProps($listeners.value, $excludeAttrs.value, {
+      return createVNode(Fragment, null, [createVNode("uni-web-view", mergeProps({
+        "class": props2.fullscreen ? "uni-webview--fullscreen" : ""
+      }, $listeners.value, $excludeAttrs.value, {
         "ref": rootRef
       }), [createVNode(ResizeSensor, {
         "onResize": _resize
@@ -15361,23 +15372,31 @@ var index$d = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-function useWebViewSize(rootRef, iframeRef) {
+function useWebViewSize(rootRef, iframe, fullscreen) {
   const _resize = () => {
-    const {
-      top,
-      left,
-      width,
-      height
-    } = rootRef.value.getBoundingClientRect();
-    iframeRef.value && updateElementStyle(iframeRef.value, {
-      position: "absolute",
-      display: "block",
-      border: "0",
-      top: top + "px",
-      left: left + "px",
-      width: width + "px",
-      height: height + "px"
-    });
+    var _a, _b;
+    if (fullscreen) {
+      const {
+        top,
+        left,
+        width,
+        height
+      } = rootRef.value.getBoundingClientRect();
+      updateElementStyle(iframe, {
+        position: "absolute",
+        display: "block",
+        border: "0",
+        top: top + "px",
+        left: left + "px",
+        width: width + "px",
+        height: height + "px"
+      });
+    } else {
+      updateElementStyle(iframe, {
+        width: ((_a = rootRef.value) == null ? void 0 : _a.style.width) || "300px",
+        height: ((_b = rootRef.value) == null ? void 0 : _b.style.height) || "150px"
+      });
+    }
   };
   return _resize;
 }
@@ -20140,7 +20159,8 @@ function useState() {
       "--window-margin": value + "px"
     }));
     return {
-      layoutState: layoutState2
+      layoutState: layoutState2,
+      windowState: computed(() => ({}))
     };
   }
   const topWindowMediaQuery = ref(false);
@@ -20193,14 +20213,14 @@ function useState() {
   watch(() => layoutState.rightWindowWidth + layoutState.marginWidth, (value) => updateCssVar({
     "--window-right": value + "px"
   }));
-  const windowState = reactive({
+  const windowState = computed(() => ({
     matchTopWindow: layoutState.topWindowMediaQuery,
     showTopWindow: layoutState.showTopWindow || layoutState.apiShowTopWindow,
     matchLeftWindow: layoutState.leftWindowMediaQuery,
     showLeftWindow: layoutState.showLeftWindow || layoutState.apiShowLeftWindow,
     matchRightWindow: layoutState.rightWindowMediaQuery,
     showRightWindow: layoutState.showRightWindow || layoutState.apiShowRightWindow
-  });
+  }));
   return {
     layoutState,
     windowState
@@ -20211,9 +20231,9 @@ function createLayoutTsx(keepAliveRoute, layoutState, windowState, topWindow, le
   if (!__UNI_FEATURE_RESPONSIVE__) {
     return routerVNode;
   }
-  const topWindowTsx = __UNI_FEATURE_TOPWINDOW__ ? createTopWindowTsx(topWindow, layoutState, windowState) : null;
-  const leftWindowTsx = __UNI_FEATURE_LEFTWINDOW__ ? createLeftWindowTsx(leftWindow, layoutState, windowState) : null;
-  const rightWindowTsx = __UNI_FEATURE_RIGHTWINDOW__ ? createRightWindowTsx(rightWindow, layoutState, windowState) : null;
+  const topWindowTsx = __UNI_FEATURE_TOPWINDOW__ ? createTopWindowTsx(topWindow, layoutState, windowState.value) : null;
+  const leftWindowTsx = __UNI_FEATURE_LEFTWINDOW__ ? createLeftWindowTsx(leftWindow, layoutState, windowState.value) : null;
+  const rightWindowTsx = __UNI_FEATURE_RIGHTWINDOW__ ? createRightWindowTsx(rightWindow, layoutState, windowState.value) : null;
   return createVNode("uni-layout", {
     "class": {
       "uni-app--showtopwindow": __UNI_FEATURE_TOPWINDOW__ && layoutState.showTopWindow,
