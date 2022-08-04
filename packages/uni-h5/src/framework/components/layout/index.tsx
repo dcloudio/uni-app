@@ -16,7 +16,6 @@ import {
   Ref,
   watch,
   nextTick,
-  WritableComputedRef,
 } from 'vue'
 
 import { RouterView } from 'vue-router'
@@ -196,7 +195,10 @@ function useState() {
       () => layoutState.marginWidth,
       (value) => updateCssVar({ '--window-margin': value + 'px' })
     )
-    return { layoutState }
+    return {
+      layoutState,
+      windowState: computed<WindowState>(() => ({})),
+    }
   }
   const topWindowMediaQuery = ref(false)
   const leftWindowMediaQuery = ref(false)
@@ -274,7 +276,7 @@ function useState() {
     () => layoutState.rightWindowWidth + layoutState.marginWidth,
     (value) => updateCssVar({ '--window-right': value + 'px' })
   )
-  const windowState: WritableComputedRef<WindowState> = computed(() => ({
+  const windowState = computed<WindowState>(() => ({
     matchTopWindow: layoutState.topWindowMediaQuery,
     showTopWindow: layoutState.showTopWindow || layoutState.apiShowTopWindow,
     matchLeftWindow: layoutState.leftWindowMediaQuery,
@@ -291,8 +293,8 @@ function useState() {
 
 function createLayoutTsx(
   keepAliveRoute: KeepAliveRoute,
-  layoutState?: LayoutState,
-  windowState?: WritableComputedRef<WindowState>,
+  layoutState: LayoutState,
+  windowState: ComputedRef<WindowState>,
   topWindow?: unknown,
   leftWindow?: unknown,
   rightWindow?: unknown
@@ -305,13 +307,13 @@ function createLayoutTsx(
     return routerVNode
   }
   const topWindowTsx = __UNI_FEATURE_TOPWINDOW__
-    ? createTopWindowTsx(topWindow, layoutState!, windowState!.value)
+    ? createTopWindowTsx(topWindow, layoutState, windowState.value)
     : null
   const leftWindowTsx = __UNI_FEATURE_LEFTWINDOW__
-    ? createLeftWindowTsx(leftWindow, layoutState!, windowState!.value)
+    ? createLeftWindowTsx(leftWindow, layoutState, windowState.value)
     : null
   const rightWindowTsx = __UNI_FEATURE_RIGHTWINDOW__
-    ? createRightWindowTsx(rightWindow, layoutState!, windowState?.value!)
+    ? createRightWindowTsx(rightWindow, layoutState, windowState.value)
     : null
   return (
     <uni-layout
