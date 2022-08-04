@@ -64,11 +64,10 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       watchEffect(() => {
         iframe.src = getRealPath(props.src)
       })
-      _resize = useWebViewSize(rootRef, iframe, props.fullscreen)
+      iframeRef.value = iframe
+      _resize = useWebViewSize(rootRef, iframeRef, props.fullscreen)
       if (props.fullscreen) {
         document.body.appendChild(iframe)
-      } else {
-        iframeRef.value = iframe
       }
     }
 
@@ -79,15 +78,15 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     })
 
     onActivated(() => {
-      iframeRef.value && (iframeRef.value.style.display = 'block')
+      props.fullscreen && (iframeRef.value!.style.display = 'block')
     })
 
     onDeactivated(() => {
-      iframeRef.value && (iframeRef.value.style.display = 'none')
+      props.fullscreen && (iframeRef.value!.style.display = 'none')
     })
 
     onBeforeUnmount(() => {
-      iframeRef.value && document.body.removeChild(iframeRef.value)
+      props.fullscreen && document.body.removeChild(iframeRef.value!)
     })
 
     return () => {
@@ -119,14 +118,14 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
 function useWebViewSize(
   rootRef: RootRef,
-  iframe: HTMLIFrameElement,
+  iframeRef: RootRef,
   fullscreen: boolean
 ) {
   const _resize = () => {
     if (fullscreen) {
-      const { top, left, width, height } =
-        rootRef.value!.getBoundingClientRect()
-      updateElementStyle(iframe, {
+      const { top, left, width, height } = rootRef.value!.getBoundingClientRect()
+
+      updateElementStyle(iframeRef.value!, {
         position: 'absolute',
         display: 'block',
         border: '0',
@@ -136,7 +135,7 @@ function useWebViewSize(
         height: height + 'px',
       })
     } else {
-      updateElementStyle(iframe, {
+      updateElementStyle(iframeRef.value!, {
         width: rootRef.value?.style.width || '300px',
         height: rootRef.value?.style.height || '150px',
       })
