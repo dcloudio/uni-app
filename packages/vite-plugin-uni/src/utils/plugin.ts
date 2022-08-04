@@ -123,6 +123,7 @@ function initPlugins(
       }
       return plugin
     })
+    .flat()
 }
 
 function resolvePlugins(cliRoot: string, platform: UniApp.PLATFORM) {
