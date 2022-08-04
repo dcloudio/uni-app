@@ -15339,11 +15339,10 @@ var index$d = /* @__PURE__ */ defineBuiltInComponent({
       watchEffect(() => {
         iframe.src = getRealPath(props2.src);
       });
-      _resize = useWebViewSize(rootRef, iframe, props2.fullscreen);
+      iframeRef.value = iframe;
+      _resize = useWebViewSize(rootRef, iframeRef, props2.fullscreen);
       if (props2.fullscreen) {
         document.body.appendChild(iframe);
-      } else {
-        iframeRef.value = iframe;
       }
     };
     renderIframe();
@@ -15353,13 +15352,13 @@ var index$d = /* @__PURE__ */ defineBuiltInComponent({
       !props2.fullscreen && ((_a = rootRef.value) == null ? void 0 : _a.appendChild(iframeRef.value));
     });
     onActivated(() => {
-      iframeRef.value && (iframeRef.value.style.display = "block");
+      props2.fullscreen && (iframeRef.value.style.display = "block");
     });
     onDeactivated(() => {
-      iframeRef.value && (iframeRef.value.style.display = "none");
+      props2.fullscreen && (iframeRef.value.style.display = "none");
     });
     onBeforeUnmount(() => {
-      iframeRef.value && document.body.removeChild(iframeRef.value);
+      props2.fullscreen && document.body.removeChild(iframeRef.value);
     });
     return () => {
       return createVNode(Fragment, null, [createVNode("uni-web-view", mergeProps({
@@ -15372,7 +15371,7 @@ var index$d = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-function useWebViewSize(rootRef, iframe, fullscreen) {
+function useWebViewSize(rootRef, iframeRef, fullscreen) {
   const _resize = () => {
     var _a, _b;
     if (fullscreen) {
@@ -15382,7 +15381,7 @@ function useWebViewSize(rootRef, iframe, fullscreen) {
         width,
         height
       } = rootRef.value.getBoundingClientRect();
-      updateElementStyle(iframe, {
+      updateElementStyle(iframeRef.value, {
         position: "absolute",
         display: "block",
         border: "0",
@@ -15392,7 +15391,7 @@ function useWebViewSize(rootRef, iframe, fullscreen) {
         height: height + "px"
       });
     } else {
-      updateElementStyle(iframe, {
+      updateElementStyle(iframeRef.value, {
         width: ((_a = rootRef.value) == null ? void 0 : _a.style.width) || "300px",
         height: ((_b = rootRef.value) == null ? void 0 : _b.style.height) || "150px"
       });
