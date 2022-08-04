@@ -49,7 +49,7 @@ module.exports = function (source) {
     sourceMap,
     rootContext,
     resourcePath,
-    resourceQuery
+    resourceQuery = ''
   } = loaderContext
 
   const rawQuery = resourceQuery.slice(1)
@@ -79,20 +79,20 @@ module.exports = function (source) {
     const isWin = /^win/.test(process.platform)
     const normalizePath = path => (isWin ? path.replace(/\\/g, '/') : path)
 
-    if(!options.compilerOptions){
+    if (!options.compilerOptions) {
       options.compilerOptions = {}
     }
     options.compilerOptions.autoComponentResourcePath = normalizePath(resourcePath)
 
     // fixed by xxxxxx
-    if(!modules && options.compilerOptions && options.compilerOptions.modules){
-        modules = options.compilerOptions.modules
+    if (!modules && options.compilerOptions && options.compilerOptions.modules) {
+      modules = options.compilerOptions.modules
     }
     const sourcePath = normalizePath(require('@dcloudio/uni-h5/path').src)
     if (normalizePath(this.resourcePath).indexOf(sourcePath) === 0) {
       descriptor.styles.length = 0
       options.compilerOptions && (delete options.compilerOptions.modules)
-    } else if(options.compilerOptions){
+    } else if (options.compilerOptions) {
       options.compilerOptions.modules = modules
     }
   }
@@ -118,7 +118,7 @@ module.exports = function (source) {
 
   const id = hash(
     isProduction
-      ? (shortFilePath + '\n' + source)
+      ? shortFilePath + '\n' + source.replace(/\r\n/g, '\n')
       : shortFilePath
   )
 
@@ -164,7 +164,7 @@ module.exports = function (source) {
   }
 
   let renderjsImport = `var renderjs`
-  if((options.isAppView || options.isH5) && descriptor.renderjs){
+  if ((options.isAppView || options.isH5) && descriptor.renderjs) {
     const src = descriptor.renderjs.src || resourcePath
     const attrsQuery = attrsToQuery(descriptor.renderjs.attrs, 'js')
     const query = `?vue&type=renderjs${attrsQuery}${inheritQuery}`
@@ -205,7 +205,7 @@ var component = normalizer(
   render,
   staticRenderFns,
   ${hasFunctional ? `true` : `false`},
-  ${options.isAppNVue ? `null`: (/injectStyles/.test(stylesCode) ? `injectStyles` : `null`)},
+  ${options.isAppNVue ? `null` : (/injectStyles/.test(stylesCode) ? `injectStyles` : `null`)},
   ${hasScoped ? JSON.stringify(id) : `null`},
   ${isServer ? JSON.stringify(hash(request)) : `null`},
   ${isShadow ? `true` : `false`},
@@ -228,7 +228,7 @@ var component = normalizer(
   }
   // fixed by xxxxxx (app-nvue injectStyles)
   if (options.isAppNVue && /injectStyles/.test(stylesCode)) {
-    code +=`\ninjectStyles.call(component)`
+    code += `\ninjectStyles.call(component)`
   }
   // Expose filename. This is used by the devtools and Vue runtime warnings.
   if (!isProduction) {
@@ -236,7 +236,7 @@ var component = normalizer(
     // from the devtools.
     code += `\ncomponent.options.__file = ${JSON.stringify(rawShortFilePath.replace(/\\/g, '/'))}`
   } else if (options.exposeFilename) {
-    // Libraies can opt-in to expose their components' filenames in production builds.
+    // Libraries can opt-in to expose their components' filenames in production builds.
     // For security reasons, only expose the file's basename in production.
     code += `\ncomponent.options.__file = ${JSON.stringify(filename)}`
   }
@@ -244,7 +244,6 @@ var component = normalizer(
     code += `\nrecyclableRender && (component.options["@render"] = recyclableRender)` // fixed by xxxxxx
   }
   code += `\nexport default component.exports`
-  // console.log(code)
   return code
 }
 
