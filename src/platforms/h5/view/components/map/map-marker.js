@@ -1,4 +1,4 @@
-import { mapInfo, MapType, IS_AMAP } from '../../../helpers/location'
+import { MapType, getMapInfo, IS_AMAP } from '../../../helpers/location'
 import getRealPath from 'uni-platform/helpers/get-real-path'
 
 export default {
@@ -332,6 +332,7 @@ export default {
       return className
     },
     getMarkerLatitudeLongitude (e) {
+      const mapInfo = getMapInfo()
       let latitude
       let longitude
 
