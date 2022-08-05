@@ -4850,7 +4850,11 @@ function findComponentPublicInstance(mpComponents, id) {
     const mpInstance = mpComponents.find(com => com && (com.properties || com.props).uI === id);
     if (mpInstance) {
         const vm = mpInstance.$vm;
-        return getExposeProxy(vm.$) || vm;
+        if (vm) {
+            return getExposeProxy(vm.$) || vm;
+        }
+        // 可能是原生组件
+        return mpInstance;
     }
     return null;
 }
