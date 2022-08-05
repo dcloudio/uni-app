@@ -123,7 +123,8 @@ function useWebViewSize(
 ) {
   const _resize = () => {
     if (fullscreen) {
-      const { top, left, width, height } = rootRef.value!.getBoundingClientRect()
+      const { top, left, width, height } =
+        rootRef.value!.getBoundingClientRect()
 
       updateElementStyle(iframeRef.value!, {
         position: 'absolute',
