@@ -265,6 +265,8 @@ const v3 = {
       })
     }
 
+    webpackConfig.plugin('vue-loader').use(require(vueLoader.loader).VueLoaderPlugin)
+
     webpackConfig.plugins.delete('hmr')
     webpackConfig.plugins.delete('html')
     webpackConfig.plugins.delete('copy')
