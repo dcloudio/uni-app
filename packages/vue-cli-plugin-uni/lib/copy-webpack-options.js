@@ -7,6 +7,7 @@ const {
   initI18nOptions
 } = require('@dcloudio/uni-cli-shared/lib/i18n')
 const assetsDir = 'static'
+const CopyWebpackPluginVersion = Number(require('copy-webpack-plugin/package.json').version.split('.')[0])
 
 function getAssetsCopyOption (from, options = {}) {
   if (path.isAbsolute(from)) {
@@ -42,7 +43,9 @@ function getAssetsCopyOptions (assetsDir) {
 
   const copyOptions = []
   // 主包静态资源
-  const mainAssetsCopyOption = getAssetsCopyOption(assetsDir, {
+  const mainAssetsCopyOption = getAssetsCopyOption(assetsDir, CopyWebpackPluginVersion > 5 ? {
+    globOptions: { ignore }
+  } : {
     ignore
   })
   if (mainAssetsCopyOption) {
@@ -51,11 +54,11 @@ function getAssetsCopyOptions (assetsDir) {
   // 分包静态资源
   process.UNI_SUBPACKAGES &&
     Object.keys(process.UNI_SUBPACKAGES).forEach(root => {
-      const subAssetsCopyOption = getAssetsCopyOption(
-        path.join(root, assetsDir), {
-          ignore
-        }
-      )
+      const subAssetsCopyOption = getAssetsCopyOption(path.join(root, assetsDir), CopyWebpackPluginVersion > 5 ? {
+        globOptions: { ignore }
+      } : {
+        ignore
+      })
       if (subAssetsCopyOption) {
         copyOptions.push(subAssetsCopyOption)
       }
@@ -91,7 +94,8 @@ function getCopyWebpackPluginOptions (platformOptions, vueOptions) {
   if (process.env.UNI_PLATFORM === 'app-plus' && !process.env.UNI_AUTOMATOR_WS_ENDPOINT) {
     copyOptions.push({
       from: path.resolve(process.env.UNI_INPUT_DIR, 'android*.json'),
-      to: '[name].[ext]',
+      to: `[name]${CopyWebpackPluginVersion > 5 ? '' : '.'}[ext]`,
+      noErrorOnMissing: true,
       globOptions: {
         ignored: require('./util').getWatchOptions().ignored
       },

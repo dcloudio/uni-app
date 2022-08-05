@@ -44,13 +44,10 @@ class WebpackAppPlusPlugin {
       })
 
       compiler.hooks.emit.tapAsync('WebpackAppPlusPlugin', (compilation, callback) => {
-        const changedChunks = compilation.chunks.filter(chunk => {
+        compilation.chunks.forEach(chunk => {
           const oldVersion = chunkVersions[chunk.name]
           chunkVersions[chunk.name] = chunk.hash
-          return chunk.hash !== oldVersion
-        })
-        changedChunks.map(chunk => {
-          if (Array.isArray(chunk.files)) {
+          if (chunk.hash !== oldVersion && Array.isArray(chunk.files)) {
             chunk.files.forEach(file => {
               if (isAppService) {
                 !serviceChangedFiles.includes(file) && (serviceChangedFiles.push(file))

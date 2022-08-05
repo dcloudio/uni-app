@@ -2,6 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const webpack = require('webpack')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
+const CopyWebpackPluginVersion = Number(require('copy-webpack-plugin/package.json').version.split('.')[0])
 
 const merge = require('webpack-merge')
 
@@ -231,12 +232,13 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
       vueOptions.pluginOptions['uni-app-plus'].view
 
     if (!isAppView) { // app-plus view不需要copy
-      plugins.push(new CopyWebpackPlugin(getCopyWebpackPluginOptions(manifestPlatformOptions, vueOptions)))
+      const patterns = getCopyWebpackPluginOptions(manifestPlatformOptions, vueOptions)
+      plugins.push(new CopyWebpackPlugin(CopyWebpackPluginVersion > 5 ? { patterns } : patterns))
     }
     if (!process.env.UNI_SUBPACKGE || !process.env.UNI_MP_PLUGIN) {
       try {
         const automatorJson = require.resolve('@dcloudio/uni-automator/dist/automator.json')
-        plugins.push(new CopyWebpackPlugin([{
+        const patterns = [{
           from: automatorJson,
           to: '../.automator/' + (process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM) +
             '/.automator.json',
@@ -249,8 +251,9 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
             }
             return ''
           }
-        }]))
-      } catch (e) {}
+        }]
+        plugins.push(new CopyWebpackPlugin(CopyWebpackPluginVersion > 5 ? { patterns } : patterns))
+      } catch (e) { }
     }
 
     if (process.UNI_SCRIPT_ENV && Object.keys(process.UNI_SCRIPT_ENV).length) {

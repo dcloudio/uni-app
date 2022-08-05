@@ -20,7 +20,6 @@
     "@dcloudio/uni-stat": "^2.0.0-32920211029001",
     "buffer-json": "^2.0.0",
     "clone-deep": "^4.0.1",
-    "copy-webpack-plugin": "^5.1.1",
     "cross-env": "^5.2.0",
     "envinfo": "^6.0.1",
     "hash-sum": "^1.0.2",
@@ -39,6 +38,7 @@
     "xregexp": "4.0.0"
   },
   "peerDependencies": {
+    "copy-webpack-plugin": ">=5",
     "postcss": ">=7"
   },
   "gitHead": "9e2d0f8e244724fcd64880316c57d837d1778cf8"

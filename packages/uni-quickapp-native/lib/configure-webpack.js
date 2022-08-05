@@ -2,6 +2,7 @@ const path = require('path')
 
 const webpack = require('webpack')
 const CopyPlugin = require('copy-webpack-plugin')
+const CopyPluginVersion = Number(require('copy-webpack-plugin/package.json').version.split('.')[0])
 
 const HandlerPlugin = require('@hap-toolkit/packager/lib/plugin/handler-plugin')
 const ZipPlugin = require('@hap-toolkit/packager/lib/plugin/zip-plugin')
@@ -38,6 +39,11 @@ function genPriorities (entryPagePath) {
 }
 
 const uniCloudPath = require.resolve('@dcloudio/vue-cli-plugin-uni/packages/uni-cloud/dist/index.js')
+
+const patterns = [{
+  from: path.resolve(__dirname, '../dist/' + dslFilename),
+  to: 'dsl.js'
+}]
 
 module.exports = {
   devtool: false,
@@ -77,10 +83,7 @@ module.exports = {
     new webpack.ProvidePlugin({
       uniCloud: [uniCloudPath, 'default']
     }),
-    new CopyPlugin([{
-      from: path.resolve(__dirname, '../dist/' + dslFilename),
-      to: 'dsl.js'
-    }]),
+    new CopyPlugin(CopyPluginVersion > 5 ? { patterns } : patterns),
     new HandlerPlugin({}),
     new Css2jsonPlugin(),
     new InstVuePlugin(),
