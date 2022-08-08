@@ -289,8 +289,7 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
           noSources: true,
           append: false
         }
-        if (isInHBuilderX && process.env.SOURCEMAP_PATH)
-        sourceMapOptions.filename = process.env.SOURCEMAP_PATH
+        if (isInHBuilderX && process.env.SOURCEMAP_PATH) { sourceMapOptions.filename = process.env.SOURCEMAP_PATH }
         if (useEvalSourceMap || useSourceMap) {
           plugins.push(sourceMap.createSourceMapDevToolPlugin(!sourceMapOptions.filename, sourceMapOptions))
         }
@@ -302,7 +301,7 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
         }
       }
     }
-    
+
     try {
       if (process.env.UNI_HBUILDERX_PLUGINS) {
         require(path.resolve(process.env.UNI_HBUILDERX_PLUGINS, 'uni_helpers/lib/bytenode'))

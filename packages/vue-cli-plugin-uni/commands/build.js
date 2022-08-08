@@ -73,7 +73,7 @@ module.exports = (api, options) => {
 
     process.env.VUE_CLI_BUILD_TARGET = args.target
 
-    if (args['sourcemap']) process.env.SOURCEMAP = args['sourcemap']
+    if (args.sourcemap) process.env.SOURCEMAP = args.sourcemap
 
     await build(args, api, options)
 
