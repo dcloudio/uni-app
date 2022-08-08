@@ -96,9 +96,6 @@ function getCopyWebpackPluginOptions (platformOptions, vueOptions) {
       from: path.resolve(process.env.UNI_INPUT_DIR, 'android*.json'),
       to: `[name]${CopyWebpackPluginVersion > 5 ? '' : '.'}[ext]`,
       noErrorOnMissing: true,
-      globOptions: {
-        ignored: require('./util').getWatchOptions().ignored
-      },
       transform (content, path) {
         if (path.endsWith('androidPrivacy.json')) {
           const options = initI18nOptions(
