@@ -172,8 +172,8 @@ module.exports = (api, options) => {
           // launch editor support.
           // this works with vue-devtools & @vue/cli-overlay
           devServer.app.use('/__open-in-editor', launchEditorMiddleware(() => console.log(
-            `To specify an editor, specify the EDITOR env variable or ` +
-            `add "editor" field to your Vue project config.\n`
+            'To specify an editor, specify the EDITOR env variable or ' +
+            'add "editor" field to your Vue project config.\n'
           )))
 
           // allow other plugins to register middlewares, e.g. PWA
@@ -189,42 +189,42 @@ module.exports = (api, options) => {
       }), compiler)
     } else {
       server = new WebpackDevServer(compiler, Object.assign({
-      clientLogLevel: 'none',
-      historyApiFallback: {
-        disableDotRule: true,
-        rewrites: [{
-          from: /./,
-          to: path.posix.join(options.publicPath, 'index.html')
-        }]
-      },
-      contentBase: api.resolve('public'),
-      watchContentBase: !isProduction,
-      hot: !isProduction,
-      quiet: true,
-      compress: isProduction,
-      publicPath: options.publicPath,
-      overlay: isProduction // TODO disable this
-        ? false : {
-          warnings: false,
-          errors: true
-        }
-    }, projectDevServerOptions, {
-      https: useHttps,
-      proxy: proxySettings,
-      before (app, server) {
+        clientLogLevel: 'none',
+        historyApiFallback: {
+          disableDotRule: true,
+          rewrites: [{
+            from: /./,
+            to: path.posix.join(options.publicPath, 'index.html')
+          }]
+        },
+        contentBase: api.resolve('public'),
+        watchContentBase: !isProduction,
+        hot: !isProduction,
+        quiet: true,
+        compress: isProduction,
+        publicPath: options.publicPath,
+        overlay: isProduction // TODO disable this
+          ? false : {
+            warnings: false,
+            errors: true
+          }
+      }, projectDevServerOptions, {
+        https: useHttps,
+        proxy: proxySettings,
+        before (app, server) {
         // launch editor support.
         // this works with vue-devtools & @vue/cli-overlay
-        app.use('/__open-in-editor', launchEditorMiddleware(() => console.log(
-          'To specify an editor, sepcify the EDITOR env variable or ' +
+          app.use('/__open-in-editor', launchEditorMiddleware(() => console.log(
+            'To specify an editor, sepcify the EDITOR env variable or ' +
           'add "editor" field to your Vue project config.\n'
-        )))
-        // allow other plugins to register middlewares, e.g. PWA
-        api.service.devServerConfigFns.forEach(fn => fn(app, server))
-        // apply in project middlewares
-        projectDevServerOptions.before && projectDevServerOptions.before(app,
-          server)
-      }
-    }))
+          )))
+          // allow other plugins to register middlewares, e.g. PWA
+          api.service.devServerConfigFns.forEach(fn => fn(app, server))
+          // apply in project middlewares
+          projectDevServerOptions.before && projectDevServerOptions.before(app,
+            server)
+        }
+      }))
     }
 
     ;
@@ -356,11 +356,11 @@ module.exports = (api, options) => {
       if (webpack.version[0] > 4) {
         server.start().catch(err => reject(err))
       } else {
-      server.listen(port, host, err => {
-        if (err) {
-          reject(err)
-        }
-      })
+        server.listen(port, host, err => {
+          if (err) {
+            reject(err)
+          }
+        })
       }
     })
   })

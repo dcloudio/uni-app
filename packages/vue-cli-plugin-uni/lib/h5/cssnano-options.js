@@ -11,8 +11,8 @@ module.exports = function initCssnanoOptions (webpackConfig) {
   }
 
   const plugins = [require('cssnano')({
-      preset: ['default', getPlatformCssnano()]
-    })]
+    preset: ['default', getPlatformCssnano()]
+  })]
 
   // TODO postcss-loader version > 4
   if (webpack.version[0] > 4) {

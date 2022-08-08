@@ -100,7 +100,7 @@ function getWebpackConfig (api, args, options) {
     modifyConfig(webpackConfig, config => {
       config.optimization.minimize = true
       if (webpack.version[0] <= 4) {
-      config.optimization.namedModules = false
+        config.optimization.namedModules = false
       }
     })
   } else {
@@ -109,7 +109,7 @@ function getWebpackConfig (api, args, options) {
         config.optimization = {}
       }
       if (webpack.version[0] <= 4) {
-      config.optimization.namedModules = false
+        config.optimization.namedModules = false
       }
     })
   }

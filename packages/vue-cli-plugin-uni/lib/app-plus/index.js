@@ -139,7 +139,7 @@ const v3 = {
         filename: '[name].js',
         chunkFilename: '[id].js',
         // webpack5 use strict
-        globalObject: webpack.version[0] > 4 ? `(new Function("return this")())` : 'this'
+        globalObject: webpack.version[0] > 4 ? '(new Function("return this")())' : 'this'
       },
       performance: {
         hints: false

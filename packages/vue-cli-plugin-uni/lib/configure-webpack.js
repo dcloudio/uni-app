@@ -70,14 +70,14 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
         return rules.length > 0 && rule.use
       } else {
         const RuleSet = require('webpack/lib/RuleSet')
-      const normalized = RuleSet.normalizeRule(clone, {}, '')
-      return (
-        !rule.enforce &&
+        const normalized = RuleSet.normalizeRule(clone, {}, '')
+        return (
+          !rule.enforce &&
         normalized.resource &&
         normalized.resource(fakeFile)
-      )
+        )
+      }
     }
-  }
   }
 
   function updateJsLoader (rawRules, fakeFile, checkLoaderRegex, loader) {
@@ -185,17 +185,17 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
         if (uses.find(use => babelLoaderRe.test(use.loader))) {
           const index = uses.findIndex(use => cacheLoaderRe.test(use.loader))
           if (index >= 0) {
-          if (process.env.UNI_USING_CACHE) {
-            Object.assign(uses[index].options, api.genCacheConfig(
-              'babel-loader/' + process.env.UNI_PLATFORM,
-              getPartialIdentifier()
-            ))
-          } else {
-            uses.splice(index, 1)
+            if (process.env.UNI_USING_CACHE) {
+              Object.assign(uses[index].options, api.genCacheConfig(
+                'babel-loader/' + process.env.UNI_PLATFORM,
+                getPartialIdentifier()
+              ))
+            } else {
+              uses.splice(index, 1)
+            }
           }
         }
       }
-    }
     }
 
     // js preprocess

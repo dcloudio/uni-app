@@ -135,7 +135,7 @@ const rules = [{
       babelrc: false
     }
   },
-    jsPreprocessorLoader
+  jsPreprocessorLoader
   ]
   // exclude (modulePath) { // nvue js均提供babel，否则还得提供transpileDependencies配置
   //   return excludeModuleReg.test(modulePath) && modulePath.indexOf('@dcloudio') === -1
