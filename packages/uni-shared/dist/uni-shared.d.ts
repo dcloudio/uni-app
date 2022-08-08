@@ -454,6 +454,8 @@ export declare const ON_LOAD = "onLoad";
 
 export declare const ON_NAVIGATION_BAR_BUTTON_TAP = "onNavigationBarButtonTap";
 
+export declare const ON_NAVIGATION_BAR_CHANGE = "onNavigationBarChange";
+
 export declare const ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED = "onNavigationBarSearchInputChanged";
 
 export declare const ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED = "onNavigationBarSearchInputClicked";
