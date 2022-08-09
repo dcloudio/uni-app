@@ -1,4 +1,5 @@
 const path = require('path')
+const webpack = require('webpack')
 
 const {
   md5,
@@ -113,7 +114,7 @@ class WebpackUniMPPlugin {
               source
             }) => emitFile(file, source, compilation))
 
-          generateComponent(compilation, compiler.options.output.jsonpFunction)
+          generateComponent(compilation, compiler.options.output[webpack.version[0] > 4 ? 'chunkLoadingGlobal' : 'jsonpFunction'])
 
           resolve()
         })
