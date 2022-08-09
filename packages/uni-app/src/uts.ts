@@ -134,6 +134,10 @@ interface InitProxyFunctionOptions {
    */
   name: string
   /**
+   * 是否伴生对象
+   */
+  companion?: boolean
+  /**
    * 实例 ID
    */
   id?: number
@@ -146,6 +150,7 @@ function initProxyFunction(
     class: cls,
     name: propOrMethod,
     id: instanceId,
+    companion,
   }: InitProxyFunctionOptions
 ) {
   const invokeCallback = ({
@@ -170,6 +175,7 @@ function initProxyFunction(
         package: pkg,
         class: cls,
         name: propOrMethod,
+        companion,
       }
   return (...args: unknown[]) => {
     const invokeArgs = extend({}, baseArgs, {
@@ -198,6 +204,7 @@ function initUtsStaticMethod(async: boolean, opts: ProxyBaseOptions) {
   return initProxyFunction(async, opts)
 }
 export const initUtsProxyFunction = initUtsStaticMethod
+
 export function initUtsProxyClass({
   package: pkg,
   class: cls,
@@ -210,7 +217,7 @@ export function initUtsProxyClass({
     package: pkg,
     class: cls,
   }
-  return class ProxyClass {
+  const ProxyClass = class UtsClass {
     constructor(...params: unknown[]) {
       const target: Record<string, Function> = {}
       // 初始化实例 ID
@@ -234,20 +241,9 @@ export function initUtsProxyClass({
                   baseOptions
                 )
               )
-            } else if (hasOwn(staticMethods, name)) {
-              // 静态方法
-              target[name] = initUtsStaticMethod(
-                !!staticMethods[name].async,
-                extend({ name, companion: true }, baseOptions)
-              )
             } else if (props.includes(name as string)) {
               // 实例属性
               return invokePropGetter({ id: instanceId, name: name as string })
-            } else if (staticProps.includes(name as string)) {
-              // 静态属性
-              return invokePropGetter(
-                extend({ name: name as string, companion: true }, baseOptions)
-              )
             }
           }
           return target[name as string]
@@ -255,4 +251,26 @@ export function initUtsProxyClass({
       })
     }
   }
+  const staticMethodCache: Record<string, Function> = {}
+  return new Proxy(ProxyClass, {
+    get(target, name, receiver) {
+      if (hasOwn(staticMethods, name)) {
+        if (!staticMethodCache[name as string]) {
+          // 静态方法
+          staticMethodCache[name] = initUtsStaticMethod(
+            !!staticMethods[name].async,
+            extend({ name, companion: true }, baseOptions)
+          )
+        }
+        return staticMethodCache[name]
+      }
+      if (staticProps.includes(name as string)) {
+        // 静态属性
+        return invokePropGetter(
+          extend({ name: name as string, companion: true }, baseOptions)
+        )
+      }
+      return Reflect.get(target, name, receiver)
+    },
+  })
 }

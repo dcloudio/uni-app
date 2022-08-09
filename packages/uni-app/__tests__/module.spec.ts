@@ -86,7 +86,7 @@ describe('uts-module', () => {
     const wifi = new WifiManager()
     wifi.preparePermission(1, 2, 3, () => {})
     wifi.count
-    wifi.staticCount
-    wifi.staticPreparePermission(1)
+    WifiManager.staticCount
+    WifiManager.staticPreparePermission(1)
   })
 })

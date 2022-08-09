@@ -137,7 +137,7 @@ function resolveSyncResult(res) {
 function invokePropGetter(args) {
     return resolveSyncResult(getProxy().invokeSync(args, () => { }));
 }
-function initProxyFunction(async, { package: pkg, class: cls, name: propOrMethod, id: instanceId, }) {
+function initProxyFunction(async, { package: pkg, class: cls, name: propOrMethod, id: instanceId, companion, }) {
     const invokeCallback = ({ id, name, params, keepAlive, }) => {
         const callback = callbacks[id];
         if (callback) {
@@ -156,6 +156,7 @@ function initProxyFunction(async, { package: pkg, class: cls, name: propOrMethod
             package: pkg,
             class: cls,
             name: propOrMethod,
+            companion,
         };
     return (...args) => {
         const invokeArgs = extend({}, baseArgs, {
@@ -190,7 +191,7 @@ function initUtsProxyClass({ package: pkg, class: cls, methods, props, staticPro
         package: pkg,
         class: cls,
     };
-    return class ProxyClass {
+    const ProxyClass = class UtsClass {
         constructor(...params) {
             const target = {};
             // 初始化实例 ID
@@ -205,17 +206,9 @@ function initUtsProxyClass({ package: pkg, class: cls, methods, props, staticPro
                                 name,
                             }, baseOptions));
                         }
-                        else if (hasOwn(staticMethods, name)) {
-                            // 静态方法
-                            target[name] = initUtsStaticMethod(!!staticMethods[name].async, extend({ name, companion: true }, baseOptions));
-                        }
                         else if (props.includes(name)) {
                             // 实例属性
                             return invokePropGetter({ id: instanceId, name: name });
-                        }
-                        else if (staticProps.includes(name)) {
-                            // 静态属性
-                            return invokePropGetter(extend({ name: name, companion: true }, baseOptions));
                         }
                     }
                     return target[name];
@@ -223,6 +216,23 @@ function initUtsProxyClass({ package: pkg, class: cls, methods, props, staticPro
             });
         }
     };
+    const staticMethodCache = {};
+    return new Proxy(ProxyClass, {
+        get(target, name, receiver) {
+            if (hasOwn(staticMethods, name)) {
+                if (!staticMethodCache[name]) {
+                    // 静态方法
+                    staticMethodCache[name] = initUtsStaticMethod(!!staticMethods[name].async, extend({ name, companion: true }, baseOptions));
+                }
+                return staticMethodCache[name];
+            }
+            if (staticProps.includes(name)) {
+                // 静态属性
+                return invokePropGetter(extend({ name: name, companion: true }, baseOptions));
+            }
+            return Reflect.get(target, name, receiver);
+        },
+    });
 }
 
 export { getCurrentSubNVue, getSsrGlobalData, initUtsProxyClass, initUtsProxyFunction, onAddToFavorites, onBackPress, onError, onHide, onInit, onLaunch, onLoad, onNavigationBarButtonTap, onNavigationBarSearchInputChanged, onNavigationBarSearchInputClicked, onNavigationBarSearchInputConfirmed, onNavigationBarSearchInputFocusChanged, onPageNotFound, onPageScroll, onPullDownRefresh, onReachBottom, onReady, onResize, onSaveExitState, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, requireNativePlugin, resolveEasycom, shallowSsrRef, ssrRef };
