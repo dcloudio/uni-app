@@ -8,10 +8,6 @@ const {
   nvueCssPreprocessOptions
 } = require('@dcloudio/uni-cli-shared')
 
-const {
-  sassLoaderVersion
-} = require('@dcloudio/uni-cli-shared/lib/scss')
-
 const nvueStyleLoader = {
   loader: '@dcloudio/vue-cli-plugin-hbuilderx/packages/webpack-uni-nvue-loader/lib/style'
 }
@@ -78,25 +74,15 @@ const sassLoader = {
   }
 }
 
-if (sassLoaderVersion < 8) {
-  scssLoader.options.data = sassData
-  scssLoader.options.outputStyle = 'expanded'
+scssLoader.options.prependData = sassData
+scssLoader.options.sassOptions = {
+  outputStyle: 'expanded'
+}
 
-  sassLoader.options.data = sassData
-  sassLoader.options.outputStyle = 'expanded'
-  sassLoader.options.indentedSyntax = true
-} else {
-  const name = sassLoaderVersion >= 9 ? 'additionalData' : 'prependData'
-  scssLoader.options[name] = sassData
-  scssLoader.options.sassOptions = {
-    outputStyle: 'expanded'
-  }
-
-  sassLoader.options[name] = sassData
-  sassLoader.options.sassOptions = {
-    outputStyle: 'expanded',
-    indentedSyntax: true
-  }
+sassLoader.options.prependData = sassData
+sassLoader.options.sassOptions = {
+  outputStyle: 'expanded',
+  indentedSyntax: true
 }
 
 const lessLoader = {

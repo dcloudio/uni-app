@@ -2,10 +2,6 @@ const path = require('path')
 const webpack = require('webpack')
 
 const {
-  sassLoaderVersion
-} = require('@dcloudio/uni-cli-shared/lib/scss')
-
-const {
   getPartialIdentifier
 } = require('./util')
 
@@ -112,21 +108,19 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
       })
     })
 
-    if (sassLoaderVersion >= 8) { // check indentedSyntax
-      // vue cli 3 and sass-loader 8
-      cssTypes.forEach(type => {
-        webpackConfig.module.rule('sass').oneOf(type).use('sass-loader').tap(options => {
-          if (options.indentedSyntax) {
-            if (!options.sassOptions) {
-              options.sassOptions = {}
-            }
-            options.sassOptions.indentedSyntax = true
-            delete options.indentedSyntax
+    // vue cli 3 and sass-loader 8
+    cssTypes.forEach(type => {
+      webpackConfig.module.rule('sass').oneOf(type).use('sass-loader').tap(options => {
+        if (options.indentedSyntax) {
+          if (!options.sassOptions) {
+            options.sassOptions = {}
           }
-          return options
-        })
+          options.sassOptions.indentedSyntax = true
+          delete options.indentedSyntax
+        }
+        return options
       })
-    }
+    })
 
     platformOptions.chainWebpack(webpackConfig, vueOptions, api)
     // define
