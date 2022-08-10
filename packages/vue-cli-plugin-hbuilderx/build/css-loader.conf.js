@@ -1,15 +1,12 @@
 const fs = require('fs')
 const path = require('path')
+const webpack = require('webpack')
 
 const {
   getPlatformScss,
   getPlatformSass,
   nvueCssPreprocessOptions
 } = require('@dcloudio/uni-cli-shared')
-
-const {
-  sassLoaderVersion
-} = require('@dcloudio/uni-cli-shared/lib/scss')
 
 const nvueStyleLoader = {
   loader: '@dcloudio/vue-cli-plugin-hbuilderx/packages/webpack-uni-nvue-loader/lib/style'
@@ -20,27 +17,33 @@ const preprocessLoader = {
   options: nvueCssPreprocessOptions
 }
 
+const options = {
+  sourceMap: false
+}
+const plugins = [
+  require('postcss-import')({
+    resolve (id, basedir, importOptions) {
+      if (id.startsWith('~@/')) {
+        return path.resolve(process.env.UNI_INPUT_DIR, id.substr(3))
+      } else if (id.startsWith('@/')) {
+        return path.resolve(process.env.UNI_INPUT_DIR, id.substr(2))
+      } else if (id.startsWith('/') && !id.startsWith('//')) {
+        return path.resolve(process.env.UNI_INPUT_DIR, id.substr(1))
+      }
+      return id
+    }
+  }),
+  require('@dcloudio/vue-cli-plugin-uni/packages/postcss')
+]
+if (webpack.version[0] > 4) {
+  options.postcssOptions = { plugins }
+} else {
+  options.parser = require('postcss-comment')
+  options.plugins = plugins
+}
 const postcssLoader = {
   loader: 'postcss-loader',
-  options: {
-    sourceMap: false,
-    parser: require('postcss-comment'),
-    plugins: [
-      require('postcss-import')({
-        resolve (id, basedir, importOptions) {
-          if (id.startsWith('~@/')) {
-            return path.resolve(process.env.UNI_INPUT_DIR, id.substr(3))
-          } else if (id.startsWith('@/')) {
-            return path.resolve(process.env.UNI_INPUT_DIR, id.substr(2))
-          } else if (id.startsWith('/') && !id.startsWith('//')) {
-            return path.resolve(process.env.UNI_INPUT_DIR, id.substr(1))
-          }
-          return id
-        }
-      }),
-      require('@dcloudio/vue-cli-plugin-uni/packages/postcss')
-    ]
-  }
+  options
 }
 
 // sass 全局变量
@@ -71,25 +74,15 @@ const sassLoader = {
   }
 }
 
-if (sassLoaderVersion < 8) {
-  scssLoader.options.data = sassData
-  scssLoader.options.outputStyle = 'expanded'
+scssLoader.options.prependData = sassData
+scssLoader.options.sassOptions = {
+  outputStyle: 'expanded'
+}
 
-  sassLoader.options.data = sassData
-  sassLoader.options.outputStyle = 'expanded'
-  sassLoader.options.indentedSyntax = true
-} else {
-  const name = sassLoaderVersion >= 9 ? 'additionalData' : 'prependData'
-  scssLoader.options[name] = sassData
-  scssLoader.options.sassOptions = {
-    outputStyle: 'expanded'
-  }
-
-  sassLoader.options[name] = sassData
-  sassLoader.options.sassOptions = {
-    outputStyle: 'expanded',
-    indentedSyntax: true
-  }
+sassLoader.options.prependData = sassData
+sassLoader.options.sassOptions = {
+  outputStyle: 'expanded',
+  indentedSyntax: true
 }
 
 const lessLoader = {

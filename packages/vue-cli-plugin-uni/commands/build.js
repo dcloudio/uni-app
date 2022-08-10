@@ -1,4 +1,5 @@
 const path = require('path')
+const webpack = require('webpack')
 
 const {
   runByHBuilderX,
@@ -73,7 +74,7 @@ module.exports = (api, options) => {
 
     process.env.VUE_CLI_BUILD_TARGET = args.target
 
-    if (args['sourcemap']) process.env.SOURCEMAP = args['sourcemap']
+    if (args.sourcemap) process.env.SOURCEMAP = args.sourcemap
 
     await build(args, api, options)
 
@@ -98,14 +99,18 @@ function getWebpackConfig (api, args, options) {
   if (args.minimize && process.env.NODE_ENV !== 'production') {
     modifyConfig(webpackConfig, config => {
       config.optimization.minimize = true
-      config.optimization.namedModules = false
+      if (webpack.version[0] <= 4) {
+        config.optimization.namedModules = false
+      }
     })
   } else {
     modifyConfig(webpackConfig, config => {
       if (!config.optimization) {
         config.optimization = {}
       }
-      config.optimization.namedModules = false
+      if (webpack.version[0] <= 4) {
+        config.optimization.namedModules = false
+      }
     })
   }
   return webpackConfig
@@ -131,7 +136,6 @@ function getWebpackConfigs (api, args, options) {
 async function build (args, api, options) {
   const fs = require('fs-extra')
   const chalk = require('chalk')
-  const webpack = require('webpack')
 
   const {
     log,

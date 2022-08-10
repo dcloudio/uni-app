@@ -36,6 +36,8 @@ module.exports.pitch = function (remainingRequest) {
     '',
     '// load the styles',
     'var content = require(' + request + ');',
+    // get default export if list is an ES Module (CSS Loader v4+)
+    "if(content.__esModule) content = content.default;",
     // content list format is [id, css, media, sourceMap]
     "if(typeof content === 'string') content = [[module.id, content, '']];",
     'if(content.locals) module.exports = content.locals;'
@@ -66,6 +68,7 @@ module.exports.pitch = function (remainingRequest) {
         ' if(!content.locals) {',
         '   module.hot.accept(' + request + ', function() {',
         '     var newContent = require(' + request + ');',
+        '     if(newContent.__esModule) newContent = newContent.default;',
         "     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];",
         '     update(newContent);',
         '   });',

@@ -160,9 +160,13 @@ module.exports = {
       },
       plugins,
       optimization: {
-        moduleIds: 'hashed'
+        moduleIds: webpack.version[0] > 4 ? 'deterministic' : 'hashed'
       },
-      devServer: {
+      devServer: webpack.version[0] > 4 ? {
+        watchFiles: {
+          options: require('../util').getWatchOptions()
+        }
+      } : {
         watchOptions: require('../util').getWatchOptions()
       }
     }

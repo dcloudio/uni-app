@@ -1,5 +1,6 @@
 const fs = require('fs')
 const path = require('path')
+const merge = require('merge')
 
 const {
   parsePages,
@@ -28,6 +29,21 @@ const uniI18n = require('@dcloudio/uni-cli-i18n')
 
 function defaultCopy (name, value, json) {
   json[name] = value
+}
+
+function isPlainObject (a) {
+  if (a === null) {
+    return false
+  }
+  return typeof a === 'object'
+}
+
+function deepCopy (name, value, json) {
+  if (isPlainObject(value) && isPlainObject(json[name])) {
+    json[name] = merge.recursive(true, json[name], value)
+  } else {
+    defaultCopy(name, value, json)
+  }
 }
 
 const pagesJson2AppJson = {
@@ -115,7 +131,7 @@ const manifestJson2ProjectJson = {
 
 const platformJson2ProjectJson = {
   appid: defaultCopy,
-  setting: defaultCopy,
+  setting: deepCopy,
   miniprogramRoot: defaultCopy,
   cloudfunctionRoot: defaultCopy,
   qcloudRoot: defaultCopy,
@@ -123,9 +139,9 @@ const platformJson2ProjectJson = {
   compileType: defaultCopy,
   libVersion: defaultCopy,
   projectname: defaultCopy,
-  packOptions: defaultCopy,
-  debugOptions: defaultCopy,
-  scripts: defaultCopy,
+  packOptions: deepCopy,
+  debugOptions: deepCopy,
+  scripts: deepCopy,
   cloudbaseRoot: defaultCopy
 }
 

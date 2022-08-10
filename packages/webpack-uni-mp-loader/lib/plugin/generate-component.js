@@ -1,5 +1,6 @@
 const fs = require('fs')
 const path = require('path')
+const webpack = require('webpack')
 const {
   removeExt,
   normalizePath,
@@ -121,8 +122,17 @@ module.exports = function generateComponent (compilation, jsonpFunction = 'webpa
           if (process.env.UNI_PLATFORM === 'mp-alipay') {
             beforeCode = ';my.defineComponent || (my.defineComponent = Component);'
           }
-          const source = beforeCode + origSource +
-            `
+          const source = beforeCode + origSource + (webpack.version[0] > 4
+            ? `
+;(${globalVar}["${jsonpFunction}"] = ${globalVar}["${jsonpFunction}"] || []).push([
+    ['${chunkName}'],
+    {},
+    function(__webpack_require__){
+      __webpack_require__('${uniModuleId}')['createComponent'](__webpack_require__(${JSON.stringify(moduleId)}))
+    }
+]);
+`
+            : `
 ;(${globalVar}["${jsonpFunction}"] = ${globalVar}["${jsonpFunction}"] || []).push([
     '${chunkName}',
     {
@@ -133,11 +143,18 @@ module.exports = function generateComponent (compilation, jsonpFunction = 'webpa
     [['${chunkName}']]
 ]);
 `
-          const newSource = function () {
-            return source
+          )
+          if (webpack.version[0] > 4) {
+            const { RawSource } = webpack.sources
+            const newSource = new RawSource(source)
+            compilation.updateAsset(name, newSource)
+          } else {
+            const newSource = function () {
+              return source
+            }
+            newSource.__$wrappered = true
+            assets[name].source = newSource
           }
-          newSource.__$wrappered = true
-          assets[name].source = newSource
         }
       }
       const styleExtname = getPlatformExts().style
@@ -186,8 +203,14 @@ module.exports = function generateComponent (compilation, jsonpFunction = 'webpa
             })
             delete sourceObj.componentGenerics
             const source = JSON.stringify(sourceObj, null, 2)
-            jsonFile.source = function () {
-              return source
+            if (webpack.version[0] > 4) {
+              const { RawSource } = webpack.sources
+              const newSource = new RawSource(source)
+              compilation.updateAsset(name, newSource)
+            } else {
+              jsonFile.source = function () {
+                return source
+              }
             }
             jsonFile.__$oldSource = oldSource
           }
@@ -205,8 +228,14 @@ module.exports = function generateComponent (compilation, jsonpFunction = 'webpa
                 }).join('')
               })
             })
-            templateFile.source = function () {
-              return templateSource
+            if (webpack.version[0] > 4) {
+              const { RawSource } = webpack.sources
+              const newSource = new RawSource(templateSource)
+              compilation.updateAsset(name, newSource)
+            } else {
+              templateFile.source = function () {
+                return templateSource
+              }
             }
             templateFile.__$oldSource = oldSource
           }
@@ -215,15 +244,22 @@ module.exports = function generateComponent (compilation, jsonpFunction = 'webpa
     })
   }
   // fix mp-qq https://github.com/dcloudio/uni-app/issues/2648
-  const appJsonFile = compilation.assets['app.json']
+  const appJsonName = 'app.json'
+  const appJsonFile = compilation.assets[appJsonName]
   if (process.env.UNI_PLATFORM === 'mp-qq' && appJsonFile) {
     const obj = JSON.parse(appJsonFile.source())
     if (obj && obj.usingComponents && !Object.keys(obj.usingComponents).length) {
       const componentName = 'fix-2648'
       obj.usingComponents[componentName] = `/${componentName}`
       const source = JSON.stringify(obj, null, 2)
-      appJsonFile.source = function () {
-        return source
+      if (webpack.version[0] > 4) {
+        const { RawSource } = webpack.sources
+        const newSource = new RawSource(source)
+        compilation.updateAsset(appJsonName, newSource)
+      } else {
+        appJsonFile.source = function () {
+          return source
+        }
       }
       const files = [
         {
@@ -258,8 +294,14 @@ module.exports = function generateComponent (compilation, jsonpFunction = 'webpa
       const componentName = 'plugin-wrapper'
       obj.usingComponents[componentName] = `/${componentName}`
       const source = JSON.stringify(obj, null, 2)
-      appJsonFile.source = function () {
-        return source
+      if (webpack.version[0] > 4) {
+        const { RawSource } = webpack.sources
+        const newSource = new RawSource(source)
+        compilation.updateAsset(appJsonName, newSource)
+      } else {
+        appJsonFile.source = function () {
+          return source
+        }
       }
       const files = [
         {

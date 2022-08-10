@@ -1,5 +1,6 @@
 const fs = require('fs')
 const path = require('path')
+const webpack = require('webpack')
 
 const isWin = /^win/.test(process.platform)
 
@@ -59,8 +60,14 @@ module.exports = function initOptions (options) {
     options.css.loaderOptions.sass = {}
   }
 
-  if (!options.css.loaderOptions.postcss.config) {
-    options.css.loaderOptions.postcss.config = {}
+  if (webpack.version[0] > 4) {
+    if (!options.css.loaderOptions.postcss.postcssOptions) {
+      options.css.loaderOptions.postcss.postcssOptions = {}
+    }
+  } else {
+    if (!options.css.loaderOptions.postcss.config) {
+      options.css.loaderOptions.postcss.config = {}
+    }
   }
 
   // sass 全局变量
@@ -85,9 +92,10 @@ module.exports = function initOptions (options) {
   }
   options.css.loaderOptions.sass.prependData = sassData
   const userPostcssConfigPath = path.resolve(process.env.UNI_INPUT_DIR, 'postcss.config.js')
-  if (fs.existsSync(userPostcssConfigPath)) {
-    options.css.loaderOptions.postcss.config.path = userPostcssConfigPath
+  const configPath = fs.existsSync(userPostcssConfigPath) ? userPostcssConfigPath : path.resolve(process.env.UNI_CLI_CONTEXT, 'postcss.config.js')
+  if (webpack.version[0] > 4) {
+    options.css.loaderOptions.postcss.postcssOptions.config = configPath
   } else {
-    options.css.loaderOptions.postcss.config.path = path.resolve(process.env.UNI_CLI_CONTEXT, 'postcss.config.js')
+    options.css.loaderOptions.postcss.config.path = configPath
   }
 }

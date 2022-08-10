@@ -6,12 +6,17 @@ const COMPONENTS_DIR_NAME = 'wxcomponents'
 function getComponentsCopyOption () {
   if (process.env.UNI_OUTPUT_TMP_DIR) { // TODO v3不需要，即将废弃
     const componentsDir = path.resolve(process.env.UNI_INPUT_DIR, COMPONENTS_DIR_NAME)
+    const CopyWebpackPluginVersion = Number(require('copy-webpack-plugin/package.json').version.split('.')[0])
     if (fs.existsSync(componentsDir)) {
-      return {
+      const ignore = ['**/*.vue', '**/*.css']
+      return Object.assign({
         from: componentsDir,
-        to: COMPONENTS_DIR_NAME,
-        ignore: ['**/*.vue', '**/*.css']
-      }
+        to: COMPONENTS_DIR_NAME
+      }, CopyWebpackPluginVersion > 5 ? {
+        globOptions: { ignore }
+      } : {
+        ignore
+      })
     }
   }
 }

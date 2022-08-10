@@ -3,6 +3,7 @@ const path = require('path')
 const webpack = require('webpack')
 const VueLoaderPlugin = require('@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib/plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
+const CopyWebpackPluginVersion = Number(require('copy-webpack-plugin/package.json').version.split('.')[0])
 const TerserPlugin = require('terser-webpack-plugin')
 
 const {
@@ -112,7 +113,10 @@ if (process.env.NODE_ENV === 'development') {
 
 // const excludeModuleReg = /node_modules(?!(\/|\\).*(weex).*)/
 
-const rules = [{
+const rules = [webpack.version[0] > 4 ? {
+  test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/i,
+  type: 'asset'
+} : {
   test: /\.(png|jpg|gif|ttf|eot|woff|woff2)$/i,
   use: [fileLoader]
 }, {
@@ -194,7 +198,7 @@ rules.unshift({
 if (process.env.UNI_USING_V3_NATIVE) {
   try {
     const automatorJson = require.resolve('@dcloudio/uni-automator/dist/automator.json')
-    plugins.push(new CopyWebpackPlugin([{
+    const patterns = [{
       from: automatorJson,
       to: '../.automator/' + (process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM) +
         '/.automator.json',
@@ -207,15 +211,16 @@ if (process.env.UNI_USING_V3_NATIVE) {
         }
         return ''
       }
-    }]))
-  } catch (e) {}
+    }]
+    plugins.push(new CopyWebpackPlugin(CopyWebpackPluginVersion > 5 ? { patterns } : patterns))
+  } catch (e) { }
 }
 
 if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
   plugins.push(new WebpackUniMPPlugin())
   const assetsDir = 'static'
   const hybridDir = 'hybrid/html'
-  const array = [{
+  const patterns = [{
     from: path.resolve(process.env.UNI_INPUT_DIR, assetsDir),
     to: assetsDir
   }]
@@ -223,7 +228,7 @@ if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
   if (!process.env.UNI_AUTOMATOR_WS_ENDPOINT) {
     const androidPrivacyPath = path.resolve(process.env.UNI_INPUT_DIR, 'androidPrivacy.json')
     if (fs.existsSync(androidPrivacyPath)) {
-      array.push({
+      patterns.push({
         from: androidPrivacyPath,
         to: 'androidPrivacy.json'
       })
@@ -231,7 +236,7 @@ if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
   }
   const hybridHtmlPath = path.resolve(process.env.UNI_INPUT_DIR, hybridDir)
   if (fs.existsSync(hybridHtmlPath)) {
-    array.push({
+    patterns.push({
       from: hybridHtmlPath,
       to: hybridDir
     })
@@ -242,7 +247,7 @@ if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
     const assets = modules + module + '/' + assetsDir
     const assetsPath = path.resolve(process.env.UNI_INPUT_DIR, assets)
     if (fs.existsSync(assetsPath)) {
-      array.push({
+      patterns.push({
         from: assetsPath,
         to: assets
       })
@@ -250,7 +255,7 @@ if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
     const hybridHtml = modules + module + '/' + hybridDir
     const hybridHtmlPath = path.resolve(process.env.UNI_INPUT_DIR, hybridHtml)
     if (fs.existsSync(hybridHtmlPath)) {
-      array.push({
+      patterns.push({
         from: hybridHtmlPath,
         to: hybridHtml
       })
@@ -258,12 +263,12 @@ if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
   })
 
   if (process.env.UNI_USING_NVUE_COMPILER) {
-    array.push({
+    patterns.push({
       from: path.resolve(getTemplatePath(), 'common'),
       to: process.env.UNI_OUTPUT_DIR
     })
   } else if (process.env.UNI_USING_V3_NATIVE) {
-    array.push({
+    patterns.push({
       from: path.resolve(getTemplatePath(), 'weex'),
       to: process.env.UNI_OUTPUT_DIR
     })
@@ -275,7 +280,7 @@ if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
         'weapp-tools/template/v8'
       )
     }
-    array.push({
+    patterns.push({
       from: nativeTemplatePath,
       to: process.env.UNI_OUTPUT_DIR
     }, {
@@ -284,15 +289,17 @@ if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
         'weapp-tools/template/common'
       ),
       to: process.env.UNI_OUTPUT_DIR,
-      ignore: [
-        '*.js',
-        '*.json',
-        '__uniapppicker.html',
-        '__uniappview.html'
-      ]
+      globOptions: {
+        ignore: [
+          '*.js',
+          '*.json',
+          '__uniapppicker.html',
+          '__uniappview.html'
+        ]
+      }
     })
   }
-  plugins.push(new CopyWebpackPlugin(array))
+  plugins.push(new CopyWebpackPlugin(CopyWebpackPluginVersion > 5 ? { patterns } : patterns))
 }
 
 try {
@@ -305,7 +312,7 @@ try {
       dir: process.env.UNI_INPUT_DIR
     }))
   }
-} catch (e) {}
+} catch (e) { }
 
 module.exports = function () {
   return {
@@ -322,8 +329,7 @@ module.exports = function () {
     performance: {
       hints: false
     },
-    optimization: {
-      namedModules: false,
+    optimization: Object.assign({
       minimizer: [
         new TerserPlugin({
           terserOptions: {
@@ -333,7 +339,7 @@ module.exports = function () {
           }
         })
       ]
-    },
+    }, webpack.version[0] > 4 ? {} : { namedModules: false }),
     output: {
       path: process.env.UNI_OUTPUT_DIR,
       filename: '[name].js'
@@ -377,7 +383,7 @@ module.exports = function () {
       reasons: true,
       errorDetails: true
     },
-    node: {
+    node: webpack.version[0] > 4 ? false : {
       global: false,
       Buffer: false,
       __filename: false,

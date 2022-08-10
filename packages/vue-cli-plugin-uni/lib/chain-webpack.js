@@ -1,8 +1,5 @@
 const path = require('path')
-
-const {
-  sassLoaderVersion
-} = require('@dcloudio/uni-cli-shared/lib/scss')
+const webpack = require('webpack')
 
 const {
   getPartialIdentifier
@@ -23,11 +20,38 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
     const urlLoader = require('@dcloudio/uni-cli-shared/lib/url-loader')
     const staticTypes = ['images', 'media', 'fonts']
     staticTypes.forEach(staticType => {
-      webpackConfig.module
-        .rule(staticType)
-        .use('url-loader')
-        .loader(urlLoader.loader)
-        .tap(options => Object.assign(options, urlLoader.options()))
+      const newOptions = urlLoader.options()
+      if (webpack.version[0] > 4) {
+        if ('limit' in newOptions) {
+          webpackConfig.module.rule(staticType).parser({
+            dataUrlCondition: {
+              maxSize: newOptions.limit
+            }
+          })
+        }
+        if (newOptions.fallback && newOptions.fallback.options) {
+          const generator = {}
+          const oldOptions = newOptions.fallback.options
+          const keys = ['publicPath', 'outputPath']
+          keys.forEach(key => {
+            generator[key] = pathData => {
+              const outputPath = oldOptions.outputPath(null, pathData.module.request)
+              const basename = path.basename(outputPath)
+              return outputPath.substring(0, outputPath.length - basename.length)
+            }
+          })
+          generator.filename = pathData => {
+            return path.basename(pathData.module.request)
+          }
+          webpackConfig.module.rule(staticType).set('generator', generator)
+        }
+      } else {
+        webpackConfig.module
+          .rule(staticType)
+          .use('url-loader')
+          .loader(urlLoader.loader)
+          .tap(options => Object.assign(options, newOptions))
+      }
     })
     // 条件编译 vue 文件统一直接过滤html,js,css三种类型,单独资源文件引用各自过滤
 
@@ -56,6 +80,18 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
             ))
             .before('css-loader')
         }
+        if (webpack.version[0] > 4) {
+          langRule.oneOf(type)
+            .use('css-loader')
+            .tap(options => {
+              options.url = {
+                filter: function (url) {
+                  return url[0] !== '/'
+                }
+              }
+              return options
+            })
+        }
         langRule.oneOf(type)
           .use('uniapp-preprocss')
           .loader(resolve('packages/webpack-preprocess-loader'))
@@ -72,21 +108,19 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
       })
     })
 
-    if (sassLoaderVersion >= 8) { // check indentedSyntax
-      // vue cli 3 and sass-loader 8
-      cssTypes.forEach(type => {
-        webpackConfig.module.rule('sass').oneOf(type).use('sass-loader').tap(options => {
-          if (options.indentedSyntax) {
-            if (!options.sassOptions) {
-              options.sassOptions = {}
-            }
-            options.sassOptions.indentedSyntax = true
-            delete options.indentedSyntax
+    // vue cli 3 and sass-loader 8
+    cssTypes.forEach(type => {
+      webpackConfig.module.rule('sass').oneOf(type).use('sass-loader').tap(options => {
+        if (options.indentedSyntax) {
+          if (!options.sassOptions) {
+            options.sassOptions = {}
           }
-          return options
-        })
+          options.sassOptions.indentedSyntax = true
+          delete options.indentedSyntax
+        }
+        return options
       })
-    }
+    })
 
     platformOptions.chainWebpack(webpackConfig, vueOptions, api)
     // define

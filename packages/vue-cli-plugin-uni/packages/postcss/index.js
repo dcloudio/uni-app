@@ -156,7 +156,7 @@ if (process.env.UNI_USING_V3) {
    * 转换 upx
    * 转换 px
    */
-  module.exports = postcss.plugin('postcss-uniapp-plugin', function (opts) {
+  const fn = function (opts) {
     opts = {
       ...defaultOpts,
       ...opts
@@ -265,5 +265,20 @@ if (process.env.UNI_USING_V3) {
         })
       }
     }
-  })
+  }
+
+  const version = Number(require('postcss/package.json').version.split('.')[0])
+
+  if (version < 8) {
+    module.exports = postcss.plugin('postcss-uniapp-plugin', fn)
+  } else {
+    module.exports = function (opts) {
+      return {
+        postcssPlugin: 'postcss-uniapp-plugin',
+        Once: fn(opts)
+      }
+    }
+
+    module.exports.postcss = true
+  }
 }

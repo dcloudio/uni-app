@@ -5,6 +5,8 @@ module.exports = function ({
     visitor: {
       MemberExpression (path, state) {
         if (
+          // main.js main.ts
+          state.filename.startsWith(require('path').join(process.env.UNI_INPUT_DIR, 'main.')) &&
           t.isIdentifier(path.node.property) &&
                     path.node.property.name === '$mount' &&
                     !path.node.$createApp
