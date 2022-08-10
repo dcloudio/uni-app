@@ -116,17 +116,25 @@ export default {
             }
           }
         }
+
+        const event = e.event || e.domEvent || e.originEvent
+
         if (this.idString) {
           const { latitude, longitude } = this.getMarkerLatitudeLongitude(e)
-          this.$parent.$trigger('markertap', {}, {
+          this.$parent.$trigger('markertap', event, {
             markerId: Number(this.idString),
             latitude,
             longitude
           })
         }
 
-        const event = e.event || e.domEvent || e.originEvent
         event.stopPropagation()
+      })
+      // 处理 google H5移动端 maker 点击触发 map 点击问题
+      maps.event.addListener(marker, 'mousedown', (e) => {
+        if (e.domEvent) {
+          e.domEvent.stopPropagation()
+        }
       })
     },
     updateMarker (option) {
