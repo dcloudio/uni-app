@@ -274,12 +274,13 @@ export default {
             callout.setOption(calloutStyle)
           } else {
             if (IS_AMAP) {
-              const callback = (self) => {
+              const callback = ($event, self) => {
                 if (self.idString) {
-                  self.$parent.$trigger('callouttap', {}, {
+                  self.$parent.$trigger('callouttap', $event, {
                     markerId: Number(self.idString)
                   })
                 }
+                $event.stopPropagation()
               }
               callout = marker.callout = new maps.Callout(calloutStyle, callback, this)
             } else {

@@ -34,8 +34,8 @@ export function createCallout (maps) {
       position: option.position
     })
 
-    maps.event.addListener(this.Text, 'click', () => {
-      this.callback(this.parent)
+    maps.event.addListener(this.Text, 'click', ({ originEvent }) => {
+      this.callback(originEvent, this.parent)
     })
 
     this.Text.setMap(option.map)
