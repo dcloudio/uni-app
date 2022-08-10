@@ -113,7 +113,10 @@ if (process.env.NODE_ENV === 'development') {
 
 // const excludeModuleReg = /node_modules(?!(\/|\\).*(weex).*)/
 
-const rules = [{
+const rules = [webpack.version[0] > 4 ? {
+  test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/i,
+  type: 'asset'
+} : {
   test: /\.(png|jpg|gif|ttf|eot|woff|woff2)$/i,
   use: [fileLoader]
 }, {
