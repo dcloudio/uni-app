@@ -1271,7 +1271,6 @@ function $nne(evt, eventValue, instance2) {
     res.changedTouches = normalizeTouchEvent(evt.changedTouches, top);
   }
   {
-    wrapperEvent(res, evt);
     return wrapperH5WxsEvent(res, eventValue, instance2) || [res];
   }
 }
@@ -1296,6 +1295,9 @@ function createNativeEvent(evt, htmlElement = false) {
   if (evt.type.startsWith("touch")) {
     event.touches = evt.touches;
     event.changedTouches = evt.changedTouches;
+  }
+  {
+    wrapperEvent(event, evt);
   }
   return event;
 }
@@ -6559,15 +6561,10 @@ function resolveColor(color) {
   color[3] = color[3] / 255;
   return "rgba(" + color.join(",") + ")";
 }
-function processTouches(target, touches) {
-  const eventTarget = target;
-  return Array.from(touches).map((touch) => {
-    let boundingClientRect = eventTarget.getBoundingClientRect();
-    return {
-      identifier: touch.identifier,
-      x: touch.clientX - boundingClientRect.left,
-      y: touch.clientY - boundingClientRect.top
-    };
+function processTouches(rect, touches) {
+  Array.from(touches).forEach((touch) => {
+    touch.x = touch.clientX - rect.left;
+    touch.y = touch.clientY - rect.top;
   });
 }
 let tempCanvas;
@@ -6661,7 +6658,7 @@ function useListeners(props2, Listeners, trigger) {
     let $listeners = extend({}, (() => {
       let obj = {};
       for (const key in _$listeners) {
-        if (Object.prototype.hasOwnProperty.call(_$listeners, key)) {
+        if (hasOwn(_$listeners, key)) {
           const event = _$listeners[key];
           obj[key] = event;
         }
@@ -6673,16 +6670,10 @@ function useListeners(props2, Listeners, trigger) {
       let eventHandler = [];
       if (existing) {
         eventHandler.push(withWebEvent(($event) => {
-          trigger(event.replace("on", "").toLocaleLowerCase(), extend({}, (() => {
-            let obj = {};
-            for (const key in $event) {
-              obj[key] = $event[key];
-            }
-            return obj;
-          })(), {
-            touches: processTouches($event.currentTarget, $event.touches),
-            changedTouches: processTouches($event.currentTarget, $event.changedTouches)
-          }));
+          const rect = $event.currentTarget.getBoundingClientRect();
+          processTouches(rect, $event.touches);
+          processTouches(rect, $event.changedTouches);
+          trigger(event.replace("on", "").toLocaleLowerCase(), $event);
         }));
       }
       if (props2.disableScroll && event === "onTouchmove") {
@@ -11822,7 +11813,7 @@ function normalizeAttrs(tagName, attrs2) {
   if (!isPlainObject(attrs2))
     return;
   for (const key in attrs2) {
-    if (Object.prototype.hasOwnProperty.call(attrs2, key)) {
+    if (hasOwn(attrs2, key)) {
       const value = attrs2[key];
       if (tagName === "img" && key === "src")
         attrs2[key] = getRealPath(value);
@@ -15313,6 +15304,10 @@ const props$f = {
   src: {
     type: String,
     default: ""
+  },
+  fullscreen: {
+    type: Boolean,
+    default: true
   }
 };
 var index$d = /* @__PURE__ */ defineBuiltInComponent({
@@ -15335,7 +15330,7 @@ var index$d = /* @__PURE__ */ defineBuiltInComponent({
       const iframe = document.createElement("iframe");
       watchEffect(() => {
         for (const key in $attrs.value) {
-          if (Object.prototype.hasOwnProperty.call($attrs.value, key)) {
+          if (hasOwn($attrs.value, key)) {
             const attr2 = $attrs.value[key];
             iframe[key] = attr2;
           }
@@ -15344,25 +15339,31 @@ var index$d = /* @__PURE__ */ defineBuiltInComponent({
       watchEffect(() => {
         iframe.src = getRealPath(props2.src);
       });
-      document.body.appendChild(iframe);
       iframeRef.value = iframe;
-      _resize = useWebViewSize(rootRef, iframeRef);
+      _resize = useWebViewSize(rootRef, iframeRef, props2.fullscreen);
+      if (props2.fullscreen) {
+        document.body.appendChild(iframe);
+      }
     };
     renderIframe();
     onMounted(() => {
+      var _a;
       _resize();
+      !props2.fullscreen && ((_a = rootRef.value) == null ? void 0 : _a.appendChild(iframeRef.value));
     });
     onActivated(() => {
-      iframeRef.value && (iframeRef.value.style.display = "block");
+      props2.fullscreen && (iframeRef.value.style.display = "block");
     });
     onDeactivated(() => {
-      iframeRef.value && (iframeRef.value.style.display = "none");
+      props2.fullscreen && (iframeRef.value.style.display = "none");
     });
     onBeforeUnmount(() => {
-      document.body.removeChild(iframeRef.value);
+      props2.fullscreen && document.body.removeChild(iframeRef.value);
     });
     return () => {
-      return createVNode(Fragment, null, [createVNode("uni-web-view", mergeProps($listeners.value, $excludeAttrs.value, {
+      return createVNode(Fragment, null, [createVNode("uni-web-view", mergeProps({
+        "class": props2.fullscreen ? "uni-webview--fullscreen" : ""
+      }, $listeners.value, $excludeAttrs.value, {
         "ref": rootRef
       }), [createVNode(ResizeSensor, {
         "onResize": _resize
@@ -15370,23 +15371,31 @@ var index$d = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-function useWebViewSize(rootRef, iframeRef) {
+function useWebViewSize(rootRef, iframeRef, fullscreen) {
   const _resize = () => {
-    const {
-      top,
-      left,
-      width,
-      height
-    } = rootRef.value.getBoundingClientRect();
-    iframeRef.value && updateElementStyle(iframeRef.value, {
-      position: "absolute",
-      display: "block",
-      border: "0",
-      top: top + "px",
-      left: left + "px",
-      width: width + "px",
-      height: height + "px"
-    });
+    var _a, _b;
+    if (fullscreen) {
+      const {
+        top,
+        left,
+        width,
+        height
+      } = rootRef.value.getBoundingClientRect();
+      updateElementStyle(iframeRef.value, {
+        position: "absolute",
+        display: "block",
+        border: "0",
+        top: top + "px",
+        left: left + "px",
+        width: width + "px",
+        height: height + "px"
+      });
+    } else {
+      updateElementStyle(iframeRef.value, {
+        width: ((_a = rootRef.value) == null ? void 0 : _a.style.width) || "300px",
+        height: ((_b = rootRef.value) == null ? void 0 : _b.style.height) || "150px"
+      });
+    }
   };
   return _resize;
 }
@@ -15396,26 +15405,47 @@ const ICON_PATH_TARGET = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAACc
 var MapType = /* @__PURE__ */ ((MapType2) => {
   MapType2["QQ"] = "qq";
   MapType2["GOOGLE"] = "google";
+  MapType2["AMAP"] = "AMap";
   MapType2["UNKNOWN"] = "";
   return MapType2;
 })(MapType || {});
 function getMapInfo() {
-  let type = "";
-  let key = "";
   if (__uniConfig.qqMapKey) {
-    type = "qq";
-    key = __uniConfig.qqMapKey;
-  } else if (__uniConfig.googleMapKey) {
-    type = "google";
-    key = __uniConfig.googleMapKey;
+    return {
+      type: "qq",
+      key: __uniConfig.qqMapKey
+    };
+  }
+  if (__uniConfig.googleMapKey) {
+    return {
+      type: "google",
+      key: __uniConfig.googleMapKey
+    };
+  }
+  if (__uniConfig.aMapKey) {
+    return {
+      type: "AMap",
+      key: __uniConfig.aMapKey,
+      securityJsCode: __uniConfig.aMapSecurityJsCode,
+      serviceHost: __uniConfig.aMapServiceHost
+    };
   }
   return {
-    type,
-    key
+    type: "",
+    key: ""
   };
 }
+let IS_AMAP = false;
+let hasGetIsAMap = false;
+const getIsAMap = () => {
+  if (hasGetIsAMap) {
+    return IS_AMAP;
+  } else {
+    hasGetIsAMap = true;
+    return IS_AMAP = getMapInfo().type === "AMap";
+  }
+};
 function createCallout(maps2) {
-  const overlay = new (maps2.OverlayView || maps2.Overlay)();
   function onAdd() {
     const div = this.div;
     const panes = this.getPanes();
@@ -15427,46 +15457,71 @@ function createCallout(maps2) {
       parentNode.removeChild(this.div);
     }
   }
+  function createAMapText() {
+    const option = this.option;
+    this.Text = new maps2.Text({
+      text: option.content,
+      anchor: "bottom-center",
+      offset: new maps2.Pixel(0, option.offsetY),
+      style: {
+        "margin-bottom": "1rem",
+        padding: (option.padding || 8) + "px",
+        "line-height": (option.fontSize || 14) + "px",
+        "border-radius": (option.borderRadius || 0) + "px",
+        "border-color": `${option.bgColor || "#fff"} transparent transparent`,
+        "background-color": option.bgColor || "#fff",
+        "box-shadow": "0 2px 6px 0 rgba(114, 124, 245, .5)",
+        "text-align": "center",
+        "font-size": (option.fontSize || 14) + "px",
+        color: option.color || "#000"
+      },
+      position: option.position
+    });
+    const event = maps2.event || maps2.Event;
+    event.addListener(this.Text, "click", () => {
+      this.callback();
+    });
+    this.Text.setMap(option.map);
+  }
+  function removeAMapText() {
+    if (this.Text) {
+      this.option.map.remove(this.Text);
+    }
+  }
   class Callout {
-    constructor(option = {}) {
-      this.setMap = overlay.setMap;
-      this.getMap = overlay.getMap;
-      this.getPanes = overlay.getPanes;
-      this.getProjection = overlay.getProjection;
-      this.map_changed = overlay.map_changed;
-      this.set = overlay.set;
-      this.get = overlay.get;
-      this.setOptions = overlay.setValues;
-      this.bindTo = overlay.bindTo;
-      this.bindsTo = overlay.bindsTo;
-      this.notify = overlay.notify;
-      this.setValues = overlay.setValues;
-      this.unbind = overlay.unbind;
-      this.unbindAll = overlay.unbindAll;
-      this.addListener = overlay.addListener;
+    constructor(option = {}, callback) {
+      this.createAMapText = createAMapText;
+      this.removeAMapText = removeAMapText;
       this.onAdd = onAdd;
       this.construct = onAdd;
       this.onRemove = onRemove;
       this.destroy = onRemove;
       this.option = option || {};
-      const map = option.map;
-      this.position = option.position;
-      this.index = 1;
       const visible = this.visible = this.alwaysVisible = option.display === "ALWAYS";
-      const div = this.div = document.createElement("div");
-      const divStyle = div.style;
-      divStyle.position = "absolute";
-      divStyle.whiteSpace = "nowrap";
-      divStyle.transform = "translateX(-50%) translateY(-100%)";
-      divStyle.zIndex = "1";
-      divStyle.boxShadow = option.boxShadow || "none";
-      divStyle.display = visible ? "block" : "none";
-      const triangle = this.triangle = document.createElement("div");
-      triangle.setAttribute("style", "position: absolute;white-space: nowrap;border-width: 4px;border-style: solid;border-color: #fff transparent transparent;border-image: initial;font-size: 12px;padding: 0px;background-color: transparent;width: 0px;height: 0px;transform: translate(-50%, 100%);left: 50%;bottom: 0;");
-      this.setStyle(option);
-      div.appendChild(triangle);
-      if (map) {
-        this.setMap(map);
+      if (getIsAMap()) {
+        this.callback = callback;
+        if (this.visible) {
+          this.createAMapText();
+        }
+      } else {
+        const map = option.map;
+        this.position = option.position;
+        this.index = 1;
+        const div = this.div = document.createElement("div");
+        const divStyle = div.style;
+        divStyle.position = "absolute";
+        divStyle.whiteSpace = "nowrap";
+        divStyle.transform = "translateX(-50%) translateY(-100%)";
+        divStyle.zIndex = "1";
+        divStyle.boxShadow = option.boxShadow || "none";
+        divStyle.display = visible ? "block" : "none";
+        const triangle = this.triangle = document.createElement("div");
+        triangle.setAttribute("style", "position: absolute;white-space: nowrap;border-width: 4px;border-style: solid;border-color: #fff transparent transparent;border-image: initial;font-size: 12px;padding: 0px;background-color: transparent;width: 0px;height: 0px;transform: translate(-50%, 100%);left: 50%;bottom: 0;");
+        this.setStyle(option);
+        div.appendChild(triangle);
+        if (map) {
+          this.setMap(map);
+        }
       }
     }
     set onclick(callback) {
@@ -15477,13 +15532,19 @@ function createCallout(maps2) {
     }
     setOption(option) {
       this.option = option;
-      this.setPosition(option.position);
       if (option.display === "ALWAYS") {
         this.alwaysVisible = this.visible = true;
       } else {
         this.alwaysVisible = false;
       }
-      this.setStyle(option);
+      if (getIsAMap()) {
+        if (this.visible) {
+          this.createAMapText();
+        }
+      } else {
+        this.setPosition(option.position);
+        this.setStyle(option);
+      }
     }
     setStyle(option) {
       const div = this.div;
@@ -15517,6 +15578,24 @@ function createCallout(maps2) {
       divStyle.display = this.visible ? "block" : "none";
     }
   }
+  if (!getIsAMap()) {
+    const overlay = new (maps2.OverlayView || maps2.Overlay)();
+    Callout.prototype.setMap = overlay.setMap;
+    Callout.prototype.getMap = overlay.getMap;
+    Callout.prototype.getPanes = overlay.getPanes;
+    Callout.prototype.getProjection = overlay.getProjection;
+    Callout.prototype.map_changed = overlay.map_changed;
+    Callout.prototype.set = overlay.set;
+    Callout.prototype.get = overlay.get;
+    Callout.prototype.setOptions = overlay.setValues;
+    Callout.prototype.bindTo = overlay.bindTo;
+    Callout.prototype.bindsTo = overlay.bindsTo;
+    Callout.prototype.notify = overlay.notify;
+    Callout.prototype.setValues = overlay.setValues;
+    Callout.prototype.unbind = overlay.unbind;
+    Callout.prototype.unbindAll = overlay.unbindAll;
+    Callout.prototype.addListener = overlay.addListener;
+  }
   return Callout;
 }
 let maps;
@@ -15532,7 +15611,7 @@ function loadMaps(libraries, callback) {
   if (maps) {
     callback(maps);
   } else if (window[mapInfo.type] && window[mapInfo.type].maps) {
-    maps = window[mapInfo.type].maps;
+    maps = getIsAMap() ? window[mapInfo.type] : window[mapInfo.type].maps;
     maps.Callout = maps.Callout || createCallout(maps);
     callback(maps);
   } else if (callbacks2.length) {
@@ -15543,13 +15622,16 @@ function loadMaps(libraries, callback) {
     const callbackName = GOOGLE_MAP_CALLBACKNAME + mapInfo.type;
     globalExt[callbackName] = function() {
       delete globalExt[callbackName];
-      maps = window[mapInfo.type].maps;
+      maps = getIsAMap() ? window[mapInfo.type] : window[mapInfo.type].maps;
       maps.Callout = createCallout(maps);
       callbacks2.forEach((callback2) => callback2(maps));
       callbacks2.length = 0;
     };
+    if (getIsAMap()) {
+      handleAMapSecurityPolicy(mapInfo);
+    }
     const script = document.createElement("script");
-    let src = mapInfo.type === MapType.GOOGLE ? "https://maps.googleapis.com/maps/api/js?" : "https://map.qq.com/api/js?v=2.exp&";
+    let src = getScriptBaseUrl(mapInfo.type);
     if (mapInfo.type === MapType.QQ) {
       libraries.push("geometry");
     }
@@ -15562,6 +15644,20 @@ function loadMaps(libraries, callback) {
     };
     document.body.appendChild(script);
   }
+}
+const getScriptBaseUrl = (mapType) => {
+  const urlMap = {
+    qq: "https://map.qq.com/api/js?v=2.exp&",
+    google: "https://maps.googleapis.com/maps/api/js?",
+    AMap: "https://webapi.amap.com/maps?v=2.0&"
+  };
+  return urlMap[mapType];
+};
+function handleAMapSecurityPolicy(mapInfo) {
+  window._AMapSecurityConfig = {
+    securityJsCode: mapInfo.securityJsCode || "",
+    serviceHost: mapInfo.serviceHost || ""
+  };
 }
 const props$e = {
   id: {
@@ -15661,15 +15757,22 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
           marker.label.setMap(null);
         }
         if (marker.callout) {
-          marker.callout.setMap(null);
+          removeMarkerCallout(marker.callout);
         }
         marker.setMap(null);
+      }
+    }
+    function removeMarkerCallout(callout) {
+      if (getIsAMap()) {
+        callout.removeAMapText();
+      } else {
+        callout.setMap(null);
       }
     }
     onMapReady((map, maps2, trigger) => {
       function updateMarker(option) {
         const title = option.title;
-        const position = new maps2.LatLng(option.latitude, option.longitude);
+        const position = getIsAMap() ? new maps2.LngLat(option.longitude, option.latitude) : new maps2.LatLng(option.latitude, option.longitude);
         const img = new Image();
         img.onload = () => {
           const anchor = option.anchor || {};
@@ -15689,6 +15792,13 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
           top = h2 - (h2 - y * h2);
           if ("MarkerImage" in maps2) {
             icon = new maps2.MarkerImage(img.src, null, null, new maps2.Point(x * w, y * h2), new maps2.Size(w, h2));
+          } else if ("Icon" in maps2) {
+            icon = new maps2.Icon({
+              image: img.src,
+              size: new maps2.Size(w, h2),
+              imageSize: new maps2.Size(w, h2),
+              imageOffset: new maps2.Pixel(x * w, y * h2)
+            });
           } else {
             icon = {
               url: img.src,
@@ -15730,13 +15840,33 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
               });
               marker.label = label;
             } else if ("setLabel" in marker) {
-              const className = updateMarkerLabelStyle(labelStyle);
-              marker.setLabel({
-                text: labelOpt.content,
-                color: labelStyle.color,
-                fontSize: labelStyle.fontSize,
-                className
-              });
+              if (getIsAMap()) {
+                const content = `<div style="
+                  margin-left:${labelStyle.marginLeft};
+                  margin-top:${labelStyle.marginTop};
+                  padding:${labelStyle.padding};
+                  background-color:${labelStyle.backgroundColor};
+                  border-radius:${labelStyle.borderRadius};
+                  line-height:${labelStyle.lineHeight};
+                  color:${labelStyle.color};
+                  font-size:${labelStyle.fontSize};
+
+                  ">
+                  ${labelOpt.content}
+                <div>`;
+                marker.setLabel({
+                  content,
+                  direction: "bottom-right"
+                });
+              } else {
+                const className = updateMarkerLabelStyle(labelStyle);
+                marker.setLabel({
+                  text: labelOpt.content,
+                  color: labelStyle.color,
+                  fontSize: labelStyle.fontSize,
+                  className
+                });
+              }
             }
           }
           const calloutOpt = option.callout || {};
@@ -15748,6 +15878,7 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
               position,
               map,
               top,
+              offsetY: -option.height / 2,
               content: calloutOpt.content,
               color: calloutOpt.color,
               fontSize: calloutOpt.fontSize,
@@ -15760,26 +15891,38 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
               position,
               map,
               top,
+              offsetY: -option.height / 2,
               content: title,
               boxShadow
             };
             if (callout) {
               callout.setOption(calloutStyle);
             } else {
-              callout = marker.callout = new maps2.Callout(calloutStyle);
-              callout.div.onclick = function($event) {
-                if (id2 !== "") {
-                  trigger("callouttap", $event, {
-                    markerId: Number(id2)
-                  });
-                }
-                $event.stopPropagation();
-                $event.preventDefault();
-              };
+              if (getIsAMap()) {
+                const callback = (id3) => {
+                  if (id3 !== "") {
+                    trigger("callouttap", {}, {
+                      markerId: Number(id3)
+                    });
+                  }
+                };
+                callout = marker.callout = new maps2.Callout(calloutStyle, callback);
+              } else {
+                callout = marker.callout = new maps2.Callout(calloutStyle);
+                callout.div.onclick = function($event) {
+                  if (id2 !== "") {
+                    trigger("callouttap", $event, {
+                      markerId: Number(id2)
+                    });
+                  }
+                  $event.stopPropagation();
+                  $event.preventDefault();
+                };
+              }
             }
           } else {
             if (callout) {
-              callout.setMap(null);
+              removeMarkerCallout(callout);
               delete marker.callout;
             }
           }
@@ -15797,17 +15940,25 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
           autoRotation: false
         });
         updateMarker(props3);
-        maps2.event.addListener(marker, "click", () => {
+        const MapsEvent = maps2.event || maps2.Event;
+        MapsEvent.addListener(marker, "click", () => {
           const callout = marker.callout;
-          if (callout) {
-            const div = callout.div;
-            const parent = div.parentNode;
-            if (!callout.alwaysVisible) {
+          if (callout && !callout.alwaysVisible) {
+            if (getIsAMap()) {
+              callout.visible = !callout.visible;
+              if (callout.visible) {
+                marker.callout.createAMapText();
+              } else {
+                marker.callout.removeAMapText();
+              }
+            } else {
               callout.set("visible", !callout.visible);
-            }
-            if (callout.visible) {
-              parent.removeChild(div);
-              parent.appendChild(div);
+              if (callout.visible) {
+                const div = callout.div;
+                const parent = div.parentNode;
+                parent.removeChild(div);
+                parent.appendChild(div);
+              }
             }
           }
           if (id2) {
@@ -15842,7 +15993,8 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
             const distance2 = maps2.geometry.spherical.computeDistanceBetween(a2, b) / 1e3;
             const time = (typeof duration === "number" ? duration : 1e3) / (1e3 * 60 * 60);
             const speed = distance2 / time;
-            const movingEvent = maps2.event.addListener(marker, "moving", (e2) => {
+            const MapsEvent = maps2.event || maps2.Event;
+            const movingEvent = MapsEvent.addListener(marker, "moving", (e2) => {
               const latLng = e2.latLng;
               const label = marker.label;
               if (label) {
@@ -15853,7 +16005,7 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
                 callout.setPosition(latLng);
               }
             });
-            const event = maps2.event.addListener(marker, "moveend", () => {
+            const event = MapsEvent.addListener(marker, "moveend", () => {
               event.remove();
               movingEvent.remove();
               marker.lastPosition = a2;
@@ -15885,7 +16037,7 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
               marker.moveTo(b, speed);
             } else {
               marker.setPosition(b);
-              maps2.event.trigger(marker, "moveend", {});
+              MapsEvent.trigger(marker, "moveend", {});
             }
           });
         }
@@ -16000,7 +16152,8 @@ var MapPolyline = /* @__PURE__ */ defineSystemComponent({
       function addPolyline(option) {
         const path = [];
         option.points.forEach((point) => {
-          path.push(new maps2.LatLng(point.latitude, point.longitude));
+          const pointPosition = getIsAMap() ? [point.longitude, point.latitude] : new maps2.LatLng(point.latitude, point.longitude);
+          path.push(pointPosition);
         });
         const strokeWeight = Number(option.width) || 1;
         const {
@@ -16102,7 +16255,7 @@ var MapCircle = /* @__PURE__ */ defineSystemComponent({
         addCircle(option);
       }
       function addCircle(option) {
-        const center = new maps2.LatLng(option.latitude, option.longitude);
+        const center = getIsAMap() ? [option.longitude, option.latitude] : new maps2.LatLng(option.latitude, option.longitude);
         const circleOptions = {
           map,
           center,
@@ -16111,28 +16264,37 @@ var MapCircle = /* @__PURE__ */ defineSystemComponent({
           strokeWeight: Number(option.strokeWidth) || 1,
           strokeDashStyle: "solid"
         };
-        const {
-          r: fr,
-          g: fg,
-          b: fb,
-          a: fa
-        } = hexToRgba(option.fillColor);
-        const {
-          r: sr,
-          g: sg,
-          b: sb,
-          a: sa
-        } = hexToRgba(option.color);
-        if ("Color" in maps2) {
-          circleOptions.fillColor = new maps2.Color(fr, fg, fb, fa);
-          circleOptions.strokeColor = new maps2.Color(sr, sg, sb, sa);
+        if (getIsAMap()) {
+          circleOptions.strokeColor = option.color;
+          circleOptions.fillColor = option.fillColor || "#000";
+          circleOptions.fillOpacity = 1;
         } else {
-          circleOptions.fillColor = `rgb(${fr}, ${fg}, ${fb})`;
-          circleOptions.fillOpacity = fa;
-          circleOptions.strokeColor = `rgb(${sr}, ${sg}, ${sb})`;
-          circleOptions.strokeOpacity = sa;
+          const {
+            r: fr,
+            g: fg,
+            b: fb,
+            a: fa
+          } = hexToRgba(option.fillColor);
+          const {
+            r: sr,
+            g: sg,
+            b: sb,
+            a: sa
+          } = hexToRgba(option.color);
+          if ("Color" in maps2) {
+            circleOptions.fillColor = new maps2.Color(fr, fg, fb, fa);
+            circleOptions.strokeColor = new maps2.Color(sr, sg, sb, sa);
+          } else {
+            circleOptions.fillColor = `rgb(${fr}, ${fg}, ${fb})`;
+            circleOptions.fillOpacity = fa;
+            circleOptions.strokeColor = `rgb(${sr}, ${sg}, ${sb})`;
+            circleOptions.strokeOpacity = sa;
+          }
         }
         circle = new maps2.Circle(circleOptions);
+        if (getIsAMap()) {
+          map.add(circle);
+        }
       }
       addCircle(props2);
       watch(props2, updateCircle);
@@ -16159,6 +16321,10 @@ const props$b = {
   clickable: {
     type: [Boolean, String],
     default: ""
+  },
+  rootRef: {
+    type: Object,
+    default: null
   }
 };
 var MapControl = /* @__PURE__ */ defineSystemComponent({
@@ -16186,6 +16352,8 @@ var MapControl = /* @__PURE__ */ defineSystemComponent({
         style.position = "absolute";
         style.width = "0";
         style.height = "0";
+        style.top = "0";
+        style.left = "0";
         img.onload = () => {
           if (option.position.width) {
             img.width = option.position.width;
@@ -16207,7 +16375,11 @@ var MapControl = /* @__PURE__ */ defineSystemComponent({
             });
           }
         };
-        map.controls[maps2.ControlPosition.TOP_LEFT].push(control);
+        if (getIsAMap()) {
+          props2.rootRef.value && props2.rootRef.value.appendChild(control);
+        } else {
+          map.controls[maps2.ControlPosition.TOP_LEFT].push(control);
+        }
       }
       addControl(props2);
       watch(props2, updateControl);
@@ -18259,6 +18431,21 @@ const getLocation = /* @__PURE__ */ defineAsyncApi(API_GET_LOCATION, ({ type, al
             reject2(new Error("network error"));
           }
         });
+      } else if (mapInfo.type === MapType.AMAP) {
+        window.AMap.plugin("AMap.Geolocation", function() {
+          var geolocation = new window.AMap.Geolocation({});
+          geolocation.getCurrentPosition(function(status, res) {
+            if (status === "complete") {
+              resolve2({
+                latitude: res.position.lat,
+                longitude: res.position.lng,
+                accuracy: res.accuracy
+              });
+            } else {
+              reject2(new Error(res.message || JSON.stringify(res)));
+            }
+          });
+        });
       } else {
         reject2(error);
       }
@@ -18377,6 +18564,11 @@ var LocationView = /* @__PURE__ */ defineSystemComponent({
       } else if (mapInfo.type === MapType.QQ) {
         const fromcoord = state2.location.latitude ? `&fromcoord=${state2.location.latitude}%2C${state2.location.longitude}` : "";
         url = `https://apis.map.qq.com/uri/v1/routeplan?type=drive${fromcoord}&tocoord=${props2.latitude}%2C${props2.longitude}&from=${encodeURIComponent("\u6211\u7684\u4F4D\u7F6E")}&to=${encodeURIComponent(props2.name || "\u76EE\u7684\u5730")}&ref=${mapInfo.key}`;
+      } else if (mapInfo.type === MapType.AMAP) {
+        url = `https://m.amap.com/navi/?dest=${props2.longitude},${props2.latitude}&key=${mapInfo.key}`;
+        if (props2.name) {
+          url += `&destName=${props2.name}`;
+        }
       }
       window.open(url);
     }
@@ -18517,7 +18709,7 @@ function useList(state2) {
       list2.push({
         name: item.title,
         address: item.address,
-        distance: item._distance,
+        distance: item._distance || item.distance,
         latitude: item.location.lat,
         longitude: item.location.lng
       });
@@ -18581,6 +18773,37 @@ function useList(state2) {
           listState.hasNextPage = false;
         }
       }, () => {
+        listState.loading = false;
+      });
+    } else if (mapInfo.type === MapType.AMAP) {
+      window.AMap.plugin("AMap.PlaceSearch", function() {
+        var autoOptions = {
+          city: "\u5168\u56FD",
+          pageSize: 10,
+          pageIndex: listState.pageIndex
+        };
+        var placeSearch = new window.AMap.PlaceSearch(autoOptions);
+        if (state2.searching) {
+          placeSearch.searchNearBy(state2.keyword, [state2.longitude, state2.latitude], 5e4, function(status, result) {
+            if (status === "error") {
+              console.error(result);
+            } else if (status === "no_data") {
+              listState.hasNextPage = false;
+            } else {
+              pushData(result.poiList.pois);
+            }
+          });
+        } else {
+          placeSearch.searchNearBy("", [state2.longitude, state2.latitude], 5e3, function(status, result) {
+            if (status === "error") {
+              console.error(result);
+            } else if (status === "no_data") {
+              listState.hasNextPage = false;
+            } else {
+              pushData(result.poiList.pois);
+            }
+          });
+        }
         listState.loading = false;
       });
     }
@@ -19935,7 +20158,8 @@ function useState() {
       "--window-margin": value + "px"
     }));
     return {
-      layoutState: layoutState2
+      layoutState: layoutState2,
+      windowState: computed(() => ({}))
     };
   }
   const topWindowMediaQuery = ref(false);
@@ -19988,14 +20212,14 @@ function useState() {
   watch(() => layoutState.rightWindowWidth + layoutState.marginWidth, (value) => updateCssVar({
     "--window-right": value + "px"
   }));
-  const windowState = reactive({
+  const windowState = computed(() => ({
     matchTopWindow: layoutState.topWindowMediaQuery,
     showTopWindow: layoutState.showTopWindow || layoutState.apiShowTopWindow,
     matchLeftWindow: layoutState.leftWindowMediaQuery,
     showLeftWindow: layoutState.showLeftWindow || layoutState.apiShowLeftWindow,
     matchRightWindow: layoutState.rightWindowMediaQuery,
     showRightWindow: layoutState.showRightWindow || layoutState.apiShowRightWindow
-  });
+  }));
   return {
     layoutState,
     windowState
@@ -20006,9 +20230,9 @@ function createLayoutTsx(keepAliveRoute, layoutState, windowState, topWindow, le
   if (!__UNI_FEATURE_RESPONSIVE__) {
     return routerVNode;
   }
-  const topWindowTsx = __UNI_FEATURE_TOPWINDOW__ ? createTopWindowTsx(topWindow, layoutState, windowState) : null;
-  const leftWindowTsx = __UNI_FEATURE_LEFTWINDOW__ ? createLeftWindowTsx(leftWindow, layoutState, windowState) : null;
-  const rightWindowTsx = __UNI_FEATURE_RIGHTWINDOW__ ? createRightWindowTsx(rightWindow, layoutState, windowState) : null;
+  const topWindowTsx = __UNI_FEATURE_TOPWINDOW__ ? createTopWindowTsx(topWindow, layoutState, windowState.value) : null;
+  const leftWindowTsx = __UNI_FEATURE_LEFTWINDOW__ ? createLeftWindowTsx(leftWindow, layoutState, windowState.value) : null;
+  const rightWindowTsx = __UNI_FEATURE_RIGHTWINDOW__ ? createRightWindowTsx(rightWindow, layoutState, windowState.value) : null;
   return createVNode("uni-layout", {
     "class": {
       "uni-app--showtopwindow": __UNI_FEATURE_TOPWINDOW__ && layoutState.showTopWindow,
@@ -20563,7 +20787,7 @@ var MapPolygon = /* @__PURE__ */ defineSystemComponent({
             latitude,
             longitude
           } = item;
-          return new maps2.LatLng(latitude, longitude);
+          return getIsAMap() ? [longitude, latitude] : new maps2.LatLng(latitude, longitude);
         });
         const {
           r: fcR,
@@ -20690,6 +20914,15 @@ function getPoints(points) {
   }
   return newPoints;
 }
+function getAMapPosition(maps2, latitude, longitude) {
+  return new maps2.LngLat(longitude, latitude);
+}
+function getGoogleOrQQMapPosition(maps2, latitude, longitude) {
+  return new maps2.LatLng(latitude, longitude);
+}
+function getMapPosition(maps2, latitude, longitude) {
+  return getIsAMap() ? getAMapPosition(maps2, latitude, longitude) : getGoogleOrQQMapPosition(maps2, latitude, longitude);
+}
 function getLat(latLng) {
   if ("getLat" in latLng) {
     return latLng.getLat();
@@ -20751,7 +20984,8 @@ function useMap(props2, rootRef, emit2) {
       state2.latitude = latitude;
       state2.longitude = longitude;
       if (map) {
-        map.setCenter(new maps2.LatLng(latitude, longitude));
+        const centerPosition = getMapPosition(maps2, state2.latitude, state2.longitude);
+        map.setCenter(centerPosition);
       }
     }
   });
@@ -20779,22 +21013,33 @@ function useMap(props2, rootRef, emit2) {
     };
   }
   function updateCenter() {
-    map.setCenter(new maps2.LatLng(state2.latitude, state2.longitude));
+    const centerPosition = getMapPosition(maps2, state2.latitude, state2.longitude);
+    map.setCenter(centerPosition);
   }
   function updateBounds() {
-    const bounds = new maps2.LatLngBounds();
-    state2.includePoints.forEach(({
-      latitude,
-      longitude
-    }) => {
-      const latLng = new maps2.LatLng(latitude, longitude);
-      bounds.extend(latLng);
-    });
-    map.fitBounds(bounds);
+    if (getIsAMap()) {
+      const points = [];
+      state2.includePoints.forEach((point) => {
+        points.push([point.longitude, point.latitude]);
+      });
+      const bounds = new maps2.Bounds(...points);
+      map.setBounds(bounds);
+    } else {
+      const bounds = new maps2.LatLngBounds();
+      state2.includePoints.forEach(({
+        latitude,
+        longitude
+      }) => {
+        const latLng = new maps2.LatLng(latitude, longitude);
+        bounds.extend(latLng);
+      });
+      map.fitBounds(bounds);
+    }
   }
   function initMap() {
     const mapEl = mapRef.value;
-    const center = new maps2.LatLng(state2.latitude, state2.longitude);
+    const center = getMapPosition(maps2, state2.latitude, state2.longitude);
+    const event = maps2.event || maps2.Event;
     const map2 = new maps2.Map(mapEl, {
       center,
       zoom: Number(props2.scale),
@@ -20819,34 +21064,34 @@ function useMap(props2, rootRef, emit2) {
         updateCenter();
       }
     });
-    const boundsChangedEvent = maps2.event.addListener(map2, "bounds_changed", () => {
+    const boundsChangedEvent = event.addListener(map2, "bounds_changed", () => {
       boundsChangedEvent.remove();
       emitBoundsReady();
     });
-    maps2.event.addListener(map2, "click", () => {
+    event.addListener(map2, "click", () => {
       trigger("tap", {}, {});
       trigger("click", {}, {});
     });
-    maps2.event.addListener(map2, "dragstart", () => {
+    event.addListener(map2, "dragstart", () => {
       trigger("regionchange", {}, {
         type: "begin",
         causedBy: "gesture"
       });
     });
-    maps2.event.addListener(map2, "dragend", () => {
+    event.addListener(map2, "dragend", () => {
       trigger("regionchange", {}, extend({
         type: "end",
         causedBy: "drag"
       }, getMapInfo2()));
     });
-    maps2.event.addListener(map2, "zoom_changed", () => {
+    event.addListener(map2, "zoom_changed", () => {
       emit2("update:scale", map2.getZoom());
       trigger("regionchange", {}, extend({
         type: "end",
         causedBy: "scale"
       }, getMapInfo2()));
     });
-    maps2.event.addListener(map2, "center_changed", () => {
+    event.addListener(map2, "center_changed", () => {
       const center2 = map2.getCenter();
       const latitude = getLat(center2);
       const longitude = getLng(center2);
@@ -20884,7 +21129,8 @@ function useMap(props2, rootRef, emit2) {
               state2.latitude = latitude;
               state2.longitude = longitude;
               if (map) {
-                map.setCenter(new maps2.LatLng(latitude, longitude));
+                const centerPosition = getMapPosition(maps2, latitude, longitude);
+                map.setCenter(centerPosition);
               }
               onMapReady(() => {
                 callOptions(data, `${type}:ok`);
@@ -20985,7 +21231,9 @@ var Map$1 = /* @__PURE__ */ defineBuiltInComponent({
         "style": "width: 100%; height: 100%; position: relative; overflow: hidden"
       }, null, 512), props2.markers.map((item) => createVNode(MapMarker, mergeProps({
         "key": item.id
-      }, item), null, 16)), props2.polyline.map((item) => createVNode(MapPolyline, item, null, 16)), props2.circles.map((item) => createVNode(MapCircle, item, null, 16)), props2.controls.map((item) => createVNode(MapControl, item, null, 16)), props2.showLocation && createVNode(MapLocation, null, null), props2.polygons.map((item) => createVNode(MapPolygon, item, null, 16)), createVNode("div", {
+      }, item), null, 16)), props2.polyline.map((item) => createVNode(MapPolyline, item, null, 16)), props2.circles.map((item) => createVNode(MapCircle, item, null, 16)), props2.controls.map((item) => createVNode(MapControl, mergeProps(item, {
+        "rootRef": rootRef
+      }), null, 16, ["rootRef"])), props2.showLocation && createVNode(MapLocation, null, null), props2.polygons.map((item) => createVNode(MapPolygon, item, null, 16)), createVNode("div", {
         "style": "position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"
       }, [slots.default && slots.default()])], 8, ["id"]);
     };

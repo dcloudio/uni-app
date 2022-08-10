@@ -1,31 +1,41 @@
+const fs = require('fs')
 const path = require('path')
-const { runBuild, UtsTarget } = require('../packages/uts/dist')
+const { parse, runBuild, bundle, UtsTarget } = require('../packages/uts/dist')
 const projectDir = path.resolve(__dirname, '../packages/playground/uts')
-// uts
-runBuild(UtsTarget.KOTLIN, {
-  silent: false,
-  input: {
-    dir: path.resolve(projectDir, 'nativeplugins/test-uniplugin'),
-    extname: '.uts',
-  },
-  output: {
-    dir: path.resolve(
+
+let start = Date.now()
+parse(
+  fs.readFileSync(
+    path.resolve(
       projectDir,
-      'unpackage/nativeplugins/test-uniplugin-android'
+      'uni_modules/test-uniplugin/app-android/index.uts'
     ),
-    sourceMap: false,
-    inlineSourcesContent: false,
-  },
+    'utf8'
+  )
+).then((res) => {
+  console.log('parse: ' + (Date.now() - start) + 'ms')
+  console.log(JSON.stringify(res))
 })
-runBuild(UtsTarget.SWIFT, {
-  silent: false,
+start = Date.now()
+bundle({
   input: {
-    dir: path.resolve(projectDir, 'nativeplugins/test-uniplugin'),
-    extname: '.uts',
+    root: path.resolve(projectDir, 'uni_modules/test-uniplugin'),
+    filename: path.resolve(
+      projectDir,
+      'uni_modules/test-uniplugin/app-android/index.uts'
+    ),
   },
   output: {
-    dir: path.resolve(projectDir, 'unpackage/nativeplugins/test-uniplugin-ios'),
-    sourceMap: false,
-    inlineSourcesContent: false,
+    outDir: path.resolve(
+      projectDir,
+      'unpackage/dist/app-plus/uni_modules/test-uniplugin/'
+    ),
+    package: 'uts.modules.testUniPlugin',
+    imports: ['kotlinx.coroutines.*', 'io.dcloud.uts.runtime.*'],
+    sourceMap: true,
+    extname: 'kt',
   },
+}).then((res) => {
+  console.log('bundle: ' + (Date.now() - start) + 'ms')
+  console.log(JSON.stringify(res))
 })

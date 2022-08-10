@@ -113,6 +113,11 @@ export default /*#__PURE__*/ defineSystemComponent({
         }%2C${props.longitude}&from=${encodeURIComponent(
           '我的位置'
         )}&to=${encodeURIComponent(props.name || '目的地')}&ref=${mapInfo.key}`
+      } else if (mapInfo.type === MapType.AMAP) {
+        url = `https://m.amap.com/navi/?dest=${props.longitude},${props.latitude}&key=${mapInfo.key}`
+        if (props.name) {
+          url += `&destName=${props.name}`
+        }
       }
       window.open(url)
     }

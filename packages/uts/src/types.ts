@@ -1,3 +1,7 @@
+export enum UtsTarget {
+  KOTLIN = 'kotlin',
+  SWIFT = 'swift',
+}
 export interface UtsParserConfig {
   /**
    * Defaults to `false`
@@ -13,13 +17,13 @@ export type UtsParseOptions = UtsParserConfig & {
 export type UtsInputOptions = UtsParseOptions & {
   root: string
   filename: string
-  namespace?: string
 }
 
 export type UtsOutputOptions = {
   outDir: string
+  package: string
   imports?: string[]
-  sourceMap: boolean | string
+  sourceMap?: boolean | string
   inlineSourcesContent?: boolean
   extname: string
 }
@@ -32,4 +36,8 @@ export interface UtsResult {
   filename?: string
   time?: number
   error?: Error
+}
+
+export interface UtsBundleOptions extends UtsOptions {
+  target: UtsTarget
 }

@@ -34,9 +34,7 @@ class Stat extends Report {
           //     uni.__stat_uniCloud_space.config.spaceId
           // )
         } else {
-          // console.error(
-          //   '当前尚未关联统计服务空间，请先在manifest.json中配置服务空间！'
-          // )
+          console.error('应用未关联服务空间，请在uniCloud目录右键关联服务空间')
         }
       }
     }

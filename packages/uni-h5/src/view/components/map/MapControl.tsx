@@ -1,7 +1,10 @@
 import { inject, onUnmounted, watch, PropType } from 'vue'
 import { getRealPath } from '@dcloudio/uni-platform'
 import { defineSystemComponent, useCustomEvent } from '@dcloudio/uni-components'
-import { Maps, Map } from './maps'
+import { Maps, Map, QQMap, GoogleMap } from './maps'
+import { getIsAMap } from '../../../helpers/location'
+import { QQMaps } from './maps/qq/types'
+import { GoogleMaps } from './maps/google/types'
 
 interface Position {
   left: number | string
@@ -15,6 +18,7 @@ const props = {
   position: { type: Object as PropType<Position>, require: true },
   iconPath: { type: String, require: true },
   clickable: { type: [Boolean, String], default: '' },
+  rootRef: { type: Object, default: null },
 }
 
 export type Props = Partial<Record<keyof typeof props, any>>
@@ -51,6 +55,8 @@ export default /*#__PURE__*/ defineSystemComponent({
         style.position = 'absolute'
         style.width = '0'
         style.height = '0'
+        style.top = '0'
+        style.left = '0'
         img.onload = () => {
           if (option.position.width) {
             img.width = option.position.width
@@ -72,7 +78,13 @@ export default /*#__PURE__*/ defineSystemComponent({
             })
           }
         }
-        map.controls[maps.ControlPosition.TOP_LEFT].push(control)
+        if (getIsAMap()) {
+          props.rootRef.value && props.rootRef.value.appendChild(control)
+        } else {
+          ;(map as QQMap | GoogleMap).controls[
+            (maps as QQMaps | GoogleMaps).ControlPosition.TOP_LEFT
+          ].push(control)
+        }
       }
       addControl(props as Props)
       watch(props, updateControl)

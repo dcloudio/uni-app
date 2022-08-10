@@ -1,5 +1,10 @@
 import { resolve } from 'path'
-import type { UtsOptions, UtsResult } from './types'
+import type {
+  UtsBundleOptions,
+  UtsOptions,
+  UtsParseOptions,
+  UtsResult,
+} from './types'
 import { normalizePath } from './utils'
 
 const bindingsOverride = process.env['UTS_BINARY_PATH']
@@ -20,7 +25,10 @@ function resolveOptions(options: UtsOptions) {
   }
   if (output.sourceMap === true) {
     output.sourceMap = output.outDir
-  } else if (output.sourceMap === false) {
+  } else if (
+    output.sourceMap === false ||
+    typeof output.sourceMap === 'undefined'
+  ) {
     output.sourceMap = ''
   }
   if (!output.imports) {
@@ -34,6 +42,12 @@ function resolveOptions(options: UtsOptions) {
   output.sourceMap = normalizePath(output.sourceMap)
 
   return options
+}
+
+export function parse(source: string, options: UtsParseOptions = {}) {
+  return bindings
+    .parse(source, toBuffer(options))
+    .then((res: string) => JSON.parse(res))
 }
 
 export function toKotlin(options: UtsOptions): Promise<UtsResult> {
@@ -54,6 +68,14 @@ export function toSwift(options: UtsOptions): Promise<UtsResult> {
   return bindings
     .toSwift(toBuffer(swiftOptions))
     .then((res: string) => JSON.parse(res))
+}
+
+export function bundle(options: UtsBundleOptions): Promise<UtsResult> {
+  const bundleOptions = resolveOptions(options)
+  if (!bundleOptions) {
+    return Promise.resolve({})
+  }
+  return bindings.bundle(toBuffer(bundleOptions)).then((res: string) => res)
 }
 
 function toBuffer(t: any): Buffer {

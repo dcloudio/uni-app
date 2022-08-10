@@ -1,4 +1,7 @@
 uni-web-view {
+  display: flex;
+}
+uni-web-view.uni-webview--fullscreen {
   position: absolute;
   left: 0;
   right: 0;

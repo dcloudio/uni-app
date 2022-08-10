@@ -7,6 +7,8 @@ declare namespace NodeJS {
     UNI_NODE_ENV: 'production' | 'development' | 'test'
     UNI_PLATFORM: UniApp.PLATFORM
     UNI_SUB_PLATFORM: 'quickapp-webview-huawei' | 'quickapp-webview-union'
+    UNI_APP_PLATFORM: 'app-android' | 'app-ios'
+
     UNI_INPUT_DIR: string
     UNI_OUTPUT_DIR: string
     UNI_CLI_CONTEXT: string

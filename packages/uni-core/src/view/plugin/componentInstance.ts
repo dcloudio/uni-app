@@ -46,7 +46,6 @@ export function $nne(
     ;(res as any).changedTouches = normalizeTouchEvent(evt.changedTouches, top)
   }
   if (__PLATFORM__ === 'h5') {
-    wrapperEvent(res, evt)
     return (
       wrapperH5WxsEvent(
         res,
@@ -89,6 +88,11 @@ export function createNativeEvent(
     ;(event as any).touches = (evt as TouchEvent).touches
     ;(event as any).changedTouches = (evt as TouchEvent).changedTouches
   }
+
+  if (__PLATFORM__ === 'h5') {
+    wrapperEvent(event, evt)
+  }
+
   return event
 }
 

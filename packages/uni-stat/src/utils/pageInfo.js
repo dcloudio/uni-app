@@ -2,6 +2,8 @@ import { sys } from './util.js'
 
 import { STAT_URL, STAT_VERSION, DIFF_TIME } from '../config.ts'
 
+// 获取 manifest.json 中统计配置
+const uniStatisticsConfig = process.env.UNI_STATISTICS_CONFIG
 let statConfig = {
   appid: process.env.UNI_APP_ID,
 }
@@ -478,7 +480,7 @@ export const is_debug = debug
  * 日志输出
  * @param {*} data
  */
-export const log = (data) => {
+export const log = (data, type) => {
   let msg_type = ''
   switch (data.lt) {
     case '1':
@@ -501,9 +503,39 @@ export const log = (data) => {
       msg_type = 'PUSH'
       break
   }
+
+  // #ifdef APP
+  // 在 app 中，日志转为 字符串
+  if (typeof data === 'object') {
+    data = JSON.stringify(data)
+  }
+  // #endif
+
+  if (type) {
+    console.log(`=== 统计队列数据上报 ===`)
+    console.log(data)
+    console.log(`=== 上报结束 ===`)
+    return
+  }
+
   if (msg_type) {
     console.log(`=== 统计数据采集：${msg_type} ===`)
     console.log(data)
     console.log(`=== 采集结束 ===`)
   }
+}
+
+/**
+ * 获取上报时间间隔
+ * @param {*} defaultTime 默认上报间隔时间 单位s
+ */
+export const get_report_Interval = (defaultTime) => {
+  let time = uniStatisticsConfig.reportInterval
+  // 如果上报时间配置为0 相当于立即上报
+  if (Number(time) === 0) return 0
+  time = time || defaultTime
+  let reg = /(^[1-9]\d*$)/
+  // 如果不是整数，则默认为上报间隔时间
+  if (!reg.test(time)) return defaultTime
+  return Number(time)
 }

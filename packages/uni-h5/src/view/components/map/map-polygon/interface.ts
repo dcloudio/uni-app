@@ -1,9 +1,10 @@
-import { Maps, Map } from '../maps'
+import { QQMap, GoogleMap } from '../maps'
 import {
   Polygon as QQPolygon,
   PolygonOptions as QQPolygonOptions,
+  QQMaps,
 } from '../maps/qq/types'
-import { Polygon as GPolygon } from '../maps/google/types'
+import { GoogleMaps, Polygon as GPolygon } from '../maps/google/types'
 import { useCustomEvent } from '@dcloudio/uni-components'
 import props from './props'
 
@@ -15,8 +16,8 @@ export interface Point {
 export type CustomEventTrigger = ReturnType<typeof useCustomEvent>
 
 type OnMapReadyCallback = (
-  map: Map,
-  maps: Maps,
+  map: QQMap | GoogleMap,
+  maps: QQMaps | GoogleMaps,
   trigger: CustomEventTrigger
 ) => void
 

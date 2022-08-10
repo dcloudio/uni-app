@@ -11453,6 +11453,7 @@ const ScanCodeProtocol = {
     scanType: Array,
     autoDecodeCharSet: Boolean,
     sound: String,
+    autoZoom: Boolean,
 };
 const SOUND = ['default', 'none'];
 const ScanCodeOptions = {
@@ -11460,6 +11461,10 @@ const ScanCodeOptions = {
         sound(value, params) {
             if (!SOUND.includes(value))
                 params.sound = 'none';
+        },
+        autoZoom(value, params) {
+            if (typeof value === 'undefined')
+                params.autoZoom = true;
         },
     },
 };
@@ -15977,7 +15982,9 @@ const chooseLocation = defineAsyncApi(API_CHOOSE_LOCATION, (options, { resolve, 
     let result;
     const page = showPage({
         url: '__uniappchooselocation',
-        data: options,
+        data: extend({}, options, {
+            locale: getLocale(),
+        }),
         style: {
             // @ts-expect-error
             animationType: options.animationType || 'slide-in-bottom',
@@ -16014,7 +16021,9 @@ const chooseLocation = defineAsyncApi(API_CHOOSE_LOCATION, (options, { resolve, 
 const openLocation = defineAsyncApi(API_OPEN_LOCATION, (data, { resolve, reject }) => {
     showPage({
         url: '__uniappopenlocation',
-        data,
+        data: extend({}, data, {
+            locale: getLocale(),
+        }),
         style: {
             titleNView: {
                 type: 'transparent',
@@ -19496,8 +19505,63 @@ function clearTempFile() {
     });
 }
 
+let focusTimeout = 0;
+let keyboardHeight = 0;
+let onKeyboardShow = null;
+let focusTimer = null;
+function hookKeyboardEvent(event, callback) {
+    onKeyboardShow = null;
+    if (focusTimer) {
+        clearTimeout(focusTimer);
+        focusTimer = null;
+    }
+    if (event.type === 'onFocus') {
+        if (keyboardHeight > 0) {
+            event.detail.height = keyboardHeight;
+        }
+        else {
+            focusTimer = setTimeout(function () {
+                event.detail.height = keyboardHeight;
+                callback(event);
+            }, focusTimeout);
+            onKeyboardShow = function () {
+                if (focusTimer) {
+                    clearTimeout(focusTimer);
+                    focusTimer = null;
+                }
+                event.detail.height = keyboardHeight;
+                callback(event);
+            };
+            return;
+        }
+    }
+    callback(event);
+}
+function initKeyboardEvent() {
+    const isAndroid = plus.os.name.toLowerCase() === 'android';
+    focusTimeout = isAndroid ? 300 : 700;
+    UniServiceJSBridge.on(ON_KEYBOARD_HEIGHT_CHANGE, (res) => {
+        keyboardHeight = res.height;
+        if (keyboardHeight > 0) {
+            const callback = onKeyboardShow;
+            onKeyboardShow = null;
+            if (callback) {
+                callback();
+            }
+        }
+    });
+}
+
 function onNodeEvent(nodeId, evt, pageNode) {
-    pageNode.fireEvent(nodeId, evt);
+    const type = evt.type;
+    if (type === 'onFocus' || type === 'onBlur') {
+        hookKeyboardEvent(evt, (evt) => {
+            pageNode.fireEvent(nodeId, evt);
+        });
+    }
+    else {
+        pageNode.fireEvent(nodeId, evt);
+    }
 }
 
 function onVdSync(actions, pageId) {
@@ -19761,6 +19825,7 @@ function registerApp(appVm) {
     initEntry();
     initTabBar();
     initGlobalEvent();
+    initKeyboardEvent();
     initSubscribeHandlers();
     initAppLaunch(appVm);
     // 10s后清理临时文件

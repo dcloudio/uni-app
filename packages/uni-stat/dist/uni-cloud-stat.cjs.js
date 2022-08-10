@@ -14,6 +14,8 @@ const APP_PVER_TIME = 300; // 应用在后台结束访问时间 单位s
 const OPERATING_TIME = 10; // 数据上报时间 单位s
 const DIFF_TIME = 60 * 1000 * 60 * 24;
 
+// 获取 manifest.json 中统计配置
+const uniStatisticsConfig = process.env.UNI_STATISTICS_CONFIG;
 let statConfig = {
   appid: process.env.UNI_APP_ID,
 };
@@ -471,7 +473,8 @@ const is_debug = debug;
  * 日志输出
  * @param {*} data
  */
-const log = (data) => {
+const log = (data, type) => {
+
   let msg_type = '';
   switch (data.lt) {
     case '1':
@@ -494,6 +497,21 @@ const log = (data) => {
       msg_type = 'PUSH';
       break
   }
+
+  // #ifdef APP
+  // 在 app 中，日志转为 字符串
+  if(typeof data === 'object') {
+    data = JSON.stringify(data);
+  }
+  // #endif
+
+  if (type) {
+    console.log(`=== 统计队列数据上报 ===`);
+    console.log(data);
+    console.log(`=== 上报结束 ===`);
+    return
+  }
+
   if (msg_type) {
     console.log(`=== 统计数据采集：${msg_type} ===`);
     console.log(data);
@@ -501,21 +519,36 @@ const log = (data) => {
   }
 };
 
+/**
+ * 获取上报时间间隔
+ * @param {*} defaultTime 默认上报间隔时间 单位s
+ */
+const get_report_Interval = (defaultTime) => {
+  let time = uniStatisticsConfig.reportInterval;
+  // 如果上报时间配置为0 相当于立即上报
+  if (Number(time) === 0) return 0
+  time = time || defaultTime;
+  let reg = /(^[1-9]\d*$)/;
+  // 如果不是整数，则默认为上报间隔时间
+  if (!reg.test(time)) return defaultTime
+  return Number(time)
+};
+
 const appid = process.env.UNI_APP_ID; // 做应用隔离
 const dbSet = (name, value) => {
-  let data = uni.getStorageSync('$$STAT__DBDATA:' + appid) || {};
+  let data = uni.getStorageSync('$$STAT__DBDATA:'+appid) || {};
 
   if (!data) {
     data = {};
   }
   data[name] = value;
-  uni.setStorageSync('$$STAT__DBDATA:' + appid, data);
+  uni.setStorageSync('$$STAT__DBDATA:'+appid, data);
 };
 
 const dbGet = (name) => {
-  let data = uni.getStorageSync('$$STAT__DBDATA:' + appid) || {};
+  let data = uni.getStorageSync('$$STAT__DBDATA:'+appid) || {};
   if (!data[name]) {
-    let dbdata = uni.getStorageSync('$$STAT__DBDATA:' + appid);
+    let dbdata = uni.getStorageSync('$$STAT__DBDATA:'+appid);
     if (!dbdata) {
       dbdata = {};
     }
@@ -528,15 +561,15 @@ const dbGet = (name) => {
 };
 
 const dbRemove = (name) => {
-  let data = uni.getStorageSync('$$STAT__DBDATA:' + appid) || {};
+  let data = uni.getStorageSync('$$STAT__DBDATA:'+appid) || {};
   if (data[name]) {
     delete data[name];
-    uni.setStorageSync('$$STAT__DBDATA:' + appid, data);
+    uni.setStorageSync('$$STAT__DBDATA:'+appid, data);
   } else {
-    data = uni.getStorageSync('$$STAT__DBDATA:' + appid);
+    data = uni.getStorageSync('$$STAT__DBDATA:'+appid);
     if (data[name]) {
       delete data[name];
-      uni.setStorageSync('$$STAT__DBDATA:' + appid, data);
+      uni.setStorageSync('$$STAT__DBDATA:'+appid, data);
     }
   }
 };
@@ -549,37 +582,37 @@ const LAST_VISIT_TIME_KEY = '__last__visit__time';
  * 获取当前时间
  */
 const get_time = () => {
-  return parseInt(new Date().getTime() / 1000)
+	return parseInt(new Date().getTime() / 1000)
 };
 
 /**
  * 获取首次访问时间
  */
 const get_first_visit_time = () => {
-  const timeStorge = dbGet(FIRST_VISIT_TIME_KEY);
-  let time = 0;
-  if (timeStorge) {
-    time = timeStorge;
-  } else {
-    time = get_time();
-    dbSet(FIRST_VISIT_TIME_KEY, time);
-    // 首次访问需要 将最后访问时间置 0
-    dbRemove(LAST_VISIT_TIME_KEY);
-  }
-  return time
+	const timeStorge = dbGet(FIRST_VISIT_TIME_KEY);
+	let time = 0;
+	if (timeStorge) {
+		time = timeStorge;
+	} else {
+		time = get_time();
+		dbSet(FIRST_VISIT_TIME_KEY, time);
+		// 首次访问需要 将最后访问时间置 0
+		dbRemove(LAST_VISIT_TIME_KEY);
+	}
+	return time
 };
 
 /**
  * 最后访问时间
  */
 const get_last_visit_time = () => {
-  const timeStorge = dbGet(LAST_VISIT_TIME_KEY);
-  let time = 0;
-  if (timeStorge) {
-    time = timeStorge;
-  }
-  dbSet(LAST_VISIT_TIME_KEY, get_time());
-  return time
+	const timeStorge = dbGet(LAST_VISIT_TIME_KEY);
+	let time = 0;
+	if (timeStorge) {
+		time = timeStorge;
+	}
+	dbSet(LAST_VISIT_TIME_KEY, get_time());
+	return time
 };
 
 // 页面停留时间记录key
@@ -591,18 +624,18 @@ let Last_Page_Residence_Time = 0;
  * 设置页面停留时间
  */
 const set_page_residence_time = () => {
-  First_Page_Residence_Time = get_time();
-  dbSet(PAGE_RESIDENCE_TIME, First_Page_Residence_Time);
-  return First_Page_Residence_Time
+	First_Page_Residence_Time = get_time();
+	dbSet(PAGE_RESIDENCE_TIME, First_Page_Residence_Time);
+	return First_Page_Residence_Time
 };
 
 /**
  * 获取页面停留时间
  */
 const get_page_residence_time = () => {
-  Last_Page_Residence_Time = get_time();
-  First_Page_Residence_Time = dbGet(PAGE_RESIDENCE_TIME);
-  return Last_Page_Residence_Time - First_Page_Residence_Time
+	Last_Page_Residence_Time = get_time();
+	First_Page_Residence_Time = dbGet(PAGE_RESIDENCE_TIME);
+	return Last_Page_Residence_Time - First_Page_Residence_Time
 };
 
 /**
@@ -610,24 +643,25 @@ const get_page_residence_time = () => {
  */
 const TOTAL_VISIT_COUNT = '__total__visit__count';
 const get_total_visit_count = () => {
-  const timeStorge = dbGet(TOTAL_VISIT_COUNT);
-  let count = 1;
-  if (timeStorge) {
-    count = timeStorge;
-    count++;
-  }
-  dbSet(TOTAL_VISIT_COUNT, count);
-  return count
+	const timeStorge = dbGet(TOTAL_VISIT_COUNT);
+	let count = 1;
+	if (timeStorge) {
+		count = timeStorge;
+		count++;
+	}
+	dbSet(TOTAL_VISIT_COUNT, count);
+	return count
 };
+
 
 const FIRST_TIME = '__first_time';
 /**
  * 设置页面首次访问时间，用户获取页面/应用停留时常
  */
 const set_first_time = () => {
-  const time = new Date().getTime();
-  const timeStorge = dbSet(FIRST_TIME, time);
-  return timeStorge
+	const time = new Date().getTime();
+	const timeStorge = dbSet(FIRST_TIME,time);
+	return timeStorge
 };
 
 /**
@@ -643,34 +677,35 @@ const set_first_time = () => {
  * 获取页面 \ 应用停留时间
  */
 const get_residence_time = (type) => {
-  let residenceTime = 0;
-  const first_time = dbGet(FIRST_TIME);
-  const last_time = get_time();
-  if (first_time !== 0) {
-    residenceTime = last_time - first_time;
-  }
+	let residenceTime = 0;
+	const first_time = dbGet(FIRST_TIME);
+	const last_time = get_time();
+	if (first_time !== 0) {
+		residenceTime = last_time - first_time;
+	}
 
-  residenceTime = parseInt(residenceTime / 1000);
-  residenceTime = residenceTime < 1 ? 1 : residenceTime;
-  if (type === 'app') {
-    let overtime = residenceTime > APP_PVER_TIME ? true : false;
-    return {
-      residenceTime,
-      overtime,
-    }
-  }
-  if (type === 'page') {
-    let overtime = residenceTime > PAGE_PVER_TIME ? true : false;
-    return {
-      residenceTime,
-      overtime,
-    }
-  }
-  return {
-    residenceTime,
-  }
+	residenceTime = parseInt(residenceTime / 1000);
+	residenceTime = residenceTime < 1 ? 1 : residenceTime;
+	if (type === 'app') {
+		let overtime = residenceTime > APP_PVER_TIME ? true : false;
+		return {
+			residenceTime,
+			overtime,
+		}
+	}
+	if (type === 'page') {
+		let overtime = residenceTime > PAGE_PVER_TIME ? true : false;
+		return {
+			residenceTime,
+			overtime,
+		}
+	}
+	return {
+		residenceTime,
+	}
 };
 
+const eport_Interval = get_report_Interval(OPERATING_TIME);
 // 统计数据默认值
 let statData = {
   uuid: get_uuid(), // 设备标识
@@ -1130,7 +1165,7 @@ class Report {
       log(data);
     }
     // 判断时候到达上报时间 ，默认 10 秒上报
-    if (page_residence_time < OPERATING_TIME && !type) return
+    if (page_residence_time < eport_Interval && !type) return
 
     // 时间超过，重新获取时间戳
     set_page_residence_time();
@@ -1182,9 +1217,7 @@ class Report {
         .report(optionsData)
         .then(() => {
           if (is_debug) {
-            console.log(`=== 统计队列数据上报 ===`);
-            console.log(optionsData);
-            console.log(`=== 上报结束 ===`);
+            log(optionsData, true);
           }
         })
         .catch((err) => {
@@ -1205,9 +1238,7 @@ class Report {
       let options = get_sgin(get_encodeURIComponent_options(data)).options;
       image.src = STAT_H5_URL + '?' + options;
       if (is_debug) {
-        console.log(`=== 统计队列数据上报 ===`);
-        console.log(data);
-        console.log(`=== 上报结束 ===`);
+        log(data, true);
       }
     });
   }
@@ -1255,6 +1286,10 @@ class Stat extends Report {
           //   '=== 当前绑定的统计服务空间spaceId：' +
           //     uni.__stat_uniCloud_space.config.spaceId
           // )
+        } else {
+          console.error(
+            '应用未关联服务空间，请在uniCloud目录右键关联服务空间'
+          );
         }
       }
     }
@@ -1275,7 +1310,7 @@ class Stat extends Report {
           const cid = res.cid || false;
           //  只有获取到才会上传
           if (cid) {
-            this.sendPushRequest(options, cid);
+            this.sendPushRequest(options,cid);
           }
         },
       });

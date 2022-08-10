@@ -90,6 +90,7 @@ function createConfig(entryFile, output, buildOption) {
         declaration: shouldEmitDeclarations,
         declarationMap: false,
         skipLibCheck: true,
+        ...(buildOption.compilerOptions || {}),
       },
       exclude: ['**/__tests__', 'test-dts'],
     },

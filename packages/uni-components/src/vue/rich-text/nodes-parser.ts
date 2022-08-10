@@ -129,7 +129,7 @@ function processClickEvent(node: Node, triggerItemClick: Function) {
 function normalizeAttrs(tagName: string, attrs: Data) {
   if (!isPlainObject(attrs)) return
   for (const key in attrs) {
-    if (Object.prototype.hasOwnProperty.call(attrs, key)) {
+    if (hasOwn(attrs, key)) {
       const value = attrs[key]
       if (tagName === 'img' && key === 'src')
         attrs[key] = getRealPath(value as string)
