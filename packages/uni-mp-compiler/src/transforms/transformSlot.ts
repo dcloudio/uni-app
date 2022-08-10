@@ -53,15 +53,12 @@ export function rewriteSlot(node: SlotOutletNode, context: TransformContext) {
       }
       if (p.name === 'bind' && isStaticArgOf(p.arg, 'name')) {
         if (p.exp) {
-          p.exp = rewriteExpression(
-            createCompoundExpression([
-              context.helperString(DYNAMIC_SLOT) + '(',
-              p.exp,
-              ')',
-            ]),
-            context
-          )
-          slotName = p.exp
+          slotName = createCompoundExpression([
+            context.helperString(DYNAMIC_SLOT) + '(',
+            p.exp,
+            ')',
+          ])
+          p.exp = rewriteExpression(slotName, context)
         }
       } else {
         if (p.name === 'bind' && p.arg && isStaticExp(p.arg)) {

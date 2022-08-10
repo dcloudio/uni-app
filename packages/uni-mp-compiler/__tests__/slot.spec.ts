@@ -25,6 +25,13 @@ describe('compiler: transform slot', () => {
   return { a: _d(_ctx.name) }
 }`
     )
+    assert(
+      `<button><slot :name="'title'+index" :content="{name:'name1'}"></slot></button>`,
+      `<button><slot name="{{a}}"></slot></button>`,
+      `(_ctx, _cache) => {
+  return { a: _d('title' + _ctx.index), b: _r(_d('title' + _ctx.index), { content: { name: 'name1' } }) }
+}`
+    )
   })
   test('fallback content', () => {
     assert(
