@@ -3,6 +3,7 @@ import kotlinx.coroutines.*;
 import io.dcloud.uts.runtime.*;
 import android.util.Log;
 fun login(name: String, pwd: String): UtsJSONObject {
+    console.log("login", "at app-android/login.uts:2");
     return object : UtsJSONObject() {
         var name = name
         var pwd = pwd

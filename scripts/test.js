@@ -34,6 +34,7 @@ bundle({
     imports: ['kotlinx.coroutines.*', 'io.dcloud.uts.runtime.*'],
     sourceMap: true,
     extname: 'kt',
+    logFilename: true,
   },
 }).then((res) => {
   console.log('bundle: ' + (Date.now() - start) + 'ms')

@@ -40,6 +40,7 @@ function resolveOptions(options: UtsOptions) {
   input.filename = normalizePath(input.filename)
   output.outDir = normalizePath(output.outDir)
   output.sourceMap = normalizePath(output.sourceMap)
+  output.logFilename = !!output.logFilename
 
   return options
 }

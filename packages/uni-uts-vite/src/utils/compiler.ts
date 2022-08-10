@@ -35,6 +35,7 @@ export async function compile(filename: string) {
       sourceMap: true,
       extname: 'kt',
       imports: ['kotlinx.coroutines.*', 'io.dcloud.uts.runtime.*'],
+      logFilename: true,
     },
   })
   console.log('uts compile time: ' + (Date.now() - time) + 'ms')

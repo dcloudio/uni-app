@@ -26,6 +26,7 @@ export type UtsOutputOptions = {
   sourceMap?: boolean | string
   inlineSourcesContent?: boolean
   extname: string
+  logFilename?: boolean
 }
 export interface UtsOptions {
   input: UtsInputOptions

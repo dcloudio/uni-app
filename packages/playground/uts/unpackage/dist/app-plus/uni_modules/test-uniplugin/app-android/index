@@ -1,5 +1,6 @@
 import android.util.Log;
 fun login(name: String, pwd: String): UtsJSONObject {
+    console.log("login");
     return object : UtsJSONObject() {
         var name = name
         var pwd = pwd
