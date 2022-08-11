@@ -14066,7 +14066,11 @@ function initPublicPage(route) {
   if (!__UNI_FEATURE_PAGES__) {
     return initPageInternalInstance("navigateTo", __uniRoutes[0].path, {}, meta);
   }
-  return initPageInternalInstance("navigateTo", route.fullPath, {}, meta);
+  let fullPath = route.fullPath;
+  if (route.meta.isEntry) {
+    fullPath = "/" + route.meta.route + fullPath.replace("/", "");
+  }
+  return initPageInternalInstance("navigateTo", fullPath, {}, meta);
 }
 function initPage(vm) {
   const route = vm.$route;
