@@ -18,9 +18,8 @@ export function createCallout (maps) {
     this.Text = new maps.Text({
       text: option.content,
       anchor: 'bottom-center', // 设置文本标记锚点
-      offset: new maps.Pixel(0, option.offsetY),
+      offset: new maps.Pixel(0, option.offsetY - 16),
       style: {
-        'margin-bottom': '1rem',
         padding: (option.padding || 8) + 'px',
         'line-height': (option.fontSize || 14) + 'px',
         'border-radius': (option.borderRadius || 0) + 'px',
