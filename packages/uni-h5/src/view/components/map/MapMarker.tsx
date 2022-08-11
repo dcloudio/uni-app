@@ -3,7 +3,7 @@ import { isFunction } from '@vue/shared'
 import { getRealPath } from '@dcloudio/uni-platform'
 import { defineSystemComponent, useCustomEvent } from '@dcloudio/uni-components'
 import { Maps, Map, LatLng, Callout, CalloutOptions } from './maps'
-import { getIsAMap } from '../../../helpers/location'
+import { MapType, getMapInfo, getIsAMap } from '../../../helpers/location'
 import {
   LatLng as GLatLng,
   Marker as GMarker,
@@ -357,6 +357,16 @@ export default /*#__PURE__*/ defineSystemComponent({
                   }
                   $event.stopPropagation()
                   $event.preventDefault()
+                }
+
+                // The mobile terminal prevent google map callout click trigger map click
+                if(getMapInfo().type === MapType.GOOGLE){
+                  callout.div!.ontouchstart = function($event: Event) {
+                    $event.stopPropagation();
+                  }
+                  callout.div!.onpointerdown = function ($event: Event) {
+                    $event.stopPropagation()
+                  }
                 }
               }
             }
