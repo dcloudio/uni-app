@@ -15465,9 +15465,8 @@ function createCallout(maps2) {
     this.Text = new maps2.Text({
       text: option.content,
       anchor: "bottom-center",
-      offset: new maps2.Pixel(0, option.offsetY),
+      offset: new maps2.Pixel(0, option.offsetY - 16),
       style: {
-        "margin-bottom": "1rem",
         padding: (option.padding || 8) + "px",
         "line-height": (option.fontSize || 14) + "px",
         "border-radius": (option.borderRadius || 0) + "px",
@@ -15921,6 +15920,14 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
                   $event.stopPropagation();
                   $event.preventDefault();
                 };
+                if (getMapInfo().type === MapType.GOOGLE) {
+                  callout.div.ontouchstart = function($event) {
+                    $event.stopPropagation();
+                  };
+                  callout.div.onpointerdown = function($event) {
+                    $event.stopPropagation();
+                  };
+                }
               }
             }
           } else {

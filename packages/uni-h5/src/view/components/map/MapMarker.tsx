@@ -360,9 +360,9 @@ export default /*#__PURE__*/ defineSystemComponent({
                 }
 
                 // The mobile terminal prevent google map callout click trigger map click
-                if(getMapInfo().type === MapType.GOOGLE){
-                  callout.div!.ontouchstart = function($event: Event) {
-                    $event.stopPropagation();
+                if (getMapInfo().type === MapType.GOOGLE) {
+                  callout.div!.ontouchstart = function ($event: Event) {
+                    $event.stopPropagation()
                   }
                   callout.div!.onpointerdown = function ($event: Event) {
                     $event.stopPropagation()

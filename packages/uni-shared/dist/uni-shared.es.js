@@ -107,6 +107,7 @@ const NVUE_BUILT_IN_TAGS = [
     'recycle-list',
     'u-scalable',
     'barcode',
+    'gcanvas',
 ];
 const NVUE_U_BUILT_IN_TAGS = [
     'u-text',

@@ -34,7 +34,7 @@ export function createCallout(maps: QQMaps | GoogleMaps | AMap.NameSpace) {
     this.Text = new (maps as AMap.NameSpace).Text({
       text: option.content,
       anchor: 'bottom-center', // 设置文本标记锚点
-      offset: new (maps as AMap.NameSpace).Pixel(0, option.offsetY!-16),
+      offset: new (maps as AMap.NameSpace).Pixel(0, option.offsetY! - 16),
       style: {
         padding: (option.padding || 8) + 'px',
         'line-height': (option.fontSize || 14) + 'px',
