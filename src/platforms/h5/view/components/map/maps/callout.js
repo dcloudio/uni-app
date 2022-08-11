@@ -32,12 +32,20 @@ export function createCallout (maps) {
       },
       position: option.position
     })
-
-    maps.event.addListener(this.Text, 'click', ({ originEvent }) => {
-      this.callback(originEvent, this.parent)
+    // 不通过 addListener 方式绑定事件，为了规避高德地图覆盖物点击触发map点击问题
+    this.Text.dom.addEventListener('click', e => {
+      handleAMapTextClick(this, e)
+    })
+    this.Text.dom.addEventListener('touchend', e => {
+      handleAMapTextClick(this, e)
     })
 
     this.Text.setMap(option.map)
+  }
+
+  function handleAMapTextClick (self, e) {
+    self.callback(e, self.parent)
+    e.stopPropagation()
   }
 
   function removeAMapText () {
