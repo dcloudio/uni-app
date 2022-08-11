@@ -1,8 +1,10 @@
 import Log from 'android.util.Log'
+import { IUser } from './interface.uts'
 import { login } from './login.uts'
-export class User {
+export class User implements IUser {
   async login(name: string, pwd: string) {
     login(name, pwd)
     Log.info('123')
   }
+  register(name: string) {}
 }
