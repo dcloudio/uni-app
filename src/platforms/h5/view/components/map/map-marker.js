@@ -127,8 +127,10 @@ export default {
             longitude
           })
         }
-
-        event.stopPropagation()
+        // 避开高德地图bug: pc端 stopPropagation 无效且地图随鼠标移动
+        if (event !== e.originEvent) {
+          event.stopPropagation()
+        }
       })
       // 处理 google H5移动端 maker 点击触发 map 点击问题
       maps.event.addListener(marker, 'mousedown', (e) => {
@@ -288,7 +290,6 @@ export default {
                     markerId: Number(self.idString)
                   })
                 }
-                $event.stopPropagation()
               }
               callout = marker.callout = new maps.Callout(calloutStyle, callback, this)
             } else {

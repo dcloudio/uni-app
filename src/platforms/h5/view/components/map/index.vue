@@ -229,6 +229,10 @@ export default {
   methods: {
     handleAMapClick (e) {
       if (IS_AMAP) {
+        // The mobile terminal prevent not map click event trigger map click
+        if (e.target.nodeName !== 'CANVAS') {
+          return
+        }
         const { pageX, pageY } = e.changedTouches[0]
         this.$trigger('click', { x: pageX, y: pageY }, {})
         this.$trigger('tap', { x: pageX, y: pageY }, {})
@@ -611,6 +615,7 @@ export default {
         style.height = 0
         style.top = 0
         style.left = 0
+        style.zIndex = 999
         img.onload = () => {
           if (option.position.width) {
             img.width = option.position.width
