@@ -13,7 +13,7 @@ export default function createPage (pageVm, options) {
 
   const id = hasOwn($route.params, '__id__') ? $route.params.__id__ : $route.meta.id
   let fullPath = $route.fullPath
-  if ($route.meta.isEntry) {
+  if ($route.meta.isEntry && fullPath.indexOf($route.meta.pagePath) === -1) {
     fullPath = '/' + $route.meta.pagePath + fullPath.replace('/', '')
   }
   pageVm.__page__ = {
