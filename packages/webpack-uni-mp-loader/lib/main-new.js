@@ -96,12 +96,21 @@ createPage(Page)
       components: []
     })
 
-    const babelLoader = findBabelLoader(this.loaders)
+    let babelLoader = findBabelLoader(this.loaders)
     if (!babelLoader) {
       throw new Error(uniI18n.__('mpLoader.findFail', {
         0: 'babel-loader'
       }))
     } else {
+      const webpack = require('webpack')
+      if (webpack.version[0] > 4) {
+        // clone babelLoader and options
+        const index = this.loaders.indexOf(babelLoader)
+        const newBabelLoader = Object.assign({}, babelLoader)
+        Object.assign(newBabelLoader, { options: Object.assign({}, babelLoader.options) })
+        this.loaders.splice(index, 1, newBabelLoader)
+        babelLoader = newBabelLoader
+      }
       addCreateApp(babelLoader)
     }
 
