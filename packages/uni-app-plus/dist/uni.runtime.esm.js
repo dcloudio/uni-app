@@ -13438,12 +13438,13 @@ const getDeviceInfo = defineSyncApi('getDeviceInfo', () => {
 });
 const getAppBaseInfo = defineSyncApi('getAppBaseInfo', () => {
     weexGetSystemInfoSync();
-    const { hostPackageName, hostName, hostVersion, hostLanguage, osLanguage, hostTheme, appId, appName, appVersion, appVersionCode, } = systemInfo;
+    const { hostPackageName, hostName, hostVersion, hostLanguage, osLanguage, hostTheme, appId, appName, appVersion, appVersionCode, appWgtVersion, } = systemInfo;
     return {
         appId,
         appName,
         appVersion,
         appVersionCode,
+        appWgtVersion,
         appLanguage: getLocale ? getLocale() : osLanguage,
         enableDebug: false,
         hostPackageName,

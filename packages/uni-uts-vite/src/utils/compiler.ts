@@ -1,7 +1,8 @@
 import os from 'os'
 import fs from 'fs-extra'
 import path from 'path'
-import execa from 'execa'
+import AdmZip from 'adm-zip'
+import { sync } from 'fast-glob'
 import { once } from '@dcloudio/uni-shared'
 import type { parse, bundle, UtsTarget } from '@dcloudio/uts'
 import { normalizePath } from '@dcloudio/uni-cli-shared'
@@ -69,13 +70,19 @@ export async function compile(filename: string) {
     // 开发模式下，需要生成 dex
     if (fs.existsSync(kotlinFile)) {
       time = Date.now()
-      await compileKotlin(kotlinFile)
-      console.log('kotlin compile time: ' + (Date.now() - time) + 'ms')
+      const { getDefaultJar, compile } = getCompilerServer()
       const jarFile = resolveJarPath(kotlinFile)
-      if (fs.existsSync(jarFile)) {
-        time = Date.now()
-        await d8(jarFile)
-        console.log('d8 compile time: ' + (Date.now() - time) + 'ms')
+      const options = {
+        kotlinc: resolveKotlincArgs(
+          kotlinFile,
+          getDefaultJar().concat(resolveLibs(filename))
+        ),
+        d8: resolveD8Args(jarFile),
+      }
+      const res = await compile(options, process.env.UNI_INPUT_DIR)
+      console.log('dex compile time: ' + (Date.now() - time) + 'ms')
+      time = Date.now()
+      if (res) {
         try {
           fs.unlinkSync(jarFile)
           // 短期内先不删除，方便排查问题
@@ -90,6 +97,62 @@ export async function compile(filename: string) {
   }
 }
 
+function resolveKotlincArgs(filename: string, jars: string[]) {
+  return [
+    filename,
+    '-cp',
+    resolveClassPath(jars),
+    '-d',
+    resolveJarPath(filename),
+    '-kotlin-home',
+    '/Applications/HBuilderX-Alpha.app/Contents/HBuilderX/plugins/uniAppRun-Extension/kotlinc',
+  ]
+}
+
+function resolveD8Args(filename: string) {
+  return [
+    filename,
+    '--no-desugaring',
+    '--min-api',
+    '19',
+    '--output',
+    resolveDexPath(filename),
+  ]
+}
+
+function resolveLibs(filename: string) {
+  const libsPath = path.resolve(path.dirname(filename), 'libs')
+  const libs: string[] = []
+  if (fs.existsSync(libsPath)) {
+    libs.push(...sync('*.jar', { cwd: libsPath, absolute: true }))
+    const zips = sync('*.aar', { cwd: libsPath })
+    zips.forEach((name) => {
+      const outputPath = resolveAndroidArchiveOutputPath(name)
+      if (!fs.existsSync(outputPath)) {
+        // 解压
+        const zip = new AdmZip(path.resolve(libsPath, name))
+        zip.extractAllTo(outputPath, true)
+      }
+    })
+    if (zips.length) {
+      libs.push(
+        ...sync('*/*.jar', {
+          cwd: resolveAndroidArchiveOutputPath(),
+          absolute: true,
+        })
+      )
+    }
+  }
+  return libs
+}
+
+function resolveAndroidArchiveOutputPath(aar?: string) {
+  return path.resolve(
+    process.env.UNI_OUTPUT_DIR,
+    '../.uts/aar',
+    aar ? aar.replace('.aar', '') : ''
+  )
+}
 function resolveDexFile(jarFile: string) {
   return normalizePath(path.resolve(path.dirname(jarFile), 'classes.dex'))
 }
@@ -104,56 +167,6 @@ function resolveKotlinFile(
     .replace(path.extname(filename), '.kt')
 }
 
-function resolveDirs(): { kotlinc: string; d8: string; lib: string } {
-  // eslint-disable-next-line no-restricted-globals
-  return require(path.resolve(
-    process.env.UNI_HBUILDERX_PLUGINS,
-    'uts-kotlin-compiler'
-  ))
-}
-
-const resolveKotlinc = once(() => {
-  const { kotlinc } = resolveDirs()
-  return path.resolve(
-    kotlinc,
-    'bin',
-    'kotlinc' + (os.platform() === 'win32' ? '.bat' : '')
-  )
-})
-
-async function compileKotlin(filename: string) {
-  const kotlinc = resolveKotlinc()
-  await execa(
-    kotlinc,
-    [filename, '-cp', resolveClassPath(), '-d', resolveJarPath(filename)],
-    {
-      stdio: 'inherit',
-    }
-  )
-}
-
-async function d8(filename: string) {
-  const java = resolveJavaPath()
-  const d8 = resolveD8Path()
-  await execa(
-    java,
-    [
-      '-cp',
-      d8,
-      'com.android.tools.r8.D8',
-      filename,
-      '--no-desugaring',
-      '--min-api',
-      '19',
-      '--output',
-      resolveDexPath(filename),
-    ],
-    {
-      stdio: 'inherit',
-    }
-  )
-}
-
 function resolveDexPath(filename: string) {
   return path.dirname(filename)
 }
@@ -162,29 +175,22 @@ function resolveJarPath(filename: string) {
   return filename.replace(path.extname(filename), '.jar')
 }
 
-const resolveBuiltInClassPath = once(() => {
-  const libDir = resolveDirs().lib
-  return fs
-    .readdirSync(libDir)
-    .filter((file) => file.endsWith('.jar'))
-    .map((file) => path.resolve(libDir, file))
-})
-
-function resolveClassPath() {
-  return resolveBuiltInClassPath().join(os.platform() === 'win32' ? ';' : ':')
+function resolveClassPath(jars: string[]) {
+  return jars.join(os.platform() === 'win32' ? ';' : ':')
 }
 
-const resolveJavaPath = once(() => {
-  return path.resolve(
+const getCompilerServer = once(() => {
+  // eslint-disable-next-line no-restricted-globals
+  return require(path.resolve(
     process.env.UNI_HBUILDERX_PLUGINS,
-    'amazon-corretto',
-    'bin/java'
-  )
-})
-
-const resolveD8Path = once(() => {
-  const { d8 } = resolveDirs()
-  return path.resolve(d8, 'd8.jar')
+    'uniAppRun-Extension/out/main.js'
+  )) as {
+    getDefaultJar(): string[]
+    compile(
+      options: { kotlinc: string[]; d8: string[] },
+      projectPath: string
+    ): Promise<boolean>
+  }
 })
 
 export function parsePackage(filepath: string) {

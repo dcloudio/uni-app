@@ -28,10 +28,13 @@
     "@dcloudio/uni-cli-shared": "3.0.0-alpha-3050420220804003",
     "@dcloudio/uni-shared": "3.0.0-alpha-3050420220804003",
     "@dcloudio/uts": "3.0.0-alpha-3050420220804003",
+    "adm-zip": "^0.5.9",
     "execa": "^5.1.1",
+    "fast-glob": "^3.2.11",
     "fs-extra": "^10.0.0"
   },
   "devDependencies": {
+    "@types/adm-zip": "^0.5.0",
     "@types/fs-extra": "^9.0.13"
   }
 }
