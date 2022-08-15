@@ -15,7 +15,7 @@ module.exports = {
     project: 'project.tt.json'
   },
   copyWebpackOptions (platformOptions, vueOptions) {
-    const copyOptions = ['ttcomponents']
+    const copyOptions = ['ttcomponents', 'ext.json']
     global.uniModules.forEach(module => {
       copyOptions.push('uni_modules/' + module + '/ttcomponents')
     })

@@ -20,7 +20,7 @@ module.exports = {
     subPackages: true
   },
   copyWebpackOptions (platformOptions, vueOptions) {
-    const copyOptions = ['mycomponents', 'customize-tab-bar']
+    const copyOptions = ['mycomponents', 'customize-tab-bar', 'ext.json']
 
     global.uniModules.forEach(module => {
       copyOptions.push('uni_modules/' + module + '/mycomponents')

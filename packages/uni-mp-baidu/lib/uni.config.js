@@ -17,7 +17,7 @@ module.exports = {
     subPackages: true
   },
   copyWebpackOptions (platformOptions, vueOptions) {
-    const copyOptions = ['swancomponents']
+    const copyOptions = ['swancomponents', 'ext.json']
     global.uniModules.forEach(module => {
       copyOptions.push('uni_modules/' + module + '/swancomponents')
     })
