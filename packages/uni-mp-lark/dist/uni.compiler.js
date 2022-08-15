@@ -98,6 +98,14 @@ const options = {
         },
         copyOptions: {
             assets: [COMPONENTS_DIR],
+            targets: [
+                {
+                    src: ['ext.json'],
+                    get dest() {
+                        return process.env.UNI_OUTPUT_DIR;
+                    },
+                },
+            ],
         },
     },
     global: 'tt',

@@ -189,7 +189,7 @@ const options = {
             targets: [
                 ...(process.env.UNI_MP_PLUGIN ? [uniCliShared.copyMiniProgramPluginJson] : []),
                 {
-                    src: ['customize-tab-bar'],
+                    src: ['customize-tab-bar', 'ext.json'],
                     get dest() {
                         return process.env.UNI_OUTPUT_DIR;
                     },
