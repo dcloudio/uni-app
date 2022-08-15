@@ -182,16 +182,25 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
     for (let i = rawRules.length - 1; i >= 0; i--) {
       const uses = rawRules[i].use
       if (Array.isArray(uses)) {
-        if (uses.find(use => babelLoaderRe.test(use.loader))) {
-          const index = uses.findIndex(use => cacheLoaderRe.test(use.loader))
-          if (index >= 0) {
+        const babelLoader = uses.find(use => babelLoaderRe.test(use.loader))
+        if (babelLoader) {
+          const options = api.genCacheConfig('babel-loader/' + process.env.UNI_PLATFORM, getPartialIdentifier())
+          if (webpack.version[0] > 4) {
             if (process.env.UNI_USING_CACHE) {
-              Object.assign(uses[index].options, api.genCacheConfig(
-                'babel-loader/' + process.env.UNI_PLATFORM,
-                getPartialIdentifier()
-              ))
+              Object.assign(babelLoader.options, options)
             } else {
-              uses.splice(index, 1)
+              Object.assign(babelLoader.options, {
+                cacheDirectory: false
+              })
+            }
+          } else {
+            const index = uses.findIndex(use => cacheLoaderRe.test(use.loader))
+            if (index >= 0) {
+              if (process.env.UNI_USING_CACHE) {
+                Object.assign(uses[index].options, options)
+              } else {
+                uses.splice(index, 1)
+              }
             }
           }
         }
