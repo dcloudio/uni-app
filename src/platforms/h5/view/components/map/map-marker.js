@@ -96,17 +96,18 @@ export default {
       })
       this.$parent._markers[this.idString] = marker
       this.updateMarker(props)
-      maps.event.addListener(marker, 'click', (e) => {
-        const callout = marker.callout
-        if (callout && !callout.alwaysVisible) {
-          if (IS_AMAP) {
-            callout.visible = !callout.visible
-            if (callout.visible) {
-              marker.callout.createAMapText()
-            } else {
-              marker.callout.removeAMapText()
-            }
-          } else {
+      if (IS_AMAP) {
+        // 不通过 addListener 方式绑定事件，为了规避高德地图覆盖物点击触发map点击问题
+        marker.dom.addEventListener('click', e => {
+          this.handleAMapMarkerClick(e, marker)
+        })
+        marker.dom.addEventListener('touchend', e => {
+          this.handleAMapMarkerClick(e, marker)
+        })
+      } else {
+        maps.event.addListener(marker, 'click', (e) => {
+          const callout = marker.callout
+          if (callout && !callout.alwaysVisible) {
             callout.set('visible', !callout.visible)
             if (callout.visible) {
               const div = callout.div
@@ -115,19 +116,26 @@ export default {
               parent.appendChild(div)
             }
           }
-        }
-        if (this.idString) {
-          const { latitude, longitude } = this.getMarkerLatitudeLongitude(e)
-          this.$parent.$trigger('markertap', {}, {
-            markerId: Number(this.idString),
-            latitude,
-            longitude
-          })
-        }
 
-        const event = e.event || e.domEvent || e.originEvent
-        event.stopPropagation()
-      })
+          const event = e.event || e.domEvent
+
+          if (this.idString) {
+            const { latitude, longitude } = this.getMarkerLatitudeLongitude(e)
+            this.$parent.$trigger('markertap', event, {
+              markerId: Number(this.idString),
+              latitude,
+              longitude
+            })
+          }
+          event.stopPropagation()
+        })
+        // 处理 google H5移动端 maker 点击触发 map 点击问题
+        maps.event.addListener(marker, 'mousedown', (e) => {
+          if (e.domEvent) {
+            e.domEvent.stopPropagation()
+          }
+        })
+      }
     },
     updateMarker (option) {
       const map = this._map
@@ -274,9 +282,9 @@ export default {
             callout.setOption(calloutStyle)
           } else {
             if (IS_AMAP) {
-              const callback = (self) => {
+              const callback = ($event, self) => {
                 if (self.idString) {
-                  self.$parent.$trigger('callouttap', {}, {
+                  self.$parent.$trigger('callouttap', $event, {
                     markerId: Number(self.idString)
                   })
                 }
@@ -307,6 +315,25 @@ export default {
       } else {
         console.error('Marker.iconPath is required.')
       }
+    },
+    handleAMapMarkerClick (e, marker) {
+      const callout = marker.callout
+      if (callout && !callout.alwaysVisible) {
+        callout.visible = !callout.visible
+        if (callout.visible) {
+          marker.callout.createAMapText()
+        } else {
+          marker.callout.removeAMapText()
+        }
+      }
+      if (this.idString) {
+        this.$parent.$trigger('markertap', e, {
+          markerId: Number(this.idString),
+          latitude: marker._position.lat,
+          longitude: marker._position.lng
+        })
+      }
+      e.stopPropagation()
     },
     updateMarkerLabelStyle (id, style) {
       const className = 'uni-map-marker-label-' + id

@@ -466,12 +466,6 @@ const protocols = { // 需要做转换的 API 列表
   hideHomeButton: {
     name: 'hideBackHome'
   },
-  saveImageToPhotosAlbum: {
-    name: 'saveImage',
-    args: {
-      filePath: 'url'
-    }
-  },
   saveVideoToPhotosAlbum: {
     args: {
       filePath: 'src'

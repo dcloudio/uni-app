@@ -18,9 +18,8 @@ export function createCallout (maps) {
     this.Text = new maps.Text({
       text: option.content,
       anchor: 'bottom-center', // 设置文本标记锚点
-      offset: new maps.Pixel(0, option.offsetY),
+      offset: new maps.Pixel(0, option.offsetY - 16),
       style: {
-        'margin-bottom': '1rem',
         padding: (option.padding || 8) + 'px',
         'line-height': (option.fontSize || 14) + 'px',
         'border-radius': (option.borderRadius || 0) + 'px',
@@ -33,12 +32,20 @@ export function createCallout (maps) {
       },
       position: option.position
     })
-
-    maps.event.addListener(this.Text, 'click', () => {
-      this.callback(this.parent)
+    // 不通过 addListener 方式绑定事件，为了规避高德地图覆盖物点击触发map点击问题
+    this.Text.dom.addEventListener('click', e => {
+      handleAMapTextClick(this, e)
+    })
+    this.Text.dom.addEventListener('touchend', e => {
+      handleAMapTextClick(this, e)
     })
 
     this.Text.setMap(option.map)
+  }
+
+  function handleAMapTextClick (self, e) {
+    self.callback(e, self.parent)
+    e.stopPropagation()
   }
 
   function removeAMapText () {

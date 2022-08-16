@@ -69,6 +69,35 @@ export function initHooks (mpOptions, hooks, vueOptions) {
   })
 }
 
+export function initUnknownHooks (mpOptions, vueOptions, excludes = []) {
+  findHooks(vueOptions).forEach((hook) => initHook(mpOptions, hook, excludes))
+}
+
+function findHooks (vueOptions, hooks = []) {
+  if (vueOptions) {
+    Object.keys(vueOptions).forEach((name) => {
+      if (name.indexOf('on') === 0 && isFn(vueOptions[name])) {
+        hooks.push(name)
+      }
+    })
+  }
+  return hooks
+}
+
+function initHook (mpOptions, hook, excludes) {
+  if (excludes.indexOf(hook) === -1 && !hasOwn(mpOptions, hook)) {
+    mpOptions[hook] = function (args) {
+      if (
+        (__PLATFORM__ === 'mp-toutiao' || __PLATFORM__ === 'mp-lark') &&
+        hook === 'onError'
+      ) {
+        return getApp().$vm.$callHook(hook, args)
+      }
+      return this.$vm && this.$vm.__call_hook(hook, args)
+    }
+  }
+}
+
 export function initVueComponent (Vue, vueOptions) {
   vueOptions = vueOptions.default || vueOptions
   let VueComponent

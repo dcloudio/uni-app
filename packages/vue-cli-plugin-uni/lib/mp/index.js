@@ -169,6 +169,10 @@ module.exports = {
 
     webpackConfig.optimization.splitChunks = require('../split-chunks')()
 
+    if (webpack.version[0] > 4) {
+      webpackConfig.optimization.chunkIds = 'named'
+    }
+
     parseEntry()
 
     const statCode = getPlatformStat()
@@ -328,6 +332,11 @@ ${globalEnv}.__webpack_require_UNI_MP_PLUGIN__ = __webpack_require__;`
             }
           }))
       }
+    }
+
+    if (process.env.NODE_ENV === 'production' && webpack.version[0] > 4) {
+      // 暂时禁用，否则导致 provide 被压缩和裁剪
+      webpackConfig.optimization.usedExports(false)
     }
 
     if (process.env.UNI_SUBPACKGE || process.env.UNI_MP_PLUGIN) {
