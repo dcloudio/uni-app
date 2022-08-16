@@ -52,6 +52,7 @@ module.exports = function initPreprocess (name, platforms, userDefines = {}) {
 
   if (name.startsWith('app-')) {
     vueContext.APP = true
+    nvueContext.APP = true
   }
 
   if (name === 'quickapp-webview') {
