@@ -3,9 +3,8 @@ import fs from 'fs-extra'
 import path from 'path'
 import AdmZip from 'adm-zip'
 import { sync } from 'fast-glob'
-import { once } from '@dcloudio/uni-shared'
 import type { parse, bundle, UtsTarget } from '@dcloudio/uts'
-import { normalizePath } from '@dcloudio/uni-cli-shared'
+import { installHBuilderXPlugin, normalizePath } from '@dcloudio/uni-cli-shared'
 import { camelize } from '@vue/shared'
 
 export function getUtsCompiler(): {
@@ -69,8 +68,12 @@ export async function compile(filename: string) {
   } else if (process.env.NODE_ENV === 'development') {
     // 开发模式下，需要生成 dex
     if (fs.existsSync(kotlinFile)) {
+      const compilerServer = getCompilerServer()
+      if (!compilerServer) {
+        return
+      }
+      const { getDefaultJar, compile } = compilerServer
       time = Date.now()
-      const { getDefaultJar, compile } = getCompilerServer()
       const jarFile = resolveJarPath(kotlinFile)
       const options = {
         kotlinc: resolveKotlincArgs(
@@ -179,19 +182,27 @@ function resolveClassPath(jars: string[]) {
   return jars.join(os.platform() === 'win32' ? ';' : ':')
 }
 
-const getCompilerServer = once(() => {
-  // eslint-disable-next-line no-restricted-globals
-  return require(path.resolve(
-    process.env.UNI_HBUILDERX_PLUGINS,
-    'uniAppRun-Extension/out/main.js'
-  )) as {
-    getDefaultJar(): string[]
-    compile(
-      options: { kotlinc: string[]; d8: string[] },
-      projectPath: string
-    ): Promise<boolean>
+const getCompilerServer = ():
+  | {
+      getDefaultJar(): string[]
+      compile(
+        options: { kotlinc: string[]; d8: string[] },
+        projectPath: string
+      ): Promise<boolean>
+    }
+  | false => {
+  try {
+    const compilerServerPath = path.resolve(
+      process.env.UNI_HBUILDERX_PLUGINS,
+      'uniapp-runextension/out/main.js'
+    )
+    // eslint-disable-next-line no-restricted-globals
+    return require(compilerServerPath)
+  } catch (e) {
+    installHBuilderXPlugin('uniapp-runextension')
   }
-})
+  return false
+}
 
 export function parsePackage(filepath: string) {
   const parts = normalizePath(filepath).split('/')

@@ -1,10 +1,14 @@
 import Log from 'android.util.Log'
 import { IUser } from './interface.uts'
 import { login } from './login.uts'
+import logo from '../static/logo.png'
 export class User implements IUser {
   async login(name: string, pwd: string) {
     login(name, pwd)
     Log.info('123')
+    Log.info(logo)
   }
-  register(name: string) {}
+  register(name: string) {
+    Log.info(logo)
+  }
 }
