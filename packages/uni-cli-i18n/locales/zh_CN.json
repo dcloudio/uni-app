@@ -33,7 +33,7 @@
   "templateCompiler.noH5KeyNoSupportExpression": "非 h5 平台 :key 不支持表达式 {{0}}，详情参考: {{1}}",
   "templateCompiler.notCurrentlySupportScopedSlot": "暂不支持 scoped slot {{0}}",
   "templateCompiler.idAttribNotAllowInCustomComponentProps": "id 作为属性保留名，不允许在自定义组件 {{0}} 中定义为 props",
-  "templateCompiler.notSupportDynamicSlotName": "{{0}} 不支持动态插槽名",
+  "templateCompiler.notSupportDynamicSlotName": "{{0}} 不支持动态插槽名，请设置 scopedSlotsCompiler 为 augmented",
   "templateCompiler.forNestedIndexNameNoArrowRepeat": "{{0}} v-for 嵌套时，索引名称 {{1}} 不允许重复",
   "templateCompiler.noSupportSyntax": "不支持 {{0}} 语法",
   "pluginHbuilderx.plaseHXCompileAppPlatform": "请使用 HBuilderX 编译运行至 app-plus 平台",
