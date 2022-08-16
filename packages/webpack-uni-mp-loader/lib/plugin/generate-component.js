@@ -70,7 +70,11 @@ module.exports = function generateComponent (compilation, jsonpFunction = 'webpa
     const modules = compilation.modules
 
     const concatenatedModules = modules.filter(module => module.modules)
-    const uniModuleId = modules.find(module => module.resource && normalizePath(module.resource) === uniPath).id
+    let uniModule = modules.find(module => module.resource && normalizePath(module.resource) === uniPath)
+    if (!uniModule && webpack.version[0] > 4) {
+      uniModule = modules.find(module => module.rootModule && module.rootModule.resource && normalizePath(module.rootModule.resource) === uniPath)
+    }
+    const uniModuleId = uniModule.id
     const styleImports = {}
     const fixSlots = {}
     const vueOuterComponentSting = 'vueOuterComponents'
