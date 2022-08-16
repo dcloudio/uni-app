@@ -4,6 +4,7 @@ import {
 
 import {
   initHooks,
+  initUnknownHooks,
   PAGE_EVENT_HOOKS
 } from 'uni-wrapper/util'
 
@@ -27,6 +28,7 @@ export default function parseBasePage (vuePageOptions, {
   })
 
   initHooks(pageOptions.methods, hooks, vuePageOptions)
+  initUnknownHooks(pageOptions.methods, vuePageOptions)
 
   pageOptions.methods.onLoad = function (query) {
     this.options = query
