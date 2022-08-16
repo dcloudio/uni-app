@@ -6542,7 +6542,8 @@ var serviceContext = (function () {
     const {
       hostPackageName, hostName, osLanguage,
       hostVersion, hostLanguage, hostTheme,
-      appId, appName, appVersion, appVersionCode
+      appId, appName, appVersion, appVersionCode,
+      appWgtVersion
     } = systemInfo;
 
     const appLanguage = uni
@@ -6556,6 +6557,7 @@ var serviceContext = (function () {
       appName,
       appVersion,
       appVersionCode,
+      appWgtVersion,
       appLanguage,
       enableDebug: false,
       hostSDKVersion: undefined,

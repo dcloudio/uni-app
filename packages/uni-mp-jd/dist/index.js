@@ -1227,6 +1227,29 @@ function initHooks (mpOptions, hooks, vueOptions) {
   });
 }
 
+function initUnknownHooks (mpOptions, vueOptions, excludes = []) {
+  findHooks(vueOptions).forEach((hook) => initHook$1(mpOptions, hook, excludes));
+}
+
+function findHooks (vueOptions, hooks = []) {
+  if (vueOptions) {
+    Object.keys(vueOptions).forEach((name) => {
+      if (name.indexOf('on') === 0 && isFn(vueOptions[name])) {
+        hooks.push(name);
+      }
+    });
+  }
+  return hooks
+}
+
+function initHook$1 (mpOptions, hook, excludes) {
+  if (excludes.indexOf(hook) === -1 && !hasOwn(mpOptions, hook)) {
+    mpOptions[hook] = function (args) {
+      return this.$vm && this.$vm.__call_hook(hook, args)
+    };
+  }
+}
+
 function initVueComponent (Vue, vueOptions) {
   vueOptions = vueOptions.default || vueOptions;
   let VueComponent;
@@ -1945,6 +1968,7 @@ function parseBaseApp (vm, {
   initAppLocale(Vue, vm, normalizeLocale(jd.getSystemInfoSync().language) || LOCALE_EN);
 
   initHooks(appOptions, hooks);
+  initUnknownHooks(appOptions, vm.$options);
 
   return appOptions
 }
@@ -2212,6 +2236,7 @@ function parseBasePage (vuePageOptions, {
   const pageOptions = parseComponent$1(vuePageOptions);
 
   initHooks(pageOptions.methods, hooks$1, vuePageOptions);
+  initUnknownHooks(pageOptions.methods, vuePageOptions);
 
   pageOptions.methods.onLoad = function (query) {
     this.options = query;
