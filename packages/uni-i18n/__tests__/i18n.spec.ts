@@ -47,6 +47,7 @@ const locales: {
   es: 'es',
   'es-AR': 'es',
   'sv-se': 'en', //fallback
+  'ja-CN': 'en', //fallback
 }
 
 describe('i18n', () => {
