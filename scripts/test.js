@@ -19,17 +19,14 @@ parse(
 start = Date.now()
 bundle({
   input: {
-    root: path.resolve(projectDir, 'uni_modules/test-uniplugin'),
+    root: projectDir,
     filename: path.resolve(
       projectDir,
       'uni_modules/test-uniplugin/app-android/index.uts'
     ),
   },
   output: {
-    outDir: path.resolve(
-      projectDir,
-      'unpackage/dist/app-plus/uni_modules/test-uniplugin/'
-    ),
+    outDir: path.resolve(projectDir, 'unpackage/dist/app'),
     package: 'uts.modules.testUniPlugin',
     imports: ['kotlinx.coroutines.*', 'io.dcloud.uts.runtime.*'],
     sourceMap: true,
