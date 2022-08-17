@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const { parse, runBuild, bundle, UtsTarget } = require('../packages/uts/dist')
+const { parse, bundle } = require('../packages/uts/dist')
 const projectDir = path.resolve(__dirname, '../packages/playground/uts')
 
 let start = Date.now()
@@ -36,4 +36,13 @@ bundle({
 }).then((res) => {
   console.log('bundle: ' + (Date.now() - start) + 'ms')
   console.log(JSON.stringify(res))
+  console.log(
+    fs.readFileSync(
+      path.resolve(
+        projectDir,
+        'unpackage/dist/app/uni_modules/test-uniplugin/app-android/index.kt'
+      ),
+      'utf8'
+    )
+  )
 })

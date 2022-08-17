@@ -72,12 +72,13 @@ export async function compile(filename: string) {
       if (!compilerServer) {
         return
       }
-      const { getDefaultJar, compile } = compilerServer
+      const { getDefaultJar, getKotlincHome, compile } = compilerServer
       time = Date.now()
       const jarFile = resolveJarPath(kotlinFile)
       const options = {
         kotlinc: resolveKotlincArgs(
           kotlinFile,
+          getKotlincHome(),
           getDefaultJar().concat(resolveLibs(filename))
         ),
         d8: resolveD8Args(jarFile),
@@ -100,7 +101,7 @@ export async function compile(filename: string) {
   }
 }
 
-function resolveKotlincArgs(filename: string, jars: string[]) {
+function resolveKotlincArgs(filename: string, kotlinc: string, jars: string[]) {
   return [
     filename,
     '-cp',
@@ -108,7 +109,7 @@ function resolveKotlincArgs(filename: string, jars: string[]) {
     '-d',
     resolveJarPath(filename),
     '-kotlin-home',
-    '/Applications/HBuilderX-Alpha.app/Contents/HBuilderX/plugins/uniAppRun-Extension/kotlinc',
+    kotlinc,
   ]
 }
 
@@ -184,6 +185,7 @@ function resolveClassPath(jars: string[]) {
 
 const getCompilerServer = ():
   | {
+      getKotlincHome(): string
       getDefaultJar(): string[]
       compile(
         options: { kotlinc: string[]; d8: string[] },
