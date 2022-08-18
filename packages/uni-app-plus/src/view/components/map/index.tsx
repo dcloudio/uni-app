@@ -236,7 +236,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         ([latitude, longitude]) => {
           map &&
             map.setStyles({
-              center: new plus.maps.Point!(Number(latitude), Number(longitude)),
+              center: new plus.maps.Point!(Number(longitude), Number(latitude)),
             })
         }
       )
