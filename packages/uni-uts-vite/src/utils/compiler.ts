@@ -32,7 +32,7 @@ export async function compile(filename: string) {
     output: {
       outDir: outputDir,
       package: parsePackage(filename),
-      sourceMap: true,
+      sourceMap: process.env.NODE_ENV === 'development',
       extname: 'kt',
       imports: [
         'kotlinx.coroutines.async',
@@ -48,6 +48,10 @@ export async function compile(filename: string) {
   const kotlinFile = resolveKotlinFile(filename, inputDir, outputDir)
   if (process.env.NODE_ENV === 'production') {
     // 生产模式下，需要将 kt 文件转移到 src 下
+    fs.copyFileSync(
+      path.resolve(filename, '../../package.json'),
+      path.resolve(kotlinFile, '../../package.json')
+    )
     fs.mkdirSync(path.resolve(kotlinFile, '../src'))
     if (fs.existsSync(kotlinFile)) {
       fs.moveSync(kotlinFile, path.resolve(kotlinFile, '../src/index.kt'))

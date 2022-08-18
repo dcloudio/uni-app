@@ -88,17 +88,15 @@ interface InvokeCallbackParamsRes {
   params: unknown[]
   keepAlive?: boolean
 }
-
-type InvokeSyncCallback = (res: InvokeCallbackParamsRes) => void
-type InvokeAsyncCallback = (
-  res: InvokeCallbackReturnRes | InvokeCallbackParamsRes
-) => void
-
 interface InvokeSyncRes {
   type: 'return'
   errMsg?: string
   params: unknown
 }
+type InvokeSyncCallback = (res: InvokeCallbackParamsRes) => void
+type InvokeAsyncCallback = (
+  res: InvokeCallbackReturnRes | InvokeCallbackParamsRes
+) => void
 function getProxy(): {
   invokeSync: (args: InvokeArgs, callback: InvokeSyncCallback) => InvokeSyncRes
   invokeAsync: (args: InvokeArgs, callback: InvokeAsyncCallback) => void
