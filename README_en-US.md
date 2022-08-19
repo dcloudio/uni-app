@@ -1,13 +1,10 @@
-<div align="center">
-  <a href="https://uniapp.dcloud.io">
-    <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/e422ceca-23ef-449a-afd7-745ad177a7e9.png" width="200">
-  </a>
-  <h1>uni-app</h1>
-  <p>uni-app is a unified front-end framework that uses `Vue.js` to develop applet, H5, and App. Official website address: <a href="https://uniapp.dcloud.io">https://uniapp.dcloud.io</a></p>
-  <p>
-    <a href="https://github.com/dcloudio/uni-app/blob/dev/README.md">中文</a>
-  </p>
-</div>
+# uni-app
+
+<p>
+  <a href="https://github.com/dcloudio/uni-app/blob/dev/README.md">简体中文</a> | English
+</p>
+
+`uni-app` is a unified front-end framework that uses `Vue.js` to develop applet, H5, and App. Official website address: [https://uniapp.dcloud.io](https://uniapp.dcloud.io)
 
 Developers use `Vue` syntax to write code, and `uni-app` framework compiles it into small programs (WeChat/Alipay/Baidu/ByteDance/QQ/Kuishou/Dingding/Xiaohongshu), App (iOS/Android) ), H5 and other platforms to ensure its correct operation and achieve an excellent experience.
 
