@@ -5,7 +5,7 @@
   <h1>uni-app</h1>
   <p>uni-app is a unified front-end framework that uses `Vue.js` to develop applet, H5, and App. Official website address: <a href="https://uniapp.dcloud.io">https://uniapp.dcloud.io</a></p>
   <p>
-    <a href="https://github.com/dcloudio/uni-app/README.md">中文</a>
+    <a href="https://github.com/dcloudio/uni-app/blob/dev/README.md">中文</a>
   </p>
 </div>
 

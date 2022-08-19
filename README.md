@@ -5,7 +5,7 @@
   <h1>uni-app</h1>
   <p>uni-app 是一个使用 Vue.js 开发小程序、H5、App的统一前端框架。官网地址：<a href="https://uniapp.dcloud.io">https://uniapp.dcloud.io</a></p>
   <p>
-    <a href="https://github.com/dcloudio/uni-app/README.en-US.md">English Readme</a>
+    <a href="https://github.com/dcloudio/uni-app/blob/dev/README_en-US.md">English Readme</a>
   </p>
 </div>
 
