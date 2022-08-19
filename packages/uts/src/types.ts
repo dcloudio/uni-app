@@ -12,6 +12,7 @@ export interface UtsParserConfig {
 export type UtsParseOptions = UtsParserConfig & {
   filename?: string
   comments?: boolean
+  noColor?: boolean
 }
 
 export type UtsInputOptions = UtsParseOptions & {
@@ -27,6 +28,7 @@ export type UtsOutputOptions = {
   inlineSourcesContent?: boolean
   extname: string
   logFilename?: boolean
+  noColor?: boolean
 }
 export interface UtsOptions {
   input: UtsInputOptions

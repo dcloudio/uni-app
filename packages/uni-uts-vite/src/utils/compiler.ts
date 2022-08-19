@@ -4,7 +4,11 @@ import path from 'path'
 import AdmZip from 'adm-zip'
 import { sync } from 'fast-glob'
 import type { parse, bundle, UtsTarget } from '@dcloudio/uts'
-import { installHBuilderXPlugin, normalizePath } from '@dcloudio/uni-cli-shared'
+import {
+  installHBuilderXPlugin,
+  isInHBuilderX,
+  normalizePath,
+} from '@dcloudio/uni-cli-shared'
 import { camelize } from '@vue/shared'
 
 export function getUtsCompiler(): {
@@ -42,6 +46,7 @@ export async function compile(filename: string) {
         'io.dcloud.uts.*',
       ],
       logFilename: true,
+      noColor: isInHBuilderX(),
     },
   })
   console.log('uts compile time: ' + (Date.now() - time) + 'ms')

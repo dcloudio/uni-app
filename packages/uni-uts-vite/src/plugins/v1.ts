@@ -1,6 +1,7 @@
 import type { Plugin } from 'vite'
 import path from 'path'
 import {
+  isInHBuilderX,
   normalizePath,
   parseVueRequest,
   requireResolve,
@@ -53,7 +54,7 @@ export function uniUtsV1Plugin(): Plugin {
       // 懒加载 uts 编译器
       // eslint-disable-next-line no-restricted-globals
       const { parse } = require('@dcloudio/uts')
-      const ast = await parse(code)
+      const ast = await parse(code, { noColor: isInHBuilderX() })
       code = `
 import { initUtsProxyClass, initUtsProxyFunction } from '@dcloudio/uni-app'
 const pkg = '${pkg}'
