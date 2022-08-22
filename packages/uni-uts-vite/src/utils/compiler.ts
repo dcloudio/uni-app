@@ -26,7 +26,7 @@ export async function compile(filename: string) {
   const { bundle, UtsTarget } = getUtsCompiler()
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
-  let time = Date.now()
+  // let time = Date.now()
   await bundle({
     target: UtsTarget.KOTLIN,
     input: {
@@ -49,7 +49,7 @@ export async function compile(filename: string) {
       noColor: isInHBuilderX(),
     },
   })
-  console.log('uts compile time: ' + (Date.now() - time) + 'ms')
+  // console.log('uts compile time: ' + (Date.now() - time) + 'ms')
   const kotlinFile = resolveKotlinFile(filename, inputDir, outputDir)
   if (process.env.NODE_ENV === 'production') {
     // 生产模式下，需要将 kt 文件转移到 src 下
@@ -88,7 +88,7 @@ export async function compile(filename: string) {
         return
       }
       const { getDefaultJar, getKotlincHome, compile } = compilerServer
-      time = Date.now()
+      // time = Date.now()
       const jarFile = resolveJarPath(kotlinFile)
       const options = {
         kotlinc: resolveKotlincArgs(
@@ -99,8 +99,7 @@ export async function compile(filename: string) {
         d8: resolveD8Args(jarFile),
       }
       const res = await compile(options, process.env.UNI_INPUT_DIR)
-      console.log('dex compile time: ' + (Date.now() - time) + 'ms')
-      time = Date.now()
+      // console.log('dex compile time: ' + (Date.now() - time) + 'ms')
       if (res) {
         try {
           fs.unlinkSync(jarFile)
