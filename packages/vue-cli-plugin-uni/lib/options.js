@@ -1,14 +1,9 @@
 const fs = require('fs')
 const path = require('path')
 const webpack = require('webpack')
-
-const isWin = /^win/.test(process.platform)
-
-function genTranspileDepRegex (depPath) {
-  return new RegExp(isWin
-    ? depPath.replace(/\\/g, '\\\\') // double escape for windows style path
-    : depPath)
-}
+const {
+  pathToRegexp
+} = require('@dcloudio/uni-cli-shared/lib/util')
 
 module.exports = function initOptions (options) {
   const {
@@ -21,7 +16,7 @@ module.exports = function initOptions (options) {
   }
 
   // 增加 src/node_modules 解析
-  options.transpileDependencies.push(genTranspileDepRegex(path.resolve(process.env.UNI_INPUT_DIR, 'node_modules')))
+  options.transpileDependencies.push(pathToRegexp(path.resolve(process.env.UNI_INPUT_DIR, 'node_modules'), { start: true }))
   options.transpileDependencies.push('@dcloudio/uni-' + process.env.UNI_PLATFORM)
   options.transpileDependencies.push('@dcloudio/uni-i18n')
   options.transpileDependencies.push('@dcloudio/uni-stat')

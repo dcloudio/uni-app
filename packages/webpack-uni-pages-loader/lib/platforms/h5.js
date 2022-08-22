@@ -177,7 +177,7 @@ const genRegisterPageVueComponentsCode = function (pageComponents) {
 
       return `Vue.component('${name}', resolve=>{
 const component = {
-  component:require.ensure([], () => resolve(require('${path}${ext}')), '${name}'),
+  component:require.ensure([], () => resolve(require(${JSON.stringify(path)}+'${ext}')), '${name}'),
   delay:__uniConfig['async'].delay,
   timeout: __uniConfig['async'].timeout
 }

@@ -186,13 +186,10 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
         if (babelLoader) {
           const options = api.genCacheConfig('babel-loader/' + process.env.UNI_PLATFORM, getPartialIdentifier())
           if (webpack.version[0] > 4) {
-            if (process.env.UNI_USING_CACHE) {
-              Object.assign(babelLoader.options, options)
-            } else {
-              Object.assign(babelLoader.options, {
-                cacheDirectory: false
-              })
-            }
+            babelLoader.options = babelLoader.options || {}
+            Object.assign(babelLoader.options, process.env.UNI_USING_CACHE ? options : {
+              cacheDirectory: false
+            })
           } else {
             const index = uses.findIndex(use => cacheLoaderRe.test(use.loader))
             if (index >= 0) {
