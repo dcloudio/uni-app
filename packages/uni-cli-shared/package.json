@@ -19,6 +19,8 @@
   "author": "fxy060608",
   "license": "Apache-2.0",
   "dependencies": {
+    "escape-string-regexp": "^4.0.0",
+    "glob-escape": "^0.0.2",
     "hash-sum": "^1.0.2",
     "postcss-urlrewrite": "^0.2.2",
     "strip-json-comments": "^2.0.1"

@@ -2,6 +2,8 @@ const path = require('path')
 const fs = require('fs')
 const hash = require('hash-sum')
 const crypto = require('crypto')
+const escapeStringRegexp = require('escape-string-regexp')
+const escapeGlob = require('glob-escape')
 
 const isWin = /^win/.test(process.platform)
 
@@ -121,6 +123,34 @@ function normalizeNodeModules (str) {
 
 const _hasOwnProperty = Object.prototype.hasOwnProperty
 
+/**
+ * pathToRegexp
+ * @param {string} pathString
+ * @param {{start:?boolean,end:?boolean,global:?boolean}?} options
+ * @returns {RegExp}
+ */
+function pathToRegexp (pathString, options = {}) {
+  return new RegExp((options.start ? '^' : '') + escapeStringRegexp(pathString) + (options.end ? '$' : ''), 'i' + (options.global ? 'g' : ''))
+}
+
+/**
+ * pathToGlob
+ * @param {string} pathString
+ * @param {string} glob
+ * @param {{windows:?boolean,escape:?boolean}?} options
+ * @returns {string}
+ */
+function pathToGlob (pathString, glob, options = {}) {
+  const isWindows = 'windows' in options ? options.windows : /^win/.test(process.platform)
+  const useEscape = options.escape
+  const str = isWindows ? pathString.replace(/\\/g, '/') : pathString
+  let safeStr = escapeGlob(str)
+  if (isWindows || !useEscape) {
+    safeStr = safeStr.replace(/\\(.)/g, '[$1]')
+  }
+  return path.posix.join(safeStr, glob)
+}
+
 module.exports = {
   isInHBuilderX,
   isInHBuilderXAlpha,
@@ -149,6 +179,8 @@ module.exports = {
   hyphenate,
   normalizePath,
   convertStaticStyle,
+  pathToRegexp,
+  pathToGlob,
   getComponentName: cached((str) => {
     if (str.indexOf('wx-') === 0) {
       return str.replace('wx-', 'weixin-')
