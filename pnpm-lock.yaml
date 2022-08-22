@@ -52,7 +52,7 @@ importers:
       typescript: 4.6.4
       vite: 2.9.14
       vue: 3.2.37
-      vue-router: ^4.1.2
+      vue-router: ^4.1.3
       yorkie: ^2.0.0
     devDependencies:
       '@babel/core': 7.18.5
@@ -103,7 +103,7 @@ importers:
       typescript: 4.6.4
       vite: 2.9.14
       vue: 3.2.37
-      vue-router: 4.1.2_vue@3.2.37
+      vue-router: 4.1.3_vue@3.2.37
       yorkie: 2.0.0
 
   packages/playground/ssr:
@@ -117,14 +117,14 @@ importers:
       serve-static: ^1.14.1
       vite: 2.9.14
       vue: 3.2.37
-      vue-router: ^4.1.2
+      vue-router: ^4.1.3
       vuex: ^4.0.2
     dependencies:
       '@dcloudio/uni-app': link:../../uni-app
       '@dcloudio/uni-components': link:../../uni-components
       '@dcloudio/uni-h5': link:../../uni-h5
       vue: 3.2.37
-      vue-router: 4.1.2_vue@3.2.37
+      vue-router: 4.1.3_vue@3.2.37
       vuex: 4.0.2_vue@3.2.37
     devDependencies:
       '@dcloudio/vite-plugin-uni': link:../../vite-plugin-uni
@@ -193,7 +193,7 @@ importers:
       '@dcloudio/uni-uts-vite': 3.0.0-alpha-3050420220804008
       '@types/pako': 1.0.2
       '@vue/compiler-sfc': 3.2.37
-      autoprefixer: ^10.4.7
+      autoprefixer: ^10.4.8
       pako: ^1.0.11
       postcss: ^8.4.13
       vue: 3.2.37
@@ -209,7 +209,7 @@ importers:
       '@dcloudio/uni-shared': link:../uni-shared
       '@types/pako': 1.0.2
       '@vue/compiler-sfc': 3.2.37
-      autoprefixer: 10.4.7_postcss@8.4.14
+      autoprefixer: 10.4.8_postcss@8.4.14
       pako: 1.0.11
       postcss: 8.4.14
       vue: 3.2.37
@@ -324,7 +324,7 @@ importers:
       '@vue/compiler-sfc': 3.2.37
       '@vue/server-renderer': 3.2.37
       '@vue/shared': 3.2.37
-      autoprefixer: ^10.4.7
+      autoprefixer: ^10.4.8
       base64url: ^3.0.1
       chokidar: ^3.5.3
       compare-versions: ^3.6.0
@@ -367,7 +367,7 @@ importers:
       '@vue/compiler-sfc': 3.2.37
       '@vue/server-renderer': 3.2.37_vue@3.2.37
       '@vue/shared': 3.2.37
-      autoprefixer: 10.4.7_postcss@8.4.14
+      autoprefixer: 10.4.8_postcss@8.4.14
       base64url: 3.0.1
       chokidar: 3.5.3
       compare-versions: 3.6.0
@@ -458,7 +458,7 @@ importers:
       localstorage-polyfill: ^1.0.1
       safe-area-insets: ^1.4.1
       vue: 3.2.37
-      vue-router: ^4.1.2
+      vue-router: ^4.1.3
       xmlhttprequest: ^1.8.0
     dependencies:
       '@dcloudio/uni-h5-vite': link:../uni-h5-vite
@@ -469,7 +469,7 @@ importers:
       '@vue/shared': 3.2.37
       localstorage-polyfill: 1.0.1
       safe-area-insets: 1.4.1
-      vue-router: 4.1.2_vue@3.2.37
+      vue-router: 4.1.3_vue@3.2.37
       xmlhttprequest: 1.8.0
     devDependencies:
       '@amap/amap-jsapi-types': 0.0.8
@@ -3375,15 +3375,15 @@ packages:
     engines: {node: '>= 4.0.0'}
     dev: true
 
-  /autoprefixer/10.4.7_postcss@8.4.14:
-    resolution: {integrity: sha512-ypHju4Y2Oav95SipEcCcI5J7CGPuvz8oat7sUtYj3ClK44bldfvtvcxK6IEK++7rqB7YchDGzweZIBG+SD0ZAA==}
+  /autoprefixer/10.4.8_postcss@8.4.14:
+    resolution: {integrity: sha512-75Jr6Q/XpTqEf6D2ltS5uMewJIx5irCU1oBYJrWjFenq/m12WRRrz6g15L1EIoYvPLXTbEry7rDOwrcYNj77xw==}
     engines: {node: ^10 || ^12 || >=14}
     hasBin: true
     peerDependencies:
       postcss: ^8.1.0
     dependencies:
-      browserslist: 4.20.4
-      caniuse-lite: 1.0.30001355
+      browserslist: 4.21.3
+      caniuse-lite: 1.0.30001380
       fraction.js: 4.2.0
       normalize-range: 0.1.2
       picocolors: 1.0.0
@@ -3663,6 +3663,16 @@ packages:
       node-releases: 2.0.5
       picocolors: 1.0.0
 
+  /browserslist/4.21.3:
+    resolution: {integrity: sha512-898rgRXLAyRkM1GryrrBHGkqA5hlpkV5MhtZwg9QXeiyLUYs2k00Un05aX5l2/yJIOObYKOpS2JNo8nJDE7fWQ==}
+    engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
+    hasBin: true
+    dependencies:
+      caniuse-lite: 1.0.30001380
+      electron-to-chromium: 1.4.225
+      node-releases: 2.0.6
+      update-browserslist-db: 1.0.5_browserslist@4.21.3
+
   /bs-logger/0.2.6:
     resolution: {integrity: sha512-pd8DCoxmbgc7hyPKOvxtqNcjYoOsABPQdcCUjGp3d42VR2CX1ORhk2A87oqqu5R1kk+76nsxZupkmyd+MVtCog==}
     engines: {node: '>= 6'}
@@ -3739,6 +3749,9 @@ packages:
 
   /caniuse-lite/1.0.30001355:
     resolution: {integrity: sha512-Sd6pjJHF27LzCB7pT7qs+kuX2ndurzCzkpJl6Qct7LPSZ9jn0bkOA8mdgMgmqnQAWLVOOGjLpc+66V57eLtb1g==}
+
+  /caniuse-lite/1.0.30001380:
+    resolution: {integrity: sha512-OO+pPubxx16lkI7TVrbFpde8XHz66SMwstl1YWpg6uMGw56XnhYVwtPIjvX4kYpzwMwQKr4DDce394E03dQPGg==}
 
   /caseless/0.12.0:
     resolution: {integrity: sha512-4tYFyifaFfGacoiObjJegolkwSU4xQNGbVgUiNYVUxbQ2x2lUsFvY4hVgVzGiIe6WLOPqycWXA40l+PWsxthUw==}
@@ -4355,6 +4368,9 @@ packages:
 
   /electron-to-chromium/1.4.160:
     resolution: {integrity: sha512-O1Z12YfyeX2LXYO7MdHIPazGXzLzQnr1ADW55U2ARQsJBPgfpJz3u+g3Mo2l1wSyfOCdiGqaX9qtV4XKZ0HNRA==}
+
+  /electron-to-chromium/1.4.225:
+    resolution: {integrity: sha512-ICHvGaCIQR3P88uK8aRtx8gmejbVJyC6bB4LEC3anzBrIzdzC7aiZHY4iFfXhN4st6I7lMO0x4sgBHf/7kBvRw==}
 
   /elliptic/6.5.4:
     resolution: {integrity: sha512-iLhC6ULemrljPZb+QutR5TQGB+pdW6KGD5RSegS+8sorOZT+rdQFbsQFJgvN3eRqNALqJer4oQ16YvJHlU8hzQ==}
@@ -6705,6 +6721,9 @@ packages:
   /node-releases/2.0.5:
     resolution: {integrity: sha512-U9h1NLROZTq9uE1SNffn6WuPDg8icmi3ns4rEl/oTfIle4iLjTliCzgTsbaIFMq/Xn078/lfY/BL0GWZ+psK4Q==}
 
+  /node-releases/2.0.6:
+    resolution: {integrity: sha512-PiVXnNuFm5+iYkLBNeq5211hvO38y63T0i2KKh2KnUs3RpzJ+JtODFjkD8yjLwnDkTYF1eKXheUwdssR+NRZdg==}
+
   /normalize-path/1.0.0:
     resolution: {integrity: sha512-7WyT0w8jhpDStXRq5836AMmihQwq2nrUVQrgjvUo/p/NZf9uy/MeJ246lBJVmWuYXMlJuG9BNZHF0hWjfTbQUA==}
     engines: {node: '>=0.10.0'}
@@ -8182,6 +8201,16 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
+  /update-browserslist-db/1.0.5_browserslist@4.21.3:
+    resolution: {integrity: sha512-dteFFpCyvuDdr9S/ff1ISkKt/9YZxKjI9WlRR99c180GaztJtRa/fn18FdxGVKVsnPY7/a/FDN68mcvUmP4U7Q==}
+    hasBin: true
+    peerDependencies:
+      browserslist: '>= 4.21.0'
+    dependencies:
+      browserslist: 4.21.3
+      escalade: 3.1.1
+      picocolors: 1.0.0
+
   /uri-js/4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
     dependencies:
@@ -8279,8 +8308,8 @@ packages:
       vue: 3.2.37
     dev: false
 
-  /vue-router/4.1.2_vue@3.2.37:
-    resolution: {integrity: sha512-5BP1qXFncVRwgV/XnqzsKApdMjQPqWIpoUBdL1ynz8HyLxIX/UDAx7Ql2BjmA5CXT/p61JfZvkpiFWFpaqcfag==}
+  /vue-router/4.1.3_vue@3.2.37:
+    resolution: {integrity: sha512-XvK81bcYglKiayT7/vYAg/f36ExPC4t90R/HIpzrZ5x+17BOWptXLCrEPufGgZeuq68ww4ekSIMBZY1qdUdfjA==}
     peerDependencies:
       vue: ^3.2.0
     dependencies:
