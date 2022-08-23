@@ -4660,7 +4660,7 @@ const getPushClientId = /* @__PURE__ */ defineAsyncApi(API_GET_PUSH_CLIENT_ID, (
     if (typeof enabled === "undefined") {
       enabled = false;
       cid = "";
-      cidErrMsg = "unipush is not enabled";
+      cidErrMsg = "uniPush is not enabled";
     }
     getPushCidCallbacks.push((cid2, errMsg) => {
       if (cid2) {

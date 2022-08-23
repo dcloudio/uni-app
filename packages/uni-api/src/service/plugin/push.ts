@@ -110,7 +110,7 @@ export const getPushClientId = defineAsyncApi(
       if (typeof enabled === 'undefined') {
         enabled = false
         cid = ''
-        cidErrMsg = 'unipush is not enabled'
+        cidErrMsg = 'uniPush is not enabled'
       }
       getPushCidCallbacks.push((cid?: string, errMsg?: string) => {
         if (cid) {
