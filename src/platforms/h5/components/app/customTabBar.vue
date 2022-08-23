@@ -7,43 +7,45 @@
       :style="{'flex-direction':direction==='vertical'?'column':'row',backgroundColor:tabBarOptions.backgroundColor}"
       class="uni-tabbar"
     >
-      <div
-        v-for="(item,index) in tabBarOptions.list"
-        :key="item.pagePath"
-        class="uni-tabbar__item"
-        @click="_switchTab(item,index)"
-      >
-        <div class="uni-tabbar__bd">
-          <div
-            v-if="showIcon && item.iconPath"
-            :class="{'uni-tabbar__icon__diff':!item.text}"
-            class="uni-tabbar__icon"
-          >
-            <img :src="_getRealPath(selectedIndex===index?item.selectedIconPath:item.iconPath)">
+      <template v-for="(item,index) in tabBarOptions.list">
+        <div
+          v-if="item.visible !== false"
+          :key="item.pagePath"
+          class="uni-tabbar__item"
+          @click="_switchTab(item,index)"
+        >
+          <div class="uni-tabbar__bd">
             <div
-              v-if="item.redDot"
-              :class="{'uni-tabbar__badge':!!item.badge}"
-              class="uni-tabbar__reddot"
+              v-if="showIcon && item.iconPath"
+              :class="{'uni-tabbar__icon__diff':!item.text}"
+              class="uni-tabbar__icon"
             >
-              {{ item.badge }}
+              <img :src="_getRealPath(selectedIndex===index?item.selectedIconPath:item.iconPath)">
+              <div
+                v-if="item.redDot"
+                :class="{'uni-tabbar__badge':!!item.badge}"
+                class="uni-tabbar__reddot"
+              >
+                {{ item.badge }}
+              </div>
             </div>
-          </div>
-          <div
-            v-if="item.text"
-            :style="{color:selectedIndex===index?tabBarOptions.selectedColor:tabBarOptions.color,fontSize:showIcon&&item.iconPath?'10px':'14px'}"
-            class="uni-tabbar__label"
-          >
-            {{ item.text }}
             <div
-              v-if="item.redDot&&(!showIcon || !item.iconPath)"
-              :class="{'uni-tabbar__badge':!!item.badge}"
-              class="uni-tabbar__reddot"
+              v-if="item.text"
+              :style="{color:selectedIndex===index?tabBarOptions.selectedColor:tabBarOptions.color,fontSize:showIcon&&item.iconPath?'10px':'14px'}"
+              class="uni-tabbar__label"
             >
-              {{ item.badge }}
+              {{ item.text }}
+              <div
+                v-if="item.redDot&&(!showIcon || !item.iconPath)"
+                :class="{'uni-tabbar__badge':!!item.badge}"
+                class="uni-tabbar__reddot"
+              >
+                {{ item.badge }}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </template>
     </div>
   </uni-tabbar>
 </template>
