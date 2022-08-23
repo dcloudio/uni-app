@@ -21,7 +21,9 @@ if (!appid) {
     })
   })
 } else {
+  // #ifdef APP
   initPushNotification()
+  // #endif
   GtPush.init({
     appid,
     onError: (res) => {
