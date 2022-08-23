@@ -9,6 +9,7 @@ import {
 let cid
 let cidErrMsg
 let enabled
+let offline
 
 function normalizePushMessage (message) {
   try {
@@ -22,6 +23,9 @@ export function invokePushCallback (
 ) {
   if (args.type === 'enabled') {
     enabled = true
+    if (__PLATFORM__ === 'app') {
+      offline = args.offline
+    }
   } else if (args.type === 'clientId') {
     cid = args.cid
     cidErrMsg = args.errMsg
@@ -70,11 +74,34 @@ export function getPushClientId (args) {
   const hasSuccess = isFn(success)
   const hasFail = isFn(fail)
   const hasComplete = isFn(complete)
+
+  // App 端且启用离线时，使用 getClientInfoAsync 来调用
+  if (__PLATFORM__ === 'app' && offline) {
+    plus.push.getClientInfoAsync(
+      (info) => {
+        const res = {
+          errMsg: 'getPushClientId:ok',
+          cid
+        }
+        hasSuccess && success(res)
+        hasComplete && complete(res)
+      },
+      (res) => {
+        res = {
+          errMsg: 'getPushClientId:fail ' + (res.code + ': ' + res.message)
+        }
+        hasFail && fail(res)
+        hasComplete && complete(res)
+      }
+    )
+    return
+  }
+
   Promise.resolve().then(() => {
     if (typeof enabled === 'undefined') {
       enabled = false
       cid = ''
-      cidErrMsg = 'unipush is not enabled'
+      cidErrMsg = 'uniPush is not enabled'
     }
     getPushCidCallbacks.push((cid, errMsg) => {
       let res
