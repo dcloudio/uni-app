@@ -481,7 +481,6 @@ export const is_debug = debug
  * @param {*} data
  */
 export const log = (data, type) => {
-
   let msg_type = ''
   switch (data.lt) {
     case '1':
@@ -507,7 +506,7 @@ export const log = (data, type) => {
 
   // #ifdef APP
   // 在 app 中，日志转为 字符串
-  if(typeof data === 'object') {
+  if (typeof data === 'object') {
     data = JSON.stringify(data)
   }
   // #endif
@@ -539,4 +538,15 @@ export const get_report_Interval = (defaultTime) => {
   // 如果不是整数，则默认为上报间隔时间
   if (!reg.test(time)) return defaultTime
   return Number(time)
+}
+
+/**
+ * 获取隐私协议配置
+ */
+export const is_push_clientid = () => {
+  if (uniStatisticsConfig.collectItems) {
+    const ClientID = uniStatisticsConfig.collectItems.uniPushClientID
+    return typeof ClientID === 'boolean' ? ClientID : false
+  }
+  return false
 }
