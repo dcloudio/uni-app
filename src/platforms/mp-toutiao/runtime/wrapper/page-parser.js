@@ -1,6 +1,7 @@
 import {
   isPage,
   instances,
+  components,
   initRelation
 } from './util'
 
@@ -11,8 +12,17 @@ export default function parsePage (vuePageOptions) {
     isPage,
     initRelation
   })
+  const lifetimes = pageOptions.lifetimes
+  const oldCreated = lifetimes.created
+  lifetimes.created = function created () {
+    const webviewId = this.__webviewId__
+    components[webviewId] = []
+    if (typeof oldCreated === 'function') {
+      oldCreated.call(this)
+    }
+  }
   // 页面需要在 ready 中触发，其他组件是在 handleLink 中触发
-  pageOptions.lifetimes.ready = function ready () {
+  lifetimes.ready = function ready () {
     if (this.$vm && this.$vm.mpType === 'page') {
       this.$vm.__call_hook('created')
       this.$vm.__call_hook('beforeMount')
@@ -23,8 +33,11 @@ export default function parsePage (vuePageOptions) {
       this.is && console.warn(this.is + ' is not ready')
     }
   }
-
-  pageOptions.lifetimes.detached = function detached () {
+  const oldDetached = lifetimes.detached
+  lifetimes.detached = function detached () {
+    if (typeof oldDetached === 'function') {
+      oldDetached.call(this)
+    }
     this.$vm && this.$vm.$destroy()
     // 清理
     const webviewId = this.__webviewId__
@@ -33,6 +46,7 @@ export default function parsePage (vuePageOptions) {
         delete instances[key]
       }
     })
+    delete components[webviewId]
   }
 
   return pageOptions

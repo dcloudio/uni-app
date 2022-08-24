@@ -1,7 +1,8 @@
 import {
   isPage,
   initRelation,
-  handleLink
+  handleLink,
+  components
 } from './util'
 
 import {
@@ -11,17 +12,26 @@ import {
 
 import parseBaseComponent from '../../../mp-weixin/runtime/wrapper/component-base-parser'
 
-const components = []
+function currentComponents (mpInstance, callback) {
+  const webviewId = mpInstance.__webviewId__
+  const currentComponents = components[webviewId]
+  if (currentComponents) {
+    callback(currentComponents)
+  }
+}
 
 export default function parseComponent (vueOptions) {
   const [componentOptions, VueComponent] = parseBaseComponent(vueOptions)
+  const lifetimes = componentOptions.lifetimes
 
   // 基础库 2.0 以上 attached 顺序错乱，按照 created 顺序强制纠正
-  componentOptions.lifetimes.created = function created () {
-    components.push(this)
+  lifetimes.created = function created () {
+    currentComponents(this, components => {
+      components.push(this)
+    })
   }
 
-  componentOptions.lifetimes.attached = function attached () {
+  lifetimes.attached = function attached () {
     this.__lifetimes_attached = function () {
       const properties = this.properties
 
@@ -48,17 +58,28 @@ export default function parseComponent (vueOptions) {
       // 触发首次 setData
       this.$vm.$mount()
     }
-    let component = this
-    while (component && component.__lifetimes_attached && components[0] && component === components[0]) {
-      components.shift()
-      component.__lifetimes_attached()
-      delete component.__lifetimes_attached
-      component = components[0]
-    }
+    currentComponents(this, components => {
+      let component = this
+      while (component && component.__lifetimes_attached && components[0] && component === components[0]) {
+        components.shift()
+        component.__lifetimes_attached()
+        delete component.__lifetimes_attached
+        component = components[0]
+      }
+    })
+  }
+
+  lifetimes.detached = function detached () {
+    currentComponents(this, components => {
+      const index = components.indexOf(this)
+      if (index >= 0) {
+        components.splice(index, 1)
+      }
+    })
   }
 
   // ready 比 handleLink 还早，初始化逻辑放到 handleLink 中
-  delete componentOptions.lifetimes.ready
+  delete lifetimes.ready
 
   componentOptions.methods.__l = handleLink
 

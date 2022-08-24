@@ -472,7 +472,6 @@ const is_debug = debug;
  * @param {*} data
  */
 const log = (data, type) => {
-
   let msg_type = '';
   switch (data.lt) {
     case '1':
@@ -498,7 +497,7 @@ const log = (data, type) => {
 
   // #ifdef APP
   // 在 app 中，日志转为 字符串
-  if(typeof data === 'object') {
+  if (typeof data === 'object') {
     data = JSON.stringify(data);
   }
   // #endif
@@ -530,6 +529,17 @@ const get_report_Interval = (defaultTime) => {
   // 如果不是整数，则默认为上报间隔时间
   if (!reg.test(time)) return defaultTime
   return Number(time)
+};
+
+/**
+ * 获取隐私协议配置
+ */
+const is_push_clientid = () => {
+  if (uniStatisticsConfig.collectItems) {
+    const ClientID = uniStatisticsConfig.collectItems.uniPushClientID;
+    return typeof ClientID === 'boolean' ? ClientID : false
+  }
+  return false
 };
 
 const appid = process.env.UNI_APP_ID; // 做应用隔离
@@ -1302,7 +1312,8 @@ class Stat extends Report {
    * 获取推送id
    */
   pushEvent(options) {
-    if (uni.getPushClientId) {
+    const ClientID = is_push_clientid();
+    if (uni.getPushClientId && ClientID) {
       uni.getPushClientId({
         success: (res) => {
           const cid = res.cid || false;
