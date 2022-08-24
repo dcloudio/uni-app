@@ -86,8 +86,17 @@ export function initEnv(
     ? path.resolve(process.env.UNI_HBUILDERX_PLUGINS!, 'uniapp-cli-vite')
     : process.cwd()
 
+  // TODO 待优化
+  if (options.platform === 'app-android' || options.platform === 'app-ios') {
+    process.env.UNI_APP_PLATFORM = options.platform
+    options.platform = 'app'
+  }
   if (options.platform === 'app-plus') {
     options.platform = 'app'
+  }
+  if (options.platform === 'app' && !process.env.UNI_APP_PLATFORM) {
+    // 目前仅支持 app-android，先强制使用 app-android
+    process.env.UNI_APP_PLATFORM = 'app-android'
   }
   if (
     options.platform === 'quickapp-webview-huawei' ||

@@ -24,8 +24,6 @@ import {
 import { compile, parsePackage } from '../utils/compiler'
 
 export function uniUtsV1Plugin(): Plugin {
-  // 目前仅支持 app-android
-  process.env.UNI_APP_PLATFORM = 'app-android'
   let isFirst = true
   return {
     name: 'uni:uts-v1',

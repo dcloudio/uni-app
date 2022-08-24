@@ -11,6 +11,7 @@ import {
   CopyOptions,
   initModuleAlias,
   initPreContext,
+  resolveSourceMapPath,
 } from '@dcloudio/uni-cli-shared'
 
 import { createConfig } from './config'
@@ -169,9 +170,9 @@ export default function uniPlugin(
         enforce: 'post',
         cwd: process.env.UNI_OUTPUT_DIR,
         pattern: '**/*.js.map',
-        dest: path.resolve(
+        dest: resolveSourceMapPath(
           process.env.UNI_OUTPUT_DIR,
-          '../.sourcemap/' + process.env.UNI_PLATFORM
+          process.env.UNI_PLATFORM
         ),
       })
     )

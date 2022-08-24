@@ -107,3 +107,7 @@ export function pathToGlob(
   )
   return path.posix.join(safeStr, glob)
 }
+
+export function resolveSourceMapPath(dir: string, platform: UniApp.PLATFORM) {
+  return path.resolve(dir, '../.sourcemap/' + platform)
+}

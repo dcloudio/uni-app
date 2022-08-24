@@ -8,6 +8,7 @@ import {
   installHBuilderXPlugin,
   isInHBuilderX,
   normalizePath,
+  resolveSourceMapPath,
 } from '@dcloudio/uni-cli-shared'
 import { camelize } from '@vue/shared'
 
@@ -36,7 +37,10 @@ export async function compile(filename: string) {
     output: {
       outDir: outputDir,
       package: parsePackage(filename),
-      sourceMap: process.env.NODE_ENV === 'development',
+      sourceMap: resolveSourceMapPath(
+        process.env.UNI_OUTPUT_DIR,
+        process.env.UNI_PLATFORM
+      ),
       extname: 'kt',
       imports: [
         'kotlinx.coroutines.async',
