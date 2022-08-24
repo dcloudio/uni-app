@@ -1481,11 +1481,12 @@ function getPushClientId (args) {
   const hasSuccess = isFn(success);
   const hasFail = isFn(fail);
   const hasComplete = isFn(complete);
+
   Promise.resolve().then(() => {
     if (typeof enabled === 'undefined') {
       enabled = false;
       cid = '';
-      cidErrMsg = 'unipush is not enabled';
+      cidErrMsg = 'uniPush is not enabled';
     }
     getPushCidCallbacks.push((cid, errMsg) => {
       let res;
@@ -2422,6 +2423,7 @@ function initRefs (vm) {
 }
 
 const instances = Object.create(null);
+const components = Object.create(null);
 
 function initRelation ({
   vuePid,
@@ -2641,17 +2643,26 @@ function parseBaseComponent (vueComponentOptions, {
   return [componentOptions, VueComponent]
 }
 
-const components = [];
+function currentComponents (mpInstance, callback) {
+  const webviewId = mpInstance.__webviewId__;
+  const currentComponents = components[webviewId];
+  if (currentComponents) {
+    callback(currentComponents);
+  }
+}
 
 function parseComponent (vueOptions) {
   const [componentOptions, VueComponent] = parseBaseComponent(vueOptions);
+  const lifetimes = componentOptions.lifetimes;
 
   // 基础库 2.0 以上 attached 顺序错乱，按照 created 顺序强制纠正
-  componentOptions.lifetimes.created = function created () {
-    components.push(this);
+  lifetimes.created = function created () {
+    currentComponents(this, components => {
+      components.push(this);
+    });
   };
 
-  componentOptions.lifetimes.attached = function attached () {
+  lifetimes.attached = function attached () {
     this.__lifetimes_attached = function () {
       const properties = this.properties;
 
@@ -2678,17 +2689,28 @@ function parseComponent (vueOptions) {
       // 触发首次 setData
       this.$vm.$mount();
     };
-    let component = this;
-    while (component && component.__lifetimes_attached && components[0] && component === components[0]) {
-      components.shift();
-      component.__lifetimes_attached();
-      delete component.__lifetimes_attached;
-      component = components[0];
-    }
+    currentComponents(this, components => {
+      let component = this;
+      while (component && component.__lifetimes_attached && components[0] && component === components[0]) {
+        components.shift();
+        component.__lifetimes_attached();
+        delete component.__lifetimes_attached;
+        component = components[0];
+      }
+    });
+  };
+
+  lifetimes.detached = function detached () {
+    currentComponents(this, components => {
+      const index = components.indexOf(this);
+      if (index >= 0) {
+        components.splice(index, 1);
+      }
+    });
   };
 
   // ready 比 handleLink 还早，初始化逻辑放到 handleLink 中
-  delete componentOptions.lifetimes.ready;
+  delete lifetimes.ready;
 
   componentOptions.methods.__l = handleLink$1;
 
@@ -2731,8 +2753,17 @@ function parsePage (vuePageOptions) {
     isPage,
     initRelation
   });
+  const lifetimes = pageOptions.lifetimes;
+  const oldCreated = lifetimes.created;
+  lifetimes.created = function created () {
+    const webviewId = this.__webviewId__;
+    components[webviewId] = [];
+    if (typeof oldCreated === 'function') {
+      oldCreated.call(this);
+    }
+  };
   // 页面需要在 ready 中触发，其他组件是在 handleLink 中触发
-  pageOptions.lifetimes.ready = function ready () {
+  lifetimes.ready = function ready () {
     if (this.$vm && this.$vm.mpType === 'page') {
       this.$vm.__call_hook('created');
       this.$vm.__call_hook('beforeMount');
@@ -2743,8 +2774,11 @@ function parsePage (vuePageOptions) {
       this.is && console.warn(this.is + ' is not ready');
     }
   };
-
-  pageOptions.lifetimes.detached = function detached () {
+  const oldDetached = lifetimes.detached;
+  lifetimes.detached = function detached () {
+    if (typeof oldDetached === 'function') {
+      oldDetached.call(this);
+    }
     this.$vm && this.$vm.$destroy();
     // 清理
     const webviewId = this.__webviewId__;
@@ -2753,6 +2787,7 @@ function parsePage (vuePageOptions) {
         delete instances[key];
       }
     });
+    delete components[webviewId];
   };
 
   return pageOptions
