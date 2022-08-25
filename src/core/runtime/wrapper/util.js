@@ -87,12 +87,6 @@ function findHooks (vueOptions, hooks = []) {
 function initHook (mpOptions, hook, excludes) {
   if (excludes.indexOf(hook) === -1 && !hasOwn(mpOptions, hook)) {
     mpOptions[hook] = function (args) {
-      if (
-        (__PLATFORM__ === 'mp-toutiao' || __PLATFORM__ === 'mp-lark') &&
-        hook === 'onError'
-      ) {
-        return getApp().$vm.$callHook(hook, args)
-      }
       return this.$vm && this.$vm.__call_hook(hook, args)
     }
   }
