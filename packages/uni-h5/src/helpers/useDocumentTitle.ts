@@ -1,5 +1,5 @@
 import { watchEffect, onActivated, ssrContextKey } from 'vue'
-import { UNI_SSR_TITLE } from '@dcloudio/uni-shared'
+import { UNI_SSR_TITLE, ON_NAVIGATION_BAR_CHANGE } from '@dcloudio/uni-shared'
 import { getApp } from '../framework/setup/app'
 
 export function updateDocumentTitle(title: string) {
@@ -12,6 +12,7 @@ export function updateDocumentTitle(title: string) {
   } else {
     document.title = title
   }
+  UniServiceJSBridge.emit(ON_NAVIGATION_BAR_CHANGE, { titleText: title })
 }
 
 export function useDocumentTitle(pageMeta: UniApp.PageRouteMeta) {

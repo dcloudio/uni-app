@@ -72,7 +72,8 @@ var setting = {
 	es6: true,
 	postcss: false,
 	minified: false,
-	newFeature: true
+	newFeature: true,
+	bigPackageSizeSupport: true
 };
 var compileType = "miniprogram";
 var libVersion = "";

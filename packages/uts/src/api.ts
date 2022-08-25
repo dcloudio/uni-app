@@ -40,11 +40,14 @@ function resolveOptions(options: UtsOptions) {
   input.filename = normalizePath(input.filename)
   output.outDir = normalizePath(output.outDir)
   output.sourceMap = normalizePath(output.sourceMap)
+  output.logFilename = !!output.logFilename
+  output.noColor = !!output.noColor
 
   return options
 }
 
 export function parse(source: string, options: UtsParseOptions = {}) {
+  options.noColor = !!options.noColor
   return bindings
     .parse(source, toBuffer(options))
     .then((res: string) => JSON.parse(res))

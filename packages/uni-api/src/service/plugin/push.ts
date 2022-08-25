@@ -2,6 +2,7 @@ import { defineAsyncApi } from '../../helpers/api'
 
 interface OnPushEnabledCallback {
   type: 'enabled'
+  offline: boolean
 }
 
 interface OnPushClientIdCallback {
@@ -28,6 +29,7 @@ interface OnPushClickCallback {
 let cid: string | undefined
 let cidErrMsg: string | undefined
 let enabled: boolean | undefined
+let offline: boolean | undefined
 
 function normalizePushMessage(message: unknown) {
   try {
@@ -49,6 +51,9 @@ export function invokePushCallback(
 ) {
   if (args.type === 'enabled') {
     enabled = true
+    if (__PLATFORM__ === 'app') {
+      offline = args.offline
+    }
   } else if (args.type === 'clientId') {
     cid = args.cid
     cidErrMsg = args.errMsg
@@ -89,11 +94,23 @@ const API_GET_PUSH_CLIENT_ID = 'getPushClientId'
 export const getPushClientId = defineAsyncApi(
   API_GET_PUSH_CLIENT_ID,
   (_, { resolve, reject }) => {
+    // App 端且启用离线时，使用 getClientInfoAsync 来调用
+    if (__PLATFORM__ === 'app' && offline) {
+      plus.push.getClientInfoAsync(
+        (info) => {
+          resolve({ cid: info.clientid })
+        },
+        (res) => {
+          reject(res.code + ': ' + res.message)
+        }
+      )
+      return
+    }
     Promise.resolve().then(() => {
       if (typeof enabled === 'undefined') {
         enabled = false
         cid = ''
-        cidErrMsg = 'unipush is not enabled'
+        cidErrMsg = 'uniPush is not enabled'
       }
       getPushCidCallbacks.push((cid?: string, errMsg?: string) => {
         if (cid) {

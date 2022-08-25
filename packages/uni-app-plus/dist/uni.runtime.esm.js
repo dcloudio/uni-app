@@ -11075,6 +11075,7 @@ const getLaunchOptionsSync = defineSyncApi(API_GET_LAUNCH_OPTIONS_SYNC, () => {
 let cid;
 let cidErrMsg;
 let enabled;
+let offline;
 function normalizePushMessage(message) {
     try {
         return JSON.parse(message);
@@ -11089,6 +11090,9 @@ function normalizePushMessage(message) {
 function invokePushCallback(args) {
     if (args.type === 'enabled') {
         enabled = true;
+        {
+            offline = args.offline;
+        }
     }
     else if (args.type === 'clientId') {
         cid = args.cid;
@@ -11127,11 +11131,20 @@ function invokeGetPushCidCallbacks(cid, errMsg) {
 }
 const API_GET_PUSH_CLIENT_ID = 'getPushClientId';
 const getPushClientId = defineAsyncApi(API_GET_PUSH_CLIENT_ID, (_, { resolve, reject }) => {
+    // App 端且启用离线时，使用 getClientInfoAsync 来调用
+    if (offline) {
+        plus.push.getClientInfoAsync((info) => {
+            resolve({ cid: info.clientid });
+        }, (res) => {
+            reject(res.code + ': ' + res.message);
+        });
+        return;
+    }
     Promise.resolve().then(() => {
         if (typeof enabled === 'undefined') {
             enabled = false;
             cid = '';
-            cidErrMsg = 'unipush is not enabled';
+            cidErrMsg = 'uniPush is not enabled';
         }
         getPushCidCallbacks.push((cid, errMsg) => {
             if (cid) {
@@ -13438,12 +13451,13 @@ const getDeviceInfo = defineSyncApi('getDeviceInfo', () => {
 });
 const getAppBaseInfo = defineSyncApi('getAppBaseInfo', () => {
     weexGetSystemInfoSync();
-    const { hostPackageName, hostName, hostVersion, hostLanguage, osLanguage, hostTheme, appId, appName, appVersion, appVersionCode, } = systemInfo;
+    const { hostPackageName, hostName, hostVersion, hostLanguage, osLanguage, hostTheme, appId, appName, appVersion, appVersionCode, appWgtVersion, } = systemInfo;
     return {
         appId,
         appName,
         appVersion,
         appVersionCode,
+        appWgtVersion,
         appLanguage: getLocale ? getLocale() : osLanguage,
         enableDebug: false,
         hostPackageName,

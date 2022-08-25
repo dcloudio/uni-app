@@ -1,6 +1,7 @@
 import type { Plugin } from 'vite'
 import path from 'path'
 import {
+  isInHBuilderX,
   normalizePath,
   parseVueRequest,
   requireResolve,
@@ -23,8 +24,6 @@ import {
 import { compile, parsePackage } from '../utils/compiler'
 
 export function uniUtsV1Plugin(): Plugin {
-  // 目前仅支持 app-android
-  process.env.UNI_APP_PLATFORM = 'app-android'
   let isFirst = true
   return {
     name: 'uni:uts-v1',
@@ -53,7 +52,7 @@ export function uniUtsV1Plugin(): Plugin {
       // 懒加载 uts 编译器
       // eslint-disable-next-line no-restricted-globals
       const { parse } = require('@dcloudio/uts')
-      const ast = await parse(code)
+      const ast = await parse(code, { noColor: isInHBuilderX() })
       code = `
 import { initUtsProxyClass, initUtsProxyFunction } from '@dcloudio/uni-app'
 const pkg = '${pkg}'

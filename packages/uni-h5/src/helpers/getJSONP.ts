@@ -3,7 +3,7 @@ interface Options {
   callback?: string
   timeout?: number
 }
-
+let index = 0
 export function getJSONP(
   url: string,
   options: Options,
@@ -12,7 +12,7 @@ export function getJSONP(
 ) {
   var js = document.createElement('script')
   var callbackKey = options.callback || 'callback'
-  var callbackName = '__callback' + Date.now()
+  var callbackName = '__uni_jsonp_callback_' + index++
   var timeout = options.timeout || 30000
   var timing: ReturnType<typeof setTimeout>
   function end() {

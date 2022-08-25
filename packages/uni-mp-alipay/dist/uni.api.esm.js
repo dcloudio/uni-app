@@ -706,7 +706,7 @@ const getPushClientId = defineAsyncApi(API_GET_PUSH_CLIENT_ID, (_, { resolve, re
         if (typeof enabled === 'undefined') {
             enabled = false;
             cid = '';
-            cidErrMsg = 'unipush is not enabled';
+            cidErrMsg = 'uniPush is not enabled';
         }
         getPushCidCallbacks.push((cid, errMsg) => {
             if (cid) {
@@ -1630,12 +1630,6 @@ const showShareMenu = {
 const hideHomeButton = {
     name: 'hideBackHome',
 };
-const saveImageToPhotosAlbum = {
-    name: 'saveImage',
-    args: {
-        filePath: 'url',
-    },
-};
 const saveVideoToPhotosAlbum = {
     args: {
         filePath: 'src',
@@ -1703,7 +1697,6 @@ var protocols = /*#__PURE__*/Object.freeze({
   getScreenBrightness: getScreenBrightness,
   showShareMenu: showShareMenu,
   hideHomeButton: hideHomeButton,
-  saveImageToPhotosAlbum: saveImageToPhotosAlbum,
   saveVideoToPhotosAlbum: saveVideoToPhotosAlbum,
   chooseAddress: chooseAddress,
   redirectTo: redirectTo,

@@ -20,7 +20,7 @@ function resolveWithSymlinks(id: string, basedir: string): string {
     // necessary to work with pnpm
     preserveSymlinks: true,
     pathFilter(pkg, filepath, relativePath) {
-      if (pkg.dcloudext && (pkg.dcloudext as any).type === 'native-uts') {
+      if (pkg.uni_modules && (pkg.uni_modules as any).type === 'uts') {
         if (
           process.env.UNI_APP_PLATFORM === 'app-android' ||
           process.env.UNI_APP_PLATFORM === 'app-ios'

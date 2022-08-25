@@ -7,55 +7,56 @@
       }"
       class="uni-tabbar"
     >
-      <div
-        v-for="(item, index) in tabBar.list"
-        :key="item.pagePath"
-        class="uni-tabbar__item"
-        @click="switchTab(item, index)"
-      >
-        <div class="uni-tabbar__bd">
-          <div
-            v-if="showIcon && item.iconPath"
-            :class="{ 'uni-tabbar__icon__diff': !item.text }"
-            class="uni-tabbar__icon"
-          >
-            <img
-              :src="
-                getRealPath(
-                  selectedIndex === index
-                    ? item.selectedIconPath
-                    : item.iconPath
-                )
-              "
-            />
+      <template v-for="(item, index) in tabBar.list" :key="item.pagePath">
+        <div
+          v-if="item.visible !== false"
+          class="uni-tabbar__item"
+          @click="switchTab(item, index)"
+        >
+          <div class="uni-tabbar__bd">
             <div
-              v-if="item.redDot"
-              :class="{ 'uni-tabbar__badge': !!item.badge }"
-              class="uni-tabbar__reddot"
+              v-if="showIcon && item.iconPath"
+              :class="{ 'uni-tabbar__icon__diff': !item.text }"
+              class="uni-tabbar__icon"
             >
-              {{ item.badge }}
+              <img
+                :src="
+                  getRealPath(
+                    selectedIndex === index
+                      ? item.selectedIconPath
+                      : item.iconPath
+                  )
+                "
+              />
+              <div
+                v-if="item.redDot"
+                :class="{ 'uni-tabbar__badge': !!item.badge }"
+                class="uni-tabbar__reddot"
+              >
+                {{ item.badge }}
+              </div>
             </div>
-          </div>
-          <div
-            v-if="item.text"
-            :style="{
-              color:
-                selectedIndex === index ? tabBar.selectedColor : tabBar.color,
-              fontSize: showIcon && item.iconPath ? '10px' : '14px',
-            }"
-            class="uni-tabbar__label"
-          >
-            {{ item.text }}
             <div
-              v-if="item.redDot && (!showIcon || !item.iconPath)"
-              :class="{ 'uni-tabbar__badge': !!item.badge }"
-              class="uni-tabbar__reddot"
+              v-if="item.text"
+              :style="{
+                color:
+                  selectedIndex === index ? tabBar.selectedColor : tabBar.color,
+                fontSize: showIcon && item.iconPath ? '10px' : '14px',
+              }"
+              class="uni-tabbar__label"
             >
-              {{ item.badge }}
+              {{ item.text }}
+              <div
+                v-if="item.redDot && (!showIcon || !item.iconPath)"
+                :class="{ 'uni-tabbar__badge': !!item.badge }"
+                class="uni-tabbar__reddot"
+              >
+                {{ item.badge }}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </template>
     </div>
   </uni-tabbar>
 </template>

@@ -6,6 +6,7 @@ import {
   get_platform_name,
   get_space,
   is_debug,
+  is_push_clientid,
 } from '../utils/pageInfo.js'
 import { dbSet } from '../utils/db.js'
 class Stat extends Report {
@@ -49,7 +50,8 @@ class Stat extends Report {
    * 获取推送id
    */
   pushEvent(options) {
-    if (uni.getPushClientId) {
+    const ClientID = is_push_clientid()
+    if (uni.getPushClientId && ClientID) {
       uni.getPushClientId({
         success: (res) => {
           const cid = res.cid || false

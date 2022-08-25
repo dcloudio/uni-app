@@ -458,12 +458,6 @@ export const showShareMenu = {
 export const hideHomeButton = {
   name: 'hideBackHome',
 }
-export const saveImageToPhotosAlbum = {
-  name: 'saveImage',
-  args: {
-    filePath: 'url',
-  },
-}
 export const saveVideoToPhotosAlbum = {
   args: {
     filePath: 'src',

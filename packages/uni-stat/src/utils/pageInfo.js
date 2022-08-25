@@ -539,3 +539,14 @@ export const get_report_Interval = (defaultTime) => {
   if (!reg.test(time)) return defaultTime
   return Number(time)
 }
+
+/**
+ * 获取隐私协议配置
+ */
+export const is_push_clientid = () => {
+  if (uniStatisticsConfig.collectItems) {
+    const ClientID = uniStatisticsConfig.collectItems.uniPushClientID
+    return typeof ClientID === 'boolean' ? ClientID : false
+  }
+  return false
+}

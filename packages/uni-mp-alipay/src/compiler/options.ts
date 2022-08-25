@@ -70,7 +70,7 @@ export const options: UniMiniProgramPluginOptions = {
       targets: [
         ...(process.env.UNI_MP_PLUGIN ? [copyMiniProgramPluginJson] : []),
         {
-          src: ['customize-tab-bar'],
+          src: ['customize-tab-bar', 'ext.json'],
           get dest() {
             return process.env.UNI_OUTPUT_DIR
           },

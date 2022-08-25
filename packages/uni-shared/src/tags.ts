@@ -110,6 +110,7 @@ export const NVUE_BUILT_IN_TAGS = [
   'recycle-list',
   'u-scalable',
   'barcode',
+  'gcanvas',
 ]
 
 export const NVUE_U_BUILT_IN_TAGS = [

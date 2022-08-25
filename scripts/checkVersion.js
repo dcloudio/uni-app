@@ -13,13 +13,13 @@ const pkgs = {
     latest: '3.2.37',
   },
   'vue-router': {
-    latest: '4.1.2',
+    latest: '4.1.3',
   },
   vuex: {
     latest: '4.0.2',
   },
   pinia: {
-    latest: '2.0.16',
+    latest: '2.0.20',
   },
   'vue-i18n': {
     next: '9.1.9',
@@ -37,10 +37,10 @@ const pkgs = {
     latest: '1.8.2',
   },
   '@dcloudio/types': {
-    next: '3.0.10',
+    next: '3.0.13',
   },
   autoprefixer: {
-    latest: '10.4.7',
+    latest: '10.4.8',
   },
   'rollup-plugin-copy': {
     latest: '3.4.0',

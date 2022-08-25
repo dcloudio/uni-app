@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const { parse, runBuild, bundle, UtsTarget } = require('../packages/uts/dist')
+const { parse, bundle } = require('../packages/uts/dist')
 const projectDir = path.resolve(__dirname, '../packages/playground/uts')
 
 let start = Date.now()
@@ -19,23 +19,30 @@ parse(
 start = Date.now()
 bundle({
   input: {
-    root: path.resolve(projectDir, 'uni_modules/test-uniplugin'),
+    root: projectDir,
     filename: path.resolve(
       projectDir,
       'uni_modules/test-uniplugin/app-android/index.uts'
     ),
   },
   output: {
-    outDir: path.resolve(
-      projectDir,
-      'unpackage/dist/app-plus/uni_modules/test-uniplugin/'
-    ),
+    outDir: path.resolve(projectDir, 'unpackage/dist/app'),
     package: 'uts.modules.testUniPlugin',
     imports: ['kotlinx.coroutines.*', 'io.dcloud.uts.runtime.*'],
     sourceMap: true,
     extname: 'kt',
+    logFilename: true,
   },
 }).then((res) => {
   console.log('bundle: ' + (Date.now() - start) + 'ms')
   console.log(JSON.stringify(res))
+  console.log(
+    fs.readFileSync(
+      path.resolve(
+        projectDir,
+        'unpackage/dist/app/uni_modules/test-uniplugin/app-android/index.kt'
+      ),
+      'utf8'
+    )
+  )
 })

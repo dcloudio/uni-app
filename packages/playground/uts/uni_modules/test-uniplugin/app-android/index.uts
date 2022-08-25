@@ -1,8 +1,17 @@
 import Log from 'android.util.Log'
+import { IUser } from './interface.uts'
 import { login } from './login.uts'
-export class User {
+import logo from '../static/logo.png'
+export class User implements IUser {
   async login(name: string, pwd: string) {
+    setTimeout(() => {
+      console.log('timeout')
+    }, 1000)
     login(name, pwd)
     Log.info('123')
+    Log.info(logo)
+  }
+  register(name: string) {
+    Log.info(logo)
   }
 }
