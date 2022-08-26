@@ -18446,44 +18446,49 @@ const getLocation = /* @__PURE__ */ defineAsyncApi(API_GET_LOCATION, ({ type, al
             reject2(new Error("network error"));
           }
         });
-      } else if (mapInfo.type === MapType.AMAP) {
-        window.AMap.plugin("AMap.Geolocation", function() {
-          var geolocation = new window.AMap.Geolocation({});
-          geolocation.getCurrentPosition(function(status, res) {
-            if (status === "complete") {
-              resolve2({
-                latitude: res.position.lat,
-                longitude: res.position.lng,
-                accuracy: res.accuracy
-              });
-            } else {
-              reject2(new Error(res.message || JSON.stringify(res)));
-            }
-          });
-        });
       } else {
         reject2(error);
       }
     });
   }).then((coords, skip) => {
-    if (type && type.toUpperCase() === "WGS84" || mapInfo.type !== MapType.QQ || skip) {
+    const wgs84Map = [MapType.GOOGLE];
+    if (type && type.toUpperCase() === "WGS84" || wgs84Map.includes(mapInfo.type) || skip) {
       return coords;
     }
-    return new Promise((resolve2) => {
-      getJSONP(`https://apis.map.qq.com/jsapi?qt=translate&type=1&points=${coords.longitude},${coords.latitude}&key=${mapInfo.key}&output=jsonp&pf=jsapi&ref=jsapi`, {
-        callback: "cb"
-      }, (res) => {
-        if ("detail" in res && "points" in res.detail && res.detail.points.length) {
-          const location2 = res.detail.points[0];
-          resolve2(extend({}, coords, {
-            longitude: location2.lng,
-            latitude: location2.lat
-          }));
-        } else {
-          resolve2(coords);
-        }
-      }, () => resolve2(coords));
-    });
+    if (mapInfo.type === MapType.QQ) {
+      return new Promise((resolve2) => {
+        getJSONP(`https://apis.map.qq.com/jsapi?qt=translate&type=1&points=${coords.longitude},${coords.latitude}&key=${mapInfo.key}&output=jsonp&pf=jsapi&ref=jsapi`, {
+          callback: "cb"
+        }, (res) => {
+          if ("detail" in res && "points" in res.detail && res.detail.points.length) {
+            const location2 = res.detail.points[0];
+            resolve2(extend({}, coords, {
+              longitude: location2.lng,
+              latitude: location2.lat
+            }));
+          } else {
+            resolve2(coords);
+          }
+        }, () => resolve2(coords));
+      });
+    }
+    if (mapInfo.type === MapType.AMAP) {
+      return new Promise((resolve2) => {
+        loadMaps([], () => {
+          window.AMap.convertFrom([coords.longitude, coords.latitude], "gps", (_, res) => {
+            if (res.info === "ok" && res.locations.length) {
+              const { lat, lng } = res.locations[0];
+              resolve2(extend({}, coords, {
+                longitude: lng,
+                latitude: lat
+              }));
+            } else {
+              resolve2(coords);
+            }
+          });
+        });
+      });
+    }
   }).then((coords) => {
     resolve({
       latitude: coords.latitude,
@@ -18792,33 +18797,22 @@ function useList(state2) {
       });
     } else if (mapInfo.type === MapType.AMAP) {
       window.AMap.plugin("AMap.PlaceSearch", function() {
-        var autoOptions = {
+        const placeSearch = new window.AMap.PlaceSearch({
           city: "\u5168\u56FD",
           pageSize: 10,
           pageIndex: listState.pageIndex
-        };
-        var placeSearch = new window.AMap.PlaceSearch(autoOptions);
-        if (state2.searching) {
-          placeSearch.searchNearBy(state2.keyword, [state2.longitude, state2.latitude], 5e4, function(status, result) {
-            if (status === "error") {
-              console.error(result);
-            } else if (status === "no_data") {
-              listState.hasNextPage = false;
-            } else {
-              pushData(result.poiList.pois);
-            }
-          });
-        } else {
-          placeSearch.searchNearBy("", [state2.longitude, state2.latitude], 5e3, function(status, result) {
-            if (status === "error") {
-              console.error(result);
-            } else if (status === "no_data") {
-              listState.hasNextPage = false;
-            } else {
-              pushData(result.poiList.pois);
-            }
-          });
-        }
+        });
+        const keyword = state2.searching ? state2.keyword : "";
+        const radius = state2.searching ? 5e4 : 5e3;
+        placeSearch.searchNearBy(keyword, [state2.longitude, state2.latitude], radius, function(status, result) {
+          if (status === "error") {
+            console.error(result);
+          } else if (status === "no_data") {
+            listState.hasNextPage = false;
+          } else {
+            pushData(result.poiList.pois);
+          }
+        });
         listState.loading = false;
       });
     }

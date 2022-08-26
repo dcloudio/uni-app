@@ -21,16 +21,11 @@ function resolveWithSymlinks(id: string, basedir: string): string {
     preserveSymlinks: true,
     pathFilter(pkg, filepath, relativePath) {
       if (pkg.uni_modules && (pkg.uni_modules as any).type === 'uts') {
+        const file = process.env.UNI_UTS_PLATFORM + '/index.uts'
         if (
-          process.env.UNI_APP_PLATFORM === 'app-android' ||
-          process.env.UNI_APP_PLATFORM === 'app-ios'
+          fs.existsSync(path.join(filepath.replace(relativePath, ''), file))
         ) {
-          const file = process.env.UNI_APP_PLATFORM + '/index.uts'
-          if (
-            fs.existsSync(path.join(filepath.replace(relativePath, ''), file))
-          ) {
-            return file
-          }
+          return file
         }
       }
       return relativePath

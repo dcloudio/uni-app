@@ -6,6 +6,7 @@ import {
   IndexedSourceMapConsumer,
   Position,
 } from '../lib/source-map/source-map'
+import path from 'path'
 
 // @ts-ignore
 if (__PLATFORM_WEB__) {
@@ -396,28 +397,31 @@ export function uniStracktraceyPreset(
 
 interface UtsStracktraceyPreset {
   /**
-   * source 根目录（如：/wgtRoot/__UNI__E070870/nativeplugins/DCloud-UTSPlugin/android/src/）
+   * 源码根目录
    */
-  sourceRoot: string
+  inputRoot: string
+  /**
+   * 编译后根目录
+   */
+  outputRoot: string
   /**
    * sourceMap 根目录
    */
-  base: string
+  sourceMapRoot: string
 }
 export function utsStracktraceyPreset(
   opts: UtsStracktraceyPreset
 ): StacktraceyPreset {
-  const { base, sourceRoot } = opts
+  const { inputRoot, outputRoot, sourceMapRoot } = opts
 
   let errStack: string[] = []
 
   return {
     parseSourceMapUrl(file, fileName, fileRelative) {
-      // 组合 sourceMapUrl
-      if (sourceRoot) {
-        return `${file.replace(sourceRoot, base + '/')}.map`
-      }
-      return `${base}/${file}.map`
+      return path.resolve(
+        sourceMapRoot,
+        path.relative(outputRoot, file) + '.map'
+      )
     },
     getSourceMapContent(file, fileName, fileRelative) {
       // 根据 base,filename 组合 sourceMapUrl
@@ -434,37 +438,29 @@ export function utsStracktraceyPreset(
         .map((line, index) => {
           line = line.trim()
 
-          let callee,
-            fileLineColumn = [],
-            planA,
-            planB
-
-          if ((planA = line.match(/e: (.+\.kt)(.+\))*:\s*(.+)*/))) {
+          const matches = line.match(
+            /\s*(.+\.kt):([0-9]+):([0-9]+):\s+(.*)/
+          ) as string[]
+          if (matches) {
             errStack.push('%StacktraceyItem%')
-            callee = 'e: '
-            fileLineColumn = (
-              planA[2].match(/.*:.*\((\d+).+?(\d+)\)/) || []
-            ).slice(1)
           } else {
             errStack.push(line)
-            return undefined
+            return
           }
 
-          const fileName: string = planA[1]
-            ? (planB = planA[1].match(/(.*)*\/(.+)/) || [])[2] || ''
-            : ''
+          const fileName: string = matches[1].replace(/^.*(\\|\/|\:)/, '')
 
           return {
             beforeParse: line,
-            callee: callee || '',
+            callee: '',
             index: false,
             native: false,
-            file: nixSlashes(planA[1] || ''),
-            line: parseInt(fileLineColumn[0] || '', 10) || undefined,
-            column: parseInt(fileLineColumn[1] || '', 10) || undefined,
+            file: nixSlashes(matches[1]),
+            line: parseInt(matches[2]),
+            column: parseInt(matches[3]),
             fileName,
-            fileShort: planB ? planB[1] : '',
-            errMsg: planA[3] || '',
+            fileShort: line,
+            errMsg: matches[4] || '',
             calleeShort: '',
             fileRelative: '',
             thirdParty: false,
@@ -482,8 +478,12 @@ export function utsStracktraceyPreset(
         .map((item) => {
           if (item === '%StacktraceyItem%') {
             const _stack = stack.items.shift()
-            if (_stack)
-              return `${_stack.callee}${_stack.file}: (${_stack.line}, ${_stack.column}): ${_stack.errMsg}`
+            if (_stack) {
+              return `at ${nixSlashes(path.relative(inputRoot, _stack.file))}:${
+                _stack.line
+              }:${_stack.column}
+${_stack.errMsg}`
+            }
           }
           return item
         })

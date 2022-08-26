@@ -5,20 +5,16 @@ const {
   utsStracktraceyPreset,
 } = require('../dist/uni-stacktracey.cjs.js')
 
-const utsErrorMsg = `e: DCloud-UTSPlugin/android/src/io/dcloud/uniplugin/TestModule.kt: (9, 5): Unresolved reference: logxxxxxxx
+const utsProjectDir = path.resolve(__dirname, '../test/uts')
 
-FAILURE: Build failed with an exception.
-
-* What went wrong:
-Execution failed for task ':nativeplugins:DCloud-UTSPlugin:compileReleaseKotlin'.
-> Compilation error. See log for more details
-
-* Try:
-Run with --stacktrace option to get the stack trace. Run with --info or --debug option to get more log output. Run with --scan to get full insights.
-
-* Get more help at https://help.gradle.org
-
-BUILD FAILED in 2s`
+const utsErrorMsg = `Error: 
+${path.resolve(
+  utsProjectDir,
+  'unpackage/dist/dev/app-plus/uni_modules/test-uts/app-android/index.kt'
+)}:59:67: error: unresolved reference: UtsJSONObject
+open suspend fun testClassAsync(opts: AsyncOptions): Deferred<UtsJSONObject> = CoroutineScope(Dispatchers.Default).async {
+                                                              ^
+`
 
 const uniErrorMsg = `Error: Sentry Error
 at a.throwError(/static/js/pages-index-index.3ab0d0e5.js:1:567)
@@ -50,31 +46,23 @@ at   node_modules/@dcloudio/vue-cli-plugin-uni/packages/h5-vue/dist/vue.runtime.
     })
   })
 
-  //   test('utsStracktraceyPreset local', () => {
-  //     stacktracey(utsErrorMsg, {
-  //       preset: utsStracktraceyPreset({
-  //         base: path.resolve(
-  //           __dirname,
-  //           '../test/nativeplugins-sourceMap/DCloud-UTSPlugin/'
-  //         ),
-  //         sourceRoot: 'DCloud-UTSPlugin/android/src/',
-  //       }),
-  //     }).then((res: string) => {
-  //       expect(res)
-  //         .toEqual(`e: C:/Users/xianyang/Documents/HBuilderProjects/test-uni2/nativeplugins/DCloud-UTSPlugin/android/src/io/dcloud/uniplugin/TestModule.uts: (7, 0): Unresolved reference: logxxxxxxx
-
-  // FAILURE: Build failed with an exception.
-
-  // * What went wrong:
-  // Execution failed for task ':nativeplugins:DCloud-UTSPlugin:compileReleaseKotlin'.
-  // > Compilation error. See log for more details
-
-  // * Try:
-  // Run with --stacktrace option to get the stack trace. Run with --info or --debug option to get more log output. Run with --scan to get full insights.
-
-  // * Get more help at https://help.gradle.org
-
-  // BUILD FAILED in 2s`)
-  //     })
-  //   })
+  test('utsStracktraceyPreset local', () => {
+    stacktracey(utsErrorMsg, {
+      preset: utsStracktraceyPreset({
+        inputRoot: '/Users/fxy/Projects/Demo/my-vue3-project-uts/src',
+        outputRoot: path.resolve(utsProjectDir, 'unpackage/dist/dev/app-plus'),
+        sourceMapRoot: path.resolve(
+          utsProjectDir,
+          'unpackage/dist/dev/.sourcemap/app-plus'
+        ),
+      }),
+    }).then((res: string) => {
+      expect(res).toEqual(`Error:
+at uni_modules/test-uts/app-android/index.uts:82:52
+error: unresolved reference: UtsJSONObject
+open suspend fun testClassAsync(opts: AsyncOptions): Deferred<UtsJSONObject> = CoroutineScope(Dispatchers.Default).async {
+^
+`)
+    })
+  })
 })

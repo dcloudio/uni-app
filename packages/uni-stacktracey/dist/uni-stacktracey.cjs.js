@@ -3,12 +3,12 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 
 var require$$0$2 = require('fs');
-var require$$1$2 = require('path');
+var path = require('path');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
 var require$$0__default = /*#__PURE__*/_interopDefaultLegacy(require$$0$2);
-var require$$1__default = /*#__PURE__*/_interopDefaultLegacy(require$$1$2);
+var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
 
 /*  ------------------------------------------------------------------------ */
 const O = Object, isBrowser = 
@@ -1663,7 +1663,7 @@ var readWasm$1 = createCommonjsModule(function (module) {
 {
   // Node version of reading a wasm file into an array buffer.
   const fs = require$$0__default["default"];
-  const path = require$$1__default["default"];
+  const path = path__default["default"];
 
   module.exports = function readWasm() {
     return new Promise((resolve, reject) => {
@@ -3851,15 +3851,11 @@ function uniStracktraceyPreset(opts) {
     };
 }
 function utsStracktraceyPreset(opts) {
-    const { base, sourceRoot } = opts;
+    const { inputRoot, outputRoot, sourceMapRoot } = opts;
     let errStack = [];
     return {
         parseSourceMapUrl(file, fileName, fileRelative) {
-            // 组合 sourceMapUrl
-            if (sourceRoot) {
-                return `${file.replace(sourceRoot, base + '/')}.map`;
-            }
-            return `${base}/${file}.map`;
+            return path__default["default"].resolve(sourceMapRoot, path__default["default"].relative(outputRoot, file) + '.map');
         },
         getSourceMapContent(file, fileName, fileRelative) {
             // 根据 base,filename 组合 sourceMapUrl
@@ -3870,30 +3866,26 @@ function utsStracktraceyPreset(opts) {
             const entries = lines
                 .map((line, index) => {
                 line = line.trim();
-                let callee, fileLineColumn = [], planA, planB;
-                if ((planA = line.match(/e: (.+\.kt)(.+\))*:\s*(.+)*/))) {
+                const matches = line.match(/\s*(.+\.kt):([0-9]+):([0-9]+):\s+(.*)/);
+                if (matches) {
                     errStack.push('%StacktraceyItem%');
-                    callee = 'e: ';
-                    fileLineColumn = (planA[2].match(/.*:.*\((\d+).+?(\d+)\)/) || []).slice(1);
                 }
                 else {
                     errStack.push(line);
-                    return undefined;
+                    return;
                 }
-                const fileName = planA[1]
-                    ? (planB = planA[1].match(/(.*)*\/(.+)/) || [])[2] || ''
-                    : '';
+                const fileName = matches[1].replace(/^.*(\\|\/|\:)/, '');
                 return {
                     beforeParse: line,
-                    callee: callee || '',
+                    callee: '',
                     index: false,
                     native: false,
-                    file: nixSlashes(planA[1] || ''),
-                    line: parseInt(fileLineColumn[0] || '', 10) || undefined,
-                    column: parseInt(fileLineColumn[1] || '', 10) || undefined,
+                    file: nixSlashes(matches[1]),
+                    line: parseInt(matches[2]),
+                    column: parseInt(matches[3]),
                     fileName,
-                    fileShort: planB ? planB[1] : '',
-                    errMsg: planA[3] || '',
+                    fileShort: line,
+                    errMsg: matches[4] || '',
                     calleeShort: '',
                     fileRelative: '',
                     thirdParty: false,
@@ -3910,8 +3902,10 @@ function utsStracktraceyPreset(opts) {
                 .map((item) => {
                 if (item === '%StacktraceyItem%') {
                     const _stack = stack.items.shift();
-                    if (_stack)
-                        return `${_stack.callee}${_stack.file}: (${_stack.line}, ${_stack.column}): ${_stack.errMsg}`;
+                    if (_stack) {
+                        return `at ${nixSlashes(path__default["default"].relative(inputRoot, _stack.file))}:${_stack.line}:${_stack.column}
+${_stack.errMsg}`;
+                    }
                 }
                 return item;
             })

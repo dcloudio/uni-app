@@ -193,8 +193,8 @@ function useList(state: State) {
           pageSize: 10,
           pageIndex: listState.pageIndex,
         })
-        const keyword = state.searching?state.keyword:''
-        const radius = state.searching?50000:5000
+        const keyword = state.searching ? state.keyword : ''
+        const radius = state.searching ? 50000 : 5000
         placeSearch.searchNearBy(
           keyword,
           [state.longitude, state.latitude],

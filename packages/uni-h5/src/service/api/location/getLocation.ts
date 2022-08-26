@@ -132,15 +132,15 @@ export const getLocation = <API_TYPE_GET_LOCATION>defineAsyncApi(
                 [coords.longitude, coords.latitude],
                 'gps',
                 (_: string, res: any) => {
-                  if(res.info === 'ok' && res.locations.length){
-                    const {lat,lng} = res.locations[0]
+                  if (res.info === 'ok' && res.locations.length) {
+                    const { lat, lng } = res.locations[0]
                     resolve(
                       extend({}, coords, {
                         longitude: lng,
                         latitude: lat,
                       })
                     )
-                  }else{
+                  } else {
                     resolve(coords)
                   }
                 }
@@ -149,7 +149,7 @@ export const getLocation = <API_TYPE_GET_LOCATION>defineAsyncApi(
           })
         }
       })
-      .then((coords: GeolocationCoordinates|any) => {
+      .then((coords: GeolocationCoordinates | any) => {
         resolve({
           latitude: coords.latitude,
           longitude: coords.longitude,
