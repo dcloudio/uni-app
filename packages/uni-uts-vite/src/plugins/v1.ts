@@ -272,7 +272,7 @@ function genProxyCode({ body }: Module) {
         }
       } else if (decl.type === 'FunctionExpression') {
         if (decl.identifier) {
-          code = genFunctionDeclarationCode(decl, false)
+          code = genFunctionDeclarationCode(decl, true)
         }
       }
     }

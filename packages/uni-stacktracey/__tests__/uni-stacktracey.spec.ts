@@ -50,31 +50,31 @@ at   node_modules/@dcloudio/vue-cli-plugin-uni/packages/h5-vue/dist/vue.runtime.
     })
   })
 
-  test('utsStracktraceyPreset local', () => {
-    stacktracey(utsErrorMsg, {
-      preset: utsStracktraceyPreset({
-        base: path.resolve(
-          __dirname,
-          '../test/nativeplugins-sourceMap/DCloud-UTSPlugin/'
-        ),
-        sourceRoot: 'DCloud-UTSPlugin/android/src/',
-      }),
-    }).then((res: string) => {
-      expect(res)
-        .toEqual(`e: C:/Users/xianyang/Documents/HBuilderProjects/test-uni2/nativeplugins/DCloud-UTSPlugin/android/src/io/dcloud/uniplugin/TestModule.uts: (7, 0): Unresolved reference: logxxxxxxx
+  //   test('utsStracktraceyPreset local', () => {
+  //     stacktracey(utsErrorMsg, {
+  //       preset: utsStracktraceyPreset({
+  //         base: path.resolve(
+  //           __dirname,
+  //           '../test/nativeplugins-sourceMap/DCloud-UTSPlugin/'
+  //         ),
+  //         sourceRoot: 'DCloud-UTSPlugin/android/src/',
+  //       }),
+  //     }).then((res: string) => {
+  //       expect(res)
+  //         .toEqual(`e: C:/Users/xianyang/Documents/HBuilderProjects/test-uni2/nativeplugins/DCloud-UTSPlugin/android/src/io/dcloud/uniplugin/TestModule.uts: (7, 0): Unresolved reference: logxxxxxxx
 
-FAILURE: Build failed with an exception.
+  // FAILURE: Build failed with an exception.
 
-* What went wrong:
-Execution failed for task ':nativeplugins:DCloud-UTSPlugin:compileReleaseKotlin'.
-> Compilation error. See log for more details
+  // * What went wrong:
+  // Execution failed for task ':nativeplugins:DCloud-UTSPlugin:compileReleaseKotlin'.
+  // > Compilation error. See log for more details
 
-* Try:
-Run with --stacktrace option to get the stack trace. Run with --info or --debug option to get more log output. Run with --scan to get full insights.
+  // * Try:
+  // Run with --stacktrace option to get the stack trace. Run with --info or --debug option to get more log output. Run with --scan to get full insights.
 
-* Get more help at https://help.gradle.org
+  // * Get more help at https://help.gradle.org
 
-BUILD FAILED in 2s`)
-    })
-  })
+  // BUILD FAILED in 2s`)
+  //     })
+  //   })
 })

@@ -6,9 +6,9 @@ import android.util.Log;
 interface IUser {
     fun register(name: String): Unit;
 }
-fun login(name: String, pwd: String): UtsJSONObject {
+fun login(name: String, pwd: String): UTSJSONObject {
     console.log("login", "at uni_modules/test-uniplugin/app-android/login.uts:2");
-    return object : UtsJSONObject() {
+    return object : UTSJSONObject() {
         var name = name
         var pwd = pwd
     };
@@ -24,7 +24,9 @@ open class User : IUser {
         Log.info("123");
         Log.info(__default);
     }
-    override fun register(name: String) {
+    override fun register(name: String, callback: UTSCallback) {
         Log.info(__default);
     }
 }
+fun login(name: String, callback: () -> Unit) {}
+fun register(name: String, callback: UTSCallback) {}

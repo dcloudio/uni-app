@@ -11,7 +11,9 @@ export class User implements IUser {
     Log.info('123')
     Log.info(logo)
   }
-  register(name: string) {
+  register(name: string, callback: () => void) {
     Log.info(logo)
   }
 }
+function login(name: string, callback: () => void) {}
+export function register(name: string, callback: () => void) {}
