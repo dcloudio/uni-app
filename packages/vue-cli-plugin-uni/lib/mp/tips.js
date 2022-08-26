@@ -1,7 +1,11 @@
+const fs = require('fs')
 const path = require('path')
+const {
+  isInHBuilderX
+} = require('@dcloudio/uni-cli-shared')
 
 class UniTips {
-  apply(compiler) {
+  apply (compiler) {
     compiler.hooks.emit.tap('PreprocessAssetsPlugin', compilation => {
       const assets = compilation.assets
       let hasAd = false
@@ -32,9 +36,22 @@ class UniTips {
               '推荐使用uni-ad微信小程序版广告，无开通门槛、提前结算、插件丰富，助力广告变现。详情: https://uniapp.dcloud.net.cn/component/ad-weixin.html'
             )
           }
-          if (assets['project.config.json']) {
-            let pcjString = assets['project.config.json'].source()
-            let pcjJson = JSON.parse(pcjString)
+
+          let projectRoot = ''
+          if (isInHBuilderX) {
+            projectRoot = process.env.UNI_INPUT_DIR
+          } else {
+            projectRoot = process.env.UNI_CLI_CONTEXT
+          }
+
+          const paths = fs.readdirSync(projectRoot)
+          const useUniCloud = paths.find((name) => {
+            return name.includes('uniCloud-')
+          })
+
+          if (!useUniCloud && assets['project.config.json']) {
+            const pcjString = assets['project.config.json'].source()
+            const pcjJson = JSON.parse(pcjString)
             if (typeof pcjJson.cloudfunctionRoot === 'string' && pcjJson.cloudfunctionRoot.length > 0) {
               console.log(
                 '欢迎使用uniCloud，价格更便宜、开发更方便、生态更丰富的云开发。详情: https://uniapp.dcloud.net.cn/uniCloud/wx2unicloud.html'
