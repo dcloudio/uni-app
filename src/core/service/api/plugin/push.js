@@ -23,7 +23,7 @@ export function invokePushCallback (
 ) {
   if (args.type === 'enabled') {
     enabled = true
-    if (__PLATFORM__ === 'app') {
+    if (__PLATFORM__ === 'app-plus') {
       offline = args.offline
     }
   } else if (args.type === 'clientId') {
@@ -76,7 +76,7 @@ export function getPushClientId (args) {
   const hasComplete = isFn(complete)
 
   // App 端且启用离线时，使用 getClientInfoAsync 来调用
-  if (__PLATFORM__ === 'app' && offline) {
+  if (__PLATFORM__ === 'app-plus' && offline) {
     plus.push.getClientInfoAsync(
       (info) => {
         const res = {
@@ -126,8 +126,25 @@ export function getPushClientId (args) {
 }
 
 const onPushMessageCallbacks = []
+let listening = false
 // 不使用 defineOnApi 实现，是因为 defineOnApi 依赖 UniServiceJSBridge ，该对象目前在小程序上未提供，故简单实现
 export const onPushMessage = (fn) => {
+  // 不能程序启动时就监听，因为离线事件，仅触发一次，框架监听后，无法转发给还没开始监听的开发者
+  if (__PLATFORM__ === 'app' && !listening) {
+    listening = true
+    plus.push.addEventListener('click', (result) => {
+      invokePushCallback({
+        type: 'click',
+        message: result
+      })
+    })
+    plus.push.addEventListener('receive', (result) => {
+      invokePushCallback({
+        type: 'pushMsg',
+        message: result
+      })
+    })
+  }
   if (onPushMessageCallbacks.indexOf(fn) === -1) {
     onPushMessageCallbacks.push(fn)
   }
