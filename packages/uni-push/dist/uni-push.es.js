@@ -133,15 +133,6 @@ function initPushNotification() {
                 },
             });
         });
-        uni.onPushMessage((res) => {
-            if (res.type === 'receive' &&
-                res.data &&
-                res.data.force_notification) {
-                // 创建通知栏
-                uni.createPushMessage(res.data);
-                res.stopped = true;
-            }
-        });
     }
 }
 
@@ -200,4 +191,16 @@ else {
             });
         },
     });
+    // 仅在 jssdk 中监听
+    // #ifdef APP
+    uni.onPushMessage((res) => {
+        if (res.type === 'receive' &&
+            res.data &&
+            res.data.force_notification) {
+            // 创建通知栏
+            uni.createPushMessage(res.data);
+            res.stopped = true;
+        }
+    });
+    // #endif
 }

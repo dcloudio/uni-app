@@ -31,15 +31,6 @@ function initPushNotification() {
                 },
             });
         });
-        uni.onPushMessage((res) => {
-            if (res.type === 'receive' &&
-                res.data &&
-                res.data.force_notification) {
-                // 创建通知栏
-                uni.createPushMessage(res.data);
-                res.stopped = true;
-            }
-        });
     }
 }
 
