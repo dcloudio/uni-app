@@ -35,13 +35,6 @@ export function initPushNotification() {
         })
       }
     )
-    plus.push.addEventListener('click', (result) => {
-      // @ts-expect-error
-      uni.invokePushCallback({
-        type: 'click',
-        message: result,
-      })
-    })
     uni.onPushMessage((res) => {
       if (
         res.type === 'receive' &&
