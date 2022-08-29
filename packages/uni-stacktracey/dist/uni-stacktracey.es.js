@@ -3874,7 +3874,7 @@ function utsStracktraceyPreset(opts) {
                     callee: '',
                     index: false,
                     native: false,
-                    file: nixSlashes(matches[1].replace('//?', '')),
+                    file: nixSlashes(matches[1]),
                     line: parseInt(matches[2]),
                     column: parseInt(matches[3]),
                     fileName,
@@ -3897,7 +3897,7 @@ function utsStracktraceyPreset(opts) {
                 if (item === '%StacktraceyItem%') {
                     const _stack = stack.items.shift();
                     if (_stack) {
-                        return `at ${nixSlashes(path.relative(inputRoot, _stack.file))}:${_stack.line}:${_stack.column}
+                        return `at ${nixSlashes(path.relative(inputRoot, _stack.file.replace('\\\\?\\', '')))}:${_stack.line}:${_stack.column}
 ${_stack.errMsg}`;
                     }
                 }
