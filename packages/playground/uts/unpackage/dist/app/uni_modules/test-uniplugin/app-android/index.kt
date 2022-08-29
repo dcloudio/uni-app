@@ -17,7 +17,7 @@ val __default = getResourcePath("uni_modules/test-uniplugin/static/logo.png");
 open class User : IUser {
     open suspend fun login(name: String, pwd: String) = CoroutineScope(Dispatchers.Default).async {
         setTimeout(fun(){
-            console.log("timeout", "at uni_modules/test-uniplugin/app-android/index.uts:8");
+            console.log("timeout", "at uni_modules/test-uniplugin/app-android/index.uts:9");
         }
         , 1000);
         login(name, pwd);
@@ -25,7 +25,7 @@ open class User : IUser {
         Log.info(__default);
     }
     override fun register(name: String, callback: UTSCallback) {
-        Log.info(__default);
+        Log.info(__default as FrameLayout);
     }
 }
 fun login(name: String, callback: () -> Unit) {}

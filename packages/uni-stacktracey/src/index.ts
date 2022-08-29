@@ -455,7 +455,7 @@ export function utsStracktraceyPreset(
             callee: '',
             index: false,
             native: false,
-            file: nixSlashes(matches[1]),
+            file: nixSlashes(matches[1].replace('//?', '')),
             line: parseInt(matches[2]),
             column: parseInt(matches[3]),
             fileName,
