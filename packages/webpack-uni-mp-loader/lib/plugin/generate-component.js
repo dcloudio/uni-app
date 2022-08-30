@@ -294,8 +294,8 @@ module.exports = function generateComponent (compilation, jsonpFunction = 'webpa
   // fix mp-alipay plugin
   if (process.env.UNI_PLATFORM === 'mp-alipay' && appJsonFile) {
     const obj = JSON.parse(appJsonFile.source())
-    if (obj && obj.usingComponents && !Object.keys(obj.usingComponents).length) {
-      const componentName = 'plugin-wrapper'
+    const componentName = 'plugin-wrapper'
+    if (obj && obj.usingComponents && !(componentName in obj.usingComponents)) {
       obj.usingComponents[componentName] = `/${componentName}`
       const source = JSON.stringify(obj, null, 2)
       if (webpack.version[0] > 4) {
