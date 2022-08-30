@@ -21383,6 +21383,7 @@ var serviceContext = (function () {
   let cid;
   let cidErrMsg;
   let enabled;
+  let offline;
 
   function normalizePushMessage (message) {
     try {
@@ -21396,6 +21397,9 @@ var serviceContext = (function () {
   ) {
     if (args.type === 'enabled') {
       enabled = true;
+      {
+        offline = args.offline;
+      }
     } else if (args.type === 'clientId') {
       cid = args.cid;
       cidErrMsg = args.errMsg;
@@ -21444,6 +21448,28 @@ var serviceContext = (function () {
     const hasSuccess = isFn(success);
     const hasFail = isFn(fail);
     const hasComplete = isFn(complete);
+
+    // App 端且启用离线时，使用 getClientInfoAsync 来调用
+    if ( offline) {
+      plus.push.getClientInfoAsync(
+        (info) => {
+          const res = {
+            errMsg: 'getPushClientId:ok',
+            cid
+          };
+          hasSuccess && success(res);
+          hasComplete && complete(res);
+        },
+        (res) => {
+          res = {
+            errMsg: 'getPushClientId:fail ' + (res.code + ': ' + res.message)
+          };
+          hasFail && fail(res);
+          hasComplete && complete(res);
+        }
+      );
+      return
+    }
 
     Promise.resolve().then(() => {
       if (typeof enabled === 'undefined') {
