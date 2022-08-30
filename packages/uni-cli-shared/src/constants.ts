@@ -8,6 +8,7 @@ export const EXTNAME_JS_RE = /\.(js|jsx|ts|tsx|mjs)$/
 export const EXTNAME_TS_RE = /\.tsx?$/
 
 export const extensions = [
+  '.uts',
   '.mjs',
   '.js',
   '.ts',

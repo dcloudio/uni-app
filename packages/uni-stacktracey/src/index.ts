@@ -484,6 +484,7 @@ export function utsStracktraceyPreset(
               )}:${_stack.line}:${_stack.column}
 ${_stack.errMsg}`
             }
+            return ''
           }
           return item
         })

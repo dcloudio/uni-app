@@ -190,6 +190,12 @@ function initUtsPlatform(options: CliOptions) {
   if (options.platform === 'app' && !process.env.UNI_UTS_PLATFORM) {
     process.env.UNI_UTS_PLATFORM = 'app-android'
   }
+  if (options.platform === 'h5') {
+    process.env.UNI_UTS_PLATFORM = 'web'
+  }
+  if (!process.env.UNI_UTS_PLATFORM) {
+    process.env.UNI_UTS_PLATFORM = options.platform as any
+  }
 }
 
 function initAutomator({ autoHost, autoPort }: CliOptions) {

@@ -43,6 +43,11 @@ export function createConfig(
       optimizeDeps: createOptimizeDeps(options),
       build: createBuild(options, config),
       css: createCss(options, config),
+      esbuild: {
+        include: /\.(tsx?|jsx|uts)$/,
+        exclude: /\.js$/,
+        loader: 'ts',
+      },
       worker: {
         plugins: initFixedEsbuildInitTSConfck(process.env.UNI_INPUT_DIR),
       },

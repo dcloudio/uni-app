@@ -3900,6 +3900,7 @@ function utsStracktraceyPreset(opts) {
                         return `at ${nixSlashes(path.relative(inputRoot, _stack.file.replace('\\\\?\\', '')))}:${_stack.line}:${_stack.column}
 ${_stack.errMsg}`;
                     }
+                    return '';
                 }
                 return item;
             })

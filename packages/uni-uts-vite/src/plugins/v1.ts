@@ -1,10 +1,6 @@
 import type { Plugin } from 'vite'
 import path from 'path'
-import {
-  isInHBuilderX,
-  parseVueRequest,
-  resolveUtsModule,
-} from '@dcloudio/uni-cli-shared'
+import { isInHBuilderX, parseVueRequest } from '@dcloudio/uni-cli-shared'
 import {
   ClassDeclaration,
   ClassExpression,
@@ -28,13 +24,6 @@ export function uniUtsV1Plugin(): Plugin {
     name: 'uni:uts-v1',
     apply: 'build',
     enforce: 'pre',
-    resolveId(id, importer) {
-      return resolveUtsModule(
-        id,
-        importer ? path.dirname(importer) : process.env.UNI_INPUT_DIR,
-        process.env.UNI_UTS_PLATFORM
-      )
-    },
     async transform(code, id, opts) {
       if (opts && opts.ssr) {
         return

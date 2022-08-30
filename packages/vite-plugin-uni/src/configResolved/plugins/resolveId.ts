@@ -1,7 +1,7 @@
 import path from 'path'
 import debug from 'debug'
 import { Plugin } from 'vite'
-import { resolveBuiltIn } from '@dcloudio/uni-cli-shared'
+import { resolveBuiltIn, resolveUtsModule } from '@dcloudio/uni-cli-shared'
 
 import { VitePluginUniResolvedOptions } from '../..'
 
@@ -28,7 +28,7 @@ export function uniResolveIdPlugin(
   const resolveCache: Record<string, string> = {}
   return {
     name: 'uni:resolve-id',
-    resolveId(id) {
+    resolveId(id, importer) {
       const cache = resolveCache[id]
       if (cache) {
         debugResolve('cache', id, cache)
@@ -39,6 +39,11 @@ export function uniResolveIdPlugin(
           path.join(id, BUILT_IN_MODULES[id as BuiltInModulesKey])
         ))
       }
+      return resolveUtsModule(
+        id,
+        importer ? path.dirname(importer) : process.env.UNI_INPUT_DIR,
+        process.env.UNI_UTS_PLATFORM
+      )
     },
   }
 }
