@@ -1,5 +1,5 @@
-import FrameLayout from 'android.widget.FrameLayout'
 import Log from 'android.util.Log'
+import FrameLayout from 'android.widget.FrameLayout'
 import { IUser } from './interface.uts'
 import { login } from './login.uts'
 import logo from '../static/logo.png'

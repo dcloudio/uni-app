@@ -3,6 +3,7 @@ import kotlinx.coroutines.*;
 import io.dcloud.uts.runtime.*;
 import io.dcloud.uts.android.getResourcePath;
 import android.util.Log;
+import android.widget.FrameLayout;
 interface IUser {
     fun register(name: String): Unit;
 }

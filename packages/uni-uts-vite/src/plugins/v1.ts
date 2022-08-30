@@ -2,9 +2,8 @@ import type { Plugin } from 'vite'
 import path from 'path'
 import {
   isInHBuilderX,
-  normalizePath,
   parseVueRequest,
-  requireResolve,
+  resolveUtsModule,
 } from '@dcloudio/uni-cli-shared'
 import {
   ClassDeclaration,
@@ -30,12 +29,11 @@ export function uniUtsV1Plugin(): Plugin {
     apply: 'build',
     enforce: 'pre',
     resolveId(id, importer) {
-      if (isUtsModuleRoot(id)) {
-        return requireResolve(
-          id,
-          (importer && path.dirname(importer)) || process.env.UNI_INPUT_DIR
-        )
-      }
+      return resolveUtsModule(
+        id,
+        importer ? path.dirname(importer) : process.env.UNI_INPUT_DIR,
+        process.env.UNI_UTS_PLATFORM
+      )
     },
     async transform(code, id, opts) {
       if (opts && opts.ssr) {
@@ -78,15 +76,6 @@ ${genProxyCode(ast)}
       isFirst = false
     },
   }
-}
-
-// 仅限 uni_modules/test-plugin 格式
-function isUtsModuleRoot(id: string) {
-  const parts = normalizePath(id).split('/')
-  if (parts[parts.length - 2] === 'uni_modules') {
-    return true
-  }
-  return false
 }
 
 function genProxyFunctionCode(
