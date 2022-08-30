@@ -27,6 +27,8 @@ function createUniMPPlugin () {
 
 const createWxMpIndependentPlugins = require('@dcloudio/uni-mp-weixin/lib/createIndependentPlugin')
 
+const UniTips = require('./tips')
+
 function getProvides () {
   const uniPath = require('@dcloudio/uni-cli-shared/lib/platform').getMPRuntimePath()
   const uniCloudPath = path.resolve(__dirname, '../../packages/uni-cloud/dist/index.js')
@@ -229,6 +231,11 @@ ${globalEnv}.__webpack_require_UNI_MP_PLUGIN__ = __webpack_require__;`
     if (process.env.NODE_ENV === 'production' || process.env.UNI_MINIMIZE === 'true') {
       output.pathinfo = false
     }
+
+    if (process.env.UNI_PLATFORM === 'mp-weixin' && process.env.NODE_ENV === 'production') {
+      plugins.push(new UniTips())
+    }
+
     return {
       mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
       entry () {

@@ -234,7 +234,6 @@ export default {
           return
         }
         const { pageX, pageY } = e.changedTouches[0]
-        this.$trigger('click', { x: pageX, y: pageY }, {})
         this.$trigger('tap', { x: pageX, y: pageY }, {})
       }
     },

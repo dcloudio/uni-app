@@ -269,33 +269,22 @@ export default {
         const self = this
 
         window.AMap.plugin('AMap.PlaceSearch', function () {
-          var autoOptions = {
+          const placeSearch = new window.AMap.PlaceSearch({
             city: '全国',
             pageSize: 10,
             pageIndex: self.pageIndex
-          }
-          var placeSearch = new window.AMap.PlaceSearch(autoOptions)
-          if (self.searching) {
-            placeSearch.searchNearBy(self.keyword, [self.longitude, self.latitude], 50000, function (status, result) {
-              if (status === 'error') {
-                console.error(result)
-              } else if (status === 'no_data') {
-                self.hasNextPage = false
-              } else {
-                self.pushData(result.poiList.pois)
-              }
-            })
-          } else {
-            placeSearch.searchNearBy('', [self.longitude, self.latitude], 5000, function (status, result) {
-              if (status === 'error') {
-                console.error(result)
-              } else if (status === 'no_data') {
-                self.hasNextPage = false
-              } else {
-                self.pushData(result.poiList.pois)
-              }
-            })
-          }
+          })
+          const keyword = self.searching ? self.keyword : ''
+          const radius = self.searching ? 50000 : 5000
+          placeSearch.searchNearBy(keyword, [self.longitude, self.latitude], radius, function (status, result) {
+            if (status === 'error') {
+              console.error(result)
+            } else if (status === 'no_data') {
+              self.hasNextPage = false
+            } else {
+              self.pushData(result.poiList.pois)
+            }
+          })
           self.loading = false
         })
       }
