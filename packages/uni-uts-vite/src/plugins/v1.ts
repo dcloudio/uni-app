@@ -28,6 +28,10 @@ export function uniUtsV1Plugin(): Plugin {
       if (opts && opts.ssr) {
         return
       }
+      // 目前仅支持app-android
+      if (process.env.UNI_UTS_PLATFORM !== 'app-android') {
+        return
+      }
       const { filename } = parseVueRequest(id)
       if (path.extname(filename) !== '.uts') {
         return

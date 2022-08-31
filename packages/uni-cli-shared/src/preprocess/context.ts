@@ -24,6 +24,7 @@ const DEFAULT_KEYS = [
   'QUICKAPP_WEBVIEW_UNION',
   'VUE2',
   'VUE3',
+  'WEB',
 ] as const
 
 const preVueContext = Object.create(null)
@@ -75,6 +76,8 @@ export function initPreContext(
     defaultContext.MP = true
   } else if (platform.startsWith('quickapp-webview')) {
     defaultContext.QUICKAPP_WEBVIEW = true
+  } else if (platform === 'h5') {
+    defaultContext.WEB = true
   }
 
   if (userPreContext) {

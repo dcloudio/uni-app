@@ -25,6 +25,7 @@ const sourcemapCatch: Record<string, string | Promise<string>> = {}
 
 type StacktraceyItems = StackTracey.Entry & {
   errMsg?: string
+  sourceContent?: string
 }
 type Stacktracey = {
   items: StacktraceyItems[]
@@ -74,6 +75,7 @@ interface StacktraceyPreset {
 
 interface StacktraceyOptions {
   preset: StacktraceyPreset
+  withSourceContent?: boolean
 }
 
 export function stacktracey(
@@ -106,10 +108,14 @@ export function stacktracey(
           .then((content) => {
             if (content) {
               return getConsumer(content).then((consumer) => {
-                return parseSourceMapContent(consumer, {
-                  line,
-                  column,
-                })
+                return parseSourceMapContent(
+                  consumer,
+                  {
+                    line,
+                    column,
+                  },
+                  !!opts.withSourceContent
+                )
               })
             }
           })
@@ -124,6 +130,7 @@ export function stacktracey(
                 sourcePath,
                 sourceLine,
                 sourceColumn,
+                sourceContent,
                 fileName = '',
               } = sourceMapContent
 
@@ -136,6 +143,7 @@ export function stacktracey(
                 fileName,
                 thirdParty: isThirdParty(sourcePath),
                 parsed: true,
+                sourceContent,
               })
 
               /**
@@ -258,11 +266,13 @@ type SourceMapContent = {
   sourcePath: string
   sourceLine: number
   sourceColumn: number
-  fileName: string | undefined
+  sourceContent?: string
+  fileName?: string
 }
 function parseSourceMapContent(
   consumer: BasicSourceMapConsumer | IndexedSourceMapConsumer,
-  obj: Position
+  obj: Position,
+  withSourceContent: boolean
 ): SourceMapContent | undefined {
   // source -> 'uni-app:///node_modules/@sentry/browser/esm/helpers.js'
   const {
@@ -281,6 +291,9 @@ function parseSourceMapContent(
       sourceLine: sourceLine === null ? 0 : sourceLine,
       sourceColumn: sourceColumn === null ? 0 : sourceColumn,
       fileName,
+      sourceContent: withSourceContent
+        ? consumer.sourceContentFor(source) || ''
+        : '',
     }
   }
 }

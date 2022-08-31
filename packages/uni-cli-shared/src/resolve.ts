@@ -148,7 +148,7 @@ export function resolveUtsModule(
         platform
       )
       // App平台仅支持 uts
-      if (platform === 'app-android' || platform === 'app-ios') {
+      if (platform === 'app-android') {
         return resolveUtsFile(platformDir, ['.uts'])
       }
       return resolveUtsFile(platformDir)

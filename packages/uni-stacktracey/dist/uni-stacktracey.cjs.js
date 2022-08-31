@@ -3617,7 +3617,7 @@ function stacktracey(stacktrace, opts) {
                             return parseSourceMapContent(consumer, {
                                 line,
                                 column,
-                            });
+                            }, !!opts.withSourceContent);
                         });
                     }
                 });
@@ -3625,7 +3625,7 @@ function stacktracey(stacktrace, opts) {
             try {
                 return _getSourceMapContent(file, fileName, fileRelative).then((sourceMapContent) => {
                     if (sourceMapContent) {
-                        const { source, sourcePath, sourceLine, sourceColumn, fileName = '', } = sourceMapContent;
+                        const { source, sourcePath, sourceLine, sourceColumn, sourceContent, fileName = '', } = sourceMapContent;
                         stack.items[index] = Object.assign({}, item, {
                             file: source,
                             line: sourceLine,
@@ -3635,6 +3635,7 @@ function stacktracey(stacktrace, opts) {
                             fileName,
                             thirdParty: isThirdParty(sourcePath),
                             parsed: true,
+                            sourceContent,
                         });
                         /**
                          * 以 .js 结尾
@@ -3739,7 +3740,7 @@ function getSourceMapContent(sourcemapUrl) {
         return '';
     }
 }
-function parseSourceMapContent(consumer, obj) {
+function parseSourceMapContent(consumer, obj, withSourceContent) {
     // source -> 'uni-app:///node_modules/@sentry/browser/esm/helpers.js'
     const { source, line: sourceLine, column: sourceColumn, } = consumer.originalPositionFor(obj);
     if (source) {
@@ -3752,6 +3753,9 @@ function parseSourceMapContent(consumer, obj) {
             sourceLine: sourceLine === null ? 0 : sourceLine,
             sourceColumn: sourceColumn === null ? 0 : sourceColumn,
             fileName,
+            sourceContent: withSourceContent
+                ? consumer.sourceContentFor(source) || ''
+                : '',
         };
     }
 }
