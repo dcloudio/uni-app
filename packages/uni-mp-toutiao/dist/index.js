@@ -2381,12 +2381,13 @@ function initRefs (vm) {
     Object.defineProperty(vm, '$refs', {
       get () {
         const $refs = {};
-        const components = mpInstance.selectAllComponents('.vue-ref');
+        // mpInstance 销毁后 selectAllComponents 取值为 null
+        const components = mpInstance.selectAllComponents('.vue-ref') || [];
         components.forEach(component => {
           const ref = component.dataset.ref;
           $refs[ref] = component.$vm || component;
         });
-        const forComponents = mpInstance.selectAllComponents('.vue-ref-in-for');
+        const forComponents = mpInstance.selectAllComponents('.vue-ref-in-for') || [];
         forComponents.forEach(component => {
           const ref = component.dataset.ref;
           if (!$refs[ref]) {
@@ -2694,7 +2695,11 @@ function parseComponent (vueOptions) {
     });
   };
 
+  const oldDetached = lifetimes.detached;
   lifetimes.detached = function detached () {
+    if (typeof oldDetached === 'function') {
+      oldDetached.call(this);
+    }
     currentComponents(this, components => {
       const index = components.indexOf(this);
       if (index >= 0) {
@@ -2773,7 +2778,6 @@ function parsePage (vuePageOptions) {
     if (typeof oldDetached === 'function') {
       oldDetached.call(this);
     }
-    this.$vm && this.$vm.$destroy();
     // 清理
     const webviewId = this.__webviewId__;
     webviewId && Object.keys(instances).forEach(key => {
