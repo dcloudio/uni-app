@@ -38,7 +38,6 @@ export default function parsePage (vuePageOptions) {
     if (typeof oldDetached === 'function') {
       oldDetached.call(this)
     }
-    this.$vm && this.$vm.$destroy()
     // 清理
     const webviewId = this.__webviewId__
     webviewId && Object.keys(instances).forEach(key => {

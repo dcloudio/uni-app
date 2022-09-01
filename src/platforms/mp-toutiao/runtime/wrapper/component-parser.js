@@ -69,7 +69,11 @@ export default function parseComponent (vueOptions) {
     })
   }
 
+  const oldDetached = lifetimes.detached
   lifetimes.detached = function detached () {
+    if (typeof oldDetached === 'function') {
+      oldDetached.call(this)
+    }
     currentComponents(this, components => {
       const index = components.indexOf(this)
       if (index >= 0) {
