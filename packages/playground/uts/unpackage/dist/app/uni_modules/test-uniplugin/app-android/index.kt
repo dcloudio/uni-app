@@ -8,7 +8,7 @@ interface IUser {
     fun register(name: String): Unit;
 }
 fun login(name: String, pwd: String): UTSJSONObject {
-    console.log("login", "at uni_modules/test-uniplugin/app-android/login.uts:2");
+    console.log("login", " at uni_modules/test-uniplugin/app-android/login.uts:2");
     return object : UTSJSONObject() {
         var name = name
         var pwd = pwd
@@ -18,7 +18,7 @@ val __default = getResourcePath("uni_modules/test-uniplugin/static/logo.png");
 open class User : IUser {
     open suspend fun login(name: String, pwd: String) = CoroutineScope(Dispatchers.Default).async {
         setTimeout(fun(){
-            console.log("timeout", "at uni_modules/test-uniplugin/app-android/index.uts:9");
+            console.log("timeout", " at uni_modules/test-uniplugin/app-android/index.uts:9");
         }
         , 1000);
         login(name, pwd);
