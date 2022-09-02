@@ -15,7 +15,17 @@ const customize = cached((str) => {
 function initTriggerEvent (mpInstance) {
   const oldTriggerEvent = mpInstance.triggerEvent
   const newTriggerEvent = function (event, ...args) {
-    return oldTriggerEvent.apply(mpInstance, [customize(event), ...args])
+    // 事件名统一转驼峰格式，仅处理：当前组件为 vue 组件、当前组件为 vue 组件子组件
+    if (this.$vm || (this.dataset && this.dataset.comType)) {
+      event = customize(event)
+    } else if (__PLATFORM__ === 'mp-weixin' || __PLATFORM__ === 'mp-qq') {
+      // 针对微信/QQ小程序单独补充驼峰格式事件，以兼容历史项目
+      const newEvent = customize(event)
+      if (newEvent !== event) {
+        oldTriggerEvent.apply(this, [newEvent, ...args])
+      }
+    }
+    return oldTriggerEvent.apply(this, [event, ...args])
   }
   try {
     // 京东小程序 triggerEvent 为只读
