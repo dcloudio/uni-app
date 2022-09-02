@@ -54,36 +54,39 @@ export async function compile(filename: string) {
     },
   })
   // console.log('uts compile time: ' + (Date.now() - time) + 'ms')
+
   const kotlinFile = resolveKotlinFile(filename, inputDir, outputDir)
   if (process.env.NODE_ENV === 'production') {
+    const androidInputDir = resolveAndroidDir(filename)
+    const androidOutputDir = resolveAndroidDir(kotlinFile)
     // 生产模式下，需要将 kt 文件转移到 src 下
-    fs.copyFileSync(
-      path.resolve(filename, '../../package.json'),
-      path.resolve(kotlinFile, '../../package.json')
-    )
-    fs.mkdirSync(path.resolve(kotlinFile, '../src'))
+    const cfgJson = path.resolve(androidInputDir, 'config.json')
+    if (fs.existsSync(cfgJson)) {
+      fs.copyFileSync(cfgJson, path.resolve(androidOutputDir, 'config.json'))
+    }
+    fs.mkdirSync(path.resolve(androidOutputDir, 'src'))
     if (fs.existsSync(kotlinFile)) {
-      fs.moveSync(kotlinFile, path.resolve(kotlinFile, '../src/index.kt'))
+      fs.moveSync(kotlinFile, path.resolve(androidOutputDir, 'src/index.kt'))
     }
     const kotlinMapFile = kotlinFile + '.map'
     if (fs.existsSync(kotlinMapFile)) {
       fs.moveSync(
         kotlinMapFile,
-        path.resolve(kotlinFile, '../src/index.map.kt')
+        path.resolve(androidOutputDir, 'src/index.map.kt')
       )
     }
 
     const copies = ['assets', 'libs', 'res']
-    const moduleDir = path.dirname(filename)
-    const outputModuleDir = path.dirname(kotlinFile)
-    fs.readdirSync(moduleDir).forEach((file) => {
-      if (copies.includes(file)) {
-        fs.copySync(
-          path.join(moduleDir, file),
-          path.join(outputModuleDir, file)
-        )
-      }
-    })
+    if (fs.existsSync(androidInputDir)) {
+      fs.readdirSync(androidInputDir).forEach((file) => {
+        if (copies.includes(file)) {
+          fs.copySync(
+            path.join(androidInputDir, file),
+            path.join(androidOutputDir, file)
+          )
+        }
+      })
+    }
   } else if (process.env.NODE_ENV === 'development') {
     // 开发模式下，需要生成 dex
     if (fs.existsSync(kotlinFile)) {
@@ -143,7 +146,7 @@ function resolveD8Args(filename: string) {
 }
 
 function resolveLibs(filename: string) {
-  const libsPath = path.resolve(path.dirname(filename), 'libs')
+  const libsPath = path.resolve(resolveAndroidDir(filename), 'libs')
   const libs: string[] = []
   if (fs.existsSync(libsPath)) {
     libs.push(...sync('*.jar', { cwd: libsPath, absolute: true }))
@@ -179,14 +182,42 @@ function resolveDexFile(jarFile: string) {
   return normalizePath(path.resolve(path.dirname(jarFile), 'classes.dex'))
 }
 
+function resolveAndroidDir(filename: string) {
+  const maybeAndroidDir = path.dirname(filename)
+  // 如果是根目录的index.uts编译出来的index.kt，则移动到app-android下
+  const isRootIndex = path.basename(maybeAndroidDir) !== 'app-android'
+  if (isRootIndex) {
+    if (maybeAndroidDir.includes('uni_modules')) {
+      return path.join(maybeAndroidDir, 'utssdk/app-android')
+    }
+    return path.join(maybeAndroidDir, 'app-android')
+  }
+  return maybeAndroidDir
+}
+
 function resolveKotlinFile(
   filename: string,
   inputDir: string,
   outputDir: string
 ) {
-  return path
+  let ktFile = path
     .resolve(outputDir, path.relative(inputDir, filename))
     .replace(path.extname(filename), '.kt')
+  const maybeModuleDir = path.dirname(filename)
+  // 如果是根目录的index.uts编译出来的index.kt，则移动到app-android下
+  const isRootIndex = path.basename(maybeModuleDir) !== 'app-android'
+  if (isRootIndex) {
+    if (fs.existsSync(ktFile)) {
+      const newKtFile = path.resolve(
+        path.dirname(ktFile),
+        (maybeModuleDir.includes('uni_modules') ? 'utssdk/' : '') +
+          'app-android/index.kt'
+      )
+      fs.moveSync(ktFile, newKtFile)
+      ktFile = newKtFile
+    }
+  }
+  return ktFile
 }
 
 function resolveDexPath(filename: string) {
@@ -226,9 +257,15 @@ const getCompilerServer = ():
 
 export function parsePackage(filepath: string) {
   const parts = normalizePath(filepath).split('/')
-  const index = parts.findIndex((part) => part === 'uni_modules')
+
+  const isUniModules = parts.includes('uni_modules')
+  const index = isUniModules
+    ? parts.findIndex((part) => part === 'uni_modules')
+    : parts.findIndex((part) => part === 'utssdk')
   if (index > -1) {
-    return 'uts.modules.' + camelize(parts[index + 1])
+    return (
+      'uts.sdk.' + (isUniModules ? 'modules.' : '') + camelize(parts[index + 1])
+    )
   }
   return ''
 }

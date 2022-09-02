@@ -1,11 +1,6 @@
 import type { Plugin } from 'vite'
 import path from 'path'
-import {
-  isInHBuilderX,
-  normalizePath,
-  parseVueRequest,
-  requireResolve,
-} from '@dcloudio/uni-cli-shared'
+import { isInHBuilderX, parseVueRequest } from '@dcloudio/uni-cli-shared'
 import {
   ClassDeclaration,
   ClassExpression,
@@ -29,16 +24,12 @@ export function uniUtsV1Plugin(): Plugin {
     name: 'uni:uts-v1',
     apply: 'build',
     enforce: 'pre',
-    resolveId(id, importer) {
-      if (isUtsModuleRoot(id)) {
-        return requireResolve(
-          id,
-          (importer && path.dirname(importer)) || process.env.UNI_INPUT_DIR
-        )
-      }
-    },
     async transform(code, id, opts) {
       if (opts && opts.ssr) {
+        return
+      }
+      // 目前仅支持app-android
+      if (process.env.UNI_UTS_PLATFORM !== 'app-android') {
         return
       }
       const { filename } = parseVueRequest(id)
@@ -78,15 +69,6 @@ ${genProxyCode(ast)}
       isFirst = false
     },
   }
-}
-
-// 仅限 uni_modules/test-plugin 格式
-function isUtsModuleRoot(id: string) {
-  const parts = normalizePath(id).split('/')
-  if (parts[parts.length - 2] === 'uni_modules') {
-    return true
-  }
-  return false
 }
 
 function genProxyFunctionCode(
@@ -272,7 +254,7 @@ function genProxyCode({ body }: Module) {
         }
       } else if (decl.type === 'FunctionExpression') {
         if (decl.identifier) {
-          code = genFunctionDeclarationCode(decl, false)
+          code = genFunctionDeclarationCode(decl, true)
         }
       }
     }

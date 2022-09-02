@@ -5,6 +5,8 @@ const DEFAULT_KEYS = [
   'APP_PLUS',
   'APP_PLUS_NVUE',
   'APP_VUE',
+  'APP_ANDROID',
+  'APP_IOS',
   'H5',
   'MP',
   'MP_360',
@@ -22,6 +24,7 @@ const DEFAULT_KEYS = [
   'QUICKAPP_WEBVIEW_UNION',
   'VUE2',
   'VUE3',
+  'WEB',
 ] as const
 
 const preVueContext = Object.create(null)
@@ -60,10 +63,21 @@ export function initPreContext(
 
     nvueContext.APP_NVUE = true
     nvueContext.APP_PLUS_NVUE = true
+
+    if (process.env.UNI_APP_PLATFORM === 'android') {
+      defaultContext.APP_ANDROID = true
+    } else if (process.env.UNI_APP_PLATFORM === 'ios') {
+      defaultContext.APP_IOS = true
+    } else {
+      defaultContext.APP_ANDROID = true
+      defaultContext.APP_IOS = true
+    }
   } else if (platform.startsWith('mp-')) {
     defaultContext.MP = true
   } else if (platform.startsWith('quickapp-webview')) {
     defaultContext.QUICKAPP_WEBVIEW = true
+  } else if (platform === 'h5') {
+    defaultContext.WEB = true
   }
 
   if (userPreContext) {

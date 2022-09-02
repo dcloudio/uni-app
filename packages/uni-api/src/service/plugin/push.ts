@@ -134,10 +134,27 @@ interface OnPushMessageSuccess {
 
 type OnPushMessageCallback = (result: OnPushMessageSuccess) => void
 const onPushMessageCallbacks: OnPushMessageCallback[] = []
+let listening = false
 // 不使用 defineOnApi 实现，是因为 defineOnApi 依赖 UniServiceJSBridge ，该对象目前在小程序上未提供，故简单实现
 export const onPushMessage: (fn: OnPushMessageCallback) => void = (fn) => {
   if (onPushMessageCallbacks.indexOf(fn) === -1) {
     onPushMessageCallbacks.push(fn)
+  }
+  // 不能程序启动时就监听，因为离线事件，仅触发一次，框架监听后，无法转发给还没开始监听的开发者
+  if (__PLATFORM__ === 'app' && !listening) {
+    listening = true
+    plus.push.addEventListener('click', (result) => {
+      invokePushCallback({
+        type: 'click',
+        message: result,
+      })
+    })
+    plus.push.addEventListener('receive', (result) => {
+      invokePushCallback({
+        type: 'pushMsg',
+        message: result,
+      })
+    })
   }
 }
 

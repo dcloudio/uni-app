@@ -1,4 +1,5 @@
 import Log from 'android.util.Log'
+import FrameLayout from 'android.widget.FrameLayout'
 import { IUser } from './interface.uts'
 import { login } from './login.uts'
 import logo from '../static/logo.png'
@@ -11,7 +12,9 @@ export class User implements IUser {
     Log.info('123')
     Log.info(logo)
   }
-  register(name: string) {
-    Log.info(logo)
+  register(name: string, callback: () => void) {
+    Log.info(logo as FrameLayout)
   }
 }
+function login(name: string, callback: () => void) {}
+export function register(name: string, callback: () => void) {}

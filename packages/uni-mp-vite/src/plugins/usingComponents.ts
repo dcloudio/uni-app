@@ -14,8 +14,10 @@ import {
   updateMiniProgramComponentsByScriptFilename,
   updateMiniProgramComponentsByTemplateFilename,
   withSourcemap,
+  resolveUtsModule,
 } from '@dcloudio/uni-cli-shared'
 import { virtualComponentPath, virtualPagePath } from './entry'
+import { CustomPluginOptions, ResolvedId } from 'rollup'
 
 export function uniUsingComponentsPlugin(
   options: {
@@ -49,6 +51,25 @@ export function uniUsingComponentsPlugin(
         sourceMap,
         dynamicImport,
       }
+      const resolve = async (
+        source: string,
+        importer?: string,
+        options?: {
+          custom?: CustomPluginOptions
+          isEntry?: boolean
+          skipSelf?: boolean
+        }
+      ): Promise<ResolvedId | null> => {
+        const id = resolveUtsModule(
+          source,
+          importer || process.env.UNI_INPUT_DIR,
+          process.env.UNI_UTS_PLATFORM
+        )
+        if (id) {
+          source = id
+        }
+        return this.resolve(source, importer, options)
+      }
       if (query.vue) {
         if (query.type === 'script') {
           // 需要主动监听
@@ -57,7 +78,7 @@ export function uniUsingComponentsPlugin(
             filename,
             parseAst(source, id),
             {
-              resolve: this.resolve,
+              resolve,
               isExternal: true,
             }
           )
@@ -78,7 +99,7 @@ export function uniUsingComponentsPlugin(
             filename,
             parseAst(source, id),
             {
-              resolve: this.resolve,
+              resolve,
               isExternal: true,
             }
           )
@@ -101,7 +122,7 @@ export function uniUsingComponentsPlugin(
 
       const ast = parseAst(source, id)
 
-      const descriptor = await parseMainDescriptor(filename, ast, this.resolve)
+      const descriptor = await parseMainDescriptor(filename, ast, resolve)
 
       updateMiniProgramComponentsByMainFilename(
         filename,

@@ -1,4 +1,5 @@
 import require$$0$2 from 'fs';
+import path from 'path';
 
 /*  ------------------------------------------------------------------------ */
 const O = Object, isBrowser = 
@@ -3610,7 +3611,7 @@ function stacktracey(stacktrace, opts) {
                             return parseSourceMapContent(consumer, {
                                 line,
                                 column,
-                            });
+                            }, !!opts.withSourceContent);
                         });
                     }
                 });
@@ -3618,7 +3619,7 @@ function stacktracey(stacktrace, opts) {
             try {
                 return _getSourceMapContent(file, fileName, fileRelative).then((sourceMapContent) => {
                     if (sourceMapContent) {
-                        const { source, sourcePath, sourceLine, sourceColumn, fileName = '', } = sourceMapContent;
+                        const { source, sourcePath, sourceLine, sourceColumn, sourceContent, fileName = '', } = sourceMapContent;
                         stack.items[index] = Object.assign({}, item, {
                             file: source,
                             line: sourceLine,
@@ -3628,6 +3629,7 @@ function stacktracey(stacktrace, opts) {
                             fileName,
                             thirdParty: isThirdParty(sourcePath),
                             parsed: true,
+                            sourceContent,
                         });
                         /**
                          * 以 .js 结尾
@@ -3732,7 +3734,7 @@ function getSourceMapContent(sourcemapUrl) {
         return '';
     }
 }
-function parseSourceMapContent(consumer, obj) {
+function parseSourceMapContent(consumer, obj, withSourceContent) {
     // source -> 'uni-app:///node_modules/@sentry/browser/esm/helpers.js'
     const { source, line: sourceLine, column: sourceColumn, } = consumer.originalPositionFor(obj);
     if (source) {
@@ -3745,6 +3747,9 @@ function parseSourceMapContent(consumer, obj) {
             sourceLine: sourceLine === null ? 0 : sourceLine,
             sourceColumn: sourceColumn === null ? 0 : sourceColumn,
             fileName,
+            sourceContent: withSourceContent
+                ? consumer.sourceContentFor(source) || ''
+                : '',
         };
     }
 }
@@ -3844,15 +3849,11 @@ function uniStracktraceyPreset(opts) {
     };
 }
 function utsStracktraceyPreset(opts) {
-    const { base, sourceRoot } = opts;
+    const { inputRoot, outputRoot, sourceMapRoot } = opts;
     let errStack = [];
     return {
         parseSourceMapUrl(file, fileName, fileRelative) {
-            // 组合 sourceMapUrl
-            if (sourceRoot) {
-                return `${file.replace(sourceRoot, base + '/')}.map`;
-            }
-            return `${base}/${file}.map`;
+            return path.resolve(sourceMapRoot, path.relative(outputRoot, file) + '.map');
         },
         getSourceMapContent(file, fileName, fileRelative) {
             // 根据 base,filename 组合 sourceMapUrl
@@ -3863,30 +3864,26 @@ function utsStracktraceyPreset(opts) {
             const entries = lines
                 .map((line, index) => {
                 line = line.trim();
-                let callee, fileLineColumn = [], planA, planB;
-                if ((planA = line.match(/e: (.+\.kt)(.+\))*:\s*(.+)*/))) {
+                const matches = line.match(/\s*(.+\.kt):([0-9]+):([0-9]+):\s+(.*)/);
+                if (matches) {
                     errStack.push('%StacktraceyItem%');
-                    callee = 'e: ';
-                    fileLineColumn = (planA[2].match(/.*:.*\((\d+).+?(\d+)\)/) || []).slice(1);
                 }
                 else {
                     errStack.push(line);
-                    return undefined;
+                    return;
                 }
-                const fileName = planA[1]
-                    ? (planB = planA[1].match(/(.*)*\/(.+)/) || [])[2] || ''
-                    : '';
+                const fileName = matches[1].replace(/^.*(\\|\/|\:)/, '');
                 return {
                     beforeParse: line,
-                    callee: callee || '',
+                    callee: '',
                     index: false,
                     native: false,
-                    file: nixSlashes(planA[1] || ''),
-                    line: parseInt(fileLineColumn[0] || '', 10) || undefined,
-                    column: parseInt(fileLineColumn[1] || '', 10) || undefined,
+                    file: nixSlashes(matches[1]),
+                    line: parseInt(matches[2]),
+                    column: parseInt(matches[3]),
                     fileName,
-                    fileShort: planB ? planB[1] : '',
-                    errMsg: planA[3] || '',
+                    fileShort: line,
+                    errMsg: matches[4] || '',
                     calleeShort: '',
                     fileRelative: '',
                     thirdParty: false,
@@ -3903,8 +3900,11 @@ function utsStracktraceyPreset(opts) {
                 .map((item) => {
                 if (item === '%StacktraceyItem%') {
                     const _stack = stack.items.shift();
-                    if (_stack)
-                        return `${_stack.callee}${_stack.file}: (${_stack.line}, ${_stack.column}): ${_stack.errMsg}`;
+                    if (_stack) {
+                        return `at ${nixSlashes(path.relative(inputRoot, _stack.file.replace('\\\\?\\', '')))}:${_stack.line}:${_stack.column}
+${_stack.errMsg}`;
+                    }
+                    return '';
                 }
                 return item;
             })
