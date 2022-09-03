@@ -301,6 +301,11 @@ export default {
                 $event.stopPropagation()
                 $event.preventDefault()
               }
+              // The mobile terminal prevent google map callout click trigger map click
+              if (getMapInfo().type === MapType.GOOGLE) {
+                callout.div.onpointerdown = (e) => { e.stopPropagation() }
+                callout.div.ontouchstart = (e) => { e.stopPropagation() }
+              }
             }
           }
         } else {
