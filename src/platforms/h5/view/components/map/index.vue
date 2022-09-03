@@ -3,7 +3,6 @@
     :id="id"
     ref="mapContainer"
     v-on="$listeners"
-    @touchend="handleAMapClick"
   >
     <map-marker
       v-for="item in markers"
@@ -18,6 +17,7 @@
     <div
       ref="map"
       style="width: 100%; height: 100%; position: relative; overflow: hidden"
+      @click.stop
     />
     <div
       style="
@@ -227,16 +227,6 @@ export default {
     this.removeLocation()
   },
   methods: {
-    handleAMapClick (e) {
-      if (IS_AMAP) {
-        // The mobile terminal prevent not map click event trigger map click
-        if (e.target.nodeName !== 'CANVAS') {
-          return
-        }
-        const { pageX, pageY } = e.changedTouches[0]
-        this.$trigger('tap', { x: pageX, y: pageY }, {})
-      }
-    },
     _handleSubscribe ({
       type,
       data = {}
@@ -408,6 +398,9 @@ export default {
         boundsChangedEvent.remove()
         this.isBoundsReady = true
         this.$emit('boundsready')
+      })
+      maps.event.addListener(map, 'click', (e) => {
+        this.$trigger('click', {}, {})
       })
       maps.event.addListener(map, 'dragstart', () => {
         this.$trigger('regionchange', {}, {
