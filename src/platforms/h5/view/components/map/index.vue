@@ -9,6 +9,11 @@
       :key="item.id"
       v-bind="item"
     />
+    <map-control
+      v-for="(item, index) in controls"
+      :key="item.id || index"
+      v-bind="item"
+    />
     <map-polygon
       v-for="item in polygons"
       :key="JSON.stringify(item.points)"
@@ -46,6 +51,7 @@ import {
 } from './maps'
 
 import mapMarker from './map-marker'
+import mapControl from './map-control'
 import mapPolygon from './map-polygon'
 
 import { ICON_PATH_ORIGIN, IS_AMAP } from '../../../helpers/location'
@@ -80,6 +86,7 @@ export default {
   name: 'Map',
   components: {
     mapMarker,
+    mapControl,
     mapPolygon
   },
   mixins: [subscriber],
@@ -160,8 +167,7 @@ export default {
       isMapReady: false,
       isBoundsReady: false,
       polylineSync: [],
-      circlesSync: [],
-      controlsSync: []
+      circlesSync: []
     }
   },
   watch: {
@@ -184,11 +190,6 @@ export default {
     circles () {
       this.mapReady(() => {
         this.createCircles()
-      })
-    },
-    controls () {
-      this.mapReady(() => {
-        this.createControls()
       })
     },
     includePoints () {
@@ -223,7 +224,6 @@ export default {
   beforeDestroy () {
     this.removePolyline()
     this.removeCircles()
-    this.removeControls()
     this.removeLocation()
   },
   methods: {
@@ -446,9 +446,6 @@ export default {
       if (this.circles && Array.isArray(this.circles) && this.circles.length) {
         this.createCircles()
       }
-      if (this.controls && Array.isArray(this.controls) && this.controls.length) {
-        this.createControls()
-      }
       if (this.showLocation) {
         this.createLocation()
       }
@@ -589,61 +586,6 @@ export default {
         circle.setMap(null)
       })
       circles.splice(0, circles.length)
-    },
-    createControls () {
-      const maps = this._maps
-      var _self = this
-      var map = this._map
-      var controls = this.controlsSync
-      this.removeControls()
-      this.controls.forEach(option => {
-        var position = option.position || {}
-        var control = document.createElement('div')
-        var img = new Image()
-        control.appendChild(img)
-        var style = control.style
-        style.position = 'absolute'
-        style.width = 0
-        style.height = 0
-        style.top = 0
-        style.left = 0
-        style.zIndex = 999
-        img.onload = () => {
-          if (option.position.width) {
-            img.width = option.position.width
-          }
-          if (option.position.height) {
-            img.height = option.position.height
-          }
-          var style = img.style
-          style.position = 'absolute'
-          style.left = (position.left || 0) + 'px'
-          style.top = (position.top || 0) + 'px'
-          style.maxWidth = 'initial'
-        }
-        img.src = this.$getRealPath(option.iconPath)
-        img.onclick = function ($event) {
-          if (option.clickable) {
-            _self.$trigger('controltap', $event, {
-              controlId: option.id
-            })
-          }
-          $event.stopPropagation()
-        }
-        if (IS_AMAP) {
-          this.$refs.mapContainer.appendChild(control)
-        } else {
-          map.controls[maps.ControlPosition.TOP_LEFT].push(control)
-        }
-        controls.push(control)
-      })
-    },
-    removeControls () {
-      var controls = this.controlsSync
-      controls.forEach(control => {
-        control.remove()
-      })
-      controls.splice(0, controls.length)
     },
     createLocation () {
       const maps = this._maps
