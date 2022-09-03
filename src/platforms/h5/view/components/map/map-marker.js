@@ -129,12 +129,6 @@ export default {
           }
           event.stopPropagation()
         })
-        // 处理 google H5移动端 maker 点击触发 map 点击问题
-        maps.event.addListener(marker, 'mousedown', (e) => {
-          if (e.domEvent) {
-            e.domEvent.stopPropagation()
-          }
-        })
       }
     },
     updateMarker (option) {
