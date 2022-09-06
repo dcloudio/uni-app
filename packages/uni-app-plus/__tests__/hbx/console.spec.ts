@@ -1,4 +1,4 @@
-import { normalizeLog } from '../../src/hbx/formatLog'
+import { normalizeLog } from '../../src/service/api/plugin/log'
 const filename = 'foo.vue'
 describe('console', () => {
   test('console.log format', () => {

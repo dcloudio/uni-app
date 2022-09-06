@@ -11,8 +11,9 @@ export {
   formatInstallHBuilderXPluginTips,
 } from './alias'
 
-export function uniHBuilderXConsolePlugin() {
+export function uniHBuilderXConsolePlugin(method: string = '__f__') {
   return uniConsolePlugin({
+    method,
     filename(filename) {
       filename = path.relative(process.env.UNI_INPUT_DIR, filename)
       if (filename.startsWith('.') || path.isAbsolute(filename)) {

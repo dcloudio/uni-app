@@ -80,6 +80,7 @@ export {
   onHostEventReceive,
   onNativeEventReceive,
 } from './plugin/sdk'
+export { __log__ } from './plugin/log'
 
 export * from './ad/rewardedVideoAd'
 export * from './ad/fullScreenVideoAd'
