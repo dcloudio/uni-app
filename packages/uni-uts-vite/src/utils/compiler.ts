@@ -59,12 +59,19 @@ export async function compile(filename: string) {
   if (process.env.NODE_ENV === 'production') {
     const androidInputDir = resolveAndroidDir(filename)
     const androidOutputDir = resolveAndroidDir(kotlinFile)
+
+    // 拷贝所有非uts文件及目录
+    fs.copySync(androidInputDir, androidOutputDir, {
+      filter(src) {
+        return path.extname(src) !== '.uts'
+      },
+    })
+
     // 生产模式下，需要将 kt 文件转移到 src 下
-    const cfgJson = path.resolve(androidInputDir, 'config.json')
-    if (fs.existsSync(cfgJson)) {
-      fs.copyFileSync(cfgJson, path.resolve(androidOutputDir, 'config.json'))
+    const srcDir = path.resolve(androidOutputDir, 'src')
+    if (!fs.existsSync(srcDir)) {
+      fs.mkdirSync(srcDir)
     }
-    fs.mkdirSync(path.resolve(androidOutputDir, 'src'))
     if (fs.existsSync(kotlinFile)) {
       fs.moveSync(kotlinFile, path.resolve(androidOutputDir, 'src/index.kt'))
     }
@@ -74,18 +81,6 @@ export async function compile(filename: string) {
         kotlinMapFile,
         path.resolve(androidOutputDir, 'src/index.map.kt')
       )
-    }
-
-    const copies = ['assets', 'libs', 'res']
-    if (fs.existsSync(androidInputDir)) {
-      fs.readdirSync(androidInputDir).forEach((file) => {
-        if (copies.includes(file)) {
-          fs.copySync(
-            path.join(androidInputDir, file),
-            path.join(androidOutputDir, file)
-          )
-        }
-      })
     }
   } else if (process.env.NODE_ENV === 'development') {
     // 开发模式下，需要生成 dex
