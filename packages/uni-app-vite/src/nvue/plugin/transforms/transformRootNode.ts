@@ -14,6 +14,7 @@ import {
   RootNode,
   TemplateChildNode,
 } from '@vue/compiler-core'
+import { addRenderWhole } from './transformRenderWhole'
 const SCROLLER_COMPONENTS = [
   'list',
   'scroller',
@@ -21,10 +22,17 @@ const SCROLLER_COMPONENTS = [
   'waterfall',
   'recycle-list',
 ]
+
 export const transformRootNode: NodeTransform = (node, context) => {
-  if (node.type !== NodeTypes.ROOT || !context.bindingMetadata.__pageOptions) {
+  if (node.type !== NodeTypes.ROOT) {
     return
   }
+  const isPage = !!context.bindingMetadata.__pageOptions
+  if (!isPage) {
+    // 非页面组件，自动为根节点补充 render-whole
+    return addRenderWhole(node)
+  }
+
   const { disableScroll, scrollIndicator } = context.bindingMetadata
     .__pageOptions as {
     disableScroll?: boolean
