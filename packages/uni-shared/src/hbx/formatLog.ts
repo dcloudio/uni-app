@@ -4,7 +4,7 @@ export function formatAppLog(
   ...args: unknown[]
 ) {
   // @ts-ignore
-  uni.__log__ && uni.__log__(type, filename, args)
+  uni.__log__ && uni.__log__(type, filename, ...args)
 }
 
 export function formatH5Log(
