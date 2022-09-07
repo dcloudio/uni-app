@@ -416,8 +416,6 @@ function getExtraValue (vm, dataPathsArray) {
 function processEventExtra (vm, extra, event, __args__) {
   const extraObj = {}
 
-  __args__ = event.detail.__args__ || __args__
-
   if (Array.isArray(extra) && extra.length) {
     /**
      *[
@@ -438,11 +436,7 @@ function processEventExtra (vm, extra, event, __args__) {
           if (dataPath === '$event') { // $event
             extraObj['$' + index] = event
           } else if (dataPath === 'arguments') {
-            if (event.detail && __args__) {
-              extraObj['$' + index] = __args__
-            } else {
-              extraObj['$' + index] = [event]
-            }
+            extraObj['$' + index] = event.detail ? event.detail.__args__ || __args__ : __args__
           } else if (dataPath.indexOf('$event.') === 0) { // $event.target.value
             extraObj['$' + index] = vm.__get_value(dataPath.replace('$event.', ''), event)
           } else {
@@ -471,7 +465,9 @@ function processEventArgs (vm, event, args = [], extra = [], isCustom, methodNam
   let isCustomMPEvent = false // wxcomponent 组件，传递原始 event 对象
 
   // fixed 用户直接触发 mpInstance.triggerEvent
-  const __args__ = event.detail.__args__ || [event.detail]
+  const __args__ = isPlainObject(event.detail)
+    ? event.detail.__args__ || [event.detail]
+    : [event.detail]
 
   if (isCustom) { // 自定义事件
     isCustomMPEvent = event.currentTarget &&
