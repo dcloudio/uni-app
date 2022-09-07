@@ -84,6 +84,20 @@ function requireNativePlugin(name) {
     return weex.requireModule(name);
 }
 
+function formatAppLog(type, filename, ...args) {
+    // @ts-ignore
+    if (uni.__log__) {
+        // @ts-ignore
+        uni.__log__(type, filename, ...args);
+    }
+    else {
+        console[type].apply(console, [...args, filename]);
+    }
+}
+function formatH5Log(type, filename, ...args) {
+    console[type].apply(console, [...args, filename]);
+}
+
 function resolveEasycom(component, easycom) {
     return shared.isString(component) ? easycom : component;
 }
@@ -267,6 +281,8 @@ function initUtsProxyClass({ package: pkg, class: cls, methods, props, staticPro
     });
 }
 
+exports.formatAppLog = formatAppLog;
+exports.formatH5Log = formatH5Log;
 exports.getCurrentSubNVue = getCurrentSubNVue;
 exports.getSsrGlobalData = getSsrGlobalData;
 exports.initUtsProxyClass = initUtsProxyClass;

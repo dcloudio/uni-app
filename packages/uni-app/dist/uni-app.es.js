@@ -52,6 +52,20 @@ function requireNativePlugin(name) {
     return weex.requireModule(name);
 }
 
+function formatAppLog(type, filename, ...args) {
+    // @ts-ignore
+    if (uni.__log__) {
+        // @ts-ignore
+        uni.__log__(type, filename, ...args);
+    }
+    else {
+        console[type].apply(console, [...args, filename]);
+    }
+}
+function formatH5Log(type, filename, ...args) {
+    console[type].apply(console, [...args, filename]);
+}
+
 function resolveEasycom(component, easycom) {
     return isString(component) ? easycom : component;
 }
@@ -235,4 +249,4 @@ function initUtsProxyClass({ package: pkg, class: cls, methods, props, staticPro
     });
 }
 
-export { getCurrentSubNVue, getSsrGlobalData, initUtsProxyClass, initUtsProxyFunction, onAddToFavorites, onBackPress, onError, onHide, onInit, onLaunch, onLoad, onNavigationBarButtonTap, onNavigationBarSearchInputChanged, onNavigationBarSearchInputClicked, onNavigationBarSearchInputConfirmed, onNavigationBarSearchInputFocusChanged, onPageNotFound, onPageScroll, onPullDownRefresh, onReachBottom, onReady, onResize, onSaveExitState, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, requireNativePlugin, resolveEasycom, shallowSsrRef, ssrRef };
+export { formatAppLog, formatH5Log, getCurrentSubNVue, getSsrGlobalData, initUtsProxyClass, initUtsProxyFunction, onAddToFavorites, onBackPress, onError, onHide, onInit, onLaunch, onLoad, onNavigationBarButtonTap, onNavigationBarSearchInputChanged, onNavigationBarSearchInputClicked, onNavigationBarSearchInputConfirmed, onNavigationBarSearchInputFocusChanged, onPageNotFound, onPageScroll, onPullDownRefresh, onReachBottom, onReady, onResize, onSaveExitState, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, requireNativePlugin, resolveEasycom, shallowSsrRef, ssrRef };
