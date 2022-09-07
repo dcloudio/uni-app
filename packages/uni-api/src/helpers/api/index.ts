@@ -50,7 +50,10 @@ function formatApiArgs<T extends ApiLike>(
 }
 
 function invokeSuccess(id: number, name: string, res: unknown) {
-  return invokeCallback(id, extend(res || {}, { errMsg: name + ':ok' }))
+  return invokeCallback(
+    id,
+    extend((res || {}) as Object, { errMsg: name + ':ok' })
+  )
 }
 
 function invokeFail(id: number, name: string, errMsg?: string, errRes?: any) {

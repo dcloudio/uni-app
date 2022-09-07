@@ -47,7 +47,7 @@ export const SetTabBarItemOptions: ApiOptions<API_TYPE_SET_TAB_BAR_ITEM> = {
           params.pagePath = removeLeadingSlash(value)
         }
       },
-    } as ApiOptions<API_TYPE_SET_TAB_BAR_ITEM>['formatArgs'],
+    } as Required<ApiOptions<API_TYPE_SET_TAB_BAR_ITEM>>['formatArgs'],
     IndexOptions.formatArgs
   ),
 }
@@ -130,7 +130,7 @@ export const SetTabBarBadgeOptions: ApiOptions<API_TYPE_SET_TAB_BAR_BADGE> = {
           params.text = '...'
         }
       },
-    } as ApiOptions<API_TYPE_SET_TAB_BAR_BADGE>['formatArgs'],
+    } as Required<ApiOptions<API_TYPE_SET_TAB_BAR_BADGE>>['formatArgs'],
     IndexOptions.formatArgs
   ),
 }
