@@ -13,6 +13,12 @@ const {
   getTemplatePath
 } = require('@dcloudio/uni-cli-shared')
 const fileLoader = require('@dcloudio/uni-cli-shared/lib/file-loader')
+const {
+  compileI18nJsonStr
+} = require('@dcloudio/uni-i18n')
+const {
+  initI18nOptions
+} = require('@dcloudio/uni-cli-shared/lib/i18n')
 const WebpackAppPlusNVuePlugin = process.env.UNI_USING_V3
   ? require('../packages/webpack-app-plus-plugin')
   : require('../packages/webpack-app-plus-nvue-plugin')
@@ -226,11 +232,25 @@ if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
   }]
   // 自动化测试时，不启用androidPrivacy.json
   if (!process.env.UNI_AUTOMATOR_WS_ENDPOINT) {
-    const androidPrivacyPath = path.resolve(process.env.UNI_INPUT_DIR, 'androidPrivacy.json')
-    if (fs.existsSync(androidPrivacyPath)) {
+    const fileName = 'androidPrivacy.json'
+    const context = path.resolve(process.env.UNI_INPUT_DIR)
+    if (fs.existsSync(path.join(context, fileName))) {
       patterns.push({
-        from: androidPrivacyPath,
-        to: 'androidPrivacy.json'
+        from: fileName,
+        context,
+        to: fileName,
+        transform (content) {
+          const options = initI18nOptions(
+            process.env.UNI_PLATFORM,
+            process.env.UNI_INPUT_DIR,
+            false,
+            true
+          )
+          if (!options) {
+            return content
+          }
+          return compileI18nJsonStr(content.toString(), options)
+        }
       })
     }
   }

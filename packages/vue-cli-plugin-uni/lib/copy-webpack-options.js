@@ -92,16 +92,14 @@ function getCopyWebpackPluginOptions (platformOptions, vueOptions) {
   })
   // 自动化测试时，不启用androidPrivacy.json
   if (process.env.UNI_PLATFORM === 'app-plus' && !process.env.UNI_AUTOMATOR_WS_ENDPOINT) {
-    const from = 'android*.json'
     const fileName = 'androidPrivacy.json'
     const context = path.resolve(process.env.UNI_INPUT_DIR)
-    const options = {
-      from,
-      context,
-      to: `[name]${CopyWebpackPluginVersion > 5 ? '' : '.'}[ext]`,
-      noErrorOnMissing: true,
-      transform (content, path) {
-        if (path.endsWith(fileName)) {
+    if (fs.existsSync(path.join(context, fileName))) {
+      copyOptions.push({
+        from: fileName,
+        context,
+        to: fileName,
+        transform (content) {
           const options = initI18nOptions(
             process.env.UNI_PLATFORM,
             process.env.UNI_INPUT_DIR,
@@ -113,22 +111,7 @@ function getCopyWebpackPluginOptions (platformOptions, vueOptions) {
           }
           return compileI18nJsonStr(content.toString(), options)
         }
-        return content
-      }
-    }
-    // copy-webpack-plugin/glob-parent 存在 Bug，例如：/test/dir(1
-    const globParent = require(require.resolve('glob-parent', { paths: [require.resolve('copy-webpack-plugin')] }))
-    const parent = globParent(path.join(context, from))
-    let canNotWatch
-    if (parent !== context) {
-      options.from = fileName
-      if (!fs.existsSync(path.join(context, fileName))) {
-        canNotWatch = true
-        // console.warn(`invalid path: ${context}, can not watch ${fileName}`)
-      }
-    }
-    if (!canNotWatch) {
-      copyOptions.push(options)
+      })
     }
   }
   return copyOptions

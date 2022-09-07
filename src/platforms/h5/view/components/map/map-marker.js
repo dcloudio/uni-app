@@ -129,12 +129,6 @@ export default {
           }
           event.stopPropagation()
         })
-        // 处理 google H5移动端 maker 点击触发 map 点击问题
-        maps.event.addListener(marker, 'mousedown', (e) => {
-          if (e.domEvent) {
-            e.domEvent.stopPropagation()
-          }
-        })
       }
     },
     updateMarker (option) {
@@ -300,6 +294,11 @@ export default {
                 }
                 $event.stopPropagation()
                 $event.preventDefault()
+              }
+              // The mobile terminal prevent google map callout click trigger map click
+              if (getMapInfo().type === MapType.GOOGLE) {
+                callout.div.onpointerdown = (e) => { e.stopPropagation() }
+                callout.div.ontouchstart = (e) => { e.stopPropagation() }
               }
             }
           }
