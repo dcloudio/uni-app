@@ -498,10 +498,10 @@ function createSetter(shallow = false) {
         if (isReadonly(oldValue) && isRef(oldValue) && !isRef(value)) {
             return false;
         }
-        if (!shallow && !isReadonly(value)) {
-            if (!isShallow(value)) {
-                value = toRaw(value);
+        if (!shallow) {
+            if (!isShallow(value) && !isReadonly(value)) {
                 oldValue = toRaw(oldValue);
+                value = toRaw(value);
             }
             if (!isArray(target) && isRef(oldValue) && !isRef(value)) {
                 oldValue.value = value;
@@ -1035,10 +1035,11 @@ class RefImpl {
         return this._value;
     }
     set value(newVal) {
-        newVal = this.__v_isShallow ? newVal : toRaw(newVal);
+        const useDirectValue = this.__v_isShallow || isShallow(newVal) || isReadonly(newVal);
+        newVal = useDirectValue ? newVal : toRaw(newVal);
         if (hasChanged(newVal, this._rawValue)) {
             this._rawValue = newVal;
-            this._value = this.__v_isShallow ? newVal : toReactive(newVal);
+            this._value = useDirectValue ? newVal : toReactive(newVal);
             triggerRefValue(this, newVal);
         }
     }
@@ -1117,11 +1118,13 @@ function toRef(object, key, defaultValue) {
         : new ObjectRefImpl(object, key, defaultValue);
 }
 
+var _a;
 class ComputedRefImpl {
     constructor(getter, _setter, isReadonly, isSSR) {
         this._setter = _setter;
         this.dep = undefined;
         this.__v_isRef = true;
+        this[_a] = false;
         this._dirty = true;
         this.effect = new ReactiveEffect(getter, () => {
             if (!this._dirty) {
@@ -1147,6 +1150,7 @@ class ComputedRefImpl {
         this._setter(newValue);
     }
 }
+_a = "__v_isReadonly" /* IS_READONLY */;
 function computed(getterOrOptions, debugOptions, isSSR = false) {
     let getter;
     let setter;
@@ -1402,15 +1406,11 @@ let isFlushPending = false;
 // fixed by xxxxxx
 const queue = [];
 let flushIndex = 0;
-const pendingPreFlushCbs = [];
-let activePreFlushCbs = null;
-let preFlushIndex = 0;
 const pendingPostFlushCbs = [];
 let activePostFlushCbs = null;
 let postFlushIndex = 0;
 const resolvedPromise = /*#__PURE__*/ Promise.resolve();
 let currentFlushPromise = null;
-let currentPreFlushParentJob = null;
 const RECURSION_LIMIT = 100;
 function nextTick(fn) {
     const p = currentFlushPromise || resolvedPromise;
@@ -1438,9 +1438,8 @@ function queueJob(job) {
     // if the job is a watch() callback, the search will start with a +1 index to
     // allow it recursively trigger itself - it is the user's responsibility to
     // ensure it doesn't end up in an infinite loop.
-    if ((!queue.length ||
-        !queue.includes(job, isFlushing && job.allowRecurse ? flushIndex + 1 : flushIndex)) &&
-        job !== currentPreFlushParentJob) {
+    if (!queue.length ||
+        !queue.includes(job, isFlushing && job.allowRecurse ? flushIndex + 1 : flushIndex)) {
         if (job.id == null) {
             queue.push(job);
         }
@@ -1465,52 +1464,38 @@ function invalidateJob(job) {
         queue.splice(i, 1);
     }
 }
-function queueCb(cb, activeQueue, pendingQueue, index) {
+function queuePostFlushCb(cb) {
     if (!isArray(cb)) {
-        if (!activeQueue ||
-            !activeQueue.includes(cb, cb.allowRecurse ? index + 1 : index)) {
-            pendingQueue.push(cb);
+        if (!activePostFlushCbs ||
+            !activePostFlushCbs.includes(cb, cb.allowRecurse ? postFlushIndex + 1 : postFlushIndex)) {
+            pendingPostFlushCbs.push(cb);
         }
     }
     else {
         // if cb is an array, it is a component lifecycle hook which can only be
         // triggered by a job, which is already deduped in the main queue, so
         // we can skip duplicate check here to improve perf
-        pendingQueue.push(...cb);
+        pendingPostFlushCbs.push(...cb);
     }
     queueFlush();
 }
-function queuePreFlushCb(cb) {
-    queueCb(cb, activePreFlushCbs, pendingPreFlushCbs, preFlushIndex);
-}
-function queuePostFlushCb(cb) {
-    queueCb(cb, activePostFlushCbs, pendingPostFlushCbs, postFlushIndex);
-}
-function flushPreFlushCbs(seen, parentJob = null) {
-    if (pendingPreFlushCbs.length) {
-        currentPreFlushParentJob = parentJob;
-        activePreFlushCbs = [...new Set(pendingPreFlushCbs)];
-        pendingPreFlushCbs.length = 0;
-        if ((process.env.NODE_ENV !== 'production')) {
-            seen = seen || new Map();
-        }
-        for (preFlushIndex = 0; preFlushIndex < activePreFlushCbs.length; preFlushIndex++) {
-            if ((process.env.NODE_ENV !== 'production') &&
-                checkRecursiveUpdates(seen, activePreFlushCbs[preFlushIndex])) {
+function flushPreFlushCbs(seen, i = flushIndex) {
+    if ((process.env.NODE_ENV !== 'production')) {
+        seen = seen || new Map();
+    }
+    for (; i < queue.length; i++) {
+        const cb = queue[i];
+        if (cb && cb.pre) {
+            if ((process.env.NODE_ENV !== 'production') && checkRecursiveUpdates(seen, cb)) {
                 continue;
             }
-            activePreFlushCbs[preFlushIndex]();
+            queue.splice(i, 1);
+            i--;
+            cb();
         }
-        activePreFlushCbs = null;
-        preFlushIndex = 0;
-        currentPreFlushParentJob = null;
-        // recursively flush until it drains
-        flushPreFlushCbs(seen, parentJob);
     }
 }
 function flushPostFlushCbs(seen) {
-    // flush any pre cbs queued during the flush (e.g. pre watchers)
-    flushPreFlushCbs();
     if (pendingPostFlushCbs.length) {
         const deduped = [...new Set(pendingPostFlushCbs)];
         pendingPostFlushCbs.length = 0;
@@ -1536,13 +1521,22 @@ function flushPostFlushCbs(seen) {
     }
 }
 const getId = (job) => job.id == null ? Infinity : job.id;
+const comparator = (a, b) => {
+    const diff = getId(a) - getId(b);
+    if (diff === 0) {
+        if (a.pre && !b.pre)
+            return -1;
+        if (b.pre && !a.pre)
+            return 1;
+    }
+    return diff;
+};
 function flushJobs(seen) {
     isFlushPending = false;
     isFlushing = true;
     if ((process.env.NODE_ENV !== 'production')) {
         seen = seen || new Map();
     }
-    flushPreFlushCbs(seen);
     // Sort queue before flush.
     // This ensures that:
     // 1. Components are updated from parent to child. (because parent is always
@@ -1550,7 +1544,7 @@ function flushJobs(seen) {
     //    priority number)
     // 2. If a component is unmounted during a parent component's update,
     //    its update can be skipped.
-    queue.sort((a, b) => getId(a) - getId(b));
+    queue.sort(comparator);
     // conditional usage of checkRecursiveUpdate must be determined out of
     // try ... catch block since Rollup by default de-optimizes treeshaking
     // inside try-catch. This can leave all warning code unshaked. Although
@@ -1579,9 +1573,7 @@ function flushJobs(seen) {
         currentFlushPromise = null;
         // some postFlushCb queued jobs!
         // keep flushing until it drains.
-        if (queue.length ||
-            pendingPreFlushCbs.length ||
-            pendingPostFlushCbs.length) {
+        if (queue.length || pendingPostFlushCbs.length) {
             flushJobs(seen);
         }
     }
@@ -1726,7 +1718,9 @@ function normalizeEmitsOptions(comp, appContext, asMixin = false) {
         }
     }
     if (!raw && !hasExtends) {
-        cache.set(comp, null);
+        if (isObject(comp)) {
+            cache.set(comp, null);
+        }
         return null;
     }
     if (isArray(raw)) {
@@ -1735,7 +1729,9 @@ function normalizeEmitsOptions(comp, appContext, asMixin = false) {
     else {
         extend(normalized, raw);
     }
-    cache.set(comp, normalized);
+    if (isObject(comp)) {
+        cache.set(comp, normalized);
+    }
     return normalized;
 }
 // Check if an incoming prop key is a declared emit event listener.
@@ -2022,17 +2018,10 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = EM
     }
     else {
         // default: 'pre'
-        scheduler = () => {
-            if (!instance || instance.isMounted) {
-                queuePreFlushCb(job);
-            }
-            else {
-                // with 'pre' option, the first call must happen before
-                // the component is mounted so it is called synchronously.
-                // fixed by xxxxxx https://github.com/dcloudio/uni-app/issues/3648
-                job();
-            }
-        };
+        job.pre = true;
+        if (instance)
+            job.id = instance.uid;
+        scheduler = () => queueJob(job);
     }
     const effect = new ReactiveEffect(getter, scheduler);
     if ((process.env.NODE_ENV !== 'production')) {
@@ -2359,14 +2348,16 @@ function resolve(registry, name) {
  * For prefixing keys in v-on="obj" with "on"
  * @private
  */
-function toHandlers(obj) {
+function toHandlers(obj, preserveCaseIfNecessary) {
     const ret = {};
     if ((process.env.NODE_ENV !== 'production') && !isObject(obj)) {
         warn$1(`v-on with no argument expects an object value.`);
         return ret;
     }
     for (const key in obj) {
-        ret[toHandlerKey(key)] = obj[key];
+        ret[preserveCaseIfNecessary && /[A-Z]/.test(key)
+            ? `on:${key}`
+            : toHandlerKey(key)] = obj[key];
     }
     return ret;
 }
@@ -2977,7 +2968,9 @@ function resolveMergedOptions(instance) {
         }
         mergeOptions(resolved, base, optionMergeStrategies);
     }
-    cache.set(base, resolved);
+    if (isObject(base)) {
+        cache.set(base, resolved);
+    }
     return resolved;
 }
 function mergeOptions(to, from, strats, asMixin = false) {
@@ -3107,6 +3100,13 @@ isSSR = false) {
     }
     instance.attrs = attrs;
 }
+function isInHmrContext(instance) {
+    while (instance) {
+        if (instance.type.__hmrId)
+            return true;
+        instance = instance.parent;
+    }
+}
 function updateProps(instance, rawProps, rawPrevProps, optimized) {
     const { props, attrs, vnode: { patchFlag } } = instance;
     const rawCurrentProps = toRaw(props);
@@ -3116,9 +3116,7 @@ function updateProps(instance, rawProps, rawPrevProps, optimized) {
     // always force full diff in dev
     // - #1942 if hmr is enabled with sfc component
     // - vite#872 non-sfc component used by sfc component
-    !((process.env.NODE_ENV !== 'production') &&
-        (instance.type.__hmrId ||
-            (instance.parent && instance.parent.type.__hmrId))) &&
+    !((process.env.NODE_ENV !== 'production') && isInHmrContext(instance)) &&
         (optimized || patchFlag > 0) &&
         !(patchFlag & 16 /* FULL_PROPS */)) {
         if (patchFlag & 8 /* PROPS */) {
@@ -3311,7 +3309,9 @@ function normalizePropsOptions(comp, appContext, asMixin = false) {
         }
     }
     if (!raw && !hasExtends) {
-        cache.set(comp, EMPTY_ARR);
+        if (isObject(comp)) {
+            cache.set(comp, EMPTY_ARR);
+        }
         return EMPTY_ARR;
     }
     if (isArray(raw)) {
@@ -3350,7 +3350,9 @@ function normalizePropsOptions(comp, appContext, asMixin = false) {
         }
     }
     const res = [normalized, needCastKeys];
-    cache.set(comp, res);
+    if (isObject(comp)) {
+        cache.set(comp, res);
+    }
     return res;
 }
 function validatePropName(key) {
@@ -4491,7 +4493,7 @@ const useSSRContext = () => {
 };
 
 // Core API ------------------------------------------------------------------
-const version = "3.2.37";
+const version = "3.2.38";
 /**
  * @internal only exposed in compat builds
  */
