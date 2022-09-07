@@ -317,6 +317,30 @@
             ]
         ]
     ],
+    "onLocationChange": [
+        "/platforms/h5/service/api/location/location-change.js",
+        []
+    ],
+    "onLocationChangeError": [
+        "/platforms/h5/service/api/location/location-change.js",
+        []
+    ],
+    "startLocationUpdate": [
+        "/platforms/h5/service/api/location/location-change.js",
+        []
+    ],
+    "stopLocationUpdate": [
+        "/platforms/h5/service/api/location/location-change.js",
+        []
+    ],
+    "offLocationChange": [
+        "/platforms/h5/service/api/location/location-change.js",
+        []
+    ],
+    "offLocationChangeError": [
+        "/platforms/h5/service/api/location/location-change.js",
+        []
+    ],
     "chooseImage": [
         "/platforms/h5/service/api/media/choose-image.js",
         [
@@ -430,6 +454,18 @@
         "/platforms/h5/service/api/device/get-system-info.js",
         [],
         true
+    ],
+    "getWindowInfo": [
+        "/platforms/h5/service/api/device/get-window-info.js",
+        []
+    ],
+    "getDeviceInfo": [
+        "/platforms/h5/service/api/device/get-system-info.js",
+        []
+    ],
+    "getAppBaseInfo": [
+        "/platforms/h5/service/api/device/get-system-info.js",
+        []
     ],
     "canIUse": [
         "/core/service/api/base/can-i-use.js",
@@ -999,11 +1035,19 @@
             ]
         ]
     ],
+    "getLaunchOptionsSync": [
+        "/platforms/h5/service/api/plugin/get-launch-options-sync.js",
+        []
+    ],
+    "getEnterOptionsSync": [
+        "/platforms/h5/service/api/plugin/get-launch-options-sync.js",
+        []
+    ],
     "invokePushCallback": [
         "/core/service/api/plugin/push.js",
         []
     ],
-    "getPushCid": [
+    "getPushClientId": [
         "/core/service/api/plugin/push.js",
         []
     ],
