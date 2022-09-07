@@ -652,7 +652,13 @@ function parseUrl(url) {
 
 function formatAppLog(type, filename, ...args) {
     // @ts-ignore
-    uni.__log__ && uni.__log__(type, filename, ...args);
+    if (uni.__log__) {
+        // @ts-ignore
+        uni.__log__(type, filename, ...args);
+    }
+    else {
+        console[type].apply(console, [...args, filename]);
+    }
 }
 function formatH5Log(type, filename, ...args) {
     console[type].apply(console, [...args, filename]);
