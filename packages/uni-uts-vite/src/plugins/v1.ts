@@ -16,7 +16,7 @@ import {
   TsTypeAnnotation,
   VariableDeclaration,
 } from '../../types/types'
-import { compile, parsePackage } from '../utils/compiler'
+import { getCompiler } from '../utils/compiler'
 
 export function uniUtsV1Plugin(): Plugin {
   let isFirst = true
@@ -28,14 +28,20 @@ export function uniUtsV1Plugin(): Plugin {
       if (opts && opts.ssr) {
         return
       }
-      // 目前仅支持app-android
-      if (process.env.UNI_UTS_PLATFORM !== 'app-android') {
+      // 目前仅支持 app-android|app-ios
+      if (
+        process.env.UNI_UTS_PLATFORM !== 'app-android' &&
+        process.env.UNI_UTS_PLATFORM !== 'app-ios'
+      ) {
         return
       }
       const { filename } = parseVueRequest(id)
       if (path.extname(filename) !== '.uts') {
         return
       }
+      const { compile, parsePackage } = getCompiler(
+        process.env.UNI_UTS_PLATFORM === 'app-ios' ? 'swift' : 'kotlin'
+      )
       const pkg = parsePackage(filename)
       if (!pkg) {
         return
@@ -50,18 +56,20 @@ const pkg = '${pkg}'
 const cls = 'IndexKt'
 ${genProxyCode(ast)}
 `
-      const dexFile = await compile(id)
-      if (!isFirst && dexFile) {
-        const files = []
-        if (process.env.UNI_APP_CHANGED_DEX_FILES) {
-          try {
-            files.push(...JSON.parse(process.env.UNI_APP_CHANGED_DEX_FILES))
-          } catch (e) {}
+      const res = await compile(id)
+      if (process.env.UNI_UTS_PLATFORM === 'app-android') {
+        if (!isFirst && res) {
+          const files = []
+          if (process.env.UNI_APP_CHANGED_DEX_FILES) {
+            try {
+              files.push(...JSON.parse(process.env.UNI_APP_CHANGED_DEX_FILES))
+            } catch (e) {}
+          }
+          files.push(res)
+          process.env.UNI_APP_CHANGED_DEX_FILES = JSON.stringify([
+            ...new Set(files),
+          ])
         }
-        files.push(dexFile)
-        process.env.UNI_APP_CHANGED_DEX_FILES = JSON.stringify([
-          ...new Set(files),
-        ])
       }
       return code
     },

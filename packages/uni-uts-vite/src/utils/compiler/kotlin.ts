@@ -3,7 +3,7 @@ import fs from 'fs-extra'
 import path from 'path'
 import AdmZip from 'adm-zip'
 import { sync } from 'fast-glob'
-import type { parse, bundle, UtsTarget } from '@dcloudio/uts'
+
 import {
   installHBuilderXPlugin,
   isInHBuilderX,
@@ -11,16 +11,30 @@ import {
   resolveSourceMapPath,
 } from '@dcloudio/uni-cli-shared'
 import { camelize } from '@vue/shared'
+import {
+  genUTSPlatformResource,
+  getUtsCompiler,
+  resolveAndroidDir,
+  resolveUTSPlatformFile,
+  UTSPlatformResourceOptions,
+} from './utils'
 
-export function getUtsCompiler(): {
-  parse: typeof parse
-  bundle: typeof bundle
-  UtsTarget: typeof UtsTarget
-} {
-  // eslint-disable-next-line no-restricted-globals
-  return require('@dcloudio/uts')
+export function parseKotlinPackage(filepath: string) {
+  const parts = normalizePath(filepath).split('/')
+
+  const isUniModules = parts.includes('uni_modules')
+  const index = isUniModules
+    ? parts.findIndex((part) => part === 'uni_modules')
+    : parts.findIndex((part) => part === 'utssdk')
+  if (index > -1) {
+    return (
+      'uts.sdk.' + (isUniModules ? 'modules.' : '') + camelize(parts[index + 1])
+    )
+  }
+  return ''
 }
-export async function compile(filename: string) {
+
+export async function compileKotlin(filename: string) {
   if (!process.env.UNI_HBUILDERX_PLUGINS) {
     return
   }
@@ -36,7 +50,7 @@ export async function compile(filename: string) {
     },
     output: {
       outDir: outputDir,
-      package: parsePackage(filename),
+      package: parseKotlinPackage(filename),
       sourceMap: resolveSourceMapPath(
         process.env.UNI_OUTPUT_DIR,
         process.env.UNI_PLATFORM
@@ -54,35 +68,16 @@ export async function compile(filename: string) {
     },
   })
   // console.log('uts compile time: ' + (Date.now() - time) + 'ms')
-
-  const kotlinFile = resolveKotlinFile(filename, inputDir, outputDir)
+  const utsPlatformOptions: UTSPlatformResourceOptions = {
+    inputDir,
+    outputDir,
+    platform: 'app-android',
+    extname: '.kt',
+  }
   if (process.env.NODE_ENV === 'production') {
-    const androidInputDir = resolveAndroidDir(filename)
-    const androidOutputDir = resolveAndroidDir(kotlinFile)
-
-    // 拷贝所有非uts文件及目录
-    fs.copySync(androidInputDir, androidOutputDir, {
-      filter(src) {
-        return path.extname(src) !== '.uts'
-      },
-    })
-
-    // 生产模式下，需要将 kt 文件转移到 src 下
-    const srcDir = path.resolve(androidOutputDir, 'src')
-    if (!fs.existsSync(srcDir)) {
-      fs.mkdirSync(srcDir)
-    }
-    if (fs.existsSync(kotlinFile)) {
-      fs.moveSync(kotlinFile, path.resolve(androidOutputDir, 'src/index.kt'))
-    }
-    const kotlinMapFile = kotlinFile + '.map'
-    if (fs.existsSync(kotlinMapFile)) {
-      fs.moveSync(
-        kotlinMapFile,
-        path.resolve(androidOutputDir, 'src/index.map.kt')
-      )
-    }
+    genUTSPlatformResource(filename, utsPlatformOptions)
   } else if (process.env.NODE_ENV === 'development') {
+    const kotlinFile = resolveUTSPlatformFile(filename, utsPlatformOptions)
     // 开发模式下，需要生成 dex
     if (fs.existsSync(kotlinFile)) {
       const compilerServer = getCompilerServer()
@@ -177,44 +172,6 @@ function resolveDexFile(jarFile: string) {
   return normalizePath(path.resolve(path.dirname(jarFile), 'classes.dex'))
 }
 
-function resolveAndroidDir(filename: string) {
-  const maybeAndroidDir = path.dirname(filename)
-  // 如果是根目录的index.uts编译出来的index.kt，则移动到app-android下
-  const isRootIndex = path.basename(maybeAndroidDir) !== 'app-android'
-  if (isRootIndex) {
-    if (maybeAndroidDir.includes('uni_modules')) {
-      return path.join(maybeAndroidDir, 'utssdk/app-android')
-    }
-    return path.join(maybeAndroidDir, 'app-android')
-  }
-  return maybeAndroidDir
-}
-
-function resolveKotlinFile(
-  filename: string,
-  inputDir: string,
-  outputDir: string
-) {
-  let ktFile = path
-    .resolve(outputDir, path.relative(inputDir, filename))
-    .replace(path.extname(filename), '.kt')
-  const maybeModuleDir = path.dirname(filename)
-  // 如果是根目录的index.uts编译出来的index.kt，则移动到app-android下
-  const isRootIndex = path.basename(maybeModuleDir) !== 'app-android'
-  if (isRootIndex) {
-    if (fs.existsSync(ktFile)) {
-      const newKtFile = path.resolve(
-        path.dirname(ktFile),
-        (maybeModuleDir.includes('uni_modules') ? 'utssdk/' : '') +
-          'app-android/index.kt'
-      )
-      fs.moveSync(ktFile, newKtFile)
-      ktFile = newKtFile
-    }
-  }
-  return ktFile
-}
-
 function resolveDexPath(filename: string) {
   return path.dirname(filename)
 }
@@ -248,19 +205,4 @@ const getCompilerServer = ():
     installHBuilderXPlugin('uniapp-runextension')
   }
   return false
-}
-
-export function parsePackage(filepath: string) {
-  const parts = normalizePath(filepath).split('/')
-
-  const isUniModules = parts.includes('uni_modules')
-  const index = isUniModules
-    ? parts.findIndex((part) => part === 'uni_modules')
-    : parts.findIndex((part) => part === 'utssdk')
-  if (index > -1) {
-    return (
-      'uts.sdk.' + (isUniModules ? 'modules.' : '') + camelize(parts[index + 1])
-    )
-  }
-  return ''
 }
