@@ -1478,7 +1478,9 @@ function queuePostFlushCb(cb) {
     }
     queueFlush();
 }
-function flushPreFlushCbs(seen, i = flushIndex) {
+function flushPreFlushCbs(seen, 
+// if currently flushing, skip the current job itself
+i = isFlushing ? flushIndex + 1 : 0) {
     if ((process.env.NODE_ENV !== 'production')) {
         seen = seen || new Map();
     }
@@ -9023,7 +9025,7 @@ function isMemoSame(cached, memo) {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.2.38";
+const version = "3.2.39";
 const _ssrUtils = {
     createComponentInstance,
     setupComponent,

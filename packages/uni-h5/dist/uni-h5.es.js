@@ -16328,77 +16328,52 @@ const props$b = {
   },
   position: {
     type: Object,
-    require: true
+    required: true
   },
   iconPath: {
     type: String,
-    require: true
+    required: true
   },
   clickable: {
     type: [Boolean, String],
     default: ""
   },
-  rootRef: {
-    type: Object,
-    default: null
+  trigger: {
+    type: Function,
+    required: true
   }
 };
 var MapControl = /* @__PURE__ */ defineSystemComponent({
   name: "MapControl",
   props: props$b,
   setup(props2) {
-    const onMapReady = inject("onMapReady");
-    let control;
-    function removeControl() {
-      if (control) {
-        control.remove();
+    const imgPath = computed(() => getRealPath(props2.iconPath));
+    const positionStyle = computed(() => {
+      let positionStyle2 = `top:${props2.position.top || 0}px;left:${props2.position.left || 0}px;`;
+      if (props2.position.width) {
+        positionStyle2 += `width:${props2.position.width}px;`;
       }
-    }
-    onMapReady((_, __, trigger) => {
-      function updateControl(option) {
-        removeControl();
-        addControl(option);
+      if (props2.position.height) {
+        positionStyle2 += `height:${props2.position.height}px;`;
       }
-      function addControl(option) {
-        control = document.createElement("div");
-        const style = control.style;
-        style.position = "absolute";
-        style.width = "0";
-        style.height = "0";
-        style.top = "0";
-        style.left = "0";
-        const img = new Image();
-        img.src = getRealPath(option.iconPath);
-        img.onload = () => {
-          const position = option.position || {};
-          if (position.width) {
-            img.width = option.position.width;
-          }
-          if (position.height) {
-            img.height = option.position.height;
-          }
-          const style2 = img.style;
-          style2.position = "absolute";
-          style2.left = (position.left || 0) + "px";
-          style2.top = (position.top || 0) + "px";
-          style2.maxWidth = "initial";
-          control.appendChild(img);
-          props2.rootRef.value && props2.rootRef.value.appendChild(control);
-        };
-        img.onclick = function($event) {
-          if (option.clickable) {
-            trigger("controltap", $event, {
-              controlId: option.id
-            });
-          }
-        };
-      }
-      addControl(props2);
-      watch(props2, updateControl);
+      return positionStyle2;
     });
-    onUnmounted(removeControl);
+    const handleClick = ($event) => {
+      if (props2.clickable) {
+        props2.trigger("controltap", $event, {
+          controlId: props2.id
+        });
+      }
+    };
     return () => {
-      return null;
+      return createVNode("div", {
+        "class": "uni-map-control"
+      }, [createVNode("img", {
+        "src": imgPath.value,
+        "style": positionStyle.value,
+        "class": "uni-map-control-icon",
+        "onClick": handleClick
+      }, null, 12, ["src", "onClick"])]);
     };
   }
 });
@@ -21244,7 +21219,8 @@ function useMap(props2, rootRef, emit2) {
   provide("removeMapChidlContext", removeMapChidlContext);
   return {
     state: state2,
-    mapRef
+    mapRef,
+    trigger
   };
 }
 var Map$1 = /* @__PURE__ */ defineBuiltInComponent({
@@ -21257,7 +21233,8 @@ var Map$1 = /* @__PURE__ */ defineBuiltInComponent({
   }) {
     const rootRef = ref(null);
     const {
-      mapRef
+      mapRef,
+      trigger
     } = useMap(props2, rootRef, emit2);
     return () => {
       return createVNode("uni-map", {
@@ -21269,8 +21246,8 @@ var Map$1 = /* @__PURE__ */ defineBuiltInComponent({
       }, null, 512), props2.markers.map((item) => createVNode(MapMarker, mergeProps({
         "key": item.id
       }, item), null, 16)), props2.polyline.map((item) => createVNode(MapPolyline, item, null, 16)), props2.circles.map((item) => createVNode(MapCircle, item, null, 16)), props2.controls.map((item) => createVNode(MapControl, mergeProps(item, {
-        "rootRef": rootRef
-      }), null, 16, ["rootRef"])), props2.showLocation && createVNode(MapLocation, null, null), props2.polygons.map((item) => createVNode(MapPolygon, item, null, 16)), createVNode("div", {
+        "trigger": trigger
+      }), null, 16, ["trigger"])), props2.showLocation && createVNode(MapLocation, null, null), props2.polygons.map((item) => createVNode(MapPolygon, item, null, 16)), createVNode("div", {
         "style": "position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"
       }, [slots.default && slots.default()])], 8, ["id"]);
     };

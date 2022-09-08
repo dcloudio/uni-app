@@ -1,4 +1,4 @@
-import {  computed, PropType } from 'vue'
+import { computed, PropType } from 'vue'
 import { getRealPath } from '@dcloudio/uni-platform'
 import { defineSystemComponent } from '@dcloudio/uni-components'
 
@@ -25,7 +25,9 @@ export default /*#__PURE__*/ defineSystemComponent({
   setup(props) {
     const imgPath = computed(() => getRealPath(props.iconPath!))
     const positionStyle = computed(() => {
-      let positionStyle = `top:${props.position!.top || 0}px;left:${props.position!.left || 0}px;`
+      let positionStyle = `top:${props.position!.top || 0}px;left:${
+        props.position!.left || 0
+      }px;`
 
       if (props.position!.width) {
         positionStyle += `width:${props.position!.width}px;`
@@ -47,14 +49,14 @@ export default /*#__PURE__*/ defineSystemComponent({
     return () => {
       return (
         <div class="uni-map-control">
-        <img
-          src={imgPath.value}
-          style={positionStyle.value}
-          class="uni-map-control-icon"
-          onClick={handleClick}
-        />
-      </div>
+          <img
+            src={imgPath.value}
+            style={positionStyle.value}
+            class="uni-map-control-icon"
+            onClick={handleClick}
+          />
+        </div>
       )
     }
-  }
+  },
 })

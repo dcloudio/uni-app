@@ -33,8 +33,8 @@
     "@dcloudio/uni-h5-vue": "3.0.0-alpha-3060120220907002",
     "@dcloudio/uni-i18n": "3.0.0-alpha-3060120220907002",
     "@dcloudio/uni-shared": "3.0.0-alpha-3060120220907002",
-    "@vue/server-renderer": "3.2.38",
-    "@vue/shared": "3.2.38",
+    "@vue/server-renderer": "3.2.39",
+    "@vue/shared": "3.2.39",
     "localstorage-polyfill": "^1.0.1",
     "safe-area-insets": "^1.4.1",
     "vue-router": "^4.1.5",
@@ -48,6 +48,6 @@
     "@amap/amap-jsapi-types": "^0.0.8",
     "acorn-loose": "^8.2.1",
     "acorn-walk": "^8.2.0",
-    "vue": "3.2.38"
+    "vue": "3.2.39"
   }
 }

@@ -509,7 +509,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   ],
   setup(props, { emit, slots }) {
     const rootRef: Ref<HTMLElement | null> = ref(null)
-    const { mapRef,trigger } = useMap(props, rootRef, emit as SetupContext['emit'])
+    const { mapRef, trigger } = useMap(
+      props,
+      rootRef,
+      emit as SetupContext['emit']
+    )
     return () => {
       return (
         <uni-map ref={rootRef} id={props.id}>

@@ -293,7 +293,7 @@ function queuePostFlushCb(cb) {
 }
 
 function flushPreFlushCbs(seen) {
-  var i = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : flushIndex;
+  var i = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : isFlushing ? flushIndex + 1 : 0;
 
   for (; i < queue.length; i++) {
     var cb = queue[i];
@@ -7660,7 +7660,7 @@ function isMemoSame(cached, memo) {
 } // Core API ------------------------------------------------------------------
 
 
-var version = "3.2.38";
+var version = "3.2.39";
 /**
  * @internal only exposed in compat builds
  */
