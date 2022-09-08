@@ -506,7 +506,7 @@ function formatApiArgs(args, options) {
     }
 }
 function invokeSuccess(id, name, res) {
-    return invokeCallback(id, extend(res || {}, { errMsg: name + ':ok' }));
+    return invokeCallback(id, extend((res || {}), { errMsg: name + ':ok' }));
 }
 function invokeFail(id, name, errMsg, errRes) {
     return invokeCallback(id, extend({ errMsg: name + ':fail' + (errMsg ? ' ' + errMsg : '') }, errRes));
