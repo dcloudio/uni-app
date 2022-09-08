@@ -44,6 +44,8 @@ export function uniManifestJsonPlugin(): Plugin {
         }
         if (!router.base) {
           router.base = '/'
+        } else {
+          router.base = new URL(router.base, 'http://localhost').pathname
         }
         const async = { ...defaultAsync, ...((h5 && h5.async) || {}) }
 
