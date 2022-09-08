@@ -2338,8 +2338,8 @@ function backbuttonListener() {
         success() { }, // 传入空方法，避免返回Promise，因为onBackPress可能导致fail
     });
 }
-const enterOptions = createLaunchOptions();
-const launchOptions = createLaunchOptions();
+const enterOptions = /*#__PURE__*/ createLaunchOptions();
+const launchOptions = /*#__PURE__*/ createLaunchOptions();
 function getLaunchOptions() {
     return extend({}, launchOptions);
 }

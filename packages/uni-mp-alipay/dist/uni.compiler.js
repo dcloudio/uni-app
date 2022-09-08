@@ -36,7 +36,7 @@ function addVueRef(node, context) {
         (context.inVFor
             ? uniCliShared.VUE_REF_IN_FOR
             : uniCliShared.VUE_REF);
-    if (refProp.type === 6 /* ATTRIBUTE */) {
+    if (refProp.type === 6 /* NodeTypes.ATTRIBUTE */) {
         refProp.name = dataRef;
     }
     else {
@@ -96,14 +96,14 @@ const eventMap = {
 
 function transformOpenType(node) {
     var _a;
-    if (node.type !== 1 /* ELEMENT */ || node.tag !== 'button') {
+    if (node.type !== 1 /* NodeTypes.ELEMENT */ || node.tag !== 'button') {
         return;
     }
     const openTypeProp = compilerCore.findProp(node, 'open-type');
     if (!openTypeProp) {
         return;
     }
-    if (openTypeProp.type !== 6 /* ATTRIBUTE */ ||
+    if (openTypeProp.type !== 6 /* NodeTypes.ATTRIBUTE */ ||
         ((_a = openTypeProp.value) === null || _a === void 0 ? void 0 : _a.content) !== 'getPhoneNumber') {
         return;
     }
@@ -112,10 +112,10 @@ function transformOpenType(node) {
     props.splice(props.indexOf(openTypeProp) + 1, 0, uniCliShared.createAttributeNode('scope', 'phoneNumber'));
     let getPhoneNumberMethodName = '';
     const getPhoneNumberPropIndex = props.findIndex((prop) => {
-        if (prop.type === 7 /* DIRECTIVE */ && prop.name === 'on') {
+        if (prop.type === 7 /* NodeTypes.DIRECTIVE */ && prop.name === 'on') {
             const { arg, exp } = prop;
-            if ((arg === null || arg === void 0 ? void 0 : arg.type) === 4 /* SIMPLE_EXPRESSION */ &&
-                (exp === null || exp === void 0 ? void 0 : exp.type) === 4 /* SIMPLE_EXPRESSION */ &&
+            if ((arg === null || arg === void 0 ? void 0 : arg.type) === 4 /* NodeTypes.SIMPLE_EXPRESSION */ &&
+                (exp === null || exp === void 0 ? void 0 : exp.type) === 4 /* NodeTypes.SIMPLE_EXPRESSION */ &&
                 arg.isStatic &&
                 arg.content === 'getphonenumber') {
                 getPhoneNumberMethodName = exp.content;
@@ -157,7 +157,7 @@ const nodeTransforms = [
     transformRef,
     transformOpenType,
     uniCliShared.transformMatchMedia,
-    uniCliShared.createTransformComponentLink(uniCliShared.COMPONENT_ON_LINK, 6 /* ATTRIBUTE */),
+    uniCliShared.createTransformComponentLink(uniCliShared.COMPONENT_ON_LINK, 6 /* NodeTypes.ATTRIBUTE */),
 ];
 const compilerOptions = {
     nodeTransforms,
