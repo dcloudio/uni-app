@@ -49,15 +49,15 @@ export function addConfigFile(inlineConfig: InlineConfig) {
   return inlineConfig
 }
 
-let initliazed = false
+let initialized = false
 export function initEnv(
   type: 'unknown' | 'dev' | 'build',
   options: CliOptions
 ) {
-  if (initliazed) {
+  if (initialized) {
     return
   }
-  initliazed = true
+  initialized = true
   if (options.platform === 'mp-360') {
     console.error(M['mp.360.unsupported'])
     process.exit(0)
