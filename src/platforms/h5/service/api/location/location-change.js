@@ -1,3 +1,5 @@
+import { translateGeo } from '../../../helpers/location'
+
 const { invokeCallbackHandler: invoke } = UniServiceJSBridge
 const callbackIds = []
 const callbackOnErrorIds = []
@@ -7,18 +9,27 @@ let watchId
 /**
  * 开始更新定位
  */
-export function startLocationUpdate () {
+export function startLocationUpdate ({ type = 'wgs84' }) {
   if (navigator.geolocation) {
     watchId = navigator.geolocation.watchPosition(
       res => {
-        callbackIds.forEach(callbackId => {
-          invoke(callbackId, res.coords)
-        })
+        translateGeo(type, res.coords)
+          .then((coords) => {
+            callbackIds.forEach(callbackId => {
+              invoke(callbackId, coords)
+            })
+          }).catch(error => {
+            callbackOnErrorIds.forEach(callbackId => {
+              invoke(callbackId, {
+                errMsg: 'onLocationChange:fail' + error.message
+              })
+            })
+          })
       },
       error => {
         callbackOnErrorIds.forEach(callbackId => {
           invoke(callbackId, {
-            errMsg: 'getLocation:fail' + error.message
+            errMsg: 'onLocationChange:fail' + error.message
           })
         })
       }
@@ -26,7 +37,7 @@ export function startLocationUpdate () {
   } else {
     callbackOnErrorIds.forEach(callbackId => {
       invoke(callbackId, {
-        errMsg: 'getLocation:fail device nonsupport geolocation'
+        errMsg: 'onLocationChange:fail device nonsupport geolocation'
       })
     })
   }
