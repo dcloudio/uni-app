@@ -35,7 +35,7 @@ export function uniCopyPlugin({
   })
   const platform = process.env.UNI_PLATFORM
   // 非当前平台 static 目录
-  const platformStaticDirs = getPlatforms()
+  const ignorePlatformStaticDirs = getPlatforms()
     .filter((p) => {
       if (platform === 'app') {
         return p !== 'app' && p !== 'app-plus'
@@ -44,6 +44,15 @@ export function uniCopyPlugin({
     })
     .map((p) => '/' + PUBLIC_DIR + '/' + p)
 
+  if (process.env.UNI_APP_PLATFORM === 'android') {
+    ignorePlatformStaticDirs.push(`/${PUBLIC_DIR}/app-ios`)
+  } else if (process.env.UNI_APP_PLATFORM === 'ios') {
+    ignorePlatformStaticDirs.push(`/${PUBLIC_DIR}/app-android`)
+  } else {
+    ignorePlatformStaticDirs.push(`/${PUBLIC_DIR}/app-android`)
+    ignorePlatformStaticDirs.push(`/${PUBLIC_DIR}/app-ios`)
+  }
+
   const targets: UniViteCopyPluginTarget[] = [
     {
       src: assets,
@@ -51,7 +60,9 @@ export function uniCopyPlugin({
       watchOptions: {
         ignored(path: string) {
           const normalizedPath = normalizePath(path)
-          if (platformStaticDirs.find((dir) => normalizedPath.includes(dir))) {
+          if (
+            ignorePlatformStaticDirs.find((dir) => normalizedPath.includes(dir))
+          ) {
             return fs.statSync(normalizedPath).isDirectory()
           }
           return false

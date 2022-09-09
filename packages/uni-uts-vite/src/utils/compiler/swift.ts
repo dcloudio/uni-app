@@ -1,9 +1,14 @@
 import { isInHBuilderX, resolveSourceMapPath } from '@dcloudio/uni-cli-shared'
-import { genUTSPlatformResource, getUtsCompiler } from './utils'
+import { genUTSPlatformResource, getUtsCompiler, resolvePackage } from './utils'
 
 export function parseSwiftPackage(filename: string) {
-  return ''
+  const res = resolvePackage(filename)
+  if (!res) {
+    return ''
+  }
+  return 'UTSSDK' + (res.is_uni_modules ? 'Modules' : '') + res.name
 }
+
 export async function compileSwift(filename: string) {
   // 开发阶段不编译
   if (process.env.NODE_ENV !== 'production') {
@@ -25,10 +30,7 @@ export async function compileSwift(filename: string) {
     output: {
       outDir: outputDir,
       package: '',
-      sourceMap: resolveSourceMapPath(
-        process.env.UNI_OUTPUT_DIR,
-        process.env.UNI_PLATFORM
-      ),
+      sourceMap: resolveSourceMapPath(),
       extname: 'kt',
       imports: [],
       logFilename: true,

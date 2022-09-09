@@ -1161,13 +1161,25 @@ var shims = /*#__PURE__*/Object.freeze({
   getProvider: getProvider
 });
 
+const requestPayment = {
+    name: ks.pay ? 'pay' : 'requestPayment',
+    args(fromArgs, toArgs) {
+        if (typeof fromArgs === 'object') {
+            // ks.pay 服务类型 id（固定值为 '1'）
+            if (ks.pay && !fromArgs.serviceId)
+                toArgs.serviceId = '1';
+        }
+    },
+};
+
 var protocols = /*#__PURE__*/Object.freeze({
   __proto__: null,
   redirectTo: redirectTo,
   navigateTo: navigateTo,
   previewImage: previewImage,
   getSystemInfo: getSystemInfo,
-  getSystemInfoSync: getSystemInfoSync
+  getSystemInfoSync: getSystemInfoSync,
+  requestPayment: requestPayment
 });
 
 var index = initUni(shims, protocols);

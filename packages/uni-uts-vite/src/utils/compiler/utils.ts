@@ -1,6 +1,8 @@
 import path from 'path'
 import fs from 'fs-extra'
 import type { parse, bundle, UtsTarget } from '@dcloudio/uts'
+import { normalizePath } from '@dcloudio/uni-cli-shared'
+import { camelize } from '@vue/shared'
 
 export function getUtsCompiler(): {
   parse: typeof parse
@@ -9,6 +11,21 @@ export function getUtsCompiler(): {
 } {
   // eslint-disable-next-line no-restricted-globals
   return require('@dcloudio/uts')
+}
+
+export function resolvePackage(filename: string) {
+  const parts = normalizePath(filename).split('/')
+
+  const isUniModules = parts.includes('uni_modules')
+  const index = isUniModules
+    ? parts.findIndex((part) => part === 'uni_modules')
+    : parts.findIndex((part) => part === 'utssdk')
+  if (index > -1) {
+    return {
+      is_uni_modules: isUniModules,
+      name: camelize(parts[index + 1]),
+    }
+  }
 }
 
 export interface UTSPlatformResourceOptions {

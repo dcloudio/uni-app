@@ -10,6 +10,7 @@ import {
   isInHBuilderX,
   initModulePaths,
   parseScripts,
+  getPlatformDir,
 } from '@dcloudio/uni-cli-shared'
 
 import { CliOptions } from '.'
@@ -115,7 +116,7 @@ export function initEnv(
         process.cwd(),
         'dist',
         process.env.NODE_ENV === 'production' ? 'build' : 'dev',
-        process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM
+        getPlatformDir()
       )
     }
     process.env.UNI_OUTPUT_DIR = (options as BuildOptions).outDir!
@@ -186,9 +187,6 @@ function initUtsPlatform(options: CliOptions) {
     if (options.platform === 'app-plus') {
       options.platform = 'app'
     }
-  }
-  if (options.platform === 'app' && !process.env.UNI_UTS_PLATFORM) {
-    process.env.UNI_UTS_PLATFORM = 'app-android'
   }
   if (options.platform === 'h5') {
     process.env.UNI_UTS_PLATFORM = 'web'

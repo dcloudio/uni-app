@@ -170,10 +170,7 @@ export default function uniPlugin(
         enforce: 'post',
         cwd: process.env.UNI_OUTPUT_DIR,
         pattern: '**/*.js.map',
-        dest: resolveSourceMapPath(
-          process.env.UNI_OUTPUT_DIR,
-          process.env.UNI_PLATFORM
-        ),
+        dest: resolveSourceMapPath(),
       })
     )
   }

@@ -147,10 +147,6 @@ export function resolveUtsModule(
         parentDir === 'uni_modules' ? 'utssdk' : '',
         platform
       )
-      // App平台仅支持 uts
-      if (platform === 'app-android') {
-        return resolveUtsFile(platformDir, ['.uts'])
-      }
       return resolveUtsFile(platformDir)
     }
   }

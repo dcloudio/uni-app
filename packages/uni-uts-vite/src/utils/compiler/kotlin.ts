@@ -10,28 +10,21 @@ import {
   normalizePath,
   resolveSourceMapPath,
 } from '@dcloudio/uni-cli-shared'
-import { camelize } from '@vue/shared'
 import {
   genUTSPlatformResource,
   getUtsCompiler,
   resolveAndroidDir,
+  resolvePackage,
   resolveUTSPlatformFile,
   UTSPlatformResourceOptions,
 } from './utils'
 
-export function parseKotlinPackage(filepath: string) {
-  const parts = normalizePath(filepath).split('/')
-
-  const isUniModules = parts.includes('uni_modules')
-  const index = isUniModules
-    ? parts.findIndex((part) => part === 'uni_modules')
-    : parts.findIndex((part) => part === 'utssdk')
-  if (index > -1) {
-    return (
-      'uts.sdk.' + (isUniModules ? 'modules.' : '') + camelize(parts[index + 1])
-    )
+export function parseKotlinPackage(filename: string) {
+  const res = resolvePackage(filename)
+  if (!res) {
+    return ''
   }
-  return ''
+  return 'uts.sdk.' + (res.is_uni_modules ? 'modules.' : '') + res.name
 }
 
 export async function compileKotlin(filename: string) {
@@ -51,10 +44,7 @@ export async function compileKotlin(filename: string) {
     output: {
       outDir: outputDir,
       package: parseKotlinPackage(filename),
-      sourceMap: resolveSourceMapPath(
-        process.env.UNI_OUTPUT_DIR,
-        process.env.UNI_PLATFORM
-      ),
+      sourceMap: resolveSourceMapPath(),
       extname: 'kt',
       imports: [
         'kotlinx.coroutines.async',
