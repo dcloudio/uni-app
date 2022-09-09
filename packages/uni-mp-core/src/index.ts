@@ -67,6 +67,6 @@ export {
   MPComponentInstance,
   CreateLifetimesOptions,
 } from './runtime/component'
-export { MPProtocols } from './api/protocols'
+export { MPProtocols, MPProtocol } from './api/protocols'
 // mp-alipay
 export { CreateComponentOptions } from './runtime/componentInstance'
