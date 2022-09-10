@@ -93,6 +93,8 @@ export default function parsePage (vuePageOptions) {
     triggerEvent
   }
 
+  Object.assign(pageOptions.events, vuePageOptions.events || {})
+
   initHooks(pageOptions, hooks, vuePageOptions)
   initUnknownHooks(pageOptions, vuePageOptions)
 
