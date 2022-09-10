@@ -27,6 +27,8 @@ import {
   createVueComponent,
 } from './util'
 
+import { extend } from '@vue/shared'
+
 declare function Page<D>(options: tinyapp.PageOptions<D>): void
 
 export function initCreatePage() {
@@ -64,6 +66,9 @@ export function initCreatePage() {
       __r: handleRef,
       __l: handleLink,
     }
+
+    extend(pageOptions.events, vueOptions.events || {})
+
     if (__VUE_OPTIONS_API__) {
       pageOptions.data = initData(vueOptions)
     }
