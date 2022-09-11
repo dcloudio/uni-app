@@ -27,3 +27,13 @@ export function requestPayment(params: UniApp.RequestPaymentOptions) {
     swan.requestPolymerPayment(params)
   }
 }
+export function createIntersectionObserver(
+  component: any,
+  options: UniApp.CreateIntersectionObserverOptions
+) {
+  if (options && options.observeAll) {
+    ;(options as any).selectAll = options.observeAll
+    delete options.observeAll
+  }
+  return (swan as any).createIntersectionObserver(component, options)
+}
