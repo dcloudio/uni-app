@@ -4627,7 +4627,7 @@ function flushCallbacks(instance) {
     const ctx = instance.ctx;
     const callbacks = ctx.__next_tick_callbacks;
     if (callbacks && callbacks.length) {
-        if (process.env.VUE_APP_DEBUG) {
+        if (process.env.UNI_DEBUG) {
             const mpInstance = ctx.$scope;
             console.log('[' +
                 +new Date() +
@@ -4649,7 +4649,7 @@ function flushCallbacks(instance) {
 function nextTick$1(instance, fn) {
     const ctx = instance.ctx;
     if (!ctx.__next_tick_pending && !hasComponentEffect(instance)) {
-        if (process.env.VUE_APP_DEBUG) {
+        if (process.env.UNI_DEBUG) {
             const mpInstance = ctx.$scope;
             console.log('[' +
                 +new Date() +
@@ -4661,7 +4661,7 @@ function nextTick$1(instance, fn) {
         }
         return nextTick(fn && fn.bind(instance.proxy));
     }
-    if (process.env.VUE_APP_DEBUG) {
+    if (process.env.UNI_DEBUG) {
         const mpInstance = ctx.$scope;
         console.log('[' +
             +new Date() +
