@@ -40,7 +40,7 @@ const pkgs = {
     next: '3.0.14',
   },
   autoprefixer: {
-    latest: '10.4.8',
+    latest: '10.4.9',
   },
   'rollup-plugin-copy': {
     latest: '3.4.0',
