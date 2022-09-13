@@ -10,7 +10,7 @@ import {
   uniViteInjectPlugin,
   UniVitePlugin,
   isInHBuilderX,
-  isEnableSecureNetwork
+  isEnableSecureNetwork,
 } from '@dcloudio/uni-cli-shared'
 
 import { uniValidateFunctionPlugin } from './validateFunction'

@@ -1169,11 +1169,19 @@ function requestPayment(params) {
         swan.requestPolymerPayment(params);
     }
 }
+function createIntersectionObserver(component, options) {
+    if (options && options.observeAll) {
+        options.selectAll = options.observeAll;
+        delete options.observeAll;
+    }
+    return swan.createIntersectionObserver(component, options);
+}
 
 var shims = /*#__PURE__*/Object.freeze({
   __proto__: null,
   getProvider: getProvider,
-  requestPayment: requestPayment
+  requestPayment: requestPayment,
+  createIntersectionObserver: createIntersectionObserver
 });
 
 function createTodoMethod(contextName, methodName) {

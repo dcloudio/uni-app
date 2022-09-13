@@ -91,7 +91,10 @@ export function isEnableUniPushV2(inputDir: string, platform: UniApp.PLATFORM) {
   return manifest[platform]?.unipush?.enable === true
 }
 
-export function isEnableSecureNetwork(inputDir: string, platform: UniApp.PLATFORM) {
+export function isEnableSecureNetwork(
+  inputDir: string,
+  platform: UniApp.PLATFORM
+) {
   const manifest = parseManifestJsonOnce(inputDir)
   if (platform === 'app') {
     return false // 暂未支持app
