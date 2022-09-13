@@ -24,7 +24,8 @@ const {
   getManifestJson,
   isEnableUniPushV1,
   isEnableUniPushV2,
-  isUniPushOffline
+  isUniPushOffline,
+  isEnableSecureNetwork
 } = require('@dcloudio/uni-cli-shared/lib/manifest')
 
 const manifestJsonObj = getManifestJson()
@@ -128,6 +129,9 @@ if (!process.env.UNI_CLOUD_PROVIDER && process.env.UNI_CLOUD_SPACES) {
     }
   } catch (e) {}
 }
+
+// 安全网络
+process.env.UNI_SECURE_NETWORK = isEnableSecureNetwork(manifestJsonObj, process.env.UNI_PLATFORM)
 
 // 初始化环境变量
 process.env.UNI_CLI_CONTEXT = require('@dcloudio/uni-cli-shared/lib/util').getCLIContext()

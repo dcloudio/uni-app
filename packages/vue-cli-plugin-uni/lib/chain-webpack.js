@@ -135,6 +135,7 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
       'process.env.UNI_PLATFORM': JSON.stringify(process.env.UNI_PLATFORM),
       'process.env.UNI_SUB_PLATFORM': JSON.stringify(process.env.UNI_SUB_PLATFORM),
       'process.env.UNI_CLOUD_PROVIDER': process.env.UNI_CLOUD_PROVIDER,
+      'process.env.UNI_SECURE_NETWORK': process.env.UNI_SECURE_NETWORK,
       'process.env.UNICLOUD_DEBUG': process.env.UNICLOUD_DEBUG,
       'process.env.RUN_BY_HBUILDERX': process.env.RUN_BY_HBUILDERX,
       'process.env.UNI_AUTOMATOR_WS_ENDPOINT': JSON.stringify(process.env.UNI_AUTOMATOR_WS_ENDPOINT),
@@ -158,6 +159,14 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
     if (process.env.UNI_PLATFORM === 'h5') {
       // TODO manifest.json
       defines.__UNI_ROUTER_MODE__ = JSON.stringify('hash')
+    }
+
+    if (process.env.UNI_CLOUD_PROVIDER && process.env.NODE_ENV !== 'development') {
+      webpackConfig.optimization.minimizer('terser').tap((args) => {
+        // reduce_vars 优化常量
+        args[0].terserOptions.compress.reduce_vars = true
+        return args
+      })
     }
 
     webpackConfig

@@ -135,6 +135,14 @@ function isEnableUniPushV2 (manifestJson, platform) {
   return platformOptions && platformOptions.unipush && platformOptions.unipush.enable === true
 }
 
+function isEnableSecureNetwork (manifestJson, platform) {
+  if (!manifestJson) {
+    manifestJson = getManifestJson()
+  }
+  const platformOptions = manifestJson[platform]
+  return platformOptions && platformOptions.secureNetwork && platformOptions.secureNetwork.enable === true
+}
+
 function isUniPushOffline (manifestJson) {
   if (!manifestJson) {
     manifestJson = getManifestJson()
@@ -152,5 +160,6 @@ module.exports = {
   getH5Options,
   isEnableUniPushV1,
   isEnableUniPushV2,
-  isUniPushOffline
+  isUniPushOffline,
+  isEnableSecureNetwork
 }
