@@ -11,6 +11,7 @@ const defaultRouter = {
   mode: 'hash',
   base: '/',
   assets: 'assets',
+  routerBase: '/'
 }
 
 const defaultAsync = {
@@ -44,9 +45,13 @@ export function uniManifestJsonPlugin(): Plugin {
         }
         if (!router.base) {
           router.base = '/'
-        } else {
-          router.base = new URL(router.base, 'http://localhost').pathname
-        }
+        } 
+        
+        /**
+         * ssr时base和访问域名不一致导致跳到错误链接，其实应该区分server和client的部署路径，后续有需求可以加上
+         */
+        router.routerBase = new URL(router.base, 'http://localhost').pathname
+        
         const async = { ...defaultAsync, ...((h5 && h5.async) || {}) }
 
         const networkTimeout = normalizeNetworkTimeout(manifest.networkTimeout)

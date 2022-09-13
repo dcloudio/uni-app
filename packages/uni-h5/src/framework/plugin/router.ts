@@ -45,17 +45,17 @@ function removeCurrentPages(delta: number = 1) {
 }
 
 function initHistory() {
-  let { base } = __uniConfig.router!
-  if (base === '/') {
-    base = ''
+  let { routerBase } = __uniConfig.router!
+  if (routerBase === '/') {
+    routerBase = ''
   }
   if (__NODE_JS__) {
-    return createMemoryHistory(base)
+    return createMemoryHistory(routerBase)
   }
   const history =
     __UNI_FEATURE_ROUTER_MODE__ === 'history'
-      ? createWebHistory(base)
-      : createWebHashHistory(base)
+      ? createWebHistory(routerBase)
+      : createWebHashHistory(routerBase)
   history.listen((_to, _from, info) => {
     if (info.direction === 'back') {
       removeCurrentPages(Math.abs(info.delta))
