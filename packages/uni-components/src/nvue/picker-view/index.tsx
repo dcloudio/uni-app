@@ -8,6 +8,7 @@ import {
   VNode,
   provide,
   ExtractPropTypes,
+  Comment,
 } from 'vue'
 import { extend } from '@vue/shared'
 import {
@@ -35,8 +36,12 @@ export default defineComponent({
     const trigger = useCustomEvent<EmitEvent<typeof emit>>(rootRef, emit)
 
     let columnVNodes: VNode[] = []
-    const getItemIndex = (vnode: VNode) =>
-      Array.prototype.indexOf.call(columnVNodes, vnode)
+    const getItemIndex = (vnode: VNode) => {
+      return Array.prototype.indexOf.call(
+        columnVNodes.filter((vnode) => vnode.type !== Comment),
+        vnode
+      )
+    }
     const getPickerViewColumn: GetPickerViewColumn = (columnInstance) => {
       return computed({
         get() {
@@ -81,7 +86,7 @@ export default defineComponent({
             preventGesture: true,
           }}
         >
-          <view class="uni-picker-view-wrapper">{defaultSlots}</view>
+          <view class="uni-picker-view-wrapper">{columnVNodes}</view>
         </view>
       )
     }
