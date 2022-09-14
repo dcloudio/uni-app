@@ -22,8 +22,7 @@ export async function compileSwift(filename: string) {
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
   // let time = Date.now()
-  await bundle({
-    target: UtsTarget.SWIFT,
+  await bundle(UtsTarget.SWIFT, {
     input: {
       root: inputDir,
       filename,

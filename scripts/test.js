@@ -33,6 +33,7 @@ function testKotlin() {
       sourceMap: true,
       extname: 'kt',
       logFilename: true,
+      isPlugin: true,
     },
   }).then((res) => {
     console.log('bundle: ' + (Date.now() - start) + 'ms')
@@ -65,6 +66,7 @@ function testSwift() {
       sourceMap: true,
       extname: 'swift',
       logFilename: true,
+      isPlugin: true,
     },
   }).then((res) => {
     console.log('bundle: ' + (Date.now() - start) + 'ms')

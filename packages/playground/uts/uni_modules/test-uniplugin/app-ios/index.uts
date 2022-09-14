@@ -19,3 +19,5 @@ export default async function getBatteryInfo(options: GetBatteryInfoOptions) {
     options.complete!(res)
   }
 }
+
+export class Test {}

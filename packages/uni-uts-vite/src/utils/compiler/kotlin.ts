@@ -35,8 +35,7 @@ export async function compileKotlin(filename: string) {
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
   // let time = Date.now()
-  await bundle({
-    target: UtsTarget.KOTLIN,
+  await bundle(UtsTarget.KOTLIN, {
     input: {
       root: inputDir,
       filename,

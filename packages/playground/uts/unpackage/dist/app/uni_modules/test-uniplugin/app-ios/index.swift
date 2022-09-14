@@ -13,3 +13,5 @@ async func getBatteryInfo(_ options: GetBatteryInfoOptions) {
     if (options.success != nil) options.success!(res);
     if (options.complete != nil) options.complete!(res);
 }
+class Test : NSObject {
+}
