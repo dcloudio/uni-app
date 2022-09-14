@@ -4,6 +4,7 @@ import io.dcloud.uts.runtime.*;
 import io.dcloud.uts.android.getResourcePath;
 import android.util.Log;
 import android.widget.FrameLayout;
+import android.view.View;
 interface IUser {
     fun register(name: String): Unit;
 }
@@ -18,7 +19,7 @@ val __default = getResourcePath("uni_modules/test-uniplugin/static/logo.png");
 open class User : IUser {
     open suspend fun login(name: String, pwd: String) = CoroutineScope(Dispatchers.Default).async {
         setTimeout(fun(){
-            console.log("timeout", " at uni_modules/test-uniplugin/app-android/index.uts:9");
+            console.log("timeout", " at uni_modules/test-uniplugin/app-android/index.uts:10");
         }
         , 1000);
         login(name, pwd);
@@ -28,6 +29,7 @@ open class User : IUser {
     override fun register(name: String, callback: UTSCallback) {
         Log.info(__default as FrameLayout);
     }
+    open fun test(view: View) {}
 }
 fun login(name: String, callback: () -> Unit) {}
 fun register(name: String, callback: UTSCallback) {}

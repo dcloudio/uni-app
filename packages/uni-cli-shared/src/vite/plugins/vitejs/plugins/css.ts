@@ -469,6 +469,10 @@ async function compileCSS(
     if (preprocessResult.errors.length) {
       throw preprocessResult.errors[0]
     }
+    // TODO 升级
+    // if (preprocessResult.error) {
+    //   throw preprocessResult.error
+    // }
 
     code = preprocessResult.code
     preprocessorMap = combineSourcemapsIfExists(
@@ -554,69 +558,78 @@ async function compileCSS(
       map: preprocessorMap,
     }
   }
-
-  // postcss is an unbundled dep and should be lazy imported
-  const postcssResult = await (await import('postcss'))
-    .default(postcssPlugins)
-    .process(code, {
-      ...postcssOptions,
-      to: id,
-      from: id,
-      ...(devSourcemap
-        ? {
-            map: {
-              inline: false,
-              annotation: false,
-              // postcss may return virtual files
-              // we cannot obtain content of them, so this needs to be enabled
-              sourcesContent: true,
-              // when "prev: preprocessorMap", the result map may include duplicate filename in `postcssResult.map.sources`
-              // prev: preprocessorMap,
-            },
-          }
-        : {}),
-    })
-
-  // record CSS dependencies from @imports
-  for (const message of postcssResult.messages) {
-    if (message.type === 'dependency') {
-      deps.add(normalizePath(message.file as string))
-    } else if (message.type === 'dir-dependency') {
-      // https://github.com/postcss/postcss/blob/main/docs/guidelines/plugin.md#3-dependencies
-      const { dir, glob: globPattern = '**' } = message
-      const pattern =
-        normalizePath(path.resolve(path.dirname(id), dir)) + `/` + globPattern
-      const files = glob.sync(pattern, {
-        ignore: ['**/node_modules/**'],
+  let postcssResult: PostCSS.Result
+  try {
+    // postcss is an unbundled dep and should be lazy imported
+    postcssResult = await (await import('postcss'))
+      .default(postcssPlugins)
+      .process(code, {
+        ...postcssOptions,
+        to: id,
+        from: id,
+        ...(devSourcemap
+          ? {
+              map: {
+                inline: false,
+                annotation: false,
+                // postcss may return virtual files
+                // we cannot obtain content of them, so this needs to be enabled
+                sourcesContent: true,
+                // when "prev: preprocessorMap", the result map may include duplicate filename in `postcssResult.map.sources`
+                // prev: preprocessorMap,
+              },
+            }
+          : {}),
       })
-      for (let i = 0; i < files.length; i++) {
-        deps.add(files[i])
-      }
-      if (server) {
-        // register glob importers so we can trigger updates on file add/remove
-        if (!(id in (server as any)._globImporters)) {
-          ;(server as any)._globImporters[id] = {
-            module: server.moduleGraph.getModuleById(id)!,
-            importGlobs: [],
-          }
-        }
-        ;(server as any)._globImporters[id].importGlobs.push({
-          base: config.root,
-          pattern,
-        })
-      }
-    } else if (message.type === 'warning') {
-      let msg = `[vite:css] ${message.text}`
-      if (message.line && message.column) {
-        msg += `\n${generateCodeFrame(code, {
-          line: message.line,
-          column: message.column,
-        })}`
-      }
-      config.logger.warn(colors.yellow(msg))
-    }
-  }
 
+    // record CSS dependencies from @imports
+    for (const message of postcssResult.messages) {
+      if (message.type === 'dependency') {
+        deps.add(normalizePath(message.file as string))
+      } else if (message.type === 'dir-dependency') {
+        // https://github.com/postcss/postcss/blob/main/docs/guidelines/plugin.md#3-dependencies
+        const { dir, glob: globPattern = '**' } = message
+        const pattern =
+          normalizePath(path.resolve(path.dirname(id), dir)) + `/` + globPattern
+        const files = glob.sync(pattern, {
+          ignore: ['**/node_modules/**'],
+        })
+        for (let i = 0; i < files.length; i++) {
+          deps.add(files[i])
+        }
+        if (server) {
+          // register glob importers so we can trigger updates on file add/remove
+          if (!(id in (server as any)._globImporters)) {
+            ;(server as any)._globImporters[id] = {
+              module: server.moduleGraph.getModuleById(id)!,
+              importGlobs: [],
+            }
+          }
+          ;(server as any)._globImporters[id].importGlobs.push({
+            base: config.root,
+            pattern,
+          })
+        }
+      } else if (message.type === 'warning') {
+        let msg = `[vite:css] ${message.text}`
+        if (message.line && message.column) {
+          msg += `\n${generateCodeFrame(code, {
+            line: message.line,
+            column: message.column,
+          })}`
+        }
+        config.logger.warn(colors.yellow(msg))
+      }
+    }
+  } catch (e: any) {
+    e.message = `[postcss] ${e.message}`
+    e.code = code
+    e.loc = {
+      column: e.column,
+      line: e.line,
+    }
+    throw e
+  }
   if (!devSourcemap) {
     return {
       ast: postcssResult,

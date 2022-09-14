@@ -5442,7 +5442,9 @@ const ShowModalOptions = {
   formatArgs: {
     title: "",
     content: "",
+    placeholderText: "",
     showCancel: true,
+    editable: false,
     cancelText(_value, params) {
       if (!hasOwn(params, "cancelText")) {
         const { t: t2 } = useI18n();
@@ -16352,27 +16354,27 @@ var MapControl = /* @__PURE__ */ defineSystemComponent({
         control.remove();
       }
     }
-    onMapReady((map, maps2, trigger) => {
+    onMapReady((_, __, trigger) => {
       function updateControl(option) {
         removeControl();
         addControl(option);
       }
       function addControl(option) {
-        const position = option.position || {};
         control = document.createElement("div");
-        const img = new Image();
-        control.appendChild(img);
         const style = control.style;
         style.position = "absolute";
         style.width = "0";
         style.height = "0";
         style.top = "0";
         style.left = "0";
+        const img = new Image();
+        img.src = getRealPath(option.iconPath);
         img.onload = () => {
-          if (option.position.width) {
+          const position = option.position || {};
+          if (position.width) {
             img.width = option.position.width;
           }
-          if (option.position.height) {
+          if (position.height) {
             img.height = option.position.height;
           }
           const style2 = img.style;
@@ -16380,8 +16382,9 @@ var MapControl = /* @__PURE__ */ defineSystemComponent({
           style2.left = (position.left || 0) + "px";
           style2.top = (position.top || 0) + "px";
           style2.maxWidth = "initial";
+          control.appendChild(img);
+          props2.rootRef.value && props2.rootRef.value.appendChild(control);
         };
-        img.src = getRealPath(option.iconPath);
         img.onclick = function($event) {
           if (option.clickable) {
             trigger("controltap", $event, {
@@ -16389,11 +16392,6 @@ var MapControl = /* @__PURE__ */ defineSystemComponent({
             });
           }
         };
-        if (getIsAMap()) {
-          props2.rootRef.value && props2.rootRef.value.appendChild(control);
-        } else {
-          map.controls[maps2.ControlPosition.TOP_LEFT].push(control);
-        }
       }
       addControl(props2);
       watch(props2, updateControl);
@@ -16999,204 +16997,6 @@ const vibrateLong = /* @__PURE__ */ defineAsyncApi(API_VIBRATE_LONG, (args, { re
     reject("vibrateLong:fail");
   }
 });
-const KEY_MAPS = {
-  esc: ["Esc", "Escape"],
-  enter: ["Enter"]
-};
-const KEYS = Object.keys(KEY_MAPS);
-function useKeyboard() {
-  const key = ref("");
-  const disable = ref(false);
-  const onKeyup = (evt) => {
-    if (disable.value) {
-      return;
-    }
-    const res = KEYS.find((key2) => KEY_MAPS[key2].indexOf(evt.key) !== -1);
-    if (res) {
-      key.value = res;
-    }
-    nextTick(() => key.value = "");
-  };
-  onMounted(() => {
-    document.addEventListener("keyup", onKeyup);
-  });
-  onBeforeUnmount(() => {
-    document.removeEventListener("keyup", onKeyup);
-  });
-  return {
-    key,
-    disable
-  };
-}
-const VNODE_MASK = /* @__PURE__ */ createVNode("div", { class: "uni-mask" }, null, -1);
-function createRootApp(component, rootState, callback) {
-  rootState.onClose = (...args) => (rootState.visible = false, callback.apply(null, args));
-  return createApp(defineComponent({
-    setup() {
-      return () => (openBlock(), createBlock(component, rootState, null, 16));
-    }
-  }));
-}
-function ensureRoot(id2) {
-  let rootEl = document.getElementById(id2);
-  if (!rootEl) {
-    rootEl = document.createElement("div");
-    rootEl.id = id2;
-    document.body.append(rootEl);
-  }
-  return rootEl;
-}
-function usePopup(props2, {
-  onEsc,
-  onEnter
-}) {
-  const visible = ref(props2.visible);
-  const { key, disable } = useKeyboard();
-  watch(() => props2.visible, (value) => visible.value = value);
-  watch(() => visible.value, (value) => disable.value = !value);
-  watchEffect(() => {
-    const { value } = key;
-    if (value === "esc") {
-      onEsc && onEsc();
-    } else if (value === "enter") {
-      onEnter && onEnter();
-    }
-  });
-  return visible;
-}
-const props$a = {
-  title: {
-    type: String,
-    default: ""
-  },
-  content: {
-    type: String,
-    default: ""
-  },
-  showCancel: {
-    type: Boolean,
-    default: true
-  },
-  cancelText: {
-    type: String,
-    default: "Cancel"
-  },
-  cancelColor: {
-    type: String,
-    default: "#000000"
-  },
-  confirmText: {
-    type: String,
-    default: "OK"
-  },
-  confirmColor: {
-    type: String,
-    default: "#007aff"
-  },
-  visible: {
-    type: Boolean
-  },
-  editable: {
-    type: Boolean,
-    default: false
-  },
-  placeholderText: {
-    type: String,
-    default: ""
-  }
-};
-var modal = /* @__PURE__ */ defineComponent({
-  props: props$a,
-  setup(props2, {
-    emit: emit2
-  }) {
-    const editContent = ref("");
-    const close = () => visible.value = false;
-    const cancel = () => (close(), emit2("close", "cancel"));
-    const confirm = () => (close(), emit2("close", "confirm", editContent.value));
-    const visible = usePopup(props2, {
-      onEsc: cancel,
-      onEnter: () => {
-        !props2.editable && confirm();
-      }
-    });
-    return () => {
-      const {
-        title,
-        content,
-        showCancel,
-        confirmText,
-        confirmColor,
-        editable,
-        placeholderText
-      } = props2;
-      editContent.value = content;
-      return createVNode(Transition, {
-        "name": "uni-fade"
-      }, {
-        default: () => [withDirectives(createVNode("uni-modal", {
-          "onTouchmove": onEventPrevent
-        }, [VNODE_MASK, createVNode("div", {
-          "class": "uni-modal"
-        }, [title && createVNode("div", {
-          "class": "uni-modal__hd"
-        }, [createVNode("strong", {
-          "class": "uni-modal__title",
-          "textContent": title
-        }, null, 8, ["textContent"])]), editable ? createVNode("textarea", {
-          "class": "uni-modal__textarea",
-          "rows": "1",
-          "placeholder": placeholderText,
-          "value": content,
-          "onInput": (e2) => editContent.value = e2.target.value
-        }, null, 40, ["placeholder", "value", "onInput"]) : createVNode("div", {
-          "class": "uni-modal__bd",
-          "onTouchmovePassive": onEventStop,
-          "textContent": content
-        }, null, 40, ["onTouchmovePassive", "textContent"]), createVNode("div", {
-          "class": "uni-modal__ft"
-        }, [showCancel && createVNode("div", {
-          "style": {
-            color: props2.cancelColor
-          },
-          "class": "uni-modal__btn uni-modal__btn_default",
-          "onClick": cancel
-        }, [props2.cancelText], 12, ["onClick"]), createVNode("div", {
-          "style": {
-            color: confirmColor
-          },
-          "class": "uni-modal__btn uni-modal__btn_primary",
-          "onClick": confirm
-        }, [confirmText], 12, ["onClick"])])])], 40, ["onTouchmove"]), [[vShow, visible.value]])]
-      });
-    };
-  }
-});
-let showModalState;
-const onHidePopupOnce$1 = /* @__PURE__ */ once(() => {
-  UniServiceJSBridge.on("onHidePopup", () => showModalState.visible = false);
-});
-let currentShowModalResolve;
-function onModalClose(type, content) {
-  const isConfirm = type === "confirm";
-  const res = {
-    confirm: isConfirm,
-    cancel: type === "cancel"
-  };
-  isConfirm && showModalState.editable && (res.content = content);
-  currentShowModalResolve && currentShowModalResolve(res);
-}
-const showModal = /* @__PURE__ */ defineAsyncApi(API_SHOW_MODAL, (args, { resolve }) => {
-  onHidePopupOnce$1();
-  currentShowModalResolve = resolve;
-  if (!showModalState) {
-    showModalState = reactive(args);
-    nextTick(() => (createRootApp(modal, showModalState, onModalClose).mount(ensureRoot("u-a-m")), nextTick(() => showModalState.visible = true)));
-  } else {
-    extend(showModalState, args);
-    showModalState.visible = true;
-  }
-}, ShowModalProtocol, ShowModalOptions);
 const getClipboardData = /* @__PURE__ */ defineAsyncApi(API_GET_CLIPBOARD_DATA, async (_, { resolve, reject }) => {
   initI18nGetClipboardDataMsgsOnce();
   const { t: t2 } = useI18n();
@@ -17204,24 +17004,48 @@ const getClipboardData = /* @__PURE__ */ defineAsyncApi(API_GET_CLIPBOARD_DATA, 
     const data = await navigator.clipboard.readText();
     resolve({ data });
   } catch (error) {
-    reject(`${error} ${t2("uni.getClipboardData.fail")}`);
+    _getClipboardData(resolve, () => {
+      reject(`${error} ${t2("uni.getClipboardData.fail")}`);
+    });
   }
 });
 const setClipboardData = /* @__PURE__ */ defineAsyncApi(API_SET_CLIPBOARD_DATA, async ({ data }, { resolve, reject }) => {
-  initI18nSetClipboardDataMsgsOnce();
-  const { t: t2 } = useI18n();
   try {
     await navigator.clipboard.writeText(data);
     resolve();
   } catch (error) {
-    reject();
-    showModal({
-      title: t2("uni.setClipboardData.fail"),
-      content: data,
-      editable: true
-    });
+    _setClipboardData(data, resolve, reject);
   }
 }, SetClipboardDataProtocol, SetClipboardDataOptions);
+function _getClipboardData(resolve, reject) {
+  const pasteText = document.getElementById("#clipboard");
+  const data = pasteText ? pasteText.value : void 0;
+  if (data) {
+    resolve({ data });
+  } else {
+    reject();
+  }
+}
+function _setClipboardData(data, resolve, reject) {
+  const pasteText = document.getElementById("#clipboard");
+  pasteText && pasteText.remove();
+  const textarea = document.createElement("textarea");
+  textarea.id = "#clipboard";
+  textarea.style.position = "fixed";
+  textarea.style.top = "-9999px";
+  textarea.style.zIndex = "-9999";
+  document.body.appendChild(textarea);
+  textarea.value = data;
+  textarea.select();
+  textarea.setSelectionRange(0, textarea.value.length);
+  const result = document.execCommand("Copy", false);
+  textarea.blur();
+  if (result) {
+    resolve();
+  } else {
+    reject();
+  }
+}
 const STORAGE_KEYS = "uni-storage-keys";
 function parseValue(value) {
   const types = ["object", "string", "number", "boolean", "undefined"];
@@ -17594,6 +17418,71 @@ const chooseImage = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_IMAGE, ({
     console.warn(t2("uni.chooseFile.notUserActivation"));
   }
 }, ChooseImageProtocol, ChooseImageOptions);
+const KEY_MAPS = {
+  esc: ["Esc", "Escape"],
+  enter: ["Enter"]
+};
+const KEYS = Object.keys(KEY_MAPS);
+function useKeyboard() {
+  const key = ref("");
+  const disable = ref(false);
+  const onKeyup = (evt) => {
+    if (disable.value) {
+      return;
+    }
+    const res = KEYS.find((key2) => KEY_MAPS[key2].indexOf(evt.key) !== -1);
+    if (res) {
+      key.value = res;
+    }
+    nextTick(() => key.value = "");
+  };
+  onMounted(() => {
+    document.addEventListener("keyup", onKeyup);
+  });
+  onBeforeUnmount(() => {
+    document.removeEventListener("keyup", onKeyup);
+  });
+  return {
+    key,
+    disable
+  };
+}
+const VNODE_MASK = /* @__PURE__ */ createVNode("div", { class: "uni-mask" }, null, -1);
+function createRootApp(component, rootState, callback) {
+  rootState.onClose = (...args) => (rootState.visible = false, callback.apply(null, args));
+  return createApp(defineComponent({
+    setup() {
+      return () => (openBlock(), createBlock(component, rootState, null, 16));
+    }
+  }));
+}
+function ensureRoot(id2) {
+  let rootEl = document.getElementById(id2);
+  if (!rootEl) {
+    rootEl = document.createElement("div");
+    rootEl.id = id2;
+    document.body.append(rootEl);
+  }
+  return rootEl;
+}
+function usePopup(props2, {
+  onEsc,
+  onEnter
+}) {
+  const visible = ref(props2.visible);
+  const { key, disable } = useKeyboard();
+  watch(() => props2.visible, (value) => visible.value = value);
+  watch(() => visible.value, (value) => disable.value = !value);
+  watchEffect(() => {
+    const { value } = key;
+    if (value === "esc") {
+      onEsc && onEsc();
+    } else if (value === "enter") {
+      onEnter && onEnter();
+    }
+  });
+  return visible;
+}
 let index$d = 0;
 let overflow = "";
 function preventScroll(prevent) {
@@ -17614,7 +17503,7 @@ function usePreventScroll() {
   onMounted(() => preventScroll(true));
   onUnmounted(() => preventScroll(false));
 }
-const props$9 = {
+const props$a = {
   src: {
     type: String,
     default: ""
@@ -17622,7 +17511,7 @@ const props$9 = {
 };
 var ImageView = /* @__PURE__ */ defineSystemComponent({
   name: "ImageView",
-  props: props$9,
+  props: props$a,
   setup(props2) {
     const state2 = reactive({
       direction: "none"
@@ -17712,7 +17601,7 @@ var ImageView = /* @__PURE__ */ defineSystemComponent({
 function _isSlot$2(s) {
   return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
 }
-const props$8 = {
+const props$9 = {
   urls: {
     type: Array,
     default() {
@@ -17731,7 +17620,7 @@ function getIndex(props2) {
 }
 var ImagePreview = /* @__PURE__ */ defineSystemComponent({
   name: "ImagePreview",
-  props: props$8,
+  props: props$9,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -18504,7 +18393,7 @@ const getLocation = /* @__PURE__ */ defineAsyncApi(API_GET_LOCATION, ({ type, al
   });
 }, GetLocationProtocol, GetLocationOptions);
 const ICON_PATH_NAV = "M28 17c-6.49396875 0-12.13721875 2.57040625-15 6.34840625V5.4105l6.29859375 6.29859375c0.387875 0.387875 1.02259375 0.387875 1.4105 0 0.387875-0.387875 0.387875-1.02259375 0-1.4105L12.77853125 2.36803125a0.9978125 0.9978125 0 0 0-0.0694375-0.077125c-0.1944375-0.1944375-0.45090625-0.291375-0.70721875-0.290875l-0.00184375-0.0000625-0.00184375 0.0000625c-0.2563125-0.0005-0.51278125 0.09640625-0.70721875 0.290875a0.9978125 0.9978125 0 0 0-0.0694375 0.077125l-7.930625 7.9305625c-0.387875 0.387875-0.387875 1.02259375 0 1.4105 0.387875 0.387875 1.02259375 0.387875 1.4105 0L11 5.4105V29c0 0.55 0.45 1 1 1s1-0.45 1-1c0-5.52284375 6.71571875-10 15-10 0.55228125 0 1-0.44771875 1-1 0-0.55228125-0.44771875-1-1-1z";
-const props$7 = {
+const props$8 = {
   latitude: {
     type: Number
   },
@@ -18561,7 +18450,7 @@ function useState$2(props2) {
 }
 var LocationView = /* @__PURE__ */ defineSystemComponent({
   name: "LocationView",
-  props: props$7,
+  props: props$8,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -18674,7 +18563,7 @@ const openLocation = /* @__PURE__ */ defineAsyncApi(API_OPEN_LOCATION, (args, { 
 function _isSlot$1(s) {
   return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
 }
-const props$6 = {
+const props$7 = {
   latitude: {
     type: Number
   },
@@ -18840,7 +18729,7 @@ function useList(state2) {
 }
 var LoctaionPicker = /* @__PURE__ */ defineSystemComponent({
   name: "LoctaionPicker",
-  props: props$6,
+  props: props$7,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -19124,6 +19013,139 @@ const preloadPage = /* @__PURE__ */ defineAsyncApi(API_PRELOAD_PAGE, ({ url }, {
     reject(`${url} ${String(err)}`);
   });
 }, PreloadPageProtocol);
+const props$6 = {
+  title: {
+    type: String,
+    default: ""
+  },
+  content: {
+    type: String,
+    default: ""
+  },
+  showCancel: {
+    type: Boolean,
+    default: true
+  },
+  cancelText: {
+    type: String,
+    default: "Cancel"
+  },
+  cancelColor: {
+    type: String,
+    default: "#000000"
+  },
+  confirmText: {
+    type: String,
+    default: "OK"
+  },
+  confirmColor: {
+    type: String,
+    default: "#007aff"
+  },
+  visible: {
+    type: Boolean
+  },
+  editable: {
+    type: Boolean,
+    default: false
+  },
+  placeholderText: {
+    type: String,
+    default: ""
+  }
+};
+var modal = /* @__PURE__ */ defineComponent({
+  props: props$6,
+  setup(props2, {
+    emit: emit2
+  }) {
+    const editContent = ref("");
+    const close = () => visible.value = false;
+    const cancel = () => (close(), emit2("close", "cancel"));
+    const confirm = () => (close(), emit2("close", "confirm", editContent.value));
+    const visible = usePopup(props2, {
+      onEsc: cancel,
+      onEnter: () => {
+        !props2.editable && confirm();
+      }
+    });
+    return () => {
+      const {
+        title,
+        content,
+        showCancel,
+        confirmText,
+        confirmColor,
+        editable,
+        placeholderText
+      } = props2;
+      editContent.value = content;
+      return createVNode(Transition, {
+        "name": "uni-fade"
+      }, {
+        default: () => [withDirectives(createVNode("uni-modal", {
+          "onTouchmove": onEventPrevent
+        }, [VNODE_MASK, createVNode("div", {
+          "class": "uni-modal"
+        }, [title && createVNode("div", {
+          "class": "uni-modal__hd"
+        }, [createVNode("strong", {
+          "class": "uni-modal__title",
+          "textContent": title
+        }, null, 8, ["textContent"])]), editable ? createVNode("textarea", {
+          "class": "uni-modal__textarea",
+          "rows": "1",
+          "placeholder": placeholderText,
+          "value": content,
+          "onInput": (e2) => editContent.value = e2.target.value
+        }, null, 40, ["placeholder", "value", "onInput"]) : createVNode("div", {
+          "class": "uni-modal__bd",
+          "onTouchmovePassive": onEventStop,
+          "textContent": content
+        }, null, 40, ["onTouchmovePassive", "textContent"]), createVNode("div", {
+          "class": "uni-modal__ft"
+        }, [showCancel && createVNode("div", {
+          "style": {
+            color: props2.cancelColor
+          },
+          "class": "uni-modal__btn uni-modal__btn_default",
+          "onClick": cancel
+        }, [props2.cancelText], 12, ["onClick"]), createVNode("div", {
+          "style": {
+            color: confirmColor
+          },
+          "class": "uni-modal__btn uni-modal__btn_primary",
+          "onClick": confirm
+        }, [confirmText], 12, ["onClick"])])])], 40, ["onTouchmove"]), [[vShow, visible.value]])]
+      });
+    };
+  }
+});
+let showModalState;
+const onHidePopupOnce$1 = /* @__PURE__ */ once(() => {
+  UniServiceJSBridge.on("onHidePopup", () => showModalState.visible = false);
+});
+let currentShowModalResolve;
+function onModalClose(type, content) {
+  const isConfirm = type === "confirm";
+  const res = {
+    confirm: isConfirm,
+    cancel: type === "cancel"
+  };
+  isConfirm && showModalState.editable && (res.content = content);
+  currentShowModalResolve && currentShowModalResolve(res);
+}
+const showModal = /* @__PURE__ */ defineAsyncApi(API_SHOW_MODAL, (args, { resolve }) => {
+  onHidePopupOnce$1();
+  currentShowModalResolve = resolve;
+  if (!showModalState) {
+    showModalState = reactive(args);
+    nextTick(() => (createRootApp(modal, showModalState, onModalClose).mount(ensureRoot("u-a-m")), nextTick(() => showModalState.visible = true)));
+  } else {
+    extend(showModalState, args);
+    showModalState.visible = true;
+  }
+}, ShowModalProtocol, ShowModalOptions);
 const props$5 = {
   title: {
     type: String,

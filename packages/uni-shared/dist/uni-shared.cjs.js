@@ -654,66 +654,6 @@ function parseUrl(url) {
     };
 }
 
-function isDebugMode() {
-    // @ts-expect-error
-    return typeof __channelId__ === 'string' && __channelId__;
-}
-function jsonStringifyReplacer(k, p) {
-    switch (shared.toRawType(p)) {
-        case 'Function':
-            return 'function() { [native code] }';
-        default:
-            return p;
-    }
-}
-function normalizeLog(type, filename, args) {
-    if (isDebugMode()) {
-        args.push(filename.replace('at ', 'uni-app:///'));
-        return console[type].apply(console, args);
-    }
-    const msgs = args.map(function (v) {
-        const type = shared.toTypeString(v).toLowerCase();
-        if (['[object object]', '[object array]', '[object module]'].indexOf(type) !==
-            -1) {
-            try {
-                v =
-                    '---BEGIN:JSON---' +
-                        JSON.stringify(v, jsonStringifyReplacer) +
-                        '---END:JSON---';
-            }
-            catch (e) {
-                v = type;
-            }
-        }
-        else {
-            if (v === null) {
-                v = '---NULL---';
-            }
-            else if (v === undefined) {
-                v = '---UNDEFINED---';
-            }
-            else {
-                const vType = shared.toRawType(v).toUpperCase();
-                if (vType === 'NUMBER' || vType === 'BOOLEAN') {
-                    v = '---BEGIN:' + vType + '---' + v + '---END:' + vType + '---';
-                }
-                else {
-                    v = String(v);
-                }
-            }
-        }
-        return v;
-    });
-    return msgs.join('---COMMA---') + ' ' + filename;
-}
-function formatAppLog(type, filename, ...args) {
-    const res = normalizeLog(type, filename, args);
-    res && console[type](res);
-}
-function formatH5Log(type, filename, ...args) {
-    console[type].apply(console, [...args, filename]);
-}
-
 function parseNVueDataset(attr) {
     const dataset = {};
     if (attr) {
@@ -1540,9 +1480,7 @@ exports.defaultNVueRpx2Unit = defaultNVueRpx2Unit;
 exports.defaultRpx2Unit = defaultRpx2Unit;
 exports.dynamicSlotName = dynamicSlotName;
 exports.forcePatchProp = forcePatchProp;
-exports.formatAppLog = formatAppLog;
 exports.formatDateTime = formatDateTime;
-exports.formatH5Log = formatH5Log;
 exports.formatLog = formatLog;
 exports.getCustomDataset = getCustomDataset;
 exports.getEnvLocale = getEnvLocale;

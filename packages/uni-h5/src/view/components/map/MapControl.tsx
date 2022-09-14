@@ -1,10 +1,7 @@
 import { inject, onUnmounted, watch, PropType } from 'vue'
 import { getRealPath } from '@dcloudio/uni-platform'
 import { defineSystemComponent, useCustomEvent } from '@dcloudio/uni-components'
-import { Maps, Map, QQMap, GoogleMap } from './maps'
-import { getIsAMap } from '../../../helpers/location'
-import { QQMaps } from './maps/qq/types'
-import { GoogleMaps } from './maps/google/types'
+import { Maps, Map } from './maps'
 
 interface Position {
   left: number | string
@@ -41,27 +38,27 @@ export default /*#__PURE__*/ defineSystemComponent({
         control.remove()
       }
     }
-    onMapReady((map, maps, trigger) => {
+    onMapReady((_, __, trigger) => {
       function updateControl(option: Props) {
         removeControl()
         addControl(option)
       }
       function addControl(option: Props) {
-        const position = option.position || {}
         control = document.createElement('div')
-        const img = new Image()
-        control.appendChild(img)
         const style = control.style
         style.position = 'absolute'
         style.width = '0'
         style.height = '0'
         style.top = '0'
         style.left = '0'
+        const img = new Image()
+        img.src = getRealPath(option.iconPath)
         img.onload = () => {
-          if (option.position.width) {
+          const position = option.position || {}
+          if (position.width) {
             img.width = option.position.width
           }
-          if (option.position.height) {
+          if (position.height) {
             img.height = option.position.height
           }
           const style = img.style
@@ -69,21 +66,16 @@ export default /*#__PURE__*/ defineSystemComponent({
           style.left = (position.left || 0) + 'px'
           style.top = (position.top || 0) + 'px'
           style.maxWidth = 'initial'
+
+          control.appendChild(img)
+          props.rootRef.value && props.rootRef.value.appendChild(control)
         }
-        img.src = getRealPath(option.iconPath)
         img.onclick = function ($event) {
           if (option.clickable) {
             trigger('controltap', $event, {
               controlId: option.id,
             })
           }
-        }
-        if (getIsAMap()) {
-          props.rootRef.value && props.rootRef.value.appendChild(control)
-        } else {
-          ;(map as QQMap | GoogleMap).controls[
-            (maps as QQMaps | GoogleMaps).ControlPosition.TOP_LEFT
-          ].push(control)
         }
       }
       addControl(props as Props)

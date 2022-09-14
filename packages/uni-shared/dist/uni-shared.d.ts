@@ -212,14 +212,10 @@ export declare const forcePatchProp: (el: {
     nodeName: string;
 }, key: string) => boolean;
 
-export declare function formatAppLog(type: 'log' | 'info' | 'debug' | 'warn' | 'error', filename: string, ...args: unknown[]): void;
-
 export declare function formatDateTime({ date, mode }: {
     date?: Date | undefined;
     mode?: string | undefined;
 }): string;
-
-export declare function formatH5Log(type: keyof Console, filename: string, ...args: unknown[]): void;
 
 export declare function formatLog(module: string, ...args: any[]): string;
 
