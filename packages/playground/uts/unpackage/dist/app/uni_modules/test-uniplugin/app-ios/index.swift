@@ -13,5 +13,12 @@ async func getBatteryInfo(_ options: GetBatteryInfoOptions) {
     if (options.success != nil) options.success!(res);
     if (options.complete != nil) options.complete!(res);
 }
+class Test1 : NSObject {
+}
+@objc(UTSSDKModulesTestUniPluginTest)
+@@objcMembers
 class Test : NSObject {
+    override init(){
+        Test1();
+    }
 }

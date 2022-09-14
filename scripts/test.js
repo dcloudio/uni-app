@@ -62,7 +62,7 @@ function testSwift() {
     },
     output: {
       outDir: path.resolve(projectDir, 'unpackage/dist/app'),
-      package: 'uts.modules.testUniPlugin',
+      package: 'UTSSDKModulesTestUniPlugin',
       sourceMap: true,
       extname: 'swift',
       logFilename: true,
