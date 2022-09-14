@@ -63,6 +63,16 @@ export function toKotlin(options: UtsOptions): Promise<UtsResult> {
     .then((res: string) => JSON.parse(res))
 }
 
+export function bundleKotlin(options: UtsBundleOptions): Promise<UtsResult> {
+  const bundleOptions = resolveOptions(options)
+  if (!bundleOptions) {
+    return Promise.resolve({})
+  }
+  return bindings
+    .bundleKotlin(toBuffer(bundleOptions))
+    .then((res: string) => res)
+}
+
 export function toSwift(options: UtsOptions): Promise<UtsResult> {
   const swiftOptions = resolveOptions(options)
   if (!swiftOptions) {
@@ -73,12 +83,14 @@ export function toSwift(options: UtsOptions): Promise<UtsResult> {
     .then((res: string) => JSON.parse(res))
 }
 
-export function bundle(options: UtsBundleOptions): Promise<UtsResult> {
+export function bundleSwift(options: UtsBundleOptions): Promise<UtsResult> {
   const bundleOptions = resolveOptions(options)
   if (!bundleOptions) {
     return Promise.resolve({})
   }
-  return bindings.bundle(toBuffer(bundleOptions)).then((res: string) => res)
+  return bindings
+    .bundleSwift(toBuffer(bundleOptions))
+    .then((res: string) => res)
 }
 
 function toBuffer(t: any): Buffer {

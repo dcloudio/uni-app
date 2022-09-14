@@ -1,0 +1,21 @@
+import { UIDevice } from 'UIKit'
+
+type GetBatteryInfoOptions = {
+  success?: (res: UTSJSONObject) => void
+  fail?: (res: UTSJSONObject) => void
+  complete?: (res: UTSJSONObject) => void
+}
+
+export default async function getBatteryInfo(options: GetBatteryInfoOptions) {
+  const res = {
+    errMsg: 'getBatteryInfo:ok',
+    level: UIDevice.current.batteryLevel * 100,
+    isCharging: UIDevice.current.batteryState == UIDevice.BatteryState.charging,
+  }
+  if (options.success != null) {
+    options.success!(res)
+  }
+  if (options.complete != null) {
+    options.complete!(res)
+  }
+}

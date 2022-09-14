@@ -1,4 +1,5 @@
 import { isInHBuilderX, resolveSourceMapPath } from '@dcloudio/uni-cli-shared'
+import { capitalize } from '@vue/shared'
 import { genUTSPlatformResource, getUtsCompiler, resolvePackage } from './utils'
 
 export function parseSwiftPackage(filename: string) {
@@ -6,7 +7,7 @@ export function parseSwiftPackage(filename: string) {
   if (!res) {
     return ''
   }
-  return 'UTSSDK' + (res.is_uni_modules ? 'Modules' : '') + res.name
+  return 'UTSSDK' + (res.is_uni_modules ? 'Modules' : '') + capitalize(res.name)
 }
 
 export async function compileSwift(filename: string) {
@@ -31,7 +32,7 @@ export async function compileSwift(filename: string) {
       outDir: outputDir,
       package: '',
       sourceMap: resolveSourceMapPath(),
-      extname: 'kt',
+      extname: 'swift',
       imports: [],
       logFilename: true,
       noColor: isInHBuilderX(),

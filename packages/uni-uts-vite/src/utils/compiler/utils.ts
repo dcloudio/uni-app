@@ -44,11 +44,13 @@ export function genUTSPlatformResource(
   const utsOutputDir = resolveUTSPlatformDir(platformFile, platform)
 
   // 拷贝所有非uts文件及目录
-  fs.copySync(utsInputDir, utsOutputDir, {
-    filter(src) {
-      return path.extname(src) !== '.uts'
-    },
-  })
+  if (fs.existsSync(utsInputDir)) {
+    fs.copySync(utsInputDir, utsOutputDir, {
+      filter(src) {
+        return path.extname(src) !== '.uts'
+      },
+    })
+  }
 
   // 生产模式下，需要将 kt 文件转移到 src 下
   const srcDir = path.resolve(utsOutputDir, 'src')
