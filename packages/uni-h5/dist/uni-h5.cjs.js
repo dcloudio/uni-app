@@ -10143,7 +10143,7 @@ function getStorageOrigin(key) {
   }
   return data;
 }
-const getStorageSync = /* @__PURE__ */ defineSyncApi(API_GET_STORAGE_SYNC, (key, t2) => {
+const getStorageSync = /* @__PURE__ */ defineSyncApi(API_GET_STORAGE_SYNC, (key) => {
   try {
     return getStorageOrigin(key);
   } catch (error) {

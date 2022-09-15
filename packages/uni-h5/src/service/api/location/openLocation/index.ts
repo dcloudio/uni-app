@@ -12,7 +12,7 @@ import LocationView, { Props } from './LocationView'
 
 let state: Props | null = null
 
-export const openLocation = <API_TYPE_OPEN_LOCATION>defineAsyncApi(
+export const openLocation = defineAsyncApi<API_TYPE_OPEN_LOCATION>(
   API_OPEN_LOCATION,
   (args, { resolve }) => {
     if (!state) {

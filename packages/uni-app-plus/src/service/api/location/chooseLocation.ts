@@ -9,7 +9,7 @@ import { showPage } from '@dcloudio/uni-core'
 import { getStatusBarStyle } from '../../../helpers/statusBar'
 import { extend } from '@vue/shared'
 
-export const chooseLocation = <API_TYPE_CHOOSE_LOCATION>defineAsyncApi(
+export const chooseLocation = defineAsyncApi<API_TYPE_CHOOSE_LOCATION>(
   API_CHOOSE_LOCATION,
   (options, { resolve, reject }) => {
     const statusBarStyle = getStatusBarStyle()

@@ -23,7 +23,7 @@ const closePreviewImageView = () => {
   })
 }
 
-export const previewImage = <API_TYPE_PREVIEW_IMAGE>defineAsyncApi(
+export const previewImage = defineAsyncApi<API_TYPE_PREVIEW_IMAGE>(
   API_PREVIEW_IMAGE,
   (args, { resolve }) => {
     if (!state) {

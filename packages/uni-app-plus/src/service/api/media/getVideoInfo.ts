@@ -7,7 +7,7 @@ import {
 } from '@dcloudio/uni-api'
 import { warpPlusErrorCallback } from '../../../helpers/plus'
 
-export const getVideoInfo = <API_TYPE_GET_VIDEO_INFO>defineAsyncApi(
+export const getVideoInfo = defineAsyncApi<API_TYPE_GET_VIDEO_INFO>(
   API_GET_VIDEO_INFO,
   (options, { resolve, reject }) => {
     plus.io.getVideoInfo({

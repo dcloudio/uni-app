@@ -39,7 +39,7 @@ function getLocationSuccess(
   })
 }
 
-export const getLocation = <API_TYPE_GET_LOCATION>defineAsyncApi(
+export const getLocation = defineAsyncApi<API_TYPE_GET_LOCATION>(
   API_GET_LOCATION,
   (
     {

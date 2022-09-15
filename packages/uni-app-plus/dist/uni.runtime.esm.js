@@ -10872,13 +10872,13 @@ class SelectorQuery {
         this._queueCb.push(callback);
     }
 }
-const createSelectorQuery = (defineSyncApi('createSelectorQuery', (context) => {
+const createSelectorQuery = defineSyncApi('createSelectorQuery', (context) => {
     context = resolveComponentInstance(context);
     if (context && !getPageIdByVm(context)) {
         context = null;
     }
     return new SelectorQuery(context || getCurrentPageVm());
-}));
+});
 
 // import { elemInArray } from '../../helpers/protocol'
 const API_CREATE_ANIMATION = 'createAnimation';
@@ -13030,7 +13030,7 @@ function parseGetStorage(type, value) {
     }
     return data;
 }
-const getStorageSync = defineSyncApi(API_GET_STORAGE_SYNC, (key, t) => {
+const getStorageSync = defineSyncApi(API_GET_STORAGE_SYNC, (key) => {
     const value = plus.storage.getItem(key);
     const typeOrigin = plus.storage.getItem(key + STORAGE_DATA_TYPE) || '';
     const type = typeOrigin.toLowerCase();
@@ -13065,13 +13065,13 @@ const removeStorage = defineAsyncApi(API_REMOVE_STORAGE, ({ key }, { resolve, re
     plus.storage.removeItemAsync(key + STORAGE_DATA_TYPE);
     plus.storage.removeItemAsync(key, resolve, warpPlusErrorCallback(reject));
 }, RemoveStorageProtocol);
-const clearStorageSync = (defineSyncApi('clearStorageSync', () => {
+const clearStorageSync = defineSyncApi('clearStorageSync', () => {
     plus.storage.clear();
-}));
-const clearStorage = (defineAsyncApi('clearStorage', (_, { resolve, reject }) => {
+});
+const clearStorage = defineAsyncApi('clearStorage', (_, { resolve, reject }) => {
     plus.storage.clearAsync(resolve, warpPlusErrorCallback(reject));
-}));
-const getStorageInfoSync = (defineSyncApi('getStorageInfoSync', () => {
+});
+const getStorageInfoSync = defineSyncApi('getStorageInfoSync', () => {
     const length = plus.storage.getLength() || 0;
     const keys = [];
     let currentSize = 0;
@@ -13091,10 +13091,10 @@ const getStorageInfoSync = (defineSyncApi('getStorageInfoSync', () => {
         currentSize: Math.ceil((currentSize * 2) / 1024),
         limitSize: Number.MAX_VALUE,
     };
-}));
-const getStorageInfo = (defineAsyncApi('getStorageInfo', (_, { resolve }) => {
+});
+const getStorageInfo = defineAsyncApi('getStorageInfo', (_, { resolve }) => {
     resolve(getStorageInfoSync());
-}));
+});
 
 const getFileInfo$1 = defineAsyncApi(API_GET_FILE_INFO, (options, { resolve, reject }) => {
     plus.io.getFileInfo(extend(options, {
@@ -13144,7 +13144,7 @@ function getSavedFileDir(success, fail) {
         }, success, fail);
     }, fail);
 }
-const getSavedFileList = (defineAsyncApi(API_GET_SAVED_LIST, (_, { resolve, reject }) => {
+const getSavedFileList = defineAsyncApi(API_GET_SAVED_LIST, (_, { resolve, reject }) => {
     const errorCallback = warpPlusErrorCallback(reject);
     getSavedFileDir((entry) => {
         var reader = entry.createReader();
@@ -13173,7 +13173,7 @@ const getSavedFileList = (defineAsyncApi(API_GET_SAVED_LIST, (_, { resolve, reje
             }
         }, errorCallback);
     }, errorCallback);
-}));
+});
 
 const getSavedFileInfo = defineAsyncApi(API_GET_SAVED_FILE_INFO, ({ filePath }, { resolve, reject }) => {
     const errorCallback = warpPlusErrorCallback(reject);
@@ -13626,13 +13626,13 @@ const getSystemInfo = defineAsyncApi('getSystemInfo', (_, { resolve }) => {
 });
 
 let listener$1 = null;
-const onCompassChange = (defineOnApi(API_ON_COMPASS, () => {
+const onCompassChange = defineOnApi(API_ON_COMPASS, () => {
     startCompass();
-}));
-const offCompassChange = (defineOffApi(API_OFF_COMPASS, () => {
+});
+const offCompassChange = defineOffApi(API_OFF_COMPASS, () => {
     stopCompass();
-}));
-const startCompass = (defineAsyncApi(API_START_COMPASS, (_, { resolve, reject }) => {
+});
+const startCompass = defineAsyncApi(API_START_COMPASS, (_, { resolve, reject }) => {
     if (!listener$1) {
         listener$1 = plus.orientation.watchOrientation((res) => {
             UniServiceJSBridge.invokeOnCallback(API_ON_COMPASS, {
@@ -13646,14 +13646,14 @@ const startCompass = (defineAsyncApi(API_START_COMPASS, (_, { resolve, reject })
         });
     }
     setTimeout(resolve, DEVICE_FREQUENCY);
-}));
-const stopCompass = (defineAsyncApi(API_STOP_COMPASS, (_, { resolve }) => {
+});
+const stopCompass = defineAsyncApi(API_STOP_COMPASS, (_, { resolve }) => {
     if (listener$1) {
         plus.orientation.clearWatch(listener$1);
         listener$1 = null;
     }
     resolve();
-}));
+});
 
 const vibrateShort = defineAsyncApi(API_VIBRATE_SHORT, (_, { resolve }) => {
     plus.device.vibrate(15);
@@ -13665,13 +13665,13 @@ const vibrateLong = defineAsyncApi(API_VIBRATE_LONG, (_, { resolve }) => {
 });
 
 let listener = null;
-const onAccelerometerChange = (defineOnApi(API_ON_ACCELEROMETER, () => {
+const onAccelerometerChange = defineOnApi(API_ON_ACCELEROMETER, () => {
     startAccelerometer();
-}));
-const offAccelerometerChange = (defineOffApi(API_OFF_ACCELEROMETER, () => {
+});
+const offAccelerometerChange = defineOffApi(API_OFF_ACCELEROMETER, () => {
     stopAccelerometer();
-}));
-const startAccelerometer = (defineAsyncApi(API_START_ACCELEROMETER, (_, { resolve, reject }) => {
+});
+const startAccelerometer = defineAsyncApi(API_START_ACCELEROMETER, (_, { resolve, reject }) => {
     if (!listener) {
         listener = plus.accelerometer.watchAcceleration((res) => {
             UniServiceJSBridge.invokeOnCallback(API_ON_ACCELEROMETER, {
@@ -13687,14 +13687,14 @@ const startAccelerometer = (defineAsyncApi(API_START_ACCELEROMETER, (_, { resolv
         });
     }
     setTimeout(resolve, DEVICE_FREQUENCY);
-}));
-const stopAccelerometer = (defineAsyncApi(API_STOP_ACCELEROMETER, (_, { resolve }) => {
+});
+const stopAccelerometer = defineAsyncApi(API_STOP_ACCELEROMETER, (_, { resolve }) => {
     if (listener) {
         plus.accelerometer.clearWatch(listener);
         listener = null;
     }
     resolve();
-}));
+});
 
 const onBluetoothDeviceFound = defineOnApi(API_ON_BLUETOOTH_DEVICE_FOUND, warpPlusEvent(() => plus.bluetooth.onBluetoothDeviceFound.bind(plus.bluetooth), API_ON_BLUETOOTH_DEVICE_FOUND));
 const onBluetoothAdapterStateChange = defineOnApi(API_ON_BLUETOOTH_ADAPTER_STATE_CHANGE, warpPlusEvent(() => plus.bluetooth.onBluetoothAdapterStateChange.bind(plus.bluetooth), API_ON_BLUETOOTH_ADAPTER_STATE_CHANGE));
@@ -16183,7 +16183,7 @@ let watchId = 0;
 /**
  * 开始更新定位
  */
-const startLocationUpdate = (defineAsyncApi(API_START_LOCATION_UPDATE, (_, { resolve, reject }) => {
+const startLocationUpdate = defineAsyncApi(API_START_LOCATION_UPDATE, (_, { resolve, reject }) => {
     if (plus.geolocation && watchId === 0) {
         watchId = plus.geolocation.watchPosition((res) => {
             UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE, res.coords);
@@ -16198,9 +16198,9 @@ const startLocationUpdate = (defineAsyncApi(API_START_LOCATION_UPDATE, (_, { res
         UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE_ERROR, 'onLocationChange:fail');
     }
     resolve();
-}, StartLocationUpdateProtocol, StartLocationUpdateOptions));
-const onLocationChange = (defineOnApi(API_ON_LOCATION_CHANGE, () => { }));
-const stopLocationUpdate = (defineAsyncApi(API_STOP_LOCATION_UPDATE, (_, { resolve, reject }) => {
+}, StartLocationUpdateProtocol, StartLocationUpdateOptions);
+const onLocationChange = defineOnApi(API_ON_LOCATION_CHANGE, () => { });
+const stopLocationUpdate = defineAsyncApi(API_STOP_LOCATION_UPDATE, (_, { resolve, reject }) => {
     if (watchId) {
         plus.geolocation.clearWatch(watchId);
         watchId = 0;
@@ -16209,12 +16209,12 @@ const stopLocationUpdate = (defineAsyncApi(API_STOP_LOCATION_UPDATE, (_, { resol
     else {
         reject('stopLocationUpdate:fail');
     }
-}));
-const offLocationChange = (defineOffApi(API_OFF_LOCATION_CHANGE, () => {
+});
+const offLocationChange = defineOffApi(API_OFF_LOCATION_CHANGE, () => {
     stopLocationUpdate();
-}));
-const onLocationChangeError = (defineOnApi(API_ON_LOCATION_CHANGE_ERROR, () => { }));
-const offLocationChangeError = (defineOnApi(API_OFF_LOCATION_CHANGE_ERROR, () => { }));
+});
+const onLocationChangeError = defineOnApi(API_ON_LOCATION_CHANGE_ERROR, () => { });
+const offLocationChangeError = defineOnApi(API_OFF_LOCATION_CHANGE_ERROR, () => { });
 
 const showModal = defineAsyncApi(API_SHOW_MODAL, ({ title = '', content = '', showCancel = true, cancelText, cancelColor, confirmText, confirmColor, editable = false, placeholderText = '', } = {}, { resolve }) => {
     const buttons = showCancel ? [cancelText, confirmText] : [confirmText];
@@ -17367,9 +17367,9 @@ class RewardedVideoAd extends AdBase {
         this._loadAd();
     }
 }
-const createRewardedVideoAd = (defineSyncApi(API_CREATE_REWARDED_VIDEO_AD, (options) => {
+const createRewardedVideoAd = defineSyncApi(API_CREATE_REWARDED_VIDEO_AD, (options) => {
     return new RewardedVideoAd(options);
-}, CreateRewardedVideoAdProtocol, CreateRewardedVideoAdOptions));
+}, CreateRewardedVideoAdProtocol, CreateRewardedVideoAdOptions);
 
 class FullScreenVideoAd extends AdBase {
     constructor(options) {
@@ -17377,9 +17377,9 @@ class FullScreenVideoAd extends AdBase {
         this.preload = false;
     }
 }
-const createFullScreenVideoAd = (defineSyncApi(API_CREATE_FULL_SCREEN_VIDEO_AD, (options) => {
+const createFullScreenVideoAd = defineSyncApi(API_CREATE_FULL_SCREEN_VIDEO_AD, (options) => {
     return new FullScreenVideoAd(options);
-}, CreateFullScreenVideoAdProtocol, CreateFullScreenVideoAdOptions));
+}, CreateFullScreenVideoAdProtocol, CreateFullScreenVideoAdOptions);
 
 class InterstitialAd extends AdBase {
     constructor(options) {
@@ -17388,9 +17388,9 @@ class InterstitialAd extends AdBase {
         this._loadAd();
     }
 }
-const createInterstitialAd = (defineSyncApi(API_CREATE_INTERSTITIAL_AD, (options) => {
+const createInterstitialAd = defineSyncApi(API_CREATE_INTERSTITIAL_AD, (options) => {
     return new InterstitialAd(options);
-}, CreateInterstitialAdProtocol, CreateInterstitialAdOptions));
+}, CreateInterstitialAdProtocol, CreateInterstitialAdOptions);
 
 const sdkCache = {};
 const sdkQueue = {};
@@ -17598,9 +17598,9 @@ class InteractiveAd extends AdEventHandler {
         return new Error(JSON.stringify(err));
     }
 }
-const createInteractiveAd = (defineSyncApi(API_CREATE_INTERACTIVE_AD, (options) => {
+const createInteractiveAd = defineSyncApi(API_CREATE_INTERACTIVE_AD, (options) => {
     return new InteractiveAd(options);
-}, CreateInteractiveAdProtocol, CreateInteractiveAdOptions));
+}, CreateInteractiveAdProtocol, CreateInteractiveAdOptions);
 
 const downgrade = plus.os.name === 'Android' && parseInt(plus.os.version) < 6;
 const ANI_SHOW = downgrade ? 'slide-in-right' : 'pop-in';

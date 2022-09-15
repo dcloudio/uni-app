@@ -18,7 +18,10 @@ export const getLocale = defineSyncApi<typeof uni.getLocale>(
   }
 )
 
-export const onLocaleChange = defineOnApi(API_ON_LOCALE_CHANGE, () => {})
+export const onLocaleChange = defineOnApi<typeof uni.onLocaleChange>(
+  API_ON_LOCALE_CHANGE,
+  () => {}
+)
 
 export const setLocale = defineSyncApi<typeof uni.setLocale>(
   API_SET_LOCALE,

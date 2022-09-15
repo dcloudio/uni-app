@@ -14,7 +14,7 @@ import {
 import { getJSONP } from '../../../helpers/getJSONP'
 import { request } from '../network/request'
 
-export const getLocation = <API_TYPE_GET_LOCATION>defineAsyncApi(
+export const getLocation = defineAsyncApi<API_TYPE_GET_LOCATION>(
   API_GET_LOCATION,
   (
     { type, altitude, highAccuracyExpireTime, isHighAccuracy },

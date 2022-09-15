@@ -51,7 +51,7 @@ function parseValue(value: any) {
   } catch (error) {}
 }
 
-export const setStorageSync = <API_TYPE_SET_STORAGE_SYNC>defineSyncApi(
+export const setStorageSync = defineSyncApi<API_TYPE_SET_STORAGE_SYNC>(
   API_SET_STORAGE_SYNC,
   (key, data) => {
     const type = typeof data
@@ -67,7 +67,7 @@ export const setStorageSync = <API_TYPE_SET_STORAGE_SYNC>defineSyncApi(
   SetStorageSyncProtocol
 )
 
-export const setStorage = <API_TYPE_SET_STORAGE>defineAsyncApi(
+export const setStorage = defineAsyncApi<API_TYPE_SET_STORAGE>(
   API_SET_STORAGE,
   ({ key, data }, { resolve, reject }) => {
     try {
@@ -96,9 +96,9 @@ function getStorageOrigin(key: string): any {
   return data
 }
 
-export const getStorageSync = <API_TYPE_GET_STORAGE_SYNC>defineSyncApi(
+export const getStorageSync = defineSyncApi<API_TYPE_GET_STORAGE_SYNC>(
   API_GET_STORAGE_SYNC,
-  (key: string, t: boolean) => {
+  (key: string) => {
     try {
       return getStorageOrigin(key)
     } catch (error) {
@@ -108,7 +108,7 @@ export const getStorageSync = <API_TYPE_GET_STORAGE_SYNC>defineSyncApi(
   GetStorageSyncProtocol
 )
 
-export const getStorage = <API_TYPE_GET_STORAGE>defineAsyncApi(
+export const getStorage = defineAsyncApi<API_TYPE_GET_STORAGE>(
   API_GET_STORAGE,
   ({ key }, { resolve, reject }) => {
     try {
@@ -123,7 +123,7 @@ export const getStorage = <API_TYPE_GET_STORAGE>defineAsyncApi(
   GetStorageProtocol
 )
 
-export const removeStorageSync = <API_TYPE_REMOVE_STORAGE_SYNC>defineSyncApi(
+export const removeStorageSync = defineSyncApi<API_TYPE_REMOVE_STORAGE_SYNC>(
   API_REMOVE_STORAGE,
   (key) => {
     if (localStorage) {
@@ -133,7 +133,7 @@ export const removeStorageSync = <API_TYPE_REMOVE_STORAGE_SYNC>defineSyncApi(
   RemoveStorageSyncProtocol
 )
 
-export const removeStorage = <API_TYPE_REMOVE_STORAGE>defineAsyncApi(
+export const removeStorage = defineAsyncApi<API_TYPE_REMOVE_STORAGE>(
   API_REMOVE_STORAGE,
   ({ key }, { resolve }) => {
     removeStorageSync(key)
@@ -142,23 +142,26 @@ export const removeStorage = <API_TYPE_REMOVE_STORAGE>defineAsyncApi(
   RemoveStorageProtocol
 )
 
-export const clearStorageSync = <typeof uni.clearStorageSync>(
-  defineSyncApi('clearStorageSync', () => {
+export const clearStorageSync = defineSyncApi<typeof uni.clearStorageSync>(
+  'clearStorageSync',
+  () => {
     if (localStorage) {
       localStorage.clear()
     }
-  })
+  }
 )
 
-export const clearStorage = <typeof uni.clearStorage>(
-  defineAsyncApi('clearStorage', (_, { resolve }) => {
+export const clearStorage = defineAsyncApi<typeof uni.clearStorage>(
+  'clearStorage',
+  (_, { resolve }) => {
     clearStorageSync()
     resolve()
-  })
+  }
 )
 
-export const getStorageInfoSync = <typeof uni.getStorageInfoSync>(
-  defineSyncApi('getStorageInfoSync', () => {
+export const getStorageInfoSync = defineSyncApi<typeof uni.getStorageInfoSync>(
+  'getStorageInfoSync',
+  () => {
     const length = (localStorage && localStorage.length) || 0
     const keys = []
     let currentSize = 0
@@ -175,11 +178,12 @@ export const getStorageInfoSync = <typeof uni.getStorageInfoSync>(
       currentSize: Math.ceil((currentSize * 2) / 1024),
       limitSize: Number.MAX_VALUE,
     }
-  })
+  }
 )
 
-export const getStorageInfo = <typeof uni.getStorageInfo>(
-  defineAsyncApi('getStorageInfo', (_, { resolve }) => {
+export const getStorageInfo = defineAsyncApi<typeof uni.getStorageInfo>(
+  'getStorageInfo',
+  (_, { resolve }) => {
     resolve(getStorageInfoSync())
-  })
+  }
 )
