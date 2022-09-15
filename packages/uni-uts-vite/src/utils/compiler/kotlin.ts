@@ -18,14 +18,23 @@ import {
   resolveUTSPlatformFile,
   UTSPlatformResourceOptions,
 } from './utils'
+import { Module } from '../../../types/types'
+
+export function createKotlinResolveTypeReferenceName(
+  _namespace: string,
+  _ast: Module
+) {
+  return (name: string) => name
+}
 
 export function parseKotlinPackage(filename: string) {
   const res = resolvePackage(filename)
   if (!res) {
-    return { package: '', class: '' }
+    return { package: '', namespace: '', class: '' }
   }
   return {
     package: 'uts.sdk.' + (res.is_uni_modules ? 'modules.' : '') + res.name,
+    namespace: '',
     class: 'IndexKt',
   }
 }

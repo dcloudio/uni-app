@@ -8,7 +8,7 @@ type GetBatteryInfoOptions = {
   complete?: (res: UTSJSONObject) => void
 }
 
-export default async function getBatteryInfo(options: GetBatteryInfoOptions) {
+export default function getBatteryInfo(options: GetBatteryInfoOptions) {
   const res = {
     errMsg: 'getBatteryInfo:ok',
     level: UIDevice.current.batteryLevel * 100,

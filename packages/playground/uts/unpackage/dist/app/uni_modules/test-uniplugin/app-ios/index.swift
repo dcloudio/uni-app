@@ -1,30 +1,25 @@
 import DCUTSPlugin;
 import UIKit;
+@objc(UTSSDKModulesTestUniPluginGetBatteryInfoOptions)
+@objcMembers
 class GetBatteryInfoOptions : UTSJSONObject {
-    var name: String;
-    var pwd: NSNumber;
-    var success: UTSCallback?;
-    var fail: UTSCallback?;
-    var complete: UTSCallback?;
-    init(_ name: String, _ pwd: NSNumber, _ success: UTSCallback, _ fail: UTSCallback, _ complete: UTSCallback){
-        self.name = name;
-        self.pwd = pwd;
-        self.success = success;
-        self.fail = fail;
-        self.complete = complete;
-    }
+    public var name: String!;
+    public var pwd: NSNumber!;
+    public var success: UTSCallback?;
+    public var fail: UTSCallback?;
+    public var complete: UTSCallback?;
 }
 class Test1 : NSObject {
 }
 class Test : NSObject {
-    init(){
+    public init(){
         Test1();
     }
 }
 @objc(UTSSDKModulesTestUniPluginIndexSwift)
 @objcMembers
 class IndexSwift : NSObject {
-    static func async getBatteryInfo(_ options: GetBatteryInfoOptions) {
+    public static func getBatteryInfo(_ options: GetBatteryInfoOptions) {
         var res = [
             "errMsg": "getBatteryInfo:ok",
             "level": UIDevice.current.batteryLevel * 100,
@@ -37,7 +32,7 @@ class IndexSwift : NSObject {
             options.complete!(res);
         }
     }
-    static func test1() {
+    public static func test1() {
         console.log("test1", " at uni_modules/test-uniplugin/app-ios/index.uts:26");
     }
 }

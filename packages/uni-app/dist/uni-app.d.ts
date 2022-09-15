@@ -39,11 +39,11 @@ export declare function getCurrentSubNVue(): any;
 
 export declare function getSsrGlobalData(): any;
 
-export declare function initUtsProxyClass({ package: pkg, class: cls, methods, props, staticProps, staticMethods, }: ProxyClassOptions): any;
+export declare function initUtsProxyClass({ package: pkg, class: cls, constructor: { params: constructorParams }, methods, props, staticProps, staticMethods, }: ProxyClassOptions): any;
 
 export declare const initUtsProxyFunction: typeof initUtsStaticMethod;
 
-declare function initUtsStaticMethod(async: boolean, opts: ProxyBaseOptions): (...args: unknown[]) => unknown;
+declare function initUtsStaticMethod(async: boolean, opts: ProxyFunctionOptions): (...args: unknown[]) => unknown;
 
 declare type LaunchOption = LaunchShowOption;
 
@@ -171,7 +171,34 @@ declare interface PageScrollOption {
     scrollTop: number;
 }
 
-declare interface ProxyBaseOptions {
+declare interface Parameter {
+    name: string;
+    type: string;
+}
+
+declare interface ProxyClassOptions {
+    package: string;
+    class: string;
+    constructor: {
+        params: Parameter[];
+    };
+    props: string[];
+    staticProps: string[];
+    methods: {
+        [name: string]: {
+            async?: boolean;
+            params: Parameter[];
+        };
+    };
+    staticMethods: {
+        [name: string]: {
+            async?: boolean;
+            params: Parameter[];
+        };
+    };
+}
+
+declare interface ProxyFunctionOptions {
     /**
      * 包名
      */
@@ -185,26 +212,13 @@ declare interface ProxyBaseOptions {
      */
     name: string;
     /**
-     * 是否是伴生对象
+     * 是否伴生对象
      */
     companion?: boolean;
-}
-
-declare interface ProxyClassOptions {
-    package: string;
-    class: string;
-    props: string[];
-    staticProps: string[];
-    methods: {
-        [name: string]: {
-            async?: boolean;
-        };
-    };
-    staticMethods: {
-        [name: string]: {
-            async?: boolean;
-        };
-    };
+    /**
+     * 方法参数列表
+     */
+    params: Parameter[];
 }
 
 declare interface ReferrerInfo {

@@ -2,6 +2,7 @@ import type { Plugin } from 'vite'
 import path from 'path'
 import { isInHBuilderX, parseVueRequest } from '@dcloudio/uni-cli-shared'
 import {
+  BindingIdentifier,
   ClassDeclaration,
   ClassExpression,
   Expression,
@@ -9,10 +10,7 @@ import {
   FunctionExpression,
   Identifier,
   Module,
-  TsFunctionType,
-  TsInterfaceDeclaration,
-  TsType,
-  TsTypeAliasDeclaration,
+  Param,
   TsTypeAnnotation,
   VariableDeclaration,
 } from '../../types/types'
@@ -39,9 +37,10 @@ export function uniUtsV1Plugin(): Plugin {
       if (path.extname(filename) !== '.uts') {
         return
       }
-      const { compile, parsePackage } = getCompiler(
-        process.env.UNI_UTS_PLATFORM === 'app-ios' ? 'swift' : 'kotlin'
-      )
+      const { compile, parsePackage, createResolveTypeReferenceName } =
+        getCompiler(
+          process.env.UNI_UTS_PLATFORM === 'app-ios' ? 'swift' : 'kotlin'
+        )
       const pkg = parsePackage(filename)
       if (!pkg.class) {
         return
@@ -54,7 +53,7 @@ export function uniUtsV1Plugin(): Plugin {
 import { initUtsProxyClass, initUtsProxyFunction } from '@dcloudio/uni-app'
 const pkg = '${pkg.package}'
 const cls = '${pkg.class}'
-${genProxyCode(ast)}
+${genProxyCode(ast, createResolveTypeReferenceName(pkg.namespace, ast))}
 `
       const res = await compile(id)
       if (process.env.UNI_UTS_PLATFORM === 'app-android') {
@@ -82,17 +81,23 @@ ${genProxyCode(ast)}
 function genProxyFunctionCode(
   method: string,
   async: boolean,
+  params: Parameter[],
   isDefault: boolean = false
 ) {
   if (isDefault) {
-    return `export default initUtsProxyFunction(${async}, { package: pkg, class: cls, name: '${method}'})`
+    return `export default initUtsProxyFunction(${async}, { package: pkg, class: cls, name: '${method}', params: ${JSON.stringify(
+      params
+    )}})`
   }
-  return `export const ${method} = initUtsProxyFunction(${async}, { package: pkg, class: cls, name: '${method}'})`
+  return `export const ${method} = initUtsProxyFunction(${async}, { package: pkg, class: cls, name: '${method}', params: ${JSON.stringify(
+    params
+  )}})`
 }
 
 function genProxyClassCode(
   cls: string,
   options: {
+    constructor: { params: Parameter[] }
     methods: Record<string, any>
     staticMethods: Record<string, any>
     props: string[]
@@ -110,63 +115,95 @@ function genProxyClassCode(
   )} })`
 }
 
-function genTsTypeAliasDeclarationCode(decl: TsTypeAliasDeclaration) {
-  if (isFunctionType(decl.typeAnnotation)) {
-    return genProxyFunctionCode(
-      decl.id.value,
-      isReturnPromise(decl.typeAnnotation.typeAnnotation)
-    )
-  }
+interface Parameter {
+  name: string
+  type: string
 }
-function genTsInterfaceDeclarationCode(
-  decl: TsInterfaceDeclaration,
-  isDefault: boolean = false
+
+type ResolveTypeReferenceName = (name: string) => string
+
+function resolveIdentifierType(
+  ident: BindingIdentifier,
+  resolveTypeReferenceName: ResolveTypeReferenceName
 ) {
-  const cls = decl.id.value
-  const methods: Record<string, { async?: boolean }> = {}
-  decl.body.body.forEach((item) => {
-    if (item.type === 'TsMethodSignature') {
-      if (item.key.type === 'Identifier') {
-        methods[item.key.value] = {
-          async: isReturnPromise(item.typeAnn),
-        }
-      }
+  if (ident.typeAnnotation) {
+    const { typeAnnotation } = ident.typeAnnotation
+    if (typeAnnotation.type === 'TsKeywordType') {
+      return typeAnnotation.kind
+    } else if (
+      typeAnnotation.type === 'TsTypeReference' &&
+      typeAnnotation.typeName.type === 'Identifier'
+    ) {
+      return resolveTypeReferenceName(typeAnnotation.typeName.value)
+    }
+  }
+  return ''
+}
+
+function resolveFunctionParams(
+  params: Param[],
+  resolveTypeReferenceName: ResolveTypeReferenceName
+) {
+  const result: Parameter[] = []
+  params.forEach(({ pat }) => {
+    if (pat.type === 'Identifier') {
+      result.push({
+        name: pat.value,
+        type: resolveIdentifierType(
+          pat as BindingIdentifier,
+          resolveTypeReferenceName
+        ),
+      })
+    } else {
+      result.push({ name: '', type: '' })
     }
   })
-  return genProxyClassCode(
-    cls,
-    { methods, staticMethods: {}, props: [], staticProps: [] },
-    isDefault
-  )
+  return result
 }
 
 function genFunctionDeclarationCode(
   decl: FunctionDeclaration | FunctionExpression,
+  resolveTypeReferenceName: ResolveTypeReferenceName,
   isDefault: boolean = false
 ) {
   return genProxyFunctionCode(
     decl.identifier!.value,
     decl.async || isReturnPromise(decl.returnType),
+    resolveFunctionParams(decl.params, resolveTypeReferenceName),
     isDefault
   )
 }
 
 function genClassDeclarationCode(
   decl: ClassDeclaration | ClassExpression,
+  resolveTypeReferenceName: ResolveTypeReferenceName,
   isDefault: boolean = false
 ) {
   const cls = decl.identifier!.value
-  const methods: Record<string, { async?: boolean }> = {}
-  const staticMethods: Record<string, { async?: boolean }> = {}
+  const constructor: { params: Parameter[] } = { params: [] }
+  const methods: Record<string, { async?: boolean; params: Parameter[] }> = {}
+  const staticMethods: Record<
+    string,
+    { async?: boolean; params: Parameter[] }
+  > = {}
   const props: string[] = []
   const staticProps: string[] = []
   decl.body.forEach((item) => {
-    if (item.type === 'ClassMethod') {
+    if (item.type === 'Constructor') {
+      constructor.params = resolveFunctionParams(
+        item.params as Param[],
+        resolveTypeReferenceName
+      )
+    } else if (item.type === 'ClassMethod') {
       if (item.key.type === 'Identifier') {
         const name = item.key.value
         const value = {
           async:
             item.function.async || isReturnPromise(item.function.returnType),
+          params: resolveFunctionParams(
+            item.function.params,
+            resolveTypeReferenceName
+          ),
         }
         if (item.isStatic) {
           staticMethods[name] = value
@@ -186,7 +223,7 @@ function genClassDeclarationCode(
   })
   return genProxyClassCode(
     cls,
-    { methods, staticMethods, props, staticProps },
+    { constructor, methods, staticMethods, props, staticProps },
     isDefault
   )
 }
@@ -228,24 +265,26 @@ function genVariableDeclarationCode(decl: VariableDeclaration) {
   }
 }
 
-function genProxyCode({ body }: Module) {
+function genProxyCode(
+  { body }: Module,
+  resolveTypeReferenceName: ResolveTypeReferenceName
+) {
   const codes: string[] = []
+
   body.forEach((item) => {
     let code: string | undefined
     if (item.type === 'ExportDeclaration') {
       const decl = item.declaration
       switch (decl.type) {
         case 'FunctionDeclaration':
-          code = genFunctionDeclarationCode(decl, false)
+          code = genFunctionDeclarationCode(
+            decl,
+            resolveTypeReferenceName,
+            false
+          )
           break
         case 'ClassDeclaration':
-          code = genClassDeclarationCode(decl, false)
-          break
-        case 'TsTypeAliasDeclaration':
-          code = genTsTypeAliasDeclarationCode(decl)
-          break
-        case 'TsInterfaceDeclaration':
-          code = genTsInterfaceDeclarationCode(decl, false)
+          code = genClassDeclarationCode(decl, resolveTypeReferenceName, false)
           break
         case 'VariableDeclaration':
           code = genVariableDeclarationCode(decl)
@@ -253,16 +292,18 @@ function genProxyCode({ body }: Module) {
       }
     } else if (item.type === 'ExportDefaultDeclaration') {
       const decl = item.decl
-      if (decl.type === 'TsInterfaceDeclaration') {
-        code = genTsInterfaceDeclarationCode(decl, true)
-      } else if (decl.type === 'ClassExpression') {
+      if (decl.type === 'ClassExpression') {
         if (decl.identifier) {
           // export default class test{}
-          code = genClassDeclarationCode(decl, false)
+          code = genClassDeclarationCode(decl, resolveTypeReferenceName, false)
         }
       } else if (decl.type === 'FunctionExpression') {
         if (decl.identifier) {
-          code = genFunctionDeclarationCode(decl, true)
+          code = genFunctionDeclarationCode(
+            decl,
+            resolveTypeReferenceName,
+            true
+          )
         }
       }
     }
@@ -271,10 +312,6 @@ function genProxyCode({ body }: Module) {
     }
   })
   return codes.join(`\n`)
-}
-
-function isFunctionType(type: TsType): type is TsFunctionType {
-  return type.type === 'TsFunctionType'
 }
 
 function isReturnPromise(anno?: TsTypeAnnotation) {

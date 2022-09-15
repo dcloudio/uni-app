@@ -16,7 +16,15 @@ export function normalizeArg(arg: unknown) {
   return arg
 }
 
-interface ProxyBaseOptions {
+function initUtsInstanceMethod(async: boolean, opts: ProxyFunctionOptions) {
+  return initProxyFunction(async, opts)
+}
+
+interface Parameter {
+  name: string
+  type: string
+}
+interface ProxyFunctionOptions {
   /**
    * 包名
    */
@@ -30,51 +38,71 @@ interface ProxyBaseOptions {
    */
   name: string
   /**
-   * 是否是伴生对象
+   * 是否伴生对象
    */
   companion?: boolean
+  /**
+   * 方法参数列表
+   */
+  params: Parameter[]
 }
 
-interface ProxyInstanceOptions extends ProxyBaseOptions {
-  id: number
-}
-
-/**
- * 实例方法
- */
-interface ProxyInstanceMethodOptions extends ProxyInstanceOptions {}
-
-function initUtsInstanceMethod(
-  async: boolean,
-  opts: ProxyInstanceMethodOptions
-) {
-  return initProxyFunction(async, opts)
-}
 interface ProxyClassOptions {
   package: string
   class: string
+  constructor: {
+    params: Parameter[]
+  }
   props: string[]
   staticProps: string[]
   methods: {
     [name: string]: {
       async?: boolean
+      params: Parameter[]
     }
   }
   staticMethods: {
     [name: string]: {
       async?: boolean
+      params: Parameter[]
     }
   }
 }
 
-type InvokeInstanceArgs =
-  // prop
-  | { id: number; name: string }
-  // method
-  | { id: number; name: string; params: unknown[] }
-type InvokeArgs = (ProxyBaseOptions | InvokeInstanceArgs) & {
+interface InvokeInstanceArgs {
+  id: number
+  name: string
   params?: unknown[]
+  method?: Parameter[]
 }
+interface InvokeStaticArgs {
+  /**
+   * 包名
+   */
+  package: string
+  /**
+   * 类名
+   */
+  class: string
+  /**
+   * 属性名或方法名
+   */
+  name: string
+  /**
+   * 执行方法时的真实参数列表
+   */
+  params?: unknown[]
+  /**
+   * 方法定义的参数列表
+   */
+  method?: Parameter[]
+  /**
+   * 是否是伴生对象
+   */
+  companion?: boolean
+}
+
+type InvokeArgs = InvokeInstanceArgs | InvokeStaticArgs
 
 interface InvokeCallbackReturnRes {
   type: 'return'
@@ -118,38 +146,16 @@ function invokePropGetter(args: InvokeArgs) {
   return resolveSyncResult(getProxy().invokeSync(args, () => {}))
 }
 
-interface InitProxyFunctionOptions {
-  /**
-   * 包名
-   */
-  package: string
-  /**
-   * 类名
-   */
-  class: string
-  /**
-   * 属性名或方法名
-   */
-  name: string
-  /**
-   * 是否伴生对象
-   */
-  companion?: boolean
-  /**
-   * 实例 ID
-   */
-  id?: number
-}
-
 function initProxyFunction(
   async: boolean,
   {
     package: pkg,
     class: cls,
     name: propOrMethod,
-    id: instanceId,
     companion,
-  }: InitProxyFunctionOptions
+    params: methodParams,
+  }: ProxyFunctionOptions,
+  instanceId?: number
 ) {
   const invokeCallback = ({
     id,
@@ -168,12 +174,13 @@ function initProxyFunction(
     }
   }
   const baseArgs: InvokeArgs = instanceId
-    ? { id: instanceId, name: propOrMethod }
+    ? { id: instanceId, name: propOrMethod, method: methodParams }
     : {
         package: pkg,
         class: cls,
         name: propOrMethod,
         companion,
+        method: methodParams,
       }
   return (...args: unknown[]) => {
     const invokeArgs = extend({}, baseArgs, {
@@ -198,7 +205,7 @@ function initProxyFunction(
   }
 }
 
-function initUtsStaticMethod(async: boolean, opts: ProxyBaseOptions) {
+function initUtsStaticMethod(async: boolean, opts: ProxyFunctionOptions) {
   return initProxyFunction(async, opts)
 }
 export const initUtsProxyFunction = initUtsStaticMethod
@@ -206,6 +213,7 @@ export const initUtsProxyFunction = initUtsStaticMethod
 export function initUtsProxyClass({
   package: pkg,
   class: cls,
+  constructor: { params: constructorParams },
   methods,
   props,
   staticProps,
@@ -221,7 +229,7 @@ export function initUtsProxyClass({
       // 初始化实例 ID
       const instanceId = initProxyFunction(
         false,
-        extend({ name: 'constructor', params }, baseOptions)
+        extend({ name: 'constructor', params: constructorParams }, baseOptions)
       ).apply(null, params) as number
 
       return new Proxy(this, {
@@ -229,12 +237,14 @@ export function initUtsProxyClass({
           if (!target[name as string]) {
             //实例方法
             if (hasOwn(methods, name)) {
+              const { async, params } = methods[name]
               target[name] = initUtsInstanceMethod(
-                !!methods[name].async,
+                !!async,
                 extend(
                   {
                     id: instanceId,
                     name,
+                    params,
                   },
                   baseOptions
                 )
@@ -254,10 +264,11 @@ export function initUtsProxyClass({
     get(target, name, receiver) {
       if (hasOwn(staticMethods, name)) {
         if (!staticMethodCache[name as string]) {
+          const { async, params } = staticMethods[name]
           // 静态方法
           staticMethodCache[name] = initUtsStaticMethod(
-            !!staticMethods[name].async,
-            extend({ name, companion: true }, baseOptions)
+            !!async,
+            extend({ name, companion: true, params }, baseOptions)
           )
         }
         return staticMethodCache[name]

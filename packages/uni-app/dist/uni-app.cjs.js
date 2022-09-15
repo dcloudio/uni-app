@@ -183,7 +183,7 @@ function resolveSyncResult(res) {
 function invokePropGetter(args) {
     return resolveSyncResult(getProxy().invokeSync(args, () => { }));
 }
-function initProxyFunction(async, { package: pkg, class: cls, name: propOrMethod, id: instanceId, companion, }) {
+function initProxyFunction(async, { package: pkg, class: cls, name: propOrMethod, companion, params: methodParams, }, instanceId) {
     const invokeCallback = ({ id, name, params, keepAlive, }) => {
         const callback = callbacks[id];
         if (callback) {
@@ -197,12 +197,13 @@ function initProxyFunction(async, { package: pkg, class: cls, name: propOrMethod
         }
     };
     const baseArgs = instanceId
-        ? { id: instanceId, name: propOrMethod }
+        ? { id: instanceId, name: propOrMethod, method: methodParams }
         : {
             package: pkg,
             class: cls,
             name: propOrMethod,
             companion,
+            method: methodParams,
         };
     return (...args) => {
         const invokeArgs = shared.extend({}, baseArgs, {
@@ -232,7 +233,7 @@ function initUtsStaticMethod(async, opts) {
     return initProxyFunction(async, opts);
 }
 const initUtsProxyFunction = initUtsStaticMethod;
-function initUtsProxyClass({ package: pkg, class: cls, methods, props, staticProps, staticMethods, }) {
+function initUtsProxyClass({ package: pkg, class: cls, constructor: { params: constructorParams }, methods, props, staticProps, staticMethods, }) {
     const baseOptions = {
         package: pkg,
         class: cls,
@@ -241,15 +242,17 @@ function initUtsProxyClass({ package: pkg, class: cls, methods, props, staticPro
         constructor(...params) {
             const target = {};
             // 初始化实例 ID
-            const instanceId = initProxyFunction(false, shared.extend({ name: 'constructor', params }, baseOptions)).apply(null, params);
+            const instanceId = initProxyFunction(false, shared.extend({ name: 'constructor', params: constructorParams }, baseOptions)).apply(null, params);
             return new Proxy(this, {
                 get(_, name) {
                     if (!target[name]) {
                         //实例方法
                         if (shared.hasOwn(methods, name)) {
-                            target[name] = initUtsInstanceMethod(!!methods[name].async, shared.extend({
+                            const { async, params } = methods[name];
+                            target[name] = initUtsInstanceMethod(!!async, shared.extend({
                                 id: instanceId,
                                 name,
+                                params,
                             }, baseOptions));
                         }
                         else if (props.includes(name)) {
@@ -267,8 +270,9 @@ function initUtsProxyClass({ package: pkg, class: cls, methods, props, staticPro
         get(target, name, receiver) {
             if (shared.hasOwn(staticMethods, name)) {
                 if (!staticMethodCache[name]) {
+                    const { async, params } = staticMethods[name];
                     // 静态方法
-                    staticMethodCache[name] = initUtsStaticMethod(!!staticMethods[name].async, shared.extend({ name, companion: true }, baseOptions));
+                    staticMethodCache[name] = initUtsStaticMethod(!!async, shared.extend({ name, companion: true, params }, baseOptions));
                 }
                 return staticMethodCache[name];
             }
