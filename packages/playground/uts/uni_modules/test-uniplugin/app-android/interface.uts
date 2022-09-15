@@ -1,0 +1,3 @@
+export interface IUser {
+  register(name: string): void
+}

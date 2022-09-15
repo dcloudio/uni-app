@@ -212,14 +212,10 @@ export declare const forcePatchProp: (el: {
     nodeName: string;
 }, key: string) => boolean;
 
-export declare function formatAppLog(type: 'log' | 'info' | 'debug' | 'warn' | 'error', filename: string, ...args: unknown[]): void;
-
 export declare function formatDateTime({ date, mode }: {
     date?: Date | undefined;
     mode?: string | undefined;
 }): string;
-
-export declare function formatH5Log(type: keyof Console, filename: string, ...args: unknown[]): void;
 
 export declare function formatLog(module: string, ...args: any[]): string;
 
@@ -453,6 +449,8 @@ export declare const ON_LAUNCH = "onLaunch";
 export declare const ON_LOAD = "onLoad";
 
 export declare const ON_NAVIGATION_BAR_BUTTON_TAP = "onNavigationBarButtonTap";
+
+export declare const ON_NAVIGATION_BAR_CHANGE = "onNavigationBarChange";
 
 export declare const ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED = "onNavigationBarSearchInputChanged";
 

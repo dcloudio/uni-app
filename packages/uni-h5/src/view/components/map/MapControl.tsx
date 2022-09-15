@@ -15,6 +15,7 @@ const props = {
   position: { type: Object as PropType<Position>, require: true },
   iconPath: { type: String, require: true },
   clickable: { type: [Boolean, String], default: '' },
+  rootRef: { type: Object, default: null },
 }
 
 export type Props = Partial<Record<keyof typeof props, any>>
@@ -37,25 +38,27 @@ export default /*#__PURE__*/ defineSystemComponent({
         control.remove()
       }
     }
-    onMapReady((map, maps, trigger) => {
+    onMapReady((_, __, trigger) => {
       function updateControl(option: Props) {
         removeControl()
         addControl(option)
       }
       function addControl(option: Props) {
-        const position = option.position || {}
         control = document.createElement('div')
-        const img = new Image()
-        control.appendChild(img)
         const style = control.style
         style.position = 'absolute'
         style.width = '0'
         style.height = '0'
+        style.top = '0'
+        style.left = '0'
+        const img = new Image()
+        img.src = getRealPath(option.iconPath)
         img.onload = () => {
-          if (option.position.width) {
+          const position = option.position || {}
+          if (position.width) {
             img.width = option.position.width
           }
-          if (option.position.height) {
+          if (position.height) {
             img.height = option.position.height
           }
           const style = img.style
@@ -63,8 +66,10 @@ export default /*#__PURE__*/ defineSystemComponent({
           style.left = (position.left || 0) + 'px'
           style.top = (position.top || 0) + 'px'
           style.maxWidth = 'initial'
+
+          control.appendChild(img)
+          props.rootRef.value && props.rootRef.value.appendChild(control)
         }
-        img.src = getRealPath(option.iconPath)
         img.onclick = function ($event) {
           if (option.clickable) {
             trigger('controltap', $event, {
@@ -72,7 +77,6 @@ export default /*#__PURE__*/ defineSystemComponent({
             })
           }
         }
-        map.controls[maps.ControlPosition.TOP_LEFT].push(control)
       }
       addControl(props as Props)
       watch(props, updateControl)

@@ -44,3 +44,5 @@ export const m: typeof withModelModifiers = (
   modifiers,
   isComponent = false
 ) => withModelModifiers(fn, modifiers, isComponent)
+
+export const j = (obj: unknown) => JSON.stringify(obj)

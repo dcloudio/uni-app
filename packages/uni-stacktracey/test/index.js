@@ -20,26 +20,7 @@ Run with --stacktrace option to get the stack trace. Run with --info or --debug 
 
 BUILD FAILED in 2s
 `
-
-const uniErrorMsg = `Error: Sentry Error
-at a.throwError(/static/js/pages-index-index.3ab0d0e5.js:1:567)
-at click(/static/js/pages-index-index.3ab0d0e5.js:1:2745)
-at ee(/static/js/chunk-vendors.75525bd5.js:34:11927)
-at n(/static/js/chunk-vendors.75525bd5.js:34:13747)
-at ee(/static/js/chunk-vendors.75525bd5.js:34:11927)
-at HTMLElement.n(/static/js/chunk-vendors.75525bd5.js:34:13824)
-at HTMLElement.o._wrapper(/static/js/chunk-vendors.75525bd5.js:34:53966)
-at HTMLElement.i(/static/js/chunk-vendors.75525bd5.js:7:609894)`
-
-stacktracey(uniErrorMsg, {
-  preset: uniStracktraceyPreset({
-    base: path.resolve(__dirname, './__UNI__APPID__/1.0.0/.sourcemap/h5/'),
-    sourceRoot: '',
-  }),
-}).then((res) => {
-  console.log('res :>> ', res)
-})
-/* stacktracey(utsErrorMsg, {
+stacktracey(utsErrorMsg, {
   preset: utsStracktraceyPreset({
     base: path.resolve(
       __dirname,
@@ -50,4 +31,22 @@ stacktracey(uniErrorMsg, {
 }).then((res) => {
   console.log('res :>> ', res)
 })
- */
+
+const uniErrorMsg = `Error: Sentry Error
+at a.throwError(/static/js/pages-index-index.3ab0d0e5.js:1:567)
+at click(/static/js/pages-index-index.3ab0d0e5.js:1:2745)
+at ee(/static/js/chunk-vendors.75525bd5.js:34:11927)
+at n(/static/js/chunk-vendors.75525bd5.js:34:13747)
+at ee(/static/js/chunk-vendors.75525bd5.js:34:11927)
+at HTMLElement.n(/static/js/chunk-vendors.75525bd5.js:34:13824)
+at HTMLElement.o._wrapper(/static/js/chunk-vendors.75525bd5.js:34:53966)
+at HTMLElement.i(/static/js/chunk-vendors.75525bd5.js:7:609894)`
+stacktracey(uniErrorMsg, {
+  preset: uniStracktraceyPreset({
+    base: path.resolve(__dirname, './__UNI__APPID__/1.0.0/.sourcemap/h5/'),
+    sourceRoot: '',
+    // splitThirdParty: true
+  }),
+}).then((res) => {
+  console.log('res :>> ', res)
+})

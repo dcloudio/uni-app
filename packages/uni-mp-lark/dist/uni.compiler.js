@@ -98,6 +98,14 @@ const options = {
         },
         copyOptions: {
             assets: [COMPONENTS_DIR],
+            targets: [
+                {
+                    src: ['ext.json'],
+                    get dest() {
+                        return process.env.UNI_OUTPUT_DIR;
+                    },
+                },
+            ],
         },
     },
     global: 'tt',
@@ -142,6 +150,16 @@ const uniMiniProgramToutiaoPlugin = {
         };
     },
 };
+options.vite.copyOptions.targets = [
+    ...(options.vite.copyOptions.targets || []),
+    {
+        src: ['theme.json'],
+        get dest() {
+            return process.env.UNI_OUTPUT_DIR;
+        },
+    },
+];
+options.app.darkmode = true;
 options.cdn = 10;
 options.template.slot.fallbackContent = false;
 // 飞书不支持：

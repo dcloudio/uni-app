@@ -119,3 +119,51 @@ export function resolveComponentsLibPath() {
   }
   return componentsLibPath
 }
+
+// 仅限 root/uni_modules/test-plugin | root/utssdk/test-plugin 格式
+export function resolveUtsModule(
+  id: string,
+  importer: string,
+  platform: typeof process.env.UNI_UTS_PLATFORM
+) {
+  id = path.resolve(importer, id)
+  if (id.includes('utssdk') || id.includes('uni_modules')) {
+    const parts = normalizePath(id).split('/')
+    const parentDir = parts[parts.length - 2]
+    if (parentDir === 'uni_modules' || parentDir === 'utssdk') {
+      const index = path.resolve(id, 'index.uts')
+      if (fs.existsSync(index)) {
+        return index
+      }
+      if (
+        parentDir === 'uni_modules' &&
+        !fs.existsSync(path.join(id, 'utssdk'))
+      ) {
+        // uni_modules/test-plugin/utssdk不存在
+        return
+      }
+      const platformDir = path.resolve(
+        id,
+        parentDir === 'uni_modules' ? 'utssdk' : '',
+        platform
+      )
+      // App平台仅支持 uts
+      if (platform === 'app-android') {
+        return resolveUtsFile(platformDir, ['.uts'])
+      }
+      return resolveUtsFile(platformDir)
+    }
+  }
+}
+
+function resolveUtsFile(
+  dir: string,
+  extensions: string[] = ['.uts', '.ts', '.js']
+) {
+  for (let i = 0; i < extensions.length; i++) {
+    const indexFile = path.join(dir, 'index' + extensions[i])
+    if (fs.existsSync(indexFile)) {
+      return indexFile
+    }
+  }
+}

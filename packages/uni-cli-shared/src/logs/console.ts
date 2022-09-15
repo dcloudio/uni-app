@@ -1,8 +1,8 @@
 import MagicString from 'magic-string'
 import { normalizePath } from '../utils'
 
-const F = '__f__'
 export function rewriteConsoleExpr(
+  method: string,
   id: string,
   filename: string,
   code: string,
@@ -18,7 +18,7 @@ export function rewriteConsoleExpr(
     s.overwrite(
       match.index,
       match.index + expr.length + 1,
-      F + `('${type}','at ${filename}:${locate(match.index).line + 1}',`
+      method + `('${type}','at ${filename}:${locate(match.index).line + 1}',`
     )
   }
   return {

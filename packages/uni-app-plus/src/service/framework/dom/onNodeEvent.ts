@@ -1,5 +1,6 @@
 import { ACTION_TYPE_EVENT, UniEvent } from '@dcloudio/uni-shared'
 import UniPageNode from './Page'
+import { hookKeyboardEvent } from './keyboard'
 
 export type EventAction = [
   typeof ACTION_TYPE_EVENT,
@@ -12,5 +13,12 @@ export function onNodeEvent(
   evt: UniEvent,
   pageNode: UniPageNode
 ) {
-  pageNode.fireEvent(nodeId, evt)
+  const type = evt.type
+  if (type === 'onFocus' || type === 'onBlur') {
+    hookKeyboardEvent(evt, (evt) => {
+      pageNode.fireEvent(nodeId, evt)
+    })
+  } else {
+    pageNode.fireEvent(nodeId, evt)
+  }
 }

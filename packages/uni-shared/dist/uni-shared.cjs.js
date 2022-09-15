@@ -111,6 +111,7 @@ const NVUE_BUILT_IN_TAGS = [
     'recycle-list',
     'u-scalable',
     'barcode',
+    'gcanvas',
 ];
 const NVUE_U_BUILT_IN_TAGS = [
     'u-text',
@@ -122,6 +123,7 @@ const NVUE_U_BUILT_IN_TAGS = [
     'u-slider',
     'u-ad',
     'u-ad-draw',
+    'u-rich-text',
 ];
 function isBuiltInComponent(tag) {
     // h5 平台会被转换为 v-uni-
@@ -247,6 +249,7 @@ const ON_ADD_TO_FAVORITES = 'onAddToFavorites';
 const ON_SHARE_APP_MESSAGE = 'onShareAppMessage';
 // navigationBar
 const ON_NAVIGATION_BAR_BUTTON_TAP = 'onNavigationBarButtonTap';
+const ON_NAVIGATION_BAR_CHANGE = 'onNavigationBarChange';
 const ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED = 'onNavigationBarSearchInputClicked';
 const ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED = 'onNavigationBarSearchInputChanged';
 const ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED = 'onNavigationBarSearchInputConfirmed';
@@ -649,66 +652,6 @@ function parseUrl(url) {
         path,
         query: parseQuery(querystring || ''),
     };
-}
-
-function isDebugMode() {
-    // @ts-expect-error
-    return typeof __channelId__ === 'string' && __channelId__;
-}
-function jsonStringifyReplacer(k, p) {
-    switch (shared.toRawType(p)) {
-        case 'Function':
-            return 'function() { [native code] }';
-        default:
-            return p;
-    }
-}
-function normalizeLog(type, filename, args) {
-    if (isDebugMode()) {
-        args.push(filename.replace('at ', 'uni-app:///'));
-        return console[type].apply(console, args);
-    }
-    const msgs = args.map(function (v) {
-        const type = shared.toTypeString(v).toLowerCase();
-        if (['[object object]', '[object array]', '[object module]'].indexOf(type) !==
-            -1) {
-            try {
-                v =
-                    '---BEGIN:JSON---' +
-                        JSON.stringify(v, jsonStringifyReplacer) +
-                        '---END:JSON---';
-            }
-            catch (e) {
-                v = type;
-            }
-        }
-        else {
-            if (v === null) {
-                v = '---NULL---';
-            }
-            else if (v === undefined) {
-                v = '---UNDEFINED---';
-            }
-            else {
-                const vType = shared.toRawType(v).toUpperCase();
-                if (vType === 'NUMBER' || vType === 'BOOLEAN') {
-                    v = '---BEGIN:' + vType + '---' + v + '---END:' + vType + '---';
-                }
-                else {
-                    v = String(v);
-                }
-            }
-        }
-        return v;
-    });
-    return msgs.join('---COMMA---') + ' ' + filename;
-}
-function formatAppLog(type, filename, ...args) {
-    const res = normalizeLog(type, filename, args);
-    res && console[type](res);
-}
-function formatH5Log(type, filename, ...args) {
-    console[type].apply(console, [...args, filename]);
 }
 
 function parseNVueDataset(attr) {
@@ -1471,6 +1414,7 @@ exports.ON_KEYBOARD_HEIGHT_CHANGE = ON_KEYBOARD_HEIGHT_CHANGE;
 exports.ON_LAUNCH = ON_LAUNCH;
 exports.ON_LOAD = ON_LOAD;
 exports.ON_NAVIGATION_BAR_BUTTON_TAP = ON_NAVIGATION_BAR_BUTTON_TAP;
+exports.ON_NAVIGATION_BAR_CHANGE = ON_NAVIGATION_BAR_CHANGE;
 exports.ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED = ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED;
 exports.ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED = ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED;
 exports.ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED = ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED;
@@ -1536,9 +1480,7 @@ exports.defaultNVueRpx2Unit = defaultNVueRpx2Unit;
 exports.defaultRpx2Unit = defaultRpx2Unit;
 exports.dynamicSlotName = dynamicSlotName;
 exports.forcePatchProp = forcePatchProp;
-exports.formatAppLog = formatAppLog;
 exports.formatDateTime = formatDateTime;
-exports.formatH5Log = formatH5Log;
 exports.formatLog = formatLog;
 exports.getCustomDataset = getCustomDataset;
 exports.getEnvLocale = getEnvLocale;

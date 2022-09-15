@@ -38,7 +38,7 @@ export function initSplashscreen(
 }
 
 export function getSplashscreen(manifestJson: Record<string, any>) {
-  const splashscreenOptions = manifestJson['app-plus']?.splashscreen
+  const splashscreenOptions = manifestJson['app-plus']?.splashscreen || {}
   return {
     autoclose: splashscreenOptions.autoclose !== false,
     alwaysShowBeforeRender:

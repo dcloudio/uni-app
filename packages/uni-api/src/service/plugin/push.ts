@@ -2,6 +2,7 @@ import { defineAsyncApi } from '../../helpers/api'
 
 interface OnPushEnabledCallback {
   type: 'enabled'
+  offline: boolean
 }
 
 interface OnPushClientIdCallback {
@@ -28,6 +29,7 @@ interface OnPushClickCallback {
 let cid: string | undefined
 let cidErrMsg: string | undefined
 let enabled: boolean | undefined
+let offline: boolean | undefined
 
 function normalizePushMessage(message: unknown) {
   try {
@@ -49,17 +51,26 @@ export function invokePushCallback(
 ) {
   if (args.type === 'enabled') {
     enabled = true
+    if (__PLATFORM__ === 'app') {
+      offline = args.offline
+    }
   } else if (args.type === 'clientId') {
     cid = args.cid
     cidErrMsg = args.errMsg
     invokeGetPushCidCallbacks(cid, args.errMsg)
   } else if (args.type === 'pushMsg') {
-    onPushMessageCallbacks.forEach((callback) => {
-      callback({
-        type: 'receive',
-        data: normalizePushMessage(args.message),
-      })
-    })
+    const message: OnPushMessageSuccess = {
+      type: 'receive',
+      data: normalizePushMessage(args.message),
+    }
+    for (let i = 0; i < onPushMessageCallbacks.length; i++) {
+      const callback = onPushMessageCallbacks[i]
+      callback(message)
+      // 该消息已被阻止
+      if (message.stopped) {
+        break
+      }
+    }
   } else if (args.type === 'click') {
     onPushMessageCallbacks.forEach((callback) => {
       callback({
@@ -83,11 +94,23 @@ const API_GET_PUSH_CLIENT_ID = 'getPushClientId'
 export const getPushClientId = defineAsyncApi(
   API_GET_PUSH_CLIENT_ID,
   (_, { resolve, reject }) => {
+    // App 端且启用离线时，使用 getClientInfoAsync 来调用
+    if (__PLATFORM__ === 'app' && offline) {
+      plus.push.getClientInfoAsync(
+        (info) => {
+          resolve({ cid: info.clientid })
+        },
+        (res) => {
+          reject(res.code + ': ' + res.message)
+        }
+      )
+      return
+    }
     Promise.resolve().then(() => {
       if (typeof enabled === 'undefined') {
         enabled = false
         cid = ''
-        cidErrMsg = 'unipush is not enabled'
+        cidErrMsg = 'uniPush is not enabled'
       }
       getPushCidCallbacks.push((cid?: string, errMsg?: string) => {
         if (cid) {
@@ -106,14 +129,32 @@ export const getPushClientId = defineAsyncApi(
 interface OnPushMessageSuccess {
   type: 'click' | 'receive'
   data: unknown
+  stopped?: boolean
 }
 
 type OnPushMessageCallback = (result: OnPushMessageSuccess) => void
 const onPushMessageCallbacks: OnPushMessageCallback[] = []
+let listening = false
 // 不使用 defineOnApi 实现，是因为 defineOnApi 依赖 UniServiceJSBridge ，该对象目前在小程序上未提供，故简单实现
 export const onPushMessage: (fn: OnPushMessageCallback) => void = (fn) => {
   if (onPushMessageCallbacks.indexOf(fn) === -1) {
     onPushMessageCallbacks.push(fn)
+  }
+  // 不能程序启动时就监听，因为离线事件，仅触发一次，框架监听后，无法转发给还没开始监听的开发者
+  if (__PLATFORM__ === 'app' && !listening) {
+    listening = true
+    plus.push.addEventListener('click', (result) => {
+      invokePushCallback({
+        type: 'click',
+        message: result,
+      })
+    })
+    plus.push.addEventListener('receive', (result) => {
+      invokePushCallback({
+        type: 'pushMsg',
+        message: result,
+      })
+    })
   }
 }
 

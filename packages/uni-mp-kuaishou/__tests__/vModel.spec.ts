@@ -6,7 +6,7 @@ describe('mp-kuaishou: transform v-model', () => {
       `<Comp v-model="model" />`,
       `<comp ks:if="{{b}}" u-i="2a9ec0b0-0" bind:__l="__l" eO="{{a}}" bindupdateModelValue="__e" u-p="{{b}}"/>`,
       `(_ctx, _cache) => {
-  return { a: { 'updateModelValue': _o($event => _ctx.model = $event) }, b: _p({ modelValue: _ctx.model }) }
+  return { a: _j({ 'updateModelValue': _o($event => _ctx.model = $event) }), b: _p({ modelValue: _ctx.model }) }
 }`
     )
   })
@@ -15,7 +15,7 @@ describe('mp-kuaishou: transform v-model', () => {
       `<Comp v-model="model" />`,
       `<comp ks:if="{{b}}" u-i="2a9ec0b0-0" bind:__l="__l" eO="{{a}}" bindupdateModelValue="__e" u-p="{{b}}"/>`,
       `(_ctx, _cache) => {
-  return { a: { 'updateModelValue': _o($event => _ctx.model = $event) }, b: _p({ modelValue: _ctx.model }) }
+  return { a: _j({ 'updateModelValue': _o($event => _ctx.model = $event) }), b: _p({ modelValue: _ctx.model }) }
 }`,
       {
         cacheHandlers: true,

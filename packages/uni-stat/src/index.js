@@ -9,6 +9,8 @@ const lifecycle = {
   onLaunch(options) {
     // 进入应用上报数据
     stat.launch(options, this)
+    // 上报push推送id
+    stat.pushEvent(options)
   },
   onLoad(options) {
     stat.load(options, this)
@@ -75,12 +77,12 @@ function main() {
   if (is_debug) {
     if (__STAT_VERSION__ === '1') {
       // #ifndef APP-NVUE
-      console.log('=== uni统计开启,version:1.0')
+      console.log('=== uni统计开启,version:1.0 ===')
       // #endif
     }
     if (__STAT_VERSION__ === '2') {
       // #ifndef APP-NVUE
-      console.log('=== uni统计开启,version:2.0')
+      console.log('=== uni统计开启,version:2.0 ===')
       // #endif
     }
     load_stat()

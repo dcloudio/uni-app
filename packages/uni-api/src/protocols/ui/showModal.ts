@@ -23,7 +23,9 @@ export const ShowModalOptions: ApiOptions<API_TYPE_SHOW_MODAL> = {
   formatArgs: {
     title: '',
     content: '',
+    placeholderText: '',
     showCancel: true,
+    editable: false,
     cancelText(_value, params) {
       if (!hasOwn(params, 'cancelText')) {
         const { t } = useI18n()

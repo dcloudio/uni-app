@@ -1,5 +1,5 @@
 import { ref, computed, ExtractPropTypes, Ref, onMounted } from 'vue'
-import { extend, isFunction } from '@vue/shared'
+import { extend, hasOwn, isFunction } from '@vue/shared'
 import type { Actions, OperateCanvasType } from '@dcloudio/uni-api'
 import {
   useAttrs,
@@ -35,15 +35,10 @@ function resolveColor(color: number[]) {
   return 'rgba(' + color.join(',') + ')'
 }
 
-function processTouches(target: EventTarget, touches: TouchEvent['touches']) {
-  const eventTarget = target as HTMLElement
-  return Array.from(touches).map((touch) => {
-    let boundingClientRect = eventTarget.getBoundingClientRect()
-    return {
-      identifier: touch.identifier,
-      x: touch.clientX - boundingClientRect.left,
-      y: touch.clientY - boundingClientRect.top,
-    }
+function processTouches(rect: DOMRect, touches: TouchEvent['touches']) {
+  Array.from(touches).forEach((touch) => {
+    ;(touch as any).x = touch.clientX - rect.left
+    ;(touch as any).y = touch.clientY - rect.top
   })
 }
 
@@ -158,7 +153,7 @@ function useListeners(
       (() => {
         let obj = {}
         for (const key in _$listeners) {
-          if (Object.prototype.hasOwnProperty.call(_$listeners, key)) {
+          if (hasOwn(_$listeners, key)) {
             const event = (_$listeners as any)[key]
             ;(obj as any)[key] = event
           }
@@ -172,27 +167,10 @@ function useListeners(
       if (existing) {
         eventHandler.push(
           withWebEvent(($event) => {
-            trigger(
-              event.replace('on', '').toLocaleLowerCase(),
-              extend(
-                {},
-                // $event无法直接assign
-                (() => {
-                  let obj = {}
-                  for (const key in $event) {
-                    ;(obj as any)[key] = $event[key]
-                  }
-                  return obj
-                })(),
-                {
-                  touches: processTouches($event.currentTarget, $event.touches),
-                  changedTouches: processTouches(
-                    $event.currentTarget,
-                    $event.changedTouches
-                  ),
-                }
-              ) as unknown as Event
-            )
+            const rect = $event.currentTarget.getBoundingClientRect()
+            processTouches(rect, $event.touches)
+            processTouches(rect, $event.changedTouches)
+            trigger(event.replace('on', '').toLocaleLowerCase(), $event)
           })
         )
       }

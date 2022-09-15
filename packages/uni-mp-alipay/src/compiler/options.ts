@@ -67,7 +67,15 @@ export const options: UniMiniProgramPluginOptions = {
     },
     copyOptions: {
       assets: [COMPONENTS_DIR],
-      targets: process.env.UNI_MP_PLUGIN ? [copyMiniProgramPluginJson] : [],
+      targets: [
+        ...(process.env.UNI_MP_PLUGIN ? [copyMiniProgramPluginJson] : []),
+        {
+          src: ['customize-tab-bar', 'ext.json'],
+          get dest() {
+            return process.env.UNI_OUTPUT_DIR
+          },
+        },
+      ],
     },
   },
   global: 'my',
@@ -86,6 +94,7 @@ export const options: UniMiniProgramPluginOptions = {
       titlePenetrate: 'titlePenetrate',
     },
     tabBarOptionsMap: {
+      customize: 'customize',
       textColor: 'color',
       selectedColor: 'selectedColor',
       backgroundColor: 'backgroundColor',

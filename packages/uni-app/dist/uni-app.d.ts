@@ -28,12 +28,22 @@ declare interface CustomShareTimeline {
     imageUrl?: string;
 }
 
+export declare function formatAppLog(type: 'log' | 'info' | 'debug' | 'warn' | 'error', filename: string, ...args: unknown[]): void;
+
+export declare function formatH5Log(type: keyof Console, filename: string, ...args: unknown[]): void;
+
 /**
  * uni 对象是跨实例的，而此处列的 API 均是需要跟当前实例关联的，比如 requireNativePlugin 获取 dom 时，依赖当前 weex 实例
  */
 export declare function getCurrentSubNVue(): any;
 
 export declare function getSsrGlobalData(): any;
+
+export declare function initUtsProxyClass({ package: pkg, class: cls, methods, props, staticProps, staticMethods, }: ProxyClassOptions): any;
+
+export declare const initUtsProxyFunction: typeof initUtsStaticMethod;
+
+declare function initUtsStaticMethod(async: boolean, opts: ProxyBaseOptions): (...args: unknown[]) => unknown;
 
 declare type LaunchOption = LaunchShowOption;
 
@@ -159,6 +169,42 @@ declare interface PageNotFoundOption {
 
 declare interface PageScrollOption {
     scrollTop: number;
+}
+
+declare interface ProxyBaseOptions {
+    /**
+     * 包名
+     */
+    package: string;
+    /**
+     * 类名
+     */
+    class: string;
+    /**
+     * 属性名或方法名
+     */
+    name: string;
+    /**
+     * 是否是伴生对象
+     */
+    companion?: boolean;
+}
+
+declare interface ProxyClassOptions {
+    package: string;
+    class: string;
+    props: string[];
+    staticProps: string[];
+    methods: {
+        [name: string]: {
+            async?: boolean;
+        };
+    };
+    staticMethods: {
+        [name: string]: {
+            async?: boolean;
+        };
+    };
 }
 
 declare interface ReferrerInfo {

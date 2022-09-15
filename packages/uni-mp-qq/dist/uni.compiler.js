@@ -103,6 +103,14 @@ const miniProgram = {
         key: true,
     },
     directive: 'qq:',
+    lazyElement: {
+        editor: [
+            {
+                name: 'on',
+                arg: ['ready'],
+            },
+        ],
+    },
     component: {
         dir: COMPONENTS_DIR,
         vShow: uniCliShared.COMPONENT_CUSTOM_HIDDEN,

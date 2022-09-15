@@ -13,19 +13,19 @@ const pkgs = {
     latest: '3.2.37',
   },
   'vue-router': {
-    latest: '4.0.16',
+    latest: '4.1.3',
   },
   vuex: {
     latest: '4.0.2',
   },
   pinia: {
-    latest: '2.0.14',
+    latest: '2.0.20',
   },
   'vue-i18n': {
     next: '9.1.9',
   },
   vite: {
-    latest: '2.9.12',
+    latest: '2.9.14',
   },
   '@vitejs/plugin-vue': {
     latest: '2.3.3',
@@ -37,16 +37,16 @@ const pkgs = {
     latest: '1.8.2',
   },
   '@dcloudio/types': {
-    latest: '2.6.12',
+    next: '3.0.13',
   },
   autoprefixer: {
-    latest: '10.4.7',
+    latest: '10.4.8',
   },
   'rollup-plugin-copy': {
     latest: '3.4.0',
   },
   typescript: {
-    latest: '4.7.3',
+    latest: '4.7.4',
   },
 }
 

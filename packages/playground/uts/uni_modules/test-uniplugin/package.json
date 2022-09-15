@@ -1,0 +1,7 @@
+{
+	"name": "UTS Plugin",
+	"id": "DCloud-UTSPlugin",
+	"version": "0.0.1",
+	"description": "UTS示例插件",
+	"main":"interface.uts"
+}

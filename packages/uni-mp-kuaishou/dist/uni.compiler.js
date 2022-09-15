@@ -109,6 +109,8 @@ var source = {
  */
 const transformOn = uniCliShared.createTransformOn(uniMpCompiler.transformOn, {
     match: (name, node, context) => {
+        if (name === 'getphonenumber')
+            return true;
         if (name === 'input' && (node.tag === 'input' || node.tag === 'textarea')) {
             return true;
         }
@@ -166,6 +168,14 @@ const options = {
         },
         copyOptions: {
             assets: [COMPONENTS_DIR],
+            targets: [
+                {
+                    src: ['ext.json'],
+                    get dest() {
+                        return process.env.UNI_OUTPUT_DIR;
+                    },
+                },
+            ],
         },
     },
     global: 'ks',

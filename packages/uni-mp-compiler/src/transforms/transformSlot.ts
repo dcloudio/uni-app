@@ -53,15 +53,22 @@ export function rewriteSlot(node: SlotOutletNode, context: TransformContext) {
       }
       if (p.name === 'bind' && isStaticArgOf(p.arg, 'name')) {
         if (p.exp) {
+          const slotKey = parseScopedSlotKey(context)
+          // renderSlot 第三个参数已经传了 slotKey
+          slotName = createCompoundExpression([
+            context.helperString(DYNAMIC_SLOT) + '(',
+            p.exp,
+            ')',
+          ])
           p.exp = rewriteExpression(
             createCompoundExpression([
               context.helperString(DYNAMIC_SLOT) + '(',
               p.exp,
+              slotKey ? `+'-'+` + slotKey : '',
               ')',
             ]),
             context
           )
-          slotName = p.exp
         }
       } else {
         if (p.name === 'bind' && p.arg && isStaticExp(p.arg)) {
@@ -143,29 +150,42 @@ function transformScopedSlotName(
     props.splice(
       props.indexOf(nameProps),
       1,
-      createBindDirectiveNode(
-        'name',
-        rewriteExpression(
-          createSimpleExpression(`"${nameProps.value.content}-"+` + slotKey),
-          context
-        ).content
-      )
+      createScopedSlotDirectiveNode(nameProps.value.content, slotKey, context)
     )
   }
 }
 
+export interface NameScopedSlotDirectiveNode extends DirectiveNode {
+  slotName: string
+}
+
+function createScopedSlotDirectiveNode(
+  name: string,
+  slotKey: string,
+  context: TransformContext
+): NameScopedSlotDirectiveNode {
+  const dir = createBindDirectiveNode(
+    'name',
+    rewriteExpression(createSimpleExpression(`"${name}-"+` + slotKey), context)
+      .content
+  ) as NameScopedSlotDirectiveNode
+  // 存储原始的 slot 名称
+  dir.slotName = name
+  return dir
+}
+
 function parseScopedSlotKey(context: TransformContext) {
   let { currentScope } = context
-  const indexs: string[] = []
+  const indexes: string[] = []
   while (currentScope) {
     if (isVForScope(currentScope)) {
-      indexs.push(currentScope.indexAlias)
+      indexes.push(currentScope.indexAlias)
     }
     currentScope = currentScope.parent!
   }
-  const inFor = !!indexs.length
+  const inFor = !!indexes.length
   if (inFor) {
-    return indexs.reverse().join(`+'-'+`)
+    return indexes.reverse().join(`+'-'+`)
   }
 }
 

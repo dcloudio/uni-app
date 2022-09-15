@@ -1,3 +1,5 @@
+import path from 'path'
+import { sync } from 'fast-glob'
 import { isArray } from '@vue/shared'
 import { once } from '@dcloudio/uni-shared'
 import {
@@ -6,11 +8,10 @@ import {
   isInHybridNVue,
   uniViteInjectPlugin,
   UniVitePlugin,
+  isInHBuilderX,
 } from '@dcloudio/uni-cli-shared'
 
 import { uniValidateFunctionPlugin } from './validateFunction'
-
-process.env.UNI_CLOUD_PROVIDER = JSON.stringify([])
 
 const uniCloudSpaces: {
   provider?: string
@@ -53,7 +54,7 @@ function uniCloudPlugin(): UniVitePlugin {
         process.env.NODE_ENV === 'production'
       ) {
         console.warn(
-          '发布H5，需要在uniCloud后台操作，绑定安全域名，否则会因为跨域问题而无法访问。教程参考：https://uniapp.dcloud.io/uniCloud/quickstart?id=useinh5'
+          '发布H5，需要在uniCloud后台操作，绑定安全域名，否则会因为跨域问题而无法访问。教程参考：https://uniapp.dcloud.net.cn/uniCloud/publish.html#useinh5'
         )
       }
       return {}
@@ -84,11 +85,56 @@ function uniCloudPlugin(): UniVitePlugin {
 const initUniCloudWarningOnce = once(() => {
   uniCloudSpaces.length &&
     console.warn(
-      '当前项目使用了uniCloud，为避免云函数调用跨域问题，建议在HBuilderX内置浏览器里调试，如使用外部浏览器需处理跨域，详见：https://uniapp.dcloud.io/uniCloud/quickstart?id=useinh5'
+      '当前项目使用了uniCloud，为避免云函数调用跨域问题，建议在HBuilderX内置浏览器里调试，如使用外部浏览器需处理跨域，详见：https://uniapp.dcloud.net.cn/uniCloud/publish.html#useinh5'
     )
 })
 
+function checkProjectUniCloudDir() {
+  return !!sync(['uniCloud-aliyun', 'uniCloud-tcb'], {
+    cwd: isInHBuilderX()
+      ? process.env.UNI_INPUT_DIR
+      : process.env.UNI_CLI_CONTEXT,
+    onlyDirectories: true,
+    onlyFiles: false,
+    ignore: ['node_modules'],
+  }).length
+}
+
+function resolveUniCloudModules() {
+  return sync('**/uni_modules/*/uniCloud', {
+    cwd: process.env.UNI_INPUT_DIR,
+    onlyDirectories: true,
+    onlyFiles: false,
+    ignore: ['node_modules'],
+  }).map((dir) => path.dirname(dir))
+}
+
+function checkUniModules() {
+  if (!checkProjectUniCloudDir()) {
+    const uniCloudModules = resolveUniCloudModules()
+    if (uniCloudModules.length) {
+      console.warn(
+        `${uniCloudModules.join(
+          ', '
+        )} 使用了uniCloud，而项目未启动uniCloud。需在项目点右键创建uniCloud环境`
+      )
+    }
+  }
+}
+
 function initUniCloudEnv() {
+  checkUniModules()
+  if (process.env.UNI_CLOUD_PROVIDER) {
+    const spaces = JSON.parse(process.env.UNI_CLOUD_PROVIDER)
+    if (!isArray(spaces)) {
+      return
+    }
+    if (spaces.length) {
+      uniCloudSpaces.push(...spaces)
+      return
+    }
+  }
+  process.env.UNI_CLOUD_PROVIDER = JSON.stringify([])
   if (!process.env.UNI_CLOUD_SPACES) {
     return
   }

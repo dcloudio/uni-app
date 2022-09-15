@@ -671,12 +671,18 @@ function invokePushCallback(args) {
         invokeGetPushCidCallbacks(cid, args.errMsg);
     }
     else if (args.type === 'pushMsg') {
-        onPushMessageCallbacks.forEach((callback) => {
-            callback({
-                type: 'receive',
-                data: normalizePushMessage(args.message),
-            });
-        });
+        const message = {
+            type: 'receive',
+            data: normalizePushMessage(args.message),
+        };
+        for (let i = 0; i < onPushMessageCallbacks.length; i++) {
+            const callback = onPushMessageCallbacks[i];
+            callback(message);
+            // 该消息已被阻止
+            if (message.stopped) {
+                break;
+            }
+        }
     }
     else if (args.type === 'click') {
         onPushMessageCallbacks.forEach((callback) => {
@@ -700,7 +706,7 @@ const getPushClientId = defineAsyncApi(API_GET_PUSH_CLIENT_ID, (_, { resolve, re
         if (typeof enabled === 'undefined') {
             enabled = false;
             cid = '';
-            cidErrMsg = 'unipush is not enabled';
+            cidErrMsg = 'uniPush is not enabled';
         }
         getPushCidCallbacks.push((cid, errMsg) => {
             if (cid) {
@@ -734,7 +740,7 @@ const offPushMessage = (fn) => {
     }
 };
 
-const SYNC_API_RE = /^\$|getLocale|setLocale|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getDeviceInfo|getAppBaseInfo|getWindowInfo/;
+const SYNC_API_RE = /^\$|getLocale|setLocale|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getDeviceInfo|getAppBaseInfo|getWindowInfo|getSystemSetting|getAppAuthorizeSetting/;
 const CONTEXT_API_RE = /^create|Manager$/;
 // Context例外情况
 const CONTEXT_API_RE_EXC = ['createBLEConnection'];
@@ -1226,6 +1232,9 @@ const navigateBackMiniProgram = {
 const showShareMenu = {
     name: 'openShare',
 };
+const login = {
+    name: 'getLoginCode',
+};
 const getAccountInfoSync = {
     name: 'getEnvInfoSync',
     returnValue(fromRes, toRes) {
@@ -1249,6 +1258,7 @@ var protocols = /*#__PURE__*/Object.freeze({
   navigateToMiniProgram: navigateToMiniProgram,
   navigateBackMiniProgram: navigateBackMiniProgram,
   showShareMenu: showShareMenu,
+  login: login,
   getAccountInfoSync: getAccountInfoSync,
   redirectTo: redirectTo,
   navigateTo: navigateTo,

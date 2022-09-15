@@ -45,10 +45,15 @@ export async function runDev(options: CliOptions & ServerOptions) {
           }
           const files = process.env.UNI_APP_CHANGED_FILES
           const pages = process.env.UNI_APP_CHANGED_PAGES
+          const dex = process.env.UNI_APP_CHANGED_DEX_FILES
           const changedFiles = pages || files
           process.env.UNI_APP_CHANGED_PAGES = ''
           process.env.UNI_APP_CHANGED_FILES = ''
-          if (changedFiles && !changedFiles.includes(APP_CONFIG_SERVICE)) {
+          process.env.UNI_APP_CHANGED_DEX_FILES = ''
+          if (
+            (changedFiles && !changedFiles.includes(APP_CONFIG_SERVICE)) ||
+            dex
+          ) {
             if (pages) {
               return output(
                 'log',
@@ -57,7 +62,14 @@ export async function runDev(options: CliOptions & ServerOptions) {
             }
             return output(
               'log',
-              M['dev.watching.end.files'].replace('{files}', changedFiles)
+              M['dev.watching.end.files'].replace(
+                '{files}',
+                JSON.stringify(
+                  JSON.parse(changedFiles || JSON.stringify([])).concat(
+                    JSON.parse(dex || JSON.stringify([]))
+                  )
+                )
+              )
             )
           }
           return output('log', M['dev.watching.end'])

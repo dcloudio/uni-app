@@ -16,13 +16,13 @@ var uniad_app_json = function (appJson) {
   }
   if (!appJson.plugins['uni-ad']) {
     appJson.plugins['uni-ad'] = {
-      version: '1.0.3',
+      version: '1.1.0',
       provider: 'wx999bf02c8e05dfc9',
     };
   }
   if (!appJson.plugins['coral-adv']) {
     appJson.plugins['coral-adv'] = {
-      version: '1.0.7',
+      version: '1.0.9',
       provider: 'wx0e203209e27b1e66',
     };
   }
@@ -72,7 +72,8 @@ var setting = {
 	es6: true,
 	postcss: false,
 	minified: false,
-	newFeature: true
+	newFeature: true,
+	bigPackageSizeSupport: true
 };
 var compileType = "miniprogram";
 var libVersion = "";
@@ -149,6 +150,7 @@ const miniProgram = {
             },
         ],
         // iOS 平台需要延迟
+        input: [{ name: 'bind', arg: ['type'] }],
         textarea: [{ name: 'on', arg: ['input'] }],
     },
     component: {
@@ -179,6 +181,7 @@ const options = {
                         'ext.json',
                         'custom-tab-bar',
                         'functional-pages',
+                        'project.private.config.json',
                         projectConfigFilename,
                     ],
                     get dest() {

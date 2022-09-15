@@ -57,6 +57,7 @@ export {
   getDeviceInfo,
   getAppBaseInfo,
   getWindowInfo,
+  getAppAuthorizeSetting,
 } from './api/protocols'
 // types
 export { MiniProgramAppOptions, MiniProgramAppInstance } from './runtime/app'

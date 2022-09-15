@@ -60,7 +60,9 @@ class NodesRef implements UniApp.NodesRef {
     this._single = single
   }
 
-  boundingClientRect(callback: (result: SelectorQueryNodeInfo) => void) {
+  boundingClientRect(
+    callback?: (result: SelectorQueryNodeInfo | SelectorQueryNodeInfo[]) => void
+  ) {
     this._selectorQuery._push(
       this._selector,
       this._component,
@@ -137,7 +139,7 @@ class SelectorQuery implements UniApp.SelectorQuery {
     requestComponentInfo(
       this._page,
       this._queue,
-      (res: Array<SelectorQueryNodeInfo | null>) => {
+      (res: Array<SelectorQueryNodeInfo | SelectorQueryNodeInfo[] | null>) => {
         const queueCbs = this._queueCb
         res.forEach((result, index) => {
           if (isArray(result)) {
@@ -192,7 +194,7 @@ class SelectorQuery implements UniApp.SelectorQuery {
     component: ComponentPublicInstance | undefined | null,
     single: boolean,
     fields: NodeField,
-    callback: (result: SelectorQueryNodeInfo) => void
+    callback?: (result: SelectorQueryNodeInfo | SelectorQueryNodeInfo[]) => void
   ) {
     this._queue.push({
       component,

@@ -1,6 +1,6 @@
 import { isArray, hasOwn as hasOwn$1, isString, isPlainObject, isObject as isObject$1, toRawType, capitalize, makeMap, isFunction, isPromise, extend, remove, toTypeString } from '@vue/shared';
-import { LINEFEED, parseNVueDataset, once, I18N_JSON_DELIMITERS, Emitter, addLeadingSlash, resolveComponentInstance, invokeArrayFns, removeLeadingSlash, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, formatLog, TABBAR_HEIGHT, NAVBAR_HEIGHT, sortObject, ON_THEME_CHANGE, ON_KEYBOARD_HEIGHT_CHANGE, BACKGROUND_COLOR, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery as stringifyQuery$1, debounce, ON_PULL_DOWN_REFRESH, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_BACK_PRESS, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ON_READY, ON_UNLOAD, EventChannel, ON_REACH_BOTTOM_DISTANCE, parseUrl, onCreateVueApp, ON_TAB_ITEM_TAP, ON_LAUNCH, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE } from '@dcloudio/uni-shared';
-import { ref, injectHook, createVNode, render, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount } from 'vue';
+import { LINEFEED, parseNVueDataset, once, I18N_JSON_DELIMITERS, Emitter, addLeadingSlash, resolveComponentInstance, invokeArrayFns, removeLeadingSlash, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, SCHEME_RE, DATA_RE, cacheStringFunction, formatLog, parseQuery, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, TABBAR_HEIGHT, NAVBAR_HEIGHT, sortObject, ON_THEME_CHANGE, ON_KEYBOARD_HEIGHT_CHANGE, BACKGROUND_COLOR, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery as stringifyQuery$1, debounce, ON_PULL_DOWN_REFRESH, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_BACK_PRESS, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ON_READY, ON_UNLOAD, EventChannel, ON_REACH_BOTTOM_DISTANCE, parseUrl, onCreateVueApp, ON_TAB_ITEM_TAP, ON_LAUNCH, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE } from '@dcloudio/uni-shared';
+import { ref, createVNode, render, injectHook, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount } from 'vue';
 
 /*
  * base64-arraybuffer
@@ -2070,6 +2070,90 @@ function normalizeCallback(method, callbacks) {
     };
 }
 
+let vueApp;
+function getVueApp() {
+    return vueApp;
+}
+function initVueApp(appVm) {
+    const appContext = appVm.$.appContext;
+    vueApp = extend(appContext.app, {
+        mountPage(pageComponent, pageProps, pageContainer) {
+            const vnode = createVNode(pageComponent, pageProps);
+            // store app context on the root VNode.
+            // this will be set on the root instance on initial mount.
+            vnode.appContext = appContext;
+            vnode.__page_container__ = pageContainer;
+            render(vnode, pageContainer);
+            const publicThis = vnode.component.proxy;
+            publicThis.__page_container__ = pageContainer;
+            return publicThis;
+        },
+        unmountPage: (pageInstance) => {
+            const { __page_container__ } = pageInstance;
+            if (__page_container__) {
+                __page_container__.isUnmounted = true;
+                render(null, __page_container__);
+            }
+        },
+    });
+}
+
+const pages = [];
+function addCurrentPage(page) {
+    const $page = page.$page;
+    if (!$page.meta.isNVue) {
+        return pages.push(page);
+    }
+    // 开发阶段热刷新需要移除旧的相同 id 的 page
+    const index = pages.findIndex((p) => p.$page.id === page.$page.id);
+    if (index > -1) {
+        pages.splice(index, 1, page);
+    }
+    else {
+        pages.push(page);
+    }
+}
+function getPageById(id) {
+    return pages.find((page) => page.$page.id === id);
+}
+function getAllPages() {
+    return pages;
+}
+function getCurrentPages$1() {
+    const curPages = [];
+    pages.forEach((page) => {
+        if (page.$.__isTabBar) {
+            if (page.$.__isActive) {
+                curPages.push(page);
+            }
+        }
+        else {
+            curPages.push(page);
+        }
+    });
+    return curPages;
+}
+function removeCurrentPage() {
+    const page = getCurrentPage();
+    if (!page) {
+        return;
+    }
+    removePage(page);
+}
+function removePage(curPage) {
+    const index = pages.findIndex((page) => page === curPage);
+    if (index === -1) {
+        return;
+    }
+    if (!curPage.$page.meta.isNVue) {
+        getVueApp().unmountPage(curPage);
+    }
+    pages.splice(index, 1);
+    if ((process.env.NODE_ENV !== 'production')) {
+        console.log(formatLog('removePage', curPage.$page));
+    }
+}
+
 const METHODS$1 = {
     play(ctx) {
         return invokeVmMethodWithoutArgs(ctx, 'play');
@@ -2103,7 +2187,7 @@ const METHODS$1 = {
     },
 };
 function operateVideoPlayer(videoId, pageId, type, data) {
-    const page = getCurrentPages().find((page) => page.$page.id === pageId);
+    const page = getPageById(pageId);
     if (page === null || page === void 0 ? void 0 : page.$page.meta.isNVue) {
         const pageVm = page.$vm;
         return METHODS$1[type](findElmById(videoId, pageVm), data);
@@ -2169,7 +2253,7 @@ const METHODS = {
     },
 };
 function operateMap(id, pageId, type, data, operateMapCallback) {
-    const page = getCurrentPages().find((page) => page.$page.id === pageId);
+    const page = getPageById(pageId);
     if (page === null || page === void 0 ? void 0 : page.$page.meta.isNVue) {
         const pageVm = page.$vm;
         return METHODS[type](findElmById(id, pageVm), data);
@@ -2224,15 +2308,6 @@ function removeMediaQueryObserver({ reqId, component }, _pageId) {
     UniServiceJSBridge.unsubscribe(getEventName(reqId));
 }
 
-function getFileName(path) {
-    const array = path.split('/');
-    return array[array.length - 1];
-}
-function getExtName(path) {
-    const array = path.split('.');
-    return array.length > 1 ? '.' + array[array.length - 1] : '';
-}
-
 const DEVICE_FREQUENCY = 200;
 const NETWORK_TYPES = [
     'unknown',
@@ -2246,6 +2321,15 @@ const NETWORK_TYPES = [
 ];
 const TEMP_PATH_BASE = '_doc/uniapp_temp';
 const TEMP_PATH = `${TEMP_PATH_BASE}_${Date.now()}`;
+
+function getFileName(path) {
+    const array = path.split('/');
+    return array[array.length - 1];
+}
+function getExtName(path) {
+    const array = path.split('.');
+    return array.length > 1 ? '.' + array[array.length - 1] : '';
+}
 
 const EVENT_BACKBUTTON = 'backbutton';
 function backbuttonListener() {
@@ -11075,6 +11159,7 @@ const getLaunchOptionsSync = defineSyncApi(API_GET_LAUNCH_OPTIONS_SYNC, () => {
 let cid;
 let cidErrMsg;
 let enabled;
+let offline;
 function normalizePushMessage(message) {
     try {
         return JSON.parse(message);
@@ -11089,6 +11174,9 @@ function normalizePushMessage(message) {
 function invokePushCallback(args) {
     if (args.type === 'enabled') {
         enabled = true;
+        {
+            offline = args.offline;
+        }
     }
     else if (args.type === 'clientId') {
         cid = args.cid;
@@ -11096,12 +11184,18 @@ function invokePushCallback(args) {
         invokeGetPushCidCallbacks(cid, args.errMsg);
     }
     else if (args.type === 'pushMsg') {
-        onPushMessageCallbacks.forEach((callback) => {
-            callback({
-                type: 'receive',
-                data: normalizePushMessage(args.message),
-            });
-        });
+        const message = {
+            type: 'receive',
+            data: normalizePushMessage(args.message),
+        };
+        for (let i = 0; i < onPushMessageCallbacks.length; i++) {
+            const callback = onPushMessageCallbacks[i];
+            callback(message);
+            // 该消息已被阻止
+            if (message.stopped) {
+                break;
+            }
+        }
     }
     else if (args.type === 'click') {
         onPushMessageCallbacks.forEach((callback) => {
@@ -11121,11 +11215,20 @@ function invokeGetPushCidCallbacks(cid, errMsg) {
 }
 const API_GET_PUSH_CLIENT_ID = 'getPushClientId';
 const getPushClientId = defineAsyncApi(API_GET_PUSH_CLIENT_ID, (_, { resolve, reject }) => {
+    // App 端且启用离线时，使用 getClientInfoAsync 来调用
+    if (offline) {
+        plus.push.getClientInfoAsync((info) => {
+            resolve({ cid: info.clientid });
+        }, (res) => {
+            reject(res.code + ': ' + res.message);
+        });
+        return;
+    }
     Promise.resolve().then(() => {
         if (typeof enabled === 'undefined') {
             enabled = false;
             cid = '';
-            cidErrMsg = 'unipush is not enabled';
+            cidErrMsg = 'uniPush is not enabled';
         }
         getPushCidCallbacks.push((cid, errMsg) => {
             if (cid) {
@@ -11141,10 +11244,27 @@ const getPushClientId = defineAsyncApi(API_GET_PUSH_CLIENT_ID, (_, { resolve, re
     });
 });
 const onPushMessageCallbacks = [];
+let listening = false;
 // 不使用 defineOnApi 实现，是因为 defineOnApi 依赖 UniServiceJSBridge ，该对象目前在小程序上未提供，故简单实现
 const onPushMessage = (fn) => {
     if (onPushMessageCallbacks.indexOf(fn) === -1) {
         onPushMessageCallbacks.push(fn);
+    }
+    // 不能程序启动时就监听，因为离线事件，仅触发一次，框架监听后，无法转发给还没开始监听的开发者
+    if (!listening) {
+        listening = true;
+        plus.push.addEventListener('click', (result) => {
+            invokePushCallback({
+                type: 'click',
+                message: result,
+            });
+        });
+        plus.push.addEventListener('receive', (result) => {
+            invokePushCallback({
+                type: 'pushMsg',
+                message: result,
+            });
+        });
     }
 };
 const offPushMessage = (fn) => {
@@ -11447,6 +11567,7 @@ const ScanCodeProtocol = {
     scanType: Array,
     autoDecodeCharSet: Boolean,
     sound: String,
+    autoZoom: Boolean,
 };
 const SOUND = ['default', 'none'];
 const ScanCodeOptions = {
@@ -11455,8 +11576,18 @@ const ScanCodeOptions = {
             if (!SOUND.includes(value))
                 params.sound = 'none';
         },
+        autoZoom(value, params) {
+            if (typeof value === 'undefined')
+                params.autoZoom = true;
+        },
     },
 };
+
+const API_GET_SYSTEM_SETTING = 'getSystemSetting';
+
+const API_GET_APP_AUTHORIZE_SETTING = 'getAppAuthorizeSetting';
+
+const API_OPEN_APP_AUTHORIZE_SETTING = 'openAppAuthorizeSetting';
 
 const API_GET_STORAGE = 'getStorage';
 const GetStorageProtocol = {
@@ -11611,8 +11742,32 @@ const GetLocationProtocol = {
 };
 
 const API_OPEN_LOCATION = 'openLocation';
+const checkProps = (key, value) => {
+    if (value === undefined) {
+        return `${key} should not be empty.`;
+    }
+    if (typeof value !== 'number') {
+        let receivedType = typeof value;
+        receivedType = receivedType[0].toUpperCase() + receivedType.substring(1);
+        return `Expected Number, got ${receivedType} with value ${JSON.stringify(value)}.`;
+    }
+};
 const OpenLocationOptions = {
     formatArgs: {
+        latitude(value, params) {
+            const checkedInfo = checkProps('latitude', value);
+            if (checkedInfo) {
+                return checkedInfo;
+            }
+            params.latitude = value;
+        },
+        longitude(value, params) {
+            const checkedInfo = checkProps('longitude', value);
+            if (checkedInfo) {
+                return checkedInfo;
+            }
+            params.longitude = value;
+        },
         scale(value, params) {
             value = Math.floor(value);
             params.scale = value >= 5 && value <= 18 ? value : 18;
@@ -11620,14 +11775,8 @@ const OpenLocationOptions = {
     },
 };
 const OpenLocationProtocol = {
-    latitude: {
-        type: Number,
-        required: true,
-    },
-    longitude: {
-        type: Number,
-        required: true,
-    },
+    latitude: Number,
+    longitude: Number,
     scale: Number,
     name: String,
     address: String,
@@ -12299,7 +12448,9 @@ const ShowModalOptions = {
     formatArgs: {
         title: '',
         content: '',
+        placeholderText: '',
         showCancel: true,
+        editable: false,
         cancelText(_value, params) {
             if (!hasOwn$1(params, 'cancelText')) {
                 const { t } = useI18n();
@@ -12608,6 +12759,17 @@ const RequestPaymentProtocol = {
     package: String,
     signType: String,
     paySign: String,
+};
+
+const API_CREATE_PUSH_MESSAGE = 'createPushMessage';
+const CreatePushMessageOptions = {
+    formatArgs: {
+        content(value) {
+            if (!value) {
+                return `content is required`;
+            }
+        },
+    },
 };
 
 const API_CREATE_REWARDED_VIDEO_AD = 'createRewardedVideoAd';
@@ -13392,12 +13554,13 @@ const getDeviceInfo = defineSyncApi('getDeviceInfo', () => {
 });
 const getAppBaseInfo = defineSyncApi('getAppBaseInfo', () => {
     weexGetSystemInfoSync();
-    const { hostPackageName, hostName, hostVersion, hostLanguage, osLanguage, hostTheme, appId, appName, appVersion, appVersionCode, } = systemInfo;
+    const { hostPackageName, hostName, hostVersion, hostLanguage, osLanguage, hostTheme, appId, appName, appVersion, appVersionCode, appWgtVersion, } = systemInfo;
     return {
         appId,
         appName,
         appVersion,
         appVersionCode,
+        appWgtVersion,
         appLanguage: getLocale ? getLocale() : osLanguage,
         enableDebug: false,
         hostPackageName,
@@ -14054,6 +14217,49 @@ const setScreenBrightness = defineAsyncApi(API_SET_SCREEN_BRIGHTNESS, (options, 
 const setKeepScreenOn = defineAsyncApi(API_SET_KEEP_SCREEN_ON, (options, { resolve }) => {
     plus.device.setWakelock(!!options.keepScreenOn);
     resolve();
+});
+
+const getSystemSetting = defineSyncApi(API_GET_SYSTEM_SETTING, () => {
+    const { getSystemSetting } = weex.requireModule('plus');
+    let systemSetting = getSystemSetting();
+    try {
+        if (typeof systemSetting === 'string')
+            systemSetting = JSON.parse(systemSetting);
+    }
+    catch (error) { }
+    return systemSetting;
+});
+
+const getAppAuthorizeSetting = defineSyncApi(API_GET_APP_AUTHORIZE_SETTING, () => {
+    const { getAppAuthorizeSetting } = weex.requireModule('plus');
+    let appAuthorizeSetting = getAppAuthorizeSetting();
+    try {
+        if (typeof appAuthorizeSetting === 'string')
+            appAuthorizeSetting = JSON.parse(appAuthorizeSetting);
+    }
+    catch (error) { }
+    for (const key in appAuthorizeSetting) {
+        if (hasOwn$1(appAuthorizeSetting, key)) {
+            const value = appAuthorizeSetting[key];
+            // @ts-ignore
+            if (value === 'undefined')
+                appAuthorizeSetting[key] = undefined;
+        }
+    }
+    return appAuthorizeSetting;
+});
+
+const openAppAuthorizeSetting = defineAsyncApi(API_OPEN_APP_AUTHORIZE_SETTING, (_, { resolve, reject }) => {
+    const { openAppAuthorizeSetting } = weex.requireModule('plus');
+    const fn = openAppAuthorizeSetting;
+    fn((ret) => {
+        if (ret.type === 'success') {
+            resolve();
+        }
+        else {
+            reject();
+        }
+    });
 });
 
 const getImageInfo = defineAsyncApi(API_GET_IMAGE_INFO, (options, { resolve, reject }) => {
@@ -15893,7 +16099,9 @@ const chooseLocation = defineAsyncApi(API_CHOOSE_LOCATION, (options, { resolve, 
     let result;
     const page = showPage({
         url: '__uniappchooselocation',
-        data: options,
+        data: extend({}, options, {
+            locale: getLocale(),
+        }),
         style: {
             // @ts-expect-error
             animationType: options.animationType || 'slide-in-bottom',
@@ -15930,7 +16138,9 @@ const chooseLocation = defineAsyncApi(API_CHOOSE_LOCATION, (options, { resolve, 
 const openLocation = defineAsyncApi(API_OPEN_LOCATION, (data, { resolve, reject }) => {
     showPage({
         url: '__uniappopenlocation',
-        data,
+        data: extend({}, data, {
+            locale: getLocale(),
+        }),
         style: {
             titleNView: {
                 type: 'transparent',
@@ -16445,7 +16655,7 @@ const providers = {
             services.forEach(({ id }) => {
                 provider.push(id);
             });
-            callback(null, provider);
+            callback(null, provider, services);
         }, (err) => {
             err = err;
             callback(err);
@@ -16458,7 +16668,7 @@ const providers = {
             services.forEach(({ id }) => {
                 provider.push(id);
             });
-            callback(null, provider);
+            callback(null, provider, services);
         }, (err) => {
             callback(err);
         });
@@ -16469,14 +16679,15 @@ const providers = {
             services.forEach(({ id }) => {
                 provider.push(id);
             });
-            callback(null, provider);
+            callback(null, provider, services);
         }, (err) => {
             callback(err);
         });
     },
     push(callback) {
         if (typeof weex !== 'undefined' || typeof plus !== 'undefined') {
-            callback(null, [plus.push.getClientInfo().id]);
+            const clientInfo = plus.push.getClientInfo();
+            callback(null, [clientInfo.id], [clientInfo]);
         }
         else {
             callback(null, []);
@@ -16485,14 +16696,24 @@ const providers = {
 };
 const getProvider = defineAsyncApi(API_GET_PROVIDER, ({ service }, { resolve, reject }) => {
     if (providers[service]) {
-        providers[service]((err, provider) => {
+        providers[service]((err, provider = [], providers = []) => {
             if (err) {
                 reject(err.message);
             }
             else {
                 resolve({
                     service,
+                    // 5+ PlusShareShareService['id'] 类型错误
                     provider: provider,
+                    providers: providers.map((provider) => {
+                        if (typeof provider.serviceReady === 'boolean') {
+                            provider.isAppExist = provider.serviceReady;
+                        }
+                        if (typeof provider.nativeClient === 'boolean') {
+                            provider.isAppExist = provider.nativeClient;
+                        }
+                        return provider;
+                    }),
                 });
             }
         });
@@ -16707,6 +16928,18 @@ const getUniverifyManager = defineSyncApi(API_GET_UNIVERIFY_MANAGER, () => {
     return univerifyManager || (univerifyManager = new UniverifyManager());
 });
 
+const createPushMessage = defineAsyncApi(API_CREATE_PUSH_MESSAGE, (opts, { resolve, reject }) => {
+    const setting = getAppAuthorizeSetting();
+    if (setting.notificationAuthorized !== 'authorized') {
+        return reject(`notificationAuthorized: ` + setting.notificationAuthorized);
+    }
+    const options = extend({}, opts);
+    delete options.content;
+    delete options.payload;
+    plus.push.createMessage(opts.content, opts.payload, options);
+    resolve();
+}, undefined, CreatePushMessageOptions);
+
 const registerRuntime = defineSyncApi('registerRuntime', (runtime) => {
     // @ts-expect-error
     extend(jsRuntime, runtime);
@@ -16855,6 +17088,63 @@ function onHostEventReceive(fn) {
 const onNativeEventReceive = onHostEventReceive;
 function invokeHostEvent(event, data) {
     hostEventCallbacks.forEach((fn) => fn(event, data));
+}
+
+function __log__(type, filename, ...args) {
+    const res = normalizeLog(type, filename, args);
+    res && console[type](res);
+}
+function isDebugMode() {
+    // @ts-expect-error
+    return typeof __channelId__ === 'string' && __channelId__;
+}
+function jsonStringifyReplacer(k, p) {
+    switch (toRawType(p)) {
+        case 'Function':
+            return 'function() { [native code] }';
+        default:
+            return p;
+    }
+}
+function normalizeLog(type, filename, args) {
+    if (isDebugMode()) {
+        args.push(filename.replace('at ', 'uni-app:///'));
+        return console[type].apply(console, args);
+    }
+    const msgs = args.map(function (v) {
+        const type = toTypeString(v).toLowerCase();
+        if (['[object object]', '[object array]', '[object module]'].indexOf(type) !==
+            -1) {
+            try {
+                v =
+                    '---BEGIN:JSON---' +
+                        JSON.stringify(v, jsonStringifyReplacer) +
+                        '---END:JSON---';
+            }
+            catch (e) {
+                v = type;
+            }
+        }
+        else {
+            if (v === null) {
+                v = '---NULL---';
+            }
+            else if (v === undefined) {
+                v = '---UNDEFINED---';
+            }
+            else {
+                const vType = toRawType(v).toUpperCase();
+                if (vType === 'NUMBER' || vType === 'BOOLEAN') {
+                    v = '---BEGIN:' + vType + '---' + v + '---END:' + vType + '---';
+                }
+                else {
+                    v = String(v);
+                }
+            }
+        }
+        return v;
+    });
+    return msgs.join('---COMMA---') + ' ' + filename;
 }
 
 const EventType = {
@@ -17259,90 +17549,6 @@ const VIEW_WEBVIEW_PATH = '_www/__uniappview.html';
 const WEBVIEW_ID_PREFIX = 'webviewId';
 const SDK_UNI_MP_NATIVE_EVENT = 'uniMPNativeEvent';
 
-let vueApp;
-function getVueApp() {
-    return vueApp;
-}
-function initVueApp(appVm) {
-    const appContext = appVm.$.appContext;
-    vueApp = extend(appContext.app, {
-        mountPage(pageComponent, pageProps, pageContainer) {
-            const vnode = createVNode(pageComponent, pageProps);
-            // store app context on the root VNode.
-            // this will be set on the root instance on initial mount.
-            vnode.appContext = appContext;
-            vnode.__page_container__ = pageContainer;
-            render(vnode, pageContainer);
-            const publicThis = vnode.component.proxy;
-            publicThis.__page_container__ = pageContainer;
-            return publicThis;
-        },
-        unmountPage: (pageInstance) => {
-            const { __page_container__ } = pageInstance;
-            if (__page_container__) {
-                __page_container__.isUnmounted = true;
-                render(null, __page_container__);
-            }
-        },
-    });
-}
-
-const pages = [];
-function addCurrentPage(page) {
-    const $page = page.$page;
-    if (!$page.meta.isNVue) {
-        return pages.push(page);
-    }
-    // 开发阶段热刷新需要移除旧的相同 id 的 page
-    const index = pages.findIndex((p) => p.$page.id === page.$page.id);
-    if (index > -1) {
-        pages.splice(index, 1, page);
-    }
-    else {
-        pages.push(page);
-    }
-}
-function getPageById(id) {
-    return pages.find((page) => page.$page.id === id);
-}
-function getAllPages() {
-    return pages;
-}
-function getCurrentPages$1() {
-    const curPages = [];
-    pages.forEach((page) => {
-        if (page.$.__isTabBar) {
-            if (page.$.__isActive) {
-                curPages.push(page);
-            }
-        }
-        else {
-            curPages.push(page);
-        }
-    });
-    return curPages;
-}
-function removeCurrentPage() {
-    const page = getCurrentPage();
-    if (!page) {
-        return;
-    }
-    removePage(page);
-}
-function removePage(curPage) {
-    const index = pages.findIndex((page) => page === curPage);
-    if (index === -1) {
-        return;
-    }
-    if (!curPage.$page.meta.isNVue) {
-        getVueApp().unmountPage(curPage);
-    }
-    pages.splice(index, 1);
-    if ((process.env.NODE_ENV !== 'production')) {
-        console.log(formatLog('removePage', curPage.$page));
-    }
-}
-
 function initNVue(webviewStyle, routeMeta, path) {
     if (path && routeMeta.isNVue) {
         webviewStyle.uniNView = {
@@ -17697,10 +17903,11 @@ function onWebviewPopGesture(webview) {
             setStatusBarStyle(popStartStatusBarStyle);
         }
         else if (e.type === 'end' && e.result) {
+            const len = getCurrentPages().length;
             const page = getCurrentPage();
             removeCurrentPage();
             setStatusBarStyle();
-            if (page && isDirectPage(page)) {
+            if (page && len === 1 && isDirectPage(page)) {
                 reLaunchEntryPage();
             }
             else {
@@ -18277,7 +18484,8 @@ class UniPageNode extends UniNode {
     }
     restore() {
         this.clear();
-        this.push(this.createAction);
+        // createAction 需要单独发送，因为 view 层需要现根据 create 来设置 page 的 ready
+        this.setup();
         if (this.scrollAction) {
             this.push(this.scrollAction);
         }
@@ -19011,6 +19219,7 @@ var uni$1 = {
   navigateToMiniProgram: navigateToMiniProgram,
   onHostEventReceive: onHostEventReceive,
   onNativeEventReceive: onNativeEventReceive,
+  __log__: __log__,
   navigateTo: navigateTo,
   reLaunch: reLaunch,
   switchTab: switchTab,
@@ -19131,6 +19340,9 @@ var uni$1 = {
   setScreenBrightness: setScreenBrightness,
   setKeepScreenOn: setKeepScreenOn,
   getWindowInfo: getWindowInfo,
+  getSystemSetting: getSystemSetting,
+  getAppAuthorizeSetting: getAppAuthorizeSetting,
+  openAppAuthorizeSetting: openAppAuthorizeSetting,
   getImageInfo: getImageInfo,
   getVideoInfo: getVideoInfo,
   previewImage: previewImage,
@@ -19196,6 +19408,7 @@ var uni$1 = {
   closeAuthView: closeAuthView,
   getCheckBoxState: getCheckBoxState,
   getUniverifyManager: getUniverifyManager,
+  createPushMessage: createPushMessage,
   registerRuntime: registerRuntime,
   share: share,
   shareWithSystem: shareWithSystem,
@@ -19383,8 +19596,63 @@ function clearTempFile() {
     });
 }
 
+let focusTimeout = 0;
+let keyboardHeight = 0;
+let onKeyboardShow = null;
+let focusTimer = null;
+function hookKeyboardEvent(event, callback) {
+    onKeyboardShow = null;
+    if (focusTimer) {
+        clearTimeout(focusTimer);
+        focusTimer = null;
+    }
+    if (event.type === 'onFocus') {
+        if (keyboardHeight > 0) {
+            event.detail.height = keyboardHeight;
+        }
+        else {
+            focusTimer = setTimeout(function () {
+                event.detail.height = keyboardHeight;
+                callback(event);
+            }, focusTimeout);
+            onKeyboardShow = function () {
+                if (focusTimer) {
+                    clearTimeout(focusTimer);
+                    focusTimer = null;
+                }
+                event.detail.height = keyboardHeight;
+                callback(event);
+            };
+            return;
+        }
+    }
+    callback(event);
+}
+function initKeyboardEvent() {
+    const isAndroid = plus.os.name.toLowerCase() === 'android';
+    focusTimeout = isAndroid ? 300 : 700;
+    UniServiceJSBridge.on(ON_KEYBOARD_HEIGHT_CHANGE, (res) => {
+        keyboardHeight = res.height;
+        if (keyboardHeight > 0) {
+            const callback = onKeyboardShow;
+            onKeyboardShow = null;
+            if (callback) {
+                callback();
+            }
+        }
+    });
+}
+
 function onNodeEvent(nodeId, evt, pageNode) {
-    pageNode.fireEvent(nodeId, evt);
+    const type = evt.type;
+    if (type === 'onFocus' || type === 'onBlur') {
+        hookKeyboardEvent(evt, (evt) => {
+            pageNode.fireEvent(nodeId, evt);
+        });
+    }
+    else {
+        pageNode.fireEvent(nodeId, evt);
+    }
 }
 
 function onVdSync(actions, pageId) {
@@ -19479,10 +19747,13 @@ function subscribeWebviewReady(_data, pageId) {
         // preloadWebview 不存在，重新加载一下
         setPreloadWebview(plus.webview.getWebviewById(pageId));
     }
-    if (preloadWebview$1.id !== pageId) {
-        return console.error(`webviewReady[${preloadWebview$1.id}][${pageId}] not match`);
+    // 仅当 preloadWebview 未 loaded 时处理 （iOS崩溃也会继续走到这里，此时 preloadWebview 通常是 loaded 的，且两者 id 肯定不一样）
+    if (!preloadWebview$1.loaded) {
+        if (preloadWebview$1.id !== pageId) {
+            return console.error(`webviewReady[${preloadWebview$1.id}][${pageId}] not match`);
+        }
+        preloadWebview$1.loaded = true; // 标记已 ready
     }
-    preloadWebview$1.loaded = true; // 标记已 ready
     UniServiceJSBridge.emit(ON_WEBVIEW_READY + '.' + pageId);
     isLaunchWebview && onLaunchWebviewReady();
 }
@@ -19645,6 +19916,7 @@ function registerApp(appVm) {
     initEntry();
     initTabBar();
     initGlobalEvent();
+    initKeyboardEvent();
     initSubscribeHandlers();
     initAppLaunch(appVm);
     // 10s后清理临时文件

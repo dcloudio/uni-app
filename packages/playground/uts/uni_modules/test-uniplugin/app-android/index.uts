@@ -1,0 +1,22 @@
+import Log from 'android.util.Log'
+import FrameLayout from 'android.widget.FrameLayout'
+import View from 'android.view.View'
+import { IUser } from './interface.uts'
+import { login } from './login.uts'
+import logo from '../static/logo.png'
+export class User implements IUser {
+  async login(name: string, pwd: string) {
+    setTimeout(() => {
+      console.log('timeout')
+    }, 1000)
+    login(name, pwd)
+    Log.info('123')
+    Log.info(logo)
+  }
+  register(name: string, callback: () => void) {
+    Log.info(logo as FrameLayout)
+  }
+  test(view: View) {}
+}
+function login(name: string, callback: () => void) {}
+export function register(name: string, callback: () => void) {}

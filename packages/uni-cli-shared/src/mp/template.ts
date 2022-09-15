@@ -57,6 +57,10 @@ export interface MiniProgramCompilerOptions {
      * 格式化组件名称，比如 wx-btn => weixin-btn (微信不允许以 wx 命名自定义组件)
      */
     normalizeName?: (name: string) => string
+    /**
+     * 合并虚拟化节点属性（class、style）
+     */
+    mergeVirtualHostAttributes?: boolean
   }
   directive: string
   emitFile?: (emittedFile: EmittedAsset) => string

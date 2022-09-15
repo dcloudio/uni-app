@@ -254,6 +254,7 @@ export function createVueComponent(
     {
       mpType,
       mpInstance,
+      slots: mpInstance.props.uS || {}, // vueSlots
       parentComponent: parent && parent.$,
       onBeforeSetup(
         instance: ComponentInternalInstance,

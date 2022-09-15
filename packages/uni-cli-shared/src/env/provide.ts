@@ -5,7 +5,7 @@ const libDir = path.resolve(__dirname, '../../lib')
 export function initAppProvide() {
   const cryptoDefine = [path.join(libDir, 'crypto.js'), 'default']
   return {
-    __f__: ['@dcloudio/uni-shared', 'formatAppLog'],
+    __f__: ['@dcloudio/uni-app', 'formatAppLog'],
     crypto: cryptoDefine,
     'window.crypto': cryptoDefine,
     'global.crypto': cryptoDefine,
@@ -16,6 +16,6 @@ export function initAppProvide() {
 
 export function initH5Provide() {
   return {
-    __f__: ['@dcloudio/uni-shared', 'formatH5Log'],
+    __f__: ['@dcloudio/uni-app', 'formatH5Log'],
   }
 }

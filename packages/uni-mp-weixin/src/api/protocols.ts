@@ -7,4 +7,5 @@ export {
   getDeviceInfo,
   getAppBaseInfo,
   getWindowInfo,
+  getAppAuthorizeSetting,
 } from '@dcloudio/uni-mp-core'

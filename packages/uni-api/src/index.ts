@@ -41,6 +41,9 @@ export * from './protocols/device/ibeacon'
 export * from './protocols/device/brightness'
 export * from './protocols/device/soterAuthentication'
 export * from './protocols/device/scanCode'
+export * from './protocols/device/getSystemSetting'
+export * from './protocols/device/getAppAuthorizeSetting'
+export * from './protocols/device/openAppAuthorizeSetting'
 
 export * from './protocols/storage/storage'
 
@@ -96,6 +99,7 @@ export * from './protocols/plugin/getProvider'
 export * from './protocols/plugin/oauth'
 export * from './protocols/plugin/share'
 export * from './protocols/plugin/requestPayment'
+export * from './protocols/plugin/push'
 
 // ad
 export * from './protocols/ad/rewardedVideoAd'

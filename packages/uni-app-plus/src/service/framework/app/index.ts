@@ -10,6 +10,7 @@ import { initAppLaunch } from './initAppLaunch'
 import { clearTempFile } from './clearTempFile'
 import { initSubscribeHandlers } from './subscriber'
 import { initVueApp } from './vueApp'
+import { initKeyboardEvent } from '../dom/keyboard'
 
 let appCtx: ComponentPublicInstance
 const defaultApp = {
@@ -60,6 +61,7 @@ export function registerApp(appVm: ComponentPublicInstance) {
   initEntry()
   initTabBar()
   initGlobalEvent()
+  initKeyboardEvent()
   initSubscribeHandlers()
 
   initAppLaunch(appVm)

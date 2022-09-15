@@ -117,7 +117,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     )
     const NUMBER_TYPES = ['number', 'digit']
     const step = computed(() =>
-      NUMBER_TYPES.includes(props.type) ? '0.000000000000000001' : ''
+      NUMBER_TYPES.includes(props.type) ? props.step : ''
     )
 
     function onKeyUpEnter(event: Event) {

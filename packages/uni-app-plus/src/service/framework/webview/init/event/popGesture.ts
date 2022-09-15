@@ -23,10 +23,11 @@ export function onWebviewPopGesture(webview: PlusWebviewWebviewObject) {
       // 拖拽未完成,设置为当前状态栏前景色
       setStatusBarStyle(popStartStatusBarStyle)
     } else if (e.type === 'end' && e.result) {
+      const len = getCurrentPages().length
       const page = getCurrentPage()
       removeCurrentPage()
       setStatusBarStyle()
-      if (page && isDirectPage(page)) {
+      if (page && len === 1 && isDirectPage(page)) {
         reLaunchEntryPage()
       } else {
         // 触发前一个页面 onShow

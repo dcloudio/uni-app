@@ -31,7 +31,11 @@ export function createConfig(options: {
       host: true,
       fs: { strict: false },
       watch: {
-        ignored: ['**/uniCloud**'],
+        ignored: [
+          '**/uniCloud-aliyun/**',
+          '**/uniCloud-tcb/**',
+          '**/uni_modules/uniCloud/**',
+        ],
       },
       ...getDevServerOptions(parseManifestJsonOnce(inputDir)),
     }

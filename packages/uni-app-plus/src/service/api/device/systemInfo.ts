@@ -64,6 +64,7 @@ export const getAppBaseInfo = defineSyncApi<typeof uni.getAppBaseInfo>(
       appName,
       appVersion,
       appVersionCode,
+      appWgtVersion,
     } = systemInfo
 
     return {
@@ -71,6 +72,7 @@ export const getAppBaseInfo = defineSyncApi<typeof uni.getAppBaseInfo>(
       appName,
       appVersion,
       appVersionCode,
+      appWgtVersion,
       appLanguage: getLocale ? getLocale() : osLanguage,
       enableDebug: false,
       hostPackageName,

@@ -13,11 +13,17 @@ import {
   PolylineOptions as QPolylineOptions,
   Circle as QCircle,
   CircleOptions as QCircleOptions,
+  Point as QPoint,
 } from './qq/types'
 
-export type Map = GMap | QMap
+export type GoogleMap = GMap
+export type QQMap = QMap
+export type Map = GMap | QMap | AMap.Map
 export type LatLng = GLatLng | QLatLng
-export type Polyline = GPolyline | QPolyline
-export type PolylineOptions = GPolylineOptions & QPolylineOptions
-export type Circle = GCircle | QCircle
-export type CircleOptions = GCircleOptions & QCircleOptions
+export type Polyline = GPolyline | QPolyline | AMap.Polyline
+export type PolylineOptions = GPolylineOptions &
+  QPolylineOptions &
+  AMap.PolylineOptions
+export type Circle = GCircle | QCircle | AMap.Circle
+export type CircleOptions = GCircleOptions & QCircleOptions & AMap.CircleOptions
+export type Point = QPoint

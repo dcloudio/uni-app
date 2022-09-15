@@ -23,6 +23,6 @@
   },
   "include": [
     "src",
-    "node_modules/source-map/source-map.d.ts"
+    "./lib/source-map/source-map.d.ts"
   ]
 }

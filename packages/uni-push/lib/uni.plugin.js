@@ -9,7 +9,8 @@ var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
 
 var index = () => [
     uniCliShared.defineUniMainJsPlugin((opts) => {
-        let isEnable = false;
+        let isEnableV1 = false;
+        let isEnableV2 = false;
         let isOffline = false;
         return {
             name: 'uni:push',
@@ -20,10 +21,16 @@ var index = () => [
                 }
                 const inputDir = process.env.UNI_INPUT_DIR;
                 const platform = process.env.UNI_PLATFORM;
-                isEnable = uniCliShared.isEnableUniPushV2(inputDir, platform);
-                if (!isEnable) {
+                isEnableV1 = uniCliShared.isEnableUniPushV1(inputDir, platform);
+                isEnableV2 = uniCliShared.isEnableUniPushV2(inputDir, platform);
+                // v1
+                if (isEnableV1) {
                     return;
                 }
+                if (!isEnableV2) {
+                    return;
+                }
+                // v2
                 isOffline = platform === 'app' && uniCliShared.isUniPushOffline(inputDir);
                 if (isOffline) {
                     return;
@@ -36,14 +43,16 @@ var index = () => [
             },
             resolveId(id) {
                 if (id === '@dcloudio/uni-push') {
-                    return uniCliShared.resolveBuiltIn(path__default["default"].join('@dcloudio/uni-push', isOffline ? 'dist/uni-push.plus.es.js' : 'dist/uni-push.es.js'));
+                    return uniCliShared.resolveBuiltIn(path__default["default"].join('@dcloudio/uni-push', isOffline || isEnableV1
+                        ? 'dist/uni-push.plus.es.js'
+                        : 'dist/uni-push.es.js'));
                 }
             },
             transform(code, id) {
                 if (!opts.filter(id)) {
                     return;
                 }
-                if (isEnable) {
+                if (isEnableV1 || isEnableV2) {
                     return {
                         code: `import '@dcloudio/uni-push';` + code,
                         map: null,

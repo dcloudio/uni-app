@@ -234,7 +234,8 @@ export default class UniPageNode extends UniNode implements IUniPageNode {
   }
   restore() {
     this.clear()
-    this.push(this.createAction)
+    // createAction 需要单独发送，因为 view 层需要现根据 create 来设置 page 的 ready
+    this.setup()
     if (this.scrollAction) {
       this.push(this.scrollAction)
     }

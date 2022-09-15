@@ -143,6 +143,10 @@ export const props = /*#__PURE__*/ extend(
       type: Boolean,
       default: true,
     },
+    step: {
+      type: String,
+      default: '0.000000000000000001',
+    },
   },
   keyboardProps
 )

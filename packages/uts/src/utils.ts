@@ -28,7 +28,15 @@ export function printStartup(target: UtsTarget, mode: string) {
   )
 }
 
-export function printUtsResults(results: UtsResult[]) {
+export function printDone(watch: boolean = false) {
+  if (watch) {
+    console.log(`DONE  Build complete. Watching for changes...`)
+  } else {
+    console.log(`DONE  Build complete.`)
+  }
+}
+
+export function printUtsResults(results: UtsResult[], watch: boolean = false) {
   let longest = 0
   let failed: UtsResult[] = []
   let transformed: UtsResult[] = []
@@ -61,6 +69,7 @@ export function printUtsResults(results: UtsResult[]) {
       }
     })
   }
+  printDone(watch)
 }
 
 export function printUtsResult(result: UtsResult, maxLength = 0) {

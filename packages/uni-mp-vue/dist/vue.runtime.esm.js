@@ -1456,13 +1456,14 @@ function queueFlush() {
         currentFlushPromise = resolvedPromise.then(flushJobs);
     }
 }
+function hasQueueJob(job) {
+    return queue.indexOf(job) > -1;
+}
 function invalidateJob(job) {
     const i = queue.indexOf(job);
     if (i > flushIndex) {
         queue.splice(i, 1);
     }
-    // fixed by xxxxxx
-    return i;
 }
 function queueCb(cb, activeQueue, pendingQueue, index) {
     if (!isArray(cb)) {
@@ -2021,7 +2022,17 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = EM
     }
     else {
         // default: 'pre'
-        scheduler = () => queuePreFlushCb(job);
+        scheduler = () => {
+            if (!instance || instance.isMounted) {
+                queuePreFlushCb(job);
+            }
+            else {
+                // with 'pre' option, the first call must happen before
+                // the component is mounted so it is called synchronously.
+                // fixed by xxxxxx https://github.com/dcloudio/uni-app/issues/3648
+                job();
+            }
+        };
     }
     const effect = new ReactiveEffect(getter, scheduler);
     if ((process.env.NODE_ENV !== 'production')) {
@@ -4805,11 +4816,28 @@ function setRef$1(instance, isUnmount = false) {
     if (isUnmount) {
         return $templateRefs.forEach(templateRef => setTemplateRef(templateRef, null, setupState));
     }
-    const doSet = () => {
+    const check = $mpPlatform === 'mp-baidu' || $mpPlatform === 'mp-toutiao';
+    const doSetByRefs = (refs) => {
         const mpComponents = $scope
             .selectAllComponents('.r')
             .concat($scope.selectAllComponents('.r-i-f'));
-        $templateRefs.forEach(templateRef => setTemplateRef(templateRef, findComponentPublicInstance(mpComponents, templateRef.i), setupState));
+        return refs.filter(templateRef => {
+            const refValue = findComponentPublicInstance(mpComponents, templateRef.i);
+            // 部分平台，在一些 if 条件下，部分 slot 组件初始化会被延迟到下一次渲染，需要二次检测
+            if (check && refValue === null) {
+                return true;
+            }
+            setTemplateRef(templateRef, refValue, setupState);
+            return false;
+        });
+    };
+    const doSet = () => {
+        const refs = doSetByRefs($templateRefs);
+        if (refs.length && instance.proxy && instance.proxy.$scope) {
+            instance.proxy.$scope.setData({ r1: 1 }, () => {
+                doSetByRefs(refs);
+            });
+        }
     };
     if ($scope._$setRef) {
         $scope._$setRef(doSet);
@@ -4822,7 +4850,11 @@ function findComponentPublicInstance(mpComponents, id) {
     const mpInstance = mpComponents.find(com => com && (com.properties || com.props).uI === id);
     if (mpInstance) {
         const vm = mpInstance.$vm;
-        return getExposeProxy(vm.$) || vm;
+        if (vm) {
+            return getExposeProxy(vm.$) || vm;
+        }
+        // 可能是原生组件
+        return mpInstance;
     }
     return null;
 }
@@ -5693,6 +5725,7 @@ const t = (val) => toDisplayString(val);
 const p = (props) => renderProps(props);
 const sr = (ref, id, opts) => setRef(ref, id, opts);
 const m = (fn, modifiers, isComponent = false) => withModelModifiers(fn, modifiers, isComponent);
+const j = (obj) => JSON.stringify(obj);
 
 function createApp(rootComponent, rootProps = null) {
     rootComponent && (rootComponent.mpType = 'app');
@@ -5700,4 +5733,4 @@ function createApp(rootComponent, rootProps = null) {
 }
 const createSSRApp = createApp;
 
-export { EffectScope, Fragment, ReactiveEffect, Text, c, callWithAsyncErrorHandling, callWithErrorHandling, computed$1 as computed, createApp, createSSRApp, createVNode$1 as createVNode, createVueApp, customRef, d, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, diff, e, effect, effectScope, f, findComponentPropsData, getCurrentInstance, getCurrentScope, getExposeProxy, guardReactiveProps, h, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, m, markRaw, mergeDefaults, mergeProps, n, nextTick, o, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, p, patch, provide, proxyRefs, pruneComponentPropsCache, queuePostFlushCb, r, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, s, setCurrentRenderingInstance, setTemplateRef, setupDevtoolsPlugin, shallowReactive, shallowReadonly, shallowRef, sr, stop, t, toHandlers, toRaw, toRef, toRefs, triggerRef, unref, updateProps, useAttrs, useCssModule, useCssVars, useSSRContext, useSlots, version, w, warn$1 as warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };
+export { EffectScope, Fragment, ReactiveEffect, Text, c, callWithAsyncErrorHandling, callWithErrorHandling, computed$1 as computed, createApp, createSSRApp, createVNode$1 as createVNode, createVueApp, customRef, d, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, diff, e, effect, effectScope, f, findComponentPropsData, getCurrentInstance, getCurrentScope, getExposeProxy, guardReactiveProps, h, hasQueueJob, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, j, logError, m, markRaw, mergeDefaults, mergeProps, n, nextTick, o, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, p, patch, provide, proxyRefs, pruneComponentPropsCache, queuePostFlushCb, r, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, s, setCurrentRenderingInstance, setTemplateRef, setupDevtoolsPlugin, shallowReactive, shallowReadonly, shallowRef, sr, stop, t, toHandlers, toRaw, toRef, toRefs, triggerRef, unref, updateProps, useAttrs, useCssModule, useCssVars, useSSRContext, useSlots, version, w, warn$1 as warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };

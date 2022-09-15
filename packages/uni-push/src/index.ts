@@ -1,4 +1,5 @@
 import GtPush from '../lib/gtpush-min'
+import { initPushNotification } from './route'
 
 // if (process.env.UNI_PUSH_DEBUG) {
 //   GtPush.setDebugMode(true)
@@ -20,6 +21,9 @@ if (!appid) {
     })
   })
 } else {
+  // #ifdef APP
+  initPushNotification()
+  // #endif
   GtPush.init({
     appid,
     onError: (res) => {
@@ -53,4 +57,19 @@ if (!appid) {
       })
     },
   })
+  // 仅在 jssdk 中监听
+  // #ifdef APP
+  uni.onPushMessage((res) => {
+    if (
+      res.type === 'receive' &&
+      res.data &&
+      (res.data as any).force_notification
+    ) {
+      // 创建通知栏
+      uni.createPushMessage(res.data)
+      // 阻止其他监听器继续监听
+      ;(res as any).stopped = true
+    }
+  })
+  // #endif
 }

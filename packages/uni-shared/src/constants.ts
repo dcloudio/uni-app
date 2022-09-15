@@ -67,6 +67,7 @@ export const ON_ADD_TO_FAVORITES = 'onAddToFavorites'
 export const ON_SHARE_APP_MESSAGE = 'onShareAppMessage'
 // navigationBar
 export const ON_NAVIGATION_BAR_BUTTON_TAP = 'onNavigationBarButtonTap'
+export const ON_NAVIGATION_BAR_CHANGE = 'onNavigationBarChange'
 export const ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED =
   'onNavigationBarSearchInputClicked'
 export const ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED =

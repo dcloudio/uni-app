@@ -29,6 +29,29 @@ describe('mp-weixin: transform component', () => {
 }`
     )
   })
+  test('lazy element: input', () => {
+    assert(
+      `<input/>`,
+      `<input/>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+    assert(
+      `<input type="number"/>`,
+      `<input type="number"/>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+    assert(
+      `<input :type="type"/>`,
+      `<block wx:if="{{r0}}"><input type="{{a}}"/></block>`,
+      `(_ctx, _cache) => {
+  return { a: _ctx.type }
+}`
+    )
+  })
   test('lazy element: textarea', () => {
     assert(
       `<textarea></textarea>`,

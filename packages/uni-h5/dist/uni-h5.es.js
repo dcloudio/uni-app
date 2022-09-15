@@ -1,6 +1,6 @@
 import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, h, createTextVNode, onBeforeActivate, onBeforeDeactivate, createBlock, renderList, onDeactivated, createApp, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
 import { isString, extend, isArray, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
-import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, debounce, ON_LOAD, UniLifecycleHooks, invokeCreateVueAppHook, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, sortObject, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
+import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, debounce, ON_LOAD, UniLifecycleHooks, invokeCreateVueAppHook, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, sortObject, ON_BACK_PRESS, parseUrl, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 export { onCreateVueApp } from "@dcloudio/uni-shared";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
@@ -1271,7 +1271,6 @@ function $nne(evt, eventValue, instance2) {
     res.changedTouches = normalizeTouchEvent(evt.changedTouches, top);
   }
   {
-    wrapperEvent(res, evt);
     return wrapperH5WxsEvent(res, eventValue, instance2) || [res];
   }
 }
@@ -1296,6 +1295,9 @@ function createNativeEvent(evt, htmlElement = false) {
   if (evt.type.startsWith("touch")) {
     event.touches = evt.touches;
     event.changedTouches = evt.changedTouches;
+  }
+  {
+    wrapperEvent(event, evt);
   }
   return event;
 }
@@ -1688,13 +1690,23 @@ function useHover(props2) {
     });
   }
   function onTouchstartPassive(evt) {
+    if (evt.touches.length > 1) {
+      return;
+    }
+    handleHoverStart(evt);
+  }
+  function onMousedown(evt) {
+    if (hoverTouch) {
+      return;
+    }
+    handleHoverStart(evt);
+    window.addEventListener("mouseup", handlePCHoverEnd);
+  }
+  function handleHoverStart(evt) {
     if (evt._hoverPropagationStopped) {
       return;
     }
     if (!props2.hoverClass || props2.hoverClass === "none" || props2.disabled) {
-      return;
-    }
-    if (evt.touches.length > 1) {
       return;
     }
     if (props2.hoverStopPropagation) {
@@ -1709,10 +1721,23 @@ function useHover(props2) {
     }, parseInt(props2.hoverStartTime));
   }
   function onTouchend() {
+    handleHoverEnd();
+  }
+  function onMouseup() {
+    if (!hoverTouch) {
+      return;
+    }
+    handlePCHoverEnd();
+  }
+  function handleHoverEnd() {
     hoverTouch = false;
     if (hovering.value) {
       hoverReset();
     }
+  }
+  function handlePCHoverEnd() {
+    handleHoverEnd();
+    window.removeEventListener("mouseup", handlePCHoverEnd);
   }
   function onTouchcancel() {
     hoverTouch = false;
@@ -1723,7 +1748,9 @@ function useHover(props2) {
     hovering,
     binding: {
       onTouchstartPassive,
+      onMousedown,
       onTouchend,
+      onMouseup,
       onTouchcancel
     }
   };
@@ -1765,7 +1792,7 @@ function normalizeCustomEvent(name, domEvt, el, detail) {
   };
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-var index$A = /* @__PURE__ */ defineBuiltInComponent({
+var index$B = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   emits: ["submit", "reset"],
   setup(_props, {
@@ -1825,7 +1852,7 @@ function useProvideLabel() {
   });
   return handlers;
 }
-var index$z = /* @__PURE__ */ defineBuiltInComponent({
+var index$A = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: labelProps,
   setup(props2, {
@@ -1953,7 +1980,7 @@ const buttonProps = {
     default: false
   }
 };
-var index$y = /* @__PURE__ */ defineBuiltInComponent({
+var index$z = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   setup(props2, {
@@ -4173,13 +4200,13 @@ const createMediaQueryObserver = /* @__PURE__ */ defineSyncApi("createMediaQuery
   }
   return new ServiceMediaQueryObserver(getCurrentPageVm());
 });
-let index$x = 0;
+let index$y = 0;
 let optionsCache = {};
 function operateEditor(componentId, pageId, type, options) {
   const data = { options };
   const needCallOptions = options && ("success" in options || "fail" in options || "complete" in options);
   if (needCallOptions) {
-    const callbackId = String(index$x++);
+    const callbackId = String(index$y++);
     data.callbackId = callbackId;
     optionsCache[callbackId] = options;
   }
@@ -4600,12 +4627,17 @@ function invokePushCallback(args) {
     cidErrMsg = args.errMsg;
     invokeGetPushCidCallbacks(cid, args.errMsg);
   } else if (args.type === "pushMsg") {
-    onPushMessageCallbacks.forEach((callback) => {
-      callback({
-        type: "receive",
-        data: normalizePushMessage(args.message)
-      });
-    });
+    const message = {
+      type: "receive",
+      data: normalizePushMessage(args.message)
+    };
+    for (let i = 0; i < onPushMessageCallbacks.length; i++) {
+      const callback = onPushMessageCallbacks[i];
+      callback(message);
+      if (message.stopped) {
+        break;
+      }
+    }
   } else if (args.type === "click") {
     onPushMessageCallbacks.forEach((callback) => {
       callback({
@@ -4628,7 +4660,7 @@ const getPushClientId = /* @__PURE__ */ defineAsyncApi(API_GET_PUSH_CLIENT_ID, (
     if (typeof enabled === "undefined") {
       enabled = false;
       cid = "";
-      cidErrMsg = "unipush is not enabled";
+      cidErrMsg = "uniPush is not enabled";
     }
     getPushCidCallbacks.push((cid2, errMsg) => {
       if (cid2) {
@@ -4810,8 +4842,32 @@ const GetLocationProtocol = {
   altitude: Boolean
 };
 const API_OPEN_LOCATION = "openLocation";
+const checkProps = (key, value) => {
+  if (value === void 0) {
+    return `${key} should not be empty.`;
+  }
+  if (typeof value !== "number") {
+    let receivedType = typeof value;
+    receivedType = receivedType[0].toUpperCase() + receivedType.substring(1);
+    return `Expected Number, got ${receivedType} with value ${JSON.stringify(value)}.`;
+  }
+};
 const OpenLocationOptions = {
   formatArgs: {
+    latitude(value, params) {
+      const checkedInfo = checkProps("latitude", value);
+      if (checkedInfo) {
+        return checkedInfo;
+      }
+      params.latitude = value;
+    },
+    longitude(value, params) {
+      const checkedInfo = checkProps("longitude", value);
+      if (checkedInfo) {
+        return checkedInfo;
+      }
+      params.longitude = value;
+    },
     scale(value, params) {
       value = Math.floor(value);
       params.scale = value >= 5 && value <= 18 ? value : 18;
@@ -4819,14 +4875,8 @@ const OpenLocationOptions = {
   }
 };
 const OpenLocationProtocol = {
-  latitude: {
-    type: Number,
-    required: true
-  },
-  longitude: {
-    type: Number,
-    required: true
-  },
+  latitude: Number,
+  longitude: Number,
   scale: Number,
   name: String,
   address: String
@@ -5392,7 +5442,9 @@ const ShowModalOptions = {
   formatArgs: {
     title: "",
     content: "",
+    placeholderText: "",
     showCancel: true,
+    editable: false,
     cancelText(_value, params) {
       if (!hasOwn(params, "cancelText")) {
         const { t: t2 } = useI18n();
@@ -6511,15 +6563,10 @@ function resolveColor(color) {
   color[3] = color[3] / 255;
   return "rgba(" + color.join(",") + ")";
 }
-function processTouches(target, touches) {
-  const eventTarget = target;
-  return Array.from(touches).map((touch) => {
-    let boundingClientRect = eventTarget.getBoundingClientRect();
-    return {
-      identifier: touch.identifier,
-      x: touch.clientX - boundingClientRect.left,
-      y: touch.clientY - boundingClientRect.top
-    };
+function processTouches(rect, touches) {
+  Array.from(touches).forEach((touch) => {
+    touch.x = touch.clientX - rect.left;
+    touch.y = touch.clientY - rect.top;
   });
 }
 let tempCanvas;
@@ -6545,7 +6592,7 @@ const props$x = {
     default: true
   }
 };
-var index$w = /* @__PURE__ */ defineBuiltInComponent({
+var index$x = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "Canvas",
   compatConfig: {
@@ -6613,7 +6660,7 @@ function useListeners(props2, Listeners, trigger) {
     let $listeners = extend({}, (() => {
       let obj = {};
       for (const key in _$listeners) {
-        if (Object.prototype.hasOwnProperty.call(_$listeners, key)) {
+        if (hasOwn(_$listeners, key)) {
           const event = _$listeners[key];
           obj[key] = event;
         }
@@ -6625,16 +6672,10 @@ function useListeners(props2, Listeners, trigger) {
       let eventHandler = [];
       if (existing) {
         eventHandler.push(withWebEvent(($event) => {
-          trigger(event.replace("on", "").toLocaleLowerCase(), extend({}, (() => {
-            let obj = {};
-            for (const key in $event) {
-              obj[key] = $event[key];
-            }
-            return obj;
-          })(), {
-            touches: processTouches($event.currentTarget, $event.touches),
-            changedTouches: processTouches($event.currentTarget, $event.changedTouches)
-          }));
+          const rect = $event.currentTarget.getBoundingClientRect();
+          processTouches(rect, $event.touches);
+          processTouches(rect, $event.changedTouches);
+          trigger(event.replace("on", "").toLocaleLowerCase(), $event);
         }));
       }
       if (props2.disableScroll && event === "onTouchmove") {
@@ -7018,7 +7059,7 @@ const props$w = {
     default: ""
   }
 };
-var index$v = /* @__PURE__ */ defineBuiltInComponent({
+var index$w = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
   props: props$w,
   emits: ["change"],
@@ -7094,7 +7135,7 @@ const props$v = {
     default: ""
   }
 };
-var index$u = /* @__PURE__ */ defineBuiltInComponent({
+var index$v = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
   props: props$v,
   setup(props2, {
@@ -7979,7 +8020,7 @@ const props$t = /* @__PURE__ */ extend({}, props$u, {
     default: false
   }
 });
-var index$t = /* @__PURE__ */ defineBuiltInComponent({
+var index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: props$t,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
@@ -8041,7 +8082,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-var index$s = /* @__PURE__ */ defineBuiltInComponent({
+var index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -8105,7 +8146,7 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-var index$r = /* @__PURE__ */ defineBuiltInComponent({
+var index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
   props: props$s,
   setup(props2, {
@@ -8494,6 +8535,10 @@ const props$r = /* @__PURE__ */ extend({}, {
   ignoreCompositionEvent: {
     type: Boolean,
     default: true
+  },
+  step: {
+    type: String,
+    default: "0.000000000000000001"
   }
 }, props$u);
 const emit = [
@@ -8802,7 +8847,7 @@ var Input = /* @__PURE__ */ defineBuiltInComponent({
       }
     });
     const NUMBER_TYPES = ["number", "digit"];
-    const step = computed(() => NUMBER_TYPES.includes(props2.type) ? "0.000000000000000001" : "");
+    const step = computed(() => NUMBER_TYPES.includes(props2.type) ? props2.step : "");
     function onKeyUpEnter(event) {
       if (event.key !== "Enter") {
         return;
@@ -9742,6 +9787,9 @@ function useMovableViewState(props2, trigger, rootRef) {
   watch(ySync, (val) => {
     _setY(val);
   });
+  watch(() => props2.disabled, () => {
+    __handleTouchStart();
+  });
   watch(() => props2.scaleValue, (val) => {
     scaleValueSync.value = Number(val) || 0;
   });
@@ -10279,7 +10327,7 @@ function createNavigatorOnClick(props2) {
     }
   };
 }
-var index$q = /* @__PURE__ */ defineBuiltInComponent({
+var index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   inheritAttrs: false,
   compatConfig: {
@@ -10305,14 +10353,15 @@ var index$q = /* @__PURE__ */ defineBuiltInComponent({
       return createVNode("a", {
         "class": "navigator-wrap",
         "href": url,
-        "onClick": onEventPrevent
+        "onClick": onEventPrevent,
+        "onMousedown": onEventPrevent
       }, [createVNode("uni-navigator", mergeProps({
         "class": hasHoverClass && hovering.value ? hoverClass : ""
       }, hasHoverClass && binding, vm ? vm.attrs : {}, {
         [__scopeId]: ""
       }, {
         "onClick": onClick
-      }), [slots.default && slots.default()], 16, ["onClick"])], 8, ["href", "onClick"]);
+      }), [slots.default && slots.default()], 16, ["onClick"])], 40, ["href", "onClick", "onMousedown"]);
     };
   }
 });
@@ -11379,7 +11428,7 @@ const progressProps = {
     default: 0
   }
 };
-var index$p = /* @__PURE__ */ defineBuiltInComponent({
+var index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: progressProps,
   setup(props2) {
@@ -11458,7 +11507,7 @@ const props$p = {
     default: ""
   }
 };
-var index$o = /* @__PURE__ */ defineBuiltInComponent({
+var index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
   props: props$p,
   setup(props2, {
@@ -11565,7 +11614,7 @@ const props$o = {
     default: ""
   }
 };
-var index$n = /* @__PURE__ */ defineBuiltInComponent({
+var index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
   props: props$o,
   setup(props2, {
@@ -11766,7 +11815,7 @@ function normalizeAttrs(tagName, attrs2) {
   if (!isPlainObject(attrs2))
     return;
   for (const key in attrs2) {
-    if (Object.prototype.hasOwnProperty.call(attrs2, key)) {
+    if (hasOwn(attrs2, key)) {
       const value = attrs2[key];
       if (tagName === "img" && key === "src")
         attrs2[key] = getRealPath(value);
@@ -11892,7 +11941,7 @@ const props$n = {
     }
   }
 };
-var index$m = /* @__PURE__ */ defineBuiltInComponent({
+var index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
     MODE: 3
@@ -12462,7 +12511,7 @@ const props$l = {
     default: false
   }
 };
-var index$l = /* @__PURE__ */ defineBuiltInComponent({
+var index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
   props: props$l,
   emits: ["changing", "change"],
@@ -13297,7 +13346,7 @@ const props$i = {
     default: "#007aff"
   }
 };
-var index$k = /* @__PURE__ */ defineBuiltInComponent({
+var index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
   props: props$i,
   emits: ["change"],
@@ -13399,7 +13448,7 @@ function normalizeText(text2, { space, decode: decode2 }) {
   }
   return text2.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
 }
-var index$j = /* @__PURE__ */ defineBuiltInComponent({
+var index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
   props: {
     selectable: {
@@ -13475,7 +13524,7 @@ function setFixMargin() {
   const DARK_TEST_STRING = "(prefers-color-scheme: dark)";
   fixMargin = String(navigator.platform).indexOf("iP") === 0 && String(navigator.vendor).indexOf("Apple") === 0 && window.matchMedia(DARK_TEST_STRING).media !== DARK_TEST_STRING;
 }
-var index$i = /* @__PURE__ */ defineBuiltInComponent({
+var index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$h,
   emits: ["confirm", "linechange", ...emit],
@@ -13600,7 +13649,7 @@ var index$i = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-var index$h = /* @__PURE__ */ defineBuiltInComponent({
+var index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
   props: extend({}, hoverProps),
   setup(props2, {
@@ -13664,13 +13713,13 @@ function useOn(name, callback) {
   onMounted(() => UniViewJSBridge.on(name, callback));
   onBeforeUnmount(() => UniViewJSBridge.off(name));
 }
-let index$g = 0;
+let index$h = 0;
 function useContextInfo(_id) {
   const page = useCurrentPageId();
   const instance2 = getCurrentInstance();
   const vm = instance2.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id2 = _id || vm.id || `context${index$g++}`;
+  const id2 = _id || vm.id || `context${index$h++}`;
   onMounted(() => {
     const el = vm.$el;
     el.__uniContextInfo = {
@@ -13957,9 +14006,12 @@ function updateCurPageCssVar(pageMeta) {
     tabBar2.shown && (windowBottomValue = parseInt(tabBar2.height));
   }
   updatePageCssVar({
-    "--window-top": normalizeWindowBottom(windowTopValue),
+    "--window-top": normalizeWindowTop(windowTopValue),
     "--window-bottom": normalizeWindowBottom(windowBottomValue)
   });
+}
+function normalizeWindowTop(windowTop) {
+  return envMethod ? `calc(${windowTop}px + ${envMethod}(safe-area-inset-top))` : `${windowTop}px`;
 }
 function normalizeWindowBottom(windowBottom) {
   return envMethod ? `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))` : `${windowBottom}px`;
@@ -14016,7 +14068,11 @@ function initPublicPage(route) {
   if (!__UNI_FEATURE_PAGES__) {
     return initPageInternalInstance("navigateTo", __uniRoutes[0].path, {}, meta);
   }
-  return initPageInternalInstance("navigateTo", route.fullPath, {}, meta);
+  let fullPath = route.fullPath;
+  if (route.meta.isEntry && fullPath.indexOf(route.meta.route) === -1) {
+    fullPath = "/" + route.meta.route + fullPath.replace("/", "");
+  }
+  return initPageInternalInstance("navigateTo", fullPath, {}, meta);
 }
 function initPage(vm) {
   const route = vm.$route;
@@ -14194,7 +14250,7 @@ function initHistory() {
   });
   return history2;
 }
-var index$f = {
+var index$g = {
   install(app) {
     initApp$1(app);
     initViewPlugin(app);
@@ -15030,7 +15086,7 @@ const props$g = {
     default: true
   }
 };
-var index$e = /* @__PURE__ */ defineBuiltInComponent({
+var index$f = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
   props: props$g,
   emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
@@ -15257,9 +15313,13 @@ const props$f = {
   src: {
     type: String,
     default: ""
+  },
+  fullscreen: {
+    type: Boolean,
+    default: true
   }
 };
-var index$d = /* @__PURE__ */ defineBuiltInComponent({
+var index$e = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
   props: props$f,
@@ -15279,7 +15339,7 @@ var index$d = /* @__PURE__ */ defineBuiltInComponent({
       const iframe = document.createElement("iframe");
       watchEffect(() => {
         for (const key in $attrs.value) {
-          if (Object.prototype.hasOwnProperty.call($attrs.value, key)) {
+          if (hasOwn($attrs.value, key)) {
             const attr2 = $attrs.value[key];
             iframe[key] = attr2;
           }
@@ -15288,25 +15348,31 @@ var index$d = /* @__PURE__ */ defineBuiltInComponent({
       watchEffect(() => {
         iframe.src = getRealPath(props2.src);
       });
-      document.body.appendChild(iframe);
       iframeRef.value = iframe;
-      _resize = useWebViewSize(rootRef, iframeRef);
+      _resize = useWebViewSize(rootRef, iframeRef, props2.fullscreen);
+      if (props2.fullscreen) {
+        document.body.appendChild(iframe);
+      }
     };
     renderIframe();
     onMounted(() => {
+      var _a;
       _resize();
+      !props2.fullscreen && ((_a = rootRef.value) == null ? void 0 : _a.appendChild(iframeRef.value));
     });
     onActivated(() => {
-      iframeRef.value && (iframeRef.value.style.display = "block");
+      props2.fullscreen && (iframeRef.value.style.display = "block");
     });
     onDeactivated(() => {
-      iframeRef.value && (iframeRef.value.style.display = "none");
+      props2.fullscreen && (iframeRef.value.style.display = "none");
     });
     onBeforeUnmount(() => {
-      document.body.removeChild(iframeRef.value);
+      props2.fullscreen && document.body.removeChild(iframeRef.value);
     });
     return () => {
-      return createVNode(Fragment, null, [createVNode("uni-web-view", mergeProps($listeners.value, $excludeAttrs.value, {
+      return createVNode(Fragment, null, [createVNode("uni-web-view", mergeProps({
+        "class": props2.fullscreen ? "uni-webview--fullscreen" : ""
+      }, $listeners.value, $excludeAttrs.value, {
         "ref": rootRef
       }), [createVNode(ResizeSensor, {
         "onResize": _resize
@@ -15314,23 +15380,31 @@ var index$d = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-function useWebViewSize(rootRef, iframeRef) {
+function useWebViewSize(rootRef, iframeRef, fullscreen) {
   const _resize = () => {
-    const {
-      top,
-      left,
-      width,
-      height
-    } = rootRef.value.getBoundingClientRect();
-    iframeRef.value && updateElementStyle(iframeRef.value, {
-      position: "absolute",
-      display: "block",
-      border: "0",
-      top: top + "px",
-      left: left + "px",
-      width: width + "px",
-      height: height + "px"
-    });
+    var _a, _b;
+    if (fullscreen) {
+      const {
+        top,
+        left,
+        width,
+        height
+      } = rootRef.value.getBoundingClientRect();
+      updateElementStyle(iframeRef.value, {
+        position: "absolute",
+        display: "block",
+        border: "0",
+        top: top + "px",
+        left: left + "px",
+        width: width + "px",
+        height: height + "px"
+      });
+    } else {
+      updateElementStyle(iframeRef.value, {
+        width: ((_a = rootRef.value) == null ? void 0 : _a.style.width) || "300px",
+        height: ((_b = rootRef.value) == null ? void 0 : _b.style.height) || "150px"
+      });
+    }
   };
   return _resize;
 }
@@ -15340,26 +15414,47 @@ const ICON_PATH_TARGET = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAACc
 var MapType = /* @__PURE__ */ ((MapType2) => {
   MapType2["QQ"] = "qq";
   MapType2["GOOGLE"] = "google";
+  MapType2["AMAP"] = "AMap";
   MapType2["UNKNOWN"] = "";
   return MapType2;
 })(MapType || {});
 function getMapInfo() {
-  let type = "";
-  let key = "";
   if (__uniConfig.qqMapKey) {
-    type = "qq";
-    key = __uniConfig.qqMapKey;
-  } else if (__uniConfig.googleMapKey) {
-    type = "google";
-    key = __uniConfig.googleMapKey;
+    return {
+      type: "qq",
+      key: __uniConfig.qqMapKey
+    };
+  }
+  if (__uniConfig.googleMapKey) {
+    return {
+      type: "google",
+      key: __uniConfig.googleMapKey
+    };
+  }
+  if (__uniConfig.aMapKey) {
+    return {
+      type: "AMap",
+      key: __uniConfig.aMapKey,
+      securityJsCode: __uniConfig.aMapSecurityJsCode,
+      serviceHost: __uniConfig.aMapServiceHost
+    };
   }
   return {
-    type,
-    key
+    type: "",
+    key: ""
   };
 }
+let IS_AMAP = false;
+let hasGetIsAMap = false;
+const getIsAMap = () => {
+  if (hasGetIsAMap) {
+    return IS_AMAP;
+  } else {
+    hasGetIsAMap = true;
+    return IS_AMAP = getMapInfo().type === "AMap";
+  }
+};
 function createCallout(maps2) {
-  const overlay = new (maps2.OverlayView || maps2.Overlay)();
   function onAdd() {
     const div = this.div;
     const panes = this.getPanes();
@@ -15371,46 +15466,70 @@ function createCallout(maps2) {
       parentNode.removeChild(this.div);
     }
   }
+  function createAMapText() {
+    const option = this.option;
+    this.Text = new maps2.Text({
+      text: option.content,
+      anchor: "bottom-center",
+      offset: new maps2.Pixel(0, option.offsetY - 16),
+      style: {
+        padding: (option.padding || 8) + "px",
+        "line-height": (option.fontSize || 14) + "px",
+        "border-radius": (option.borderRadius || 0) + "px",
+        "border-color": `${option.bgColor || "#fff"} transparent transparent`,
+        "background-color": option.bgColor || "#fff",
+        "box-shadow": "0 2px 6px 0 rgba(114, 124, 245, .5)",
+        "text-align": "center",
+        "font-size": (option.fontSize || 14) + "px",
+        color: option.color || "#000"
+      },
+      position: option.position
+    });
+    const event = maps2.event || maps2.Event;
+    event.addListener(this.Text, "click", () => {
+      this.callback();
+    });
+    this.Text.setMap(option.map);
+  }
+  function removeAMapText() {
+    if (this.Text) {
+      this.option.map.remove(this.Text);
+    }
+  }
   class Callout {
-    constructor(option = {}) {
-      this.setMap = overlay.setMap;
-      this.getMap = overlay.getMap;
-      this.getPanes = overlay.getPanes;
-      this.getProjection = overlay.getProjection;
-      this.map_changed = overlay.map_changed;
-      this.set = overlay.set;
-      this.get = overlay.get;
-      this.setOptions = overlay.setValues;
-      this.bindTo = overlay.bindTo;
-      this.bindsTo = overlay.bindsTo;
-      this.notify = overlay.notify;
-      this.setValues = overlay.setValues;
-      this.unbind = overlay.unbind;
-      this.unbindAll = overlay.unbindAll;
-      this.addListener = overlay.addListener;
+    constructor(option = {}, callback) {
+      this.createAMapText = createAMapText;
+      this.removeAMapText = removeAMapText;
       this.onAdd = onAdd;
       this.construct = onAdd;
       this.onRemove = onRemove;
       this.destroy = onRemove;
       this.option = option || {};
-      const map = option.map;
-      this.position = option.position;
-      this.index = 1;
       const visible = this.visible = this.alwaysVisible = option.display === "ALWAYS";
-      const div = this.div = document.createElement("div");
-      const divStyle = div.style;
-      divStyle.position = "absolute";
-      divStyle.whiteSpace = "nowrap";
-      divStyle.transform = "translateX(-50%) translateY(-100%)";
-      divStyle.zIndex = "1";
-      divStyle.boxShadow = option.boxShadow || "none";
-      divStyle.display = visible ? "block" : "none";
-      const triangle = this.triangle = document.createElement("div");
-      triangle.setAttribute("style", "position: absolute;white-space: nowrap;border-width: 4px;border-style: solid;border-color: #fff transparent transparent;border-image: initial;font-size: 12px;padding: 0px;background-color: transparent;width: 0px;height: 0px;transform: translate(-50%, 100%);left: 50%;bottom: 0;");
-      this.setStyle(option);
-      div.appendChild(triangle);
-      if (map) {
-        this.setMap(map);
+      if (getIsAMap()) {
+        this.callback = callback;
+        if (this.visible) {
+          this.createAMapText();
+        }
+      } else {
+        const map = option.map;
+        this.position = option.position;
+        this.index = 1;
+        const div = this.div = document.createElement("div");
+        const divStyle = div.style;
+        divStyle.position = "absolute";
+        divStyle.whiteSpace = "nowrap";
+        divStyle.transform = "translateX(-50%) translateY(-100%)";
+        divStyle.zIndex = "1";
+        divStyle.boxShadow = option.boxShadow || "none";
+        divStyle.display = visible ? "block" : "none";
+        const triangle = this.triangle = document.createElement("div");
+        triangle.setAttribute("style", "position: absolute;white-space: nowrap;border-width: 4px;border-style: solid;border-color: #fff transparent transparent;border-image: initial;font-size: 12px;padding: 0px;background-color: transparent;width: 0px;height: 0px;transform: translate(-50%, 100%);left: 50%;bottom: 0;");
+        this.setStyle(option);
+        div.appendChild(triangle);
+        if (map) {
+          this.setMap(map);
+        }
       }
     }
     set onclick(callback) {
@@ -15421,13 +15540,19 @@ function createCallout(maps2) {
     }
     setOption(option) {
       this.option = option;
-      this.setPosition(option.position);
       if (option.display === "ALWAYS") {
         this.alwaysVisible = this.visible = true;
       } else {
         this.alwaysVisible = false;
       }
-      this.setStyle(option);
+      if (getIsAMap()) {
+        if (this.visible) {
+          this.createAMapText();
+        }
+      } else {
+        this.setPosition(option.position);
+        this.setStyle(option);
+      }
     }
     setStyle(option) {
       const div = this.div;
@@ -15461,6 +15586,24 @@ function createCallout(maps2) {
       divStyle.display = this.visible ? "block" : "none";
     }
   }
+  if (!getIsAMap()) {
+    const overlay = new (maps2.OverlayView || maps2.Overlay)();
+    Callout.prototype.setMap = overlay.setMap;
+    Callout.prototype.getMap = overlay.getMap;
+    Callout.prototype.getPanes = overlay.getPanes;
+    Callout.prototype.getProjection = overlay.getProjection;
+    Callout.prototype.map_changed = overlay.map_changed;
+    Callout.prototype.set = overlay.set;
+    Callout.prototype.get = overlay.get;
+    Callout.prototype.setOptions = overlay.setValues;
+    Callout.prototype.bindTo = overlay.bindTo;
+    Callout.prototype.bindsTo = overlay.bindsTo;
+    Callout.prototype.notify = overlay.notify;
+    Callout.prototype.setValues = overlay.setValues;
+    Callout.prototype.unbind = overlay.unbind;
+    Callout.prototype.unbindAll = overlay.unbindAll;
+    Callout.prototype.addListener = overlay.addListener;
+  }
   return Callout;
 }
 let maps;
@@ -15476,7 +15619,7 @@ function loadMaps(libraries, callback) {
   if (maps) {
     callback(maps);
   } else if (window[mapInfo.type] && window[mapInfo.type].maps) {
-    maps = window[mapInfo.type].maps;
+    maps = getIsAMap() ? window[mapInfo.type] : window[mapInfo.type].maps;
     maps.Callout = maps.Callout || createCallout(maps);
     callback(maps);
   } else if (callbacks2.length) {
@@ -15487,13 +15630,16 @@ function loadMaps(libraries, callback) {
     const callbackName = GOOGLE_MAP_CALLBACKNAME + mapInfo.type;
     globalExt[callbackName] = function() {
       delete globalExt[callbackName];
-      maps = window[mapInfo.type].maps;
+      maps = getIsAMap() ? window[mapInfo.type] : window[mapInfo.type].maps;
       maps.Callout = createCallout(maps);
       callbacks2.forEach((callback2) => callback2(maps));
       callbacks2.length = 0;
     };
+    if (getIsAMap()) {
+      handleAMapSecurityPolicy(mapInfo);
+    }
     const script = document.createElement("script");
-    let src = mapInfo.type === MapType.GOOGLE ? "https://maps.googleapis.com/maps/api/js?" : "https://map.qq.com/api/js?v=2.exp&";
+    let src = getScriptBaseUrl(mapInfo.type);
     if (mapInfo.type === MapType.QQ) {
       libraries.push("geometry");
     }
@@ -15506,6 +15652,20 @@ function loadMaps(libraries, callback) {
     };
     document.body.appendChild(script);
   }
+}
+const getScriptBaseUrl = (mapType) => {
+  const urlMap = {
+    qq: "https://map.qq.com/api/js?v=2.exp&",
+    google: "https://maps.googleapis.com/maps/api/js?",
+    AMap: "https://webapi.amap.com/maps?v=2.0&"
+  };
+  return urlMap[mapType];
+};
+function handleAMapSecurityPolicy(mapInfo) {
+  window._AMapSecurityConfig = {
+    securityJsCode: mapInfo.securityJsCode || "",
+    serviceHost: mapInfo.serviceHost || ""
+  };
 }
 const props$e = {
   id: {
@@ -15605,15 +15765,22 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
           marker.label.setMap(null);
         }
         if (marker.callout) {
-          marker.callout.setMap(null);
+          removeMarkerCallout(marker.callout);
         }
         marker.setMap(null);
+      }
+    }
+    function removeMarkerCallout(callout) {
+      if (getIsAMap()) {
+        callout.removeAMapText();
+      } else {
+        callout.setMap(null);
       }
     }
     onMapReady((map, maps2, trigger) => {
       function updateMarker(option) {
         const title = option.title;
-        const position = new maps2.LatLng(option.latitude, option.longitude);
+        const position = getIsAMap() ? new maps2.LngLat(option.longitude, option.latitude) : new maps2.LatLng(option.latitude, option.longitude);
         const img = new Image();
         img.onload = () => {
           const anchor = option.anchor || {};
@@ -15633,6 +15800,13 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
           top = h2 - (h2 - y * h2);
           if ("MarkerImage" in maps2) {
             icon = new maps2.MarkerImage(img.src, null, null, new maps2.Point(x * w, y * h2), new maps2.Size(w, h2));
+          } else if ("Icon" in maps2) {
+            icon = new maps2.Icon({
+              image: img.src,
+              size: new maps2.Size(w, h2),
+              imageSize: new maps2.Size(w, h2),
+              imageOffset: new maps2.Pixel(x * w, y * h2)
+            });
           } else {
             icon = {
               url: img.src,
@@ -15674,13 +15848,33 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
               });
               marker.label = label;
             } else if ("setLabel" in marker) {
-              const className = updateMarkerLabelStyle(labelStyle);
-              marker.setLabel({
-                text: labelOpt.content,
-                color: labelStyle.color,
-                fontSize: labelStyle.fontSize,
-                className
-              });
+              if (getIsAMap()) {
+                const content = `<div style="
+                  margin-left:${labelStyle.marginLeft};
+                  margin-top:${labelStyle.marginTop};
+                  padding:${labelStyle.padding};
+                  background-color:${labelStyle.backgroundColor};
+                  border-radius:${labelStyle.borderRadius};
+                  line-height:${labelStyle.lineHeight};
+                  color:${labelStyle.color};
+                  font-size:${labelStyle.fontSize};
+
+                  ">
+                  ${labelOpt.content}
+                <div>`;
+                marker.setLabel({
+                  content,
+                  direction: "bottom-right"
+                });
+              } else {
+                const className = updateMarkerLabelStyle(labelStyle);
+                marker.setLabel({
+                  text: labelOpt.content,
+                  color: labelStyle.color,
+                  fontSize: labelStyle.fontSize,
+                  className
+                });
+              }
             }
           }
           const calloutOpt = option.callout || {};
@@ -15692,6 +15886,7 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
               position,
               map,
               top,
+              offsetY: -option.height / 2,
               content: calloutOpt.content,
               color: calloutOpt.color,
               fontSize: calloutOpt.fontSize,
@@ -15704,26 +15899,46 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
               position,
               map,
               top,
+              offsetY: -option.height / 2,
               content: title,
               boxShadow
             };
             if (callout) {
               callout.setOption(calloutStyle);
             } else {
-              callout = marker.callout = new maps2.Callout(calloutStyle);
-              callout.div.onclick = function($event) {
-                if (id2 !== "") {
-                  trigger("callouttap", $event, {
-                    markerId: Number(id2)
-                  });
+              if (getIsAMap()) {
+                const callback = (id3) => {
+                  if (id3 !== "") {
+                    trigger("callouttap", {}, {
+                      markerId: Number(id3)
+                    });
+                  }
+                };
+                callout = marker.callout = new maps2.Callout(calloutStyle, callback);
+              } else {
+                callout = marker.callout = new maps2.Callout(calloutStyle);
+                callout.div.onclick = function($event) {
+                  if (id2 !== "") {
+                    trigger("callouttap", $event, {
+                      markerId: Number(id2)
+                    });
+                  }
+                  $event.stopPropagation();
+                  $event.preventDefault();
+                };
+                if (getMapInfo().type === MapType.GOOGLE) {
+                  callout.div.ontouchstart = function($event) {
+                    $event.stopPropagation();
+                  };
+                  callout.div.onpointerdown = function($event) {
+                    $event.stopPropagation();
+                  };
                 }
-                $event.stopPropagation();
-                $event.preventDefault();
-              };
+              }
             }
           } else {
             if (callout) {
-              callout.setMap(null);
+              removeMarkerCallout(callout);
               delete marker.callout;
             }
           }
@@ -15741,22 +15956,32 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
           autoRotation: false
         });
         updateMarker(props3);
-        maps2.event.addListener(marker, "click", () => {
+        const MapsEvent = maps2.event || maps2.Event;
+        MapsEvent.addListener(marker, "click", () => {
           const callout = marker.callout;
-          if (callout) {
-            const div = callout.div;
-            const parent = div.parentNode;
-            if (!callout.alwaysVisible) {
+          if (callout && !callout.alwaysVisible) {
+            if (getIsAMap()) {
+              callout.visible = !callout.visible;
+              if (callout.visible) {
+                marker.callout.createAMapText();
+              } else {
+                marker.callout.removeAMapText();
+              }
+            } else {
               callout.set("visible", !callout.visible);
-            }
-            if (callout.visible) {
-              parent.removeChild(div);
-              parent.appendChild(div);
+              if (callout.visible) {
+                const div = callout.div;
+                const parent = div.parentNode;
+                parent.removeChild(div);
+                parent.appendChild(div);
+              }
             }
           }
           if (id2) {
             trigger("markertap", {}, {
-              markerId: Number(id2)
+              markerId: Number(id2),
+              latitude: props3.latitude,
+              longitude: props3.longitude
             });
           }
         });
@@ -15784,7 +16009,8 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
             const distance2 = maps2.geometry.spherical.computeDistanceBetween(a2, b) / 1e3;
             const time = (typeof duration === "number" ? duration : 1e3) / (1e3 * 60 * 60);
             const speed = distance2 / time;
-            const movingEvent = maps2.event.addListener(marker, "moving", (e2) => {
+            const MapsEvent = maps2.event || maps2.Event;
+            const movingEvent = MapsEvent.addListener(marker, "moving", (e2) => {
               const latLng = e2.latLng;
               const label = marker.label;
               if (label) {
@@ -15795,7 +16021,7 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
                 callout.setPosition(latLng);
               }
             });
-            const event = maps2.event.addListener(marker, "moveend", () => {
+            const event = MapsEvent.addListener(marker, "moveend", () => {
               event.remove();
               movingEvent.remove();
               marker.lastPosition = a2;
@@ -15827,7 +16053,7 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
               marker.moveTo(b, speed);
             } else {
               marker.setPosition(b);
-              maps2.event.trigger(marker, "moveend", {});
+              MapsEvent.trigger(marker, "moveend", {});
             }
           });
         }
@@ -15942,7 +16168,8 @@ var MapPolyline = /* @__PURE__ */ defineSystemComponent({
       function addPolyline(option) {
         const path = [];
         option.points.forEach((point) => {
-          path.push(new maps2.LatLng(point.latitude, point.longitude));
+          const pointPosition = getIsAMap() ? [point.longitude, point.latitude] : new maps2.LatLng(point.latitude, point.longitude);
+          path.push(pointPosition);
         });
         const strokeWeight = Number(option.width) || 1;
         const {
@@ -16044,7 +16271,7 @@ var MapCircle = /* @__PURE__ */ defineSystemComponent({
         addCircle(option);
       }
       function addCircle(option) {
-        const center = new maps2.LatLng(option.latitude, option.longitude);
+        const center = getIsAMap() ? [option.longitude, option.latitude] : new maps2.LatLng(option.latitude, option.longitude);
         const circleOptions = {
           map,
           center,
@@ -16053,28 +16280,37 @@ var MapCircle = /* @__PURE__ */ defineSystemComponent({
           strokeWeight: Number(option.strokeWidth) || 1,
           strokeDashStyle: "solid"
         };
-        const {
-          r: fr,
-          g: fg,
-          b: fb,
-          a: fa
-        } = hexToRgba(option.fillColor);
-        const {
-          r: sr,
-          g: sg,
-          b: sb,
-          a: sa
-        } = hexToRgba(option.color);
-        if ("Color" in maps2) {
-          circleOptions.fillColor = new maps2.Color(fr, fg, fb, fa);
-          circleOptions.strokeColor = new maps2.Color(sr, sg, sb, sa);
+        if (getIsAMap()) {
+          circleOptions.strokeColor = option.color;
+          circleOptions.fillColor = option.fillColor || "#000";
+          circleOptions.fillOpacity = 1;
         } else {
-          circleOptions.fillColor = `rgb(${fr}, ${fg}, ${fb})`;
-          circleOptions.fillOpacity = fa;
-          circleOptions.strokeColor = `rgb(${sr}, ${sg}, ${sb})`;
-          circleOptions.strokeOpacity = sa;
+          const {
+            r: fr,
+            g: fg,
+            b: fb,
+            a: fa
+          } = hexToRgba(option.fillColor);
+          const {
+            r: sr,
+            g: sg,
+            b: sb,
+            a: sa
+          } = hexToRgba(option.color);
+          if ("Color" in maps2) {
+            circleOptions.fillColor = new maps2.Color(fr, fg, fb, fa);
+            circleOptions.strokeColor = new maps2.Color(sr, sg, sb, sa);
+          } else {
+            circleOptions.fillColor = `rgb(${fr}, ${fg}, ${fb})`;
+            circleOptions.fillOpacity = fa;
+            circleOptions.strokeColor = `rgb(${sr}, ${sg}, ${sb})`;
+            circleOptions.strokeOpacity = sa;
+          }
         }
         circle = new maps2.Circle(circleOptions);
+        if (getIsAMap()) {
+          map.add(circle);
+        }
       }
       addCircle(props2);
       watch(props2, updateCircle);
@@ -16101,6 +16337,10 @@ const props$b = {
   clickable: {
     type: [Boolean, String],
     default: ""
+  },
+  rootRef: {
+    type: Object,
+    default: null
   }
 };
 var MapControl = /* @__PURE__ */ defineSystemComponent({
@@ -16114,25 +16354,27 @@ var MapControl = /* @__PURE__ */ defineSystemComponent({
         control.remove();
       }
     }
-    onMapReady((map, maps2, trigger) => {
+    onMapReady((_, __, trigger) => {
       function updateControl(option) {
         removeControl();
         addControl(option);
       }
       function addControl(option) {
-        const position = option.position || {};
         control = document.createElement("div");
-        const img = new Image();
-        control.appendChild(img);
         const style = control.style;
         style.position = "absolute";
         style.width = "0";
         style.height = "0";
+        style.top = "0";
+        style.left = "0";
+        const img = new Image();
+        img.src = getRealPath(option.iconPath);
         img.onload = () => {
-          if (option.position.width) {
+          const position = option.position || {};
+          if (position.width) {
             img.width = option.position.width;
           }
-          if (option.position.height) {
+          if (position.height) {
             img.height = option.position.height;
           }
           const style2 = img.style;
@@ -16140,8 +16382,9 @@ var MapControl = /* @__PURE__ */ defineSystemComponent({
           style2.left = (position.left || 0) + "px";
           style2.top = (position.top || 0) + "px";
           style2.maxWidth = "initial";
+          control.appendChild(img);
+          props2.rootRef.value && props2.rootRef.value.appendChild(control);
         };
-        img.src = getRealPath(option.iconPath);
         img.onclick = function($event) {
           if (option.clickable) {
             trigger("controltap", $event, {
@@ -16149,7 +16392,6 @@ var MapControl = /* @__PURE__ */ defineSystemComponent({
             });
           }
         };
-        map.controls[maps2.ControlPosition.TOP_LEFT].push(control);
       }
       addControl(props2);
       watch(props2, updateControl);
@@ -16755,204 +16997,6 @@ const vibrateLong = /* @__PURE__ */ defineAsyncApi(API_VIBRATE_LONG, (args, { re
     reject("vibrateLong:fail");
   }
 });
-const KEY_MAPS = {
-  esc: ["Esc", "Escape"],
-  enter: ["Enter"]
-};
-const KEYS = Object.keys(KEY_MAPS);
-function useKeyboard() {
-  const key = ref("");
-  const disable = ref(false);
-  const onKeyup = (evt) => {
-    if (disable.value) {
-      return;
-    }
-    const res = KEYS.find((key2) => KEY_MAPS[key2].indexOf(evt.key) !== -1);
-    if (res) {
-      key.value = res;
-    }
-    nextTick(() => key.value = "");
-  };
-  onMounted(() => {
-    document.addEventListener("keyup", onKeyup);
-  });
-  onBeforeUnmount(() => {
-    document.removeEventListener("keyup", onKeyup);
-  });
-  return {
-    key,
-    disable
-  };
-}
-const VNODE_MASK = /* @__PURE__ */ createVNode("div", { class: "uni-mask" }, null, -1);
-function createRootApp(component, rootState, callback) {
-  rootState.onClose = (...args) => (rootState.visible = false, callback.apply(null, args));
-  return createApp(defineComponent({
-    setup() {
-      return () => (openBlock(), createBlock(component, rootState, null, 16));
-    }
-  }));
-}
-function ensureRoot(id2) {
-  let rootEl = document.getElementById(id2);
-  if (!rootEl) {
-    rootEl = document.createElement("div");
-    rootEl.id = id2;
-    document.body.append(rootEl);
-  }
-  return rootEl;
-}
-function usePopup(props2, {
-  onEsc,
-  onEnter
-}) {
-  const visible = ref(props2.visible);
-  const { key, disable } = useKeyboard();
-  watch(() => props2.visible, (value) => visible.value = value);
-  watch(() => visible.value, (value) => disable.value = !value);
-  watchEffect(() => {
-    const { value } = key;
-    if (value === "esc") {
-      onEsc && onEsc();
-    } else if (value === "enter") {
-      onEnter && onEnter();
-    }
-  });
-  return visible;
-}
-const props$a = {
-  title: {
-    type: String,
-    default: ""
-  },
-  content: {
-    type: String,
-    default: ""
-  },
-  showCancel: {
-    type: Boolean,
-    default: true
-  },
-  cancelText: {
-    type: String,
-    default: "Cancel"
-  },
-  cancelColor: {
-    type: String,
-    default: "#000000"
-  },
-  confirmText: {
-    type: String,
-    default: "OK"
-  },
-  confirmColor: {
-    type: String,
-    default: "#007aff"
-  },
-  visible: {
-    type: Boolean
-  },
-  editable: {
-    type: Boolean,
-    default: false
-  },
-  placeholderText: {
-    type: String,
-    default: ""
-  }
-};
-var modal = /* @__PURE__ */ defineComponent({
-  props: props$a,
-  setup(props2, {
-    emit: emit2
-  }) {
-    const editContent = ref("");
-    const close = () => visible.value = false;
-    const cancel = () => (close(), emit2("close", "cancel"));
-    const confirm = () => (close(), emit2("close", "confirm", editContent.value));
-    const visible = usePopup(props2, {
-      onEsc: cancel,
-      onEnter: () => {
-        !props2.editable && confirm();
-      }
-    });
-    return () => {
-      const {
-        title,
-        content,
-        showCancel,
-        confirmText,
-        confirmColor,
-        editable,
-        placeholderText
-      } = props2;
-      editContent.value = content;
-      return createVNode(Transition, {
-        "name": "uni-fade"
-      }, {
-        default: () => [withDirectives(createVNode("uni-modal", {
-          "onTouchmove": onEventPrevent
-        }, [VNODE_MASK, createVNode("div", {
-          "class": "uni-modal"
-        }, [title && createVNode("div", {
-          "class": "uni-modal__hd"
-        }, [createVNode("strong", {
-          "class": "uni-modal__title",
-          "textContent": title
-        }, null, 8, ["textContent"])]), editable ? createVNode("textarea", {
-          "class": "uni-modal__textarea",
-          "rows": "1",
-          "placeholder": placeholderText,
-          "value": content,
-          "onInput": (e2) => editContent.value = e2.target.value
-        }, null, 40, ["placeholder", "value", "onInput"]) : createVNode("div", {
-          "class": "uni-modal__bd",
-          "onTouchmovePassive": onEventStop,
-          "textContent": content
-        }, null, 40, ["onTouchmovePassive", "textContent"]), createVNode("div", {
-          "class": "uni-modal__ft"
-        }, [showCancel && createVNode("div", {
-          "style": {
-            color: props2.cancelColor
-          },
-          "class": "uni-modal__btn uni-modal__btn_default",
-          "onClick": cancel
-        }, [props2.cancelText], 12, ["onClick"]), createVNode("div", {
-          "style": {
-            color: confirmColor
-          },
-          "class": "uni-modal__btn uni-modal__btn_primary",
-          "onClick": confirm
-        }, [confirmText], 12, ["onClick"])])])], 40, ["onTouchmove"]), [[vShow, visible.value]])]
-      });
-    };
-  }
-});
-let showModalState;
-const onHidePopupOnce$1 = /* @__PURE__ */ once(() => {
-  UniServiceJSBridge.on("onHidePopup", () => showModalState.visible = false);
-});
-let currentShowModalResolve;
-function onModalClose(type, content) {
-  const isConfirm = type === "confirm";
-  const res = {
-    confirm: isConfirm,
-    cancel: type === "cancel"
-  };
-  isConfirm && showModalState.editable && (res.content = content);
-  currentShowModalResolve && currentShowModalResolve(res);
-}
-const showModal = /* @__PURE__ */ defineAsyncApi(API_SHOW_MODAL, (args, { resolve }) => {
-  onHidePopupOnce$1();
-  currentShowModalResolve = resolve;
-  if (!showModalState) {
-    showModalState = reactive(args);
-    nextTick(() => (createRootApp(modal, showModalState, onModalClose).mount(ensureRoot("u-a-m")), nextTick(() => showModalState.visible = true)));
-  } else {
-    extend(showModalState, args);
-    showModalState.visible = true;
-  }
-}, ShowModalProtocol, ShowModalOptions);
 const getClipboardData = /* @__PURE__ */ defineAsyncApi(API_GET_CLIPBOARD_DATA, async (_, { resolve, reject }) => {
   initI18nGetClipboardDataMsgsOnce();
   const { t: t2 } = useI18n();
@@ -16960,24 +17004,48 @@ const getClipboardData = /* @__PURE__ */ defineAsyncApi(API_GET_CLIPBOARD_DATA, 
     const data = await navigator.clipboard.readText();
     resolve({ data });
   } catch (error) {
-    reject(`${error} ${t2("uni.getClipboardData.fail")}`);
+    _getClipboardData(resolve, () => {
+      reject(`${error} ${t2("uni.getClipboardData.fail")}`);
+    });
   }
 });
 const setClipboardData = /* @__PURE__ */ defineAsyncApi(API_SET_CLIPBOARD_DATA, async ({ data }, { resolve, reject }) => {
-  initI18nSetClipboardDataMsgsOnce();
-  const { t: t2 } = useI18n();
   try {
     await navigator.clipboard.writeText(data);
     resolve();
   } catch (error) {
-    reject();
-    showModal({
-      title: t2("uni.setClipboardData.fail"),
-      content: data,
-      editable: true
-    });
+    _setClipboardData(data, resolve, reject);
   }
 }, SetClipboardDataProtocol, SetClipboardDataOptions);
+function _getClipboardData(resolve, reject) {
+  const pasteText = document.getElementById("#clipboard");
+  const data = pasteText ? pasteText.value : void 0;
+  if (data) {
+    resolve({ data });
+  } else {
+    reject();
+  }
+}
+function _setClipboardData(data, resolve, reject) {
+  const pasteText = document.getElementById("#clipboard");
+  pasteText && pasteText.remove();
+  const textarea = document.createElement("textarea");
+  textarea.id = "#clipboard";
+  textarea.style.position = "fixed";
+  textarea.style.top = "-9999px";
+  textarea.style.zIndex = "-9999";
+  document.body.appendChild(textarea);
+  textarea.value = data;
+  textarea.select();
+  textarea.setSelectionRange(0, textarea.value.length);
+  const result = document.execCommand("Copy", false);
+  textarea.blur();
+  if (result) {
+    resolve();
+  } else {
+    reject();
+  }
+}
 const STORAGE_KEYS = "uni-storage-keys";
 function parseValue(value) {
   const types = ["object", "string", "number", "boolean", "undefined"];
@@ -17350,13 +17418,78 @@ const chooseImage = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_IMAGE, ({
     console.warn(t2("uni.chooseFile.notUserActivation"));
   }
 }, ChooseImageProtocol, ChooseImageOptions);
-let index$c = 0;
+const KEY_MAPS = {
+  esc: ["Esc", "Escape"],
+  enter: ["Enter"]
+};
+const KEYS = Object.keys(KEY_MAPS);
+function useKeyboard() {
+  const key = ref("");
+  const disable = ref(false);
+  const onKeyup = (evt) => {
+    if (disable.value) {
+      return;
+    }
+    const res = KEYS.find((key2) => KEY_MAPS[key2].indexOf(evt.key) !== -1);
+    if (res) {
+      key.value = res;
+    }
+    nextTick(() => key.value = "");
+  };
+  onMounted(() => {
+    document.addEventListener("keyup", onKeyup);
+  });
+  onBeforeUnmount(() => {
+    document.removeEventListener("keyup", onKeyup);
+  });
+  return {
+    key,
+    disable
+  };
+}
+const VNODE_MASK = /* @__PURE__ */ createVNode("div", { class: "uni-mask" }, null, -1);
+function createRootApp(component, rootState, callback) {
+  rootState.onClose = (...args) => (rootState.visible = false, callback.apply(null, args));
+  return createApp(defineComponent({
+    setup() {
+      return () => (openBlock(), createBlock(component, rootState, null, 16));
+    }
+  }));
+}
+function ensureRoot(id2) {
+  let rootEl = document.getElementById(id2);
+  if (!rootEl) {
+    rootEl = document.createElement("div");
+    rootEl.id = id2;
+    document.body.append(rootEl);
+  }
+  return rootEl;
+}
+function usePopup(props2, {
+  onEsc,
+  onEnter
+}) {
+  const visible = ref(props2.visible);
+  const { key, disable } = useKeyboard();
+  watch(() => props2.visible, (value) => visible.value = value);
+  watch(() => visible.value, (value) => disable.value = !value);
+  watchEffect(() => {
+    const { value } = key;
+    if (value === "esc") {
+      onEsc && onEsc();
+    } else if (value === "enter") {
+      onEnter && onEnter();
+    }
+  });
+  return visible;
+}
+let index$d = 0;
 let overflow = "";
 function preventScroll(prevent) {
-  let before = index$c;
-  index$c += prevent ? 1 : -1;
-  index$c = Math.max(0, index$c);
-  if (index$c > 0) {
+  let before = index$d;
+  index$d += prevent ? 1 : -1;
+  index$d = Math.max(0, index$d);
+  if (index$d > 0) {
     if (before === 0) {
       overflow = document.body.style.overflow;
       document.body.style.overflow = "hidden";
@@ -17370,7 +17503,7 @@ function usePreventScroll() {
   onMounted(() => preventScroll(true));
   onUnmounted(() => preventScroll(false));
 }
-const props$9 = {
+const props$a = {
   src: {
     type: String,
     default: ""
@@ -17378,7 +17511,7 @@ const props$9 = {
 };
 var ImageView = /* @__PURE__ */ defineSystemComponent({
   name: "ImageView",
-  props: props$9,
+  props: props$a,
   setup(props2) {
     const state2 = reactive({
       direction: "none"
@@ -17468,7 +17601,7 @@ var ImageView = /* @__PURE__ */ defineSystemComponent({
 function _isSlot$2(s) {
   return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
 }
-const props$8 = {
+const props$9 = {
   urls: {
     type: Array,
     default() {
@@ -17487,7 +17620,7 @@ function getIndex(props2) {
 }
 var ImagePreview = /* @__PURE__ */ defineSystemComponent({
   name: "ImagePreview",
-  props: props$8,
+  props: props$9,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -18122,10 +18255,11 @@ const onSocketOpen = /* @__PURE__ */ on("open");
 const onSocketError = /* @__PURE__ */ on("error");
 const onSocketMessage = /* @__PURE__ */ on("message");
 const onSocketClose = /* @__PURE__ */ on("close");
+let index$c = 0;
 function getJSONP(url, options, success, error) {
   var js = document.createElement("script");
   var callbackKey = options.callback || "callback";
-  var callbackName = "__callback" + Date.now();
+  var callbackName = "__uni_jsonp_callback_" + index$c++;
   var timeout = options.timeout || 3e4;
   var timing;
   function end() {
@@ -18206,24 +18340,44 @@ const getLocation = /* @__PURE__ */ defineAsyncApi(API_GET_LOCATION, ({ type, al
       }
     });
   }).then((coords, skip) => {
-    if (type && type.toUpperCase() === "WGS84" || mapInfo.type !== MapType.QQ || skip) {
+    const wgs84Map = [MapType.GOOGLE];
+    if (type && type.toUpperCase() === "WGS84" || wgs84Map.includes(mapInfo.type) || skip) {
       return coords;
     }
-    return new Promise((resolve2) => {
-      getJSONP(`https://apis.map.qq.com/jsapi?qt=translate&type=1&points=${coords.longitude},${coords.latitude}&key=${mapInfo.key}&output=jsonp&pf=jsapi&ref=jsapi`, {
-        callback: "cb"
-      }, (res) => {
-        if ("detail" in res && "points" in res.detail && res.detail.points.length) {
-          const location2 = res.detail.points[0];
-          resolve2(extend({}, coords, {
-            longitude: location2.lng,
-            latitude: location2.lat
-          }));
-        } else {
-          resolve2(coords);
-        }
-      }, () => resolve2(coords));
-    });
+    if (mapInfo.type === MapType.QQ) {
+      return new Promise((resolve2) => {
+        getJSONP(`https://apis.map.qq.com/jsapi?qt=translate&type=1&points=${coords.longitude},${coords.latitude}&key=${mapInfo.key}&output=jsonp&pf=jsapi&ref=jsapi`, {
+          callback: "cb"
+        }, (res) => {
+          if ("detail" in res && "points" in res.detail && res.detail.points.length) {
+            const location2 = res.detail.points[0];
+            resolve2(extend({}, coords, {
+              longitude: location2.lng,
+              latitude: location2.lat
+            }));
+          } else {
+            resolve2(coords);
+          }
+        }, () => resolve2(coords));
+      });
+    }
+    if (mapInfo.type === MapType.AMAP) {
+      return new Promise((resolve2) => {
+        loadMaps([], () => {
+          window.AMap.convertFrom([coords.longitude, coords.latitude], "gps", (_, res) => {
+            if (res.info === "ok" && res.locations.length) {
+              const { lat, lng } = res.locations[0];
+              resolve2(extend({}, coords, {
+                longitude: lng,
+                latitude: lat
+              }));
+            } else {
+              resolve2(coords);
+            }
+          });
+        });
+      });
+    }
   }).then((coords) => {
     resolve({
       latitude: coords.latitude,
@@ -18239,7 +18393,7 @@ const getLocation = /* @__PURE__ */ defineAsyncApi(API_GET_LOCATION, ({ type, al
   });
 }, GetLocationProtocol, GetLocationOptions);
 const ICON_PATH_NAV = "M28 17c-6.49396875 0-12.13721875 2.57040625-15 6.34840625V5.4105l6.29859375 6.29859375c0.387875 0.387875 1.02259375 0.387875 1.4105 0 0.387875-0.387875 0.387875-1.02259375 0-1.4105L12.77853125 2.36803125a0.9978125 0.9978125 0 0 0-0.0694375-0.077125c-0.1944375-0.1944375-0.45090625-0.291375-0.70721875-0.290875l-0.00184375-0.0000625-0.00184375 0.0000625c-0.2563125-0.0005-0.51278125 0.09640625-0.70721875 0.290875a0.9978125 0.9978125 0 0 0-0.0694375 0.077125l-7.930625 7.9305625c-0.387875 0.387875-0.387875 1.02259375 0 1.4105 0.387875 0.387875 1.02259375 0.387875 1.4105 0L11 5.4105V29c0 0.55 0.45 1 1 1s1-0.45 1-1c0-5.52284375 6.71571875-10 15-10 0.55228125 0 1-0.44771875 1-1 0-0.55228125-0.44771875-1-1-1z";
-const props$7 = {
+const props$8 = {
   latitude: {
     type: Number
   },
@@ -18296,7 +18450,7 @@ function useState$2(props2) {
 }
 var LocationView = /* @__PURE__ */ defineSystemComponent({
   name: "LocationView",
-  props: props$7,
+  props: props$8,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -18319,6 +18473,11 @@ var LocationView = /* @__PURE__ */ defineSystemComponent({
       } else if (mapInfo.type === MapType.QQ) {
         const fromcoord = state2.location.latitude ? `&fromcoord=${state2.location.latitude}%2C${state2.location.longitude}` : "";
         url = `https://apis.map.qq.com/uri/v1/routeplan?type=drive${fromcoord}&tocoord=${props2.latitude}%2C${props2.longitude}&from=${encodeURIComponent("\u6211\u7684\u4F4D\u7F6E")}&to=${encodeURIComponent(props2.name || "\u76EE\u7684\u5730")}&ref=${mapInfo.key}`;
+      } else if (mapInfo.type === MapType.AMAP) {
+        url = `https://m.amap.com/navi/?dest=${props2.longitude},${props2.latitude}&key=${mapInfo.key}`;
+        if (props2.name) {
+          url += `&destName=${props2.name}`;
+        }
       }
       window.open(url);
     }
@@ -18404,7 +18563,7 @@ const openLocation = /* @__PURE__ */ defineAsyncApi(API_OPEN_LOCATION, (args, { 
 function _isSlot$1(s) {
   return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
 }
-const props$6 = {
+const props$7 = {
   latitude: {
     type: Number
   },
@@ -18459,7 +18618,7 @@ function useList(state2) {
       list2.push({
         name: item.title,
         address: item.address,
-        distance: item._distance,
+        distance: item._distance || item.distance,
         latitude: item.location.lat,
         longitude: item.location.lng
       });
@@ -18525,6 +18684,26 @@ function useList(state2) {
       }, () => {
         listState.loading = false;
       });
+    } else if (mapInfo.type === MapType.AMAP) {
+      window.AMap.plugin("AMap.PlaceSearch", function() {
+        const placeSearch = new window.AMap.PlaceSearch({
+          city: "\u5168\u56FD",
+          pageSize: 10,
+          pageIndex: listState.pageIndex
+        });
+        const keyword = state2.searching ? state2.keyword : "";
+        const radius = state2.searching ? 5e4 : 5e3;
+        placeSearch.searchNearBy(keyword, [state2.longitude, state2.latitude], radius, function(status, result) {
+          if (status === "error") {
+            console.error(result);
+          } else if (status === "no_data") {
+            listState.hasNextPage = false;
+          } else {
+            pushData(result.poiList.pois);
+          }
+        });
+        listState.loading = false;
+      });
     }
   }
   function loadMore() {
@@ -18550,7 +18729,7 @@ function useList(state2) {
 }
 var LoctaionPicker = /* @__PURE__ */ defineSystemComponent({
   name: "LoctaionPicker",
-  props: props$6,
+  props: props$7,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -18834,6 +19013,139 @@ const preloadPage = /* @__PURE__ */ defineAsyncApi(API_PRELOAD_PAGE, ({ url }, {
     reject(`${url} ${String(err)}`);
   });
 }, PreloadPageProtocol);
+const props$6 = {
+  title: {
+    type: String,
+    default: ""
+  },
+  content: {
+    type: String,
+    default: ""
+  },
+  showCancel: {
+    type: Boolean,
+    default: true
+  },
+  cancelText: {
+    type: String,
+    default: "Cancel"
+  },
+  cancelColor: {
+    type: String,
+    default: "#000000"
+  },
+  confirmText: {
+    type: String,
+    default: "OK"
+  },
+  confirmColor: {
+    type: String,
+    default: "#007aff"
+  },
+  visible: {
+    type: Boolean
+  },
+  editable: {
+    type: Boolean,
+    default: false
+  },
+  placeholderText: {
+    type: String,
+    default: ""
+  }
+};
+var modal = /* @__PURE__ */ defineComponent({
+  props: props$6,
+  setup(props2, {
+    emit: emit2
+  }) {
+    const editContent = ref("");
+    const close = () => visible.value = false;
+    const cancel = () => (close(), emit2("close", "cancel"));
+    const confirm = () => (close(), emit2("close", "confirm", editContent.value));
+    const visible = usePopup(props2, {
+      onEsc: cancel,
+      onEnter: () => {
+        !props2.editable && confirm();
+      }
+    });
+    return () => {
+      const {
+        title,
+        content,
+        showCancel,
+        confirmText,
+        confirmColor,
+        editable,
+        placeholderText
+      } = props2;
+      editContent.value = content;
+      return createVNode(Transition, {
+        "name": "uni-fade"
+      }, {
+        default: () => [withDirectives(createVNode("uni-modal", {
+          "onTouchmove": onEventPrevent
+        }, [VNODE_MASK, createVNode("div", {
+          "class": "uni-modal"
+        }, [title && createVNode("div", {
+          "class": "uni-modal__hd"
+        }, [createVNode("strong", {
+          "class": "uni-modal__title",
+          "textContent": title
+        }, null, 8, ["textContent"])]), editable ? createVNode("textarea", {
+          "class": "uni-modal__textarea",
+          "rows": "1",
+          "placeholder": placeholderText,
+          "value": content,
+          "onInput": (e2) => editContent.value = e2.target.value
+        }, null, 40, ["placeholder", "value", "onInput"]) : createVNode("div", {
+          "class": "uni-modal__bd",
+          "onTouchmovePassive": onEventStop,
+          "textContent": content
+        }, null, 40, ["onTouchmovePassive", "textContent"]), createVNode("div", {
+          "class": "uni-modal__ft"
+        }, [showCancel && createVNode("div", {
+          "style": {
+            color: props2.cancelColor
+          },
+          "class": "uni-modal__btn uni-modal__btn_default",
+          "onClick": cancel
+        }, [props2.cancelText], 12, ["onClick"]), createVNode("div", {
+          "style": {
+            color: confirmColor
+          },
+          "class": "uni-modal__btn uni-modal__btn_primary",
+          "onClick": confirm
+        }, [confirmText], 12, ["onClick"])])])], 40, ["onTouchmove"]), [[vShow, visible.value]])]
+      });
+    };
+  }
+});
+let showModalState;
+const onHidePopupOnce$1 = /* @__PURE__ */ once(() => {
+  UniServiceJSBridge.on("onHidePopup", () => showModalState.visible = false);
+});
+let currentShowModalResolve;
+function onModalClose(type, content) {
+  const isConfirm = type === "confirm";
+  const res = {
+    confirm: isConfirm,
+    cancel: type === "cancel"
+  };
+  isConfirm && showModalState.editable && (res.content = content);
+  currentShowModalResolve && currentShowModalResolve(res);
+}
+const showModal = /* @__PURE__ */ defineAsyncApi(API_SHOW_MODAL, (args, { resolve }) => {
+  onHidePopupOnce$1();
+  currentShowModalResolve = resolve;
+  if (!showModalState) {
+    showModalState = reactive(args);
+    nextTick(() => (createRootApp(modal, showModalState, onModalClose).mount(ensureRoot("u-a-m")), nextTick(() => showModalState.visible = true)));
+  } else {
+    extend(showModalState, args);
+    showModalState.visible = true;
+  }
+}, ShowModalProtocol, ShowModalOptions);
 const props$5 = {
   title: {
     type: String,
@@ -19326,6 +19638,7 @@ function updateDocumentTitle(title) {
   {
     document.title = title;
   }
+  UniServiceJSBridge.emit(ON_NAVIGATION_BAR_CHANGE, { titleText: title });
 }
 function useDocumentTitle(pageMeta) {
   function update() {
@@ -19877,7 +20190,8 @@ function useState() {
       "--window-margin": value + "px"
     }));
     return {
-      layoutState: layoutState2
+      layoutState: layoutState2,
+      windowState: computed(() => ({}))
     };
   }
   const topWindowMediaQuery = ref(false);
@@ -19900,6 +20214,7 @@ function useState() {
     marginWidth: 0,
     leftWindowWidth: 0,
     rightWindowWidth: 0,
+    navigationBarTitleText: "",
     topWindowStyle: {},
     leftWindowStyle: {},
     rightWindowStyle: {}
@@ -19930,14 +20245,17 @@ function useState() {
   watch(() => layoutState.rightWindowWidth + layoutState.marginWidth, (value) => updateCssVar({
     "--window-right": value + "px"
   }));
-  const windowState = reactive({
+  UniServiceJSBridge.on(ON_NAVIGATION_BAR_CHANGE, (navigationBar) => {
+    layoutState.navigationBarTitleText = navigationBar.titleText;
+  });
+  const windowState = computed(() => ({
     matchTopWindow: layoutState.topWindowMediaQuery,
     showTopWindow: layoutState.showTopWindow || layoutState.apiShowTopWindow,
     matchLeftWindow: layoutState.leftWindowMediaQuery,
     showLeftWindow: layoutState.showLeftWindow || layoutState.apiShowLeftWindow,
     matchRightWindow: layoutState.rightWindowMediaQuery,
     showRightWindow: layoutState.showRightWindow || layoutState.apiShowRightWindow
-  });
+  }));
   return {
     layoutState,
     windowState
@@ -19948,9 +20266,9 @@ function createLayoutTsx(keepAliveRoute, layoutState, windowState, topWindow, le
   if (!__UNI_FEATURE_RESPONSIVE__) {
     return routerVNode;
   }
-  const topWindowTsx = __UNI_FEATURE_TOPWINDOW__ ? createTopWindowTsx(topWindow, layoutState, windowState) : null;
-  const leftWindowTsx = __UNI_FEATURE_LEFTWINDOW__ ? createLeftWindowTsx(leftWindow, layoutState, windowState) : null;
-  const rightWindowTsx = __UNI_FEATURE_RIGHTWINDOW__ ? createRightWindowTsx(rightWindow, layoutState, windowState) : null;
+  const topWindowTsx = __UNI_FEATURE_TOPWINDOW__ ? createTopWindowTsx(topWindow, layoutState, windowState.value) : null;
+  const leftWindowTsx = __UNI_FEATURE_LEFTWINDOW__ ? createLeftWindowTsx(leftWindow, layoutState, windowState.value) : null;
+  const rightWindowTsx = __UNI_FEATURE_RIGHTWINDOW__ ? createRightWindowTsx(rightWindow, layoutState, windowState.value) : null;
   return createVNode("uni-layout", {
     "class": {
       "uni-app--showtopwindow": __UNI_FEATURE_TOPWINDOW__ && layoutState.showTopWindow,
@@ -20062,8 +20380,9 @@ function createTopWindowTsx(topWindow, layoutState, windowState) {
       "class": "uni-top-window",
       "style": layoutState.topWindowStyle
     }, [createVNode(TopWindow, mergeProps({
-      "ref": windowRef
-    }, windowState), null, 16)], 4), createVNode("div", {
+      "ref": windowRef,
+      "navigation-bar-title-text": layoutState.navigationBarTitleText
+    }, windowState), null, 16, ["navigation-bar-title-text"])], 4), createVNode("div", {
       "class": "uni-top-window--placeholder",
       "style": {
         height: layoutState.topWindowHeight + "px"
@@ -20505,7 +20824,7 @@ var MapPolygon = /* @__PURE__ */ defineSystemComponent({
             latitude,
             longitude
           } = item;
-          return new maps2.LatLng(latitude, longitude);
+          return getIsAMap() ? [longitude, latitude] : new maps2.LatLng(latitude, longitude);
         });
         const {
           r: fcR,
@@ -20632,6 +20951,15 @@ function getPoints(points) {
   }
   return newPoints;
 }
+function getAMapPosition(maps2, latitude, longitude) {
+  return new maps2.LngLat(longitude, latitude);
+}
+function getGoogleOrQQMapPosition(maps2, latitude, longitude) {
+  return new maps2.LatLng(latitude, longitude);
+}
+function getMapPosition(maps2, latitude, longitude) {
+  return getIsAMap() ? getAMapPosition(maps2, latitude, longitude) : getGoogleOrQQMapPosition(maps2, latitude, longitude);
+}
 function getLat(latLng) {
   if ("getLat" in latLng) {
     return latLng.getLat();
@@ -20693,7 +21021,8 @@ function useMap(props2, rootRef, emit2) {
       state2.latitude = latitude;
       state2.longitude = longitude;
       if (map) {
-        map.setCenter(new maps2.LatLng(latitude, longitude));
+        const centerPosition = getMapPosition(maps2, state2.latitude, state2.longitude);
+        map.setCenter(centerPosition);
       }
     }
   });
@@ -20721,22 +21050,33 @@ function useMap(props2, rootRef, emit2) {
     };
   }
   function updateCenter() {
-    map.setCenter(new maps2.LatLng(state2.latitude, state2.longitude));
+    const centerPosition = getMapPosition(maps2, state2.latitude, state2.longitude);
+    map.setCenter(centerPosition);
   }
   function updateBounds() {
-    const bounds = new maps2.LatLngBounds();
-    state2.includePoints.forEach(({
-      latitude,
-      longitude
-    }) => {
-      const latLng = new maps2.LatLng(latitude, longitude);
-      bounds.extend(latLng);
-    });
-    map.fitBounds(bounds);
+    if (getIsAMap()) {
+      const points = [];
+      state2.includePoints.forEach((point) => {
+        points.push([point.longitude, point.latitude]);
+      });
+      const bounds = new maps2.Bounds(...points);
+      map.setBounds(bounds);
+    } else {
+      const bounds = new maps2.LatLngBounds();
+      state2.includePoints.forEach(({
+        latitude,
+        longitude
+      }) => {
+        const latLng = new maps2.LatLng(latitude, longitude);
+        bounds.extend(latLng);
+      });
+      map.fitBounds(bounds);
+    }
   }
   function initMap() {
     const mapEl = mapRef.value;
-    const center = new maps2.LatLng(state2.latitude, state2.longitude);
+    const center = getMapPosition(maps2, state2.latitude, state2.longitude);
+    const event = maps2.event || maps2.Event;
     const map2 = new maps2.Map(mapEl, {
       center,
       zoom: Number(props2.scale),
@@ -20761,33 +21101,34 @@ function useMap(props2, rootRef, emit2) {
         updateCenter();
       }
     });
-    const boundsChangedEvent = maps2.event.addListener(map2, "bounds_changed", () => {
+    const boundsChangedEvent = event.addListener(map2, "bounds_changed", () => {
       boundsChangedEvent.remove();
       emitBoundsReady();
     });
-    maps2.event.addListener(map2, "click", () => {
+    event.addListener(map2, "click", () => {
+      trigger("tap", {}, {});
       trigger("click", {}, {});
     });
-    maps2.event.addListener(map2, "dragstart", () => {
+    event.addListener(map2, "dragstart", () => {
       trigger("regionchange", {}, {
         type: "begin",
         causedBy: "gesture"
       });
     });
-    maps2.event.addListener(map2, "dragend", () => {
+    event.addListener(map2, "dragend", () => {
       trigger("regionchange", {}, extend({
         type: "end",
         causedBy: "drag"
       }, getMapInfo2()));
     });
-    maps2.event.addListener(map2, "zoom_changed", () => {
+    event.addListener(map2, "zoom_changed", () => {
       emit2("update:scale", map2.getZoom());
       trigger("regionchange", {}, extend({
         type: "end",
         causedBy: "scale"
       }, getMapInfo2()));
     });
-    maps2.event.addListener(map2, "center_changed", () => {
+    event.addListener(map2, "center_changed", () => {
       const center2 = map2.getCenter();
       const latitude = getLat(center2);
       const longitude = getLng(center2);
@@ -20825,7 +21166,8 @@ function useMap(props2, rootRef, emit2) {
               state2.latitude = latitude;
               state2.longitude = longitude;
               if (map) {
-                map.setCenter(new maps2.LatLng(latitude, longitude));
+                const centerPosition = getMapPosition(maps2, latitude, longitude);
+                map.setCenter(centerPosition);
               }
               onMapReady(() => {
                 callOptions(data, `${type}:ok`);
@@ -20926,7 +21268,9 @@ var Map$1 = /* @__PURE__ */ defineBuiltInComponent({
         "style": "width: 100%; height: 100%; position: relative; overflow: hidden"
       }, null, 512), props2.markers.map((item) => createVNode(MapMarker, mergeProps({
         "key": item.id
-      }, item), null, 16)), props2.polyline.map((item) => createVNode(MapPolyline, item, null, 16)), props2.circles.map((item) => createVNode(MapCircle, item, null, 16)), props2.controls.map((item) => createVNode(MapControl, item, null, 16)), props2.showLocation && createVNode(MapLocation, null, null), props2.polygons.map((item) => createVNode(MapPolygon, item, null, 16)), createVNode("div", {
+      }, item), null, 16)), props2.polyline.map((item) => createVNode(MapPolyline, item, null, 16)), props2.circles.map((item) => createVNode(MapCircle, item, null, 16)), props2.controls.map((item) => createVNode(MapControl, mergeProps(item, {
+        "rootRef": rootRef
+      }), null, 16, ["rootRef"])), props2.showLocation && createVNode(MapLocation, null, null), props2.polygons.map((item) => createVNode(MapPolygon, item, null, 16)), createVNode("div", {
         "style": "position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"
       }, [slots.default && slots.default()])], 8, ["id"]);
     };
@@ -22512,4 +22856,4 @@ var index = /* @__PURE__ */ defineSystemComponent({
     return openBlock(), createBlock("div", clazz, [loadingVNode]);
   }
 });
-export { $emit, $off, $on, $once, index$8 as Ad, index$7 as AdContentPage, index$6 as AdDraw, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, index$y as Button, index$5 as Camera, index$w as Canvas, index$u as Checkbox, index$v as CheckboxGroup, index$a as CoverImage, index$b as CoverView, index$t as Editor, index$A as Form, index$s as Icon, index$r as Image, Input, index$z as Label, LayoutComponent, index$4 as LivePlayer, index$3 as LivePusher, Map$1 as Map, MovableArea, MovableView, index$q as Navigator, index$2 as PageComponent, index$9 as Picker, PickerView, PickerViewColumn, index$p as Progress, index$n as Radio, index$o as RadioGroup, ResizeSensor, index$m as RichText, ScrollView, index$l as Slider, Swiper, SwiperItem, index$k as Switch, index$j as Text, index$i as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$e as Video, index$h as View, index$d as WebView, addInterceptor, addPhoneContact, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closePreviewImage, closeSocket, connectSocket, createAnimation$1 as createAnimation, createCameraContext, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createLivePlayerContext, createMapContext, createMediaQueryObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getAppBaseInfo, getClipboardData, getCurrentPages$1 as getCurrentPages, getDeviceInfo, getEnterOptionsSync, getFileInfo, getImageInfo, getLaunchOptionsSync, getLeftWindowStyle, getLocale, getLocation, getNetworkType, getProvider, getPushClientId, getRealPath, getRecorderManager, getRightWindowStyle, getSavedFileInfo, getSavedFileList, getScreenBrightness, getSelectedTextRange$1 as getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getTopWindowStyle, getVideoInfo, getWindowInfo, hideKeyboard, hideLeftWindow, hideLoading, hideNavigationBarLoading, hideRightWindow, hideTabBar, hideTabBarRedDot, hideToast, hideTopWindow, interceptors, invokePushCallback, loadFontFace, login, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offAppHide, offAppShow, offCompassChange, offError, offNetworkStatusChange, offPageNotFound, offPushMessage, offUnhandledRejection, offWindowResize, onAccelerometerChange, onAppHide, onAppShow, onCompassChange, onError, onGyroscopeChange, onLocaleChange, onMemoryWarning, onNetworkStatusChange, onPageNotFound, onPushMessage, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onUnhandledRejection, onUserCaptureScreen, onWindowResize, openDocument, openLocation, pageScrollTo, index$f as plugin, preloadPage, previewImage, reLaunch, redirectTo, removeInterceptor, removeSavedFileInfo, removeStorage, removeStorageSync, removeTabBarBadge, request, saveFile, saveImageToPhotosAlbum, saveVideoToPhotosAlbum, scanCode, sendSocketMessage, setClipboardData, setKeepScreenOn, setLeftWindowStyle, setLocale, setNavigationBarColor, setNavigationBarTitle, setPageMeta, setRightWindowStyle, setScreenBrightness, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setTopWindowStyle, setupApp, setupPage, setupWindow, showActionSheet, showLeftWindow, showLoading, showModal, showNavigationBarLoading, showRightWindow, showTabBar, showTabBarRedDot, showToast, showTopWindow, startAccelerometer, startCompass, startGyroscope, startPullDownRefresh, stopAccelerometer, stopCompass, stopGyroscope, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useI18n, useTabBar, vibrateLong, vibrateShort };
+export { $emit, $off, $on, $once, index$8 as Ad, index$7 as AdContentPage, index$6 as AdDraw, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, index$z as Button, index$5 as Camera, index$x as Canvas, index$v as Checkbox, index$w as CheckboxGroup, index$a as CoverImage, index$b as CoverView, index$u as Editor, index$B as Form, index$t as Icon, index$s as Image, Input, index$A as Label, LayoutComponent, index$4 as LivePlayer, index$3 as LivePusher, Map$1 as Map, MovableArea, MovableView, index$r as Navigator, index$2 as PageComponent, index$9 as Picker, PickerView, PickerViewColumn, index$q as Progress, index$o as Radio, index$p as RadioGroup, ResizeSensor, index$n as RichText, ScrollView, index$m as Slider, Swiper, SwiperItem, index$l as Switch, index$k as Text, index$j as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$f as Video, index$i as View, index$e as WebView, addInterceptor, addPhoneContact, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closePreviewImage, closeSocket, connectSocket, createAnimation$1 as createAnimation, createCameraContext, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createLivePlayerContext, createMapContext, createMediaQueryObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getAppBaseInfo, getClipboardData, getCurrentPages$1 as getCurrentPages, getDeviceInfo, getEnterOptionsSync, getFileInfo, getImageInfo, getLaunchOptionsSync, getLeftWindowStyle, getLocale, getLocation, getNetworkType, getProvider, getPushClientId, getRealPath, getRecorderManager, getRightWindowStyle, getSavedFileInfo, getSavedFileList, getScreenBrightness, getSelectedTextRange$1 as getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getTopWindowStyle, getVideoInfo, getWindowInfo, hideKeyboard, hideLeftWindow, hideLoading, hideNavigationBarLoading, hideRightWindow, hideTabBar, hideTabBarRedDot, hideToast, hideTopWindow, interceptors, invokePushCallback, loadFontFace, login, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offAppHide, offAppShow, offCompassChange, offError, offNetworkStatusChange, offPageNotFound, offPushMessage, offUnhandledRejection, offWindowResize, onAccelerometerChange, onAppHide, onAppShow, onCompassChange, onError, onGyroscopeChange, onLocaleChange, onMemoryWarning, onNetworkStatusChange, onPageNotFound, onPushMessage, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onUnhandledRejection, onUserCaptureScreen, onWindowResize, openDocument, openLocation, pageScrollTo, index$g as plugin, preloadPage, previewImage, reLaunch, redirectTo, removeInterceptor, removeSavedFileInfo, removeStorage, removeStorageSync, removeTabBarBadge, request, saveFile, saveImageToPhotosAlbum, saveVideoToPhotosAlbum, scanCode, sendSocketMessage, setClipboardData, setKeepScreenOn, setLeftWindowStyle, setLocale, setNavigationBarColor, setNavigationBarTitle, setPageMeta, setRightWindowStyle, setScreenBrightness, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setTopWindowStyle, setupApp, setupPage, setupWindow, showActionSheet, showLeftWindow, showLoading, showModal, showNavigationBarLoading, showRightWindow, showTabBar, showTabBarRedDot, showToast, showTopWindow, startAccelerometer, startCompass, startGyroscope, startPullDownRefresh, stopAccelerometer, stopCompass, stopGyroscope, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useI18n, useTabBar, vibrateLong, vibrateShort };

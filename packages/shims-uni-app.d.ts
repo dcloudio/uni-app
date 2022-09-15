@@ -1,3 +1,8 @@
+// 临时覆盖 HBuilderX.PageURIString , HBuilderX.ColorString
+declare namespace HBuilderX {
+  type PageURIString = string
+  type ColorString = string
+}
 declare namespace Page {
   interface PageInstance {
     $page: {
@@ -13,7 +18,7 @@ declare namespace Page {
     }
   }
 }
-declare namespace UniApp {
+declare namespace UniNamespace {
   type ClassObj = Record<string, boolean>
   type StyleObj = Record<string, any>
   type PLATFORM = keyof PagesJsonPagePlatformStyle
@@ -61,6 +66,9 @@ declare namespace UniApp {
     subPackages?: { root: string }[]
     qqMapKey?: string
     googleMapKey?: string
+    aMapKey?: string
+    aMapServiceHost?: string
+    aMapSecurityJsCode?: string
     // app-plus
     referrerInfo?: {
       appId: string
@@ -496,3 +504,5 @@ declare namespace UniApp {
     ): void
   }
 }
+
+import UniApp = UniNamespace

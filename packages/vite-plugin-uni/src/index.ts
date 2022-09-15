@@ -11,12 +11,13 @@ import {
   CopyOptions,
   initModuleAlias,
   initPreContext,
+  resolveSourceMapPath,
 } from '@dcloudio/uni-cli-shared'
 
 import { createConfig } from './config'
 import { createConfigResolved } from './configResolved'
 import { uniCopyPlugin } from './plugins/copy'
-// import { uniMovePlugin } from './plugins/move'
+import { uniMovePlugin } from './plugins/move'
 import {
   initExtraPlugins,
   initPluginUniOptions,
@@ -162,21 +163,20 @@ export default function uniPlugin(
     )
   }
 
-  // let addSourceMapPlugin = false
-  // if (addSourceMapPlugin) {
-  //   plugins.push(
-  //     uniMovePlugin({
-  //       apply: 'build',
-  //       enforce: 'post',
-  //       cwd: process.env.UNI_OUTPUT_DIR,
-  //       pattern: '**/*.js.map',
-  //       dest: path.resolve(
-  //         process.env.UNI_OUTPUT_DIR,
-  //         '../.s/' + process.env.UNI_PLATFORM
-  //       ),
-  //     })
-  //   )
-  // }
+  if (process.env.SOURCEMAP === 'true') {
+    plugins.push(
+      uniMovePlugin({
+        apply: 'build',
+        enforce: 'post',
+        cwd: process.env.UNI_OUTPUT_DIR,
+        pattern: '**/*.js.map',
+        dest: resolveSourceMapPath(
+          process.env.UNI_OUTPUT_DIR,
+          process.env.UNI_PLATFORM
+        ),
+      })
+    )
+  }
 
   return plugins
 }

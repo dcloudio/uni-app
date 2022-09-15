@@ -22,12 +22,15 @@ export function subscribeWebviewReady(_data: unknown, pageId: string) {
     // preloadWebview 不存在，重新加载一下
     setPreloadWebview(plus.webview.getWebviewById(pageId))
   }
-  if (preloadWebview.id !== pageId) {
-    return console.error(
-      `webviewReady[${preloadWebview.id}][${pageId}] not match`
-    )
+  // 仅当 preloadWebview 未 loaded 时处理 （iOS崩溃也会继续走到这里，此时 preloadWebview 通常是 loaded 的，且两者 id 肯定不一样）
+  if (!preloadWebview.loaded) {
+    if (preloadWebview.id !== pageId) {
+      return console.error(
+        `webviewReady[${preloadWebview.id}][${pageId}] not match`
+      )
+    }
+    ;(preloadWebview as any).loaded = true // 标记已 ready
   }
-  ;(preloadWebview as any).loaded = true // 标记已 ready
   UniServiceJSBridge.emit(ON_WEBVIEW_READY + '.' + pageId)
   isLaunchWebview && onLaunchWebviewReady()
 }

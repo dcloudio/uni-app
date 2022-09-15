@@ -1,0 +1,4 @@
+export declare function login(name: string, pwd: string): void
+export declare class User {
+  login(name: string, pwd: string): void
+}

@@ -166,7 +166,7 @@ async function build(target) {
       ],
       { stdio: 'inherit' }
     )
-    if (types) {
+    if (types && target !== 'uni-uts-vite') {
       await extract(target)
     }
   }

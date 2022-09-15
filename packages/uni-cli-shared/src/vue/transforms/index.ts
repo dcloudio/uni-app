@@ -12,6 +12,7 @@ export * from './transformTag'
 export { createAssetUrlTransformWithOptions } from './templateTransformAssetUrl'
 export { createSrcsetTransformWithOptions } from './templateTransformSrcset'
 export {
+  STRINGIFY_JSON,
   ATTR_DATASET_EVENT_OPTS,
   createTransformOn,
   defaultMatch as matchTransformOn,

@@ -20,7 +20,7 @@ export function updateCurPageCssVar(pageMeta: UniApp.PageRouteMeta) {
     tabBar.shown && (windowBottomValue = parseInt(tabBar.height!))
   }
   updatePageCssVar({
-    '--window-top': normalizeWindowBottom(windowTopValue),
+    '--window-top': normalizeWindowTop(windowTopValue),
     '--window-bottom': normalizeWindowBottom(windowBottomValue),
   })
 }

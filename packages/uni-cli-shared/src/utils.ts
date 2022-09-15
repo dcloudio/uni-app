@@ -91,3 +91,23 @@ export function normalizeParsePlugins(
   if (isTS) plugins.push('typescript', 'decorators-legacy')
   return plugins
 }
+
+export function pathToGlob(
+  pathString: string,
+  glob: string,
+  options: { windows?: boolean; escape?: boolean } = {}
+): string {
+  const isWindows =
+    'windows' in options ? options.windows : /^win/.test(process.platform)
+  const useEscape = options.escape
+  const str = isWindows ? pathString.replace(/\\/g, '/') : pathString
+  let safeStr = str.replace(
+    /[\\*?[\]{}()!]/g,
+    isWindows || !useEscape ? '[$&]' : '\\$&'
+  )
+  return path.posix.join(safeStr, glob)
+}
+
+export function resolveSourceMapPath(dir: string, platform: UniApp.PLATFORM) {
+  return path.resolve(dir, '../.sourcemap/' + platform)
+}

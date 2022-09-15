@@ -6,6 +6,7 @@ import {
   get_platform_name,
   get_space,
   is_debug,
+  is_push_clientid,
 } from '../utils/pageInfo.js'
 import { dbSet } from '../utils/db.js'
 class Stat extends Report {
@@ -34,9 +35,7 @@ class Stat extends Report {
           //     uni.__stat_uniCloud_space.config.spaceId
           // )
         } else {
-          console.error(
-            '当前尚未关联统计服务空间，请先在manifest.json中配置服务空间！'
-          )
+          console.error('应用未关联服务空间，请在uniCloud目录右键关联服务空间')
         }
       }
     }
@@ -45,6 +44,24 @@ class Stat extends Report {
   }
   constructor() {
     super()
+  }
+
+  /**
+   * 获取推送id
+   */
+  pushEvent(options) {
+    const ClientID = is_push_clientid()
+    if (uni.getPushClientId && ClientID) {
+      uni.getPushClientId({
+        success: (res) => {
+          const cid = res.cid || false
+          //  只有获取到才会上传
+          if (cid) {
+            this.sendPushRequest(options, cid)
+          }
+        },
+      })
+    }
   }
 
   /**

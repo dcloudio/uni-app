@@ -1,0 +1,4 @@
+export function login(name: string, pwd: string) {
+  console.log('login')
+  return { name, pwd }
+}

@@ -272,6 +272,8 @@ function normalizeNavigationBar(
     }
   })
 
+  navigationBar.type = navigationBar.type || 'default'
+
   const { titleNView } = pageStyle
   if (isPlainObject(titleNView)) {
     extend(navigationBar, titleNView)

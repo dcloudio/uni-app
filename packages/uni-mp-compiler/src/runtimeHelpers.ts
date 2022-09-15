@@ -1,5 +1,5 @@
 import { registerRuntimeHelpers } from '@vue/compiler-core'
-
+import { STRINGIFY_JSON } from '@dcloudio/uni-cli-shared'
 export const V_ON = Symbol(`vOn`)
 export const V_FOR = Symbol(`vFor`)
 export const EXTEND = Symbol(`extend`)
@@ -14,6 +14,7 @@ export const STRINGIFY_STYLE = Symbol(`stringifyStyle`)
 export const NORMALIZE_CLASS = Symbol(`normalizeClass`)
 export const TO_DISPLAY_STRING = Symbol(`toDisplayString`)
 export const WITH_MODEL_MODIFIERS = Symbol(`withModelModifiers`)
+
 registerRuntimeHelpers({
   [V_ON]: 'o',
   [V_FOR]: 'f',
@@ -29,4 +30,5 @@ registerRuntimeHelpers({
   [NORMALIZE_CLASS]: 'n',
   [TO_DISPLAY_STRING]: 't',
   [WITH_MODEL_MODIFIERS]: 'm',
+  [STRINGIFY_JSON]: 'j',
 })

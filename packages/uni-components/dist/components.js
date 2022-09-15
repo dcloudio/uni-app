@@ -3220,7 +3220,8 @@ var Switch = defineComponent({
       }, [type === SwitchType.switch ? createVNode("dc-switch", mergeProps({
         dataUncType: "uni-switch"
       }, listeners, {
-        checked: switchChecked.value
+        checked: switchChecked.value,
+        color
       }, {
         "style": DCSwitchSize
       }), null) : null, type === SwitchType.checkbox ? createVNode(resolveComponent("checkbox"), mergeProps({
@@ -4399,7 +4400,7 @@ var RichText = defineComponent({
       if (isString(nodes)) {
         nodes = parseHtml(nodes);
       }
-      return createVNode(resolveComponent("u-rich-text"), {
+      return createVNode("u-rich-text", {
         value: normalizeNodes(nodes || [], instance.root, {
           defaultFontSize
         })

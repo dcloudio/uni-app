@@ -1,3 +1,5 @@
+import { TEMP_PATH_BASE } from '../service/api/constants'
+
 export function getFileName(path: string) {
   const array = path.split('/')
   return array[array.length - 1]
@@ -54,7 +56,7 @@ function download(url: string): Promise<string> {
       .createDownload(
         url,
         {
-          filename: '_doc/uniapp_temp/download/',
+          filename: `${TEMP_PATH_BASE}/download/`,
         },
         function (d, status) {
           if (status === 200) {

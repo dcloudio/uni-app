@@ -86,9 +86,9 @@ export function initEnv(
     ? path.resolve(process.env.UNI_HBUILDERX_PLUGINS!, 'uniapp-cli-vite')
     : process.cwd()
 
-  if (options.platform === 'app-plus') {
-    options.platform = 'app'
-  }
+  // TODO 待优化
+  initUtsPlatform(options)
+
   if (
     options.platform === 'quickapp-webview-huawei' ||
     options.platform === 'quickapp-webview-union'
@@ -155,9 +155,47 @@ export function initEnv(
     )
   }
 
+  if (
+    (options as BuildOptions).sourcemap &&
+    process.env.NODE_ENV === 'production'
+  ) {
+    process.env.SOURCEMAP = 'true'
+  }
+
   initModulePaths()
 
   console.log(M['compiling'])
+}
+
+function initUtsPlatform(options: CliOptions) {
+  if (options.platform === 'app-android') {
+    process.env.UNI_APP_PLATFORM = 'android'
+    process.env.UNI_UTS_PLATFORM = 'app-android'
+    options.platform = 'app'
+  } else if (options.platform === 'app-ios') {
+    process.env.UNI_APP_PLATFORM = 'ios'
+    process.env.UNI_UTS_PLATFORM = 'app-ios'
+    options.platform = 'app'
+  } else {
+    if (process.env.UNI_APP_PLATFORM === 'android') {
+      process.env.UNI_UTS_PLATFORM = 'app-android'
+    }
+    if (process.env.UNI_APP_PLATFORM === 'ios') {
+      process.env.UNI_UTS_PLATFORM = 'app-ios'
+    }
+    if (options.platform === 'app-plus') {
+      options.platform = 'app'
+    }
+  }
+  if (options.platform === 'app' && !process.env.UNI_UTS_PLATFORM) {
+    process.env.UNI_UTS_PLATFORM = 'app-android'
+  }
+  if (options.platform === 'h5') {
+    process.env.UNI_UTS_PLATFORM = 'web'
+  }
+  if (!process.env.UNI_UTS_PLATFORM) {
+    process.env.UNI_UTS_PLATFORM = options.platform as any
+  }
 }
 
 function initAutomator({ autoHost, autoPort }: CliOptions) {

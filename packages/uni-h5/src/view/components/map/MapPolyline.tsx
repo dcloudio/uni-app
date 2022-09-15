@@ -2,6 +2,7 @@ import { inject, PropType, onUnmounted, watch } from 'vue'
 import { defineSystemComponent, useCustomEvent } from '@dcloudio/uni-components'
 import { Maps, Map, LatLng, Polyline, PolylineOptions } from './maps'
 import { hexToRgba } from '../../../helpers/hexToRgba'
+import { getIsAMap } from '../../../helpers/location'
 
 interface Point {
   latitude: number
@@ -56,9 +57,15 @@ export default /*#__PURE__*/ defineSystemComponent({
         addPolyline(option)
       }
       function addPolyline(option: Props) {
-        const path: LatLng[] = []
+        const path: LatLng | any[] = []
         option.points.forEach((point: Point) => {
-          path.push(new maps.LatLng(point.latitude, point.longitude))
+          const pointPosition = getIsAMap()
+            ? [point.longitude, point.latitude]
+            : new (maps as typeof google.maps).LatLng(
+                point.latitude,
+                point.longitude
+              )
+          path.push(pointPosition)
         })
         const strokeWeight = Number(option.width) || 1
         const { r: sr, g: sg, b: sb, a: sa } = hexToRgba(option.color)
