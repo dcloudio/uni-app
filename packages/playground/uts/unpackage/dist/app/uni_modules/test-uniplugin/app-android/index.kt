@@ -16,10 +16,15 @@ fun login(name: String, pwd: String): UTSJSONObject {
     };
 }
 val __default = getResourcePath("uni_modules/test-uniplugin/static/logo.png");
+open class GetBatteryInfoOptions : UTSJSONObject() {
+    open var success: UTSCallback? = null;
+    open var fail: UTSCallback? = null;
+    open var complete: UTSCallback? = null;
+}
 open class User : IUser {
     open suspend fun login(name: String, pwd: String) = CoroutineScope(Dispatchers.Default).async {
         setTimeout(fun(){
-            console.log("timeout", " at uni_modules/test-uniplugin/app-android/index.uts:10");
+            console.log("timeout", " at uni_modules/test-uniplugin/app-android/index.uts:16");
         }
         , 1000);
         login(name, pwd);

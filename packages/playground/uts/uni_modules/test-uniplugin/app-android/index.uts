@@ -4,6 +4,12 @@ import View from 'android.view.View'
 import { IUser } from './interface.uts'
 import { login } from './login.uts'
 import logo from '../static/logo.png'
+
+type GetBatteryInfoOptions = {
+  success?: (res: UTSJSONObject) => void
+  fail?: (res: UTSJSONObject) => void
+  complete?: (res: UTSJSONObject) => void
+}
 export class User implements IUser {
   async login(name: string, pwd: string) {
     setTimeout(() => {

@@ -1,24 +1,25 @@
+import DCUTSPlugin;
 import UIKit;
-typealias GetBatteryInfoOptions = {
-    var success?: (_ res: UTSJSONObject) -> Void;
-    var fail?: (_ res: UTSJSONObject) -> Void;
-    var complete?: (_ res: UTSJSONObject) -> Void;
-};
-async func getBatteryInfo(_ options: GetBatteryInfoOptions) {
-    var res = [
-        "errMsg": "getBatteryInfo:ok",
-        "level": UIDevice.current.batteryLevel * 100,
-        "isCharging": UIDevice.current.batteryState == UIDevice.BatteryState.charging
-    ];
-    if (options.success != nil) options.success!(res);
-    if (options.complete != nil) options.complete!(res);
+class GetBatteryInfoOptions : UTSJSONObject {
+    var success: UTSCallback?;
+    var fail: UTSCallback?;
+    var complete: UTSCallback?;
+    init(_ success: UTSCallback, _ fail: UTSCallback, _ complete: UTSCallback){
+        self.success = success;
+        self.fail = fail;
+        self.complete = complete;
+    }
 }
-class Test1 : NSObject {
-}
-@objc(UTSSDKModulesTestUniPluginTest)
-@@objcMembers
-class Test : NSObject {
-    override init(){
-        Test1();
+@objc(UTSSDKModulesTestUniPluginIndexSwift)
+@objcMembers
+class IndexSwift : NSObject {
+    static func async getBatteryInfo(_ options: GetBatteryInfoOptions) {
+        var res = [
+            "errMsg": "getBatteryInfo:ok",
+            "level": UIDevice.current.batteryLevel * 100,
+            "isCharging": UIDevice.current.batteryState == UIDevice.BatteryState.charging
+        ] as [String: Any];
+        if (options.success != nil) options.success!(res);
+        if (options.complete != nil) options.complete!(res);
     }
 }

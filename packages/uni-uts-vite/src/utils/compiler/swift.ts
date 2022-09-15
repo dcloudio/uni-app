@@ -32,7 +32,7 @@ export async function compileSwift(filename: string) {
       package: '',
       sourceMap: resolveSourceMapPath(),
       extname: 'swift',
-      imports: [],
+      imports: ['DCUTSPlugin'],
       logFilename: true,
       noColor: isInHBuilderX(),
     },
