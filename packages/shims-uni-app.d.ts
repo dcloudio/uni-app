@@ -43,7 +43,7 @@ declare namespace UniNamespace {
     router?: {
       strict: boolean
       base: string
-      assets: string,
+      assets: string
       routerBase: string
     }
     nvue?: {

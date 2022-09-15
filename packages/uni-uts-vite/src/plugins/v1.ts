@@ -43,7 +43,7 @@ export function uniUtsV1Plugin(): Plugin {
         process.env.UNI_UTS_PLATFORM === 'app-ios' ? 'swift' : 'kotlin'
       )
       const pkg = parsePackage(filename)
-      if (!pkg) {
+      if (!pkg.class) {
         return
       }
       // 懒加载 uts 编译器
@@ -52,8 +52,8 @@ export function uniUtsV1Plugin(): Plugin {
       const ast = await parse(code, { noColor: isInHBuilderX() })
       code = `
 import { initUtsProxyClass, initUtsProxyFunction } from '@dcloudio/uni-app'
-const pkg = '${pkg}'
-const cls = 'IndexKt'
+const pkg = '${pkg.package}'
+const cls = '${pkg.class}'
 ${genProxyCode(ast)}
 `
       const res = await compile(id)

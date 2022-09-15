@@ -15,44 +15,44 @@ import {
   API_TYPE_OFF_LOCATION_CHANGE_ERROR,
   API_OFF_LOCATION_CHANGE_ERROR,
   API_TYPE_ON_LOCATION_CHANGE_ERROR,
-  API_ON_LOCATION_CHANGE_ERROR
+  API_ON_LOCATION_CHANGE_ERROR,
 } from '@dcloudio/uni-api'
-import {
-  translateGeo,
-} from '../../../helpers/location'
+import { translateGeo } from '../../../helpers/location'
 
-let watchId: number = 0;
+let watchId: number = 0
 
 /**
  * 开始更新定位
  */
-export const startLocationUpdate = <API_TYPE_START_LOCATION_UPDATE>defineAsyncApi(
-  API_START_LOCATION_UPDATE,
-  (_, { resolve, reject }) => {
-    if (navigator.geolocation && watchId === 0) {
-      watchId = navigator.geolocation.watchPosition(
-        (res) => {
-          translateGeo(_?.type, res.coords)
-            .then((coords) => {
-              UniServiceJSBridge.invokeOnCallback(
-                API_ON_LOCATION_CHANGE,
-                coords
-              )
-              resolve()
-            })
-            .catch((error) => {
-              reject(error.message)
-            })
-        },
-        (error) => {
-          reject(error.message)
-        }
-      )
-    }
-    resolve()
-  },
-  StartLocationUpdateProtocol,
-  StartLocationUpdateOptions
+export const startLocationUpdate = <API_TYPE_START_LOCATION_UPDATE>(
+  defineAsyncApi(
+    API_START_LOCATION_UPDATE,
+    (_, { resolve, reject }) => {
+      if (navigator.geolocation && watchId === 0) {
+        watchId = navigator.geolocation.watchPosition(
+          (res) => {
+            translateGeo(_?.type, res.coords)
+              .then((coords) => {
+                UniServiceJSBridge.invokeOnCallback(
+                  API_ON_LOCATION_CHANGE,
+                  coords
+                )
+                resolve()
+              })
+              .catch((error) => {
+                reject(error.message)
+              })
+          },
+          (error) => {
+            reject(error.message)
+          }
+        )
+      }
+      resolve()
+    },
+    StartLocationUpdateProtocol,
+    StartLocationUpdateOptions
+  )
 )
 
 export const onLocationChange = <API_TYPE_ON_LOCATION_CHANGE>(

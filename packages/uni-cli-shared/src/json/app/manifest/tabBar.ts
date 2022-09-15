@@ -2,7 +2,7 @@ import { SELECTED_COLOR, TABBAR_HEIGHT } from '@dcloudio/uni-shared'
 
 const borderStyles = {
   black: 'rgba(0,0,0,0.4)',
-  white: 'rgba(255,255,255,0.4)'
+  white: 'rgba(255,255,255,0.4)',
 }
 export function initTabBar(
   entryPagePath: string,
@@ -17,7 +17,9 @@ export function initTabBar(
   ) as UniApp.TabBarOptions
 
   if (tabBar.borderStyle! in borderStyles) {
-    tabBar.borderStyle = (borderStyles[tabBar.borderStyle!] as UniNamespace.TabBarOptions['borderStyle'])
+    tabBar.borderStyle = borderStyles[
+      tabBar.borderStyle!
+    ] as UniNamespace.TabBarOptions['borderStyle']
   }
 
   if (!tabBar.selectedColor) {

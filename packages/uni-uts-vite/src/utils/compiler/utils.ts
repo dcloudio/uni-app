@@ -52,13 +52,16 @@ export function genUTSPlatformResource(
     })
   }
 
-  // 生产模式下，需要将 kt 文件转移到 src 下
+  // 生产模式下，需要将生成的平台文件转移到 src 下
   const srcDir = path.resolve(utsOutputDir, 'src')
   if (!fs.existsSync(srcDir)) {
     fs.mkdirSync(srcDir)
   }
   if (fs.existsSync(platformFile)) {
-    fs.moveSync(platformFile, path.resolve(utsOutputDir, 'src/index.kt'))
+    fs.moveSync(
+      platformFile,
+      path.resolve(utsOutputDir, 'src/index' + options.extname)
+    )
   }
 }
 

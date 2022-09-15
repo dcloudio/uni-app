@@ -1,6 +1,8 @@
 import { UIDevice } from 'UIKit'
 
 type GetBatteryInfoOptions = {
+  name: string
+  pwd: number
   success?: (res: UTSJSONObject) => void
   fail?: (res: UTSJSONObject) => void
   complete?: (res: UTSJSONObject) => void
@@ -17,5 +19,16 @@ export default async function getBatteryInfo(options: GetBatteryInfoOptions) {
   }
   if (options.complete != null) {
     options.complete!(res)
+  }
+}
+
+export function test1() {
+  console.log('test1')
+}
+
+class Test1 {}
+export class Test {
+  constructor() {
+    new Test1()
   }
 }

@@ -15,43 +15,45 @@ import {
   API_TYPE_OFF_LOCATION_CHANGE_ERROR,
   API_OFF_LOCATION_CHANGE_ERROR,
   API_TYPE_ON_LOCATION_CHANGE_ERROR,
-  API_ON_LOCATION_CHANGE_ERROR
+  API_ON_LOCATION_CHANGE_ERROR,
 } from '@dcloudio/uni-api'
 
-let watchId: number = 0;
+let watchId: number = 0
 
 /**
  * 开始更新定位
  */
-export const startLocationUpdate = <API_TYPE_START_LOCATION_UPDATE>defineAsyncApi(
-  API_START_LOCATION_UPDATE,
-  (_, { resolve, reject }) => {
-    if (plus.geolocation && watchId === 0) {
-      watchId = plus.geolocation.watchPosition(
-        (res) => {
-          UniServiceJSBridge.invokeOnCallback(
-            API_ON_LOCATION_CHANGE,
-            res.coords
-          )
-          resolve()
-        },
-        (error) => {
-          reject(error.message)
-        },
-        {
-          coordsType: _?.type,
-        }
-      )
-    } else {
-      UniServiceJSBridge.invokeOnCallback(
-        API_ON_LOCATION_CHANGE_ERROR,
-        'onLocationChange:fail'
-      )
-    }
-    resolve()
-  },
-  StartLocationUpdateProtocol,
-  StartLocationUpdateOptions
+export const startLocationUpdate = <API_TYPE_START_LOCATION_UPDATE>(
+  defineAsyncApi(
+    API_START_LOCATION_UPDATE,
+    (_, { resolve, reject }) => {
+      if (plus.geolocation && watchId === 0) {
+        watchId = plus.geolocation.watchPosition(
+          (res) => {
+            UniServiceJSBridge.invokeOnCallback(
+              API_ON_LOCATION_CHANGE,
+              res.coords
+            )
+            resolve()
+          },
+          (error) => {
+            reject(error.message)
+          },
+          {
+            coordsType: _?.type,
+          }
+        )
+      } else {
+        UniServiceJSBridge.invokeOnCallback(
+          API_ON_LOCATION_CHANGE_ERROR,
+          'onLocationChange:fail'
+        )
+      }
+      resolve()
+    },
+    StartLocationUpdateProtocol,
+    StartLocationUpdateOptions
+  )
 )
 
 export const onLocationChange = <API_TYPE_ON_LOCATION_CHANGE>(

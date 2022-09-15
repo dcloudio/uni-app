@@ -7,7 +7,8 @@ export type API_TYPE_STOP_LOCATION_UPDATE = typeof uni.stopLocationUpdate
 export const API_OFF_LOCATION_CHANGE = 'offLocationChange'
 export type API_TYPE_OFF_LOCATION_CHANGE = typeof uni.offLocationChange
 export const API_OFF_LOCATION_CHANGE_ERROR = 'offLocationChangeError'
-export type API_TYPE_OFF_LOCATION_CHANGE_ERROR = typeof uni.offLocationChangeError
+export type API_TYPE_OFF_LOCATION_CHANGE_ERROR =
+  typeof uni.offLocationChangeError
 export const API_ON_LOCATION_CHANGE_ERROR = 'onLocationChangeError'
 export type API_TYPE_ON_LOCATION_CHANGE_ERROR = typeof uni.onLocationChangeError
 
@@ -15,7 +16,7 @@ const coordTypes = ['wgs84', 'gcj02']
 
 export const StartLocationUpdateProtocol: ApiProtocol<API_TYPE_START_LOCATION_UPDATE> =
   {
-    type: String
+    type: String,
   }
 
 export const StartLocationUpdateOptions: ApiOptions<API_TYPE_START_LOCATION_UPDATE> =
@@ -28,6 +29,6 @@ export const StartLocationUpdateOptions: ApiOptions<API_TYPE_START_LOCATION_UPDA
         } else {
           params.type = value
         }
-      }
-    }
+      },
+    },
   }

@@ -22,9 +22,12 @@ import {
 export function parseKotlinPackage(filename: string) {
   const res = resolvePackage(filename)
   if (!res) {
-    return ''
+    return { package: '', class: '' }
   }
-  return 'uts.sdk.' + (res.is_uni_modules ? 'modules.' : '') + res.name
+  return {
+    package: 'uts.sdk.' + (res.is_uni_modules ? 'modules.' : '') + res.name,
+    class: 'IndexKt',
+  }
 }
 
 export async function compileKotlin(filename: string) {
@@ -41,8 +44,9 @@ export async function compileKotlin(filename: string) {
       filename,
     },
     output: {
+      isPlugin: true,
       outDir: outputDir,
-      package: parseKotlinPackage(filename),
+      package: parseKotlinPackage(filename).package,
       sourceMap: resolveSourceMapPath(),
       extname: 'kt',
       imports: [

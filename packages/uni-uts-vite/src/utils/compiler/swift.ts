@@ -5,9 +5,19 @@ import { genUTSPlatformResource, getUtsCompiler, resolvePackage } from './utils'
 export function parseSwiftPackage(filename: string) {
   const res = resolvePackage(filename)
   if (!res) {
-    return ''
+    return {
+      package: '',
+      namespace: '',
+      class: '',
+    }
   }
-  return 'UTSSDK' + (res.is_uni_modules ? 'Modules' : '') + capitalize(res.name)
+  const namespace =
+    'UTSSDK' + (res.is_uni_modules ? 'Modules' : '') + capitalize(res.name)
+  return {
+    package: '',
+    namespace,
+    class: namespace + 'IndexSwift',
+  }
 }
 
 export async function compileSwift(filename: string) {
@@ -28,8 +38,9 @@ export async function compileSwift(filename: string) {
       filename,
     },
     output: {
+      isPlugin: true,
       outDir: outputDir,
-      package: '',
+      package: parseSwiftPackage(filename).namespace,
       sourceMap: resolveSourceMapPath(),
       extname: 'swift',
       imports: ['DCUTSPlugin'],
