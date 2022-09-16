@@ -2470,7 +2470,6 @@ function parseBasePage (vuePageOptions, {
   const pageOptions = parseComponent(vuePageOptions);
 
   initHooks(pageOptions.methods, hooks$1, vuePageOptions);
-  initUnknownHooks(pageOptions.methods, vuePageOptions);
 
   pageOptions.methods.onLoad = function (query) {
     this.options = query;
@@ -2482,6 +2481,7 @@ function parseBasePage (vuePageOptions, {
     this.$vm.$mp.query = query; // 兼容 mpvue
     this.$vm.__call_hook('onLoad', query);
   };
+  initUnknownHooks(pageOptions.methods, vuePageOptions, ['onReady']);
 
   return pageOptions
 }
