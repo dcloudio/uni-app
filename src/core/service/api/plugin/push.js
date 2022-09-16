@@ -81,7 +81,7 @@ export function getPushClientId (args) {
       (info) => {
         const res = {
           errMsg: 'getPushClientId:ok',
-          cid
+          cid: info.clientid
         }
         hasSuccess && success(res)
         hasComplete && complete(res)
