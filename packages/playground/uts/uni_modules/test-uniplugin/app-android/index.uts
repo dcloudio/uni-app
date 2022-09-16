@@ -29,6 +29,12 @@ export class User implements IUser {
     //#ifndef APP-IOS
     console.log('ndef ios')
     //#endif
+    //#ifdef APP-ANDROID || APP-IOS
+    console.log('def android || def ios')
+    //#endif
+    //#ifdef MP-WEIXIN
+    console.log('def weixin')
+    //#endif
   }
   register(name: string, callback: () => void) {
     Log.info(logo as FrameLayout)

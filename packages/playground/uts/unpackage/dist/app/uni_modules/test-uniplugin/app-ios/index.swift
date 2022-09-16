@@ -36,5 +36,6 @@ class IndexSwift : NSObject {
         console.log("test1", " at uni_modules/test-uniplugin/app-ios/index.uts:26");
         console.log("def ios", " at uni_modules/test-uniplugin/app-ios/index.uts:31");
         console.log("ndef android", " at uni_modules/test-uniplugin/app-ios/index.uts:34");
+        console.log("def android || def ios", " at uni_modules/test-uniplugin/app-ios/index.uts:40");
     }
 }

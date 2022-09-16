@@ -31,6 +31,7 @@ open class User : IUser {
         Log.info(__default);
         console.log("def android", " at uni_modules/test-uniplugin/app-android/index.uts:21");
         console.log("ndef ios", " at uni_modules/test-uniplugin/app-android/index.uts:30");
+        console.log("def android || def ios", " at uni_modules/test-uniplugin/app-android/index.uts:33");
     }
     override fun register(name: String, callback: UTSCallback) {
         Log.info(__default as FrameLayout);
