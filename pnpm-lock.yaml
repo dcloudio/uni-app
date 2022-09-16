@@ -193,7 +193,7 @@ importers:
       '@dcloudio/uni-uts-vite': 3.0.0-alpha-3060220220914003
       '@types/pako': 1.0.2
       '@vue/compiler-sfc': 3.2.39
-      autoprefixer: ^10.4.9
+      autoprefixer: ^10.4.11
       pako: ^1.0.11
       postcss: ^8.4.13
       vue: 3.2.39
@@ -209,7 +209,7 @@ importers:
       '@dcloudio/uni-shared': link:../uni-shared
       '@types/pako': 1.0.2
       '@vue/compiler-sfc': 3.2.39
-      autoprefixer: 10.4.9_postcss@8.4.14
+      autoprefixer: 10.4.11_postcss@8.4.14
       pako: 1.0.11
       postcss: 8.4.14
       vue: 3.2.39
@@ -324,7 +324,7 @@ importers:
       '@vue/compiler-sfc': 3.2.39
       '@vue/server-renderer': 3.2.39
       '@vue/shared': 3.2.39
-      autoprefixer: ^10.4.9
+      autoprefixer: ^10.4.11
       base64url: ^3.0.1
       chokidar: ^3.5.3
       compare-versions: ^3.6.0
@@ -367,7 +367,7 @@ importers:
       '@vue/compiler-sfc': 3.2.39
       '@vue/server-renderer': 3.2.39_vue@3.2.39
       '@vue/shared': 3.2.39
-      autoprefixer: 10.4.9_postcss@8.4.14
+      autoprefixer: 10.4.11_postcss@8.4.14
       base64url: 3.0.1
       chokidar: 3.5.3
       compare-versions: 3.6.0
@@ -3446,8 +3446,8 @@ packages:
     engines: {node: '>= 4.0.0'}
     dev: true
 
-  /autoprefixer/10.4.9_postcss@8.4.14:
-    resolution: {integrity: sha512-Uu67eduPEmOeA0vyJby5ghu1AAELCCNSsLAjK+lz6kYzNM5sqnBO36MqfsjhPjQF/BaJM5U/UuFYyl7PavY/wQ==}
+  /autoprefixer/10.4.11_postcss@8.4.14:
+    resolution: {integrity: sha512-5lHp6DgRodxlBLSkzHOTcufWFflH1ewfy2hvFQyjrblBFlP/0Yh4O/Wrg4ow8WRlN3AAUFFLAQwX8hTptzqVHg==}
     engines: {node: ^10 || ^12 || >=14}
     hasBin: true
     peerDependencies:
@@ -5321,7 +5321,7 @@ packages:
     resolution: {integrity: sha512-9ByhssR2fPVsNZj478qUUbKfmL0+t5BDVyjShtyZZLiK7ZDAArFFfopyOTj0M05wE2tJPisA4iTnnXl2YoPvOA==}
 
   /graceful-fs/4.2.9:
-    resolution: {integrity: sha512-NtNxqUcXgpW2iMrfqSfR73Glt39K+BLwWsPs94yR63v45T0Wbej7eRmL5cWfwEgqXnmjQp3zaJTshdRW/qC2ZQ==, registry: https://registry.yarnpkg.com/}
+    resolution: {integrity: sha512-NtNxqUcXgpW2iMrfqSfR73Glt39K+BLwWsPs94yR63v45T0Wbej7eRmL5cWfwEgqXnmjQp3zaJTshdRW/qC2ZQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.9.tgz}
     dev: true
 
   /has-flag/3.0.0:
