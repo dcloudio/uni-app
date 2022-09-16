@@ -28,8 +28,9 @@ open class User : IUser {
         }
         , 1000);
         login(name, pwd);
-        Log.info("123");
         Log.info(__default);
+        console.log("def android", " at uni_modules/test-uniplugin/app-android/index.uts:21");
+        console.log("ndef ios", " at uni_modules/test-uniplugin/app-android/index.uts:30");
     }
     override fun register(name: String, callback: UTSCallback) {
         Log.info(__default as FrameLayout);

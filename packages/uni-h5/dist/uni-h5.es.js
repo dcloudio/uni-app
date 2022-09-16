@@ -12763,6 +12763,18 @@ const props$k = {
   disableTouch: {
     type: [Boolean, String],
     default: false
+  },
+  navigation: {
+    type: [Boolean, String],
+    default: false
+  },
+  navigationColor: {
+    type: String,
+    default: "#fff"
+  },
+  navigationActiveColor: {
+    type: String,
+    default: "rgba(53, 53, 53, 0.6)"
   }
 };
 function useState$3(props2) {
@@ -12805,7 +12817,8 @@ function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger
   let transitionStart;
   let currentChangeSource = "";
   let animationFrame;
-  const circularEnabled = computed(() => props2.circular && swiperContexts.value.length > state2.displayMultipleItems);
+  const swiperEnabled = computed(() => swiperContexts.value.length > state2.displayMultipleItems);
+  const circularEnabled = computed(() => props2.circular && swiperEnabled.value);
   function checkCircularLayout(index2) {
     if (!invalid) {
       for (let items = swiperContexts.value, n = items.length, i = index2 + state2.displayMultipleItems, r = 0; r < n; r++) {
@@ -12946,6 +12959,8 @@ function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger
           position += length;
         }
       }
+    } else if (source === "click") {
+      current = current + state2.displayMultipleItems - 1 < length ? current : 0;
     }
     animating = {
       toPos: current,
@@ -13182,7 +13197,9 @@ function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger
     animateViewport(state2.current = index2, currentChangeSource = "click", circularEnabled.value ? 1 : 0);
   }
   return {
-    onSwiperDotClick
+    onSwiperDotClick,
+    circularEnabled,
+    swiperEnabled
   };
 }
 var Swiper = /* @__PURE__ */ defineBuiltInComponent({
@@ -13253,8 +13270,14 @@ var Swiper = /* @__PURE__ */ defineBuiltInComponent({
     };
     provide("removeSwiperContext", removeSwiperContext);
     const {
-      onSwiperDotClick
+      onSwiperDotClick,
+      circularEnabled,
+      swiperEnabled
     } = useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger);
+    let createNavigationTsx = () => null;
+    {
+      createNavigationTsx = useSwiperNavigation(rootRef, props2, state2, onSwiperDotClick, swiperContexts, circularEnabled, swiperEnabled);
+    }
     return () => {
       const defaultSlots = slots.default && slots.default();
       swiperItems = flatVNode(defaultSlots);
@@ -13281,10 +13304,116 @@ var Swiper = /* @__PURE__ */ defineBuiltInComponent({
         "style": {
           background: index2 === state2.current ? props2.indicatorActiveColor : props2.indicatorColor
         }
-      }, null, 14, ["onClick"]))], 2)], 512)], 512);
+      }, null, 14, ["onClick"]))], 2), createNavigationTsx()], 512)], 512);
     };
   }
 });
+const useSwiperNavigation = (rootRef, props2, state2, onSwiperDotClick, swiperContext, circularEnabled, swiperEnabled) => {
+  let isNavigationAuto = false;
+  let prevDisabled = false;
+  let nextDisabled = false;
+  let hideNavigation = ref(false);
+  watchEffect(() => {
+    isNavigationAuto = props2.navigation === "auto";
+    hideNavigation.value = props2.navigation !== true || isNavigationAuto;
+    swiperAddMouseEvent();
+  });
+  watchEffect(() => {
+    const swiperItemLength = swiperContext.value.length;
+    const notCircular = !circularEnabled.value;
+    prevDisabled = state2.current === 0 && notCircular;
+    nextDisabled = state2.current === swiperItemLength - 1 && notCircular || notCircular && state2.current + state2.displayMultipleItems >= swiperItemLength;
+    if (!swiperEnabled.value) {
+      prevDisabled = true;
+      nextDisabled = true;
+      isNavigationAuto && (hideNavigation.value = true);
+    }
+  });
+  function navigationHover(event, type) {
+    const target = event.currentTarget;
+    if (!target)
+      return;
+    target.style.backgroundColor = type === "over" ? props2.navigationActiveColor : "";
+  }
+  const navigationAttr = {
+    onMouseover: (event) => navigationHover(event, "over"),
+    onMouseout: (event) => navigationHover(event, "out")
+  };
+  function navigationClick(type) {
+    const swiperItemLength = swiperContext.value.length;
+    let _current = state2.current;
+    switch (type) {
+      case "prev":
+        _current--;
+        if (_current < 0 && circularEnabled.value) {
+          _current = swiperItemLength - 1;
+        }
+        break;
+      case "next":
+        _current++;
+        if (_current >= swiperItemLength && circularEnabled.value) {
+          _current = 0;
+        }
+        break;
+    }
+    onSwiperDotClick(_current);
+  }
+  const createNavigationSVG = () => createSvgIconVNode(ICON_PATH_BACK, props2.navigationColor, 26);
+  const _mouseMove = (e2) => {
+    const {
+      clientX,
+      clientY
+    } = e2;
+    const {
+      left,
+      right,
+      top,
+      bottom,
+      width,
+      height
+    } = rootRef.value.getBoundingClientRect();
+    if (props2.vertical) {
+      hideNavigation.value = !(clientY - top < height / 3 || bottom - clientY < height / 3);
+    } else {
+      hideNavigation.value = !(clientX - left < width / 3 || right - clientX < width / 3);
+    }
+  };
+  const _mouseOut = () => {
+    hideNavigation.value = true;
+  };
+  function swiperAddMouseEvent() {
+    if (rootRef.value) {
+      rootRef.value.removeEventListener("mousemove", _mouseMove);
+      rootRef.value.removeEventListener("mouseout", _mouseOut);
+      if (isNavigationAuto) {
+        rootRef.value.addEventListener("mousemove", _mouseMove);
+        rootRef.value.addEventListener("mouseout", _mouseOut);
+      }
+    }
+  }
+  onMounted(swiperAddMouseEvent);
+  function createNavigationTsx() {
+    const navigationClass = {
+      "uni-swiper-navigation-hide": hideNavigation.value,
+      "uni-swiper-navigation-vertical": props2.vertical
+    };
+    if (props2.navigation) {
+      return createVNode(Fragment, null, [createVNode("div", mergeProps({
+        "class": ["uni-swiper-navigation uni-swiper-navigation-prev", extend({
+          "uni-swiper-navigation-disabled": prevDisabled
+        }, navigationClass)],
+        "onClick": () => navigationClick("prev")
+      }, navigationAttr), [createNavigationSVG()], 16, ["onClick"]), createVNode("div", mergeProps({
+        "class": ["uni-swiper-navigation uni-swiper-navigation-next", extend({
+          "uni-swiper-navigation-disabled": nextDisabled
+        }, navigationClass)],
+        "onClick": () => navigationClick("next")
+      }, navigationAttr), [createNavigationSVG()], 16, ["onClick"])]);
+    }
+    return null;
+  }
+  return createNavigationTsx;
+};
 const props$j = {
   itemId: {
     type: String,

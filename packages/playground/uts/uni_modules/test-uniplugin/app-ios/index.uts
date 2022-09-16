@@ -22,8 +22,20 @@ export default function getBatteryInfo(options: GetBatteryInfoOptions) {
   }
 }
 
-export function test1() {
+export function test1(callback: () => void) {
   console.log('test1')
+  //#ifdef APP-ANDROID
+  console.log('def android')
+  //#endif
+  //#ifdef APP-IOS
+  console.log('def ios')
+  //#endif
+  //#ifndef APP-ANDROID
+  console.log('ndef android')
+  //#endif
+  //#ifndef APP-IOS
+  console.log('ndef ios')
+  //#endif
 }
 
 class Test1 {}

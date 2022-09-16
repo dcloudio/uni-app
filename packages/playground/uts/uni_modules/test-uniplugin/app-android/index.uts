@@ -16,8 +16,19 @@ export class User implements IUser {
       console.log('timeout')
     }, 1000)
     login(name, pwd)
-    Log.info('123')
     Log.info(logo)
+    //#ifdef APP-ANDROID
+    console.log('def android')
+    //#endif
+    //#ifdef APP-IOS
+    console.log('def ios')
+    //#endif
+    //#ifndef APP-ANDROID
+    console.log('ndef android')
+    //#endif
+    //#ifndef APP-IOS
+    console.log('ndef ios')
+    //#endif
   }
   register(name: string, callback: () => void) {
     Log.info(logo as FrameLayout)

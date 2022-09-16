@@ -32,7 +32,9 @@ class IndexSwift : NSObject {
             options.complete!(res);
         }
     }
-    public static func test1() {
+    public static func test1(_ callback: UTSCallback) {
         console.log("test1", " at uni_modules/test-uniplugin/app-ios/index.uts:26");
+        console.log("def ios", " at uni_modules/test-uniplugin/app-ios/index.uts:31");
+        console.log("ndef android", " at uni_modules/test-uniplugin/app-ios/index.uts:34");
     }
 }
