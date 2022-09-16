@@ -635,7 +635,9 @@ export default {
         this.circularEnabled ? 1 : 0
       )
     },
-    _navigationClick (type) {
+    _navigationClick ($event, type) {
+      $event.stopPropagation()
+
       const swiperItemLength = this.items.length
       let _current = this.currentSync
 
@@ -783,7 +785,7 @@ export default {
             'div',
             {
               on: {
-                click: () => this._navigationClick('prev'),
+                click: (e) => this._navigationClick(e, 'prev'),
                 ...navigationEvent
               },
               class: [
@@ -801,7 +803,7 @@ export default {
             'div',
             {
               on: {
-                click: () => this._navigationClick('next'),
+                click: (e) => this._navigationClick(e, 'next'),
                 ...navigationEvent
               },
               class: [
