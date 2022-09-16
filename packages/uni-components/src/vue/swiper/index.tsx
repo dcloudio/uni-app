@@ -843,7 +843,9 @@ const useSwiperNavigation = /*#__PURE__*/ (
     onMouseout: (event: MouseEvent) => navigationHover(event, 'out'),
   }
 
-  function navigationClick(type: NavigationClickType) {
+  function navigationClick($event: MouseEvent, type: NavigationClickType) {
+    $event.stopPropagation()
+
     const swiperItemLength = swiperContext.value.length
     let _current = state.current
 
@@ -918,7 +920,7 @@ const useSwiperNavigation = /*#__PURE__*/ (
               },
               navigationClass
             )}
-            onClick={() => navigationClick('prev')}
+            onClick={(e) => navigationClick(e, 'prev')}
             {...navigationAttr}
           >
             {createNavigationSVG()}
@@ -932,7 +934,7 @@ const useSwiperNavigation = /*#__PURE__*/ (
               },
               navigationClass
             )}
-            onClick={() => navigationClick('next')}
+            onClick={(e) => navigationClick(e, 'next')}
             {...navigationAttr}
           >
             {createNavigationSVG()}
