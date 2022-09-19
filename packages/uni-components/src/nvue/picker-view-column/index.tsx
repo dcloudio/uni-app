@@ -60,7 +60,11 @@ export default defineComponent({
     const indicatorStyle = computed(() =>
       getStyle(pickerViewProps.indicatorStyle)
     )
-    const maskStyle = computed(() => getStyle(pickerViewProps.maskStyle))
+    // const maskStyle = computed(() => getStyle(pickerViewProps.maskStyle))
+    const maskTopStyle = computed(() => getStyle(pickerViewProps.maskTopStyle))
+    const maskBottomStyle = computed(() =>
+      getStyle(pickerViewProps.maskBottomStyle)
+    )
     let indicatorHeight = ref(0)
     indicatorHeight.value = getHeight(indicatorStyle.value)
     let pickerViewHeight = ref(0)
@@ -149,18 +153,18 @@ export default defineComponent({
               {createScrollViewChild(children)}
             </view>
           </scroll-view>
-          <u-scalable class="uni-picker-view-mask" style={maskStyle.value}>
+          <u-scalable class="uni-picker-view-mask">
             <u-scalable
               class="uni-picker-view-mask uni-picker-view-mask-top"
-              style={{
+              style={extend({}, maskTopStyle.value, {
                 bottom: maskPosition,
-              }}
+              })}
             ></u-scalable>
             <u-scalable
               class="uni-picker-view-mask uni-picker-view-mask-bottom"
-              style={{
+              style={extend({}, maskBottomStyle.value, {
                 top: maskPosition,
-              }}
+              })}
             ></u-scalable>
           </u-scalable>
           <u-scalable
