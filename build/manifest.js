@@ -46,7 +46,14 @@ const DEPS = {
     ['/core/view/components/swiper-item/index.vue', 'SwiperItem'],
     ['/core/view/components/movable-area/index.vue', 'MovableArea'],
     ['/core/view/components/movable-view/index.vue', 'MovableView'],
-    ['/platforms/h5/components/system-routes/preview-image/index.vue', 'PreviewImage']
+    [
+      '/platforms/h5/components/app/popup/preview-image/index.vue',
+      'PreviewImage'
+    ],
+    [
+      '/platforms/h5/components/app/popup/mixins/preview-image.js',
+      'PreviewImageMixin'
+    ]
   ],
   showToast: TOAST_DEPS,
   hideToast: TOAST_DEPS,

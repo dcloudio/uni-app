@@ -383,8 +383,12 @@
                 "MovableView"
             ],
             [
-                "/platforms/h5/components/system-routes/preview-image/index.vue",
+                "/platforms/h5/components/app/popup/preview-image/index.vue",
                 "PreviewImage"
+            ],
+            [
+                "/platforms/h5/components/app/popup/mixins/preview-image.js",
+                "PreviewImageMixin"
             ]
         ]
     ],

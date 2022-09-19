@@ -27,6 +27,11 @@
       v-bind="showModal"
       @close="_onModalClose"
     />
+    <preview-image
+      v-if="$options.components.PreviewImage"
+      v-bind="previewImage"
+      @close="_onPreviewClose"
+    />
     <template v-if="sysComponents&&sysComponents.length">
       <component
         :is="item"
