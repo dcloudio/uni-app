@@ -870,32 +870,41 @@ const useSwiperNavigation = /*#__PURE__*/ (
   const createNavigationSVG = () =>
     createSvgIconVNode(ICON_PATH_BACK, props.navigationColor, 26)
 
-  const _mouseMove = (e: MouseEvent) => {
+  let setHideNavigationTimer: number | undefined
+  const _mousemove = (e: MouseEvent) => {
+    clearTimeout(setHideNavigationTimer)
+
     const { clientX, clientY } = e
     const { left, right, top, bottom, width, height } =
       rootRef.value!.getBoundingClientRect()
 
+    let hide = false
     if (props.vertical) {
-      hideNavigation.value = !(
-        clientY - top < height / 3 || bottom - clientY < height / 3
-      )
+      hide = !(clientY - top < height / 3 || bottom - clientY < height / 3)
     } else {
-      hideNavigation.value = !(
-        clientX - left < width / 3 || right - clientX < width / 3
-      )
+      hide = !(clientX - left < width / 3 || right - clientX < width / 3)
     }
+
+    if (hide) {
+      // @ts-ignore setTimeout -> NodeJS.Timeout
+      return (setHideNavigationTimer = setTimeout(() => {
+        hideNavigation.value = hide
+      }, 300))
+    }
+
+    hideNavigation.value = hide
   }
-  const _mouseOut = () => {
+  const _mouseleave = () => {
     hideNavigation.value = true
   }
   function swiperAddMouseEvent() {
     if (rootRef.value) {
-      rootRef.value.removeEventListener('mousemove', _mouseMove)
-      rootRef.value.removeEventListener('mouseout', _mouseOut)
+      rootRef.value.removeEventListener('mousemove', _mousemove)
+      rootRef.value.removeEventListener('mouseleave', _mouseleave)
 
       if (isNavigationAuto) {
-        rootRef.value.addEventListener('mousemove', _mouseMove)
-        rootRef.value.addEventListener('mouseout', _mouseOut)
+        rootRef.value.addEventListener('mousemove', _mousemove)
+        rootRef.value.addEventListener('mouseleave', _mouseleave)
       }
     }
   }
