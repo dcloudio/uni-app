@@ -2,7 +2,8 @@ import path from 'path'
 import fs from 'fs-extra'
 import type { parse, bundle, UtsTarget } from '@dcloudio/uts'
 import { normalizePath } from '@dcloudio/uni-cli-shared'
-import { camelize } from '@vue/shared'
+import { camelize, capitalize } from '@vue/shared'
+import { Module, ModuleItem } from '../../../types/types'
 
 export function getUtsCompiler(): {
   parse: typeof parse
@@ -21,9 +22,11 @@ export function resolvePackage(filename: string) {
     ? parts.findIndex((part) => part === 'uni_modules')
     : parts.findIndex((part) => part === 'utssdk')
   if (index > -1) {
+    const name = camelize(parts[index + 1])
     return {
       is_uni_modules: isUniModules,
-      name: camelize(parts[index + 1]),
+      name,
+      namespace: 'UTSSDK' + (isUniModules ? 'Modules' : '') + capitalize(name),
     }
   }
 }
@@ -109,4 +112,24 @@ export function resolveUTSPlatformFile(
     }
   }
   return platformFile
+}
+
+function resolveTypeAliasDeclNames(items: ModuleItem[]) {
+  const names: string[] = []
+  items.forEach((item) => {
+    if (item.type === 'TsTypeAliasDeclaration') {
+      names.push(item.id.value)
+    }
+  })
+  return names
+}
+
+export function createResolveTypeReferenceName(namespace: string, ast: Module) {
+  const names = resolveTypeAliasDeclNames(ast.body)
+  return (name: string) => {
+    if (names.includes(name)) {
+      return namespace + capitalize(name)
+    }
+    return name
+  }
 }

@@ -1,5 +1,6 @@
-import { isPlainObject, hasOwn, extend } from '@vue/shared'
+import { isPlainObject, hasOwn, extend, capitalize } from '@vue/shared'
 declare const uni: any
+declare const plus: any
 let callbackId = 1
 let proxy: any
 const callbacks: Record<string, Function> = {}
@@ -282,4 +283,24 @@ export function initUtsProxyClass({
       return Reflect.get(target, name, receiver)
     },
   })
+}
+
+export function initUtsPackageName(name: string, is_uni_modules: boolean) {
+  if (typeof plus !== 'undefined' && plus.os.name === 'Android') {
+    return 'uts.sdk.' + (is_uni_modules ? 'modules.' : '') + name
+  }
+  return ''
+}
+
+export function initUtsClassName(name: string, is_uni_modules: boolean) {
+  if (typeof plus === 'undefined') {
+    return ''
+  }
+  if (plus.os.name === 'Android') {
+    return 'IndexKt'
+  }
+  if (plus.os.name === 'iOS') {
+    return 'UTSSDK' + (is_uni_modules ? 'Modules' : '') + capitalize(name)
+  }
+  return ''
 }

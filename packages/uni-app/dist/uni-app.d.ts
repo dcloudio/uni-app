@@ -39,6 +39,10 @@ export declare function getCurrentSubNVue(): any;
 
 export declare function getSsrGlobalData(): any;
 
+export declare function initUtsClassName(name: string, is_uni_modules: boolean): string;
+
+export declare function initUtsPackageName(name: string, is_uni_modules: boolean): string;
+
 export declare function initUtsProxyClass({ package: pkg, class: cls, constructor: { params: constructorParams }, methods, props, staticProps, staticMethods, }: ProxyClassOptions): any;
 
 export declare const initUtsProxyFunction: typeof initUtsStaticMethod;

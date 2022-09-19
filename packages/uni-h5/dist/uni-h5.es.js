@@ -13339,7 +13339,8 @@ const useSwiperNavigation = (rootRef, props2, state2, onSwiperDotClick, swiperCo
     onMouseover: (event) => navigationHover(event, "over"),
     onMouseout: (event) => navigationHover(event, "out")
   };
-  function navigationClick(type) {
+  function navigationClick($event, type) {
+    $event.stopPropagation();
     const swiperItemLength = swiperContext.value.length;
     let _current = state2.current;
     switch (type) {
@@ -13359,7 +13360,9 @@ const useSwiperNavigation = (rootRef, props2, state2, onSwiperDotClick, swiperCo
     onSwiperDotClick(_current);
   }
   const createNavigationSVG = () => createSvgIconVNode(ICON_PATH_BACK, props2.navigationColor, 26);
-  const _mouseMove = (e2) => {
+  let setHideNavigationTimer;
+  const _mousemove = (e2) => {
+    clearTimeout(setHideNavigationTimer);
     const {
       clientX,
       clientY
@@ -13372,22 +13375,29 @@ const useSwiperNavigation = (rootRef, props2, state2, onSwiperDotClick, swiperCo
       width,
       height
     } = rootRef.value.getBoundingClientRect();
+    let hide = false;
     if (props2.vertical) {
-      hideNavigation.value = !(clientY - top < height / 3 || bottom - clientY < height / 3);
+      hide = !(clientY - top < height / 3 || bottom - clientY < height / 3);
     } else {
-      hideNavigation.value = !(clientX - left < width / 3 || right - clientX < width / 3);
+      hide = !(clientX - left < width / 3 || right - clientX < width / 3);
     }
+    if (hide) {
+      return setHideNavigationTimer = setTimeout(() => {
+        hideNavigation.value = hide;
+      }, 300);
+    }
+    hideNavigation.value = hide;
   };
-  const _mouseOut = () => {
+  const _mouseleave = () => {
     hideNavigation.value = true;
   };
   function swiperAddMouseEvent() {
     if (rootRef.value) {
-      rootRef.value.removeEventListener("mousemove", _mouseMove);
-      rootRef.value.removeEventListener("mouseout", _mouseOut);
+      rootRef.value.removeEventListener("mousemove", _mousemove);
+      rootRef.value.removeEventListener("mouseleave", _mouseleave);
       if (isNavigationAuto) {
-        rootRef.value.addEventListener("mousemove", _mouseMove);
-        rootRef.value.addEventListener("mouseout", _mouseOut);
+        rootRef.value.addEventListener("mousemove", _mousemove);
+        rootRef.value.addEventListener("mouseleave", _mouseleave);
       }
     }
   }
@@ -13402,12 +13412,12 @@ const useSwiperNavigation = (rootRef, props2, state2, onSwiperDotClick, swiperCo
         "class": ["uni-swiper-navigation uni-swiper-navigation-prev", extend({
           "uni-swiper-navigation-disabled": prevDisabled
         }, navigationClass)],
-        "onClick": () => navigationClick("prev")
+        "onClick": (e2) => navigationClick(e2, "prev")
       }, navigationAttr), [createNavigationSVG()], 16, ["onClick"]), createVNode("div", mergeProps({
         "class": ["uni-swiper-navigation uni-swiper-navigation-next", extend({
           "uni-swiper-navigation-disabled": nextDisabled
         }, navigationClass)],
-        "onClick": () => navigationClick("next")
+        "onClick": (e2) => navigationClick(e2, "next")
       }, navigationAttr), [createNavigationSVG()], 16, ["onClick"])]);
     }
     return null;
@@ -17857,6 +17867,20 @@ var ImagePreview = /* @__PURE__ */ defineSystemComponent({
     function onChange2(event) {
       indexRef.value = event.detail.current;
     }
+    const closeBtnStyle = {
+      position: "absolute",
+      "box-sizing": "border-box",
+      top: "0",
+      left: "0",
+      width: "60px",
+      height: "44px",
+      padding: "6px",
+      "line-height": "32px",
+      "font-size": "26px",
+      color: "white",
+      "text-align": "center",
+      cursor: "pointer"
+    };
     return () => {
       let _slot;
       return createVNode("div", {
@@ -17873,6 +17897,7 @@ var ImagePreview = /* @__PURE__ */ defineSystemComponent({
         },
         "onClick": onClick
       }, [createVNode(Swiper, {
+        "navigation": "auto",
         "current": indexRef.value,
         "onChange": onChange2,
         "indicator-dots": false,
@@ -17891,7 +17916,9 @@ var ImagePreview = /* @__PURE__ */ defineSystemComponent({
       }))) ? _slot : {
         default: () => [_slot],
         _: 1
-      }, 8, ["current", "onChange"])], 8, ["onClick"]);
+      }, 8, ["current", "onChange"]), createVNode("div", {
+        "style": closeBtnStyle
+      }, [createSvgIconVNode(ICON_PATH_CLOSE, "#ffffff", 26)], 4)], 8, ["onClick"]);
     };
   }
 });

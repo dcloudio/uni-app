@@ -131,23 +131,27 @@ export function resolveUtsModule(
     const parts = normalizePath(id).split('/')
     const parentDir = parts[parts.length - 2]
     if (parentDir === 'uni_modules' || parentDir === 'utssdk') {
-      const index = path.resolve(id, 'index.uts')
+      const resolvePlatformDir = (p: typeof process.env.UNI_UTS_PLATFORM) => {
+        return path.resolve(id, parentDir === 'uni_modules' ? 'utssdk' : '', p)
+      }
+      // 未指定具体的平台
+      if (platform === 'app') {
+        platform = 'app-android'
+      }
+      let index = resolveUtsFile(resolvePlatformDir(platform))
+      if (index) {
+        return index
+      }
+      index = path.resolve(id, 'index.uts')
       if (fs.existsSync(index)) {
         return index
       }
-      if (
-        parentDir === 'uni_modules' &&
-        !fs.existsSync(path.join(id, 'utssdk'))
-      ) {
-        // uni_modules/test-plugin/utssdk不存在
-        return
+      // 如果是 android 或 ios，本平台没有，则查找一下另一个平台
+      if (platform === 'app-android') {
+        return resolveUtsFile(resolvePlatformDir('app-ios'))
+      } else if (platform === 'app-ios') {
+        return resolveUtsFile(resolvePlatformDir('app-android'))
       }
-      const platformDir = path.resolve(
-        id,
-        parentDir === 'uni_modules' ? 'utssdk' : '',
-        platform
-      )
-      return resolveUtsFile(platformDir)
     }
   }
 }

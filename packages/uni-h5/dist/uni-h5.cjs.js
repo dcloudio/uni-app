@@ -6344,7 +6344,8 @@ const useSwiperNavigation = (rootRef, props2, state, onSwiperDotClick, swiperCon
     onMouseover: (event) => navigationHover(event, "over"),
     onMouseout: (event) => navigationHover(event, "out")
   };
-  function navigationClick(type) {
+  function navigationClick($event, type) {
+    $event.stopPropagation();
     const swiperItemLength = swiperContext.value.length;
     let _current = state.current;
     switch (type) {
@@ -6364,7 +6365,9 @@ const useSwiperNavigation = (rootRef, props2, state, onSwiperDotClick, swiperCon
     onSwiperDotClick(_current);
   }
   const createNavigationSVG = () => createSvgIconVNode(ICON_PATH_BACK, props2.navigationColor, 26);
-  const _mouseMove = (e2) => {
+  let setHideNavigationTimer;
+  const _mousemove = (e2) => {
+    clearTimeout(setHideNavigationTimer);
     const {
       clientX,
       clientY
@@ -6377,22 +6380,29 @@ const useSwiperNavigation = (rootRef, props2, state, onSwiperDotClick, swiperCon
       width,
       height
     } = rootRef.value.getBoundingClientRect();
+    let hide = false;
     if (props2.vertical) {
-      hideNavigation.value = !(clientY - top < height / 3 || bottom - clientY < height / 3);
+      hide = !(clientY - top < height / 3 || bottom - clientY < height / 3);
     } else {
-      hideNavigation.value = !(clientX - left < width / 3 || right - clientX < width / 3);
+      hide = !(clientX - left < width / 3 || right - clientX < width / 3);
     }
+    if (hide) {
+      return setHideNavigationTimer = setTimeout(() => {
+        hideNavigation.value = hide;
+      }, 300);
+    }
+    hideNavigation.value = hide;
   };
-  const _mouseOut = () => {
+  const _mouseleave = () => {
     hideNavigation.value = true;
   };
   function swiperAddMouseEvent() {
     if (rootRef.value) {
-      rootRef.value.removeEventListener("mousemove", _mouseMove);
-      rootRef.value.removeEventListener("mouseout", _mouseOut);
+      rootRef.value.removeEventListener("mousemove", _mousemove);
+      rootRef.value.removeEventListener("mouseleave", _mouseleave);
       if (isNavigationAuto) {
-        rootRef.value.addEventListener("mousemove", _mouseMove);
-        rootRef.value.addEventListener("mouseout", _mouseOut);
+        rootRef.value.addEventListener("mousemove", _mousemove);
+        rootRef.value.addEventListener("mouseleave", _mouseleave);
       }
     }
   }
@@ -6406,12 +6416,12 @@ const useSwiperNavigation = (rootRef, props2, state, onSwiperDotClick, swiperCon
         "class": ["uni-swiper-navigation uni-swiper-navigation-prev", shared.extend({
           "uni-swiper-navigation-disabled": prevDisabled
         }, navigationClass)],
-        "onClick": () => navigationClick("prev")
+        "onClick": (e2) => navigationClick(e2, "prev")
       }, navigationAttr), [createNavigationSVG()], 16, ["onClick"]), vue.createVNode("div", vue.mergeProps({
         "class": ["uni-swiper-navigation uni-swiper-navigation-next", shared.extend({
           "uni-swiper-navigation-disabled": nextDisabled
         }, navigationClass)],
-        "onClick": () => navigationClick("next")
+        "onClick": (e2) => navigationClick(e2, "next")
       }, navigationAttr), [createNavigationSVG()], 16, ["onClick"])]);
     }
     return null;

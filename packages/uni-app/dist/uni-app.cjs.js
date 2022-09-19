@@ -284,11 +284,31 @@ function initUtsProxyClass({ package: pkg, class: cls, constructor: { params: co
         },
     });
 }
+function initUtsPackageName(name, is_uni_modules) {
+    if (typeof plus !== 'undefined' && plus.os.name === 'Android') {
+        return 'uts.sdk.' + (is_uni_modules ? 'modules.' : '') + name;
+    }
+    return '';
+}
+function initUtsClassName(name, is_uni_modules) {
+    if (typeof plus === 'undefined') {
+        return '';
+    }
+    if (plus.os.name === 'Android') {
+        return 'IndexKt';
+    }
+    if (plus.os.name === 'iOS') {
+        return 'UTSSDK' + (is_uni_modules ? 'Modules' : '') + shared.capitalize(name);
+    }
+    return '';
+}
 
 exports.formatAppLog = formatAppLog;
 exports.formatH5Log = formatH5Log;
 exports.getCurrentSubNVue = getCurrentSubNVue;
 exports.getSsrGlobalData = getSsrGlobalData;
+exports.initUtsClassName = initUtsClassName;
+exports.initUtsPackageName = initUtsPackageName;
 exports.initUtsProxyClass = initUtsProxyClass;
 exports.initUtsProxyFunction = initUtsProxyFunction;
 exports.onAddToFavorites = onAddToFavorites;

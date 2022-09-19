@@ -15,6 +15,10 @@ import {
   VariableDeclaration,
 } from '../../types/types'
 import { getCompiler } from '../utils/compiler'
+import {
+  createResolveTypeReferenceName,
+  resolvePackage,
+} from '../utils/compiler/utils'
 
 export function uniUtsV1Plugin(): Plugin {
   let isFirst = true
@@ -28,6 +32,7 @@ export function uniUtsV1Plugin(): Plugin {
       }
       // 目前仅支持 app-android|app-ios
       if (
+        process.env.UNI_UTS_PLATFORM !== 'app' &&
         process.env.UNI_UTS_PLATFORM !== 'app-android' &&
         process.env.UNI_UTS_PLATFORM !== 'app-ios'
       ) {
@@ -37,12 +42,11 @@ export function uniUtsV1Plugin(): Plugin {
       if (path.extname(filename) !== '.uts') {
         return
       }
-      const { compile, parsePackage, createResolveTypeReferenceName } =
-        getCompiler(
-          process.env.UNI_UTS_PLATFORM === 'app-ios' ? 'swift' : 'kotlin'
-        )
-      const pkg = parsePackage(filename)
-      if (!pkg.class) {
+      const { compile } = getCompiler(
+        process.env.UNI_UTS_PLATFORM === 'app-ios' ? 'swift' : 'kotlin'
+      )
+      const pkg = resolvePackage(filename)
+      if (!pkg) {
         return
       }
       // 懒加载 uts 编译器
@@ -50,11 +54,23 @@ export function uniUtsV1Plugin(): Plugin {
       const { parse } = require('@dcloudio/uts')
       const ast = await parse(preJs(code), { noColor: isInHBuilderX() })
       code = `
-import { initUtsProxyClass, initUtsProxyFunction } from '@dcloudio/uni-app'
-const pkg = '${pkg.package}'
-const cls = '${pkg.class}'
+import { initUtsProxyClass, initUtsProxyFunction, initUtsPackageName, initUtsClassName } from '@dcloudio/uni-app'
+const name = '${pkg.name}'
+const is_uni_modules = ${pkg.is_uni_modules}
+const pkg = initUtsPackageName(name, is_uni_modules)
+const cls = initUtsClassName(name, is_uni_modules)
 ${genProxyCode(ast, createResolveTypeReferenceName(pkg.namespace, ast))}
 `
+      // 平台不匹配，不走平台代码编译，仅生成js代码
+      if (
+        process.env.UNI_UTS_PLATFORM === 'app' ||
+        (process.env.UNI_UTS_PLATFORM === 'app-android' &&
+          id.includes('app-ios')) ||
+        (process.env.UNI_UTS_PLATFORM === 'app-ios' &&
+          id.includes('app-android'))
+      ) {
+        return code
+      }
       const res = await compile(id)
       if (process.env.UNI_UTS_PLATFORM === 'app-android') {
         if (!isFirst && res) {
