@@ -49,4 +49,7 @@ export class Test {
   constructor() {
     new Test1()
   }
+  test(): string | null {
+    return null
+  }
 }

@@ -15,6 +15,9 @@ class Test : NSObject {
     public init(){
         Test1();
     }
+    public func test() -> String? {
+        return nil;
+    }
 }
 @objc(UTSSDKModulesTestUniPluginIndexSwift)
 @objcMembers
