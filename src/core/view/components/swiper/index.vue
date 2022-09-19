@@ -167,10 +167,13 @@ export default {
     displayMultipleItemsNumber () {
       this._resetLayout()
     },
-    navigation (val) {
-      this.isNavigationAuto = val === 'auto'
-      this.hideNavigation = val !== true || this.isNavigationAuto
-      this._navigationSwiperAddMouseEvent()
+    navigation: {
+      immediate: true,
+      handler (val) {
+        this.isNavigationAuto = val === 'auto'
+        this.hideNavigation = val !== true || this.isNavigationAuto
+        this._navigationSwiperAddMouseEvent()
+      }
     },
     items () {
       this._setNavigationState()
@@ -659,6 +662,8 @@ export default {
       this._onSwiperDotClick(_current)
     },
     _navigationMouseMove (e) {
+      clearTimeout(this.hideNavigationTimer)
+
       const { clientX, clientY } = e
       const {
         left,
@@ -669,15 +674,20 @@ export default {
         height
       } = this.$refs.slidesWrapper.getBoundingClientRect()
 
+      let hide = false
       if (this.vertical) {
-        this.hideNavigation = !(
-          clientY - top < height / 3 || bottom - clientY < height / 3
-        )
+        hide = !(clientY - top < height / 3 || bottom - clientY < height / 3)
       } else {
-        this.hideNavigation = !(
-          clientX - left < width / 3 || right - clientX < width / 3
-        )
+        hide = !(clientX - left < width / 3 || right - clientX < width / 3)
       }
+
+      if (hide) {
+        return this.hideNavigationTimer = setTimeout(() => {
+          this.hideNavigation = hide
+        }, 300)
+      }
+
+      this.hideNavigation = hide
     },
     _navigationMouseOut () {
       this.hideNavigation = true
@@ -687,11 +697,11 @@ export default {
         const rootRef = this.$refs.slidesWrapper
         if (rootRef) {
           rootRef.removeEventListener('mousemove', this._navigationMouseMove)
-          rootRef.removeEventListener('mouseout', this._navigationMouseOut)
+          rootRef.removeEventListener('mouseleave', this._navigationMouseOut)
 
           if (this.isNavigationAuto) {
             rootRef.addEventListener('mousemove', this._navigationMouseMove)
-            rootRef.addEventListener('mouseout', this._navigationMouseOut)
+            rootRef.addEventListener('mouseleave', this._navigationMouseOut)
           }
         }
       }
