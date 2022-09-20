@@ -9,7 +9,7 @@
 
 * 执行命令编译指定包，如：```npm run build uni-mp-weixin```。
 * 执行 ```npm run lint``` 检查代码风格。
-* 执行 ```yarn test``` 运行测试。
+* 执行 ```npm run test``` 运行测试。
 
 ## 测试
 
@@ -18,10 +18,10 @@
   ```
   npx degit dcloudio/uni-preset-vue#vite uniapp-test
   ```
-* 从本地安装改动过的依赖，由于部分包对软链可能兼容不佳，暂不推荐使用 ```npm link``` 方式。
+* 从本地安装改动过的依赖
 
   ```
-  yarn add @dcloudio/%包名%@%uni-app本地仓库路径%/packages/%包名%
+  pnpm add @dcloudio/%包名%@%uni-app本地仓库路径%/packages/%包名%
   ```
 * 编写测试代码。
 * 编译到对应平台进行测试。
