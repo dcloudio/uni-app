@@ -44,15 +44,6 @@ export function uniCopyPlugin({
     })
     .map((p) => '/' + PUBLIC_DIR + '/' + p)
 
-  if (process.env.UNI_APP_PLATFORM === 'android') {
-    ignorePlatformStaticDirs.push(`/${PUBLIC_DIR}/app-ios`)
-  } else if (process.env.UNI_APP_PLATFORM === 'ios') {
-    ignorePlatformStaticDirs.push(`/${PUBLIC_DIR}/app-android`)
-  } else {
-    ignorePlatformStaticDirs.push(`/${PUBLIC_DIR}/app-android`)
-    ignorePlatformStaticDirs.push(`/${PUBLIC_DIR}/app-ios`)
-  }
-
   const targets: UniViteCopyPluginTarget[] = [
     {
       src: assets,

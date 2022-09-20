@@ -63,15 +63,6 @@ export function initPreContext(
 
     nvueContext.APP_NVUE = true
     nvueContext.APP_PLUS_NVUE = true
-
-    if (process.env.UNI_APP_PLATFORM === 'android') {
-      defaultContext.APP_ANDROID = true
-    } else if (process.env.UNI_APP_PLATFORM === 'ios') {
-      defaultContext.APP_IOS = true
-    } else {
-      defaultContext.APP_ANDROID = true
-      defaultContext.APP_IOS = true
-    }
   } else if (platform.startsWith('mp-')) {
     defaultContext.MP = true
   } else if (platform.startsWith('quickapp-webview')) {

@@ -1,6 +1,6 @@
 import type { Plugin } from 'vite'
 import path from 'path'
-import { isInHBuilderX, parseVueRequest, preJs } from '@dcloudio/uni-cli-shared'
+import { isInHBuilderX, parseVueRequest } from '@dcloudio/uni-cli-shared'
 import {
   BindingIdentifier,
   ClassDeclaration,
@@ -52,7 +52,7 @@ export function uniUtsV1Plugin(): Plugin {
       // 懒加载 uts 编译器
       // eslint-disable-next-line no-restricted-globals
       const { parse } = require('@dcloudio/uts')
-      const ast = await parse(preJs(code), { noColor: isInHBuilderX() })
+      const ast = await parse(code, { noColor: isInHBuilderX() })
       code = `
 import { initUtsProxyClass, initUtsProxyFunction, initUtsPackageName, initUtsClassName } from '@dcloudio/uni-app'
 const name = '${pkg.name}'
