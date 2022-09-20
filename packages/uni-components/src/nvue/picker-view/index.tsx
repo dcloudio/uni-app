@@ -24,6 +24,14 @@ const nvuePickerViewProps = extend({}, pickerViewProps, {
     type: [Number, String],
     default: 0,
   },
+  maskTopStyle: {
+    type: String,
+    default: '',
+  },
+  maskBottomStyle: {
+    type: String,
+    default: '',
+  },
 })
 type Props = ExtractPropTypes<typeof nvuePickerViewProps>
 export default defineComponent({

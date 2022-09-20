@@ -36,11 +36,20 @@ export function test1(callback: () => void) {
   //#ifndef APP-IOS
   console.log('ndef ios')
   //#endif
+  //#ifdef APP-ANDROID || APP-IOS
+  console.log('def android || def ios')
+  //#endif
+  //#ifdef MP-WEIXIN
+  console.log('def weixin')
+  //#endif
 }
 
 class Test1 {}
 export class Test {
   constructor() {
     new Test1()
+  }
+  test(): string | null {
+    return null
   }
 }

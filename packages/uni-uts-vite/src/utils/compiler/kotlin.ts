@@ -27,15 +27,13 @@ export function createKotlinResolveTypeReferenceName(
   return (name: string) => name
 }
 
-export function parseKotlinPackage(filename: string) {
+function parseKotlinPackage(filename: string) {
   const res = resolvePackage(filename)
   if (!res) {
-    return { package: '', namespace: '', class: '' }
+    return { package: '' }
   }
   return {
     package: 'uts.sdk.' + (res.is_uni_modules ? 'modules.' : '') + res.name,
-    namespace: '',
-    class: 'IndexKt',
   }
 }
 

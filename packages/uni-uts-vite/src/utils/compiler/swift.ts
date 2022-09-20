@@ -1,46 +1,18 @@
 import { isInHBuilderX, resolveSourceMapPath } from '@dcloudio/uni-cli-shared'
 import { capitalize } from '@vue/shared'
-import { Module, ModuleItem } from '../../../types/types'
 import { genUTSPlatformResource, getUtsCompiler, resolvePackage } from './utils'
 
-function resolveTypeAliasDeclNames(items: ModuleItem[]) {
-  const names: string[] = []
-  items.forEach((item) => {
-    if (item.type === 'TsTypeAliasDeclaration') {
-      names.push(item.id.value)
-    }
-  })
-  return names
-}
-
-export function createSwiftResolveTypeReferenceName(
-  namespace: string,
-  ast: Module
-) {
-  const names = resolveTypeAliasDeclNames(ast.body)
-  return (name: string) => {
-    if (names.includes(name)) {
-      return namespace + capitalize(name)
-    }
-    return name
-  }
-}
-
-export function parseSwiftPackage(filename: string) {
+function parseSwiftPackage(filename: string) {
   const res = resolvePackage(filename)
   if (!res) {
     return {
-      package: '',
       namespace: '',
-      class: '',
     }
   }
   const namespace =
     'UTSSDK' + (res.is_uni_modules ? 'Modules' : '') + capitalize(res.name)
   return {
-    package: '',
     namespace,
-    class: namespace + 'IndexSwift',
   }
 }
 

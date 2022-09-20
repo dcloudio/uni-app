@@ -2246,6 +2246,14 @@ const nvuePickerViewProps = extend({}, pickerViewProps, {
   height: {
     type: [Number, String],
     default: 0
+  },
+  maskTopStyle: {
+    type: String,
+    default: ""
+  },
+  maskBottomStyle: {
+    type: String,
+    default: ""
   }
 });
 var PickerView = defineComponent({
@@ -2371,7 +2379,8 @@ var PickerViewColumn = defineComponent({
     const getPickerViewColumn = inject("getPickerViewColumn");
     const current = getPickerViewColumn(instance);
     const indicatorStyle = computed(() => getStyle(pickerViewProps2.indicatorStyle));
-    const maskStyle = computed(() => getStyle(pickerViewProps2.maskStyle));
+    const maskTopStyle = computed(() => getStyle(pickerViewProps2.maskTopStyle));
+    const maskBottomStyle = computed(() => getStyle(pickerViewProps2.maskBottomStyle));
     let indicatorHeight = ref(0);
     indicatorHeight.value = getHeight(indicatorStyle.value);
     let pickerViewHeight = ref(0);
@@ -2445,18 +2454,17 @@ var PickerViewColumn = defineComponent({
           paddingBottom: `${padding}px`
         }
       }, [createScrollViewChild(children)])]), createVNode("u-scalable", {
-        "class": "uni-picker-view-mask",
-        "style": maskStyle.value
+        "class": "uni-picker-view-mask"
       }, [createVNode("u-scalable", {
         "class": "uni-picker-view-mask uni-picker-view-mask-top",
-        "style": {
+        "style": extend({}, maskTopStyle.value, {
           bottom: maskPosition
-        }
+        })
       }, null), createVNode("u-scalable", {
         "class": "uni-picker-view-mask uni-picker-view-mask-bottom",
-        "style": {
+        "style": extend({}, maskBottomStyle.value, {
           top: maskPosition
-        }
+        })
       }, null)]), createVNode("u-scalable", {
         "ref": indicatorRef,
         "class": "uni-picker-view-indicator",

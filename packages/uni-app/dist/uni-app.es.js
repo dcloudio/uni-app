@@ -1,5 +1,5 @@
 import { shallowRef, ref, getCurrentInstance, isInSSRComponentSetup, injectHook } from 'vue';
-import { hasOwn, isString, extend, isPlainObject } from '@vue/shared';
+import { hasOwn, isString, extend, capitalize, isPlainObject } from '@vue/shared';
 import { sanitise, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR, ON_SHOW, ON_HIDE, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, ON_INIT, ON_LOAD, ON_READY, ON_UNLOAD, ON_RESIZE, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SAVE_EXIT_STATE, ON_SHARE_TIMELINE, ON_ADD_TO_FAVORITES, ON_SHARE_APP_MESSAGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED } from '@dcloudio/uni-shared';
 
 function getSSRDataType() {
@@ -252,5 +252,23 @@ function initUtsProxyClass({ package: pkg, class: cls, constructor: { params: co
         },
     });
 }
+function initUtsPackageName(name, is_uni_modules) {
+    if (typeof plus !== 'undefined' && plus.os.name === 'Android') {
+        return 'uts.sdk.' + (is_uni_modules ? 'modules.' : '') + name;
+    }
+    return '';
+}
+function initUtsClassName(name, is_uni_modules) {
+    if (typeof plus === 'undefined') {
+        return '';
+    }
+    if (plus.os.name === 'Android') {
+        return 'IndexKt';
+    }
+    if (plus.os.name === 'iOS') {
+        return 'UTSSDK' + (is_uni_modules ? 'Modules' : '') + capitalize(name);
+    }
+    return '';
+}
 
-export { formatAppLog, formatH5Log, getCurrentSubNVue, getSsrGlobalData, initUtsProxyClass, initUtsProxyFunction, onAddToFavorites, onBackPress, onError, onHide, onInit, onLaunch, onLoad, onNavigationBarButtonTap, onNavigationBarSearchInputChanged, onNavigationBarSearchInputClicked, onNavigationBarSearchInputConfirmed, onNavigationBarSearchInputFocusChanged, onPageNotFound, onPageScroll, onPullDownRefresh, onReachBottom, onReady, onResize, onSaveExitState, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, requireNativePlugin, resolveEasycom, shallowSsrRef, ssrRef };
+export { formatAppLog, formatH5Log, getCurrentSubNVue, getSsrGlobalData, initUtsClassName, initUtsPackageName, initUtsProxyClass, initUtsProxyFunction, onAddToFavorites, onBackPress, onError, onHide, onInit, onLaunch, onLoad, onNavigationBarButtonTap, onNavigationBarSearchInputChanged, onNavigationBarSearchInputClicked, onNavigationBarSearchInputConfirmed, onNavigationBarSearchInputFocusChanged, onPageNotFound, onPageScroll, onPullDownRefresh, onReachBottom, onReady, onResize, onSaveExitState, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, requireNativePlugin, resolveEasycom, shallowSsrRef, ssrRef };
