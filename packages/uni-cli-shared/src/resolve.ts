@@ -149,6 +149,12 @@ export function resolveUtsAppModule(id: string, importer: string) {
   }
 }
 
+export function resolveUtsModuleProxyFile(id: string, importer: string) {
+  const file = resolveUtsAppModule(id, importer)
+  if (file) {
+    return '\0' + file + '?uts-proxy'
+  }
+}
 // 仅限 root/uni_modules/test-plugin | root/utssdk/test-plugin 格式
 export function resolveUtsModule(
   id: string,
@@ -156,7 +162,7 @@ export function resolveUtsModule(
   platform: typeof process.env.UNI_UTS_PLATFORM
 ) {
   if (process.env.UNI_PLATFORM === 'app') {
-    return
+    return resolveUtsAppModule(id, importer)
   }
   id = path.resolve(importer, id)
   if (id.includes('utssdk') || id.includes('uni_modules')) {
