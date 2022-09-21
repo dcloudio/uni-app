@@ -682,9 +682,10 @@ export default {
       }
 
       if (hide) {
-        return this.hideNavigationTimer = setTimeout(() => {
+        this.hideNavigationTimer = setTimeout(() => {
           this.hideNavigation = hide
         }, 300)
+        return
       }
 
       this.hideNavigation = hide
