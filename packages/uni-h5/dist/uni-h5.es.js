@@ -9732,26 +9732,10 @@ function _getPx(val) {
   }
   return Number(val) || 0;
 }
-function useMovableViewState(props2, trigger, rootRef) {
+function useMovableViewLayout(rootRef, _scale, _adjustScale) {
   const movableAreaWidth = inject("movableAreaWidth", ref(0));
   const movableAreaHeight = inject("movableAreaHeight", ref(0));
-  const _isMounted = inject("_isMounted", ref(false));
   const movableAreaRootRef = inject("movableAreaRootRef");
-  const addMovableViewContext = inject("addMovableViewContext", () => {
-  });
-  const removeMovableViewContext = inject("removeMovableViewContext", () => {
-  });
-  const xSync = ref(_getPx(props2.x));
-  const ySync = ref(_getPx(props2.y));
-  const scaleValueSync = ref(Number(props2.scaleValue) || 1);
-  const width = ref(0);
-  const height = ref(0);
-  const minX = ref(0);
-  const minY = ref(0);
-  const maxX = ref(0);
-  const maxY = ref(0);
-  let _SFA = null;
-  let _FA = null;
   const _offset = {
     x: 0,
     y: 0
@@ -9760,43 +9744,57 @@ function useMovableViewState(props2, trigger, rootRef) {
     x: 0,
     y: 0
   };
-  let _scale = 1;
-  let _oldScale = 1;
-  let _translateX = 0;
-  let _translateY = 0;
-  let _isScaling = false;
-  let _isTouching = false;
-  let __baseX;
-  let __baseY;
-  let _checkCanMove = null;
-  let _firstMoveDirection = null;
-  const _declineX = new Decline();
-  const _declineY = new Decline();
-  const __touchInfo = {
-    historyX: [0, 0],
-    historyY: [0, 0],
-    historyT: [0, 0]
+  const width = ref(0);
+  const height = ref(0);
+  const minX = ref(0);
+  const minY = ref(0);
+  const maxX = ref(0);
+  const maxY = ref(0);
+  function _updateBoundary() {
+    let x = 0 - _offset.x + _scaleOffset.x;
+    let _width = movableAreaWidth.value - width.value - _offset.x - _scaleOffset.x;
+    minX.value = Math.min(x, _width);
+    maxX.value = Math.max(x, _width);
+    let y = 0 - _offset.y + _scaleOffset.y;
+    let _height = movableAreaHeight.value - height.value - _offset.y - _scaleOffset.y;
+    minY.value = Math.min(y, _height);
+    maxY.value = Math.max(y, _height);
+  }
+  function _updateOffset() {
+    _offset.x = p(rootRef.value, movableAreaRootRef.value);
+    _offset.y = f(rootRef.value, movableAreaRootRef.value);
+  }
+  function _updateWH(scale) {
+    scale = scale || _scale.value;
+    scale = _adjustScale(scale);
+    let rect = rootRef.value.getBoundingClientRect();
+    height.value = rect.height / _scale.value;
+    width.value = rect.width / _scale.value;
+    let _height = height.value * scale;
+    let _width = width.value * scale;
+    _scaleOffset.x = (_width - width.value) / 2;
+    _scaleOffset.y = (_height - height.value) / 2;
+  }
+  return {
+    _updateBoundary,
+    _updateOffset,
+    _updateWH,
+    _scaleOffset,
+    minX,
+    minY,
+    maxX,
+    maxY
   };
+}
+function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, maxY, minX, minY, _translateX, _translateY, _SFA, _FA, _adjustScale, trigger) {
   const dampingNumber = computed(() => {
     let val = Number(props2.damping);
     return isNaN(val) ? 20 : val;
   });
-  const frictionNumber = computed(() => {
-    let val = Number(props2.friction);
-    return isNaN(val) || val <= 0 ? 2 : val;
-  });
-  const scaleMinNumber = computed(() => {
-    let val = Number(props2.scaleMin);
-    return isNaN(val) ? 0.5 : val;
-  });
-  const scaleMaxNumber = computed(() => {
-    let val = Number(props2.scaleMax);
-    return isNaN(val) ? 10 : val;
-  });
   const xMove = computed(() => props2.direction === "all" || props2.direction === "horizontal");
   const yMove = computed(() => props2.direction === "all" || props2.direction === "vertical");
-  const _STD = new STD(1, 9 * Math.pow(dampingNumber.value, 2) / 40, dampingNumber.value);
-  const _friction = new Friction$1(1, frictionNumber.value);
+  const xSync = ref(_getPx(props2.x));
+  const ySync = ref(_getPx(props2.y));
   watch(() => props2.x, (val) => {
     xSync.value = _getPx(val);
   });
@@ -9809,12 +9807,174 @@ function useMovableViewState(props2, trigger, rootRef) {
   watch(ySync, (val) => {
     _setY(val);
   });
-  watch(() => props2.disabled, () => {
-    __handleTouchStart();
+  const _STD = new STD(1, 9 * Math.pow(dampingNumber.value, 2) / 40, dampingNumber.value);
+  function _getLimitXY(x, y) {
+    let outOfBounds = false;
+    if (x > maxX.value) {
+      x = maxX.value;
+      outOfBounds = true;
+    } else {
+      if (x < minX.value) {
+        x = minX.value;
+        outOfBounds = true;
+      }
+    }
+    if (y > maxY.value) {
+      y = maxY.value;
+      outOfBounds = true;
+    } else {
+      if (y < minY.value) {
+        y = minY.value;
+        outOfBounds = true;
+      }
+    }
+    return {
+      x,
+      y,
+      outOfBounds
+    };
+  }
+  function FAandSFACancel() {
+    if (_FA) {
+      _FA.cancel();
+    }
+    if (_SFA) {
+      _SFA.cancel();
+    }
+  }
+  function _animationTo(x, y, scale, source, r, o2) {
+    FAandSFACancel();
+    if (!xMove.value) {
+      x = _translateX.value;
+    }
+    if (!yMove.value) {
+      y = _translateY.value;
+    }
+    if (!props2.scale) {
+      scale = _scale.value;
+    }
+    let limitXY = _getLimitXY(x, y);
+    x = limitXY.x;
+    y = limitXY.y;
+    if (!props2.animation) {
+      _setTransform(x, y, scale, source, r, o2);
+      return;
+    }
+    _STD._springX._solution = null;
+    _STD._springY._solution = null;
+    _STD._springScale._solution = null;
+    _STD._springX._endPosition = _translateX.value;
+    _STD._springY._endPosition = _translateY.value;
+    _STD._springScale._endPosition = _scale.value;
+    _STD.setEnd(x, y, scale, 1);
+    _SFA = g(_STD, function() {
+      let data = _STD.x();
+      let x2 = data.x;
+      let y2 = data.y;
+      let scale2 = data.scale;
+      _setTransform(x2, y2, scale2, source, r, o2);
+    }, function() {
+      _SFA.cancel();
+    });
+  }
+  function _setTransform(x, y, scale, source = "", r, o2) {
+    if (!(x !== null && x.toString() !== "NaN" && typeof x === "number")) {
+      x = _translateX.value || 0;
+    }
+    if (!(y !== null && y.toString() !== "NaN" && typeof y === "number")) {
+      y = _translateY.value || 0;
+    }
+    x = Number(x.toFixed(1));
+    y = Number(y.toFixed(1));
+    scale = Number(scale.toFixed(1));
+    if (!(_translateX.value === x && _translateY.value === y)) {
+      if (!r) {
+        trigger("change", {}, {
+          x: v(x, _scaleOffset.x),
+          y: v(y, _scaleOffset.y),
+          source
+        });
+      }
+    }
+    if (!props2.scale) {
+      scale = _scale.value;
+    }
+    scale = _adjustScale(scale);
+    scale = +scale.toFixed(3);
+    if (o2 && scale !== _scale.value) {
+      trigger("scale", {}, {
+        x,
+        y,
+        scale
+      });
+    }
+    let transform = "translateX(" + x + "px) translateY(" + y + "px) translateZ(0px) scale(" + scale + ")";
+    rootRef.value.style.transform = transform;
+    rootRef.value.style.webkitTransform = transform;
+    _translateX.value = x;
+    _translateY.value = y;
+    _scale.value = scale;
+  }
+  function _revise(source) {
+    let limitXY = _getLimitXY(_translateX.value, _translateY.value);
+    let x = limitXY.x;
+    let y = limitXY.y;
+    let outOfBounds = limitXY.outOfBounds;
+    if (outOfBounds) {
+      _animationTo(x, y, _scale.value, source);
+    }
+    return outOfBounds;
+  }
+  function _setX(val) {
+    if (xMove.value) {
+      if (val + _scaleOffset.x === _translateX.value) {
+        return _translateX;
+      } else {
+        if (_SFA) {
+          _SFA.cancel();
+        }
+        _animationTo(val + _scaleOffset.x, ySync.value + _scaleOffset.y, _scale.value);
+      }
+    }
+    return val;
+  }
+  function _setY(val) {
+    if (yMove.value) {
+      if (val + _scaleOffset.y === _translateY.value) {
+        return _translateY;
+      } else {
+        if (_SFA) {
+          _SFA.cancel();
+        }
+        _animationTo(xSync.value + _scaleOffset.x, val + _scaleOffset.y, _scale.value);
+      }
+    }
+    return val;
+  }
+  return {
+    FAandSFACancel,
+    _getLimitXY,
+    _animationTo,
+    _setTransform,
+    _revise,
+    dampingNumber,
+    xMove,
+    yMove,
+    xSync,
+    ySync,
+    _STD
+  };
+}
+function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScaling, _translateX, _translateY, _SFA, _FA) {
+  const scaleMinNumber = computed(() => {
+    let val = Number(props2.scaleMin);
+    return isNaN(val) ? 0.5 : val;
   });
-  watch(() => props2.scaleValue, (val) => {
-    scaleValueSync.value = Number(val) || 0;
+  const scaleMaxNumber = computed(() => {
+    let val = Number(props2.scaleMax);
+    return isNaN(val) ? 10 : val;
   });
+  const scaleValueSync = ref(Number(props2.scaleValue) || 1);
   watch(scaleValueSync, (val) => {
     _setScaleValue(val);
   });
@@ -9824,46 +9984,66 @@ function useMovableViewState(props2, trigger, rootRef) {
   watch(scaleMaxNumber, () => {
     _setScaleMinOrMax();
   });
-  function FAandSFACancel() {
-    if (_FA) {
-      _FA.cancel();
-    }
-    if (_SFA) {
-      _SFA.cancel();
-    }
-  }
-  function _setX(val) {
-    if (xMove.value) {
-      if (val + _scaleOffset.x === _translateX) {
-        return _translateX;
+  watch(() => props2.scaleValue, (val) => {
+    scaleValueSync.value = Number(val) || 0;
+  });
+  const {
+    _updateBoundary,
+    _updateOffset,
+    _updateWH,
+    _scaleOffset,
+    minX,
+    minY,
+    maxX,
+    maxY
+  } = useMovableViewLayout(rootRef, _scale, _adjustScale);
+  const {
+    FAandSFACancel,
+    _getLimitXY,
+    _animationTo,
+    _setTransform,
+    _revise,
+    dampingNumber,
+    xMove,
+    yMove,
+    xSync,
+    ySync,
+    _STD
+  } = useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, maxY, minX, minY, _translateX, _translateY, _SFA, _FA, _adjustScale, trigger);
+  function _updateScale(scale, animat) {
+    if (props2.scale) {
+      scale = _adjustScale(scale);
+      _updateWH(scale);
+      _updateBoundary();
+      const limitXY = _getLimitXY(_translateX.value, _translateY.value);
+      const x = limitXY.x;
+      const y = limitXY.y;
+      if (animat) {
+        _animationTo(x, y, scale, "", true, true);
       } else {
-        if (_SFA) {
-          _SFA.cancel();
-        }
-        _animationTo(val + _scaleOffset.x, ySync.value + _scaleOffset.y, _scale);
+        _requestAnimationFrame(function() {
+          _setTransform(x, y, scale, "", true, true);
+        });
       }
     }
-    return val;
   }
-  function _setY(val) {
-    if (yMove.value) {
-      if (val + _scaleOffset.y === _translateY) {
-        return _translateY;
-      } else {
-        if (_SFA) {
-          _SFA.cancel();
-        }
-        _animationTo(xSync.value + _scaleOffset.x, val + _scaleOffset.y, _scale);
-      }
-    }
-    return val;
+  function _beginScale() {
+    _isScaling.value = true;
+  }
+  function _updateOldScale(scale) {
+    _oldScale.value = scale;
+  }
+  function _adjustScale(scale) {
+    scale = Math.max(0.5, scaleMinNumber.value, scale);
+    scale = Math.min(10, scaleMaxNumber.value, scale);
+    return scale;
   }
   function _setScaleMinOrMax() {
     if (!props2.scale) {
       return false;
     }
-    _updateScale(_scale, true);
-    _updateOldScale(_scale);
+    _updateScale(_scale.value, true);
+    _updateOldScale(_scale.value);
   }
   function _setScaleValue(scale) {
     if (!props2.scale) {
@@ -9874,18 +10054,112 @@ function useMovableViewState(props2, trigger, rootRef) {
     _updateOldScale(scale);
     return scale;
   }
+  function _endScale() {
+    _isScaling.value = false;
+    _updateOldScale(_scale.value);
+  }
+  function _setScale(scale) {
+    if (scale) {
+      scale = _oldScale.value * scale;
+      _beginScale();
+      _updateScale(scale);
+    }
+  }
+  return {
+    _updateOldScale,
+    _endScale,
+    _setScale,
+    scaleValueSync,
+    _updateBoundary,
+    _updateOffset,
+    _updateWH,
+    _scaleOffset,
+    minX,
+    minY,
+    maxX,
+    maxY,
+    FAandSFACancel,
+    _getLimitXY,
+    _animationTo,
+    _setTransform,
+    _revise,
+    dampingNumber,
+    xMove,
+    yMove,
+    xSync,
+    ySync,
+    _STD
+  };
+}
+function useMovableViewState(props2, trigger, rootRef) {
+  const _isMounted = inject("_isMounted", ref(false));
+  const addMovableViewContext = inject("addMovableViewContext", () => {
+  });
+  const removeMovableViewContext = inject("removeMovableViewContext", () => {
+  });
+  let _scale = ref(1);
+  let _oldScale = ref(1);
+  let _isScaling = ref(false);
+  let _translateX = ref(0);
+  let _translateY = ref(0);
+  let _SFA = null;
+  let _FA = null;
+  let _isTouching = false;
+  let __baseX;
+  let __baseY;
+  let _checkCanMove = null;
+  let _firstMoveDirection = null;
+  const _declineX = new Decline();
+  const _declineY = new Decline();
+  const __touchInfo = {
+    historyX: [0, 0],
+    historyY: [0, 0],
+    historyT: [0, 0]
+  };
+  const frictionNumber = computed(() => {
+    let val = Number(props2.friction);
+    return isNaN(val) || val <= 0 ? 2 : val;
+  });
+  const _friction = new Friction$1(1, frictionNumber.value);
+  watch(() => props2.disabled, () => {
+    __handleTouchStart();
+  });
+  const {
+    _updateOldScale,
+    _endScale,
+    _setScale,
+    scaleValueSync,
+    _updateBoundary,
+    _updateOffset,
+    _updateWH,
+    _scaleOffset,
+    minX,
+    minY,
+    maxX,
+    maxY,
+    FAandSFACancel,
+    _getLimitXY,
+    _setTransform,
+    _revise,
+    dampingNumber,
+    xMove,
+    yMove,
+    xSync,
+    ySync,
+    _STD
+  } = useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScaling, _translateX, _translateY, _SFA, _FA);
   function __handleTouchStart() {
-    if (!_isScaling) {
+    if (!_isScaling.value) {
       if (!props2.disabled) {
         FAandSFACancel();
         __touchInfo.historyX = [0, 0];
         __touchInfo.historyY = [0, 0];
         __touchInfo.historyT = [0, 0];
         if (xMove.value) {
-          __baseX = _translateX;
+          __baseX = _translateX.value;
         }
         if (yMove.value) {
-          __baseY = _translateY;
+          __baseY = _translateY.value;
         }
         rootRef.value.style.willChange = "transform";
         _checkCanMove = null;
@@ -9895,9 +10169,9 @@ function useMovableViewState(props2, trigger, rootRef) {
     }
   }
   function __handleTouchMove(event) {
-    if (!_isScaling && !props2.disabled && _isTouching) {
-      let x = _translateX;
-      let y = _translateY;
+    if (!_isScaling.value && !props2.disabled && _isTouching) {
+      let x = _translateX.value;
+      let y = _translateY.value;
       if (_firstMoveDirection === null) {
         _firstMoveDirection = Math.abs(event.detail.dx / event.detail.dy) > 1 ? "htouchmove" : "vtouchmove";
       }
@@ -9955,40 +10229,42 @@ function useMovableViewState(props2, trigger, rootRef) {
           }
         }
         _requestAnimationFrame(function() {
-          _setTransform(x, y, _scale, source);
+          _setTransform(x, y, _scale.value, source);
         });
       }
     }
   }
   function __handleTouchEnd() {
-    if (!_isScaling && !props2.disabled && _isTouching) {
+    if (!_isScaling.value && !props2.disabled && _isTouching) {
       rootRef.value.style.willChange = "auto";
       _isTouching = false;
       if (!_checkCanMove && !_revise("out-of-bounds") && props2.inertia) {
         const xv = 1e3 * (__touchInfo.historyX[1] - __touchInfo.historyX[0]) / (__touchInfo.historyT[1] - __touchInfo.historyT[0]);
         const yv = 1e3 * (__touchInfo.historyY[1] - __touchInfo.historyY[0]) / (__touchInfo.historyT[1] - __touchInfo.historyT[0]);
+        const __translateX = _translateX.value;
+        const __translateY = _translateY.value;
         _friction.setV(xv, yv);
-        _friction.setS(_translateX, _translateY);
+        _friction.setS(__translateX, __translateY);
         const x0 = _friction.delta().x;
         const y0 = _friction.delta().y;
-        let x = x0 + _translateX;
-        let y = y0 + _translateY;
+        let x = x0 + __translateX;
+        let y = y0 + __translateY;
         if (x < minX.value) {
           x = minX.value;
-          y = _translateY + (minX.value - _translateX) * y0 / x0;
+          y = __translateY + (minX.value - __translateX) * y0 / x0;
         } else {
           if (x > maxX.value) {
             x = maxX.value;
-            y = _translateY + (maxX.value - _translateX) * y0 / x0;
+            y = __translateY + (maxX.value - __translateX) * y0 / x0;
           }
         }
         if (y < minY.value) {
           y = minY.value;
-          x = _translateX + (minY.value - _translateY) * x0 / y0;
+          x = __translateX + (minY.value - __translateY) * x0 / y0;
         } else {
           if (y > maxY.value) {
             y = maxY.value;
-            x = _translateX + (maxY.value - _translateY) * x0 / y0;
+            x = __translateX + (maxY.value - __translateY) * x0 / y0;
           }
         }
         _friction.setEnd(x, y);
@@ -9996,7 +10272,7 @@ function useMovableViewState(props2, trigger, rootRef) {
           let t2 = _friction.s();
           let x2 = t2.x;
           let y2 = t2.y;
-          _setTransform(x2, y2, _scale, "friction");
+          _setTransform(x2, y2, _scale.value, "friction");
         }, function() {
           _FA.cancel();
         });
@@ -10005,168 +10281,6 @@ function useMovableViewState(props2, trigger, rootRef) {
     if (!props2.outOfBounds && !props2.inertia) {
       FAandSFACancel();
     }
-  }
-  function _getLimitXY(x, y) {
-    let outOfBounds = false;
-    if (x > maxX.value) {
-      x = maxX.value;
-      outOfBounds = true;
-    } else {
-      if (x < minX.value) {
-        x = minX.value;
-        outOfBounds = true;
-      }
-    }
-    if (y > maxY.value) {
-      y = maxY.value;
-      outOfBounds = true;
-    } else {
-      if (y < minY.value) {
-        y = minY.value;
-        outOfBounds = true;
-      }
-    }
-    return {
-      x,
-      y,
-      outOfBounds
-    };
-  }
-  function _updateOffset() {
-    _offset.x = p(rootRef.value, movableAreaRootRef.value);
-    _offset.y = f(rootRef.value, movableAreaRootRef.value);
-  }
-  function _updateWH(scale) {
-    scale = scale || _scale;
-    scale = _adjustScale(scale);
-    let rect = rootRef.value.getBoundingClientRect();
-    height.value = rect.height / _scale;
-    width.value = rect.width / _scale;
-    let _height = height.value * scale;
-    let _width = width.value * scale;
-    _scaleOffset.x = (_width - width.value) / 2;
-    _scaleOffset.y = (_height - height.value) / 2;
-  }
-  function _updateBoundary() {
-    let x = 0 - _offset.x + _scaleOffset.x;
-    let _width = movableAreaWidth.value - width.value - _offset.x - _scaleOffset.x;
-    minX.value = Math.min(x, _width);
-    maxX.value = Math.max(x, _width);
-    let y = 0 - _offset.y + _scaleOffset.y;
-    let _height = movableAreaHeight.value - height.value - _offset.y - _scaleOffset.y;
-    minY.value = Math.min(y, _height);
-    maxY.value = Math.max(y, _height);
-  }
-  function _beginScale() {
-    _isScaling = true;
-  }
-  function _updateScale(scale, animat) {
-    if (props2.scale) {
-      scale = _adjustScale(scale);
-      _updateWH(scale);
-      _updateBoundary();
-      const limitXY = _getLimitXY(_translateX, _translateY);
-      const x = limitXY.x;
-      const y = limitXY.y;
-      if (animat) {
-        _animationTo(x, y, scale, "", true, true);
-      } else {
-        _requestAnimationFrame(function() {
-          _setTransform(x, y, scale, "", true, true);
-        });
-      }
-    }
-  }
-  function _updateOldScale(scale) {
-    _oldScale = scale;
-  }
-  function _adjustScale(scale) {
-    scale = Math.max(0.5, scaleMinNumber.value, scale);
-    scale = Math.min(10, scaleMaxNumber.value, scale);
-    return scale;
-  }
-  function _animationTo(x, y, scale, source, r, o2) {
-    FAandSFACancel();
-    if (!xMove.value) {
-      x = _translateX;
-    }
-    if (!yMove.value) {
-      y = _translateY;
-    }
-    if (!props2.scale) {
-      scale = _scale;
-    }
-    let limitXY = _getLimitXY(x, y);
-    x = limitXY.x;
-    y = limitXY.y;
-    if (!props2.animation) {
-      _setTransform(x, y, scale, source, r, o2);
-      return;
-    }
-    _STD._springX._solution = null;
-    _STD._springY._solution = null;
-    _STD._springScale._solution = null;
-    _STD._springX._endPosition = _translateX;
-    _STD._springY._endPosition = _translateY;
-    _STD._springScale._endPosition = _scale;
-    _STD.setEnd(x, y, scale, 1);
-    _SFA = g(_STD, function() {
-      let data = _STD.x();
-      let x2 = data.x;
-      let y2 = data.y;
-      let scale2 = data.scale;
-      _setTransform(x2, y2, scale2, source, r, o2);
-    }, function() {
-      _SFA.cancel();
-    });
-  }
-  function _revise(source) {
-    let limitXY = _getLimitXY(_translateX, _translateY);
-    let x = limitXY.x;
-    let y = limitXY.y;
-    let outOfBounds = limitXY.outOfBounds;
-    if (outOfBounds) {
-      _animationTo(x, y, _scale, source);
-    }
-    return outOfBounds;
-  }
-  function _setTransform(x, y, scale, source = "", r, o2) {
-    if (!(x !== null && x.toString() !== "NaN" && typeof x === "number")) {
-      x = _translateX || 0;
-    }
-    if (!(y !== null && y.toString() !== "NaN" && typeof y === "number")) {
-      y = _translateY || 0;
-    }
-    x = Number(x.toFixed(1));
-    y = Number(y.toFixed(1));
-    scale = Number(scale.toFixed(1));
-    if (!(_translateX === x && _translateY === y)) {
-      if (!r) {
-        trigger("change", {}, {
-          x: v(x, _scaleOffset.x),
-          y: v(y, _scaleOffset.y),
-          source
-        });
-      }
-    }
-    if (!props2.scale) {
-      scale = _scale;
-    }
-    scale = _adjustScale(scale);
-    scale = +scale.toFixed(3);
-    if (o2 && scale !== _scale) {
-      trigger("scale", {}, {
-        x,
-        y,
-        scale
-      });
-    }
-    let transform = "translateX(" + x + "px) translateY(" + y + "px) translateZ(0px) scale(" + scale + ")";
-    rootRef.value.style.transform = transform;
-    rootRef.value.style.webkitTransform = transform;
-    _translateX = x;
-    _translateY = y;
-    _scale = scale;
   }
   function setParent() {
     if (!_isMounted.value) {
@@ -10177,24 +10291,11 @@ function useMovableViewState(props2, trigger, rootRef) {
     _updateOffset();
     _updateWH(scale);
     _updateBoundary();
-    _translateX = xSync.value + _scaleOffset.x;
-    _translateY = ySync.value + _scaleOffset.y;
-    let limitXY = _getLimitXY(_translateX, _translateY);
+    let limitXY = _getLimitXY(xSync.value + _scaleOffset.x, ySync.value + _scaleOffset.y);
     let x = limitXY.x;
     let y = limitXY.y;
     _setTransform(x, y, scale, "", true);
     _updateOldScale(scale);
-  }
-  function _endScale() {
-    _isScaling = false;
-    _updateOldScale(_scale);
-  }
-  function _setScale(scale) {
-    if (scale) {
-      scale = _oldScale * scale;
-      _beginScale();
-      _updateScale(scale);
-    }
   }
   onMounted(() => {
     useTouchtrack(rootRef.value, (event) => {

@@ -1,13 +1,15 @@
-import { compileKotlin } from './kotlin'
-import { compileSwift } from './swift'
-
+import { runKotlinProd, runKotlinDev } from './kotlin'
+import { runSwiftProd, runSwiftDev } from './swift'
+export { genProxyCode } from './code'
 export function getCompiler(type: 'kotlin' | 'swift') {
   if (type === 'swift') {
     return {
-      compile: compileSwift,
+      runProd: runSwiftProd,
+      runDev: runSwiftDev,
     }
   }
   return {
-    compile: compileKotlin,
+    runProd: runKotlinProd,
+    runDev: runKotlinDev,
   }
 }

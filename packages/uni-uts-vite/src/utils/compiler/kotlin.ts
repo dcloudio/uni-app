@@ -16,7 +16,6 @@ import {
   resolveAndroidDir,
   resolvePackage,
   resolveUTSPlatformFile,
-  UTSPlatformResourceOptions,
 } from './utils'
 import { Module } from '../../../types/types'
 
@@ -37,7 +36,66 @@ function parseKotlinPackage(filename: string) {
   }
 }
 
-export async function compileKotlin(filename: string) {
+export async function runKotlinProd(filename: string) {
+  // 文件有可能是 app-ios 里边的，因为编译到 android 时，为了保证不报错，可能会去读取 ios 下的 uts
+  if (filename.includes('app-ios')) {
+    return
+  }
+  await compile(filename)
+  genUTSPlatformResource(filename, {
+    inputDir: process.env.UNI_INPUT_DIR,
+    outputDir: process.env.UNI_OUTPUT_DIR,
+    platform: 'app-android',
+    extname: '.kt',
+  })
+}
+
+export async function runKotlinDev(filename: string) {
+  // 文件有可能是 app-ios 里边的，因为编译到 android 时，为了保证不报错，可能会去读取 ios 下的 uts
+  if (filename.includes('app-ios')) {
+    return
+  }
+  await compile(filename)
+  const kotlinFile = resolveUTSPlatformFile(filename, {
+    inputDir: process.env.UNI_INPUT_DIR,
+    outputDir: process.env.UNI_OUTPUT_DIR,
+    platform: 'app-android',
+    extname: '.kt',
+  })
+  // 开发模式下，需要生成 dex
+  if (fs.existsSync(kotlinFile)) {
+    const compilerServer = getCompilerServer()
+    if (!compilerServer) {
+      return
+    }
+    const { getDefaultJar, getKotlincHome, compile } = compilerServer
+    // time = Date.now()
+    const jarFile = resolveJarPath(kotlinFile)
+    const options = {
+      kotlinc: resolveKotlincArgs(
+        kotlinFile,
+        getKotlincHome(),
+        getDefaultJar().concat(resolveLibs(filename))
+      ),
+      d8: resolveD8Args(jarFile),
+    }
+    const res = await compile(options, process.env.UNI_INPUT_DIR)
+    // console.log('dex compile time: ' + (Date.now() - time) + 'ms')
+    if (res) {
+      try {
+        fs.unlinkSync(jarFile)
+        // 短期内先不删除，方便排查问题
+        // fs.unlinkSync(kotlinFile)
+      } catch (e) {}
+      const dexFile = resolveDexFile(jarFile)
+      if (fs.existsSync(dexFile)) {
+        return normalizePath(path.relative(process.env.UNI_OUTPUT_DIR, dexFile))
+      }
+    }
+  }
+}
+
+async function compile(filename: string) {
   if (!process.env.UNI_HBUILDERX_PLUGINS) {
     return
   }
@@ -67,49 +125,6 @@ export async function compileKotlin(filename: string) {
       noColor: isInHBuilderX(),
     },
   })
-  // console.log('uts compile time: ' + (Date.now() - time) + 'ms')
-  const utsPlatformOptions: UTSPlatformResourceOptions = {
-    inputDir,
-    outputDir,
-    platform: 'app-android',
-    extname: '.kt',
-  }
-  if (process.env.NODE_ENV === 'production') {
-    genUTSPlatformResource(filename, utsPlatformOptions)
-  } else if (process.env.NODE_ENV === 'development') {
-    const kotlinFile = resolveUTSPlatformFile(filename, utsPlatformOptions)
-    // 开发模式下，需要生成 dex
-    if (fs.existsSync(kotlinFile)) {
-      const compilerServer = getCompilerServer()
-      if (!compilerServer) {
-        return
-      }
-      const { getDefaultJar, getKotlincHome, compile } = compilerServer
-      // time = Date.now()
-      const jarFile = resolveJarPath(kotlinFile)
-      const options = {
-        kotlinc: resolveKotlincArgs(
-          kotlinFile,
-          getKotlincHome(),
-          getDefaultJar().concat(resolveLibs(filename))
-        ),
-        d8: resolveD8Args(jarFile),
-      }
-      const res = await compile(options, process.env.UNI_INPUT_DIR)
-      // console.log('dex compile time: ' + (Date.now() - time) + 'ms')
-      if (res) {
-        try {
-          fs.unlinkSync(jarFile)
-          // 短期内先不删除，方便排查问题
-          // fs.unlinkSync(kotlinFile)
-        } catch (e) {}
-        const dexFile = resolveDexFile(jarFile)
-        if (fs.existsSync(dexFile)) {
-          return normalizePath(path.relative(outputDir, dexFile))
-        }
-      }
-    }
-  }
 }
 
 function resolveKotlincArgs(filename: string, kotlinc: string, jars: string[]) {

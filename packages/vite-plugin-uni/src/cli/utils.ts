@@ -170,14 +170,13 @@ export function initEnv(
 
 function initUtsPlatform(options: CliOptions) {
   if (options.platform === 'app-android') {
-    process.env.UNI_APP_PLATFORM = 'android'
     process.env.UNI_UTS_PLATFORM = 'app-android'
     options.platform = 'app'
   } else if (options.platform === 'app-ios') {
-    process.env.UNI_APP_PLATFORM = 'ios'
     process.env.UNI_UTS_PLATFORM = 'app-ios'
     options.platform = 'app'
   } else {
+    // 运行时，可能传入了 UNI_APP_PLATFORM = 'android'|'ios'
     if (process.env.UNI_APP_PLATFORM === 'android') {
       process.env.UNI_UTS_PLATFORM = 'app-android'
     }
@@ -191,8 +190,12 @@ function initUtsPlatform(options: CliOptions) {
   if (options.platform === 'h5') {
     process.env.UNI_UTS_PLATFORM = 'web'
   }
-  if (!process.env.UNI_UTS_PLATFORM) {
-    process.env.UNI_UTS_PLATFORM = options.platform as any
+  // 非 app 平台，自动补充 UNI_UTS_PLATFORM
+  // app 平台，必须主动传入
+  if (options.platform !== 'app') {
+    if (!process.env.UNI_UTS_PLATFORM) {
+      process.env.UNI_UTS_PLATFORM = options.platform as any
+    }
   }
 }
 
