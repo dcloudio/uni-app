@@ -9,6 +9,7 @@ import {
   provide,
   ExtractPropTypes,
   Comment,
+  nextTick,
 } from 'vue'
 import { extend } from '@vue/shared'
 import {
@@ -130,10 +131,13 @@ function useState(props: Props) {
     () => props.value,
     (val) => {
       state.value.length = val.length
-      val.forEach((val, index) => {
-        if (val !== state.value[index]) {
-          state.value.splice(index, 1, val)
-        }
+      // fixed by lxh 解决 picker 组件滑动出范围不重定向回 end
+      nextTick(() => {
+        val.forEach((val, index) => {
+          if (val !== state.value[index]) {
+            state.value.splice(index, 1, val)
+          }
+        })
       })
     }
   )

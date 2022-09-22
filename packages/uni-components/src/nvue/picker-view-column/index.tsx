@@ -259,6 +259,16 @@ function usePickerColumnScroll(
 ) {
   let scrollToElementTime: number
 
+  function setDomScrollToElement(_current: number, animated: boolean = true) {
+    dom.scrollToElement(contentRef.value, {
+      offset: _current * indicatorHeight.value,
+      animated,
+    })
+    if (animated) {
+      scrollToElementTime = Date.now()
+    }
+  }
+
   watch(
     () => props.length,
     () => {
@@ -267,29 +277,14 @@ function usePickerColumnScroll(
       }, 150)
     }
   )
-  watch(
-    () => current.value,
-    (_current) => {
-      dom.scrollToElement(contentRef.value, {
-        offset: _current * indicatorHeight.value,
-        animated: true,
-      })
-      scrollToElementTime = Date.now()
-    }
-  )
+  watch(current, (val) => setDomScrollToElement(val))
 
   const setCurrent = (_current: number, animated = true, force: Boolean) => {
     if (current.value === _current && !force) {
       return
     }
-    dom.scrollToElement(contentRef.value, {
-      offset: _current * indicatorHeight.value,
-      animated,
-    })
     current.value = _current
-    if (animated) {
-      scrollToElementTime = Date.now()
-    }
+    if (isAndroid) setDomScrollToElement(_current, animated)
   }
   const onScrollend = (event: {
     detail: {

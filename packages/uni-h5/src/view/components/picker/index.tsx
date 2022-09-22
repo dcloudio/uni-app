@@ -42,7 +42,7 @@ function getDefaultStartValue(props: Props) {
     return '00:00'
   }
   if (props.mode === mode.DATE) {
-    const year = new Date().getFullYear() - 100
+    const year = new Date().getFullYear() - 150
     switch (props.fields) {
       case fields.YEAR:
         return year.toString()
@@ -59,7 +59,7 @@ function getDefaultEndValue(props: Props) {
     return '23:59'
   }
   if (props.mode === mode.DATE) {
-    const year = new Date().getFullYear() + 100
+    const year = new Date().getFullYear() + 150
     switch (props.fields) {
       case fields.YEAR:
         return year.toString()
@@ -584,10 +584,33 @@ function usePickerMethods(
     }
     ;(state.timeArray as TwoDimensionArray).push(hours, minutes)
   }
+  function getYearStartEnd() {
+    let year = new Date().getFullYear()
+    let start = year - 150
+    let end = year + 150
+    if (props.start) {
+      const _year = new Date(props.start).getFullYear()
+      if (!isNaN(_year) && _year < start) {
+        start = _year
+      }
+    }
+    if (props.end) {
+      const _year = new Date(props.start).getFullYear()
+      if (!isNaN(_year) && _year > end) {
+        end = _year
+      }
+    }
+
+    return {
+      start,
+      end,
+    }
+  }
   function _createDate() {
     let years: string[] = []
-    let year = new Date().getFullYear()
-    for (let i = year - 150, end = year + 150; i <= end; i++) {
+
+    const year = getYearStartEnd()
+    for (let i = year.start, end = year.end; i <= end; i++) {
       years.push(String(i))
     }
     let months: string[] = []
