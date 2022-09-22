@@ -133,7 +133,7 @@ export const onPushMessage = (fn) => {
     onPushMessageCallbacks.push(fn)
   }
   // 不能程序启动时就监听，因为离线事件，仅触发一次，框架监听后，无法转发给还没开始监听的开发者
-  if (__PLATFORM__ === 'app' && !listening) {
+  if (__PLATFORM__ === 'app-plus' && !listening) {
     listening = true
     plus.push.addEventListener('click', (result) => {
       invokePushCallback({
