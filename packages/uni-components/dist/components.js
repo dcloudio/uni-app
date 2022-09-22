@@ -1,4 +1,4 @@
-import { createElementVNode, defineComponent, createVNode, mergeProps, getCurrentInstance, provide, watch, onUnmounted, shallowRef, reactive, watchEffect, ref, inject, onBeforeUnmount, computed, Text as Text$1, isVNode, Fragment, onMounted, Comment, resolveComponent, parseClassList } from "vue";
+import { createElementVNode, defineComponent, createVNode, mergeProps, getCurrentInstance, provide, watch, onUnmounted, shallowRef, reactive, watchEffect, ref, inject, onBeforeUnmount, computed, Text as Text$1, isVNode, Fragment, onMounted, nextTick, Comment, resolveComponent, parseClassList } from "vue";
 import { extend, hasOwn, isFunction, isPlainObject, isArray, isString } from "@vue/shared";
 import { cacheStringFunction, PRIMARY_COLOR } from "@dcloudio/uni-shared";
 const OPEN_TYPES = [
@@ -2342,10 +2342,12 @@ function useState(props2) {
   });
   watch(() => props2.value, (val) => {
     state.value.length = val.length;
-    val.forEach((val2, index) => {
-      if (val2 !== state.value[index]) {
-        state.value.splice(index, 1, val2);
-      }
+    nextTick(() => {
+      val.forEach((val2, index) => {
+        if (val2 !== state.value[index]) {
+          state.value.splice(index, 1, val2);
+        }
+      });
     });
   });
   return state;
@@ -2549,30 +2551,28 @@ function getHeight(style) {
 }
 function usePickerColumnScroll(props2, current, contentRef, indicatorHeight) {
   let scrollToElementTime;
+  function setDomScrollToElement(_current, animated = true) {
+    dom.scrollToElement(contentRef.value, {
+      offset: _current * indicatorHeight.value,
+      animated
+    });
+    if (animated) {
+      scrollToElementTime = Date.now();
+    }
+  }
   watch(() => props2.length, () => {
     setTimeout(() => {
       setCurrent(current.value, true, true);
     }, 150);
   });
-  watch(() => current.value, (_current) => {
-    dom.scrollToElement(contentRef.value, {
-      offset: _current * indicatorHeight.value,
-      animated: true
-    });
-    scrollToElementTime = Date.now();
-  });
+  watch(current, (val) => setDomScrollToElement(val));
   const setCurrent = (_current, animated = true, force) => {
     if (current.value === _current && !force) {
       return;
     }
-    dom.scrollToElement(contentRef.value, {
-      offset: _current * indicatorHeight.value,
-      animated
-    });
     current.value = _current;
-    if (animated) {
-      scrollToElementTime = Date.now();
-    }
+    if (isAndroid$1)
+      setDomScrollToElement(_current, animated);
   };
   const onScrollend = (event) => {
     if (Date.now() - scrollToElementTime < 340) {
