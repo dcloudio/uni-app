@@ -55,13 +55,6 @@
               v-else-if="!item.isMidButton"
               :src="_getRealPath(getIconPath(item,index))"
             >
-            <div
-              v-if="item.redDot"
-              :class="{'uni-tabbar__badge':!!item.badge}"
-              class="uni-tabbar__reddot"
-            >
-              {{ item.badge }}
-            </div>
           </div>
           <div
             v-if="item.text"
@@ -74,13 +67,13 @@
             class="uni-tabbar__label"
           >
             {{ item.text }}
-            <div
-              v-if="item.redDot&&!item.iconPath"
-              :class="{'uni-tabbar__badge':!!item.badge}"
-              class="uni-tabbar__reddot"
-            >
-              {{ item.badge }}
-            </div>
+          </div>
+          <div
+            v-if="item.redDot"
+            :class="{'uni-tabbar__badge':!!item.badge}"
+            class="uni-tabbar__reddot"
+          >
+            {{ item.badge }}
           </div>
         </div>
       </div>
@@ -199,14 +192,14 @@
 
   uni-tabbar .uni-tabbar__reddot {
     position: absolute;
-    top: 0;
+    top: 2px;
     right: 0;
     width: 12px;
     height: 12px;
     border-radius: 50%;
     background-color: #f43530;
     color: #ffffff;
-    transform: translate(40%, -20%);
+    transform: translate(40%, 0%);
   }
 
   uni-tabbar .uni-tabbar__badge {
