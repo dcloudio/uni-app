@@ -10808,13 +10808,12 @@ function createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, tab
     "style": {
       height
     }
-  }, [iconfontText ? createTabBarItemIconfontTsx(iconfontText, iconfontColor || BLUR_EFFECT_COLOR_DARK, tabBarItem, tabBar2) : iconPath && createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2), tabBarItem.text && createTabBarItemTextTsx(color, tabBarItem, tabBar2)], 4);
+  }, [iconfontText ? createTabBarItemIconfontTsx(iconfontText, iconfontColor || BLUR_EFFECT_COLOR_DARK, tabBarItem, tabBar2) : iconPath && createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2), tabBarItem.text && createTabBarItemTextTsx(color, tabBarItem, tabBar2), tabBarItem.redDot && createTabBarItemRedDotTsx(tabBarItem.badge)], 4);
 }
 function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2) {
   const {
     type,
-    text,
-    redDot
+    text
   } = tabBarItem;
   const {
     iconWidth
@@ -10829,14 +10828,13 @@ function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2) {
     "style": style
   }, [type !== "midButton" && vue.createVNode("img", {
     "src": getRealPath(iconPath)
-  }, null, 8, ["src"]), redDot && createTabBarItemRedDotTsx(tabBarItem.badge)], 6);
+  }, null, 8, ["src"])], 6);
 }
 function createTabBarItemIconfontTsx(iconfontText, iconfontColor, tabBarItem, tabBar2) {
   var _a;
   const {
     type,
-    text,
-    redDot
+    text
   } = tabBarItem;
   const {
     iconWidth
@@ -10856,11 +10854,10 @@ function createTabBarItemIconfontTsx(iconfontText, iconfontColor, tabBarItem, ta
   }, [type !== "midButton" && vue.createVNode("div", {
     "class": "uni-tabbar__iconfont",
     "style": iconfontStyle
-  }, [iconfontText], 4), redDot && createTabBarItemRedDotTsx(tabBarItem.badge)], 6);
+  }, [iconfontText], 4)], 6);
 }
 function createTabBarItemTextTsx(color, tabBarItem, tabBar2) {
   const {
-    redDot,
     iconPath,
     text
   } = tabBarItem;
@@ -10877,7 +10874,7 @@ function createTabBarItemTextTsx(color, tabBarItem, tabBar2) {
   return vue.createVNode("div", {
     "class": "uni-tabbar__label",
     "style": style
-  }, [text, redDot && !iconPath && createTabBarItemRedDotTsx(tabBarItem.badge)], 4);
+  }, [text], 4);
 }
 function createTabBarItemRedDotTsx(badge) {
   const clazz2 = "uni-tabbar__reddot" + (badge ? " uni-tabbar__badge" : "");
