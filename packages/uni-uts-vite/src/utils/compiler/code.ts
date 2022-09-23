@@ -29,11 +29,12 @@ export async function genProxyCode(
 ) {
   const { name, is_uni_modules } = options
   return `
-import { initUtsProxyClass, initUtsProxyFunction, initUtsPackageName, initUtsClassName } from '@dcloudio/uni-app'
+import { extend } from '@vue/shared'
+import { initUtsProxyClass, initUtsProxyFunction, initUtsPackageName, initUtsIndexClassName, initUtsClassName } from '@dcloudio/uni-app'
 const name = '${name}'
 const is_uni_modules = ${is_uni_modules}
 const pkg = initUtsPackageName(name, is_uni_modules)
-const cls = initUtsClassName(name, is_uni_modules)
+const cls = initUtsIndexClassName(name, is_uni_modules)
 ${genModuleCode(await parseModuleDecls(module, options))}
 `
 }
@@ -63,17 +64,17 @@ function genModuleCode(decls: ProxyDecl[]) {
     if (decl.type === 'Class') {
       if (decl.isDefault) {
         codes.push(
-          `export default initUtsProxyClass({ package: pkg, class: '${
+          `export default initUtsProxyClass(extend({ package: pkg, class: initUtsClassName(name, '${
             decl.cls
-          }', ...${JSON.stringify(decl.options)} })`
+          }', is_uni_modules) }, ${JSON.stringify(decl.options)} ))`
         )
       } else {
         codes.push(
           `export const ${
             decl.cls
-          } = initUtsProxyClass({ package: pkg, class: '${
+          } = initUtsProxyClass(extend({ package: pkg, class: initUtsClassName(name, '${
             decl.cls
-          }', ...${JSON.stringify(decl.options)} })`
+          }', is_uni_modules) }, ${JSON.stringify(decl.options)} ))`
         )
       }
     } else if (decl.type === 'FunctionDeclaration') {
@@ -81,7 +82,7 @@ function genModuleCode(decls: ProxyDecl[]) {
         codes.push(
           `export default initUtsProxyFunction(${
             decl.async
-          }, { package: pkg, class: cls, name: '${
+          }, { main: true, package: pkg, class: cls, name: '${
             decl.method
           }', params: ${JSON.stringify(decl.params)}})`
         )
@@ -89,7 +90,7 @@ function genModuleCode(decls: ProxyDecl[]) {
         codes.push(
           `export const ${decl.method} = initUtsProxyFunction(${
             decl.async
-          }, { package: pkg, class: cls, name: '${
+          }, { main: true, package: pkg, class: cls, name: '${
             decl.method
           }', params: ${JSON.stringify(decl.params)}})`
         )

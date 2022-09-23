@@ -183,7 +183,7 @@ function resolveSyncResult(res) {
 function invokePropGetter(args) {
     return resolveSyncResult(getProxy().invokeSync(args, () => { }));
 }
-function initProxyFunction(async, { package: pkg, class: cls, name: propOrMethod, companion, params: methodParams, }, instanceId) {
+function initProxyFunction(async, { package: pkg, class: cls, name: propOrMethod, method, companion, params: methodParams, }, instanceId) {
     const invokeCallback = ({ id, name, params, keepAlive, }) => {
         const callback = callbacks[id];
         if (callback) {
@@ -201,7 +201,7 @@ function initProxyFunction(async, { package: pkg, class: cls, name: propOrMethod
         : {
             package: pkg,
             class: cls,
-            name: propOrMethod,
+            name: method || propOrMethod,
             companion,
             method: methodParams,
         };
@@ -230,6 +230,11 @@ function initProxyFunction(async, { package: pkg, class: cls, name: propOrMethod
     };
 }
 function initUtsStaticMethod(async, opts) {
+    if (opts.main && !opts.method) {
+        if (typeof plus !== 'undefined' && plus.os.name === 'iOS') {
+            opts.method = 's_' + opts.name;
+        }
+    }
     return initProxyFunction(async, opts);
 }
 const initUtsProxyFunction = initUtsStaticMethod;
@@ -290,15 +295,24 @@ function initUtsPackageName(name, is_uni_modules) {
     }
     return '';
 }
-function initUtsClassName(name, is_uni_modules) {
+function initUtsIndexClassName(moduleName, is_uni_modules) {
+    if (typeof plus === 'undefined') {
+        return '';
+    }
+    return initUtsClassName(moduleName, plus.os.name === 'iOS' ? 'IndexSwift' : 'IndexKt', is_uni_modules);
+}
+function initUtsClassName(moduleName, className, is_uni_modules) {
     if (typeof plus === 'undefined') {
         return '';
     }
     if (plus.os.name === 'Android') {
-        return 'IndexKt';
+        return className;
     }
     if (plus.os.name === 'iOS') {
-        return 'UTSSDK' + (is_uni_modules ? 'Modules' : '') + shared.capitalize(name);
+        return ('UTSSDK' +
+            (is_uni_modules ? 'Modules' : '') +
+            shared.capitalize(moduleName) +
+            shared.capitalize(className));
     }
     return '';
 }
@@ -308,6 +322,7 @@ exports.formatH5Log = formatH5Log;
 exports.getCurrentSubNVue = getCurrentSubNVue;
 exports.getSsrGlobalData = getSsrGlobalData;
 exports.initUtsClassName = initUtsClassName;
+exports.initUtsIndexClassName = initUtsIndexClassName;
 exports.initUtsPackageName = initUtsPackageName;
 exports.initUtsProxyClass = initUtsProxyClass;
 exports.initUtsProxyFunction = initUtsProxyFunction;

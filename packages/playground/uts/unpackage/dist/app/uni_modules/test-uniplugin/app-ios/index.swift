@@ -9,8 +9,29 @@ class GetBatteryInfoOptions : UTSJSONObject {
     public var fail: UTSCallback?;
     public var complete: UTSCallback?;
 }
+func getBatteryInfo(_ options: GetBatteryInfoOptions) {
+    var res = [
+        "errMsg": "getBatteryInfo:ok",
+        "level": UIDevice.current.batteryLevel * 100,
+        "isCharging": UIDevice.current.batteryState == UIDevice.BatteryState.charging
+    ] as [String: Any];
+    if (options.success != nil) {
+        options.success!(res);
+    }
+    if (options.complete != nil) {
+        options.complete!(res);
+    }
+}
+func test1(_ callback: UTSCallback) {
+    console.log("test1", " at uni_modules/test-uniplugin/app-ios/index.uts:26");
+    console.log("def ios", " at uni_modules/test-uniplugin/app-ios/index.uts:31");
+    console.log("ndef android", " at uni_modules/test-uniplugin/app-ios/index.uts:34");
+    console.log("def android || def ios", " at uni_modules/test-uniplugin/app-ios/index.uts:40");
+}
 class Test1 : NSObject {
 }
+@objc(UTSSDKModulesTestUniPluginTest)
+@objcMembers
 class Test : NSObject {
     public init(){
         Test1();
@@ -22,23 +43,10 @@ class Test : NSObject {
 @objc(UTSSDKModulesTestUniPluginIndexSwift)
 @objcMembers
 class IndexSwift : NSObject {
-    public static func getBatteryInfo(_ options: GetBatteryInfoOptions) {
-        var res = [
-            "errMsg": "getBatteryInfo:ok",
-            "level": UIDevice.current.batteryLevel * 100,
-            "isCharging": UIDevice.current.batteryState == UIDevice.BatteryState.charging
-        ] as [String: Any];
-        if (options.success != nil) {
-            options.success!(res);
-        }
-        if (options.complete != nil) {
-            options.complete!(res);
-        }
+    public static func s_getBatteryInfo(_ options: GetBatteryInfoOptions) {
+        return getBatteryInfo(options);
     }
-    public static func test1(_ callback: UTSCallback) {
-        console.log("test1", " at uni_modules/test-uniplugin/app-ios/index.uts:26");
-        console.log("def ios", " at uni_modules/test-uniplugin/app-ios/index.uts:31");
-        console.log("ndef android", " at uni_modules/test-uniplugin/app-ios/index.uts:34");
-        console.log("def android || def ios", " at uni_modules/test-uniplugin/app-ios/index.uts:40");
+    public static func s_test1(_ callback: UTSCallback) {
+        return test1(callback);
     }
 }

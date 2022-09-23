@@ -6,6 +6,7 @@ export * from './apiLifecycle'
 export {
   initUtsProxyClass,
   initUtsProxyFunction,
+  initUtsIndexClassName,
   initUtsClassName,
   initUtsPackageName,
 } from './uts'

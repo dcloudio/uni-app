@@ -39,7 +39,9 @@ export declare function getCurrentSubNVue(): any;
 
 export declare function getSsrGlobalData(): any;
 
-export declare function initUtsClassName(name: string, is_uni_modules: boolean): string;
+export declare function initUtsClassName(moduleName: string, className: string, is_uni_modules: boolean): string;
+
+export declare function initUtsIndexClassName(moduleName: string, is_uni_modules: boolean): string;
 
 export declare function initUtsPackageName(name: string, is_uni_modules: boolean): string;
 
@@ -204,6 +206,10 @@ declare interface ProxyClassOptions {
 
 declare interface ProxyFunctionOptions {
     /**
+     * 是否是入口类
+     */
+    main?: boolean;
+    /**
      * 包名
      */
     package: string;
@@ -215,6 +221,10 @@ declare interface ProxyFunctionOptions {
      * 属性名或方法名
      */
     name: string;
+    /**
+     * 方法名 指定的方法名（用于 IndexSwift 静态方法，自动补充前缀 s_）
+     */
+    method?: string;
     /**
      * 是否伴生对象
      */

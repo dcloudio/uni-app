@@ -27,6 +27,10 @@ interface Parameter {
 }
 interface ProxyFunctionOptions {
   /**
+   * 是否是入口类
+   */
+  main?: boolean
+  /**
    * 包名
    */
   package: string
@@ -38,6 +42,10 @@ interface ProxyFunctionOptions {
    * 属性名或方法名
    */
   name: string
+  /**
+   * 方法名 指定的方法名（用于 IndexSwift 静态方法，自动补充前缀 s_）
+   */
+  method?: string
   /**
    * 是否伴生对象
    */
@@ -153,6 +161,7 @@ function initProxyFunction(
     package: pkg,
     class: cls,
     name: propOrMethod,
+    method,
     companion,
     params: methodParams,
   }: ProxyFunctionOptions,
@@ -179,7 +188,7 @@ function initProxyFunction(
     : {
         package: pkg,
         class: cls,
-        name: propOrMethod,
+        name: method || propOrMethod,
         companion,
         method: methodParams,
       }
@@ -207,8 +216,14 @@ function initProxyFunction(
 }
 
 function initUtsStaticMethod(async: boolean, opts: ProxyFunctionOptions) {
+  if (opts.main && !opts.method) {
+    if (typeof plus !== 'undefined' && plus.os.name === 'iOS') {
+      opts.method = 's_' + opts.name
+    }
+  }
   return initProxyFunction(async, opts)
 }
+
 export const initUtsProxyFunction = initUtsStaticMethod
 
 export function initUtsProxyClass({
@@ -292,15 +307,38 @@ export function initUtsPackageName(name: string, is_uni_modules: boolean) {
   return ''
 }
 
-export function initUtsClassName(name: string, is_uni_modules: boolean) {
+export function initUtsIndexClassName(
+  moduleName: string,
+  is_uni_modules: boolean
+) {
+  if (typeof plus === 'undefined') {
+    return ''
+  }
+  return initUtsClassName(
+    moduleName,
+    plus.os.name === 'iOS' ? 'IndexSwift' : 'IndexKt',
+    is_uni_modules
+  )
+}
+
+export function initUtsClassName(
+  moduleName: string,
+  className: string,
+  is_uni_modules: boolean
+) {
   if (typeof plus === 'undefined') {
     return ''
   }
   if (plus.os.name === 'Android') {
-    return 'IndexKt'
+    return className
   }
   if (plus.os.name === 'iOS') {
-    return 'UTSSDK' + (is_uni_modules ? 'Modules' : '') + capitalize(name)
+    return (
+      'UTSSDK' +
+      (is_uni_modules ? 'Modules' : '') +
+      capitalize(moduleName) +
+      capitalize(className)
+    )
   }
   return ''
 }
