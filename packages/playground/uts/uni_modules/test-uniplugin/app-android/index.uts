@@ -5,6 +5,8 @@ import { IUser } from './interface.uts'
 import { login } from './login.uts'
 import logo from '../static/logo.png'
 
+const test = arrayOf(1, 2, 3)
+
 type GetBatteryInfoOptions = {
   success?: (res: UTSJSONObject) => void
   fail?: (res: UTSJSONObject) => void

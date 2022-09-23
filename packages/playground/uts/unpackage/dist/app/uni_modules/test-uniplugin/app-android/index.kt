@@ -16,6 +16,7 @@ fun login(name: String, pwd: String): UTSJSONObject {
     };
 }
 val __default = getResourcePath("uni_modules/test-uniplugin/static/logo.png");
+val test = arrayOf(1, 2, 3);
 open class GetBatteryInfoOptions : UTSJSONObject() {
     open var success: UTSCallback? = null;
     open var fail: UTSCallback? = null;
@@ -24,14 +25,14 @@ open class GetBatteryInfoOptions : UTSJSONObject() {
 open class User : IUser {
     open suspend fun login(name: String, pwd: String) = CoroutineScope(Dispatchers.Default).async {
         setTimeout(fun(){
-            console.log("timeout", " at uni_modules/test-uniplugin/app-android/index.uts:16");
+            console.log("timeout", " at uni_modules/test-uniplugin/app-android/index.uts:18");
         }
         , 1000);
         login(name, pwd);
         Log.info(__default);
-        console.log("def android", " at uni_modules/test-uniplugin/app-android/index.uts:21");
-        console.log("ndef ios", " at uni_modules/test-uniplugin/app-android/index.uts:30");
-        console.log("def android || def ios", " at uni_modules/test-uniplugin/app-android/index.uts:33");
+        console.log("def android", " at uni_modules/test-uniplugin/app-android/index.uts:23");
+        console.log("ndef ios", " at uni_modules/test-uniplugin/app-android/index.uts:32");
+        console.log("def android || def ios", " at uni_modules/test-uniplugin/app-android/index.uts:35");
     }
     override fun register(name: String, callback: UTSCallback) {
         Log.info(__default as FrameLayout);
