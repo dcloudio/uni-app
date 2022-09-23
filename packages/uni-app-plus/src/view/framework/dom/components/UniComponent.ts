@@ -29,6 +29,7 @@ import {
 import { decodeAttr, isCssVar } from '../utils'
 import { patchVShow, VShowElement } from '../directives/vShow'
 import { initRenderjs } from '../renderjs'
+import { normalizeStyleValue } from '../../../utils'
 
 export class UniComponent extends UniNode {
   declare $: UniCustomElement
@@ -131,7 +132,7 @@ export class UniComponent extends UniNode {
         this.$props.style = newStyle
       }
     } else if (isCssVar(name)) {
-      this.$.style.setProperty(name, value as string)
+      this.$.style.setProperty(name, normalizeStyleValue(value as string))
     } else {
       value = decodeAttr(this.$ || $(this.pid).$, value)
       if (!this.wxsPropsInvoke(name, value, true)) {
