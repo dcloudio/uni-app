@@ -143,6 +143,29 @@ function mergeDecls(from: ProxyDecl[], to: ProxyDecl[]) {
       ) {
         to.push(item)
       }
+    } else if (
+      item.type === 'VariableDeclaration' &&
+      item.declarations.length === 1
+    ) {
+      if (
+        !to.find((toItem) => {
+          if (
+            toItem.type === 'VariableDeclaration' &&
+            toItem.declarations.length === 1
+          ) {
+            const toDecl = toItem.declarations[0].id
+            const decl = item.declarations[0].id
+            return (
+              toDecl.type === 'Identifier' &&
+              decl.type === 'Identifier' &&
+              toDecl.value === decl.value
+            )
+          }
+          return false
+        })
+      ) {
+        to.push(item)
+      }
     }
   })
   return to

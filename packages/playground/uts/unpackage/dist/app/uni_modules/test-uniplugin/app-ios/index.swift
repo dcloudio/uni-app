@@ -10,11 +10,11 @@ class GetBatteryInfoOptions : UTSJSONObject {
     public var complete: UTSCallback?;
 }
 func getBatteryInfo(_ options: GetBatteryInfoOptions) {
-    var res = [
+    var res = UTSJSONObject([
         "errMsg": "getBatteryInfo:ok",
         "level": UIDevice.current.batteryLevel * 100,
         "isCharging": UIDevice.current.batteryState == UIDevice.BatteryState.charging
-    ] as [String: Any];
+    ]);
     if (options.success != nil) {
         options.success!(res);
     }
@@ -22,11 +22,12 @@ func getBatteryInfo(_ options: GetBatteryInfoOptions) {
         options.complete!(res);
     }
 }
-func test1(_ callback: UTSCallback) {
+func test1(_ callback: UTSCallback) -> String {
     console.log("test1", " at uni_modules/test-uniplugin/app-ios/index.uts:26");
     console.log("def ios", " at uni_modules/test-uniplugin/app-ios/index.uts:31");
     console.log("ndef android", " at uni_modules/test-uniplugin/app-ios/index.uts:34");
     console.log("def android || def ios", " at uni_modules/test-uniplugin/app-ios/index.uts:40");
+    return "test1";
 }
 class Test1 : NSObject {
 }
@@ -46,7 +47,7 @@ class IndexSwift : NSObject {
     public static func s_getBatteryInfo(_ options: GetBatteryInfoOptions) {
         return getBatteryInfo(options);
     }
-    public static func s_test1(_ callback: UTSCallback) {
+    public static func s_test1(_ callback: UTSCallback) -> String {
         return test1(callback);
     }
 }

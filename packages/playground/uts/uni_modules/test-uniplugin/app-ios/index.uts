@@ -22,7 +22,7 @@ export default function getBatteryInfo(options: GetBatteryInfoOptions) {
   }
 }
 
-export function test1(callback: () => void) {
+export function test1(callback: () => void): string {
   console.log('test1')
   //#ifdef APP-ANDROID
   console.log('def android')
@@ -42,6 +42,7 @@ export function test1(callback: () => void) {
   //#ifdef MP-WEIXIN
   console.log('def weixin')
   //#endif
+  return 'test1'
 }
 
 class Test1 {}
