@@ -1,18 +1,12 @@
-import { resolve } from 'path'
-import { emptyDirSync, lstatSync, readdirSync, unlinkSync } from 'fs-extra'
-import { rmdirSync } from 'fs'
+import fs from 'fs'
+import path from 'path'
+
 export function emptyDir(dir: string, skip: string[] = []) {
-  for (const file of readdirSync(dir)) {
+  for (const file of fs.readdirSync(dir)) {
     if (skip.includes(file)) {
       continue
     }
-    const abs = resolve(dir, file)
-    // baseline is Node 12 so can't use rmSync :(
-    if (lstatSync(abs).isDirectory()) {
-      emptyDirSync(abs)
-      rmdirSync(abs)
-    } else {
-      unlinkSync(abs)
-    }
+    // node >= 14.14.0
+    fs.rmSync(path.resolve(dir, file), { recursive: true, force: true })
   }
 }

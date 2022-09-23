@@ -8,6 +8,9 @@
     "dist",
     "lib"
   ],
+  "engines": {
+    "node": "^14.18.0 || >=16.0.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dcloudio/uni-app.git",
