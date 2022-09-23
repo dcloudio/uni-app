@@ -17,8 +17,12 @@ export function normalizeArg(arg: unknown) {
   return arg
 }
 
-function initUtsInstanceMethod(async: boolean, opts: ProxyFunctionOptions) {
-  return initProxyFunction(async, opts)
+function initUtsInstanceMethod(
+  async: boolean,
+  opts: ProxyFunctionOptions,
+  instanceId: number
+) {
+  return initProxyFunction(async, opts, instanceId)
 }
 
 interface Parameter {
@@ -165,7 +169,7 @@ function initProxyFunction(
     companion,
     params: methodParams,
   }: ProxyFunctionOptions,
-  instanceId?: number
+  instanceId: number
 ) {
   const invokeCallback = ({
     id,
@@ -221,7 +225,7 @@ function initUtsStaticMethod(async: boolean, opts: ProxyFunctionOptions) {
       opts.method = 's_' + opts.name
     }
   }
-  return initProxyFunction(async, opts)
+  return initProxyFunction(async, opts, 0)
 }
 
 export const initUtsProxyFunction = initUtsStaticMethod
@@ -245,9 +249,12 @@ export function initUtsProxyClass({
       // 初始化实例 ID
       const instanceId = initProxyFunction(
         false,
-        extend({ name: 'constructor', params: constructorParams }, baseOptions)
+        extend({ name: 'constructor', params: constructorParams }, baseOptions),
+        0
       ).apply(null, params) as number
-
+      if (!instanceId) {
+        throw new Error(`new ${cls} is failed`)
+      }
       return new Proxy(this, {
         get(_, name) {
           if (!target[name as string]) {
@@ -258,12 +265,12 @@ export function initUtsProxyClass({
                 !!async,
                 extend(
                   {
-                    id: instanceId,
                     name,
                     params,
                   },
                   baseOptions
-                )
+                ),
+                instanceId
               )
             } else if (props.includes(name as string)) {
               // 实例属性

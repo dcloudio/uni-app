@@ -165,8 +165,8 @@ function normalizeArg(arg) {
     }
     return arg;
 }
-function initUtsInstanceMethod(async, opts) {
-    return initProxyFunction(async, opts);
+function initUtsInstanceMethod(async, opts, instanceId) {
+    return initProxyFunction(async, opts, instanceId);
 }
 function getProxy() {
     if (!proxy) {
@@ -235,7 +235,7 @@ function initUtsStaticMethod(async, opts) {
             opts.method = 's_' + opts.name;
         }
     }
-    return initProxyFunction(async, opts);
+    return initProxyFunction(async, opts, 0);
 }
 const initUtsProxyFunction = initUtsStaticMethod;
 function initUtsProxyClass({ package: pkg, class: cls, constructor: { params: constructorParams }, methods, props, staticProps, staticMethods, }) {
@@ -247,7 +247,10 @@ function initUtsProxyClass({ package: pkg, class: cls, constructor: { params: co
         constructor(...params) {
             const target = {};
             // 初始化实例 ID
-            const instanceId = initProxyFunction(false, shared.extend({ name: 'constructor', params: constructorParams }, baseOptions)).apply(null, params);
+            const instanceId = initProxyFunction(false, shared.extend({ name: 'constructor', params: constructorParams }, baseOptions), 0).apply(null, params);
+            if (!instanceId) {
+                throw new Error(`new ${cls} is failed`);
+            }
             return new Proxy(this, {
                 get(_, name) {
                     if (!target[name]) {
@@ -255,10 +258,9 @@ function initUtsProxyClass({ package: pkg, class: cls, constructor: { params: co
                         if (shared.hasOwn(methods, name)) {
                             const { async, params } = methods[name];
                             target[name] = initUtsInstanceMethod(!!async, shared.extend({
-                                id: instanceId,
                                 name,
                                 params,
-                            }, baseOptions));
+                            }, baseOptions), instanceId);
                         }
                         else if (props.includes(name)) {
                             // 实例属性
