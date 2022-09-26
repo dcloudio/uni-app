@@ -116,6 +116,7 @@ export default defineConfig({
     rollupOptions: {
       output: {
         freeze: false, // uni 对象需要可被修改
+        entryFileNames: 'uni-h5.' + FORMAT + '.js',
       },
       external(source) {
         if (
@@ -134,7 +135,7 @@ export default defineConfig({
         }
       },
       preserveEntrySignatures: 'strict',
-      plugins: rollupPlugins,
+      plugins: rollupPlugins as any,
       onwarn: (msg, warn) => {
         if (!String(msg).includes('external module "vue" but never used')) {
           warn(msg)

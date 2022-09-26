@@ -1,5 +1,4 @@
 [
-  "onCreateVueApp",
   "$emit",
   "$off",
   "$on",
@@ -93,6 +92,7 @@
   "onAppHide",
   "onAppShow",
   "onCompassChange",
+  "onCreateVueApp",
   "onError",
   "onGyroscopeChange",
   "onLocaleChange",

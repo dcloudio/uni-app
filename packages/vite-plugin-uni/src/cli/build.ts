@@ -17,7 +17,9 @@ import { CliOptions } from '.'
 import { addConfigFile, cleanOptions } from './utils'
 import { RollupWatcher, RollupWatcherEvent } from 'rollup'
 
-export async function build(options: CliOptions) {
+export async function build(
+  options: CliOptions
+): Promise<RollupWatcher | void> {
   if (options.platform === 'app') {
     return buildApp(options)
   }
@@ -25,7 +27,7 @@ export async function build(options: CliOptions) {
     addConfigFile(
       initBuildOptions(options, cleanOptions(options) as BuildOptions)
     )
-  )
+  ) as Promise<RollupWatcher | void>
 }
 
 export async function buildSSR(options: CliOptions) {
@@ -95,7 +97,9 @@ function buildManifestJson() {
   )
 }
 
-export async function buildApp(options: CliOptions) {
+export async function buildApp(
+  options: CliOptions
+): Promise<RollupWatcher | void> {
   if ((options as BuildOptions).manifest) {
     return buildManifestJson()
   }
@@ -130,7 +134,7 @@ export async function buildApp(options: CliOptions) {
     )
     if (appWatcher) {
       appWatcher.setSecondWatcher(nvueBuilder as RollupWatcher)
-      return appWatcher
+      return appWatcher as unknown as RollupWatcher
     }
     return
   }
@@ -159,7 +163,7 @@ export async function buildApp(options: CliOptions) {
 
   if (appWatcher) {
     appWatcher.setSecondWatcher(nvueBuilder as RollupWatcher)
-    return appWatcher
+    return appWatcher as unknown as RollupWatcher
   }
 }
 

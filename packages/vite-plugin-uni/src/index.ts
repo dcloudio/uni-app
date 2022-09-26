@@ -2,7 +2,7 @@ import path from 'path'
 import debug from 'debug'
 import type { Plugin, ResolvedConfig, ViteDevServer } from 'vite'
 import type { Options as VueOptions } from '@vitejs/plugin-vue'
-import type { Options as ViteLegacyOptions } from '@vitejs/plugin-legacy'
+import type ViteLegacyPlugin from '@vitejs/plugin-legacy'
 import type { VueJSXPluginOptions } from '@vue/babel-plugin-jsx'
 import vueJsxPlugin from '@vitejs/plugin-vue-jsx'
 import legacyPlugin from '@vitejs/plugin-legacy'
@@ -30,6 +30,8 @@ import {
   initPluginVueOptions,
 } from './vue'
 import { initEnv } from './cli/utils'
+
+export type ViteLegacyOptions = Parameters<typeof ViteLegacyPlugin>[0]
 
 const debugUni = debug('uni:plugin')
 

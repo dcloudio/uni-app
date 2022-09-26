@@ -78,7 +78,7 @@ export function createBuildOptions(
                   right: '))',
                 }
               }
-              return renderDynamicImport!.call(this, options)
+              return (renderDynamicImport as Function).call(this, options)
             },
           },
         ],

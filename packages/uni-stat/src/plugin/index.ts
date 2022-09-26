@@ -10,6 +10,7 @@ import {
   isSsr,
   resolveBuiltIn,
 } from '@dcloudio/uni-cli-shared'
+import { ConfigEnv, UserConfig } from 'vite'
 const uniStatLog = once((text: string) => {
   console.log()
   console.warn(text)
@@ -32,7 +33,7 @@ export default () => [
     return {
       name: 'uni:stat',
       enforce: 'pre',
-      config(config, env) {
+      config(config: UserConfig, env: ConfigEnv) {
         const inputDir = process.env.UNI_INPUT_DIR!
         const platform = process.env.UNI_PLATFORM!
         const titlesJson = Object.create(null)
@@ -97,10 +98,10 @@ export default () => [
           },
         }
       },
-      resolveId(id) {
+      resolveId(id: string) {
         return stats[id] || null
       },
-      transform(code, id) {
+      transform(code: string, id: string) {
         if (isEnable && opts.filter(id)) {
           return {
             code:

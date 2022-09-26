@@ -38,7 +38,7 @@
     "@types/module-alias": "^2.0.1",
     "@types/resolve": "^1.20.2",
     "@vue/compiler-core": "3.2.39",
-    "esbuild": "^0.14.27",
+    "esbuild": "^0.15.9",
     "vue": "3.2.39"
   }
 }

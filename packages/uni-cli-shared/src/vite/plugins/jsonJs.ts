@@ -22,9 +22,9 @@ function createDefineJsonJsPlugin(name: 'pages.json' | 'manifest.json') {
     } as UniViteFilterPluginOptions
 
     const plugin = createVitePlugin(opts)
-    const origLoad = plugin.load
-    const origResolveId = plugin.resolveId
-    const origConfigResolved = plugin.configResolved
+    const origLoad = plugin.load as Function
+    const origResolveId = plugin.resolveId as Function
+    const origConfigResolved = plugin.configResolved as Function
 
     let jsonPath = ''
     let jsonJsPath = ''

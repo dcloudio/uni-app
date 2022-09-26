@@ -182,6 +182,7 @@ declare namespace UniNamespace {
 
   interface PagesJsonPagePlatformStyle {
     h5?: PagesJsonPageStyle
+    web?: PagesJsonPageStyle
     app?: PagesJsonPageStyle
     'app-plus'?: PagesJsonPageStyle
     'mp-alipay'?: PagesJsonPageStyle

@@ -1,5 +1,5 @@
 import { isRootHook, getValueByDataPath, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, dynamicSlotName } from '@dcloudio/uni-shared';
-import { extend, isObject, toRawType, def, hasChanged, isArray, isString, isFunction, isPromise, remove, EMPTY_OBJ, toHandlerKey, camelize, capitalize, hasOwn, hyphenate, isReservedProp, normalizeClass, normalizeStyle, isOn, toTypeString, NOOP, isMap, isIntegerKey, isSet, isPlainObject, makeMap, invokeArrayFns, isBuiltInDirective, NO, isSymbol, toNumber, EMPTY_ARR, isModelListener, toDisplayString } from '@vue/shared';
+import { extend, isObject, def, hasChanged, isArray, isString, isFunction, isPromise, remove, EMPTY_OBJ, toHandlerKey, camelize, capitalize, hasOwn, hyphenate, isReservedProp, toRawType, normalizeClass, normalizeStyle, isOn, toTypeString, NOOP, isMap, isIntegerKey, isSet, isPlainObject, makeMap, invokeArrayFns, NO, isSymbol, toNumber, isBuiltInDirective, EMPTY_ARR, isModelListener, toDisplayString } from '@vue/shared';
 export { EMPTY_OBJ, camelize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
 
 function warn(msg, ...args) {

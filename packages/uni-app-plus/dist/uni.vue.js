@@ -1,4 +1,4 @@
-import { invokeArrayFns, ON_LOAD, ON_SHOW, LINEFEED, RENDERJS_MODULES, WXS_PROTOCOL, formatLog, WXS_MODULES, UniLifecycleHooks, ON_ERROR, invokeCreateErrorHandler, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
+import { invokeArrayFns, ON_LOAD, ON_SHOW, LINEFEED, RENDERJS_MODULES, formatLog, WXS_PROTOCOL, WXS_MODULES, UniLifecycleHooks, ON_ERROR, invokeCreateErrorHandler, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
 import { isString, isArray, isFunction } from '@vue/shared';
 import { injectHook } from 'vue';
 

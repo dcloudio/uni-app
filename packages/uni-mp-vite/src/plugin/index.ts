@@ -157,7 +157,7 @@ export function uniMiniProgramPlugin(
     },
     configResolved(config) {
       resolvedConfig = config
-      return createConfigResolved(options)!(config)
+      return (createConfigResolved(options) as Function)(config)
     },
     generateBundle() {
       if (template.filter) {

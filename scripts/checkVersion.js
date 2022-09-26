@@ -25,16 +25,16 @@ const pkgs = {
     next: '9.1.9',
   },
   vite: {
-    latest: '2.9.14',
+    latest: '3.1.3',
   },
   '@vitejs/plugin-vue': {
-    latest: '2.3.3',
+    latest: '3.1.0',
   },
   '@vitejs/plugin-vue-jsx': {
-    latest: '1.3.10',
+    latest: '2.0.1',
   },
   '@vitejs/plugin-legacy': {
-    latest: '1.8.2',
+    latest: '2.2.0',
   },
   '@dcloudio/types': {
     next: '3.0.16',
