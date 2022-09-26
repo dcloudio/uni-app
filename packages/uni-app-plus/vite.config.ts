@@ -67,6 +67,7 @@ export default defineConfig({
     __UNI_FEATURE_I18N_ZH_HANS__: true,
     __UNI_FEATURE_I18N_ZH_HANT__: true,
     __IMPORT_META_ENV_BASE_URL__: JSON.stringify(''),
+    'process.env.NODE_ENV': JSON.stringify('production'),
   },
   resolve: {
     alias: [
