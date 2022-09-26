@@ -106,19 +106,7 @@ function resolvePkgDeps(pkgPath) {
   resolveDeps(name, peerDependencies)
 }
 
-const paths = [
-  path.resolve(__dirname, '../packages/vite-plugin-uni/node_modules'),
-]
-
-const vuePkgs = [
-  require.resolve('vite/package.json'),
-  require.resolve('@vitejs/plugin-vue/package.json'),
-  require.resolve('@vitejs/plugin-vue-jsx/package.json'),
-  require.resolve('@vitejs/plugin-legacy/package.json', { paths }),
-  require.resolve('@vue/compiler-core/package.json', { paths }),
-  require.resolve('@vue/compiler-dom/package.json', { paths }),
-  require.resolve('@vue/compiler-sfc/package.json', { paths }),
-]
+const { vuePkgs } = require('../packages/vite-plugin-uni/script.js')
 
 function checkDeps() {
   vuePkgs.forEach((pkg) => resolvePkgDeps(pkg))

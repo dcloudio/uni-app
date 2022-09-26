@@ -25,7 +25,7 @@
     "@vue/compiler-sfc": "3.2.39",
     "@vue/shared": "3.2.39",
     "debug": "^4.3.3",
-    "magic-string": "^0.26.1"
+    "magic-string": "^0.26.3"
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "devDependencies": {
