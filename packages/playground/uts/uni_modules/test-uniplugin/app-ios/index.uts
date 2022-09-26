@@ -54,3 +54,7 @@ export class Test {
     return null
   }
 }
+
+export async function testAsync() {
+  return { a: 1 }
+}

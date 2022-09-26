@@ -1,6 +1,6 @@
+import { isRootHook, getValueByDataPath, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, dynamicSlotName } from '@dcloudio/uni-shared';
 import { extend, isObject, toRawType, def, hasChanged, isArray, isString, isFunction, isPromise, remove, EMPTY_OBJ, toHandlerKey, camelize, capitalize, hasOwn, hyphenate, isReservedProp, normalizeClass, normalizeStyle, isOn, toTypeString, NOOP, isMap, isIntegerKey, isSet, isPlainObject, makeMap, invokeArrayFns, isBuiltInDirective, NO, isSymbol, toNumber, EMPTY_ARR, isModelListener, toDisplayString } from '@vue/shared';
 export { EMPTY_OBJ, camelize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
-import { isRootHook, getValueByDataPath, ON_ERROR, UniLifecycleHooks, dynamicSlotName } from '@dcloudio/uni-shared';
 
 function warn(msg, ...args) {
     console.warn(`[Vue warn] ${msg}`, ...args);
@@ -5353,9 +5353,7 @@ function uniIdMixin(globalProperties) {
 
 function initApp(app) {
     const appConfig = app._context.config;
-    if (isFunction(app._component.onError)) {
-        appConfig.errorHandler = createErrorHandler(app);
-    }
+    appConfig.errorHandler = invokeCreateErrorHandler(app, createErrorHandler);
     initOptionMergeStrategies(appConfig.optionMergeStrategies);
     const globalProperties = appConfig.globalProperties;
     {

@@ -41,6 +41,11 @@ class Test : NSObject {
         return nil;
     }
 }
+async func testAsync() -> Deferred<UTSJSONObject> {
+    return UTSJSONObject([
+        "a": 1
+    ]);
+}
 @objc(UTSSDKModulesTestUniPluginIndexSwift)
 @objcMembers
 class IndexSwift : NSObject {
@@ -49,5 +54,8 @@ class IndexSwift : NSObject {
     }
     public static func s_test1(_ callback: UTSCallback) -> String {
         return test1(callback);
+    }
+    public static func async s_testAsync() -> Deferred<UTSJSONObject> {
+        return testAsync();
     }
 }

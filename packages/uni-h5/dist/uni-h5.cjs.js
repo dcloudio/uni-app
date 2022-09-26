@@ -7063,9 +7063,7 @@ function uniIdMixin(globalProperties) {
 }
 function initApp$1(app) {
   const appConfig = app._context.config;
-  if (shared.isFunction(app._component.onError)) {
-    appConfig.errorHandler = createErrorHandler(app);
-  }
+  appConfig.errorHandler = uniShared.invokeCreateErrorHandler(app, createErrorHandler);
   initOptionMergeStrategies(appConfig.optionMergeStrategies);
   const globalProperties = appConfig.globalProperties;
   {

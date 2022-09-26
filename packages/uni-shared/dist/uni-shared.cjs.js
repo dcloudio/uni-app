@@ -1303,6 +1303,11 @@ function invokeCreateVueAppHook(app) {
     vueApp = app;
     createVueAppHooks.forEach((hook) => hook(app));
 }
+const invokeCreateErrorHandler = once((app, createErrorHandler) => {
+    if (shared.isFunction(app._component.onError)) {
+        return createErrorHandler(app);
+    }
+});
 
 const E = function () {
     // Keep this empty so it's easier to inherit from
@@ -1488,6 +1493,7 @@ exports.getLen = getLen;
 exports.getValueByDataPath = getValueByDataPath;
 exports.initCustomDatasetOnce = initCustomDatasetOnce;
 exports.invokeArrayFns = invokeArrayFns;
+exports.invokeCreateErrorHandler = invokeCreateErrorHandler;
 exports.invokeCreateVueAppHook = invokeCreateVueAppHook;
 exports.isAppNVueNativeTag = isAppNVueNativeTag;
 exports.isAppNativeTag = isAppNativeTag;

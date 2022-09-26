@@ -1,5 +1,5 @@
+import { invokeArrayFns, ON_LOAD, ON_SHOW, LINEFEED, RENDERJS_MODULES, WXS_PROTOCOL, formatLog, WXS_MODULES, UniLifecycleHooks, ON_ERROR, invokeCreateErrorHandler, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
 import { isString, isArray, isFunction } from '@vue/shared';
-import { invokeArrayFns, ON_LOAD, ON_SHOW, LINEFEED, RENDERJS_MODULES, WXS_PROTOCOL, formatLog, WXS_MODULES, ON_ERROR, UniLifecycleHooks, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
 import { injectHook } from 'vue';
 
 function getCurrentPage() {
@@ -255,9 +255,7 @@ function uniIdMixin(globalProperties) {
 
 function initApp(app) {
     const appConfig = app._context.config;
-    if (isFunction(app._component.onError)) {
-        appConfig.errorHandler = createErrorHandler(app);
-    }
+    appConfig.errorHandler = invokeCreateErrorHandler(app, createErrorHandler);
     initOptionMergeStrategies(appConfig.optionMergeStrategies);
     const globalProperties = appConfig.globalProperties;
     {
