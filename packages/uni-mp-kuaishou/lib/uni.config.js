@@ -11,7 +11,8 @@ module.exports = {
       style: '.css',
       template: '.ksml'
     },
-    project: 'project.ks.json'
+    project: 'project.ks.json',
+    subPackages: true
   },
   copyWebpackOptions (platformOptions, vueOptions) {
     const copyOptions = ['kscomponents', 'ext.json']
