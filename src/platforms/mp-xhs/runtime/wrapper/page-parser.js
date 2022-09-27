@@ -80,8 +80,8 @@ export default function parsePage (vuePageOptions) {
     triggerEvent: function noop () {}
   }
 
-  initHooks(pageOptions, hooks, vuePageOptions)
-  initUnknownHooks(pageOptions, vuePageOptions, ['onReady'])
+  initHooks(pageOptions, hooks, vueOptions)
+  initUnknownHooks(pageOptions, vueOptions, ['onReady'])
 
   if (Array.isArray(vueOptions.wxsCallMethods)) {
     vueOptions.wxsCallMethods.forEach(callMethod => {

@@ -5,9 +5,9 @@ import {
   initRelation
 } from './util'
 
-export default function parseComponent (vueComponentOptions) {
+export default function parseComponent (vueComponentOptions, needVueOptions) {
   return parseBaseComponent(vueComponentOptions, {
     isPage,
     initRelation
-  })
+  }, needVueOptions)
 }

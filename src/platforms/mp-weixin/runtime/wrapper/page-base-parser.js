@@ -18,16 +18,10 @@ const hooks = [
 
 hooks.push(...PAGE_EVENT_HOOKS)
 
-export default function parseBasePage (vuePageOptions, {
-  isPage,
-  initRelation
-}) {
-  const pageOptions = parseComponent(vuePageOptions, {
-    isPage,
-    initRelation
-  })
+export default function parseBasePage (vuePageOptions) {
+  const [pageOptions, vueOptions] = parseComponent(vuePageOptions, true)
 
-  initHooks(pageOptions.methods, hooks, vuePageOptions)
+  initHooks(pageOptions.methods, hooks, vueOptions)
 
   pageOptions.methods.onLoad = function (query) {
     this.options = query

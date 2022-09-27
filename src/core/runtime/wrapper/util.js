@@ -50,7 +50,7 @@ function hasHook (hook, vueOptions) {
     return false
   }
 
-  if (isFn(vueOptions[hook])) {
+  if (isFn(vueOptions[hook]) || Array.isArray(vueOptions[hook])) {
     return true
   }
   const mixins = vueOptions.mixins
