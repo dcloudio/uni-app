@@ -231,7 +231,10 @@ export function updateMiniProgramComponentsByMainFilename(
     return
   }
   const bindingComponents = parseBindingComponents(
-    templateDescriptor.bindingComponents,
+    {
+      ...templateDescriptor.bindingComponents,
+      ...scriptDescriptor.setupBindingComponents,
+    },
     scriptDescriptor.bindingComponents
   )
   const imports = parseImports(
@@ -341,7 +344,9 @@ interface ParseDescriptor {
   resolve: PluginContext['resolve']
   isExternal: boolean
 }
-export interface ScriptDescriptor extends TemplateDescriptor {}
+export interface ScriptDescriptor extends TemplateDescriptor {
+  setupBindingComponents: BindingComponents
+}
 
 async function parseGlobalDescriptor(
   filename: string,
@@ -386,10 +391,12 @@ export async function parseScriptDescriptor(
         options.resolve
       )
     : []
-  const descriptor = {
+  const descriptor: ScriptDescriptor = {
     bindingComponents: parseComponents(ast),
+    setupBindingComponents: findBindingComponents(ast.body),
     imports,
   }
+
   scriptDescriptors.set(filename, descriptor)
   return descriptor
 }
