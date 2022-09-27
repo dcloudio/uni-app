@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-mp-compiler",
-  "version": "3.0.0-alpha-3060420220922003",
+  "version": "3.0.0-alpha-3060420220922004",
   "description": "uni-mp-compiler",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -22,8 +22,8 @@
     "@babel/generator": "^7.18.13",
     "@babel/parser": "^7.18.13",
     "@babel/types": "^7.17.0",
-    "@dcloudio/uni-cli-shared": "3.0.0-alpha-3060420220922003",
-    "@dcloudio/uni-shared": "3.0.0-alpha-3060420220922003",
+    "@dcloudio/uni-cli-shared": "3.0.0-alpha-3060420220922004",
+    "@dcloudio/uni-shared": "3.0.0-alpha-3060420220922004",
     "@vue/compiler-core": "3.2.39",
     "@vue/compiler-dom": "3.2.39",
     "@vue/shared": "3.2.39",

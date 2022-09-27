@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-stacktracey",
-  "version": "3.0.0-alpha-3060420220922003",
+  "version": "3.0.0-alpha-3060420220922004",
   "description": "@dcloudio/uni-stacktracey",
   "main": "dist/uni-stacktracey.cjs.js",
   "module": "dist/uni-stacktracey.es.js",
