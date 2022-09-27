@@ -41,7 +41,8 @@ class Test : NSObject {
         return nil;
     }
 }
-async func testAsync() -> Deferred<UTSJSONObject> {
+@available(iOS 13.0.0, *)
+func testAsync() async  -> UTSJSONObject {
     return UTSJSONObject([
         "a": 1
     ]);
@@ -55,7 +56,8 @@ class IndexSwift : NSObject {
     public static func s_test1(_ callback: UTSCallback) -> String {
         return test1(callback);
     }
-    public static func async s_testAsync() -> Deferred<UTSJSONObject> {
+    @available(iOS 13.0.0, *)
+    public static func s_testAsync() async  -> UTSJSONObject {
         return testAsync();
     }
 }
