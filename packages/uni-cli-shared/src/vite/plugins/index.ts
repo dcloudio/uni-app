@@ -5,6 +5,7 @@ export * from './mainJs'
 export * from './jsonJs'
 export * from './console'
 export * from './dynamicImportPolyfill'
+export { uniModulesExportsPlugin } from './uniModules'
 
 export { assetPlugin, getAssetHash } from './vitejs/plugins/asset'
 export {

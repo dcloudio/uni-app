@@ -23,6 +23,7 @@ import {
   isJsFile,
   isAssignmentExpression,
 } from '../utils'
+import { UNI_MODULES_EXPORTS } from '../../constants'
 
 interface Scope {
   parent: Scope
@@ -83,8 +84,11 @@ export function uniViteInjectPlugin(
     // 确保在 commonjs 之后，否则会混合 es6 module 与 cjs 的代码，导致 commonjs 失效
     enforce: 'post',
     transform(code, id) {
-      if (!filter(id)) return null
-      if (!isJsFile(id)) return null
+      // 硬编码支持了uni_modules_exports
+      if (id !== UNI_MODULES_EXPORTS) {
+        if (!filter(id)) return null
+        if (!isJsFile(id)) return null
+      }
       debugInjectTry(id)
       if (code.search(firstpass) === -1) return null
       if (sep !== '/') id = id.split(sep).join('/')

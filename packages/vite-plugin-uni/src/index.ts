@@ -12,6 +12,7 @@ import {
   initModuleAlias,
   initPreContext,
   resolveSourceMapPath,
+  uniModulesExportsPlugin,
 } from '@dcloudio/uni-cli-shared'
 
 import { createConfig } from './config'
@@ -85,7 +86,7 @@ export default function uniPlugin(
 
   initPreContext(options.platform, process.env.UNI_CUSTOM_CONTEXT)
 
-  const plugins: Plugin[] = []
+  const plugins: Plugin[] = [uniModulesExportsPlugin()]
   // 仅限 h5
   if (options.viteLegacyOptions && options.platform === 'h5') {
     plugins.push(

@@ -2,6 +2,7 @@ import {
   defineUniMainJsPlugin,
   isSsr,
   PAGES_JSON_JS,
+  UNI_MODULES_EXPORTS,
 } from '@dcloudio/uni-cli-shared'
 import { isSSR, isSsrManifest } from '../utils'
 
@@ -26,7 +27,7 @@ export function uniMainJsPlugin() {
               ? createSSRServerApp(code)
               : createSSRClientApp(code)
           }
-          code = `import './${PAGES_JSON_JS}';${code}`
+          code = `import './${PAGES_JSON_JS}';import '${UNI_MODULES_EXPORTS}';${code}`
           return {
             code,
             map: this.getCombinedSourcemap(),

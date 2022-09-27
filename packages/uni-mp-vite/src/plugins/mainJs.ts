@@ -3,6 +3,7 @@ import {
   PAGES_JSON_JS,
   parseProgram,
   transformDynamicImports,
+  UNI_MODULES_EXPORTS,
   updateMiniProgramGlobalComponents,
   withSourcemap,
 } from '@dcloudio/uni-cli-shared'
@@ -46,7 +47,7 @@ export function uniMainJsPlugin(
           })
           return {
             code:
-              `import '\0plugin-vue:export-helper';import 'uni-mp-runtime';import './${PAGES_JSON_JS}';` +
+              `import '\0plugin-vue:export-helper';import 'uni-mp-runtime';import './${PAGES_JSON_JS}';import '${UNI_MODULES_EXPORTS}';` +
               code,
             map,
           }

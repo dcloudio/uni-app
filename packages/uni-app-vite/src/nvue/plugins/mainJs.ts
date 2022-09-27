@@ -2,6 +2,7 @@ import {
   defineUniMainJsPlugin,
   MANIFEST_JSON_JS,
   PAGES_JSON_JS,
+  UNI_MODULES_EXPORTS,
 } from '@dcloudio/uni-cli-shared'
 import { APP_CSS_JS } from './appCss'
 
@@ -20,7 +21,7 @@ export function uniMainJsPlugin({
         if (opts.filter(id)) {
           if (renderer !== 'native') {
             return {
-              code: `import './${PAGES_JSON_JS}';import('${APP_CSS_JS}').then(()=>{})`,
+              code: `import './${PAGES_JSON_JS}';import '${UNI_MODULES_EXPORTS}';import('${APP_CSS_JS}').then(()=>{})`,
               map: { mappings: '' },
             }
           }
@@ -30,13 +31,13 @@ export function uniMainJsPlugin({
               : createLegacyApp(code)
             return {
               code:
-                `import './${MANIFEST_JSON_JS}';\nimport './${PAGES_JSON_JS}';\n` +
+                `import './${MANIFEST_JSON_JS}';\nimport './${PAGES_JSON_JS}';\nimport '${UNI_MODULES_EXPORTS}';\n` +
                 code,
               map: { mappings: '' },
             }
           }
           return {
-            code: `import './${PAGES_JSON_JS}';`,
+            code: `import './${PAGES_JSON_JS}';import '${UNI_MODULES_EXPORTS}';`,
             map: { mappings: '' },
           }
         }
