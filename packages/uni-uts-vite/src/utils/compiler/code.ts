@@ -244,7 +244,7 @@ function parseAst(
       if (decl.type === 'ClassExpression') {
         if (decl.identifier) {
           // export default class test{}
-          decls.push(genClassDeclaration(decl, resolveTypeReferenceName, false))
+          decls.push(genClassDeclaration(decl, resolveTypeReferenceName, true))
         }
       } else if (decl.type === 'FunctionExpression') {
         if (decl.identifier) {
