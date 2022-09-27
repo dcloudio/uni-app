@@ -54,7 +54,7 @@ export function uniUtsV1Plugin(): Plugin {
         ) {
           const filename =
             resolvePlatformIndex('app-android', module, pkg) ||
-            resolveRootIndex(module)
+            resolveRootIndex(module, pkg)
           if (filename) {
             await getCompiler('kotlin').runProd(filename)
           }
@@ -65,7 +65,7 @@ export function uniUtsV1Plugin(): Plugin {
         ) {
           const filename =
             resolvePlatformIndex('app-ios', module, pkg) ||
-            resolveRootIndex(module)
+            resolveRootIndex(module, pkg)
           if (filename) {
             await getCompiler('swift').runProd(filename)
           }
@@ -75,7 +75,7 @@ export function uniUtsV1Plugin(): Plugin {
         if (process.env.UNI_UTS_PLATFORM === 'app-android') {
           const filename =
             resolvePlatformIndex('app-android', module, pkg) ||
-            resolveRootIndex(module)
+            resolveRootIndex(module, pkg)
           if (filename) {
             const res = await getCompiler('kotlin').runDev(filename)
             if (!isFirst && res) {

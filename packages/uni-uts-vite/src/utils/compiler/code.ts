@@ -39,8 +39,12 @@ ${genModuleCode(await parseModuleDecls(module, options))}
 `
 }
 
-export function resolveRootIndex(module: string) {
-  const filename = path.resolve(module, 'index.uts')
+export function resolveRootIndex(module: string, options: GenProxyCodeOptions) {
+  const filename = path.resolve(
+    module,
+    options.is_uni_modules ? 'utssdk' : '',
+    'index.uts'
+  )
   return fs.existsSync(filename) && filename
 }
 
@@ -120,7 +124,7 @@ async function parseModuleDecls(module: string, options: GenProxyCodeOptions) {
   const decls = mergeDecls(androidDecls, iosDecls)
   // 如果没有平台特有，查找 root index.uts
   if (!decls.length) {
-    return await parseFile(resolveRootIndex(module), options)
+    return await parseFile(resolveRootIndex(module, options), options)
   }
   return decls
 }

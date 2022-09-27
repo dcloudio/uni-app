@@ -132,11 +132,12 @@ export function resolveUtsAppModule(id: string, importer: string) {
     const parts = normalizePath(id).split('/')
     const parentDir = parts[parts.length - 2]
     if (parentDir === 'uni_modules' || parentDir === 'utssdk') {
-      if (fs.existsSync(path.resolve(id, 'index.uts'))) {
+      const basedir = parentDir === 'uni_modules' ? 'utssdk' : ''
+      if (fs.existsSync(path.resolve(id, basedir, 'index.uts'))) {
         return id
       }
       const resolvePlatformDir = (p: typeof process.env.UNI_UTS_PLATFORM) => {
-        return path.resolve(id, parentDir === 'uni_modules' ? 'utssdk' : '', p)
+        return path.resolve(id, basedir, p)
       }
       const extname = ['.uts']
       if (resolveUtsFile(resolvePlatformDir('app-android'), extname)) {
@@ -169,15 +170,16 @@ export function resolveUtsModule(
     const parts = normalizePath(id).split('/')
     const parentDir = parts[parts.length - 2]
     if (parentDir === 'uni_modules' || parentDir === 'utssdk') {
+      const basedir = parentDir === 'uni_modules' ? 'utssdk' : ''
       const resolvePlatformDir = (p: typeof process.env.UNI_UTS_PLATFORM) => {
-        return path.resolve(id, parentDir === 'uni_modules' ? 'utssdk' : '', p)
+        return path.resolve(id, basedir, p)
       }
 
       let index = resolveUtsFile(resolvePlatformDir(platform))
       if (index) {
         return index
       }
-      index = path.resolve(id, 'index.uts')
+      index = path.resolve(id, basedir, 'index.uts')
       if (fs.existsSync(index)) {
         return index
       }
