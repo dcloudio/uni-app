@@ -274,6 +274,9 @@ declare namespace UniNamespace {
         [name: string]: string
       }
     }
+    uni_modules?: {
+      exports?: boolean
+    }
     condition?: {
       current?: number
       list?: {

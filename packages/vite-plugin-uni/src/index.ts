@@ -11,6 +11,7 @@ import {
   CopyOptions,
   initModuleAlias,
   initPreContext,
+  parsePagesJsonOnce,
   resolveSourceMapPath,
   uniModulesExportsPlugin,
 } from '@dcloudio/uni-cli-shared'
@@ -86,7 +87,17 @@ export default function uniPlugin(
 
   initPreContext(options.platform, process.env.UNI_CUSTOM_CONTEXT)
 
-  const plugins: Plugin[] = [uniModulesExportsPlugin()]
+  const pagesJson = parsePagesJsonOnce(
+    process.env.UNI_INPUT_DIR,
+    process.env.UNI_PLATFORM
+  )
+
+  const plugins: Plugin[] = [
+    uniModulesExportsPlugin({
+      enable: pagesJson.uni_modules?.exports === false ? false : true,
+    }),
+  ]
+
   // 仅限 h5
   if (options.viteLegacyOptions && options.platform === 'h5') {
     plugins.push(

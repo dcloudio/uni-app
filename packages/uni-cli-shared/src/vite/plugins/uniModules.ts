@@ -6,7 +6,11 @@ import { isArray, isPlainObject, isString } from '@vue/shared'
 import { UNI_MODULES_EXPORTS } from '../../constants'
 import { parseJson } from '../../json'
 
-export function uniModulesExportsPlugin(): Plugin {
+export function uniModulesExportsPlugin({
+  enable,
+}: {
+  enable: boolean
+}): Plugin {
   return {
     name: 'uni:modules:exports',
     resolveId(id) {
@@ -17,6 +21,10 @@ export function uniModulesExportsPlugin(): Plugin {
     load(id) {
       if (id !== UNI_MODULES_EXPORTS) {
         return
+      }
+      // 未启用
+      if (!enable) {
+        return ''
       }
       const uniModulesDir = path.resolve(
         process.env.UNI_INPUT_DIR,
