@@ -2219,7 +2219,7 @@ function injectHook(type, hook, target = currentInstance, prepend = false) {
 const createHook = (lifecycle) => (hook, target = currentInstance) => 
 // post-create lifecycle registrations are noops during SSR (except for serverPrefetch)
 (!isInSSRComponentSetup || lifecycle === "sp" /* LifecycleHooks.SERVER_PREFETCH */) &&
-    injectHook(lifecycle, hook, target);
+    injectHook(lifecycle, (...args) => hook(...args), target);
 const onBeforeMount = createHook("bm" /* LifecycleHooks.BEFORE_MOUNT */);
 const onMounted = createHook("m" /* LifecycleHooks.MOUNTED */);
 const onBeforeUpdate = createHook("bu" /* LifecycleHooks.BEFORE_UPDATE */);
@@ -4495,7 +4495,7 @@ const useSSRContext = () => {
 };
 
 // Core API ------------------------------------------------------------------
-const version = "3.2.39";
+const version = "3.2.40";
 /**
  * @internal only exposed in compat builds
  */

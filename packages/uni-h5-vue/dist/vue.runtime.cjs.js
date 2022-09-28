@@ -4011,7 +4011,7 @@ function injectHook(type, hook, target = currentInstance, prepend = false) {
 const createHook = (lifecycle) => (hook, target = currentInstance) => 
 // post-create lifecycle registrations are noops during SSR (except for serverPrefetch)
 (!exports.isInSSRComponentSetup || lifecycle === "sp" /* LifecycleHooks.SERVER_PREFETCH */) &&
-    injectHook(lifecycle, hook, target);
+    injectHook(lifecycle, (...args) => hook(...args), target);
 const onBeforeMount = createHook("bm" /* LifecycleHooks.BEFORE_MOUNT */);
 const onMounted = createHook("m" /* LifecycleHooks.MOUNTED */);
 const onBeforeUpdate = createHook("bu" /* LifecycleHooks.BEFORE_UPDATE */);
@@ -4234,7 +4234,10 @@ function createSlots(slots, dynamicSlots) {
             slots[slot.name] = slot.key
                 ? (...args) => {
                     const res = slot.fn(...args);
-                    res.key = slot.key;
+                    // attach branch key so each conditional branch is considered a
+                    // different fragment
+                    if (res)
+                        res.key = slot.key;
                     return res;
                 }
                 : slot.fn;
@@ -5893,7 +5896,7 @@ function createHydrationFunctions(rendererInternals) {
         const isFragmentStart = isComment(node) && node.data === '[';
         const onMismatch = () => handleMismatch(node, vnode, parentComponent, parentSuspense, slotScopeIds, isFragmentStart);
         const { type, ref, shapeFlag, patchFlag } = vnode;
-        const domType = node.nodeType;
+        let domType = node.nodeType;
         vnode.el = node;
         if (patchFlag === -2 /* PatchFlags.BAIL */) {
             optimized = false;
@@ -5933,10 +5936,12 @@ function createHydrationFunctions(rendererInternals) {
                 }
                 break;
             case Static:
-                if (domType !== 1 /* DOMNodeTypes.ELEMENT */ && domType !== 3 /* DOMNodeTypes.TEXT */) {
-                    nextNode = onMismatch();
+                if (isFragmentStart) {
+                    // entire template is static but SSRed as a fragment
+                    node = nextSibling(node);
+                    domType = node.nodeType;
                 }
-                else {
+                if (domType === 1 /* DOMNodeTypes.ELEMENT */ || domType === 3 /* DOMNodeTypes.TEXT */) {
                     // determine anchor, adopt content
                     nextNode = node;
                     // if the static vnode has its content stripped during build,
@@ -5953,7 +5958,10 @@ function createHydrationFunctions(rendererInternals) {
                         }
                         nextNode = nextSibling(nextNode);
                     }
-                    return nextNode;
+                    return isFragmentStart ? nextSibling(nextNode) : nextNode;
+                }
+                else {
+                    onMismatch();
                 }
                 break;
             case Fragment:
@@ -6279,7 +6287,7 @@ function baseCreateRenderer(options, createHydrationFns) {
         setDevtoolsHook(target.__VUE_DEVTOOLS_GLOBAL_HOOK__, target);
     }
     const { insert: hostInsert, remove: hostRemove, patchProp: hostPatchProp, forcePatchProp: hostForcePatchProp, // fixed by xxxxxx
-    createElement: hostCreateElement, createText: hostCreateText, createComment: hostCreateComment, setText: hostSetText, setElementText: hostSetElementText, parentNode: hostParentNode, nextSibling: hostNextSibling, setScopeId: hostSetScopeId = shared.NOOP, cloneNode: hostCloneNode, insertStaticContent: hostInsertStaticContent } = options;
+    createElement: hostCreateElement, createText: hostCreateText, createComment: hostCreateComment, setText: hostSetText, setElementText: hostSetElementText, parentNode: hostParentNode, nextSibling: hostNextSibling, setScopeId: hostSetScopeId = shared.NOOP, insertStaticContent: hostInsertStaticContent } = options;
     // Note: functions inside this closure should use `const xxx = () => {}`
     // style in order to prevent being inlined by minifiers.
     const patch = (n1, n2, container, anchor = null, parentComponent = null, parentSuspense = null, isSVG = false, slotScopeIds = null, optimized = isHmrUpdating ? false : !!n2.dynamicChildren) => {
@@ -6406,46 +6414,44 @@ function baseCreateRenderer(options, createHydrationFns) {
     const mountElement = (vnode, container, anchor, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized) => {
         let el;
         let vnodeHook;
-        const { type, props, shapeFlag, transition, patchFlag, dirs } = vnode;
-        {
-            el = vnode.el = hostCreateElement(vnode.type, isSVG, props && props.is, props);
-            // mount children first, since some props may rely on child content
-            // being already rendered, e.g. `<select value>`
-            if (shapeFlag & 8 /* ShapeFlags.TEXT_CHILDREN */) {
-                hostSetElementText(el, vnode.children);
-            }
-            else if (shapeFlag & 16 /* ShapeFlags.ARRAY_CHILDREN */) {
-                mountChildren(vnode.children, el, null, parentComponent, parentSuspense, isSVG && type !== 'foreignObject', slotScopeIds, optimized);
-            }
-            if (dirs) {
-                invokeDirectiveHook(vnode, null, parentComponent, 'created');
-            }
-            // props
-            if (props) {
-                for (const key in props) {
-                    if (key !== 'value' && !shared.isReservedProp(key)) {
-                        hostPatchProp(el, key, null, props[key], isSVG, vnode.children, parentComponent, parentSuspense, unmountChildren);
-                    }
-                }
-                /**
-                 * Special case for setting value on DOM elements:
-                 * - it can be order-sensitive (e.g. should be set *after* min/max, #2325, #4024)
-                 * - it needs to be forced (#1471)
-                 * #2353 proposes adding another renderer option to configure this, but
-                 * the properties affects are so finite it is worth special casing it
-                 * here to reduce the complexity. (Special casing it also should not
-                 * affect non-DOM renderers)
-                 */
-                if ('value' in props) {
-                    hostPatchProp(el, 'value', null, props.value);
-                }
-                if ((vnodeHook = props.onVnodeBeforeMount)) {
-                    invokeVNodeHook(vnodeHook, parentComponent, vnode);
-                }
-            }
-            // scopeId
-            setScopeId(el, vnode, vnode.scopeId, slotScopeIds, parentComponent);
+        const { type, props, shapeFlag, transition, dirs } = vnode;
+        el = vnode.el = hostCreateElement(vnode.type, isSVG, props && props.is, props);
+        // mount children first, since some props may rely on child content
+        // being already rendered, e.g. `<select value>`
+        if (shapeFlag & 8 /* ShapeFlags.TEXT_CHILDREN */) {
+            hostSetElementText(el, vnode.children);
         }
+        else if (shapeFlag & 16 /* ShapeFlags.ARRAY_CHILDREN */) {
+            mountChildren(vnode.children, el, null, parentComponent, parentSuspense, isSVG && type !== 'foreignObject', slotScopeIds, optimized);
+        }
+        if (dirs) {
+            invokeDirectiveHook(vnode, null, parentComponent, 'created');
+        }
+        // props
+        if (props) {
+            for (const key in props) {
+                if (key !== 'value' && !shared.isReservedProp(key)) {
+                    hostPatchProp(el, key, null, props[key], isSVG, vnode.children, parentComponent, parentSuspense, unmountChildren);
+                }
+            }
+            /**
+             * Special case for setting value on DOM elements:
+             * - it can be order-sensitive (e.g. should be set *after* min/max, #2325, #4024)
+             * - it needs to be forced (#1471)
+             * #2353 proposes adding another renderer option to configure this, but
+             * the properties affects are so finite it is worth special casing it
+             * here to reduce the complexity. (Special casing it also should not
+             * affect non-DOM renderers)
+             */
+            if ('value' in props) {
+                hostPatchProp(el, 'value', null, props.value);
+            }
+            if ((vnodeHook = props.onVnodeBeforeMount)) {
+                invokeVNodeHook(vnodeHook, parentComponent, vnode);
+            }
+        }
+        // scopeId
+        setScopeId(el, vnode, vnode.scopeId, slotScopeIds, parentComponent);
         {
             Object.defineProperty(el, '__vnode', {
                 value: vnode,
@@ -6635,6 +6641,13 @@ function baseCreateRenderer(options, createHydrationFns) {
     };
     const patchProps = (el, vnode, oldProps, newProps, parentComponent, parentSuspense, isSVG) => {
         if (oldProps !== newProps) {
+            if (oldProps !== shared.EMPTY_OBJ) {
+                for (const key in oldProps) {
+                    if (!shared.isReservedProp(key) && !(key in newProps)) {
+                        hostPatchProp(el, key, oldProps[key], null, isSVG, vnode.children, parentComponent, parentSuspense, unmountChildren);
+                    }
+                }
+            }
             for (const key in newProps) {
                 // empty string is not valid prop
                 if (shared.isReservedProp(key))
@@ -6646,13 +6659,6 @@ function baseCreateRenderer(options, createHydrationFns) {
                     (hostForcePatchProp && hostForcePatchProp(el, key)) // fixed by xxxxxx
                 ) {
                     hostPatchProp(el, key, prev, next, isSVG, vnode.children, parentComponent, parentSuspense, unmountChildren);
-                }
-            }
-            if (oldProps !== shared.EMPTY_OBJ) {
-                for (const key in oldProps) {
-                    if (!shared.isReservedProp(key) && !(key in newProps)) {
-                        hostPatchProp(el, key, oldProps[key], null, isSVG, vnode.children, parentComponent, parentSuspense, unmountChildren);
-                    }
                 }
             }
             if ('value' in newProps) {
@@ -8183,7 +8189,10 @@ function normalizeVNode(child) {
 }
 // optimized normalization for template-compiled render fns
 function cloneIfMounted(child) {
-    return child.el === null || child.memo ? child : cloneVNode(child);
+    return (child.el === null && child.patchFlag !== -1 /* PatchFlags.HOISTED */) ||
+        child.memo
+        ? child
+        : cloneVNode(child);
 }
 function normalizeChildren(vnode, children) {
     let type = 0;
@@ -9088,7 +9097,7 @@ function isMemoSame(cached, memo) {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.2.39";
+const version = "3.2.40";
 const _ssrUtils = {
     createComponentInstance,
     setupComponent,
@@ -9146,22 +9155,6 @@ const nodeOps = {
     querySelector: selector => doc.querySelector(selector),
     setScopeId(el, id) {
         el.setAttribute(id, '');
-    },
-    cloneNode(el) {
-        const cloned = el.cloneNode(true);
-        // #3072
-        // - in `patchDOMProp`, we store the actual value in the `el._value` property.
-        // - normally, elements using `:value` bindings will not be hoisted, but if
-        //   the bound value is a constant, e.g. `:value="true"` - they do get
-        //   hoisted.
-        // - in production, hoisted nodes are cloned when subsequent inserts, but
-        //   cloneNode() does not copy the custom property we attached.
-        // - This may need to account for other custom DOM properties we attach to
-        //   elements in addition to `_value` in the future.
-        if (`_value` in el) {
-            cloned._value = el._value;
-        }
-        return cloned;
     },
     // __UNSAFE__
     // Reason: innerHTML.
@@ -9411,7 +9404,6 @@ prevChildren, parentComponent, parentSuspense, unmountChildren) {
         }
         else if (type === 'number') {
             // e.g. <img :width="null">
-            // the value of some IDL attr must be greater than 0, e.g. input.size = 0 -> error
             value = 0;
             needRemove = true;
         }
@@ -9423,7 +9415,8 @@ prevChildren, parentComponent, parentSuspense, unmountChildren) {
         el[key] = value;
     }
     catch (e) {
-        {
+        // do not warn if value is auto-coerced from nullish values
+        if (!needRemove) {
             warn$1(`Failed setting prop "${key}" on <${el.tagName.toLowerCase()}>: ` +
                 `value ${value} is invalid.`, e);
         }
