@@ -174,6 +174,7 @@ const customElements = [
     'ix-native-grid',
     'ix-native-list',
     'mkt',
+    'page-container',
 ];
 const options = {
     cdn: 2,
