@@ -63,7 +63,10 @@ export function genUTSPlatformResource(
   if (fs.existsSync(platformFile)) {
     fs.moveSync(
       platformFile,
-      path.resolve(utsOutputDir, 'src/index' + options.extname)
+      path.resolve(utsOutputDir, 'src/index' + options.extname),
+      {
+        overwrite: true,
+      }
     )
   }
 }
@@ -107,7 +110,9 @@ export function resolveUTSPlatformFile(
           '/index' +
           extname
       )
-      fs.moveSync(platformFile, newPlatformFile)
+      fs.moveSync(platformFile, newPlatformFile, {
+        overwrite: true,
+      })
       platformFile = newPlatformFile
     }
   }
