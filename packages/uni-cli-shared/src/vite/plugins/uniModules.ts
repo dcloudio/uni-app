@@ -26,43 +26,7 @@ export function uniModulesExportsPlugin({
       if (!enable) {
         return ''
       }
-      const uniModulesDir = path.resolve(
-        process.env.UNI_INPUT_DIR,
-        'uni_modules'
-      )
-      if (!fs.existsSync(uniModulesDir)) {
-        return ''
-      }
-      const importCodes: string[] = []
-      const assignCodes: string[] = []
-      fs.readdirSync(uniModulesDir).forEach((uniModuleDir) => {
-        const pkgPath = path.resolve(
-          uniModulesDir,
-          uniModuleDir,
-          'package.json'
-        )
-        if (!fs.existsSync(pkgPath)) {
-          return
-        }
-        const exports = parseJson(fs.readFileSync(pkgPath, 'utf8'))?.uni_modules
-          ?.exports as Exports | undefined
-        if (exports) {
-          const [exportsImportCodes, exportsAssignCodes] = parseExports(
-            process.env.UNI_PLATFORM === 'h5'
-              ? 'web'
-              : process.env.UNI_PLATFORM,
-            `@/uni_modules/${uniModuleDir}`,
-            exports
-          )
-          importCodes.push(...exportsImportCodes)
-          assignCodes.push(...exportsAssignCodes)
-        }
-      })
-      if (!importCodes.length) {
-        return ''
-      }
-      return `${importCodes.join('\n')}
-${assignCodes.join('\n')}`
+      return genUniModulesExports()
     },
   }
 }
@@ -74,6 +38,37 @@ type Defines = {
 
 interface Exports {
   [name: string]: Define | Defines | false
+}
+
+function genUniModulesExports() {
+  const uniModulesDir = path.resolve(process.env.UNI_INPUT_DIR, 'uni_modules')
+  if (!fs.existsSync(uniModulesDir)) {
+    return ''
+  }
+  const importCodes: string[] = []
+  const assignCodes: string[] = []
+  fs.readdirSync(uniModulesDir).forEach((uniModuleDir) => {
+    const pkgPath = path.resolve(uniModulesDir, uniModuleDir, 'package.json')
+    if (!fs.existsSync(pkgPath)) {
+      return
+    }
+    const exports = parseJson(fs.readFileSync(pkgPath, 'utf8'))?.uni_modules
+      ?.exports as Exports | undefined
+    if (exports) {
+      const [exportsImportCodes, exportsAssignCodes] = parseExports(
+        process.env.UNI_PLATFORM === 'h5' ? 'web' : process.env.UNI_PLATFORM,
+        `@/uni_modules/${uniModuleDir}`,
+        exports
+      )
+      importCodes.push(...exportsImportCodes)
+      assignCodes.push(...exportsAssignCodes)
+    }
+  })
+  if (!importCodes.length) {
+    return ''
+  }
+  return `${importCodes.join('\n')}
+${assignCodes.join('\n')}`
 }
 
 export function parseExports(

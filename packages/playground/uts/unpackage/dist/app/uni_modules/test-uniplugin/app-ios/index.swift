@@ -58,6 +58,6 @@ class IndexSwift : NSObject {
     }
     @available(iOS 13.0.0, *)
     public static func s_testAsync() async  -> UTSJSONObject {
-        return testAsync();
+        return await testAsync();
     }
 }
