@@ -72,4 +72,13 @@ describe('compiler: transform scoped slots', () => {
 }`
     )
   })
+  test('scoped slots + slot', () => {
+    assert(
+      `<c><template #n="{ h }"><slot name="n" :h="h"></slot></template></c>`,
+      `<c u-s="{{['n']}}" u-i="2a9ec0b0-0"><view wx:for="{{a}}" wx:for-item="v0" wx:key="b" slot="{{v0.c}}"><slot name="n"></slot></view></c>`,
+      `(_ctx, _cache) => {
+  return { a: _w(({ h }, s0, i0) => { return { a: _r("n", { h: h }), b: i0, c: s0 }; }, { name: 'n', path: 'a', vueId: '2a9ec0b0-0' }) }
+}`
+    )
+  })
 })

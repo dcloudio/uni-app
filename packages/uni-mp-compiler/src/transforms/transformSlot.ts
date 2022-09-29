@@ -178,7 +178,7 @@ function parseScopedSlotKey(context: TransformContext) {
   let { currentScope } = context
   const indexes: string[] = []
   while (currentScope) {
-    if (isVForScope(currentScope)) {
+    if (isVForScope(currentScope) && !isScopedSlotVFor(currentScope)) {
       indexes.push(currentScope.indexAlias)
     }
     currentScope = currentScope.parent!
