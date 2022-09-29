@@ -1,4 +1,4 @@
-import { parseExports } from '../src/vite/plugins/uniModules'
+import { parseExports } from '../src/uni_modules'
 
 describe('uni_modules:exports', () => {
   test('parseExports', () => {
