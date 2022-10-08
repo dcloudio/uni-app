@@ -37,7 +37,7 @@ export function initSpecialMethods (mpInstance) {
 
 export const handleWrap = function (mp, destory) {
   const vueId = mp.props.vueId
-  const list = mp.props['data-event-list'].split(',')
+  const list = (mp.props['data-event-list'] || '').split(',')
   list.forEach(eventName => {
     const key = `${eventName}${vueId}`
     if (destory) {
