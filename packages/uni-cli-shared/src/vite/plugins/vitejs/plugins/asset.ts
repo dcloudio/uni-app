@@ -10,6 +10,7 @@ import { ResolvedConfig } from '../config'
 import { cleanUrl, normalizePath } from '../utils'
 import { withSourcemap } from '../../../../vite/utils/utils'
 import { isFunction, isString } from '@vue/shared'
+import { normalizeNodeModules } from '../../../../utils'
 
 export const assetUrlRE = /__VITE_ASSET__([a-z\d]{8})__(?:\$_(.*?)__)?/g
 
@@ -282,7 +283,8 @@ function fileToBuiltUrl(
 
     const inputDir = normalizePath(process.env.UNI_INPUT_DIR)
     let fileName = file.startsWith(inputDir)
-      ? path.posix.relative(inputDir, file)
+      ? // 需要处理 HBuilderX 项目中的 node_modules 目录
+        normalizeNodeModules(path.posix.relative(inputDir, file))
       : assetFileNamesToFileName(
           path.posix.join(config.build.assetsDir, '[name].[hash][extname]'),
           file,
