@@ -27,7 +27,7 @@ describe('mp-kuaishou: transform component', () => {
     })
     assert(
       `<van-button/>`,
-      `<van-button u-t="m" u-i="dc555fe4-0" bind:__l="__l"/>`,
+      `<van-button ks:if="{{r0}}" u-t="m" u-i="dc555fe4-0" bind:__l="__l"/>`,
       `(_ctx, _cache) => {
   return {}
 }`,

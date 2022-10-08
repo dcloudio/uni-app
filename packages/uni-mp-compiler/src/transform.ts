@@ -123,7 +123,9 @@ export interface TransformContext
   addVIfScope(initScope: CodegenVIfScopeInit): CodegenVIfScope
   addVForScope(initScope: CodegenVForScopeInit): CodegenVForScope
   cache<T extends JSChildNode>(exp: T, isVNode?: boolean): CacheExpression | T
-  isMiniProgramComponent(name: string): 'plugin' | 'component' | undefined
+  isMiniProgramComponent(
+    name: string
+  ): 'plugin' | 'component' | 'dynamicLib' | undefined
   rootNode: TemplateChildNode | null
 }
 

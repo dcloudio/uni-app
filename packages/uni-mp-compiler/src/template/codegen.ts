@@ -1,4 +1,4 @@
-import { hyphenate } from '@vue/shared'
+import { hyphenate, isFunction, isPlainObject } from '@vue/shared'
 import { SLOT_DEFAULT_NAME, dynamicSlotName } from '@dcloudio/uni-shared'
 import {
   formatMiniProgramEvent,
@@ -36,7 +36,7 @@ import {
   VIRTUAL_HOST_CLASS,
 } from '../transforms/utils'
 
-interface TemplateCodegenContext {
+export interface TemplateCodegenContext {
   code: string
   directive: string
   scopeId?: string | null
@@ -45,6 +45,7 @@ interface TemplateCodegenContext {
   lazyElement: MiniProgramCompilerOptions['lazyElement']
   component: MiniProgramCompilerOptions['component']
   isBuiltInComponent: TransformContext['isBuiltInComponent']
+  isMiniProgramComponent: TransformContext['isMiniProgramComponent']
   push(code: string): void
 }
 
@@ -59,6 +60,7 @@ export function generate(
     directive,
     lazyElement,
     isBuiltInComponent,
+    isMiniProgramComponent,
     component,
   }: TemplateCodegenOptions
 ) {
@@ -71,6 +73,7 @@ export function generate(
     lazyElement,
     component,
     isBuiltInComponent,
+    isMiniProgramComponent,
     push(code) {
       context.code += code
     },
@@ -253,6 +256,14 @@ function genComponent(node: ComponentNode, context: TemplateCodegenContext) {
   if (isIfElementNode(node) || isForElementNode(node)) {
     return genElement(node, context)
   }
+  // 小程序原生组件，补充 if(r0)
+  if (context.isMiniProgramComponent(node.tag)) {
+    ;(node as IfElementNode).vIf = {
+      name: 'if',
+      condition: 'r0',
+    }
+    return genElement(node, context)
+  }
   const prop = findProp(node, ATTR_VUE_PROPS) as DirectiveNode
   if (!prop) {
     return genElement(node, context)
@@ -268,14 +279,23 @@ function isLazyElement(node: ElementNode, context: TemplateCodegenContext) {
   if (!context.lazyElement) {
     return false
   }
-  const lazyProps = context.lazyElement[node.tag]
+  let lazyProps: { name: 'on' | 'bind'; arg: string[] }[] | undefined
+  if (isFunction(context.lazyElement)) {
+    const res = context.lazyElement(node, context)
+    if (!isPlainObject(res)) {
+      return res
+    }
+    lazyProps = res[node.tag]
+  } else {
+    lazyProps = context.lazyElement[node.tag]
+  }
   if (!lazyProps) {
     return
   }
   return node.props.some(
     (prop) =>
       prop.type === NodeTypes.DIRECTIVE &&
-      lazyProps.find((lazyProp) => {
+      lazyProps!.find((lazyProp) => {
         return (
           prop.name === lazyProp.name &&
           prop.arg?.type === NodeTypes.SIMPLE_EXPRESSION &&
