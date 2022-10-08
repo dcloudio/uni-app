@@ -1,4 +1,10 @@
 "use strict";
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
 Object.defineProperties(exports, { __esModule: { value: true }, [Symbol.toStringTag]: { value: "Module" } });
 const vue = require("vue");
 const shared = require("@vue/shared");
@@ -10623,6 +10629,7 @@ function normalizeContentType(header) {
 }
 class RequestTask {
   constructor(xhr) {
+    __publicField(this, "_xhr");
     this._xhr = xhr;
   }
   abort() {
