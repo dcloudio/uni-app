@@ -1153,10 +1153,24 @@ const getProvider = initGetProvider({
     payment: ['qqpay'],
     push: ['qq'],
 });
+function createCanvasContext(canvasId, context) {
+    if (context) {
+        context[Symbol.toPrimitive] = () => '[object Object]';
+    }
+    return qq.createCanvasContext(canvasId, context);
+}
+function canvasToTempFilePath(canvasId, context) {
+    if (context) {
+        context[Symbol.toPrimitive] = () => '[object Object]';
+    }
+    return qq.canvasToTempFilePath(canvasId, context);
+}
 
 var shims = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  getProvider: getProvider
+  getProvider: getProvider,
+  createCanvasContext: createCanvasContext,
+  canvasToTempFilePath: canvasToTempFilePath
 });
 
 var protocols = /*#__PURE__*/Object.freeze({
