@@ -111,7 +111,7 @@ export function initChildVues (mpInstance) {
 function handleProps (ref) {
   const eventProps = {}
   let refProps = ref.props
-  const eventList = refProps['data-event-list'].split(',')
+  const eventList = (refProps['data-event-list'] || '').split(',')
   // 初始化支付宝小程序组件事件
   Object.keys(refProps).forEach(key => {
     if (eventList.includes(key)) {
@@ -227,7 +227,7 @@ export const handleLink = (function () {
 
 export const handleWrap = function (mp, destory) {
   const vueId = mp.props.vueId
-  const list = mp.props['data-event-list'].split(',')
+  const list = (mp.props['data-event-list'] || '').split(',')
   list.forEach(eventName => {
     const key = `${eventName}${vueId}`
     if (destory) {
