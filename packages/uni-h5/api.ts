@@ -4,7 +4,7 @@ import { parse } from 'acorn-loose'
 import { simple } from 'acorn-walk'
 import { hyphenate } from '@vue/shared'
 import { isBuiltInComponent } from '@dcloudio/uni-shared'
-import { ExportNamedDeclaration } from 'estree'
+import type { ExportNamedDeclaration } from 'estree'
 
 const BLACKLIST = [
   'AsyncErrorComponent',

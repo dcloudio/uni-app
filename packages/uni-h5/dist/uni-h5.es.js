@@ -1,9 +1,3 @@
-var __defProp = Object.defineProperty;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField = (obj, key, value) => {
-  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
 import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, h, createTextVNode, onBeforeActivate, onBeforeDeactivate, createBlock, renderList, onDeactivated, createApp, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
 import { isString, extend, isArray, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
 import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, debounce, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, parseQuery, NAVBAR_HEIGHT, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, sortObject, ON_BACK_PRESS, parseUrl, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
@@ -1277,10 +1271,8 @@ function normalizeTabBarRoute(index2, oldPagePath, newPagePath) {
 }
 class ComponentDescriptor {
   constructor(vm) {
-    __publicField(this, "$vm");
-    __publicField(this, "$el");
-    __publicField(this, "$bindClass", false);
-    __publicField(this, "$bindStyle", false);
+    this.$bindClass = false;
+    this.$bindStyle = false;
     this.$vm = vm;
     {
       this.$el = resolveOwnerEl(vm.$);
@@ -3420,8 +3412,6 @@ validator.concat({
 const RATES = [0.5, 0.8, 1, 1.25, 1.5, 2];
 class VideoContext {
   constructor(id2, pageId) {
-    __publicField(this, "id");
-    __publicField(this, "pageId");
     this.id = id2;
     this.pageId = pageId;
   }
@@ -3488,8 +3478,6 @@ const operateMapWrap = (id2, pageId, type, options) => {
 };
 class MapContext {
   constructor(id2, pageId) {
-    __publicField(this, "id");
-    __publicField(this, "pageId");
     this.id = id2;
     this.pageId = pageId;
   }
@@ -3895,9 +3883,6 @@ function checkColor(e2) {
 }
 class CanvasGradient {
   constructor(type, data) {
-    __publicField(this, "type");
-    __publicField(this, "data");
-    __publicField(this, "colorStop");
     this.type = type;
     this.data = data;
     this.colorStop = [];
@@ -3908,9 +3893,6 @@ class CanvasGradient {
 }
 class Pattern {
   constructor(image2, repetition) {
-    __publicField(this, "type");
-    __publicField(this, "data");
-    __publicField(this, "colorStop");
     this.type = "pattern";
     this.data = image2;
     this.colorStop = repetition;
@@ -3918,44 +3900,11 @@ class Pattern {
 }
 class TextMetrics {
   constructor(width) {
-    __publicField(this, "width");
     this.width = width;
   }
 }
 class CanvasContext {
   constructor(id2, pageId) {
-    __publicField(this, "id");
-    __publicField(this, "pageId");
-    __publicField(this, "actions");
-    __publicField(this, "path");
-    __publicField(this, "subpath");
-    __publicField(this, "state");
-    __publicField(this, "drawingState");
-    __publicField(this, "setFillStyle");
-    __publicField(this, "setStrokeStyle");
-    __publicField(this, "setGlobalAlpha");
-    __publicField(this, "setShadow");
-    __publicField(this, "addColorStop");
-    __publicField(this, "setLineWidth");
-    __publicField(this, "setLineCap");
-    __publicField(this, "setLineJoin");
-    __publicField(this, "setLineDash");
-    __publicField(this, "setMiterLimit");
-    __publicField(this, "fillRect");
-    __publicField(this, "strokeRect");
-    __publicField(this, "clearRect");
-    __publicField(this, "fill");
-    __publicField(this, "stroke");
-    __publicField(this, "scale");
-    __publicField(this, "rotate");
-    __publicField(this, "translate");
-    __publicField(this, "setFontSize");
-    __publicField(this, "fillText");
-    __publicField(this, "setTextAlign");
-    __publicField(this, "setTextBaseline");
-    __publicField(this, "drawImage");
-    __publicField(this, "strokeText");
-    __publicField(this, "setTransform");
     this.id = id2;
     this.pageId = pageId;
     this.actions = [];
@@ -4615,10 +4564,6 @@ function normalizeRootMargin(margins = {}) {
 }
 class ServiceIntersectionObserver {
   constructor(component, options) {
-    __publicField(this, "_reqId");
-    __publicField(this, "_pageId");
-    __publicField(this, "_component");
-    __publicField(this, "_options");
     this._pageId = getPageIdByVm(component);
     this._component = component;
     this._options = extend({}, defaultOptions, options);
@@ -4670,9 +4615,6 @@ const createIntersectionObserver = /* @__PURE__ */ defineSyncApi("createIntersec
 let reqComponentObserverId = 1;
 class ServiceMediaQueryObserver {
   constructor(component) {
-    __publicField(this, "_reqId");
-    __publicField(this, "_pageId");
-    __publicField(this, "_component");
     this._pageId = component.$page && component.$page.id;
     this._component = component;
   }
@@ -4738,8 +4680,6 @@ function operateEditor(componentId, pageId, type, options) {
 }
 class EditorContext {
   constructor(id2, pageId) {
-    __publicField(this, "id");
-    __publicField(this, "pageId");
     this.id = id2;
     this.pageId = pageId;
   }
@@ -4805,10 +4745,6 @@ function convertContext(result) {
 }
 class NodesRef {
   constructor(selectorQuery, component, selector, single) {
-    __publicField(this, "_selectorQuery");
-    __publicField(this, "_component");
-    __publicField(this, "_selector");
-    __publicField(this, "_single");
     this._selectorQuery = selectorQuery;
     this._component = component;
     this._selector = selector;
@@ -4871,11 +4807,7 @@ class NodesRef {
 }
 class SelectorQuery {
   constructor(page) {
-    __publicField(this, "_page");
-    __publicField(this, "_queue");
-    __publicField(this, "_component");
-    __publicField(this, "_queueCb");
-    __publicField(this, "_nodesRef");
+    this._component = void 0;
     this._page = page;
     this._queue = [];
     this._queueCb = [];
@@ -4962,38 +4894,6 @@ const defaultOption = {
 };
 class MPAnimation {
   constructor(option) {
-    __publicField(this, "actions");
-    __publicField(this, "currentTransform");
-    __publicField(this, "currentStepAnimates");
-    __publicField(this, "option");
-    __publicField(this, "matrix");
-    __publicField(this, "matrix3d");
-    __publicField(this, "rotate");
-    __publicField(this, "rotate3d");
-    __publicField(this, "rotateX");
-    __publicField(this, "rotateY");
-    __publicField(this, "rotateZ");
-    __publicField(this, "scale");
-    __publicField(this, "scale3d");
-    __publicField(this, "scaleX");
-    __publicField(this, "scaleY");
-    __publicField(this, "scaleZ");
-    __publicField(this, "skew");
-    __publicField(this, "skewX");
-    __publicField(this, "skewY");
-    __publicField(this, "translate");
-    __publicField(this, "translate3d");
-    __publicField(this, "translateX");
-    __publicField(this, "translateY");
-    __publicField(this, "translateZ");
-    __publicField(this, "opacity");
-    __publicField(this, "backgroundColor");
-    __publicField(this, "width");
-    __publicField(this, "height");
-    __publicField(this, "right");
-    __publicField(this, "top");
-    __publicField(this, "bottom");
-    __publicField(this, "left");
     this.actions = [];
     this.currentTransform = {};
     this.currentStepAnimates = [];
@@ -11440,13 +11340,6 @@ const PickerView = /* @__PURE__ */ defineBuiltInComponent({
 });
 class Friction {
   constructor(drag) {
-    __publicField(this, "_drag");
-    __publicField(this, "_dragLog");
-    __publicField(this, "_x");
-    __publicField(this, "_v");
-    __publicField(this, "_startTime");
-    __publicField(this, "_dt");
-    __publicField(this, "_powDragDt");
     this._drag = drag;
     this._dragLog = Math.log(drag);
     this._x = 0;
@@ -11513,12 +11406,6 @@ function a(e2, t2) {
 }
 class Spring {
   constructor(m, k, c) {
-    __publicField(this, "_m");
-    __publicField(this, "_k");
-    __publicField(this, "_c");
-    __publicField(this, "_solution");
-    __publicField(this, "_endPosition");
-    __publicField(this, "_startTime");
     this._m = m;
     this._k = k;
     this._c = c;
@@ -11700,14 +11587,6 @@ class Spring {
 }
 class Scroll {
   constructor(extent, friction, spring) {
-    __publicField(this, "_extent");
-    __publicField(this, "_friction");
-    __publicField(this, "_spring");
-    __publicField(this, "_startTime");
-    __publicField(this, "_springing");
-    __publicField(this, "_springOffset");
-    __publicField(this, "_lastTime");
-    __publicField(this, "_lastDx");
     this._extent = extent;
     this._friction = friction || new Friction(0.01);
     this._spring = spring || new Spring(1, 90, 20);
@@ -11824,28 +11703,6 @@ function createAnimation(scroll, onScroll, onEnd) {
 }
 class Scroller {
   constructor(element, options) {
-    __publicField(this, "_element");
-    __publicField(this, "_options");
-    __publicField(this, "_enableSnap");
-    __publicField(this, "_itemSize");
-    __publicField(this, "_enableX");
-    __publicField(this, "_enableY");
-    __publicField(this, "_shouldDispatchScrollEvent");
-    __publicField(this, "_extent");
-    __publicField(this, "_scrollWidth");
-    __publicField(this, "_scrollHeight");
-    __publicField(this, "_position");
-    __publicField(this, "_scroll");
-    __publicField(this, "_onTransitionEnd");
-    __publicField(this, "_startPosition");
-    __publicField(this, "_lastChangePos");
-    __publicField(this, "_animation");
-    __publicField(this, "_scrolling");
-    __publicField(this, "_lastTime");
-    __publicField(this, "_lastDelay");
-    __publicField(this, "_lastIdx");
-    __publicField(this, "_snapping");
-    __publicField(this, "_lastPos");
     options = options || {};
     this._element = element;
     this._options = options;
@@ -16797,36 +16654,12 @@ function createCallout(maps2) {
   }
   class Callout {
     constructor(option = {}, callback) {
-      __publicField(this, "option");
-      __publicField(this, "position");
-      __publicField(this, "index");
-      __publicField(this, "visible");
-      __publicField(this, "alwaysVisible");
-      __publicField(this, "div");
-      __publicField(this, "triangle");
-      __publicField(this, "callback");
-      __publicField(this, "Text");
-      __publicField(this, "setMap");
-      __publicField(this, "getMap");
-      __publicField(this, "getPanes");
-      __publicField(this, "getProjection");
-      __publicField(this, "map_changed");
-      __publicField(this, "set");
-      __publicField(this, "get");
-      __publicField(this, "setOptions");
-      __publicField(this, "bindTo");
-      __publicField(this, "bindsTo");
-      __publicField(this, "notify");
-      __publicField(this, "setValues");
-      __publicField(this, "unbind");
-      __publicField(this, "unbindAll");
-      __publicField(this, "addListener");
-      __publicField(this, "createAMapText", createAMapText);
-      __publicField(this, "removeAMapText", removeAMapText);
-      __publicField(this, "onAdd", onAdd);
-      __publicField(this, "construct", onAdd);
-      __publicField(this, "onRemove", onRemove);
-      __publicField(this, "destroy", onRemove);
+      this.createAMapText = createAMapText;
+      this.removeAMapText = removeAMapText;
+      this.onAdd = onAdd;
+      this.construct = onAdd;
+      this.onRemove = onRemove;
+      this.destroy = onRemove;
       this.option = option || {};
       const visible = this.visible = this.alwaysVisible = option.display === "ALWAYS";
       if (getIsAMap()) {
@@ -17725,40 +17558,7 @@ const initInnerAudioContextEventOnce = /* @__PURE__ */ once(() => {
 });
 class InnerAudioContext {
   constructor() {
-    __publicField(this, "duration");
-    __publicField(this, "currentTime");
-    __publicField(this, "paused");
-    __publicField(this, "src");
-    __publicField(this, "buffered");
-    __publicField(this, "autoplay");
-    __publicField(this, "loop");
-    __publicField(this, "obeyMuteSwitch");
-    __publicField(this, "volume");
-    __publicField(this, "_audio");
-    __publicField(this, "_stoping");
-    __publicField(this, "startTime");
-    __publicField(this, "_events");
-    __publicField(this, "_src", "");
-    __publicField(this, "onCanplay");
-    __publicField(this, "onPlay");
-    __publicField(this, "onPause");
-    __publicField(this, "onStop");
-    __publicField(this, "onEnded");
-    __publicField(this, "onTimeUpdate");
-    __publicField(this, "onError");
-    __publicField(this, "onWaiting");
-    __publicField(this, "onSeeking");
-    __publicField(this, "onSeeked");
-    __publicField(this, "offCanplay");
-    __publicField(this, "offPlay");
-    __publicField(this, "offPause");
-    __publicField(this, "offStop");
-    __publicField(this, "offEnded");
-    __publicField(this, "offTimeUpdate");
-    __publicField(this, "offError");
-    __publicField(this, "offWaiting");
-    __publicField(this, "offSeeking");
-    __publicField(this, "offSeeked");
+    this._src = "";
     var audio = this._audio = new Audio();
     this._stoping = false;
     const propertys = [
@@ -18397,31 +18197,51 @@ const vibrateLong = /* @__PURE__ */ defineAsyncApi(
     }
   }
 );
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
 const getClipboardData = /* @__PURE__ */ defineAsyncApi(
   API_GET_CLIPBOARD_DATA,
-  async (_, { resolve, reject }) => {
+  (_0, _1) => __async(void 0, [_0, _1], function* (_, { resolve, reject }) {
     initI18nGetClipboardDataMsgsOnce();
     const { t: t2 } = useI18n();
     try {
-      const data = await navigator.clipboard.readText();
+      const data = yield navigator.clipboard.readText();
       resolve({ data });
     } catch (error) {
       _getClipboardData(resolve, () => {
         reject(`${error} ${t2("uni.getClipboardData.fail")}`);
       });
     }
-  }
+  })
 );
 const setClipboardData = /* @__PURE__ */ defineAsyncApi(
   API_SET_CLIPBOARD_DATA,
-  async ({ data }, { resolve, reject }) => {
+  (_0, _1) => __async(void 0, [_0, _1], function* ({ data }, { resolve, reject }) {
     try {
-      await navigator.clipboard.writeText(data);
+      yield navigator.clipboard.writeText(data);
       resolve();
     } catch (error) {
       _setClipboardData(data, resolve, reject);
     }
-  },
+  }),
   SetClipboardDataProtocol,
   SetClipboardDataOptions
 );
@@ -19415,7 +19235,6 @@ function normalizeContentType(header) {
 }
 class RequestTask {
   constructor(xhr) {
-    __publicField(this, "_xhr");
     this._xhr = xhr;
   }
   abort() {
@@ -19444,8 +19263,7 @@ function parseHeaders(headers) {
 }
 class DownloadTask {
   constructor(xhr) {
-    __publicField(this, "_xhr");
-    __publicField(this, "_callbacks", []);
+    this._callbacks = [];
     this._xhr = xhr;
   }
   onProgressUpdate(callback) {
@@ -19537,9 +19355,7 @@ const downloadFile = /* @__PURE__ */ defineTaskApi(
 );
 class UploadTask {
   constructor(xhr) {
-    __publicField(this, "_xhr");
-    __publicField(this, "_isAbort");
-    __publicField(this, "_callbacks", []);
+    this._callbacks = [];
     this._xhr = xhr;
   }
   onProgressUpdate(callback) {
@@ -19670,18 +19486,12 @@ const globalEvent = {
 };
 class SocketTask {
   constructor(url, protocols, callback) {
-    __publicField(this, "_webSocket");
-    __publicField(this, "_callbacks", {
+    this._callbacks = {
       open: [],
       close: [],
       error: [],
       message: []
-    });
-    __publicField(this, "CLOSED");
-    __publicField(this, "CLOSING");
-    __publicField(this, "CONNECTING");
-    __publicField(this, "OPEN");
-    __publicField(this, "readyState");
+    };
     let error;
     try {
       const webSocket = this._webSocket = new WebSocket(url, protocols);

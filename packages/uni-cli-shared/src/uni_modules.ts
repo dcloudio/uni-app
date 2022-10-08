@@ -1,8 +1,6 @@
 import path from 'path'
 import fs from 'fs-extra'
-import { isArray, isPlainObject, isString } from '@vue/shared'
 import { recursive } from 'merge'
-import { parseJson } from './json'
 
 type Define = string | string[] | Record<string, string>
 type Defines = {
@@ -25,7 +23,7 @@ export function genUniModulesExports() {
     if (!fs.existsSync(pkgPath)) {
       return
     }
-    const exports = parseJson(fs.readFileSync(pkgPath, 'utf8'))?.uni_modules
+    const exports = JSON.parse(fs.readFileSync(pkgPath, 'utf8'))?.uni_modules
       ?.exports as Exports | undefined
     if (exports) {
       const [exportsImportCodes, exportsAssignCodes] = parseExports(
@@ -108,15 +106,15 @@ function parseDefine(
 ): [string[], string[]] {
   const importCodes: string[] = []
   const assignCodes: string[] = []
-  if (isString(define)) {
+  if (typeof define === 'string') {
     importCodes.push(`import ${define} from '${source}'`)
     assignCodes.push(`${globalObject}.${define} = ${define}`)
-  } else if (isArray(define)) {
+  } else if (Array.isArray(define)) {
     importCodes.push(`import { ${define.join(', ')} } from '${source}'`)
     define.forEach((d) => {
       assignCodes.push(`${globalObject}.${d} = ${d}`)
     })
-  } else if (isPlainObject(define)) {
+  } else {
     const keys = Object.keys(define)
     const specifiers: string[] = []
 

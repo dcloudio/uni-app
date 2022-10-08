@@ -449,6 +449,7 @@ importers:
       '@dcloudio/uni-h5-vue': 3.0.0-alpha-3060420220922006
       '@dcloudio/uni-i18n': 3.0.0-alpha-3060420220922006
       '@dcloudio/uni-shared': 3.0.0-alpha-3060420220922006
+      '@types/estree': ^0.0.51
       '@types/google.maps': ^3.45.6
       '@vue/server-renderer': 3.2.40
       '@vue/shared': 3.2.40
@@ -474,6 +475,7 @@ importers:
     devDependencies:
       '@amap/amap-jsapi-types': 0.0.8
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
+      '@types/estree': 0.0.51
       '@types/google.maps': 3.50.2
       acorn-loose: 8.3.0
       acorn-walk: 8.2.0
