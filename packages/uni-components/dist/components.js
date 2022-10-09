@@ -3272,7 +3272,8 @@ const Switch = defineComponent({
     return () => {
       const {
         color,
-        type
+        type,
+        disabled
       } = props2;
       return createVNode("div", {
         "ref": rootRef
@@ -3280,7 +3281,8 @@ const Switch = defineComponent({
         dataUncType: "uni-switch"
       }, listeners, {
         checked: switchChecked.value,
-        color
+        color,
+        disabled
       }, {
         "style": DCSwitchSize
       }), null) : null, type === SwitchType.checkbox ? createVNode(resolveComponent("checkbox"), mergeProps({

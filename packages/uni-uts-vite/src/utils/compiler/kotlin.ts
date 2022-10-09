@@ -78,6 +78,11 @@ export async function runKotlinDev(filename: string) {
         getDefaultJar().concat(resolveLibs(filename))
       ),
       d8: resolveD8Args(jarFile),
+      sourceRoot: process.env.UNI_INPUT_DIR,
+      sourceMapPath: resolveSourceMapFile(
+        process.env.UNI_OUTPUT_DIR,
+        kotlinFile
+      ),
     }
     const res = await compile(options, process.env.UNI_INPUT_DIR)
     // console.log('dex compile time: ' + (Date.now() - time) + 'ms')
@@ -93,6 +98,13 @@ export async function runKotlinDev(filename: string) {
       }
     }
   }
+}
+
+function resolveSourceMapFile(outputDir: string, kotlinFile: string) {
+  return (
+    path.resolve(resolveSourceMapPath(), path.relative(outputDir, kotlinFile)) +
+    '.map'
+  )
 }
 
 async function compile(filename: string) {

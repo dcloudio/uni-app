@@ -8,6 +8,13 @@ import {
 } from '../lib/source-map/source-map'
 import path from 'path'
 
+export { SourceMapConsumer } from '../lib/source-map/source-map'
+
+export {
+  generateCodeFrame,
+  generateCodeFrameSourceMapConsumer,
+  generateCodeFrameWithSourceMapPath,
+} from './utils'
 // @ts-ignore
 if (__PLATFORM_WEB__) {
   // @ts-ignore

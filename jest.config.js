@@ -10,6 +10,8 @@ module.exports = {
     __GLOBAL__: false,
     __VUE_OPTIONS_API__: true,
     __VUE_PROD_DEVTOOLS__: false,
+    // source-map
+    __PLATFORM_WEB__: false,
   },
   coverageDirectory: 'coverage',
   coverageReporters: ['html', 'lcov', 'text'],
