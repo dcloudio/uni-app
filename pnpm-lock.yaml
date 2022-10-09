@@ -48,6 +48,7 @@ importers:
       rollup-plugin-typescript2: ^0.29.0
       rollup-plugin-vue: ^6.0.0
       semver: ^7.3.5
+      simple-git-hooks: ^2.8.0
       ts-jest: ^27.0.3
       typescript: ^4.8.4
       vite: 3.1.6
@@ -99,6 +100,7 @@ importers:
       rollup-plugin-typescript2: 0.29.0_gypgyaqhine6mwjfvh7icfhviq
       rollup-plugin-vue: 6.0.0_@vue+compiler-sfc@3.2.40
       semver: 7.3.7
+      simple-git-hooks: 2.8.0
       ts-jest: 27.1.5_2lv2rcj537c6eix77wyoioddju
       typescript: 4.8.4
       vite: 3.1.6
@@ -7758,6 +7760,12 @@ packages:
 
   /signal-exit/3.0.7:
     resolution: {integrity: sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ==}
+
+  /simple-git-hooks/2.8.0:
+    resolution: {integrity: sha512-ocmZQORwa6x9mxg+gVIAp5o4wXiWOHGXyrDBA0+UxGKIEKOyFtL4LWNKkP/2ornQPdlnlDGDteVeYP5FjhIoWA==}
+    hasBin: true
+    requiresBuild: true
+    dev: true
 
   /sisteransi/1.0.5:
     resolution: {integrity: sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==}

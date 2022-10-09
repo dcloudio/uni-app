@@ -16,7 +16,8 @@
     "format": "prettier --write --parser typescript \"packages/**/*.ts?(x)\"",
     "test": "tsc -p ./test-dts/tsconfig.json && jest && node scripts/test.js",
     "test-dts": "tsc -p ./test-dts/tsconfig.json && tsc -p ./test-dts/tsconfig.build.json",
-    "preinstall": "node ./scripts/preinstall.js",
+    "preinstall": "npx only-allow pnpm",
+    "postinstall": "simple-git-hooks",
     "e2e:ssr:dev": "cd packages/playground/ssr && npm run dev:ssr",
     "e2e:ssr:open": "cd packages/playground/ssr && npx cypress open",
     "release": "node scripts/release.js"
@@ -25,15 +26,15 @@
   "tsd": {
     "directory": "test-dts"
   },
-  "gitHooks": {
-    "pre-commit": "lint-staged",
-    "commit-msg": "node scripts/verifyCommit.js"
+  "simple-git-hooks": {
+    "pre-commit": "pnpm exec lint-staged --concurrent false",
+    "commit-msg": "node scripts/verifyCommit.js $1"
   },
   "lint-staged": {
-    "*.js": [
+    "packages/**/*.js": [
       "prettier --write"
     ],
-    "*.ts?(x)": [
+    "packages/**/*.ts?(x)": [
       "eslint",
       "prettier --parser=typescript --write"
     ]
@@ -86,6 +87,7 @@
     "rollup-plugin-typescript2": "^0.29.0",
     "rollup-plugin-vue": "^6.0.0",
     "semver": "^7.3.5",
+    "simple-git-hooks": "^2.8.0",
     "ts-jest": "^27.0.3",
     "typescript": "^4.8.4",
     "vite": "3.1.6",

@@ -1,7 +1,8 @@
 // Invoked on the commit-msg git hook by yorkie.
 
 const colors = require('picocolors')
-const msgPath = process.env.GIT_PARAMS
+// get $1 from commit-msg script
+const msgPath = process.argv[2]
 const msg = require('fs').readFileSync(msgPath, 'utf-8').trim()
 
 const commitRE =
