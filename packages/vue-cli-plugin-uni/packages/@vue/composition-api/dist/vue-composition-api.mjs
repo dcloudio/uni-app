@@ -1804,17 +1804,23 @@ function updateTemplateRef(vm) {
 }
 function afterRender(vm) {
     var stack = [vm._vnode];
+    var updated;
     while (stack.length) {
         var vnode = stack.pop();
         if (vnode) {
-            if (vnode.context)
+            if (vnode.context) {
                 updateTemplateRef(vnode.context);
+                updated = true;
+            }
             if (vnode.children) {
                 for (var i = 0; i < vnode.children.length; ++i) {
                     stack.push(vnode.children[i]);
                 }
             }
         }
+    }
+    if (!updated) {
+        updateTemplateRef(vm);
     }
 }
 function updateVmAttrs(vm, ctx) {
