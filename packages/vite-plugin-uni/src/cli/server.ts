@@ -117,7 +117,7 @@ export async function createSSRServer(
   const logger = createLogger(options.logLevel)
   const serverOptions = vite.config.server || {}
 
-  let port = options.port || serverOptions.port || 3000
+  let port = options.port || serverOptions.port || 5173
   let hostname: string | undefined
   if (options.host === 'localhost') {
     // Use a secure default
