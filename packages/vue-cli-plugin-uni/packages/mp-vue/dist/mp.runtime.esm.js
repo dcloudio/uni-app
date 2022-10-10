@@ -5597,6 +5597,16 @@ function nextTick$1(vm, cb) {
 
 /*  */
 
+function clearInstance(key, value) {
+  // 简易去除 Vue 和小程序组件实例
+  if (value) {
+    if (value._isVue || (value.$vm && value.$vm._isVue)) {
+      return {}
+    }
+  }
+  return value
+}
+
 function cloneWithData(vm) {
   // 确保当前 vm 所有数据被同步
   var ret = Object.create(null);
@@ -5628,7 +5638,7 @@ function cloneWithData(vm) {
     ret['value'] = vm.value;
   }
 
-  return JSON.parse(JSON.stringify(ret))
+  return JSON.parse(JSON.stringify(ret, clearInstance))
 }
 
 var patch = function(oldVnode, vnode) {
