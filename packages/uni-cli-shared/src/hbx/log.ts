@@ -12,8 +12,8 @@ import { EXTNAME_VUE_RE } from '../constants'
 import { parseVue } from '../vite/utils/ast'
 import { generateCodeFrame } from '../vite/plugins/vitejs/utils'
 
-const SIGNAL_H5_LOCAL = ' > Local:'
-const SIGNAL_H5_NETWORK = ' > Network:'
+const SIGNAL_H5_LOCAL = ' ➜  Local:'
+const SIGNAL_H5_NETWORK = ' ➜  Network:'
 
 const networkLogs: string[] = []
 
@@ -39,19 +39,19 @@ export const h5ServeFormatter: Formatter = {
   },
   format(msg) {
     if (msg.includes(SIGNAL_H5_NETWORK)) {
-      networkLogs.push(msg)
+      networkLogs.push(msg.replace('➜ ', '➜'))
       process.nextTick(() => {
         if (networkLogs.length) {
-          // 延迟打印所有 network,仅最后一个 network 替换 > 为 -，通知 hbx
+          // 延迟打印所有 network,仅最后一个 network 替换 ➜ 为 -，通知 hbx
           const len = networkLogs.length - 1
-          networkLogs[len] = networkLogs[len].replace('>', '-')
+          networkLogs[len] = networkLogs[len].replace('➜', '-')
           console.log(networkLogs.join('\n'))
           networkLogs.length = 0
         }
       })
       return ''
     }
-    return msg.replace('>', '-')
+    return msg.replace('➜ ', '-')
   },
 }
 

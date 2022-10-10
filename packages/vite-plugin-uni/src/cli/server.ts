@@ -185,9 +185,9 @@ function printServerUrls(
 ): void {
   if (hostname.host === '127.0.0.1') {
     const url = `${protocol}://${hostname.name}:${colors.bold(port)}${base}`
-    info(`  > Local: ${colors.cyan(url)}`)
+    info(`  - Local: ${colors.cyan(url)}`)
     if (hostname.name !== '127.0.0.1') {
-      info(`  > Network: ${colors.dim('use `--host` to expose')}`)
+      info(`  - Network: ${colors.dim('use `--host` to expose')}`)
     }
   } else {
     Object.values(os.networkInterfaces())
@@ -203,13 +203,19 @@ function printServerUrls(
       )
       .map((detail) => {
         const type = detail.address.includes('127.0.0.1')
-          ? 'Local:   '
-          : 'Network: '
+          ? '  - Local:   '
+          : '  ➜ Network: '
         const host = detail.address.replace('127.0.0.1', hostname.name)
         const url = `${protocol}://${host}:${colors.bold(port)}${base}`
-        return `  > ${type} ${colors.cyan(url)}`
+        return `${type} ${colors.cyan(url)}`
       })
-      .forEach((msg) => info(msg))
+      .forEach((msg, index, arr) => {
+        if (arr.length - 1 === index) {
+          info(msg.replace('➜', '-'))
+        } else {
+          info(msg)
+        }
+      })
   }
 }
 

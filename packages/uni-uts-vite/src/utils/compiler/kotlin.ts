@@ -221,15 +221,16 @@ const getCompilerServer = ():
       ): Promise<boolean>
     }
   | false => {
-  try {
-    const compilerServerPath = path.resolve(
-      process.env.UNI_HBUILDERX_PLUGINS,
-      'uniapp-runextension/out/main.js'
-    )
+  const compilerServerPath = path.resolve(
+    process.env.UNI_HBUILDERX_PLUGINS,
+    'uniapp-runextension/out/main.js'
+  )
+  if (fs.existsSync(compilerServerPath)) {
     // eslint-disable-next-line no-restricted-globals
     return require(compilerServerPath)
-  } catch (e) {
+  } else {
     installHBuilderXPlugin('uniapp-runextension')
   }
+
   return false
 }
