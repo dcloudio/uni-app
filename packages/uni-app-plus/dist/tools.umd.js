@@ -4,6 +4,21 @@
     (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.Tools = {}));
 })(this, (function (exports) { 'use strict';
 
+    /**
+     * Make a map and return a function for checking if a key
+     * is in that map.
+     * IMPORTANT: all calls of this function must be prefixed with
+     * \/\*#\_\_PURE\_\_\*\/
+     * So that rollup can tree-shake them if necessary.
+     */
+
+    (process.env.NODE_ENV !== 'production')
+        ? Object.freeze({})
+        : {};
+    (process.env.NODE_ENV !== 'production') ? Object.freeze([]) : [];
+    const hasOwnProperty = Object.prototype.hasOwnProperty;
+    const hasOwn = (val, key) => hasOwnProperty.call(val, key);
+
     const ACTION_TYPE_PAGE_CREATE = 1;
     const ACTION_TYPE_PAGE_CREATED = 2;
     const ACTION_TYPE_CREATE = 3;
@@ -56,7 +71,7 @@
                 case ACTION_TYPE_CREATE:
                     return decodeCreateAction(action, getDict);
                 case ACTION_TYPE_INSERT:
-                    return decodeInsertAction(action);
+                    return decodeInsertAction(action, getDict);
                 case ACTION_TYPE_REMOVE:
                     return decodeRemoveAction(action);
                 case ACTION_TYPE_SET_ATTRIBUTE:
@@ -84,19 +99,19 @@
         if (!nodeJson) {
             return;
         }
-        if (nodeJson.a) {
+        if (hasOwn(nodeJson, 'a')) {
             nodeJson.a = getDict(nodeJson.a);
         }
-        if (nodeJson.e) {
+        if (hasOwn(nodeJson, 'e')) {
             nodeJson.e = getDict(nodeJson.e, false);
         }
-        if (nodeJson.w) {
+        if (hasOwn(nodeJson, 'w')) {
             nodeJson.w = getWxsEventDict(nodeJson.w, getDict);
         }
-        if (nodeJson.s) {
+        if (hasOwn(nodeJson, 's')) {
             nodeJson.s = getDict(nodeJson.s);
         }
-        if (nodeJson.t) {
+        if (hasOwn(nodeJson, 't')) {
             nodeJson.t = getDict(nodeJson.t);
         }
         return nodeJson;
@@ -118,8 +133,14 @@
             decodeNodeJson(getDict, nodeJson),
         ];
     }
-    function decodeInsertAction([, ...action]) {
-        return ['insert', ...action];
+    function decodeInsertAction([, ...action], getDict) {
+        return [
+            'insert',
+            action[0],
+            action[1],
+            action[2],
+            action[3] ? decodeNodeJson(getDict, action[3]) : {},
+        ];
     }
     function decodeRemoveAction([, ...action]) {
         return ['remove', ...action];

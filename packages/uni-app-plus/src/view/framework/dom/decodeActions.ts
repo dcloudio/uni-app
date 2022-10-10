@@ -1,3 +1,4 @@
+import { hasOwn } from '@vue/shared'
 import {
   ACTION_TYPE_ADD_EVENT,
   ACTION_TYPE_ADD_WXS_EVENT,
@@ -77,7 +78,7 @@ export function decodeActions(actions: (PageAction | DictAction)[]) {
       case ACTION_TYPE_CREATE:
         return decodeCreateAction(action, getDict)
       case ACTION_TYPE_INSERT:
-        return decodeInsertAction(action)
+        return decodeInsertAction(action, getDict)
       case ACTION_TYPE_REMOVE:
         return decodeRemoveAction(action)
       case ACTION_TYPE_SET_ATTRIBUTE:
@@ -111,31 +112,31 @@ export function decodeNodeJson(
   if (!nodeJson) {
     return
   }
-  if (nodeJson.a) {
-    ;(nodeJson as unknown as UniNodeJSON).a = getDict(nodeJson.a) as Record<
+  if (hasOwn(nodeJson, 'a')) {
+    ;(nodeJson as unknown as UniNodeJSON).a = getDict(nodeJson.a!) as Record<
       string,
       unknown
     >
   }
-  if (nodeJson.e) {
+  if (hasOwn(nodeJson, 'e')) {
     ;(nodeJson as unknown as UniNodeJSON).e = getDict(
-      nodeJson.e,
+      nodeJson.e!,
       false
     ) as Record<string, number>
   }
-  if (nodeJson.w) {
+  if (hasOwn(nodeJson, 'w')) {
     ;(nodeJson as unknown as UniNodeJSON).w = getWxsEventDict(
-      nodeJson.w,
+      nodeJson.w!,
       getDict
     )
   }
-  if (nodeJson.s) {
+  if (hasOwn(nodeJson, 's')) {
     ;(nodeJson as unknown as UniNodeJSON).s = getDict(
       nodeJson.s as [number, number][]
     ) as UniCSSStyleDeclarationJSON
   }
-  if (nodeJson.t) {
-    ;(nodeJson as unknown as UniNodeJSON).t = getDict(nodeJson.t) as string
+  if (hasOwn(nodeJson, 't')) {
+    ;(nodeJson as unknown as UniNodeJSON).t = getDict(nodeJson.t!) as string
   }
   return nodeJson as unknown as UniNodeJSON
 }
@@ -162,8 +163,14 @@ function decodeCreateAction(
   ]
 }
 
-function decodeInsertAction([, ...action]: InsertAction) {
-  return ['insert', ...action]
+function decodeInsertAction([, ...action]: InsertAction, getDict: GetDict) {
+  return [
+    'insert',
+    action[0],
+    action[1],
+    action[2],
+    action[3] ? decodeNodeJson(getDict, action[3] as UniNodeJSONMinify) : {},
+  ]
 }
 
 function decodeRemoveAction([, ...action]: RemoveAction) {
