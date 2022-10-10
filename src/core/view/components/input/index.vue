@@ -236,6 +236,33 @@ export default {
             $event.target.addEventListener('blur', clearCachedValue)
             return
           }
+          // 处理小数点
+          if (this.cachedValue) {
+            if (this.cachedValue.indexOf('.') !== -1) {
+              // 删除到小数点时
+              if (
+                $event.data !== '.' &&
+                $event.inputType === 'deleteContentBackward'
+              ) {
+                const dotIndex = this.cachedValue.indexOf('.')
+                this.cachedValue =
+                  $event.target.value =
+                  this.valueSync =
+                  this.cachedValue.slice(0, dotIndex)
+                return this.$triggerInput($event, {
+                  value: this.valueSync
+                }, force)
+              }
+            } else if ($event.data === '.') {
+              // 输入小数点时
+              this.cachedValue += '.'
+              this.__clearCachedValue = () => {
+                this.cachedValue = $event.target.value = this.cachedValue.slice(0, -1)
+              }
+              $event.target.addEventListener('blur', this.__clearCachedValue)
+              return false
+            }
+          }
           this.cachedValue = this.valueSync = $event.target.value = this.cachedValue === '-' ? '' : this.cachedValue
           // 输入非法字符不触发 input 事件
           return
