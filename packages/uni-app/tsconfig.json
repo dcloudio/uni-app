@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "module": "CommonJS",
+    "target": "ES5",
+    "outDir": "dist",
+    "sourceMap": false,
+    "rootDir": "src",
+    "removeComments": true,
+    "declaration": true,
+    "skipLibCheck": true,
+    "paths": {
+      "@vue/composition-api": [
+        "../../packages/vue-cli-plugin-uni/packages/@vue/composition-api"
+      ]
+    }
+  },
+  "include": [
+    "src"
+  ]
+}
