@@ -75,6 +75,7 @@ interface MessageSourceLocation {
   file?: string
   line: number
   column: number
+  code?: string
 }
 interface GenerateCodeFrameOptions {
   sourceRoot?: string
@@ -104,8 +105,8 @@ export function generateCodeFrameSourceMapConsumer(
             : res.source,
           line: res.line,
           column: res.column,
-          message: `${m.message}
-${generateCodeFrame(code, { line: res.line, column: res.column })}`,
+          message: m.message,
+          code: generateCodeFrame(code, { line: res.line, column: res.column }),
         }
       }
     }

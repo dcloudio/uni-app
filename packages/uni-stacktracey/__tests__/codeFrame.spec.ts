@@ -110,7 +110,11 @@ describe('code-frame', () => {
   test('generateCodeFrame', async () => {
     const consumer = await initConsumer()
     warnings.forEach((w) => {
-      expect(generateCodeFrameSourceMapConsumer(consumer, w)).toMatchSnapshot()
+      expect(
+        generateCodeFrameSourceMapConsumer(consumer, w, {
+          sourceRoot: '/Users/fxy/Projects/Gitcode/hello-uts',
+        })
+      ).toMatchSnapshot()
     })
   })
 
@@ -118,7 +122,8 @@ describe('code-frame', () => {
     ;(
       await generateCodeFrameWithSourceMapPath(
         filename,
-        JSON.stringify(warnings)
+        JSON.stringify(warnings),
+        { sourceRoot: '/Users/fxy/Projects/Gitcode/hello-uts' }
       )
     ).forEach((m: unknown) => {
       expect(m).toMatchSnapshot()

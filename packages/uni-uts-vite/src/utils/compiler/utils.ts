@@ -83,9 +83,6 @@ function resolveUTSPlatformDir(
   // 如果是根目录的 index.uts，需要定向到真正的平台目录
   const isRootIndex = path.basename(maybePlatformDir) !== platform
   if (isRootIndex) {
-    if (maybePlatformDir.includes('uni_modules')) {
-      return path.join(maybePlatformDir, 'utssdk/' + platform)
-    }
     return path.join(maybePlatformDir, platform)
   }
   return maybePlatformDir
@@ -105,10 +102,7 @@ export function resolveUTSPlatformFile(
     if (fs.existsSync(platformFile)) {
       const newPlatformFile = path.resolve(
         path.dirname(platformFile),
-        (maybeModuleDir.includes('uni_modules') ? 'utssdk/' : '') +
-          platform +
-          '/index' +
-          extname
+        platform + '/index' + extname
       )
       fs.moveSync(platformFile, newPlatformFile, {
         overwrite: true,

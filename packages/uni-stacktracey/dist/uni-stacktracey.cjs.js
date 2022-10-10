@@ -3666,8 +3666,8 @@ function generateCodeFrameSourceMapConsumer(consumer, m, options = {}) {
                         : res.source,
                     line: res.line,
                     column: res.column,
-                    message: `${m.message}
-${generateCodeFrame(code, { line: res.line, column: res.column })}`,
+                    message: m.message,
+                    code: generateCodeFrame(code, { line: res.line, column: res.column }),
                 };
             }
         }
