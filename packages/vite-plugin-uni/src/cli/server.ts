@@ -56,6 +56,8 @@ export async function createSSRServer(
    */
   const vite = await createViteServer(
     addConfigFile({
+      // custom: don't include HTML middlewares
+      appType: 'custom',
       root: process.env.VITE_ROOT_DIR,
       base: options.base,
       mode: options.mode,

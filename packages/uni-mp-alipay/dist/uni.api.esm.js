@@ -1346,7 +1346,6 @@ function showToast({ icon = 'success' } = {}) {
     const args = {
         title: 'content',
         icon: 'type',
-        duration: false,
         image: false,
         mask: false,
     };

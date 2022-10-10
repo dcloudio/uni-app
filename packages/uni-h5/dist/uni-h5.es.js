@@ -9551,6 +9551,22 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
             input.addEventListener("blur", resetCache);
             return false;
           }
+          if (cache.value) {
+            if (cache.value.indexOf(".") !== -1) {
+              if (event.data !== "." && event.inputType === "deleteContentBackward") {
+                const dotIndex = cache.value.indexOf(".");
+                cache.value = input.value = state3.value = cache.value.slice(0, dotIndex);
+                return true;
+              }
+            } else if (event.data === ".") {
+              cache.value += ".";
+              resetCache = () => {
+                cache.value = input.value = cache.value.slice(0, -1);
+              };
+              input.addEventListener("blur", resetCache);
+              return false;
+            }
+          }
           cache.value = state3.value = input.value = cache.value === "-" ? "" : cache.value;
           return false;
         } else {
@@ -15316,7 +15332,9 @@ const index$g = {
     initApp$1(app);
     initViewPlugin(app);
     initServicePlugin(app);
-    app.config.warnHandler = warnHandler;
+    if (!app.config.warnHandler) {
+      app.config.warnHandler = warnHandler;
+    }
     if (__UNI_FEATURE_PAGES__) {
       initRouter(app);
     }

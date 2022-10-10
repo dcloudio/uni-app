@@ -3434,6 +3434,22 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
             input.addEventListener("blur", resetCache);
             return false;
           }
+          if (cache.value) {
+            if (cache.value.indexOf(".") !== -1) {
+              if (event.data !== "." && event.inputType === "deleteContentBackward") {
+                const dotIndex = cache.value.indexOf(".");
+                cache.value = input.value = state2.value = cache.value.slice(0, dotIndex);
+                return true;
+              }
+            } else if (event.data === ".") {
+              cache.value += ".";
+              resetCache = () => {
+                cache.value = input.value = cache.value.slice(0, -1);
+              };
+              input.addEventListener("blur", resetCache);
+              return false;
+            }
+          }
           cache.value = state2.value = input.value = cache.value === "-" ? "" : cache.value;
           return false;
         } else {
@@ -7540,7 +7556,9 @@ function initHistory() {
 const index$f = {
   install(app) {
     initApp$1(app);
-    app.config.warnHandler = warnHandler;
+    if (!app.config.warnHandler) {
+      app.config.warnHandler = warnHandler;
+    }
     if (__UNI_FEATURE_PAGES__) {
       initRouter(app);
     }
