@@ -25,7 +25,7 @@ const pkgs = {
     next: '9.1.9',
   },
   vite: {
-    latest: '3.1.6',
+    latest: '3.1.7',
   },
   '@vitejs/plugin-vue': {
     latest: '3.1.2',
