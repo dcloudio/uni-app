@@ -32,7 +32,7 @@ export function initRelation (detail) {
 }
 
 function selectAllComponents (mpInstance, selector, $refs) {
-  const components = mpInstance.selectAllComponents(selector)
+  const components = mpInstance.selectAllComponents(selector) || []
   components.forEach(component => {
     const ref = component.dataset.ref
     $refs[ref] = component.$vm || component
@@ -46,14 +46,33 @@ function selectAllComponents (mpInstance, selector, $refs) {
   })
 }
 
+export function syncRefs (refs, newRefs) {
+  const oldKeys = new Set(...Object.keys(refs))
+  const newKeys = Object.keys(newRefs)
+  newKeys.forEach(key => {
+    const oldValue = refs[key]
+    const newValue = newRefs[key]
+    if (Array.isArray(oldValue) && Array.isArray(newValue) && oldValue.length === newValue.length && newValue.every(value => oldValue.includes(value))) {
+      return
+    }
+    refs[key] = newValue
+    oldKeys.delete(key)
+  })
+  oldKeys.forEach(key => {
+    delete refs[key]
+  })
+  return refs
+}
+
 export function initRefs (vm) {
   const mpInstance = vm.$scope
+  const refs = {}
   Object.defineProperty(vm, '$refs', {
     get () {
       const $refs = {}
       selectAllComponents(mpInstance, '.vue-ref', $refs)
       // TODO 暂不考虑 for 中的 scoped
-      const forComponents = mpInstance.selectAllComponents('.vue-ref-in-for')
+      const forComponents = mpInstance.selectAllComponents('.vue-ref-in-for') || []
       forComponents.forEach(component => {
         const ref = component.dataset.ref
         if (!$refs[ref]) {
@@ -61,7 +80,7 @@ export function initRefs (vm) {
         }
         $refs[ref].push(component.$vm || component)
       })
-      return $refs
+      return syncRefs(refs, $refs)
     }
   })
 }
