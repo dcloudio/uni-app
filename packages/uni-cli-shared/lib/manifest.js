@@ -140,6 +140,11 @@ function isEnableSecureNetwork (manifestJson, platform) {
     manifestJson = getManifestJson()
   }
   const platformOptions = manifestJson[platform]
+  if (platform === 'app-plus') {
+    return !!(
+      platformOptions && platformOptions.modules && platformOptions.modules.SecureNetwork
+    )
+  }
   return platformOptions && platformOptions.secureNetwork && platformOptions.secureNetwork.enable === true
 }
 
