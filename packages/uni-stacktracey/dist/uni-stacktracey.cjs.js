@@ -3712,9 +3712,16 @@ function resolveSourceMapPath(sourceMapFilename, name, outputDir) {
     const is_uni_modules = path__default["default"].basename(path__default["default"].dirname(name)) === 'uni_modules';
     return path__default["default"].resolve(outputDir, '../.sourcemap/app', name, is_uni_modules ? 'utssdk' : '', sourceMapFilename);
 }
-function generateCodeFrameWithAndroidStacktrace(stacktrace, { name, inputDir, outputDir }) {
+function generateCodeFrameWithKotlinStacktrace(stacktrace, { name, inputDir, outputDir }) {
     const sourceMapFilename = resolveSourceMapPath('app-android/index.kt.map', name, outputDir);
     return generateCodeFrameWithStacktrace(stacktrace, /e:\s+(.*):\s+\(([0-9]+),\s+([0-9]+)\):\s+(.*)/g, {
+        sourceRoot: inputDir,
+        sourceMapFilename,
+    });
+}
+function generateCodeFrameWithSwiftStacktrace(stacktrace, { name, inputDir, outputDir }) {
+    const sourceMapFilename = resolveSourceMapPath('app-ios/index.swift.map', name, outputDir);
+    return generateCodeFrameWithStacktrace(stacktrace, /(.*):([0-9]+):([0-9]+):\s+error:\s+(.*)/g, {
         sourceRoot: inputDir,
         sourceMapFilename,
     });
@@ -4070,8 +4077,9 @@ ${_stack.errMsg}`;
 exports.SourceMapConsumer = SourceMapConsumer;
 exports.generateCodeFrame = generateCodeFrame;
 exports.generateCodeFrameSourceMapConsumer = generateCodeFrameSourceMapConsumer;
-exports.generateCodeFrameWithAndroidStacktrace = generateCodeFrameWithAndroidStacktrace;
+exports.generateCodeFrameWithKotlinStacktrace = generateCodeFrameWithKotlinStacktrace;
 exports.generateCodeFrameWithSourceMapPath = generateCodeFrameWithSourceMapPath;
+exports.generateCodeFrameWithSwiftStacktrace = generateCodeFrameWithSwiftStacktrace;
 exports.stacktracey = stacktracey;
 exports.uniStracktraceyPreset = uniStracktraceyPreset;
 exports.utsStracktraceyPreset = utsStracktraceyPreset;

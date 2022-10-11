@@ -185,7 +185,7 @@ function resolveSourceMapPath(
   )
 }
 
-export function generateCodeFrameWithAndroidStacktrace(
+export function generateCodeFrameWithKotlinStacktrace(
   stacktrace: string,
   { name, inputDir, outputDir }: GenerateCodeFrameWithStacktraceOptions
 ) {
@@ -197,6 +197,25 @@ export function generateCodeFrameWithAndroidStacktrace(
   return generateCodeFrameWithStacktrace(
     stacktrace,
     /e:\s+(.*):\s+\(([0-9]+),\s+([0-9]+)\):\s+(.*)/g,
+    {
+      sourceRoot: inputDir,
+      sourceMapFilename,
+    }
+  )
+}
+
+export function generateCodeFrameWithSwiftStacktrace(
+  stacktrace: string,
+  { name, inputDir, outputDir }: GenerateCodeFrameWithStacktraceOptions
+) {
+  const sourceMapFilename = resolveSourceMapPath(
+    'app-ios/index.swift.map',
+    name,
+    outputDir
+  )
+  return generateCodeFrameWithStacktrace(
+    stacktrace,
+    /(.*):([0-9]+):([0-9]+):\s+error:\s+(.*)/g,
     {
       sourceRoot: inputDir,
       sourceMapFilename,

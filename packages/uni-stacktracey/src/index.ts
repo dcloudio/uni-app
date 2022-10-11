@@ -14,7 +14,8 @@ export {
   generateCodeFrame,
   generateCodeFrameSourceMapConsumer,
   generateCodeFrameWithSourceMapPath,
-  generateCodeFrameWithAndroidStacktrace,
+  generateCodeFrameWithKotlinStacktrace,
+  generateCodeFrameWithSwiftStacktrace,
 } from './utils'
 // @ts-ignore
 if (__PLATFORM_WEB__) {
