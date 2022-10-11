@@ -150,8 +150,17 @@ function pathToGlob (pathString, glob, options = {}) {
   }
   return path.posix.join(safeStr, glob)
 }
+/**
+ * 字节跳动小程序可以配置 ext:// 开头的插件页面模板，如 ext://microapp-trade-plugin/order-confirm
+ * @param pagePath
+ * @returns
+ */
+function isNormalPage (pagePath) {
+  return !pagePath.startsWith('ext://')
+}
 
 module.exports = {
+  isNormalPage,
   isInHBuilderX,
   isInHBuilderXAlpha,
   getCLIContext,
