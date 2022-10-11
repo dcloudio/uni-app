@@ -3662,7 +3662,7 @@ function generateCodeFrameSourceMapConsumer(consumer, m, options = {}) {
                 return {
                     type: m.type,
                     file: options.sourceRoot
-                        ? normalizePath(path__default["default"].relative(options.sourceRoot, res.source))
+                        ? normalizePath(path__default["default"].relative(options.sourceRoot, res.source.replace('\\\\?\\', '')))
                         : res.source,
                     line: res.line,
                     column: res.column,

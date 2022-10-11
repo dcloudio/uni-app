@@ -101,7 +101,12 @@ export function generateCodeFrameSourceMapConsumer(
         return {
           type: m.type,
           file: options.sourceRoot
-            ? normalizePath(path.relative(options.sourceRoot, res.source))
+            ? normalizePath(
+                path.relative(
+                  options.sourceRoot,
+                  res.source.replace('\\\\?\\', '')
+                )
+              )
             : res.source,
           line: res.line,
           column: res.column,
