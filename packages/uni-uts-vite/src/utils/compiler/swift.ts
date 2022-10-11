@@ -1,6 +1,12 @@
-import { isInHBuilderX, resolveSourceMapPath } from '@dcloudio/uni-cli-shared'
+import { isInHBuilderX } from '@dcloudio/uni-cli-shared'
 import { capitalize } from '@vue/shared'
-import { genUTSPlatformResource, getUtsCompiler, resolvePackage } from './utils'
+import {
+  genUTSPlatformResource,
+  getUtsCompiler,
+  moveRootIndexSourceMap,
+  resolvePackage,
+  resolveUTSSourceMapPath,
+} from './utils'
 
 function parseSwiftPackage(filename: string) {
   const res = resolvePackage(filename)
@@ -49,11 +55,17 @@ async function compile(filename: string) {
       isPlugin: true,
       outDir: outputDir,
       package: parseSwiftPackage(filename).namespace,
-      sourceMap: resolveSourceMapPath(),
+      sourceMap: resolveUTSSourceMapPath(filename),
       extname: 'swift',
       imports: ['DCUTSPlugin'],
       logFilename: true,
       noColor: isInHBuilderX(),
     },
+  })
+  moveRootIndexSourceMap(filename, {
+    inputDir: process.env.UNI_INPUT_DIR,
+    outputDir: process.env.UNI_OUTPUT_DIR,
+    platform: 'app-ios',
+    extname: '.swift',
   })
 }

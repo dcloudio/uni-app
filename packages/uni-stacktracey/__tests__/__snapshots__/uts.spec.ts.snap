@@ -1,0 +1,53 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`code-frame-uts android 1`] = `
+"error: The integer literal does not conform to the expected type String
+at uni_modules/test-uts1/utssdk/index.uts:2:10
+1  |  export function test(): string {
+2  |    return 1;
+   |            ^
+3  |  }
+4  |  
+
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':uni_modules:test-uts1:compileReleaseKotlin'.
+> Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+
+* Get more help at https://help.gradle.org
+
+BUILD FAILED in 50s"
+`;
+
+exports[`code-frame-uts android 2`] = `
+"error: The integer literal does not conform to the expected type String
+at utssdk/test2/index.uts:2:10
+1  |  export function test(): string {
+2  |    return 2;
+   |            ^
+3  |  }
+4  |  
+
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':uni_modules:test-uts1:compileReleaseKotlin'.
+> Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+
+* Get more help at https://help.gradle.org
+
+BUILD FAILED in 50s"
+`;

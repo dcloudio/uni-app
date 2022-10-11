@@ -3708,6 +3708,42 @@ function generateCodeFrameWithSourceMapPath(filename, messages, options = {}) {
     }
     return Promise.resolve([]);
 }
+function resolveSourceMapPath(sourceMapFilename, name, outputDir) {
+    const is_uni_modules = path__default["default"].basename(path__default["default"].dirname(name)) === 'uni_modules';
+    return path__default["default"].resolve(outputDir, '../.sourcemap/app', name, is_uni_modules ? 'utssdk' : '', sourceMapFilename);
+}
+function generateCodeFrameWithAndroidStacktrace(stacktrace, { name, inputDir, outputDir }) {
+    const sourceMapFilename = resolveSourceMapPath('app-android/index.kt.map', name, outputDir);
+    return generateCodeFrameWithStacktrace(stacktrace, /e:\s+(.*):\s+\(([0-9]+),\s+([0-9]+)\):\s+(.*)/g, {
+        sourceRoot: inputDir,
+        sourceMapFilename,
+    });
+}
+function generateCodeFrameWithStacktrace(stacktrace, regexp, { sourceRoot, sourceMapFilename, }) {
+    return new Promise((resolve) => {
+        initConsumer(sourceMapFilename).then((consumer) => {
+            if (!consumer) {
+                return resolve(stacktrace);
+            }
+            resolve(stacktrace.replace(regexp, (substring, file, line, column, message) => {
+                const m = generateCodeFrameSourceMapConsumer(consumer, {
+                    type: 'error',
+                    file,
+                    message,
+                    line: parseInt(line),
+                    column: parseInt(column),
+                }, { sourceRoot });
+                if (!m) {
+                    return substring;
+                }
+                return `error: ${message}
+at ${m.file}:${m.line}:${m.column}
+${m.code}
+`;
+            }));
+        });
+    });
+}
 
 const nixSlashes = (x) => x.replace(/\\/g, '/');
 const sourcemapCatch = {};
@@ -4034,6 +4070,7 @@ ${_stack.errMsg}`;
 exports.SourceMapConsumer = SourceMapConsumer;
 exports.generateCodeFrame = generateCodeFrame;
 exports.generateCodeFrameSourceMapConsumer = generateCodeFrameSourceMapConsumer;
+exports.generateCodeFrameWithAndroidStacktrace = generateCodeFrameWithAndroidStacktrace;
 exports.generateCodeFrameWithSourceMapPath = generateCodeFrameWithSourceMapPath;
 exports.stacktracey = stacktracey;
 exports.uniStracktraceyPreset = uniStracktraceyPreset;

@@ -13,9 +13,11 @@ import {
 import {
   genUTSPlatformResource,
   getUtsCompiler,
+  moveRootIndexSourceMap,
   resolveAndroidDir,
   resolvePackage,
   resolveUTSPlatformFile,
+  resolveUTSSourceMapPath,
 } from './utils'
 import { Module } from '../../../types/types'
 
@@ -124,7 +126,7 @@ async function compile(filename: string) {
       isPlugin: true,
       outDir: outputDir,
       package: parseKotlinPackage(filename).package,
-      sourceMap: resolveSourceMapPath(),
+      sourceMap: resolveUTSSourceMapPath(filename),
       extname: 'kt',
       imports: [
         'kotlinx.coroutines.async',
@@ -136,6 +138,13 @@ async function compile(filename: string) {
       logFilename: true,
       noColor: isInHBuilderX(),
     },
+  })
+
+  moveRootIndexSourceMap(filename, {
+    inputDir: process.env.UNI_INPUT_DIR,
+    outputDir: process.env.UNI_OUTPUT_DIR,
+    platform: 'app-android',
+    extname: '.kt',
   })
 }
 

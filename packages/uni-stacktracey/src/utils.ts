@@ -163,3 +163,85 @@ export function generateCodeFrameWithSourceMapPath(
   }
   return Promise.resolve([])
 }
+
+interface GenerateCodeFrameWithStacktraceOptions {
+  name: string
+  inputDir: string
+  outputDir: string
+}
+
+function resolveSourceMapPath(
+  sourceMapFilename: string,
+  name: string,
+  outputDir: string
+) {
+  const is_uni_modules = path.basename(path.dirname(name)) === 'uni_modules'
+  return path.resolve(
+    outputDir,
+    '../.sourcemap/app',
+    name,
+    is_uni_modules ? 'utssdk' : '',
+    sourceMapFilename
+  )
+}
+
+export function generateCodeFrameWithAndroidStacktrace(
+  stacktrace: string,
+  { name, inputDir, outputDir }: GenerateCodeFrameWithStacktraceOptions
+) {
+  const sourceMapFilename = resolveSourceMapPath(
+    'app-android/index.kt.map',
+    name,
+    outputDir
+  )
+  return generateCodeFrameWithStacktrace(
+    stacktrace,
+    /e:\s+(.*):\s+\(([0-9]+),\s+([0-9]+)\):\s+(.*)/g,
+    {
+      sourceRoot: inputDir,
+      sourceMapFilename,
+    }
+  )
+}
+
+function generateCodeFrameWithStacktrace(
+  stacktrace: string,
+  regexp: RegExp,
+  {
+    sourceRoot,
+    sourceMapFilename,
+  }: {
+    sourceRoot: string
+    sourceMapFilename: string
+  }
+) {
+  return new Promise((resolve) => {
+    initConsumer(sourceMapFilename).then((consumer) => {
+      if (!consumer) {
+        return resolve(stacktrace)
+      }
+      resolve(
+        stacktrace.replace(regexp, (substring, file, line, column, message) => {
+          const m = generateCodeFrameSourceMapConsumer(
+            consumer,
+            {
+              type: 'error',
+              file,
+              message,
+              line: parseInt(line),
+              column: parseInt(column),
+            },
+            { sourceRoot }
+          )
+          if (!m) {
+            return substring
+          }
+          return `error: ${message}
+at ${m.file}:${m.line}:${m.column}
+${m.code}
+`
+        })
+      )
+    })
+  })
+}

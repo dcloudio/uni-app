@@ -3691,6 +3691,42 @@ function generateCodeFrameWithSourceMapPath(filename, messages, options = {}) {
     }
     return Promise.resolve([]);
 }
+function resolveSourceMapPath(sourceMapFilename, name, outputDir) {
+    const is_uni_modules = path.basename(path.dirname(name)) === 'uni_modules';
+    return path.resolve(outputDir, '../.sourcemap/app', name, is_uni_modules ? 'utssdk' : '', sourceMapFilename);
+}
+function generateCodeFrameWithAndroidStacktrace(stacktrace, { name, inputDir, outputDir }) {
+    const sourceMapFilename = resolveSourceMapPath('app-android/index.kt.map', name, outputDir);
+    return generateCodeFrameWithStacktrace(stacktrace, /e:\s+(.*):\s+\(([0-9]+),\s+([0-9]+)\):\s+(.*)/g, {
+        sourceRoot: inputDir,
+        sourceMapFilename,
+    });
+}
+function generateCodeFrameWithStacktrace(stacktrace, regexp, { sourceRoot, sourceMapFilename, }) {
+    return new Promise((resolve) => {
+        initConsumer(sourceMapFilename).then((consumer) => {
+            if (!consumer) {
+                return resolve(stacktrace);
+            }
+            resolve(stacktrace.replace(regexp, (substring, file, line, column, message) => {
+                const m = generateCodeFrameSourceMapConsumer(consumer, {
+                    type: 'error',
+                    file,
+                    message,
+                    line: parseInt(line),
+                    column: parseInt(column),
+                }, { sourceRoot });
+                if (!m) {
+                    return substring;
+                }
+                return `error: ${message}
+at ${m.file}:${m.line}:${m.column}
+${m.code}
+`;
+            }));
+        });
+    });
+}
 
 // @ts-ignore
 {
@@ -4024,4 +4060,4 @@ ${_stack.errMsg}`;
     };
 }
 
-export { SourceMapConsumer, generateCodeFrame, generateCodeFrameSourceMapConsumer, generateCodeFrameWithSourceMapPath, stacktracey, uniStracktraceyPreset, utsStracktraceyPreset };
+export { SourceMapConsumer, generateCodeFrame, generateCodeFrameSourceMapConsumer, generateCodeFrameWithAndroidStacktrace, generateCodeFrameWithSourceMapPath, stacktracey, uniStracktraceyPreset, utsStracktraceyPreset };

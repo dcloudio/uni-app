@@ -109,9 +109,12 @@ export function pathToGlob(
   return path.posix.join(safeStr, glob)
 }
 
-export function resolveSourceMapPath() {
+export function resolveSourceMapPath(
+  outputDir?: string,
+  platform?: UniApp.PLATFORM
+) {
   return path.resolve(
-    process.env.UNI_OUTPUT_DIR,
-    '../.sourcemap/' + getPlatformDir()
+    outputDir || process.env.UNI_OUTPUT_DIR,
+    '../.sourcemap/' + (platform || getPlatformDir())
   )
 }

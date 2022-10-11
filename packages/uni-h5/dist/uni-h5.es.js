@@ -20447,7 +20447,7 @@ function removeNonTabBarPages() {
   }
 }
 function isSamePage(url, $page) {
-  return url === $page.fullPath;
+  return url === $page.fullPath || url === "/" && $page.meta.isEntry;
 }
 function getTabBarPageId(url) {
   const pages = getCurrentPagesMap().values();
