@@ -97,7 +97,7 @@ export function isEnableSecureNetwork(
 ) {
   const manifest = parseManifestJsonOnce(inputDir)
   if (platform === 'app') {
-    return !!manifest[platform]?.modules?.SecureNetwork
+    return !!manifest['app-plus']?.modules?.SecureNetwork
   }
   return manifest[platform]?.secureNetwork?.enable === true
 }
