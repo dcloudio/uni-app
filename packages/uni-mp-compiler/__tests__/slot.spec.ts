@@ -39,6 +39,13 @@ describe('compiler: transform slot', () => {
   return { a: _f(3, (item, index, i0) => { return { a: _d('title' + index + '-' + i0), b: _r(_d('title' + index), { content: { name: 'name' + index } }, i0), c: index }; }) }
 }`
     )
+    assert(
+      `<view v-for="(item,index) in 3" :key="index"><slot :name="item.slot" :content="{name:'name'+index}"></slot></view>`,
+      `<view wx:for="{{a}}" wx:for-item="item" wx:key="c"><slot name="{{item.a}}"></slot></view>`,
+      `(_ctx, _cache) => {
+  return { a: _f(3, (item, index, i0) => { return { a: _d(item.slot), b: _r(_d(item.slot), { content: { name: 'name' + index } }, i0), c: index }; }) }
+}`
+    )
   })
   test('fallback content', () => {
     assert(

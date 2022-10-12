@@ -3,6 +3,13 @@ import { assert } from './testUtils'
 describe('compiler: transform scoped slots', () => {
   test('basic', () => {
     assert(
+      `<view><slot data="123"/></view>`,
+      `<view><slot name="d"/></view>`,
+      `(_ctx, _cache) => {
+  return { a: _r("d", { data: "123" }) }
+}`
+    )
+    assert(
       `<view><slot :item="item" :index="index"/></view>`,
       `<view><slot name="d"/></view>`,
       `(_ctx, _cache) => {
