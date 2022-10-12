@@ -7185,7 +7185,7 @@ function initHooks(options, instance, publicThis) {
     return;
   }
   Object.keys(options).forEach((name) => {
-    if (name.indexOf("on") === 0) {
+    if (uniShared.isUniLifecycleHook(name, options[name], false)) {
       const hooks = options[name];
       if (shared.isArray(hooks)) {
         hooks.forEach(

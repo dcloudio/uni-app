@@ -1292,6 +1292,21 @@ const MINI_PROGRAM_PAGE_RUNTIME_HOOKS = /*#__PURE__*/ (() => {
         onShareTimeline: 1 << 2,
     };
 })();
+function isUniLifecycleHook(name, value, checkType = true) {
+    // 检查类型
+    if (checkType && !shared.isFunction(value)) {
+        return false;
+    }
+    if (UniLifecycleHooks.indexOf(name) > -1) {
+        // 已预定义
+        return true;
+    }
+    else if (name.indexOf('on') === 0) {
+        // 以 on 开头
+        return true;
+    }
+    return false;
+}
 
 let vueApp;
 const createVueAppHooks = [];
@@ -1511,6 +1526,7 @@ exports.isH5NativeTag = isH5NativeTag;
 exports.isMiniProgramNativeTag = isMiniProgramNativeTag;
 exports.isRootHook = isRootHook;
 exports.isRootImmediateHook = isRootImmediateHook;
+exports.isUniLifecycleHook = isUniLifecycleHook;
 exports.normalizeDataset = normalizeDataset;
 exports.normalizeEventType = normalizeEventType;
 exports.normalizeTarget = normalizeTarget;

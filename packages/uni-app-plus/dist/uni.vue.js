@@ -1,4 +1,4 @@
-import { invokeArrayFns, ON_LOAD, ON_SHOW, LINEFEED, RENDERJS_MODULES, formatLog, WXS_PROTOCOL, WXS_MODULES, UniLifecycleHooks, ON_ERROR, invokeCreateErrorHandler, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
+import { invokeArrayFns, isUniLifecycleHook, ON_LOAD, ON_SHOW, LINEFEED, RENDERJS_MODULES, formatLog, WXS_PROTOCOL, WXS_MODULES, UniLifecycleHooks, ON_ERROR, invokeCreateErrorHandler, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
 import { isString, isArray, isFunction } from '@vue/shared';
 import { injectHook } from 'vue';
 
@@ -56,7 +56,7 @@ function initHooks(options, instance, publicThis) {
         return;
     }
     Object.keys(options).forEach((name) => {
-        if (name.indexOf('on') === 0) {
+        if (isUniLifecycleHook(name, options[name], false)) {
             const hooks = options[name];
             if (isArray(hooks)) {
                 hooks.forEach((hook) => injectLifecycleHook(name, hook, publicThis, instance));

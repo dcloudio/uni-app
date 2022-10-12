@@ -1,4 +1,4 @@
-import { isRootHook, getValueByDataPath, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, dynamicSlotName } from '@dcloudio/uni-shared';
+import { isRootHook, getValueByDataPath, isUniLifecycleHook, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, dynamicSlotName } from '@dcloudio/uni-shared';
 import { extend, isObject, def, hasChanged, isArray, isString, isFunction, isPromise, remove, EMPTY_OBJ, toHandlerKey, camelize, capitalize, hasOwn, hyphenate, isReservedProp, toRawType, normalizeClass, normalizeStyle, isOn, toTypeString, NOOP, isMap, isIntegerKey, isSet, isPlainObject, makeMap, invokeArrayFns, NO, isSymbol, toNumber, isBuiltInDirective, EMPTY_ARR, isModelListener, toDisplayString } from '@vue/shared';
 export { EMPTY_OBJ, camelize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
 
@@ -5226,7 +5226,7 @@ function initHooks(options, instance, publicThis) {
         return;
     }
     Object.keys(options).forEach((name) => {
-        if (name.indexOf('on') === 0) {
+        if (isUniLifecycleHook(name, options[name], false)) {
             const hooks = options[name];
             if (isArray(hooks)) {
                 hooks.forEach((hook) => injectLifecycleHook(name, hook, publicThis, instance));
