@@ -141,17 +141,15 @@ export default {
         url = `https://www.google.com/maps/dir/?api=1${origin}&destination=${this.latitude}%2C${this.longitude}`
       } else if (mapInfo.type === MapType.QQ) {
         const fromcoord = this.location.latitude
-          ? `&fromcoord=${this.location.latitude}%2C${this.location.longitude}`
+          ? `&fromcoord=${this.location.latitude}%2C${this.location.longitude}&from=${encodeURIComponent(
+          '我的位置'
+        )}`
           : ''
         url = `https://apis.map.qq.com/uri/v1/routeplan?type=drive${fromcoord}&tocoord=${this.latitude
-          }%2C${this.longitude}&from=${encodeURIComponent(
-            '我的位置'
-          )}&to=${encodeURIComponent(this.name || '目的地')}&ref=${mapInfo.key}`
+          }%2C${this.longitude}&to=${encodeURIComponent(this.name || '目的地')}&ref=${mapInfo.key}`
       } else if (mapInfo.type === MapType.AMAP) {
-        url = `https://m.amap.com/navi/?dest=${this.longitude},${this.latitude}&key=${mapInfo.key}`
-        if (this.name) {
-          url += `&destName=${this.name}`
-        }
+        const from = this.location.latitude ? `from=${this.location.longitude},${this.location.latitude},${encodeURIComponent('我的位置')}&` : ''
+        url = `https://uri.amap.com/navigation?${from}to=${this.longitude},${this.latitude},${encodeURIComponent(this.name || '目的地')}}`
       }
       window.open(url)
     }
