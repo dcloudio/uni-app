@@ -15,7 +15,7 @@ fun login(name: String, pwd: String): UTSJSONObject {
         var pwd = pwd
     };
 }
-val __default = getResourcePath("uni_modules/test-uniplugin/static/logo.png");
+val default = getResourcePath("uni_modules/test-uniplugin/static/logo.png");
 val test = arrayOf(1, 2, 3);
 open class GetBatteryInfoOptions : UTSJSONObject() {
     open var success: UTSCallback? = null;
@@ -29,13 +29,13 @@ open class User : IUser {
         }
         , 1000);
         login(name, pwd);
-        Log.info(__default);
+        Log.info(default);
         console.log("def android", " at uni_modules/test-uniplugin/app-android/index.uts:23");
         console.log("ndef ios", " at uni_modules/test-uniplugin/app-android/index.uts:32");
         console.log("def android || def ios", " at uni_modules/test-uniplugin/app-android/index.uts:35");
     }
     override fun register(name: String, callback: UTSCallback) {
-        Log.info(__default as FrameLayout);
+        Log.info(default as FrameLayout);
     }
     open fun test(view: View) {}
 }

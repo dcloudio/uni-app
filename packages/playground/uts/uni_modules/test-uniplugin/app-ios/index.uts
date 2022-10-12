@@ -1,4 +1,5 @@
 import { UIDevice } from 'UIKit'
+import { CLLocationManager, CLAuthorizationStatus } from 'CoreLocation'
 
 type GetBatteryInfoOptions = {
   name: string
@@ -42,6 +43,7 @@ export function test1(callback: () => void): string {
   //#ifdef MP-WEIXIN
   console.log('def weixin')
   //#endif
+  console.log(CLLocationManager, CLAuthorizationStatus)
   return 'test1'
 }
 
