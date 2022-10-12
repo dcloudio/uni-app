@@ -119,7 +119,10 @@ function buildAppCss() {
     return
   }
   const appCssJsCode = fs.readFileSync(appCssJsFilename, 'utf8')
-  const appCssJsFn = new Function('exports', appCssJsCode)
+  const appCssJsFn = new Function(
+    'exports',
+    appCssJsCode.replace(`export default`, `exports=`)
+  )
   const exports = { styles: [] }
   appCssJsFn(exports)
   const appCssJsonCode = JSON.stringify(exports.styles)
