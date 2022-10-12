@@ -210,8 +210,7 @@ async function build (args, api, options) {
 
           if (process.env.UNI_PLATFORM === 'h5' && !isInHBuilderX) {
             console.log()
-            console.log('欢迎将H5站部署到uniCloud前端网页托管平台，高速、免费、安全、省心，详见：')
-            console.log('https://uniapp.dcloud.io/uniCloud/hosting')
+            console.log('欢迎将H5站部署到uniCloud前端网页托管平台，高速、免费、安全、省心，详见：https://uniapp.dcloud.io/uniCloud/hosting')
           }
         } else {
           const dirMsg = runByHBuilderX ? ''

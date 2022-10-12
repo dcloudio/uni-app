@@ -48,7 +48,7 @@
   "pluginUni.entryDileNoExistsCheckAfterRetry": "{{0}} 入口文件不存在，请检查后重试",
   "pluginUni.nvueCompileModeForDetail": "当前nvue编译模式：{{0}}。编译模式差异见 {{1}}",
   "pluginUni.currentProjectDefaultSpaceId": "当前项目的uniCloud使用的默认服务空间spaceId为：{{0}}",
-  "pluginUni.unicloudReleaseH5": "发布H5，需要在uniCloud web控制台操作，绑定安全域名，否则会因为跨域问题而无法访问。教程参考：{{0}}",
+  "pluginUni.unicloudReleaseH5": "发布web站点需要在uniCloud web控制台操作，绑定安全域名，否则会因为跨域问题而无法访问。教程参考：{{0}}",
   "pluginUni.unicloudShowedRunByHBuilderX": "当前项目使用了uniCloud，为避免云函数调用跨域问题，建议在HBuilderX内置浏览器里调试，如使用外部浏览器需处理跨域，详见：{{0}}",
   "pluginUni.pleaseSpecifyPluginName": "请指定插件名",
   "pluginUni.pluginNameNotExist": "插件名称不存在",
