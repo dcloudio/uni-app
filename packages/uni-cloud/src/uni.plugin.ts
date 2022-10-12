@@ -76,7 +76,7 @@ function uniCloudPlugin(): UniVitePlugin {
       if (process.env.UNI_PLATFORM === 'h5' && !process.env.UNI_SSR_CLIENT) {
         console.log()
         console.log(
-          '欢迎将Web站点部署到uniCloud前端网页托管平台，高速、免费、安全、省心，详见： https://uniapp.dcloud.io/uniCloud/hosting'
+          '欢迎将Web站点部署到uniCloud前端网页托管平台，高速、免费、安全、省心，详见：https://uniapp.dcloud.io/uniCloud/hosting'
         )
       }
     },
