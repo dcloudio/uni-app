@@ -56,7 +56,7 @@ function uniCloudPlugin(): UniVitePlugin {
         process.env.NODE_ENV === 'production'
       ) {
         console.warn(
-          '发布到Web端需要在uniCloud后台操作，绑定安全域名，否则会因为跨域问题而无法访问。教程参考：https://uniapp.dcloud.net.cn/uniCloud/publish.html#useinh5'
+          '发布到web端需要在uniCloud后台操作，绑定安全域名，否则会因为跨域问题而无法访问。教程参考：https://uniapp.dcloud.net.cn/uniCloud/publish.html#useinh5'
         )
       }
       return {}
@@ -76,7 +76,7 @@ function uniCloudPlugin(): UniVitePlugin {
       if (process.env.UNI_PLATFORM === 'h5' && !process.env.UNI_SSR_CLIENT) {
         console.log()
         console.log(
-          '欢迎将Web站点部署到uniCloud前端网页托管平台，高速、免费、安全、省心，详见：https://uniapp.dcloud.io/uniCloud/hosting'
+          '欢迎将web站点部署到uniCloud前端网页托管平台，高速、免费、安全、省心，详见：https://uniapp.dcloud.io/uniCloud/hosting'
         )
       }
     },
