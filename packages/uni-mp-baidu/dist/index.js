@@ -2680,7 +2680,9 @@ function parseBasePage (vuePageOptions, {
     this.$vm.$mp.query = query; // 兼容 mpvue
     this.$vm.__call_hook('onLoad', query);
   };
-  initUnknownHooks(pageOptions.methods, vuePageOptions, ['onReady']);
+  {
+    initUnknownHooks(pageOptions.methods, vuePageOptions, ['onInit', 'onReady']);
+  }
 
   return pageOptions
 }

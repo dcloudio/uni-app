@@ -1098,7 +1098,6 @@ const protocols = { // 需要做转换的 API 列表
     const args = {
       title: 'content',
       icon: 'type',
-      duration: false,
       image: false,
       mask: false
     };
@@ -2814,7 +2813,7 @@ function initChildVues (mpInstance) {
 function handleProps (ref) {
   const eventProps = {};
   let refProps = ref.props;
-  const eventList = refProps['data-event-list'].split(',');
+  const eventList = (refProps['data-event-list'] || '').split(',');
   // 初始化支付宝小程序组件事件
   Object.keys(refProps).forEach(key => {
     if (eventList.includes(key)) {
@@ -2930,7 +2929,7 @@ const handleLink$1 = (function () {
 
 const handleWrap = function (mp, destory) {
   const vueId = mp.props.vueId;
-  const list = mp.props['data-event-list'].split(',');
+  const list = (mp.props['data-event-list'] || '').split(',');
   list.forEach(eventName => {
     const key = `${eventName}${vueId}`;
     if (destory) {
