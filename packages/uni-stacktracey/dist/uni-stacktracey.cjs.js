@@ -3657,8 +3657,12 @@ function generateCodeFrameSourceMapConsumer(consumer, m, options = {}) {
             column: m.column,
         });
         if (res.source != null && res.line != null && res.column != null) {
-            const code = consumer.sourceContentFor(res.source, true);
+            let code = consumer.sourceContentFor(res.source, true);
             if (code) {
+                code = generateCodeFrame(code, { line: res.line, column: res.column });
+                if (options.replaceTabsWithSpace) {
+                    code = code.replace(/\t/g, ' ');
+                }
                 return {
                     type: m.type,
                     file: options.sourceRoot
@@ -3667,7 +3671,7 @@ function generateCodeFrameSourceMapConsumer(consumer, m, options = {}) {
                     line: res.line,
                     column: res.column,
                     message: m.message,
-                    code: generateCodeFrame(code, { line: res.line, column: res.column }),
+                    code,
                 };
             }
         }
@@ -3726,7 +3730,7 @@ function generateCodeFrameWithSwiftStacktrace(stacktrace, { name, inputDir, outp
         sourceMapFilename,
     });
 }
-function generateCodeFrameWithStacktrace(stacktrace, regexp, { sourceRoot, sourceMapFilename, }) {
+function generateCodeFrameWithStacktrace(stacktrace, regexp, { sourceRoot, sourceMapFilename, replaceTabsWithSpace, }) {
     return new Promise((resolve) => {
         initConsumer(sourceMapFilename).then((consumer) => {
             if (!consumer) {
@@ -3739,7 +3743,7 @@ function generateCodeFrameWithStacktrace(stacktrace, regexp, { sourceRoot, sourc
                     message,
                     line: parseInt(line),
                     column: parseInt(column),
-                }, { sourceRoot });
+                }, { sourceRoot, replaceTabsWithSpace });
                 if (!m) {
                     return substring;
                 }

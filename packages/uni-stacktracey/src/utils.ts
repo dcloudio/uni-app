@@ -79,6 +79,7 @@ interface MessageSourceLocation {
 }
 interface GenerateCodeFrameOptions {
   sourceRoot?: string
+  replaceTabsWithSpace?: boolean
 }
 const isWindows = os.platform() === 'win32'
 function normalizePath(id: string): string {
@@ -96,8 +97,12 @@ export function generateCodeFrameSourceMapConsumer(
       column: m.column,
     })
     if (res.source != null && res.line != null && res.column != null) {
-      const code = consumer.sourceContentFor(res.source, true)
+      let code = consumer.sourceContentFor(res.source, true)
       if (code) {
+        code = generateCodeFrame(code, { line: res.line, column: res.column })
+        if (options.replaceTabsWithSpace) {
+          code = code.replace(/\t/g, ' ')
+        }
         return {
           type: m.type,
           file: options.sourceRoot
@@ -111,7 +116,7 @@ export function generateCodeFrameSourceMapConsumer(
           line: res.line,
           column: res.column,
           message: m.message,
-          code: generateCodeFrame(code, { line: res.line, column: res.column }),
+          code,
         }
       }
     }
@@ -229,9 +234,11 @@ function generateCodeFrameWithStacktrace(
   {
     sourceRoot,
     sourceMapFilename,
+    replaceTabsWithSpace,
   }: {
     sourceRoot: string
     sourceMapFilename: string
+    replaceTabsWithSpace?: boolean
   }
 ) {
   return new Promise((resolve) => {
@@ -250,7 +257,7 @@ function generateCodeFrameWithStacktrace(
               line: parseInt(line),
               column: parseInt(column),
             },
-            { sourceRoot }
+            { sourceRoot, replaceTabsWithSpace }
           )
           if (!m) {
             return substring
