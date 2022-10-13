@@ -92,7 +92,6 @@ export function moveRootIndexSourceMap(
         platform,
         path.basename(sourceMapFilename)
       )
-      console.log('move', sourceMapFilename, newSourceMapFilename)
       fs.moveSync(sourceMapFilename, newSourceMapFilename, {
         overwrite: true,
       })
