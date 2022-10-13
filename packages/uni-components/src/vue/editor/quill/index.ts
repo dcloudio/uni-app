@@ -242,35 +242,6 @@ export function useQuill(
     quillReady = true
     trigger('ready', {} as Event, {})
   }
-  onMounted(() => {
-    const imageResizeModules: ResizeModuleName[] = []
-    if (props.showImgSize) {
-      imageResizeModules.push('DisplaySize')
-    }
-    if (props.showImgToolbar) {
-      imageResizeModules.push('Toolbar')
-    }
-    if (props.showImgResize) {
-      imageResizeModules.push('Resize')
-    }
-    const quillSrc =
-      __PLATFORM__ === 'app'
-        ? './__uniappquill.js'
-        : 'https://unpkg.com/quill@1.3.7/dist/quill.min.js'
-    loadScript((window as WindowExt).Quill, quillSrc, () => {
-      if (imageResizeModules.length) {
-        const imageResizeSrc =
-          __PLATFORM__ === 'app'
-            ? './__uniappquillimageresize.js'
-            : 'https://unpkg.com/quill-image-resize-mp@3.0.1/image-resize.min.js'
-        loadScript((window as WindowExt).ImageResize, imageResizeSrc, () => {
-          initQuill(imageResizeModules)
-        })
-      } else {
-        initQuill(imageResizeModules)
-      }
-    })
-  })
   const id = useContextInfo()
   useSubscribe<{ callbackId: string; data: any }>(
     (type, data: any, resolve) => {
@@ -438,4 +409,33 @@ export function useQuill(
     id,
     true
   )
+  onMounted(() => {
+    const imageResizeModules: ResizeModuleName[] = []
+    if (props.showImgSize) {
+      imageResizeModules.push('DisplaySize')
+    }
+    if (props.showImgToolbar) {
+      imageResizeModules.push('Toolbar')
+    }
+    if (props.showImgResize) {
+      imageResizeModules.push('Resize')
+    }
+    const quillSrc =
+      __PLATFORM__ === 'app'
+        ? './__uniappquill.js'
+        : 'https://unpkg.com/quill@1.3.7/dist/quill.min.js'
+    loadScript((window as WindowExt).Quill, quillSrc, () => {
+      if (imageResizeModules.length) {
+        const imageResizeSrc =
+          __PLATFORM__ === 'app'
+            ? './__uniappquillimageresize.js'
+            : 'https://unpkg.com/quill-image-resize-mp@3.0.1/image-resize.min.js'
+        loadScript((window as WindowExt).ImageResize, imageResizeSrc, () => {
+          initQuill(imageResizeModules)
+        })
+      } else {
+        initQuill(imageResizeModules)
+      }
+    })
+  })
 }
