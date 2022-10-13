@@ -54,12 +54,14 @@ class AdBase {
     })
     ad.onError(({
       code,
-      message
+      message,
+      detail
     }) => {
       this._isLoading = false
       const data = {
         code: code,
-        errMsg: message
+        errMsg: message,
+        detail: detail
       }
 
       if (this._retry && code === -5008) {
