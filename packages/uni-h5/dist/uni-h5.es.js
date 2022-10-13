@@ -8504,29 +8504,6 @@ function useQuill(props2, rootRef, trigger) {
     quillReady = true;
     trigger("ready", {}, {});
   }
-  onMounted(() => {
-    const imageResizeModules = [];
-    if (props2.showImgSize) {
-      imageResizeModules.push("DisplaySize");
-    }
-    if (props2.showImgToolbar) {
-      imageResizeModules.push("Toolbar");
-    }
-    if (props2.showImgResize) {
-      imageResizeModules.push("Resize");
-    }
-    const quillSrc = "https://unpkg.com/quill@1.3.7/dist/quill.min.js";
-    loadScript(window.Quill, quillSrc, () => {
-      if (imageResizeModules.length) {
-        const imageResizeSrc = "https://unpkg.com/quill-image-resize-mp@3.0.1/image-resize.min.js";
-        loadScript(window.ImageResize, imageResizeSrc, () => {
-          initQuill(imageResizeModules);
-        });
-      } else {
-        initQuill(imageResizeModules);
-      }
-    });
-  });
   const id2 = useContextInfo();
   useSubscribe(
     (type, data, resolve) => {
@@ -8685,6 +8662,29 @@ function useQuill(props2, rootRef, trigger) {
     id2,
     true
   );
+  onMounted(() => {
+    const imageResizeModules = [];
+    if (props2.showImgSize) {
+      imageResizeModules.push("DisplaySize");
+    }
+    if (props2.showImgToolbar) {
+      imageResizeModules.push("Toolbar");
+    }
+    if (props2.showImgResize) {
+      imageResizeModules.push("Resize");
+    }
+    const quillSrc = "https://unpkg.com/quill@1.3.7/dist/quill.min.js";
+    loadScript(window.Quill, quillSrc, () => {
+      if (imageResizeModules.length) {
+        const imageResizeSrc = "https://unpkg.com/quill-image-resize-mp@3.0.1/image-resize.min.js";
+        loadScript(window.ImageResize, imageResizeSrc, () => {
+          initQuill(imageResizeModules);
+        });
+      } else {
+        initQuill(imageResizeModules);
+      }
+    });
+  });
 }
 const props$t = /* @__PURE__ */ extend({}, props$u, {
   id: {
