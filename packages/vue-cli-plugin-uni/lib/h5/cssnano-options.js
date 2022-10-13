@@ -1,15 +1,24 @@
 const {
   getPlatformCssnano
 } = require('@dcloudio/uni-cli-shared')
+const webpack = require('webpack')
 
 module.exports = function initCssnanoOptions (webpackConfig) {
   const module = webpackConfig.module
   // TODO 临时 hack calc:false 看看 vue cli 后续是否开放 cssnano 的配置
   const cssnanoOptions = {
-    sourceMap: false,
-    plugins: [require('cssnano')({
-      preset: ['default', getPlatformCssnano()]
-    })]
+    sourceMap: false
+  }
+
+  const plugins = [require('cssnano')({
+    preset: ['default', getPlatformCssnano()]
+  })]
+
+  // TODO postcss-loader version > 4
+  if (webpack.version[0] > 4) {
+    cssnanoOptions.postcssOptions = { plugins }
+  } else {
+    cssnanoOptions.plugins = plugins
   }
 
   module.rule('css').oneOf('vue-modules').use('cssnano').loader('postcss-loader').options(cssnanoOptions)

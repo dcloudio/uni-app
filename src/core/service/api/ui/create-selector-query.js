@@ -92,6 +92,7 @@ class SelectorQuery {
     this._page = page
     this._queue = []
     this._queueCb = []
+    this._nodesRef = null
   }
 
   exec (callback) {
@@ -110,6 +111,8 @@ class SelectorQuery {
       })
       isFn(callback) && callback.call(this, res)
     })
+
+    return this._nodesRef
   }
 
   ['in'] (component) {
@@ -119,15 +122,15 @@ class SelectorQuery {
   }
 
   select (selector) {
-    return new NodesRef(this, this._component, selector, true)
+    return (this._nodesRef = new NodesRef(this, this._component, selector, true))
   }
 
   selectAll (selector) {
-    return new NodesRef(this, this._component, selector, false)
+    return (this._nodesRef = new NodesRef(this, this._component, selector, false))
   }
 
   selectViewport () {
-    return new NodesRef(this, 0, '', true)
+    return (this._nodesRef = new NodesRef(this, 0, '', true))
   }
 
   _push (selector, component, single, fields, callback) {

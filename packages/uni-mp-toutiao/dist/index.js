@@ -1481,11 +1481,12 @@ function getPushClientId (args) {
   const hasSuccess = isFn(success);
   const hasFail = isFn(fail);
   const hasComplete = isFn(complete);
+
   Promise.resolve().then(() => {
     if (typeof enabled === 'undefined') {
       enabled = false;
       cid = '';
-      cidErrMsg = 'unipush is not enabled';
+      cidErrMsg = 'uniPush is not enabled';
     }
     getPushCidCallbacks.push((cid, errMsg) => {
       let res;
@@ -1549,7 +1550,11 @@ const customize = cached((str) => {
 function initTriggerEvent (mpInstance) {
   const oldTriggerEvent = mpInstance.triggerEvent;
   const newTriggerEvent = function (event, ...args) {
-    return oldTriggerEvent.apply(mpInstance, [customize(event), ...args])
+    // 事件名统一转驼峰格式，仅处理：当前组件为 vue 组件、当前组件为 vue 组件子组件
+    if (this.$vm || (this.dataset && this.dataset.comType)) {
+      event = customize(event);
+    }
+    return oldTriggerEvent.apply(this, [event, ...args])
   };
   try {
     // 京东小程序 triggerEvent 为只读
@@ -1652,6 +1657,29 @@ function initHooks (mpOptions, hooks, vueOptions) {
   });
 }
 
+function initUnknownHooks (mpOptions, vueOptions, excludes = []) {
+  findHooks(vueOptions).forEach((hook) => initHook$1(mpOptions, hook, excludes));
+}
+
+function findHooks (vueOptions, hooks = []) {
+  if (vueOptions) {
+    Object.keys(vueOptions).forEach((name) => {
+      if (name.indexOf('on') === 0 && isFn(vueOptions[name])) {
+        hooks.push(name);
+      }
+    });
+  }
+  return hooks
+}
+
+function initHook$1 (mpOptions, hook, excludes) {
+  if (excludes.indexOf(hook) === -1 && !hasOwn(mpOptions, hook)) {
+    mpOptions[hook] = function (args) {
+      return this.$vm && this.$vm.__call_hook(hook, args)
+    };
+  }
+}
+
 function initVueComponent (Vue, vueOptions) {
   vueOptions = vueOptions.default || vueOptions;
   let VueComponent;
@@ -1702,7 +1730,7 @@ function initData (vueOptions, context) {
     try {
       // 对 data 格式化
       data = JSON.parse(JSON.stringify(data));
-    } catch (e) {}
+    } catch (e) { }
   }
 
   if (!isPlainObject(data)) {
@@ -1861,7 +1889,7 @@ function wrapper$1 (event) {
   // TODO 又得兼容 mpvue 的 mp 对象
   try {
     event.mp = JSON.parse(JSON.stringify(event));
-  } catch (e) {}
+  } catch (e) { }
 
   event.stopPropagation = noop;
   event.preventDefault = noop;
@@ -1932,7 +1960,7 @@ function getExtraValue (vm, dataPathsArray) {
   return context
 }
 
-function processEventExtra (vm, extra, event) {
+function processEventExtra (vm, extra, event, __args__) {
   const extraObj = {};
 
   if (Array.isArray(extra) && extra.length) {
@@ -1955,11 +1983,7 @@ function processEventExtra (vm, extra, event) {
           if (dataPath === '$event') { // $event
             extraObj['$' + index] = event;
           } else if (dataPath === 'arguments') {
-            if (event.detail && event.detail.__args__) {
-              extraObj['$' + index] = event.detail.__args__;
-            } else {
-              extraObj['$' + index] = [event];
-            }
+            extraObj['$' + index] = event.detail ? event.detail.__args__ || __args__ : __args__;
           } else if (dataPath.indexOf('$event.') === 0) { // $event.target.value
             extraObj['$' + index] = vm.__get_value(dataPath.replace('$event.', ''), event);
           } else {
@@ -1986,6 +2010,12 @@ function getObjByArray (arr) {
 
 function processEventArgs (vm, event, args = [], extra = [], isCustom, methodName) {
   let isCustomMPEvent = false; // wxcomponent 组件，传递原始 event 对象
+
+  // fixed 用户直接触发 mpInstance.triggerEvent
+  const __args__ = isPlainObject(event.detail)
+    ? event.detail.__args__ || [event.detail]
+    : [event.detail];
+
   if (isCustom) { // 自定义事件
     isCustomMPEvent = event.currentTarget &&
       event.currentTarget.dataset &&
@@ -1994,11 +2024,11 @@ function processEventArgs (vm, event, args = [], extra = [], isCustom, methodNam
       if (isCustomMPEvent) {
         return [event]
       }
-      return event.detail.__args__ || event.detail
+      return __args__
     }
   }
 
-  const extraObj = processEventExtra(vm, extra, event);
+  const extraObj = processEventExtra(vm, extra, event, __args__);
 
   const ret = [];
   args.forEach(arg => {
@@ -2007,7 +2037,7 @@ function processEventArgs (vm, event, args = [], extra = [], isCustom, methodNam
         ret.push(event.target.value);
       } else {
         if (isCustom && !isCustomMPEvent) {
-          ret.push(event.detail.__args__[0]);
+          ret.push(__args__[0]);
         } else { // wxcomponent 组件或内置组件
           ret.push(event);
         }
@@ -2296,6 +2326,7 @@ function parseBaseApp (vm, {
   initAppLocale(Vue, vm, normalizeLocale(tt.getSystemInfoSync().language) || LOCALE_EN);
 
   initHooks(appOptions, hooks);
+  initUnknownHooks(appOptions, vm.$options);
 
   return appOptions
 }
@@ -2356,12 +2387,13 @@ function initRefs (vm) {
     Object.defineProperty(vm, '$refs', {
       get () {
         const $refs = {};
-        const components = mpInstance.selectAllComponents('.vue-ref');
+        // mpInstance 销毁后 selectAllComponents 取值为 null
+        const components = mpInstance.selectAllComponents('.vue-ref') || [];
         components.forEach(component => {
           const ref = component.dataset.ref;
           $refs[ref] = component.$vm || component;
         });
-        const forComponents = mpInstance.selectAllComponents('.vue-ref-in-for');
+        const forComponents = mpInstance.selectAllComponents('.vue-ref-in-for') || [];
         forComponents.forEach(component => {
           const ref = component.dataset.ref;
           if (!$refs[ref]) {
@@ -2392,6 +2424,7 @@ function initRefs (vm) {
 }
 
 const instances = Object.create(null);
+const components = Object.create(null);
 
 function initRelation ({
   vuePid,
@@ -2611,17 +2644,26 @@ function parseBaseComponent (vueComponentOptions, {
   return [componentOptions, VueComponent]
 }
 
-const components = [];
+function currentComponents (mpInstance, callback) {
+  const webviewId = mpInstance.__webviewId__;
+  const currentComponents = components[webviewId];
+  if (currentComponents) {
+    callback(currentComponents);
+  }
+}
 
 function parseComponent (vueOptions) {
   const [componentOptions, VueComponent] = parseBaseComponent(vueOptions);
+  const lifetimes = componentOptions.lifetimes;
 
   // 基础库 2.0 以上 attached 顺序错乱，按照 created 顺序强制纠正
-  componentOptions.lifetimes.created = function created () {
-    components.push(this);
+  lifetimes.created = function created () {
+    currentComponents(this, components => {
+      components.push(this);
+    });
   };
 
-  componentOptions.lifetimes.attached = function attached () {
+  lifetimes.attached = function attached () {
     this.__lifetimes_attached = function () {
       const properties = this.properties;
 
@@ -2648,17 +2690,32 @@ function parseComponent (vueOptions) {
       // 触发首次 setData
       this.$vm.$mount();
     };
-    let component = this;
-    while (component && component.__lifetimes_attached && components[0] && component === components[0]) {
-      components.shift();
-      component.__lifetimes_attached();
-      delete component.__lifetimes_attached;
-      component = components[0];
+    currentComponents(this, components => {
+      let component = this;
+      while (component && component.__lifetimes_attached && components[0] && component === components[0]) {
+        components.shift();
+        component.__lifetimes_attached();
+        delete component.__lifetimes_attached;
+        component = components[0];
+      }
+    });
+  };
+
+  const oldDetached = lifetimes.detached;
+  lifetimes.detached = function detached () {
+    if (typeof oldDetached === 'function') {
+      oldDetached.call(this);
     }
+    currentComponents(this, components => {
+      const index = components.indexOf(this);
+      if (index >= 0) {
+        components.splice(index, 1);
+      }
+    });
   };
 
   // ready 比 handleLink 还早，初始化逻辑放到 handleLink 中
-  delete componentOptions.lifetimes.ready;
+  delete lifetimes.ready;
 
   componentOptions.methods.__l = handleLink$1;
 
@@ -2691,6 +2748,7 @@ function parseBasePage (vuePageOptions, {
     this.$vm.$mp.query = query; // 兼容 mpvue
     this.$vm.__call_hook('onLoad', query);
   };
+  initUnknownHooks(pageOptions.methods, vuePageOptions, ['onReady']);
 
   return pageOptions
 }
@@ -2700,8 +2758,17 @@ function parsePage (vuePageOptions) {
     isPage,
     initRelation
   });
+  const lifetimes = pageOptions.lifetimes;
+  const oldCreated = lifetimes.created;
+  lifetimes.created = function created () {
+    const webviewId = this.__webviewId__;
+    components[webviewId] = [];
+    if (typeof oldCreated === 'function') {
+      oldCreated.call(this);
+    }
+  };
   // 页面需要在 ready 中触发，其他组件是在 handleLink 中触发
-  pageOptions.lifetimes.ready = function ready () {
+  lifetimes.ready = function ready () {
     if (this.$vm && this.$vm.mpType === 'page') {
       this.$vm.__call_hook('created');
       this.$vm.__call_hook('beforeMount');
@@ -2712,9 +2779,11 @@ function parsePage (vuePageOptions) {
       this.is && console.warn(this.is + ' is not ready');
     }
   };
-
-  pageOptions.lifetimes.detached = function detached () {
-    this.$vm && this.$vm.$destroy();
+  const oldDetached = lifetimes.detached;
+  lifetimes.detached = function detached () {
+    if (typeof oldDetached === 'function') {
+      oldDetached.call(this);
+    }
     // 清理
     const webviewId = this.__webviewId__;
     webviewId && Object.keys(instances).forEach(key => {
@@ -2722,6 +2791,7 @@ function parsePage (vuePageOptions) {
         delete instances[key];
       }
     });
+    delete components[webviewId];
   };
 
   return pageOptions

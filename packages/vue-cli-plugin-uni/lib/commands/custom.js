@@ -34,7 +34,7 @@ module.exports = function custom (argv) {
     clean: false,
     subpackage: argv.subpackage,
     plugin: argv.plugin,
-    sourcemap: argv['sourcemap'],
+    sourcemap: argv.sourcemap
   }).catch(err => {
     console.error(err)
     process.exit(1)

@@ -1,4 +1,8 @@
 const path = require('path')
+const {
+  pathToGlob
+} = require('@dcloudio/uni-cli-shared/lib/util')
+
 let partialIdentifier = false
 module.exports = {
   getPartialIdentifier () {
@@ -21,7 +25,7 @@ module.exports = {
   getWatchOptions () {
     return {
       ignored: [
-        path.resolve(process.env.UNI_INPUT_DIR, '*.md'),
+        pathToGlob(path.resolve(process.env.UNI_INPUT_DIR), '*.md'),
         path.resolve(process.env.UNI_INPUT_DIR, '.hbuilderx'),
         path.resolve(process.env.UNI_INPUT_DIR, '.editorconfig'),
         path.resolve(process.env.UNI_INPUT_DIR, '.gitignore'),

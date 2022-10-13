@@ -2,6 +2,7 @@ import Vue from 'vue'
 
 import {
   initHooks,
+  initUnknownHooks,
   initMocks
 } from 'uni-wrapper/util'
 
@@ -190,6 +191,7 @@ export default function parseBaseApp (vm, {
   initAppLocale(Vue, vm, normalizeLocale(__GLOBAL__.getSystemInfoSync().language) || LOCALE_EN)
 
   initHooks(appOptions, hooks)
+  initUnknownHooks(appOptions, vm.$options)
 
   return appOptions
 }

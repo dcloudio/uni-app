@@ -83,9 +83,14 @@ function handleIdentifier ({
       if (t.isVariableDeclarator(declaration)) {
         identifier = declaration.id
         declaration = declaration.init
-      } else if (t.isExpressionStatement(declaration)) {
+      } else if (t.isExpressionStatement(declaration) && t.isAssignmentExpression(declaration.expression)) {
         identifier = declaration.expression.left
         declaration = declaration.expression.right
+      }
+      // __sfc_main.components = Object.assign({CustomButton}, __sfc_main.components);
+      if (t.isMemberExpression(identifier) && identifier.object.name === name && identifier.property.name === 'components' && t.isCallExpression(declaration) && declaration.arguments.length === 2 && t.isObjectExpression(declaration.arguments[0])) {
+        handleComponentsObjectExpression(declaration.arguments[0], path, state, true)
+        return
       }
       if (identifier.name === name) {
         if (t.isCallExpression(declaration) &&

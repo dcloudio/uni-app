@@ -16,12 +16,13 @@ export function initRefs (vm) {
     Object.defineProperty(vm, '$refs', {
       get () {
         const $refs = {}
-        const components = mpInstance.selectAllComponents('.vue-ref')
+        // mpInstance 销毁后 selectAllComponents 取值为 null
+        const components = mpInstance.selectAllComponents('.vue-ref') || []
         components.forEach(component => {
           const ref = component.dataset.ref
           $refs[ref] = component.$vm || component
         })
-        const forComponents = mpInstance.selectAllComponents('.vue-ref-in-for')
+        const forComponents = mpInstance.selectAllComponents('.vue-ref-in-for') || []
         forComponents.forEach(component => {
           const ref = component.dataset.ref
           if (!$refs[ref]) {
@@ -52,6 +53,7 @@ export function initRefs (vm) {
 }
 
 export const instances = Object.create(null)
+export const components = Object.create(null)
 
 export function initRelation ({
   vuePid,

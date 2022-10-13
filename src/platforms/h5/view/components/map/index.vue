@@ -1,11 +1,17 @@
 <template>
   <uni-map
     :id="id"
+    ref="mapContainer"
     v-on="$listeners"
   >
     <map-marker
       v-for="item in markers"
       :key="item.id"
+      v-bind="item"
+    />
+    <map-control
+      v-for="(item, index) in controls"
+      :key="item.id || index"
       v-bind="item"
     />
     <map-polygon
@@ -16,6 +22,7 @@
     <div
       ref="map"
       style="width: 100%; height: 100%; position: relative; overflow: hidden"
+      @click.stop
     />
     <div
       style="
@@ -44,9 +51,20 @@ import {
 } from './maps'
 
 import mapMarker from './map-marker'
+import mapControl from './map-control'
 import mapPolygon from './map-polygon'
 
-import { ICON_PATH_ORIGIN } from '../../../helpers/location'
+import { ICON_PATH_ORIGIN, IS_AMAP } from '../../../helpers/location'
+
+function getAMapPosition (maps, latitude, longitude) {
+  return new maps.LngLat(longitude, latitude)
+}
+function getGoogleQQMapPosition (maps, latitude, longitude) {
+  return new maps.LatLng(latitude, longitude)
+}
+function getMapPosition (maps, latitude, longitude) {
+  return IS_AMAP ? getAMapPosition(maps, latitude, longitude) : getGoogleQQMapPosition(maps, latitude, longitude)
+}
 
 function getLat (latLng) {
   if ('getLat' in latLng) {
@@ -68,6 +86,7 @@ export default {
   name: 'Map',
   components: {
     mapMarker,
+    mapControl,
     mapPolygon
   },
   mixins: [subscriber],
@@ -148,8 +167,7 @@ export default {
       isMapReady: false,
       isBoundsReady: false,
       polylineSync: [],
-      circlesSync: [],
-      controlsSync: []
+      circlesSync: []
     }
   },
   watch: {
@@ -174,11 +192,6 @@ export default {
         this.createCircles()
       })
     },
-    controls () {
-      this.mapReady(() => {
-        this.createControls()
-      })
-    },
     includePoints () {
       this.mapReady(() => {
         this.fitBounds(this.includePoints)
@@ -201,6 +214,9 @@ export default {
   },
   mounted () {
     loadMaps(this.libraries, result => {
+      // 兼容高德地图
+      result.event = result.event || result.Event
+      result.Point = result.Point || result.BuryPoint
       this._maps = result
       this.init()
     })
@@ -208,7 +224,6 @@ export default {
   beforeDestroy () {
     this.removePolyline()
     this.removeCircles()
-    this.removeControls()
     this.removeLocation()
   },
   methods: {
@@ -247,10 +262,14 @@ export default {
         case 'moveToLocation':
           {
             const { latitude, longitude } = data
-            var locationPosition = (latitude && longitude) ? new maps.LatLng(latitude, longitude) : this._locationPosition
+            const locationPosition = (latitude && longitude) ? getMapPosition(maps, latitude, longitude) : this._locationPosition
+
             if (locationPosition) {
               this._map.setCenter(locationPosition)
-              callback({})
+              callback({
+                latitude,
+                longitude
+              })
             }
           }
           break
@@ -267,7 +286,7 @@ export default {
                 rotation = marker.getRotation()
               }
               var a = marker.getPosition()
-              var b = new maps.LatLng(destination.latitude, destination.longitude)
+              const b = getMapPosition(maps, destination.latitude, destination.longitude)
               var distance = maps.geometry.spherical.computeDistanceBetween(a, b) / 1000
               var time = ((typeof duration === 'number') ? duration : 1000) / (1000 * 60 * 60)
               var speed = distance / time
@@ -325,20 +344,26 @@ export default {
           this.fitBounds(data.points)
           break
         case 'getRegion':
-          this.boundsReady(() => {
-            var latLngBounds = this._map.getBounds()
-            var southwest = latLngBounds.getSouthWest()
-            var northeast = latLngBounds.getNorthEast()
-            callback({
-              southwest: {
-                latitude: getLat(southwest),
-                longitude: getLng(southwest)
-              },
-              northeast: {
-                latitude: getLat(northeast),
-                longitude: getLng(northeast)
-              }
+          this.mapReady(() => {
+            this.boundsReady(() => {
+              const latLngBounds = this._map.getBounds()
+              const southwest = latLngBounds.getSouthWest()
+              const northeast = latLngBounds.getNorthEast()
+              callback({
+                southwest: {
+                  latitude: getLat(southwest),
+                  longitude: getLng(southwest)
+                },
+                northeast: {
+                  latitude: getLat(northeast),
+                  longitude: getLng(northeast)
+                }
+              })
             })
+            if (IS_AMAP) {
+              this.isBoundsReady = true
+              this.$emit('boundsready')
+            }
           })
           break
         case 'getScale':
@@ -352,7 +377,7 @@ export default {
     },
     init () {
       const maps = this._maps
-      var center = new maps.LatLng(this.center.latitude, this.center.longitude)
+      const center = getMapPosition(maps, this.center.latitude, this.center.longitude)
       var map = this._map = new maps.Map(this.$refs.map, {
         center,
         zoom: Number(this.scale),
@@ -373,6 +398,9 @@ export default {
         boundsChangedEvent.remove()
         this.isBoundsReady = true
         this.$emit('boundsready')
+      })
+      maps.event.addListener(map, 'click', (e) => {
+        this.$trigger('click', {}, {})
       })
       maps.event.addListener(map, 'dragstart', () => {
         this.$trigger('regionchange', {}, {
@@ -418,9 +446,6 @@ export default {
       if (this.circles && Array.isArray(this.circles) && this.circles.length) {
         this.createCircles()
       }
-      if (this.controls && Array.isArray(this.controls) && this.controls.length) {
-        this.createControls()
-      }
       if (this.showLocation) {
         this.createLocation()
       }
@@ -442,7 +467,8 @@ export default {
         this.center.longitude = longitude
         if (this._map) {
           this.mapReady(() => {
-            this._map.setCenter(new maps.LatLng(latitude, longitude))
+            const centerPosition = getMapPosition(maps, latitude, longitude)
+            this._map.setCenter(centerPosition)
           })
         }
       }
@@ -453,10 +479,13 @@ export default {
       var polyline = this.polylineSync
       this.removePolyline()
       this.polyline.forEach(option => {
-        var path = []
+        const path = []
+
         option.points.forEach(point => {
-          path.push(new maps.LatLng(point.latitude, point.longitude))
+          const pointPosition = IS_AMAP ? [point.longitude, point.latitude] : getGoogleQQMapPosition(maps, point.latitude, point.longitude)
+          path.push(pointPosition)
         })
+
         const borderWidth = Number(option.borderWidth) || 0
         const { r: sr, g: sg, b: sb, a: sa } = hexToRgba(option.color)
         const { r: br, g: bg, b: bb, a: ba } = hexToRgba(option.borderColor)
@@ -464,14 +493,23 @@ export default {
           map,
           clickable: false,
           path,
-          strokeWeight: option.width + borderWidth,
+          strokeWeight: ((Number(option.width) || 0) + borderWidth) || 6,
           strokeDashStyle: option.dottedLine ? 'dash' : 'solid'
         }
+
+        if (IS_AMAP) {
+          polylineOptions.strokeColor = option.strokeColor
+          polylineOptions.strokeStyle = option.dottedLine ? 'dashed' : 'solid'
+          polylineOptions.isOutline = !!option.borderWidth
+          polylineOptions.borderWeight = option.borderWidth
+          polylineOptions.outlineColor = option.borderColor
+        }
+
         const polylineBorderOptions = {
           map,
           clickable: false,
           path,
-          strokeWeight: option.width,
+          strokeWeight: option.width || 6,
           strokeDashStyle: option.dottedLine ? 'dash' : 'solid'
         }
         if ('Color' in maps) {
@@ -486,7 +524,11 @@ export default {
         if (borderWidth) {
           polyline.push(new maps.Polyline(polylineBorderOptions))
         }
-        polyline.push(new maps.Polyline(polylineOptions))
+        const _polyline = new maps.Polyline(polylineOptions)
+        if (IS_AMAP) {
+          map.add(_polyline)
+        }
+        polyline.push(_polyline)
       })
     },
     removePolyline () {
@@ -498,12 +540,11 @@ export default {
     },
     createCircles () {
       const maps = this._maps
-      var map = this._map
-      var circles = this.circlesSync
+      const map = this._map
+      const circles = this.circlesSync
       this.removeCircles()
       this.circles.forEach(option => {
-        var center = new maps.LatLng(option.latitude, option.longitude)
-
+        const center = IS_AMAP ? [option.longitude, option.latitude] : getGoogleQQMapPosition(maps, option.latitude, option.longitude)
         const circleOptions = {
           map,
           center,
@@ -512,18 +553,30 @@ export default {
           strokeWeight: Number(option.strokeWidth) || 1,
           strokeDashStyle: 'solid'
         }
-        const { r: fr, g: fg, b: fb, a: fa } = hexToRgba(option.fillColor || '#00000000')
-        const { r: sr, g: sg, b: sb, a: sa } = hexToRgba(option.color || '#000000')
-        if ('Color' in maps) {
-          circleOptions.fillColor = new maps.Color(fr, fg, fb, fa)
-          circleOptions.strokeColor = new maps.Color(sr, sg, sb, sa)
+
+        if (IS_AMAP) {
+          circleOptions.strokeColor = option.color
+          circleOptions.fillColor = option.fillColor || '#000'
         } else {
-          circleOptions.fillColor = `rgb(${fr}, ${fg}, ${fb})`
-          circleOptions.fillOpacity = fa
-          circleOptions.strokeColor = `rgb(${sr}, ${sg}, ${sb})`
-          circleOptions.strokeOpacity = sa
+          const { r: fr, g: fg, b: fb, a: fa } = hexToRgba(option.fillColor || '#00000000')
+          const { r: sr, g: sg, b: sb, a: sa } = hexToRgba(option.color || '#000000')
+          if ('Color' in maps) {
+            // 腾讯
+            circleOptions.fillColor = new maps.Color(fr, fg, fb, fa)
+            circleOptions.strokeColor = new maps.Color(sr, sg, sb, sa)
+          } else {
+            // Google
+            circleOptions.fillColor = `rgb(${fr}, ${fg}, ${fb})`
+            circleOptions.fillOpacity = fa
+            circleOptions.strokeColor = `rgb(${sr}, ${sg}, ${sb})`
+            circleOptions.strokeOpacity = sa
+          }
         }
-        var circle = new maps.Circle(circleOptions)
+
+        const circle = new maps.Circle(circleOptions)
+        if (IS_AMAP) {
+          map.add(circle)
+        }
         circles.push(circle)
       })
     },
@@ -534,57 +587,10 @@ export default {
       })
       circles.splice(0, circles.length)
     },
-    createControls () {
-      const maps = this._maps
-      var _self = this
-      var map = this._map
-      var controls = this.controlsSync
-      this.removeControls()
-      this.controls.forEach(option => {
-        var position = option.position || {}
-        var control = document.createElement('div')
-        var img = new Image()
-        control.appendChild(img)
-        var style = control.style
-        style.position = 'absolute'
-        style.width = 0
-        style.height = 0
-        img.onload = () => {
-          if (option.position.width) {
-            img.width = option.position.width
-          }
-          if (option.position.height) {
-            img.height = option.position.height
-          }
-          var style = img.style
-          style.position = 'absolute'
-          style.left = (position.left || 0) + 'px'
-          style.top = (position.top || 0) + 'px'
-          style.maxWidth = 'initial'
-        }
-        img.src = this.$getRealPath(option.iconPath)
-        img.onclick = function ($event) {
-          if (option.clickable) {
-            _self.$trigger('controltap', $event, {
-              controlId: option.id
-            })
-          }
-        }
-        map.controls[maps.ControlPosition.TOP_LEFT].push(control)
-        controls.push(control)
-      })
-    },
-    removeControls () {
-      var controls = this.controlsSync
-      controls.forEach(control => {
-        control.remove()
-      })
-      controls.splice(0, controls.length)
-    },
     createLocation () {
       const maps = this._maps
-      var map = this._map
-      var location = this._location
+      const map = this._map
+      let location = this._location
       if (location) {
         this.removeLocation()
       }
@@ -594,14 +600,30 @@ export default {
           if (location !== this._location) {
             return
           }
-          var position = new maps.LatLng(res.latitude, res.longitude)
-          location = new maps.Marker({
-            position,
-            map,
-            icon: new maps.MarkerImage(ICON_PATH_ORIGIN, null, null, new maps.Point(22, 22), new maps.Size(44, 44)),
-            flat: true,
-            rotation: 0
-          })
+          const position = getMapPosition(maps, res.latitude, res.longitude)
+          if (IS_AMAP) {
+            location = new maps.Marker({
+              position,
+              map,
+              flat: true,
+              rotation: 0
+            })
+            const icon = new maps.Icon({
+              size: new maps.Size(44, 44),
+              image: ICON_PATH_ORIGIN,
+              imageSize: new maps.Size(44, 44)
+            })
+            location.setIcon(icon)
+            map.add(location)
+          } else {
+            location = new maps.Marker({
+              position,
+              map,
+              icon: new maps.MarkerImage(ICON_PATH_ORIGIN, null, null, new maps.Point(22, 22), new maps.Size(44, 44)),
+              flat: true,
+              rotation: 0
+            })
+          }
           this._location = location
           refreshLocation()
           this.__onCompassChange = function (res) {
@@ -623,7 +645,7 @@ export default {
           uni.getLocation({
             type: 'gcj02',
             success: (res) => {
-              var locationPosition = self._locationPosition = new maps.LatLng(res.latitude, res.longitude)
+              const locationPosition = self._locationPosition = getMapPosition(maps, res.latitude, res.longitude)
               location.setPosition(locationPosition)
             },
             fail: e => {
@@ -648,20 +670,35 @@ export default {
     fitBounds (points, cb) {
       const maps = this._maps
       this.boundsReady(() => {
-        var map = this._map
-        var bounds = new maps.LatLngBounds()
+        const map = this._map
 
-        points.forEach(point => {
-          var longitude = point.longitude
-          var latitude = point.latitude
-          var latLng = new maps.LatLng(latitude, longitude)
-          bounds.extend(latLng)
-        })
-        map.fitBounds(bounds)
+        if (IS_AMAP) {
+          const _points = []
+          points.forEach(point => {
+            _points.push([point.longitude, point.latitude])
+          })
+          const bounds = new maps.Bounds(..._points)
+          map.setBounds(bounds)
+        } else {
+          const bounds = new maps.LatLngBounds()
+          points.forEach(point => {
+            const longitude = point.longitude
+            const latitude = point.latitude
+            const latLng = getGoogleQQMapPosition(maps, latitude, longitude)
+            bounds.extend(latLng)
+          })
+          map.fitBounds(bounds)
+        }
+
         if (typeof cb === 'function') {
           cb()
         }
       })
+
+      if (IS_AMAP) {
+        this.isBoundsReady = true
+        this.$emit('boundsready')
+      }
     },
     mapReady (cb) {
       if (this.isMapReady) {
@@ -703,4 +740,16 @@ export default {
 	uni-map[hidden] {
 		display: none;
 	}
+
+  /* 处理高德地图 marker label 默认样式 */
+  .amap-marker-label{
+		padding:0;
+		border:none;
+    background-color: transparent;
+	}
+  /* 处理高德地图 open-location icon 被遮挡问题 */
+  .amap-marker>.amap-icon>img{
+    left:0!important;
+    top:0!important;
+  }
 </style>

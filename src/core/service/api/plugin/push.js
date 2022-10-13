@@ -9,6 +9,7 @@ import {
 let cid
 let cidErrMsg
 let enabled
+let offline
 
 function normalizePushMessage (message) {
   try {
@@ -22,6 +23,9 @@ export function invokePushCallback (
 ) {
   if (args.type === 'enabled') {
     enabled = true
+    if (__PLATFORM__ === 'app-plus') {
+      offline = args.offline
+    }
   } else if (args.type === 'clientId') {
     cid = args.cid
     cidErrMsg = args.errMsg
@@ -70,11 +74,34 @@ export function getPushClientId (args) {
   const hasSuccess = isFn(success)
   const hasFail = isFn(fail)
   const hasComplete = isFn(complete)
+
+  // App 端且启用离线时，使用 getClientInfoAsync 来调用
+  if (__PLATFORM__ === 'app-plus' && offline) {
+    plus.push.getClientInfoAsync(
+      (info) => {
+        const res = {
+          errMsg: 'getPushClientId:ok',
+          cid: info.clientid
+        }
+        hasSuccess && success(res)
+        hasComplete && complete(res)
+      },
+      (res) => {
+        res = {
+          errMsg: 'getPushClientId:fail ' + (res.code + ': ' + res.message)
+        }
+        hasFail && fail(res)
+        hasComplete && complete(res)
+      }
+    )
+    return
+  }
+
   Promise.resolve().then(() => {
     if (typeof enabled === 'undefined') {
       enabled = false
       cid = ''
-      cidErrMsg = 'unipush is not enabled'
+      cidErrMsg = 'uniPush is not enabled'
     }
     getPushCidCallbacks.push((cid, errMsg) => {
       let res
@@ -99,10 +126,27 @@ export function getPushClientId (args) {
 }
 
 const onPushMessageCallbacks = []
+let listening = false
 // 不使用 defineOnApi 实现，是因为 defineOnApi 依赖 UniServiceJSBridge ，该对象目前在小程序上未提供，故简单实现
 export const onPushMessage = (fn) => {
   if (onPushMessageCallbacks.indexOf(fn) === -1) {
     onPushMessageCallbacks.push(fn)
+  }
+  // 不能程序启动时就监听，因为离线事件，仅触发一次，框架监听后，无法转发给还没开始监听的开发者
+  if (__PLATFORM__ === 'app' && !listening) {
+    listening = true
+    plus.push.addEventListener('click', (result) => {
+      invokePushCallback({
+        type: 'click',
+        message: result
+      })
+    })
+    plus.push.addEventListener('receive', (result) => {
+      invokePushCallback({
+        type: 'pushMsg',
+        message: result
+      })
+    })
   }
 }
 

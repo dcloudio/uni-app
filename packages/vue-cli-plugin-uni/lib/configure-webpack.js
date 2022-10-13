@@ -1,8 +1,8 @@
 const fs = require('fs')
 const path = require('path')
 const webpack = require('webpack')
-const RuleSet = require('webpack/lib/RuleSet')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
+const CopyWebpackPluginVersion = Number(require('copy-webpack-plugin/package.json').version.split('.')[0])
 
 const merge = require('webpack-merge')
 
@@ -39,12 +39,44 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
     return (rule, i) => {
       const clone = Object.assign({}, rule)
       delete clone.include
-      const normalized = RuleSet.normalizeRule(clone, {}, '')
-      return (
-        !rule.enforce &&
+      if (webpack.version[0] > 4) {
+        const BasicEffectRulePlugin = require('webpack/lib/rules/BasicEffectRulePlugin')
+        const BasicMatcherRulePlugin = require('webpack/lib/rules/BasicMatcherRulePlugin')
+        const RuleSetCompiler = require('webpack/lib/rules/RuleSetCompiler')
+        const UseEffectRulePlugin = require('webpack/lib/rules/UseEffectRulePlugin')
+        const ruleSetCompiler = new RuleSetCompiler([
+          new BasicMatcherRulePlugin('test', 'resource'),
+          new BasicMatcherRulePlugin('include', 'resource'),
+          new BasicMatcherRulePlugin('exclude', 'resource', true),
+          new BasicMatcherRulePlugin('resource'),
+          new BasicMatcherRulePlugin('conditions'),
+          new BasicMatcherRulePlugin('resourceQuery'),
+          new BasicMatcherRulePlugin('realResource'),
+          new BasicMatcherRulePlugin('issuer'),
+          new BasicMatcherRulePlugin('compiler'),
+          new BasicEffectRulePlugin('type'),
+          new BasicEffectRulePlugin('sideEffects'),
+          new BasicEffectRulePlugin('parser'),
+          new BasicEffectRulePlugin('resolve'),
+          new BasicEffectRulePlugin('generator'),
+          new UseEffectRulePlugin()
+        ])
+        const ruleSet = ruleSetCompiler.compile([{
+          rules: [clone]
+        }])
+        const rules = ruleSet.exec({
+          resource: fakeFile
+        })
+        return rules.length > 0 && rule.use
+      } else {
+        const RuleSet = require('webpack/lib/RuleSet')
+        const normalized = RuleSet.normalizeRule(clone, {}, '')
+        return (
+          !rule.enforce &&
         normalized.resource &&
         normalized.resource(fakeFile)
-      )
+        )
+      }
     }
   }
 
@@ -150,15 +182,23 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
     for (let i = rawRules.length - 1; i >= 0; i--) {
       const uses = rawRules[i].use
       if (Array.isArray(uses)) {
-        if (uses.find(use => babelLoaderRe.test(use.loader))) {
-          const index = uses.findIndex(use => cacheLoaderRe.test(use.loader))
-          if (process.env.UNI_USING_CACHE) {
-            Object.assign(uses[index].options, api.genCacheConfig(
-              'babel-loader/' + process.env.UNI_PLATFORM,
-              getPartialIdentifier()
-            ))
+        const babelLoader = uses.find(use => babelLoaderRe.test(use.loader))
+        if (babelLoader) {
+          const options = api.genCacheConfig('babel-loader/' + process.env.UNI_PLATFORM, getPartialIdentifier())
+          if (webpack.version[0] > 4) {
+            babelLoader.options = babelLoader.options || {}
+            Object.assign(babelLoader.options, process.env.UNI_USING_CACHE ? options : {
+              cacheDirectory: false
+            })
           } else {
-            uses.splice(index, 1)
+            const index = uses.findIndex(use => cacheLoaderRe.test(use.loader))
+            if (index >= 0) {
+              if (process.env.UNI_USING_CACHE) {
+                Object.assign(uses[index].options, options)
+              } else {
+                uses.splice(index, 1)
+              }
+            }
           }
         }
       }
@@ -198,12 +238,13 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
       vueOptions.pluginOptions['uni-app-plus'].view
 
     if (!isAppView) { // app-plus view不需要copy
-      plugins.push(new CopyWebpackPlugin(getCopyWebpackPluginOptions(manifestPlatformOptions, vueOptions)))
+      const patterns = getCopyWebpackPluginOptions(manifestPlatformOptions, vueOptions)
+      plugins.push(new CopyWebpackPlugin(CopyWebpackPluginVersion > 5 ? { patterns } : patterns))
     }
     if (!process.env.UNI_SUBPACKGE || !process.env.UNI_MP_PLUGIN) {
       try {
         const automatorJson = require.resolve('@dcloudio/uni-automator/dist/automator.json')
-        plugins.push(new CopyWebpackPlugin([{
+        const patterns = [{
           from: automatorJson,
           to: '../.automator/' + (process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM) +
             '/.automator.json',
@@ -216,8 +257,9 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
             }
             return ''
           }
-        }]))
-      } catch (e) {}
+        }]
+        plugins.push(new CopyWebpackPlugin(CopyWebpackPluginVersion > 5 ? { patterns } : patterns))
+      } catch (e) { }
     }
 
     if (process.UNI_SCRIPT_ENV && Object.keys(process.UNI_SCRIPT_ENV).length) {
@@ -289,8 +331,7 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
           noSources: true,
           append: false
         }
-        if (isInHBuilderX && process.env.SOURCEMAP_PATH)
-        sourceMapOptions.filename = process.env.SOURCEMAP_PATH
+        if (isInHBuilderX && process.env.SOURCEMAP_PATH) { sourceMapOptions.filename = process.env.SOURCEMAP_PATH }
         if (useEvalSourceMap || useSourceMap) {
           plugins.push(sourceMap.createSourceMapDevToolPlugin(!sourceMapOptions.filename, sourceMapOptions))
         }
@@ -302,7 +343,7 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
         }
       }
     }
-    
+
     try {
       if (process.env.UNI_HBUILDERX_PLUGINS) {
         require(path.resolve(process.env.UNI_HBUILDERX_PLUGINS, 'uni_helpers/lib/bytenode'))

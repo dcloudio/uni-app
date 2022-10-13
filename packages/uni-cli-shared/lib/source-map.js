@@ -4,16 +4,10 @@ const webpack = require('webpack')
 
 const {
   normalizePath,
+  pathToRegexp,
   isInHBuilderX
 } = require('@dcloudio/uni-cli-shared/lib/util')
 
-const isWin = /^win/.test(process.platform)
-
-function genTranspileDepRegex (depPath) {
-  return new RegExp(isWin
-    ? depPath.replace(/\\/g, '\\\\') // double escape for windows style path
-    : depPath)
-}
 let sourceRoot = false
 
 function getSourceRoot () {
@@ -60,7 +54,7 @@ module.exports = {
   },
   createEvalSourceMapDevToolPlugin () {
     return new webpack.EvalSourceMapDevToolPlugin({
-      test: genTranspileDepRegex(process.env.UNI_INPUT_DIR),
+      test: pathToRegexp(process.env.UNI_INPUT_DIR, { start: true }),
       exclude,
       moduleFilenameTemplate
     })

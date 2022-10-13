@@ -24,6 +24,7 @@ module.exports = {
     darkmode: true
   },
   copyWebpackOptions (platformOptions, vueOptions) {
+    const CopyWebpackPluginVersion = Number(require('copy-webpack-plugin/package.json').version.split('.')[0])
     const copyOptions = [
       'theme.json',
       'sitemap.json',
@@ -46,25 +47,32 @@ module.exports = {
     const manifestConfig = process.UNI_MANIFEST
     const weixinConfig = manifestConfig['mp-weixin'] || {}
     const copyWxComponentsOnDemandSwitch = !!weixinConfig.copyWxComponentsOnDemand // 默认值false
+    const ignore = ['**/*.vue', '**/*.css'] // v3 会自动转换生成vue,css文件，需要过滤
 
     if (!copyWxComponentsOnDemandSwitch) {
       const wxcomponentsDir = path.resolve(process.env.UNI_INPUT_DIR, COMPONENTS_DIR_NAME)
       if (fs.existsSync(wxcomponentsDir)) {
-        copyOptions.push({
+        copyOptions.push(Object.assign({
           from: wxcomponentsDir,
-          to: COMPONENTS_DIR_NAME,
-          ignore: ['**/*.vue', '**/*.css'] // v3 会自动转换生成vue,css文件，需要过滤
-        })
+          to: COMPONENTS_DIR_NAME
+        }, CopyWebpackPluginVersion > 5 ? {
+          globOptions: { ignore }
+        } : {
+          ignore
+        }))
       }
     }
     global.uniModules.forEach(module => {
       const wxcomponentsDir = path.resolve(process.env.UNI_INPUT_DIR, 'uni_modules', module, COMPONENTS_DIR_NAME)
       if (fs.existsSync(wxcomponentsDir)) {
-        copyOptions.push({
+        copyOptions.push(Object.assign({
           from: wxcomponentsDir,
-          to: 'uni_modules/' + module + '/' + COMPONENTS_DIR_NAME,
-          ignore: ['**/*.vue', '**/*.css'] // v3 会自动转换生成vue,css文件，需要过滤
-        })
+          to: 'uni_modules/' + module + '/' + COMPONENTS_DIR_NAME
+        }, CopyWebpackPluginVersion > 5 ? {
+          globOptions: { ignore }
+        } : {
+          ignore
+        }))
       }
     })
     return copyOptions

@@ -159,7 +159,7 @@ module.exports = function generateJson (compilation) {
       })
     }
     // fix mp-alipay plugin
-    if (process.env.UNI_PLATFORM === 'mp-alipay') {
+    if (process.env.UNI_PLATFORM === 'mp-alipay' && name !== 'app.json') {
       const usingComponents = jsonObj.usingComponents || {}
       if (Object.values(usingComponents).find(value => value.startsWith('plugin://'))) {
         const componentName = 'plugin-wrapper'

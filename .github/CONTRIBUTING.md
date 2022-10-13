@@ -83,7 +83,7 @@
     * commands
     * lib
     * packages：内置依赖包
-      * mp-vue：小程序平台使用的 Vue 依赖，由仓库 [fxy060608/vue](https://github.com/fxy060608/vue) 编译。
+      * mp-vue：小程序平台使用的 Vue 依赖，由仓库 [fxy060608/vue#dev](https://github.com/fxy060608/vue) 编译。
   * vue-cli-plugin-uni-optimize：Vue CLI 插件，主要处理 H5 平台摇树优化
   * webpack-uni-mp-loader：webpack loader，用于生成小程序平台的各种文件
   * webpack-uni-pages-loader：webpack loader，用于解析 pages.json

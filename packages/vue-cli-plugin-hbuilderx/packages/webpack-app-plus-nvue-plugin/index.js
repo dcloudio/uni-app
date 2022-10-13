@@ -14,13 +14,10 @@ class WebpackAppPlusNVuePlugin {
     const changedFiles = []
     compiler.hooks.emit.tapAsync('webpack-uni-nvue', (compilation, callback) => {
       changedFiles.length = 0
-      const changedChunks = compilation.chunks.filter(chunk => {
+      compilation.chunks.forEach(chunk => {
         const oldVersion = chunkVersions[chunk.name]
         chunkVersions[chunk.name] = chunk.hash
-        return chunk.hash !== oldVersion
-      })
-      changedChunks.map(chunk => {
-        if (Array.isArray(chunk.files)) {
+        if (chunk.hash !== oldVersion && Array.isArray(chunk.files)) {
           chunk.files.forEach(file => {
             !changedFiles.includes(file) && (changedFiles.push(file))
           })

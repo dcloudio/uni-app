@@ -67,7 +67,11 @@ module.exports = function (content, map) {
   )
 
   // this.addDependency(pagesJsonJsPath)
-  this.addContextDependency(path.resolve(process.env.UNI_INPUT_DIR, 'locale'))
+  const localePath = path.resolve(process.env.UNI_INPUT_DIR, 'locale')
+  // 路径不存在时会触发 webpack5 差量编译
+  if (fs.existsSync(localePath)) {
+    this.addContextDependency(localePath)
+  }
   this.addDependency(manifestJsonPath)
 
   let pagesJson = parsePagesJson(content, {

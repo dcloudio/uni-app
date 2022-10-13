@@ -11,5 +11,9 @@ export const scanCode = {
   sound: {
     type: String,
     default: 'none'
+  },
+  autoZoom: {
+    type: Boolean,
+    default: true
   }
 }

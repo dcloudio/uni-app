@@ -5,7 +5,10 @@ const DEFAULT_KEYS = [
   'APP',
   'APP-PLUS-NVUE',
   'APP-VUE',
-  'APP-NVUE'
+  'APP-NVUE',
+  'APP-ANDROID',
+  'APP-IOS',
+  'WEB'
 ]
 
 function normalize (name) {
@@ -44,14 +47,26 @@ module.exports = function initPreprocess (name, platforms, userDefines = {}) {
     nvueContext.APP_PLUS = true
     nvueContext.APP_NVUE = true
     nvueContext.APP_PLUS_NVUE = true
-  }
 
+    if (process.env.UNI_APP_PLATFORM === 'android') {
+      defaultContext.APP_ANDROID = true
+    } else if (process.env.UNI_APP_PLATFORM === 'ios') {
+      defaultContext.APP_IOS = true
+    } else {
+      defaultContext.APP_ANDROID = true
+      defaultContext.APP_IOS = true
+    }
+  }
+  if (name === 'h5') {
+    defaultContext.WEB = true
+  }
   if (name.startsWith('mp-')) {
     vueContext.MP = true
   }
 
   if (name.startsWith('app-')) {
     vueContext.APP = true
+    nvueContext.APP = true
   }
 
   if (name === 'quickapp-webview') {

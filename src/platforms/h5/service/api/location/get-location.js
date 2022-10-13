@@ -5,6 +5,7 @@ import {
   MapType,
   getMapInfo
 } from '../../../helpers/location'
+import { loadMaps } from '../../../view/components/map/maps'
 
 /**
  * 获取定位信息
@@ -72,24 +73,52 @@ export function getLocation ({
       }
     })
   }).then((coords, skip) => {
-    if (type.toUpperCase() === 'WGS84' || mapInfo.type !== MapType.QQ || skip) {
+    const wgs84Map = [MapType.GOOGLE]
+    if (type.toUpperCase() === 'WGS84' || wgs84Map.includes(mapInfo.type) || skip) {
       return coords
     }
-    return new Promise((resolve, reject) => {
-      getJSONP(`https://apis.map.qq.com/jsapi?qt=translate&type=1&points=${coords.longitude},${coords.latitude}&key=${mapInfo.key}&output=jsonp&pf=jsapi&ref=jsapi`, {
-        callback: 'cb'
-      }, (res) => {
-        if ('detail' in res && 'points' in res.detail && res.detail.points.length) {
-          const location = res.detail.points[0]
-          resolve(Object.assign({}, coords, {
-            longitude: location.lng,
-            latitude: location.lat
-          }))
-        } else {
-          resolve(coords)
-        }
-      }, () => resolve(coords))
-    })
+
+    if (mapInfo.type === MapType.QQ) {
+      return new Promise((resolve) => {
+        getJSONP(`https://apis.map.qq.com/jsapi?qt=translate&type=1&points=${coords.longitude},${coords.latitude}&key=${mapInfo.key}&output=jsonp&pf=jsapi&ref=jsapi`, {
+          callback: 'cb'
+        }, (res) => {
+          if ('detail' in res && 'points' in res.detail && res.detail.points.length) {
+            const location = res.detail.points[0]
+            resolve(Object.assign({}, coords, {
+              longitude: location.lng,
+              latitude: location.lat
+            }))
+          } else {
+            resolve(coords)
+          }
+        }, () => resolve(coords))
+      })
+    }
+
+    if (mapInfo.type === MapType.AMAP) {
+      return new Promise((resolve) => {
+        loadMaps([], () => {
+          window.AMap.convertFrom(
+            [coords.longitude, coords.latitude],
+            'gps',
+            (_, res) => {
+              if (res.info === 'ok' && res.locations.length) {
+                const { lat, lng } = res.locations[0]
+                resolve(
+                  Object.assign({}, coords, {
+                    longitude: lng,
+                    latitude: lat
+                  })
+                )
+              } else {
+                resolve(coords)
+              }
+            }
+          )
+        })
+      })
+    }
   }).then(coords => {
     invoke(callbackId, Object.assign(coords, {
       errMsg: 'getLocation:ok',

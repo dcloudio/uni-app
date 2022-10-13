@@ -7,6 +7,7 @@ import {
 import {
   initData,
   initHooks,
+  initUnknownHooks,
   handleEvent,
   initBehaviors,
   initVueComponent,
@@ -80,6 +81,7 @@ export default function parsePage (vuePageOptions) {
   }
 
   initHooks(pageOptions, hooks, vuePageOptions)
+  initUnknownHooks(pageOptions, vuePageOptions, ['onReady'])
 
   if (Array.isArray(vueOptions.wxsCallMethods)) {
     vueOptions.wxsCallMethods.forEach(callMethod => {

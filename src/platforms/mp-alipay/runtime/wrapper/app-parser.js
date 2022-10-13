@@ -8,23 +8,6 @@ import {
 } from './util'
 
 export default function parseApp (vm) {
-  Object.defineProperty(Vue.prototype, '$slots', {
-    get () {
-      return this.$scope && this.$scope.props.$slots
-    },
-    set () {
-
-    }
-  })
-  Object.defineProperty(Vue.prototype, '$scopedSlots', {
-    get () {
-      return this.$scope && this.$scope.props.$scopedSlots
-    },
-    set () {
-
-    }
-  })
-
   Vue.prototype.$onAliGetAuthorize = function onAliGetAuthorize (method, $event) {
     my.getPhoneNumber({
       success: (res) => {

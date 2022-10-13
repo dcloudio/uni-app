@@ -26,8 +26,8 @@ export function setClipboardData ({
   textarea.style.zIndex = '-9999'
   document.body.appendChild(textarea)
   textarea.value = data
-  textarea.focus()
   textarea.select()
+  textarea.setSelectionRange(0, textarea.value.length)
   const result = document.execCommand('Copy', false, null)
   textarea.blur()
   if (result) {

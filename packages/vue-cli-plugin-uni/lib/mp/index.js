@@ -27,6 +27,8 @@ function createUniMPPlugin () {
 
 const createWxMpIndependentPlugins = require('@dcloudio/uni-mp-weixin/lib/createIndependentPlugin')
 
+const UniTips = require('./tips')
+
 function getProvides () {
   const uniPath = require('@dcloudio/uni-cli-shared/lib/platform').getMPRuntimePath()
   const uniCloudPath = path.resolve(__dirname, '../../packages/uni-cloud/dist/index.js')
@@ -157,13 +159,21 @@ module.exports = {
       webpackConfig.optimization = {}
     }
     // disable noEmitOnErrors
-    webpackConfig.optimization.noEmitOnErrors = false
+    if (webpack.version[0] > 4) {
+      webpackConfig.optimization.emitOnErrors = true
+    } else {
+      webpackConfig.optimization.noEmitOnErrors = false
+    }
 
     webpackConfig.optimization.runtimeChunk = {
       name: 'common/runtime'
     }
 
     webpackConfig.optimization.splitChunks = require('../split-chunks')()
+
+    if (webpack.version[0] > 4) {
+      webpackConfig.optimization.chunkIds = 'named'
+    }
 
     parseEntry()
 
@@ -221,6 +231,11 @@ ${globalEnv}.__webpack_require_UNI_MP_PLUGIN__ = __webpack_require__;`
     if (process.env.NODE_ENV === 'production' || process.env.UNI_MINIMIZE === 'true') {
       output.pathinfo = false
     }
+
+    if (process.env.UNI_PLATFORM === 'mp-weixin' && process.env.NODE_ENV === 'production') {
+      plugins.push(new UniTips())
+    }
+
     return {
       mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
       entry () {
@@ -300,23 +315,35 @@ ${globalEnv}.__webpack_require_UNI_MP_PLUGIN__ = __webpack_require__;`
       process.env.NODE_ENV === 'production' &&
       process.env.UNI_PLATFORM !== 'app-plus'
     ) {
-      const OptimizeCssnanoPlugin = require('../../packages/@intervolga/optimize-cssnano-plugin/index.js')
-      webpackConfig.plugin('optimize-css')
-        .init((Plugin, args) => new OptimizeCssnanoPlugin({
-          sourceMap: false,
-          filter (assetName) {
-            return path.extname(assetName) === styleExt
-          },
-          cssnanoOptions: {
-            preset: [
-              'default',
-              Object.assign({}, getPlatformCssnano(), {
-                discardComments: true
-              })
-            ]
-          }
+      // webpack5 不再使用 OptimizeCssnanoPlugin，改用 CssMinimizerPlugin
+      if (webpack.version[0] > 4) {
+        webpackConfig.optimization.minimizer('css').tap(args => {
+          args[0].test = new RegExp(`\\${styleExt}$`)
+          return args
+        })
+      } else {
+        const OptimizeCssnanoPlugin = require('../../packages/@intervolga/optimize-cssnano-plugin/index.js')
+        webpackConfig.plugin('optimize-css')
+          .init((Plugin, args) => new OptimizeCssnanoPlugin({
+            sourceMap: false,
+            filter (assetName) {
+              return path.extname(assetName) === styleExt
+            },
+            cssnanoOptions: {
+              preset: [
+                'default',
+                Object.assign({}, getPlatformCssnano(), {
+                  discardComments: true
+                })
+              ]
+            }
+          }))
+      }
+    }
 
-        }))
+    if (process.env.NODE_ENV === 'production' && webpack.version[0] > 4) {
+      // 暂时禁用，否则导致 provide 被压缩和裁剪
+      webpackConfig.optimization.usedExports(false)
     }
 
     if (process.env.UNI_SUBPACKGE || process.env.UNI_MP_PLUGIN) {

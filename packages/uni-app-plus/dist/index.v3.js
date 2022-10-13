@@ -1246,6 +1246,10 @@ var serviceContext = (function () {
     sound: {
       type: String,
       default: 'none'
+    },
+    autoZoom: {
+      type: Boolean,
+      default: true
     }
   };
 
@@ -6538,7 +6542,8 @@ var serviceContext = (function () {
     const {
       hostPackageName, hostName, osLanguage,
       hostVersion, hostLanguage, hostTheme,
-      appId, appName, appVersion, appVersionCode
+      appId, appName, appVersion, appVersionCode,
+      appWgtVersion
     } = systemInfo;
 
     const appLanguage = uni
@@ -6552,6 +6557,7 @@ var serviceContext = (function () {
       appName,
       appVersion,
       appVersionCode,
+      appWgtVersion,
       appLanguage,
       enableDebug: false,
       hostSDKVersion: undefined,
@@ -6874,7 +6880,9 @@ var serviceContext = (function () {
     let result;
     const page = showPage({
       url: '__uniappchooselocation',
-      data: options,
+      data: Object.assign({}, options, {
+        locale: getLocale()
+      }),
       style: {
         animationType: options.animationType || 'slide-in-bottom',
         titleNView: false,
@@ -7047,7 +7055,9 @@ var serviceContext = (function () {
   function openLocation$2 (data, callbackId) {
     showPage({
       url: '__uniappopenlocation',
-      data,
+      data: Object.assign({}, data, {
+        locale: getLocale()
+      }),
       style: {
         titleNView: {
           type: 'transparent'
@@ -21373,6 +21383,7 @@ var serviceContext = (function () {
   let cid;
   let cidErrMsg;
   let enabled;
+  let offline;
 
   function normalizePushMessage (message) {
     try {
@@ -21386,6 +21397,9 @@ var serviceContext = (function () {
   ) {
     if (args.type === 'enabled') {
       enabled = true;
+      {
+        offline = args.offline;
+      }
     } else if (args.type === 'clientId') {
       cid = args.cid;
       cidErrMsg = args.errMsg;
@@ -21434,11 +21448,34 @@ var serviceContext = (function () {
     const hasSuccess = isFn(success);
     const hasFail = isFn(fail);
     const hasComplete = isFn(complete);
+
+    // App 端且启用离线时，使用 getClientInfoAsync 来调用
+    if ( offline) {
+      plus.push.getClientInfoAsync(
+        (info) => {
+          const res = {
+            errMsg: 'getPushClientId:ok',
+            cid: info.clientid
+          };
+          hasSuccess && success(res);
+          hasComplete && complete(res);
+        },
+        (res) => {
+          res = {
+            errMsg: 'getPushClientId:fail ' + (res.code + ': ' + res.message)
+          };
+          hasFail && fail(res);
+          hasComplete && complete(res);
+        }
+      );
+      return
+    }
+
     Promise.resolve().then(() => {
       if (typeof enabled === 'undefined') {
         enabled = false;
         cid = '';
-        cidErrMsg = 'unipush is not enabled';
+        cidErrMsg = 'uniPush is not enabled';
       }
       getPushCidCallbacks.push((cid, errMsg) => {
         let res;
@@ -21775,6 +21812,7 @@ var serviceContext = (function () {
       this._page = page;
       this._queue = [];
       this._queueCb = [];
+      this._nodesRef = null;
     }
 
     exec (callback) {
@@ -21793,6 +21831,8 @@ var serviceContext = (function () {
         });
         isFn(callback) && callback.call(this, res);
       });
+
+      return this._nodesRef
     }
 
     ['in'] (component) {
@@ -21802,15 +21842,15 @@ var serviceContext = (function () {
     }
 
     select (selector) {
-      return new NodesRef(this, this._component, selector, true)
+      return (this._nodesRef = new NodesRef(this, this._component, selector, true))
     }
 
     selectAll (selector) {
-      return new NodesRef(this, this._component, selector, false)
+      return (this._nodesRef = new NodesRef(this, this._component, selector, false))
     }
 
     selectViewport () {
-      return new NodesRef(this, 0, '', true)
+      return (this._nodesRef = new NodesRef(this, 0, '', true))
     }
 
     _push (selector, component, single, fields, callback) {

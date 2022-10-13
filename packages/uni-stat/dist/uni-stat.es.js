@@ -12,6 +12,8 @@ const APP_PVER_TIME = 300; // 应用在后台结束访问时间 单位s
 const OPERATING_TIME = 10; // 数据上报时间 单位s
 const DIFF_TIME = 60 * 1000 * 60 * 24;
 
+// 获取 manifest.json 中统计配置
+const uniStatisticsConfig = process.env.UNI_STATISTICS_CONFIG;
 let statConfig = {
   appid: process.env.UNI_APP_ID,
 };
@@ -448,7 +450,7 @@ const is_debug = debug;
  * 日志输出
  * @param {*} data
  */
-const log = (data) => {
+const log = (data, type) => {
   let msg_type = '';
   switch (data.lt) {
     case '1':
@@ -471,11 +473,52 @@ const log = (data) => {
       msg_type = 'PUSH';
       break
   }
+
+  // #ifdef APP
+  // 在 app 中，日志转为 字符串
+  if (typeof data === 'object') {
+    data = JSON.stringify(data);
+  }
+  // #endif
+
+  if (type) {
+    console.log(`=== 统计队列数据上报 ===`);
+    console.log(data);
+    console.log(`=== 上报结束 ===`);
+    return
+  }
+
   if (msg_type) {
     console.log(`=== 统计数据采集：${msg_type} ===`);
     console.log(data);
     console.log(`=== 采集结束 ===`);
   }
+};
+
+/**
+ * 获取上报时间间隔
+ * @param {*} defaultTime 默认上报间隔时间 单位s
+ */
+const get_report_Interval = (defaultTime) => {
+  let time = uniStatisticsConfig.reportInterval;
+  // 如果上报时间配置为0 相当于立即上报
+  if (Number(time) === 0) return 0
+  time = time || defaultTime;
+  let reg = /(^[1-9]\d*$)/;
+  // 如果不是整数，则默认为上报间隔时间
+  if (!reg.test(time)) return defaultTime
+  return Number(time)
+};
+
+/**
+ * 获取隐私协议配置
+ */
+const is_push_clientid = () => {
+  if (uniStatisticsConfig.collectItems) {
+    const ClientID = uniStatisticsConfig.collectItems.uniPushClientID;
+    return typeof ClientID === 'boolean' ? ClientID : false
+  }
+  return false
 };
 
 const appid = process.env.UNI_APP_ID; // 做应用隔离
@@ -649,6 +692,7 @@ const get_residence_time = (type) => {
 	}
 };
 
+const eport_Interval = get_report_Interval(OPERATING_TIME);
 // 统计数据默认值
 let statData = {
   uuid: get_uuid(), // 设备标识
@@ -1115,7 +1159,7 @@ class Report {
       log(data);
     }
     // 判断时候到达上报时间 ，默认 10 秒上报
-    if (page_residence_time < OPERATING_TIME && !type) return
+    if (page_residence_time < eport_Interval && !type) return
 
     // 时间超过，重新获取时间戳
     set_page_residence_time();
@@ -1165,9 +1209,7 @@ class Report {
           data: optionsData,
           success: () => {
             if (is_debug) {
-              console.log(`=== 统计队列数据上报 ===`);
-              console.log(optionsData);
-              console.log(`=== 上报结束 ===`);
+              log(optionsData, true);
             }
           },
           fail: (e) => {
@@ -1195,9 +1237,7 @@ class Report {
       let options = get_sgin(get_encodeURIComponent_options(data)).options;
       image.src = STAT_H5_URL + '?' + options;
       if (is_debug) {
-        console.log(`=== 统计队列数据上报 ===`);
-        console.log(data);
-        console.log(`=== 上报结束 ===`);
+        log(data, true);
       }
     });
   }
@@ -1236,7 +1276,8 @@ class Stat extends Report {
    * 获取推送id
    */
   pushEvent(options) {
-    if (uni.getPushClientId) {
+    const ClientID = is_push_clientid();
+    if (uni.getPushClientId && ClientID) {
       uni.getPushClientId({
         success: (res) => {
           const cid = res.cid || false;

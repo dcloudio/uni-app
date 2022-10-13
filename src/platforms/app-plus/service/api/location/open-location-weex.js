@@ -6,10 +6,14 @@ import {
   showPage
 } from '../../../helpers/page.js'
 
+import { getLocale } from 'uni-core/helpers/i18n'
+
 export function openLocation (data, callbackId) {
   showPage({
     url: '__uniappopenlocation',
-    data,
+    data: Object.assign({}, data, {
+      locale: getLocale()
+    }),
     style: {
       titleNView: {
         type: 'transparent'

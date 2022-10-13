@@ -1,5 +1,5 @@
 const {
-  normalizePath,
+  pathToRegexp,
   isInHBuilderX
 } = require('@dcloudio/uni-cli-shared/lib/util')
 const plp = require('@dcloudio/webpack-uni-pages-loader/package.json')
@@ -18,8 +18,8 @@ class ErrorReport {
     this._https = null
     this._crypto = null
     this._cacheList = []
-    this._UNI_INPUT_DIR_REG = new RegExp(normalizePath(process.env.UNI_INPUT_DIR), 'g')
-    this._UNI_CLI_CONTEXT_REG = new RegExp(normalizePath(process.env.UNI_CLI_CONTEXT), 'g')
+    this._UNI_INPUT_DIR_REG = pathToRegexp(process.env.UNI_INPUT_DIR, { global: true })
+    this._UNI_CLI_CONTEXT_REG = pathToRegexp(process.env.UNI_CLI_CONTEXT, { global: true })
   }
 
   get os () {
@@ -47,7 +47,6 @@ class ErrorReport {
       } catch (e) {}
     }
 
-    err = normalizePath(err) || ''
     err = err.replace(this._UNI_INPUT_DIR_REG, 'UNI_INPUT_DIR')
     err = err.replace(this._UNI_CLI_CONTEXT_REG, 'UNI_CLI_CONTEXT')
 

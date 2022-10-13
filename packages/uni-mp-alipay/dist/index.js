@@ -1387,12 +1387,6 @@ const protocols = { // 需要做转换的 API 列表
   hideHomeButton: {
     name: 'hideBackHome'
   },
-  saveImageToPhotosAlbum: {
-    name: 'saveImage',
-    args: {
-      filePath: 'url'
-    }
-  },
   saveVideoToPhotosAlbum: {
     args: {
       filePath: 'src'
@@ -1782,11 +1776,12 @@ function getPushClientId (args) {
   const hasSuccess = isFn(success);
   const hasFail = isFn(fail);
   const hasComplete = isFn(complete);
+
   Promise.resolve().then(() => {
     if (typeof enabled === 'undefined') {
       enabled = false;
       cid = '';
-      cidErrMsg = 'unipush is not enabled';
+      cidErrMsg = 'uniPush is not enabled';
     }
     getPushCidCallbacks.push((cid, errMsg) => {
       let res;
@@ -1993,6 +1988,29 @@ function initHooks (mpOptions, hooks, vueOptions) {
   });
 }
 
+function initUnknownHooks (mpOptions, vueOptions, excludes = []) {
+  findHooks(vueOptions).forEach((hook) => initHook(mpOptions, hook, excludes));
+}
+
+function findHooks (vueOptions, hooks = []) {
+  if (vueOptions) {
+    Object.keys(vueOptions).forEach((name) => {
+      if (name.indexOf('on') === 0 && isFn(vueOptions[name])) {
+        hooks.push(name);
+      }
+    });
+  }
+  return hooks
+}
+
+function initHook (mpOptions, hook, excludes) {
+  if (excludes.indexOf(hook) === -1 && !hasOwn(mpOptions, hook)) {
+    mpOptions[hook] = function (args) {
+      return this.$vm && this.$vm.__call_hook(hook, args)
+    };
+  }
+}
+
 function initVueComponent (Vue, vueOptions) {
   vueOptions = vueOptions.default || vueOptions;
   let VueComponent;
@@ -2033,7 +2051,7 @@ function initData (vueOptions, context) {
     try {
       // 对 data 格式化
       data = JSON.parse(JSON.stringify(data));
-    } catch (e) {}
+    } catch (e) { }
   }
 
   if (!isPlainObject(data)) {
@@ -2181,7 +2199,7 @@ function wrapper$1 (event) {
   // TODO 又得兼容 mpvue 的 mp 对象
   try {
     event.mp = JSON.parse(JSON.stringify(event));
-  } catch (e) {}
+  } catch (e) { }
 
   event.stopPropagation = noop;
   event.preventDefault = noop;
@@ -2252,7 +2270,7 @@ function getExtraValue (vm, dataPathsArray) {
   return context
 }
 
-function processEventExtra (vm, extra, event) {
+function processEventExtra (vm, extra, event, __args__) {
   const extraObj = {};
 
   if (Array.isArray(extra) && extra.length) {
@@ -2275,11 +2293,7 @@ function processEventExtra (vm, extra, event) {
           if (dataPath === '$event') { // $event
             extraObj['$' + index] = event;
           } else if (dataPath === 'arguments') {
-            if (event.detail && event.detail.__args__) {
-              extraObj['$' + index] = event.detail.__args__;
-            } else {
-              extraObj['$' + index] = [event];
-            }
+            extraObj['$' + index] = event.detail ? event.detail.__args__ || __args__ : __args__;
           } else if (dataPath.indexOf('$event.') === 0) { // $event.target.value
             extraObj['$' + index] = vm.__get_value(dataPath.replace('$event.', ''), event);
           } else {
@@ -2306,6 +2320,12 @@ function getObjByArray (arr) {
 
 function processEventArgs (vm, event, args = [], extra = [], isCustom, methodName) {
   let isCustomMPEvent = false; // wxcomponent 组件，传递原始 event 对象
+
+  // fixed 用户直接触发 mpInstance.triggerEvent
+  const __args__ = isPlainObject(event.detail)
+    ? event.detail.__args__ || [event.detail]
+    : [event.detail];
+
   if (isCustom) { // 自定义事件
     isCustomMPEvent = event.currentTarget &&
       event.currentTarget.dataset &&
@@ -2314,11 +2334,11 @@ function processEventArgs (vm, event, args = [], extra = [], isCustom, methodNam
       if (isCustomMPEvent) {
         return [event]
       }
-      return event.detail.__args__ || event.detail
+      return __args__
     }
   }
 
-  const extraObj = processEventExtra(vm, extra, event);
+  const extraObj = processEventExtra(vm, extra, event, __args__);
 
   const ret = [];
   args.forEach(arg => {
@@ -2327,7 +2347,7 @@ function processEventArgs (vm, event, args = [], extra = [], isCustom, methodNam
         ret.push(event.target.value);
       } else {
         if (isCustom && !isCustomMPEvent) {
-          ret.push(event.detail.__args__[0]);
+          ret.push(__args__[0]);
         } else { // wxcomponent 组件或内置组件
           ret.push(event);
         }
@@ -2616,6 +2636,7 @@ function parseBaseApp (vm, {
   initAppLocale(Vue, vm, normalizeLocale(my.getSystemInfoSync().language) || LOCALE_EN);
 
   initHooks(appOptions, hooks);
+  initUnknownHooks(appOptions, vm.$options);
 
   return appOptions
 }
@@ -2926,23 +2947,6 @@ const handleWrap = function (mp, destory) {
 };
 
 function parseApp (vm) {
-  Object.defineProperty(Vue.prototype, '$slots', {
-    get () {
-      return this.$scope && this.$scope.props.$slots
-    },
-    set () {
-
-    }
-  });
-  Object.defineProperty(Vue.prototype, '$scopedSlots', {
-    get () {
-      return this.$scope && this.$scope.props.$scopedSlots
-    },
-    set () {
-
-    }
-  });
-
   Vue.prototype.$onAliGetAuthorize = function onAliGetAuthorize (method, $event) {
     my.getPhoneNumber({
       success: (res) => {
@@ -3091,6 +3095,7 @@ function parsePage (vuePageOptions) {
   };
 
   initHooks(pageOptions, hooks$1, vuePageOptions);
+  initUnknownHooks(pageOptions, vuePageOptions, ['onReady']);
 
   if (Array.isArray(vueOptions.wxsCallMethods)) {
     vueOptions.wxsCallMethods.forEach(callMethod => {
@@ -3106,6 +3111,29 @@ function parsePage (vuePageOptions) {
 function createPage (vuePageOptions) {
   {
     return Page(parsePage(vuePageOptions))
+  }
+}
+
+function initSlots (vm, vueSlots) {
+  const $slots = Object.create(null);
+  // 未启用小程序基础库 2.0 时，组件实例支持支持访问 $slots、$scopedSlots
+  Object.defineProperty(vm, '$slots', {
+    get () {
+      const $scope = this.$scope;
+      return ($scope && $scope.props.$slots) || ($scope && $scope.props.$scopedSlots ? {} : $slots)
+    }
+  });
+  Object.defineProperty(vm, '$scopedSlots', {
+    get () {
+      const $scope = this.$scope;
+      return ($scope && $scope.props.$scopedSlots) || ($scope && $scope.props.$slots ? {} : $slots)
+    }
+  });
+  // 处理$slots,$scopedSlots（暂不支持动态变化$slots）
+  if (Array.isArray(vueSlots) && vueSlots.length) {
+    vueSlots.forEach(slotName => {
+      $slots[slotName] = true;
+    });
   }
 }
 
@@ -3133,6 +3161,8 @@ function initVm (VueComponent) {
     // 初始化 vue 实例
     this.$vm = new VueComponent(options);
 
+    initSlots(this.$vm, properties.vueSlots);
+
     // 触发首次 setData
     this.$vm.$mount();
   } else {
@@ -3148,6 +3178,9 @@ function initVm (VueComponent) {
       // 初始化 vue 实例
       this.$vm = new VueComponent(options);
       handleRef.call(options.parent.$scope, this);
+
+      initSlots(this.$vm, properties.vueSlots);
+
       // 触发首次 setData
       this.$vm.$mount();
 
@@ -3170,9 +3203,7 @@ function parseComponent (vueComponentOptions) {
   };
 
   Object.keys(properties).forEach(key => {
-    if (key !== 'vueSlots') {
-      props[key] = properties[key].value;
-    }
+    props[key] = properties[key].value;
   });
 
   const componentOptions = {

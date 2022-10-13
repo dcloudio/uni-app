@@ -163,6 +163,20 @@ global['__wxVueOptions'] = {
       }
       ])
 
+    assertCodegen(`
+      import CustomButton from './custom-button.vue'
+      const __sfc_main = {}
+      __sfc_main.components = Object.assign({
+          'custom-button': CustomButton
+        }, __sfc_main.components)
+      export default __sfc_main
+                      `,
+    [{
+      name: 'custom-button',
+      value: 'CustomButton',
+      source: './custom-button.vue'
+    }])
+
     assertCodegen(
       `import myButton from '@/components/my-button/my-button.vue';
       export default {

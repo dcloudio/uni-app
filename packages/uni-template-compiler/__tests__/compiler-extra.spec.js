@@ -545,6 +545,11 @@ describe('mp:compiler-extra', () => {
       '<my-component v-model="test[a.b][a.b]">4</my-component>',
       '<my-component bind:input="__e" vue-id="551070e6-1" value="{{test[a.b][a.b]}}" data-event-opts="{{[[\'^input\',[[\'__set_model\',[\'$0\',\'$1\',\'$event\',[]],[\'test.\'+a.b+\'\',\'a.b\']]]]]}}" bind:__l="__l" vue-slots="{{[\'default\']}}">4</my-component>'
     )
+    assertCodegen(
+      '<my-component v-for="(item, index) in array" :key="index" v-model="item.value" @input="handle" :class="{test:test(index)}"></my-component>',
+      '<block wx:for="{{$root.l0}}" wx:for-item="item" wx:for-index="index" wx:key="index"><my-component class="{{[(item.m0)?\'test\':\'\']}}" bind:input="__e" vue-id="{{\'551070e6-1-\'+index}}" value="{{item.$orig.value}}" data-event-opts="{{[[\'^input\',[[\'__set_model\',[\'$0\',\'value\',\'$event\',[]],[[[\'array\',\'\',index]]]],[\'handle\']]]]}}" bind:__l="__l"></my-component></block>',
+      'with(this){var l0=__map(array,function(item,index){var $orig=__get_orig(item);var m0=test(index);return{$orig:$orig,m0:m0}});$mp.data=Object.assign({},{$root:{l0:l0}})}'
+    )
   })
 
   it('generate object property on custom component', () => {

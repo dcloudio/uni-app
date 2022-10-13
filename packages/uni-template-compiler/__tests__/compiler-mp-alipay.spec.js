@@ -31,11 +31,11 @@ describe('mp:compiler-mp-alipay', () => {
   it('generate ref', () => {
     assertCodegen(
       '<component1 ref="c1">text</component1>',
-      '<component1 vue-id="551070e6-1" ref="__r" data-ref="c1" onVueInit="__l">text</component1>'
+      '<component1 vue-id="551070e6-1" ref="__r" data-ref="c1" onVueInit="__l" vue-slots="{{[\'default\']}}">text</component1>'
     )
     assertCodegen(
       '<component1 :ref="c2">text<text>123213</text></component1>',
-      '<component1 vue-id="551070e6-1" ref="__r" data-ref="{{c2}}" onVueInit="__l">text<text>123213</text></component1>'
+      '<component1 vue-id="551070e6-1" ref="__r" data-ref="{{c2}}" onVueInit="__l" vue-slots="{{[\'default\']}}">text<text>123213</text></component1>'
     )
     assertCodegen(
       '<component1 v-for="item in items" ref="c3"></component1>',
@@ -47,7 +47,7 @@ describe('mp:compiler-mp-alipay', () => {
     )
     assertCodegen(
       '<component1>text</component1>',
-      '<component1 vue-id="551070e6-1" data-com-type="wx" ref="__r" onVueInit="__l">text</component1>',
+      '<component1 vue-id="551070e6-1" data-com-type="wx" ref="__r" onVueInit="__l" vue-slots="{{[\'default\']}}">text</component1>',
       undefined,
       undefined,
       {
@@ -56,7 +56,7 @@ describe('mp:compiler-mp-alipay', () => {
     )
     assertCodegen(
       '<component1 @change="onChange" @cancle="onCancle">text</component1>',
-      '<component1 onChange="__e" onCancle="__e" vue-id="551070e6-1" data-event-opts="{{[[\'^change\',[[\'onChange\']]],[\'^cancle\',[[\'onCancle\']]]]}}" data-com-type="wx" ref="__r" data-event-list="onChange,onCancle" onVueInit="__l">text</component1>',
+      '<component1 onChange="__e" onCancle="__e" vue-id="551070e6-1" data-event-opts="{{[[\'^change\',[[\'onChange\']]],[\'^cancle\',[[\'onCancle\']]]]}}" data-com-type="wx" ref="__r" data-event-list="onChange,onCancle" onVueInit="__l" vue-slots="{{[\'default\']}}">text</component1>',
       undefined,
       undefined,
       {
@@ -65,7 +65,7 @@ describe('mp:compiler-mp-alipay', () => {
     )
     assertCodegen(
       '<credit-pay @change="onChange" @cancle="onCancle">text</credit-pay>',
-      '<plugin-wrapper onChange="__e" onCancle="__e" vue-id="551070e6-1" onPluginWrap="__w" data-event-opts="{{[[\'^change\',[[\'onChange\']]],[\'^cancle\',[[\'onCancle\']]]]}}" data-com-type="wx" data-event-list="onChange,onCancle" onVueInit="__l"><credit-pay onChange="{{\'onChange\'+\'551070e6-1\'}}" onCancle="{{\'onCancle\'+\'551070e6-1\'}}" onVueInit="__l">text</credit-pay></plugin-wrapper>',
+      '<plugin-wrapper onChange="__e" onCancle="__e" vue-id="551070e6-1" onPluginWrap="__w" data-event-opts="{{[[\'^change\',[[\'onChange\']]],[\'^cancle\',[[\'onCancle\']]]]}}" data-com-type="wx" data-event-list="onChange,onCancle" onVueInit="__l" vue-slots="{{[\'default\']}}"><credit-pay onChange="{{\'onChange\'+\'551070e6-1\'}}" onCancle="{{\'onCancle\'+\'551070e6-1\'}}" onVueInit="__l" vue-slots="{{[\'default\']}}">text</credit-pay></plugin-wrapper>',
       undefined,
       undefined,
       {
@@ -82,33 +82,33 @@ describe('mp:compiler-mp-alipay', () => {
   it('generate default slot', () => {
     assertCodegen(
       '<component1>text</component1>',
-      '<component1 vue-id="551070e6-1" onVueInit="__l">text</component1>'
+      '<component1 vue-id="551070e6-1" onVueInit="__l" vue-slots="{{[\'default\']}}">text</component1>'
     )
     assertCodegen(
       '<component1>text<text>123213</text></component1>',
-      '<component1 vue-id="551070e6-1" onVueInit="__l">text<text>123213</text></component1>'
+      '<component1 vue-id="551070e6-1" onVueInit="__l" vue-slots="{{[\'default\']}}">text<text>123213</text></component1>'
     )
     assertCodegen(
       '<component1>text<block slot="right"></block></component1>',
-      '<component1 vue-id="551070e6-1" onVueInit="__l">text<view slot="right"></view></component1>'
+      '<component1 vue-id="551070e6-1" onVueInit="__l" vue-slots="{{[\'default\',\'right\']}}">text<view slot="right"></view></component1>'
     )
   })
 
   it('generate scoped slot', () => {
     assertCodegen(
       '<component1 :text="\'text\'"><template v-slot="props"><view :class="{text:props.text}">{{props.text}}</view></template></component1>',
-      '<component1 vue-id="551070e6-1" text="text" onVueInit="__l"><view slot-scope="props"><view class="{{((props.text)?\'text\':\'\')}}">{{props.text}}</view></view></component1>'
+      '<component1 vue-id="551070e6-1" text="text" onVueInit="__l" vue-slots="{{[\'default\']}}"><view slot-scope="props"><view class="{{((props.text)?\'text\':\'\')}}">{{props.text}}</view></view></component1>'
     )
     assertCodegen(
       '<component1 :text="\'text\'"><template v-slot="{text}"><view :class="{text:text}">{{text}}</view></template></component1>',
-      '<component1 vue-id="551070e6-1" text="text" onVueInit="__l"><view slot-scope="__SCOPED__"><view class="{{((__SCOPED__.text)?\'text\':\'\')}}">{{__SCOPED__.text}}</view></view></component1>'
+      '<component1 vue-id="551070e6-1" text="text" onVueInit="__l" vue-slots="{{[\'default\']}}"><view slot-scope="__SCOPED__"><view class="{{((__SCOPED__.text)?\'text\':\'\')}}">{{__SCOPED__.text}}</view></view></component1>'
     )
   })
 
   it('generate scoped slot with scopedSlotsCompiler: auto', () => {
     assertCodegen(
       '<my-component><template v-slot="{item}">{{item}}<template></my-component>',
-      '<my-component vue-id="551070e6-1" onVueInit="__l"><view slot-scope="__SCOPED__">{{__SCOPED__.item}}</view></my-component>',
+      '<my-component vue-id="551070e6-1" onVueInit="__l" vue-slots="{{[\'default\']}}"><view slot-scope="__SCOPED__">{{__SCOPED__.item}}</view></my-component>',
       'with(this){}',
       {
         scopedSlotsCompiler: 'auto'
@@ -116,7 +116,7 @@ describe('mp:compiler-mp-alipay', () => {
     )
     assertCodegen(
       '<my-component><template v-slot="{item}">{{getValue(item)}}<template></my-component>',
-      '<my-component scoped-slots-compiler="augmented" vue-id="551070e6-1" onVueInit="__l"><block a:if="{{$root.m0}}">{{$root.m1}}</block></my-component>',
+      '<my-component scoped-slots-compiler="augmented" vue-id="551070e6-1" onVueInit="__l" vue-slots="{{[\'default\']}}"><block a:if="{{$root.m0}}">{{$root.m1}}</block></my-component>',
       'with(this){var m0=$hasScopedSlotsParams("551070e6-1");var m1=m0?getValue($getScopedSlotsParams("551070e6-1","default","item")):null;$mp.data=Object.assign({},{$root:{m0:m0,m1:m1}})}',
       {
         scopedSlotsCompiler: 'auto'
@@ -124,7 +124,7 @@ describe('mp:compiler-mp-alipay', () => {
     )
     assertCodegen(
       '<my-component><template v-slot="item">{{getValue(item.text)}}<template></my-component>',
-      '<my-component scoped-slots-compiler="augmented" vue-id="551070e6-1" onVueInit="__l"><block a:if="{{$root.m0}}">{{$root.m1}}</block></my-component>',
+      '<my-component scoped-slots-compiler="augmented" vue-id="551070e6-1" onVueInit="__l" vue-slots="{{[\'default\']}}"><block a:if="{{$root.m0}}">{{$root.m1}}</block></my-component>',
       'with(this){var m0=$hasScopedSlotsParams("551070e6-1");var m1=m0?getValue($getScopedSlotsParams("551070e6-1","default").text):null;$mp.data=Object.assign({},{$root:{m0:m0,m1:m1}})}',
       {
         scopedSlotsCompiler: 'auto'
@@ -207,7 +207,7 @@ describe('mp:compiler-mp-alipay', () => {
   it('generate attrs with mergeVirtualHostAttributes', () => {
     assertCodegen(
       '<custom-view>hello world</custom-view>',
-      '<custom-view vue-id="551070e6-1" onVueInit="__l" virtualHostStyle="{{virtualHostStyle}}" virtualHostClass="{{(virtualHostClass)}}">hello world</custom-view>',
+      '<custom-view vue-id="551070e6-1" onVueInit="__l" virtualHostStyle="{{virtualHostStyle}}" virtualHostClass="{{(virtualHostClass)}}" vue-slots="{{[\'default\']}}">hello world</custom-view>',
       'with(this){}',
       {
         mergeVirtualHostAttributes: true
@@ -215,7 +215,7 @@ describe('mp:compiler-mp-alipay', () => {
     )
     assertCodegen(
       '<custom-view :class="class1" :style="style">hello world</custom-view>',
-      '<custom-view vue-id="551070e6-1" onVueInit="__l" virtualHostStyle="{{(style)+virtualHostStyle}}" virtualHostClass="{{((class1)+\' \'+virtualHostClass)}}">hello world</custom-view>',
+      '<custom-view vue-id="551070e6-1" onVueInit="__l" virtualHostStyle="{{(style)+virtualHostStyle}}" virtualHostClass="{{((class1)+\' \'+virtualHostClass)}}" vue-slots="{{[\'default\']}}">hello world</custom-view>',
       'with(this){}',
       {
         mergeVirtualHostAttributes: true
@@ -223,7 +223,7 @@ describe('mp:compiler-mp-alipay', () => {
     )
     assertCodegen(
       '<view><custom-view>hello world</custom-view></view>',
-      '<view class="{{(virtualHostClass)}}" style="{{virtualHostStyle}}"><custom-view vue-id="551070e6-1" onVueInit="__l">hello world</custom-view></view>',
+      '<view class="{{(virtualHostClass)}}" style="{{virtualHostStyle}}"><custom-view vue-id="551070e6-1" onVueInit="__l" vue-slots="{{[\'default\']}}">hello world</custom-view></view>',
       'with(this){}',
       {
         mergeVirtualHostAttributes: true
@@ -231,7 +231,7 @@ describe('mp:compiler-mp-alipay', () => {
     )
     assertCodegen(
       '<view><custom-view :class="class1" :style="style">hello world</custom-view></view>',
-      '<view class="{{(virtualHostClass)}}" style="{{virtualHostStyle}}"><custom-view vue-id="551070e6-1" onVueInit="__l" virtualHostStyle="{{(style)}}" virtualHostClass="{{(class1)}}">hello world</custom-view></view>',
+      '<view class="{{(virtualHostClass)}}" style="{{virtualHostStyle}}"><custom-view vue-id="551070e6-1" onVueInit="__l" virtualHostStyle="{{(style)}}" virtualHostClass="{{(class1)}}" vue-slots="{{[\'default\']}}">hello world</custom-view></view>',
       'with(this){}',
       {
         mergeVirtualHostAttributes: true

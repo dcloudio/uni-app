@@ -54,5 +54,18 @@ uni-cover-view .uni-cover-view {
   width: 100%;
   height: 100%;
   visibility: hidden;
+  text-overflow: inherit;
+  overflow: hidden;
+  white-space: inherit;
+  -webkit-align-items: inherit;
+  align-items: inherit;
+  -webkit-justify-content: inherit;
+  justify-content: inherit;
+  -webkit-flex-direction: inherit;
+  flex-direction: inherit;
+  -webkit-flex-wrap: inherit;
+  flex-wrap: inherit;
+  display: inherit;
+  overflow: inherit;
 }
 </style>
