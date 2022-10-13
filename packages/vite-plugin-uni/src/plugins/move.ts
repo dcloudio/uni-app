@@ -38,7 +38,6 @@ export function uniMovePlugin({
             cwd,
           })
           .map((filename) => {
-            fs.removeSync(dest)
             return fs.move(
               path.resolve(cwd, filename),
               path.resolve(dest, filename),

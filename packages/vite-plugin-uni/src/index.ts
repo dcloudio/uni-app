@@ -1,3 +1,4 @@
+import fs from 'fs'
 import path from 'path'
 import debug from 'debug'
 import type { Plugin, ResolvedConfig, ViteDevServer } from 'vite'
@@ -9,6 +10,7 @@ import legacyPlugin from '@vitejs/plugin-legacy'
 
 import {
   CopyOptions,
+  emptyDir,
   initModuleAlias,
   initPreContext,
   parsePagesJsonOnce,
@@ -66,6 +68,8 @@ export interface VitePluginUniResolvedOptions extends VitePluginUniOptions {
 }
 
 export { runDev, runBuild } from './cli/action'
+
+let isFirst = true
 
 export default function uniPlugin(
   rawOptions: VitePluginUniOptions = {}
@@ -181,13 +185,23 @@ export default function uniPlugin(
   }
 
   if (process.env.SOURCEMAP === 'true') {
+    // 清空之前的 sourcemap 目录
+    const sourceMapPath = resolveSourceMapPath()
+    if (isFirst) {
+      // 避免重复清空
+      isFirst = false
+      if (fs.existsSync(sourceMapPath)) {
+        emptyDir(sourceMapPath)
+      }
+    }
+
     plugins.push(
       uniMovePlugin({
         apply: 'build',
         enforce: 'post',
         cwd: process.env.UNI_OUTPUT_DIR,
         pattern: '**/*.js.map',
-        dest: resolveSourceMapPath(),
+        dest: sourceMapPath,
       })
     )
   }
