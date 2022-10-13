@@ -177,6 +177,9 @@ export function useQuill(
       trigger('statuschange', {} as Event, status)
     }
   }
+  function textChangeHandler() {
+    trigger('input', {} as Event, getContents())
+  }
   function initQuill(imageResizeModules: ResizeModuleName[]) {
     const Quill = (window as WindowExt).Quill as typeof QuillClass
     formats.register(Quill)
@@ -220,11 +223,7 @@ export function useQuill(
         }
       })
     })
-    quill.on('text-change', () => {
-      if (!textChanging) {
-        trigger('input', {} as Event, getContents())
-      }
-    })
+    quill.on('text-change', textChangeHandler)
     quill.on('selection-change', updateStatus)
     quill.on('scroll-optimize', () => {
       const range = quill.selection.getRange()[0]
@@ -338,24 +337,27 @@ export function useQuill(
                 data = {},
               } = options
               const path = getRealPath(src)
-              quill.insertEmbed(range.index, 'image', path, 'user')
+              quill.insertEmbed(range.index, 'image', path, 'silent')
               const local = /^(file|blob):/.test(path) ? path : false
-              textChanging = true
-              quill.formatText(range.index, 1, 'data-local', local)
-              quill.formatText(range.index, 1, 'alt', alt)
-              quill.formatText(range.index, 1, 'width', width)
-              quill.formatText(range.index, 1, 'height', height)
-              quill.formatText(range.index, 1, 'class', extClass)
-              textChanging = false
+              quill.formatText(range.index, 1, 'data-local', local, 'silent')
+              quill.formatText(range.index, 1, 'alt', alt, 'silent')
+              quill.formatText(range.index, 1, 'width', width, 'silent')
+              quill.formatText(range.index, 1, 'height', height, 'silent')
+              quill.formatText(range.index, 1, 'class', extClass, 'silent')
               quill.formatText(
                 range.index,
                 1,
                 'data-custom',
                 Object.keys(data)
                   .map((key) => `${key}=${data[key]}`)
-                  .join('&')
+                  .join('&'),
+                'silent'
               )
               quill.setSelection(range.index + 1, 0, 'silent')
+              quill.scrollIntoView()
+              setTimeout(() => {
+                textChangeHandler()
+              }, 1000)
             }
             break
           case 'insertText':
