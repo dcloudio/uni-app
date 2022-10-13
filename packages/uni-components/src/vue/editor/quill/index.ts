@@ -69,7 +69,6 @@ export function useQuill(
   let quillReady: boolean
   let skipMatcher: boolean
   let quill: QuillExt
-  let textChanging: Boolean = false
   watch(
     () => props.readOnly,
     (value) => {

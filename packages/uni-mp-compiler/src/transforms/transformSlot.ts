@@ -61,7 +61,6 @@ export function rewriteSlot(node: SlotOutletNode, context: TransformContext) {
             ')',
           ])
           let slotKey
-          debugger
           const keys = parseVForKeyAlias(context)
           if (keys.length) {
             const babelNode = parseExpr(p.exp, context)

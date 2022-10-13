@@ -8342,7 +8342,6 @@ function useQuill(props2, rootRef, trigger) {
   let quillReady;
   let skipMatcher;
   let quill;
-  let textChanging = false;
   watch(
     () => props2.readOnly,
     (value) => {
@@ -8444,6 +8443,9 @@ function useQuill(props2, rootRef, trigger) {
       trigger("statuschange", {}, status);
     }
   }
+  function textChangeHandler() {
+    trigger("input", {}, getContents());
+  }
   function initQuill(imageResizeModules) {
     const Quill = window.Quill;
     register(Quill);
@@ -8484,11 +8486,7 @@ function useQuill(props2, rootRef, trigger) {
         }
       });
     });
-    quill.on("text-change", () => {
-      if (!textChanging) {
-        trigger("input", {}, getContents());
-      }
-    });
+    quill.on("text-change", textChangeHandler);
     quill.on("selection-change", updateStatus);
     quill.on("scroll-optimize", () => {
       const range = quill.selection.getRange()[0];
@@ -8589,22 +8587,25 @@ function useQuill(props2, rootRef, trigger) {
                 data: data2 = {}
               } = options;
               const path = getRealPath(src);
-              quill.insertEmbed(range.index, "image", path, "user");
+              quill.insertEmbed(range.index, "image", path, "silent");
               const local = /^(file|blob):/.test(path) ? path : false;
-              textChanging = true;
-              quill.formatText(range.index, 1, "data-local", local);
-              quill.formatText(range.index, 1, "alt", alt);
-              quill.formatText(range.index, 1, "width", width);
-              quill.formatText(range.index, 1, "height", height);
-              quill.formatText(range.index, 1, "class", extClass);
-              textChanging = false;
+              quill.formatText(range.index, 1, "data-local", local, "silent");
+              quill.formatText(range.index, 1, "alt", alt, "silent");
+              quill.formatText(range.index, 1, "width", width, "silent");
+              quill.formatText(range.index, 1, "height", height, "silent");
+              quill.formatText(range.index, 1, "class", extClass, "silent");
               quill.formatText(
                 range.index,
                 1,
                 "data-custom",
-                Object.keys(data2).map((key) => `${key}=${data2[key]}`).join("&")
+                Object.keys(data2).map((key) => `${key}=${data2[key]}`).join("&"),
+                "silent"
               );
               quill.setSelection(range.index + 1, 0, "silent");
+              quill.scrollIntoView();
+              setTimeout(() => {
+                textChangeHandler();
+              }, 1e3);
             }
             break;
           case "insertText":
