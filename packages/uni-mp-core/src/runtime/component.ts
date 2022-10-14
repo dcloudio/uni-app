@@ -170,7 +170,7 @@ export function $createComponent(
 
 export function $destroyComponent(instance: ComponentPublicInstance) {
   if (!$destroyComponentFn) {
-    $destroyComponentFn = getApp().$vm.$destroyComponent
+    $destroyComponentFn = getAppVm().$destroyComponent
   }
   return $destroyComponentFn(instance)
 }
