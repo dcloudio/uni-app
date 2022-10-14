@@ -70,11 +70,11 @@ export function isJsFile(id: string) {
   if (id === UNI_MODULES_EXPORTS) {
     return true
   }
-  const isJs = EXTNAME_JS_RE.test(id)
+  const { filename, query } = parseVueRequest(id)
+  const isJs = EXTNAME_JS_RE.test(filename)
   if (isJs) {
     return true
   }
-  const { filename, query } = parseVueRequest(id)
   const isVueJs = EXTNAME_VUE.includes(path.extname(filename)) && !query.vue
   if (isVueJs) {
     return true
