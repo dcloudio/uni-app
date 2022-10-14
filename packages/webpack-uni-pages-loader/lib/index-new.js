@@ -39,9 +39,11 @@ const {
 
 // 将开发者手动设置的 usingComponents 调整名称，方便与自动解析到的 usingComponents 做最后合并
 function renameUsingComponents (jsonObj) {
-  if (jsonObj.usingComponents) {
-    jsonObj.customUsingComponents = jsonObj.usingComponents
+  if (jsonObj.usingComponents || jsonObj.usingSwanComponents) {
+    // 暂定 usingComponents 优先级高于 usingSwanComponents
+    jsonObj.customUsingComponents = Object.assign({}, jsonObj.usingSwanComponents, jsonObj.usingComponents)
     delete jsonObj.usingComponents
+    delete jsonObj.usingSwanComponents
   }
   return jsonObj
 }

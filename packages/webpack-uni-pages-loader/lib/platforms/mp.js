@@ -49,9 +49,11 @@ function deepCopy (name, value, json) {
 const pagesJson2AppJson = {
   globalStyle: function (name, value, json) {
     json.window = parseStyle(value)
-    if (json.window.usingComponents) {
-      json.usingComponents = json.window.usingComponents
+    if (json.window.usingComponents || json.window.usingSwanComponents) {
+      // 暂定 usingComponents 优先级高于 usingSwanComponents
+      json.usingComponents = Object.assign({}, json.window.usingSwanComponents, json.window.usingComponents)
       delete json.window.usingComponents
+      delete json.window.usingSwanComponents
     } else {
       json.usingComponents = {}
     }
