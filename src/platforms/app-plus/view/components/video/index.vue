@@ -66,7 +66,8 @@ const attrs = [
   'httpCache',
   'playStrategy',
   'header',
-  'advanced'
+  'advanced',
+  'title'
 ]
 
 export default {
@@ -198,6 +199,10 @@ export default {
       default () {
         return []
       }
+    },
+    title: {
+      type: String,
+      default: ''
     }
   },
   computed: {
