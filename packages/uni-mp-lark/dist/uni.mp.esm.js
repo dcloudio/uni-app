@@ -665,7 +665,7 @@ function $createComponent(initialVNode, options) {
 }
 function $destroyComponent(instance) {
     if (!$destroyComponentFn) {
-        $destroyComponentFn = getApp().$vm.$destroyComponent;
+        $destroyComponentFn = getAppVm().$destroyComponent;
     }
     return $destroyComponentFn(instance);
 }

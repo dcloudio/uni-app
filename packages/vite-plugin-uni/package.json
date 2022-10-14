@@ -57,11 +57,11 @@
     "@types/sass": "^1.16.0",
     "@vue/babel-plugin-jsx": "^1.1.1",
     "chokidar": "^3.5.3",
-    "vite": "3.1.7",
+    "vite": "3.1.8",
     "vue": "3.2.40"
   },
   "peerDependencies": {
-    "vite": "3.1.7"
+    "vite": "3.1.8"
   },
   "uni-app": {
     "compilerVersion": "3.6.4"
