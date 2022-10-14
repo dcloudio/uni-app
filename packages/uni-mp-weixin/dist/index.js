@@ -1370,7 +1370,7 @@ function hasHook (hook, vueOptions) {
     return false
   }
 
-  if (isFn(vueOptions[hook])) {
+  if (isFn(vueOptions[hook]) || Array.isArray(vueOptions[hook])) {
     return true
   }
   const mixins = vueOptions.mixins;
@@ -2120,7 +2120,7 @@ function initRelation (detail) {
 }
 
 function selectAllComponents (mpInstance, selector, $refs) {
-  const components = mpInstance.selectAllComponents(selector);
+  const components = mpInstance.selectAllComponents(selector) || [];
   components.forEach(component => {
     const ref = component.dataset.ref;
     $refs[ref] = component.$vm || component;
@@ -2134,14 +2134,33 @@ function selectAllComponents (mpInstance, selector, $refs) {
   });
 }
 
+function syncRefs (refs, newRefs) {
+  const oldKeys = new Set(...Object.keys(refs));
+  const newKeys = Object.keys(newRefs);
+  newKeys.forEach(key => {
+    const oldValue = refs[key];
+    const newValue = newRefs[key];
+    if (Array.isArray(oldValue) && Array.isArray(newValue) && oldValue.length === newValue.length && newValue.every(value => oldValue.includes(value))) {
+      return
+    }
+    refs[key] = newValue;
+    oldKeys.delete(key);
+  });
+  oldKeys.forEach(key => {
+    delete refs[key];
+  });
+  return refs
+}
+
 function initRefs (vm) {
   const mpInstance = vm.$scope;
+  const refs = {};
   Object.defineProperty(vm, '$refs', {
     get () {
       const $refs = {};
       selectAllComponents(mpInstance, '.vue-ref', $refs);
       // TODO 暂不考虑 for 中的 scoped
-      const forComponents = mpInstance.selectAllComponents('.vue-ref-in-for');
+      const forComponents = mpInstance.selectAllComponents('.vue-ref-in-for') || [];
       forComponents.forEach(component => {
         const ref = component.dataset.ref;
         if (!$refs[ref]) {
@@ -2149,7 +2168,7 @@ function initRefs (vm) {
         }
         $refs[ref].push(component.$vm || component);
       });
-      return $refs
+      return syncRefs(refs, $refs)
     }
   });
 }
@@ -2231,7 +2250,7 @@ function stringifyQuery (obj, encodeStr = encode) {
 function parseBaseComponent (vueComponentOptions, {
   isPage,
   initRelation
-} = {}) {
+} = {}, needVueOptions) {
   const [VueComponent, vueOptions] = initVueComponent(Vue, vueComponentOptions);
 
   const options = {
@@ -2321,17 +2340,20 @@ function parseBaseComponent (vueComponentOptions, {
     });
   }
 
+  if (needVueOptions) {
+    return [componentOptions, vueOptions, VueComponent]
+  }
   if (isPage) {
     return componentOptions
   }
   return [componentOptions, VueComponent]
 }
 
-function parseComponent (vueComponentOptions) {
+function parseComponent (vueComponentOptions, needVueOptions) {
   return parseBaseComponent(vueComponentOptions, {
     isPage,
     initRelation
-  })
+  }, needVueOptions)
 }
 
 const hooks$1 = [
@@ -2342,13 +2364,10 @@ const hooks$1 = [
 
 hooks$1.push(...PAGE_EVENT_HOOKS);
 
-function parseBasePage (vuePageOptions, {
-  isPage,
-  initRelation
-}) {
-  const pageOptions = parseComponent(vuePageOptions);
+function parseBasePage (vuePageOptions) {
+  const [pageOptions, vueOptions] = parseComponent(vuePageOptions, true);
 
-  initHooks(pageOptions.methods, hooks$1, vuePageOptions);
+  initHooks(pageOptions.methods, hooks$1, vueOptions);
 
   pageOptions.methods.onLoad = function (query) {
     this.options = query;
@@ -2368,10 +2387,7 @@ function parseBasePage (vuePageOptions, {
 }
 
 function parsePage (vuePageOptions) {
-  return parseBasePage(vuePageOptions, {
-    isPage,
-    initRelation
-  })
+  return parseBasePage(vuePageOptions)
 }
 
 function createPage (vuePageOptions) {
@@ -2478,7 +2494,7 @@ if (typeof Proxy !== 'undefined' && "mp-weixin" !== 'app-plus') {
       if (eventApi[name]) {
         return eventApi[name]
       }
-      if (!hasOwn(wx, name) && !hasOwn(protocols, name)) {
+      if (typeof wx[name] !== 'function' && !hasOwn(protocols, name)) {
         return
       }
       return promisify(name, wrapper(name, wx[name]))

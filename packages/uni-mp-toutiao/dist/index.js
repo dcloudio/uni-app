@@ -1638,7 +1638,7 @@ function hasHook (hook, vueOptions) {
     return false
   }
 
-  if (isFn(vueOptions[hook])) {
+  if (isFn(vueOptions[hook]) || Array.isArray(vueOptions[hook])) {
     return true
   }
   const mixins = vueOptions.mixins;
@@ -2354,6 +2354,53 @@ function initBehavior (options) {
   return Behavior(options)
 }
 
+function selectAllComponents (mpInstance, selector, $refs) {
+  const components = mpInstance.selectAllComponents(selector) || [];
+  components.forEach(component => {
+    const ref = component.dataset.ref;
+    $refs[ref] = component.$vm || component;
+  });
+}
+
+function syncRefs (refs, newRefs) {
+  const oldKeys = new Set(...Object.keys(refs));
+  const newKeys = Object.keys(newRefs);
+  newKeys.forEach(key => {
+    const oldValue = refs[key];
+    const newValue = newRefs[key];
+    if (Array.isArray(oldValue) && Array.isArray(newValue) && oldValue.length === newValue.length && newValue.every(value => oldValue.includes(value))) {
+      return
+    }
+    refs[key] = newValue;
+    oldKeys.delete(key);
+  });
+  oldKeys.forEach(key => {
+    delete refs[key];
+  });
+  return refs
+}
+
+function initRefs (vm) {
+  const mpInstance = vm.$scope;
+  const refs = {};
+  Object.defineProperty(vm, '$refs', {
+    get () {
+      const $refs = {};
+      selectAllComponents(mpInstance, '.vue-ref', $refs);
+      // TODO 暂不考虑 for 中的 scoped
+      const forComponents = mpInstance.selectAllComponents('.vue-ref-in-for') || [];
+      forComponents.forEach(component => {
+        const ref = component.dataset.ref;
+        if (!$refs[ref]) {
+          $refs[ref] = [];
+        }
+        $refs[ref].push(component.$vm || component);
+      });
+      return syncRefs(refs, $refs)
+    }
+  });
+}
+
 function handleLink (event) {
   const {
     vuePid,
@@ -2379,31 +2426,12 @@ function isPage () {
   return this.__nodeid__ === 0 || this.__nodeId__ === 0
 }
 
-function initRefs (vm) {
+function initRefs$1 (vm) {
   const mpInstance = vm.$scope;
   /* eslint-disable no-undef */
   const minorVersion = parseInt(tt.getSystemInfoSync().SDKVersion.split('.')[1]);
   if (minorVersion > 16) {
-    Object.defineProperty(vm, '$refs', {
-      get () {
-        const $refs = {};
-        // mpInstance 销毁后 selectAllComponents 取值为 null
-        const components = mpInstance.selectAllComponents('.vue-ref') || [];
-        components.forEach(component => {
-          const ref = component.dataset.ref;
-          $refs[ref] = component.$vm || component;
-        });
-        const forComponents = mpInstance.selectAllComponents('.vue-ref-in-for') || [];
-        forComponents.forEach(component => {
-          const ref = component.dataset.ref;
-          if (!$refs[ref]) {
-            $refs[ref] = [];
-          }
-          $refs[ref].push(component.$vm || component);
-        });
-        return $refs
-      }
-    });
+    initRefs(vm);
   } else {
     mpInstance.selectAllComponents('.vue-ref', (components) => {
       components.forEach(component => {
@@ -2490,7 +2518,7 @@ function parseApp (vm) {
           this.$scope.route = this.$scope.__route__;
         }
 
-        initRefs(this);
+        initRefs$1(this);
 
         this.__init_injections(this);
         this.__init_provide(this);
@@ -2555,7 +2583,7 @@ function stringifyQuery (obj, encodeStr = encode) {
 function parseBaseComponent (vueComponentOptions, {
   isPage,
   initRelation
-} = {}) {
+} = {}, needVueOptions) {
   const [VueComponent, vueOptions] = initVueComponent(Vue, vueComponentOptions);
 
   const options = {
@@ -2638,6 +2666,9 @@ function parseBaseComponent (vueComponentOptions, {
     });
   }
 
+  if (needVueOptions) {
+    return [componentOptions, vueOptions, VueComponent]
+  }
   if (isPage) {
     return componentOptions
   }
@@ -2652,8 +2683,11 @@ function currentComponents (mpInstance, callback) {
   }
 }
 
-function parseComponent (vueOptions) {
-  const [componentOptions, VueComponent] = parseBaseComponent(vueOptions);
+function parseComponent (vueComponentOptions, needVueOptions) {
+  const [componentOptions, vueOptions, VueComponent] = parseBaseComponent(vueComponentOptions, {
+    isPage,
+    initRelation
+  }, true);
   const lifetimes = componentOptions.lifetimes;
 
   // 基础库 2.0 以上 attached 顺序错乱，按照 created 顺序强制纠正
@@ -2719,7 +2753,7 @@ function parseComponent (vueOptions) {
 
   componentOptions.methods.__l = handleLink$1;
 
-  return componentOptions
+  return needVueOptions ? [componentOptions, vueOptions] : componentOptions
 }
 
 const hooks$1 = [
@@ -2730,13 +2764,10 @@ const hooks$1 = [
 
 hooks$1.push(...PAGE_EVENT_HOOKS);
 
-function parseBasePage (vuePageOptions, {
-  isPage,
-  initRelation
-}) {
-  const pageOptions = parseComponent(vuePageOptions);
+function parseBasePage (vuePageOptions) {
+  const [pageOptions, vueOptions] = parseComponent(vuePageOptions, true);
 
-  initHooks(pageOptions.methods, hooks$1, vuePageOptions);
+  initHooks(pageOptions.methods, hooks$1, vueOptions);
 
   pageOptions.methods.onLoad = function (query) {
     this.options = query;
@@ -2756,10 +2787,7 @@ function parseBasePage (vuePageOptions, {
 }
 
 function parsePage (vuePageOptions) {
-  const pageOptions = parseBasePage(vuePageOptions, {
-    isPage,
-    initRelation
-  });
+  const pageOptions = parseBasePage(vuePageOptions);
   const lifetimes = pageOptions.lifetimes;
   const oldCreated = lifetimes.created;
   lifetimes.created = function created () {
@@ -2903,7 +2931,7 @@ if (typeof Proxy !== 'undefined' && "mp-toutiao" !== 'app-plus') {
       if (eventApi[name]) {
         return eventApi[name]
       }
-      if (!hasOwn(tt, name) && !hasOwn(protocols, name)) {
+      if (typeof tt[name] !== 'function' && !hasOwn(protocols, name)) {
         return
       }
       return promisify(name, wrapper(name, tt[name]))

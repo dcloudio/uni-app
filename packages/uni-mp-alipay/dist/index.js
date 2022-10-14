@@ -1968,7 +1968,7 @@ function hasHook (hook, vueOptions) {
     return false
   }
 
-  if (isFn(vueOptions[hook])) {
+  if (isFn(vueOptions[hook]) || Array.isArray(vueOptions[hook])) {
     return true
   }
   const mixins = vueOptions.mixins;
@@ -2843,7 +2843,7 @@ function handleProps (ref) {
 }
 
 function handleRef (ref) {
-  if (!ref) {
+  if (!(ref && this.$vm)) {
     return
   }
   if (ref.props['data-com-type'] === 'wx') {
@@ -3093,8 +3093,10 @@ function parsePage (vuePageOptions) {
     triggerEvent
   };
 
-  initHooks(pageOptions, hooks$1, vuePageOptions);
-  initUnknownHooks(pageOptions, vuePageOptions, ['onReady']);
+  Object.assign(pageOptions.events, vueOptions.events || {});
+
+  initHooks(pageOptions, hooks$1, vueOptions);
+  initUnknownHooks(pageOptions, vueOptions, ['onReady']);
 
   if (Array.isArray(vueOptions.wxsCallMethods)) {
     vueOptions.wxsCallMethods.forEach(callMethod => {
@@ -3192,7 +3194,7 @@ function initVm (VueComponent) {
   }
 }
 
-function parseComponent (vueComponentOptions) {
+function parseComponent (vueComponentOptions, needVueOptions) {
   const [VueComponent, vueOptions] = initVueComponent(Vue, vueComponentOptions);
 
   const properties = initProperties(vueOptions.props, false, vueOptions.__file);
@@ -3255,7 +3257,7 @@ function parseComponent (vueComponentOptions) {
     });
   }
 
-  return componentOptions
+  return needVueOptions ? [componentOptions, vueOptions] : componentOptions
 }
 
 function createComponent (vueOptions) {
@@ -3356,7 +3358,7 @@ if (typeof Proxy !== 'undefined' && "mp-alipay" !== 'app-plus') {
       if (eventApi[name]) {
         return eventApi[name]
       }
-      if (!hasOwn(my, name) && !hasOwn(protocols, name)) {
+      if (typeof my[name] !== 'function' && !hasOwn(protocols, name)) {
         return
       }
       return promisify(name, wrapper(name, my[name]))

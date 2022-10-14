@@ -57,7 +57,13 @@ var serviceContext = (function () {
     'getLocation',
     'chooseLocation',
     'openLocation',
-    'createMapContext'
+    'createMapContext',
+    'onLocationChange',
+    'onLocationChangeError',
+    'startLocationUpdate',
+    'stopLocationUpdate',
+    'offLocationChange',
+    'offLocationChangeError'
   ];
 
   const media = [
@@ -7086,6 +7092,86 @@ var serviceContext = (function () {
     return api.openLocation(...array)
   }
 
+  const callbackIds$2 = [];
+  const callbackOnErrorIds = [];
+  const callbackOffErrorIds = [];
+  let watchId;
+
+  /**
+   * 开始更新定位
+   */
+  function startLocationUpdate ({ type = 'wgs84' }) {
+    watchId = plus.geolocation.watchPosition(
+      res => {
+        callbackIds$2.forEach(callbackId => {
+          invoke$1(callbackId, res.coords);
+        });
+      },
+      error => {
+        callbackOnErrorIds.forEach(callbackId => {
+          invoke$1(callbackId, {
+            errMsg: 'onLocationChange:fail' + error.message
+          });
+        });
+      },
+      {
+        coordsType: type
+      }
+    );
+  }
+
+  /**
+   * 暂停更新定位
+   * @param {*} callbackId
+   */
+  function stopLocationUpdate (callbackId) {
+    if (watchId) {
+      plus.geolocation.clearWatch(watchId);
+    } else {
+      invoke$1(callbackId, { errMsg: 'stopLocationUpdate:fail' });
+    }
+    return {}
+  }
+
+  /**
+   * 监听更新定位
+   * @param {*} callbackId
+   */
+  function onLocationChange (callbackId) {
+    callbackIds$2.push(callbackId);
+  }
+
+  /**
+   * 监听更新定位失败
+   * @param {*} callbackId
+   */
+  function onLocationChangeError (callbackId) {
+    callbackOnErrorIds.push(callbackId);
+  }
+
+  // 移除实时地理位置变化事件的监听函数
+  function offLocationChange (callbackId) {
+    if (callbackId) {
+      const index = callbackIds$2.indexOf(callbackId);
+      if (index >= 0) {
+        callbackIds$2.splice(index, 1);
+      } else {
+        callbackOffErrorIds.forEach(callbackId => {
+          invoke$1(callbackId, {
+            errMsg: 'offLocationChange:fail'
+          });
+        });
+      }
+    } else {
+      callbackIds$2.length = 0;
+    }
+  }
+
+  // 移除实时地理位置变化事件的监听函数
+  function offLocationChangeError (callbackId) {
+    callbackOffErrorIds.push(callbackId);
+  }
+
   const RECORD_TIME = 60 * 60 * 1000;
 
   let recorder;
@@ -11790,7 +11876,9 @@ var serviceContext = (function () {
 
         const data = {
           code: e.code,
-          errMsg: e.message
+          errCode: e.code,
+          errMsg: e.message,
+          detail: e.detail
         };
 
         this._adError = data;
@@ -11800,6 +11888,7 @@ var serviceContext = (function () {
         const error = new Error(JSON.stringify(this._adError));
         error.code = e.code;
         error.errMsg = e.message;
+        error.detail = e.detail;
 
         if (this._loadPromiseReject != null) {
           this._loadPromiseReject(error);
@@ -12235,6 +12324,12 @@ var serviceContext = (function () {
     chooseLocation: chooseLocation$3,
     getLocation: getLocation$1,
     openLocation: openLocation$3,
+    startLocationUpdate: startLocationUpdate,
+    stopLocationUpdate: stopLocationUpdate,
+    onLocationChange: onLocationChange,
+    onLocationChangeError: onLocationChangeError,
+    offLocationChange: offLocationChange,
+    offLocationChangeError: offLocationChangeError,
     startRecord: startRecord,
     stopRecord: stopRecord,
     playVoice: playVoice,
@@ -21500,10 +21595,27 @@ var serviceContext = (function () {
   }
 
   const onPushMessageCallbacks = [];
+  let listening = false;
   // 不使用 defineOnApi 实现，是因为 defineOnApi 依赖 UniServiceJSBridge ，该对象目前在小程序上未提供，故简单实现
   const onPushMessage = (fn) => {
     if (onPushMessageCallbacks.indexOf(fn) === -1) {
       onPushMessageCallbacks.push(fn);
+    }
+    // 不能程序启动时就监听，因为离线事件，仅触发一次，框架监听后，无法转发给还没开始监听的开发者
+    if ( !listening) {
+      listening = true;
+      plus.push.addEventListener('click', (result) => {
+        invokePushCallback({
+          type: 'click',
+          message: result
+        });
+      });
+      plus.push.addEventListener('receive', (result) => {
+        invokePushCallback({
+          type: 'pushMsg',
+          message: result
+        });
+      });
     }
   };
 
