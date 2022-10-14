@@ -19,6 +19,10 @@ export function genUniModulesExports() {
   const importCodes: string[] = []
   const assignCodes: string[] = []
   fs.readdirSync(uniModulesDir).forEach((uniModuleDir) => {
+    // 必须以 uni- 开头
+    if (!uniModuleDir.startsWith('uni-')) {
+      return
+    }
     const pkgPath = path.resolve(uniModulesDir, uniModuleDir, 'package.json')
     if (!fs.existsSync(pkgPath)) {
       return
