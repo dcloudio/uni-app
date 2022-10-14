@@ -25,11 +25,11 @@ import parseBaseComponent from '../../../mp-weixin/runtime/wrapper/component-bas
 
 const newLifecycle = swan.canIUse('lifecycle-2-0')
 
-export default function parseComponent (vueOptions) {
-  const componentOptions = parseBaseComponent(vueOptions, {
+export default function parseComponent (vueComponentOptions, needVueOptions) {
+  const [componentOptions, vueOptions] = parseBaseComponent(vueComponentOptions, {
     isPage,
     initRelation
-  })
+  }, true)
 
   // 关于百度小程序生命周期的说明(组件作为页面时):
   // lifetimes:attached --> methods:onShow --> methods:onLoad --> methods:onReady
@@ -90,5 +90,5 @@ export default function parseComponent (vueOptions) {
   }
   delete componentOptions.methods.__l
 
-  return componentOptions
+  return needVueOptions ? [componentOptions, vueOptions] : componentOptions
 }

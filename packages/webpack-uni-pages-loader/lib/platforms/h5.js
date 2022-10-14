@@ -257,32 +257,6 @@ const genSystemRoutes = function () {
   return [
     `
 {
-path: '/preview-image',
-component: {
-  render (createElement) {
-    return createElement(
-      'Page',
-      {
-        props:{
-          navigationStyle:'custom'
-        }
-      },
-      [
-        createElement('system-preview-image', {
-          slot: 'page'
-        })
-      ]
-    )
-  }
-},
-meta:{
-  name:'preview-image',
-  pagePath:'/preview-image'
-}
-}
-    `,
-    `
-{
 path: '/choose-location',
 component: {
   render (createElement) {

@@ -383,7 +383,8 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
             JSON.stringify({
               type: 'stat'
             }),
-          vuex: require.resolve('@dcloudio/vue-cli-plugin-uni/packages/vuex3')
+          vuex: require.resolve('@dcloudio/vue-cli-plugin-uni/packages/vuex3'),
+          '@vue/composition-api': require.resolve('@dcloudio/vue-cli-plugin-uni/packages/@vue/composition-api')
         },
         modules: [
           process.env.UNI_INPUT_DIR,

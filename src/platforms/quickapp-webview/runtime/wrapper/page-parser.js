@@ -1,16 +1,11 @@
 import {
-  isPage,
-  instances,
-  initRelation
+  instances
 } from './util'
 
 import parseBasePage from '../../../mp-weixin/runtime/wrapper/page-base-parser'
 
 export default function parsePage (vuePageOptions) {
-  const pageOptions = parseBasePage(vuePageOptions, {
-    isPage,
-    initRelation
-  })
+  const pageOptions = parseBasePage(vuePageOptions)
   // 页面需要在 ready 中触发，其他组件是在 handleLink 中触发
   pageOptions.lifetimes.ready = function ready () {
     if (this.$vm && this.$vm.mpType === 'page') {

@@ -19,8 +19,8 @@ import {
   fixSetDataEnd
 } from '../../../mp-weixin/runtime/wrapper/fix-set-data'
 
-export default function parseComponent (vueComponentOptions) {
-  const componentOptions = parseBaseComponent(vueComponentOptions)
+export default function parseComponent (vueComponentOptions, needVueOptions) {
+  const [componentOptions, vueOptions] = parseBaseComponent(vueComponentOptions, true)
   const oldAttached = componentOptions.lifetimes.attached
   componentOptions.lifetimes.attached = function attached () {
     // 暂不区分版本
@@ -32,5 +32,5 @@ export default function parseComponent (vueComponentOptions) {
     }
     oldAttached.call(this)
   }
-  return componentOptions
+  return needVueOptions ? [componentOptions, vueOptions] : componentOptions
 }

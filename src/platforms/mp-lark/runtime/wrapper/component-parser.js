@@ -11,8 +11,11 @@ import {
 
 import parseBaseComponent from '../../../mp-weixin/runtime/wrapper/component-base-parser'
 
-export default function parseComponent (vueOptions) {
-  const [componentOptions, VueComponent] = parseBaseComponent(vueOptions)
+export default function parseComponent (vueComponentOptions, needVueOptions) {
+  const [componentOptions, vueOptions, VueComponent] = parseBaseComponent(vueComponentOptions, {
+    isPage,
+    initRelation
+  }, true)
 
   componentOptions.lifetimes.attached = function attached () {
     const properties = this.properties
@@ -46,5 +49,5 @@ export default function parseComponent (vueOptions) {
 
   componentOptions.methods.__l = handleLink
 
-  return componentOptions
+  return needVueOptions ? [componentOptions, vueOptions] : componentOptions
 }

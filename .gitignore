@@ -8,3 +8,4 @@ unpackage/
 package-lock.json
 !packages/vue-cli-plugin-uni/packages/**/*
 tests/package.json
+*.DS_Store

@@ -20,8 +20,11 @@ function currentComponents (mpInstance, callback) {
   }
 }
 
-export default function parseComponent (vueOptions) {
-  const [componentOptions, VueComponent] = parseBaseComponent(vueOptions)
+export default function parseComponent (vueComponentOptions, needVueOptions) {
+  const [componentOptions, vueOptions, VueComponent] = parseBaseComponent(vueComponentOptions, {
+    isPage,
+    initRelation
+  }, true)
   const lifetimes = componentOptions.lifetimes
 
   // 基础库 2.0 以上 attached 顺序错乱，按照 created 顺序强制纠正
@@ -87,5 +90,5 @@ export default function parseComponent (vueOptions) {
 
   componentOptions.methods.__l = handleLink
 
-  return componentOptions
+  return needVueOptions ? [componentOptions, vueOptions] : componentOptions
 }

@@ -1,0 +1,25 @@
+{
+  "name": "@dcloudio/uni-app",
+  "version": "2.0.0-32920211029001",
+  "description": "uni-app composition-api",
+  "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uni-app"
+  },
+  "scripts": {
+    "build": "tsc -p . "
+  },
+  "peerDependencies": {
+    "@dcloudio/types": "^3.0.15",
+    "@vue/composition-api": "^1.7.0"
+  },
+  "author": "fxy060608",
+  "license": "Apache-2.0",
+  "gitHead": "9e2d0f8e244724fcd64880316c57d837d1778cf8",
+  "devDependencies": {
+    "@dcloudio/types": "^3.0.15",
+    "typescript": "^4.8.3"
+  }
+}

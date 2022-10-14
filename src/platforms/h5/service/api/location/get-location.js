@@ -3,9 +3,9 @@ import {
 } from '../../../helpers/get-jsonp'
 import {
   MapType,
-  getMapInfo
+  getMapInfo,
+  translateGeo
 } from '../../../helpers/location'
-import { loadMaps } from '../../../view/components/map/maps'
 
 /**
  * 获取定位信息
@@ -73,62 +73,22 @@ export function getLocation ({
       }
     })
   }).then((coords, skip) => {
-    const wgs84Map = [MapType.GOOGLE]
-    if (type.toUpperCase() === 'WGS84' || wgs84Map.includes(mapInfo.type) || skip) {
-      return coords
-    }
-
-    if (mapInfo.type === MapType.QQ) {
-      return new Promise((resolve) => {
-        getJSONP(`https://apis.map.qq.com/jsapi?qt=translate&type=1&points=${coords.longitude},${coords.latitude}&key=${mapInfo.key}&output=jsonp&pf=jsapi&ref=jsapi`, {
-          callback: 'cb'
-        }, (res) => {
-          if ('detail' in res && 'points' in res.detail && res.detail.points.length) {
-            const location = res.detail.points[0]
-            resolve(Object.assign({}, coords, {
-              longitude: location.lng,
-              latitude: location.lat
-            }))
-          } else {
-            resolve(coords)
-          }
-        }, () => resolve(coords))
+    translateGeo(type, coords, skip)
+      .then(coords => {
+        invoke(
+          callbackId,
+          Object.assign(coords, {
+            errMsg: 'getLocation:ok',
+            verticalAccuracy: coords.altitudeAccuracy || 0,
+            // 无专门水平精度，使用位置精度替代
+            horizontalAccuracy: coords.accuracy
+          })
+        )
       })
-    }
-
-    if (mapInfo.type === MapType.AMAP) {
-      return new Promise((resolve) => {
-        loadMaps([], () => {
-          window.AMap.convertFrom(
-            [coords.longitude, coords.latitude],
-            'gps',
-            (_, res) => {
-              if (res.info === 'ok' && res.locations.length) {
-                const { lat, lng } = res.locations[0]
-                resolve(
-                  Object.assign({}, coords, {
-                    longitude: lng,
-                    latitude: lat
-                  })
-                )
-              } else {
-                resolve(coords)
-              }
-            }
-          )
+      .catch(error => {
+        invoke(callbackId, {
+          errMsg: 'getLocation:fail ' + error.message
         })
       })
-    }
-  }).then(coords => {
-    invoke(callbackId, Object.assign(coords, {
-      errMsg: 'getLocation:ok',
-      verticalAccuracy: coords.altitudeAccuracy || 0,
-      // 无专门水平精度，使用位置精度替代
-      horizontalAccuracy: coords.accuracy
-    }))
-  }).catch(error => {
-    invoke(callbackId, {
-      errMsg: 'getLocation:fail ' + error.message
-    })
   })
 }

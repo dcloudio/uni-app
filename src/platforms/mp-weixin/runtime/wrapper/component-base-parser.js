@@ -18,7 +18,7 @@ import {
 export default function parseBaseComponent (vueComponentOptions, {
   isPage,
   initRelation
-} = {}) {
+} = {}, needVueOptions) {
   const [VueComponent, vueOptions] = initVueComponent(Vue, vueComponentOptions)
 
   const options = {
@@ -110,6 +110,9 @@ export default function parseBaseComponent (vueComponentOptions, {
     })
   }
 
+  if (needVueOptions) {
+    return [componentOptions, vueOptions, VueComponent]
+  }
   if (isPage) {
     return componentOptions
   }

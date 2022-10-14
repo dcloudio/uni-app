@@ -141,7 +141,7 @@ function handleProps (ref) {
 }
 
 export function handleRef (ref) {
-  if (!ref) {
+  if (!(ref && this.$vm)) {
     return
   }
   if (ref.props['data-com-type'] === 'wx') {

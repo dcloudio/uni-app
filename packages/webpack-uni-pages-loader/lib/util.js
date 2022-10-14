@@ -133,6 +133,7 @@ function parseTabBar (style = {}) {
 const NON_APP_JSON_KEYS = [
   'appid',
   'unipush',
+  'secureNetwork',
   'usingComponents',
   'optimization',
   'scopedSlotsCompiler',

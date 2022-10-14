@@ -20,10 +20,10 @@
 
 ## 扫码体验
 
-开发一次，编译到11个平台。依次扫描11个二维码，亲自体验最全面的跨平台效果！
+开发一次，编译到14个平台。依次扫描14个二维码，亲自体验最全面的跨平台效果！
 
 <div align="center">
-  <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-a90b5f95-90ba-4d30-a6a7-cd4d057327db/d6c073b7-9233-411d-b143-a74af382422c.jpg"/>
+  <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-a90b5f95-90ba-4d30-a6a7-cd4d057327db/cf5727bc-fbe6-4d7e-bd92-e0d16e6f53b0.jpg"/>
 </div>
 
 *注： 某些平台不能提交简单demo，补充了一些其他功能。*

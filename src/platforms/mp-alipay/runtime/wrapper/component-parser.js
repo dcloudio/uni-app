@@ -101,7 +101,7 @@ function initVm (VueComponent) {
   }
 }
 
-export default function parseComponent (vueComponentOptions) {
+export default function parseComponent (vueComponentOptions, needVueOptions) {
   const [VueComponent, vueOptions] = initVueComponent(Vue, vueComponentOptions)
 
   const properties = initProperties(vueOptions.props, false, vueOptions.__file)
@@ -164,5 +164,5 @@ export default function parseComponent (vueComponentOptions) {
     })
   }
 
-  return componentOptions
+  return needVueOptions ? [componentOptions, vueOptions] : componentOptions
 }
