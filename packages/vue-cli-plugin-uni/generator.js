@@ -52,6 +52,7 @@ module.exports = (api, options, rootOptions) => {
         scripts: {}
       },
       dependencies: {
+        '@dcloudio/uni-app': version,
         '@dcloudio/uni-app-plus': version,
         '@dcloudio/uni-h5': version,
         '@dcloudio/uni-mp-vue': version,
