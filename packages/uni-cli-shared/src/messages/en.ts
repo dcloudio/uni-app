@@ -25,4 +25,6 @@ export default {
   'mp.component.args[1]': '{0} requires two parameters',
   'mp.360.unsupported': '360 is unsupported',
   'file.notfound': '{file} is not found',
+  'uts.ios.tips':
+    'The project uses the uts plug-in. After the uts plug-in code is modified, the [Custom playground native runner](https://uniapp.dcloud.net.cn/tutorial/run/run-app.html#customplayground) needs to be regenerated to take effect',
 } as const

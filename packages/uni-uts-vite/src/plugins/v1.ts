@@ -93,6 +93,8 @@ export function uniUtsV1Plugin(): Plugin {
               ])
             }
           }
+        } else if (process.env.UNI_UTS_PLATFORM === 'app-ios') {
+          process.env.UNI_APP_IOS_UTS = 'true'
         }
       }
       return code
