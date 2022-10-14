@@ -112,5 +112,6 @@ module.exports = {
   getPlatformGlobal,
   getPlatformStat,
   getPlatformPush,
-  getPlatformUniCloud
+  getPlatformUniCloud,
+  uniModulesLoader: normalizePath(require.resolve('./uni_modules-loader'))
 }
