@@ -88,7 +88,7 @@ export default /*#__PURE__*/ defineSystemComponent({
       position: 'absolute',
       'box-sizing': 'border-box',
       top: '0',
-      left: '0',
+      right: '0',
       width: '60px',
       height: '44px',
       padding: '6px',
