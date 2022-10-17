@@ -4393,11 +4393,13 @@ function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, ma
       });
     }
     let transform = "translateX(" + x + "px) translateY(" + y + "px) translateZ(0px) scale(" + scale + ")";
-    rootRef.value.style.transform = transform;
-    rootRef.value.style.webkitTransform = transform;
-    _translateX.value = x;
-    _translateY.value = y;
-    _scale.value = scale;
+    if (rootRef.value) {
+      rootRef.value.style.transform = transform;
+      rootRef.value.style.webkitTransform = transform;
+      _translateX.value = x;
+      _translateY.value = y;
+      _scale.value = scale;
+    }
   }
   function _revise(source) {
     let limitXY = _getLimitXY(_translateX.value, _translateY.value);
