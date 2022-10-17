@@ -32,6 +32,10 @@ export function createIntersectionObserver (component, options) {
   return swan.createIntersectionObserver(component, options)
 }
 
+export function createVideoContext (videoId) {
+  return swan.createVideoContext(videoId)
+}
+
 export {
   createMediaQueryObserver
 }

@@ -638,8 +638,10 @@ export default {
         this.circularEnabled ? 1 : 0
       )
     },
-    _navigationClick ($event, type) {
+    _navigationClick ($event, type, disabled) {
       $event.stopPropagation()
+
+      if (disabled) return
 
       const swiperItemLength = this.items.length
       let _current = this.currentSync
@@ -796,7 +798,7 @@ export default {
             'div',
             {
               on: {
-                click: (e) => this._navigationClick(e, 'prev'),
+                click: (e) => this._navigationClick(e, 'prev', this.prevDisabled),
                 ...navigationEvent
               },
               class: [
@@ -814,7 +816,7 @@ export default {
             'div',
             {
               on: {
-                click: (e) => this._navigationClick(e, 'next'),
+                click: (e) => this._navigationClick(e, 'next', this.nextDisabled),
                 ...navigationEvent
               },
               class: [
@@ -949,8 +951,7 @@ uni-swiper .uni-swiper-navigation {
 
 uni-swiper .uni-swiper-navigation-disabled {
   opacity: 0.35;
-  cursor: auto;
-  pointer-events: none;
+  cursor: not-allowed;
 }
 
 uni-swiper .uni-swiper-navigation-hide {
