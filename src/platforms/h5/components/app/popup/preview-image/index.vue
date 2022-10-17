@@ -112,7 +112,7 @@ export default {
   position: absolute;
   box-sizing: border-box;
   top: 0;
-  left: 0;
+  right: 0;
   width: 44px;
   height: 44px;
   padding: 6px;
