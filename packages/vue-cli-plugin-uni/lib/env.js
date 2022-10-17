@@ -341,7 +341,13 @@ if (
   )
 
   if (uniStatistics.enable === true) {
-    process.env.UNI_USING_STAT = Number(uniStatistics.version) === 2 ? '2' : '1'
+    const uniStatLog = (text) => {
+      console.log()
+      console.warn(text)
+      console.log()
+    }
+    const version = Number(uniStatistics.version) === 2 ? '2' : '1'
+    process.env.UNI_USING_STAT = version
     // 获取服务空间配置信息
     const uniCloudConfig = uniStatistics.uniCloud || {}
     process.env.UNI_STATISTICS_CONFIG = JSON.stringify(uniStatistics)
@@ -350,35 +356,31 @@ if (
 
     if (process.env.NODE_ENV === 'production') {
       if (!process.UNI_STAT_CONFIG.appid) {
-        console.log()
-        console.warn(uniI18n.__('pluginUni.uniStatisticsNoAppid', {
+        uniStatLog(uniI18n.__('pluginUni.uniStatisticsNoAppid', {
           0: 'https://ask.dcloud.net.cn/article/36303'
         }))
-        console.log()
       } else {
         if (!uniStatistics.version) {
-          console.log()
-          console.warn(uniI18n.__('pluginUni.uniStatisticsNoVersion', {
+          uniStatLog(uniI18n.__('pluginUni.uniStatisticsNoVersion', {
             0: 'https://uniapp.dcloud.io/uni-stat-v2.html'
           }))
-          console.log()
         } else {
-          console.log()
-          console.warn(`已开启 uni统计${uniStatistics.version}.0 版本`)
-          console.log()
+          uniStatLog(`已开启 uni统计${uniStatistics.version}.0 版本`)
+          if (version === '2') {
+            uniStatLog('【重要】因 HBuilderX 3.4.9 版本起，uni统计2.0 调整了安卓端 deviceId 获取方式，导致 uni统计2.0 App-Android平台部分统计数据不准确。如使用了HBuilderX 3.4.9 - 3.6.4版本且开通了uni统计2.0的应用，需要使用HBuilderX3.6.7及以上版本重新发布应用并升级 uniAdmin 云函数解决，详见：https://ask.dcloud.net.cn/article/40097')
+          }
         }
       }
     } else {
       if (!uniStatistics.version) {
-        console.log()
-        console.warn(uniI18n.__('pluginUni.uniStatisticsNoVersion', {
+        uniStatLog(uniI18n.__('pluginUni.uniStatisticsNoVersion', {
           0: 'https://uniapp.dcloud.io/uni-stat-v2.html'
         }))
-        console.log()
       } else {
-        console.log()
-        console.warn(`已开启 uni统计${uniStatistics.version}.0 版本`)
-        console.log()
+        uniStatLog(`已开启 uni统计${uniStatistics.version}.0 版本`)
+        if (version === '2') {
+          uniStatLog('【重要】因 HBuilderX 3.4.9 版本起，uni统计2.0 调整了安卓端 deviceId 获取方式，导致 uni统计2.0 App-Android平台部分统计数据不准确。如使用了HBuilderX 3.4.9 - 3.6.4版本且开通了uni统计2.0的应用，需要使用HBuilderX3.6.7及以上版本重新发布应用并升级 uniAdmin 云函数解决，详见：https://ask.dcloud.net.cn/article/40097')
+        }
       }
     }
   }
