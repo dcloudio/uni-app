@@ -8,6 +8,9 @@ export interface VueQuery {
   index?: number
   lang?: string
   raw?: boolean
+  setup?: boolean
+  'lang.ts'?: string
+  'lang.js'?: string
 }
 
 export function parseVueRequest(id: string) {

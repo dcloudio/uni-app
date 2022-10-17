@@ -5,6 +5,8 @@ import { addLeadingSlash, once, TABBAR_HEIGHT } from '@dcloudio/uni-shared'
 import { removeExt, normalizePath } from '../utils'
 import { parseJson } from './json'
 import { isVueSfcFile } from '../vue/utils'
+import { parseVueRequest } from '../vite'
+import { EXTNAME_VUE_RE } from '../constants'
 
 const pagesCacheSet: Set<string> = new Set()
 
@@ -16,6 +18,16 @@ export function isUniPageFile(
     file = normalizePath(path.relative(inputDir, file))
   }
   return pagesCacheSet.has(removeExt(file))
+}
+
+export function isUniPageSetupAndTs(file: string) {
+  const { filename, query } = parseVueRequest(file)
+  return !!(
+    query.vue &&
+    query.setup &&
+    hasOwn(query, 'lang.ts') &&
+    EXTNAME_VUE_RE.test(filename)
+  )
 }
 
 export function isUniPageSfcFile(
