@@ -1498,10 +1498,15 @@ function createIntersectionObserver (component, options) {
   return swan.createIntersectionObserver(component, options)
 }
 
+function createVideoContext (videoId) {
+  return swan.createVideoContext(videoId)
+}
+
 var api = /*#__PURE__*/Object.freeze({
   __proto__: null,
   requestPayment: requestPayment,
   createIntersectionObserver: createIntersectionObserver,
+  createVideoContext: createVideoContext,
   createMediaQueryObserver: createMediaQueryObserver,
   getPushClientId: getPushClientId,
   onPushMessage: onPushMessage,

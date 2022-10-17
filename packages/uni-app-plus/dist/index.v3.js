@@ -6498,13 +6498,6 @@ var serviceContext = (function () {
     }
   }
 
-  let deviceId;
-
-  function deviceId$1 () {
-    deviceId = deviceId || plus.device.uuid;
-    return deviceId
-  }
-
   let systemInfo = {};
   let _initSystemInfo = true;
 
@@ -6523,7 +6516,8 @@ var serviceContext = (function () {
     weexGetSystemInfoSync();
     const {
       deviceBrand = '', deviceModel, osName,
-      osVersion, deviceOrientation, deviceType
+      osVersion, deviceOrientation, deviceType,
+      deviceId
     } = systemInfo;
 
     const brand = deviceBrand.toLowerCase();
@@ -6534,7 +6528,7 @@ var serviceContext = (function () {
       deviceBrand: brand,
       deviceModel,
       devicePixelRatio: plus.screen.scale,
-      deviceId: deviceId$1(),
+      deviceId,
       deviceOrientation,
       deviceType,
       model: deviceModel,
