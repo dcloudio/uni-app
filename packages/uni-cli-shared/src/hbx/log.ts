@@ -90,6 +90,9 @@ export const h5ServeFormatter: Formatter = {
       })
       return ''
     }
+    if (msg.includes(SIGNAL_H5_LOCAL)) {
+      return msg.replace('➜ ', '-')
+    }
     return msg.replace('➜ ', '*')
   },
 }
