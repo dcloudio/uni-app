@@ -643,11 +643,16 @@ function withCtx(fn) {
     }
 
     var prevInstance = setCurrentRenderingInstance(ctx);
-    var res = fn(...arguments);
-    setCurrentRenderingInstance(prevInstance);
+    var res;
 
-    if (renderFnWithContext._d) {
-      setBlockTracking(1);
+    try {
+      res = fn(...arguments);
+    } finally {
+      setCurrentRenderingInstance(prevInstance);
+
+      if (renderFnWithContext._d) {
+        setBlockTracking(1);
+      }
     }
 
     return res;
@@ -4042,6 +4047,7 @@ var normalizeSlot = (key, rawSlot, ctx) => {
   }
 
   var normalized = withCtx(function () {
+    if ("production" !== 'production' && currentInstance) ;
     return normalizeSlotValue(rawSlot(...arguments));
   }, ctx);
   normalized._c = false;
@@ -4347,7 +4353,7 @@ function setRef(rawRef, oldRawRef, parentSuspense, vnode) {
     if (_isString || _isRef) {
       var doSet = () => {
         if (rawRef.f) {
-          var existing = _isString ? refs[ref] : ref.value;
+          var existing = _isString ? hasOwn(setupState, ref) ? setupState[ref] : refs[ref] : ref.value;
 
           if (isUnmount) {
             isArray(existing) && remove(existing, refValue);
@@ -7688,7 +7694,7 @@ function isMemoSame(cached, memo) {
 } // Core API ------------------------------------------------------------------
 
 
-var version = "3.2.40";
+var version = "3.2.41";
 var _ssrUtils = {
   createComponentInstance,
   setupComponent,

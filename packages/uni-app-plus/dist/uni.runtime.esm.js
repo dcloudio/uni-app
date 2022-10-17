@@ -13208,12 +13208,6 @@ const canIUse = defineSyncApi(API_CAN_I_USE, (schema) => {
     return false;
 }, CanIUseProtocol);
 
-let deviceId;
-function deviceId$1 () {
-    deviceId = deviceId || plus.device.uuid;
-    return deviceId;
-}
-
 let config;
 /**
  * tabbar显示状态
@@ -13560,7 +13554,7 @@ function weexGetSystemInfoSync() {
 }
 const getDeviceInfo = defineSyncApi('getDeviceInfo', () => {
     weexGetSystemInfoSync();
-    const { deviceBrand = '', deviceModel, osName, osVersion, deviceOrientation, deviceType, } = systemInfo;
+    const { deviceBrand = '', deviceModel, osName, osVersion, deviceOrientation, deviceType, deviceId, } = systemInfo;
     const brand = deviceBrand.toLowerCase();
     const _osName = osName.toLowerCase();
     return {
@@ -13568,7 +13562,7 @@ const getDeviceInfo = defineSyncApi('getDeviceInfo', () => {
         deviceBrand: brand,
         deviceModel,
         devicePixelRatio: plus.screen.scale,
-        deviceId: deviceId$1(),
+        deviceId,
         deviceOrientation,
         deviceType,
         model: deviceModel,

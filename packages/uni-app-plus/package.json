@@ -34,11 +34,11 @@
     "@dcloudio/uni-i18n": "3.0.0-alpha-3060720221014001",
     "@dcloudio/uni-shared": "3.0.0-alpha-3060720221014001",
     "@types/pako": "1.0.2",
-    "@vue/compiler-sfc": "3.2.40",
+    "@vue/compiler-sfc": "3.2.41",
     "autoprefixer": "^10.4.12",
     "pako": "^1.0.11",
     "postcss": "^8.4.16",
-    "vue": "3.2.40"
+    "vue": "3.2.41"
   },
   "dependencies": {
     "@dcloudio/uni-app-vite": "3.0.0-alpha-3060720221014001",

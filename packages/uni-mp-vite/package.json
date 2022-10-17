@@ -22,8 +22,8 @@
     "@dcloudio/uni-mp-compiler": "3.0.0-alpha-3060720221014001",
     "@dcloudio/uni-mp-vue": "3.0.0-alpha-3060720221014001",
     "@dcloudio/uni-shared": "3.0.0-alpha-3060720221014001",
-    "@vue/compiler-sfc": "3.2.40",
-    "@vue/shared": "3.2.40",
+    "@vue/compiler-sfc": "3.2.41",
+    "@vue/shared": "3.2.41",
     "debug": "^4.3.3",
     "magic-string": "^0.26.3"
   },
