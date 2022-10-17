@@ -12,6 +12,7 @@ import {
 import {
   stat_config,
   get_uuid,
+  get_odid,
   get_platform_name,
   get_pack_name,
   get_scene,
@@ -30,6 +31,7 @@ import {
   is_debug,
   log,
   get_report_Interval,
+  is_handle_device
 } from '../utils/pageInfo.js'
 
 import { sys } from '../utils/util.js'
@@ -295,13 +297,32 @@ export default class Report {
     this._navigationBarTitle.config = get_page_name(options.path)
     let is_opt = options.query && JSON.stringify(options.query) !== '{}'
     let query = is_opt ? '?' + JSON.stringify(options.query) : ''
+    const last_time = get_last_visit_time()
+    // 非老用户
+    if(last_time !== 0 || !last_time){
+      const odid = get_odid()
+      // 1.0 处理规则
+      if (__STAT_VERSION__ === '1') {
+        this.statData.odid = odid
+      }
+
+      // 2.0 处理规则
+      if (__STAT_VERSION__ === '2') {
+        const have_device = is_handle_device()
+        // 如果没有上报过设备信息 ，则需要上报设备信息
+        if(!have_device) {
+          this.statData.odid = odid
+        }
+      }
+    }
+
     Object.assign(this.statData, {
       lt: '1',
       url: options.path + query || '',
       t: get_time(),
       sc: get_scene(options.scene),
       fvts: get_first_visit_time(),
-      lvts: get_last_visit_time(),
+      lvts: last_time,
       tvc: get_total_visit_count(),
       // create session type  上报类型 ，1 应用进入 2.后台30min进入 3.页面30min进入
       cst: options.cst || 1,

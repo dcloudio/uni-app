@@ -1,7 +1,10 @@
 import { sys } from './util.js'
 
 import { STAT_URL, STAT_VERSION, DIFF_TIME } from '../config.ts'
-
+import {
+	dbGet,
+	dbSet,
+} from './db.js'
 // 获取 manifest.json 中统计配置
 const uniStatisticsConfig = process.env.UNI_STATISTICS_CONFIG
 let statConfig = {
@@ -67,6 +70,24 @@ function getUuid() {
 
 export const get_uuid = (statData) => {
   // 有可能不存在 deviceId（一般不存在就是出bug了），就自己生成一个
+  return sys.deviceId || getUuid()
+}
+
+/**
+ * 获取老版的 deviceid ,兼容以前的错误 deviceid
+ * @param {*} statData 
+ * @returns 
+ */
+export const get_odid = (statData) => {
+  let odid  = ''
+  if (get_platform_name() === 'n') {
+    try {
+      odid = plus.device.uuid
+    } catch (e) {
+      odid = ''
+    }
+    return odid
+  }
   return sys.deviceId || getUuid()
 }
 
@@ -549,4 +570,15 @@ export const is_push_clientid = () => {
     return typeof ClientID === 'boolean' ? ClientID : false
   }
   return false
+}
+
+/**
+ * 是否已处理设备 DeviceId
+ * 如果值为 1 则表示已处理
+ */
+const IS_HANDLE_DEVECE_ID = 'is_handle_device_id'
+export const is_handle_device = () => {
+  let isHandleDevice = dbGet(IS_HANDLE_DEVECE_ID) || ''
+	dbSet(IS_HANDLE_DEVECE_ID, '1')
+  return isHandleDevice === '1'
 }
