@@ -6718,8 +6718,10 @@ const useSwiperNavigation = (rootRef, props2, state, onSwiperDotClick, swiperCon
     onMouseover: (event) => navigationHover(event, "over"),
     onMouseout: (event) => navigationHover(event, "out")
   };
-  function navigationClick($event, type) {
+  function navigationClick($event, type, disabled) {
     $event.stopPropagation();
+    if (disabled)
+      return;
     const swiperItemLength = swiperContext.value.length;
     let _current = state.current;
     switch (type) {
@@ -6790,12 +6792,12 @@ const useSwiperNavigation = (rootRef, props2, state, onSwiperDotClick, swiperCon
         "class": ["uni-swiper-navigation uni-swiper-navigation-prev", shared.extend({
           "uni-swiper-navigation-disabled": prevDisabled
         }, navigationClass)],
-        "onClick": (e2) => navigationClick(e2, "prev")
+        "onClick": (e2) => navigationClick(e2, "prev", prevDisabled)
       }, navigationAttr), [createNavigationSVG()], 16, ["onClick"]), vue.createVNode("div", vue.mergeProps({
         "class": ["uni-swiper-navigation uni-swiper-navigation-next", shared.extend({
           "uni-swiper-navigation-disabled": nextDisabled
         }, navigationClass)],
-        "onClick": (e2) => navigationClick(e2, "next")
+        "onClick": (e2) => navigationClick(e2, "next", nextDisabled)
       }, navigationAttr), [createNavigationSVG()], 16, ["onClick"])]);
     }
     return null;

@@ -1176,12 +1176,16 @@ function createIntersectionObserver(component, options) {
     }
     return swan.createIntersectionObserver(component, options);
 }
+function createVideoContext(videoId) {
+    return swan.createVideoContext(videoId);
+}
 
 var shims = /*#__PURE__*/Object.freeze({
   __proto__: null,
   getProvider: getProvider,
   requestPayment: requestPayment,
-  createIntersectionObserver: createIntersectionObserver
+  createIntersectionObserver: createIntersectionObserver,
+  createVideoContext: createVideoContext
 });
 
 function createTodoMethod(contextName, methodName) {

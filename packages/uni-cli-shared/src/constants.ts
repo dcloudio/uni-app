@@ -17,7 +17,6 @@ export const extensions = [
   '.json',
 ].concat(EXTNAME_VUE)
 
-export const UNI_MODULES_EXPORTS = '\0uni-modules-exports'
 export const PAGES_JSON_JS = 'pages-json-js'
 export const MANIFEST_JSON_JS = 'manifest-json-js'
 export const JSON_JS_MAP = {

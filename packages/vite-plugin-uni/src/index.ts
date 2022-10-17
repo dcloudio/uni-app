@@ -13,9 +13,9 @@ import {
   emptyDir,
   initModuleAlias,
   initPreContext,
-  parsePagesJsonOnce,
+  parseUniExtApis,
   resolveSourceMapPath,
-  uniModulesExportsPlugin,
+  uniViteInjectPlugin,
 } from '@dcloudio/uni-cli-shared'
 
 import { createConfig } from './config'
@@ -92,15 +92,8 @@ export default function uniPlugin(
 
   initPreContext(options.platform, process.env.UNI_CUSTOM_CONTEXT)
 
-  const pagesJson = parsePagesJsonOnce(
-    process.env.UNI_INPUT_DIR,
-    process.env.UNI_PLATFORM
-  )
-
   const plugins: Plugin[] = [
-    uniModulesExportsPlugin({
-      enable: pagesJson.uni_modules?.exports === false ? false : true,
-    }),
+    uniViteInjectPlugin('uni:ext-api-inject', parseUniExtApis()),
   ]
 
   // 仅限 h5

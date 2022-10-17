@@ -137,8 +137,8 @@ const props = {
   },
   title: {
     type: String,
-    default: ''
-  }
+    default: '',
+  },
 }
 
 type EventName =

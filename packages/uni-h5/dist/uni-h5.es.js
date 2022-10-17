@@ -14207,8 +14207,10 @@ const useSwiperNavigation = (rootRef, props2, state2, onSwiperDotClick, swiperCo
     onMouseover: (event) => navigationHover(event, "over"),
     onMouseout: (event) => navigationHover(event, "out")
   };
-  function navigationClick($event, type) {
+  function navigationClick($event, type, disabled) {
     $event.stopPropagation();
+    if (disabled)
+      return;
     const swiperItemLength = swiperContext.value.length;
     let _current = state2.current;
     switch (type) {
@@ -14280,12 +14282,12 @@ const useSwiperNavigation = (rootRef, props2, state2, onSwiperDotClick, swiperCo
         "class": ["uni-swiper-navigation uni-swiper-navigation-prev", extend({
           "uni-swiper-navigation-disabled": prevDisabled
         }, navigationClass)],
-        "onClick": (e2) => navigationClick(e2, "prev")
+        "onClick": (e2) => navigationClick(e2, "prev", prevDisabled)
       }, navigationAttr), [createNavigationSVG()], 16, ["onClick"]), createVNode("div", mergeProps({
         "class": ["uni-swiper-navigation uni-swiper-navigation-next", extend({
           "uni-swiper-navigation-disabled": nextDisabled
         }, navigationClass)],
-        "onClick": (e2) => navigationClick(e2, "next")
+        "onClick": (e2) => navigationClick(e2, "next", nextDisabled)
       }, navigationAttr), [createNavigationSVG()], 16, ["onClick"])]);
     }
     return null;

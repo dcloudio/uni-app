@@ -1,9 +1,5 @@
 import path from 'path'
-import {
-  EXTNAME_JS_RE,
-  EXTNAME_VUE,
-  UNI_MODULES_EXPORTS,
-} from '../../constants'
+import { EXTNAME_JS_RE, EXTNAME_VUE } from '../../constants'
 
 export interface VueQuery {
   vue?: boolean
@@ -66,10 +62,6 @@ export const cleanUrl = (url: string) =>
   url.replace(hashRE, '').replace(queryRE, '')
 
 export function isJsFile(id: string) {
-  // inject 使用了isJsFile 判断。uni_modules_exports 中注入使用了 uni，在小程序平台，inject 需要注入 uni 对象
-  if (id === UNI_MODULES_EXPORTS) {
-    return true
-  }
   const { filename, query } = parseVueRequest(id)
   const isJs = EXTNAME_JS_RE.test(filename)
   if (isJs) {
