@@ -204,7 +204,7 @@ function printServerUrls(
       .map((detail) => {
         const type = detail.address.includes('127.0.0.1')
           ? '  - Local:   '
-          : '  - Network: '
+          : '  * Network: '
         const host = detail.address.replace('127.0.0.1', hostname.name)
         const url = `${protocol}://${host}:${colors.bold(port)}${base}`
         return `${type} ${colors.cyan(url)}`
@@ -214,7 +214,7 @@ function printServerUrls(
       })
       .forEach((msg, index, arr) => {
         if (arr.length - 1 === index) {
-          info(msg.replace('➜', '-'))
+          info(msg.replace('* Network', '- Network'))
         } else {
           info(msg)
         }

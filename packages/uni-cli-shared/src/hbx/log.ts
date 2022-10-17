@@ -83,7 +83,7 @@ export const h5ServeFormatter: Formatter = {
         if (networkLogs.length) {
           // 延迟打印所有 network,仅最后一个 network 替换 ➜ 为 -，通知 hbx
           const len = networkLogs.length - 1
-          networkLogs[len] = networkLogs[len].replace('➜', '-')
+          networkLogs[len] = networkLogs[len].replace('* Network', '- Network')
           console.log(networkLogs.join('\n'))
           networkLogs.length = 0
         }
