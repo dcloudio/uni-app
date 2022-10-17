@@ -204,10 +204,13 @@ function printServerUrls(
       .map((detail) => {
         const type = detail.address.includes('127.0.0.1')
           ? '  - Local:   '
-          : '  ➜ Network: '
+          : '  - Network: '
         const host = detail.address.replace('127.0.0.1', hostname.name)
         const url = `${protocol}://${host}:${colors.bold(port)}${base}`
         return `${type} ${colors.cyan(url)}`
+      })
+      .sort((msg1) => {
+        return msg1.indexOf('- Local') > -1 ? -1 : 1
       })
       .forEach((msg, index, arr) => {
         if (arr.length - 1 === index) {
