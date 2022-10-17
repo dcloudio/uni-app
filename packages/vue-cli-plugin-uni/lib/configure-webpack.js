@@ -73,8 +73,8 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
         const normalized = RuleSet.normalizeRule(clone, {}, '')
         return (
           !rule.enforce &&
-        normalized.resource &&
-        normalized.resource(fakeFile)
+          normalized.resource &&
+          normalized.resource(fakeFile)
         )
       }
     }
@@ -230,7 +230,10 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
       webpackConfig.resolve.modules = webpackConfig.resolve.modules.filter(module => module !== 'node_modules')
     }
 
-    const plugins = []
+    const plugins = [
+      new webpack.ProvidePlugin(require('@dcloudio/uni-cli-shared/lib/uni_modules/uni_modules')
+        .parseUniExtApis())
+    ]
 
     const isAppView = process.env.UNI_PLATFORM === 'app-plus' &&
       vueOptions.pluginOptions &&
@@ -239,7 +242,9 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
 
     if (!isAppView) { // app-plus view不需要copy
       const patterns = getCopyWebpackPluginOptions(manifestPlatformOptions, vueOptions)
-      plugins.push(new CopyWebpackPlugin(CopyWebpackPluginVersion > 5 ? { patterns } : patterns))
+      plugins.push(new CopyWebpackPlugin(CopyWebpackPluginVersion > 5 ? {
+        patterns
+      } : patterns))
     }
     if (!process.env.UNI_SUBPACKGE || !process.env.UNI_MP_PLUGIN) {
       try {
@@ -258,8 +263,10 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
             return ''
           }
         }]
-        plugins.push(new CopyWebpackPlugin(CopyWebpackPluginVersion > 5 ? { patterns } : patterns))
-      } catch (e) { }
+        plugins.push(new CopyWebpackPlugin(CopyWebpackPluginVersion > 5 ? {
+          patterns
+        } : patterns))
+      } catch (e) {}
     }
 
     if (process.UNI_SCRIPT_ENV && Object.keys(process.UNI_SCRIPT_ENV).length) {
@@ -309,7 +316,8 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
       })
     }
 
-    if (process.env.NODE_ENV === 'development' || (process.env.NODE_ENV === 'production' && process.env.SOURCEMAP === 'true')) {
+    if (process.env.NODE_ENV === 'development' || (process.env.NODE_ENV === 'production' && process.env
+      .SOURCEMAP === 'true')) {
       const sourceMap = require('@dcloudio/uni-cli-shared/lib/source-map')
       let isAppService = false
       if (
@@ -331,7 +339,9 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
           noSources: true,
           append: false
         }
-        if (isInHBuilderX && process.env.SOURCEMAP_PATH) { sourceMapOptions.filename = process.env.SOURCEMAP_PATH }
+        if (isInHBuilderX && process.env.SOURCEMAP_PATH) {
+          sourceMapOptions.filename = process.env.SOURCEMAP_PATH
+        }
         if (useEvalSourceMap || useSourceMap) {
           plugins.push(sourceMap.createSourceMapDevToolPlugin(!sourceMapOptions.filename, sourceMapOptions))
         }
@@ -339,7 +349,8 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
         if (useEvalSourceMap) {
           plugins.push(sourceMap.createEvalSourceMapDevToolPlugin())
         } else if (useSourceMap) {
-          plugins.push(sourceMap.createSourceMapDevToolPlugin(process.env.UNI_PLATFORM === 'mp-weixin' || process.env.UNI_PLATFORM === 'mp-toutiao'))
+          plugins.push(sourceMap.createSourceMapDevToolPlugin(process.env.UNI_PLATFORM === 'mp-weixin' || process
+            .env.UNI_PLATFORM === 'mp-toutiao'))
         }
       }
     }

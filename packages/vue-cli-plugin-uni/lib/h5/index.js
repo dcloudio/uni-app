@@ -7,8 +7,7 @@ const {
   getH5Options,
   getPlatformStat,
   getPlatformPush,
-  getPlatformUniCloud,
-  uniModulesLoader
+  getPlatformUniCloud
 } = require('@dcloudio/uni-cli-shared')
 
 const {
@@ -104,7 +103,7 @@ module.exports = {
     } catch (e) {}
 
     const beforeCode = (useBuiltIns === 'entry' ? 'import \'@babel/polyfill\';' : '') +
-      `import 'uni-pages';import 'uni-${process.env.UNI_PLATFORM}';import '${uniModulesLoader}!';`
+      `import 'uni-pages';import 'uni-${process.env.UNI_PLATFORM}';`
 
     return {
       resolve: {
