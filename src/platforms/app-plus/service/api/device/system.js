@@ -1,6 +1,5 @@
 import { callApiSync } from '../util'
 import { getWindowInfo } from './get-window-info'
-import deviceId from 'uni-platform/helpers/uuid'
 import { sortObject } from 'uni-shared'
 
 let systemInfo = {}
@@ -21,7 +20,8 @@ export function getDeviceInfo () {
   weexGetSystemInfoSync()
   const {
     deviceBrand = '', deviceModel, osName,
-    osVersion, deviceOrientation, deviceType
+    osVersion, deviceOrientation, deviceType,
+    deviceId
   } = systemInfo
 
   const brand = deviceBrand.toLowerCase()
@@ -32,7 +32,7 @@ export function getDeviceInfo () {
     deviceBrand: brand,
     deviceModel,
     devicePixelRatio: plus.screen.scale,
-    deviceId: deviceId(),
+    deviceId,
     deviceOrientation,
     deviceType,
     model: deviceModel,
