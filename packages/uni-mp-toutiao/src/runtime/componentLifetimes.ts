@@ -1,4 +1,4 @@
-import { ComponentInternalInstance, ComponentPublicInstance } from 'vue'
+import type { ComponentInternalInstance, ComponentPublicInstance } from 'vue'
 // @ts-ignore
 import { pruneComponentPropsCache } from 'vue'
 import {
@@ -8,6 +8,7 @@ import {
   CreateLifetimesOptions,
   initSetRef,
   findPropsData,
+  initFormField,
 } from '@dcloudio/uni-mp-core'
 
 import {
@@ -47,10 +48,12 @@ export function initLifetimes({
       mpInstance.route = mpInstance.__route__
     }
 
+    const props = findPropsData(properties, mpType === 'page')
+
     this.$vm = $createComponent(
       {
         type: vueOptions,
-        props: findPropsData(properties, mpType === 'page'),
+        props,
       },
       {
         mpType,
@@ -67,6 +70,10 @@ export function initLifetimes({
         },
       }
     ) as ComponentPublicInstance
+
+    if (mpType === 'component') {
+      initFormField(this.$vm)
+    }
 
     // 处理父子关系
     initRelation(this, relationOptions)

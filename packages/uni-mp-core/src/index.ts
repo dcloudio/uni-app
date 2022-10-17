@@ -23,7 +23,7 @@ export {
   initBehaviors,
   updateComponentProps,
 } from './runtime/componentOptions'
-export { initProps } from './runtime/componentProps'
+export { initProps, initFormField } from './runtime/componentProps'
 export {
   initHooks,
   initUnknownHooks,

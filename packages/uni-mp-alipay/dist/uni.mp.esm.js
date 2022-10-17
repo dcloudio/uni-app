@@ -339,7 +339,7 @@ const builtInProps = [
     // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
     'uS',
 ];
-function initDefaultProps(isBehavior = false) {
+function initDefaultProps(options, isBehavior = false) {
     const properties = {};
     if (!isBehavior) {
         // 均不指定类型，避免微信小程序 property received type-uncompatible value 警告
@@ -364,6 +364,19 @@ function initDefaultProps(isBehavior = false) {
                 });
             },
         };
+    }
+    if (options.behaviors) {
+        // wx://form-field
+        if (options.behaviors.includes('my://form-field')) {
+            properties.name = {
+                type: null,
+                value: '',
+            };
+            properties.value = {
+                type: null,
+                value: '',
+            };
+        }
     }
     return properties;
 }
@@ -392,7 +405,7 @@ function initProps(mpComponentOptions) {
     if (!mpComponentOptions.properties) {
         mpComponentOptions.properties = {};
     }
-    extend(mpComponentOptions.properties, initDefaultProps(), initVirtualHostProps(mpComponentOptions.options));
+    extend(mpComponentOptions.properties, initDefaultProps(mpComponentOptions), initVirtualHostProps(mpComponentOptions.options));
 }
 function findPropsData(properties, isPage) {
     return ((isPage
@@ -453,14 +466,14 @@ function initBehaviors(vueOptions) {
             if (behavior === 'uni://form-field') {
                 if (isArray(vueProps)) {
                     vueProps.push('name');
-                    vueProps.push('value');
+                    vueProps.push('modelValue');
                 }
                 else {
                     vueProps.name = {
                         type: String,
                         default: '',
                     };
-                    vueProps.value = {
+                    vueProps.modelValue = {
                         type: [String, Number, Boolean, Array, Object, Date],
                         default: '',
                     };

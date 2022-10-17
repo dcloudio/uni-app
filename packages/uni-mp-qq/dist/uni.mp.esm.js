@@ -386,7 +386,7 @@ const builtInProps = [
     // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
     'uS',
 ];
-function initDefaultProps(isBehavior = false) {
+function initDefaultProps(options, isBehavior = false) {
     const properties = {};
     if (!isBehavior) {
         // 均不指定类型，避免微信小程序 property received type-uncompatible value 警告
@@ -412,6 +412,19 @@ function initDefaultProps(isBehavior = false) {
             },
         };
     }
+    if (options.behaviors) {
+        // wx://form-field
+        if (options.behaviors.includes('qq://form-field')) {
+            properties.name = {
+                type: null,
+                value: '',
+            };
+            properties.value = {
+                type: null,
+                value: '',
+            };
+        }
+    }
     return properties;
 }
 function initVirtualHostProps(options) {
@@ -427,7 +440,7 @@ function initProps(mpComponentOptions) {
     if (!mpComponentOptions.properties) {
         mpComponentOptions.properties = {};
     }
-    extend(mpComponentOptions.properties, initDefaultProps(), initVirtualHostProps(mpComponentOptions.options));
+    extend(mpComponentOptions.properties, initDefaultProps(mpComponentOptions), initVirtualHostProps(mpComponentOptions.options));
 }
 const PROP_TYPES = [String, Number, Boolean, Object, Array, null];
 function parsePropType(type, defaultValue) {
@@ -495,6 +508,22 @@ function findPagePropsData(properties) {
         });
     }
     return propsData;
+}
+function initFormField(vm) {
+    // 同步 form-field 的 name,value 值
+    const vueOptions = vm.$options;
+    if (isArray(vueOptions.behaviors) &&
+        vueOptions.behaviors.includes('uni://form-field')) {
+        vm.$watch('modelValue', () => {
+            vm.$scope &&
+                vm.$scope.setData({
+                    name: vm.name,
+                    value: vm.modelValue,
+                });
+        }, {
+            immediate: true,
+        });
+    }
 }
 
 function initData(_) {
@@ -567,14 +596,14 @@ function initBehaviors(vueOptions) {
             if (behavior === 'uni://form-field') {
                 if (isArray(vueProps)) {
                     vueProps.push('name');
-                    vueProps.push('value');
+                    vueProps.push('modelValue');
                 }
                 else {
                     vueProps.name = {
                         type: String,
                         default: '',
                     };
-                    vueProps.value = {
+                    vueProps.modelValue = {
                         type: [String, Number, Boolean, Array, Object, Date],
                         default: '',
                     };
@@ -767,6 +796,9 @@ function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
                     initComponentInstance(instance, options);
                 },
             });
+            if (!isMiniProgramPage) {
+                initFormField(this.$vm);
+            }
         },
         ready() {
             // 当组件 props 默认值为 true，初始化时传入 false 会导致 created,ready 触发, 但 attached 不触发
