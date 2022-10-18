@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uts",
-  "version": "3.0.0-alpha-3060720221018001",
+  "version": "3.0.0-alpha-3060720221018002",
   "description": "uts",
   "bin": {
     "uts": "bin/uts.js"
@@ -27,9 +27,9 @@
     "@types/fs-extra": "^9.0.13"
   },
   "optionalDependencies": {
-    "@dcloudio/uts-darwin-arm64": "3.0.0-alpha-3060720221018001",
-    "@dcloudio/uts-darwin-x64": "3.0.0-alpha-3060720221018001",
-    "@dcloudio/uts-win32-ia32-msvc": "3.0.0-alpha-3060720221018001",
-    "@dcloudio/uts-win32-x64-msvc": "3.0.0-alpha-3060720221018001"
+    "@dcloudio/uts-darwin-arm64": "3.0.0-alpha-3060720221018002",
+    "@dcloudio/uts-darwin-x64": "3.0.0-alpha-3060720221018002",
+    "@dcloudio/uts-win32-ia32-msvc": "3.0.0-alpha-3060720221018002",
+    "@dcloudio/uts-win32-x64-msvc": "3.0.0-alpha-3060720221018002"
   }
 }
