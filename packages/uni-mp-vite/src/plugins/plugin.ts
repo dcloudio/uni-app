@@ -1,7 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import type { Plugin } from 'vite'
-import type { RollupOptions } from 'rollup'
+import type { BuildOptions, Plugin } from 'vite'
 import {
   MP_PLUGIN_JSON_NAME,
   parseJson,
@@ -17,7 +16,7 @@ export function uniMiniProgramPluginPlugin({
   style: { extname },
 }: UniMiniProgramPluginOptions): Plugin {
   const entry = initPluginEntry()
-  const rollupOptions: RollupOptions = {}
+  const rollupOptions: BuildOptions['rollupOptions'] = {}
   if (entry) {
     rollupOptions.input = extend(
       {

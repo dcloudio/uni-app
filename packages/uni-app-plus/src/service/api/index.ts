@@ -53,6 +53,7 @@ export * from './context/createLivePusherContext'
 export * from './location/getLocation'
 export * from './location/chooseLocation'
 export * from './location/openLocation'
+export * from './location/locationChange'
 
 export * from './ui/popup/showModal'
 export * from './ui/popup/showActionSheet'

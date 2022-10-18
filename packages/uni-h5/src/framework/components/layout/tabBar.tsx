@@ -290,6 +290,7 @@ function createTabBarItemBdTsx(
           )
         : iconPath && createTabBarItemIconTsx(iconPath, tabBarItem, tabBar)}
       {tabBarItem.text && createTabBarItemTextTsx(color, tabBarItem, tabBar)}
+      {tabBarItem.redDot && createTabBarItemRedDotTsx(tabBarItem.badge)}
     </div>
   )
 }
@@ -299,14 +300,13 @@ function createTabBarItemIconTsx(
   tabBarItem: UniApp.TabBarItemOptions,
   tabBar: UniApp.TabBarOptions
 ) {
-  const { type, text, redDot } = tabBarItem
+  const { type, text } = tabBarItem
   const { iconWidth } = tabBar
   const clazz = 'uni-tabbar__icon' + (text ? ' uni-tabbar__icon__diff' : '')
   const style = { width: iconWidth, height: iconWidth }
   return (
     <div class={clazz} style={style}>
       {type !== 'midButton' && <img src={getRealPath(iconPath)} />}
-      {redDot && createTabBarItemRedDotTsx(tabBarItem.badge)}
     </div>
   )
 }
@@ -317,7 +317,7 @@ function createTabBarItemIconfontTsx(
   tabBarItem: UniApp.TabBarItemOptions,
   tabBar: UniApp.TabBarOptions
 ) {
-  const { type, text, redDot } = tabBarItem
+  const { type, text } = tabBarItem
   const { iconWidth } = tabBar
   const clazz = 'uni-tabbar__icon' + (text ? ' uni-tabbar__icon__diff' : '')
   const style = { width: iconWidth, height: iconWidth }
@@ -332,7 +332,6 @@ function createTabBarItemIconfontTsx(
           {iconfontText}
         </div>
       )}
-      {redDot && createTabBarItemRedDotTsx(tabBarItem.badge)}
     </div>
   )
 }
@@ -342,7 +341,7 @@ function createTabBarItemTextTsx(
   tabBarItem: UniApp.TabBarItemOptions,
   tabBar: UniApp.TabBarOptions
 ) {
-  const { redDot, iconPath, text } = tabBarItem
+  const { iconPath, text } = tabBarItem
   const { fontSize, spacing } = tabBar
   const style = {
     color,
@@ -353,7 +352,6 @@ function createTabBarItemTextTsx(
   return (
     <div class="uni-tabbar__label" style={style}>
       {text}
-      {redDot && !iconPath && createTabBarItemRedDotTsx(tabBarItem.badge)}
     </div>
   )
 }

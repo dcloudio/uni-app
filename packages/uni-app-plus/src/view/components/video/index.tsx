@@ -135,6 +135,10 @@ const props = {
       return []
     },
   },
+  title: {
+    type: String,
+    default: '',
+  },
 }
 
 type EventName =

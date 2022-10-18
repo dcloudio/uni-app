@@ -1,5 +1,5 @@
 import { isArray, hasOwn as hasOwn$1, isString, isPlainObject, isObject as isObject$1, toRawType, capitalize, makeMap, isFunction, isPromise, extend, remove, toTypeString } from '@vue/shared';
-import { LINEFEED, parseNVueDataset, once, I18N_JSON_DELIMITERS, Emitter, addLeadingSlash, resolveComponentInstance, invokeArrayFns, removeLeadingSlash, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, SCHEME_RE, DATA_RE, cacheStringFunction, formatLog, parseQuery, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, TABBAR_HEIGHT, NAVBAR_HEIGHT, sortObject, ON_THEME_CHANGE, ON_KEYBOARD_HEIGHT_CHANGE, BACKGROUND_COLOR, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery as stringifyQuery$1, debounce, ON_PULL_DOWN_REFRESH, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_BACK_PRESS, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ON_READY, ON_UNLOAD, EventChannel, ON_REACH_BOTTOM_DISTANCE, parseUrl, onCreateVueApp, ON_TAB_ITEM_TAP, ON_LAUNCH, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE } from '@dcloudio/uni-shared';
+import { LINEFEED, parseNVueDataset, once, I18N_JSON_DELIMITERS, Emitter, resolveComponentInstance, addLeadingSlash, invokeArrayFns, removeLeadingSlash, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, SCHEME_RE, DATA_RE, cacheStringFunction, formatLog, parseQuery, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, TABBAR_HEIGHT, NAVBAR_HEIGHT, sortObject, ON_THEME_CHANGE, ON_KEYBOARD_HEIGHT_CHANGE, BACKGROUND_COLOR, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery as stringifyQuery$1, debounce, ON_PULL_DOWN_REFRESH, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_BACK_PRESS, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ON_READY, ON_UNLOAD, EventChannel, ON_REACH_BOTTOM_DISTANCE, parseUrl, onCreateVueApp, ON_TAB_ITEM_TAP, ON_LAUNCH, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE } from '@dcloudio/uni-shared';
 import { ref, createVNode, render, injectHook, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount } from 'vue';
 
 /*
@@ -506,7 +506,7 @@ function formatApiArgs(args, options) {
     }
 }
 function invokeSuccess(id, name, res) {
-    return invokeCallback(id, extend(res || {}, { errMsg: name + ':ok' }));
+    return invokeCallback(id, extend((res || {}), { errMsg: name + ':ok' }));
 }
 function invokeFail(id, name, errMsg, errRes) {
     return invokeCallback(id, extend({ errMsg: name + ':fail' + (errMsg ? ' ' + errMsg : '') }, errRes));
@@ -2338,8 +2338,8 @@ function backbuttonListener() {
         success() { }, // 传入空方法，避免返回Promise，因为onBackPress可能导致fail
     });
 }
-const enterOptions = createLaunchOptions();
-const launchOptions = createLaunchOptions();
+const enterOptions = /*#__PURE__*/ createLaunchOptions();
+const launchOptions = /*#__PURE__*/ createLaunchOptions();
 function getLaunchOptions() {
     return extend({}, launchOptions);
 }
@@ -10872,13 +10872,13 @@ class SelectorQuery {
         this._queueCb.push(callback);
     }
 }
-const createSelectorQuery = (defineSyncApi('createSelectorQuery', (context) => {
+const createSelectorQuery = defineSyncApi('createSelectorQuery', (context) => {
     context = resolveComponentInstance(context);
     if (context && !getPageIdByVm(context)) {
         context = null;
     }
     return new SelectorQuery(context || getCurrentPageVm());
-}));
+});
 
 // import { elemInArray } from '../../helpers/protocol'
 const API_CREATE_ANIMATION = 'createAnimation';
@@ -11719,13 +11719,13 @@ const ChooseLocationProtocol = {
 };
 
 const API_GET_LOCATION = 'getLocation';
-const coordTypes = ['wgs84', 'gcj02'];
+const coordTypes$1 = ['wgs84', 'gcj02'];
 const GetLocationOptions = {
     formatArgs: {
         type(value, params) {
             value = (value || '').toLowerCase();
-            if (coordTypes.indexOf(value) === -1) {
-                params.type = coordTypes[0];
+            if (coordTypes$1.indexOf(value) === -1) {
+                params.type = coordTypes$1[0];
             }
             else {
                 params.type = value;
@@ -12143,6 +12143,30 @@ const API_CLOSE_SOCKET = 'closeSocket';
 const CloseSocketProtocol = {
     code: Number,
     reason: String,
+};
+
+const API_START_LOCATION_UPDATE = 'startLocationUpdate';
+const API_ON_LOCATION_CHANGE = 'onLocationChange';
+const API_STOP_LOCATION_UPDATE = 'stopLocationUpdate';
+const API_OFF_LOCATION_CHANGE = 'offLocationChange';
+const API_OFF_LOCATION_CHANGE_ERROR = 'offLocationChangeError';
+const API_ON_LOCATION_CHANGE_ERROR = 'onLocationChangeError';
+const coordTypes = ['wgs84', 'gcj02'];
+const StartLocationUpdateProtocol = {
+    type: String,
+};
+const StartLocationUpdateOptions = {
+    formatArgs: {
+        type(value, params) {
+            value = (value || '').toLowerCase();
+            if (coordTypes.indexOf(value) === -1) {
+                params.type = coordTypes[0];
+            }
+            else {
+                params.type = value;
+            }
+        },
+    },
 };
 
 function encodeQueryString(url) {
@@ -13006,7 +13030,7 @@ function parseGetStorage(type, value) {
     }
     return data;
 }
-const getStorageSync = defineSyncApi(API_GET_STORAGE_SYNC, (key, t) => {
+const getStorageSync = defineSyncApi(API_GET_STORAGE_SYNC, (key) => {
     const value = plus.storage.getItem(key);
     const typeOrigin = plus.storage.getItem(key + STORAGE_DATA_TYPE) || '';
     const type = typeOrigin.toLowerCase();
@@ -13041,13 +13065,13 @@ const removeStorage = defineAsyncApi(API_REMOVE_STORAGE, ({ key }, { resolve, re
     plus.storage.removeItemAsync(key + STORAGE_DATA_TYPE);
     plus.storage.removeItemAsync(key, resolve, warpPlusErrorCallback(reject));
 }, RemoveStorageProtocol);
-const clearStorageSync = (defineSyncApi('clearStorageSync', () => {
+const clearStorageSync = defineSyncApi('clearStorageSync', () => {
     plus.storage.clear();
-}));
-const clearStorage = (defineAsyncApi('clearStorage', (_, { resolve, reject }) => {
+});
+const clearStorage = defineAsyncApi('clearStorage', (_, { resolve, reject }) => {
     plus.storage.clearAsync(resolve, warpPlusErrorCallback(reject));
-}));
-const getStorageInfoSync = (defineSyncApi('getStorageInfoSync', () => {
+});
+const getStorageInfoSync = defineSyncApi('getStorageInfoSync', () => {
     const length = plus.storage.getLength() || 0;
     const keys = [];
     let currentSize = 0;
@@ -13067,10 +13091,10 @@ const getStorageInfoSync = (defineSyncApi('getStorageInfoSync', () => {
         currentSize: Math.ceil((currentSize * 2) / 1024),
         limitSize: Number.MAX_VALUE,
     };
-}));
-const getStorageInfo = (defineAsyncApi('getStorageInfo', (_, { resolve }) => {
+});
+const getStorageInfo = defineAsyncApi('getStorageInfo', (_, { resolve }) => {
     resolve(getStorageInfoSync());
-}));
+});
 
 const getFileInfo$1 = defineAsyncApi(API_GET_FILE_INFO, (options, { resolve, reject }) => {
     plus.io.getFileInfo(extend(options, {
@@ -13120,7 +13144,7 @@ function getSavedFileDir(success, fail) {
         }, success, fail);
     }, fail);
 }
-const getSavedFileList = (defineAsyncApi(API_GET_SAVED_LIST, (_, { resolve, reject }) => {
+const getSavedFileList = defineAsyncApi(API_GET_SAVED_LIST, (_, { resolve, reject }) => {
     const errorCallback = warpPlusErrorCallback(reject);
     getSavedFileDir((entry) => {
         var reader = entry.createReader();
@@ -13149,7 +13173,7 @@ const getSavedFileList = (defineAsyncApi(API_GET_SAVED_LIST, (_, { resolve, reje
             }
         }, errorCallback);
     }, errorCallback);
-}));
+});
 
 const getSavedFileInfo = defineAsyncApi(API_GET_SAVED_FILE_INFO, ({ filePath }, { resolve, reject }) => {
     const errorCallback = warpPlusErrorCallback(reject);
@@ -13183,12 +13207,6 @@ const canIUse = defineSyncApi(API_CAN_I_USE, (schema) => {
     }
     return false;
 }, CanIUseProtocol);
-
-let deviceId;
-function deviceId$1 () {
-    deviceId = deviceId || plus.device.uuid;
-    return deviceId;
-}
 
 let config;
 /**
@@ -13536,7 +13554,7 @@ function weexGetSystemInfoSync() {
 }
 const getDeviceInfo = defineSyncApi('getDeviceInfo', () => {
     weexGetSystemInfoSync();
-    const { deviceBrand = '', deviceModel, osName, osVersion, deviceOrientation, deviceType, } = systemInfo;
+    const { deviceBrand = '', deviceModel, osName, osVersion, deviceOrientation, deviceType, deviceId, } = systemInfo;
     const brand = deviceBrand.toLowerCase();
     const _osName = osName.toLowerCase();
     return {
@@ -13544,7 +13562,7 @@ const getDeviceInfo = defineSyncApi('getDeviceInfo', () => {
         deviceBrand: brand,
         deviceModel,
         devicePixelRatio: plus.screen.scale,
-        deviceId: deviceId$1(),
+        deviceId,
         deviceOrientation,
         deviceType,
         model: deviceModel,
@@ -13602,13 +13620,13 @@ const getSystemInfo = defineAsyncApi('getSystemInfo', (_, { resolve }) => {
 });
 
 let listener$1 = null;
-const onCompassChange = (defineOnApi(API_ON_COMPASS, () => {
+const onCompassChange = defineOnApi(API_ON_COMPASS, () => {
     startCompass();
-}));
-const offCompassChange = (defineOffApi(API_OFF_COMPASS, () => {
+});
+const offCompassChange = defineOffApi(API_OFF_COMPASS, () => {
     stopCompass();
-}));
-const startCompass = (defineAsyncApi(API_START_COMPASS, (_, { resolve, reject }) => {
+});
+const startCompass = defineAsyncApi(API_START_COMPASS, (_, { resolve, reject }) => {
     if (!listener$1) {
         listener$1 = plus.orientation.watchOrientation((res) => {
             UniServiceJSBridge.invokeOnCallback(API_ON_COMPASS, {
@@ -13622,14 +13640,14 @@ const startCompass = (defineAsyncApi(API_START_COMPASS, (_, { resolve, reject })
         });
     }
     setTimeout(resolve, DEVICE_FREQUENCY);
-}));
-const stopCompass = (defineAsyncApi(API_STOP_COMPASS, (_, { resolve }) => {
+});
+const stopCompass = defineAsyncApi(API_STOP_COMPASS, (_, { resolve }) => {
     if (listener$1) {
         plus.orientation.clearWatch(listener$1);
         listener$1 = null;
     }
     resolve();
-}));
+});
 
 const vibrateShort = defineAsyncApi(API_VIBRATE_SHORT, (_, { resolve }) => {
     plus.device.vibrate(15);
@@ -13641,13 +13659,13 @@ const vibrateLong = defineAsyncApi(API_VIBRATE_LONG, (_, { resolve }) => {
 });
 
 let listener = null;
-const onAccelerometerChange = (defineOnApi(API_ON_ACCELEROMETER, () => {
+const onAccelerometerChange = defineOnApi(API_ON_ACCELEROMETER, () => {
     startAccelerometer();
-}));
-const offAccelerometerChange = (defineOffApi(API_OFF_ACCELEROMETER, () => {
+});
+const offAccelerometerChange = defineOffApi(API_OFF_ACCELEROMETER, () => {
     stopAccelerometer();
-}));
-const startAccelerometer = (defineAsyncApi(API_START_ACCELEROMETER, (_, { resolve, reject }) => {
+});
+const startAccelerometer = defineAsyncApi(API_START_ACCELEROMETER, (_, { resolve, reject }) => {
     if (!listener) {
         listener = plus.accelerometer.watchAcceleration((res) => {
             UniServiceJSBridge.invokeOnCallback(API_ON_ACCELEROMETER, {
@@ -13663,14 +13681,14 @@ const startAccelerometer = (defineAsyncApi(API_START_ACCELEROMETER, (_, { resolv
         });
     }
     setTimeout(resolve, DEVICE_FREQUENCY);
-}));
-const stopAccelerometer = (defineAsyncApi(API_STOP_ACCELEROMETER, (_, { resolve }) => {
+});
+const stopAccelerometer = defineAsyncApi(API_STOP_ACCELEROMETER, (_, { resolve }) => {
     if (listener) {
         plus.accelerometer.clearWatch(listener);
         listener = null;
     }
     resolve();
-}));
+});
 
 const onBluetoothDeviceFound = defineOnApi(API_ON_BLUETOOTH_DEVICE_FOUND, warpPlusEvent(() => plus.bluetooth.onBluetoothDeviceFound.bind(plus.bluetooth), API_ON_BLUETOOTH_DEVICE_FOUND));
 const onBluetoothAdapterStateChange = defineOnApi(API_ON_BLUETOOTH_ADAPTER_STATE_CHANGE, warpPlusEvent(() => plus.bluetooth.onBluetoothAdapterStateChange.bind(plus.bluetooth), API_ON_BLUETOOTH_ADAPTER_STATE_CHANGE));
@@ -16155,6 +16173,43 @@ const openLocation = defineAsyncApi(API_OPEN_LOCATION, (data, { resolve, reject 
     return resolve();
 }, OpenLocationProtocol, OpenLocationOptions);
 
+let watchId = 0;
+/**
+ * 开始更新定位
+ */
+const startLocationUpdate = defineAsyncApi(API_START_LOCATION_UPDATE, (_, { resolve, reject }) => {
+    if (plus.geolocation && watchId === 0) {
+        watchId = plus.geolocation.watchPosition((res) => {
+            UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE, res.coords);
+            resolve();
+        }, (error) => {
+            reject(error.message);
+        }, {
+            coordsType: _ === null || _ === void 0 ? void 0 : _.type,
+        });
+    }
+    else {
+        UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE_ERROR, 'onLocationChange:fail');
+    }
+    resolve();
+}, StartLocationUpdateProtocol, StartLocationUpdateOptions);
+const onLocationChange = defineOnApi(API_ON_LOCATION_CHANGE, () => { });
+const stopLocationUpdate = defineAsyncApi(API_STOP_LOCATION_UPDATE, (_, { resolve, reject }) => {
+    if (watchId) {
+        plus.geolocation.clearWatch(watchId);
+        watchId = 0;
+        resolve();
+    }
+    else {
+        reject('stopLocationUpdate:fail');
+    }
+});
+const offLocationChange = defineOffApi(API_OFF_LOCATION_CHANGE, () => {
+    stopLocationUpdate();
+});
+const onLocationChangeError = defineOnApi(API_ON_LOCATION_CHANGE_ERROR, () => { });
+const offLocationChangeError = defineOnApi(API_OFF_LOCATION_CHANGE_ERROR, () => { });
+
 const showModal = defineAsyncApi(API_SHOW_MODAL, ({ title = '', content = '', showCancel = true, cancelText, cancelColor, confirmText, confirmColor, editable = false, placeholderText = '', } = {}, { resolve }) => {
     const buttons = showCancel ? [cancelText, confirmText] : [confirmText];
     const tip = editable ? placeholderText : buttons;
@@ -17306,9 +17361,9 @@ class RewardedVideoAd extends AdBase {
         this._loadAd();
     }
 }
-const createRewardedVideoAd = (defineSyncApi(API_CREATE_REWARDED_VIDEO_AD, (options) => {
+const createRewardedVideoAd = defineSyncApi(API_CREATE_REWARDED_VIDEO_AD, (options) => {
     return new RewardedVideoAd(options);
-}, CreateRewardedVideoAdProtocol, CreateRewardedVideoAdOptions));
+}, CreateRewardedVideoAdProtocol, CreateRewardedVideoAdOptions);
 
 class FullScreenVideoAd extends AdBase {
     constructor(options) {
@@ -17316,9 +17371,9 @@ class FullScreenVideoAd extends AdBase {
         this.preload = false;
     }
 }
-const createFullScreenVideoAd = (defineSyncApi(API_CREATE_FULL_SCREEN_VIDEO_AD, (options) => {
+const createFullScreenVideoAd = defineSyncApi(API_CREATE_FULL_SCREEN_VIDEO_AD, (options) => {
     return new FullScreenVideoAd(options);
-}, CreateFullScreenVideoAdProtocol, CreateFullScreenVideoAdOptions));
+}, CreateFullScreenVideoAdProtocol, CreateFullScreenVideoAdOptions);
 
 class InterstitialAd extends AdBase {
     constructor(options) {
@@ -17327,9 +17382,9 @@ class InterstitialAd extends AdBase {
         this._loadAd();
     }
 }
-const createInterstitialAd = (defineSyncApi(API_CREATE_INTERSTITIAL_AD, (options) => {
+const createInterstitialAd = defineSyncApi(API_CREATE_INTERSTITIAL_AD, (options) => {
     return new InterstitialAd(options);
-}, CreateInterstitialAdProtocol, CreateInterstitialAdOptions));
+}, CreateInterstitialAdProtocol, CreateInterstitialAdOptions);
 
 const sdkCache = {};
 const sdkQueue = {};
@@ -17537,9 +17592,9 @@ class InteractiveAd extends AdEventHandler {
         return new Error(JSON.stringify(err));
     }
 }
-const createInteractiveAd = (defineSyncApi(API_CREATE_INTERACTIVE_AD, (options) => {
+const createInteractiveAd = defineSyncApi(API_CREATE_INTERACTIVE_AD, (options) => {
     return new InteractiveAd(options);
-}, CreateInteractiveAdProtocol, CreateInteractiveAdOptions));
+}, CreateInteractiveAdProtocol, CreateInteractiveAdOptions);
 
 const downgrade = plus.os.name === 'Android' && parseInt(plus.os.version) < 6;
 const ANI_SHOW = downgrade ? 'slide-in-right' : 'pop-in';
@@ -19375,6 +19430,12 @@ var uni$1 = {
   getLocation: getLocation,
   chooseLocation: chooseLocation,
   openLocation: openLocation,
+  startLocationUpdate: startLocationUpdate,
+  onLocationChange: onLocationChange,
+  stopLocationUpdate: stopLocationUpdate,
+  offLocationChange: offLocationChange,
+  onLocationChangeError: onLocationChangeError,
+  offLocationChangeError: offLocationChangeError,
   showModal: showModal,
   showActionSheet: showActionSheet,
   showLoading: showLoading,

@@ -1,6 +1,6 @@
 import fs from 'fs-extra'
 import path from 'path'
-import { defineUniMainJsPlugin } from '@dcloudio/uni-cli-shared'
+import { defineUniMainJsPlugin, getPlatformDir } from '@dcloudio/uni-cli-shared'
 
 export default [
   defineUniMainJsPlugin((opts) => {
@@ -21,7 +21,7 @@ export default [
         fs.outputFileSync(
           path.resolve(
             process.env.UNI_OUTPUT_DIR,
-            '../.automator/' + process.env.UNI_PLATFORM + '/.automator.json'
+            '../.automator/' + getPlatformDir() + '/.automator.json'
           ),
           automatorJson
         )

@@ -53,7 +53,7 @@ function parseValue(value: any) {
   } catch (error) {}
 }
 
-export const setStorageSync = <API_TYPE_SET_STORAGE_SYNC>defineSyncApi(
+export const setStorageSync = defineSyncApi<API_TYPE_SET_STORAGE_SYNC>(
   API_SET_STORAGE_SYNC,
   (key, data) => {
     const type = typeof data
@@ -76,7 +76,7 @@ export const setStorageSync = <API_TYPE_SET_STORAGE_SYNC>defineSyncApi(
   SetStorageSyncProtocol
 )
 
-export const setStorage = <API_TYPE_SET_STORAGE>defineAsyncApi(
+export const setStorage = defineAsyncApi<API_TYPE_SET_STORAGE>(
   API_SET_STORAGE,
   ({ key, data }, { resolve, reject }) => {
     const type = typeof data
@@ -135,9 +135,9 @@ function parseGetStorage(type: string, value: string) {
   return data
 }
 
-export const getStorageSync = <API_TYPE_GET_STORAGE_SYNC>defineSyncApi(
+export const getStorageSync = defineSyncApi<API_TYPE_GET_STORAGE_SYNC>(
   API_GET_STORAGE_SYNC,
-  (key: string, t: boolean) => {
+  (key: string) => {
     const value = plus.storage.getItem(key)
     const typeOrigin = plus.storage.getItem(key + STORAGE_DATA_TYPE) || ''
     const type = typeOrigin.toLowerCase()
@@ -149,7 +149,7 @@ export const getStorageSync = <API_TYPE_GET_STORAGE_SYNC>defineSyncApi(
   GetStorageSyncProtocol
 )
 
-export const getStorage = <API_TYPE_GET_STORAGE>defineAsyncApi(
+export const getStorage = defineAsyncApi<API_TYPE_GET_STORAGE>(
   API_GET_STORAGE,
   ({ key }, { resolve, reject }) => {
     const storage = plus.storage
@@ -179,7 +179,7 @@ export const getStorage = <API_TYPE_GET_STORAGE>defineAsyncApi(
   GetStorageProtocol
 )
 
-export const removeStorageSync = <API_TYPE_REMOVE_STORAGE_SYNC>defineSyncApi(
+export const removeStorageSync = defineSyncApi<API_TYPE_REMOVE_STORAGE_SYNC>(
   API_REMOVE_STORAGE,
   (key) => {
     plus.storage.removeItem(key + STORAGE_DATA_TYPE)
@@ -188,7 +188,7 @@ export const removeStorageSync = <API_TYPE_REMOVE_STORAGE_SYNC>defineSyncApi(
   RemoveStorageSyncProtocol
 )
 
-export const removeStorage = <API_TYPE_REMOVE_STORAGE>defineAsyncApi(
+export const removeStorage = defineAsyncApi<API_TYPE_REMOVE_STORAGE>(
   API_REMOVE_STORAGE,
   ({ key }, { resolve, reject }) => {
     // 兼容App端历史格式
@@ -198,20 +198,23 @@ export const removeStorage = <API_TYPE_REMOVE_STORAGE>defineAsyncApi(
   RemoveStorageProtocol
 )
 
-export const clearStorageSync = <typeof uni.clearStorageSync>(
-  defineSyncApi('clearStorageSync', () => {
+export const clearStorageSync = defineSyncApi<typeof uni.clearStorageSync>(
+  'clearStorageSync',
+  () => {
     plus.storage.clear()
-  })
+  }
 )
 
-export const clearStorage = <typeof uni.clearStorage>(
-  defineAsyncApi('clearStorage', (_, { resolve, reject }) => {
+export const clearStorage = defineAsyncApi<typeof uni.clearStorage>(
+  'clearStorage',
+  (_, { resolve, reject }) => {
     plus.storage.clearAsync(resolve, warpPlusErrorCallback(reject))
-  })
+  }
 )
 
-export const getStorageInfoSync = <typeof uni.getStorageInfoSync>(
-  defineSyncApi('getStorageInfoSync', () => {
+export const getStorageInfoSync = defineSyncApi<typeof uni.getStorageInfoSync>(
+  'getStorageInfoSync',
+  () => {
     const length = plus.storage.getLength() || 0
     const keys: string[] = []
     let currentSize = 0
@@ -233,11 +236,12 @@ export const getStorageInfoSync = <typeof uni.getStorageInfoSync>(
       currentSize: Math.ceil((currentSize * 2) / 1024),
       limitSize: Number.MAX_VALUE,
     }
-  })
+  }
 )
 
-export const getStorageInfo = <typeof uni.getStorageInfo>(
-  defineAsyncApi('getStorageInfo', (_, { resolve }) => {
+export const getStorageInfo = defineAsyncApi<typeof uni.getStorageInfo>(
+  'getStorageInfo',
+  (_, { resolve }) => {
     resolve(getStorageInfoSync())
-  })
+  }
 )

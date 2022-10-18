@@ -96,7 +96,7 @@ export class MapContext implements UniApp.MapContext {
   }
 }
 
-export const createMapContext = <API_TYPE_CREATE_MAP_CONTEXT>defineSyncApi(
+export const createMapContext = defineSyncApi<API_TYPE_CREATE_MAP_CONTEXT>(
   API_CREATE_MAP_CONTEXT,
   (id, context) => {
     if (context) {

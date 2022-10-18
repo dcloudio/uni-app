@@ -1,5 +1,8 @@
 import { hasOwn, isArray, isPlainObject } from '@vue/shared'
-import type { TemplateCompiler } from '@vue/compiler-sfc'
+import type {
+  SFCStyleCompileOptions,
+  TemplateCompiler,
+} from '@vue/compiler-sfc'
 import type { Options as VueOptions } from '@vitejs/plugin-vue'
 import {
   EXTNAME_VUE_RE,
@@ -11,7 +14,7 @@ import {
   normalizePath,
 } from '@dcloudio/uni-cli-shared'
 
-import { VitePluginUniResolvedOptions } from '..'
+import type { ViteLegacyOptions, VitePluginUniResolvedOptions } from '..'
 import { createNVueCompiler } from '../utils'
 
 const pluginVuePath = require.resolve('@vitejs/plugin-vue')
@@ -48,7 +51,8 @@ export function initPluginVueOptions(
   }
   vueOptions.include.push(EXTNAME_VUE_RE)
 
-  const styleOptions = vueOptions.style || (vueOptions.style = {})
+  const styleOptions: Partial<SFCStyleCompileOptions> =
+    vueOptions.style || (vueOptions.style = {})
   if (!styleOptions.postcssPlugins) {
     styleOptions.postcssPlugins = []
   }
@@ -181,7 +185,7 @@ export function initPluginVueJsxOptions(
 
 export function initPluginViteLegacyOptions(
   options: VitePluginUniResolvedOptions
-) {
+): ViteLegacyOptions {
   const viteLegacyOptions =
     options.viteLegacyOptions || (options.viteLegacyOptions = {})
   return viteLegacyOptions

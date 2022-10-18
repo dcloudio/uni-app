@@ -7,6 +7,7 @@ import {
   isUniPushOffline,
   resolveBuiltIn,
 } from '@dcloudio/uni-cli-shared'
+import { ConfigEnv, UserConfig } from 'vite'
 
 export default () => [
   defineUniMainJsPlugin((opts) => {
@@ -16,7 +17,7 @@ export default () => [
     return {
       name: 'uni:push',
       enforce: 'pre',
-      config(config, env) {
+      config(config: UserConfig, env: ConfigEnv) {
         if (isSsr(env.command, config)) {
           return
         }
@@ -42,7 +43,7 @@ export default () => [
           },
         }
       },
-      resolveId(id) {
+      resolveId(id: string) {
         if (id === '@dcloudio/uni-push') {
           return resolveBuiltIn(
             path.join(
@@ -54,7 +55,7 @@ export default () => [
           )
         }
       },
-      transform(code, id) {
+      transform(code: string, id: string) {
         if (!opts.filter(id)) {
           return
         }

@@ -33,7 +33,7 @@ var source = {
 };
 
 function transformSwiper(node) {
-    if (node.type !== 1 /* ELEMENT */ || node.tag !== 'swiper') {
+    if (node.type !== 1 /* NodeTypes.ELEMENT */ || node.tag !== 'swiper') {
         return;
     }
     const disableTouchProp = compilerCore.findProp(node, 'disable-touch', false, true);
@@ -41,7 +41,7 @@ function transformSwiper(node) {
         return;
     }
     const { props } = node;
-    if (disableTouchProp.type === 6 /* ATTRIBUTE */) {
+    if (disableTouchProp.type === 6 /* NodeTypes.ATTRIBUTE */) {
         // <swiper disable-touch/> => <swiper :touchable="false"/>
         props.splice(props.indexOf(disableTouchProp), 1, uniCliShared.createBindDirectiveNode('touchable', 'false'));
     }
@@ -49,7 +49,7 @@ function transformSwiper(node) {
         if (disableTouchProp.exp) {
             // <swiper :disable-touch="true"/> => <swiper :touchable="!(true)"/>
             let touchable = '';
-            if (disableTouchProp.exp.type === 4 /* SIMPLE_EXPRESSION */) {
+            if (disableTouchProp.exp.type === 4 /* NodeTypes.SIMPLE_EXPRESSION */) {
                 if (disableTouchProp.exp.content === 'true') {
                     touchable = 'false';
                 }

@@ -4,7 +4,7 @@ import { parse } from 'acorn-loose'
 import { simple } from 'acorn-walk'
 import { hyphenate } from '@vue/shared'
 import { isBuiltInComponent } from '@dcloudio/uni-shared'
-import { ExportNamedDeclaration } from 'estree'
+import type { ExportNamedDeclaration } from 'estree'
 
 const BLACKLIST = [
   'AsyncErrorComponent',
@@ -30,7 +30,7 @@ const BLACKLIST = [
 ]
 
 export function genApiJson(code: string) {
-  const apiNames = []
+  const apiNames: string[] = []
   simple(
     parse(code, {
       sourceType: 'module',
@@ -50,7 +50,7 @@ export function genApiJson(code: string) {
   )
   const apiJsonPath = path.resolve(__dirname, '../uni-h5-vite/lib/api.json')
   const oldApiJson = fs.readFileSync(apiJsonPath, 'utf8').replace(/\r\n/g, '\n')
-  const newApiJson = JSON.stringify(apiNames, null, 2)
+  const newApiJson = JSON.stringify(apiNames.sort(), null, 2)
   if (oldApiJson !== newApiJson) {
     fs.writeFileSync(
       path.resolve(__dirname, '../uni-h5-vite/lib/api.new.json'),

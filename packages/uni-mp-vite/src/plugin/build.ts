@@ -78,7 +78,7 @@ export function createBuildOptions(
                   right: '))',
                 }
               }
-              return renderDynamicImport!.call(this, options)
+              return (renderDynamicImport as Function).call(this, options)
             },
           },
         ],
@@ -111,7 +111,7 @@ function parseRollupInput(inputDir: string, platform: UniApp.PLATFORM) {
 }
 
 function isVueJs(id: string) {
-  return id.includes('plugin-vue:export-helper')
+  return id.includes('\0plugin-vue:export-helper')
 }
 
 const chunkFileNameBlackList = ['main', 'pages.json', 'manifest.json']

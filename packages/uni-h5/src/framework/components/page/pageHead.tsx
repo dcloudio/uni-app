@@ -28,6 +28,7 @@ const ICON_PATHS = {
   forward:
     'M11 7.844q-0.25-0.219-0.25-0.578t0.25-0.578q0.219-0.25 0.563-0.25t0.563 0.25l9.656 9.125q0.125 0.125 0.188 0.297t0.063 0.328q0 0.188-0.063 0.359t-0.188 0.297l-9.656 9.125q-0.219 0.25-0.563 0.25t-0.563-0.25q-0.25-0.219-0.25-0.578t0.25-0.609l9.063-8.594-9.063-8.594z',
   back: ICON_PATH_BACK,
+  select: ICON_PATH_BACK,
   share:
     'M26.563 24.844q0 0.125-0.109 0.234t-0.234 0.109h-17.938q-0.125 0-0.219-0.109t-0.094-0.234v-13.25q0-0.156 0.094-0.25t0.219-0.094h5.5v-1.531h-6q-0.531 0-0.906 0.391t-0.375 0.922v14.375q0 0.531 0.375 0.922t0.906 0.391h18.969q0.531 0 0.891-0.391t0.359-0.953v-5.156h-1.438v4.625zM29.813 10.969l-5.125-5.375-1.031 1.094 3.438 3.594-3.719 0.031q-2.313 0.188-4.344 1.125t-3.578 2.422-2.5 3.453-1.109 4.188l-0.031 0.25h1.469v-0.219q0.156-1.875 1-3.594t2.25-3.063 3.234-2.125 3.828-0.906l0.188-0.031 3.313-0.031-3.438 3.625 1.031 1.063 5.125-5.375-0.031-0.063 0.031-0.063z',
   favorite:
@@ -122,6 +123,7 @@ function createButtonsTsx(btns: PageHeadButton[]) {
         btnIconPath,
         badgeText,
         iconStyle,
+        btnSelect,
       },
       index
     ) => {
@@ -135,6 +137,11 @@ function createButtonsTsx(btns: PageHeadButton[]) {
         >
           {btnIconPath ? (
             createSvgIconVNode(btnIconPath, iconStyle.color, iconStyle.fontSize)
+          ) : btnSelect ? (
+            <span style={iconStyle}>
+              <i class="uni-btn-icon" v-html={btnText} />
+              {createSvgIconVNode(ICON_PATHS['select'], '#000', 14)}
+            </span>
           ) : (
             <i class="uni-btn-icon" style={iconStyle} v-html={btnText} />
           )}
@@ -366,6 +373,7 @@ function usePageHeadButton(
     onClick() {
       invokeHook(pageId, ON_NAVIGATION_BAR_BUTTON_TAP, extend({ index }, btn))
     },
+    btnSelect: btn.select,
   }
 }
 

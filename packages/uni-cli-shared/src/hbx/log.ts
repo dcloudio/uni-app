@@ -12,10 +12,49 @@ import { EXTNAME_VUE_RE } from '../constants'
 import { parseVue } from '../vite/utils/ast'
 import { generateCodeFrame } from '../vite/plugins/vitejs/utils'
 
-const SIGNAL_H5_LOCAL = ' > Local:'
-const SIGNAL_H5_NETWORK = ' > Network:'
+const SIGNAL_H5_LOCAL = ' ➜  Local:'
+const SIGNAL_H5_NETWORK = ' ➜  Network:'
 
 const networkLogs: string[] = []
+
+const ZERO_WIDTH_CHAR = {
+  NOTE: '',
+  WARNING: '\u200B',
+  ERROR: '\u200C',
+  backup0: '\u200D',
+  backup1: '\u200E',
+  backup2: '\u200F',
+  backup3: '\uFEFF',
+} as const
+
+type ZERO_WIDTH_CHAR_KEY = keyof typeof ZERO_WIDTH_CHAR
+type ConsoleMethod = 'warn' | 'error'
+
+function overridedConsole(
+  name: ConsoleMethod,
+  oldFn: (...args: any[]) => any,
+  char: typeof ZERO_WIDTH_CHAR[ZERO_WIDTH_CHAR_KEY]
+) {
+  console[name] = function (...args) {
+    oldFn.apply(
+      this,
+      args.map((arg) => {
+        let item
+        if (typeof arg !== 'object') {
+          item = `${char}${arg}${char}`
+        } else {
+          item = `${char}${JSON.stringify(arg)}${char}`
+        }
+        return item
+      })
+    )
+  }
+}
+
+if (typeof console !== 'undefined') {
+  overridedConsole('warn', console.warn, ZERO_WIDTH_CHAR.WARNING)
+  // overridedConsole('error', console.error, ZERO_WIDTH_CHAR.ERROR)
+}
 
 export function formatAtFilename(
   filename: string,
@@ -39,19 +78,22 @@ export const h5ServeFormatter: Formatter = {
   },
   format(msg) {
     if (msg.includes(SIGNAL_H5_NETWORK)) {
-      networkLogs.push(msg)
+      networkLogs.push(msg.replace('➜ ', '*'))
       process.nextTick(() => {
         if (networkLogs.length) {
-          // 延迟打印所有 network,仅最后一个 network 替换 > 为 -，通知 hbx
+          // 延迟打印所有 network,仅最后一个 network 替换 ➜ 为 -，通知 hbx
           const len = networkLogs.length - 1
-          networkLogs[len] = networkLogs[len].replace('>', '-')
+          networkLogs[len] = networkLogs[len].replace('* Network', '- Network')
           console.log(networkLogs.join('\n'))
           networkLogs.length = 0
         }
       })
       return ''
     }
-    return msg.replace('>', '-')
+    if (msg.includes(SIGNAL_H5_LOCAL)) {
+      return msg.replace('➜ ', '-')
+    }
+    return msg.replace('➜ ', '*')
   },
 }
 

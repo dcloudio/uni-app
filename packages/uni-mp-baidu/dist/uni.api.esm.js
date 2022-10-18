@@ -411,7 +411,7 @@ function formatApiArgs(args, options) {
     }
 }
 function invokeSuccess(id, name, res) {
-    return invokeCallback(id, extend(res || {}, { errMsg: name + ':ok' }));
+    return invokeCallback(id, extend((res || {}), { errMsg: name + ':ok' }));
 }
 function invokeFail(id, name, errMsg, errRes) {
     return invokeCallback(id, extend({ errMsg: name + ':fail' + (errMsg ? ' ' + errMsg : '') }, errRes));
@@ -1169,11 +1169,23 @@ function requestPayment(params) {
         swan.requestPolymerPayment(params);
     }
 }
+function createIntersectionObserver(component, options) {
+    if (options && options.observeAll) {
+        options.selectAll = options.observeAll;
+        delete options.observeAll;
+    }
+    return swan.createIntersectionObserver(component, options);
+}
+function createVideoContext(videoId) {
+    return swan.createVideoContext(videoId);
+}
 
 var shims = /*#__PURE__*/Object.freeze({
   __proto__: null,
   getProvider: getProvider,
-  requestPayment: requestPayment
+  requestPayment: requestPayment,
+  createIntersectionObserver: createIntersectionObserver,
+  createVideoContext: createVideoContext
 });
 
 function createTodoMethod(contextName, methodName) {

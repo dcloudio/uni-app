@@ -54,12 +54,12 @@ jobs:
           npx cypress version --component node
 
       - name: Cypress run
-        uses: cypress-io/github-action@v2.3.6
+        uses: cypress-io/github-action@v4
         with:
           install: false
           start: npm run dev:ssr
           working-directory: ./packages/playground/ssr
-          wait-on: 'http://localhost:3000'
+          wait-on: 'http://localhost:5173'
           wait-on-timeout: 480
           browser: chrome
         env:

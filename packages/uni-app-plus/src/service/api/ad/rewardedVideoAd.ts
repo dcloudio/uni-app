@@ -16,8 +16,8 @@ class RewardedVideoAd extends AdBase implements UniApp.RewardedVideoAdContext {
   }
 }
 
-export const createRewardedVideoAd = <API_TYPE_CREATE_REWARDED_VIDEO_AD>(
-  defineSyncApi(
+export const createRewardedVideoAd =
+  defineSyncApi<API_TYPE_CREATE_REWARDED_VIDEO_AD>(
     API_CREATE_REWARDED_VIDEO_AD,
     (options) => {
       return new RewardedVideoAd(options)
@@ -25,4 +25,3 @@ export const createRewardedVideoAd = <API_TYPE_CREATE_REWARDED_VIDEO_AD>(
     CreateRewardedVideoAdProtocol,
     CreateRewardedVideoAdOptions
   )
-)

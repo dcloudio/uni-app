@@ -11,13 +11,16 @@ import {
   VNode,
   markRaw,
   SetupContext,
+  watchEffect,
 } from 'vue'
+import { extend } from '@vue/shared'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { useCustomEvent, CustomEventTrigger } from '../../helpers/useEvent'
 import { useTouchtrack } from '../../helpers/useTouchtrack'
 import { flatVNode } from '../../helpers/flatVNode'
 import { useRebuild } from '../../helpers/useRebuild'
 import { rpx2px } from '@dcloudio/uni-core'
+import { createSvgIconVNode, ICON_PATH_BACK } from '@dcloudio/uni-core'
 
 const props = {
   indicatorDots: {
@@ -80,9 +83,22 @@ const props = {
     type: [Boolean, String],
     default: false,
   },
+  navigation: {
+    type: [Boolean, String],
+    default: false,
+  },
+  navigationColor: {
+    type: String,
+    default: '#fff',
+  },
+  navigationActiveColor: {
+    type: String,
+    default: 'rgba(53, 53, 53, 0.6)',
+  },
 }
 
 type Props = Record<keyof typeof props, any>
+type CurrentChangeSource = 'click' | 'touch' | 'autoplay' | ''
 
 export interface SwiperContext {
   rootRef: Ref<HTMLElement | null>
@@ -154,9 +170,11 @@ function useLayout(
   let transitionStart: number | null
   let currentChangeSource = ''
   let animationFrame: number
+  const swiperEnabled: ComputedRef<boolean> = computed(
+    () => swiperContexts.value.length > state.displayMultipleItems
+  )
   const circularEnabled: ComputedRef<boolean> = computed(
-    () =>
-      props.circular && swiperContexts.value.length > state.displayMultipleItems
+    () => props.circular && swiperEnabled.value
   )
   function checkCircularLayout(index: number) {
     if (!invalid) {
@@ -276,7 +294,11 @@ function useLayout(
     updateViewport(l)
     animationFrame = requestAnimationFrame(animateFrameFuncProto)
   }
-  function animateViewport(current: number, source: string, n: number) {
+  function animateViewport(
+    current: number,
+    source: CurrentChangeSource,
+    n: number
+  ) {
     cancelViewportAnimation()
     const duration = state.duration
     const length = swiperContexts.value.length
@@ -310,6 +332,8 @@ function useLayout(
           position += length
         }
       }
+    } else if (source === 'click') {
+      current = current + state.displayMultipleItems - 1 < length ? current : 0
     }
 
     animating = {
@@ -604,6 +628,8 @@ function useLayout(
   }
   return {
     onSwiperDotClick,
+    circularEnabled,
+    swiperEnabled,
   }
 }
 
@@ -688,7 +714,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     }
     provide('removeSwiperContext', removeSwiperContext)
 
-    const { onSwiperDotClick } = useLayout(
+    const { onSwiperDotClick, circularEnabled, swiperEnabled } = useLayout(
       props,
       state,
       swiperContexts,
@@ -696,6 +722,19 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       emit as SetupContext['emit'],
       trigger
     )
+
+    let createNavigationTsx: () => JSX.Element | null = () => null
+    if (__PLATFORM__ === 'h5') {
+      createNavigationTsx = useSwiperNavigation(
+        rootRef,
+        props,
+        state,
+        onSwiperDotClick,
+        swiperContexts,
+        circularEnabled,
+        swiperEnabled
+      )
+    }
 
     return () => {
       const defaultSlots = slots.default && slots.default()
@@ -745,9 +784,181 @@ export default /*#__PURE__*/ defineBuiltInComponent({
                 ))}
               </div>
             )}
+            {createNavigationTsx()}
           </div>
         </uni-swiper>
       )
     }
   },
 })
+
+type NavigationHoverType = 'over' | 'out'
+type NavigationClickType = 'prev' | 'next'
+
+const useSwiperNavigation = /*#__PURE__*/ (
+  rootRef: Ref<HTMLElement | null>,
+  props: Props,
+  state: State,
+  onSwiperDotClick: ReturnType<typeof useLayout>['onSwiperDotClick'],
+  swiperContext: Ref<SwiperContext[]>,
+  circularEnabled: ComputedRef<boolean>,
+  swiperEnabled: ComputedRef<boolean>
+) => {
+  let isNavigationAuto = false
+  let prevDisabled = false
+  let nextDisabled = false
+  let hideNavigation = ref(false)
+
+  watchEffect(() => {
+    isNavigationAuto = props.navigation === 'auto'
+    hideNavigation.value = props.navigation !== true || isNavigationAuto
+    swiperAddMouseEvent()
+  })
+
+  watchEffect(() => {
+    const swiperItemLength = swiperContext.value.length
+    const notCircular = !circularEnabled.value
+
+    prevDisabled = state.current === 0 && notCircular
+    nextDisabled =
+      (state.current === swiperItemLength - 1 && notCircular) ||
+      (notCircular &&
+        state.current + state.displayMultipleItems >= swiperItemLength)
+
+    if (!swiperEnabled.value) {
+      prevDisabled = true
+      nextDisabled = true
+      isNavigationAuto && (hideNavigation.value = true)
+    }
+  })
+
+  function navigationHover(event: MouseEvent, type: NavigationHoverType) {
+    const target = event.currentTarget
+    if (!target) return
+    ;(target as HTMLDivElement).style.backgroundColor =
+      type === 'over' ? props.navigationActiveColor : ''
+  }
+  const navigationAttr = {
+    onMouseover: (event: MouseEvent) => navigationHover(event, 'over'),
+    onMouseout: (event: MouseEvent) => navigationHover(event, 'out'),
+  }
+
+  function navigationClick(
+    $event: MouseEvent,
+    type: NavigationClickType,
+    disabled: boolean
+  ) {
+    $event.stopPropagation()
+
+    if (disabled) return
+
+    const swiperItemLength = swiperContext.value.length
+    let _current = state.current
+
+    switch (type) {
+      case 'prev':
+        _current--
+        if (_current < 0 && circularEnabled.value) {
+          _current = swiperItemLength - 1
+        }
+        break
+      case 'next':
+        _current++
+        if (_current >= swiperItemLength && circularEnabled.value) {
+          _current = 0
+        }
+        break
+    }
+
+    onSwiperDotClick(_current)
+  }
+
+  const createNavigationSVG = () =>
+    createSvgIconVNode(ICON_PATH_BACK, props.navigationColor, 26)
+
+  let setHideNavigationTimer: number | undefined
+  const _mousemove = (e: MouseEvent) => {
+    clearTimeout(setHideNavigationTimer)
+
+    const { clientX, clientY } = e
+    const { left, right, top, bottom, width, height } =
+      rootRef.value!.getBoundingClientRect()
+
+    let hide = false
+    if (props.vertical) {
+      hide = !(clientY - top < height / 3 || bottom - clientY < height / 3)
+    } else {
+      hide = !(clientX - left < width / 3 || right - clientX < width / 3)
+    }
+
+    if (hide) {
+      // @ts-ignore setTimeout -> NodeJS.Timeout
+      return (setHideNavigationTimer = setTimeout(() => {
+        hideNavigation.value = hide
+      }, 300))
+    }
+
+    hideNavigation.value = hide
+  }
+  const _mouseleave = () => {
+    hideNavigation.value = true
+  }
+  function swiperAddMouseEvent() {
+    if (rootRef.value) {
+      rootRef.value.removeEventListener('mousemove', _mousemove)
+      rootRef.value.removeEventListener('mouseleave', _mouseleave)
+
+      if (isNavigationAuto) {
+        rootRef.value.addEventListener('mousemove', _mousemove)
+        rootRef.value.addEventListener('mouseleave', _mouseleave)
+      }
+    }
+  }
+
+  onMounted(swiperAddMouseEvent)
+
+  function createNavigationTsx() {
+    const navigationClass = {
+      'uni-swiper-navigation-hide': hideNavigation.value,
+      'uni-swiper-navigation-vertical': props.vertical,
+    }
+
+    if (props.navigation) {
+      return (
+        <>
+          <div
+            class="uni-swiper-navigation uni-swiper-navigation-prev"
+            // @ts-expect-error
+            class={extend(
+              {
+                'uni-swiper-navigation-disabled': prevDisabled,
+              },
+              navigationClass
+            )}
+            onClick={(e) => navigationClick(e, 'prev', prevDisabled)}
+            {...navigationAttr}
+          >
+            {createNavigationSVG()}
+          </div>
+          <div
+            class="uni-swiper-navigation uni-swiper-navigation-next"
+            // @ts-expect-error
+            class={extend(
+              {
+                'uni-swiper-navigation-disabled': nextDisabled,
+              },
+              navigationClass
+            )}
+            onClick={(e) => navigationClick(e, 'next', nextDisabled)}
+            {...navigationAttr}
+          >
+            {createNavigationSVG()}
+          </div>
+        </>
+      )
+    }
+    return null
+  }
+
+  return createNavigationTsx
+}

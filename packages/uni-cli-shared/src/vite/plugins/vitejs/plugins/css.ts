@@ -702,7 +702,7 @@ function combineSourcemapsIfExists(
 
 interface PostCSSConfigResult {
   options: Postcss.ProcessOptions
-  plugins: Postcss.Plugin[]
+  plugins: Postcss.AcceptedPlugin[]
 }
 
 async function resolvePostcssConfig(

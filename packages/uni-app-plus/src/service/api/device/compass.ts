@@ -15,20 +15,23 @@ import { DEVICE_FREQUENCY } from '../constants'
 
 let listener: number | null = null
 
-export const onCompassChange = <API_TYPE_ON_COMPASS_CHANGE>(
-  defineOnApi(API_ON_COMPASS, () => {
+export const onCompassChange = defineOnApi<API_TYPE_ON_COMPASS_CHANGE>(
+  API_ON_COMPASS,
+  () => {
     startCompass()
-  })
+  }
 )
 
-export const offCompassChange = <API_TYPE_OFF_COMPASS_CHANGE>(
-  defineOffApi(API_OFF_COMPASS, () => {
+export const offCompassChange = defineOffApi<API_TYPE_OFF_COMPASS_CHANGE>(
+  API_OFF_COMPASS,
+  () => {
     stopCompass()
-  })
+  }
 )
 
-export const startCompass = <API_TYPE_START_COMPASS>(
-  defineAsyncApi(API_START_COMPASS, (_, { resolve, reject }) => {
+export const startCompass = defineAsyncApi<API_TYPE_START_COMPASS>(
+  API_START_COMPASS,
+  (_, { resolve, reject }) => {
     if (!listener) {
       listener = plus.orientation.watchOrientation(
         (res) => {
@@ -46,15 +49,16 @@ export const startCompass = <API_TYPE_START_COMPASS>(
       )
     }
     setTimeout(resolve, DEVICE_FREQUENCY)
-  })
+  }
 )
 
-export const stopCompass = <API_TYPE_STOP_COMPASS>(
-  defineAsyncApi(API_STOP_COMPASS, (_, { resolve }) => {
+export const stopCompass = defineAsyncApi<API_TYPE_STOP_COMPASS>(
+  API_STOP_COMPASS,
+  (_, { resolve }) => {
     if (listener) {
       plus.orientation.clearWatch(listener)
       listener = null
     }
     resolve()
-  })
+  }
 )

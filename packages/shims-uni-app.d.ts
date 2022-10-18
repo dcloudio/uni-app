@@ -44,6 +44,7 @@ declare namespace UniNamespace {
       strict: boolean
       base: string
       assets: string
+      routerBase: string
     }
     nvue?: {
       'flex-direction': 'column' | 'row'
@@ -181,6 +182,7 @@ declare namespace UniNamespace {
 
   interface PagesJsonPagePlatformStyle {
     h5?: PagesJsonPageStyle
+    web?: PagesJsonPageStyle
     app?: PagesJsonPageStyle
     'app-plus'?: PagesJsonPageStyle
     'mp-alipay'?: PagesJsonPageStyle
@@ -271,6 +273,9 @@ declare namespace UniNamespace {
       custom?: {
         [name: string]: string
       }
+    }
+    uni_modules?: {
+      exports?: boolean
     }
     condition?: {
       current?: number

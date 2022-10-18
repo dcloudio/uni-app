@@ -206,12 +206,12 @@ class SelectorQuery implements UniApp.SelectorQuery {
   }
 }
 
-export const createSelectorQuery = <typeof uni.createSelectorQuery>(
-  defineSyncApi('createSelectorQuery', (context?: any) => {
-    context = resolveComponentInstance(context)
-    if (context && !getPageIdByVm(context)) {
-      context = null
-    }
-    return new SelectorQuery(context || getCurrentPageVm()!)
-  })
-)
+export const createSelectorQuery = defineSyncApi<
+  typeof uni.createSelectorQuery
+>('createSelectorQuery', (context?: any) => {
+  context = resolveComponentInstance(context)
+  if (context && !getPageIdByVm(context)) {
+    context = null
+  }
+  return new SelectorQuery(context || getCurrentPageVm()!)
+})

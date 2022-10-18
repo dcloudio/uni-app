@@ -85,6 +85,7 @@ export function uniViteInjectPlugin(
     transform(code, id) {
       if (!filter(id)) return null
       if (!isJsFile(id)) return null
+
       debugInjectTry(id)
       if (code.search(firstpass) === -1) return null
       if (sep !== '/') id = id.split(sep).join('/')

@@ -23,9 +23,11 @@ import {
   createObserver,
 } from './util'
 
-declare function Component<P, D, M extends tinyapp.IComponentMethods>(
-  options: tinyapp.ComponentOptions<P, D, M>
-): void
+declare function Component<
+  P extends Record<string, any>,
+  D,
+  M extends tinyapp.IComponentMethods
+>(options: tinyapp.ComponentOptions<P, D, M>): void
 
 function initComponentProps(_rawProps: Record<string, any>) {
   const propertiesOptions = {

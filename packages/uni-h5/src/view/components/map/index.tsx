@@ -14,6 +14,7 @@ import {
   useContextInfo,
   useSubscribe,
   useCustomEvent,
+  CustomEventTrigger,
 } from '@dcloudio/uni-components'
 import '@amap/amap-jsapi-types'
 import { callOptions } from '@dcloudio/uni-shared'
@@ -171,7 +172,6 @@ function useMap(
     longitude: Number(props.longitude),
     includePoints: getPoints(props.includePoints),
   })
-  type CustomEventTrigger = ReturnType<typeof useCustomEvent>
   type OnMapReadyCallback = (
     map: Map,
     maps: Maps,
@@ -487,6 +487,7 @@ function useMap(
   return {
     state,
     mapRef,
+    trigger,
   }
 }
 
@@ -508,7 +509,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   ],
   setup(props, { emit, slots }) {
     const rootRef: Ref<HTMLElement | null> = ref(null)
-    const { mapRef } = useMap(props, rootRef, emit as SetupContext['emit'])
+    const { mapRef, trigger } = useMap(
+      props,
+      rootRef,
+      emit as SetupContext['emit']
+    )
     return () => {
       return (
         <uni-map ref={rootRef} id={props.id}>
@@ -526,7 +531,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             <MapCircle {...item} />
           ))}
           {props.controls.map((item) => (
-            <MapControl {...item} rootRef={rootRef} />
+            <MapControl {...item} trigger={trigger} />
           ))}
           {props.showLocation && <MapLocation />}
           {props.polygons.map((item) => (

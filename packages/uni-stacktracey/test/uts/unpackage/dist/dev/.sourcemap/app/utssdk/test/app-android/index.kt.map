@@ -1,0 +1,1 @@
+{"version":3,"sources":["/Users/fxy/DCloud/test-uts/utssdk/test/app-android/index.uts"],"sourcesContent":["export function test(): number {\n  return 2.0.toFloat();\n}\n"],"names":[],"mappings":";;;;;;AAAO,IAAS,QAAQ,MAAM,CAAC;IAC7B,OAAO,GAAG,CAAC,OAAO;AACpB"}

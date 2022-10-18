@@ -75,14 +75,18 @@ export default defineComponent({
     useListeners(props, { 'label-click': _onClick })
 
     return () => {
-      const { color, type } = props
+      const { color, type, disabled } = props
       return (
         <div ref={rootRef}>
           {type === SwitchType.switch ? (
             <dc-switch
               {...{ dataUncType: 'uni-switch' }}
               {...listeners}
-              {...{ checked: switchChecked.value, color: color }}
+              {...{
+                checked: switchChecked.value,
+                color: color,
+                disabled: disabled,
+              }}
               style={DCSwitchSize}
             />
           ) : null}

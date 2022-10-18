@@ -411,7 +411,7 @@ function formatApiArgs(args, options) {
     }
 }
 function invokeSuccess(id, name, res) {
-    return invokeCallback(id, extend(res || {}, { errMsg: name + ':ok' }));
+    return invokeCallback(id, extend((res || {}), { errMsg: name + ':ok' }));
 }
 function invokeFail(id, name, errMsg, errRes) {
     return invokeCallback(id, extend({ errMsg: name + ':fail' + (errMsg ? ' ' + errMsg : '') }, errRes));
@@ -1153,10 +1153,24 @@ const getProvider = initGetProvider({
     payment: ['qqpay'],
     push: ['qq'],
 });
+function createCanvasContext(canvasId, context) {
+    if (context) {
+        context[Symbol.toPrimitive] = () => '[object Object]';
+    }
+    return qq.createCanvasContext(canvasId, context);
+}
+function canvasToTempFilePath(canvasId, context) {
+    if (context) {
+        context[Symbol.toPrimitive] = () => '[object Object]';
+    }
+    return qq.canvasToTempFilePath(canvasId, context);
+}
 
 var shims = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  getProvider: getProvider
+  getProvider: getProvider,
+  createCanvasContext: createCanvasContext,
+  canvasToTempFilePath: canvasToTempFilePath
 });
 
 var protocols = /*#__PURE__*/Object.freeze({

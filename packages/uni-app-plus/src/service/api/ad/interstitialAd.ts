@@ -16,8 +16,8 @@ class InterstitialAd extends AdBase implements UniApp.InterstitialAdContext {
   }
 }
 
-export const createInterstitialAd = <API_TYPE_CREATE_INTERSTITIAL_AD>(
-  defineSyncApi(
+export const createInterstitialAd =
+  defineSyncApi<API_TYPE_CREATE_INTERSTITIAL_AD>(
     API_CREATE_INTERSTITIAL_AD,
     (options) => {
       return new InterstitialAd(options)
@@ -25,4 +25,3 @@ export const createInterstitialAd = <API_TYPE_CREATE_INTERSTITIAL_AD>(
     CreateInterstitialAdProtocol,
     CreateInterstitialAdOptions
   )
-)

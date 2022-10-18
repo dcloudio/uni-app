@@ -12,6 +12,46 @@ const APP_PVER_TIME = 300; // 应用在后台结束访问时间 单位s
 const OPERATING_TIME = 10; // 数据上报时间 单位s
 const DIFF_TIME = 60 * 1000 * 60 * 24;
 
+const appid = process.env.UNI_APP_ID; // 做应用隔离
+const dbSet = (name, value) => {
+  let data = uni.getStorageSync('$$STAT__DBDATA:'+appid) || {};
+
+  if (!data) {
+    data = {};
+  }
+  data[name] = value;
+  uni.setStorageSync('$$STAT__DBDATA:'+appid, data);
+};
+
+const dbGet = (name) => {
+  let data = uni.getStorageSync('$$STAT__DBDATA:'+appid) || {};
+  if (!data[name]) {
+    let dbdata = uni.getStorageSync('$$STAT__DBDATA:'+appid);
+    if (!dbdata) {
+      dbdata = {};
+    }
+    if (!dbdata[name]) {
+      return undefined
+    }
+    data[name] = dbdata[name];
+  }
+  return data[name]
+};
+
+const dbRemove = (name) => {
+  let data = uni.getStorageSync('$$STAT__DBDATA:'+appid) || {};
+  if (data[name]) {
+    delete data[name];
+    uni.setStorageSync('$$STAT__DBDATA:'+appid, data);
+  } else {
+    data = uni.getStorageSync('$$STAT__DBDATA:'+appid);
+    if (data[name]) {
+      delete data[name];
+      uni.setStorageSync('$$STAT__DBDATA:'+appid, data);
+    }
+  }
+};
+
 // 获取 manifest.json 中统计配置
 const uniStatisticsConfig = process.env.UNI_STATISTICS_CONFIG;
 let statConfig = {
@@ -77,6 +117,24 @@ function getUuid() {
 
 const get_uuid = (statData) => {
   // 有可能不存在 deviceId（一般不存在就是出bug了），就自己生成一个
+  return sys.deviceId || getUuid()
+};
+
+/**
+ * 获取老版的 deviceid ,兼容以前的错误 deviceid
+ * @param {*} statData 
+ * @returns 
+ */
+const get_odid = (statData) => {
+  let odid  = '';
+  if (get_platform_name() === 'n') {
+    try {
+      odid = plus.device.uuid;
+    } catch (e) {
+      odid = '';
+    }
+    return odid
+  }
   return sys.deviceId || getUuid()
 };
 
@@ -542,44 +600,15 @@ const is_push_clientid = () => {
   return false
 };
 
-const appid = process.env.UNI_APP_ID; // 做应用隔离
-const dbSet = (name, value) => {
-  let data = uni.getStorageSync('$$STAT__DBDATA:'+appid) || {};
-
-  if (!data) {
-    data = {};
-  }
-  data[name] = value;
-  uni.setStorageSync('$$STAT__DBDATA:'+appid, data);
-};
-
-const dbGet = (name) => {
-  let data = uni.getStorageSync('$$STAT__DBDATA:'+appid) || {};
-  if (!data[name]) {
-    let dbdata = uni.getStorageSync('$$STAT__DBDATA:'+appid);
-    if (!dbdata) {
-      dbdata = {};
-    }
-    if (!dbdata[name]) {
-      return undefined
-    }
-    data[name] = dbdata[name];
-  }
-  return data[name]
-};
-
-const dbRemove = (name) => {
-  let data = uni.getStorageSync('$$STAT__DBDATA:'+appid) || {};
-  if (data[name]) {
-    delete data[name];
-    uni.setStorageSync('$$STAT__DBDATA:'+appid, data);
-  } else {
-    data = uni.getStorageSync('$$STAT__DBDATA:'+appid);
-    if (data[name]) {
-      delete data[name];
-      uni.setStorageSync('$$STAT__DBDATA:'+appid, data);
-    }
-  }
+/**
+ * 是否已处理设备 DeviceId
+ * 如果值为 1 则表示已处理
+ */
+const IS_HANDLE_DEVECE_ID = 'is_handle_device_id';
+const is_handle_device = () => {
+  let isHandleDevice = dbGet(IS_HANDLE_DEVECE_ID) || '';
+	dbSet(IS_HANDLE_DEVECE_ID, '1');
+  return isHandleDevice === '1'
 };
 
 // 首次访问时间
@@ -966,13 +995,28 @@ class Report {
     this._navigationBarTitle.config = get_page_name(options.path);
     let is_opt = options.query && JSON.stringify(options.query) !== '{}';
     let query = is_opt ? '?' + JSON.stringify(options.query) : '';
+    const last_time = get_last_visit_time();
+    // 非老用户
+    if(last_time !== 0 || !last_time){
+      const odid = get_odid();
+
+      // 2.0 处理规则
+      {
+        const have_device = is_handle_device();
+        // 如果没有上报过设备信息 ，则需要上报设备信息
+        if(!have_device) {
+          this.statData.odid = odid;
+        }
+      }
+    }
+
     Object.assign(this.statData, {
       lt: '1',
       url: options.path + query || '',
       t: get_time(),
       sc: get_scene(options.scene),
       fvts: get_first_visit_time(),
-      lvts: get_last_visit_time(),
+      lvts: last_time,
       tvc: get_total_visit_count(),
       // create session type  上报类型 ，1 应用进入 2.后台30min进入 3.页面30min进入
       cst: options.cst || 1,

@@ -153,7 +153,10 @@ export function rewriteBinding(
   context: TransformContext
 ) {
   const isMiniProgramComponent = context.isMiniProgramComponent(tag)
-  if (isMiniProgramComponent === 'plugin') {
+  if (
+    isMiniProgramComponent === 'plugin' ||
+    isMiniProgramComponent === 'dynamicLib'
+  ) {
     // 因无法介入插件类型组件内部实现，故保留原始属性
     return
   }

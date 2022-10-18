@@ -7,6 +7,7 @@ import {
   SFCParseResult,
   SFCScriptBlock,
   SFCScriptCompileOptions,
+  SFCTemplateCompileOptions,
 } from '@vue/compiler-sfc'
 
 export const rewriteCompileScriptOnce = once(rewriteCompileScript)
@@ -14,7 +15,8 @@ export const rewriteCompilerSfcParseOnce = once(rewriteCompilerSfcParse)
 
 function rewriteCompileScript() {
   const compiler = require(resolveBuiltIn('@vue/compiler-sfc'))
-  const { compileScript } = compiler
+  const { compileScript, compileTemplate } = compiler
+  // script-setup + v-bind
   compiler.compileScript = (
     sfc: SFCDescriptor,
     options: SFCScriptCompileOptions
@@ -24,6 +26,14 @@ function rewriteCompileScript() {
         sfc.cssVars || []
     }
     return compileScript(sfc, options)
+  }
+  // script + v-bind
+  compiler.compileTemplate = (options: SFCTemplateCompileOptions) => {
+    if (options?.compilerOptions) {
+      ;(options.compilerOptions as any).bindingCssVars =
+        options.ssrCssVars || []
+    }
+    return compileTemplate(options)
   }
 }
 

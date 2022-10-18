@@ -103,6 +103,9 @@ export interface TemplateCodegenOptions
   scopeId?: string | null
   filename: string
   isBuiltInComponent: Required<TransformOptions>['isBuiltInComponent']
+  isMiniProgramComponent(
+    name: string
+  ): 'plugin' | 'component' | 'dynamicLib' | undefined
 }
 
 export type CompilerOptions = ParserOptions & TransformOptions & CodegenOptions

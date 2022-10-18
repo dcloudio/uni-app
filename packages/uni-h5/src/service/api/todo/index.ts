@@ -59,10 +59,10 @@ export const getSavedFileInfo = defineAsyncApi<typeof uni.getSavedFileInfo>(
   API_GET_SAVED_FILE_INFO,
   createUnsupportedAsyncApi(API_GET_SAVED_FILE_INFO)
 )
-const API_REMOVE_SAVED_FILE_INFO = 'removeSavedFileInfo'
-export const removeSavedFileInfo = defineAsyncApi(
-  API_REMOVE_SAVED_FILE_INFO,
-  createUnsupportedAsyncApi(API_REMOVE_SAVED_FILE_INFO)
+const API_REMOVE_SAVED_FILE = 'removeSavedFile'
+export const removeSavedFile = defineAsyncApi<typeof uni.removeSavedFile>(
+  API_REMOVE_SAVED_FILE,
+  createUnsupportedAsyncApi(API_REMOVE_SAVED_FILE)
 )
 
 const API_ON_MEMORY_WARNING = 'onMemoryWarning'

@@ -1,5 +1,4 @@
 import { defineAsyncApi, defineSyncApi, getLocale } from '@dcloudio/uni-api'
-import deviceId from '../../../helpers/uuid'
 import { extend, isString } from '@vue/shared'
 import { getWindowInfo } from './getWindowInfo'
 import { sortObject } from '@dcloudio/uni-shared'
@@ -29,6 +28,7 @@ export const getDeviceInfo = defineSyncApi<typeof uni.getDeviceInfo>(
       osVersion,
       deviceOrientation,
       deviceType,
+      deviceId,
     } = systemInfo
 
     const brand = deviceBrand.toLowerCase()
@@ -39,7 +39,7 @@ export const getDeviceInfo = defineSyncApi<typeof uni.getDeviceInfo>(
       deviceBrand: brand,
       deviceModel,
       devicePixelRatio: plus.screen.scale!,
-      deviceId: deviceId(),
+      deviceId,
       deviceOrientation,
       deviceType,
       model: deviceModel,

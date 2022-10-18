@@ -29,6 +29,7 @@ export type UtsOutputOptions = {
   extname: string
   logFilename?: boolean
   noColor?: boolean
+  isPlugin?: boolean
 }
 export interface UtsOptions {
   input: UtsInputOptions
@@ -41,6 +42,4 @@ export interface UtsResult {
   error?: Error
 }
 
-export interface UtsBundleOptions extends UtsOptions {
-  target: UtsTarget
-}
+export interface UtsBundleOptions extends UtsOptions {}

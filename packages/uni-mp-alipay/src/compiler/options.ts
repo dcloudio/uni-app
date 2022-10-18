@@ -54,6 +54,7 @@ export const customElements = [
   'ix-native-grid',
   'ix-native-list',
   'mkt',
+  'page-container',
 ]
 
 export const options: UniMiniProgramPluginOptions = {

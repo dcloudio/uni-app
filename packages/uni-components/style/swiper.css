@@ -83,3 +83,69 @@ uni-swiper[hidden] {
 .uni-swiper-dot-active {
   background-color: #000000;
 }
+
+.uni-swiper-navigation {
+  width: 26px;
+  height: 26px;
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  margin-top: -13px;
+  display: flex;
+  align-items: center;
+  transition: all 0.2s;
+  border-radius: 50%;
+  opacity: 1;
+}
+
+.uni-swiper-navigation-disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.uni-swiper-navigation-hide {
+  opacity: 0;
+  cursor: auto;
+  pointer-events: none;
+}
+
+.uni-swiper-navigation-prev {
+  left: 10px;
+}
+
+.uni-swiper-navigation-prev svg {
+  margin-left: -1px;
+  left: 10px;
+}
+
+.uni-swiper-navigation-prev.uni-swiper-navigation-vertical {
+  top: 18px;
+  left: 50%;
+  margin-left: -13px;
+}
+
+.uni-swiper-navigation-prev.uni-swiper-navigation-vertical svg {
+  transform: rotate(90deg);
+  margin-left: auto;
+  margin-top: -2px;
+}
+
+.uni-swiper-navigation-next {
+  right: 10px;
+}
+
+.uni-swiper-navigation-next svg {
+  transform: rotate(180deg);
+}
+
+.uni-swiper-navigation-next.uni-swiper-navigation-vertical {
+  top: auto;
+  bottom: 5px;
+  left: 50%;
+  margin-left: -13px;
+}
+
+.uni-swiper-navigation-next.uni-swiper-navigation-vertical svg {
+  margin-top: 2px;
+  transform: rotate(270deg);
+}

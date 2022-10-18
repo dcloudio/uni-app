@@ -12,15 +12,15 @@
     "@dcloudio/uni-app": "../../uni-app",
     "@dcloudio/uni-components": "../../uni-components",
     "@dcloudio/uni-h5": "../../uni-h5",
-    "vue": "3.2.37",
-    "vue-router": "^4.1.3",
+    "vue": "3.2.41",
+    "vue-router": "^4.1.5",
     "vuex": "^4.0.2"
   },
   "devDependencies": {
     "@dcloudio/vite-plugin-uni": "../../vite-plugin-uni",
     "compression": "^1.7.4",
-    "cypress": "^7.3.0",
-    "serve-static": "^1.14.1",
-    "vite": "2.9.14"
+    "cypress": "^10.7.0",
+    "serve-static": "^1.15.0",
+    "vite": "3.1.8"
   }
 }

@@ -3,12 +3,14 @@ import { sync } from 'fast-glob'
 import { isArray } from '@vue/shared'
 import { once } from '@dcloudio/uni-shared'
 import {
+  isSsr,
   defineUniMainJsPlugin,
   COMMON_EXCLUDE,
   isInHybridNVue,
   uniViteInjectPlugin,
   UniVitePlugin,
   isInHBuilderX,
+  isEnableSecureNetwork,
 } from '@dcloudio/uni-cli-shared'
 
 import { uniValidateFunctionPlugin } from './validateFunction'
@@ -54,7 +56,7 @@ function uniCloudPlugin(): UniVitePlugin {
         process.env.NODE_ENV === 'production'
       ) {
         console.warn(
-          '发布H5，需要在uniCloud后台操作，绑定安全域名，否则会因为跨域问题而无法访问。教程参考：https://uniapp.dcloud.net.cn/uniCloud/publish.html#useinh5'
+          '发布到web端需要在uniCloud后台操作，绑定安全域名，否则会因为跨域问题而无法访问。教程参考：https://uniapp.dcloud.net.cn/uniCloud/publish.html#useinh5'
         )
       }
       return {}
@@ -74,9 +76,8 @@ function uniCloudPlugin(): UniVitePlugin {
       if (process.env.UNI_PLATFORM === 'h5' && !process.env.UNI_SSR_CLIENT) {
         console.log()
         console.log(
-          '欢迎将H5站部署到uniCloud前端网页托管平台，高速、免费、安全、省心，详见：'
+          '欢迎将web站点部署到uniCloud前端网页托管平台，高速、免费、安全、省心，详见：https://uniapp.dcloud.io/uniCloud/hosting'
         )
-        console.log('https://uniapp.dcloud.io/uniCloud/hosting')
       }
     },
   }
@@ -174,6 +175,19 @@ export default () => [
     return {
       name: 'uni:cloud',
       enforce: 'pre',
+      config(config, env) {
+        if (isSsr(env.command, config)) {
+          return
+        }
+        const inputDir = process.env.UNI_INPUT_DIR!
+        const platform = process.env.UNI_PLATFORM!
+        const isSecureNetworkEnabled = isEnableSecureNetwork(inputDir, platform)
+        return {
+          define: {
+            'process.env.UNI_SECURE_NETWORK': isSecureNetworkEnabled,
+          },
+        }
+      },
       transform(code, id) {
         if (!opts.filter(id)) {
           return

@@ -818,7 +818,12 @@ function sibling(node, type) {
 function removeNode(node) {
     const { parentNode } = node;
     if (parentNode) {
-        parentNode.removeChild(node);
+        const { childNodes } = parentNode;
+        const index = childNodes.indexOf(node);
+        if (index > -1) {
+            node.parentNode = null;
+            childNodes.splice(index, 1);
+        }
     }
 }
 function checkNodeId(node) {
@@ -894,6 +899,7 @@ class UniNode extends UniEventTarget {
         return cloned;
     }
     insertBefore(newChild, refChild) {
+        // 先从现在的父节点移除（注意：不能触发onRemoveChild，否则会生成先remove该 id，再 insert）
         removeNode(newChild);
         newChild.pageNode = this.pageNode;
         newChild.parentNode = this;
@@ -1286,6 +1292,21 @@ const MINI_PROGRAM_PAGE_RUNTIME_HOOKS = /*#__PURE__*/ (() => {
         onShareTimeline: 1 << 2,
     };
 })();
+function isUniLifecycleHook(name, value, checkType = true) {
+    // 检查类型
+    if (checkType && !shared.isFunction(value)) {
+        return false;
+    }
+    if (UniLifecycleHooks.indexOf(name) > -1) {
+        // 已预定义
+        return true;
+    }
+    else if (name.indexOf('on') === 0) {
+        // 以 on 开头
+        return true;
+    }
+    return false;
+}
 
 let vueApp;
 const createVueAppHooks = [];
@@ -1303,6 +1324,11 @@ function invokeCreateVueAppHook(app) {
     vueApp = app;
     createVueAppHooks.forEach((hook) => hook(app));
 }
+const invokeCreateErrorHandler = once((app, createErrorHandler) => {
+    if (shared.isFunction(app._component.onError)) {
+        return createErrorHandler(app);
+    }
+});
 
 const E = function () {
     // Keep this empty so it's easier to inherit from
@@ -1488,6 +1514,7 @@ exports.getLen = getLen;
 exports.getValueByDataPath = getValueByDataPath;
 exports.initCustomDatasetOnce = initCustomDatasetOnce;
 exports.invokeArrayFns = invokeArrayFns;
+exports.invokeCreateErrorHandler = invokeCreateErrorHandler;
 exports.invokeCreateVueAppHook = invokeCreateVueAppHook;
 exports.isAppNVueNativeTag = isAppNVueNativeTag;
 exports.isAppNativeTag = isAppNativeTag;
@@ -1499,6 +1526,7 @@ exports.isH5NativeTag = isH5NativeTag;
 exports.isMiniProgramNativeTag = isMiniProgramNativeTag;
 exports.isRootHook = isRootHook;
 exports.isRootImmediateHook = isRootImmediateHook;
+exports.isUniLifecycleHook = isUniLifecycleHook;
 exports.normalizeDataset = normalizeDataset;
 exports.normalizeEventType = normalizeEventType;
 exports.normalizeTarget = normalizeTarget;

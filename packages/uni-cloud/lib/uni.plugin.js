@@ -36,7 +36,7 @@ function uniCloudPlugin() {
             if (process.env.UNI_PLATFORM === 'h5' &&
                 !process.env.UNI_SUB_PLATFORM &&
                 process.env.NODE_ENV === 'production') {
-                console.warn('发布H5，需要在uniCloud后台操作，绑定安全域名，否则会因为跨域问题而无法访问。教程参考：https://uniapp.dcloud.net.cn/uniCloud/publish.html#useinh5');
+                console.warn('发布到web端需要在uniCloud后台操作，绑定安全域名，否则会因为跨域问题而无法访问。教程参考：https://uniapp.dcloud.net.cn/uniCloud/publish.html#useinh5');
             }
             return {};
         },
@@ -55,8 +55,7 @@ function uniCloudPlugin() {
         closeBundle() {
             if (process.env.UNI_PLATFORM === 'h5' && !process.env.UNI_SSR_CLIENT) {
                 console.log();
-                console.log('欢迎将H5站部署到uniCloud前端网页托管平台，高速、免费、安全、省心，详见：');
-                console.log('https://uniapp.dcloud.io/uniCloud/hosting');
+                console.log('欢迎将web站点部署到uniCloud前端网页托管平台，高速、免费、安全、省心，详见：https://uniapp.dcloud.io/uniCloud/hosting');
             }
         },
     };
@@ -142,6 +141,19 @@ exports.default = () => [
         return {
             name: 'uni:cloud',
             enforce: 'pre',
+            config(config, env) {
+                if ((0, uni_cli_shared_1.isSsr)(env.command, config)) {
+                    return;
+                }
+                const inputDir = process.env.UNI_INPUT_DIR;
+                const platform = process.env.UNI_PLATFORM;
+                const isSecureNetworkEnabled = (0, uni_cli_shared_1.isEnableSecureNetwork)(inputDir, platform);
+                return {
+                    define: {
+                        'process.env.UNI_SECURE_NETWORK': isSecureNetworkEnabled,
+                    },
+                };
+            },
             transform(code, id) {
                 if (!opts.filter(id)) {
                     return;

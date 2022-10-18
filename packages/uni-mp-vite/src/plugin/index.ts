@@ -149,12 +149,15 @@ export function uniMiniProgramPlugin(
             }),
           },
         },
+        optimizeDeps: {
+          disabled: true,
+        },
         build: buildOptions(),
       }
     },
     configResolved(config) {
       resolvedConfig = config
-      return createConfigResolved(options)!(config)
+      return (createConfigResolved(options) as Function)(config)
     },
     generateBundle() {
       if (template.filter) {

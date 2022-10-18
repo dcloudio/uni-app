@@ -130,7 +130,7 @@ export function getValueByDataPath(obj: any, path: string): unknown {
   return getValueByDataPath(obj[key], parts.slice(1).join('.'))
 }
 
-export function sortObject<T>(obj: T) {
+export function sortObject<T extends Object>(obj: T) {
   let sortObj: T = {} as T
   if (isPlainObject(obj)) {
     Object.keys(obj)

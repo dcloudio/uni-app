@@ -1,17 +1,21 @@
 import fs from 'fs'
+import os from 'os'
 import path from 'path'
 import colors from 'picocolors'
 import {
+  CommonServerOptions,
   createLogger,
   createServer as createViteServer,
+  Logger,
+  ResolvedConfig,
   ServerOptions,
   ViteDevServer,
-  printHttpServerUrls,
 } from 'vite'
 import express from 'express'
 import { parseManifestJson } from '@dcloudio/uni-cli-shared'
 import { CliOptions } from '.'
 import { addConfigFile, cleanOptions, printStartupDuration } from './utils'
+import { AddressInfo, Server } from 'net'
 
 export async function createServer(options: CliOptions & ServerOptions) {
   const server = await createViteServer(
@@ -52,6 +56,8 @@ export async function createSSRServer(
    */
   const vite = await createViteServer(
     addConfigFile({
+      // custom: don't include HTML middlewares
+      appType: 'custom',
       root: process.env.VITE_ROOT_DIR,
       base: options.base,
       mode: options.mode,
@@ -111,7 +117,7 @@ export async function createSSRServer(
   const logger = createLogger(options.logLevel)
   const serverOptions = vite.config.server || {}
 
-  let port = options.port || serverOptions.port || 3000
+  let port = options.port || serverOptions.port || 5173
   let hostname: string | undefined
   if (options.host === 'localhost') {
     // Use a secure default
@@ -144,4 +150,105 @@ export async function createSSRServer(
     }
     const server = app.listen(port, hostname!, onSuccess).on('error', onError)
   })
+}
+
+function printHttpServerUrls(server: Server, config: ResolvedConfig): void {
+  printCommonServerUrls(server, config.server, config)
+}
+
+function printCommonServerUrls(
+  server: Server,
+  options: CommonServerOptions,
+  config: ResolvedConfig
+): void {
+  const address = server.address()
+  const isAddressInfo = (x: any): x is AddressInfo => x?.address
+  if (isAddressInfo(address)) {
+    const hostname = resolveHostname(options.host)
+    const protocol = options.https ? 'https' : 'http'
+    printServerUrls(
+      hostname,
+      protocol,
+      address.port,
+      config.base,
+      config.logger.info
+    )
+  }
+}
+
+function printServerUrls(
+  hostname: Hostname,
+  protocol: string,
+  port: number,
+  base: string,
+  info: Logger['info']
+): void {
+  if (hostname.host === '127.0.0.1') {
+    const url = `${protocol}://${hostname.name}:${colors.bold(port)}${base}`
+    info(`  - Local: ${colors.cyan(url)}`)
+    if (hostname.name !== '127.0.0.1') {
+      info(`  - Network: ${colors.dim('use `--host` to expose')}`)
+    }
+  } else {
+    Object.values(os.networkInterfaces())
+      .flatMap((nInterface) => nInterface ?? [])
+      .filter(
+        (detail) =>
+          detail &&
+          detail.address &&
+          // Node < v18
+          ((typeof detail.family === 'string' && detail.family === 'IPv4') ||
+            // Node >= v18
+            (typeof detail.family === 'number' && detail.family === 4))
+      )
+      .map((detail) => {
+        const type = detail.address.includes('127.0.0.1')
+          ? '  - Local:   '
+          : '  * Network: '
+        const host = detail.address.replace('127.0.0.1', hostname.name)
+        const url = `${protocol}://${host}:${colors.bold(port)}${base}`
+        return `${type} ${colors.cyan(url)}`
+      })
+      .sort((msg1) => {
+        return msg1.indexOf('- Local') > -1 ? -1 : 1
+      })
+      .forEach((msg, index, arr) => {
+        if (arr.length - 1 === index) {
+          info(msg.replace('* Network', '- Network'))
+        } else {
+          info(msg)
+        }
+      })
+  }
+}
+
+interface Hostname {
+  // undefined sets the default behaviour of server.listen
+  host: string | undefined
+  // resolve to localhost when possible
+  name: string
+}
+
+function resolveHostname(optionsHost: string | boolean | undefined): Hostname {
+  let host: string | undefined
+  if (optionsHost === undefined || optionsHost === false) {
+    // Use a secure default
+    host = '127.0.0.1'
+  } else if (optionsHost === true) {
+    // If passed --host in the CLI without arguments
+    host = undefined // undefined typically means 0.0.0.0 or :: (listen on all IPs)
+  } else {
+    host = optionsHost
+  }
+
+  // Set host name to localhost when possible, unless the user explicitly asked for '127.0.0.1'
+  const name =
+    (optionsHost !== '127.0.0.1' && host === '127.0.0.1') ||
+    host === '0.0.0.0' ||
+    host === '::' ||
+    host === undefined
+      ? 'localhost'
+      : host
+
+  return { host, name }
 }

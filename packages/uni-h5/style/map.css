@@ -19,3 +19,16 @@ uni-map[hidden] {
   left:0!important;
   top:0!important;
 }
+
+.uni-map-control{
+  position:absolute;
+  width:0;
+  height:0;
+  top:0;
+  left:0;
+  z-index:999;
+}
+.uni-map-control-icon{
+  position:absolute;
+  max-width:initial;
+}

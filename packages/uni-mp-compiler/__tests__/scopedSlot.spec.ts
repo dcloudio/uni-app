@@ -3,6 +3,13 @@ import { assert } from './testUtils'
 describe('compiler: transform scoped slots', () => {
   test('basic', () => {
     assert(
+      `<view><slot data="123"/></view>`,
+      `<view><slot name="d"/></view>`,
+      `(_ctx, _cache) => {
+  return { a: _r("d", { data: "123" }) }
+}`
+    )
+    assert(
       `<view><slot :item="item" :index="index"/></view>`,
       `<view><slot name="d"/></view>`,
       `(_ctx, _cache) => {
@@ -69,6 +76,15 @@ describe('compiler: transform scoped slots', () => {
       `<button wx:for="{{a}}" wx:for-item="item" wx:key="c"><block wx:if="{{$slots.text}}"><slot name="{{item.a}}"></slot></block><block wx:else>Submit</block></button>`,
       `(_ctx, _cache) => {
   return { a: _f(1, (item, k0, i0) => { return { a: "text-" + i0, b: _r("text", { item: item }, i0), c: item }; }) }
+}`
+    )
+  })
+  test('scoped slots + slot', () => {
+    assert(
+      `<c><template #n="{ h }"><slot name="n" :h="h"></slot></template></c>`,
+      `<c u-s="{{['n']}}" u-i="2a9ec0b0-0"><view wx:for="{{a}}" wx:for-item="v0" wx:key="b" slot="{{v0.c}}"><slot name="n"></slot></view></c>`,
+      `(_ctx, _cache) => {
+  return { a: _w(({ h }, s0, i0) => { return { a: _r("n", { h: h }), b: i0, c: s0 }; }, { name: 'n', path: 'a', vueId: '2a9ec0b0-0' }) }
 }`
     )
   })

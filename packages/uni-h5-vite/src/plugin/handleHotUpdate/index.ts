@@ -54,7 +54,7 @@ export function createHandleHotUpdate(): Plugin['handleHotUpdate'] {
       server: { middlewareMode },
     } = server.config
     extend(
-      define,
+      define!,
       initFeatures({
         inputDir,
         command: 'serve',

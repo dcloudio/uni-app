@@ -1,5 +1,11 @@
-import { createElementVNode, defineComponent, createVNode, mergeProps, getCurrentInstance, provide, watch, onUnmounted, shallowRef, reactive, watchEffect, ref, inject, onBeforeUnmount, computed, Text as Text$1, isVNode, Fragment, onMounted, resolveComponent, parseClassList } from "vue";
-import { extend, hasOwn, isFunction, isPlainObject, isArray, isString } from "@vue/shared";
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
+import { createElementVNode, defineComponent, createVNode, mergeProps, getCurrentInstance, provide, watch, onUnmounted, shallowRef, reactive, watchEffect, ref, inject, onBeforeUnmount, computed, Text as Text$1, isVNode, Fragment, onMounted, nextTick, Comment, resolveComponent, parseClassList } from "vue";
+import { hasOwn, extend, isFunction, isPlainObject, isArray, isString } from "@vue/shared";
 import { cacheStringFunction, PRIMARY_COLOR } from "@dcloudio/uni-shared";
 const OPEN_TYPES = [
   "navigate",
@@ -81,7 +87,9 @@ const navigatorProps = {
 function createNavigatorOnClick(props2) {
   return () => {
     if (props2.openType !== "navigateBack" && !props2.url) {
-      console.error("<navigator/> should have url attribute when using navigateTo, redirectTo, reLaunch or switchTab");
+      console.error(
+        "<navigator/> should have url attribute when using navigateTo, redirectTo, reLaunch or switchTab"
+      );
       return;
     }
     const animationDuration = parseInt(props2.animationDuration);
@@ -136,7 +144,11 @@ function useHoverClass(props2) {
   return {};
 }
 function createNVueTextVNode(text, attrs) {
-  return createElementVNode("u-text", extend({ appendAsTree: true }, attrs), text);
+  return createElementVNode(
+    "u-text",
+    extend({ appendAsTree: true }, attrs),
+    text
+  );
 }
 const navigatorStyles = [{
   "navigator-hover": {
@@ -146,7 +158,7 @@ const navigatorStyles = [{
     }
   }
 }];
-var Navigator = defineComponent({
+const Navigator = defineComponent({
   name: "Navigator",
   props: navigatorProps,
   styles: navigatorStyles,
@@ -208,14 +220,17 @@ function addEventListener(pageId, callback) {
 }
 class Page {
   constructor(webview) {
+    __publicField(this, "webview");
     this.webview = webview;
   }
   sendMessage(data) {
-    const message = JSON.parse(JSON.stringify({
-      __message: {
-        data
-      }
-    }));
+    const message = JSON.parse(
+      JSON.stringify({
+        __message: {
+          data
+        }
+      })
+    );
     const id = this.webview.id;
     if (BroadcastChannel_) {
       const channel2 = new BroadcastChannel_(id);
@@ -302,7 +317,7 @@ function useProvideLabel() {
   });
   return handlers;
 }
-var Label = /* @__PURE__ */ defineComponent({
+const Label = /* @__PURE__ */ defineComponent({
   name: "Label",
   props: labelProps,
   styles: [],
@@ -325,10 +340,13 @@ var Label = /* @__PURE__ */ defineComponent({
 });
 function useListeners(props2, listeners) {
   _addListeners(props2.id, listeners);
-  watch(() => props2.id, (newId, oldId) => {
-    _removeListeners(oldId, listeners, true);
-    _addListeners(newId, listeners, true);
-  });
+  watch(
+    () => props2.id,
+    (newId, oldId) => {
+      _removeListeners(oldId, listeners, true);
+      _addListeners(newId, listeners, true);
+    }
+  );
   onUnmounted(() => {
     _removeListeners(props2.id, listeners);
   });
@@ -391,23 +409,26 @@ const useAttrs = (params = {}) => {
   const allExcludeKeys = excludeKeys.concat(DEFAULT_EXCLUDE_KEYS);
   instance.attrs = reactive(instance.attrs);
   watchEffect(() => {
-    const res = entries(instance.attrs).reduce((acc, [key, val]) => {
-      if (allExcludeKeys.includes(key)) {
-        acc.exclude[key] = val;
-      } else if (LISTENER_PREFIX.test(key)) {
-        if (!excludeListeners) {
+    const res = entries(instance.attrs).reduce(
+      (acc, [key, val]) => {
+        if (allExcludeKeys.includes(key)) {
+          acc.exclude[key] = val;
+        } else if (LISTENER_PREFIX.test(key)) {
+          if (!excludeListeners) {
+            acc.attrs[key] = val;
+          }
+          acc.listeners[key] = val;
+        } else {
           acc.attrs[key] = val;
         }
-        acc.listeners[key] = val;
-      } else {
-        acc.attrs[key] = val;
+        return acc;
+      },
+      {
+        exclude: {},
+        attrs: {},
+        listeners: {}
       }
-      return acc;
-    }, {
-      exclude: {},
-      attrs: {},
-      listeners: {}
-    });
+    );
     attrs.value = res.attrs;
     listeners.value = res.listeners;
     excludeAttrs.value = res.exclude;
@@ -725,7 +746,7 @@ const TYPES = {
   primary: "p",
   warn: "w"
 };
-var Button = defineComponent({
+const Button = defineComponent({
   inheritAttrs: false,
   name: "Button",
   props: extend(buttonProps, {
@@ -886,7 +907,7 @@ const getComponentSize = (el) => {
     });
   });
 };
-var MovableArea = defineComponent({
+const MovableArea = defineComponent({
   name: "MovableArea",
   props: movableAreaProps,
   styles: [{
@@ -1033,7 +1054,12 @@ function useTouchtrack(method) {
   });
   addListener("touchmove", function($event) {
     if ($eventOld) {
-      const res = fn($event, "move", $event.touches[0].pageX, $event.touches[0].pageY);
+      const res = fn(
+        $event,
+        "move",
+        $event.touches[0].pageX,
+        $event.touches[0].pageY
+      );
       x1 = $event.touches[0].pageX;
       y1 = $event.touches[0].pageY;
       return res;
@@ -1042,7 +1068,12 @@ function useTouchtrack(method) {
   addListener("touchend", function($event) {
     if ($eventOld) {
       $eventOld = null;
-      return fn($event, "end", $event.changedTouches[0].pageX, $event.changedTouches[0].pageY);
+      return fn(
+        $event,
+        "end",
+        $event.changedTouches[0].pageX,
+        $event.changedTouches[0].pageY
+      );
     }
   });
   return {
@@ -1125,7 +1156,7 @@ Friction.prototype.setS = function(x, y) {
   this._y_s = y;
 };
 Friction.prototype.s = function(t2) {
-  if (t2 === void 0) {
+  if (void 0 === t2) {
     t2 = (new Date().getTime() - this._startTime) / 1e3;
   }
   if (t2 > this._t) {
@@ -1146,7 +1177,7 @@ Friction.prototype.s = function(t2) {
   };
 };
 Friction.prototype.ds = function(t2) {
-  if (t2 === void 0) {
+  if (void 0 === t2) {
     t2 = (new Date().getTime() - this._startTime) / 1e3;
   }
   if (t2 > this._t) {
@@ -1263,13 +1294,13 @@ Spring.prototype._solve = function(e2, t2) {
   };
 };
 Spring.prototype.x = function(e2) {
-  if (e2 === void 0) {
+  if (void 0 === e2) {
     e2 = (new Date().getTime() - this._startTime) / 1e3;
   }
   return this._solution ? this._endPosition + this._solution.x(e2) : 0;
 };
 Spring.prototype.dx = function(e2) {
-  if (e2 === void 0) {
+  if (void 0 === e2) {
     e2 = (new Date().getTime() - this._startTime) / 1e3;
   }
   return this._solution ? this._solution.dx(e2) : 0;
@@ -1495,7 +1526,7 @@ function cancelAnimationFrame(id) {
   clearTimeout(id);
 }
 const animation = weex.requireModule("animation");
-var MovableView = defineComponent({
+const MovableView = defineComponent({
   name: "MovableView",
   props: movableViewProps,
   emits: ["change", "scale"],
@@ -2109,7 +2140,7 @@ const progressStyles = [{
     }
   }
 }];
-var Progress = defineComponent({
+const Progress = defineComponent({
   name: "Progress",
   props: progressProps,
   styles: progressStyles,
@@ -2246,9 +2277,17 @@ const nvuePickerViewProps = extend({}, pickerViewProps, {
   height: {
     type: [Number, String],
     default: 0
+  },
+  maskTopStyle: {
+    type: String,
+    default: ""
+  },
+  maskBottomStyle: {
+    type: String,
+    default: ""
   }
 });
-var PickerView = defineComponent({
+const PickerView = defineComponent({
   name: "PickerView",
   props: nvuePickerViewProps,
   emits: ["change", "update:value"],
@@ -2260,7 +2299,9 @@ var PickerView = defineComponent({
     const state = useState(props2);
     const trigger = useCustomEvent(rootRef, emit);
     let columnVNodes = [];
-    const getItemIndex = (vnode) => Array.prototype.indexOf.call(columnVNodes, vnode);
+    const getItemIndex = (vnode) => {
+      return Array.prototype.indexOf.call(columnVNodes.filter((vnode2) => vnode2.type !== Comment), vnode);
+    };
     const getPickerViewColumn = (columnInstance) => {
       return computed({
         get() {
@@ -2302,7 +2343,7 @@ var PickerView = defineComponent({
         preventGesture: true
       }), [createVNode("view", {
         "class": "uni-picker-view-wrapper"
-      }, [defaultSlots])]);
+      }, [columnVNodes])]);
     };
   },
   styles: [{
@@ -2332,10 +2373,12 @@ function useState(props2) {
   });
   watch(() => props2.value, (val) => {
     state.value.length = val.length;
-    val.forEach((val2, index) => {
-      if (val2 !== state.value[index]) {
-        state.value.splice(index, 1, val2);
-      }
+    nextTick(() => {
+      val.forEach((val2, index) => {
+        if (val2 !== state.value[index]) {
+          state.value.splice(index, 1, val2);
+        }
+      });
     });
   });
   return state;
@@ -2345,14 +2388,15 @@ const isAndroid$1 = weex.config.env.platform.toLowerCase() === "android";
 function getStyle(val) {
   return extend({}, isString(val) ? parseStyleText(val) : val);
 }
-var PickerViewColumn = defineComponent({
+const props$2 = {
+  length: {
+    type: [Number, String],
+    default: 0
+  }
+};
+const PickerViewColumn = defineComponent({
   name: "PickerViewColumn",
-  props: {
-    length: {
-      type: [Number, String],
-      default: 0
-    }
-  },
+  props: props$2,
   data: () => ({
     _isMounted: false
   }),
@@ -2368,42 +2412,16 @@ var PickerViewColumn = defineComponent({
     const getPickerViewColumn = inject("getPickerViewColumn");
     const current = getPickerViewColumn(instance);
     const indicatorStyle = computed(() => getStyle(pickerViewProps2.indicatorStyle));
-    const maskStyle = computed(() => getStyle(pickerViewProps2.maskStyle));
+    const maskTopStyle = computed(() => getStyle(pickerViewProps2.maskTopStyle));
+    const maskBottomStyle = computed(() => getStyle(pickerViewProps2.maskBottomStyle));
     let indicatorHeight = ref(0);
     indicatorHeight.value = getHeight(indicatorStyle.value);
     let pickerViewHeight = ref(0);
     pickerViewHeight.value = parseFloat(pickerViewProps2.height);
-    watch(() => props2.length, () => {
-      setTimeout(() => {
-        setCurrent(current.value, true, true);
-      }, 150);
-    });
-    let scrollToElementTime;
-    const setCurrent = (_current, animated = true, force) => {
-      if (current.value === _current && !force) {
-        return;
-      }
-      dom.scrollToElement(contentRef.value, {
-        offset: _current * indicatorHeight.value,
-        animated
-      });
-      current.value = _current;
-      if (animated) {
-        scrollToElementTime = Date.now();
-      }
-    };
-    const onScrollend = (event) => {
-      if (Date.now() - scrollToElementTime < 340) {
-        return;
-      }
-      const y = event.detail.contentOffset.y;
-      const _current = Math.round(y / indicatorHeight.value);
-      if (y % indicatorHeight.value) {
-        setCurrent(_current, true, true);
-      } else {
-        current.value = _current;
-      }
-    };
+    const {
+      setCurrent,
+      onScrollend
+    } = usePickerColumnScroll(props2, current, contentRef, indicatorHeight);
     const checkMounted = () => {
       let height_;
       let indicatorHeight_;
@@ -2469,18 +2487,17 @@ var PickerViewColumn = defineComponent({
           paddingBottom: `${padding}px`
         }
       }, [createScrollViewChild(children)])]), createVNode("u-scalable", {
-        "class": "uni-picker-view-mask",
-        "style": maskStyle.value
+        "class": "uni-picker-view-mask"
       }, [createVNode("u-scalable", {
         "class": "uni-picker-view-mask uni-picker-view-mask-top",
-        "style": {
+        "style": extend({}, maskTopStyle.value, {
           bottom: maskPosition
-        }
+        })
       }, null), createVNode("u-scalable", {
         "class": "uni-picker-view-mask uni-picker-view-mask-bottom",
-        "style": {
+        "style": extend({}, maskBottomStyle.value, {
           top: maskPosition
-        }
+        })
       }, null)]), createVNode("u-scalable", {
         "ref": indicatorRef,
         "class": "uni-picker-view-indicator",
@@ -2562,6 +2579,48 @@ function getHeight(style) {
     value = parseFloat(res[1]);
   }
   return value;
+}
+function usePickerColumnScroll(props2, current, contentRef, indicatorHeight) {
+  let scrollToElementTime;
+  function setDomScrollToElement(_current, animated = true) {
+    dom.scrollToElement(contentRef.value, {
+      offset: _current * indicatorHeight.value,
+      animated
+    });
+    if (animated) {
+      scrollToElementTime = Date.now();
+    }
+  }
+  watch(() => props2.length, () => {
+    setTimeout(() => {
+      setCurrent(current.value, true, true);
+    }, 150);
+  });
+  watch(current, (val) => setDomScrollToElement(val));
+  const setCurrent = (_current, animated = true, force) => {
+    if (current.value === _current && !force) {
+      return;
+    }
+    current.value = _current;
+    if (isAndroid$1)
+      setDomScrollToElement(_current, animated);
+  };
+  const onScrollend = (event) => {
+    if (Date.now() - scrollToElementTime < 340) {
+      return;
+    }
+    const y = event.detail.contentOffset.y;
+    const _current = Math.round(y / indicatorHeight.value);
+    if (y % indicatorHeight.value) {
+      setCurrent(_current, true, true);
+    } else {
+      current.value = _current;
+    }
+  };
+  return {
+    setCurrent,
+    onScrollend
+  };
 }
 const mode = {
   SELECTOR: "selector",
@@ -2670,7 +2729,7 @@ const props$1 = {
     default: false
   }
 };
-var Picker = /* @__PURE__ */ defineComponent({
+const Picker = /* @__PURE__ */ defineComponent({
   name: "Picker",
   props: props$1,
   emits: ["change", "cancel", "columnchange"],
@@ -2967,7 +3026,7 @@ const slierStyles = [{
     }
   }
 }];
-var USlider = defineComponent({
+const USlider = defineComponent({
   name: "USlider",
   props: sliderProps,
   styles: slierStyles,
@@ -3170,7 +3229,7 @@ const DCSwitchSize = {
   width: 52,
   height: 32
 };
-var Switch = defineComponent({
+const Switch = defineComponent({
   name: "Switch",
   props: switchProps,
   emits: ["change"],
@@ -3213,7 +3272,8 @@ var Switch = defineComponent({
     return () => {
       const {
         color,
-        type
+        type,
+        disabled
       } = props2;
       return createVNode("div", {
         "ref": rootRef
@@ -3221,7 +3281,8 @@ var Switch = defineComponent({
         dataUncType: "uni-switch"
       }, listeners, {
         checked: switchChecked.value,
-        color
+        color,
+        disabled
       }, {
         "style": DCSwitchSize
       }), null) : null, type === SwitchType.checkbox ? createVNode(resolveComponent("checkbox"), mergeProps({
@@ -3334,7 +3395,7 @@ const checkboxStyles = [{
     }
   }
 }];
-var Checkbox = defineComponent({
+const Checkbox = defineComponent({
   name: "Checkbox",
   props: checkboxProps,
   styles: checkboxStyles,
@@ -3431,7 +3492,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
     uniLabel
   };
 }
-var CheckboxGroup = defineComponent({
+const CheckboxGroup = defineComponent({
   name: "CheckboxGroup",
   props: checkboxGroupProps,
   emits: ["change"],
@@ -3558,7 +3619,7 @@ const radioStyles = [{
     }
   }
 }];
-var Radio = defineComponent({
+const Radio = defineComponent({
   name: "Radio",
   props: radioProps,
   styles: radioStyles,
@@ -3677,7 +3738,7 @@ function useRadioInject(radioChecked, radioValue, reset) {
     field
   };
 }
-var RadioGroup = defineComponent({
+const RadioGroup = defineComponent({
   name: "RadioGroup",
   props: radioGroupProps,
   emits: ["change"],
@@ -3755,7 +3816,7 @@ function useProvideRadioGroup(props2, trigger) {
   return fields2;
 }
 const NATIVE_COMPONENTS = ["u-input", "u-textarea"];
-var Form = defineComponent({
+const Form = defineComponent({
   name: "Form",
   emits: ["submit", "reset"],
   setup({}, {
@@ -3876,7 +3937,7 @@ const iconStyles = [{
     }
   }
 }];
-var Icon = defineComponent({
+const Icon = defineComponent({
   name: "Icon",
   props: iconProps,
   styles: iconStyles,
@@ -3981,7 +4042,7 @@ const swiperStyles = [{
     }
   }
 }];
-var Swiper = defineComponent({
+const Swiper = defineComponent({
   name: "Swiper",
   props: swiperProps,
   styles: swiperStyles,
@@ -4144,7 +4205,7 @@ const swiperItemProps = {
     default: ""
   }
 };
-var SwiperItem = defineComponent({
+const SwiperItem = defineComponent({
   name: "SwiperItem",
   props: swiperItemProps,
   setup(props2, {
@@ -4168,11 +4229,21 @@ var SwiperItem = defineComponent({
 var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
 var endTag = /^<\/([-A-Za-z0-9_]+)[^>]*>/;
 var attr = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g;
-var empty = /* @__PURE__ */ makeMap("area,base,basefont,br,col,frame,hr,img,input,link,meta,param,embed,command,keygen,source,track,wbr");
-var block = /* @__PURE__ */ makeMap("a,address,article,applet,aside,audio,blockquote,button,canvas,center,dd,del,dir,div,dl,dt,fieldset,figcaption,figure,footer,form,frameset,h1,h2,h3,h4,h5,h6,header,hgroup,hr,iframe,isindex,li,map,menu,noframes,noscript,object,ol,output,p,pre,section,script,table,tbody,td,tfoot,th,thead,tr,ul,video");
-var inline = /* @__PURE__ */ makeMap("abbr,acronym,applet,b,basefont,bdo,big,br,button,cite,code,del,dfn,em,font,i,iframe,img,input,ins,kbd,label,map,object,q,s,samp,script,select,small,span,strike,strong,sub,sup,textarea,tt,u,var");
-var closeSelf = /* @__PURE__ */ makeMap("colgroup,dd,dt,li,options,p,td,tfoot,th,thead,tr");
-var fillAttrs = /* @__PURE__ */ makeMap("checked,compact,declare,defer,disabled,ismap,multiple,nohref,noresize,noshade,nowrap,readonly,selected");
+var empty = /* @__PURE__ */ makeMap(
+  "area,base,basefont,br,col,frame,hr,img,input,link,meta,param,embed,command,keygen,source,track,wbr"
+);
+var block = /* @__PURE__ */ makeMap(
+  "a,address,article,applet,aside,audio,blockquote,button,canvas,center,dd,del,dir,div,dl,dt,fieldset,figcaption,figure,footer,form,frameset,h1,h2,h3,h4,h5,h6,header,hgroup,hr,iframe,isindex,li,map,menu,noframes,noscript,object,ol,output,p,pre,section,script,table,tbody,td,tfoot,th,thead,tr,ul,video"
+);
+var inline = /* @__PURE__ */ makeMap(
+  "abbr,acronym,applet,b,basefont,bdo,big,br,button,cite,code,del,dfn,em,font,i,iframe,img,input,ins,kbd,label,map,object,q,s,samp,script,select,small,span,strike,strong,sub,sup,textarea,tt,u,var"
+);
+var closeSelf = /* @__PURE__ */ makeMap(
+  "colgroup,dd,dt,li,options,p,td,tfoot,th,thead,tr"
+);
+var fillAttrs = /* @__PURE__ */ makeMap(
+  "checked,compact,declare,defer,disabled,ismap,multiple,nohref,noresize,noshade,nowrap,readonly,selected"
+);
 var special = /* @__PURE__ */ makeMap("script,style");
 function HTMLParser(html, handler) {
   var index;
@@ -4219,13 +4290,19 @@ function HTMLParser(html, handler) {
         }
       }
     } else {
-      html = html.replace(new RegExp("([\\s\\S]*?)</" + stack.last() + "[^>]*>"), function(all, text2) {
-        text2 = text2.replace(/<!--([\s\S]*?)-->|<!\[CDATA\[([\s\S]*?)]]>/g, "$1$2");
-        if (handler.chars) {
-          handler.chars(text2);
+      html = html.replace(
+        new RegExp("([\\s\\S]*?)</" + stack.last() + "[^>]*>"),
+        function(all, text2) {
+          text2 = text2.replace(
+            /<!--([\s\S]*?)-->|<!\[CDATA\[([\s\S]*?)]]>/g,
+            "$1$2"
+          );
+          if (handler.chars) {
+            handler.chars(text2);
+          }
+          return "";
         }
-        return "";
-      });
+      );
       parseEndTag("", stack.last());
     }
     if (html == last) {
@@ -4390,7 +4467,7 @@ const props = {
   }
 };
 const defaultFontSize = 16;
-var RichText = defineComponent({
+const RichText = defineComponent({
   name: "RichText",
   props,
   setup(props2) {
@@ -4564,16 +4641,20 @@ function getAdData$1(data, onsuccess, onerror) {
     onsuccess(adDataList.splice(0, 1)[0]);
     return;
   }
-  plus.ad.getAds(data, (res) => {
-    const list = res.ads;
-    onsuccess(list.splice(0, 1)[0]);
-    _adDataCache$1[key] = adDataList ? adDataList.concat(list) : list;
-  }, (err) => {
-    onerror({
-      errCode: err.code,
-      errMsg: err.message
-    });
-  });
+  plus.ad.getAds(
+    data,
+    (res) => {
+      const list = res.ads;
+      onsuccess(list.splice(0, 1)[0]);
+      _adDataCache$1[key] = adDataList ? adDataList.concat(list) : list;
+    },
+    (err) => {
+      onerror({
+        errCode: err.code,
+        errMsg: err.message
+      });
+    }
+  );
 }
 const adProps = {
   adpid: {
@@ -4599,7 +4680,7 @@ const AdEventType$1 = {
   error: "error",
   downloadchange: "downloadchange"
 };
-var Ad = defineComponent({
+const Ad = defineComponent({
   name: "Ad",
   props: adProps,
   emits: [AdEventType$1.load, AdEventType$1.close, AdEventType$1.error, AdEventType$1.downloadchange],
@@ -4670,20 +4751,24 @@ function getAdData(adpid, width, height, onsuccess, onerror) {
     onsuccess(adDataList.splice(0, 1)[0]);
     return;
   }
-  plus.ad.getDrawAds({
-    adpid: String(adpid),
-    count: 3,
-    width
-  }, (res) => {
-    const list = res.ads;
-    onsuccess(list.splice(0, 1)[0]);
-    _adDataCache[key] = adDataList ? adDataList.concat(list) : list;
-  }, (err) => {
-    onerror({
-      errCode: err.code,
-      errMsg: err.message
-    });
-  });
+  plus.ad.getDrawAds(
+    {
+      adpid: String(adpid),
+      count: 3,
+      width
+    },
+    (res) => {
+      const list = res.ads;
+      onsuccess(list.splice(0, 1)[0]);
+      _adDataCache[key] = adDataList ? adDataList.concat(list) : list;
+    },
+    (err) => {
+      onerror({
+        errCode: err.code,
+        errMsg: err.message
+      });
+    }
+  );
 }
 const adDrawProps = {
   adpid: {
@@ -4704,7 +4789,7 @@ const AdEventType = {
   close: "close",
   error: "error"
 };
-var AdDraw = defineComponent({
+const AdDraw = defineComponent({
   name: "AdDraw",
   props: adDrawProps,
   emits: [AdEventType.load, AdEventType.close, AdEventType.error],
@@ -4767,7 +4852,7 @@ function _loadAdData(state, props2, trigger) {
     trigger(AdEventType.error, err);
   });
 }
-var components = {
+const components = {
   Navigator,
   Label,
   Button,
@@ -4791,4 +4876,6 @@ var components = {
   Ad,
   AdDraw
 };
-export { components as default };
+export {
+  components as default
+};

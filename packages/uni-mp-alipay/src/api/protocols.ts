@@ -150,7 +150,6 @@ export function showToast({ icon = 'success' }: UniApp.ShowToastOptions = {}) {
   const args = {
     title: 'content',
     icon: 'type',
-    duration: false,
     image: false,
     mask: false,
   }

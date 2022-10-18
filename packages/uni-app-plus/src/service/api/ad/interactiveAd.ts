@@ -258,8 +258,8 @@ class InteractiveAd
   }
 }
 
-export const createInteractiveAd = <API_TYPE_CREATE_INTERACTIVE_AD>(
-  defineSyncApi(
+export const createInteractiveAd =
+  defineSyncApi<API_TYPE_CREATE_INTERACTIVE_AD>(
     API_CREATE_INTERACTIVE_AD,
     (options) => {
       return new InteractiveAd(options)
@@ -267,4 +267,3 @@ export const createInteractiveAd = <API_TYPE_CREATE_INTERACTIVE_AD>(
     CreateInteractiveAdProtocol,
     CreateInteractiveAdOptions
   )
-)

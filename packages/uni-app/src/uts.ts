@@ -1,5 +1,6 @@
-import { isPlainObject, hasOwn, extend } from '@vue/shared'
+import { isPlainObject, hasOwn, extend, capitalize } from '@vue/shared'
 declare const uni: any
+declare const plus: any
 let callbackId = 1
 let proxy: any
 const callbacks: Record<string, Function> = {}
@@ -16,7 +17,23 @@ export function normalizeArg(arg: unknown) {
   return arg
 }
 
-interface ProxyBaseOptions {
+function initUtsInstanceMethod(
+  async: boolean,
+  opts: ProxyFunctionOptions,
+  instanceId: number
+) {
+  return initProxyFunction(async, opts, instanceId)
+}
+
+interface Parameter {
+  name: string
+  type: string
+}
+interface ProxyFunctionOptions {
+  /**
+   * 是否是入口类
+   */
+  main?: boolean
   /**
    * 包名
    */
@@ -30,51 +47,75 @@ interface ProxyBaseOptions {
    */
   name: string
   /**
-   * 是否是伴生对象
+   * 方法名 指定的方法名（用于 IndexSwift 静态方法，自动补充前缀 s_）
+   */
+  method?: string
+  /**
+   * 是否伴生对象
    */
   companion?: boolean
+  /**
+   * 方法参数列表
+   */
+  params: Parameter[]
 }
 
-interface ProxyInstanceOptions extends ProxyBaseOptions {
-  id: number
-}
-
-/**
- * 实例方法
- */
-interface ProxyInstanceMethodOptions extends ProxyInstanceOptions {}
-
-function initUtsInstanceMethod(
-  async: boolean,
-  opts: ProxyInstanceMethodOptions
-) {
-  return initProxyFunction(async, opts)
-}
 interface ProxyClassOptions {
   package: string
   class: string
+  constructor: {
+    params: Parameter[]
+  }
   props: string[]
   staticProps: string[]
   methods: {
     [name: string]: {
       async?: boolean
+      params: Parameter[]
     }
   }
   staticMethods: {
     [name: string]: {
       async?: boolean
+      params: Parameter[]
     }
   }
 }
 
-type InvokeInstanceArgs =
-  // prop
-  | { id: number; name: string }
-  // method
-  | { id: number; name: string; params: unknown[] }
-type InvokeArgs = (ProxyBaseOptions | InvokeInstanceArgs) & {
+interface InvokeInstanceArgs {
+  id: number
+  name: string
   params?: unknown[]
+  method?: Parameter[]
 }
+interface InvokeStaticArgs {
+  /**
+   * 包名
+   */
+  package: string
+  /**
+   * 类名
+   */
+  class: string
+  /**
+   * 属性名或方法名
+   */
+  name: string
+  /**
+   * 执行方法时的真实参数列表
+   */
+  params?: unknown[]
+  /**
+   * 方法定义的参数列表
+   */
+  method?: Parameter[]
+  /**
+   * 是否是伴生对象
+   */
+  companion?: boolean
+}
+
+type InvokeArgs = InvokeInstanceArgs | InvokeStaticArgs
 
 interface InvokeCallbackReturnRes {
   type: 'return'
@@ -118,38 +159,17 @@ function invokePropGetter(args: InvokeArgs) {
   return resolveSyncResult(getProxy().invokeSync(args, () => {}))
 }
 
-interface InitProxyFunctionOptions {
-  /**
-   * 包名
-   */
-  package: string
-  /**
-   * 类名
-   */
-  class: string
-  /**
-   * 属性名或方法名
-   */
-  name: string
-  /**
-   * 是否伴生对象
-   */
-  companion?: boolean
-  /**
-   * 实例 ID
-   */
-  id?: number
-}
-
 function initProxyFunction(
   async: boolean,
   {
     package: pkg,
     class: cls,
     name: propOrMethod,
-    id: instanceId,
+    method,
     companion,
-  }: InitProxyFunctionOptions
+    params: methodParams,
+  }: ProxyFunctionOptions,
+  instanceId: number
 ) {
   const invokeCallback = ({
     id,
@@ -168,12 +188,13 @@ function initProxyFunction(
     }
   }
   const baseArgs: InvokeArgs = instanceId
-    ? { id: instanceId, name: propOrMethod }
+    ? { id: instanceId, name: propOrMethod, method: methodParams }
     : {
         package: pkg,
         class: cls,
-        name: propOrMethod,
+        name: method || propOrMethod,
         companion,
+        method: methodParams,
       }
   return (...args: unknown[]) => {
     const invokeArgs = extend({}, baseArgs, {
@@ -198,14 +219,21 @@ function initProxyFunction(
   }
 }
 
-function initUtsStaticMethod(async: boolean, opts: ProxyBaseOptions) {
-  return initProxyFunction(async, opts)
+function initUtsStaticMethod(async: boolean, opts: ProxyFunctionOptions) {
+  if (opts.main && !opts.method) {
+    if (typeof plus !== 'undefined' && plus.os.name === 'iOS') {
+      opts.method = 's_' + opts.name
+    }
+  }
+  return initProxyFunction(async, opts, 0)
 }
+
 export const initUtsProxyFunction = initUtsStaticMethod
 
 export function initUtsProxyClass({
   package: pkg,
   class: cls,
+  constructor: { params: constructorParams },
   methods,
   props,
   staticProps,
@@ -221,23 +249,28 @@ export function initUtsProxyClass({
       // 初始化实例 ID
       const instanceId = initProxyFunction(
         false,
-        extend({ name: 'constructor', params }, baseOptions)
+        extend({ name: 'constructor', params: constructorParams }, baseOptions),
+        0
       ).apply(null, params) as number
-
+      if (!instanceId) {
+        throw new Error(`new ${cls} is failed`)
+      }
       return new Proxy(this, {
         get(_, name) {
           if (!target[name as string]) {
             //实例方法
             if (hasOwn(methods, name)) {
+              const { async, params } = methods[name]
               target[name] = initUtsInstanceMethod(
-                !!methods[name].async,
+                !!async,
                 extend(
                   {
-                    id: instanceId,
                     name,
+                    params,
                   },
                   baseOptions
-                )
+                ),
+                instanceId
               )
             } else if (props.includes(name as string)) {
               // 实例属性
@@ -254,10 +287,11 @@ export function initUtsProxyClass({
     get(target, name, receiver) {
       if (hasOwn(staticMethods, name)) {
         if (!staticMethodCache[name as string]) {
+          const { async, params } = staticMethods[name]
           // 静态方法
           staticMethodCache[name] = initUtsStaticMethod(
-            !!staticMethods[name].async,
-            extend({ name, companion: true }, baseOptions)
+            !!async,
+            extend({ name, companion: true, params }, baseOptions)
           )
         }
         return staticMethodCache[name]
@@ -271,4 +305,47 @@ export function initUtsProxyClass({
       return Reflect.get(target, name, receiver)
     },
   })
+}
+
+export function initUtsPackageName(name: string, is_uni_modules: boolean) {
+  if (typeof plus !== 'undefined' && plus.os.name === 'Android') {
+    return 'uts.sdk.' + (is_uni_modules ? 'modules.' : '') + name
+  }
+  return ''
+}
+
+export function initUtsIndexClassName(
+  moduleName: string,
+  is_uni_modules: boolean
+) {
+  if (typeof plus === 'undefined') {
+    return ''
+  }
+  return initUtsClassName(
+    moduleName,
+    plus.os.name === 'iOS' ? 'IndexSwift' : 'IndexKt',
+    is_uni_modules
+  )
+}
+
+export function initUtsClassName(
+  moduleName: string,
+  className: string,
+  is_uni_modules: boolean
+) {
+  if (typeof plus === 'undefined') {
+    return ''
+  }
+  if (plus.os.name === 'Android') {
+    return className
+  }
+  if (plus.os.name === 'iOS') {
+    return (
+      'UTSSDK' +
+      (is_uni_modules ? 'Modules' : '') +
+      capitalize(moduleName) +
+      capitalize(className)
+    )
+  }
+  return ''
 }

@@ -191,4 +191,41 @@ describe('mp-weixin: transform component', () => {
 }`
     )
   })
+  test('lazy element: scroll-view', () => {
+    assert(
+      `<scroll-view/>`,
+      `<scroll-view/>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+    assert(
+      `<scroll-view @dragstart="d"/>`,
+      `<block wx:if="{{r0}}"><scroll-view binddragstart="{{a}}"/></block>`,
+      `(_ctx, _cache) => {
+  return { a: _o(_ctx.d) }
+}`
+    )
+    assert(
+      `<scroll-view @dragging="d"/>`,
+      `<block wx:if="{{r0}}"><scroll-view binddragging="{{a}}"/></block>`,
+      `(_ctx, _cache) => {
+  return { a: _o(_ctx.d) }
+}`
+    )
+    assert(
+      `<scroll-view @dragend="d"/>`,
+      `<block wx:if="{{r0}}"><scroll-view binddragend="{{a}}"/></block>`,
+      `(_ctx, _cache) => {
+  return { a: _o(_ctx.d) }
+}`
+    )
+    assert(
+      `<scroll-view @dragstart="d" @dragging="d" @dragend="d"/>`,
+      `<block wx:if="{{r0}}"><scroll-view binddragstart="{{a}}" binddragging="{{b}}" binddragend="{{c}}"/></block>`,
+      `(_ctx, _cache) => {
+  return { a: _o(_ctx.d), b: _o(_ctx.d), c: _o(_ctx.d) }
+}`
+    )
+  })
 })

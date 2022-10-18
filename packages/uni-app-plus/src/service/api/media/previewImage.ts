@@ -14,7 +14,7 @@ import { initI18nPreviewImageMsgsOnce, useI18n } from '@dcloudio/uni-core'
 
 import { getRealPath } from '../../../platform/getRealPath'
 
-export const previewImage = <API_TYPE_PREVIEW_IMAGE>defineAsyncApi(
+export const previewImage = defineAsyncApi<API_TYPE_PREVIEW_IMAGE>(
   API_PREVIEW_IMAGE,
   (
     { current = 0, indicator = 'number', loop = false, urls, longPressActions },

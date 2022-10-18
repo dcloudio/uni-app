@@ -1,5 +1,6 @@
-import require$$0$2 from 'fs';
+import fs from 'fs';
 import path from 'path';
+import os from 'os';
 
 /*  ------------------------------------------------------------------------ */
 const O = Object, isBrowser = 
@@ -3581,6 +3582,163 @@ var SourceMapConsumer =
   require$$1.SourceMapConsumer;
 require$$2.SourceNode;
 
+const splitRE = /\r?\n/;
+const range = 2;
+function posToNumber(source, pos) {
+    if (typeof pos === 'number')
+        return pos;
+    const lines = source.split(splitRE);
+    const { line, column } = pos;
+    let start = 0;
+    for (let i = 0; i < line - 1; i++) {
+        start += lines[i].length + 1;
+    }
+    return start + column;
+}
+function generateCodeFrame(source, start = 0, end) {
+    start = posToNumber(source, start);
+    end = end || start;
+    const lines = source.split(splitRE);
+    let count = 0;
+    const res = [];
+    for (let i = 0; i < lines.length; i++) {
+        count += lines[i].length + 1;
+        if (count >= start) {
+            for (let j = i - range; j <= i + range || end > count; j++) {
+                if (j < 0 || j >= lines.length)
+                    continue;
+                const line = j + 1;
+                res.push(`${line}${' '.repeat(Math.max(3 - String(line).length, 0))}|  ${lines[j]}`);
+                const lineLength = lines[j].length;
+                if (j === i) {
+                    // push underline
+                    const pad = start - (count - lineLength) + 1;
+                    const length = Math.max(1, end > count ? lineLength - pad : end - start);
+                    res.push(`   |  ` + ' '.repeat(pad) + '^'.repeat(length));
+                }
+                else if (j > i) {
+                    if (end > count) {
+                        const length = Math.max(Math.min(end - count, lineLength), 1);
+                        res.push(`   |  ` + '^'.repeat(length));
+                    }
+                    count += lineLength + 1;
+                }
+            }
+            break;
+        }
+    }
+    return res.join('\n');
+}
+const isWindows = os.platform() === 'win32';
+function normalizePath(id) {
+    return isWindows ? id.replace(/\\/g, '/') : id;
+}
+function generateCodeFrameSourceMapConsumer(consumer, m, options = {}) {
+    if (m.file) {
+        const res = consumer.originalPositionFor({
+            line: m.line,
+            column: m.column,
+        });
+        if (res.source != null && res.line != null && res.column != null) {
+            let code = consumer.sourceContentFor(res.source, true);
+            if (code) {
+                code = generateCodeFrame(code, { line: res.line, column: res.column });
+                if (options.replaceTabsWithSpace) {
+                    code = code.replace(/\t/g, ' ');
+                }
+                return {
+                    type: m.type,
+                    file: options.sourceRoot
+                        ? normalizePath(path.relative(options.sourceRoot, res.source.replace('\\\\?\\', '')))
+                        : res.source,
+                    line: res.line,
+                    column: res.column,
+                    message: m.message,
+                    code,
+                };
+            }
+        }
+    }
+}
+function initConsumer(filename) {
+    if (fs.existsSync(filename)) {
+        return new SourceMapConsumer(fs.readFileSync(filename, 'utf8'));
+    }
+    return Promise.resolve(undefined);
+}
+function generateCodeFrameWithSourceMapPath(filename, messages, options = {}) {
+    if (typeof messages === 'string') {
+        try {
+            messages = JSON.parse(messages);
+        }
+        catch (e) { }
+    }
+    if (Array.isArray(messages) && messages.length) {
+        return new Promise((resolve) => {
+            initConsumer(filename).then((consumer) => {
+                resolve(messages
+                    .map((m) => {
+                    if (m.file && consumer) {
+                        const message = generateCodeFrameSourceMapConsumer(consumer, m, options);
+                        if (message) {
+                            return message;
+                        }
+                    }
+                    if (!m.file) {
+                        m.file = '';
+                    }
+                    return m;
+                })
+                    .filter(Boolean));
+            });
+        });
+    }
+    return Promise.resolve([]);
+}
+function resolveSourceMapPath(sourceMapFilename, name, outputDir) {
+    const is_uni_modules = path.basename(path.dirname(name)) === 'uni_modules';
+    return path.resolve(outputDir, '../.sourcemap/app', name, is_uni_modules ? 'utssdk' : '', sourceMapFilename);
+}
+function generateCodeFrameWithKotlinStacktrace(stacktrace, { name, inputDir, outputDir }) {
+    const sourceMapFilename = resolveSourceMapPath('app-android/index.kt.map', name, outputDir);
+    return generateCodeFrameWithStacktrace(stacktrace, /e:\s+(.*):\s+\(([0-9]+),\s+([0-9]+)\):\s+(.*)/g, {
+        sourceRoot: inputDir,
+        sourceMapFilename,
+    });
+}
+function generateCodeFrameWithSwiftStacktrace(stacktrace, { name, inputDir, outputDir }) {
+    const sourceMapFilename = resolveSourceMapPath('app-ios/index.swift.map', name, outputDir);
+    return generateCodeFrameWithStacktrace(stacktrace, /(.*):([0-9]+):([0-9]+):\s+error:\s+(.*)/g, {
+        sourceRoot: inputDir,
+        sourceMapFilename,
+    });
+}
+function generateCodeFrameWithStacktrace(stacktrace, regexp, { sourceRoot, sourceMapFilename, replaceTabsWithSpace, }) {
+    return new Promise((resolve) => {
+        initConsumer(sourceMapFilename).then((consumer) => {
+            if (!consumer) {
+                return resolve(stacktrace);
+            }
+            resolve(stacktrace.replace(regexp, (substring, file, line, column, message) => {
+                const m = generateCodeFrameSourceMapConsumer(consumer, {
+                    type: 'error',
+                    file,
+                    message,
+                    line: parseInt(line),
+                    column: parseInt(column),
+                }, { sourceRoot, replaceTabsWithSpace });
+                if (!m) {
+                    return substring;
+                }
+                return `error: ${message}
+at ${m.file}:${m.line}:${m.column}
+${m.code}
+`;
+            }));
+        });
+    });
+}
+
 // @ts-ignore
 {
     // @ts-ignore
@@ -3721,7 +3879,7 @@ function getSourceMapContent(sourcemapUrl) {
                         });
                     }
                     else {
-                        sourcemapCatch[sourcemapUrl] = require$$0$2.readFileSync(sourcemapUrl, 'utf-8');
+                        sourcemapCatch[sourcemapUrl] = fs.readFileSync(sourcemapUrl, 'utf-8');
                         resolve(sourcemapCatch[sourcemapUrl]);
                     }
                 }
@@ -3913,4 +4071,4 @@ ${_stack.errMsg}`;
     };
 }
 
-export { stacktracey, uniStracktraceyPreset, utsStracktraceyPreset };
+export { SourceMapConsumer, generateCodeFrame, generateCodeFrameSourceMapConsumer, generateCodeFrameWithKotlinStacktrace, generateCodeFrameWithSourceMapPath, generateCodeFrameWithSwiftStacktrace, stacktracey, uniStracktraceyPreset, utsStracktraceyPreset };

@@ -12,6 +12,7 @@ import {
   TemplateChildNode,
 } from '@vue/compiler-core'
 import { ParserPlugin } from '@babel/parser'
+import { getPlatformDir } from './platform'
 
 export let isRunningWithYarnPnp: boolean
 try {
@@ -108,6 +109,12 @@ export function pathToGlob(
   return path.posix.join(safeStr, glob)
 }
 
-export function resolveSourceMapPath(dir: string, platform: UniApp.PLATFORM) {
-  return path.resolve(dir, '../.sourcemap/' + platform)
+export function resolveSourceMapPath(
+  outputDir?: string,
+  platform?: UniApp.PLATFORM
+) {
+  return path.resolve(
+    outputDir || process.env.UNI_OUTPUT_DIR,
+    '../.sourcemap/' + (platform || getPlatformDir())
+  )
 }
