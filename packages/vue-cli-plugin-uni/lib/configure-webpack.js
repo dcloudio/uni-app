@@ -230,10 +230,7 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
       webpackConfig.resolve.modules = webpackConfig.resolve.modules.filter(module => module !== 'node_modules')
     }
 
-    const plugins = [
-      new webpack.ProvidePlugin(require('@dcloudio/uni-cli-shared/lib/uni_modules/uni_modules')
-        .parseUniExtApis())
-    ]
+    const plugins = []
 
     const isAppView = process.env.UNI_PLATFORM === 'app-plus' &&
       vueOptions.pluginOptions &&
@@ -245,6 +242,19 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
       plugins.push(new CopyWebpackPlugin(CopyWebpackPluginVersion > 5 ? {
         patterns
       } : patterns))
+
+      const uniExtApis = require('@dcloudio/uni-cli-shared/lib/uni_modules/uni_modules')
+        .parseUniExtApis(false)
+      const keys = Object.keys(uniExtApis)
+      if (keys.length) {
+        if (process.env.UNI_PLATFORM === 'app-plus') {
+          keys.forEach(key => {
+            console.warn(`[${uniExtApis[key][0].split('/')[2]}]: uts目前仅支持vue3`)
+          })
+        } else {
+          plugins.push(new webpack.ProvidePlugin(uniExtApis))
+        }
+      }
     }
     if (!process.env.UNI_SUBPACKGE || !process.env.UNI_MP_PLUGIN) {
       try {

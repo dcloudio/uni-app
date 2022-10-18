@@ -7,7 +7,7 @@ exports.parseInject = exports.parseInjects = exports.parseUniExtApis = void 0;
 const path_1 = __importDefault(require("path"));
 const fs_extra_1 = __importDefault(require("fs-extra"));
 const merge_1 = require("merge");
-function parseUniExtApis() {
+function parseUniExtApis(vite = true) {
     const uniModulesDir = path_1.default.resolve(process.env.UNI_INPUT_DIR, 'uni_modules');
     if (!fs_extra_1.default.existsSync(uniModulesDir)) {
         return {};
@@ -25,7 +25,10 @@ function parseUniExtApis() {
         }
         const exports = (_b = (_a = JSON.parse(fs_extra_1.default.readFileSync(pkgPath, 'utf8'))) === null || _a === void 0 ? void 0 : _a.uni_modules) === null || _b === void 0 ? void 0 : _b['uni-ext-api'];
         if (exports) {
-            Object.assign(injects, parseInjects(process.env.UNI_PLATFORM === 'h5' ? 'web' : process.env.UNI_PLATFORM, `@/uni_modules/${uniModuleDir}`, exports));
+            Object.assign(injects, parseInjects(vite, process.env.UNI_PLATFORM === 'h5' ? 'web' : process.env.UNI_PLATFORM, `@/uni_modules/${uniModuleDir}` +
+                (vite || !process.env.UNI_UTS_PLATFORM
+                    ? ''
+                    : `/utssdk/${process.env.UNI_UTS_PLATFORM}/index`), exports));
         }
     });
     return injects;
@@ -52,7 +55,7 @@ exports.parseUniExtApis = parseUniExtApis;
  * @param define
  * @returns
  */
-function parseInjects(platform, source, exports = {}) {
+function parseInjects(vite = true, platform, source, exports = {}) {
     let rootDefines = {};
     Object.keys(exports).forEach((name) => {
         if (name.startsWith('uni')) {
@@ -69,18 +72,18 @@ function parseInjects(platform, source, exports = {}) {
     }
     const injects = {};
     for (const key in rootDefines) {
-        Object.assign(injects, parseInject(source, 'uni', rootDefines[key]));
+        Object.assign(injects, parseInject(vite, source, 'uni', rootDefines[key]));
     }
     return injects;
 }
 exports.parseInjects = parseInjects;
-function parseInject(source, globalObject, define) {
+function parseInject(vite = true, source, globalObject, define) {
     const injects = {};
     if (define === false) {
     }
     else if (typeof define === 'string') {
         // {'uni.getBatteryInfo' : '@dcloudio/uni-getbatteryinfo'}
-        injects[globalObject + '.' + define] = source;
+        injects[globalObject + '.' + define] = vite ? source : [source, 'default'];
     }
     else if (Array.isArray(define)) {
         // {'uni.getBatteryInfo' : ['@dcloudio/uni-getbatteryinfo','getBatteryInfo]}
