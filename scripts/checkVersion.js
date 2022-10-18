@@ -10,13 +10,13 @@ async function getVersion(name, tag = 'latest') {
 
 const pkgs = {
   vue: {
-    latest: '3.2.40',
+    latest: '3.2.41',
   },
   'vue-router': {
     latest: '4.1.5',
   },
   vuex: {
-    latest: '4.0.2',
+    latest: '4.1.0',
   },
   pinia: {
     latest: '2.0.23',

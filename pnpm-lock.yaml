@@ -120,14 +120,14 @@ importers:
       vite: 3.1.8
       vue: 3.2.41
       vue-router: ^4.1.5
-      vuex: ^4.0.2
+      vuex: ^4.1.0
     dependencies:
       '@dcloudio/uni-app': link:../../uni-app
       '@dcloudio/uni-components': link:../../uni-components
       '@dcloudio/uni-h5': link:../../uni-h5
       vue: 3.2.41
       vue-router: 4.1.5_vue@3.2.41
-      vuex: 4.0.2_vue@3.2.41
+      vuex: 4.1.0_vue@3.2.41
     devDependencies:
       '@dcloudio/vite-plugin-uni': link:../../vite-plugin-uni
       compression: 1.7.4
@@ -144,13 +144,13 @@ importers:
       '@dcloudio/vite-plugin-uni': 3.0.0-alpha-3060720221018001
       vue: ^3.2.31
       vue-i18n: 9.1.9
-      vuex: ^4.0.2
+      vuex: ^4.1.0
     dependencies:
       '@dcloudio/uni-app': link:../uni-app
       '@dcloudio/uni-h5': link:../uni-h5
       vue: 3.2.40
       vue-i18n: 9.1.9_vue@3.2.40
-      vuex: 4.0.2_vue@3.2.40
+      vuex: 4.1.0_vue@3.2.40
     devDependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
       '@dcloudio/uni-components': link:../uni-components
@@ -3088,7 +3088,7 @@ packages:
       '@babel/plugin-syntax-import-meta': 7.10.4_@babel+core@7.19.3
       '@babel/plugin-transform-typescript': 7.19.3_@babel+core@7.19.3
       '@vue/babel-plugin-jsx': 1.1.1_@babel+core@7.19.3
-      vite: 3.1.8_terser@5.15.1
+      vite: 3.1.8
       vue: 3.2.41
     transitivePeerDependencies:
       - supports-color
@@ -8425,19 +8425,19 @@ packages:
       '@vue/server-renderer': 3.2.41_vue@3.2.41
       '@vue/shared': 3.2.41
 
-  /vuex/4.0.2_vue@3.2.40:
-    resolution: {integrity: sha512-M6r8uxELjZIK8kTKDGgZTYX/ahzblnzC4isU1tpmEuOIIKmV+TRdc+H4s8ds2NuZ7wpUTdGRzJRtoj+lI+pc0Q==}
+  /vuex/4.1.0_vue@3.2.40:
+    resolution: {integrity: sha512-hmV6UerDrPcgbSy9ORAtNXDr9M4wlNP4pEFKye4ujJF8oqgFFuxDCdOLS3eNoRTtq5O3hoBDh9Doj1bQMYHRbQ==}
     peerDependencies:
-      vue: ^3.0.2
+      vue: ^3.2.0
     dependencies:
       '@vue/devtools-api': 6.4.4
       vue: 3.2.40
     dev: false
 
-  /vuex/4.0.2_vue@3.2.41:
-    resolution: {integrity: sha512-M6r8uxELjZIK8kTKDGgZTYX/ahzblnzC4isU1tpmEuOIIKmV+TRdc+H4s8ds2NuZ7wpUTdGRzJRtoj+lI+pc0Q==}
+  /vuex/4.1.0_vue@3.2.41:
+    resolution: {integrity: sha512-hmV6UerDrPcgbSy9ORAtNXDr9M4wlNP4pEFKye4ujJF8oqgFFuxDCdOLS3eNoRTtq5O3hoBDh9Doj1bQMYHRbQ==}
     peerDependencies:
-      vue: ^3.0.2
+      vue: ^3.2.0
     dependencies:
       '@vue/devtools-api': 6.4.4
       vue: 3.2.41
