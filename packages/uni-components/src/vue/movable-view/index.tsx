@@ -372,7 +372,7 @@ function useMovableViewTransform(
       'px) translateZ(0px) scale(' +
       scale +
       ')'
-    if(rootRef.value) {
+    if (rootRef.value) {
       rootRef.value.style.transform = transform
       rootRef.value.style.webkitTransform = transform
       _translateX.value = x
