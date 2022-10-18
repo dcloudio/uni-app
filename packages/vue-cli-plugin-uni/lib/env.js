@@ -148,6 +148,23 @@ if (process.env.UNI_OUTPUT_DIR && process.env.UNI_OUTPUT_DIR.indexOf('./') === 0
 process.env.UNI_PLATFORM = process.env.UNI_PLATFORM || 'h5'
 process.env.VUE_APP_PLATFORM = process.env.UNI_PLATFORM
 process.env.UNI_OUTPUT_DIR = process.env.UNI_OUTPUT_DIR || process.env.UNI_OUTPUT_DEFAULT_DIR
+initUtsPlatform()
+
+function initUtsPlatform () {
+  if (process.env.UNI_APP_PLATFORM === 'android') {
+    process.env.UNI_UTS_PLATFORM = 'app-android'
+  }
+  if (process.env.UNI_APP_PLATFORM === 'ios') {
+    process.env.UNI_UTS_PLATFORM = 'app-ios'
+  }
+  if (process.env.UNI_PLATFORM === 'h5') {
+    process.env.UNI_UTS_PLATFORM = 'web'
+  } else {
+    if (!process.env.UNI_UTS_PLATFORM) {
+      process.env.UNI_UTS_PLATFORM = process.env.UNI_PLATFORM
+    }
+  }
+}
 
 if (process.env.UNI_PLATFORM === 'app-plus') {
   process.env.UNI_OUTPUT_TMP_DIR = path.resolve(process.env.UNI_OUTPUT_DIR, '../.tmp/app-plus')
@@ -367,7 +384,9 @@ if (
         } else {
           uniStatLog(`已开启 uni统计${uniStatistics.version}.0 版本`)
           if (version === '2') {
-            uniStatLog('【重要】因 HBuilderX 3.4.9 版本起，uni统计2.0 调整了安卓端 deviceId 获取方式，导致 uni统计2.0 App-Android平台部分统计数据不准确。如使用了HBuilderX 3.4.9 - 3.6.4版本且开通了uni统计2.0的应用，需要使用HBuilderX3.6.7及以上版本重新发布应用并升级 uniAdmin 云函数解决，详见：https://ask.dcloud.net.cn/article/40097')
+            uniStatLog(
+              '【重要】因 HBuilderX 3.4.9 版本起，uni统计2.0 调整了安卓端 deviceId 获取方式，导致 uni统计2.0 App-Android平台部分统计数据不准确。如使用了HBuilderX 3.4.9 - 3.6.4版本且开通了uni统计2.0的应用，需要使用HBuilderX3.6.7及以上版本重新发布应用并升级 uniAdmin 云函数解决，详见：https://ask.dcloud.net.cn/article/40097'
+            )
           }
         }
       }
@@ -379,7 +398,9 @@ if (
       } else {
         uniStatLog(`已开启 uni统计${uniStatistics.version}.0 版本`)
         if (version === '2') {
-          uniStatLog('【重要】因 HBuilderX 3.4.9 版本起，uni统计2.0 调整了安卓端 deviceId 获取方式，导致 uni统计2.0 App-Android平台部分统计数据不准确。如使用了HBuilderX 3.4.9 - 3.6.4版本且开通了uni统计2.0的应用，需要使用HBuilderX3.6.7及以上版本重新发布应用并升级 uniAdmin 云函数解决，详见：https://ask.dcloud.net.cn/article/40097')
+          uniStatLog(
+            '【重要】因 HBuilderX 3.4.9 版本起，uni统计2.0 调整了安卓端 deviceId 获取方式，导致 uni统计2.0 App-Android平台部分统计数据不准确。如使用了HBuilderX 3.4.9 - 3.6.4版本且开通了uni统计2.0的应用，需要使用HBuilderX3.6.7及以上版本重新发布应用并升级 uniAdmin 云函数解决，详见：https://ask.dcloud.net.cn/article/40097'
+          )
         }
       }
     }
