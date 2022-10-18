@@ -70,7 +70,8 @@ export function isJsFile(id: string) {
   if (isJs) {
     return true
   }
-  const isVueJs = EXTNAME_VUE.includes(path.extname(filename)) && !query.vue
+  const isVueJs =
+    EXTNAME_VUE.includes(path.extname(filename)) && (!query.vue || query.setup)
   if (isVueJs) {
     return true
   }
