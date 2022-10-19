@@ -29,7 +29,6 @@ export async function genProxyCode(
 ) {
   const { name, is_uni_modules } = options
   return `
-import { extend } from '@vue/shared'
 import { initUtsProxyClass, initUtsProxyFunction, initUtsPackageName, initUtsIndexClassName, initUtsClassName } from '@dcloudio/uni-app'
 const name = '${name}'
 const is_uni_modules = ${is_uni_modules}
@@ -68,7 +67,7 @@ function genModuleCode(decls: ProxyDecl[]) {
     if (decl.type === 'Class') {
       if (decl.isDefault) {
         codes.push(
-          `export default initUtsProxyClass(extend({ package: pkg, class: initUtsClassName(name, '${
+          `export default initUtsProxyClass(Object.assign({ package: pkg, class: initUtsClassName(name, '${
             decl.cls
           }', is_uni_modules) }, ${JSON.stringify(decl.options)} ))`
         )
@@ -76,7 +75,7 @@ function genModuleCode(decls: ProxyDecl[]) {
         codes.push(
           `export const ${
             decl.cls
-          } = initUtsProxyClass(extend({ package: pkg, class: initUtsClassName(name, '${
+          } = initUtsProxyClass(Object.assign({ package: pkg, class: initUtsClassName(name, '${
             decl.cls
           }', is_uni_modules) }, ${JSON.stringify(decl.options)} ))`
         )

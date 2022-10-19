@@ -1,4 +1,8 @@
+import { capitalize } from '@vue/shared';
 import type { ComponentInternalInstance } from '@vue/runtime-core';
+import { extend } from '@vue/shared';
+import { hasOwn } from '@vue/shared';
+import { isPlainObject } from '@vue/shared';
 import { ref } from 'vue';
 import { shallowRef } from 'vue';
 
@@ -16,6 +20,8 @@ declare interface BackPressOption {
     from: 'backbutton' | 'navigateBack';
 }
 
+export { capitalize }
+
 declare interface CustomShareAppMessage {
     title?: string;
     path?: string;
@@ -28,6 +34,8 @@ declare interface CustomShareTimeline {
     imageUrl?: string;
 }
 
+export { extend }
+
 export declare function formatAppLog(type: 'log' | 'info' | 'debug' | 'warn' | 'error', filename: string, ...args: unknown[]): void;
 
 export declare function formatH5Log(type: keyof Console, filename: string, ...args: unknown[]): void;
@@ -38,6 +46,8 @@ export declare function formatH5Log(type: keyof Console, filename: string, ...ar
 export declare function getCurrentSubNVue(): any;
 
 export declare function getSsrGlobalData(): any;
+
+export { hasOwn }
 
 export declare function initUtsClassName(moduleName: string, className: string, is_uni_modules: boolean): string;
 
@@ -50,6 +60,8 @@ export declare function initUtsProxyClass({ package: pkg, class: cls, constructo
 export declare const initUtsProxyFunction: typeof initUtsStaticMethod;
 
 declare function initUtsStaticMethod(async: boolean, opts: ProxyFunctionOptions): (...args: unknown[]) => unknown;
+
+export { isPlainObject }
 
 declare type LaunchOption = LaunchShowOption;
 
