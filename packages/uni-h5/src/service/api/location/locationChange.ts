@@ -19,19 +19,24 @@ import {
 } from '@dcloudio/uni-api'
 import { translateGeo } from '../../../helpers/location'
 
+let started = false
 let watchId: number = 0
 
-/**
- * 开始更新定位
- */
 export const startLocationUpdate =
   defineAsyncApi<API_TYPE_START_LOCATION_UPDATE>(
     API_START_LOCATION_UPDATE,
-    (_, { resolve, reject }) => {
-      if (navigator.geolocation && watchId === 0) {
-        watchId = navigator.geolocation.watchPosition(
+    (options, { resolve, reject }) => {
+      if (!navigator.geolocation) {
+        reject()
+        return
+      }
+
+      watchId =
+        watchId ||
+        navigator.geolocation.watchPosition(
           (res) => {
-            translateGeo(_?.type, res.coords)
+            started = true
+            translateGeo(options?.type, res.coords)
               .then((coords) => {
                 UniServiceJSBridge.invokeOnCallback(
                   API_ON_LOCATION_CHANGE,
@@ -40,43 +45,48 @@ export const startLocationUpdate =
                 resolve()
               })
               .catch((error) => {
-                reject(error.message)
+                UniServiceJSBridge.invokeOnCallback(
+                  API_ON_LOCATION_CHANGE_ERROR,
+                  { errMsg: `onLocationChange:fail ${error.message}` }
+                )
               })
           },
           (error) => {
-            reject(error.message)
+            if (!started) {
+              reject(error.message)
+              started = true
+            }
+            UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE_ERROR, {
+              errMsg: `onLocationChange:fail ${error.message}`,
+            })
           }
         )
-      }
-      resolve()
+      setTimeout(resolve, 100)
     },
     StartLocationUpdateProtocol,
     StartLocationUpdateOptions
   )
+
+export const stopLocationUpdate = defineAsyncApi<API_TYPE_STOP_LOCATION_UPDATE>(
+  API_STOP_LOCATION_UPDATE,
+  (_, { resolve }) => {
+    if (watchId) {
+      navigator.geolocation.clearWatch(watchId)
+      started = false
+      watchId = 0
+    }
+    resolve()
+  }
+)
 
 export const onLocationChange = defineOnApi<API_TYPE_ON_LOCATION_CHANGE>(
   API_ON_LOCATION_CHANGE,
   () => {}
 )
 
-export const stopLocationUpdate = defineAsyncApi<API_TYPE_STOP_LOCATION_UPDATE>(
-  API_STOP_LOCATION_UPDATE,
-  (_, { resolve, reject }) => {
-    if (watchId) {
-      navigator.geolocation.clearWatch(watchId)
-      watchId = 0
-      resolve()
-    } else {
-      reject('stopLocationUpdate:fail')
-    }
-  }
-)
-
 export const offLocationChange = defineOffApi<API_TYPE_OFF_LOCATION_CHANGE>(
   API_OFF_LOCATION_CHANGE,
-  () => {
-    stopLocationUpdate()
-  }
+  () => {}
 )
 
 export const onLocationChangeError =
@@ -86,7 +96,7 @@ export const onLocationChangeError =
   )
 
 export const offLocationChangeError =
-  defineOnApi<API_TYPE_OFF_LOCATION_CHANGE_ERROR>(
+  defineOffApi<API_TYPE_OFF_LOCATION_CHANGE_ERROR>(
     API_OFF_LOCATION_CHANGE_ERROR,
     () => {}
   )
