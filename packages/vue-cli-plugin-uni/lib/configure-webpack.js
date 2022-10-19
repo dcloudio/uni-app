@@ -106,7 +106,6 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
   const tsLoaderOptions = {
     context,
     configFile: tsConfigJsonFile,
-    transpileOnly: false,
     compilerOptions: {
       baseUrl: context,
       typeRoots: [resolveModule('@dcloudio/types'), resolveModule('@types')],
@@ -135,6 +134,12 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
         ],
         'mpvue-page-factory': [
           resolveModule('@dcloudio/vue-cli-plugin-uni/packages/mpvue-page-factory')
+        ],
+        '@vue/composition-api': [
+          resolveModule('@dcloudio/vue-cli-plugin-uni/packages/@vue/composition-api')
+        ],
+        '@dcloudio/uni-app': [
+          resolveModule('@dcloudio/uni-app')
         ]
       }
     },
@@ -155,7 +160,7 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
   function updateTsLoader (rawRules, fakeFile, loader) {
     const matchRule = rawRules.find(createMatcher(fakeFile))
     if (matchRule && matchRule.use) {
-      if (runByHBuilderX) {
+      if (isInHBuilderX) {
         matchRule.use.forEach(matchUse => {
           if (matchUse.loader.includes('ts-loader')) {
             Object.assign(matchUse.options, tsLoaderOptions)
@@ -276,7 +281,7 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
         plugins.push(new CopyWebpackPlugin(CopyWebpackPluginVersion > 5 ? {
           patterns
         } : patterns))
-      } catch (e) {}
+      } catch (e) { }
     }
 
     if (process.UNI_SCRIPT_ENV && Object.keys(process.UNI_SCRIPT_ENV).length) {
@@ -375,7 +380,7 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
           dir: process.env.UNI_INPUT_DIR
         }))
       }
-    } catch (e) {}
+    } catch (e) { }
 
     const resolveLoaderAlias = {}
     const modules = ['@vue/cli-plugin-babel', '@vue/cli-service']
