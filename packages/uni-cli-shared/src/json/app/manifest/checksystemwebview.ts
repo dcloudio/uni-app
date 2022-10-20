@@ -4,9 +4,7 @@ export function initCheckSystemWebview(manifestJson: Record<string, any>) {
   if (plusWebView) {
     manifestJson.plus['uni-app'].webView = plusWebView
     delete manifestJson.plus.webView
-  }
-
-  if (process.env.NODE_ENV === 'development' && !plusWebView) {
+  } else {
     manifestJson.plus['uni-app'].webView = {
       minUserAgentVersion: '49.0',
     }
