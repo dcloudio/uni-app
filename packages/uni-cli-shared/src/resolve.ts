@@ -201,13 +201,23 @@ function resolveUtsFile(
 }
 
 export function resolveUTSCompiler(): typeof UTSCompiler {
+  let compilerPath: string = ''
   if (isInHBuilderX()) {
-    return require(path.resolve(
-      process.env.UNI_HBUILDERX_PLUGINS,
-      'uniapp-uts'
-    ))
+    try {
+      compilerPath = require.resolve(
+        path.resolve(process.env.UNI_HBUILDERX_PLUGINS, 'uniapp-uts')
+      )
+    } catch (e) {}
   }
-  return require(require.resolve('@dcloudio/uni-uts-v1', {
-    paths: [process.env.UNI_CLI_CONTEXT],
-  }))
+  if (!compilerPath) {
+    try {
+      compilerPath = require.resolve('@dcloudio/uni-uts-v1', {
+        paths: [process.env.UNI_CLI_CONTEXT],
+      })
+    } catch (e) {}
+  }
+  if (!compilerPath) {
+    throw 'uts compiler is not found'
+  }
+  return require(compilerPath)
 }

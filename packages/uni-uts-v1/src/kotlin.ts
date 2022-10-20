@@ -152,7 +152,7 @@ function resolveSourceMapFile(outputDir: string, kotlinFile: string) {
 
 async function compile(filename: string) {
   if (!process.env.UNI_HBUILDERX_PLUGINS) {
-    return console.error('process.env.UNI_HBUILDERX_PLUGINS is not found')
+    throw 'process.env.UNI_HBUILDERX_PLUGINS is not found'
   }
   const { bundle, UtsTarget } = getUtsCompiler()
   const inputDir = process.env.UNI_INPUT_DIR
