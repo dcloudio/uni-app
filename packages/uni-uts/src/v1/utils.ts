@@ -3,7 +3,7 @@ import fs from 'fs-extra'
 import type { parse, bundle, UtsTarget } from '@dcloudio/uts'
 import { normalizePath, resolveSourceMapPath } from '@dcloudio/uni-cli-shared'
 import { camelize, capitalize } from '@vue/shared'
-import { Module, ModuleItem } from '../../../types/types'
+import { Module, ModuleItem } from '../../types/types'
 
 export function resolveUTSSourceMapPath(_filename: string) {
   return resolveSourceMapPath()

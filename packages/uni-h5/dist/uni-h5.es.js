@@ -5744,7 +5744,7 @@ const StartLocationUpdateOptions = {
     type(value, params) {
       value = (value || "").toLowerCase();
       if (coordTypes.indexOf(value) === -1) {
-        params.type = coordTypes[0];
+        params.type = coordTypes[1];
       } else {
         params.type = value;
       }
@@ -16593,13 +16593,16 @@ function translateGeo(type, coords, skip) {
         },
         (res) => {
           if ("detail" in res && "points" in res.detail && res.detail.points.length) {
-            const location2 = res.detail.points[0];
-            resolve(
-              extend({}, coords, {
-                longitude: location2.lng,
-                latitude: location2.lat
-              })
-            );
+            const { lng, lat } = res.detail.points[0];
+            resolve({
+              longitude: lng,
+              latitude: lat,
+              altitude: coords.altitude,
+              accuracy: coords.accuracy,
+              altitudeAccuracy: coords.altitudeAccuracy,
+              heading: coords.heading,
+              speed: coords.speed
+            });
           } else {
             resolve(coords);
           }
@@ -16617,12 +16620,15 @@ function translateGeo(type, coords, skip) {
           (_, res) => {
             if (res.info === "ok" && res.locations.length) {
               const { lat, lng } = res.locations[0];
-              resolve(
-                extend({}, coords, {
-                  longitude: lng,
-                  latitude: lat
-                })
-              );
+              resolve({
+                longitude: lng,
+                latitude: lat,
+                altitude: coords.altitude,
+                accuracy: coords.accuracy,
+                altitudeAccuracy: coords.altitudeAccuracy,
+                heading: coords.heading,
+                speed: coords.speed
+              });
             } else {
               resolve(coords);
             }
@@ -20290,54 +20296,65 @@ const chooseLocation = /* @__PURE__ */ defineAsyncApi(
   },
   ChooseLocationProtocol
 );
+let started = false;
 let watchId = 0;
 const startLocationUpdate = /* @__PURE__ */ defineAsyncApi(
   API_START_LOCATION_UPDATE,
-  (_, { resolve, reject }) => {
-    if (navigator.geolocation && watchId === 0) {
-      watchId = navigator.geolocation.watchPosition(
-        (res) => {
-          translateGeo(_ == null ? void 0 : _.type, res.coords).then((coords) => {
-            UniServiceJSBridge.invokeOnCallback(
-              API_ON_LOCATION_CHANGE,
-              coords
-            );
-            resolve();
-          }).catch((error) => {
-            reject(error.message);
-          });
-        },
-        (error) => {
-          reject(error.message);
-        }
-      );
+  (options, { resolve, reject }) => {
+    if (!navigator.geolocation) {
+      reject();
+      return;
     }
-    resolve();
+    watchId = watchId || navigator.geolocation.watchPosition(
+      (res) => {
+        started = true;
+        translateGeo(options == null ? void 0 : options.type, res.coords).then((coords) => {
+          UniServiceJSBridge.invokeOnCallback(
+            API_ON_LOCATION_CHANGE,
+            coords
+          );
+          resolve();
+        }).catch((error) => {
+          UniServiceJSBridge.invokeOnCallback(
+            API_ON_LOCATION_CHANGE_ERROR,
+            { errMsg: `onLocationChange:fail ${error.message}` }
+          );
+        });
+      },
+      (error) => {
+        if (!started) {
+          reject(error.message);
+          started = true;
+        }
+        UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE_ERROR, {
+          errMsg: `onLocationChange:fail ${error.message}`
+        });
+      }
+    );
+    setTimeout(resolve, 100);
   },
   StartLocationUpdateProtocol,
   StartLocationUpdateOptions
+);
+const stopLocationUpdate = /* @__PURE__ */ defineAsyncApi(
+  API_STOP_LOCATION_UPDATE,
+  (_, { resolve }) => {
+    if (watchId) {
+      navigator.geolocation.clearWatch(watchId);
+      started = false;
+      watchId = 0;
+    }
+    resolve();
+  }
 );
 const onLocationChange = /* @__PURE__ */ defineOnApi(
   API_ON_LOCATION_CHANGE,
   () => {
   }
 );
-const stopLocationUpdate = /* @__PURE__ */ defineAsyncApi(
-  API_STOP_LOCATION_UPDATE,
-  (_, { resolve, reject }) => {
-    if (watchId) {
-      navigator.geolocation.clearWatch(watchId);
-      watchId = 0;
-      resolve();
-    } else {
-      reject("stopLocationUpdate:fail");
-    }
-  }
-);
 const offLocationChange = /* @__PURE__ */ defineOffApi(
   API_OFF_LOCATION_CHANGE,
   () => {
-    stopLocationUpdate();
   }
 );
 const onLocationChangeError = /* @__PURE__ */ defineOnApi(
@@ -20345,7 +20362,7 @@ const onLocationChangeError = /* @__PURE__ */ defineOnApi(
   () => {
   }
 );
-const offLocationChangeError = /* @__PURE__ */ defineOnApi(
+const offLocationChangeError = /* @__PURE__ */ defineOffApi(
   API_OFF_LOCATION_CHANGE_ERROR,
   () => {
   }
@@ -22377,8 +22394,8 @@ const api = /* @__PURE__ */ Object.defineProperty({
   openLocation,
   chooseLocation,
   startLocationUpdate,
-  onLocationChange,
   stopLocationUpdate,
+  onLocationChange,
   offLocationChange,
   onLocationChangeError,
   offLocationChangeError,

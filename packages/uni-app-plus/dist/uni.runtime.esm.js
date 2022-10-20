@@ -12160,7 +12160,7 @@ const StartLocationUpdateOptions = {
         type(value, params) {
             value = (value || '').toLowerCase();
             if (coordTypes.indexOf(value) === -1) {
-                params.type = coordTypes[0];
+                params.type = coordTypes[1];
             }
             else {
                 params.type = value;
@@ -16173,42 +16173,39 @@ const openLocation = defineAsyncApi(API_OPEN_LOCATION, (data, { resolve, reject 
     return resolve();
 }, OpenLocationProtocol, OpenLocationOptions);
 
+let started = false;
 let watchId = 0;
-/**
- * 开始更新定位
- */
-const startLocationUpdate = defineAsyncApi(API_START_LOCATION_UPDATE, (_, { resolve, reject }) => {
-    if (plus.geolocation && watchId === 0) {
-        watchId = plus.geolocation.watchPosition((res) => {
-            UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE, res.coords);
-            resolve();
-        }, (error) => {
-            reject(error.message);
-        }, {
-            coordsType: _ === null || _ === void 0 ? void 0 : _.type,
-        });
-    }
-    else {
-        UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE_ERROR, 'onLocationChange:fail');
-    }
-    resolve();
+const startLocationUpdate = defineAsyncApi(API_START_LOCATION_UPDATE, (options, { resolve, reject }) => {
+    watchId =
+        watchId ||
+            plus.geolocation.watchPosition((res) => {
+                started = true;
+                UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE, res.coords);
+            }, (error) => {
+                if (!started) {
+                    reject(error.message);
+                    started = true;
+                }
+                UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE_ERROR, {
+                    errMsg: `onLocationChange:fail ${error.message}`,
+                });
+            }, {
+                coordsType: options === null || options === void 0 ? void 0 : options.type,
+            });
+    setTimeout(resolve, 100);
 }, StartLocationUpdateProtocol, StartLocationUpdateOptions);
-const onLocationChange = defineOnApi(API_ON_LOCATION_CHANGE, () => { });
-const stopLocationUpdate = defineAsyncApi(API_STOP_LOCATION_UPDATE, (_, { resolve, reject }) => {
+const stopLocationUpdate = defineAsyncApi(API_STOP_LOCATION_UPDATE, (_, { resolve }) => {
     if (watchId) {
         plus.geolocation.clearWatch(watchId);
+        started = false;
         watchId = 0;
-        resolve();
     }
-    else {
-        reject('stopLocationUpdate:fail');
-    }
+    resolve();
 });
-const offLocationChange = defineOffApi(API_OFF_LOCATION_CHANGE, () => {
-    stopLocationUpdate();
-});
+const onLocationChange = defineOnApi(API_ON_LOCATION_CHANGE, () => { });
+const offLocationChange = defineOffApi(API_OFF_LOCATION_CHANGE, () => { });
 const onLocationChangeError = defineOnApi(API_ON_LOCATION_CHANGE_ERROR, () => { });
-const offLocationChangeError = defineOnApi(API_OFF_LOCATION_CHANGE_ERROR, () => { });
+const offLocationChangeError = defineOffApi(API_OFF_LOCATION_CHANGE_ERROR, () => { });
 
 const showModal = defineAsyncApi(API_SHOW_MODAL, ({ title = '', content = '', showCancel = true, cancelText, cancelColor, confirmText, confirmColor, editable = false, placeholderText = '', } = {}, { resolve }) => {
     const buttons = showCancel ? [cancelText, confirmText] : [confirmText];
@@ -19431,8 +19428,8 @@ var uni$1 = {
   chooseLocation: chooseLocation,
   openLocation: openLocation,
   startLocationUpdate: startLocationUpdate,
-  onLocationChange: onLocationChange,
   stopLocationUpdate: stopLocationUpdate,
+  onLocationChange: onLocationChange,
   offLocationChange: offLocationChange,
   onLocationChangeError: onLocationChangeError,
   offLocationChangeError: offLocationChangeError,

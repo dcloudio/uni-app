@@ -32,8 +32,8 @@ const priority = {
   'uni-cloud': 10,
   'uni-automator': 10,
   uts: 10,
-  'uni-uts-vite': 9,
-  'uni-stacktracey': 9,
+  'uni-uts': 9,
+  'uni-stacktracey': 8,
   'size-check': 0,
 }
 

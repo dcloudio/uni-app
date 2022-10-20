@@ -192,7 +192,6 @@ importers:
       '@dcloudio/uni-h5': 3.0.0-alpha-3060720221018002
       '@dcloudio/uni-i18n': 3.0.0-alpha-3060720221018002
       '@dcloudio/uni-shared': 3.0.0-alpha-3060720221018002
-      '@dcloudio/uni-uts-vite': 3.0.0-alpha-3060720221018002
       '@types/pako': 1.0.2
       '@vue/compiler-sfc': 3.2.41
       autoprefixer: ^10.4.12
@@ -202,7 +201,6 @@ importers:
     dependencies:
       '@dcloudio/uni-app-vite': link:../uni-app-vite
       '@dcloudio/uni-app-vue': link:../uni-app-vue
-      '@dcloudio/uni-uts-vite': link:../uni-uts-vite
     devDependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
       '@dcloudio/uni-components': link:../uni-components
@@ -306,6 +304,7 @@ importers:
       '@babel/types': ^7.17.0
       '@dcloudio/uni-i18n': 3.0.0-alpha-3060720221018002
       '@dcloudio/uni-shared': 3.0.0-alpha-3060720221018002
+      '@dcloudio/uni-uts': 3.0.0-alpha-3060720221018002
       '@intlify/core-base': 9.1.9
       '@intlify/shared': 9.1.9
       '@intlify/vue-devtools': 9.1.9
@@ -395,6 +394,7 @@ importers:
       tapable: 2.2.1
       xregexp: 3.1.0
     devDependencies:
+      '@dcloudio/uni-uts': link:../uni-uts
       '@types/babel__core': 7.1.19
       '@types/debug': 4.1.7
       '@types/estree': 0.0.51
@@ -799,13 +799,14 @@ importers:
     devDependencies:
       '@types/debug': 4.1.7
 
-  packages/uni-uts-vite:
+  packages/uni-uts:
     specifiers:
       '@dcloudio/uni-cli-shared': 3.0.0-alpha-3060720221018002
       '@dcloudio/uni-shared': 3.0.0-alpha-3060720221018002
       '@dcloudio/uts': 3.0.0-alpha-3060720221018002
       '@types/adm-zip': ^0.5.0
       '@types/fs-extra': ^9.0.13
+      '@vue/shared': 3.2.41
       adm-zip: ^0.5.9
       execa: ^5.1.1
       fast-glob: ^3.2.11
@@ -814,6 +815,7 @@ importers:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
       '@dcloudio/uni-shared': link:../uni-shared
       '@dcloudio/uts': link:../uts
+      '@vue/shared': 3.2.41
       adm-zip: 0.5.9
       execa: 5.1.1
       fast-glob: 3.2.12
@@ -5347,7 +5349,7 @@ packages:
     resolution: {integrity: sha512-9ByhssR2fPVsNZj478qUUbKfmL0+t5BDVyjShtyZZLiK7ZDAArFFfopyOTj0M05wE2tJPisA4iTnnXl2YoPvOA==}
 
   /graceful-fs/4.2.9:
-    resolution: {integrity: sha512-NtNxqUcXgpW2iMrfqSfR73Glt39K+BLwWsPs94yR63v45T0Wbej7eRmL5cWfwEgqXnmjQp3zaJTshdRW/qC2ZQ==, registry: https://registry.yarnpkg.com/}
+    resolution: {integrity: sha512-NtNxqUcXgpW2iMrfqSfR73Glt39K+BLwWsPs94yR63v45T0Wbej7eRmL5cWfwEgqXnmjQp3zaJTshdRW/qC2ZQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.9.tgz}
     dev: true
 
   /has-flag/3.0.0:

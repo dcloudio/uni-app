@@ -9,6 +9,7 @@ import {
   isInHBuilderX,
   normalizePath,
   resolveSourceMapPath,
+  runByHBuilderX,
 } from '@dcloudio/uni-cli-shared'
 import {
   genUTSPlatformResource,
@@ -19,7 +20,7 @@ import {
   resolveUTSPlatformFile,
   resolveUTSSourceMapPath,
 } from './utils'
-import { Module } from '../../../types/types'
+import { Module } from '../../types/types'
 
 export function createKotlinResolveTypeReferenceName(
   _namespace: string,
@@ -111,7 +112,7 @@ function resolveSourceMapFile(outputDir: string, kotlinFile: string) {
 
 async function compile(filename: string) {
   if (!process.env.UNI_HBUILDERX_PLUGINS) {
-    return
+    return console.error('process.env.UNI_HBUILDERX_PLUGINS is not found')
   }
   const { bundle, UtsTarget } = getUtsCompiler()
   const inputDir = process.env.UNI_INPUT_DIR
@@ -238,7 +239,11 @@ const getCompilerServer = ():
     // eslint-disable-next-line no-restricted-globals
     return require(compilerServerPath)
   } else {
-    installHBuilderXPlugin('uniapp-runextension')
+    if (runByHBuilderX()) {
+      installHBuilderXPlugin('uniapp-runextension')
+    } else {
+      console.error(compilerServerPath + ' is not found')
+    }
   }
 
   return false

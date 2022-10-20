@@ -19,7 +19,7 @@ export const isInHBuilderX = once(() => {
 })
 
 export const runByHBuilderX = once(() => {
-  return !!process.env.UNI_HBUILDERX_PLUGINS
+  return !!process.env.UNI_HBUILDERX_PLUGINS && !!process.env.RUN_BY_HBUILDERX
 })
 
 /**

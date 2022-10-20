@@ -1,6 +1,7 @@
 import { runKotlinProd, runKotlinDev } from './kotlin'
 import { runSwiftProd, runSwiftDev } from './swift'
-export { genProxyCode } from './code'
+export { genProxyCode, resolvePlatformIndex, resolveRootIndex } from './code'
+export { resolvePackage } from './utils'
 export function getCompiler(type: 'kotlin' | 'swift') {
   if (type === 'swift') {
     return {

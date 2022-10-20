@@ -40,7 +40,7 @@ export async function runSwiftDev(_filename: string) {}
 
 async function compile(filename: string) {
   if (!process.env.UNI_HBUILDERX_PLUGINS) {
-    return
+    return console.error('process.env.UNI_HBUILDERX_PLUGINS is not found')
   }
   const { bundle, UtsTarget } = getUtsCompiler()
   const inputDir = process.env.UNI_INPUT_DIR

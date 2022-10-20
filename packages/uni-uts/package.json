@@ -1,7 +1,7 @@
 {
-  "name": "@dcloudio/uni-uts-vite",
+  "name": "@dcloudio/uni-uts",
   "version": "3.0.0-alpha-3060720221018002",
-  "description": "uni-uts-vite",
+  "description": "uni-uts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -10,24 +10,17 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dcloudio/uni-app.git",
-    "directory": "packages/uni-uts-vite"
+    "directory": "packages/uni-uts"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "license": "Apache-2.0",
-  "uni-app": {
-    "name": "uts",
-    "title": "uts",
-    "apply": [
-      "app"
-    ],
-    "main": "dist/index.js"
-  },
   "dependencies": {
     "@dcloudio/uni-cli-shared": "3.0.0-alpha-3060720221018002",
     "@dcloudio/uni-shared": "3.0.0-alpha-3060720221018002",
     "@dcloudio/uts": "3.0.0-alpha-3060720221018002",
+    "@vue/shared": "3.2.41",
     "adm-zip": "^0.5.9",
     "execa": "^5.1.1",
     "fast-glob": "^3.2.11",

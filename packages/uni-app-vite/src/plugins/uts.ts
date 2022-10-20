@@ -1,10 +1,10 @@
 import type { Plugin } from 'vite'
 import path from 'path'
-import { parseVueRequest, resolveUtsAppModule } from '@dcloudio/uni-cli-shared'
-
-import { getCompiler, genProxyCode } from '../utils/compiler'
-import { resolvePackage } from '../utils/compiler/utils'
-import { resolvePlatformIndex, resolveRootIndex } from '../utils/compiler/code'
+import {
+  parseVueRequest,
+  resolveUtsAppModule,
+  resolveUTSCompiler,
+} from '@dcloudio/uni-cli-shared'
 
 const UTSProxyRE = /\?uts-proxy$/
 
@@ -40,6 +40,14 @@ export function uniUtsV1Plugin(): Plugin {
         return
       }
       const { filename: module } = parseVueRequest(id.replace('\0', ''))
+
+      const {
+        getCompiler,
+        genProxyCode,
+        resolvePackage,
+        resolvePlatformIndex,
+        resolveRootIndex,
+      } = resolveUTSCompiler().v1
 
       const pkg = resolvePackage(module)
       if (!pkg) {

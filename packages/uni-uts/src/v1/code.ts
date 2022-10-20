@@ -14,7 +14,7 @@ import {
   Param,
   TsTypeAnnotation,
   VariableDeclaration,
-} from '../../../types/types'
+} from '../../types/types'
 import { createResolveTypeReferenceName } from './utils'
 
 interface GenProxyCodeOptions {

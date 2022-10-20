@@ -4,6 +4,7 @@ import path from 'path'
 import debug from 'debug'
 import resolve from 'resolve'
 import { once } from '@dcloudio/uni-shared'
+import * as UTSCompiler from '@dcloudio/uni-uts'
 
 import { normalizePath } from './utils'
 import { isInHBuilderX } from './hbx/env'
@@ -197,4 +198,16 @@ function resolveUtsFile(
       return indexFile
     }
   }
+}
+
+export function resolveUTSCompiler(): typeof UTSCompiler {
+  if (isInHBuilderX()) {
+    return require(path.resolve(
+      process.env.UNI_HBUILDERX_PLUGINS,
+      'uniapp-uts'
+    ))
+  }
+  return require(require.resolve('@dcloudio/uni-uts', {
+    paths: [process.env.UNI_CLI_CONTEXT],
+  }))
 }
