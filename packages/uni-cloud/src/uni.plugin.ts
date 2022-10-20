@@ -184,9 +184,7 @@ export default () => [
         const isSecureNetworkEnabled = isEnableSecureNetwork(inputDir, platform)
         return {
           define: {
-            'process.env.UNI_SECURE_NETWORK_ENABLE': isSecureNetworkEnabled,
-            'process.env.UNI_SECURE_NETWORK_CONFIG':
-              process.env.UNI_SECURE_NETWORK_CONFIG,
+            'process.env.UNI_SECURE_NETWORK': isSecureNetworkEnabled,
           },
         }
       },
