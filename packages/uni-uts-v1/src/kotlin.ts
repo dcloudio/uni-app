@@ -3,14 +3,15 @@ import fs from 'fs-extra'
 import path from 'path'
 import AdmZip from 'adm-zip'
 import { sync } from 'fast-glob'
-
+import { isArray } from '@vue/shared'
 import {
   installHBuilderXPlugin,
   isInHBuilderX,
   normalizePath,
+  parseJson,
   resolveSourceMapPath,
   runByHBuilderX,
-} from '@dcloudio/uni-cli-shared'
+} from './shared'
 import {
   genUTSPlatformResource,
   getUtsCompiler,
@@ -20,7 +21,7 @@ import {
   resolveUTSPlatformFile,
   resolveUTSSourceMapPath,
 } from './utils'
-import { Module } from '../../types/types'
+import { Module } from '../types/types'
 
 export function createKotlinResolveTypeReferenceName(
   _namespace: string,
@@ -71,7 +72,11 @@ export async function runKotlinDev(filename: string) {
     if (!compilerServer) {
       return
     }
-    const { getDefaultJar, getKotlincHome, compile } = compilerServer
+    const { getDefaultJar, getKotlincHome, compile, checkDependencies } =
+      compilerServer
+    if (checkDependencies) {
+      await checkDeps(filename, checkDependencies)
+    }
     // time = Date.now()
     const jarFile = resolveJarPath(kotlinFile)
     const options = {
@@ -100,6 +105,41 @@ export async function runKotlinDev(filename: string) {
         return normalizePath(path.relative(process.env.UNI_OUTPUT_DIR, dexFile))
       }
     }
+  }
+}
+
+function checkDeps(
+  filename: string,
+  checkDependencies: (
+    configJsonFile: string
+  ) => Promise<{ code: number; msg: string; data: string[] }>
+) {
+  const configJsonFile = resolveConfigJsonFile(filename)
+  if (configJsonFile && hasDeps(configJsonFile)) {
+    return checkDependencies(configJsonFile).then(({ code, msg, data }) => {
+      if (code > 0) {
+        throw msg
+      }
+      return data
+    })
+  }
+  return Promise.resolve([])
+}
+function hasDeps(configJsonFile: string) {
+  const deps = parseJson(configJsonFile).dependencies || []
+  if (isArray(deps) && deps.length) {
+    return true
+  }
+  return false
+}
+
+function resolveConfigJsonFile(filename: string) {
+  const configJsonFile = path.resolve(
+    resolveAndroidDir(filename),
+    'config.json'
+  )
+  if (fs.existsSync(configJsonFile)) {
+    return configJsonFile
   }
 }
 
@@ -221,16 +261,19 @@ function resolveClassPath(jars: string[]) {
   return jars.join(os.platform() === 'win32' ? ';' : ':')
 }
 
-const getCompilerServer = ():
-  | {
-      getKotlincHome(): string
-      getDefaultJar(): string[]
-      compile(
-        options: { kotlinc: string[]; d8: string[] },
-        projectPath: string
-      ): Promise<boolean>
-    }
-  | false => {
+interface CompilerServer {
+  getKotlincHome(): string
+  getDefaultJar(): string[]
+  compile(
+    options: { kotlinc: string[]; d8: string[] },
+    projectPath: string
+  ): Promise<boolean>
+  checkDependencies?: (
+    configJsonPath: string
+  ) => Promise<{ code: number; msg: string; data: string[] }>
+}
+
+function getCompilerServer(): CompilerServer | undefined {
   const compilerServerPath = path.resolve(
     process.env.UNI_HBUILDERX_PLUGINS,
     'uniapp-runextension/out/main.js'
@@ -245,6 +288,4 @@ const getCompilerServer = ():
       console.error(compilerServerPath + ' is not found')
     }
   }
-
-  return false
 }

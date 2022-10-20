@@ -47,7 +47,7 @@ export function uniUtsV1Plugin(): Plugin {
         resolvePackage,
         resolvePlatformIndex,
         resolveRootIndex,
-      } = resolveUTSCompiler().v1
+      } = resolveUTSCompiler()
 
       const pkg = resolvePackage(module)
       if (!pkg) {

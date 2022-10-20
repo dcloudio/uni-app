@@ -8,7 +8,7 @@ packages/uni-mp-compiler/dist
 packages/uni-nvue-styler/dist
 packages/vite-plugin-uni/dist
 packages/uts/dist
-packages/uni-uts/dist
+packages/uni-uts-v1/dist
 
 
 .DS_Store

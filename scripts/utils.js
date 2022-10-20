@@ -32,7 +32,7 @@ const priority = {
   'uni-cloud': 10,
   'uni-automator': 10,
   uts: 10,
-  'uni-uts': 9,
+  'uni-uts-v1': 9,
   'uni-stacktracey': 8,
   'size-check': 0,
 }
@@ -51,7 +51,7 @@ const targets = (exports.targets = fs.readdirSync('packages').filter((f) => {
       ) ||
       fs.existsSync(path.resolve(__dirname, `../packages/${f}/tsconfig.json`))
     )
-  } catch (e) {}
+  } catch (e) { }
   return false
 })).sort((a, b) => priority[b] - priority[a])
 exports.fuzzyMatchTarget = (partialTargets, includeAllMatching) => {

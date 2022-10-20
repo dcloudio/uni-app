@@ -1,6 +1,5 @@
 import fs from 'fs'
 import path from 'path'
-import { isInHBuilderX } from '@dcloudio/uni-cli-shared'
 
 import {
   BindingIdentifier,
@@ -14,9 +13,9 @@ import {
   Param,
   TsTypeAnnotation,
   VariableDeclaration,
-} from '../../types/types'
+} from '../types/types'
 import { createResolveTypeReferenceName } from './utils'
-
+import { isInHBuilderX } from './shared'
 interface GenProxyCodeOptions {
   is_uni_modules: boolean
   name: string

@@ -304,7 +304,7 @@ importers:
       '@babel/types': ^7.17.0
       '@dcloudio/uni-i18n': 3.0.0-alpha-3060720221018002
       '@dcloudio/uni-shared': 3.0.0-alpha-3060720221018002
-      '@dcloudio/uni-uts': 3.0.0-alpha-3060720221018002
+      '@dcloudio/uni-uts-v1': 3.0.0-alpha-3060720221018002
       '@intlify/core-base': 9.1.9
       '@intlify/shared': 9.1.9
       '@intlify/vue-devtools': 9.1.9
@@ -394,7 +394,7 @@ importers:
       tapable: 2.2.1
       xregexp: 3.1.0
     devDependencies:
-      '@dcloudio/uni-uts': link:../uni-uts
+      '@dcloudio/uni-uts-v1': link:../uni-uts-v1
       '@types/babel__core': 7.1.19
       '@types/debug': 4.1.7
       '@types/estree': 0.0.51
@@ -799,10 +799,8 @@ importers:
     devDependencies:
       '@types/debug': 4.1.7
 
-  packages/uni-uts:
+  packages/uni-uts-v1:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3060720221018002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3060720221018002
       '@dcloudio/uts': 3.0.0-alpha-3060720221018002
       '@types/adm-zip': ^0.5.0
       '@types/fs-extra': ^9.0.13
@@ -811,15 +809,15 @@ importers:
       execa: ^5.1.1
       fast-glob: ^3.2.11
       fs-extra: ^10.0.0
+      jsonc-parser: ^3.0.0
     dependencies:
-      '@dcloudio/uni-cli-shared': link:../uni-cli-shared
-      '@dcloudio/uni-shared': link:../uni-shared
       '@dcloudio/uts': link:../uts
       '@vue/shared': 3.2.41
       adm-zip: 0.5.9
       execa: 5.1.1
       fast-glob: 3.2.12
       fs-extra: 10.1.0
+      jsonc-parser: 3.2.0
     devDependencies:
       '@types/adm-zip': 0.5.0
       '@types/fs-extra': 9.0.13

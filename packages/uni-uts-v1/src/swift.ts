@@ -1,4 +1,3 @@
-import { isInHBuilderX } from '@dcloudio/uni-cli-shared'
 import { capitalize } from '@vue/shared'
 import {
   genUTSPlatformResource,
@@ -7,6 +6,7 @@ import {
   resolvePackage,
   resolveUTSSourceMapPath,
 } from './utils'
+import { isInHBuilderX } from './shared'
 
 function parseSwiftPackage(filename: string) {
   const res = resolvePackage(filename)
