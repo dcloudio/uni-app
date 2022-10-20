@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-uts-v1",
-  "version": "3.0.0-alpha-3060720221018005",
+  "version": "3.0.0-alpha-3060720221018006",
   "description": "uni-uts-v1",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -17,7 +17,7 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@dcloudio/uts": "3.0.0-alpha-3060720221018005",
+    "@dcloudio/uts": "3.0.0-alpha-3060720221018006",
     "@vue/shared": "3.2.41",
     "adm-zip": "^0.5.9",
     "execa": "^5.1.1",
