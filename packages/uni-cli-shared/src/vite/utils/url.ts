@@ -1,3 +1,4 @@
+import { hasOwn } from '@vue/shared'
 import path from 'path'
 import { EXTNAME_JS_RE, EXTNAME_VUE } from '../../constants'
 
@@ -71,7 +72,8 @@ export function isJsFile(id: string) {
     return true
   }
   const isVueJs =
-    EXTNAME_VUE.includes(path.extname(filename)) && (!query.vue || query.setup)
+    EXTNAME_VUE.includes(path.extname(filename)) &&
+    (!query.vue || query.setup || hasOwn(query, 'lang.ts'))
   if (isVueJs) {
     return true
   }
