@@ -3,7 +3,9 @@ const path = require('path')
 const colors = require('picocolors')
 
 const priority = {
-  'uni-shared': 100,
+  uts: 100,
+  'uni-uts-v1': 99,
+  'uni-shared': 98,
   'uni-i18n': 90,
   'uni-app': 90,
   'uni-cli-shared': 80,
@@ -31,8 +33,6 @@ const priority = {
   'vite-plugin-uni': 20,
   'uni-cloud': 10,
   'uni-automator': 10,
-  uts: 10,
-  'uni-uts-v1': 9,
   'uni-stacktracey': 8,
   'size-check': 0,
 }
