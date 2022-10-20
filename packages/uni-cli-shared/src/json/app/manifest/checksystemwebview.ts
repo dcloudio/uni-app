@@ -1,8 +1,14 @@
 export function initCheckSystemWebview(manifestJson: Record<string, any>) {
   // 检查Android系统webview版本 || 下载X5后启动
-  let plusWebview = manifestJson.plus.webView
-  if (plusWebview) {
-    manifestJson.plus['uni-app'].webView = plusWebview
+  let plusWebView = manifestJson.plus.webView
+  if (plusWebView) {
+    manifestJson.plus['uni-app'].webView = plusWebView
     delete manifestJson.plus.webView
+  }
+
+  if (process.env.NODE_ENV === 'development' && !plusWebView) {
+    manifestJson.plus['uni-app'].webView = {
+      minUserAgentVersion: '64.0.3282.116',
+    }
   }
 }
