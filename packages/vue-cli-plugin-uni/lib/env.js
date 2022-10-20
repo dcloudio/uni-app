@@ -131,7 +131,7 @@ if (!process.env.UNI_CLOUD_PROVIDER && process.env.UNI_CLOUD_SPACES) {
 }
 
 // 安全网络
-process.env.UNI_SECURE_NETWORK = isEnableSecureNetwork(manifestJsonObj, process.env.UNI_PLATFORM)
+process.env.UNI_SECURE_NETWORK_ENABLE = isEnableSecureNetwork(manifestJsonObj, process.env.UNI_PLATFORM)
 
 // 初始化环境变量
 process.env.UNI_CLI_CONTEXT = require('@dcloudio/uni-cli-shared/lib/util').getCLIContext()
