@@ -74,8 +74,9 @@ export async function runKotlinDev(filename: string) {
     }
     const { getDefaultJar, getKotlincHome, compile, checkDependencies } =
       compilerServer
+    let deps: string[] = []
     if (checkDependencies) {
-      await checkDeps(filename, checkDependencies)
+      deps = await checkDeps(filename, checkDependencies)
     }
     // time = Date.now()
     const jarFile = resolveJarPath(kotlinFile)
@@ -83,7 +84,7 @@ export async function runKotlinDev(filename: string) {
       kotlinc: resolveKotlincArgs(
         kotlinFile,
         getKotlincHome(),
-        getDefaultJar().concat(resolveLibs(filename))
+        getDefaultJar().concat(resolveLibs(filename)).concat(deps)
       ),
       d8: resolveD8Args(jarFile),
       sourceRoot: process.env.UNI_INPUT_DIR,
@@ -117,7 +118,7 @@ function checkDeps(
   const configJsonFile = resolveConfigJsonFile(filename)
   if (configJsonFile && hasDeps(configJsonFile)) {
     return checkDependencies(configJsonFile).then(({ code, msg, data }) => {
-      if (code > 0) {
+      if (code !== 0) {
         throw msg
       }
       return data
@@ -126,7 +127,8 @@ function checkDeps(
   return Promise.resolve([])
 }
 function hasDeps(configJsonFile: string) {
-  const deps = parseJson(configJsonFile).dependencies || []
+  const deps =
+    parseJson(fs.readFileSync(configJsonFile, 'utf8')).dependencies || []
   if (isArray(deps) && deps.length) {
     return true
   }

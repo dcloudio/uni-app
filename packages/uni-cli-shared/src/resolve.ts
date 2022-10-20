@@ -205,7 +205,7 @@ export function resolveUTSCompiler(): typeof UTSCompiler {
   if (isInHBuilderX()) {
     try {
       compilerPath = require.resolve(
-        path.resolve(process.env.UNI_HBUILDERX_PLUGINS, 'uniapp-uts')
+        path.resolve(process.env.UNI_HBUILDERX_PLUGINS, 'uniapp-uts-v1')
       )
     } catch (e) {}
   }

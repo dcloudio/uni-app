@@ -85,6 +85,8 @@ export function uniUtsV1Plugin(): Plugin {
             resolvePlatformIndex('app-android', module, pkg) ||
             resolveRootIndex(module, pkg)
           if (filename) {
+            // TODO 添加其他文件的依赖
+            this.addWatchFile(filename)
             const res = await getCompiler('kotlin').runDev(filename)
             if (!isFirst && res) {
               const files = []

@@ -24,7 +24,6 @@
     "@dcloudio/uni-cli-shared": "3.0.0-alpha-3060720221018006",
     "@dcloudio/uni-i18n": "3.0.0-alpha-3060720221018006",
     "@dcloudio/uni-shared": "3.0.0-alpha-3060720221018006",
-    "@dcloudio/uts": "3.0.0-alpha-3060720221018006",
     "@rollup/pluginutils": "^4.2.0",
     "@vitejs/plugin-vue": "^3.1.2",
     "@vue/compiler-dom": "3.2.41",
