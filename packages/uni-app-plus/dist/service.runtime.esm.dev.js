@@ -5541,8 +5541,8 @@ var Comment = /*@__PURE__*/(function (Node$$1) {
 
 function appendBody(doc, node, before) {
   var documentElement = doc.documentElement;
-
-  if (documentElement.pureChildren.length > 0 || node.parentNode) {
+  // fix append comment
+  if ((documentElement.pureChildren.length > 0 && node.nodeType === 1) || node.parentNode) {
     return
   }
   var children = documentElement.children;
