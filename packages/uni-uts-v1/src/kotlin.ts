@@ -22,6 +22,7 @@ import {
   resolveUTSSourceMapPath,
 } from './utils'
 import { Module } from '../types/types'
+import { UtsResult } from '@dcloudio/uts'
 
 export function createKotlinResolveTypeReferenceName(
   _namespace: string,
@@ -54,12 +55,16 @@ export async function runKotlinProd(filename: string) {
   })
 }
 
-export async function runKotlinDev(filename: string) {
+type RunKotlinDevResult = UtsResult & { dex?: string }
+
+export async function runKotlinDev(
+  filename: string
+): Promise<RunKotlinDevResult | undefined> {
   // 文件有可能是 app-ios 里边的，因为编译到 android 时，为了保证不报错，可能会去读取 ios 下的 uts
   if (filename.includes('app-ios')) {
     return
   }
-  await compile(filename)
+  const result = (await compile(filename)) as RunKotlinDevResult
   const kotlinFile = resolveUTSPlatformFile(filename, {
     inputDir: process.env.UNI_INPUT_DIR,
     outputDir: process.env.UNI_OUTPUT_DIR,
@@ -103,10 +108,13 @@ export async function runKotlinDev(filename: string) {
       } catch (e) {}
       const dexFile = resolveDexFile(jarFile)
       if (fs.existsSync(dexFile)) {
-        return normalizePath(path.relative(process.env.UNI_OUTPUT_DIR, dexFile))
+        result.dex = normalizePath(
+          path.relative(process.env.UNI_OUTPUT_DIR, dexFile)
+        )
       }
     }
   }
+  return result
 }
 
 function checkDeps(
@@ -160,7 +168,7 @@ async function compile(filename: string) {
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
   // let time = Date.now()
-  await bundle(UtsTarget.KOTLIN, {
+  const result = await bundle(UtsTarget.KOTLIN, {
     input: {
       root: inputDir,
       filename,
@@ -182,13 +190,13 @@ async function compile(filename: string) {
       noColor: isInHBuilderX(),
     },
   })
-
   moveRootIndexSourceMap(filename, {
     inputDir: process.env.UNI_INPUT_DIR,
     outputDir: process.env.UNI_OUTPUT_DIR,
     platform: 'app-android',
     extname: '.kt',
   })
+  return result
 }
 
 function resolveKotlincArgs(filename: string, kotlinc: string, jars: string[]) {

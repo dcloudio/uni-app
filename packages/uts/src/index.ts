@@ -21,7 +21,7 @@ import {
   timeEnd,
 } from './utils'
 
-export { UtsTarget } from './types'
+export { UtsTarget, UtsResult } from './types'
 
 export type UtsMode = 'dev' | 'build'
 
@@ -319,7 +319,10 @@ function buildFile(
 
 export { parse, bundleKotlin, bundleSwift } from './api'
 
-export function bundle(target: UtsTarget, opts: UtsBundleOptions) {
+export function bundle(
+  target: UtsTarget,
+  opts: UtsBundleOptions
+): Promise<UtsResult> {
   if (target === UtsTarget.KOTLIN) {
     return bundleKotlin(opts)
   } else if (target === UtsTarget.SWIFT) {

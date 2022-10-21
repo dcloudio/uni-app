@@ -46,7 +46,7 @@ async function compile(filename: string) {
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
   // let time = Date.now()
-  await bundle(UtsTarget.SWIFT, {
+  const result = await bundle(UtsTarget.SWIFT, {
     input: {
       root: inputDir,
       filename,
@@ -68,4 +68,5 @@ async function compile(filename: string) {
     platform: 'app-ios',
     extname: '.swift',
   })
+  return result
 }

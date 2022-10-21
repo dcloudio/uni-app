@@ -5,6 +5,7 @@ import {
   resolveUtsAppModule,
   resolveUTSCompiler,
 } from '@dcloudio/uni-cli-shared'
+import { isArray } from '@vue/shared'
 
 const UTSProxyRE = /\?uts-proxy$/
 
@@ -85,22 +86,31 @@ export function uniUtsV1Plugin(): Plugin {
             resolvePlatformIndex('app-android', module, pkg) ||
             resolveRootIndex(module, pkg)
           if (filename) {
-            // TODO 添加其他文件的依赖
             this.addWatchFile(filename)
             const res = await getCompiler('kotlin').runDev(filename)
-            if (!isFirst && res) {
-              const files = []
-              if (process.env.UNI_APP_CHANGED_DEX_FILES) {
-                try {
-                  files.push(
-                    ...JSON.parse(process.env.UNI_APP_CHANGED_DEX_FILES)
-                  )
-                } catch (e) {}
+            if (res) {
+              if (isArray(res.deps) && res.deps.length) {
+                // 添加其他文件的依赖
+                res.deps.forEach((dep) => {
+                  this.addWatchFile(dep)
+                })
               }
-              files.push(res)
-              process.env.UNI_APP_CHANGED_DEX_FILES = JSON.stringify([
-                ...new Set(files),
-              ])
+              if (!isFirst) {
+                const files: string[] = []
+                if (process.env.UNI_APP_CHANGED_DEX_FILES) {
+                  try {
+                    files.push(
+                      ...JSON.parse(process.env.UNI_APP_CHANGED_DEX_FILES)
+                    )
+                  } catch (e) {}
+                }
+                if (res.dex) {
+                  files.push(res.dex)
+                }
+                process.env.UNI_APP_CHANGED_DEX_FILES = JSON.stringify([
+                  ...new Set(files),
+                ])
+              }
             }
           }
         } else if (process.env.UNI_UTS_PLATFORM === 'app-ios') {
