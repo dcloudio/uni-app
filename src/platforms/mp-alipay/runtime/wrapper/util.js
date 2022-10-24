@@ -113,8 +113,7 @@ function handleProps (ref) {
   let refProps = ref.props
   const eventList = (refProps['data-event-list'] || '').split(',')
   // 初始化支付宝小程序组件事件
-  Object.keys(refProps).forEach(key => {
-    if (eventList.includes(key)) {
+  eventList.forEach(key => {
       const handler = refProps[key]
       const res = key.match(/^on([A-Z])(\S*)/)
       const event = res && (res[1].toLowerCase() + res[2])
@@ -127,7 +126,6 @@ function handleProps (ref) {
           __args__: [...arguments]
         })
       }
-    }
   })
   // 处理 props 重写
   Object.defineProperty(ref, 'props', {
