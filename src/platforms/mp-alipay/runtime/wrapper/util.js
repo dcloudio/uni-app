@@ -108,24 +108,24 @@ export function initChildVues (mpInstance) {
   delete mpInstance._$childVues
 }
 
-function handleProps (ref) {
+export function handleProps (ref) {
   const eventProps = {}
   let refProps = ref.props
   const eventList = (refProps['data-event-list'] || '').split(',')
   // 初始化支付宝小程序组件事件
   eventList.forEach(key => {
-      const handler = refProps[key]
-      const res = key.match(/^on([A-Z])(\S*)/)
-      const event = res && (res[1].toLowerCase() + res[2])
-      refProps[key] = eventProps[key] = function () {
-        const props = Object.assign({}, refProps)
-        props[key] = handler
-        // 由于支付宝事件可能包含多个参数，不使用微信小程序事件格式
-        delete props['data-com-type']
-        triggerEvent.bind({ props })(event, {
-          __args__: [...arguments]
-        })
-      }
+    const handler = refProps[key]
+    const res = key.match(/^on([A-Z])(\S*)/)
+    const event = res && (res[1].toLowerCase() + res[2])
+    refProps[key] = eventProps[key] = function () {
+      const props = Object.assign({}, refProps)
+      props[key] = handler
+      // 由于支付宝事件可能包含多个参数，不使用微信小程序事件格式
+      delete props['data-com-type']
+      triggerEvent.bind({ props })(event, {
+        __args__: [...arguments]
+      })
+    }
   })
   // 处理 props 重写
   Object.defineProperty(ref, 'props', {
@@ -141,9 +141,6 @@ function handleProps (ref) {
 export function handleRef (ref) {
   if (!(ref && this.$vm)) {
     return
-  }
-  if (ref.props['data-com-type'] === 'wx') {
-    handleProps(ref)
   }
   const refName = ref.props['data-ref']
   const refInForName = ref.props['data-ref-in-for']
