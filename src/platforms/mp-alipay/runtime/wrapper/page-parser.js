@@ -24,6 +24,8 @@ import {
   initSpecialMethods
 } from './util'
 
+import { $emit } from 'uni-core/runtime/event-bus'
+
 const hooks = [
   'onShow',
   'onHide',
@@ -84,6 +86,9 @@ export default function parsePage (vuePageOptions) {
       // 支付宝小程序有些页面事件只能放在events下
       onBack () {
         this.$vm.__call_hook('onBackPress')
+      },
+      onKeyboardHeight (res) {
+        $emit('uni:keyboardHeightChange', res)
       }
     },
     __r: handleRef,
