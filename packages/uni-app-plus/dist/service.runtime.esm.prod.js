@@ -6347,7 +6347,7 @@ function updateDOMListeners (oldVnode, vnode) {
 
   var parent = vnode.parent;
   while (parent && parent.componentInstance) { // 使用组件外壳节点id
-    var parentId = parent.data.attrs && parent.data.attrs['_i'];
+    var parentId = parent.componentInstance.$attrs && parent.componentInstance.$attrs['_i'];
     isDef(parentId) && (nid = 'r-' + parentId);
     parent = parent.parent;
   }
