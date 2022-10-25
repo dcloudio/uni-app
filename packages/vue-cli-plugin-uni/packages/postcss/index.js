@@ -170,8 +170,6 @@ if (process.env.UNI_USING_V3) {
       if (process.env.UNI_PLATFORM === 'h5') {
         // Transform CSS AST here
 
-        const bgDecls = []
-
         root.walkRules(rule => {
           let hasPage = false
           // Transform each rule here
@@ -197,6 +195,7 @@ if (process.env.UNI_USING_V3) {
               )
             })
           }
+          const bgDecls = []
           // handle upx unit
           rule.walkDecls(decl => {
             if (hasPage) {
@@ -207,6 +206,15 @@ if (process.env.UNI_USING_V3) {
             // Transform each property declaration here
             decl.value = tranformValue(decl.value, opts)
           })
+
+          // handle body background rule
+          if (bgDecls.length) {
+            const bodyRule = postcss.rule({
+              selector: 'body.?%PAGE?%'
+            })
+            bgDecls.forEach(decl => bodyRule.append(decl))
+            rule.after(bodyRule)
+          }
         })
 
         root.walkAtRules(rule => {
@@ -214,14 +222,6 @@ if (process.env.UNI_USING_V3) {
             rule.params = tranformValue(rule.params, opts)
           }
         })
-
-        if (bgDecls.length) {
-          const rule = postcss.rule({
-            selector: 'body.?%PAGE?%'
-          })
-          bgDecls.forEach(decl => rule.append(decl))
-          root.append(rule)
-        }
       } else {
         root.walkRules(rule => {
           const selectors = transformSelector(rule.selectors.join(','), function (selectors) {
