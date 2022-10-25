@@ -36,10 +36,7 @@ export function parseUniExtApis(vite = true) {
         parseInjects(
           vite,
           process.env.UNI_PLATFORM === 'h5' ? 'web' : process.env.UNI_PLATFORM,
-          `@/uni_modules/${uniModuleDir}` +
-            (vite || !process.env.UNI_UTS_PLATFORM
-              ? ''
-              : `/utssdk/${process.env.UNI_UTS_PLATFORM}/index`),
+          `@/uni_modules/${uniModuleDir}`,
           exports
         )
       )

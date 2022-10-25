@@ -5,7 +5,6 @@ import {
   resolveUtsAppModule,
   resolveUTSCompiler,
 } from '@dcloudio/uni-cli-shared'
-import { isArray } from '@vue/shared'
 
 const UTSProxyRE = /\?uts-proxy$/
 
@@ -13,7 +12,6 @@ function isUTSProxy(id: string) {
   return UTSProxyRE.test(id)
 }
 export function uniUtsV1Plugin(): Plugin {
-  let isFirst = true
   return {
     name: 'uni:uts-v1',
     apply: 'build',
@@ -33,7 +31,7 @@ export function uniUtsV1Plugin(): Plugin {
         return ''
       }
     },
-    async transform(code, id, opts) {
+    async transform(_, id, opts) {
       if (opts && opts.ssr) {
         return
       }
@@ -41,86 +39,13 @@ export function uniUtsV1Plugin(): Plugin {
         return
       }
       const { filename: module } = parseVueRequest(id.replace('\0', ''))
-
-      const {
-        getCompiler,
-        genProxyCode,
-        resolvePackage,
-        resolvePlatformIndex,
-        resolveRootIndex,
-      } = resolveUTSCompiler()
-
-      const pkg = resolvePackage(module)
-      if (!pkg) {
-        return
+      const result = await resolveUTSCompiler().compile(module)
+      if (result) {
+        result.deps.forEach((dep) => {
+          this.addWatchFile(dep)
+        })
+        return result.code
       }
-      code = await genProxyCode(module, pkg)
-      if (process.env.NODE_ENV !== 'development') {
-        // 生产模式 支持同时生成 android 和 ios 的 uts 插件
-        if (
-          process.env.UNI_UTS_PLATFORM === 'app-android' ||
-          process.env.UNI_UTS_PLATFORM === 'app'
-        ) {
-          const filename =
-            resolvePlatformIndex('app-android', module, pkg) ||
-            resolveRootIndex(module, pkg)
-          if (filename) {
-            await getCompiler('kotlin').runProd(filename)
-          }
-        }
-        if (
-          process.env.UNI_UTS_PLATFORM === 'app-ios' ||
-          process.env.UNI_UTS_PLATFORM === 'app'
-        ) {
-          const filename =
-            resolvePlatformIndex('app-ios', module, pkg) ||
-            resolveRootIndex(module, pkg)
-          if (filename) {
-            await getCompiler('swift').runProd(filename)
-          }
-        }
-      } else {
-        // dev 模式仅 android 支持
-        if (process.env.UNI_UTS_PLATFORM === 'app-android') {
-          const filename =
-            resolvePlatformIndex('app-android', module, pkg) ||
-            resolveRootIndex(module, pkg)
-          if (filename) {
-            this.addWatchFile(filename)
-            const res = await getCompiler('kotlin').runDev(filename)
-            if (res) {
-              if (isArray(res.deps) && res.deps.length) {
-                // 添加其他文件的依赖
-                res.deps.forEach((dep) => {
-                  this.addWatchFile(dep)
-                })
-              }
-              if (!isFirst) {
-                const files: string[] = []
-                if (process.env.UNI_APP_CHANGED_DEX_FILES) {
-                  try {
-                    files.push(
-                      ...JSON.parse(process.env.UNI_APP_CHANGED_DEX_FILES)
-                    )
-                  } catch (e) {}
-                }
-                if (res.dex) {
-                  files.push(res.dex)
-                }
-                process.env.UNI_APP_CHANGED_DEX_FILES = JSON.stringify([
-                  ...new Set(files),
-                ])
-              }
-            }
-          }
-        } else if (process.env.UNI_UTS_PLATFORM === 'app-ios') {
-          process.env.UNI_APP_IOS_UTS = 'true'
-        }
-      }
-      return code
-    },
-    buildEnd() {
-      isFirst = false
     },
   }
 }

@@ -1,6 +1,6 @@
 import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise, extend, remove } from '@vue/shared';
-import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 import { LINEFEED, Emitter, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
+import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 
 const eventChannels = {};
 const eventChannelStack = [];
@@ -952,6 +952,10 @@ function initUni(api, protocols) {
             return promisify(key, wrapper(key, my[key]));
         },
     };
+    // 处理 api mp 打包后为不同js，emitter 无法共享问题
+    {
+        my.$emit = $emit;
+    }
     return new Proxy({}, UniProxyHandlers);
 }
 
@@ -1106,6 +1110,7 @@ function getHostName(fromRes) {
 
 const redirectTo = {};
 
+let onKeyboardHeightChangeCallback;
 const getProvider = initGetProvider({
     oauth: ['alipay'],
     share: ['alipay'],
@@ -1207,6 +1212,19 @@ function createIntersectionObserver(component, options) {
     }
     return my.createIntersectionObserver(options);
 }
+function onKeyboardHeightChange(callback) {
+    // 与微信小程序一致仅保留最后一次监听
+    if (onKeyboardHeightChangeCallback) {
+        $off('uni:keyboardHeightChange', onKeyboardHeightChangeCallback);
+    }
+    onKeyboardHeightChangeCallback = callback;
+    $on('uni:keyboardHeightChange', onKeyboardHeightChangeCallback);
+}
+function offKeyboardHeightChange() {
+    // 与微信小程序一致移除最后一次监听
+    $off('uni:keyboardHeightChange', onKeyboardHeightChangeCallback);
+    onKeyboardHeightChangeCallback = undefined;
+}
 
 var shims = /*#__PURE__*/Object.freeze({
   __proto__: null,
@@ -1216,7 +1234,9 @@ var shims = /*#__PURE__*/Object.freeze({
   removeStorageSync: removeStorageSync,
   startGyroscope: startGyroscope,
   createSelectorQuery: createSelectorQuery,
-  createIntersectionObserver: createIntersectionObserver
+  createIntersectionObserver: createIntersectionObserver,
+  onKeyboardHeightChange: onKeyboardHeightChange,
+  offKeyboardHeightChange: offKeyboardHeightChange
 });
 
 function handleNetworkInfo(fromRes, toRes) {

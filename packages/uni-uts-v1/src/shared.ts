@@ -21,7 +21,10 @@ export function once<T extends (...args: any[]) => any>(
 }
 
 export const runByHBuilderX = once(() => {
-  return !!process.env.UNI_HBUILDERX_PLUGINS && !!process.env.RUN_BY_HBUILDERX
+  return (
+    !!process.env.UNI_HBUILDERX_PLUGINS &&
+    (!!process.env.RUN_BY_HBUILDERX || !!process.env.HX_Version)
+  )
 })
 
 export const isInHBuilderX = once(() => {

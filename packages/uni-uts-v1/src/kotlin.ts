@@ -77,11 +77,20 @@ export async function runKotlinDev(
     if (!compilerServer) {
       return
     }
-    const { getDefaultJar, getKotlincHome, compile, checkDependencies } =
-      compilerServer
+    const {
+      getDefaultJar,
+      getKotlincHome,
+      compile,
+      checkDependencies,
+      checkRResources,
+    } = compilerServer
     let deps: string[] = []
     if (checkDependencies) {
       deps = await checkDeps(filename, checkDependencies)
+    }
+    let resDeps: string[] = []
+    if (checkRResources) {
+      resDeps = await checkRes(filename, checkRResources)
     }
     // time = Date.now()
     const jarFile = resolveJarPath(kotlinFile)
@@ -89,7 +98,10 @@ export async function runKotlinDev(
       kotlinc: resolveKotlincArgs(
         kotlinFile,
         getKotlincHome(),
-        getDefaultJar().concat(resolveLibs(filename)).concat(deps)
+        getDefaultJar()
+          .concat(resolveLibs(filename))
+          .concat(deps)
+          .concat(resDeps)
       ),
       d8: resolveD8Args(jarFile),
       sourceRoot: process.env.UNI_INPUT_DIR,
@@ -134,6 +146,7 @@ function checkDeps(
   }
   return Promise.resolve([])
 }
+
 function hasDeps(configJsonFile: string) {
   const deps =
     parseJson(fs.readFileSync(configJsonFile, 'utf8')).dependencies || []
@@ -141,6 +154,31 @@ function hasDeps(configJsonFile: string) {
     return true
   }
   return false
+}
+
+function checkRes(
+  filename: string,
+  checkRResources: (
+    resDir: string
+  ) => Promise<{ code: number; msg: string; jarPaths: string[] }>
+) {
+  const resDir = resolveResDir(filename)
+  if (resDir) {
+    return checkRResources(resDir).then(({ code, msg, jarPaths }) => {
+      if (code !== 0) {
+        throw msg
+      }
+      return jarPaths
+    })
+  }
+  return Promise.resolve([])
+}
+
+function resolveResDir(filename: string) {
+  const resDir = path.resolve(resolveAndroidDir(filename), 'res')
+  if (fs.existsSync(resDir)) {
+    return resDir
+  }
 }
 
 function resolveConfigJsonFile(filename: string) {
@@ -281,6 +319,9 @@ interface CompilerServer {
   checkDependencies?: (
     configJsonPath: string
   ) => Promise<{ code: number; msg: string; data: string[] }>
+  checkRResources?: (
+    resDir: string
+  ) => Promise<{ code: number; msg: string; jarPaths: string[] }>
 }
 
 function getCompilerServer(): CompilerServer | undefined {
