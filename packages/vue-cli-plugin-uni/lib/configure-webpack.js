@@ -24,7 +24,8 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
     isInHBuilderX, // 在 HBuilderX 的插件中
     hasModule,
     jsPreprocessOptions,
-    htmlPreprocessOptions
+    htmlPreprocessOptions,
+    uts
   } = require('@dcloudio/uni-cli-shared')
 
   const {
@@ -252,13 +253,7 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
         .parseUniExtApis(false)
       const keys = Object.keys(uniExtApis)
       if (keys.length) {
-        if (process.env.UNI_PLATFORM === 'app-plus') {
-          keys.forEach(key => {
-            console.warn(`[${uniExtApis[key][0].split('/')[2]}]: uts目前仅支持vue3`)
-          })
-        } else {
-          plugins.push(new webpack.ProvidePlugin(uniExtApis))
-        }
+        plugins.push(new webpack.ProvidePlugin(uniExtApis))
       }
     }
     if (!process.env.UNI_SUBPACKGE || !process.env.UNI_MP_PLUGIN) {
@@ -281,7 +276,7 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
         plugins.push(new CopyWebpackPlugin(CopyWebpackPluginVersion > 5 ? {
           patterns
         } : patterns))
-      } catch (e) { }
+      } catch (e) {}
     }
 
     if (process.UNI_SCRIPT_ENV && Object.keys(process.UNI_SCRIPT_ENV).length) {
@@ -380,7 +375,7 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
           dir: process.env.UNI_INPUT_DIR
         }))
       }
-    } catch (e) { }
+    } catch (e) {}
 
     const resolveLoaderAlias = {}
     const modules = ['@vue/cli-plugin-babel', '@vue/cli-service']
@@ -415,6 +410,9 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
         modules: [
           process.env.UNI_INPUT_DIR,
           path.resolve(process.env.UNI_INPUT_DIR, 'node_modules')
+        ],
+        plugins: [
+          new uts.UTSResolverPlugin()
         ]
       },
       module: {

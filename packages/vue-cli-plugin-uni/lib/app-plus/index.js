@@ -178,6 +178,13 @@ const v3 = {
               '../../packages/webpack-uni-app-loader/page-meta')
           }]
         },
+        {
+          type: 'javascript/auto',
+          resourceQuery: /uts-proxy/,
+          use: [{
+            loader: require.resolve('@dcloudio/uni-cli-shared/lib/uts/uts-loader.js')
+          }]
+        },
         ...rules
           // v3 暂不支持 cache
           // createTemplateCacheLoader(api,

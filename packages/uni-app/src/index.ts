@@ -2,6 +2,14 @@
 import { createLifeCycle as createLifeCycleBase, ComponentInternalInstance } from '@vue/composition-api'
 import * as mp from './mp'
 
+export {
+  initUtsProxyClass,
+  initUtsProxyFunction,
+  initUtsIndexClassName,
+  initUtsClassName,
+  initUtsPackageName,
+} from './uts'
+
 const lifecycles: string[] = []
 
 const createLifeCycle = <T extends Function>(lifecycle: string) => {
