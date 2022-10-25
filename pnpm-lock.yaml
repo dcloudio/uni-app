@@ -53,7 +53,7 @@ importers:
       typescript: ^4.8.4
       vite: 3.1.8
       vue: 3.2.41
-      vue-router: ^4.1.5
+      vue-router: ^4.1.6
       yorkie: ^2.0.0
     devDependencies:
       '@babel/core': 7.19.3
@@ -105,7 +105,7 @@ importers:
       typescript: 4.8.4
       vite: 3.1.8
       vue: 3.2.41
-      vue-router: 4.1.5_vue@3.2.41
+      vue-router: 4.1.6_vue@3.2.41
       yorkie: 2.0.0
 
   packages/playground/ssr:
@@ -119,14 +119,14 @@ importers:
       serve-static: ^1.15.0
       vite: 3.1.8
       vue: 3.2.41
-      vue-router: ^4.1.5
+      vue-router: ^4.1.6
       vuex: ^4.1.0
     dependencies:
       '@dcloudio/uni-app': link:../../uni-app
       '@dcloudio/uni-components': link:../../uni-components
       '@dcloudio/uni-h5': link:../../uni-h5
       vue: 3.2.41
-      vue-router: 4.1.5_vue@3.2.41
+      vue-router: 4.1.6_vue@3.2.41
       vuex: 4.1.0_vue@3.2.41
     devDependencies:
       '@dcloudio/vite-plugin-uni': link:../../vite-plugin-uni
@@ -459,7 +459,7 @@ importers:
       localstorage-polyfill: ^1.0.1
       safe-area-insets: ^1.4.1
       vue: 3.2.41
-      vue-router: ^4.1.5
+      vue-router: ^4.1.6
       xmlhttprequest: ^1.8.0
     dependencies:
       '@dcloudio/uni-h5-vite': link:../uni-h5-vite
@@ -470,7 +470,7 @@ importers:
       '@vue/shared': 3.2.41
       localstorage-polyfill: 1.0.1
       safe-area-insets: 1.4.1
-      vue-router: 4.1.5_vue@3.2.41
+      vue-router: 4.1.6_vue@3.2.41
       xmlhttprequest: 1.8.0
     devDependencies:
       '@amap/amap-jsapi-types': 0.0.8
@@ -3194,6 +3194,10 @@ packages:
 
   /@vue/devtools-api/6.4.4:
     resolution: {integrity: sha512-Ku31WzpOV/8cruFaXaEZKF81WkNnvCSlBY4eOGtz5WMSdJvX1v1WWlSMGZeqUwPtQ27ZZz7B62erEMq8JDjcXw==}
+    dev: false
+
+  /@vue/devtools-api/6.4.5:
+    resolution: {integrity: sha512-JD5fcdIuFxU4fQyXUu3w2KpAJHzTVdN+p4iOX2lMWSHMOoQdMAcpFLZzm9Z/2nmsoZ1a96QEhZ26e50xLBsgOQ==}
 
   /@vue/reactivity-transform/3.2.40:
     resolution: {integrity: sha512-HQUCVwEaacq6fGEsg2NUuGKIhUveMCjOk8jGHqLXPI2w6zFoPrlQhwWEaINTv5kkZDXKEnCijAp+4gNEHG03yw==}
@@ -8400,12 +8404,12 @@ packages:
       vue: 3.2.40
     dev: false
 
-  /vue-router/4.1.5_vue@3.2.41:
-    resolution: {integrity: sha512-IsvoF5D2GQ/EGTs/Th4NQms9gd2NSqV+yylxIyp/OYp8xOwxmU8Kj/74E9DTSYAyH5LX7idVUngN3JSj1X4xcQ==}
+  /vue-router/4.1.6_vue@3.2.41:
+    resolution: {integrity: sha512-DYWYwsG6xNPmLq/FmZn8Ip+qrhFEzA14EI12MsMgVxvHFDYvlr4NXpVF5hrRH1wVcDP8fGi5F4rxuJSl8/r+EQ==}
     peerDependencies:
       vue: ^3.2.0
     dependencies:
-      '@vue/devtools-api': 6.4.4
+      '@vue/devtools-api': 6.4.5
       vue: 3.2.41
 
   /vue/3.2.40:
