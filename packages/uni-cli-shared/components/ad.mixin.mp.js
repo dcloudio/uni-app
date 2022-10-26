@@ -111,8 +111,7 @@ export default {
     },
 
     _hasCallback () {
-      return false
-      // return (typeof this.urlCallback === 'object' && Object.keys(this.urlCallback).length > 0)
+      return (typeof this.urlCallback === 'object' && Object.keys(this.urlCallback).length > 0)
     },
 
     _onmpload (e) {
