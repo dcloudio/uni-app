@@ -1,23 +1,26 @@
 import { invoke } from '../../bridge'
-const callbackIds = []
-const callbackOnErrorIds = []
-const callbackOffErrorIds = []
-let watchId
 
-/**
- * 开始更新定位
- */
-export function startLocationUpdate ({ type = 'wgs84' }) {
-  watchId = plus.geolocation.watchPosition(
+let successCallbackIds = []
+let errorCallbackIds = []
+let started = false
+let watchId = 0
+
+export function startLocationUpdate ({ type = 'gcj02' }, callbackId) {
+  watchId = watchId || plus.geolocation.watchPosition(
     res => {
-      callbackIds.forEach(callbackId => {
+      started = true
+      successCallbackIds.forEach(callbackId => {
         invoke(callbackId, res.coords)
       })
     },
     error => {
-      callbackOnErrorIds.forEach(callbackId => {
+      if (!started) {
+        invoke(callbackId, { errMsg: `startLocationUpdate:fail ${error.message}` })
+        started = true
+      }
+      errorCallbackIds.forEach(callbackId => {
         invoke(callbackId, {
-          errMsg: 'onLocationChange:fail' + error.message
+          errMsg: `onLocationChange:fail ${error.message}`
         })
       })
     },
@@ -25,56 +28,48 @@ export function startLocationUpdate ({ type = 'wgs84' }) {
       coordsType: type
     }
   )
+  setTimeout(() => {
+    invoke(callbackId, {
+      errMsg: 'startLocationUpdate:ok'
+    })
+  }, 100)
 }
 
-/**
- * 暂停更新定位
- * @param {*} callbackId
- */
-export function stopLocationUpdate (callbackId) {
-  if (watchId) {
+export function stopLocationUpdate () {
+  if (watchId !== 0) {
     plus.geolocation.clearWatch(watchId)
-  } else {
-    invoke(callbackId, { errMsg: 'stopLocationUpdate:fail' })
+    started = false
+    watchId = 0
   }
   return {}
 }
 
-/**
- * 监听更新定位
- * @param {*} callbackId
- */
 export function onLocationChange (callbackId) {
-  callbackIds.push(callbackId)
+  successCallbackIds.push(callbackId)
 }
 
-/**
- * 监听更新定位失败
- * @param {*} callbackId
- */
-export function onLocationChangeError (callbackId) {
-  callbackOnErrorIds.push(callbackId)
-}
-
-// 移除实时地理位置变化事件的监听函数
 export function offLocationChange (callbackId) {
   if (callbackId) {
-    const index = callbackIds.indexOf(callbackId)
+    const index = successCallbackIds.indexOf(callbackId)
     if (index >= 0) {
-      callbackIds.splice(index, 1)
-    } else {
-      callbackOffErrorIds.forEach(callbackId => {
-        invoke(callbackId, {
-          errMsg: 'offLocationChange:fail'
-        })
-      })
+      successCallbackIds.splice(index, 1)
     }
   } else {
-    callbackIds.length = 0
+    successCallbackIds = []
   }
 }
 
-// 移除实时地理位置变化事件的监听函数
+export function onLocationChangeError (callbackId) {
+  errorCallbackIds.push(callbackId)
+}
+
 export function offLocationChangeError (callbackId) {
-  callbackOffErrorIds.push(callbackId)
+  if (callbackId) {
+    const index = errorCallbackIds.indexOf(callbackId)
+    if (index >= 0) {
+      errorCallbackIds.splice(index, 1)
+    }
+  } else {
+    errorCallbackIds = []
+  }
 }

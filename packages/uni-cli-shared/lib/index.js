@@ -63,7 +63,10 @@ const {
   getPlatformUniCloud
 } = require('./platform')
 
+const uts = require('./uts')
+
 module.exports = {
+  uts,
   md5,
   tags,
   hasOwn,

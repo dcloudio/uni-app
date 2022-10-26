@@ -1,5 +1,9 @@
+const fs = require('fs')
+const path = require('path')
+
 const {
-  parsePages
+  parsePages,
+  getPlatformProject
 } = require('@dcloudio/uni-cli-shared')
 
 const {
@@ -84,13 +88,21 @@ module.exports = function (pagesJson, manifestJson) {
   if (app.usingComponents) {
     updateAppJsonUsingComponents(app.usingComponents)
   }
+  const projectName = getPlatformProject()
 
-  const project = Object.assign({
-    appid: platformJson.appid
-  })
+  let project = {}
 
-  project.component2 = hasOwn(platformJson, 'component2') ? platformJson.component2 : true
-  project.enableAppxNg = hasOwn(platformJson, 'enableAppxNg') ? platformJson.enableAppxNg : true
+  const projectPath = path.resolve(process.env.UNI_INPUT_DIR, projectName)
+  if (fs.existsSync(projectPath)) {
+    project = require(projectPath)
+  } else {
+    if (platformJson.appid) {
+      project.appid = platformJson.appid
+    }
+
+    project.component2 = hasOwn(platformJson, 'component2') ? platformJson.component2 : true
+    project.enableAppxNg = hasOwn(platformJson, 'enableAppxNg') ? platformJson.enableAppxNg : true
+  }
 
   return [{
     name: 'app',

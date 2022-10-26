@@ -3,6 +3,7 @@
 /// <reference types="@dcloudio/types" />
 /// <reference types="@dcloudio/types" />
 import { ComponentInternalInstance } from '@vue/composition-api';
+export { initUtsProxyClass, initUtsProxyFunction, initUtsIndexClassName, initUtsClassName, initUtsPackageName, } from './uts';
 export declare const onShow: (callback: ((options?: App.LaunchShowOption) => void) | (() => void), target?: ComponentInternalInstance | null) => Function;
 export declare const onHide: (callback: (() => void) | (() => void), target?: ComponentInternalInstance | null) => Function;
 export declare const onLaunch: (callback: (options?: App.LaunchShowOption) => void, target?: ComponentInternalInstance | null) => Function;

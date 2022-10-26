@@ -1,5 +1,7 @@
 const path = require('path')
-const { parseJson } = require('@dcloudio/uni-cli-shared/lib/json')
+const {
+  parseJson
+} = require('@dcloudio/uni-cli-shared/lib/json')
 
 module.exports = {
   options: {
@@ -17,7 +19,8 @@ module.exports = {
       filter: '.sjs'
     },
     filterTag: 'sjs',
-    subPackages: true
+    subPackages: true,
+    project: 'mini.project.json'
   },
   copyWebpackOptions (platformOptions, vueOptions) {
     const copyOptions = ['mycomponents', 'customize-tab-bar', 'ext.json']
