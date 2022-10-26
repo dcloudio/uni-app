@@ -8,6 +8,7 @@ import {
 } from '../manifest'
 import { parseArguments } from '../manifest/arguments'
 import { getSplashscreen } from '../manifest/splashscreen'
+import { normalizeThemeConfigOnce } from '../../theme'
 
 interface AppUniConfig {
   pages: string[]
@@ -37,6 +38,8 @@ interface AppUniConfig {
   locale?: string
   fallbackLocale?: string
   locales?: Record<string, Record<string, string>>
+  darkmode: boolean
+  themeConfig: UniApp.ThemeJson
 }
 
 export function normalizeAppUniConfig(
@@ -44,6 +47,10 @@ export function normalizeAppUniConfig(
   manifestJson: Record<string, any>
 ) {
   const { autoclose, alwaysShowBeforeRender } = getSplashscreen(manifestJson)
+  const platformConfig =
+    manifestJson[
+      process.env.UNI_PLATFORM === 'app' ? 'app-plus' : process.env.UNI_PLATFORM
+    ] || {}
 
   const config: AppUniConfig = {
     pages: [],
@@ -65,6 +72,8 @@ export function normalizeAppUniConfig(
     networkTimeout: normalizeNetworkTimeout(manifestJson.networkTimeout),
     tabBar: pagesJson.tabBar,
     locales: initLocales(path.join(process.env.UNI_INPUT_DIR, 'locale')),
+    darkmode: platformConfig.darkmode || false,
+    themeConfig: normalizeThemeConfigOnce(platformConfig),
   }
   // TODO 待支持分包
   return JSON.stringify(config)

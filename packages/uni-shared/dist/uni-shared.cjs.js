@@ -1381,6 +1381,56 @@ E.prototype = {
 };
 var E$1 = E;
 
+const borderStyles = {
+    black: 'rgba(0,0,0,0.4)',
+    white: 'rgba(255,255,255,0.4)',
+};
+function normalizeTabBarStyles(borderStyle) {
+    if (borderStyle && borderStyle in borderStyles) {
+        return borderStyles[borderStyle];
+    }
+    return borderStyle;
+}
+function normalizeTitleColor(titleColor) {
+    return titleColor === 'black' ? '#000000' : '#ffffff';
+}
+function normalizeStyles(pageStyle, themeConfig, mode = 'light') {
+    const modeStyle = themeConfig[mode];
+    const styles = {};
+    if (!modeStyle) {
+        return pageStyle;
+    }
+    Object.keys(pageStyle).forEach((key) => {
+        let styleItem = pageStyle[key] // Object Array String
+        ;
+        styles[key] = (() => {
+            if (shared.isPlainObject(styleItem)) {
+                return normalizeStyles(styleItem, themeConfig, mode);
+            }
+            else if (shared.isArray(styleItem)) {
+                return styleItem.map((item) => shared.isPlainObject(item)
+                    ? normalizeStyles(item, themeConfig, mode)
+                    : item);
+            }
+            else if (shared.isString(styleItem) && styleItem.startsWith('@')) {
+                const _key = styleItem.replace('@', '');
+                let _styleItem = modeStyle[_key];
+                switch (key) {
+                    case 'titleColor':
+                        _styleItem = normalizeTitleColor(_styleItem);
+                        break;
+                    case 'borderStyle':
+                        _styleItem = normalizeTabBarStyles(_styleItem);
+                        break;
+                }
+                return _styleItem;
+            }
+            return styleItem;
+        })();
+    });
+    return styles;
+}
+
 function getEnvLocale() {
     const { env } = process;
     const lang = env.LC_ALL || env.LC_MESSAGES || env.LANG || env.LANGUAGE;
@@ -1491,6 +1541,7 @@ exports.WXS_MODULES = WXS_MODULES;
 exports.WXS_PROTOCOL = WXS_PROTOCOL;
 exports.addFont = addFont;
 exports.addLeadingSlash = addLeadingSlash;
+exports.borderStyles = borderStyles;
 exports.cache = cache;
 exports.cacheStringFunction = cacheStringFunction;
 exports.callOptions = callOptions;
@@ -1529,7 +1580,10 @@ exports.isRootImmediateHook = isRootImmediateHook;
 exports.isUniLifecycleHook = isUniLifecycleHook;
 exports.normalizeDataset = normalizeDataset;
 exports.normalizeEventType = normalizeEventType;
+exports.normalizeStyles = normalizeStyles;
+exports.normalizeTabBarStyles = normalizeTabBarStyles;
 exports.normalizeTarget = normalizeTarget;
+exports.normalizeTitleColor = normalizeTitleColor;
 exports.onCreateVueApp = onCreateVueApp;
 exports.once = once;
 exports.parseEventName = parseEventName;

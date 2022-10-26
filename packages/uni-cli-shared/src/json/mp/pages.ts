@@ -7,6 +7,8 @@ import { AppJson, NetworkTimeout, PageWindowOptions } from './types'
 import { parseTabBar, parseWindowOptions } from './utils'
 import { normalizePath } from '../../utils'
 import { isMiniProgramProjectJsonKey } from './project'
+import { parseManifestJsonOnce } from '../manifest'
+import { initTheme } from '../theme'
 
 interface ParsePagesJsonOptions {
   debug?: boolean
@@ -65,11 +67,11 @@ function parsePagesJson(
     subpackages: false,
   }
 ) {
-  const appJson: AppJson = {
+  let appJson: AppJson = {
     pages: [],
   }
-  const pageJsons: Record<string, PageWindowOptions> = {}
-  const nvuePages: string[] = []
+  let pageJsons: Record<string, PageWindowOptions> = {}
+  let nvuePages: string[] = []
   // preprocess
   const pagesJson = parseJson(jsonStr, true) as UniApp.PagesJson
   if (!pagesJson) {
@@ -178,6 +180,10 @@ function parsePagesJson(
   if (darkmode) {
     appJson.darkmode = true
     appJson.themeLocation = 'theme.json'
+  } else {
+    const manifestJson = parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
+    appJson = initTheme(manifestJson, appJson)
+    pageJsons = initTheme(manifestJson, pageJsons)
   }
   return {
     appJson,

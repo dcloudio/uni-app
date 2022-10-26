@@ -17,4 +17,13 @@ export function initBackgroundColor(
   if (!webviewStyle.backgroundColorTop) {
     webviewStyle.backgroundColorTop = backgroundColor
   }
+  if (!webviewStyle.backgroundColorBottom) {
+    webviewStyle.backgroundColorBottom = backgroundColor
+  }
+  if (!webviewStyle.animationAlphaBGColor) {
+    webviewStyle.animationAlphaBGColor = backgroundColor
+  }
+  if (typeof webviewStyle.webviewBGTransparent === 'undefined') {
+    webviewStyle.webviewBGTransparent = true
+  }
 }

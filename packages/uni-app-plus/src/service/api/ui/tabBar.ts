@@ -32,7 +32,7 @@ import {
   ShowTabBarRedDotProtocol,
 } from '@dcloudio/uni-api'
 import tabBar from '../../framework/app/tabBar'
-import { removeLeadingSlash } from '@dcloudio/uni-shared'
+import { removeLeadingSlash, normalizeTabBarStyles } from '@dcloudio/uni-shared'
 import { normalizeTabBarRoute } from '@dcloudio/uni-core'
 import { isTabBarPage } from '../../../helpers/plus'
 
@@ -82,14 +82,7 @@ export const setTabBarStyle = defineAsyncApi<API_TYPE_SET_TAB_BAR_STYLE>(
     if (!isTabBarPage()) {
       return reject('not TabBar page')
     }
-    const borderStyles = {
-      black: 'rgba(0,0,0,0.4)',
-      white: 'rgba(255,255,255,0.4)',
-    }
-    const borderStyle = style.borderStyle
-    if (borderStyle && borderStyle in borderStyles) {
-      style.borderStyle = borderStyles[borderStyle as keyof typeof borderStyles]
-    }
+    style.borderStyle = normalizeTabBarStyles(style.borderStyle)
     tabBar.setTabBarStyle(style)
     resolve()
   },

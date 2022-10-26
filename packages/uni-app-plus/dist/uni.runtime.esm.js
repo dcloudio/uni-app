@@ -1,5 +1,5 @@
 import { isArray, hasOwn as hasOwn$1, isString, isPlainObject, isObject as isObject$1, toRawType, capitalize, makeMap, isFunction, isPromise, extend, remove, toTypeString } from '@vue/shared';
-import { LINEFEED, parseNVueDataset, once, I18N_JSON_DELIMITERS, Emitter, resolveComponentInstance, addLeadingSlash, invokeArrayFns, removeLeadingSlash, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, SCHEME_RE, DATA_RE, cacheStringFunction, formatLog, parseQuery, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, TABBAR_HEIGHT, NAVBAR_HEIGHT, sortObject, ON_THEME_CHANGE, ON_KEYBOARD_HEIGHT_CHANGE, BACKGROUND_COLOR, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery as stringifyQuery$1, debounce, ON_PULL_DOWN_REFRESH, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_BACK_PRESS, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ON_READY, ON_UNLOAD, EventChannel, ON_REACH_BOTTOM_DISTANCE, parseUrl, onCreateVueApp, ON_TAB_ITEM_TAP, ON_LAUNCH, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE } from '@dcloudio/uni-shared';
+import { LINEFEED, parseNVueDataset, once, I18N_JSON_DELIMITERS, Emitter, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, SCHEME_RE, DATA_RE, cacheStringFunction, formatLog, parseQuery, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, ON_THEME_CHANGE, TABBAR_HEIGHT, NAVBAR_HEIGHT, sortObject, ON_KEYBOARD_HEIGHT_CHANGE, normalizeTabBarStyles, BACKGROUND_COLOR, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery as stringifyQuery$1, debounce, ON_PULL_DOWN_REFRESH, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_BACK_PRESS, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ON_READY, ON_UNLOAD, EventChannel, ON_REACH_BOTTOM_DISTANCE, parseUrl, onCreateVueApp, ON_TAB_ITEM_TAP, ON_LAUNCH, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE } from '@dcloudio/uni-shared';
 import { ref, createVNode, render, injectHook, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount } from 'vue';
 
 /*
@@ -1542,6 +1542,7 @@ function normalizePullToRefreshRpx(pullToRefresh) {
 }
 function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel) {
     const { id, route } = meta;
+    const titleColor = normalizeStyles(meta.navigationBar, __uniConfig.themeConfig).titleColor;
     return {
         id: id,
         path: addLeadingSlash(route),
@@ -1551,7 +1552,7 @@ function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel) 
         meta,
         openType,
         eventChannel,
-        statusBarStyle: meta.navigationBar.titleColor === '#000000' ? 'dark' : 'light',
+        statusBarStyle: titleColor === '#000000' ? 'dark' : 'light',
     };
 }
 
@@ -13208,6 +13209,68 @@ const canIUse = defineSyncApi(API_CAN_I_USE, (schema) => {
     return false;
 }, CanIUseProtocol);
 
+function onThemeChange$1(callback) {
+    UniServiceJSBridge.on(ON_THEME_CHANGE, callback);
+}
+function offThemeChange(callback) {
+    UniServiceJSBridge.off(ON_THEME_CHANGE, callback);
+}
+function parseTheme(pageStyle) {
+    let parsedStyle = {};
+    if (__uniConfig.darkmode) {
+        let theme = 'light';
+        const systemInfo = weexGetSystemInfoSync();
+        if (systemInfo) {
+            theme = systemInfo.hostTheme || systemInfo.osTheme;
+        }
+        parsedStyle = normalizeStyles(pageStyle, __uniConfig.themeConfig, theme);
+    }
+    return __uniConfig.darkmode ? parsedStyle : pageStyle;
+}
+function useTabBarThemeChange(tabBar, options) {
+    if (__uniConfig.darkmode) {
+        const fn = () => {
+            const { list = [], color, selectedColor, backgroundColor, borderStyle, } = parseTheme(options);
+            tabBar &&
+                tabBar.setTabBarStyle({
+                    color,
+                    selectedColor,
+                    backgroundColor,
+                    borderStyle,
+                });
+            tabBar &&
+                tabBar.setTabBarItems({
+                    list: list.map((item) => ({
+                        iconPath: item.iconPath,
+                        selectedIconPath: item.selectedIconPath,
+                    })),
+                });
+        };
+        // 由于应用首次启动获取不到手机 theme 应用首次启动设置下 tabBar
+        fn();
+        onThemeChange$1(fn);
+    }
+}
+function useWebviewThemeChange(webview, getWebviewStyle) {
+    if (__uniConfig.darkmode) {
+        const fn = () => {
+            const { animationAlphaBGColor, background, backgroundColorBottom, backgroundColorTop, titleNView: { backgroundColor, titleColor } = {}, } = getWebviewStyle();
+            webview === null || webview === void 0 ? void 0 : webview.setStyle({
+                animationAlphaBGColor,
+                background,
+                backgroundColorBottom,
+                backgroundColorTop,
+                titleNView: {
+                    backgroundColor,
+                    titleColor,
+                },
+            });
+        };
+        onThemeChange$1(fn);
+        webview.addEventListener('close', () => offThemeChange(fn));
+    }
+}
+
 let config;
 /**
  * tabbar显示状态
@@ -13245,6 +13308,12 @@ function setTabBarBadge$1(type, index, text) {
     }
 }
 /**
+ * 动态设置 tabBar 多项的内容
+ */
+function setTabBarItems(tabBarConfig) {
+    tabBar && tabBar.setTabBarItems(tabBarConfig);
+}
+/**
  * 动态设置 tabBar 某一项的内容
  */
 function setTabBarItem$1(index, text, iconPath, selectedIconPath, visible, iconfont) {
@@ -13270,7 +13339,7 @@ function setTabBarItem$1(index, text, iconPath, selectedIconPath, visible, iconf
             visible: item.visible,
         }));
         tabbarItems[index] = item;
-        tabBar && tabBar.setTabBarItems({ list: tabbarItems });
+        setTabBarItems({ list: tabbarItems });
     }
     else {
         tabBar && tabBar.setTabBarItem(item);
@@ -13331,6 +13400,7 @@ var tabBarInstance = {
             tabBar.onMidButtonClick(() => {
                 return UniServiceJSBridge.invokeOnCallback(API_ON_TAB_BAR_MID_BUTTON_TAP);
             });
+        useTabBarThemeChange(tabBar, options);
     },
     indexOf(page) {
         const config = this.config;
@@ -13551,6 +13621,7 @@ function weexGetSystemInfoSync() {
         }
         catch (error) { }
     }
+    return systemInfo;
 }
 const getDeviceInfo = defineSyncApi('getDeviceInfo', () => {
     weexGetSystemInfoSync();
@@ -13572,7 +13643,7 @@ const getDeviceInfo = defineSyncApi('getDeviceInfo', () => {
 });
 const getAppBaseInfo = defineSyncApi('getAppBaseInfo', () => {
     weexGetSystemInfoSync();
-    const { hostPackageName, hostName, hostVersion, hostLanguage, osLanguage, hostTheme, appId, appName, appVersion, appVersionCode, appWgtVersion, } = systemInfo;
+    const { hostPackageName, hostName, hostVersion, hostLanguage, osLanguage, osTheme, hostTheme, appId, appName, appVersion, appVersionCode, appWgtVersion, } = systemInfo;
     return {
         appId,
         appName,
@@ -13590,7 +13661,7 @@ const getAppBaseInfo = defineSyncApi('getAppBaseInfo', () => {
         hostSDKVersion: undefined,
         language: osLanguage,
         SDKVersion: '',
-        theme: undefined,
+        theme: hostTheme || osTheme,
         version: plus.runtime.innerVersion,
     };
 });
@@ -13612,7 +13683,9 @@ const getSystemInfoSync = defineSyncApi('getSystemInfoSync', () => {
     const _systemInfo = extend(systemInfo, windowInfo, deviceInfo, appBaseInfo, extraData);
     delete _systemInfo.screenTop;
     delete _systemInfo.enableDebug;
-    delete _systemInfo.theme;
+    if (!__uniConfig.darkmode) {
+        delete _systemInfo.theme;
+    }
     return sortObject(_systemInfo);
 });
 const getSystemInfo = defineAsyncApi('getSystemInfo', (_, { resolve }) => {
@@ -16481,14 +16554,7 @@ const setTabBarStyle = defineAsyncApi(API_SET_TAB_BAR_STYLE, (style = {}, { reso
     if (!isTabBarPage()) {
         return reject('not TabBar page');
     }
-    const borderStyles = {
-        black: 'rgba(0,0,0,0.4)',
-        white: 'rgba(255,255,255,0.4)',
-    };
-    const borderStyle = style.borderStyle;
-    if (borderStyle && borderStyle in borderStyles) {
-        style.borderStyle = borderStyles[borderStyle];
-    }
+    style.borderStyle = normalizeTabBarStyles(style.borderStyle);
     tabBarInstance.setTabBarStyle(style);
     resolve();
 }, SetTabBarStyleProtocol, SetTabBarStyleOptions);
@@ -17630,6 +17696,15 @@ function initBackgroundColor(webviewStyle, routeMeta) {
     if (!webviewStyle.backgroundColorTop) {
         webviewStyle.backgroundColorTop = backgroundColor;
     }
+    if (!webviewStyle.backgroundColorBottom) {
+        webviewStyle.backgroundColorBottom = backgroundColor;
+    }
+    if (!webviewStyle.animationAlphaBGColor) {
+        webviewStyle.animationAlphaBGColor = backgroundColor;
+    }
+    if (typeof webviewStyle.webviewBGTransparent === 'undefined') {
+        webviewStyle.webviewBGTransparent = true;
+    }
 }
 
 function initPopGesture(webviewStyle, routeMeta) {
@@ -17868,20 +17943,23 @@ function initDebugRefresh(isTab, path, query) {
 }
 
 function createNVueWebview({ path, query, routeOptions, webviewExtras, }) {
-    const curWebviewId = genWebviewId();
-    const curWebviewStyle = parseWebviewStyle(path, routeOptions.meta, {
+    const getCurWebviewStyle = () => parseWebviewStyle(path, parseTheme(routeOptions.meta), {
         id: curWebviewId + '',
     });
+    const curWebviewId = genWebviewId();
+    const curWebviewStyle = getCurWebviewStyle();
     curWebviewStyle.uniPageUrl = initUniPageUrl(path, query);
     if ((process.env.NODE_ENV !== 'production')) {
         console.log(formatLog('createNVueWebview', curWebviewId, path, curWebviewStyle));
     }
     curWebviewStyle.isTab = !!routeOptions.meta.isTabBar;
-    return plus.webview.create('', String(curWebviewId), curWebviewStyle, extend({
+    const webview = plus.webview.create('', String(curWebviewId), curWebviewStyle, extend({
         nvue: true,
         __path__: path,
         __query__: JSON.stringify(query),
     }, webviewExtras));
+    useWebviewThemeChange(webview, getCurWebviewStyle);
+    return webview;
 }
 
 let preloadWebview$1;
@@ -18043,7 +18121,8 @@ function initWebviewEvent(webview) {
 }
 
 function initWebviewStyle(webview, path, query, routeMeta) {
-    const webviewStyle = parseWebviewStyle(path, routeMeta, webview);
+    const getWebviewStyle = () => parseWebviewStyle(path, parseTheme(routeMeta), webview);
+    const webviewStyle = getWebviewStyle();
     webviewStyle.uniPageUrl = initUniPageUrl(path, query);
     const isTabBar = !!routeMeta.isTabBar;
     if (!routeMeta.isNVue) {
@@ -18057,6 +18136,7 @@ function initWebviewStyle(webview, path, query, routeMeta) {
     if ((process.env.NODE_ENV !== 'production')) {
         console.log(formatLog('updateWebview', webviewStyle));
     }
+    useWebviewThemeChange(webview, getWebviewStyle);
     webview.setStyle(webviewStyle);
 }
 
@@ -19337,6 +19417,7 @@ var uni$1 = {
   removeSavedFile: removeSavedFile,
   openDocument: openDocument,
   canIUse: canIUse,
+  weexGetSystemInfoSync: weexGetSystemInfoSync,
   getDeviceInfo: getDeviceInfo,
   getAppBaseInfo: getAppBaseInfo,
   getSystemInfoSync: getSystemInfoSync,
