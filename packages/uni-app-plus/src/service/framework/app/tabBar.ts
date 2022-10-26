@@ -7,6 +7,8 @@ import {
   OnTabBarMidButtonTap,
 } from '@dcloudio/uni-api'
 
+import { useTabBarThemeChange } from '../../theme'
+
 let config: UniApp.TabBarOptions
 
 /**
@@ -49,6 +51,15 @@ function setTabBarBadge(
   }
 }
 /**
+ * 动态设置 tabBar 多项的内容
+ */
+function setTabBarItems(tabBarConfig: {
+  list: Partial<UniApp.TabBarItemBaseOptions>[]
+  midButton?: Partial<UniApp.TabBarMidButtonOptions>
+}) {
+  tabBar && tabBar.setTabBarItems(tabBarConfig)
+}
+/**
  * 动态设置 tabBar 某一项的内容
  */
 function setTabBarItem(
@@ -87,7 +98,7 @@ function setTabBarItem(
     }))
     tabbarItems[index] = item
 
-    tabBar && tabBar.setTabBarItems({ list: tabbarItems })
+    setTabBarItems({ list: tabbarItems })
   } else {
     tabBar && tabBar.setTabBarItem(item)
   }
@@ -150,6 +161,8 @@ export default {
           API_ON_TAB_BAR_MID_BUTTON_TAP
         )
       })
+
+    useTabBarThemeChange(tabBar, options)
   },
   indexOf(page: string) {
     const config = this.config

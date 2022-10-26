@@ -1,6 +1,7 @@
 import { formatLog } from '@dcloudio/uni-shared'
 import { parseWebviewStyle } from '../style'
 import { initUniPageUrl, initDebugRefresh } from '../utils'
+import { parseTheme, useWebviewThemeChange } from '../../../theme'
 
 export function initWebviewStyle(
   webview: PlusWebviewWebviewObject,
@@ -8,7 +9,9 @@ export function initWebviewStyle(
   query: Record<string, any>,
   routeMeta: UniApp.PageRouteMeta
 ) {
-  const webviewStyle = parseWebviewStyle(path, routeMeta, webview)
+  const getWebviewStyle = () =>
+    parseWebviewStyle(path, parseTheme(routeMeta), webview)
+  const webviewStyle = getWebviewStyle()
   webviewStyle.uniPageUrl = initUniPageUrl(path, query)
   const isTabBar = !!routeMeta.isTabBar
   if (!routeMeta.isNVue) {
@@ -21,5 +24,8 @@ export function initWebviewStyle(
   if (__DEV__) {
     console.log(formatLog('updateWebview', webviewStyle))
   }
+
+  useWebviewThemeChange(webview, getWebviewStyle)
+
   webview.setStyle(webviewStyle)
 }

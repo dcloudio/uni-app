@@ -1,12 +1,19 @@
 import fs from 'fs'
 import path from 'path'
 import { extend, hasOwn, isArray, isPlainObject } from '@vue/shared'
-import { addLeadingSlash, once, TABBAR_HEIGHT } from '@dcloudio/uni-shared'
+import {
+  addLeadingSlash,
+  once,
+  TABBAR_HEIGHT,
+  normalizeTitleColor,
+} from '@dcloudio/uni-shared'
 import { removeExt, normalizePath } from '../utils'
 import { parseJson } from './json'
 import { isVueSfcFile } from '../vue/utils'
 import { parseVueRequest } from '../vite'
-import { EXTNAME_VUE_RE } from '../constants'
+import { EXTNAME_VUE_RE, TEXT_STYLE } from '../constants'
+import { initTheme } from './theme'
+import { parseManifestJsonOnce } from './manifest'
 
 const pagesCacheSet: Set<string> = new Set()
 
@@ -124,7 +131,9 @@ export function normalizePagesJson(
   pagesCacheSet.clear()
   pagesJson.pages.forEach((page) => pagesCacheSet.add(page.path))
 
-  return pagesJson
+  return process.env.UNI_PLATFORM === 'app'
+    ? pagesJson
+    : initTheme(parseManifestJsonOnce(process.env.UNI_INPUT_DIR), pagesJson)
 }
 
 export function validatePages(pagesJson: Record<string, any>, jsonStr: string) {
@@ -315,8 +324,12 @@ function normalizeNavigationBar(
   }
 
   if (!navigationBar.titleColor && hasOwn(navigationBar, 'textStyle')) {
-    navigationBar.titleColor =
-      (navigationBar as any).textStyle === 'black' ? '#000000' : '#ffffff'
+    const textStyle = (navigationBar as any).textStyle as string
+    if (TEXT_STYLE.includes(textStyle)) {
+      navigationBar.titleColor = normalizeTitleColor(textStyle)
+    } else {
+      navigationBar.titleColor = (navigationBar as any).textStyle
+    }
     delete (navigationBar as any).textStyle
   }
 
@@ -328,12 +341,17 @@ function normalizeNavigationBar(
     delete pageStyle.navigationBarShadow
   }
 
+  const parsedNavigationBar = initTheme(
+    parseManifestJsonOnce(process.env.UNI_INPUT_DIR),
+    navigationBar
+  )
+
   if (isArray(navigationBar.buttons)) {
     navigationBar.buttons = navigationBar.buttons.map((btn) =>
       normalizeNavigationBarButton(
         btn,
         navigationBar.type,
-        navigationBar.titleColor!
+        parsedNavigationBar.titleColor!
       )
     )
   }

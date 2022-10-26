@@ -12,15 +12,18 @@ import { initLaunchwebview } from './launchwebview'
 import { initCheckSystemWebview } from './checksystemwebview'
 import { initTabBar } from './tabBar'
 import { initI18n } from './i18n'
+import { initTheme } from '../../theme'
 
 export function normalizeAppManifestJson(
   userManifestJson: Record<string, any>,
   pagesJson: UniApp.PagesJson
 ) {
   const manifestJson = initRecursiveMerge(
-    initAppStatusbar(initDefaultManifestJson(), pagesJson),
+    initDefaultManifestJson(),
     userManifestJson
   )
+  pagesJson = initTheme(manifestJson, pagesJson)
+  initAppStatusbar(manifestJson, pagesJson)
   initArguments(manifestJson, pagesJson)
   initPlus(manifestJson, pagesJson)
   initNVue(manifestJson, pagesJson)
