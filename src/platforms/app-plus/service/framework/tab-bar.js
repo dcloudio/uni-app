@@ -7,6 +7,8 @@ import {
   requireNativePlugin
 } from '../bridge'
 
+import { useTabBarThemeChange } from './theme'
+
 const TABBAR_HEIGHT = 50
 let config
 
@@ -16,6 +18,10 @@ let config
 let visible = true
 
 let tabBar
+
+function setTabBarItems (style) {
+  tabBar && tabBar.setTabBarItems(style)
+}
 
 /**
  * 设置角标
@@ -71,7 +77,7 @@ function setTabBarItem (index, text, iconPath, selectedIconPath, visible, iconfo
     const tabbarItems = config.list.map(item => ({ visible: item.visible }))
     tabbarItems[index] = item
 
-    tabBar && tabBar.setTabBarItems({ list: tabbarItems })
+    setTabBarItems({ list: tabbarItems })
   } else {
     tabBar && tabBar.setTabBarItem(item)
   }
@@ -128,6 +134,8 @@ export default {
     tabBar && tabBar.onMidButtonClick(() => {
       publish('onTabBarMidButtonTap', {})
     })
+
+    useTabBarThemeChange(tabBar, options)
   },
   indexOf (page) {
     const config = this.config

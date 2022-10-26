@@ -4,6 +4,8 @@ import { parsePullToRefresh } from './pull-to-refresh-parser'
 
 import { parseStyleUnit } from './style-unit-parser'
 
+import { parseTheme } from '../../theme'
+
 const WEBVIEW_STYLE_BLACKLIST = [
   'navigationBarBackgroundColor',
   'navigationBarTextStyle',
@@ -21,24 +23,26 @@ const WEBVIEW_STYLE_BLACKLIST = [
   'pullToRefresh'
 ]
 
-export function parseWebviewStyle (id, path, routeOptions = {}) {
+export function parseWebviewStyle (id, path, _routeOptions = {}) {
   const webviewStyle = {
     bounce: 'vertical'
   }
 
   // 合并
-  routeOptions.window = parseStyleUnit(
+  _routeOptions.window = parseStyleUnit(
     Object.assign(
       JSON.parse(JSON.stringify(__uniConfig.window || {})),
-      routeOptions.window || {}
+      _routeOptions.window || {}
     )
   )
 
-  Object.keys(routeOptions.window).forEach(name => {
+  Object.keys(_routeOptions.window).forEach(name => {
     if (WEBVIEW_STYLE_BLACKLIST.indexOf(name) === -1) {
-      webviewStyle[name] = routeOptions.window[name]
+      webviewStyle[name] = _routeOptions.window[name]
     }
   })
+
+  const routeOptions = parseTheme(_routeOptions)
 
   const backgroundColor = routeOptions.window.backgroundColor
   if (
@@ -50,6 +54,15 @@ export function parseWebviewStyle (id, path, routeOptions = {}) {
     }
     if (!webviewStyle.backgroundColorTop) {
       webviewStyle.backgroundColorTop = backgroundColor
+    }
+    if (!webviewStyle.backgroundColorBottom) {
+      webviewStyle.backgroundColorBottom = backgroundColor
+    }
+    if (!webviewStyle.animationAlphaBGColor) {
+      webviewStyle.animationAlphaBGColor = backgroundColor
+    }
+    if (typeof webviewStyle.webviewBGTransparent === 'undefined') {
+      webviewStyle.webviewBGTransparent = true
     }
   }
 

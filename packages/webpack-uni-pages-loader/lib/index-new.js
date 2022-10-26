@@ -51,8 +51,6 @@ function renameUsingComponents (jsonObj) {
 module.exports = function (content, map) {
   this.cacheable && this.cacheable()
 
-  initTheme()
-
   let isAppView = false
   if (this.resourceQuery) {
     const params = loaderUtils.parseQuery(this.resourceQuery)
@@ -68,6 +66,8 @@ module.exports = function (content, map) {
     fs.readFileSync(manifestJsonPath, 'utf8')
   )
 
+  initTheme(manifestJson)
+
   // this.addDependency(pagesJsonJsPath)
   const localePath = path.resolve(process.env.UNI_INPUT_DIR, 'locale')
   // 路径不存在时会触发 webpack5 差量编译
@@ -76,7 +76,7 @@ module.exports = function (content, map) {
   }
   this.addDependency(manifestJsonPath)
 
-  let pagesJson = parsePagesJson(content, {
+  const originalPagesJson = parsePagesJson(content, {
     addDependency: file => {
       (process.UNI_PAGES_DEPS || (process.UNI_PAGES_DEPS = new Set())).add(
         normalizePath(file)
@@ -85,7 +85,7 @@ module.exports = function (content, map) {
     }
   })
 
-  if (!pagesJson.pages || pagesJson.pages.length === 0) {
+  if (!originalPagesJson.pages || originalPagesJson.pages.length === 0) {
     console.error(uniI18n.__('pagesLoader.pagesNodeCannotNull'))
     process.exit(0)
   }
@@ -94,13 +94,13 @@ module.exports = function (content, map) {
     const queryParam = loaderUtils.parseQuery(this.resourceQuery)
     if (queryParam) {
       if (queryParam.type === 'origin-pages-json') {
-        return `export default ${JSON.stringify(pagesJson)}`
+        return `export default ${JSON.stringify(originalPagesJson)}`
       }
     }
   }
 
+  const pagesJson = parseTheme(originalPagesJson)
   if (global.uniPlugin.defaultTheme) {
-    pagesJson = parseTheme(pagesJson)
     this.addDependency(path.resolve(process.env.UNI_INPUT_DIR, 'theme.json'))
   }
 
@@ -167,7 +167,7 @@ module.exports = function (content, map) {
   }
 
   const jsonFiles = require('./platforms/' + process.env.UNI_PLATFORM)(
-    pagesJson,
+    process.env.UNI_PLATFORM === 'app-plus' ? originalPagesJson : pagesJson,
     manifestJson,
     isAppView
   )
