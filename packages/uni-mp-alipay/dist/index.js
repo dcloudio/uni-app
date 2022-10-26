@@ -1823,6 +1823,7 @@ const offPushMessage = (fn) => {
   }
 };
 
+let onKeyboardHeightChangeCallback;
 function startGyroscope (params) {
   if (hasOwn(params, 'interval')) {
     console.warn('支付宝小程序 startGyroscope暂不支持interval');
@@ -1910,11 +1911,28 @@ function createIntersectionObserver (component, options) {
   return my.createIntersectionObserver(options)
 }
 
+function onKeyboardHeightChange (callback) {
+  // 与微信小程序一致仅保留最后一次监听
+  if (onKeyboardHeightChangeCallback) {
+    $off('uni:keyboardHeightChange', onKeyboardHeightChangeCallback);
+  }
+  onKeyboardHeightChangeCallback = callback;
+  $on('uni:keyboardHeightChange', onKeyboardHeightChangeCallback);
+}
+
+function offKeyboardHeightChange () {
+  // 与微信小程序一致移除最后一次监听
+  $off('uni:keyboardHeightChange', onKeyboardHeightChangeCallback);
+  onKeyboardHeightChangeCallback = null;
+}
+
 var api = /*#__PURE__*/Object.freeze({
   __proto__: null,
   startGyroscope: startGyroscope,
   createSelectorQuery: createSelectorQuery,
   createIntersectionObserver: createIntersectionObserver,
+  onKeyboardHeightChange: onKeyboardHeightChange,
+  offKeyboardHeightChange: offKeyboardHeightChange,
   createMediaQueryObserver: createMediaQueryObserver,
   setStorageSync: setStorageSync,
   getStorageSync: getStorageSync,
@@ -1924,6 +1942,329 @@ var api = /*#__PURE__*/Object.freeze({
   offPushMessage: offPushMessage,
   invokePushCallback: invokePushCallback
 });
+
+function findVmByVueId (vm, vuePid) {
+  const $children = vm.$children;
+  // 优先查找直属(反向查找:https://github.com/dcloudio/uni-app/issues/1200)
+  for (let i = $children.length - 1; i >= 0; i--) {
+    const childVm = $children[i];
+    if (childVm.$scope._$vueId === vuePid) {
+      return childVm
+    }
+  }
+  // 反向递归查找
+  let parentVm;
+  for (let i = $children.length - 1; i >= 0; i--) {
+    parentVm = findVmByVueId($children[i], vuePid);
+    if (parentVm) {
+      return parentVm
+    }
+  }
+}
+
+function handleLink (event) {
+  const {
+    vuePid,
+    vueOptions
+  } = event.detail || event.value; // detail 是微信,value 是百度(dipatch)
+
+  let parentVm;
+
+  if (vuePid) {
+    parentVm = findVmByVueId(this.$vm, vuePid);
+  }
+
+  if (!parentVm) {
+    parentVm = this.$vm;
+  }
+
+  vueOptions.parent = parentVm;
+}
+
+const isArray = Array.isArray;
+const keyList = Object.keys;
+
+function equal (a, b) {
+  if (a === b) return true
+
+  if (a && b && typeof a === 'object' && typeof b === 'object') {
+    const arrA = isArray(a);
+    const arrB = isArray(b);
+    let i, length, key;
+    if (arrA && arrB) {
+      length = a.length;
+      if (length !== b.length) return false
+      for (i = length; i-- !== 0;) {
+        if (!equal(a[i], b[i])) return false
+      }
+      return true
+    }
+    if (arrA !== arrB) return false
+
+    const dateA = a instanceof Date;
+    const dateB = b instanceof Date;
+    if (dateA !== dateB) return false
+    if (dateA && dateB) return a.getTime() === b.getTime()
+
+    const regexpA = a instanceof RegExp;
+    const regexpB = b instanceof RegExp;
+    if (regexpA !== regexpB) return false
+    if (regexpA && regexpB) return a.toString() === b.toString()
+
+    const keys = keyList(a);
+    length = keys.length;
+    if (length !== keyList(b).length) {
+      return false
+    }
+    for (i = length; i-- !== 0;) {
+      if (!hasOwn.call(b, keys[i])) return false
+    }
+    for (i = length; i-- !== 0;) {
+      key = keys[i];
+      if (!equal(a[key], b[key])) return false
+    }
+
+    return true
+  }
+
+  return false
+}
+
+const customizeRE = /:/g;
+
+const customize = cached((str) => {
+  return camelize(str.replace(customizeRE, '-'))
+});
+
+const isComponent2 = my.canIUse('component2');
+
+const mocks = ['$id'];
+
+function initRefs () {
+
+}
+
+function initRelation (detail) {
+  this.props.onVueInit(detail);
+}
+
+function initSpecialMethods (mpInstance) {
+  if (!mpInstance.$vm) {
+    return
+  }
+  let path = mpInstance.is || mpInstance.route;
+  if (!path) {
+    return
+  }
+  if (path.indexOf('/') === 0) {
+    path = path.substr(1);
+  }
+  const specialMethods = my.specialMethods && my.specialMethods[path];
+  if (specialMethods) {
+    specialMethods.forEach(method => {
+      if (isFn(mpInstance.$vm[method])) {
+        mpInstance[method] = function (event) {
+          if (hasOwn(event, 'markerId')) {
+            event.detail = typeof event.detail === 'object' ? event.detail : {};
+            event.detail.markerId = event.markerId;
+          }
+          // TODO normalizeEvent
+          mpInstance.$vm[method](event);
+        };
+      }
+    });
+  }
+}
+
+function initChildVues (mpInstance) {
+  // 此时需保证当前 mpInstance 已经存在 $vm
+  if (!mpInstance.$vm) {
+    return
+  }
+  mpInstance._$childVues && mpInstance._$childVues.forEach(({
+    vuePid,
+    vueOptions,
+    VueComponent,
+    mpInstance: childMPInstance
+  }) => {
+    // 父子关系
+    handleLink.call(mpInstance, {
+      detail: {
+        vuePid,
+        vueOptions
+      }
+    });
+
+    childMPInstance.$vm = new VueComponent(vueOptions);
+
+    initSpecialMethods(childMPInstance);
+
+    handleRef.call(vueOptions.parent.$scope, childMPInstance);
+
+    childMPInstance.$vm.$mount();
+
+    initChildVues(childMPInstance);
+
+    childMPInstance.$vm._isMounted = true;
+    childMPInstance.$vm.__call_hook('mounted');
+    childMPInstance.$vm.__call_hook('onReady');
+  });
+
+  delete mpInstance._$childVues;
+}
+
+function handleProps (ref) {
+  const eventProps = {};
+  let refProps = ref.props;
+  const eventList = (refProps['data-event-list'] || '').split(',');
+  // 初始化支付宝小程序组件事件
+  eventList.forEach(key => {
+    const handler = refProps[key];
+    const res = key.match(/^on([A-Z])(\S*)/);
+    const event = res && (res[1].toLowerCase() + res[2]);
+    refProps[key] = eventProps[key] = function () {
+      const props = Object.assign({}, refProps);
+      props[key] = handler;
+      // 由于支付宝事件可能包含多个参数，不使用微信小程序事件格式
+      delete props['data-com-type'];
+      triggerEvent.bind({ props })(event, {
+        __args__: [...arguments]
+      });
+    };
+  });
+  // 处理 props 重写
+  Object.defineProperty(ref, 'props', {
+    get () {
+      return refProps
+    },
+    set (value) {
+      refProps = Object.assign(value, eventProps);
+    }
+  });
+}
+
+function handleRef (ref) {
+  if (!(ref && this.$vm)) {
+    return
+  }
+  const refName = ref.props['data-ref'];
+  const refInForName = ref.props['data-ref-in-for'];
+  if (refName) {
+    this.$vm.$refs[refName] = ref.$vm || ref;
+  } else if (refInForName) {
+    (this.$vm.$refs[refInForName] || (this.$vm.$refs[refInForName] = [])).push(ref.$vm || ref);
+  }
+}
+
+function triggerEvent (type, detail, options) {
+  const handler = this.props && this.props[customize('on-' + type)];
+  if (!handler) {
+    return
+  }
+
+  const eventOpts = this.props['data-event-opts'];
+  const eventParams = this.props['data-event-params'];
+  const comType = this.props['data-com-type'];
+
+  const target = {
+    dataset: {
+      eventOpts,
+      eventParams,
+      comType
+    }
+  };
+
+  handler({
+    type: customize(type),
+    target,
+    currentTarget: target,
+    detail
+  });
+}
+
+const IGNORES = ['$slots', '$scopedSlots'];
+
+function createObserver (isDidUpdate) {
+  return function observe (props) {
+    const prevProps = isDidUpdate ? props : this.props;
+    const nextProps = isDidUpdate ? this.props : props;
+    if (equal(prevProps, nextProps)) {
+      return
+    }
+    Object.keys(prevProps).forEach(name => {
+      if (IGNORES.indexOf(name) === -1) {
+        const prevValue = prevProps[name];
+        const nextValue = nextProps[name];
+        if (!isFn(prevValue) && !isFn(nextValue) && !equal(prevValue, nextValue)) {
+          this.$vm[name] = nextProps[name];
+        }
+      }
+    });
+  }
+}
+
+const handleLink$1 = (function () {
+  if (isComponent2) {
+    return function handleLink$1 (detail) {
+      return handleLink.call(this, {
+        detail
+      })
+    }
+  }
+  return function handleLink$1 (detail) {
+    if (this.$vm && this.$vm._isMounted) { // 父已初始化
+      return handleLink.call(this, {
+        detail: {
+          vuePid: detail.vuePid,
+          vueOptions: detail.vueOptions
+        }
+      })
+    }
+    // 支付宝通过 didMount 来实现，先子后父，故等父 ready 之后，统一初始化
+    (this._$childVues || (this._$childVues = [])).unshift(detail);
+  }
+})();
+
+const handleWrap = function (mp, destory) {
+  const vueId = mp.props.vueId;
+  const list = (mp.props['data-event-list'] || '').split(',');
+  list.forEach(eventName => {
+    const key = `${eventName}${vueId}`;
+    if (destory) {
+      delete this[key];
+    } else {
+      this[key] = function () {
+        mp.props[eventName].apply(this, arguments);
+      };
+    }
+  });
+  if (!destory) {
+    handleProps(mp);
+  }
+};
+
+const MPComponent = Component;
+
+function initHook (name, options) {
+  const oldHook = options[name];
+  options[name] = function (...args) {
+    const props = this.props;
+    if (props && props['data-com-type'] === 'wx') {
+      handleProps(this);
+    }
+    if (oldHook) {
+      return oldHook.apply(this, args)
+    }
+  };
+}
+
+if (!MPComponent.__$wrappered) {
+  MPComponent.__$wrappered = true;
+  Component = function (options = {}) {
+    initHook('onInit', options);
+    return MPComponent(options)
+  };
+}
 
 const PAGE_EVENT_HOOKS = [
   'onPullDownRefresh',
@@ -1988,7 +2329,7 @@ function initHooks (mpOptions, hooks, vueOptions) {
 }
 
 function initUnknownHooks (mpOptions, vueOptions, excludes = []) {
-  findHooks(vueOptions).forEach((hook) => initHook(mpOptions, hook, excludes));
+  findHooks(vueOptions).forEach((hook) => initHook$1(mpOptions, hook, excludes));
 }
 
 function findHooks (vueOptions, hooks = []) {
@@ -2002,7 +2343,7 @@ function findHooks (vueOptions, hooks = []) {
   return hooks
 }
 
-function initHook (mpOptions, hook, excludes) {
+function initHook$1 (mpOptions, hook, excludes) {
   if (excludes.indexOf(hook) === -1 && !hasOwn(mpOptions, hook)) {
     mpOptions[hook] = function (args) {
       return this.$vm && this.$vm.__call_hook(hook, args)
@@ -2068,7 +2409,7 @@ function initData (vueOptions, context) {
 
 const PROP_TYPES = [String, Number, Boolean, Object, Array, null];
 
-function createObserver (name) {
+function createObserver$1 (name) {
   return function observer (newVal, oldVal) {
     if (this.$vm) {
       this.$vm[name] = newVal; // 为了触发其他非 render watcher
@@ -2163,7 +2504,7 @@ function initProperties (props, isBehavior = false, file = '', options) {
     props.forEach(key => {
       properties[key] = {
         type: null,
-        observer: createObserver(key)
+        observer: createObserver$1(key)
       };
     });
   } else if (isPlainObject(props)) { // {title:{type:String,default:''},content:String}
@@ -2180,13 +2521,13 @@ function initProperties (props, isBehavior = false, file = '', options) {
         properties[key] = {
           type: PROP_TYPES.indexOf(opts.type) !== -1 ? opts.type : null,
           value,
-          observer: createObserver(key)
+          observer: createObserver$1(key)
         };
       } else { // content:String
         const type = parsePropType(key, opts);
         properties[key] = {
           type: PROP_TYPES.indexOf(type) !== -1 ? type : null,
-          observer: createObserver(key)
+          observer: createObserver$1(key)
         };
       }
     });
@@ -2640,311 +2981,6 @@ function parseBaseApp (vm, {
   return appOptions
 }
 
-function findVmByVueId (vm, vuePid) {
-  const $children = vm.$children;
-  // 优先查找直属(反向查找:https://github.com/dcloudio/uni-app/issues/1200)
-  for (let i = $children.length - 1; i >= 0; i--) {
-    const childVm = $children[i];
-    if (childVm.$scope._$vueId === vuePid) {
-      return childVm
-    }
-  }
-  // 反向递归查找
-  let parentVm;
-  for (let i = $children.length - 1; i >= 0; i--) {
-    parentVm = findVmByVueId($children[i], vuePid);
-    if (parentVm) {
-      return parentVm
-    }
-  }
-}
-
-function handleLink (event) {
-  const {
-    vuePid,
-    vueOptions
-  } = event.detail || event.value; // detail 是微信,value 是百度(dipatch)
-
-  let parentVm;
-
-  if (vuePid) {
-    parentVm = findVmByVueId(this.$vm, vuePid);
-  }
-
-  if (!parentVm) {
-    parentVm = this.$vm;
-  }
-
-  vueOptions.parent = parentVm;
-}
-
-const isArray = Array.isArray;
-const keyList = Object.keys;
-
-function equal (a, b) {
-  if (a === b) return true
-
-  if (a && b && typeof a === 'object' && typeof b === 'object') {
-    const arrA = isArray(a);
-    const arrB = isArray(b);
-    let i, length, key;
-    if (arrA && arrB) {
-      length = a.length;
-      if (length !== b.length) return false
-      for (i = length; i-- !== 0;) {
-        if (!equal(a[i], b[i])) return false
-      }
-      return true
-    }
-    if (arrA !== arrB) return false
-
-    const dateA = a instanceof Date;
-    const dateB = b instanceof Date;
-    if (dateA !== dateB) return false
-    if (dateA && dateB) return a.getTime() === b.getTime()
-
-    const regexpA = a instanceof RegExp;
-    const regexpB = b instanceof RegExp;
-    if (regexpA !== regexpB) return false
-    if (regexpA && regexpB) return a.toString() === b.toString()
-
-    const keys = keyList(a);
-    length = keys.length;
-    if (length !== keyList(b).length) {
-      return false
-    }
-    for (i = length; i-- !== 0;) {
-      if (!hasOwn.call(b, keys[i])) return false
-    }
-    for (i = length; i-- !== 0;) {
-      key = keys[i];
-      if (!equal(a[key], b[key])) return false
-    }
-
-    return true
-  }
-
-  return false
-}
-
-const customizeRE = /:/g;
-
-const customize = cached((str) => {
-  return camelize(str.replace(customizeRE, '-'))
-});
-
-const isComponent2 = my.canIUse('component2');
-
-const mocks = ['$id'];
-
-function initRefs () {
-
-}
-
-function initRelation (detail) {
-  this.props.onVueInit(detail);
-}
-
-function initSpecialMethods (mpInstance) {
-  if (!mpInstance.$vm) {
-    return
-  }
-  let path = mpInstance.is || mpInstance.route;
-  if (!path) {
-    return
-  }
-  if (path.indexOf('/') === 0) {
-    path = path.substr(1);
-  }
-  const specialMethods = my.specialMethods && my.specialMethods[path];
-  if (specialMethods) {
-    specialMethods.forEach(method => {
-      if (isFn(mpInstance.$vm[method])) {
-        mpInstance[method] = function (event) {
-          if (hasOwn(event, 'markerId')) {
-            event.detail = typeof event.detail === 'object' ? event.detail : {};
-            event.detail.markerId = event.markerId;
-          }
-          // TODO normalizeEvent
-          mpInstance.$vm[method](event);
-        };
-      }
-    });
-  }
-}
-
-function initChildVues (mpInstance) {
-  // 此时需保证当前 mpInstance 已经存在 $vm
-  if (!mpInstance.$vm) {
-    return
-  }
-  mpInstance._$childVues && mpInstance._$childVues.forEach(({
-    vuePid,
-    vueOptions,
-    VueComponent,
-    mpInstance: childMPInstance
-  }) => {
-    // 父子关系
-    handleLink.call(mpInstance, {
-      detail: {
-        vuePid,
-        vueOptions
-      }
-    });
-
-    childMPInstance.$vm = new VueComponent(vueOptions);
-
-    initSpecialMethods(childMPInstance);
-
-    handleRef.call(vueOptions.parent.$scope, childMPInstance);
-
-    childMPInstance.$vm.$mount();
-
-    initChildVues(childMPInstance);
-
-    childMPInstance.$vm._isMounted = true;
-    childMPInstance.$vm.__call_hook('mounted');
-    childMPInstance.$vm.__call_hook('onReady');
-  });
-
-  delete mpInstance._$childVues;
-}
-
-function handleProps (ref) {
-  const eventProps = {};
-  let refProps = ref.props;
-  const eventList = (refProps['data-event-list'] || '').split(',');
-  // 初始化支付宝小程序组件事件
-  Object.keys(refProps).forEach(key => {
-    if (eventList.includes(key)) {
-      const handler = refProps[key];
-      const res = key.match(/^on([A-Z])(\S*)/);
-      const event = res && (res[1].toLowerCase() + res[2]);
-      refProps[key] = eventProps[key] = function () {
-        const props = Object.assign({}, refProps);
-        props[key] = handler;
-        // 由于支付宝事件可能包含多个参数，不使用微信小程序事件格式
-        delete props['data-com-type'];
-        triggerEvent.bind({ props })(event, {
-          __args__: [...arguments]
-        });
-      };
-    }
-  });
-  // 处理 props 重写
-  Object.defineProperty(ref, 'props', {
-    get () {
-      return refProps
-    },
-    set (value) {
-      refProps = Object.assign(value, eventProps);
-    }
-  });
-}
-
-function handleRef (ref) {
-  if (!(ref && this.$vm)) {
-    return
-  }
-  if (ref.props['data-com-type'] === 'wx') {
-    handleProps(ref);
-  }
-  const refName = ref.props['data-ref'];
-  const refInForName = ref.props['data-ref-in-for'];
-  if (refName) {
-    this.$vm.$refs[refName] = ref.$vm || ref;
-  } else if (refInForName) {
-    (this.$vm.$refs[refInForName] || (this.$vm.$refs[refInForName] = [])).push(ref.$vm || ref);
-  }
-}
-
-function triggerEvent (type, detail, options) {
-  const handler = this.props && this.props[customize('on-' + type)];
-  if (!handler) {
-    return
-  }
-
-  const eventOpts = this.props['data-event-opts'];
-  const eventParams = this.props['data-event-params'];
-  const comType = this.props['data-com-type'];
-
-  const target = {
-    dataset: {
-      eventOpts,
-      eventParams,
-      comType
-    }
-  };
-
-  handler({
-    type: customize(type),
-    target,
-    currentTarget: target,
-    detail
-  });
-}
-
-const IGNORES = ['$slots', '$scopedSlots'];
-
-function createObserver$1 (isDidUpdate) {
-  return function observe (props) {
-    const prevProps = isDidUpdate ? props : this.props;
-    const nextProps = isDidUpdate ? this.props : props;
-    if (equal(prevProps, nextProps)) {
-      return
-    }
-    Object.keys(prevProps).forEach(name => {
-      if (IGNORES.indexOf(name) === -1) {
-        const prevValue = prevProps[name];
-        const nextValue = nextProps[name];
-        if (!isFn(prevValue) && !isFn(nextValue) && !equal(prevValue, nextValue)) {
-          this.$vm[name] = nextProps[name];
-        }
-      }
-    });
-  }
-}
-
-const handleLink$1 = (function () {
-  if (isComponent2) {
-    return function handleLink$1 (detail) {
-      return handleLink.call(this, {
-        detail
-      })
-    }
-  }
-  return function handleLink$1 (detail) {
-    if (this.$vm && this.$vm._isMounted) { // 父已初始化
-      return handleLink.call(this, {
-        detail: {
-          vuePid: detail.vuePid,
-          vueOptions: detail.vueOptions
-        }
-      })
-    }
-    // 支付宝通过 didMount 来实现，先子后父，故等父 ready 之后，统一初始化
-    (this._$childVues || (this._$childVues = [])).unshift(detail);
-  }
-})();
-
-const handleWrap = function (mp, destory) {
-  const vueId = mp.props.vueId;
-  const list = (mp.props['data-event-list'] || '').split(',');
-  list.forEach(eventName => {
-    const key = `${eventName}${vueId}`;
-    if (destory) {
-      delete this[key];
-    } else {
-      this[key] = function () {
-        mp.props[eventName].apply(this, arguments);
-      };
-    }
-  });
-  if (!destory) {
-    handleProps(mp);
-  }
-};
-
 function parseApp (vm) {
   Vue.prototype.$onAliGetAuthorize = function onAliGetAuthorize (method, $event) {
     my.getPhoneNumber({
@@ -3084,6 +3120,9 @@ function parsePage (vuePageOptions) {
       // 支付宝小程序有些页面事件只能放在events下
       onBack () {
         this.$vm.__call_hook('onBackPress');
+      },
+      onKeyboardHeight (res) {
+        $emit('uni:keyboardHeightChange', res);
       }
     },
     __r: handleRef,
@@ -3244,9 +3283,9 @@ function parseComponent (vueComponentOptions, needVueOptions) {
     componentOptions.onInit = function onInit () {
       initVm.call(this, VueComponent);
     };
-    componentOptions.deriveDataFromProps = createObserver$1();
+    componentOptions.deriveDataFromProps = createObserver();
   } else {
-    componentOptions.didUpdate = createObserver$1(true);
+    componentOptions.didUpdate = createObserver(true);
   }
 
   if (Array.isArray(vueOptions.wxsCallMethods)) {

@@ -7086,25 +7086,27 @@ var serviceContext = (function () {
     return api.openLocation(...array)
   }
 
-  const callbackIds$2 = [];
-  const callbackOnErrorIds = [];
-  const callbackOffErrorIds = [];
-  let watchId;
+  let successCallbackIds = [];
+  let errorCallbackIds = [];
+  let started = false;
+  let watchId = 0;
 
-  /**
-   * 开始更新定位
-   */
-  function startLocationUpdate ({ type = 'wgs84' }) {
-    watchId = plus.geolocation.watchPosition(
+  function startLocationUpdate ({ type = 'gcj02' }, callbackId) {
+    watchId = watchId || plus.geolocation.watchPosition(
       res => {
-        callbackIds$2.forEach(callbackId => {
+        started = true;
+        successCallbackIds.forEach(callbackId => {
           invoke$1(callbackId, res.coords);
         });
       },
       error => {
-        callbackOnErrorIds.forEach(callbackId => {
+        if (!started) {
+          invoke$1(callbackId, { errMsg: `startLocationUpdate:fail ${error.message}` });
+          started = true;
+        }
+        errorCallbackIds.forEach(callbackId => {
           invoke$1(callbackId, {
-            errMsg: 'onLocationChange:fail' + error.message
+            errMsg: `onLocationChange:fail ${error.message}`
           });
         });
       },
@@ -7112,58 +7114,50 @@ var serviceContext = (function () {
         coordsType: type
       }
     );
+    setTimeout(() => {
+      invoke$1(callbackId, {
+        errMsg: 'startLocationUpdate:ok'
+      });
+    }, 100);
   }
 
-  /**
-   * 暂停更新定位
-   * @param {*} callbackId
-   */
-  function stopLocationUpdate (callbackId) {
-    if (watchId) {
+  function stopLocationUpdate () {
+    if (watchId !== 0) {
       plus.geolocation.clearWatch(watchId);
-    } else {
-      invoke$1(callbackId, { errMsg: 'stopLocationUpdate:fail' });
+      started = false;
+      watchId = 0;
     }
     return {}
   }
 
-  /**
-   * 监听更新定位
-   * @param {*} callbackId
-   */
   function onLocationChange (callbackId) {
-    callbackIds$2.push(callbackId);
+    successCallbackIds.push(callbackId);
   }
 
-  /**
-   * 监听更新定位失败
-   * @param {*} callbackId
-   */
-  function onLocationChangeError (callbackId) {
-    callbackOnErrorIds.push(callbackId);
-  }
-
-  // 移除实时地理位置变化事件的监听函数
   function offLocationChange (callbackId) {
     if (callbackId) {
-      const index = callbackIds$2.indexOf(callbackId);
+      const index = successCallbackIds.indexOf(callbackId);
       if (index >= 0) {
-        callbackIds$2.splice(index, 1);
-      } else {
-        callbackOffErrorIds.forEach(callbackId => {
-          invoke$1(callbackId, {
-            errMsg: 'offLocationChange:fail'
-          });
-        });
+        successCallbackIds.splice(index, 1);
       }
     } else {
-      callbackIds$2.length = 0;
+      successCallbackIds = [];
     }
   }
 
-  // 移除实时地理位置变化事件的监听函数
+  function onLocationChangeError (callbackId) {
+    errorCallbackIds.push(callbackId);
+  }
+
   function offLocationChangeError (callbackId) {
-    callbackOffErrorIds.push(callbackId);
+    if (callbackId) {
+      const index = errorCallbackIds.indexOf(callbackId);
+      if (index >= 0) {
+        errorCallbackIds.splice(index, 1);
+      }
+    } else {
+      errorCallbackIds = [];
+    }
   }
 
   const RECORD_TIME = 60 * 60 * 1000;
@@ -12321,8 +12315,8 @@ var serviceContext = (function () {
     startLocationUpdate: startLocationUpdate,
     stopLocationUpdate: stopLocationUpdate,
     onLocationChange: onLocationChange,
-    onLocationChangeError: onLocationChangeError,
     offLocationChange: offLocationChange,
+    onLocationChangeError: onLocationChangeError,
     offLocationChangeError: offLocationChangeError,
     startRecord: startRecord,
     stopRecord: stopRecord,
@@ -20743,6 +20737,7 @@ var serviceContext = (function () {
   });
 
   const callbacks$7 = [];
+  const oldCallbacks = [];
 
   onMethod('onThemeChange', function (res) {
     callbacks$7.forEach(callbackId => {
@@ -20756,13 +20751,13 @@ var serviceContext = (function () {
 
   // 旧版本 API，后期文档更新后考虑移除
   onMethod('onUIStyleChange', function (res) {
-    callbacks$7.forEach(callbackId => {
+    oldCallbacks.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
 
   function onUIStyleChange (callbackId) {
-    callbacks$7.push(callbackId);
+    oldCallbacks.push(callbackId);
     console.warn('The "uni.onUIStyleChange" API is deprecated, please use "uni.onThemeChange". Learn more: https://uniapp.dcloud.net.cn/api/system/theme.');
   }
 
