@@ -5,7 +5,7 @@ import {
   ToOptions,
   UtsTarget,
   UtsTargetExtNames,
-} from './index'
+} from './index.bak'
 
 const cli = cac('uts')
 

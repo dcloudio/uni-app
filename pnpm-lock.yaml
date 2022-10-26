@@ -804,7 +804,6 @@ importers:
       '@types/fs-extra': ^9.0.13
       '@vue/shared': 3.2.41
       adm-zip: ^0.5.9
-      execa: ^5.1.1
       fast-glob: ^3.2.11
       fs-extra: ^10.0.0
       jsonc-parser: ^3.0.0
@@ -812,7 +811,6 @@ importers:
       '@dcloudio/uts': link:../uts
       '@vue/shared': 3.2.41
       adm-zip: 0.5.9
-      execa: 5.1.1
       fast-glob: 3.2.12
       fs-extra: 10.1.0
       jsonc-parser: 3.2.0
@@ -834,25 +832,11 @@ importers:
       '@dcloudio/uts-darwin-x64': 3.0.0-alpha-3060720221018007
       '@dcloudio/uts-win32-ia32-msvc': 3.0.0-alpha-3060720221018007
       '@dcloudio/uts-win32-x64-msvc': 3.0.0-alpha-3060720221018007
-      '@types/fs-extra': ^9.0.13
-      cac: 6.7.9
-      chokidar: ^3.5.3
-      fast-glob: ^3.2.11
-      fs-extra: ^10.0.0
-      picocolors: ^1.0.0
-    dependencies:
-      cac: 6.7.9
-      chokidar: 3.5.3
-      fast-glob: 3.2.12
-      fs-extra: 10.1.0
-      picocolors: 1.0.0
     optionalDependencies:
       '@dcloudio/uts-darwin-arm64': link:../uts-darwin-arm64
       '@dcloudio/uts-darwin-x64': link:../uts-darwin-x64
       '@dcloudio/uts-win32-ia32-msvc': link:../uts-win32-ia32-msvc
       '@dcloudio/uts-win32-x64-msvc': link:../uts-win32-x64-msvc
-    devDependencies:
-      '@types/fs-extra': 9.0.13
 
   packages/uts-darwin-arm64:
     specifiers: {}

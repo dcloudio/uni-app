@@ -20,7 +20,6 @@
     "@dcloudio/uts": "3.0.0-alpha-3060720221018007",
     "@vue/shared": "3.2.41",
     "adm-zip": "^0.5.9",
-    "execa": "^5.1.1",
     "fast-glob": "^3.2.11",
     "fs-extra": "^10.0.0",
     "jsonc-parser": "^3.0.0"

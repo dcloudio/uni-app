@@ -2,9 +2,6 @@
   "name": "@dcloudio/uts",
   "version": "3.0.0-alpha-3060720221018007",
   "description": "uts",
-  "bin": {
-    "uts": "bin/uts.js"
-  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -15,16 +12,6 @@
     "type": "git",
     "url": "git+https://github.com/dcloudio/uni-app.git",
     "directory": "packages/uts"
-  },
-  "dependencies": {
-    "cac": "6.7.9",
-    "chokidar": "^3.5.3",
-    "fast-glob": "^3.2.11",
-    "fs-extra": "^10.0.0",
-    "picocolors": "^1.0.0"
-  },
-  "devDependencies": {
-    "@types/fs-extra": "^9.0.13"
   },
   "optionalDependencies": {
     "@dcloudio/uts-darwin-arm64": "3.0.0-alpha-3060720221018007",
