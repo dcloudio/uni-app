@@ -4,8 +4,8 @@ module.exports = function (appJson) {
   }
   if (!appJson.plugins['uni-ad']) {
     appJson.plugins['uni-ad'] = {
-      version: '1.1.0',
-      provider: 'wx999bf02c8e05dfc9',
+      version: '1.0.1',
+      provider: 'wxf72d316417b6767f',
     }
   }
   if (!appJson.plugins['coral-adv']) {
