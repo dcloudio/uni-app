@@ -56,7 +56,12 @@ export function uniPagesJsonPlugin(
             debug: !!manifestJson.debug,
             darkmode:
               options.app.darkmode &&
-              fs.existsSync(path.resolve(inputDir, 'theme.json')),
+              fs.existsSync(
+                path.resolve(
+                  inputDir,
+                  (manifestJson[platform] || {}).themeLocation || 'theme.json'
+                )
+              ),
             networkTimeout: manifestJson.networkTimeout,
             subpackages: !!options.app.subpackages,
             ...options.json,
