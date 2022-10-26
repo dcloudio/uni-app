@@ -15,7 +15,7 @@ export function normalizeTitleColor(titleColor: string) {
   return titleColor === 'black' ? '#000000' : '#ffffff'
 }
 
-export function normallizeStyles<T extends Object>(
+export function normalizeStyles<T extends Object>(
   pageStyle: T,
   themeConfig: UniApp.ThemeJson,
   mode: UniApp.ThemeMode = 'light'
@@ -33,11 +33,11 @@ export function normallizeStyles<T extends Object>(
 
     ;(styles as any)[key] = (() => {
       if (isPlainObject(styleItem)) {
-        return normallizeStyles(styleItem as T, themeConfig, mode)
+        return normalizeStyles(styleItem as T, themeConfig, mode)
       } else if (isArray(styleItem)) {
         return styleItem.map((item) =>
           isPlainObject(item)
-            ? normallizeStyles(item as T, themeConfig, mode)
+            ? normalizeStyles(item as T, themeConfig, mode)
             : item
         )
       } else if (isString(styleItem) && styleItem.startsWith('@')) {

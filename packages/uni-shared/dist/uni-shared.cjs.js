@@ -1394,7 +1394,7 @@ function normalizeTabBarStyles(borderStyle) {
 function normalizeTitleColor(titleColor) {
     return titleColor === 'black' ? '#000000' : '#ffffff';
 }
-function normallizeStyles(pageStyle, themeConfig, mode = 'light') {
+function normalizeStyles(pageStyle, themeConfig, mode = 'light') {
     const modeStyle = themeConfig[mode];
     const styles = {};
     if (!modeStyle) {
@@ -1405,11 +1405,11 @@ function normallizeStyles(pageStyle, themeConfig, mode = 'light') {
         ;
         styles[key] = (() => {
             if (shared.isPlainObject(styleItem)) {
-                return normallizeStyles(styleItem, themeConfig, mode);
+                return normalizeStyles(styleItem, themeConfig, mode);
             }
             else if (shared.isArray(styleItem)) {
                 return styleItem.map((item) => shared.isPlainObject(item)
-                    ? normallizeStyles(item, themeConfig, mode)
+                    ? normalizeStyles(item, themeConfig, mode)
                     : item);
             }
             else if (shared.isString(styleItem) && styleItem.startsWith('@')) {
@@ -1580,10 +1580,10 @@ exports.isRootImmediateHook = isRootImmediateHook;
 exports.isUniLifecycleHook = isUniLifecycleHook;
 exports.normalizeDataset = normalizeDataset;
 exports.normalizeEventType = normalizeEventType;
+exports.normalizeStyles = normalizeStyles;
 exports.normalizeTabBarStyles = normalizeTabBarStyles;
 exports.normalizeTarget = normalizeTarget;
 exports.normalizeTitleColor = normalizeTitleColor;
-exports.normallizeStyles = normallizeStyles;
 exports.onCreateVueApp = onCreateVueApp;
 exports.once = once;
 exports.parseEventName = parseEventName;

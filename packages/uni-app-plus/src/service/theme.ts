@@ -1,5 +1,5 @@
 import { weexGetSystemInfoSync } from './api/device/systemInfo'
-import { normallizeStyles } from '@dcloudio/uni-shared'
+import { normalizeStyles } from '@dcloudio/uni-shared'
 import { parseWebviewStyle } from './framework/webview/style/index'
 import { ON_THEME_CHANGE } from '@dcloudio/uni-shared'
 
@@ -21,7 +21,7 @@ export function parseTheme<T extends Object>(pageStyle: T): T {
       theme = systemInfo.hostTheme || systemInfo.osTheme
     }
 
-    parsedStyle = normallizeStyles(pageStyle, __uniConfig.themeConfig, theme)
+    parsedStyle = normalizeStyles(pageStyle, __uniConfig.themeConfig, theme)
   }
 
   return __uniConfig.darkmode ? parsedStyle : pageStyle

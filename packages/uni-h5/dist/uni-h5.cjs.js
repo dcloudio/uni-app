@@ -394,7 +394,7 @@ function normalizePullToRefreshRpx(pullToRefresh) {
 }
 function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel) {
   const { id, route } = meta;
-  const titleColor = uniShared.normallizeStyles(
+  const titleColor = uniShared.normalizeStyles(
     meta.navigationBar,
     __uniConfig.themeConfig
   ).titleColor;

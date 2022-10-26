@@ -2,7 +2,7 @@ import {
   addLeadingSlash,
   EventChannel,
   resolveComponentInstance,
-  normallizeStyles,
+  normalizeStyles,
 } from '@dcloudio/uni-shared'
 import { extend } from '@vue/shared'
 import {
@@ -146,7 +146,7 @@ export function initPageInternalInstance(
   eventChannel?: EventChannel
 ): Page.PageInstance['$page'] {
   const { id, route } = meta
-  const titleColor = normallizeStyles(
+  const titleColor = normalizeStyles(
     meta.navigationBar,
     __uniConfig.themeConfig
   ).titleColor
