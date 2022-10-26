@@ -131,7 +131,7 @@ export function normalizePagesJson(
   pagesCacheSet.clear()
   pagesJson.pages.forEach((page) => pagesCacheSet.add(page.path))
 
-  return process.env.UNI_PLATFORM === 'app'
+  return process.env.UNI_PLATFORM === 'app' || !process.env.UNI_INPUT_DIR
     ? pagesJson
     : initTheme(parseManifestJsonOnce(process.env.UNI_INPUT_DIR), pagesJson)
 }

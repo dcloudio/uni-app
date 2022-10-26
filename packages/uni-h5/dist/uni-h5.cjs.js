@@ -394,6 +394,10 @@ function normalizePullToRefreshRpx(pullToRefresh) {
 }
 function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel) {
   const { id, route } = meta;
+  const titleColor = uniShared.normallizeStyles(
+    meta.navigationBar,
+    __uniConfig.themeConfig
+  ).titleColor;
   return {
     id,
     path: uniShared.addLeadingSlash(route),
@@ -403,7 +407,7 @@ function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel) 
     meta,
     openType,
     eventChannel,
-    statusBarStyle: meta.navigationBar.titleColor === "#000000" ? "dark" : "light"
+    statusBarStyle: titleColor === "#000000" ? "dark" : "light"
   };
 }
 function invokeHook(vm, name, args) {
