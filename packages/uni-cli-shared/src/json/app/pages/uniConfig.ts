@@ -51,7 +51,6 @@ export function normalizeAppUniConfig(
     manifestJson[
       process.env.UNI_PLATFORM === 'app' ? 'app-plus' : process.env.UNI_PLATFORM
     ] || {}
-  const darkmode = platformConfig.darkmode || false
 
   const config: AppUniConfig = {
     pages: [],
@@ -73,7 +72,7 @@ export function normalizeAppUniConfig(
     networkTimeout: normalizeNetworkTimeout(manifestJson.networkTimeout),
     tabBar: pagesJson.tabBar,
     locales: initLocales(path.join(process.env.UNI_INPUT_DIR, 'locale')),
-    darkmode,
+    darkmode: platformConfig.darkmode || false,
     themeConfig: normalizeThemeConfigOnce(platformConfig),
   }
   // TODO 待支持分包
