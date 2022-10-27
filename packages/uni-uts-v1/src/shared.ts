@@ -48,10 +48,13 @@ export function resolveSourceMapPath(
   outputDir?: string,
   platform?: UniApp.PLATFORM
 ) {
+  let dir = platform || process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM
+  if (dir === 'app-plus') {
+    dir = 'app'
+  }
   return path.resolve(
     outputDir || process.env.UNI_OUTPUT_DIR,
-    '../.sourcemap/' +
-      (platform || process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM)
+    '../.sourcemap/' + dir
   )
 }
 
