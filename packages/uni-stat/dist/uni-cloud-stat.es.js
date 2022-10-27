@@ -14,19 +14,19 @@ const DIFF_TIME = 60 * 1000 * 60 * 24;
 
 const appid = process.env.UNI_APP_ID; // 做应用隔离
 const dbSet = (name, value) => {
-  let data = uni.getStorageSync('$$STAT__DBDATA:'+appid) || {};
+  let data = uni.getStorageSync('$$STAT__DBDATA:' + appid) || {};
 
   if (!data) {
     data = {};
   }
   data[name] = value;
-  uni.setStorageSync('$$STAT__DBDATA:'+appid, data);
+  uni.setStorageSync('$$STAT__DBDATA:' + appid, data);
 };
 
 const dbGet = (name) => {
-  let data = uni.getStorageSync('$$STAT__DBDATA:'+appid) || {};
+  let data = uni.getStorageSync('$$STAT__DBDATA:' + appid) || {};
   if (!data[name]) {
-    let dbdata = uni.getStorageSync('$$STAT__DBDATA:'+appid);
+    let dbdata = uni.getStorageSync('$$STAT__DBDATA:' + appid);
     if (!dbdata) {
       dbdata = {};
     }
@@ -39,15 +39,15 @@ const dbGet = (name) => {
 };
 
 const dbRemove = (name) => {
-  let data = uni.getStorageSync('$$STAT__DBDATA:'+appid) || {};
+  let data = uni.getStorageSync('$$STAT__DBDATA:' + appid) || {};
   if (data[name]) {
     delete data[name];
-    uni.setStorageSync('$$STAT__DBDATA:'+appid, data);
+    uni.setStorageSync('$$STAT__DBDATA:' + appid, data);
   } else {
-    data = uni.getStorageSync('$$STAT__DBDATA:'+appid);
+    data = uni.getStorageSync('$$STAT__DBDATA:' + appid);
     if (data[name]) {
       delete data[name];
-      uni.setStorageSync('$$STAT__DBDATA:'+appid, data);
+      uni.setStorageSync('$$STAT__DBDATA:' + appid, data);
     }
   }
 };
@@ -619,37 +619,37 @@ const LAST_VISIT_TIME_KEY = '__last__visit__time';
  * 获取当前时间
  */
 const get_time = () => {
-	return parseInt(new Date().getTime() / 1000)
+  return parseInt(new Date().getTime() / 1000)
 };
 
 /**
  * 获取首次访问时间
  */
 const get_first_visit_time = () => {
-	const timeStorge = dbGet(FIRST_VISIT_TIME_KEY);
-	let time = 0;
-	if (timeStorge) {
-		time = timeStorge;
-	} else {
-		time = get_time();
-		dbSet(FIRST_VISIT_TIME_KEY, time);
-		// 首次访问需要 将最后访问时间置 0
-		dbRemove(LAST_VISIT_TIME_KEY);
-	}
-	return time
+  const timeStorge = dbGet(FIRST_VISIT_TIME_KEY);
+  let time = 0;
+  if (timeStorge) {
+    time = timeStorge;
+  } else {
+    time = get_time();
+    dbSet(FIRST_VISIT_TIME_KEY, time);
+    // 首次访问需要 将最后访问时间置 0
+    dbRemove(LAST_VISIT_TIME_KEY);
+  }
+  return time
 };
 
 /**
  * 最后访问时间
  */
 const get_last_visit_time = () => {
-	const timeStorge = dbGet(LAST_VISIT_TIME_KEY);
-	let time = 0;
-	if (timeStorge) {
-		time = timeStorge;
-	}
-	dbSet(LAST_VISIT_TIME_KEY, get_time());
-	return time
+  const timeStorge = dbGet(LAST_VISIT_TIME_KEY);
+  let time = 0;
+  if (timeStorge) {
+    time = timeStorge;
+  }
+  dbSet(LAST_VISIT_TIME_KEY, get_time());
+  return time
 };
 
 // 页面停留时间记录key
@@ -661,18 +661,18 @@ let Last_Page_Residence_Time = 0;
  * 设置页面停留时间
  */
 const set_page_residence_time = () => {
-	First_Page_Residence_Time = get_time();
-	dbSet(PAGE_RESIDENCE_TIME, First_Page_Residence_Time);
-	return First_Page_Residence_Time
+  First_Page_Residence_Time = get_time();
+  dbSet(PAGE_RESIDENCE_TIME, First_Page_Residence_Time);
+  return First_Page_Residence_Time
 };
 
 /**
  * 获取页面停留时间
  */
 const get_page_residence_time = () => {
-	Last_Page_Residence_Time = get_time();
-	First_Page_Residence_Time = dbGet(PAGE_RESIDENCE_TIME);
-	return Last_Page_Residence_Time - First_Page_Residence_Time
+  Last_Page_Residence_Time = get_time();
+  First_Page_Residence_Time = dbGet(PAGE_RESIDENCE_TIME);
+  return Last_Page_Residence_Time - First_Page_Residence_Time
 };
 
 /**
@@ -680,25 +680,24 @@ const get_page_residence_time = () => {
  */
 const TOTAL_VISIT_COUNT = '__total__visit__count';
 const get_total_visit_count = () => {
-	const timeStorge = dbGet(TOTAL_VISIT_COUNT);
-	let count = 1;
-	if (timeStorge) {
-		count = timeStorge;
-		count++;
-	}
-	dbSet(TOTAL_VISIT_COUNT, count);
-	return count
+  const timeStorge = dbGet(TOTAL_VISIT_COUNT);
+  let count = 1;
+  if (timeStorge) {
+    count = timeStorge;
+    count++;
+  }
+  dbSet(TOTAL_VISIT_COUNT, count);
+  return count
 };
-
 
 const FIRST_TIME = '__first_time';
 /**
  * 设置页面首次访问时间，用户获取页面/应用停留时常
  */
 const set_first_time = () => {
-	const time = new Date().getTime();
-	const timeStorge = dbSet(FIRST_TIME,time);
-	return timeStorge
+  const time = new Date().getTime();
+  const timeStorge = dbSet(FIRST_TIME, time);
+  return timeStorge
 };
 
 /**
@@ -714,32 +713,32 @@ const set_first_time = () => {
  * 获取页面 \ 应用停留时间
  */
 const get_residence_time = (type) => {
-	let residenceTime = 0;
-	const first_time = dbGet(FIRST_TIME);
-	const last_time = get_time();
-	if (first_time !== 0) {
-		residenceTime = last_time - first_time;
-	}
+  let residenceTime = 0;
+  const first_time = dbGet(FIRST_TIME);
+  const last_time = get_time();
+  if (first_time !== 0) {
+    residenceTime = last_time - first_time;
+  }
 
-	residenceTime = parseInt(residenceTime / 1000);
-	residenceTime = residenceTime < 1 ? 1 : residenceTime;
-	if (type === 'app') {
-		let overtime = residenceTime > APP_PVER_TIME ? true : false;
-		return {
-			residenceTime,
-			overtime,
-		}
-	}
-	if (type === 'page') {
-		let overtime = residenceTime > PAGE_PVER_TIME ? true : false;
-		return {
-			residenceTime,
-			overtime,
-		}
-	}
-	return {
-		residenceTime,
-	}
+  residenceTime = parseInt(residenceTime / 1000);
+  residenceTime = residenceTime < 1 ? 1 : residenceTime;
+  if (type === 'app') {
+    let overtime = residenceTime > APP_PVER_TIME ? true : false;
+    return {
+      residenceTime,
+      overtime,
+    }
+  }
+  if (type === 'page') {
+    let overtime = residenceTime > PAGE_PVER_TIME ? true : false;
+    return {
+      residenceTime,
+      overtime,
+    }
+  }
+  return {
+    residenceTime,
+  }
 };
 
 const eport_Interval = get_report_Interval(OPERATING_TIME);
@@ -1339,9 +1338,7 @@ class Stat extends Report {
           //     uni.__stat_uniCloud_space.config.spaceId
           // )
         } else {
-          console.error(
-            '应用未关联服务空间，请在uniCloud目录右键关联服务空间'
-          );
+          console.error('应用未关联服务空间，请在uniCloud目录右键关联服务空间');
         }
       }
     }
@@ -1363,7 +1360,7 @@ class Stat extends Report {
           const cid = res.cid || false;
           //  只有获取到才会上传
           if (cid) {
-            this.sendPushRequest(options,cid);
+            this.sendPushRequest(options, cid);
           }
         },
       });
