@@ -1,4 +1,4 @@
-import { isPlainObject, hasOwn, extend, capitalize } from '@vue/shared'
+import { isPlainObject, hasOwn, extend, capitalize } from './utils'
 declare const uni: any
 declare const plus: any
 let callbackId = 1

@@ -3,14 +3,14 @@ import { parseInjects } from '../src/uni_modules'
 describe('uni_modules:uni-ext-api', () => {
   test('parseInjects', () => {
     expect(
-      parseInjects('app', `@/uni_modules/uni-getbatteryinfo`, {
+      parseInjects(true, 'app', `@/uni_modules/uni-getbatteryinfo`, {
         uni: 'getBatteryInfo',
       })
     ).toEqual({
       'uni.getBatteryInfo': '@/uni_modules/uni-getbatteryinfo',
     })
     expect(
-      parseInjects('app', `@/uni_modules/uni-getbatteryinfo`, {
+      parseInjects(true, 'app', `@/uni_modules/uni-getbatteryinfo`, {
         uni: ['getBatteryInfo'],
       })
     ).toEqual({
@@ -20,7 +20,7 @@ describe('uni_modules:uni-ext-api', () => {
       ],
     })
     expect(
-      parseInjects('app', `@/uni_modules/uni-location`, {
+      parseInjects(true, 'app', `@/uni_modules/uni-location`, {
         uni: ['openLocation', 'chooseLocation'],
       })
     ).toEqual({
@@ -28,7 +28,7 @@ describe('uni_modules:uni-ext-api', () => {
       'uni.chooseLocation': ['@/uni_modules/uni-location', 'chooseLocation'],
     })
     expect(
-      parseInjects('app', `@/uni_modules/uni-capturescreen`, {
+      parseInjects(true, 'app', `@/uni_modules/uni-capturescreen`, {
         uni: {
           onUserCaptureScreen: 'onCaptureScreen',
           offUserCaptureScreen: 'offUserCaptureScreen',
@@ -47,7 +47,7 @@ describe('uni_modules:uni-ext-api', () => {
   })
   test('parseInjects with platform', () => {
     expect(
-      parseInjects('web', `@/uni_modules/uni-getbatteryinfo`, {
+      parseInjects(true, 'web', `@/uni_modules/uni-getbatteryinfo`, {
         uni: 'getBatteryInfo1',
         web: {
           uni: 'getBatteryInfo',
@@ -57,13 +57,13 @@ describe('uni_modules:uni-ext-api', () => {
       'uni.getBatteryInfo': '@/uni_modules/uni-getbatteryinfo',
     })
     expect(
-      parseInjects('web', `@/uni_modules/uni-getbatteryinfo`, {
+      parseInjects(true, 'web', `@/uni_modules/uni-getbatteryinfo`, {
         uni: 'getBatteryInfo1',
         web: false,
       })
     ).toEqual({})
     expect(
-      parseInjects('web', `@/uni_modules/uni-location`, {
+      parseInjects(true, 'web', `@/uni_modules/uni-location`, {
         uni: ['openLocation'],
         web: {
           uni: ['chooseLocation'],

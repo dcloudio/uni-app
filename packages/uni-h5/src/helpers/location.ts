@@ -1,4 +1,3 @@
-import { extend } from '@vue/shared'
 import { getJSONP } from './getJSONP'
 import { loadMaps } from '../view/components/map/maps'
 
@@ -89,13 +88,16 @@ export function translateGeo(
             'points' in res.detail &&
             res.detail.points.length
           ) {
-            const location = res.detail.points[0]
-            resolve(
-              extend({}, coords, {
-                longitude: location.lng,
-                latitude: location.lat,
-              })
-            )
+            const { lng, lat } = res.detail.points[0]
+            resolve({
+              longitude: lng,
+              latitude: lat,
+              altitude: coords.altitude,
+              accuracy: coords.accuracy,
+              altitudeAccuracy: coords.altitudeAccuracy,
+              heading: coords.heading,
+              speed: coords.speed,
+            })
           } else {
             resolve(coords)
           }
@@ -113,12 +115,15 @@ export function translateGeo(
           (_: string, res: any) => {
             if (res.info === 'ok' && res.locations.length) {
               const { lat, lng } = res.locations[0]
-              resolve(
-                extend({}, coords, {
-                  longitude: lng,
-                  latitude: lat,
-                })
-              )
+              resolve({
+                longitude: lng,
+                latitude: lat,
+                altitude: coords.altitude,
+                accuracy: coords.accuracy,
+                altitudeAccuracy: coords.altitudeAccuracy,
+                heading: coords.heading,
+                speed: coords.speed,
+              })
             } else {
               resolve(coords)
             }

@@ -63,5 +63,11 @@ export function initUni(api: Record<string, any>, protocols: MPProtocols) {
       return promisify(key, wrapper(key, __GLOBAL__[key]))
     },
   }
+
+  // 处理 api mp 打包后为不同js，emitter 无法共享问题
+  if (__PLATFORM__ === 'mp-alipay') {
+    __GLOBAL__.$emit = $emit
+  }
+
   return new Proxy({}, UniProxyHandlers)
 }

@@ -11,7 +11,7 @@ interface Exports {
   [name: string]: Define | Defines | false
 }
 
-export function parseUniExtApis() {
+export function parseUniExtApis(vite = true) {
   const uniModulesDir = path.resolve(process.env.UNI_INPUT_DIR, 'uni_modules')
   if (!fs.existsSync(uniModulesDir)) {
     return {}
@@ -34,6 +34,7 @@ export function parseUniExtApis() {
       Object.assign(
         injects,
         parseInjects(
+          vite,
           process.env.UNI_PLATFORM === 'h5' ? 'web' : process.env.UNI_PLATFORM,
           `@/uni_modules/${uniModuleDir}`,
           exports
@@ -70,6 +71,7 @@ type Injects = {
  * @returns
  */
 export function parseInjects(
+  vite = true,
   platform: UniApp.PLATFORM,
   source: string,
   exports: Exports = {}
@@ -90,12 +92,13 @@ export function parseInjects(
   }
   const injects: Injects = {}
   for (const key in rootDefines) {
-    Object.assign(injects, parseInject(source, 'uni', rootDefines[key]))
+    Object.assign(injects, parseInject(vite, source, 'uni', rootDefines[key]))
   }
   return injects
 }
 
 export function parseInject(
+  vite = true,
   source: string,
   globalObject: string,
   define: Define
@@ -104,7 +107,7 @@ export function parseInject(
   if (define === false) {
   } else if (typeof define === 'string') {
     // {'uni.getBatteryInfo' : '@dcloudio/uni-getbatteryinfo'}
-    injects[globalObject + '.' + define] = source
+    injects[globalObject + '.' + define] = vite ? source : [source, 'default']
   } else if (Array.isArray(define)) {
     // {'uni.getBatteryInfo' : ['@dcloudio/uni-getbatteryinfo','getBatteryInfo]}
     define.forEach((d) => {

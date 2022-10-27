@@ -38,6 +38,7 @@ export interface UtsOptions {
 
 export interface UtsResult {
   filename?: string
+  deps?: string[]
   time?: number
   error?: Error
 }

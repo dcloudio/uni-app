@@ -41,6 +41,9 @@ export async function runDev(options: CliOptions & ServerOptions) {
             if (process.env.UNI_APP_IOS_UTS) {
               console.log(`\u200B` + M['uts.ios.tips'] + `\u200B`)
             }
+            process.env.UNI_APP_CHANGED_PAGES = ''
+            process.env.UNI_APP_CHANGED_FILES = ''
+            process.env.UNI_APP_CHANGED_DEX_FILES = ''
             return (
               (isFirstEnd = false),
               output('log', M['dev.watching.end']),

@@ -7185,7 +7185,7 @@ function injectLifecycleHook(name, hook, publicThis, instance) {
 }
 function initHooks(options, instance, publicThis) {
   const mpType = options.mpType || publicThis.$mpType;
-  if (!mpType) {
+  if (!mpType || mpType === "component") {
     return;
   }
   Object.keys(options).forEach((name) => {

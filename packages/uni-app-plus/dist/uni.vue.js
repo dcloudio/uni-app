@@ -51,7 +51,7 @@ function injectLifecycleHook(name, hook, publicThis, instance) {
 }
 function initHooks(options, instance, publicThis) {
     const mpType = options.mpType || publicThis.$mpType;
-    if (!mpType) {
+    if (!mpType || mpType === 'component') {
         // 仅 App,Page 类型支持在 options 中配置 on 生命周期，组件可以使用组合式 API 定义页面生命周期
         return;
     }

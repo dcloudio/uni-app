@@ -70,7 +70,7 @@ export function bundleKotlin(options: UtsBundleOptions): Promise<UtsResult> {
   }
   return bindings
     .bundleKotlin(toBuffer(bundleOptions))
-    .then((res: string) => res)
+    .then((res: string) => JSON.parse(res))
 }
 
 export function toSwift(options: UtsOptions): Promise<UtsResult> {
@@ -90,7 +90,7 @@ export function bundleSwift(options: UtsBundleOptions): Promise<UtsResult> {
   }
   return bindings
     .bundleSwift(toBuffer(bundleOptions))
-    .then((res: string) => res)
+    .then((res: string) => JSON.parse(res))
 }
 
 function toBuffer(t: any): Buffer {

@@ -62,8 +62,7 @@ export function uniUsingComponentsPlugin(
       ): Promise<ResolvedId | null> => {
         const id = resolveUtsModule(
           source,
-          importer || process.env.UNI_INPUT_DIR,
-          process.env.UNI_UTS_PLATFORM
+          importer || process.env.UNI_INPUT_DIR
         )
         if (id) {
           source = id

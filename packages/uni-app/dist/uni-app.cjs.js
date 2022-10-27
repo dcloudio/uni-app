@@ -319,6 +319,22 @@ function initUtsClassName(moduleName, className, is_uni_modules) {
     return '';
 }
 
+Object.defineProperty(exports, 'capitalize', {
+  enumerable: true,
+  get: function () { return shared.capitalize; }
+});
+Object.defineProperty(exports, 'extend', {
+  enumerable: true,
+  get: function () { return shared.extend; }
+});
+Object.defineProperty(exports, 'hasOwn', {
+  enumerable: true,
+  get: function () { return shared.hasOwn; }
+});
+Object.defineProperty(exports, 'isPlainObject', {
+  enumerable: true,
+  get: function () { return shared.isPlainObject; }
+});
 exports.formatAppLog = formatAppLog;
 exports.formatH5Log = formatH5Log;
 exports.getCurrentSubNVue = getCurrentSubNVue;

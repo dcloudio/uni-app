@@ -62,6 +62,9 @@ export function initCreatePage() {
         onBack() {
           this.$vm.$callHook(ON_BACK_PRESS)
         },
+        onKeyboardHeight: ((res: unknown) => {
+          ;(my as any).$emit('uni:keyboardHeightChange', res)
+        }) as any,
       },
       __r: handleRef,
       __l: handleLink,

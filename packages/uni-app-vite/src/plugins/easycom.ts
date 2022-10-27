@@ -23,11 +23,11 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
       if (!filter(id)) {
         return
       }
-      const { filename, query } = parseVueRequest(id)
-      if (
-        query.type !== 'template' &&
-        (query.vue || !EXTNAME_VUE_TEMPLATE.includes(path.extname(filename)))
-      ) {
+      const { filename } = parseVueRequest(id)
+      if (!EXTNAME_VUE_TEMPLATE.includes(path.extname(filename))) {
+        return
+      }
+      if (!code.includes('_resolveComponent')) {
         return
       }
       let i = 0
