@@ -1193,6 +1193,18 @@ function createTodoMethod(contextName, methodName) {
         console.error(`百度小程序 ${contextName}暂不支持${methodName}`);
     };
 }
+function returnValue(methodName, res = {}) {
+    // 通用 returnValue 解析
+    if (res.error || res.errorMessage) {
+        res.errMsg = `${methodName}:fail ${res.errorMessage || res.error}`;
+        delete res.error;
+        delete res.errorMessage;
+    }
+    else {
+        res.errMsg = `${methodName}:ok`;
+    }
+    return res;
+}
 const request = {
     args() {
         // TODO
@@ -1262,6 +1274,7 @@ const getAccountInfoSync = {
 
 var protocols = /*#__PURE__*/Object.freeze({
   __proto__: null,
+  returnValue: returnValue,
   request: request,
   connectSocket: connectSocket,
   getRecorderManager: getRecorderManager,
