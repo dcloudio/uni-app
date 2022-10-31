@@ -1,6 +1,6 @@
 import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise, extend, remove } from '@vue/shared';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
-import { LINEFEED, Emitter, onCreateVueApp, invokeCreateVueAppHook, sortObject } from '@dcloudio/uni-shared';
+import { LINEFEED, Emitter, sortObject, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
 
 function getBaseSystemInfo() {
   return wx.getSystemInfoSync()
@@ -879,67 +879,6 @@ if (typeof global !== 'undefined') {
     global.getLocale = getLocale;
 }
 
-const baseApis = {
-    $on,
-    $off,
-    $once,
-    $emit,
-    upx2px,
-    interceptors,
-    addInterceptor,
-    removeInterceptor,
-    onCreateVueApp,
-    invokeCreateVueAppHook,
-    getLocale,
-    setLocale,
-    onLocaleChange,
-    getPushClientId,
-    onPushMessage,
-    offPushMessage,
-    invokePushCallback,
-};
-function initUni(api, protocols) {
-    const wrapper = initWrapper(protocols);
-    const UniProxyHandlers = {
-        get(target, key) {
-            if (hasOwn(target, key)) {
-                return target[key];
-            }
-            if (hasOwn(api, key)) {
-                return promisify(key, api[key]);
-            }
-            if (hasOwn(baseApis, key)) {
-                return promisify(key, baseApis[key]);
-            }
-            // event-api
-            // provider-api?
-            return promisify(key, wrapper(key, wx[key]));
-        },
-    };
-    return new Proxy({}, UniProxyHandlers);
-}
-
-function initGetProvider(providers) {
-    return function getProvider({ service, success, fail, complete, }) {
-        let res;
-        if (providers[service]) {
-            res = {
-                errMsg: 'getProvider:ok',
-                service,
-                provider: providers[service],
-            };
-            isFunction(success) && success(res);
-        }
-        else {
-            res = {
-                errMsg: 'getProvider:fail:服务[' + service + ']不存在',
-            };
-            isFunction(fail) && fail(res);
-        }
-        isFunction(complete) && complete(res);
-    };
-}
-
 const UUID_KEY = '__DC_STAT_UUID';
 let deviceId;
 function useDeviceId(global = wx) {
@@ -1180,6 +1119,67 @@ const getAppAuthorizeSetting = {
         }
     },
 };
+
+const baseApis = {
+    $on,
+    $off,
+    $once,
+    $emit,
+    upx2px,
+    interceptors,
+    addInterceptor,
+    removeInterceptor,
+    onCreateVueApp,
+    invokeCreateVueAppHook,
+    getLocale,
+    setLocale,
+    onLocaleChange,
+    getPushClientId,
+    onPushMessage,
+    offPushMessage,
+    invokePushCallback,
+};
+function initUni(api, protocols) {
+    const wrapper = initWrapper(protocols);
+    const UniProxyHandlers = {
+        get(target, key) {
+            if (hasOwn(target, key)) {
+                return target[key];
+            }
+            if (hasOwn(api, key)) {
+                return promisify(key, api[key]);
+            }
+            if (hasOwn(baseApis, key)) {
+                return promisify(key, baseApis[key]);
+            }
+            // event-api
+            // provider-api?
+            return promisify(key, wrapper(key, wx[key]));
+        },
+    };
+    return new Proxy({}, UniProxyHandlers);
+}
+
+function initGetProvider(providers) {
+    return function getProvider({ service, success, fail, complete, }) {
+        let res;
+        if (providers[service]) {
+            res = {
+                errMsg: 'getProvider:ok',
+                service,
+                provider: providers[service],
+            };
+            isFunction(success) && success(res);
+        }
+        else {
+            res = {
+                errMsg: 'getProvider:fail:服务[' + service + ']不存在',
+            };
+            isFunction(fail) && fail(res);
+        }
+        isFunction(complete) && complete(res);
+    };
+}
 
 const mocks = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__'];
 

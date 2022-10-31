@@ -3,17 +3,6 @@ import { isArray, hasOwn, isFunction, extend, isPlainObject, isObject } from '@v
 import { ref, nextTick, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, getExposeProxy, pruneComponentPropsCache } from 'vue';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 
-const eventChannels = {};
-const eventChannelStack = [];
-function getEventChannel(id) {
-    if (id) {
-        const eventChannel = eventChannels[id];
-        delete eventChannels[id];
-        return eventChannel;
-    }
-    return eventChannelStack.shift();
-}
-
 const MP_METHODS = [
     'createSelectorQuery',
     'createIntersectionObserver',
@@ -99,8 +88,10 @@ function callHook(name, args) {
         name = 'm';
     }
     else if (name === 'onLoad' && args && args.__id__) {
-        this.__eventChannel__ = getEventChannel(args.__id__);
-        delete args.__id__;
+        {
+            this.__eventChannel__ = qa.getEventChannel(args.__id__);
+            delete args.__id__;
+        }
     }
     const hooks = this.$[name];
     return hooks && invokeArrayFns(hooks, args);
