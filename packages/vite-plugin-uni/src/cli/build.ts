@@ -70,6 +70,7 @@ function initBuildOptions(
 ): InlineConfig {
   return {
     root: process.env.VITE_ROOT_DIR,
+    configFile: options.config,
     base: options.base,
     logLevel: options.logLevel,
     clearScreen: options.clearScreen,
