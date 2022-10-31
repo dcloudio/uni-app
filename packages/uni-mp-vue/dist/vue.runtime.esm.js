@@ -4829,9 +4829,10 @@ function setRef$1(instance, isUnmount = false) {
     }
     const check = $mpPlatform === 'mp-baidu' || $mpPlatform === 'mp-toutiao';
     const doSetByRefs = (refs) => {
-        const mpComponents = $scope
-            .selectAllComponents('.r')
-            .concat($scope.selectAllComponents('.r-i-f'));
+        const mpComponents = 
+        // 字节小程序 selectAllComponents 可能返回 null
+        // https://github.com/dcloudio/uni-app/issues/3954
+        ($scope.selectAllComponents('.r') || []).concat($scope.selectAllComponents('.r-i-f') || []);
         return refs.filter(templateRef => {
             const refValue = findComponentPublicInstance(mpComponents, templateRef.i);
             // 部分平台，在一些 if 条件下，部分 slot 组件初始化会被延迟到下一次渲染，需要二次检测
