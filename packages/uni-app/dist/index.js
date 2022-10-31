@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.onNavigationBarSearchInputClicked = exports.onNavigationBarSearchInputConfirmed = exports.onNavigationBarSearchInputChanged = exports.onBackPress = exports.onNavigationBarButtonTap = exports.onTabItemTap = exports.onResize = exports.onPageScroll = exports.onAddToFavorites = exports.onShareTimeline = exports.onShareAppMessage = exports.onReachBottom = exports.onPullDownRefresh = exports.onUnload = exports.onReady = exports.onLoad = exports.onInit = exports.onUniNViewMessage = exports.onThemeChange = exports.onUnhandledRejection = exports.onPageNotFound = exports.onError = exports.onLaunch = exports.onHide = exports.onShow = exports.initUtsPackageName = exports.initUtsClassName = exports.initUtsIndexClassName = exports.initUtsProxyFunction = exports.initUtsProxyClass = void 0;
 var composition_api_1 = require("@vue/composition-api");
+var app = require("./app");
 var mp = require("./mp");
 var uts_1 = require("./uts");
 Object.defineProperty(exports, "initUtsProxyClass", { enumerable: true, get: function () { return uts_1.initUtsProxyClass; } });
@@ -18,6 +19,7 @@ var createLifeCycle = function (lifecycle) {
     };
 };
 if (typeof plus === 'object') {
+    app.init();
 }
 else if (typeof window === 'object' && 'document' in window) {
 }
