@@ -96,8 +96,8 @@ function callHook(name, args) {
         this.$.isMounted = true;
         name = 'm';
     }
-    else if (name === 'onLoad' && args && args.__id__) {
-        {
+    {
+        if (name === 'onLoad' && args && args.__id__) {
             this.__eventChannel__ = my.getEventChannel(args.__id__);
             delete args.__id__;
         }

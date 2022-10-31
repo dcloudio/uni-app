@@ -1126,7 +1126,9 @@ function initUni(api, protocols) {
         },
     };
     // 处理 api mp 打包后为不同js，getEventChannel 无法共享问题
-    tt.getEventChannel = getEventChannel;
+    {
+        tt.getEventChannel = getEventChannel;
+    }
     return new Proxy({}, UniProxyHandlers);
 }
 

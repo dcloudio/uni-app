@@ -4,6 +4,7 @@
   "version": "3.0.0-alpha-3060820221027001",
   "description": "@dcloudio/uni-api",
   "sideEffects": false,
+  "module": "src/index.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dcloudio/uni-app.git",

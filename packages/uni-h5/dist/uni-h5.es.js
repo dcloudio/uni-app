@@ -15040,7 +15040,6 @@ function checkMinWidth(minWidth) {
 function getStateId() {
   return history.state && history.state.__id__ || 1;
 }
-PolySymbol(process.env.NODE_ENV !== "production" ? "layout" : "l");
 let tabBar;
 function useTabBar() {
   if (!tabBar) {
@@ -18597,6 +18596,7 @@ const MIMEType = {
     wvx: "x-ms-wvx"
   }
 };
+const MIMEType$1 = MIMEType;
 const ALL = "all";
 addInteractListener();
 function isWXEnv() {
@@ -18624,7 +18624,7 @@ function _createInput({
   inputEl.accept = extension.map((item) => {
     if (type !== ALL) {
       const MIMEKey = item.replace(".", "");
-      return `${type}/${MIMEType[type][MIMEKey] || MIMEKey}`;
+      return `${type}/${MIMEType$1[type][MIMEKey] || MIMEKey}`;
     } else {
       if (isWXEnv()) {
         return ".";
@@ -21939,19 +21939,13 @@ function createRouterViewVNode({
   return createVNode(RouterView, null, {
     default: withCtx(({
       Component
-    }) => [(openBlock(), createBlock(
-      KeepAlive,
-      {
-        matchBy: "key",
-        cache: routeCache2
-      },
-      [(openBlock(), createBlock(resolveDynamicComponent(Component), {
-        type: isTabBar.value ? "tabBar" : "",
-        key: routeKey.value
-      }))],
-      1032,
-      ["cache"]
-    ))]),
+    }) => [(openBlock(), createBlock(KeepAlive, {
+      matchBy: "key",
+      cache: routeCache2
+    }, [(openBlock(), createBlock(resolveDynamicComponent(Component), {
+      type: isTabBar.value ? "tabBar" : "",
+      key: routeKey.value
+    }))], 1032, ["cache"]))]),
     _: 1
   });
 }

@@ -1124,7 +1124,9 @@ function initUni(api, protocols) {
         },
     };
     // 处理 api mp 打包后为不同js，getEventChannel 无法共享问题
-    qq.getEventChannel = getEventChannel;
+    {
+        qq.getEventChannel = getEventChannel;
+    }
     return new Proxy({}, UniProxyHandlers);
 }
 

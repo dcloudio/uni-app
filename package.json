@@ -42,7 +42,7 @@
   "devDependencies": {
     "@babel/core": "^7.17.10",
     "@babel/preset-env": "^7.16.11",
-    "@dcloudio/types": "^3.0.16",
+    "@dcloudio/types": "^3.0.17",
     "@dcloudio/uni-api": "3.0.0-alpha-3060820221027001",
     "@dcloudio/uni-app": "3.0.0-alpha-3060820221027001",
     "@jest/types": "^27.0.2",
@@ -57,8 +57,8 @@
     "@types/jest": "^27.0.0",
     "@types/node": "^17.0.31",
     "@typescript-eslint/parser": "^5.14.0",
-    "@vitejs/plugin-vue": "^3.1.2",
-    "@vitejs/plugin-vue-jsx": "^2.0.1",
+    "@vitejs/plugin-vue": "^3.2.0",
+    "@vitejs/plugin-vue-jsx": "^2.1.0",
     "@vue/compiler-sfc": "3.2.41",
     "@vue/reactivity": "3.2.41",
     "@vue/runtime-core": "3.2.41",
@@ -87,7 +87,7 @@
     "simple-git-hooks": "^2.8.0",
     "ts-jest": "^27.0.3",
     "typescript": "^4.8.4",
-    "vite": "3.1.8",
+    "vite": "3.2.2",
     "vue": "3.2.41",
     "vue-router": "^4.1.6",
     "yorkie": "^2.0.0"

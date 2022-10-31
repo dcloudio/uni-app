@@ -1120,7 +1120,9 @@ function initUni(api, protocols) {
         },
     };
     // 处理 api mp 打包后为不同js，getEventChannel 无法共享问题
-    swan.getEventChannel = getEventChannel;
+    {
+        swan.getEventChannel = getEventChannel;
+    }
     return new Proxy({}, UniProxyHandlers);
 }
 

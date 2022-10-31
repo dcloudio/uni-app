@@ -5,7 +5,6 @@ import {
 } from '@dcloudio/uni-shared'
 import { capitalize, hasOwn, isArray } from '@vue/shared'
 import { ComponentPublicInstance, ComponentInternalInstance } from 'vue'
-import { getEventChannel } from '../api/protocols/navigateTo'
 import { MPComponentInstance } from './component'
 
 const MP_METHODS = [

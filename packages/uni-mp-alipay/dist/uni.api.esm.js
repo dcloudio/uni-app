@@ -1087,7 +1087,9 @@ function initUni(api, protocols) {
         my.$emit = $emit;
     }
     // 处理 api mp 打包后为不同js，getEventChannel 无法共享问题
-    my.getEventChannel = getEventChannel;
+    {
+        my.getEventChannel = getEventChannel;
+    }
     return new Proxy({}, UniProxyHandlers);
 }
 
