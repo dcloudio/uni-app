@@ -27,7 +27,7 @@
     "directory": "test-dts"
   },
   "simple-git-hooks": {
-    "pre-commit": "pnpm exec lint-staged --concurrent false",
+    "pre-commit": "pnpm exec lint-staged --concurrent false && pnpm run test-dts",
     "commit-msg": "node scripts/verifyCommit.js $1"
   },
   "lint-staged": {
