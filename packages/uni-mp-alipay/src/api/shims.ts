@@ -2,6 +2,10 @@ import { hasOwn, isFunction } from '@vue/shared'
 
 import { initGetProvider } from '@dcloudio/uni-mp-core'
 
+import { $on, $off } from '@dcloudio/uni-api/src/service/base/eventBus'
+
+let onKeyboardHeightChangeCallback: undefined | ((result: any) => void)
+
 export const getProvider = initGetProvider({
   oauth: ['alipay'],
   share: ['alipay'],
@@ -119,4 +123,19 @@ export function createIntersectionObserver(
     delete options.observeAll
   }
   return (my as any).createIntersectionObserver(options)
+}
+
+export function onKeyboardHeightChange(callback: (result: any) => void) {
+  // 与微信小程序一致仅保留最后一次监听
+  if (onKeyboardHeightChangeCallback) {
+    $off('uni:keyboardHeightChange', onKeyboardHeightChangeCallback)
+  }
+  onKeyboardHeightChangeCallback = callback
+  $on('uni:keyboardHeightChange', onKeyboardHeightChangeCallback)
+}
+
+export function offKeyboardHeightChange() {
+  // 与微信小程序一致移除最后一次监听
+  $off('uni:keyboardHeightChange', onKeyboardHeightChangeCallback)
+  onKeyboardHeightChangeCallback = undefined
 }

@@ -1,7 +1,8 @@
-import { hyphenate } from '@vue/shared'
+import { hyphenate, isFunction, isPlainObject } from '@vue/shared'
 import { SLOT_DEFAULT_NAME, dynamicSlotName } from '@dcloudio/uni-shared'
 import {
   formatMiniProgramEvent,
+  isAttributeNode,
   isElementNode,
   isUserComponent,
   MiniProgramCompilerOptions,
@@ -22,14 +23,20 @@ import {
   TemplateNode,
   TextNode,
 } from '@vue/compiler-core'
-import { TemplateCodegenOptions } from '../options'
+import type { TemplateCodegenOptions } from '../options'
+import type { NameScopedSlotDirectiveNode } from '../transforms/transformSlot'
 import { genExpr } from '../codegen'
 import { ForElementNode, isForElementNode } from '../transforms/vFor'
 import { IfElementNode, isIfElementNode } from '../transforms/vIf'
 import { findSlotName } from '../transforms/vSlot'
 import { TransformContext } from '../transform'
-import { ATTR_VUE_PROPS } from '../transforms/utils'
-interface TemplateCodegenContext {
+import {
+  ATTR_VUE_PROPS,
+  VIRTUAL_HOST_STYLE,
+  VIRTUAL_HOST_CLASS,
+} from '../transforms/utils'
+
+export interface TemplateCodegenContext {
   code: string
   directive: string
   scopeId?: string | null
@@ -38,6 +45,7 @@ interface TemplateCodegenContext {
   lazyElement: MiniProgramCompilerOptions['lazyElement']
   component: MiniProgramCompilerOptions['component']
   isBuiltInComponent: TransformContext['isBuiltInComponent']
+  isMiniProgramComponent: TransformContext['isMiniProgramComponent']
   push(code: string): void
 }
 
@@ -52,6 +60,7 @@ export function generate(
     directive,
     lazyElement,
     isBuiltInComponent,
+    isMiniProgramComponent,
     component,
   }: TemplateCodegenOptions
 ) {
@@ -64,6 +73,7 @@ export function generate(
     lazyElement,
     component,
     isBuiltInComponent,
+    isMiniProgramComponent,
     push(code) {
       context.code += code
     },
@@ -165,13 +175,19 @@ function genSlot(node: SlotOutletNode, context: TemplateCodegenContext) {
 
   push(`<block`)
   const nameProp = findProp(node, 'name')
-  genVIf(
-    `$slots.` +
-      (nameProp?.type === NodeTypes.ATTRIBUTE && nameProp.value?.content
-        ? nameProp.value.content
-        : SLOT_DEFAULT_NAME),
-    context
-  )
+  let name = SLOT_DEFAULT_NAME
+  if (nameProp) {
+    if (isAttributeNode(nameProp)) {
+      if (nameProp.value?.content) {
+        name = nameProp.value.content
+      }
+    } else {
+      if ((nameProp as NameScopedSlotDirectiveNode).slotName) {
+        name = (nameProp as NameScopedSlotDirectiveNode).slotName
+      }
+    }
+  }
+  genVIf(`$slots.${name}`, context)
   push(`>`)
   genElement(node, context)
   push(`</block>`)
@@ -240,6 +256,14 @@ function genComponent(node: ComponentNode, context: TemplateCodegenContext) {
   if (isIfElementNode(node) || isForElementNode(node)) {
     return genElement(node, context)
   }
+  // 小程序原生组件，补充 if(r0)
+  if (context.isMiniProgramComponent(node.tag)) {
+    ;(node as IfElementNode).vIf = {
+      name: 'if',
+      condition: 'r0',
+    }
+    return genElement(node, context)
+  }
   const prop = findProp(node, ATTR_VUE_PROPS) as DirectiveNode
   if (!prop) {
     return genElement(node, context)
@@ -255,14 +279,23 @@ function isLazyElement(node: ElementNode, context: TemplateCodegenContext) {
   if (!context.lazyElement) {
     return false
   }
-  const lazyProps = context.lazyElement[node.tag]
+  let lazyProps: { name: 'on' | 'bind'; arg: string[] }[] | undefined
+  if (isFunction(context.lazyElement)) {
+    const res = context.lazyElement(node, context)
+    if (!isPlainObject(res)) {
+      return res
+    }
+    lazyProps = res[node.tag]
+  } else {
+    lazyProps = context.lazyElement[node.tag]
+  }
   if (!lazyProps) {
     return
   }
   return node.props.some(
     (prop) =>
       prop.type === NodeTypes.DIRECTIVE &&
-      lazyProps.find((lazyProp) => {
+      lazyProps!.find((lazyProp) => {
         return (
           prop.name === lazyProp.name &&
           prop.arg?.type === NodeTypes.SIMPLE_EXPRESSION &&
@@ -333,10 +366,14 @@ function genElement(node: ElementNode, context: TemplateCodegenContext) {
       genNode(node, context)
     })
   }
+  let virtualHost: boolean = false
   if (isUserComponent(node, context)) {
     tag = hyphenate(tag)
     if (context.component?.normalizeName) {
       tag = context.component?.normalizeName(tag)
+    }
+    if (context.component?.mergeVirtualHostAttributes) {
+      virtualHost = true
     }
   }
   const { push } = context
@@ -360,7 +397,7 @@ function genElement(node: ElementNode, context: TemplateCodegenContext) {
     genVFor(node, context)
   }
   if (props.length) {
-    genElementProps(node, context)
+    genElementProps(node, virtualHost, context)
   }
 
   if (isSelfClosing) {
@@ -377,15 +414,34 @@ function genElement(node: ElementNode, context: TemplateCodegenContext) {
   }
 }
 
+function checkVirtualHostProps(name: string, virtualHost: boolean): string[] {
+  const names: string[] = [name]
+  if (virtualHost) {
+    const obj: { [key: string]: string } = {
+      style: VIRTUAL_HOST_STYLE,
+      class: VIRTUAL_HOST_CLASS,
+    }
+    if (name in obj) {
+      // TODO 支付宝平台移除原有属性（支付宝小程序自定义组件外部属性始终无效）
+      names.push(obj[name])
+    }
+    return names
+  }
+  return names
+}
+
 export function genElementProps(
   node: ElementNode,
+  virtualHost: boolean,
   context: TemplateCodegenContext
 ) {
   node.props.forEach((prop) => {
     if (prop.type === NodeTypes.ATTRIBUTE) {
       const { value } = prop
       if (value) {
-        context.push(` ${prop.name}="${value.content}"`)
+        checkVirtualHostProps(prop.name, virtualHost).forEach((name) => {
+          context.push(` ${name}="${value.content}"`)
+        })
       } else {
         context.push(` ${prop.name}`)
       }
@@ -394,7 +450,7 @@ export function genElementProps(
       if (name === 'on') {
         genOn(prop, node, context)
       } else {
-        genDirectiveNode(prop, node, context)
+        genDirectiveNode(prop, node, virtualHost, context)
       }
     }
   })
@@ -422,6 +478,7 @@ function genOn(
 function genDirectiveNode(
   prop: DirectiveNode,
   node: ElementNode,
+  virtualHost: boolean,
   context: TemplateCodegenContext
 ) {
   const { push, component } = context
@@ -449,7 +506,9 @@ function genDirectiveNode(
   } else if (prop.arg && prop.exp) {
     const arg = (prop.arg as SimpleExpressionNode).content
     const exp = (prop.exp as SimpleExpressionNode).content
-    push(` ${arg}="{{${exp}}}"`)
+    checkVirtualHostProps(arg, virtualHost).forEach((arg) => {
+      push(` ${arg}="{{${exp}}}"`)
+    })
   } else {
     if (prop.name !== 'bind') {
       throw new Error(`unknown directive ` + JSON.stringify(prop))

@@ -21,6 +21,9 @@ export function uniAppPlugin(
       return {
         base: '/', // app 平台强制 base
         build: buildOptions({ renderer, appService }, config, env),
+        optimizeDeps: {
+          disabled: true,
+        },
         resolve: {
           alias: {
             // vue-i18n 默认会启用 new Function 来构造翻译函数，导致在 Android 上可能报`TypeError: no access` 错误

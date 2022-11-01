@@ -1,3 +1,4 @@
+import { hasOwn } from '@vue/shared'
 import path from 'path'
 import { EXTNAME_JS_RE, EXTNAME_VUE } from '../../constants'
 
@@ -8,6 +9,9 @@ export interface VueQuery {
   index?: number
   lang?: string
   raw?: boolean
+  setup?: boolean
+  'lang.ts'?: string
+  'lang.js'?: string
 }
 
 export function parseVueRequest(id: string) {
@@ -62,12 +66,14 @@ export const cleanUrl = (url: string) =>
   url.replace(hashRE, '').replace(queryRE, '')
 
 export function isJsFile(id: string) {
-  const isJs = EXTNAME_JS_RE.test(id)
+  const { filename, query } = parseVueRequest(id)
+  const isJs = EXTNAME_JS_RE.test(filename)
   if (isJs) {
     return true
   }
-  const { filename, query } = parseVueRequest(id)
-  const isVueJs = EXTNAME_VUE.includes(path.extname(filename)) && !query.vue
+  const isVueJs =
+    EXTNAME_VUE.includes(path.extname(filename)) &&
+    (!query.vue || query.setup || hasOwn(query, 'lang.ts'))
   if (isVueJs) {
     return true
   }

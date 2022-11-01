@@ -1,4 +1,7 @@
-import { ComponentPropsOptions } from '@vue/runtime-core'
+import {
+  ComponentPropsOptions,
+  ComponentPublicInstance,
+} from '@vue/runtime-core'
 import { extend, isArray, isFunction, isPlainObject } from '@vue/shared'
 import type { MPComponentOptions, MPComponentInstance } from './component'
 // @ts-ignore
@@ -24,7 +27,10 @@ const builtInProps = [
   'uS',
 ]
 
-function initDefaultProps(isBehavior: boolean = false) {
+function initDefaultProps(
+  options: MPComponentOptions,
+  isBehavior: boolean = false
+) {
   const properties: Component.PropertyOption = {}
   if (!isBehavior) {
     // 均不指定类型，避免微信小程序 property received type-uncompatible value 警告
@@ -50,6 +56,36 @@ function initDefaultProps(isBehavior: boolean = false) {
       },
     }
   }
+  if (options.behaviors) {
+    // wx://form-field
+    if (options.behaviors.includes('__GLOBAL__://form-field')) {
+      properties.name = {
+        type: null,
+        value: '',
+      }
+      properties.value = {
+        type: null,
+        value: '',
+      }
+    }
+  }
+  return properties
+}
+
+function initVirtualHostProps(options?: Component.ComponentOptions) {
+  const properties: Component.PropertyOption = {}
+  if (__PLATFORM__ === 'mp-weixin' || __PLATFORM__ === 'mp-alipay') {
+    if (__PLATFORM__ === 'mp-alipay' || (options && options.virtualHost)) {
+      properties.virtualHostStyle = {
+        type: null,
+        value: '',
+      }
+      properties.virtualHostClass = {
+        type: null,
+        value: '',
+      }
+    }
+  }
   return properties
 }
 
@@ -62,7 +98,11 @@ export function initProps(mpComponentOptions: MPComponentOptions) {
   if (!mpComponentOptions.properties) {
     mpComponentOptions.properties = {}
   }
-  extend(mpComponentOptions.properties, initDefaultProps())
+  extend(
+    mpComponentOptions.properties,
+    initDefaultProps(mpComponentOptions),
+    initVirtualHostProps(mpComponentOptions.options)
+  )
 }
 
 const PROP_TYPES = [String, Number, Boolean, Object, Array, null]
@@ -154,4 +194,27 @@ function findPagePropsData(properties: Record<string, any>) {
     })
   }
   return propsData
+}
+
+export function initFormField(vm: ComponentPublicInstance) {
+  // 同步 form-field 的 name,value 值
+  const vueOptions = vm.$options
+  if (
+    isArray(vueOptions.behaviors) &&
+    vueOptions.behaviors.includes('uni://form-field')
+  ) {
+    vm.$watch(
+      'modelValue',
+      () => {
+        vm.$scope &&
+          vm.$scope.setData({
+            name: (vm as any).name,
+            value: (vm as any).modelValue,
+          })
+      },
+      {
+        immediate: true,
+      }
+    )
+  }
 }

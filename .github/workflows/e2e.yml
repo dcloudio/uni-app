@@ -12,12 +12,12 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node_version: [12]
+        node_version: [16]
         include:
           - os: macos-latest
-            node_version: 12
+            node_version: 16
           - os: windows-latest
-            node_version: 12
+            node_version: 16
       fail-fast: false
     name: 'e2e: node-${{ matrix.node_version }}, ${{ matrix.os }}'
     env:
@@ -54,12 +54,12 @@ jobs:
           npx cypress version --component node
 
       - name: Cypress run
-        uses: cypress-io/github-action@v2.3.6
+        uses: cypress-io/github-action@v4
         with:
           install: false
           start: npm run dev:ssr
           working-directory: ./packages/playground/ssr
-          wait-on: 'http://localhost:3000'
+          wait-on: 'http://localhost:5173'
           wait-on-timeout: 480
           browser: chrome
         env:

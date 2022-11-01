@@ -1,13 +1,15 @@
 import { onUnmounted, inject, watch } from 'vue'
+import { isFunction } from '@vue/shared'
 import { getRealPath } from '@dcloudio/uni-platform'
 import { defineSystemComponent, useCustomEvent } from '@dcloudio/uni-components'
 import { Maps, Map, LatLng, Callout, CalloutOptions } from './maps'
+import { MapType, getMapInfo, getIsAMap } from '../../../helpers/location'
 import {
-  Map as GMap,
   LatLng as GLatLng,
   Marker as GMarker,
   Label as GLabel,
   Icon,
+  GoogleMaps,
 } from './maps/google/types'
 import {
   Map as QMap,
@@ -15,6 +17,7 @@ import {
   Marker as QMarker,
   Label as QLabel,
   MarkerImage,
+  QQMaps,
 } from './maps/qq/types'
 
 const props = {
@@ -113,7 +116,8 @@ interface MarkerExt {
 }
 interface GMarkerExt extends GMarker, MarkerExt {}
 interface QMarkerExt extends QMarker, MarkerExt {}
-type Marker = GMarkerExt | QMarkerExt
+interface AMarkerExt extends AMap.Marker, MarkerExt {}
+type Marker = GMarkerExt | QMarkerExt | AMarkerExt
 type MarkerLabelStyle = Partial<
   Pick<
     CSSStyleDeclaration,
@@ -161,7 +165,7 @@ export default /*#__PURE__*/ defineSystemComponent({
   name: 'MapMarker',
   props,
   setup(props) {
-    const id = String(Number(props.id) !== NaN ? props.id : '')
+    const id = String(!isNaN(Number(props.id)) ? props.id : '')
     const onMapReady: OnMapReady = inject('onMapReady') as OnMapReady
     const updateMarkerLabelStyle = useMarkerLabelStyle(id)
     let marker: Marker
@@ -171,15 +175,30 @@ export default /*#__PURE__*/ defineSystemComponent({
           ;(marker.label as QLabel).setMap(null)
         }
         if (marker.callout) {
-          marker.callout.setMap(null)
+          removeMarkerCallout(marker.callout)
         }
         marker.setMap(null)
+      }
+    }
+    function removeMarkerCallout(callout: Marker['callout']) {
+      if (getIsAMap()) {
+        callout!.removeAMapText()
+      } else {
+        callout!.setMap(null)
       }
     }
     onMapReady((map, maps, trigger) => {
       function updateMarker(option: Props) {
         const title = option.title
-        const position = new maps.LatLng(option.latitude, option.longitude)
+        const position = getIsAMap()
+          ? new (maps as AMap.NameSpace).LngLat(
+              option.longitude,
+              option.latitude
+            )
+          : new (maps as QQMaps | GoogleMaps).LatLng(
+              option.latitude,
+              option.longitude
+            )
         const img = new Image()
         img.onload = () => {
           const anchor = option.anchor || {}
@@ -202,14 +221,22 @@ export default /*#__PURE__*/ defineSystemComponent({
               img.src,
               null,
               null,
-              new maps.Point(x * w, y * h),
-              new maps.Size(w, h)
+              new (maps as QQMaps).Point(x * w, y * h),
+              new (maps as QQMaps).Size(w, h)
             )
+          } else if ('Icon' in maps) {
+            // 高德
+            icon = new (maps as AMap.NameSpace).Icon({
+              image: img.src,
+              size: new (maps as AMap.NameSpace).Size(w, h),
+              imageSize: new (maps as AMap.NameSpace).Size(w, h),
+              imageOffset: new (maps as AMap.NameSpace).Pixel(x * w, y * h),
+            })
           } else {
             icon = {
               url: img.src,
-              anchor: new maps.Point(x, y),
-              size: new maps.Size(w, h),
+              anchor: new (maps as GoogleMaps).Point(x, y),
+              size: new (maps as GoogleMaps).Size(w, h),
             }
           }
           marker.setPosition(position as any)
@@ -246,13 +273,33 @@ export default /*#__PURE__*/ defineSystemComponent({
               })
               marker.label = label
             } else if ('setLabel' in marker) {
-              const className = updateMarkerLabelStyle(labelStyle)
-              marker.setLabel({
-                text: labelOpt.content,
-                color: labelStyle.color,
-                fontSize: labelStyle.fontSize,
-                className,
-              })
+              if (getIsAMap()) {
+                const content = `<div style="
+                  margin-left:${labelStyle.marginLeft};
+                  margin-top:${labelStyle.marginTop};
+                  padding:${labelStyle.padding};
+                  background-color:${labelStyle.backgroundColor};
+                  border-radius:${labelStyle.borderRadius};
+                  line-height:${labelStyle.lineHeight};
+                  color:${labelStyle.color};
+                  font-size:${labelStyle.fontSize};
+
+                  ">
+                  ${labelOpt.content}
+                <div>`
+                marker.setLabel({
+                  content,
+                  direction: 'bottom-right',
+                } as any)
+              } else {
+                const className = updateMarkerLabelStyle(labelStyle)
+                ;(marker as GMarker).setLabel({
+                  text: labelOpt.content,
+                  color: labelStyle.color,
+                  fontSize: labelStyle.fontSize,
+                  className,
+                })
+              }
             }
           }
           const calloutOpt = option.callout || {}
@@ -265,6 +312,8 @@ export default /*#__PURE__*/ defineSystemComponent({
                   position,
                   map,
                   top,
+                  // handle AMap callout offset
+                  offsetY: -option.height / 2,
                   content: calloutOpt.content,
                   color: calloutOpt.color,
                   fontSize: calloutOpt.fontSize,
@@ -278,26 +327,52 @@ export default /*#__PURE__*/ defineSystemComponent({
                   position,
                   map,
                   top,
+                  // handle AMap callout offset
+                  offsetY: -option.height / 2,
                   content: title,
                   boxShadow,
                 }
             if (callout) {
               callout.setOption(calloutStyle)
             } else {
-              callout = marker.callout = new maps.Callout(calloutStyle)
-              callout.div.onclick = function ($event) {
-                if (id !== '') {
-                  trigger('callouttap', $event, {
-                    markerId: Number(id),
-                  })
+              if (getIsAMap()) {
+                const callback = (id: number | string) => {
+                  if (id !== '') {
+                    trigger('callouttap', {} as Event, {
+                      markerId: Number(id),
+                    })
+                  }
                 }
-                $event.stopPropagation()
-                $event.preventDefault()
+                callout = marker.callout = new maps.Callout(
+                  calloutStyle,
+                  callback
+                )
+              } else {
+                callout = marker.callout = new maps.Callout(calloutStyle)
+                callout.div!.onclick = function ($event: Event) {
+                  if (id !== '') {
+                    trigger('callouttap', $event, {
+                      markerId: Number(id),
+                    })
+                  }
+                  $event.stopPropagation()
+                  $event.preventDefault()
+                }
+
+                // The mobile terminal prevent google map callout click trigger map click
+                if (getMapInfo().type === MapType.GOOGLE) {
+                  callout.div!.ontouchstart = function ($event: Event) {
+                    $event.stopPropagation()
+                  }
+                  callout.div!.onpointerdown = function ($event: Event) {
+                    $event.stopPropagation()
+                  }
+                }
               }
             }
           } else {
             if (callout) {
-              callout.setMap(null)
+              removeMarkerCallout(callout)
               delete marker.callout
             }
           }
@@ -310,27 +385,39 @@ export default /*#__PURE__*/ defineSystemComponent({
       }
       function addMarker(props: Props) {
         marker = new maps.Marker({
-          map: map as GMap & QMap,
+          map: map as any,
           flat: true,
           autoRotation: false,
         })
         updateMarker(props)
-        maps.event.addListener(marker, 'click', () => {
+        const MapsEvent =
+          (maps as QQMaps | GoogleMaps).event || (maps as AMap.NameSpace).Event
+        MapsEvent.addListener(marker, 'click', () => {
           const callout = marker.callout
-          if (callout) {
-            const div = callout.div
-            const parent = div.parentNode as HTMLElement
-            if (!callout.alwaysVisible) {
+          if (callout && !callout.alwaysVisible) {
+            if (getIsAMap()) {
+              callout.visible = !callout.visible
+              if (callout.visible) {
+                marker.callout!.createAMapText()
+              } else {
+                marker.callout!.removeAMapText()
+              }
+            } else {
               callout.set('visible', !callout.visible)
-            }
-            if (callout.visible) {
-              parent.removeChild(div)
-              parent.appendChild(div)
+              if (callout.visible) {
+                const div = callout.div!
+                const parent = div.parentNode!
+                parent.removeChild(div)
+                parent.appendChild(div)
+              }
             }
           }
+
           if (id) {
             trigger('markertap', {} as Event, {
               markerId: Number(id),
+              latitude: props.latitude,
+              longitude: props.longitude,
             })
           }
         })
@@ -358,20 +445,23 @@ export default /*#__PURE__*/ defineSystemComponent({
               rotation = marker.getRotation()
             }
             const a = marker.getPosition()
-            const b = new maps.LatLng(
+            const b = new (maps as QQMaps | GoogleMaps).LatLng(
               destination.latitude,
               destination.longitude
             )
             const distance =
-              maps.geometry.spherical.computeDistanceBetween(
-                a as any,
-                b as any
-              ) / 1000
+              (
+                maps as QQMaps | GoogleMaps
+              ).geometry.spherical.computeDistanceBetween(a as any, b as any) /
+              1000
             const time =
               (typeof duration === 'number' ? duration : 1000) /
               (1000 * 60 * 60)
             const speed = distance / time
-            const movingEvent = maps.event.addListener(
+            const MapsEvent =
+              (maps as QQMaps | GoogleMaps).event ||
+              (maps as AMap.NameSpace).Event
+            const movingEvent = MapsEvent.addListener(
               marker,
               'moving',
               (e: any) => {
@@ -386,10 +476,10 @@ export default /*#__PURE__*/ defineSystemComponent({
                 }
               }
             )
-            const event = maps.event.addListener(marker, 'moveend', () => {
+            const event = MapsEvent.addListener(marker, 'moveend', () => {
               event.remove()
               movingEvent.remove()
-              marker.lastPosition = a!
+              marker.lastPosition = a as QLatLng
               marker.setPosition(b as any)
               const label = marker.label
               if (label) {
@@ -400,21 +490,25 @@ export default /*#__PURE__*/ defineSystemComponent({
                 callout.setPosition(b)
               }
               const cb = data.animationEnd
-              if (typeof cb === 'function') {
+              if (isFunction(cb)) {
                 cb()
               }
             })
             let lastRtate = 0
             if (autoRotate) {
               if (marker.lastPosition) {
-                lastRtate = maps.geometry.spherical.computeHeading(
+                lastRtate = (
+                  maps as QQMaps | GoogleMaps
+                ).geometry.spherical.computeHeading(
                   marker.lastPosition as any,
                   a as any
                 )
               }
               rotate =
-                maps.geometry.spherical.computeHeading(a as any, b as any) -
-                lastRtate
+                (maps as QQMaps | GoogleMaps).geometry.spherical.computeHeading(
+                  a as any,
+                  b as any
+                ) - lastRtate
             }
             if ('setRotation' in marker) {
               marker.setRotation(rotation + rotate)
@@ -423,7 +517,7 @@ export default /*#__PURE__*/ defineSystemComponent({
               marker.moveTo(b as QLatLng, speed)
             } else {
               marker.setPosition(b as GLatLng)
-              maps.event.trigger(marker, 'moveend', {})
+              MapsEvent.trigger(marker, 'moveend', {})
             }
           })
         },

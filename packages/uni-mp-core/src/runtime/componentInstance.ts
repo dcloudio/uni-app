@@ -5,7 +5,6 @@ import {
 } from '@dcloudio/uni-shared'
 import { capitalize, hasOwn, isArray } from '@vue/shared'
 import { ComponentPublicInstance, ComponentInternalInstance } from 'vue'
-import { getEventChannel } from '../api/protocols/navigateTo'
 import { MPComponentInstance } from './component'
 
 const MP_METHODS = [
@@ -145,9 +144,14 @@ function callHook(this: ComponentPublicInstance, name: string, args?: unknown) {
     callHook.call(this, 'bm') // beforeMount
     this.$.isMounted = true
     name = 'm'
-  } else if (name === 'onLoad' && args && (args as any).__id__) {
-    ;(this as any).__eventChannel__ = getEventChannel((args as any).__id__)
-    delete (args as any).__id__
+  }
+  if (__PLATFORM__ !== 'mp-weixin') {
+    if (name === 'onLoad' && args && (args as any).__id__) {
+      ;(this as any).__eventChannel__ = __GLOBAL__.getEventChannel(
+        (args as any).__id__
+      )
+      delete (args as any).__id__
+    }
   }
   const hooks = (this.$ as any)[name]
   return hooks && invokeArrayFns(hooks, args)

@@ -25,6 +25,27 @@ describe('compiler: transform slot', () => {
   return { a: _d(_ctx.name) }
 }`
     )
+    assert(
+      `<button><slot :name="'title'+index" :content="{name:'name1'}"></slot></button>`,
+      `<button><slot name="{{a}}"></slot></button>`,
+      `(_ctx, _cache) => {
+  return { a: _d('title' + _ctx.index), b: _r(_d('title' + _ctx.index), { content: { name: 'name1' } }) }
+}`
+    )
+    assert(
+      `<view v-for="(item,index) in 3" :key="index"><slot :name="'title'+index" :content="{name:'name'+index}"></slot></view>`,
+      `<view wx:for="{{a}}" wx:for-item="item" wx:key="c"><slot name="{{item.a}}"></slot></view>`,
+      `(_ctx, _cache) => {
+  return { a: _f(3, (item, index, i0) => { return { a: _d('title' + index + '-' + i0), b: _r(_d('title' + index), { content: { name: 'name' + index } }, i0), c: index }; }) }
+}`
+    )
+    assert(
+      `<view v-for="(item,index) in 3" :key="index"><slot :name="item.slot" :content="{name:'name'+index}"></slot></view>`,
+      `<view wx:for="{{a}}" wx:for-item="item" wx:key="c"><slot name="{{item.a}}"></slot></view>`,
+      `(_ctx, _cache) => {
+  return { a: _f(3, (item, index, i0) => { return { a: _d(item.slot), b: _r(_d(item.slot), { content: { name: 'name' + index } }, i0), c: index }; }) }
+}`
+    )
   })
   test('fallback content', () => {
     assert(
@@ -99,7 +120,7 @@ describe('compiler: transform slot', () => {
       `<view v-for="(item,index) in items" :key="index"><slot v-for="(item1,index1) in item.list" :key="index1"></slot></view>`,
       `<view wx:for="{{a}}" wx:for-item="item" wx:key="b"><slot wx:for="{{item.a}}" wx:for-item="item1" name="{{item1.a}}"></slot></view>`,
       `(_ctx, _cache) => {
-  return { a: _f(_ctx.items, (item, index, i0) => { return { a: _f(item.list, (item1, index1, i1) => { return { a: "d-" + i0 + '-' + i1, b: _r("d", { key: index1 }, i1) }; }), b: index }; }) }
+  return { a: _f(_ctx.items, (item, index, i0) => { return { a: _f(item.list, (item1, index1, i1) => { return { a: "d-" + i0 + '-' + i1, b: _r("d", { key: index1 }, i0 + '-' + i1) }; }), b: index }; }) }
 }`
     )
   })

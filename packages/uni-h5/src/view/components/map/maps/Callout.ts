@@ -1,9 +1,9 @@
+import { getIsAMap } from '../../../../helpers/location'
 import { QQMaps, Overlay, LatLng as QLatLng } from './qq/types'
 import { GoogleMaps, OverlayView, LatLng as GLatLng } from './google/types'
-
 export interface CalloutOptions {
   map?: any
-  position?: GLatLng | QLatLng
+  position?: GLatLng | QLatLng | AMap.LngLat
   display?: 'ALWAYS'
   boxShadow?: string
   content?: string
@@ -13,100 +13,164 @@ export interface CalloutOptions {
   borderRadius?: number
   bgColor?: string
   top?: number
+  offsetY?: number
 }
 
-export function createCallout(maps: QQMaps | GoogleMaps) {
-  const overlay: OverlayView | Overlay = new ((maps as GoogleMaps)
-    .OverlayView || (maps as QQMaps).Overlay)()
+export function createCallout(maps: QQMaps | GoogleMaps | AMap.NameSpace) {
   function onAdd(this: Callout) {
     const div = this.div
     const panes = this.getPanes()!
     panes.floatPane.appendChild(div)
   }
   function onRemove(this: Callout) {
-    const parentNode = this.div.parentNode
+    const parentNode = this.div!.parentNode
     if (parentNode) {
-      parentNode.removeChild(this.div)
+      parentNode.removeChild(this.div!)
+    }
+  }
+
+  function createAMapText(this: Callout) {
+    const option = this.option
+    this.Text = new (maps as AMap.NameSpace).Text({
+      text: option.content,
+      anchor: 'bottom-center', // 设置文本标记锚点
+      offset: new (maps as AMap.NameSpace).Pixel(0, option.offsetY! - 16),
+      style: {
+        padding: (option.padding || 8) + 'px',
+        'line-height': (option.fontSize || 14) + 'px',
+        'border-radius': (option.borderRadius || 0) + 'px',
+        'border-color': `${option.bgColor || '#fff'} transparent transparent`,
+        'background-color': option.bgColor || '#fff',
+        'box-shadow': '0 2px 6px 0 rgba(114, 124, 245, .5)',
+        'text-align': 'center',
+        'font-size': (option.fontSize || 14) + 'px',
+        color: option.color || '#000',
+      },
+      position: option.position as any,
+    })
+    const event =
+      (maps as QQMaps | GoogleMaps).event || (maps as AMap.NameSpace).Event
+    event.addListener(this.Text, 'click', () => {
+      this.callback!()
+    })
+
+    this.Text.setMap(option.map)
+  }
+
+  function removeAMapText(this: Callout) {
+    if (this.Text) {
+      this.option.map.remove(this.Text)
     }
   }
 
   class Callout implements OverlayView, Overlay {
     option: CalloutOptions
-    position?: GLatLng | QLatLng
+    position?: GLatLng | QLatLng | AMap.LngLat
     index?: number
     visible?: boolean
     alwaysVisible?: boolean
-    div: HTMLDivElement
-    triangle: HTMLDivElement
+    div?: HTMLDivElement
+    triangle?: HTMLDivElement
+    callback?: Function
+    Text?: AMap.Text
     // @ts-ignore
-    setMap = overlay.setMap
+    setMap
     // @ts-ignore
-    getMap = overlay.getMap
+    getMap
     // @ts-ignore
-    getPanes = overlay.getPanes
+    getPanes
     // @ts-ignore
-    getProjection = overlay.getProjection
-    map_changed = (overlay as any).map_changed
-    set = overlay.set
-    get = overlay.get
-    setOptions = overlay.setValues
-    bindTo = overlay.bindTo
-    bindsTo = (overlay as any).bindsTo
-    notify = overlay.notify
-    setValues = overlay.setValues
+    getProjection
     // @ts-ignore
-    unbind = overlay.unbind
+    map_changed
     // @ts-ignore
-    unbindAll = overlay.unbindAll
-    addListener = (overlay as any).addListener
+    set: (key: string, value: any) => void
+    // @ts-ignore
+    get: (key: string) => any
+    // @ts-ignore
+    setOptions: (values?: object | null | undefined) => void
+    // @ts-ignore
+    bindTo
+    // @ts-ignore
+    bindsTo
+    // @ts-ignore
+    notify
+    // @ts-ignore
+    setValues
+    // @ts-ignore
+    unbind
+    // @ts-ignore
+    unbindAll
+    // @ts-ignore
+    addListener
     set onclick(callback: any) {
-      this.div.onclick = callback
+      this.div!.onclick = callback
     }
     get onclick(): any {
-      return this.div.onclick
+      return this.div!.onclick
     }
-    constructor(option: CalloutOptions = {}) {
+    constructor(option: CalloutOptions = {}, callback?: Function) {
       this.option = option || {}
-      const map = option.map
-      this.position = option.position
-      this.index = 1
+
       const visible =
         (this.visible =
         this.alwaysVisible =
           option.display === 'ALWAYS')
-      const div = (this.div = document.createElement('div'))
-      const divStyle = div.style
-      divStyle.position = 'absolute'
-      divStyle.whiteSpace = 'nowrap'
-      divStyle.transform = 'translateX(-50%) translateY(-100%)'
-      divStyle.zIndex = '1'
-      divStyle.boxShadow = option.boxShadow || 'none'
-      divStyle.display = visible ? 'block' : 'none'
-      const triangle = (this.triangle = document.createElement('div'))
-      triangle.setAttribute(
-        'style',
-        'position: absolute;white-space: nowrap;border-width: 4px;border-style: solid;border-color: #fff transparent transparent;border-image: initial;font-size: 12px;padding: 0px;background-color: transparent;width: 0px;height: 0px;transform: translate(-50%, 100%);left: 50%;bottom: 0;'
-      )
-      this.setStyle(option)
-      div.appendChild(triangle)
-      if (map) {
-        this.setMap(map)
+
+      if (getIsAMap()) {
+        this.callback = callback
+        if (this.visible) {
+          this.createAMapText()
+        }
+      } else {
+        const map = option.map
+        this.position = option.position
+        this.index = 1
+        const div = (this.div = document.createElement('div'))
+        const divStyle = div.style
+        divStyle.position = 'absolute'
+        divStyle.whiteSpace = 'nowrap'
+        divStyle.transform = 'translateX(-50%) translateY(-100%)'
+        divStyle.zIndex = '1'
+        divStyle.boxShadow = option.boxShadow || 'none'
+        divStyle.display = visible ? 'block' : 'none'
+        const triangle = (this.triangle = document.createElement('div'))
+        triangle.setAttribute(
+          'style',
+          'position: absolute;white-space: nowrap;border-width: 4px;border-style: solid;border-color: #fff transparent transparent;border-image: initial;font-size: 12px;padding: 0px;background-color: transparent;width: 0px;height: 0px;transform: translate(-50%, 100%);left: 50%;bottom: 0;'
+        )
+        this.setStyle(option)
+        div.appendChild(triangle)
+        if (map) {
+          this.setMap(map)
+        }
       }
     }
+
+    createAMapText = createAMapText
+    removeAMapText = removeAMapText
+
     onAdd = onAdd
     construct = onAdd
     setOption(option: CalloutOptions) {
       this.option = option
-      this.setPosition(option.position)
       if (option.display === 'ALWAYS') {
         this.alwaysVisible = this.visible = true
       } else {
         this.alwaysVisible = false
       }
-      this.setStyle(option)
+
+      if (getIsAMap()) {
+        if (this.visible) {
+          this.createAMapText()
+        }
+      } else {
+        this.setPosition(option.position)
+        this.setStyle(option)
+      }
     }
     setStyle(option: CalloutOptions) {
-      const div = this.div
+      const div = this.div!
       const divStyle = div.style
       div.innerText = option.content || ''
       divStyle.lineHeight = (option.fontSize || 14) + 'px'
@@ -116,11 +180,11 @@ export function createCallout(maps: QQMaps | GoogleMaps) {
       divStyle.borderRadius = (option.borderRadius || 0) + 'px'
       divStyle.backgroundColor = option.bgColor || '#fff'
       divStyle.marginTop = '-' + ((option.top || 0) + 5) + 'px'
-      this.triangle.style.borderColor = `${
+      this.triangle!.style.borderColor = `${
         option.bgColor || '#fff'
       } transparent transparent`
     }
-    setPosition(position?: GLatLng | QLatLng) {
+    setPosition(position?: GLatLng | QLatLng | AMap.LngLat) {
       this.position = position
       this.draw()
     }
@@ -137,11 +201,38 @@ export function createCallout(maps: QQMaps | GoogleMaps) {
       divStyle.top = pixel.y + 'px'
     }
     changed() {
-      const divStyle = this.div.style
+      const divStyle = this.div!.style
       divStyle.display = this.visible ? 'block' : 'none'
     }
     onRemove = onRemove
     destroy = onRemove
   }
+
+  if (!getIsAMap()) {
+    const overlay: OverlayView | Overlay = new ((maps as GoogleMaps)
+      .OverlayView || (maps as QQMaps).Overlay)()
+    // @ts-ignore
+    Callout.prototype.setMap = overlay.setMap
+    // @ts-ignore
+    Callout.prototype.getMap = overlay.getMap
+    // @ts-ignore
+    Callout.prototype.getPanes = overlay.getPanes
+    // @ts-ignore
+    Callout.prototype.getProjection = overlay.getProjection
+    Callout.prototype.map_changed = (overlay as any).map_changed
+    Callout.prototype.set = overlay.set
+    Callout.prototype.get = overlay.get
+    Callout.prototype.setOptions = overlay.setValues
+    Callout.prototype.bindTo = overlay.bindTo
+    Callout.prototype.bindsTo = (overlay as any).bindsTo
+    Callout.prototype.notify = overlay.notify
+    Callout.prototype.setValues = overlay.setValues
+    // @ts-ignore
+    Callout.prototype.unbind = overlay.unbind
+    // @ts-ignore
+    Callout.prototype.unbindAll = overlay.unbindAll
+    Callout.prototype.addListener = (overlay as any).addListener
+  }
+
   return Callout
 }

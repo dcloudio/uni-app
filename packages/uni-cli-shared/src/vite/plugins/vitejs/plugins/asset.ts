@@ -9,6 +9,8 @@ import { Plugin } from '../plugin'
 import { ResolvedConfig } from '../config'
 import { cleanUrl, normalizePath } from '../utils'
 import { withSourcemap } from '../../../../vite/utils/utils'
+import { isFunction, isString } from '@vue/shared'
+import { normalizeNodeModules } from '../../../../utils'
 
 export const assetUrlRE = /__VITE_ASSET__([a-z\d]{8})__(?:\$_(.*?)__)?/g
 
@@ -190,16 +192,16 @@ export function assetFileNamesToFileName(
   const name = basename.slice(0, -extname.length)
   const hash = contentHash
 
-  if (typeof assetFileNames === 'function') {
+  if (isFunction(assetFileNames)) {
     assetFileNames = assetFileNames({
       name: file,
       source: content,
       type: 'asset',
     })
-    if (typeof assetFileNames !== 'string') {
+    if (!isString(assetFileNames)) {
       throw new TypeError('assetFileNames must return a string')
     }
-  } else if (typeof assetFileNames !== 'string') {
+  } else if (!isString(assetFileNames)) {
     throw new TypeError('assetFileNames must be a string or a function')
   }
 
@@ -217,7 +219,7 @@ export function assetFileNamesToFileName(
           return hash
 
         case '[name]':
-          return name
+          return sanitizeFileName(name)
       }
       throw new Error(
         `invalid placeholder ${placeholder} in assetFileNames "${assetFileNames}"`
@@ -226,6 +228,23 @@ export function assetFileNamesToFileName(
   )
 
   return fileName
+}
+
+// taken from https://github.com/rollup/rollup/blob/a8647dac0fe46c86183be8596ef7de25bc5b4e4b/src/utils/sanitizeFileName.ts
+// https://datatracker.ietf.org/doc/html/rfc2396
+// eslint-disable-next-line no-control-regex
+const INVALID_CHAR_REGEX = /[\x00-\x1F\x7F<>*#"{}|^[\]`;?:&=+$,]/g
+const DRIVE_LETTER_REGEX = /^[a-z]:/i
+function sanitizeFileName(name: string): string {
+  const match = DRIVE_LETTER_REGEX.exec(name)
+  const driveLetter = match ? match[0] : ''
+
+  // A `:` is only allowed as part of a windows drive letter (ex: C:\foo)
+  // Otherwise, avoid them because they can refer to NTFS alternate data streams.
+  return (
+    driveLetter +
+    name.substring(driveLetter.length).replace(INVALID_CHAR_REGEX, '_')
+  )
 }
 
 /**
@@ -264,7 +283,8 @@ function fileToBuiltUrl(
 
     const inputDir = normalizePath(process.env.UNI_INPUT_DIR)
     let fileName = file.startsWith(inputDir)
-      ? path.posix.relative(inputDir, file)
+      ? // 需要处理 HBuilderX 项目中的 node_modules 目录
+        normalizeNodeModules(path.posix.relative(inputDir, file))
       : assetFileNamesToFileName(
           path.posix.join(config.build.assetsDir, '[name].[hash][extname]'),
           file,

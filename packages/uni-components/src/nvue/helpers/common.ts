@@ -26,7 +26,3 @@ export const firstLetterToLowerCase = cached((str: string) => {
 export function isDef(v: any) {
   return typeof v !== 'undefined'
 }
-
-export function isFn(fn: any) {
-  return typeof fn === 'function'
-}

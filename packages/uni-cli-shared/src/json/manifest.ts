@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { extend } from '@vue/shared'
+import { extend, hasOwn } from '@vue/shared'
 import {
   once,
   defaultRpx2Unit,
@@ -66,6 +66,20 @@ export function getUniStatistics(inputDir: string, platform: UniApp.PLATFORM) {
   )
 }
 
+export function isEnableUniPushV1(inputDir: string, platform: UniApp.PLATFORM) {
+  if (isEnableUniPushV2(inputDir, platform)) {
+    return false
+  }
+  const manifest = parseManifestJsonOnce(inputDir)
+  if (platform === 'app') {
+    const push = manifest['app-plus']?.distribute?.sdkConfigs?.push
+    if (push && hasOwn(push, 'unipush')) {
+      return true
+    }
+  }
+  return false
+}
+
 export function isEnableUniPushV2(inputDir: string, platform: UniApp.PLATFORM) {
   const manifest = parseManifestJsonOnce(inputDir)
   if (platform === 'app') {
@@ -75,6 +89,17 @@ export function isEnableUniPushV2(inputDir: string, platform: UniApp.PLATFORM) {
     )
   }
   return manifest[platform]?.unipush?.enable === true
+}
+
+export function isEnableSecureNetwork(
+  inputDir: string,
+  platform: UniApp.PLATFORM
+) {
+  const manifest = parseManifestJsonOnce(inputDir)
+  if (platform === 'app') {
+    return !!manifest['app-plus']?.modules?.SecureNetwork
+  }
+  return manifest[platform]?.secureNetwork?.enable === true
 }
 
 export function isUniPushOffline(inputDir: string) {

@@ -1,3 +1,4 @@
+import { isFunction } from '@vue/shared'
 import {
   ON_ADD_TO_FAVORITES,
   ON_BACK_PRESS,
@@ -95,3 +96,23 @@ export const MINI_PROGRAM_PAGE_RUNTIME_HOOKS = /*#__PURE__*/ (() => {
     onShareTimeline: 1 << 2,
   } as const
 })()
+
+export function isUniLifecycleHook(
+  name: string,
+  value: unknown,
+  checkType = true
+) {
+  // 检查类型
+  if (checkType && !isFunction(value)) {
+    return false
+  }
+
+  if (UniLifecycleHooks.indexOf(name as any) > -1) {
+    // 已预定义
+    return true
+  } else if (name.indexOf('on') === 0) {
+    // 以 on 开头
+    return true
+  }
+  return false
+}

@@ -27,6 +27,8 @@ import {
   createVueComponent,
 } from './util'
 
+import { extend, isPlainObject } from '@vue/shared'
+
 declare function Page<D>(options: tinyapp.PageOptions<D>): void
 
 export function initCreatePage() {
@@ -60,10 +62,18 @@ export function initCreatePage() {
         onBack() {
           this.$vm.$callHook(ON_BACK_PRESS)
         },
+        onKeyboardHeight: ((res: unknown) => {
+          ;(my as any).$emit('uni:keyboardHeightChange', res)
+        }) as any,
       },
       __r: handleRef,
       __l: handleLink,
     }
+
+    if (isPlainObject(vueOptions.events)) {
+      extend(pageOptions.events!, vueOptions.events)
+    }
+
     if (__VUE_OPTIONS_API__) {
       pageOptions.data = initData(vueOptions)
     }

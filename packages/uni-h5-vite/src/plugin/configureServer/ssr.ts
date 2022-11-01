@@ -18,6 +18,7 @@ export const external = [
   '@dcloudio/uni-quickapp-webview',
   '@dcloudio/uni-shared',
   '@dcloudio/uni-stat',
+  '@dcloudio/uni-stacktracey',
   '@vue/shared',
   'vue',
   'vue-i18n',

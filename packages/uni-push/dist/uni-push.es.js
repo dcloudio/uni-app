@@ -100,9 +100,49 @@ e?.onClose(t);
 
 var GtPush = /*@__PURE__*/getDefaultExportFromCjs(gtpushMin);
 
+function initPushNotification() {
+    // 仅 App 端
+    if (typeof plus !== 'undefined' && plus.push) {
+        plus.globalEvent.addEventListener('newPath', ({ path }) => {
+            if (!path) {
+                return;
+            }
+            // 指定的页面为当前页面
+            const pages = getCurrentPages();
+            const currentPage = pages[pages.length - 1];
+            if (currentPage &&
+                currentPage.$page &&
+                currentPage.$page.fullPath === path) {
+                return;
+            }
+            // 简单起见，先尝试 navigateTo 跳转，失败后，再尝试 tabBar 跳转
+            uni.navigateTo({
+                url: path,
+                fail(res) {
+                    if (res.errMsg.indexOf('tabbar') > -1) {
+                        uni.switchTab({
+                            url: path,
+                            fail(res) {
+                                console.error(res.errMsg);
+                            },
+                        });
+                    }
+                    else {
+                        console.error(res.errMsg);
+                    }
+                },
+            });
+        });
+    }
+}
+
 // if (process.env.UNI_PUSH_DEBUG) {
 //   GtPush.setDebugMode(true)
 // }
+// @ts-expect-error
+uni.invokePushCallback({
+    type: 'enabled',
+});
 const appid = process.env.UNI_APP_ID;
 if (!appid) {
     Promise.resolve().then(() => {
@@ -115,6 +155,9 @@ if (!appid) {
     });
 }
 else {
+    // #ifdef APP
+    initPushNotification();
+    // #endif
     GtPush.init({
         appid,
         onError: (res) => {
@@ -148,4 +191,16 @@ else {
             });
         },
     });
+    // 仅在 jssdk 中监听
+    // #ifdef APP
+    uni.onPushMessage((res) => {
+        if (res.type === 'receive' &&
+            res.data &&
+            res.data.force_notification) {
+            // 创建通知栏
+            uni.createPushMessage(res.data);
+            res.stopped = true;
+        }
+    });
+    // #endif
 }

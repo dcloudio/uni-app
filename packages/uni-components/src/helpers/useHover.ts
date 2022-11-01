@@ -40,15 +40,29 @@ export function useHover(props: UseHoverOptions) {
       }, parseInt(props.hoverStayTime as string))
     })
   }
+
   function onTouchstartPassive(evt: TouchEvent) {
+    if (evt.touches.length > 1) {
+      return
+    }
+    handleHoverStart(evt)
+  }
+
+  function onMousedown(evt: MouseEvent) {
+    if (hoverTouch) {
+      return
+    }
+
+    handleHoverStart(evt)
+    window.addEventListener('mouseup', handlePCHoverEnd)
+  }
+
+  function handleHoverStart(evt: TouchEvent | MouseEvent) {
     // TODO detect scrolling
     if ((evt as any)._hoverPropagationStopped) {
       return
     }
     if (!props.hoverClass || props.hoverClass === 'none' || props.disabled) {
-      return
-    }
-    if (evt.touches.length > 1) {
       return
     }
     if (props.hoverStopPropagation) {
@@ -63,12 +77,31 @@ export function useHover(props: UseHoverOptions) {
       }
     }, parseInt(props.hoverStartTime as string))
   }
+
   function onTouchend() {
+    handleHoverEnd()
+  }
+
+  function onMouseup() {
+    if (!hoverTouch) {
+      return
+    }
+
+    handlePCHoverEnd()
+  }
+
+  function handleHoverEnd() {
     hoverTouch = false
     if (hovering.value) {
       hoverReset()
     }
   }
+
+  function handlePCHoverEnd() {
+    handleHoverEnd()
+    window.removeEventListener('mouseup', handlePCHoverEnd)
+  }
+
   function onTouchcancel() {
     hoverTouch = false
     hovering.value = false
@@ -78,7 +111,9 @@ export function useHover(props: UseHoverOptions) {
     hovering,
     binding: {
       onTouchstartPassive,
+      onMousedown,
       onTouchend,
+      onMouseup,
       onTouchcancel,
     },
   }

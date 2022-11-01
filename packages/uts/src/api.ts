@@ -1,5 +1,10 @@
 import { resolve } from 'path'
-import type { UtsKotlinOptions, UtsResult, UtsSwiftOptions } from './types'
+import type {
+  UtsBundleOptions,
+  UtsOptions,
+  UtsParseOptions,
+  UtsResult,
+} from './types'
 import { normalizePath } from './utils'
 
 const bindingsOverride = process.env['UTS_BINARY_PATH']
@@ -7,21 +12,23 @@ const bindings = !!bindingsOverride
   ? require(resolve(bindingsOverride))
   : require('./binding').default
 
-export function toKotlin(options: UtsKotlinOptions): Promise<UtsResult> {
-  const result = Promise.resolve({})
+function resolveOptions(options: UtsOptions) {
   const { input, output } = options
   if (!input?.root) {
-    return result
+    return
   }
   if (!input?.filename) {
-    return result
+    return
   }
   if (!output?.outDir) {
-    return result
+    return
   }
   if (output.sourceMap === true) {
     output.sourceMap = output.outDir
-  } else if (output.sourceMap === false) {
+  } else if (
+    output.sourceMap === false ||
+    typeof output.sourceMap === 'undefined'
+  ) {
     output.sourceMap = ''
   }
   if (!output.imports) {
@@ -33,15 +40,56 @@ export function toKotlin(options: UtsKotlinOptions): Promise<UtsResult> {
   input.filename = normalizePath(input.filename)
   output.outDir = normalizePath(output.outDir)
   output.sourceMap = normalizePath(output.sourceMap)
+  output.logFilename = !!output.logFilename
+  output.noColor = !!output.noColor
 
+  return options
+}
+
+export function parse(source: string, options: UtsParseOptions = {}) {
+  options.noColor = !!options.noColor
   return bindings
-    .toKotlin(toBuffer(options))
+    .parse(source, toBuffer(options))
     .then((res: string) => JSON.parse(res))
 }
 
-export function toSwift(options: UtsSwiftOptions): Promise<UtsResult> {
+export function toKotlin(options: UtsOptions): Promise<UtsResult> {
+  const kotlinOptions = resolveOptions(options)
+  if (!kotlinOptions) {
+    return Promise.resolve({})
+  }
   return bindings
-    .toSwift(toBuffer(options))
+    .toKotlin(toBuffer(kotlinOptions))
+    .then((res: string) => JSON.parse(res))
+}
+
+export function bundleKotlin(options: UtsBundleOptions): Promise<UtsResult> {
+  const bundleOptions = resolveOptions(options)
+  if (!bundleOptions) {
+    return Promise.resolve({})
+  }
+  return bindings
+    .bundleKotlin(toBuffer(bundleOptions))
+    .then((res: string) => JSON.parse(res))
+}
+
+export function toSwift(options: UtsOptions): Promise<UtsResult> {
+  const swiftOptions = resolveOptions(options)
+  if (!swiftOptions) {
+    return Promise.resolve({})
+  }
+  return bindings
+    .toSwift(toBuffer(swiftOptions))
+    .then((res: string) => JSON.parse(res))
+}
+
+export function bundleSwift(options: UtsBundleOptions): Promise<UtsResult> {
+  const bundleOptions = resolveOptions(options)
+  if (!bundleOptions) {
+    return Promise.resolve({})
+  }
+  return bindings
+    .bundleSwift(toBuffer(bundleOptions))
     .then((res: string) => JSON.parse(res))
 }
 

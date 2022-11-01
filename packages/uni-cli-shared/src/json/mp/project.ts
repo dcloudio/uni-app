@@ -1,4 +1,5 @@
-import { hasOwn, isArray } from '@vue/shared'
+import { hasOwn, isArray, isPlainObject } from '@vue/shared'
+import { recursive } from 'merge'
 import { parseJson } from '../json'
 
 interface ParseMiniProgramProjectJsonOptions {
@@ -46,7 +47,18 @@ export function parseMiniProgramProjectJson(
     if (platformConfig) {
       projectKeys.forEach((name) => {
         if (hasOwn(platformConfig, name)) {
-          ;(projectJson as Record<string, any>)[name] = platformConfig[name]
+          if (
+            isPlainObject(platformConfig[name]) &&
+            isPlainObject((projectJson as Record<string, any>)[name])
+          ) {
+            ;(projectJson as Record<string, any>)[name] = recursive(
+              true,
+              (projectJson as Record<string, any>)[name],
+              platformConfig[name]
+            )
+          } else {
+            ;(projectJson as Record<string, any>)[name] = platformConfig[name]
+          }
         }
       })
     }

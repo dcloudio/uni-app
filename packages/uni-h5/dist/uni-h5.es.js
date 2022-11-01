@@ -1,10 +1,12 @@
 import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, h, createTextVNode, onBeforeActivate, onBeforeDeactivate, createBlock, renderList, onDeactivated, createApp, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
 import { isString, extend, isArray, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
-import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, addLeadingSlash, invokeArrayFns, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, removeLeadingSlash, getLen, debounce, ON_LOAD, UniLifecycleHooks, invokeCreateVueAppHook, NAVBAR_HEIGHT, parseQuery, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, sortObject, ON_BACK_PRESS, parseUrl, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
-export { onCreateVueApp } from "@dcloudio/uni-shared";
+import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, debounce, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, parseQuery, NAVBAR_HEIGHT, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, sortObject, ON_BACK_PRESS, parseUrl, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
+import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
-const isEnableLocale = /* @__PURE__ */ once(() => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length);
+const isEnableLocale = /* @__PURE__ */ once(
+  () => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
+);
 let i18n;
 function getLocaleMessage() {
   const locale = uni.getLocale();
@@ -62,7 +64,9 @@ function useI18n() {
     if (isEnableLocale()) {
       const localeKeys = Object.keys(__uniConfig.locales || {});
       if (localeKeys.length) {
-        localeKeys.forEach((locale2) => i18n.add(locale2, __uniConfig.locales[locale2]));
+        localeKeys.forEach(
+          (locale2) => i18n.add(locale2, __uniConfig.locales[locale2])
+        );
       }
       i18n.setLocale(locale);
     }
@@ -79,25 +83,45 @@ const initI18nAsyncMsgsOnce = /* @__PURE__ */ once(() => {
   const name = "uni.async.";
   const keys = ["error"];
   if (__UNI_FEATURE_I18N_EN__) {
-    useI18n().add(LOCALE_EN, normalizeMessages(name, keys, [
-      "The connection timed out, click the screen to try again."
-    ]), false);
+    useI18n().add(
+      LOCALE_EN,
+      normalizeMessages(name, keys, [
+        "The connection timed out, click the screen to try again."
+      ]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    useI18n().add(LOCALE_ES, normalizeMessages(name, keys, [
-      "Se agot\xF3 el tiempo de conexi\xF3n, haga clic en la pantalla para volver a intentarlo."
-    ]), false);
+    useI18n().add(
+      LOCALE_ES,
+      normalizeMessages(name, keys, [
+        "Se agot\xF3 el tiempo de conexi\xF3n, haga clic en la pantalla para volver a intentarlo."
+      ]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    useI18n().add(LOCALE_FR, normalizeMessages(name, keys, [
-      "La connexion a expir\xE9, cliquez sur l'\xE9cran pour r\xE9essayer."
-    ]), false);
+    useI18n().add(
+      LOCALE_FR,
+      normalizeMessages(name, keys, [
+        "La connexion a expir\xE9, cliquez sur l'\xE9cran pour r\xE9essayer."
+      ]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ["\u8FDE\u63A5\u670D\u52A1\u5668\u8D85\u65F6\uFF0C\u70B9\u51FB\u5C4F\u5E55\u91CD\u8BD5"]), false);
+    useI18n().add(
+      LOCALE_ZH_HANS,
+      normalizeMessages(name, keys, ["\u8FDE\u63A5\u670D\u52A1\u5668\u8D85\u65F6\uFF0C\u70B9\u51FB\u5C4F\u5E55\u91CD\u8BD5"]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["\u9023\u63A5\u670D\u52D9\u5668\u8D85\u6642\uFF0C\u9EDE\u64CA\u5C4F\u5E55\u91CD\u8A66"]), false);
+    useI18n().add(
+      LOCALE_ZH_HANT,
+      normalizeMessages(name, keys, ["\u9023\u63A5\u670D\u52D9\u5668\u8D85\u6642\uFF0C\u9EDE\u64CA\u5C4F\u5E55\u91CD\u8A66"]),
+      false
+    );
   }
 });
 const initI18nShowActionSheetMsgsOnce = /* @__PURE__ */ once(() => {
@@ -113,218 +137,406 @@ const initI18nShowActionSheetMsgsOnce = /* @__PURE__ */ once(() => {
     useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ["Annuler"]), false);
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ["\u53D6\u6D88"]), false);
+    useI18n().add(
+      LOCALE_ZH_HANS,
+      normalizeMessages(name, keys, ["\u53D6\u6D88"]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["\u53D6\u6D88"]), false);
+    useI18n().add(
+      LOCALE_ZH_HANT,
+      normalizeMessages(name, keys, ["\u53D6\u6D88"]),
+      false
+    );
   }
 });
 const initI18nShowToastMsgsOnce = /* @__PURE__ */ once(() => {
   const name = "uni.showToast.";
   const keys = ["unpaired"];
   if (__UNI_FEATURE_I18N_EN__) {
-    useI18n().add(LOCALE_EN, normalizeMessages(name, keys, [
-      "Please note showToast must be paired with hideToast"
-    ]), false);
+    useI18n().add(
+      LOCALE_EN,
+      normalizeMessages(name, keys, [
+        "Please note showToast must be paired with hideToast"
+      ]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    useI18n().add(LOCALE_ES, normalizeMessages(name, keys, [
-      "Tenga en cuenta que showToast debe estar emparejado con hideToast"
-    ]), false);
+    useI18n().add(
+      LOCALE_ES,
+      normalizeMessages(name, keys, [
+        "Tenga en cuenta que showToast debe estar emparejado con hideToast"
+      ]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    useI18n().add(LOCALE_FR, normalizeMessages(name, keys, [
-      "Veuillez noter que showToast doit \xEAtre associ\xE9 \xE0 hideToast"
-    ]), false);
+    useI18n().add(
+      LOCALE_FR,
+      normalizeMessages(name, keys, [
+        "Veuillez noter que showToast doit \xEAtre associ\xE9 \xE0 hideToast"
+      ]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, [
-      "\u8BF7\u6CE8\u610F showToast \u4E0E hideToast \u5FC5\u987B\u914D\u5BF9\u4F7F\u7528"
-    ]), false);
+    useI18n().add(
+      LOCALE_ZH_HANS,
+      normalizeMessages(name, keys, [
+        "\u8BF7\u6CE8\u610F showToast \u4E0E hideToast \u5FC5\u987B\u914D\u5BF9\u4F7F\u7528"
+      ]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, [
-      "\u8ACB\u6CE8\u610F showToast \u8207 hideToast \u5FC5\u9808\u914D\u5C0D\u4F7F\u7528"
-    ]), false);
+    useI18n().add(
+      LOCALE_ZH_HANT,
+      normalizeMessages(name, keys, [
+        "\u8ACB\u6CE8\u610F showToast \u8207 hideToast \u5FC5\u9808\u914D\u5C0D\u4F7F\u7528"
+      ]),
+      false
+    );
   }
 });
 const initI18nShowLoadingMsgsOnce = /* @__PURE__ */ once(() => {
   const name = "uni.showLoading.";
   const keys = ["unpaired"];
   if (__UNI_FEATURE_I18N_EN__) {
-    useI18n().add(LOCALE_EN, normalizeMessages(name, keys, [
-      "Please note showLoading must be paired with hideLoading"
-    ]), false);
+    useI18n().add(
+      LOCALE_EN,
+      normalizeMessages(name, keys, [
+        "Please note showLoading must be paired with hideLoading"
+      ]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    useI18n().add(LOCALE_ES, normalizeMessages(name, keys, [
-      "Tenga en cuenta que showLoading debe estar emparejado con hideLoading"
-    ]), false);
+    useI18n().add(
+      LOCALE_ES,
+      normalizeMessages(name, keys, [
+        "Tenga en cuenta que showLoading debe estar emparejado con hideLoading"
+      ]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    useI18n().add(LOCALE_FR, normalizeMessages(name, keys, [
-      "Veuillez noter que showLoading doit \xEAtre associ\xE9 \xE0 hideLoading"
-    ]), false);
+    useI18n().add(
+      LOCALE_FR,
+      normalizeMessages(name, keys, [
+        "Veuillez noter que showLoading doit \xEAtre associ\xE9 \xE0 hideLoading"
+      ]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, [
-      "\u8BF7\u6CE8\u610F showLoading \u4E0E hideLoading \u5FC5\u987B\u914D\u5BF9\u4F7F\u7528"
-    ]), false);
+    useI18n().add(
+      LOCALE_ZH_HANS,
+      normalizeMessages(name, keys, [
+        "\u8BF7\u6CE8\u610F showLoading \u4E0E hideLoading \u5FC5\u987B\u914D\u5BF9\u4F7F\u7528"
+      ]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, [
-      "\u8ACB\u6CE8\u610F showLoading \u8207 hideLoading \u5FC5\u9808\u914D\u5C0D\u4F7F\u7528"
-    ]), false);
+    useI18n().add(
+      LOCALE_ZH_HANT,
+      normalizeMessages(name, keys, [
+        "\u8ACB\u6CE8\u610F showLoading \u8207 hideLoading \u5FC5\u9808\u914D\u5C0D\u4F7F\u7528"
+      ]),
+      false
+    );
   }
 });
 const initI18nShowModalMsgsOnce = /* @__PURE__ */ once(() => {
   const name = "uni.showModal.";
   const keys = ["cancel", "confirm"];
   if (__UNI_FEATURE_I18N_EN__) {
-    useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ["Cancel", "OK"]), false);
+    useI18n().add(
+      LOCALE_EN,
+      normalizeMessages(name, keys, ["Cancel", "OK"]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ["Cancelar", "OK"]), false);
+    useI18n().add(
+      LOCALE_ES,
+      normalizeMessages(name, keys, ["Cancelar", "OK"]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ["Annuler", "OK"]), false);
+    useI18n().add(
+      LOCALE_FR,
+      normalizeMessages(name, keys, ["Annuler", "OK"]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ["\u53D6\u6D88", "\u786E\u5B9A"]), false);
+    useI18n().add(
+      LOCALE_ZH_HANS,
+      normalizeMessages(name, keys, ["\u53D6\u6D88", "\u786E\u5B9A"]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["\u53D6\u6D88", "\u78BA\u5B9A"]), false);
+    useI18n().add(
+      LOCALE_ZH_HANT,
+      normalizeMessages(name, keys, ["\u53D6\u6D88", "\u78BA\u5B9A"]),
+      false
+    );
   }
 });
 const initI18nChooseFileMsgsOnce = /* @__PURE__ */ once(() => {
   const name = "uni.chooseFile.";
   const keys = ["notUserActivation"];
   if (__UNI_FEATURE_I18N_EN__) {
-    useI18n().add(LOCALE_EN, normalizeMessages(name, keys, [
-      "File chooser dialog can only be shown with a user activation"
-    ]), false);
+    useI18n().add(
+      LOCALE_EN,
+      normalizeMessages(name, keys, [
+        "File chooser dialog can only be shown with a user activation"
+      ]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    useI18n().add(LOCALE_ES, normalizeMessages(name, keys, [
-      "El cuadro de di\xE1logo del selector de archivos solo se puede mostrar con la activaci\xF3n del usuario"
-    ]), false);
+    useI18n().add(
+      LOCALE_ES,
+      normalizeMessages(name, keys, [
+        "El cuadro de di\xE1logo del selector de archivos solo se puede mostrar con la activaci\xF3n del usuario"
+      ]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    useI18n().add(LOCALE_FR, normalizeMessages(name, keys, [
-      "La bo\xEEte de dialogue du s\xE9lecteur de fichier ne peut \xEAtre affich\xE9e qu'avec une activation par l'utilisateur"
-    ]), false);
+    useI18n().add(
+      LOCALE_FR,
+      normalizeMessages(name, keys, [
+        "La bo\xEEte de dialogue du s\xE9lecteur de fichier ne peut \xEAtre affich\xE9e qu'avec une activation par l'utilisateur"
+      ]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ["\u6587\u4EF6\u9009\u62E9\u5668\u5BF9\u8BDD\u6846\u53EA\u80FD\u5728\u7528\u6237\u6FC0\u6D3B\u65F6\u663E\u793A"]), false);
+    useI18n().add(
+      LOCALE_ZH_HANS,
+      normalizeMessages(name, keys, ["\u6587\u4EF6\u9009\u62E9\u5668\u5BF9\u8BDD\u6846\u53EA\u80FD\u5728\u7528\u6237\u6FC0\u6D3B\u65F6\u663E\u793A"]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["\u6587\u4EF6\u9078\u64C7\u5668\u5C0D\u8A71\u6846\u53EA\u80FD\u5728\u7528\u6236\u6FC0\u6D3B\u6642\u986F\u793A"]), false);
+    useI18n().add(
+      LOCALE_ZH_HANT,
+      normalizeMessages(name, keys, ["\u6587\u4EF6\u9078\u64C7\u5668\u5C0D\u8A71\u6846\u53EA\u80FD\u5728\u7528\u6236\u6FC0\u6D3B\u6642\u986F\u793A"]),
+      false
+    );
   }
 });
 const initI18nSetClipboardDataMsgsOnce = /* @__PURE__ */ once(() => {
   const name = "uni.setClipboardData.";
   const keys = ["success", "fail"];
   if (__UNI_FEATURE_I18N_EN__) {
-    useI18n().add(LOCALE_EN, normalizeMessages(name, keys, [
-      "Content copied",
-      "Copy failed, please copy manually"
-    ]), false);
+    useI18n().add(
+      LOCALE_EN,
+      normalizeMessages(name, keys, [
+        "Content copied",
+        "Copy failed, please copy manually"
+      ]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    useI18n().add(LOCALE_ES, normalizeMessages(name, keys, [
-      "Contenido copiado",
-      "Error al copiar, copie manualmente"
-    ]), false);
+    useI18n().add(
+      LOCALE_ES,
+      normalizeMessages(name, keys, [
+        "Contenido copiado",
+        "Error al copiar, copie manualmente"
+      ]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    useI18n().add(LOCALE_FR, normalizeMessages(name, keys, [
-      "Contenu copi\xE9",
-      "\xC9chec de la copie, copiez manuellement"
-    ]), false);
+    useI18n().add(
+      LOCALE_FR,
+      normalizeMessages(name, keys, [
+        "Contenu copi\xE9",
+        "\xC9chec de la copie, copiez manuellement"
+      ]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ["\u5185\u5BB9\u5DF2\u590D\u5236", "\u590D\u5236\u5931\u8D25\uFF0C\u8BF7\u624B\u52A8\u590D\u5236"]), false);
+    useI18n().add(
+      LOCALE_ZH_HANS,
+      normalizeMessages(name, keys, ["\u5185\u5BB9\u5DF2\u590D\u5236", "\u590D\u5236\u5931\u8D25\uFF0C\u8BF7\u624B\u52A8\u590D\u5236"]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["\u5167\u5BB9\u5DF2\u5FA9\u5236", "\u5FA9\u5236\u5931\u6557\uFF0C\u8ACB\u624B\u52D5\u5FA9\u88FD"]), false);
+    useI18n().add(
+      LOCALE_ZH_HANT,
+      normalizeMessages(name, keys, ["\u5167\u5BB9\u5DF2\u5FA9\u5236", "\u5FA9\u5236\u5931\u6557\uFF0C\u8ACB\u624B\u52D5\u5FA9\u88FD"]),
+      false
+    );
   }
 });
 const initI18nGetClipboardDataMsgsOnce = /* @__PURE__ */ once(() => {
   const name = "uni.getClipboardData.";
   const keys = ["fail"];
   if (__UNI_FEATURE_I18N_EN__) {
-    useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ["Reading failed, please paste manually"]), false);
+    useI18n().add(
+      LOCALE_EN,
+      normalizeMessages(name, keys, ["Reading failed, please paste manually"]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ["Error de lectura, pegue manualmente"]), false);
+    useI18n().add(
+      LOCALE_ES,
+      normalizeMessages(name, keys, ["Error de lectura, pegue manualmente"]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    useI18n().add(LOCALE_FR, normalizeMessages(name, keys, [
-      "\xC9chec de la lecture, veuillez coller manuellement"
-    ]), false);
+    useI18n().add(
+      LOCALE_FR,
+      normalizeMessages(name, keys, [
+        "\xC9chec de la lecture, veuillez coller manuellement"
+      ]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ["\u8BFB\u53D6\u5931\u8D25\uFF0C\u8BF7\u624B\u52A8\u7C98\u8D34"]), false);
+    useI18n().add(
+      LOCALE_ZH_HANS,
+      normalizeMessages(name, keys, ["\u8BFB\u53D6\u5931\u8D25\uFF0C\u8BF7\u624B\u52A8\u7C98\u8D34"]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["\u8B80\u53D6\u5931\u6557\uFF0C\u8ACB\u624B\u52D5\u7C98\u8CBC"]), false);
+    useI18n().add(
+      LOCALE_ZH_HANT,
+      normalizeMessages(name, keys, ["\u8B80\u53D6\u5931\u6557\uFF0C\u8ACB\u624B\u52D5\u7C98\u8CBC"]),
+      false
+    );
   }
 });
 const initI18nPickerMsgsOnce = /* @__PURE__ */ once(() => {
   const name = "uni.picker.";
   const keys = ["done", "cancel"];
   if (__UNI_FEATURE_I18N_EN__) {
-    useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ["Done", "Cancel"]), false);
+    useI18n().add(
+      LOCALE_EN,
+      normalizeMessages(name, keys, ["Done", "Cancel"]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ["OK", "Cancelar"]), false);
+    useI18n().add(
+      LOCALE_ES,
+      normalizeMessages(name, keys, ["OK", "Cancelar"]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ["OK", "Annuler"]), false);
+    useI18n().add(
+      LOCALE_FR,
+      normalizeMessages(name, keys, ["OK", "Annuler"]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ["\u5B8C\u6210", "\u53D6\u6D88"]), false);
+    useI18n().add(
+      LOCALE_ZH_HANS,
+      normalizeMessages(name, keys, ["\u5B8C\u6210", "\u53D6\u6D88"]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["\u5B8C\u6210", "\u53D6\u6D88"]), false);
+    useI18n().add(
+      LOCALE_ZH_HANT,
+      normalizeMessages(name, keys, ["\u5B8C\u6210", "\u53D6\u6D88"]),
+      false
+    );
   }
 });
 const initI18nVideoMsgsOnce = /* @__PURE__ */ once(() => {
   const name = "uni.video.";
   const keys = ["danmu", "volume"];
   if (__UNI_FEATURE_I18N_EN__) {
-    useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ["Danmu", "Volume"]), false);
+    useI18n().add(
+      LOCALE_EN,
+      normalizeMessages(name, keys, ["Danmu", "Volume"]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ["Danmu", "Volumen"]), false);
+    useI18n().add(
+      LOCALE_ES,
+      normalizeMessages(name, keys, ["Danmu", "Volumen"]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ["Danmu", "Le Volume"]), false);
+    useI18n().add(
+      LOCALE_FR,
+      normalizeMessages(name, keys, ["Danmu", "Le Volume"]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ["\u5F39\u5E55", "\u97F3\u91CF"]), false);
+    useI18n().add(
+      LOCALE_ZH_HANS,
+      normalizeMessages(name, keys, ["\u5F39\u5E55", "\u97F3\u91CF"]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["\u5F48\u5E55", "\u97F3\u91CF"]), false);
+    useI18n().add(
+      LOCALE_ZH_HANT,
+      normalizeMessages(name, keys, ["\u5F48\u5E55", "\u97F3\u91CF"]),
+      false
+    );
   }
 });
 const initI18nChooseLocationMsgsOnce = /* @__PURE__ */ once(() => {
   const name = "uni.chooseLocation.";
   const keys = ["search", "cancel"];
   if (__UNI_FEATURE_I18N_EN__) {
-    useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ["Find Place", "Cancel"]), false);
+    useI18n().add(
+      LOCALE_EN,
+      normalizeMessages(name, keys, ["Find Place", "Cancel"]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ["Encontrar", "Cancelar"]), false);
+    useI18n().add(
+      LOCALE_ES,
+      normalizeMessages(name, keys, ["Encontrar", "Cancelar"]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ["Trouve", "Annuler"]), false);
+    useI18n().add(
+      LOCALE_FR,
+      normalizeMessages(name, keys, ["Trouve", "Annuler"]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ["\u641C\u7D22\u5730\u70B9", "\u53D6\u6D88"]), false);
+    useI18n().add(
+      LOCALE_ZH_HANS,
+      normalizeMessages(name, keys, ["\u641C\u7D22\u5730\u70B9", "\u53D6\u6D88"]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["\u641C\u7D22\u5730\u9EDE", "\u53D6\u6D88"]), false);
+    useI18n().add(
+      LOCALE_ZH_HANT,
+      normalizeMessages(name, keys, ["\u641C\u7D22\u5730\u9EDE", "\u53D6\u6D88"]),
+      false
+    );
   }
 });
 function initNavigationBarI18n(navigationBar) {
@@ -383,7 +595,10 @@ function normalizeViewMethodName(pageId, name) {
   return pageId + "." + name;
 }
 function subscribeViewMethod(pageId, wrapper2) {
-  UniViewJSBridge.subscribe(normalizeViewMethodName(pageId, INVOKE_VIEW_API), wrapper2 ? wrapper2(onInvokeViewMethod) : onInvokeViewMethod);
+  UniViewJSBridge.subscribe(
+    normalizeViewMethodName(pageId, INVOKE_VIEW_API),
+    wrapper2 ? wrapper2(onInvokeViewMethod) : onInvokeViewMethod
+  );
 }
 function unsubscribeViewMethod(pageId) {
   UniViewJSBridge.unsubscribe(normalizeViewMethodName(pageId, INVOKE_VIEW_API));
@@ -419,9 +634,12 @@ function onInvokeViewMethod({
     publish({});
   }
 }
-const ViewJSBridge = /* @__PURE__ */ extend(/* @__PURE__ */ initBridge("service"), {
-  invokeServiceMethod
-});
+const ViewJSBridge = /* @__PURE__ */ extend(
+  /* @__PURE__ */ initBridge("service"),
+  {
+    invokeServiceMethod
+  }
+);
 const LONGPRESS_TIMEOUT = 350;
 const LONGPRESS_THRESHOLD = 10;
 const passiveOptions$2 = /* @__PURE__ */ passive(true);
@@ -480,7 +698,11 @@ function getWindowWidth$1() {
   const screenFix = /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
   const landscape = screenFix && Math.abs(window.orientation) === 90;
   var screenWidth = screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
-  var windowWidth = Math.min(window.innerWidth, document.documentElement.clientWidth, screenWidth) || screenWidth;
+  var windowWidth = Math.min(
+    window.innerWidth,
+    document.documentElement.clientWidth,
+    screenWidth
+  ) || screenWidth;
   return windowWidth;
 }
 function useRem() {
@@ -708,11 +930,13 @@ function getWindowOffset() {
   const bottom = getWindowOffsetCssVar(style, "--window-bottom");
   const left = getWindowOffsetCssVar(style, "--window-left");
   const right = getWindowOffsetCssVar(style, "--window-right");
+  const topWindowHeight = getWindowOffsetCssVar(style, "--top-window-height");
   return {
     top,
     bottom: bottom ? bottom + out.bottom : 0,
     left: left ? left + out.left : 0,
-    right: right ? right + out.right : 0
+    right: right ? right + out.right : 0,
+    topWindowHeight: topWindowHeight || 0
   };
 }
 function updateCssVar(cssVars) {
@@ -746,7 +970,9 @@ function removeStyle(id2) {
   if (style) {
     if (style instanceof CSSStyleSheet) {
       document.adoptedStyleSheets.indexOf(style);
-      document.adoptedStyleSheets = document.adoptedStyleSheets.filter((s) => s !== style);
+      document.adoptedStyleSheets = document.adoptedStyleSheets.filter(
+        (s) => s !== style
+      );
     } else {
       document.head.removeChild(style);
     }
@@ -764,7 +990,7 @@ function rpx2px(str, replace = false) {
   if (replace) {
     return rpx2pxWithReplace(str);
   }
-  if (typeof str === "string") {
+  if (isString(str)) {
     const res = parseInt(str) || 0;
     if (hasRpx(str)) {
       return uni.upx2px(res);
@@ -794,16 +1020,28 @@ const ICON_PATH_BACK = "M21.781 7.844l-9.063 8.594 9.063 8.594q0.25 0.25 0.25 0.
 const ICON_PATH_CLOSE = "M17.25 16.156l7.375-7.313q0.281-0.281 0.281-0.641t-0.281-0.641q-0.25-0.25-0.625-0.25t-0.625 0.25l-7.375 7.344-7.313-7.344q-0.25-0.25-0.625-0.25t-0.625 0.25q-0.281 0.25-0.281 0.625t0.281 0.625l7.313 7.344-7.375 7.344q-0.281 0.25-0.281 0.625t0.281 0.625q0.125 0.125 0.281 0.188t0.344 0.063q0.156 0 0.328-0.063t0.297-0.188l7.375-7.344 7.375 7.406q0.125 0.156 0.297 0.219t0.328 0.063q0.188 0 0.344-0.078t0.281-0.203q0.281-0.25 0.281-0.609t-0.281-0.641l-7.375-7.406z";
 const ICON_PATH_CONFIRM = "M31.562 4.9966666659375q0.435 0.399 0.435 0.87 0.036 0.58-0.399 0.98l-18.61 19.917q-0.145 0.145-0.327 0.217-0.073 0.037-0.145 0.11-0.254 0.035-0.472 0.035-0.29 0-0.544-0.036l-0.145-0.072q-0.109-0.073-0.217-0.182l-0.11-0.072L0.363 16.2786666659375q-0.327-0.399-0.363-0.907 0-0.544 0.363-1.016 0.435-0.326 0.961-0.362 0.527-0.036 0.962 0.362l9.722 9.542L29.712 5.0326666659375q0.399-0.363 0.943-0.363 0.544-0.036 0.907 0.327z";
 function createSvgIconVNode(path, color = "#000", size = 27) {
-  return createVNode("svg", {
-    width: size,
-    height: size,
-    viewBox: "0 0 32 32"
-  }, [
-    createVNode("path", {
-      d: path,
-      fill: color
-    }, null, 8, ["d", "fill"])
-  ], 8, ["width", "height"]);
+  return createVNode(
+    "svg",
+    {
+      width: size,
+      height: size,
+      viewBox: "0 0 32 32"
+    },
+    [
+      createVNode(
+        "path",
+        {
+          d: path,
+          fill: color
+        },
+        null,
+        8,
+        ["d", "fill"]
+      )
+    ],
+    8,
+    ["width", "height"]
+  );
 }
 function useCurrentPageId() {
   {
@@ -878,6 +1116,10 @@ function normalizePullToRefreshRpx(pullToRefresh) {
 }
 function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel) {
   const { id: id2, route } = meta;
+  const titleColor = normalizeStyles(
+    meta.navigationBar,
+    __uniConfig.themeConfig
+  ).titleColor;
   return {
     id: id2,
     path: addLeadingSlash(route),
@@ -887,7 +1129,7 @@ function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel) 
     meta,
     openType,
     eventChannel,
-    statusBarStyle: meta.navigationBar.titleColor === "#000000" ? "dark" : "light"
+    statusBarStyle: titleColor === "#000000" ? "dark" : "light"
   };
 }
 function removeHook(vm, name, hook) {
@@ -1007,9 +1249,29 @@ function getRealRoute(fromRoute, toRoute) {
 }
 function getRouteOptions(path, alias = false) {
   if (alias) {
-    return __uniRoutes.find((route) => route.path === path || route.alias === path);
+    return __uniRoutes.find(
+      (route) => route.path === path || route.alias === path
+    );
   }
   return __uniRoutes.find((route) => route.path === path);
+}
+function normalizeTabBarRoute(index2, oldPagePath, newPagePath) {
+  const oldTabBarRoute = getRouteOptions(addLeadingSlash(oldPagePath));
+  if (oldTabBarRoute) {
+    const { meta } = oldTabBarRoute;
+    delete meta.tabBarIndex;
+    meta.isQuit = meta.isTabBar = false;
+  }
+  const newTabBarRoute = getRouteOptions(addLeadingSlash(newPagePath));
+  if (newTabBarRoute) {
+    const { meta } = newTabBarRoute;
+    meta.tabBarIndex = index2;
+    meta.isQuit = meta.isTabBar = true;
+    const tabBar2 = __uniConfig.tabBar;
+    if (tabBar2 && tabBar2.list && tabBar2.list[index2]) {
+      tabBar2.list[index2].pagePath = removeLeadingSlash(newPagePath);
+    }
+  }
 }
 class ComponentDescriptor {
   constructor(vm) {
@@ -1081,7 +1343,7 @@ class ComponentDescriptor {
     if (!this.$el || !style) {
       return this;
     }
-    if (typeof style === "string") {
+    if (isString(style)) {
       style = parseStringStyle(style);
     }
     if (isPlainObject(style)) {
@@ -1213,7 +1475,11 @@ function wrapperH5WxsEvent(event, eventValue, instance2, checkArgsLength = true)
         }
       });
     }
-    const ownerVm = resolveOwnerComponentPublicInstance(eventValue, instance2, checkArgsLength);
+    const ownerVm = resolveOwnerComponentPublicInstance(
+      eventValue,
+      instance2,
+      checkArgsLength
+    );
     if (ownerVm) {
       return [event, getComponentDescriptor(ownerVm, false)];
     }
@@ -1237,7 +1503,12 @@ function $nne(evt, eventValue, instance2) {
   const isHTMLTarget = currentTarget.tagName.indexOf("UNI-") !== 0;
   {
     if (isHTMLTarget) {
-      return wrapperH5WxsEvent(evt, eventValue, instance2, false) || [evt];
+      return wrapperH5WxsEvent(
+        evt,
+        eventValue,
+        instance2,
+        false
+      ) || [evt];
     }
   }
   const res = createNativeEvent(evt, isHTMLTarget);
@@ -1251,8 +1522,11 @@ function $nne(evt, eventValue, instance2) {
     res.changedTouches = normalizeTouchEvent(evt.changedTouches, top);
   }
   {
-    wrapperEvent(res, evt);
-    return wrapperH5WxsEvent(res, eventValue, instance2) || [res];
+    return wrapperH5WxsEvent(
+      res,
+      eventValue,
+      instance2
+    ) || [res];
   }
 }
 function findUniTarget(target) {
@@ -1266,7 +1540,9 @@ function createNativeEvent(evt, htmlElement = false) {
   const event = {
     type,
     timeStamp,
-    target: normalizeTarget(htmlElement ? target : findUniTarget(target)),
+    target: normalizeTarget(
+      htmlElement ? target : findUniTarget(target)
+    ),
     detail: {},
     currentTarget: normalizeTarget(currentTarget)
   };
@@ -1276,6 +1552,9 @@ function createNativeEvent(evt, htmlElement = false) {
   if (evt.type.startsWith("touch")) {
     event.touches = evt.touches;
     event.changedTouches = evt.changedTouches;
+  }
+  {
+    wrapperEvent(event, evt);
   }
   return event;
 }
@@ -1328,7 +1607,7 @@ function normalizeTouchEvent(touches, top) {
   }
   return res;
 }
-var instance = /* @__PURE__ */ Object.defineProperty({
+const instance = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   $nne,
   createNativeEvent
@@ -1364,11 +1643,16 @@ const invokeViewMethodKeepAlive = (name, args, callback, pageId) => {
     unsubscribe(subscribeName);
   };
 };
-const ServiceJSBridge = /* @__PURE__ */ extend(/* @__PURE__ */ initBridge("view"), {
-  invokeOnCallback,
-  invokeViewMethod,
-  invokeViewMethodKeepAlive
-});
+const ServiceJSBridge = /* @__PURE__ */ extend(
+  /* @__PURE__ */ initBridge(
+    "view"
+  ),
+  {
+    invokeOnCallback,
+    invokeViewMethod,
+    invokeViewMethodKeepAlive
+  }
+);
 function initOn() {
   const { on: on2 } = UniServiceJSBridge;
   on2(ON_RESIZE, onResize$1);
@@ -1390,7 +1674,9 @@ function onAppEnterBackground() {
 }
 const SUBSCRIBE_LIFECYCLE_HOOKS = [ON_PAGE_SCROLL, ON_REACH_BOTTOM];
 function initSubscribe() {
-  SUBSCRIBE_LIFECYCLE_HOOKS.forEach((name) => UniServiceJSBridge.subscribe(name, createPageEvent(name)));
+  SUBSCRIBE_LIFECYCLE_HOOKS.forEach(
+    (name) => UniServiceJSBridge.subscribe(name, createPageEvent(name))
+  );
 }
 function createPageEvent(name) {
   return (args, pageId) => {
@@ -1452,7 +1738,7 @@ function selectComponent(selector) {
 function selectAllComponents(selector) {
   return querySelectorAll(this, selector);
 }
-var wxInstance = /* @__PURE__ */ Object.defineProperty({
+const wxInstance = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   createSelectorQuery: createSelectorQuery$1,
   createMediaQueryObserver: createMediaQueryObserver$1,
@@ -1571,7 +1857,9 @@ function getStyle(action) {
     }
   });
   style.transform = style.webkitTransform = transform.join(" ");
-  style.transition = style.webkitTransition = Object.keys(style).map((type) => `${converType(type)} ${transition.duration}ms ${transition.timingFunction} ${transition.delay}ms`).join(",");
+  style.transition = style.webkitTransition = Object.keys(style).map(
+    (type) => `${converType(type)} ${transition.duration}ms ${transition.timingFunction} ${transition.delay}ms`
+  ).join(",");
   style.transformOrigin = style.webkitTransformOrigin = option.transformOrigin;
   return style;
 }
@@ -1599,7 +1887,7 @@ function startAnimation(context) {
     animate();
   }, 0);
 }
-var animation = {
+const animation = {
   props: ["animation"],
   watch: {
     animation: {
@@ -1668,13 +1956,23 @@ function useHover(props2) {
     });
   }
   function onTouchstartPassive(evt) {
+    if (evt.touches.length > 1) {
+      return;
+    }
+    handleHoverStart(evt);
+  }
+  function onMousedown(evt) {
+    if (hoverTouch) {
+      return;
+    }
+    handleHoverStart(evt);
+    window.addEventListener("mouseup", handlePCHoverEnd);
+  }
+  function handleHoverStart(evt) {
     if (evt._hoverPropagationStopped) {
       return;
     }
     if (!props2.hoverClass || props2.hoverClass === "none" || props2.disabled) {
-      return;
-    }
-    if (evt.touches.length > 1) {
       return;
     }
     if (props2.hoverStopPropagation) {
@@ -1689,10 +1987,23 @@ function useHover(props2) {
     }, parseInt(props2.hoverStartTime));
   }
   function onTouchend() {
+    handleHoverEnd();
+  }
+  function onMouseup() {
+    if (!hoverTouch) {
+      return;
+    }
+    handlePCHoverEnd();
+  }
+  function handleHoverEnd() {
     hoverTouch = false;
     if (hovering.value) {
       hoverReset();
     }
+  }
+  function handlePCHoverEnd() {
+    handleHoverEnd();
+    window.removeEventListener("mouseup", handlePCHoverEnd);
   }
   function onTouchcancel() {
     hoverTouch = false;
@@ -1703,7 +2014,9 @@ function useHover(props2) {
     hovering,
     binding: {
       onTouchstartPassive,
+      onMousedown,
       onTouchend,
+      onMouseup,
       onTouchcancel
     }
   };
@@ -1745,7 +2058,7 @@ function normalizeCustomEvent(name, domEvt, el, detail) {
   };
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-var index$A = /* @__PURE__ */ defineBuiltInComponent({
+const index$B = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   emits: ["submit", "reset"],
   setup(_props, {
@@ -1805,7 +2118,7 @@ function useProvideLabel() {
   });
   return handlers;
 }
-var index$z = /* @__PURE__ */ defineBuiltInComponent({
+const index$A = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: labelProps,
   setup(props2, {
@@ -1839,10 +2152,13 @@ var index$z = /* @__PURE__ */ defineBuiltInComponent({
 });
 function useListeners$1(props2, listeners2) {
   _addListeners(props2.id, listeners2);
-  watch(() => props2.id, (newId, oldId) => {
-    _removeListeners(oldId, listeners2, true);
-    _addListeners(newId, listeners2, true);
-  });
+  watch(
+    () => props2.id,
+    (newId, oldId) => {
+      _removeListeners(oldId, listeners2, true);
+      _addListeners(newId, listeners2, true);
+    }
+  );
   onUnmounted(() => {
     _removeListeners(props2.id, listeners2);
   });
@@ -1933,7 +2249,7 @@ const buttonProps = {
     default: false
   }
 };
-var index$y = /* @__PURE__ */ defineBuiltInComponent({
+const index$z = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   setup(props2, {
@@ -1993,8 +2309,8 @@ var index$y = /* @__PURE__ */ defineBuiltInComponent({
 function findElem(vm) {
   return vm.$el;
 }
-const baseUrl = import.meta.env.BASE_URL;
 function addBase(filePath) {
+  const { base: baseUrl } = __uniConfig.router;
   if (addLeadingSlash(filePath).indexOf(baseUrl) === 0) {
     return addLeadingSlash(filePath);
   }
@@ -2019,7 +2335,9 @@ function getRealPath(filePath) {
   }
   const pages = getCurrentPages();
   if (pages.length) {
-    return addBase(getRealRoute(pages[pages.length - 1].$page.route, filePath).slice(1));
+    return addBase(
+      getRealRoute(pages[pages.length - 1].$page.route, filePath).slice(1)
+    );
   }
   return filePath;
 }
@@ -2043,11 +2361,17 @@ function getScreenHeight(screenFix, landscape) {
   return screenFix ? Math[landscape ? "min" : "max"](screen.height, screen.width) : screen.height;
 }
 function getWindowWidth(screenWidth) {
-  return Math.min(window.innerWidth, document.documentElement.clientWidth, screenWidth) || screenWidth;
+  return Math.min(
+    window.innerWidth,
+    document.documentElement.clientWidth,
+    screenWidth
+  ) || screenWidth;
 }
 function getBaseSystemInfo() {
   const screenFix = getScreenFix();
-  const windowWidth = getWindowWidth(getScreenWidth(screenFix, isLandscape(screenFix)));
+  const windowWidth = getWindowWidth(
+    getScreenWidth(screenFix, isLandscape(screenFix))
+  );
   return {
     platform: isIOS$1 ? "ios" : "other",
     pixelRatio: window.devicePixelRatio,
@@ -2055,17 +2379,26 @@ function getBaseSystemInfo() {
   };
 }
 function operateVideoPlayer(videoId, pageId, type, data) {
-  UniServiceJSBridge.invokeViewMethod("video." + videoId, {
-    videoId,
-    type,
-    data
-  }, pageId);
+  UniServiceJSBridge.invokeViewMethod(
+    "video." + videoId,
+    {
+      videoId,
+      type,
+      data
+    },
+    pageId
+  );
 }
 function operateMap(id2, pageId, type, data, operateMapCallback2) {
-  UniServiceJSBridge.invokeViewMethod("map." + id2, {
-    type,
-    data
-  }, pageId, operateMapCallback2);
+  UniServiceJSBridge.invokeViewMethod(
+    "map." + id2,
+    {
+      type,
+      data
+    },
+    pageId,
+    operateMapCallback2
+  );
 }
 function getRootInfo(fields2) {
   const info = {};
@@ -2097,7 +2430,7 @@ function getRootInfo(fields2) {
 }
 function getNodeInfo(el, fields2) {
   const info = {};
-  const { top } = getWindowOffset();
+  const { top, topWindowHeight } = getWindowOffset();
   if (fields2.id) {
     info.id = el.id;
   }
@@ -2109,15 +2442,15 @@ function getNodeInfo(el, fields2) {
     if (fields2.rect) {
       info.left = rect.left;
       info.right = rect.right;
-      info.top = rect.top - top;
-      info.bottom = rect.bottom - top;
+      info.top = rect.top - top - topWindowHeight;
+      info.bottom = rect.bottom - top - topWindowHeight;
     }
     if (fields2.size) {
       info.width = rect.width;
       info.height = rect.height;
     }
   }
-  if (Array.isArray(fields2.properties)) {
+  if (isArray(fields2.properties)) {
     fields2.properties.forEach((prop) => {
       prop = prop.replace(/-([a-z])/g, function(e2, t2) {
         return t2.toUpperCase();
@@ -2138,7 +2471,7 @@ function getNodeInfo(el, fields2) {
       info.scrollWidth = 0;
     }
   }
-  if (Array.isArray(fields2.computedStyle)) {
+  if (isArray(fields2.computedStyle)) {
     const sytle = getComputedStyle(el);
     fields2.computedStyle.forEach((name) => {
       info[name] = sytle[name];
@@ -2157,7 +2490,9 @@ function findElm(component, pageVm) {
 }
 function matches(element, selectors) {
   const matches2 = element.matches || element.matchesSelector || element.mozMatchesSelector || element.msMatchesSelector || element.oMatchesSelector || element.webkitMatchesSelector || function(selectors2) {
-    const matches3 = this.parentElement.querySelectorAll(selectors2);
+    const matches3 = this.parentElement.querySelectorAll(
+      selectors2
+    );
     let i = matches3.length;
     while (--i >= 0 && matches3.item(i) !== this) {
     }
@@ -2289,7 +2624,12 @@ function validateProtocol(name, data, protocol, onFail) {
     onFail = validateProtocolFail;
   }
   for (const key in protocol) {
-    const errMsg = validateProp(key, data[key], protocol[key], !hasOwn(data, key));
+    const errMsg = validateProp(
+      key,
+      data[key],
+      protocol[key],
+      !hasOwn(data, key)
+    );
     if (isString(errMsg)) {
       onFail(name, errMsg);
     }
@@ -2300,7 +2640,12 @@ function validateProtocols(name, args, protocol, onFail) {
     return;
   }
   if (!isArray(protocol)) {
-    return validateProtocol(name, args[0] || /* @__PURE__ */ Object.create(null), protocol, onFail);
+    return validateProtocol(
+      name,
+      args[0] || /* @__PURE__ */ Object.create(null),
+      protocol,
+      onFail
+    );
   }
   const len = protocol.length;
   const argsLen = args.length;
@@ -2341,7 +2686,9 @@ function validateProp(name, value, prop, isAbsent) {
     return validator2(value);
   }
 }
-const isSimpleType = /* @__PURE__ */ makeMap$1("String,Number,Boolean,Function,Symbol");
+const isSimpleType = /* @__PURE__ */ makeMap$1(
+  "String,Number,Boolean,Function,Symbol"
+);
 function assertType(value, type) {
   let valid;
   const expectedType = getType(type);
@@ -2585,7 +2932,9 @@ function getApiInterceptorHooks(method) {
   if (scopedInterceptor) {
     Object.keys(scopedInterceptor).forEach((hook) => {
       if (hook !== "returnValue") {
-        interceptor[hook] = (interceptor[hook] || []).concat(scopedInterceptor[hook]);
+        interceptor[hook] = (interceptor[hook] || []).concat(
+          scopedInterceptor[hook]
+        );
       }
     });
   }
@@ -2606,7 +2955,9 @@ function invokeApi(method, api2, options, params) {
   return api2(options, ...params);
 }
 function hasCallback(args) {
-  if (isPlainObject(args) && [API_SUCCESS, API_FAIL, API_COMPLETE].find((cb) => isFunction(args[cb]))) {
+  if (isPlainObject(args) && [API_SUCCESS, API_FAIL, API_COMPLETE].find(
+    (cb) => isFunction(args[cb])
+  )) {
     return true;
   }
   return false;
@@ -2619,9 +2970,19 @@ function promisify(name, fn) {
     if (hasCallback(args)) {
       return wrapperReturnValue(name, invokeApi(name, fn, args, rest));
     }
-    return wrapperReturnValue(name, handlePromise(new Promise((resolve, reject) => {
-      invokeApi(name, fn, extend(args, { success: resolve, fail: reject }), rest);
-    })));
+    return wrapperReturnValue(
+      name,
+      handlePromise(
+        new Promise((resolve, reject) => {
+          invokeApi(
+            name,
+            fn,
+            extend(args, { success: resolve, fail: reject }),
+            rest
+          );
+        })
+      )
+    );
   };
 }
 function formatApiArgs(args, options) {
@@ -2647,10 +3008,16 @@ function formatApiArgs(args, options) {
   }
 }
 function invokeSuccess(id2, name, res) {
-  return invokeCallback(id2, extend(res || {}, { errMsg: name + ":ok" }));
+  return invokeCallback(
+    id2,
+    extend(res || {}, { errMsg: name + ":ok" })
+  );
 }
 function invokeFail(id2, name, errMsg, errRes) {
-  return invokeCallback(id2, extend({ errMsg: name + ":fail" + (errMsg ? " " + errMsg : "") }, errRes));
+  return invokeCallback(
+    id2,
+    extend({ errMsg: name + ":fail" + (errMsg ? " " + errMsg : "") }, errRes)
+  );
 }
 function beforeInvokeApi(name, args, protocol, options) {
   if (process.env.NODE_ENV !== "production") {
@@ -2669,7 +3036,9 @@ function beforeInvokeApi(name, args, protocol, options) {
 }
 function checkCallback(callback) {
   if (!isFunction(callback)) {
-    throw new Error('Invalid args: type check failed for args "callback". Expected Function');
+    throw new Error(
+      'Invalid args: type check failed for args "callback". Expected Function'
+    );
   }
 }
 function wrapperOnApi(name, fn, options) {
@@ -2745,13 +3114,24 @@ function defineOffApi(name, fn, options) {
   return wrapperOffApi(name, fn, options);
 }
 function defineTaskApi(name, fn, protocol, options) {
-  return promisify(name, wrapperTaskApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
+  return promisify(
+    name,
+    wrapperTaskApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options)
+  );
 }
 function defineSyncApi(name, fn, protocol, options) {
-  return wrapperSyncApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options);
+  return wrapperSyncApi(
+    name,
+    fn,
+    process.env.NODE_ENV !== "production" ? protocol : void 0,
+    options
+  );
 }
 function defineAsyncApi(name, fn, protocol, options) {
-  return promisify(name, wrapperAsyncApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
+  return promisify(
+    name,
+    wrapperAsyncApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options)
+  );
 }
 function createUnsupportedMsg(name) {
   return `method 'uni.${name}' not supported`;
@@ -2783,12 +3163,20 @@ const ArrayBufferToBase64Protocol = [
     required: true
   }
 ];
-const base64ToArrayBuffer = /* @__PURE__ */ defineSyncApi(API_BASE64_TO_ARRAY_BUFFER, (base64) => {
-  return decode(base64);
-}, Base64ToArrayBufferProtocol);
-const arrayBufferToBase64 = /* @__PURE__ */ defineSyncApi(API_ARRAY_BUFFER_TO_BASE64, (arrayBuffer) => {
-  return encode$1(arrayBuffer);
-}, ArrayBufferToBase64Protocol);
+const base64ToArrayBuffer = /* @__PURE__ */ defineSyncApi(
+  API_BASE64_TO_ARRAY_BUFFER,
+  (base64) => {
+    return decode(base64);
+  },
+  Base64ToArrayBufferProtocol
+);
+const arrayBufferToBase64 = /* @__PURE__ */ defineSyncApi(
+  API_ARRAY_BUFFER_TO_BASE64,
+  (arrayBuffer) => {
+    return encode$1(arrayBuffer);
+  },
+  ArrayBufferToBase64Protocol
+);
 const API_UPX2PX = "upx2px";
 const Upx2pxProtocol = [
   {
@@ -2819,35 +3207,39 @@ function checkMaxWidth() {
   maxWidth = checkValue(config.rpxCalcMaxDeviceWidth, 960);
   baseWidth = checkValue(config.rpxCalcBaseDeviceWidth, 375);
 }
-const upx2px = /* @__PURE__ */ defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
-  if (deviceWidth === 0) {
-    checkDeviceWidth();
+const upx2px = /* @__PURE__ */ defineSyncApi(
+  API_UPX2PX,
+  (number, newDeviceWidth) => {
+    if (deviceWidth === 0) {
+      checkDeviceWidth();
+      {
+        checkMaxWidth();
+      }
+    }
+    number = Number(number);
+    if (number === 0) {
+      return 0;
+    }
+    let width = newDeviceWidth || deviceWidth;
     {
-      checkMaxWidth();
+      width = width <= maxWidth ? width : baseWidth;
     }
-  }
-  number = Number(number);
-  if (number === 0) {
-    return 0;
-  }
-  let width = newDeviceWidth || deviceWidth;
-  {
-    width = width <= maxWidth ? width : baseWidth;
-  }
-  let result = number / BASE_DEVICE_WIDTH * width;
-  if (result < 0) {
-    result = -result;
-  }
-  result = Math.floor(result + EPS);
-  if (result === 0) {
-    if (deviceDPR === 1 || !isIOS) {
-      result = 1;
-    } else {
-      result = 0.5;
+    let result = number / BASE_DEVICE_WIDTH * width;
+    if (result < 0) {
+      result = -result;
     }
-  }
-  return number < 0 ? -result : result;
-}, Upx2pxProtocol);
+    result = Math.floor(result + EPS);
+    if (result === 0) {
+      if (deviceDPR === 1 || !isIOS) {
+        result = 1;
+      } else {
+        result = 0.5;
+      }
+    }
+    return number < 0 ? -result : result;
+  },
+  Upx2pxProtocol
+);
 const API_ADD_INTERCEPTOR = "addInterceptor";
 const API_REMOVE_INTERCEPTOR = "removeInterceptor";
 const AddInterceptorProtocol = [
@@ -2861,7 +3253,10 @@ const RemoveInterceptorProtocol = AddInterceptorProtocol;
 function mergeInterceptorHook(interceptors2, interceptor) {
   Object.keys(interceptor).forEach((hook) => {
     if (isFunction(interceptor[hook])) {
-      interceptors2[hook] = mergeHook(interceptors2[hook], interceptor[hook]);
+      interceptors2[hook] = mergeHook(
+        interceptors2[hook],
+        interceptor[hook]
+      );
     }
   });
 }
@@ -2890,24 +3285,35 @@ function dedupeHooks(hooks) {
   }
   return res;
 }
-const addInterceptor = /* @__PURE__ */ defineSyncApi(API_ADD_INTERCEPTOR, (method, interceptor) => {
-  if (typeof method === "string" && isPlainObject(interceptor)) {
-    mergeInterceptorHook(scopedInterceptors[method] || (scopedInterceptors[method] = {}), interceptor);
-  } else if (isPlainObject(method)) {
-    mergeInterceptorHook(globalInterceptors, method);
-  }
-}, AddInterceptorProtocol);
-const removeInterceptor = /* @__PURE__ */ defineSyncApi(API_REMOVE_INTERCEPTOR, (method, interceptor) => {
-  if (typeof method === "string") {
-    if (isPlainObject(interceptor)) {
-      removeInterceptorHook(scopedInterceptors[method], interceptor);
-    } else {
-      delete scopedInterceptors[method];
+const addInterceptor = /* @__PURE__ */ defineSyncApi(
+  API_ADD_INTERCEPTOR,
+  (method, interceptor) => {
+    if (isString(method) && isPlainObject(interceptor)) {
+      mergeInterceptorHook(
+        scopedInterceptors[method] || (scopedInterceptors[method] = {}),
+        interceptor
+      );
+    } else if (isPlainObject(method)) {
+      mergeInterceptorHook(globalInterceptors, method);
     }
-  } else if (isPlainObject(method)) {
-    removeInterceptorHook(globalInterceptors, method);
-  }
-}, RemoveInterceptorProtocol);
+  },
+  AddInterceptorProtocol
+);
+const removeInterceptor = /* @__PURE__ */ defineSyncApi(
+  API_REMOVE_INTERCEPTOR,
+  (method, interceptor) => {
+    if (isString(method)) {
+      if (isPlainObject(interceptor)) {
+        removeInterceptorHook(scopedInterceptors[method], interceptor);
+      } else {
+        delete scopedInterceptors[method];
+      }
+    } else if (isPlainObject(method)) {
+      removeInterceptorHook(globalInterceptors, method);
+    }
+  },
+  RemoveInterceptorProtocol
+);
 const interceptors = {};
 const API_ON = "$on";
 const OnProtocol = [
@@ -2944,26 +3350,42 @@ const EmitProtocol = [
   }
 ];
 const emitter = new Emitter();
-const $on = /* @__PURE__ */ defineSyncApi(API_ON, (name, callback) => {
-  emitter.on(name, callback);
-  return () => emitter.off(name, callback);
-}, OnProtocol);
-const $once = /* @__PURE__ */ defineSyncApi(API_ONCE, (name, callback) => {
-  emitter.once(name, callback);
-  return () => emitter.off(name, callback);
-}, OnceProtocol);
-const $off = /* @__PURE__ */ defineSyncApi(API_OFF, (name, callback) => {
-  if (!name) {
-    emitter.e = {};
-    return;
-  }
-  if (!Array.isArray(name))
-    name = [name];
-  name.forEach((n) => emitter.off(n, callback));
-}, OffProtocol);
-const $emit = /* @__PURE__ */ defineSyncApi(API_EMIT, (name, ...args) => {
-  emitter.emit(name, ...args);
-}, EmitProtocol);
+const $on = /* @__PURE__ */ defineSyncApi(
+  API_ON,
+  (name, callback) => {
+    emitter.on(name, callback);
+    return () => emitter.off(name, callback);
+  },
+  OnProtocol
+);
+const $once = /* @__PURE__ */ defineSyncApi(
+  API_ONCE,
+  (name, callback) => {
+    emitter.once(name, callback);
+    return () => emitter.off(name, callback);
+  },
+  OnceProtocol
+);
+const $off = /* @__PURE__ */ defineSyncApi(
+  API_OFF,
+  (name, callback) => {
+    if (!name) {
+      emitter.e = {};
+      return;
+    }
+    if (!isArray(name))
+      name = [name];
+    name.forEach((n) => emitter.off(n, callback));
+  },
+  OffProtocol
+);
+const $emit = /* @__PURE__ */ defineSyncApi(
+  API_EMIT,
+  (name, ...args) => {
+    emitter.emit(name, ...args);
+  },
+  EmitProtocol
+);
 const validator = [
   {
     name: "id",
@@ -3035,12 +3457,15 @@ class VideoContext {
     operateVideoPlayer(this.id, this.pageId, "hideStatusBar");
   }
 }
-const createVideoContext = /* @__PURE__ */ defineSyncApi(API_CREATE_VIDEO_CONTEXT, (id2, context) => {
-  if (context) {
-    return new VideoContext(id2, getPageIdByVm(context));
+const createVideoContext = /* @__PURE__ */ defineSyncApi(
+  API_CREATE_VIDEO_CONTEXT,
+  (id2, context) => {
+    if (context) {
+      return new VideoContext(id2, getPageIdByVm(context));
+    }
+    return new VideoContext(id2, getPageIdByVm(getCurrentPageVm()));
   }
-  return new VideoContext(id2, getPageIdByVm(getCurrentPageVm()));
-});
+);
 const operateMapCallback = (options, res) => {
   const errMsg = res.errMsg || "";
   if (new RegExp("\\:\\s*fail").test(errMsg)) {
@@ -3114,12 +3539,16 @@ class MapContext {
     operateMapWrap(this.id, this.pageId, "on", options);
   }
 }
-const createMapContext = /* @__PURE__ */ defineSyncApi(API_CREATE_MAP_CONTEXT, (id2, context) => {
-  if (context) {
-    return new MapContext(id2, getPageIdByVm(context));
-  }
-  return new MapContext(id2, getPageIdByVm(getCurrentPageVm()));
-}, CreateMapContextProtocol);
+const createMapContext = /* @__PURE__ */ defineSyncApi(
+  API_CREATE_MAP_CONTEXT,
+  (id2, context) => {
+    if (context) {
+      return new MapContext(id2, getPageIdByVm(context));
+    }
+    return new MapContext(id2, getPageIdByVm(getCurrentPageVm()));
+  },
+  CreateMapContextProtocol
+);
 function getInt(name, defaultValue) {
   return function(value, params) {
     if (value) {
@@ -3164,16 +3593,20 @@ const CanvasGetImageDataProtocol = {
 };
 const API_CANVAS_PUT_IMAGE_DATA = "canvasPutImageData";
 const CanvasPutImageDataOptions = CanvasGetImageDataOptions;
-const CanvasPutImageDataProtocol = /* @__PURE__ */ extend({
-  data: {
-    type: Uint8ClampedArray,
-    required: true
+const CanvasPutImageDataProtocol = /* @__PURE__ */ extend(
+  {
+    data: {
+      type: Uint8ClampedArray,
+      required: true
+    }
+  },
+  CanvasGetImageDataProtocol,
+  {
+    height: {
+      type: Number
+    }
   }
-}, CanvasGetImageDataProtocol, {
-  height: {
-    type: Number
-  }
-});
+);
 const fileTypes = {
   PNG: "png",
   JPG: "jpg",
@@ -3216,13 +3649,18 @@ const CanvasToTempFilePathProtocol = {
   quality: Number
 };
 function operateCanvas(canvasId, pageId, type, data, callback) {
-  UniServiceJSBridge.invokeViewMethod(`canvas.${canvasId}`, {
-    type,
-    data
-  }, pageId, (data2) => {
-    if (callback)
-      callback(data2);
-  });
+  UniServiceJSBridge.invokeViewMethod(
+    `canvas.${canvasId}`,
+    {
+      type,
+      data
+    },
+    pageId,
+    (data2) => {
+      if (callback)
+        callback(data2);
+    }
+  );
 }
 var methods1 = ["scale", "rotate", "translate", "setTransform", "transform"];
 var methods2 = [
@@ -3494,10 +3932,16 @@ class CanvasContext {
     var actions = [...this.actions];
     this.actions = [];
     this.path = [];
-    operateCanvas(this.id, this.pageId, "actionsChanged", {
-      actions,
-      reserve
-    }, callback);
+    operateCanvas(
+      this.id,
+      this.pageId,
+      "actionsChanged",
+      {
+        actions,
+        reserve
+      },
+      callback
+    );
   }
   createLinearGradient(x0, y0, x1, y1) {
     return new CanvasGradient("linear", [x0, y0, x1, y1]);
@@ -3506,10 +3950,14 @@ class CanvasContext {
     return new CanvasGradient("radial", [x, y, r]);
   }
   createPattern(image2, repetition) {
-    if (repetition === void 0) {
-      console.error("Failed to execute 'createPattern' on 'CanvasContext': 2 arguments required, but only 1 present.");
+    if (void 0 === repetition) {
+      console.error(
+        "Failed to execute 'createPattern' on 'CanvasContext': 2 arguments required, but only 1 present."
+      );
     } else if (["repeat", "repeat-x", "repeat-y", "no-repeat"].indexOf(repetition) < 0) {
-      console.error("Failed to execute 'createPattern' on 'CanvasContext': The provided type ('" + repetition + "') is not one of 'repeat', 'no-repeat', 'repeat-x', or 'repeat-y'.");
+      console.error(
+        "Failed to execute 'createPattern' on 'CanvasContext': The provided type ('" + repetition + "') is not one of 'repeat', 'no-repeat', 'repeat-x', or 'repeat-y'."
+      );
     } else {
       return new Pattern(image2, repetition);
     }
@@ -3675,7 +4123,9 @@ class CanvasContext {
   set font(value) {
     var self = this;
     this.state.font = value;
-    var fontFormat = value.match(/^(([\w\-]+\s)*)(\d+r?px)(\/(\d+\.?\d*(r?px)?))?\s+(.*)/);
+    var fontFormat = value.match(
+      /^(([\w\-]+\s)*)(\d+r?px)(\/(\d+\.?\d*(r?px)?))?\s+(.*)/
+    );
     if (fontFormat) {
       var style = fontFormat[1].trim().split(/\s/);
       var fontSize = parseFloat(fontFormat[3]);
@@ -3921,7 +4371,10 @@ const initCanvasContextProperty = /* @__PURE__ */ once(() => {
           };
         case "setFontSize":
           return function(fontSize) {
-            this.state.font = this.state.font.replace(/\d+\.?\d*px/, fontSize + "px");
+            this.state.font = this.state.font.replace(
+              /\d+\.?\d*px/,
+              fontSize + "px"
+            );
             this.state.fontSize = fontSize;
             this.actions.push({
               method: method2,
@@ -3940,106 +4393,143 @@ const initCanvasContextProperty = /* @__PURE__ */ once(() => {
     CanvasContext.prototype[method] = get(method);
   });
 });
-const createCanvasContext = /* @__PURE__ */ defineSyncApi(API_CREATE_CANVAS_CONTEXT, (canvasId, componentInstance) => {
-  initCanvasContextProperty();
-  if (componentInstance) {
-    return new CanvasContext(canvasId, getPageIdByVm(componentInstance));
-  }
-  const pageId = getPageIdByVm(getCurrentPageVm());
-  if (pageId) {
-    return new CanvasContext(canvasId, pageId);
-  } else {
-    UniServiceJSBridge.emit(ON_ERROR, "createCanvasContext:fail");
-  }
-}, CreateCanvasContextProtocol);
-const canvasGetImageData = /* @__PURE__ */ defineAsyncApi(API_CANVAS_GET_IMAGE_DATA, ({ canvasId, x, y, width, height }, { resolve, reject }) => {
-  const pageId = getPageIdByVm(getCurrentPageVm());
-  if (!pageId) {
-    reject();
-    return;
-  }
-  function callback(data) {
-    if (data.errMsg && data.errMsg.indexOf("fail") !== -1) {
-      reject("", data);
+const createCanvasContext = /* @__PURE__ */ defineSyncApi(
+  API_CREATE_CANVAS_CONTEXT,
+  (canvasId, componentInstance) => {
+    initCanvasContextProperty();
+    if (componentInstance) {
+      return new CanvasContext(canvasId, getPageIdByVm(componentInstance));
+    }
+    const pageId = getPageIdByVm(getCurrentPageVm());
+    if (pageId) {
+      return new CanvasContext(canvasId, pageId);
+    } else {
+      UniServiceJSBridge.emit(ON_ERROR, "createCanvasContext:fail");
+    }
+  },
+  CreateCanvasContextProtocol
+);
+const canvasGetImageData = /* @__PURE__ */ defineAsyncApi(
+  API_CANVAS_GET_IMAGE_DATA,
+  ({ canvasId, x, y, width, height }, { resolve, reject }) => {
+    const pageId = getPageIdByVm(getCurrentPageVm());
+    if (!pageId) {
+      reject();
       return;
     }
-    let imgData = data.data;
-    if (imgData && imgData.length) {
-      data.data = new Uint8ClampedArray(imgData);
-    }
-    delete data.compressed;
-    resolve(data);
-  }
-  operateCanvas(canvasId, pageId, "getImageData", {
-    x,
-    y,
-    width,
-    height
-  }, callback);
-}, CanvasGetImageDataProtocol, CanvasGetImageDataOptions);
-const canvasPutImageData = /* @__PURE__ */ defineAsyncApi(API_CANVAS_PUT_IMAGE_DATA, ({ canvasId, data, x, y, width, height }, { resolve, reject }) => {
-  var pageId = getPageIdByVm(getCurrentPageVm());
-  if (!pageId) {
-    reject();
-    return;
-  }
-  let compressed;
-  const operate = () => {
-    operateCanvas(canvasId, pageId, "putImageData", {
-      data,
-      x,
-      y,
-      width,
-      height,
-      compressed
-    }, (data2) => {
-      if (data2.errMsg && data2.errMsg.indexOf("fail") !== -1) {
-        reject();
+    function callback(data) {
+      if (data.errMsg && data.errMsg.indexOf("fail") !== -1) {
+        reject("", data);
         return;
       }
-      resolve(data2);
-    });
-  };
-  {
-    data = Array.prototype.slice.call(data);
-  }
-  operate();
-}, CanvasPutImageDataProtocol, CanvasPutImageDataOptions);
-const canvasToTempFilePath = /* @__PURE__ */ defineAsyncApi(API_CANVAS_TO_TEMP_FILE_PATH, ({
-  x = 0,
-  y = 0,
-  width,
-  height,
-  destWidth,
-  destHeight,
-  canvasId,
-  fileType,
-  quality
-}, { resolve, reject }) => {
-  var pageId = getPageIdByVm(getCurrentPageVm());
-  if (!pageId) {
-    reject();
-    return;
-  }
-  const dirname = `${TEMP_PATH}/canvas`;
-  operateCanvas(canvasId, pageId, "toTempFilePath", {
-    x,
-    y,
+      let imgData = data.data;
+      if (imgData && imgData.length) {
+        data.data = new Uint8ClampedArray(imgData);
+      }
+      delete data.compressed;
+      resolve(data);
+    }
+    operateCanvas(
+      canvasId,
+      pageId,
+      "getImageData",
+      {
+        x,
+        y,
+        width,
+        height
+      },
+      callback
+    );
+  },
+  CanvasGetImageDataProtocol,
+  CanvasGetImageDataOptions
+);
+const canvasPutImageData = /* @__PURE__ */ defineAsyncApi(
+  API_CANVAS_PUT_IMAGE_DATA,
+  ({ canvasId, data, x, y, width, height }, { resolve, reject }) => {
+    var pageId = getPageIdByVm(getCurrentPageVm());
+    if (!pageId) {
+      reject();
+      return;
+    }
+    let compressed;
+    const operate = () => {
+      operateCanvas(
+        canvasId,
+        pageId,
+        "putImageData",
+        {
+          data,
+          x,
+          y,
+          width,
+          height,
+          compressed
+        },
+        (data2) => {
+          if (data2.errMsg && data2.errMsg.indexOf("fail") !== -1) {
+            reject();
+            return;
+          }
+          resolve(data2);
+        }
+      );
+    };
+    {
+      data = Array.prototype.slice.call(data);
+    }
+    operate();
+  },
+  CanvasPutImageDataProtocol,
+  CanvasPutImageDataOptions
+);
+const canvasToTempFilePath = /* @__PURE__ */ defineAsyncApi(
+  API_CANVAS_TO_TEMP_FILE_PATH,
+  ({
+    x = 0,
+    y = 0,
     width,
     height,
     destWidth,
     destHeight,
+    canvasId,
     fileType,
-    quality,
-    dirname
-  }, (res) => {
-    if (res.errMsg && res.errMsg.indexOf("fail") !== -1) {
-      reject("", res);
+    quality
+  }, { resolve, reject }) => {
+    var pageId = getPageIdByVm(getCurrentPageVm());
+    if (!pageId) {
+      reject();
       return;
     }
-    resolve(res);
-  });
-}, CanvasToTempFilePathProtocol, CanvasToTempFilePathOptions);
+    const dirname = `${TEMP_PATH}/canvas`;
+    operateCanvas(
+      canvasId,
+      pageId,
+      "toTempFilePath",
+      {
+        x,
+        y,
+        width,
+        height,
+        destWidth,
+        destHeight,
+        fileType,
+        quality,
+        dirname
+      },
+      (res) => {
+        if (res.errMsg && res.errMsg.indexOf("fail") !== -1) {
+          reject("", res);
+          return;
+        }
+        resolve(res);
+      }
+    );
+  },
+  CanvasToTempFilePathProtocol,
+  CanvasToTempFilePathOptions
+);
 const innerAudioContextEventNames = [
   "onCanplay",
   "onPlay",
@@ -4072,7 +4562,9 @@ const defaultOptions = {
 const MARGINS = ["top", "right", "bottom", "left"];
 let reqComponentObserverId$1 = 1;
 function normalizeRootMargin(margins = {}) {
-  return MARGINS.map((name) => `${Number(margins[name]) || 0}px`).join(" ");
+  return MARGINS.map(
+    (name) => `${Number(margins[name]) || 0}px`
+  ).join(" ");
 }
 class ServiceIntersectionObserver {
   constructor(component, options) {
@@ -4096,15 +4588,21 @@ class ServiceIntersectionObserver {
     }
     this._options.selector = selector;
     this._reqId = reqComponentObserverId$1++;
-    addIntersectionObserver({
-      reqId: this._reqId,
-      component: this._component,
-      options: this._options,
-      callback
-    }, this._pageId);
+    addIntersectionObserver(
+      {
+        reqId: this._reqId,
+        component: this._component,
+        options: this._options,
+        callback
+      },
+      this._pageId
+    );
   }
   disconnect() {
-    this._reqId && removeIntersectionObserver({ reqId: this._reqId, component: this._component }, this._pageId);
+    this._reqId && removeIntersectionObserver(
+      { reqId: this._reqId, component: this._component },
+      this._pageId
+    );
   }
 }
 const createIntersectionObserver = /* @__PURE__ */ defineSyncApi("createIntersectionObserver", (context, options) => {
@@ -4129,18 +4627,24 @@ class ServiceMediaQueryObserver {
       return;
     }
     this._reqId = reqComponentObserverId++;
-    addMediaQueryObserver({
-      reqId: this._reqId,
-      component: this._component,
-      options,
-      callback
-    }, this._pageId);
+    addMediaQueryObserver(
+      {
+        reqId: this._reqId,
+        component: this._component,
+        options,
+        callback
+      },
+      this._pageId
+    );
   }
   disconnect() {
-    this._reqId && removeMediaQueryObserver({
-      reqId: this._reqId,
-      component: this._component
-    }, this._pageId);
+    this._reqId && removeMediaQueryObserver(
+      {
+        reqId: this._reqId,
+        component: this._component
+      },
+      this._pageId
+    );
   }
 }
 const createMediaQueryObserver = /* @__PURE__ */ defineSyncApi("createMediaQueryObserver", (context) => {
@@ -4153,25 +4657,30 @@ const createMediaQueryObserver = /* @__PURE__ */ defineSyncApi("createMediaQuery
   }
   return new ServiceMediaQueryObserver(getCurrentPageVm());
 });
-let index$x = 0;
+let index$y = 0;
 let optionsCache = {};
 function operateEditor(componentId, pageId, type, options) {
   const data = { options };
   const needCallOptions = options && ("success" in options || "fail" in options || "complete" in options);
   if (needCallOptions) {
-    const callbackId = String(index$x++);
+    const callbackId = String(index$y++);
     data.callbackId = callbackId;
     optionsCache[callbackId] = options;
   }
-  UniServiceJSBridge.invokeViewMethod(`editor.${componentId}`, {
-    type,
-    data
-  }, pageId, ({ callbackId, data: data2 }) => {
-    if (needCallOptions) {
-      callOptions(optionsCache[callbackId], data2);
-      delete optionsCache[callbackId];
+  UniServiceJSBridge.invokeViewMethod(
+    `editor.${componentId}`,
+    {
+      type,
+      data
+    },
+    pageId,
+    ({ callbackId, data: data2 }) => {
+      if (needCallOptions) {
+        callOptions(optionsCache[callbackId], data2);
+        delete optionsCache[callbackId];
+      }
     }
-  });
+  );
 }
 class EditorContext {
   constructor(id2, pageId) {
@@ -4246,30 +4755,54 @@ class NodesRef {
     this._single = single;
   }
   boundingClientRect(callback) {
-    this._selectorQuery._push(this._selector, this._component, this._single, {
-      id: true,
-      dataset: true,
-      rect: true,
-      size: true
-    }, callback);
+    this._selectorQuery._push(
+      this._selector,
+      this._component,
+      this._single,
+      {
+        id: true,
+        dataset: true,
+        rect: true,
+        size: true
+      },
+      callback
+    );
     return this._selectorQuery;
   }
   fields(fields2, callback) {
-    this._selectorQuery._push(this._selector, this._component, this._single, fields2, callback);
+    this._selectorQuery._push(
+      this._selector,
+      this._component,
+      this._single,
+      fields2,
+      callback
+    );
     return this._selectorQuery;
   }
   scrollOffset(callback) {
-    this._selectorQuery._push(this._selector, this._component, this._single, {
-      id: true,
-      dataset: true,
-      scrollOffset: true
-    }, callback);
+    this._selectorQuery._push(
+      this._selector,
+      this._component,
+      this._single,
+      {
+        id: true,
+        dataset: true,
+        scrollOffset: true
+      },
+      callback
+    );
     return this._selectorQuery;
   }
   context(callback) {
-    this._selectorQuery._push(this._selector, this._component, this._single, {
-      context: true
-    }, callback);
+    this._selectorQuery._push(
+      this._selector,
+      this._component,
+      this._single,
+      {
+        context: true
+      },
+      callback
+    );
     return this._selectorQuery;
   }
   node(_callback) {
@@ -4284,23 +4817,27 @@ class SelectorQuery {
     this._queueCb = [];
   }
   exec(callback) {
-    requestComponentInfo(this._page, this._queue, (res) => {
-      const queueCbs = this._queueCb;
-      res.forEach((result, index2) => {
-        if (Array.isArray(result)) {
-          result.forEach(convertContext);
-        } else {
-          convertContext(result);
+    requestComponentInfo(
+      this._page,
+      this._queue,
+      (res) => {
+        const queueCbs = this._queueCb;
+        res.forEach((result, index2) => {
+          if (isArray(result)) {
+            result.forEach(convertContext);
+          } else {
+            convertContext(result);
+          }
+          const queueCb = queueCbs[index2];
+          if (isFunction(queueCb)) {
+            queueCb.call(this, result);
+          }
+        });
+        if (isFunction(callback)) {
+          callback.call(this, res);
         }
-        const queueCb = queueCbs[index2];
-        if (typeof queueCb === "function") {
-          queueCb.call(this, result);
-        }
-      });
-      if (typeof callback === "function") {
-        callback.call(this, res);
       }
-    });
+    );
     return this._nodesRef;
   }
   in(component) {
@@ -4308,10 +4845,20 @@ class SelectorQuery {
     return this;
   }
   select(selector) {
-    return this._nodesRef = new NodesRef(this, this._component, selector, true);
+    return this._nodesRef = new NodesRef(
+      this,
+      this._component,
+      selector,
+      true
+    );
   }
   selectAll(selector) {
-    return this._nodesRef = new NodesRef(this, this._component, selector, false);
+    return this._nodesRef = new NodesRef(
+      this,
+      this._component,
+      selector,
+      false
+    );
   }
   selectViewport() {
     return this._nodesRef = new NodesRef(this, null, "", true);
@@ -4395,7 +4942,9 @@ class MPAnimation {
       }
     });
     this.actions.push({
-      animates: Object.values(this.currentTransform),
+      animates: Object.values(
+        this.currentTransform
+      ),
       option: this._getOption(option)
     });
     this.currentStepAnimates = [];
@@ -4441,61 +4990,90 @@ const initAnimationProperty = /* @__PURE__ */ once(() => {
     };
   });
 });
-const createAnimation$1 = /* @__PURE__ */ defineSyncApi(API_CREATE_ANIMATION, (option) => {
-  initAnimationProperty();
-  return new MPAnimation(option);
-}, CreateAnimationProtocol, CreateAnimationOptions);
+const createAnimation$1 = /* @__PURE__ */ defineSyncApi(
+  API_CREATE_ANIMATION,
+  (option) => {
+    initAnimationProperty();
+    return new MPAnimation(option);
+  },
+  CreateAnimationProtocol,
+  CreateAnimationOptions
+);
 const API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
-const onTabBarMidButtonTap = /* @__PURE__ */ defineOnApi(API_ON_TAB_BAR_MID_BUTTON_TAP, () => {
-});
+const onTabBarMidButtonTap = /* @__PURE__ */ defineOnApi(
+  API_ON_TAB_BAR_MID_BUTTON_TAP,
+  () => {
+  }
+);
 const API_ON_WINDOW_RESIZE = "onWindowResize";
 const API_OFF_WINDOW_RESIZE = "offWindowResize";
-const onWindowResize = /* @__PURE__ */ defineOnApi(API_ON_WINDOW_RESIZE, () => {
-});
-const offWindowResize = /* @__PURE__ */ defineOffApi(API_OFF_WINDOW_RESIZE, () => {
-});
+const onWindowResize = /* @__PURE__ */ defineOnApi(
+  API_ON_WINDOW_RESIZE,
+  () => {
+  }
+);
+const offWindowResize = /* @__PURE__ */ defineOffApi(
+  API_OFF_WINDOW_RESIZE,
+  () => {
+  }
+);
 const API_SET_LOCALE = "setLocale";
 const API_GET_LOCALE = "getLocale";
 const API_ON_LOCALE_CHANGE = "onLocaleChange";
-const getLocale = /* @__PURE__ */ defineSyncApi(API_GET_LOCALE, () => {
-  const app = getApp({ allowDefault: true });
-  if (app && app.$vm) {
-    return app.$vm.$locale;
+const getLocale = /* @__PURE__ */ defineSyncApi(
+  API_GET_LOCALE,
+  () => {
+    const app = getApp({ allowDefault: true });
+    if (app && app.$vm) {
+      return app.$vm.$locale;
+    }
+    return useI18n().getLocale();
   }
-  return useI18n().getLocale();
-});
-const onLocaleChange = /* @__PURE__ */ defineOnApi(API_ON_LOCALE_CHANGE, () => {
-});
-const setLocale = /* @__PURE__ */ defineSyncApi(API_SET_LOCALE, (locale) => {
-  const app = getApp();
-  if (!app) {
+);
+const onLocaleChange = /* @__PURE__ */ defineOnApi(
+  API_ON_LOCALE_CHANGE,
+  () => {
+  }
+);
+const setLocale = /* @__PURE__ */ defineSyncApi(
+  API_SET_LOCALE,
+  (locale) => {
+    const app = getApp();
+    if (!app) {
+      return false;
+    }
+    const oldLocale = app.$vm.$locale;
+    if (oldLocale !== locale) {
+      app.$vm.$locale = locale;
+      {
+        window.localStorage && (localStorage[UNI_STORAGE_LOCALE] = locale);
+      }
+      UniServiceJSBridge.invokeOnCallback(API_ON_LOCALE_CHANGE, { locale });
+      return true;
+    }
     return false;
   }
-  const oldLocale = app.$vm.$locale;
-  if (oldLocale !== locale) {
-    app.$vm.$locale = locale;
-    {
-      window.localStorage && (localStorage[UNI_STORAGE_LOCALE] = locale);
-    }
-    UniServiceJSBridge.invokeOnCallback(API_ON_LOCALE_CHANGE, { locale });
-    return true;
-  }
-  return false;
-});
+);
 const API_SET_PAGE_META = "setPageMeta";
-const setPageMeta = /* @__PURE__ */ defineAsyncApi(API_SET_PAGE_META, (options, { resolve }) => {
-  resolve(setCurrentPageMeta(getCurrentPageVm(), options));
-});
+const setPageMeta = /* @__PURE__ */ defineAsyncApi(
+  API_SET_PAGE_META,
+  (options, { resolve }) => {
+    resolve(setCurrentPageMeta(getCurrentPageVm(), options));
+  }
+);
 const API_GET_SELECTED_TEXT_RANGE = "getSelectedTextRange";
-const getSelectedTextRange$1 = /* @__PURE__ */ defineAsyncApi(API_GET_SELECTED_TEXT_RANGE, (_, { resolve, reject }) => {
-  UniServiceJSBridge.invokeViewMethod("getSelectedTextRange", {}, getCurrentPageId(), (res) => {
-    if (typeof res.end === "undefined" && typeof res.start === "undefined") {
-      reject("no focused");
-    } else {
-      resolve(res);
-    }
-  });
-});
+const getSelectedTextRange$1 = /* @__PURE__ */ defineAsyncApi(
+  API_GET_SELECTED_TEXT_RANGE,
+  (_, { resolve, reject }) => {
+    UniServiceJSBridge.invokeViewMethod(API_GET_SELECTED_TEXT_RANGE, {}, getCurrentPageId(), (res) => {
+      if (typeof res.end === "undefined" && typeof res.start === "undefined") {
+        reject("no focused");
+      } else {
+        resolve(res);
+      }
+    });
+  }
+);
 const appHooks = {
   [ON_UNHANDLE_REJECTION]: [],
   [ON_PAGE_NOT_FOUND]: [],
@@ -4555,15 +5133,22 @@ function offAppHide(hook) {
   offAppHook(ON_HIDE, hook);
 }
 const API_GET_ENTER_OPTIONS_SYNC = "getEnterOptionsSync";
-const getEnterOptionsSync = /* @__PURE__ */ defineSyncApi(API_GET_ENTER_OPTIONS_SYNC, () => {
-  return getEnterOptions();
-});
+const getEnterOptionsSync = /* @__PURE__ */ defineSyncApi(
+  API_GET_ENTER_OPTIONS_SYNC,
+  () => {
+    return getEnterOptions();
+  }
+);
 const API_GET_LAUNCH_OPTIONS_SYNC = "getLaunchOptionsSync";
-const getLaunchOptionsSync = /* @__PURE__ */ defineSyncApi(API_GET_LAUNCH_OPTIONS_SYNC, () => {
-  return getLaunchOptions();
-});
+const getLaunchOptionsSync = /* @__PURE__ */ defineSyncApi(
+  API_GET_LAUNCH_OPTIONS_SYNC,
+  () => {
+    return getLaunchOptions();
+  }
+);
 let cid;
 let cidErrMsg;
+let enabled;
 function normalizePushMessage(message) {
   try {
     return JSON.parse(message);
@@ -4572,17 +5157,24 @@ function normalizePushMessage(message) {
   return message;
 }
 function invokePushCallback(args) {
-  if (args.type === "clientId") {
+  if (args.type === "enabled") {
+    enabled = true;
+  } else if (args.type === "clientId") {
     cid = args.cid;
     cidErrMsg = args.errMsg;
     invokeGetPushCidCallbacks(cid, args.errMsg);
   } else if (args.type === "pushMsg") {
-    onPushMessageCallbacks.forEach((callback) => {
-      callback({
-        type: "receive",
-        data: normalizePushMessage(args.message)
-      });
-    });
+    const message = {
+      type: "receive",
+      data: normalizePushMessage(args.message)
+    };
+    for (let i = 0; i < onPushMessageCallbacks.length; i++) {
+      const callback = onPushMessageCallbacks[i];
+      callback(message);
+      if (message.stopped) {
+        break;
+      }
+    }
   } else if (args.type === "click") {
     onPushMessageCallbacks.forEach((callback) => {
       callback({
@@ -4599,29 +5191,29 @@ function invokeGetPushCidCallbacks(cid2, errMsg) {
   });
   getPushCidCallbacks.length = 0;
 }
-function getPushClientid(args) {
-  if (!isPlainObject(args)) {
-    args = {};
+const API_GET_PUSH_CLIENT_ID = "getPushClientId";
+const getPushClientId = /* @__PURE__ */ defineAsyncApi(
+  API_GET_PUSH_CLIENT_ID,
+  (_, { resolve, reject }) => {
+    Promise.resolve().then(() => {
+      if (typeof enabled === "undefined") {
+        enabled = false;
+        cid = "";
+        cidErrMsg = "uniPush is not enabled";
+      }
+      getPushCidCallbacks.push((cid2, errMsg) => {
+        if (cid2) {
+          resolve({ cid: cid2 });
+        } else {
+          reject(errMsg);
+        }
+      });
+      if (typeof cid !== "undefined") {
+        invokeGetPushCidCallbacks(cid, cidErrMsg);
+      }
+    });
   }
-  const { success, fail, complete } = getApiCallbacks(args);
-  const hasSuccess = isFunction(success);
-  const hasFail = isFunction(fail);
-  const hasComplete = isFunction(complete);
-  getPushCidCallbacks.push((cid2, errMsg) => {
-    let res;
-    if (cid2) {
-      res = { errMsg: "getPushClientid:ok", cid: cid2 };
-      hasSuccess && success(res);
-    } else {
-      res = { errMsg: "getPushClientid:fail" + (errMsg ? " " + errMsg : "") };
-      hasFail && fail(res);
-    }
-    hasComplete && complete(res);
-  });
-  if (typeof cid !== "undefined") {
-    Promise.resolve().then(() => invokeGetPushCidCallbacks(cid, cidErrMsg));
-  }
-}
+);
 const onPushMessageCallbacks = [];
 const onPushMessage = (fn) => {
   if (onPushMessageCallbacks.indexOf(fn) === -1) {
@@ -4769,13 +5361,13 @@ const ChooseLocationProtocol = {
   longitude: Number
 };
 const API_GET_LOCATION = "getLocation";
-const coordTypes = ["wgs84", "gcj02"];
+const coordTypes$1 = ["wgs84", "gcj02"];
 const GetLocationOptions = {
   formatArgs: {
     type(value, params) {
       value = (value || "").toLowerCase();
-      if (coordTypes.indexOf(value) === -1) {
-        params.type = coordTypes[0];
+      if (coordTypes$1.indexOf(value) === -1) {
+        params.type = coordTypes$1[0];
       } else {
         params.type = value;
       }
@@ -4790,8 +5382,34 @@ const GetLocationProtocol = {
   altitude: Boolean
 };
 const API_OPEN_LOCATION = "openLocation";
+const checkProps = (key, value) => {
+  if (value === void 0) {
+    return `${key} should not be empty.`;
+  }
+  if (typeof value !== "number") {
+    let receivedType = typeof value;
+    receivedType = receivedType[0].toUpperCase() + receivedType.substring(1);
+    return `Expected Number, got ${receivedType} with value ${JSON.stringify(
+      value
+    )}.`;
+  }
+};
 const OpenLocationOptions = {
   formatArgs: {
+    latitude(value, params) {
+      const checkedInfo = checkProps("latitude", value);
+      if (checkedInfo) {
+        return checkedInfo;
+      }
+      params.latitude = value;
+    },
+    longitude(value, params) {
+      const checkedInfo = checkProps("longitude", value);
+      if (checkedInfo) {
+        return checkedInfo;
+      }
+      params.longitude = value;
+    },
     scale(value, params) {
       value = Math.floor(value);
       params.scale = value >= 5 && value <= 18 ? value : 18;
@@ -4799,14 +5417,8 @@ const OpenLocationOptions = {
   }
 };
 const OpenLocationProtocol = {
-  latitude: {
-    type: Number,
-    required: true
-  },
-  longitude: {
-    type: Number,
-    required: true
-  },
+  latitude: Number,
+  longitude: Number,
   scale: Number,
   name: String,
   address: String
@@ -4917,12 +5529,14 @@ const API_PREVIEW_IMAGE = "previewImage";
 const PreviewImageOptions = {
   formatArgs: {
     urls(urls, params) {
-      params.urls = urls.map((url) => typeof url === "string" && url ? getRealPath(url) : "");
+      params.urls = urls.map(
+        (url) => isString(url) && url ? getRealPath(url) : ""
+      );
     },
     current(current, params) {
       if (typeof current === "number") {
         params.current = current > 0 && current < params.urls.length ? current : 0;
-      } else if (typeof current === "string" && current) {
+      } else if (isString(current) && current) {
         params.current = getRealPath(current);
       }
     }
@@ -5002,7 +5616,10 @@ const RequestProtocol = {
 const RequestOptions = {
   formatArgs: {
     method(value, params) {
-      params.method = elemInArray((value || "").toUpperCase(), HTTP_METHODS);
+      params.method = elemInArray(
+        (value || "").toUpperCase(),
+        HTTP_METHODS
+      );
     },
     data(value, params) {
       params.data = value || "";
@@ -5015,7 +5632,9 @@ const RequestOptions = {
     header(value, params) {
       const header = params.header = value || {};
       if (params.method !== HTTP_METHODS[0]) {
-        if (!Object.keys(header).find((key) => key.toLowerCase() === "content-type")) {
+        if (!Object.keys(header).find(
+          (key) => key.toLowerCase() === "content-type"
+        )) {
           header["Content-Type"] = "application/json";
         }
       }
@@ -5082,10 +5701,13 @@ const ConnectSocketOptions = {
       params.header = value || {};
     },
     method(value, params) {
-      params.method = elemInArray((value || "").toUpperCase(), HTTP_METHODS);
+      params.method = elemInArray(
+        (value || "").toUpperCase(),
+        HTTP_METHODS
+      );
     },
     protocols(protocols, params) {
-      if (typeof protocols === "string") {
+      if (isString(protocols)) {
         params.protocols = [protocols];
       }
     }
@@ -5111,8 +5733,30 @@ const CloseSocketProtocol = {
   code: Number,
   reason: String
 };
+const API_START_LOCATION_UPDATE = "startLocationUpdate";
+const API_ON_LOCATION_CHANGE = "onLocationChange";
+const API_STOP_LOCATION_UPDATE = "stopLocationUpdate";
+const API_OFF_LOCATION_CHANGE = "offLocationChange";
+const API_OFF_LOCATION_CHANGE_ERROR = "offLocationChangeError";
+const API_ON_LOCATION_CHANGE_ERROR = "onLocationChangeError";
+const coordTypes = ["wgs84", "gcj02"];
+const StartLocationUpdateProtocol = {
+  type: String
+};
+const StartLocationUpdateOptions = {
+  formatArgs: {
+    type(value, params) {
+      value = (value || "").toLowerCase();
+      if (coordTypes.indexOf(value) === -1) {
+        params.type = coordTypes[1];
+      } else {
+        params.type = value;
+      }
+    }
+  }
+};
 function encodeQueryString(url) {
-  if (typeof url !== "string") {
+  if (!isString(url)) {
     return url;
   }
   const index2 = url.indexOf("?");
@@ -5168,12 +5812,19 @@ const API_SWITCH_TAB = "switchTab";
 const API_NAVIGATE_BACK = "navigateBack";
 const API_PRELOAD_PAGE = "preloadPage";
 const API_UN_PRELOAD_PAGE = "unPreloadPage";
-const NavigateToProtocol = /* @__PURE__ */ extend({}, BaseRouteProtocol, createAnimationProtocol(ANIMATION_IN$1));
-const NavigateBackProtocol = /* @__PURE__ */ extend({
-  delta: {
-    type: Number
-  }
-}, createAnimationProtocol(ANIMATION_OUT$1));
+const NavigateToProtocol = /* @__PURE__ */ extend(
+  {},
+  BaseRouteProtocol,
+  createAnimationProtocol(ANIMATION_IN$1)
+);
+const NavigateBackProtocol = /* @__PURE__ */ extend(
+  {
+    delta: {
+      type: Number
+    }
+  },
+  createAnimationProtocol(ANIMATION_OUT$1)
+);
 const RedirectToProtocol = BaseRouteProtocol;
 const ReLaunchProtocol = BaseRouteProtocol;
 const SwitchTabProtocol = BaseRouteProtocol;
@@ -5372,7 +6023,9 @@ const ShowModalOptions = {
   formatArgs: {
     title: "",
     content: "",
+    placeholderText: "",
     showCancel: true,
+    editable: false,
     cancelText(_value, params) {
       if (!hasOwn(params, "cancelText")) {
         const { t: t2 } = useI18n();
@@ -5444,21 +6097,27 @@ const IndexOptions = {
   }
 };
 const API_SET_TAB_BAR_ITEM = "setTabBarItem";
-const SetTabBarItemProtocol = /* @__PURE__ */ extend({
-  text: String,
-  iconPath: String,
-  selectedIconPath: String,
-  pagePath: String
-}, IndexProtocol);
+const SetTabBarItemProtocol = /* @__PURE__ */ extend(
+  {
+    text: String,
+    iconPath: String,
+    selectedIconPath: String,
+    pagePath: String
+  },
+  IndexProtocol
+);
 const SetTabBarItemOptions = {
   beforeInvoke: IndexOptions.beforeInvoke,
-  formatArgs: /* @__PURE__ */ extend({
-    pagePath(value, params) {
-      if (value) {
-        params.pagePath = removeLeadingSlash(value);
+  formatArgs: /* @__PURE__ */ extend(
+    {
+      pagePath(value, params) {
+        if (value) {
+          params.pagePath = removeLeadingSlash(value);
+        }
       }
-    }
-  }, IndexOptions.formatArgs)
+    },
+    IndexOptions.formatArgs
+  )
 };
 const API_SET_TAB_BAR_STYLE = "setTabBarStyle";
 const SetTabBarStyleProtocol = {
@@ -5501,21 +6160,27 @@ const API_REMOVE_TAB_BAR_BADGE = "removeTabBarBadge";
 const RemoveTabBarBadgeProtocol = IndexProtocol;
 const RemoveTabBarBadgeOptions = IndexOptions;
 const API_SET_TAB_BAR_BADGE = "setTabBarBadge";
-const SetTabBarBadgeProtocol = /* @__PURE__ */ extend({
-  text: {
-    type: String,
-    required: true
-  }
-}, IndexProtocol);
+const SetTabBarBadgeProtocol = /* @__PURE__ */ extend(
+  {
+    text: {
+      type: String,
+      required: true
+    }
+  },
+  IndexProtocol
+);
 const SetTabBarBadgeOptions = {
   beforeInvoke: IndexOptions.beforeInvoke,
-  formatArgs: /* @__PURE__ */ extend({
-    text(value, params) {
-      if (getLen(value) >= 4) {
-        params.text = "...";
+  formatArgs: /* @__PURE__ */ extend(
+    {
+      text(value, params) {
+        if (getLen(value) >= 4) {
+          params.text = "...";
+        }
       }
-    }
-  }, IndexOptions.formatArgs)
+    },
+    IndexOptions.formatArgs
+  )
 };
 const initIntersectionObserverPolyfill = function() {
   if (typeof window !== "object") {
@@ -5523,11 +6188,15 @@ const initIntersectionObserverPolyfill = function() {
   }
   if ("IntersectionObserver" in window && "IntersectionObserverEntry" in window && "intersectionRatio" in window.IntersectionObserverEntry.prototype) {
     if (!("isIntersecting" in window.IntersectionObserverEntry.prototype)) {
-      Object.defineProperty(window.IntersectionObserverEntry.prototype, "isIntersecting", {
-        get: function() {
-          return this.intersectionRatio > 0;
+      Object.defineProperty(
+        window.IntersectionObserverEntry.prototype,
+        "isIntersecting",
+        {
+          get: function() {
+            return this.intersectionRatio > 0;
+          }
         }
-      });
+      );
     }
     return;
   }
@@ -5555,14 +6224,18 @@ const initIntersectionObserverPolyfill = function() {
     this.target = entry.target;
     this.rootBounds = ensureDOMRect(entry.rootBounds);
     this.boundingClientRect = ensureDOMRect(entry.boundingClientRect);
-    this.intersectionRect = ensureDOMRect(entry.intersectionRect || getEmptyRect());
+    this.intersectionRect = ensureDOMRect(
+      entry.intersectionRect || getEmptyRect()
+    );
     this.isIntersecting = !!entry.intersectionRect;
     var targetRect = this.boundingClientRect;
     var targetArea = targetRect.width * targetRect.height;
     var intersectionRect = this.intersectionRect;
     var intersectionArea = intersectionRect.width * intersectionRect.height;
     if (targetArea) {
-      this.intersectionRatio = Number((intersectionArea / targetArea).toFixed(4));
+      this.intersectionRatio = Number(
+        (intersectionArea / targetArea).toFixed(4)
+      );
     } else {
       this.intersectionRatio = this.isIntersecting ? 1 : 0;
     }
@@ -5575,7 +6248,10 @@ const initIntersectionObserverPolyfill = function() {
     if (options.root && options.root.nodeType != 1 && options.root.nodeType != 9) {
       throw new Error("root must be a Document or Element");
     }
-    this._checkForIntersections = throttle2(this._checkForIntersections.bind(this), this.THROTTLE_TIMEOUT);
+    this._checkForIntersections = throttle2(
+      this._checkForIntersections.bind(this),
+      this.THROTTLE_TIMEOUT
+    );
     this._callback = callback;
     this._observationTargets = [];
     this._queuedEntries = [];
@@ -5597,7 +6273,10 @@ const initIntersectionObserverPolyfill = function() {
         if (!boundingClientRect || !intersectionRect) {
           crossOriginRect = getEmptyRect();
         } else {
-          crossOriginRect = convertFromParentRect(boundingClientRect, intersectionRect);
+          crossOriginRect = convertFromParentRect(
+            boundingClientRect,
+            intersectionRect
+          );
         }
         registry.forEach(function(observer) {
           observer._checkForIntersections();
@@ -5650,7 +6329,9 @@ const initIntersectionObserverPolyfill = function() {
       threshold = [threshold];
     return threshold.sort().filter(function(t2, i, a2) {
       if (typeof t2 != "number" || isNaN(t2) || t2 < 0 || t2 > 1) {
-        throw new Error("threshold must be a number between 0 and 1 inclusively");
+        throw new Error(
+          "threshold must be a number between 0 and 1 inclusively"
+        );
       }
       return t2 !== a2[i - 1];
     });
@@ -6067,23 +6748,26 @@ function rectifyIntersectionRatio(entrie) {
 function requestComponentObserver($el, options, callback) {
   initIntersectionObserverPolyfill();
   const root = options.relativeToSelector ? $el.querySelector(options.relativeToSelector) : null;
-  const intersectionObserver = new IntersectionObserver((entries2) => {
-    entries2.forEach((entrie) => {
-      callback({
-        intersectionRatio: rectifyIntersectionRatio(entrie),
-        intersectionRect: normalizeRect(entrie.intersectionRect),
-        boundingClientRect: normalizeRect(entrie.boundingClientRect),
-        relativeRect: normalizeRect(entrie.rootBounds),
-        time: Date.now(),
-        dataset: getCustomDataset(entrie.target),
-        id: entrie.target.id
+  const intersectionObserver = new IntersectionObserver(
+    (entries2) => {
+      entries2.forEach((entrie) => {
+        callback({
+          intersectionRatio: rectifyIntersectionRatio(entrie),
+          intersectionRect: normalizeRect(entrie.intersectionRect),
+          boundingClientRect: normalizeRect(entrie.boundingClientRect),
+          relativeRect: normalizeRect(entrie.rootBounds),
+          time: Date.now(),
+          dataset: getCustomDataset(entrie.target),
+          id: entrie.target.id
+        });
       });
-    });
-  }, {
-    root,
-    rootMargin: options.rootMargin,
-    threshold: options.thresholds
-  });
+    },
+    {
+      root,
+      rootMargin: options.rootMargin,
+      threshold: options.thresholds
+    }
+  );
   if (options.observeAll) {
     intersectionObserver.USE_MUTATION_OBSERVER = true;
     const nodeList = $el.querySelectorAll(options.selector);
@@ -6094,7 +6778,9 @@ function requestComponentObserver($el, options, callback) {
     intersectionObserver.USE_MUTATION_OBSERVER = false;
     const el = $el.querySelector(options.selector);
     if (!el) {
-      console.warn(`Node ${options.selector} is not found. Intersection observer will not trigger.`);
+      console.warn(
+        `Node ${options.selector} is not found. Intersection observer will not trigger.`
+      );
     } else {
       intersectionObserver.observe(el);
     }
@@ -6103,7 +6789,11 @@ function requestComponentObserver($el, options, callback) {
 }
 function addIntersectionObserver({ reqId, component, options, callback }, _pageId) {
   const $el = findElem(component);
-  ($el.__io || ($el.__io = {}))[reqId] = requestComponentObserver($el, options, callback);
+  ($el.__io || ($el.__io = {}))[reqId] = requestComponentObserver(
+    $el,
+    options,
+    callback
+  );
 }
 function removeIntersectionObserver({ reqId, component }, _pageId) {
   const $el = findElem(component);
@@ -6128,7 +6818,11 @@ function handleMediaQueryStr($props) {
   ];
   for (const item of propsMenu) {
     if (item !== "orientation" && $props[item] && Number($props[item] >= 0)) {
-      mediaQueryArr.push(`(${humpToLine(item)}: ${Number($props[item])}px)`);
+      mediaQueryArr.push(
+        `(${humpToLine(item)}: ${Number(
+          $props[item]
+        )}px)`
+      );
     }
     if (item === "orientation" && $props[item]) {
       mediaQueryArr.push(`(${humpToLine(item)}: ${$props[item]})`);
@@ -6141,7 +6835,9 @@ function humpToLine(name) {
   return name.replace(/([A-Z])/g, "-$1").toLowerCase();
 }
 function addMediaQueryObserver({ reqId, component, options, callback }, _pageId) {
-  const mediaQueryObserver = mediaQueryObservers[reqId] = window.matchMedia(handleMediaQueryStr(options));
+  const mediaQueryObserver = mediaQueryObservers[reqId] = window.matchMedia(
+    handleMediaQueryStr(options)
+  );
   const listener2 = listeners[reqId] = (observer) => callback(observer.matches);
   listener2(mediaQueryObserver);
   mediaQueryObserver.addListener(listener2);
@@ -6269,7 +6965,7 @@ const inflateRaw = (...args) => {
 };
 const deflateRaw = (...args) => {
 };
-var ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
+const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
   name: "ResizeSensor",
   props: {
     initial: {
@@ -6442,9 +7138,12 @@ function initHidpi() {
           args[3] *= pixelRatio;
         }
         var font2 = this.font;
-        this.font = font2.replace(/(\d+\.?\d*)(px|em|rem|pt)/g, function(w, m, u) {
-          return m * pixelRatio + u;
-        });
+        this.font = font2.replace(
+          /(\d+\.?\d*)(px|em|rem|pt)/g,
+          function(w, m, u) {
+            return m * pixelRatio + u;
+          }
+        );
         _super.apply(this, args);
         this.font = font2;
       };
@@ -6461,9 +7160,12 @@ function initHidpi() {
           args[3] *= pixelRatio;
         }
         var font2 = this.font;
-        this.font = font2.replace(/(\d+\.?\d*)(px|em|rem|pt)/g, function(w, m, u) {
-          return m * pixelRatio + u;
-        });
+        this.font = font2.replace(
+          /(\d+\.?\d*)(px|em|rem|pt)/g,
+          function(w, m, u) {
+            return m * pixelRatio + u;
+          }
+        );
         _super.apply(this, args);
         this.font = font2;
       };
@@ -6491,15 +7193,10 @@ function resolveColor(color) {
   color[3] = color[3] / 255;
   return "rgba(" + color.join(",") + ")";
 }
-function processTouches(target, touches) {
-  const eventTarget = target;
-  return Array.from(touches).map((touch) => {
-    let boundingClientRect = eventTarget.getBoundingClientRect();
-    return {
-      identifier: touch.identifier,
-      x: touch.clientX - boundingClientRect.left,
-      y: touch.clientY - boundingClientRect.top
-    };
+function processTouches(rect, touches) {
+  Array.from(touches).forEach((touch) => {
+    touch.x = touch.clientX - rect.left;
+    touch.y = touch.clientY - rect.top;
   });
 }
 let tempCanvas;
@@ -6525,7 +7222,7 @@ const props$x = {
     default: true
   }
 };
-var index$w = /* @__PURE__ */ defineBuiltInComponent({
+const index$x = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "Canvas",
   compatConfig: {
@@ -6593,7 +7290,7 @@ function useListeners(props2, Listeners, trigger) {
     let $listeners = extend({}, (() => {
       let obj = {};
       for (const key in _$listeners) {
-        if (Object.prototype.hasOwnProperty.call(_$listeners, key)) {
+        if (hasOwn(_$listeners, key)) {
           const event = _$listeners[key];
           obj[key] = event;
         }
@@ -6605,16 +7302,10 @@ function useListeners(props2, Listeners, trigger) {
       let eventHandler = [];
       if (existing) {
         eventHandler.push(withWebEvent(($event) => {
-          trigger(event.replace("on", "").toLocaleLowerCase(), extend({}, (() => {
-            let obj = {};
-            for (const key in $event) {
-              obj[key] = $event[key];
-            }
-            return obj;
-          })(), {
-            touches: processTouches($event.currentTarget, $event.touches),
-            changedTouches: processTouches($event.currentTarget, $event.changedTouches)
-          }));
+          const rect = $event.currentTarget.getBoundingClientRect();
+          processTouches(rect, $event.touches);
+          processTouches(rect, $event.changedTouches);
+          trigger(event.replace("on", "").toLocaleLowerCase(), $event);
         }));
       }
       if (props2.disableScroll && event === "onTouchmove") {
@@ -6753,7 +7444,13 @@ function useMethods(props2, canvasRef, actionsWaiting) {
           _images = _images || {};
           if (!checkImageLoaded(url, actions.slice(index2 + 1), resolve, function(image2) {
             if (image2) {
-              c2d.drawImage.apply(c2d, [image2].concat([...otherData.slice(4, 8)], [...otherData.slice(0, 4)]));
+              c2d.drawImage.apply(
+                c2d,
+                [image2].concat(
+                  [...otherData.slice(4, 8)],
+                  [...otherData.slice(0, 4)]
+                )
+              );
             }
           }))
             return "break";
@@ -6982,7 +7679,7 @@ function useMethods(props2, canvasRef, actionsWaiting) {
   };
   function _handleSubscribe(type, data, resolve) {
     let method = methods[type];
-    if (type.indexOf("_") !== 0 && typeof method === "function") {
+    if (type.indexOf("_") !== 0 && isFunction(method)) {
       method(data, resolve);
     }
   }
@@ -6998,7 +7695,7 @@ const props$w = {
     default: ""
   }
 };
-var index$v = /* @__PURE__ */ defineBuiltInComponent({
+const index$w = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
   props: props$w,
   emits: ["change"],
@@ -7074,7 +7771,7 @@ const props$v = {
     default: ""
   }
 };
-var index$u = /* @__PURE__ */ defineBuiltInComponent({
+const index$v = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
   props: props$v,
   setup(props2, {
@@ -7174,7 +7871,9 @@ const props$u = {
 const emit$1 = ["keyboardheightchange"];
 function useKeyboard$1(props2, elRef, trigger) {
   function initKeyboard(el) {
-    const isApple = computed(() => String(navigator.vendor).indexOf("Apple") === 0);
+    const isApple = computed(
+      () => String(navigator.vendor).indexOf("Apple") === 0
+    );
     el.addEventListener("focus", () => {
       clearTimeout(resetTimer);
       document.addEventListener("click", iosHideKeyboard, false);
@@ -7182,7 +7881,10 @@ function useKeyboard$1(props2, elRef, trigger) {
     const onKeyboardHide = () => {
       document.removeEventListener("click", iosHideKeyboard, false);
       if (isApple.value) {
-        document.documentElement.scrollTo(document.documentElement.scrollLeft, document.documentElement.scrollTop);
+        document.documentElement.scrollTo(
+          document.documentElement.scrollLeft,
+          document.documentElement.scrollTop
+        );
       }
     };
     el.addEventListener("blur", () => {
@@ -7192,16 +7894,29 @@ function useKeyboard$1(props2, elRef, trigger) {
       onKeyboardHide();
     });
   }
-  watch(() => elRef.value, (el) => initKeyboard(el));
+  watch(
+    () => elRef.value,
+    (el) => initKeyboard(el)
+  );
 }
 var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
 var endTag = /^<\/([-A-Za-z0-9_]+)[^>]*>/;
 var attr = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g;
-var empty = /* @__PURE__ */ makeMap("area,base,basefont,br,col,frame,hr,img,input,link,meta,param,embed,command,keygen,source,track,wbr");
-var block = /* @__PURE__ */ makeMap("a,address,article,applet,aside,audio,blockquote,button,canvas,center,dd,del,dir,div,dl,dt,fieldset,figcaption,figure,footer,form,frameset,h1,h2,h3,h4,h5,h6,header,hgroup,hr,iframe,isindex,li,map,menu,noframes,noscript,object,ol,output,p,pre,section,script,table,tbody,td,tfoot,th,thead,tr,ul,video");
-var inline = /* @__PURE__ */ makeMap("abbr,acronym,applet,b,basefont,bdo,big,br,button,cite,code,del,dfn,em,font,i,iframe,img,input,ins,kbd,label,map,object,q,s,samp,script,select,small,span,strike,strong,sub,sup,textarea,tt,u,var");
-var closeSelf = /* @__PURE__ */ makeMap("colgroup,dd,dt,li,options,p,td,tfoot,th,thead,tr");
-var fillAttrs = /* @__PURE__ */ makeMap("checked,compact,declare,defer,disabled,ismap,multiple,nohref,noresize,noshade,nowrap,readonly,selected");
+var empty = /* @__PURE__ */ makeMap(
+  "area,base,basefont,br,col,frame,hr,img,input,link,meta,param,embed,command,keygen,source,track,wbr"
+);
+var block = /* @__PURE__ */ makeMap(
+  "a,address,article,applet,aside,audio,blockquote,button,canvas,center,dd,del,dir,div,dl,dt,fieldset,figcaption,figure,footer,form,frameset,h1,h2,h3,h4,h5,h6,header,hgroup,hr,iframe,isindex,li,map,menu,noframes,noscript,object,ol,output,p,pre,section,script,table,tbody,td,tfoot,th,thead,tr,ul,video"
+);
+var inline = /* @__PURE__ */ makeMap(
+  "abbr,acronym,applet,b,basefont,bdo,big,br,button,cite,code,del,dfn,em,font,i,iframe,img,input,ins,kbd,label,map,object,q,s,samp,script,select,small,span,strike,strong,sub,sup,textarea,tt,u,var"
+);
+var closeSelf = /* @__PURE__ */ makeMap(
+  "colgroup,dd,dt,li,options,p,td,tfoot,th,thead,tr"
+);
+var fillAttrs = /* @__PURE__ */ makeMap(
+  "checked,compact,declare,defer,disabled,ismap,multiple,nohref,noresize,noshade,nowrap,readonly,selected"
+);
 var special = /* @__PURE__ */ makeMap("script,style");
 function HTMLParser(html, handler) {
   var index2;
@@ -7248,13 +7963,19 @@ function HTMLParser(html, handler) {
         }
       }
     } else {
-      html = html.replace(new RegExp("([\\s\\S]*?)</" + stack.last() + "[^>]*>"), function(all, text3) {
-        text3 = text3.replace(/<!--([\s\S]*?)-->|<!\[CDATA\[([\s\S]*?)]]>/g, "$1$2");
-        if (handler.chars) {
-          handler.chars(text3);
+      html = html.replace(
+        new RegExp("([\\s\\S]*?)</" + stack.last() + "[^>]*>"),
+        function(all, text3) {
+          text3 = text3.replace(
+            /<!--([\s\S]*?)-->|<!\[CDATA\[([\s\S]*?)]]>/g,
+            "$1$2"
+          );
+          if (handler.chars) {
+            handler.chars(text3);
+          }
+          return "";
         }
-        return "";
-      });
+      );
       parseEndTag("", stack.last());
     }
     if (html == last) {
@@ -7322,7 +8043,7 @@ function makeMap(str) {
 }
 const scripts = {};
 function loadScript(globalName, src, callback) {
-  const globalObject = typeof globalName === "string" ? window[globalName] : globalName;
+  const globalObject = isString(globalName) ? window[globalName] : globalName;
   if (globalObject) {
     callback();
     return;
@@ -7468,9 +8189,13 @@ function list(Quill) {
 function background(Quill) {
   const { Scope } = Quill.import("parchment");
   const BackgroundStyle = Quill.import("formats/background");
-  const BackgroundColorStyle = new BackgroundStyle.constructor("backgroundColor", "background-color", {
-    scope: Scope.INLINE
-  });
+  const BackgroundColorStyle = new BackgroundStyle.constructor(
+    "backgroundColor",
+    "background-color",
+    {
+      scope: Scope.INLINE
+    }
+  );
   return {
     "formats/backgroundColor": BackgroundColorStyle
   };
@@ -7496,7 +8221,11 @@ function box(Quill) {
   ];
   const result = {};
   margin.concat(padding).forEach((name) => {
-    result[`formats/${name}`] = new Attributor.Style(name, hyphenate(name), config);
+    result[`formats/${name}`] = new Attributor.Style(
+      name,
+      hyphenate(name),
+      config
+    );
   });
   return result;
 }
@@ -7515,7 +8244,11 @@ function font(Quill) {
   ];
   const result = {};
   font2.forEach((name) => {
-    result[`formats/${name}`] = new Attributor.Style(name, hyphenate(name), config);
+    result[`formats/${name}`] = new Attributor.Style(
+      name,
+      hyphenate(name),
+      config
+    );
   });
   return result;
 }
@@ -7559,12 +8292,15 @@ function image(Quill) {
   ];
   Image2.sanitize = (url) => url ? getRealPath(url) : url;
   Image2.formats = function formats(domNode) {
-    return ATTRIBUTES.reduce(function(formats2, attribute) {
-      if (domNode.hasAttribute(attribute)) {
-        formats2[attribute] = domNode.getAttribute(attribute);
-      }
-      return formats2;
-    }, {});
+    return ATTRIBUTES.reduce(
+      function(formats2, attribute) {
+        if (domNode.hasAttribute(attribute)) {
+          formats2[attribute] = domNode.getAttribute(attribute);
+        }
+        return formats2;
+      },
+      {}
+    );
   };
   const format = Image2.prototype.format;
   Image2.prototype.format = function(name, value) {
@@ -7610,20 +8346,25 @@ function useQuill(props2, rootRef, trigger) {
   let quillReady;
   let skipMatcher;
   let quill;
-  let textChanging = false;
-  watch(() => props2.readOnly, (value) => {
-    if (quillReady) {
-      quill.enable(!value);
-      if (!value) {
-        quill.blur();
+  watch(
+    () => props2.readOnly,
+    (value) => {
+      if (quillReady) {
+        quill.enable(!value);
+        if (!value) {
+          quill.blur();
+        }
       }
     }
-  });
-  watch(() => props2.placeholder, (value) => {
-    if (quillReady) {
-      setPlaceHolder(value);
+  );
+  watch(
+    () => props2.placeholder,
+    (value) => {
+      if (quillReady) {
+        setPlaceHolder(value);
+      }
     }
-  });
+  );
   function html2delta(html) {
     const tags = [
       "span",
@@ -7706,6 +8447,9 @@ function useQuill(props2, rootRef, trigger) {
       trigger("statuschange", {}, status);
     }
   }
+  function textChangeHandler() {
+    trigger("input", {}, getContents());
+  }
   function initQuill(imageResizeModules) {
     const Quill = window.Quill;
     register(Quill);
@@ -7715,7 +8459,10 @@ function useQuill(props2, rootRef, trigger) {
       placeholder: props2.placeholder
     };
     if (imageResizeModules.length) {
-      Quill.register("modules/ImageResize", window.ImageResize.default);
+      Quill.register(
+        "modules/ImageResize",
+        window.ImageResize.default
+      );
       options.modules = {
         ImageResize: {
           modules: imageResizeModules
@@ -7731,7 +8478,9 @@ function useQuill(props2, rootRef, trigger) {
         const contents = getContents();
         if (name === "input") {
           if (getBaseSystemInfo().platform === "ios") {
-            const regExpContent = (contents.html.match(/<span [\s\S]*>([\s\S]*)<\/span>/) || [])[1];
+            const regExpContent = (contents.html.match(
+              /<span [\s\S]*>([\s\S]*)<\/span>/
+            ) || [])[1];
             const placeholder = regExpContent && regExpContent.replace(/\s/g, "") ? "" : props2.placeholder;
             setPlaceHolder(placeholder);
           }
@@ -7741,11 +8490,7 @@ function useQuill(props2, rootRef, trigger) {
         }
       });
     });
-    quill.on("text-change", () => {
-      if (!textChanging) {
-        trigger("input", {}, getContents());
-      }
-    });
+    quill.on("text-change", textChangeHandler);
     quill.on("selection-change", updateStatus);
     quill.on("scroll-optimize", () => {
       const range = quill.selection.getRange()[0];
@@ -7756,13 +8501,171 @@ function useQuill(props2, rootRef, trigger) {
         return delta;
       }
       if (delta.ops) {
-        delta.ops = delta.ops.filter(({ insert }) => typeof insert === "string").map(({ insert }) => ({ insert }));
+        delta.ops = delta.ops.filter(({ insert }) => isString(insert)).map(({ insert }) => ({ insert }));
       }
       return delta;
     });
     quillReady = true;
     trigger("ready", {}, {});
   }
+  const id2 = useContextInfo();
+  useSubscribe(
+    (type, data, resolve) => {
+      const { options, callbackId } = data;
+      let res;
+      let range;
+      let errMsg;
+      if (quillReady) {
+        const Quill = window.Quill;
+        switch (type) {
+          case "format":
+            {
+              let { name = "", value = false } = options;
+              range = quill.getSelection(true);
+              let format = quill.getFormat(range)[name] || false;
+              if (["bold", "italic", "underline", "strike", "ins"].includes(name)) {
+                value = !format;
+              } else if (name === "direction") {
+                value = value === "rtl" && format ? false : value;
+                const align2 = quill.getFormat(range).align;
+                if (value === "rtl" && !align2) {
+                  quill.format("align", "right", "user");
+                } else if (!value && align2 === "right") {
+                  quill.format("align", false, "user");
+                }
+              } else if (name === "indent") {
+                const rtl = quill.getFormat(range).direction === "rtl";
+                value = value === "+1";
+                if (rtl) {
+                  value = !value;
+                }
+                value = value ? "+1" : "-1";
+              } else {
+                if (name === "list") {
+                  value = value === "check" ? "unchecked" : value;
+                  format = format === "checked" ? "unchecked" : format;
+                }
+                value = format && format !== (value || false) || !format && value ? value : !format;
+              }
+              quill.format(name, value, "user");
+            }
+            break;
+          case "insertDivider":
+            range = quill.getSelection(true);
+            quill.insertText(range.index, LINEFEED, "user");
+            quill.insertEmbed(range.index + 1, "divider", true, "user");
+            quill.setSelection(range.index + 2, 0, "silent");
+            break;
+          case "insertImage":
+            {
+              range = quill.getSelection(true);
+              const {
+                src = "",
+                alt = "",
+                width = "",
+                height = "",
+                extClass = "",
+                data: data2 = {}
+              } = options;
+              const path = getRealPath(src);
+              quill.insertEmbed(range.index, "image", path, "silent");
+              const local = /^(file|blob):/.test(path) ? path : false;
+              quill.formatText(range.index, 1, "data-local", local, "silent");
+              quill.formatText(range.index, 1, "alt", alt, "silent");
+              quill.formatText(range.index, 1, "width", width, "silent");
+              quill.formatText(range.index, 1, "height", height, "silent");
+              quill.formatText(range.index, 1, "class", extClass, "silent");
+              quill.formatText(
+                range.index,
+                1,
+                "data-custom",
+                Object.keys(data2).map((key) => `${key}=${data2[key]}`).join("&"),
+                "silent"
+              );
+              quill.setSelection(range.index + 1, 0, "silent");
+              quill.scrollIntoView();
+              setTimeout(() => {
+                textChangeHandler();
+              }, 1e3);
+            }
+            break;
+          case "insertText":
+            {
+              range = quill.getSelection(true);
+              const { text: text2 = "" } = options;
+              quill.insertText(range.index, text2, "user");
+              quill.setSelection(range.index + text2.length, 0, "silent");
+            }
+            break;
+          case "setContents":
+            {
+              const { delta, html } = options;
+              if (typeof delta === "object") {
+                quill.setContents(delta, "silent");
+              } else if (isString(html)) {
+                quill.setContents(html2delta(html), "silent");
+              } else {
+                errMsg = "contents is missing";
+              }
+            }
+            break;
+          case "getContents":
+            res = getContents();
+            break;
+          case "clear":
+            quill.setText("");
+            break;
+          case "removeFormat":
+            {
+              range = quill.getSelection(true);
+              const parchment = Quill.import("parchment");
+              if (range.length) {
+                quill.removeFormat(range.index, range.length, "user");
+              } else {
+                Object.keys(quill.getFormat(range)).forEach((key) => {
+                  if (parchment.query(key, parchment.Scope.INLINE)) {
+                    quill.format(key, false);
+                  }
+                });
+              }
+            }
+            break;
+          case "undo":
+            quill.history.undo();
+            break;
+          case "redo":
+            quill.history.redo();
+            break;
+          case "blur":
+            quill.blur();
+            break;
+          case "getSelectionText":
+            range = quill.selection.savedRange;
+            res = { text: "" };
+            if (range && range.length !== 0) {
+              res.text = quill.getText(range.index, range.length);
+            }
+            break;
+          case "scrollIntoView":
+            quill.scrollIntoView();
+            break;
+        }
+        updateStatus(range);
+      } else {
+        errMsg = "not ready";
+      }
+      if (callbackId) {
+        resolve({
+          callbackId,
+          data: extend({}, res, {
+            errMsg: `${type}:${errMsg ? "fail " + errMsg : "ok"}`
+          })
+        });
+      }
+    },
+    id2,
+    true
+  );
   onMounted(() => {
     const imageResizeModules = [];
     if (props2.showImgSize) {
@@ -7786,152 +8689,6 @@ function useQuill(props2, rootRef, trigger) {
       }
     });
   });
-  const id2 = useContextInfo();
-  useSubscribe((type, data, resolve) => {
-    const { options, callbackId } = data;
-    let res;
-    let range;
-    let errMsg;
-    if (quillReady) {
-      const Quill = window.Quill;
-      switch (type) {
-        case "format":
-          {
-            let { name = "", value = false } = options;
-            range = quill.getSelection(true);
-            let format = quill.getFormat(range)[name] || false;
-            if (["bold", "italic", "underline", "strike", "ins"].includes(name)) {
-              value = !format;
-            } else if (name === "direction") {
-              value = value === "rtl" && format ? false : value;
-              const align2 = quill.getFormat(range).align;
-              if (value === "rtl" && !align2) {
-                quill.format("align", "right", "user");
-              } else if (!value && align2 === "right") {
-                quill.format("align", false, "user");
-              }
-            } else if (name === "indent") {
-              const rtl = quill.getFormat(range).direction === "rtl";
-              value = value === "+1";
-              if (rtl) {
-                value = !value;
-              }
-              value = value ? "+1" : "-1";
-            } else {
-              if (name === "list") {
-                value = value === "check" ? "unchecked" : value;
-                format = format === "checked" ? "unchecked" : format;
-              }
-              value = format && format !== (value || false) || !format && value ? value : !format;
-            }
-            quill.format(name, value, "user");
-          }
-          break;
-        case "insertDivider":
-          range = quill.getSelection(true);
-          quill.insertText(range.index, LINEFEED, "user");
-          quill.insertEmbed(range.index + 1, "divider", true, "user");
-          quill.setSelection(range.index + 2, 0, "silent");
-          break;
-        case "insertImage":
-          {
-            range = quill.getSelection(true);
-            const {
-              src = "",
-              alt = "",
-              width = "",
-              height = "",
-              extClass = "",
-              data: data2 = {}
-            } = options;
-            const path = getRealPath(src);
-            quill.insertEmbed(range.index, "image", path, "user");
-            const local = /^(file|blob):/.test(path) ? path : false;
-            textChanging = true;
-            quill.formatText(range.index, 1, "data-local", local);
-            quill.formatText(range.index, 1, "alt", alt);
-            quill.formatText(range.index, 1, "width", width);
-            quill.formatText(range.index, 1, "height", height);
-            quill.formatText(range.index, 1, "class", extClass);
-            textChanging = false;
-            quill.formatText(range.index, 1, "data-custom", Object.keys(data2).map((key) => `${key}=${data2[key]}`).join("&"));
-            quill.setSelection(range.index + 1, 0, "silent");
-          }
-          break;
-        case "insertText":
-          {
-            range = quill.getSelection(true);
-            const { text: text2 = "" } = options;
-            quill.insertText(range.index, text2, "user");
-            quill.setSelection(range.index + text2.length, 0, "silent");
-          }
-          break;
-        case "setContents":
-          {
-            const { delta, html } = options;
-            if (typeof delta === "object") {
-              quill.setContents(delta, "silent");
-            } else if (typeof html === "string") {
-              quill.setContents(html2delta(html), "silent");
-            } else {
-              errMsg = "contents is missing";
-            }
-          }
-          break;
-        case "getContents":
-          res = getContents();
-          break;
-        case "clear":
-          quill.setText("");
-          break;
-        case "removeFormat":
-          {
-            range = quill.getSelection(true);
-            const parchment = Quill.import("parchment");
-            if (range.length) {
-              quill.removeFormat(range.index, range.length, "user");
-            } else {
-              Object.keys(quill.getFormat(range)).forEach((key) => {
-                if (parchment.query(key, parchment.Scope.INLINE)) {
-                  quill.format(key, false);
-                }
-              });
-            }
-          }
-          break;
-        case "undo":
-          quill.history.undo();
-          break;
-        case "redo":
-          quill.history.redo();
-          break;
-        case "blur":
-          quill.blur();
-          break;
-        case "getSelectionText":
-          range = quill.selection.savedRange;
-          res = { text: "" };
-          if (range && range.length !== 0) {
-            res.text = quill.getText(range.index, range.length);
-          }
-          break;
-        case "scrollIntoView":
-          quill.scrollIntoView();
-          break;
-      }
-      updateStatus(range);
-    } else {
-      errMsg = "not ready";
-    }
-    if (callbackId) {
-      resolve({
-        callbackId,
-        data: extend({}, res, {
-          errMsg: `${type}:${errMsg ? "fail " + errMsg : "ok"}`
-        })
-      });
-    }
-  }, id2, true);
 }
 const props$t = /* @__PURE__ */ extend({}, props$u, {
   id: {
@@ -7959,7 +8716,7 @@ const props$t = /* @__PURE__ */ extend({}, props$u, {
     default: false
   }
 });
-var index$t = /* @__PURE__ */ defineBuiltInComponent({
+const index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: props$t,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
@@ -8021,7 +8778,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-var index$s = /* @__PURE__ */ defineBuiltInComponent({
+const index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -8085,7 +8842,7 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-var index$r = /* @__PURE__ */ defineBuiltInComponent({
+const index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
   props: props$s,
   setup(props2, {
@@ -8303,13 +9060,17 @@ function addInteractListener(vm = { userAction: false }) {
       "mouseup"
     ];
     eventNames.forEach((eventName) => {
-      document.addEventListener(eventName, function() {
-        !userInteract && setUserAction(true);
-        userInteract++;
-        setTimeout(() => {
-          !--userInteract && setUserAction(false);
-        }, 0);
-      }, passiveOptions$1);
+      document.addEventListener(
+        eventName,
+        function() {
+          !userInteract && setUserAction(true);
+          userInteract++;
+          setTimeout(() => {
+            !--userInteract && setUserAction(false);
+          }, 0);
+        },
+        passiveOptions$1
+      );
     });
     inited = true;
   }
@@ -8355,7 +9116,10 @@ function useScopedAttrs() {
   };
 }
 function useFormField(nameKey, value) {
-  const uniForm = inject(uniFormKey, false);
+  const uniForm = inject(
+    uniFormKey,
+    false
+  );
   if (!uniForm) {
     return;
   }
@@ -8365,11 +9129,11 @@ function useFormField(nameKey, value) {
       const proxy = instance2.proxy;
       return [
         proxy[nameKey],
-        typeof value === "string" ? proxy[value] : value.value
+        isString(value) ? proxy[value] : value.value
       ];
     },
     reset() {
-      if (typeof value === "string") {
+      if (isString(value)) {
         instance2.proxy[value] = "";
       } else {
         value.value = "";
@@ -8394,7 +9158,11 @@ function getSelectedTextRange(_, resolve) {
   resolve(data);
 }
 const UniViewJSBridgeSubscribe = function() {
-  registerViewMethod(getCurrentPageId(), "getSelectedTextRange", getSelectedTextRange);
+  registerViewMethod(
+    getCurrentPageId(),
+    "getSelectedTextRange",
+    getSelectedTextRange
+  );
 };
 function getValueString(value, type) {
   if (type === "number" && isNaN(Number(value))) {
@@ -8402,80 +9170,88 @@ function getValueString(value, type) {
   }
   return value === null ? "" : String(value);
 }
-const props$r = /* @__PURE__ */ extend({}, {
-  name: {
-    type: String,
-    default: ""
+const props$r = /* @__PURE__ */ extend(
+  {},
+  {
+    name: {
+      type: String,
+      default: ""
+    },
+    modelValue: {
+      type: [String, Number],
+      default: ""
+    },
+    value: {
+      type: [String, Number],
+      default: ""
+    },
+    disabled: {
+      type: [Boolean, String],
+      default: false
+    },
+    autoFocus: {
+      type: [Boolean, String],
+      default: false
+    },
+    focus: {
+      type: [Boolean, String],
+      default: false
+    },
+    cursor: {
+      type: [Number, String],
+      default: -1
+    },
+    selectionStart: {
+      type: [Number, String],
+      default: -1
+    },
+    selectionEnd: {
+      type: [Number, String],
+      default: -1
+    },
+    type: {
+      type: String,
+      default: "text"
+    },
+    password: {
+      type: [Boolean, String],
+      default: false
+    },
+    placeholder: {
+      type: String,
+      default: ""
+    },
+    placeholderStyle: {
+      type: String,
+      default: ""
+    },
+    placeholderClass: {
+      type: String,
+      default: ""
+    },
+    maxlength: {
+      type: [Number, String],
+      default: 140
+    },
+    confirmType: {
+      type: String,
+      default: "done"
+    },
+    confirmHold: {
+      type: Boolean,
+      default: false
+    },
+    ignoreCompositionEvent: {
+      type: Boolean,
+      default: true
+    },
+    step: {
+      type: String,
+      default: "0.000000000000000001"
+    }
   },
-  modelValue: {
-    type: [String, Number],
-    default: ""
-  },
-  value: {
-    type: [String, Number],
-    default: ""
-  },
-  disabled: {
-    type: [Boolean, String],
-    default: false
-  },
-  autoFocus: {
-    type: [Boolean, String],
-    default: false
-  },
-  focus: {
-    type: [Boolean, String],
-    default: false
-  },
-  cursor: {
-    type: [Number, String],
-    default: -1
-  },
-  selectionStart: {
-    type: [Number, String],
-    default: -1
-  },
-  selectionEnd: {
-    type: [Number, String],
-    default: -1
-  },
-  type: {
-    type: String,
-    default: "text"
-  },
-  password: {
-    type: [Boolean, String],
-    default: false
-  },
-  placeholder: {
-    type: String,
-    default: ""
-  },
-  placeholderStyle: {
-    type: String,
-    default: ""
-  },
-  placeholderClass: {
-    type: String,
-    default: ""
-  },
-  maxlength: {
-    type: [Number, String],
-    default: 140
-  },
-  confirmType: {
-    type: String,
-    default: "done"
-  },
-  confirmHold: {
-    type: Boolean,
-    default: false
-  },
-  ignoreCompositionEvent: {
-    type: Boolean,
-    default: true
-  }
-}, props$u);
+  props$u
+);
 const emit = [
   "input",
   "focus",
@@ -8518,8 +9294,14 @@ function useBase(props2, rootRef, emit2) {
     selectionEnd,
     cursor
   });
-  watch(() => state2.focus, (val) => emit2("update:focus", val));
-  watch(() => state2.maxlength, (val) => state2.value = state2.value.slice(0, val));
+  watch(
+    () => state2.focus,
+    (val) => emit2("update:focus", val)
+  );
+  watch(
+    () => state2.maxlength,
+    (val) => state2.value = state2.value.slice(0, val)
+  );
   return {
     fieldRef,
     state: state2,
@@ -8527,9 +9309,13 @@ function useBase(props2, rootRef, emit2) {
   };
 }
 function useValueSync(props2, state2, emit2, trigger) {
-  const valueChangeFn = debounce((val) => {
-    state2.value = getValueString(val, props2.type);
-  }, 100, { setTimeout, clearTimeout });
+  const valueChangeFn = debounce(
+    (val) => {
+      state2.value = getValueString(val, props2.type);
+    },
+    100,
+    { setTimeout, clearTimeout }
+  );
   watch(() => props2.modelValue, valueChangeFn);
   watch(() => props2.value, valueChangeFn);
   const triggerInputFn = throttle((event, detail) => {
@@ -8576,13 +9362,16 @@ function useAutoFocus(props2, fieldRef) {
       field.blur();
     }
   }
-  watch(() => props2.focus, (value) => {
-    if (value) {
-      focus();
-    } else {
-      blur();
+  watch(
+    () => props2.focus,
+    (value) => {
+      if (value) {
+        focus();
+      } else {
+        blur();
+      }
     }
-  });
+  );
   onMounted(() => {
     if (needFocus.value) {
       nextTick(focus);
@@ -8622,15 +9411,19 @@ function useEvent(fieldRef, state2, props2, trigger, triggerInput, beforeInput) 
     };
     const onInput = function(event, force) {
       event.stopPropagation();
-      if (typeof beforeInput === "function" && beforeInput(event, state2) === false) {
+      if (isFunction(beforeInput) && beforeInput(event, state2) === false) {
         return;
       }
       state2.value = field.value;
       if (!state2.composing || !props2.ignoreCompositionEvent) {
-        triggerInput(event, {
-          value: field.value,
-          cursor: getFieldSelectionEnd(field)
-        }, force);
+        triggerInput(
+          event,
+          {
+            value: field.value,
+            cursor: getFieldSelectionEnd(field)
+          },
+          force
+        );
       }
     };
     const onBlur = function(event) {
@@ -8702,7 +9495,7 @@ const props$q = /* @__PURE__ */ extend({}, props$r, {
     default: ""
   }
 });
-var Input = /* @__PURE__ */ defineBuiltInComponent({
+const Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
   props: props$q,
   emits: ["confirm", ...emit],
@@ -8763,6 +9556,22 @@ var Input = /* @__PURE__ */ defineBuiltInComponent({
             input.addEventListener("blur", resetCache);
             return false;
           }
+          if (cache.value) {
+            if (cache.value.indexOf(".") !== -1) {
+              if (event.data !== "." && event.inputType === "deleteContentBackward") {
+                const dotIndex = cache.value.indexOf(".");
+                cache.value = input.value = state3.value = cache.value.slice(0, dotIndex);
+                return true;
+              }
+            } else if (event.data === ".") {
+              cache.value += ".";
+              resetCache = () => {
+                cache.value = input.value = cache.value.slice(0, -1);
+              };
+              input.addEventListener("blur", resetCache);
+              return false;
+            }
+          }
           cache.value = state3.value = input.value = cache.value === "-" ? "" : cache.value;
           return false;
         } else {
@@ -8782,7 +9591,7 @@ var Input = /* @__PURE__ */ defineBuiltInComponent({
       }
     });
     const NUMBER_TYPES = ["number", "digit"];
-    const step = computed(() => NUMBER_TYPES.includes(props2.type) ? "0.000000000000000001" : "");
+    const step = computed(() => NUMBER_TYPES.includes(props2.type) ? props2.step : "");
     function onKeyUpEnter(event) {
       if (event.key !== "Enter") {
         return;
@@ -8847,23 +9656,26 @@ const useAttrs = (params = {}) => {
   const allExcludeKeys = excludeKeys.concat(DEFAULT_EXCLUDE_KEYS);
   instance2.attrs = reactive(instance2.attrs);
   watchEffect(() => {
-    const res = entries(instance2.attrs).reduce((acc, [key, val]) => {
-      if (allExcludeKeys.includes(key)) {
-        acc.exclude[key] = val;
-      } else if (LISTENER_PREFIX.test(key)) {
-        if (!excludeListeners) {
+    const res = entries(instance2.attrs).reduce(
+      (acc, [key, val]) => {
+        if (allExcludeKeys.includes(key)) {
+          acc.exclude[key] = val;
+        } else if (LISTENER_PREFIX.test(key)) {
+          if (!excludeListeners) {
+            acc.attrs[key] = val;
+          }
+          acc.listeners[key] = val;
+        } else {
           acc.attrs[key] = val;
         }
-        acc.listeners[key] = val;
-      } else {
-        acc.attrs[key] = val;
+        return acc;
+      },
+      {
+        exclude: {},
+        attrs: {},
+        listeners: {}
       }
-      return acc;
-    }, {
-      exclude: {},
-      attrs: {},
-      listeners: {}
-    });
+    );
     attrs2.value = res.attrs;
     listeners2.value = res.listeners;
     excludeAttrs.value = res.exclude;
@@ -8872,7 +9684,7 @@ const useAttrs = (params = {}) => {
 };
 function flatVNode(nodes) {
   const array = [];
-  if (Array.isArray(nodes)) {
+  if (isArray(nodes)) {
     nodes.forEach((vnode) => {
       if (isVNode(vnode)) {
         if (vnode.type === Fragment) {
@@ -8880,7 +9692,7 @@ function flatVNode(nodes) {
         } else {
           array.push(vnode);
         }
-      } else if (Array.isArray(vnode)) {
+      } else if (isArray(vnode)) {
         array.push(...flatVNode(vnode));
       }
     });
@@ -8893,7 +9705,7 @@ const movableAreaProps = {
     default: false
   }
 };
-var MovableArea = /* @__PURE__ */ defineBuiltInComponent({
+const MovableArea = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
   props: movableAreaProps,
@@ -9099,18 +9911,22 @@ function useMovableAreaState(props2, rootRef) {
   };
 }
 const addListenerToElement = function(element, type, callback, capture) {
-  element.addEventListener(type, ($event) => {
-    if (typeof callback === "function") {
-      if (callback($event) === false) {
-        if (typeof $event.cancelable !== "undefined" ? $event.cancelable : true) {
-          $event.preventDefault();
+  element.addEventListener(
+    type,
+    ($event) => {
+      if (isFunction(callback)) {
+        if (callback($event) === false) {
+          if (typeof $event.cancelable !== "undefined" ? $event.cancelable : true) {
+            $event.preventDefault();
+          }
+          $event.stopPropagation();
         }
-        $event.stopPropagation();
       }
+    },
+    {
+      passive: false
     }
-  }, {
-    passive: false
-  });
+  );
 };
 let __mouseMoveEventListener;
 let __mouseUpEventListener;
@@ -9169,7 +9985,12 @@ function useTouchtrack(element, method, useCancel) {
   });
   addListenerToElement(element, "touchmove", function($event) {
     if ($event.touches.length === 1 && $eventOld) {
-      const res = fn($event, "move", $event.touches[0].pageX, $event.touches[0].pageY);
+      const res = fn(
+        $event,
+        "move",
+        $event.touches[0].pageX,
+        $event.touches[0].pageY
+      );
       x1 = $event.touches[0].pageX;
       y1 = $event.touches[0].pageY;
       return res;
@@ -9188,7 +10009,12 @@ function useTouchtrack(element, method, useCancel) {
     if ($event.touches.length === 0 && $eventOld) {
       hasTouchStart = false;
       $eventOld = null;
-      return fn($event, "end", $event.changedTouches[0].pageX, $event.changedTouches[0].pageY);
+      return fn(
+        $event,
+        "end",
+        $event.changedTouches[0].pageX,
+        $event.changedTouches[0].pageY
+      );
     }
   });
   const mouseUpEventListener = __mouseUpEventListener = function($event) {
@@ -9204,7 +10030,12 @@ function useTouchtrack(element, method, useCancel) {
       hasTouchStart = false;
       const $eventTemp = $eventOld;
       $eventOld = null;
-      return fn($event, useCancel ? "cancel" : "end", $eventTemp.touches[0].pageX, $eventTemp.touches[0].pageY);
+      return fn(
+        $event,
+        useCancel ? "cancel" : "end",
+        $eventTemp.touches[0].pageX,
+        $eventTemp.touches[0].pageY
+      );
     }
   });
 }
@@ -9240,7 +10071,7 @@ Friction$1.prototype.setS = function(x, y) {
   this._y_s = y;
 };
 Friction$1.prototype.s = function(t2) {
-  if (t2 === void 0) {
+  if (void 0 === t2) {
     t2 = (new Date().getTime() - this._startTime) / 1e3;
   }
   if (t2 > this._t) {
@@ -9261,7 +10092,7 @@ Friction$1.prototype.s = function(t2) {
   };
 };
 Friction$1.prototype.ds = function(t2) {
-  if (t2 === void 0) {
+  if (void 0 === t2) {
     t2 = (new Date().getTime() - this._startTime) / 1e3;
   }
   if (t2 > this._t) {
@@ -9378,13 +10209,13 @@ Spring$1.prototype._solve = function(e2, t2) {
   };
 };
 Spring$1.prototype.x = function(e2) {
-  if (e2 === void 0) {
+  if (void 0 === e2) {
     e2 = (new Date().getTime() - this._startTime) / 1e3;
   }
   return this._solution ? this._endPosition + this._solution.x(e2) : 0;
 };
 Spring$1.prototype.dx = function(e2) {
-  if (e2 === void 0) {
+  if (void 0 === e2) {
     e2 = (new Date().getTime() - this._startTime) / 1e3;
   }
   return this._solution ? this._solution.dx(e2) : 0;
@@ -9560,7 +10391,7 @@ const movableViewProps = {
 function v(a2, b) {
   return +((1e3 * a2 - 1e3 * b) / 1e3).toFixed(1);
 }
-var MovableView = /* @__PURE__ */ defineBuiltInComponent({
+const MovableView = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
   props: movableViewProps,
   emits: ["change", "scale"],
@@ -9645,26 +10476,10 @@ function _getPx(val) {
   }
   return Number(val) || 0;
 }
-function useMovableViewState(props2, trigger, rootRef) {
+function useMovableViewLayout(rootRef, _scale, _adjustScale) {
   const movableAreaWidth = inject("movableAreaWidth", ref(0));
   const movableAreaHeight = inject("movableAreaHeight", ref(0));
-  const _isMounted = inject("_isMounted", ref(false));
   const movableAreaRootRef = inject("movableAreaRootRef");
-  const addMovableViewContext = inject("addMovableViewContext", () => {
-  });
-  const removeMovableViewContext = inject("removeMovableViewContext", () => {
-  });
-  const xSync = ref(_getPx(props2.x));
-  const ySync = ref(_getPx(props2.y));
-  const scaleValueSync = ref(Number(props2.scaleValue) || 1);
-  const width = ref(0);
-  const height = ref(0);
-  const minX = ref(0);
-  const minY = ref(0);
-  const maxX = ref(0);
-  const maxY = ref(0);
-  let _SFA = null;
-  let _FA = null;
   const _offset = {
     x: 0,
     y: 0
@@ -9673,43 +10488,57 @@ function useMovableViewState(props2, trigger, rootRef) {
     x: 0,
     y: 0
   };
-  let _scale = 1;
-  let _oldScale = 1;
-  let _translateX = 0;
-  let _translateY = 0;
-  let _isScaling = false;
-  let _isTouching = false;
-  let __baseX;
-  let __baseY;
-  let _checkCanMove = null;
-  let _firstMoveDirection = null;
-  const _declineX = new Decline();
-  const _declineY = new Decline();
-  const __touchInfo = {
-    historyX: [0, 0],
-    historyY: [0, 0],
-    historyT: [0, 0]
+  const width = ref(0);
+  const height = ref(0);
+  const minX = ref(0);
+  const minY = ref(0);
+  const maxX = ref(0);
+  const maxY = ref(0);
+  function _updateBoundary() {
+    let x = 0 - _offset.x + _scaleOffset.x;
+    let _width = movableAreaWidth.value - width.value - _offset.x - _scaleOffset.x;
+    minX.value = Math.min(x, _width);
+    maxX.value = Math.max(x, _width);
+    let y = 0 - _offset.y + _scaleOffset.y;
+    let _height = movableAreaHeight.value - height.value - _offset.y - _scaleOffset.y;
+    minY.value = Math.min(y, _height);
+    maxY.value = Math.max(y, _height);
+  }
+  function _updateOffset() {
+    _offset.x = p(rootRef.value, movableAreaRootRef.value);
+    _offset.y = f(rootRef.value, movableAreaRootRef.value);
+  }
+  function _updateWH(scale) {
+    scale = scale || _scale.value;
+    scale = _adjustScale(scale);
+    let rect = rootRef.value.getBoundingClientRect();
+    height.value = rect.height / _scale.value;
+    width.value = rect.width / _scale.value;
+    let _height = height.value * scale;
+    let _width = width.value * scale;
+    _scaleOffset.x = (_width - width.value) / 2;
+    _scaleOffset.y = (_height - height.value) / 2;
+  }
+  return {
+    _updateBoundary,
+    _updateOffset,
+    _updateWH,
+    _scaleOffset,
+    minX,
+    minY,
+    maxX,
+    maxY
   };
+}
+function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, maxY, minX, minY, _translateX, _translateY, _SFA, _FA, _adjustScale, trigger) {
   const dampingNumber = computed(() => {
     let val = Number(props2.damping);
     return isNaN(val) ? 20 : val;
   });
-  const frictionNumber = computed(() => {
-    let val = Number(props2.friction);
-    return isNaN(val) || val <= 0 ? 2 : val;
-  });
-  const scaleMinNumber = computed(() => {
-    let val = Number(props2.scaleMin);
-    return isNaN(val) ? 0.5 : val;
-  });
-  const scaleMaxNumber = computed(() => {
-    let val = Number(props2.scaleMax);
-    return isNaN(val) ? 10 : val;
-  });
   const xMove = computed(() => props2.direction === "all" || props2.direction === "horizontal");
   const yMove = computed(() => props2.direction === "all" || props2.direction === "vertical");
-  const _STD = new STD(1, 9 * Math.pow(dampingNumber.value, 2) / 40, dampingNumber.value);
-  const _friction = new Friction$1(1, frictionNumber.value);
+  const xSync = ref(_getPx(props2.x));
+  const ySync = ref(_getPx(props2.y));
   watch(() => props2.x, (val) => {
     xSync.value = _getPx(val);
   });
@@ -9722,9 +10551,176 @@ function useMovableViewState(props2, trigger, rootRef) {
   watch(ySync, (val) => {
     _setY(val);
   });
-  watch(() => props2.scaleValue, (val) => {
-    scaleValueSync.value = Number(val) || 0;
+  const _STD = new STD(1, 9 * Math.pow(dampingNumber.value, 2) / 40, dampingNumber.value);
+  function _getLimitXY(x, y) {
+    let outOfBounds = false;
+    if (x > maxX.value) {
+      x = maxX.value;
+      outOfBounds = true;
+    } else {
+      if (x < minX.value) {
+        x = minX.value;
+        outOfBounds = true;
+      }
+    }
+    if (y > maxY.value) {
+      y = maxY.value;
+      outOfBounds = true;
+    } else {
+      if (y < minY.value) {
+        y = minY.value;
+        outOfBounds = true;
+      }
+    }
+    return {
+      x,
+      y,
+      outOfBounds
+    };
+  }
+  function FAandSFACancel() {
+    if (_FA) {
+      _FA.cancel();
+    }
+    if (_SFA) {
+      _SFA.cancel();
+    }
+  }
+  function _animationTo(x, y, scale, source, r, o2) {
+    FAandSFACancel();
+    if (!xMove.value) {
+      x = _translateX.value;
+    }
+    if (!yMove.value) {
+      y = _translateY.value;
+    }
+    if (!props2.scale) {
+      scale = _scale.value;
+    }
+    let limitXY = _getLimitXY(x, y);
+    x = limitXY.x;
+    y = limitXY.y;
+    if (!props2.animation) {
+      _setTransform(x, y, scale, source, r, o2);
+      return;
+    }
+    _STD._springX._solution = null;
+    _STD._springY._solution = null;
+    _STD._springScale._solution = null;
+    _STD._springX._endPosition = _translateX.value;
+    _STD._springY._endPosition = _translateY.value;
+    _STD._springScale._endPosition = _scale.value;
+    _STD.setEnd(x, y, scale, 1);
+    _SFA = g(_STD, function() {
+      let data = _STD.x();
+      let x2 = data.x;
+      let y2 = data.y;
+      let scale2 = data.scale;
+      _setTransform(x2, y2, scale2, source, r, o2);
+    }, function() {
+      _SFA.cancel();
+    });
+  }
+  function _setTransform(x, y, scale, source = "", r, o2) {
+    if (!(x !== null && x.toString() !== "NaN" && typeof x === "number")) {
+      x = _translateX.value || 0;
+    }
+    if (!(y !== null && y.toString() !== "NaN" && typeof y === "number")) {
+      y = _translateY.value || 0;
+    }
+    x = Number(x.toFixed(1));
+    y = Number(y.toFixed(1));
+    scale = Number(scale.toFixed(1));
+    if (!(_translateX.value === x && _translateY.value === y)) {
+      if (!r) {
+        trigger("change", {}, {
+          x: v(x, _scaleOffset.x),
+          y: v(y, _scaleOffset.y),
+          source
+        });
+      }
+    }
+    if (!props2.scale) {
+      scale = _scale.value;
+    }
+    scale = _adjustScale(scale);
+    scale = +scale.toFixed(3);
+    if (o2 && scale !== _scale.value) {
+      trigger("scale", {}, {
+        x,
+        y,
+        scale
+      });
+    }
+    let transform = "translateX(" + x + "px) translateY(" + y + "px) translateZ(0px) scale(" + scale + ")";
+    if (rootRef.value) {
+      rootRef.value.style.transform = transform;
+      rootRef.value.style.webkitTransform = transform;
+      _translateX.value = x;
+      _translateY.value = y;
+      _scale.value = scale;
+    }
+  }
+  function _revise(source) {
+    let limitXY = _getLimitXY(_translateX.value, _translateY.value);
+    let x = limitXY.x;
+    let y = limitXY.y;
+    let outOfBounds = limitXY.outOfBounds;
+    if (outOfBounds) {
+      _animationTo(x, y, _scale.value, source);
+    }
+    return outOfBounds;
+  }
+  function _setX(val) {
+    if (xMove.value) {
+      if (val + _scaleOffset.x === _translateX.value) {
+        return _translateX;
+      } else {
+        if (_SFA) {
+          _SFA.cancel();
+        }
+        _animationTo(val + _scaleOffset.x, ySync.value + _scaleOffset.y, _scale.value);
+      }
+    }
+    return val;
+  }
+  function _setY(val) {
+    if (yMove.value) {
+      if (val + _scaleOffset.y === _translateY.value) {
+        return _translateY;
+      } else {
+        if (_SFA) {
+          _SFA.cancel();
+        }
+        _animationTo(xSync.value + _scaleOffset.x, val + _scaleOffset.y, _scale.value);
+      }
+    }
+    return val;
+  }
+  return {
+    FAandSFACancel,
+    _getLimitXY,
+    _animationTo,
+    _setTransform,
+    _revise,
+    dampingNumber,
+    xMove,
+    yMove,
+    xSync,
+    ySync,
+    _STD
+  };
+}
+function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScaling, _translateX, _translateY, _SFA, _FA) {
+  const scaleMinNumber = computed(() => {
+    let val = Number(props2.scaleMin);
+    return isNaN(val) ? 0.5 : val;
   });
+  const scaleMaxNumber = computed(() => {
+    let val = Number(props2.scaleMax);
+    return isNaN(val) ? 10 : val;
+  });
+  const scaleValueSync = ref(Number(props2.scaleValue) || 1);
   watch(scaleValueSync, (val) => {
     _setScaleValue(val);
   });
@@ -9734,46 +10730,66 @@ function useMovableViewState(props2, trigger, rootRef) {
   watch(scaleMaxNumber, () => {
     _setScaleMinOrMax();
   });
-  function FAandSFACancel() {
-    if (_FA) {
-      _FA.cancel();
-    }
-    if (_SFA) {
-      _SFA.cancel();
-    }
-  }
-  function _setX(val) {
-    if (xMove.value) {
-      if (val + _scaleOffset.x === _translateX) {
-        return _translateX;
+  watch(() => props2.scaleValue, (val) => {
+    scaleValueSync.value = Number(val) || 0;
+  });
+  const {
+    _updateBoundary,
+    _updateOffset,
+    _updateWH,
+    _scaleOffset,
+    minX,
+    minY,
+    maxX,
+    maxY
+  } = useMovableViewLayout(rootRef, _scale, _adjustScale);
+  const {
+    FAandSFACancel,
+    _getLimitXY,
+    _animationTo,
+    _setTransform,
+    _revise,
+    dampingNumber,
+    xMove,
+    yMove,
+    xSync,
+    ySync,
+    _STD
+  } = useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, maxY, minX, minY, _translateX, _translateY, _SFA, _FA, _adjustScale, trigger);
+  function _updateScale(scale, animat) {
+    if (props2.scale) {
+      scale = _adjustScale(scale);
+      _updateWH(scale);
+      _updateBoundary();
+      const limitXY = _getLimitXY(_translateX.value, _translateY.value);
+      const x = limitXY.x;
+      const y = limitXY.y;
+      if (animat) {
+        _animationTo(x, y, scale, "", true, true);
       } else {
-        if (_SFA) {
-          _SFA.cancel();
-        }
-        _animationTo(val + _scaleOffset.x, ySync.value + _scaleOffset.y, _scale);
+        _requestAnimationFrame(function() {
+          _setTransform(x, y, scale, "", true, true);
+        });
       }
     }
-    return val;
   }
-  function _setY(val) {
-    if (yMove.value) {
-      if (val + _scaleOffset.y === _translateY) {
-        return _translateY;
-      } else {
-        if (_SFA) {
-          _SFA.cancel();
-        }
-        _animationTo(xSync.value + _scaleOffset.x, val + _scaleOffset.y, _scale);
-      }
-    }
-    return val;
+  function _beginScale() {
+    _isScaling.value = true;
+  }
+  function _updateOldScale(scale) {
+    _oldScale.value = scale;
+  }
+  function _adjustScale(scale) {
+    scale = Math.max(0.5, scaleMinNumber.value, scale);
+    scale = Math.min(10, scaleMaxNumber.value, scale);
+    return scale;
   }
   function _setScaleMinOrMax() {
     if (!props2.scale) {
       return false;
     }
-    _updateScale(_scale, true);
-    _updateOldScale(_scale);
+    _updateScale(_scale.value, true);
+    _updateOldScale(_scale.value);
   }
   function _setScaleValue(scale) {
     if (!props2.scale) {
@@ -9784,18 +10800,112 @@ function useMovableViewState(props2, trigger, rootRef) {
     _updateOldScale(scale);
     return scale;
   }
+  function _endScale() {
+    _isScaling.value = false;
+    _updateOldScale(_scale.value);
+  }
+  function _setScale(scale) {
+    if (scale) {
+      scale = _oldScale.value * scale;
+      _beginScale();
+      _updateScale(scale);
+    }
+  }
+  return {
+    _updateOldScale,
+    _endScale,
+    _setScale,
+    scaleValueSync,
+    _updateBoundary,
+    _updateOffset,
+    _updateWH,
+    _scaleOffset,
+    minX,
+    minY,
+    maxX,
+    maxY,
+    FAandSFACancel,
+    _getLimitXY,
+    _animationTo,
+    _setTransform,
+    _revise,
+    dampingNumber,
+    xMove,
+    yMove,
+    xSync,
+    ySync,
+    _STD
+  };
+}
+function useMovableViewState(props2, trigger, rootRef) {
+  const _isMounted = inject("_isMounted", ref(false));
+  const addMovableViewContext = inject("addMovableViewContext", () => {
+  });
+  const removeMovableViewContext = inject("removeMovableViewContext", () => {
+  });
+  let _scale = ref(1);
+  let _oldScale = ref(1);
+  let _isScaling = ref(false);
+  let _translateX = ref(0);
+  let _translateY = ref(0);
+  let _SFA = null;
+  let _FA = null;
+  let _isTouching = false;
+  let __baseX;
+  let __baseY;
+  let _checkCanMove = null;
+  let _firstMoveDirection = null;
+  const _declineX = new Decline();
+  const _declineY = new Decline();
+  const __touchInfo = {
+    historyX: [0, 0],
+    historyY: [0, 0],
+    historyT: [0, 0]
+  };
+  const frictionNumber = computed(() => {
+    let val = Number(props2.friction);
+    return isNaN(val) || val <= 0 ? 2 : val;
+  });
+  const _friction = new Friction$1(1, frictionNumber.value);
+  watch(() => props2.disabled, () => {
+    __handleTouchStart();
+  });
+  const {
+    _updateOldScale,
+    _endScale,
+    _setScale,
+    scaleValueSync,
+    _updateBoundary,
+    _updateOffset,
+    _updateWH,
+    _scaleOffset,
+    minX,
+    minY,
+    maxX,
+    maxY,
+    FAandSFACancel,
+    _getLimitXY,
+    _setTransform,
+    _revise,
+    dampingNumber,
+    xMove,
+    yMove,
+    xSync,
+    ySync,
+    _STD
+  } = useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScaling, _translateX, _translateY, _SFA, _FA);
   function __handleTouchStart() {
-    if (!_isScaling) {
+    if (!_isScaling.value) {
       if (!props2.disabled) {
         FAandSFACancel();
         __touchInfo.historyX = [0, 0];
         __touchInfo.historyY = [0, 0];
         __touchInfo.historyT = [0, 0];
         if (xMove.value) {
-          __baseX = _translateX;
+          __baseX = _translateX.value;
         }
         if (yMove.value) {
-          __baseY = _translateY;
+          __baseY = _translateY.value;
         }
         rootRef.value.style.willChange = "transform";
         _checkCanMove = null;
@@ -9805,9 +10915,9 @@ function useMovableViewState(props2, trigger, rootRef) {
     }
   }
   function __handleTouchMove(event) {
-    if (!_isScaling && !props2.disabled && _isTouching) {
-      let x = _translateX;
-      let y = _translateY;
+    if (!_isScaling.value && !props2.disabled && _isTouching) {
+      let x = _translateX.value;
+      let y = _translateY.value;
       if (_firstMoveDirection === null) {
         _firstMoveDirection = Math.abs(event.detail.dx / event.detail.dy) > 1 ? "htouchmove" : "vtouchmove";
       }
@@ -9865,40 +10975,42 @@ function useMovableViewState(props2, trigger, rootRef) {
           }
         }
         _requestAnimationFrame(function() {
-          _setTransform(x, y, _scale, source);
+          _setTransform(x, y, _scale.value, source);
         });
       }
     }
   }
   function __handleTouchEnd() {
-    if (!_isScaling && !props2.disabled && _isTouching) {
+    if (!_isScaling.value && !props2.disabled && _isTouching) {
       rootRef.value.style.willChange = "auto";
       _isTouching = false;
       if (!_checkCanMove && !_revise("out-of-bounds") && props2.inertia) {
         const xv = 1e3 * (__touchInfo.historyX[1] - __touchInfo.historyX[0]) / (__touchInfo.historyT[1] - __touchInfo.historyT[0]);
         const yv = 1e3 * (__touchInfo.historyY[1] - __touchInfo.historyY[0]) / (__touchInfo.historyT[1] - __touchInfo.historyT[0]);
+        const __translateX = _translateX.value;
+        const __translateY = _translateY.value;
         _friction.setV(xv, yv);
-        _friction.setS(_translateX, _translateY);
+        _friction.setS(__translateX, __translateY);
         const x0 = _friction.delta().x;
         const y0 = _friction.delta().y;
-        let x = x0 + _translateX;
-        let y = y0 + _translateY;
+        let x = x0 + __translateX;
+        let y = y0 + __translateY;
         if (x < minX.value) {
           x = minX.value;
-          y = _translateY + (minX.value - _translateX) * y0 / x0;
+          y = __translateY + (minX.value - __translateX) * y0 / x0;
         } else {
           if (x > maxX.value) {
             x = maxX.value;
-            y = _translateY + (maxX.value - _translateX) * y0 / x0;
+            y = __translateY + (maxX.value - __translateX) * y0 / x0;
           }
         }
         if (y < minY.value) {
           y = minY.value;
-          x = _translateX + (minY.value - _translateY) * x0 / y0;
+          x = __translateX + (minY.value - __translateY) * x0 / y0;
         } else {
           if (y > maxY.value) {
             y = maxY.value;
-            x = _translateX + (maxY.value - _translateY) * x0 / y0;
+            x = __translateX + (maxY.value - __translateY) * x0 / y0;
           }
         }
         _friction.setEnd(x, y);
@@ -9906,7 +11018,7 @@ function useMovableViewState(props2, trigger, rootRef) {
           let t2 = _friction.s();
           let x2 = t2.x;
           let y2 = t2.y;
-          _setTransform(x2, y2, _scale, "friction");
+          _setTransform(x2, y2, _scale.value, "friction");
         }, function() {
           _FA.cancel();
         });
@@ -9915,168 +11027,6 @@ function useMovableViewState(props2, trigger, rootRef) {
     if (!props2.outOfBounds && !props2.inertia) {
       FAandSFACancel();
     }
-  }
-  function _getLimitXY(x, y) {
-    let outOfBounds = false;
-    if (x > maxX.value) {
-      x = maxX.value;
-      outOfBounds = true;
-    } else {
-      if (x < minX.value) {
-        x = minX.value;
-        outOfBounds = true;
-      }
-    }
-    if (y > maxY.value) {
-      y = maxY.value;
-      outOfBounds = true;
-    } else {
-      if (y < minY.value) {
-        y = minY.value;
-        outOfBounds = true;
-      }
-    }
-    return {
-      x,
-      y,
-      outOfBounds
-    };
-  }
-  function _updateOffset() {
-    _offset.x = p(rootRef.value, movableAreaRootRef.value);
-    _offset.y = f(rootRef.value, movableAreaRootRef.value);
-  }
-  function _updateWH(scale) {
-    scale = scale || _scale;
-    scale = _adjustScale(scale);
-    let rect = rootRef.value.getBoundingClientRect();
-    height.value = rect.height / _scale;
-    width.value = rect.width / _scale;
-    let _height = height.value * scale;
-    let _width = width.value * scale;
-    _scaleOffset.x = (_width - width.value) / 2;
-    _scaleOffset.y = (_height - height.value) / 2;
-  }
-  function _updateBoundary() {
-    let x = 0 - _offset.x + _scaleOffset.x;
-    let _width = movableAreaWidth.value - width.value - _offset.x - _scaleOffset.x;
-    minX.value = Math.min(x, _width);
-    maxX.value = Math.max(x, _width);
-    let y = 0 - _offset.y + _scaleOffset.y;
-    let _height = movableAreaHeight.value - height.value - _offset.y - _scaleOffset.y;
-    minY.value = Math.min(y, _height);
-    maxY.value = Math.max(y, _height);
-  }
-  function _beginScale() {
-    _isScaling = true;
-  }
-  function _updateScale(scale, animat) {
-    if (props2.scale) {
-      scale = _adjustScale(scale);
-      _updateWH(scale);
-      _updateBoundary();
-      const limitXY = _getLimitXY(_translateX, _translateY);
-      const x = limitXY.x;
-      const y = limitXY.y;
-      if (animat) {
-        _animationTo(x, y, scale, "", true, true);
-      } else {
-        _requestAnimationFrame(function() {
-          _setTransform(x, y, scale, "", true, true);
-        });
-      }
-    }
-  }
-  function _updateOldScale(scale) {
-    _oldScale = scale;
-  }
-  function _adjustScale(scale) {
-    scale = Math.max(0.5, scaleMinNumber.value, scale);
-    scale = Math.min(10, scaleMaxNumber.value, scale);
-    return scale;
-  }
-  function _animationTo(x, y, scale, source, r, o2) {
-    FAandSFACancel();
-    if (!xMove.value) {
-      x = _translateX;
-    }
-    if (!yMove.value) {
-      y = _translateY;
-    }
-    if (!props2.scale) {
-      scale = _scale;
-    }
-    let limitXY = _getLimitXY(x, y);
-    x = limitXY.x;
-    y = limitXY.y;
-    if (!props2.animation) {
-      _setTransform(x, y, scale, source, r, o2);
-      return;
-    }
-    _STD._springX._solution = null;
-    _STD._springY._solution = null;
-    _STD._springScale._solution = null;
-    _STD._springX._endPosition = _translateX;
-    _STD._springY._endPosition = _translateY;
-    _STD._springScale._endPosition = _scale;
-    _STD.setEnd(x, y, scale, 1);
-    _SFA = g(_STD, function() {
-      let data = _STD.x();
-      let x2 = data.x;
-      let y2 = data.y;
-      let scale2 = data.scale;
-      _setTransform(x2, y2, scale2, source, r, o2);
-    }, function() {
-      _SFA.cancel();
-    });
-  }
-  function _revise(source) {
-    let limitXY = _getLimitXY(_translateX, _translateY);
-    let x = limitXY.x;
-    let y = limitXY.y;
-    let outOfBounds = limitXY.outOfBounds;
-    if (outOfBounds) {
-      _animationTo(x, y, _scale, source);
-    }
-    return outOfBounds;
-  }
-  function _setTransform(x, y, scale, source = "", r, o2) {
-    if (!(x !== null && x.toString() !== "NaN" && typeof x === "number")) {
-      x = _translateX || 0;
-    }
-    if (!(y !== null && y.toString() !== "NaN" && typeof y === "number")) {
-      y = _translateY || 0;
-    }
-    x = Number(x.toFixed(1));
-    y = Number(y.toFixed(1));
-    scale = Number(scale.toFixed(1));
-    if (!(_translateX === x && _translateY === y)) {
-      if (!r) {
-        trigger("change", {}, {
-          x: v(x, _scaleOffset.x),
-          y: v(y, _scaleOffset.y),
-          source
-        });
-      }
-    }
-    if (!props2.scale) {
-      scale = _scale;
-    }
-    scale = _adjustScale(scale);
-    scale = +scale.toFixed(3);
-    if (o2 && scale !== _scale) {
-      trigger("scale", {}, {
-        x,
-        y,
-        scale
-      });
-    }
-    let transform = "translateX(" + x + "px) translateY(" + y + "px) translateZ(0px) scale(" + scale + ")";
-    rootRef.value.style.transform = transform;
-    rootRef.value.style.webkitTransform = transform;
-    _translateX = x;
-    _translateY = y;
-    _scale = scale;
   }
   function setParent() {
     if (!_isMounted.value) {
@@ -10087,24 +11037,11 @@ function useMovableViewState(props2, trigger, rootRef) {
     _updateOffset();
     _updateWH(scale);
     _updateBoundary();
-    _translateX = xSync.value + _scaleOffset.x;
-    _translateY = ySync.value + _scaleOffset.y;
-    let limitXY = _getLimitXY(_translateX, _translateY);
+    let limitXY = _getLimitXY(xSync.value + _scaleOffset.x, ySync.value + _scaleOffset.y);
     let x = limitXY.x;
     let y = limitXY.y;
     _setTransform(x, y, scale, "", true);
     _updateOldScale(scale);
-  }
-  function _endScale() {
-    _isScaling = false;
-    _updateOldScale(_scale);
-  }
-  function _setScale(scale) {
-    if (scale) {
-      scale = _oldScale * scale;
-      _beginScale();
-      _updateScale(scale);
-    }
   }
   onMounted(() => {
     useTouchtrack(rootRef.value, (event) => {
@@ -10208,6 +11145,7 @@ const navigatorProps = {
   },
   animationType: {
     type: String,
+    default: "",
     validator(value) {
       return !value || ANIMATION_IN.concat(ANIMATION_OUT).includes(value);
     }
@@ -10220,7 +11158,9 @@ const navigatorProps = {
 function createNavigatorOnClick(props2) {
   return () => {
     if (props2.openType !== "navigateBack" && !props2.url) {
-      console.error("<navigator/> should have url attribute when using navigateTo, redirectTo, reLaunch or switchTab");
+      console.error(
+        "<navigator/> should have url attribute when using navigateTo, redirectTo, reLaunch or switchTab"
+      );
       return;
     }
     const animationDuration = parseInt(props2.animationDuration);
@@ -10258,7 +11198,7 @@ function createNavigatorOnClick(props2) {
     }
   };
 }
-var index$q = /* @__PURE__ */ defineBuiltInComponent({
+const index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   inheritAttrs: false,
   compatConfig: {
@@ -10284,14 +11224,15 @@ var index$q = /* @__PURE__ */ defineBuiltInComponent({
       return createVNode("a", {
         "class": "navigator-wrap",
         "href": url,
-        "onClick": onEventPrevent
+        "onClick": onEventPrevent,
+        "onMousedown": onEventPrevent
       }, [createVNode("uni-navigator", mergeProps({
         "class": hasHoverClass && hovering.value ? hoverClass : ""
       }, hasHoverClass && binding, vm ? vm.attrs : {}, {
         [__scopeId]: ""
       }, {
         "onClick": onClick
-      }), [slots.default && slots.default()], 16, ["onClick"])], 8, ["href", "onClick"]);
+      }), [slots.default && slots.default()], 16, ["onClick"])], 40, ["href", "onClick", "onMousedown"]);
     };
   }
 });
@@ -10302,7 +11243,7 @@ const pickerViewProps = {
       return [];
     },
     validator: function(val) {
-      return Array.isArray(val) && val.filter((val2) => typeof val2 === "number").length === val.length;
+      return isArray(val) && val.filter((val2) => typeof val2 === "number").length === val.length;
     }
   },
   indicatorStyle: {
@@ -10340,7 +11281,7 @@ function useState$4(props2) {
   });
   return state2;
 }
-var PickerView = /* @__PURE__ */ defineBuiltInComponent({
+const PickerView = /* @__PURE__ */ defineBuiltInComponent({
   name: "PickerView",
   props: pickerViewProps,
   emits: ["change", "pickstart", "pickend", "update:value"],
@@ -10759,7 +11700,9 @@ function createAnimation(scroll, onScroll, onEnd) {
       const isDone = scroll2.done();
       if (!isDone) {
         if (!state22.cancelled) {
-          state22.id = requestAnimationFrame(startAnimation2.bind(null, state22, scroll2, onScroll2, onEnd2));
+          state22.id = requestAnimationFrame(
+            startAnimation2.bind(null, state22, scroll2, onScroll2, onEnd2)
+          );
         }
       }
       if (isDone && onEnd2) {
@@ -10865,33 +11808,39 @@ class Scroller {
     this._scrolling = true;
     this._lastChangePos = this._position;
     this._lastIdx = Math.floor(Math.abs(this._position / this._itemSize));
-    this._animation = createAnimation(this._scroll, () => {
-      const e2 = Date.now();
-      const i = (e2 - this._scroll._startTime) / 1e3;
-      const r = this._scroll.x(i);
-      this._position = r;
-      this.updatePosition();
-      const o22 = this._scroll.dx(i);
-      if (this._shouldDispatchScrollEvent && e2 - this._lastTime > this._lastDelay) {
-        this.dispatchScroll();
-        this._lastDelay = Math.abs(2e3 / o22);
-        this._lastTime = e2;
-      }
-    }, () => {
-      if (this._enableSnap) {
-        if (c <= 0 && c >= -this._extent) {
-          this._position = c;
-          this.updatePosition();
+    this._animation = createAnimation(
+      this._scroll,
+      () => {
+        const e2 = Date.now();
+        const i = (e2 - this._scroll._startTime) / 1e3;
+        const r = this._scroll.x(i);
+        this._position = r;
+        this.updatePosition();
+        const o22 = this._scroll.dx(i);
+        if (this._shouldDispatchScrollEvent && e2 - this._lastTime > this._lastDelay) {
+          this.dispatchScroll();
+          this._lastDelay = Math.abs(2e3 / o22);
+          this._lastTime = e2;
         }
-        if (typeof this._options.onSnap === "function") {
-          this._options.onSnap(Math.floor(Math.abs(this._position) / this._itemSize));
+      },
+      () => {
+        if (this._enableSnap) {
+          if (c <= 0 && c >= -this._extent) {
+            this._position = c;
+            this.updatePosition();
+          }
+          if (isFunction(this._options.onSnap)) {
+            this._options.onSnap(
+              Math.floor(Math.abs(this._position) / this._itemSize)
+            );
+          }
         }
+        if (this._shouldDispatchScrollEvent) {
+          this.dispatchScroll();
+        }
+        this._scrolling = false;
       }
-      if (this._shouldDispatchScrollEvent) {
-        this.dispatchScroll();
-      }
-      this._scrolling = false;
-    });
+    );
   }
   onTransitionEnd() {
     this._element.style.webkitTransition = "";
@@ -10909,8 +11858,10 @@ class Scroller {
     if (this._position !== i) {
       this._snapping = true;
       this.scrollTo(-i);
-      if (typeof this._options.onSnap === "function") {
-        this._options.onSnap(Math.floor(Math.abs(this._position) / this._itemSize));
+      if (isFunction(this._options.onSnap)) {
+        this._options.onSnap(
+          Math.floor(Math.abs(this._position) / this._itemSize)
+        );
       }
     }
   }
@@ -10936,7 +11887,7 @@ class Scroller {
     this._element.addEventListener("transitionend", this._onTransitionEnd);
   }
   dispatchScroll() {
-    if (typeof this._options.onScroll === "function" && Math.round(Number(this._lastPos)) !== Math.round(this._position)) {
+    if (isFunction(this._options.onScroll) && Math.round(Number(this._lastPos)) !== Math.round(this._position)) {
       this._lastPos = this._position;
       const event = {
         target: {
@@ -10975,8 +11926,10 @@ class Scroller {
     this.updatePosition();
     if (position !== this._position) {
       this.dispatchScroll();
-      if (typeof this._options.onSnap === "function") {
-        this._options.onSnap(Math.floor(Math.abs(this._position) / this._itemSize));
+      if (isFunction(this._options.onSnap)) {
+        this._options.onSnap(
+          Math.floor(Math.abs(this._position) / this._itemSize)
+        );
       }
     }
     this._extent = extent;
@@ -11050,7 +12003,9 @@ function useScroller(element, options) {
         event.preventDefault();
       const delta = findDelta(event);
       if (delta) {
-        for (touchInfo.maxDy = Math.max(touchInfo.maxDy, Math.abs(delta.y)), touchInfo.maxDx = Math.max(touchInfo.maxDx, Math.abs(delta.x)), touchInfo.historyX.push(delta.x), touchInfo.historyY.push(delta.y), touchInfo.historyTime.push(touchtrackEvent.detail.timeStamp || mouseEvent.timeStamp); touchInfo.historyTime.length > 10; ) {
+        for (touchInfo.maxDy = Math.max(touchInfo.maxDy, Math.abs(delta.y)), touchInfo.maxDx = Math.max(touchInfo.maxDx, Math.abs(delta.x)), touchInfo.historyX.push(delta.x), touchInfo.historyY.push(delta.y), touchInfo.historyTime.push(
+          touchtrackEvent.detail.timeStamp || mouseEvent.timeStamp
+        ); touchInfo.historyTime.length > 10; ) {
           touchInfo.historyTime.shift();
           touchInfo.historyX.shift();
           touchInfo.historyY.shift();
@@ -11140,7 +12095,7 @@ function useCustomClick(dom) {
     }
   });
 }
-var PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
+const PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
   name: "PickerViewColumn",
   setup(props2, {
     slots,
@@ -11358,7 +12313,7 @@ const progressProps = {
     default: 0
   }
 };
-var index$p = /* @__PURE__ */ defineBuiltInComponent({
+const index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: progressProps,
   setup(props2) {
@@ -11437,7 +12392,7 @@ const props$p = {
     default: ""
   }
 };
-var index$o = /* @__PURE__ */ defineBuiltInComponent({
+const index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
   props: props$p,
   setup(props2, {
@@ -11544,7 +12499,7 @@ const props$o = {
     default: ""
   }
 };
-var index$n = /* @__PURE__ */ defineBuiltInComponent({
+const index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
   props: props$o,
   setup(props2, {
@@ -11716,18 +12671,21 @@ const CHARS = {
   hellip: "\u2026"
 };
 function decodeEntities(htmlString) {
-  return htmlString.replace(/&(([a-zA-Z]+)|(#x{0,1}[\da-zA-Z]+));/gi, function(match, stage) {
-    if (hasOwn(CHARS, stage) && CHARS[stage]) {
-      return CHARS[stage];
+  return htmlString.replace(
+    /&(([a-zA-Z]+)|(#x{0,1}[\da-zA-Z]+));/gi,
+    function(match, stage) {
+      if (hasOwn(CHARS, stage) && CHARS[stage]) {
+        return CHARS[stage];
+      }
+      if (/^#[0-9]{1,4}$/.test(stage)) {
+        return String.fromCharCode(stage.slice(1));
+      }
+      if (/^#x[0-9a-f]{1,4}$/i.test(stage)) {
+        return String.fromCharCode(0 + stage.slice(1));
+      }
+      return match;
     }
-    if (/^#[0-9]{1,4}$/.test(stage)) {
-      return String.fromCharCode(stage.slice(1));
-    }
-    if (/^#x[0-9a-f]{1,4}$/i.test(stage)) {
-      return String.fromCharCode(0 + stage.slice(1));
-    }
-    return match;
-  });
+  );
 }
 function processClickEvent(node, triggerItemClick) {
   if (["a", "img"].includes(node.name) && triggerItemClick) {
@@ -11745,7 +12703,7 @@ function normalizeAttrs(tagName, attrs2) {
   if (!isPlainObject(attrs2))
     return;
   for (const key in attrs2) {
-    if (Object.prototype.hasOwnProperty.call(attrs2, key)) {
+    if (hasOwn(attrs2, key)) {
       const value = attrs2[key];
       if (tagName === "img" && key === "src")
         attrs2[key] = getRealPath(value);
@@ -11753,7 +12711,7 @@ function normalizeAttrs(tagName, attrs2) {
   }
 }
 const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
-  if (!nodeList || Array.isArray(nodeList) && !nodeList.length)
+  if (!nodeList || isArray(nodeList) && !nodeList.length)
     return [];
   return nodeList.map((node) => {
     if (!isPlainObject(node)) {
@@ -11766,10 +12724,18 @@ const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
         return;
       }
       normalizeAttrs(tagName, node.attrs);
-      nodeProps = extend(nodeProps, processClickEvent(node, triggerItemClick), node.attrs);
-      return h(node.name, nodeProps, nodeList2VNode(scopeId, triggerItemClick, node.children));
+      nodeProps = extend(
+        nodeProps,
+        processClickEvent(node, triggerItemClick),
+        node.attrs
+      );
+      return h(
+        node.name,
+        nodeProps,
+        nodeList2VNode(scopeId, triggerItemClick, node.children)
+      );
     }
-    if (node.type === "text" && typeof node.text === "string" && node.text !== "")
+    if (node.type === "text" && isString(node.text) && node.text !== "")
       return createTextVNode(decodeEntities(node.text || ""));
   });
 };
@@ -11871,7 +12837,7 @@ const props$n = {
     }
   }
 };
-var index$m = /* @__PURE__ */ defineBuiltInComponent({
+const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
     MODE: 3
@@ -11891,7 +12857,7 @@ var index$m = /* @__PURE__ */ defineBuiltInComponent({
     }
     function renderVNode() {
       let nodeList = props2.nodes;
-      if (typeof nodeList === "string") {
+      if (isString(nodeList)) {
         nodeList = parseHtml(props2.nodes);
       }
       _vnode.value = nodeList2VNode(scopeId, triggerItemClick, nodeList);
@@ -11963,7 +12929,7 @@ const props$m = {
     default: false
   }
 };
-var ScrollView = /* @__PURE__ */ defineBuiltInComponent({
+const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
   compatConfig: {
     MODE: 3
@@ -12441,7 +13407,7 @@ const props$l = {
     default: false
   }
 };
-var index$l = /* @__PURE__ */ defineBuiltInComponent({
+const index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
   props: props$l,
   emits: ["changing", "change"],
@@ -12671,6 +13637,18 @@ const props$k = {
   disableTouch: {
     type: [Boolean, String],
     default: false
+  },
+  navigation: {
+    type: [Boolean, String],
+    default: false
+  },
+  navigationColor: {
+    type: String,
+    default: "#fff"
+  },
+  navigationActiveColor: {
+    type: String,
+    default: "rgba(53, 53, 53, 0.6)"
   }
 };
 function useState$3(props2) {
@@ -12713,7 +13691,8 @@ function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger
   let transitionStart;
   let currentChangeSource = "";
   let animationFrame;
-  const circularEnabled = computed(() => props2.circular && swiperContexts.value.length > state2.displayMultipleItems);
+  const swiperEnabled = computed(() => swiperContexts.value.length > state2.displayMultipleItems);
+  const circularEnabled = computed(() => props2.circular && swiperEnabled.value);
   function checkCircularLayout(index2) {
     if (!invalid) {
       for (let items = swiperContexts.value, n = items.length, i = index2 + state2.displayMultipleItems, r = 0; r < n; r++) {
@@ -12854,6 +13833,8 @@ function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger
           position += length;
         }
       }
+    } else if (source === "click") {
+      current = current + state2.displayMultipleItems - 1 < length ? current : 0;
     }
     animating = {
       toPos: current,
@@ -13090,10 +14071,12 @@ function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger
     animateViewport(state2.current = index2, currentChangeSource = "click", circularEnabled.value ? 1 : 0);
   }
   return {
-    onSwiperDotClick
+    onSwiperDotClick,
+    circularEnabled,
+    swiperEnabled
   };
 }
-var Swiper = /* @__PURE__ */ defineBuiltInComponent({
+const Swiper = /* @__PURE__ */ defineBuiltInComponent({
   name: "Swiper",
   props: props$k,
   emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
@@ -13161,8 +14144,14 @@ var Swiper = /* @__PURE__ */ defineBuiltInComponent({
     };
     provide("removeSwiperContext", removeSwiperContext);
     const {
-      onSwiperDotClick
+      onSwiperDotClick,
+      circularEnabled,
+      swiperEnabled
     } = useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger);
+    let createNavigationTsx = () => null;
+    {
+      createNavigationTsx = useSwiperNavigation(rootRef, props2, state2, onSwiperDotClick, swiperContexts, circularEnabled, swiperEnabled);
+    }
     return () => {
       const defaultSlots = slots.default && slots.default();
       swiperItems = flatVNode(defaultSlots);
@@ -13189,17 +14178,135 @@ var Swiper = /* @__PURE__ */ defineBuiltInComponent({
         "style": {
           background: index2 === state2.current ? props2.indicatorActiveColor : props2.indicatorColor
         }
-      }, null, 14, ["onClick"]))], 2)], 512)], 512);
+      }, null, 14, ["onClick"]))], 2), createNavigationTsx()], 512)], 512);
     };
   }
 });
+const useSwiperNavigation = (rootRef, props2, state2, onSwiperDotClick, swiperContext, circularEnabled, swiperEnabled) => {
+  let isNavigationAuto = false;
+  let prevDisabled = false;
+  let nextDisabled = false;
+  let hideNavigation = ref(false);
+  watchEffect(() => {
+    isNavigationAuto = props2.navigation === "auto";
+    hideNavigation.value = props2.navigation !== true || isNavigationAuto;
+    swiperAddMouseEvent();
+  });
+  watchEffect(() => {
+    const swiperItemLength = swiperContext.value.length;
+    const notCircular = !circularEnabled.value;
+    prevDisabled = state2.current === 0 && notCircular;
+    nextDisabled = state2.current === swiperItemLength - 1 && notCircular || notCircular && state2.current + state2.displayMultipleItems >= swiperItemLength;
+    if (!swiperEnabled.value) {
+      prevDisabled = true;
+      nextDisabled = true;
+      isNavigationAuto && (hideNavigation.value = true);
+    }
+  });
+  function navigationHover(event, type) {
+    const target = event.currentTarget;
+    if (!target)
+      return;
+    target.style.backgroundColor = type === "over" ? props2.navigationActiveColor : "";
+  }
+  const navigationAttr = {
+    onMouseover: (event) => navigationHover(event, "over"),
+    onMouseout: (event) => navigationHover(event, "out")
+  };
+  function navigationClick($event, type, disabled) {
+    $event.stopPropagation();
+    if (disabled)
+      return;
+    const swiperItemLength = swiperContext.value.length;
+    let _current = state2.current;
+    switch (type) {
+      case "prev":
+        _current--;
+        if (_current < 0 && circularEnabled.value) {
+          _current = swiperItemLength - 1;
+        }
+        break;
+      case "next":
+        _current++;
+        if (_current >= swiperItemLength && circularEnabled.value) {
+          _current = 0;
+        }
+        break;
+    }
+    onSwiperDotClick(_current);
+  }
+  const createNavigationSVG = () => createSvgIconVNode(ICON_PATH_BACK, props2.navigationColor, 26);
+  let setHideNavigationTimer;
+  const _mousemove = (e2) => {
+    clearTimeout(setHideNavigationTimer);
+    const {
+      clientX,
+      clientY
+    } = e2;
+    const {
+      left,
+      right,
+      top,
+      bottom,
+      width,
+      height
+    } = rootRef.value.getBoundingClientRect();
+    let hide = false;
+    if (props2.vertical) {
+      hide = !(clientY - top < height / 3 || bottom - clientY < height / 3);
+    } else {
+      hide = !(clientX - left < width / 3 || right - clientX < width / 3);
+    }
+    if (hide) {
+      return setHideNavigationTimer = setTimeout(() => {
+        hideNavigation.value = hide;
+      }, 300);
+    }
+    hideNavigation.value = hide;
+  };
+  const _mouseleave = () => {
+    hideNavigation.value = true;
+  };
+  function swiperAddMouseEvent() {
+    if (rootRef.value) {
+      rootRef.value.removeEventListener("mousemove", _mousemove);
+      rootRef.value.removeEventListener("mouseleave", _mouseleave);
+      if (isNavigationAuto) {
+        rootRef.value.addEventListener("mousemove", _mousemove);
+        rootRef.value.addEventListener("mouseleave", _mouseleave);
+      }
+    }
+  }
+  onMounted(swiperAddMouseEvent);
+  function createNavigationTsx() {
+    const navigationClass = {
+      "uni-swiper-navigation-hide": hideNavigation.value,
+      "uni-swiper-navigation-vertical": props2.vertical
+    };
+    if (props2.navigation) {
+      return createVNode(Fragment, null, [createVNode("div", mergeProps({
+        "class": ["uni-swiper-navigation uni-swiper-navigation-prev", extend({
+          "uni-swiper-navigation-disabled": prevDisabled
+        }, navigationClass)],
+        "onClick": (e2) => navigationClick(e2, "prev", prevDisabled)
+      }, navigationAttr), [createNavigationSVG()], 16, ["onClick"]), createVNode("div", mergeProps({
+        "class": ["uni-swiper-navigation uni-swiper-navigation-next", extend({
+          "uni-swiper-navigation-disabled": nextDisabled
+        }, navigationClass)],
+        "onClick": (e2) => navigationClick(e2, "next", nextDisabled)
+      }, navigationAttr), [createNavigationSVG()], 16, ["onClick"])]);
+    }
+    return null;
+  }
+  return createNavigationTsx;
+};
 const props$j = {
   itemId: {
     type: String,
     default: ""
   }
 };
-var SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
+const SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
   name: "SwiperItem",
   props: props$j,
   setup(props2, {
@@ -13276,7 +14383,7 @@ const props$i = {
     default: "#007aff"
   }
 };
-var index$k = /* @__PURE__ */ defineBuiltInComponent({
+const index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
   props: props$i,
   emits: ["change"],
@@ -13378,7 +14485,7 @@ function normalizeText(text2, { space, decode: decode2 }) {
   }
   return text2.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
 }
-var index$j = /* @__PURE__ */ defineBuiltInComponent({
+const index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
   props: {
     selectable: {
@@ -13454,7 +14561,7 @@ function setFixMargin() {
   const DARK_TEST_STRING = "(prefers-color-scheme: dark)";
   fixMargin = String(navigator.platform).indexOf("iP") === 0 && String(navigator.vendor).indexOf("Apple") === 0 && window.matchMedia(DARK_TEST_STRING).media !== DARK_TEST_STRING;
 }
-var index$i = /* @__PURE__ */ defineBuiltInComponent({
+const index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$h,
   emits: ["confirm", "linechange", ...emit],
@@ -13579,7 +14686,7 @@ var index$i = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-var index$h = /* @__PURE__ */ defineBuiltInComponent({
+const index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
   props: extend({}, hoverProps),
   setup(props2, {
@@ -13613,9 +14720,13 @@ function addSubscribe(name, callback, pageId) {
   if (!name) {
     return;
   }
-  registerViewMethod(pageId || getCurrentPageId(), name, ({ type, data }, resolve) => {
-    callback(type, data, resolve);
-  });
+  registerViewMethod(
+    pageId || getCurrentPageId(),
+    name,
+    ({ type, data }, resolve) => {
+      callback(type, data, resolve);
+    }
+  );
 }
 function removeSubscribe(name, pageId) {
   if (!name) {
@@ -13629,10 +14740,13 @@ function useSubscribe(callback, name, multiple, pageId) {
   onMounted(() => {
     addSubscribe(name || normalizeEvent(vm), callback, pageId);
     if (multiple || !name) {
-      watch(() => vm.id, (value, oldValue) => {
-        addSubscribe(normalizeEvent(vm, value), callback, pageId);
-        removeSubscribe(oldValue && normalizeEvent(vm, oldValue));
-      });
+      watch(
+        () => vm.id,
+        (value, oldValue) => {
+          addSubscribe(normalizeEvent(vm, value), callback, pageId);
+          removeSubscribe(oldValue && normalizeEvent(vm, oldValue));
+        }
+      );
     }
   });
   onBeforeUnmount(() => {
@@ -13643,13 +14757,13 @@ function useOn(name, callback) {
   onMounted(() => UniViewJSBridge.on(name, callback));
   onBeforeUnmount(() => UniViewJSBridge.off(name));
 }
-let index$g = 0;
+let index$h = 0;
 function useContextInfo(_id) {
   const page = useCurrentPageId();
   const instance2 = getCurrentInstance();
   const vm = instance2.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id2 = _id || vm.id || `context${index$g++}`;
+  const id2 = _id || vm.id || `context${index$h++}`;
   onMounted(() => {
     const el = vm.$el;
     el.__uniContextInfo = {
@@ -13670,14 +14784,16 @@ function injectLifecycleHook(name, hook, publicThis, instance2) {
 }
 function initHooks(options, instance2, publicThis) {
   const mpType = options.mpType || publicThis.$mpType;
-  if (!mpType) {
+  if (!mpType || mpType === "component") {
     return;
   }
   Object.keys(options).forEach((name) => {
-    if (name.indexOf("on") === 0) {
+    if (isUniLifecycleHook(name, options[name], false)) {
       const hooks = options[name];
       if (isArray(hooks)) {
-        hooks.forEach((hook) => injectLifecycleHook(name, hook, publicThis, instance2));
+        hooks.forEach(
+          (hook) => injectLifecycleHook(name, hook, publicThis, instance2)
+        );
       } else {
         injectLifecycleHook(name, hooks, publicThis, instance2);
       }
@@ -13700,17 +14816,19 @@ function applyOptions(options, instance2, publicThis) {
 function set(target, key, val) {
   return target[key] = val;
 }
-function errorHandler(err, instance2, info) {
-  if (!instance2) {
-    throw err;
-  }
-  const app = getApp();
-  if (!app || !app.$vm) {
-    throw err;
-  }
-  {
-    invokeHook(app.$vm, ON_ERROR, err);
-  }
+function createErrorHandler(app) {
+  return function errorHandler(err, instance2, _info) {
+    if (!instance2) {
+      throw err;
+    }
+    const appInstance = app._instance;
+    if (!appInstance || !appInstance.proxy) {
+      throw err;
+    }
+    {
+      invokeHook(appInstance.proxy, ON_ERROR, err);
+    }
+  };
 }
 function mergeAsArray(to, from) {
   return to ? [...new Set([].concat(to, from))] : from;
@@ -13727,7 +14845,9 @@ if (typeof atob !== "function") {
   realAtob = function(str) {
     str = String(str).replace(/[\t\n\f\r ]+/g, "");
     if (!b64re.test(str)) {
-      throw new Error("Failed to execute 'atob' on 'Window': The string to be decoded is not correctly encoded.");
+      throw new Error(
+        "Failed to execute 'atob' on 'Window': The string to be decoded is not correctly encoded."
+      );
     }
     str += "==".slice(2 - (str.length & 3));
     var bitmap;
@@ -13737,7 +14857,11 @@ if (typeof atob !== "function") {
     var i = 0;
     for (; i < str.length; ) {
       bitmap = b64.indexOf(str.charAt(i++)) << 18 | b64.indexOf(str.charAt(i++)) << 12 | (r1 = b64.indexOf(str.charAt(i++))) << 6 | (r2 = b64.indexOf(str.charAt(i++)));
-      result += r1 === 64 ? String.fromCharCode(bitmap >> 16 & 255) : r2 === 64 ? String.fromCharCode(bitmap >> 16 & 255, bitmap >> 8 & 255) : String.fromCharCode(bitmap >> 16 & 255, bitmap >> 8 & 255, bitmap & 255);
+      result += r1 === 64 ? String.fromCharCode(bitmap >> 16 & 255) : r2 === 64 ? String.fromCharCode(bitmap >> 16 & 255, bitmap >> 8 & 255) : String.fromCharCode(
+        bitmap >> 16 & 255,
+        bitmap >> 8 & 255,
+        bitmap & 255
+      );
     }
     return result;
   };
@@ -13745,9 +14869,11 @@ if (typeof atob !== "function") {
   realAtob = atob;
 }
 function b64DecodeUnicode(str) {
-  return decodeURIComponent(realAtob(str).split("").map(function(c) {
-    return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-  }).join(""));
+  return decodeURIComponent(
+    realAtob(str).split("").map(function(c) {
+      return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join("")
+  );
 }
 function getCurrentUserInfo() {
   const token = uni.getStorageSync("uni_id_token") || "";
@@ -13787,9 +14913,7 @@ function uniIdMixin(globalProperties) {
 }
 function initApp$1(app) {
   const appConfig = app._context.config;
-  if (isFunction(app._component.onError)) {
-    appConfig.errorHandler = errorHandler;
-  }
+  appConfig.errorHandler = invokeCreateErrorHandler(app, createErrorHandler);
   initOptionMergeStrategies(appConfig.optionMergeStrategies);
   const globalProperties = appConfig.globalProperties;
   {
@@ -13823,7 +14947,9 @@ function usePageRoute() {
   const hashPos = url.indexOf("#", searchPos > -1 ? searchPos : 0);
   let query = {};
   if (searchPos > -1) {
-    query = parseQuery(url.slice(searchPos + 1, hashPos > -1 ? hashPos : url.length));
+    query = parseQuery(
+      url.slice(searchPos + 1, hashPos > -1 ? hashPos : url.length)
+    );
   }
   const { meta } = __uniRoutes[0];
   const path = addLeadingSlash(meta.route);
@@ -13836,22 +14962,42 @@ function usePageRoute() {
 }
 function initPageMeta(id2) {
   if (__UNI_FEATURE_PAGES__) {
-    return reactive(normalizePageMeta(JSON.parse(JSON.stringify(initRouteMeta(useRoute().meta, id2)))));
+    return reactive(
+      normalizePageMeta(
+        JSON.parse(
+          JSON.stringify(
+            initRouteMeta(
+              useRoute().meta,
+              id2
+            )
+          )
+        )
+      )
+    );
   }
-  return reactive(normalizePageMeta(JSON.parse(JSON.stringify(initRouteMeta(__uniRoutes[0].meta, id2)))));
+  return reactive(
+    normalizePageMeta(
+      JSON.parse(JSON.stringify(initRouteMeta(__uniRoutes[0].meta, id2)))
+    )
+  );
 }
 function normalizePageMeta(pageMeta) {
   if (__UNI_FEATURE_PULL_DOWN_REFRESH__) {
     const { enablePullDownRefresh, navigationBar } = pageMeta;
     if (enablePullDownRefresh) {
-      const pullToRefresh = normalizePullToRefreshRpx(extend({
-        support: true,
-        color: "#2BD009",
-        style: "circle",
-        height: 70,
-        range: 150,
-        offset: 0
-      }, pageMeta.pullToRefresh));
+      const pullToRefresh = normalizePullToRefreshRpx(
+        extend(
+          {
+            support: true,
+            color: "#2BD009",
+            style: "circle",
+            height: 70,
+            range: 150,
+            offset: 0
+          },
+          pageMeta.pullToRefresh
+        )
+      );
       const { type, style } = navigationBar;
       if (style !== "custom" && type !== "transparent") {
         pullToRefresh.offset += NAVBAR_HEIGHT + out.top;
@@ -13894,7 +15040,6 @@ function checkMinWidth(minWidth) {
 function getStateId() {
   return history.state && history.state.__id__ || 1;
 }
-PolySymbol(process.env.NODE_ENV !== "production" ? "layout" : "l");
 let tabBar;
 function useTabBar() {
   if (!tabBar) {
@@ -13916,12 +15061,16 @@ const SCHEMA_CSS = {
   "css.constant": cssConstant,
   "css.backdrop-filter": cssBackdropFilter
 };
-const canIUse = /* @__PURE__ */ defineSyncApi(API_CAN_I_USE, (schema) => {
-  if (hasOwn(SCHEMA_CSS, schema)) {
-    return SCHEMA_CSS[schema];
-  }
-  return true;
-}, CanIUseProtocol);
+const canIUse = /* @__PURE__ */ defineSyncApi(
+  API_CAN_I_USE,
+  (schema) => {
+    if (hasOwn(SCHEMA_CSS, schema)) {
+      return SCHEMA_CSS[schema];
+    }
+    return true;
+  },
+  CanIUseProtocol
+);
 const envMethod = /* @__PURE__ */ (() => cssEnv ? "env" : cssConstant ? "constant" : "")();
 function updateCurPageCssVar(pageMeta) {
   let windowTopValue = 0;
@@ -13934,9 +15083,12 @@ function updateCurPageCssVar(pageMeta) {
     tabBar2.shown && (windowBottomValue = parseInt(tabBar2.height));
   }
   updatePageCssVar({
-    "--window-top": normalizeWindowBottom(windowTopValue),
+    "--window-top": normalizeWindowTop(windowTopValue),
     "--window-bottom": normalizeWindowBottom(windowBottomValue)
   });
+}
+function normalizeWindowTop(windowTop) {
+  return envMethod ? `calc(${windowTop}px + ${envMethod}(safe-area-inset-top))` : `${windowTop}px`;
 }
 function normalizeWindowBottom(windowBottom) {
   return envMethod ? `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))` : `${windowBottom}px`;
@@ -13993,7 +15145,11 @@ function initPublicPage(route) {
   if (!__UNI_FEATURE_PAGES__) {
     return initPageInternalInstance("navigateTo", __uniRoutes[0].path, {}, meta);
   }
-  return initPageInternalInstance("navigateTo", route.fullPath, {}, meta);
+  let fullPath = route.fullPath;
+  if (route.meta.isEntry && fullPath.indexOf(route.meta.route) === -1) {
+    fullPath = "/" + route.meta.route + fullPath.replace("/", "");
+  }
+  return initPageInternalInstance("navigateTo", fullPath, {}, meta);
 }
 function initPage(vm) {
   const route = vm.$route;
@@ -14006,7 +15162,9 @@ function normalizeRouteKey(path, id2) {
 }
 function useKeepAliveRoute() {
   const route = useRoute();
-  const routeKey = computed(() => normalizeRouteKey("/" + route.meta.route, getStateId()));
+  const routeKey = computed(
+    () => normalizeRouteKey("/" + route.meta.route, getStateId())
+  );
   const isTabBar = computed(() => route.meta.isTabBar);
   return {
     routeKey,
@@ -14110,14 +15268,20 @@ function initPageScrollListener(instance2, pageMeta) {
   const opts = {};
   const pageId = instance2.proxy.$page.id;
   if (onPageScroll || navigationBarTransparent) {
-    opts.onPageScroll = createOnPageScroll(pageId, onPageScroll, navigationBarTransparent);
+    opts.onPageScroll = createOnPageScroll(
+      pageId,
+      onPageScroll,
+      navigationBarTransparent
+    );
   }
   if (onReachBottom) {
     opts.onReachBottomDistance = pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE;
     opts.onReachBottom = () => UniViewJSBridge.publishHandler(ON_REACH_BOTTOM, {}, pageId);
   }
   curScrollListener = createScrollListener(opts);
-  requestAnimationFrame(() => document.addEventListener("scroll", curScrollListener));
+  requestAnimationFrame(
+    () => document.addEventListener("scroll", curScrollListener)
+  );
 }
 function createOnPageScroll(pageId, onPageScroll, navigationBarTransparent) {
   return (scrollTop) => {
@@ -14159,11 +15323,11 @@ function removeCurrentPages(delta = 1) {
   }
 }
 function initHistory() {
-  let { base } = __uniConfig.router;
-  if (base === "/") {
-    base = "";
+  let { routerBase } = __uniConfig.router;
+  if (routerBase === "/") {
+    routerBase = "";
   }
-  const history2 = __UNI_FEATURE_ROUTER_MODE__ === "history" ? createWebHistory(base) : createWebHashHistory(base);
+  const history2 = __UNI_FEATURE_ROUTER_MODE__ === "history" ? createWebHistory(routerBase) : createWebHashHistory(routerBase);
   history2.listen((_to, _from, info) => {
     if (info.direction === "back") {
       removeCurrentPages(Math.abs(info.delta));
@@ -14171,12 +15335,14 @@ function initHistory() {
   });
   return history2;
 }
-var index$f = {
+const index$g = {
   install(app) {
     initApp$1(app);
     initViewPlugin(app);
     initServicePlugin(app);
-    app.config.warnHandler = warnHandler;
+    if (!app.config.warnHandler) {
+      app.config.warnHandler = warnHandler;
+    }
     if (__UNI_FEATURE_PAGES__) {
       initRouter(app);
     }
@@ -14185,7 +15351,7 @@ var index$f = {
 function warnHandler(msg, instance2, trace) {
   if (instance2) {
     const name = instance2.$.type.name;
-    if (name === "PageMetaHead") {
+    if ("PageMetaHead" === name) {
       return;
     }
     const parent = instance2.$.parent;
@@ -14327,7 +15493,10 @@ function setupApp(comp) {
         onBeforeMount(onLaunch);
       }
       onMounted(() => {
-        window.addEventListener("resize", debounce(onResize, 50, { setTimeout, clearTimeout }));
+        window.addEventListener(
+          "resize",
+          debounce(onResize, 50, { setTimeout, clearTimeout })
+        );
         window.addEventListener("message", onMessage);
         document.addEventListener("visibilitychange", onVisibilityChange);
       });
@@ -14363,7 +15532,11 @@ function onResize() {
 }
 function onMessage(evt) {
   if (isPlainObject(evt.data) && evt.data.type === WEB_INVOKE_APPSERVICE) {
-    UniServiceJSBridge.emit(ON_WEB_INVOKE_APP_SERVICE, evt.data.data, evt.data.pageId);
+    UniServiceJSBridge.emit(
+      ON_WEB_INVOKE_APP_SERVICE,
+      evt.data.data,
+      evt.data.pageId
+    );
   }
 }
 function onVisibilityChange() {
@@ -14824,7 +15997,7 @@ function useDanmu(props2, videoState) {
     time: 0,
     index: -1
   };
-  const danmuList = Array.isArray(props2.danmuList) ? JSON.parse(JSON.stringify(props2.danmuList)) : [];
+  const danmuList = isArray(props2.danmuList) ? JSON.parse(JSON.stringify(props2.danmuList)) : [];
   danmuList.sort(function(a2, b) {
     return (a2.time || 0) - (b.time || 0);
   });
@@ -15007,7 +16180,7 @@ const props$g = {
     default: true
   }
 };
-var index$e = /* @__PURE__ */ defineBuiltInComponent({
+const index$f = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
   props: props$g,
   emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
@@ -15234,9 +16407,13 @@ const props$f = {
   src: {
     type: String,
     default: ""
+  },
+  fullscreen: {
+    type: Boolean,
+    default: true
   }
 };
-var index$d = /* @__PURE__ */ defineBuiltInComponent({
+const index$e = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
   props: props$f,
@@ -15256,7 +16433,7 @@ var index$d = /* @__PURE__ */ defineBuiltInComponent({
       const iframe = document.createElement("iframe");
       watchEffect(() => {
         for (const key in $attrs.value) {
-          if (Object.prototype.hasOwnProperty.call($attrs.value, key)) {
+          if (hasOwn($attrs.value, key)) {
             const attr2 = $attrs.value[key];
             iframe[key] = attr2;
           }
@@ -15265,25 +16442,31 @@ var index$d = /* @__PURE__ */ defineBuiltInComponent({
       watchEffect(() => {
         iframe.src = getRealPath(props2.src);
       });
-      document.body.appendChild(iframe);
       iframeRef.value = iframe;
-      _resize = useWebViewSize(rootRef, iframeRef);
+      _resize = useWebViewSize(rootRef, iframeRef, props2.fullscreen);
+      if (props2.fullscreen) {
+        document.body.appendChild(iframe);
+      }
     };
     renderIframe();
     onMounted(() => {
+      var _a;
       _resize();
+      !props2.fullscreen && ((_a = rootRef.value) == null ? void 0 : _a.appendChild(iframeRef.value));
     });
     onActivated(() => {
-      iframeRef.value && (iframeRef.value.style.display = "block");
+      props2.fullscreen && (iframeRef.value.style.display = "block");
     });
     onDeactivated(() => {
-      iframeRef.value && (iframeRef.value.style.display = "none");
+      props2.fullscreen && (iframeRef.value.style.display = "none");
     });
     onBeforeUnmount(() => {
-      document.body.removeChild(iframeRef.value);
+      props2.fullscreen && document.body.removeChild(iframeRef.value);
     });
     return () => {
-      return createVNode(Fragment, null, [createVNode("uni-web-view", mergeProps($listeners.value, $excludeAttrs.value, {
+      return createVNode(Fragment, null, [createVNode("uni-web-view", mergeProps({
+        "class": props2.fullscreen ? "uni-webview--fullscreen" : ""
+      }, $listeners.value, $excludeAttrs.value, {
         "ref": rootRef
       }), [createVNode(ResizeSensor, {
         "onResize": _resize
@@ -15291,25 +16474,66 @@ var index$d = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-function useWebViewSize(rootRef, iframeRef) {
+function useWebViewSize(rootRef, iframeRef, fullscreen) {
   const _resize = () => {
-    const {
-      top,
-      left,
-      width,
-      height
-    } = rootRef.value.getBoundingClientRect();
-    iframeRef.value && updateElementStyle(iframeRef.value, {
-      position: "absolute",
-      display: "block",
-      border: "0",
-      top: top + "px",
-      left: left + "px",
-      width: width + "px",
-      height: height + "px"
-    });
+    var _a, _b;
+    if (fullscreen) {
+      const {
+        top,
+        left,
+        width,
+        height
+      } = rootRef.value.getBoundingClientRect();
+      updateElementStyle(iframeRef.value, {
+        position: "absolute",
+        display: "block",
+        border: "0",
+        top: top + "px",
+        left: left + "px",
+        width: width + "px",
+        height: height + "px"
+      });
+    } else {
+      updateElementStyle(iframeRef.value, {
+        width: ((_a = rootRef.value) == null ? void 0 : _a.style.width) || "300px",
+        height: ((_b = rootRef.value) == null ? void 0 : _b.style.height) || "150px"
+      });
+    }
   };
   return _resize;
+}
+let index$d = 0;
+function getJSONP(url, options, success, error) {
+  var js = document.createElement("script");
+  var callbackKey = options.callback || "callback";
+  var callbackName = "__uni_jsonp_callback_" + index$d++;
+  var timeout = options.timeout || 3e4;
+  var timing;
+  function end() {
+    clearTimeout(timing);
+    delete window[callbackName];
+    js.remove();
+  }
+  window[callbackName] = (res) => {
+    if (isFunction(success)) {
+      success(res);
+    }
+    end();
+  };
+  js.onerror = () => {
+    if (isFunction(error)) {
+      error();
+    }
+    end();
+  };
+  timing = setTimeout(function() {
+    if (isFunction(error)) {
+      error();
+    }
+    end();
+  }, timeout);
+  js.src = url + (url.indexOf("?") >= 0 ? "&" : "?") + callbackKey + "=" + callbackName;
+  document.body.appendChild(js);
 }
 const ICON_PATH_LOCTAION = "M13.3334375 16 q0.033125 1.1334375 0.783125 1.8834375 q0.75 0.75 1.8834375 0.75 q1.1334375 0 1.8834375 -0.75 q0.75 -0.75 0.75 -1.8834375 q0 -1.1334375 -0.75 -1.8834375 q-0.75 -0.75 -1.8834375 -0.75 q-1.1334375 0 -1.8834375 0.75 q-0.75 0.75 -0.783125 1.8834375 ZM30.9334375 14.9334375 l-1.1334375 0 q-0.5 -5.2 -4.0165625 -8.716875 q-3.516875 -3.5165625 -8.716875 -4.0165625 l0 -1.1334375 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 l0 1.1334375 q-5.2 0.5 -8.716875 4.0165625 q-3.5165625 3.516875 -4.0165625 8.716875 l-1.1334375 0 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 l1.1334375 0 q0.5 5.2 4.0165625 8.716875 q3.516875 3.5165625 8.716875 4.0165625 l0 1.1334375 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 l0 -1.1334375 q5.2 -0.5 8.716875 -4.0165625 q3.5165625 -3.516875 4.0165625 -8.716875 l1.1334375 0 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 ZM17.0665625 27.6665625 l0 -2.0665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 l0 2.0665625 q-4.3 -0.4665625 -7.216875 -3.383125 q-2.916875 -2.916875 -3.3834375 -7.216875 l2.0665625 0 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 l-2.0665625 0 q0.4665625 -4.3 3.3834375 -7.216875 q2.9165625 -2.916875 7.216875 -3.3834375 l0 2.0665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 l0 -2.0665625 q4.3 0.4665625 7.216875 3.3834375 q2.9165625 2.9165625 3.383125 7.216875 l-2.0665625 0 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 l2.0665625 0 q-0.4665625 4.3 -3.383125 7.216875 q-2.916875 2.9165625 -7.216875 3.383125 Z";
 const ICON_PATH_ORIGIN = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIQAAACECAMAAABmmnOVAAAC01BMVEUAAAAAef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef96quGStdqStdpbnujMzMzCyM7Gyc7Ky83MzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMwAef8GfP0yjfNWnOp0qOKKsdyYt9mju9aZt9mMstx1qeJYnekyjvIIfP0qivVmouaWttnMzMyat9lppOUujPQKffxhoOfNzc3Y2Njh4eHp6enu7u7y8vL19fXv7+/i4uLZ2dnOzs6auNgOf/sKff15quHR0dHx8fH9/f3////j4+N6quFdn+iywdPb29vw8PD+/v7c3NyywtLa2tr29vbS0tLd3d38/Pzf39/o6Ojc7f+q0v+HwP9rsf9dqv9Hnv9Vpv/q6urj8P+Vx/9Am/8Pgf8Iff/z8/OAvP95uf/n5+c5l//V6f+52v+y1//7+/vt7e0rkP/09PTQ0NDq9P8Whf+cy//W1tbe3t7A3v/m5ubs7OxOov/r6+vk5OQiaPjKAAAAknRSTlMACBZ9oB71/jiqywJBZATT6hBukRXv+zDCAVrkDIf4JbQsTb7eVeJLbwfa8Rh4G/OlPS/6/kxQ9/xdmZudoJxNVhng7B6wtWdzAtQOipcF1329wS44doK/BAkyP1pvgZOsrbnGXArAg34G2IsD1eMRe7bi7k5YnqFT9V0csyPedQyYD3p/Fje+hDpskq/MwpRBC6yKp2MAAAQdSURBVHja7Zn1exMxGIAPHbrhDsPdneHuNtzd3d3dIbjLh93o2o4i7TpgG1Jk0g0mMNwd/gTa5rq129reHnK5e/bk/TFNk/dJ7r5894XjGAwGg8GgTZasCpDIll1+hxw5vXLJLpEboTx5ZXbIhyzkl9fB28cqUaCgrBKFkI3CcjoUKYolihWXUSI7EihRUjaHXF52CVRKLoe8eZIdUOkyMknkRw6UlcehYAFHiXK+skgURk6Ul8OhQjFnCVRRBolKqRxQ5SzUHaqgNGSj7VCmalqJnDkoS5RF6ZCbroNvufQkUD6qEuXTdUA+3hQdqiEXVKfnUKOmK4latalJ1EEuoZZ6162HJ9x/4OChw0eOHj12/MTJU6dxG7XUu751tjNnz4ET5y9ctLZTSr0beKFLl89bpuUDrqgC1RqNWqsKuqqzNFw7e51S6u3tc+OmZUJ9kCHY6ECwOkRvab51iUrqXej2HYDQsHBjWgx3Ae7dppB6N2wEcF9jdMGDUIDGTaR2aNoM9FqjG7QmaN5CWgc/gIePjG559BigpZQOrYB/4jBfRGRUtDkmJjY6KjLCofkpD62lc2gDfMpWPIuLdwyV8XEpHgaddBZ+wBuSFcwJqSN2ovmZ/dfnOvCTxqGtwzq8SEjv4EhISn48eWgnhUP7DvDSvgzxrs6vV6+FLiro2EkCic4QKkzwJsH1KYreCp0eQhfyDl1B/w4P/xa5JVJ4U03QjbRD9x7wXlgH5IE3wmMBHXoSlugFAcI6f/AkkSi8q6HQm6xDn77wEQ8djTwSj3tqAMguRTe4ikeOQyJ4YV+KfkQl+oNW5GbY4gWOWgbwJ+kwAD6Fi90MK2ZsrIeBBCUGwRXbqJ+/iJMQliIEBhOU6AJhtlG/IpHE2bqrYQg5h6HA4yQiRqwEfkGCdTCMmMRw+IbPDCQaHCsCYAQxiZHw3TbmD/ESOHgHwShiEqPhp/gggYkSztIxxCRawy/bmEniJaJtfwiEscQkxkFgRqJESqQwwHhiEuMBp3Vm8RK/cZoHEzKXhCK2QxEPpiJe0YlKCFaKCNv/cYBNUsBRPlkJSc0U+dM7E9H0ThGJbgZT/iR7yj+VqMS06Qr4+OFm2JdCxIa8lugzkJs5K6MfxAaYPUcBpYG5khZJEkUUSb7DPCnKRfPBXj6M8FwuegoLpCgXcQszVjhbJFUJUee2hBhLoYTIcYtB57KY+opSMdVqwatSlZVj05aV//CwJLMX2DluaUcwhXm4ali2XOoLjxUrPV26zFtF4f5p0Gp310+z13BUWNvbehEXona6iAtX/zVZmtfN4WixfsNky4S6gCCVVq3RPLdfSfpv3MRRZfPoLc6Xs/5bt3EyMGzE9h07/Xft2t15z6i9+zgGg8FgMBgMBoPBYDAYDAYj8/APG67Rie8pUDsAAAAASUVORK5CYII=";
@@ -15317,26 +16541,108 @@ const ICON_PATH_TARGET = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAACc
 var MapType = /* @__PURE__ */ ((MapType2) => {
   MapType2["QQ"] = "qq";
   MapType2["GOOGLE"] = "google";
+  MapType2["AMAP"] = "AMap";
   MapType2["UNKNOWN"] = "";
   return MapType2;
 })(MapType || {});
 function getMapInfo() {
-  let type = "";
-  let key = "";
   if (__uniConfig.qqMapKey) {
-    type = "qq";
-    key = __uniConfig.qqMapKey;
-  } else if (__uniConfig.googleMapKey) {
-    type = "google";
-    key = __uniConfig.googleMapKey;
+    return {
+      type: "qq",
+      key: __uniConfig.qqMapKey
+    };
+  }
+  if (__uniConfig.googleMapKey) {
+    return {
+      type: "google",
+      key: __uniConfig.googleMapKey
+    };
+  }
+  if (__uniConfig.aMapKey) {
+    return {
+      type: "AMap",
+      key: __uniConfig.aMapKey,
+      securityJsCode: __uniConfig.aMapSecurityJsCode,
+      serviceHost: __uniConfig.aMapServiceHost
+    };
   }
   return {
-    type,
-    key
+    type: "",
+    key: ""
   };
 }
+let IS_AMAP = false;
+let hasGetIsAMap = false;
+const getIsAMap = () => {
+  if (hasGetIsAMap) {
+    return IS_AMAP;
+  } else {
+    hasGetIsAMap = true;
+    return IS_AMAP = getMapInfo().type === "AMap";
+  }
+};
+function translateGeo(type, coords, skip) {
+  const mapInfo = getMapInfo();
+  const wgs84Map = ["google"];
+  if (type && type.toUpperCase() === "WGS84" || wgs84Map.includes(mapInfo.type) || skip) {
+    return Promise.resolve(coords);
+  }
+  if (mapInfo.type === "qq") {
+    return new Promise((resolve) => {
+      getJSONP(
+        `https://apis.map.qq.com/jsapi?qt=translate&type=1&points=${coords.longitude},${coords.latitude}&key=${mapInfo.key}&output=jsonp&pf=jsapi&ref=jsapi`,
+        {
+          callback: "cb"
+        },
+        (res) => {
+          if ("detail" in res && "points" in res.detail && res.detail.points.length) {
+            const { lng, lat } = res.detail.points[0];
+            resolve({
+              longitude: lng,
+              latitude: lat,
+              altitude: coords.altitude,
+              accuracy: coords.accuracy,
+              altitudeAccuracy: coords.altitudeAccuracy,
+              heading: coords.heading,
+              speed: coords.speed
+            });
+          } else {
+            resolve(coords);
+          }
+        },
+        () => resolve(coords)
+      );
+    });
+  }
+  if (mapInfo.type === "AMap") {
+    return new Promise((resolve) => {
+      loadMaps([], () => {
+        window.AMap.convertFrom(
+          [coords.longitude, coords.latitude],
+          "gps",
+          (_, res) => {
+            if (res.info === "ok" && res.locations.length) {
+              const { lat, lng } = res.locations[0];
+              resolve({
+                longitude: lng,
+                latitude: lat,
+                altitude: coords.altitude,
+                accuracy: coords.accuracy,
+                altitudeAccuracy: coords.altitudeAccuracy,
+                heading: coords.heading,
+                speed: coords.speed
+              });
+            } else {
+              resolve(coords);
+            }
+          }
+        );
+      });
+    });
+  }
+  return Promise.reject(new Error("translateGeo faild"));
+}
 function createCallout(maps2) {
-  const overlay = new (maps2.OverlayView || maps2.Overlay)();
   function onAdd() {
     const div = this.div;
     const panes = this.getPanes();
@@ -15348,46 +16654,73 @@ function createCallout(maps2) {
       parentNode.removeChild(this.div);
     }
   }
+  function createAMapText() {
+    const option = this.option;
+    this.Text = new maps2.Text({
+      text: option.content,
+      anchor: "bottom-center",
+      offset: new maps2.Pixel(0, option.offsetY - 16),
+      style: {
+        padding: (option.padding || 8) + "px",
+        "line-height": (option.fontSize || 14) + "px",
+        "border-radius": (option.borderRadius || 0) + "px",
+        "border-color": `${option.bgColor || "#fff"} transparent transparent`,
+        "background-color": option.bgColor || "#fff",
+        "box-shadow": "0 2px 6px 0 rgba(114, 124, 245, .5)",
+        "text-align": "center",
+        "font-size": (option.fontSize || 14) + "px",
+        color: option.color || "#000"
+      },
+      position: option.position
+    });
+    const event = maps2.event || maps2.Event;
+    event.addListener(this.Text, "click", () => {
+      this.callback();
+    });
+    this.Text.setMap(option.map);
+  }
+  function removeAMapText() {
+    if (this.Text) {
+      this.option.map.remove(this.Text);
+    }
+  }
   class Callout {
-    constructor(option = {}) {
-      this.setMap = overlay.setMap;
-      this.getMap = overlay.getMap;
-      this.getPanes = overlay.getPanes;
-      this.getProjection = overlay.getProjection;
-      this.map_changed = overlay.map_changed;
-      this.set = overlay.set;
-      this.get = overlay.get;
-      this.setOptions = overlay.setValues;
-      this.bindTo = overlay.bindTo;
-      this.bindsTo = overlay.bindsTo;
-      this.notify = overlay.notify;
-      this.setValues = overlay.setValues;
-      this.unbind = overlay.unbind;
-      this.unbindAll = overlay.unbindAll;
-      this.addListener = overlay.addListener;
+    constructor(option = {}, callback) {
+      this.createAMapText = createAMapText;
+      this.removeAMapText = removeAMapText;
       this.onAdd = onAdd;
       this.construct = onAdd;
       this.onRemove = onRemove;
       this.destroy = onRemove;
       this.option = option || {};
-      const map = option.map;
-      this.position = option.position;
-      this.index = 1;
       const visible = this.visible = this.alwaysVisible = option.display === "ALWAYS";
-      const div = this.div = document.createElement("div");
-      const divStyle = div.style;
-      divStyle.position = "absolute";
-      divStyle.whiteSpace = "nowrap";
-      divStyle.transform = "translateX(-50%) translateY(-100%)";
-      divStyle.zIndex = "1";
-      divStyle.boxShadow = option.boxShadow || "none";
-      divStyle.display = visible ? "block" : "none";
-      const triangle = this.triangle = document.createElement("div");
-      triangle.setAttribute("style", "position: absolute;white-space: nowrap;border-width: 4px;border-style: solid;border-color: #fff transparent transparent;border-image: initial;font-size: 12px;padding: 0px;background-color: transparent;width: 0px;height: 0px;transform: translate(-50%, 100%);left: 50%;bottom: 0;");
-      this.setStyle(option);
-      div.appendChild(triangle);
-      if (map) {
-        this.setMap(map);
+      if (getIsAMap()) {
+        this.callback = callback;
+        if (this.visible) {
+          this.createAMapText();
+        }
+      } else {
+        const map = option.map;
+        this.position = option.position;
+        this.index = 1;
+        const div = this.div = document.createElement("div");
+        const divStyle = div.style;
+        divStyle.position = "absolute";
+        divStyle.whiteSpace = "nowrap";
+        divStyle.transform = "translateX(-50%) translateY(-100%)";
+        divStyle.zIndex = "1";
+        divStyle.boxShadow = option.boxShadow || "none";
+        divStyle.display = visible ? "block" : "none";
+        const triangle = this.triangle = document.createElement("div");
+        triangle.setAttribute(
+          "style",
+          "position: absolute;white-space: nowrap;border-width: 4px;border-style: solid;border-color: #fff transparent transparent;border-image: initial;font-size: 12px;padding: 0px;background-color: transparent;width: 0px;height: 0px;transform: translate(-50%, 100%);left: 50%;bottom: 0;"
+        );
+        this.setStyle(option);
+        div.appendChild(triangle);
+        if (map) {
+          this.setMap(map);
+        }
       }
     }
     set onclick(callback) {
@@ -15398,13 +16731,19 @@ function createCallout(maps2) {
     }
     setOption(option) {
       this.option = option;
-      this.setPosition(option.position);
       if (option.display === "ALWAYS") {
         this.alwaysVisible = this.visible = true;
       } else {
         this.alwaysVisible = false;
       }
-      this.setStyle(option);
+      if (getIsAMap()) {
+        if (this.visible) {
+          this.createAMapText();
+        }
+      } else {
+        this.setPosition(option.position);
+        this.setStyle(option);
+      }
     }
     setStyle(option) {
       const div = this.div;
@@ -15428,7 +16767,9 @@ function createCallout(maps2) {
       if (!this.position || !this.div || !overlayProjection) {
         return;
       }
-      const pixel = overlayProjection.fromLatLngToDivPixel(this.position);
+      const pixel = overlayProjection.fromLatLngToDivPixel(
+        this.position
+      );
       const divStyle = this.div.style;
       divStyle.left = pixel.x + "px";
       divStyle.top = pixel.y + "px";
@@ -15437,6 +16778,24 @@ function createCallout(maps2) {
       const divStyle = this.div.style;
       divStyle.display = this.visible ? "block" : "none";
     }
+  }
+  if (!getIsAMap()) {
+    const overlay = new (maps2.OverlayView || maps2.Overlay)();
+    Callout.prototype.setMap = overlay.setMap;
+    Callout.prototype.getMap = overlay.getMap;
+    Callout.prototype.getPanes = overlay.getPanes;
+    Callout.prototype.getProjection = overlay.getProjection;
+    Callout.prototype.map_changed = overlay.map_changed;
+    Callout.prototype.set = overlay.set;
+    Callout.prototype.get = overlay.get;
+    Callout.prototype.setOptions = overlay.setValues;
+    Callout.prototype.bindTo = overlay.bindTo;
+    Callout.prototype.bindsTo = overlay.bindsTo;
+    Callout.prototype.notify = overlay.notify;
+    Callout.prototype.setValues = overlay.setValues;
+    Callout.prototype.unbind = overlay.unbind;
+    Callout.prototype.unbindAll = overlay.unbindAll;
+    Callout.prototype.addListener = overlay.addListener;
   }
   return Callout;
 }
@@ -15453,7 +16812,7 @@ function loadMaps(libraries, callback) {
   if (maps) {
     callback(maps);
   } else if (window[mapInfo.type] && window[mapInfo.type].maps) {
-    maps = window[mapInfo.type].maps;
+    maps = getIsAMap() ? window[mapInfo.type] : window[mapInfo.type].maps;
     maps.Callout = maps.Callout || createCallout(maps);
     callback(maps);
   } else if (callbacks2.length) {
@@ -15464,13 +16823,16 @@ function loadMaps(libraries, callback) {
     const callbackName = GOOGLE_MAP_CALLBACKNAME + mapInfo.type;
     globalExt[callbackName] = function() {
       delete globalExt[callbackName];
-      maps = window[mapInfo.type].maps;
+      maps = getIsAMap() ? window[mapInfo.type] : window[mapInfo.type].maps;
       maps.Callout = createCallout(maps);
       callbacks2.forEach((callback2) => callback2(maps));
       callbacks2.length = 0;
     };
+    if (getIsAMap()) {
+      handleAMapSecurityPolicy(mapInfo);
+    }
     const script = document.createElement("script");
-    let src = mapInfo.type === MapType.GOOGLE ? "https://maps.googleapis.com/maps/api/js?" : "https://map.qq.com/api/js?v=2.exp&";
+    let src = getScriptBaseUrl(mapInfo.type);
     if (mapInfo.type === MapType.QQ) {
       libraries.push("geometry");
     }
@@ -15483,6 +16845,20 @@ function loadMaps(libraries, callback) {
     };
     document.body.appendChild(script);
   }
+}
+const getScriptBaseUrl = (mapType) => {
+  const urlMap = {
+    qq: "https://map.qq.com/api/js?v=2.exp&",
+    google: "https://maps.googleapis.com/maps/api/js?",
+    AMap: "https://webapi.amap.com/maps?v=2.0&"
+  };
+  return urlMap[mapType];
+};
+function handleAMapSecurityPolicy(mapInfo) {
+  window._AMapSecurityConfig = {
+    securityJsCode: mapInfo.securityJsCode || "",
+    serviceHost: mapInfo.serviceHost || ""
+  };
 }
 const props$e = {
   id: {
@@ -15568,11 +16944,11 @@ function useMarkerLabelStyle(id2) {
     return className;
   };
 }
-var MapMarker = /* @__PURE__ */ defineSystemComponent({
+const MapMarker = /* @__PURE__ */ defineSystemComponent({
   name: "MapMarker",
   props: props$e,
   setup(props2) {
-    const id2 = String(Number(props2.id) !== NaN ? props2.id : "");
+    const id2 = String(!isNaN(Number(props2.id)) ? props2.id : "");
     const onMapReady = inject("onMapReady");
     const updateMarkerLabelStyle = useMarkerLabelStyle(id2);
     let marker;
@@ -15582,15 +16958,22 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
           marker.label.setMap(null);
         }
         if (marker.callout) {
-          marker.callout.setMap(null);
+          removeMarkerCallout(marker.callout);
         }
         marker.setMap(null);
+      }
+    }
+    function removeMarkerCallout(callout) {
+      if (getIsAMap()) {
+        callout.removeAMapText();
+      } else {
+        callout.setMap(null);
       }
     }
     onMapReady((map, maps2, trigger) => {
       function updateMarker(option) {
         const title = option.title;
-        const position = new maps2.LatLng(option.latitude, option.longitude);
+        const position = getIsAMap() ? new maps2.LngLat(option.longitude, option.latitude) : new maps2.LatLng(option.latitude, option.longitude);
         const img = new Image();
         img.onload = () => {
           const anchor = option.anchor || {};
@@ -15610,6 +16993,13 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
           top = h2 - (h2 - y * h2);
           if ("MarkerImage" in maps2) {
             icon = new maps2.MarkerImage(img.src, null, null, new maps2.Point(x * w, y * h2), new maps2.Size(w, h2));
+          } else if ("Icon" in maps2) {
+            icon = new maps2.Icon({
+              image: img.src,
+              size: new maps2.Size(w, h2),
+              imageSize: new maps2.Size(w, h2),
+              imageOffset: new maps2.Pixel(x * w, y * h2)
+            });
           } else {
             icon = {
               url: img.src,
@@ -15651,13 +17041,33 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
               });
               marker.label = label;
             } else if ("setLabel" in marker) {
-              const className = updateMarkerLabelStyle(labelStyle);
-              marker.setLabel({
-                text: labelOpt.content,
-                color: labelStyle.color,
-                fontSize: labelStyle.fontSize,
-                className
-              });
+              if (getIsAMap()) {
+                const content = `<div style="
+                  margin-left:${labelStyle.marginLeft};
+                  margin-top:${labelStyle.marginTop};
+                  padding:${labelStyle.padding};
+                  background-color:${labelStyle.backgroundColor};
+                  border-radius:${labelStyle.borderRadius};
+                  line-height:${labelStyle.lineHeight};
+                  color:${labelStyle.color};
+                  font-size:${labelStyle.fontSize};
+
+                  ">
+                  ${labelOpt.content}
+                <div>`;
+                marker.setLabel({
+                  content,
+                  direction: "bottom-right"
+                });
+              } else {
+                const className = updateMarkerLabelStyle(labelStyle);
+                marker.setLabel({
+                  text: labelOpt.content,
+                  color: labelStyle.color,
+                  fontSize: labelStyle.fontSize,
+                  className
+                });
+              }
             }
           }
           const calloutOpt = option.callout || {};
@@ -15669,6 +17079,7 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
               position,
               map,
               top,
+              offsetY: -option.height / 2,
               content: calloutOpt.content,
               color: calloutOpt.color,
               fontSize: calloutOpt.fontSize,
@@ -15681,26 +17092,46 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
               position,
               map,
               top,
+              offsetY: -option.height / 2,
               content: title,
               boxShadow
             };
             if (callout) {
               callout.setOption(calloutStyle);
             } else {
-              callout = marker.callout = new maps2.Callout(calloutStyle);
-              callout.div.onclick = function($event) {
-                if (id2 !== "") {
-                  trigger("callouttap", $event, {
-                    markerId: Number(id2)
-                  });
+              if (getIsAMap()) {
+                const callback = (id3) => {
+                  if (id3 !== "") {
+                    trigger("callouttap", {}, {
+                      markerId: Number(id3)
+                    });
+                  }
+                };
+                callout = marker.callout = new maps2.Callout(calloutStyle, callback);
+              } else {
+                callout = marker.callout = new maps2.Callout(calloutStyle);
+                callout.div.onclick = function($event) {
+                  if (id2 !== "") {
+                    trigger("callouttap", $event, {
+                      markerId: Number(id2)
+                    });
+                  }
+                  $event.stopPropagation();
+                  $event.preventDefault();
+                };
+                if (getMapInfo().type === MapType.GOOGLE) {
+                  callout.div.ontouchstart = function($event) {
+                    $event.stopPropagation();
+                  };
+                  callout.div.onpointerdown = function($event) {
+                    $event.stopPropagation();
+                  };
                 }
-                $event.stopPropagation();
-                $event.preventDefault();
-              };
+              }
             }
           } else {
             if (callout) {
-              callout.setMap(null);
+              removeMarkerCallout(callout);
               delete marker.callout;
             }
           }
@@ -15718,22 +17149,32 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
           autoRotation: false
         });
         updateMarker(props3);
-        maps2.event.addListener(marker, "click", () => {
+        const MapsEvent = maps2.event || maps2.Event;
+        MapsEvent.addListener(marker, "click", () => {
           const callout = marker.callout;
-          if (callout) {
-            const div = callout.div;
-            const parent = div.parentNode;
-            if (!callout.alwaysVisible) {
+          if (callout && !callout.alwaysVisible) {
+            if (getIsAMap()) {
+              callout.visible = !callout.visible;
+              if (callout.visible) {
+                marker.callout.createAMapText();
+              } else {
+                marker.callout.removeAMapText();
+              }
+            } else {
               callout.set("visible", !callout.visible);
-            }
-            if (callout.visible) {
-              parent.removeChild(div);
-              parent.appendChild(div);
+              if (callout.visible) {
+                const div = callout.div;
+                const parent = div.parentNode;
+                parent.removeChild(div);
+                parent.appendChild(div);
+              }
             }
           }
           if (id2) {
             trigger("markertap", {}, {
-              markerId: Number(id2)
+              markerId: Number(id2),
+              latitude: props3.latitude,
+              longitude: props3.longitude
             });
           }
         });
@@ -15761,7 +17202,8 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
             const distance2 = maps2.geometry.spherical.computeDistanceBetween(a2, b) / 1e3;
             const time = (typeof duration === "number" ? duration : 1e3) / (1e3 * 60 * 60);
             const speed = distance2 / time;
-            const movingEvent = maps2.event.addListener(marker, "moving", (e2) => {
+            const MapsEvent = maps2.event || maps2.Event;
+            const movingEvent = MapsEvent.addListener(marker, "moving", (e2) => {
               const latLng = e2.latLng;
               const label = marker.label;
               if (label) {
@@ -15772,7 +17214,7 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
                 callout.setPosition(latLng);
               }
             });
-            const event = maps2.event.addListener(marker, "moveend", () => {
+            const event = MapsEvent.addListener(marker, "moveend", () => {
               event.remove();
               movingEvent.remove();
               marker.lastPosition = a2;
@@ -15786,7 +17228,7 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
                 callout.setPosition(b);
               }
               const cb = data.animationEnd;
-              if (typeof cb === "function") {
+              if (isFunction(cb)) {
                 cb();
               }
             });
@@ -15804,7 +17246,7 @@ var MapMarker = /* @__PURE__ */ defineSystemComponent({
               marker.moveTo(b, speed);
             } else {
               marker.setPosition(b);
-              maps2.event.trigger(marker, "moveend", {});
+              MapsEvent.trigger(marker, "moveend", {});
             }
           });
         }
@@ -15896,7 +17338,7 @@ const props$d = {
     default: ""
   }
 };
-var MapPolyline = /* @__PURE__ */ defineSystemComponent({
+const MapPolyline = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolyline",
   props: props$d,
   setup(props2) {
@@ -15919,7 +17361,8 @@ var MapPolyline = /* @__PURE__ */ defineSystemComponent({
       function addPolyline(option) {
         const path = [];
         option.points.forEach((point) => {
-          path.push(new maps2.LatLng(point.latitude, point.longitude));
+          const pointPosition = getIsAMap() ? [point.longitude, point.latitude] : new maps2.LatLng(point.latitude, point.longitude);
+          path.push(pointPosition);
         });
         const strokeWeight = Number(option.width) || 1;
         const {
@@ -16004,7 +17447,7 @@ const props$c = {
     default: ""
   }
 };
-var MapCircle = /* @__PURE__ */ defineSystemComponent({
+const MapCircle = /* @__PURE__ */ defineSystemComponent({
   name: "MapCircle",
   props: props$c,
   setup(props2) {
@@ -16021,7 +17464,7 @@ var MapCircle = /* @__PURE__ */ defineSystemComponent({
         addCircle(option);
       }
       function addCircle(option) {
-        const center = new maps2.LatLng(option.latitude, option.longitude);
+        const center = getIsAMap() ? [option.longitude, option.latitude] : new maps2.LatLng(option.latitude, option.longitude);
         const circleOptions = {
           map,
           center,
@@ -16030,28 +17473,37 @@ var MapCircle = /* @__PURE__ */ defineSystemComponent({
           strokeWeight: Number(option.strokeWidth) || 1,
           strokeDashStyle: "solid"
         };
-        const {
-          r: fr,
-          g: fg,
-          b: fb,
-          a: fa
-        } = hexToRgba(option.fillColor);
-        const {
-          r: sr,
-          g: sg,
-          b: sb,
-          a: sa
-        } = hexToRgba(option.color);
-        if ("Color" in maps2) {
-          circleOptions.fillColor = new maps2.Color(fr, fg, fb, fa);
-          circleOptions.strokeColor = new maps2.Color(sr, sg, sb, sa);
+        if (getIsAMap()) {
+          circleOptions.strokeColor = option.color;
+          circleOptions.fillColor = option.fillColor || "#000";
+          circleOptions.fillOpacity = 1;
         } else {
-          circleOptions.fillColor = `rgb(${fr}, ${fg}, ${fb})`;
-          circleOptions.fillOpacity = fa;
-          circleOptions.strokeColor = `rgb(${sr}, ${sg}, ${sb})`;
-          circleOptions.strokeOpacity = sa;
+          const {
+            r: fr,
+            g: fg,
+            b: fb,
+            a: fa
+          } = hexToRgba(option.fillColor);
+          const {
+            r: sr,
+            g: sg,
+            b: sb,
+            a: sa
+          } = hexToRgba(option.color);
+          if ("Color" in maps2) {
+            circleOptions.fillColor = new maps2.Color(fr, fg, fb, fa);
+            circleOptions.strokeColor = new maps2.Color(sr, sg, sb, sa);
+          } else {
+            circleOptions.fillColor = `rgb(${fr}, ${fg}, ${fb})`;
+            circleOptions.fillOpacity = fa;
+            circleOptions.strokeColor = `rgb(${sr}, ${sg}, ${sb})`;
+            circleOptions.strokeOpacity = sa;
+          }
         }
         circle = new maps2.Circle(circleOptions);
+        if (getIsAMap()) {
+          map.add(circle);
+        }
       }
       addCircle(props2);
       watch(props2, updateCircle);
@@ -16069,78 +17521,59 @@ const props$b = {
   },
   position: {
     type: Object,
-    require: true
+    required: true
   },
   iconPath: {
     type: String,
-    require: true
+    required: true
   },
   clickable: {
     type: [Boolean, String],
     default: ""
+  },
+  trigger: {
+    type: Function,
+    required: true
   }
 };
-var MapControl = /* @__PURE__ */ defineSystemComponent({
+const MapControl = /* @__PURE__ */ defineSystemComponent({
   name: "MapControl",
   props: props$b,
   setup(props2) {
-    const onMapReady = inject("onMapReady");
-    let control;
-    function removeControl() {
-      if (control) {
-        control.remove();
+    const imgPath = computed(() => getRealPath(props2.iconPath));
+    const positionStyle = computed(() => {
+      let positionStyle2 = `top:${props2.position.top || 0}px;left:${props2.position.left || 0}px;`;
+      if (props2.position.width) {
+        positionStyle2 += `width:${props2.position.width}px;`;
       }
-    }
-    onMapReady((map, maps2, trigger) => {
-      function updateControl(option) {
-        removeControl();
-        addControl(option);
+      if (props2.position.height) {
+        positionStyle2 += `height:${props2.position.height}px;`;
       }
-      function addControl(option) {
-        const position = option.position || {};
-        control = document.createElement("div");
-        const img = new Image();
-        control.appendChild(img);
-        const style = control.style;
-        style.position = "absolute";
-        style.width = "0";
-        style.height = "0";
-        img.onload = () => {
-          if (option.position.width) {
-            img.width = option.position.width;
-          }
-          if (option.position.height) {
-            img.height = option.position.height;
-          }
-          const style2 = img.style;
-          style2.position = "absolute";
-          style2.left = (position.left || 0) + "px";
-          style2.top = (position.top || 0) + "px";
-          style2.maxWidth = "initial";
-        };
-        img.src = getRealPath(option.iconPath);
-        img.onclick = function($event) {
-          if (option.clickable) {
-            trigger("controltap", $event, {
-              controlId: option.id
-            });
-          }
-        };
-        map.controls[maps2.ControlPosition.TOP_LEFT].push(control);
-      }
-      addControl(props2);
-      watch(props2, updateControl);
+      return positionStyle2;
     });
-    onUnmounted(removeControl);
+    const handleClick = ($event) => {
+      if (props2.clickable) {
+        props2.trigger("controltap", $event, {
+          controlId: props2.id
+        });
+      }
+    };
     return () => {
-      return null;
+      return createVNode("div", {
+        "class": "uni-map-control"
+      }, [createVNode("img", {
+        "src": imgPath.value,
+        "style": positionStyle.value,
+        "class": "uni-map-control-icon",
+        "onClick": handleClick
+      }, null, 12, ["src", "onClick"])]);
     };
   }
 });
 const initInnerAudioContextEventOnce = /* @__PURE__ */ once(() => {
   innerAudioContextEventNames.forEach((eventName) => {
     InnerAudioContext.prototype[eventName] = function(callback) {
-      if (typeof callback === "function") {
+      if (isFunction(callback)) {
         this._events[eventName].push(callback);
       }
     };
@@ -16219,15 +17652,19 @@ class InnerAudioContext {
       "waiting"
     ]);
     eventNames.forEach((eventName) => {
-      audio.addEventListener(eventName.toLowerCase(), () => {
-        if (this._stoping && stopEventNames.indexOf(eventName) >= 0) {
-          return;
-        }
-        const EventName = `on${eventName.slice(0, 1).toUpperCase()}${eventName.slice(1)}`;
-        this._events[EventName].forEach((callback) => {
-          callback();
-        });
-      }, false);
+      audio.addEventListener(
+        eventName.toLowerCase(),
+        () => {
+          if (this._stoping && stopEventNames.indexOf(eventName) >= 0) {
+            return;
+          }
+          const EventName = `on${eventName.slice(0, 1).toUpperCase()}${eventName.slice(1)}`;
+          this._events[EventName].forEach((callback) => {
+            callback();
+          });
+        },
+        false
+      );
     });
     initInnerAudioContextEventOnce();
   }
@@ -16257,13 +17694,20 @@ class InnerAudioContext {
     this.stop();
   }
 }
-const createInnerAudioContext = /* @__PURE__ */ defineSyncApi(API_CREATE_INNER_AUDIO_CONTEXT, () => {
-  return new InnerAudioContext();
-});
-const makePhoneCall = /* @__PURE__ */ defineAsyncApi(API_MAKE_PHONE_CALL, ({ phoneNumber }, { resolve }) => {
-  window.location.href = `tel:${phoneNumber}`;
-  return resolve();
-}, MakePhoneCallProtocol);
+const createInnerAudioContext = /* @__PURE__ */ defineSyncApi(
+  API_CREATE_INNER_AUDIO_CONTEXT,
+  () => {
+    return new InnerAudioContext();
+  }
+);
+const makePhoneCall = /* @__PURE__ */ defineAsyncApi(
+  API_MAKE_PHONE_CALL,
+  ({ phoneNumber }, { resolve }) => {
+    window.location.href = `tel:${phoneNumber}`;
+    return resolve();
+  },
+  MakePhoneCallProtocol
+);
 const UUID_KEY = "__DC_STAT_UUID";
 const storage = window.localStorage || window.sessionStorage || {};
 let deviceId;
@@ -16358,7 +17802,7 @@ function getBrowserInfo() {
     model = "iPad";
     osname = "iOS";
     deviceType = "pad";
-    osversion = typeof window.BigInt === "function" ? "14.0" : "13.0";
+    osversion = isFunction(window.BigInt) ? "14.0" : "13.0";
   } else if (isWindows || isMac || isLinux) {
     model = "PC";
     osname = "PC";
@@ -16454,45 +17898,48 @@ function getBrowserInfo() {
     theme: void 0
   };
 }
-const getWindowInfo = /* @__PURE__ */ defineSyncApi("getWindowInfo", () => {
-  const pixelRatio2 = window.devicePixelRatio;
-  const screenFix = getScreenFix();
-  const landscape = isLandscape(screenFix);
-  const screenWidth = getScreenWidth(screenFix, landscape);
-  const screenHeight = getScreenHeight(screenFix, landscape);
-  const windowWidth = getWindowWidth(screenWidth);
-  let windowHeight = window.innerHeight;
-  const statusBarHeight = out.top;
-  const safeArea = {
-    left: out.left,
-    right: windowWidth - out.right,
-    top: out.top,
-    bottom: windowHeight - out.bottom,
-    width: windowWidth - out.left - out.right,
-    height: windowHeight - out.top - out.bottom
-  };
-  const { top: windowTop, bottom: windowBottom } = getWindowOffset();
-  windowHeight -= windowTop;
-  windowHeight -= windowBottom;
-  return {
-    windowTop,
-    windowBottom,
-    windowWidth,
-    windowHeight,
-    pixelRatio: pixelRatio2,
-    screenWidth,
-    screenHeight,
-    statusBarHeight,
-    safeArea,
-    safeAreaInsets: {
+const getWindowInfo = /* @__PURE__ */ defineSyncApi(
+  "getWindowInfo",
+  () => {
+    const pixelRatio2 = window.devicePixelRatio;
+    const screenFix = getScreenFix();
+    const landscape = isLandscape(screenFix);
+    const screenWidth = getScreenWidth(screenFix, landscape);
+    const screenHeight = getScreenHeight(screenFix, landscape);
+    const windowWidth = getWindowWidth(screenWidth);
+    let windowHeight = window.innerHeight;
+    const statusBarHeight = out.top;
+    const safeArea = {
+      left: out.left,
+      right: windowWidth - out.right,
       top: out.top,
-      right: out.right,
-      bottom: out.bottom,
-      left: out.left
-    },
-    screenTop: screenHeight - windowHeight
-  };
-});
+      bottom: windowHeight - out.bottom,
+      width: windowWidth - out.left - out.right,
+      height: windowHeight - out.top - out.bottom
+    };
+    const { top: windowTop, bottom: windowBottom } = getWindowOffset();
+    windowHeight -= windowTop;
+    windowHeight -= windowBottom;
+    return {
+      windowTop,
+      windowBottom,
+      windowWidth,
+      windowHeight,
+      pixelRatio: pixelRatio2,
+      screenWidth,
+      screenHeight,
+      statusBarHeight,
+      safeArea,
+      safeAreaInsets: {
+        top: out.top,
+        right: out.right,
+        bottom: out.bottom,
+        left: out.left
+      },
+      screenTop: screenHeight - windowHeight
+    };
+  }
+);
 let browserInfo;
 let _initBrowserInfo = true;
 function initBrowserInfo() {
@@ -16500,105 +17947,128 @@ function initBrowserInfo() {
     return;
   browserInfo = getBrowserInfo();
 }
-const getDeviceInfo = /* @__PURE__ */ defineSyncApi("getDeviceInfo", () => {
-  initBrowserInfo();
-  const {
-    deviceBrand,
-    deviceModel,
-    brand,
-    model,
-    platform,
-    system,
-    deviceOrientation,
-    deviceType
-  } = browserInfo;
-  return {
-    brand,
-    deviceBrand,
-    deviceModel,
-    devicePixelRatio: window.devicePixelRatio,
-    deviceId: deviceId$1(),
-    deviceOrientation,
-    deviceType,
-    model,
-    platform,
-    system
-  };
-});
-const getAppBaseInfo = /* @__PURE__ */ defineSyncApi("getAppBaseInfo", () => {
-  initBrowserInfo();
-  const { theme, language, browserName, browserVersion } = browserInfo;
-  return {
-    appId: __uniConfig.appId,
-    appName: __uniConfig.appName,
-    appVersion: __uniConfig.appVersion,
-    appVersionCode: __uniConfig.appVersionCode,
-    appLanguage: getLocale ? getLocale() : language,
-    enableDebug: false,
-    hostSDKVersion: void 0,
-    hostPackageName: void 0,
-    hostFontSizeSetting: void 0,
-    hostName: browserName,
-    hostVersion: browserVersion,
-    hostTheme: theme,
-    hostLanguage: language,
-    language,
-    SDKVersion: "",
-    theme,
-    version: ""
-  };
-});
-const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () => {
-  _initBrowserInfo = true;
-  initBrowserInfo();
-  _initBrowserInfo = false;
-  const windowInfo = getWindowInfo();
-  const deviceInfo = getDeviceInfo();
-  const appBaseInfo = getAppBaseInfo();
-  _initBrowserInfo = true;
-  const { ua: ua2, browserName, browserVersion, osname, osversion } = browserInfo;
-  const systemInfo = extend(windowInfo, deviceInfo, appBaseInfo, {
-    ua: ua2,
-    browserName,
-    browserVersion,
-    uniPlatform: "web",
-    uniCompileVersion: __uniConfig.compilerVersion,
-    uniRuntimeVersion: __uniConfig.compilerVersion,
-    fontSizeSetting: void 0,
-    osName: osname.toLocaleLowerCase(),
-    osVersion: osversion,
-    osLanguage: void 0,
-    osTheme: void 0
-  });
-  delete systemInfo.screenTop;
-  delete systemInfo.enableDebug;
-  delete systemInfo.theme;
-  return sortObject(systemInfo);
-});
-const getSystemInfo = /* @__PURE__ */ defineAsyncApi("getSystemInfo", (_args, { resolve }) => {
-  return resolve(getSystemInfoSync());
-});
+const getDeviceInfo = /* @__PURE__ */ defineSyncApi(
+  "getDeviceInfo",
+  () => {
+    initBrowserInfo();
+    const {
+      deviceBrand,
+      deviceModel,
+      brand,
+      model,
+      platform,
+      system,
+      deviceOrientation,
+      deviceType
+    } = browserInfo;
+    return {
+      brand,
+      deviceBrand,
+      deviceModel,
+      devicePixelRatio: window.devicePixelRatio,
+      deviceId: deviceId$1(),
+      deviceOrientation,
+      deviceType,
+      model,
+      platform,
+      system
+    };
+  }
+);
+const getAppBaseInfo = /* @__PURE__ */ defineSyncApi(
+  "getAppBaseInfo",
+  () => {
+    initBrowserInfo();
+    const { theme, language, browserName, browserVersion } = browserInfo;
+    return {
+      appId: __uniConfig.appId,
+      appName: __uniConfig.appName,
+      appVersion: __uniConfig.appVersion,
+      appVersionCode: __uniConfig.appVersionCode,
+      appLanguage: getLocale ? getLocale() : language,
+      enableDebug: false,
+      hostSDKVersion: void 0,
+      hostPackageName: void 0,
+      hostFontSizeSetting: void 0,
+      hostName: browserName,
+      hostVersion: browserVersion,
+      hostTheme: theme,
+      hostLanguage: language,
+      language,
+      SDKVersion: "",
+      theme,
+      version: ""
+    };
+  }
+);
+const getSystemInfoSync = /* @__PURE__ */ defineSyncApi(
+  "getSystemInfoSync",
+  () => {
+    _initBrowserInfo = true;
+    initBrowserInfo();
+    _initBrowserInfo = false;
+    const windowInfo = getWindowInfo();
+    const deviceInfo = getDeviceInfo();
+    const appBaseInfo = getAppBaseInfo();
+    _initBrowserInfo = true;
+    const { ua: ua2, browserName, browserVersion, osname, osversion } = browserInfo;
+    const systemInfo = extend(
+      windowInfo,
+      deviceInfo,
+      appBaseInfo,
+      {
+        ua: ua2,
+        browserName,
+        browserVersion,
+        uniPlatform: "web",
+        uniCompileVersion: __uniConfig.compilerVersion,
+        uniRuntimeVersion: __uniConfig.compilerVersion,
+        fontSizeSetting: void 0,
+        osName: osname.toLocaleLowerCase(),
+        osVersion: osversion,
+        osLanguage: void 0,
+        osTheme: void 0
+      }
+    );
+    delete systemInfo.screenTop;
+    delete systemInfo.enableDebug;
+    delete systemInfo.theme;
+    return sortObject(systemInfo);
+  }
+);
+const getSystemInfo = /* @__PURE__ */ defineAsyncApi(
+  "getSystemInfo",
+  (_args, { resolve }) => {
+    return resolve(getSystemInfoSync());
+  }
+);
 const API_ON_NETWORK_STATUS_CHANGE = "onNetworkStatusChange";
 function networkListener() {
   getNetworkType().then(({ networkType }) => {
-    UniServiceJSBridge.invokeOnCallback(API_ON_NETWORK_STATUS_CHANGE, {
-      isConnected: networkType !== "none",
-      networkType
-    });
+    UniServiceJSBridge.invokeOnCallback(
+      API_ON_NETWORK_STATUS_CHANGE,
+      {
+        isConnected: networkType !== "none",
+        networkType
+      }
+    );
   });
 }
 function getConnection() {
   return navigator.connection || navigator.webkitConnection || navigator.mozConnection;
 }
-const onNetworkStatusChange = /* @__PURE__ */ defineOnApi(API_ON_NETWORK_STATUS_CHANGE, () => {
-  const connection = getConnection();
-  if (connection) {
-    connection.addEventListener("change", networkListener);
-  } else {
-    window.addEventListener("offline", networkListener);
-    window.addEventListener("online", networkListener);
+const onNetworkStatusChange = /* @__PURE__ */ defineOnApi(
+  API_ON_NETWORK_STATUS_CHANGE,
+  () => {
+    const connection = getConnection();
+    if (connection) {
+      connection.addEventListener("change", networkListener);
+    } else {
+      window.addEventListener("offline", networkListener);
+      window.addEventListener("online", networkListener);
+    }
   }
-});
+);
 const offNetworkStatusChange = /* @__PURE__ */ defineOffApi("offNetworkStatusChange", () => {
   const connection = getConnection();
   if (connection) {
@@ -16608,21 +18078,24 @@ const offNetworkStatusChange = /* @__PURE__ */ defineOffApi("offNetworkStatusCha
     window.removeEventListener("online", networkListener);
   }
 });
-const getNetworkType = /* @__PURE__ */ defineAsyncApi("getNetworkType", (_args, { resolve }) => {
-  const connection = getConnection();
-  let networkType = "unknown";
-  if (connection) {
-    networkType = connection.type;
-    if (networkType === "cellular" && connection.effectiveType) {
-      networkType = connection.effectiveType.replace("slow-", "");
-    } else if (!["none", "wifi"].includes(networkType)) {
-      networkType = "unknown";
+const getNetworkType = /* @__PURE__ */ defineAsyncApi(
+  "getNetworkType",
+  (_args, { resolve }) => {
+    const connection = getConnection();
+    let networkType = "unknown";
+    if (connection) {
+      networkType = connection.type;
+      if (networkType === "cellular" && connection.effectiveType) {
+        networkType = connection.effectiveType.replace("slow-", "");
+      } else if (!["none", "wifi"].includes(networkType)) {
+        networkType = "unknown";
+      }
+    } else if (navigator.onLine === false) {
+      networkType = "none";
     }
-  } else if (navigator.onLine === false) {
-    networkType = "none";
+    return resolve({ networkType });
   }
-  return resolve({ networkType });
-});
+);
 let listener$1 = null;
 const onAccelerometerChange = /* @__PURE__ */ defineOnApi(API_ON_ACCELEROMETER, () => {
   startAccelerometer();
@@ -16630,336 +18103,214 @@ const onAccelerometerChange = /* @__PURE__ */ defineOnApi(API_ON_ACCELEROMETER, 
 const offAccelerometerChange = /* @__PURE__ */ defineOnApi(API_OFF_ACCELEROMETER, () => {
   stopAccelerometer();
 });
-const startAccelerometer = /* @__PURE__ */ defineAsyncApi(API_START_ACCELEROMETER, (_, { resolve, reject }) => {
-  if (!window.DeviceMotionEvent) {
-    reject();
-    return;
-  }
-  function addEventListener() {
-    listener$1 = function(event) {
-      const acceleration = event.acceleration || event.accelerationIncludingGravity;
-      UniServiceJSBridge.invokeOnCallback(API_ON_ACCELEROMETER, {
-        x: acceleration && acceleration.x || 0,
-        y: acceleration && acceleration.y || 0,
-        z: acceleration && acceleration.z || 0
-      });
-    };
-    window.addEventListener("devicemotion", listener$1, false);
-  }
-  if (!listener$1) {
-    if (DeviceMotionEvent.requestPermission) {
-      DeviceMotionEvent.requestPermission().then((res) => {
-        if (res === "granted") {
-          addEventListener();
-          resolve();
-        } else {
-          reject(`${res}`);
-        }
-      }).catch((error) => {
-        reject(`${error}`);
-      });
+const startAccelerometer = /* @__PURE__ */ defineAsyncApi(
+  API_START_ACCELEROMETER,
+  (_, { resolve, reject }) => {
+    if (!window.DeviceMotionEvent) {
+      reject();
       return;
     }
-    addEventListener();
-  }
-  resolve();
-});
-const stopAccelerometer = /* @__PURE__ */ defineAsyncApi(API_STOP_ACCELEROMETER, (_, { resolve }) => {
-  if (listener$1) {
-    window.removeEventListener("devicemotion", listener$1, false);
-    listener$1 = null;
-  }
-  resolve();
-});
-let listener = null;
-const onCompassChange = /* @__PURE__ */ defineOnApi(API_ON_COMPASS, () => {
-  startCompass();
-});
-const offCompassChange = /* @__PURE__ */ defineOffApi(API_OFF_COMPASS, () => {
-  stopCompass();
-});
-const startCompass = /* @__PURE__ */ defineAsyncApi(API_START_COMPASS, (_, { resolve, reject }) => {
-  if (!window.DeviceOrientationEvent) {
-    reject();
-    return;
-  }
-  function addEventListener() {
-    listener = function(event) {
-      const direction2 = 360 - (event.alpha !== null ? event.alpha : 360);
-      UniServiceJSBridge.invokeOnCallback(API_ON_COMPASS, {
-        direction: direction2
-      });
-    };
-    window.addEventListener("deviceorientation", listener, false);
-  }
-  if (!listener) {
-    if (DeviceOrientationEvent.requestPermission) {
-      DeviceOrientationEvent.requestPermission().then((res) => {
-        if (res === "granted") {
-          addEventListener();
-          resolve();
-        } else {
-          reject(`${res}`);
-        }
-      }).catch((error) => {
-        reject(`${error}`);
-      });
-      return;
+    function addEventListener() {
+      listener$1 = function(event) {
+        const acceleration = event.acceleration || event.accelerationIncludingGravity;
+        UniServiceJSBridge.invokeOnCallback(API_ON_ACCELEROMETER, {
+          x: acceleration && acceleration.x || 0,
+          y: acceleration && acceleration.y || 0,
+          z: acceleration && acceleration.z || 0
+        });
+      };
+      window.addEventListener("devicemotion", listener$1, false);
     }
-    addEventListener();
-  }
-  resolve();
-});
-const stopCompass = /* @__PURE__ */ defineAsyncApi(API_STOP_COMPASS, (_, { resolve }) => {
-  if (listener) {
-    window.removeEventListener("deviceorientation", listener, false);
-    listener = null;
-  }
-  resolve();
-});
-const _isSupport = !!window.navigator.vibrate;
-const vibrateShort = /* @__PURE__ */ defineAsyncApi(API_VIBRATE_SHORT, (args, { resolve, reject }) => {
-  if (_isSupport && window.navigator.vibrate(15)) {
-    resolve();
-  } else {
-    reject("vibrateLong:fail");
-  }
-});
-const vibrateLong = /* @__PURE__ */ defineAsyncApi(API_VIBRATE_LONG, (args, { resolve, reject }) => {
-  if (_isSupport && window.navigator.vibrate(400)) {
-    resolve();
-  } else {
-    reject("vibrateLong:fail");
-  }
-});
-const KEY_MAPS = {
-  esc: ["Esc", "Escape"],
-  enter: ["Enter"]
-};
-const KEYS = Object.keys(KEY_MAPS);
-function useKeyboard() {
-  const key = ref("");
-  const disable = ref(false);
-  const onKeyup = (evt) => {
-    if (disable.value) {
-      return;
-    }
-    const res = KEYS.find((key2) => KEY_MAPS[key2].indexOf(evt.key) !== -1);
-    if (res) {
-      key.value = res;
-    }
-    nextTick(() => key.value = "");
-  };
-  onMounted(() => {
-    document.addEventListener("keyup", onKeyup);
-  });
-  onBeforeUnmount(() => {
-    document.removeEventListener("keyup", onKeyup);
-  });
-  return {
-    key,
-    disable
-  };
-}
-const VNODE_MASK = /* @__PURE__ */ createVNode("div", { class: "uni-mask" }, null, -1);
-function createRootApp(component, rootState, callback) {
-  rootState.onClose = (...args) => (rootState.visible = false, callback.apply(null, args));
-  return createApp(defineComponent({
-    setup() {
-      return () => (openBlock(), createBlock(component, rootState, null, 16));
-    }
-  }));
-}
-function ensureRoot(id2) {
-  let rootEl = document.getElementById(id2);
-  if (!rootEl) {
-    rootEl = document.createElement("div");
-    rootEl.id = id2;
-    document.body.append(rootEl);
-  }
-  return rootEl;
-}
-function usePopup(props2, {
-  onEsc,
-  onEnter
-}) {
-  const visible = ref(props2.visible);
-  const { key, disable } = useKeyboard();
-  watch(() => props2.visible, (value) => visible.value = value);
-  watch(() => visible.value, (value) => disable.value = !value);
-  watchEffect(() => {
-    const { value } = key;
-    if (value === "esc") {
-      onEsc && onEsc();
-    } else if (value === "enter") {
-      onEnter && onEnter();
-    }
-  });
-  return visible;
-}
-const props$a = {
-  title: {
-    type: String,
-    default: ""
-  },
-  content: {
-    type: String,
-    default: ""
-  },
-  showCancel: {
-    type: Boolean,
-    default: true
-  },
-  cancelText: {
-    type: String,
-    default: "Cancel"
-  },
-  cancelColor: {
-    type: String,
-    default: "#000000"
-  },
-  confirmText: {
-    type: String,
-    default: "OK"
-  },
-  confirmColor: {
-    type: String,
-    default: "#007aff"
-  },
-  visible: {
-    type: Boolean
-  },
-  editable: {
-    type: Boolean,
-    default: false
-  },
-  placeholderText: {
-    type: String,
-    default: ""
-  }
-};
-var modal = /* @__PURE__ */ defineComponent({
-  props: props$a,
-  setup(props2, {
-    emit: emit2
-  }) {
-    const editContent = ref("");
-    const close = () => visible.value = false;
-    const cancel = () => (close(), emit2("close", "cancel"));
-    const confirm = () => (close(), emit2("close", "confirm", editContent.value));
-    const visible = usePopup(props2, {
-      onEsc: cancel,
-      onEnter: () => {
-        !props2.editable && confirm();
+    if (!listener$1) {
+      if (DeviceMotionEvent.requestPermission) {
+        DeviceMotionEvent.requestPermission().then((res) => {
+          if (res === "granted") {
+            addEventListener();
+            resolve();
+          } else {
+            reject(`${res}`);
+          }
+        }).catch((error) => {
+          reject(`${error}`);
+        });
+        return;
       }
-    });
-    return () => {
-      const {
-        title,
-        content,
-        showCancel,
-        confirmText,
-        confirmColor,
-        editable,
-        placeholderText
-      } = props2;
-      editContent.value = content;
-      return createVNode(Transition, {
-        "name": "uni-fade"
-      }, {
-        default: () => [withDirectives(createVNode("uni-modal", {
-          "onTouchmove": onEventPrevent
-        }, [VNODE_MASK, createVNode("div", {
-          "class": "uni-modal"
-        }, [title && createVNode("div", {
-          "class": "uni-modal__hd"
-        }, [createVNode("strong", {
-          "class": "uni-modal__title",
-          "textContent": title
-        }, null, 8, ["textContent"])]), editable ? createVNode("textarea", {
-          "class": "uni-modal__textarea",
-          "rows": "1",
-          "placeholder": placeholderText,
-          "value": content,
-          "onInput": (e2) => editContent.value = e2.target.value
-        }, null, 40, ["placeholder", "value", "onInput"]) : createVNode("div", {
-          "class": "uni-modal__bd",
-          "onTouchmovePassive": onEventStop,
-          "textContent": content
-        }, null, 40, ["onTouchmovePassive", "textContent"]), createVNode("div", {
-          "class": "uni-modal__ft"
-        }, [showCancel && createVNode("div", {
-          "style": {
-            color: props2.cancelColor
-          },
-          "class": "uni-modal__btn uni-modal__btn_default",
-          "onClick": cancel
-        }, [props2.cancelText], 12, ["onClick"]), createVNode("div", {
-          "style": {
-            color: confirmColor
-          },
-          "class": "uni-modal__btn uni-modal__btn_primary",
-          "onClick": confirm
-        }, [confirmText], 12, ["onClick"])])])], 40, ["onTouchmove"]), [[vShow, visible.value]])]
-      });
-    };
-  }
-});
-let showModalState;
-const onHidePopupOnce$1 = /* @__PURE__ */ once(() => {
-  UniServiceJSBridge.on("onHidePopup", () => showModalState.visible = false);
-});
-let currentShowModalResolve;
-function onModalClose(type, content) {
-  const isConfirm = type === "confirm";
-  const res = {
-    confirm: isConfirm,
-    cancel: type === "cancel"
-  };
-  isConfirm && showModalState.editable && (res.content = content);
-  currentShowModalResolve && currentShowModalResolve(res);
-}
-const showModal = /* @__PURE__ */ defineAsyncApi(API_SHOW_MODAL, (args, { resolve }) => {
-  onHidePopupOnce$1();
-  currentShowModalResolve = resolve;
-  if (!showModalState) {
-    showModalState = reactive(args);
-    nextTick(() => (createRootApp(modal, showModalState, onModalClose).mount(ensureRoot("u-a-m")), nextTick(() => showModalState.visible = true)));
-  } else {
-    extend(showModalState, args);
-    showModalState.visible = true;
-  }
-}, ShowModalProtocol, ShowModalOptions);
-const getClipboardData = /* @__PURE__ */ defineAsyncApi(API_GET_CLIPBOARD_DATA, async (_, { resolve, reject }) => {
-  initI18nGetClipboardDataMsgsOnce();
-  const { t: t2 } = useI18n();
-  try {
-    const data = await navigator.clipboard.readText();
-    resolve({ data });
-  } catch (error) {
-    reject(`${error} ${t2("uni.getClipboardData.fail")}`);
-  }
-});
-const setClipboardData = /* @__PURE__ */ defineAsyncApi(API_SET_CLIPBOARD_DATA, async ({ data }, { resolve, reject }) => {
-  initI18nSetClipboardDataMsgsOnce();
-  const { t: t2 } = useI18n();
-  try {
-    await navigator.clipboard.writeText(data);
+      addEventListener();
+    }
     resolve();
-  } catch (error) {
-    reject();
-    showModal({
-      title: t2("uni.setClipboardData.fail"),
-      content: data,
-      editable: true
-    });
   }
-}, SetClipboardDataProtocol, SetClipboardDataOptions);
+);
+const stopAccelerometer = /* @__PURE__ */ defineAsyncApi(
+  API_STOP_ACCELEROMETER,
+  (_, { resolve }) => {
+    if (listener$1) {
+      window.removeEventListener("devicemotion", listener$1, false);
+      listener$1 = null;
+    }
+    resolve();
+  }
+);
+let listener = null;
+const onCompassChange = /* @__PURE__ */ defineOnApi(
+  API_ON_COMPASS,
+  () => {
+    startCompass();
+  }
+);
+const offCompassChange = /* @__PURE__ */ defineOffApi(
+  API_OFF_COMPASS,
+  () => {
+    stopCompass();
+  }
+);
+const startCompass = /* @__PURE__ */ defineAsyncApi(
+  API_START_COMPASS,
+  (_, { resolve, reject }) => {
+    if (!window.DeviceOrientationEvent) {
+      reject();
+      return;
+    }
+    function addEventListener() {
+      listener = function(event) {
+        const direction2 = 360 - (event.alpha !== null ? event.alpha : 360);
+        UniServiceJSBridge.invokeOnCallback(API_ON_COMPASS, {
+          direction: direction2
+        });
+      };
+      window.addEventListener("deviceorientation", listener, false);
+    }
+    if (!listener) {
+      if (DeviceOrientationEvent.requestPermission) {
+        DeviceOrientationEvent.requestPermission().then((res) => {
+          if (res === "granted") {
+            addEventListener();
+            resolve();
+          } else {
+            reject(`${res}`);
+          }
+        }).catch((error) => {
+          reject(`${error}`);
+        });
+        return;
+      }
+      addEventListener();
+    }
+    resolve();
+  }
+);
+const stopCompass = /* @__PURE__ */ defineAsyncApi(
+  API_STOP_COMPASS,
+  (_, { resolve }) => {
+    if (listener) {
+      window.removeEventListener("deviceorientation", listener, false);
+      listener = null;
+    }
+    resolve();
+  }
+);
+const _isSupport = !!window.navigator.vibrate;
+const vibrateShort = /* @__PURE__ */ defineAsyncApi(
+  API_VIBRATE_SHORT,
+  (args, { resolve, reject }) => {
+    if (_isSupport && window.navigator.vibrate(15)) {
+      resolve();
+    } else {
+      reject("vibrateLong:fail");
+    }
+  }
+);
+const vibrateLong = /* @__PURE__ */ defineAsyncApi(
+  API_VIBRATE_LONG,
+  (args, { resolve, reject }) => {
+    if (_isSupport && window.navigator.vibrate(400)) {
+      resolve();
+    } else {
+      reject("vibrateLong:fail");
+    }
+  }
+);
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+const getClipboardData = /* @__PURE__ */ defineAsyncApi(
+  API_GET_CLIPBOARD_DATA,
+  (_0, _1) => __async(void 0, [_0, _1], function* (_, { resolve, reject }) {
+    initI18nGetClipboardDataMsgsOnce();
+    const { t: t2 } = useI18n();
+    try {
+      const data = yield navigator.clipboard.readText();
+      resolve({ data });
+    } catch (error) {
+      _getClipboardData(resolve, () => {
+        reject(`${error} ${t2("uni.getClipboardData.fail")}`);
+      });
+    }
+  })
+);
+const setClipboardData = /* @__PURE__ */ defineAsyncApi(
+  API_SET_CLIPBOARD_DATA,
+  (_0, _1) => __async(void 0, [_0, _1], function* ({ data }, { resolve, reject }) {
+    try {
+      yield navigator.clipboard.writeText(data);
+      resolve();
+    } catch (error) {
+      _setClipboardData(data, resolve, reject);
+    }
+  }),
+  SetClipboardDataProtocol,
+  SetClipboardDataOptions
+);
+function _getClipboardData(resolve, reject) {
+  const pasteText = document.getElementById("#clipboard");
+  const data = pasteText ? pasteText.value : void 0;
+  if (data) {
+    resolve({ data });
+  } else {
+    reject();
+  }
+}
+function _setClipboardData(data, resolve, reject) {
+  const pasteText = document.getElementById("#clipboard");
+  pasteText && pasteText.remove();
+  const textarea = document.createElement("textarea");
+  textarea.id = "#clipboard";
+  textarea.style.position = "fixed";
+  textarea.style.top = "-9999px";
+  textarea.style.zIndex = "-9999";
+  document.body.appendChild(textarea);
+  textarea.value = data;
+  textarea.select();
+  textarea.setSelectionRange(0, textarea.value.length);
+  const result = document.execCommand("Copy", false);
+  textarea.blur();
+  if (result) {
+    resolve();
+  } else {
+    reject();
+  }
+}
 const STORAGE_KEYS = "uni-storage-keys";
 function parseValue(value) {
   const types = ["object", "string", "number", "boolean", "undefined"];
   try {
-    const object = typeof value === "string" ? JSON.parse(value) : value;
+    const object = isString(value) ? JSON.parse(value) : value;
     const type = object.type;
     if (types.indexOf(type) >= 0) {
       const keys = Object.keys(object);
@@ -16977,25 +18328,33 @@ function parseValue(value) {
   } catch (error) {
   }
 }
-const setStorageSync = /* @__PURE__ */ defineSyncApi(API_SET_STORAGE_SYNC, (key, data) => {
-  const type = typeof data;
-  const value = type === "string" ? data : JSON.stringify({
-    type,
-    data
-  });
-  localStorage.setItem(key, value);
-}, SetStorageSyncProtocol);
-const setStorage = /* @__PURE__ */ defineAsyncApi(API_SET_STORAGE, ({ key, data }, { resolve, reject }) => {
-  try {
-    setStorageSync(key, data);
-    resolve();
-  } catch (error) {
-    reject(error.message);
-  }
-}, SetStorageProtocol);
+const setStorageSync = /* @__PURE__ */ defineSyncApi(
+  API_SET_STORAGE_SYNC,
+  (key, data) => {
+    const type = typeof data;
+    const value = type === "string" ? data : JSON.stringify({
+      type,
+      data
+    });
+    localStorage.setItem(key, value);
+  },
+  SetStorageSyncProtocol
+);
+const setStorage = /* @__PURE__ */ defineAsyncApi(
+  API_SET_STORAGE,
+  ({ key, data }, { resolve, reject }) => {
+    try {
+      setStorageSync(key, data);
+      resolve();
+    } catch (error) {
+      reject(error.message);
+    }
+  },
+  SetStorageProtocol
+);
 function getStorageOrigin(key) {
   const value = localStorage && localStorage.getItem(key);
-  if (typeof value !== "string") {
+  if (!isString(value)) {
     throw new Error("data not found");
   }
   let data = value;
@@ -17009,133 +18368,187 @@ function getStorageOrigin(key) {
   }
   return data;
 }
-const getStorageSync = /* @__PURE__ */ defineSyncApi(API_GET_STORAGE_SYNC, (key, t2) => {
-  try {
-    return getStorageOrigin(key);
-  } catch (error) {
-    return "";
-  }
-}, GetStorageSyncProtocol);
-const getStorage = /* @__PURE__ */ defineAsyncApi(API_GET_STORAGE, ({ key }, { resolve, reject }) => {
-  try {
-    const data = getStorageOrigin(key);
-    resolve({
-      data
-    });
-  } catch (error) {
-    reject(error.message);
-  }
-}, GetStorageProtocol);
-const removeStorageSync = /* @__PURE__ */ defineSyncApi(API_REMOVE_STORAGE, (key) => {
-  if (localStorage) {
-    localStorage.removeItem(key);
-  }
-}, RemoveStorageSyncProtocol);
-const removeStorage = /* @__PURE__ */ defineAsyncApi(API_REMOVE_STORAGE, ({ key }, { resolve }) => {
-  removeStorageSync(key);
-  resolve();
-}, RemoveStorageProtocol);
-const clearStorageSync = /* @__PURE__ */ defineSyncApi("clearStorageSync", () => {
-  if (localStorage) {
-    localStorage.clear();
-  }
-});
-const clearStorage = /* @__PURE__ */ defineAsyncApi("clearStorage", (_, { resolve }) => {
-  clearStorageSync();
-  resolve();
-});
-const getStorageInfoSync = /* @__PURE__ */ defineSyncApi("getStorageInfoSync", () => {
-  const length = localStorage && localStorage.length || 0;
-  const keys = [];
-  let currentSize = 0;
-  for (let index2 = 0; index2 < length; index2++) {
-    const key = localStorage.key(index2);
-    const value = localStorage.getItem(key) || "";
-    currentSize += key.length + value.length;
-    if (key !== STORAGE_KEYS) {
-      keys.push(key);
+const getStorageSync = /* @__PURE__ */ defineSyncApi(
+  API_GET_STORAGE_SYNC,
+  (key) => {
+    try {
+      return getStorageOrigin(key);
+    } catch (error) {
+      return "";
+    }
+  },
+  GetStorageSyncProtocol
+);
+const getStorage = /* @__PURE__ */ defineAsyncApi(
+  API_GET_STORAGE,
+  ({ key }, { resolve, reject }) => {
+    try {
+      const data = getStorageOrigin(key);
+      resolve({
+        data
+      });
+    } catch (error) {
+      reject(error.message);
+    }
+  },
+  GetStorageProtocol
+);
+const removeStorageSync = /* @__PURE__ */ defineSyncApi(
+  API_REMOVE_STORAGE,
+  (key) => {
+    if (localStorage) {
+      localStorage.removeItem(key);
+    }
+  },
+  RemoveStorageSyncProtocol
+);
+const removeStorage = /* @__PURE__ */ defineAsyncApi(
+  API_REMOVE_STORAGE,
+  ({ key }, { resolve }) => {
+    removeStorageSync(key);
+    resolve();
+  },
+  RemoveStorageProtocol
+);
+const clearStorageSync = /* @__PURE__ */ defineSyncApi(
+  "clearStorageSync",
+  () => {
+    if (localStorage) {
+      localStorage.clear();
     }
   }
-  return {
-    keys,
-    currentSize: Math.ceil(currentSize * 2 / 1024),
-    limitSize: Number.MAX_VALUE
-  };
-});
-const getStorageInfo = /* @__PURE__ */ defineAsyncApi("getStorageInfo", (_, { resolve }) => {
-  resolve(getStorageInfoSync());
-});
-const getFileInfo = /* @__PURE__ */ defineAsyncApi(API_GET_FILE_INFO, ({ filePath }, { resolve, reject }) => {
-  urlToFile(filePath).then((res) => {
-    resolve({
-      size: res.size
-    });
-  }).catch((err) => {
-    reject(String(err));
-  });
-}, GetFileInfoProtocol, GetFileInfoOptions);
-const openDocument = /* @__PURE__ */ defineAsyncApi(API_OPEN_DOCUMENT, ({ filePath }, { resolve }) => {
-  window.open(filePath);
-  return resolve();
-}, OpenDocumentProtocol, OpenDocumentOptions);
-const hideKeyboard = /* @__PURE__ */ defineAsyncApi(API_HIDE_KEYBOARD, (args, { resolve, reject }) => {
-  const activeElement = document.activeElement;
-  if (activeElement && (activeElement.tagName === "TEXTAREA" || activeElement.tagName === "INPUT")) {
-    activeElement.blur();
+);
+const clearStorage = /* @__PURE__ */ defineAsyncApi(
+  "clearStorage",
+  (_, { resolve }) => {
+    clearStorageSync();
     resolve();
   }
-});
+);
+const getStorageInfoSync = /* @__PURE__ */ defineSyncApi(
+  "getStorageInfoSync",
+  () => {
+    const length = localStorage && localStorage.length || 0;
+    const keys = [];
+    let currentSize = 0;
+    for (let index2 = 0; index2 < length; index2++) {
+      const key = localStorage.key(index2);
+      const value = localStorage.getItem(key) || "";
+      currentSize += key.length + value.length;
+      if (key !== STORAGE_KEYS) {
+        keys.push(key);
+      }
+    }
+    return {
+      keys,
+      currentSize: Math.ceil(currentSize * 2 / 1024),
+      limitSize: Number.MAX_VALUE
+    };
+  }
+);
+const getStorageInfo = /* @__PURE__ */ defineAsyncApi(
+  "getStorageInfo",
+  (_, { resolve }) => {
+    resolve(getStorageInfoSync());
+  }
+);
+const getFileInfo = /* @__PURE__ */ defineAsyncApi(
+  API_GET_FILE_INFO,
+  ({ filePath }, { resolve, reject }) => {
+    urlToFile(filePath).then((res) => {
+      resolve({
+        size: res.size
+      });
+    }).catch((err) => {
+      reject(String(err));
+    });
+  },
+  GetFileInfoProtocol,
+  GetFileInfoOptions
+);
+const openDocument = /* @__PURE__ */ defineAsyncApi(
+  API_OPEN_DOCUMENT,
+  ({ filePath }, { resolve }) => {
+    window.open(filePath);
+    return resolve();
+  },
+  OpenDocumentProtocol,
+  OpenDocumentOptions
+);
+const hideKeyboard = /* @__PURE__ */ defineAsyncApi(
+  API_HIDE_KEYBOARD,
+  (args, { resolve, reject }) => {
+    const activeElement = document.activeElement;
+    if (activeElement && (activeElement.tagName === "TEXTAREA" || activeElement.tagName === "INPUT")) {
+      activeElement.blur();
+      resolve();
+    }
+  }
+);
 function getServiceAddress() {
   return window.location.protocol + "//" + window.location.host;
 }
-const getImageInfo = /* @__PURE__ */ defineAsyncApi(API_GET_IMAGE_INFO, ({ src }, { resolve, reject }) => {
-  const img = new Image();
-  img.onload = function() {
-    resolve({
-      width: img.naturalWidth,
-      height: img.naturalHeight,
-      path: src.indexOf("/") === 0 ? getServiceAddress() + src : src
-    });
-  };
-  img.onerror = function() {
-    reject();
-  };
-  img.src = src;
-}, GetImageInfoProtocol, GetImageInfoOptions);
-const getVideoInfo = /* @__PURE__ */ defineAsyncApi(API_GET_VIDEO_INFO, ({ src }, { resolve, reject }) => {
-  urlToFile(src, true).then((file) => {
-    return file;
-  }).catch(() => {
-    return null;
-  }).then((file) => {
-    const video = document.createElement("video");
-    if (video.onloadedmetadata !== void 0) {
-      const handle = setTimeout(() => {
-        video.onloadedmetadata = null;
-        video.onerror = null;
-        reject();
-      }, src.startsWith("data:") || src.startsWith("blob:") ? 300 : 3e3);
-      video.onloadedmetadata = function() {
-        clearTimeout(handle);
-        video.onerror = null;
-        resolve({
-          size: file ? file.size : void 0,
-          duration: video.duration || 0,
-          width: video.videoWidth || 0,
-          height: video.videoHeight || 0
-        });
-      };
-      video.onerror = function() {
-        clearTimeout(handle);
-        video.onloadedmetadata = null;
-        reject();
-      };
-      video.src = src;
-    } else {
+const getImageInfo = /* @__PURE__ */ defineAsyncApi(
+  API_GET_IMAGE_INFO,
+  ({ src }, { resolve, reject }) => {
+    const img = new Image();
+    img.onload = function() {
+      resolve({
+        width: img.naturalWidth,
+        height: img.naturalHeight,
+        path: src.indexOf("/") === 0 ? getServiceAddress() + src : src
+      });
+    };
+    img.onerror = function() {
       reject();
-    }
-  });
-}, GetVideoInfoProtocol, GetVideoInfoOptions);
+    };
+    img.src = src;
+  },
+  GetImageInfoProtocol,
+  GetImageInfoOptions
+);
+const getVideoInfo = /* @__PURE__ */ defineAsyncApi(
+  API_GET_VIDEO_INFO,
+  ({ src }, { resolve, reject }) => {
+    urlToFile(src, true).then((file) => {
+      return file;
+    }).catch(() => {
+      return null;
+    }).then((file) => {
+      const video = document.createElement("video");
+      if (video.onloadedmetadata !== void 0) {
+        const handle = setTimeout(
+          () => {
+            video.onloadedmetadata = null;
+            video.onerror = null;
+            reject();
+          },
+          src.startsWith("data:") || src.startsWith("blob:") ? 300 : 3e3
+        );
+        video.onloadedmetadata = function() {
+          clearTimeout(handle);
+          video.onerror = null;
+          resolve({
+            size: file ? file.size : void 0,
+            duration: video.duration || 0,
+            width: video.videoWidth || 0,
+            height: video.videoHeight || 0
+          });
+        };
+        video.onerror = function() {
+          clearTimeout(handle);
+          video.onloadedmetadata = null;
+          reject();
+        };
+        video.src = src;
+      } else {
+        reject();
+      }
+    });
+  },
+  GetVideoInfoProtocol,
+  GetVideoInfoOptions
+);
 const MIMEType = {
   image: {
     jpg: "jpeg",
@@ -17183,6 +18596,7 @@ const MIMEType = {
     wvx: "x-ms-wvx"
   }
 };
+const MIMEType$1 = MIMEType;
 const ALL = "all";
 addInteractListener();
 function isWXEnv() {
@@ -17210,7 +18624,7 @@ function _createInput({
   inputEl.accept = extension.map((item) => {
     if (type !== ALL) {
       const MIMEKey = item.replace(".", "");
-      return `${type}/${MIMEType[type][MIMEKey] || MIMEKey}`;
+      return `${type}/${MIMEType$1[type][MIMEKey] || MIMEKey}`;
     } else {
       if (isWXEnv()) {
         return ".";
@@ -17227,106 +18641,196 @@ function _createInput({
   return inputEl;
 }
 let fileInput = null;
-const chooseFile = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_FILE, ({
-  count,
-  sourceType,
-  type,
-  extension
-}, { resolve, reject }) => {
-  initI18nChooseFileMsgsOnce();
-  const { t: t2 } = useI18n();
-  if (fileInput) {
-    document.body.removeChild(fileInput);
-    fileInput = null;
-  }
-  fileInput = _createInput({
+const chooseFile = /* @__PURE__ */ defineAsyncApi(
+  API_CHOOSE_FILE,
+  ({
     count,
     sourceType,
     type,
     extension
-  });
-  document.body.appendChild(fileInput);
-  fileInput.addEventListener("change", function(event) {
-    const eventTarget = event.target;
-    const tempFiles = [];
-    if (eventTarget && eventTarget.files) {
-      const fileCount = eventTarget.files.length;
-      for (let i = 0; i < fileCount; i++) {
-        const file = eventTarget.files[i];
-        let filePath;
-        Object.defineProperty(file, "path", {
-          get() {
-            filePath = filePath || fileToUrl(file);
-            return filePath;
-          }
-        });
-        if (i < count)
-          tempFiles.push(file);
-      }
+  }, { resolve, reject }) => {
+    initI18nChooseFileMsgsOnce();
+    const { t: t2 } = useI18n();
+    if (fileInput) {
+      document.body.removeChild(fileInput);
+      fileInput = null;
     }
-    const res = {
-      get tempFilePaths() {
-        return tempFiles.map(({ path }) => path);
-      },
-      tempFiles
-    };
-    resolve(res);
-  });
-  fileInput.click();
-  if (!getInteractStatus()) {
-    console.warn(t2("uni.chooseFile.notUserActivation"));
-  }
-}, ChooseFileProtocol, ChooseFileOptions);
+    fileInput = _createInput({
+      count,
+      sourceType,
+      type,
+      extension
+    });
+    document.body.appendChild(fileInput);
+    fileInput.addEventListener("change", function(event) {
+      const eventTarget = event.target;
+      const tempFiles = [];
+      if (eventTarget && eventTarget.files) {
+        const fileCount = eventTarget.files.length;
+        for (let i = 0; i < fileCount; i++) {
+          const file = eventTarget.files[i];
+          let filePath;
+          Object.defineProperty(file, "path", {
+            get() {
+              filePath = filePath || fileToUrl(file);
+              return filePath;
+            }
+          });
+          if (i < count)
+            tempFiles.push(file);
+        }
+      }
+      const res = {
+        get tempFilePaths() {
+          return tempFiles.map(({ path }) => path);
+        },
+        tempFiles
+      };
+      resolve(res);
+    });
+    fileInput.click();
+    if (!getInteractStatus()) {
+      console.warn(t2("uni.chooseFile.notUserActivation"));
+    }
+  },
+  ChooseFileProtocol,
+  ChooseFileOptions
+);
 let imageInput = null;
-const chooseImage = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_IMAGE, ({
-  count,
-  sourceType,
-  extension
-}, { resolve, reject }) => {
-  initI18nChooseFileMsgsOnce();
-  const { t: t2 } = useI18n();
-  if (imageInput) {
-    document.body.removeChild(imageInput);
-    imageInput = null;
-  }
-  imageInput = _createInput({
+const chooseImage = /* @__PURE__ */ defineAsyncApi(
+  API_CHOOSE_IMAGE,
+  ({
     count,
     sourceType,
-    extension,
-    type: "image"
-  });
-  document.body.appendChild(imageInput);
-  imageInput.addEventListener("change", function(event) {
-    const eventTarget = event.target;
-    const tempFiles = [];
-    if (eventTarget && eventTarget.files) {
-      const fileCount = eventTarget.files.length;
-      for (let i = 0; i < fileCount; i++) {
-        const file = eventTarget.files[i];
-        let filePath;
-        Object.defineProperty(file, "path", {
-          get() {
-            filePath = filePath || fileToUrl(file);
-            return filePath;
-          }
-        });
-        if (i < count)
-          tempFiles.push(file);
-      }
+    extension
+  }, { resolve, reject }) => {
+    initI18nChooseFileMsgsOnce();
+    const { t: t2 } = useI18n();
+    if (imageInput) {
+      document.body.removeChild(imageInput);
+      imageInput = null;
     }
-    const res = {
-      get tempFilePaths() {
-        return tempFiles.map(({ path }) => path);
-      },
-      tempFiles
-    };
-    resolve(res);
+    imageInput = _createInput({
+      count,
+      sourceType,
+      extension,
+      type: "image"
+    });
+    document.body.appendChild(imageInput);
+    imageInput.addEventListener("change", function(event) {
+      const eventTarget = event.target;
+      const tempFiles = [];
+      if (eventTarget && eventTarget.files) {
+        const fileCount = eventTarget.files.length;
+        for (let i = 0; i < fileCount; i++) {
+          const file = eventTarget.files[i];
+          let filePath;
+          Object.defineProperty(file, "path", {
+            get() {
+              filePath = filePath || fileToUrl(file);
+              return filePath;
+            }
+          });
+          if (i < count)
+            tempFiles.push(file);
+        }
+      }
+      const res = {
+        get tempFilePaths() {
+          return tempFiles.map(({ path }) => path);
+        },
+        tempFiles
+      };
+      resolve(res);
+    });
+    imageInput.click();
+    if (!getInteractStatus()) {
+      console.warn(t2("uni.chooseFile.notUserActivation"));
+    }
+  },
+  ChooseImageProtocol,
+  ChooseImageOptions
+);
+const KEY_MAPS = {
+  esc: ["Esc", "Escape"],
+  enter: ["Enter"]
+};
+const KEYS = Object.keys(KEY_MAPS);
+function useKeyboard() {
+  const key = ref("");
+  const disable = ref(false);
+  const onKeyup = (evt) => {
+    if (disable.value) {
+      return;
+    }
+    const res = KEYS.find(
+      (key2) => KEY_MAPS[key2].indexOf(evt.key) !== -1
+    );
+    if (res) {
+      key.value = res;
+    }
+    nextTick(() => key.value = "");
+  };
+  onMounted(() => {
+    document.addEventListener("keyup", onKeyup);
   });
-  imageInput.click();
-  if (!getInteractStatus()) {
-    console.warn(t2("uni.chooseFile.notUserActivation"));
+  onBeforeUnmount(() => {
+    document.removeEventListener("keyup", onKeyup);
+  });
+  return {
+    key,
+    disable
+  };
+}
+const VNODE_MASK = /* @__PURE__ */ createVNode(
+  "div",
+  { class: "uni-mask" },
+  null,
+  -1
+);
+function createRootApp(component, rootState, callback) {
+  rootState.onClose = (...args) => (rootState.visible = false, callback.apply(null, args));
+  return createApp(
+    defineComponent({
+      setup() {
+        return () => (openBlock(), createBlock(component, rootState, null, 16));
+      }
+    })
+  );
+}
+function ensureRoot(id2) {
+  let rootEl = document.getElementById(id2);
+  if (!rootEl) {
+    rootEl = document.createElement("div");
+    rootEl.id = id2;
+    document.body.append(rootEl);
   }
-}, ChooseImageProtocol, ChooseImageOptions);
+  return rootEl;
+}
+function usePopup(props2, {
+  onEsc,
+  onEnter
+}) {
+  const visible = ref(props2.visible);
+  const { key, disable } = useKeyboard();
+  watch(
+    () => props2.visible,
+    (value) => visible.value = value
+  );
+  watch(
+    () => visible.value,
+    (value) => disable.value = !value
+  );
+  watchEffect(() => {
+    const { value } = key;
+    if (value === "esc") {
+      onEsc && onEsc();
+    } else if (value === "enter") {
+      onEnter && onEnter();
+    }
+  });
+  return visible;
+}
 let index$c = 0;
 let overflow = "";
 function preventScroll(prevent) {
@@ -17347,15 +18851,15 @@ function usePreventScroll() {
   onMounted(() => preventScroll(true));
   onUnmounted(() => preventScroll(false));
 }
-const props$9 = {
+const props$a = {
   src: {
     type: String,
     default: ""
   }
 };
-var ImageView = /* @__PURE__ */ defineSystemComponent({
+const ImageView = /* @__PURE__ */ defineSystemComponent({
   name: "ImageView",
-  props: props$9,
+  props: props$a,
   setup(props2) {
     const state2 = reactive({
       direction: "none"
@@ -17445,7 +18949,7 @@ var ImageView = /* @__PURE__ */ defineSystemComponent({
 function _isSlot$2(s) {
   return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
 }
-const props$8 = {
+const props$9 = {
   urls: {
     type: Array,
     default() {
@@ -17462,9 +18966,9 @@ function getIndex(props2) {
   index2 = index2 < 0 ? 0 : index2;
   return index2;
 }
-var ImagePreview = /* @__PURE__ */ defineSystemComponent({
+const ImagePreview = /* @__PURE__ */ defineSystemComponent({
   name: "ImagePreview",
-  props: props$8,
+  props: props$9,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -17500,6 +19004,20 @@ var ImagePreview = /* @__PURE__ */ defineSystemComponent({
     function onChange2(event) {
       indexRef.value = event.detail.current;
     }
+    const closeBtnStyle = {
+      position: "absolute",
+      "box-sizing": "border-box",
+      top: "0",
+      right: "0",
+      width: "60px",
+      height: "44px",
+      padding: "6px",
+      "line-height": "32px",
+      "font-size": "26px",
+      color: "white",
+      "text-align": "center",
+      cursor: "pointer"
+    };
     return () => {
       let _slot;
       return createVNode("div", {
@@ -17516,6 +19034,7 @@ var ImagePreview = /* @__PURE__ */ defineSystemComponent({
         },
         "onClick": onClick
       }, [createVNode(Swiper, {
+        "navigation": "auto",
         "current": indexRef.value,
         "onChange": onChange2,
         "indicator-dots": false,
@@ -17534,7 +19053,9 @@ var ImagePreview = /* @__PURE__ */ defineSystemComponent({
       }))) ? _slot : {
         default: () => [_slot],
         _: 1
-      }, 8, ["current", "onChange"])], 8, ["onClick"]);
+      }, 8, ["current", "onChange"]), createVNode("div", {
+        "style": closeBtnStyle
+      }, [createSvgIconVNode(ICON_PATH_CLOSE, "#ffffff", 26)], 4)], 8, ["onClick"]);
     };
   }
 });
@@ -17547,165 +19068,193 @@ const closePreviewImageView = () => {
     imagePreviewInstance = null;
   });
 };
-const previewImage = /* @__PURE__ */ defineAsyncApi(API_PREVIEW_IMAGE, (args, { resolve }) => {
-  if (!state$2) {
-    state$2 = reactive(args);
-    nextTick(() => {
-      imagePreviewInstance = createRootApp(ImagePreview, state$2, closePreviewImageView);
-      imagePreviewInstance.mount(ensureRoot("u-a-p"));
-    });
-  } else {
-    extend(state$2, args);
-  }
-  resolve();
-}, PreviewImageProtocol, PreviewImageOptions);
-const closePreviewImage = /* @__PURE__ */ defineAsyncApi(API_CLOSE_PREVIEW_IMAGE, (_, { resolve, reject }) => {
-  if (imagePreviewInstance) {
-    closePreviewImageView();
+const previewImage = /* @__PURE__ */ defineAsyncApi(
+  API_PREVIEW_IMAGE,
+  (args, { resolve }) => {
+    if (!state$2) {
+      state$2 = reactive(args);
+      nextTick(() => {
+        imagePreviewInstance = createRootApp(
+          ImagePreview,
+          state$2,
+          closePreviewImageView
+        );
+        imagePreviewInstance.mount(ensureRoot("u-a-p"));
+      });
+    } else {
+      extend(state$2, args);
+    }
     resolve();
-  } else {
-    reject();
+  },
+  PreviewImageProtocol,
+  PreviewImageOptions
+);
+const closePreviewImage = /* @__PURE__ */ defineAsyncApi(
+  API_CLOSE_PREVIEW_IMAGE,
+  (_, { resolve, reject }) => {
+    if (imagePreviewInstance) {
+      closePreviewImageView();
+      resolve();
+    } else {
+      reject();
+    }
   }
-});
+);
 let videoInput = null;
-const chooseVideo = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_VIDEO, ({ sourceType, extension }, { resolve, reject }) => {
-  initI18nChooseFileMsgsOnce();
-  const { t: t2 } = useI18n();
-  if (videoInput) {
-    document.body.removeChild(videoInput);
-    videoInput = null;
-  }
-  videoInput = _createInput({
-    sourceType,
-    extension,
-    type: "video"
-  });
-  document.body.appendChild(videoInput);
-  videoInput.addEventListener("change", function(event) {
-    const eventTarget = event.target;
-    const file = eventTarget.files[0];
-    let filePath = "";
-    const callbackResult = {
-      tempFilePath: filePath,
-      tempFile: file,
-      size: file.size,
-      duration: 0,
-      width: 0,
-      height: 0,
-      name: file.name
-    };
-    Object.defineProperty(callbackResult, "tempFilePath", {
-      get() {
-        filePath = filePath || fileToUrl(this.tempFile);
-        return filePath;
+const chooseVideo = /* @__PURE__ */ defineAsyncApi(
+  API_CHOOSE_VIDEO,
+  ({ sourceType, extension }, { resolve, reject }) => {
+    initI18nChooseFileMsgsOnce();
+    const { t: t2 } = useI18n();
+    if (videoInput) {
+      document.body.removeChild(videoInput);
+      videoInput = null;
+    }
+    videoInput = _createInput({
+      sourceType,
+      extension,
+      type: "video"
+    });
+    document.body.appendChild(videoInput);
+    videoInput.addEventListener("change", function(event) {
+      const eventTarget = event.target;
+      const file = eventTarget.files[0];
+      let filePath = "";
+      const callbackResult = {
+        tempFilePath: filePath,
+        tempFile: file,
+        size: file.size,
+        duration: 0,
+        width: 0,
+        height: 0,
+        name: file.name
+      };
+      Object.defineProperty(callbackResult, "tempFilePath", {
+        get() {
+          filePath = filePath || fileToUrl(this.tempFile);
+          return filePath;
+        }
+      });
+      const video = document.createElement("video");
+      if (video.onloadedmetadata !== void 0) {
+        const filePath2 = fileToUrl(file);
+        video.onloadedmetadata = function() {
+          revokeObjectURL(filePath2);
+          resolve(
+            extend(callbackResult, {
+              duration: video.duration || 0,
+              width: video.videoWidth || 0,
+              height: video.videoHeight || 0
+            })
+          );
+        };
+        setTimeout(() => {
+          video.onloadedmetadata = null;
+          revokeObjectURL(filePath2);
+          resolve(callbackResult);
+        }, 300);
+        video.src = filePath2;
+      } else {
+        resolve(callbackResult);
       }
     });
-    const video = document.createElement("video");
-    if (video.onloadedmetadata !== void 0) {
-      const filePath2 = fileToUrl(file);
-      video.onloadedmetadata = function() {
-        revokeObjectURL(filePath2);
-        resolve(extend(callbackResult, {
-          duration: video.duration || 0,
-          width: video.videoWidth || 0,
-          height: video.videoHeight || 0
-        }));
-      };
-      setTimeout(() => {
-        video.onloadedmetadata = null;
-        revokeObjectURL(filePath2);
-        resolve(callbackResult);
-      }, 300);
-      video.src = filePath2;
-    } else {
-      resolve(callbackResult);
+    videoInput.click();
+    if (!getInteractStatus()) {
+      console.warn(t2("uni.chooseFile.notUserActivation"));
     }
-  });
-  videoInput.click();
-  if (!getInteractStatus()) {
-    console.warn(t2("uni.chooseFile.notUserActivation"));
-  }
-}, ChooseVideoProtocol, ChooseVideoOptions);
-const request = /* @__PURE__ */ defineTaskApi(API_REQUEST, ({
-  url,
-  data,
-  header,
-  method,
-  dataType: dataType2,
-  responseType,
-  withCredentials,
-  timeout = __uniConfig.networkTimeout.request
-}, { resolve, reject }) => {
-  let body = null;
-  const contentType = normalizeContentType(header);
-  if (method !== "GET") {
-    if (typeof data === "string" || data instanceof ArrayBuffer) {
-      body = data;
-    } else {
-      if (contentType === "json") {
-        try {
-          body = JSON.stringify(data);
-        } catch (error) {
+  },
+  ChooseVideoProtocol,
+  ChooseVideoOptions
+);
+const request = /* @__PURE__ */ defineTaskApi(
+  API_REQUEST,
+  ({
+    url,
+    data,
+    header,
+    method,
+    dataType: dataType2,
+    responseType,
+    withCredentials,
+    timeout = __uniConfig.networkTimeout.request
+  }, { resolve, reject }) => {
+    let body = null;
+    const contentType = normalizeContentType(header);
+    if (method !== "GET") {
+      if (isString(data) || data instanceof ArrayBuffer) {
+        body = data;
+      } else {
+        if (contentType === "json") {
+          try {
+            body = JSON.stringify(data);
+          } catch (error) {
+            body = data.toString();
+          }
+        } else if (contentType === "urlencoded") {
+          const bodyArray = [];
+          for (const key in data) {
+            if (hasOwn(data, key)) {
+              bodyArray.push(
+                encodeURIComponent(key) + "=" + encodeURIComponent(data[key])
+              );
+            }
+          }
+          body = bodyArray.join("&");
+        } else {
           body = data.toString();
         }
-      } else if (contentType === "urlencoded") {
-        const bodyArray = [];
-        for (const key in data) {
-          if (hasOwn(data, key)) {
-            bodyArray.push(encodeURIComponent(key) + "=" + encodeURIComponent(data[key]));
-          }
+      }
+    }
+    const xhr = new XMLHttpRequest();
+    const requestTask = new RequestTask(xhr);
+    xhr.open(method, url);
+    for (const key in header) {
+      if (hasOwn(header, key)) {
+        xhr.setRequestHeader(key, header[key]);
+      }
+    }
+    const timer = setTimeout(function() {
+      xhr.onload = xhr.onabort = xhr.onerror = null;
+      requestTask.abort();
+      reject("timeout");
+    }, timeout);
+    xhr.responseType = responseType;
+    xhr.onload = function() {
+      clearTimeout(timer);
+      const statusCode = xhr.status;
+      let res = responseType === "text" ? xhr.responseText : xhr.response;
+      if (responseType === "text" && dataType2 === "json") {
+        try {
+          res = JSON.parse(res);
+        } catch (error) {
         }
-        body = bodyArray.join("&");
-      } else {
-        body = data.toString();
       }
-    }
-  }
-  const xhr = new XMLHttpRequest();
-  const requestTask = new RequestTask(xhr);
-  xhr.open(method, url);
-  for (const key in header) {
-    if (hasOwn(header, key)) {
-      xhr.setRequestHeader(key, header[key]);
-    }
-  }
-  const timer = setTimeout(function() {
-    xhr.onload = xhr.onabort = xhr.onerror = null;
-    requestTask.abort();
-    reject("timeout");
-  }, timeout);
-  xhr.responseType = responseType;
-  xhr.onload = function() {
-    clearTimeout(timer);
-    const statusCode = xhr.status;
-    let res = responseType === "text" ? xhr.responseText : xhr.response;
-    if (responseType === "text" && dataType2 === "json") {
-      try {
-        res = JSON.parse(res);
-      } catch (error) {
-      }
-    }
-    resolve({
-      data: res,
-      statusCode,
-      header: parseHeaders(xhr.getAllResponseHeaders()),
-      cookies: []
-    });
-  };
-  xhr.onabort = function() {
-    clearTimeout(timer);
-    reject("abort");
-  };
-  xhr.onerror = function() {
-    clearTimeout(timer);
-    reject();
-  };
-  xhr.withCredentials = withCredentials;
-  xhr.send(body);
-  return requestTask;
-}, RequestProtocol, RequestOptions);
+      resolve({
+        data: res,
+        statusCode,
+        header: parseHeaders(xhr.getAllResponseHeaders()),
+        cookies: []
+      });
+    };
+    xhr.onabort = function() {
+      clearTimeout(timer);
+      reject("abort");
+    };
+    xhr.onerror = function() {
+      clearTimeout(timer);
+      reject();
+    };
+    xhr.withCredentials = withCredentials;
+    xhr.send(body);
+    return requestTask;
+  },
+  RequestProtocol,
+  RequestOptions
+);
 function normalizeContentType(header) {
-  const name = Object.keys(header).find((name2) => name2.toLowerCase() === "content-type");
+  const name = Object.keys(header).find(
+    (name2) => name2.toLowerCase() === "content-type"
+  );
   if (!name) {
     return;
   }
@@ -17751,7 +19300,7 @@ class DownloadTask {
     this._xhr = xhr;
   }
   onProgressUpdate(callback) {
-    if (typeof callback !== "function") {
+    if (!isFunction(callback)) {
       return;
     }
     this._callbacks.push(callback);
@@ -17775,68 +19324,75 @@ class DownloadTask {
     throw new Error("Method not implemented.");
   }
 }
-const downloadFile = /* @__PURE__ */ defineTaskApi(API_DOWNLOAD_FILE, ({ url, header, timeout = __uniConfig.networkTimeout.downloadFile }, { resolve, reject }) => {
-  var timer;
-  var xhr = new XMLHttpRequest();
-  var downloadTask = new DownloadTask(xhr);
-  xhr.open("GET", url, true);
-  Object.keys(header).forEach((key) => {
-    xhr.setRequestHeader(key, header[key]);
-  });
-  xhr.responseType = "blob";
-  xhr.onload = function() {
-    clearTimeout(timer);
-    const statusCode = xhr.status;
-    const blob = this.response;
-    let filename;
-    const contentDisposition = xhr.getResponseHeader("content-disposition");
-    if (contentDisposition) {
-      const res = contentDisposition.match(/filename="?(\S+)"?\b/);
-      if (res) {
-        filename = res[1];
+const downloadFile = /* @__PURE__ */ defineTaskApi(
+  API_DOWNLOAD_FILE,
+  ({ url, header, timeout = __uniConfig.networkTimeout.downloadFile }, { resolve, reject }) => {
+    var timer;
+    var xhr = new XMLHttpRequest();
+    var downloadTask = new DownloadTask(xhr);
+    xhr.open("GET", url, true);
+    Object.keys(header).forEach((key) => {
+      xhr.setRequestHeader(key, header[key]);
+    });
+    xhr.responseType = "blob";
+    xhr.onload = function() {
+      clearTimeout(timer);
+      const statusCode = xhr.status;
+      const blob = this.response;
+      let filename;
+      const contentDisposition = xhr.getResponseHeader("content-disposition");
+      if (contentDisposition) {
+        const res = contentDisposition.match(/filename="?(\S+)"?\b/);
+        if (res) {
+          filename = res[1];
+        }
       }
-    }
-    blob.name = filename || getFileName(url);
-    resolve({
-      statusCode,
-      tempFilePath: fileToUrl(blob)
-    });
-  };
-  xhr.onabort = function() {
-    clearTimeout(timer);
-    reject("abort");
-  };
-  xhr.onerror = function() {
-    clearTimeout(timer);
-    reject();
-  };
-  xhr.onprogress = function(event) {
-    downloadTask._callbacks.forEach((callback) => {
-      var totalBytesWritten = event.loaded;
-      var totalBytesExpectedToWrite = event.total;
-      var progress = Math.round(totalBytesWritten / totalBytesExpectedToWrite * 100);
-      callback({
-        progress,
-        totalBytesWritten,
-        totalBytesExpectedToWrite
+      blob.name = filename || getFileName(url);
+      resolve({
+        statusCode,
+        tempFilePath: fileToUrl(blob)
       });
-    });
-  };
-  xhr.send();
-  timer = setTimeout(function() {
-    xhr.onprogress = xhr.onload = xhr.onabort = xhr.onerror = null;
-    downloadTask.abort();
-    reject("timeout");
-  }, timeout);
-  return downloadTask;
-}, DownloadFileProtocol, DownloadFileOptions);
+    };
+    xhr.onabort = function() {
+      clearTimeout(timer);
+      reject("abort");
+    };
+    xhr.onerror = function() {
+      clearTimeout(timer);
+      reject();
+    };
+    xhr.onprogress = function(event) {
+      downloadTask._callbacks.forEach((callback) => {
+        var totalBytesWritten = event.loaded;
+        var totalBytesExpectedToWrite = event.total;
+        var progress = Math.round(
+          totalBytesWritten / totalBytesExpectedToWrite * 100
+        );
+        callback({
+          progress,
+          totalBytesWritten,
+          totalBytesExpectedToWrite
+        });
+      });
+    };
+    xhr.send();
+    timer = setTimeout(function() {
+      xhr.onprogress = xhr.onload = xhr.onabort = xhr.onerror = null;
+      downloadTask.abort();
+      reject("timeout");
+    }, timeout);
+    return downloadTask;
+  },
+  DownloadFileProtocol,
+  DownloadFileOptions
+);
 class UploadTask {
   constructor(xhr) {
     this._callbacks = [];
     this._xhr = xhr;
   }
   onProgressUpdate(callback) {
-    if (typeof callback !== "function") {
+    if (!isFunction(callback)) {
       return;
     }
     this._callbacks.push(callback);
@@ -17861,88 +19417,99 @@ class UploadTask {
     throw new Error("Method not implemented.");
   }
 }
-const uploadFile = /* @__PURE__ */ defineTaskApi(API_UPLOAD_FILE, ({
-  url,
-  file,
-  filePath,
-  name,
-  files: files2,
-  header,
-  formData,
-  timeout = __uniConfig.networkTimeout.uploadFile
-}, { resolve, reject }) => {
-  var uploadTask = new UploadTask();
-  if (!Array.isArray(files2) || !files2.length) {
-    files2 = [
-      {
-        name,
-        file,
-        uri: filePath
-      }
-    ];
-  }
-  function upload(realFiles) {
-    var xhr = new XMLHttpRequest();
-    var form = new FormData();
-    var timer;
-    Object.keys(formData).forEach((key) => {
-      form.append(key, formData[key]);
-    });
-    Object.values(files2).forEach(({ name: name2 }, index2) => {
-      const file2 = realFiles[index2];
-      form.append(name2 || "file", file2, file2.name || `file-${Date.now()}`);
-    });
-    xhr.open("POST", url);
-    Object.keys(header).forEach((key) => {
-      xhr.setRequestHeader(key, header[key]);
-    });
-    xhr.upload.onprogress = function(event) {
-      uploadTask._callbacks.forEach((callback) => {
-        var totalBytesSent = event.loaded;
-        var totalBytesExpectedToSend = event.total;
-        var progress = Math.round(totalBytesSent / totalBytesExpectedToSend * 100);
-        callback({
-          progress,
-          totalBytesSent,
-          totalBytesExpectedToSend
-        });
-      });
-    };
-    xhr.onerror = function() {
-      clearTimeout(timer);
-      reject();
-    };
-    xhr.onabort = function() {
-      clearTimeout(timer);
-      reject("abort");
-    };
-    xhr.onload = function() {
-      clearTimeout(timer);
-      const statusCode = xhr.status;
-      resolve({
-        statusCode,
-        data: xhr.responseText || xhr.response
-      });
-    };
-    if (!uploadTask._isAbort) {
-      timer = setTimeout(function() {
-        xhr.upload.onprogress = xhr.onload = xhr.onabort = xhr.onerror = null;
-        uploadTask.abort();
-        reject("timeout");
-      }, timeout);
-      xhr.send(form);
-      uploadTask._xhr = xhr;
-    } else {
-      reject("abort");
+const uploadFile = /* @__PURE__ */ defineTaskApi(
+  API_UPLOAD_FILE,
+  ({
+    url,
+    file,
+    filePath,
+    name,
+    files: files2,
+    header,
+    formData,
+    timeout = __uniConfig.networkTimeout.uploadFile
+  }, { resolve, reject }) => {
+    var uploadTask = new UploadTask();
+    if (!isArray(files2) || !files2.length) {
+      files2 = [
+        {
+          name,
+          file,
+          uri: filePath
+        }
+      ];
     }
-  }
-  Promise.all(files2.map(({ file: file2, uri }) => file2 instanceof Blob ? Promise.resolve(blobToFile(file2)) : urlToFile(uri))).then(upload).catch(() => {
-    setTimeout(() => {
-      reject("file error");
-    }, 0);
-  });
-  return uploadTask;
-}, UploadFileProtocol, UploadFileOptions);
+    function upload(realFiles) {
+      var xhr = new XMLHttpRequest();
+      var form = new FormData();
+      var timer;
+      Object.keys(formData).forEach((key) => {
+        form.append(key, formData[key]);
+      });
+      Object.values(files2).forEach(({ name: name2 }, index2) => {
+        const file2 = realFiles[index2];
+        form.append(name2 || "file", file2, file2.name || `file-${Date.now()}`);
+      });
+      xhr.open("POST", url);
+      Object.keys(header).forEach((key) => {
+        xhr.setRequestHeader(key, header[key]);
+      });
+      xhr.upload.onprogress = function(event) {
+        uploadTask._callbacks.forEach((callback) => {
+          var totalBytesSent = event.loaded;
+          var totalBytesExpectedToSend = event.total;
+          var progress = Math.round(
+            totalBytesSent / totalBytesExpectedToSend * 100
+          );
+          callback({
+            progress,
+            totalBytesSent,
+            totalBytesExpectedToSend
+          });
+        });
+      };
+      xhr.onerror = function() {
+        clearTimeout(timer);
+        reject();
+      };
+      xhr.onabort = function() {
+        clearTimeout(timer);
+        reject("abort");
+      };
+      xhr.onload = function() {
+        clearTimeout(timer);
+        const statusCode = xhr.status;
+        resolve({
+          statusCode,
+          data: xhr.responseText || xhr.response
+        });
+      };
+      if (!uploadTask._isAbort) {
+        timer = setTimeout(function() {
+          xhr.upload.onprogress = xhr.onload = xhr.onabort = xhr.onerror = null;
+          uploadTask.abort();
+          reject("timeout");
+        }, timeout);
+        xhr.send(form);
+        uploadTask._xhr = xhr;
+      } else {
+        reject("abort");
+      }
+    }
+    Promise.all(
+      files2.map(
+        ({ file: file2, uri }) => file2 instanceof Blob ? Promise.resolve(blobToFile(file2)) : urlToFile(uri)
+      )
+    ).then(upload).catch(() => {
+      setTimeout(() => {
+        reject("file error");
+      }, 0);
+    });
+    return uploadTask;
+  },
+  UploadFileProtocol,
+  UploadFileOptions
+);
 const socketTasks = [];
 const globalEvent = {
   open: "",
@@ -17973,9 +19540,14 @@ class SocketTask {
             try {
               callback2(res);
             } catch (e2) {
-              console.error(`thirdScriptError
-${e2};at socketTask.on${capitalize(name)} callback function
-`, e2);
+              console.error(
+                `thirdScriptError
+${e2};at socketTask.on${capitalize(
+                  name
+                )} callback function
+`,
+                e2
+              );
             }
           });
           if (this === socketTasks[0] && globalEvent[name]) {
@@ -18026,7 +19598,7 @@ ${e2};at socketTask.on${capitalize(name)} callback function
     try {
       const code = options.code || 1e3;
       const reason = options.reason;
-      if (typeof reason === "string") {
+      if (isString(reason)) {
         ws.close(code, reason);
       } else {
         ws.close(code);
@@ -18049,46 +19621,66 @@ ${e2};at socketTask.on${capitalize(name)} callback function
     this._callbacks.close.push(callback);
   }
 }
-const connectSocket = /* @__PURE__ */ defineTaskApi(API_CONNECT_SOCKET, ({ url, protocols }, { resolve, reject }) => {
-  return new SocketTask(url, protocols, (error, socketTask) => {
-    if (error) {
-      reject(error.toString());
-      return;
-    }
-    socketTasks.push(socketTask);
-    resolve();
-  });
-}, ConnectSocketProtocol, ConnectSocketOptions);
+const connectSocket = /* @__PURE__ */ defineTaskApi(
+  API_CONNECT_SOCKET,
+  ({ url, protocols }, { resolve, reject }) => {
+    return new SocketTask(
+      url,
+      protocols,
+      (error, socketTask) => {
+        if (error) {
+          reject(error.toString());
+          return;
+        }
+        socketTasks.push(socketTask);
+        resolve();
+      }
+    );
+  },
+  ConnectSocketProtocol,
+  ConnectSocketOptions
+);
 function callSocketTask(socketTask, method, option, resolve, reject) {
   const fn = socketTask[method];
-  if (typeof fn === "function") {
-    fn.call(socketTask, extend({}, option, {
-      success() {
-        resolve();
-      },
-      fail({ errMsg }) {
-        reject(errMsg.replace("sendSocketMessage:fail ", ""));
-      },
-      complete: void 0
-    }));
+  if (isFunction(fn)) {
+    fn.call(
+      socketTask,
+      extend({}, option, {
+        success() {
+          resolve();
+        },
+        fail({ errMsg }) {
+          reject(errMsg.replace("sendSocketMessage:fail ", ""));
+        },
+        complete: void 0
+      })
+    );
   }
 }
-const sendSocketMessage = /* @__PURE__ */ defineAsyncApi(API_SEND_SOCKET_MESSAGE, (options, { resolve, reject }) => {
-  const socketTask = socketTasks[0];
-  if (socketTask && socketTask.readyState === socketTask.OPEN) {
-    callSocketTask(socketTask, "send", options, resolve, reject);
-  } else {
-    reject("WebSocket is not connected");
-  }
-}, SendSocketMessageProtocol);
-const closeSocket = /* @__PURE__ */ defineAsyncApi(API_CLOSE_SOCKET, (options, { resolve, reject }) => {
-  const socketTask = socketTasks[0];
-  if (socketTask) {
-    callSocketTask(socketTask, "close", options, resolve, reject);
-  } else {
-    reject("WebSocket is not connected");
-  }
-}, CloseSocketProtocol);
+const sendSocketMessage = /* @__PURE__ */ defineAsyncApi(
+  API_SEND_SOCKET_MESSAGE,
+  (options, { resolve, reject }) => {
+    const socketTask = socketTasks[0];
+    if (socketTask && socketTask.readyState === socketTask.OPEN) {
+      callSocketTask(socketTask, "send", options, resolve, reject);
+    } else {
+      reject("WebSocket is not connected");
+    }
+  },
+  SendSocketMessageProtocol
+);
+const closeSocket = /* @__PURE__ */ defineAsyncApi(
+  API_CLOSE_SOCKET,
+  (options, { resolve, reject }) => {
+    const socketTask = socketTasks[0];
+    if (socketTask) {
+      callSocketTask(socketTask, "close", options, resolve, reject);
+    } else {
+      reject("WebSocket is not connected");
+    }
+  },
+  CloseSocketProtocol
+);
 function on(event) {
   const api2 = `onSocket${capitalize(event)}`;
   return /* @__PURE__ */ defineOnApi(api2, () => {
@@ -18099,124 +19691,96 @@ const onSocketOpen = /* @__PURE__ */ on("open");
 const onSocketError = /* @__PURE__ */ on("error");
 const onSocketMessage = /* @__PURE__ */ on("message");
 const onSocketClose = /* @__PURE__ */ on("close");
-function getJSONP(url, options, success, error) {
-  var js = document.createElement("script");
-  var callbackKey = options.callback || "callback";
-  var callbackName = "__callback" + Date.now();
-  var timeout = options.timeout || 3e4;
-  var timing;
-  function end() {
-    clearTimeout(timing);
-    delete window[callbackName];
-    js.remove();
-  }
-  window[callbackName] = (res) => {
-    if (typeof success === "function") {
-      success(res);
-    }
-    end();
-  };
-  js.onerror = () => {
-    if (typeof error === "function") {
-      error();
-    }
-    end();
-  };
-  timing = setTimeout(function() {
-    if (typeof error === "function") {
-      error();
-    }
-    end();
-  }, timeout);
-  js.src = url + (url.indexOf("?") >= 0 ? "&" : "?") + callbackKey + "=" + callbackName;
-  document.body.appendChild(js);
-}
-const getLocation = /* @__PURE__ */ defineAsyncApi(API_GET_LOCATION, ({ type, altitude, highAccuracyExpireTime, isHighAccuracy }, { resolve, reject }) => {
-  const mapInfo = getMapInfo();
-  new Promise((resolve2, reject2) => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((res) => resolve2(res.coords), reject2, {
-        enableHighAccuracy: isHighAccuracy || altitude,
-        timeout: highAccuracyExpireTime || 1e3 * 100
-      });
-    } else {
-      reject2(new Error("device nonsupport geolocation"));
-    }
-  }).catch((error) => {
-    return new Promise((resolve2, reject2) => {
-      if (mapInfo.type === MapType.QQ) {
-        getJSONP(`https://apis.map.qq.com/ws/location/v1/ip?output=jsonp&key=${mapInfo.key}`, {
-          callback: "callback"
-        }, (res) => {
-          if ("result" in res && res.result.location) {
-            const location2 = res.result.location;
-            resolve2({
-              latitude: location2.lat,
-              longitude: location2.lng
-            }, true);
-          } else {
-            reject2(new Error(res.message || JSON.stringify(res)));
+const getLocation = /* @__PURE__ */ defineAsyncApi(
+  API_GET_LOCATION,
+  ({ type, altitude, highAccuracyExpireTime, isHighAccuracy }, { resolve, reject }) => {
+    const mapInfo = getMapInfo();
+    new Promise((resolve2, reject2) => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (res) => resolve2(res.coords),
+          reject2,
+          {
+            enableHighAccuracy: isHighAccuracy || altitude,
+            timeout: highAccuracyExpireTime || 1e3 * 100
           }
-        }, () => reject2(new Error("network error")));
-      } else if (mapInfo.type === MapType.GOOGLE) {
-        request({
-          method: "POST",
-          url: `https://www.googleapis.com/geolocation/v1/geolocate?key=${mapInfo.key}`,
-          success(res) {
-            const data = res.data;
-            if ("location" in data) {
-              resolve2({
-                latitude: data.location.lat,
-                longitude: data.location.lng,
-                accuracy: data.accuracy
-              });
-            } else {
-              reject2(new Error(data.error && data.error.message || JSON.stringify(res)));
-            }
-          },
-          fail() {
-            reject2(new Error("network error"));
-          }
-        });
+        );
       } else {
-        reject2(error);
+        reject2(new Error("device nonsupport geolocation"));
       }
-    });
-  }).then((coords, skip) => {
-    if (type && type.toUpperCase() === "WGS84" || mapInfo.type !== MapType.QQ || skip) {
-      return coords;
-    }
-    return new Promise((resolve2) => {
-      getJSONP(`https://apis.map.qq.com/jsapi?qt=translate&type=1&points=${coords.longitude},${coords.latitude}&key=${mapInfo.key}&output=jsonp&pf=jsapi&ref=jsapi`, {
-        callback: "cb"
-      }, (res) => {
-        if ("detail" in res && "points" in res.detail && res.detail.points.length) {
-          const location2 = res.detail.points[0];
-          resolve2(extend({}, coords, {
-            longitude: location2.lng,
-            latitude: location2.lat
-          }));
+    }).catch((error) => {
+      return new Promise((resolve2, reject2) => {
+        if (mapInfo.type === MapType.QQ) {
+          getJSONP(
+            `https://apis.map.qq.com/ws/location/v1/ip?output=jsonp&key=${mapInfo.key}`,
+            {
+              callback: "callback"
+            },
+            (res) => {
+              if ("result" in res && res.result.location) {
+                const location2 = res.result.location;
+                resolve2(
+                  {
+                    latitude: location2.lat,
+                    longitude: location2.lng
+                  },
+                  true
+                );
+              } else {
+                reject2(new Error(res.message || JSON.stringify(res)));
+              }
+            },
+            () => reject2(new Error("network error"))
+          );
+        } else if (mapInfo.type === MapType.GOOGLE) {
+          request({
+            method: "POST",
+            url: `https://www.googleapis.com/geolocation/v1/geolocate?key=${mapInfo.key}`,
+            success(res) {
+              const data = res.data;
+              if ("location" in data) {
+                resolve2({
+                  latitude: data.location.lat,
+                  longitude: data.location.lng,
+                  accuracy: data.accuracy
+                });
+              } else {
+                reject2(
+                  new Error(
+                    data.error && data.error.message || JSON.stringify(res)
+                  )
+                );
+              }
+            },
+            fail() {
+              reject2(new Error("network error"));
+            }
+          });
         } else {
-          resolve2(coords);
+          reject2(error);
         }
-      }, () => resolve2(coords));
+      });
+    }).then((coords, skip) => {
+      translateGeo(type, coords, skip).then((coords2) => {
+        resolve({
+          latitude: coords2.latitude,
+          longitude: coords2.longitude,
+          accuracy: coords2.accuracy,
+          speed: coords2.altitude || 0,
+          altitude: coords2.altitude || 0,
+          verticalAccuracy: coords2.altitudeAccuracy || 0,
+          horizontalAccuracy: coords2.accuracy || 0
+        });
+      }).catch((error) => {
+        reject(error.message);
+      });
     });
-  }).then((coords) => {
-    resolve({
-      latitude: coords.latitude,
-      longitude: coords.longitude,
-      accuracy: coords.accuracy,
-      speed: coords.altitude || 0,
-      altitude: coords.altitude || 0,
-      verticalAccuracy: coords.altitudeAccuracy || 0,
-      horizontalAccuracy: coords.accuracy || 0
-    });
-  }).catch((error) => {
-    reject(error.message);
-  });
-}, GetLocationProtocol, GetLocationOptions);
+  },
+  GetLocationProtocol,
+  GetLocationOptions
+);
 const ICON_PATH_NAV = "M28 17c-6.49396875 0-12.13721875 2.57040625-15 6.34840625V5.4105l6.29859375 6.29859375c0.387875 0.387875 1.02259375 0.387875 1.4105 0 0.387875-0.387875 0.387875-1.02259375 0-1.4105L12.77853125 2.36803125a0.9978125 0.9978125 0 0 0-0.0694375-0.077125c-0.1944375-0.1944375-0.45090625-0.291375-0.70721875-0.290875l-0.00184375-0.0000625-0.00184375 0.0000625c-0.2563125-0.0005-0.51278125 0.09640625-0.70721875 0.290875a0.9978125 0.9978125 0 0 0-0.0694375 0.077125l-7.930625 7.9305625c-0.387875 0.387875-0.387875 1.02259375 0 1.4105 0.387875 0.387875 1.02259375 0.387875 1.4105 0L11 5.4105V29c0 0.55 0.45 1 1 1s1-0.45 1-1c0-5.52284375 6.71571875-10 15-10 0.55228125 0 1-0.44771875 1-1 0-0.55228125-0.44771875-1-1-1z";
-const props$7 = {
+const props$8 = {
   latitude: {
     type: Number
   },
@@ -18271,9 +19835,9 @@ function useState$2(props2) {
   updatePosition();
   return state2;
 }
-var LocationView = /* @__PURE__ */ defineSystemComponent({
+const LocationView = /* @__PURE__ */ defineSystemComponent({
   name: "LocationView",
-  props: props$7,
+  props: props$8,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -18294,8 +19858,11 @@ var LocationView = /* @__PURE__ */ defineSystemComponent({
         const origin = state2.location.latitude ? `&origin=${state2.location.latitude}%2C${state2.location.longitude}` : "";
         url = `https://www.google.com/maps/dir/?api=1${origin}&destination=${props2.latitude}%2C${props2.longitude}`;
       } else if (mapInfo.type === MapType.QQ) {
-        const fromcoord = state2.location.latitude ? `&fromcoord=${state2.location.latitude}%2C${state2.location.longitude}` : "";
-        url = `https://apis.map.qq.com/uri/v1/routeplan?type=drive${fromcoord}&tocoord=${props2.latitude}%2C${props2.longitude}&from=${encodeURIComponent("\u6211\u7684\u4F4D\u7F6E")}&to=${encodeURIComponent(props2.name || "\u76EE\u7684\u5730")}&ref=${mapInfo.key}`;
+        const fromcoord = state2.location.latitude ? `&fromcoord=${state2.location.latitude}%2C${state2.location.longitude}&from=${encodeURIComponent("\u6211\u7684\u4F4D\u7F6E")}` : "";
+        url = `https://apis.map.qq.com/uri/v1/routeplan?type=drive${fromcoord}&tocoord=${props2.latitude}%2C${props2.longitude}&to=${encodeURIComponent(props2.name || "\u76EE\u7684\u5730")}&ref=${mapInfo.key}`;
+      } else if (mapInfo.type === MapType.AMAP) {
+        const from = state2.location.latitude ? `from=${state2.location.longitude},${state2.location.latitude},${encodeURIComponent("\u6211\u7684\u4F4D\u7F6E")}&` : "";
+        url = `https://uri.amap.com/navigation?${from}to=${props2.longitude},${props2.latitude},${encodeURIComponent(props2.name || "\u76EE\u7684\u5730")}`;
       }
       window.open(url);
     }
@@ -18361,27 +19928,32 @@ var LocationView = /* @__PURE__ */ defineSystemComponent({
   }
 });
 let state$1 = null;
-const openLocation = /* @__PURE__ */ defineAsyncApi(API_OPEN_LOCATION, (args, { resolve }) => {
-  if (!state$1) {
-    state$1 = reactive(args);
-    nextTick(() => {
-      const app = createRootApp(LocationView, state$1, () => {
-        state$1 = null;
-        nextTick(() => {
-          app.unmount();
+const openLocation = /* @__PURE__ */ defineAsyncApi(
+  API_OPEN_LOCATION,
+  (args, { resolve }) => {
+    if (!state$1) {
+      state$1 = reactive(args);
+      nextTick(() => {
+        const app = createRootApp(LocationView, state$1, () => {
+          state$1 = null;
+          nextTick(() => {
+            app.unmount();
+          });
         });
+        app.mount(ensureRoot("u-a-o"));
       });
-      app.mount(ensureRoot("u-a-o"));
-    });
-  } else {
-    extend(state$1, args);
-  }
-  resolve();
-}, OpenLocationProtocol, OpenLocationOptions);
+    } else {
+      extend(state$1, args);
+    }
+    resolve();
+  },
+  OpenLocationProtocol,
+  OpenLocationOptions
+);
 function _isSlot$1(s) {
   return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
 }
-const props$6 = {
+const props$7 = {
   latitude: {
     type: Number
   },
@@ -18436,7 +20008,7 @@ function useList(state2) {
       list2.push({
         name: item.title,
         address: item.address,
-        distance: item._distance,
+        distance: item._distance || item.distance,
         latitude: item.location.lat,
         longitude: item.location.lng
       });
@@ -18502,6 +20074,26 @@ function useList(state2) {
       }, () => {
         listState.loading = false;
       });
+    } else if (mapInfo.type === MapType.AMAP) {
+      window.AMap.plugin("AMap.PlaceSearch", function() {
+        const placeSearch = new window.AMap.PlaceSearch({
+          city: "\u5168\u56FD",
+          pageSize: 10,
+          pageIndex: listState.pageIndex
+        });
+        const keyword = state2.searching ? state2.keyword : "";
+        const radius = state2.searching ? 5e4 : 5e3;
+        placeSearch.searchNearBy(keyword, [state2.longitude, state2.latitude], radius, function(status, result) {
+          if (status === "error") {
+            console.error(result);
+          } else if (status === "no_data") {
+            listState.hasNextPage = false;
+          } else {
+            pushData(result.poiList.pois);
+          }
+        });
+        listState.loading = false;
+      });
     }
   }
   function loadMore() {
@@ -18525,9 +20117,9 @@ function useList(state2) {
     getList
   };
 }
-var LoctaionPicker = /* @__PURE__ */ defineSystemComponent({
+const LoctaionPicker = /* @__PURE__ */ defineSystemComponent({
   name: "LoctaionPicker",
-  props: props$6,
+  props: props$7,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -18683,34 +20275,120 @@ var LoctaionPicker = /* @__PURE__ */ defineSystemComponent({
   }
 });
 let state = null;
-const chooseLocation = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_LOCATION, (args, { resolve, reject }) => {
-  if (!state) {
-    state = reactive(args);
-    nextTick(() => {
-      const app = createRootApp(LoctaionPicker, state, (poi) => {
-        state = null;
-        nextTick(() => {
-          app.unmount();
-        });
-        poi ? resolve(poi) : reject("cancel");
+const chooseLocation = /* @__PURE__ */ defineAsyncApi(
+  API_CHOOSE_LOCATION,
+  (args, { resolve, reject }) => {
+    if (!state) {
+      state = reactive(args);
+      nextTick(() => {
+        const app = createRootApp(
+          LoctaionPicker,
+          state,
+          (poi) => {
+            state = null;
+            nextTick(() => {
+              app.unmount();
+            });
+            poi ? resolve(poi) : reject("cancel");
+          }
+        );
+        app.mount(ensureRoot("u-a-c"));
       });
-      app.mount(ensureRoot("u-a-c"));
-    });
-  } else {
-    reject("cancel");
+    } else {
+      reject("cancel");
+    }
+  },
+  ChooseLocationProtocol
+);
+let started = false;
+let watchId = 0;
+const startLocationUpdate = /* @__PURE__ */ defineAsyncApi(
+  API_START_LOCATION_UPDATE,
+  (options, { resolve, reject }) => {
+    if (!navigator.geolocation) {
+      reject();
+      return;
+    }
+    watchId = watchId || navigator.geolocation.watchPosition(
+      (res) => {
+        started = true;
+        translateGeo(options == null ? void 0 : options.type, res.coords).then((coords) => {
+          UniServiceJSBridge.invokeOnCallback(
+            API_ON_LOCATION_CHANGE,
+            coords
+          );
+          resolve();
+        }).catch((error) => {
+          UniServiceJSBridge.invokeOnCallback(
+            API_ON_LOCATION_CHANGE_ERROR,
+            { errMsg: `onLocationChange:fail ${error.message}` }
+          );
+        });
+      },
+      (error) => {
+        if (!started) {
+          reject(error.message);
+          started = true;
+        }
+        UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE_ERROR, {
+          errMsg: `onLocationChange:fail ${error.message}`
+        });
+      }
+    );
+    setTimeout(resolve, 100);
+  },
+  StartLocationUpdateProtocol,
+  StartLocationUpdateOptions
+);
+const stopLocationUpdate = /* @__PURE__ */ defineAsyncApi(
+  API_STOP_LOCATION_UPDATE,
+  (_, { resolve }) => {
+    if (watchId) {
+      navigator.geolocation.clearWatch(watchId);
+      started = false;
+      watchId = 0;
+    }
+    resolve();
   }
-}, ChooseLocationProtocol);
-const navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, (args, { resolve, reject }) => {
-  let canBack = true;
-  if (invokeHook(ON_BACK_PRESS, { from: args.from }) === true) {
-    canBack = false;
+);
+const onLocationChange = /* @__PURE__ */ defineOnApi(
+  API_ON_LOCATION_CHANGE,
+  () => {
   }
-  if (!canBack) {
-    return reject(ON_BACK_PRESS);
+);
+const offLocationChange = /* @__PURE__ */ defineOffApi(
+  API_OFF_LOCATION_CHANGE,
+  () => {
   }
-  getApp().$router.go(-args.delta);
-  return resolve();
-}, NavigateBackProtocol, NavigateBackOptions);
+);
+const onLocationChangeError = /* @__PURE__ */ defineOnApi(
+  API_ON_LOCATION_CHANGE_ERROR,
+  () => {
+  }
+);
+const offLocationChangeError = /* @__PURE__ */ defineOffApi(
+  API_OFF_LOCATION_CHANGE_ERROR,
+  () => {
+  }
+);
+const navigateBack = /* @__PURE__ */ defineAsyncApi(
+  API_NAVIGATE_BACK,
+  (args, { resolve, reject }) => {
+    let canBack = true;
+    if (invokeHook(ON_BACK_PRESS, {
+      from: args.from || "navigateBack"
+    }) === true) {
+      canBack = false;
+    }
+    if (!canBack) {
+      return reject(ON_BACK_PRESS);
+    }
+    getApp().$router.go(-args.delta);
+    return resolve();
+  },
+  NavigateBackProtocol,
+  NavigateBackOptions
+);
 function navigate({ type, url, events }, __id__) {
   const router = getApp().$router;
   const { path, query } = parseUrl(url);
@@ -18736,7 +20414,12 @@ function navigate({ type, url, events }, __id__) {
     });
   });
 }
-const navigateTo = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_TO, ({ url, events }, { resolve, reject }) => navigate({ type: API_NAVIGATE_TO, url, events }).then(resolve).catch(reject), NavigateToProtocol, NavigateToOptions);
+const navigateTo = /* @__PURE__ */ defineAsyncApi(
+  API_NAVIGATE_TO,
+  ({ url, events }, { resolve, reject }) => navigate({ type: API_NAVIGATE_TO, url, events }).then(resolve).catch(reject),
+  NavigateToProtocol,
+  NavigateToOptions
+);
 function removeLastPage() {
   const page = getCurrentPage();
   if (!page) {
@@ -18745,18 +20428,28 @@ function removeLastPage() {
   const $page = page.$page;
   removePage(normalizeRouteKey($page.path, $page.id));
 }
-const redirectTo = /* @__PURE__ */ defineAsyncApi(API_REDIRECT_TO, ({ url }, { resolve, reject }) => {
-  return removeLastPage(), navigate({ type: API_REDIRECT_TO, url }).then(resolve).catch(reject);
-}, RedirectToProtocol, RedirectToOptions);
+const redirectTo = /* @__PURE__ */ defineAsyncApi(
+  API_REDIRECT_TO,
+  ({ url }, { resolve, reject }) => {
+    return removeLastPage(), navigate({ type: API_REDIRECT_TO, url }).then(resolve).catch(reject);
+  },
+  RedirectToProtocol,
+  RedirectToOptions
+);
 function removeAllPages() {
   const keys = getCurrentPagesMap().keys();
   for (const routeKey of keys) {
     removePage(routeKey);
   }
 }
-const reLaunch = /* @__PURE__ */ defineAsyncApi(API_RE_LAUNCH, ({ url }, { resolve, reject }) => {
-  return removeAllPages(), navigate({ type: API_RE_LAUNCH, url }).then(resolve).catch(reject);
-}, ReLaunchProtocol, ReLaunchOptions);
+const reLaunch = /* @__PURE__ */ defineAsyncApi(
+  API_RE_LAUNCH,
+  ({ url }, { resolve, reject }) => {
+    return removeAllPages(), navigate({ type: API_RE_LAUNCH, url }).then(resolve).catch(reject);
+  },
+  ReLaunchProtocol,
+  ReLaunchOptions
+);
 function removeNonTabBarPages() {
   const curTabBarPageVm = getCurrentPageVm();
   if (!curTabBarPageVm) {
@@ -18778,7 +20471,7 @@ function removeNonTabBarPages() {
   }
 }
 function isSamePage(url, $page) {
-  return url === $page.fullPath;
+  return url === $page.fullPath || url === "/" && $page.meta.isEntry;
 }
 function getTabBarPageId(url) {
   const pages = getCurrentPagesMap().values();
@@ -18790,25 +20483,176 @@ function getTabBarPageId(url) {
     }
   }
 }
-const switchTab = /* @__PURE__ */ defineAsyncApi(API_SWITCH_TAB, ({ url }, { resolve, reject }) => {
-  return removeNonTabBarPages(), navigate({ type: API_SWITCH_TAB, url }, getTabBarPageId(url)).then(resolve).catch(reject);
-}, SwitchTabProtocol, SwitchTabOptions);
-const preloadPage = /* @__PURE__ */ defineAsyncApi(API_PRELOAD_PAGE, ({ url }, { resolve, reject }) => {
-  const path = url.split("?")[0];
-  const route = getRouteOptions(path);
-  if (!route) {
-    reject(`${url}}`);
-    return;
-  }
-  route.loader && route.loader().then(() => {
-    resolve({
-      url,
-      errMsg: "preloadPage:ok"
+const switchTab = /* @__PURE__ */ defineAsyncApi(
+  API_SWITCH_TAB,
+  ({ url }, { resolve, reject }) => {
+    return removeNonTabBarPages(), navigate({ type: API_SWITCH_TAB, url }, getTabBarPageId(url)).then(resolve).catch(reject);
+  },
+  SwitchTabProtocol,
+  SwitchTabOptions
+);
+const preloadPage = /* @__PURE__ */ defineAsyncApi(
+  API_PRELOAD_PAGE,
+  ({ url }, { resolve, reject }) => {
+    const path = url.split("?")[0];
+    const route = getRouteOptions(path);
+    if (!route) {
+      reject(`${url}}`);
+      return;
+    }
+    route.loader && route.loader().then(() => {
+      resolve({
+        url,
+        errMsg: "preloadPage:ok"
+      });
+    }).catch((err) => {
+      reject(`${url} ${String(err)}`);
     });
-  }).catch((err) => {
-    reject(`${url} ${String(err)}`);
-  });
-}, PreloadPageProtocol);
+  },
+  PreloadPageProtocol
+);
+const props$6 = {
+  title: {
+    type: String,
+    default: ""
+  },
+  content: {
+    type: String,
+    default: ""
+  },
+  showCancel: {
+    type: Boolean,
+    default: true
+  },
+  cancelText: {
+    type: String,
+    default: "Cancel"
+  },
+  cancelColor: {
+    type: String,
+    default: "#000000"
+  },
+  confirmText: {
+    type: String,
+    default: "OK"
+  },
+  confirmColor: {
+    type: String,
+    default: "#007aff"
+  },
+  visible: {
+    type: Boolean
+  },
+  editable: {
+    type: Boolean,
+    default: false
+  },
+  placeholderText: {
+    type: String,
+    default: ""
+  }
+};
+const modal = /* @__PURE__ */ defineComponent({
+  props: props$6,
+  setup(props2, {
+    emit: emit2
+  }) {
+    const editContent = ref("");
+    const close = () => visible.value = false;
+    const cancel = () => (close(), emit2("close", "cancel"));
+    const confirm = () => (close(), emit2("close", "confirm", editContent.value));
+    const visible = usePopup(props2, {
+      onEsc: cancel,
+      onEnter: () => {
+        !props2.editable && confirm();
+      }
+    });
+    return () => {
+      const {
+        title,
+        content,
+        showCancel,
+        confirmText,
+        confirmColor,
+        editable,
+        placeholderText
+      } = props2;
+      editContent.value = content;
+      return createVNode(Transition, {
+        "name": "uni-fade"
+      }, {
+        default: () => [withDirectives(createVNode("uni-modal", {
+          "onTouchmove": onEventPrevent
+        }, [VNODE_MASK, createVNode("div", {
+          "class": "uni-modal"
+        }, [title && createVNode("div", {
+          "class": "uni-modal__hd"
+        }, [createVNode("strong", {
+          "class": "uni-modal__title",
+          "textContent": title
+        }, null, 8, ["textContent"])]), editable ? createVNode("textarea", {
+          "class": "uni-modal__textarea",
+          "rows": "1",
+          "placeholder": placeholderText,
+          "value": content,
+          "onInput": (e2) => editContent.value = e2.target.value
+        }, null, 40, ["placeholder", "value", "onInput"]) : createVNode("div", {
+          "class": "uni-modal__bd",
+          "onTouchmovePassive": onEventStop,
+          "textContent": content
+        }, null, 40, ["onTouchmovePassive", "textContent"]), createVNode("div", {
+          "class": "uni-modal__ft"
+        }, [showCancel && createVNode("div", {
+          "style": {
+            color: props2.cancelColor
+          },
+          "class": "uni-modal__btn uni-modal__btn_default",
+          "onClick": cancel
+        }, [props2.cancelText], 12, ["onClick"]), createVNode("div", {
+          "style": {
+            color: confirmColor
+          },
+          "class": "uni-modal__btn uni-modal__btn_primary",
+          "onClick": confirm
+        }, [confirmText], 12, ["onClick"])])])], 40, ["onTouchmove"]), [[vShow, visible.value]])]
+      });
+    };
+  }
+});
+let showModalState;
+const onHidePopupOnce$1 = /* @__PURE__ */ once(() => {
+  UniServiceJSBridge.on("onHidePopup", () => showModalState.visible = false);
+});
+let currentShowModalResolve;
+function onModalClose(type, content) {
+  const isConfirm = type === "confirm";
+  const res = {
+    confirm: isConfirm,
+    cancel: type === "cancel"
+  };
+  isConfirm && showModalState.editable && (res.content = content);
+  currentShowModalResolve && currentShowModalResolve(res);
+}
+const showModal = /* @__PURE__ */ defineAsyncApi(
+  API_SHOW_MODAL,
+  (args, { resolve }) => {
+    onHidePopupOnce$1();
+    currentShowModalResolve = resolve;
+    if (!showModalState) {
+      showModalState = reactive(args);
+      nextTick(
+        () => (createRootApp(modal, showModalState, onModalClose).mount(
+          ensureRoot("u-a-m")
+        ), nextTick(() => showModalState.visible = true))
+      );
+    } else {
+      extend(showModalState, args);
+      showModalState.visible = true;
+    }
+  },
+  ShowModalProtocol,
+  ShowModalOptions
+);
 const props$5 = {
   title: {
     type: String,
@@ -18837,7 +20681,7 @@ const props$5 = {
   }
 };
 const ToastIconClassName = "uni-toast__icon";
-var Toast = /* @__PURE__ */ defineComponent({
+const Toast = /* @__PURE__ */ defineComponent({
   name: "Toast",
   props: props$5,
   setup(props2) {
@@ -18908,18 +20752,21 @@ let timeoutId;
 const scope = /* @__PURE__ */ effectScope();
 function watchVisible() {
   scope.run(() => {
-    watch([() => showToastState.visible, () => showToastState.duration], ([visible, duration]) => {
-      if (visible) {
-        timeoutId && clearTimeout(timeoutId);
-        if (showType === "onShowLoading")
-          return;
-        timeoutId = setTimeout(() => {
-          hidePopup("onHideToast");
-        }, duration);
-      } else {
-        timeoutId && clearTimeout(timeoutId);
+    watch(
+      [() => showToastState.visible, () => showToastState.duration],
+      ([visible, duration]) => {
+        if (visible) {
+          timeoutId && clearTimeout(timeoutId);
+          if (showType === "onShowLoading")
+            return;
+          timeoutId = setTimeout(() => {
+            hidePopup("onHideToast");
+          }, duration);
+        } else {
+          timeoutId && clearTimeout(timeoutId);
+        }
       }
-    });
+    );
   });
 }
 function createToast(args) {
@@ -18938,30 +20785,46 @@ function createToast(args) {
     showToastState.visible = true;
   }, 10);
 }
-const showToast = /* @__PURE__ */ defineAsyncApi(API_SHOW_TOAST, (args, { resolve, reject }) => {
-  createToast(args);
-  showType = "onShowToast";
-  resolve();
-}, ShowToastProtocol, ShowToastOptions);
+const showToast = /* @__PURE__ */ defineAsyncApi(
+  API_SHOW_TOAST,
+  (args, { resolve, reject }) => {
+    createToast(args);
+    showType = "onShowToast";
+    resolve();
+  },
+  ShowToastProtocol,
+  ShowToastOptions
+);
 const showLoadingDefaultState = {
   icon: "loading",
   duration: 1e8,
   image: ""
 };
-const showLoading = /* @__PURE__ */ defineAsyncApi(API_SHOW_LOADING, (args, { resolve, reject }) => {
-  extend(args, showLoadingDefaultState);
-  createToast(args);
-  showType = "onShowLoading";
-  resolve();
-}, ShowLoadingProtocol, ShowLoadingOptions);
-const hideToast = /* @__PURE__ */ defineAsyncApi(API_HIDE_TOAST, (args, { resolve, reject }) => {
-  hidePopup("onHideToast");
-  resolve();
-});
-const hideLoading = /* @__PURE__ */ defineAsyncApi(API_HIDE_LOADING, (args, { resolve, reject }) => {
-  hidePopup("onHideLoading");
-  resolve();
-});
+const showLoading = /* @__PURE__ */ defineAsyncApi(
+  API_SHOW_LOADING,
+  (args, { resolve, reject }) => {
+    extend(args, showLoadingDefaultState);
+    createToast(args);
+    showType = "onShowLoading";
+    resolve();
+  },
+  ShowLoadingProtocol,
+  ShowLoadingOptions
+);
+const hideToast = /* @__PURE__ */ defineAsyncApi(
+  API_HIDE_TOAST,
+  (args, { resolve, reject }) => {
+    hidePopup("onHideToast");
+    resolve();
+  }
+);
+const hideLoading = /* @__PURE__ */ defineAsyncApi(
+  API_HIDE_LOADING,
+  (args, { resolve, reject }) => {
+    hidePopup("onHideLoading");
+    resolve();
+  }
+);
 function hidePopup(type) {
   const { t: t2 } = useI18n();
   if (!showType) {
@@ -18984,7 +20847,9 @@ function hidePopup(type) {
 function usePopupStyle(props2) {
   const popupWidth = ref(0);
   const popupHeight = ref(0);
-  const isDesktop = computed(() => popupWidth.value >= 500 && popupHeight.value >= 500);
+  const isDesktop = computed(
+    () => popupWidth.value >= 500 && popupHeight.value >= 500
+  );
   const popupStyle = computed(() => {
     const style = {
       content: {
@@ -19083,7 +20948,7 @@ const props$4 = {
     default: false
   }
 };
-var actionSheet = /* @__PURE__ */ defineComponent({
+const actionSheet = /* @__PURE__ */ defineComponent({
   name: "ActionSheet",
   props: props$4,
   emits: ["close"],
@@ -19269,7 +21134,10 @@ let resolveAction;
 let rejectAction;
 let showActionSheetState;
 const onHidePopupOnce = /* @__PURE__ */ once(() => {
-  UniServiceJSBridge.on("onHidePopup", () => showActionSheetState.visible = false);
+  UniServiceJSBridge.on(
+    "onHidePopup",
+    () => showActionSheetState.visible = false
+  );
 });
 function onActionSheetClose(tapIndex) {
   if (tapIndex === -1) {
@@ -19278,29 +21146,45 @@ function onActionSheetClose(tapIndex) {
     resolveAction && resolveAction({ tapIndex });
   }
 }
-const showActionSheet = /* @__PURE__ */ defineAsyncApi(API_SHOW_ACTION_SHEET, (args, { resolve, reject }) => {
-  onHidePopupOnce();
-  resolveAction = resolve;
-  rejectAction = reject;
-  if (!showActionSheetState) {
-    showActionSheetState = reactive(args);
-    nextTick(() => (createRootApp(actionSheet, showActionSheetState, onActionSheetClose).mount(ensureRoot("u-s-a-s")), nextTick(() => showActionSheetState.visible = true)));
-  } else {
-    extend(showActionSheetState, args);
-    showActionSheetState.visible = true;
-  }
-}, ShowActionSheetProtocol, ShowActionSheetOptions);
-const loadFontFace = /* @__PURE__ */ defineAsyncApi(API_LOAD_FONT_FACE, ({ family, source, desc }, { resolve, reject }) => {
-  addFont(family, source, desc).then(() => {
-    resolve();
-  }).catch((err) => {
-    reject(`loadFontFace:fail ${err}`);
-  });
-}, LoadFontFaceProtocol);
+const showActionSheet = /* @__PURE__ */ defineAsyncApi(
+  API_SHOW_ACTION_SHEET,
+  (args, { resolve, reject }) => {
+    onHidePopupOnce();
+    resolveAction = resolve;
+    rejectAction = reject;
+    if (!showActionSheetState) {
+      showActionSheetState = reactive(args);
+      nextTick(
+        () => (createRootApp(
+          actionSheet,
+          showActionSheetState,
+          onActionSheetClose
+        ).mount(ensureRoot("u-s-a-s")), nextTick(() => showActionSheetState.visible = true))
+      );
+    } else {
+      extend(showActionSheetState, args);
+      showActionSheetState.visible = true;
+    }
+  },
+  ShowActionSheetProtocol,
+  ShowActionSheetOptions
+);
+const loadFontFace = /* @__PURE__ */ defineAsyncApi(
+  API_LOAD_FONT_FACE,
+  ({ family, source, desc }, { resolve, reject }) => {
+    addFont(family, source, desc).then(() => {
+      resolve();
+    }).catch((err) => {
+      reject(`loadFontFace:fail ${err}`);
+    });
+  },
+  LoadFontFaceProtocol
+);
 function updateDocumentTitle(title) {
   {
     document.title = title;
   }
+  UniServiceJSBridge.emit(ON_NAVIGATION_BAR_CHANGE, { titleText: title });
 }
 function useDocumentTitle(pageMeta) {
   function update() {
@@ -19340,30 +21224,88 @@ function setNavigationBar(pageMeta, type, args, resolve, reject) {
   }
   resolve();
 }
-const setNavigationBarColor = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BAR_COLOR, (args, { resolve, reject }) => {
-  setNavigationBar(getCurrentPageMeta(), API_SET_NAVIGATION_BAR_COLOR, args, resolve, reject);
-}, SetNavigationBarColorProtocol, SetNavigationBarColorOptions);
-const showNavigationBarLoading = /* @__PURE__ */ defineAsyncApi(API_SHOW_NAVIGATION_BAR_LOADING, (args, { resolve, reject }) => {
-  setNavigationBar(getCurrentPageMeta(), API_SHOW_NAVIGATION_BAR_LOADING, args || {}, resolve, reject);
-});
-const hideNavigationBarLoading = /* @__PURE__ */ defineAsyncApi(API_HIDE_NAVIGATION_BAR_LOADING, (args, { resolve, reject }) => {
-  setNavigationBar(getCurrentPageMeta(), API_HIDE_NAVIGATION_BAR_LOADING, args || {}, resolve, reject);
-});
-const setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BAR_TITLE, (args, { resolve, reject }) => {
-  setNavigationBar(getCurrentPageMeta(), API_SET_NAVIGATION_BAR_TITLE, args, resolve, reject);
-}, SetNavigationBarTitleProtocol);
-const pageScrollTo = /* @__PURE__ */ defineAsyncApi(API_PAGE_SCROLL_TO, ({ scrollTop, selector, duration }, { resolve }) => {
-  scrollTo(selector || scrollTop || 0, duration, true);
-  resolve();
-}, PageScrollToProtocol, PageScrollToOptions);
-const startPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_START_PULL_DOWN_REFRESH, (_args, { resolve }) => {
-  UniServiceJSBridge.invokeViewMethod(API_START_PULL_DOWN_REFRESH, {}, getCurrentPageId());
-  resolve();
-});
-const stopPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_STOP_PULL_DOWN_REFRESH, (_args, { resolve }) => {
-  UniServiceJSBridge.invokeViewMethod(API_STOP_PULL_DOWN_REFRESH, {}, getCurrentPageId());
-  resolve();
-});
+const setNavigationBarColor = /* @__PURE__ */ defineAsyncApi(
+  API_SET_NAVIGATION_BAR_COLOR,
+  (args, { resolve, reject }) => {
+    setNavigationBar(
+      getCurrentPageMeta(),
+      API_SET_NAVIGATION_BAR_COLOR,
+      args,
+      resolve,
+      reject
+    );
+  },
+  SetNavigationBarColorProtocol,
+  SetNavigationBarColorOptions
+);
+const showNavigationBarLoading = /* @__PURE__ */ defineAsyncApi(
+  API_SHOW_NAVIGATION_BAR_LOADING,
+  (args, { resolve, reject }) => {
+    setNavigationBar(
+      getCurrentPageMeta(),
+      API_SHOW_NAVIGATION_BAR_LOADING,
+      args || {},
+      resolve,
+      reject
+    );
+  }
+);
+const hideNavigationBarLoading = /* @__PURE__ */ defineAsyncApi(
+  API_HIDE_NAVIGATION_BAR_LOADING,
+  (args, { resolve, reject }) => {
+    setNavigationBar(
+      getCurrentPageMeta(),
+      API_HIDE_NAVIGATION_BAR_LOADING,
+      args || {},
+      resolve,
+      reject
+    );
+  }
+);
+const setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(
+  API_SET_NAVIGATION_BAR_TITLE,
+  (args, { resolve, reject }) => {
+    setNavigationBar(
+      getCurrentPageMeta(),
+      API_SET_NAVIGATION_BAR_TITLE,
+      args,
+      resolve,
+      reject
+    );
+  },
+  SetNavigationBarTitleProtocol
+);
+const pageScrollTo = /* @__PURE__ */ defineAsyncApi(
+  API_PAGE_SCROLL_TO,
+  ({ scrollTop, selector, duration }, { resolve }) => {
+    scrollTo(selector || scrollTop || 0, duration, true);
+    resolve();
+  },
+  PageScrollToProtocol,
+  PageScrollToOptions
+);
+const startPullDownRefresh = /* @__PURE__ */ defineAsyncApi(
+  API_START_PULL_DOWN_REFRESH,
+  (_args, { resolve }) => {
+    UniServiceJSBridge.invokeViewMethod(
+      API_START_PULL_DOWN_REFRESH,
+      {},
+      getCurrentPageId()
+    );
+    resolve();
+  }
+);
+const stopPullDownRefresh = /* @__PURE__ */ defineAsyncApi(
+  API_STOP_PULL_DOWN_REFRESH,
+  (_args, { resolve }) => {
+    UniServiceJSBridge.invokeViewMethod(
+      API_STOP_PULL_DOWN_REFRESH,
+      {},
+      getCurrentPageId()
+    );
+    resolve();
+  }
+);
 const setTabBarItemProps = [
   "text",
   "iconPath",
@@ -19385,20 +21327,6 @@ function setProperties(item, props2, propsData) {
     }
   });
 }
-function normalizeTabBarRoute(index2, oldPagePath, newPagePath) {
-  const oldTabBarRoute = getRouteOptions(addLeadingSlash(oldPagePath));
-  if (oldTabBarRoute) {
-    const { meta } = oldTabBarRoute;
-    delete meta.tabBarIndex;
-    meta.isQuit = meta.isTabBar = false;
-  }
-  const newTabBarRoute = getRouteOptions(addLeadingSlash(newPagePath));
-  if (newTabBarRoute) {
-    const { meta } = newTabBarRoute;
-    meta.tabBarIndex = index2;
-    meta.isQuit = meta.isTabBar = false;
-  }
-}
 function setTabBar(type, args, resolve) {
   const tabBar2 = useTabBar();
   switch (type) {
@@ -19414,8 +21342,11 @@ function setTabBar(type, args, resolve) {
       const oldPagePath = tabBarItem.pagePath;
       setProperties(tabBarItem, setTabBarItemProps, args);
       const { pagePath } = args;
-      if (pagePath && pagePath !== oldPagePath) {
-        normalizeTabBarRoute(index2, oldPagePath, pagePath);
+      if (pagePath) {
+        const newPagePath = addLeadingSlash(pagePath);
+        if (newPagePath !== oldPagePath) {
+          normalizeTabBarRoute(index2, oldPagePath, newPagePath);
+        }
       }
       break;
     case API_SET_TAB_BAR_STYLE:
@@ -19443,32 +21374,70 @@ function setTabBar(type, args, resolve) {
   }
   resolve();
 }
-const setTabBarItem = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_ITEM, (args, { resolve }) => {
-  setTabBar(API_SET_TAB_BAR_ITEM, args, resolve);
-}, SetTabBarItemProtocol, SetTabBarItemOptions);
-const setTabBarStyle = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_STYLE, (args, { resolve }) => {
-  setTabBar(API_SET_TAB_BAR_STYLE, args, resolve);
-}, SetTabBarStyleProtocol, SetTabBarStyleOptions);
-const hideTabBar = /* @__PURE__ */ defineAsyncApi(API_HIDE_TAB_BAR, (args, { resolve }) => {
-  setTabBar(API_HIDE_TAB_BAR, args ? args : {}, resolve);
-}, HideTabBarProtocol);
-const showTabBar = /* @__PURE__ */ defineAsyncApi(API_SHOW_TAB_BAR, (args, { resolve }) => {
-  setTabBar(API_SHOW_TAB_BAR, args ? args : {}, resolve);
-}, ShowTabBarProtocol);
-const hideTabBarRedDot = /* @__PURE__ */ defineAsyncApi(API_HIDE_TAB_BAR_RED_DOT, (args, { resolve }) => {
-  setTabBar(API_HIDE_TAB_BAR_RED_DOT, args, resolve);
-}, HideTabBarRedDotProtocol, HideTabBarRedDotOptions);
-const showTabBarRedDot = /* @__PURE__ */ defineAsyncApi(API_SHOW_TAB_BAR_RED_DOT, (args, { resolve }) => {
-  setTabBar(API_SHOW_TAB_BAR_RED_DOT, args, resolve);
-}, ShowTabBarRedDotProtocol, ShowTabBarRedDotOptions);
-const removeTabBarBadge = /* @__PURE__ */ defineAsyncApi(API_REMOVE_TAB_BAR_BADGE, (args, { resolve }) => {
-  setTabBar(API_REMOVE_TAB_BAR_BADGE, args, resolve);
-}, RemoveTabBarBadgeProtocol, RemoveTabBarBadgeOptions);
-const setTabBarBadge = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_BADGE, (args, { resolve }) => {
-  setTabBar(API_SET_TAB_BAR_BADGE, args, resolve);
-}, SetTabBarBadgeProtocol, SetTabBarBadgeOptions);
+const setTabBarItem = /* @__PURE__ */ defineAsyncApi(
+  API_SET_TAB_BAR_ITEM,
+  (args, { resolve }) => {
+    setTabBar(API_SET_TAB_BAR_ITEM, args, resolve);
+  },
+  SetTabBarItemProtocol,
+  SetTabBarItemOptions
+);
+const setTabBarStyle = /* @__PURE__ */ defineAsyncApi(
+  API_SET_TAB_BAR_STYLE,
+  (args, { resolve }) => {
+    setTabBar(API_SET_TAB_BAR_STYLE, args, resolve);
+  },
+  SetTabBarStyleProtocol,
+  SetTabBarStyleOptions
+);
+const hideTabBar = /* @__PURE__ */ defineAsyncApi(
+  API_HIDE_TAB_BAR,
+  (args, { resolve }) => {
+    setTabBar(API_HIDE_TAB_BAR, args ? args : {}, resolve);
+  },
+  HideTabBarProtocol
+);
+const showTabBar = /* @__PURE__ */ defineAsyncApi(
+  API_SHOW_TAB_BAR,
+  (args, { resolve }) => {
+    setTabBar(API_SHOW_TAB_BAR, args ? args : {}, resolve);
+  },
+  ShowTabBarProtocol
+);
+const hideTabBarRedDot = /* @__PURE__ */ defineAsyncApi(
+  API_HIDE_TAB_BAR_RED_DOT,
+  (args, { resolve }) => {
+    setTabBar(API_HIDE_TAB_BAR_RED_DOT, args, resolve);
+  },
+  HideTabBarRedDotProtocol,
+  HideTabBarRedDotOptions
+);
+const showTabBarRedDot = /* @__PURE__ */ defineAsyncApi(
+  API_SHOW_TAB_BAR_RED_DOT,
+  (args, { resolve }) => {
+    setTabBar(API_SHOW_TAB_BAR_RED_DOT, args, resolve);
+  },
+  ShowTabBarRedDotProtocol,
+  ShowTabBarRedDotOptions
+);
+const removeTabBarBadge = /* @__PURE__ */ defineAsyncApi(
+  API_REMOVE_TAB_BAR_BADGE,
+  (args, { resolve }) => {
+    setTabBar(API_REMOVE_TAB_BAR_BADGE, args, resolve);
+  },
+  RemoveTabBarBadgeProtocol,
+  RemoveTabBarBadgeOptions
+);
+const setTabBarBadge = /* @__PURE__ */ defineAsyncApi(
+  API_SET_TAB_BAR_BADGE,
+  (args, { resolve }) => {
+    setTabBar(API_SET_TAB_BAR_BADGE, args, resolve);
+  },
+  SetTabBarBadgeProtocol,
+  SetTabBarBadgeOptions
+);
 const UNI_TABBAR_ICON_FONT = "UniTabbarIconFont";
-var TabBar = /* @__PURE__ */ defineSystemComponent({
+const TabBar = /* @__PURE__ */ defineSystemComponent({
   name: "TabBar",
   setup() {
     const visibleList = ref([]);
@@ -19649,13 +21618,12 @@ function createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, tab
     "style": {
       height
     }
-  }, [iconfontText ? createTabBarItemIconfontTsx(iconfontText, iconfontColor || BLUR_EFFECT_COLOR_DARK, tabBarItem, tabBar2) : iconPath && createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2), tabBarItem.text && createTabBarItemTextTsx(color, tabBarItem, tabBar2)], 4);
+  }, [iconfontText ? createTabBarItemIconfontTsx(iconfontText, iconfontColor || BLUR_EFFECT_COLOR_DARK, tabBarItem, tabBar2) : iconPath && createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2), tabBarItem.text && createTabBarItemTextTsx(color, tabBarItem, tabBar2), tabBarItem.redDot && createTabBarItemRedDotTsx(tabBarItem.badge)], 4);
 }
 function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2) {
   const {
     type,
-    text: text2,
-    redDot
+    text: text2
   } = tabBarItem;
   const {
     iconWidth
@@ -19670,14 +21638,13 @@ function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2) {
     "style": style
   }, [type !== "midButton" && createVNode("img", {
     "src": getRealPath(iconPath)
-  }, null, 8, ["src"]), redDot && createTabBarItemRedDotTsx(tabBarItem.badge)], 6);
+  }, null, 8, ["src"])], 6);
 }
 function createTabBarItemIconfontTsx(iconfontText, iconfontColor, tabBarItem, tabBar2) {
   var _a;
   const {
     type,
-    text: text2,
-    redDot
+    text: text2
   } = tabBarItem;
   const {
     iconWidth
@@ -19697,11 +21664,10 @@ function createTabBarItemIconfontTsx(iconfontText, iconfontColor, tabBarItem, ta
   }, [type !== "midButton" && createVNode("div", {
     "class": "uni-tabbar__iconfont",
     "style": iconfontStyle
-  }, [iconfontText], 4), redDot && createTabBarItemRedDotTsx(tabBarItem.badge)], 6);
+  }, [iconfontText], 4)], 6);
 }
 function createTabBarItemTextTsx(color, tabBarItem, tabBar2) {
   const {
-    redDot,
     iconPath,
     text: text2
   } = tabBarItem;
@@ -19718,7 +21684,7 @@ function createTabBarItemTextTsx(color, tabBarItem, tabBar2) {
   return createVNode("div", {
     "class": "uni-tabbar__label",
     "style": style
-  }, [text2, redDot && !iconPath && createTabBarItemRedDotTsx(tabBarItem.badge)], 4);
+  }, [text2], 4);
 }
 function createTabBarItemRedDotTsx(badge) {
   const clazz2 = "uni-tabbar__reddot" + (badge ? " uni-tabbar__badge" : "");
@@ -19761,7 +21727,7 @@ let globalLayoutState = void 0;
 function getLayoutState() {
   return globalLayoutState;
 }
-var LayoutComponent = /* @__PURE__ */ defineSystemComponent({
+const LayoutComponent = /* @__PURE__ */ defineSystemComponent({
   name: "Layout",
   setup(_props, {
     emit: emit2
@@ -19863,7 +21829,8 @@ function useState() {
       "--window-margin": value + "px"
     }));
     return {
-      layoutState: layoutState2
+      layoutState: layoutState2,
+      windowState: computed(() => ({}))
     };
   }
   const topWindowMediaQuery = ref(false);
@@ -19886,6 +21853,7 @@ function useState() {
     marginWidth: 0,
     leftWindowWidth: 0,
     rightWindowWidth: 0,
+    navigationBarTitleText: "",
     topWindowStyle: {},
     leftWindowStyle: {},
     rightWindowStyle: {}
@@ -19916,14 +21884,17 @@ function useState() {
   watch(() => layoutState.rightWindowWidth + layoutState.marginWidth, (value) => updateCssVar({
     "--window-right": value + "px"
   }));
-  const windowState = reactive({
+  UniServiceJSBridge.on(ON_NAVIGATION_BAR_CHANGE, (navigationBar) => {
+    layoutState.navigationBarTitleText = navigationBar.titleText;
+  });
+  const windowState = computed(() => ({
     matchTopWindow: layoutState.topWindowMediaQuery,
     showTopWindow: layoutState.showTopWindow || layoutState.apiShowTopWindow,
     matchLeftWindow: layoutState.leftWindowMediaQuery,
     showLeftWindow: layoutState.showLeftWindow || layoutState.apiShowLeftWindow,
     matchRightWindow: layoutState.rightWindowMediaQuery,
     showRightWindow: layoutState.showRightWindow || layoutState.apiShowRightWindow
-  });
+  }));
   return {
     layoutState,
     windowState
@@ -19934,9 +21905,9 @@ function createLayoutTsx(keepAliveRoute, layoutState, windowState, topWindow, le
   if (!__UNI_FEATURE_RESPONSIVE__) {
     return routerVNode;
   }
-  const topWindowTsx = __UNI_FEATURE_TOPWINDOW__ ? createTopWindowTsx(topWindow, layoutState, windowState) : null;
-  const leftWindowTsx = __UNI_FEATURE_LEFTWINDOW__ ? createLeftWindowTsx(leftWindow, layoutState, windowState) : null;
-  const rightWindowTsx = __UNI_FEATURE_RIGHTWINDOW__ ? createRightWindowTsx(rightWindow, layoutState, windowState) : null;
+  const topWindowTsx = __UNI_FEATURE_TOPWINDOW__ ? createTopWindowTsx(topWindow, layoutState, windowState.value) : null;
+  const leftWindowTsx = __UNI_FEATURE_LEFTWINDOW__ ? createLeftWindowTsx(leftWindow, layoutState, windowState.value) : null;
+  const rightWindowTsx = __UNI_FEATURE_RIGHTWINDOW__ ? createRightWindowTsx(rightWindow, layoutState, windowState.value) : null;
   return createVNode("uni-layout", {
     "class": {
       "uni-app--showtopwindow": __UNI_FEATURE_TOPWINDOW__ && layoutState.showTopWindow,
@@ -20048,8 +22019,9 @@ function createTopWindowTsx(topWindow, layoutState, windowState) {
       "class": "uni-top-window",
       "style": layoutState.topWindowStyle
     }, [createVNode(TopWindow, mergeProps({
-      "ref": windowRef
-    }, windowState), null, 16)], 4), createVNode("div", {
+      "ref": windowRef,
+      "navigation-bar-title-text": layoutState.navigationBarTitleText
+    }, windowState), null, 16, ["navigation-bar-title-text"])], 4), createVNode("div", {
       "class": "uni-top-window--placeholder",
       "style": {
         height: layoutState.topWindowHeight + "px"
@@ -20095,80 +22067,110 @@ function createRightWindowTsx(rightWindow, layoutState, windowState) {
     }, windowState), null, 16)])], 12, ["data-show"]), [[vShow, layoutState.showRightWindow || layoutState.apiShowRightWindow]]);
   }
 }
-const showTopWindow = /* @__PURE__ */ defineAsyncApi("showTopWindow", (_, { resolve, reject }) => {
-  const state2 = getLayoutState();
-  if (!state2) {
-    reject();
-    return;
+const showTopWindow = /* @__PURE__ */ defineAsyncApi(
+  "showTopWindow",
+  (_, { resolve, reject }) => {
+    const state2 = getLayoutState();
+    if (!state2) {
+      reject();
+      return;
+    }
+    state2.apiShowTopWindow = true;
+    nextTick(resolve);
   }
-  state2.apiShowTopWindow = true;
-  nextTick(resolve);
-});
-const hideTopWindow = /* @__PURE__ */ defineAsyncApi("hideTopWindow", (_, { resolve, reject }) => {
-  const state2 = getLayoutState();
-  if (!state2) {
-    reject();
-    return;
+);
+const hideTopWindow = /* @__PURE__ */ defineAsyncApi(
+  "hideTopWindow",
+  (_, { resolve, reject }) => {
+    const state2 = getLayoutState();
+    if (!state2) {
+      reject();
+      return;
+    }
+    state2.apiShowTopWindow = false;
+    nextTick(resolve);
   }
-  state2.apiShowTopWindow = false;
-  nextTick(resolve);
-});
-const showLeftWindow = /* @__PURE__ */ defineAsyncApi("showLeftWindow", (_, { resolve, reject }) => {
-  const state2 = getLayoutState();
-  if (!state2) {
-    reject();
-    return;
+);
+const showLeftWindow = /* @__PURE__ */ defineAsyncApi(
+  "showLeftWindow",
+  (_, { resolve, reject }) => {
+    const state2 = getLayoutState();
+    if (!state2) {
+      reject();
+      return;
+    }
+    state2.apiShowLeftWindow = true;
+    nextTick(resolve);
   }
-  state2.apiShowLeftWindow = true;
-  nextTick(resolve);
-});
-const hideLeftWindow = /* @__PURE__ */ defineAsyncApi("hideLeftWindow", (_, { resolve, reject }) => {
-  const state2 = getLayoutState();
-  if (!state2) {
-    reject();
-    return;
+);
+const hideLeftWindow = /* @__PURE__ */ defineAsyncApi(
+  "hideLeftWindow",
+  (_, { resolve, reject }) => {
+    const state2 = getLayoutState();
+    if (!state2) {
+      reject();
+      return;
+    }
+    state2.apiShowLeftWindow = false;
+    nextTick(resolve);
   }
-  state2.apiShowLeftWindow = false;
-  nextTick(resolve);
-});
-const showRightWindow = /* @__PURE__ */ defineAsyncApi("showRightWindow", (_, { resolve, reject }) => {
-  const state2 = getLayoutState();
-  if (!state2) {
-    reject();
-    return;
+);
+const showRightWindow = /* @__PURE__ */ defineAsyncApi(
+  "showRightWindow",
+  (_, { resolve, reject }) => {
+    const state2 = getLayoutState();
+    if (!state2) {
+      reject();
+      return;
+    }
+    state2.apiShowRightWindow = true;
+    nextTick(resolve);
   }
-  state2.apiShowRightWindow = true;
-  nextTick(resolve);
-});
-const hideRightWindow = /* @__PURE__ */ defineAsyncApi("hideRightWindow", (_, { resolve, reject }) => {
-  const state2 = getLayoutState();
-  if (!state2) {
-    reject();
-    return;
+);
+const hideRightWindow = /* @__PURE__ */ defineAsyncApi(
+  "hideRightWindow",
+  (_, { resolve, reject }) => {
+    const state2 = getLayoutState();
+    if (!state2) {
+      reject();
+      return;
+    }
+    state2.apiShowRightWindow = false;
+    nextTick(resolve);
   }
-  state2.apiShowRightWindow = false;
-  nextTick(resolve);
-});
-const getTopWindowStyle = /* @__PURE__ */ defineSyncApi("getTopWindowStyle", () => {
-  const state2 = getLayoutState();
-  return extend({}, state2 && state2.topWindowStyle);
-});
-const setTopWindowStyle = /* @__PURE__ */ defineSyncApi("setTopWindowStyle", (style) => {
-  const state2 = getLayoutState();
-  if (state2) {
-    state2.topWindowStyle = style;
+);
+const getTopWindowStyle = /* @__PURE__ */ defineSyncApi(
+  "getTopWindowStyle",
+  () => {
+    const state2 = getLayoutState();
+    return extend({}, state2 && state2.topWindowStyle);
   }
-});
-const getLeftWindowStyle = /* @__PURE__ */ defineSyncApi("getLeftWindowStyle", () => {
-  const state2 = getLayoutState();
-  return extend({}, state2 && state2.leftWindowStyle);
-});
-const setLeftWindowStyle = /* @__PURE__ */ defineSyncApi("setLeftWindowStyle", (style) => {
-  const state2 = getLayoutState();
-  if (state2) {
-    state2.leftWindowStyle = style;
+);
+const setTopWindowStyle = /* @__PURE__ */ defineSyncApi(
+  "setTopWindowStyle",
+  (style) => {
+    const state2 = getLayoutState();
+    if (state2) {
+      state2.topWindowStyle = style;
+    }
   }
-});
+);
+const getLeftWindowStyle = /* @__PURE__ */ defineSyncApi(
+  "getLeftWindowStyle",
+  () => {
+    const state2 = getLayoutState();
+    return extend({}, state2 && state2.leftWindowStyle);
+  }
+);
+const setLeftWindowStyle = /* @__PURE__ */ defineSyncApi(
+  "setLeftWindowStyle",
+  (style) => {
+    const state2 = getLayoutState();
+    if (state2) {
+      state2.leftWindowStyle = style;
+    }
+  }
+);
 const getRightWindowStyle = /* @__PURE__ */ defineSyncApi("getRightWindowStyle", () => {
   const state2 = getLayoutState();
   return extend({}, state2 && state2.rightWindowStyle);
@@ -20179,47 +22181,110 @@ const setRightWindowStyle = /* @__PURE__ */ defineSyncApi("setRightWindowStyle",
     state2.rightWindowStyle = style;
   }
 });
-const saveImageToPhotosAlbum = /* @__PURE__ */ defineAsyncApi(API_SAVE_IMAGE_TO_PHOTOS_ALBUM, createUnsupportedAsyncApi(API_SAVE_IMAGE_TO_PHOTOS_ALBUM));
+const saveImageToPhotosAlbum = /* @__PURE__ */ defineAsyncApi(
+  API_SAVE_IMAGE_TO_PHOTOS_ALBUM,
+  createUnsupportedAsyncApi(API_SAVE_IMAGE_TO_PHOTOS_ALBUM)
+);
 const API_GET_RECORDER_MANAGER = "getRecorderManager";
-const getRecorderManager = /* @__PURE__ */ defineSyncApi(API_GET_RECORDER_MANAGER, createUnsupportedSyncApi(API_GET_RECORDER_MANAGER));
-const saveVideoToPhotosAlbum = /* @__PURE__ */ defineAsyncApi(API_SAVE_VIDEO_TO_PHOTOS_ALBUM, createUnsupportedAsyncApi(API_SAVE_VIDEO_TO_PHOTOS_ALBUM));
+const getRecorderManager = /* @__PURE__ */ defineSyncApi(
+  API_GET_RECORDER_MANAGER,
+  createUnsupportedSyncApi(API_GET_RECORDER_MANAGER)
+);
+const saveVideoToPhotosAlbum = /* @__PURE__ */ defineAsyncApi(
+  API_SAVE_VIDEO_TO_PHOTOS_ALBUM,
+  createUnsupportedAsyncApi(API_SAVE_VIDEO_TO_PHOTOS_ALBUM)
+);
 const API_CREATE_CAMERA_CONTEXT = "createCameraContext";
-const createCameraContext = /* @__PURE__ */ defineSyncApi(API_CREATE_CAMERA_CONTEXT, createUnsupportedSyncApi(API_CREATE_CAMERA_CONTEXT));
+const createCameraContext = /* @__PURE__ */ defineSyncApi(
+  API_CREATE_CAMERA_CONTEXT,
+  createUnsupportedSyncApi(API_CREATE_CAMERA_CONTEXT)
+);
 const API_CREATE_LIVE_PLAYER_CONTEXT = "createLivePlayerContext";
-const createLivePlayerContext = /* @__PURE__ */ defineSyncApi(API_CREATE_LIVE_PLAYER_CONTEXT, createUnsupportedSyncApi(API_CREATE_LIVE_PLAYER_CONTEXT));
+const createLivePlayerContext = /* @__PURE__ */ defineSyncApi(
+  API_CREATE_LIVE_PLAYER_CONTEXT,
+  createUnsupportedSyncApi(API_CREATE_LIVE_PLAYER_CONTEXT)
+);
 const API_SAVE_FILE = "saveFile";
-const saveFile = /* @__PURE__ */ defineAsyncApi(API_SAVE_FILE, createUnsupportedAsyncApi(API_SAVE_FILE));
+const saveFile = /* @__PURE__ */ defineAsyncApi(
+  API_SAVE_FILE,
+  createUnsupportedAsyncApi(API_SAVE_FILE)
+);
 const API_GET_SAVED_FILE_LIST = "getSavedFileList";
-const getSavedFileList = /* @__PURE__ */ defineAsyncApi(API_GET_SAVED_FILE_LIST, createUnsupportedAsyncApi(API_GET_SAVED_FILE_LIST));
+const getSavedFileList = /* @__PURE__ */ defineAsyncApi(
+  API_GET_SAVED_FILE_LIST,
+  createUnsupportedAsyncApi(API_GET_SAVED_FILE_LIST)
+);
 const API_GET_SAVED_FILE_INFO = "getSavedFileInfo";
-const getSavedFileInfo = /* @__PURE__ */ defineAsyncApi(API_GET_SAVED_FILE_INFO, createUnsupportedAsyncApi(API_GET_SAVED_FILE_INFO));
-const API_REMOVE_SAVED_FILE_INFO = "removeSavedFileInfo";
-const removeSavedFileInfo = /* @__PURE__ */ defineAsyncApi(API_REMOVE_SAVED_FILE_INFO, createUnsupportedAsyncApi(API_REMOVE_SAVED_FILE_INFO));
+const getSavedFileInfo = /* @__PURE__ */ defineAsyncApi(
+  API_GET_SAVED_FILE_INFO,
+  createUnsupportedAsyncApi(API_GET_SAVED_FILE_INFO)
+);
+const API_REMOVE_SAVED_FILE = "removeSavedFile";
+const removeSavedFile = /* @__PURE__ */ defineAsyncApi(
+  API_REMOVE_SAVED_FILE,
+  createUnsupportedAsyncApi(API_REMOVE_SAVED_FILE)
+);
 const API_ON_MEMORY_WARNING = "onMemoryWarning";
-const onMemoryWarning = /* @__PURE__ */ defineOnApi(API_ON_MEMORY_WARNING, createUnsupportedOnApi(API_ON_MEMORY_WARNING));
+const onMemoryWarning = /* @__PURE__ */ defineOnApi(
+  API_ON_MEMORY_WARNING,
+  createUnsupportedOnApi(API_ON_MEMORY_WARNING)
+);
 const API_ON_GYROSCOPE_CHANGE = "onGyroscopeChange";
-const onGyroscopeChange = /* @__PURE__ */ defineOnApi(API_ON_GYROSCOPE_CHANGE, createUnsupportedOnApi(API_ON_GYROSCOPE_CHANGE));
+const onGyroscopeChange = /* @__PURE__ */ defineOnApi(
+  API_ON_GYROSCOPE_CHANGE,
+  createUnsupportedOnApi(API_ON_GYROSCOPE_CHANGE)
+);
 const API_START_GYROSCOPE = "startGyroscope";
-const startGyroscope = /* @__PURE__ */ defineAsyncApi(API_START_GYROSCOPE, createUnsupportedAsyncApi(API_START_GYROSCOPE));
+const startGyroscope = /* @__PURE__ */ defineAsyncApi(
+  API_START_GYROSCOPE,
+  createUnsupportedAsyncApi(API_START_GYROSCOPE)
+);
 const API_STOP_GYROSCOPE = "stopGyroscope";
-const stopGyroscope = /* @__PURE__ */ defineAsyncApi(API_STOP_GYROSCOPE, createUnsupportedAsyncApi(API_STOP_GYROSCOPE));
+const stopGyroscope = /* @__PURE__ */ defineAsyncApi(
+  API_STOP_GYROSCOPE,
+  createUnsupportedAsyncApi(API_STOP_GYROSCOPE)
+);
 const API_SCAN_CODE = "scanCode";
-const scanCode = /* @__PURE__ */ defineAsyncApi(API_SCAN_CODE, createUnsupportedAsyncApi(API_SCAN_CODE));
+const scanCode = /* @__PURE__ */ defineAsyncApi(
+  API_SCAN_CODE,
+  createUnsupportedAsyncApi(API_SCAN_CODE)
+);
 const API_SET_SCREEN_BRIGHTNESS = "setScreenBrightness";
-const setScreenBrightness = /* @__PURE__ */ defineAsyncApi(API_SET_SCREEN_BRIGHTNESS, createUnsupportedAsyncApi(API_SET_SCREEN_BRIGHTNESS));
+const setScreenBrightness = /* @__PURE__ */ defineAsyncApi(
+  API_SET_SCREEN_BRIGHTNESS,
+  createUnsupportedAsyncApi(API_SET_SCREEN_BRIGHTNESS)
+);
 const API_GET_SCREEN_BRIGHTNESS = "getScreenBrightness";
-const getScreenBrightness = /* @__PURE__ */ defineAsyncApi(API_GET_SCREEN_BRIGHTNESS, createUnsupportedAsyncApi(API_GET_SCREEN_BRIGHTNESS));
+const getScreenBrightness = /* @__PURE__ */ defineAsyncApi(
+  API_GET_SCREEN_BRIGHTNESS,
+  createUnsupportedAsyncApi(API_GET_SCREEN_BRIGHTNESS)
+);
 const API_SET_KEEP_SCREEN_ON = "setKeepScreenOn";
-const setKeepScreenOn = /* @__PURE__ */ defineAsyncApi(API_SET_KEEP_SCREEN_ON, createUnsupportedAsyncApi(API_SET_KEEP_SCREEN_ON));
+const setKeepScreenOn = /* @__PURE__ */ defineAsyncApi(
+  API_SET_KEEP_SCREEN_ON,
+  createUnsupportedAsyncApi(API_SET_KEEP_SCREEN_ON)
+);
 const API_ON_USER_CAPTURE_SCREEN = "onUserCaptureScreen";
-const onUserCaptureScreen = /* @__PURE__ */ defineOnApi(API_ON_USER_CAPTURE_SCREEN, createUnsupportedOnApi(API_ON_USER_CAPTURE_SCREEN));
+const onUserCaptureScreen = /* @__PURE__ */ defineOnApi(
+  API_ON_USER_CAPTURE_SCREEN,
+  createUnsupportedOnApi(API_ON_USER_CAPTURE_SCREEN)
+);
 const API_ADD_PHONE_CONTACT = "addPhoneContact";
-const addPhoneContact = /* @__PURE__ */ defineAsyncApi(API_ADD_PHONE_CONTACT, createUnsupportedAsyncApi(API_ADD_PHONE_CONTACT));
+const addPhoneContact = /* @__PURE__ */ defineAsyncApi(
+  API_ADD_PHONE_CONTACT,
+  createUnsupportedAsyncApi(API_ADD_PHONE_CONTACT)
+);
 const API_LOGIN = "login";
-const login = /* @__PURE__ */ defineAsyncApi(API_LOGIN, createUnsupportedAsyncApi(API_LOGIN));
+const login = /* @__PURE__ */ defineAsyncApi(
+  API_LOGIN,
+  createUnsupportedAsyncApi(API_LOGIN)
+);
 const API_GET_PROVIDER = "getProvider";
-const getProvider = /* @__PURE__ */ defineAsyncApi(API_GET_PROVIDER, createUnsupportedAsyncApi(API_GET_PROVIDER));
-var api = /* @__PURE__ */ Object.defineProperty({
+const getProvider = /* @__PURE__ */ defineAsyncApi(
+  API_GET_PROVIDER,
+  createUnsupportedAsyncApi(API_GET_PROVIDER)
+);
+const api = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   upx2px,
   addInterceptor,
@@ -20252,7 +22317,7 @@ var api = /* @__PURE__ */ Object.defineProperty({
   setPageMeta,
   getEnterOptionsSync,
   getLaunchOptionsSync,
-  getPushClientid,
+  getPushClientId,
   onPushMessage,
   offPushMessage,
   onAppHide,
@@ -20326,6 +22391,12 @@ var api = /* @__PURE__ */ Object.defineProperty({
   getLocation,
   openLocation,
   chooseLocation,
+  startLocationUpdate,
+  stopLocationUpdate,
+  onLocationChange,
+  offLocationChange,
+  onLocationChangeError,
+  offLocationChangeError,
   navigateBack,
   navigateTo,
   redirectTo,
@@ -20374,7 +22445,7 @@ var api = /* @__PURE__ */ Object.defineProperty({
   saveFile,
   getSavedFileList,
   getSavedFileInfo,
-  removeSavedFileInfo,
+  removeSavedFile,
   onMemoryWarning,
   onGyroscopeChange,
   startGyroscope,
@@ -20389,7 +22460,7 @@ var api = /* @__PURE__ */ Object.defineProperty({
   getProvider
 }, Symbol.toStringTag, { value: "Module" });
 const CONTEXT_ID = "MAP_LOCATION";
-var MapLocation = /* @__PURE__ */ defineSystemComponent({
+const MapLocation = /* @__PURE__ */ defineSystemComponent({
   name: "MapLocation",
   setup() {
     const state2 = reactive({
@@ -20444,7 +22515,7 @@ var MapLocation = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-var props$3 = {
+const props$3 = {
   dashArray: {
     type: Array,
     default: () => [0, 0]
@@ -20470,7 +22541,7 @@ var props$3 = {
     default: 0
   }
 };
-var MapPolygon = /* @__PURE__ */ defineSystemComponent({
+const MapPolygon = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolygon",
   props: props$3,
   setup(props2) {
@@ -20491,7 +22562,7 @@ var MapPolygon = /* @__PURE__ */ defineSystemComponent({
             latitude,
             longitude
           } = item;
-          return new maps2.LatLng(latitude, longitude);
+          return getIsAMap() ? [longitude, latitude] : new maps2.LatLng(latitude, longitude);
         });
         const {
           r: fcR,
@@ -20606,7 +22677,7 @@ const props$2 = {
 };
 function getPoints(points) {
   const newPoints = [];
-  if (Array.isArray(points)) {
+  if (isArray(points)) {
     points.forEach((point) => {
       if (point && point.latitude && point.longitude) {
         newPoints.push({
@@ -20617,6 +22688,15 @@ function getPoints(points) {
     });
   }
   return newPoints;
+}
+function getAMapPosition(maps2, latitude, longitude) {
+  return new maps2.LngLat(longitude, latitude);
+}
+function getGoogleOrQQMapPosition(maps2, latitude, longitude) {
+  return new maps2.LatLng(latitude, longitude);
+}
+function getMapPosition(maps2, latitude, longitude) {
+  return getIsAMap() ? getAMapPosition(maps2, latitude, longitude) : getGoogleOrQQMapPosition(maps2, latitude, longitude);
 }
 function getLat(latLng) {
   if ("getLat" in latLng) {
@@ -20679,7 +22759,8 @@ function useMap(props2, rootRef, emit2) {
       state2.latitude = latitude;
       state2.longitude = longitude;
       if (map) {
-        map.setCenter(new maps2.LatLng(latitude, longitude));
+        const centerPosition = getMapPosition(maps2, state2.latitude, state2.longitude);
+        map.setCenter(centerPosition);
       }
     }
   });
@@ -20707,22 +22788,33 @@ function useMap(props2, rootRef, emit2) {
     };
   }
   function updateCenter() {
-    map.setCenter(new maps2.LatLng(state2.latitude, state2.longitude));
+    const centerPosition = getMapPosition(maps2, state2.latitude, state2.longitude);
+    map.setCenter(centerPosition);
   }
   function updateBounds() {
-    const bounds = new maps2.LatLngBounds();
-    state2.includePoints.forEach(({
-      latitude,
-      longitude
-    }) => {
-      const latLng = new maps2.LatLng(latitude, longitude);
-      bounds.extend(latLng);
-    });
-    map.fitBounds(bounds);
+    if (getIsAMap()) {
+      const points = [];
+      state2.includePoints.forEach((point) => {
+        points.push([point.longitude, point.latitude]);
+      });
+      const bounds = new maps2.Bounds(...points);
+      map.setBounds(bounds);
+    } else {
+      const bounds = new maps2.LatLngBounds();
+      state2.includePoints.forEach(({
+        latitude,
+        longitude
+      }) => {
+        const latLng = new maps2.LatLng(latitude, longitude);
+        bounds.extend(latLng);
+      });
+      map.fitBounds(bounds);
+    }
   }
   function initMap() {
     const mapEl = mapRef.value;
-    const center = new maps2.LatLng(state2.latitude, state2.longitude);
+    const center = getMapPosition(maps2, state2.latitude, state2.longitude);
+    const event = maps2.event || maps2.Event;
     const map2 = new maps2.Map(mapEl, {
       center,
       zoom: Number(props2.scale),
@@ -20747,33 +22839,34 @@ function useMap(props2, rootRef, emit2) {
         updateCenter();
       }
     });
-    const boundsChangedEvent = maps2.event.addListener(map2, "bounds_changed", () => {
+    const boundsChangedEvent = event.addListener(map2, "bounds_changed", () => {
       boundsChangedEvent.remove();
       emitBoundsReady();
     });
-    maps2.event.addListener(map2, "click", () => {
+    event.addListener(map2, "click", () => {
+      trigger("tap", {}, {});
       trigger("click", {}, {});
     });
-    maps2.event.addListener(map2, "dragstart", () => {
+    event.addListener(map2, "dragstart", () => {
       trigger("regionchange", {}, {
         type: "begin",
         causedBy: "gesture"
       });
     });
-    maps2.event.addListener(map2, "dragend", () => {
+    event.addListener(map2, "dragend", () => {
       trigger("regionchange", {}, extend({
         type: "end",
         causedBy: "drag"
       }, getMapInfo2()));
     });
-    maps2.event.addListener(map2, "zoom_changed", () => {
+    event.addListener(map2, "zoom_changed", () => {
       emit2("update:scale", map2.getZoom());
       trigger("regionchange", {}, extend({
         type: "end",
         causedBy: "scale"
       }, getMapInfo2()));
     });
-    maps2.event.addListener(map2, "center_changed", () => {
+    event.addListener(map2, "center_changed", () => {
       const center2 = map2.getCenter();
       const latitude = getLat(center2);
       const longitude = getLng(center2);
@@ -20811,7 +22904,8 @@ function useMap(props2, rootRef, emit2) {
               state2.latitude = latitude;
               state2.longitude = longitude;
               if (map) {
-                map.setCenter(new maps2.LatLng(latitude, longitude));
+                const centerPosition = getMapPosition(maps2, latitude, longitude);
+                map.setCenter(centerPosition);
               }
               onMapReady(() => {
                 callOptions(data, `${type}:ok`);
@@ -20888,10 +22982,11 @@ function useMap(props2, rootRef, emit2) {
   provide("removeMapChidlContext", removeMapChidlContext);
   return {
     state: state2,
-    mapRef
+    mapRef,
+    trigger
   };
 }
-var Map$1 = /* @__PURE__ */ defineBuiltInComponent({
+const Map$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Map",
   props: props$2,
   emits: ["markertap", "labeltap", "callouttap", "controltap", "regionchange", "tap", "click", "updated", "update:scale", "update:latitude", "update:longitude"],
@@ -20901,7 +22996,8 @@ var Map$1 = /* @__PURE__ */ defineBuiltInComponent({
   }) {
     const rootRef = ref(null);
     const {
-      mapRef
+      mapRef,
+      trigger
     } = useMap(props2, rootRef, emit2);
     return () => {
       return createVNode("uni-map", {
@@ -20912,7 +23008,9 @@ var Map$1 = /* @__PURE__ */ defineBuiltInComponent({
         "style": "width: 100%; height: 100%; position: relative; overflow: hidden"
       }, null, 512), props2.markers.map((item) => createVNode(MapMarker, mergeProps({
         "key": item.id
-      }, item), null, 16)), props2.polyline.map((item) => createVNode(MapPolyline, item, null, 16)), props2.circles.map((item) => createVNode(MapCircle, item, null, 16)), props2.controls.map((item) => createVNode(MapControl, item, null, 16)), props2.showLocation && createVNode(MapLocation, null, null), props2.polygons.map((item) => createVNode(MapPolygon, item, null, 16)), createVNode("div", {
+      }, item), null, 16)), props2.polyline.map((item) => createVNode(MapPolyline, item, null, 16)), props2.circles.map((item) => createVNode(MapCircle, item, null, 16)), props2.controls.map((item) => createVNode(MapControl, mergeProps(item, {
+        "trigger": trigger
+      }), null, 16, ["trigger"])), props2.showLocation && createVNode(MapLocation, null, null), props2.polygons.map((item) => createVNode(MapPolygon, item, null, 16)), createVNode("div", {
         "style": "position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"
       }, [slots.default && slots.default()])], 8, ["id"]);
     };
@@ -20924,7 +23022,7 @@ const props$1 = {
     default: 0
   }
 };
-var index$b = /* @__PURE__ */ defineBuiltInComponent({
+const index$b = /* @__PURE__ */ defineBuiltInComponent({
   name: "CoverView",
   compatConfig: {
     MODE: 3
@@ -20965,7 +23063,7 @@ var index$b = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-var index$a = /* @__PURE__ */ defineBuiltInComponent({
+const index$a = /* @__PURE__ */ defineBuiltInComponent({
   name: "CoverImage",
   compatConfig: {
     MODE: 3
@@ -21013,7 +23111,7 @@ function getDefaultStartValue(props2) {
     return "00:00";
   }
   if (props2.mode === mode.DATE) {
-    const year = new Date().getFullYear() - 100;
+    const year = new Date().getFullYear() - 150;
     switch (props2.fields) {
       case fields.YEAR:
         return year.toString();
@@ -21030,7 +23128,7 @@ function getDefaultEndValue(props2) {
     return "23:59";
   }
   if (props2.mode === mode.DATE) {
-    const year = new Date().getFullYear() + 100;
+    const year = new Date().getFullYear() + 150;
     switch (props2.fields) {
       case fields.YEAR:
         return year.toString();
@@ -21138,7 +23236,7 @@ const props = {
     default: ""
   }
 };
-var index$9 = /* @__PURE__ */ defineBuiltInComponent({
+const index$9 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Picker",
   compatConfig: {
     MODE: 3
@@ -21441,10 +23539,31 @@ function usePickerMethods(props2, state2, trigger, rootRef, pickerRef, selectRef
     }
     state2.timeArray.push(hours, minutes);
   }
+  function getYearStartEnd() {
+    let year = new Date().getFullYear();
+    let start = year - 150;
+    let end = year + 150;
+    if (props2.start) {
+      const _year = new Date(props2.start).getFullYear();
+      if (!isNaN(_year) && _year < start) {
+        start = _year;
+      }
+    }
+    if (props2.end) {
+      const _year = new Date(props2.start).getFullYear();
+      if (!isNaN(_year) && _year > end) {
+        end = _year;
+      }
+    }
+    return {
+      start,
+      end
+    };
+  }
   function _createDate() {
     let years = [];
-    let year = new Date().getFullYear();
-    for (let i = year - 150, end = year + 150; i <= end; i++) {
+    const year = getYearStartEnd();
+    for (let i = year.start, end = year.end; i <= end; i++) {
       years.push(String(i));
     }
     let months = [];
@@ -21474,10 +23593,10 @@ function usePickerMethods(props2, state2, trigger, rootRef, pickerRef, selectRef
     switch (props2.mode) {
       case mode.MULTISELECTOR:
         {
-          if (!Array.isArray(val)) {
+          if (!isArray(val)) {
             val = state2.valueArray;
           }
-          if (!Array.isArray(state2.valueSync)) {
+          if (!isArray(state2.valueSync)) {
             state2.valueSync = [];
           }
           const length = state2.valueSync.length = Math.max(val.length, props2.range.length);
@@ -21542,7 +23661,7 @@ function usePickerMethods(props2, state2, trigger, rootRef, pickerRef, selectRef
     _close();
     state2.valueChangeSource = "click";
     const value = _getValue();
-    state2.valueSync = Array.isArray(value) ? value.map((val) => val) : value;
+    state2.valueSync = isArray(value) ? value.map((val) => val) : value;
     trigger("change", {}, {
       value
     });
@@ -21758,12 +23877,12 @@ function usePickerForm(_resetFormData, _getFormData) {
     });
   }
 }
-var index$8 = /* @__PURE__ */ defineUnsupportedComponent("ad");
-var index$7 = /* @__PURE__ */ defineUnsupportedComponent("ad-content-page");
-var index$6 = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
-var index$5 = /* @__PURE__ */ defineUnsupportedComponent("camera");
-var index$4 = /* @__PURE__ */ defineUnsupportedComponent("live-player");
-var index$3 = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
+const index$8 = /* @__PURE__ */ defineUnsupportedComponent("ad");
+const index$7 = /* @__PURE__ */ defineUnsupportedComponent("ad-content-page");
+const index$6 = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
+const index$5 = /* @__PURE__ */ defineUnsupportedComponent("camera");
+const index$4 = /* @__PURE__ */ defineUnsupportedComponent("live-player");
+const index$3 = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
 const UniViewJSBridge$1 = /* @__PURE__ */ extend(ViewJSBridge, {
   publishHandler(event, args, pageId) {
     UniServiceJSBridge.subscribeHandler(event, args, pageId);
@@ -21795,8 +23914,12 @@ function usePageHeadTransparent(headRef, {
     const $el = headRef.value;
     transparentElemStyle = $el.style;
     titleElem = $el.querySelector(".uni-page-head__title");
-    const borderRadiusElems = $el.querySelectorAll(".uni-page-head-btn");
-    const iconSvgElems = $el.querySelectorAll("svg path");
+    const borderRadiusElems = $el.querySelectorAll(
+      ".uni-page-head-btn"
+    );
+    const iconSvgElems = $el.querySelectorAll(
+      "svg path"
+    );
     for (let i = 0; i < iconSvgElems.length; i++) {
       iconElemsPaths.push(iconSvgElems[i]);
     }
@@ -21838,13 +23961,14 @@ const ICON_PATHS = {
   none: "",
   forward: "M11 7.844q-0.25-0.219-0.25-0.578t0.25-0.578q0.219-0.25 0.563-0.25t0.563 0.25l9.656 9.125q0.125 0.125 0.188 0.297t0.063 0.328q0 0.188-0.063 0.359t-0.188 0.297l-9.656 9.125q-0.219 0.25-0.563 0.25t-0.563-0.25q-0.25-0.219-0.25-0.578t0.25-0.609l9.063-8.594-9.063-8.594z",
   back: ICON_PATH_BACK,
+  select: ICON_PATH_BACK,
   share: "M26.563 24.844q0 0.125-0.109 0.234t-0.234 0.109h-17.938q-0.125 0-0.219-0.109t-0.094-0.234v-13.25q0-0.156 0.094-0.25t0.219-0.094h5.5v-1.531h-6q-0.531 0-0.906 0.391t-0.375 0.922v14.375q0 0.531 0.375 0.922t0.906 0.391h18.969q0.531 0 0.891-0.391t0.359-0.953v-5.156h-1.438v4.625zM29.813 10.969l-5.125-5.375-1.031 1.094 3.438 3.594-3.719 0.031q-2.313 0.188-4.344 1.125t-3.578 2.422-2.5 3.453-1.109 4.188l-0.031 0.25h1.469v-0.219q0.156-1.875 1-3.594t2.25-3.063 3.234-2.125 3.828-0.906l0.188-0.031 3.313-0.031-3.438 3.625 1.031 1.063 5.125-5.375-0.031-0.063 0.031-0.063z",
   favorite: "M27.594 13.375q-0.063-0.188-0.219-0.313t-0.344-0.156l-7.094-0.969-3.219-6.406q-0.094-0.188-0.25-0.281t-0.375-0.094q-0.188 0-0.344 0.094t-0.25 0.281l-3.125 6.438-7.094 1.094q-0.188 0.031-0.344 0.156t-0.219 0.313q-0.031 0.188 0.016 0.375t0.172 0.313l5.156 4.969-1.156 7.063q-0.031 0.188 0.047 0.375t0.234 0.313q0.094 0.063 0.188 0.094t0.219 0.031q0.063 0 0.141-0.031t0.172-0.063l6.313-3.375 6.375 3.313q0.063 0.031 0.141 0.047t0.172 0.016q0.188 0 0.344-0.094t0.25-0.281q0.063-0.094 0.078-0.234t-0.016-0.234q0-0.031 0-0.063l-1.25-6.938 5.094-5.031q0.156-0.156 0.203-0.344t-0.016-0.375zM11.469 19.063q0.031-0.188-0.016-0.344t-0.172-0.281l-4.406-4.25 6.063-0.906q0.156-0.031 0.297-0.125t0.203-0.25l2.688-5.531 2.75 5.5q0.063 0.156 0.203 0.25t0.297 0.125l6.094 0.844-4.375 4.281q-0.125 0.125-0.172 0.297t-0.016 0.328l1.063 6.031-5.438-2.813q-0.156-0.094-0.328-0.078t-0.297 0.078l-5.438 2.875 1-6.031z",
   home: "M23.719 16.5q-0.313 0-0.531 0.219t-0.219 0.5v7.063q0 0.219-0.172 0.391t-0.391 0.172h-12.344q-0.25 0-0.422-0.172t-0.172-0.391v-7.063q0-0.281-0.219-0.5t-0.531-0.219q-0.281 0-0.516 0.219t-0.234 0.5v7.063q0.031 0.844 0.625 1.453t1.438 0.609h12.375q0.844 0 1.453-0.609t0.609-1.453v-7.063q0-0.125-0.063-0.266t-0.156-0.234q-0.094-0.125-0.234-0.172t-0.297-0.047zM26.5 14.875l-8.813-8.813q-0.313-0.313-0.688-0.453t-0.781-0.141-0.781 0.141-0.656 0.422l-8.813 8.844q-0.188 0.219-0.188 0.516t0.219 0.484q0.094 0.125 0.234 0.172t0.297 0.047q0.125 0 0.25-0.047t0.25-0.141l8.781-8.781q0.156-0.156 0.406-0.156t0.406 0.156l8.813 8.781q0.219 0.188 0.516 0.188t0.516-0.219q0.188-0.188 0.203-0.484t-0.172-0.516z",
   menu: "M8.938 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM16.188 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM23.469 18.313q0.844 0 1.453-0.609t0.609-1.453-0.609-1.453-1.453-0.609q-0.875 0-1.484 0.609t-0.609 1.453 0.609 1.453 1.484 0.609z",
   close: ICON_PATH_CLOSE
 };
-var PageHead = /* @__PURE__ */ defineSystemComponent({
+const PageHead = /* @__PURE__ */ defineSystemComponent({
   name: "PageHead",
   setup() {
     const headRef = ref(null);
@@ -21902,7 +24026,8 @@ function createButtonsTsx(btns) {
     btnText,
     btnIconPath,
     badgeText,
-    iconStyle
+    iconStyle,
+    btnSelect
   }, index2) => {
     return createVNode("div", {
       "key": index2,
@@ -21910,7 +24035,12 @@ function createButtonsTsx(btns) {
       "style": btnStyle,
       "onClick": onClick,
       "badge-text": badgeText
-    }, [btnIconPath ? createSvgIconVNode(btnIconPath, iconStyle.color, iconStyle.fontSize) : createVNode("i", {
+    }, [btnIconPath ? createSvgIconVNode(btnIconPath, iconStyle.color, iconStyle.fontSize) : btnSelect ? createVNode("span", {
+      "style": iconStyle
+    }, [createVNode("i", {
+      "class": "uni-btn-icon",
+      "innerHTML": btnText
+    }, null, 8, ["innerHTML"]), createSvgIconVNode(ICON_PATHS["select"], "#000", 14)], 4) : createVNode("i", {
       "class": "uni-btn-icon",
       "style": iconStyle,
       "innerHTML": btnText
@@ -22114,7 +24244,8 @@ function usePageHeadButton(pageId, index2, btn, isTransparent) {
       invokeHook(pageId, ON_NAVIGATION_BAR_BUTTON_TAP, extend({
         index: index2
       }, btn));
-    }
+    },
+    btnSelect: btn.select
   };
 }
 function usePageHeadSearchInput({
@@ -22175,13 +24306,6 @@ function usePageHeadSearchInput({
     onKeyup
   };
 }
-var _export_sfc = (sfc, props2) => {
-  const target = sfc.__vccOpts || sfc;
-  for (const [key, val] of props2) {
-    target[key] = val;
-  }
-  return target;
-};
 const _sfc_main = {
   name: "PageRefresh",
   setup() {
@@ -22191,6 +24315,13 @@ const _sfc_main = {
       color: pullToRefresh.color
     };
   }
+};
+const _export_sfc = (sfc, props2) => {
+  const target = sfc.__vccOpts || sfc;
+  for (const [key, val] of props2) {
+    target[key] = val;
+  }
+  return target;
 };
 const _hoisted_1 = { class: "uni-page-refresh-inner" };
 const _hoisted_2 = ["fill"];
@@ -22240,7 +24371,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     ], 4)
   ]);
 }
-var PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
+const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
 function processDeltaY(ev, identifier, startY) {
   const touch = Array.prototype.slice.call(ev.changedTouches).filter((touch2) => touch2.identifier === identifier)[0];
   if (!touch) {
@@ -22261,31 +24392,43 @@ function usePageRefresh(refreshRef) {
   let refreshControllerElem;
   let refreshControllerElemStyle;
   let refreshInnerElemStyle;
-  useSubscribe(() => {
-    if (!state2) {
-      state2 = REFRESHING;
-      addClass();
-      setTimeout(() => {
-        refreshing();
-      }, 50);
-    }
-  }, API_START_PULL_DOWN_REFRESH, false, id2);
-  useSubscribe(() => {
-    if (state2 === REFRESHING) {
-      removeClass();
-      state2 = RESTORING;
-      addClass();
-      restoring(() => {
+  useSubscribe(
+    () => {
+      if (!state2) {
+        state2 = REFRESHING;
+        addClass();
+        setTimeout(() => {
+          refreshing();
+        }, 50);
+      }
+    },
+    API_START_PULL_DOWN_REFRESH,
+    false,
+    id2
+  );
+  useSubscribe(
+    () => {
+      if (state2 === REFRESHING) {
         removeClass();
-        state2 = distance2 = offset = null;
-      });
-    }
-  }, API_STOP_PULL_DOWN_REFRESH, false, id2);
+        state2 = RESTORING;
+        addClass();
+        restoring(() => {
+          removeClass();
+          state2 = distance2 = offset = null;
+        });
+      }
+    },
+    API_STOP_PULL_DOWN_REFRESH,
+    false,
+    id2
+  );
   onMounted(() => {
     refreshContainerElem = refreshRef.value.$el;
     refreshControllerElem = refreshContainerElem.querySelector(".uni-page-refresh");
     refreshControllerElemStyle = refreshControllerElem.style;
-    refreshInnerElemStyle = refreshControllerElem.querySelector(".uni-page-refresh-inner").style;
+    refreshInnerElemStyle = refreshControllerElem.querySelector(
+      ".uni-page-refresh-inner"
+    ).style;
   });
   let touchId;
   let startY;
@@ -22398,11 +24541,17 @@ function usePageRefresh(refreshRef) {
       refreshControllerElemStyle.transform = "translate3d(-50%, 0, 0)";
       const abortTransitionEnd = function() {
         timeout && clearTimeout(timeout);
-        refreshControllerElem.removeEventListener("webkitTransitionEnd", abortTransitionEnd);
+        refreshControllerElem.removeEventListener(
+          "webkitTransitionEnd",
+          abortTransitionEnd
+        );
         refreshControllerElemStyle.transition = "";
         callback();
       };
-      refreshControllerElem.addEventListener("webkitTransitionEnd", abortTransitionEnd);
+      refreshControllerElem.addEventListener(
+        "webkitTransitionEnd",
+        abortTransitionEnd
+      );
       const timeout = setTimeout(abortTransitionEnd, 350);
     } else {
       callback();
@@ -22424,12 +24573,18 @@ function usePageRefresh(refreshRef) {
     refreshControllerElemStyle.transform += " scale(0.01)";
     const restoreTransitionEnd = function() {
       timeout && clearTimeout(timeout);
-      refreshControllerElem.removeEventListener("webkitTransitionEnd", restoreTransitionEnd);
+      refreshControllerElem.removeEventListener(
+        "webkitTransitionEnd",
+        restoreTransitionEnd
+      );
       refreshControllerElemStyle.transition = "";
       refreshControllerElemStyle.transform = "translate3d(-50%, 0, 0)";
       callback();
     };
-    refreshControllerElem.addEventListener("webkitTransitionEnd", restoreTransitionEnd);
+    refreshControllerElem.addEventListener(
+      "webkitTransitionEnd",
+      restoreTransitionEnd
+    );
     const timeout = setTimeout(restoreTransitionEnd, 350);
   }
   return {
@@ -22439,7 +24594,7 @@ function usePageRefresh(refreshRef) {
     onTouchcancel: onTouchend
   };
 }
-var PageBody = defineSystemComponent({
+const PageBody = defineSystemComponent({
   name: "PageBody",
   setup(props2, ctx) {
     const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ && usePageMeta();
@@ -22459,25 +24614,33 @@ function createPageRefreshTsx(refreshRef, pageMeta) {
     "ref": refreshRef
   }, null, 512);
 }
-var index$2 = defineSystemComponent({
+const index$2 = defineSystemComponent({
   name: "Page",
   setup(_props, ctx) {
     const pageMeta = providePageMeta(getStateId());
     const navigationBar = pageMeta.navigationBar;
     useDocumentTitle(pageMeta);
-    return () => createVNode("uni-page", { "data-page": pageMeta.route }, __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [createVNode(PageHead), createPageBodyVNode(ctx)] : [createPageBodyVNode(ctx)]);
+    return () => createVNode(
+      "uni-page",
+      { "data-page": pageMeta.route },
+      __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [createVNode(PageHead), createPageBodyVNode(ctx)] : [createPageBodyVNode(ctx)]
+    );
   }
 });
 function createPageBodyVNode(ctx) {
-  return openBlock(), createBlock(PageBody, { key: 0 }, {
-    default: withCtx(() => [renderSlot(ctx.slots, "page")]),
-    _: 3
-  });
+  return openBlock(), createBlock(
+    PageBody,
+    { key: 0 },
+    {
+      default: withCtx(() => [renderSlot(ctx.slots, "page")]),
+      _: 3
+    }
+  );
 }
 function reload() {
   window.location.reload();
 }
-var index$1 = /* @__PURE__ */ defineSystemComponent({
+const index$1 = /* @__PURE__ */ defineSystemComponent({
   name: "AsyncError",
   setup() {
     initI18nAsyncMsgsOnce();
@@ -22491,11 +24654,245 @@ var index$1 = /* @__PURE__ */ defineSystemComponent({
   }
 });
 const clazz = { class: "uni-async-loading" };
-const loadingVNode = /* @__PURE__ */ createVNode("i", { class: "uni-loading" }, null, -1);
-var index = /* @__PURE__ */ defineSystemComponent({
+const loadingVNode = /* @__PURE__ */ createVNode(
+  "i",
+  { class: "uni-loading" },
+  null,
+  -1
+);
+const index = /* @__PURE__ */ defineSystemComponent({
   name: "AsyncLoading",
   render() {
     return openBlock(), createBlock("div", clazz, [loadingVNode]);
   }
 });
-export { $emit, $off, $on, $once, index$8 as Ad, index$7 as AdContentPage, index$6 as AdDraw, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, index$y as Button, index$5 as Camera, index$w as Canvas, index$u as Checkbox, index$v as CheckboxGroup, index$a as CoverImage, index$b as CoverView, index$t as Editor, index$A as Form, index$s as Icon, index$r as Image, Input, index$z as Label, LayoutComponent, index$4 as LivePlayer, index$3 as LivePusher, Map$1 as Map, MovableArea, MovableView, index$q as Navigator, index$2 as PageComponent, index$9 as Picker, PickerView, PickerViewColumn, index$p as Progress, index$n as Radio, index$o as RadioGroup, ResizeSensor, index$m as RichText, ScrollView, index$l as Slider, Swiper, SwiperItem, index$k as Switch, index$j as Text, index$i as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$e as Video, index$h as View, index$d as WebView, addInterceptor, addPhoneContact, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closePreviewImage, closeSocket, connectSocket, createAnimation$1 as createAnimation, createCameraContext, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createLivePlayerContext, createMapContext, createMediaQueryObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getAppBaseInfo, getClipboardData, getCurrentPages$1 as getCurrentPages, getDeviceInfo, getEnterOptionsSync, getFileInfo, getImageInfo, getLaunchOptionsSync, getLeftWindowStyle, getLocale, getLocation, getNetworkType, getProvider, getPushClientid, getRealPath, getRecorderManager, getRightWindowStyle, getSavedFileInfo, getSavedFileList, getScreenBrightness, getSelectedTextRange$1 as getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getTopWindowStyle, getVideoInfo, getWindowInfo, hideKeyboard, hideLeftWindow, hideLoading, hideNavigationBarLoading, hideRightWindow, hideTabBar, hideTabBarRedDot, hideToast, hideTopWindow, interceptors, invokePushCallback, loadFontFace, login, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offAppHide, offAppShow, offCompassChange, offError, offNetworkStatusChange, offPageNotFound, offPushMessage, offUnhandledRejection, offWindowResize, onAccelerometerChange, onAppHide, onAppShow, onCompassChange, onError, onGyroscopeChange, onLocaleChange, onMemoryWarning, onNetworkStatusChange, onPageNotFound, onPushMessage, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onUnhandledRejection, onUserCaptureScreen, onWindowResize, openDocument, openLocation, pageScrollTo, index$f as plugin, preloadPage, previewImage, reLaunch, redirectTo, removeInterceptor, removeSavedFileInfo, removeStorage, removeStorageSync, removeTabBarBadge, request, saveFile, saveImageToPhotosAlbum, saveVideoToPhotosAlbum, scanCode, sendSocketMessage, setClipboardData, setKeepScreenOn, setLeftWindowStyle, setLocale, setNavigationBarColor, setNavigationBarTitle, setPageMeta, setRightWindowStyle, setScreenBrightness, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setTopWindowStyle, setupApp, setupPage, setupWindow, showActionSheet, showLeftWindow, showLoading, showModal, showNavigationBarLoading, showRightWindow, showTabBar, showTabBarRedDot, showToast, showTopWindow, startAccelerometer, startCompass, startGyroscope, startPullDownRefresh, stopAccelerometer, stopCompass, stopGyroscope, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useI18n, useTabBar, vibrateLong, vibrateShort };
+export {
+  $emit,
+  $off,
+  $on,
+  $once,
+  index$8 as Ad,
+  index$7 as AdContentPage,
+  index$6 as AdDraw,
+  index$1 as AsyncErrorComponent,
+  index as AsyncLoadingComponent,
+  index$z as Button,
+  index$5 as Camera,
+  index$x as Canvas,
+  index$v as Checkbox,
+  index$w as CheckboxGroup,
+  index$a as CoverImage,
+  index$b as CoverView,
+  index$u as Editor,
+  index$B as Form,
+  index$t as Icon,
+  index$s as Image,
+  Input,
+  index$A as Label,
+  LayoutComponent,
+  index$4 as LivePlayer,
+  index$3 as LivePusher,
+  Map$1 as Map,
+  MovableArea,
+  MovableView,
+  index$r as Navigator,
+  index$2 as PageComponent,
+  index$9 as Picker,
+  PickerView,
+  PickerViewColumn,
+  index$q as Progress,
+  index$o as Radio,
+  index$p as RadioGroup,
+  ResizeSensor,
+  index$n as RichText,
+  ScrollView,
+  index$m as Slider,
+  Swiper,
+  SwiperItem,
+  index$l as Switch,
+  index$k as Text,
+  index$j as Textarea,
+  UniServiceJSBridge$1 as UniServiceJSBridge,
+  UniViewJSBridge$1 as UniViewJSBridge,
+  index$f as Video,
+  index$i as View,
+  index$e as WebView,
+  addInterceptor,
+  addPhoneContact,
+  arrayBufferToBase64,
+  base64ToArrayBuffer,
+  canIUse,
+  canvasGetImageData,
+  canvasPutImageData,
+  canvasToTempFilePath,
+  chooseFile,
+  chooseImage,
+  chooseLocation,
+  chooseVideo,
+  clearStorage,
+  clearStorageSync,
+  closePreviewImage,
+  closeSocket,
+  connectSocket,
+  createAnimation$1 as createAnimation,
+  createCameraContext,
+  createCanvasContext,
+  createInnerAudioContext,
+  createIntersectionObserver,
+  createLivePlayerContext,
+  createMapContext,
+  createMediaQueryObserver,
+  createSelectorQuery,
+  createVideoContext,
+  cssBackdropFilter,
+  cssConstant,
+  cssEnv,
+  cssVar,
+  downloadFile,
+  getApp$1 as getApp,
+  getAppBaseInfo,
+  getClipboardData,
+  getCurrentPages$1 as getCurrentPages,
+  getDeviceInfo,
+  getEnterOptionsSync,
+  getFileInfo,
+  getImageInfo,
+  getLaunchOptionsSync,
+  getLeftWindowStyle,
+  getLocale,
+  getLocation,
+  getNetworkType,
+  getProvider,
+  getPushClientId,
+  getRealPath,
+  getRecorderManager,
+  getRightWindowStyle,
+  getSavedFileInfo,
+  getSavedFileList,
+  getScreenBrightness,
+  getSelectedTextRange$1 as getSelectedTextRange,
+  getStorage,
+  getStorageInfo,
+  getStorageInfoSync,
+  getStorageSync,
+  getSystemInfo,
+  getSystemInfoSync,
+  getTopWindowStyle,
+  getVideoInfo,
+  getWindowInfo,
+  hideKeyboard,
+  hideLeftWindow,
+  hideLoading,
+  hideNavigationBarLoading,
+  hideRightWindow,
+  hideTabBar,
+  hideTabBarRedDot,
+  hideToast,
+  hideTopWindow,
+  interceptors,
+  invokePushCallback,
+  loadFontFace,
+  login,
+  makePhoneCall,
+  navigateBack,
+  navigateTo,
+  offAccelerometerChange,
+  offAppHide,
+  offAppShow,
+  offCompassChange,
+  offError,
+  offLocationChange,
+  offLocationChangeError,
+  offNetworkStatusChange,
+  offPageNotFound,
+  offPushMessage,
+  offUnhandledRejection,
+  offWindowResize,
+  onAccelerometerChange,
+  onAppHide,
+  onAppShow,
+  onCompassChange,
+  onCreateVueApp2 as onCreateVueApp,
+  onError,
+  onGyroscopeChange,
+  onLocaleChange,
+  onLocationChange,
+  onLocationChangeError,
+  onMemoryWarning,
+  onNetworkStatusChange,
+  onPageNotFound,
+  onPushMessage,
+  onSocketClose,
+  onSocketError,
+  onSocketMessage,
+  onSocketOpen,
+  onTabBarMidButtonTap,
+  onUnhandledRejection,
+  onUserCaptureScreen,
+  onWindowResize,
+  openDocument,
+  openLocation,
+  pageScrollTo,
+  index$g as plugin,
+  preloadPage,
+  previewImage,
+  reLaunch,
+  redirectTo,
+  removeInterceptor,
+  removeSavedFile,
+  removeStorage,
+  removeStorageSync,
+  removeTabBarBadge,
+  request,
+  saveFile,
+  saveImageToPhotosAlbum,
+  saveVideoToPhotosAlbum,
+  scanCode,
+  sendSocketMessage,
+  setClipboardData,
+  setKeepScreenOn,
+  setLeftWindowStyle,
+  setLocale,
+  setNavigationBarColor,
+  setNavigationBarTitle,
+  setPageMeta,
+  setRightWindowStyle,
+  setScreenBrightness,
+  setStorage,
+  setStorageSync,
+  setTabBarBadge,
+  setTabBarItem,
+  setTabBarStyle,
+  setTopWindowStyle,
+  setupApp,
+  setupPage,
+  setupWindow,
+  showActionSheet,
+  showLeftWindow,
+  showLoading,
+  showModal,
+  showNavigationBarLoading,
+  showRightWindow,
+  showTabBar,
+  showTabBarRedDot,
+  showToast,
+  showTopWindow,
+  startAccelerometer,
+  startCompass,
+  startGyroscope,
+  startLocationUpdate,
+  startPullDownRefresh,
+  stopAccelerometer,
+  stopCompass,
+  stopGyroscope,
+  stopLocationUpdate,
+  stopPullDownRefresh,
+  switchTab,
+  uni$1 as uni,
+  uploadFile,
+  upx2px,
+  useI18n,
+  useTabBar,
+  vibrateLong,
+  vibrateShort
+};

@@ -1,4 +1,4 @@
-import { extend } from '@vue/shared'
+import { extend, isArray } from '@vue/shared'
 import {
   onMounted,
   reactive,
@@ -14,10 +14,14 @@ import {
   useContextInfo,
   useSubscribe,
   useCustomEvent,
+  CustomEventTrigger,
 } from '@dcloudio/uni-components'
+import '@amap/amap-jsapi-types'
 import { callOptions } from '@dcloudio/uni-shared'
 import { Point } from '../../../helpers/location'
-import { Maps, Map, loadMaps, LatLng } from './maps'
+import { Maps, Map, loadMaps, LatLng, QQMap, GoogleMap } from './maps'
+import { QQMaps } from './maps/qq/types'
+import { GoogleMaps } from './maps/google/types'
 import MapMarker, {
   Props as MapMarkerProps,
   Context as MapMarkerContext,
@@ -31,6 +35,7 @@ import MapLocation, {
 } from './MapLocation'
 import MapPolygon from './map-polygon/index'
 import { Polygon } from './map-polygon/interface'
+import { getIsAMap } from '../../../helpers/location'
 
 const props = {
   id: {
@@ -104,7 +109,7 @@ interface MapState {
 
 function getPoints(points: Point[]): Point[] {
   const newPoints: Point[] = []
-  if (Array.isArray(points)) {
+  if (isArray(points)) {
     points.forEach((point) => {
       if (point && point.latitude && point.longitude) {
         newPoints.push({
@@ -115,6 +120,26 @@ function getPoints(points: Point[]): Point[] {
     })
   }
   return newPoints
+}
+
+function getAMapPosition(
+  maps: AMap.NameSpace,
+  latitude: number,
+  longitude: number
+) {
+  return new maps.LngLat(longitude, latitude)
+}
+function getGoogleOrQQMapPosition(
+  maps: QQMaps | GoogleMaps,
+  latitude: number,
+  longitude: number
+) {
+  return new maps.LatLng(latitude, longitude)
+}
+function getMapPosition(maps: Maps, latitude: number, longitude: number) {
+  return getIsAMap()
+    ? getAMapPosition(maps as AMap.NameSpace, latitude, longitude)
+    : getGoogleOrQQMapPosition(maps as QQMaps | GoogleMaps, latitude, longitude)
 }
 
 function getLat(latLng: LatLng) {
@@ -147,7 +172,6 @@ function useMap(
     longitude: Number(props.longitude),
     includePoints: getPoints(props.includePoints),
   })
-  type CustomEventTrigger = ReturnType<typeof useCustomEvent>
   type OnMapReadyCallback = (
     map: Map,
     maps: Maps,
@@ -195,7 +219,12 @@ function useMap(
         state.latitude = latitude
         state.longitude = longitude
         if (map) {
-          map.setCenter(new maps.LatLng(latitude, longitude) as any)
+          const centerPosition = getMapPosition(
+            maps,
+            state.latitude,
+            state.longitude
+          )
+          map.setCenter(centerPosition as any)
         }
       }
     }
@@ -222,25 +251,40 @@ function useMap(
     return {
       scale: map.getZoom(),
       centerLocation: {
-        latitude: getLat(center),
-        longitude: getLng(center),
+        latitude: getLat(center as LatLng),
+        longitude: getLng(center as LatLng),
       },
     }
   }
   function updateCenter() {
-    map.setCenter(new maps.LatLng(state.latitude, state.longitude) as any)
+    const centerPosition = getMapPosition(maps, state.latitude, state.longitude)
+    map.setCenter(centerPosition as any)
   }
   function updateBounds() {
-    const bounds = new maps.LatLngBounds()
-    state.includePoints.forEach(({ latitude, longitude }) => {
-      const latLng = new maps.LatLng(latitude, longitude)
-      bounds.extend(latLng as any)
-    })
-    map.fitBounds(bounds as any)
+    if (getIsAMap()) {
+      const points: [number, number][] = []
+      state.includePoints.forEach((point) => {
+        points.push([point.longitude, point.latitude])
+      })
+      const bounds = new (maps as AMap.NameSpace).Bounds(...points)
+      ;(map as AMap.Map).setBounds(bounds)
+    } else {
+      const bounds = new (maps as QQMaps | GoogleMaps).LatLngBounds()
+      state.includePoints.forEach(({ latitude, longitude }) => {
+        const latLng = new (maps as QQMaps | GoogleMaps).LatLng(
+          latitude,
+          longitude
+        )
+        bounds.extend(latLng as any)
+      })
+      ;(map as QQMap | GoogleMap).fitBounds(bounds as any)
+    }
   }
   function initMap() {
     const mapEl = mapRef.value as HTMLDivElement
-    const center = new maps.LatLng(state.latitude, state.longitude)
+    const center = getMapPosition(maps, state.latitude, state.longitude)
+    const event =
+      (maps as QQMaps | GoogleMaps).event || (maps as AMap.NameSpace).Event
     const map = new maps.Map(mapEl, {
       center: center as any,
       zoom: Number(props.scale),
@@ -271,25 +315,22 @@ function useMap(
       }
     })
     // 需在 bounds_changed 后触发 BoundsReady
-    const boundsChangedEvent = maps.event.addListener(
-      map,
-      'bounds_changed',
-      () => {
-        boundsChangedEvent.remove()
-        emitBoundsReady()
-      }
-    )
-    maps.event.addListener(map, 'click', () => {
+    const boundsChangedEvent = event.addListener(map, 'bounds_changed', () => {
+      boundsChangedEvent.remove()
+      emitBoundsReady()
+    })
+    event.addListener(map, 'click', () => {
       // TODO 编译器将 tap 转换为 click
+      trigger('tap', {} as Event, {})
       trigger('click', {} as Event, {})
     })
-    maps.event.addListener(map, 'dragstart', () => {
+    event.addListener(map, 'dragstart', () => {
       trigger('regionchange', {} as Event, {
         type: 'begin',
         causedBy: 'gesture',
       })
     })
-    maps.event.addListener(map, 'dragend', () => {
+    event.addListener(map, 'dragend', () => {
       trigger(
         'regionchange',
         {} as Event,
@@ -302,7 +343,7 @@ function useMap(
         )
       )
     })
-    maps.event.addListener(map, 'zoom_changed', () => {
+    event.addListener(map, 'zoom_changed', () => {
       emit('update:scale', map.getZoom())
       trigger(
         'regionchange',
@@ -316,15 +357,16 @@ function useMap(
         )
       )
     })
-    maps.event.addListener(map, 'center_changed', () => {
+    event.addListener(map, 'center_changed', () => {
       const center = map.getCenter()!
-      const latitude = getLat(center)
-      const longitude = getLng(center)
+      const latitude = getLat(center as LatLng)
+      const longitude = getLng(center as LatLng)
       emit('update:latitude', latitude)
       emit('update:longitude', longitude)
     })
     return map
   }
+
   try {
     // TODO 支持在页面外使用
     const id = useContextInfo()
@@ -335,8 +377,8 @@ function useMap(
             onMapReady(() => {
               const center = map.getCenter()!
               callOptions(data, {
-                latitude: getLat(center),
-                longitude: getLng(center),
+                latitude: getLat(center as LatLng),
+                longitude: getLng(center as LatLng),
                 errMsg: `${type}:ok`,
               })
             })
@@ -358,7 +400,12 @@ function useMap(
                 state.latitude = latitude
                 state.longitude = longitude
                 if (map) {
-                  map.setCenter(new maps.LatLng(latitude, longitude) as any)
+                  const centerPosition = getMapPosition(
+                    maps,
+                    latitude,
+                    longitude
+                  )
+                  map.setCenter(centerPosition as any)
                 }
                 onMapReady(() => {
                   callOptions(data, `${type}:ok`)
@@ -401,12 +448,12 @@ function useMap(
               const northeast = latLngBounds.getNorthEast()
               callOptions(data, {
                 southwest: {
-                  latitude: getLat(southwest),
-                  longitude: getLng(southwest),
+                  latitude: getLat(southwest as LatLng),
+                  longitude: getLng(southwest as LatLng),
                 },
                 northeast: {
-                  latitude: getLat(northeast),
-                  longitude: getLng(northeast),
+                  latitude: getLat(northeast as LatLng),
+                  longitude: getLng(northeast as LatLng),
                 },
                 errMsg: `${type}:ok`,
               })
@@ -429,7 +476,7 @@ function useMap(
   onMounted(() => {
     loadMaps(props.libraries, (result) => {
       maps = result
-      map = initMap()
+      map = initMap() as Map
       emitMapReady()
       trigger('updated', {} as Event, {})
     })
@@ -440,6 +487,7 @@ function useMap(
   return {
     state,
     mapRef,
+    trigger,
   }
 }
 
@@ -461,7 +509,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   ],
   setup(props, { emit, slots }) {
     const rootRef: Ref<HTMLElement | null> = ref(null)
-    const { mapRef } = useMap(props, rootRef, emit as SetupContext['emit'])
+    const { mapRef, trigger } = useMap(
+      props,
+      rootRef,
+      emit as SetupContext['emit']
+    )
     return () => {
       return (
         <uni-map ref={rootRef} id={props.id}>
@@ -479,7 +531,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             <MapCircle {...item} />
           ))}
           {props.controls.map((item) => (
-            <MapControl {...item} />
+            <MapControl {...item} trigger={trigger} />
           ))}
           {props.showLocation && <MapLocation />}
           {props.polygons.map((item) => (

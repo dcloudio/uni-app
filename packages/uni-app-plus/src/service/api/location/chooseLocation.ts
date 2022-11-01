@@ -3,11 +3,13 @@ import {
   API_TYPE_CHOOSE_LOCATION,
   defineAsyncApi,
   ChooseLocationProtocol,
+  getLocale,
 } from '@dcloudio/uni-api'
 import { showPage } from '@dcloudio/uni-core'
 import { getStatusBarStyle } from '../../../helpers/statusBar'
+import { extend } from '@vue/shared'
 
-export const chooseLocation = <API_TYPE_CHOOSE_LOCATION>defineAsyncApi(
+export const chooseLocation = defineAsyncApi<API_TYPE_CHOOSE_LOCATION>(
   API_CHOOSE_LOCATION,
   (options, { resolve, reject }) => {
     const statusBarStyle = getStatusBarStyle()
@@ -16,7 +18,9 @@ export const chooseLocation = <API_TYPE_CHOOSE_LOCATION>defineAsyncApi(
     let result: undefined | UniApp.ChooseLocationSuccess
     const page = showPage({
       url: '__uniappchooselocation',
-      data: options,
+      data: extend({}, options, {
+        locale: getLocale(),
+      }),
       style: {
         // @ts-expect-error
         animationType: options.animationType || 'slide-in-bottom',

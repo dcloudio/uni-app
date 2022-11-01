@@ -1,4 +1,10 @@
-import { isArray, isFunction, isPlainObject, remove } from '@vue/shared'
+import {
+  isArray,
+  isFunction,
+  isPlainObject,
+  isString,
+  remove,
+} from '@vue/shared'
 
 import {
   HOOKS,
@@ -74,7 +80,7 @@ function dedupeHooks(hooks: Function[]) {
 export const addInterceptor = defineSyncApi(
   API_ADD_INTERCEPTOR,
   (method: string | Interceptor, interceptor: Interceptor | undefined) => {
-    if (typeof method === 'string' && isPlainObject(interceptor)) {
+    if (isString(method) && isPlainObject(interceptor)) {
       mergeInterceptorHook(
         scopedInterceptors[method] || (scopedInterceptors[method] = {}),
         interceptor
@@ -89,7 +95,7 @@ export const addInterceptor = defineSyncApi(
 export const removeInterceptor = defineSyncApi(
   API_REMOVE_INTERCEPTOR,
   (method: string | Interceptor, interceptor: Interceptor | undefined) => {
-    if (typeof method === 'string') {
+    if (isString(method)) {
       if (isPlainObject(interceptor)) {
         removeInterceptorHook(scopedInterceptors[method], interceptor)
       } else {

@@ -1,7 +1,7 @@
 import path from 'path'
 import debug from 'debug'
 import { Plugin } from 'vite'
-import { resolveBuiltIn } from '@dcloudio/uni-cli-shared'
+import { resolveBuiltIn, resolveUtsModule } from '@dcloudio/uni-cli-shared'
 
 import { VitePluginUniResolvedOptions } from '../..'
 
@@ -15,6 +15,7 @@ const BUILT_IN_MODULES = {
   '@dcloudio/uni-cloud': 'dist/uni-cloud.es.js',
   '@dcloudio/uni-i18n': 'dist/uni-i18n.es.js',
   '@dcloudio/uni-shared': 'dist/uni-shared.es.js',
+  '@dcloudio/uni-stacktracey': 'dist/uni-stacktracey.es.js',
   '@vue/shared': 'dist/shared.esm-bundler.js',
   pinia: 'dist/pinia.mjs',
 }
@@ -27,7 +28,7 @@ export function uniResolveIdPlugin(
   const resolveCache: Record<string, string> = {}
   return {
     name: 'uni:resolve-id',
-    resolveId(id) {
+    resolveId(id, importer) {
       const cache = resolveCache[id]
       if (cache) {
         debugResolve('cache', id, cache)
@@ -37,6 +38,12 @@ export function uniResolveIdPlugin(
         return (resolveCache[id] = resolveBuiltIn(
           path.join(id, BUILT_IN_MODULES[id as BuiltInModulesKey])
         ))
+      }
+      if (process.env.UNI_PLATFORM !== 'app') {
+        return resolveUtsModule(
+          id,
+          importer ? path.dirname(importer) : process.env.UNI_INPUT_DIR
+        )
       }
     },
   }

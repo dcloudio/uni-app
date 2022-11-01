@@ -33,8 +33,9 @@ const ANIMATION_OUT = [
 ]
 
 type AnimationToType = Parameters<typeof uni.navigateTo>[0]['animationType']
-type AnimationBackType = Parameters<typeof uni.navigateBack>[0]['animationType']
-
+type AnimationBackType = Required<
+  Parameters<typeof uni.navigateBack>
+>[0]['animationType']
 export const navigatorProps = {
   hoverClass: {
     type: String,
@@ -73,6 +74,7 @@ export const navigatorProps = {
   },
   animationType: {
     type: String,
+    default: '',
     validator(value?: string) {
       return !value || ANIMATION_IN.concat(ANIMATION_OUT).includes(value)
     },

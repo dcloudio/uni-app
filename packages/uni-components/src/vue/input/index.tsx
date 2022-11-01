@@ -87,6 +87,31 @@ export default /*#__PURE__*/ defineBuiltInComponent({
               input.addEventListener('blur', resetCache)
               return false
             }
+            // 处理小数点
+            if (cache.value) {
+              if (cache.value.indexOf('.') !== -1) {
+                // 删除到小数点时
+                if (
+                  (event as InputEvent).data !== '.' &&
+                  (event as InputEvent).inputType === 'deleteContentBackward'
+                ) {
+                  const dotIndex = cache.value.indexOf('.')
+                  cache.value =
+                    input.value =
+                    state.value =
+                      cache.value.slice(0, dotIndex)
+                  return true
+                }
+              } else if ((event as InputEvent).data === '.') {
+                // 输入小数点时
+                cache.value += '.'
+                resetCache = () => {
+                  cache.value = input.value = cache.value.slice(0, -1)
+                }
+                input.addEventListener('blur', resetCache)
+                return false
+              }
+            }
             cache.value =
               state.value =
               input.value =
@@ -117,7 +142,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     )
     const NUMBER_TYPES = ['number', 'digit']
     const step = computed(() =>
-      NUMBER_TYPES.includes(props.type) ? '0.000000000000000001' : ''
+      NUMBER_TYPES.includes(props.type) ? props.step : ''
     )
 
     function onKeyUpEnter(event: Event) {

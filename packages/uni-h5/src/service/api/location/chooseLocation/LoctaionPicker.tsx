@@ -107,7 +107,7 @@ function useList(state: State) {
       list.push({
         name: item.title,
         address: item.address,
-        distance: item._distance,
+        distance: item._distance || item.distance,
         latitude: item.location.lat,
         longitude: item.location.lng,
       })
@@ -186,6 +186,31 @@ function useList(state: State) {
           listState.loading = false
         }
       )
+    } else if (mapInfo.type === MapType.AMAP) {
+      window.AMap.plugin('AMap.PlaceSearch', function () {
+        const placeSearch = new (window.AMap as any).PlaceSearch({
+          city: '全国',
+          pageSize: 10,
+          pageIndex: listState.pageIndex,
+        })
+        const keyword = state.searching ? state.keyword : ''
+        const radius = state.searching ? 50000 : 5000
+        placeSearch.searchNearBy(
+          keyword,
+          [state.longitude, state.latitude],
+          radius,
+          function (status: string, result: any) {
+            if (status === 'error') {
+              console.error(result)
+            } else if (status === 'no_data') {
+              listState.hasNextPage = false
+            } else {
+              pushData(result.poiList.pois)
+            }
+          }
+        )
+        listState.loading = false
+      })
     }
   }
   function loadMore() {

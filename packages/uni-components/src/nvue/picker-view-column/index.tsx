@@ -8,8 +8,10 @@ import {
   computed,
   getCurrentInstance,
   onMounted,
+  ExtractPropTypes,
+  WritableComputedRef,
 } from 'vue'
-import { extend } from '@vue/shared'
+import { extend, isString } from '@vue/shared'
 import { Props, GetPickerViewColumn } from '../picker-view'
 import { parseStyleText, getComponentSize } from '../helpers'
 
@@ -20,21 +22,24 @@ type ScrollOptions = {
   scrollY: boolean
   scrollTop?: number
 }
+type PickerColumnProps = ExtractPropTypes<typeof props>
 
 const dom = weex.requireModule('dom')
 const isAndroid = weex.config.env.platform.toLowerCase() === 'android'
 function getStyle(val: string) {
-  return extend({}, typeof val === 'string' ? parseStyleText(val) : val)
+  return extend({}, isString(val) ? parseStyleText(val) : val)
+}
+
+const props = {
+  length: {
+    type: [Number, String],
+    default: 0,
+  },
 }
 
 export default defineComponent({
   name: 'PickerViewColumn',
-  props: {
-    length: {
-      type: [Number, String],
-      default: 0,
-    },
-  },
+  props,
   data: () => ({
     _isMounted: false,
   }),
@@ -55,51 +60,23 @@ export default defineComponent({
     const indicatorStyle = computed(() =>
       getStyle(pickerViewProps.indicatorStyle)
     )
-    const maskStyle = computed(() => getStyle(pickerViewProps.maskStyle))
+    // const maskStyle = computed(() => getStyle(pickerViewProps.maskStyle))
+    const maskTopStyle = computed(() => getStyle(pickerViewProps.maskTopStyle))
+    const maskBottomStyle = computed(() =>
+      getStyle(pickerViewProps.maskBottomStyle)
+    )
     let indicatorHeight = ref(0)
     indicatorHeight.value = getHeight(indicatorStyle.value)
     let pickerViewHeight = ref(0)
     pickerViewHeight.value = parseFloat(pickerViewProps.height as string)
 
-    watch(
-      () => props.length,
-      () => {
-        setTimeout(() => {
-          setCurrent(current.value, true, true)
-        }, 150)
-      }
+    const { setCurrent, onScrollend } = usePickerColumnScroll(
+      props,
+      current,
+      contentRef,
+      indicatorHeight
     )
 
-    let scrollToElementTime: number
-    const setCurrent = (_current: number, animated = true, force: Boolean) => {
-      if (current.value === _current && !force) {
-        return
-      }
-      dom.scrollToElement(contentRef.value, {
-        offset: _current * indicatorHeight.value,
-        animated,
-      })
-      current.value = _current
-      if (animated) {
-        scrollToElementTime = Date.now()
-      }
-    }
-    const onScrollend = (event: {
-      detail: {
-        contentOffset: { x: number; y: number }
-      }
-    }) => {
-      if (Date.now() - scrollToElementTime < 340) {
-        return
-      }
-      const y = event.detail.contentOffset.y
-      const _current = Math.round(y / indicatorHeight.value)
-      if (y % indicatorHeight.value) {
-        setCurrent(_current, true, true)
-      } else {
-        current.value = _current
-      }
-    }
     const checkMounted = () => {
       let height_: number
       let indicatorHeight_: number
@@ -176,18 +153,18 @@ export default defineComponent({
               {createScrollViewChild(children)}
             </view>
           </scroll-view>
-          <u-scalable class="uni-picker-view-mask" style={maskStyle.value}>
+          <u-scalable class="uni-picker-view-mask">
             <u-scalable
               class="uni-picker-view-mask uni-picker-view-mask-top"
-              style={{
+              style={extend({}, maskTopStyle.value, {
                 bottom: maskPosition,
-              }}
+              })}
             ></u-scalable>
             <u-scalable
               class="uni-picker-view-mask uni-picker-view-mask-bottom"
-              style={{
+              style={extend({}, maskBottomStyle.value, {
                 top: maskPosition,
-              }}
+              })}
             ></u-scalable>
           </u-scalable>
           <u-scalable
@@ -272,4 +249,59 @@ function getHeight(style: Record<string, any>) {
     value = parseFloat(res[1])
   }
   return value
+}
+
+function usePickerColumnScroll(
+  props: PickerColumnProps,
+  current: WritableComputedRef<number>,
+  contentRef: Ref<HTMLElement | null>,
+  indicatorHeight: Ref<number>
+) {
+  let scrollToElementTime: number
+
+  function setDomScrollToElement(_current: number, animated: boolean = true) {
+    dom.scrollToElement(contentRef.value, {
+      offset: _current * indicatorHeight.value,
+      animated,
+    })
+    if (animated) {
+      scrollToElementTime = Date.now()
+    }
+  }
+
+  watch(
+    () => props.length,
+    () => {
+      setTimeout(() => {
+        setCurrent(current.value, true, true)
+      }, 150)
+    }
+  )
+  watch(current, (val) => setDomScrollToElement(val))
+
+  const setCurrent = (_current: number, animated = true, force: Boolean) => {
+    if (current.value === _current && !force) {
+      return
+    }
+    current.value = _current
+    if (isAndroid) setDomScrollToElement(_current, animated)
+  }
+  const onScrollend = (event: {
+    detail: {
+      contentOffset: { x: number; y: number }
+    }
+  }) => {
+    if (Date.now() - scrollToElementTime < 340) {
+      return
+    }
+    const y = event.detail.contentOffset.y
+    const _current = Math.round(y / indicatorHeight.value)
+    if (y % indicatorHeight.value) {
+      setCurrent(_current, true, true)
+    } else {
+      current.value = _current
+    }
+  }
+
+  return { setCurrent, onScrollend }
 }

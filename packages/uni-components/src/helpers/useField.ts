@@ -9,7 +9,7 @@ import {
   reactive,
   nextTick,
 } from 'vue'
-import { extend } from '@vue/shared'
+import { extend, isFunction } from '@vue/shared'
 import { debounce } from '@dcloudio/uni-shared'
 import { getCurrentPageId, registerViewMethod } from '@dcloudio/uni-core'
 import { throttle } from './throttle'
@@ -142,6 +142,10 @@ export const props = /*#__PURE__*/ extend(
     ignoreCompositionEvent: {
       type: Boolean,
       default: true,
+    },
+    step: {
+      type: String,
+      default: '0.000000000000000001',
     },
   },
   keyboardProps
@@ -371,10 +375,7 @@ function useEvent(
     }
     const onInput = function (event: Event, force?: boolean) {
       event.stopPropagation()
-      if (
-        typeof beforeInput === 'function' &&
-        beforeInput(event, state) === false
-      ) {
+      if (isFunction(beforeInput) && beforeInput(event, state) === false) {
         return
       }
       state.value = field.value

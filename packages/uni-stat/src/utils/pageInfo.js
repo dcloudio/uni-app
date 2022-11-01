@@ -1,7 +1,12 @@
 import { sys } from './util.js'
 
 import { STAT_URL, STAT_VERSION, DIFF_TIME } from '../config.ts'
-
+import {
+	dbGet,
+	dbSet,
+} from './db.js'
+// 获取 manifest.json 中统计配置
+const uniStatisticsConfig = process.env.UNI_STATISTICS_CONFIG
 let statConfig = {
   appid: process.env.UNI_APP_ID,
 }
@@ -65,6 +70,24 @@ function getUuid() {
 
 export const get_uuid = (statData) => {
   // 有可能不存在 deviceId（一般不存在就是出bug了），就自己生成一个
+  return sys.deviceId || getUuid()
+}
+
+/**
+ * 获取老版的 deviceid ,兼容以前的错误 deviceid
+ * @param {*} statData 
+ * @returns 
+ */
+export const get_odid = (statData) => {
+  let odid  = ''
+  if (get_platform_name() === 'n') {
+    try {
+      odid = plus.device.uuid
+    } catch (e) {
+      odid = ''
+    }
+    return odid
+  }
   return sys.deviceId || getUuid()
 }
 
@@ -285,9 +308,9 @@ export const handle_data = (statData) => {
     rd.forEach((elm) => {
       let newData = ''
       if (__STAT_VERSION__ === '1') {
-         newData = get_splicing(elm)
+        newData = get_splicing(elm)
       }
-      if(__STAT_VERSION__ === '2') {
+      if (__STAT_VERSION__ === '2') {
         newData = elm
       }
       if (i === 0) {
@@ -453,10 +476,10 @@ export const uni_cloud_config = () => {
 export const get_space = (config) => {
   const uniCloudConfig = uni_cloud_config()
   const { spaceId, provider, clientSecret } = uniCloudConfig
-  const space_type = ['tcb', 'aliyun']
+  const space_type = ['tcb', 'tencent', 'aliyun']
   const is_provider = space_type.indexOf(provider) !== -1
   const is_aliyun = provider === 'aliyun' && spaceId && clientSecret
-  const is_tcb = provider === 'tcb' && spaceId
+  const is_tcb = (provider === 'tcb' || provider === 'tencent') && spaceId
 
   if (is_provider && (is_aliyun || is_tcb)) {
     return uniCloudConfig
@@ -478,7 +501,7 @@ export const is_debug = debug
  * 日志输出
  * @param {*} data
  */
-export const log = (data) => {
+export const log = (data, type) => {
   let msg_type = ''
   switch (data.lt) {
     case '1':
@@ -497,10 +520,65 @@ export const log = (data) => {
     case '31':
       msg_type = '应用错误'
       break
+    case '101':
+      msg_type = 'PUSH'
+      break
   }
+
+  // #ifdef APP
+  // 在 app 中，日志转为 字符串
+  if (typeof data === 'object') {
+    data = JSON.stringify(data)
+  }
+  // #endif
+
+  if (type) {
+    console.log(`=== 统计队列数据上报 ===`)
+    console.log(data)
+    console.log(`=== 上报结束 ===`)
+    return
+  }
+
   if (msg_type) {
     console.log(`=== 统计数据采集：${msg_type} ===`)
     console.log(data)
     console.log(`=== 采集结束 ===`)
   }
+}
+
+/**
+ * 获取上报时间间隔
+ * @param {*} defaultTime 默认上报间隔时间 单位s
+ */
+export const get_report_Interval = (defaultTime) => {
+  let time = uniStatisticsConfig.reportInterval
+  // 如果上报时间配置为0 相当于立即上报
+  if (Number(time) === 0) return 0
+  time = time || defaultTime
+  let reg = /(^[1-9]\d*$)/
+  // 如果不是整数，则默认为上报间隔时间
+  if (!reg.test(time)) return defaultTime
+  return Number(time)
+}
+
+/**
+ * 获取隐私协议配置
+ */
+export const is_push_clientid = () => {
+  if (uniStatisticsConfig.collectItems) {
+    const ClientID = uniStatisticsConfig.collectItems.uniPushClientID
+    return typeof ClientID === 'boolean' ? ClientID : false
+  }
+  return false
+}
+
+/**
+ * 是否已处理设备 DeviceId
+ * 如果值为 1 则表示已处理
+ */
+const IS_HANDLE_DEVECE_ID = 'is_handle_device_id'
+export const is_handle_device = () => {
+  let isHandleDevice = dbGet(IS_HANDLE_DEVECE_ID) || ''
+	dbSet(IS_HANDLE_DEVECE_ID, '1')
+  return isHandleDevice === '1'
 }

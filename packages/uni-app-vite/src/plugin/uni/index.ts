@@ -18,7 +18,7 @@ export function uniOptions(): UniVitePlugin['uni'] {
   const isNVueCompiler = process.env.UNI_COMPILER === 'nvue'
   return {
     copyOptions() {
-      const platfrom = process.env.UNI_PLATFORM
+      const platform = process.env.UNI_PLATFORM
       const inputDir = process.env.UNI_INPUT_DIR
       const outputDir = process.env.UNI_OUTPUT_DIR
       const targets: UniViteCopyPluginOptions['targets'] = []
@@ -28,7 +28,7 @@ export function uniOptions(): UniVitePlugin['uni'] {
           src: 'androidPrivacy.json',
           dest: outputDir,
           transform(source) {
-            const options = initI18nOptions(platfrom, inputDir, false, true)
+            const options = initI18nOptions(platform, inputDir, false, true)
             if (!options) {
               return
             }

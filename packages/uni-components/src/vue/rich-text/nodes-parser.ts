@@ -1,4 +1,4 @@
-import { hasOwn, extend, isPlainObject } from '@vue/shared'
+import { hasOwn, extend, isPlainObject, isArray, isString } from '@vue/shared'
 import { getRealPath } from '@dcloudio/uni-platform'
 import { createTextVNode, h, VNode } from 'vue'
 
@@ -129,7 +129,7 @@ function processClickEvent(node: Node, triggerItemClick: Function) {
 function normalizeAttrs(tagName: string, attrs: Data) {
   if (!isPlainObject(attrs)) return
   for (const key in attrs) {
-    if (Object.prototype.hasOwnProperty.call(attrs, key)) {
+    if (hasOwn(attrs, key)) {
       const value = attrs[key]
       if (tagName === 'img' && key === 'src')
         attrs[key] = getRealPath(value as string)
@@ -142,7 +142,7 @@ export const nodeList2VNode = /*#__PURE__*/ (
   triggerItemClick: Function,
   nodeList?: Node[]
 ): Array<VNode | undefined> => {
-  if (!nodeList || (Array.isArray(nodeList) && !nodeList.length)) return []
+  if (!nodeList || (isArray(nodeList) && !nodeList.length)) return []
 
   return nodeList.map((node) => {
     if (!isPlainObject(node)) {
@@ -166,11 +166,7 @@ export const nodeList2VNode = /*#__PURE__*/ (
         nodeList2VNode(scopeId, triggerItemClick, node.children)
       )
     }
-    if (
-      node.type === 'text' &&
-      typeof node.text === 'string' &&
-      node.text !== ''
-    )
+    if (node.type === 'text' && isString(node.text) && node.text !== '')
       return createTextVNode(decodeEntities(node.text || ''))
   })
 }

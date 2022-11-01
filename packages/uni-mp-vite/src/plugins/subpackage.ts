@@ -1,4 +1,4 @@
-import { OutputAsset, OutputChunk, OutputPluginHooks } from 'rollup'
+import { OutputAsset, OutputChunk } from 'rollup'
 import type { Plugin } from 'vite'
 import { isMiniProgramPageFile, relativeFile } from '@dcloudio/uni-cli-shared'
 import { UniMiniProgramPluginOptions } from '../plugin'
@@ -15,7 +15,7 @@ export function uniSubpackagePlugin({
 
 export function createNonAppGenerateBundle(
   extname: string
-): OutputPluginHooks['generateBundle'] {
+): Plugin['generateBundle'] {
   return function generateBundle(_, bundle) {
     ;['project.config.json', 'app.json'].forEach((name) => {
       delete bundle[name]

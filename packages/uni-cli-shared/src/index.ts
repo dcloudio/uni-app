@@ -5,6 +5,7 @@ export * from './env'
 export * from './hbx'
 export * from './ssr'
 export * from './vue'
+export * from './uts'
 export * from './logs'
 export * from './i18n'
 export * from './deps'
@@ -20,6 +21,8 @@ export * from './esbuild'
 export * from './resolve'
 export * from './scripts'
 export * from './platform'
+
+export { parseUniExtApis } from './uni_modules'
 
 export { M } from './messages'
 

@@ -1,4 +1,4 @@
-import { extend, capitalize } from '@vue/shared'
+import { extend, capitalize, isFunction, isString } from '@vue/shared'
 import {
   defineTaskApi,
   defineAsyncApi,
@@ -133,7 +133,7 @@ class SocketTask implements UniApp.SocketTask {
     try {
       const code = options.code || 1000
       const reason = options.reason
-      if (typeof reason === 'string') {
+      if (isString(reason)) {
         ws.close(code, reason)
       } else {
         ws.close(code)
@@ -185,7 +185,7 @@ function callSocketTask(
   reject: Function
 ) {
   const fn = socketTask[method]
-  if (typeof fn === 'function') {
+  if (isFunction(fn)) {
     fn.call(
       socketTask,
       extend({}, option, {
@@ -214,7 +214,7 @@ export const sendSocketMessage = defineAsyncApi<API_TYPE_SEND_SOCKET_MESSAGE>(
   SendSocketMessageProtocol
 )
 
-export const closeSocket = <API_TYPE_CLOSE_SOCKET>defineAsyncApi(
+export const closeSocket = defineAsyncApi<API_TYPE_CLOSE_SOCKET>(
   API_CLOSE_SOCKET,
   (options, { resolve, reject }) => {
     const socketTask = socketTasks[0]

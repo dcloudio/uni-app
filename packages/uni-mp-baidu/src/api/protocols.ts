@@ -14,6 +14,18 @@ function createTodoMethod(contextName: string, methodName: string) {
 
 type Data = Record<string, any>
 
+export function returnValue(methodName: string, res: Record<string, any> = {}) {
+  // 通用 returnValue 解析
+  if (res.error || res.errorMessage) {
+    res.errMsg = `${methodName}:fail ${res.errorMessage || res.error}`
+    delete res.error
+    delete res.errorMessage
+  } else {
+    res.errMsg = `${methodName}:ok`
+  }
+  return res
+}
+
 export const request = {
   args() {
     // TODO
@@ -74,6 +86,10 @@ export const navigateBackMiniProgram = {
 
 export const showShareMenu = {
   name: 'openShare',
+}
+
+export const login = {
+  name: 'getLoginCode',
 }
 
 export const getAccountInfoSync = {

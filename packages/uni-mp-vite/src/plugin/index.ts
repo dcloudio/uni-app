@@ -12,11 +12,7 @@ import {
   AppJson,
   resolveVueI18nRuntime,
 } from '@dcloudio/uni-cli-shared'
-import type {
-  SFCDescriptor,
-  SFCScriptBlock,
-  SFCScriptCompileOptions,
-} from '@vue/compiler-sfc'
+
 import type { CompilerOptions } from '@dcloudio/uni-mp-compiler'
 
 import { uniOptions } from './uni'
@@ -25,6 +21,10 @@ import { createConfigResolved } from './configResolved'
 import { emitFile, getFilterFiles, getTemplateFiles } from './template'
 
 import { getNVueCssPaths } from '../plugins/pagesJson'
+import {
+  rewriteCompilerSfcParseOnce,
+  rewriteCompileScriptOnce,
+} from './polyfill'
 
 export interface UniMiniProgramPluginOptions {
   cdn?: number
@@ -107,7 +107,8 @@ export function uniMiniProgramPlugin(
 
   let resolvedConfig: ResolvedConfig
 
-  rewriteCompileScript()
+  rewriteCompileScriptOnce()
+  rewriteCompilerSfcParseOnce()
 
   return {
     name: 'uni:mp',
@@ -148,12 +149,15 @@ export function uniMiniProgramPlugin(
             }),
           },
         },
+        optimizeDeps: {
+          disabled: true,
+        },
         build: buildOptions(),
       }
     },
     configResolved(config) {
       resolvedConfig = config
-      return createConfigResolved(options)!(config)
+      return (createConfigResolved(options) as Function)(config)
     },
     generateBundle() {
       if (template.filter) {
@@ -190,20 +194,5 @@ export function uniMiniProgramPlugin(
         }
       }
     },
-  }
-}
-
-function rewriteCompileScript() {
-  const compiler = require(resolveBuiltIn('@vue/compiler-sfc'))
-  const { compileScript } = compiler
-  compiler.compileScript = (
-    sfc: SFCDescriptor,
-    options: SFCScriptCompileOptions
-  ): SFCScriptBlock => {
-    if (options?.templateOptions?.compilerOptions) {
-      ;(options.templateOptions.compilerOptions as any).bindingCssVars =
-        sfc.cssVars || []
-    }
-    return compileScript(sfc, options)
   }
 }

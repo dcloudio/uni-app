@@ -7,6 +7,7 @@ import { rewriteConsoleExpr } from '../../logs/console'
 import { withSourcemap } from '../../vite/utils/utils'
 
 export interface ConsoleOptions {
+  method: string
   filename?: (filename: string) => string
   include?: FilterPattern
   exclude?: FilterPattern
@@ -38,6 +39,7 @@ export function uniConsolePlugin(options: ConsoleOptions): Plugin {
       }
       debugConsole(id)
       return rewriteConsoleExpr(
+        options.method,
         id,
         filename,
         code,

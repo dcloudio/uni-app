@@ -1,10 +1,19 @@
 import fs from 'fs'
 import path from 'path'
 import { extend, hasOwn, isArray, isPlainObject } from '@vue/shared'
-import { addLeadingSlash, once, TABBAR_HEIGHT } from '@dcloudio/uni-shared'
+import {
+  addLeadingSlash,
+  once,
+  TABBAR_HEIGHT,
+  normalizeTitleColor,
+} from '@dcloudio/uni-shared'
 import { removeExt, normalizePath } from '../utils'
 import { parseJson } from './json'
 import { isVueSfcFile } from '../vue/utils'
+import { parseVueRequest } from '../vite'
+import { EXTNAME_VUE_RE, TEXT_STYLE } from '../constants'
+import { initTheme } from './theme'
+import { parseManifestJsonOnce } from './manifest'
 
 const pagesCacheSet: Set<string> = new Set()
 
@@ -16,6 +25,16 @@ export function isUniPageFile(
     file = normalizePath(path.relative(inputDir, file))
   }
   return pagesCacheSet.has(removeExt(file))
+}
+
+export function isUniPageSetupAndTs(file: string) {
+  const { filename, query } = parseVueRequest(file)
+  return !!(
+    query.vue &&
+    query.setup &&
+    hasOwn(query, 'lang.ts') &&
+    EXTNAME_VUE_RE.test(filename)
+  )
 }
 
 export function isUniPageSfcFile(
@@ -112,11 +131,13 @@ export function normalizePagesJson(
   pagesCacheSet.clear()
   pagesJson.pages.forEach((page) => pagesCacheSet.add(page.path))
 
-  return pagesJson
+  return process.env.UNI_PLATFORM === 'app' || !process.env.UNI_INPUT_DIR
+    ? pagesJson
+    : initTheme(parseManifestJsonOnce(process.env.UNI_INPUT_DIR), pagesJson)
 }
 
 export function validatePages(pagesJson: Record<string, any>, jsonStr: string) {
-  if (!Array.isArray(pagesJson.pages)) {
+  if (!isArray(pagesJson.pages)) {
     pagesJson.pages = []
     throw new Error(`[uni-app] Error: pages.json->pages parse failed.`)
   } else if (!pagesJson.pages.length) {
@@ -160,7 +181,7 @@ function normalizeSubpackages(
   subpackages?: UniApp.PagesJsonSubpackagesOptions[]
 ) {
   const pages: UniApp.PagesJsonPageOptions[] = []
-  if (Array.isArray(subpackages)) {
+  if (isArray(subpackages)) {
     subpackages.forEach(({ root, pages: subPages }) => {
       if (root && subPages.length) {
         subPages.forEach((subPage) => {
@@ -272,6 +293,8 @@ function normalizeNavigationBar(
     }
   })
 
+  navigationBar.type = navigationBar.type || 'default'
+
   const { titleNView } = pageStyle
   if (isPlainObject(titleNView)) {
     extend(navigationBar, titleNView)
@@ -301,8 +324,12 @@ function normalizeNavigationBar(
   }
 
   if (!navigationBar.titleColor && hasOwn(navigationBar, 'textStyle')) {
-    navigationBar.titleColor =
-      (navigationBar as any).textStyle === 'black' ? '#000000' : '#ffffff'
+    const textStyle = (navigationBar as any).textStyle as string
+    if (TEXT_STYLE.includes(textStyle)) {
+      navigationBar.titleColor = normalizeTitleColor(textStyle)
+    } else {
+      navigationBar.titleColor = (navigationBar as any).textStyle
+    }
     delete (navigationBar as any).textStyle
   }
 
@@ -314,12 +341,17 @@ function normalizeNavigationBar(
     delete pageStyle.navigationBarShadow
   }
 
+  const parsedNavigationBar = initTheme(
+    parseManifestJsonOnce(process.env.UNI_INPUT_DIR),
+    navigationBar
+  )
+
   if (isArray(navigationBar.buttons)) {
     navigationBar.buttons = navigationBar.buttons.map((btn) =>
       normalizeNavigationBarButton(
         btn,
         navigationBar.type,
-        navigationBar.titleColor!
+        parsedNavigationBar.titleColor!
       )
     )
   }

@@ -1,4 +1,6 @@
 import type { App } from 'vue'
+import { isFunction } from '@vue/shared'
+import { once } from './utils'
 type CreateVueAppHook = (app: App) => void
 
 let vueApp: App
@@ -18,3 +20,14 @@ export function invokeCreateVueAppHook(app: App) {
   vueApp = app
   createVueAppHooks.forEach((hook) => hook(app))
 }
+
+export const invokeCreateErrorHandler = once(
+  (
+    app: App,
+    createErrorHandler: (app: App) => App['config']['errorHandler']
+  ) => {
+    if (isFunction((app._component as any).onError)) {
+      return createErrorHandler(app)
+    }
+  }
+)

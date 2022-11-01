@@ -1,3 +1,5 @@
+import { isString } from '@vue/shared'
+
 const scripts: Record<string, Function[]> = {}
 
 interface WindowExt extends Window {
@@ -9,10 +11,9 @@ export default function loadScript(
   src: string,
   callback: () => void
 ) {
-  const globalObject =
-    typeof globalName === 'string'
-      ? (window as WindowExt)[globalName]
-      : globalName
+  const globalObject = isString(globalName)
+    ? (window as WindowExt)[globalName]
+    : globalName
   if (globalObject) {
     callback()
     return

@@ -1,3 +1,4 @@
+import { isString } from '@vue/shared'
 export function PolySymbol(name: string) {
   return Symbol(__DEV__ ? '[uni-app]: ' + name : name)
 }
@@ -16,7 +17,7 @@ export function rpx2px(str: string | number, replace = false) {
   if (__NODE_JS__) {
     return parseInt(str + '')
   }
-  if (typeof str === 'string') {
+  if (isString(str)) {
     const res = parseInt(str) || 0
     if (hasRpx(str)) {
       return uni.upx2px(res)

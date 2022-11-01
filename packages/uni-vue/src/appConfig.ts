@@ -16,9 +16,9 @@ export function createErrorHandler(app: App) {
       throw err
     }
     if (__PLATFORM__ !== 'h5' && __PLATFORM__ !== 'app') {
-      appInstance.proxy.$vm.$callHook(ON_ERROR, err)
+      appInstance.proxy.$callHook(ON_ERROR, err)
     } else {
-      invokeHook(appInstance.proxy.$vm, ON_ERROR, err)
+      invokeHook(appInstance.proxy, ON_ERROR, err)
     }
   }
 }

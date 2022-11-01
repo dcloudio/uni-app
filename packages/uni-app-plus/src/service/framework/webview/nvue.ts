@@ -4,6 +4,7 @@ import { extend } from '@vue/shared'
 import { CreateWebviewOptions } from '.'
 import { parseWebviewStyle } from './style'
 import { genWebviewId, initUniPageUrl } from './utils'
+import { parseTheme, useWebviewThemeChange } from '../../theme'
 
 export function createNVueWebview({
   path,
@@ -11,10 +12,12 @@ export function createNVueWebview({
   routeOptions,
   webviewExtras,
 }: CreateWebviewOptions) {
+  const getCurWebviewStyle = () =>
+    parseWebviewStyle(path, parseTheme(routeOptions.meta), {
+      id: curWebviewId + '',
+    })
   const curWebviewId = genWebviewId()
-  const curWebviewStyle = parseWebviewStyle(path, routeOptions.meta, {
-    id: curWebviewId + '',
-  })
+  const curWebviewStyle = getCurWebviewStyle()
   ;(curWebviewStyle as any).uniPageUrl = initUniPageUrl(path, query)
   if (__DEV__) {
     console.log(
@@ -23,7 +26,8 @@ export function createNVueWebview({
   }
   // android 需要使用
   ;(curWebviewStyle as any).isTab = !!routeOptions.meta.isTabBar
-  return plus.webview.create(
+
+  const webview = plus.webview.create(
     '',
     String(curWebviewId),
     curWebviewStyle,
@@ -36,4 +40,8 @@ export function createNVueWebview({
       webviewExtras
     )
   )
+
+  useWebviewThemeChange(webview, getCurWebviewStyle)
+
+  return webview
 }

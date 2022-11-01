@@ -9,6 +9,7 @@ function warn(msg, ...args) {
 let activeEffectScope;
 class EffectScope {
     constructor(detached = false) {
+        this.detached = detached;
         /**
          * @internal
          */
@@ -21,8 +22,8 @@ class EffectScope {
          * @internal
          */
         this.cleanups = [];
+        this.parent = activeEffectScope;
         if (!detached && activeEffectScope) {
-            this.parent = activeEffectScope;
             this.index =
                 (activeEffectScope.scopes || (activeEffectScope.scopes = [])).push(this) - 1;
         }
@@ -71,7 +72,7 @@ class EffectScope {
                 }
             }
             // nested scope, dereference from parent to avoid memory leaks
-            if (this.parent && !fromParent) {
+            if (!this.detached && this.parent && !fromParent) {
                 // optimized O(1) removal
                 const last = this.parent.scopes.pop();
                 if (last && last !== this) {
@@ -79,6 +80,7 @@ class EffectScope {
                     last.index = this.index;
                 }
             }
+            this.parent = undefined;
             this.active = false;
         }
     }
@@ -295,7 +297,7 @@ function trigger(target, type, key, newValue, oldValue, oldTarget) {
         return;
     }
     let deps = [];
-    if (type === "clear" /* CLEAR */) {
+    if (type === "clear" /* TriggerOpTypes.CLEAR */) {
         // collection being cleared
         // trigger all effects for target
         deps = [...depsMap.values()];
@@ -314,7 +316,7 @@ function trigger(target, type, key, newValue, oldValue, oldTarget) {
         }
         // also run for iteration key on ADD | DELETE | Map.SET
         switch (type) {
-            case "add" /* ADD */:
+            case "add" /* TriggerOpTypes.ADD */:
                 if (!isArray(target)) {
                     deps.push(depsMap.get(ITERATE_KEY));
                     if (isMap(target)) {
@@ -326,7 +328,7 @@ function trigger(target, type, key, newValue, oldValue, oldTarget) {
                     deps.push(depsMap.get('length'));
                 }
                 break;
-            case "delete" /* DELETE */:
+            case "delete" /* TriggerOpTypes.DELETE */:
                 if (!isArray(target)) {
                     deps.push(depsMap.get(ITERATE_KEY));
                     if (isMap(target)) {
@@ -334,7 +336,7 @@ function trigger(target, type, key, newValue, oldValue, oldTarget) {
                     }
                 }
                 break;
-            case "set" /* SET */:
+            case "set" /* TriggerOpTypes.SET */:
                 if (isMap(target)) {
                     deps.push(depsMap.get(ITERATE_KEY));
                 }
@@ -418,7 +420,7 @@ function createArrayInstrumentations() {
         instrumentations[key] = function (...args) {
             const arr = toRaw(this);
             for (let i = 0, l = this.length; i < l; i++) {
-                track(arr, "get" /* GET */, i + '');
+                track(arr, "get" /* TrackOpTypes.GET */, i + '');
             }
             // we run the method using the original args first (which may be reactive)
             const res = arr[key](...args);
@@ -443,16 +445,16 @@ function createArrayInstrumentations() {
 }
 function createGetter(isReadonly = false, shallow = false) {
     return function get(target, key, receiver) {
-        if (key === "__v_isReactive" /* IS_REACTIVE */) {
+        if (key === "__v_isReactive" /* ReactiveFlags.IS_REACTIVE */) {
             return !isReadonly;
         }
-        else if (key === "__v_isReadonly" /* IS_READONLY */) {
+        else if (key === "__v_isReadonly" /* ReactiveFlags.IS_READONLY */) {
             return isReadonly;
         }
-        else if (key === "__v_isShallow" /* IS_SHALLOW */) {
+        else if (key === "__v_isShallow" /* ReactiveFlags.IS_SHALLOW */) {
             return shallow;
         }
-        else if (key === "__v_raw" /* RAW */ &&
+        else if (key === "__v_raw" /* ReactiveFlags.RAW */ &&
             receiver ===
                 (isReadonly
                     ? shallow
@@ -472,7 +474,7 @@ function createGetter(isReadonly = false, shallow = false) {
             return res;
         }
         if (!isReadonly) {
-            track(target, "get" /* GET */, key);
+            track(target, "get" /* TrackOpTypes.GET */, key);
         }
         if (shallow) {
             return res;
@@ -498,10 +500,10 @@ function createSetter(shallow = false) {
         if (isReadonly(oldValue) && isRef(oldValue) && !isRef(value)) {
             return false;
         }
-        if (!shallow && !isReadonly(value)) {
-            if (!isShallow(value)) {
-                value = toRaw(value);
+        if (!shallow) {
+            if (!isShallow(value) && !isReadonly(value)) {
                 oldValue = toRaw(oldValue);
+                value = toRaw(value);
             }
             if (!isArray(target) && isRef(oldValue) && !isRef(value)) {
                 oldValue.value = value;
@@ -515,10 +517,10 @@ function createSetter(shallow = false) {
         // don't trigger if target is something up in the prototype chain of original
         if (target === toRaw(receiver)) {
             if (!hadKey) {
-                trigger(target, "add" /* ADD */, key, value);
+                trigger(target, "add" /* TriggerOpTypes.ADD */, key, value);
             }
             else if (hasChanged(value, oldValue)) {
-                trigger(target, "set" /* SET */, key, value, oldValue);
+                trigger(target, "set" /* TriggerOpTypes.SET */, key, value, oldValue);
             }
         }
         return result;
@@ -529,19 +531,19 @@ function deleteProperty(target, key) {
     const oldValue = target[key];
     const result = Reflect.deleteProperty(target, key);
     if (result && hadKey) {
-        trigger(target, "delete" /* DELETE */, key, undefined, oldValue);
+        trigger(target, "delete" /* TriggerOpTypes.DELETE */, key, undefined, oldValue);
     }
     return result;
 }
 function has(target, key) {
     const result = Reflect.has(target, key);
     if (!isSymbol(key) || !builtInSymbols.has(key)) {
-        track(target, "has" /* HAS */, key);
+        track(target, "has" /* TrackOpTypes.HAS */, key);
     }
     return result;
 }
 function ownKeys(target) {
-    track(target, "iterate" /* ITERATE */, isArray(target) ? 'length' : ITERATE_KEY);
+    track(target, "iterate" /* TrackOpTypes.ITERATE */, isArray(target) ? 'length' : ITERATE_KEY);
     return Reflect.ownKeys(target);
 }
 const mutableHandlers = {
@@ -582,14 +584,14 @@ const getProto = (v) => Reflect.getPrototypeOf(v);
 function get$1(target, key, isReadonly = false, isShallow = false) {
     // #1772: readonly(reactive(Map)) should return readonly + reactive version
     // of the value
-    target = target["__v_raw" /* RAW */];
+    target = target["__v_raw" /* ReactiveFlags.RAW */];
     const rawTarget = toRaw(target);
     const rawKey = toRaw(key);
     if (!isReadonly) {
         if (key !== rawKey) {
-            track(rawTarget, "get" /* GET */, key);
+            track(rawTarget, "get" /* TrackOpTypes.GET */, key);
         }
-        track(rawTarget, "get" /* GET */, rawKey);
+        track(rawTarget, "get" /* TrackOpTypes.GET */, rawKey);
     }
     const { has } = getProto(rawTarget);
     const wrap = isShallow ? toShallow : isReadonly ? toReadonly : toReactive;
@@ -606,22 +608,22 @@ function get$1(target, key, isReadonly = false, isShallow = false) {
     }
 }
 function has$1(key, isReadonly = false) {
-    const target = this["__v_raw" /* RAW */];
+    const target = this["__v_raw" /* ReactiveFlags.RAW */];
     const rawTarget = toRaw(target);
     const rawKey = toRaw(key);
     if (!isReadonly) {
         if (key !== rawKey) {
-            track(rawTarget, "has" /* HAS */, key);
+            track(rawTarget, "has" /* TrackOpTypes.HAS */, key);
         }
-        track(rawTarget, "has" /* HAS */, rawKey);
+        track(rawTarget, "has" /* TrackOpTypes.HAS */, rawKey);
     }
     return key === rawKey
         ? target.has(key)
         : target.has(key) || target.has(rawKey);
 }
 function size(target, isReadonly = false) {
-    target = target["__v_raw" /* RAW */];
-    !isReadonly && track(toRaw(target), "iterate" /* ITERATE */, ITERATE_KEY);
+    target = target["__v_raw" /* ReactiveFlags.RAW */];
+    !isReadonly && track(toRaw(target), "iterate" /* TrackOpTypes.ITERATE */, ITERATE_KEY);
     return Reflect.get(target, 'size', target);
 }
 function add(value) {
@@ -631,7 +633,7 @@ function add(value) {
     const hadKey = proto.has.call(target, value);
     if (!hadKey) {
         target.add(value);
-        trigger(target, "add" /* ADD */, value, value);
+        trigger(target, "add" /* TriggerOpTypes.ADD */, value, value);
     }
     return this;
 }
@@ -650,10 +652,10 @@ function set$1(key, value) {
     const oldValue = get.call(target, key);
     target.set(key, value);
     if (!hadKey) {
-        trigger(target, "add" /* ADD */, key, value);
+        trigger(target, "add" /* TriggerOpTypes.ADD */, key, value);
     }
     else if (hasChanged(value, oldValue)) {
-        trigger(target, "set" /* SET */, key, value, oldValue);
+        trigger(target, "set" /* TriggerOpTypes.SET */, key, value, oldValue);
     }
     return this;
 }
@@ -672,7 +674,7 @@ function deleteEntry(key) {
     // forward the operation before queueing reactions
     const result = target.delete(key);
     if (hadKey) {
-        trigger(target, "delete" /* DELETE */, key, undefined, oldValue);
+        trigger(target, "delete" /* TriggerOpTypes.DELETE */, key, undefined, oldValue);
     }
     return result;
 }
@@ -687,17 +689,17 @@ function clear() {
     // forward the operation before queueing reactions
     const result = target.clear();
     if (hadItems) {
-        trigger(target, "clear" /* CLEAR */, undefined, undefined, oldTarget);
+        trigger(target, "clear" /* TriggerOpTypes.CLEAR */, undefined, undefined, oldTarget);
     }
     return result;
 }
 function createForEach(isReadonly, isShallow) {
     return function forEach(callback, thisArg) {
         const observed = this;
-        const target = observed["__v_raw" /* RAW */];
+        const target = observed["__v_raw" /* ReactiveFlags.RAW */];
         const rawTarget = toRaw(target);
         const wrap = isShallow ? toShallow : isReadonly ? toReadonly : toReactive;
-        !isReadonly && track(rawTarget, "iterate" /* ITERATE */, ITERATE_KEY);
+        !isReadonly && track(rawTarget, "iterate" /* TrackOpTypes.ITERATE */, ITERATE_KEY);
         return target.forEach((value, key) => {
             // important: make sure the callback is
             // 1. invoked with the reactive map as `this` and 3rd arg
@@ -708,7 +710,7 @@ function createForEach(isReadonly, isShallow) {
 }
 function createIterableMethod(method, isReadonly, isShallow) {
     return function (...args) {
-        const target = this["__v_raw" /* RAW */];
+        const target = this["__v_raw" /* ReactiveFlags.RAW */];
         const rawTarget = toRaw(target);
         const targetIsMap = isMap(rawTarget);
         const isPair = method === 'entries' || (method === Symbol.iterator && targetIsMap);
@@ -716,7 +718,7 @@ function createIterableMethod(method, isReadonly, isShallow) {
         const innerIterator = target[method](...args);
         const wrap = isShallow ? toShallow : isReadonly ? toReadonly : toReactive;
         !isReadonly &&
-            track(rawTarget, "iterate" /* ITERATE */, isKeyOnly ? MAP_KEY_ITERATE_KEY : ITERATE_KEY);
+            track(rawTarget, "iterate" /* TrackOpTypes.ITERATE */, isKeyOnly ? MAP_KEY_ITERATE_KEY : ITERATE_KEY);
         // return a wrapped iterator which returns observed versions of the
         // values emitted from the real iterator
         return {
@@ -743,7 +745,7 @@ function createReadonlyMethod(type) {
             const key = args[0] ? `on key "${args[0]}" ` : ``;
             console.warn(`${capitalize(type)} operation ${key}failed: target is readonly.`, toRaw(this));
         }
-        return type === "delete" /* DELETE */ ? false : this;
+        return type === "delete" /* TriggerOpTypes.DELETE */ ? false : this;
     };
 }
 function createInstrumentations() {
@@ -785,10 +787,10 @@ function createInstrumentations() {
         has(key) {
             return has$1.call(this, key, true);
         },
-        add: createReadonlyMethod("add" /* ADD */),
-        set: createReadonlyMethod("set" /* SET */),
-        delete: createReadonlyMethod("delete" /* DELETE */),
-        clear: createReadonlyMethod("clear" /* CLEAR */),
+        add: createReadonlyMethod("add" /* TriggerOpTypes.ADD */),
+        set: createReadonlyMethod("set" /* TriggerOpTypes.SET */),
+        delete: createReadonlyMethod("delete" /* TriggerOpTypes.DELETE */),
+        clear: createReadonlyMethod("clear" /* TriggerOpTypes.CLEAR */),
         forEach: createForEach(true, false)
     };
     const shallowReadonlyInstrumentations = {
@@ -801,10 +803,10 @@ function createInstrumentations() {
         has(key) {
             return has$1.call(this, key, true);
         },
-        add: createReadonlyMethod("add" /* ADD */),
-        set: createReadonlyMethod("set" /* SET */),
-        delete: createReadonlyMethod("delete" /* DELETE */),
-        clear: createReadonlyMethod("clear" /* CLEAR */),
+        add: createReadonlyMethod("add" /* TriggerOpTypes.ADD */),
+        set: createReadonlyMethod("set" /* TriggerOpTypes.SET */),
+        delete: createReadonlyMethod("delete" /* TriggerOpTypes.DELETE */),
+        clear: createReadonlyMethod("clear" /* TriggerOpTypes.CLEAR */),
         forEach: createForEach(true, true)
     };
     const iteratorMethods = ['keys', 'values', 'entries', Symbol.iterator];
@@ -831,13 +833,13 @@ function createInstrumentationGetter(isReadonly, shallow) {
             ? readonlyInstrumentations
             : mutableInstrumentations;
     return (target, key, receiver) => {
-        if (key === "__v_isReactive" /* IS_REACTIVE */) {
+        if (key === "__v_isReactive" /* ReactiveFlags.IS_REACTIVE */) {
             return !isReadonly;
         }
-        else if (key === "__v_isReadonly" /* IS_READONLY */) {
+        else if (key === "__v_isReadonly" /* ReactiveFlags.IS_READONLY */) {
             return isReadonly;
         }
-        else if (key === "__v_raw" /* RAW */) {
+        else if (key === "__v_raw" /* ReactiveFlags.RAW */) {
             return target;
         }
         return Reflect.get(hasOwn(instrumentations, key) && key in target
@@ -877,19 +879,19 @@ function targetTypeMap(rawType) {
     switch (rawType) {
         case 'Object':
         case 'Array':
-            return 1 /* COMMON */;
+            return 1 /* TargetType.COMMON */;
         case 'Map':
         case 'Set':
         case 'WeakMap':
         case 'WeakSet':
-            return 2 /* COLLECTION */;
+            return 2 /* TargetType.COLLECTION */;
         default:
-            return 0 /* INVALID */;
+            return 0 /* TargetType.INVALID */;
     }
 }
 function getTargetType(value) {
-    return value["__v_skip" /* SKIP */] || !Object.isExtensible(value)
-        ? 0 /* INVALID */
+    return value["__v_skip" /* ReactiveFlags.SKIP */] || !Object.isExtensible(value)
+        ? 0 /* TargetType.INVALID */
         : targetTypeMap(toRawType(value));
 }
 function reactive(target) {
@@ -932,8 +934,8 @@ function createReactiveObject(target, isReadonly, baseHandlers, collectionHandle
     }
     // target is already a Proxy, return it.
     // exception: calling readonly() on a reactive object
-    if (target["__v_raw" /* RAW */] &&
-        !(isReadonly && target["__v_isReactive" /* IS_REACTIVE */])) {
+    if (target["__v_raw" /* ReactiveFlags.RAW */] &&
+        !(isReadonly && target["__v_isReactive" /* ReactiveFlags.IS_REACTIVE */])) {
         return target;
     }
     // target already has corresponding Proxy
@@ -943,34 +945,34 @@ function createReactiveObject(target, isReadonly, baseHandlers, collectionHandle
     }
     // only specific value types can be observed.
     const targetType = getTargetType(target);
-    if (targetType === 0 /* INVALID */) {
+    if (targetType === 0 /* TargetType.INVALID */) {
         return target;
     }
-    const proxy = new Proxy(target, targetType === 2 /* COLLECTION */ ? collectionHandlers : baseHandlers);
+    const proxy = new Proxy(target, targetType === 2 /* TargetType.COLLECTION */ ? collectionHandlers : baseHandlers);
     proxyMap.set(target, proxy);
     return proxy;
 }
 function isReactive(value) {
     if (isReadonly(value)) {
-        return isReactive(value["__v_raw" /* RAW */]);
+        return isReactive(value["__v_raw" /* ReactiveFlags.RAW */]);
     }
-    return !!(value && value["__v_isReactive" /* IS_REACTIVE */]);
+    return !!(value && value["__v_isReactive" /* ReactiveFlags.IS_REACTIVE */]);
 }
 function isReadonly(value) {
-    return !!(value && value["__v_isReadonly" /* IS_READONLY */]);
+    return !!(value && value["__v_isReadonly" /* ReactiveFlags.IS_READONLY */]);
 }
 function isShallow(value) {
-    return !!(value && value["__v_isShallow" /* IS_SHALLOW */]);
+    return !!(value && value["__v_isShallow" /* ReactiveFlags.IS_SHALLOW */]);
 }
 function isProxy(value) {
     return isReactive(value) || isReadonly(value);
 }
 function toRaw(observed) {
-    const raw = observed && observed["__v_raw" /* RAW */];
+    const raw = observed && observed["__v_raw" /* ReactiveFlags.RAW */];
     return raw ? toRaw(raw) : observed;
 }
 function markRaw(value) {
-    def(value, "__v_skip" /* SKIP */, true);
+    def(value, "__v_skip" /* ReactiveFlags.SKIP */, true);
     return value;
 }
 const toReactive = (value) => isObject(value) ? reactive(value) : value;
@@ -982,7 +984,7 @@ function trackRefValue(ref) {
         if ((process.env.NODE_ENV !== 'production')) {
             trackEffects(ref.dep || (ref.dep = createDep()), {
                 target: ref,
-                type: "get" /* GET */,
+                type: "get" /* TrackOpTypes.GET */,
                 key: 'value'
             });
         }
@@ -997,7 +999,7 @@ function triggerRefValue(ref, newVal) {
         if ((process.env.NODE_ENV !== 'production')) {
             triggerEffects(ref.dep, {
                 target: ref,
-                type: "set" /* SET */,
+                type: "set" /* TriggerOpTypes.SET */,
                 key: 'value',
                 newValue: newVal
             });
@@ -1035,10 +1037,11 @@ class RefImpl {
         return this._value;
     }
     set value(newVal) {
-        newVal = this.__v_isShallow ? newVal : toRaw(newVal);
+        const useDirectValue = this.__v_isShallow || isShallow(newVal) || isReadonly(newVal);
+        newVal = useDirectValue ? newVal : toRaw(newVal);
         if (hasChanged(newVal, this._rawValue)) {
             this._rawValue = newVal;
-            this._value = this.__v_isShallow ? newVal : toReactive(newVal);
+            this._value = useDirectValue ? newVal : toReactive(newVal);
             triggerRefValue(this, newVal);
         }
     }
@@ -1117,11 +1120,13 @@ function toRef(object, key, defaultValue) {
         : new ObjectRefImpl(object, key, defaultValue);
 }
 
+var _a;
 class ComputedRefImpl {
     constructor(getter, _setter, isReadonly, isSSR) {
         this._setter = _setter;
         this.dep = undefined;
         this.__v_isRef = true;
+        this[_a] = false;
         this._dirty = true;
         this.effect = new ReactiveEffect(getter, () => {
             if (!this._dirty) {
@@ -1131,7 +1136,7 @@ class ComputedRefImpl {
         });
         this.effect.computed = this;
         this.effect.active = this._cacheable = !isSSR;
-        this["__v_isReadonly" /* IS_READONLY */] = isReadonly;
+        this["__v_isReadonly" /* ReactiveFlags.IS_READONLY */] = isReadonly;
     }
     get value() {
         // the computed ref may get wrapped by other proxies e.g. readonly() #3376
@@ -1147,6 +1152,7 @@ class ComputedRefImpl {
         this._setter(newValue);
     }
 }
+_a = "__v_isReadonly" /* ReactiveFlags.IS_READONLY */;
 function computed(getterOrOptions, debugOptions, isSSR = false) {
     let getter;
     let setter;
@@ -1186,7 +1192,7 @@ function warn$1(msg, ...args) {
     const appWarnHandler = instance && instance.appContext.config.warnHandler;
     const trace = getComponentTrace();
     if (appWarnHandler) {
-        callWithErrorHandling(appWarnHandler, instance, 11 /* APP_WARN_HANDLER */, [
+        callWithErrorHandling(appWarnHandler, instance, 11 /* ErrorCodes.APP_WARN_HANDLER */, [
             msg + args.join(''),
             instance && instance.proxy,
             trace
@@ -1286,35 +1292,35 @@ function formatProp(key, value, raw) {
 }
 
 const ErrorTypeStrings = {
-    ["sp" /* SERVER_PREFETCH */]: 'serverPrefetch hook',
-    ["bc" /* BEFORE_CREATE */]: 'beforeCreate hook',
-    ["c" /* CREATED */]: 'created hook',
-    ["bm" /* BEFORE_MOUNT */]: 'beforeMount hook',
-    ["m" /* MOUNTED */]: 'mounted hook',
-    ["bu" /* BEFORE_UPDATE */]: 'beforeUpdate hook',
-    ["u" /* UPDATED */]: 'updated',
-    ["bum" /* BEFORE_UNMOUNT */]: 'beforeUnmount hook',
-    ["um" /* UNMOUNTED */]: 'unmounted hook',
-    ["a" /* ACTIVATED */]: 'activated hook',
-    ["da" /* DEACTIVATED */]: 'deactivated hook',
-    ["ec" /* ERROR_CAPTURED */]: 'errorCaptured hook',
-    ["rtc" /* RENDER_TRACKED */]: 'renderTracked hook',
-    ["rtg" /* RENDER_TRIGGERED */]: 'renderTriggered hook',
-    [0 /* SETUP_FUNCTION */]: 'setup function',
-    [1 /* RENDER_FUNCTION */]: 'render function',
-    [2 /* WATCH_GETTER */]: 'watcher getter',
-    [3 /* WATCH_CALLBACK */]: 'watcher callback',
-    [4 /* WATCH_CLEANUP */]: 'watcher cleanup function',
-    [5 /* NATIVE_EVENT_HANDLER */]: 'native event handler',
-    [6 /* COMPONENT_EVENT_HANDLER */]: 'component event handler',
-    [7 /* VNODE_HOOK */]: 'vnode hook',
-    [8 /* DIRECTIVE_HOOK */]: 'directive hook',
-    [9 /* TRANSITION_HOOK */]: 'transition hook',
-    [10 /* APP_ERROR_HANDLER */]: 'app errorHandler',
-    [11 /* APP_WARN_HANDLER */]: 'app warnHandler',
-    [12 /* FUNCTION_REF */]: 'ref function',
-    [13 /* ASYNC_COMPONENT_LOADER */]: 'async component loader',
-    [14 /* SCHEDULER */]: 'scheduler flush. This is likely a Vue internals bug. ' +
+    ["sp" /* LifecycleHooks.SERVER_PREFETCH */]: 'serverPrefetch hook',
+    ["bc" /* LifecycleHooks.BEFORE_CREATE */]: 'beforeCreate hook',
+    ["c" /* LifecycleHooks.CREATED */]: 'created hook',
+    ["bm" /* LifecycleHooks.BEFORE_MOUNT */]: 'beforeMount hook',
+    ["m" /* LifecycleHooks.MOUNTED */]: 'mounted hook',
+    ["bu" /* LifecycleHooks.BEFORE_UPDATE */]: 'beforeUpdate hook',
+    ["u" /* LifecycleHooks.UPDATED */]: 'updated',
+    ["bum" /* LifecycleHooks.BEFORE_UNMOUNT */]: 'beforeUnmount hook',
+    ["um" /* LifecycleHooks.UNMOUNTED */]: 'unmounted hook',
+    ["a" /* LifecycleHooks.ACTIVATED */]: 'activated hook',
+    ["da" /* LifecycleHooks.DEACTIVATED */]: 'deactivated hook',
+    ["ec" /* LifecycleHooks.ERROR_CAPTURED */]: 'errorCaptured hook',
+    ["rtc" /* LifecycleHooks.RENDER_TRACKED */]: 'renderTracked hook',
+    ["rtg" /* LifecycleHooks.RENDER_TRIGGERED */]: 'renderTriggered hook',
+    [0 /* ErrorCodes.SETUP_FUNCTION */]: 'setup function',
+    [1 /* ErrorCodes.RENDER_FUNCTION */]: 'render function',
+    [2 /* ErrorCodes.WATCH_GETTER */]: 'watcher getter',
+    [3 /* ErrorCodes.WATCH_CALLBACK */]: 'watcher callback',
+    [4 /* ErrorCodes.WATCH_CLEANUP */]: 'watcher cleanup function',
+    [5 /* ErrorCodes.NATIVE_EVENT_HANDLER */]: 'native event handler',
+    [6 /* ErrorCodes.COMPONENT_EVENT_HANDLER */]: 'component event handler',
+    [7 /* ErrorCodes.VNODE_HOOK */]: 'vnode hook',
+    [8 /* ErrorCodes.DIRECTIVE_HOOK */]: 'directive hook',
+    [9 /* ErrorCodes.TRANSITION_HOOK */]: 'transition hook',
+    [10 /* ErrorCodes.APP_ERROR_HANDLER */]: 'app errorHandler',
+    [11 /* ErrorCodes.APP_WARN_HANDLER */]: 'app warnHandler',
+    [12 /* ErrorCodes.FUNCTION_REF */]: 'ref function',
+    [13 /* ErrorCodes.ASYNC_COMPONENT_LOADER */]: 'async component loader',
+    [14 /* ErrorCodes.SCHEDULER */]: 'scheduler flush. This is likely a Vue internals bug. ' +
         'Please open an issue at https://new-issue.vuejs.org/?repo=vuejs/core'
 };
 function callWithErrorHandling(fn, instance, type, args) {
@@ -1365,7 +1371,7 @@ function handleError(err, instance, type, throwInDev = true) {
         // app-level handling
         const appErrorHandler = instance.appContext.config.errorHandler;
         if (appErrorHandler) {
-            callWithErrorHandling(appErrorHandler, null, 10 /* APP_ERROR_HANDLER */, [err, exposedInstance, errorInfo]);
+            callWithErrorHandling(appErrorHandler, null, 10 /* ErrorCodes.APP_ERROR_HANDLER */, [err, exposedInstance, errorInfo]);
             return;
         }
     }
@@ -1402,15 +1408,11 @@ let isFlushPending = false;
 // fixed by xxxxxx
 const queue = [];
 let flushIndex = 0;
-const pendingPreFlushCbs = [];
-let activePreFlushCbs = null;
-let preFlushIndex = 0;
 const pendingPostFlushCbs = [];
 let activePostFlushCbs = null;
 let postFlushIndex = 0;
 const resolvedPromise = /*#__PURE__*/ Promise.resolve();
 let currentFlushPromise = null;
-let currentPreFlushParentJob = null;
 const RECURSION_LIMIT = 100;
 function nextTick(fn) {
     const p = currentFlushPromise || resolvedPromise;
@@ -1438,9 +1440,8 @@ function queueJob(job) {
     // if the job is a watch() callback, the search will start with a +1 index to
     // allow it recursively trigger itself - it is the user's responsibility to
     // ensure it doesn't end up in an infinite loop.
-    if ((!queue.length ||
-        !queue.includes(job, isFlushing && job.allowRecurse ? flushIndex + 1 : flushIndex)) &&
-        job !== currentPreFlushParentJob) {
+    if (!queue.length ||
+        !queue.includes(job, isFlushing && job.allowRecurse ? flushIndex + 1 : flushIndex)) {
         if (job.id == null) {
             queue.push(job);
         }
@@ -1456,60 +1457,49 @@ function queueFlush() {
         currentFlushPromise = resolvedPromise.then(flushJobs);
     }
 }
+function hasQueueJob(job) {
+    return queue.indexOf(job) > -1;
+}
 function invalidateJob(job) {
     const i = queue.indexOf(job);
     if (i > flushIndex) {
         queue.splice(i, 1);
     }
-    // fixed by xxxxxx
-    return i;
 }
-function queueCb(cb, activeQueue, pendingQueue, index) {
+function queuePostFlushCb(cb) {
     if (!isArray(cb)) {
-        if (!activeQueue ||
-            !activeQueue.includes(cb, cb.allowRecurse ? index + 1 : index)) {
-            pendingQueue.push(cb);
+        if (!activePostFlushCbs ||
+            !activePostFlushCbs.includes(cb, cb.allowRecurse ? postFlushIndex + 1 : postFlushIndex)) {
+            pendingPostFlushCbs.push(cb);
         }
     }
     else {
         // if cb is an array, it is a component lifecycle hook which can only be
         // triggered by a job, which is already deduped in the main queue, so
         // we can skip duplicate check here to improve perf
-        pendingQueue.push(...cb);
+        pendingPostFlushCbs.push(...cb);
     }
     queueFlush();
 }
-function queuePreFlushCb(cb) {
-    queueCb(cb, activePreFlushCbs, pendingPreFlushCbs, preFlushIndex);
-}
-function queuePostFlushCb(cb) {
-    queueCb(cb, activePostFlushCbs, pendingPostFlushCbs, postFlushIndex);
-}
-function flushPreFlushCbs(seen, parentJob = null) {
-    if (pendingPreFlushCbs.length) {
-        currentPreFlushParentJob = parentJob;
-        activePreFlushCbs = [...new Set(pendingPreFlushCbs)];
-        pendingPreFlushCbs.length = 0;
-        if ((process.env.NODE_ENV !== 'production')) {
-            seen = seen || new Map();
-        }
-        for (preFlushIndex = 0; preFlushIndex < activePreFlushCbs.length; preFlushIndex++) {
-            if ((process.env.NODE_ENV !== 'production') &&
-                checkRecursiveUpdates(seen, activePreFlushCbs[preFlushIndex])) {
+function flushPreFlushCbs(seen, 
+// if currently flushing, skip the current job itself
+i = isFlushing ? flushIndex + 1 : 0) {
+    if ((process.env.NODE_ENV !== 'production')) {
+        seen = seen || new Map();
+    }
+    for (; i < queue.length; i++) {
+        const cb = queue[i];
+        if (cb && cb.pre) {
+            if ((process.env.NODE_ENV !== 'production') && checkRecursiveUpdates(seen, cb)) {
                 continue;
             }
-            activePreFlushCbs[preFlushIndex]();
+            queue.splice(i, 1);
+            i--;
+            cb();
         }
-        activePreFlushCbs = null;
-        preFlushIndex = 0;
-        currentPreFlushParentJob = null;
-        // recursively flush until it drains
-        flushPreFlushCbs(seen, parentJob);
     }
 }
 function flushPostFlushCbs(seen) {
-    // flush any pre cbs queued during the flush (e.g. pre watchers)
-    flushPreFlushCbs();
     if (pendingPostFlushCbs.length) {
         const deduped = [...new Set(pendingPostFlushCbs)];
         pendingPostFlushCbs.length = 0;
@@ -1535,13 +1525,22 @@ function flushPostFlushCbs(seen) {
     }
 }
 const getId = (job) => job.id == null ? Infinity : job.id;
+const comparator = (a, b) => {
+    const diff = getId(a) - getId(b);
+    if (diff === 0) {
+        if (a.pre && !b.pre)
+            return -1;
+        if (b.pre && !a.pre)
+            return 1;
+    }
+    return diff;
+};
 function flushJobs(seen) {
     isFlushPending = false;
     isFlushing = true;
     if ((process.env.NODE_ENV !== 'production')) {
         seen = seen || new Map();
     }
-    flushPreFlushCbs(seen);
     // Sort queue before flush.
     // This ensures that:
     // 1. Components are updated from parent to child. (because parent is always
@@ -1549,7 +1548,7 @@ function flushJobs(seen) {
     //    priority number)
     // 2. If a component is unmounted during a parent component's update,
     //    its update can be skipped.
-    queue.sort((a, b) => getId(a) - getId(b));
+    queue.sort(comparator);
     // conditional usage of checkRecursiveUpdate must be determined out of
     // try ... catch block since Rollup by default de-optimizes treeshaking
     // inside try-catch. This can leave all warning code unshaked. Although
@@ -1566,7 +1565,7 @@ function flushJobs(seen) {
                     continue;
                 }
                 // console.log(`running:`, job.id)
-                callWithErrorHandling(job, null, 14 /* SCHEDULER */);
+                callWithErrorHandling(job, null, 14 /* ErrorCodes.SCHEDULER */);
             }
         }
     }
@@ -1578,9 +1577,7 @@ function flushJobs(seen) {
         currentFlushPromise = null;
         // some postFlushCb queued jobs!
         // keep flushing until it drains.
-        if (queue.length ||
-            pendingPreFlushCbs.length ||
-            pendingPostFlushCbs.length) {
+        if (queue.length || pendingPostFlushCbs.length) {
             flushJobs(seen);
         }
     }
@@ -1610,14 +1607,14 @@ function checkRecursiveUpdates(seen, fn) {
 function emit(event, ...args) {
 }
 const devtoolsComponentUpdated = 
-/*#__PURE__*/ createDevtoolsComponentHook("component:updated" /* COMPONENT_UPDATED */);
+/*#__PURE__*/ createDevtoolsComponentHook("component:updated" /* DevtoolsHooks.COMPONENT_UPDATED */);
 function createDevtoolsComponentHook(hook) {
     return (component) => {
         emit(hook, component.appContext.app, component.uid, component.parent ? component.parent.uid : undefined, component);
     };
 }
 function devtoolsComponentEmit(component, event, params) {
-    emit("component:emit" /* COMPONENT_EMIT */, component.appContext.app, component, event, params);
+    emit("component:emit" /* DevtoolsHooks.COMPONENT_EMIT */, component.appContext.app, component, event, params);
 }
 
 function emit$1(instance, event, ...rawArgs) {
@@ -1682,7 +1679,7 @@ function emit$1(instance, event, ...rawArgs) {
         handler = props[(handlerName = toHandlerKey(hyphenate(event)))];
     }
     if (handler) {
-        callWithAsyncErrorHandling(handler, instance, 6 /* COMPONENT_EVENT_HANDLER */, args);
+        callWithAsyncErrorHandling(handler, instance, 6 /* ErrorCodes.COMPONENT_EVENT_HANDLER */, args);
     }
     const onceHandler = props[handlerName + `Once`];
     if (onceHandler) {
@@ -1693,7 +1690,7 @@ function emit$1(instance, event, ...rawArgs) {
             return;
         }
         instance.emitted[handlerName] = true;
-        callWithAsyncErrorHandling(onceHandler, instance, 6 /* COMPONENT_EVENT_HANDLER */, args);
+        callWithAsyncErrorHandling(onceHandler, instance, 6 /* ErrorCodes.COMPONENT_EVENT_HANDLER */, args);
     }
 }
 function normalizeEmitsOptions(comp, appContext, asMixin = false) {
@@ -1725,7 +1722,9 @@ function normalizeEmitsOptions(comp, appContext, asMixin = false) {
         }
     }
     if (!raw && !hasExtends) {
-        cache.set(comp, null);
+        if (isObject(comp)) {
+            cache.set(comp, null);
+        }
         return null;
     }
     if (isArray(raw)) {
@@ -1734,7 +1733,9 @@ function normalizeEmitsOptions(comp, appContext, asMixin = false) {
     else {
         extend(normalized, raw);
     }
-    cache.set(comp, normalized);
+    if (isObject(comp)) {
+        cache.set(comp, normalized);
+    }
     return normalized;
 }
 // Check if an incoming prop key is a declared emit event listener.
@@ -1799,10 +1800,15 @@ function withCtx(fn, ctx = currentRenderingInstance, isNonScopedSlot // false on
             setBlockTracking(-1);
         }
         const prevInstance = setCurrentRenderingInstance(ctx);
-        const res = fn(...args);
-        setCurrentRenderingInstance(prevInstance);
-        if (renderFnWithContext._d) {
-            setBlockTracking(1);
+        let res;
+        try {
+            res = fn(...args);
+        }
+        finally {
+            setCurrentRenderingInstance(prevInstance);
+            if (renderFnWithContext._d) {
+                setBlockTracking(1);
+            }
         }
         if ((process.env.NODE_ENV !== 'production') || false) {
             devtoolsComponentUpdated(ctx);
@@ -1938,7 +1944,7 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = EM
                 return traverse(s);
             }
             else if (isFunction(s)) {
-                return callWithErrorHandling(s, instance, 2 /* WATCH_GETTER */);
+                return callWithErrorHandling(s, instance, 2 /* ErrorCodes.WATCH_GETTER */);
             }
             else {
                 (process.env.NODE_ENV !== 'production') && warnInvalidSource(s);
@@ -1948,7 +1954,7 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = EM
     else if (isFunction(source)) {
         if (cb) {
             // getter with cb
-            getter = () => callWithErrorHandling(source, instance, 2 /* WATCH_GETTER */);
+            getter = () => callWithErrorHandling(source, instance, 2 /* ErrorCodes.WATCH_GETTER */);
         }
         else {
             // no cb -> simple effect
@@ -1959,7 +1965,7 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = EM
                 if (cleanup) {
                     cleanup();
                 }
-                return callWithAsyncErrorHandling(source, instance, 3 /* WATCH_CALLBACK */, [onCleanup]);
+                return callWithAsyncErrorHandling(source, instance, 3 /* ErrorCodes.WATCH_CALLBACK */, [onCleanup]);
             };
         }
     }
@@ -1974,7 +1980,7 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = EM
     let cleanup;
     let onCleanup = (fn) => {
         cleanup = effect.onStop = () => {
-            callWithErrorHandling(fn, instance, 4 /* WATCH_CLEANUP */);
+            callWithErrorHandling(fn, instance, 4 /* ErrorCodes.WATCH_CLEANUP */);
         };
     };
     let oldValue = isMultiSource ? [] : INITIAL_WATCHER_VALUE;
@@ -1995,7 +2001,7 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = EM
                 if (cleanup) {
                     cleanup();
                 }
-                callWithAsyncErrorHandling(cb, instance, 3 /* WATCH_CALLBACK */, [
+                callWithAsyncErrorHandling(cb, instance, 3 /* ErrorCodes.WATCH_CALLBACK */, [
                     newValue,
                     // pass undefined as the old value when it's changed for the first time
                     oldValue === INITIAL_WATCHER_VALUE ? undefined : oldValue,
@@ -2021,7 +2027,10 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = EM
     }
     else {
         // default: 'pre'
-        scheduler = () => queuePreFlushCb(job);
+        job.pre = true;
+        if (instance)
+            job.id = instance.uid;
+        scheduler = () => queueJob(job);
     }
     const effect = new ReactiveEffect(getter, scheduler);
     if ((process.env.NODE_ENV !== 'production')) {
@@ -2088,7 +2097,7 @@ function createPathGetter(ctx, path) {
     };
 }
 function traverse(value, seen) {
-    if (!isObject(value) || value["__v_skip" /* SKIP */]) {
+    if (!isObject(value) || value["__v_skip" /* ReactiveFlags.SKIP */]) {
         return value;
     }
     seen = seen || new Set();
@@ -2124,10 +2133,10 @@ function defineComponent(options) {
 
 const isKeepAlive = (vnode) => vnode.type.__isKeepAlive;
 function onActivated(hook, target) {
-    registerKeepAliveHook(hook, "a" /* ACTIVATED */, target);
+    registerKeepAliveHook(hook, "a" /* LifecycleHooks.ACTIVATED */, target);
 }
 function onDeactivated(hook, target) {
-    registerKeepAliveHook(hook, "da" /* DEACTIVATED */, target);
+    registerKeepAliveHook(hook, "da" /* LifecycleHooks.DEACTIVATED */, target);
 }
 function registerKeepAliveHook(hook, type, target = currentInstance) {
     // cache the deactivate branch check wrapper for injected hooks so the same
@@ -2216,19 +2225,19 @@ function injectHook(type, hook, target = currentInstance, prepend = false) {
 }
 const createHook = (lifecycle) => (hook, target = currentInstance) => 
 // post-create lifecycle registrations are noops during SSR (except for serverPrefetch)
-(!isInSSRComponentSetup || lifecycle === "sp" /* SERVER_PREFETCH */) &&
-    injectHook(lifecycle, hook, target);
-const onBeforeMount = createHook("bm" /* BEFORE_MOUNT */);
-const onMounted = createHook("m" /* MOUNTED */);
-const onBeforeUpdate = createHook("bu" /* BEFORE_UPDATE */);
-const onUpdated = createHook("u" /* UPDATED */);
-const onBeforeUnmount = createHook("bum" /* BEFORE_UNMOUNT */);
-const onUnmounted = createHook("um" /* UNMOUNTED */);
-const onServerPrefetch = createHook("sp" /* SERVER_PREFETCH */);
-const onRenderTriggered = createHook("rtg" /* RENDER_TRIGGERED */);
-const onRenderTracked = createHook("rtc" /* RENDER_TRACKED */);
+(!isInSSRComponentSetup || lifecycle === "sp" /* LifecycleHooks.SERVER_PREFETCH */) &&
+    injectHook(lifecycle, (...args) => hook(...args), target);
+const onBeforeMount = createHook("bm" /* LifecycleHooks.BEFORE_MOUNT */);
+const onMounted = createHook("m" /* LifecycleHooks.MOUNTED */);
+const onBeforeUpdate = createHook("bu" /* LifecycleHooks.BEFORE_UPDATE */);
+const onUpdated = createHook("u" /* LifecycleHooks.UPDATED */);
+const onBeforeUnmount = createHook("bum" /* LifecycleHooks.BEFORE_UNMOUNT */);
+const onUnmounted = createHook("um" /* LifecycleHooks.UNMOUNTED */);
+const onServerPrefetch = createHook("sp" /* LifecycleHooks.SERVER_PREFETCH */);
+const onRenderTriggered = createHook("rtg" /* LifecycleHooks.RENDER_TRIGGERED */);
+const onRenderTracked = createHook("rtc" /* LifecycleHooks.RENDER_TRACKED */);
 function onErrorCaptured(hook, target = currentInstance) {
-    injectHook("ec" /* ERROR_CAPTURED */, hook, target);
+    injectHook("ec" /* LifecycleHooks.ERROR_CAPTURED */, hook, target);
 }
 
 /**
@@ -2348,14 +2357,16 @@ function resolve(registry, name) {
  * For prefixing keys in v-on="obj" with "on"
  * @private
  */
-function toHandlers(obj) {
+function toHandlers(obj, preserveCaseIfNecessary) {
     const ret = {};
     if ((process.env.NODE_ENV !== 'production') && !isObject(obj)) {
         warn$1(`v-on with no argument expects an object value.`);
         return ret;
     }
     for (const key in obj) {
-        ret[toHandlerKey(key)] = obj[key];
+        ret[preserveCaseIfNecessary && /[A-Z]/.test(key)
+            ? `on:${key}`
+            : toHandlerKey(key)] = obj[key];
     }
     return ret;
 }
@@ -2422,23 +2433,23 @@ const PublicInstanceProxyHandlers = {
             const n = accessCache[key];
             if (n !== undefined) {
                 switch (n) {
-                    case 1 /* SETUP */:
+                    case 1 /* AccessTypes.SETUP */:
                         return setupState[key];
-                    case 2 /* DATA */:
+                    case 2 /* AccessTypes.DATA */:
                         return data[key];
-                    case 4 /* CONTEXT */:
+                    case 4 /* AccessTypes.CONTEXT */:
                         return ctx[key];
-                    case 3 /* PROPS */:
+                    case 3 /* AccessTypes.PROPS */:
                         return props[key];
                     // default: just fallthrough
                 }
             }
             else if (setupState !== EMPTY_OBJ && hasOwn(setupState, key)) {
-                accessCache[key] = 1 /* SETUP */;
+                accessCache[key] = 1 /* AccessTypes.SETUP */;
                 return setupState[key];
             }
             else if (data !== EMPTY_OBJ && hasOwn(data, key)) {
-                accessCache[key] = 2 /* DATA */;
+                accessCache[key] = 2 /* AccessTypes.DATA */;
                 return data[key];
             }
             else if (
@@ -2446,15 +2457,15 @@ const PublicInstanceProxyHandlers = {
             // props
             (normalizedProps = instance.propsOptions[0]) &&
                 hasOwn(normalizedProps, key)) {
-                accessCache[key] = 3 /* PROPS */;
+                accessCache[key] = 3 /* AccessTypes.PROPS */;
                 return props[key];
             }
             else if (ctx !== EMPTY_OBJ && hasOwn(ctx, key)) {
-                accessCache[key] = 4 /* CONTEXT */;
+                accessCache[key] = 4 /* AccessTypes.CONTEXT */;
                 return ctx[key];
             }
             else if (!__VUE_OPTIONS_API__ || shouldCacheAccess) {
-                accessCache[key] = 0 /* OTHER */;
+                accessCache[key] = 0 /* AccessTypes.OTHER */;
             }
         }
         const publicGetter = publicPropertiesMap[key];
@@ -2462,7 +2473,7 @@ const PublicInstanceProxyHandlers = {
         // public $xxx properties
         if (publicGetter) {
             if (key === '$attrs') {
-                track(instance, "get" /* GET */, key);
+                track(instance, "get" /* TrackOpTypes.GET */, key);
                 (process.env.NODE_ENV !== 'production') && markAttrsAccessed();
             }
             return publicGetter(instance);
@@ -2475,7 +2486,7 @@ const PublicInstanceProxyHandlers = {
         }
         else if (ctx !== EMPTY_OBJ && hasOwn(ctx, key)) {
             // user may set custom properties to `this` that start with `$`
-            accessCache[key] = 4 /* CONTEXT */;
+            accessCache[key] = 4 /* AccessTypes.CONTEXT */;
             return ctx[key];
         }
         else if (
@@ -2645,7 +2656,7 @@ function applyOptions(instance) {
     // call beforeCreate first before accessing other options since
     // the hook may mutate resolved options (#2791)
     if (options.beforeCreate) {
-        callHook(options.beforeCreate, instance, "bc" /* BEFORE_CREATE */);
+        callHook(options.beforeCreate, instance, "bc" /* LifecycleHooks.BEFORE_CREATE */);
     }
     const { 
     // state
@@ -2661,7 +2672,7 @@ function applyOptions(instance) {
         const [propsOptions] = instance.propsOptions;
         if (propsOptions) {
             for (const key in propsOptions) {
-                checkDuplicateProperties("Props" /* PROPS */, key);
+                checkDuplicateProperties("Props" /* OptionTypes.PROPS */, key);
             }
         }
     }
@@ -2695,7 +2706,7 @@ function applyOptions(instance) {
                     ctx[key] = methodHandler.bind(publicThis);
                 }
                 if ((process.env.NODE_ENV !== 'production')) {
-                    checkDuplicateProperties("Methods" /* METHODS */, key);
+                    checkDuplicateProperties("Methods" /* OptionTypes.METHODS */, key);
                 }
             }
             else if ((process.env.NODE_ENV !== 'production')) {
@@ -2722,7 +2733,7 @@ function applyOptions(instance) {
             instance.data = reactive(data);
             if ((process.env.NODE_ENV !== 'production')) {
                 for (const key in data) {
-                    checkDuplicateProperties("Data" /* DATA */, key);
+                    checkDuplicateProperties("Data" /* OptionTypes.DATA */, key);
                     // expose data on ctx during dev
                     if (!isReservedPrefix(key[0])) {
                         Object.defineProperty(ctx, key, {
@@ -2767,7 +2778,7 @@ function applyOptions(instance) {
                 set: v => (c.value = v)
             });
             if ((process.env.NODE_ENV !== 'production')) {
-                checkDuplicateProperties("Computed" /* COMPUTED */, key);
+                checkDuplicateProperties("Computed" /* OptionTypes.COMPUTED */, key);
             }
         }
     }
@@ -2791,13 +2802,13 @@ function applyOptions(instance) {
     if (__VUE_CREATED_DEFERRED__) {
         ctx.$callCreatedHook = function (name) {
             if (created) {
-                return callHook(created, instance, "c" /* CREATED */);
+                return callHook(created, instance, "c" /* LifecycleHooks.CREATED */);
             }
         };
     }
     else {
         if (created) {
-            callHook(created, instance, "c" /* CREATED */);
+            callHook(created, instance, "c" /* LifecycleHooks.CREATED */);
         }
     }
     function registerLifecycleHook(register, hook) {
@@ -2895,7 +2906,7 @@ function resolveInjections(injectOptions, ctx, checkDuplicateProperties = NOOP, 
             ctx[key] = injected;
         }
         if ((process.env.NODE_ENV !== 'production')) {
-            checkDuplicateProperties("Inject" /* INJECT */, key);
+            checkDuplicateProperties("Inject" /* OptionTypes.INJECT */, key);
         }
     }
 }
@@ -2966,7 +2977,9 @@ function resolveMergedOptions(instance) {
         }
         mergeOptions(resolved, base, optionMergeStrategies);
     }
-    cache.set(base, resolved);
+    if (isObject(base)) {
+        cache.set(base, resolved);
+    }
     return resolved;
 }
 function mergeOptions(to, from, strats, asMixin = false) {
@@ -3096,6 +3109,13 @@ isSSR = false) {
     }
     instance.attrs = attrs;
 }
+function isInHmrContext(instance) {
+    while (instance) {
+        if (instance.type.__hmrId)
+            return true;
+        instance = instance.parent;
+    }
+}
 function updateProps(instance, rawProps, rawPrevProps, optimized) {
     const { props, attrs, vnode: { patchFlag } } = instance;
     const rawCurrentProps = toRaw(props);
@@ -3105,12 +3125,10 @@ function updateProps(instance, rawProps, rawPrevProps, optimized) {
     // always force full diff in dev
     // - #1942 if hmr is enabled with sfc component
     // - vite#872 non-sfc component used by sfc component
-    !((process.env.NODE_ENV !== 'production') &&
-        (instance.type.__hmrId ||
-            (instance.parent && instance.parent.type.__hmrId))) &&
+    !((process.env.NODE_ENV !== 'production') && isInHmrContext(instance)) &&
         (optimized || patchFlag > 0) &&
-        !(patchFlag & 16 /* FULL_PROPS */)) {
-        if (patchFlag & 8 /* PROPS */) {
+        !(patchFlag & 16 /* PatchFlags.FULL_PROPS */)) {
+        if (patchFlag & 8 /* PatchFlags.PROPS */) {
             // Compiler-generated props & no keys change, just set the updated
             // the props.
             const propsToUpdate = instance.vnode.dynamicProps;
@@ -3189,7 +3207,7 @@ function updateProps(instance, rawProps, rawPrevProps, optimized) {
     }
     // trigger updates for $attrs in case it's used in component slots
     if (hasAttrsChanged) {
-        trigger(instance, "set" /* SET */, '$attrs');
+        trigger(instance, "set" /* TriggerOpTypes.SET */, '$attrs');
     }
     if ((process.env.NODE_ENV !== 'production')) {
         validateProps(rawProps || {}, props, instance);
@@ -3258,11 +3276,11 @@ function resolvePropValue(options, props, key, value, instance, isAbsent) {
             }
         }
         // boolean casting
-        if (opt[0 /* shouldCast */]) {
+        if (opt[0 /* BooleanFlags.shouldCast */]) {
             if (isAbsent && !hasDefault) {
                 value = false;
             }
-            else if (opt[1 /* shouldCastTrue */] &&
+            else if (opt[1 /* BooleanFlags.shouldCastTrue */] &&
                 (value === '' || value === hyphenate(key))) {
                 value = true;
             }
@@ -3300,7 +3318,9 @@ function normalizePropsOptions(comp, appContext, asMixin = false) {
         }
     }
     if (!raw && !hasExtends) {
-        cache.set(comp, EMPTY_ARR);
+        if (isObject(comp)) {
+            cache.set(comp, EMPTY_ARR);
+        }
         return EMPTY_ARR;
     }
     if (isArray(raw)) {
@@ -3327,8 +3347,8 @@ function normalizePropsOptions(comp, appContext, asMixin = false) {
                 if (prop) {
                     const booleanIndex = getTypeIndex(Boolean, prop.type);
                     const stringIndex = getTypeIndex(String, prop.type);
-                    prop[0 /* shouldCast */] = booleanIndex > -1;
-                    prop[1 /* shouldCastTrue */] =
+                    prop[0 /* BooleanFlags.shouldCast */] = booleanIndex > -1;
+                    prop[1 /* BooleanFlags.shouldCastTrue */] =
                         stringIndex < 0 || booleanIndex < stringIndex;
                     // if the prop needs boolean casting or default value
                     if (booleanIndex > -1 || hasOwn(prop, 'default')) {
@@ -3339,7 +3359,9 @@ function normalizePropsOptions(comp, appContext, asMixin = false) {
         }
     }
     const res = [normalized, needCastKeys];
-    cache.set(comp, res);
+    if (isObject(comp)) {
+        cache.set(comp, res);
+    }
     return res;
 }
 function validatePropName(key) {
@@ -3680,7 +3702,7 @@ const normalizeRef = ({ ref, ref_key, ref_for }) => {
             : ref
         : null);
 };
-function createBaseVNode(type, props = null, children = null, patchFlag = 0, dynamicProps = null, shapeFlag = type === Fragment ? 0 : 1 /* ELEMENT */, isBlockNode = false, needFullChildrenNormalization = false) {
+function createBaseVNode(type, props = null, children = null, patchFlag = 0, dynamicProps = null, shapeFlag = type === Fragment ? 0 : 1 /* ShapeFlags.ELEMENT */, isBlockNode = false, needFullChildrenNormalization = false) {
     const vnode = {
         __v_isVNode: true,
         __v_skip: true,
@@ -3715,8 +3737,8 @@ function createBaseVNode(type, props = null, children = null, patchFlag = 0, dyn
         // compiled element vnode - if children is passed, only possible types are
         // string or Array.
         vnode.shapeFlag |= isString(children)
-            ? 8 /* TEXT_CHILDREN */
-            : 16 /* ARRAY_CHILDREN */;
+            ? 8 /* ShapeFlags.TEXT_CHILDREN */
+            : 16 /* ShapeFlags.ARRAY_CHILDREN */;
     }
     // validate key
     if ((process.env.NODE_ENV !== 'production') && vnode.key !== vnode.key) {
@@ -3732,10 +3754,10 @@ function createBaseVNode(type, props = null, children = null, patchFlag = 0, dyn
         // component nodes also should always be patched, because even if the
         // component doesn't need to update, it needs to persist the instance on to
         // the next vnode so that it can be properly unmounted later.
-        (vnode.patchFlag > 0 || shapeFlag & 6 /* COMPONENT */) &&
+        (vnode.patchFlag > 0 || shapeFlag & 6 /* ShapeFlags.COMPONENT */) &&
         // the EVENTS flag is only for hydration and if it is the only flag, the
         // vnode should not be considered dynamic due to handler caching.
-        vnode.patchFlag !== 32 /* HYDRATE_EVENTS */) {
+        vnode.patchFlag !== 32 /* PatchFlags.HYDRATE_EVENTS */) {
         currentBlock.push(vnode);
     }
     return vnode;
@@ -3757,14 +3779,14 @@ function _createVNode(type, props = null, children = null, patchFlag = 0, dynami
             normalizeChildren(cloned, children);
         }
         if (isBlockTreeEnabled > 0 && !isBlockNode && currentBlock) {
-            if (cloned.shapeFlag & 6 /* COMPONENT */) {
+            if (cloned.shapeFlag & 6 /* ShapeFlags.COMPONENT */) {
                 currentBlock[currentBlock.indexOf(type)] = cloned;
             }
             else {
                 currentBlock.push(cloned);
             }
         }
-        cloned.patchFlag |= -2 /* BAIL */;
+        cloned.patchFlag |= -2 /* PatchFlags.BAIL */;
         return cloned;
     }
     // class component normalization.
@@ -3790,15 +3812,15 @@ function _createVNode(type, props = null, children = null, patchFlag = 0, dynami
     }
     // encode the vnode type information into a bitmap
     const shapeFlag = isString(type)
-        ? 1 /* ELEMENT */
+        ? 1 /* ShapeFlags.ELEMENT */
         : isTeleport(type)
-                ? 64 /* TELEPORT */
+                ? 64 /* ShapeFlags.TELEPORT */
                 : isObject(type)
-                    ? 4 /* STATEFUL_COMPONENT */
+                    ? 4 /* ShapeFlags.STATEFUL_COMPONENT */
                     : isFunction(type)
-                        ? 2 /* FUNCTIONAL_COMPONENT */
+                        ? 2 /* ShapeFlags.FUNCTIONAL_COMPONENT */
                         : 0;
-    if ((process.env.NODE_ENV !== 'production') && shapeFlag & 4 /* STATEFUL_COMPONENT */ && isProxy(type)) {
+    if ((process.env.NODE_ENV !== 'production') && shapeFlag & 4 /* ShapeFlags.STATEFUL_COMPONENT */ && isProxy(type)) {
         type = toRaw(type);
         warn$1(`Vue received a Component which was made a reactive object. This can ` +
             `lead to unnecessary performance overhead, and should be avoided by ` +
@@ -3837,7 +3859,7 @@ function cloneVNode(vnode, extraProps, mergeRef = false) {
             : ref,
         scopeId: vnode.scopeId,
         slotScopeIds: vnode.slotScopeIds,
-        children: (process.env.NODE_ENV !== 'production') && patchFlag === -1 /* HOISTED */ && isArray(children)
+        children: (process.env.NODE_ENV !== 'production') && patchFlag === -1 /* PatchFlags.HOISTED */ && isArray(children)
             ? children.map(deepCloneVNode)
             : children,
         target: vnode.target,
@@ -3850,8 +3872,8 @@ function cloneVNode(vnode, extraProps, mergeRef = false) {
         // fast paths only.
         patchFlag: extraProps && vnode.type !== Fragment
             ? patchFlag === -1 // hoisted node
-                ? 16 /* FULL_PROPS */
-                : patchFlag | 16 /* FULL_PROPS */
+                ? 16 /* PatchFlags.FULL_PROPS */
+                : patchFlag | 16 /* PatchFlags.FULL_PROPS */
             : patchFlag,
         dynamicProps: vnode.dynamicProps,
         dynamicChildren: vnode.dynamicChildren,
@@ -3895,10 +3917,10 @@ function normalizeChildren(vnode, children) {
         children = null;
     }
     else if (isArray(children)) {
-        type = 16 /* ARRAY_CHILDREN */;
+        type = 16 /* ShapeFlags.ARRAY_CHILDREN */;
     }
     else if (typeof children === 'object') {
-        if (shapeFlag & (1 /* ELEMENT */ | 64 /* TELEPORT */)) {
+        if (shapeFlag & (1 /* ShapeFlags.ELEMENT */ | 64 /* ShapeFlags.TELEPORT */)) {
             // Normalize slot to plain children for plain element and Teleport
             const slot = children.default;
             if (slot) {
@@ -3910,37 +3932,37 @@ function normalizeChildren(vnode, children) {
             return;
         }
         else {
-            type = 32 /* SLOTS_CHILDREN */;
+            type = 32 /* ShapeFlags.SLOTS_CHILDREN */;
             const slotFlag = children._;
             if (!slotFlag && !(InternalObjectKey in children)) {
                 children._ctx = currentRenderingInstance;
             }
-            else if (slotFlag === 3 /* FORWARDED */ && currentRenderingInstance) {
+            else if (slotFlag === 3 /* SlotFlags.FORWARDED */ && currentRenderingInstance) {
                 // a child component receives forwarded slots from the parent.
                 // its slot type is determined by its parent's slot type.
-                if (currentRenderingInstance.slots._ === 1 /* STABLE */) {
-                    children._ = 1 /* STABLE */;
+                if (currentRenderingInstance.slots._ === 1 /* SlotFlags.STABLE */) {
+                    children._ = 1 /* SlotFlags.STABLE */;
                 }
                 else {
-                    children._ = 2 /* DYNAMIC */;
-                    vnode.patchFlag |= 1024 /* DYNAMIC_SLOTS */;
+                    children._ = 2 /* SlotFlags.DYNAMIC */;
+                    vnode.patchFlag |= 1024 /* PatchFlags.DYNAMIC_SLOTS */;
                 }
             }
         }
     }
     else if (isFunction(children)) {
         children = { default: children, _ctx: currentRenderingInstance };
-        type = 32 /* SLOTS_CHILDREN */;
+        type = 32 /* ShapeFlags.SLOTS_CHILDREN */;
     }
     else {
         children = String(children);
         // force teleport children to array so it can be moved around
-        if (shapeFlag & 64 /* TELEPORT */) {
-            type = 16 /* ARRAY_CHILDREN */;
+        if (shapeFlag & 64 /* ShapeFlags.TELEPORT */) {
+            type = 16 /* ShapeFlags.ARRAY_CHILDREN */;
             children = [createTextVNode(children)];
         }
         else {
-            type = 8 /* TEXT_CHILDREN */;
+            type = 8 /* ShapeFlags.TEXT_CHILDREN */;
         }
     }
     vnode.children = children;
@@ -4083,7 +4105,7 @@ function validateComponentName(name, config) {
     }
 }
 function isStatefulComponent(instance) {
-    return instance.vnode.shapeFlag & 4 /* STATEFUL_COMPONENT */;
+    return instance.vnode.shapeFlag & 4 /* ShapeFlags.STATEFUL_COMPONENT */;
 }
 let isInSSRComponentSetup = false;
 function setupComponent(instance, isSSR = false) {
@@ -4138,7 +4160,7 @@ function setupStatefulComponent(instance, isSSR) {
             setup.length > 1 ? createSetupContext(instance) : null);
         setCurrentInstance(instance);
         pauseTracking();
-        const setupResult = callWithErrorHandling(setup, instance, 0 /* SETUP_FUNCTION */, [(process.env.NODE_ENV !== 'production') ? shallowReadonly(instance.props) : instance.props, setupContext]);
+        const setupResult = callWithErrorHandling(setup, instance, 0 /* ErrorCodes.SETUP_FUNCTION */, [(process.env.NODE_ENV !== 'production') ? shallowReadonly(instance.props) : instance.props, setupContext]);
         resetTracking();
         unsetCurrentInstance();
         if (isPromise(setupResult)) {
@@ -4221,7 +4243,7 @@ function createAttrsProxy(instance) {
     return new Proxy(instance.attrs, (process.env.NODE_ENV !== 'production')
         ? {
             get(target, key) {
-                track(instance, "get" /* GET */, '$attrs');
+                track(instance, "get" /* TrackOpTypes.GET */, '$attrs');
                 return target[key];
             },
             set() {
@@ -4235,7 +4257,7 @@ function createAttrsProxy(instance) {
         }
         : {
             get(target, key) {
-                track(instance, "get" /* GET */, '$attrs');
+                track(instance, "get" /* TrackOpTypes.GET */, '$attrs');
                 return target[key];
             }
         });
@@ -4480,7 +4502,7 @@ const useSSRContext = () => {
 };
 
 // Core API ------------------------------------------------------------------
-const version = "3.2.37";
+const version = "3.2.41";
 /**
  * @internal only exposed in compat builds
  */
@@ -4612,7 +4634,7 @@ function flushCallbacks(instance) {
     const ctx = instance.ctx;
     const callbacks = ctx.__next_tick_callbacks;
     if (callbacks && callbacks.length) {
-        if (process.env.VUE_APP_DEBUG) {
+        if (process.env.UNI_DEBUG) {
             const mpInstance = ctx.$scope;
             console.log('[' +
                 +new Date() +
@@ -4634,7 +4656,7 @@ function flushCallbacks(instance) {
 function nextTick$1(instance, fn) {
     const ctx = instance.ctx;
     if (!ctx.__next_tick_pending && !hasComponentEffect(instance)) {
-        if (process.env.VUE_APP_DEBUG) {
+        if (process.env.UNI_DEBUG) {
             const mpInstance = ctx.$scope;
             console.log('[' +
                 +new Date() +
@@ -4646,7 +4668,7 @@ function nextTick$1(instance, fn) {
         }
         return nextTick(fn && fn.bind(instance.proxy));
     }
-    if (process.env.VUE_APP_DEBUG) {
+    if (process.env.UNI_DEBUG) {
         const mpInstance = ctx.$scope;
         console.log('[' +
             +new Date() +
@@ -4662,7 +4684,7 @@ function nextTick$1(instance, fn) {
     }
     ctx.__next_tick_callbacks.push(() => {
         if (fn) {
-            callWithErrorHandling(fn.bind(instance.proxy), instance, 14 /* SCHEDULER */);
+            callWithErrorHandling(fn.bind(instance.proxy), instance, 14 /* ErrorCodes.SCHEDULER */);
         }
         else if (_resolve) {
             _resolve(instance.proxy);
@@ -4760,7 +4782,7 @@ function patch(instance, data, oldData) {
                 flushCallbacks(instance);
             });
             // props update may have triggered pre-flush watchers.
-            flushPreFlushCbs(undefined, instance.update);
+            flushPreFlushCbs();
         }
         else {
             flushCallbacks(instance);
@@ -4805,11 +4827,29 @@ function setRef(instance, isUnmount = false) {
     if (isUnmount) {
         return $templateRefs.forEach(templateRef => setTemplateRef(templateRef, null, setupState));
     }
+    const check = $mpPlatform === 'mp-baidu' || $mpPlatform === 'mp-toutiao';
+    const doSetByRefs = (refs) => {
+        const mpComponents = 
+        // 字节小程序 selectAllComponents 可能返回 null
+        // https://github.com/dcloudio/uni-app/issues/3954
+        ($scope.selectAllComponents('.r') || []).concat($scope.selectAllComponents('.r-i-f') || []);
+        return refs.filter(templateRef => {
+            const refValue = findComponentPublicInstance(mpComponents, templateRef.i);
+            // 部分平台，在一些 if 条件下，部分 slot 组件初始化会被延迟到下一次渲染，需要二次检测
+            if (check && refValue === null) {
+                return true;
+            }
+            setTemplateRef(templateRef, refValue, setupState);
+            return false;
+        });
+    };
     const doSet = () => {
-        const mpComponents = $scope
-            .selectAllComponents('.r')
-            .concat($scope.selectAllComponents('.r-i-f'));
-        $templateRefs.forEach(templateRef => setTemplateRef(templateRef, findComponentPublicInstance(mpComponents, templateRef.i), setupState));
+        const refs = doSetByRefs($templateRefs);
+        if (refs.length && instance.proxy && instance.proxy.$scope) {
+            instance.proxy.$scope.setData({ r1: 1 }, () => {
+                doSetByRefs(refs);
+            });
+        }
     };
     if ($scope._$setRef) {
         $scope._$setRef(doSet);
@@ -4822,7 +4862,11 @@ function findComponentPublicInstance(mpComponents, id) {
     const mpInstance = mpComponents.find(com => com && (com.properties || com.props).uI === id);
     if (mpInstance) {
         const vm = mpInstance.$vm;
-        return getExposeProxy(vm.$) || vm;
+        if (vm) {
+            return getExposeProxy(vm.$) || vm;
+        }
+        // 可能是原生组件
+        return mpInstance;
     }
     return null;
 }
@@ -4928,7 +4972,7 @@ function renderComponentRoot(instance) {
     let result;
     const prev = setCurrentRenderingInstance(instance);
     try {
-        if (vnode.shapeFlag & 4 /* STATEFUL_COMPONENT */) {
+        if (vnode.shapeFlag & 4 /* ShapeFlags.STATEFUL_COMPONENT */) {
             fallthroughAttrs(inheritAttrs, props, propsOptions, attrs);
             // withProxy is a proxy with a different `has` trap only for
             // runtime-compiled render functions using `with` block.
@@ -4946,7 +4990,7 @@ function renderComponentRoot(instance) {
         }
     }
     catch (err) {
-        handleError(err, instance, 1 /* RENDER_FUNCTION */);
+        handleError(err, instance, 1 /* ErrorCodes.RENDER_FUNCTION */);
         result = false;
     }
     setRef(instance);
@@ -4975,7 +5019,7 @@ const updateComponentPreRender = (instance) => {
     pauseTracking();
     // props update may have triggered pre-flush watchers.
     // flush them before the render update.
-    flushPreFlushCbs(undefined, instance.update);
+    flushPreFlushCbs();
     resetTracking();
 };
 function componentUpdateScopedSlotsFn() {
@@ -4989,7 +5033,7 @@ function componentUpdateScopedSlotsFn() {
     const diffData = Object.create(null);
     scopedSlotsData.forEach(({ path, index, data }) => {
         const oldScopedSlotData = getValueByDataPath(oldData, path);
-        const diffPath = `${path}[${index}]`;
+        const diffPath = isString(index) ? `${path}.${index}` : `${path}[${index}]`;
         if (typeof oldScopedSlotData === 'undefined' ||
             typeof oldScopedSlotData[index] === 'undefined') {
             diffData[diffPath] = data;
@@ -5035,7 +5079,7 @@ function setupRenderEffect(instance) {
             const { bu, u } = instance;
             // Disallow component effect recursion during pre-lifecycle hooks.
             toggleRecurse(instance, false);
-            updateComponentPreRender(instance);
+            updateComponentPreRender();
             // beforeUpdate hook
             if (bu) {
                 invokeArrayFns(bu);
@@ -5096,7 +5140,7 @@ function createVueApp(rootComponent, rootProps = null) {
     initAppConfig(appContext.config);
     const createVNode = initialVNode => {
         initialVNode.appContext = appContext;
-        initialVNode.shapeFlag = 6 /* COMPONENT */;
+        initialVNode.shapeFlag = 6 /* ShapeFlags.COMPONENT */;
         return initialVNode;
     };
     const createComponent = function createComponent(initialVNode, options) {
@@ -5114,6 +5158,7 @@ function createVueApp(rootComponent, rootProps = null) {
             slots: [],
             props: null
         });
+        app._instance = instance.$;
         instance.$app = app;
         instance.$createComponent = createComponent;
         instance.$destroyComponent = destroyComponent;
@@ -5177,4 +5222,4 @@ function initCssVarsRender(instance, getter) {
 function withModifiers() { }
 function createVNode$1() { }
 
-export { EffectScope, Fragment, ReactiveEffect, Text, callWithAsyncErrorHandling, callWithErrorHandling, computed$1 as computed, createVNode$1 as createVNode, createVueApp, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, diff, effect, effectScope, getCurrentInstance, getCurrentScope, getExposeProxy, guardReactiveProps, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, markRaw, mergeDefaults, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, patch, provide, proxyRefs, queuePostFlushCb, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, setCurrentRenderingInstance, setTemplateRef, shallowReactive, shallowReadonly, shallowRef, stop, toHandlers, toRaw, toRef, toRefs, triggerRef, unref, updateProps, useAttrs, useCssModule, useCssVars, useSSRContext, useSlots, version, warn$1 as warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };
+export { EffectScope, Fragment, ReactiveEffect, Text, callWithAsyncErrorHandling, callWithErrorHandling, computed$1 as computed, createVNode$1 as createVNode, createVueApp, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, diff, effect, effectScope, getCurrentInstance, getCurrentScope, getExposeProxy, guardReactiveProps, hasQueueJob, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, markRaw, mergeDefaults, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, patch, provide, proxyRefs, queuePostFlushCb, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, setCurrentRenderingInstance, setTemplateRef, shallowReactive, shallowReadonly, shallowRef, stop, toHandlers, toRaw, toRef, toRefs, triggerRef, unref, updateProps, useAttrs, useCssModule, useCssVars, useSSRContext, useSlots, version, warn$1 as warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };

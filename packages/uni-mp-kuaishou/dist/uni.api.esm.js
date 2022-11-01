@@ -1,42 +1,6 @@
-import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise, remove, extend } from '@vue/shared';
+import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise, extend, remove } from '@vue/shared';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
-import { Emitter, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
-
-const eventChannels = {};
-const eventChannelStack = [];
-let id = 0;
-function initEventChannel(events, cache = true) {
-    id++;
-    const eventChannel = new ks.EventChannel(id, events);
-    if (cache) {
-        eventChannels[id] = eventChannel;
-        eventChannelStack.push(eventChannel);
-    }
-    return eventChannel;
-}
-function getEventChannel(id) {
-    if (id) {
-        const eventChannel = eventChannels[id];
-        delete eventChannels[id];
-        return eventChannel;
-    }
-    return eventChannelStack.shift();
-}
-const navigateTo = {
-    args(fromArgs) {
-        const id = initEventChannel(fromArgs.events).id;
-        if (fromArgs.url) {
-            fromArgs.url =
-                fromArgs.url +
-                    (fromArgs.url.indexOf('?') === -1 ? '?' : '&') +
-                    '__id__=' +
-                    id;
-        }
-    },
-    returnValue(fromRes) {
-        fromRes.eventChannel = getEventChannel();
-    },
-};
+import { LINEFEED, Emitter, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
 
 function getBaseSystemInfo() {
   return ks.getSystemInfoSync()
@@ -190,6 +154,32 @@ function tryCatch(fn) {
     };
 }
 
+let invokeCallbackId = 1;
+const invokeCallbacks = {};
+function addInvokeCallback(id, name, callback, keepAlive = false) {
+    invokeCallbacks[id] = {
+        name,
+        keepAlive,
+        callback,
+    };
+    return id;
+}
+// onNativeEventReceive((event,data)=>{}) 需要两个参数，目前写死最多两个参数
+function invokeCallback(id, res, extras) {
+    if (typeof id === 'number') {
+        const opts = invokeCallbacks[id];
+        if (opts) {
+            if (!opts.keepAlive) {
+                delete invokeCallbacks[id];
+            }
+            return opts.callback(res, extras);
+        }
+    }
+    return res;
+}
+const API_SUCCESS = 'success';
+const API_FAIL = 'fail';
+const API_COMPLETE = 'complete';
 function getApiCallbacks(args) {
     const apiCallbacks = {};
     for (const name in args) {
@@ -200,6 +190,36 @@ function getApiCallbacks(args) {
         }
     }
     return apiCallbacks;
+}
+function normalizeErrMsg$1(errMsg, name) {
+    if (!errMsg || errMsg.indexOf(':fail') === -1) {
+        return name + ':ok';
+    }
+    return name + errMsg.substring(errMsg.indexOf(':fail'));
+}
+function createAsyncApiCallback(name, args = {}, { beforeAll, beforeSuccess } = {}) {
+    if (!isPlainObject(args)) {
+        args = {};
+    }
+    const { success, fail, complete } = getApiCallbacks(args);
+    const hasSuccess = isFunction(success);
+    const hasFail = isFunction(fail);
+    const hasComplete = isFunction(complete);
+    const callbackId = invokeCallbackId++;
+    addInvokeCallback(callbackId, name, (res) => {
+        res = res || {};
+        res.errMsg = normalizeErrMsg$1(res.errMsg, name);
+        isFunction(beforeAll) && beforeAll(res);
+        if (res.errMsg === name + ':ok') {
+            isFunction(beforeSuccess) && beforeSuccess(res, args);
+            hasSuccess && success(res);
+        }
+        else {
+            hasFail && fail(res);
+        }
+        hasComplete && complete(res);
+    });
+    return callbackId;
 }
 
 const HOOK_SUCCESS = 'success';
@@ -301,6 +321,13 @@ function invokeApi(method, api, options, params) {
     return api(options, ...params);
 }
 
+function hasCallback(args) {
+    if (isPlainObject(args) &&
+        [API_SUCCESS, API_FAIL, API_COMPLETE].find((cb) => isFunction(args[cb]))) {
+        return true;
+    }
+    return false;
+}
 function handlePromise(promise) {
     // if (__UNI_FEATURE_PROMISE__) {
     //   return promise
@@ -310,6 +337,16 @@ function handlePromise(promise) {
     //     .catch((err) => [err])
     // }
     return promise;
+}
+function promisify$1(name, fn) {
+    return (args = {}, ...rest) => {
+        if (hasCallback(args)) {
+            return wrapperReturnValue(name, invokeApi(name, fn, args, rest));
+        }
+        return wrapperReturnValue(name, handlePromise(new Promise((resolve, reject) => {
+            invokeApi(name, fn, extend(args, { success: resolve, fail: reject }), rest);
+        })));
+    };
 }
 
 function formatApiArgs(args, options) {
@@ -337,6 +374,12 @@ function formatApiArgs(args, options) {
         }
     }
 }
+function invokeSuccess(id, name, res) {
+    return invokeCallback(id, extend((res || {}), { errMsg: name + ':ok' }));
+}
+function invokeFail(id, name, errMsg, errRes) {
+    return invokeCallback(id, extend({ errMsg: name + ':fail' + (errMsg ? ' ' + errMsg : '') }, errRes));
+}
 function beforeInvokeApi(name, args, protocol, options) {
     if ((process.env.NODE_ENV !== 'production')) {
         validateProtocols(name, args, protocol);
@@ -352,6 +395,29 @@ function beforeInvokeApi(name, args, protocol, options) {
         return errMsg;
     }
 }
+function normalizeErrMsg(errMsg) {
+    if (!errMsg || isString(errMsg)) {
+        return errMsg;
+    }
+    if (errMsg.stack) {
+        console.error(errMsg.message + LINEFEED + errMsg.stack);
+        return errMsg.message;
+    }
+    return errMsg;
+}
+function wrapperTaskApi(name, fn, protocol, options) {
+    return (args) => {
+        const id = createAsyncApiCallback(name, args, options);
+        const errMsg = beforeInvokeApi(name, [args], protocol, options);
+        if (errMsg) {
+            return invokeFail(id, name, errMsg);
+        }
+        return fn(args, {
+            resolve: (res) => invokeSuccess(id, name, res),
+            reject: (errMsg, errRes) => invokeFail(id, name, normalizeErrMsg(errMsg), errRes),
+        });
+    };
+}
 function wrapperSyncApi(name, fn, protocol, options) {
     return (...args) => {
         const errMsg = beforeInvokeApi(name, args, protocol, options);
@@ -361,8 +427,14 @@ function wrapperSyncApi(name, fn, protocol, options) {
         return fn.apply(null, args);
     };
 }
+function wrapperAsyncApi(name, fn, protocol, options) {
+    return wrapperTaskApi(name, fn, protocol, options);
+}
 function defineSyncApi(name, fn, protocol, options) {
     return wrapperSyncApi(name, fn, (process.env.NODE_ENV !== 'production') ? protocol : undefined, options);
+}
+function defineAsyncApi(name, fn, protocol, options) {
+    return promisify$1(name, wrapperAsyncApi(name, fn, (process.env.NODE_ENV !== 'production') ? protocol : undefined, options));
 }
 
 const API_UPX2PX = 'upx2px';
@@ -460,7 +532,7 @@ function dedupeHooks(hooks) {
     return res;
 }
 const addInterceptor = defineSyncApi(API_ADD_INTERCEPTOR, (method, interceptor) => {
-    if (typeof method === 'string' && isPlainObject(interceptor)) {
+    if (isString(method) && isPlainObject(interceptor)) {
         mergeInterceptorHook(scopedInterceptors[method] || (scopedInterceptors[method] = {}), interceptor);
     }
     else if (isPlainObject(method)) {
@@ -468,7 +540,7 @@ const addInterceptor = defineSyncApi(API_ADD_INTERCEPTOR, (method, interceptor) 
     }
 }, AddInterceptorProtocol);
 const removeInterceptor = defineSyncApi(API_REMOVE_INTERCEPTOR, (method, interceptor) => {
-    if (typeof method === 'string') {
+    if (isString(method)) {
         if (isPlainObject(interceptor)) {
             removeInterceptorHook(scopedInterceptors[method], interceptor);
         }
@@ -531,7 +603,7 @@ const $off = defineSyncApi(API_OFF, (name, callback) => {
         emitter.e = {};
         return;
     }
-    if (!Array.isArray(name))
+    if (!isArray(name))
         name = [name];
     name.forEach((n) => emitter.off(n, callback));
 }, OffProtocol);
@@ -541,6 +613,7 @@ const $emit = defineSyncApi(API_EMIT, (name, ...args) => {
 
 let cid;
 let cidErrMsg;
+let enabled;
 function normalizePushMessage(message) {
     try {
         return JSON.parse(message);
@@ -553,18 +626,27 @@ function normalizePushMessage(message) {
  * @param args
  */
 function invokePushCallback(args) {
-    if (args.type === 'clientId') {
+    if (args.type === 'enabled') {
+        enabled = true;
+    }
+    else if (args.type === 'clientId') {
         cid = args.cid;
         cidErrMsg = args.errMsg;
         invokeGetPushCidCallbacks(cid, args.errMsg);
     }
     else if (args.type === 'pushMsg') {
-        onPushMessageCallbacks.forEach((callback) => {
-            callback({
-                type: 'receive',
-                data: normalizePushMessage(args.message),
-            });
-        });
+        const message = {
+            type: 'receive',
+            data: normalizePushMessage(args.message),
+        };
+        for (let i = 0; i < onPushMessageCallbacks.length; i++) {
+            const callback = onPushMessageCallbacks[i];
+            callback(message);
+            // 该消息已被阻止
+            if (message.stopped) {
+                break;
+            }
+        }
     }
     else if (args.type === 'click') {
         onPushMessageCallbacks.forEach((callback) => {
@@ -582,30 +664,27 @@ function invokeGetPushCidCallbacks(cid, errMsg) {
     });
     getPushCidCallbacks.length = 0;
 }
-function getPushClientid(args) {
-    if (!isPlainObject(args)) {
-        args = {};
-    }
-    const { success, fail, complete } = getApiCallbacks(args);
-    const hasSuccess = isFunction(success);
-    const hasFail = isFunction(fail);
-    const hasComplete = isFunction(complete);
-    getPushCidCallbacks.push((cid, errMsg) => {
-        let res;
-        if (cid) {
-            res = { errMsg: 'getPushClientid:ok', cid };
-            hasSuccess && success(res);
+const API_GET_PUSH_CLIENT_ID = 'getPushClientId';
+const getPushClientId = defineAsyncApi(API_GET_PUSH_CLIENT_ID, (_, { resolve, reject }) => {
+    Promise.resolve().then(() => {
+        if (typeof enabled === 'undefined') {
+            enabled = false;
+            cid = '';
+            cidErrMsg = 'uniPush is not enabled';
         }
-        else {
-            res = { errMsg: 'getPushClientid:fail' + (errMsg ? ' ' + errMsg : '') };
-            hasFail && fail(res);
+        getPushCidCallbacks.push((cid, errMsg) => {
+            if (cid) {
+                resolve({ cid });
+            }
+            else {
+                reject(errMsg);
+            }
+        });
+        if (typeof cid !== 'undefined') {
+            invokeGetPushCidCallbacks(cid, cidErrMsg);
         }
-        hasComplete && complete(res);
     });
-    if (typeof cid !== 'undefined') {
-        Promise.resolve().then(() => invokeGetPushCidCallbacks(cid, cidErrMsg));
-    }
-}
+});
 const onPushMessageCallbacks = [];
 // 不使用 defineOnApi 实现，是因为 defineOnApi 依赖 UniServiceJSBridge ，该对象目前在小程序上未提供，故简单实现
 const onPushMessage = (fn) => {
@@ -625,7 +704,7 @@ const offPushMessage = (fn) => {
     }
 };
 
-const SYNC_API_RE = /^\$|getLocale|setLocale|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getDeviceInfo|getAppBaseInfo|getWindowInfo/;
+const SYNC_API_RE = /^\$|getLocale|setLocale|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getDeviceInfo|getAppBaseInfo|getWindowInfo|getSystemSetting|getAppAuthorizeSetting/;
 const CONTEXT_API_RE = /^create|Manager$/;
 // Context例外情况
 const CONTEXT_API_RE_EXC = ['createBLEConnection'];
@@ -798,67 +877,6 @@ const onLocaleChange = (fn) => {
 };
 if (typeof global !== 'undefined') {
     global.getLocale = getLocale;
-}
-
-const baseApis = {
-    $on,
-    $off,
-    $once,
-    $emit,
-    upx2px,
-    interceptors,
-    addInterceptor,
-    removeInterceptor,
-    onCreateVueApp,
-    invokeCreateVueAppHook,
-    getLocale,
-    setLocale,
-    onLocaleChange,
-    getPushClientid,
-    onPushMessage,
-    offPushMessage,
-    invokePushCallback,
-};
-function initUni(api, protocols) {
-    const wrapper = initWrapper(protocols);
-    const UniProxyHandlers = {
-        get(target, key) {
-            if (hasOwn(target, key)) {
-                return target[key];
-            }
-            if (hasOwn(api, key)) {
-                return promisify(key, api[key]);
-            }
-            if (hasOwn(baseApis, key)) {
-                return promisify(key, baseApis[key]);
-            }
-            // event-api
-            // provider-api?
-            return promisify(key, wrapper(key, ks[key]));
-        },
-    };
-    return new Proxy({}, UniProxyHandlers);
-}
-
-function initGetProvider(providers) {
-    return function getProvider({ service, success, fail, complete, }) {
-        let res;
-        if (providers[service]) {
-            res = {
-                errMsg: 'getProvider:ok',
-                service,
-                provider: providers[service],
-            };
-            isFunction(success) && success(res);
-        }
-        else {
-            res = {
-                errMsg: 'getProvider:fail:服务[' + service + ']不存在',
-            };
-            isFunction(fail) && fail(res);
-        }
-        isFunction(complete) && complete(res);
-    };
 }
 
 const UUID_KEY = '__DC_STAT_UUID';
@@ -1034,6 +1052,107 @@ const previewImage = {
     },
 };
 
+const eventChannels = {};
+const eventChannelStack = [];
+let id = 0;
+function initEventChannel(events, cache = true) {
+    id++;
+    const eventChannel = new ks.EventChannel(id, events);
+    if (cache) {
+        eventChannels[id] = eventChannel;
+        eventChannelStack.push(eventChannel);
+    }
+    return eventChannel;
+}
+function getEventChannel(id) {
+    if (id) {
+        const eventChannel = eventChannels[id];
+        delete eventChannels[id];
+        return eventChannel;
+    }
+    return eventChannelStack.shift();
+}
+const navigateTo = {
+    args(fromArgs) {
+        const id = initEventChannel(fromArgs.events).id;
+        if (fromArgs.url) {
+            fromArgs.url =
+                fromArgs.url +
+                    (fromArgs.url.indexOf('?') === -1 ? '?' : '&') +
+                    '__id__=' +
+                    id;
+        }
+    },
+    returnValue(fromRes) {
+        fromRes.eventChannel = getEventChannel();
+    },
+};
+
+const baseApis = {
+    $on,
+    $off,
+    $once,
+    $emit,
+    upx2px,
+    interceptors,
+    addInterceptor,
+    removeInterceptor,
+    onCreateVueApp,
+    invokeCreateVueAppHook,
+    getLocale,
+    setLocale,
+    onLocaleChange,
+    getPushClientId,
+    onPushMessage,
+    offPushMessage,
+    invokePushCallback,
+};
+function initUni(api, protocols) {
+    const wrapper = initWrapper(protocols);
+    const UniProxyHandlers = {
+        get(target, key) {
+            if (hasOwn(target, key)) {
+                return target[key];
+            }
+            if (hasOwn(api, key)) {
+                return promisify(key, api[key]);
+            }
+            if (hasOwn(baseApis, key)) {
+                return promisify(key, baseApis[key]);
+            }
+            // event-api
+            // provider-api?
+            return promisify(key, wrapper(key, ks[key]));
+        },
+    };
+    // 处理 api mp 打包后为不同js，getEventChannel 无法共享问题
+    {
+        ks.getEventChannel = getEventChannel;
+    }
+    return new Proxy({}, UniProxyHandlers);
+}
+
+function initGetProvider(providers) {
+    return function getProvider({ service, success, fail, complete, }) {
+        let res;
+        if (providers[service]) {
+            res = {
+                errMsg: 'getProvider:ok',
+                service,
+                provider: providers[service],
+            };
+            isFunction(success) && success(res);
+        }
+        else {
+            res = {
+                errMsg: 'getProvider:fail:服务[' + service + ']不存在',
+            };
+            isFunction(fail) && fail(res);
+        }
+        isFunction(complete) && complete(res);
+    };
+}
+
 const getProvider = initGetProvider({
     oauth: ['kuaishou'],
     share: ['kuaishou'],
@@ -1046,13 +1165,25 @@ var shims = /*#__PURE__*/Object.freeze({
   getProvider: getProvider
 });
 
+const requestPayment = {
+    name: ks.pay ? 'pay' : 'requestPayment',
+    args(fromArgs, toArgs) {
+        if (typeof fromArgs === 'object') {
+            // ks.pay 服务类型 id（固定值为 '1'）
+            if (ks.pay && !fromArgs.serviceId)
+                toArgs.serviceId = '1';
+        }
+    },
+};
+
 var protocols = /*#__PURE__*/Object.freeze({
   __proto__: null,
   redirectTo: redirectTo,
   navigateTo: navigateTo,
   previewImage: previewImage,
   getSystemInfo: getSystemInfo,
-  getSystemInfoSync: getSystemInfoSync
+  getSystemInfoSync: getSystemInfoSync,
+  requestPayment: requestPayment
 });
 
 var index = initUni(shims, protocols);

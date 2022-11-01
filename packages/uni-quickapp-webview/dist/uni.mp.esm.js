@@ -1,18 +1,7 @@
-import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, addLeadingSlash, stringifyQuery, customizeEvent } from '@dcloudio/uni-shared';
+import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, isUniLifecycleHook, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, addLeadingSlash, stringifyQuery, customizeEvent } from '@dcloudio/uni-shared';
 import { isArray, hasOwn, isFunction, extend, isPlainObject, isObject } from '@vue/shared';
-import { ref, nextTick, findComponentPropsData, toRaw, updateProps, invalidateJob, getExposeProxy, pruneComponentPropsCache } from 'vue';
+import { ref, nextTick, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, getExposeProxy, pruneComponentPropsCache } from 'vue';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
-
-const eventChannels = {};
-const eventChannelStack = [];
-function getEventChannel(id) {
-    if (id) {
-        const eventChannel = eventChannels[id];
-        delete eventChannels[id];
-        return eventChannel;
-    }
-    return eventChannelStack.shift();
-}
 
 const MP_METHODS = [
     'createSelectorQuery',
@@ -98,9 +87,11 @@ function callHook(name, args) {
         this.$.isMounted = true;
         name = 'm';
     }
-    else if (name === 'onLoad' && args && args.__id__) {
-        this.__eventChannel__ = getEventChannel(args.__id__);
-        delete args.__id__;
+    {
+        if (name === 'onLoad' && args && args.__id__) {
+            this.__eventChannel__ = qa.getEventChannel(args.__id__);
+            delete args.__id__;
+        }
     }
     const hooks = this.$[name];
     return hooks && invokeArrayFns(hooks, args);
@@ -124,7 +115,7 @@ const PAGE_INIT_HOOKS = [
 function findHooks(vueOptions, hooks = new Set()) {
     if (vueOptions) {
         Object.keys(vueOptions).forEach((name) => {
-            if (name.indexOf('on') === 0 && isFunction(vueOptions[name])) {
+            if (isUniLifecycleHook(name, vueOptions[name])) {
                 hooks.add(name);
             }
         });
@@ -378,7 +369,7 @@ const builtInProps = [
     // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
     'uS',
 ];
-function initDefaultProps(isBehavior = false) {
+function initDefaultProps(options, isBehavior = false) {
     const properties = {};
     if (!isBehavior) {
         // 均不指定类型，避免微信小程序 property received type-uncompatible value 警告
@@ -404,6 +395,23 @@ function initDefaultProps(isBehavior = false) {
             },
         };
     }
+    if (options.behaviors) {
+        // wx://form-field
+        if (options.behaviors.includes('qa://form-field')) {
+            properties.name = {
+                type: null,
+                value: '',
+            };
+            properties.value = {
+                type: null,
+                value: '',
+            };
+        }
+    }
+    return properties;
+}
+function initVirtualHostProps(options) {
+    const properties = {};
     return properties;
 }
 /**
@@ -415,7 +423,7 @@ function initProps(mpComponentOptions) {
     if (!mpComponentOptions.properties) {
         mpComponentOptions.properties = {};
     }
-    extend(mpComponentOptions.properties, initDefaultProps());
+    extend(mpComponentOptions.properties, initDefaultProps(mpComponentOptions), initVirtualHostProps(mpComponentOptions.options));
 }
 const PROP_TYPES = [String, Number, Boolean, Object, Array, null];
 function parsePropType(type, defaultValue) {
@@ -484,6 +492,22 @@ function findPagePropsData(properties) {
     }
     return propsData;
 }
+function initFormField(vm) {
+    // 同步 form-field 的 name,value 值
+    const vueOptions = vm.$options;
+    if (isArray(vueOptions.behaviors) &&
+        vueOptions.behaviors.includes('uni://form-field')) {
+        vm.$watch('modelValue', () => {
+            vm.$scope &&
+                vm.$scope.setData({
+                    name: vm.name,
+                    value: vm.modelValue,
+                });
+        }, {
+            immediate: true,
+        });
+    }
+}
 
 function initData(_) {
     return {};
@@ -518,7 +542,9 @@ function updateComponentProps(up, instance) {
     const nextProps = findComponentPropsData(up) || {};
     if (hasPropsChanged(prevProps, nextProps)) {
         updateProps(instance, nextProps, prevProps, false);
-        invalidateJob(instance.update);
+        if (hasQueueJob(instance.update)) {
+            invalidateJob(instance.update);
+        }
         {
             instance.update();
         }
@@ -550,14 +576,14 @@ function initBehaviors(vueOptions) {
             if (behavior === 'uni://form-field') {
                 if (isArray(vueProps)) {
                     vueProps.push('name');
-                    vueProps.push('value');
+                    vueProps.push('modelValue');
                 }
                 else {
                     vueProps.name = {
                         type: String,
                         default: '',
                     };
-                    vueProps.value = {
+                    vueProps.modelValue = {
                         type: [String, Number, Boolean, Array, Object, Date],
                         default: '',
                     };
@@ -637,7 +663,7 @@ function $createComponent(initialVNode, options) {
 }
 function $destroyComponent(instance) {
     if (!$destroyComponentFn) {
-        $destroyComponentFn = getApp().$vm.$destroyComponent;
+        $destroyComponentFn = getAppVm().$destroyComponent;
     }
     return $destroyComponentFn(instance);
 }
@@ -812,9 +838,10 @@ function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
         if (mpType === 'page' && !mpInstance.route && mpInstance.__route__) {
             mpInstance.route = mpInstance.__route__;
         }
+        const props = findPropsData(properties, mpType === 'page');
         this.$vm = $createComponent({
             type: vueOptions,
-            props: findPropsData(properties, mpType === 'page'),
+            props,
         }, {
             mpType,
             mpInstance,
@@ -826,6 +853,9 @@ function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
                 initComponentInstance(instance, options);
             },
         });
+        if (mpType === 'component') {
+            initFormField(this.$vm);
+        }
         // 处理父子关系
         initRelation(this, relationOptions);
     }

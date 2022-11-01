@@ -1,8 +1,9 @@
+import { isFunction } from '@vue/shared'
 interface Options {
   callback?: string
   timeout?: number
 }
-
+let index = 0
 export function getJSONP(
   url: string,
   options: Options,
@@ -11,7 +12,7 @@ export function getJSONP(
 ) {
   var js = document.createElement('script')
   var callbackKey = options.callback || 'callback'
-  var callbackName = '__callback' + Date.now()
+  var callbackName = '__uni_jsonp_callback_' + index++
   var timeout = options.timeout || 30000
   var timing: ReturnType<typeof setTimeout>
   function end() {
@@ -20,19 +21,19 @@ export function getJSONP(
     js.remove()
   }
   ;(window as any)[callbackName] = (res: any) => {
-    if (typeof success === 'function') {
+    if (isFunction(success)) {
       success(res)
     }
     end()
   }
   js.onerror = () => {
-    if (typeof error === 'function') {
+    if (isFunction(error)) {
       error()
     }
     end()
   }
   timing = setTimeout(function () {
-    if (typeof error === 'function') {
+    if (isFunction(error)) {
       error()
     }
     end()

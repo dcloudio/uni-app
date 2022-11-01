@@ -17,7 +17,7 @@ export function defineUniMainJsPlugin(
   } as UniViteFilterPluginOptions
 
   const plugin = createUniMainJsPlugin(opts)
-  const origConfigResolved = plugin.configResolved
+  const origConfigResolved = plugin.configResolved as Function
 
   let mainJsPath = ''
   let mainTsPath = ''

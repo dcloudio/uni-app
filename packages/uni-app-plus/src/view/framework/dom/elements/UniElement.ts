@@ -23,6 +23,7 @@ import {
 import { decodeAttr, isCssVar } from '../utils'
 import { patchVShow, VShowElement } from '../directives/vShow'
 import { initRenderjs } from '../renderjs'
+import { normalizeStyleValue } from '../../../utils'
 
 export class UniElement<T extends object> extends UniNode {
   declare $: UniCustomElement
@@ -137,7 +138,7 @@ export class UniElement<T extends object> extends UniNode {
     if (this.$propNames.indexOf(name) !== -1) {
       ;(this.$props as any)[name] = value
     } else if (isCssVar(name)) {
-      this.$.style.setProperty(name, value as string)
+      this.$.style.setProperty(name, normalizeStyleValue(value as string))
     } else {
       if (!this.wxsPropsInvoke(name, value)) {
         this.$.setAttribute(name, value as string)

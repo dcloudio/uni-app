@@ -38,7 +38,8 @@ export function createTransformModel(
       addEventOpts(
         (arg as SimpleExpressionNode).content,
         exp as SimpleExpressionNode,
-        node as ComponentNode
+        node as ComponentNode,
+        context
       )
       props[1].exp = createCustomEventExpr()
     }

@@ -1,1 +1,2 @@
-export { default } from '@dcloudio/uni-app-vite'
+import appVite from '@dcloudio/uni-app-vite'
+export default [appVite]

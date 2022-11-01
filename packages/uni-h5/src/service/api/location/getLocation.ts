@@ -1,4 +1,3 @@
-import { extend } from '@vue/shared'
 import {
   defineAsyncApi,
   API_GET_LOCATION,
@@ -6,13 +5,16 @@ import {
   GetLocationProtocol,
   GetLocationOptions,
 } from '@dcloudio/uni-api'
-import { MapType, getMapInfo } from '../../../helpers/location'
+import {
+  MapType,
+  getMapInfo,
+  GeoRes,
+  translateGeo,
+} from '../../../helpers/location'
 import { getJSONP } from '../../../helpers/getJSONP'
 import { request } from '../network/request'
 
-type GeoRes = (coords: GeolocationCoordinates, skip?: boolean) => void
-
-export const getLocation = <API_TYPE_GET_LOCATION>defineAsyncApi(
+export const getLocation = defineAsyncApi<API_TYPE_GET_LOCATION>(
   API_GET_LOCATION,
   (
     { type, altitude, highAccuracyExpireTime, isHighAccuracy },
@@ -88,54 +90,22 @@ export const getLocation = <API_TYPE_GET_LOCATION>defineAsyncApi(
         })
       })
       .then((coords: GeolocationCoordinates, skip?: boolean) => {
-        if (
-          (type && type.toUpperCase() === 'WGS84') ||
-          mapInfo.type !== MapType.QQ ||
-          skip
-        ) {
-          return coords
-        }
-        return new Promise((resolve: GeoRes) => {
-          getJSONP(
-            `https://apis.map.qq.com/jsapi?qt=translate&type=1&points=${coords.longitude},${coords.latitude}&key=${mapInfo.key}&output=jsonp&pf=jsapi&ref=jsapi`,
-            {
-              callback: 'cb',
-            },
-            (res: any) => {
-              if (
-                'detail' in res &&
-                'points' in res.detail &&
-                res.detail.points.length
-              ) {
-                const location = res.detail.points[0]
-                resolve(
-                  extend({}, coords, {
-                    longitude: location.lng,
-                    latitude: location.lat,
-                  })
-                )
-              } else {
-                resolve(coords)
-              }
-            },
-            () => resolve(coords)
-          )
-        })
-      })
-      .then((coords: GeolocationCoordinates) => {
-        resolve({
-          latitude: coords.latitude,
-          longitude: coords.longitude,
-          accuracy: coords.accuracy,
-          speed: coords.altitude || 0,
-          altitude: coords.altitude || 0,
-          verticalAccuracy: coords.altitudeAccuracy || 0,
-          // 无专门水平精度，使用位置精度替代
-          horizontalAccuracy: coords.accuracy || 0,
-        })
-      })
-      .catch((error) => {
-        reject(error.message)
+        translateGeo(type, coords, skip)
+          .then((coords: GeolocationCoordinates | any) => {
+            resolve({
+              latitude: coords.latitude,
+              longitude: coords.longitude,
+              accuracy: coords.accuracy,
+              speed: coords.altitude || 0,
+              altitude: coords.altitude || 0,
+              verticalAccuracy: coords.altitudeAccuracy || 0,
+              // 无专门水平精度，使用位置精度替代
+              horizontalAccuracy: coords.accuracy || 0,
+            })
+          })
+          .catch((error) => {
+            reject(error.message)
+          })
       })
   },
   GetLocationProtocol,

@@ -1,4 +1,4 @@
-import { hasOwn } from '@vue/shared'
+import { hasOwn, isString } from '@vue/shared'
 import {
   API_REQUEST,
   API_TYPE_REQUEST,
@@ -27,7 +27,7 @@ export const request = defineTaskApi<API_TYPE_REQUEST>(
     // 根据请求类型处理数据
     const contentType = normalizeContentType(header)
     if (method !== 'GET') {
-      if (typeof data === 'string' || data instanceof ArrayBuffer) {
+      if (isString(data) || data instanceof ArrayBuffer) {
         body = data
       } else {
         if (contentType === 'json') {

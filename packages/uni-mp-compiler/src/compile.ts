@@ -119,6 +119,7 @@ export function baseCompile(template: string, options: CompilerOptions = {}) {
       lazyElement,
       component,
       isBuiltInComponent: context.isBuiltInComponent,
+      isMiniProgramComponent: context.isMiniProgramComponent,
     })
   }
 

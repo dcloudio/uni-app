@@ -31,7 +31,7 @@ export function assert(
   renderCode: string,
   options: CompilerOptions = {}
 ) {
-  const res = compile(template, {
+  const compilerOptions: CompilerOptions = {
     root: '',
     mode: 'module',
     filename: 'foo.vue',
@@ -44,16 +44,17 @@ export function assert(
     },
     miniProgram: {
       ...miniProgram,
-      emitFile({ source }) {
-        // console.log(source)
-        if (!options.onError) {
-          expect(source).toBe(templateCode)
-        }
-        return ''
-      },
     },
     ...options,
-  })
+  }
+  compilerOptions.miniProgram!.emitFile = ({ source }) => {
+    // console.log(source)
+    if (!options.onError) {
+      expect(source).toBe(templateCode)
+    }
+    return ''
+  }
+  const res = compile(template, compilerOptions)
   // expect(res.template).toBe(templateCode)
   // expect(res.code).toBe(renderCode)
   // console.log(require('util').inspect(res.code, { colors: true, depth: null }))

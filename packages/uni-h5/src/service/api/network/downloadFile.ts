@@ -1,4 +1,4 @@
-import { fileToUrl, getFileName } from '../../../helpers/file'
+import { isFunction } from '@vue/shared'
 import {
   defineTaskApi,
   API_DOWNLOAD_FILE,
@@ -6,6 +6,7 @@ import {
   DownloadFileProtocol,
   DownloadFileOptions,
 } from '@dcloudio/uni-api'
+import { fileToUrl, getFileName } from '../../../helpers/file'
 /**
  * 下载任务
  */
@@ -21,7 +22,7 @@ class DownloadTask implements UniApp.DownloadTask {
    * @param {Function} callback 回调
    */
   onProgressUpdate(callback: (result: any) => void) {
-    if (typeof callback !== 'function') {
+    if (!isFunction(callback)) {
       return
     }
     this._callbacks.push(callback)

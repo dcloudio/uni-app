@@ -1,4 +1,8 @@
+import { capitalize } from '@vue/shared';
 import type { ComponentInternalInstance } from '@vue/runtime-core';
+import { extend } from '@vue/shared';
+import { hasOwn } from '@vue/shared';
+import { isPlainObject } from '@vue/shared';
 import { ref } from 'vue';
 import { shallowRef } from 'vue';
 
@@ -16,6 +20,8 @@ declare interface BackPressOption {
     from: 'backbutton' | 'navigateBack';
 }
 
+export { capitalize }
+
 declare interface CustomShareAppMessage {
     title?: string;
     path?: string;
@@ -28,12 +34,34 @@ declare interface CustomShareTimeline {
     imageUrl?: string;
 }
 
+export { extend }
+
+export declare function formatAppLog(type: 'log' | 'info' | 'debug' | 'warn' | 'error', filename: string, ...args: unknown[]): void;
+
+export declare function formatH5Log(type: keyof Console, filename: string, ...args: unknown[]): void;
+
 /**
  * uni 对象是跨实例的，而此处列的 API 均是需要跟当前实例关联的，比如 requireNativePlugin 获取 dom 时，依赖当前 weex 实例
  */
 export declare function getCurrentSubNVue(): any;
 
 export declare function getSsrGlobalData(): any;
+
+export { hasOwn }
+
+export declare function initUtsClassName(moduleName: string, className: string, is_uni_modules: boolean): string;
+
+export declare function initUtsIndexClassName(moduleName: string, is_uni_modules: boolean): string;
+
+export declare function initUtsPackageName(name: string, is_uni_modules: boolean): string;
+
+export declare function initUtsProxyClass({ package: pkg, class: cls, constructor: { params: constructorParams }, methods, props, staticProps, staticMethods, }: ProxyClassOptions): any;
+
+export declare const initUtsProxyFunction: typeof initUtsStaticMethod;
+
+declare function initUtsStaticMethod(async: boolean, opts: ProxyFunctionOptions): (...args: unknown[]) => unknown;
+
+export { isPlainObject }
 
 declare type LaunchOption = LaunchShowOption;
 
@@ -159,6 +187,64 @@ declare interface PageNotFoundOption {
 
 declare interface PageScrollOption {
     scrollTop: number;
+}
+
+declare interface Parameter {
+    name: string;
+    type: string;
+}
+
+declare interface ProxyClassOptions {
+    package: string;
+    class: string;
+    constructor: {
+        params: Parameter[];
+    };
+    props: string[];
+    staticProps: string[];
+    methods: {
+        [name: string]: {
+            async?: boolean;
+            params: Parameter[];
+        };
+    };
+    staticMethods: {
+        [name: string]: {
+            async?: boolean;
+            params: Parameter[];
+        };
+    };
+}
+
+declare interface ProxyFunctionOptions {
+    /**
+     * 是否是入口类
+     */
+    main?: boolean;
+    /**
+     * 包名
+     */
+    package: string;
+    /**
+     * 类名
+     */
+    class: string;
+    /**
+     * 属性名或方法名
+     */
+    name: string;
+    /**
+     * 方法名 指定的方法名（用于 IndexSwift 静态方法，自动补充前缀 s_）
+     */
+    method?: string;
+    /**
+     * 是否伴生对象
+     */
+    companion?: boolean;
+    /**
+     * 方法参数列表
+     */
+    params: Parameter[];
 }
 
 declare interface ReferrerInfo {

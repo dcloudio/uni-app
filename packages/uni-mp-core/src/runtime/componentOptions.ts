@@ -5,6 +5,8 @@ import {
   // @ts-ignore
   findComponentPropsData,
   // @ts-ignore
+  hasQueueJob,
+  // @ts-ignore
   invalidateJob,
   // @ts-ignore
   updateProps,
@@ -60,10 +62,15 @@ export function updateComponentProps(
   const nextProps = findComponentPropsData(up) || {}
   if (hasPropsChanged(prevProps, nextProps)) {
     updateProps(instance, nextProps, prevProps, false)
-    const index = invalidateJob(instance.update)
-    if (__PLATFORM__ === 'mp-toutiao') {
+    if (hasQueueJob(instance.update)) {
+      invalidateJob(instance.update)
+    }
+    if (__PLATFORM__ === 'mp-toutiao' || __PLATFORM__ === 'mp-baidu') {
       // 字节跳动小程序 https://github.com/dcloudio/uni-app/issues/3340
-      index === -1 && instance.update()
+      // 百度小程序 https://github.com/dcloudio/uni-app/issues/3612
+      if (!hasQueueJob(instance.update)) {
+        instance.update()
+      }
     } else {
       instance.update()
     }
@@ -104,13 +111,13 @@ export function initBehaviors(vueOptions: ComponentOptions): string[] {
       if (behavior === 'uni://form-field') {
         if (isArray(vueProps)) {
           vueProps.push('name')
-          vueProps.push('value')
+          vueProps.push('modelValue')
         } else {
           vueProps.name = {
             type: String,
             default: '',
           }
-          vueProps.value = {
+          vueProps.modelValue = {
             type: [String, Number, Boolean, Array, Object, Date],
             default: '',
           }

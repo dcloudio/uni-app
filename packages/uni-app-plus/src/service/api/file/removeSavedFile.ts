@@ -7,7 +7,7 @@ import {
 } from '@dcloudio/uni-api'
 import { warpPlusErrorCallback } from '../../../helpers/plus'
 
-export const removeSavedFile = <API_TYPE_REMOVE_SAVED_FILE>defineAsyncApi(
+export const removeSavedFile = defineAsyncApi<API_TYPE_REMOVE_SAVED_FILE>(
   API_REMOVE_SAVED_FILE,
   ({ filePath }, { resolve, reject }) => {
     const errorCallback = warpPlusErrorCallback(reject)

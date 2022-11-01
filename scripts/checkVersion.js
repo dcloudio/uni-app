@@ -10,43 +10,43 @@ async function getVersion(name, tag = 'latest') {
 
 const pkgs = {
   vue: {
-    latest: '3.2.37',
+    latest: '3.2.41',
   },
   'vue-router': {
-    latest: '4.0.15',
+    latest: '4.1.6',
   },
   vuex: {
-    latest: '4.0.2',
+    latest: '4.1.0',
   },
   pinia: {
-    latest: '2.0.14',
+    latest: '2.0.23',
   },
   'vue-i18n': {
     next: '9.1.9',
   },
   vite: {
-    latest: '2.9.9',
+    latest: '3.2.2',
   },
   '@vitejs/plugin-vue': {
-    latest: '2.3.3',
+    latest: '3.2.0',
   },
   '@vitejs/plugin-vue-jsx': {
-    latest: '1.3.10',
+    latest: '2.1.0',
   },
   '@vitejs/plugin-legacy': {
-    latest: '1.8.2',
+    latest: '2.3.0',
   },
   '@dcloudio/types': {
-    latest: '2.6.11',
+    next: '3.0.17',
   },
   autoprefixer: {
-    latest: '10.4.7',
+    latest: '10.4.13',
   },
   'rollup-plugin-copy': {
     latest: '3.4.0',
   },
   typescript: {
-    latest: '4.7.3',
+    latest: '4.8.4',
   },
 }
 
@@ -106,19 +106,7 @@ function resolvePkgDeps(pkgPath) {
   resolveDeps(name, peerDependencies)
 }
 
-const paths = [
-  path.resolve(__dirname, '../packages/vite-plugin-uni/node_modules'),
-]
-
-const vuePkgs = [
-  require.resolve('vite/package.json'),
-  require.resolve('@vitejs/plugin-vue/package.json'),
-  require.resolve('@vitejs/plugin-vue-jsx/package.json'),
-  require.resolve('@vitejs/plugin-legacy/package.json', { paths }),
-  require.resolve('@vue/compiler-core/package.json', { paths }),
-  require.resolve('@vue/compiler-dom/package.json', { paths }),
-  require.resolve('@vue/compiler-sfc/package.json', { paths }),
-]
+const { vuePkgs } = require('../packages/vite-plugin-uni/script.js')
 
 function checkDeps() {
   vuePkgs.forEach((pkg) => resolvePkgDeps(pkg))

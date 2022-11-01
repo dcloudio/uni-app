@@ -7,6 +7,7 @@ import {
   watchEffect,
   onBeforeUnmount,
 } from 'vue'
+import { hasOwn } from '@vue/shared'
 import {
   defineBuiltInComponent,
   ResizeSensor,
@@ -29,6 +30,10 @@ const props = {
     type: String,
     default: '',
   },
+  fullscreen: {
+    type: Boolean,
+    default: true,
+  },
 }
 
 type RootRef = Ref<HTMLElement | null>
@@ -50,7 +55,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       const iframe = document.createElement('iframe')
       watchEffect(() => {
         for (const key in $attrs.value) {
-          if (Object.prototype.hasOwnProperty.call($attrs.value, key)) {
+          if (hasOwn($attrs.value, key)) {
             const attr = ($attrs.value as any)[key]
             ;(iframe as any)[key] = attr
           }
@@ -59,32 +64,36 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       watchEffect(() => {
         iframe.src = getRealPath(props.src)
       })
-      document.body.appendChild(iframe)
       iframeRef.value = iframe
-      _resize = useWebViewSize(rootRef, iframeRef)
+      _resize = useWebViewSize(rootRef, iframeRef, props.fullscreen)
+      if (props.fullscreen) {
+        document.body.appendChild(iframe)
+      }
     }
 
     __NODE_JS__ ? onMounted(renderIframe) : renderIframe()
     onMounted(() => {
       _resize()
+      !props.fullscreen && rootRef.value?.appendChild(iframeRef.value!)
     })
 
     onActivated(() => {
-      iframeRef.value && (iframeRef.value.style.display = 'block')
+      props.fullscreen && (iframeRef.value!.style.display = 'block')
     })
 
     onDeactivated(() => {
-      iframeRef.value && (iframeRef.value.style.display = 'none')
+      props.fullscreen && (iframeRef.value!.style.display = 'none')
     })
 
     onBeforeUnmount(() => {
-      document.body.removeChild(iframeRef.value!)
+      props.fullscreen && document.body.removeChild(iframeRef.value!)
     })
 
     return () => {
       return (
         <>
           <uni-web-view
+            class={props.fullscreen ? 'uni-webview--fullscreen' : ''}
             {...$listeners.value}
             {...$excludeAttrs.value}
             ref={rootRef}
@@ -107,12 +116,17 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   },
 })
 
-function useWebViewSize(rootRef: RootRef, iframeRef: RootRef) {
+function useWebViewSize(
+  rootRef: RootRef,
+  iframeRef: RootRef,
+  fullscreen: boolean
+) {
   const _resize = () => {
-    const { top, left, width, height } = rootRef.value!.getBoundingClientRect()
+    if (fullscreen) {
+      const { top, left, width, height } =
+        rootRef.value!.getBoundingClientRect()
 
-    iframeRef.value &&
-      updateElementStyle(iframeRef.value, {
+      updateElementStyle(iframeRef.value!, {
         position: 'absolute',
         display: 'block',
         border: '0',
@@ -121,6 +135,12 @@ function useWebViewSize(rootRef: RootRef, iframeRef: RootRef) {
         width: width + 'px',
         height: height + 'px',
       })
+    } else {
+      updateElementStyle(iframeRef.value!, {
+        width: rootRef.value?.style.width || '300px',
+        height: rootRef.value?.style.height || '150px',
+      })
+    }
   }
 
   return _resize

@@ -5,7 +5,7 @@ import {
   UploadFileProtocol,
   UploadFileOptions,
 } from '@dcloudio/uni-api'
-import { hasOwn } from '@vue/shared'
+import { hasOwn, isFunction } from '@vue/shared'
 import { getRealPath } from '@dcloudio/uni-platform'
 
 type Uploader = ReturnType<typeof plus.uploader.createUpload>
@@ -35,7 +35,7 @@ class UploadTask implements UniApp.UploadTask {
   }
 
   onProgressUpdate(callback: Function) {
-    if (typeof callback !== 'function') {
+    if (!isFunction(callback)) {
       return
     }
     this._callbacks.push(callback)

@@ -23,6 +23,11 @@ const uniStatLog = once((text) => {
     console.warn(text);
     console.log();
 });
+const uniStatDeviceLog = once((text) => {
+    console.log();
+    console.warn(text);
+    console.log();
+});
 var index = () => [
     uniCliShared.defineUniMainJsPlugin((opts) => {
         let statVersion = '1';
@@ -58,7 +63,9 @@ var index = () => [
                     isEnable = statConfig.enable === true;
                     if (isEnable) {
                         const uniCloudConfig = statConfig.uniCloud || {};
-                        statVersion = statConfig.version === '2' ? '2' : '1';
+                        // 获取manifest.json 统计配置，插入环境变量中
+                        process.env.UNI_STATISTICS_CONFIG = JSON.stringify(statConfig);
+                        statVersion = Number(statConfig.version) === 2 ? '2' : '1';
                         process.env.UNI_STAT_UNI_CLOUD = JSON.stringify(uniCloudConfig);
                         process.env.UNI_STAT_DEBUG = statConfig.debug ? 'true' : 'false';
                         if (process.env.NODE_ENV === 'production') {
@@ -73,6 +80,9 @@ var index = () => [
                                 }
                                 else {
                                     uniStatLog(`已开启 uni统计${statVersion}.0 版本`);
+                                    if (statVersion === '2') {
+                                        uniStatDeviceLog('【重要】因 HBuilderX 3.4.9 版本起，uni统计2.0 调整了安卓端 deviceId 获取方式，导致 uni统计2.0 App-Android平台部分统计数据不准确。如使用了HBuilderX 3.4.9 - 3.6.4版本且开通了uni统计2.0的应用，需要使用HBuilderX3.6.7及以上版本重新发布应用并升级 uniAdmin 云函数解决，详见：https://ask.dcloud.net.cn/article/40097');
+                                    }
                                 }
                             }
                         }
@@ -82,6 +92,9 @@ var index = () => [
                             }
                             else {
                                 uniStatLog(uniCliShared.M['stat.warn.tip'].replace('{version}', `${statVersion}.0`));
+                                if (statVersion === '2') {
+                                    uniStatDeviceLog('【重要】因 HBuilderX 3.4.9 版本起，uni统计2.0 调整了安卓端 deviceId 获取方式，导致 uni统计2.0 App-Android平台部分统计数据不准确。如使用了HBuilderX 3.4.9 - 3.6.4版本且开通了uni统计2.0的应用，需要使用HBuilderX3.6.7及以上版本重新发布应用并升级 uniAdmin 云函数解决，详见：https://ask.dcloud.net.cn/article/40097');
+                                }
                             }
                         }
                     }
@@ -91,8 +104,9 @@ var index = () => [
                 return {
                     define: {
                         'process.env.UNI_STAT_TITLE_JSON': process.env.UNI_STAT_TITLE_JSON,
-                        'process.env.UNI_STAT_UNI_CLOUD': process.env.UNI_STAT_UNI_CLOUD || JSON.stringify({}),
-                        'process.env.UNI_STAT_DEBUG': process.env.UNI_STAT_DEBUG || 'false',
+                        'process.env.UNI_STAT_UNI_CLOUD': process.env.UNI_STAT_UNI_CLOUD,
+                        'process.env.UNI_STAT_DEBUG': process.env.UNI_STAT_DEBUG,
+                        'process.env.UNI_STATISTICS_CONFIG': process.env.UNI_STATISTICS_CONFIG,
                     },
                 };
             },

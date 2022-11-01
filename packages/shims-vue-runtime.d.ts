@@ -5,6 +5,7 @@ declare module '@vue/runtime-core' {
     route: string
     $scope: {
       $getAppWebview?: () => PlusWebviewWebviewObject
+      setData(data: Record<string, unknown>, callback?: () => void): void
     }
     // 目前 H5,APP 平台 getCurrentPages 中获取的 page 对象调整为 vm 对象
     $getAppWebview?: () => PlusWebviewWebviewObject

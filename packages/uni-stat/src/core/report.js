@@ -12,6 +12,7 @@ import {
 import {
   stat_config,
   get_uuid,
+  get_odid,
   get_platform_name,
   get_pack_name,
   get_scene,
@@ -29,6 +30,8 @@ import {
   get_page_vm,
   is_debug,
   log,
+  get_report_Interval,
+  is_handle_device
 } from '../utils/pageInfo.js'
 
 import { sys } from '../utils/util.js'
@@ -41,7 +44,7 @@ import {
 } from '../config.ts'
 
 import { dbSet, dbGet, dbRemove } from '../utils/db.js'
-
+const eport_Interval = get_report_Interval(OPERATING_TIME)
 // 统计数据默认值
 let statData = {
   uuid: get_uuid(), // 设备标识
@@ -287,27 +290,47 @@ export default class Report {
   /**
    * 发送请求,应用维度上报
    * @param {Object} options 页面信息
+   * @param {Boolean} type 是否立即上报
    */
-  sendReportRequest(options) {
+  sendReportRequest(options, type) {
     this._navigationBarTitle.lt = '1'
     this._navigationBarTitle.config = get_page_name(options.path)
     let is_opt = options.query && JSON.stringify(options.query) !== '{}'
     let query = is_opt ? '?' + JSON.stringify(options.query) : ''
+    const last_time = get_last_visit_time()
+    // 非老用户
+    if(last_time !== 0 || !last_time){
+      const odid = get_odid()
+      // 1.0 处理规则
+      if (__STAT_VERSION__ === '1') {
+        this.statData.odid = odid
+      }
+
+      // 2.0 处理规则
+      if (__STAT_VERSION__ === '2') {
+        const have_device = is_handle_device()
+        // 如果没有上报过设备信息 ，则需要上报设备信息
+        if(!have_device) {
+          this.statData.odid = odid
+        }
+      }
+    }
+
     Object.assign(this.statData, {
       lt: '1',
       url: options.path + query || '',
       t: get_time(),
       sc: get_scene(options.scene),
       fvts: get_first_visit_time(),
-      lvts: get_last_visit_time(),
+      lvts: last_time,
       tvc: get_total_visit_count(),
       // create session type  上报类型 ，1 应用进入 2.后台30min进入 3.页面30min进入
       cst: options.cst || 1,
     })
     if (get_platform_name() === 'n') {
-      this.getProperty()
+      this.getProperty(type)
     } else {
-      this.getNetworkInfo()
+      this.getNetworkInfo(type)
     }
   }
 
@@ -388,24 +411,66 @@ export default class Report {
     this.request(options)
   }
 
+  sendPushRequest(options, cid) {
+    let time = get_time()
+
+    const statData = {
+      lt: '101',
+      cid: cid,
+      t: time,
+      ut: this.statData.ut,
+    }
+
+    // debug 打印打点信息
+    if (is_debug) {
+      log(statData)
+    }
+
+    const stat_data = handle_data({
+      101: [statData],
+    })
+    let optionsData = {
+      usv: STAT_VERSION, //统计 SDK 版本号
+      t: time, //发送请求时的时间戮
+      requests: stat_data,
+    }
+
+    if (__STAT_VERSION__ === '1') {
+      if (statData.ut === 'h5') {
+        this.imageRequest(optionsData)
+        return
+      }
+    }
+
+    // XXX 安卓需要延迟上报 ，否则会有未知错误，需要验证处理
+    if (get_platform_name() === 'n' && this.statData.p === 'a') {
+      setTimeout(() => {
+        this.sendRequest(optionsData)
+      }, 200)
+      return
+    }
+
+    this.sendRequest(optionsData)
+  }
+
   /**
    * 获取wgt资源版本
    */
-  getProperty() {
+  getProperty(type) {
     plus.runtime.getProperty(plus.runtime.appid, (wgtinfo) => {
       this.statData.v = wgtinfo.version || ''
-      this.getNetworkInfo()
+      this.getNetworkInfo(type)
     })
   }
 
   /**
    * 获取网络信息
    */
-  getNetworkInfo() {
+  getNetworkInfo(type) {
     uni.getNetworkType({
       success: (result) => {
         this.statData.net = result.networkType
-        this.getLocation()
+        this.getLocation(type)
       },
     })
   }
@@ -413,7 +478,7 @@ export default class Report {
   /**
    * 获取位置信息
    */
-  getLocation() {
+  getLocation(type) {
     if (stat_config.getLocation) {
       uni.getLocation({
         type: 'wgs84',
@@ -427,13 +492,13 @@ export default class Report {
 
           this.statData.lat = result.latitude
           this.statData.lng = result.longitude
-          this.request(this.statData)
+          this.request(this.statData, type)
         },
       })
     } else {
       this.statData.lat = 0
       this.statData.lng = 0
-      this.request(this.statData)
+      this.request(this.statData, type)
     }
   }
 
@@ -465,7 +530,7 @@ export default class Report {
       log(data)
     }
     // 判断时候到达上报时间 ，默认 10 秒上报
-    if (page_residence_time < OPERATING_TIME && !type) return
+    if (page_residence_time < eport_Interval && !type) return
 
     // 时间超过，重新获取时间戳
     set_page_residence_time()
@@ -508,7 +573,9 @@ export default class Report {
   sendRequest(optionsData) {
     if (__STAT_VERSION__ === '2') {
       if (!uni.__stat_uniCloud_space) {
-        console.error('当前尚未关联服务空间.')
+        console.error(
+          '应用未关联服务空间，统计上报失败，请在uniCloud目录右键关联服务空间.'
+        )
         return
       }
 
@@ -522,9 +589,7 @@ export default class Report {
         .report(optionsData)
         .then(() => {
           if (is_debug) {
-            console.log(`=== 统计队列数据上报 ===`)
-            console.log(optionsData)
-            console.log(`=== 上报结束 ===`)
+            log(optionsData, true)
           }
         })
         .catch((err) => {
@@ -543,9 +608,7 @@ export default class Report {
           data: optionsData,
           success: () => {
             if (is_debug) {
-              console.log(`=== 统计队列数据上报 ===`)
-              console.log(optionsData)
-              console.log(`=== 上报结束 ===`)
+              log(optionsData, true)
             }
           },
           fail: (e) => {
@@ -573,9 +636,7 @@ export default class Report {
       let options = get_sgin(get_encodeURIComponent_options(data)).options
       image.src = STAT_H5_URL + '?' + options
       if (is_debug) {
-        console.log(`=== 统计队列数据上报 ===`)
-        console.log(data)
-        console.log(`=== 上报结束 ===`)
+        log(data, true)
       }
     })
   }

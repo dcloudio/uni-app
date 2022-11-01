@@ -1,7 +1,9 @@
-import { SELECTED_COLOR, TABBAR_HEIGHT } from '@dcloudio/uni-shared'
+import {
+  SELECTED_COLOR,
+  TABBAR_HEIGHT,
+  normalizeTabBarStyles,
+} from '@dcloudio/uni-shared'
 
-const TABBAR_WHITE = 'rgba(255,255,255,0.4)'
-const TABBAR_BLACK = 'rgba(0,0,0,0.4)'
 export function initTabBar(
   entryPagePath: string,
   manifestJson: Record<string, any>,
@@ -14,9 +16,9 @@ export function initTabBar(
     JSON.stringify(pagesJson.tabBar)
   ) as UniApp.TabBarOptions
 
-  tabBar.borderStyle = (
-    tabBar.borderStyle === 'white' ? TABBAR_WHITE : TABBAR_BLACK
-  ) as UniApp.TabBarOptions['borderStyle']
+  tabBar.borderStyle = normalizeTabBarStyles(
+    tabBar.borderStyle
+  ) as UniNamespace.TabBarOptions['borderStyle']
 
   if (!tabBar.selectedColor) {
     tabBar.selectedColor = SELECTED_COLOR

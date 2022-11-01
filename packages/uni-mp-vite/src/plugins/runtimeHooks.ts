@@ -1,6 +1,7 @@
 import type { Plugin } from 'vite'
 import { MINI_PROGRAM_PAGE_RUNTIME_HOOKS } from '@dcloudio/uni-shared'
-import { isUniPageSfcFile } from '@dcloudio/uni-cli-shared'
+import { isUniPageSetupAndTs, isUniPageSfcFile } from '@dcloudio/uni-cli-shared'
+import { rewriteDefault } from '@vue/compiler-sfc'
 
 type RuntimeHooks = keyof typeof MINI_PROGRAM_PAGE_RUNTIME_HOOKS
 
@@ -9,13 +10,17 @@ export function uniRuntimeHooksPlugin(): Plugin {
     name: 'uni:mp-runtime-hooks',
     enforce: 'post',
     async transform(source, id) {
-      if (!isUniPageSfcFile(id)) {
+      const isSetupJs = isUniPageSfcFile(id)
+      const isSetupTs = !isSetupJs && isUniPageSetupAndTs(id)
+      if (!isSetupJs && !isSetupTs) {
         return null
       }
-      if (!source.includes('_sfc_main')) {
+      if (isSetupJs && !source.includes('_sfc_main')) {
         return null
       }
-
+      if (isSetupTs && !source.includes('defineComponent')) {
+        return null
+      }
       const matches = source.match(
         new RegExp(
           `(${Object.keys(MINI_PROGRAM_PAGE_RUNTIME_HOOKS).join('|')})`,
@@ -33,8 +38,16 @@ export function uniRuntimeHooksPlugin(): Plugin {
       for (const hook of hooks) {
         flag |= MINI_PROGRAM_PAGE_RUNTIME_HOOKS[hook]
       }
+
+      if (isSetupJs) {
+        source = source + `;_sfc_main.__runtimeHooks = ${flag};`
+      } else if (isSetupTs) {
+        source =
+          rewriteDefault(source, '_sfc_defineComponent') +
+          `\n_sfc_defineComponent.__runtimeHooks = ${flag};\nexport default _sfc_defineComponent`
+      }
       return {
-        code: source + `;_sfc_main.__runtimeHooks = ${flag};`,
+        code: source,
         map: { mappings: '' },
       }
     },

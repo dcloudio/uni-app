@@ -144,7 +144,7 @@ export function isMiniProgramUsingComponent(
 }
 
 interface MiniProgramComponents {
-  [name: string]: 'plugin' | 'component'
+  [name: string]: 'plugin' | 'component' | 'dynamicLib'
 }
 
 export function findMiniProgramUsingComponents({
@@ -168,12 +168,25 @@ export function findMiniProgramUsingComponents({
   const jsonFile = findJsonFile(
     removeExt(normalizeMiniProgramFilename(filename, inputDir))
   )
-  if (jsonFile?.usingComponents) {
-    extend(
-      miniProgramComponents,
-      findMiniProgramUsingComponent(jsonFile.usingComponents, componentsDir)
-    )
+  if (jsonFile) {
+    if (jsonFile.usingComponents) {
+      extend(
+        miniProgramComponents,
+        findMiniProgramUsingComponent(jsonFile.usingComponents, componentsDir)
+      )
+    }
+    // mp-baidu 特有
+    if (jsonFile.usingSwanComponents) {
+      extend(
+        miniProgramComponents,
+        findMiniProgramUsingComponent(
+          jsonFile.usingSwanComponents,
+          componentsDir
+        )
+      )
+    }
   }
+
   return miniProgramComponents
 }
 
@@ -186,6 +199,8 @@ function findMiniProgramUsingComponent(
       const path = usingComponents[name]
       if (path.includes('plugin://')) {
         res[name] = 'plugin'
+      } else if (path.includes('dynamicLib://')) {
+        res[name] = 'dynamicLib'
       } else if (componentsDir && path.includes(componentsDir + '/')) {
         res[name] = 'component'
       }

@@ -1,0 +1,54 @@
+import Log from 'android.util.Log'
+import FrameLayout from 'android.widget.FrameLayout'
+import View from 'android.view.View'
+import { IUser } from './interface.uts'
+import { login } from './login.uts'
+import logo from '../static/logo.png'
+
+const test = arrayOf(1, 2, 3)
+
+type GetBatteryInfoOptions = {
+  success?: (res: UTSJSONObject) => void
+  fail?: (res: UTSJSONObject) => void
+  complete?: (res: UTSJSONObject) => void
+}
+export class User implements IUser {
+  async login(name: string, pwd: string) {
+    setTimeout(() => {
+      console.log('timeout')
+    }, 1000)
+    login(name, pwd)
+    Log.info(logo)
+    //#ifdef APP-ANDROID
+    console.log('def android')
+    //#endif
+    //#ifdef APP-IOS
+    console.log('def ios')
+    //#endif
+    //#ifndef APP-ANDROID
+    console.log('ndef android')
+    //#endif
+    //#ifndef APP-IOS
+    console.log('ndef ios')
+    //#endif
+    //#ifdef APP-ANDROID || APP-IOS
+    console.log('def android || def ios')
+    //#endif
+    //#ifdef MP-WEIXIN
+    console.log('def weixin')
+    //#endif
+
+    new XToast<XToast<unknown>>(getUniActivity())
+      .setContentView(R.layout.toast_hint)
+      .setDuration(1000)
+      .setImageDrawable(android.R.id.icon, R.mipmap.ic_dialog_tip_finish)
+      .setText(android.R.id.message, "点我消失")
+      .show()
+  }
+  register(name: string, callback: () => void) {
+    Log.info(logo as FrameLayout)
+  }
+  test(view: View) { }
+}
+function login(name: string, callback: () => void) { }
+export function register(name: string, callback: () => void) { }

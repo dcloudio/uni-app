@@ -24,7 +24,11 @@ import { defineSystemComponent } from '@dcloudio/uni-components'
 import { updateCssVar } from '@dcloudio/uni-core'
 import { useTabBar } from '../../setup/state'
 import { useKeepAliveRoute } from '../../setup/page'
-import { resolveOwnerEl, RESPONSIVE_MIN_WIDTH } from '@dcloudio/uni-shared'
+import {
+  resolveOwnerEl,
+  RESPONSIVE_MIN_WIDTH,
+  ON_NAVIGATION_BAR_CHANGE,
+} from '@dcloudio/uni-shared'
 import { checkMinWidth } from '../../../helpers/dom'
 import { hasOwn } from '@vue/shared'
 
@@ -111,6 +115,7 @@ interface LayoutState {
   marginWidth: number
   leftWindowWidth: number
   rightWindowWidth: number
+  navigationBarTitleText: string
   topWindowStyle: unknown
   leftWindowStyle: unknown
   rightWindowStyle: unknown
@@ -195,7 +200,10 @@ function useState() {
       () => layoutState.marginWidth,
       (value) => updateCssVar({ '--window-margin': value + 'px' })
     )
-    return { layoutState }
+    return {
+      layoutState,
+      windowState: computed<WindowState>(() => ({})),
+    }
   }
   const topWindowMediaQuery = ref(false)
   const leftWindowMediaQuery = ref(false)
@@ -232,6 +240,7 @@ function useState() {
     marginWidth: 0,
     leftWindowWidth: 0,
     rightWindowWidth: 0,
+    navigationBarTitleText: '',
     topWindowStyle: {},
     leftWindowStyle: {},
     rightWindowStyle: {},
@@ -273,7 +282,10 @@ function useState() {
     () => layoutState.rightWindowWidth + layoutState.marginWidth,
     (value) => updateCssVar({ '--window-right': value + 'px' })
   )
-  const windowState: WindowState = reactive({
+  UniServiceJSBridge.on(ON_NAVIGATION_BAR_CHANGE, (navigationBar) => {
+    layoutState.navigationBarTitleText = navigationBar.titleText
+  })
+  const windowState = computed<WindowState>(() => ({
     matchTopWindow: layoutState.topWindowMediaQuery,
     showTopWindow: layoutState.showTopWindow || layoutState.apiShowTopWindow,
     matchLeftWindow: layoutState.leftWindowMediaQuery,
@@ -281,7 +293,7 @@ function useState() {
     matchRightWindow: layoutState.rightWindowMediaQuery,
     showRightWindow:
       layoutState.showRightWindow || layoutState.apiShowRightWindow,
-  })
+  }))
   return {
     layoutState,
     windowState,
@@ -290,8 +302,8 @@ function useState() {
 
 function createLayoutTsx(
   keepAliveRoute: KeepAliveRoute,
-  layoutState?: LayoutState,
-  windowState?: WindowState,
+  layoutState: LayoutState,
+  windowState: ComputedRef<WindowState>,
   topWindow?: unknown,
   leftWindow?: unknown,
   rightWindow?: unknown
@@ -304,13 +316,13 @@ function createLayoutTsx(
     return routerVNode
   }
   const topWindowTsx = __UNI_FEATURE_TOPWINDOW__
-    ? createTopWindowTsx(topWindow, layoutState!, windowState!)
+    ? createTopWindowTsx(topWindow, layoutState, windowState.value)
     : null
   const leftWindowTsx = __UNI_FEATURE_LEFTWINDOW__
-    ? createLeftWindowTsx(leftWindow, layoutState!, windowState!)
+    ? createLeftWindowTsx(leftWindow, layoutState, windowState.value)
     : null
   const rightWindowTsx = __UNI_FEATURE_RIGHTWINDOW__
-    ? createRightWindowTsx(rightWindow, layoutState!, windowState!)
+    ? createRightWindowTsx(rightWindow, layoutState, windowState.value)
     : null
   return (
     <uni-layout
@@ -457,7 +469,11 @@ function createTopWindowTsx(
         v-show={layoutState.showTopWindow || layoutState.apiShowTopWindow}
       >
         <div class="uni-top-window" style={layoutState.topWindowStyle as any}>
-          <TopWindow ref={windowRef} {...windowState} />
+          <TopWindow
+            ref={windowRef}
+            navigation-bar-title-text={layoutState.navigationBarTitleText}
+            {...windowState}
+          />
         </div>
         <div
           class="uni-top-window--placeholder"

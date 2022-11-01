@@ -12,6 +12,48 @@ const APP_PVER_TIME = 300; // 应用在后台结束访问时间 单位s
 const OPERATING_TIME = 10; // 数据上报时间 单位s
 const DIFF_TIME = 60 * 1000 * 60 * 24;
 
+const appid = process.env.UNI_APP_ID; // 做应用隔离
+const dbSet = (name, value) => {
+  let data = uni.getStorageSync('$$STAT__DBDATA:'+appid) || {};
+
+  if (!data) {
+    data = {};
+  }
+  data[name] = value;
+  uni.setStorageSync('$$STAT__DBDATA:'+appid, data);
+};
+
+const dbGet = (name) => {
+  let data = uni.getStorageSync('$$STAT__DBDATA:'+appid) || {};
+  if (!data[name]) {
+    let dbdata = uni.getStorageSync('$$STAT__DBDATA:'+appid);
+    if (!dbdata) {
+      dbdata = {};
+    }
+    if (!dbdata[name]) {
+      return undefined
+    }
+    data[name] = dbdata[name];
+  }
+  return data[name]
+};
+
+const dbRemove = (name) => {
+  let data = uni.getStorageSync('$$STAT__DBDATA:'+appid) || {};
+  if (data[name]) {
+    delete data[name];
+    uni.setStorageSync('$$STAT__DBDATA:'+appid, data);
+  } else {
+    data = uni.getStorageSync('$$STAT__DBDATA:'+appid);
+    if (data[name]) {
+      delete data[name];
+      uni.setStorageSync('$$STAT__DBDATA:'+appid, data);
+    }
+  }
+};
+
+// 获取 manifest.json 中统计配置
+const uniStatisticsConfig = process.env.UNI_STATISTICS_CONFIG;
 let statConfig = {
   appid: process.env.UNI_APP_ID,
 };
@@ -75,6 +117,24 @@ function getUuid() {
 
 const get_uuid = (statData) => {
   // 有可能不存在 deviceId（一般不存在就是出bug了），就自己生成一个
+  return sys.deviceId || getUuid()
+};
+
+/**
+ * 获取老版的 deviceid ,兼容以前的错误 deviceid
+ * @param {*} statData 
+ * @returns 
+ */
+const get_odid = (statData) => {
+  let odid  = '';
+  if (get_platform_name() === 'n') {
+    try {
+      odid = plus.device.uuid;
+    } catch (e) {
+      odid = '';
+    }
+    return odid
+  }
   return sys.deviceId || getUuid()
 };
 
@@ -444,10 +504,10 @@ const uni_cloud_config = () => {
 const get_space = (config) => {
   const uniCloudConfig = uni_cloud_config();
   const { spaceId, provider, clientSecret } = uniCloudConfig;
-  const space_type = ['tcb', 'aliyun'];
+  const space_type = ['tcb', 'tencent', 'aliyun'];
   const is_provider = space_type.indexOf(provider) !== -1;
   const is_aliyun = provider === 'aliyun' && spaceId && clientSecret;
-  const is_tcb = provider === 'tcb' && spaceId;
+  const is_tcb = (provider === 'tcb' || provider === 'tencent') && spaceId;
 
   if (is_provider && (is_aliyun || is_tcb)) {
     return uniCloudConfig
@@ -469,7 +529,7 @@ const is_debug = debug;
  * 日志输出
  * @param {*} data
  */
-const log = (data) => {
+const log = (data, type) => {
   let msg_type = '';
   switch (data.lt) {
     case '1':
@@ -488,7 +548,25 @@ const log = (data) => {
     case '31':
       msg_type = '应用错误';
       break
+    case '101':
+      msg_type = 'PUSH';
+      break
   }
+
+  // #ifdef APP
+  // 在 app 中，日志转为 字符串
+  if (typeof data === 'object') {
+    data = JSON.stringify(data);
+  }
+  // #endif
+
+  if (type) {
+    console.log(`=== 统计队列数据上报 ===`);
+    console.log(data);
+    console.log(`=== 上报结束 ===`);
+    return
+  }
+
   if (msg_type) {
     console.log(`=== 统计数据采集：${msg_type} ===`);
     console.log(data);
@@ -496,44 +574,41 @@ const log = (data) => {
   }
 };
 
-const appid = process.env.UNI_APP_ID; // 做应用隔离
-const dbSet = (name, value) => {
-  let data = uni.getStorageSync('$$STAT__DBDATA:'+appid) || {};
-
-  if (!data) {
-    data = {};
-  }
-  data[name] = value;
-  uni.setStorageSync('$$STAT__DBDATA:'+appid, data);
+/**
+ * 获取上报时间间隔
+ * @param {*} defaultTime 默认上报间隔时间 单位s
+ */
+const get_report_Interval = (defaultTime) => {
+  let time = uniStatisticsConfig.reportInterval;
+  // 如果上报时间配置为0 相当于立即上报
+  if (Number(time) === 0) return 0
+  time = time || defaultTime;
+  let reg = /(^[1-9]\d*$)/;
+  // 如果不是整数，则默认为上报间隔时间
+  if (!reg.test(time)) return defaultTime
+  return Number(time)
 };
 
-const dbGet = (name) => {
-  let data = uni.getStorageSync('$$STAT__DBDATA:'+appid) || {};
-  if (!data[name]) {
-    let dbdata = uni.getStorageSync('$$STAT__DBDATA:'+appid);
-    if (!dbdata) {
-      dbdata = {};
-    }
-    if (!dbdata[name]) {
-      return undefined
-    }
-    data[name] = dbdata[name];
+/**
+ * 获取隐私协议配置
+ */
+const is_push_clientid = () => {
+  if (uniStatisticsConfig.collectItems) {
+    const ClientID = uniStatisticsConfig.collectItems.uniPushClientID;
+    return typeof ClientID === 'boolean' ? ClientID : false
   }
-  return data[name]
+  return false
 };
 
-const dbRemove = (name) => {
-  let data = uni.getStorageSync('$$STAT__DBDATA:'+appid) || {};
-  if (data[name]) {
-    delete data[name];
-    uni.setStorageSync('$$STAT__DBDATA:'+appid, data);
-  } else {
-    data = uni.getStorageSync('$$STAT__DBDATA:'+appid);
-    if (data[name]) {
-      delete data[name];
-      uni.setStorageSync('$$STAT__DBDATA:'+appid, data);
-    }
-  }
+/**
+ * 是否已处理设备 DeviceId
+ * 如果值为 1 则表示已处理
+ */
+const IS_HANDLE_DEVECE_ID = 'is_handle_device_id';
+const is_handle_device = () => {
+  let isHandleDevice = dbGet(IS_HANDLE_DEVECE_ID) || '';
+	dbSet(IS_HANDLE_DEVECE_ID, '1');
+  return isHandleDevice === '1'
 };
 
 // 首次访问时间
@@ -667,6 +742,7 @@ const get_residence_time = (type) => {
 	}
 };
 
+const eport_Interval = get_report_Interval(OPERATING_TIME);
 // 统计数据默认值
 let statData = {
   uuid: get_uuid(), // 设备标识
@@ -912,27 +988,43 @@ class Report {
   /**
    * 发送请求,应用维度上报
    * @param {Object} options 页面信息
+   * @param {Boolean} type 是否立即上报
    */
-  sendReportRequest(options) {
+  sendReportRequest(options, type) {
     this._navigationBarTitle.lt = '1';
     this._navigationBarTitle.config = get_page_name(options.path);
     let is_opt = options.query && JSON.stringify(options.query) !== '{}';
     let query = is_opt ? '?' + JSON.stringify(options.query) : '';
+    const last_time = get_last_visit_time();
+    // 非老用户
+    if(last_time !== 0 || !last_time){
+      const odid = get_odid();
+
+      // 2.0 处理规则
+      {
+        const have_device = is_handle_device();
+        // 如果没有上报过设备信息 ，则需要上报设备信息
+        if(!have_device) {
+          this.statData.odid = odid;
+        }
+      }
+    }
+
     Object.assign(this.statData, {
       lt: '1',
       url: options.path + query || '',
       t: get_time(),
       sc: get_scene(options.scene),
       fvts: get_first_visit_time(),
-      lvts: get_last_visit_time(),
+      lvts: last_time,
       tvc: get_total_visit_count(),
       // create session type  上报类型 ，1 应用进入 2.后台30min进入 3.页面30min进入
       cst: options.cst || 1,
     });
     if (get_platform_name() === 'n') {
-      this.getProperty();
+      this.getProperty(type);
     } else {
-      this.getNetworkInfo();
+      this.getNetworkInfo(type);
     }
   }
 
@@ -1013,24 +1105,59 @@ class Report {
     this.request(options);
   }
 
+  sendPushRequest(options, cid) {
+    let time = get_time();
+
+    const statData = {
+      lt: '101',
+      cid: cid,
+      t: time,
+      ut: this.statData.ut,
+    };
+
+    // debug 打印打点信息
+    if (is_debug) {
+      log(statData);
+    }
+
+    const stat_data = handle_data({
+      101: [statData],
+    });
+    let optionsData = {
+      usv: STAT_VERSION, //统计 SDK 版本号
+      t: time, //发送请求时的时间戮
+      requests: stat_data,
+    };
+
+    // XXX 安卓需要延迟上报 ，否则会有未知错误，需要验证处理
+    if (get_platform_name() === 'n' && this.statData.p === 'a') {
+      setTimeout(() => {
+        this.sendRequest(optionsData);
+      }, 200);
+      return
+    }
+
+    this.sendRequest(optionsData);
+  }
+
   /**
    * 获取wgt资源版本
    */
-  getProperty() {
+  getProperty(type) {
     plus.runtime.getProperty(plus.runtime.appid, (wgtinfo) => {
       this.statData.v = wgtinfo.version || '';
-      this.getNetworkInfo();
+      this.getNetworkInfo(type);
     });
   }
 
   /**
    * 获取网络信息
    */
-  getNetworkInfo() {
+  getNetworkInfo(type) {
     uni.getNetworkType({
       success: (result) => {
         this.statData.net = result.networkType;
-        this.getLocation();
+        this.getLocation(type);
       },
     });
   }
@@ -1038,7 +1165,7 @@ class Report {
   /**
    * 获取位置信息
    */
-  getLocation() {
+  getLocation(type) {
     if (stat_config.getLocation) {
       uni.getLocation({
         type: 'wgs84',
@@ -1052,13 +1179,13 @@ class Report {
 
           this.statData.lat = result.latitude;
           this.statData.lng = result.longitude;
-          this.request(this.statData);
+          this.request(this.statData, type);
         },
       });
     } else {
       this.statData.lat = 0;
       this.statData.lng = 0;
-      this.request(this.statData);
+      this.request(this.statData, type);
     }
   }
 
@@ -1090,7 +1217,7 @@ class Report {
       log(data);
     }
     // 判断时候到达上报时间 ，默认 10 秒上报
-    if (page_residence_time < OPERATING_TIME && !type) return
+    if (page_residence_time < eport_Interval && !type) return
 
     // 时间超过，重新获取时间戳
     set_page_residence_time();
@@ -1126,7 +1253,9 @@ class Report {
   sendRequest(optionsData) {
     {
       if (!uni.__stat_uniCloud_space) {
-        console.error('当前尚未关联服务空间.');
+        console.error(
+          '应用未关联服务空间，统计上报失败，请在uniCloud目录右键关联服务空间.'
+        );
         return
       }
 
@@ -1140,9 +1269,7 @@ class Report {
         .report(optionsData)
         .then(() => {
           if (is_debug) {
-            console.log(`=== 统计队列数据上报 ===`);
-            console.log(optionsData);
-            console.log(`=== 上报结束 ===`);
+            log(optionsData, true);
           }
         })
         .catch((err) => {
@@ -1163,9 +1290,7 @@ class Report {
       let options = get_sgin(get_encodeURIComponent_options(data)).options;
       image.src = STAT_H5_URL + '?' + options;
       if (is_debug) {
-        console.log(`=== 统计队列数据上报 ===`);
-        console.log(data);
-        console.log(`=== 上报结束 ===`);
+        log(data, true);
       }
     });
   }
@@ -1203,9 +1328,9 @@ class Stat extends Report {
           let spaceData = {
             provider: space.provider,
             spaceId: space.spaceId,
-            clientSecret: space.clientSecret
+            clientSecret: space.clientSecret,
           };
-          if(space.endpoint){
+          if (space.endpoint) {
             spaceData.endpoint = space.endpoint;
           }
           uni.__stat_uniCloud_space = uniCloud.init(spaceData);
@@ -1214,7 +1339,9 @@ class Stat extends Report {
           //     uni.__stat_uniCloud_space.config.spaceId
           // )
         } else {
-          console.error('当前尚未关联统计服务空间，请先在manifest.json中配置服务空间！');
+          console.error(
+            '应用未关联服务空间，请在uniCloud目录右键关联服务空间'
+          );
         }
       }
     }
@@ -1223,6 +1350,24 @@ class Stat extends Report {
   }
   constructor() {
     super();
+  }
+
+  /**
+   * 获取推送id
+   */
+  pushEvent(options) {
+    const ClientID = is_push_clientid();
+    if (uni.getPushClientId && ClientID) {
+      uni.getPushClientId({
+        success: (res) => {
+          const cid = res.cid || false;
+          //  只有获取到才会上传
+          if (cid) {
+            this.sendPushRequest(options,cid);
+          }
+        },
+      });
+    }
   }
 
   /**
@@ -1235,7 +1380,7 @@ class Stat extends Report {
     set_page_residence_time();
     this.__licationShow = true;
     dbSet('__launch_options', options);
-    // 应用初始上报参数为1 
+    // 应用初始上报参数为1
     options.cst = 1;
     this.sendReportRequest(options, true);
   }
@@ -1311,8 +1456,8 @@ class Stat extends Report {
 
     let route = '';
     try {
-      route =  get_route(); 
-    }catch(e){
+      route = get_route();
+    } catch (e) {
       // 未获取到页面路径
       route = '';
     }
@@ -1322,7 +1467,7 @@ class Stat extends Report {
       uuid: this.statData.uuid,
       p: this.statData.p,
       lt: '31',
-      url:route,
+      url: route,
       ut: this.statData.ut,
       ch: this.statData.ch,
       mpsdk: this.statData.mpsdk,
@@ -1346,6 +1491,8 @@ const lifecycle = {
   onLaunch(options) {
     // 进入应用上报数据
     stat.launch(options, this);
+    // 上报push推送id
+    stat.pushEvent(options);
   },
   onLoad(options) {
     stat.load(options, this);
@@ -1412,7 +1559,7 @@ function main() {
   if (is_debug) {
     {
       // #ifndef APP-NVUE
-      console.log('=== uni统计开启,version:2.0');
+      console.log('=== uni统计开启,version:2.0 ===');
       // #endif
     }
     load_stat();

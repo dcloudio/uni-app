@@ -170,7 +170,7 @@ export function $createComponent(
 
 export function $destroyComponent(instance: ComponentPublicInstance) {
   if (!$destroyComponentFn) {
-    $destroyComponentFn = (process.env.UNI_MP_PLUGIN ? __GLOBAL__ : getApp()).$vm.$destroyComponent
+    $destroyComponentFn = getAppVm().$destroyComponent
   }
   return $destroyComponentFn(instance)
 }

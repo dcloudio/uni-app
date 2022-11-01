@@ -1,6 +1,7 @@
 import type { App } from 'vue';
 import type { ComponentInternalInstance } from '@vue/runtime-core';
 import { ComponentOptionsBase } from '@vue/runtime-core';
+import { ComponentOptionsBase as ComponentOptionsBase_2 } from 'vue';
 import type { ComponentPublicInstance } from '@vue/runtime-core';
 import { ComponentPublicInstance as ComponentPublicInstance_2 } from 'vue';
 import { createApp } from 'vue';
@@ -80,6 +81,11 @@ export declare const ATTR_V_SHOW = ".vShow";
 
 export declare const BACKGROUND_COLOR = "#f7f7f7";
 
+export declare const borderStyles: {
+    black: string;
+    white: string;
+};
+
 export declare const BUILT_IN_TAG_NAMES: string[];
 
 export declare const BUILT_IN_TAGS: string[];
@@ -131,10 +137,6 @@ export declare const DATA_RE: RegExp;
 
 /**
  * 需要手动传入 timer,主要是解决 App 平台的定制 timer
- * @param fn
- * @param delay
- * @param timer
- * @returns
  */
 export declare function debounce(fn: Function, delay: number, { clearTimeout, setTimeout }: Timer): {
     (this: any): void;
@@ -216,14 +218,10 @@ export declare const forcePatchProp: (el: {
     nodeName: string;
 }, key: string) => boolean;
 
-export declare function formatAppLog(type: 'log' | 'info' | 'debug' | 'warn' | 'error', filename: string, ...args: unknown[]): void;
-
 export declare function formatDateTime({ date, mode }: {
     date?: Date | undefined;
     mode?: string | undefined;
 }): string;
-
-export declare function formatH5Log(type: keyof Console, filename: string, ...args: unknown[]): void;
 
 export declare function formatLog(module: string, ...args: any[]): string;
 
@@ -259,6 +257,8 @@ Partial<UniNodeJSON | UniNodeJSONMinify>?
 
 export declare const invokeArrayFns: (fns: Function[], arg?: any) => any;
 
+export declare const invokeCreateErrorHandler: (app: App, createErrorHandler: (app: App) => App['config']['errorHandler']) => ((err: unknown, instance: ComponentPublicInstance_2<    {}, {}, {}, {}, {}, {}, {}, {}, false, ComponentOptionsBase_2<any, any, any, any, any, any, any, any, any, {}>> | null, info: string) => void) | undefined;
+
 export declare function invokeCreateVueAppHook(app: App): void;
 
 export declare function isAppNativeTag(tag: string): boolean;
@@ -280,6 +280,8 @@ export declare function isMiniProgramNativeTag(tag: string): boolean;
 export declare function isRootHook(name: string): boolean;
 
 export declare function isRootImmediateHook(name: string): boolean;
+
+export declare function isUniLifecycleHook(name: string, value: unknown, checkType?: boolean): boolean;
 
 export declare interface IUniPageNode {
     pageId: number;
@@ -325,12 +327,18 @@ export declare function normalizeDataset(el: Element): any;
 
 export declare function normalizeEventType(type: string, options?: AddEventListenerOptions): string;
 
+export declare function normalizeStyles<T extends Object>(pageStyle: T, themeConfig: UniApp.ThemeJson, mode?: UniApp.ThemeMode): T;
+
+export declare function normalizeTabBarStyles(borderStyle?: string): string | undefined;
+
 export declare function normalizeTarget(el: HTMLElement): {
     id: string;
     dataset: DOMStringMap & Record<string, any>;
     offsetTop: number;
     offsetLeft: number;
 };
+
+export declare function normalizeTitleColor(titleColor: string): "#000000" | "#ffffff";
 
 export declare interface NVue {
     config: NVueConfigAPI;
@@ -457,6 +465,8 @@ export declare const ON_LAUNCH = "onLaunch";
 export declare const ON_LOAD = "onLoad";
 
 export declare const ON_NAVIGATION_BAR_BUTTON_TAP = "onNavigationBarButtonTap";
+
+export declare const ON_NAVIGATION_BAR_CHANGE = "onNavigationBarChange";
 
 export declare const ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED = "onNavigationBarSearchInputChanged";
 
@@ -646,7 +656,7 @@ string | number
 
 export declare const SLOT_DEFAULT_NAME = "d";
 
-export declare function sortObject<T>(obj: T): T;
+export declare function sortObject<T extends Object>(obj: T): T;
 
 export declare function stringifyQuery(obj?: Record<string, any>, encodeStr?: typeof encodeURIComponent): string;
 

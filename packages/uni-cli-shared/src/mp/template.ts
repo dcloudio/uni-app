@@ -1,15 +1,32 @@
 import path from 'path'
-import { EmittedAsset } from 'rollup'
+import type { EmittedAsset } from 'rollup'
+import type { ElementNode } from '@vue/compiler-core'
+
 import { LINEFEED } from '@dcloudio/uni-shared'
+
 import { normalizeMiniProgramFilename } from '../utils'
 
+type LazyElementFn = (
+  node: ElementNode,
+  context: {
+    isMiniProgramComponent(
+      name: string
+    ): 'plugin' | 'component' | 'dynamicLib' | undefined
+  }
+) =>
+  | {
+      [name: string]: { name: 'on' | 'bind'; arg: string[] }[]
+    }
+  | boolean
 export interface MiniProgramCompilerOptions {
   /**
    * 需要延迟渲染的组件，通常是某个组件的某个事件会立刻触发，需要延迟到首次 render 之后，比如微信 editor 的 ready 事件，快手 switch 的 change
    */
-  lazyElement?: {
-    [name: string]: { name: 'on' | 'bind'; arg: string[] }[]
-  }
+  lazyElement?:
+    | {
+        [name: string]: { name: 'on' | 'bind'; arg: string[] }[]
+      }
+    | LazyElementFn
   event?: {
     key?: boolean
     format?(
@@ -57,6 +74,10 @@ export interface MiniProgramCompilerOptions {
      * 格式化组件名称，比如 wx-btn => weixin-btn (微信不允许以 wx 命名自定义组件)
      */
     normalizeName?: (name: string) => string
+    /**
+     * 合并虚拟化节点属性（class、style）
+     */
+    mergeVirtualHostAttributes?: boolean
   }
   directive: string
   emitFile?: (emittedFile: EmittedAsset) => string

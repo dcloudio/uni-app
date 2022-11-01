@@ -150,7 +150,6 @@ export function showToast({ icon = 'success' }: UniApp.ShowToastOptions = {}) {
   const args = {
     title: 'content',
     icon: 'type',
-    duration: false,
     image: false,
     mask: false,
   }
@@ -457,12 +456,6 @@ export const showShareMenu = {
 }
 export const hideHomeButton = {
   name: 'hideBackHome',
-}
-export const saveImageToPhotosAlbum = {
-  name: 'saveImage',
-  args: {
-    filePath: 'url',
-  },
 }
 export const saveVideoToPhotosAlbum = {
   args: {

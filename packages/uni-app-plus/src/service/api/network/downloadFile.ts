@@ -1,5 +1,5 @@
 import { TEMP_PATH } from '../constants'
-import { hasOwn } from '@vue/shared'
+import { hasOwn, isFunction } from '@vue/shared'
 import {
   defineTaskApi,
   API_DOWNLOAD_FILE,
@@ -33,7 +33,7 @@ class DownloadTask implements UniApp.DownloadTask {
     this._downloader.abort()
   }
   onProgressUpdate(callback: (result: any) => void) {
-    if (typeof callback !== 'function') {
+    if (!isFunction(callback)) {
       return
     }
     this._callbacks.push(callback)

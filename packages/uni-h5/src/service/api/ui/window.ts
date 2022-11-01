@@ -3,8 +3,9 @@ import { nextTick } from 'vue'
 import { defineAsyncApi, defineSyncApi } from '@dcloudio/uni-api'
 import { getLayoutState } from '../../../framework/components/layout'
 
-export const showTopWindow = <typeof uni.showTopWindow>(
-  defineAsyncApi('showTopWindow', (_, { resolve, reject }) => {
+export const showTopWindow = defineAsyncApi<typeof uni.showTopWindow>(
+  'showTopWindow',
+  (_, { resolve, reject }) => {
     const state = getLayoutState()
     if (!state) {
       reject()
@@ -12,11 +13,12 @@ export const showTopWindow = <typeof uni.showTopWindow>(
     }
     state.apiShowTopWindow = true
     nextTick(resolve)
-  })
+  }
 )
 
-export const hideTopWindow = <typeof uni.hideTopWindow>(
-  defineAsyncApi('hideTopWindow', (_, { resolve, reject }) => {
+export const hideTopWindow = defineAsyncApi<typeof uni.hideTopWindow>(
+  'hideTopWindow',
+  (_, { resolve, reject }) => {
     const state = getLayoutState()
     if (!state) {
       reject()
@@ -24,11 +26,12 @@ export const hideTopWindow = <typeof uni.hideTopWindow>(
     }
     state.apiShowTopWindow = false
     nextTick(resolve)
-  })
+  }
 )
 
-export const showLeftWindow = <typeof uni.showLeftWindow>(
-  defineAsyncApi('showLeftWindow', (_, { resolve, reject }) => {
+export const showLeftWindow = defineAsyncApi<typeof uni.showLeftWindow>(
+  'showLeftWindow',
+  (_, { resolve, reject }) => {
     const state = getLayoutState()
     if (!state) {
       reject()
@@ -36,11 +39,12 @@ export const showLeftWindow = <typeof uni.showLeftWindow>(
     }
     state.apiShowLeftWindow = true
     nextTick(resolve)
-  })
+  }
 )
 
-export const hideLeftWindow = <typeof uni.hideLeftWindow>(
-  defineAsyncApi('hideLeftWindow', (_, { resolve, reject }) => {
+export const hideLeftWindow = defineAsyncApi<typeof uni.hideLeftWindow>(
+  'hideLeftWindow',
+  (_, { resolve, reject }) => {
     const state = getLayoutState()
     if (!state) {
       reject()
@@ -48,11 +52,12 @@ export const hideLeftWindow = <typeof uni.hideLeftWindow>(
     }
     state.apiShowLeftWindow = false
     nextTick(resolve)
-  })
+  }
 )
 
-export const showRightWindow = <typeof uni.showRightWindow>(
-  defineAsyncApi('showRightWindow', (_, { resolve, reject }) => {
+export const showRightWindow = defineAsyncApi<typeof uni.showRightWindow>(
+  'showRightWindow',
+  (_, { resolve, reject }) => {
     const state = getLayoutState()
     if (!state) {
       reject()
@@ -60,11 +65,12 @@ export const showRightWindow = <typeof uni.showRightWindow>(
     }
     state.apiShowRightWindow = true
     nextTick(resolve)
-  })
+  }
 )
 
-export const hideRightWindow = <typeof uni.hideRightWindow>(
-  defineAsyncApi('hideRightWindow', (_, { resolve, reject }) => {
+export const hideRightWindow = defineAsyncApi<typeof uni.hideRightWindow>(
+  'hideRightWindow',
+  (_, { resolve, reject }) => {
     const state = getLayoutState()
     if (!state) {
       reject()
@@ -72,53 +78,57 @@ export const hideRightWindow = <typeof uni.hideRightWindow>(
     }
     state.apiShowRightWindow = false
     nextTick(resolve)
-  })
+  }
 )
 
-export const getTopWindowStyle = <typeof uni.getTopWindowStyle>(
-  defineSyncApi('getTopWindowStyle', () => {
+export const getTopWindowStyle = defineSyncApi<typeof uni.getTopWindowStyle>(
+  'getTopWindowStyle',
+  () => {
     const state = getLayoutState()
     return extend({}, state && state.topWindowStyle)
-  })
+  }
 )
 
-export const setTopWindowStyle = <typeof uni.setTopWindowStyle>(
-  defineSyncApi('setTopWindowStyle', (style) => {
+export const setTopWindowStyle = defineSyncApi<typeof uni.setTopWindowStyle>(
+  'setTopWindowStyle',
+  (style) => {
     const state = getLayoutState()
     if (state) {
       state.topWindowStyle = style
     }
-  })
+  }
 )
 
-export const getLeftWindowStyle = <typeof uni.getLeftWindowStyle>(
-  defineSyncApi('getLeftWindowStyle', () => {
+export const getLeftWindowStyle = defineSyncApi<typeof uni.getLeftWindowStyle>(
+  'getLeftWindowStyle',
+  () => {
     const state = getLayoutState()
     return extend({}, state && state.leftWindowStyle)
-  })
+  }
 )
 
-export const setLeftWindowStyle = <typeof uni.setLeftWindowStyle>(
-  defineSyncApi('setLeftWindowStyle', (style) => {
+export const setLeftWindowStyle = defineSyncApi<typeof uni.setLeftWindowStyle>(
+  'setLeftWindowStyle',
+  (style) => {
     const state = getLayoutState()
     if (state) {
       state.leftWindowStyle = style
     }
-  })
+  }
 )
 
-export const getRightWindowStyle = <typeof uni.getRightWindowStyle>(
-  defineSyncApi('getRightWindowStyle', () => {
-    const state = getLayoutState()
-    return extend({}, state && state.rightWindowStyle)
-  })
-)
+export const getRightWindowStyle = defineSyncApi<
+  typeof uni.getRightWindowStyle
+>('getRightWindowStyle', () => {
+  const state = getLayoutState()
+  return extend({}, state && state.rightWindowStyle)
+})
 
-export const setRightWindowStyle = <typeof uni.setRightWindowStyle>(
-  defineSyncApi('setRightWindowStyle', (style) => {
-    const state = getLayoutState()
-    if (state) {
-      state.rightWindowStyle = style
-    }
-  })
-)
+export const setRightWindowStyle = defineSyncApi<
+  typeof uni.setRightWindowStyle
+>('setRightWindowStyle', (style) => {
+  const state = getLayoutState()
+  if (state) {
+    state.rightWindowStyle = style
+  }
+})

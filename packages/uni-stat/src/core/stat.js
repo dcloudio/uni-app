@@ -6,6 +6,7 @@ import {
   get_platform_name,
   get_space,
   is_debug,
+  is_push_clientid
 } from '../utils/pageInfo.js'
 import { dbSet } from '../utils/db.js'
 class Stat extends Report {
@@ -23,9 +24,9 @@ class Stat extends Report {
           let spaceData = {
             provider: space.provider,
             spaceId: space.spaceId,
-            clientSecret: space.clientSecret
+            clientSecret: space.clientSecret,
           }
-          if(space.endpoint){
+          if (space.endpoint) {
             spaceData.endpoint = space.endpoint
           }
           uni.__stat_uniCloud_space = uniCloud.init(spaceData)
@@ -34,7 +35,9 @@ class Stat extends Report {
           //     uni.__stat_uniCloud_space.config.spaceId
           // )
         } else {
-          console.error('当前尚未关联统计服务空间，请先在manifest.json中配置服务空间！')
+          console.error(
+            '应用未关联服务空间，请在uniCloud目录右键关联服务空间'
+          )
         }
       }
     }
@@ -43,6 +46,24 @@ class Stat extends Report {
   }
   constructor() {
     super()
+  }
+
+  /**
+   * 获取推送id
+   */
+  pushEvent(options) {
+    const ClientID = is_push_clientid()
+    if (uni.getPushClientId && ClientID) {
+      uni.getPushClientId({
+        success: (res) => {
+          const cid = res.cid || false
+          //  只有获取到才会上传
+          if (cid) {
+            this.sendPushRequest(options,cid)
+          }
+        },
+      })
+    }
   }
 
   /**
@@ -55,7 +76,7 @@ class Stat extends Report {
     let residence_time = set_page_residence_time()
     this.__licationShow = true
     dbSet('__launch_options', options)
-    // 应用初始上报参数为1 
+    // 应用初始上报参数为1
     options.cst = 1
     this.sendReportRequest(options, true)
   }
@@ -131,8 +152,8 @@ class Stat extends Report {
 
     let route = ''
     try {
-      route =  get_route() 
-    }catch(e){
+      route = get_route()
+    } catch (e) {
       // 未获取到页面路径
       route = ''
     }
@@ -142,7 +163,7 @@ class Stat extends Report {
       uuid: this.statData.uuid,
       p: this.statData.p,
       lt: '31',
-      url:route,
+      url: route,
       ut: this.statData.ut,
       ch: this.statData.ch,
       mpsdk: this.statData.mpsdk,

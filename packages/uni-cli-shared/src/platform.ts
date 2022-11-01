@@ -26,3 +26,7 @@ export function registerPlatform(platform: string) {
 export function getPlatforms() {
   return platforms
 }
+
+export function getPlatformDir() {
+  return process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM
+}

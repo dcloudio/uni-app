@@ -111,6 +111,7 @@ const NVUE_BUILT_IN_TAGS = [
     'recycle-list',
     'u-scalable',
     'barcode',
+    'gcanvas',
 ];
 const NVUE_U_BUILT_IN_TAGS = [
     'u-text',
@@ -122,6 +123,7 @@ const NVUE_U_BUILT_IN_TAGS = [
     'u-slider',
     'u-ad',
     'u-ad-draw',
+    'u-rich-text',
 ];
 function isBuiltInComponent(tag) {
     // h5 平台会被转换为 v-uni-
@@ -247,6 +249,7 @@ const ON_ADD_TO_FAVORITES = 'onAddToFavorites';
 const ON_SHARE_APP_MESSAGE = 'onShareAppMessage';
 // navigationBar
 const ON_NAVIGATION_BAR_BUTTON_TAP = 'onNavigationBarButtonTap';
+const ON_NAVIGATION_BAR_CHANGE = 'onNavigationBarChange';
 const ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED = 'onNavigationBarSearchInputClicked';
 const ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED = 'onNavigationBarSearchInputChanged';
 const ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED = 'onNavigationBarSearchInputConfirmed';
@@ -373,22 +376,22 @@ function formatDateTime({ date = new Date(), mode = 'date' }) {
 }
 function callOptions(options, data) {
     options = options || {};
-    if (typeof data === 'string') {
+    if (shared.isString(data)) {
         data = {
             errMsg: data,
         };
     }
     if (/:ok$/.test(data.errMsg)) {
-        if (typeof options.success === 'function') {
+        if (shared.isFunction(options.success)) {
             options.success(data);
         }
     }
     else {
-        if (typeof options.fail === 'function') {
+        if (shared.isFunction(options.fail)) {
             options.fail(data);
         }
     }
-    if (typeof options.complete === 'function') {
+    if (shared.isFunction(options.complete)) {
         options.complete(data);
     }
 }
@@ -651,66 +654,6 @@ function parseUrl(url) {
     };
 }
 
-function isDebugMode() {
-    // @ts-expect-error
-    return typeof __channelId__ === 'string' && __channelId__;
-}
-function jsonStringifyReplacer(k, p) {
-    switch (shared.toRawType(p)) {
-        case 'Function':
-            return 'function() { [native code] }';
-        default:
-            return p;
-    }
-}
-function normalizeLog(type, filename, args) {
-    if (isDebugMode()) {
-        args.push(filename.replace('at ', 'uni-app:///'));
-        return console[type].apply(console, args);
-    }
-    const msgs = args.map(function (v) {
-        const type = shared.toTypeString(v).toLowerCase();
-        if (['[object object]', '[object array]', '[object module]'].indexOf(type) !==
-            -1) {
-            try {
-                v =
-                    '---BEGIN:JSON---' +
-                        JSON.stringify(v, jsonStringifyReplacer) +
-                        '---END:JSON---';
-            }
-            catch (e) {
-                v = type;
-            }
-        }
-        else {
-            if (v === null) {
-                v = '---NULL---';
-            }
-            else if (v === undefined) {
-                v = '---UNDEFINED---';
-            }
-            else {
-                const vType = shared.toRawType(v).toUpperCase();
-                if (vType === 'NUMBER' || vType === 'BOOLEAN') {
-                    v = '---BEGIN:' + vType + '---' + v + '---END:' + vType + '---';
-                }
-                else {
-                    v = String(v);
-                }
-            }
-        }
-        return v;
-    });
-    return msgs.join('---COMMA---') + ' ' + filename;
-}
-function formatAppLog(type, filename, ...args) {
-    const res = normalizeLog(type, filename, args);
-    res && console[type](res);
-}
-function formatH5Log(type, filename, ...args) {
-    console[type].apply(console, [...args, filename]);
-}
-
 function parseNVueDataset(attr) {
     const dataset = {};
     if (attr) {
@@ -724,7 +667,7 @@ function parseNVueDataset(attr) {
 }
 
 function plusReady(callback) {
-    if (typeof callback !== 'function') {
+    if (!shared.isFunction(callback)) {
         return;
     }
     if (window.plus) {
@@ -875,7 +818,12 @@ function sibling(node, type) {
 function removeNode(node) {
     const { parentNode } = node;
     if (parentNode) {
-        parentNode.removeChild(node);
+        const { childNodes } = parentNode;
+        const index = childNodes.indexOf(node);
+        if (index > -1) {
+            node.parentNode = null;
+            childNodes.splice(index, 1);
+        }
     }
 }
 function checkNodeId(node) {
@@ -951,6 +899,7 @@ class UniNode extends UniEventTarget {
         return cloned;
     }
     insertBefore(newChild, refChild) {
+        // 先从现在的父节点移除（注意：不能触发onRemoveChild，否则会生成先remove该 id，再 insert）
         removeNode(newChild);
         newChild.pageNode = this.pageNode;
         newChild.parentNode = this;
@@ -1203,10 +1152,6 @@ const ACTION_TYPE_EVENT = 20;
 
 /**
  * 需要手动传入 timer,主要是解决 App 平台的定制 timer
- * @param fn
- * @param delay
- * @param timer
- * @returns
  */
 function debounce(fn, delay, { clearTimeout, setTimeout }) {
     let timeout;
@@ -1347,6 +1292,21 @@ const MINI_PROGRAM_PAGE_RUNTIME_HOOKS = /*#__PURE__*/ (() => {
         onShareTimeline: 1 << 2,
     };
 })();
+function isUniLifecycleHook(name, value, checkType = true) {
+    // 检查类型
+    if (checkType && !shared.isFunction(value)) {
+        return false;
+    }
+    if (UniLifecycleHooks.indexOf(name) > -1) {
+        // 已预定义
+        return true;
+    }
+    else if (name.indexOf('on') === 0) {
+        // 以 on 开头
+        return true;
+    }
+    return false;
+}
 
 let vueApp;
 const createVueAppHooks = [];
@@ -1364,6 +1324,11 @@ function invokeCreateVueAppHook(app) {
     vueApp = app;
     createVueAppHooks.forEach((hook) => hook(app));
 }
+const invokeCreateErrorHandler = once((app, createErrorHandler) => {
+    if (shared.isFunction(app._component.onError)) {
+        return createErrorHandler(app);
+    }
+});
 
 const E = function () {
     // Keep this empty so it's easier to inherit from
@@ -1415,6 +1380,56 @@ E.prototype = {
     },
 };
 var E$1 = E;
+
+const borderStyles = {
+    black: 'rgba(0,0,0,0.4)',
+    white: 'rgba(255,255,255,0.4)',
+};
+function normalizeTabBarStyles(borderStyle) {
+    if (borderStyle && borderStyle in borderStyles) {
+        return borderStyles[borderStyle];
+    }
+    return borderStyle;
+}
+function normalizeTitleColor(titleColor) {
+    return titleColor === 'black' ? '#000000' : '#ffffff';
+}
+function normalizeStyles(pageStyle, themeConfig, mode = 'light') {
+    const modeStyle = themeConfig[mode];
+    const styles = {};
+    if (!modeStyle) {
+        return pageStyle;
+    }
+    Object.keys(pageStyle).forEach((key) => {
+        let styleItem = pageStyle[key] // Object Array String
+        ;
+        styles[key] = (() => {
+            if (shared.isPlainObject(styleItem)) {
+                return normalizeStyles(styleItem, themeConfig, mode);
+            }
+            else if (shared.isArray(styleItem)) {
+                return styleItem.map((item) => shared.isPlainObject(item)
+                    ? normalizeStyles(item, themeConfig, mode)
+                    : item);
+            }
+            else if (shared.isString(styleItem) && styleItem.startsWith('@')) {
+                const _key = styleItem.replace('@', '');
+                let _styleItem = modeStyle[_key];
+                switch (key) {
+                    case 'titleColor':
+                        _styleItem = normalizeTitleColor(_styleItem);
+                        break;
+                    case 'borderStyle':
+                        _styleItem = normalizeTabBarStyles(_styleItem);
+                        break;
+                }
+                return _styleItem;
+            }
+            return styleItem;
+        })();
+    });
+    return styles;
+}
 
 function getEnvLocale() {
     const { env } = process;
@@ -1475,6 +1490,7 @@ exports.ON_KEYBOARD_HEIGHT_CHANGE = ON_KEYBOARD_HEIGHT_CHANGE;
 exports.ON_LAUNCH = ON_LAUNCH;
 exports.ON_LOAD = ON_LOAD;
 exports.ON_NAVIGATION_BAR_BUTTON_TAP = ON_NAVIGATION_BAR_BUTTON_TAP;
+exports.ON_NAVIGATION_BAR_CHANGE = ON_NAVIGATION_BAR_CHANGE;
 exports.ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED = ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED;
 exports.ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED = ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED;
 exports.ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED = ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED;
@@ -1525,6 +1541,7 @@ exports.WXS_MODULES = WXS_MODULES;
 exports.WXS_PROTOCOL = WXS_PROTOCOL;
 exports.addFont = addFont;
 exports.addLeadingSlash = addLeadingSlash;
+exports.borderStyles = borderStyles;
 exports.cache = cache;
 exports.cacheStringFunction = cacheStringFunction;
 exports.callOptions = callOptions;
@@ -1540,9 +1557,7 @@ exports.defaultNVueRpx2Unit = defaultNVueRpx2Unit;
 exports.defaultRpx2Unit = defaultRpx2Unit;
 exports.dynamicSlotName = dynamicSlotName;
 exports.forcePatchProp = forcePatchProp;
-exports.formatAppLog = formatAppLog;
 exports.formatDateTime = formatDateTime;
-exports.formatH5Log = formatH5Log;
 exports.formatLog = formatLog;
 exports.getCustomDataset = getCustomDataset;
 exports.getEnvLocale = getEnvLocale;
@@ -1550,6 +1565,7 @@ exports.getLen = getLen;
 exports.getValueByDataPath = getValueByDataPath;
 exports.initCustomDatasetOnce = initCustomDatasetOnce;
 exports.invokeArrayFns = invokeArrayFns;
+exports.invokeCreateErrorHandler = invokeCreateErrorHandler;
 exports.invokeCreateVueAppHook = invokeCreateVueAppHook;
 exports.isAppNVueNativeTag = isAppNVueNativeTag;
 exports.isAppNativeTag = isAppNativeTag;
@@ -1561,9 +1577,13 @@ exports.isH5NativeTag = isH5NativeTag;
 exports.isMiniProgramNativeTag = isMiniProgramNativeTag;
 exports.isRootHook = isRootHook;
 exports.isRootImmediateHook = isRootImmediateHook;
+exports.isUniLifecycleHook = isUniLifecycleHook;
 exports.normalizeDataset = normalizeDataset;
 exports.normalizeEventType = normalizeEventType;
+exports.normalizeStyles = normalizeStyles;
+exports.normalizeTabBarStyles = normalizeTabBarStyles;
 exports.normalizeTarget = normalizeTarget;
+exports.normalizeTitleColor = normalizeTitleColor;
 exports.onCreateVueApp = onCreateVueApp;
 exports.once = once;
 exports.parseEventName = parseEventName;

@@ -1,3 +1,4 @@
+import { customizeEvent } from '@dcloudio/uni-shared'
 import {
   ExpressionNode,
   DirectiveNode,
@@ -46,7 +47,14 @@ export function createTransformOn(
     }
     const value = res.props[0].value as ExpressionNode
     res.props[0].value = createCustomEventExpr()
-    addEventOpts(arg.content, value, node)
+    addEventOpts(
+      node.tagType === ElementTypes.COMPONENT
+        ? customizeEvent(arg.content)
+        : arg.content,
+      value,
+      node,
+      context
+    )
     return res
   }
 }
@@ -58,7 +66,8 @@ export function createCustomEventExpr() {
 export function addEventOpts(
   event: string,
   value: ExpressionNode,
-  node: ElementNode
+  node: ElementNode,
+  context: TransformContext
 ) {
   const attrName =
     node.tagType === ElementTypes.COMPONENT
@@ -66,7 +75,7 @@ export function addEventOpts(
       : ATTR_DATASET_EVENT_OPTS
   const opts = findProp(node, attrName, true) as DirectiveNode
   if (!opts) {
-    node.props.push(createDataEventOptsProp(attrName, event, value))
+    node.props.push(createDataEventOptsProp(attrName, event, value, context))
   } else {
     const children = (opts.exp as CompoundExpressionNode).children
     children.splice(
@@ -84,22 +93,30 @@ function createDataEventOptsProperty(event: string, exp: ExpressionNode) {
   return createCompoundExpression([`'${event}'`, ': ', exp, ','])
 }
 
+export const STRINGIFY_JSON = Symbol(`stringifyJson`)
+
 function createDataEventOptsProp(
   name: string,
   event: string,
-  exp: ExpressionNode
+  exp: ExpressionNode,
+  context: TransformContext
 ): DirectiveNode {
+  const children = []
+  const stringify = name === ATTR_DATA_EVENT_OPTS
+  if (stringify) {
+    children.push(context.helperString(STRINGIFY_JSON) + '(')
+  }
+  children.push('{', createDataEventOptsProperty(event, exp), '}')
+  if (stringify) {
+    children.push(')')
+  }
   return {
     type: NodeTypes.DIRECTIVE,
     name: 'bind',
     loc: locStub,
     modifiers: [],
     arg: createSimpleExpression(name, true),
-    exp: createCompoundExpression([
-      '{',
-      createDataEventOptsProperty(event, exp),
-      '}',
-    ]),
+    exp: createCompoundExpression(children),
   }
 }
 

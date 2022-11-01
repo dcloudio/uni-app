@@ -1,4 +1,4 @@
-import { isPlainObject, isString } from '@vue/shared'
+import { isFunction, isPlainObject, isString } from '@vue/shared'
 
 export function cache<T>(fn: (str: string) => T) {
   const cache: Record<string, T> = Object.create(null)
@@ -95,21 +95,21 @@ export function callOptions(
   data: { [key: string]: any; errMsg: string } | string
 ): void {
   options = options || {}
-  if (typeof data === 'string') {
+  if (isString(data)) {
     data = {
       errMsg: data,
     }
   }
   if (/:ok$/.test(data.errMsg)) {
-    if (typeof options.success === 'function') {
+    if (isFunction(options.success)) {
       options.success(data)
     }
   } else {
-    if (typeof options.fail === 'function') {
+    if (isFunction(options.fail)) {
       options.fail(data)
     }
   }
-  if (typeof options.complete === 'function') {
+  if (isFunction(options.complete)) {
     options.complete(data)
   }
 }
@@ -130,7 +130,7 @@ export function getValueByDataPath(obj: any, path: string): unknown {
   return getValueByDataPath(obj[key], parts.slice(1).join('.'))
 }
 
-export function sortObject<T>(obj: T) {
+export function sortObject<T extends Object>(obj: T) {
   let sortObj: T = {} as T
   if (isPlainObject(obj)) {
     Object.keys(obj)

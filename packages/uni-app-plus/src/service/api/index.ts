@@ -24,6 +24,9 @@ export * from './device/scanCode'
 export * from './device/theme'
 export * from './device/brightness'
 export * from './device/getWindowInfo'
+export * from './device/getSystemSetting'
+export * from './device/getAppAuthorizeSetting'
+export * from './device/openAppAuthorizeSetting'
 
 export * from './media/getImageInfo'
 export * from './media/getVideoInfo'
@@ -50,6 +53,7 @@ export * from './context/createLivePusherContext'
 export * from './location/getLocation'
 export * from './location/chooseLocation'
 export * from './location/openLocation'
+export * from './location/locationChange'
 
 export * from './ui/popup/showModal'
 export * from './ui/popup/showActionSheet'
@@ -66,6 +70,7 @@ export * from './internal/global'
 
 export * from './plugin/getProvider'
 export * from './plugin/oauth'
+export * from './plugin/push'
 export * from './plugin/registerRuntime'
 export * from './plugin/share'
 export * from './plugin/requestPayment'
@@ -76,6 +81,7 @@ export {
   onHostEventReceive,
   onNativeEventReceive,
 } from './plugin/sdk'
+export { __log__ } from './plugin/log'
 
 export * from './ad/rewardedVideoAd'
 export * from './ad/fullScreenVideoAd'
@@ -121,7 +127,7 @@ export {
   setPageMeta,
   getEnterOptionsSync,
   getLaunchOptionsSync,
-  getPushClientid,
+  getPushClientId,
   onPushMessage,
   offPushMessage,
   onAppHide,

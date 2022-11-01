@@ -40,7 +40,10 @@ export function uniMovePlugin({
           .map((filename) => {
             return fs.move(
               path.resolve(cwd, filename),
-              path.resolve(dest, filename)
+              path.resolve(dest, filename),
+              {
+                overwrite: true,
+              }
             )
           })
       )

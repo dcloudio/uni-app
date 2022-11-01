@@ -16,13 +16,13 @@ var uniad_app_json = function (appJson) {
   }
   if (!appJson.plugins['uni-ad']) {
     appJson.plugins['uni-ad'] = {
-      version: '1.0.3',
-      provider: 'wx999bf02c8e05dfc9',
+      version: '1.0.1',
+      provider: 'wxf72d316417b6767f',
     };
   }
   if (!appJson.plugins['coral-adv']) {
     appJson.plugins['coral-adv'] = {
-      version: '1.0.7',
+      version: '1.0.9',
       provider: 'wx0e203209e27b1e66',
     };
   }
@@ -51,7 +51,7 @@ function transformAd(node, context) {
     const adpidProp = compilerCore.findProp(node, 'adpid');
     if (node.tag === 'ad' && adpidProp) {
         node.tag = 'uniad';
-        node.tagType = 1 /* COMPONENT */;
+        node.tagType = 1 /* ElementTypes.COMPONENT */;
     }
     if (appJsonUniadFlag) {
         return;
@@ -72,7 +72,8 @@ var setting = {
 	es6: true,
 	postcss: false,
 	minified: false,
-	newFeature: true
+	newFeature: true,
+	bigPackageSizeSupport: true
 };
 var compileType = "miniprogram";
 var libVersion = "";
@@ -148,7 +149,14 @@ const miniProgram = {
                 arg: ['ready'],
             },
         ],
+        'scroll-view': [
+            {
+                name: 'on',
+                arg: ['dragstart', 'dragging', 'dragend'],
+            },
+        ],
         // iOS 平台需要延迟
+        input: [{ name: 'bind', arg: ['type'] }],
         textarea: [{ name: 'on', arg: ['input'] }],
     },
     component: {
@@ -179,6 +187,7 @@ const options = {
                         'ext.json',
                         'custom-tab-bar',
                         'functional-pages',
+                        'project.private.config.json',
                         projectConfigFilename,
                     ],
                     get dest() {

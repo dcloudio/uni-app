@@ -1,3 +1,8 @@
+// 临时覆盖 HBuilderX.PageURIString , HBuilderX.ColorString
+declare namespace HBuilderX {
+  type PageURIString = string
+  type ColorString = string
+}
 declare namespace Page {
   interface PageInstance {
     $page: {
@@ -13,10 +18,11 @@ declare namespace Page {
     }
   }
 }
-declare namespace UniApp {
+declare namespace UniNamespace {
   type ClassObj = Record<string, boolean>
   type StyleObj = Record<string, any>
   type PLATFORM = keyof PagesJsonPagePlatformStyle
+  type ThemeMode = 'light' | 'dark'
 
   type OpenType =
     | 'navigateTo'
@@ -39,6 +45,7 @@ declare namespace UniApp {
       strict: boolean
       base: string
       assets: string
+      routerBase: string
     }
     nvue?: {
       'flex-direction': 'column' | 'row'
@@ -61,6 +68,9 @@ declare namespace UniApp {
     subPackages?: { root: string }[]
     qqMapKey?: string
     googleMapKey?: string
+    aMapKey?: string
+    aMapServiceHost?: string
+    aMapSecurityJsCode?: string
     // app-plus
     referrerInfo?: {
       appId: string
@@ -84,6 +94,8 @@ declare namespace UniApp {
     appName: string
     appVersion: string
     appVersionCode: string
+    darkmode: Boolean
+    themeConfig: ThemeJson
   }
 
   interface UniRoute {
@@ -173,6 +185,7 @@ declare namespace UniApp {
 
   interface PagesJsonPagePlatformStyle {
     h5?: PagesJsonPageStyle
+    web?: PagesJsonPageStyle
     app?: PagesJsonPageStyle
     'app-plus'?: PagesJsonPageStyle
     'mp-alipay'?: PagesJsonPageStyle
@@ -264,6 +277,9 @@ declare namespace UniApp {
         [name: string]: string
       }
     }
+    uni_modules?: {
+      exports?: boolean
+    }
     condition?: {
       current?: number
       list?: {
@@ -274,6 +290,11 @@ declare namespace UniApp {
         query?: string
       }[]
     }
+  }
+
+  interface ThemeJson {
+    light?: Record<string, string>
+    dark?: Record<string, string>
   }
 
   interface TabBarItemBaseOptions {
@@ -496,3 +517,5 @@ declare namespace UniApp {
     ): void
   }
 }
+
+import UniApp = UniNamespace

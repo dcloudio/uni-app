@@ -16,6 +16,7 @@ export default {
       plugins: [terser()],
       output: {
         inlineDynamicImports: true,
+        entryFileNames: 'size-check.es.js',
       },
     },
   },

@@ -27,12 +27,15 @@ describe('mp-baidu: transform component', () => {
       usingComponents: {
         'van-button': 'swancomponents/button/index',
       },
+      usingSwanComponents: {
+        'comment-list': 'dynamicLib://myDynamicLib/comment-list',
+      },
     })
     assert(
-      `<van-button/>`,
-      `<van-button u-t="m" u-i="dc555fe4-0"/>`,
+      `<van-button/><comment-list :comment-param="comment"/>`,
+      `<van-button s-if="{{r0}}" u-t="m" u-i="dc555fe4-0"/><comment-list s-if="{{r0}}" comment-param="{{a}}" u-t="m" u-i="dc555fe4-1"/>`,
       `(_ctx, _cache) => {
-  return {}
+  return { a: _ctx.comment }
 }`,
       {
         filename,

@@ -14,6 +14,7 @@ export function createOptimizeDeps(
       '@dcloudio/uni-components',
       '@dcloudio/uni-i18n',
       '@dcloudio/uni-shared',
+      '@dcloudio/uni-stacktracey',
       'pinia',
     ],
   }

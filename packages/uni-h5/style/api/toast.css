@@ -58,9 +58,9 @@ uni-toast .uni-mask {
 
 .uni-toast__icon {
   margin: 20px 0 0;
-  width: 38px;
-  height: 38px;
-  vertical-align: baseline;
+  width: 38px!important;
+  height: 38px!important;
+  vertical-align: baseline!important;
 }
 
 .uni-icon_toast {

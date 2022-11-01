@@ -8,13 +8,13 @@ import {
   API_TYPE_CLOSE_PREVIEW_IMAGE,
 } from '@dcloudio/uni-api'
 
-import { isPlainObject } from '@vue/shared'
+import { isFunction, isPlainObject } from '@vue/shared'
 
 import { initI18nPreviewImageMsgsOnce, useI18n } from '@dcloudio/uni-core'
 
 import { getRealPath } from '../../../platform/getRealPath'
 
-export const previewImage = <API_TYPE_PREVIEW_IMAGE>defineAsyncApi(
+export const previewImage = defineAsyncApi<API_TYPE_PREVIEW_IMAGE>(
   API_PREVIEW_IMAGE,
   (
     { current = 0, indicator = 'number', loop = false, urls, longPressActions },
@@ -67,8 +67,8 @@ export const previewImage = <API_TYPE_PREVIEW_IMAGE>defineAsyncApi(
         plus.nativeUI.actionSheet(options, (e) => {
           if (e.index > 0) {
             if (hasLongPressActions) {
-              typeof longPressActions!.success === 'function' &&
-                longPressActions!.success({
+              isFunction(longPressActions.success) &&
+                longPressActions.success({
                   tapIndex: e.index - 1,
                   index: res.index,
                 })
@@ -85,8 +85,8 @@ export const previewImage = <API_TYPE_PREVIEW_IMAGE>defineAsyncApi(
               }
             )
           } else if (hasLongPressActions) {
-            typeof longPressActions!.fail === 'function' &&
-              longPressActions!.fail({
+            isFunction(longPressActions.fail) &&
+              longPressActions.fail({
                 errMsg: 'showActionSheet:fail cancel',
               })
           }

@@ -1,6 +1,8 @@
 import fs from 'fs-extra'
 import path from 'path'
 import { FSWatcher, watch, WatchOptions } from 'chokidar'
+import { isArray } from '@vue/shared'
+import { pathToGlob } from './utils'
 type FileTransform = (source: Buffer, filename: string) => void | string
 export interface FileWatcherOptions {
   src: string | string[]
@@ -16,7 +18,7 @@ export class FileWatcher {
   private watcher!: FSWatcher
   private onChange?: () => void
   constructor({ src, dest, transform, verbose }: FileWatcherOptions) {
-    this.src = !Array.isArray(src) ? [src] : src
+    this.src = !isArray(src) ? [src] : src
     this.dest = dest
     this.transform = transform
     this.verbose = verbose
@@ -29,7 +31,11 @@ export class FileWatcher {
     if (!this.watcher) {
       const copy = this.copy.bind(this)
       const remove = this.remove.bind(this)
-      this.watcher = watch(this.src, watchOptions)
+      // escape chokidar cwd
+      const src = this.src.map((src) =>
+        pathToGlob(path.resolve(watchOptions.cwd), src)
+      )
+      this.watcher = watch(src, watchOptions)
         .on('add', copy)
         .on('addDir', copy)
         .on('change', copy)

@@ -52,7 +52,14 @@ export const miniProgram: MiniProgramCompilerOptions = {
         arg: ['ready'],
       },
     ],
+    'scroll-view': [
+      {
+        name: 'on',
+        arg: ['dragstart', 'dragging', 'dragend'],
+      },
+    ],
     // iOS 平台需要延迟
+    input: [{ name: 'bind', arg: ['type'] }],
     textarea: [{ name: 'on', arg: ['input'] }],
   },
   component: {
@@ -85,6 +92,7 @@ export const options: UniMiniProgramPluginOptions = {
             'ext.json',
             'custom-tab-bar',
             'functional-pages',
+            'project.private.config.json',
             projectConfigFilename,
           ],
           get dest() {

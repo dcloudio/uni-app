@@ -23,7 +23,7 @@ export {
   initBehaviors,
   updateComponentProps,
 } from './runtime/componentOptions'
-export { initProps } from './runtime/componentProps'
+export { initProps, initFormField } from './runtime/componentProps'
 export {
   initHooks,
   initUnknownHooks,
@@ -57,6 +57,7 @@ export {
   getDeviceInfo,
   getAppBaseInfo,
   getWindowInfo,
+  getAppAuthorizeSetting,
 } from './api/protocols'
 // types
 export { MiniProgramAppOptions, MiniProgramAppInstance } from './runtime/app'
@@ -66,6 +67,6 @@ export {
   MPComponentInstance,
   CreateLifetimesOptions,
 } from './runtime/component'
-export { MPProtocols } from './api/protocols'
+export { MPProtocols, MPProtocol } from './api/protocols'
 // mp-alipay
 export { CreateComponentOptions } from './runtime/componentInstance'

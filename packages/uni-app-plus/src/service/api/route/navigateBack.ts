@@ -29,7 +29,7 @@ export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
     }
     if (
       invokeHook(page as ComponentPublicInstance, ON_BACK_PRESS, {
-        from: (args as any).from,
+        from: (args as any).from || 'navigateBack',
       })
     ) {
       return resolve()
@@ -41,7 +41,7 @@ export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
     } else if (isDirectPage(page)) {
       reLaunchEntryPage()
     } else {
-      const { delta, animationType, animationDuration } = args
+      const { delta, animationType, animationDuration } = args!
       back(delta!, animationType, animationDuration)
     }
     return resolve()

@@ -10,6 +10,9 @@ const cli = cac('uni')
 export interface CliOptions {
   '--'?: string[]
 
+  c?: boolean | string
+  config?: string
+
   platform?: string
   p?: string
   ssr?: boolean
@@ -31,6 +34,7 @@ export interface CliOptions {
 }
 
 cli
+  .option('-c, --config <file>', `[string] use specified config file`)
   .option('-p, --platform [platform]', '[string] ' + PLATFORMS.join(' | '), {
     default: 'h5',
   })
@@ -43,6 +47,11 @@ cli
   .option('-d, --debug [feat]', `[string | boolean] show debug logs`)
   .option('-f, --filter <filter>', `[string] filter debug logs`)
   .option('-m, --mode <mode>', `[string] set env mode`)
+  .option(
+    '--minify [minifier]',
+    `[boolean | "terser" | "esbuild"] enable/disable minification, ` +
+      `or specify minifier to use (default: terser)`
+  )
   .option('--autoHost [autoHost]', `[string] specify automator hostname`)
   .option('--autoPort [autoPort]', `[number] specify automator port`)
   .option('--subpackage [subpackage]', `[string] specify subpackage to build`)
@@ -73,11 +82,6 @@ cli
   .option(
     '--sourcemap',
     `[boolean] output source maps for build (default: false)`
-  )
-  .option(
-    '--minify [minifier]',
-    `[boolean | "terser" | "esbuild"] enable/disable minification, ` +
-      `or specify minifier to use (default: terser)`
   )
   .option('--manifest', `[boolean] emit build manifest json`)
   .option('--ssrManifest', `[boolean] emit ssr manifest json`)

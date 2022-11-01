@@ -10,6 +10,7 @@ import {
   isInHBuilderX,
   initModulePaths,
   parseScripts,
+  getPlatformDir,
 } from '@dcloudio/uni-cli-shared'
 
 import { CliOptions } from '.'
@@ -49,15 +50,15 @@ export function addConfigFile(inlineConfig: InlineConfig) {
   return inlineConfig
 }
 
-let initliazed = false
+let initialized = false
 export function initEnv(
   type: 'unknown' | 'dev' | 'build',
   options: CliOptions
 ) {
-  if (initliazed) {
+  if (initialized) {
     return
   }
-  initliazed = true
+  initialized = true
   if (options.platform === 'mp-360') {
     console.error(M['mp.360.unsupported'])
     process.exit(0)
@@ -86,9 +87,9 @@ export function initEnv(
     ? path.resolve(process.env.UNI_HBUILDERX_PLUGINS!, 'uniapp-cli-vite')
     : process.cwd()
 
-  if (options.platform === 'app-plus') {
-    options.platform = 'app'
-  }
+  // TODO 待优化
+  initUtsPlatform(options)
+
   if (
     options.platform === 'quickapp-webview-huawei' ||
     options.platform === 'quickapp-webview-union'
@@ -115,7 +116,7 @@ export function initEnv(
         process.cwd(),
         'dist',
         process.env.NODE_ENV === 'production' ? 'build' : 'dev',
-        process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM
+        getPlatformDir()
       )
     }
     process.env.UNI_OUTPUT_DIR = (options as BuildOptions).outDir!
@@ -155,9 +156,47 @@ export function initEnv(
     )
   }
 
+  if (
+    (options as BuildOptions).sourcemap &&
+    process.env.NODE_ENV === 'production'
+  ) {
+    process.env.SOURCEMAP = 'true'
+  }
+
   initModulePaths()
 
   console.log(M['compiling'])
+}
+
+function initUtsPlatform(options: CliOptions) {
+  if (options.platform === 'app-android') {
+    process.env.UNI_UTS_PLATFORM = 'app-android'
+    options.platform = 'app'
+  } else if (options.platform === 'app-ios') {
+    process.env.UNI_UTS_PLATFORM = 'app-ios'
+    options.platform = 'app'
+  } else {
+    // 运行时，可能传入了 UNI_APP_PLATFORM = 'android'|'ios'
+    if (process.env.UNI_APP_PLATFORM === 'android') {
+      process.env.UNI_UTS_PLATFORM = 'app-android'
+    }
+    if (process.env.UNI_APP_PLATFORM === 'ios') {
+      process.env.UNI_UTS_PLATFORM = 'app-ios'
+    }
+    if (options.platform === 'app-plus') {
+      options.platform = 'app'
+    }
+  }
+  if (options.platform === 'h5') {
+    process.env.UNI_UTS_PLATFORM = 'web'
+  }
+  // 非 app 平台，自动补充 UNI_UTS_PLATFORM
+  // app 平台，必须主动传入
+  if (options.platform !== 'app') {
+    if (!process.env.UNI_UTS_PLATFORM) {
+      process.env.UNI_UTS_PLATFORM = options.platform as any
+    }
+  }
 }
 
 function initAutomator({ autoHost, autoPort }: CliOptions) {
@@ -193,6 +232,9 @@ function resolveHostname() {
 export function cleanOptions(options: CliOptions) {
   const ret = { ...options }
   delete ret['--']
+
+  delete ret.c
+  delete ret.config
 
   delete ret.platform
   delete ret.p

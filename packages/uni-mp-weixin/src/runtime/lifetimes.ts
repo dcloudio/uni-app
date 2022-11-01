@@ -8,6 +8,7 @@ import {
   CreateComponentOptions,
   CreateLifetimesOptions,
   findPropsData,
+  initFormField,
 } from '@dcloudio/uni-mp-core'
 
 import {
@@ -55,6 +56,7 @@ export function initLifetimes({
           propsData = this.options as Record<string, any>
         }
       }
+
       this.$vm = $createComponent(
         {
           type: vueOptions,
@@ -75,6 +77,9 @@ export function initLifetimes({
           },
         }
       ) as ComponentPublicInstance
+      if (!isMiniProgramPage) {
+        initFormField(this.$vm)
+      }
     },
     ready(this: MPComponentInstance) {
       // 当组件 props 默认值为 true，初始化时传入 false 会导致 created,ready 触发, 但 attached 不触发

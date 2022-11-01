@@ -2,11 +2,15 @@ declare namespace NodeJS {
   interface Process {
     UNI_NVUE_ENTRY: Record<string, string>
   }
+
   interface ProcessEnv {
     NODE_ENV: 'production' | 'development' | 'test'
     UNI_NODE_ENV: 'production' | 'development' | 'test'
     UNI_PLATFORM: UniApp.PLATFORM
+    UNI_APP_PLATFORM: 'android' | 'ios'
     UNI_SUB_PLATFORM: 'quickapp-webview-huawei' | 'quickapp-webview-union'
+    UNI_UTS_PLATFORM: 'app-android' | 'app-ios' | 'web' | UniApp.PLATFORM
+
     UNI_INPUT_DIR: string
     UNI_OUTPUT_DIR: string
     UNI_CLI_CONTEXT: string
