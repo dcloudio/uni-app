@@ -178,7 +178,9 @@ module.exports = function (content, map) {
   }
 
   const jsonFiles = require('./platforms/' + process.env.UNI_PLATFORM)(
-    process.env.UNI_PLATFORM === 'app-plus' ? originalPagesJson : pagesJson,
+    process.env.UNI_PLATFORM === 'app-plus' && process.env.VUE_APP_DARK_MODE === 'true'
+      ? originalPagesJson
+      : pagesJson,
     manifestJson,
     isAppView
   )
