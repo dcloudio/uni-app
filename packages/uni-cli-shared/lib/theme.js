@@ -47,8 +47,8 @@ module.exports = {
       console.error(e)
     }
   },
-  parseTheme (json) {
-    const theme = global.uniPlugin.defaultTheme
+  parseTheme (json, _theme) {
+    const theme = themeConfig[_theme] || global.uniPlugin.defaultTheme
     if (!theme) {
       return json
     }

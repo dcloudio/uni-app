@@ -21,6 +21,16 @@ function IEVersion () {
   }
 }
 
+export function getTheme () {
+  try {
+    return window.matchMedia('(prefers-color-scheme: light)').matches
+      ? 'light'
+      : 'dark'
+  } catch (error) {
+    return 'light'
+  }
+}
+
 const ua = navigator.userAgent
 /**
  * 是否安卓设备
@@ -201,6 +211,6 @@ export function getBrowserInfo () {
     ua,
     osname,
     osversion,
-    theme: undefined
+    theme: getTheme()
   }
 }

@@ -6,10 +6,14 @@ import {
   onMethod
 } from '../../platform'
 
+import {
+  ON_THEME_CHANGE
+} from 'uni-helpers/constants'
+
 const callbacks = []
 const oldCallbacks = []
 
-onMethod('onThemeChange', function (res) {
+onMethod(ON_THEME_CHANGE, function (res) {
   callbacks.forEach(callbackId => {
     invoke(callbackId, res)
   })

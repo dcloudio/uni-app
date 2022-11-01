@@ -99,9 +99,16 @@ module.exports = function (content, map) {
     }
   }
 
+  const platformManifestJson = manifestJson[process.env.UNI_PLATFORM] || {}
+
   const pagesJson = parseTheme(originalPagesJson)
   if (global.uniPlugin.defaultTheme) {
-    this.addDependency(path.resolve(process.env.UNI_INPUT_DIR, 'theme.json'))
+    this.addDependency(
+      path.resolve(
+        process.env.UNI_INPUT_DIR,
+        platformManifestJson.themeLocation || 'theme.json'
+      )
+    )
   }
 
   // 组件自动导入配置
@@ -120,7 +127,7 @@ module.exports = function (content, map) {
   if (process.env.UNI_PLATFORM === 'h5') {
     return this.callback(
       null,
-      require('./platforms/h5')(pagesJson, manifestJson, this),
+      require('./platforms/h5')(originalPagesJson, manifestJson, this),
       map
     )
   }
