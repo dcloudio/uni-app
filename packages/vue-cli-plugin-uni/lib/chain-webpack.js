@@ -91,6 +91,17 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
               }
               return options
             })
+          const platformExcludes = ['app-plus', 'h5', 'mp-360']
+          const platform = process.env.UNI_PLATFORM
+          if (!platformExcludes.includes(platform)) {
+            // remove warning https://github.com/vuejs/vue-loader/issues/1742
+            langRule.oneOf(type)
+              .use('extract-css-loader')
+              .tap(options => {
+                options.esModule = false
+                return options
+              })
+          }
         }
         langRule.oneOf(type)
           .use('uniapp-preprocss')
