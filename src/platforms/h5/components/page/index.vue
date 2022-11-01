@@ -257,14 +257,9 @@ export default {
       titleNView
     } = normalizeNavigationBar.call(this)
 
-    if (__uniConfig.darkmode) {
-
-    }
-
     return {
       navigationBar,
-      refreshOptions: getRefreshOptions.call(this, titleNView),
-      darkmodeStyle: {}
+      refreshOptions: getRefreshOptions.call(this, titleNView)
     }
   },
   created () {

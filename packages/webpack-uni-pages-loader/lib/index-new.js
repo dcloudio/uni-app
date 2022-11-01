@@ -127,7 +127,11 @@ module.exports = function (content, map) {
   if (process.env.UNI_PLATFORM === 'h5') {
     return this.callback(
       null,
-      require('./platforms/h5')(originalPagesJson, manifestJson, this),
+      require('./platforms/h5')(
+        process.env.VUE_APP_DARK_MODE === 'true' ? originalPagesJson : pagesJson,
+        manifestJson,
+        this
+      ),
       map
     )
   }

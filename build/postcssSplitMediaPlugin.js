@@ -3,7 +3,7 @@ const mediaQuerys = []
 module.exports = {
   splitMediaPlugin: function (root, result) {
     root.walkAtRules(rule => {
-      if (rule.params === '(perfers-color-scheme:dark)') {
+      if (rule.params.indexOf('prefers-color-scheme') !== -1) {
         root.removeChild(rule)
 
         mediaQuerys.push(rule)

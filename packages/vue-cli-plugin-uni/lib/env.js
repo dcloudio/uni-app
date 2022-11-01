@@ -35,7 +35,7 @@ process.env.UNI_APP_NAME = manifestJsonObj.name || ''
 process.env.UNI_PLATFORM = process.env.UNI_PLATFORM || 'h5'
 process.env.UNI_APP_VERSION_NAME = manifestJsonObj.versionName
 process.env.UNI_APP_VERSION_CODE = manifestJsonObj.versionCode
-process.env.VUE_APP_DARK_MODE = (manifestJsonObj[process.env.UNI_PLATFORM] || {}).darkmode
+process.env.VUE_APP_DARK_MODE = (manifestJsonObj[process.env.UNI_PLATFORM] || {}).darkmode || false
 
 // 小程序 vue3 标记
 if (process.env.UNI_PLATFORM.indexOf('mp-') === 0) {
@@ -274,7 +274,6 @@ if (process.env.UNI_PLATFORM === 'h5') {
     process.env.VUE_APP_INDEX_DARK_CSS_HASH = loaderUtils.getHashDigest(indexDarkCssBuffer, 'md5', 'hex', 8)
   } catch (error) {
     process.env.VUE_APP_INDEX_DARK_CSS_HASH = ''
-    process.env.VUE_APP_DARK_MODE = false
   }
 }
 
