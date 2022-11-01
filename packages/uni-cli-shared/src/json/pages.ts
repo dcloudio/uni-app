@@ -13,7 +13,7 @@ import { isVueSfcFile } from '../vue/utils'
 import { parseVueRequest } from '../vite'
 import { EXTNAME_VUE_RE, TEXT_STYLE } from '../constants'
 import { initTheme } from './theme'
-import { parseManifestJsonOnce } from './manifest'
+import { getPlatformManifestJsonOnce } from './manifest'
 
 const pagesCacheSet: Set<string> = new Set()
 
@@ -131,9 +131,12 @@ export function normalizePagesJson(
   pagesCacheSet.clear()
   pagesJson.pages.forEach((page) => pagesCacheSet.add(page.path))
 
-  return process.env.UNI_PLATFORM === 'app' || !process.env.UNI_INPUT_DIR
-    ? pagesJson
-    : initTheme(parseManifestJsonOnce(process.env.UNI_INPUT_DIR), pagesJson)
+  const manifestJsonPlatform = getPlatformManifestJsonOnce()
+  if (!manifestJsonPlatform.darkmode) {
+    pagesJson = initTheme(manifestJsonPlatform, pagesJson)
+  }
+
+  return pagesJson
 }
 
 export function validatePages(pagesJson: Record<string, any>, jsonStr: string) {
@@ -342,7 +345,7 @@ function normalizeNavigationBar(
   }
 
   const parsedNavigationBar = initTheme(
-    parseManifestJsonOnce(process.env.UNI_INPUT_DIR),
+    getPlatformManifestJsonOnce(),
     navigationBar
   )
 

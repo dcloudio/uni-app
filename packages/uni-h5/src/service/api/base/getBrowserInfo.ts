@@ -34,6 +34,18 @@ function IEVersion() {
   }
 }
 
+export function getTheme() {
+  try {
+    return (
+      window.matchMedia('(prefers-color-scheme: light)').matches
+        ? 'light'
+        : 'dark'
+    ) as UniApp.ThemeMode
+  } catch (error) {
+    return 'light'
+  }
+}
+
 export function getBrowserInfo() {
   let osname
   let osversion = '0'
@@ -205,6 +217,6 @@ export function getBrowserInfo() {
     ua,
     osname,
     osversion,
-    theme: undefined,
+    theme: getTheme(),
   }
 }

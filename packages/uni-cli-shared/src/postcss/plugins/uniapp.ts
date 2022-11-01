@@ -1,12 +1,20 @@
 import { extend } from '@vue/shared'
-import type { Rule, Declaration, Plugin } from 'postcss'
+import type { Rule, Declaration, Plugin, Root } from 'postcss'
+import postcss from 'postcss'
 import selectorParser from 'postcss-selector-parser'
 import {
   createRpx2Unit,
   defaultRpx2Unit,
   isBuiltInComponent,
   COMPONENT_SELECTOR_PREFIX,
+  normalizeStyles,
 } from '@dcloudio/uni-shared'
+
+import {
+  parsePagesJsonOnce,
+  normalizeThemeConfigOnce,
+  getPlatformManifestJsonOnce,
+} from '../../json'
 
 export interface UniAppCssProcessorOptions {
   unit?: string // 目标单位，默认rem
@@ -83,6 +91,37 @@ function walkDecls(rpx2unit: ReturnType<typeof createRpx2Unit>) {
   }
 }
 
+function darkmodeAtRule(root: Root, platform: UniApp.PLATFORM) {
+  const pageJson = parsePagesJsonOnce(process.env.UNI_PLATFORM, platform)
+  const filePath = root.source?.input.file || ''
+  if (
+    process.env.VUE_APP_DARK_MODE === 'true' &&
+    filePath.indexOf('App.vue') !== -1
+  ) {
+    const pageBGC = (pageJson.globalStyle || {}).backgroundColor || ''
+    if (pageBGC.indexOf('@') === 0) {
+      ;['dark', 'light'].forEach((theme) => {
+        const { backgroundColor } = normalizeStyles(
+          { backgroundColor: pageBGC },
+          normalizeThemeConfigOnce(getPlatformManifestJsonOnce()),
+          theme as UniApp.ThemeMode
+        )
+        if (backgroundColor !== 'undefined') {
+          const mediaRoot = postcss.parse(`
+            @media (prefers-color-scheme: ${theme}) {
+              body,
+              uni-page-body {
+                background-color: ${backgroundColor};
+              }
+            }
+          `)
+          root.nodes = [...mediaRoot.nodes, ...root.nodes]
+        }
+      })
+    }
+  }
+}
+
 const baiduTags: Record<string, string> = {
   navigator: 'nav',
 }
@@ -132,6 +171,9 @@ const uniapp = (opts?: UniAppCssProcessorOptions) => {
         OnceExit(root) {
           root.walkDecls(walkDecls(rpx2unit))
           const rewriteTag = transforms[platform]
+          if (['h5', 'app'].includes(platform)) {
+            darkmodeAtRule(root, platform)
+          }
           if (rewriteTag) {
             root.walkRules(
               walkRules({

@@ -107,6 +107,7 @@
   "onSocketMessage",
   "onSocketOpen",
   "onTabBarMidButtonTap",
+  "onThemeChange",
   "onUnhandledRejection",
   "onUserCaptureScreen",
   "onWindowResize",
