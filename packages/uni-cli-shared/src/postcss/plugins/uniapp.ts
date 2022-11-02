@@ -108,12 +108,14 @@ function darkmodeAtRule(root: Root, platform: UniApp.PLATFORM) {
         )
         if (backgroundColor !== 'undefined') {
           const mediaRoot = postcss.parse(`
+            /* #ifndef APP-NVUE*/
             @media (prefers-color-scheme: ${theme}) {
               body,
               uni-page-body {
                 background-color: ${backgroundColor};
               }
             }
+            /* #endif */
           `)
           root.nodes = [...mediaRoot.nodes, ...root.nodes]
         }

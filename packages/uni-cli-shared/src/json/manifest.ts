@@ -127,7 +127,7 @@ export function getDevServerOptions(manifestJson: Record<string, any>) {
 
 export function getPlatformManifestJsonOnce() {
   const platform =
-    process.env.UNI_PLATFORM === 'app-plus' ? 'app' : process.env.UNI_PLATFORM
+    process.env.UNI_PLATFORM === 'app' ? 'app-plus' : process.env.UNI_PLATFORM
   return !process.env.UNI_INPUT_DIR
     ? {}
     : parseManifestJsonOnce(process.env.UNI_INPUT_DIR)[platform] || {}
