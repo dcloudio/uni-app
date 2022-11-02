@@ -13,7 +13,8 @@ body {
 
 @media (prefers-color-scheme: dark) {
   body {
-    color-scheme: dark;
+    background-color: #191919;
+    color: hsla(0, 0%, 100%, 0.8);
   }
 }
 
