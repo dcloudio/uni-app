@@ -137,7 +137,7 @@ describe('sourceMap', () => {
       column: 15,
     })
     expect(res).toEqual({
-      line: 15,
+      line: 18,
       column: 16,
       lastColumn: null,
     })
@@ -157,7 +157,7 @@ describe('sourceMap', () => {
     const { line, column, source } = await originalPositionFor({
       sourceMapFile,
       filename,
-      line: 15,
+      line: 18,
       column: 16,
     })
 

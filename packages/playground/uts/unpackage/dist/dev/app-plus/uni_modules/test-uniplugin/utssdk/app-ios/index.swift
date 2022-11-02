@@ -3,7 +3,7 @@ import UIKit;
 import CoreLocation;
 @objc(UTSSDKModulesTestUniPluginGetBatteryInfoOptions)
 @objcMembers
-class GetBatteryInfoOptions : UTSJSONObject {
+class GetBatteryInfoOptions : NSObject {
     public var name: String!;
     public var pwd: NSNumber!;
     public var success: UTSCallback?;
