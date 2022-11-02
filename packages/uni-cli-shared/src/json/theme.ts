@@ -4,7 +4,7 @@ import { parseJson } from './json'
 import { once, normalizeStyles } from '@dcloudio/uni-shared'
 
 export const parseThemeJson = (themeLocation: string = 'theme.json') => {
-  if (!themeLocation) {
+  if (!themeLocation || !process.env.UNI_INPUT_DIR) {
     return {}
   }
   themeLocation = path.join(process.env.UNI_INPUT_DIR, themeLocation)
