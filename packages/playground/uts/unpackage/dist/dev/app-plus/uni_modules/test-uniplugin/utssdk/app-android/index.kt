@@ -1,4 +1,4 @@
-package uts.modules.testUniPlugin;
+package uts.modules.modules.testUniPlugin;
 import kotlinx.coroutines.*;
 import io.dcloud.uts.runtime.*;
 import io.dcloud.uts.android.getResourcePath;
@@ -9,10 +9,10 @@ interface IUser {
     fun register(name: String): Unit;
 }
 fun test() {
-    console.log("test", " at uni_modules/test-uniplugin/app-android/utils.uts:2");
+    console.log("test", " at uni_modules/test-uniplugin/utssdk/app-android/utils.uts:2");
 }
 fun login(name: String, pwd: String): UTSJSONObject {
-    console.log("login", " at uni_modules/test-uniplugin/app-android/login.uts:3");
+    console.log("login", " at uni_modules/test-uniplugin/utssdk/app-android/login.uts:3");
     test();
     return object : UTSJSONObject() {
         var name = name
@@ -29,14 +29,14 @@ open class GetBatteryInfoOptions : UTSJSONObject() {
 open class User : IUser {
     open suspend fun login(name: String, pwd: String) = CoroutineScope(Dispatchers.Default).async {
         setTimeout(fun(){
-            console.log("timeout", " at uni_modules/test-uniplugin/app-android/index.uts:18");
+            console.log("timeout", " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:18");
         }
         , 1000);
         login(name, pwd);
         Log.info(default);
-        console.log("def android", " at uni_modules/test-uniplugin/app-android/index.uts:23");
-        console.log("ndef ios", " at uni_modules/test-uniplugin/app-android/index.uts:32");
-        console.log("def android || def ios", " at uni_modules/test-uniplugin/app-android/index.uts:35");
+        console.log("def android", " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:23");
+        console.log("ndef ios", " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:32");
+        console.log("def android || def ios", " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:35");
         XToast<XToast<*>>(getUniActivity()).setContentView(R.layout.toast_hint).setDuration(1000).setImageDrawable(android.R.id.icon, R.mipmap.ic_dialog_tip_finish).setText(android.R.id.message, "点我消失").show();
     }
     override fun register(name: String, callback: UTSCallback) {

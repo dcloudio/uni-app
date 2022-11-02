@@ -158,17 +158,19 @@ function hasDeps(configJsonFile: string) {
 
 function checkRes(
   filename: string,
-  checkRResources: (
-    resDir: string
-  ) => Promise<{ code: number; msg: string; jarPaths: string[] }>
+  checkRResources: (resDir: string) => Promise<{
+    code: number
+    msg: string
+    data: { jarPath: string; uniModuleName: string }
+  }>
 ) {
   const resDir = resolveResDir(filename)
   if (resDir) {
-    return checkRResources(resDir).then(({ code, msg, jarPaths }) => {
+    return checkRResources(resDir).then(({ code, msg, data }) => {
       if (code !== 0) {
         throw msg
       }
-      return jarPaths
+      return [data.jarPath]
     })
   }
   return Promise.resolve([])
@@ -319,9 +321,11 @@ interface CompilerServer {
   checkDependencies?: (
     configJsonPath: string
   ) => Promise<{ code: number; msg: string; data: string[] }>
-  checkRResources?: (
-    resDir: string
-  ) => Promise<{ code: number; msg: string; jarPaths: string[] }>
+  checkRResources?: (resDir: string) => Promise<{
+    code: number
+    msg: string
+    data: { jarPath: string; uniModuleName: string }
+  }>
 }
 
 function getCompilerServer(): CompilerServer | undefined {

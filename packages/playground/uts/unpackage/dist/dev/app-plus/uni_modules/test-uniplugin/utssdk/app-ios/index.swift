@@ -24,11 +24,11 @@ func getBatteryInfo(_ options: GetBatteryInfoOptions) {
     }
 }
 func test1(_ callback: UTSCallback) -> String {
-    console.log("test1", " at uni_modules/test-uniplugin/app-ios/index.uts:27");
-    console.log("def ios", " at uni_modules/test-uniplugin/app-ios/index.uts:32");
-    console.log("ndef android", " at uni_modules/test-uniplugin/app-ios/index.uts:35");
-    console.log("def android || def ios", " at uni_modules/test-uniplugin/app-ios/index.uts:41");
-    console.log(CLLocationManager, CLAuthorizationStatus, " at uni_modules/test-uniplugin/app-ios/index.uts:46");
+    console.log("test1", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:27");
+    console.log("def ios", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:32");
+    console.log("ndef android", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:35");
+    console.log("def android || def ios", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:41");
+    console.log(CLLocationManager, CLAuthorizationStatus, " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:46");
     return "test1";
 }
 class Test1 : NSObject {

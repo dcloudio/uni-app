@@ -6,6 +6,8 @@ import { runSwiftProd, runSwiftDev } from './swift'
 import { genProxyCode, resolvePlatformIndex, resolveRootIndex } from './code'
 import { resolvePackage } from './utils'
 
+export * from './sourceMap'
+
 export async function compile(module: string) {
   const pkg = resolvePackage(module)
   if (!pkg) {
