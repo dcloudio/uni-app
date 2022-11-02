@@ -23,6 +23,13 @@ uni-page-body {
   box-sizing: border-box;
   width: 100%;
 }
+
+@media (prefers-color-scheme: dark) {
+  uni-page-body {
+    background-color: #191919;
+    color: hsla(0, 0%, 100%, 0.8);
+  }
+}
 </style>
 <script>
 import appendCss from 'uni-platform/helpers/append-css'

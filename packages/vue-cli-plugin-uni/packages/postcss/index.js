@@ -6,8 +6,6 @@ if (process.env.UNI_USING_V3) {
   const valueParser = require('postcss-value-parser')
 
   const {
-    parseTheme,
-    getJson,
     getPlatformCssVars
   } = require('@dcloudio/uni-cli-shared')
 
@@ -22,7 +20,6 @@ if (process.env.UNI_USING_V3) {
   }
 
   const cssVars = getPlatformCssVars()
-  const pageJson = getJson('pages.json', true)
 
   const transformSelector = (complexSelector, transformer) => {
     return selectorParser(transformer).processSync(complexSelector)
@@ -172,30 +169,6 @@ if (process.env.UNI_USING_V3) {
 
       if (process.env.UNI_PLATFORM === 'h5') {
         // Transform CSS AST here
-
-        // darkmode
-        if (
-          process.env.VUE_APP_DARK_MODE === 'true' &&
-          root.source.input.file.indexOf('App.vue') !== -1
-        ) {
-          const pageBGC = (pageJson.globalStyle || {}).backgroundColor || ''
-          if (pageBGC.indexOf('@') === 0) {
-            ['dark', 'light'].forEach(theme => {
-              const { backgroundColor } = parseTheme({ backgroundColor: pageBGC }, theme)
-              if (backgroundColor !== 'undefined') {
-                const mediaRoot = postcss.parse(`
-                  @media (prefers-color-scheme: ${theme}) {
-                    body,
-                    uni-page-body {
-                      background-color: ${backgroundColor};
-                    }
-                  }
-                `)
-                root.nodes = [...mediaRoot.nodes, ...root.nodes]
-              }
-            })
-          }
-        }
 
         root.walkRules(rule => {
           let hasPage = false

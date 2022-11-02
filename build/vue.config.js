@@ -20,7 +20,7 @@ if (process.env.UNI_PLATFORM === 'app-plus' && process.env.UNI_VIEW === 'true') 
   outputDir = resolve('./packages/uni-' + process.env.UNI_PLATFORM + '/dist')
 }
 
-postCssConfig.plugins.push(splitMediaPlugin)
+if (process.env.UNI_PLATFORM === 'h5') { postCssConfig.plugins.push(splitMediaPlugin) }
 
 module.exports = {
   publicPath: '/',
@@ -48,16 +48,17 @@ module.exports = {
       })
     config.plugins.delete('hmr') // remove hot module reload
 
-    config
-      .plugin('webpack-build-done')
-      .use(webpack.ProgressPlugin, [function (percentage, message, ...args) {
-        if (percentage === 1) {
-          console.log('webpack build done')
-          generateMediaQuerys({
-            outputDir
-          })
-        }
-      }])
+    if (process.env.UNI_PLATFORM === 'h5') {
+      config
+        .plugin('webpack-build-done')
+        .use(webpack.ProgressPlugin, [function (percentage, message, ...args) {
+          if (percentage === 1) {
+            generateMediaQuerys({
+              outputDir
+            })
+          }
+        }])
+    }
   },
   css: {
     extract: true,
