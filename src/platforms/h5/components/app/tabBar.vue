@@ -301,7 +301,8 @@ export default {
   data () {
     return {
       selectedIndex: 0,
-      visibleList: []
+      visibleList: [],
+      internalMidButton: {}
     }
   },
   computed: {
@@ -345,6 +346,9 @@ export default {
         this._initVisibleList()
         this.setSelectedIndex()
       }
+    },
+    midButton (config) {
+      this._initVisibleList()
     }
   },
   created () {
@@ -422,16 +426,16 @@ export default {
       const listLength = list.length
       // 偶数则添加midButton
       if (listLength % 2 === 0 && isPlainObject(this.midButton)) {
-        // 给midButton赋值默认值
-        const DefaultMidButton = {
-          width: '50px',
-          height: '50px',
-          iconWidth: '24px'
-        }
-        for (const key in DefaultMidButton) {
-          this.midButton[key] = this.midButton[key] || DefaultMidButton[key]
-        }
-        list.splice(~~(listLength / 2), 0, Object.assign({}, this.midButton, { isMidButton: true }))
+        this.internalMidButton = Object.assign(
+          {
+            width: '50px',
+            height: '50px',
+            iconWidth: '24px'
+          },
+          this.internalMidButton,
+          this.midButton
+        )
+        list.splice(~~(listLength / 2), 0, Object.assign({}, this.internalMidButton, { isMidButton: true }))
       }
       return list
     },
