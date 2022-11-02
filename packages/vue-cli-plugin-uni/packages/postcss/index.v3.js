@@ -1,6 +1,16 @@
 const selectorParser = require('postcss-selector-parser')
+const postcss = require('postcss')
 
-const TAGS = Object.keys(require('@dcloudio/uni-cli-shared').tags)
+const {
+  initTheme,
+  parseTheme,
+  getJson,
+  getManifestJson,
+  tags
+} = require('@dcloudio/uni-cli-shared')
+
+const TAGS = Object.keys(tags)
+const pageJson = getJson('pages.json', true)
 
 const transformSelector = (complexSelector, transformer) => {
   return selectorParser(transformer).processSync(complexSelector)
@@ -41,6 +51,34 @@ function once (root) {
       )
     }
   })
+
+  // darkmode
+  if (
+    process.env.VUE_APP_DARK_MODE === 'true' &&
+    root.source.input.file.indexOf('App.vue') !== -1
+  ) {
+    const pageBGC = (pageJson.globalStyle || {}).backgroundColor || ''
+    if (pageBGC.indexOf('@') === 0) {
+      // app 端 webpack-uni-pages-loader/lib/index-new.js 执行晚于 postCss
+      initTheme(getManifestJson())
+      ;['dark', 'light'].forEach(theme => {
+        const { backgroundColor } = parseTheme({ backgroundColor: pageBGC }, theme)
+        if (backgroundColor !== 'undefined') {
+          const mediaRoot = postcss.parse(`
+            /* #ifndef APP-NVUE*/
+            @media (prefers-color-scheme: ${theme}) {
+              body,
+              uni-page-body {
+                background-color: ${backgroundColor};
+              }
+            }
+            /* #endif */
+          `)
+          root.nodes = [...mediaRoot.nodes, ...root.nodes]
+        }
+      })
+    }
+  }
 }
 
 const version = Number(require('postcss/package.json').version.split('.')[0])

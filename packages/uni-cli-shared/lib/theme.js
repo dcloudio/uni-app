@@ -41,7 +41,7 @@ module.exports = {
       return
     }
     try {
-      themeConfig = getJson(themeLocation, true)
+      themeConfig = Object.keys(themeConfig).length ? themeConfig : getJson(themeLocation, true)
       global.uniPlugin.defaultTheme = themeConfig.light
     } catch (e) {
       console.error(e)
