@@ -12,7 +12,8 @@ body {
 }
 
 @media (prefers-color-scheme: dark) {
-  body {
+  body,
+  uni-page-body {
     background-color: #191919;
     color: hsla(0, 0%, 100%, 0.8);
   }
