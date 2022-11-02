@@ -4858,6 +4858,12 @@ function setRef$1(instance, isUnmount = false) {
         nextTick$1(instance, doSet);
     }
 }
+function toSkip(value) {
+    if (isObject(value)) {
+        markRaw(value);
+    }
+    return value;
+}
 function findComponentPublicInstance(mpComponents, id) {
     const mpInstance = mpComponents.find(com => com && (com.properties || com.props).uI === id);
     if (mpInstance) {
@@ -4866,7 +4872,7 @@ function findComponentPublicInstance(mpComponents, id) {
             return getExposeProxy(vm.$) || vm;
         }
         // 可能是原生组件
-        return mpInstance;
+        return toSkip(mpInstance);
     }
     return null;
 }
