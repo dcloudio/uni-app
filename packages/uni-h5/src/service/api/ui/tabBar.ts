@@ -48,6 +48,7 @@ const setTabBarStyleProps = [
   'selectedColor',
   'backgroundColor',
   'borderStyle',
+  'midButton',
 ]
 const setTabBarBadgeProps = ['badge', 'redDot']
 

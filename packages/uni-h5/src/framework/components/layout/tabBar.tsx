@@ -7,6 +7,7 @@ import {
   onMounted,
   reactive,
 } from 'vue'
+import { extend } from '@vue/shared'
 import { RouteLocationNormalizedLoaded, useRoute } from 'vue-router'
 import { invokeHook, updatePageCssVar } from '@dcloudio/uni-core'
 import {
@@ -23,6 +24,12 @@ import { normalizeWindowBottom } from '../../../helpers/cssVar'
 import { parseTheme, onThemeChange } from '../../../helpers/theme'
 
 const UNI_TABBAR_ICON_FONT = 'UniTabbarIconFont'
+
+const _middleButton = {
+  width: '50px',
+  height: '50px',
+  iconWidth: '24px',
+}
 
 export default /*#__PURE__*/ defineSystemComponent({
   name: 'TabBar',
@@ -89,18 +96,27 @@ function useVisibleList(
   tabBar: UniApp.TabBarOptions,
   visibleList: Ref<UniApp.TabBarItemOptions[]>
 ) {
+  const internalMidButton = ref<UniApp.TabBarMidButtonOptions>(
+    extend({ type: 'midButton' }, tabBar.midButton)
+  )
   function setVisibleList() {
     let tempList = []
     tempList = tabBar.list.filter((item) => item.visible !== false)
 
-    if (__UNI_FEATURE_TABBAR_MIDBUTTON__) {
+    if (__UNI_FEATURE_TABBAR_MIDBUTTON__ && tabBar.midButton) {
+      internalMidButton.value = extend(
+        {},
+        _middleButton,
+        internalMidButton.value,
+        tabBar.midButton
+      )
       tempList = tempList.filter((item) => !isMidButton(item))
 
       if (tempList.length % 2 === 0) {
         tempList.splice(
           Math.floor(tempList.length / 2),
           0,
-          tabBar.list[Math.floor(tabBar.list.length / 2)]
+          internalMidButton.value
         )
       }
     }

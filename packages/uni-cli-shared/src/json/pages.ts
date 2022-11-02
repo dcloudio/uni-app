@@ -426,26 +426,6 @@ function normalizeTabBar(
     return
   }
   tabBar = extend({}, DEFAULT_TAB_BAR, tabBar)
-  if (platform === 'h5') {
-    const len = list.length
-    if (len % 2 === 0 && isPlainObject(midButton)) {
-      list.splice(
-        Math.floor(len / 2),
-        0,
-        extend(
-          {
-            type: 'midButton',
-            width: '50px',
-            height: '50px',
-            iconWidth: '24px',
-          },
-          midButton
-        )
-      )
-    } else {
-      delete tabBar.midButton
-    }
-  }
   list.forEach((item) => {
     if (item.iconPath) {
       item.iconPath = normalizeFilepath(item.iconPath)
@@ -453,10 +433,10 @@ function normalizeTabBar(
     if (item.selectedIconPath) {
       item.selectedIconPath = normalizeFilepath(item.selectedIconPath)
     }
-    if (item.type === 'midButton' && item.backgroundImage) {
-      item.backgroundImage = normalizeFilepath(item.backgroundImage)
-    }
   })
+  if (midButton && midButton.backgroundImage) {
+    midButton.backgroundImage = normalizeFilepath(midButton.backgroundImage)
+  }
   tabBar.selectedIndex = 0
   tabBar.shown = true
   return tabBar
