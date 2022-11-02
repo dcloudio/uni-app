@@ -1,6 +1,9 @@
 package uts.modules.modules.testUniPlugin;
-import kotlinx.coroutines.*;
-import io.dcloud.uts.runtime.*;
+import kotlinx.coroutines.async;
+import kotlinx.coroutines.CoroutineScope;
+import kotlinx.coroutines.Deferred;
+import kotlinx.coroutines.Dispatchers;
+import io.dcloud.uts.*;
 import io.dcloud.uts.android.getResourcePath;
 import android.util.Log;
 import android.widget.FrameLayout;

@@ -32,7 +32,13 @@ async function testKotlin() {
     output: {
       outDir,
       package: 'uts.modules.modules.testUniPlugin',
-      imports: ['kotlinx.coroutines.*', 'io.dcloud.uts.runtime.*'],
+      imports: [
+        'kotlinx.coroutines.async',
+        'kotlinx.coroutines.CoroutineScope',
+        'kotlinx.coroutines.Deferred',
+        'kotlinx.coroutines.Dispatchers',
+        'io.dcloud.uts.*',
+      ],
       sourceMap,
       extname: 'kt',
       logFilename: true,
