@@ -154,7 +154,9 @@ let proxy;
 const callbacks = {};
 function normalizeArg(arg) {
     if (typeof arg === 'function') {
-        const id = callbackId++;
+        // 查找该函数是否已缓存
+        const oldId = Object.keys(callbacks).find((id) => callbacks[id] === arg);
+        const id = oldId ? parseInt(oldId) : callbackId++;
         callbacks[id] = arg;
         return id;
     }

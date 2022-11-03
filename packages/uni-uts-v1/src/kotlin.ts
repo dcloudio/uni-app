@@ -75,7 +75,7 @@ export async function runKotlinDev(
   if (fs.existsSync(kotlinFile)) {
     const compilerServer = getCompilerServer()
     if (!compilerServer) {
-      return
+      throw `项目使用了uts插件，正在安装 uts Android 运行扩展...`
     }
     const {
       getDefaultJar,
@@ -124,6 +124,10 @@ export async function runKotlinDev(
           path.relative(process.env.UNI_OUTPUT_DIR, dexFile)
         )
       }
+    } else {
+      throw `${normalizePath(
+        path.relative(process.env.UNI_INPUT_DIR, filename)
+      )} 编译失败`
     }
   }
   return result

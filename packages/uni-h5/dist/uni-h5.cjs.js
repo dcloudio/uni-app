@@ -11112,6 +11112,12 @@ const TabBar = /* @__PURE__ */ defineSystemComponent({
       tabBar2.color = tabBarStyle.color;
       tabBar2.selectedColor = tabBarStyle.selectedColor;
       tabBar2.blurEffect = tabBarStyle.blurEffect;
+      if (tabBarStyle.list.length) {
+        tabBarStyle.list.forEach((item, index2) => {
+          tabBar2.list[index2].iconPath = item.iconPath;
+          tabBar2.list[index2].selectedIconPath = item.selectedIconPath;
+        });
+      }
     });
     return () => {
       const tabBarItemsTsx = createTabBarItemsTsx(tabBar2, onSwitchTab, visibleList);

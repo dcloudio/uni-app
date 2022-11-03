@@ -1,0 +1,4 @@
+export function onMemoryWarning(callback: (level: number) => void) {}
+export function offMemoryWarning(
+  callback: ((level: number) => void) | null = null
+) {}

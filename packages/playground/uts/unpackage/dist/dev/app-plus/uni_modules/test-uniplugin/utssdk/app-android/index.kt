@@ -49,3 +49,4 @@ open class User : IUser {
 }
 fun login(name: String, callback: () -> Unit) {}
 fun register(name: String, callback: UTSCallback) {}
+fun offMemoryWarning(callback: (UTSCallback)? = null) {}

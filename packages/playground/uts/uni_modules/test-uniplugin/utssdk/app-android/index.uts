@@ -42,13 +42,16 @@ export class User implements IUser {
       .setContentView(R.layout.toast_hint)
       .setDuration(1000)
       .setImageDrawable(android.R.id.icon, R.mipmap.ic_dialog_tip_finish)
-      .setText(android.R.id.message, "点我消失")
+      .setText(android.R.id.message, '点我消失')
       .show()
   }
   register(name: string, callback: () => void) {
     Log.info(logo as FrameLayout)
   }
-  test(view: View) { }
+  test(view: View) {}
 }
-function login(name: string, callback: () => void) { }
-export function register(name: string, callback: () => void) { }
+function login(name: string, callback: () => void) {}
+export function register(name: string, callback: () => void) {}
+export function offMemoryWarning(
+  callback: null | ((level: number) => void) = null
+) {}

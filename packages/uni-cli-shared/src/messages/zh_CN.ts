@@ -27,4 +27,6 @@ export default {
   'file.notfound': '{file} 文件不存在',
   'uts.ios.tips':
     '项目使用了uts插件，iOS平台uts插件代码修改后需要重新生成[自定义基座](https://uniapp.dcloud.net.cn/tutorial/run/run-app.html#customplayground)才能生效',
+  'uts.android.compiler.server':
+    '项目使用了uts插件，正在安装 uts Android 运行扩展...',
 } as const

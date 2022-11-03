@@ -7,6 +7,7 @@ import {
   NullablePosition,
   SourceMapConsumer,
 } from 'source-map'
+import { isWindows } from './shared'
 
 const EXTNAME = {
   kotlin: '.kt',
@@ -95,7 +96,7 @@ export function generatedPositionFor({
 }: PositionFor): Promise<NullablePosition> {
   return resolveSourceMapConsumer(sourceMapFile).then((consumer) => {
     return consumer.generatedPositionFor({
-      source: filename,
+      source: isWindows ? `\\\\?\\` : '' + filename,
       line,
       column,
     })

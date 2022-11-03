@@ -2246,6 +2246,9 @@ const METHODS = {
     moveAlong(ctx, args) {
         return invokeVmMethod(ctx, 'moveAlong', args);
     },
+    setLocMarkerIcon(ctx, args) {
+        return invokeVmMethod(ctx, 'setLocMarkerIcon', args);
+    },
     openMapApp(ctx, args) {
         return invokeVmMethod(ctx, 'openMapApp', args);
     },
@@ -9565,6 +9568,9 @@ class MapContext {
     }
     moveAlong(options) {
         operateMapWrap(this.id, this.pageId, 'moveAlong', options);
+    }
+    setLocMarkerIcon(options) {
+        operateMapWrap(this.id, this.pageId, 'setLocMarkerIcon', options);
     }
     openMapApp(options) {
         operateMapWrap(this.id, this.pageId, 'openMapApp', options);

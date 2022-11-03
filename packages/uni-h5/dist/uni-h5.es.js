@@ -3532,6 +3532,9 @@ class MapContext {
   moveAlong(options) {
     operateMapWrap(this.id, this.pageId, "moveAlong", options);
   }
+  setLocMarkerIcon(options) {
+    operateMapWrap(this.id, this.pageId, "setLocMarkerIcon", options);
+  }
   openMapApp(options) {
     operateMapWrap(this.id, this.pageId, "openMapApp", options);
   }
@@ -21518,6 +21521,12 @@ const TabBar = /* @__PURE__ */ defineSystemComponent({
       tabBar2.color = tabBarStyle.color;
       tabBar2.selectedColor = tabBarStyle.selectedColor;
       tabBar2.blurEffect = tabBarStyle.blurEffect;
+      if (tabBarStyle.list.length) {
+        tabBarStyle.list.forEach((item, index2) => {
+          tabBar2.list[index2].iconPath = item.iconPath;
+          tabBar2.list[index2].selectedIconPath = item.selectedIconPath;
+        });
+      }
     });
     onMounted(() => {
       if (tabBar2.iconfontSrc) {
