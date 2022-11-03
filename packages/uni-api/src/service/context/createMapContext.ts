@@ -88,6 +88,9 @@ export class MapContext implements UniApp.MapContext {
   moveAlong(options: any) {
     operateMapWrap(this.id, this.pageId, 'moveAlong', options)
   }
+  setLocMarkerIcon(options: any) {
+    operateMapWrap(this.id, this.pageId, 'setLocMarkerIcon', options)
+  }
   openMapApp(options: any) {
     operateMapWrap(this.id, this.pageId, 'openMapApp', options)
   }
