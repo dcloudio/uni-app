@@ -23,6 +23,10 @@ body {
   background-color: white;
 }
 
+#app{
+  height: 100%;
+}
+
 @media (prefers-color-scheme: dark) {
   body {
     background-color: #191919;
