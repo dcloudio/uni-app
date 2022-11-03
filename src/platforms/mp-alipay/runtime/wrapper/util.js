@@ -6,10 +6,13 @@ import {
 } from 'uni-shared'
 
 import {
-  handleLink as handleBaseLink
+  handleLink as handleBaseLink,
+  toSkip
 } from '../../../mp-weixin/runtime/wrapper/util'
 
 import deepEqual from './deep-equal'
+
+export { markMPComponent } from '../../../mp-weixin/runtime/wrapper/util'
 
 const customizeRE = /:/g
 
@@ -145,9 +148,9 @@ export function handleRef (ref) {
   const refName = ref.props['data-ref']
   const refInForName = ref.props['data-ref-in-for']
   if (refName) {
-    this.$vm.$refs[refName] = ref.$vm || ref
+    this.$vm.$refs[refName] = ref.$vm || toSkip(ref)
   } else if (refInForName) {
-    (this.$vm.$refs[refInForName] || (this.$vm.$refs[refInForName] = [])).push(ref.$vm || ref)
+    (this.$vm.$refs[refInForName] || (this.$vm.$refs[refInForName] = [])).push(ref.$vm || toSkip(ref))
   }
 }
 

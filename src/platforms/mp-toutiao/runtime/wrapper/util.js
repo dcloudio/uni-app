@@ -1,6 +1,7 @@
 import {
   findVmByVueId,
-  initRefs as initRefsBase
+  initRefs as initRefsBase,
+  toSkip
 } from '../../../mp-weixin/runtime/wrapper/util'
 
 export const mocks = ['__route__', '__webviewId__', '__nodeid__', '__nodeId__']
@@ -19,7 +20,7 @@ export function initRefs (vm) {
     mpInstance.selectAllComponents('.vue-ref', (components) => {
       components.forEach(component => {
         const ref = component.dataset.ref
-        vm.$refs[ref] = component.$vm || component
+        vm.$refs[ref] = component.$vm || toSkip(component)
       })
     })
     mpInstance.selectAllComponents('.vue-ref-in-for', (forComponents) => {
@@ -28,7 +29,7 @@ export function initRefs (vm) {
         if (!vm.$refs[ref]) {
           vm.$refs[ref] = []
         }
-        vm.$refs[ref].push(component.$vm || component)
+        vm.$refs[ref].push(component.$vm || toSkip(component))
       })
     })
   }
