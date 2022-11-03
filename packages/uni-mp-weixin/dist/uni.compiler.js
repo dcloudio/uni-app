@@ -182,7 +182,6 @@ const options = {
                 ...(process.env.UNI_MP_PLUGIN ? [uniCliShared.copyMiniProgramPluginJson] : []),
                 {
                     src: [
-                        'theme.json',
                         'sitemap.json',
                         'ext.json',
                         'custom-tab-bar',
@@ -194,6 +193,7 @@ const options = {
                         return process.env.UNI_OUTPUT_DIR;
                     },
                 },
+                ...uniCliShared.copyMiniProgramThemeJson(),
             ],
         },
     },

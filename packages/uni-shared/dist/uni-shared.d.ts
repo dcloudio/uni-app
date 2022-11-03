@@ -444,6 +444,8 @@ export declare interface NVueTaskCenter {
     updateData: (componentId: string, data: Record<string, unknown> | void, callback?: Function) => void;
 }
 
+export declare const OFF_THEME_CHANGE = "offThemeChange";
+
 export declare const ON_ADD_TO_FAVORITES = "onAddToFavorites";
 
 export declare const ON_APP_ENTER_BACKGROUND = "onAppEnterBackground";
