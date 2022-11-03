@@ -1,6 +1,9 @@
 import path from 'path'
 import { initLocales } from '../../../i18n'
-import { normalizeNetworkTimeout } from '../../manifest'
+import {
+  normalizeNetworkTimeout,
+  getPlatformManifestJsonOnce,
+} from '../../manifest'
 import {
   getNVueCompiler,
   getNVueFlexDirection,
@@ -47,10 +50,7 @@ export function normalizeAppUniConfig(
   manifestJson: Record<string, any>
 ) {
   const { autoclose, alwaysShowBeforeRender } = getSplashscreen(manifestJson)
-  const platformConfig =
-    manifestJson[
-      process.env.UNI_PLATFORM === 'app' ? 'app-plus' : process.env.UNI_PLATFORM
-    ] || {}
+  const platformConfig = getPlatformManifestJsonOnce()
 
   const config: AppUniConfig = {
     pages: [],
