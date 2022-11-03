@@ -13,6 +13,12 @@ onThemeChange(() => {
   __uniConfig.tabBar.color = tabBarStyle.color
   __uniConfig.tabBar.selectedColor = tabBarStyle.selectedColor
   __uniConfig.tabBar.blurEffect = tabBarStyle.blurEffect
+  if (tabBarStyle.list.length && __uniConfig.tabBar.list.length) {
+    tabBarStyle.list.forEach((item, index) => {
+      __uniConfig.tabBar.list[index].iconPath = item.iconPath
+      __uniConfig.tabBar.list[index].selectedIconPath = item.selectedIconPath
+    })
+  }
 })
 
 export const tabBar = __uniConfig.tabBar
