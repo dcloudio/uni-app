@@ -444,6 +444,8 @@ function normalizeTabBar(
 const SCHEME_RE = /^([a-z-]+:)?\/\//i
 const DATA_RE = /^data:.*,.*/
 function normalizeFilepath(filepath: string) {
+  const manifestJsonPlatform = getPlatformManifestJsonOnce()
+  if (manifestJsonPlatform.darkmode && filepath.startsWith('@')) return filepath
   if (
     !(SCHEME_RE.test(filepath) || DATA_RE.test(filepath)) &&
     filepath.indexOf('/') !== 0
