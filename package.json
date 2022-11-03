@@ -14,7 +14,7 @@
     "size": "npm run build size-check",
     "lint": "eslint packages/*/src/**/*.ts",
     "format": "prettier --write --parser typescript \"packages/**/*.ts?(x)\"",
-    "test": "tsc -p ./test-dts/tsconfig.json && jest && node scripts/test.js",
+    "test": "tsc -p ./test-dts/tsconfig.json && node scripts/test.js && jest",
     "test-dts": "tsc -p ./test-dts/tsconfig.json && tsc -p ./test-dts/tsconfig.build.json",
     "preinstall": "npx only-allow pnpm",
     "postinstall": "simple-git-hooks",
