@@ -37,10 +37,6 @@ export async function runDev(options: CliOptions & ServerOptions) {
           event.result.close()
           if (isFirstEnd) {
             // 首次全量同步
-            // iOS 平台使用了 UTS
-            if (process.env.UNI_APP_IOS_UTS) {
-              console.log(`\u200B` + M['uts.ios.tips'] + `\u200B`)
-            }
             process.env.UNI_APP_CHANGED_PAGES = ''
             process.env.UNI_APP_CHANGED_FILES = ''
             process.env.UNI_APP_CHANGED_DEX_FILES = ''

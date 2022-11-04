@@ -3,7 +3,12 @@ import fs from 'fs-extra'
 import type { parse, bundle, UtsTarget } from '@dcloudio/uts'
 import { camelize, capitalize } from '@vue/shared'
 import { Module, ModuleItem } from '../types/types'
-import { normalizePath, resolveSourceMapPath } from './shared'
+import {
+  installHBuilderXPlugin,
+  normalizePath,
+  resolveSourceMapPath,
+  runByHBuilderX,
+} from './shared'
 
 export function resolveUTSSourceMapPath(_filename: string) {
   return resolveSourceMapPath()
@@ -26,11 +31,13 @@ export function resolvePackage(filename: string) {
     ? parts.findIndex((part) => part === 'uni_modules')
     : parts.findIndex((part) => part === 'utssdk')
   if (index > -1) {
-    const name = camelize(parts[index + 1])
+    const id = parts[index + 1]
+    const name = camelize(id)
     return {
-      is_uni_modules: isUniModules,
+      id,
       name,
       namespace: 'UTSSDK' + (isUniModules ? 'Modules' : '') + capitalize(name),
+      is_uni_modules: isUniModules,
     }
   }
 }
@@ -161,5 +168,25 @@ export function createResolveTypeReferenceName(namespace: string, ast: Module) {
       return namespace + capitalize(name)
     }
     return name
+  }
+}
+
+export type CompilerServer = {}
+export function getCompilerServer<T extends CompilerServer>(
+  pluginName: 'uts-development-ios' | 'uniapp-runextension'
+): T | undefined {
+  const compilerServerPath = path.resolve(
+    process.env.UNI_HBUILDERX_PLUGINS,
+    `${pluginName}/out/external`
+  )
+  if (fs.existsSync(compilerServerPath)) {
+    // eslint-disable-next-line no-restricted-globals
+    return require(compilerServerPath)
+  } else {
+    if (runByHBuilderX()) {
+      installHBuilderXPlugin(pluginName)
+    } else {
+      console.error(compilerServerPath + ' is not found')
+    }
   }
 }

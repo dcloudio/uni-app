@@ -40,37 +40,45 @@ export async function compile(module: string) {
       }
     }
   } else {
-    // dev 模式仅 android 支持
-    if (process.env.UNI_UTS_PLATFORM === 'app-android') {
+    if (
+      process.env.UNI_UTS_PLATFORM === 'app-android' ||
+      process.env.UNI_UTS_PLATFORM === 'app-ios'
+    ) {
+      // dev 模式
       const filename =
-        resolvePlatformIndex('app-android', module, pkg) ||
+        resolvePlatformIndex(process.env.UNI_UTS_PLATFORM, module, pkg) ||
         resolveRootIndex(module, pkg)
+      const compilerType =
+        process.env.UNI_UTS_PLATFORM === 'app-android' ? 'kotlin' : 'swift'
+
       if (filename) {
         deps.push(filename)
-
-        const res = await getCompiler('kotlin').runDev(filename)
+        const res = await getCompiler(compilerType).runDev(filename)
         if (res) {
           if (isArray(res.deps) && res.deps.length) {
             // 添加其他文件的依赖
             deps.push(...res.deps)
           }
-
-          const files: string[] = []
-          if (process.env.UNI_APP_CHANGED_DEX_FILES) {
-            try {
-              files.push(...JSON.parse(process.env.UNI_APP_CHANGED_DEX_FILES))
-            } catch (e) {}
+          if (res.type === 'kotlin') {
+            const files: string[] = []
+            if (process.env.UNI_APP_CHANGED_DEX_FILES) {
+              try {
+                files.push(...JSON.parse(process.env.UNI_APP_CHANGED_DEX_FILES))
+              } catch (e) {}
+            }
+            if (res.dex) {
+              files.push(res.dex)
+            }
+            process.env.UNI_APP_CHANGED_DEX_FILES = JSON.stringify([
+              ...new Set(files),
+            ])
+          } else if (res.type === 'swift') {
+            if (code) {
+              throw res.msg
+            }
           }
-          if (res.dex) {
-            files.push(res.dex)
-          }
-          process.env.UNI_APP_CHANGED_DEX_FILES = JSON.stringify([
-            ...new Set(files),
-          ])
         }
       }
-    } else if (process.env.UNI_UTS_PLATFORM === 'app-ios') {
-      process.env.UNI_APP_IOS_UTS = 'true'
     }
   }
   return {

@@ -5,16 +5,16 @@ import AdmZip from 'adm-zip'
 import { sync } from 'fast-glob'
 import { isArray } from '@vue/shared'
 import {
-  installHBuilderXPlugin,
   isInHBuilderX,
   normalizePath,
   parseJson,
   resolveSourceMapPath,
-  runByHBuilderX,
 } from './shared'
 import {
+  CompilerServer,
   genUTSPlatformResource,
   getUtsCompiler,
+  getCompilerServer,
   moveRootIndexSourceMap,
   resolveAndroidDir,
   resolvePackage,
@@ -23,6 +23,23 @@ import {
 } from './utils'
 import { Module } from '../types/types'
 import { UtsResult } from '@dcloudio/uts'
+
+interface KotlinCompilerServer extends CompilerServer {
+  getKotlincHome(): string
+  getDefaultJar(): string[]
+  compile(
+    options: { kotlinc: string[]; d8: string[] },
+    projectPath: string
+  ): Promise<boolean>
+  checkDependencies?: (
+    configJsonPath: string
+  ) => Promise<{ code: number; msg: string; data: string[] }>
+  checkRResources?: (resDir: string) => Promise<{
+    code: number
+    msg: string
+    data: { jarPath: string; uniModuleName: string }
+  }>
+}
 
 export function createKotlinResolveTypeReferenceName(
   _namespace: string,
@@ -55,7 +72,7 @@ export async function runKotlinProd(filename: string) {
   })
 }
 
-type RunKotlinDevResult = UtsResult & { dex?: string }
+export type RunKotlinDevResult = UtsResult & { type: 'kotlin'; dex?: string }
 
 export async function runKotlinDev(
   filename: string
@@ -65,6 +82,9 @@ export async function runKotlinDev(
     return
   }
   const result = (await compile(filename)) as RunKotlinDevResult
+
+  result.type = 'kotlin'
+
   const kotlinFile = resolveUTSPlatformFile(filename, {
     inputDir: process.env.UNI_INPUT_DIR,
     outputDir: process.env.UNI_OUTPUT_DIR,
@@ -73,7 +93,9 @@ export async function runKotlinDev(
   })
   // 开发模式下，需要生成 dex
   if (fs.existsSync(kotlinFile)) {
-    const compilerServer = getCompilerServer()
+    const compilerServer = getCompilerServer<KotlinCompilerServer>(
+      'uniapp-runextension'
+    )
     if (!compilerServer) {
       throw `项目使用了uts插件，正在安装 uts Android 运行扩展...`
     }
@@ -313,38 +335,4 @@ function resolveJarPath(filename: string) {
 
 function resolveClassPath(jars: string[]) {
   return jars.join(os.platform() === 'win32' ? ';' : ':')
-}
-
-interface CompilerServer {
-  getKotlincHome(): string
-  getDefaultJar(): string[]
-  compile(
-    options: { kotlinc: string[]; d8: string[] },
-    projectPath: string
-  ): Promise<boolean>
-  checkDependencies?: (
-    configJsonPath: string
-  ) => Promise<{ code: number; msg: string; data: string[] }>
-  checkRResources?: (resDir: string) => Promise<{
-    code: number
-    msg: string
-    data: { jarPath: string; uniModuleName: string }
-  }>
-}
-
-function getCompilerServer(): CompilerServer | undefined {
-  const compilerServerPath = path.resolve(
-    process.env.UNI_HBUILDERX_PLUGINS,
-    'uniapp-runextension/out/main.js'
-  )
-  if (fs.existsSync(compilerServerPath)) {
-    // eslint-disable-next-line no-restricted-globals
-    return require(compilerServerPath)
-  } else {
-    if (runByHBuilderX()) {
-      installHBuilderXPlugin('uniapp-runextension')
-    } else {
-      console.error(compilerServerPath + ' is not found')
-    }
-  }
 }
