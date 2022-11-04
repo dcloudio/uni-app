@@ -96,7 +96,7 @@ export function generatedPositionFor({
 }: PositionFor): Promise<NullablePosition> {
   return resolveSourceMapConsumer(sourceMapFile).then((consumer) => {
     return consumer.generatedPositionFor({
-      source: isWindows ? `\\\\?\\` : '' + filename,
+      source: (isWindows ? `\\\\?\\` : '') + filename,
       line,
       column,
     })
