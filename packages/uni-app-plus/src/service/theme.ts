@@ -52,6 +52,7 @@ export function useTabBarThemeChange(
           list: list.map((item) => ({
             iconPath: item.iconPath,
             selectedIconPath: item.selectedIconPath,
+            visible: item.visible,
           })),
         })
     }
