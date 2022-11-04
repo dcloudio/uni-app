@@ -197,6 +197,15 @@ module.exports = function (pagesJson, userManifestJson, isAppView) {
       manifestJson.plus.distribute.plugins = distribute.sdkConfigs
       delete manifestJson.plus.distribute.sdkConfigs
     }
+    if (manifestJson.plus.darkmode) {
+      if (!(distribute.google || (distribute.google = {})).defaultNightMode) {
+        distribute.google.defaultNightMode = 'auto'
+      }
+
+      if (!(distribute.apple || (distribute.apple = {})).UIUserInterfaceStyle) {
+        distribute.apple.UIUserInterfaceStyle = 'Automatic'
+      }
+    }
   }
 
   // 屏幕启动方向
