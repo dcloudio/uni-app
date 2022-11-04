@@ -42,7 +42,8 @@ export function useTabBarThemeChange (tabBar, options) {
       tabBar && tabBar.setTabBarItems({
         list: list.map((item) => ({
           iconPath: item.iconPath,
-          selectedIconPath: item.selectedIconPath
+          selectedIconPath: item.selectedIconPath,
+          visible: item.visible
         }))
       })
       // TODO 暂未实现
