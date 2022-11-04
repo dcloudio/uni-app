@@ -62,7 +62,7 @@ class WebpackAppPlusPlugin {
         callback()
       })
 
-      compiler.hooks.done.tapPromise('WebpackAppPlusPlugin', compilation => {
+      compiler.hooks.done.tapPromise('WebpackAppPlusPlugin', stats => {
         return new Promise((resolve, reject) => {
           isAppNVue && (nvueCompiled = true)
           isAppService && (serviceCompiled = true)
@@ -82,7 +82,9 @@ class WebpackAppPlusPlugin {
                   done('Build complete. FILES:' + JSON.stringify(changedFiles))
                 }
               } else {
-                !process.env.UNI_AUTOMATOR_WS_ENDPOINT && done('Build complete. Watching for changes...')
+                if (!stats.hasErrors()) {
+                  !process.env.UNI_AUTOMATOR_WS_ENDPOINT && done('Build complete. Watching for changes...')
+                };
               }
               isFirst = false
             } else {
@@ -97,7 +99,7 @@ class WebpackAppPlusPlugin {
         })
       })
     } else {
-      compiler.hooks.done.tapPromise('WebpackAppPlusPlugin', compilation => {
+      compiler.hooks.done.tapPromise('WebpackAppPlusPlugin', stats => {
         return new Promise((resolve, reject) => {
           if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
             return resolve()
