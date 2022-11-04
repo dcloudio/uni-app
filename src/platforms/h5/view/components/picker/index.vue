@@ -162,8 +162,8 @@ function getDefaultEndValue () {
 
 function getYearStartEnd (props) {
   const year = new Date().getFullYear()
-  let start = year - 61
-  let end = year + 61
+  let start = year - 150
+  let end = year + 150
   if (props.start) {
     const _year = new Date(props.start).getFullYear()
     if (!isNaN(_year) && _year < start) {
