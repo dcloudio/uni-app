@@ -136,7 +136,7 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
       'process.env.UNI_SUB_PLATFORM': JSON.stringify(process.env.UNI_SUB_PLATFORM),
       'process.env.UNI_CLOUD_PROVIDER': process.env.UNI_CLOUD_PROVIDER,
       'process.env.UNI_SECURE_NETWORK_ENABLE': process.env.UNI_SECURE_NETWORK_ENABLE,
-      'process.env.UNI_SECURE_NETWORK_CONFIG': process.env.UNI_SECURE_NETWORK_CONFIG,
+      'process.env.UNI_SECURE_NETWORK_CONFIG': process.env.UNI_SECURE_NETWORK_CONFIG || '[]',
       'process.env.UNICLOUD_DEBUG': process.env.UNICLOUD_DEBUG,
       'process.env.RUN_BY_HBUILDERX': process.env.RUN_BY_HBUILDERX,
       'process.env.UNI_AUTOMATOR_WS_ENDPOINT': JSON.stringify(process.env.UNI_AUTOMATOR_WS_ENDPOINT),
