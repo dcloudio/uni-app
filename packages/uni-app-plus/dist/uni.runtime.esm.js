@@ -9240,6 +9240,7 @@ let deviceWidth = 0;
 let deviceDPR = 0;
 let maxWidth = 960;
 let baseWidth = 375;
+let includeWidth = 750;
 function checkDeviceWidth() {
     const { platform, pixelRatio, windowWidth } = getBaseSystemInfo();
     deviceWidth = windowWidth;
@@ -9252,9 +9253,9 @@ function checkValue(value, defaultValue) {
 }
 function checkMaxWidth() {
     const config = __uniConfig.globalStyle || {};
-    // ignore rpxCalcIncludeWidth
     maxWidth = checkValue(config.rpxCalcMaxDeviceWidth, 960);
     baseWidth = checkValue(config.rpxCalcBaseDeviceWidth, 375);
+    includeWidth = checkValue(config.rpxCalcBaseDeviceWidth, 750);
 }
 const upx2px = defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
     if (deviceWidth === 0) {
@@ -9269,7 +9270,7 @@ const upx2px = defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
     }
     let width = newDeviceWidth || deviceWidth;
     {
-        width = width <= maxWidth ? width : baseWidth;
+        width = number === includeWidth || width <= maxWidth ? width : baseWidth;
     }
     let result = (number / BASE_DEVICE_WIDTH) * width;
     if (result < 0) {
@@ -13249,6 +13250,7 @@ function useTabBarThemeChange(tabBar, options) {
                     list: list.map((item) => ({
                         iconPath: item.iconPath,
                         selectedIconPath: item.selectedIconPath,
+                        visible: item.visible,
                     })),
                 });
         };

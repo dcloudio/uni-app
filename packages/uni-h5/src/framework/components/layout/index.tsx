@@ -21,7 +21,7 @@ import {
 import { RouterView } from 'vue-router'
 
 import { defineSystemComponent } from '@dcloudio/uni-components'
-import { updateCssVar } from '@dcloudio/uni-core'
+import { getRouteOptions, updateCssVar } from '@dcloudio/uni-core'
 import { useTabBar } from '../../setup/state'
 import { useKeepAliveRoute } from '../../setup/page'
 import {
@@ -152,8 +152,25 @@ function useMaxWidth(
   const route = usePageRoute()
   function checkMaxWidth() {
     const windowWidth = document.body.clientWidth
+
+    const pages = getCurrentPages()
+    let meta = {} as UniApp.PageRouteMeta
+    if (pages.length > 0) {
+      const curPage = pages[pages.length - 1]
+      meta = curPage.$page.meta
+    } else {
+      const routeOptions = getRouteOptions(route.path, true)
+      if (routeOptions) {
+        meta = routeOptions.meta
+      }
+    }
+
     const maxWidth = parseInt(
-      String(__uniConfig.globalStyle.maxWidth || Number.MAX_SAFE_INTEGER)
+      String(
+        (hasOwn(meta, 'maxWidth')
+          ? meta.maxWidth
+          : __uniConfig.globalStyle.maxWidth) || Number.MAX_SAFE_INTEGER
+      )
     )
     let showMaxWidth = false
     if (windowWidth > maxWidth) {
@@ -195,10 +212,24 @@ function useState() {
     // max width
     const layoutState = reactive({
       marginWidth: 0,
+      leftWindowWidth: 0,
+      rightWindowWidth: 0,
     }) as LayoutState
     watch(
       () => layoutState.marginWidth,
       (value) => updateCssVar({ '--window-margin': value + 'px' })
+    )
+    watch(
+      () => layoutState.leftWindowWidth + layoutState.marginWidth,
+      (value) => {
+        updateCssVar({ '--window-left': value + 'px' })
+      }
+    )
+    watch(
+      () => layoutState.rightWindowWidth + layoutState.marginWidth,
+      (value) => {
+        updateCssVar({ '--window-right': value + 'px' })
+      }
     )
     return {
       layoutState,
@@ -276,11 +307,15 @@ function useState() {
   )
   watch(
     () => layoutState.leftWindowWidth + layoutState.marginWidth,
-    (value) => updateCssVar({ '--window-left': value + 'px' })
+    (value) => {
+      updateCssVar({ '--window-left': value + 'px' })
+    }
   )
   watch(
     () => layoutState.rightWindowWidth + layoutState.marginWidth,
-    (value) => updateCssVar({ '--window-right': value + 'px' })
+    (value) => {
+      updateCssVar({ '--window-right': value + 'px' })
+    }
   )
   UniServiceJSBridge.on(ON_NAVIGATION_BAR_CHANGE, (navigationBar) => {
     layoutState.navigationBarTitleText = navigationBar.titleText

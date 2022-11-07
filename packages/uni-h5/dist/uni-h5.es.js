@@ -3192,6 +3192,7 @@ let deviceWidth = 0;
 let deviceDPR = 0;
 let maxWidth = 960;
 let baseWidth = 375;
+let includeWidth = 750;
 function checkDeviceWidth() {
   const { platform, pixelRatio: pixelRatio2, windowWidth } = getBaseSystemInfo();
   deviceWidth = windowWidth;
@@ -3206,6 +3207,7 @@ function checkMaxWidth() {
   const config = __uniConfig.globalStyle || {};
   maxWidth = checkValue(config.rpxCalcMaxDeviceWidth, 960);
   baseWidth = checkValue(config.rpxCalcBaseDeviceWidth, 375);
+  includeWidth = checkValue(config.rpxCalcBaseDeviceWidth, 750);
 }
 const upx2px = /* @__PURE__ */ defineSyncApi(
   API_UPX2PX,
@@ -3222,7 +3224,7 @@ const upx2px = /* @__PURE__ */ defineSyncApi(
     }
     let width = newDeviceWidth || deviceWidth;
     {
-      width = width <= maxWidth ? width : baseWidth;
+      width = number === includeWidth || width <= maxWidth ? width : baseWidth;
     }
     let result = number / BASE_DEVICE_WIDTH * width;
     if (result < 0) {
@@ -21870,7 +21872,18 @@ function useMaxWidth(layoutState, rootRef) {
   const route = usePageRoute();
   function checkMaxWidth2() {
     const windowWidth = document.body.clientWidth;
-    const maxWidth2 = parseInt(String(__uniConfig.globalStyle.maxWidth || Number.MAX_SAFE_INTEGER));
+    const pages = getCurrentPages();
+    let meta = {};
+    if (pages.length > 0) {
+      const curPage = pages[pages.length - 1];
+      meta = curPage.$page.meta;
+    } else {
+      const routeOptions = getRouteOptions(route.path, true);
+      if (routeOptions) {
+        meta = routeOptions.meta;
+      }
+    }
+    const maxWidth2 = parseInt(String((hasOwn(meta, "maxWidth") ? meta.maxWidth : __uniConfig.globalStyle.maxWidth) || Number.MAX_SAFE_INTEGER));
     let showMaxWidth = false;
     if (windowWidth > maxWidth2) {
       showMaxWidth = true;
@@ -21905,11 +21918,23 @@ function useState() {
   const route = usePageRoute();
   if (!__UNI_FEATURE_RESPONSIVE__) {
     const layoutState2 = reactive({
-      marginWidth: 0
+      marginWidth: 0,
+      leftWindowWidth: 0,
+      rightWindowWidth: 0
     });
     watch(() => layoutState2.marginWidth, (value) => updateCssVar({
       "--window-margin": value + "px"
     }));
+    watch(() => layoutState2.leftWindowWidth + layoutState2.marginWidth, (value) => {
+      updateCssVar({
+        "--window-left": value + "px"
+      });
+    });
+    watch(() => layoutState2.rightWindowWidth + layoutState2.marginWidth, (value) => {
+      updateCssVar({
+        "--window-right": value + "px"
+      });
+    });
     return {
       layoutState: layoutState2,
       windowState: computed(() => ({}))
@@ -21960,12 +21985,16 @@ function useState() {
   watch(() => layoutState.marginWidth, (value) => updateCssVar({
     "--window-margin": value + "px"
   }));
-  watch(() => layoutState.leftWindowWidth + layoutState.marginWidth, (value) => updateCssVar({
-    "--window-left": value + "px"
-  }));
-  watch(() => layoutState.rightWindowWidth + layoutState.marginWidth, (value) => updateCssVar({
-    "--window-right": value + "px"
-  }));
+  watch(() => layoutState.leftWindowWidth + layoutState.marginWidth, (value) => {
+    updateCssVar({
+      "--window-left": value + "px"
+    });
+  });
+  watch(() => layoutState.rightWindowWidth + layoutState.marginWidth, (value) => {
+    updateCssVar({
+      "--window-right": value + "px"
+    });
+  });
   UniServiceJSBridge.on(ON_NAVIGATION_BAR_CHANGE, (navigationBar) => {
     layoutState.navigationBarTitleText = navigationBar.titleText;
   });

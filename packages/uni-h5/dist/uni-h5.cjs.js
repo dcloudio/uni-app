@@ -447,6 +447,14 @@ function getRealRoute(fromRoute, toRoute) {
   fromRouteArray.splice(fromRouteArray.length - i - 1, i + 1);
   return uniShared.addLeadingSlash(fromRouteArray.concat(toRouteArray).join("/"));
 }
+function getRouteOptions(path, alias = false) {
+  if (alias) {
+    return __uniRoutes.find(
+      (route) => route.path === path || route.alias === path
+    );
+  }
+  return __uniRoutes.find((route) => route.path === path);
+}
 function findUniTarget(target) {
   while (target && target.tagName.indexOf("UNI-") !== 0) {
     target = target.parentElement;
@@ -11432,7 +11440,18 @@ function useMaxWidth(layoutState, rootRef) {
   const route = usePageRoute();
   function checkMaxWidth() {
     const windowWidth = document.body.clientWidth;
-    const maxWidth = parseInt(String(__uniConfig.globalStyle.maxWidth || Number.MAX_SAFE_INTEGER));
+    const pages = getCurrentPages();
+    let meta = {};
+    if (pages.length > 0) {
+      const curPage = pages[pages.length - 1];
+      meta = curPage.$page.meta;
+    } else {
+      const routeOptions = getRouteOptions(route.path, true);
+      if (routeOptions) {
+        meta = routeOptions.meta;
+      }
+    }
+    const maxWidth = parseInt(String((shared.hasOwn(meta, "maxWidth") ? meta.maxWidth : __uniConfig.globalStyle.maxWidth) || Number.MAX_SAFE_INTEGER));
     let showMaxWidth = false;
     if (windowWidth > maxWidth) {
       showMaxWidth = true;
@@ -11463,11 +11482,23 @@ function useState() {
   const route = usePageRoute();
   if (!__UNI_FEATURE_RESPONSIVE__) {
     const layoutState2 = vue.reactive({
-      marginWidth: 0
+      marginWidth: 0,
+      leftWindowWidth: 0,
+      rightWindowWidth: 0
     });
     vue.watch(() => layoutState2.marginWidth, (value) => updateCssVar({
       "--window-margin": value + "px"
     }));
+    vue.watch(() => layoutState2.leftWindowWidth + layoutState2.marginWidth, (value) => {
+      updateCssVar({
+        "--window-left": value + "px"
+      });
+    });
+    vue.watch(() => layoutState2.rightWindowWidth + layoutState2.marginWidth, (value) => {
+      updateCssVar({
+        "--window-right": value + "px"
+      });
+    });
     return {
       layoutState: layoutState2,
       windowState: vue.computed(() => ({}))
@@ -11514,12 +11545,16 @@ function useState() {
   vue.watch(() => layoutState.marginWidth, (value) => updateCssVar({
     "--window-margin": value + "px"
   }));
-  vue.watch(() => layoutState.leftWindowWidth + layoutState.marginWidth, (value) => updateCssVar({
-    "--window-left": value + "px"
-  }));
-  vue.watch(() => layoutState.rightWindowWidth + layoutState.marginWidth, (value) => updateCssVar({
-    "--window-right": value + "px"
-  }));
+  vue.watch(() => layoutState.leftWindowWidth + layoutState.marginWidth, (value) => {
+    updateCssVar({
+      "--window-left": value + "px"
+    });
+  });
+  vue.watch(() => layoutState.rightWindowWidth + layoutState.marginWidth, (value) => {
+    updateCssVar({
+      "--window-right": value + "px"
+    });
+  });
   UniServiceJSBridge.on(uniShared.ON_NAVIGATION_BAR_CHANGE, (navigationBar) => {
     layoutState.navigationBarTitleText = navigationBar.titleText;
   });
