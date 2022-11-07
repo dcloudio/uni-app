@@ -39,7 +39,7 @@ export async function runDev(options: CliOptions & ServerOptions) {
             // 首次全量同步
             process.env.UNI_APP_CHANGED_PAGES = ''
             process.env.UNI_APP_CHANGED_FILES = ''
-            process.env.UNI_APP_CHANGED_DEX_FILES = ''
+            process.env.UNI_APP_UTS_CHANGED_FILES = ''
             return (
               (isFirstEnd = false),
               output('log', M['dev.watching.end']),
@@ -48,11 +48,11 @@ export async function runDev(options: CliOptions & ServerOptions) {
           }
           const files = process.env.UNI_APP_CHANGED_FILES
           const pages = process.env.UNI_APP_CHANGED_PAGES
-          const dex = process.env.UNI_APP_CHANGED_DEX_FILES
+          const dex = process.env.UNI_APP_UTS_CHANGED_FILES
           const changedFiles = pages || files
           process.env.UNI_APP_CHANGED_PAGES = ''
           process.env.UNI_APP_CHANGED_FILES = ''
-          process.env.UNI_APP_CHANGED_DEX_FILES = ''
+          process.env.UNI_APP_UTS_CHANGED_FILES = ''
           if (
             (changedFiles && !changedFiles.includes(APP_CONFIG_SERVICE)) ||
             dex

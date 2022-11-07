@@ -14,7 +14,7 @@ const utssdkPluginDir = 'utssdk/test-uts'
 
 const uniModulesPluginDir = 'uni_modules/test-uniplugin'
 
-describe('sourceMap', () => {
+describe('uts:sourceMap', () => {
   test('resolveUtsPluginSourceMapFile with uni_modules uts=>kotlin', () => {
     const sourceMapFile = resolveUtsPluginSourceMapFile(
       'kotlin',
@@ -135,11 +135,17 @@ describe('sourceMap', () => {
       filename,
       line: 3,
       column: 15,
+      outputDir,
     })
     expect(res).toEqual({
       line: 18,
       column: 16,
       lastColumn: null,
+      source: resolve(
+        outputDir,
+        uniModulesPluginDir,
+        'utssdk/app-android/index.kt'
+      ),
     })
   })
   test('originalPositionFor', async () => {
@@ -156,7 +162,6 @@ describe('sourceMap', () => {
     )
     const { line, column, source } = await originalPositionFor({
       sourceMapFile,
-      filename,
       line: 18,
       column: 16,
     })

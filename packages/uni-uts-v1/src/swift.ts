@@ -45,6 +45,7 @@ export type RunSwiftDevResult = UtsResult & {
   type: 'swift'
   code: number
   msg: string
+  changed: string[]
 }
 
 export async function runSwiftDev(filename: string) {
@@ -62,6 +63,7 @@ export async function runSwiftDev(filename: string) {
     platform: 'app-ios',
     extname: '.swift',
   })
+  result.changed = []
   // 开发模式下，需要生成 framework
   if (fs.existsSync(swiftFile)) {
     const compilerServer = getCompilerServer<SwiftCompilerServer>(
@@ -92,6 +94,7 @@ export async function runSwiftDev(filename: string) {
     })
     result.code = code
     result.msg = msg
+    result.changed = [swiftFile]
   }
   return result
 }

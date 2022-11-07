@@ -177,7 +177,9 @@ export function getCompilerServer<T extends CompilerServer>(
 ): T | undefined {
   const compilerServerPath = path.resolve(
     process.env.UNI_HBUILDERX_PLUGINS,
-    `${pluginName}/out/external`
+    `${pluginName}/out/${
+      pluginName === 'uniapp-runextension' ? 'main.js' : 'external.js'
+    }`
   )
   if (fs.existsSync(compilerServerPath)) {
     // eslint-disable-next-line no-restricted-globals

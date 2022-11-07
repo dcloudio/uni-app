@@ -72,7 +72,10 @@ export async function runKotlinProd(filename: string) {
   })
 }
 
-export type RunKotlinDevResult = UtsResult & { type: 'kotlin'; dex?: string }
+export type RunKotlinDevResult = UtsResult & {
+  type: 'kotlin'
+  changed: string[]
+}
 
 export async function runKotlinDev(
   filename: string
@@ -84,6 +87,7 @@ export async function runKotlinDev(
   const result = (await compile(filename)) as RunKotlinDevResult
 
   result.type = 'kotlin'
+  result.changed = []
 
   const kotlinFile = resolveUTSPlatformFile(filename, {
     inputDir: process.env.UNI_INPUT_DIR,
@@ -142,9 +146,9 @@ export async function runKotlinDev(
       } catch (e) {}
       const dexFile = resolveDexFile(jarFile)
       if (fs.existsSync(dexFile)) {
-        result.dex = normalizePath(
-          path.relative(process.env.UNI_OUTPUT_DIR, dexFile)
-        )
+        result.changed = [
+          normalizePath(path.relative(process.env.UNI_OUTPUT_DIR, dexFile)),
+        ]
       }
     } else {
       throw `${normalizePath(

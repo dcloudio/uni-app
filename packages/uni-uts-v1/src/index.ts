@@ -5,6 +5,8 @@ import { runSwiftProd, runSwiftDev } from './swift'
 
 import { genProxyCode, resolvePlatformIndex, resolveRootIndex } from './code'
 import { resolvePackage } from './utils'
+import { parseUtsSwiftPluginStacktrace } from './stacktrace'
+import { resolveUtsPluginSourceMapFile } from './sourceMap'
 
 export * from './sourceMap'
 
@@ -59,24 +61,32 @@ export async function compile(module: string) {
             // 添加其他文件的依赖
             deps.push(...res.deps)
           }
-          if (res.type === 'kotlin') {
-            const files: string[] = []
-            if (process.env.UNI_APP_CHANGED_DEX_FILES) {
-              try {
-                files.push(...JSON.parse(process.env.UNI_APP_CHANGED_DEX_FILES))
-              } catch (e) {}
-            }
-            if (res.dex) {
-              files.push(res.dex)
-            }
-            process.env.UNI_APP_CHANGED_DEX_FILES = JSON.stringify([
-              ...new Set(files),
-            ])
-          } else if (res.type === 'swift') {
-            if (code) {
-              throw res.msg
+          if (res.type === 'swift') {
+            if (res.code) {
+              throw await parseUtsSwiftPluginStacktrace({
+                stacktrace: res.msg,
+                sourceMapFile: resolveUtsPluginSourceMapFile(
+                  'swift',
+                  filename,
+                  process.env.UNI_INPUT_DIR,
+                  process.env.UNI_OUTPUT_DIR
+                ),
+                sourceRoot: process.env.UNI_INPUT_DIR,
+              })
             }
           }
+          const files: string[] = []
+          if (process.env.UNI_APP_UTS_CHANGED_FILES) {
+            try {
+              files.push(...JSON.parse(process.env.UNI_APP_UTS_CHANGED_FILES))
+            } catch (e) {}
+          }
+          if (res.changed) {
+            files.push(...res.changed)
+          }
+          process.env.UNI_APP_UTS_CHANGED_FILES = JSON.stringify([
+            ...new Set(files),
+          ])
         }
       }
     }

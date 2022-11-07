@@ -76,6 +76,7 @@ interface PositionFor {
   filename: string
   line: number
   column: number
+  withSourceContent?: boolean
 }
 
 const consumers: Record<
@@ -93,13 +94,25 @@ export function generatedPositionFor({
   filename,
   line,
   column,
-}: PositionFor): Promise<NullablePosition> {
+  outputDir,
+}: PositionFor & { outputDir?: string }): Promise<
+  NullablePosition & { source: string | null }
+> {
   return resolveSourceMapConsumer(sourceMapFile).then((consumer) => {
-    return consumer.generatedPositionFor({
-      source: (isWindows ? `\\\\?\\` : '') + filename,
+    const res = consumer.generatedPositionFor({
+      source: (isWindows ? `\\\\?\\` : '') + normalizePath(filename),
       line,
       column,
     })
+    let source = null
+    if (outputDir) {
+      // 根据 sourceMapFile 和 outputDir，计算出生成后的文件路径
+      source = join(
+        outputDir,
+        relative(join(outputDir, '../.sourcemap/app'), sourceMapFile)
+      ).replace('.map', '')
+    }
+    return Object.assign(res, { source })
   })
 }
 
@@ -109,14 +122,25 @@ export function generatedPositionFor({
  * @returns
  */
 export function originalPositionFor(
-  generatedPosition: PositionFor
-): Promise<NullableMappedPosition> {
+  generatedPosition: Omit<PositionFor, 'filename'>
+): Promise<NullableMappedPosition & { sourceContent?: string }> {
   return resolveSourceMapConsumer(generatedPosition.sourceMapFile).then(
     (consumer) => {
-      return consumer.originalPositionFor({
+      const res = consumer.originalPositionFor({
         line: generatedPosition.line,
         column: generatedPosition.column,
       })
+      if (
+        generatedPosition.withSourceContent &&
+        res.source &&
+        res.line &&
+        res.column
+      ) {
+        return Object.assign(res, {
+          sourceContent: consumer.sourceContentFor(res.source, true),
+        })
+      }
+      return res
     }
   )
 }
@@ -136,4 +160,16 @@ async function resolveSourceMapConsumer(sourceMapFile: string) {
     }
   }
   return consumers[sourceMapFile].consumer
+}
+
+function normalizePath(path: string) {
+  return isWindows ? unixPathToWindowsPath(path) : windowsPathToUnixPath(path)
+}
+
+function windowsPathToUnixPath(path: string) {
+  return path.replace(/\\/g, '/')
+}
+
+function unixPathToWindowsPath(path: string) {
+  return path.replace(/\//g, '\\')
 }
