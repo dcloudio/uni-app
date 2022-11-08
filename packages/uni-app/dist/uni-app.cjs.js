@@ -102,7 +102,7 @@ function resolveEasycom(component, easycom) {
     return shared.isString(component) ? easycom : component;
 }
 
-// @ts-ignore
+/// <reference types="@dcloudio/types" />
 const createHook = (lifecycle) => (hook, target = vue.getCurrentInstance()) => {
     // post-create lifecycle registrations are noops during SSR
     !vue.isInSSRComponentSetup && vue.injectHook(lifecycle, hook, target);
