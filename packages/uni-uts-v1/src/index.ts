@@ -7,6 +7,7 @@ import { genProxyCode, resolvePlatformIndex, resolveRootIndex } from './code'
 import { resolvePackage } from './utils'
 import { parseUtsSwiftPluginStacktrace } from './stacktrace'
 import { resolveUtsPluginSourceMapFile } from './sourceMap'
+import { isWindows } from './shared'
 
 export * from './sourceMap'
 
@@ -42,6 +43,23 @@ export async function compile(module: string) {
       }
     }
   } else {
+    // iOS windows 平台，标准基座不编译
+    if (process.env.UNI_UTS_PLATFORM === 'app-ios') {
+      if (isWindows) {
+        process.env.UNI_UTS_TIPS = `iOS手机在windows上真机运行时uts插件代码修改需提交云端打包自定义基座才能生效`
+        return {
+          code,
+          deps,
+        }
+      }
+      if (process.env.HX_USE_BASE_TYPE === 'standard') {
+        process.env.UNI_UTS_TIPS = `iOS手机在标准基座真机运行暂不支持uts插件，如需调用uts插件请使用自定义基座`
+        return {
+          code,
+          deps,
+        }
+      }
+    }
     if (
       process.env.UNI_UTS_PLATFORM === 'app-android' ||
       process.env.UNI_UTS_PLATFORM === 'app-ios'
@@ -63,16 +81,19 @@ export async function compile(module: string) {
           }
           if (res.type === 'swift') {
             if (res.code) {
-              throw await parseUtsSwiftPluginStacktrace({
-                stacktrace: res.msg,
-                sourceMapFile: resolveUtsPluginSourceMapFile(
-                  'swift',
-                  filename,
-                  process.env.UNI_INPUT_DIR,
-                  process.env.UNI_OUTPUT_DIR
-                ),
-                sourceRoot: process.env.UNI_INPUT_DIR,
-              })
+              console.error(
+                `error: ` +
+                  (await parseUtsSwiftPluginStacktrace({
+                    stacktrace: res.msg,
+                    sourceMapFile: resolveUtsPluginSourceMapFile(
+                      'swift',
+                      filename,
+                      process.env.UNI_INPUT_DIR,
+                      process.env.UNI_OUTPUT_DIR
+                    ),
+                    sourceRoot: process.env.UNI_INPUT_DIR,
+                  }))
+              )
             }
           }
           const files: string[] = []

@@ -11,6 +11,7 @@ export default {
   'dev.watching.end': 'DONE  Build complete. Watching for changes...',
   'dev.watching.end.pages': 'DONE  Build complete. PAGES:{pages}',
   'dev.watching.end.files': 'DONE  Build complete. FILES:{files}',
+  'compiler.build.failed': '编译失败',
   'stat.warn.appid':
     '当前应用未配置 appid，无法使用 uni 统计，详情参考：https://ask.dcloud.net.cn/article/36303',
   'stat.warn.version':
@@ -29,4 +30,8 @@ export default {
     '项目使用了uts插件，iOS平台uts插件代码修改后需要重新生成[自定义基座](https://uniapp.dcloud.net.cn/tutorial/run/run-app.html#customplayground)才能生效',
   'uts.android.compiler.server':
     '项目使用了uts插件，正在安装 uts Android 运行扩展...',
+  'uts.ios.windows.tips':
+    'iOS手机在windows上真机运行时uts插件代码修改需提交云端打包自定义基座才能生效',
+  'uts.ios.standard.tips':
+    'iOS手机在标准基座真机运行暂不支持uts插件，如需调用uts插件请使用自定义基座',
 } as const

@@ -12,6 +12,7 @@ export default {
   'dev.watching.end': 'DONE  Build complete. Watching for changes...',
   'dev.watching.end.pages': 'DONE  Build complete. PAGES:{pages}',
   'dev.watching.end.files': 'DONE  Build complete. FILES:{files}',
+  'compiler.build.failed': 'Build failed with errors.',
   'stat.warn.appid':
     'The current application is not configured with Appid, and uni statistics cannot be used. For details, see https://ask.dcloud.net.cn/article/36303',
   'stat.warn.version':
@@ -29,4 +30,8 @@ export default {
     'The project uses the uts plugin. After the uts plug-in code is modified, the [Custom playground native runner](https://uniapp.dcloud.net.cn/tutorial/run/run-app.html#customplayground) needs to be regenerated to take effect',
   'uts.android.compiler.server':
     'The project uses the uts plugin, installing the uts Android runtime extension...',
+  'uts.ios.windows.tips':
+    'When running on Windows to iOS mobile phone, the modification of the uts plugin code needs to be submitted to the cloud to package the custom playground to take effect.',
+  'uts.ios.standard.tips':
+    'When the standard playground runs to an IOS phone, the uts plugin is temporarily not supported. If you need to call the uts plugin, please use a custom playground',
 } as const
