@@ -58,7 +58,7 @@
     "@types/node": "^17.0.31",
     "@typescript-eslint/parser": "^5.14.0",
     "@vitejs/plugin-vue": "^3.2.0",
-    "@vitejs/plugin-vue-jsx": "^2.1.0",
+    "@vitejs/plugin-vue-jsx": "^2.1.1",
     "@vue/compiler-sfc": "3.2.41",
     "@vue/reactivity": "3.2.41",
     "@vue/runtime-core": "3.2.41",
@@ -87,7 +87,7 @@
     "simple-git-hooks": "^2.8.0",
     "ts-jest": "^27.0.3",
     "typescript": "^4.8.4",
-    "vite": "3.2.2",
+    "vite": "3.2.3",
     "vue": "3.2.41",
     "vue-router": "^4.1.6",
     "yorkie": "^2.0.0"
