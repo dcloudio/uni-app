@@ -1395,7 +1395,7 @@ function normalizeTabBarStyles(borderStyle) {
 function normalizeTitleColor(titleColor) {
     return titleColor === 'black' ? '#000000' : '#ffffff';
 }
-function normalizeStyles(pageStyle, themeConfig, mode = 'light') {
+function normalizeStyles(pageStyle, themeConfig = {}, mode = 'light') {
     const modeStyle = themeConfig[mode];
     const styles = {};
     if (!modeStyle) {
@@ -1415,7 +1415,7 @@ function normalizeStyles(pageStyle, themeConfig, mode = 'light') {
             }
             else if (shared.isString(styleItem) && styleItem.startsWith('@')) {
                 const _key = styleItem.replace('@', '');
-                let _styleItem = modeStyle[_key];
+                let _styleItem = modeStyle[_key] || styleItem;
                 switch (key) {
                     case 'titleColor':
                         _styleItem = normalizeTitleColor(_styleItem);

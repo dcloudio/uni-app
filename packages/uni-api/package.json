@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@dcloudio/uni-api",
-  "version": "3.0.0-alpha-3060820221027003",
+  "version": "3.0.0-alpha-3060820221027004",
   "description": "@dcloudio/uni-api",
   "sideEffects": false,
   "module": "src/index.ts",
@@ -18,6 +18,6 @@
     "@vue/shared": "3.2.41"
   },
   "devDependencies": {
-    "@dcloudio/uni-shared": "3.0.0-alpha-3060820221027003"
+    "@dcloudio/uni-shared": "3.0.0-alpha-3060820221027004"
   }
 }

@@ -327,7 +327,7 @@ export declare function normalizeDataset(el: Element): any;
 
 export declare function normalizeEventType(type: string, options?: AddEventListenerOptions): string;
 
-export declare function normalizeStyles<T extends Object>(pageStyle: T, themeConfig: UniApp.ThemeJson, mode?: UniApp.ThemeMode): T;
+export declare function normalizeStyles<T extends Object>(pageStyle: T, themeConfig?: UniApp.ThemeJson, mode?: UniApp.ThemeMode): T;
 
 export declare function normalizeTabBarStyles(borderStyle?: string): string | undefined;
 
