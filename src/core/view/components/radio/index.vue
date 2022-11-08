@@ -6,7 +6,10 @@
   >
     <div class="uni-radio-wrapper">
       <div
-        :class="radioChecked ? 'uni-radio-input-checked' : ''"
+        :class="{
+          'uni-radio-input-checked': radioChecked,
+          'uni-radio-input-disabled': disabled,
+        }"
         :style="radioChecked ? checkedStyle : ''"
         class="uni-radio-input"
       />
