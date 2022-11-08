@@ -1,5 +1,6 @@
 const {
-  getPlatformExts
+  getPlatformExts,
+  createSource
 } = require('../shared')
 
 const {
@@ -22,26 +23,12 @@ module.exports = function generateApp (compilation) {
     process.env.UNI_PLATFORM !== 'app-plus'
   ) {
     const targetCssName = `common/main${ext}`
-
-    if (!compilation.assets[targetCssName]) {
-      compilation.assets[targetCssName] = {
-        size () {
-          return Buffer.byteLength(getShadowCss(), 'utf8')
-        },
-        source () {
-          return getShadowCss()
-        }
-      }
+    const asset = compilation.getAsset(targetCssName)
+    if (!asset) {
+      compilation.emitAsset(targetCssName, createSource(getShadowCss()))
     } else {
-      const source = compilation.assets[targetCssName].source() + getShadowCss()
-      compilation.assets[targetCssName] = {
-        size () {
-          return Buffer.byteLength(source, 'utf8')
-        },
-        source () {
-          return source
-        }
-      }
+      const source = asset.source.source() + getShadowCss()
+      compilation.updateAsset(targetCssName, createSource(source))
     }
   }
 
@@ -50,17 +37,17 @@ module.exports = function generateApp (compilation) {
   const platforms = ['mp-weixin', 'mp-qq', 'mp-jd', 'mp-xhs', 'mp-toutiao', 'mp-lark']
   const presetStyle = platforms.includes(process.env.UNI_PLATFORM) ? '[data-custom-hidden="true"],[bind-data-custom-hidden="true"]{display: none !important;}' : ''
 
-  if (compilation.assets[`common/main${ext}`]) { // 是否存在 main.css
+  if (compilation.getAsset(`common/main${ext}`)) { // 是否存在 main.css
     importMainCss = `@import './common/main${ext}';`
   }
 
-  if (compilation.assets[`common/vendor${ext}`]) { // 是否存在 vendor.css
+  if (compilation.getAsset(`common/vendor${ext}`)) { // 是否存在 vendor.css
     importVendorCss += `@import './common/vendor${ext}';`
   }
 
   const runtimeJsPath = 'common/runtime.js'
 
-  const asset = compilation.assets[runtimeJsPath]
+  const asset = compilation.getAsset(runtimeJsPath)
   if ( // app 和 baidu 不需要
     process.env.UNI_PLATFORM !== 'app-plus' &&
     process.env.UNI_PLATFORM !== 'mp-baidu' &&
@@ -70,13 +57,11 @@ module.exports = function generateApp (compilation) {
     const source =
       `
   !function(){try{var a=Function("return this")();a&&!a.Math&&(Object.assign(a,{isFinite:isFinite,Array:Array,Date:Date,Error:Error,Function:Function,Math:Math,Object:Object,RegExp:RegExp,String:String,TypeError:TypeError,setTimeout:setTimeout,clearTimeout:clearTimeout,setInterval:setInterval,clearInterval:clearInterval}),"undefined"!=typeof Reflect&&(a.Reflect=Reflect))}catch(a){}}();
-  ${asset.source()}
+  ${asset.source.source()}
   `
-    const newSource = function () {
-      return source
-    }
+    const newSource = createSource(source)
     newSource.__$wrappered = true
-    compilation.assets[runtimeJsPath].source = newSource
+    compilation.updateAsset(runtimeJsPath, newSource)
   }
 
   const specialMethods = getSpecialMethods()
