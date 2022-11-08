@@ -182,7 +182,8 @@ function parsePagesJson(
     appJson.themeLocation = 'theme.json'
   } else {
     const manifestJson = parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
-    appJson = initTheme(manifestJson, appJson)
+    const { pages, window, tabBar } = initTheme(manifestJson, appJson)
+    extend(appJson, { pages, window, tabBar })
     pageJsons = initTheme(manifestJson, pageJsons)
   }
   return {

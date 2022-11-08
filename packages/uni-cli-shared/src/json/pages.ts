@@ -12,7 +12,7 @@ import { parseJson } from './json'
 import { isVueSfcFile } from '../vue/utils'
 import { parseVueRequest } from '../vite'
 import { EXTNAME_VUE_RE, TEXT_STYLE } from '../constants'
-import { initTheme } from './theme'
+import { initTheme, normalizeThemeConfigOnce } from './theme'
 import { getPlatformManifestJsonOnce } from './manifest'
 
 const pagesCacheSet: Set<string> = new Set()
@@ -133,7 +133,11 @@ export function normalizePagesJson(
 
   const manifestJsonPlatform = getPlatformManifestJsonOnce()
   if (!manifestJsonPlatform.darkmode) {
-    pagesJson = initTheme(manifestJsonPlatform, pagesJson)
+    const { pages, globalStyle, tabBar } = initTheme(
+      manifestJsonPlatform,
+      pagesJson
+    )
+    extend(pagesJson, { pages, globalStyle, tabBar })
   }
 
   return pagesJson
@@ -444,8 +448,8 @@ function normalizeTabBar(
 const SCHEME_RE = /^([a-z-]+:)?\/\//i
 const DATA_RE = /^data:.*,.*/
 function normalizeFilepath(filepath: string) {
-  const manifestJsonPlatform = getPlatformManifestJsonOnce()
-  if (manifestJsonPlatform.darkmode && filepath.startsWith('@')) return filepath
+  const themeConfig = normalizeThemeConfigOnce()['light'] || {}
+  if (themeConfig[filepath.replace('@', '')]) return filepath
   if (
     !(SCHEME_RE.test(filepath) || DATA_RE.test(filepath)) &&
     filepath.indexOf('/') !== 0

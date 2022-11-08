@@ -1,3 +1,4 @@
+import { extend } from '@vue/shared'
 import { initRecursiveMerge } from './merge'
 import { initDefaultManifestJson } from './defaultManifestJson'
 import { initAppStatusbar } from './statusbar'
@@ -22,7 +23,8 @@ export function normalizeAppManifestJson(
     initDefaultManifestJson(),
     userManifestJson
   )
-  pagesJson = initTheme(manifestJson, pagesJson)
+  const { pages, globalStyle, tabBar } = initTheme(manifestJson, pagesJson)
+  extend(pagesJson, { pages, globalStyle, tabBar })
   initAppStatusbar(manifestJson, pagesJson)
   initArguments(manifestJson, pagesJson)
   initPlus(manifestJson, pagesJson)

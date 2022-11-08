@@ -17,7 +17,7 @@ export function normalizeTitleColor(titleColor: string) {
 
 export function normalizeStyles<T extends Object>(
   pageStyle: T,
-  themeConfig: UniApp.ThemeJson,
+  themeConfig: UniApp.ThemeJson = {},
   mode: UniApp.ThemeMode = 'light'
 ) {
   const modeStyle = themeConfig[mode]
@@ -42,7 +42,7 @@ export function normalizeStyles<T extends Object>(
         )
       } else if (isString(styleItem) && styleItem.startsWith('@')) {
         const _key = styleItem.replace('@', '')
-        let _styleItem = modeStyle[_key]
+        let _styleItem = modeStyle[_key] || styleItem
         switch (key) {
           case 'titleColor':
             _styleItem = normalizeTitleColor(_styleItem)
