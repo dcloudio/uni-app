@@ -92,7 +92,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
               style={radioChecked.value ? checkedStyle.value : ''}
             >
               {radioChecked.value
-                ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, '#fff', 18)
+                ? createSvgIconVNode(
+                    ICON_PATH_SUCCESS_NO_CIRCLE,
+                    props.disabled ? '#adadad' : '#fff',
+                    18
+                  )
                 : ''}
             </div>
             {slots.default && slots.default()}
