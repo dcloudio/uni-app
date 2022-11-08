@@ -112,7 +112,7 @@ function updateFileFlag (appJson) {
 function _initTheme (appJson, userManifestJson) {
   const manifestJson = userManifestJson[process.env.UNI_PLATFORM] || {}
   appJson.darkmode = manifestJson.darkmode || false
-  const themeLocation = manifestJson.themeLocation || ''
+  const themeLocation = manifestJson.themeLocation || 'theme.json'
   if (themeLocation && hasTheme(themeLocation)) {
     appJson.themeConfig = getTheme()
   }

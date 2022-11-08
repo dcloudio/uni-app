@@ -76,7 +76,7 @@ module.exports = function (content, map) {
   }
   this.addDependency(manifestJsonPath)
 
-  const originalPagesJson = parsePagesJson(content, {
+  const pagesJson = parsePagesJson(content, {
     addDependency: file => {
       (process.UNI_PAGES_DEPS || (process.UNI_PAGES_DEPS = new Set())).add(
         normalizePath(file)
@@ -85,7 +85,7 @@ module.exports = function (content, map) {
     }
   })
 
-  if (!originalPagesJson.pages || originalPagesJson.pages.length === 0) {
+  if (!pagesJson.pages || pagesJson.pages.length === 0) {
     console.error(uniI18n.__('pagesLoader.pagesNodeCannotNull'))
     process.exit(0)
   }
@@ -94,14 +94,13 @@ module.exports = function (content, map) {
     const queryParam = loaderUtils.parseQuery(this.resourceQuery)
     if (queryParam) {
       if (queryParam.type === 'origin-pages-json') {
-        return `export default ${JSON.stringify(originalPagesJson)}`
+        return `export default ${JSON.stringify(pagesJson)}`
       }
     }
   }
 
   const platformManifestJson = manifestJson[process.env.UNI_PLATFORM] || {}
 
-  const pagesJson = parseTheme(originalPagesJson)
   if (global.uniPlugin.defaultTheme) {
     this.addDependency(
       path.resolve(
@@ -124,11 +123,16 @@ module.exports = function (content, map) {
     process.UNI_TRANSFORM_PX = true
   }
 
+  if (process.env.VUE_APP_DARK_MODE !== 'true') {
+    const { pages, globalStyle, tabBar } = parseTheme(pagesJson)
+    Object.assign(pagesJson, { pages, globalStyle, tabBar })
+  }
+
   if (process.env.UNI_PLATFORM === 'h5') {
     return this.callback(
       null,
       require('./platforms/h5')(
-        process.env.VUE_APP_DARK_MODE === 'true' ? originalPagesJson : pagesJson,
+        pagesJson,
         manifestJson,
         this
       ),
@@ -178,9 +182,7 @@ module.exports = function (content, map) {
   }
 
   const jsonFiles = require('./platforms/' + process.env.UNI_PLATFORM)(
-    process.env.UNI_PLATFORM === 'app-plus' && process.env.VUE_APP_DARK_MODE === 'true'
-      ? originalPagesJson
-      : pagesJson,
+    pagesJson,
     manifestJson,
     isAppView
   )

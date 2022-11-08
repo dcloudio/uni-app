@@ -12,7 +12,7 @@ export function normalizeTabBarStyles (borderStyle) {
   return borderStyle
 }
 
-export function normallizeStyles (pageStyle, themeConfig, mode = 'light') {
+export function normallizeStyles (pageStyle, themeConfig = {}, mode = 'light') {
   const modeStyle = themeConfig[mode]
   const styles = {}
   if (!modeStyle) {
@@ -29,7 +29,7 @@ export function normallizeStyles (pageStyle, themeConfig, mode = 'light') {
           : item)
       } else if (isStr(styleItem) && styleItem.startsWith('@')) {
         const _key = styleItem.replace('@', '')
-        let _styleItem = modeStyle[_key]
+        let _styleItem = modeStyle[_key] || styleItem
         switch (key) {
           case 'borderStyle':
             _styleItem = normalizeTabBarStyles(_styleItem)

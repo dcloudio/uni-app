@@ -6,12 +6,17 @@ const {
   getJson
 } = require('./json')
 
+let themeConfig = {}
+let manifestJsonDarkmode = false
+
 function parseThemeByJsonStr (jsonStr, keys, theme) {
   if (jsonStr.indexOf('@') === -1) {
     return jsonStr
   }
   keys.forEach(key => {
-    jsonStr = jsonStr.replace(new RegExp('@' + key, 'g'), theme[key])
+    jsonStr = jsonStr.replace(new RegExp('@' + key, 'g'), $1 => {
+      return theme[key] || $1
+    })
   })
   return jsonStr
 }
@@ -22,10 +27,8 @@ function hasTheme (themeLocation = 'theme.json') {
 }
 
 function darkmode () {
-  return !!(global.uniPlugin.options || {}).darkmode
+  return manifestJsonDarkmode && !!(global.uniPlugin.options || {}).darkmode
 }
-
-let themeConfig = {}
 
 module.exports = {
   getTheme: () => themeConfig,
@@ -34,6 +37,7 @@ module.exports = {
   initTheme (manifestJson = {}) {
     const platform = process.env.UNI_PLATFORM
     const themeLocation = (manifestJson[platform] || {}).themeLocation || 'theme.json'
+    manifestJsonDarkmode = (manifestJson[platform] || {}).darkmode || false
     if (!hasTheme(themeLocation)) {
       return
     }
