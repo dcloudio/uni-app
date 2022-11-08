@@ -82,9 +82,9 @@ class WebpackAppPlusPlugin {
                   done('Build complete. FILES:' + JSON.stringify(changedFiles))
                 }
               } else {
-                if (!stats.hasErrors()) {
-                  !process.env.UNI_AUTOMATOR_WS_ENDPOINT && done('Build complete. Watching for changes...')
-                };
+                // if (!stats.hasErrors()) {
+                !process.env.UNI_AUTOMATOR_WS_ENDPOINT && done('Build complete. Watching for changes...')
+                // };
               }
               isFirst = false
             } else {
