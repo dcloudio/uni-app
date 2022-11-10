@@ -177,7 +177,6 @@ export const showActionSheet = {
 export const showLoading = {
   args: {
     title: 'content',
-    mask: false,
   },
 }
 export const uploadFile = {
