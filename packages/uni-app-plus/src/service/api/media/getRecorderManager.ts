@@ -45,7 +45,7 @@ const Recorder: Recorder = {
     recorder.record(
       {
         format,
-        samplerate: sampleRate ? String(sampleRate) : '',
+        samplerate: sampleRate ? String(sampleRate) : undefined,
         filename: TEMP_PATH + '/recorder/',
       },
       (res) =>
