@@ -5,7 +5,7 @@
       class="uni-input-wrapper"
     >
       <div
-        v-show="!(composing || valueSync.length || cachedValue === '-')"
+        v-show="!(composing || valueSync.length || cachedValue.length || cachedValue === '-')"
         ref="placeholder"
         :style="placeholderStyle"
         :class="placeholderClass"
@@ -26,6 +26,7 @@
         :pattern="type === 'number' ? '[0-9]*' : null"
         class="uni-input-input"
         :autocomplete="autocomplete"
+        :inputmode="inputmode"
         @change.stop
         @focus="_onFocus"
         @blur="_onBlur"
@@ -147,6 +148,14 @@ export default {
           ? kebabCaseIndex
           : 0
       return AUTOCOMPLETES[index]
+    },
+    inputmode () {
+      switch (this.type) {
+        case 'digit':
+          return 'decimal'
+        default:
+          return undefined
+      }
     }
   },
   watch: {
@@ -257,7 +266,7 @@ export default {
               // 输入小数点时
               this.cachedValue += '.'
               this.__clearCachedValue = () => {
-                this.cachedValue = $event.target.value = this.cachedValue.slice(0, -1)
+                this.cachedValue = this.valueSync = $event.target.value = this.cachedValue.slice(0, -1)
               }
               $event.target.addEventListener('blur', this.__clearCachedValue)
               return false
