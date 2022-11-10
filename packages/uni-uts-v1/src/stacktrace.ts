@@ -29,7 +29,6 @@ export async function parseUtsSwiftPluginStacktrace({
     )
     if (codes) {
       res.push(...codes)
-      i++ // 移除下一行的 code frame
     } else {
       res.push(line)
     }

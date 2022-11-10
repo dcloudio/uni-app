@@ -306,15 +306,13 @@ function resolveLibs(filename: string) {
         const zip = new AdmZip(path.resolve(libsPath, name))
         zip.extractAllTo(outputPath, true)
       }
-    })
-    if (zips.length) {
       libs.push(
-        ...sync('*/*.jar', {
-          cwd: resolveAndroidArchiveOutputPath(),
+        ...sync('**/*.jar', {
+          cwd: outputPath,
           absolute: true,
         })
       )
-    }
+    })
   }
   return libs
 }
