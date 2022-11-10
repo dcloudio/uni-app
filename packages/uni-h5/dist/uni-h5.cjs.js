@@ -3446,6 +3446,14 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       const index2 = camelizeIndex !== -1 ? camelizeIndex : kebabCaseIndex !== -1 ? kebabCaseIndex : 0;
       return AUTOCOMPLETES[index2];
     });
+    const inputmode = vue.computed(() => {
+      switch (props2.type) {
+        case "digit":
+          return "decimal";
+        default:
+          return void 0;
+      }
+    });
     let cache = vue.ref("");
     let resetCache;
     const rootRef = vue.ref(null);
@@ -3541,8 +3549,9 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "pattern": props2.type === "number" ? "[0-9]*" : void 0,
         "class": "uni-input-input",
         "autocomplete": autocomplete.value,
-        "onKeyup": onKeyUpEnter
-      }, null, 40, ["value", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup"]);
+        "onKeyup": onKeyUpEnter,
+        "inputmode": inputmode.value
+      }, null, 40, ["value", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup", "inputmode"]);
       return vue.createVNode("uni-input", {
         "ref": rootRef
       }, [vue.createVNode("div", {
