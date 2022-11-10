@@ -1397,7 +1397,6 @@ const showActionSheet = {
 const showLoading = {
     args: {
         title: 'content',
-        mask: false,
     },
 };
 const uploadFile = {

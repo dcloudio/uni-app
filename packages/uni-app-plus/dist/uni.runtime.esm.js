@@ -14489,7 +14489,7 @@ const Recorder = {
         recorder = plus.audio.getRecorder();
         recorder.record({
             format,
-            samplerate: sampleRate ? String(sampleRate) : '',
+            samplerate: sampleRate ? String(sampleRate) : undefined,
             filename: TEMP_PATH + '/recorder/',
         }, (res) => publishRecorderStateChange('stop', {
             tempFilePath: res,

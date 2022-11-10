@@ -13,7 +13,7 @@ function isUTSProxy(id: string) {
 }
 export function uniUtsV1Plugin(): Plugin {
   return {
-    name: 'uni:uts-v1',
+    name: 'uni:uts',
     apply: 'build',
     enforce: 'pre',
     resolveId(id, importer) {
