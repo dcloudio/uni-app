@@ -25,6 +25,9 @@ export function resolveUtsPluginSourceMapFile(
   inputDir: string,
   outputDir: string
 ) {
+  inputDir = normalizePath(inputDir)
+  outputDir = normalizePath(outputDir)
+  filename = normalizePath(filename)
   const pluginDir = resolvePluginDir(inputDir, outputDir, filename)
   const is_uni_modules = basename(dirname(pluginDir)) === 'uni_modules'
   const sourceMapFile = join(
@@ -71,6 +74,11 @@ function resolvePluginDir(
   }
 }
 
+enum BIAS {
+  GREATEST_LOWER_BOUND = 1,
+  LEAST_UPPER_BOUND = 2,
+}
+
 interface PositionFor {
   sourceMapFile: string
   filename: string
@@ -83,6 +91,22 @@ const consumers: Record<
   string,
   { time: number; consumer: BasicSourceMapConsumer | IndexedSourceMapConsumer }
 > = {}
+
+/**
+ * 解析源码文件，目前 uts 的 sourcemap 存储的都是相对目录
+ * @param consumer
+ * @param filename
+ * @returns
+ */
+function resolveSource(
+  consumer: BasicSourceMapConsumer | IndexedSourceMapConsumer,
+  filename: string
+) {
+  filename = normalizePath(filename)
+  return (
+    consumer.sources.find((source) => filename.endsWith(source)) || filename
+  )
+}
 
 /**
  * 根据源码文件名、行号、列号，返回生成后文件、行号、列号（根据 uts 文件返回 kt|swift 文件）
@@ -100,9 +124,10 @@ export function generatedPositionFor({
 > {
   return resolveSourceMapConsumer(sourceMapFile).then((consumer) => {
     const res = consumer.generatedPositionFor({
-      source: (isWindows ? `\\\\?\\` : '') + normalizePath(filename),
+      source: resolveSource(consumer, filename),
       line,
       column,
+      bias: column === 0 ? BIAS.LEAST_UPPER_BOUND : BIAS.GREATEST_LOWER_BOUND,
     })
     let source = null
     if (outputDir) {
@@ -129,6 +154,10 @@ export function originalPositionFor(
       const res = consumer.originalPositionFor({
         line: generatedPosition.line,
         column: generatedPosition.column,
+        bias:
+          generatedPosition.column === 0
+            ? BIAS.LEAST_UPPER_BOUND
+            : BIAS.GREATEST_LOWER_BOUND,
       })
       if (
         generatedPosition.withSourceContent &&

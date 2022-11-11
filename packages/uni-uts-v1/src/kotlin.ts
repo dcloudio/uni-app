@@ -170,7 +170,8 @@ function checkDeps(
   if (configJsonFile && hasDeps(configJsonFile)) {
     return checkDependencies(configJsonFile).then(({ code, msg, data }) => {
       if (code !== 0) {
-        throw msg
+        console.error(msg)
+        return []
       }
       return data
     })
@@ -199,7 +200,8 @@ function checkRes(
   if (resDir) {
     return checkRResources(resDir).then(({ code, msg, data }) => {
       if (code !== 0) {
-        throw msg
+        console.error(msg)
+        return []
       }
       return [data.jarPath]
     })
