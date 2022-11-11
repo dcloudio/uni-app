@@ -48,10 +48,29 @@ export type RunSwiftDevResult = UtsResult & {
   changed: string[]
 }
 
+let isEnvReady = true
 export async function runSwiftDev(filename: string) {
   // 文件有可能是 app-android 里边的，因为编译到 ios 时，为了保证不报错，可能会去读取 android 下的 uts
   if (filename.includes('app-android')) {
     return
+  }
+  if (!isEnvReady) {
+    console.error(`已跳过uts插件[${resolvePackage(filename)?.id}]的编译`)
+    return
+  }
+  const compilerServer = getCompilerServer<SwiftCompilerServer>(
+    'uts-development-ios'
+  )
+  if (!compilerServer) {
+    throw `项目使用了uts插件，正在安装 uts iOS 运行扩展...`
+  }
+  if (compilerServer.checkEnv) {
+    const { code, msg } = compilerServer.checkEnv()
+    if (code) {
+      isEnvReady = false
+      console.error(msg)
+      return
+    }
   }
   const result = (await compile(filename)) as RunSwiftDevResult
 
@@ -66,12 +85,6 @@ export async function runSwiftDev(filename: string) {
   result.changed = []
   // 开发模式下，需要生成 framework
   if (fs.existsSync(swiftFile)) {
-    const compilerServer = getCompilerServer<SwiftCompilerServer>(
-      'uts-development-ios'
-    )
-    if (!compilerServer) {
-      throw `项目使用了uts插件，正在安装 uts iOS 运行扩展...`
-    }
     let projectPath = process.env.UNI_INPUT_DIR
     const isCli = isCliProject(projectPath)
     if (isCli) {
@@ -156,4 +169,5 @@ interface SwiftCompilerServer {
     utsPath: string
     swiftPath: string
   }): Promise<{ code: number; msg: string }>
+  checkEnv?: () => { code: number; msg: string }
 }
