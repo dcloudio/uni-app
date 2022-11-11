@@ -18,7 +18,8 @@ const {
 
 const {
   initTheme,
-  parseTheme
+  parseTheme,
+  darkmode
 } = require('@dcloudio/uni-cli-shared/lib/theme')
 
 const {
@@ -123,9 +124,12 @@ module.exports = function (content, map) {
     process.UNI_TRANSFORM_PX = true
   }
 
-  if (process.env.VUE_APP_DARK_MODE !== 'true') {
+  if (
+    (process.env.UNI_PLATFORM.indexOf('mp') !== -1 && !darkmode()) ||
+     process.env.VUE_APP_DARK_MODE !== 'true'
+  ) {
     const { pages, globalStyle, tabBar } = parseTheme(pagesJson)
-    Object.assign(pagesJson, { pages, globalStyle, tabBar })
+    Object.assign(pagesJson, JSON.parse(JSON.stringify({ pages, globalStyle, tabBar })))
   }
 
   if (process.env.UNI_PLATFORM === 'h5') {

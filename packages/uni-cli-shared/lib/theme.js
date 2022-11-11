@@ -1,13 +1,8 @@
 const fs = require('fs')
 const path = require('path')
-const { parseJson } = require('./json')
-
-const {
-  getJson
-} = require('./json')
+const { parseJson, getJson } = require('./json')
 
 let themeConfig = {}
-let manifestJsonDarkmode = false
 
 function parseThemeByJsonStr (jsonStr, keys, theme) {
   if (jsonStr.indexOf('@') === -1) {
@@ -27,7 +22,7 @@ function hasTheme (themeLocation = 'theme.json') {
 }
 
 function darkmode () {
-  return manifestJsonDarkmode && !!(global.uniPlugin.options || {}).darkmode
+  return !!(global.uniPlugin.options || {}).darkmode
 }
 
 module.exports = {
@@ -37,7 +32,6 @@ module.exports = {
   initTheme (manifestJson = {}) {
     const platform = process.env.UNI_PLATFORM
     const themeLocation = (manifestJson[platform] || {}).themeLocation || 'theme.json'
-    manifestJsonDarkmode = (manifestJson[platform] || {}).darkmode || false
     if (!hasTheme(themeLocation)) {
       return
     }
@@ -66,11 +60,14 @@ module.exports = {
     return JSON.parse(parseThemeByJsonStr(JSON.stringify(json), keys, theme))
   },
   copyMiniProgramThemeJson (platformOptions, vueOptions) {
-    platformOptions.themeLocation || (platformOptions.themeLocation = 'theme.json')
-    return {
-      from: path.resolve(process.env.UNI_INPUT_DIR, platformOptions.themeLocation),
-      to: path.resolve(process.env.UNI_OUTPUT_DIR, platformOptions.themeLocation),
-      transform: content => JSON.stringify(parseJson(content.toString(), true))
+    const themeLocation = platformOptions.themeLocation || 'theme.json'
+    if (hasTheme(themeLocation)) {
+      platformOptions.themeLocation = themeLocation
+      return {
+        from: path.resolve(process.env.UNI_INPUT_DIR, platformOptions.themeLocation),
+        to: path.resolve(process.env.UNI_OUTPUT_DIR, platformOptions.themeLocation),
+        transform: content => JSON.stringify(parseJson(content.toString(), true))
+      }
     }
   }
 }
