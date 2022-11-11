@@ -90,6 +90,10 @@ function isStr (str) {
   return typeof str === 'string'
 }
 
+function isObject (obj) {
+  return obj !== null && typeof obj === 'object'
+}
+
 function isPlainObject (obj) {
   return _toString.call(obj) === '[object Object]'
 }
@@ -1124,8 +1128,7 @@ const protocols = { // 需要做转换的 API 列表
   },
   showLoading: {
     args: {
-      title: 'content',
-      mask: false
+      title: 'content'
     }
   },
   uploadFile: {
@@ -1981,6 +1984,33 @@ function handleLink (event) {
   vueOptions.parent = parentVm;
 }
 
+function markMPComponent (component) {
+  // 在 Vue 中标记为小程序组件
+  const IS_MP = '__v_isMPComponent';
+  Object.defineProperty(component, IS_MP, {
+    configurable: true,
+    enumerable: false,
+    value: true
+  });
+  return component
+}
+
+function toSkip (obj) {
+  const OB = '__ob__';
+  const SKIP = '__v_skip';
+  if (isObject(obj) && Object.isExtensible(obj)) {
+    // 避免被 @vue/composition-api 观测
+    Object.defineProperty(obj, OB, {
+      configurable: true,
+      enumerable: false,
+      value: {
+        [SKIP]: true
+      }
+    });
+  }
+  return obj
+}
+
 const isArray = Array.isArray;
 const keyList = Object.keys;
 
@@ -2150,9 +2180,9 @@ function handleRef (ref) {
   const refName = ref.props['data-ref'];
   const refInForName = ref.props['data-ref-in-for'];
   if (refName) {
-    this.$vm.$refs[refName] = ref.$vm || ref;
+    this.$vm.$refs[refName] = ref.$vm || toSkip(ref);
   } else if (refInForName) {
-    (this.$vm.$refs[refInForName] || (this.$vm.$refs[refInForName] = [])).push(ref.$vm || ref);
+    (this.$vm.$refs[refInForName] || (this.$vm.$refs[refInForName] = [])).push(ref.$vm || toSkip(ref));
   }
 }
 
@@ -2248,6 +2278,7 @@ const MPComponent = Component;
 function initHook (name, options) {
   const oldHook = options[name];
   options[name] = function (...args) {
+    markMPComponent(this);
     const props = this.props;
     if (props && props['data-com-type'] === 'wx') {
       handleProps(this);

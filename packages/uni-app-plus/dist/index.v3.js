@@ -150,6 +150,7 @@ var serviceContext = (function () {
     'checkIsSoterEnrolledInDevice',
     'startSoterAuthentication',
     'onThemeChange',
+    'offThemeChange',
     'onUIStyleChange',
     'getSystemSetting',
     'getAppAuthorizeSetting',
@@ -640,6 +641,49 @@ var serviceContext = (function () {
     warp,
     invoke
   };
+
+  const borderStyles = {
+    black: 'rgba(0,0,0,0.4)',
+    white: 'rgba(255,255,255,0.4)'
+  };
+
+  function normalizeTabBarStyles (borderStyle) {
+    if (borderStyle && borderStyle in borderStyles) {
+      return borderStyles[borderStyle]
+    }
+    return borderStyle
+  }
+
+  function normallizeStyles (pageStyle, themeConfig = {}, mode = 'light') {
+    const modeStyle = themeConfig[mode];
+    const styles = {};
+    if (!modeStyle) {
+      return styles
+    }
+    Object.keys(pageStyle).forEach((key) => {
+      const styleItem = pageStyle[key]; // Object Array String
+      styles[key] = (() => {
+        if (isPlainObject(styleItem)) {
+          return normallizeStyles(styleItem, themeConfig, mode)
+        } else if (Array.isArray(styleItem)) {
+          return styleItem.map((item) => isPlainObject(item)
+            ? normallizeStyles(item, themeConfig, mode)
+            : item)
+        } else if (isStr(styleItem) && styleItem.startsWith('@')) {
+          const _key = styleItem.replace('@', '');
+          let _styleItem = modeStyle[_key] || styleItem;
+          switch (key) {
+            case 'borderStyle':
+              _styleItem = normalizeTabBarStyles(_styleItem);
+              break
+          }
+          return _styleItem
+        }
+        return styleItem
+      })();
+    });
+    return styles
+  }
 
   /**
    * 框架内 try-catch
@@ -1595,6 +1639,7 @@ var serviceContext = (function () {
   }
 
   const NAVBAR_HEIGHT = 44;
+  const ON_THEME_CHANGE = 'onThemeChange';
 
   var en = {
   	"uni.app.quit": "Press back button again to exit",
@@ -4965,6 +5010,9 @@ var serviceContext = (function () {
     moveAlong (ctx, args) {
       return invokeVmMethod(ctx, 'moveAlong', args)
     },
+    setLocMarkerIcon (ctx, args) {
+      return invokeVmMethod(ctx, 'setLocMarkerIcon', args)
+    },
     openMapApp (ctx, args) {
       return invokeVmMethod(ctx, 'openMapApp', args)
     },
@@ -6221,6 +6269,85 @@ var serviceContext = (function () {
     }
   }
 
+  const ON_THEME_CHANGE$1 = 'api.onThemeChange';
+
+  function onThemeChange (callback = () => { }) {
+    UniServiceJSBridge.on(ON_THEME_CHANGE$1, callback);
+  }
+
+  function offThemeChange (callback = () => { }) {
+    UniServiceJSBridge.off(ON_THEME_CHANGE$1, callback);
+  }
+
+  function parseTheme (pageStyle) {
+    let parsedStyle = {};
+    if (__uniConfig.darkmode) {
+      let theme = 'light';
+      const systemInfo = weexGetSystemInfoSync();
+      if (systemInfo) {
+        theme = systemInfo.hostTheme || systemInfo.osTheme;
+      }
+      parsedStyle = normallizeStyles(pageStyle, __uniConfig.themeConfig, theme);
+    }
+    return __uniConfig.darkmode ? parsedStyle : pageStyle
+  }
+
+  function useTabBarThemeChange (tabBar, options) {
+    if (__uniConfig.darkmode) {
+      const fn = () => {
+        const {
+          list = [], color, selectedColor,
+          backgroundColor, borderStyle
+        } = parseTheme(options);
+        const tabbarStyle = {
+          color,
+          selectedColor,
+          backgroundColor,
+          borderStyle
+        };
+
+        tabBar && tabBar.setTabBarStyle(tabbarStyle);
+        tabBar && tabBar.setTabBarItems({
+          list: list.map((item) => ({
+            iconPath: item.iconPath,
+            selectedIconPath: item.selectedIconPath,
+            visible: item.visible
+          }))
+        });
+        // TODO 暂未实现
+        // tabBar && tabBar.setAnimationAlphaBGColor(parseTheme((__uniConfig.window || {}).backgroundColor, false))
+      };
+
+      fn();
+
+      onThemeChange(fn);
+    }
+  }
+
+  function useWebviewThemeChange (webview, getWebviewStyle) {
+    if (__uniConfig.darkmode) {
+      const fn = () => {
+        const {
+          animationAlphaBGColor, background,
+          backgroundColorBottom, backgroundColorTop,
+          titleNView: { backgroundColor, titleColor } = {}
+        } = getWebviewStyle();
+        webview && webview.setStyle({
+          animationAlphaBGColor,
+          background,
+          backgroundColorBottom,
+          backgroundColorTop,
+          titleNView: {
+            backgroundColor,
+            titleColor
+          }
+        });
+      };
+      onThemeChange(fn);
+      webview.addEventListener('close', () => offThemeChange(fn));
+    }
+  }
+
   const TABBAR_HEIGHT = 50;
   let config;
 
@@ -6230,6 +6357,10 @@ var serviceContext = (function () {
   let visible = true;
 
   let tabBar;
+
+  function setTabBarItems (style) {
+    tabBar && tabBar.setTabBarItems(style);
+  }
 
   /**
    * 设置角标
@@ -6285,7 +6416,7 @@ var serviceContext = (function () {
       const tabbarItems = config.list.map(item => ({ visible: item.visible }));
       tabbarItems[index] = item;
 
-      tabBar && tabBar.setTabBarItems({ list: tabbarItems });
+      setTabBarItems({ list: tabbarItems });
     } else {
       tabBar && tabBar.setTabBarItem(item);
     }
@@ -6342,6 +6473,8 @@ var serviceContext = (function () {
       tabBar && tabBar.onMidButtonClick(() => {
         publish('onTabBarMidButtonTap', {});
       });
+
+      useTabBarThemeChange(tabBar, options);
     },
     indexOf (page) {
       const config = this.config;
@@ -6508,8 +6641,9 @@ var serviceContext = (function () {
     if (typeof systemInfo === 'string') {
       try {
         systemInfo = JSON.parse(systemInfo);
-      } catch (error) {}
+      } catch (error) { }
     }
+    return systemInfo
   }
 
   function getDeviceInfo () {
@@ -6543,7 +6677,7 @@ var serviceContext = (function () {
       hostPackageName, hostName, osLanguage,
       hostVersion, hostLanguage, hostTheme,
       appId, appName, appVersion, appVersionCode,
-      appWgtVersion
+      appWgtVersion, osTheme
     } = systemInfo;
 
     const appLanguage = uni
@@ -6569,7 +6703,7 @@ var serviceContext = (function () {
       hostFontSizeSetting: undefined,
       language: osLanguage,
       SDKVersion: '',
-      theme: undefined,
+      theme: hostTheme || osTheme,
       version: plus.runtime.innerVersion
     }
   }
@@ -6608,7 +6742,9 @@ var serviceContext = (function () {
 
     delete _systemInfo.screenTop;
     delete _systemInfo.enableDebug;
-    delete _systemInfo.theme;
+    if (!__uniConfig.darkmode) {
+      delete _systemInfo.theme;
+    }
 
     return sortObject(_systemInfo)
   }
@@ -9422,24 +9558,26 @@ var serviceContext = (function () {
     'pullToRefresh'
   ];
 
-  function parseWebviewStyle (id, path, routeOptions = {}) {
+  function parseWebviewStyle (id, path, _routeOptions = {}) {
     const webviewStyle = {
       bounce: 'vertical'
     };
 
     // 合并
-    routeOptions.window = parseStyleUnit(
+    _routeOptions.window = parseStyleUnit(
       Object.assign(
         JSON.parse(JSON.stringify(__uniConfig.window || {})),
-        routeOptions.window || {}
+        _routeOptions.window || {}
       )
     );
 
-    Object.keys(routeOptions.window).forEach(name => {
+    Object.keys(_routeOptions.window).forEach(name => {
       if (WEBVIEW_STYLE_BLACKLIST.indexOf(name) === -1) {
-        webviewStyle[name] = routeOptions.window[name];
+        webviewStyle[name] = _routeOptions.window[name];
       }
     });
+
+    const routeOptions = parseTheme(_routeOptions);
 
     const backgroundColor = routeOptions.window.backgroundColor;
     if (
@@ -9451,6 +9589,15 @@ var serviceContext = (function () {
       }
       if (!webviewStyle.backgroundColorTop) {
         webviewStyle.backgroundColorTop = backgroundColor;
+      }
+      if (!webviewStyle.backgroundColorBottom) {
+        webviewStyle.backgroundColorBottom = backgroundColor;
+      }
+      if (!webviewStyle.animationAlphaBGColor) {
+        webviewStyle.animationAlphaBGColor = backgroundColor;
+      }
+      if (typeof webviewStyle.webviewBGTransparent === 'undefined') {
+        webviewStyle.webviewBGTransparent = true;
       }
     }
 
@@ -9797,21 +9944,26 @@ var serviceContext = (function () {
 
   function createWebview (path, routeOptions, query, extras = {}) {
     if (routeOptions.meta.isNVue) {
-      const webviewId = id$1++;
-      const webviewStyle = parseWebviewStyle(
+      const getWebviewStyle = () => parseWebviewStyle(
         webviewId,
         path,
         routeOptions
       );
+      const webviewId = id$1++;
+      const webviewStyle = getWebviewStyle();
       webviewStyle.uniPageUrl = getUniPageUrl(path, query);
       if (process.env.NODE_ENV !== 'production') {
         console.log('[uni-app] createWebview', webviewId, path, webviewStyle);
       }
       // android 需要使用
       webviewStyle.isTab = !!routeOptions.meta.isTabBar;
-      return plus.webview.create('', String(webviewId), webviewStyle, Object.assign({
+      const webview = plus.webview.create('', String(webviewId), webviewStyle, Object.assign({
         nvue: true
-      }, extras))
+      }, extras));
+
+      useWebviewThemeChange(webview, getWebviewStyle);
+
+      return webview
     }
     if (id$1 === 2) { // 如果首页非 nvue，则直接返回 Launch Webview
       return plus.webview.getLaunchWebview()
@@ -9823,11 +9975,12 @@ var serviceContext = (function () {
   function initWebview (webview, routeOptions, path, query) {
     // 首页或非 nvue 页面
     if (webview.id === '1' || !routeOptions.meta.isNVue) {
-      const webviewStyle = parseWebviewStyle(
+      const getWebviewStyle = () => parseWebviewStyle(
         parseInt(webview.id),
         '',
         routeOptions
       );
+      const webviewStyle = getWebviewStyle();
 
       webviewStyle.uniPageUrl = getUniPageUrl(path, query);
 
@@ -9840,6 +9993,8 @@ var serviceContext = (function () {
       if (process.env.NODE_ENV !== 'production') {
         console.log('[uni-app] updateWebview', webviewStyle);
       }
+
+      useWebviewThemeChange(webview, getWebviewStyle);
 
       webview.setStyle(webviewStyle);
     }
@@ -12293,6 +12448,7 @@ var serviceContext = (function () {
     checkIsSupportSoterAuthentication: checkIsSupportSoterAuthentication,
     checkIsSoterEnrolledInDevice: checkIsSoterEnrolledInDevice,
     startSoterAuthentication: startSoterAuthentication,
+    weexGetSystemInfoSync: weexGetSystemInfoSync,
     getDeviceInfo: getDeviceInfo,
     getAppBaseInfo: getAppBaseInfo,
     getSystemInfoSync: getSystemInfoSync,
@@ -20349,6 +20505,7 @@ var serviceContext = (function () {
     'addMarkers',
     'removeMarkers',
     'moveAlong',
+    'setLocMarkerIcon',
     'openMapApp'];
 
   class MapContext {
@@ -20739,14 +20896,24 @@ var serviceContext = (function () {
   const callbacks$7 = [];
   const oldCallbacks = [];
 
-  onMethod('onThemeChange', function (res) {
+  onMethod(ON_THEME_CHANGE, function (res) {
     callbacks$7.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
 
-  function onThemeChange (callbackId) {
+  function onThemeChange$1 (callbackId) {
     callbacks$7.push(callbackId);
+  }
+
+  function offThemeChange$1 (callbackId) {
+    // 暂不支持移除所有监听
+    if (callbackId) {
+      const index = callbacks$7.indexOf(callbackId);
+      if (index >= 0) {
+        callbacks$7.splice(index, 1);
+      }
+    }
   }
 
   // 旧版本 API，后期文档更新后考虑移除
@@ -20763,7 +20930,8 @@ var serviceContext = (function () {
 
   var require_context_module_1_12 = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    onThemeChange: onThemeChange,
+    onThemeChange: onThemeChange$1,
+    offThemeChange: offThemeChange$1,
     onUIStyleChange: onUIStyleChange
   });
 
