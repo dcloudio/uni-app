@@ -10,6 +10,10 @@ import { resolveUtsPluginSourceMapFile } from './sourceMap'
 import { isWindows } from './shared'
 
 export * from './sourceMap'
+export {
+  generateCodeFrameWithKotlinStacktrace,
+  generateCodeFrameWithSwiftStacktrace,
+} from './legacy'
 
 export async function compile(module: string) {
   const pkg = resolvePackage(module)

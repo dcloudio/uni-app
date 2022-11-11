@@ -1,5 +1,3 @@
-import path from 'path'
-import { normalizePath } from './shared'
 import { originalPositionFor } from './sourceMap'
 
 const splitRE = /\r?\n/
@@ -57,9 +55,7 @@ async function parseUtsStacktraceLine(
   if (originalPosition.source && originalPosition.sourceContent) {
     lines.push(`${message}`)
     lines.push(
-      `at ${normalizePath(
-        path.relative(sourceRoot, originalPosition.source)
-      )}:${originalPosition.line}:${originalPosition.column}`
+      `at ${originalPosition.source}:${originalPosition.line}:${originalPosition.column}`
     )
     if (originalPosition.line !== null && originalPosition.column !== null) {
       lines.push(
