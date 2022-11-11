@@ -12521,7 +12521,11 @@ const index$o = /* @__PURE__ */ defineBuiltInComponent({
   }) {
     const radioChecked = ref(props2.checked);
     const radioValue = ref(props2.value);
-    const checkedStyle = computed(() => `background-color: ${props2.color};border-color: ${props2.color};`);
+    const checkedStyle = computed(() => {
+      if (props2.disabled)
+        return "background-color: #E1E1E1;border-color: ##D1D1D1;";
+      return `background-color: ${props2.color};border-color: ${props2.color};`;
+    });
     watch([() => props2.checked, () => props2.value], ([newChecked, newModelValue]) => {
       radioChecked.value = newChecked;
       radioValue.value = newModelValue;
@@ -12561,7 +12565,7 @@ const index$o = /* @__PURE__ */ defineBuiltInComponent({
           "uni-radio-input-disabled": props2.disabled
         }],
         "style": radioChecked.value ? checkedStyle.value : ""
-      }, [radioChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#adadad" : "#fff", 18) : ""], 6), slots.default && slots.default()])], 16, ["onClick"]);
+      }, [radioChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : "#fff", 18) : ""], 6), slots.default && slots.default()])], 16, ["onClick"]);
     };
   }
 });
