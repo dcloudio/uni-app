@@ -55,6 +55,7 @@ export default {
   },
   computed: {
     checkedStyle () {
+      if (this.disabled) return 'background-color: #E1E1E1;border-color: ##D1D1D1;'
       return `background-color: ${this.color};border-color: ${this.color};`
     }
   },
@@ -157,8 +158,8 @@ export default {
 	}
 
 	uni-radio .uni-radio-input.uni-radio-input-disabled {
-		background-color: #E1E1E1 !important;
-		border-color: #D1D1D1 !important;
+		background-color: #E1E1E1;
+		border-color: #D1D1D1;
 	}
 
 	uni-radio .uni-radio-input.uni-radio-input-disabled:before {
