@@ -8,6 +8,11 @@ const {
   getFlexDirection
 } = require('@dcloudio/uni-cli-shared')
 const {
+  getTheme,
+  hasTheme,
+  parseTheme
+} = require('@dcloudio/uni-cli-shared/lib/theme')
+const {
   compileI18nJsonStr
 } = require('@dcloudio/uni-i18n')
 const {
@@ -104,6 +109,16 @@ function updateFileFlag (appJson) {
   }
 }
 
+function _initTheme (appJson, userManifestJson) {
+  const manifestJson = userManifestJson[process.env.UNI_PLATFORM] || {}
+  appJson.darkmode = manifestJson.darkmode || false
+  const themeLocation = manifestJson.themeLocation || 'theme.json'
+  if (themeLocation && hasTheme(themeLocation)) {
+    appJson.themeConfig = getTheme()
+  }
+  return appJson
+}
+
 module.exports = function (pagesJson, userManifestJson, isAppView) {
   const {
     app
@@ -115,10 +130,12 @@ module.exports = function (pagesJson, userManifestJson, isAppView) {
 
   const appJson = app.content
 
+  _initTheme(appJson, userManifestJson)
+
   const {
     navigationBarTextStyle = 'white',
     navigationBarBackgroundColor = '#000000'
-  } = appJson.window || {}
+  } = parseTheme(appJson.window) || {}
 
   const TABBAR_HEIGHT = 50
 
@@ -179,6 +196,15 @@ module.exports = function (pagesJson, userManifestJson, isAppView) {
     if (distribute.sdkConfigs) {
       manifestJson.plus.distribute.plugins = distribute.sdkConfigs
       delete manifestJson.plus.distribute.sdkConfigs
+    }
+    if (manifestJson.plus.darkmode) {
+      if (!(distribute.google || (distribute.google = {})).defaultNightMode) {
+        distribute.google.defaultNightMode = 'auto'
+      }
+
+      if (!(distribute.apple || (distribute.apple = {})).UIUserInterfaceStyle) {
+        distribute.apple.UIUserInterfaceStyle = 'Automatic'
+      }
     }
   }
 
@@ -279,7 +305,7 @@ module.exports = function (pagesJson, userManifestJson, isAppView) {
     // 安全区配置 仅包含 tabBar 的时候才配置
     if (!manifestJson.plus.safearea) {
       manifestJson.plus.safearea = {
-        background: appJson.tabBar.backgroundColor || '#FFFFFF',
+        background: parseTheme(appJson.tabBar).backgroundColor || '#FFFFFF',
         bottom: {
           offset: 'auto'
         }
@@ -470,7 +496,7 @@ module.exports = function (pagesJson, userManifestJson, isAppView) {
         if (args && (args.path || args.pathName)) {
           entryPagePath = conditionPagePath = args.path || args.pathName
         }
-      } catch (e) {}
+      } catch (e) { }
     }
 
     let isNVueEntryPage = appJson.nvue && appJson.nvue.entryPagePath
@@ -521,7 +547,7 @@ module.exports = function (pagesJson, userManifestJson, isAppView) {
       pagesJson.tabBar.list.length
     ) {
       const tabBar = (manifestJson.plus.tabBar = Object.assign({},
-        pagesJson.tabBar
+        parseTheme(pagesJson.tabBar)
       ))
       const borderStyles = {
         black: 'rgba(0,0,0,0.4)',
@@ -546,9 +572,9 @@ module.exports = function (pagesJson, userManifestJson, isAppView) {
         const item = tabBar.list.find(
           page =>
             page.pagePath ===
-          (process.env.UNI_USING_NATIVE
-            ? appJson.entryPagePath
-            : entryPagePath)
+            (process.env.UNI_USING_NATIVE
+              ? appJson.entryPagePath
+              : entryPagePath)
         )
         if (item) {
           tabBar.child = ['lauchwebview']
@@ -634,7 +660,7 @@ function initUniStatistics (manifestJson) {
   let spaces = []
   try {
     spaces = JSON.parse(process.env.UNI_CLOUD_PROVIDER)
-  } catch (e) {}
+  } catch (e) { }
   if (!Array.isArray(spaces) || !spaces.length) {
     return
   }

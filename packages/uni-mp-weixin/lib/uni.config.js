@@ -1,6 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const { parseJson } = require('@dcloudio/uni-cli-shared/lib/json')
+const { copyMiniProgramThemeJson } = require('@dcloudio/uni-cli-shared/lib/theme')
 
 const COMPONENTS_DIR_NAME = 'wxcomponents'
 
@@ -26,7 +27,6 @@ module.exports = {
   copyWebpackOptions (platformOptions, vueOptions) {
     const CopyWebpackPluginVersion = Number(require('copy-webpack-plugin/package.json').version.split('.')[0])
     const copyOptions = [
-      'theme.json',
       'sitemap.json',
       'ext.json',
       'custom-tab-bar',
@@ -40,6 +40,8 @@ module.exports = {
         transform: content => JSON.stringify(parseJson(content.toString(), true))
       })
     }
+
+    copyOptions.push(copyMiniProgramThemeJson(platformOptions, vueOptions))
 
     const workers = platformOptions.workers
     workers && copyOptions.push(workers)

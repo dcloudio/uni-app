@@ -203,8 +203,7 @@ const protocols = { // 需要做转换的 API 列表
   },
   showLoading: {
     args: {
-      title: 'content',
-      mask: false
+      title: 'content'
     }
   },
   uploadFile: {

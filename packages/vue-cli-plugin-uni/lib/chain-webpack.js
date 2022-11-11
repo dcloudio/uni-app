@@ -91,6 +91,17 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
               }
               return options
             })
+          const platformExcludes = ['app-plus', 'h5', 'mp-360']
+          const platform = process.env.UNI_PLATFORM
+          if (!platformExcludes.includes(platform)) {
+            // remove warning https://github.com/vuejs/vue-loader/issues/1742
+            langRule.oneOf(type)
+              .use('extract-css-loader')
+              .tap(options => {
+                options.esModule = false
+                return options
+              })
+          }
         }
         langRule.oneOf(type)
           .use('uniapp-preprocss')
@@ -136,7 +147,7 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
       'process.env.UNI_SUB_PLATFORM': JSON.stringify(process.env.UNI_SUB_PLATFORM),
       'process.env.UNI_CLOUD_PROVIDER': process.env.UNI_CLOUD_PROVIDER,
       'process.env.UNI_SECURE_NETWORK_ENABLE': process.env.UNI_SECURE_NETWORK_ENABLE,
-      'process.env.UNI_SECURE_NETWORK_CONFIG': process.env.UNI_SECURE_NETWORK_CONFIG,
+      'process.env.UNI_SECURE_NETWORK_CONFIG': process.env.UNI_SECURE_NETWORK_CONFIG || '[]',
       'process.env.UNICLOUD_DEBUG': process.env.UNICLOUD_DEBUG,
       'process.env.RUN_BY_HBUILDERX': process.env.RUN_BY_HBUILDERX,
       'process.env.UNI_AUTOMATOR_WS_ENDPOINT': JSON.stringify(process.env.UNI_AUTOMATOR_WS_ENDPOINT),

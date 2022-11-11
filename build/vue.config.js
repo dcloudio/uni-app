@@ -4,7 +4,11 @@ const resolve = dir => path.resolve(__dirname, '../', dir)
 
 const pkgPath = resolve('package.json')
 
+const { splitMediaPlugin, generateMediaQuerys } = require('./postcssSplitMediaPlugin')
+const webpack = require('webpack')
+
 const webpackConfig = require('./webpack.config.js')
+const postCssConfig = require('../postcss.config')
 
 let outputDir = resolve('./packages/uni-' + process.env.UNI_PLATFORM + '/dist')
 
@@ -15,6 +19,8 @@ if (process.env.UNI_PLATFORM === 'h5' && process.env.UNI_UI === 'true') {
 if (process.env.UNI_PLATFORM === 'app-plus' && process.env.UNI_VIEW === 'true') {
   outputDir = resolve('./packages/uni-' + process.env.UNI_PLATFORM + '/dist')
 }
+
+if (process.env.UNI_PLATFORM === 'h5') { postCssConfig.plugins.push(splitMediaPlugin) }
 
 module.exports = {
   publicPath: '/',
@@ -41,8 +47,23 @@ module.exports = {
         configFile: pkgPath
       })
     config.plugins.delete('hmr') // remove hot module reload
+
+    if (process.env.UNI_PLATFORM === 'h5') {
+      config
+        .plugin('webpack-build-done')
+        .use(webpack.ProgressPlugin, [function (percentage, message, ...args) {
+          if (percentage === 1) {
+            generateMediaQuerys({
+              outputDir
+            })
+          }
+        }])
+    }
   },
   css: {
-    extract: true
+    extract: true,
+    loaderOptions: {
+      postcss: postCssConfig
+    }
   }
 }

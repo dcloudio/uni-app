@@ -1,5 +1,6 @@
 /// <reference types="@dcloudio/types" />
 import { createLifeCycle as createLifeCycleBase, ComponentInternalInstance } from '@vue/composition-api'
+import * as app from './app'
 import * as mp from './mp'
 
 export {
@@ -20,7 +21,7 @@ const createLifeCycle = <T extends Function>(lifecycle: string) => {
   }
 }
 if (typeof plus === 'object') {
-  // TODO App
+  app.init()
 } else if (typeof window === 'object' && 'document' in window) {
   // TODO H5
 } else {

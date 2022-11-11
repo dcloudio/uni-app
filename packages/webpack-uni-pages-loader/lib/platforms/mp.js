@@ -258,9 +258,9 @@ module.exports = function (pagesJson, manifestJson, project = {}) {
     updateAppJsonUsingComponents(app.usingComponents)
   }
 
-  if (darkmode() && hasTheme()) {
-    app.darkmode = true
-    app.themeLocation = 'theme.json'
+  const themeLocation = (manifestJson[process.env.UNI_PLATFORM] || {}).themeLocation
+  if (darkmode() && hasTheme(themeLocation)) {
+    app.themeLocation = themeLocation || 'theme.json'
   }
 
   const projectName = getPlatformProject()

@@ -30,6 +30,8 @@ import {
   onWebviewPopGesture
 } from './on-webview-pop-gesture'
 
+import { useWebviewThemeChange } from '../theme'
+
 export let preloadWebview
 
 let id = 2
@@ -71,21 +73,26 @@ function getDebugRefresh (path, query, routeOptions) {
 
 export function createWebview (path, routeOptions, query, extras = {}) {
   if (routeOptions.meta.isNVue) {
-    const webviewId = id++
-    const webviewStyle = parseWebviewStyle(
+    const getWebviewStyle = () => parseWebviewStyle(
       webviewId,
       path,
       routeOptions
     )
+    const webviewId = id++
+    const webviewStyle = getWebviewStyle()
     webviewStyle.uniPageUrl = getUniPageUrl(path, query)
     if (process.env.NODE_ENV !== 'production') {
       console.log('[uni-app] createWebview', webviewId, path, webviewStyle)
     }
     // android 需要使用
     webviewStyle.isTab = !!routeOptions.meta.isTabBar
-    return plus.webview.create('', String(webviewId), webviewStyle, Object.assign({
+    const webview = plus.webview.create('', String(webviewId), webviewStyle, Object.assign({
       nvue: true
     }, extras))
+
+    useWebviewThemeChange(webview, getWebviewStyle)
+
+    return webview
   }
   if (id === 2) { // 如果首页非 nvue，则直接返回 Launch Webview
     return plus.webview.getLaunchWebview()
@@ -97,11 +104,12 @@ export function createWebview (path, routeOptions, query, extras = {}) {
 export function initWebview (webview, routeOptions, path, query) {
   // 首页或非 nvue 页面
   if (webview.id === '1' || !routeOptions.meta.isNVue) {
-    const webviewStyle = parseWebviewStyle(
+    const getWebviewStyle = () => parseWebviewStyle(
       parseInt(webview.id),
       '',
       routeOptions
     )
+    const webviewStyle = getWebviewStyle()
 
     webviewStyle.uniPageUrl = getUniPageUrl(path, query)
 
@@ -114,6 +122,8 @@ export function initWebview (webview, routeOptions, path, query) {
     if (process.env.NODE_ENV !== 'production') {
       console.log('[uni-app] updateWebview', webviewStyle)
     }
+
+    useWebviewThemeChange(webview, getWebviewStyle)
 
     webview.setStyle(webviewStyle)
   }

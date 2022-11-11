@@ -35,6 +35,7 @@ process.env.UNI_APP_NAME = manifestJsonObj.name || ''
 process.env.UNI_PLATFORM = process.env.UNI_PLATFORM || 'h5'
 process.env.UNI_APP_VERSION_NAME = manifestJsonObj.versionName
 process.env.UNI_APP_VERSION_CODE = manifestJsonObj.versionCode
+process.env.VUE_APP_DARK_MODE = (manifestJsonObj[process.env.UNI_PLATFORM] || {}).darkmode || false
 
 // 小程序 vue3 标记
 if (process.env.UNI_PLATFORM.indexOf('mp-') === 0) {
@@ -265,8 +266,15 @@ if (process.env.UNI_PLATFORM === 'h5') {
       process.env.UNI_OPT_PRELOAD = true
     }
   }
-  const buffer = fs.readFileSync(require.resolve('@dcloudio/uni-h5/dist/index.css'))
-  process.env.VUE_APP_INDEX_CSS_HASH = loaderUtils.getHashDigest(buffer, 'md5', 'hex', 8)
+  const indexCssBuffer = fs.readFileSync(require.resolve('@dcloudio/uni-h5/dist/index.css'))
+  process.env.VUE_APP_INDEX_CSS_HASH = loaderUtils.getHashDigest(indexCssBuffer, 'md5', 'hex', 8)
+  let indexDarkCssBuffer = ''
+  try {
+    indexDarkCssBuffer = fs.readFileSync(require.resolve('@dcloudio/uni-h5/dist/index.dark.css'))
+    process.env.VUE_APP_INDEX_DARK_CSS_HASH = loaderUtils.getHashDigest(indexDarkCssBuffer, 'md5', 'hex', 8)
+  } catch (error) {
+    process.env.VUE_APP_INDEX_DARK_CSS_HASH = ''
+  }
 }
 
 if (process.env.UNI_PLATFORM === 'mp-qq') { // QQ小程序 强制自定义组件模式

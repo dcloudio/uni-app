@@ -105,7 +105,7 @@ export function getSystemInfoSync () {
 
   delete systemInfo.screenTop
   delete systemInfo.enableDebug
-  delete systemInfo.theme
+  if (!__uniConfig.darkmode) delete systemInfo.theme
 
   return sortObject(systemInfo)
 }

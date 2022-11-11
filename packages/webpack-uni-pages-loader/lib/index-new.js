@@ -18,7 +18,8 @@ const {
 
 const {
   initTheme,
-  parseTheme
+  parseTheme,
+  darkmode
 } = require('@dcloudio/uni-cli-shared/lib/theme')
 
 const {
@@ -51,8 +52,6 @@ function renameUsingComponents (jsonObj) {
 module.exports = function (content, map) {
   this.cacheable && this.cacheable()
 
-  initTheme()
-
   let isAppView = false
   if (this.resourceQuery) {
     const params = loaderUtils.parseQuery(this.resourceQuery)
@@ -68,6 +67,8 @@ module.exports = function (content, map) {
     fs.readFileSync(manifestJsonPath, 'utf8')
   )
 
+  initTheme(manifestJson)
+
   // this.addDependency(pagesJsonJsPath)
   const localePath = path.resolve(process.env.UNI_INPUT_DIR, 'locale')
   // 路径不存在时会触发 webpack5 差量编译
@@ -76,7 +77,7 @@ module.exports = function (content, map) {
   }
   this.addDependency(manifestJsonPath)
 
-  let pagesJson = parsePagesJson(content, {
+  const pagesJson = parsePagesJson(content, {
     addDependency: file => {
       (process.UNI_PAGES_DEPS || (process.UNI_PAGES_DEPS = new Set())).add(
         normalizePath(file)
@@ -99,9 +100,15 @@ module.exports = function (content, map) {
     }
   }
 
+  const platformManifestJson = manifestJson[process.env.UNI_PLATFORM] || {}
+
   if (global.uniPlugin.defaultTheme) {
-    pagesJson = parseTheme(pagesJson)
-    this.addDependency(path.resolve(process.env.UNI_INPUT_DIR, 'theme.json'))
+    this.addDependency(
+      path.resolve(
+        process.env.UNI_INPUT_DIR,
+        platformManifestJson.themeLocation || 'theme.json'
+      )
+    )
   }
 
   // 组件自动导入配置
@@ -117,10 +124,22 @@ module.exports = function (content, map) {
     process.UNI_TRANSFORM_PX = true
   }
 
+  if (
+    (process.env.UNI_PLATFORM.indexOf('mp') !== -1 && !darkmode()) ||
+     process.env.VUE_APP_DARK_MODE !== 'true'
+  ) {
+    const { pages, globalStyle, tabBar } = parseTheme(pagesJson)
+    Object.assign(pagesJson, JSON.parse(JSON.stringify({ pages, globalStyle, tabBar })))
+  }
+
   if (process.env.UNI_PLATFORM === 'h5') {
     return this.callback(
       null,
-      require('./platforms/h5')(pagesJson, manifestJson, this),
+      require('./platforms/h5')(
+        pagesJson,
+        manifestJson,
+        this
+      ),
       map
     )
   }

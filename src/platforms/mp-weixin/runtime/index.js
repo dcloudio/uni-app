@@ -2,6 +2,7 @@ import {
   cached,
   camelize
 } from 'uni-shared'
+import { markMPComponent } from './wrapper/util'
 
 const MPPage = Page
 const MPComponent = Component
@@ -41,13 +42,10 @@ function initHook (name, options, isComponent) {
     isComponent && options.lifetimes && options.lifetimes[name] && (options = options.lifetimes)
   }
   const oldHook = options[name]
-  if (!oldHook) {
-    options[name] = function () {
-      initTriggerEvent(this)
-    }
-  } else {
-    options[name] = function (...args) {
-      initTriggerEvent(this)
+  options[name] = function (...args) {
+    markMPComponent(this)
+    initTriggerEvent(this)
+    if (oldHook) {
       return oldHook.apply(this, args)
     }
   }

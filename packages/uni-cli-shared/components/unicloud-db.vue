@@ -161,13 +161,6 @@ export default {
     },
     isLookup () {
       return (Array.isArray(this.collection) && this.collection.length > 1) || (typeof this.collection === 'string' && this.collection.indexOf(',') > -1)
-    },
-    mainCollection () {
-      if (typeof this.collection === 'string') {
-        return this.collection.split(',')[0]
-      }
-      const mainQuery = JSON.parse(JSON.stringify(this.collection[0]))
-      return mainQuery.$db[0].$param[0]
     }
   },
   created () {
@@ -335,7 +328,7 @@ export default {
         db = db.action(action)
       }
 
-      db.collection(this.mainCollection).add(value).then((res) => {
+      db.collection(this.getMainCollection()).add(value).then((res) => {
         success && success(res)
         if (showToast) {
           uni.showToast({
@@ -409,7 +402,7 @@ export default {
         db = db.action(action)
       }
 
-      return db.collection(this.mainCollection).doc(id).update(value).then((res) => {
+      return db.collection(this.getMainCollection()).doc(id).update(value).then((res) => {
         success && success(res)
         if (showToast) {
           uni.showToast({
@@ -430,6 +423,13 @@ export default {
         }
         complete && complete()
       })
+    },
+    getMainCollection () {
+      if (typeof this.collection === 'string') {
+        return this.collection.split(',')[0]
+      }
+      const mainQuery = JSON.parse(JSON.stringify(this.collection[0]))
+      return mainQuery.$db[0].$param[0]
     },
     getTemp (isTemp = true) {
       /* eslint-disable no-undef */
@@ -590,7 +590,7 @@ export default {
         exec = exec.action(action)
       }
 
-      exec.collection(this.mainCollection).where({
+      exec.collection(this.getMainCollection()).where({
         _id: dbCmd.in(ids)
       }).remove().then((res) => {
         success && success(res.result)

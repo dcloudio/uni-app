@@ -1,23 +1,23 @@
 const fs = require('fs')
 const path = require('path')
+const { parseJson, getJson } = require('./json')
 
-const {
-  getJson
-} = require('./json')
+let themeConfig = {}
 
 function parseThemeByJsonStr (jsonStr, keys, theme) {
   if (jsonStr.indexOf('@') === -1) {
     return jsonStr
   }
   keys.forEach(key => {
-    jsonStr = jsonStr.replace(new RegExp('@' + key, 'g'), theme[key])
+    jsonStr = jsonStr.replace(new RegExp('@' + key, 'g'), $1 => {
+      return theme[key] || $1
+    })
   })
   return jsonStr
 }
 
-const themeJsonPath = path.join(process.env.UNI_INPUT_DIR, 'theme.json')
-
-function hasTheme () {
+function hasTheme (themeLocation = 'theme.json') {
+  const themeJsonPath = path.join(process.env.UNI_INPUT_DIR, themeLocation)
   return fs.existsSync(themeJsonPath)
 }
 
@@ -26,24 +26,27 @@ function darkmode () {
 }
 
 module.exports = {
+  getTheme: () => themeConfig,
   darkmode,
   hasTheme,
-  initTheme () {
-    if (!hasTheme()) {
+  initTheme (manifestJson = {}) {
+    const platform = process.env.UNI_PLATFORM
+    const themeLocation = (manifestJson[platform] || {}).themeLocation || 'theme.json'
+    if (!hasTheme(themeLocation)) {
       return
     }
     if (darkmode()) {
       return
     }
     try {
-      const theme = getJson('theme.json', true)
-      global.uniPlugin.defaultTheme = theme.light
+      themeConfig = Object.keys(themeConfig).length ? themeConfig : getJson(themeLocation, true)
+      global.uniPlugin.defaultTheme = themeConfig.light
     } catch (e) {
       console.error(e)
     }
   },
-  parseTheme (json) {
-    const theme = global.uniPlugin.defaultTheme
+  parseTheme (json, _theme) {
+    const theme = themeConfig[_theme] || global.uniPlugin.defaultTheme
     if (!theme) {
       return json
     }
@@ -55,5 +58,16 @@ module.exports = {
       return parseThemeByJsonStr(json, keys, theme)
     }
     return JSON.parse(parseThemeByJsonStr(JSON.stringify(json), keys, theme))
+  },
+  copyMiniProgramThemeJson (platformOptions, vueOptions) {
+    const themeLocation = platformOptions.themeLocation || 'theme.json'
+    if (hasTheme(themeLocation)) {
+      platformOptions.themeLocation = themeLocation
+      return {
+        from: path.resolve(process.env.UNI_INPUT_DIR, platformOptions.themeLocation),
+        to: path.resolve(process.env.UNI_OUTPUT_DIR, platformOptions.themeLocation),
+        transform: content => JSON.stringify(parseJson(content.toString(), true))
+      }
+    }
   }
 }

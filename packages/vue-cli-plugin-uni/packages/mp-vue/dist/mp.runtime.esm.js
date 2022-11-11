@@ -991,7 +991,8 @@ function observe (value, asRootData) {
     !isServerRendering() &&
     (Array.isArray(value) || isPlainObject(value)) &&
     Object.isExtensible(value) &&
-    !value._isVue
+    !value._isVue &&
+    !value.__v_isMPComponent
   ) {
     ob = new Observer(value);
   }
@@ -5600,7 +5601,7 @@ function nextTick$1(vm, cb) {
 function clearInstance(key, value) {
   // 简易去除 Vue 和小程序组件实例
   if (value) {
-    if (value._isVue || (value.$vm && value.$vm._isVue)) {
+    if (value._isVue || value.__v_isMPComponent) {
       return {}
     }
   }

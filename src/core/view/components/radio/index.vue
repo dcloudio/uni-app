@@ -6,7 +6,10 @@
   >
     <div class="uni-radio-wrapper">
       <div
-        :class="radioChecked ? 'uni-radio-input-checked' : ''"
+        :class="{
+          'uni-radio-input-checked': radioChecked,
+          'uni-radio-input-disabled': disabled,
+        }"
         :style="radioChecked ? checkedStyle : ''"
         class="uni-radio-input"
       />
@@ -52,6 +55,7 @@ export default {
   },
   computed: {
     checkedStyle () {
+      if (this.disabled) return 'background-color: #E1E1E1;border-color: ##D1D1D1;'
       return `background-color: ${this.color};border-color: ${this.color};`
     }
   },

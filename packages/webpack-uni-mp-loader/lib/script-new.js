@@ -28,7 +28,8 @@ const traverse = require('./babel/scoped-component-traverse')
 
 const {
   resolve,
-  normalizeNodeModules
+  normalizeNodeModules,
+  getIssuer
 } = require('./shared')
 
 const {
@@ -55,13 +56,18 @@ module.exports = function (content, map) {
     type = 'Page'
   }
   // <script src=""/>
-  if (!type && this._module.issuer && this._module.issuer.issuer) {
-    resourcePath = normalizeNodeModules(removeExt(normalizePath(path.relative(process.env.UNI_INPUT_DIR, this._module
-      .issuer.issuer.resource))))
-    if (resourcePath === 'App') {
-      type = 'App'
-    } else if (process.UNI_ENTRY[resourcePath]) {
-      type = 'Page'
+  if (!type) {
+    const moduleIssuer = getIssuer(this._compilation, this._module)
+    if (moduleIssuer) {
+      const moduleIssuerIssuer = getIssuer(this._compilation, moduleIssuer)
+      if (moduleIssuerIssuer) {
+        resourcePath = normalizeNodeModules(removeExt(normalizePath(path.relative(process.env.UNI_INPUT_DIR, moduleIssuerIssuer.resource))))
+        if (resourcePath === 'App') {
+          type = 'App'
+        } else if (process.UNI_ENTRY[resourcePath]) {
+          type = 'Page'
+        }
+      }
     }
   }
 

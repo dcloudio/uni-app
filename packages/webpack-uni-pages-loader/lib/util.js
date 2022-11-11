@@ -18,7 +18,13 @@ const alipayWindowMap = {
   navigationBarShadow: 'navigationBarShadow',
   titleImage: 'titleImage',
   transparentTitle: 'transparentTitle',
-  titlePenetrate: 'titlePenetrate'
+  titlePenetrate: 'titlePenetrate',
+  barButtonTheme: {
+    key: 'navigationBarTextStyle',
+    transform: function (value) {
+
+    }
+  }
 }
 
 const alipayTabBarMap = {

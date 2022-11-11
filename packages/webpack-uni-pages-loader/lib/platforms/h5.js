@@ -14,6 +14,10 @@ const {
   addPageUsingComponents
 } = require('@dcloudio/uni-cli-shared/lib/pages')
 
+const {
+  getTheme
+} = require('@dcloudio/uni-cli-shared/lib/theme')
+
 const compilerVersion = require('@dcloudio/webpack-uni-pages-loader/package.json')['uni-app'].compilerVersion
 
 const PLATFORMS = getPlatforms()
@@ -119,14 +123,27 @@ const getPageComponents = function (inputDir, pagesJson) {
       always: 'float'
     }
     let titleNView = pageStyle.titleNView
-    titleNView = Object.assign({}, {
-      type: pageStyle.navigationStyle === 'custom' ? 'none' : 'default'
-    }, pageStyle.transparentTitle in titleNViewTypeList ? {
-      type: titleNViewTypeList[pageStyle.transparentTitle],
-      backgroundColor: 'rgba(0,0,0,0)'
-    } : null, typeof titleNView === 'object' ? titleNView : (typeof titleNView === 'boolean' ? {
-      type: titleNView ? 'default' : 'none'
-    } : null))
+    titleNView = Object.assign(
+      {},
+      {
+        type: pageStyle.navigationStyle === 'custom' ? 'none' : 'default'
+      },
+      pageStyle.transparentTitle in titleNViewTypeList
+        ? {
+          type: titleNViewTypeList[pageStyle.transparentTitle],
+          backgroundColor: 'rgba(0,0,0,0)'
+        }
+        : null,
+      typeof titleNView === 'object'
+        ? titleNView
+        : (
+          typeof titleNView === 'boolean'
+            ? {
+              type: titleNView ? 'default' : 'none'
+            }
+            : null
+        )
+    )
     if (titleNView.type === 'none' || titleNView.type === 'transparent') {
       windowTop = 0
     }
@@ -407,9 +424,9 @@ module.exports = function (pagesJson, manifestJson, loader) {
   const googleMapKey = sdkConfigs.maps && sdkConfigs.maps.google && sdkConfigs.maps.google.key
   const aMapKey = sdkConfigs.maps && sdkConfigs.maps.amap && sdkConfigs.maps.amap.key
   const aMapSecurityJsCode =
-        sdkConfigs.maps && sdkConfigs.maps.amap && sdkConfigs.maps.amap.securityJsCode
+    sdkConfigs.maps && sdkConfigs.maps.amap && sdkConfigs.maps.amap.securityJsCode
   const aMapServiceHost =
-        sdkConfigs.maps && sdkConfigs.maps.amap && sdkConfigs.maps.amap.serviceHost
+    sdkConfigs.maps && sdkConfigs.maps.amap && sdkConfigs.maps.amap.serviceHost
 
   let locale = manifestJson.locale
   locale = locale && locale.toUpperCase() !== 'AUTO' ? locale : ''
@@ -422,6 +439,8 @@ global['____${h5.appid}____'] = true;
 delete global['____${h5.appid}____'];
 global.__uniConfig = ${JSON.stringify(pagesJson)};
 global.__uniConfig.compilerVersion = '${compilerVersion}';
+global.__uniConfig.darkmode = ${JSON.stringify(h5.darkmode || false)};
+global.__uniConfig.themeConfig = ${JSON.stringify(getTheme())};
 global.__uniConfig.uniPlatform = '${process.env.UNI_PLATFORM}';
 global.__uniConfig.appId = '${process.env.UNI_APP_ID}';
 global.__uniConfig.appName = '${process.env.UNI_APP_NAME}';

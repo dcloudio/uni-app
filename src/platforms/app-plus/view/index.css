@@ -41,6 +41,13 @@ body {
   background-color: white;
 }
 
+@media (prefers-color-scheme: dark) {
+  body {
+      background-color: #191919;
+      color: hsla(0, 0%, 100%, 0.8);
+  }
+}
+
 [class^="uni-icon-"],
 [class*=" uni-icon-"] {
   display: inline-block;

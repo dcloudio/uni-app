@@ -5,15 +5,16 @@ import { sortObject } from 'uni-shared'
 let systemInfo = {}
 let _initSystemInfo = true
 
-function weexGetSystemInfoSync () {
+export function weexGetSystemInfoSync () {
   if (!_initSystemInfo) return
   const { getSystemInfoSync } = weex.requireModule('plus')
   systemInfo = getSystemInfoSync()
   if (typeof systemInfo === 'string') {
     try {
       systemInfo = JSON.parse(systemInfo)
-    } catch (error) {}
+    } catch (error) { }
   }
+  return systemInfo
 }
 
 export function getDeviceInfo () {
@@ -47,7 +48,7 @@ export function getAppBaseInfo () {
     hostPackageName, hostName, osLanguage,
     hostVersion, hostLanguage, hostTheme,
     appId, appName, appVersion, appVersionCode,
-    appWgtVersion
+    appWgtVersion, osTheme
   } = systemInfo
 
   const appLanguage = uni
@@ -73,7 +74,7 @@ export function getAppBaseInfo () {
     hostFontSizeSetting: undefined,
     language: osLanguage,
     SDKVersion: '',
-    theme: undefined,
+    theme: hostTheme || osTheme,
     version: plus.runtime.innerVersion
   }
 }
@@ -112,7 +113,9 @@ export function getSystemInfo () {
 
   delete _systemInfo.screenTop
   delete _systemInfo.enableDebug
-  delete _systemInfo.theme
+  if (!__uniConfig.darkmode) {
+    delete _systemInfo.theme
+  }
 
   return sortObject(_systemInfo)
 }
