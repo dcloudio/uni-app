@@ -1,4 +1,3 @@
-import fs from 'fs'
 import path from 'path'
 import debug from 'debug'
 import { Plugin, ResolvedConfig } from 'vite'
@@ -54,14 +53,7 @@ export function uniPagesJsonPlugin(
           platform,
           {
             debug: !!manifestJson.debug,
-            darkmode:
-              options.app.darkmode &&
-              fs.existsSync(
-                path.resolve(
-                  inputDir,
-                  (manifestJson[platform] || {}).themeLocation || 'theme.json'
-                )
-              ),
+            darkmode: options.app.darkmode,
             networkTimeout: manifestJson.networkTimeout,
             subpackages: !!options.app.subpackages,
             ...options.json,

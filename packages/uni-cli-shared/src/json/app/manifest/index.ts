@@ -24,7 +24,7 @@ export function normalizeAppManifestJson(
     userManifestJson
   )
   const { pages, globalStyle, tabBar } = initTheme(manifestJson, pagesJson)
-  extend(pagesJson, { pages, globalStyle, tabBar })
+  extend(pagesJson, JSON.parse(JSON.stringify({ pages, globalStyle, tabBar })))
   initAppStatusbar(manifestJson, pagesJson)
   initArguments(manifestJson, pagesJson)
   initPlus(manifestJson, pagesJson)

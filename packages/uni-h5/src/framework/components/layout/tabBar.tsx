@@ -49,7 +49,7 @@ export default /*#__PURE__*/ defineSystemComponent({
       tabBar.color = tabBarStyle.color
       tabBar.selectedColor = tabBarStyle.selectedColor
       tabBar.blurEffect = tabBarStyle.blurEffect
-      if (tabBarStyle.list.length) {
+      if (tabBarStyle.list && tabBarStyle.list.length) {
         tabBarStyle.list.forEach((item, index) => {
           tabBar.list[index].iconPath = item.iconPath
           tabBar.list[index].selectedIconPath = item.selectedIconPath
