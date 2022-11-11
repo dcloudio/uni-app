@@ -41,9 +41,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     const radioChecked = ref(props.checked)
     const radioValue = ref(props.value)
 
-    const checkedStyle = computed(
-      () => `background-color: ${props.color};border-color: ${props.color};`
-    )
+    const checkedStyle = computed(() => {
+      if (props.disabled)
+        return 'background-color: #E1E1E1;border-color: ##D1D1D1;'
+      return `background-color: ${props.color};border-color: ${props.color};`
+    })
 
     watch(
       [() => props.checked, () => props.value],
@@ -94,7 +96,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
               {radioChecked.value
                 ? createSvgIconVNode(
                     ICON_PATH_SUCCESS_NO_CIRCLE,
-                    props.disabled ? '#adadad' : '#fff',
+                    props.disabled ? '#ADADAD' : '#fff',
                     18
                   )
                 : ''}

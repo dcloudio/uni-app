@@ -44,8 +44,8 @@ uni-radio:not([disabled]) .uni-radio-input:hover {
 }
 
 .uni-radio-input.uni-radio-input-disabled {
-  background-color: #e1e1e1 !important;
-  border-color: #d1d1d1 !important;
+  background-color: #e1e1e1;
+  border-color: #d1d1d1;
 }
 
 .uni-radio-input.uni-radio-input-disabled svg{
