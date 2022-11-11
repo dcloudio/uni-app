@@ -157,8 +157,8 @@ export default {
 	}
 
 	uni-radio .uni-radio-input.uni-radio-input-disabled {
-		background-color: #E1E1E1;
-		border-color: #D1D1D1;
+		background-color: #E1E1E1 !important;
+		border-color: #D1D1D1 !important;
 	}
 
 	uni-radio .uni-radio-input.uni-radio-input-disabled:before {
