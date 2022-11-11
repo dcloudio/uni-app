@@ -7,7 +7,6 @@ import {
   NullablePosition,
   SourceMapConsumer,
 } from 'source-map'
-import { isWindows } from './shared'
 
 const EXTNAME = {
   kotlin: '.kt',
@@ -192,13 +191,5 @@ async function resolveSourceMapConsumer(sourceMapFile: string) {
 }
 
 function normalizePath(path: string) {
-  return isWindows ? unixPathToWindowsPath(path) : windowsPathToUnixPath(path)
-}
-
-function windowsPathToUnixPath(path: string) {
   return path.replace(/\\/g, '/')
-}
-
-function unixPathToWindowsPath(path: string) {
-  return path.replace(/\//g, '\\')
 }
