@@ -63,7 +63,10 @@ export function formatAtFilename(
 ) {
   return `at ${colors.cyan(
     normalizePath(
-      path.relative(process.env.UNI_INPUT_DIR, filename.split('?')[0])
+      path.relative(
+        process.env.UNI_INPUT_DIR,
+        filename.replace('\x00', '').split('?')[0]
+      )
     ) +
       ':' +
       (line || 1) +
