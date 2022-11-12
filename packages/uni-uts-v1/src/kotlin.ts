@@ -216,6 +216,30 @@ function resolveResDir(filename: string) {
   }
 }
 
+function resolveAndroidResourceClass(filename: string) {
+  const resDir = resolveResDir(filename)
+  if (resDir && fs.readdirSync(resDir).length) {
+    const pkg = resolveAndroidManifestPackage(filename)
+    if (pkg) {
+      return pkg + '.R'
+    }
+  }
+}
+
+const packageRe = /\s+package="(.*)"/
+function resolveAndroidManifestPackage(filename: string) {
+  const manifestXmlPath = path.resolve(
+    resolveAndroidDir(filename),
+    'AndroidManifest.xml'
+  )
+  if (fs.existsSync(manifestXmlPath)) {
+    const matches = fs.readFileSync(manifestXmlPath, 'utf8').match(packageRe)
+    if (matches && matches[1]) {
+      return matches[1]
+    }
+  }
+}
+
 function resolveConfigJsonFile(filename: string) {
   const configJsonFile = path.resolve(
     resolveAndroidDir(filename),
@@ -233,6 +257,14 @@ function resolveSourceMapFile(outputDir: string, kotlinFile: string) {
   )
 }
 
+const DEFAULT_IMPORTS = [
+  'kotlinx.coroutines.async',
+  'kotlinx.coroutines.CoroutineScope',
+  'kotlinx.coroutines.Deferred',
+  'kotlinx.coroutines.Dispatchers',
+  'io.dcloud.uts.*',
+]
+
 async function compile(filename: string) {
   if (!process.env.UNI_HBUILDERX_PLUGINS) {
     throw 'process.env.UNI_HBUILDERX_PLUGINS is not found'
@@ -241,6 +273,11 @@ async function compile(filename: string) {
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
   // let time = Date.now()
+  const imports = [...DEFAULT_IMPORTS]
+  const rClass = resolveAndroidResourceClass(filename)
+  if (rClass) {
+    imports.push(rClass)
+  }
   const result = await bundle(UtsTarget.KOTLIN, {
     input: {
       root: inputDir,
@@ -252,13 +289,7 @@ async function compile(filename: string) {
       package: parseKotlinPackage(filename).package,
       sourceMap: resolveUTSSourceMapPath(filename),
       extname: 'kt',
-      imports: [
-        'kotlinx.coroutines.async',
-        'kotlinx.coroutines.CoroutineScope',
-        'kotlinx.coroutines.Deferred',
-        'kotlinx.coroutines.Dispatchers',
-        'io.dcloud.uts.*',
-      ],
+      imports,
       logFilename: true,
       noColor: isInHBuilderX(),
     },
