@@ -8,12 +8,17 @@ import { resolvePackage } from './utils'
 import { parseUtsSwiftPluginStacktrace } from './stacktrace'
 import { resolveUtsPluginSourceMapFile } from './sourceMap'
 import { isWindows } from './shared'
-
-export * from './sourceMap'
-export {
+import {
   generateCodeFrameWithKotlinStacktrace,
   generateCodeFrameWithSwiftStacktrace,
 } from './legacy'
+
+export const sourcemap = {
+  generateCodeFrameWithKotlinStacktrace,
+  generateCodeFrameWithSwiftStacktrace,
+}
+
+export * from './sourceMap'
 
 export async function compile(module: string) {
   const pkg = resolvePackage(module)
