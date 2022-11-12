@@ -156,12 +156,14 @@ export async function runKotlinDev(
     //     path.relative(process.env.UNI_INPUT_DIR, filename)
     //   )} 编译失败`
     // }
-    if (!isSupportStandardPlayground(filename)) {
-      const pkg = resolvePackage(filename)
-      if (pkg) {
-        console.warn(
-          `uts插件[${pkg.id}]依赖的原生配置或三方SDK在运行至标准基座时不能生效，如需正常调用请使用自定义基座`
-        )
+    if (process.env.HX_USE_BASE_TYPE === 'standard') {
+      if (!isSupportStandardPlayground(filename)) {
+        const pkg = resolvePackage(filename)
+        if (pkg) {
+          console.warn(
+            `uts插件[${pkg.id}]依赖的原生配置或三方SDK在运行至标准基座时不能生效，如需正常调用请使用自定义基座`
+          )
+        }
       }
     }
   }

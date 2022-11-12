@@ -28,6 +28,9 @@ export function resolveUtsPluginSourceMapFile(
   outputDir = normalizePath(outputDir)
   filename = normalizePath(filename)
   const pluginDir = resolvePluginDir(inputDir, outputDir, filename)
+  if (!pluginDir) {
+    throw `plugin dir not found`
+  }
   const is_uni_modules = basename(dirname(pluginDir)) === 'uni_modules'
   const sourceMapFile = join(
     join(outputDir, '../.sourcemap/app'),
@@ -58,10 +61,14 @@ function resolvePluginDir(
     return join(inputDir, join(relativePath, '../..'))
   } else if (filename.startsWith(inputDir)) {
     let parent = dirname(filename)
-    const utssdkDir = join(inputDir, 'utssdk')
-    const uniModulesDir = join(inputDir, 'uni_modules')
+    const utssdkDir = normalizePath(join(inputDir, 'utssdk'))
+    const uniModulesDir = normalizePath(join(inputDir, 'uni_modules'))
     while (parent) {
       const dir = dirname(parent)
+      if (parent === dir) {
+        // windows 上边会剩下一个盘符
+        return
+      }
       if (dir === utssdkDir || dir === uniModulesDir) {
         return parent
       }
@@ -146,7 +153,7 @@ export function generatedPositionFor({
  * @returns
  */
 export function originalPositionFor(
-  generatedPosition: Omit<PositionFor, 'filename'>
+  generatedPosition: Omit<PositionFor, 'filename'> & { inputDir?: string }
 ): Promise<NullableMappedPosition & { sourceContent?: string }> {
   return resolveSourceMapConsumer(generatedPosition.sourceMapFile).then(
     (consumer) => {
@@ -167,6 +174,9 @@ export function originalPositionFor(
         return Object.assign(res, {
           sourceContent: consumer.sourceContentFor(res.source, true),
         })
+      }
+      if (res.source && generatedPosition.inputDir) {
+        res.source = join(generatedPosition.inputDir, res.source)
       }
       return res
     }
