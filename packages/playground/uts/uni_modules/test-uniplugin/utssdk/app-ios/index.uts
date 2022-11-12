@@ -10,6 +10,11 @@ type GetBatteryInfoOptions = {
 }
 
 export default function getBatteryInfo(options: GetBatteryInfoOptions) {
+  new UIAlertController(
+    (title = title),
+    (message = message),
+    (preferredStyle = UIAlertController.Style.alert)
+  )
   const res = {
     errMsg: 'getBatteryInfo:ok',
     level: UIDevice.current.batteryLevel * 100,
