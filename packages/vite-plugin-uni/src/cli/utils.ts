@@ -233,6 +233,9 @@ export function cleanOptions(options: CliOptions) {
   const ret = { ...options }
   delete ret['--']
 
+  delete ret.c
+  delete ret.config
+
   delete ret.platform
   delete ret.p
   delete ret.ssr

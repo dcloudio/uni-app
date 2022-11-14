@@ -5,16 +5,16 @@ import AdmZip from 'adm-zip'
 import { sync } from 'fast-glob'
 import { isArray } from '@vue/shared'
 import {
-  installHBuilderXPlugin,
   isInHBuilderX,
   normalizePath,
   parseJson,
   resolveSourceMapPath,
-  runByHBuilderX,
 } from './shared'
 import {
+  CompilerServer,
   genUTSPlatformResource,
   getUtsCompiler,
+  getCompilerServer,
   moveRootIndexSourceMap,
   resolveAndroidDir,
   resolvePackage,
@@ -23,6 +23,23 @@ import {
 } from './utils'
 import { Module } from '../types/types'
 import { UtsResult } from '@dcloudio/uts'
+
+interface KotlinCompilerServer extends CompilerServer {
+  getKotlincHome(): string
+  getDefaultJar(): string[]
+  compile(
+    options: { kotlinc: string[]; d8: string[] },
+    projectPath: string
+  ): Promise<boolean>
+  checkDependencies?: (
+    configJsonPath: string
+  ) => Promise<{ code: number; msg: string; data: string[] }>
+  checkRResources?: (resDir: string) => Promise<{
+    code: number
+    msg: string
+    data: { jarPath: string; uniModuleName: string }
+  }>
+}
 
 export function createKotlinResolveTypeReferenceName(
   _namespace: string,
@@ -55,7 +72,10 @@ export async function runKotlinProd(filename: string) {
   })
 }
 
-type RunKotlinDevResult = UtsResult & { dex?: string }
+export type RunKotlinDevResult = UtsResult & {
+  type: 'kotlin'
+  changed: string[]
+}
 
 export async function runKotlinDev(
   filename: string
@@ -65,6 +85,10 @@ export async function runKotlinDev(
     return
   }
   const result = (await compile(filename)) as RunKotlinDevResult
+
+  result.type = 'kotlin'
+  result.changed = []
+
   const kotlinFile = resolveUTSPlatformFile(filename, {
     inputDir: process.env.UNI_INPUT_DIR,
     outputDir: process.env.UNI_OUTPUT_DIR,
@@ -73,9 +97,11 @@ export async function runKotlinDev(
   })
   // 开发模式下，需要生成 dex
   if (fs.existsSync(kotlinFile)) {
-    const compilerServer = getCompilerServer()
+    const compilerServer = getCompilerServer<KotlinCompilerServer>(
+      'uniapp-runextension'
+    )
     if (!compilerServer) {
-      return
+      throw `项目使用了uts插件，正在安装 uts Android 运行扩展...`
     }
     const {
       getDefaultJar,
@@ -120,11 +146,16 @@ export async function runKotlinDev(
       } catch (e) {}
       const dexFile = resolveDexFile(jarFile)
       if (fs.existsSync(dexFile)) {
-        result.dex = normalizePath(
-          path.relative(process.env.UNI_OUTPUT_DIR, dexFile)
-        )
+        result.changed = [
+          normalizePath(path.relative(process.env.UNI_OUTPUT_DIR, dexFile)),
+        ]
       }
     }
+    // else {
+    //   throw `${normalizePath(
+    //     path.relative(process.env.UNI_INPUT_DIR, filename)
+    //   )} 编译失败`
+    // }
   }
   return result
 }
@@ -139,7 +170,8 @@ function checkDeps(
   if (configJsonFile && hasDeps(configJsonFile)) {
     return checkDependencies(configJsonFile).then(({ code, msg, data }) => {
       if (code !== 0) {
-        throw msg
+        console.error(msg)
+        return []
       }
       return data
     })
@@ -158,17 +190,20 @@ function hasDeps(configJsonFile: string) {
 
 function checkRes(
   filename: string,
-  checkRResources: (
-    resDir: string
-  ) => Promise<{ code: number; msg: string; jarPaths: string[] }>
+  checkRResources: (resDir: string) => Promise<{
+    code: number
+    msg: string
+    data: { jarPath: string; uniModuleName: string }
+  }>
 ) {
   const resDir = resolveResDir(filename)
   if (resDir) {
-    return checkRResources(resDir).then(({ code, msg, jarPaths }) => {
+    return checkRResources(resDir).then(({ code, msg, data }) => {
       if (code !== 0) {
-        throw msg
+        console.error(msg)
+        return []
       }
-      return jarPaths
+      return [data.jarPath]
     })
   }
   return Promise.resolve([])
@@ -273,15 +308,13 @@ function resolveLibs(filename: string) {
         const zip = new AdmZip(path.resolve(libsPath, name))
         zip.extractAllTo(outputPath, true)
       }
-    })
-    if (zips.length) {
       libs.push(
-        ...sync('*/*.jar', {
-          cwd: resolveAndroidArchiveOutputPath(),
+        ...sync('**/*.jar', {
+          cwd: outputPath,
           absolute: true,
         })
       )
-    }
+    })
   }
   return libs
 }
@@ -307,36 +340,4 @@ function resolveJarPath(filename: string) {
 
 function resolveClassPath(jars: string[]) {
   return jars.join(os.platform() === 'win32' ? ';' : ':')
-}
-
-interface CompilerServer {
-  getKotlincHome(): string
-  getDefaultJar(): string[]
-  compile(
-    options: { kotlinc: string[]; d8: string[] },
-    projectPath: string
-  ): Promise<boolean>
-  checkDependencies?: (
-    configJsonPath: string
-  ) => Promise<{ code: number; msg: string; data: string[] }>
-  checkRResources?: (
-    resDir: string
-  ) => Promise<{ code: number; msg: string; jarPaths: string[] }>
-}
-
-function getCompilerServer(): CompilerServer | undefined {
-  const compilerServerPath = path.resolve(
-    process.env.UNI_HBUILDERX_PLUGINS,
-    'uniapp-runextension/out/main.js'
-  )
-  if (fs.existsSync(compilerServerPath)) {
-    // eslint-disable-next-line no-restricted-globals
-    return require(compilerServerPath)
-  } else {
-    if (runByHBuilderX()) {
-      installHBuilderXPlugin('uniapp-runextension')
-    } else {
-      console.error(compilerServerPath + ' is not found')
-    }
-  }
 }

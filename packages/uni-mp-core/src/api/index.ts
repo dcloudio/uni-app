@@ -23,7 +23,7 @@ import { invokeCreateVueAppHook, onCreateVueApp } from '@dcloudio/uni-shared'
 import { promisify } from './promise'
 import { initWrapper } from './wrapper'
 
-import { MPProtocols } from './protocols'
+import { MPProtocols, getEventChannel } from './protocols'
 import { getLocale, setLocale, onLocaleChange } from './locale'
 
 const baseApis = {
@@ -67,6 +67,10 @@ export function initUni(api: Record<string, any>, protocols: MPProtocols) {
   // 处理 api mp 打包后为不同js，emitter 无法共享问题
   if (__PLATFORM__ === 'mp-alipay') {
     __GLOBAL__.$emit = $emit
+  }
+  // 处理 api mp 打包后为不同js，getEventChannel 无法共享问题
+  if (__PLATFORM__ !== 'mp-weixin') {
+    __GLOBAL__.getEventChannel = getEventChannel
   }
 
   return new Proxy({}, UniProxyHandlers)

@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`code genProxyCode 1`] = `
+"
+import { initUtsProxyClass, initUtsProxyFunction, initUtsPackageName, initUtsIndexClassName, initUtsClassName } from '@dcloudio/uni-app'
+const name = 'test-uts'
+const is_uni_modules = false
+const pkg = initUtsPackageName(name, is_uni_modules)
+const cls = initUtsIndexClassName(name, is_uni_modules)
+export const onMemoryWarning = initUtsProxyFunction(false, { main: true, package: pkg, class: cls, name: 'onMemoryWarning', params: [{\\"name\\":\\"callback\\",\\"type\\":\\"UTSCallback\\"}]})
+export const offMemoryWarning = initUtsProxyFunction(false, { main: true, package: pkg, class: cls, name: 'offMemoryWarning', params: [{\\"name\\":\\"callback\\",\\"type\\":\\"UTSCallback\\",\\"default\\":\\"UTSNull\\"}]})
+"
+`;

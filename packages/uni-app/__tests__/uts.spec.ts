@@ -51,25 +51,25 @@ describe('uts-module', () => {
       /**
        * {"package":"testPlugin","class":"","method":"preparePermission","params":[{"name":"foo","age":10,"success":7,"fail":8},9]}
        */
-      preparePermission(
-        {
-          family: {
-            father: 'f',
-            mother: 'm',
-          },
-          name: 'foo',
-          age: 10,
-          success(res: any) {
-            console.log('success', res)
-          },
-          fail(res: any) {
-            console.log('fail', res)
-          },
+      const options = {
+        family: {
+          father: 'f',
+          mother: 'm',
         },
-        (res: any) => {
-          console.log('callback', res)
-        }
-      )
+        name: 'foo',
+        age: 10,
+        success(res: any) {
+          console.log('success', res)
+        },
+        fail(res: any) {
+          console.log('fail', res)
+        },
+      }
+      const callback = (res: any) => {
+        console.log('callback', res)
+      }
+      preparePermission(options, callback)
+      preparePermission(options, callback)
     })
   })
   test(`initProxyClass`, () => {

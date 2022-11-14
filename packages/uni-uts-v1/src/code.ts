@@ -298,9 +298,23 @@ function genProxyClass(
 interface Parameter {
   name: string
   type: string
+  default?: string | number | boolean
 }
 
 type ResolveTypeReferenceName = (name: string) => string
+
+function resolveIdentifierDefaultValue(ident: Expression) {
+  if (ident.type === 'NullLiteral') {
+    return 'UTSNull'
+  } else if (
+    ident.type === 'StringLiteral' ||
+    ident.type === 'NumericLiteral' ||
+    ident.type === 'BooleanLiteral'
+  ) {
+    return ident.value
+  }
+  return null
+}
 
 function resolveIdentifierType(
   ident: BindingIdentifier,
@@ -317,6 +331,26 @@ function resolveIdentifierType(
       typeAnnotation.typeName.type === 'Identifier'
     ) {
       return resolveTypeReferenceName(typeAnnotation.typeName.value)
+    } else if (typeAnnotation.type === 'TsUnionType') {
+      if (typeAnnotation.types.length === 2) {
+        const [type1, type2] = typeAnnotation.types
+        if (type1.type === 'TsKeywordType' && type1.kind === 'null') {
+          if (
+            type2.type === 'TsParenthesizedType' &&
+            type2.typeAnnotation.type === 'TsFunctionType'
+          ) {
+            return 'UTSCallback'
+          }
+        }
+        if (type2.type === 'TsKeywordType' && type2.kind === 'null') {
+          if (
+            type1.type === 'TsParenthesizedType' &&
+            type1.typeAnnotation.type === 'TsFunctionType'
+          ) {
+            return 'UTSCallback'
+          }
+        }
+      }
     }
   }
   return ''
@@ -336,6 +370,21 @@ function resolveFunctionParams(
           resolveTypeReferenceName
         ),
       })
+    } else if (pat.type === 'AssignmentPattern') {
+      if (pat.left.type === 'Identifier') {
+        const param: Parameter = {
+          name: pat.left.value,
+          type: resolveIdentifierType(
+            pat.left as BindingIdentifier,
+            resolveTypeReferenceName
+          ),
+        }
+        const defaultValue = resolveIdentifierDefaultValue(pat.right)
+        if (defaultValue !== null) {
+          param.default = defaultValue
+        }
+        result.push(param)
+      }
     } else {
       result.push({ name: '', type: '' })
     }

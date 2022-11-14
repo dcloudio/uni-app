@@ -10,6 +10,9 @@ const cli = cac('uni')
 export interface CliOptions {
   '--'?: string[]
 
+  c?: boolean | string
+  config?: string
+
   platform?: string
   p?: string
   ssr?: boolean
@@ -31,6 +34,7 @@ export interface CliOptions {
 }
 
 cli
+  .option('-c, --config <file>', `[string] use specified config file`)
   .option('-p, --platform [platform]', '[string] ' + PLATFORMS.join(' | '), {
     default: 'h5',
   })

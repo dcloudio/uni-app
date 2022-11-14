@@ -2,6 +2,8 @@ import fs from 'fs'
 import path from 'path'
 import { ResolvedConfig } from 'vite'
 
+import { getPlatformManifestJsonOnce } from '@dcloudio/uni-cli-shared'
+
 export function initEnv(config: ResolvedConfig) {
   if (!process.env.UNI_PLATFORM) {
     process.env.UNI_PLATFORM = 'h5'
@@ -15,6 +17,8 @@ export function initEnv(config: ResolvedConfig) {
   if (!process.env.UNI_OUTPUT_DIR) {
     process.env.UNI_OUTPUT_DIR = path.resolve(config.root, config.build.outDir)
   }
+  process.env.VUE_APP_DARK_MODE =
+    getPlatformManifestJsonOnce().darkmode || false
 
   process.env.BROWSERSLIST_CONFIG = [
     path.resolve(process.env.UNI_INPUT_DIR, '.browserslistrc'),

@@ -1,6 +1,6 @@
 import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, h, createTextVNode, onBeforeActivate, onBeforeDeactivate, createBlock, renderList, onDeactivated, createApp, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
 import { isString, extend, isArray, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
-import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, debounce, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, parseQuery, NAVBAR_HEIGHT, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, sortObject, ON_BACK_PRESS, parseUrl, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
+import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, debounce, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, parseQuery, NAVBAR_HEIGHT, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, updateElementStyle, sortObject, OFF_THEME_CHANGE, ON_BACK_PRESS, parseUrl, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
@@ -1116,6 +1116,10 @@ function normalizePullToRefreshRpx(pullToRefresh) {
 }
 function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel) {
   const { id: id2, route } = meta;
+  const titleColor = normalizeStyles(
+    meta.navigationBar,
+    __uniConfig.themeConfig
+  ).titleColor;
   return {
     id: id2,
     path: addLeadingSlash(route),
@@ -1125,7 +1129,7 @@ function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel) 
     meta,
     openType,
     eventChannel,
-    statusBarStyle: meta.navigationBar.titleColor === "#000000" ? "dark" : "light"
+    statusBarStyle: titleColor === "#000000" ? "dark" : "light"
   };
 }
 function removeHook(vm, name, hook) {
@@ -3188,6 +3192,7 @@ let deviceWidth = 0;
 let deviceDPR = 0;
 let maxWidth = 960;
 let baseWidth = 375;
+let includeWidth = 750;
 function checkDeviceWidth() {
   const { platform, pixelRatio: pixelRatio2, windowWidth } = getBaseSystemInfo();
   deviceWidth = windowWidth;
@@ -3202,6 +3207,7 @@ function checkMaxWidth() {
   const config = __uniConfig.globalStyle || {};
   maxWidth = checkValue(config.rpxCalcMaxDeviceWidth, 960);
   baseWidth = checkValue(config.rpxCalcBaseDeviceWidth, 375);
+  includeWidth = checkValue(config.rpxCalcBaseDeviceWidth, 750);
 }
 const upx2px = /* @__PURE__ */ defineSyncApi(
   API_UPX2PX,
@@ -3218,7 +3224,7 @@ const upx2px = /* @__PURE__ */ defineSyncApi(
     }
     let width = newDeviceWidth || deviceWidth;
     {
-      width = width <= maxWidth ? width : baseWidth;
+      width = number === includeWidth || width <= maxWidth ? width : baseWidth;
     }
     let result = number / BASE_DEVICE_WIDTH * width;
     if (result < 0) {
@@ -3527,6 +3533,9 @@ class MapContext {
   }
   moveAlong(options) {
     operateMapWrap(this.id, this.pageId, "moveAlong", options);
+  }
+  setLocMarkerIcon(options) {
+    operateMapWrap(this.id, this.pageId, "setLocMarkerIcon", options);
   }
   openMapApp(options) {
     operateMapWrap(this.id, this.pageId, "openMapApp", options);
@@ -9526,6 +9535,14 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       const index2 = camelizeIndex !== -1 ? camelizeIndex : kebabCaseIndex !== -1 ? kebabCaseIndex : 0;
       return AUTOCOMPLETES[index2];
     });
+    const inputmode = computed(() => {
+      switch (props2.type) {
+        case "digit":
+          return "decimal";
+        default:
+          return void 0;
+      }
+    });
     let cache = ref("");
     let resetCache;
     const rootRef = ref(null);
@@ -9621,8 +9638,9 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "pattern": props2.type === "number" ? "[0-9]*" : void 0,
         "class": "uni-input-input",
         "autocomplete": autocomplete.value,
-        "onKeyup": onKeyUpEnter
-      }, null, 40, ["value", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup"]);
+        "onKeyup": onKeyUpEnter,
+        "inputmode": inputmode.value
+      }, null, 40, ["value", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup", "inputmode"]);
       return createVNode("uni-input", {
         "ref": rootRef
       }, [createVNode("div", {
@@ -12503,7 +12521,11 @@ const index$o = /* @__PURE__ */ defineBuiltInComponent({
   }) {
     const radioChecked = ref(props2.checked);
     const radioValue = ref(props2.value);
-    const checkedStyle = computed(() => `background-color: ${props2.color};border-color: ${props2.color};`);
+    const checkedStyle = computed(() => {
+      if (props2.disabled)
+        return "background-color: #E1E1E1;border-color: ##D1D1D1;";
+      return `background-color: ${props2.color};border-color: ${props2.color};`;
+    });
     watch([() => props2.checked, () => props2.value], ([newChecked, newModelValue]) => {
       radioChecked.value = newChecked;
       radioValue.value = newModelValue;
@@ -12543,7 +12565,7 @@ const index$o = /* @__PURE__ */ defineBuiltInComponent({
           "uni-radio-input-disabled": props2.disabled
         }],
         "style": radioChecked.value ? checkedStyle.value : ""
-      }, [radioChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, "#fff", 18) : ""], 6), slots.default && slots.default()])], 16, ["onClick"]);
+      }, [radioChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : "#fff", 18) : ""], 6), slots.default && slots.default()])], 16, ["onClick"]);
     };
   }
 });
@@ -15036,7 +15058,6 @@ function checkMinWidth(minWidth) {
 function getStateId() {
   return history.state && history.state.__id__ || 1;
 }
-PolySymbol(process.env.NODE_ENV !== "production" ? "layout" : "l");
 let tabBar;
 function useTabBar() {
   if (!tabBar) {
@@ -15496,6 +15517,7 @@ function setupApp(comp) {
         );
         window.addEventListener("message", onMessage);
         document.addEventListener("visibilitychange", onVisibilityChange);
+        onThemeChange$2();
       });
       return route.query;
     },
@@ -15542,6 +15564,20 @@ function onVisibilityChange() {
     emit2(ON_APP_ENTER_FOREGROUND, getEnterOptions());
   } else {
     emit2(ON_APP_ENTER_BACKGROUND);
+  }
+}
+function onThemeChange$2() {
+  let mediaQueryList = null;
+  try {
+    mediaQueryList = window.matchMedia("(prefers-color-scheme: dark)");
+  } catch (error) {
+  }
+  if (mediaQueryList) {
+    mediaQueryList.addEventListener("change", (e2) => {
+      UniServiceJSBridge.emit(ON_THEME_CHANGE, {
+        theme: e2.matches ? "dark" : "light"
+      });
+    });
   }
 }
 function formatTime(val) {
@@ -17741,6 +17777,13 @@ function IEVersion() {
     return -1;
   }
 }
+function getTheme() {
+  try {
+    return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+  } catch (error) {
+    return "light";
+  }
+}
 function getBrowserInfo() {
   let osname;
   let osversion = "0";
@@ -17892,7 +17935,7 @@ function getBrowserInfo() {
     ua,
     osname,
     osversion,
-    theme: void 0
+    theme: getTheme()
   };
 }
 const getWindowInfo = /* @__PURE__ */ defineSyncApi(
@@ -18029,7 +18072,8 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi(
     );
     delete systemInfo.screenTop;
     delete systemInfo.enableDebug;
-    delete systemInfo.theme;
+    if (!__uniConfig.darkmode)
+      delete systemInfo.theme;
     return sortObject(systemInfo);
   }
 );
@@ -18303,6 +18347,21 @@ function _setClipboardData(data, resolve, reject) {
     reject();
   }
 }
+const themeChangeCallBack = (res) => {
+  UniServiceJSBridge.invokeOnCallback(ON_THEME_CHANGE, res);
+};
+const onThemeChange$1 = /* @__PURE__ */ defineOnApi(
+  ON_THEME_CHANGE,
+  () => {
+    UniServiceJSBridge.on(ON_THEME_CHANGE, themeChangeCallBack);
+  }
+);
+const offThemeChange = /* @__PURE__ */ defineOffApi(
+  OFF_THEME_CHANGE,
+  () => {
+    UniServiceJSBridge.off(ON_THEME_CHANGE, themeChangeCallBack);
+  }
+);
 const STORAGE_KEYS = "uni-storage-keys";
 function parseValue(value) {
   const types = ["object", "string", "number", "boolean", "undefined"];
@@ -18593,6 +18652,7 @@ const MIMEType = {
     wvx: "x-ms-wvx"
   }
 };
+const MIMEType$1 = MIMEType;
 const ALL = "all";
 addInteractListener();
 function isWXEnv() {
@@ -18620,7 +18680,7 @@ function _createInput({
   inputEl.accept = extension.map((item) => {
     if (type !== ALL) {
       const MIMEKey = item.replace(".", "");
-      return `${type}/${MIMEType[type][MIMEKey] || MIMEKey}`;
+      return `${type}/${MIMEType$1[type][MIMEKey] || MIMEKey}`;
     } else {
       if (isWXEnv()) {
         return ".";
@@ -21313,7 +21373,8 @@ const setTabBarStyleProps = [
   "color",
   "selectedColor",
   "backgroundColor",
-  "borderStyle"
+  "borderStyle",
+  "midButton"
 ];
 const setTabBarBadgeProps = ["badge", "redDot"];
 function setProperties(item, props2, propsData) {
@@ -21432,12 +21493,34 @@ const setTabBarBadge = /* @__PURE__ */ defineAsyncApi(
   SetTabBarBadgeProtocol,
   SetTabBarBadgeOptions
 );
+function onThemeChange(callback) {
+  if (__uniConfig.darkmode) {
+    UniServiceJSBridge.on(ON_THEME_CHANGE, callback);
+  }
+}
+function parseTheme(pageStyle) {
+  let parsedStyle = {};
+  if (__uniConfig.darkmode) {
+    parsedStyle = normalizeStyles(
+      pageStyle,
+      __uniConfig.themeConfig,
+      getTheme()
+    );
+  }
+  return __uniConfig.darkmode ? parsedStyle : pageStyle;
+}
 const UNI_TABBAR_ICON_FONT = "UniTabbarIconFont";
+const _middleButton = {
+  width: "50px",
+  height: "50px",
+  iconWidth: "24px"
+};
 const TabBar = /* @__PURE__ */ defineSystemComponent({
   name: "TabBar",
   setup() {
     const visibleList = ref([]);
-    const tabBar2 = useTabBar();
+    const _tabBar = useTabBar();
+    const tabBar2 = reactive(parseTheme(_tabBar));
     useVisibleList(tabBar2, visibleList);
     useTabBarCssVar(tabBar2);
     const onSwitchTab = useSwitchTab(useRoute(), tabBar2, visibleList);
@@ -21446,6 +21529,20 @@ const TabBar = /* @__PURE__ */ defineSystemComponent({
       borderStyle,
       placeholderStyle
     } = useTabBarStyle(tabBar2);
+    onThemeChange(() => {
+      const tabBarStyle = parseTheme(_tabBar);
+      tabBar2.backgroundColor = tabBarStyle.backgroundColor;
+      tabBar2.borderStyle = tabBarStyle.borderStyle;
+      tabBar2.color = tabBarStyle.color;
+      tabBar2.selectedColor = tabBarStyle.selectedColor;
+      tabBar2.blurEffect = tabBarStyle.blurEffect;
+      if (tabBarStyle.list && tabBarStyle.list.length) {
+        tabBarStyle.list.forEach((item, index2) => {
+          tabBar2.list[index2].iconPath = item.iconPath;
+          tabBar2.list[index2].selectedIconPath = item.selectedIconPath;
+        });
+      }
+    });
     onMounted(() => {
       if (tabBar2.iconfontSrc) {
         loadFontFace({
@@ -21479,13 +21576,17 @@ function useTabBarCssVar(tabBar2) {
   });
 }
 function useVisibleList(tabBar2, visibleList) {
+  const internalMidButton = ref(extend({
+    type: "midButton"
+  }, tabBar2.midButton));
   function setVisibleList() {
     let tempList = [];
     tempList = tabBar2.list.filter((item) => item.visible !== false);
-    if (__UNI_FEATURE_TABBAR_MIDBUTTON__) {
+    if (__UNI_FEATURE_TABBAR_MIDBUTTON__ && tabBar2.midButton) {
+      internalMidButton.value = extend({}, _middleButton, internalMidButton.value, tabBar2.midButton);
       tempList = tempList.filter((item) => !isMidButton(item));
       if (tempList.length % 2 === 0) {
-        tempList.splice(Math.floor(tempList.length / 2), 0, tabBar2.list[Math.floor(tabBar2.list.length / 2)]);
+        tempList.splice(Math.floor(tempList.length / 2), 0, internalMidButton.value);
       }
     }
     visibleList.value = tempList;
@@ -21784,7 +21885,18 @@ function useMaxWidth(layoutState, rootRef) {
   const route = usePageRoute();
   function checkMaxWidth2() {
     const windowWidth = document.body.clientWidth;
-    const maxWidth2 = parseInt(String(__uniConfig.globalStyle.maxWidth || Number.MAX_SAFE_INTEGER));
+    const pages = getCurrentPages();
+    let meta = {};
+    if (pages.length > 0) {
+      const curPage = pages[pages.length - 1];
+      meta = curPage.$page.meta;
+    } else {
+      const routeOptions = getRouteOptions(route.path, true);
+      if (routeOptions) {
+        meta = routeOptions.meta;
+      }
+    }
+    const maxWidth2 = parseInt(String((hasOwn(meta, "maxWidth") ? meta.maxWidth : __uniConfig.globalStyle.maxWidth) || Number.MAX_SAFE_INTEGER));
     let showMaxWidth = false;
     if (windowWidth > maxWidth2) {
       showMaxWidth = true;
@@ -21819,11 +21931,23 @@ function useState() {
   const route = usePageRoute();
   if (!__UNI_FEATURE_RESPONSIVE__) {
     const layoutState2 = reactive({
-      marginWidth: 0
+      marginWidth: 0,
+      leftWindowWidth: 0,
+      rightWindowWidth: 0
     });
     watch(() => layoutState2.marginWidth, (value) => updateCssVar({
       "--window-margin": value + "px"
     }));
+    watch(() => layoutState2.leftWindowWidth + layoutState2.marginWidth, (value) => {
+      updateCssVar({
+        "--window-left": value + "px"
+      });
+    });
+    watch(() => layoutState2.rightWindowWidth + layoutState2.marginWidth, (value) => {
+      updateCssVar({
+        "--window-right": value + "px"
+      });
+    });
     return {
       layoutState: layoutState2,
       windowState: computed(() => ({}))
@@ -21874,12 +21998,16 @@ function useState() {
   watch(() => layoutState.marginWidth, (value) => updateCssVar({
     "--window-margin": value + "px"
   }));
-  watch(() => layoutState.leftWindowWidth + layoutState.marginWidth, (value) => updateCssVar({
-    "--window-left": value + "px"
-  }));
-  watch(() => layoutState.rightWindowWidth + layoutState.marginWidth, (value) => updateCssVar({
-    "--window-right": value + "px"
-  }));
+  watch(() => layoutState.leftWindowWidth + layoutState.marginWidth, (value) => {
+    updateCssVar({
+      "--window-left": value + "px"
+    });
+  });
+  watch(() => layoutState.rightWindowWidth + layoutState.marginWidth, (value) => {
+    updateCssVar({
+      "--window-right": value + "px"
+    });
+  });
   UniServiceJSBridge.on(ON_NAVIGATION_BAR_CHANGE, (navigationBar) => {
     layoutState.navigationBarTitleText = navigationBar.titleText;
   });
@@ -21935,19 +22063,13 @@ function createRouterViewVNode({
   return createVNode(RouterView, null, {
     default: withCtx(({
       Component
-    }) => [(openBlock(), createBlock(
-      KeepAlive,
-      {
-        matchBy: "key",
-        cache: routeCache2
-      },
-      [(openBlock(), createBlock(resolveDynamicComponent(Component), {
-        type: isTabBar.value ? "tabBar" : "",
-        key: routeKey.value
-      }))],
-      1032,
-      ["cache"]
-    ))]),
+    }) => [(openBlock(), createBlock(KeepAlive, {
+      matchBy: "key",
+      cache: routeCache2
+    }, [(openBlock(), createBlock(resolveDynamicComponent(Component), {
+      type: isTabBar.value ? "tabBar" : "",
+      key: routeKey.value
+    }))], 1032, ["cache"]))]),
     _: 1
   });
 }
@@ -22360,6 +22482,8 @@ const api = /* @__PURE__ */ Object.defineProperty({
   getClipboardData,
   setClipboardData,
   getWindowInfo,
+  onThemeChange: onThemeChange$1,
+  offThemeChange,
   setStorageSync,
   setStorage,
   getStorageSync,
@@ -23975,16 +24099,21 @@ const PageHead = /* @__PURE__ */ defineSystemComponent({
   setup() {
     const headRef = ref(null);
     const pageMeta = usePageMeta();
-    const navigationBar = pageMeta.navigationBar;
+    const navigationBar = reactive(parseTheme(pageMeta.navigationBar));
     const {
       clazz: clazz2,
       style
     } = usePageHead(navigationBar);
+    onThemeChange(() => {
+      const _navigationBar = parseTheme(pageMeta.navigationBar);
+      navigationBar.backgroundColor = _navigationBar.backgroundColor;
+      navigationBar.titleColor = _navigationBar.titleColor;
+    });
     const buttons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ && usePageHeadButtons(pageMeta);
     const searchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ && navigationBar.searchInput && usePageHeadSearchInput(pageMeta);
     __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" && usePageHeadTransparent(headRef, pageMeta);
     return () => {
-      const backButtonTsx = __UNI_FEATURE_PAGES__ ? createBackButtonTsx(pageMeta) : null;
+      const backButtonTsx = __UNI_FEATURE_PAGES__ ? createBackButtonTsx(navigationBar, pageMeta.isQuit) : null;
       const leftButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.left) : [];
       const rightButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.right) : [];
       const type = navigationBar.type || "default";
@@ -24008,11 +24137,7 @@ const PageHead = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-function createBackButtonTsx(pageMeta) {
-  const {
-    navigationBar,
-    isQuit
-  } = pageMeta;
+function createBackButtonTsx(navigationBar, isQuit) {
   if (!isQuit) {
     return createVNode("div", {
       "class": "uni-page-head-btn",
@@ -24808,6 +24933,7 @@ export {
   offNetworkStatusChange,
   offPageNotFound,
   offPushMessage,
+  offThemeChange,
   offUnhandledRejection,
   offWindowResize,
   onAccelerometerChange,
@@ -24829,6 +24955,7 @@ export {
   onSocketMessage,
   onSocketOpen,
   onTabBarMidButtonTap,
+  onThemeChange$1 as onThemeChange,
   onUnhandledRejection,
   onUserCaptureScreen,
   onWindowResize,

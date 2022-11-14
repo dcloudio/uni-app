@@ -1,12 +1,19 @@
 import fs from 'fs'
 import path from 'path'
 import { extend, hasOwn, isArray, isPlainObject } from '@vue/shared'
-import { addLeadingSlash, once, TABBAR_HEIGHT } from '@dcloudio/uni-shared'
+import {
+  addLeadingSlash,
+  once,
+  TABBAR_HEIGHT,
+  normalizeTitleColor,
+} from '@dcloudio/uni-shared'
 import { removeExt, normalizePath } from '../utils'
 import { parseJson } from './json'
 import { isVueSfcFile } from '../vue/utils'
 import { parseVueRequest } from '../vite'
-import { EXTNAME_VUE_RE } from '../constants'
+import { EXTNAME_VUE_RE, TEXT_STYLE } from '../constants'
+import { initTheme, normalizeThemeConfigOnce } from './theme'
+import { getPlatformManifestJsonOnce } from './manifest'
 
 const pagesCacheSet: Set<string> = new Set()
 
@@ -123,6 +130,15 @@ export function normalizePagesJson(
   // 缓存页面列表
   pagesCacheSet.clear()
   pagesJson.pages.forEach((page) => pagesCacheSet.add(page.path))
+
+  const manifestJsonPlatform = getPlatformManifestJsonOnce()
+  if (!manifestJsonPlatform.darkmode) {
+    const { pages, globalStyle, tabBar } = initTheme(
+      manifestJsonPlatform,
+      pagesJson
+    )
+    extend(pagesJson, { pages, globalStyle, tabBar })
+  }
 
   return pagesJson
 }
@@ -315,8 +331,12 @@ function normalizeNavigationBar(
   }
 
   if (!navigationBar.titleColor && hasOwn(navigationBar, 'textStyle')) {
-    navigationBar.titleColor =
-      (navigationBar as any).textStyle === 'black' ? '#000000' : '#ffffff'
+    const textStyle = (navigationBar as any).textStyle as string
+    if (TEXT_STYLE.includes(textStyle)) {
+      navigationBar.titleColor = normalizeTitleColor(textStyle)
+    } else {
+      navigationBar.titleColor = (navigationBar as any).textStyle
+    }
     delete (navigationBar as any).textStyle
   }
 
@@ -328,12 +348,17 @@ function normalizeNavigationBar(
     delete pageStyle.navigationBarShadow
   }
 
+  const parsedNavigationBar = initTheme(
+    getPlatformManifestJsonOnce(),
+    navigationBar
+  )
+
   if (isArray(navigationBar.buttons)) {
     navigationBar.buttons = navigationBar.buttons.map((btn) =>
       normalizeNavigationBarButton(
         btn,
         navigationBar.type,
-        navigationBar.titleColor!
+        parsedNavigationBar.titleColor!
       )
     )
   }
@@ -405,26 +430,6 @@ function normalizeTabBar(
     return
   }
   tabBar = extend({}, DEFAULT_TAB_BAR, tabBar)
-  if (platform === 'h5') {
-    const len = list.length
-    if (len % 2 === 0 && isPlainObject(midButton)) {
-      list.splice(
-        Math.floor(len / 2),
-        0,
-        extend(
-          {
-            type: 'midButton',
-            width: '50px',
-            height: '50px',
-            iconWidth: '24px',
-          },
-          midButton
-        )
-      )
-    } else {
-      delete tabBar.midButton
-    }
-  }
   list.forEach((item) => {
     if (item.iconPath) {
       item.iconPath = normalizeFilepath(item.iconPath)
@@ -432,10 +437,10 @@ function normalizeTabBar(
     if (item.selectedIconPath) {
       item.selectedIconPath = normalizeFilepath(item.selectedIconPath)
     }
-    if (item.type === 'midButton' && item.backgroundImage) {
-      item.backgroundImage = normalizeFilepath(item.backgroundImage)
-    }
   })
+  if (midButton && midButton.backgroundImage) {
+    midButton.backgroundImage = normalizeFilepath(midButton.backgroundImage)
+  }
   tabBar.selectedIndex = 0
   tabBar.shown = true
   return tabBar
@@ -443,6 +448,8 @@ function normalizeTabBar(
 const SCHEME_RE = /^([a-z-]+:)?\/\//i
 const DATA_RE = /^data:.*,.*/
 function normalizeFilepath(filepath: string) {
+  const themeConfig = normalizeThemeConfigOnce()['light'] || {}
+  if (themeConfig[filepath.replace('@', '')]) return filepath
   if (
     !(SCHEME_RE.test(filepath) || DATA_RE.test(filepath)) &&
     filepath.indexOf('/') !== 0

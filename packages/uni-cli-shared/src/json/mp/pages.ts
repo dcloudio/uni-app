@@ -7,6 +7,8 @@ import { AppJson, NetworkTimeout, PageWindowOptions } from './types'
 import { parseTabBar, parseWindowOptions } from './utils'
 import { normalizePath } from '../../utils'
 import { isMiniProgramProjectJsonKey } from './project'
+import { getPlatformManifestJsonOnce } from '../manifest'
+import { initTheme, hasThemeJson } from '../theme'
 
 interface ParsePagesJsonOptions {
   debug?: boolean
@@ -65,11 +67,11 @@ function parsePagesJson(
     subpackages: false,
   }
 ) {
-  const appJson: AppJson = {
+  let appJson: AppJson = {
     pages: [],
   }
-  const pageJsons: Record<string, PageWindowOptions> = {}
-  const nvuePages: string[] = []
+  let pageJsons: Record<string, PageWindowOptions> = {}
+  let nvuePages: string[] = []
   // preprocess
   const pagesJson = parseJson(jsonStr, true) as UniApp.PagesJson
   if (!pagesJson) {
@@ -175,9 +177,17 @@ function parsePagesJson(
   if (networkTimeout) {
     appJson.networkTimeout = networkTimeout
   }
-  if (darkmode) {
-    appJson.darkmode = true
-    appJson.themeLocation = 'theme.json'
+  const manifestJson = getPlatformManifestJsonOnce()
+  if (!darkmode) {
+    const { pages, window, tabBar } = initTheme(manifestJson, appJson)
+    extend(appJson, JSON.parse(JSON.stringify({ pages, window, tabBar })))
+    delete appJson.darkmode
+    delete appJson.themeLocation
+    pageJsons = initTheme(manifestJson, pageJsons)
+  } else {
+    const themeLocation = manifestJson.themeLocation || 'theme.json'
+    if (hasThemeJson(path.join(process.env.UNI_INPUT_DIR, themeLocation)))
+      appJson.themeLocation = themeLocation
   }
   return {
     appJson,

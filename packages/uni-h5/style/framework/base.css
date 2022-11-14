@@ -11,6 +11,14 @@ body {
   height: 100%;
 }
 
+@media (prefers-color-scheme: dark) {
+  body,
+  uni-page-body {
+    background-color: #191919;
+    color: hsla(0, 0%, 100%, 0.8);
+  }
+}
+
 body {
   overflow-x: hidden;
   font-size: 16px;

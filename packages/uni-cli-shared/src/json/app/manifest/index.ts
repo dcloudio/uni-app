@@ -1,3 +1,4 @@
+import { extend } from '@vue/shared'
 import { initRecursiveMerge } from './merge'
 import { initDefaultManifestJson } from './defaultManifestJson'
 import { initAppStatusbar } from './statusbar'
@@ -12,15 +13,19 @@ import { initLaunchwebview } from './launchwebview'
 import { initCheckSystemWebview } from './checksystemwebview'
 import { initTabBar } from './tabBar'
 import { initI18n } from './i18n'
+import { initTheme } from '../../theme'
 
 export function normalizeAppManifestJson(
   userManifestJson: Record<string, any>,
   pagesJson: UniApp.PagesJson
 ) {
   const manifestJson = initRecursiveMerge(
-    initAppStatusbar(initDefaultManifestJson(), pagesJson),
+    initDefaultManifestJson(),
     userManifestJson
   )
+  const { pages, globalStyle, tabBar } = initTheme(manifestJson, pagesJson)
+  extend(pagesJson, JSON.parse(JSON.stringify({ pages, globalStyle, tabBar })))
+  initAppStatusbar(manifestJson, pagesJson)
   initArguments(manifestJson, pagesJson)
   initPlus(manifestJson, pagesJson)
   initNVue(manifestJson, pagesJson)

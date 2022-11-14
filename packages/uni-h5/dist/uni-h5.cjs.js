@@ -394,6 +394,10 @@ function normalizePullToRefreshRpx(pullToRefresh) {
 }
 function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel) {
   const { id, route } = meta;
+  const titleColor = uniShared.normalizeStyles(
+    meta.navigationBar,
+    __uniConfig.themeConfig
+  ).titleColor;
   return {
     id,
     path: uniShared.addLeadingSlash(route),
@@ -403,7 +407,7 @@ function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel) 
     meta,
     openType,
     eventChannel,
-    statusBarStyle: meta.navigationBar.titleColor === "#000000" ? "dark" : "light"
+    statusBarStyle: titleColor === "#000000" ? "dark" : "light"
   };
 }
 function invokeHook(vm, name, args) {
@@ -442,6 +446,14 @@ function getRealRoute(fromRoute, toRoute) {
   const fromRouteArray = fromRoute.length > 0 ? fromRoute.split("/") : [];
   fromRouteArray.splice(fromRouteArray.length - i - 1, i + 1);
   return uniShared.addLeadingSlash(fromRouteArray.concat(toRouteArray).join("/"));
+}
+function getRouteOptions(path, alias = false) {
+  if (alias) {
+    return __uniRoutes.find(
+      (route) => route.path === path || route.alias === path
+    );
+  }
+  return __uniRoutes.find((route) => route.path === path);
 }
 function findUniTarget(target) {
   while (target && target.tagName.indexOf("UNI-") !== 0) {
@@ -1096,7 +1108,7 @@ function validateProp(name, value, prop, isAbsent) {
   if (!shared.isPlainObject(prop)) {
     prop = { type: prop };
   }
-  const { type, required, validator: validator2 } = prop;
+  const { type, required, validator } = prop;
   if (required && isAbsent) {
     return 'Missing required args: "' + name + '"';
   }
@@ -1116,8 +1128,8 @@ function validateProp(name, value, prop, isAbsent) {
       return getInvalidTypeMessage(name, value, expectedTypes);
     }
   }
-  if (validator2) {
-    return validator2(value);
+  if (validator) {
+    return validator(value);
   }
 }
 const isSimpleType = /* @__PURE__ */ shared.makeMap(
@@ -1491,18 +1503,6 @@ function defineAsyncApi(name, fn, protocol, options) {
     wrapperAsyncApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options)
   );
 }
-new uniShared.Emitter();
-const validator = [
-  {
-    name: "id",
-    type: String,
-    required: true
-  }
-];
-validator.concat({
-  name: "componentInstance",
-  type: Object
-});
 const API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
 const API_GET_LOCALE = "getLocale";
 const getLocale = /* @__PURE__ */ defineSyncApi(
@@ -1515,6 +1515,14 @@ const getLocale = /* @__PURE__ */ defineSyncApi(
     return useI18n().getLocale();
   }
 );
+const API_CAN_I_USE = "canIUse";
+const CanIUseProtocol = [
+  {
+    name: "schema",
+    type: String,
+    required: true
+  }
+];
 const API_GET_STORAGE = "getStorage";
 const GetStorageProtocol = {
   key: {
@@ -1637,7 +1645,37 @@ const RequestOptions = {
     }
   }
 };
+const FRONT_COLORS = ["#ffffff", "#000000"];
 const API_SET_NAVIGATION_BAR_COLOR = "setNavigationBarColor";
+const SetNavigationBarColorOptions = {
+  formatArgs: {
+    animation(animation2, params) {
+      if (!animation2) {
+        animation2 = { duration: 0, timingFunc: "linear" };
+      }
+      params.animation = {
+        duration: animation2.duration || 0,
+        timingFunc: animation2.timingFunc || "linear"
+      };
+    }
+  }
+};
+const SetNavigationBarColorProtocol = {
+  frontColor: {
+    type: String,
+    required: true,
+    validator(frontColor) {
+      if (FRONT_COLORS.indexOf(frontColor) === -1) {
+        return `invalid frontColor "${frontColor}"`;
+      }
+    }
+  },
+  backgroundColor: {
+    type: String,
+    required: true
+  },
+  animation: Object
+};
 const API_SET_NAVIGATION_BAR_TITLE = "setNavigationBarTitle";
 const SetNavigationBarTitleProtocol = {
   title: {
@@ -3408,6 +3446,14 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       const index2 = camelizeIndex !== -1 ? camelizeIndex : kebabCaseIndex !== -1 ? kebabCaseIndex : 0;
       return AUTOCOMPLETES[index2];
     });
+    const inputmode = vue.computed(() => {
+      switch (props2.type) {
+        case "digit":
+          return "decimal";
+        default:
+          return void 0;
+      }
+    });
     let cache = vue.ref("");
     let resetCache;
     const rootRef = vue.ref(null);
@@ -3503,8 +3549,9 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "pattern": props2.type === "number" ? "[0-9]*" : void 0,
         "class": "uni-input-input",
         "autocomplete": autocomplete.value,
-        "onKeyup": onKeyUpEnter
-      }, null, 40, ["value", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup"]);
+        "onKeyup": onKeyUpEnter,
+        "inputmode": inputmode.value
+      }, null, 40, ["value", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup", "inputmode"]);
       return vue.createVNode("uni-input", {
         "ref": rootRef
       }, [vue.createVNode("div", {
@@ -5288,7 +5335,11 @@ const index$q = /* @__PURE__ */ defineBuiltInComponent({
   }) {
     const radioChecked = vue.ref(props2.checked);
     const radioValue = vue.ref(props2.value);
-    const checkedStyle = vue.computed(() => `background-color: ${props2.color};border-color: ${props2.color};`);
+    const checkedStyle = vue.computed(() => {
+      if (props2.disabled)
+        return "background-color: #E1E1E1;border-color: ##D1D1D1;";
+      return `background-color: ${props2.color};border-color: ${props2.color};`;
+    });
     vue.watch([() => props2.checked, () => props2.value], ([newChecked, newModelValue]) => {
       radioChecked.value = newChecked;
       radioValue.value = newModelValue;
@@ -5322,7 +5373,7 @@ const index$q = /* @__PURE__ */ defineBuiltInComponent({
           "uni-radio-input-disabled": props2.disabled
         }],
         "style": radioChecked.value ? checkedStyle.value : ""
-      }, [radioChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, "#fff", 18) : ""], 6), slots.default && slots.default()])], 16, ["onClick"]);
+      }, [radioChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : "#fff", 18) : ""], 6), slots.default && slots.default()])], 16, ["onClick"]);
     };
   }
 });
@@ -7423,7 +7474,6 @@ function getStateId() {
     return 1;
   }
 }
-PolySymbol(process.env.NODE_ENV !== "production" ? "layout" : "l");
 let tabBar;
 function useTabBar() {
   if (!tabBar) {
@@ -7431,9 +7481,29 @@ function useTabBar() {
   }
   return tabBar;
 }
+const cssVar = true;
+const cssEnv = true;
+const cssConstant = true;
+const cssBackdropFilter = true;
+const SCHEMA_CSS = {
+  "css.var": cssVar,
+  "css.env": cssEnv,
+  "css.constant": cssConstant,
+  "css.backdrop-filter": cssBackdropFilter
+};
+/* @__PURE__ */ defineSyncApi(
+  API_CAN_I_USE,
+  (schema) => {
+    if (shared.hasOwn(SCHEMA_CSS, schema)) {
+      return SCHEMA_CSS[schema];
+    }
+    return true;
+  },
+  CanIUseProtocol
+);
 const envMethod = /* @__PURE__ */ (() => "env")();
 function normalizeWindowBottom(windowBottom) {
-  return `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))`;
+  return envMethod ? `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))` : `${windowBottom}px`;
 }
 const SEP = "$$";
 const currentPagesMap = /* @__PURE__ */ new Map();
@@ -10817,6 +10887,13 @@ const getStorageInfo = /* @__PURE__ */ defineAsyncApi(
     resolve(getStorageInfoSync());
   }
 );
+function getTheme() {
+  try {
+    return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+  } catch (error) {
+    return "light";
+  }
+}
 let browserInfo;
 function initBrowserInfo() {
   {
@@ -10937,6 +11014,44 @@ function setNavigationBar(pageMeta, type, args, resolve, reject) {
   }
   resolve();
 }
+/* @__PURE__ */ defineAsyncApi(
+  API_SET_NAVIGATION_BAR_COLOR,
+  (args, { resolve, reject }) => {
+    setNavigationBar(
+      getCurrentPageMeta(),
+      API_SET_NAVIGATION_BAR_COLOR,
+      args,
+      resolve,
+      reject
+    );
+  },
+  SetNavigationBarColorProtocol,
+  SetNavigationBarColorOptions
+);
+/* @__PURE__ */ defineAsyncApi(
+  API_SHOW_NAVIGATION_BAR_LOADING,
+  (args, { resolve, reject }) => {
+    setNavigationBar(
+      getCurrentPageMeta(),
+      API_SHOW_NAVIGATION_BAR_LOADING,
+      args || {},
+      resolve,
+      reject
+    );
+  }
+);
+/* @__PURE__ */ defineAsyncApi(
+  API_HIDE_NAVIGATION_BAR_LOADING,
+  (args, { resolve, reject }) => {
+    setNavigationBar(
+      getCurrentPageMeta(),
+      API_HIDE_NAVIGATION_BAR_LOADING,
+      args || {},
+      resolve,
+      reject
+    );
+  }
+);
 const setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(
   API_SET_NAVIGATION_BAR_TITLE,
   (args, { resolve, reject }) => {
@@ -10976,11 +11091,33 @@ const UniServiceJSBridge$1 = /* @__PURE__ */ shared.extend(ServiceJSBridge, {
     UniViewJSBridge.subscribeHandler(event, args, pageId);
   }
 });
+function onThemeChange(callback) {
+  if (__uniConfig.darkmode) {
+    UniServiceJSBridge.on(uniShared.ON_THEME_CHANGE, callback);
+  }
+}
+function parseTheme(pageStyle) {
+  let parsedStyle = {};
+  if (__uniConfig.darkmode) {
+    parsedStyle = uniShared.normalizeStyles(
+      pageStyle,
+      __uniConfig.themeConfig,
+      getTheme()
+    );
+  }
+  return __uniConfig.darkmode ? parsedStyle : pageStyle;
+}
+const _middleButton = {
+  width: "50px",
+  height: "50px",
+  iconWidth: "24px"
+};
 const TabBar = /* @__PURE__ */ defineSystemComponent({
   name: "TabBar",
   setup() {
     const visibleList = vue.ref([]);
-    const tabBar2 = useTabBar();
+    const _tabBar = useTabBar();
+    const tabBar2 = vue.reactive(parseTheme(_tabBar));
     useVisibleList(tabBar2, visibleList);
     useTabBarCssVar(tabBar2);
     const onSwitchTab = useSwitchTab(vueRouter.useRoute(), tabBar2, visibleList);
@@ -10989,6 +11126,20 @@ const TabBar = /* @__PURE__ */ defineSystemComponent({
       borderStyle,
       placeholderStyle
     } = useTabBarStyle(tabBar2);
+    onThemeChange(() => {
+      const tabBarStyle = parseTheme(_tabBar);
+      tabBar2.backgroundColor = tabBarStyle.backgroundColor;
+      tabBar2.borderStyle = tabBarStyle.borderStyle;
+      tabBar2.color = tabBarStyle.color;
+      tabBar2.selectedColor = tabBarStyle.selectedColor;
+      tabBar2.blurEffect = tabBarStyle.blurEffect;
+      if (tabBarStyle.list && tabBarStyle.list.length) {
+        tabBarStyle.list.forEach((item, index2) => {
+          tabBar2.list[index2].iconPath = item.iconPath;
+          tabBar2.list[index2].selectedIconPath = item.selectedIconPath;
+        });
+      }
+    });
     return () => {
       const tabBarItemsTsx = createTabBarItemsTsx(tabBar2, onSwitchTab, visibleList);
       return vue.createVNode("uni-tabbar", {
@@ -11014,13 +11165,17 @@ function useTabBarCssVar(tabBar2) {
   });
 }
 function useVisibleList(tabBar2, visibleList) {
+  const internalMidButton = vue.ref(shared.extend({
+    type: "midButton"
+  }, tabBar2.midButton));
   function setVisibleList() {
     let tempList = [];
     tempList = tabBar2.list.filter((item) => item.visible !== false);
-    if (__UNI_FEATURE_TABBAR_MIDBUTTON__) {
+    if (__UNI_FEATURE_TABBAR_MIDBUTTON__ && tabBar2.midButton) {
+      internalMidButton.value = shared.extend({}, _middleButton, internalMidButton.value, tabBar2.midButton);
       tempList = tempList.filter((item) => !isMidButton(item));
       if (tempList.length % 2 === 0) {
-        tempList.splice(Math.floor(tempList.length / 2), 0, tabBar2.list[Math.floor(tabBar2.list.length / 2)]);
+        tempList.splice(Math.floor(tempList.length / 2), 0, internalMidButton.value);
       }
     }
     visibleList.value = tempList;
@@ -11084,7 +11239,7 @@ function useTabBarStyle(tabBar2) {
     let backgroundColor = tabBar2.backgroundColor;
     const blurEffect = tabBar2.blurEffect;
     if (!backgroundColor) {
-      if (blurEffect && blurEffect !== "none") {
+      if (cssBackdropFilter && blurEffect && blurEffect !== "none") {
         backgroundColor = BLUR_EFFECT_COLORS[blurEffect];
       }
     }
@@ -11298,7 +11453,18 @@ function useMaxWidth(layoutState, rootRef) {
   const route = usePageRoute();
   function checkMaxWidth() {
     const windowWidth = document.body.clientWidth;
-    const maxWidth = parseInt(String(__uniConfig.globalStyle.maxWidth || Number.MAX_SAFE_INTEGER));
+    const pages = getCurrentPages();
+    let meta = {};
+    if (pages.length > 0) {
+      const curPage = pages[pages.length - 1];
+      meta = curPage.$page.meta;
+    } else {
+      const routeOptions = getRouteOptions(route.path, true);
+      if (routeOptions) {
+        meta = routeOptions.meta;
+      }
+    }
+    const maxWidth = parseInt(String((shared.hasOwn(meta, "maxWidth") ? meta.maxWidth : __uniConfig.globalStyle.maxWidth) || Number.MAX_SAFE_INTEGER));
     let showMaxWidth = false;
     if (windowWidth > maxWidth) {
       showMaxWidth = true;
@@ -11329,11 +11495,23 @@ function useState() {
   const route = usePageRoute();
   if (!__UNI_FEATURE_RESPONSIVE__) {
     const layoutState2 = vue.reactive({
-      marginWidth: 0
+      marginWidth: 0,
+      leftWindowWidth: 0,
+      rightWindowWidth: 0
     });
     vue.watch(() => layoutState2.marginWidth, (value) => updateCssVar({
       "--window-margin": value + "px"
     }));
+    vue.watch(() => layoutState2.leftWindowWidth + layoutState2.marginWidth, (value) => {
+      updateCssVar({
+        "--window-left": value + "px"
+      });
+    });
+    vue.watch(() => layoutState2.rightWindowWidth + layoutState2.marginWidth, (value) => {
+      updateCssVar({
+        "--window-right": value + "px"
+      });
+    });
     return {
       layoutState: layoutState2,
       windowState: vue.computed(() => ({}))
@@ -11380,12 +11558,16 @@ function useState() {
   vue.watch(() => layoutState.marginWidth, (value) => updateCssVar({
     "--window-margin": value + "px"
   }));
-  vue.watch(() => layoutState.leftWindowWidth + layoutState.marginWidth, (value) => updateCssVar({
-    "--window-left": value + "px"
-  }));
-  vue.watch(() => layoutState.rightWindowWidth + layoutState.marginWidth, (value) => updateCssVar({
-    "--window-right": value + "px"
-  }));
+  vue.watch(() => layoutState.leftWindowWidth + layoutState.marginWidth, (value) => {
+    updateCssVar({
+      "--window-left": value + "px"
+    });
+  });
+  vue.watch(() => layoutState.rightWindowWidth + layoutState.marginWidth, (value) => {
+    updateCssVar({
+      "--window-right": value + "px"
+    });
+  });
   UniServiceJSBridge.on(uniShared.ON_NAVIGATION_BAR_CHANGE, (navigationBar) => {
     layoutState.navigationBarTitleText = navigationBar.titleText;
   });
@@ -11438,19 +11620,13 @@ function createRouterViewVNode({
   return vue.createVNode(vueRouter.RouterView, null, {
     default: vue.withCtx(({
       Component
-    }) => [(vue.openBlock(), vue.createBlock(
-      vue.KeepAlive,
-      {
-        matchBy: "key",
-        cache: routeCache2
-      },
-      [(vue.openBlock(), vue.createBlock(vue.resolveDynamicComponent(Component), {
-        type: isTabBar.value ? "tabBar" : "",
-        key: routeKey.value
-      }))],
-      1032,
-      ["cache"]
-    ))]),
+    }) => [(vue.openBlock(), vue.createBlock(vue.KeepAlive, {
+      matchBy: "key",
+      cache: routeCache2
+    }, [(vue.openBlock(), vue.createBlock(vue.resolveDynamicComponent(Component), {
+      type: isTabBar.value ? "tabBar" : "",
+      key: routeKey.value
+    }))], 1032, ["cache"]))]),
     _: 1
   });
 }
@@ -11595,16 +11771,21 @@ const PageHead = /* @__PURE__ */ defineSystemComponent({
   setup() {
     const headRef = vue.ref(null);
     const pageMeta = usePageMeta();
-    const navigationBar = pageMeta.navigationBar;
+    const navigationBar = vue.reactive(parseTheme(pageMeta.navigationBar));
     const {
       clazz: clazz2,
       style
     } = usePageHead(navigationBar);
+    onThemeChange(() => {
+      const _navigationBar = parseTheme(pageMeta.navigationBar);
+      navigationBar.backgroundColor = _navigationBar.backgroundColor;
+      navigationBar.titleColor = _navigationBar.titleColor;
+    });
     const buttons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ && usePageHeadButtons(pageMeta);
     const searchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ && navigationBar.searchInput && usePageHeadSearchInput(pageMeta);
     __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" && usePageHeadTransparent(headRef, pageMeta);
     return () => {
-      const backButtonTsx = __UNI_FEATURE_PAGES__ ? createBackButtonTsx(pageMeta) : null;
+      const backButtonTsx = __UNI_FEATURE_PAGES__ ? createBackButtonTsx(navigationBar, pageMeta.isQuit) : null;
       const leftButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.left) : [];
       const rightButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.right) : [];
       const type = navigationBar.type || "default";
@@ -11628,11 +11809,7 @@ const PageHead = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-function createBackButtonTsx(pageMeta) {
-  const {
-    navigationBar,
-    isQuit
-  } = pageMeta;
+function createBackButtonTsx(navigationBar, isQuit) {
   if (!isQuit) {
     return vue.createVNode("div", {
       "class": "uni-page-head-btn",

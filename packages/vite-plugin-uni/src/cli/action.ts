@@ -37,47 +37,49 @@ export async function runDev(options: CliOptions & ServerOptions) {
           event.result.close()
           if (isFirstEnd) {
             // 首次全量同步
-            // iOS 平台使用了 UTS
-            if (process.env.UNI_APP_IOS_UTS) {
-              console.log(`\u200B` + M['uts.ios.tips'] + `\u200B`)
+            if (options.platform === 'app') {
+              process.env.UNI_APP_CHANGED_PAGES = ''
+              process.env.UNI_APP_CHANGED_FILES = ''
+              process.env.UNI_APP_UTS_CHANGED_FILES = ''
             }
+            isFirstEnd = false
+            output('log', M['dev.watching.end'])
+            printStartupDuration(createLogger(options.logLevel), false)
+            if (process.env.UNI_UTS_TIPS) {
+              console.warn(process.env.UNI_UTS_TIPS)
+            }
+            return
+          }
+          if (options.platform === 'app') {
+            const files = process.env.UNI_APP_CHANGED_FILES
+            const pages = process.env.UNI_APP_CHANGED_PAGES
+            const dex = process.env.UNI_APP_UTS_CHANGED_FILES
+            const changedFiles = pages || files
             process.env.UNI_APP_CHANGED_PAGES = ''
             process.env.UNI_APP_CHANGED_FILES = ''
-            process.env.UNI_APP_CHANGED_DEX_FILES = ''
-            return (
-              (isFirstEnd = false),
-              output('log', M['dev.watching.end']),
-              printStartupDuration(createLogger(options.logLevel), false)
-            )
-          }
-          const files = process.env.UNI_APP_CHANGED_FILES
-          const pages = process.env.UNI_APP_CHANGED_PAGES
-          const dex = process.env.UNI_APP_CHANGED_DEX_FILES
-          const changedFiles = pages || files
-          process.env.UNI_APP_CHANGED_PAGES = ''
-          process.env.UNI_APP_CHANGED_FILES = ''
-          process.env.UNI_APP_CHANGED_DEX_FILES = ''
-          if (
-            (changedFiles && !changedFiles.includes(APP_CONFIG_SERVICE)) ||
-            dex
-          ) {
-            if (pages) {
+            process.env.UNI_APP_UTS_CHANGED_FILES = ''
+            if (
+              (changedFiles && !changedFiles.includes(APP_CONFIG_SERVICE)) ||
+              dex
+            ) {
+              if (pages) {
+                return output(
+                  'log',
+                  M['dev.watching.end.pages'].replace('{pages}', changedFiles)
+                )
+              }
               return output(
                 'log',
-                M['dev.watching.end.pages'].replace('{pages}', changedFiles)
-              )
-            }
-            return output(
-              'log',
-              M['dev.watching.end.files'].replace(
-                '{files}',
-                JSON.stringify(
-                  JSON.parse(changedFiles || JSON.stringify([])).concat(
-                    JSON.parse(dex || JSON.stringify([]))
+                M['dev.watching.end.files'].replace(
+                  '{files}',
+                  JSON.stringify(
+                    JSON.parse(changedFiles || JSON.stringify([])).concat(
+                      JSON.parse(dex || JSON.stringify([]))
+                    )
                   )
                 )
               )
-            )
+            }
           }
           return output('log', M['dev.watching.end'])
         }
@@ -101,7 +103,7 @@ export async function runBuild(options: CliOptions & BuildOptions) {
       : build(options))
     console.log(M['build.done'])
   } catch (e: any) {
-    console.error(`error during build:\n${e.stack || e}`)
+    console.error(`Build failed with errors.`)
     process.exit(1)
   }
 }

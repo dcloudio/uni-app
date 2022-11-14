@@ -1,10 +1,5 @@
 import { isArray } from '@vue/shared'
-import {
-  BACKGROUND_COLOR,
-  formatLog,
-  ON_NAVIGATION_BAR_BUTTON_TAP,
-} from '@dcloudio/uni-shared'
-import { isColor } from './utils'
+import { formatLog, ON_NAVIGATION_BAR_BUTTON_TAP } from '@dcloudio/uni-shared'
 import { initNavigationBarI18n, invokeHook } from '@dcloudio/uni-core'
 export function initTitleNView(
   webviewStyle: PlusWebviewWebviewStyles,
@@ -23,11 +18,7 @@ export function initTitleNView(
   }
   Object.keys(navigationBar).forEach((name) => {
     const value = navigationBar[name as keyof UniApp.PageNavigationBar]
-    if (name === 'backgroundColor') {
-      titleNView.backgroundColor = isColor(value as string)
-        ? (value as string)
-        : BACKGROUND_COLOR
-    } else if (name === 'titleImage' && value) {
+    if (name === 'titleImage' && value) {
       titleNView.tags = createTitleImageTags(value as string)
     } else if (name === 'buttons' && isArray(value)) {
       titleNView.buttons = (value as UniApp.PageNavigationBar['buttons'])!.map(

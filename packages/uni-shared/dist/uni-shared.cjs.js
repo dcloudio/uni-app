@@ -227,6 +227,7 @@ const ON_HIDE = 'onHide';
 const ON_LAUNCH = 'onLaunch';
 const ON_ERROR = 'onError';
 const ON_THEME_CHANGE = 'onThemeChange';
+const OFF_THEME_CHANGE = 'offThemeChange';
 const ON_KEYBOARD_HEIGHT_CHANGE = 'onKeyboardHeightChange';
 const ON_PAGE_NOT_FOUND = 'onPageNotFound';
 const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
@@ -1381,6 +1382,56 @@ E.prototype = {
 };
 var E$1 = E;
 
+const borderStyles = {
+    black: 'rgba(0,0,0,0.4)',
+    white: 'rgba(255,255,255,0.4)',
+};
+function normalizeTabBarStyles(borderStyle) {
+    if (borderStyle && borderStyle in borderStyles) {
+        return borderStyles[borderStyle];
+    }
+    return borderStyle;
+}
+function normalizeTitleColor(titleColor) {
+    return titleColor === 'black' ? '#000000' : '#ffffff';
+}
+function normalizeStyles(pageStyle, themeConfig = {}, mode = 'light') {
+    const modeStyle = themeConfig[mode];
+    const styles = {};
+    if (!modeStyle) {
+        return pageStyle;
+    }
+    Object.keys(pageStyle).forEach((key) => {
+        let styleItem = pageStyle[key] // Object Array String
+        ;
+        styles[key] = (() => {
+            if (shared.isPlainObject(styleItem)) {
+                return normalizeStyles(styleItem, themeConfig, mode);
+            }
+            else if (shared.isArray(styleItem)) {
+                return styleItem.map((item) => shared.isPlainObject(item)
+                    ? normalizeStyles(item, themeConfig, mode)
+                    : item);
+            }
+            else if (shared.isString(styleItem) && styleItem.startsWith('@')) {
+                const _key = styleItem.replace('@', '');
+                let _styleItem = modeStyle[_key] || styleItem;
+                switch (key) {
+                    case 'titleColor':
+                        _styleItem = normalizeTitleColor(_styleItem);
+                        break;
+                    case 'borderStyle':
+                        _styleItem = normalizeTabBarStyles(_styleItem);
+                        break;
+                }
+                return _styleItem;
+            }
+            return styleItem;
+        })();
+    });
+    return styles;
+}
+
 function getEnvLocale() {
     const { env } = process;
     const lang = env.LC_ALL || env.LC_MESSAGES || env.LANG || env.LANGUAGE;
@@ -1429,6 +1480,7 @@ exports.NODE_TYPE_PAGE = NODE_TYPE_PAGE;
 exports.NODE_TYPE_TEXT = NODE_TYPE_TEXT;
 exports.NVUE_BUILT_IN_TAGS = NVUE_BUILT_IN_TAGS;
 exports.NVUE_U_BUILT_IN_TAGS = NVUE_U_BUILT_IN_TAGS;
+exports.OFF_THEME_CHANGE = OFF_THEME_CHANGE;
 exports.ON_ADD_TO_FAVORITES = ON_ADD_TO_FAVORITES;
 exports.ON_APP_ENTER_BACKGROUND = ON_APP_ENTER_BACKGROUND;
 exports.ON_APP_ENTER_FOREGROUND = ON_APP_ENTER_FOREGROUND;
@@ -1491,6 +1543,7 @@ exports.WXS_MODULES = WXS_MODULES;
 exports.WXS_PROTOCOL = WXS_PROTOCOL;
 exports.addFont = addFont;
 exports.addLeadingSlash = addLeadingSlash;
+exports.borderStyles = borderStyles;
 exports.cache = cache;
 exports.cacheStringFunction = cacheStringFunction;
 exports.callOptions = callOptions;
@@ -1529,7 +1582,10 @@ exports.isRootImmediateHook = isRootImmediateHook;
 exports.isUniLifecycleHook = isUniLifecycleHook;
 exports.normalizeDataset = normalizeDataset;
 exports.normalizeEventType = normalizeEventType;
+exports.normalizeStyles = normalizeStyles;
+exports.normalizeTabBarStyles = normalizeTabBarStyles;
 exports.normalizeTarget = normalizeTarget;
+exports.normalizeTitleColor = normalizeTitleColor;
 exports.onCreateVueApp = onCreateVueApp;
 exports.once = once;
 exports.parseEventName = parseEventName;

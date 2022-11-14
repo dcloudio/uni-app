@@ -59,6 +59,14 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           : 0
       return AUTOCOMPLETES[index]
     })
+    const inputmode = computed(() => {
+      switch (props.type) {
+        case 'digit':
+          return 'decimal'
+        default:
+          return undefined
+      }
+    })
 
     let cache = ref('')
     let resetCache: (() => void) | null
@@ -187,6 +195,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             class="uni-input-input"
             autocomplete={autocomplete.value}
             onKeyup={onKeyUpEnter}
+            inputmode={inputmode.value}
           />
         )
       return (

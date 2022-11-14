@@ -5,6 +5,7 @@ import {
   normalizeNetworkTimeout,
   parseJson,
   initI18nOptions,
+  normalizeThemeConfigOnce,
 } from '@dcloudio/uni-cli-shared'
 
 const defaultRouter = {
@@ -96,6 +97,13 @@ export function uniManifestJsonPlugin(): Plugin {
             manifest['app'].nvue['flex-direction']) ||
           'column'
 
+        const platformConfig =
+          manifest[
+            process.env.UNI_PLATFORM === 'app'
+              ? 'app-plus'
+              : process.env.UNI_PLATFORM
+          ] || {}
+
         return {
           code: `export const appId = ${JSON.stringify(manifest.appid || '')}
   export const appName = ${JSON.stringify(manifest.name || '')}
@@ -118,6 +126,10 @@ export function uniManifestJsonPlugin(): Plugin {
   export const sdkConfigs = ${JSON.stringify(sdkConfigs)}
   export const locale = '${locale}'
   export const fallbackLocale = '${fallbackLocale}'
+  export const darkmode = ${platformConfig.darkmode || 'false'}
+  export const themeConfig = ${JSON.stringify(
+    normalizeThemeConfigOnce(platformConfig)
+  )}
   `,
           map: { mappings: '' },
         }

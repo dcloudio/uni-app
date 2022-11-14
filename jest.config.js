@@ -19,7 +19,11 @@ module.exports = {
   watchPathIgnorePatterns: ['/node_modules/', '/dist/', '/.git/'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'json'],
   moduleNameMapper: {
-    '^@dcloudio/(.*?)$': '<rootDir>/packages/$1/src',
+    "@dcloudio/uts-darwin-arm64": "<rootDir>/packages/uts-darwin-arm64",
+    "@dcloudio/uts-darwin-x64": "<rootDir>/packages/uts-darwin-x64",
+    "@dcloudio/uts-win32-ia32-msvc": "<rootDir>/packages/uts-win32-ia32-msvc",
+    "@dcloudio/uts-win32-x64-msvc": "<rootDir>/packages/uts-win32-x64-msvc",
+    '^@dcloudio/(.*?)$': '<rootDir>/packages/$1/src'
   },
   rootDir: __dirname,
   testMatch: ['<rootDir>/packages/**/__tests__/**/*spec.[jt]s?(x)'],

@@ -1,5 +1,5 @@
 import { extend } from '@vue/shared'
-import type { Rule, Declaration, Plugin } from 'postcss'
+import type { Rule, Declaration, Plugin, Root } from 'postcss'
 import selectorParser from 'postcss-selector-parser'
 import {
   createRpx2Unit,
@@ -83,6 +83,19 @@ function walkDecls(rpx2unit: ReturnType<typeof createRpx2Unit>) {
   }
 }
 
+function filterPrefersColorScheme(root: Root) {
+  if (process.env.VUE_APP_DARK_MODE !== 'true') {
+    const filePath = root.source?.input.file
+    if (filePath && filePath.includes('@dcloudio')) {
+      root.walkAtRules((rule) => {
+        if (rule.params.includes('prefers-color-scheme')) {
+          rule.remove()
+        }
+      })
+    }
+  }
+}
+
 const baiduTags: Record<string, string> = {
   navigator: 'nav',
 }
@@ -132,6 +145,7 @@ const uniapp = (opts?: UniAppCssProcessorOptions) => {
         OnceExit(root) {
           root.walkDecls(walkDecls(rpx2unit))
           const rewriteTag = transforms[platform]
+          filterPrefersColorScheme(root)
           if (rewriteTag) {
             root.walkRules(
               walkRules({

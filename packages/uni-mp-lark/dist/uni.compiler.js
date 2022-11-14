@@ -152,12 +152,7 @@ const uniMiniProgramToutiaoPlugin = {
 };
 options.vite.copyOptions.targets = [
     ...(options.vite.copyOptions.targets || []),
-    {
-        src: ['theme.json'],
-        get dest() {
-            return process.env.UNI_OUTPUT_DIR;
-        },
-    },
+    ...uniCliShared.copyMiniProgramThemeJson(),
 ];
 options.app.darkmode = true;
 options.cdn = 10;

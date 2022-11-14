@@ -1,4 +1,13 @@
-import { watch, watchEffect, computed, ref, Ref, onMounted } from 'vue'
+import {
+  watch,
+  watchEffect,
+  computed,
+  ref,
+  Ref,
+  onMounted,
+  reactive,
+} from 'vue'
+import { extend } from '@vue/shared'
 import { RouteLocationNormalizedLoaded, useRoute } from 'vue-router'
 import { invokeHook, updatePageCssVar } from '@dcloudio/uni-core'
 import {
@@ -12,18 +21,41 @@ import { useTabBar } from '../../setup/state'
 import { cssBackdropFilter } from '../../../service/api/base/canIUse'
 import { loadFontFace } from '../../../service/api/ui/loadFontFace'
 import { normalizeWindowBottom } from '../../../helpers/cssVar'
+import { parseTheme, onThemeChange } from '../../../helpers/theme'
 
 const UNI_TABBAR_ICON_FONT = 'UniTabbarIconFont'
+
+const _middleButton = {
+  width: '50px',
+  height: '50px',
+  iconWidth: '24px',
+}
 
 export default /*#__PURE__*/ defineSystemComponent({
   name: 'TabBar',
   setup() {
     const visibleList = ref<UniApp.TabBarItemOptions[]>([])
-    const tabBar = useTabBar()!
+    const _tabBar = useTabBar()!
+    const tabBar = reactive(parseTheme(_tabBar))
     useVisibleList(tabBar, visibleList)
     useTabBarCssVar(tabBar)
     const onSwitchTab = useSwitchTab(useRoute(), tabBar, visibleList)
     const { style, borderStyle, placeholderStyle } = useTabBarStyle(tabBar)
+
+    onThemeChange(() => {
+      const tabBarStyle = parseTheme(_tabBar)
+      tabBar.backgroundColor = tabBarStyle.backgroundColor
+      tabBar.borderStyle = tabBarStyle.borderStyle
+      tabBar.color = tabBarStyle.color
+      tabBar.selectedColor = tabBarStyle.selectedColor
+      tabBar.blurEffect = tabBarStyle.blurEffect
+      if (tabBarStyle.list && tabBarStyle.list.length) {
+        tabBarStyle.list.forEach((item, index) => {
+          tabBar.list[index].iconPath = item.iconPath
+          tabBar.list[index].selectedIconPath = item.selectedIconPath
+        })
+      }
+    })
 
     onMounted(() => {
       if (tabBar.iconfontSrc) {
@@ -70,18 +102,27 @@ function useVisibleList(
   tabBar: UniApp.TabBarOptions,
   visibleList: Ref<UniApp.TabBarItemOptions[]>
 ) {
+  const internalMidButton = ref<UniApp.TabBarMidButtonOptions>(
+    extend({ type: 'midButton' }, tabBar.midButton)
+  )
   function setVisibleList() {
     let tempList = []
     tempList = tabBar.list.filter((item) => item.visible !== false)
 
-    if (__UNI_FEATURE_TABBAR_MIDBUTTON__) {
+    if (__UNI_FEATURE_TABBAR_MIDBUTTON__ && tabBar.midButton) {
+      internalMidButton.value = extend(
+        {},
+        _middleButton,
+        internalMidButton.value,
+        tabBar.midButton
+      )
       tempList = tempList.filter((item) => !isMidButton(item))
 
       if (tempList.length % 2 === 0) {
         tempList.splice(
           Math.floor(tempList.length / 2),
           0,
-          tabBar.list[Math.floor(tabBar.list.length / 2)]
+          internalMidButton.value
         )
       }
     }

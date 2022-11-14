@@ -23,6 +23,17 @@ body {
   background-color: white;
 }
 
+#app{
+  height: 100%;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #191919;
+    color: hsla(0, 0%, 100%, 0.8);
+  }
+}
+
 input[type='search']::-webkit-search-cancel-button {
   display: none;
 }

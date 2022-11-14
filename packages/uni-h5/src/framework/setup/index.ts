@@ -21,6 +21,7 @@ import {
   ON_RESIZE,
   ON_WEB_INVOKE_APP_SERVICE,
   WEB_INVOKE_APPSERVICE,
+  ON_THEME_CHANGE,
 } from '@dcloudio/uni-shared'
 import { injectAppHooks } from '@dcloudio/uni-api'
 import { subscribeViewMethod, unsubscribeViewMethod } from '@dcloudio/uni-core'
@@ -181,6 +182,7 @@ export function setupApp(comp: any) {
         )
         window.addEventListener('message', onMessage)
         document.addEventListener('visibilitychange', onVisibilityChange)
+        onThemeChange()
       })
       return route.query
     },
@@ -231,5 +233,20 @@ function onVisibilityChange() {
     emit(ON_APP_ENTER_FOREGROUND, getEnterOptions())
   } else {
     emit(ON_APP_ENTER_BACKGROUND)
+  }
+}
+function onThemeChange() {
+  let mediaQueryList: MediaQueryList | null = null
+
+  try {
+    mediaQueryList = window.matchMedia('(prefers-color-scheme: dark)')
+  } catch (error) {}
+
+  if (mediaQueryList) {
+    mediaQueryList.addEventListener('change', (e) => {
+      UniServiceJSBridge.emit(ON_THEME_CHANGE, {
+        theme: e.matches ? 'dark' : 'light',
+      })
+    })
   }
 }

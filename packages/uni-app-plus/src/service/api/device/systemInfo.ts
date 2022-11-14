@@ -6,7 +6,7 @@ import { sortObject } from '@dcloudio/uni-shared'
 let systemInfo: any
 let _initSystemInfo = true
 
-function weexGetSystemInfoSync() {
+export function weexGetSystemInfoSync() {
   if (!_initSystemInfo) return
   const { getSystemInfoSync } = weex.requireModule('plus')
   systemInfo = getSystemInfoSync()
@@ -15,6 +15,7 @@ function weexGetSystemInfoSync() {
       systemInfo = JSON.parse(systemInfo)
     } catch (error) {}
   }
+  return systemInfo
 }
 
 export const getDeviceInfo = defineSyncApi<typeof uni.getDeviceInfo>(
@@ -59,6 +60,7 @@ export const getAppBaseInfo = defineSyncApi<typeof uni.getAppBaseInfo>(
       hostVersion,
       hostLanguage,
       osLanguage,
+      osTheme,
       hostTheme,
       appId,
       appName,
@@ -84,7 +86,7 @@ export const getAppBaseInfo = defineSyncApi<typeof uni.getAppBaseInfo>(
       hostSDKVersion: undefined,
       language: osLanguage,
       SDKVersion: '',
-      theme: undefined,
+      theme: hostTheme || osTheme,
       version: plus.runtime.innerVersion!,
     }
   }
@@ -120,7 +122,9 @@ export const getSystemInfoSync = defineSyncApi<typeof uni.getSystemInfoSync>(
 
     delete (_systemInfo as any).screenTop
     delete (_systemInfo as any).enableDebug
-    delete (_systemInfo as any).theme
+    if (!__uniConfig.darkmode) {
+      delete (_systemInfo as any).theme
+    }
 
     return sortObject(_systemInfo)
   }
