@@ -52,7 +52,7 @@ function generatePagesJsonCode(
 
   return `
 import { defineAsyncComponent, resolveComponent, createVNode, withCtx, openBlock, createBlock } from 'vue'
-import { PageComponent, AsyncLoadingComponent, AsyncErrorComponent, useI18n, setupWindow, setupPage } from '@dcloudio/uni-h5'
+import { PageComponent, useI18n, setupWindow, setupPage } from '@dcloudio/uni-h5'
 import { appId, appName, appVersion, appVersionCode, debug, networkTimeout, router, async, sdkConfigs, qqMapKey, googleMapKey, aMapKey, aMapSecurityJsCode, aMapServiceHost, nvue, locale, fallbackLocale, darkmode, themeConfig } from './${MANIFEST_JSON_JS}'
 const locales = import.meta.globEager('./locale/*.json')
 ${importLayoutComponentsCode}
@@ -190,13 +190,27 @@ function generatePagesDefineCode(
   const { pages } = pagesJson
   return (
     `const AsyncComponentOptions = {
-  loadingComponent: AsyncLoadingComponent,
-  errorComponent: AsyncErrorComponent,
-  delay: async.delay,
-  timeout: async.timeout,
-  suspensible: async.suspensible
-}
-` + pages.map((pageOptions) => generatePageDefineCode(pageOptions)).join('\n')
+      delay: async.delay,
+      timeout: async.timeout,
+      suspensible: async.suspensible
+    }
+    if(async.loading){
+      AsyncComponentOptions.loadingComponent = {
+        name:'SystemAsyncLoading',
+        render(){
+          return createVNode(resolveComponent(async.loading))
+        }
+      }
+    }
+    if(async.error){
+      AsyncComponentOptions.errorComponent = {
+        name:'SystemAsyncError',
+        render(){
+          return createVNode(resolveComponent(async.error))
+        }
+      }
+    }
+  ` + pages.map((pageOptions) => generatePageDefineCode(pageOptions)).join('\n')
   )
 }
 
