@@ -186,7 +186,7 @@ export default () => [
           define: {
             'process.env.UNI_SECURE_NETWORK_ENABLE': isSecureNetworkEnabled,
             'process.env.UNI_SECURE_NETWORK_CONFIG':
-              process.env.UNI_SECURE_NETWORK_CONFIG,
+              process.env.UNI_SECURE_NETWORK_CONFIG || JSON.stringify([]),
           },
         }
       },
