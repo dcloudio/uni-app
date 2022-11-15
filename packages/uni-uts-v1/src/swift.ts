@@ -146,7 +146,7 @@ async function compile(filename: string) {
       package: parseSwiftPackage(filename).namespace,
       sourceMap: resolveUTSSourceMapPath(filename),
       extname: 'swift',
-      imports: ['DCUTSPlugin'],
+      imports: ['DCUTSFoundation'],
       logFilename: true,
       noColor: isInHBuilderX(),
     },
