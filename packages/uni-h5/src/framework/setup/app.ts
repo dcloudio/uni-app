@@ -1,4 +1,6 @@
 import { ComponentPublicInstance } from 'vue'
+import AsyncLoadingComponent from '../components/async-loading'
+import AsyncErrorComponent from '../components/async-error'
 import {
   initAppVm,
   initService,
@@ -14,6 +16,18 @@ export function getApp() {
 
 export function initApp(vm: ComponentPublicInstance) {
   appVm = vm
+  if (!appVm.$.appContext.app.component(AsyncLoadingComponent.name)) {
+    appVm.$.appContext.app.component(
+      AsyncLoadingComponent.name,
+      AsyncLoadingComponent
+    )
+  }
+  if (!appVm.$.appContext.app.component(AsyncErrorComponent.name)) {
+    appVm.$.appContext.app.component(
+      AsyncErrorComponent.name,
+      AsyncErrorComponent
+    )
+  }
   initAppVm(appVm)
   defineGlobalData(appVm)
   initService()
