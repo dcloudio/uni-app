@@ -109,9 +109,14 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
     transpileOnly: false,
     compilerOptions: {
       baseUrl: context,
-      typeRoots: [resolveModule('@dcloudio/types'), resolveModule('@types')],
+      typeRoots: [
+        resolveModule('@dcloudio/types'),
+        resolveModule('@types'),
+        path.resolve(process.env.UNI_CLI_CONTEXT, 'types')
+      ],
       types: [
         'uni-app',
+        'uni-app-vue2',
         'webpack-env'
       ],
       paths: {
