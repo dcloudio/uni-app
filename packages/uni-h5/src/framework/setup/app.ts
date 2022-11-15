@@ -16,17 +16,12 @@ export function getApp() {
 
 export function initApp(vm: ComponentPublicInstance) {
   appVm = vm
-  if (!appVm.$.appContext.app.component(AsyncLoadingComponent.name)) {
-    appVm.$.appContext.app.component(
-      AsyncLoadingComponent.name,
-      AsyncLoadingComponent
-    )
+  const app = appVm.$.appContext.app
+  if (!app.component(AsyncLoadingComponent.name)) {
+    app.component(AsyncLoadingComponent.name, AsyncLoadingComponent)
   }
-  if (!appVm.$.appContext.app.component(AsyncErrorComponent.name)) {
-    appVm.$.appContext.app.component(
-      AsyncErrorComponent.name,
-      AsyncErrorComponent
-    )
+  if (!app.component(AsyncErrorComponent.name)) {
+    app.component(AsyncErrorComponent.name, AsyncErrorComponent)
   }
   initAppVm(appVm)
   defineGlobalData(appVm)
