@@ -180,8 +180,11 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
   function removeForkTsCheckerWebpackPlugin (rawPlugins) {
     if (isInHBuilderX && hasModule('fork-ts-checker-webpack-plugin')) {
       const pluginIndex = rawPlugins.findIndex(rawPlugin => rawPlugin.vue && rawPlugin.typescriptVersion)
-      if (pluginIndex !== -1) { // 移除fork-ts-checker-webpack-plugin
+      if (pluginIndex !== -1) {
+        // 移除fork-ts-checker-webpack-plugin
         rawPlugins.splice(pluginIndex, 1)
+        // 恢复vue-loader的ts检查
+        tsLoaderOptions.transpileOnly = false
       }
     }
   }
@@ -215,6 +218,8 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
       }
     }
 
+    // 如果在 HBuilderX 中
+    removeForkTsCheckerWebpackPlugin(webpackConfig.plugins)
     // js preprocess
     updateJsLoader(rawRules, 'foo.js', babelLoaderRe, {
       loader: resolve('packages/webpack-preprocess-loader'),
@@ -229,8 +234,6 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
       loader: resolve('packages/webpack-preprocess-loader'),
       options: jsPreprocessOptions
     })
-    // 如果在 HBuilderX 中
-    removeForkTsCheckerWebpackPlugin(webpackConfig.plugins)
 
     let platformWebpackConfig = platformOptions.webpackConfig
     if (typeof platformWebpackConfig === 'function') {
