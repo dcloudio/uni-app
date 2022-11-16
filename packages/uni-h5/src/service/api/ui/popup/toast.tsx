@@ -4,6 +4,8 @@ import {
   ExtractPropTypes,
   computed,
   createVNode,
+  ref,
+  watchEffect,
 } from 'vue'
 import { SHOW_TOAST_ICON } from '@dcloudio/uni-api'
 import type { API_TYPE_SHOW_TOAST_ICON } from '@dcloudio/uni-api'
@@ -18,6 +20,11 @@ import {
   initI18nShowToastMsgsOnce,
   initI18nShowLoadingMsgsOnce,
 } from '@dcloudio/uni-core'
+import {
+  onThemeChange,
+  offThemeChange,
+  getTheme,
+} from '../../../../helpers/theme'
 
 const props = {
   title: {
@@ -47,6 +54,12 @@ const props = {
   },
 }
 const ToastIconClassName = 'uni-toast__icon'
+
+const ICONCOLOR = {
+  light: '#fff',
+  dark: 'rgba(255,255,255,0.9)',
+}
+const getIconColor = (theme: UniApp.ThemeMode) => ICONCOLOR[theme]
 
 export type ToastProps = ExtractPropTypes<typeof props>
 
@@ -95,19 +108,34 @@ export default /*#__PURE__*/ defineComponent({
 })
 
 function useToastIcon(props: ToastProps) {
+  const iconColor = ref(getIconColor(getTheme()))
+  const _onThemeChange = ({ theme }: { theme: UniApp.ThemeMode }) =>
+    (iconColor.value = getIconColor(theme))
+
+  watchEffect(() => {
+    if (props.visible) {
+      onThemeChange(_onThemeChange)
+    } else {
+      offThemeChange(_onThemeChange)
+    }
+  })
+
   const Icon = computed(() => {
     switch (props.icon) {
       case 'success':
         return createVNode(
-          createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, '#fff', 38),
+          createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, iconColor.value, 38),
           {
             class: ToastIconClassName,
           }
         )
       case 'error':
-        return createVNode(createSvgIconVNode(ICON_PATH_WARN, '#fff', 38), {
-          class: ToastIconClassName,
-        })
+        return createVNode(
+          createSvgIconVNode(ICON_PATH_WARN, iconColor.value, 38),
+          {
+            class: ToastIconClassName,
+          }
+        )
       case 'loading':
         // @ts-ignore
         return <i class={ToastIconClassName} class="uni-loading"></i>

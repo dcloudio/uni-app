@@ -51,6 +51,7 @@ uni-actionsheet {
   right: 0;
   left: 0;
   z-index: 1;
+  color: var(--UI-FG);
   background-color: #fff;
   border-radius: 5px 5px 0 0;
   border-bottom: 1px solid #e5e5e5;
@@ -104,5 +105,26 @@ uni-actionsheet {
 
   .uni-actionsheet__action {
     display: none;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .uni-actionsheet__title {
+    background-color: var(--UI-BG-1);
+    border-bottom-color: var(--UI-BORDER-CLOLOR-1);
+  }
+
+  .uni-actionsheet__action,
+  .uni-actionsheet__menu {
+    background-color: var(--UI-BG-2);
+  }
+
+  .uni-actionsheet__cell:active {
+    background-color: var(--UI-BG-CLOLOR-ACTIVE);
+  }
+
+  .uni-actionsheet__cell:before {
+    border-top-color: var(--UI-BORDER-CLOLOR-1);
+    color: var(--UI-BORDER-CLOLOR-1);
   }
 }
