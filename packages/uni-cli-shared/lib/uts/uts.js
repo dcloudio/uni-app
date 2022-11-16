@@ -75,7 +75,7 @@ function resolveUtsFile(dir, extensions = ['.uts', '.ts', '.js']) {
 }
 function resolveUTSCompiler() {
     let compilerPath = '';
-    if ((0, hbx_1.isInHBuilderX)()) {
+    if ((0, hbx_1.runByHBuilderX)()) {
         try {
             compilerPath = require.resolve(path_1.default.resolve(process.env.UNI_HBUILDERX_PLUGINS, 'uniapp-uts-v1'));
         }
