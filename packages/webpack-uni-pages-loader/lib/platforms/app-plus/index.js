@@ -132,10 +132,13 @@ module.exports = function (pagesJson, userManifestJson, isAppView) {
 
   _initTheme(appJson, userManifestJson)
 
-  const {
-    navigationBarTextStyle = 'white',
-    navigationBarBackgroundColor = '#000000'
-  } = parseTheme(appJson.window) || {}
+  parseTheme(appJson.window)
+
+  const navigationBarTextStyle =
+  (appJson.pages[0].style && appJson.pages[0].style.navigationBarTextStyle) ||
+  (appJson.window && appJson.window.navigationBarTextStyle) ||
+  'white'
+  const navigationBarBackgroundColor = (appJson.window && appJson.window.navigationBarBackgroundColor) || '#000000'
 
   const TABBAR_HEIGHT = 50
 
@@ -488,7 +491,7 @@ module.exports = function (pagesJson, userManifestJson, isAppView) {
   appJson.compilerVersion = uniApp.compilerVersion
 
   if (process.env.UNI_USING_V8) {
-    let entryPagePath = appJson.pages[0]
+    let entryPagePath = appJson.pages[0].path
     let conditionPagePath = false
     if (manifestJson.plus.arguments) {
       try {

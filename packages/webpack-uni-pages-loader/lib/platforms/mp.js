@@ -223,7 +223,7 @@ module.exports = function (pagesJson, manifestJson, project = {}) {
   parsePages(
     pagesJson,
     function (page) {
-      app.pages.push(page.path)
+      app.pages.push(page)
     },
     function (root, page, subPackage) {
       if (!isSupportSubPackages()) {
