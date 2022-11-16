@@ -1607,13 +1607,94 @@ function checkRecursiveUpdates(seen, fn) {
     }
 }
 
+let devtools;
+let buffer = [];
+let devtoolsNotInstalled = false;
 function emit(event, ...args) {
+    if (devtools) {
+        devtools.emit(event, ...args);
+    }
+    else if (!devtoolsNotInstalled) {
+        buffer.push({ event, args });
+    }
 }
+function setDevtoolsHook(hook, target) {
+    var _a, _b;
+    devtools = hook;
+    if (devtools) {
+        devtools.enabled = true;
+        buffer.forEach(({ event, args }) => devtools.emit(event, ...args));
+        buffer = [];
+    }
+    else if (
+    // handle late devtools injection - only do this if we are in an actual
+    // browser environment to avoid the timer handle stalling test runner exit
+    // (#4815)
+    typeof window !== 'undefined' &&
+        // some envs mock window but not fully
+        // eslint-disable-next-line no-restricted-globals
+        window.HTMLElement &&
+        // also exclude jsdom
+        // eslint-disable-next-line no-restricted-globals
+        !((_b = (_a = window.navigator) === null || _a === void 0 ? void 0 : _a.userAgent) === null || _b === void 0 ? void 0 : _b.includes('jsdom'))) {
+        const replay = (target.__VUE_DEVTOOLS_HOOK_REPLAY__ =
+            target.__VUE_DEVTOOLS_HOOK_REPLAY__ || []);
+        replay.push((newHook) => {
+            setDevtoolsHook(newHook, target);
+        });
+        // clear buffer after 3s - the user probably doesn't have devtools installed
+        // at all, and keeping the buffer will cause memory leaks (#4738)
+        setTimeout(() => {
+            if (!devtools) {
+                target.__VUE_DEVTOOLS_HOOK_REPLAY__ = null;
+                devtoolsNotInstalled = true;
+                buffer = [];
+            }
+        }, 3000);
+    }
+    else {
+        // non-browser env, assume not installed
+        devtoolsNotInstalled = true;
+        buffer = [];
+    }
+}
+function devtoolsInitApp(app, version) {
+    emit("app:init" /* DevtoolsHooks.APP_INIT */, app, version, {
+        Fragment,
+        Text,
+        Comment,
+        Static
+    });
+}
+const devtoolsComponentAdded = /*#__PURE__*/ createDevtoolsComponentHook("component:added" /* DevtoolsHooks.COMPONENT_ADDED */);
 const devtoolsComponentUpdated = 
 /*#__PURE__*/ createDevtoolsComponentHook("component:updated" /* DevtoolsHooks.COMPONENT_UPDATED */);
+const _devtoolsComponentRemoved = /*#__PURE__*/ createDevtoolsComponentHook("component:removed" /* DevtoolsHooks.COMPONENT_REMOVED */);
+const devtoolsComponentRemoved = (component) => {
+    if (devtools &&
+        typeof devtools.cleanupBuffer === 'function' &&
+        // remove the component if it wasn't buffered
+        !devtools.cleanupBuffer(component)) {
+        _devtoolsComponentRemoved(component);
+    }
+};
 function createDevtoolsComponentHook(hook) {
     return (component) => {
-        emit(hook, component.appContext.app, component.uid, component.parent ? component.parent.uid : undefined, component);
+        emit(hook, component.appContext.app, component.uid, 
+        // fixed by xxxxxx
+        // 为 0 是 App，无 parent 是 Page 指向 App
+        component.uid === 0
+            ? undefined
+            : component.parent
+                ? component.parent.uid
+                : 0, component);
+    };
+}
+const devtoolsPerfStart = /*#__PURE__*/ createDevtoolsPerformanceHook("perf:start" /* DevtoolsHooks.PERFORMANCE_START */);
+const devtoolsPerfEnd = /*#__PURE__*/ createDevtoolsPerformanceHook("perf:end" /* DevtoolsHooks.PERFORMANCE_END */);
+function createDevtoolsPerformanceHook(hook) {
+    return (component, type, time) => {
+        emit(hook, component.appContext.app, component.uid, component, type, time);
     };
 }
 function devtoolsComponentEmit(component, event, params) {
@@ -1659,7 +1740,7 @@ function emit$1(instance, event, ...rawArgs) {
             args = rawArgs.map(toNumber);
         }
     }
-    if ((process.env.NODE_ENV !== 'production') || false) {
+    if ((process.env.NODE_ENV !== 'production') || __VUE_PROD_DEVTOOLS__) {
         devtoolsComponentEmit(instance, event, args);
     }
     if ((process.env.NODE_ENV !== 'production')) {
@@ -1813,7 +1894,7 @@ function withCtx(fn, ctx = currentRenderingInstance, isNonScopedSlot // false on
                 setBlockTracking(1);
             }
         }
-        if ((process.env.NODE_ENV !== 'production') || false) {
+        if ((process.env.NODE_ENV !== 'production') || __VUE_PROD_DEVTOOLS__) {
             devtoolsComponentUpdated(ctx);
         }
         return res;
@@ -2011,7 +2092,7 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = EM
                     // pass undefined as the old value when it's changed for the first time
                     oldValue === INITIAL_WATCHER_VALUE
                         ? undefined
-                        : (isMultiSource && oldValue[0] === INITIAL_WATCHER_VALUE)
+                        : isMultiSource && oldValue[0] === INITIAL_WATCHER_VALUE
                             ? []
                             : oldValue,
                     onCleanup
@@ -3662,6 +3743,44 @@ hydrate) {
     };
 }
 
+/* eslint-disable no-restricted-globals */
+let supported;
+let perf;
+function startMeasure(instance, type) {
+    if (instance.appContext.config.performance && isSupported()) {
+        perf.mark(`vue-${type}-${instance.uid}`);
+    }
+    if ((process.env.NODE_ENV !== 'production') || __VUE_PROD_DEVTOOLS__) {
+        devtoolsPerfStart(instance, type, isSupported() ? perf.now() : Date.now());
+    }
+}
+function endMeasure(instance, type) {
+    if (instance.appContext.config.performance && isSupported()) {
+        const startTag = `vue-${type}-${instance.uid}`;
+        const endTag = startTag + `:end`;
+        perf.mark(endTag);
+        perf.measure(`<${formatComponentName(instance, instance.type)}> ${type}`, startTag, endTag);
+        perf.clearMarks(startTag);
+        perf.clearMarks(endTag);
+    }
+    if ((process.env.NODE_ENV !== 'production') || __VUE_PROD_DEVTOOLS__) {
+        devtoolsPerfEnd(instance, type, isSupported() ? perf.now() : Date.now());
+    }
+}
+function isSupported() {
+    if (supported !== undefined) {
+        return supported;
+    }
+    if (typeof window !== 'undefined' && window.performance) {
+        supported = true;
+        perf = window.performance;
+    }
+    else {
+        supported = false;
+    }
+    return supported;
+}
+
 const queuePostRenderEffect = queuePostFlushCb;
 
 const isTeleport = (type) => type.__isTeleport;
@@ -3669,7 +3788,7 @@ const isTeleport = (type) => type.__isTeleport;
 const Fragment = Symbol((process.env.NODE_ENV !== 'production') ? 'Fragment' : undefined);
 const Text = Symbol((process.env.NODE_ENV !== 'production') ? 'Text' : undefined);
 const Comment = Symbol((process.env.NODE_ENV !== 'production') ? 'Comment' : undefined);
-Symbol((process.env.NODE_ENV !== 'production') ? 'Static' : undefined);
+const Static = Symbol((process.env.NODE_ENV !== 'production') ? 'Static' : undefined);
 let currentBlock = null;
 // Whether we should be tracking dynamic child nodes inside a block.
 // Only tracks when this value is > 0
@@ -4203,7 +4322,7 @@ function handleSetupResult(instance, setupResult, isSSR) {
         }
         // setup returned bindings.
         // assuming a render function compiled from template is present.
-        if ((process.env.NODE_ENV !== 'production') || false) {
+        if ((process.env.NODE_ENV !== 'production') || __VUE_PROD_DEVTOOLS__) {
             instance.devtoolsRawSetupState = setupResult;
         }
         instance.setupState = proxyRefs(setupResult);
@@ -4958,8 +5077,15 @@ function mountComponent(initialVNode, options) {
     }
     if ((process.env.NODE_ENV !== 'production')) {
         pushWarningContext(initialVNode);
+        startMeasure(instance, `mount`);
+    }
+    if ((process.env.NODE_ENV !== 'production')) {
+        startMeasure(instance, `init`);
     }
     setupComponent(instance);
+    if ((process.env.NODE_ENV !== 'production')) {
+        endMeasure(instance, `init`);
+    }
     if (__VUE_OPTIONS_API__) {
         // $children
         if (options.parentComponent && instance.proxy) {
@@ -4969,6 +5095,7 @@ function mountComponent(initialVNode, options) {
     setupRenderEffect(instance);
     if ((process.env.NODE_ENV !== 'production')) {
         popWarningContext();
+        endMeasure(instance, `mount`);
     }
     return instance.proxy;
 }
@@ -5092,11 +5219,23 @@ function setupRenderEffect(instance) {
             onBeforeUnmount(() => {
                 setRef(instance, true);
             }, instance);
+            if ((process.env.NODE_ENV !== 'production')) {
+                startMeasure(instance, `patch`);
+            }
             patch(instance, renderComponentRoot(instance));
+            if ((process.env.NODE_ENV !== 'production')) {
+                endMeasure(instance, `patch`);
+            }
+            if ((process.env.NODE_ENV !== 'production') || __VUE_PROD_DEVTOOLS__) {
+                devtoolsComponentAdded(instance);
+            }
         }
         else {
             // updateComponent
-            const { bu, u } = instance;
+            const { next, bu, u } = instance;
+            if ((process.env.NODE_ENV !== 'production')) {
+                pushWarningContext(next || instance.vnode);
+            }
             // Disallow component effect recursion during pre-lifecycle hooks.
             toggleRecurse(instance, false);
             updateComponentPreRender();
@@ -5105,10 +5244,22 @@ function setupRenderEffect(instance) {
                 invokeArrayFns(bu);
             }
             toggleRecurse(instance, true);
+            if ((process.env.NODE_ENV !== 'production')) {
+                startMeasure(instance, `patch`);
+            }
             patch(instance, renderComponentRoot(instance));
+            if ((process.env.NODE_ENV !== 'production')) {
+                endMeasure(instance, `patch`);
+            }
             // updated hook
             if (u) {
                 queuePostRenderEffect$1(u);
+            }
+            if ((process.env.NODE_ENV !== 'production') || __VUE_PROD_DEVTOOLS__) {
+                devtoolsComponentUpdated(instance);
+            }
+            if ((process.env.NODE_ENV !== 'production')) {
+                popWarningContext();
             }
         }
     };
@@ -5152,9 +5303,31 @@ function unmountComponent(instance) {
     queuePostRenderEffect$1(() => {
         instance.isUnmounted = true;
     });
+    if ((process.env.NODE_ENV !== 'production') || __VUE_PROD_DEVTOOLS__) {
+        devtoolsComponentRemoved(instance);
+    }
 }
 const oldCreateApp = createAppAPI();
+function getTarget() {
+    if (typeof window !== 'undefined') {
+        return window;
+    }
+    if (typeof globalThis !== 'undefined') {
+        return globalThis;
+    }
+    if (typeof global !== 'undefined') {
+        return global;
+    }
+    if (typeof my !== 'undefined') {
+        return my;
+    }
+}
 function createVueApp(rootComponent, rootProps = null) {
+    const target = getTarget();
+    target.__VUE__ = true;
+    if ((process.env.NODE_ENV !== 'production') || __VUE_PROD_DEVTOOLS__) {
+        setDevtoolsHook(target.__VUE_DEVTOOLS_GLOBAL_HOOK__, target);
+    }
     const app = oldCreateApp(rootComponent, rootProps);
     const appContext = app._context;
     initAppConfig(appContext.config);
@@ -5179,6 +5352,9 @@ function createVueApp(rootComponent, rootProps = null) {
             props: null
         });
         app._instance = instance.$;
+        if ((process.env.NODE_ENV !== 'production') || __VUE_PROD_DEVTOOLS__) {
+            devtoolsInitApp(app, version);
+        }
         instance.$app = app;
         instance.$createComponent = createComponent;
         instance.$destroyComponent = destroyComponent;

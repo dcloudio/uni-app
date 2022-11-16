@@ -34,6 +34,7 @@ const priority = {
   'uni-cloud': 10,
   'uni-automator': 10,
   'uni-stacktracey': 8,
+  'uni-vue-devtools': 6,
   'size-check': 0,
 }
 

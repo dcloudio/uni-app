@@ -85,6 +85,7 @@
     "rollup-plugin-vue": "^6.0.0",
     "semver": "^7.3.5",
     "simple-git-hooks": "^2.8.0",
+    "terser": "^5.4.0",
     "ts-jest": "^27.0.3",
     "typescript": "^4.8.4",
     "vite": "3.2.3",

@@ -3,7 +3,7 @@ import path from 'path'
 
 import * as UTSCompiler from '@dcloudio/uni-uts-v1'
 
-import { isInHBuilderX } from './hbx'
+import { runByHBuilderX } from './hbx'
 import { normalizePath } from './utils'
 
 /**
@@ -82,7 +82,7 @@ function resolveUtsFile(
 
 export function resolveUTSCompiler(): typeof UTSCompiler {
   let compilerPath: string = ''
-  if (isInHBuilderX()) {
+  if (runByHBuilderX()) {
     try {
       compilerPath = require.resolve(
         path.resolve(process.env.UNI_HBUILDERX_PLUGINS, 'uniapp-uts-v1')

@@ -30,3 +30,7 @@ export function getPlatforms() {
 export function getPlatformDir() {
   return process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM
 }
+
+export function isMiniProgramPlatform() {
+  return !['app', 'app-plus', 'h5', 'web'].includes(process.env.UNI_PLATFORM)
+}

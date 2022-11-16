@@ -42,6 +42,16 @@ export function parseApp(
   parseAppOptions?: ParseAppOptions
 ) {
   const internalInstance = instance.$
+
+  if (__VUE_PROD_DEVTOOLS__) {
+    // 定制 App 的 $children
+    Object.defineProperty((internalInstance as any).ctx, '$children', {
+      get() {
+        return getCurrentPages().map((page) => page.$vm)
+      },
+    })
+  }
+
   const appOptions: MiniProgramAppOptions = {
     globalData: (instance.$options && instance.$options.globalData) || {},
     $vm: instance, // mp-alipay 组件 data 初始化比 onLaunch 早，提前挂载
