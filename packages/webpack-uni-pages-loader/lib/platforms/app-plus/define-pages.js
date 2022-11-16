@@ -1,8 +1,7 @@
 const fs = require('fs')
 
 function generatePageCode (pages, pageOptions) {
-  return pages.map(page => {
-    const pagePath = page.path
+  return pages.map(pagePath => {
     if (pageOptions[pagePath].nvue) {
       return ''
     }

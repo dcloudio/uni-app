@@ -34,17 +34,17 @@ function parseEntryPagePath (appJson, manifestJson) {
       const args = JSON.parse(argsJsonStr)
       const pathName = args.path || args.pathName
       const entryPageQuery = (args.query ? ('?' + args.query) : '')
-      if (pathName && appJson.pages[0].path !== pathName) {
+      if (pathName && appJson.pages[0] !== pathName) {
         appJson.entryPagePath = pathName
         appJson.entryPageQuery = entryPageQuery
         if (!isTabBarPage(pathName, getTabBarPages(appJson))) {
-          appJson.realEntryPagePath = appJson.pages[0].path
+          appJson.realEntryPagePath = appJson.pages[0]
         }
       }
     } catch (e) {}
   }
   if (!appJson.entryPagePath) {
-    appJson.entryPagePath = appJson.pages[0].path
+    appJson.entryPagePath = appJson.pages[0]
   }
 }
 
