@@ -20,6 +20,9 @@ export const sourcemap = {
 
 export * from './sourceMap'
 
+export { compile as toKotlin } from './kotlin'
+export { compile as toSwift } from './swift'
+
 export async function compile(module: string) {
   const pkg = resolvePackage(module)
   if (!pkg) {

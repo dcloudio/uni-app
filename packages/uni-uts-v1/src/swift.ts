@@ -8,6 +8,7 @@ import {
   resolvePackage,
   resolveUTSPlatformFile,
   resolveUTSSourceMapPath,
+  ToSwiftOptions,
 } from './utils'
 import { isInHBuilderX } from './shared'
 import { UtsResult } from '@dcloudio/uts'
@@ -32,10 +33,12 @@ export async function runSwiftProd(filename: string) {
   if (filename.includes('app-android')) {
     return
   }
-  await compile(filename)
+  const inputDir = process.env.UNI_INPUT_DIR
+  const outputDir = process.env.UNI_OUTPUT_DIR
+  await compile(filename, { inputDir, outputDir, sourceMap: true })
   genUTSPlatformResource(filename, {
-    inputDir: process.env.UNI_INPUT_DIR,
-    outputDir: process.env.UNI_OUTPUT_DIR,
+    inputDir,
+    outputDir,
     platform: 'app-ios',
     extname: '.swift',
   })
@@ -72,20 +75,26 @@ export async function runSwiftDev(filename: string) {
       return
     }
   }
-  const result = (await compile(filename)) as RunSwiftDevResult
+  const inputDir = process.env.UNI_INPUT_DIR
+  const outputDir = process.env.UNI_OUTPUT_DIR
+  const result = (await compile(filename, {
+    inputDir,
+    outputDir,
+    sourceMap: true,
+  })) as RunSwiftDevResult
 
   result.type = 'swift'
 
   const swiftFile = resolveUTSPlatformFile(filename, {
-    inputDir: process.env.UNI_INPUT_DIR,
-    outputDir: process.env.UNI_OUTPUT_DIR,
+    inputDir,
+    outputDir,
     platform: 'app-ios',
     extname: '.swift',
   })
   result.changed = []
   // 开发模式下，需要生成 framework
   if (fs.existsSync(swiftFile)) {
-    let projectPath = process.env.UNI_INPUT_DIR
+    let projectPath = inputDir
     const isCli = isCliProject(projectPath)
     if (isCli) {
       projectPath = path.resolve(projectPath, '..')
@@ -96,14 +105,8 @@ export async function runSwiftDev(filename: string) {
       isCli,
       type: 1,
       pluginName: id,
-      utsPath: resolveCompilerUtsPath(
-        process.env.UNI_INPUT_DIR,
-        is_uni_modules
-      ),
-      swiftPath: resolveCompilerSwiftPath(
-        process.env.UNI_OUTPUT_DIR,
-        is_uni_modules
-      ),
+      utsPath: resolveCompilerUtsPath(inputDir, is_uni_modules),
+      swiftPath: resolveCompilerSwiftPath(outputDir, is_uni_modules),
     })
     result.code = code
     result.msg = msg
@@ -127,13 +130,11 @@ function isCliProject(projectPath: string) {
   return false
 }
 
-async function compile(filename: string) {
-  if (!process.env.UNI_HBUILDERX_PLUGINS) {
-    throw 'process.env.UNI_HBUILDERX_PLUGINS is not found'
-  }
+export async function compile(
+  filename: string,
+  { inputDir, outputDir, sourceMap }: ToSwiftOptions
+) {
   const { bundle, UtsTarget } = getUtsCompiler()
-  const inputDir = process.env.UNI_INPUT_DIR
-  const outputDir = process.env.UNI_OUTPUT_DIR
   // let time = Date.now()
   const result = await bundle(UtsTarget.SWIFT, {
     input: {
@@ -144,19 +145,20 @@ async function compile(filename: string) {
       isPlugin: true,
       outDir: outputDir,
       package: parseSwiftPackage(filename).namespace,
-      sourceMap: resolveUTSSourceMapPath(filename),
+      sourceMap: sourceMap ? resolveUTSSourceMapPath(filename) : false,
       extname: 'swift',
       imports: ['DCUTSFoundation'],
       logFilename: true,
       noColor: isInHBuilderX(),
     },
   })
-  moveRootIndexSourceMap(filename, {
-    inputDir: process.env.UNI_INPUT_DIR,
-    outputDir: process.env.UNI_OUTPUT_DIR,
-    platform: 'app-ios',
-    extname: '.swift',
-  })
+  sourceMap &&
+    moveRootIndexSourceMap(filename, {
+      inputDir,
+      outputDir,
+      platform: 'app-ios',
+      extname: '.swift',
+    })
   return result
 }
 

@@ -10,6 +10,14 @@ import {
   runByHBuilderX,
 } from './shared'
 
+interface ToOptions {
+  inputDir: string
+  outputDir: string
+  sourceMap: boolean
+}
+export type ToKotlinOptions = ToOptions
+export type ToSwiftOptions = ToOptions
+
 export function resolveUTSSourceMapPath(_filename: string) {
   return resolveSourceMapPath()
 }
@@ -84,7 +92,7 @@ export function genUTSPlatformResource(
 
 export function moveRootIndexSourceMap(
   filename: string,
-  { inputDir, outputDir, platform, extname }: UTSPlatformResourceOptions
+  { inputDir, platform, extname }: UTSPlatformResourceOptions
 ) {
   if (isRootIndex(filename, platform)) {
     const sourceMapFilename = path
