@@ -27,8 +27,14 @@ export interface CliOptions {
   m?: string
   mode?: string
   clearScreen?: boolean
+
   autoHost?: string
   autoPort?: number
+
+  devtools?: boolean
+  devtoolsHost?: string
+  devtoolsPort?: number
+
   subpackage?: string
   plugin?: boolean
 }
@@ -54,6 +60,9 @@ cli
   )
   .option('--autoHost [autoHost]', `[string] specify automator hostname`)
   .option('--autoPort [autoPort]', `[number] specify automator port`)
+  .option('--devtools', `[boolean] enable devtools`)
+  .option('--devtoolsHost [devtoolsHost]', `[string] specify devtools hostname`)
+  .option('--devtoolsPort [devtoolsPort]', `[number] specify devtools port`)
   .option('--subpackage [subpackage]', `[string] specify subpackage to build`)
   .option('--plugin', `[boolean] build plugin`)
 
