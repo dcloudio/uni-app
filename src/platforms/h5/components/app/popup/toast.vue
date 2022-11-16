@@ -186,4 +186,16 @@ uni-toast .uni-icon_toast.uni-loading {
 uni-toast .uni-toast__content {
   margin: 0 0 15px;
 }
+
+@media (prefers-color-scheme: dark) {
+  uni-toast .uni-toast {
+    background-color: #606060;
+    color: var(--UI-FG-0);
+  }
+
+  uni-toast .uni-icon_toast.uni-icon-error:before,
+  uni-toast .uni-icon_toast.uni-icon-success-no-circle:before {
+  color: rgba(255,255,255,0.9);
+}
+}
 </style>

@@ -25,7 +25,7 @@ export const showModal = {
   },
   cancelColor: {
     type: String,
-    default: '#000000'
+    default: '#000'
   },
   confirmText: {
     type: String,
@@ -113,7 +113,7 @@ export const showActionSheet = {
   },
   itemColor: {
     type: String,
-    default: '#000000'
+    default: '#000'
   },
   visible: {
     type: Boolean,
