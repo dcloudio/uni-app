@@ -21,7 +21,7 @@ export const showActionSheet = defineAsyncApi<API_TYPE_SHOW_ACTION_SHEET>(
   API_SHOW_ACTION_SHEET,
   ({ itemList = [], itemColor, title = '', popover }, { resolve, reject }) => {
     // #000 by default in protocols
-    if (itemColor === '#000') {
+    if (itemColor === '#000' && __uniConfig.darkmode) {
       itemColor =
         ACTION_SHEET_THEME[plus.navigator.getUIStyle() as UniApp.ThemeMode]
           .itemColor
