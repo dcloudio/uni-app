@@ -55,10 +55,12 @@ export function initModulePaths() {
 export function fixBinaryPath() {
   // cli 工程在 HBuilderX 中运行
   if (!isInHBuilderX() && runByHBuilderX()) {
-    process.env.ESBUILD_BINARY_PATH = path.join(
-      resolveBuiltIn('esbuild/package.json'),
-      '../bin/esbuild'
-    )
+    if (!isWindows) {
+      process.env.ESBUILD_BINARY_PATH = path.join(
+        resolveBuiltIn('esbuild/package.json'),
+        '../bin/esbuild'
+      )
+    }
     try {
       if (isWindows) {
         process.env.UTS_BINARY_PATH = resolveBuiltIn(
