@@ -94,11 +94,14 @@ export function resolveUTSCompiler(): typeof UTSCompiler {
       paths: [process.env.UNI_CLI_CONTEXT],
     })
   } catch (e) {
-    throw installDepTips(
-      'devDependencies',
-      '@dcloudio/uni-uts-v1',
-      require('@dcloudio/uni-cli-shared/package.json').version
+    console.error(
+      installDepTips(
+        'devDependencies',
+        '@dcloudio/uni-uts-v1',
+        require('@dcloudio/uni-cli-shared/package.json').version
+      )
     )
+    process.exit(0)
   }
   return require(compilerPath)
 }
