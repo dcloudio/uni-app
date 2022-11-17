@@ -123,7 +123,7 @@ export function showModal ({
   confirmText,
   confirmColor,
   editable = false,
-  placeholderText	= ''
+  placeholderText = ''
 } = {}, callbackId) {
   const buttons = showCancel ? [cancelText, confirmText] : [confirmText]
   const tip = editable ? placeholderText : buttons
@@ -150,12 +150,27 @@ export function showModal ({
     }
   }, title, tip, buttons)
 }
+
+const ACTION_SHEET_THEME = {
+  light: {
+    itemColor: '#000000'
+  },
+  dark: {
+    itemColor: 'rgba(255, 255, 255, 0.8)'
+  }
+}
 export function showActionSheet ({
   itemList = [],
-  itemColor = '#000000',
+  itemColor,
   title = '',
   popover
 }, callbackId) {
+  // #000 by default in protocols
+  if (itemColor === '#000') {
+    itemColor =
+      ACTION_SHEET_THEME[plus.navigator.getUIStyle()]
+        .itemColor
+  }
   const options = {
     buttons: itemList.map(item => ({
       title: item,
