@@ -88,7 +88,11 @@ function resolveUTSCompiler() {
             });
         }
         catch (e) {
-            console.error((0, utils_1.installDepTips)('devDependencies', '@dcloudio/uni-uts-v1', require('@dcloudio/uni-cli-shared/package.json').version));
+            let version = require('@dcloudio/uni-cli-shared/package.json').version;
+            if (version.startsWith('2.0.')) {
+                version = '^3.0.0-alpha-3060920221117001';
+            }
+            console.error((0, utils_1.installDepTips)('devDependencies', '@dcloudio/uni-uts-v1', version));
             process.exit(0);
         }
     }
