@@ -105,7 +105,8 @@ export function registerPage({
     url,
     query,
     routeOptions.meta,
-    eventChannel
+    eventChannel,
+    plus.navigator.getUIStyle() as UniApp.ThemeMode
   )
 
   const id = parseInt(webview.id!)

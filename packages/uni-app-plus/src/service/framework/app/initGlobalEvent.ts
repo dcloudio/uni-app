@@ -14,6 +14,7 @@ import {
   parseRedirectInfo,
   initEnterOptions,
 } from './utils'
+import { changePagesNavigatorStyle } from '../../theme'
 
 export function initGlobalEvent() {
   const plusGlobalEvent = (plus as any).globalEvent
@@ -47,6 +48,7 @@ export function initGlobalEvent() {
         theme: event.uistyle,
       }
       emit(ON_THEME_CHANGE, args)
+      changePagesNavigatorStyle()
     }
   )
 
