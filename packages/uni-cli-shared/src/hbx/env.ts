@@ -52,24 +52,30 @@ export function initModulePaths() {
   }
 }
 
+function resolveEsbuildModule(name: string) {
+  try {
+    return path.dirname(
+      require.resolve(name + '/package.json', {
+        paths: [path.dirname(resolveBuiltIn('esbuild/package.json'))],
+      })
+    )
+  } catch (e) {}
+  return ''
+}
+
 export function fixBinaryPath() {
   // cli 工程在 HBuilderX 中运行
   if (!isInHBuilderX() && runByHBuilderX()) {
-    if (!isWindows) {
-      process.env.ESBUILD_BINARY_PATH = path.join(
-        resolveBuiltIn('esbuild/package.json'),
-        '../bin/esbuild'
-      )
-    }
-    try {
-      if (isWindows) {
-        process.env.UTS_BINARY_PATH = resolveBuiltIn(
-          '@dcloudio/uts-win32-x64-msvc'
-        )
-      } else {
-        // 强制使用 arm64 也不行，会报错：have 'arm64', need 'x86_64'
-        // process.env.UTS_BINARY_PATH = resolveBuiltIn('@dcloudio/uts-darwin-arm64')
+    if (isWindows) {
+      const win64 = resolveEsbuildModule('esbuild-windows-64')
+      if (win64) {
+        process.env.ESBUILD_BINARY_PATH = path.join(win64, 'esbuild.exe')
       }
-    } catch (e) {}
+    } else {
+      const arm64 = resolveEsbuildModule('esbuild-darwin-arm64')
+      if (arm64) {
+        process.env.ESBUILD_BINARY_PATH = path.join(arm64, 'bin/esbuild')
+      }
+    }
   }
 }
