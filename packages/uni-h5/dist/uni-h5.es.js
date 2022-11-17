@@ -17815,6 +17815,8 @@ function IEVersion() {
   }
 }
 function getTheme() {
+  if (__uniConfig.darkmode !== true)
+    return isString(__uniConfig.darkmode) ? __uniConfig.darkmode : "light";
   try {
     return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
   } catch (error) {
@@ -18393,7 +18395,7 @@ const onThemeChange$1 = /* @__PURE__ */ defineOnApi(
     UniServiceJSBridge.on(ON_THEME_CHANGE, themeChangeCallBack);
   }
 );
-const offThemeChange = /* @__PURE__ */ defineOffApi(
+const offThemeChange$1 = /* @__PURE__ */ defineOffApi(
   OFF_THEME_CHANGE,
   () => {
     UniServiceJSBridge.off(ON_THEME_CHANGE, themeChangeCallBack);
@@ -20604,6 +20606,34 @@ const preloadPage = /* @__PURE__ */ defineAsyncApi(
   },
   PreloadPageProtocol
 );
+function onThemeChange(callback) {
+  if (__uniConfig.darkmode) {
+    UniServiceJSBridge.on(ON_THEME_CHANGE, callback);
+  }
+}
+function offThemeChange(callback) {
+  UniServiceJSBridge.off(ON_THEME_CHANGE, callback);
+}
+function parseTheme(pageStyle) {
+  let parsedStyle = {};
+  if (__uniConfig.darkmode) {
+    parsedStyle = normalizeStyles(
+      pageStyle,
+      __uniConfig.themeConfig,
+      getTheme()
+    );
+  }
+  return __uniConfig.darkmode ? parsedStyle : pageStyle;
+}
+const ModalTheme = {
+  light: {
+    cancelColor: "#000000"
+  },
+  dark: {
+    cancelColor: "rgb(170, 170, 170)"
+  }
+};
+const setCancelColor = (theme, cancelColor) => cancelColor.value = ModalTheme[theme].cancelColor;
 const props$6 = {
   title: {
     type: String,
@@ -20660,6 +20690,7 @@ const modal = /* @__PURE__ */ defineComponent({
         !props2.editable && confirm();
       }
     });
+    const cancelColor = useOnThemeChange$1(props2);
     return () => {
       const {
         title,
@@ -20697,7 +20728,7 @@ const modal = /* @__PURE__ */ defineComponent({
           "class": "uni-modal__ft"
         }, [showCancel && createVNode("div", {
           "style": {
-            color: props2.cancelColor
+            color: cancelColor.value
           },
           "class": "uni-modal__btn uni-modal__btn_default",
           "onClick": cancel
@@ -20712,6 +20743,29 @@ const modal = /* @__PURE__ */ defineComponent({
     };
   }
 });
+function useOnThemeChange$1(props2) {
+  const cancelColor = ref(props2.cancelColor);
+  const _onThemeChange = ({
+    theme
+  }) => {
+    setCancelColor(theme, cancelColor);
+  };
+  watchEffect(() => {
+    if (props2.visible) {
+      cancelColor.value = props2.cancelColor;
+      if (props2.cancelColor === "#000") {
+        if (getTheme() === "dark")
+          _onThemeChange({
+            theme: "dark"
+          });
+        onThemeChange(_onThemeChange);
+      }
+    } else {
+      offThemeChange(_onThemeChange);
+    }
+  });
+  return cancelColor;
+}
 let showModalState;
 const onHidePopupOnce$1 = /* @__PURE__ */ once(() => {
   UniServiceJSBridge.on("onHidePopup", () => showModalState.visible = false);
@@ -20774,6 +20828,11 @@ const props$5 = {
   }
 };
 const ToastIconClassName = "uni-toast__icon";
+const ICONCOLOR = {
+  light: "#fff",
+  dark: "rgba(255,255,255,0.9)"
+};
+const getIconColor = (theme) => ICONCOLOR[theme];
 const Toast = /* @__PURE__ */ defineComponent({
   name: "Toast",
   props: props$5,
@@ -20817,14 +20876,25 @@ const Toast = /* @__PURE__ */ defineComponent({
   }
 });
 function useToastIcon(props2) {
+  const iconColor = ref(getIconColor(getTheme()));
+  const _onThemeChange = ({
+    theme
+  }) => iconColor.value = getIconColor(theme);
+  watchEffect(() => {
+    if (props2.visible) {
+      onThemeChange(_onThemeChange);
+    } else {
+      offThemeChange(_onThemeChange);
+    }
+  });
   const Icon = computed(() => {
     switch (props2.icon) {
       case "success":
-        return createVNode(createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, "#fff", 38), {
+        return createVNode(createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, iconColor.value, 38), {
           class: ToastIconClassName
         });
       case "error":
-        return createVNode(createSvgIconVNode(ICON_PATH_WARN, "#fff", 38), {
+        return createVNode(createSvgIconVNode(ICON_PATH_WARN, iconColor.value, 38), {
           class: ToastIconClassName
         });
       case "loading":
@@ -21017,6 +21087,22 @@ function usePopupStyle(props2) {
     popupStyle
   };
 }
+const ACTION_SHEET_THEME = {
+  light: {
+    listItemColor: "#000000",
+    cancelItemColor: "#000000"
+  },
+  dark: {
+    listItemColor: "rgba(255, 255, 255, 0.8)",
+    cancelItemColor: "rgba(255, 255, 255)"
+  }
+};
+function setActionSheetTheme(theme, actionSheetTheme) {
+  const ActionSheetThemeKey = ["listItemColor", "cancelItemColor"];
+  ActionSheetThemeKey.forEach((key) => {
+    actionSheetTheme[key] = ACTION_SHEET_THEME[theme][key];
+  });
+}
 const props$4 = {
   title: {
     type: String,
@@ -21121,6 +21207,7 @@ const actionSheet = /* @__PURE__ */ defineComponent({
         });
       });
     });
+    const actionSheetTheme = useOnThemeChange(props2);
     return () => {
       return createVNode("uni-actionsheet", {
         "onTouchmove": onEventPrevent
@@ -21157,7 +21244,7 @@ const actionSheet = /* @__PURE__ */ defineComponent({
       }, [props2.itemList.map((itemTitle, index2) => createVNode("div", {
         "key": index2,
         "style": {
-          color: props2.itemColor
+          color: actionSheetTheme.listItemColor
         },
         "class": "uni-actionsheet__cell",
         "onClick": () => _close(index2)
@@ -21165,7 +21252,7 @@ const actionSheet = /* @__PURE__ */ defineComponent({
         "class": "uni-actionsheet__action"
       }, [createVNode("div", {
         "style": {
-          color: props2.itemColor
+          color: actionSheetTheme.cancelItemColor
         },
         "class": "uni-actionsheet__cell",
         "onClick": () => _close(-1)
@@ -21222,6 +21309,31 @@ function initClick(dom) {
       event.target.dispatchEvent(customEvent);
     }
   });
+}
+function useOnThemeChange(props2) {
+  const actionSheetTheme = reactive({
+    listItemColor: "#000",
+    cancelItemColor: "#000"
+  });
+  const _onThemeChange = ({
+    theme
+  }) => {
+    setActionSheetTheme(theme, actionSheetTheme);
+  };
+  watchEffect(() => {
+    if (props2.visible) {
+      actionSheetTheme.listItemColor = actionSheetTheme.cancelItemColor = props2.itemColor;
+      if (props2.itemColor === "#000") {
+        _onThemeChange({
+          theme: getTheme()
+        });
+        onThemeChange(_onThemeChange);
+      }
+    } else {
+      offThemeChange(_onThemeChange);
+    }
+  });
+  return actionSheetTheme;
 }
 let resolveAction;
 let rejectAction;
@@ -21530,22 +21642,6 @@ const setTabBarBadge = /* @__PURE__ */ defineAsyncApi(
   SetTabBarBadgeProtocol,
   SetTabBarBadgeOptions
 );
-function onThemeChange(callback) {
-  if (__uniConfig.darkmode) {
-    UniServiceJSBridge.on(ON_THEME_CHANGE, callback);
-  }
-}
-function parseTheme(pageStyle) {
-  let parsedStyle = {};
-  if (__uniConfig.darkmode) {
-    parsedStyle = normalizeStyles(
-      pageStyle,
-      __uniConfig.themeConfig,
-      getTheme()
-    );
-  }
-  return __uniConfig.darkmode ? parsedStyle : pageStyle;
-}
 const UNI_TABBAR_ICON_FONT = "UniTabbarIconFont";
 const _middleButton = {
   width: "50px",
@@ -22520,7 +22616,7 @@ const api = /* @__PURE__ */ Object.defineProperty({
   setClipboardData,
   getWindowInfo,
   onThemeChange: onThemeChange$1,
-  offThemeChange,
+  offThemeChange: offThemeChange$1,
   setStorageSync,
   setStorage,
   getStorageSync,
@@ -24941,7 +25037,7 @@ export {
   offNetworkStatusChange,
   offPageNotFound,
   offPushMessage,
-  offThemeChange,
+  offThemeChange$1 as offThemeChange,
   offUnhandledRejection,
   offWindowResize,
   onAccelerometerChange,

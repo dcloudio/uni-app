@@ -1,6 +1,6 @@
 import { extend } from '@vue/shared'
 import { RollupWatcher } from 'rollup'
-import { BuildOptions, createLogger, ServerOptions } from 'vite'
+import type { BuildOptions, ServerOptions } from 'vite'
 import { APP_CONFIG_SERVICE, M, output } from '@dcloudio/uni-cli-shared'
 import { CliOptions } from '.'
 import { build, buildSSR } from './build'
@@ -16,6 +16,9 @@ export async function runDev(options: CliOptions & ServerOptions) {
     ;(options as BuildOptions).minify = true
   }
   initEnv('dev', options)
+  const createLogger = await import('vite').then(
+    ({ createLogger }) => createLogger
+  )
   try {
     if (options.platform === 'h5') {
       const server = await (options.ssr

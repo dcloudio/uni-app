@@ -1,9 +1,12 @@
 import { cac } from 'cac'
 
 import type { LogLevel } from 'vite'
+import { fixBinaryPath } from '@dcloudio/uni-cli-shared'
 
 import { PLATFORMS } from './utils'
 import { runBuild, runDev } from './action'
+
+fixBinaryPath()
 
 const cli = cac('uni')
 

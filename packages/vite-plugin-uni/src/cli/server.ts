@@ -2,11 +2,12 @@ import fs from 'fs'
 import os from 'os'
 import path from 'path'
 import colors from 'picocolors'
-import {
+import type {
   CommonServerOptions,
-  createLogger,
-  createServer as createViteServer,
+  InlineConfig,
   Logger,
+  LoggerOptions,
+  LogLevel,
   ResolvedConfig,
   ServerOptions,
   ViteDevServer,
@@ -16,6 +17,14 @@ import { parseManifestJson } from '@dcloudio/uni-cli-shared'
 import { CliOptions } from '.'
 import { addConfigFile, cleanOptions, printStartupDuration } from './utils'
 import { AddressInfo, Server } from 'net'
+
+function createLogger(level?: LogLevel, options?: LoggerOptions) {
+  return import('vite').then(({ createLogger }) => createLogger(level, options))
+}
+
+function createViteServer(inlineConfig?: InlineConfig) {
+  return import('vite').then(({ createServer }) => createServer(inlineConfig))
+}
 
 export async function createServer(options: CliOptions & ServerOptions) {
   const server = await createViteServer(
@@ -116,7 +125,7 @@ export async function createSSRServer(
     }
   })
 
-  const logger = createLogger(options.logLevel)
+  const logger = await createLogger(options.logLevel)
   const serverOptions = vite.config.server || {}
 
   let port = options.port || serverOptions.port || 5173

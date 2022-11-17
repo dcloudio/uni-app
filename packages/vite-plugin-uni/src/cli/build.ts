@@ -1,11 +1,6 @@
 import path from 'path'
 import fs from 'fs-extra'
-import {
-  build as buildByVite,
-  BuildOptions,
-  InlineConfig,
-  ServerOptions,
-} from 'vite'
+import type { BuildOptions, InlineConfig, ServerOptions } from 'vite'
 import { extend } from '@vue/shared'
 import {
   initPreContext,
@@ -16,6 +11,10 @@ import {
 import { CliOptions } from '.'
 import { addConfigFile, cleanOptions } from './utils'
 import { RollupWatcher, RollupWatcherEvent } from 'rollup'
+
+async function buildByVite(inlineConfig: InlineConfig) {
+  return import('vite').then(({ build }) => build(inlineConfig))
+}
 
 export async function build(
   options: CliOptions

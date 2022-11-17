@@ -10925,6 +10925,8 @@ const getStorageInfo = /* @__PURE__ */ defineAsyncApi(
   }
 );
 function getTheme() {
+  if (__uniConfig.darkmode !== true)
+    return shared.isString(__uniConfig.darkmode) ? __uniConfig.darkmode : "light";
   try {
     return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
   } catch (error) {

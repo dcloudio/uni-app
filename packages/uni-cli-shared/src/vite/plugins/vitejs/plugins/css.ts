@@ -36,7 +36,6 @@ import type Sass from 'sass'
 import type Stylus from 'stylus'
 import type Less from 'less'
 import type { Alias } from 'types/alias'
-import { transform, formatMessages } from 'esbuild'
 import { preCss, preNVueCss } from '../../../../preprocess'
 import { PAGES_JSON_JS } from '../../../../constants'
 import { emptyCssComments } from '../cleanString'
@@ -903,13 +902,17 @@ async function doImportCSSReplace(
 
 export async function minifyCSS(css: string, config: ResolvedConfig) {
   try {
-    const { code, warnings } = await transform(css, {
-      loader: 'css',
-      minify: true,
-      target: config.build.cssTarget || undefined,
+    const { code, warnings } = await import('esbuild').then(({ transform }) => {
+      return transform(css, {
+        loader: 'css',
+        minify: true,
+        target: config.build.cssTarget || undefined,
+      })
     })
     if (warnings.length) {
-      const msgs = await formatMessages(warnings, { kind: 'warning' })
+      const msgs = await import('esbuild').then(({ formatMessages }) => {
+        return formatMessages(warnings, { kind: 'warning' })
+      })
       config.logger.warn(
         colors.yellow(`warnings when minifying css:\n${msgs.join('\n')}`)
       )
@@ -917,7 +920,9 @@ export async function minifyCSS(css: string, config: ResolvedConfig) {
     return code
   } catch (e: any) {
     if (e.errors) {
-      const msgs = await formatMessages(e.errors, { kind: 'error' })
+      const msgs = await import('esbuild').then(({ formatMessages }) => {
+        return formatMessages(e.errors, { kind: 'error' })
+      })
       e.frame = '\n' + msgs.join('\n')
       e.loc = e.errors[0].location
     }

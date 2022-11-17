@@ -1,6 +1,8 @@
 import path from 'path'
 import BuiltinModule from 'module'
 import { once } from '@dcloudio/uni-shared'
+import { resolveBuiltIn } from '../resolve'
+import { isWindows } from '../utils'
 
 export const isInHBuilderX = once(() => {
   try {
@@ -47,5 +49,25 @@ export function initModulePaths() {
       paths.push(nodeModulesPath)
     }
     return paths
+  }
+}
+
+export function fixBinaryPath() {
+  // cli 工程在 HBuilderX 中运行
+  if (!isInHBuilderX() && runByHBuilderX()) {
+    process.env.ESBUILD_BINARY_PATH = path.join(
+      resolveBuiltIn('esbuild/package.json'),
+      '../bin/esbuild'
+    )
+    try {
+      if (isWindows) {
+        process.env.UTS_BINARY_PATH = resolveBuiltIn(
+          '@dcloudio/uts-win32-x64-msvc'
+        )
+      } else {
+        // 强制使用 arm64 也不行，会报错：have 'arm64', need 'x86_64'
+        // process.env.UTS_BINARY_PATH = resolveBuiltIn('@dcloudio/uts-darwin-arm64')
+      }
+    } catch (e) {}
   }
 }

@@ -3,7 +3,7 @@ import os from 'os'
 import path from 'path'
 import colors from 'picocolors'
 import { performance } from 'perf_hooks'
-import { BuildOptions, InlineConfig, Logger } from 'vite'
+import type { BuildOptions, InlineConfig, Logger } from 'vite'
 
 import {
   M,
