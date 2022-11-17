@@ -20,22 +20,25 @@ function getNavigatorStyle() {
 }
 
 export function changePagesNavigatorStyle() {
-  const theme = getNavigatorStyle()
+  if (__uniConfig.darkmode) {
+    const theme = getNavigatorStyle()
 
-  setStatusBarStyle(theme)
+    setStatusBarStyle(theme)
 
-  const pages = getAllPages()
-  pages.forEach((page) => {
-    page.$page.statusBarStyle = theme
-  })
+    const pages = getAllPages()
+    pages.forEach((page) => {
+      page.$page.statusBarStyle = theme
+    })
+  }
 }
 
 export function parseTheme<T extends Object>(pageStyle: T): T {
-  let parsedStyle = {} as T
   if (__uniConfig.darkmode) {
+    let parsedStyle = {} as T
     let theme = plus.navigator.getUIStyle()
 
     const systemInfo = weexGetSystemInfoSync()
+    // 小程序 SDK
     if (systemInfo && systemInfo.hostTheme) {
       theme = systemInfo.hostTheme
     }
@@ -45,9 +48,11 @@ export function parseTheme<T extends Object>(pageStyle: T): T {
       __uniConfig.themeConfig,
       theme as UniApp.ThemeMode
     )
+
+    return parsedStyle
   }
 
-  return __uniConfig.darkmode ? parsedStyle : pageStyle
+  return pageStyle
 }
 
 export function useTabBarThemeChange(

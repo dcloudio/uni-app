@@ -106,7 +106,9 @@ export function registerPage({
     query,
     routeOptions.meta,
     eventChannel,
-    plus.navigator.getUIStyle() as UniApp.ThemeMode
+    (__uniConfig.darkmode
+      ? plus.navigator.getUIStyle()
+      : 'light') as UniApp.ThemeMode
   )
 
   const id = parseInt(webview.id!)
