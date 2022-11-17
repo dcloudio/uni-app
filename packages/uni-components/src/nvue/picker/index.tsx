@@ -193,7 +193,6 @@ export default /*#__PURE__*/ defineComponent({
         url: '__uniapppicker',
         data,
         style: {
-          // @ts-expect-error
           titleNView: false,
           animationType: 'none',
           animationDuration: 0,

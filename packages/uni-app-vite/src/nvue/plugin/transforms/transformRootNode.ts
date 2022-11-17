@@ -34,7 +34,7 @@ export const transformRootNode: NodeTransform = (node, context) => {
   }
 
   const { disableScroll, scrollIndicator } = context.bindingMetadata
-    .__pageOptions as {
+    .__pageOptions as unknown as {
     disableScroll?: boolean
     scrollIndicator?: 'none'
   }

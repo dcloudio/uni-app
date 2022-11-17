@@ -19,13 +19,13 @@ const pkgs = {
     latest: '4.1.0',
   },
   pinia: {
-    latest: '2.0.23',
+    latest: '2.0.24',
   },
   'vue-i18n': {
     next: '9.1.9',
   },
   vite: {
-    latest: '3.2.3',
+    latest: '3.2.4',
   },
   '@vitejs/plugin-vue': {
     latest: '3.2.0',
@@ -46,7 +46,7 @@ const pkgs = {
     latest: '3.4.0',
   },
   typescript: {
-    latest: '4.8.4',
+    latest: '4.9.3',
   },
 }
 
