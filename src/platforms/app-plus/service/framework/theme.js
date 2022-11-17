@@ -1,5 +1,7 @@
 import { normallizeStyles } from 'uni-shared'
 import { weexGetSystemInfoSync } from '../api/device/system'
+import { setStatusBarStyle } from '../bridge'
+import { getCurrentPages } from './page'
 
 const ON_THEME_CHANGE = 'api.onThemeChange'
 
@@ -11,13 +13,28 @@ function offThemeChange (callback = () => { }) {
   UniServiceJSBridge.off(ON_THEME_CHANGE, callback)
 }
 
+function getNavigatorStyle () {
+  return plus.navigator.getUIStyle() === 'dark' ? 'light' : 'dark'
+}
+
+export function changePagesNavigatorStyle () {
+  const theme = getNavigatorStyle()
+
+  setStatusBarStyle(theme)
+
+  const pages = getCurrentPages(true)
+  pages.forEach((page) => {
+    page.$page.meta.statusBarStyle = theme
+  })
+}
+
 export function parseTheme (pageStyle) {
   let parsedStyle = {}
   if (__uniConfig.darkmode) {
-    let theme = 'light'
+    let theme = plus.navigator.getUIStyle()
     const systemInfo = weexGetSystemInfoSync()
-    if (systemInfo) {
-      theme = systemInfo.hostTheme || systemInfo.osTheme
+    if (systemInfo && systemInfo.hostTheme) {
+      theme = systemInfo.hostTheme
     }
     parsedStyle = normallizeStyles(pageStyle, __uniConfig.themeConfig, theme)
   }

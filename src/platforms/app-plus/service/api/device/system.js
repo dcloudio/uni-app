@@ -48,7 +48,7 @@ export function getAppBaseInfo () {
     hostPackageName, hostName, osLanguage,
     hostVersion, hostLanguage, hostTheme,
     appId, appName, appVersion, appVersionCode,
-    appWgtVersion, osTheme
+    appWgtVersion
   } = systemInfo
 
   const appLanguage = uni
@@ -74,7 +74,7 @@ export function getAppBaseInfo () {
     hostFontSizeSetting: undefined,
     language: osLanguage,
     SDKVersion: '',
-    theme: hostTheme || osTheme,
+    theme: plus.navigator.getUIStyle(),
     version: plus.runtime.innerVersion
   }
 }
