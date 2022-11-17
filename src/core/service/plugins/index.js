@@ -46,10 +46,17 @@ function getHash () {
 
 function getLocation (base = '/') {
   let path = decodeURI(window.location.pathname)
+  const search = window.location.search
+  const hash = window.location.hash
+  // 检查和纠正 path
+  if (base[base.length - 1] === '/' && path === base.substring(0, base.length - 1)) {
+    path = base
+    window.history.replaceState({}, '', base + search + hash)
+  }
   if (base && path.indexOf(base) === 0) {
     path = path.slice(base.length)
   }
-  return (path || '/') + window.location.search + window.location.hash
+  return (path || '/') + search + hash
 }
 
 /**

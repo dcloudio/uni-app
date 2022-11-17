@@ -106,5 +106,6 @@ export function parseWebviewStyle (id, path, _routeOptions = {}) {
     }
   }
 
+  _routeOptions.meta = routeOptions.meta
   return webviewStyle
 }

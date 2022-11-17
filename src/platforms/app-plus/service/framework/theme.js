@@ -1,5 +1,7 @@
 import { normallizeStyles } from 'uni-shared'
 import { weexGetSystemInfoSync } from '../api/device/system'
+import { setStatusBarStyle } from '../bridge'
+import { getCurrentPages } from './page'
 
 const ON_THEME_CHANGE = 'api.onThemeChange'
 
@@ -11,17 +13,38 @@ function offThemeChange (callback = () => { }) {
   UniServiceJSBridge.off(ON_THEME_CHANGE, callback)
 }
 
-export function parseTheme (pageStyle) {
-  let parsedStyle = {}
+function getNavigatorStyle () {
+  return plus.navigator.getUIStyle() === 'dark' ? 'light' : 'dark'
+}
+
+export function changePagesNavigatorStyle () {
   if (__uniConfig.darkmode) {
-    let theme = 'light'
-    const systemInfo = weexGetSystemInfoSync()
-    if (systemInfo) {
-      theme = systemInfo.hostTheme || systemInfo.osTheme
-    }
-    parsedStyle = normallizeStyles(pageStyle, __uniConfig.themeConfig, theme)
+    const theme = getNavigatorStyle()
+
+    setStatusBarStyle(theme)
+
+    const pages = getCurrentPages(true)
+    pages.forEach((page) => {
+      page.$page.meta.statusBarStyle = theme
+    })
   }
-  return __uniConfig.darkmode ? parsedStyle : pageStyle
+}
+
+export function parseTheme (pageStyle) {
+  if (__uniConfig.darkmode) {
+    let parsedStyle = {}
+    let theme = plus.navigator.getUIStyle()
+
+    const systemInfo = weexGetSystemInfoSync()
+    // 小程序 SDK
+    if (systemInfo && systemInfo.hostTheme) {
+      theme = systemInfo.hostTheme
+    }
+
+    parsedStyle = normallizeStyles(pageStyle, __uniConfig.themeConfig, theme)
+    return parsedStyle
+  }
+  return pageStyle
 }
 
 export function useTabBarThemeChange (tabBar, options) {

@@ -77,7 +77,8 @@ const tags = {
     'ix-native-grid',
     'ix-native-list',
     'mkt',
-    'page-container'
+    'page-container',
+    'page-meta'
   ]
 }
 

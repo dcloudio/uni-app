@@ -74,8 +74,16 @@ class WebpackAppPlusPlugin {
                 ...viewChangedFiles,
                 ...nvueChangedFiles
               ])]
+              let utsChangedFiles = []
+              try {
+                utsChangedFiles = JSON.parse(process.env.UNI_APP_UTS_CHANGED_FILES || '[]')
+                if (utsChangedFiles.length) {
+                  changedFiles.push(...utsChangedFiles)
+                }
+              } catch (e) {}
               if (!isFirst && changedFiles.length > 0) {
-                if (serviceChangedFiles.length === 0 && viewChangedFiles.length === 0) {
+                if (serviceChangedFiles.length === 0 && viewChangedFiles.length === 0 && utsChangedFiles
+                  .length === 0) {
                   // 仅 nvue 页面发生变化
                   done('Build complete. PAGES:' + JSON.stringify(changedFiles))
                 } else {

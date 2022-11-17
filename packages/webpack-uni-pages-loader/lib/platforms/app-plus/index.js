@@ -132,10 +132,13 @@ module.exports = function (pagesJson, userManifestJson, isAppView) {
 
   _initTheme(appJson, userManifestJson)
 
-  const {
-    navigationBarTextStyle = 'white',
-    navigationBarBackgroundColor = '#000000'
-  } = parseTheme(appJson.window) || {}
+  parseTheme(appJson.window)
+
+  const navigationBarTextStyle =
+  (pagesJson.pages[0].style && pagesJson.pages[0].style.navigationBarTextStyle) ||
+  (pagesJson.globalStyle && pagesJson.globalStyle.navigationBarTextStyle) ||
+  'white'
+  const navigationBarBackgroundColor = (appJson.window && appJson.window.navigationBarBackgroundColor) || '#000000'
 
   const TABBAR_HEIGHT = 50
 

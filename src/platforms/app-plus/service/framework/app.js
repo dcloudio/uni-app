@@ -52,6 +52,8 @@ import {
   parseRedirectInfo
 } from './utils'
 
+import { changePagesNavigatorStyle } from './theme'
+
 let appCtx
 
 const defaultApp = {
@@ -131,6 +133,7 @@ function initGlobalListeners () {
     publish('onUIStyleChange', {
       style: event.uistyle
     })
+    changePagesNavigatorStyle()
   })
 
   globalEvent.addEventListener('uniMPNativeEvent', function (event) {

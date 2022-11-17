@@ -463,7 +463,10 @@ function initAutoImportComponents (easycom = {}) {
   }
   initBuiltInEasycom(BUILT_IN_EASYCOMS, usingAutoImportComponents)
   // 目前仅 mp-weixin 内置支持 page-meta 等组件
-  if (process.env.UNI_PLATFORM !== 'mp-weixin') {
+  if (process.env.UNI_PLATFORM === 'mp-weixin') {
+  } else if (process.env.UNI_PLATFORM === 'mp-alipay') {
+    initBuiltInEasycom(BUILT_IN_COMPONENTS_ALIPAY, usingAutoImportComponents)
+  } else {
     initBuiltInEasycom(BUILT_IN_COMPONENTS, usingAutoImportComponents)
   }
 
@@ -530,6 +533,7 @@ function parseUsingAutoImportComponents (usingAutoImportComponents) {
 }
 
 const BUILT_IN_COMPONENTS = ['page-meta', 'navigation-bar', 'uni-match-media']
+const BUILT_IN_COMPONENTS_ALIPAY = ['navigation-bar']
 
 const BUILT_IN_EASYCOMS = ['unicloud-db', 'uniad', 'ad-rewarded-video', 'ad-fullscreen-video', 'ad-interstitial',
   'ad-interactive'

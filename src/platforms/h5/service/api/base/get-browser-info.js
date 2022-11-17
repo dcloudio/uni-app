@@ -1,3 +1,5 @@
+import { isStr } from 'uni-shared'
+
 function IEVersion () {
   const userAgent = navigator.userAgent
   const isIE = userAgent.indexOf('compatible') > -1 && userAgent.indexOf('MSIE') > -1
@@ -22,6 +24,7 @@ function IEVersion () {
 }
 
 export function getTheme () {
+  if (__uniConfig.darkmode !== true) return isStr(__uniConfig.darkmode) ? __uniConfig.darkmode : 'light'
   try {
     return window.matchMedia('(prefers-color-scheme: light)').matches
       ? 'light'
