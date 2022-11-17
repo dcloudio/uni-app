@@ -89,19 +89,21 @@ export function resolveUTSCompiler(): typeof UTSCompiler {
       )
     } catch (e) {}
   }
-  try {
-    compilerPath = require.resolve('@dcloudio/uni-uts-v1', {
-      paths: [process.env.UNI_CLI_CONTEXT],
-    })
-  } catch (e) {
-    console.error(
-      installDepTips(
-        'devDependencies',
-        '@dcloudio/uni-uts-v1',
-        require('@dcloudio/uni-cli-shared/package.json').version
+  if (!compilerPath) {
+    try {
+      compilerPath = require.resolve('@dcloudio/uni-uts-v1', {
+        paths: [process.env.UNI_CLI_CONTEXT],
+      })
+    } catch (e) {
+      console.error(
+        installDepTips(
+          'devDependencies',
+          '@dcloudio/uni-uts-v1',
+          require('@dcloudio/uni-cli-shared/package.json').version
+        )
       )
-    )
-    process.exit(0)
+      process.exit(0)
+    }
   }
   return require(compilerPath)
 }
