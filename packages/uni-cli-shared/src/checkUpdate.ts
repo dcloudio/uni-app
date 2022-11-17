@@ -218,6 +218,7 @@ export function getMac() {
       } else if (
         // Node >= v18
         typeof item.family === 'number' &&
+        // @ts-ignore
         (item.family === 4 || item.family === 6)
       ) {
         mac = (item as any).mac

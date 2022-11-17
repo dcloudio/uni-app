@@ -16253,7 +16253,6 @@ const chooseLocation = defineAsyncApi(API_CHOOSE_LOCATION, (options, { resolve, 
         style: {
             // @ts-expect-error
             animationType: options.animationType || 'slide-in-bottom',
-            // @ts-expect-error
             titleNView: false,
             popGesture: 'close',
             scrollIndicator: 'none',
