@@ -75,22 +75,20 @@ function resolveUtsFile(dir, extensions = ['.uts', '.ts', '.js']) {
 }
 function resolveUTSCompiler() {
     let compilerPath = '';
-    if ((0, hbx_1.runByHBuilderX)()) {
+    if ((0, hbx_1.isInHBuilderX)()) {
         try {
             compilerPath = require.resolve(path_1.default.resolve(process.env.UNI_HBUILDERX_PLUGINS, 'uniapp-uts-v1'));
         }
         catch (e) { }
     }
-    if (!compilerPath) {
-        try {
-            compilerPath = require.resolve('@dcloudio/uni-uts-v1', {
-                paths: [process.env.UNI_CLI_CONTEXT],
-            });
-        }
-        catch (e) { }
+    try {
+        compilerPath = require.resolve('@dcloudio/uni-uts-v1', {
+            paths: [process.env.UNI_CLI_CONTEXT],
+        });
     }
-    if (!compilerPath) {
-        throw 'uts compiler is not found';
+    catch (e) {
+        console.error((0, utils_1.installDepTips)('devDependencies', '@dcloudio/uni-uts-v1', require('@dcloudio/uni-cli-shared/package.json').version));
+        process.exit(0);
     }
     return require(compilerPath);
 }
