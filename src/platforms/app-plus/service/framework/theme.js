@@ -18,27 +18,33 @@ function getNavigatorStyle () {
 }
 
 export function changePagesNavigatorStyle () {
-  const theme = getNavigatorStyle()
+  if (__uniConfig.darkmode) {
+    const theme = getNavigatorStyle()
 
-  setStatusBarStyle(theme)
+    setStatusBarStyle(theme)
 
-  const pages = getCurrentPages(true)
-  pages.forEach((page) => {
-    page.$page.meta.statusBarStyle = theme
-  })
+    const pages = getCurrentPages(true)
+    pages.forEach((page) => {
+      page.$page.meta.statusBarStyle = theme
+    })
+  }
 }
 
 export function parseTheme (pageStyle) {
-  let parsedStyle = {}
   if (__uniConfig.darkmode) {
+    let parsedStyle = {}
     let theme = plus.navigator.getUIStyle()
+
     const systemInfo = weexGetSystemInfoSync()
+    // 小程序 SDK
     if (systemInfo && systemInfo.hostTheme) {
       theme = systemInfo.hostTheme
     }
+
     parsedStyle = normallizeStyles(pageStyle, __uniConfig.themeConfig, theme)
+    return parsedStyle
   }
-  return __uniConfig.darkmode ? parsedStyle : pageStyle
+  return pageStyle
 }
 
 export function useTabBarThemeChange (tabBar, options) {
