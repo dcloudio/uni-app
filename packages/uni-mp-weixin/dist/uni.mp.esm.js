@@ -182,6 +182,14 @@ const HOOKS = [
 ];
 function parseApp(instance, parseAppOptions) {
     const internalInstance = instance.$;
+    if (__VUE_PROD_DEVTOOLS__) {
+        // 定制 App 的 $children
+        Object.defineProperty(internalInstance.ctx, '$children', {
+            get() {
+                return getCurrentPages().map((page) => page.$vm);
+            },
+        });
+    }
     const appOptions = {
         globalData: (instance.$options && instance.$options.globalData) || {},
         $vm: instance,

@@ -3,7 +3,7 @@ import os from 'os'
 import path from 'path'
 import colors from 'picocolors'
 import { performance } from 'perf_hooks'
-import { BuildOptions, InlineConfig, Logger } from 'vite'
+import type { BuildOptions, InlineConfig, Logger } from 'vite'
 
 import {
   M,
@@ -136,6 +136,8 @@ export function initEnv(
 
   initAutomator(options)
 
+  initDevtools(options)
+
   if (process.env.UNI_PLATFORM === 'app') {
     const pkg = require('../../package.json')
     console.log(
@@ -196,6 +198,19 @@ function initUtsPlatform(options: CliOptions) {
     if (!process.env.UNI_UTS_PLATFORM) {
       process.env.UNI_UTS_PLATFORM = options.platform as any
     }
+  }
+}
+
+function initDevtools({ devtools, devtoolsHost, devtoolsPort }: CliOptions) {
+  if (!devtools) {
+    return
+  }
+  process.env.__VUE_PROD_DEVTOOLS__ = 'true'
+  if (devtoolsHost) {
+    process.env.__VUE_DEVTOOLS_HOST__ = devtoolsHost
+  }
+  if (devtoolsPort) {
+    process.env.__VUE_DEVTOOLS_PORT__ = devtoolsPort + ''
   }
 }
 

@@ -1,9 +1,4 @@
-import {
-  ComponentOptions,
-  createElementBlock,
-  defineComponent,
-  openBlock,
-} from 'vue'
+import { createElementBlock, defineComponent, openBlock } from 'vue'
 import { camelize, capitalize } from '@vue/shared'
 import animation from './animation'
 /**
@@ -30,9 +25,11 @@ export const defineBuiltInComponent: typeof defineComponent = (
  * @returns
  */
 export const defineSystemComponent: typeof defineComponent = (options: any) => {
+  // 标记 devtools 隐藏
+  options.devtools = { hide: true }
   // 标记为保留组件
   options.__reserved = true
-  ;(options as ComponentOptions).compatConfig = {
+  options.compatConfig = {
     MODE: 3, // 标记为vue3
   }
   return defineComponent(options)

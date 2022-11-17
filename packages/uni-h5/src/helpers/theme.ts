@@ -1,6 +1,8 @@
 import { getTheme } from '../service/api/base/getBrowserInfo'
 import { normalizeStyles, ON_THEME_CHANGE } from '@dcloudio/uni-shared'
 
+export { getTheme }
+
 export function onThemeChange(
   callback: (res: { theme: UniApp.ThemeMode }) => void
 ) {

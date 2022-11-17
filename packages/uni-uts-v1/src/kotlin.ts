@@ -4,6 +4,7 @@ import path from 'path'
 import AdmZip from 'adm-zip'
 import { sync } from 'fast-glob'
 import { isArray } from '@vue/shared'
+import type { UtsResult } from '@dcloudio/uts'
 import {
   isInHBuilderX,
   normalizePath,
@@ -20,9 +21,9 @@ import {
   resolvePackage,
   resolveUTSPlatformFile,
   resolveUTSSourceMapPath,
+  ToKotlinOptions,
 } from './utils'
 import { Module } from '../types/types'
-import { UtsResult } from '@dcloudio/uts'
 
 interface KotlinCompilerServer extends CompilerServer {
   getKotlincHome(): string
@@ -63,10 +64,12 @@ export async function runKotlinProd(filename: string) {
   if (filename.includes('app-ios')) {
     return
   }
-  await compile(filename)
+  const inputDir = process.env.UNI_INPUT_DIR
+  const outputDir = process.env.UNI_OUTPUT_DIR
+  await compile(filename, { inputDir, outputDir, sourceMap: true })
   genUTSPlatformResource(filename, {
-    inputDir: process.env.UNI_INPUT_DIR,
-    outputDir: process.env.UNI_OUTPUT_DIR,
+    inputDir,
+    outputDir,
     platform: 'app-android',
     extname: '.kt',
   })
@@ -84,14 +87,20 @@ export async function runKotlinDev(
   if (filename.includes('app-ios')) {
     return
   }
-  const result = (await compile(filename)) as RunKotlinDevResult
+  const inputDir = process.env.UNI_INPUT_DIR
+  const outputDir = process.env.UNI_OUTPUT_DIR
+  const result = (await compile(filename, {
+    inputDir,
+    outputDir,
+    sourceMap: true,
+  })) as RunKotlinDevResult
 
   result.type = 'kotlin'
   result.changed = []
 
   const kotlinFile = resolveUTSPlatformFile(filename, {
-    inputDir: process.env.UNI_INPUT_DIR,
-    outputDir: process.env.UNI_OUTPUT_DIR,
+    inputDir,
+    outputDir,
     platform: 'app-android',
     extname: '.kt',
   })
@@ -130,13 +139,10 @@ export async function runKotlinDev(
           .concat(resDeps)
       ),
       d8: resolveD8Args(jarFile),
-      sourceRoot: process.env.UNI_INPUT_DIR,
-      sourceMapPath: resolveSourceMapFile(
-        process.env.UNI_OUTPUT_DIR,
-        kotlinFile
-      ),
+      sourceRoot: inputDir,
+      sourceMapPath: resolveSourceMapFile(outputDir, kotlinFile),
     }
-    const res = await compile(options, process.env.UNI_INPUT_DIR)
+    const res = await compile(options, inputDir)
     // console.log('dex compile time: ' + (Date.now() - time) + 'ms')
     if (res) {
       try {
@@ -146,9 +152,7 @@ export async function runKotlinDev(
       } catch (e) {}
       const dexFile = resolveDexFile(jarFile)
       if (fs.existsSync(dexFile)) {
-        result.changed = [
-          normalizePath(path.relative(process.env.UNI_OUTPUT_DIR, dexFile)),
-        ]
+        result.changed = [normalizePath(path.relative(outputDir, dexFile))]
       }
     }
     // else {
@@ -275,13 +279,11 @@ const DEFAULT_IMPORTS = [
   'io.dcloud.uts.*',
 ]
 
-async function compile(filename: string) {
-  if (!process.env.UNI_HBUILDERX_PLUGINS) {
-    throw 'process.env.UNI_HBUILDERX_PLUGINS is not found'
-  }
+export async function compile(
+  filename: string,
+  { inputDir, outputDir, sourceMap }: ToKotlinOptions
+) {
   const { bundle, UtsTarget } = getUtsCompiler()
-  const inputDir = process.env.UNI_INPUT_DIR
-  const outputDir = process.env.UNI_OUTPUT_DIR
   // let time = Date.now()
   const imports = [...DEFAULT_IMPORTS]
   const rClass = resolveAndroidResourceClass(filename)
@@ -297,19 +299,20 @@ async function compile(filename: string) {
       isPlugin: true,
       outDir: outputDir,
       package: parseKotlinPackage(filename).package,
-      sourceMap: resolveUTSSourceMapPath(filename),
+      sourceMap: sourceMap ? resolveUTSSourceMapPath(filename) : false,
       extname: 'kt',
       imports,
       logFilename: true,
       noColor: isInHBuilderX(),
     },
   })
-  moveRootIndexSourceMap(filename, {
-    inputDir: process.env.UNI_INPUT_DIR,
-    outputDir: process.env.UNI_OUTPUT_DIR,
-    platform: 'app-android',
-    extname: '.kt',
-  })
+  sourceMap &&
+    moveRootIndexSourceMap(filename, {
+      inputDir,
+      outputDir,
+      platform: 'app-android',
+      extname: '.kt',
+    })
   return result
 }
 

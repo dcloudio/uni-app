@@ -53,7 +53,7 @@ function resolveNodeModulePath(modulePath: string) {
 }
 
 function initPaths() {
-  const cliContext = process.env.UNI_CLI_CONTEXT
+  const cliContext = process.env.UNI_CLI_CONTEXT || process.cwd()
   if (cliContext) {
     const pathSet = new Set<string>()
     pathSet.add(path.join(cliContext, 'node_modules'))

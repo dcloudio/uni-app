@@ -1,4 +1,4 @@
-import { BuildOptions } from 'esbuild'
+import type { BuildOptions } from 'esbuild'
 import path from 'path'
 
 export function transformWithEsbuild(

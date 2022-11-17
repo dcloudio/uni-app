@@ -143,12 +143,14 @@ export function initPageInternalInstance(
   url: string,
   pageQuery: Record<string, any>,
   meta: UniApp.PageRouteMeta,
-  eventChannel?: EventChannel
+  eventChannel?: EventChannel,
+  themeMode?: UniApp.ThemeMode
 ): Page.PageInstance['$page'] {
   const { id, route } = meta
   const titleColor = normalizeStyles(
     meta.navigationBar,
-    __uniConfig.themeConfig
+    __uniConfig.themeConfig,
+    themeMode
   ).titleColor
   return {
     id: id!,

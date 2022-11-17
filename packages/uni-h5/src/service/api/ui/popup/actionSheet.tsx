@@ -9,9 +9,15 @@ import {
   watchEffect,
   nextTick,
   Transition,
+  reactive,
 } from 'vue'
 import { usePopupStyle } from '../../../../helpers/usePopupStyle'
 import { useKeyboard } from '../../../../helpers/useKeyboard'
+import {
+  onThemeChange,
+  offThemeChange,
+  getTheme,
+} from '../../../../helpers/theme'
 import { initI18nShowActionSheetMsgsOnce, useI18n } from '@dcloudio/uni-core'
 import { useTouchtrack } from '@dcloudio/uni-components'
 import {
@@ -23,6 +29,35 @@ import {
   disableScrollBounce,
 } from '@dcloudio/uni-components'
 import { onEventPrevent } from '@dcloudio/uni-core'
+
+type ActionSheetTheme = {
+  listItemColor: string
+  cancelItemColor: string
+}
+
+const ACTION_SHEET_THEME: Record<UniApp.ThemeMode, ActionSheetTheme> = {
+  light: {
+    listItemColor: '#000000',
+    cancelItemColor: '#000000',
+  },
+  dark: {
+    listItemColor: 'rgba(255, 255, 255, 0.8)',
+    cancelItemColor: 'rgba(255, 255, 255)',
+  },
+}
+
+function setActionSheetTheme(
+  theme: UniApp.ThemeMode,
+  actionSheetTheme: ActionSheetTheme
+) {
+  const ActionSheetThemeKey: Array<keyof ActionSheetTheme> = [
+    'listItemColor',
+    'cancelItemColor',
+  ]
+  ActionSheetThemeKey.forEach((key) => {
+    actionSheetTheme[key] = ACTION_SHEET_THEME[theme][key]
+  })
+}
 
 const props = {
   title: {
@@ -160,6 +195,8 @@ export default /*#__PURE__*/ defineComponent({
       }
     )
 
+    const actionSheetTheme = useOnThemeChange(props)
+
     return () => {
       return (
         <uni-actionsheet onTouchmove={onEventPrevent}>
@@ -200,7 +237,7 @@ export default /*#__PURE__*/ defineComponent({
                   {props.itemList.map((itemTitle, index) => (
                     <div
                       key={index}
-                      style={{ color: props.itemColor }}
+                      style={{ color: actionSheetTheme.listItemColor }}
                       class="uni-actionsheet__cell"
                       onClick={() => _close(index)}
                     >
@@ -212,7 +249,7 @@ export default /*#__PURE__*/ defineComponent({
             </div>
             <div class="uni-actionsheet__action">
               <div
-                style={{ color: props.itemColor }}
+                style={{ color: actionSheetTheme.cancelItemColor }}
                 class="uni-actionsheet__cell"
                 onClick={() => _close(-1)}
               >
@@ -281,4 +318,30 @@ function initClick(dom: HTMLElement) {
       event.target!.dispatchEvent(customEvent)
     }
   })
+}
+
+function useOnThemeChange(props: Props) {
+  const actionSheetTheme = reactive<ActionSheetTheme>({
+    listItemColor: '#000',
+    cancelItemColor: '#000',
+  })
+  const _onThemeChange = ({ theme }: { theme: UniApp.ThemeMode }) => {
+    setActionSheetTheme(theme, actionSheetTheme)
+  }
+
+  watchEffect(() => {
+    if (props.visible) {
+      actionSheetTheme.listItemColor = actionSheetTheme.cancelItemColor =
+        props.itemColor
+      // #000 by default in protocols
+      if (props.itemColor === '#000') {
+        _onThemeChange({ theme: getTheme() })
+        onThemeChange(_onThemeChange)
+      }
+    } else {
+      offThemeChange(_onThemeChange)
+    }
+  })
+
+  return actionSheetTheme
 }

@@ -4,7 +4,7 @@ import path from 'path'
 import * as UTSCompiler from '@dcloudio/uni-uts-v1'
 
 import { isInHBuilderX } from './hbx'
-import { normalizePath } from './utils'
+import { installDepTips, normalizePath } from './utils'
 
 /**
  * 解析 app 平台的 uts 插件，任意平台（android|ios）存在即可
@@ -89,15 +89,19 @@ export function resolveUTSCompiler(): typeof UTSCompiler {
       )
     } catch (e) {}
   }
-  if (!compilerPath) {
-    try {
-      compilerPath = require.resolve('@dcloudio/uni-uts-v1', {
-        paths: [process.env.UNI_CLI_CONTEXT],
-      })
-    } catch (e) {}
-  }
-  if (!compilerPath) {
-    throw 'uts compiler is not found'
+  try {
+    compilerPath = require.resolve('@dcloudio/uni-uts-v1', {
+      paths: [process.env.UNI_CLI_CONTEXT],
+    })
+  } catch (e) {
+    console.error(
+      installDepTips(
+        'devDependencies',
+        '@dcloudio/uni-uts-v1',
+        require('@dcloudio/uni-cli-shared/package.json').version
+      )
+    )
+    process.exit(0)
   }
   return require(compilerPath)
 }

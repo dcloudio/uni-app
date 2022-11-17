@@ -1,4 +1,4 @@
-import { isFunction } from '@vue/shared'
+import { isFunction, isString } from '@vue/shared'
 import {
   ua,
   isIOS,
@@ -35,6 +35,8 @@ function IEVersion() {
 }
 
 export function getTheme() {
+  if (__uniConfig.darkmode !== true)
+    return isString(__uniConfig.darkmode) ? __uniConfig.darkmode : 'light'
   try {
     return (
       window.matchMedia('(prefers-color-scheme: light)').matches

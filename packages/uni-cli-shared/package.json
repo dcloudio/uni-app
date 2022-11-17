@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-cli-shared",
-  "version": "3.0.0-alpha-3060920221114001",
+  "version": "3.0.0-alpha-3060920221117001",
   "description": "@dcloudio/uni-cli-shared",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -25,17 +25,17 @@
     "@babel/core": "^7.19.6",
     "@babel/parser": "^7.19.6",
     "@babel/types": "^7.20.0",
-    "@dcloudio/uni-i18n": "3.0.0-alpha-3060920221114001",
-    "@dcloudio/uni-shared": "3.0.0-alpha-3060920221114001",
+    "@dcloudio/uni-i18n": "3.0.0-alpha-3060920221117001",
+    "@dcloudio/uni-shared": "3.0.0-alpha-3060920221117001",
     "@intlify/core-base": "9.1.9",
     "@intlify/shared": "9.1.9",
     "@intlify/vue-devtools": "9.1.9",
     "@rollup/pluginutils": "^4.2.0",
-    "@vue/compiler-core": "3.2.41",
-    "@vue/compiler-dom": "3.2.41",
-    "@vue/compiler-sfc": "3.2.41",
-    "@vue/server-renderer": "3.2.41",
-    "@vue/shared": "3.2.41",
+    "@vue/compiler-core": "3.2.45",
+    "@vue/compiler-dom": "3.2.45",
+    "@vue/compiler-sfc": "3.2.45",
+    "@vue/server-renderer": "3.2.45",
+    "@vue/shared": "3.2.45",
     "autoprefixer": "^10.4.13",
     "base64url": "^3.0.1",
     "chokidar": "^3.5.3",
@@ -64,7 +64,7 @@
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "devDependencies": {
-    "@dcloudio/uni-uts-v1": "3.0.0-alpha-3060920221114001",
+    "@dcloudio/uni-uts-v1": "3.0.0-alpha-3060920221117001",
     "@types/babel__core": "^7.1.19",
     "@types/debug": "^4.1.7",
     "@types/estree": "^0.0.51",
@@ -77,6 +77,6 @@
     "@types/sass": "^1.43.1",
     "@types/stylus": "^0.48.36",
     "postcss": "^8.4.16",
-    "vue": "3.2.41"
+    "vue": "3.2.45"
   }
 }

@@ -94,7 +94,7 @@ declare namespace UniNamespace {
     appName: string
     appVersion: string
     appVersionCode: string
-    darkmode: Boolean
+    darkmode: Boolean | ThemeMode
     themeConfig: ThemeJson
   }
 

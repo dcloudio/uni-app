@@ -8,12 +8,24 @@ import {
 import { extend } from '@vue/shared'
 import { initI18nShowActionSheetMsgsOnce, useI18n } from '@dcloudio/uni-core'
 
+const ACTION_SHEET_THEME: Record<UniApp.ThemeMode, { itemColor: string }> = {
+  light: {
+    itemColor: '#000000',
+  },
+  dark: {
+    itemColor: 'rgba(255, 255, 255, 0.8)',
+  },
+}
+
 export const showActionSheet = defineAsyncApi<API_TYPE_SHOW_ACTION_SHEET>(
   API_SHOW_ACTION_SHEET,
-  (
-    { itemList = [], itemColor = '#000000', title = '', popover },
-    { resolve, reject }
-  ) => {
+  ({ itemList = [], itemColor, title = '', popover }, { resolve, reject }) => {
+    // #000 by default in protocols
+    if (itemColor === '#000' && __uniConfig.darkmode) {
+      itemColor =
+        ACTION_SHEET_THEME[plus.navigator.getUIStyle() as UniApp.ThemeMode]
+          .itemColor
+    }
     initI18nShowActionSheetMsgsOnce()
     const { t } = useI18n()
     const options = {

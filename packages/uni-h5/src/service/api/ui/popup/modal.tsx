@@ -1,6 +1,30 @@
 import { onEventPrevent, onEventStop } from '@dcloudio/uni-core'
-import { Transition, defineComponent, ExtractPropTypes, ref } from 'vue'
+import {
+  Transition,
+  defineComponent,
+  ExtractPropTypes,
+  ref,
+  Ref,
+  watchEffect,
+} from 'vue'
 import { usePopup, VNODE_MASK } from './utils'
+import {
+  onThemeChange,
+  offThemeChange,
+  getTheme,
+} from '../../../../helpers/theme'
+
+type ModalTheme = Record<UniApp.ThemeMode, { cancelColor: string }>
+const ModalTheme: ModalTheme = {
+  light: {
+    cancelColor: '#000000',
+  },
+  dark: {
+    cancelColor: 'rgb(170, 170, 170)',
+  },
+}
+const setCancelColor = (theme: UniApp.ThemeMode, cancelColor: Ref<string>) =>
+  (cancelColor.value = ModalTheme[theme].cancelColor)
 
 const props = {
   title: {
@@ -58,6 +82,9 @@ export default /*#__PURE__*/ defineComponent({
         !props.editable && confirm()
       },
     })
+
+    const cancelColor = useOnThemeChange(props)
+
     return () => {
       const {
         title,
@@ -101,7 +128,7 @@ export default /*#__PURE__*/ defineComponent({
               <div class="uni-modal__ft">
                 {showCancel && (
                   <div
-                    style={{ color: props.cancelColor }}
+                    style={{ color: cancelColor.value }}
                     class="uni-modal__btn uni-modal__btn_default"
                     onClick={cancel}
                   >
@@ -123,3 +150,26 @@ export default /*#__PURE__*/ defineComponent({
     }
   },
 })
+
+function useOnThemeChange(props: ModalProps) {
+  const cancelColor = ref(props.cancelColor)
+
+  const _onThemeChange = ({ theme }: { theme: UniApp.ThemeMode }) => {
+    setCancelColor(theme, cancelColor)
+  }
+
+  watchEffect(() => {
+    if (props.visible) {
+      cancelColor.value = props.cancelColor
+      // #000 by default in protocols
+      if (props.cancelColor === '#000') {
+        if (getTheme() === 'dark') _onThemeChange({ theme: 'dark' })
+        onThemeChange(_onThemeChange)
+      }
+    } else {
+      offThemeChange(_onThemeChange)
+    }
+  })
+
+  return cancelColor
+}
