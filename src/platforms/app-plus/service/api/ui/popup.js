@@ -166,7 +166,7 @@ export function showActionSheet ({
   popover
 }, callbackId) {
   // #000 by default in protocols
-  if (itemColor === '#000') {
+  if (itemColor === '#000' && __uniConfig.darkmode) {
     itemColor =
       ACTION_SHEET_THEME[plus.navigator.getUIStyle()]
         .itemColor
