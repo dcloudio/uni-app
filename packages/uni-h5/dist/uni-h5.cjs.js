@@ -392,11 +392,12 @@ function normalizePullToRefreshRpx(pullToRefresh) {
   }
   return pullToRefresh;
 }
-function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel) {
+function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel, themeMode) {
   const { id, route } = meta;
   const titleColor = uniShared.normalizeStyles(
     meta.navigationBar,
-    __uniConfig.themeConfig
+    __uniConfig.themeConfig,
+    themeMode
   ).titleColor;
   return {
     id,

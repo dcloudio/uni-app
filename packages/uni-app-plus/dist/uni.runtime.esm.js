@@ -1540,9 +1540,9 @@ function normalizePullToRefreshRpx(pullToRefresh) {
     }
     return pullToRefresh;
 }
-function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel) {
+function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel, themeMode) {
     const { id, route } = meta;
-    const titleColor = normalizeStyles(meta.navigationBar, __uniConfig.themeConfig).titleColor;
+    const titleColor = normalizeStyles(meta.navigationBar, __uniConfig.themeConfig, themeMode).titleColor;
     return {
         id: id,
         path: addLeadingSlash(route),
@@ -13216,23 +13216,69 @@ const canIUse = defineSyncApi(API_CAN_I_USE, (schema) => {
     return false;
 }, CanIUseProtocol);
 
+let lastStatusBarStyle;
+let oldSetStatusBarStyle = plus.navigator.setStatusBarStyle;
+function restoreOldSetStatusBarStyle(setStatusBarStyle) {
+    oldSetStatusBarStyle = setStatusBarStyle;
+}
+function newSetStatusBarStyle(style) {
+    lastStatusBarStyle = style;
+    oldSetStatusBarStyle(style);
+}
+plus.navigator.setStatusBarStyle = newSetStatusBarStyle;
+function setStatusBarStyle(statusBarStyle) {
+    if (!statusBarStyle) {
+        const page = getCurrentPage();
+        if (!page) {
+            return;
+        }
+        statusBarStyle = page.$page.statusBarStyle;
+        if (!statusBarStyle || statusBarStyle === lastStatusBarStyle) {
+            return;
+        }
+    }
+    if (statusBarStyle === lastStatusBarStyle) {
+        return;
+    }
+    if ((process.env.NODE_ENV !== 'production')) {
+        console.log(formatLog('setStatusBarStyle', statusBarStyle));
+    }
+    lastStatusBarStyle = statusBarStyle;
+    plus.navigator.setStatusBarStyle(statusBarStyle);
+}
+
 function onThemeChange$1(callback) {
     UniServiceJSBridge.on(ON_THEME_CHANGE, callback);
 }
 function offThemeChange$1(callback) {
     UniServiceJSBridge.off(ON_THEME_CHANGE, callback);
 }
-function parseTheme(pageStyle) {
-    let parsedStyle = {};
+function getNavigatorStyle() {
+    return plus.navigator.getUIStyle() === 'dark' ? 'light' : 'dark';
+}
+function changePagesNavigatorStyle() {
     if (__uniConfig.darkmode) {
-        let theme = 'light';
+        const theme = getNavigatorStyle();
+        setStatusBarStyle(theme);
+        const pages = getAllPages();
+        pages.forEach((page) => {
+            page.$page.statusBarStyle = theme;
+        });
+    }
+}
+function parseTheme(pageStyle) {
+    if (__uniConfig.darkmode) {
+        let parsedStyle = {};
+        let theme = plus.navigator.getUIStyle();
         const systemInfo = weexGetSystemInfoSync();
-        if (systemInfo) {
-            theme = systemInfo.hostTheme || systemInfo.osTheme;
+        // 小程序 SDK
+        if (systemInfo && systemInfo.hostTheme) {
+            theme = systemInfo.hostTheme;
         }
         parsedStyle = normalizeStyles(pageStyle, __uniConfig.themeConfig, theme);
+        return parsedStyle;
     }
-    return __uniConfig.darkmode ? parsedStyle : pageStyle;
+    return pageStyle;
 }
 function useTabBarThemeChange(tabBar, options) {
     if (__uniConfig.darkmode) {
@@ -13651,7 +13697,7 @@ const getDeviceInfo = defineSyncApi('getDeviceInfo', () => {
 });
 const getAppBaseInfo = defineSyncApi('getAppBaseInfo', () => {
     weexGetSystemInfoSync();
-    const { hostPackageName, hostName, hostVersion, hostLanguage, osLanguage, osTheme, hostTheme, appId, appName, appVersion, appVersionCode, appWgtVersion, } = systemInfo;
+    const { hostPackageName, hostName, hostVersion, hostLanguage, osLanguage, hostTheme, appId, appName, appVersion, appVersionCode, appWgtVersion, } = systemInfo;
     return {
         appId,
         appName,
@@ -13669,7 +13715,7 @@ const getAppBaseInfo = defineSyncApi('getAppBaseInfo', () => {
         hostSDKVersion: undefined,
         language: osLanguage,
         SDKVersion: '',
-        theme: hostTheme || osTheme,
+        theme: plus.navigator.getUIStyle(),
         version: plus.runtime.innerVersion,
     };
 });
@@ -13691,9 +13737,8 @@ const getSystemInfoSync = defineSyncApi('getSystemInfoSync', () => {
     const _systemInfo = extend(systemInfo, windowInfo, deviceInfo, appBaseInfo, extraData);
     delete _systemInfo.screenTop;
     delete _systemInfo.enableDebug;
-    if (!__uniConfig.darkmode) {
+    if (!__uniConfig.darkmode)
         delete _systemInfo.theme;
-    }
     return sortObject(_systemInfo);
 });
 const getSystemInfo = defineAsyncApi('getSystemInfo', (_, { resolve }) => {
@@ -16317,7 +16362,21 @@ const showModal = defineAsyncApi(API_SHOW_MODAL, ({ title = '', content = '', sh
     }, title, tip, buttons);
 }, ShowModalProtocol, ShowModalOptions);
 
-const showActionSheet = defineAsyncApi(API_SHOW_ACTION_SHEET, ({ itemList = [], itemColor = '#000000', title = '', popover }, { resolve, reject }) => {
+const ACTION_SHEET_THEME = {
+    light: {
+        itemColor: '#000000',
+    },
+    dark: {
+        itemColor: 'rgba(255, 255, 255, 0.8)',
+    },
+};
+const showActionSheet = defineAsyncApi(API_SHOW_ACTION_SHEET, ({ itemList = [], itemColor, title = '', popover }, { resolve, reject }) => {
+    // #000 by default in protocols
+    if (itemColor === '#000' && __uniConfig.darkmode) {
+        itemColor =
+            ACTION_SHEET_THEME[plus.navigator.getUIStyle()]
+                .itemColor;
+    }
     initI18nShowActionSheetMsgsOnce();
     const { t } = useI18n();
     const options = {
@@ -16694,37 +16753,6 @@ const getSubNVueById = function (id, isSub) {
     // TODO 暂时通过 isSub 区分来自 subNVue 页面
     return new SubNvue(id, isSub);
 };
-
-let lastStatusBarStyle;
-let oldSetStatusBarStyle = plus.navigator.setStatusBarStyle;
-function restoreOldSetStatusBarStyle(setStatusBarStyle) {
-    oldSetStatusBarStyle = setStatusBarStyle;
-}
-function newSetStatusBarStyle(style) {
-    lastStatusBarStyle = style;
-    oldSetStatusBarStyle(style);
-}
-plus.navigator.setStatusBarStyle = newSetStatusBarStyle;
-function setStatusBarStyle(statusBarStyle) {
-    if (!statusBarStyle) {
-        const page = getCurrentPage();
-        if (!page) {
-            return;
-        }
-        statusBarStyle = page.$page.statusBarStyle;
-        if (!statusBarStyle || statusBarStyle === lastStatusBarStyle) {
-            return;
-        }
-    }
-    if (statusBarStyle === lastStatusBarStyle) {
-        return;
-    }
-    if ((process.env.NODE_ENV !== 'production')) {
-        console.log(formatLog('setStatusBarStyle', statusBarStyle));
-    }
-    lastStatusBarStyle = statusBarStyle;
-    plus.navigator.setStatusBarStyle(statusBarStyle);
-}
 
 function restoreGlobal(newVue, newWeex, newPlus, newSetTimeout, newClearTimeout, newSetInterval, newClearInterval) {
     // 确保部分全局变量 是 app-service 中的
@@ -19000,7 +19028,9 @@ function registerPage({ url, path, query, openType, webview, nvuePageVm, eventCh
     initWebview(webview, path, query, routeOptions.meta);
     const route = path.slice(1);
     webview.__uniapp_route = route;
-    const pageInstance = initPageInternalInstance(openType, url, query, routeOptions.meta, eventChannel);
+    const pageInstance = initPageInternalInstance(openType, url, query, routeOptions.meta, eventChannel, (__uniConfig.darkmode
+        ? plus.navigator.getUIStyle()
+        : 'light'));
     const id = parseInt(webview.id);
     if (webview.nvue) {
         if (nvuePageVm) {
@@ -19651,6 +19681,7 @@ function initGlobalEvent() {
             theme: event.uistyle,
         };
         emit(ON_THEME_CHANGE, args);
+        changePagesNavigatorStyle();
     });
     let keyboardHeightChange = 0;
     plusGlobalEvent.addEventListener('KeyboardHeightChange', function (event) {
