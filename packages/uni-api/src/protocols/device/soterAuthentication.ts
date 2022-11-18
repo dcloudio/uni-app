@@ -1,4 +1,5 @@
-export const API_CHECK_IS_SUPPORT_SOTER_AUTHENTICATION = 'soterAuthentication'
+export const API_CHECK_IS_SUPPORT_SOTER_AUTHENTICATION =
+  'checkIsSupportSoterAuthentication'
 export type API_TYPE_CHECK_IS_SUPPORT_SOTER_AUTHENTICATION =
   typeof uni.checkIsSupportSoterAuthentication
 
@@ -27,7 +28,7 @@ export const CheckIsSoterEnrolledInDeviceProtocols: ApiProtocol<API_TYPE_CHECK_I
     checkAuthMode: String as any,
   }
 
-export const API_START_SOTER_AUTHENTICATION = 'checkIsSoterEnrolledInDevice'
+export const API_START_SOTER_AUTHENTICATION = 'startSoterAuthentication'
 export type API_TYPE_START_SOTER_AUTHENTICATION =
   typeof uni.startSoterAuthentication
 export const StartSoterAuthenticationOptions: ApiOptions<API_TYPE_START_SOTER_AUTHENTICATION> =
