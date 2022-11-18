@@ -80,6 +80,7 @@ class WebpackAppPlusPlugin {
                 if (utsChangedFiles.length) {
                   changedFiles.push(...utsChangedFiles)
                 }
+                process.env.UNI_APP_UTS_CHANGED_FILES = ''
               } catch (e) {}
               if (!isFirst && changedFiles.length > 0) {
                 if (serviceChangedFiles.length === 0 && viewChangedFiles.length === 0 && utsChangedFiles
