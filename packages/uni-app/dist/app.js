@@ -17,10 +17,11 @@ function init() {
                 index = res.findIndex(function (fn) { return fn.toString().includes('onReady'); });
                 onReadyFn = res[index];
             }
-            res.splice(index, 1);
-            res.push(onReadyFn);
+            if (index !== -1) {
+                res.splice(index, 1);
+                res.push(onReadyFn);
+            }
         }
-        console.log('Merge mounted:', res);
         return res;
     };
 }
