@@ -18,6 +18,9 @@ export class User implements IUser {
       console.log('timeout')
     }, 1000)
     login(name, pwd)
+    for (let i = 0; i < 10; i++) {
+      console.log(i)
+    }
     Log.info(logo)
     //#ifdef APP-ANDROID
     console.log('def android')
@@ -48,10 +51,10 @@ export class User implements IUser {
   register(name: string, callback: () => void) {
     Log.info(logo as FrameLayout)
   }
-  test(view: View) {}
+  test(view: View) { }
 }
-function login(name: string, callback: () => void) {}
-export function register(name: string, callback: () => void) {}
+function login(name: string, callback: () => void) { }
+export function register(name: string, callback: () => void) { }
 export function offMemoryWarning(
   callback: null | ((level: number) => void) = null
-) {}
+) { }
