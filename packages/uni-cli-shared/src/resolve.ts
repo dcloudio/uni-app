@@ -35,7 +35,11 @@ export const resolveMainPathOnce = once((inputDir: string) => {
   return normalizePath(path.resolve(inputDir, 'main.js'))
 })
 
-const ownerModules = ['@dcloudio/uni-app', '@dcloudio/vite-plugin-uni']
+const ownerModules = [
+  '@dcloudio/uni-app',
+  '@dcloudio/vite-plugin-uni',
+  '@dcloudio/uni-cli-shared',
+]
 
 const paths: string[] = []
 

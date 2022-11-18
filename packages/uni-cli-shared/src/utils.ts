@@ -15,6 +15,8 @@ import {
 import { ParserPlugin } from '@babel/parser'
 import { getPlatformDir } from './platform'
 
+export const version = require('../package.json').version
+
 export let isRunningWithYarnPnp: boolean
 try {
   isRunningWithYarnPnp = Boolean(require('pnpapi'))
