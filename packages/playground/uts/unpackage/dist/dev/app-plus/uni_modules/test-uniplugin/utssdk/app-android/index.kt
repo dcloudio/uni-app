@@ -36,10 +36,17 @@ open class User : IUser {
         }
         , 1000);
         login(name, pwd);
+        run {
+            var i = 0;
+            while(i < 10){
+                console.log(i, " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:22");
+                i++;
+            }
+        }
         Log.info(default);
-        console.log("def android", " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:23");
-        console.log("ndef ios", " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:32");
-        console.log("def android || def ios", " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:35");
+        console.log("def android", " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:26");
+        console.log("ndef ios", " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:35");
+        console.log("def android || def ios", " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:38");
         XToast<XToast<*>>(getUniActivity()).setContentView(R.layout.toast_hint).setDuration(1000).setImageDrawable(android.R.id.icon, R.mipmap.ic_dialog_tip_finish).setText(android.R.id.message, "点我消失").show();
     }
     override fun register(name: String, callback: UTSCallback) {

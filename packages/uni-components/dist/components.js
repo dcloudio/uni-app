@@ -2944,85 +2944,59 @@ const slierStyles = [{
   "uni-slider": {
     "": {
       flex: 1,
-      flexDirection: "column",
-      marginTop: "12",
-      marginRight: 0,
-      marginBottom: "12",
-      marginLeft: 0,
-      paddingTop: 0,
-      paddingRight: 0,
-      paddingBottom: 0,
-      paddingLeft: 0
+      flexDirection: "column"
     }
   },
   "uni-slider-wrapper": {
     "": {
       flexDirection: "row",
-      alignItems: "center",
-      minHeight: "30"
+      justifyContent: "center",
+      alignItems: "center"
     }
   },
   "uni-slider-tap-area": {
     "": {
       position: "relative",
       flex: 1,
-      flexDirection: "column",
-      paddingTop: "15",
-      paddingRight: 0,
-      paddingBottom: "15",
-      paddingLeft: 0
+      flexDirection: "row",
+      alignItems: "center",
+      paddingTop: "14",
+      paddingBottom: "14"
     }
   },
   "uni-slider-handle-wrapper": {
     "": {
       position: "relative",
-      marginTop: 0,
-      marginRight: "18",
-      marginBottom: 0,
-      marginLeft: "18",
+      flex: 1,
+      backgroundColor: "#e9e9e9",
       height: "2",
       borderRadius: "5",
-      backgroundColor: "#e9e9e9",
-      transitionProperty: "backgroundColor",
-      transitionDuration: 300,
-      transitionTimingFunction: "ease"
+      marginRight: "14",
+      marginLeft: "14"
     }
   },
   "uni-slider-track": {
     "": {
       height: "2",
       borderRadius: "6",
-      backgroundColor: "#007aff",
-      transitionProperty: "backgroundColor",
-      transitionDuration: 300,
-      transitionTimingFunction: "ease"
+      backgroundColor: "#007aff"
     }
   },
   "uni-slider-thumb": {
     "": {
       position: "absolute",
+      top: "1",
       width: "28",
       height: "28",
       borderRadius: 50,
-      boxShadow: "0 0 4px #ebebeb",
-      transitionProperty: "borderColor",
-      transitionDuration: 300,
-      transitionTimingFunction: "ease"
-    }
-  },
-  "uni-slider-step": {
-    "": {
-      position: "absolute",
-      width: 100,
-      height: "2",
-      background: "transparent"
+      boxShadow: "0 0 4px #ebebeb"
     }
   },
   "uni-slider-value": {
     "": {
       color: "#888888",
-      fontSize: "14",
-      marginLeft: "14"
+      fontSize: "16",
+      width: "30"
     }
   }
 }];
@@ -3044,9 +3018,11 @@ const USlider = defineComponent({
     });
     onMounted(() => {
       setTimeout(() => {
-        getComponentSize(sliderRef.value).then(({
-          width
+        getComponentSize(sliderTrackRef.value).then(({
+          width,
+          left
         }) => {
+          state.sliderLeft = left;
           state.sliderWidth = width || 0;
           state.sliderValue = Number(props2.value);
         });
@@ -3057,6 +3033,7 @@ const USlider = defineComponent({
         showValue
       } = props2;
       const {
+        trackTapStyle,
         trackStyle,
         trackActiveStyle,
         thumbStyle,
@@ -3068,11 +3045,12 @@ const USlider = defineComponent({
       }, [createVNode("div", {
         "class": "uni-slider-wrapper"
       }, [createVNode("div", mergeProps({
-        "class": "uni-slider-tap-area"
+        "class": "uni-slider-tap-area",
+        "style": trackTapStyle
       }, listeners), [createVNode("div", {
         "class": "uni-slider-handle-wrapper",
-        "ref": sliderTrackRef,
-        "style": trackStyle
+        "style": trackStyle,
+        "ref": sliderTrackRef
       }, [createVNode("div", {
         "class": "uni-slider-track",
         "style": trackActiveStyle
@@ -3086,6 +3064,7 @@ const USlider = defineComponent({
   }
 });
 function useSliderState(props2) {
+  const sliderLeft = ref(0);
   const sliderWidth = ref(0);
   const sliderValue = ref(0);
   const _getBgColor = () => {
@@ -3099,11 +3078,20 @@ function useSliderState(props2) {
     const min = Number(props2.min);
     return (sliderValue.value - min) / (max - min) * sliderWidth.value;
   };
+  const sliderThumbOffset = Number(props2.blockSize) / 2;
   const state = reactive({
+    sliderLeft,
     sliderWidth,
     sliderValue,
+    sliderThumbOffset,
+    trackTapStyle: computed(() => ({
+      paddingTop: sliderThumbOffset,
+      paddingBottom: sliderThumbOffset
+    })),
     trackStyle: computed(() => ({
-      backgroundColor: _getBgColor()
+      backgroundColor: _getBgColor(),
+      marginLeft: sliderThumbOffset,
+      marginRight: sliderThumbOffset
     })),
     trackActiveStyle: computed(() => ({
       backgroundColor: _getActiveColor(),
@@ -3112,9 +3100,8 @@ function useSliderState(props2) {
     thumbStyle: computed(() => ({
       width: props2.blockSize,
       height: props2.blockSize,
-      marginTop: -props2.blockSize / 2,
-      left: _getValueWidth(),
-      backgroundColor: props2.blockColor
+      backgroundColor: props2.blockColor,
+      left: _getValueWidth()
     }))
   });
   return state;
@@ -3137,6 +3124,7 @@ function useSliderListeners(props2, state, trigger) {
     }
   }
   function changedValue(x) {
+    x -= state.sliderThumbOffset;
     if (x < 0) {
       x = 0;
     }
@@ -3146,9 +3134,11 @@ function useSliderListeners(props2, state, trigger) {
     const max = Number(props2.max);
     const min = Number(props2.min);
     const step = Number(props2.step);
-    let value = x / state.sliderWidth * max - min;
+    let value = x / state.sliderWidth * (max - min);
     if (step > 0 && value > step && value % step / step !== 0) {
       value -= value % step;
+    } else {
+      value = parseInt(value + "");
     }
     state.sliderValue = value + min;
   }
