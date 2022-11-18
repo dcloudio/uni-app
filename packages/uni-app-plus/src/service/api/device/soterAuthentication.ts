@@ -187,10 +187,13 @@ export const startSoterAuthentication =
       }
       const realAuthMode = enrolledRequestAuthMode[0]
       if (realAuthMode === 'fingerPrint') {
+        let waiting: PlusNativeUIWaitingObj | null = null
+        let waitingTimer: ReturnType<typeof setTimeout>
+        const waitingTitle =
+          authContent || t('uni.startSoterAuthentication.authContent')
         if (plus.os.name!.toLowerCase() === 'android') {
-          plus.nativeUI.showWaiting(
-            authContent || t('uni.startSoterAuthentication.authContent')
-          ).onclose = function () {
+          waiting = plus.nativeUI.showWaiting(waitingTitle)
+          waiting.onclose = function () {
             plus.fingerprint.cancel()
           }
         }
@@ -208,6 +211,13 @@ export const startSoterAuthentication =
             }
             switch (e.code) {
               case e.AUTHENTICATE_MISMATCH:
+                if (waiting) {
+                  clearTimeout(waitingTimer)
+                  waiting.setTitle('无法识别')
+                  waitingTimer = setTimeout(() => {
+                    waiting && waiting.setTitle(waitingTitle)
+                  }, 1000)
+                }
                 // 微信小程序没有这个回调，如果要实现此处回调需要多次触发需要用事件publish实现
                 // invoke(callbackId, {
                 //   authMode: realAuthMode,
