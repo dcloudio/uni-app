@@ -148,29 +148,30 @@ export const startSoterAuthentication =
       */
       initI18nStartSoterAuthenticationMsgsOnce()
       const { t } = useI18n()
-      const supportMode = baseCheckIsSupportSoterAuthentication().supportMode
-      if (supportMode.length === 0) {
-        return {
+
+      const { supportMode } = baseCheckIsSupportSoterAuthentication()
+      if (!supportMode.length) {
+        return reject('not support', {
           authMode: 'fingerPrint',
           errCode: 90001,
-          errMsg: 'startSoterAuthentication:fail',
-        }
+        })
       }
+
       const supportRequestAuthMode: UniApp.SoterAuthModes[] = []
-      requestAuthModes.map((item, index) => {
+      requestAuthModes.forEach((item) => {
         if (supportMode.indexOf(item) > -1) {
           supportRequestAuthMode.push(item)
         }
       })
-      if (supportRequestAuthMode.length === 0) {
-        return {
+      if (!supportRequestAuthMode.length) {
+        return reject('startSoterAuthentication:fail no corresponding mode', {
           authMode: 'fingerPrint',
           errCode: 90003,
-          errMsg: 'startSoterAuthentication:fail no corresponding mode',
-        }
+        })
       }
+
       const enrolledRequestAuthMode: UniApp.SoterAuthModes[] = []
-      supportRequestAuthMode.map((item, index) => {
+      supportRequestAuthMode.forEach((item) => {
         const checked = basecheckIsSoterEnrolledInDevice({
           checkAuthMode: item,
         }).isEnrolled
@@ -178,21 +179,89 @@ export const startSoterAuthentication =
           enrolledRequestAuthMode.push(item)
         }
       })
-      if (enrolledRequestAuthMode.length === 0) {
-        return {
-          authMode: supportRequestAuthMode[0],
-          errCode: 90011,
-          errMsg: `startSoterAuthentication:fail no ${supportRequestAuthMode[0]} enrolled`,
+
+      if (!enrolledRequestAuthMode.length) {
+        return reject(
+          `startSoterAuthentication:fail no ${supportRequestAuthMode[0]} enrolled`,
+          {
+            authMode: supportRequestAuthMode[0],
+            errCode: 90011,
+          }
+        )
+      }
+
+      const realAuthMode = enrolledRequestAuthMode[0]
+
+      let waiting: PlusNativeUIWaitingObj | null = null
+      let waitingTimer: ReturnType<typeof setTimeout>
+      const authenticateMessage =
+        authContent || t('uni.startSoterAuthentication.authContent')
+
+      const errorCB = (err: PlusFingerprintFingerprintError) => {
+        const { code } = err
+        const res = {
+          authMode: realAuthMode,
+        }
+        const handler: Record<number, Function> = {
+          // AUTHENTICATE_MISMATCH
+          4: () => {
+            if (waiting) {
+              clearTimeout(waitingTimer)
+              waiting.setTitle('无法识别')
+              waitingTimer = setTimeout(() => {
+                waiting && waiting.setTitle(authenticateMessage)
+              }, 1000)
+            } else {
+              reject(
+                '',
+                extend(res, {
+                  errCode: 90009,
+                })
+              )
+            }
+          },
+          // AUTHENTICATE_OVERLIMIT
+          5: () => {
+            // 微信小程序在第一次重试次数超限时安卓IOS返回不一致
+            // 安卓端会返回次数超过限制（errCode: 90010）
+            // IOS端会返回认证失败（errCode: 90009）
+            // APP-IOS实际运行时不会次数超限，超过指定次数之后会弹出输入密码的界面
+            plus.nativeUI.closeWaiting()
+            reject(
+              'authenticate freeze. please try again later',
+              extend(res, {
+                errCode: 90010,
+              })
+            )
+          },
+          // CANCEL
+          6: () => {
+            plus.nativeUI.closeWaiting()
+            reject(
+              'cancel',
+              extend(res, {
+                errCode: 90008,
+              })
+            )
+          },
+        }
+
+        if (code && handler[code]) {
+          handler[code]()
+        } else {
+          plus.nativeUI.closeWaiting()
+          reject(
+            '',
+            extend(res, {
+              errCode: 90007,
+            })
+          )
         }
       }
-      const realAuthMode = enrolledRequestAuthMode[0]
+
       if (realAuthMode === 'fingerPrint') {
-        let waiting: PlusNativeUIWaitingObj | null = null
-        let waitingTimer: ReturnType<typeof setTimeout>
-        const waitingTitle =
-          authContent || t('uni.startSoterAuthentication.authContent')
         if (plus.os.name!.toLowerCase() === 'android') {
-          waiting = plus.nativeUI.showWaiting(waitingTitle)
+          waiting = plus.nativeUI.showWaiting(authenticateMessage)
           waiting.onclose = function () {
             plus.fingerprint.cancel()
           }
@@ -205,110 +274,25 @@ export const startSoterAuthentication =
               errCode: 0,
             })
           },
-          (e) => {
-            const res = {
-              authMode: realAuthMode,
-            }
-            switch (e.code) {
-              case e.AUTHENTICATE_MISMATCH:
-                if (waiting) {
-                  clearTimeout(waitingTimer)
-                  waiting.setTitle('无法识别')
-                  waitingTimer = setTimeout(() => {
-                    waiting && waiting.setTitle(waitingTitle)
-                  }, 1000)
-                }
-                // 微信小程序没有这个回调，如果要实现此处回调需要多次触发需要用事件publish实现
-                // invoke(callbackId, {
-                //   authMode: realAuthMode,
-                //   errCode: 90009,
-                //   errMsg: 'startSoterAuthentication:fail'
-                // })
-                break
-              case e.AUTHENTICATE_OVERLIMIT:
-                // 微信小程序在第一次重试次数超限时安卓IOS返回不一致，安卓端会返回次数超过限制（errCode: 90010），IOS端会返回认证失败（errCode: 90009）。APP-IOS实际运行时不会次数超限，超过指定次数之后会弹出输入密码的界面
-                plus.nativeUI.closeWaiting()
-                reject(
-                  'authenticate freeze. please try again later',
-                  extend(res, {
-                    errCode: 90010,
-                  })
-                )
-                break
-              case e.CANCEL:
-                plus.nativeUI.closeWaiting()
-                reject(
-                  'cancel',
-                  extend(res, {
-                    errCode: 90008,
-                  })
-                )
-                break
-              default:
-                plus.nativeUI.closeWaiting()
-                reject(
-                  '',
-                  extend(res, {
-                    errCode: 90007,
-                  })
-                )
-                break
-            }
-          },
+          errorCB,
           {
-            message: authContent,
+            message: authenticateMessage,
           }
         )
       } else if (realAuthMode === 'facial') {
         const faceID = requireNativePlugin('faceID')
         faceID.authenticate(
           {
-            message: authContent,
+            message: authenticateMessage,
           },
-          (e: Data) => {
-            const res = {
-              authMode: realAuthMode,
-            }
+          (e: PlusFingerprintFingerprintError & { type: string }) => {
             if (e.type === 'success' && e.code === 0) {
               resolve({
                 authMode: realAuthMode,
                 errCode: 0,
               })
             } else {
-              switch (e.code) {
-                case 4:
-                  reject(
-                    '',
-                    extend(res, {
-                      errCode: 90009,
-                    })
-                  )
-                  break
-                case 5:
-                  reject(
-                    'authenticate freeze. please try again later',
-                    extend(res, {
-                      errCode: 90010,
-                    })
-                  )
-                  break
-                case 6:
-                  reject(
-                    '',
-                    extend(res, {
-                      errCode: 90008,
-                    })
-                  )
-                  break
-                default:
-                  reject(
-                    '',
-                    extend(res, {
-                      errCode: 90007,
-                    })
-                  )
-                  break
-              }
+              errorCB(e)
             }
           }
         )
