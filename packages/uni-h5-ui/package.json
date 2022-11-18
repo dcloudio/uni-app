@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-h5-ui",
-  "version": "2.0.1-alpha-36920221118001",
+  "version": "2.0.1-alpha-36920221118002",
   "description": "uni-app h5 ui",
   "main": "dist/index.umd.min.js",
   "repository": {
