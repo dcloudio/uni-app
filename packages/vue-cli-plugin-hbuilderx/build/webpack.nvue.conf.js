@@ -10,7 +10,8 @@ const {
   getNVueMainEntry,
   nvueJsPreprocessOptions,
   nvueHtmlPreprocessOptions,
-  getTemplatePath
+  getTemplatePath,
+  uts
 } = require('@dcloudio/uni-cli-shared')
 const fileLoader = require('@dcloudio/uni-cli-shared/lib/file-loader')
 const {
@@ -179,6 +180,13 @@ const rules = [webpack.version[0] > 4 ? {
 {
   resourceQuery: /vue&type=template/,
   use: [htmlPreprocessorLoader]
+},
+{
+  type: 'javascript/auto',
+  resourceQuery: /uts-proxy/,
+  use: [{
+    loader: require.resolve('@dcloudio/uni-cli-shared/lib/uts/uts-loader.js')
+  }]
 }
 ].concat(cssLoaders)
 
@@ -220,8 +228,10 @@ if (process.env.UNI_USING_V3_NATIVE) {
         return ''
       }
     }]
-    plugins.push(new CopyWebpackPlugin(CopyWebpackPluginVersion > 5 ? { patterns } : patterns))
-  } catch (e) { }
+    plugins.push(new CopyWebpackPlugin(CopyWebpackPluginVersion > 5 ? {
+      patterns
+    } : patterns))
+  } catch (e) {}
 }
 
 if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
@@ -321,7 +331,9 @@ if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
       }
     })
   }
-  plugins.push(new CopyWebpackPlugin(CopyWebpackPluginVersion > 5 ? { patterns } : patterns))
+  plugins.push(new CopyWebpackPlugin(CopyWebpackPluginVersion > 5 ? {
+    patterns
+  } : patterns))
 }
 
 try {
@@ -334,7 +346,7 @@ try {
       dir: process.env.UNI_INPUT_DIR
     }))
   }
-} catch (e) { }
+} catch (e) {}
 
 module.exports = function () {
   return {
@@ -361,7 +373,9 @@ module.exports = function () {
           }
         })
       ]
-    }, webpack.version[0] > 4 ? {} : { namedModules: false }),
+    }, webpack.version[0] > 4 ? {} : {
+      namedModules: false
+    }),
     output: {
       path: process.env.UNI_OUTPUT_DIR,
       filename: '[name].js'
@@ -382,12 +396,16 @@ module.exports = function () {
           '?' +
           JSON.stringify({
             type: 'stat'
-          })
+          }),
+        '@vue/composition-api': require.resolve('@dcloudio/vue-cli-plugin-uni/packages/@vue/composition-api')
       },
       modules: [
         'node_modules',
         path.resolve(process.env.UNI_CLI_CONTEXT, 'node_modules'),
         path.resolve(process.env.UNI_INPUT_DIR, 'node_modules')
+      ],
+      plugins: [
+        new uts.UTSResolverPlugin()
       ]
     },
     resolveLoader: {
