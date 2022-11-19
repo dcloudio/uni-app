@@ -1,33 +1,33 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`dom minify = true 1`] = `"[[0,[\\"VIEW\\",\\"id\\",\\"view\\",\\"hidden\\",true]],[3,3,0,0,-1,{\\"a\\":[[1,2]]}],[6,3,3,4]]"`;
+exports[`dom minify = true 1`] = `"[[0,["VIEW","id","view","hidden",true]],[3,3,0,0,-1,{"a":[[1,2]]}],[6,3,3,4]]"`;
 
-exports[`dom minify = true 2`] = `"[[0,[\\"VIEW\\",\\"id\\",\\"view\\",\\"hidden\\",true]],[\\"create\\",3,\\"VIEW\\",0,-1,{\\"a\\":{\\"id\\":\\"view\\"}}],[\\"setAttr\\",3,\\"hidden\\",true]]"`;
+exports[`dom minify = true 2`] = `"[[0,["VIEW","id","view","hidden",true]],["create",3,"VIEW",0,-1,{"a":{"id":"view"}}],["setAttr",3,"hidden",true]]"`;
 
-exports[`dom minify = true 3`] = `"[[0,[\\"hidden\\"]],[7,3,0]]"`;
+exports[`dom minify = true 3`] = `"[[0,["hidden"]],[7,3,0]]"`;
 
-exports[`dom minify = true 4`] = `"[[0,[\\"hidden\\"]],[\\"removeAttr\\",3,\\"hidden\\"]]"`;
+exports[`dom minify = true 4`] = `"[[0,["hidden"]],["removeAttr",3,"hidden"]]"`;
 
-exports[`dom minify = true 5`] = `"[[0,[\\"text\\"]],[10,3,0]]"`;
+exports[`dom minify = true 5`] = `"[[0,["text"]],[10,3,0]]"`;
 
-exports[`dom minify = true 6`] = `"[[0,[\\"text\\"]],[\\"setText\\",3,\\"text\\"]]"`;
+exports[`dom minify = true 6`] = `"[[0,["text"]],["setText",3,"text"]]"`;
 
 exports[`dom minify = true 7`] = `"[[0,[]],[5,3]]"`;
 
-exports[`dom minify = true 8`] = `"[[0,[]],[\\"remove\\",3]]"`;
+exports[`dom minify = true 8`] = `"[[0,[]],["remove",3]]"`;
 
-exports[`dom minify = true 9`] = `"[[0,[\\"#text\\",\\"hello\\"]],[3,4,0,0,-1,{\\"t\\":1}]]"`;
+exports[`dom minify = true 9`] = `"[[0,["#text","hello"]],[3,4,0,0,-1,{"t":1}]]"`;
 
-exports[`dom minify = true 10`] = `"[[0,[\\"#text\\",\\"hello\\"]],[\\"create\\",4,\\"#text\\",0,-1,{\\"t\\":\\"hello\\"}]]"`;
+exports[`dom minify = true 10`] = `"[[0,["#text","hello"]],["create",4,"#text",0,-1,{"t":"hello"}]]"`;
 
-exports[`dom minify = true 11`] = `"[[0,[\\"onClick\\"]],[8,4,0,0]]"`;
+exports[`dom minify = true 11`] = `"[[0,["onClick"]],[8,4,0,0]]"`;
 
-exports[`dom minify = true 12`] = `"[[0,[\\"onClick\\"]],[\\"addEvent\\",4,\\"onClick\\",0]]"`;
+exports[`dom minify = true 12`] = `"[[0,["onClick"]],["addEvent",4,"onClick",0]]"`;
 
-exports[`dom minify = true 13`] = `"[[0,[\\"onClick\\"]],[9,4,0]]"`;
+exports[`dom minify = true 13`] = `"[[0,["onClick"]],[9,4,0]]"`;
 
-exports[`dom minify = true 14`] = `"[[0,[\\"onClick\\"]],[\\"removeEvent\\",4,\\"onClick\\"]]"`;
+exports[`dom minify = true 14`] = `"[[0,["onClick"]],["removeEvent",4,"onClick"]]"`;
 
-exports[`dom minify = true 15`] = `"[[0,[\\"onClickCapture\\"]],[8,4,0,3]]"`;
+exports[`dom minify = true 15`] = `"[[0,["onClickCapture"]],[8,4,0,3]]"`;
 
-exports[`dom minify = true 16`] = `"[[0,[\\"onClickCapture\\"]],[\\"addEvent\\",4,\\"onClickCapture\\",3]]"`;
+exports[`dom minify = true 16`] = `"[[0,["onClickCapture"]],["addEvent",4,"onClickCapture",3]]"`;

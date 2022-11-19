@@ -5,7 +5,7 @@ exports[`wxs parseWxsCode 1`] = `
   <script>
   export default {}
   </script>
-  <renderjs  name=\\"echarts\\">
+  <renderjs  name="echarts">
   export default{
       mounted(){
           console.log('mounted')
@@ -28,7 +28,7 @@ exports[`wxs parseWxsCode 2`] = `
     <script>
     export default {}
     </script>
-    <wxs  name=\\"echarts\\">
+    <wxs  name="echarts">
     export default{
         mounted(){
             console.log('mounted')
