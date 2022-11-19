@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`code-frame generateCodeFrame 1`] = `
-Object {
+{
   "code": "36 |   */
 37 |  const MEDIA_PROJECTIONS_API_16 = arrayOf(
 38 |    MediaStore.Images.ImageColumns.DATA,
@@ -17,7 +17,7 @@ Object {
 `;
 
 exports[`code-frame generateCodeFrame 2`] = `
-Object {
+{
   "code": "76 |        }
 77 |        lastFileObserverTime = System.currentTimeMillis()
 78 |        listenOption!.onImageCatchChange(newPath)
@@ -33,7 +33,7 @@ Object {
 `;
 
 exports[`code-frame generateCodeFrame 3`] = `
-Object {
+{
   "code": "124|  
 125|  
 126|      if (cursor == null) {
@@ -49,7 +49,7 @@ Object {
 `;
 
 exports[`code-frame generateCodeFrame 4`] = `
-Object {
+{
   "code": "133|  
 134|      // 获取各列的索引
 135|      let dataIndex = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA)
@@ -65,7 +65,7 @@ Object {
 `;
 
 exports[`code-frame generateCodeFrame 5`] = `
-Object {
+{
   "code": "141|      let data = cursor.getString(dataIndex)
 142|      let dateTaken = cursor.getLong(dateTakenIndex)
 143|      let width = 0;
@@ -81,7 +81,7 @@ Object {
 `;
 
 exports[`code-frame generateCodeFrame 6`] = `
-Object {
+{
   "code": "142|      let dateTaken = cursor.getLong(dateTakenIndex)
 143|      let width = 0;
 144|      let height = 0;
@@ -97,7 +97,7 @@ Object {
 `;
 
 exports[`code-frame generateCodeFrame 7`] = `
-Object {
+{
   "code": "180|    if (checkScreenShot(data, dateTaken, width, height)) {
 181|      if (!checkCallback(data)) {
 182|        listenOption!.onImageCatchChange(data)
@@ -113,7 +113,7 @@ Object {
 `;
 
 exports[`code-frame generateCodeFrame 8`] = `
-Object {
+{
   "code": "248|    try {
 249|      let windowManager = getUniActivity()!.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 250|      let defaultDisplay = windowManager.defaultDisplay
@@ -129,7 +129,7 @@ Object {
 `;
 
 exports[`code-frame generateCodeFrame 9`] = `
-Object {
+{
   "code": "249|      let windowManager = getUniActivity()!.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 250|      let defaultDisplay = windowManager.defaultDisplay
 251|      defaultDisplay.getRealSize(screenSize)
@@ -145,7 +145,7 @@ Object {
 `;
 
 exports[`code-frame generateCodeFrame 10`] = `
-Object {
+{
   "code": "308|      var directory_screenshot: File;
 309|  
 310|      var directory_pictures = File(Environment.getExternalStorageDirectory(), Environment.DIRECTORY_PICTURES);
@@ -161,13 +161,13 @@ Object {
 `;
 
 exports[`code-frame generateCodeFrame 11`] = `
-Object {
+{
   "code": "309|  
 310|      var directory_pictures = File(Environment.getExternalStorageDirectory(), Environment.DIRECTORY_PICTURES);
 311|      var directory_dcim = File(Environment.getExternalStorageDirectory(), Environment.DIRECTORY_DCIM);
    |                                            ^
 312|  
-313|      if (Build.MANUFACTURER.equals(\\"Xiaomi\\", true)) {",
+313|      if (Build.MANUFACTURER.equals("Xiaomi", true)) {",
   "column": 42,
   "file": "uni_modules/uts-screenshot-listener/utssdk/app-android/index.uts",
   "line": 311,
@@ -177,7 +177,7 @@ Object {
 `;
 
 exports[`code-frame generateCodeFrameWithSourceMapPath 1`] = `
-Object {
+{
   "code": "36 |   */
 37 |  const MEDIA_PROJECTIONS_API_16 = arrayOf(
 38 |    MediaStore.Images.ImageColumns.DATA,
@@ -193,7 +193,7 @@ Object {
 `;
 
 exports[`code-frame generateCodeFrameWithSourceMapPath 2`] = `
-Object {
+{
   "code": "76 |        }
 77 |        lastFileObserverTime = System.currentTimeMillis()
 78 |        listenOption!.onImageCatchChange(newPath)
@@ -209,7 +209,7 @@ Object {
 `;
 
 exports[`code-frame generateCodeFrameWithSourceMapPath 3`] = `
-Object {
+{
   "code": "124|  
 125|  
 126|      if (cursor == null) {
@@ -225,7 +225,7 @@ Object {
 `;
 
 exports[`code-frame generateCodeFrameWithSourceMapPath 4`] = `
-Object {
+{
   "code": "133|  
 134|      // 获取各列的索引
 135|      let dataIndex = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA)
@@ -241,7 +241,7 @@ Object {
 `;
 
 exports[`code-frame generateCodeFrameWithSourceMapPath 5`] = `
-Object {
+{
   "code": "141|      let data = cursor.getString(dataIndex)
 142|      let dateTaken = cursor.getLong(dateTakenIndex)
 143|      let width = 0;
@@ -257,7 +257,7 @@ Object {
 `;
 
 exports[`code-frame generateCodeFrameWithSourceMapPath 6`] = `
-Object {
+{
   "code": "142|      let dateTaken = cursor.getLong(dateTakenIndex)
 143|      let width = 0;
 144|      let height = 0;
@@ -273,7 +273,7 @@ Object {
 `;
 
 exports[`code-frame generateCodeFrameWithSourceMapPath 7`] = `
-Object {
+{
   "code": "180|    if (checkScreenShot(data, dateTaken, width, height)) {
 181|      if (!checkCallback(data)) {
 182|        listenOption!.onImageCatchChange(data)
@@ -289,7 +289,7 @@ Object {
 `;
 
 exports[`code-frame generateCodeFrameWithSourceMapPath 8`] = `
-Object {
+{
   "code": "248|    try {
 249|      let windowManager = getUniActivity()!.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 250|      let defaultDisplay = windowManager.defaultDisplay
@@ -305,7 +305,7 @@ Object {
 `;
 
 exports[`code-frame generateCodeFrameWithSourceMapPath 9`] = `
-Object {
+{
   "code": "249|      let windowManager = getUniActivity()!.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 250|      let defaultDisplay = windowManager.defaultDisplay
 251|      defaultDisplay.getRealSize(screenSize)
@@ -321,7 +321,7 @@ Object {
 `;
 
 exports[`code-frame generateCodeFrameWithSourceMapPath 10`] = `
-Object {
+{
   "code": "308|      var directory_screenshot: File;
 309|  
 310|      var directory_pictures = File(Environment.getExternalStorageDirectory(), Environment.DIRECTORY_PICTURES);
@@ -337,13 +337,13 @@ Object {
 `;
 
 exports[`code-frame generateCodeFrameWithSourceMapPath 11`] = `
-Object {
+{
   "code": "309|  
 310|      var directory_pictures = File(Environment.getExternalStorageDirectory(), Environment.DIRECTORY_PICTURES);
 311|      var directory_dcim = File(Environment.getExternalStorageDirectory(), Environment.DIRECTORY_DCIM);
    |                                            ^
 312|  
-313|      if (Build.MANUFACTURER.equals(\\"Xiaomi\\", true)) {",
+313|      if (Build.MANUFACTURER.equals("Xiaomi", true)) {",
   "column": 42,
   "file": "uni_modules/uts-screenshot-listener/utssdk/app-android/index.uts",
   "line": 311,

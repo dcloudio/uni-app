@@ -23,6 +23,7 @@
     "fast-glob": "^3.2.11",
     "fs-extra": "^10.0.0",
     "jsonc-parser": "^3.0.0",
+    "md5-file": "^5.0.0",
     "source-map": "^0.7.4"
   },
   "devDependencies": {
