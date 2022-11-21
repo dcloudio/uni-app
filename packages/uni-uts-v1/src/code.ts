@@ -14,7 +14,7 @@ import {
   TsTypeAnnotation,
   VariableDeclaration,
 } from '../types/types'
-import { createResolveTypeReferenceName } from './utils'
+import { createResolveTypeReferenceName, ERR_MSG_PLACEHOLDER } from './utils'
 import { isInHBuilderX } from './shared'
 interface GenProxyCodeOptions {
   is_uni_modules: boolean
@@ -30,6 +30,7 @@ export async function genProxyCode(
   return `
 import { initUtsProxyClass, initUtsProxyFunction, initUtsPackageName, initUtsIndexClassName, initUtsClassName } from '@dcloudio/uni-app'
 const name = '${name}'
+const errMsg = \`${ERR_MSG_PLACEHOLDER}\`
 const is_uni_modules = ${is_uni_modules}
 const pkg = initUtsPackageName(name, is_uni_modules)
 const cls = initUtsIndexClassName(name, is_uni_modules)
@@ -66,7 +67,7 @@ function genModuleCode(decls: ProxyDecl[]) {
     if (decl.type === 'Class') {
       if (decl.isDefault) {
         codes.push(
-          `export default initUtsProxyClass(Object.assign({ package: pkg, class: initUtsClassName(name, '${
+          `export default initUtsProxyClass(Object.assign({ errMsg, package: pkg, class: initUtsClassName(name, '${
             decl.cls
           }', is_uni_modules) }, ${JSON.stringify(decl.options)} ))`
         )
@@ -74,7 +75,7 @@ function genModuleCode(decls: ProxyDecl[]) {
         codes.push(
           `export const ${
             decl.cls
-          } = initUtsProxyClass(Object.assign({ package: pkg, class: initUtsClassName(name, '${
+          } = initUtsProxyClass(Object.assign({ errMsg, package: pkg, class: initUtsClassName(name, '${
             decl.cls
           }', is_uni_modules) }, ${JSON.stringify(decl.options)} ))`
         )
@@ -84,7 +85,7 @@ function genModuleCode(decls: ProxyDecl[]) {
         codes.push(
           `export default initUtsProxyFunction(${
             decl.async
-          }, { main: true, package: pkg, class: cls, name: '${
+          }, { errMsg, main: true, package: pkg, class: cls, name: '${
             decl.method
           }', params: ${JSON.stringify(decl.params)}})`
         )
@@ -92,7 +93,7 @@ function genModuleCode(decls: ProxyDecl[]) {
         codes.push(
           `export const ${decl.method} = initUtsProxyFunction(${
             decl.async
-          }, { main: true, package: pkg, class: cls, name: '${
+          }, { errMsg, main: true, package: pkg, class: cls, name: '${
             decl.method
           }', params: ${JSON.stringify(decl.params)}})`
         )

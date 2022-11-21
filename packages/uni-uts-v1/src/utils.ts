@@ -18,6 +18,8 @@ interface ToOptions {
 export type ToKotlinOptions = ToOptions
 export type ToSwiftOptions = ToOptions
 
+export const ERR_MSG_PLACEHOLDER = `___ERR_MSG___`
+
 export function resolveUTSSourceMapPath(_filename: string) {
   return resolveSourceMapPath()
 }

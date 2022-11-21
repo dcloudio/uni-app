@@ -70,6 +70,13 @@ describe('uts-module', () => {
       }
       preparePermission(options, callback)
       preparePermission(options, callback)
+
+      const errMsg = 'xx插件编译失败，无法使用'
+      expect(
+        initUtsProxyFunction(async, {
+          errMsg,
+        } as any)
+      ).toThrowError(errMsg)
     })
   })
   test(`initProxyClass`, () => {
@@ -101,5 +108,23 @@ describe('uts-module', () => {
     wifi.count
     WifiManager.staticCount
     WifiManager.staticPreparePermission(1)
+
+    const errMsg = 'xx插件编译失败，无法使用'
+    const WifiManagerError = initUtsProxyClass({
+      errMsg,
+      staticMethods: {
+        staticPreparePermission: {
+          params: [],
+        },
+      },
+      staticProps: ['staticCount'],
+    } as any)
+    expect(() => {
+      new WifiManagerError()
+    }).toThrowError(errMsg)
+    expect(WifiManagerError.staticPreparePermission).toThrowError(errMsg)
+    expect(() => {
+      WifiManagerError.staticCount
+    }).toThrowError(errMsg)
   })
 })

@@ -4,7 +4,7 @@ import { runKotlinProd, runKotlinDev } from './kotlin'
 import { runSwiftProd, runSwiftDev } from './swift'
 
 import { genProxyCode, resolvePlatformIndex, resolveRootIndex } from './code'
-import { resolvePackage } from './utils'
+import { ERR_MSG_PLACEHOLDER, resolvePackage } from './utils'
 import { parseUtsSwiftPluginStacktrace } from './stacktrace'
 import { resolveUtsPluginSourceMapFile } from './sourceMap'
 import { isWindows } from './shared'
@@ -23,6 +23,14 @@ export * from './sourceMap'
 export { compile as toKotlin } from './kotlin'
 export { compile as toSwift } from './swift'
 
+function parseErrMsg(code: string, errMsg: string) {
+  return code.replace(ERR_MSG_PLACEHOLDER, errMsg)
+}
+
+function compileErrMsg(id: string) {
+  return `uts插件[${id}]编译失败，无法使用`
+}
+
 export async function compile(module: string) {
   const pkg = resolvePackage(module)
   if (!pkg) {
@@ -30,6 +38,7 @@ export async function compile(module: string) {
   }
   const deps: string[] = []
   const code = await genProxyCode(module, pkg)
+  let errMsg = ''
   if (process.env.NODE_ENV !== 'development') {
     // 生产模式 支持同时生成 android 和 ios 的 uts 插件
     if (
@@ -93,6 +102,7 @@ export async function compile(module: string) {
           }
           if (res.type === 'swift') {
             if (res.code) {
+              errMsg = compileErrMsg(pkg.id)
               console.error(
                 `error: ` +
                   (await parseUtsSwiftPluginStacktrace({
@@ -114,18 +124,24 @@ export async function compile(module: string) {
               files.push(...JSON.parse(process.env.UNI_APP_UTS_CHANGED_FILES))
             } catch (e) {}
           }
-          if (res.changed) {
+          if (res.changed && res.changed.length) {
             files.push(...res.changed)
+          } else {
+            if (res.type === 'kotlin') {
+              errMsg = compileErrMsg(pkg.id)
+            }
           }
           process.env.UNI_APP_UTS_CHANGED_FILES = JSON.stringify([
             ...new Set(files),
           ])
+        } else {
+          errMsg = compileErrMsg(pkg.id)
         }
       }
     }
   }
   return {
-    code,
+    code: parseErrMsg(code, errMsg),
     deps,
   }
 }
