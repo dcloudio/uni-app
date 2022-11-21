@@ -43,6 +43,10 @@ describe('uts-module', () => {
         package: 'uts.modules.TestPlugin',
         class: 'TestKt',
         name: 'preparePermission',
+        params: [
+          { name: 'options', type: 'PermissionOptions' },
+          { name: 'callback', type: 'UTSCallback' },
+        ],
       })
       /**
        * {"package":"testPlugin","class":"","method":"preparePermission","params":[{"name":"foo","age":10,"success":7,"fail":8},9]}
@@ -72,12 +76,21 @@ describe('uts-module', () => {
     const WifiManager = initUtsProxyClass({
       package: 'uni.modules.TestPlugin',
       class: 'WifiManager',
+      constructor: {
+        params: [],
+      },
       methods: {
-        preparePermission: {},
+        preparePermission: {
+          params: [
+            { name: 'options', type: 'PermissionOptions' },
+            { name: 'callback', type: 'UTSCallback' },
+          ],
+        },
       },
       staticMethods: {
         staticPreparePermission: {
           async: true,
+          params: [{ name: 'num', type: 'number' }],
         },
       },
       props: ['count'],

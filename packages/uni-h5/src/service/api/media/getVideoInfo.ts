@@ -8,7 +8,7 @@ import {
 
 import { urlToFile } from '../../../helpers/file'
 
-export const getVideoInfo = <API_TYPE_GET_VIDEO_INFO>defineAsyncApi(
+export const getVideoInfo = defineAsyncApi<API_TYPE_GET_VIDEO_INFO>(
   API_GET_VIDEO_INFO,
   ({ src }, { resolve, reject }) => {
     urlToFile(src, true)

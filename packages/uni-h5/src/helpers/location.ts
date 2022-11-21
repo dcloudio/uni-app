@@ -1,3 +1,7 @@
+import { extend } from '@vue/shared'
+import { getJSONP } from './getJSONP'
+import { loadMaps } from '../view/components/map/maps'
+
 export interface Point {
   latitude: number
   longitude: number
@@ -17,6 +21,8 @@ export enum MapType {
   AMAP = 'AMap',
   UNKNOWN = '',
 }
+
+export type GeoRes = (coords: GeolocationCoordinates, skip?: boolean) => void
 
 export function getMapInfo() {
   if (__uniConfig.qqMapKey) {
@@ -54,4 +60,72 @@ export const getIsAMap = () => {
     hasGetIsAMap = true
     return (IS_AMAP = getMapInfo().type === MapType.AMAP)
   }
+}
+
+export function translateGeo(
+  type: string | undefined,
+  coords: GeolocationCoordinates,
+  skip?: boolean
+) {
+  const mapInfo = getMapInfo()
+  const wgs84Map = [MapType.GOOGLE]
+  if (
+    (type && type.toUpperCase() === 'WGS84') ||
+    wgs84Map.includes(mapInfo.type) ||
+    skip
+  ) {
+    return Promise.resolve(coords)
+  }
+  if (mapInfo.type === MapType.QQ) {
+    return new Promise((resolve: GeoRes) => {
+      getJSONP(
+        `https://apis.map.qq.com/jsapi?qt=translate&type=1&points=${coords.longitude},${coords.latitude}&key=${mapInfo.key}&output=jsonp&pf=jsapi&ref=jsapi`,
+        {
+          callback: 'cb',
+        },
+        (res: any) => {
+          if (
+            'detail' in res &&
+            'points' in res.detail &&
+            res.detail.points.length
+          ) {
+            const location = res.detail.points[0]
+            resolve(
+              extend({}, coords, {
+                longitude: location.lng,
+                latitude: location.lat,
+              })
+            )
+          } else {
+            resolve(coords)
+          }
+        },
+        () => resolve(coords)
+      )
+    })
+  }
+  if (mapInfo.type === MapType.AMAP) {
+    return new Promise((resolve: GeoRes) => {
+      loadMaps([], () => {
+        window.AMap.convertFrom(
+          [coords.longitude, coords.latitude],
+          'gps',
+          (_: string, res: any) => {
+            if (res.info === 'ok' && res.locations.length) {
+              const { lat, lng } = res.locations[0]
+              resolve(
+                extend({}, coords, {
+                  longitude: lng,
+                  latitude: lat,
+                })
+              )
+            } else {
+              resolve(coords)
+            }
+          }
+        )
+      })
+    })
+  }
+  return Promise.reject(new Error('translateGeo faild'))
 }

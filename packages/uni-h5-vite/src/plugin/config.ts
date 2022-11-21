@@ -50,10 +50,10 @@ export function createConfig(options: {
         server.host = userServer.host
       }
       if (hasOwn(userServer, 'fs')) {
-        extend(server.fs, userServer.fs)
+        extend(server.fs!, userServer.fs)
       }
       if (hasOwn(userServer, 'watch')) {
-        extend(server.watch, userServer.watch)
+        extend(server.watch!, userServer.watch)
       }
     }
 

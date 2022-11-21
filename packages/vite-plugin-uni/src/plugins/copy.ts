@@ -35,7 +35,7 @@ export function uniCopyPlugin({
   })
   const platform = process.env.UNI_PLATFORM
   // 非当前平台 static 目录
-  const platformStaticDirs = getPlatforms()
+  const ignorePlatformStaticDirs = getPlatforms()
     .filter((p) => {
       if (platform === 'app') {
         return p !== 'app' && p !== 'app-plus'
@@ -51,7 +51,9 @@ export function uniCopyPlugin({
       watchOptions: {
         ignored(path: string) {
           const normalizedPath = normalizePath(path)
-          if (platformStaticDirs.find((dir) => normalizedPath.includes(dir))) {
+          if (
+            ignorePlatformStaticDirs.find((dir) => normalizedPath.includes(dir))
+          ) {
             return fs.statSync(normalizedPath).isDirectory()
           }
           return false

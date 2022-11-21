@@ -10,7 +10,7 @@ import LoctaionPicker, { Props, Poi } from './LoctaionPicker'
 
 let state: Props | null = null
 
-export const chooseLocation = <API_TYPE_CHOOSE_LOCATION>defineAsyncApi(
+export const chooseLocation = defineAsyncApi<API_TYPE_CHOOSE_LOCATION>(
   API_CHOOSE_LOCATION,
   (args, { resolve, reject }) => {
     if (!state) {

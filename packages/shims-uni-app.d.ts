@@ -44,6 +44,7 @@ declare namespace UniNamespace {
       strict: boolean
       base: string
       assets: string
+      routerBase: string
     }
     nvue?: {
       'flex-direction': 'column' | 'row'

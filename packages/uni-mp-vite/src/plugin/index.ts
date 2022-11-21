@@ -149,6 +149,9 @@ export function uniMiniProgramPlugin(
             }),
           },
         },
+        optimizeDeps: {
+          disabled: true,
+        },
         build: buildOptions(),
       }
     },

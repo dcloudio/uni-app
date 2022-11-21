@@ -640,7 +640,7 @@ string | number
 
 export declare const SLOT_DEFAULT_NAME = "d";
 
-export declare function sortObject<T>(obj: T): T;
+export declare function sortObject<T extends Object>(obj: T): T;
 
 export declare function stringifyQuery(obj?: Record<string, any>, encodeStr?: typeof encodeURIComponent): string;
 

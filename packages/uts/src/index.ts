@@ -4,8 +4,9 @@ import glob from 'fast-glob'
 
 import chokidar from 'chokidar'
 
-import { toKotlin, toSwift } from './api'
+import { bundleKotlin, bundleSwift, toKotlin, toSwift } from './api'
 import {
+  UtsBundleOptions,
   UtsInputOptions,
   UtsOptions,
   UtsOutputOptions,
@@ -316,7 +317,16 @@ function buildFile(
   })
 }
 
-export { parse, bundle } from './api'
+export { parse, bundleKotlin, bundleSwift } from './api'
+
+export function bundle(target: UtsTarget, opts: UtsBundleOptions) {
+  if (target === UtsTarget.KOTLIN) {
+    return bundleKotlin(opts)
+  } else if (target === UtsTarget.SWIFT) {
+    return bundleSwift(opts)
+  }
+  return Promise.resolve({})
+}
 
 export function runDev(target: UtsTarget, opts: ToOptions) {
   opts = parseOptions('dev', target, opts)

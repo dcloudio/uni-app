@@ -3992,25 +3992,10 @@ function _getPx(val) {
   }
   return Number(val) || 0;
 }
-function useMovableViewState(props2, trigger, rootRef) {
+function useMovableViewLayout(rootRef, _scale, _adjustScale) {
   const movableAreaWidth = vue.inject("movableAreaWidth", vue.ref(0));
   const movableAreaHeight = vue.inject("movableAreaHeight", vue.ref(0));
-  const _isMounted = vue.inject("_isMounted", vue.ref(false));
   const movableAreaRootRef = vue.inject("movableAreaRootRef");
-  vue.inject("addMovableViewContext", () => {
-  });
-  vue.inject("removeMovableViewContext", () => {
-  });
-  const xSync = vue.ref(_getPx(props2.x));
-  const ySync = vue.ref(_getPx(props2.y));
-  const scaleValueSync = vue.ref(Number(props2.scaleValue) || 1);
-  const width = vue.ref(0);
-  const height = vue.ref(0);
-  const minX = vue.ref(0);
-  const minY = vue.ref(0);
-  const maxX = vue.ref(0);
-  const maxY = vue.ref(0);
-  let _SFA = null;
   const _offset = {
     x: 0,
     y: 0
@@ -4019,29 +4004,57 @@ function useMovableViewState(props2, trigger, rootRef) {
     x: 0,
     y: 0
   };
-  let _scale = 1;
-  let _translateX = 0;
-  let _translateY = 0;
+  const width = vue.ref(0);
+  const height = vue.ref(0);
+  const minX = vue.ref(0);
+  const minY = vue.ref(0);
+  const maxX = vue.ref(0);
+  const maxY = vue.ref(0);
+  function _updateBoundary() {
+    let x = 0 - _offset.x + _scaleOffset.x;
+    let _width = movableAreaWidth.value - width.value - _offset.x - _scaleOffset.x;
+    minX.value = Math.min(x, _width);
+    maxX.value = Math.max(x, _width);
+    let y = 0 - _offset.y + _scaleOffset.y;
+    let _height = movableAreaHeight.value - height.value - _offset.y - _scaleOffset.y;
+    minY.value = Math.min(y, _height);
+    maxY.value = Math.max(y, _height);
+  }
+  function _updateOffset() {
+    _offset.x = p(rootRef.value, movableAreaRootRef.value);
+    _offset.y = f(rootRef.value, movableAreaRootRef.value);
+  }
+  function _updateWH(scale) {
+    scale = scale || _scale.value;
+    scale = _adjustScale(scale);
+    let rect = rootRef.value.getBoundingClientRect();
+    height.value = rect.height / _scale.value;
+    width.value = rect.width / _scale.value;
+    let _height = height.value * scale;
+    let _width = width.value * scale;
+    _scaleOffset.x = (_width - width.value) / 2;
+    _scaleOffset.y = (_height - height.value) / 2;
+  }
+  return {
+    _updateBoundary,
+    _updateOffset,
+    _updateWH,
+    _scaleOffset,
+    minX,
+    minY,
+    maxX,
+    maxY
+  };
+}
+function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, maxY, minX, minY, _translateX, _translateY, _SFA, _FA, _adjustScale, trigger) {
   const dampingNumber = vue.computed(() => {
     let val = Number(props2.damping);
     return isNaN(val) ? 20 : val;
   });
-  const frictionNumber = vue.computed(() => {
-    let val = Number(props2.friction);
-    return isNaN(val) || val <= 0 ? 2 : val;
-  });
-  const scaleMinNumber = vue.computed(() => {
-    let val = Number(props2.scaleMin);
-    return isNaN(val) ? 0.5 : val;
-  });
-  const scaleMaxNumber = vue.computed(() => {
-    let val = Number(props2.scaleMax);
-    return isNaN(val) ? 10 : val;
-  });
   const xMove = vue.computed(() => props2.direction === "all" || props2.direction === "horizontal");
   const yMove = vue.computed(() => props2.direction === "all" || props2.direction === "vertical");
-  const _STD = new STD(1, 9 * Math.pow(dampingNumber.value, 2) / 40, dampingNumber.value);
-  new Friction(1, frictionNumber.value);
+  const xSync = vue.ref(_getPx(props2.x));
+  const ySync = vue.ref(_getPx(props2.y));
   vue.watch(() => props2.x, (val) => {
     xSync.value = _getPx(val);
   });
@@ -4054,78 +4067,7 @@ function useMovableViewState(props2, trigger, rootRef) {
   vue.watch(ySync, (val) => {
     _setY(val);
   });
-  vue.watch(() => props2.disabled, () => {
-    __handleTouchStart();
-  });
-  vue.watch(() => props2.scaleValue, (val) => {
-    scaleValueSync.value = Number(val) || 0;
-  });
-  vue.watch(scaleValueSync, (val) => {
-    _setScaleValue(val);
-  });
-  vue.watch(scaleMinNumber, () => {
-    _setScaleMinOrMax();
-  });
-  vue.watch(scaleMaxNumber, () => {
-    _setScaleMinOrMax();
-  });
-  function FAandSFACancel() {
-    if (_SFA) {
-      _SFA.cancel();
-    }
-  }
-  function _setX(val) {
-    if (xMove.value) {
-      if (val + _scaleOffset.x === _translateX) {
-        return _translateX;
-      } else {
-        if (_SFA) {
-          _SFA.cancel();
-        }
-        _animationTo(val + _scaleOffset.x, ySync.value + _scaleOffset.y, _scale);
-      }
-    }
-    return val;
-  }
-  function _setY(val) {
-    if (yMove.value) {
-      if (val + _scaleOffset.y === _translateY) {
-        return _translateY;
-      } else {
-        if (_SFA) {
-          _SFA.cancel();
-        }
-        _animationTo(xSync.value + _scaleOffset.x, val + _scaleOffset.y, _scale);
-      }
-    }
-    return val;
-  }
-  function _setScaleMinOrMax() {
-    if (!props2.scale) {
-      return false;
-    }
-    _updateScale(_scale, true);
-  }
-  function _setScaleValue(scale) {
-    if (!props2.scale) {
-      return false;
-    }
-    scale = _adjustScale(scale);
-    _updateScale(scale, true);
-    return scale;
-  }
-  function __handleTouchStart() {
-    {
-      if (!props2.disabled) {
-        FAandSFACancel();
-        if (xMove.value)
-          ;
-        if (yMove.value)
-          ;
-        rootRef.value.style.willChange = "transform";
-      }
-    }
-  }
+  const _STD = new STD(1, 9 * Math.pow(dampingNumber.value, 2) / 40, dampingNumber.value);
   function _getLimitXY(x, y) {
     let outOfBounds = false;
     if (x > maxX.value) {
@@ -4152,63 +4094,24 @@ function useMovableViewState(props2, trigger, rootRef) {
       outOfBounds
     };
   }
-  function _updateOffset() {
-    _offset.x = p(rootRef.value, movableAreaRootRef.value);
-    _offset.y = f(rootRef.value, movableAreaRootRef.value);
-  }
-  function _updateWH(scale) {
-    scale = scale || _scale;
-    scale = _adjustScale(scale);
-    let rect = rootRef.value.getBoundingClientRect();
-    height.value = rect.height / _scale;
-    width.value = rect.width / _scale;
-    let _height = height.value * scale;
-    let _width = width.value * scale;
-    _scaleOffset.x = (_width - width.value) / 2;
-    _scaleOffset.y = (_height - height.value) / 2;
-  }
-  function _updateBoundary() {
-    let x = 0 - _offset.x + _scaleOffset.x;
-    let _width = movableAreaWidth.value - width.value - _offset.x - _scaleOffset.x;
-    minX.value = Math.min(x, _width);
-    maxX.value = Math.max(x, _width);
-    let y = 0 - _offset.y + _scaleOffset.y;
-    let _height = movableAreaHeight.value - height.value - _offset.y - _scaleOffset.y;
-    minY.value = Math.min(y, _height);
-    maxY.value = Math.max(y, _height);
-  }
-  function _updateScale(scale, animat) {
-    if (props2.scale) {
-      scale = _adjustScale(scale);
-      _updateWH(scale);
-      _updateBoundary();
-      const limitXY = _getLimitXY(_translateX, _translateY);
-      const x = limitXY.x;
-      const y = limitXY.y;
-      if (animat) {
-        _animationTo(x, y, scale, "", true, true);
-      } else {
-        _requestAnimationFrame(function() {
-          _setTransform(x, y, scale, "", true, true);
-        });
-      }
+  function FAandSFACancel() {
+    if (_FA) {
+      _FA.cancel();
     }
-  }
-  function _adjustScale(scale) {
-    scale = Math.max(0.5, scaleMinNumber.value, scale);
-    scale = Math.min(10, scaleMaxNumber.value, scale);
-    return scale;
+    if (_SFA) {
+      _SFA.cancel();
+    }
   }
   function _animationTo(x, y, scale, source, r, o) {
     FAandSFACancel();
     if (!xMove.value) {
-      x = _translateX;
+      x = _translateX.value;
     }
     if (!yMove.value) {
-      y = _translateY;
+      y = _translateY.value;
     }
     if (!props2.scale) {
-      scale = _scale;
+      scale = _scale.value;
     }
     let limitXY = _getLimitXY(x, y);
     x = limitXY.x;
@@ -4220,9 +4123,9 @@ function useMovableViewState(props2, trigger, rootRef) {
     _STD._springX._solution = null;
     _STD._springY._solution = null;
     _STD._springScale._solution = null;
-    _STD._springX._endPosition = _translateX;
-    _STD._springY._endPosition = _translateY;
-    _STD._springScale._endPosition = _scale;
+    _STD._springX._endPosition = _translateX.value;
+    _STD._springY._endPosition = _translateY.value;
+    _STD._springScale._endPosition = _scale.value;
     _STD.setEnd(x, y, scale, 1);
     _SFA = g(_STD, function() {
       let data = _STD.x();
@@ -4236,15 +4139,15 @@ function useMovableViewState(props2, trigger, rootRef) {
   }
   function _setTransform(x, y, scale, source = "", r, o) {
     if (!(x !== null && x.toString() !== "NaN" && typeof x === "number")) {
-      x = _translateX || 0;
+      x = _translateX.value || 0;
     }
     if (!(y !== null && y.toString() !== "NaN" && typeof y === "number")) {
-      y = _translateY || 0;
+      y = _translateY.value || 0;
     }
     x = Number(x.toFixed(1));
     y = Number(y.toFixed(1));
     scale = Number(scale.toFixed(1));
-    if (!(_translateX === x && _translateY === y)) {
+    if (!(_translateX.value === x && _translateY.value === y)) {
       if (!r) {
         trigger("change", {}, {
           x: v(x, _scaleOffset.x),
@@ -4254,11 +4157,11 @@ function useMovableViewState(props2, trigger, rootRef) {
       }
     }
     if (!props2.scale) {
-      scale = _scale;
+      scale = _scale.value;
     }
     scale = _adjustScale(scale);
     scale = +scale.toFixed(3);
-    if (o && scale !== _scale) {
+    if (o && scale !== _scale.value) {
       trigger("scale", {}, {
         x,
         y,
@@ -4268,9 +4171,244 @@ function useMovableViewState(props2, trigger, rootRef) {
     let transform = "translateX(" + x + "px) translateY(" + y + "px) translateZ(0px) scale(" + scale + ")";
     rootRef.value.style.transform = transform;
     rootRef.value.style.webkitTransform = transform;
-    _translateX = x;
-    _translateY = y;
-    _scale = scale;
+    _translateX.value = x;
+    _translateY.value = y;
+    _scale.value = scale;
+  }
+  function _revise(source) {
+    let limitXY = _getLimitXY(_translateX.value, _translateY.value);
+    let x = limitXY.x;
+    let y = limitXY.y;
+    let outOfBounds = limitXY.outOfBounds;
+    if (outOfBounds) {
+      _animationTo(x, y, _scale.value, source);
+    }
+    return outOfBounds;
+  }
+  function _setX(val) {
+    if (xMove.value) {
+      if (val + _scaleOffset.x === _translateX.value) {
+        return _translateX;
+      } else {
+        if (_SFA) {
+          _SFA.cancel();
+        }
+        _animationTo(val + _scaleOffset.x, ySync.value + _scaleOffset.y, _scale.value);
+      }
+    }
+    return val;
+  }
+  function _setY(val) {
+    if (yMove.value) {
+      if (val + _scaleOffset.y === _translateY.value) {
+        return _translateY;
+      } else {
+        if (_SFA) {
+          _SFA.cancel();
+        }
+        _animationTo(xSync.value + _scaleOffset.x, val + _scaleOffset.y, _scale.value);
+      }
+    }
+    return val;
+  }
+  return {
+    FAandSFACancel,
+    _getLimitXY,
+    _animationTo,
+    _setTransform,
+    _revise,
+    dampingNumber,
+    xMove,
+    yMove,
+    xSync,
+    ySync,
+    _STD
+  };
+}
+function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScaling, _translateX, _translateY, _SFA, _FA) {
+  const scaleMinNumber = vue.computed(() => {
+    let val = Number(props2.scaleMin);
+    return isNaN(val) ? 0.5 : val;
+  });
+  const scaleMaxNumber = vue.computed(() => {
+    let val = Number(props2.scaleMax);
+    return isNaN(val) ? 10 : val;
+  });
+  const scaleValueSync = vue.ref(Number(props2.scaleValue) || 1);
+  vue.watch(scaleValueSync, (val) => {
+    _setScaleValue(val);
+  });
+  vue.watch(scaleMinNumber, () => {
+    _setScaleMinOrMax();
+  });
+  vue.watch(scaleMaxNumber, () => {
+    _setScaleMinOrMax();
+  });
+  vue.watch(() => props2.scaleValue, (val) => {
+    scaleValueSync.value = Number(val) || 0;
+  });
+  const {
+    _updateBoundary,
+    _updateOffset,
+    _updateWH,
+    _scaleOffset,
+    minX,
+    minY,
+    maxX,
+    maxY
+  } = useMovableViewLayout(rootRef, _scale, _adjustScale);
+  const {
+    FAandSFACancel,
+    _getLimitXY,
+    _animationTo,
+    _setTransform,
+    _revise,
+    dampingNumber,
+    xMove,
+    yMove,
+    xSync,
+    ySync,
+    _STD
+  } = useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, maxY, minX, minY, _translateX, _translateY, _SFA, _FA, _adjustScale, trigger);
+  function _updateScale(scale, animat) {
+    if (props2.scale) {
+      scale = _adjustScale(scale);
+      _updateWH(scale);
+      _updateBoundary();
+      const limitXY = _getLimitXY(_translateX.value, _translateY.value);
+      const x = limitXY.x;
+      const y = limitXY.y;
+      if (animat) {
+        _animationTo(x, y, scale, "", true, true);
+      } else {
+        _requestAnimationFrame(function() {
+          _setTransform(x, y, scale, "", true, true);
+        });
+      }
+    }
+  }
+  function _beginScale() {
+    _isScaling.value = true;
+  }
+  function _updateOldScale(scale) {
+    _oldScale.value = scale;
+  }
+  function _adjustScale(scale) {
+    scale = Math.max(0.5, scaleMinNumber.value, scale);
+    scale = Math.min(10, scaleMaxNumber.value, scale);
+    return scale;
+  }
+  function _setScaleMinOrMax() {
+    if (!props2.scale) {
+      return false;
+    }
+    _updateScale(_scale.value, true);
+    _updateOldScale(_scale.value);
+  }
+  function _setScaleValue(scale) {
+    if (!props2.scale) {
+      return false;
+    }
+    scale = _adjustScale(scale);
+    _updateScale(scale, true);
+    _updateOldScale(scale);
+    return scale;
+  }
+  function _endScale() {
+    _isScaling.value = false;
+    _updateOldScale(_scale.value);
+  }
+  function _setScale(scale) {
+    if (scale) {
+      scale = _oldScale.value * scale;
+      _beginScale();
+      _updateScale(scale);
+    }
+  }
+  return {
+    _updateOldScale,
+    _endScale,
+    _setScale,
+    scaleValueSync,
+    _updateBoundary,
+    _updateOffset,
+    _updateWH,
+    _scaleOffset,
+    minX,
+    minY,
+    maxX,
+    maxY,
+    FAandSFACancel,
+    _getLimitXY,
+    _animationTo,
+    _setTransform,
+    _revise,
+    dampingNumber,
+    xMove,
+    yMove,
+    xSync,
+    ySync,
+    _STD
+  };
+}
+function useMovableViewState(props2, trigger, rootRef) {
+  const _isMounted = vue.inject("_isMounted", vue.ref(false));
+  vue.inject("addMovableViewContext", () => {
+  });
+  vue.inject("removeMovableViewContext", () => {
+  });
+  let _scale = vue.ref(1);
+  let _oldScale = vue.ref(1);
+  let _isScaling = vue.ref(false);
+  let _translateX = vue.ref(0);
+  let _translateY = vue.ref(0);
+  let _SFA = null;
+  let _FA = null;
+  const frictionNumber = vue.computed(() => {
+    let val = Number(props2.friction);
+    return isNaN(val) || val <= 0 ? 2 : val;
+  });
+  new Friction(1, frictionNumber.value);
+  vue.watch(() => props2.disabled, () => {
+    __handleTouchStart();
+  });
+  const {
+    _updateOldScale,
+    _endScale,
+    _setScale,
+    scaleValueSync,
+    _updateBoundary,
+    _updateOffset,
+    _updateWH,
+    _scaleOffset,
+    minX,
+    minY,
+    maxX,
+    maxY,
+    FAandSFACancel,
+    _getLimitXY,
+    _setTransform,
+    _revise,
+    dampingNumber,
+    xMove,
+    yMove,
+    xSync,
+    ySync,
+    _STD
+  } = useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScaling, _translateX, _translateY, _SFA, _FA);
+  function __handleTouchStart() {
+    if (!_isScaling.value) {
+      if (!props2.disabled) {
+        FAandSFACancel();
+        if (xMove.value) {
+          _translateX.value;
+        }
+        if (yMove.value) {
+          _translateY.value;
+        }
+        rootRef.value.style.willChange = "transform";
+      }
+    }
   }
   function setParent() {
     if (!_isMounted.value) {
@@ -4281,12 +4419,11 @@ function useMovableViewState(props2, trigger, rootRef) {
     _updateOffset();
     _updateWH(scale);
     _updateBoundary();
-    _translateX = xSync.value + _scaleOffset.x;
-    _translateY = ySync.value + _scaleOffset.y;
-    let limitXY = _getLimitXY(_translateX, _translateY);
+    let limitXY = _getLimitXY(xSync.value + _scaleOffset.x, ySync.value + _scaleOffset.y);
     let x = limitXY.x;
     let y = limitXY.y;
     _setTransform(x, y, scale, "", true);
+    _updateOldScale(scale);
   }
   return {
     setParent
@@ -5874,6 +6011,18 @@ const props$d = {
   disableTouch: {
     type: [Boolean, String],
     default: false
+  },
+  navigation: {
+    type: [Boolean, String],
+    default: false
+  },
+  navigationColor: {
+    type: String,
+    default: "#fff"
+  },
+  navigationActiveColor: {
+    type: String,
+    default: "rgba(53, 53, 53, 0.6)"
   }
 };
 function useState$1(props2) {
@@ -5915,7 +6064,8 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
   let contentTrackViewport = 0;
   let transitionStart;
   let currentChangeSource = "";
-  const circularEnabled = vue.computed(() => props2.circular && swiperContexts.value.length > state.displayMultipleItems);
+  const swiperEnabled = vue.computed(() => swiperContexts.value.length > state.displayMultipleItems);
+  const circularEnabled = vue.computed(() => props2.circular && swiperEnabled.value);
   function checkCircularLayout(index2) {
     if (!invalid) {
       for (let items = swiperContexts.value, n = items.length, i = index2 + state.displayMultipleItems, r = 0; r < n; r++) {
@@ -6056,6 +6206,8 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
           position += length;
         }
       }
+    } else if (source === "click") {
+      current = current + state.displayMultipleItems - 1 < length ? current : 0;
     }
     animating = {
       toPos: current,
@@ -6187,7 +6339,9 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
     animateViewport(state.current = index2, currentChangeSource = "click", circularEnabled.value ? 1 : 0);
   }
   return {
-    onSwiperDotClick
+    onSwiperDotClick,
+    circularEnabled,
+    swiperEnabled
   };
 }
 var index$m = /* @__PURE__ */ defineBuiltInComponent({
@@ -6258,8 +6412,14 @@ var index$m = /* @__PURE__ */ defineBuiltInComponent({
     };
     vue.provide("removeSwiperContext", removeSwiperContext);
     const {
-      onSwiperDotClick
+      onSwiperDotClick,
+      circularEnabled,
+      swiperEnabled
     } = useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger);
+    let createNavigationTsx = () => null;
+    {
+      createNavigationTsx = useSwiperNavigation(rootRef, props2, state, onSwiperDotClick, swiperContexts, circularEnabled, swiperEnabled);
+    }
     return () => {
       const defaultSlots = slots.default && slots.default();
       swiperItems = flatVNode(defaultSlots);
@@ -6286,10 +6446,125 @@ var index$m = /* @__PURE__ */ defineBuiltInComponent({
         "style": {
           background: index2 === state.current ? props2.indicatorActiveColor : props2.indicatorColor
         }
-      }, null, 14, ["onClick"]))], 2)], 512)], 512);
+      }, null, 14, ["onClick"]))], 2), createNavigationTsx()], 512)], 512);
     };
   }
 });
+const useSwiperNavigation = (rootRef, props2, state, onSwiperDotClick, swiperContext, circularEnabled, swiperEnabled) => {
+  let isNavigationAuto = false;
+  let prevDisabled = false;
+  let nextDisabled = false;
+  let hideNavigation = vue.ref(false);
+  vue.watchEffect(() => {
+    isNavigationAuto = props2.navigation === "auto";
+    hideNavigation.value = props2.navigation !== true || isNavigationAuto;
+    swiperAddMouseEvent();
+  });
+  vue.watchEffect(() => {
+    const swiperItemLength = swiperContext.value.length;
+    const notCircular = !circularEnabled.value;
+    prevDisabled = state.current === 0 && notCircular;
+    nextDisabled = state.current === swiperItemLength - 1 && notCircular || notCircular && state.current + state.displayMultipleItems >= swiperItemLength;
+    if (!swiperEnabled.value) {
+      prevDisabled = true;
+      nextDisabled = true;
+      isNavigationAuto && (hideNavigation.value = true);
+    }
+  });
+  function navigationHover(event, type) {
+    const target = event.currentTarget;
+    if (!target)
+      return;
+    target.style.backgroundColor = type === "over" ? props2.navigationActiveColor : "";
+  }
+  const navigationAttr = {
+    onMouseover: (event) => navigationHover(event, "over"),
+    onMouseout: (event) => navigationHover(event, "out")
+  };
+  function navigationClick($event, type) {
+    $event.stopPropagation();
+    const swiperItemLength = swiperContext.value.length;
+    let _current = state.current;
+    switch (type) {
+      case "prev":
+        _current--;
+        if (_current < 0 && circularEnabled.value) {
+          _current = swiperItemLength - 1;
+        }
+        break;
+      case "next":
+        _current++;
+        if (_current >= swiperItemLength && circularEnabled.value) {
+          _current = 0;
+        }
+        break;
+    }
+    onSwiperDotClick(_current);
+  }
+  const createNavigationSVG = () => createSvgIconVNode(ICON_PATH_BACK, props2.navigationColor, 26);
+  let setHideNavigationTimer;
+  const _mousemove = (e2) => {
+    clearTimeout(setHideNavigationTimer);
+    const {
+      clientX,
+      clientY
+    } = e2;
+    const {
+      left,
+      right,
+      top,
+      bottom,
+      width,
+      height
+    } = rootRef.value.getBoundingClientRect();
+    let hide = false;
+    if (props2.vertical) {
+      hide = !(clientY - top < height / 3 || bottom - clientY < height / 3);
+    } else {
+      hide = !(clientX - left < width / 3 || right - clientX < width / 3);
+    }
+    if (hide) {
+      return setHideNavigationTimer = setTimeout(() => {
+        hideNavigation.value = hide;
+      }, 300);
+    }
+    hideNavigation.value = hide;
+  };
+  const _mouseleave = () => {
+    hideNavigation.value = true;
+  };
+  function swiperAddMouseEvent() {
+    if (rootRef.value) {
+      rootRef.value.removeEventListener("mousemove", _mousemove);
+      rootRef.value.removeEventListener("mouseleave", _mouseleave);
+      if (isNavigationAuto) {
+        rootRef.value.addEventListener("mousemove", _mousemove);
+        rootRef.value.addEventListener("mouseleave", _mouseleave);
+      }
+    }
+  }
+  function createNavigationTsx() {
+    const navigationClass = {
+      "uni-swiper-navigation-hide": hideNavigation.value,
+      "uni-swiper-navigation-vertical": props2.vertical
+    };
+    if (props2.navigation) {
+      return vue.createVNode(vue.Fragment, null, [vue.createVNode("div", vue.mergeProps({
+        "class": ["uni-swiper-navigation uni-swiper-navigation-prev", shared.extend({
+          "uni-swiper-navigation-disabled": prevDisabled
+        }, navigationClass)],
+        "onClick": (e2) => navigationClick(e2, "prev")
+      }, navigationAttr), [createNavigationSVG()], 16, ["onClick"]), vue.createVNode("div", vue.mergeProps({
+        "class": ["uni-swiper-navigation uni-swiper-navigation-next", shared.extend({
+          "uni-swiper-navigation-disabled": nextDisabled
+        }, navigationClass)],
+        "onClick": (e2) => navigationClick(e2, "next")
+      }, navigationAttr), [createNavigationSVG()], 16, ["onClick"])]);
+    }
+    return null;
+  }
+  return createNavigationTsx;
+};
 const props$c = {
   itemId: {
     type: String,
@@ -7001,12 +7276,12 @@ function createRouterOptions() {
   };
 }
 function initHistory() {
-  let { base } = __uniConfig.router;
-  if (base === "/") {
-    base = "";
+  let { routerBase } = __uniConfig.router;
+  if (routerBase === "/") {
+    routerBase = "";
   }
   {
-    return vueRouter.createMemoryHistory(base);
+    return vueRouter.createMemoryHistory(routerBase);
   }
 }
 var index$f = {
@@ -8620,76 +8895,52 @@ const props$4 = {
   },
   position: {
     type: Object,
-    require: true
+    required: true
   },
   iconPath: {
     type: String,
-    require: true
+    required: true
   },
   clickable: {
     type: [Boolean, String],
     default: ""
   },
-  rootRef: {
-    type: Object,
-    default: null
+  trigger: {
+    type: Function,
+    required: true
   }
 };
 var MapControl = /* @__PURE__ */ defineSystemComponent({
   name: "MapControl",
   props: props$4,
   setup(props2) {
-    const onMapReady = vue.inject("onMapReady");
-    let control;
-    function removeControl() {
-      if (control) {
-        control.remove();
+    const imgPath = vue.computed(() => getRealPath(props2.iconPath));
+    const positionStyle = vue.computed(() => {
+      let positionStyle2 = `top:${props2.position.top || 0}px;left:${props2.position.left || 0}px;`;
+      if (props2.position.width) {
+        positionStyle2 += `width:${props2.position.width}px;`;
       }
-    }
-    onMapReady((_, __, trigger) => {
-      function updateControl(option) {
-        removeControl();
-        addControl(option);
+      if (props2.position.height) {
+        positionStyle2 += `height:${props2.position.height}px;`;
       }
-      function addControl(option) {
-        control = document.createElement("div");
-        const style = control.style;
-        style.position = "absolute";
-        style.width = "0";
-        style.height = "0";
-        style.top = "0";
-        style.left = "0";
-        const img = new Image();
-        img.src = getRealPath(option.iconPath);
-        img.onload = () => {
-          const position = option.position || {};
-          if (position.width) {
-            img.width = option.position.width;
-          }
-          if (position.height) {
-            img.height = option.position.height;
-          }
-          const style2 = img.style;
-          style2.position = "absolute";
-          style2.left = (position.left || 0) + "px";
-          style2.top = (position.top || 0) + "px";
-          style2.maxWidth = "initial";
-          control.appendChild(img);
-          props2.rootRef.value && props2.rootRef.value.appendChild(control);
-        };
-        img.onclick = function($event) {
-          if (option.clickable) {
-            trigger("controltap", $event, {
-              controlId: option.id
-            });
-          }
-        };
-      }
-      addControl(props2);
-      vue.watch(props2, updateControl);
+      return positionStyle2;
     });
+    const handleClick = ($event) => {
+      if (props2.clickable) {
+        props2.trigger("controltap", $event, {
+          controlId: props2.id
+        });
+      }
+    };
     return () => {
-      return null;
+      return vue.createVNode("div", {
+        "class": "uni-map-control"
+      }, [vue.createVNode("img", {
+        "src": imgPath.value,
+        "style": positionStyle.value,
+        "class": "uni-map-control-icon",
+        "onClick": handleClick
+      }, null, 12, ["src", "onClick"])]);
     };
   }
 });
@@ -8910,6 +9161,7 @@ function getLng(latLng) {
   }
 }
 function useMap(props2, rootRef, emit2) {
+  const trigger = useCustomEvent(rootRef, emit2);
   const mapRef = vue.ref(null);
   let maps;
   let map;
@@ -9059,7 +9311,8 @@ function useMap(props2, rootRef, emit2) {
   vue.provide("removeMapChidlContext", removeMapChidlContext);
   return {
     state,
-    mapRef
+    mapRef,
+    trigger
   };
 }
 var index$c = /* @__PURE__ */ defineBuiltInComponent({
@@ -9072,8 +9325,9 @@ var index$c = /* @__PURE__ */ defineBuiltInComponent({
   }) {
     const rootRef = vue.ref(null);
     const {
-      mapRef
-    } = useMap(props2);
+      mapRef,
+      trigger
+    } = useMap(props2, rootRef, emit2);
     return () => {
       return vue.createVNode("uni-map", {
         "ref": rootRef,
@@ -9084,8 +9338,8 @@ var index$c = /* @__PURE__ */ defineBuiltInComponent({
       }, null, 512), props2.markers.map((item) => vue.createVNode(MapMarker, vue.mergeProps({
         "key": item.id
       }, item), null, 16)), props2.polyline.map((item) => vue.createVNode(MapPolyline, item, null, 16)), props2.circles.map((item) => vue.createVNode(MapCircle, item, null, 16)), props2.controls.map((item) => vue.createVNode(MapControl, vue.mergeProps(item, {
-        "rootRef": rootRef
-      }), null, 16, ["rootRef"])), props2.showLocation && vue.createVNode(MapLocation, null, null), props2.polygons.map((item) => vue.createVNode(MapPolygon, item, null, 16)), vue.createVNode("div", {
+        "trigger": trigger
+      }), null, 16, ["trigger"])), props2.showLocation && vue.createVNode(MapLocation, null, null), props2.polygons.map((item) => vue.createVNode(MapPolygon, item, null, 16)), vue.createVNode("div", {
         "style": "position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"
       }, [slots.default && slots.default()])], 8, ["id"]);
     };
@@ -9257,7 +9511,7 @@ function getDefaultStartValue(props2) {
     return "00:00";
   }
   if (props2.mode === mode.DATE) {
-    const year = new Date().getFullYear() - 100;
+    const year = new Date().getFullYear() - 150;
     switch (props2.fields) {
       case fields.YEAR:
         return year.toString();
@@ -9274,7 +9528,7 @@ function getDefaultEndValue(props2) {
     return "23:59";
   }
   if (props2.mode === mode.DATE) {
-    const year = new Date().getFullYear() + 100;
+    const year = new Date().getFullYear() + 150;
     switch (props2.fields) {
       case fields.YEAR:
         return year.toString();
@@ -9662,10 +9916,31 @@ function usePickerMethods(props2, state, trigger, rootRef, pickerRef, selectRef,
     }
     state.timeArray.push(hours, minutes);
   }
+  function getYearStartEnd() {
+    let year = new Date().getFullYear();
+    let start = year - 150;
+    let end = year + 150;
+    if (props2.start) {
+      const _year = new Date(props2.start).getFullYear();
+      if (!isNaN(_year) && _year < start) {
+        start = _year;
+      }
+    }
+    if (props2.end) {
+      const _year = new Date(props2.start).getFullYear();
+      if (!isNaN(_year) && _year > end) {
+        end = _year;
+      }
+    }
+    return {
+      start,
+      end
+    };
+  }
   function _createDate() {
     let years = [];
-    let year = new Date().getFullYear();
-    for (let i = year - 150, end = year + 150; i <= end; i++) {
+    const year = getYearStartEnd();
+    for (let i = year.start, end = year.end; i <= end; i++) {
       years.push(String(i));
     }
     let months = [];
@@ -10164,7 +10439,7 @@ function getStorageOrigin(key) {
   }
   return data;
 }
-const getStorageSync = /* @__PURE__ */ defineSyncApi(API_GET_STORAGE_SYNC, (key, t2) => {
+const getStorageSync = /* @__PURE__ */ defineSyncApi(API_GET_STORAGE_SYNC, (key) => {
   try {
     return getStorageOrigin(key);
   } catch (error) {
@@ -10533,13 +10808,12 @@ function createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, tab
     "style": {
       height
     }
-  }, [iconfontText ? createTabBarItemIconfontTsx(iconfontText, iconfontColor || BLUR_EFFECT_COLOR_DARK, tabBarItem, tabBar2) : iconPath && createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2), tabBarItem.text && createTabBarItemTextTsx(color, tabBarItem, tabBar2)], 4);
+  }, [iconfontText ? createTabBarItemIconfontTsx(iconfontText, iconfontColor || BLUR_EFFECT_COLOR_DARK, tabBarItem, tabBar2) : iconPath && createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2), tabBarItem.text && createTabBarItemTextTsx(color, tabBarItem, tabBar2), tabBarItem.redDot && createTabBarItemRedDotTsx(tabBarItem.badge)], 4);
 }
 function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2) {
   const {
     type,
-    text,
-    redDot
+    text
   } = tabBarItem;
   const {
     iconWidth
@@ -10554,14 +10828,13 @@ function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2) {
     "style": style
   }, [type !== "midButton" && vue.createVNode("img", {
     "src": getRealPath(iconPath)
-  }, null, 8, ["src"]), redDot && createTabBarItemRedDotTsx(tabBarItem.badge)], 6);
+  }, null, 8, ["src"])], 6);
 }
 function createTabBarItemIconfontTsx(iconfontText, iconfontColor, tabBarItem, tabBar2) {
   var _a;
   const {
     type,
-    text,
-    redDot
+    text
   } = tabBarItem;
   const {
     iconWidth
@@ -10581,11 +10854,10 @@ function createTabBarItemIconfontTsx(iconfontText, iconfontColor, tabBarItem, ta
   }, [type !== "midButton" && vue.createVNode("div", {
     "class": "uni-tabbar__iconfont",
     "style": iconfontStyle
-  }, [iconfontText], 4), redDot && createTabBarItemRedDotTsx(tabBarItem.badge)], 6);
+  }, [iconfontText], 4)], 6);
 }
 function createTabBarItemTextTsx(color, tabBarItem, tabBar2) {
   const {
-    redDot,
     iconPath,
     text
   } = tabBarItem;
@@ -10602,7 +10874,7 @@ function createTabBarItemTextTsx(color, tabBarItem, tabBar2) {
   return vue.createVNode("div", {
     "class": "uni-tabbar__label",
     "style": style
-  }, [text, redDot && !iconPath && createTabBarItemRedDotTsx(tabBarItem.badge)], 4);
+  }, [text], 4);
 }
 function createTabBarItemRedDotTsx(badge) {
   const clazz2 = "uni-tabbar__reddot" + (badge ? " uni-tabbar__badge" : "");
@@ -10964,6 +11236,7 @@ const ICON_PATHS = {
   none: "",
   forward: "M11 7.844q-0.25-0.219-0.25-0.578t0.25-0.578q0.219-0.25 0.563-0.25t0.563 0.25l9.656 9.125q0.125 0.125 0.188 0.297t0.063 0.328q0 0.188-0.063 0.359t-0.188 0.297l-9.656 9.125q-0.219 0.25-0.563 0.25t-0.563-0.25q-0.25-0.219-0.25-0.578t0.25-0.609l9.063-8.594-9.063-8.594z",
   back: ICON_PATH_BACK,
+  select: ICON_PATH_BACK,
   share: "M26.563 24.844q0 0.125-0.109 0.234t-0.234 0.109h-17.938q-0.125 0-0.219-0.109t-0.094-0.234v-13.25q0-0.156 0.094-0.25t0.219-0.094h5.5v-1.531h-6q-0.531 0-0.906 0.391t-0.375 0.922v14.375q0 0.531 0.375 0.922t0.906 0.391h18.969q0.531 0 0.891-0.391t0.359-0.953v-5.156h-1.438v4.625zM29.813 10.969l-5.125-5.375-1.031 1.094 3.438 3.594-3.719 0.031q-2.313 0.188-4.344 1.125t-3.578 2.422-2.5 3.453-1.109 4.188l-0.031 0.25h1.469v-0.219q0.156-1.875 1-3.594t2.25-3.063 3.234-2.125 3.828-0.906l0.188-0.031 3.313-0.031-3.438 3.625 1.031 1.063 5.125-5.375-0.031-0.063 0.031-0.063z",
   favorite: "M27.594 13.375q-0.063-0.188-0.219-0.313t-0.344-0.156l-7.094-0.969-3.219-6.406q-0.094-0.188-0.25-0.281t-0.375-0.094q-0.188 0-0.344 0.094t-0.25 0.281l-3.125 6.438-7.094 1.094q-0.188 0.031-0.344 0.156t-0.219 0.313q-0.031 0.188 0.016 0.375t0.172 0.313l5.156 4.969-1.156 7.063q-0.031 0.188 0.047 0.375t0.234 0.313q0.094 0.063 0.188 0.094t0.219 0.031q0.063 0 0.141-0.031t0.172-0.063l6.313-3.375 6.375 3.313q0.063 0.031 0.141 0.047t0.172 0.016q0.188 0 0.344-0.094t0.25-0.281q0.063-0.094 0.078-0.234t-0.016-0.234q0-0.031 0-0.063l-1.25-6.938 5.094-5.031q0.156-0.156 0.203-0.344t-0.016-0.375zM11.469 19.063q0.031-0.188-0.016-0.344t-0.172-0.281l-4.406-4.25 6.063-0.906q0.156-0.031 0.297-0.125t0.203-0.25l2.688-5.531 2.75 5.5q0.063 0.156 0.203 0.25t0.297 0.125l6.094 0.844-4.375 4.281q-0.125 0.125-0.172 0.297t-0.016 0.328l1.063 6.031-5.438-2.813q-0.156-0.094-0.328-0.078t-0.297 0.078l-5.438 2.875 1-6.031z",
   home: "M23.719 16.5q-0.313 0-0.531 0.219t-0.219 0.5v7.063q0 0.219-0.172 0.391t-0.391 0.172h-12.344q-0.25 0-0.422-0.172t-0.172-0.391v-7.063q0-0.281-0.219-0.5t-0.531-0.219q-0.281 0-0.516 0.219t-0.234 0.5v7.063q0.031 0.844 0.625 1.453t1.438 0.609h12.375q0.844 0 1.453-0.609t0.609-1.453v-7.063q0-0.125-0.063-0.266t-0.156-0.234q-0.094-0.125-0.234-0.172t-0.297-0.047zM26.5 14.875l-8.813-8.813q-0.313-0.313-0.688-0.453t-0.781-0.141-0.781 0.141-0.656 0.422l-8.813 8.844q-0.188 0.219-0.188 0.516t0.219 0.484q0.094 0.125 0.234 0.172t0.297 0.047q0.125 0 0.25-0.047t0.25-0.141l8.781-8.781q0.156-0.156 0.406-0.156t0.406 0.156l8.813 8.781q0.219 0.188 0.516 0.188t0.516-0.219q0.188-0.188 0.203-0.484t-0.172-0.516z",
@@ -11028,7 +11301,8 @@ function createButtonsTsx(btns) {
     btnText,
     btnIconPath,
     badgeText,
-    iconStyle
+    iconStyle,
+    btnSelect
   }, index2) => {
     return vue.createVNode("div", {
       "key": index2,
@@ -11036,7 +11310,12 @@ function createButtonsTsx(btns) {
       "style": btnStyle,
       "onClick": onClick,
       "badge-text": badgeText
-    }, [btnIconPath ? createSvgIconVNode(btnIconPath, iconStyle.color, iconStyle.fontSize) : vue.createVNode("i", {
+    }, [btnIconPath ? createSvgIconVNode(btnIconPath, iconStyle.color, iconStyle.fontSize) : btnSelect ? vue.createVNode("span", {
+      "style": iconStyle
+    }, [vue.createVNode("i", {
+      "class": "uni-btn-icon",
+      "innerHTML": btnText
+    }, null, 8, ["innerHTML"]), createSvgIconVNode(ICON_PATHS["select"], "#000", 14)], 4) : vue.createVNode("i", {
       "class": "uni-btn-icon",
       "style": iconStyle,
       "innerHTML": btnText
@@ -11239,7 +11518,8 @@ function usePageHeadButton(pageId, index2, btn, isTransparent) {
       invokeHook(pageId, uniShared.ON_NAVIGATION_BAR_BUTTON_TAP, shared.extend({
         index: index2
       }, btn));
-    }
+    },
+    btnSelect: btn.select
   };
 }
 function usePageHeadSearchInput({

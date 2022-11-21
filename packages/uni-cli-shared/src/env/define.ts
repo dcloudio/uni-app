@@ -22,25 +22,33 @@ export function initDefine(stringifyBoolean: boolean = false) {
     ),
     'process.env.UNI_PLATFORM': JSON.stringify(process.env.UNI_PLATFORM),
     'process.env.UNI_SUB_PLATFORM': JSON.stringify(
-      process.env.UNI_SUB_PLATFORM
+      process.env.UNI_SUB_PLATFORM || ''
     ),
-    'process.env.UNI_MP_PLUGIN': JSON.stringify(process.env.UNI_MP_PLUGIN),
-    'process.env.UNI_SUBPACKAGE': JSON.stringify(process.env.UNI_SUBPACKAGE),
+    'process.env.UNI_MP_PLUGIN': JSON.stringify(
+      process.env.UNI_MP_PLUGIN || ''
+    ),
+    'process.env.UNI_SUBPACKAGE': JSON.stringify(
+      process.env.UNI_SUBPACKAGE || ''
+    ),
     'process.env.UNI_COMPILER_VERSION': JSON.stringify(
-      process.env.UNI_COMPILER_VERSION
+      process.env.UNI_COMPILER_VERSION || ''
     ),
     'process.env.RUN_BY_HBUILDERX': stringifyBoolean
       ? JSON.stringify(isRunByHBuilderX)
       : isRunByHBuilderX,
     'process.env.UNI_AUTOMATOR_WS_ENDPOINT': JSON.stringify(
-      process.env.UNI_AUTOMATOR_WS_ENDPOINT
+      process.env.UNI_AUTOMATOR_WS_ENDPOINT || ''
     ),
     'process.env.UNI_CLOUD_PROVIDER': JSON.stringify(
-      process.env.UNI_CLOUD_PROVIDER
+      process.env.UNI_CLOUD_PROVIDER || ''
     ),
-    'process.env.UNICLOUD_DEBUG': JSON.stringify(process.env.UNICLOUD_DEBUG),
+    'process.env.UNICLOUD_DEBUG': JSON.stringify(
+      process.env.UNICLOUD_DEBUG || ''
+    ),
     // 兼容旧版本
-    'process.env.VUE_APP_PLATFORM': JSON.stringify(process.env.UNI_PLATFORM),
+    'process.env.VUE_APP_PLATFORM': JSON.stringify(
+      process.env.UNI_PLATFORM || ''
+    ),
   }
 }
 

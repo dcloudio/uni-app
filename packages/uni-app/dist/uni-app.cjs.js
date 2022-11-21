@@ -165,8 +165,8 @@ function normalizeArg(arg) {
     }
     return arg;
 }
-function initUtsInstanceMethod(async, opts) {
-    return initProxyFunction(async, opts);
+function initUtsInstanceMethod(async, opts, instanceId) {
+    return initProxyFunction(async, opts, instanceId);
 }
 function getProxy() {
     if (!proxy) {
@@ -183,7 +183,7 @@ function resolveSyncResult(res) {
 function invokePropGetter(args) {
     return resolveSyncResult(getProxy().invokeSync(args, () => { }));
 }
-function initProxyFunction(async, { package: pkg, class: cls, name: propOrMethod, id: instanceId, companion, }) {
+function initProxyFunction(async, { package: pkg, class: cls, name: propOrMethod, method, companion, params: methodParams, }, instanceId) {
     const invokeCallback = ({ id, name, params, keepAlive, }) => {
         const callback = callbacks[id];
         if (callback) {
@@ -197,12 +197,13 @@ function initProxyFunction(async, { package: pkg, class: cls, name: propOrMethod
         }
     };
     const baseArgs = instanceId
-        ? { id: instanceId, name: propOrMethod }
+        ? { id: instanceId, name: propOrMethod, method: methodParams }
         : {
             package: pkg,
             class: cls,
-            name: propOrMethod,
+            name: method || propOrMethod,
             companion,
+            method: methodParams,
         };
     return (...args) => {
         const invokeArgs = shared.extend({}, baseArgs, {
@@ -229,10 +230,15 @@ function initProxyFunction(async, { package: pkg, class: cls, name: propOrMethod
     };
 }
 function initUtsStaticMethod(async, opts) {
-    return initProxyFunction(async, opts);
+    if (opts.main && !opts.method) {
+        if (typeof plus !== 'undefined' && plus.os.name === 'iOS') {
+            opts.method = 's_' + opts.name;
+        }
+    }
+    return initProxyFunction(async, opts, 0);
 }
 const initUtsProxyFunction = initUtsStaticMethod;
-function initUtsProxyClass({ package: pkg, class: cls, methods, props, staticProps, staticMethods, }) {
+function initUtsProxyClass({ package: pkg, class: cls, constructor: { params: constructorParams }, methods, props, staticProps, staticMethods, }) {
     const baseOptions = {
         package: pkg,
         class: cls,
@@ -241,16 +247,20 @@ function initUtsProxyClass({ package: pkg, class: cls, methods, props, staticPro
         constructor(...params) {
             const target = {};
             // 初始化实例 ID
-            const instanceId = initProxyFunction(false, shared.extend({ name: 'constructor', params }, baseOptions)).apply(null, params);
+            const instanceId = initProxyFunction(false, shared.extend({ name: 'constructor', params: constructorParams }, baseOptions), 0).apply(null, params);
+            if (!instanceId) {
+                throw new Error(`new ${cls} is failed`);
+            }
             return new Proxy(this, {
                 get(_, name) {
                     if (!target[name]) {
                         //实例方法
                         if (shared.hasOwn(methods, name)) {
-                            target[name] = initUtsInstanceMethod(!!methods[name].async, shared.extend({
-                                id: instanceId,
+                            const { async, params } = methods[name];
+                            target[name] = initUtsInstanceMethod(!!async, shared.extend({
                                 name,
-                            }, baseOptions));
+                                params,
+                            }, baseOptions), instanceId);
                         }
                         else if (props.includes(name)) {
                             // 实例属性
@@ -267,8 +277,9 @@ function initUtsProxyClass({ package: pkg, class: cls, methods, props, staticPro
         get(target, name, receiver) {
             if (shared.hasOwn(staticMethods, name)) {
                 if (!staticMethodCache[name]) {
+                    const { async, params } = staticMethods[name];
                     // 静态方法
-                    staticMethodCache[name] = initUtsStaticMethod(!!staticMethods[name].async, shared.extend({ name, companion: true }, baseOptions));
+                    staticMethodCache[name] = initUtsStaticMethod(!!async, shared.extend({ name, companion: true, params }, baseOptions));
                 }
                 return staticMethodCache[name];
             }
@@ -280,11 +291,41 @@ function initUtsProxyClass({ package: pkg, class: cls, methods, props, staticPro
         },
     });
 }
+function initUtsPackageName(name, is_uni_modules) {
+    if (typeof plus !== 'undefined' && plus.os.name === 'Android') {
+        return 'uts.sdk.' + (is_uni_modules ? 'modules.' : '') + name;
+    }
+    return '';
+}
+function initUtsIndexClassName(moduleName, is_uni_modules) {
+    if (typeof plus === 'undefined') {
+        return '';
+    }
+    return initUtsClassName(moduleName, plus.os.name === 'iOS' ? 'IndexSwift' : 'IndexKt', is_uni_modules);
+}
+function initUtsClassName(moduleName, className, is_uni_modules) {
+    if (typeof plus === 'undefined') {
+        return '';
+    }
+    if (plus.os.name === 'Android') {
+        return className;
+    }
+    if (plus.os.name === 'iOS') {
+        return ('UTSSDK' +
+            (is_uni_modules ? 'Modules' : '') +
+            shared.capitalize(moduleName) +
+            shared.capitalize(className));
+    }
+    return '';
+}
 
 exports.formatAppLog = formatAppLog;
 exports.formatH5Log = formatH5Log;
 exports.getCurrentSubNVue = getCurrentSubNVue;
 exports.getSsrGlobalData = getSsrGlobalData;
+exports.initUtsClassName = initUtsClassName;
+exports.initUtsIndexClassName = initUtsIndexClassName;
+exports.initUtsPackageName = initUtsPackageName;
 exports.initUtsProxyClass = initUtsProxyClass;
 exports.initUtsProxyFunction = initUtsProxyFunction;
 exports.onAddToFavorites = onAddToFavorites;

@@ -1,4 +1,4 @@
-import { createElementVNode, defineComponent, createVNode, mergeProps, getCurrentInstance, provide, watch, onUnmounted, shallowRef, reactive, watchEffect, ref, inject, onBeforeUnmount, computed, Text as Text$1, isVNode, Fragment, onMounted, resolveComponent, parseClassList } from "vue";
+import { createElementVNode, defineComponent, createVNode, mergeProps, getCurrentInstance, provide, watch, onUnmounted, shallowRef, reactive, watchEffect, ref, inject, onBeforeUnmount, computed, Text as Text$1, isVNode, Fragment, onMounted, nextTick, Comment, resolveComponent, parseClassList } from "vue";
 import { extend, hasOwn, isFunction, isPlainObject, isArray, isString } from "@vue/shared";
 import { cacheStringFunction, PRIMARY_COLOR } from "@dcloudio/uni-shared";
 const OPEN_TYPES = [
@@ -2246,6 +2246,14 @@ const nvuePickerViewProps = extend({}, pickerViewProps, {
   height: {
     type: [Number, String],
     default: 0
+  },
+  maskTopStyle: {
+    type: String,
+    default: ""
+  },
+  maskBottomStyle: {
+    type: String,
+    default: ""
   }
 });
 var PickerView = defineComponent({
@@ -2260,7 +2268,9 @@ var PickerView = defineComponent({
     const state = useState(props2);
     const trigger = useCustomEvent(rootRef, emit);
     let columnVNodes = [];
-    const getItemIndex = (vnode) => Array.prototype.indexOf.call(columnVNodes, vnode);
+    const getItemIndex = (vnode) => {
+      return Array.prototype.indexOf.call(columnVNodes.filter((vnode2) => vnode2.type !== Comment), vnode);
+    };
     const getPickerViewColumn = (columnInstance) => {
       return computed({
         get() {
@@ -2302,7 +2312,7 @@ var PickerView = defineComponent({
         preventGesture: true
       }), [createVNode("view", {
         "class": "uni-picker-view-wrapper"
-      }, [defaultSlots])]);
+      }, [columnVNodes])]);
     };
   },
   styles: [{
@@ -2332,10 +2342,12 @@ function useState(props2) {
   });
   watch(() => props2.value, (val) => {
     state.value.length = val.length;
-    val.forEach((val2, index) => {
-      if (val2 !== state.value[index]) {
-        state.value.splice(index, 1, val2);
-      }
+    nextTick(() => {
+      val.forEach((val2, index) => {
+        if (val2 !== state.value[index]) {
+          state.value.splice(index, 1, val2);
+        }
+      });
     });
   });
   return state;
@@ -2345,14 +2357,15 @@ const isAndroid$1 = weex.config.env.platform.toLowerCase() === "android";
 function getStyle(val) {
   return extend({}, isString(val) ? parseStyleText(val) : val);
 }
+const props$2 = {
+  length: {
+    type: [Number, String],
+    default: 0
+  }
+};
 var PickerViewColumn = defineComponent({
   name: "PickerViewColumn",
-  props: {
-    length: {
-      type: [Number, String],
-      default: 0
-    }
-  },
+  props: props$2,
   data: () => ({
     _isMounted: false
   }),
@@ -2368,42 +2381,16 @@ var PickerViewColumn = defineComponent({
     const getPickerViewColumn = inject("getPickerViewColumn");
     const current = getPickerViewColumn(instance);
     const indicatorStyle = computed(() => getStyle(pickerViewProps2.indicatorStyle));
-    const maskStyle = computed(() => getStyle(pickerViewProps2.maskStyle));
+    const maskTopStyle = computed(() => getStyle(pickerViewProps2.maskTopStyle));
+    const maskBottomStyle = computed(() => getStyle(pickerViewProps2.maskBottomStyle));
     let indicatorHeight = ref(0);
     indicatorHeight.value = getHeight(indicatorStyle.value);
     let pickerViewHeight = ref(0);
     pickerViewHeight.value = parseFloat(pickerViewProps2.height);
-    watch(() => props2.length, () => {
-      setTimeout(() => {
-        setCurrent(current.value, true, true);
-      }, 150);
-    });
-    let scrollToElementTime;
-    const setCurrent = (_current, animated = true, force) => {
-      if (current.value === _current && !force) {
-        return;
-      }
-      dom.scrollToElement(contentRef.value, {
-        offset: _current * indicatorHeight.value,
-        animated
-      });
-      current.value = _current;
-      if (animated) {
-        scrollToElementTime = Date.now();
-      }
-    };
-    const onScrollend = (event) => {
-      if (Date.now() - scrollToElementTime < 340) {
-        return;
-      }
-      const y = event.detail.contentOffset.y;
-      const _current = Math.round(y / indicatorHeight.value);
-      if (y % indicatorHeight.value) {
-        setCurrent(_current, true, true);
-      } else {
-        current.value = _current;
-      }
-    };
+    const {
+      setCurrent,
+      onScrollend
+    } = usePickerColumnScroll(props2, current, contentRef, indicatorHeight);
     const checkMounted = () => {
       let height_;
       let indicatorHeight_;
@@ -2469,18 +2456,17 @@ var PickerViewColumn = defineComponent({
           paddingBottom: `${padding}px`
         }
       }, [createScrollViewChild(children)])]), createVNode("u-scalable", {
-        "class": "uni-picker-view-mask",
-        "style": maskStyle.value
+        "class": "uni-picker-view-mask"
       }, [createVNode("u-scalable", {
         "class": "uni-picker-view-mask uni-picker-view-mask-top",
-        "style": {
+        "style": extend({}, maskTopStyle.value, {
           bottom: maskPosition
-        }
+        })
       }, null), createVNode("u-scalable", {
         "class": "uni-picker-view-mask uni-picker-view-mask-bottom",
-        "style": {
+        "style": extend({}, maskBottomStyle.value, {
           top: maskPosition
-        }
+        })
       }, null)]), createVNode("u-scalable", {
         "ref": indicatorRef,
         "class": "uni-picker-view-indicator",
@@ -2562,6 +2548,48 @@ function getHeight(style) {
     value = parseFloat(res[1]);
   }
   return value;
+}
+function usePickerColumnScroll(props2, current, contentRef, indicatorHeight) {
+  let scrollToElementTime;
+  function setDomScrollToElement(_current, animated = true) {
+    dom.scrollToElement(contentRef.value, {
+      offset: _current * indicatorHeight.value,
+      animated
+    });
+    if (animated) {
+      scrollToElementTime = Date.now();
+    }
+  }
+  watch(() => props2.length, () => {
+    setTimeout(() => {
+      setCurrent(current.value, true, true);
+    }, 150);
+  });
+  watch(current, (val) => setDomScrollToElement(val));
+  const setCurrent = (_current, animated = true, force) => {
+    if (current.value === _current && !force) {
+      return;
+    }
+    current.value = _current;
+    if (isAndroid$1)
+      setDomScrollToElement(_current, animated);
+  };
+  const onScrollend = (event) => {
+    if (Date.now() - scrollToElementTime < 340) {
+      return;
+    }
+    const y = event.detail.contentOffset.y;
+    const _current = Math.round(y / indicatorHeight.value);
+    if (y % indicatorHeight.value) {
+      setCurrent(_current, true, true);
+    } else {
+      current.value = _current;
+    }
+  };
+  return {
+    setCurrent,
+    onScrollend
+  };
 }
 const mode = {
   SELECTOR: "selector",

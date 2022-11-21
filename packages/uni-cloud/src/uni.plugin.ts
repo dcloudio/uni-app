@@ -3,12 +3,14 @@ import { sync } from 'fast-glob'
 import { isArray } from '@vue/shared'
 import { once } from '@dcloudio/uni-shared'
 import {
+  isSsr,
   defineUniMainJsPlugin,
   COMMON_EXCLUDE,
   isInHybridNVue,
   uniViteInjectPlugin,
   UniVitePlugin,
   isInHBuilderX,
+  isEnableSecureNetwork,
 } from '@dcloudio/uni-cli-shared'
 
 import { uniValidateFunctionPlugin } from './validateFunction'
@@ -174,6 +176,19 @@ export default () => [
     return {
       name: 'uni:cloud',
       enforce: 'pre',
+      config(config, env) {
+        if (isSsr(env.command, config)) {
+          return
+        }
+        const inputDir = process.env.UNI_INPUT_DIR!
+        const platform = process.env.UNI_PLATFORM!
+        const isSecureNetworkEnabled = isEnableSecureNetwork(inputDir, platform)
+        return {
+          define: {
+            'process.env.UNI_SECURE_NETWORK': isSecureNetworkEnabled,
+          },
+        }
+      },
       transform(code, id) {
         if (!opts.filter(id)) {
           return

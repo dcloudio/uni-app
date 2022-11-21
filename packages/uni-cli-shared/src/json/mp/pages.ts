@@ -28,6 +28,7 @@ export function parseMiniProgramPagesJson(
 
 const NON_APP_JSON_KEYS = [
   'unipush',
+  'secureNetwork',
   'usingComponents',
   'optimization',
   'scopedSlotsCompiler',

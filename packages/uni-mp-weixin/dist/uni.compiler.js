@@ -51,7 +51,7 @@ function transformAd(node, context) {
     const adpidProp = compilerCore.findProp(node, 'adpid');
     if (node.tag === 'ad' && adpidProp) {
         node.tag = 'uniad';
-        node.tagType = 1 /* COMPONENT */;
+        node.tagType = 1 /* ElementTypes.COMPONENT */;
     }
     if (appJsonUniadFlag) {
         return;

@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/vite-plugin-uni",
-  "version": "3.0.0-alpha-3060220220914001",
+  "version": "3.0.0-alpha-3060420220922001",
   "description": "uni-app vite plugin",
   "bin": {
     "uni": "bin/uni.js"
@@ -12,6 +12,9 @@
     "dist",
     "lib"
   ],
+  "engines": {
+    "node": "^14.18.0 || >=16.0.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dcloudio/uni-app.git",
@@ -25,16 +28,16 @@
     "@babel/core": "^7.17.9",
     "@babel/plugin-syntax-import-meta": "^7.10.4",
     "@babel/plugin-transform-typescript": "^7.16.8",
-    "@dcloudio/uni-cli-shared": "3.0.0-alpha-3060220220914001",
-    "@dcloudio/uni-shared": "3.0.0-alpha-3060220220914001",
+    "@dcloudio/uni-cli-shared": "3.0.0-alpha-3060420220922001",
+    "@dcloudio/uni-shared": "3.0.0-alpha-3060420220922001",
     "@rollup/pluginutils": "^4.2.0",
     "@vitejs/plugin-legacy": "^1.8.2",
     "@vitejs/plugin-vue": "^2.3.3",
     "@vitejs/plugin-vue-jsx": "^1.3.10",
-    "@vue/compiler-core": "3.2.37",
-    "@vue/compiler-dom": "3.2.37",
-    "@vue/compiler-sfc": "3.2.37",
-    "@vue/shared": "3.2.37",
+    "@vue/compiler-core": "3.2.39",
+    "@vue/compiler-dom": "3.2.39",
+    "@vue/compiler-sfc": "3.2.39",
+    "@vue/shared": "3.2.39",
     "cac": "6.7.9",
     "debug": "^4.3.3",
     "estree-walker": "^2.0.2",
@@ -54,13 +57,13 @@
     "@vue/babel-plugin-jsx": "^1.1.1",
     "chokidar": "^3.5.3",
     "vite": "2.9.14",
-    "vue": "3.2.37"
+    "vue": "3.2.39"
   },
   "peerDependencies": {
     "vite": "2.9.14"
   },
   "uni-app": {
-    "compilerVersion": "3.6.2"
+    "compilerVersion": "3.6.4"
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da"
 }

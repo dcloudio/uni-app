@@ -214,7 +214,7 @@ export const sendSocketMessage = defineAsyncApi<API_TYPE_SEND_SOCKET_MESSAGE>(
   SendSocketMessageProtocol
 )
 
-export const closeSocket = <API_TYPE_CLOSE_SOCKET>defineAsyncApi(
+export const closeSocket = defineAsyncApi<API_TYPE_CLOSE_SOCKET>(
   API_CLOSE_SOCKET,
   (options, { resolve, reject }) => {
     const socketTask = socketTasks[0]

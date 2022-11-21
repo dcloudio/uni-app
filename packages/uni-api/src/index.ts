@@ -79,6 +79,7 @@ export * from './protocols/network/uploadFile'
 export * from './protocols/network/socket'
 
 export * from './protocols/location/getLocation'
+export * from './protocols/location/locationChange'
 
 export * from './protocols/route/route'
 

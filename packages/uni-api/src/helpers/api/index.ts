@@ -50,7 +50,10 @@ function formatApiArgs<T extends ApiLike>(
 }
 
 function invokeSuccess(id: number, name: string, res: unknown) {
-  return invokeCallback(id, extend(res || {}, { errMsg: name + ':ok' }))
+  return invokeCallback(
+    id,
+    extend((res || {}) as Object, { errMsg: name + ':ok' })
+  )
 }
 
 function invokeFail(id: number, name: string, errMsg?: string, errRes?: any) {
@@ -202,7 +205,10 @@ export function defineOffApi<T extends ApiLike>(
   return wrapperOffApi(name, fn, options) as unknown as T
 }
 
-export function defineTaskApi<T extends TaskApiLike, P = AsyncApiOptions<T>>(
+export function defineTaskApi<
+  T extends TaskApiLike,
+  P extends AsyncMethodOptionLike = AsyncApiOptions<T>
+>(
   name: string,
   fn: (
     args: Omit<P, CALLBACK_TYPES>,
@@ -234,7 +240,10 @@ export function defineSyncApi<T extends ApiLike>(
   ) as unknown as T
 }
 
-export type DefineAsyncApiFn<T extends AsyncApiLike, P = AsyncApiOptions<T>> = (
+export type DefineAsyncApiFn<
+  T extends AsyncApiLike,
+  P extends AsyncMethodOptionLike = AsyncApiOptions<T>
+> = (
   args: P extends undefined ? undefined : Omit<P, CALLBACK_TYPES>,
   res: {
     resolve: (res: AsyncApiRes<P> | void) => void
@@ -242,7 +251,10 @@ export type DefineAsyncApiFn<T extends AsyncApiLike, P = AsyncApiOptions<T>> = (
   }
 ) => void
 
-export function defineAsyncApi<T extends AsyncApiLike, P = AsyncApiOptions<T>>(
+export function defineAsyncApi<
+  T extends AsyncApiLike,
+  P extends AsyncMethodOptionLike = AsyncApiOptions<T>
+>(
   name: string,
   fn: DefineAsyncApiFn<T>,
   protocol?: ApiProtocols<T>,

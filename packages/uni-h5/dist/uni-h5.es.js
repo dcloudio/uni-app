@@ -4821,13 +4821,13 @@ const ChooseLocationProtocol = {
   longitude: Number
 };
 const API_GET_LOCATION = "getLocation";
-const coordTypes = ["wgs84", "gcj02"];
+const coordTypes$1 = ["wgs84", "gcj02"];
 const GetLocationOptions = {
   formatArgs: {
     type(value, params) {
       value = (value || "").toLowerCase();
-      if (coordTypes.indexOf(value) === -1) {
-        params.type = coordTypes[0];
+      if (coordTypes$1.indexOf(value) === -1) {
+        params.type = coordTypes$1[0];
       } else {
         params.type = value;
       }
@@ -5180,6 +5180,28 @@ const API_CLOSE_SOCKET = "closeSocket";
 const CloseSocketProtocol = {
   code: Number,
   reason: String
+};
+const API_START_LOCATION_UPDATE = "startLocationUpdate";
+const API_ON_LOCATION_CHANGE = "onLocationChange";
+const API_STOP_LOCATION_UPDATE = "stopLocationUpdate";
+const API_OFF_LOCATION_CHANGE = "offLocationChange";
+const API_OFF_LOCATION_CHANGE_ERROR = "offLocationChangeError";
+const API_ON_LOCATION_CHANGE_ERROR = "onLocationChangeError";
+const coordTypes = ["wgs84", "gcj02"];
+const StartLocationUpdateProtocol = {
+  type: String
+};
+const StartLocationUpdateOptions = {
+  formatArgs: {
+    type(value, params) {
+      value = (value || "").toLowerCase();
+      if (coordTypes.indexOf(value) === -1) {
+        params.type = coordTypes[0];
+      } else {
+        params.type = value;
+      }
+    }
+  }
 };
 function encodeQueryString(url) {
   if (!isString(url)) {
@@ -9710,26 +9732,10 @@ function _getPx(val) {
   }
   return Number(val) || 0;
 }
-function useMovableViewState(props2, trigger, rootRef) {
+function useMovableViewLayout(rootRef, _scale, _adjustScale) {
   const movableAreaWidth = inject("movableAreaWidth", ref(0));
   const movableAreaHeight = inject("movableAreaHeight", ref(0));
-  const _isMounted = inject("_isMounted", ref(false));
   const movableAreaRootRef = inject("movableAreaRootRef");
-  const addMovableViewContext = inject("addMovableViewContext", () => {
-  });
-  const removeMovableViewContext = inject("removeMovableViewContext", () => {
-  });
-  const xSync = ref(_getPx(props2.x));
-  const ySync = ref(_getPx(props2.y));
-  const scaleValueSync = ref(Number(props2.scaleValue) || 1);
-  const width = ref(0);
-  const height = ref(0);
-  const minX = ref(0);
-  const minY = ref(0);
-  const maxX = ref(0);
-  const maxY = ref(0);
-  let _SFA = null;
-  let _FA = null;
   const _offset = {
     x: 0,
     y: 0
@@ -9738,43 +9744,57 @@ function useMovableViewState(props2, trigger, rootRef) {
     x: 0,
     y: 0
   };
-  let _scale = 1;
-  let _oldScale = 1;
-  let _translateX = 0;
-  let _translateY = 0;
-  let _isScaling = false;
-  let _isTouching = false;
-  let __baseX;
-  let __baseY;
-  let _checkCanMove = null;
-  let _firstMoveDirection = null;
-  const _declineX = new Decline();
-  const _declineY = new Decline();
-  const __touchInfo = {
-    historyX: [0, 0],
-    historyY: [0, 0],
-    historyT: [0, 0]
+  const width = ref(0);
+  const height = ref(0);
+  const minX = ref(0);
+  const minY = ref(0);
+  const maxX = ref(0);
+  const maxY = ref(0);
+  function _updateBoundary() {
+    let x = 0 - _offset.x + _scaleOffset.x;
+    let _width = movableAreaWidth.value - width.value - _offset.x - _scaleOffset.x;
+    minX.value = Math.min(x, _width);
+    maxX.value = Math.max(x, _width);
+    let y = 0 - _offset.y + _scaleOffset.y;
+    let _height = movableAreaHeight.value - height.value - _offset.y - _scaleOffset.y;
+    minY.value = Math.min(y, _height);
+    maxY.value = Math.max(y, _height);
+  }
+  function _updateOffset() {
+    _offset.x = p(rootRef.value, movableAreaRootRef.value);
+    _offset.y = f(rootRef.value, movableAreaRootRef.value);
+  }
+  function _updateWH(scale) {
+    scale = scale || _scale.value;
+    scale = _adjustScale(scale);
+    let rect = rootRef.value.getBoundingClientRect();
+    height.value = rect.height / _scale.value;
+    width.value = rect.width / _scale.value;
+    let _height = height.value * scale;
+    let _width = width.value * scale;
+    _scaleOffset.x = (_width - width.value) / 2;
+    _scaleOffset.y = (_height - height.value) / 2;
+  }
+  return {
+    _updateBoundary,
+    _updateOffset,
+    _updateWH,
+    _scaleOffset,
+    minX,
+    minY,
+    maxX,
+    maxY
   };
+}
+function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, maxY, minX, minY, _translateX, _translateY, _SFA, _FA, _adjustScale, trigger) {
   const dampingNumber = computed(() => {
     let val = Number(props2.damping);
     return isNaN(val) ? 20 : val;
   });
-  const frictionNumber = computed(() => {
-    let val = Number(props2.friction);
-    return isNaN(val) || val <= 0 ? 2 : val;
-  });
-  const scaleMinNumber = computed(() => {
-    let val = Number(props2.scaleMin);
-    return isNaN(val) ? 0.5 : val;
-  });
-  const scaleMaxNumber = computed(() => {
-    let val = Number(props2.scaleMax);
-    return isNaN(val) ? 10 : val;
-  });
   const xMove = computed(() => props2.direction === "all" || props2.direction === "horizontal");
   const yMove = computed(() => props2.direction === "all" || props2.direction === "vertical");
-  const _STD = new STD(1, 9 * Math.pow(dampingNumber.value, 2) / 40, dampingNumber.value);
-  const _friction = new Friction$1(1, frictionNumber.value);
+  const xSync = ref(_getPx(props2.x));
+  const ySync = ref(_getPx(props2.y));
   watch(() => props2.x, (val) => {
     xSync.value = _getPx(val);
   });
@@ -9787,12 +9807,174 @@ function useMovableViewState(props2, trigger, rootRef) {
   watch(ySync, (val) => {
     _setY(val);
   });
-  watch(() => props2.disabled, () => {
-    __handleTouchStart();
+  const _STD = new STD(1, 9 * Math.pow(dampingNumber.value, 2) / 40, dampingNumber.value);
+  function _getLimitXY(x, y) {
+    let outOfBounds = false;
+    if (x > maxX.value) {
+      x = maxX.value;
+      outOfBounds = true;
+    } else {
+      if (x < minX.value) {
+        x = minX.value;
+        outOfBounds = true;
+      }
+    }
+    if (y > maxY.value) {
+      y = maxY.value;
+      outOfBounds = true;
+    } else {
+      if (y < minY.value) {
+        y = minY.value;
+        outOfBounds = true;
+      }
+    }
+    return {
+      x,
+      y,
+      outOfBounds
+    };
+  }
+  function FAandSFACancel() {
+    if (_FA) {
+      _FA.cancel();
+    }
+    if (_SFA) {
+      _SFA.cancel();
+    }
+  }
+  function _animationTo(x, y, scale, source, r, o2) {
+    FAandSFACancel();
+    if (!xMove.value) {
+      x = _translateX.value;
+    }
+    if (!yMove.value) {
+      y = _translateY.value;
+    }
+    if (!props2.scale) {
+      scale = _scale.value;
+    }
+    let limitXY = _getLimitXY(x, y);
+    x = limitXY.x;
+    y = limitXY.y;
+    if (!props2.animation) {
+      _setTransform(x, y, scale, source, r, o2);
+      return;
+    }
+    _STD._springX._solution = null;
+    _STD._springY._solution = null;
+    _STD._springScale._solution = null;
+    _STD._springX._endPosition = _translateX.value;
+    _STD._springY._endPosition = _translateY.value;
+    _STD._springScale._endPosition = _scale.value;
+    _STD.setEnd(x, y, scale, 1);
+    _SFA = g(_STD, function() {
+      let data = _STD.x();
+      let x2 = data.x;
+      let y2 = data.y;
+      let scale2 = data.scale;
+      _setTransform(x2, y2, scale2, source, r, o2);
+    }, function() {
+      _SFA.cancel();
+    });
+  }
+  function _setTransform(x, y, scale, source = "", r, o2) {
+    if (!(x !== null && x.toString() !== "NaN" && typeof x === "number")) {
+      x = _translateX.value || 0;
+    }
+    if (!(y !== null && y.toString() !== "NaN" && typeof y === "number")) {
+      y = _translateY.value || 0;
+    }
+    x = Number(x.toFixed(1));
+    y = Number(y.toFixed(1));
+    scale = Number(scale.toFixed(1));
+    if (!(_translateX.value === x && _translateY.value === y)) {
+      if (!r) {
+        trigger("change", {}, {
+          x: v(x, _scaleOffset.x),
+          y: v(y, _scaleOffset.y),
+          source
+        });
+      }
+    }
+    if (!props2.scale) {
+      scale = _scale.value;
+    }
+    scale = _adjustScale(scale);
+    scale = +scale.toFixed(3);
+    if (o2 && scale !== _scale.value) {
+      trigger("scale", {}, {
+        x,
+        y,
+        scale
+      });
+    }
+    let transform = "translateX(" + x + "px) translateY(" + y + "px) translateZ(0px) scale(" + scale + ")";
+    rootRef.value.style.transform = transform;
+    rootRef.value.style.webkitTransform = transform;
+    _translateX.value = x;
+    _translateY.value = y;
+    _scale.value = scale;
+  }
+  function _revise(source) {
+    let limitXY = _getLimitXY(_translateX.value, _translateY.value);
+    let x = limitXY.x;
+    let y = limitXY.y;
+    let outOfBounds = limitXY.outOfBounds;
+    if (outOfBounds) {
+      _animationTo(x, y, _scale.value, source);
+    }
+    return outOfBounds;
+  }
+  function _setX(val) {
+    if (xMove.value) {
+      if (val + _scaleOffset.x === _translateX.value) {
+        return _translateX;
+      } else {
+        if (_SFA) {
+          _SFA.cancel();
+        }
+        _animationTo(val + _scaleOffset.x, ySync.value + _scaleOffset.y, _scale.value);
+      }
+    }
+    return val;
+  }
+  function _setY(val) {
+    if (yMove.value) {
+      if (val + _scaleOffset.y === _translateY.value) {
+        return _translateY;
+      } else {
+        if (_SFA) {
+          _SFA.cancel();
+        }
+        _animationTo(xSync.value + _scaleOffset.x, val + _scaleOffset.y, _scale.value);
+      }
+    }
+    return val;
+  }
+  return {
+    FAandSFACancel,
+    _getLimitXY,
+    _animationTo,
+    _setTransform,
+    _revise,
+    dampingNumber,
+    xMove,
+    yMove,
+    xSync,
+    ySync,
+    _STD
+  };
+}
+function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScaling, _translateX, _translateY, _SFA, _FA) {
+  const scaleMinNumber = computed(() => {
+    let val = Number(props2.scaleMin);
+    return isNaN(val) ? 0.5 : val;
   });
-  watch(() => props2.scaleValue, (val) => {
-    scaleValueSync.value = Number(val) || 0;
+  const scaleMaxNumber = computed(() => {
+    let val = Number(props2.scaleMax);
+    return isNaN(val) ? 10 : val;
   });
+  const scaleValueSync = ref(Number(props2.scaleValue) || 1);
   watch(scaleValueSync, (val) => {
     _setScaleValue(val);
   });
@@ -9802,46 +9984,66 @@ function useMovableViewState(props2, trigger, rootRef) {
   watch(scaleMaxNumber, () => {
     _setScaleMinOrMax();
   });
-  function FAandSFACancel() {
-    if (_FA) {
-      _FA.cancel();
-    }
-    if (_SFA) {
-      _SFA.cancel();
-    }
-  }
-  function _setX(val) {
-    if (xMove.value) {
-      if (val + _scaleOffset.x === _translateX) {
-        return _translateX;
+  watch(() => props2.scaleValue, (val) => {
+    scaleValueSync.value = Number(val) || 0;
+  });
+  const {
+    _updateBoundary,
+    _updateOffset,
+    _updateWH,
+    _scaleOffset,
+    minX,
+    minY,
+    maxX,
+    maxY
+  } = useMovableViewLayout(rootRef, _scale, _adjustScale);
+  const {
+    FAandSFACancel,
+    _getLimitXY,
+    _animationTo,
+    _setTransform,
+    _revise,
+    dampingNumber,
+    xMove,
+    yMove,
+    xSync,
+    ySync,
+    _STD
+  } = useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, maxY, minX, minY, _translateX, _translateY, _SFA, _FA, _adjustScale, trigger);
+  function _updateScale(scale, animat) {
+    if (props2.scale) {
+      scale = _adjustScale(scale);
+      _updateWH(scale);
+      _updateBoundary();
+      const limitXY = _getLimitXY(_translateX.value, _translateY.value);
+      const x = limitXY.x;
+      const y = limitXY.y;
+      if (animat) {
+        _animationTo(x, y, scale, "", true, true);
       } else {
-        if (_SFA) {
-          _SFA.cancel();
-        }
-        _animationTo(val + _scaleOffset.x, ySync.value + _scaleOffset.y, _scale);
+        _requestAnimationFrame(function() {
+          _setTransform(x, y, scale, "", true, true);
+        });
       }
     }
-    return val;
   }
-  function _setY(val) {
-    if (yMove.value) {
-      if (val + _scaleOffset.y === _translateY) {
-        return _translateY;
-      } else {
-        if (_SFA) {
-          _SFA.cancel();
-        }
-        _animationTo(xSync.value + _scaleOffset.x, val + _scaleOffset.y, _scale);
-      }
-    }
-    return val;
+  function _beginScale() {
+    _isScaling.value = true;
+  }
+  function _updateOldScale(scale) {
+    _oldScale.value = scale;
+  }
+  function _adjustScale(scale) {
+    scale = Math.max(0.5, scaleMinNumber.value, scale);
+    scale = Math.min(10, scaleMaxNumber.value, scale);
+    return scale;
   }
   function _setScaleMinOrMax() {
     if (!props2.scale) {
       return false;
     }
-    _updateScale(_scale, true);
-    _updateOldScale(_scale);
+    _updateScale(_scale.value, true);
+    _updateOldScale(_scale.value);
   }
   function _setScaleValue(scale) {
     if (!props2.scale) {
@@ -9852,18 +10054,112 @@ function useMovableViewState(props2, trigger, rootRef) {
     _updateOldScale(scale);
     return scale;
   }
+  function _endScale() {
+    _isScaling.value = false;
+    _updateOldScale(_scale.value);
+  }
+  function _setScale(scale) {
+    if (scale) {
+      scale = _oldScale.value * scale;
+      _beginScale();
+      _updateScale(scale);
+    }
+  }
+  return {
+    _updateOldScale,
+    _endScale,
+    _setScale,
+    scaleValueSync,
+    _updateBoundary,
+    _updateOffset,
+    _updateWH,
+    _scaleOffset,
+    minX,
+    minY,
+    maxX,
+    maxY,
+    FAandSFACancel,
+    _getLimitXY,
+    _animationTo,
+    _setTransform,
+    _revise,
+    dampingNumber,
+    xMove,
+    yMove,
+    xSync,
+    ySync,
+    _STD
+  };
+}
+function useMovableViewState(props2, trigger, rootRef) {
+  const _isMounted = inject("_isMounted", ref(false));
+  const addMovableViewContext = inject("addMovableViewContext", () => {
+  });
+  const removeMovableViewContext = inject("removeMovableViewContext", () => {
+  });
+  let _scale = ref(1);
+  let _oldScale = ref(1);
+  let _isScaling = ref(false);
+  let _translateX = ref(0);
+  let _translateY = ref(0);
+  let _SFA = null;
+  let _FA = null;
+  let _isTouching = false;
+  let __baseX;
+  let __baseY;
+  let _checkCanMove = null;
+  let _firstMoveDirection = null;
+  const _declineX = new Decline();
+  const _declineY = new Decline();
+  const __touchInfo = {
+    historyX: [0, 0],
+    historyY: [0, 0],
+    historyT: [0, 0]
+  };
+  const frictionNumber = computed(() => {
+    let val = Number(props2.friction);
+    return isNaN(val) || val <= 0 ? 2 : val;
+  });
+  const _friction = new Friction$1(1, frictionNumber.value);
+  watch(() => props2.disabled, () => {
+    __handleTouchStart();
+  });
+  const {
+    _updateOldScale,
+    _endScale,
+    _setScale,
+    scaleValueSync,
+    _updateBoundary,
+    _updateOffset,
+    _updateWH,
+    _scaleOffset,
+    minX,
+    minY,
+    maxX,
+    maxY,
+    FAandSFACancel,
+    _getLimitXY,
+    _setTransform,
+    _revise,
+    dampingNumber,
+    xMove,
+    yMove,
+    xSync,
+    ySync,
+    _STD
+  } = useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScaling, _translateX, _translateY, _SFA, _FA);
   function __handleTouchStart() {
-    if (!_isScaling) {
+    if (!_isScaling.value) {
       if (!props2.disabled) {
         FAandSFACancel();
         __touchInfo.historyX = [0, 0];
         __touchInfo.historyY = [0, 0];
         __touchInfo.historyT = [0, 0];
         if (xMove.value) {
-          __baseX = _translateX;
+          __baseX = _translateX.value;
         }
         if (yMove.value) {
-          __baseY = _translateY;
+          __baseY = _translateY.value;
         }
         rootRef.value.style.willChange = "transform";
         _checkCanMove = null;
@@ -9873,9 +10169,9 @@ function useMovableViewState(props2, trigger, rootRef) {
     }
   }
   function __handleTouchMove(event) {
-    if (!_isScaling && !props2.disabled && _isTouching) {
-      let x = _translateX;
-      let y = _translateY;
+    if (!_isScaling.value && !props2.disabled && _isTouching) {
+      let x = _translateX.value;
+      let y = _translateY.value;
       if (_firstMoveDirection === null) {
         _firstMoveDirection = Math.abs(event.detail.dx / event.detail.dy) > 1 ? "htouchmove" : "vtouchmove";
       }
@@ -9933,40 +10229,42 @@ function useMovableViewState(props2, trigger, rootRef) {
           }
         }
         _requestAnimationFrame(function() {
-          _setTransform(x, y, _scale, source);
+          _setTransform(x, y, _scale.value, source);
         });
       }
     }
   }
   function __handleTouchEnd() {
-    if (!_isScaling && !props2.disabled && _isTouching) {
+    if (!_isScaling.value && !props2.disabled && _isTouching) {
       rootRef.value.style.willChange = "auto";
       _isTouching = false;
       if (!_checkCanMove && !_revise("out-of-bounds") && props2.inertia) {
         const xv = 1e3 * (__touchInfo.historyX[1] - __touchInfo.historyX[0]) / (__touchInfo.historyT[1] - __touchInfo.historyT[0]);
         const yv = 1e3 * (__touchInfo.historyY[1] - __touchInfo.historyY[0]) / (__touchInfo.historyT[1] - __touchInfo.historyT[0]);
+        const __translateX = _translateX.value;
+        const __translateY = _translateY.value;
         _friction.setV(xv, yv);
-        _friction.setS(_translateX, _translateY);
+        _friction.setS(__translateX, __translateY);
         const x0 = _friction.delta().x;
         const y0 = _friction.delta().y;
-        let x = x0 + _translateX;
-        let y = y0 + _translateY;
+        let x = x0 + __translateX;
+        let y = y0 + __translateY;
         if (x < minX.value) {
           x = minX.value;
-          y = _translateY + (minX.value - _translateX) * y0 / x0;
+          y = __translateY + (minX.value - __translateX) * y0 / x0;
         } else {
           if (x > maxX.value) {
             x = maxX.value;
-            y = _translateY + (maxX.value - _translateX) * y0 / x0;
+            y = __translateY + (maxX.value - __translateX) * y0 / x0;
           }
         }
         if (y < minY.value) {
           y = minY.value;
-          x = _translateX + (minY.value - _translateY) * x0 / y0;
+          x = __translateX + (minY.value - __translateY) * x0 / y0;
         } else {
           if (y > maxY.value) {
             y = maxY.value;
-            x = _translateX + (maxY.value - _translateY) * x0 / y0;
+            x = __translateX + (maxY.value - __translateY) * x0 / y0;
           }
         }
         _friction.setEnd(x, y);
@@ -9974,7 +10272,7 @@ function useMovableViewState(props2, trigger, rootRef) {
           let t2 = _friction.s();
           let x2 = t2.x;
           let y2 = t2.y;
-          _setTransform(x2, y2, _scale, "friction");
+          _setTransform(x2, y2, _scale.value, "friction");
         }, function() {
           _FA.cancel();
         });
@@ -9983,168 +10281,6 @@ function useMovableViewState(props2, trigger, rootRef) {
     if (!props2.outOfBounds && !props2.inertia) {
       FAandSFACancel();
     }
-  }
-  function _getLimitXY(x, y) {
-    let outOfBounds = false;
-    if (x > maxX.value) {
-      x = maxX.value;
-      outOfBounds = true;
-    } else {
-      if (x < minX.value) {
-        x = minX.value;
-        outOfBounds = true;
-      }
-    }
-    if (y > maxY.value) {
-      y = maxY.value;
-      outOfBounds = true;
-    } else {
-      if (y < minY.value) {
-        y = minY.value;
-        outOfBounds = true;
-      }
-    }
-    return {
-      x,
-      y,
-      outOfBounds
-    };
-  }
-  function _updateOffset() {
-    _offset.x = p(rootRef.value, movableAreaRootRef.value);
-    _offset.y = f(rootRef.value, movableAreaRootRef.value);
-  }
-  function _updateWH(scale) {
-    scale = scale || _scale;
-    scale = _adjustScale(scale);
-    let rect = rootRef.value.getBoundingClientRect();
-    height.value = rect.height / _scale;
-    width.value = rect.width / _scale;
-    let _height = height.value * scale;
-    let _width = width.value * scale;
-    _scaleOffset.x = (_width - width.value) / 2;
-    _scaleOffset.y = (_height - height.value) / 2;
-  }
-  function _updateBoundary() {
-    let x = 0 - _offset.x + _scaleOffset.x;
-    let _width = movableAreaWidth.value - width.value - _offset.x - _scaleOffset.x;
-    minX.value = Math.min(x, _width);
-    maxX.value = Math.max(x, _width);
-    let y = 0 - _offset.y + _scaleOffset.y;
-    let _height = movableAreaHeight.value - height.value - _offset.y - _scaleOffset.y;
-    minY.value = Math.min(y, _height);
-    maxY.value = Math.max(y, _height);
-  }
-  function _beginScale() {
-    _isScaling = true;
-  }
-  function _updateScale(scale, animat) {
-    if (props2.scale) {
-      scale = _adjustScale(scale);
-      _updateWH(scale);
-      _updateBoundary();
-      const limitXY = _getLimitXY(_translateX, _translateY);
-      const x = limitXY.x;
-      const y = limitXY.y;
-      if (animat) {
-        _animationTo(x, y, scale, "", true, true);
-      } else {
-        _requestAnimationFrame(function() {
-          _setTransform(x, y, scale, "", true, true);
-        });
-      }
-    }
-  }
-  function _updateOldScale(scale) {
-    _oldScale = scale;
-  }
-  function _adjustScale(scale) {
-    scale = Math.max(0.5, scaleMinNumber.value, scale);
-    scale = Math.min(10, scaleMaxNumber.value, scale);
-    return scale;
-  }
-  function _animationTo(x, y, scale, source, r, o2) {
-    FAandSFACancel();
-    if (!xMove.value) {
-      x = _translateX;
-    }
-    if (!yMove.value) {
-      y = _translateY;
-    }
-    if (!props2.scale) {
-      scale = _scale;
-    }
-    let limitXY = _getLimitXY(x, y);
-    x = limitXY.x;
-    y = limitXY.y;
-    if (!props2.animation) {
-      _setTransform(x, y, scale, source, r, o2);
-      return;
-    }
-    _STD._springX._solution = null;
-    _STD._springY._solution = null;
-    _STD._springScale._solution = null;
-    _STD._springX._endPosition = _translateX;
-    _STD._springY._endPosition = _translateY;
-    _STD._springScale._endPosition = _scale;
-    _STD.setEnd(x, y, scale, 1);
-    _SFA = g(_STD, function() {
-      let data = _STD.x();
-      let x2 = data.x;
-      let y2 = data.y;
-      let scale2 = data.scale;
-      _setTransform(x2, y2, scale2, source, r, o2);
-    }, function() {
-      _SFA.cancel();
-    });
-  }
-  function _revise(source) {
-    let limitXY = _getLimitXY(_translateX, _translateY);
-    let x = limitXY.x;
-    let y = limitXY.y;
-    let outOfBounds = limitXY.outOfBounds;
-    if (outOfBounds) {
-      _animationTo(x, y, _scale, source);
-    }
-    return outOfBounds;
-  }
-  function _setTransform(x, y, scale, source = "", r, o2) {
-    if (!(x !== null && x.toString() !== "NaN" && typeof x === "number")) {
-      x = _translateX || 0;
-    }
-    if (!(y !== null && y.toString() !== "NaN" && typeof y === "number")) {
-      y = _translateY || 0;
-    }
-    x = Number(x.toFixed(1));
-    y = Number(y.toFixed(1));
-    scale = Number(scale.toFixed(1));
-    if (!(_translateX === x && _translateY === y)) {
-      if (!r) {
-        trigger("change", {}, {
-          x: v(x, _scaleOffset.x),
-          y: v(y, _scaleOffset.y),
-          source
-        });
-      }
-    }
-    if (!props2.scale) {
-      scale = _scale;
-    }
-    scale = _adjustScale(scale);
-    scale = +scale.toFixed(3);
-    if (o2 && scale !== _scale) {
-      trigger("scale", {}, {
-        x,
-        y,
-        scale
-      });
-    }
-    let transform = "translateX(" + x + "px) translateY(" + y + "px) translateZ(0px) scale(" + scale + ")";
-    rootRef.value.style.transform = transform;
-    rootRef.value.style.webkitTransform = transform;
-    _translateX = x;
-    _translateY = y;
-    _scale = scale;
   }
   function setParent() {
     if (!_isMounted.value) {
@@ -10155,24 +10291,11 @@ function useMovableViewState(props2, trigger, rootRef) {
     _updateOffset();
     _updateWH(scale);
     _updateBoundary();
-    _translateX = xSync.value + _scaleOffset.x;
-    _translateY = ySync.value + _scaleOffset.y;
-    let limitXY = _getLimitXY(_translateX, _translateY);
+    let limitXY = _getLimitXY(xSync.value + _scaleOffset.x, ySync.value + _scaleOffset.y);
     let x = limitXY.x;
     let y = limitXY.y;
     _setTransform(x, y, scale, "", true);
     _updateOldScale(scale);
-  }
-  function _endScale() {
-    _isScaling = false;
-    _updateOldScale(_scale);
-  }
-  function _setScale(scale) {
-    if (scale) {
-      scale = _oldScale * scale;
-      _beginScale();
-      _updateScale(scale);
-    }
   }
   onMounted(() => {
     useTouchtrack(rootRef.value, (event) => {
@@ -12741,6 +12864,18 @@ const props$k = {
   disableTouch: {
     type: [Boolean, String],
     default: false
+  },
+  navigation: {
+    type: [Boolean, String],
+    default: false
+  },
+  navigationColor: {
+    type: String,
+    default: "#fff"
+  },
+  navigationActiveColor: {
+    type: String,
+    default: "rgba(53, 53, 53, 0.6)"
   }
 };
 function useState$3(props2) {
@@ -12783,7 +12918,8 @@ function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger
   let transitionStart;
   let currentChangeSource = "";
   let animationFrame;
-  const circularEnabled = computed(() => props2.circular && swiperContexts.value.length > state2.displayMultipleItems);
+  const swiperEnabled = computed(() => swiperContexts.value.length > state2.displayMultipleItems);
+  const circularEnabled = computed(() => props2.circular && swiperEnabled.value);
   function checkCircularLayout(index2) {
     if (!invalid) {
       for (let items = swiperContexts.value, n = items.length, i = index2 + state2.displayMultipleItems, r = 0; r < n; r++) {
@@ -12924,6 +13060,8 @@ function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger
           position += length;
         }
       }
+    } else if (source === "click") {
+      current = current + state2.displayMultipleItems - 1 < length ? current : 0;
     }
     animating = {
       toPos: current,
@@ -13160,7 +13298,9 @@ function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger
     animateViewport(state2.current = index2, currentChangeSource = "click", circularEnabled.value ? 1 : 0);
   }
   return {
-    onSwiperDotClick
+    onSwiperDotClick,
+    circularEnabled,
+    swiperEnabled
   };
 }
 var Swiper = /* @__PURE__ */ defineBuiltInComponent({
@@ -13231,8 +13371,14 @@ var Swiper = /* @__PURE__ */ defineBuiltInComponent({
     };
     provide("removeSwiperContext", removeSwiperContext);
     const {
-      onSwiperDotClick
+      onSwiperDotClick,
+      circularEnabled,
+      swiperEnabled
     } = useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger);
+    let createNavigationTsx = () => null;
+    {
+      createNavigationTsx = useSwiperNavigation(rootRef, props2, state2, onSwiperDotClick, swiperContexts, circularEnabled, swiperEnabled);
+    }
     return () => {
       const defaultSlots = slots.default && slots.default();
       swiperItems = flatVNode(defaultSlots);
@@ -13259,10 +13405,126 @@ var Swiper = /* @__PURE__ */ defineBuiltInComponent({
         "style": {
           background: index2 === state2.current ? props2.indicatorActiveColor : props2.indicatorColor
         }
-      }, null, 14, ["onClick"]))], 2)], 512)], 512);
+      }, null, 14, ["onClick"]))], 2), createNavigationTsx()], 512)], 512);
     };
   }
 });
+const useSwiperNavigation = (rootRef, props2, state2, onSwiperDotClick, swiperContext, circularEnabled, swiperEnabled) => {
+  let isNavigationAuto = false;
+  let prevDisabled = false;
+  let nextDisabled = false;
+  let hideNavigation = ref(false);
+  watchEffect(() => {
+    isNavigationAuto = props2.navigation === "auto";
+    hideNavigation.value = props2.navigation !== true || isNavigationAuto;
+    swiperAddMouseEvent();
+  });
+  watchEffect(() => {
+    const swiperItemLength = swiperContext.value.length;
+    const notCircular = !circularEnabled.value;
+    prevDisabled = state2.current === 0 && notCircular;
+    nextDisabled = state2.current === swiperItemLength - 1 && notCircular || notCircular && state2.current + state2.displayMultipleItems >= swiperItemLength;
+    if (!swiperEnabled.value) {
+      prevDisabled = true;
+      nextDisabled = true;
+      isNavigationAuto && (hideNavigation.value = true);
+    }
+  });
+  function navigationHover(event, type) {
+    const target = event.currentTarget;
+    if (!target)
+      return;
+    target.style.backgroundColor = type === "over" ? props2.navigationActiveColor : "";
+  }
+  const navigationAttr = {
+    onMouseover: (event) => navigationHover(event, "over"),
+    onMouseout: (event) => navigationHover(event, "out")
+  };
+  function navigationClick($event, type) {
+    $event.stopPropagation();
+    const swiperItemLength = swiperContext.value.length;
+    let _current = state2.current;
+    switch (type) {
+      case "prev":
+        _current--;
+        if (_current < 0 && circularEnabled.value) {
+          _current = swiperItemLength - 1;
+        }
+        break;
+      case "next":
+        _current++;
+        if (_current >= swiperItemLength && circularEnabled.value) {
+          _current = 0;
+        }
+        break;
+    }
+    onSwiperDotClick(_current);
+  }
+  const createNavigationSVG = () => createSvgIconVNode(ICON_PATH_BACK, props2.navigationColor, 26);
+  let setHideNavigationTimer;
+  const _mousemove = (e2) => {
+    clearTimeout(setHideNavigationTimer);
+    const {
+      clientX,
+      clientY
+    } = e2;
+    const {
+      left,
+      right,
+      top,
+      bottom,
+      width,
+      height
+    } = rootRef.value.getBoundingClientRect();
+    let hide = false;
+    if (props2.vertical) {
+      hide = !(clientY - top < height / 3 || bottom - clientY < height / 3);
+    } else {
+      hide = !(clientX - left < width / 3 || right - clientX < width / 3);
+    }
+    if (hide) {
+      return setHideNavigationTimer = setTimeout(() => {
+        hideNavigation.value = hide;
+      }, 300);
+    }
+    hideNavigation.value = hide;
+  };
+  const _mouseleave = () => {
+    hideNavigation.value = true;
+  };
+  function swiperAddMouseEvent() {
+    if (rootRef.value) {
+      rootRef.value.removeEventListener("mousemove", _mousemove);
+      rootRef.value.removeEventListener("mouseleave", _mouseleave);
+      if (isNavigationAuto) {
+        rootRef.value.addEventListener("mousemove", _mousemove);
+        rootRef.value.addEventListener("mouseleave", _mouseleave);
+      }
+    }
+  }
+  onMounted(swiperAddMouseEvent);
+  function createNavigationTsx() {
+    const navigationClass = {
+      "uni-swiper-navigation-hide": hideNavigation.value,
+      "uni-swiper-navigation-vertical": props2.vertical
+    };
+    if (props2.navigation) {
+      return createVNode(Fragment, null, [createVNode("div", mergeProps({
+        "class": ["uni-swiper-navigation uni-swiper-navigation-prev", extend({
+          "uni-swiper-navigation-disabled": prevDisabled
+        }, navigationClass)],
+        "onClick": (e2) => navigationClick(e2, "prev")
+      }, navigationAttr), [createNavigationSVG()], 16, ["onClick"]), createVNode("div", mergeProps({
+        "class": ["uni-swiper-navigation uni-swiper-navigation-next", extend({
+          "uni-swiper-navigation-disabled": nextDisabled
+        }, navigationClass)],
+        "onClick": (e2) => navigationClick(e2, "next")
+      }, navigationAttr), [createNavigationSVG()], 16, ["onClick"])]);
+    }
+    return null;
+  }
+  return createNavigationTsx;
+};
 const props$j = {
   itemId: {
     type: String,
@@ -14238,11 +14500,11 @@ function removeCurrentPages(delta = 1) {
   }
 }
 function initHistory() {
-  let { base } = __uniConfig.router;
-  if (base === "/") {
-    base = "";
+  let { routerBase } = __uniConfig.router;
+  if (routerBase === "/") {
+    routerBase = "";
   }
-  const history2 = __UNI_FEATURE_ROUTER_MODE__ === "history" ? createWebHistory(base) : createWebHashHistory(base);
+  const history2 = __UNI_FEATURE_ROUTER_MODE__ === "history" ? createWebHistory(routerBase) : createWebHashHistory(routerBase);
   history2.listen((_to, _from, info) => {
     if (info.direction === "back") {
       removeCurrentPages(Math.abs(info.delta));
@@ -15408,6 +15670,39 @@ function useWebViewSize(rootRef, iframeRef, fullscreen) {
   };
   return _resize;
 }
+let index$d = 0;
+function getJSONP(url, options, success, error) {
+  var js = document.createElement("script");
+  var callbackKey = options.callback || "callback";
+  var callbackName = "__uni_jsonp_callback_" + index$d++;
+  var timeout = options.timeout || 3e4;
+  var timing;
+  function end() {
+    clearTimeout(timing);
+    delete window[callbackName];
+    js.remove();
+  }
+  window[callbackName] = (res) => {
+    if (isFunction(success)) {
+      success(res);
+    }
+    end();
+  };
+  js.onerror = () => {
+    if (isFunction(error)) {
+      error();
+    }
+    end();
+  };
+  timing = setTimeout(function() {
+    if (isFunction(error)) {
+      error();
+    }
+    end();
+  }, timeout);
+  js.src = url + (url.indexOf("?") >= 0 ? "&" : "?") + callbackKey + "=" + callbackName;
+  document.body.appendChild(js);
+}
 const ICON_PATH_LOCTAION = "M13.3334375 16 q0.033125 1.1334375 0.783125 1.8834375 q0.75 0.75 1.8834375 0.75 q1.1334375 0 1.8834375 -0.75 q0.75 -0.75 0.75 -1.8834375 q0 -1.1334375 -0.75 -1.8834375 q-0.75 -0.75 -1.8834375 -0.75 q-1.1334375 0 -1.8834375 0.75 q-0.75 0.75 -0.783125 1.8834375 ZM30.9334375 14.9334375 l-1.1334375 0 q-0.5 -5.2 -4.0165625 -8.716875 q-3.516875 -3.5165625 -8.716875 -4.0165625 l0 -1.1334375 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 l0 1.1334375 q-5.2 0.5 -8.716875 4.0165625 q-3.5165625 3.516875 -4.0165625 8.716875 l-1.1334375 0 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 l1.1334375 0 q0.5 5.2 4.0165625 8.716875 q3.516875 3.5165625 8.716875 4.0165625 l0 1.1334375 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 l0 -1.1334375 q5.2 -0.5 8.716875 -4.0165625 q3.5165625 -3.516875 4.0165625 -8.716875 l1.1334375 0 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 ZM17.0665625 27.6665625 l0 -2.0665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 l0 2.0665625 q-4.3 -0.4665625 -7.216875 -3.383125 q-2.916875 -2.916875 -3.3834375 -7.216875 l2.0665625 0 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 l-2.0665625 0 q0.4665625 -4.3 3.3834375 -7.216875 q2.9165625 -2.916875 7.216875 -3.3834375 l0 2.0665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 l0 -2.0665625 q4.3 0.4665625 7.216875 3.3834375 q2.9165625 2.9165625 3.383125 7.216875 l-2.0665625 0 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 l2.0665625 0 q-0.4665625 4.3 -3.383125 7.216875 q-2.916875 2.9165625 -7.216875 3.383125 Z";
 const ICON_PATH_ORIGIN = "data:image/png;base64,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";
 const ICON_PATH_TARGET = "data:image/png;base64,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";
@@ -15454,6 +15749,48 @@ const getIsAMap = () => {
     return IS_AMAP = getMapInfo().type === "AMap";
   }
 };
+function translateGeo(type, coords, skip) {
+  const mapInfo = getMapInfo();
+  const wgs84Map = ["google"];
+  if (type && type.toUpperCase() === "WGS84" || wgs84Map.includes(mapInfo.type) || skip) {
+    return Promise.resolve(coords);
+  }
+  if (mapInfo.type === "qq") {
+    return new Promise((resolve) => {
+      getJSONP(`https://apis.map.qq.com/jsapi?qt=translate&type=1&points=${coords.longitude},${coords.latitude}&key=${mapInfo.key}&output=jsonp&pf=jsapi&ref=jsapi`, {
+        callback: "cb"
+      }, (res) => {
+        if ("detail" in res && "points" in res.detail && res.detail.points.length) {
+          const location2 = res.detail.points[0];
+          resolve(extend({}, coords, {
+            longitude: location2.lng,
+            latitude: location2.lat
+          }));
+        } else {
+          resolve(coords);
+        }
+      }, () => resolve(coords));
+    });
+  }
+  if (mapInfo.type === "AMap") {
+    return new Promise((resolve) => {
+      loadMaps([], () => {
+        window.AMap.convertFrom([coords.longitude, coords.latitude], "gps", (_, res) => {
+          if (res.info === "ok" && res.locations.length) {
+            const { lat, lng } = res.locations[0];
+            resolve(extend({}, coords, {
+              longitude: lng,
+              latitude: lat
+            }));
+          } else {
+            resolve(coords);
+          }
+        });
+      });
+    });
+  }
+  return Promise.reject(new Error("translateGeo faild"));
+}
 function createCallout(maps2) {
   function onAdd() {
     const div = this.div;
@@ -16328,77 +16665,52 @@ const props$b = {
   },
   position: {
     type: Object,
-    require: true
+    required: true
   },
   iconPath: {
     type: String,
-    require: true
+    required: true
   },
   clickable: {
     type: [Boolean, String],
     default: ""
   },
-  rootRef: {
-    type: Object,
-    default: null
+  trigger: {
+    type: Function,
+    required: true
   }
 };
 var MapControl = /* @__PURE__ */ defineSystemComponent({
   name: "MapControl",
   props: props$b,
   setup(props2) {
-    const onMapReady = inject("onMapReady");
-    let control;
-    function removeControl() {
-      if (control) {
-        control.remove();
+    const imgPath = computed(() => getRealPath(props2.iconPath));
+    const positionStyle = computed(() => {
+      let positionStyle2 = `top:${props2.position.top || 0}px;left:${props2.position.left || 0}px;`;
+      if (props2.position.width) {
+        positionStyle2 += `width:${props2.position.width}px;`;
       }
-    }
-    onMapReady((_, __, trigger) => {
-      function updateControl(option) {
-        removeControl();
-        addControl(option);
+      if (props2.position.height) {
+        positionStyle2 += `height:${props2.position.height}px;`;
       }
-      function addControl(option) {
-        control = document.createElement("div");
-        const style = control.style;
-        style.position = "absolute";
-        style.width = "0";
-        style.height = "0";
-        style.top = "0";
-        style.left = "0";
-        const img = new Image();
-        img.src = getRealPath(option.iconPath);
-        img.onload = () => {
-          const position = option.position || {};
-          if (position.width) {
-            img.width = option.position.width;
-          }
-          if (position.height) {
-            img.height = option.position.height;
-          }
-          const style2 = img.style;
-          style2.position = "absolute";
-          style2.left = (position.left || 0) + "px";
-          style2.top = (position.top || 0) + "px";
-          style2.maxWidth = "initial";
-          control.appendChild(img);
-          props2.rootRef.value && props2.rootRef.value.appendChild(control);
-        };
-        img.onclick = function($event) {
-          if (option.clickable) {
-            trigger("controltap", $event, {
-              controlId: option.id
-            });
-          }
-        };
-      }
-      addControl(props2);
-      watch(props2, updateControl);
+      return positionStyle2;
     });
-    onUnmounted(removeControl);
+    const handleClick = ($event) => {
+      if (props2.clickable) {
+        props2.trigger("controltap", $event, {
+          controlId: props2.id
+        });
+      }
+    };
     return () => {
-      return null;
+      return createVNode("div", {
+        "class": "uni-map-control"
+      }, [createVNode("img", {
+        "src": imgPath.value,
+        "style": positionStyle.value,
+        "class": "uni-map-control-icon",
+        "onClick": handleClick
+      }, null, 12, ["src", "onClick"])]);
     };
   }
 });
@@ -17100,7 +17412,7 @@ function getStorageOrigin(key) {
   }
   return data;
 }
-const getStorageSync = /* @__PURE__ */ defineSyncApi(API_GET_STORAGE_SYNC, (key, t2) => {
+const getStorageSync = /* @__PURE__ */ defineSyncApi(API_GET_STORAGE_SYNC, (key) => {
   try {
     return getStorageOrigin(key);
   } catch (error) {
@@ -17483,13 +17795,13 @@ function usePopup(props2, {
   });
   return visible;
 }
-let index$d = 0;
+let index$c = 0;
 let overflow = "";
 function preventScroll(prevent) {
-  let before = index$d;
-  index$d += prevent ? 1 : -1;
-  index$d = Math.max(0, index$d);
-  if (index$d > 0) {
+  let before = index$c;
+  index$c += prevent ? 1 : -1;
+  index$c = Math.max(0, index$c);
+  if (index$c > 0) {
     if (before === 0) {
       overflow = document.body.style.overflow;
       document.body.style.overflow = "hidden";
@@ -17656,6 +17968,20 @@ var ImagePreview = /* @__PURE__ */ defineSystemComponent({
     function onChange2(event) {
       indexRef.value = event.detail.current;
     }
+    const closeBtnStyle = {
+      position: "absolute",
+      "box-sizing": "border-box",
+      top: "0",
+      left: "0",
+      width: "60px",
+      height: "44px",
+      padding: "6px",
+      "line-height": "32px",
+      "font-size": "26px",
+      color: "white",
+      "text-align": "center",
+      cursor: "pointer"
+    };
     return () => {
       let _slot;
       return createVNode("div", {
@@ -17672,6 +17998,7 @@ var ImagePreview = /* @__PURE__ */ defineSystemComponent({
         },
         "onClick": onClick
       }, [createVNode(Swiper, {
+        "navigation": "auto",
         "current": indexRef.value,
         "onChange": onChange2,
         "indicator-dots": false,
@@ -17690,7 +18017,9 @@ var ImagePreview = /* @__PURE__ */ defineSystemComponent({
       }))) ? _slot : {
         default: () => [_slot],
         _: 1
-      }, 8, ["current", "onChange"])], 8, ["onClick"]);
+      }, 8, ["current", "onChange"]), createVNode("div", {
+        "style": closeBtnStyle
+      }, [createSvgIconVNode(ICON_PATH_CLOSE, "#ffffff", 26)], 4)], 8, ["onClick"]);
     };
   }
 });
@@ -18255,39 +18584,6 @@ const onSocketOpen = /* @__PURE__ */ on("open");
 const onSocketError = /* @__PURE__ */ on("error");
 const onSocketMessage = /* @__PURE__ */ on("message");
 const onSocketClose = /* @__PURE__ */ on("close");
-let index$c = 0;
-function getJSONP(url, options, success, error) {
-  var js = document.createElement("script");
-  var callbackKey = options.callback || "callback";
-  var callbackName = "__uni_jsonp_callback_" + index$c++;
-  var timeout = options.timeout || 3e4;
-  var timing;
-  function end() {
-    clearTimeout(timing);
-    delete window[callbackName];
-    js.remove();
-  }
-  window[callbackName] = (res) => {
-    if (isFunction(success)) {
-      success(res);
-    }
-    end();
-  };
-  js.onerror = () => {
-    if (isFunction(error)) {
-      error();
-    }
-    end();
-  };
-  timing = setTimeout(function() {
-    if (isFunction(error)) {
-      error();
-    }
-    end();
-  }, timeout);
-  js.src = url + (url.indexOf("?") >= 0 ? "&" : "?") + callbackKey + "=" + callbackName;
-  document.body.appendChild(js);
-}
 const getLocation = /* @__PURE__ */ defineAsyncApi(API_GET_LOCATION, ({ type, altitude, highAccuracyExpireTime, isHighAccuracy }, { resolve, reject }) => {
   const mapInfo = getMapInfo();
   new Promise((resolve2, reject2) => {
@@ -18340,56 +18636,19 @@ const getLocation = /* @__PURE__ */ defineAsyncApi(API_GET_LOCATION, ({ type, al
       }
     });
   }).then((coords, skip) => {
-    const wgs84Map = [MapType.GOOGLE];
-    if (type && type.toUpperCase() === "WGS84" || wgs84Map.includes(mapInfo.type) || skip) {
-      return coords;
-    }
-    if (mapInfo.type === MapType.QQ) {
-      return new Promise((resolve2) => {
-        getJSONP(`https://apis.map.qq.com/jsapi?qt=translate&type=1&points=${coords.longitude},${coords.latitude}&key=${mapInfo.key}&output=jsonp&pf=jsapi&ref=jsapi`, {
-          callback: "cb"
-        }, (res) => {
-          if ("detail" in res && "points" in res.detail && res.detail.points.length) {
-            const location2 = res.detail.points[0];
-            resolve2(extend({}, coords, {
-              longitude: location2.lng,
-              latitude: location2.lat
-            }));
-          } else {
-            resolve2(coords);
-          }
-        }, () => resolve2(coords));
+    translateGeo(type, coords, skip).then((coords2) => {
+      resolve({
+        latitude: coords2.latitude,
+        longitude: coords2.longitude,
+        accuracy: coords2.accuracy,
+        speed: coords2.altitude || 0,
+        altitude: coords2.altitude || 0,
+        verticalAccuracy: coords2.altitudeAccuracy || 0,
+        horizontalAccuracy: coords2.accuracy || 0
       });
-    }
-    if (mapInfo.type === MapType.AMAP) {
-      return new Promise((resolve2) => {
-        loadMaps([], () => {
-          window.AMap.convertFrom([coords.longitude, coords.latitude], "gps", (_, res) => {
-            if (res.info === "ok" && res.locations.length) {
-              const { lat, lng } = res.locations[0];
-              resolve2(extend({}, coords, {
-                longitude: lng,
-                latitude: lat
-              }));
-            } else {
-              resolve2(coords);
-            }
-          });
-        });
-      });
-    }
-  }).then((coords) => {
-    resolve({
-      latitude: coords.latitude,
-      longitude: coords.longitude,
-      accuracy: coords.accuracy,
-      speed: coords.altitude || 0,
-      altitude: coords.altitude || 0,
-      verticalAccuracy: coords.altitudeAccuracy || 0,
-      horizontalAccuracy: coords.accuracy || 0
+    }).catch((error) => {
+      reject(error.message);
     });
-  }).catch((error) => {
-    reject(error.message);
   });
 }, GetLocationProtocol, GetLocationOptions);
 const ICON_PATH_NAV = "M28 17c-6.49396875 0-12.13721875 2.57040625-15 6.34840625V5.4105l6.29859375 6.29859375c0.387875 0.387875 1.02259375 0.387875 1.4105 0 0.387875-0.387875 0.387875-1.02259375 0-1.4105L12.77853125 2.36803125a0.9978125 0.9978125 0 0 0-0.0694375-0.077125c-0.1944375-0.1944375-0.45090625-0.291375-0.70721875-0.290875l-0.00184375-0.0000625-0.00184375 0.0000625c-0.2563125-0.0005-0.51278125 0.09640625-0.70721875 0.290875a0.9978125 0.9978125 0 0 0-0.0694375 0.077125l-7.930625 7.9305625c-0.387875 0.387875-0.387875 1.02259375 0 1.4105 0.387875 0.387875 1.02259375 0.387875 1.4105 0L11 5.4105V29c0 0.55 0.45 1 1 1s1-0.45 1-1c0-5.52284375 6.71571875-10 15-10 0.55228125 0 1-0.44771875 1-1 0-0.55228125-0.44771875-1-1-1z";
@@ -18902,6 +19161,40 @@ const chooseLocation = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_LOCATION, (args
     reject("cancel");
   }
 }, ChooseLocationProtocol);
+let watchId = 0;
+const startLocationUpdate = /* @__PURE__ */ defineAsyncApi(API_START_LOCATION_UPDATE, (_, { resolve, reject }) => {
+  if (navigator.geolocation && watchId === 0) {
+    watchId = navigator.geolocation.watchPosition((res) => {
+      translateGeo(_ == null ? void 0 : _.type, res.coords).then((coords) => {
+        UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE, coords);
+        resolve();
+      }).catch((error) => {
+        reject(error.message);
+      });
+    }, (error) => {
+      reject(error.message);
+    });
+  }
+  resolve();
+}, StartLocationUpdateProtocol, StartLocationUpdateOptions);
+const onLocationChange = /* @__PURE__ */ defineOnApi(API_ON_LOCATION_CHANGE, () => {
+});
+const stopLocationUpdate = /* @__PURE__ */ defineAsyncApi(API_STOP_LOCATION_UPDATE, (_, { resolve, reject }) => {
+  if (watchId) {
+    navigator.geolocation.clearWatch(watchId);
+    watchId = 0;
+    resolve();
+  } else {
+    reject("stopLocationUpdate:fail");
+  }
+});
+const offLocationChange = /* @__PURE__ */ defineOffApi(API_OFF_LOCATION_CHANGE, () => {
+  stopLocationUpdate();
+});
+const onLocationChangeError = /* @__PURE__ */ defineOnApi(API_ON_LOCATION_CHANGE_ERROR, () => {
+});
+const offLocationChangeError = /* @__PURE__ */ defineOnApi(API_OFF_LOCATION_CHANGE_ERROR, () => {
+});
 const navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, (args, { resolve, reject }) => {
   let canBack = true;
   if (invokeHook(ON_BACK_PRESS, {
@@ -19976,13 +20269,12 @@ function createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, tab
     "style": {
       height
     }
-  }, [iconfontText ? createTabBarItemIconfontTsx(iconfontText, iconfontColor || BLUR_EFFECT_COLOR_DARK, tabBarItem, tabBar2) : iconPath && createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2), tabBarItem.text && createTabBarItemTextTsx(color, tabBarItem, tabBar2)], 4);
+  }, [iconfontText ? createTabBarItemIconfontTsx(iconfontText, iconfontColor || BLUR_EFFECT_COLOR_DARK, tabBarItem, tabBar2) : iconPath && createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2), tabBarItem.text && createTabBarItemTextTsx(color, tabBarItem, tabBar2), tabBarItem.redDot && createTabBarItemRedDotTsx(tabBarItem.badge)], 4);
 }
 function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2) {
   const {
     type,
-    text: text2,
-    redDot
+    text: text2
   } = tabBarItem;
   const {
     iconWidth
@@ -19997,14 +20289,13 @@ function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2) {
     "style": style
   }, [type !== "midButton" && createVNode("img", {
     "src": getRealPath(iconPath)
-  }, null, 8, ["src"]), redDot && createTabBarItemRedDotTsx(tabBarItem.badge)], 6);
+  }, null, 8, ["src"])], 6);
 }
 function createTabBarItemIconfontTsx(iconfontText, iconfontColor, tabBarItem, tabBar2) {
   var _a;
   const {
     type,
-    text: text2,
-    redDot
+    text: text2
   } = tabBarItem;
   const {
     iconWidth
@@ -20024,11 +20315,10 @@ function createTabBarItemIconfontTsx(iconfontText, iconfontColor, tabBarItem, ta
   }, [type !== "midButton" && createVNode("div", {
     "class": "uni-tabbar__iconfont",
     "style": iconfontStyle
-  }, [iconfontText], 4), redDot && createTabBarItemRedDotTsx(tabBarItem.badge)], 6);
+  }, [iconfontText], 4)], 6);
 }
 function createTabBarItemTextTsx(color, tabBarItem, tabBar2) {
   const {
-    redDot,
     iconPath,
     text: text2
   } = tabBarItem;
@@ -20045,7 +20335,7 @@ function createTabBarItemTextTsx(color, tabBarItem, tabBar2) {
   return createVNode("div", {
     "class": "uni-tabbar__label",
     "style": style
-  }, [text2, redDot && !iconPath && createTabBarItemRedDotTsx(tabBarItem.badge)], 4);
+  }, [text2], 4);
 }
 function createTabBarItemRedDotTsx(badge) {
   const clazz2 = "uni-tabbar__reddot" + (badge ? " uni-tabbar__badge" : "");
@@ -20526,8 +20816,8 @@ const API_GET_SAVED_FILE_LIST = "getSavedFileList";
 const getSavedFileList = /* @__PURE__ */ defineAsyncApi(API_GET_SAVED_FILE_LIST, createUnsupportedAsyncApi(API_GET_SAVED_FILE_LIST));
 const API_GET_SAVED_FILE_INFO = "getSavedFileInfo";
 const getSavedFileInfo = /* @__PURE__ */ defineAsyncApi(API_GET_SAVED_FILE_INFO, createUnsupportedAsyncApi(API_GET_SAVED_FILE_INFO));
-const API_REMOVE_SAVED_FILE_INFO = "removeSavedFileInfo";
-const removeSavedFileInfo = /* @__PURE__ */ defineAsyncApi(API_REMOVE_SAVED_FILE_INFO, createUnsupportedAsyncApi(API_REMOVE_SAVED_FILE_INFO));
+const API_REMOVE_SAVED_FILE = "removeSavedFile";
+const removeSavedFile = /* @__PURE__ */ defineAsyncApi(API_REMOVE_SAVED_FILE, createUnsupportedAsyncApi(API_REMOVE_SAVED_FILE));
 const API_ON_MEMORY_WARNING = "onMemoryWarning";
 const onMemoryWarning = /* @__PURE__ */ defineOnApi(API_ON_MEMORY_WARNING, createUnsupportedOnApi(API_ON_MEMORY_WARNING));
 const API_ON_GYROSCOPE_CHANGE = "onGyroscopeChange";
@@ -20659,6 +20949,12 @@ var api = /* @__PURE__ */ Object.defineProperty({
   getLocation,
   openLocation,
   chooseLocation,
+  startLocationUpdate,
+  onLocationChange,
+  stopLocationUpdate,
+  offLocationChange,
+  onLocationChangeError,
+  offLocationChangeError,
   navigateBack,
   navigateTo,
   redirectTo,
@@ -20707,7 +21003,7 @@ var api = /* @__PURE__ */ Object.defineProperty({
   saveFile,
   getSavedFileList,
   getSavedFileInfo,
-  removeSavedFileInfo,
+  removeSavedFile,
   onMemoryWarning,
   onGyroscopeChange,
   startGyroscope,
@@ -21244,7 +21540,8 @@ function useMap(props2, rootRef, emit2) {
   provide("removeMapChidlContext", removeMapChidlContext);
   return {
     state: state2,
-    mapRef
+    mapRef,
+    trigger
   };
 }
 var Map$1 = /* @__PURE__ */ defineBuiltInComponent({
@@ -21257,7 +21554,8 @@ var Map$1 = /* @__PURE__ */ defineBuiltInComponent({
   }) {
     const rootRef = ref(null);
     const {
-      mapRef
+      mapRef,
+      trigger
     } = useMap(props2, rootRef, emit2);
     return () => {
       return createVNode("uni-map", {
@@ -21269,8 +21567,8 @@ var Map$1 = /* @__PURE__ */ defineBuiltInComponent({
       }, null, 512), props2.markers.map((item) => createVNode(MapMarker, mergeProps({
         "key": item.id
       }, item), null, 16)), props2.polyline.map((item) => createVNode(MapPolyline, item, null, 16)), props2.circles.map((item) => createVNode(MapCircle, item, null, 16)), props2.controls.map((item) => createVNode(MapControl, mergeProps(item, {
-        "rootRef": rootRef
-      }), null, 16, ["rootRef"])), props2.showLocation && createVNode(MapLocation, null, null), props2.polygons.map((item) => createVNode(MapPolygon, item, null, 16)), createVNode("div", {
+        "trigger": trigger
+      }), null, 16, ["trigger"])), props2.showLocation && createVNode(MapLocation, null, null), props2.polygons.map((item) => createVNode(MapPolygon, item, null, 16)), createVNode("div", {
         "style": "position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"
       }, [slots.default && slots.default()])], 8, ["id"]);
     };
@@ -21371,7 +21669,7 @@ function getDefaultStartValue(props2) {
     return "00:00";
   }
   if (props2.mode === mode.DATE) {
-    const year = new Date().getFullYear() - 100;
+    const year = new Date().getFullYear() - 150;
     switch (props2.fields) {
       case fields.YEAR:
         return year.toString();
@@ -21388,7 +21686,7 @@ function getDefaultEndValue(props2) {
     return "23:59";
   }
   if (props2.mode === mode.DATE) {
-    const year = new Date().getFullYear() + 100;
+    const year = new Date().getFullYear() + 150;
     switch (props2.fields) {
       case fields.YEAR:
         return year.toString();
@@ -21799,10 +22097,31 @@ function usePickerMethods(props2, state2, trigger, rootRef, pickerRef, selectRef
     }
     state2.timeArray.push(hours, minutes);
   }
+  function getYearStartEnd() {
+    let year = new Date().getFullYear();
+    let start = year - 150;
+    let end = year + 150;
+    if (props2.start) {
+      const _year = new Date(props2.start).getFullYear();
+      if (!isNaN(_year) && _year < start) {
+        start = _year;
+      }
+    }
+    if (props2.end) {
+      const _year = new Date(props2.start).getFullYear();
+      if (!isNaN(_year) && _year > end) {
+        end = _year;
+      }
+    }
+    return {
+      start,
+      end
+    };
+  }
   function _createDate() {
     let years = [];
-    let year = new Date().getFullYear();
-    for (let i = year - 150, end = year + 150; i <= end; i++) {
+    const year = getYearStartEnd();
+    for (let i = year.start, end = year.end; i <= end; i++) {
       years.push(String(i));
     }
     let months = [];
@@ -22196,6 +22515,7 @@ const ICON_PATHS = {
   none: "",
   forward: "M11 7.844q-0.25-0.219-0.25-0.578t0.25-0.578q0.219-0.25 0.563-0.25t0.563 0.25l9.656 9.125q0.125 0.125 0.188 0.297t0.063 0.328q0 0.188-0.063 0.359t-0.188 0.297l-9.656 9.125q-0.219 0.25-0.563 0.25t-0.563-0.25q-0.25-0.219-0.25-0.578t0.25-0.609l9.063-8.594-9.063-8.594z",
   back: ICON_PATH_BACK,
+  select: ICON_PATH_BACK,
   share: "M26.563 24.844q0 0.125-0.109 0.234t-0.234 0.109h-17.938q-0.125 0-0.219-0.109t-0.094-0.234v-13.25q0-0.156 0.094-0.25t0.219-0.094h5.5v-1.531h-6q-0.531 0-0.906 0.391t-0.375 0.922v14.375q0 0.531 0.375 0.922t0.906 0.391h18.969q0.531 0 0.891-0.391t0.359-0.953v-5.156h-1.438v4.625zM29.813 10.969l-5.125-5.375-1.031 1.094 3.438 3.594-3.719 0.031q-2.313 0.188-4.344 1.125t-3.578 2.422-2.5 3.453-1.109 4.188l-0.031 0.25h1.469v-0.219q0.156-1.875 1-3.594t2.25-3.063 3.234-2.125 3.828-0.906l0.188-0.031 3.313-0.031-3.438 3.625 1.031 1.063 5.125-5.375-0.031-0.063 0.031-0.063z",
   favorite: "M27.594 13.375q-0.063-0.188-0.219-0.313t-0.344-0.156l-7.094-0.969-3.219-6.406q-0.094-0.188-0.25-0.281t-0.375-0.094q-0.188 0-0.344 0.094t-0.25 0.281l-3.125 6.438-7.094 1.094q-0.188 0.031-0.344 0.156t-0.219 0.313q-0.031 0.188 0.016 0.375t0.172 0.313l5.156 4.969-1.156 7.063q-0.031 0.188 0.047 0.375t0.234 0.313q0.094 0.063 0.188 0.094t0.219 0.031q0.063 0 0.141-0.031t0.172-0.063l6.313-3.375 6.375 3.313q0.063 0.031 0.141 0.047t0.172 0.016q0.188 0 0.344-0.094t0.25-0.281q0.063-0.094 0.078-0.234t-0.016-0.234q0-0.031 0-0.063l-1.25-6.938 5.094-5.031q0.156-0.156 0.203-0.344t-0.016-0.375zM11.469 19.063q0.031-0.188-0.016-0.344t-0.172-0.281l-4.406-4.25 6.063-0.906q0.156-0.031 0.297-0.125t0.203-0.25l2.688-5.531 2.75 5.5q0.063 0.156 0.203 0.25t0.297 0.125l6.094 0.844-4.375 4.281q-0.125 0.125-0.172 0.297t-0.016 0.328l1.063 6.031-5.438-2.813q-0.156-0.094-0.328-0.078t-0.297 0.078l-5.438 2.875 1-6.031z",
   home: "M23.719 16.5q-0.313 0-0.531 0.219t-0.219 0.5v7.063q0 0.219-0.172 0.391t-0.391 0.172h-12.344q-0.25 0-0.422-0.172t-0.172-0.391v-7.063q0-0.281-0.219-0.5t-0.531-0.219q-0.281 0-0.516 0.219t-0.234 0.5v7.063q0.031 0.844 0.625 1.453t1.438 0.609h12.375q0.844 0 1.453-0.609t0.609-1.453v-7.063q0-0.125-0.063-0.266t-0.156-0.234q-0.094-0.125-0.234-0.172t-0.297-0.047zM26.5 14.875l-8.813-8.813q-0.313-0.313-0.688-0.453t-0.781-0.141-0.781 0.141-0.656 0.422l-8.813 8.844q-0.188 0.219-0.188 0.516t0.219 0.484q0.094 0.125 0.234 0.172t0.297 0.047q0.125 0 0.25-0.047t0.25-0.141l8.781-8.781q0.156-0.156 0.406-0.156t0.406 0.156l8.813 8.781q0.219 0.188 0.516 0.188t0.516-0.219q0.188-0.188 0.203-0.484t-0.172-0.516z",
@@ -22260,7 +22580,8 @@ function createButtonsTsx(btns) {
     btnText,
     btnIconPath,
     badgeText,
-    iconStyle
+    iconStyle,
+    btnSelect
   }, index2) => {
     return createVNode("div", {
       "key": index2,
@@ -22268,7 +22589,12 @@ function createButtonsTsx(btns) {
       "style": btnStyle,
       "onClick": onClick,
       "badge-text": badgeText
-    }, [btnIconPath ? createSvgIconVNode(btnIconPath, iconStyle.color, iconStyle.fontSize) : createVNode("i", {
+    }, [btnIconPath ? createSvgIconVNode(btnIconPath, iconStyle.color, iconStyle.fontSize) : btnSelect ? createVNode("span", {
+      "style": iconStyle
+    }, [createVNode("i", {
+      "class": "uni-btn-icon",
+      "innerHTML": btnText
+    }, null, 8, ["innerHTML"]), createSvgIconVNode(ICON_PATHS["select"], "#000", 14)], 4) : createVNode("i", {
       "class": "uni-btn-icon",
       "style": iconStyle,
       "innerHTML": btnText
@@ -22472,7 +22798,8 @@ function usePageHeadButton(pageId, index2, btn, isTransparent) {
       invokeHook(pageId, ON_NAVIGATION_BAR_BUTTON_TAP, extend({
         index: index2
       }, btn));
-    }
+    },
+    btnSelect: btn.select
   };
 }
 function usePageHeadSearchInput({
@@ -22856,4 +23183,4 @@ var index = /* @__PURE__ */ defineSystemComponent({
     return openBlock(), createBlock("div", clazz, [loadingVNode]);
   }
 });
-export { $emit, $off, $on, $once, index$8 as Ad, index$7 as AdContentPage, index$6 as AdDraw, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, index$z as Button, index$5 as Camera, index$x as Canvas, index$v as Checkbox, index$w as CheckboxGroup, index$a as CoverImage, index$b as CoverView, index$u as Editor, index$B as Form, index$t as Icon, index$s as Image, Input, index$A as Label, LayoutComponent, index$4 as LivePlayer, index$3 as LivePusher, Map$1 as Map, MovableArea, MovableView, index$r as Navigator, index$2 as PageComponent, index$9 as Picker, PickerView, PickerViewColumn, index$q as Progress, index$o as Radio, index$p as RadioGroup, ResizeSensor, index$n as RichText, ScrollView, index$m as Slider, Swiper, SwiperItem, index$l as Switch, index$k as Text, index$j as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$f as Video, index$i as View, index$e as WebView, addInterceptor, addPhoneContact, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closePreviewImage, closeSocket, connectSocket, createAnimation$1 as createAnimation, createCameraContext, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createLivePlayerContext, createMapContext, createMediaQueryObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getAppBaseInfo, getClipboardData, getCurrentPages$1 as getCurrentPages, getDeviceInfo, getEnterOptionsSync, getFileInfo, getImageInfo, getLaunchOptionsSync, getLeftWindowStyle, getLocale, getLocation, getNetworkType, getProvider, getPushClientId, getRealPath, getRecorderManager, getRightWindowStyle, getSavedFileInfo, getSavedFileList, getScreenBrightness, getSelectedTextRange$1 as getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getTopWindowStyle, getVideoInfo, getWindowInfo, hideKeyboard, hideLeftWindow, hideLoading, hideNavigationBarLoading, hideRightWindow, hideTabBar, hideTabBarRedDot, hideToast, hideTopWindow, interceptors, invokePushCallback, loadFontFace, login, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offAppHide, offAppShow, offCompassChange, offError, offNetworkStatusChange, offPageNotFound, offPushMessage, offUnhandledRejection, offWindowResize, onAccelerometerChange, onAppHide, onAppShow, onCompassChange, onError, onGyroscopeChange, onLocaleChange, onMemoryWarning, onNetworkStatusChange, onPageNotFound, onPushMessage, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onUnhandledRejection, onUserCaptureScreen, onWindowResize, openDocument, openLocation, pageScrollTo, index$g as plugin, preloadPage, previewImage, reLaunch, redirectTo, removeInterceptor, removeSavedFileInfo, removeStorage, removeStorageSync, removeTabBarBadge, request, saveFile, saveImageToPhotosAlbum, saveVideoToPhotosAlbum, scanCode, sendSocketMessage, setClipboardData, setKeepScreenOn, setLeftWindowStyle, setLocale, setNavigationBarColor, setNavigationBarTitle, setPageMeta, setRightWindowStyle, setScreenBrightness, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setTopWindowStyle, setupApp, setupPage, setupWindow, showActionSheet, showLeftWindow, showLoading, showModal, showNavigationBarLoading, showRightWindow, showTabBar, showTabBarRedDot, showToast, showTopWindow, startAccelerometer, startCompass, startGyroscope, startPullDownRefresh, stopAccelerometer, stopCompass, stopGyroscope, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useI18n, useTabBar, vibrateLong, vibrateShort };
+export { $emit, $off, $on, $once, index$8 as Ad, index$7 as AdContentPage, index$6 as AdDraw, index$1 as AsyncErrorComponent, index as AsyncLoadingComponent, index$z as Button, index$5 as Camera, index$x as Canvas, index$v as Checkbox, index$w as CheckboxGroup, index$a as CoverImage, index$b as CoverView, index$u as Editor, index$B as Form, index$t as Icon, index$s as Image, Input, index$A as Label, LayoutComponent, index$4 as LivePlayer, index$3 as LivePusher, Map$1 as Map, MovableArea, MovableView, index$r as Navigator, index$2 as PageComponent, index$9 as Picker, PickerView, PickerViewColumn, index$q as Progress, index$o as Radio, index$p as RadioGroup, ResizeSensor, index$n as RichText, ScrollView, index$m as Slider, Swiper, SwiperItem, index$l as Switch, index$k as Text, index$j as Textarea, UniServiceJSBridge$1 as UniServiceJSBridge, UniViewJSBridge$1 as UniViewJSBridge, index$f as Video, index$i as View, index$e as WebView, addInterceptor, addPhoneContact, arrayBufferToBase64, base64ToArrayBuffer, canIUse, canvasGetImageData, canvasPutImageData, canvasToTempFilePath, chooseFile, chooseImage, chooseLocation, chooseVideo, clearStorage, clearStorageSync, closePreviewImage, closeSocket, connectSocket, createAnimation$1 as createAnimation, createCameraContext, createCanvasContext, createInnerAudioContext, createIntersectionObserver, createLivePlayerContext, createMapContext, createMediaQueryObserver, createSelectorQuery, createVideoContext, cssBackdropFilter, cssConstant, cssEnv, cssVar, downloadFile, getApp$1 as getApp, getAppBaseInfo, getClipboardData, getCurrentPages$1 as getCurrentPages, getDeviceInfo, getEnterOptionsSync, getFileInfo, getImageInfo, getLaunchOptionsSync, getLeftWindowStyle, getLocale, getLocation, getNetworkType, getProvider, getPushClientId, getRealPath, getRecorderManager, getRightWindowStyle, getSavedFileInfo, getSavedFileList, getScreenBrightness, getSelectedTextRange$1 as getSelectedTextRange, getStorage, getStorageInfo, getStorageInfoSync, getStorageSync, getSystemInfo, getSystemInfoSync, getTopWindowStyle, getVideoInfo, getWindowInfo, hideKeyboard, hideLeftWindow, hideLoading, hideNavigationBarLoading, hideRightWindow, hideTabBar, hideTabBarRedDot, hideToast, hideTopWindow, interceptors, invokePushCallback, loadFontFace, login, makePhoneCall, navigateBack, navigateTo, offAccelerometerChange, offAppHide, offAppShow, offCompassChange, offError, offLocationChange, offLocationChangeError, offNetworkStatusChange, offPageNotFound, offPushMessage, offUnhandledRejection, offWindowResize, onAccelerometerChange, onAppHide, onAppShow, onCompassChange, onError, onGyroscopeChange, onLocaleChange, onLocationChange, onLocationChangeError, onMemoryWarning, onNetworkStatusChange, onPageNotFound, onPushMessage, onSocketClose, onSocketError, onSocketMessage, onSocketOpen, onTabBarMidButtonTap, onUnhandledRejection, onUserCaptureScreen, onWindowResize, openDocument, openLocation, pageScrollTo, index$g as plugin, preloadPage, previewImage, reLaunch, redirectTo, removeInterceptor, removeSavedFile, removeStorage, removeStorageSync, removeTabBarBadge, request, saveFile, saveImageToPhotosAlbum, saveVideoToPhotosAlbum, scanCode, sendSocketMessage, setClipboardData, setKeepScreenOn, setLeftWindowStyle, setLocale, setNavigationBarColor, setNavigationBarTitle, setPageMeta, setRightWindowStyle, setScreenBrightness, setStorage, setStorageSync, setTabBarBadge, setTabBarItem, setTabBarStyle, setTopWindowStyle, setupApp, setupPage, setupWindow, showActionSheet, showLeftWindow, showLoading, showModal, showNavigationBarLoading, showRightWindow, showTabBar, showTabBarRedDot, showToast, showTopWindow, startAccelerometer, startCompass, startGyroscope, startLocationUpdate, startPullDownRefresh, stopAccelerometer, stopCompass, stopGyroscope, stopLocationUpdate, stopPullDownRefresh, switchTab, uni$1 as uni, uploadFile, upx2px, useI18n, useTabBar, vibrateLong, vibrateShort };

@@ -20,7 +20,7 @@ exports.default = [
                     version: pkg.version,
                     wsEndpoint: process.env.UNI_AUTOMATOR_WS_ENDPOINT,
                 });
-                fs_extra_1.default.outputFileSync(path_1.default.resolve(process.env.UNI_OUTPUT_DIR, '../.automator/' + process.env.UNI_PLATFORM + '/.automator.json'), automatorJson);
+                fs_extra_1.default.outputFileSync(path_1.default.resolve(process.env.UNI_OUTPUT_DIR, '../.automator/' + (0, uni_cli_shared_1.getPlatformDir)() + '/.automator.json'), automatorJson);
             },
             transform(code, id) {
                 if (!process.env.UNI_AUTOMATOR_WS_ENDPOINT) {

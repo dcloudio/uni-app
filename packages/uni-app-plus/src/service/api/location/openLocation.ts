@@ -9,7 +9,7 @@ import {
 import { showPage } from '@dcloudio/uni-core'
 import { extend } from '@vue/shared'
 
-export const openLocation = <API_TYPE_OPEN_LOCATION>defineAsyncApi(
+export const openLocation = defineAsyncApi<API_TYPE_OPEN_LOCATION>(
   API_OPEN_LOCATION,
   (data, { resolve, reject }) => {
     showPage({

@@ -142,6 +142,19 @@ exports.default = () => [
         return {
             name: 'uni:cloud',
             enforce: 'pre',
+            config(config, env) {
+                if ((0, uni_cli_shared_1.isSsr)(env.command, config)) {
+                    return;
+                }
+                const inputDir = process.env.UNI_INPUT_DIR;
+                const platform = process.env.UNI_PLATFORM;
+                const isSecureNetworkEnabled = (0, uni_cli_shared_1.isEnableSecureNetwork)(inputDir, platform);
+                return {
+                    define: {
+                        'process.env.UNI_SECURE_NETWORK': isSecureNetworkEnabled,
+                    },
+                };
+            },
             transform(code, id) {
                 if (!opts.filter(id)) {
                     return;

@@ -1,5 +1,5 @@
 import { shallowRef, ref, getCurrentInstance, isInSSRComponentSetup, injectHook } from 'vue';
-import { hasOwn, isString, extend, isPlainObject } from '@vue/shared';
+import { hasOwn, isString, extend, capitalize, isPlainObject } from '@vue/shared';
 import { sanitise, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR, ON_SHOW, ON_HIDE, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, ON_INIT, ON_LOAD, ON_READY, ON_UNLOAD, ON_RESIZE, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SAVE_EXIT_STATE, ON_SHARE_TIMELINE, ON_ADD_TO_FAVORITES, ON_SHARE_APP_MESSAGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED } from '@dcloudio/uni-shared';
 
 function getSSRDataType() {
@@ -133,8 +133,8 @@ function normalizeArg(arg) {
     }
     return arg;
 }
-function initUtsInstanceMethod(async, opts) {
-    return initProxyFunction(async, opts);
+function initUtsInstanceMethod(async, opts, instanceId) {
+    return initProxyFunction(async, opts, instanceId);
 }
 function getProxy() {
     if (!proxy) {
@@ -151,7 +151,7 @@ function resolveSyncResult(res) {
 function invokePropGetter(args) {
     return resolveSyncResult(getProxy().invokeSync(args, () => { }));
 }
-function initProxyFunction(async, { package: pkg, class: cls, name: propOrMethod, id: instanceId, companion, }) {
+function initProxyFunction(async, { package: pkg, class: cls, name: propOrMethod, method, companion, params: methodParams, }, instanceId) {
     const invokeCallback = ({ id, name, params, keepAlive, }) => {
         const callback = callbacks[id];
         if (callback) {
@@ -165,12 +165,13 @@ function initProxyFunction(async, { package: pkg, class: cls, name: propOrMethod
         }
     };
     const baseArgs = instanceId
-        ? { id: instanceId, name: propOrMethod }
+        ? { id: instanceId, name: propOrMethod, method: methodParams }
         : {
             package: pkg,
             class: cls,
-            name: propOrMethod,
+            name: method || propOrMethod,
             companion,
+            method: methodParams,
         };
     return (...args) => {
         const invokeArgs = extend({}, baseArgs, {
@@ -197,10 +198,15 @@ function initProxyFunction(async, { package: pkg, class: cls, name: propOrMethod
     };
 }
 function initUtsStaticMethod(async, opts) {
-    return initProxyFunction(async, opts);
+    if (opts.main && !opts.method) {
+        if (typeof plus !== 'undefined' && plus.os.name === 'iOS') {
+            opts.method = 's_' + opts.name;
+        }
+    }
+    return initProxyFunction(async, opts, 0);
 }
 const initUtsProxyFunction = initUtsStaticMethod;
-function initUtsProxyClass({ package: pkg, class: cls, methods, props, staticProps, staticMethods, }) {
+function initUtsProxyClass({ package: pkg, class: cls, constructor: { params: constructorParams }, methods, props, staticProps, staticMethods, }) {
     const baseOptions = {
         package: pkg,
         class: cls,
@@ -209,16 +215,20 @@ function initUtsProxyClass({ package: pkg, class: cls, methods, props, staticPro
         constructor(...params) {
             const target = {};
             // 初始化实例 ID
-            const instanceId = initProxyFunction(false, extend({ name: 'constructor', params }, baseOptions)).apply(null, params);
+            const instanceId = initProxyFunction(false, extend({ name: 'constructor', params: constructorParams }, baseOptions), 0).apply(null, params);
+            if (!instanceId) {
+                throw new Error(`new ${cls} is failed`);
+            }
             return new Proxy(this, {
                 get(_, name) {
                     if (!target[name]) {
                         //实例方法
                         if (hasOwn(methods, name)) {
-                            target[name] = initUtsInstanceMethod(!!methods[name].async, extend({
-                                id: instanceId,
+                            const { async, params } = methods[name];
+                            target[name] = initUtsInstanceMethod(!!async, extend({
                                 name,
-                            }, baseOptions));
+                                params,
+                            }, baseOptions), instanceId);
                         }
                         else if (props.includes(name)) {
                             // 实例属性
@@ -235,8 +245,9 @@ function initUtsProxyClass({ package: pkg, class: cls, methods, props, staticPro
         get(target, name, receiver) {
             if (hasOwn(staticMethods, name)) {
                 if (!staticMethodCache[name]) {
+                    const { async, params } = staticMethods[name];
                     // 静态方法
-                    staticMethodCache[name] = initUtsStaticMethod(!!staticMethods[name].async, extend({ name, companion: true }, baseOptions));
+                    staticMethodCache[name] = initUtsStaticMethod(!!async, extend({ name, companion: true, params }, baseOptions));
                 }
                 return staticMethodCache[name];
             }
@@ -248,5 +259,32 @@ function initUtsProxyClass({ package: pkg, class: cls, methods, props, staticPro
         },
     });
 }
+function initUtsPackageName(name, is_uni_modules) {
+    if (typeof plus !== 'undefined' && plus.os.name === 'Android') {
+        return 'uts.sdk.' + (is_uni_modules ? 'modules.' : '') + name;
+    }
+    return '';
+}
+function initUtsIndexClassName(moduleName, is_uni_modules) {
+    if (typeof plus === 'undefined') {
+        return '';
+    }
+    return initUtsClassName(moduleName, plus.os.name === 'iOS' ? 'IndexSwift' : 'IndexKt', is_uni_modules);
+}
+function initUtsClassName(moduleName, className, is_uni_modules) {
+    if (typeof plus === 'undefined') {
+        return '';
+    }
+    if (plus.os.name === 'Android') {
+        return className;
+    }
+    if (plus.os.name === 'iOS') {
+        return ('UTSSDK' +
+            (is_uni_modules ? 'Modules' : '') +
+            capitalize(moduleName) +
+            capitalize(className));
+    }
+    return '';
+}
 
-export { formatAppLog, formatH5Log, getCurrentSubNVue, getSsrGlobalData, initUtsProxyClass, initUtsProxyFunction, onAddToFavorites, onBackPress, onError, onHide, onInit, onLaunch, onLoad, onNavigationBarButtonTap, onNavigationBarSearchInputChanged, onNavigationBarSearchInputClicked, onNavigationBarSearchInputConfirmed, onNavigationBarSearchInputFocusChanged, onPageNotFound, onPageScroll, onPullDownRefresh, onReachBottom, onReady, onResize, onSaveExitState, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, requireNativePlugin, resolveEasycom, shallowSsrRef, ssrRef };
+export { formatAppLog, formatH5Log, getCurrentSubNVue, getSsrGlobalData, initUtsClassName, initUtsIndexClassName, initUtsPackageName, initUtsProxyClass, initUtsProxyFunction, onAddToFavorites, onBackPress, onError, onHide, onInit, onLaunch, onLoad, onNavigationBarButtonTap, onNavigationBarSearchInputChanged, onNavigationBarSearchInputClicked, onNavigationBarSearchInputConfirmed, onNavigationBarSearchInputFocusChanged, onPageNotFound, onPageScroll, onPullDownRefresh, onReachBottom, onReady, onResize, onSaveExitState, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, requireNativePlugin, resolveEasycom, shallowSsrRef, ssrRef };

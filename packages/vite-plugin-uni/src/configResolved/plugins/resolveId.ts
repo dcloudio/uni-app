@@ -39,11 +39,13 @@ export function uniResolveIdPlugin(
           path.join(id, BUILT_IN_MODULES[id as BuiltInModulesKey])
         ))
       }
-      return resolveUtsModule(
-        id,
-        importer ? path.dirname(importer) : process.env.UNI_INPUT_DIR,
-        process.env.UNI_UTS_PLATFORM
-      )
+      if (process.env.UNI_PLATFORM !== 'app') {
+        return resolveUtsModule(
+          id,
+          importer ? path.dirname(importer) : process.env.UNI_INPUT_DIR,
+          process.env.UNI_UTS_PLATFORM
+        )
+      }
     },
   }
 }
