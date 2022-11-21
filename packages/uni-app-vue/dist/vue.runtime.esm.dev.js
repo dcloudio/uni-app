@@ -1,8 +1,8 @@
-import { isRootHook, isRootImmediateHook, ON_LOAD, UniInputElement, UniTextAreaElement, UniElement, UniTextNode, UniCommentNode, forcePatchProp, JSON_PROTOCOL, resolveOwnerEl, ATTR_V_OWNER_ID, ATTR_V_RENDERJS } from '@dcloudio/uni-shared';
 import { isString, isFunction, isPromise, isArray, getGlobalThis, NOOP, EMPTY_OBJ, remove, toHandlerKey, camelize, capitalize, isObject, extend, normalizeClass, normalizeStyle, isOn, hasChanged, toNumber, hyphenate, isHTMLTag, isSVGTag, isSet, isMap, isPlainObject, invokeArrayFns, EMPTY_ARR, NO, isModelListener, isBuiltInDirective, hasOwn, isReservedProp, makeMap, def, toRawType, isGloballyWhitelisted } from '@vue/shared';
 export { camelize, capitalize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
 import { pauseTracking, resetTracking, isRef, toRaw, isShallow as isShallow$1, isReactive, ReactiveEffect, ref, isProxy, computed as computed$1, shallowReadonly, proxyRefs, markRaw, isReadonly, track, EffectScope, reactive, shallowReactive, trigger } from '@vue/reactivity';
 export { EffectScope, ReactiveEffect, customRef, effect, effectScope, getCurrentScope, isProxy, isReactive, isReadonly, isRef, isShallow, markRaw, onScopeDispose, proxyRefs, reactive, readonly, ref, shallowReactive, shallowReadonly, shallowRef, stop, toRaw, toRef, toRefs, triggerRef, unref } from '@vue/reactivity';
+import { isRootHook, isRootImmediateHook, ON_LOAD, UniInputElement, UniTextAreaElement, UniElement, UniTextNode, UniCommentNode, forcePatchProp, JSON_PROTOCOL, resolveOwnerEl, ATTR_V_OWNER_ID, ATTR_V_RENDERJS } from '@dcloudio/uni-shared';
 var stack = [];
 function pushWarningContext(vnode) {
   stack.push(vnode);
@@ -8636,6 +8636,11 @@ var createApp = function () {
   } = app;
   app.mount = container => {
     if (isString(container)) {
+      {
+        if (container === '#app') {
+          devtoolsInitApp(app, version);
+        }
+      }
       container = createComment(container);
     }
     return container && mount(container, false, false);
