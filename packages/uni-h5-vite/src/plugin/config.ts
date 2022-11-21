@@ -43,6 +43,8 @@ export function createConfig(options: {
           '**/uniCloud-aliyun/**',
           '**/uniCloud-tcb/**',
           '**/uni_modules/uniCloud/**',
+          normalizePath(path.join(inputDir, 'unpackage/**')),
+          normalizePath(path.join(inputDir, 'dist/**')),
         ],
       },
       ...getDevServerOptions(parseManifestJsonOnce(inputDir)),
