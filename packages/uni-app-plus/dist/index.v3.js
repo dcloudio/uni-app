@@ -6137,7 +6137,7 @@ var serviceContext = (function () {
       return {
         authMode: supportMode[0] || 'fingerPrint',
         errCode: 90001,
-        errMsg: 'startSoterAuthentication:fail'
+        errMsg: 'startSoterAuthentication:fail not support'
       }
     }
     const supportRequestAuthMode = [];
