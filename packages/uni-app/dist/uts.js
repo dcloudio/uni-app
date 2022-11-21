@@ -1,5 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 exports.initUtsClassName = exports.initUtsIndexClassName = exports.initUtsPackageName = exports.initUtsProxyClass = exports.initUtsProxyFunction = exports.normalizeArg = void 0;
 var utils_1 = require("./utils");
 var callbackId = 1;
@@ -7,7 +7,9 @@ var proxy;
 var callbacks = {};
 function normalizeArg(arg) {
     if (typeof arg === 'function') {
-        var id = callbackId++;
+        // 查找该函数是否已缓存
+        var oldId = Object.keys(callbacks).find(function (id) { return callbacks[id] === arg; });
+        var id = oldId ? parseInt(oldId) : callbackId++;
         callbacks[id] = arg;
         return id;
     }
@@ -36,10 +38,14 @@ function resolveSyncResult(res) {
     return res.params;
 }
 function invokePropGetter(args) {
+    if (args.errMsg) {
+        throw new Error(args.errMsg);
+    }
+    delete args.errMsg;
     return resolveSyncResult(getProxy().invokeSync(args, function () { }));
 }
 function initProxyFunction(async, _a, instanceId) {
-    var pkg = _a.package, cls = _a.class, propOrMethod = _a.name, method = _a.method, companion = _a.companion, methodParams = _a.params;
+    var pkg = _a.package, cls = _a["class"], propOrMethod = _a.name, method = _a.method, companion = _a.companion, methodParams = _a.params, errMsg = _a.errMsg;
     var invokeCallback = function (_a) {
         var id = _a.id, name = _a.name, params = _a.params, keepAlive = _a.keepAlive;
         var callback = callbacks[id];
@@ -57,18 +63,21 @@ function initProxyFunction(async, _a, instanceId) {
         ? { id: instanceId, name: propOrMethod, method: methodParams }
         : {
             package: pkg,
-            class: cls,
+            "class": cls,
             name: method || propOrMethod,
             companion: companion,
-            method: methodParams,
+            method: methodParams
         };
     return function () {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             args[_i] = arguments[_i];
         }
+        if (errMsg) {
+            throw new Error(errMsg);
+        }
         var invokeArgs = (0, utils_1.extend)({}, baseArgs, {
-            params: args.map(function (arg) { return normalizeArg(arg); }),
+            params: args.map(function (arg) { return normalizeArg(arg); })
         });
         if (async) {
             return new Promise(function (resolve, reject) {
@@ -100,18 +109,23 @@ function initUtsStaticMethod(async, opts) {
 }
 exports.initUtsProxyFunction = initUtsStaticMethod;
 function initUtsProxyClass(_a) {
-    var pkg = _a.package, cls = _a.class, constructorParams = _a.constructor.params, methods = _a.methods, props = _a.props, staticProps = _a.staticProps, staticMethods = _a.staticMethods;
+    var pkg = _a.package, cls = _a["class"], constructorParams = _a.constructor.params, methods = _a.methods, props = _a.props, staticProps = _a.staticProps, staticMethods = _a.staticMethods, errMsg = _a.errMsg;
     var baseOptions = {
         package: pkg,
-        class: cls,
+        "class": cls,
+        errMsg: errMsg
     };
-    var ProxyClass = (function () {
+    var ProxyClass = /** @class */ (function () {
         function UtsClass() {
             var params = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 params[_i] = arguments[_i];
             }
+            if (errMsg) {
+                throw new Error(errMsg);
+            }
             var target = {};
+            // 初始化实例 ID
             var instanceId = initProxyFunction(false, (0, utils_1.extend)({ name: 'constructor', params: constructorParams }, baseOptions), 0).apply(null, params);
             if (!instanceId) {
                 throw new Error("new ".concat(cls, " is failed"));
@@ -119,19 +133,25 @@ function initUtsProxyClass(_a) {
             return new Proxy(this, {
                 get: function (_, name) {
                     if (!target[name]) {
+                        //实例方法
                         if ((0, utils_1.hasOwn)(methods, name)) {
                             var _a = methods[name], async = _a.async, params_1 = _a.params;
                             target[name] = initUtsInstanceMethod(!!async, (0, utils_1.extend)({
                                 name: name,
-                                params: params_1,
+                                params: params_1
                             }, baseOptions), instanceId);
                         }
                         else if (props.includes(name)) {
-                            return invokePropGetter({ id: instanceId, name: name });
+                            // 实例属性
+                            return invokePropGetter({
+                                id: instanceId,
+                                name: name,
+                                errMsg: errMsg
+                            });
                         }
                     }
                     return target[name];
-                },
+                }
             });
         }
         return UtsClass;
@@ -142,15 +162,17 @@ function initUtsProxyClass(_a) {
             if ((0, utils_1.hasOwn)(staticMethods, name)) {
                 if (!staticMethodCache[name]) {
                     var _a = staticMethods[name], async = _a.async, params = _a.params;
+                    // 静态方法
                     staticMethodCache[name] = initUtsStaticMethod(!!async, (0, utils_1.extend)({ name: name, companion: true, params: params }, baseOptions));
                 }
                 return staticMethodCache[name];
             }
             if (staticProps.includes(name)) {
+                // 静态属性
                 return invokePropGetter((0, utils_1.extend)({ name: name, companion: true }, baseOptions));
             }
             return Reflect.get(target, name, receiver);
-        },
+        }
     });
 }
 exports.initUtsProxyClass = initUtsProxyClass;

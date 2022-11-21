@@ -32,6 +32,7 @@ Please run \`${command}\` and try again.`
 }
 
 module.exports = {
+  version: require('../../package.json').version,
   normalizePath,
   installDepTips
 }
