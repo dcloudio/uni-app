@@ -140,6 +140,7 @@ interface InvokeCallbackReturnRes {
   type: 'return'
   params?: unknown[]
   errMsg?: string
+  errStackTrace?: string
 }
 interface InvokeCallbackParamsRes {
   type: 'params'
@@ -151,6 +152,7 @@ interface InvokeCallbackParamsRes {
 interface InvokeSyncRes {
   type: 'return'
   errMsg?: string
+  errStackTrace?: string
   params: unknown
 }
 type InvokeSyncCallback = (res: InvokeCallbackParamsRes) => void
