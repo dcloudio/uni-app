@@ -61,6 +61,10 @@ interface ProxyFunctionOptions {
    * 方法参数列表
    */
   params: Parameter[]
+  /**
+   * 运行时提示的错误信息
+   */
+  errMsg?: string
 }
 
 interface ProxyClassOptions {
@@ -83,6 +87,10 @@ interface ProxyClassOptions {
       params: Parameter[]
     }
   }
+  /**
+   * 运行时提示的错误信息
+   */
+  errMsg?: string
 }
 
 interface InvokeInstanceArgs {
@@ -90,6 +98,10 @@ interface InvokeInstanceArgs {
   name: string
   params?: unknown[]
   method?: Parameter[]
+  /**
+   * 运行时提示的错误信息
+   */
+  errMsg?: string
 }
 interface InvokeStaticArgs {
   /**
@@ -116,6 +128,10 @@ interface InvokeStaticArgs {
    * 是否是伴生对象
    */
   companion?: boolean
+  /**
+   * 运行时提示的错误信息
+   */
+  errMsg?: string
 }
 
 type InvokeArgs = InvokeInstanceArgs | InvokeStaticArgs
@@ -159,6 +175,10 @@ function resolveSyncResult(res: InvokeSyncRes) {
 }
 
 function invokePropGetter(args: InvokeArgs) {
+  if (args.errMsg) {
+    throw new Error(args.errMsg)
+  }
+  delete args.errMsg
   return resolveSyncResult(getProxy().invokeSync(args, () => {}))
 }
 
@@ -171,6 +191,7 @@ function initProxyFunction(
     method,
     companion,
     params: methodParams,
+    errMsg,
   }: ProxyFunctionOptions,
   instanceId: number
 ) {
@@ -200,6 +221,9 @@ function initProxyFunction(
         method: methodParams,
       }
   return (...args: unknown[]) => {
+    if (errMsg) {
+      throw new Error(errMsg)
+    }
     const invokeArgs = extend({}, baseArgs, {
       params: args.map((arg) => normalizeArg(arg)),
     })
@@ -241,13 +265,18 @@ export function initUtsProxyClass({
   props,
   staticProps,
   staticMethods,
+  errMsg,
 }: ProxyClassOptions): any {
   const baseOptions = {
     package: pkg,
     class: cls,
+    errMsg,
   }
   const ProxyClass = class UtsClass {
     constructor(...params: unknown[]) {
+      if (errMsg) {
+        throw new Error(errMsg)
+      }
       const target: Record<string, Function> = {}
       // 初始化实例 ID
       const instanceId = initProxyFunction(
@@ -277,7 +306,11 @@ export function initUtsProxyClass({
               )
             } else if (props.includes(name as string)) {
               // 实例属性
-              return invokePropGetter({ id: instanceId, name: name as string })
+              return invokePropGetter({
+                id: instanceId,
+                name: name as string,
+                errMsg,
+              })
             }
           }
           return target[name as string]

@@ -153,9 +153,13 @@ function resolveSyncResult(res) {
     return res.params;
 }
 function invokePropGetter(args) {
+    if (args.errMsg) {
+        throw new Error(args.errMsg);
+    }
+    delete args.errMsg;
     return resolveSyncResult(getProxy().invokeSync(args, () => { }));
 }
-function initProxyFunction(async, { package: pkg, class: cls, name: propOrMethod, method, companion, params: methodParams, }, instanceId) {
+function initProxyFunction(async, { package: pkg, class: cls, name: propOrMethod, method, companion, params: methodParams, errMsg, }, instanceId) {
     const invokeCallback = ({ id, name, params, keepAlive, }) => {
         const callback = callbacks[id];
         if (callback) {
@@ -178,6 +182,9 @@ function initProxyFunction(async, { package: pkg, class: cls, name: propOrMethod
             method: methodParams,
         };
     return (...args) => {
+        if (errMsg) {
+            throw new Error(errMsg);
+        }
         const invokeArgs = extend({}, baseArgs, {
             params: args.map((arg) => normalizeArg(arg)),
         });
@@ -210,13 +217,17 @@ function initUtsStaticMethod(async, opts) {
     return initProxyFunction(async, opts, 0);
 }
 const initUtsProxyFunction = initUtsStaticMethod;
-function initUtsProxyClass({ package: pkg, class: cls, constructor: { params: constructorParams }, methods, props, staticProps, staticMethods, }) {
+function initUtsProxyClass({ package: pkg, class: cls, constructor: { params: constructorParams }, methods, props, staticProps, staticMethods, errMsg, }) {
     const baseOptions = {
         package: pkg,
         class: cls,
+        errMsg,
     };
     const ProxyClass = class UtsClass {
         constructor(...params) {
+            if (errMsg) {
+                throw new Error(errMsg);
+            }
             const target = {};
             // 初始化实例 ID
             const instanceId = initProxyFunction(false, extend({ name: 'constructor', params: constructorParams }, baseOptions), 0).apply(null, params);
@@ -236,7 +247,11 @@ function initUtsProxyClass({ package: pkg, class: cls, constructor: { params: co
                         }
                         else if (props.includes(name)) {
                             // 实例属性
-                            return invokePropGetter({ id: instanceId, name: name });
+                            return invokePropGetter({
+                                id: instanceId,
+                                name: name,
+                                errMsg,
+                            });
                         }
                     }
                     return target[name];

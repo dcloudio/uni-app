@@ -32,7 +32,7 @@ export declare function initUtsIndexClassName(moduleName: string, is_uni_modules
 
 export declare function initUtsPackageName(name: string, is_uni_modules: boolean): string;
 
-export declare function initUtsProxyClass({ package: pkg, class: cls, constructor: { params: constructorParams }, methods, props, staticProps, staticMethods, }: ProxyClassOptions): any;
+export declare function initUtsProxyClass({ package: pkg, class: cls, constructor: { params: constructorParams }, methods, props, staticProps, staticMethods, errMsg, }: ProxyClassOptions): any;
 
 export declare const initUtsProxyFunction: typeof initUtsStaticMethod;
 
@@ -125,6 +125,10 @@ declare interface ProxyClassOptions {
             params: Parameter[];
         };
     };
+    /**
+     * 运行时提示的错误信息
+     */
+    errMsg?: string;
 }
 
 declare interface ProxyFunctionOptions {
@@ -156,6 +160,10 @@ declare interface ProxyFunctionOptions {
      * 方法参数列表
      */
     params: Parameter[];
+    /**
+     * 运行时提示的错误信息
+     */
+    errMsg?: string;
 }
 
 export declare function requireNativePlugin(name: string): any;
