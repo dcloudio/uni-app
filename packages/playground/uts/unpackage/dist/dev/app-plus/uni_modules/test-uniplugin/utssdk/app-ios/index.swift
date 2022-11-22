@@ -26,7 +26,7 @@ func getBatteryInfo(_ options: GetBatteryInfoOptions) {
 }
 func test1(_ callback: UTSCallback) -> String {
     console.log(UTSJSONObject([
-        ""a"": "b"
+        "a": "b"
     ]), " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:32");
     console.log("test1", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:33");
     console.log("def ios", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:38");
