@@ -1,6 +1,5 @@
 import { isArray } from '@vue/shared'
-import { basename, join, relative } from 'path'
-import { copySync, existsSync } from 'fs-extra'
+import { join, relative } from 'path'
 
 import { runKotlinProd, runKotlinDev, resolveAndroidDepFiles } from './kotlin'
 import { runSwiftProd, runSwiftDev, resolveIOSDepFiles } from './swift'
@@ -18,7 +17,9 @@ import {
   checkCompile,
   genManifestFile,
   initCheckOptionsEnv,
+  restoreDex,
   restoreSourceMap,
+  storeDex,
   storeSourceMap,
 } from './manifest'
 
@@ -109,6 +110,7 @@ export async function compile(pluginDir: string) {
       }
     }
     if (utsPlatform === 'app-android' || utsPlatform === 'app-ios') {
+      let tips = ''
       // dev 模式
       if (cacheDir) {
         // 检查缓存
@@ -127,18 +129,14 @@ export async function compile(pluginDir: string) {
             is_uni_modules: pkg.is_uni_modules,
           }
         )
+        if (res.tips) {
+          tips = res.tips
+        }
         // console.log('uts插件[' + pkg.id + ']end', Date.now())
         // console.log('uts插件[' + pkg.id + ']缓存检查耗时：', Date.now() - start)
         if (!res.expired) {
           if (utsPlatform === 'app-android') {
-            // 拷贝 dex
-            const cacheFile = resolveDexCacheFile(pluginRelativeDir, outputDir)
-            if (cacheFile) {
-              copySync(
-                cacheFile,
-                join(outputDir, pluginRelativeDir, basename(cacheFile))
-              )
-            }
+            restoreDex(pluginRelativeDir, outputDir, pkg.is_uni_modules)
           }
 
           // 还原 sourcemap
@@ -205,26 +203,30 @@ export async function compile(pluginDir: string) {
               isSuccess = true
             }
           }
-          // 生成缓存文件
-          if (cacheDir && isSuccess) {
-            // 存储 sourcemap
-            storeSourceMap(
-              utsPlatform,
-              pluginRelativeDir,
-              outputDir,
-              cacheDir,
-              pkg.is_uni_modules
-            )
-            // 生成 manifest
-            genManifestFile(utsPlatform, {
-              pluginDir,
-              env,
-              cacheDir,
-              pluginRelativeDir,
-              is_uni_modules: pkg.is_uni_modules,
-            })
+          if (isSuccess) {
+            // 生成缓存文件
+            if (cacheDir) {
+              // 存储 sourcemap
+              storeSourceMap(
+                utsPlatform,
+                pluginRelativeDir,
+                outputDir,
+                cacheDir,
+                pkg.is_uni_modules
+              )
+              // 生成 manifest
+              genManifestFile(utsPlatform, {
+                pluginDir,
+                env,
+                cacheDir,
+                pluginRelativeDir,
+                is_uni_modules: pkg.is_uni_modules,
+              })
+            }
+            if (tips) {
+              console.warn(tips)
+            }
           }
-
           const files: string[] = []
           if (process.env.UNI_APP_UTS_CHANGED_FILES) {
             try {
@@ -237,10 +239,7 @@ export async function compile(pluginDir: string) {
             if (cacheDir && res.type === 'kotlin') {
               res.changed.forEach((file) => {
                 if (file.endsWith('classes.dex')) {
-                  copySync(
-                    join(outputDir, file),
-                    resolveDexCacheFilename(pluginRelativeDir, outputDir)
-                  )
+                  storeDex(join(outputDir, file), pluginRelativeDir, outputDir)
                 }
               })
             }
@@ -275,13 +274,4 @@ function getCompiler(type: 'kotlin' | 'swift') {
     runProd: runKotlinProd,
     runDev: runKotlinDev,
   }
-}
-
-function resolveDexCacheFilename(pluginRelativeDir: string, outputDir: string) {
-  return join(outputDir, '../.uts/dex', pluginRelativeDir, 'classes.dex')
-}
-
-function resolveDexCacheFile(pluginRelativeDir: string, outputDir: string) {
-  const file = resolveDexCacheFilename(pluginRelativeDir, outputDir)
-  return (existsSync(file) && file) || ''
 }
