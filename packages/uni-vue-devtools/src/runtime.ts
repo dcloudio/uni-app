@@ -12,7 +12,9 @@ function getTarget() {
   if (typeof globalThis !== 'undefined') {
     return globalThis
   }
-
+  if (typeof global !== 'undefined') {
+    return global
+  }
   if (typeof my !== 'undefined') {
     return my
   }
@@ -47,7 +49,8 @@ class Socket {
     // upgrade: 5
     this._socket = uni.connectSocket({
       url: `ws://${this.host}/socket.io/?EIO=4&transport=websocket`,
-      complete() {
+      multiple: true,
+      complete(res) {
         // NOOP
       },
     })
@@ -55,6 +58,9 @@ class Socket {
       // NOOP
     })
     this._socket.onMessage(({ data }) => {
+      if (typeof my !== 'undefined') {
+        data = data.data
+      }
       if (typeof data !== 'string') {
         return
       }
@@ -135,3 +141,5 @@ class Socket {
 ;(getTarget() as any).__VUE_DEVTOOLS_SOCKET__ = new Socket(
   __VUE_DEVTOOLS_HOST__ + ':' + __VUE_DEVTOOLS_PORT__
 )
+
+export default {}
