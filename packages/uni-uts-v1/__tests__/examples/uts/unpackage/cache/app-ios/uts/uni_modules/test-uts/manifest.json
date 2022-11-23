@@ -10,6 +10,9 @@
     "utssdk/common/utils.uts": {
       "md5": "d41d8cd98f00b204e9800998ecf8427e"
     },
+    "utssdk/index.uts": {
+      "md5": "d41d8cd98f00b204e9800998ecf8427e"
+    },
     "package.json": {
       "md5": "9595031a0d4158abb72060cdf3a200c1"
     },

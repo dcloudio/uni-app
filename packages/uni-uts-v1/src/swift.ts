@@ -146,7 +146,7 @@ export async function compile(
       isPlugin: true,
       outDir: outputDir,
       package: parseSwiftPackage(filename).namespace,
-      sourceMap: sourceMap ? resolveUTSSourceMapPath(filename) : false,
+      sourceMap: sourceMap ? resolveUTSSourceMapPath() : false,
       extname: 'swift',
       imports: ['DCUTSFoundation'],
       logFilename: true,

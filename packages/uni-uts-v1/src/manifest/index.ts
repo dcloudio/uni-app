@@ -15,6 +15,8 @@ import {
 
 export { genManifestFile } from './manifest'
 
+export { restoreSourceMap, storeSourceMap } from './sourceMap'
+
 interface PlatformOptions {
   customRes: string[]
 }

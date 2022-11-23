@@ -14,7 +14,13 @@ import {
   generateCodeFrameWithKotlinStacktrace,
   generateCodeFrameWithSwiftStacktrace,
 } from './legacy'
-import { checkCompile, genManifestFile, initCheckOptionsEnv } from './manifest'
+import {
+  checkCompile,
+  genManifestFile,
+  initCheckOptionsEnv,
+  restoreSourceMap,
+  storeSourceMap,
+} from './manifest'
 
 export const sourcemap = {
   generateCodeFrameWithKotlinStacktrace,
@@ -90,14 +96,14 @@ export async function compile(pluginDir: string) {
       if (isWindows) {
         process.env.UNI_UTS_TIPS = `iOS手机在windows上真机运行时uts插件代码修改需提交云端打包自定义基座才能生效`
         return {
-          code,
+          code: parseErrMsg(code, errMsg),
           deps,
         }
       }
       if (process.env.HX_USE_BASE_TYPE === 'standard') {
         process.env.UNI_UTS_TIPS = `iOS手机在标准基座真机或模拟器运行暂不支持uts插件，如需调用uts插件请使用自定义基座`
         return {
-          code,
+          code: parseErrMsg(code, errMsg),
           deps,
         }
       }
@@ -106,7 +112,8 @@ export async function compile(pluginDir: string) {
       // dev 模式
       if (cacheDir) {
         // 检查缓存
-        let start = Date.now()
+        // let start = Date.now()
+        // console.log('uts插件[' + pkg.id + ']start', start)
         const res = await checkCompile(
           utsPlatform,
           process.env.HX_USE_BASE_TYPE,
@@ -120,9 +127,11 @@ export async function compile(pluginDir: string) {
             is_uni_modules: pkg.is_uni_modules,
           }
         )
-        console.log('uts插件[' + pkg.id + ']缓存检查耗时：', Date.now() - start)
+        // console.log('uts插件[' + pkg.id + ']end', Date.now())
+        // console.log('uts插件[' + pkg.id + ']缓存检查耗时：', Date.now() - start)
         if (!res.expired) {
           if (utsPlatform === 'app-android') {
+            // 拷贝 dex
             const cacheFile = resolveDexCacheFile(pluginRelativeDir, outputDir)
             if (cacheFile) {
               copySync(
@@ -131,12 +140,22 @@ export async function compile(pluginDir: string) {
               )
             }
           }
+
+          // 还原 sourcemap
+          restoreSourceMap(
+            utsPlatform,
+            pluginRelativeDir,
+            outputDir,
+            cacheDir,
+            pkg.is_uni_modules
+          )
+
           if (res.tips) {
             console.warn(res.tips)
           }
 
           return {
-            code,
+            code: parseErrMsg(code, errMsg),
             // 所有文件加入依赖
             deps: res.files.map((name) => join(pluginDir, name)),
           }
@@ -188,6 +207,15 @@ export async function compile(pluginDir: string) {
           }
           // 生成缓存文件
           if (cacheDir && isSuccess) {
+            // 存储 sourcemap
+            storeSourceMap(
+              utsPlatform,
+              pluginRelativeDir,
+              outputDir,
+              cacheDir,
+              pkg.is_uni_modules
+            )
+            // 生成 manifest
             genManifestFile(utsPlatform, {
               pluginDir,
               env,

@@ -306,7 +306,7 @@ export async function compile(
       isPlugin: true,
       outDir: outputDir,
       package: parseKotlinPackage(filename).package,
-      sourceMap: sourceMap ? resolveUTSSourceMapPath(filename) : false,
+      sourceMap: sourceMap ? resolveUTSSourceMapPath() : false,
       extname: 'kt',
       imports,
       logFilename: true,

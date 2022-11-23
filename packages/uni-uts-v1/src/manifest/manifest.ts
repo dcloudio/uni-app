@@ -130,7 +130,15 @@ async function resolvePluginCommonFiles(
   pluginDir: string,
   is_uni_modules: boolean
 ) {
-  return glob(['*', (is_uni_modules ? 'utssdk/' : '') + 'common/**/*'], {
+  const patterns = ['*']
+  if (is_uni_modules) {
+    patterns.push('utssdk/*.uts')
+    patterns.push('utssdk/common/**/*')
+  } else {
+    patterns.push('common/**/*')
+  }
+  return glob(patterns, {
+    ignore: ['changelog.md', 'readme.md'],
     cwd: pluginDir,
   })
 }

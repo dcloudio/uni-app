@@ -20,7 +20,7 @@ export type ToSwiftOptions = ToOptions
 
 export const ERR_MSG_PLACEHOLDER = `___ERR_MSG___`
 
-export function resolveUTSSourceMapPath(_filename: string) {
+export function resolveUTSSourceMapPath() {
   return resolveSourceMapPath()
 }
 
@@ -98,10 +98,7 @@ export function moveRootIndexSourceMap(
 ) {
   if (isRootIndex(filename, platform)) {
     const sourceMapFilename = path
-      .resolve(
-        resolveUTSSourceMapPath(filename),
-        path.relative(inputDir, filename)
-      )
+      .resolve(resolveUTSSourceMapPath(), path.relative(inputDir, filename))
       .replace(path.extname(filename), extname + '.map')
     if (fs.existsSync(sourceMapFilename)) {
       const newSourceMapFilename = path.resolve(
