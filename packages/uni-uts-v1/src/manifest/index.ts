@@ -1,11 +1,9 @@
-import { existsSync } from 'fs'
-import { join } from 'path'
 import {
   checkManifest,
   hasCustomResources,
   isCustomResources,
   resolveManifestJson,
-  resolvePluginAndroidFiles,
+  resolvePluginFiles,
 } from './manifest'
 import {
   APP_PLATFORM,
@@ -15,9 +13,10 @@ import {
   customResourceTips,
 } from './utils'
 
+export { genManifestFile } from './manifest'
+
 interface PlatformOptions {
   customRes: string[]
-  cacheFile: false | string
 }
 
 const ANDROID_CUSTOM_RES = [
@@ -49,25 +48,22 @@ export function checkSwiftCompile(
   return checkCompile('app-ios', playground, options)
 }
 
-function checkCompile(
+export function checkCompile(
   platform: APP_PLATFORM,
   playground: typeof process.env.HX_USE_BASE_TYPE,
   options: CheckOptions
 ) {
   const platformOptions: PlatformOptions = {
     customRes: platform === 'app-android' ? ANDROID_CUSTOM_RES : IOS_CUSTOM_RES,
-    cacheFile:
-      platform === 'app-android'
-        ? resolveDexCacheFile(options.pluginRelativeDir, options.outputDir)
-        : false,
   }
   if (playground === 'standard') {
-    return checkWithPlayground('standard', options, platformOptions)
+    return checkWithPlayground(platform, 'standard', options, platformOptions)
   }
-  return checkWithPlayground('custom', options, platformOptions)
+  return checkWithPlayground(platform, 'custom', options, platformOptions)
 }
 
 async function checkWithPlayground(
+  platform: APP_PLATFORM,
   type: typeof process.env.HX_USE_BASE_TYPE,
   {
     id,
@@ -77,27 +73,19 @@ async function checkWithPlayground(
     pluginRelativeDir,
     is_uni_modules,
   }: CheckOptions,
-  { customRes, cacheFile }: PlatformOptions
+  { customRes }: PlatformOptions
 ): Promise<CheckResult> {
   // 第一步：获取所有文件列表
-  const files = await resolvePluginAndroidFiles(pluginDir, is_uni_modules)
+  const files = await resolvePluginFiles(platform, pluginDir, is_uni_modules)
   let tips = ''
   // 标准基座检查是否包含原生资源/配置
   if (type === 'standard' && hasCustomResources(files, customRes)) {
     tips = customResourceTips(id)
   }
-  // 第二步：检查 dex 文件是否存在
-  if (cacheFile !== false && !cacheFile) {
-    return { expired: true, tips, cacheFile: '' }
-  }
-  // 第三步：获取当前插件缓存文件信息
-  const manifest = resolveManifestJson(
-    'app-android',
-    pluginRelativeDir,
-    cacheDir
-  )
+  // 第二步：获取当前插件缓存文件信息
+  const manifest = resolveManifestJson(platform, pluginRelativeDir, cacheDir)
   if (!manifest) {
-    return { expired: true, tips, cacheFile: '' }
+    return { expired: true, tips, files }
   }
   // 第四步：检查文件变更
   const res = await checkManifest(manifest, { env, files, pluginDir })
@@ -110,11 +98,12 @@ async function checkWithPlayground(
   return {
     expired: res !== true,
     tips,
-    cacheFile,
+    files,
   }
 }
 
-function resolveDexCacheFile(pluginRelativeDir: string, outputDir: string) {
-  const file = join(outputDir, '../.uts/dex', pluginRelativeDir, 'classes.dex')
-  return (existsSync(file) && file) || ''
+export function initCheckOptionsEnv(): CheckOptions['env'] {
+  return {
+    compilerVersion: require('../../package.json').version,
+  }
 }

@@ -5,6 +5,7 @@ import {
   getCompilerServer,
   getUtsCompiler,
   moveRootIndexSourceMap,
+  resolveIOSDir,
   resolvePackage,
   resolveUTSPlatformFile,
   resolveUTSSourceMapPath,
@@ -160,6 +161,13 @@ export async function compile(
       extname: '.swift',
     })
   return result
+}
+
+const deps = ['Info.plist', 'config.json']
+
+export function resolveIOSDepFiles(filename: string) {
+  const dir = resolveIOSDir(filename)
+  return deps.map((dep) => path.resolve(dir, dep))
 }
 
 interface SwiftCompilerServer {

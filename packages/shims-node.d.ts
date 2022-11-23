@@ -37,6 +37,7 @@ declare namespace NodeJS {
     UNI_APP_CHANGED_PAGES: string
     VUE_APP_DARK_MODE: 'true' | 'false'
     HX_USE_BASE_TYPE?: 'standard' | 'custom'
+    HX_DEPENDENCIES_DIR?: string
 
     __VUE_PROD_DEVTOOLS__?: 'true'
     __VUE_DEVTOOLS_HOST__: string

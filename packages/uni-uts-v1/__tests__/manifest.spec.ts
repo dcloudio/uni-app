@@ -2,10 +2,9 @@ import { resolve } from 'path'
 import {
   checkManifest,
   resolveManifestJson,
-  resolvePluginAndroidFiles,
-  resolvePluginIOSFiles,
+  resolvePluginFiles,
 } from '../src/manifest/manifest'
-import { checkKotlinCompile } from '../src/manifest/index'
+import { checkKotlinCompile, checkSwiftCompile } from '../src/manifest/index'
 
 const pluginModuleDir = resolve(__dirname, 'examples/uts/uni_modules/test-uts')
 const pluginDir = resolve(__dirname, 'examples/uts/utssdk/test-uts')
@@ -36,13 +35,15 @@ const pluginOptions = {
 
 describe('manifest', () => {
   test('resolve android files', async () => {
-    expect(await resolvePluginAndroidFiles(pluginDir, false)).toEqual([
+    expect(await resolvePluginFiles('app-android', pluginDir, false)).toEqual([
       'index.uts',
       'package.json',
       'common/utils.uts',
       'common/test/test.uts',
     ])
-    expect(await resolvePluginAndroidFiles(pluginModuleDir, true)).toEqual([
+    expect(
+      await resolvePluginFiles('app-android', pluginModuleDir, true)
+    ).toEqual([
       'package.json',
       'utssdk/common/utils.uts',
       'utssdk/app-android/index.uts',
@@ -50,13 +51,13 @@ describe('manifest', () => {
     ])
   })
   test('resolve ios files', async () => {
-    expect(await resolvePluginIOSFiles(pluginDir, false)).toEqual([
+    expect(await resolvePluginFiles('app-ios', pluginDir, false)).toEqual([
       'index.uts',
       'package.json',
       'common/utils.uts',
       'common/test/test.uts',
     ])
-    expect(await resolvePluginIOSFiles(pluginModuleDir, true)).toEqual([
+    expect(await resolvePluginFiles('app-ios', pluginModuleDir, true)).toEqual([
       'package.json',
       'utssdk/common/utils.uts',
       'utssdk/app-ios/index.uts',
@@ -99,17 +100,24 @@ describe('manifest', () => {
     ).toBe(filename)
   })
   test('gen android manifest', async () => {
-    expect(
-      await (
-        await checkKotlinCompile('standard', pluginModuleOptions)
-      ).expired
-    ).toBe(true)
-
-    const res = await checkKotlinCompile('standard', pluginOptions)
+    const res = await checkKotlinCompile('standard', pluginModuleOptions)
     expect(res.expired).toBe(false)
-    expect(res.cacheFile).toContain('classes.dex')
+    expect(res.files.length).toBe(4)
+    expect(res.tips).toBeTruthy()
+
+    const res1 = await checkKotlinCompile('standard', pluginOptions)
+    expect(res1.expired).toBe(false)
+    expect(res1.files.length).toBe(4)
+    expect(res1.tips).toBe('')
   })
   test('gen ios manifest', async () => {
-    // console.log(await checkCompile('standard', pluginModuleOptions))
+    const res = await checkSwiftCompile('standard', pluginModuleOptions)
+    expect(res.expired).toBe(false)
+    expect(res.files.length).toBe(4)
+    expect(res.tips).toBe('')
+    const res1 = await checkSwiftCompile('standard', pluginOptions)
+    expect(res1.expired).toBe(false)
+    expect(res1.files.length).toBe(4)
+    expect(res1.tips).toBe('')
   })
 })

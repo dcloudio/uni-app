@@ -13,7 +13,7 @@ export interface CheckOptions {
 export interface CheckResult {
   expired: boolean
   tips?: string
-  cacheFile: string | false
+  files: string[]
 }
 
 export function customResourceTips(id: string) {

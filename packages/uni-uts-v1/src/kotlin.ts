@@ -254,6 +254,13 @@ function resolveAndroidManifestPackage(filename: string) {
   }
 }
 
+const deps = ['AndroidManifest.xml', 'config.json']
+
+export function resolveAndroidDepFiles(filename: string) {
+  const dir = resolveAndroidDir(filename)
+  return deps.map((dep) => path.resolve(dir, dep))
+}
+
 function resolveConfigJsonFile(filename: string) {
   const configJsonFile = path.resolve(
     resolveAndroidDir(filename),

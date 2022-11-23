@@ -127,6 +127,10 @@ export function resolveAndroidDir(filename: string) {
   return resolveUTSPlatformDir(filename, 'app-android')
 }
 
+export function resolveIOSDir(filename: string) {
+  return resolveUTSPlatformDir(filename, 'app-ios')
+}
+
 function resolveUTSPlatformDir(
   filename: string,
   platform: typeof process.env.UNI_UTS_PLATFORM

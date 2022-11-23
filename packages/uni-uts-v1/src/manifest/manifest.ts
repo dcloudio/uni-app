@@ -50,6 +50,15 @@ interface GenManifestJsonOptions {
   is_uni_modules: boolean
 }
 
+export interface GenManifestFileOptions {
+  cacheDir: string
+  pluginRelativeDir: string
+  is_uni_modules: boolean
+  env: Record<string, unknown>
+  pluginDir: string
+  files?: string[]
+}
+
 export async function genManifestFile(
   platform: APP_PLATFORM,
   {
@@ -59,14 +68,7 @@ export async function genManifestFile(
     cacheDir,
     pluginRelativeDir,
     is_uni_modules,
-  }: {
-    cacheDir: string
-    pluginRelativeDir: string
-    is_uni_modules: boolean
-    env: Record<string, unknown>
-    pluginDir: string
-    files?: string[]
-  }
+  }: GenManifestFileOptions
 ) {
   outputFileSync(
     resolveManifestFilename(platform, pluginRelativeDir, cacheDir),
@@ -89,11 +91,7 @@ export async function genManifestJson(
   { pluginDir, files, env, is_uni_modules }: GenManifestJsonOptions
 ): Promise<Manifest> {
   if (!files) {
-    if (platform === 'app-android') {
-      files = await resolvePluginAndroidFiles(pluginDir, is_uni_modules)
-    } else if (platform === 'app-ios') {
-      files = await resolvePluginIOSFiles(pluginDir, is_uni_modules)
-    }
+    files = await resolvePluginFiles(platform, pluginDir, is_uni_modules)
   }
   if (!files) {
     files = []
@@ -137,23 +135,14 @@ async function resolvePluginCommonFiles(
   })
 }
 
-export async function resolvePluginAndroidFiles(
+export async function resolvePluginFiles(
+  platform: APP_PLATFORM,
   pluginDir: string,
   is_uni_modules: boolean
 ) {
   return Promise.all([
     resolvePluginCommonFiles(pluginDir, is_uni_modules),
-    resolvePluginPlatformFiles('app-android', pluginDir, is_uni_modules),
-  ]).then((files) => files.flat())
-}
-
-export async function resolvePluginIOSFiles(
-  pluginDir: string,
-  is_uni_modules: boolean
-) {
-  return Promise.all([
-    resolvePluginCommonFiles(pluginDir, is_uni_modules),
-    resolvePluginPlatformFiles('app-ios', pluginDir, is_uni_modules),
+    resolvePluginPlatformFiles(platform, pluginDir, is_uni_modules),
   ]).then((files) => files.flat())
 }
 
