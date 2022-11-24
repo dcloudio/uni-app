@@ -1,4 +1,4 @@
-import DCUTSFoundation;
+import DCloudUTSFoundation;
 func test() {}
 @objc(UTSSDKModulesTestUtsIndexSwift)
 @objcMembers
