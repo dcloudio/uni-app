@@ -58,7 +58,7 @@ function initFrontServer(socketHost, socketPort, network, devtoolsPort) {
     res.send(fs.readFileSync(path.resolve(__dirname, `./app.html`)).toString())
   })
 
-  app.get('/network', (_, res) => {
+  app.get('/env', (_, res) => {
     res.send(
       `window.process = {
         env: {
