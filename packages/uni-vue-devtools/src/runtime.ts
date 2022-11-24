@@ -1,5 +1,6 @@
 declare const __VUE_DEVTOOLS_HOST__: string
 declare const __VUE_DEVTOOLS_PORT__: string
+declare const my: any
 
 type Callback = (data: unknown) => void
 

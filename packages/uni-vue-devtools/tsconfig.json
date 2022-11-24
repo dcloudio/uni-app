@@ -10,5 +10,9 @@
     "../global.d.ts",
     "../shims-node.d.ts",
     "../shims-uni-app.d.ts"
-  ]
+  ],
+  "baseUrl":".",
+  "paths": {
+      "tslib" : ["node_modules/tslib/tslib.d.ts"]
+  }
 }
