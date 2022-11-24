@@ -13,7 +13,7 @@ const hbxPlugins = {
 
 export function initModuleAlias() {
   const compilerSfcPath = require.resolve('@vue/compiler-sfc')
-  const serverRendererPath = require.resolve('@vue/server-renderer')
+  // const serverRendererPath = require.resolve('@vue/server-renderer')
   moduleAlias.addAliases({
     '@vue/shared': require.resolve('@vue/shared'),
     '@vue/shared/dist/shared.esm-bundler.js': require.resolve(
@@ -21,9 +21,9 @@ export function initModuleAlias() {
     ),
     '@vue/compiler-dom': require.resolve('@vue/compiler-dom'),
     '@vue/compiler-sfc': compilerSfcPath,
-    '@vue/server-renderer': serverRendererPath,
+    // '@vue/server-renderer': serverRendererPath,
     'vue/compiler-sfc': compilerSfcPath,
-    'vue/server-renderer': serverRendererPath,
+    // 'vue/server-renderer': serverRendererPath,
   })
   if (process.env.VITEST) {
     moduleAlias.addAliases({
