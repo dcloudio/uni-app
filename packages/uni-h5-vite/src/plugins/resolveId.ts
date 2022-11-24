@@ -16,6 +16,9 @@ export function uniResolveIdPlugin(): Plugin {
       resolveCache[ownerModuleName] = resolveBuiltIn(
         path.join(ownerModuleName, 'dist/uni-h5.es.js')
       )
+      resolveCache['vue/server-renderer'] = resolveBuiltIn(
+        'vue/server-renderer'
+      )
       resolveCache['@dcloudio/uni-h5-vue'] = resolveBuiltIn(
         path.join(
           '@dcloudio/uni-h5-vue',
