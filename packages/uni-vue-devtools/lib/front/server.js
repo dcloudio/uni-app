@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 const _detectPort = require('detect-port');
 const os = require('os')
 const { createServer } = require('http')
@@ -51,15 +52,22 @@ function detectPort(port) {
 }
 
 function initFrontServer(socketHost, socketPort, network, devtoolsPort) {
-  const platform = process.env.UNI_PLATFORM
-
   app.use(express.static(__dirname))
 
   app.get('/', (_, res) => {
-    res.send(fs.readFileSync(path.resolve(__dirname, `./${platform}/app.html`)).toString())
+    res.send(fs.readFileSync(path.resolve(__dirname, `./app.html`)).toString())
   })
 
-  writeNetworkFile(platform, socketHost, socketPort)
+  app.get('/network', (_, res) => {
+    res.send(
+      `window.process = {
+        env: {
+          HOST: '${socketHost}',
+          PORT: '${socketPort}',
+        }
+      } `
+    )
+  })
 
   app.listen(devtoolsPort, 'localhost', () => {
     const colorUrl = (url) => colors.cyan(url.replace(/:(\d+)\//, (_, port) => `:${colors.bold(port)}/`))
@@ -70,35 +78,6 @@ function initFrontServer(socketHost, socketPort, network, devtoolsPort) {
     open(`http:localhost:${devtoolsPort}`)
   })
 
-}
-
-function writeNetworkFile(platform, HOST, PORT) {
-  fs.open(
-    path.resolve(__dirname, `./${platform}/network.js`),
-    'w',
-    (err, fd) => {
-      if (err) {
-        console.log(colors.red(err))
-        return
-      }
-      fs.write(
-        fd,
-        `
-window.process = {
-  env: {
-    HOST: '${HOST}',
-    PORT: '${PORT}',
-  }
-}
-  `,
-        (err) => {
-          if (err) {
-            console.log(colors.red(err))
-          }
-        }
-      )
-    }
-  )
 }
 
 function initSocketServer(host, port) {

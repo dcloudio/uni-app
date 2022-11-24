@@ -839,14 +839,12 @@ importers:
       detect-port: ^1.5.1
       express: ^4.17.1
       open: ^8.4.0
-      picocolors: ^1.0.0
       socket.io: ^4.4.0
     dependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
       detect-port: 1.5.1
       express: 4.18.2
       open: 8.4.0
-      picocolors: 1.0.0
       socket.io: 4.5.4
 
   packages/uts:
