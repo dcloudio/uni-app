@@ -23,6 +23,7 @@ import { V_ON } from '../runtimeHelpers'
 import { TransformContext } from '../transform'
 import { DirectiveTransformResult } from './transformElement'
 import { isBuiltInIdentifier, processExpression } from './transformExpression'
+import { parseVForScope } from './vFor'
 
 const fnExpRE =
   /^\s*([\w$_]+|(async\s*)?\([^)]*?\))\s*=>|^\s*(async\s+)?function(?:\s+[\w$]+)?\s*\(/
@@ -212,7 +213,13 @@ export function wrapperVOn(
   }
   const keys: string[] = []
   if (context.miniProgram.event?.key && context.inVFor) {
-    const keyProp = findProp(node, 'key')
+    let keyProp = findProp(node, 'key')
+    if (!keyProp) {
+      const vForScope = parseVForScope(context.currentScope)
+      if (vForScope) {
+        keyProp = findProp(vForScope.node, 'key')
+      }
+    }
     // 对 for 中的所有事件增加 key 标记，避免微信小程序不更新事件对象
     if (keyProp && isDirectiveNode(keyProp) && keyProp.exp) {
       const keyCode = genExpr(keyProp.exp)
