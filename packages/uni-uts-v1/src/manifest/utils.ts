@@ -23,3 +23,7 @@ export function customResourceTips(id: string) {
 export function customResourceChangedTips(id: string) {
   return `uts插件[${id}]依赖的原生配置或三方SDK发生变化，需要重新打包自定义基座`
 }
+
+export function cacheTips(id: string) {
+  return `uts插件[${id}]文件未发生变化，跳过编译`
+}

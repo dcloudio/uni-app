@@ -22,6 +22,7 @@ import {
   storeDex,
   storeSourceMap,
 } from './manifest'
+import { cacheTips } from './manifest/utils'
 
 export const sourcemap = {
   generateCodeFrameWithKotlinStacktrace,
@@ -144,6 +145,8 @@ export async function compile(pluginDir: string) {
           if (res.tips) {
             console.warn(res.tips)
           }
+
+          console.log(cacheTips(pkg.id))
 
           return {
             code: parseErrMsg(code, errMsg),
