@@ -8,7 +8,10 @@
     },
     "external": [
       "@dcloudio/uni-cli-shared"
-    ]
+    ],
+    "compilerOptions": {
+      "target": "es2018"
+    }
   },
   {
     "input": {

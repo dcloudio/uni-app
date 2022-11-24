@@ -841,7 +841,6 @@ importers:
       open: ^8.4.0
       picocolors: ^1.0.0
       socket.io: ^4.4.0
-      tslib: ^2.4.1
     dependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
       detect-port: 1.5.1
@@ -849,7 +848,6 @@ importers:
       open: 8.4.0
       picocolors: 1.0.0
       socket.io: 4.5.4
-      tslib: 2.4.1
 
   packages/uts:
     specifiers:
@@ -7938,6 +7936,7 @@ packages:
 
   /tslib/2.4.1:
     resolution: {integrity: sha512-tGyy4dAjRIEwI7BzsB0lynWgOpfqjUdq91XXAlIWD2OwKBH7oCl/GZG/HT4BOHrTlPMOASlMQ7veyTqpmRcrNA==}
+    dev: true
 
   /tsutils/3.21.0_typescript@4.9.3:
     resolution: {integrity: sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==}

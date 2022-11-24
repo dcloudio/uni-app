@@ -4,7 +4,8 @@
   "description": "uni-vue-devtools",
   "module": "dist/runtime.es.js",
   "files": [
-    "dist"
+    "dist",
+    "lib"
   ],
   "repository": {
     "type": "git",
@@ -26,7 +27,6 @@
     "express": "^4.17.1",
     "open": "^8.4.0",
     "picocolors": "^1.0.0",
-    "socket.io": "^4.4.0",
-    "tslib": "^2.4.1"
+    "socket.io": "^4.4.0"
   }
 }

@@ -9,31 +9,6 @@ function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'defau
 var fs__default = /*#__PURE__*/_interopDefaultLegacy(fs);
 var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
 
-/******************************************************************************
-Copyright (c) Microsoft Corporation.
-
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted.
-
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
-REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
-AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
-INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
-LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
-OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
-PERFORMANCE OF THIS SOFTWARE.
-***************************************************************************** */
-
-function __awaiter(thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-}
-
 // eslint-disable-next-line no-restricted-globals
 const { initDevtoolsServer } = require('../lib/front/server.js');
 const uniVueDevtoolsPlugin = () => {
@@ -41,11 +16,11 @@ const uniVueDevtoolsPlugin = () => {
     return {
         name: 'uni:vue-devtools',
         config() {
-            return new Promise((resolve) => __awaiter(this, void 0, void 0, function* () {
+            return new Promise(async (resolve) => {
                 let __VUE_DEVTOOLS_HOST__ = 'localhost';
                 let __VUE_DEVTOOLS_PORT__ = 8098;
                 if (process.env.__VUE_PROD_DEVTOOLS__) {
-                    const { socketHost, socketPort } = yield initDevtoolsServer();
+                    const { socketHost, socketPort } = await initDevtoolsServer();
                     __VUE_DEVTOOLS_HOST__ = socketHost;
                     __VUE_DEVTOOLS_PORT__ = socketPort;
                 }
@@ -56,7 +31,7 @@ const uniVueDevtoolsPlugin = () => {
                         __VUE_DEVTOOLS_PORT__: JSON.stringify(`${__VUE_DEVTOOLS_PORT__}`),
                     },
                 });
-            }));
+            });
         },
         generateBundle() {
             // 仅处理小程序
