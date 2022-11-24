@@ -148,7 +148,7 @@ export async function compile(
       package: parseSwiftPackage(filename).namespace,
       sourceMap: sourceMap ? resolveUTSSourceMapPath() : false,
       extname: 'swift',
-      imports: ['DCUTSFoundation'],
+      imports: ['DCloudUTSFoundation'],
       logFilename: true,
       noColor: isInHBuilderX(),
     },
