@@ -55,5 +55,6 @@ open class User : IUser {
     open fun test(view: View) {}
 }
 fun login(name: String, callback: () -> Unit) {}
+@Suppress("DEPRECATION")
 fun register(name: String, callback: UTSCallback) {}
 fun offMemoryWarning(callback: (UTSCallback)? = null) {}
