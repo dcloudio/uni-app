@@ -2,6 +2,7 @@ import { extend } from '@vue/shared'
 import { UniNode } from '@dcloudio/uni-shared'
 import { App, createVNode, render, ComponentPublicInstance } from 'vue'
 import { VuePageComponent } from '../page/define'
+import { getAllPages } from '../page/getCurrentPages'
 
 interface VueApp extends App {
   mountPage: (
@@ -19,7 +20,16 @@ export function getVueApp() {
 }
 
 export function initVueApp(appVm: ComponentPublicInstance) {
-  const appContext = appVm.$.appContext
+  const internalInstance = appVm.$
+
+  // 定制 App 的 $children 为 devtools 服务 __VUE_PROD_DEVTOOLS__
+  Object.defineProperty((internalInstance as any).ctx, '$children', {
+    get() {
+      return getAllPages().map((page) => page.$vm)
+    },
+  })
+
+  const appContext = internalInstance.appContext
   vueApp = extend(appContext.app, {
     mountPage(
       pageComponent: VuePageComponent,
