@@ -160,16 +160,6 @@ export async function runKotlinDev(
     //     path.relative(process.env.UNI_INPUT_DIR, filename)
     //   )} 编译失败`
     // }
-    if (process.env.HX_USE_BASE_TYPE === 'standard') {
-      if (!isSupportStandardPlayground(filename)) {
-        const pkg = resolvePackage(filename)
-        if (pkg) {
-          console.warn(
-            `uts插件[${pkg.id}]依赖的原生配置或三方SDK在运行至标准基座时不能生效，如需正常调用请使用自定义基座`
-          )
-        }
-      }
-    }
   }
   return result
 }
@@ -391,31 +381,4 @@ function resolveJarPath(filename: string) {
 
 function resolveClassPath(jars: string[]) {
   return jars.join(os.platform() === 'win32' ? ';' : ':')
-}
-
-const checkFiles = ['AndroidManifest.xml']
-const checkDirs = ['libs', 'assets', 'res']
-/**
- * 当前插件是否支持标准基座运行
- * @param filename
- * @returns
- */
-function isSupportStandardPlayground(filename: string) {
-  const baseDir = resolveAndroidDir(filename)
-  if (checkFiles.find((file) => fs.existsSync(path.resolve(baseDir, file)))) {
-    return false
-  }
-  if (
-    checkDirs.find((dir) => {
-      const absDir = path.resolve(baseDir, dir)
-      return fs.existsSync(absDir) && fs.readdirSync(absDir).length
-    })
-  ) {
-    return false
-  }
-  const configJsonFile = resolveConfigJsonFile(filename)
-  if (configJsonFile && hasDeps(configJsonFile)) {
-    return false
-  }
-  return true
 }
