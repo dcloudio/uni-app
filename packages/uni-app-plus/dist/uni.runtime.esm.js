@@ -16804,6 +16804,9 @@ function requireGlobal() {
     }
     return object;
 }
+function syncDataToGlobal(data) {
+    extend(global, data);
+}
 
 const providers = {
     oauth(callback) {
@@ -19577,6 +19580,7 @@ var uni$1 = {
   getSubNVueById: getSubNVueById,
   restoreGlobal: restoreGlobal,
   requireGlobal: requireGlobal,
+  syncDataToGlobal: syncDataToGlobal,
   getProvider: getProvider,
   login: login,
   getUserInfo: getUserInfo,
