@@ -25,7 +25,7 @@ export async function parseUtsSwiftPluginStacktrace({
       sourceMapFile,
       sourceRoot
     )
-    if (codes) {
+    if (codes && codes.length) {
       res.push(...codes)
     } else {
       res.push(line)
@@ -52,8 +52,8 @@ async function parseUtsStacktraceLine(
     column: parseInt(column),
     withSourceContent: true,
   })
+  lines.push(`${message}`)
   if (originalPosition.source && originalPosition.sourceContent) {
-    lines.push(`${message}`)
     lines.push(
       `at ${originalPosition.source}:${originalPosition.line}:${originalPosition.column}`
     )

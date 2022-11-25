@@ -2076,7 +2076,14 @@ function getVueApp() {
     return vueApp;
 }
 function initVueApp(appVm) {
-    const appContext = appVm.$.appContext;
+    const internalInstance = appVm.$;
+    // 定制 App 的 $children 为 devtools 服务 false
+    Object.defineProperty(internalInstance.ctx, '$children', {
+        get() {
+            return getAllPages().map((page) => page.$vm);
+        },
+    });
+    const appContext = internalInstance.appContext;
     vueApp = extend(appContext.app, {
         mountPage(pageComponent, pageProps, pageContainer) {
             const vnode = createVNode(pageComponent, pageProps);
