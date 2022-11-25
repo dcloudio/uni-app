@@ -29,6 +29,7 @@ export default function getBatteryInfo(options: GetBatteryInfoOptions) {
 }
 
 export function test1(callback: () => void): string {
+  console.log({ "a": "b" })
   console.log('test1')
   //#ifdef APP-ANDROID
   console.log('def android')
@@ -52,7 +53,7 @@ export function test1(callback: () => void): string {
   return 'test1'
 }
 
-class Test1 {}
+class Test1 { }
 export class Test {
   constructor() {
     new Test1()

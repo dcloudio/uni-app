@@ -1,8 +1,8 @@
-import { isRootHook, isRootImmediateHook, ON_LOAD, resolveOwnerEl, ATTR_V_OWNER_ID, ATTR_V_RENDERJS, UniInputElement, UniTextAreaElement, UniElement, UniTextNode, UniCommentNode, JSON_PROTOCOL, forcePatchProp } from '@dcloudio/uni-shared';
 import { isString, isFunction, isPromise, isArray, NOOP, getGlobalThis, extend, EMPTY_OBJ, toHandlerKey, toNumber, hyphenate, camelize, isObject, isOn, hasOwn, isModelListener, hasChanged, remove, isSet, isMap, isPlainObject, invokeArrayFns, isBuiltInDirective, capitalize, isGloballyWhitelisted, def, isReservedProp, EMPTY_ARR, toRawType, makeMap, NO, normalizeClass, normalizeStyle, isHTMLTag, isSVGTag } from '@vue/shared';
 export { camelize, capitalize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
 import { pauseTracking, resetTracking, isRef, toRaw, isShallow as isShallow$1, isReactive, ReactiveEffect, ref, shallowReadonly, track, reactive, shallowReactive, trigger, isProxy, EffectScope, markRaw, proxyRefs, computed as computed$1, isReadonly } from '@vue/reactivity';
 export { EffectScope, ReactiveEffect, customRef, effect, effectScope, getCurrentScope, isProxy, isReactive, isReadonly, isRef, isShallow, markRaw, onScopeDispose, proxyRefs, reactive, readonly, ref, shallowReactive, shallowReadonly, shallowRef, stop, toRaw, toRef, toRefs, triggerRef, unref } from '@vue/reactivity';
+import { isRootHook, isRootImmediateHook, ON_LOAD, resolveOwnerEl, ATTR_V_OWNER_ID, ATTR_V_RENDERJS, UniInputElement, UniTextAreaElement, UniElement, UniTextNode, UniCommentNode, JSON_PROTOCOL, forcePatchProp } from '@dcloudio/uni-shared';
 
 const stack = [];
 function pushWarningContext(vnode) {
@@ -1812,7 +1812,7 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = EM
                     // pass undefined as the old value when it's changed for the first time
                     oldValue === INITIAL_WATCHER_VALUE
                         ? undefined
-                        : (isMultiSource && oldValue[0] === INITIAL_WATCHER_VALUE)
+                        : isMultiSource && oldValue[0] === INITIAL_WATCHER_VALUE
                             ? []
                             : oldValue,
                     onCleanup
@@ -8858,6 +8858,11 @@ const createApp = ((...args) => {
     const { mount } = app;
     app.mount = (container) => {
         if (isString(container)) {
+            if ((process.env.NODE_ENV !== 'production') || __VUE_PROD_DEVTOOLS__) {
+                if (container === '#app') {
+                    devtoolsInitApp(app, version);
+                }
+            }
             container = createComment(container);
         }
         return container && mount(container, false, false);

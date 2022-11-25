@@ -82,7 +82,6 @@ export function buildOptions(
           }
           return '[name].js'
         },
-        assetFileNames: '[name][extname]',
       },
     },
   }

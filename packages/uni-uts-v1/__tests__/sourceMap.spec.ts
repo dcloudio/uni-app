@@ -22,7 +22,6 @@ describe('uts:sourceMap', () => {
       inputDir,
       outputDir
     )
-    console.log(sourceMapFile)
     expect(sourceMapFile).toBeDefined()
     expect(
       resolveUtsPluginSourceMapFile(
@@ -53,7 +52,6 @@ describe('uts:sourceMap', () => {
       inputDir,
       outputDir
     )
-    console.log(sourceMapFile)
     expect(sourceMapFile).toBeDefined()
   })
 
@@ -64,7 +62,6 @@ describe('uts:sourceMap', () => {
       inputDir,
       outputDir
     )
-    console.log(sourceMapFile)
     expect(sourceMapFile).toBeDefined()
   })
   test('resolveUtsPluginSourceMapFile with utssdk uts=>swift', () => {
@@ -74,7 +71,6 @@ describe('uts:sourceMap', () => {
       inputDir,
       outputDir
     )
-    console.log(sourceMapFile)
     expect(sourceMapFile).toBeDefined()
   })
 
@@ -85,7 +81,6 @@ describe('uts:sourceMap', () => {
       inputDir,
       outputDir
     )
-    console.log(sourceMapFile)
     expect(sourceMapFile).toBeDefined()
   })
   test('resolveUtsPluginSourceMapFile with uni_modules swift', () => {
@@ -95,7 +90,6 @@ describe('uts:sourceMap', () => {
       inputDir,
       outputDir
     )
-    console.log(sourceMapFile)
     expect(sourceMapFile).toBeDefined()
   })
   test('resolveUtsPluginSourceMapFile with utssdk kt', () => {
@@ -105,7 +99,6 @@ describe('uts:sourceMap', () => {
       inputDir,
       outputDir
     )
-    console.log(sourceMapFile)
     expect(sourceMapFile).toBeDefined()
   })
   test('resolveUtsPluginSourceMapFile with utssdk swift', () => {
@@ -115,7 +108,6 @@ describe('uts:sourceMap', () => {
       inputDir,
       outputDir
     )
-    console.log(sourceMapFile)
     expect(sourceMapFile).toBeDefined()
   })
   test('generatedPositionFor', async () => {

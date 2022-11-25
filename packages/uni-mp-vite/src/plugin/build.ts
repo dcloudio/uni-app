@@ -66,7 +66,6 @@ export function createBuildOptions(
         format: 'cjs',
         manualChunks: createMoveToVendorChunkFn(),
         chunkFileNames: createChunkFileNames(inputDir),
-        assetFileNames: '[name][extname]',
         plugins: [
           {
             name: 'dynamic-import-polyfill',

@@ -4,7 +4,7 @@ import kotlinx.coroutines.CoroutineScope;
 import kotlinx.coroutines.Deferred;
 import kotlinx.coroutines.Dispatchers;
 import io.dcloud.uts.*;
-import io.dcloud.uts.android.getResourcePath;
+import io.dcloud.uts.UTSAndroid;
 import android.util.Log;
 import android.widget.FrameLayout;
 import android.view.View;
@@ -22,7 +22,7 @@ fun login(name: String, pwd: String): UTSJSONObject {
         var pwd = pwd
     };
 }
-val default = getResourcePath("uni_modules/test-uniplugin/static/logo.png");
+val default = UTSAndroid.getResourcePath("uni_modules/test-uniplugin/static/logo.png");
 val test1 = arrayOf(1, 2, 3);
 open class GetBatteryInfoOptions : UTSJSONObject() {
     open var success: UTSCallback? = null;
@@ -55,5 +55,6 @@ open class User : IUser {
     open fun test(view: View) {}
 }
 fun login(name: String, callback: () -> Unit) {}
+@Suppress("DEPRECATION")
 fun register(name: String, callback: UTSCallback) {}
 fun offMemoryWarning(callback: (UTSCallback)? = null) {}

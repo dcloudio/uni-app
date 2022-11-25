@@ -1,0 +1,23 @@
+{
+  "version": "1",
+  "env": {
+    "compilerVersion": "3.6.10"
+  },
+  "files": {
+    "utssdk/app-ios/index.uts": {
+      "md5": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "utssdk/common/utils.uts": {
+      "md5": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "utssdk/index.uts": {
+      "md5": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "package.json": {
+      "md5": "9595031a0d4158abb72060cdf3a200c1"
+    },
+    "utssdk/app-ios/assets/test.json": {
+      "md5": "d41d8cd98f00b204e9800998ecf8427e"
+    }
+  }
+}

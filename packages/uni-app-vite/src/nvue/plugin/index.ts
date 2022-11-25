@@ -98,7 +98,6 @@ export function uniAppNVuePlugin({
                 }
                 return chunk.name + '.js'
               },
-              assetFileNames: '[name][extname]',
               chunkFileNames: createChunkFileNames(inputDir),
               plugins: [dynamicImportPolyfill(true)],
               globals: globals(appService),

@@ -254,6 +254,13 @@ function resolveAndroidManifestPackage(filename: string) {
   }
 }
 
+const deps = ['AndroidManifest.xml', 'config.json']
+
+export function resolveAndroidDepFiles(filename: string) {
+  const dir = resolveAndroidDir(filename)
+  return deps.map((dep) => path.resolve(dir, dep))
+}
+
 function resolveConfigJsonFile(filename: string) {
   const configJsonFile = path.resolve(
     resolveAndroidDir(filename),
@@ -299,7 +306,7 @@ export async function compile(
       isPlugin: true,
       outDir: outputDir,
       package: parseKotlinPackage(filename).package,
-      sourceMap: sourceMap ? resolveUTSSourceMapPath(filename) : false,
+      sourceMap: sourceMap ? resolveUTSSourceMapPath() : false,
       extname: 'kt',
       imports,
       logFilename: true,

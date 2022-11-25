@@ -63,6 +63,7 @@ export type VForOptions = Omit<ForParseResult, 'tagType'> & {
   indexCode: string
   indexExpr: Identifier | Pattern | RestElement
   indexAlias: string
+  node: ElementNode
 }
 
 export type ForElementNode = ElementNode & {
@@ -165,6 +166,7 @@ export const transformFor = createStructuralDirectiveTransform(
       indexCode,
       indexExpr,
       indexAlias,
+      node,
     }
 
     const vForScope = context.addVForScope({
@@ -237,7 +239,7 @@ function parseAlias(
   return fallback
 }
 
-function parseVForScope(currentScope: CodegenScope) {
+export function parseVForScope(currentScope: CodegenScope) {
   while (currentScope) {
     if (isVForScope(currentScope) && !isScopedSlotVFor(currentScope)) {
       return currentScope
