@@ -23668,6 +23668,11 @@ var serviceContext = (function () {
         break
       case V_FOR:
         return setForData.call(this, id, value)
+      case 'is': {
+        if (typeof value === 'function') {
+          value = value.options;
+        }
+      }
     }
 
     return ((this._$newData[id] || (this._$newData[id] = {}))[name] = value)
