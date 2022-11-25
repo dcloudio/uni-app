@@ -15,10 +15,10 @@ module.exports = {
       const fs = require('fs')
       const path = require('path')
       const postcss = require('postcss')
-      var uglifycss = require('uglifycss')
+      const uglifycss = require('uglifycss')
 
       const mediaRoot = postcss.root()
-      mediaRoot.append(mediaQuerys)
+      mediaRoot.append(mediaQuerys.sort((a, b) => a.source.input.file > b.source.input.file ? 1 : -1))
 
       fs.writeFileSync(
         path.resolve(outputDir, filename),

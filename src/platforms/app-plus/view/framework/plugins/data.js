@@ -114,7 +114,18 @@ function vdSync ({
 
 function getData (id, name) {
   try {
-    return this.$r[id][name]
+    const data = this.$r[id][name]
+    if (name === 'is' && typeof data === 'object') {
+      const components = this.$options.components || {}
+      for (const key in components) {
+        const value = components[key]
+        const options = typeof value === 'function' ? value.options : value
+        if (options.__file === data.__file) {
+          return options
+        }
+      }
+    }
+    return data
   } catch (e) {
     // console.error(this.$options.__file + `:[${this._$id}]$r[${id}][${name}] is undefined`)
   }
