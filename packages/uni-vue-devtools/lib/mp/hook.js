@@ -330,6 +330,8 @@ function installHook(target, isIframe = false) {
     });
   }
 
+  if (false) {}
+
   Object.defineProperty(target, '__VUE_DEVTOOLS_GLOBAL_HOOK__', {
     get() {
       return hook;
@@ -2762,7 +2764,7 @@ function openInEditor(file) {
     env_1.target.chrome.devtools.inspectedWindow.eval(src);
   } else {
     // eslint-disable-next-line no-eval
-    eval(src);
+    [eval][0](src);
   }
 }
 

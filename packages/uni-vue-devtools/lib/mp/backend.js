@@ -4764,12 +4764,8 @@ class ComponentWalker {
 
 
   getInternalInstanceChildrenByInstance(instance, suspense = null) {
-    if (true) {
-      if (instance.ctx.$children) {
-        return instance.ctx.$children.map(proxy => proxy.$);
-      }
-
-      return [];
+    if (instance.ctx.$children) {
+      return instance.ctx.$children.map(proxy => proxy.$);
     }
 
     return this.getInternalInstanceChildren(instance.subTree, suspense);
@@ -7310,7 +7306,7 @@ function openInEditor(file) {
     env_1.target.chrome.devtools.inspectedWindow.eval(src);
   } else {
     // eslint-disable-next-line no-eval
-    eval(src);
+    [eval][0](src);
   }
 }
 
