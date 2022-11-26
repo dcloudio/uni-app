@@ -13315,17 +13315,23 @@ function useTabBarThemeChange(tabBar, options) {
 function useWebviewThemeChange(webview, getWebviewStyle) {
     if (__uniConfig.darkmode) {
         const fn = () => {
-            const { animationAlphaBGColor, background, backgroundColorBottom, backgroundColorTop, titleNView: { backgroundColor, titleColor } = {}, } = getWebviewStyle();
-            webview === null || webview === void 0 ? void 0 : webview.setStyle({
-                animationAlphaBGColor,
-                background,
-                backgroundColorBottom,
-                backgroundColorTop,
-                titleNView: {
-                    backgroundColor,
-                    titleColor,
-                },
+            const webviewStyle = getWebviewStyle();
+            ({
+                animationAlphaBGColor: webviewStyle.animationAlphaBGColor,
+                background: webviewStyle.background,
+                backgroundColorBottom: webviewStyle.backgroundColorBottom,
+                backgroundColorTop: webviewStyle.backgroundColorTop,
             });
+            var titleNView = webviewStyle.titleNView;
+            if (typeof titleNView !== 'undefined') {
+                typeof titleNView === 'object'
+                        ? {
+                            backgroundColor: titleNView.backgroundColor,
+                            titleColor: titleNView.titleColor,
+                        }
+                        : titleNView;
+            }
+            webview && webview.setStyle(webviewStyle);
         };
         onThemeChange$1(fn);
         webview.addEventListener('close', () => offThemeChange$1(fn));
