@@ -106,7 +106,7 @@ export async function compile(pluginDir: string) {
       if (process.env.HX_RUN_DEVICE_TYPE === 'ios_simulator') {
         process.env.UNI_UTS_TIPS = `iOS手机在模拟器运行暂不支持uts插件，如需调用uts插件请使用自定义基座`
         return {
-          code: parseErrMsg(code, errMsg),
+          code: parseErrMsg(code, compileErrMsg(pkg.id)),
           deps,
         }
       }
