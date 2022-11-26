@@ -3013,7 +3013,7 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = sh
                     // pass undefined as the old value when it's changed for the first time
                     oldValue === INITIAL_WATCHER_VALUE
                         ? undefined
-                        : (isMultiSource && oldValue[0] === INITIAL_WATCHER_VALUE)
+                        : isMultiSource && oldValue[0] === INITIAL_WATCHER_VALUE
                             ? []
                             : oldValue,
                     onCleanup
@@ -9590,7 +9590,11 @@ function patchStopImmediatePropagation(e, value) {
             originalStop.call(e);
             e._stopped = true;
         };
-        return value.map(fn => (e) => !e._stopped && fn && fn(e));
+        return value.map(fn => {
+            const patchedFn = (e) => !e._stopped && fn && fn(e);
+            patchedFn.__wwe = fn.__wwe;
+            return patchedFn;
+        });
     }
     else {
         return value;
