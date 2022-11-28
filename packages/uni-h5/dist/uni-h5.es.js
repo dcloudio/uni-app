@@ -19940,6 +19940,16 @@ const LocationView = /* @__PURE__ */ defineSystemComponent({
   }) {
     const state2 = useState$2(props2);
     usePreventScroll();
+    getLocation({
+      type: "gcj02",
+      success: ({
+        latitude,
+        longitude
+      }) => {
+        state2.location.latitude = latitude;
+        state2.location.longitude = longitude;
+      }
+    });
     function onRegionChange(event) {
       const centerLocation = event.detail.centerLocation;
       if (centerLocation) {
@@ -19965,31 +19975,12 @@ const LocationView = /* @__PURE__ */ defineSystemComponent({
     function back() {
       emit2("close");
     }
-    function move({
-      latitude,
-      longitude
-    }) {
-      state2.location.latitude = latitude;
-      state2.location.longitude = longitude;
-      setCenter({
-        latitude,
-        longitude
-      });
-    }
     function setCenter({
       latitude,
       longitude
     }) {
       state2.center.latitude = latitude;
       state2.center.longitude = longitude;
-    }
-    function moveToLocation() {
-      getLocation({
-        type: "gcj02",
-        success: move,
-        fail: () => {
-        }
-      });
     }
     return () => {
       return createVNode("div", {
@@ -20003,7 +19994,7 @@ const LocationView = /* @__PURE__ */ defineSystemComponent({
       }, {
         default: () => [createVNode("div", {
           "class": "map-move",
-          "onClick": moveToLocation
+          "onClick": () => setCenter(state2.location)
         }, [createSvgIconVNode(ICON_PATH_LOCTAION, "#000000", 24)], 8, ["onClick"])]
       }, 8, ["latitude", "longitude", "markers", "onRegionchange"]), createVNode("div", {
         "class": "info"
