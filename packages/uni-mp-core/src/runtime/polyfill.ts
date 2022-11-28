@@ -8,8 +8,14 @@ const MPComponent = Component
 
 function initTriggerEvent(mpInstance: MPComponentInstance) {
   const oldTriggerEvent = mpInstance.triggerEvent
-  mpInstance.triggerEvent = function (event, ...args) {
+  const newTriggerEvent = function (event: string, ...args: []) {
     return oldTriggerEvent.apply(mpInstance, [customizeEvent(event), ...args])
+  }
+  // 京东小程序triggerEvent为只读属性
+  try {
+    mpInstance.triggerEvent = newTriggerEvent
+  } catch (error) {
+    mpInstance._triggerEvent = newTriggerEvent
   }
 }
 

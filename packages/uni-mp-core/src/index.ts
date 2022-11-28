@@ -9,7 +9,7 @@ declare module '@vue/runtime-core' {
 
 export { initCreateApp, initCreateSubpackageApp } from './runtime/app'
 export { initCreatePage } from './runtime/page'
-export { initCreateComponent } from './runtime/component'
+export { initCreateComponent, ParseComponentOptions } from './runtime/component'
 export { initCreatePluginApp } from './runtime/plugin'
 export { findPropsData } from './runtime/componentProps'
 export { fixSetDataEnd, fixSetDataStart } from './runtime/fixSetData'
@@ -21,14 +21,20 @@ export { initGetProvider } from './api/shims'
 export {
   initData,
   initBehaviors,
+  initPropsObserver,
   updateComponentProps,
 } from './runtime/componentOptions'
-export { initProps, initFormField } from './runtime/componentProps'
+export {
+  initProps,
+  initFormField,
+  initPageProps,
+} from './runtime/componentProps'
 export {
   initHooks,
   initUnknownHooks,
   initRuntimeHooks,
   PAGE_INIT_HOOKS,
+  initMixinRuntimeHooks,
 } from './runtime/componentHooks'
 export { initMocks, initComponentInstance } from './runtime/componentInstance'
 export { $createComponent, $destroyComponent } from './runtime/component'
