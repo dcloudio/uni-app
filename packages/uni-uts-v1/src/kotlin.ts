@@ -1,10 +1,11 @@
 import os from 'os'
 import fs from 'fs-extra'
-import path from 'path'
+import path, { join } from 'path'
 import AdmZip from 'adm-zip'
 import { sync } from 'fast-glob'
 import { isArray } from '@vue/shared'
 import type { UtsResult } from '@dcloudio/uts'
+import { get } from 'android-versions'
 import {
   isInHBuilderX,
   normalizePath,
@@ -381,4 +382,28 @@ function resolveJarPath(filename: string) {
 
 function resolveClassPath(jars: string[]) {
   return jars.join(os.platform() === 'win32' ? ';' : ':')
+}
+
+export function checkAndroidVersionTips(
+  pluginId: string,
+  pluginDir: string,
+  is_uni_modules: boolean
+) {
+  const configJsonFile = join(
+    pluginDir,
+    is_uni_modules ? 'utssdk' : '',
+    'app-android',
+    'config.json'
+  )
+  if (configJsonFile && fs.existsSync(configJsonFile)) {
+    try {
+      const configJson = parseJson(fs.readFileSync(configJsonFile, 'utf8'))
+      if (configJson.minSdkVersion) {
+        const androidVersion = get(configJson.minSdkVersion)
+        if (androidVersion) {
+          return `uts插件[${pluginId}]需在 Android ${androidVersion.semver} 版本及以上方可正常使用`
+        }
+      }
+    } catch (e) {}
+  }
 }
