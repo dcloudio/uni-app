@@ -82,21 +82,21 @@ export function useTabBarThemeChange (tabBar, options) {
 export function useWebviewThemeChange (webview, getWebviewStyle) {
   if (__uniConfig.darkmode) {
     const fn = () => {
-      const {
-        animationAlphaBGColor, background,
-        backgroundColorBottom, backgroundColorTop,
-        titleNView: { backgroundColor, titleColor } = {}
-      } = getWebviewStyle()
-      webview && webview.setStyle({
-        animationAlphaBGColor,
-        background,
-        backgroundColorBottom,
-        backgroundColorTop,
-        titleNView: {
-          backgroundColor,
-          titleColor
-        }
-      })
+      const webviewStyle = getWebviewStyle()
+      const style = {
+        animationAlphaBGColor: webviewStyle.animationAlphaBGColor,
+        background: webviewStyle.background,
+        backgroundColorBottom: webviewStyle.backgroundColorBottom,
+        backgroundColorTop: webviewStyle.backgroundColorTop
+      }
+      var titleNView = webviewStyle.titleNView
+      if (typeof titleNView !== 'undefined') {
+        style.titleNView = typeof titleNView === 'object' ? {
+          backgroundColor: titleNView.backgroundColor,
+          titleColor: titleNView.titleColor
+        } : titleNView
+      }
+      webview && webview.setStyle(webviewStyle)
     }
     onThemeChange(fn)
     webview.addEventListener('close', () => offThemeChange(fn))

@@ -23,9 +23,13 @@ function parseUniExtApis(vite = true) {
         if (!fs_extra_1.default.existsSync(pkgPath)) {
             return;
         }
-        const exports = (_b = (_a = JSON.parse(fs_extra_1.default.readFileSync(pkgPath, 'utf8'))) === null || _a === void 0 ? void 0 : _a.uni_modules) === null || _b === void 0 ? void 0 : _b['uni-ext-api'];
-        if (exports) {
-            Object.assign(injects, parseInjects(vite, process.env.UNI_PLATFORM === 'h5' ? 'web' : process.env.UNI_PLATFORM, `@/uni_modules/${uniModuleDir}`, exports));
+        try {
+            const exports = (_b = (_a = JSON.parse(fs_extra_1.default.readFileSync(pkgPath, 'utf8'))) === null || _a === void 0 ? void 0 : _a.uni_modules) === null || _b === void 0 ? void 0 : _b['uni-ext-api'];
+            if (exports) {
+                Object.assign(injects, parseInjects(vite, process.env.UNI_PLATFORM === 'h5' ? 'web' : process.env.UNI_PLATFORM, `@/uni_modules/${uniModuleDir}`, exports));
+            }
+        }
+        catch (e) {
         }
     });
     return injects;
