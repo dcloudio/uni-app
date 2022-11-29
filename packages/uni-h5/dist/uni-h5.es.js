@@ -19852,6 +19852,26 @@ const getLocation = /* @__PURE__ */ defineAsyncApi(
               reject2(new Error("network error"));
             }
           });
+        } else if (mapInfo.type === MapType.AMAP) {
+          loadMaps([], () => {
+            window.AMap.plugin("AMap.Geolocation", () => {
+              const geolocation = new window.AMap.Geolocation({
+                enableHighAccuracy: true,
+                timeout: 1e4
+              });
+              geolocation.getCurrentPosition((status, data) => {
+                if (status === "complete") {
+                  resolve2({
+                    latitude: data.position.lat,
+                    longitude: data.position.lng,
+                    accuracy: data.accuracy
+                  });
+                } else {
+                  reject2(new Error(data.message));
+                }
+              });
+            });
+          });
         } else {
           reject2(error);
         }
