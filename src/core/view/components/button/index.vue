@@ -405,7 +405,7 @@ export default {
   }
 
   .button-hover[type="primary"][plain] {
-    color: #0062cc;
+    color: rgba(0, 122, 255, 0.6);
     border-color: rgba(0, 122, 255, 0.6);
     background-color: transparent;
   }
