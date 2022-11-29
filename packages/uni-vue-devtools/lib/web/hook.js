@@ -328,6 +328,8 @@ function installHook(target, isIframe = false) {
     });
   }
 
+  if (false) {}
+
   Object.defineProperty(target, '__VUE_DEVTOOLS_GLOBAL_HOOK__', {
     get() {
       return hook;
@@ -1216,7 +1218,7 @@ exports.StateEditor = StateEditor;
 /*!**********************************!*\
   !*** ../shared-utils/lib/env.js ***!
   \**********************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, exports) => {
 
 
 
@@ -1224,10 +1226,10 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports.initEnv = exports.keys = exports.isLinux = exports.isMac = exports.isWindows = exports.isFirefox = exports.isChrome = exports.target = exports.isBrowser = void 0;
-exports.isBrowser = typeof navigator !== 'undefined';
-exports.target = exports.isBrowser ? window : typeof __webpack_require__.g !== 'undefined' ? __webpack_require__.g : typeof my !== 'undefined' ? my : undefined;
+exports.isBrowser = typeof navigator !== 'undefined' && typeof window !== 'undefined';
+exports.target = exports.isBrowser ? window : typeof globalThis !== 'undefined' ? globalThis : typeof global !== 'undefined' ? global : typeof my !== 'undefined' ? my : {};
 exports.isChrome = typeof exports.target.chrome !== 'undefined' && !!exports.target.chrome.devtools;
-exports.isFirefox = exports.isBrowser && navigator.userAgent.indexOf('Firefox') > -1;
+exports.isFirefox = exports.isBrowser && navigator.userAgent && navigator.userAgent.indexOf('Firefox') > -1;
 exports.isWindows = exports.isBrowser && navigator.platform.indexOf('Win') === 0;
 exports.isMac = exports.isBrowser && navigator.platform === 'MacIntel';
 exports.isLinux = exports.isBrowser && navigator.platform.indexOf('Linux') === 0;
@@ -2760,7 +2762,7 @@ function openInEditor(file) {
     env_1.target.chrome.devtools.inspectedWindow.eval(src);
   } else {
     // eslint-disable-next-line no-eval
-    eval(src);
+    [eval][0](src);
   }
 }
 

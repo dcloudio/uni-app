@@ -2438,6 +2438,7 @@ const index$x = /* @__PURE__ */ defineBuiltInComponent({
       }
       checkboxChecked.value = !checkboxChecked.value;
       uniCheckGroup && uniCheckGroup.checkboxChange($event);
+      $event.stopPropagation();
     };
     if (!!uniLabel) {
       uniLabel.addHandler(_onClick);
@@ -5360,6 +5361,7 @@ const index$o = /* @__PURE__ */ defineBuiltInComponent({
       }
       radioChecked.value = true;
       uniCheckGroup && uniCheckGroup.radioChange($event, field);
+      $event.stopPropagation();
     };
     if (!!uniLabel) {
       uniLabel.addHandler(_onClick);
@@ -7693,6 +7695,11 @@ function getApp$1() {
 }
 function initApp(vm) {
   appVm = vm;
+  Object.defineProperty(appVm.$.ctx, "$children", {
+    get() {
+      return getCurrentPages().map((page) => page.$vm);
+    }
+  });
   const app = appVm.$.appContext.app;
   if (!app.component(AsyncLoadingComponent.name)) {
     app.component(AsyncLoadingComponent.name, AsyncLoadingComponent);
