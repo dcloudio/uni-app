@@ -33,7 +33,7 @@ function getDevtoolsGlobalHook() {
 }
 function getTarget() {
   // @ts-ignore
-  return typeof navigator !== 'undefined' && typeof window !== 'undefined' ? window : typeof __webpack_require__.g !== 'undefined' ? __webpack_require__.g : typeof my !== 'undefined' ? my : {};
+  return typeof navigator !== 'undefined' && typeof window !== 'undefined' ? window : typeof globalThis !== 'undefined' ? globalThis : typeof global !== 'undefined' ? global : typeof my !== 'undefined' ? my : {};
 }
 const isProxyAvailable = typeof Proxy === 'function';
 
@@ -1115,7 +1115,7 @@ async function createAppRecord(options, backend, ctx) {
       instanceMap: new Map(),
       rootInstance,
       perfGroupIds: new Map(),
-      iframe: shared_utils_1.isBrowser && document !== el.ownerDocument ? (_b = (_a = el.ownerDocument) === null || _a === void 0 ? void 0 : _a.location) === null || _b === void 0 ? void 0 : _b.pathname : null,
+      iframe: shared_utils_1.isBrowser && el && document !== el.ownerDocument ? (_b = (_a = el.ownerDocument) === null || _a === void 0 ? void 0 : _a.location) === null || _b === void 0 ? void 0 : _b.pathname : null,
       meta: (_c = options.meta) !== null && _c !== void 0 ? _c : {}
     };
     options.app.__VUE_DEVTOOLS_APP_RECORD__ = record;
@@ -4743,7 +4743,9 @@ class ComponentWalker {
 
 
   getInternalInstanceChildrenByInstance(instance, suspense = null) {
-    if (false) {}
+    if (instance.ctx.$children) {
+      return instance.ctx.$children.map(proxy => proxy.$);
+    }
 
     return this.getInternalInstanceChildren(instance.subTree, suspense);
   }
@@ -4757,9 +4759,7 @@ class ComponentWalker {
 
     if (subTree) {
       if (subTree.component) {
-        !suspense ? list.push(subTree.component) : list.push({ ...subTree.component,
-          suspense
-        });
+        this.getInstanceChildrenBySubTreeComponent(list, subTree, suspense);
       } else if (subTree.suspense) {
         const suspenseKey = !subTree.suspense.isInFallback ? 'suspense default' : 'suspense fallback';
         list.push(...this.getInternalInstanceChildren(subTree.suspense.activeBranch, { ...subTree.suspense,
@@ -4768,9 +4768,7 @@ class ComponentWalker {
       } else if (Array.isArray(subTree.children)) {
         subTree.children.forEach(childSubTree => {
           if (childSubTree.component) {
-            !suspense ? list.push(childSubTree.component) : list.push({ ...childSubTree.component,
-              suspense
-            });
+            this.getInstanceChildrenBySubTreeComponent(list, childSubTree, suspense);
           } else {
             list.push(...this.getInternalInstanceChildren(childSubTree, suspense));
           }
@@ -4783,6 +4781,22 @@ class ComponentWalker {
 
       return !(0, util_1.isBeingDestroyed)(child) && !((_a = child.type.devtools) === null || _a === void 0 ? void 0 : _a.hide);
     });
+  }
+  /**
+   * getInternalInstanceChildren by subTree component for uni-app defineSystemComponent
+   */
+
+
+  getInstanceChildrenBySubTreeComponent(list, subTree, suspense) {
+    var _a;
+
+    if ((_a = subTree.type.devtools) === null || _a === void 0 ? void 0 : _a.hide) {
+      list.push(...this.getInternalInstanceChildren(subTree.component.subTree));
+    } else {
+      !suspense ? list.push(subTree.component) : list.push({ ...subTree.component,
+        suspense
+      });
+    }
   }
 
   captureId(instance) {
@@ -4811,7 +4825,7 @@ class ComponentWalker {
 
 
   async capture(instance, list, depth) {
-    var _a;
+    var _a, _b;
 
     if (!instance) return null;
     const id = this.captureId(instance);
@@ -4834,7 +4848,16 @@ class ComponentWalker {
         backgroundColor: 0xeeeeee
       }],
       autoOpen: this.recursively
-    }; // capture children
+    };
+
+    if (false) {}
+
+    if (false) {}
+
+    if (true) {
+      treeNode.route = instance.ctx.route || '';
+    } // capture children
+
 
     if (depth < this.maxDepth || instance.type.__isKeepAlive || parents.some(parent => parent.type.__isKeepAlive)) {
       treeNode.children = await Promise.all(children.map((child, index, list) => this.capture(child, list, depth + 1)).filter(Boolean));
@@ -4878,7 +4901,7 @@ class ComponentWalker {
       treeNode.domOrder = [-1];
     }
 
-    if ((_a = instance.suspense) === null || _a === void 0 ? void 0 : _a.suspenseKey) {
+    if ((_b = instance.suspense) === null || _b === void 0 ? void 0 : _b.suspenseKey) {
       treeNode.tags.push({
         label: instance.suspense.suspenseKey,
         backgroundColor: 0xe492e4,
@@ -5722,7 +5745,7 @@ exports.StateEditor = StateEditor;
 /*!**********************************!*\
   !*** ../shared-utils/lib/env.js ***!
   \**********************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, exports) => {
 
 
 
@@ -5730,10 +5753,10 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports.initEnv = exports.keys = exports.isLinux = exports.isMac = exports.isWindows = exports.isFirefox = exports.isChrome = exports.target = exports.isBrowser = void 0;
-exports.isBrowser = typeof navigator !== 'undefined';
-exports.target = exports.isBrowser ? window : typeof __webpack_require__.g !== 'undefined' ? __webpack_require__.g : typeof my !== 'undefined' ? my : undefined;
+exports.isBrowser = typeof navigator !== 'undefined' && typeof window !== 'undefined';
+exports.target = exports.isBrowser ? window : typeof globalThis !== 'undefined' ? globalThis : typeof global !== 'undefined' ? global : typeof my !== 'undefined' ? my : {};
 exports.isChrome = typeof exports.target.chrome !== 'undefined' && !!exports.target.chrome.devtools;
-exports.isFirefox = exports.isBrowser && navigator.userAgent.indexOf('Firefox') > -1;
+exports.isFirefox = exports.isBrowser && navigator.userAgent && navigator.userAgent.indexOf('Firefox') > -1;
 exports.isWindows = exports.isBrowser && navigator.platform.indexOf('Win') === 0;
 exports.isMac = exports.isBrowser && navigator.platform === 'MacIntel';
 exports.isLinux = exports.isBrowser && navigator.platform.indexOf('Linux') === 0;
@@ -7266,7 +7289,7 @@ function openInEditor(file) {
     env_1.target.chrome.devtools.inspectedWindow.eval(src);
   } else {
     // eslint-disable-next-line no-eval
-    eval(src);
+    [eval][0](src);
   }
 }
 
