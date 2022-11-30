@@ -52,7 +52,7 @@ function overridedConsole(
 }
 
 if (typeof console !== 'undefined') {
-  overridedConsole('warn', console.warn, ZERO_WIDTH_CHAR.WARNING)
+  overridedConsole('warn', console.log, ZERO_WIDTH_CHAR.WARNING)
   // overridedConsole('error', console.error, ZERO_WIDTH_CHAR.ERROR)
 }
 

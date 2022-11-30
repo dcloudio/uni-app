@@ -166,14 +166,14 @@ export async function compile(pluginDir: string) {
             pkg.is_uni_modules
           )
 
+          console.log(cacheTips(pkg.id))
+
           if (res.tips) {
             console.warn(res.tips)
           }
           if (versionTips) {
             console.warn(versionTips)
           }
-
-          console.log(cacheTips(pkg.id))
 
           return {
             code: parseErrMsg(code, errMsg),
