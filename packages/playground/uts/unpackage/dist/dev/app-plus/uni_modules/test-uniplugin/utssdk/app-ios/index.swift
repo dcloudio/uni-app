@@ -35,6 +35,8 @@ func test1(_ callback: UTSCallback) -> String {
     console.log(CLLocationManager, CLAuthorizationStatus, " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:52");
     return "test1";
 }
+@objc
+@objcMembers
 class Test1 : NSObject {
 }
 @objc(UTSSDKModulesTestUniPluginTest)
@@ -48,7 +50,7 @@ class Test : NSObject {
     }
 }
 @available(iOS 13.0.0, *)
-func testAsync() async  -> UTSJSONObject {
+func testAsync() async -> UTSJSONObject {
     return UTSJSONObject([
         "a": 1
     ]);
@@ -63,7 +65,7 @@ class IndexSwift : NSObject {
         return test1(callback);
     }
     @available(iOS 13.0.0, *)
-    public static func s_testAsync() async  -> UTSJSONObject {
+    public static func s_testAsync() async -> UTSJSONObject {
         return await testAsync();
     }
 }
