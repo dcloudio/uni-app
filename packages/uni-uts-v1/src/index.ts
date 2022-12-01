@@ -1,8 +1,18 @@
 import { isArray } from '@vue/shared'
 import { join, relative } from 'path'
 
-import { runKotlinProd, runKotlinDev, resolveAndroidDepFiles } from './kotlin'
-import { runSwiftProd, runSwiftDev, resolveIOSDepFiles } from './swift'
+import {
+  runKotlinProd,
+  runKotlinDev,
+  resolveAndroidDepFiles,
+  checkAndroidVersionTips,
+} from './kotlin'
+import {
+  runSwiftProd,
+  runSwiftDev,
+  resolveIOSDepFiles,
+  checkIOSVersionTips,
+} from './swift'
 
 import { genProxyCode, resolvePlatformIndex, resolveRootIndex } from './code'
 import { ERR_MSG_PLACEHOLDER, resolvePackage } from './utils'
@@ -93,12 +103,26 @@ export async function compile(pluginDir: string) {
       }
     }
   } else {
+    const compilerType = utsPlatform === 'app-android' ? 'kotlin' : 'swift'
+    const versionTips = getCompiler(compilerType).checkVersionTips(
+      pkg.id,
+      pluginDir,
+      pkg.is_uni_modules
+    )
     // iOS windows 平台，标准基座不编译
     if (utsPlatform === 'app-ios') {
       if (isWindows) {
         process.env.UNI_UTS_TIPS = `iOS手机在windows上真机运行时uts插件代码修改需提交云端打包自定义基座才能生效`
         return {
           code: parseErrMsg(code, errMsg),
+          deps,
+        }
+      }
+      // ios 模拟器不支持
+      if (process.env.HX_RUN_DEVICE_TYPE === 'ios_simulator') {
+        process.env.UNI_UTS_TIPS = `iOS手机在模拟器运行暂不支持uts插件，如需调用uts插件请使用自定义基座`
+        return {
+          code: parseErrMsg(code, compileErrMsg(pkg.id)),
           deps,
         }
       }
@@ -145,6 +169,9 @@ export async function compile(pluginDir: string) {
           if (res.tips) {
             console.warn(res.tips)
           }
+          if (versionTips) {
+            console.warn(versionTips)
+          }
 
           console.log(cacheTips(pkg.id))
 
@@ -158,7 +185,6 @@ export async function compile(pluginDir: string) {
       const filename =
         resolvePlatformIndex(utsPlatform, pluginDir, pkg) ||
         resolveRootIndex(pluginDir, pkg)
-      const compilerType = utsPlatform === 'app-android' ? 'kotlin' : 'swift'
 
       if (filename) {
         deps.push(filename)
@@ -222,6 +248,9 @@ export async function compile(pluginDir: string) {
             if (tips) {
               console.warn(tips)
             }
+            if (versionTips) {
+              console.warn(versionTips)
+            }
           }
           const files: string[] = []
           if (process.env.UNI_APP_UTS_CHANGED_FILES) {
@@ -264,10 +293,12 @@ function getCompiler(type: 'kotlin' | 'swift') {
     return {
       runProd: runSwiftProd,
       runDev: runSwiftDev,
+      checkVersionTips: checkIOSVersionTips,
     }
   }
   return {
     runProd: runKotlinProd,
     runDev: runKotlinDev,
+    checkVersionTips: checkAndroidVersionTips,
   }
 }

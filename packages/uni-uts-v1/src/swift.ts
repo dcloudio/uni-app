@@ -1,4 +1,5 @@
 import fs from 'fs-extra'
+import path, { join } from 'path'
 import { capitalize } from '@vue/shared'
 import {
   genUTSPlatformResource,
@@ -11,9 +12,8 @@ import {
   resolveUTSSourceMapPath,
   ToSwiftOptions,
 } from './utils'
-import { isInHBuilderX } from './shared'
+import { isInHBuilderX, parseJson } from './shared'
 import { UtsResult } from '@dcloudio/uts'
-import path from 'path'
 
 function parseSwiftPackage(filename: string) {
   const res = resolvePackage(filename)
@@ -180,4 +180,25 @@ interface SwiftCompilerServer {
     swiftPath: string
   }): Promise<{ code: number; msg: string }>
   checkEnv?: () => { code: number; msg: string }
+}
+
+export function checkIOSVersionTips(
+  pluginId: string,
+  pluginDir: string,
+  is_uni_modules: boolean
+) {
+  const configJsonFile = join(
+    pluginDir,
+    is_uni_modules ? 'utssdk' : '',
+    'app-ios',
+    'config.json'
+  )
+  if (configJsonFile && fs.existsSync(configJsonFile)) {
+    try {
+      const configJson = parseJson(fs.readFileSync(configJsonFile, 'utf8'))
+      if (configJson.deploymentTarget) {
+        return `uts插件[${pluginId}]需在 iOS ${configJson.deploymentTarget} 版本及以上方可正常使用`
+      }
+    } catch (e) {}
+  }
 }

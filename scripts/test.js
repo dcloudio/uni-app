@@ -96,7 +96,7 @@ async function testSwift() {
     output: {
       outDir,
       package: 'UTSSDKModulesTestUniPlugin',
-      imports: ['DCUTSPlugin'],
+      imports: ['DCloudUTSPlugin'],
       sourceMap,
       extname: 'swift',
       logFilename: true,

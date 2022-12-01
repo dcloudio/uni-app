@@ -2076,7 +2076,14 @@ function getVueApp() {
     return vueApp;
 }
 function initVueApp(appVm) {
-    const appContext = appVm.$.appContext;
+    const internalInstance = appVm.$;
+    // 定制 App 的 $children 为 devtools 服务 false
+    Object.defineProperty(internalInstance.ctx, '$children', {
+        get() {
+            return getAllPages().map((page) => page.$vm);
+        },
+    });
+    const appContext = internalInstance.appContext;
     vueApp = extend(appContext.app, {
         mountPage(pageComponent, pageProps, pageContainer) {
             const vnode = createVNode(pageComponent, pageProps);
@@ -13308,17 +13315,23 @@ function useTabBarThemeChange(tabBar, options) {
 function useWebviewThemeChange(webview, getWebviewStyle) {
     if (__uniConfig.darkmode) {
         const fn = () => {
-            const { animationAlphaBGColor, background, backgroundColorBottom, backgroundColorTop, titleNView: { backgroundColor, titleColor } = {}, } = getWebviewStyle();
-            webview === null || webview === void 0 ? void 0 : webview.setStyle({
-                animationAlphaBGColor,
-                background,
-                backgroundColorBottom,
-                backgroundColorTop,
-                titleNView: {
-                    backgroundColor,
-                    titleColor,
-                },
+            const webviewStyle = getWebviewStyle();
+            ({
+                animationAlphaBGColor: webviewStyle.animationAlphaBGColor,
+                background: webviewStyle.background,
+                backgroundColorBottom: webviewStyle.backgroundColorBottom,
+                backgroundColorTop: webviewStyle.backgroundColorTop,
             });
+            var titleNView = webviewStyle.titleNView;
+            if (typeof titleNView !== 'undefined') {
+                typeof titleNView === 'object'
+                        ? {
+                            backgroundColor: titleNView.backgroundColor,
+                            titleColor: titleNView.titleColor,
+                        }
+                        : titleNView;
+            }
+            webview && webview.setStyle(webviewStyle);
         };
         onThemeChange$1(fn);
         webview.addEventListener('close', () => offThemeChange$1(fn));
@@ -16797,6 +16810,9 @@ function requireGlobal() {
     }
     return object;
 }
+function syncDataToGlobal(data) {
+    extend(global, data);
+}
 
 const providers = {
     oauth(callback) {
@@ -19570,6 +19586,7 @@ var uni$1 = {
   getSubNVueById: getSubNVueById,
   restoreGlobal: restoreGlobal,
   requireGlobal: requireGlobal,
+  syncDataToGlobal: syncDataToGlobal,
   getProvider: getProvider,
   login: login,
   getUserInfo: getUserInfo,

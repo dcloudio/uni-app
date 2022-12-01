@@ -1,10 +1,11 @@
 import os from 'os'
 import fs from 'fs-extra'
-import path from 'path'
+import path, { join } from 'path'
 import AdmZip from 'adm-zip'
 import { sync } from 'fast-glob'
 import { isArray } from '@vue/shared'
 import type { UtsResult } from '@dcloudio/uts'
+import { get } from 'android-versions'
 import {
   isInHBuilderX,
   normalizePath,
@@ -160,16 +161,6 @@ export async function runKotlinDev(
     //     path.relative(process.env.UNI_INPUT_DIR, filename)
     //   )} 编译失败`
     // }
-    if (process.env.HX_USE_BASE_TYPE === 'standard') {
-      if (!isSupportStandardPlayground(filename)) {
-        const pkg = resolvePackage(filename)
-        if (pkg) {
-          console.warn(
-            `uts插件[${pkg.id}]依赖的原生配置或三方SDK在运行至标准基座时不能生效，如需正常调用请使用自定义基座`
-          )
-        }
-      }
-    }
   }
   return result
 }
@@ -393,29 +384,26 @@ function resolveClassPath(jars: string[]) {
   return jars.join(os.platform() === 'win32' ? ';' : ':')
 }
 
-const checkFiles = ['AndroidManifest.xml']
-const checkDirs = ['libs', 'assets', 'res']
-/**
- * 当前插件是否支持标准基座运行
- * @param filename
- * @returns
- */
-function isSupportStandardPlayground(filename: string) {
-  const baseDir = resolveAndroidDir(filename)
-  if (checkFiles.find((file) => fs.existsSync(path.resolve(baseDir, file)))) {
-    return false
+export function checkAndroidVersionTips(
+  pluginId: string,
+  pluginDir: string,
+  is_uni_modules: boolean
+) {
+  const configJsonFile = join(
+    pluginDir,
+    is_uni_modules ? 'utssdk' : '',
+    'app-android',
+    'config.json'
+  )
+  if (configJsonFile && fs.existsSync(configJsonFile)) {
+    try {
+      const configJson = parseJson(fs.readFileSync(configJsonFile, 'utf8'))
+      if (configJson.minSdkVersion) {
+        const androidVersion = get(configJson.minSdkVersion)
+        if (androidVersion) {
+          return `uts插件[${pluginId}]需在 Android ${androidVersion.semver} 版本及以上方可正常使用`
+        }
+      }
+    } catch (e) {}
   }
-  if (
-    checkDirs.find((dir) => {
-      const absDir = path.resolve(baseDir, dir)
-      return fs.existsSync(absDir) && fs.readdirSync(absDir).length
-    })
-  ) {
-    return false
-  }
-  const configJsonFile = resolveConfigJsonFile(filename)
-  if (configJsonFile && hasDeps(configJsonFile)) {
-    return false
-  }
-  return true
 }

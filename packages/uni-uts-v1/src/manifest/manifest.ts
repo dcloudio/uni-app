@@ -233,7 +233,9 @@ async function checkFiles(
 }
 
 export function hasCustomResources(files: string[], resources: string[]) {
-  return files.some((file) => isCustomResources(file, resources))
+  if (files.some((file) => isCustomResources(file, resources))) {
+    return true
+  }
 }
 
 export function isCustomResources(file: string, resources: string[]) {

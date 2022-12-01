@@ -27,20 +27,23 @@ export function parseUniExtApis(vite = true) {
     if (!fs.existsSync(pkgPath)) {
       return
     }
-    const exports = JSON.parse(fs.readFileSync(pkgPath, 'utf8'))?.uni_modules?.[
-      'uni-ext-api'
-    ] as Exports | undefined
-    if (exports) {
-      Object.assign(
-        injects,
-        parseInjects(
-          vite,
-          process.env.UNI_PLATFORM === 'h5' ? 'web' : process.env.UNI_PLATFORM,
-          `@/uni_modules/${uniModuleDir}`,
-          exports
+    try {
+      const exports = JSON.parse(fs.readFileSync(pkgPath, 'utf8'))
+        ?.uni_modules?.['uni-ext-api'] as Exports | undefined
+      if (exports) {
+        Object.assign(
+          injects,
+          parseInjects(
+            vite,
+            process.env.UNI_PLATFORM === 'h5'
+              ? 'web'
+              : process.env.UNI_PLATFORM,
+            `@/uni_modules/${uniModuleDir}`,
+            exports
+          )
         )
-      )
-    }
+      }
+    } catch (e) {}
   })
   return injects
 }

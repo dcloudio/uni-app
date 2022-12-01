@@ -92,9 +92,12 @@ export default function uniPlugin(
 
   initPreContext(options.platform, process.env.UNI_CUSTOM_CONTEXT)
 
-  const plugins: Plugin[] = [
-    uniViteInjectPlugin('uni:ext-api-inject', parseUniExtApis()),
-  ]
+  const plugins: Plugin[] = []
+
+  const injects = parseUniExtApis()
+  if (Object.keys(injects).length) {
+    plugins.push(uniViteInjectPlugin('uni:ext-api-inject', injects))
+  }
 
   // 仅限 h5
   if (options.viteLegacyOptions && options.platform === 'h5') {

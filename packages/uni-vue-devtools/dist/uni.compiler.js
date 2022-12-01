@@ -11,15 +11,17 @@ var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
 
 // eslint-disable-next-line no-restricted-globals
 const { initDevtoolsServer } = require('../lib/front/server.js');
+let copied = false;
+let initializedServer = false;
 const uniVueDevtoolsPlugin = () => {
-    let copied = false;
     return {
         name: 'uni:vue-devtools',
         config() {
             return new Promise(async (resolve) => {
                 let __VUE_DEVTOOLS_HOST__ = 'localhost';
                 let __VUE_DEVTOOLS_PORT__ = 8098;
-                if (process.env.__VUE_PROD_DEVTOOLS__) {
+                if (process.env.__VUE_PROD_DEVTOOLS__ && !initializedServer) {
+                    initializedServer = true;
                     const { socketHost, socketPort } = await initDevtoolsServer();
                     __VUE_DEVTOOLS_HOST__ = socketHost;
                     __VUE_DEVTOOLS_PORT__ = socketPort;
@@ -34,10 +36,6 @@ const uniVueDevtoolsPlugin = () => {
             });
         },
         generateBundle() {
-            // 仅处理小程序
-            if (!uniCliShared.isMiniProgramPlatform()) {
-                return;
-            }
             if (copied || process.env.__VUE_PROD_DEVTOOLS__ !== 'true') {
                 return;
             }

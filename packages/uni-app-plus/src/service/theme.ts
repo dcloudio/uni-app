@@ -98,23 +98,24 @@ export function useWebviewThemeChange(
 ) {
   if (__uniConfig.darkmode) {
     const fn = () => {
-      const {
-        animationAlphaBGColor,
-        background,
-        backgroundColorBottom,
-        backgroundColorTop,
-        titleNView: { backgroundColor, titleColor } = {},
-      } = getWebviewStyle()
-      webview?.setStyle({
-        animationAlphaBGColor,
-        background,
-        backgroundColorBottom,
-        backgroundColorTop,
-        titleNView: {
-          backgroundColor,
-          titleColor,
-        },
-      })
+      const webviewStyle = getWebviewStyle()
+      const style: typeof webviewStyle = {
+        animationAlphaBGColor: webviewStyle.animationAlphaBGColor,
+        background: webviewStyle.background,
+        backgroundColorBottom: webviewStyle.backgroundColorBottom,
+        backgroundColorTop: webviewStyle.backgroundColorTop,
+      }
+      var titleNView = webviewStyle.titleNView
+      if (typeof titleNView !== 'undefined') {
+        style.titleNView =
+          typeof titleNView === 'object'
+            ? {
+                backgroundColor: titleNView.backgroundColor,
+                titleColor: titleNView.titleColor,
+              }
+            : titleNView
+      }
+      webview && webview.setStyle(webviewStyle)
     }
 
     onThemeChange(fn)
