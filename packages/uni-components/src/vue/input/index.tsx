@@ -168,6 +168,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       let inputNode =
         props.disabled && fixDisabledColor ? (
           <input
+            key="disabled-input"
             ref={fieldRef}
             value={state.value}
             tabindex="-1"
@@ -183,6 +184,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           />
         ) : (
           <input
+            key="input"
             ref={fieldRef}
             value={state.value}
             disabled={!!props.disabled}
