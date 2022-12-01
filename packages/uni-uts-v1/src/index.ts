@@ -52,6 +52,10 @@ function compileErrMsg(id: string) {
   return `uts插件[${id}]编译失败，无法使用`
 }
 
+function warn(msg: string) {
+  console.warn(`提示：${msg}`)
+}
+
 export async function compile(pluginDir: string) {
   const pkg = resolvePackage(pluginDir)
   if (!pkg) {
@@ -169,10 +173,10 @@ export async function compile(pluginDir: string) {
           console.log(cacheTips(pkg.id))
 
           if (res.tips) {
-            console.warn(res.tips)
+            warn(res.tips)
           }
           if (versionTips) {
-            console.warn(versionTips)
+            warn(versionTips)
           }
 
           return {
@@ -246,10 +250,10 @@ export async function compile(pluginDir: string) {
               })
             }
             if (tips) {
-              console.warn(tips)
+              warn(tips)
             }
             if (versionTips) {
-              console.warn(versionTips)
+              warn(versionTips)
             }
           }
           const files: string[] = []
