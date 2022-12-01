@@ -73,7 +73,8 @@
           url: AD_URL,
           method: 'POST',
           data: {
-            adpid: this.adpid || ''
+            adpid: this.adpid || '',
+            appid: uni.getAppBaseInfo().appId
           },
           timeout: 5000,
           dataType: 'json',
