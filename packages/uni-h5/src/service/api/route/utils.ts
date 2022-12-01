@@ -31,8 +31,11 @@ export function navigate(
         return reject(failure.message)
       }
       if (type === 'navigateTo') {
-        const eventChannel = new EventChannel(state.__id__, events)
-        router.currentRoute.value.meta.eventChannel = eventChannel
+        const meta = router.currentRoute.value.meta
+        // if getOpenerEventChannel is called before navigateTo
+        const eventChannel = (meta.eventChannel =
+          (meta.eventChannel as EventChannel) ||
+          new EventChannel(state.__id__, events))
         return resolve({
           eventChannel,
         })
