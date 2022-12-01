@@ -2438,7 +2438,6 @@ const index$x = /* @__PURE__ */ defineBuiltInComponent({
       }
       checkboxChecked.value = !checkboxChecked.value;
       uniCheckGroup && uniCheckGroup.checkboxChange($event);
-      $event.stopPropagation();
     };
     if (!!uniLabel) {
       uniLabel.addHandler(_onClick);
@@ -5361,7 +5360,6 @@ const index$o = /* @__PURE__ */ defineBuiltInComponent({
       }
       radioChecked.value = true;
       uniCheckGroup && uniCheckGroup.radioChange($event, field);
-      $event.stopPropagation();
     };
     if (!!uniLabel) {
       uniLabel.addHandler(_onClick);
