@@ -81,7 +81,16 @@ export {
   onHostEventReceive,
   onNativeEventReceive,
 } from './plugin/sdk'
+// 内部使用
 export { __log__ } from './plugin/log'
+// 内部使用
+export {
+  initUtsProxyClass,
+  initUtsProxyFunction,
+  initUtsIndexClassName,
+  initUtsClassName,
+  initUtsPackageName,
+} from './plugin/uts'
 
 export * from './ad/rewardedVideoAd'
 export * from './ad/fullScreenVideoAd'

@@ -1669,17 +1669,17 @@ function getPageId() {
 }
 let channel;
 let globalEvent$1;
-const callbacks$2 = {};
+const callbacks$3 = {};
 function onPlusMessage$1(res) {
     const message = res.data && res.data.__message;
     if (!message || !message.__page) {
         return;
     }
     const pageId = message.__page;
-    const callback = callbacks$2[pageId];
+    const callback = callbacks$3[pageId];
     callback && callback(message);
     if (!message.keep) {
-        delete callbacks$2[pageId];
+        delete callbacks$3[pageId];
     }
 }
 function addEventListener(pageId, callback) {
@@ -1698,7 +1698,7 @@ function addEventListener(pageId, callback) {
         // @ts-ignore
         window.__plusMessage = onPlusMessage$1;
     }
-    callbacks$2[pageId] = callback;
+    callbacks$3[pageId] = callback;
 }
 class Page {
     constructor(webview) {
@@ -14576,7 +14576,7 @@ const Recorder = {
         }
     },
 };
-const callbacks$1 = {
+const callbacks$2 = {
     pause: null,
     resume: null,
     start: null,
@@ -14587,29 +14587,29 @@ function onRecorderStateChange(res) {
     const state = res.state;
     delete res.state;
     delete res.errMsg;
-    if (state && isFunction(callbacks$1[state])) {
-        callbacks$1[state](res);
+    if (state && isFunction(callbacks$2[state])) {
+        callbacks$2[state](res);
     }
 }
 class RecorderManager {
     constructor() { }
     onError(callback) {
-        callbacks$1.error = callback;
+        callbacks$2.error = callback;
     }
     onFrameRecorded(callback) { }
     onInterruptionBegin(callback) { }
     onInterruptionEnd(callback) { }
     onPause(callback) {
-        callbacks$1.pause = callback;
+        callbacks$2.pause = callback;
     }
     onResume(callback) {
-        callbacks$1.resume = callback;
+        callbacks$2.resume = callback;
     }
     onStart(callback) {
-        callbacks$1.start = callback;
+        callbacks$2.start = callback;
     }
     onStop(callback) {
-        callbacks$1.stop = callback;
+        callbacks$2.stop = callback;
     }
     pause() {
         Recorder.pause();
@@ -15712,7 +15712,7 @@ const eventNames = [
     'error',
     'waiting',
 ];
-const callbacks = {
+const callbacks$1 = {
     canplay: [],
     play: [],
     pause: [],
@@ -15900,7 +15900,7 @@ function operateBackgroundAudio({ operationType, src, startTime, currentTime, })
     });
 }
 function onBackgroundAudioStateChange({ state, errMsg, errCode, dataUrl, }) {
-    callbacks[state].forEach((callback) => {
+    callbacks$1[state].forEach((callback) => {
         if (isFunction(callback)) {
             callback(state === 'error'
                 ? {
@@ -15915,7 +15915,7 @@ const onInitBackgroundAudioManager = /*#__PURE__*/ once(() => {
     eventNames.forEach((item) => {
         BackgroundAudioManager.prototype[`on${capitalize(item)}`] =
             function (callback) {
-                callbacks[item].push(callback);
+                callbacks$1[item].push(callback);
             };
     });
 });
@@ -17312,6 +17312,193 @@ function normalizeLog(type, filename, args) {
         return v;
     });
     return msgs.join('---COMMA---') + ' ' + filename;
+}
+
+let callbackId = 1;
+let proxy;
+const callbacks = {};
+function normalizeArg(arg) {
+    if (typeof arg === 'function') {
+        // 查找该函数是否已缓存
+        const oldId = Object.keys(callbacks).find((id) => callbacks[id] === arg);
+        const id = oldId ? parseInt(oldId) : callbackId++;
+        callbacks[id] = arg;
+        return id;
+    }
+    else if (isPlainObject(arg)) {
+        Object.keys(arg).forEach((name) => {
+            arg[name] = normalizeArg(arg[name]);
+        });
+    }
+    return arg;
+}
+function initUtsInstanceMethod(async, opts, instanceId) {
+    return initProxyFunction(async, opts, instanceId);
+}
+function getProxy() {
+    if (!proxy) {
+        proxy = uni.requireNativePlugin('UTS-Proxy');
+    }
+    return proxy;
+}
+function resolveSyncResult(res) {
+    if (res.errMsg) {
+        throw new Error(res.errMsg);
+    }
+    return res.params;
+}
+function invokePropGetter(args) {
+    if (args.errMsg) {
+        throw new Error(args.errMsg);
+    }
+    delete args.errMsg;
+    return resolveSyncResult(getProxy().invokeSync(args, () => { }));
+}
+function initProxyFunction(async, { package: pkg, class: cls, name: propOrMethod, method, companion, params: methodParams, errMsg, }, instanceId) {
+    const invokeCallback = ({ id, name, params, keepAlive, }) => {
+        const callback = callbacks[id];
+        if (callback) {
+            callback(...params);
+            if (!keepAlive) {
+                delete callbacks[id];
+            }
+        }
+        else {
+            console.error(`${pkg}${cls}.${propOrMethod} ${name} is not found`);
+        }
+    };
+    const baseArgs = instanceId
+        ? { id: instanceId, name: propOrMethod, method: methodParams }
+        : {
+            package: pkg,
+            class: cls,
+            name: method || propOrMethod,
+            companion,
+            method: methodParams,
+        };
+    return (...args) => {
+        if (errMsg) {
+            throw new Error(errMsg);
+        }
+        const invokeArgs = extend({}, baseArgs, {
+            params: args.map((arg) => normalizeArg(arg)),
+        });
+        if (async) {
+            return new Promise((resolve, reject) => {
+                getProxy().invokeAsync(invokeArgs, (res) => {
+                    if (res.type !== 'return') {
+                        invokeCallback(res);
+                    }
+                    else {
+                        if (res.errMsg) {
+                            reject(res.errMsg);
+                        }
+                        else {
+                            resolve(res.params);
+                        }
+                    }
+                });
+            });
+        }
+        return resolveSyncResult(getProxy().invokeSync(invokeArgs, invokeCallback));
+    };
+}
+function initUtsStaticMethod(async, opts) {
+    if (opts.main && !opts.method) {
+        if (typeof plus !== 'undefined' && plus.os.name === 'iOS') {
+            opts.method = 's_' + opts.name;
+        }
+    }
+    return initProxyFunction(async, opts, 0);
+}
+const initUtsProxyFunction = initUtsStaticMethod;
+function initUtsProxyClass({ package: pkg, class: cls, constructor: { params: constructorParams }, methods, props, staticProps, staticMethods, errMsg, }) {
+    const baseOptions = {
+        package: pkg,
+        class: cls,
+        errMsg,
+    };
+    const ProxyClass = class UtsClass {
+        constructor(...params) {
+            if (errMsg) {
+                throw new Error(errMsg);
+            }
+            const target = {};
+            // 初始化实例 ID
+            const instanceId = initProxyFunction(false, extend({ name: 'constructor', params: constructorParams }, baseOptions), 0).apply(null, params);
+            if (!instanceId) {
+                throw new Error(`new ${cls} is failed`);
+            }
+            return new Proxy(this, {
+                get(_, name) {
+                    if (!target[name]) {
+                        //实例方法
+                        if (hasOwn$1(methods, name)) {
+                            const { async, params } = methods[name];
+                            target[name] = initUtsInstanceMethod(!!async, extend({
+                                name,
+                                params,
+                            }, baseOptions), instanceId);
+                        }
+                        else if (props.includes(name)) {
+                            // 实例属性
+                            return invokePropGetter({
+                                id: instanceId,
+                                name: name,
+                                errMsg,
+                            });
+                        }
+                    }
+                    return target[name];
+                },
+            });
+        }
+    };
+    const staticMethodCache = {};
+    return new Proxy(ProxyClass, {
+        get(target, name, receiver) {
+            if (hasOwn$1(staticMethods, name)) {
+                if (!staticMethodCache[name]) {
+                    const { async, params } = staticMethods[name];
+                    // 静态方法
+                    staticMethodCache[name] = initUtsStaticMethod(!!async, extend({ name, companion: true, params }, baseOptions));
+                }
+                return staticMethodCache[name];
+            }
+            if (staticProps.includes(name)) {
+                // 静态属性
+                return invokePropGetter(extend({ name: name, companion: true }, baseOptions));
+            }
+            return Reflect.get(target, name, receiver);
+        },
+    });
+}
+function initUtsPackageName(name, is_uni_modules) {
+    if (typeof plus !== 'undefined' && plus.os.name === 'Android') {
+        return 'uts.sdk.' + (is_uni_modules ? 'modules.' : '') + name;
+    }
+    return '';
+}
+function initUtsIndexClassName(moduleName, is_uni_modules) {
+    if (typeof plus === 'undefined') {
+        return '';
+    }
+    return initUtsClassName(moduleName, plus.os.name === 'iOS' ? 'IndexSwift' : 'IndexKt', is_uni_modules);
+}
+function initUtsClassName(moduleName, className, is_uni_modules) {
+    if (typeof plus === 'undefined') {
+        return '';
+    }
+    if (plus.os.name === 'Android') {
+        return className;
+    }
+    if (plus.os.name === 'iOS') {
+        return ('UTSSDK' +
+            (is_uni_modules ? 'Modules' : '') +
+            capitalize(moduleName) +
+            capitalize(className));
+    }
+    return '';
 }
 
 const EventType = {
@@ -19398,6 +19585,11 @@ var uni$1 = {
   onHostEventReceive: onHostEventReceive,
   onNativeEventReceive: onNativeEventReceive,
   __log__: __log__,
+  initUtsProxyClass: initUtsProxyClass,
+  initUtsProxyFunction: initUtsProxyFunction,
+  initUtsIndexClassName: initUtsIndexClassName,
+  initUtsClassName: initUtsClassName,
+  initUtsPackageName: initUtsPackageName,
   navigateTo: navigateTo,
   reLaunch: reLaunch,
   switchTab: switchTab,
