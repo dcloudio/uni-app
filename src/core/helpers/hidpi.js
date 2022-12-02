@@ -1,7 +1,7 @@
 import {
   hasOwn
 }
-  from 'uni-shared'
+from 'uni-shared'
 
 export const pixelRatio = (function () {
   const canvas = document.createElement('canvas')

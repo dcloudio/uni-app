@@ -14,7 +14,7 @@ import {
 import {
   lifecycleMixin
 }
-  from 'uni-core/service/plugins/lifecycle'
+from 'uni-core/service/plugins/lifecycle'
 
 import {
   VD_SYNC_VERSION
@@ -23,7 +23,7 @@ import {
 import {
   ON_REACH_BOTTOM_DISTANCE
 }
-  from '../../constants'
+from '../../constants'
 
 import {
   NAVBAR_HEIGHT

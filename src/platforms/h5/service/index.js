@@ -9,7 +9,7 @@ import {
   getApp,
   getCurrentPages
 }
-  from 'uni-core/service/plugins/app'
+from 'uni-core/service/plugins/app'
 
 initOn(UniServiceJSBridge.on, {
   getApp,
