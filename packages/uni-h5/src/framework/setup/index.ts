@@ -12,7 +12,6 @@ import {
   onBeforeMount,
   onBeforeUnmount,
 } from 'vue'
-import { useRouter } from 'vue-router'
 import {
   debounce,
   decodedQuery,
@@ -169,12 +168,14 @@ export function setupApp(comp: any) {
           }
         }
       }
-      if (__UNI_FEATURE_PAGES__) {
-        // 等待ready后，再onLaunch，可以顺利获取到正确的path和query
-        useRouter().isReady().then(onLaunch)
-      } else {
-        onBeforeMount(onLaunch)
-      }
+      // if (__UNI_FEATURE_PAGES__) {
+      //   // 等待ready后，再onLaunch，可以顺利获取到正确的path和query
+      //   useRouter().isReady().then(onLaunch)
+      // } else {
+      //   onBeforeMount(onLaunch)
+      // }
+      onBeforeMount(onLaunch)
+
       onMounted(() => {
         window.addEventListener(
           'resize',
