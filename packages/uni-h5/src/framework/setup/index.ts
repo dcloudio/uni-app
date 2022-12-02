@@ -168,12 +168,7 @@ export function setupApp(comp: any) {
           }
         }
       }
-      // if (__UNI_FEATURE_PAGES__) {
-      //   // 等待ready后，再onLaunch，可以顺利获取到正确的path和query
-      //   useRouter().isReady().then(onLaunch)
-      // } else {
-      //   onBeforeMount(onLaunch)
-      // }
+      // https://tower.im/teams/226535/todos/18307
       onBeforeMount(onLaunch)
 
       onMounted(() => {
