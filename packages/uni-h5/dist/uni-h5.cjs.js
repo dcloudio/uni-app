@@ -2529,7 +2529,7 @@ function useKeyboard$1(props2, elRef, trigger) {
   }
   vue.watch(
     () => elRef.value,
-    (el) => initKeyboard(el)
+    (el) => el && initKeyboard(el)
   );
 }
 var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
@@ -3320,6 +3320,8 @@ function useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput) {
   }
   function initField() {
     const field = fieldRef.value;
+    if (!field)
+      return;
     const onFocus = function(event) {
       state.focus = true;
       trigger("focus", event, {
@@ -3532,6 +3534,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
     }
     return () => {
       let inputNode = props2.disabled && fixDisabledColor ? vue.createVNode("input", {
+        "key": "disabled-input",
         "ref": fieldRef,
         "value": state.value,
         "tabindex": "-1",
@@ -3542,6 +3545,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-input-input",
         "onFocus": (event) => event.target.blur()
       }, null, 40, ["value", "readonly", "type", "maxlength", "step", "onFocus"]) : vue.createVNode("input", {
+        "key": "input",
         "ref": fieldRef,
         "value": state.value,
         "disabled": !!props2.disabled,

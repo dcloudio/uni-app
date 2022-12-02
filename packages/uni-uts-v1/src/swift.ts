@@ -104,7 +104,7 @@ export async function runSwiftDev(filename: string) {
     const { code, msg } = await compilerServer.compile({
       projectPath,
       isCli,
-      type: 1,
+      type: is_uni_modules ? 1 : 2,
       pluginName: id,
       utsPath: resolveCompilerUtsPath(inputDir, is_uni_modules),
       swiftPath: resolveCompilerSwiftPath(outputDir, is_uni_modules),
