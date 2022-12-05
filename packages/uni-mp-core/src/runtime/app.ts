@@ -99,9 +99,12 @@ export function initCreateApp(parseAppOptions?: ParseAppOptions) {
 export function initCreateSubpackageApp(parseAppOptions?: ParseAppOptions) {
   return function createApp(vm: ComponentPublicInstance) {
     const appOptions = parseApp(vm, parseAppOptions)
-    const app = getApp({
-      allowDefault: true,
-    })
+    const app =
+      isFunction(getApp) &&
+      getApp({
+        allowDefault: true,
+      })
+    if (!app) return
     ;(vm.$ as any).ctx.$scope = app
     const globalData = app.globalData
     if (globalData) {
