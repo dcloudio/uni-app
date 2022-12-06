@@ -14659,6 +14659,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
     }
     return () => {
       let textareaNode = props2.disabled && fixDisabledColor ? createVNode("textarea", {
+        "key": "disabled-textarea",
         "ref": fieldRef,
         "value": state2.value,
         "tabindex": "-1",
@@ -14673,6 +14674,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
         },
         "onFocus": (event) => event.target.blur()
       }, null, 46, ["value", "readonly", "maxlength", "onFocus"]) : createVNode("textarea", {
+        "key": "textarea",
         "ref": fieldRef,
         "value": state2.value,
         "disabled": !!props2.disabled,
@@ -16385,9 +16387,9 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
           "uni-video-control-button-pause": videoState.playing
         },
         "onClick": withModifiers(toggle, ["stop"])
-      }, null, 10, ["onClick"]), [[vShow, props2.showPlayBtn]]), createVNode("div", {
+      }, null, 10, ["onClick"]), [[vShow, props2.showPlayBtn]]), withDirectives(createVNode("div", {
         "class": "uni-video-current-time"
-      }, [formatTime(videoState.currentTime)]), createVNode("div", {
+      }, [formatTime(videoState.currentTime)], 512), [[vShow, props2.showProgress]]), withDirectives(createVNode("div", {
         "ref": progressRef,
         "class": "uni-video-progress-container",
         "onClick": withModifiers(clickProgress, ["stop"])
@@ -16406,9 +16408,9 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-ball"
       }, [createVNode("div", {
         "class": "uni-video-inner"
-      }, null)], 4)])], 8, ["onClick"]), createVNode("div", {
+      }, null)], 4)])], 8, ["onClick"]), [[vShow, props2.showProgress]]), withDirectives(createVNode("div", {
         "class": "uni-video-duration"
-      }, [formatTime(Number(props2.duration) || videoState.duration)])]), withDirectives(createVNode("div", {
+      }, [formatTime(Number(props2.duration) || videoState.duration)], 512), [[vShow, props2.showProgress]])]), withDirectives(createVNode("div", {
         "class": {
           "uni-video-danmu-button": true,
           "uni-video-danmu-button-active": danmuState.enable

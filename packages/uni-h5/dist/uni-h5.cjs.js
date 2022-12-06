@@ -7150,6 +7150,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
     }
     return () => {
       let textareaNode = props2.disabled && fixDisabledColor ? vue.createVNode("textarea", {
+        "key": "disabled-textarea",
         "ref": fieldRef,
         "value": state.value,
         "tabindex": "-1",
@@ -7164,6 +7165,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
         },
         "onFocus": (event) => event.target.blur()
       }, null, 46, ["value", "readonly", "maxlength", "onFocus"]) : vue.createVNode("textarea", {
+        "key": "textarea",
         "ref": fieldRef,
         "value": state.value,
         "disabled": !!props2.disabled,
@@ -8469,9 +8471,9 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
           "uni-video-control-button-pause": videoState.playing
         },
         "onClick": vue.withModifiers(toggle, ["stop"])
-      }, null, 10, ["onClick"]), [[vue.vShow, props2.showPlayBtn]]), vue.createVNode("div", {
+      }, null, 10, ["onClick"]), [[vue.vShow, props2.showPlayBtn]]), vue.withDirectives(vue.createVNode("div", {
         "class": "uni-video-current-time"
-      }, [formatTime(videoState.currentTime)]), vue.createVNode("div", {
+      }, [formatTime(videoState.currentTime)], 512), [[vue.vShow, props2.showProgress]]), vue.withDirectives(vue.createVNode("div", {
         "ref": progressRef,
         "class": "uni-video-progress-container",
         "onClick": vue.withModifiers(clickProgress, ["stop"])
@@ -8490,9 +8492,9 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-ball"
       }, [vue.createVNode("div", {
         "class": "uni-video-inner"
-      }, null)], 4)])], 8, ["onClick"]), vue.createVNode("div", {
+      }, null)], 4)])], 8, ["onClick"]), [[vue.vShow, props2.showProgress]]), vue.withDirectives(vue.createVNode("div", {
         "class": "uni-video-duration"
-      }, [formatTime(Number(props2.duration) || videoState.duration)])]), vue.withDirectives(vue.createVNode("div", {
+      }, [formatTime(Number(props2.duration) || videoState.duration)], 512), [[vue.vShow, props2.showProgress]])]), vue.withDirectives(vue.createVNode("div", {
         "class": {
           "uni-video-danmu-button": true,
           "uni-video-danmu-button-active": danmuState.enable
