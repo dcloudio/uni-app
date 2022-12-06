@@ -39,7 +39,7 @@
     "@vue/compiler-core": "3.2.45",
     "esbuild": "^0.15.9",
     "postcss": "^8.4.16",
-    "vite": "3.2.4",
+    "vite": "3.2.5",
     "vue": "3.2.45"
   }
 }

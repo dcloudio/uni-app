@@ -152,7 +152,7 @@ function initRuntimeHooks(mpOptions, runtimeHooks) {
 }
 const findMixinRuntimeHooks = /*#__PURE__*/ once(() => {
     const runtimeHooks = [];
-    const app = getApp({ allowDefault: true });
+    const app = isFunction(getApp) && getApp({ allowDefault: true });
     if (app && app.$vm && app.$vm.$) {
         const mixins = app.$vm.$.appContext.mixins;
         if (isArray(mixins)) {
@@ -230,9 +230,12 @@ function initCreateApp(parseAppOptions) {
 function initCreateSubpackageApp(parseAppOptions) {
     return function createApp(vm) {
         const appOptions = parseApp(vm, parseAppOptions);
-        const app = getApp({
-            allowDefault: true,
-        });
+        const app = isFunction(getApp) &&
+            getApp({
+                allowDefault: true,
+            });
+        if (!app)
+            return;
         vm.$.ctx.$scope = app;
         const globalData = app.globalData;
         if (globalData) {
