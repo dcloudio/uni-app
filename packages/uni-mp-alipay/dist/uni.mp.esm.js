@@ -738,7 +738,6 @@ function createVueComponent(mpType, mpInstance, vueOptions, parent) {
     });
 }
 
-// @ts-ignore
 function initCreatePage() {
     return function createPage(vueOptions) {
         vueOptions = vueOptions.default || vueOptions;
