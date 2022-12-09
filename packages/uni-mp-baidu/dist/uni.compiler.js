@@ -64,7 +64,25 @@ const transformOn = uniCliShared.createTransformOn(uniMpCompiler.transformOn);
  */
 const transformModel = uniCliShared.createTransformModel(uniMpCompiler.transformModel);
 
-const customElements = ['follow-swan', 'login', 'inline-payment-panel'];
+const customElements = [
+    'follow-swan',
+    'login',
+    'inline-payment-panel',
+    'talos-linear-gradient',
+    'talos-rc-view',
+    'talos-nested-scroll-view',
+    'talos-nested-scroll-top-container',
+    'talos-nested-scroll-bottom-container',
+    'talos-waterfall-view',
+    'talos-waterfall-item',
+    'talos-waterfall-header',
+    'talos-waterfall-footer',
+    'talos-pull-refresh',
+    'talos-control-container',
+    'talos-na-refresh-control',
+    'talos-modal',
+    'talos-svg',
+];
 const nodeTransforms = [uniCliShared.transformRef, transformFor, uniCliShared.transformMatchMedia];
 const directiveTransforms = {
     on: transformOn,

@@ -5,6 +5,8 @@ import type { ComponentInternalInstance } from '@vue/runtime-core';
 import { extend } from '@vue/shared';
 import { hasOwn } from '@vue/shared';
 import { isPlainObject } from '@vue/shared';
+import { OnThemeChangeCallbackResult } from '@dcloudio/types/uni-app/uni/base/ThemeChange';
+import { OnUnhandledRejectionCallbackResult } from '@dcloudio/types/uni-app/uni/base/UnhandledRejectiond';
 import { ref } from 'vue';
 import { shallowRef } from 'vue';
 
@@ -94,9 +96,9 @@ export declare const onShow: (hook: ((options?: App.LaunchShowOption | undefined
 
 export declare const onTabItemTap: (hook: (options: Page.TabItemTapOption) => void, target?: ComponentInternalInstance | null) => void;
 
-export declare const onThemeChange: (hook: (options: UniApp.OnThemeChangeCallbackResult) => void, target?: ComponentInternalInstance | null) => void;
+export declare const onThemeChange: (hook: (options: OnThemeChangeCallbackResult) => void, target?: ComponentInternalInstance | null) => void;
 
-export declare const onUnhandledRejection: (hook: (options: UniApp.OnUnhandledRejectionCallbackResult) => void, target?: ComponentInternalInstance | null) => void;
+export declare const onUnhandledRejection: (hook: (options: OnUnhandledRejectionCallbackResult) => void, target?: ComponentInternalInstance | null) => void;
 
 export declare const onUnload: (hook: () => any, target?: ComponentInternalInstance | null) => void;
 
