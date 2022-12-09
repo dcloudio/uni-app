@@ -115,7 +115,7 @@ const PAGE_INIT_HOOKS = [
 function findHooks(vueOptions, hooks = new Set()) {
     if (vueOptions) {
         Object.keys(vueOptions).forEach((name) => {
-            if (name.indexOf('on') === 0 && isFunction(vueOptions[name])) {
+            if (isUniLifecycleHook(name, vueOptions[name])) {
                 hooks.add(name);
             }
         });
