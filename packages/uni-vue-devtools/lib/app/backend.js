@@ -2102,7 +2102,7 @@ async function connect() {
     }
   };
 
-  const sendComponentUpdate =  false ? 0 : (0, throttle_1.default)(_sendComponentUpdate, 100);
+  const sendComponentUpdate =  true ? (0, throttle_1.default)(_sendComponentUpdate, 100) : 0;
   global_hook_1.hook.on(shared_utils_1.HookEvents.COMPONENT_UPDATED, async (app, uid, parentUid, component) => {
     try {
       if (!app || typeof uid !== 'number' && !uid || !component) return;
@@ -2152,6 +2152,8 @@ async function connect() {
         const parentId = `${id.split(':')[0]}:root`;
         (0, component_1.sendComponentTreeData)(appRecord, parentId, appRecord.componentFilter, null, false, ctx);
       }
+
+      if (false) {}
 
       if (parentUid != null) {
         const parentInstances = await appRecord.backend.api.walkComponentParents(component);
@@ -4733,7 +4735,7 @@ class ComponentWalker {
 
 
   getInternalInstanceChildrenByInstance(instance, suspense = null) {
-    if ( true && instance.ctx.$children) {
+    if (instance.ctx.$children) {
       return instance.ctx.$children.map(proxy => proxy.$);
     }
 
@@ -4780,7 +4782,7 @@ class ComponentWalker {
   getInstanceChildrenBySubTreeComponent(list, subTree, suspense) {
     var _a;
 
-    if (((_a = subTree.type.devtools) === null || _a === void 0 ? void 0 : _a.hide) || typeof subTree.key === 'string' && subTree.key.startsWith('/pages') || this.uniAppPageNames.includes(subTree.type.name)) {
+    if (((_a = subTree.type.devtools) === null || _a === void 0 ? void 0 : _a.hide) || this.uniAppPageNames.includes(subTree.type.name)) {
       list.push(...this.getInternalInstanceChildren(subTree.component.subTree));
     } else {
       !suspense ? list.push(subTree.component) : list.push({ ...subTree.component,
@@ -4819,10 +4821,7 @@ class ComponentWalker {
 
     if (!instance) return null;
     const id = this.captureId(instance);
-    const name = (0, util_1.getInstanceName)(instance); // 暂时处理web端页面跳转组件树更新问题
-
-    if (false) {}
-
+    const name = (0, util_1.getInstanceName)(instance);
     const children = this.getInternalInstanceChildrenByInstance(instance).filter(child => !(0, util_1.isBeingDestroyed)(child));
     const parents = this.getComponentParents(instance) || [];
     const inactive = !!instance.isDeactivated || parents.some(parent => parent.isDeactivated);
@@ -4847,7 +4846,9 @@ class ComponentWalker {
 
     if (true) {
       treeNode.route = instance.attrs.__pagePath || '';
-    } // capture children
+    }
+
+    if (false) {} // capture children
 
 
     if (depth < this.maxDepth || instance.type.__isKeepAlive || parents.some(parent => parent.type.__isKeepAlive)) {
