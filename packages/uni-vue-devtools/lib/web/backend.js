@@ -4755,7 +4755,9 @@ class ComponentWalker {
 
 
   getInternalInstanceChildrenByInstance(instance, suspense = null) {
-    if (false) {}
+    if (instance.ctx.$children) {
+      return instance.ctx.$children.map(proxy => proxy.$);
+    }
 
     return this.getInternalInstanceChildren(instance.subTree, suspense);
   }
@@ -4800,7 +4802,7 @@ class ComponentWalker {
   getInstanceChildrenBySubTreeComponent(list, subTree, suspense) {
     var _a;
 
-    if (((_a = subTree.type.devtools) === null || _a === void 0 ? void 0 : _a.hide) || typeof subTree.key === 'string' && subTree.key.startsWith('/pages') || this.uniAppPageNames.includes(subTree.type.name)) {
+    if (((_a = subTree.type.devtools) === null || _a === void 0 ? void 0 : _a.hide) || this.uniAppPageNames.includes(subTree.type.name)) {
       list.push(...this.getInternalInstanceChildren(subTree.component.subTree));
     } else {
       !suspense ? list.push(subTree.component) : list.push({ ...subTree.component,
@@ -4862,7 +4864,11 @@ class ComponentWalker {
 
     if (false) {}
 
-    if (false) {} // capture children
+    if (false) {}
+
+    if (true) {
+      treeNode.route = instance.ctx.route || '';
+    } // capture children
 
 
     if (depth < this.maxDepth || instance.type.__isKeepAlive || parents.some(parent => parent.type.__isKeepAlive)) {
