@@ -10,6 +10,7 @@ import { ResolvedConfig } from '../config'
 import { cleanUrl, normalizePath } from '../utils'
 import { withSourcemap } from '../../../../vite/utils/utils'
 import { isFunction, isString } from '@vue/shared'
+import { normalizeNodeModules } from '../../../../utils'
 
 export const assetUrlRE = /__VITE_ASSET__([a-z\d]{8})__(?:\$_(.*?)__)?/g
 
@@ -280,15 +281,29 @@ function fileToBuiltUrl(
     const { search, hash } = parseUrl(id)
     const postfix = (search || '') + (hash || '')
 
+    const output = config.build?.rollupOptions?.output
+
+    const defaultAssetFileNames = path.posix.join(
+      config.build.assetsDir,
+      '[name].[hash][extname]'
+    )
+    // Steps to determine which assetFileNames will be actually used.
+    // First, if output is an object or string, use assetFileNames in it.
+    // And a default assetFileNames as fallback.
+    let assetFileNames: Exclude<OutputOptions['assetFileNames'], undefined> =
+      (output && !Array.isArray(output) ? output.assetFileNames : undefined) ??
+      defaultAssetFileNames
+    if (output && Array.isArray(output)) {
+      // Second, if output is an array, adopt assetFileNames in the first object.
+      assetFileNames = output[0].assetFileNames ?? assetFileNames
+    }
+
     const inputDir = normalizePath(process.env.UNI_INPUT_DIR)
-    let fileName = file.startsWith(inputDir)
-      ? path.posix.relative(inputDir, file)
-      : assetFileNamesToFileName(
-          path.posix.join(config.build.assetsDir, '[name].[hash][extname]'),
-          file,
-          contentHash,
-          content
-        )
+    let fileName =
+      file.startsWith(inputDir) && file.includes('/static/')
+        ? // 需要处理 HBuilderX 项目中的 node_modules 目录
+          normalizeNodeModules(path.posix.relative(inputDir, file))
+        : assetFileNamesToFileName(assetFileNames, file, contentHash, content)
 
     if (!map.has(contentHash)) {
       map.set(contentHash, fileName)

@@ -6,7 +6,7 @@
     "output": {
       "format": "cjs"
     },
-    "external": ["@dcloudio/uni-app-vite", "@dcloudio/uni-uts-vite"]
+    "external": ["@dcloudio/uni-app-vite"]
   },
   {
     "input": {

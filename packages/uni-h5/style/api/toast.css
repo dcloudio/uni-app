@@ -82,3 +82,10 @@ uni-toast .uni-mask {
 .uni-toast__content {
   margin: 0 0 15px;
 }
+
+@media (prefers-color-scheme: dark) {
+  .uni-toast {
+    background-color: #606060;
+    color: var(--UI-FG-0);
+  }
+}

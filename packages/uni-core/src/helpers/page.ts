@@ -2,6 +2,7 @@ import {
   addLeadingSlash,
   EventChannel,
   resolveComponentInstance,
+  normalizeStyles,
 } from '@dcloudio/uni-shared'
 import { extend } from '@vue/shared'
 import {
@@ -142,9 +143,15 @@ export function initPageInternalInstance(
   url: string,
   pageQuery: Record<string, any>,
   meta: UniApp.PageRouteMeta,
-  eventChannel?: EventChannel
+  eventChannel?: EventChannel,
+  themeMode?: UniApp.ThemeMode
 ): Page.PageInstance['$page'] {
   const { id, route } = meta
+  const titleColor = normalizeStyles(
+    meta.navigationBar,
+    __uniConfig.themeConfig,
+    themeMode
+  ).titleColor
   return {
     id: id!,
     path: addLeadingSlash(route),
@@ -154,7 +161,6 @@ export function initPageInternalInstance(
     meta,
     openType,
     eventChannel,
-    statusBarStyle:
-      meta.navigationBar.titleColor === '#000000' ? 'dark' : 'light',
+    statusBarStyle: titleColor === '#000000' ? 'dark' : 'light',
   }
 }

@@ -1,14 +1,20 @@
 import { cac } from 'cac'
 
 import type { LogLevel } from 'vite'
+import { fixBinaryPath } from '@dcloudio/uni-cli-shared'
 
 import { PLATFORMS } from './utils'
 import { runBuild, runDev } from './action'
+
+fixBinaryPath()
 
 const cli = cac('uni')
 
 export interface CliOptions {
   '--'?: string[]
+
+  c?: boolean | string
+  config?: string
 
   platform?: string
   p?: string
@@ -24,13 +30,20 @@ export interface CliOptions {
   m?: string
   mode?: string
   clearScreen?: boolean
+
   autoHost?: string
   autoPort?: number
+
+  devtools?: boolean
+  devtoolsHost?: string
+  devtoolsPort?: number
+
   subpackage?: string
   plugin?: boolean
 }
 
 cli
+  .option('-c, --config <file>', `[string] use specified config file`)
   .option('-p, --platform [platform]', '[string] ' + PLATFORMS.join(' | '), {
     default: 'h5',
   })
@@ -50,6 +63,9 @@ cli
   )
   .option('--autoHost [autoHost]', `[string] specify automator hostname`)
   .option('--autoPort [autoPort]', `[number] specify automator port`)
+  .option('--devtools', `[boolean] enable devtools`)
+  .option('--devtoolsHost [devtoolsHost]', `[string] specify devtools hostname`)
+  .option('--devtoolsPort [devtoolsPort]', `[number] specify devtools port`)
   .option('--subpackage [subpackage]', `[string] specify subpackage to build`)
   .option('--plugin', `[boolean] build plugin`)
 

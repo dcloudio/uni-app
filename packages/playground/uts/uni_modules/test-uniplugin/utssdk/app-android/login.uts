@@ -1,0 +1,6 @@
+import { test } from "./utils.uts"
+export function login(name: string, pwd: string) {
+  console.log('login')
+  test()
+  return { name, pwd }
+}

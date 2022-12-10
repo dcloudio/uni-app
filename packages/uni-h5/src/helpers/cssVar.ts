@@ -11,6 +11,7 @@ export function updateCurPageCssVar(pageMeta: UniApp.PageRouteMeta) {
   let windowBottomValue = 0
   if (
     __UNI_FEATURE_NAVIGATIONBAR__ &&
+    pageMeta.navigationBar.style !== 'custom' &&
     ['default', 'float'].indexOf(pageMeta.navigationBar.type!) > -1
   ) {
     windowTopValue = NAVBAR_HEIGHT

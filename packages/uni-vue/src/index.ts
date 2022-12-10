@@ -1,7 +1,9 @@
 import { App } from 'vue'
 
-import { isFunction } from '@vue/shared'
-import { invokeCreateVueAppHook } from '@dcloudio/uni-shared'
+import {
+  invokeCreateVueAppHook,
+  invokeCreateErrorHandler,
+} from '@dcloudio/uni-shared'
 
 import { applyOptions } from './componentOptions'
 import { set } from './componentInstance'
@@ -10,10 +12,8 @@ import { uniIdMixin } from './uni-id-mixin'
 
 export function initApp(app: App) {
   const appConfig = app._context.config
-  if (isFunction((app._component as any).onError)) {
-    appConfig.errorHandler = createErrorHandler(app)
-  }
 
+  appConfig.errorHandler = invokeCreateErrorHandler(app, createErrorHandler)
   initOptionMergeStrategies(appConfig.optionMergeStrategies)
 
   const globalProperties = appConfig.globalProperties

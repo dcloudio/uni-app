@@ -1,8 +1,9 @@
 import { runByHBuilderX } from '../hbx/env'
-import { parseManifestJsonOnce } from '../json'
+import { parseManifestJsonOnce, getPlatformManifestJsonOnce } from '../json'
 
 export function initDefine(stringifyBoolean: boolean = false) {
   const manifestJson = parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
+  const platformManifestJson = getPlatformManifestJsonOnce()
   const isRunByHBuilderX = runByHBuilderX()
   const isDebug = !!manifestJson.debug
 
@@ -48,6 +49,9 @@ export function initDefine(stringifyBoolean: boolean = false) {
     // 兼容旧版本
     'process.env.VUE_APP_PLATFORM': JSON.stringify(
       process.env.UNI_PLATFORM || ''
+    ),
+    'process.env.VUE_APP_DARK_MODE': JSON.stringify(
+      platformManifestJson.darkmode || false
     ),
   }
 }

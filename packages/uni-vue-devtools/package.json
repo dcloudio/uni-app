@@ -1,0 +1,31 @@
+{
+  "name": "@dcloudio/uni-vue-devtools",
+  "version": "3.0.0-alpha-3061220221207001",
+  "description": "uni-vue-devtools",
+  "module": "dist/runtime.es.js",
+  "files": [
+    "dist",
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uni-vue-devtools"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "Apache-2.0",
+  "uni-app": {
+    "name": "vue-devtools",
+    "title": "Vue Devtools",
+    "main": "dist/uni.compiler.js"
+  },
+  "dependencies": {
+    "@dcloudio/uni-cli-shared": "3.0.0-alpha-3061220221207001",
+    "detect-port": "^1.5.1",
+    "express": "^4.17.1",
+    "open": "^8.4.0",
+    "socket.io": "^4.4.0"
+  }
+}

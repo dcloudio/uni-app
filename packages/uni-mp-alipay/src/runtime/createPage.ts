@@ -1,4 +1,10 @@
-import { ComponentOptions } from 'vue'
+import {
+  ComponentOptions,
+  // @ts-ignore
+  devtoolsComponentAdded,
+  // @ts-ignore
+  devtoolsComponentRemoved,
+} from 'vue'
 
 import {
   PAGE_INIT_HOOKS,
@@ -14,6 +20,7 @@ import {
   addLeadingSlash,
   ON_BACK_PRESS,
   ON_LOAD,
+  ON_SHOW,
   ON_READY,
   ON_UNLOAD,
   stringifyQuery,
@@ -46,6 +53,13 @@ export function initCreatePage() {
         initSpecialMethods(this)
         this.$vm.$callHook(ON_LOAD, query)
       },
+      onShow() {
+        if (process.env.NODE_ENV !== 'production') {
+          devtoolsComponentRemoved(this.$vm.$)
+          devtoolsComponentAdded(this.$vm.$)
+        }
+        this.$vm.$callHook(ON_SHOW)
+      },
       onReady() {
         initChildVues(this)
         this.$vm.$callHook('mounted')
@@ -62,6 +76,9 @@ export function initCreatePage() {
         onBack() {
           this.$vm.$callHook(ON_BACK_PRESS)
         },
+        onKeyboardHeight: ((res: unknown) => {
+          ;(my as any).$emit('uni:keyboardHeightChange', res)
+        }) as any,
       },
       __r: handleRef,
       __l: handleLink,

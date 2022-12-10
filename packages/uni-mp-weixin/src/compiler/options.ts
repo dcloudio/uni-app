@@ -3,6 +3,7 @@ import type { CompilerOptions } from '@vue/compiler-core'
 import {
   COMPONENT_CUSTOM_HIDDEN,
   copyMiniProgramPluginJson,
+  copyMiniProgramThemeJson,
   MiniProgramCompilerOptions,
   transformComponentLink,
   transformRef,
@@ -52,6 +53,12 @@ export const miniProgram: MiniProgramCompilerOptions = {
         arg: ['ready'],
       },
     ],
+    'scroll-view': [
+      {
+        name: 'on',
+        arg: ['dragstart', 'dragging', 'dragend'],
+      },
+    ],
     // iOS 平台需要延迟
     input: [{ name: 'bind', arg: ['type'] }],
     textarea: [{ name: 'on', arg: ['input'] }],
@@ -65,7 +72,6 @@ export const miniProgram: MiniProgramCompilerOptions = {
   },
 }
 const projectConfigFilename = 'project.config.json'
-
 export const options: UniMiniProgramPluginOptions = {
   cdn: 1,
   vite: {
@@ -81,7 +87,6 @@ export const options: UniMiniProgramPluginOptions = {
         ...(process.env.UNI_MP_PLUGIN ? [copyMiniProgramPluginJson] : []),
         {
           src: [
-            'theme.json',
             'sitemap.json',
             'ext.json',
             'custom-tab-bar',
@@ -93,6 +98,7 @@ export const options: UniMiniProgramPluginOptions = {
             return process.env.UNI_OUTPUT_DIR
           },
         },
+        ...copyMiniProgramThemeJson(),
       ],
     },
   },

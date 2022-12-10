@@ -10,7 +10,7 @@ exports[`block parseBlockCode 1`] = `
 `;
 
 exports[`block parseBlockCode 2`] = `
-"<template><view><template v-if=\\"a\\">a</template><template v-else>b</template></view></template>
+"<template><view><template v-if="a">a</template><template v-else>b</template></view></template>
   <script>
   export default {}
   </script>

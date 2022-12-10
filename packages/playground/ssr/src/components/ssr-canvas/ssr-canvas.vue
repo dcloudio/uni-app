@@ -58,7 +58,9 @@ export default {
     const canvas = document.querySelector(".mycanvas>canvas");
     this.canvasWidth = canvas.getBoundingClientRect().width;
     // this.ctx = canvas.getContext("2d"); //创建绘图对象
-    this.ctx = uni.createCanvasContext("mycanvas", this); //创建绘图对象
+    const ctx = uni.createCanvasContext("mycanvas", this); //创建绘图对象
+    console.log(ctx)
+    this.ctx = ctx
 
     //设置画笔样式
     this.ctx.lineWidth = 4;

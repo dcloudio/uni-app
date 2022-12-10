@@ -91,7 +91,7 @@ export function initInjections(instance: ComponentPublicInstance) {
     }
   } else {
     for (const key in injectOptions) {
-      const opt = injectOptions[key]
+      const opt = (injectOptions as Record<string, any>)[key]
       if (isObject(opt)) {
         ctx[key] = inject(
           internalInstance,

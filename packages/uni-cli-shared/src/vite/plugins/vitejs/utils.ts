@@ -138,8 +138,8 @@ export async function processSrcSet(
       const [url] = imageSetUrlRE.exec(src) || []
 
       return {
-        url,
-        descriptor: src?.slice(url.length).trim(),
+        url: url!,
+        descriptor: src?.slice(url!.length).trim(),
       }
     })
     .filter(({ url }) => !!url)

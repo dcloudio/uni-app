@@ -1,38 +1,38 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`page initRouteMeta 1`] = `
-Object {
+{
   "id": 1,
-  "navigationBar": Object {
+  "navigationBar": {
     "titleText": "uni-app",
   },
-  "pullToRefresh": Object {},
+  "pullToRefresh": {},
   "route": "",
 }
 `;
 
 exports[`page initRouteMeta 2`] = `
-Object {
+{
   "enablePullDownRefresh": true,
   "id": 1,
-  "navigationBar": Object {
+  "navigationBar": {
     "titleColor": "#000000",
     "titleText": "hello",
   },
-  "pullToRefresh": Object {},
+  "pullToRefresh": {},
   "route": "",
 }
 `;
 
 exports[`page initRouteMeta 3`] = `
-Object {
+{
   "enablePullDownRefresh": true,
   "id": 1,
-  "navigationBar": Object {
+  "navigationBar": {
     "titleColor": "#000000",
     "titleText": "uni-app",
   },
-  "pullToRefresh": Object {
+  "pullToRefresh": {
     "offset": 100,
   },
   "route": "",

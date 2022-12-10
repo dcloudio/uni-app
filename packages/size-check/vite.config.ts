@@ -2,7 +2,6 @@ import path from 'path'
 import { terser } from 'rollup-plugin-terser'
 import uni from '@dcloudio/vite-plugin-uni'
 import { UserConfig } from 'vite'
-
 export default {
   root: __dirname,
   logLevel: 'info',
@@ -16,6 +15,7 @@ export default {
       plugins: [terser()],
       output: {
         inlineDynamicImports: true,
+        entryFileNames: 'size-check.es.js',
       },
     },
   },

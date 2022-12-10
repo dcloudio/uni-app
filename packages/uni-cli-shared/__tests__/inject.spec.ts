@@ -21,7 +21,7 @@ describe('inject', () => {
     const plugin = uniViteInjectPlugin('uni:inject', injectOptions)
     expect(
       (
-        plugin.transform!.call(
+        (plugin.transform as Function).call(
           context,
           `uni.test();uni.reLaunch();`,
           filename
@@ -33,7 +33,7 @@ describe('inject', () => {
     const plugin = uniViteInjectPlugin('uni:inject', injectOptions)
     expect(
       (
-        plugin.transform!.call(
+        (plugin.transform as Function).call(
           context,
           `uni.reLaunch();uni.reLaunch=()=>{};uni.reLaunch();uni.navigateTo();const temp = uni.navigateTo;uni.navigateTo();temp();`,
           filename

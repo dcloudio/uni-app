@@ -75,7 +75,7 @@ export function uniInjectPlugin(): Plugin {
       )
     },
     transform(code, id) {
-      return injectPlugin.transform!.call(this, code, id)
+      return (injectPlugin.transform as Function).call(this, code, id)
     },
   }
 }

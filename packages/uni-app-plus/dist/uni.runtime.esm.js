@@ -1,5 +1,5 @@
 import { isArray, hasOwn as hasOwn$1, isString, isPlainObject, isObject as isObject$1, toRawType, capitalize, makeMap, isFunction, isPromise, extend, remove, toTypeString } from '@vue/shared';
-import { LINEFEED, parseNVueDataset, once, I18N_JSON_DELIMITERS, Emitter, addLeadingSlash, resolveComponentInstance, invokeArrayFns, removeLeadingSlash, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, SCHEME_RE, DATA_RE, cacheStringFunction, formatLog, parseQuery, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, TABBAR_HEIGHT, NAVBAR_HEIGHT, sortObject, ON_THEME_CHANGE, ON_KEYBOARD_HEIGHT_CHANGE, BACKGROUND_COLOR, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery as stringifyQuery$1, debounce, ON_PULL_DOWN_REFRESH, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_BACK_PRESS, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ON_READY, ON_UNLOAD, EventChannel, ON_REACH_BOTTOM_DISTANCE, parseUrl, onCreateVueApp, ON_TAB_ITEM_TAP, ON_LAUNCH, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE } from '@dcloudio/uni-shared';
+import { LINEFEED, parseNVueDataset, once, I18N_JSON_DELIMITERS, Emitter, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, SCHEME_RE, DATA_RE, cacheStringFunction, formatLog, parseQuery, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, ON_THEME_CHANGE, TABBAR_HEIGHT, NAVBAR_HEIGHT, sortObject, OFF_THEME_CHANGE, ON_KEYBOARD_HEIGHT_CHANGE, normalizeTabBarStyles, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery as stringifyQuery$1, debounce, ON_PULL_DOWN_REFRESH, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_BACK_PRESS, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ON_READY, ON_UNLOAD, EventChannel, ON_REACH_BOTTOM_DISTANCE, parseUrl, onCreateVueApp, ON_TAB_ITEM_TAP, ON_LAUNCH, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE } from '@dcloudio/uni-shared';
 import { ref, createVNode, render, injectHook, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount } from 'vue';
 
 /*
@@ -1540,8 +1540,9 @@ function normalizePullToRefreshRpx(pullToRefresh) {
     }
     return pullToRefresh;
 }
-function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel) {
+function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel, themeMode) {
     const { id, route } = meta;
+    const titleColor = normalizeStyles(meta.navigationBar, __uniConfig.themeConfig, themeMode).titleColor;
     return {
         id: id,
         path: addLeadingSlash(route),
@@ -1551,7 +1552,7 @@ function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel) 
         meta,
         openType,
         eventChannel,
-        statusBarStyle: meta.navigationBar.titleColor === '#000000' ? 'dark' : 'light',
+        statusBarStyle: titleColor === '#000000' ? 'dark' : 'light',
     };
 }
 
@@ -1668,17 +1669,17 @@ function getPageId() {
 }
 let channel;
 let globalEvent$1;
-const callbacks$2 = {};
+const callbacks$3 = {};
 function onPlusMessage$1(res) {
     const message = res.data && res.data.__message;
     if (!message || !message.__page) {
         return;
     }
     const pageId = message.__page;
-    const callback = callbacks$2[pageId];
+    const callback = callbacks$3[pageId];
     callback && callback(message);
     if (!message.keep) {
-        delete callbacks$2[pageId];
+        delete callbacks$3[pageId];
     }
 }
 function addEventListener(pageId, callback) {
@@ -1697,7 +1698,7 @@ function addEventListener(pageId, callback) {
         // @ts-ignore
         window.__plusMessage = onPlusMessage$1;
     }
-    callbacks$2[pageId] = callback;
+    callbacks$3[pageId] = callback;
 }
 class Page {
     constructor(webview) {
@@ -2075,7 +2076,14 @@ function getVueApp() {
     return vueApp;
 }
 function initVueApp(appVm) {
-    const appContext = appVm.$.appContext;
+    const internalInstance = appVm.$;
+    // 定制 App 的 $children 为 devtools 服务 false
+    Object.defineProperty(internalInstance.ctx, '$children', {
+        get() {
+            return getAllPages().map((page) => page.$vm);
+        },
+    });
+    const appContext = internalInstance.appContext;
     vueApp = extend(appContext.app, {
         mountPage(pageComponent, pageProps, pageContainer) {
             const vnode = createVNode(pageComponent, pageProps);
@@ -2244,6 +2252,9 @@ const METHODS = {
     },
     moveAlong(ctx, args) {
         return invokeVmMethod(ctx, 'moveAlong', args);
+    },
+    setLocMarkerIcon(ctx, args) {
+        return invokeVmMethod(ctx, 'setLocMarkerIcon', args);
     },
     openMapApp(ctx, args) {
         return invokeVmMethod(ctx, 'openMapApp', args);
@@ -9236,6 +9247,7 @@ let deviceWidth = 0;
 let deviceDPR = 0;
 let maxWidth = 960;
 let baseWidth = 375;
+let includeWidth = 750;
 function checkDeviceWidth() {
     const { platform, pixelRatio, windowWidth } = getBaseSystemInfo();
     deviceWidth = windowWidth;
@@ -9248,9 +9260,9 @@ function checkValue(value, defaultValue) {
 }
 function checkMaxWidth() {
     const config = __uniConfig.globalStyle || {};
-    // ignore rpxCalcIncludeWidth
     maxWidth = checkValue(config.rpxCalcMaxDeviceWidth, 960);
     baseWidth = checkValue(config.rpxCalcBaseDeviceWidth, 375);
+    includeWidth = checkValue(config.rpxCalcBaseDeviceWidth, 750);
 }
 const upx2px = defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
     if (deviceWidth === 0) {
@@ -9265,7 +9277,7 @@ const upx2px = defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
     }
     let width = newDeviceWidth || deviceWidth;
     {
-        width = width <= maxWidth ? width : baseWidth;
+        width = number === includeWidth || width <= maxWidth ? width : baseWidth;
     }
     let result = (number / BASE_DEVICE_WIDTH) * width;
     if (result < 0) {
@@ -9564,6 +9576,9 @@ class MapContext {
     }
     moveAlong(options) {
         operateMapWrap(this.id, this.pageId, 'moveAlong', options);
+    }
+    setLocMarkerIcon(options) {
+        operateMapWrap(this.id, this.pageId, 'setLocMarkerIcon', options);
     }
     openMapApp(options) {
         operateMapWrap(this.id, this.pageId, 'openMapApp', options);
@@ -11525,7 +11540,7 @@ const API_GET_SCREEN_BRIGHTNESS = 'getScreenBrightness';
 const API_SET_SCREEN_BRIGHTNESS = 'setScreenBrightness';
 const API_SET_KEEP_SCREEN_ON = 'setKeepScreenOn';
 
-const API_CHECK_IS_SUPPORT_SOTER_AUTHENTICATION = 'soterAuthentication';
+const API_CHECK_IS_SUPPORT_SOTER_AUTHENTICATION = 'checkIsSupportSoterAuthentication';
 const API_CHECK_IS_SOTER_ENROLLED_IN_DEVICE = 'checkIsSoterEnrolledInDevice';
 const CheckAuthModes = [
     'fingerPrint',
@@ -11543,7 +11558,7 @@ const CheckIsSoterEnrolledInDeviceOptions = {
 const CheckIsSoterEnrolledInDeviceProtocols = {
     checkAuthMode: String,
 };
-const API_START_SOTER_AUTHENTICATION = 'checkIsSoterEnrolledInDevice';
+const API_START_SOTER_AUTHENTICATION = 'startSoterAuthentication';
 const StartSoterAuthenticationOptions = {
     formatArgs: {
         requestAuthModes(value, params) {
@@ -12160,7 +12175,7 @@ const StartLocationUpdateOptions = {
         type(value, params) {
             value = (value || '').toLowerCase();
             if (coordTypes.indexOf(value) === -1) {
-                params.type = coordTypes[0];
+                params.type = coordTypes[1];
             }
             else {
                 params.type = value;
@@ -13208,10 +13223,119 @@ const canIUse = defineSyncApi(API_CAN_I_USE, (schema) => {
     return false;
 }, CanIUseProtocol);
 
-let deviceId;
-function deviceId$1 () {
-    deviceId = deviceId || plus.device.uuid;
-    return deviceId;
+let lastStatusBarStyle;
+let oldSetStatusBarStyle = plus.navigator.setStatusBarStyle;
+function restoreOldSetStatusBarStyle(setStatusBarStyle) {
+    oldSetStatusBarStyle = setStatusBarStyle;
+}
+function newSetStatusBarStyle(style) {
+    lastStatusBarStyle = style;
+    oldSetStatusBarStyle(style);
+}
+plus.navigator.setStatusBarStyle = newSetStatusBarStyle;
+function setStatusBarStyle(statusBarStyle) {
+    if (!statusBarStyle) {
+        const page = getCurrentPage();
+        if (!page) {
+            return;
+        }
+        statusBarStyle = page.$page.statusBarStyle;
+        if (!statusBarStyle || statusBarStyle === lastStatusBarStyle) {
+            return;
+        }
+    }
+    if (statusBarStyle === lastStatusBarStyle) {
+        return;
+    }
+    if ((process.env.NODE_ENV !== 'production')) {
+        console.log(formatLog('setStatusBarStyle', statusBarStyle));
+    }
+    lastStatusBarStyle = statusBarStyle;
+    plus.navigator.setStatusBarStyle(statusBarStyle);
+}
+
+function onThemeChange$1(callback) {
+    UniServiceJSBridge.on(ON_THEME_CHANGE, callback);
+}
+function offThemeChange$1(callback) {
+    UniServiceJSBridge.off(ON_THEME_CHANGE, callback);
+}
+function getNavigatorStyle() {
+    return plus.navigator.getUIStyle() === 'dark' ? 'light' : 'dark';
+}
+function changePagesNavigatorStyle() {
+    if (__uniConfig.darkmode) {
+        const theme = getNavigatorStyle();
+        setStatusBarStyle(theme);
+        const pages = getAllPages();
+        pages.forEach((page) => {
+            page.$page.statusBarStyle = theme;
+        });
+    }
+}
+function parseTheme(pageStyle) {
+    if (__uniConfig.darkmode) {
+        let parsedStyle = {};
+        let theme = plus.navigator.getUIStyle();
+        const systemInfo = weexGetSystemInfoSync();
+        // 小程序 SDK
+        if (systemInfo && systemInfo.hostTheme) {
+            theme = systemInfo.hostTheme;
+        }
+        parsedStyle = normalizeStyles(pageStyle, __uniConfig.themeConfig, theme);
+        return parsedStyle;
+    }
+    return pageStyle;
+}
+function useTabBarThemeChange(tabBar, options) {
+    if (__uniConfig.darkmode) {
+        const fn = () => {
+            const { list = [], color, selectedColor, backgroundColor, borderStyle, } = parseTheme(options);
+            tabBar &&
+                tabBar.setTabBarStyle({
+                    color,
+                    selectedColor,
+                    backgroundColor,
+                    borderStyle,
+                });
+            tabBar &&
+                tabBar.setTabBarItems({
+                    list: list.map((item) => ({
+                        iconPath: item.iconPath,
+                        selectedIconPath: item.selectedIconPath,
+                        visible: item.visible,
+                    })),
+                });
+        };
+        // 由于应用首次启动获取不到手机 theme 应用首次启动设置下 tabBar
+        fn();
+        onThemeChange$1(fn);
+    }
+}
+function useWebviewThemeChange(webview, getWebviewStyle) {
+    if (__uniConfig.darkmode) {
+        const fn = () => {
+            const webviewStyle = getWebviewStyle();
+            ({
+                animationAlphaBGColor: webviewStyle.animationAlphaBGColor,
+                background: webviewStyle.background,
+                backgroundColorBottom: webviewStyle.backgroundColorBottom,
+                backgroundColorTop: webviewStyle.backgroundColorTop,
+            });
+            var titleNView = webviewStyle.titleNView;
+            if (typeof titleNView !== 'undefined') {
+                typeof titleNView === 'object'
+                        ? {
+                            backgroundColor: titleNView.backgroundColor,
+                            titleColor: titleNView.titleColor,
+                        }
+                        : titleNView;
+            }
+            webview && webview.setStyle(webviewStyle);
+        };
+        onThemeChange$1(fn);
+        webview.addEventListener('close', () => offThemeChange$1(fn));
+    }
 }
 
 let config;
@@ -13251,6 +13375,12 @@ function setTabBarBadge$1(type, index, text) {
     }
 }
 /**
+ * 动态设置 tabBar 多项的内容
+ */
+function setTabBarItems(tabBarConfig) {
+    tabBar && tabBar.setTabBarItems(tabBarConfig);
+}
+/**
  * 动态设置 tabBar 某一项的内容
  */
 function setTabBarItem$1(index, text, iconPath, selectedIconPath, visible, iconfont) {
@@ -13276,7 +13406,7 @@ function setTabBarItem$1(index, text, iconPath, selectedIconPath, visible, iconf
             visible: item.visible,
         }));
         tabbarItems[index] = item;
-        tabBar && tabBar.setTabBarItems({ list: tabbarItems });
+        setTabBarItems({ list: tabbarItems });
     }
     else {
         tabBar && tabBar.setTabBarItem(item);
@@ -13337,6 +13467,7 @@ var tabBarInstance = {
             tabBar.onMidButtonClick(() => {
                 return UniServiceJSBridge.invokeOnCallback(API_ON_TAB_BAR_MID_BUTTON_TAP);
             });
+        useTabBarThemeChange(tabBar, options);
     },
     indexOf(page) {
         const config = this.config;
@@ -13557,10 +13688,11 @@ function weexGetSystemInfoSync() {
         }
         catch (error) { }
     }
+    return systemInfo;
 }
 const getDeviceInfo = defineSyncApi('getDeviceInfo', () => {
     weexGetSystemInfoSync();
-    const { deviceBrand = '', deviceModel, osName, osVersion, deviceOrientation, deviceType, } = systemInfo;
+    const { deviceBrand = '', deviceModel, osName, osVersion, deviceOrientation, deviceType, deviceId, } = systemInfo;
     const brand = deviceBrand.toLowerCase();
     const _osName = osName.toLowerCase();
     return {
@@ -13568,7 +13700,7 @@ const getDeviceInfo = defineSyncApi('getDeviceInfo', () => {
         deviceBrand: brand,
         deviceModel,
         devicePixelRatio: plus.screen.scale,
-        deviceId: deviceId$1(),
+        deviceId,
         deviceOrientation,
         deviceType,
         model: deviceModel,
@@ -13596,7 +13728,7 @@ const getAppBaseInfo = defineSyncApi('getAppBaseInfo', () => {
         hostSDKVersion: undefined,
         language: osLanguage,
         SDKVersion: '',
-        theme: undefined,
+        theme: plus.navigator.getUIStyle(),
         version: plus.runtime.innerVersion,
     };
 });
@@ -13618,7 +13750,8 @@ const getSystemInfoSync = defineSyncApi('getSystemInfoSync', () => {
     const _systemInfo = extend(systemInfo, windowInfo, deviceInfo, appBaseInfo, extraData);
     delete _systemInfo.screenTop;
     delete _systemInfo.enableDebug;
-    delete _systemInfo.theme;
+    if (!__uniConfig.darkmode)
+        delete _systemInfo.theme;
     return sortObject(_systemInfo);
 });
 const getSystemInfo = defineAsyncApi('getSystemInfo', (_, { resolve }) => {
@@ -14021,29 +14154,27 @@ const startSoterAuthentication = defineAsyncApi(API_START_SOTER_AUTHENTICATION, 
     */
     initI18nStartSoterAuthenticationMsgsOnce();
     const { t } = useI18n();
-    const supportMode = baseCheckIsSupportSoterAuthentication().supportMode;
-    if (supportMode.length === 0) {
-        return {
+    const { supportMode } = baseCheckIsSupportSoterAuthentication();
+    if (!supportMode.length) {
+        return reject('not support', {
             authMode: 'fingerPrint',
             errCode: 90001,
-            errMsg: 'startSoterAuthentication:fail',
-        };
+        });
     }
     const supportRequestAuthMode = [];
-    requestAuthModes.map((item, index) => {
+    requestAuthModes.forEach((item) => {
         if (supportMode.indexOf(item) > -1) {
             supportRequestAuthMode.push(item);
         }
     });
-    if (supportRequestAuthMode.length === 0) {
-        return {
+    if (!supportRequestAuthMode.length) {
+        return reject('startSoterAuthentication:fail no corresponding mode', {
             authMode: 'fingerPrint',
             errCode: 90003,
-            errMsg: 'startSoterAuthentication:fail no corresponding mode',
-        };
+        });
     }
     const enrolledRequestAuthMode = [];
-    supportRequestAuthMode.map((item, index) => {
+    supportRequestAuthMode.forEach((item) => {
         const checked = basecheckIsSoterEnrolledInDevice({
             checkAuthMode: item,
         }).isEnrolled;
@@ -14051,17 +14182,70 @@ const startSoterAuthentication = defineAsyncApi(API_START_SOTER_AUTHENTICATION, 
             enrolledRequestAuthMode.push(item);
         }
     });
-    if (enrolledRequestAuthMode.length === 0) {
-        return {
+    if (!enrolledRequestAuthMode.length) {
+        return reject(`startSoterAuthentication:fail no ${supportRequestAuthMode[0]} enrolled`, {
             authMode: supportRequestAuthMode[0],
             errCode: 90011,
-            errMsg: `startSoterAuthentication:fail no ${supportRequestAuthMode[0]} enrolled`,
-        };
+        });
     }
     const realAuthMode = enrolledRequestAuthMode[0];
+    let waiting = null;
+    let waitingTimer;
+    const authenticateMessage = authContent || t('uni.startSoterAuthentication.authContent');
+    const errorCB = (err) => {
+        const { code } = err;
+        const res = {
+            authMode: realAuthMode,
+        };
+        const handler = {
+            // AUTHENTICATE_MISMATCH
+            4: () => {
+                if (waiting) {
+                    clearTimeout(waitingTimer);
+                    waiting.setTitle('无法识别');
+                    waitingTimer = setTimeout(() => {
+                        waiting && waiting.setTitle(authenticateMessage);
+                    }, 1000);
+                }
+                else {
+                    reject('', extend(res, {
+                        errCode: 90009,
+                    }));
+                }
+            },
+            // AUTHENTICATE_OVERLIMIT
+            5: () => {
+                // 微信小程序在第一次重试次数超限时安卓IOS返回不一致
+                // 安卓端会返回次数超过限制（errCode: 90010）
+                // IOS端会返回认证失败（errCode: 90009）
+                // APP-IOS实际运行时不会次数超限，超过指定次数之后会弹出输入密码的界面
+                plus.nativeUI.closeWaiting();
+                reject('authenticate freeze. please try again later', extend(res, {
+                    errCode: 90010,
+                }));
+            },
+            // CANCEL
+            6: () => {
+                plus.nativeUI.closeWaiting();
+                reject('cancel', extend(res, {
+                    errCode: 90008,
+                }));
+            },
+        };
+        if (code && handler[code]) {
+            handler[code]();
+        }
+        else {
+            plus.nativeUI.closeWaiting();
+            reject('', extend(res, {
+                errCode: 90007,
+            }));
+        }
+    };
     if (realAuthMode === 'fingerPrint') {
         if (plus.os.name.toLowerCase() === 'android') {
-            plus.nativeUI.showWaiting(authContent || t('uni.startSoterAuthentication.authContent')).onclose = function () {
+            waiting = plus.nativeUI.showWaiting(authenticateMessage);
+            waiting.onclose = function () {
                 plus.fingerprint.cancel();
             };
         }
@@ -14071,51 +14255,15 @@ const startSoterAuthentication = defineAsyncApi(API_START_SOTER_AUTHENTICATION, 
                 authMode: realAuthMode,
                 errCode: 0,
             });
-        }, (e) => {
-            const res = {
-                authMode: realAuthMode,
-            };
-            switch (e.code) {
-                case e.AUTHENTICATE_MISMATCH:
-                    // 微信小程序没有这个回调，如果要实现此处回调需要多次触发需要用事件publish实现
-                    // invoke(callbackId, {
-                    //   authMode: realAuthMode,
-                    //   errCode: 90009,
-                    //   errMsg: 'startSoterAuthentication:fail'
-                    // })
-                    break;
-                case e.AUTHENTICATE_OVERLIMIT:
-                    // 微信小程序在第一次重试次数超限时安卓IOS返回不一致，安卓端会返回次数超过限制（errCode: 90010），IOS端会返回认证失败（errCode: 90009）。APP-IOS实际运行时不会次数超限，超过指定次数之后会弹出输入密码的界面
-                    plus.nativeUI.closeWaiting();
-                    reject('authenticate freeze. please try again later', extend(res, {
-                        errCode: 90010,
-                    }));
-                    break;
-                case e.CANCEL:
-                    plus.nativeUI.closeWaiting();
-                    reject('cancel', extend(res, {
-                        errCode: 90008,
-                    }));
-                    break;
-                default:
-                    plus.nativeUI.closeWaiting();
-                    reject('', extend(res, {
-                        errCode: 90007,
-                    }));
-                    break;
-            }
-        }, {
-            message: authContent,
+        }, errorCB, {
+            message: authenticateMessage,
         });
     }
     else if (realAuthMode === 'facial') {
         const faceID = requireNativePlugin('faceID');
         faceID.authenticate({
-            message: authContent,
+            message: authenticateMessage,
         }, (e) => {
-            const res = {
-                authMode: realAuthMode,
-            };
             if (e.type === 'success' && e.code === 0) {
                 resolve({
                     authMode: realAuthMode,
@@ -14123,28 +14271,7 @@ const startSoterAuthentication = defineAsyncApi(API_START_SOTER_AUTHENTICATION, 
                 });
             }
             else {
-                switch (e.code) {
-                    case 4:
-                        reject('', extend(res, {
-                            errCode: 90009,
-                        }));
-                        break;
-                    case 5:
-                        reject('authenticate freeze. please try again later', extend(res, {
-                            errCode: 90010,
-                        }));
-                        break;
-                    case 6:
-                        reject('', extend(res, {
-                            errCode: 90008,
-                        }));
-                        break;
-                    default:
-                        reject('', extend(res, {
-                            errCode: 90007,
-                        }));
-                        break;
-                }
+                errorCB(e);
             }
         });
     }
@@ -14224,10 +14351,14 @@ const scanCode = defineAsyncApi(API_SCAN_CODE, (options, { resolve, reject }) =>
     }
 }, ScanCodeProtocol, ScanCodeOptions);
 
+const themeChangeCallBack = (res) => {
+    UniServiceJSBridge.invokeOnCallback(ON_THEME_CHANGE, res);
+};
 const onThemeChange = defineOnApi(ON_THEME_CHANGE, () => {
-    UniServiceJSBridge.on(ON_THEME_CHANGE, (res) => {
-        UniServiceJSBridge.invokeOnCallback(ON_THEME_CHANGE, res);
-    });
+    UniServiceJSBridge.on(ON_THEME_CHANGE, themeChangeCallBack);
+});
+const offThemeChange = defineOffApi(OFF_THEME_CHANGE, () => {
+    UniServiceJSBridge.off(ON_THEME_CHANGE, themeChangeCallBack);
 });
 
 const getScreenBrightness = defineAsyncApi(API_GET_SCREEN_BRIGHTNESS, (_, { resolve }) => {
@@ -14410,7 +14541,7 @@ const Recorder = {
         recorder = plus.audio.getRecorder();
         recorder.record({
             format,
-            samplerate: sampleRate ? String(sampleRate) : '',
+            samplerate: sampleRate ? String(sampleRate) : undefined,
             filename: TEMP_PATH + '/recorder/',
         }, (res) => publishRecorderStateChange('stop', {
             tempFilePath: res,
@@ -14445,7 +14576,7 @@ const Recorder = {
         }
     },
 };
-const callbacks$1 = {
+const callbacks$2 = {
     pause: null,
     resume: null,
     start: null,
@@ -14456,29 +14587,29 @@ function onRecorderStateChange(res) {
     const state = res.state;
     delete res.state;
     delete res.errMsg;
-    if (state && isFunction(callbacks$1[state])) {
-        callbacks$1[state](res);
+    if (state && isFunction(callbacks$2[state])) {
+        callbacks$2[state](res);
     }
 }
 class RecorderManager {
     constructor() { }
     onError(callback) {
-        callbacks$1.error = callback;
+        callbacks$2.error = callback;
     }
     onFrameRecorded(callback) { }
     onInterruptionBegin(callback) { }
     onInterruptionEnd(callback) { }
     onPause(callback) {
-        callbacks$1.pause = callback;
+        callbacks$2.pause = callback;
     }
     onResume(callback) {
-        callbacks$1.resume = callback;
+        callbacks$2.resume = callback;
     }
     onStart(callback) {
-        callbacks$1.start = callback;
+        callbacks$2.start = callback;
     }
     onStop(callback) {
-        callbacks$1.stop = callback;
+        callbacks$2.stop = callback;
     }
     pause() {
         Recorder.pause();
@@ -15581,7 +15712,7 @@ const eventNames = [
     'error',
     'waiting',
 ];
-const callbacks = {
+const callbacks$1 = {
     canplay: [],
     play: [],
     pause: [],
@@ -15769,7 +15900,7 @@ function operateBackgroundAudio({ operationType, src, startTime, currentTime, })
     });
 }
 function onBackgroundAudioStateChange({ state, errMsg, errCode, dataUrl, }) {
-    callbacks[state].forEach((callback) => {
+    callbacks$1[state].forEach((callback) => {
         if (isFunction(callback)) {
             callback(state === 'error'
                 ? {
@@ -15784,7 +15915,7 @@ const onInitBackgroundAudioManager = /*#__PURE__*/ once(() => {
     eventNames.forEach((item) => {
         BackgroundAudioManager.prototype[`on${capitalize(item)}`] =
             function (callback) {
-                callbacks[item].push(callback);
+                callbacks$1[item].push(callback);
             };
     });
 });
@@ -16129,7 +16260,6 @@ const chooseLocation = defineAsyncApi(API_CHOOSE_LOCATION, (options, { resolve, 
         style: {
             // @ts-expect-error
             animationType: options.animationType || 'slide-in-bottom',
-            // @ts-expect-error
             titleNView: false,
             popGesture: 'close',
             scrollIndicator: 'none',
@@ -16179,42 +16309,39 @@ const openLocation = defineAsyncApi(API_OPEN_LOCATION, (data, { resolve, reject 
     return resolve();
 }, OpenLocationProtocol, OpenLocationOptions);
 
+let started = false;
 let watchId = 0;
-/**
- * 开始更新定位
- */
-const startLocationUpdate = defineAsyncApi(API_START_LOCATION_UPDATE, (_, { resolve, reject }) => {
-    if (plus.geolocation && watchId === 0) {
-        watchId = plus.geolocation.watchPosition((res) => {
-            UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE, res.coords);
-            resolve();
-        }, (error) => {
-            reject(error.message);
-        }, {
-            coordsType: _ === null || _ === void 0 ? void 0 : _.type,
-        });
-    }
-    else {
-        UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE_ERROR, 'onLocationChange:fail');
-    }
-    resolve();
+const startLocationUpdate = defineAsyncApi(API_START_LOCATION_UPDATE, (options, { resolve, reject }) => {
+    watchId =
+        watchId ||
+            plus.geolocation.watchPosition((res) => {
+                started = true;
+                UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE, res.coords);
+            }, (error) => {
+                if (!started) {
+                    reject(error.message);
+                    started = true;
+                }
+                UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE_ERROR, {
+                    errMsg: `onLocationChange:fail ${error.message}`,
+                });
+            }, {
+                coordsType: options === null || options === void 0 ? void 0 : options.type,
+            });
+    setTimeout(resolve, 100);
 }, StartLocationUpdateProtocol, StartLocationUpdateOptions);
-const onLocationChange = defineOnApi(API_ON_LOCATION_CHANGE, () => { });
-const stopLocationUpdate = defineAsyncApi(API_STOP_LOCATION_UPDATE, (_, { resolve, reject }) => {
+const stopLocationUpdate = defineAsyncApi(API_STOP_LOCATION_UPDATE, (_, { resolve }) => {
     if (watchId) {
         plus.geolocation.clearWatch(watchId);
+        started = false;
         watchId = 0;
-        resolve();
     }
-    else {
-        reject('stopLocationUpdate:fail');
-    }
+    resolve();
 });
-const offLocationChange = defineOffApi(API_OFF_LOCATION_CHANGE, () => {
-    stopLocationUpdate();
-});
+const onLocationChange = defineOnApi(API_ON_LOCATION_CHANGE, () => { });
+const offLocationChange = defineOffApi(API_OFF_LOCATION_CHANGE, () => { });
 const onLocationChangeError = defineOnApi(API_ON_LOCATION_CHANGE_ERROR, () => { });
-const offLocationChangeError = defineOnApi(API_OFF_LOCATION_CHANGE_ERROR, () => { });
+const offLocationChangeError = defineOffApi(API_OFF_LOCATION_CHANGE_ERROR, () => { });
 
 const showModal = defineAsyncApi(API_SHOW_MODAL, ({ title = '', content = '', showCancel = true, cancelText, cancelColor, confirmText, confirmColor, editable = false, placeholderText = '', } = {}, { resolve }) => {
     const buttons = showCancel ? [cancelText, confirmText] : [confirmText];
@@ -16241,7 +16368,21 @@ const showModal = defineAsyncApi(API_SHOW_MODAL, ({ title = '', content = '', sh
     }, title, tip, buttons);
 }, ShowModalProtocol, ShowModalOptions);
 
-const showActionSheet = defineAsyncApi(API_SHOW_ACTION_SHEET, ({ itemList = [], itemColor = '#000000', title = '', popover }, { resolve, reject }) => {
+const ACTION_SHEET_THEME = {
+    light: {
+        itemColor: '#000000',
+    },
+    dark: {
+        itemColor: 'rgba(255, 255, 255, 0.8)',
+    },
+};
+const showActionSheet = defineAsyncApi(API_SHOW_ACTION_SHEET, ({ itemList = [], itemColor, title = '', popover }, { resolve, reject }) => {
+    // #000 by default in protocols
+    if (itemColor === '#000' && __uniConfig.darkmode) {
+        itemColor =
+            ACTION_SHEET_THEME[plus.navigator.getUIStyle()]
+                .itemColor;
+    }
     initI18nShowActionSheetMsgsOnce();
     const { t } = useI18n();
     const options = {
@@ -16490,14 +16631,7 @@ const setTabBarStyle = defineAsyncApi(API_SET_TAB_BAR_STYLE, (style = {}, { reso
     if (!isTabBarPage()) {
         return reject('not TabBar page');
     }
-    const borderStyles = {
-        black: 'rgba(0,0,0,0.4)',
-        white: 'rgba(255,255,255,0.4)',
-    };
-    const borderStyle = style.borderStyle;
-    if (borderStyle && borderStyle in borderStyles) {
-        style.borderStyle = borderStyles[borderStyle];
-    }
+    style.borderStyle = normalizeTabBarStyles(style.borderStyle);
     tabBarInstance.setTabBarStyle(style);
     resolve();
 }, SetTabBarStyleProtocol, SetTabBarStyleOptions);
@@ -16626,37 +16760,6 @@ const getSubNVueById = function (id, isSub) {
     return new SubNvue(id, isSub);
 };
 
-let lastStatusBarStyle;
-let oldSetStatusBarStyle = plus.navigator.setStatusBarStyle;
-function restoreOldSetStatusBarStyle(setStatusBarStyle) {
-    oldSetStatusBarStyle = setStatusBarStyle;
-}
-function newSetStatusBarStyle(style) {
-    lastStatusBarStyle = style;
-    oldSetStatusBarStyle(style);
-}
-plus.navigator.setStatusBarStyle = newSetStatusBarStyle;
-function setStatusBarStyle(statusBarStyle) {
-    if (!statusBarStyle) {
-        const page = getCurrentPage();
-        if (!page) {
-            return;
-        }
-        statusBarStyle = page.$page.statusBarStyle;
-        if (!statusBarStyle || statusBarStyle === lastStatusBarStyle) {
-            return;
-        }
-    }
-    if (statusBarStyle === lastStatusBarStyle) {
-        return;
-    }
-    if ((process.env.NODE_ENV !== 'production')) {
-        console.log(formatLog('setStatusBarStyle', statusBarStyle));
-    }
-    lastStatusBarStyle = statusBarStyle;
-    plus.navigator.setStatusBarStyle(statusBarStyle);
-}
-
 function restoreGlobal(newVue, newWeex, newPlus, newSetTimeout, newClearTimeout, newSetInterval, newClearInterval) {
     // 确保部分全局变量 是 app-service 中的
     // 若首页 nvue 初始化比 app-service 快，导致框架处于该 nvue 环境下
@@ -16706,6 +16809,9 @@ function requireGlobal() {
         object[key] = global[key];
     }
     return object;
+}
+function syncDataToGlobal(data) {
+    extend(global, data);
 }
 
 const providers = {
@@ -17208,6 +17314,193 @@ function normalizeLog(type, filename, args) {
     return msgs.join('---COMMA---') + ' ' + filename;
 }
 
+let callbackId = 1;
+let proxy;
+const callbacks = {};
+function normalizeArg(arg) {
+    if (typeof arg === 'function') {
+        // 查找该函数是否已缓存
+        const oldId = Object.keys(callbacks).find((id) => callbacks[id] === arg);
+        const id = oldId ? parseInt(oldId) : callbackId++;
+        callbacks[id] = arg;
+        return id;
+    }
+    else if (isPlainObject(arg)) {
+        Object.keys(arg).forEach((name) => {
+            arg[name] = normalizeArg(arg[name]);
+        });
+    }
+    return arg;
+}
+function initUtsInstanceMethod(async, opts, instanceId) {
+    return initProxyFunction(async, opts, instanceId);
+}
+function getProxy() {
+    if (!proxy) {
+        proxy = uni.requireNativePlugin('UTS-Proxy');
+    }
+    return proxy;
+}
+function resolveSyncResult(res) {
+    if (res.errMsg) {
+        throw new Error(res.errMsg);
+    }
+    return res.params;
+}
+function invokePropGetter(args) {
+    if (args.errMsg) {
+        throw new Error(args.errMsg);
+    }
+    delete args.errMsg;
+    return resolveSyncResult(getProxy().invokeSync(args, () => { }));
+}
+function initProxyFunction(async, { package: pkg, class: cls, name: propOrMethod, method, companion, params: methodParams, errMsg, }, instanceId) {
+    const invokeCallback = ({ id, name, params, keepAlive, }) => {
+        const callback = callbacks[id];
+        if (callback) {
+            callback(...params);
+            if (!keepAlive) {
+                delete callbacks[id];
+            }
+        }
+        else {
+            console.error(`${pkg}${cls}.${propOrMethod} ${name} is not found`);
+        }
+    };
+    const baseArgs = instanceId
+        ? { id: instanceId, name: propOrMethod, method: methodParams }
+        : {
+            package: pkg,
+            class: cls,
+            name: method || propOrMethod,
+            companion,
+            method: methodParams,
+        };
+    return (...args) => {
+        if (errMsg) {
+            throw new Error(errMsg);
+        }
+        const invokeArgs = extend({}, baseArgs, {
+            params: args.map((arg) => normalizeArg(arg)),
+        });
+        if (async) {
+            return new Promise((resolve, reject) => {
+                getProxy().invokeAsync(invokeArgs, (res) => {
+                    if (res.type !== 'return') {
+                        invokeCallback(res);
+                    }
+                    else {
+                        if (res.errMsg) {
+                            reject(res.errMsg);
+                        }
+                        else {
+                            resolve(res.params);
+                        }
+                    }
+                });
+            });
+        }
+        return resolveSyncResult(getProxy().invokeSync(invokeArgs, invokeCallback));
+    };
+}
+function initUtsStaticMethod(async, opts) {
+    if (opts.main && !opts.method) {
+        if (typeof plus !== 'undefined' && plus.os.name === 'iOS') {
+            opts.method = 's_' + opts.name;
+        }
+    }
+    return initProxyFunction(async, opts, 0);
+}
+const initUtsProxyFunction = initUtsStaticMethod;
+function initUtsProxyClass({ package: pkg, class: cls, constructor: { params: constructorParams }, methods, props, staticProps, staticMethods, errMsg, }) {
+    const baseOptions = {
+        package: pkg,
+        class: cls,
+        errMsg,
+    };
+    const ProxyClass = class UtsClass {
+        constructor(...params) {
+            if (errMsg) {
+                throw new Error(errMsg);
+            }
+            const target = {};
+            // 初始化实例 ID
+            const instanceId = initProxyFunction(false, extend({ name: 'constructor', params: constructorParams }, baseOptions), 0).apply(null, params);
+            if (!instanceId) {
+                throw new Error(`new ${cls} is failed`);
+            }
+            return new Proxy(this, {
+                get(_, name) {
+                    if (!target[name]) {
+                        //实例方法
+                        if (hasOwn$1(methods, name)) {
+                            const { async, params } = methods[name];
+                            target[name] = initUtsInstanceMethod(!!async, extend({
+                                name,
+                                params,
+                            }, baseOptions), instanceId);
+                        }
+                        else if (props.includes(name)) {
+                            // 实例属性
+                            return invokePropGetter({
+                                id: instanceId,
+                                name: name,
+                                errMsg,
+                            });
+                        }
+                    }
+                    return target[name];
+                },
+            });
+        }
+    };
+    const staticMethodCache = {};
+    return new Proxy(ProxyClass, {
+        get(target, name, receiver) {
+            if (hasOwn$1(staticMethods, name)) {
+                if (!staticMethodCache[name]) {
+                    const { async, params } = staticMethods[name];
+                    // 静态方法
+                    staticMethodCache[name] = initUtsStaticMethod(!!async, extend({ name, companion: true, params }, baseOptions));
+                }
+                return staticMethodCache[name];
+            }
+            if (staticProps.includes(name)) {
+                // 静态属性
+                return invokePropGetter(extend({ name: name, companion: true }, baseOptions));
+            }
+            return Reflect.get(target, name, receiver);
+        },
+    });
+}
+function initUtsPackageName(name, is_uni_modules) {
+    if (typeof plus !== 'undefined' && plus.os.name === 'Android') {
+        return 'uts.sdk.' + (is_uni_modules ? 'modules.' : '') + name;
+    }
+    return '';
+}
+function initUtsIndexClassName(moduleName, is_uni_modules) {
+    if (typeof plus === 'undefined') {
+        return '';
+    }
+    return initUtsClassName(moduleName, plus.os.name === 'iOS' ? 'IndexSwift' : 'IndexKt', is_uni_modules);
+}
+function initUtsClassName(moduleName, className, is_uni_modules) {
+    if (typeof plus === 'undefined') {
+        return '';
+    }
+    if (plus.os.name === 'Android') {
+        return className;
+    }
+    if (plus.os.name === 'iOS') {
+        return ('UTSSDK' +
+            (is_uni_modules ? 'Modules' : '') +
+            capitalize(moduleName) +
+            capitalize(className));
+    }
+    return '';
+}
+
 const EventType = {
     load: 'load',
     close: 'close',
@@ -17639,6 +17932,15 @@ function initBackgroundColor(webviewStyle, routeMeta) {
     if (!webviewStyle.backgroundColorTop) {
         webviewStyle.backgroundColorTop = backgroundColor;
     }
+    if (!webviewStyle.backgroundColorBottom) {
+        webviewStyle.backgroundColorBottom = backgroundColor;
+    }
+    if (!webviewStyle.animationAlphaBGColor) {
+        webviewStyle.animationAlphaBGColor = backgroundColor;
+    }
+    if (typeof webviewStyle.webviewBGTransparent === 'undefined') {
+        webviewStyle.webviewBGTransparent = true;
+    }
 }
 
 function initPopGesture(webviewStyle, routeMeta) {
@@ -17732,12 +18034,7 @@ function initTitleNView(webviewStyle, routeMeta) {
     };
     Object.keys(navigationBar).forEach((name) => {
         const value = navigationBar[name];
-        if (name === 'backgroundColor') {
-            titleNView.backgroundColor = isColor(value)
-                ? value
-                : BACKGROUND_COLOR;
-        }
-        else if (name === 'titleImage' && value) {
+        if (name === 'titleImage' && value) {
             titleNView.tags = createTitleImageTags(value);
         }
         else if (name === 'buttons' && isArray(value)) {
@@ -17877,20 +18174,23 @@ function initDebugRefresh(isTab, path, query) {
 }
 
 function createNVueWebview({ path, query, routeOptions, webviewExtras, }) {
-    const curWebviewId = genWebviewId();
-    const curWebviewStyle = parseWebviewStyle(path, routeOptions.meta, {
+    const getCurWebviewStyle = () => parseWebviewStyle(path, parseTheme(routeOptions.meta), {
         id: curWebviewId + '',
     });
+    const curWebviewId = genWebviewId();
+    const curWebviewStyle = getCurWebviewStyle();
     curWebviewStyle.uniPageUrl = initUniPageUrl(path, query);
     if ((process.env.NODE_ENV !== 'production')) {
         console.log(formatLog('createNVueWebview', curWebviewId, path, curWebviewStyle));
     }
     curWebviewStyle.isTab = !!routeOptions.meta.isTabBar;
-    return plus.webview.create('', String(curWebviewId), curWebviewStyle, extend({
+    const webview = plus.webview.create('', String(curWebviewId), curWebviewStyle, extend({
         nvue: true,
         __path__: path,
         __query__: JSON.stringify(query),
     }, webviewExtras));
+    useWebviewThemeChange(webview, getCurWebviewStyle);
+    return webview;
 }
 
 let preloadWebview$1;
@@ -18052,7 +18352,8 @@ function initWebviewEvent(webview) {
 }
 
 function initWebviewStyle(webview, path, query, routeMeta) {
-    const webviewStyle = parseWebviewStyle(path, routeMeta, webview);
+    const getWebviewStyle = () => parseWebviewStyle(path, parseTheme(routeMeta), webview);
+    const webviewStyle = getWebviewStyle();
     webviewStyle.uniPageUrl = initUniPageUrl(path, query);
     const isTabBar = !!routeMeta.isTabBar;
     if (!routeMeta.isNVue) {
@@ -18066,6 +18367,7 @@ function initWebviewStyle(webview, path, query, routeMeta) {
     if ((process.env.NODE_ENV !== 'production')) {
         console.log(formatLog('updateWebview', webviewStyle));
     }
+    useWebviewThemeChange(webview, getWebviewStyle);
     webview.setStyle(webviewStyle);
 }
 
@@ -18922,7 +19224,9 @@ function registerPage({ url, path, query, openType, webview, nvuePageVm, eventCh
     initWebview(webview, path, query, routeOptions.meta);
     const route = path.slice(1);
     webview.__uniapp_route = route;
-    const pageInstance = initPageInternalInstance(openType, url, query, routeOptions.meta, eventChannel);
+    const pageInstance = initPageInternalInstance(openType, url, query, routeOptions.meta, eventChannel, (__uniConfig.darkmode
+        ? plus.navigator.getUIStyle()
+        : 'light'));
     const id = parseInt(webview.id);
     if (webview.nvue) {
         if (nvuePageVm) {
@@ -19281,6 +19585,11 @@ var uni$1 = {
   onHostEventReceive: onHostEventReceive,
   onNativeEventReceive: onNativeEventReceive,
   __log__: __log__,
+  initUtsProxyClass: initUtsProxyClass,
+  initUtsProxyFunction: initUtsProxyFunction,
+  initUtsIndexClassName: initUtsIndexClassName,
+  initUtsClassName: initUtsClassName,
+  initUtsPackageName: initUtsPackageName,
   navigateTo: navigateTo,
   reLaunch: reLaunch,
   switchTab: switchTab,
@@ -19346,6 +19655,7 @@ var uni$1 = {
   removeSavedFile: removeSavedFile,
   openDocument: openDocument,
   canIUse: canIUse,
+  weexGetSystemInfoSync: weexGetSystemInfoSync,
   getDeviceInfo: getDeviceInfo,
   getAppBaseInfo: getAppBaseInfo,
   getSystemInfoSync: getSystemInfoSync,
@@ -19397,6 +19707,7 @@ var uni$1 = {
   startSoterAuthentication: startSoterAuthentication,
   scanCode: scanCode,
   onThemeChange: onThemeChange,
+  offThemeChange: offThemeChange,
   getScreenBrightness: getScreenBrightness,
   setScreenBrightness: setScreenBrightness,
   setKeepScreenOn: setKeepScreenOn,
@@ -19437,8 +19748,8 @@ var uni$1 = {
   chooseLocation: chooseLocation,
   openLocation: openLocation,
   startLocationUpdate: startLocationUpdate,
-  onLocationChange: onLocationChange,
   stopLocationUpdate: stopLocationUpdate,
+  onLocationChange: onLocationChange,
   offLocationChange: offLocationChange,
   onLocationChangeError: onLocationChangeError,
   offLocationChangeError: offLocationChangeError,
@@ -19467,6 +19778,7 @@ var uni$1 = {
   getSubNVueById: getSubNVueById,
   restoreGlobal: restoreGlobal,
   requireGlobal: requireGlobal,
+  syncDataToGlobal: syncDataToGlobal,
   getProvider: getProvider,
   login: login,
   getUserInfo: getUserInfo,
@@ -19571,6 +19883,7 @@ function initGlobalEvent() {
             theme: event.uistyle,
         };
         emit(ON_THEME_CHANGE, args);
+        changePagesNavigatorStyle();
     });
     let keyboardHeightChange = 0;
     plusGlobalEvent.addEventListener('KeyboardHeightChange', function (event) {

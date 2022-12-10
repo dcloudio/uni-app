@@ -119,10 +119,13 @@ function buildAppCss() {
     return
   }
   const appCssJsCode = fs.readFileSync(appCssJsFilename, 'utf8')
-  const appCssJsFn = new Function('exports', appCssJsCode)
-  const exports = { styles: [] }
-  appCssJsFn(exports)
-  const appCssJsonCode = JSON.stringify(exports.styles)
+  const appCssJsFn = new Function(
+    'module',
+    appCssJsCode.replace(`export default`, `module.exports=`)
+  )
+  const module = { exports: { styles: [] } }
+  appCssJsFn(module)
+  const appCssJsonCode = JSON.stringify(module.exports.styles)
   if (process.env.UNI_NVUE_APP_STYLES === appCssJsonCode) {
     return
   }

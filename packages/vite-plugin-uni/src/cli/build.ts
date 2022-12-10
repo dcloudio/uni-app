@@ -1,11 +1,6 @@
 import path from 'path'
 import fs from 'fs-extra'
-import {
-  build as buildByVite,
-  BuildOptions,
-  InlineConfig,
-  ServerOptions,
-} from 'vite'
+import type { BuildOptions, InlineConfig, ServerOptions } from 'vite'
 import { extend } from '@vue/shared'
 import {
   initPreContext,
@@ -17,7 +12,13 @@ import { CliOptions } from '.'
 import { addConfigFile, cleanOptions } from './utils'
 import { RollupWatcher, RollupWatcherEvent } from 'rollup'
 
-export async function build(options: CliOptions) {
+async function buildByVite(inlineConfig: InlineConfig) {
+  return import('vite').then(({ build }) => build(inlineConfig))
+}
+
+export async function build(
+  options: CliOptions
+): Promise<RollupWatcher | void> {
   if (options.platform === 'app') {
     return buildApp(options)
   }
@@ -25,7 +26,7 @@ export async function build(options: CliOptions) {
     addConfigFile(
       initBuildOptions(options, cleanOptions(options) as BuildOptions)
     )
-  )
+  ) as Promise<RollupWatcher | void>
 }
 
 export async function buildSSR(options: CliOptions) {
@@ -68,6 +69,7 @@ function initBuildOptions(
 ): InlineConfig {
   return {
     root: process.env.VITE_ROOT_DIR,
+    configFile: options.config,
     base: options.base,
     logLevel: options.logLevel,
     clearScreen: options.clearScreen,
@@ -95,7 +97,9 @@ function buildManifestJson() {
   )
 }
 
-export async function buildApp(options: CliOptions) {
+export async function buildApp(
+  options: CliOptions
+): Promise<RollupWatcher | void> {
   if ((options as BuildOptions).manifest) {
     return buildManifestJson()
   }
@@ -130,7 +134,7 @@ export async function buildApp(options: CliOptions) {
     )
     if (appWatcher) {
       appWatcher.setSecondWatcher(nvueBuilder as RollupWatcher)
-      return appWatcher
+      return appWatcher as unknown as RollupWatcher
     }
     return
   }
@@ -159,7 +163,7 @@ export async function buildApp(options: CliOptions) {
 
   if (appWatcher) {
     appWatcher.setSecondWatcher(nvueBuilder as RollupWatcher)
-    return appWatcher
+    return appWatcher as unknown as RollupWatcher
   }
 }
 

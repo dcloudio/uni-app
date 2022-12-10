@@ -23,8 +23,6 @@ export function uniRenderjsPlugin({ lang }: { lang?: string }): Plugin {
     name: 'uni:mp-renderjs',
     configResolved(config) {
       resolvedConfig = config
-    },
-    buildStart() {
       filtersCache.set(resolvedConfig, [])
     },
     transform(code, id) {
@@ -43,12 +41,19 @@ export function uniRenderjsPlugin({ lang }: { lang?: string }): Plugin {
       if (!name) {
         this.error(missingModuleName(type, code))
       } else {
-        filtersCache.get(resolvedConfig)!.push({
-          id,
-          type,
-          name,
-          code,
-        })
+        let cache = filtersCache.get(resolvedConfig)
+        if (cache) {
+          const index = cache.findIndex((item) => item.id === id)
+          if (index > -1) {
+            cache.splice(index, 1)
+          }
+          cache.push({
+            id,
+            type,
+            name,
+            code,
+          })
+        }
       }
       return {
         code: genWxsCallMethodsCode(code),

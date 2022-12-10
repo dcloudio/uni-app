@@ -1,18 +1,7 @@
-import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_READY, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, customizeEvent, addLeadingSlash, stringifyQuery, ON_BACK_PRESS } from '@dcloudio/uni-shared';
-import { hasOwn, isArray, capitalize, isFunction, extend, isPlainObject, isString } from '@vue/shared';
-import { ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, getExposeProxy, EMPTY_OBJ, isRef, setTemplateRef, pruneComponentPropsCache } from 'vue';
+import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, isUniLifecycleHook, ON_READY, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, customizeEvent, addLeadingSlash, stringifyQuery, ON_BACK_PRESS } from '@dcloudio/uni-shared';
+import { ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, getExposeProxy, EMPTY_OBJ, isRef, setTemplateRef, devtoolsComponentRemoved, devtoolsComponentAdded, pruneComponentPropsCache } from 'vue';
+import { isArray, hasOwn, capitalize, isFunction, extend, isPlainObject, isString } from '@vue/shared';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
-
-const eventChannels = {};
-const eventChannelStack = [];
-function getEventChannel(id) {
-    if (id) {
-        const eventChannel = eventChannels[id];
-        delete eventChannels[id];
-        return eventChannel;
-    }
-    return eventChannelStack.shift();
-}
 
 const MP_METHODS = [
     'createSelectorQuery',
@@ -107,9 +96,11 @@ function callHook(name, args) {
         this.$.isMounted = true;
         name = 'm';
     }
-    else if (name === 'onLoad' && args && args.__id__) {
-        this.__eventChannel__ = getEventChannel(args.__id__);
-        delete args.__id__;
+    {
+        if (name === 'onLoad' && args && args.__id__) {
+            this.__eventChannel__ = my.getEventChannel(args.__id__);
+            delete args.__id__;
+        }
     }
     const hooks = this.$[name];
     return hooks && invokeArrayFns(hooks, args);
@@ -133,7 +124,7 @@ const PAGE_INIT_HOOKS = [
 function findHooks(vueOptions, hooks = new Set()) {
     if (vueOptions) {
         Object.keys(vueOptions).forEach((name) => {
-            if (name.indexOf('on') === 0 && isFunction(vueOptions[name])) {
+            if (isUniLifecycleHook(name, vueOptions[name])) {
                 hooks.add(name);
             }
         });
@@ -185,6 +176,14 @@ const HOOKS = [
 ];
 function parseApp(instance, parseAppOptions) {
     const internalInstance = instance.$;
+    if (__VUE_PROD_DEVTOOLS__) {
+        // 定制 App 的 $children
+        Object.defineProperty(internalInstance.ctx, '$children', {
+            get() {
+                return getCurrentPages().map((page) => page.$vm);
+            },
+        });
+    }
     const appOptions = {
         globalData: (instance.$options && instance.$options.globalData) || {},
         $vm: instance,
@@ -339,7 +338,7 @@ const builtInProps = [
     // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
     'uS',
 ];
-function initDefaultProps(isBehavior = false) {
+function initDefaultProps(options, isBehavior = false) {
     const properties = {};
     if (!isBehavior) {
         // 均不指定类型，避免微信小程序 property received type-uncompatible value 警告
@@ -364,6 +363,19 @@ function initDefaultProps(isBehavior = false) {
                 });
             },
         };
+    }
+    if (options.behaviors) {
+        // wx://form-field
+        if (options.behaviors.includes('my://form-field')) {
+            properties.name = {
+                type: null,
+                value: '',
+            };
+            properties.value = {
+                type: null,
+                value: '',
+            };
+        }
     }
     return properties;
 }
@@ -392,7 +404,7 @@ function initProps(mpComponentOptions) {
     if (!mpComponentOptions.properties) {
         mpComponentOptions.properties = {};
     }
-    extend(mpComponentOptions.properties, initDefaultProps(), initVirtualHostProps(mpComponentOptions.options));
+    extend(mpComponentOptions.properties, initDefaultProps(mpComponentOptions), initVirtualHostProps(mpComponentOptions.options));
 }
 function findPropsData(properties, isPage) {
     return ((isPage
@@ -453,14 +465,14 @@ function initBehaviors(vueOptions) {
             if (behavior === 'uni://form-field') {
                 if (isArray(vueProps)) {
                     vueProps.push('name');
-                    vueProps.push('value');
+                    vueProps.push('modelValue');
                 }
                 else {
                     vueProps.name = {
                         type: String,
                         default: '',
                     };
-                    vueProps.value = {
+                    vueProps.modelValue = {
                         type: [String, Number, Boolean, Array, Object, Date],
                         default: '',
                     };
@@ -491,7 +503,7 @@ function $createComponent(initialVNode, options) {
 }
 function $destroyComponent(instance) {
     if (!$destroyComponentFn) {
-        $destroyComponentFn = getApp().$vm.$destroyComponent;
+        $destroyComponentFn = getAppVm().$destroyComponent;
     }
     return $destroyComponentFn(instance);
 }
@@ -741,6 +753,13 @@ function initCreatePage() {
                 initSpecialMethods(this);
                 this.$vm.$callHook(ON_LOAD, query);
             },
+            onShow() {
+                if (process.env.NODE_ENV !== 'production') {
+                    devtoolsComponentRemoved(this.$vm.$);
+                    devtoolsComponentAdded(this.$vm.$);
+                }
+                this.$vm.$callHook(ON_SHOW);
+            },
             onReady() {
                 initChildVues(this);
                 this.$vm.$callHook('mounted');
@@ -757,6 +776,9 @@ function initCreatePage() {
                 onBack() {
                     this.$vm.$callHook(ON_BACK_PRESS);
                 },
+                onKeyboardHeight: ((res) => {
+                    my.$emit('uni:keyboardHeightChange', res);
+                }),
             },
             __r: handleRef,
             __l: handleLink,

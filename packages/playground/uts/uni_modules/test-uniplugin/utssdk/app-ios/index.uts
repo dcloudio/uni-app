@@ -1,0 +1,68 @@
+import { UIDevice } from 'UIKit'
+import { CLLocationManager, CLAuthorizationStatus } from 'CoreLocation'
+
+type GetBatteryInfoOptions = {
+  name: string
+  pwd: number
+  success?: (res: UTSJSONObject) => void
+  fail?: (res: UTSJSONObject) => void
+  complete?: (res: UTSJSONObject) => void
+}
+
+export default function getBatteryInfo(options: GetBatteryInfoOptions) {
+  new UIAlertController(
+    (title = title),
+    (message = message),
+    (preferredStyle = UIAlertController.Style.alert)
+  )
+  const res = {
+    errMsg: 'getBatteryInfo:ok',
+    level: UIDevice.current.batteryLevel * 100,
+    isCharging: UIDevice.current.batteryState == UIDevice.BatteryState.charging,
+  }
+  if (options.success != null) {
+    options.success!(res)
+  }
+  if (options.complete != null) {
+    options.complete!(res)
+  }
+}
+
+export function test1(callback: () => void): string {
+  console.log({ "a": "b" })
+  console.log('test1')
+  //#ifdef APP-ANDROID
+  console.log('def android')
+  //#endif
+  //#ifdef APP-IOS
+  console.log('def ios')
+  //#endif
+  //#ifndef APP-ANDROID
+  console.log('ndef android')
+  //#endif
+  //#ifndef APP-IOS
+  console.log('ndef ios')
+  //#endif
+  //#ifdef APP-ANDROID || APP-IOS
+  console.log('def android || def ios')
+  //#endif
+  //#ifdef MP-WEIXIN
+  console.log('def weixin')
+  //#endif
+  console.log(CLLocationManager, CLAuthorizationStatus)
+  return 'test1'
+}
+
+class Test1 { }
+export class Test {
+  constructor() {
+    new Test1()
+  }
+  test(): string | null {
+    return null
+  }
+}
+
+export async function testAsync() {
+  return { a: 1 }
+}

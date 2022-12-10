@@ -26,6 +26,13 @@ describe('mp-weixin: transform v-on', () => {
 }`
     )
     assert(
+      `<view v-for="(item, index) in list" :key="item.id"><view @click="handleClickItem(item, index)"></view></view>`,
+      `<view wx:for="{{a}}" wx:for-item="item" wx:key="b"><view bindtap="{{item.a}}"></view></view>`,
+      `(_ctx, _cache) => {
+  return { a: _f(_ctx.list, (item, index, i0) => { return { a: _o($event => _ctx.handleClickItem(item, index), item.id), b: item.id }; }) }
+}`
+    )
+    assert(
       `<view v-for="item in items" @click="test(item)"/>`,
       `<view wx:for="{{a}}" wx:for-item="item" bindtap="{{item.a}}"/>`,
       `(_ctx, _cache) => {

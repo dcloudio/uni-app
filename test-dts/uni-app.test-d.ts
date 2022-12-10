@@ -21,10 +21,10 @@ import {
 import { expectType } from './'
 
 describe('apiLifecycle', () => {
-  onLaunch(({ path, query, scene }) => {
-    expectType<string>(path)
-    expectType<Record<string, string | undefined>>(query)
-    expectType<number>(scene)
+  onLaunch((options) => {
+    expectType<string>(options!.path)
+    expectType<Record<string, string | undefined>>(options!.query)
+    expectType<number>(options!.scene)
   })
   onError((err) => {
     expectType<string>(err)
@@ -40,15 +40,15 @@ describe('apiLifecycle', () => {
     expectType<Promise<any>>(promise)
     expectType<string>(reason)
   })
-  onShow(({ path }) => {
-    expectType<string>(path)
+  onShow((option) => {
+    expectType<string>(option!.path)
   })
   onLoad((options) => {
-    expectType<string | undefined>(options.a)
+    expectType<any>(options!.a)
   })
-  onResize(({ size: { windowHeight, windowWidth } }) => {
-    expectType<number>(windowHeight)
-    expectType<number>(windowWidth)
+  onResize((res) => {
+    expectType<number>(res.size!.windowHeight)
+    expectType<number>(res.size!.windowWidth)
   })
   onBackPress(({ from }) => {
     expectType<'backbutton' | 'navigateBack'>(from)
@@ -57,11 +57,10 @@ describe('apiLifecycle', () => {
     expectType<number>(scrollTop)
   })
   onTabItemTap(({ index, pagePath, text }) => {
-    expectType<string>(index)
+    expectType<number>(index)
     expectType<string>(pagePath)
     expectType<string>(text)
   })
-  onShareTimeline(() => {})
   onShareTimeline(() => {
     return {
       title: '',
@@ -69,7 +68,6 @@ describe('apiLifecycle', () => {
       imageUrl: '',
     }
   })
-  onAddToFavorites(() => {})
   onAddToFavorites(({ webviewUrl }) => {
     expectType<string | undefined>(webviewUrl)
     return {
@@ -78,7 +76,6 @@ describe('apiLifecycle', () => {
       imageUrl: '',
     }
   })
-  onShareAppMessage(() => {})
   onShareAppMessage(({ from, target, webViewUrl }) => {
     expectType<string>(from)
     expectType<any>(target)

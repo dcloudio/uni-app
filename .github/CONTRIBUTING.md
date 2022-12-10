@@ -89,6 +89,7 @@
       * api：uni 对象接口适配，抹平 wx 对象的平台差异
       * compiler：编译器（当前平台独有部分）
       * runtime：运行时框架生命周期等
+      * platform：用于为框架提供统一的接口，对应 @dcloudio/uni-platform
   * uni-mp-alipay：支付宝小程序平台依赖包
   * uni-mp-baidu：百度小程序平台依赖包
   * uni-mp-qq：QQ小程序平台依赖包

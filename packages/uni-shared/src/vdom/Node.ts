@@ -30,7 +30,12 @@ function sibling(node: UniNode, type: 'n' | 'p') {
 function removeNode(node: UniNode) {
   const { parentNode } = node
   if (parentNode) {
-    parentNode.removeChild(node)
+    const { childNodes } = parentNode
+    const index = childNodes.indexOf(node)
+    if (index > -1) {
+      node.parentNode = null
+      childNodes.splice(index, 1)
+    }
   }
 }
 
@@ -169,6 +174,7 @@ export class UniNode extends UniEventTarget {
   }
 
   insertBefore(newChild: UniNode, refChild: UniNode | null): UniNode {
+    // 先从现在的父节点移除（注意：不能触发onRemoveChild，否则会生成先remove该 id，再 insert）
     removeNode(newChild)
     newChild.pageNode = this.pageNode
     newChild.parentNode = this

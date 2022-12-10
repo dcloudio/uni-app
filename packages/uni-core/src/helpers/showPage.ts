@@ -103,6 +103,7 @@ type ShowPage = {
   style?: PlusWebviewWebviewStyles & {
     animationType?: PageShow[0]
     animationDuration?: PageShow[1]
+    titleNView?: PlusWebviewWebviewStyles['titleNView'] | false | 'none'
   }
   onMessage?: CallBack
   onClose: CallBack

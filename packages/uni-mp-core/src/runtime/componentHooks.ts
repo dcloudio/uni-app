@@ -1,4 +1,5 @@
 import {
+  isUniLifecycleHook,
   MINI_PROGRAM_PAGE_RUNTIME_HOOKS,
   once,
   ON_ADD_TO_FAVORITES,
@@ -12,7 +13,7 @@ import {
   ON_TAB_ITEM_TAP,
   ON_UNLOAD,
 } from '@dcloudio/uni-shared'
-import { hasOwn, isArray, isFunction } from '@vue/shared'
+import { hasOwn, isArray } from '@vue/shared'
 
 import { ComponentOptions } from 'vue'
 
@@ -42,7 +43,7 @@ function findHooks(
 ): Set<string> {
   if (vueOptions) {
     Object.keys(vueOptions).forEach((name) => {
-      if (name.indexOf('on') === 0 && isFunction(vueOptions[name])) {
+      if (isUniLifecycleHook(name, vueOptions[name])) {
         hooks.add(name)
       }
     })

@@ -7,6 +7,7 @@ declare namespace NodeJS {
     NODE_ENV: 'production' | 'development' | 'test'
     UNI_NODE_ENV: 'production' | 'development' | 'test'
     UNI_PLATFORM: UniApp.PLATFORM
+    UNI_APP_PLATFORM: 'android' | 'ios'
     UNI_SUB_PLATFORM: 'quickapp-webview-huawei' | 'quickapp-webview-union'
     UNI_UTS_PLATFORM: 'app-android' | 'app-ios' | 'web' | UniApp.PLATFORM
 
@@ -34,5 +35,12 @@ declare namespace NodeJS {
     UNI_NVUE_APP_STYLES: string
     UNI_APP_CHANGED_FILES: string
     UNI_APP_CHANGED_PAGES: string
+    VUE_APP_DARK_MODE: 'true' | 'false'
+    HX_USE_BASE_TYPE?: 'standard' | 'custom'
+    HX_DEPENDENCIES_DIR?: string
+
+    __VUE_PROD_DEVTOOLS__?: 'true'
+    __VUE_DEVTOOLS_HOST__: string
+    __VUE_DEVTOOLS_PORT__: string
   }
 }

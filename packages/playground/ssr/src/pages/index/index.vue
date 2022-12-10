@@ -1,5 +1,4 @@
 <template>
-<view id="ssr-log"></view>
 <page-meta>
   <head>
     <meta name="keywords" content="uni-app ssr" />

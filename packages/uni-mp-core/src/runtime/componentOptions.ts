@@ -111,13 +111,13 @@ export function initBehaviors(vueOptions: ComponentOptions): string[] {
       if (behavior === 'uni://form-field') {
         if (isArray(vueProps)) {
           vueProps.push('name')
-          vueProps.push('value')
+          vueProps.push('modelValue')
         } else {
           vueProps.name = {
             type: String,
             default: '',
           }
-          vueProps.value = {
+          vueProps.modelValue = {
             type: [String, Number, Boolean, Array, Object, Date],
             default: '',
           }

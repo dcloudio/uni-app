@@ -1,6 +1,7 @@
 import type { App } from 'vue';
 import type { ComponentInternalInstance } from '@vue/runtime-core';
 import { ComponentOptionsBase } from '@vue/runtime-core';
+import { ComponentOptionsBase as ComponentOptionsBase_2 } from 'vue';
 import type { ComponentPublicInstance } from '@vue/runtime-core';
 import { ComponentPublicInstance as ComponentPublicInstance_2 } from 'vue';
 import { createApp } from 'vue';
@@ -79,6 +80,11 @@ export declare const ATTR_V_RENDERJS = ".vRenderjs";
 export declare const ATTR_V_SHOW = ".vShow";
 
 export declare const BACKGROUND_COLOR = "#f7f7f7";
+
+export declare const borderStyles: {
+    black: string;
+    white: string;
+};
 
 export declare const BUILT_IN_TAG_NAMES: string[];
 
@@ -251,6 +257,8 @@ Partial<UniNodeJSON | UniNodeJSONMinify>?
 
 export declare const invokeArrayFns: (fns: Function[], arg?: any) => any;
 
+export declare const invokeCreateErrorHandler: (app: App, createErrorHandler: (app: App) => App['config']['errorHandler']) => ((err: unknown, instance: ComponentPublicInstance_2<    {}, {}, {}, {}, {}, {}, {}, {}, false, ComponentOptionsBase_2<any, any, any, any, any, any, any, any, any, {}, {}, string>, {}> | null, info: string) => void) | undefined;
+
 export declare function invokeCreateVueAppHook(app: App): void;
 
 export declare function isAppNativeTag(tag: string): boolean;
@@ -272,6 +280,8 @@ export declare function isMiniProgramNativeTag(tag: string): boolean;
 export declare function isRootHook(name: string): boolean;
 
 export declare function isRootImmediateHook(name: string): boolean;
+
+export declare function isUniLifecycleHook(name: string, value: unknown, checkType?: boolean): boolean;
 
 export declare interface IUniPageNode {
     pageId: number;
@@ -317,12 +327,18 @@ export declare function normalizeDataset(el: Element): any;
 
 export declare function normalizeEventType(type: string, options?: AddEventListenerOptions): string;
 
+export declare function normalizeStyles<T extends Object>(pageStyle: T, themeConfig?: UniApp.ThemeJson, mode?: UniApp.ThemeMode): T;
+
+export declare function normalizeTabBarStyles(borderStyle?: string): string | undefined;
+
 export declare function normalizeTarget(el: HTMLElement): {
     id: string;
     dataset: DOMStringMap & Record<string, any>;
     offsetTop: number;
     offsetLeft: number;
 };
+
+export declare function normalizeTitleColor(titleColor: string): "#000000" | "#ffffff";
 
 export declare interface NVue {
     config: NVueConfigAPI;
@@ -427,6 +443,8 @@ export declare interface NVueTaskCenter {
     registerHook: (componentId: string, type: string, hook: string, fn: Function) => void;
     updateData: (componentId: string, data: Record<string, unknown> | void, callback?: Function) => void;
 }
+
+export declare const OFF_THEME_CHANGE = "offThemeChange";
 
 export declare const ON_ADD_TO_FAVORITES = "onAddToFavorites";
 
@@ -597,11 +615,11 @@ export declare function removeLeadingSlash(str: string): string;
 
 export declare const RENDERJS_MODULES = "renderjsModules";
 
-export declare function resolveComponentInstance(instance?: ComponentInternalInstance | ComponentPublicInstance): ComponentPublicInstance<{}, {}, {}, {}, {}, {}, {}, {}, false, ComponentOptionsBase<any, any, any, any, any, any, any, any, any, {}>> | undefined;
+export declare function resolveComponentInstance(instance?: ComponentInternalInstance | ComponentPublicInstance): ComponentPublicInstance<{}, {}, {}, {}, {}, {}, {}, {}, false, ComponentOptionsBase<any, any, any, any, any, any, any, any, any, {}, {}, string>, {}> | undefined;
 
 export declare function resolveOwnerEl(instance: ComponentInternalInstance): RendererNode | null;
 
-export declare function resolveOwnerVm(vm: ComponentInternalInstance): ComponentPublicInstance<{}, {}, {}, {}, {}, {}, {}, {}, false, ComponentOptionsBase<any, any, any, any, any, any, any, any, any, {}>> | undefined;
+export declare function resolveOwnerVm(vm: ComponentInternalInstance): ComponentPublicInstance<{}, {}, {}, {}, {}, {}, {}, {}, false, ComponentOptionsBase<any, any, any, any, any, any, any, any, any, {}, {}, string>, {}> | undefined;
 
 export declare const RESPONSIVE_MIN_WIDTH = 768;
 

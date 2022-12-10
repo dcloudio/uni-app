@@ -11,7 +11,9 @@ export default {
     initViewPlugin(app)
     initServicePlugin(app)
 
-    app.config.warnHandler = warnHandler
+    if (!app.config.warnHandler) {
+      app.config.warnHandler = warnHandler
+    }
 
     if (__UNI_FEATURE_PAGES__) {
       initRouter(app)

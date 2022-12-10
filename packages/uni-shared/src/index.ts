@@ -14,5 +14,6 @@ export * from './EventChannel'
 export * from './lifecycle'
 export * from './onCreateVueApp'
 export { default as Emitter } from './TinyEmitter'
+export * from './theme'
 
 export * from './node/locale'

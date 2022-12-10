@@ -1,5 +1,6 @@
 import path from 'path'
 import moduleAlias from 'module-alias'
+import resovle, { SyncOpts } from 'resolve'
 import { isInHBuilderX } from './env'
 import type { Formatter } from '../logs/format'
 
@@ -13,7 +14,7 @@ const hbxPlugins = {
 
 export function initModuleAlias() {
   const compilerSfcPath = require.resolve('@vue/compiler-sfc')
-  const serverRendererPath = require.resolve('@vue/server-renderer')
+  // const serverRendererPath = require.resolve('@vue/server-renderer')
   moduleAlias.addAliases({
     '@vue/shared': require.resolve('@vue/shared'),
     '@vue/shared/dist/shared.esm-bundler.js': require.resolve(
@@ -21,9 +22,9 @@ export function initModuleAlias() {
     ),
     '@vue/compiler-dom': require.resolve('@vue/compiler-dom'),
     '@vue/compiler-sfc': compilerSfcPath,
-    '@vue/server-renderer': serverRendererPath,
+    // '@vue/server-renderer': serverRendererPath,
     'vue/compiler-sfc': compilerSfcPath,
-    'vue/server-renderer': serverRendererPath,
+    // 'vue/server-renderer': serverRendererPath,
   })
   if (process.env.VITEST) {
     moduleAlias.addAliases({
@@ -31,6 +32,7 @@ export function initModuleAlias() {
     })
   }
   if (isInHBuilderX()) {
+    // 又是为了复用 HBuilderX 的插件逻辑，硬编码映射
     Object.keys(hbxPlugins).forEach((name) => {
       moduleAlias.addAlias(
         name,
@@ -40,6 +42,17 @@ export function initModuleAlias() {
         )
       )
     })
+    // https://github.com/vitejs/vite/blob/892916d040a035edde1add93c192e0b0c5c9dd86/packages/vite/src/node/plugins/css.ts#L1481
+    const oldSync = resovle.sync
+    resovle.sync = (id: string, opts?: SyncOpts) => {
+      if ((hbxPlugins as any)[id]) {
+        return path.resolve(
+          process.env.UNI_HBUILDERX_PLUGINS,
+          hbxPlugins[id as keyof typeof hbxPlugins]
+        )
+      }
+      return oldSync(id, opts)
+    }
   }
 }
 
@@ -55,6 +68,8 @@ export function installHBuilderXPlugin(plugin: string) {
     `%HXRunUniAPPPluginName%${plugin}%HXRunUniAPPPluginName%`
   )
 }
+
+const installPreprocessorTips: Record<string, boolean> = {}
 
 export const moduleAliasFormatter: Formatter = {
   test(msg) {
@@ -74,6 +89,11 @@ export const moduleAliasFormatter: Formatter = {
       preprocessor = 'compile-stylus'
     }
     if (lang) {
+      // 仅提醒一次
+      if (installPreprocessorTips[lang]) {
+        return ''
+      }
+      installPreprocessorTips[lang] = true
       installHBuilderXPlugin(preprocessor)
       return formatInstallHBuilderXPluginTips(lang, preprocessor)
     }

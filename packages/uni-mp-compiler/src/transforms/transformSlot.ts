@@ -19,12 +19,14 @@ import { RENDER_SLOT } from '../runtimeHelpers'
 import { genExpr } from '../codegen'
 import { isScopedSlotVFor, isVForScope, TransformContext } from '../transform'
 import { processProps } from './transformElement'
-import { removeAttribute, rewriteExpression } from './utils'
+import { isReferencedByIds, removeAttribute, rewriteExpression } from './utils'
 import {
   createAttributeNode,
   createBindDirectiveNode,
+  isDirectiveNode,
 } from '@dcloudio/uni-cli-shared'
 import { DYNAMIC_SLOT } from '..'
+import { parseExpr } from '../ast'
 
 export function rewriteSlot(node: SlotOutletNode, context: TransformContext) {
   let slotName: string | ExpressionNode = `"${SLOT_DEFAULT_NAME}"`
@@ -53,13 +55,20 @@ export function rewriteSlot(node: SlotOutletNode, context: TransformContext) {
       }
       if (p.name === 'bind' && isStaticArgOf(p.arg, 'name')) {
         if (p.exp) {
-          const slotKey = parseScopedSlotKey(context)
-          // renderSlot 第三个参数已经传了 slotKey
           slotName = createCompoundExpression([
             context.helperString(DYNAMIC_SLOT) + '(',
             p.exp,
             ')',
           ])
+          let slotKey
+          const keys = parseVForKeyAlias(context)
+          if (keys.length) {
+            const babelNode = parseExpr(p.exp, context)
+            // 在 v-for 中，判断是否插槽名使用 v-for 的 key 变量
+            if (babelNode && isReferencedByIds(babelNode, keys)) {
+              slotKey = parseScopedSlotKey(context)
+            }
+          }
           p.exp = rewriteExpression(
             createCompoundExpression([
               context.helperString(DYNAMIC_SLOT) + '(',
@@ -90,10 +99,8 @@ export function rewriteSlot(node: SlotOutletNode, context: TransformContext) {
     processProps(node, context, nonNameProps)
     const properties: string[] = []
     nonNameProps.forEach((prop) => {
-      if (prop.type === NodeTypes.DIRECTIVE && prop.name === 'bind') {
-        const property = transformProperty(prop, context)
-        property && properties.push(property)
-      }
+      const property = transformProperty(prop, context)
+      property && properties.push(property)
     })
     if (properties.length) {
       transformScopedSlotName(node, context)
@@ -174,31 +181,60 @@ function createScopedSlotDirectiveNode(
   return dir
 }
 
-function parseScopedSlotKey(context: TransformContext) {
+function parseVForKeyAlias(context: TransformContext) {
+  let { currentScope } = context
+  const keys: string[] = []
+  while (currentScope) {
+    if (isVForScope(currentScope) && !isScopedSlotVFor(currentScope)) {
+      keys.push(currentScope.keyAlias)
+    }
+    currentScope = currentScope.parent!
+  }
+  return keys
+}
+
+function parseVForIndexes(context: TransformContext) {
   let { currentScope } = context
   const indexes: string[] = []
   while (currentScope) {
-    if (isVForScope(currentScope)) {
+    if (isVForScope(currentScope) && !isScopedSlotVFor(currentScope)) {
       indexes.push(currentScope.indexAlias)
     }
     currentScope = currentScope.parent!
   }
+  return indexes
+}
+
+function parseSlotKeyByVForIndexes(indexes: string[]) {
+  return indexes.reverse().join(`+'-'+`)
+}
+
+function parseScopedSlotKey(context: TransformContext) {
+  const indexes = parseVForIndexes(context)
   const inFor = !!indexes.length
   if (inFor) {
-    return indexes.reverse().join(`+'-'+`)
+    return parseSlotKeyByVForIndexes(indexes)
   }
 }
 
-function transformProperty(dir: DirectiveNode, context: TransformContext) {
-  if (!dir.arg || !dir.exp) {
-    return
-  }
+function transformProperty(
+  dir: DirectiveNode | AttributeNode,
+  _: TransformContext
+) {
+  if (isDirectiveNode(dir)) {
+    if (!dir.arg || !dir.exp) {
+      return
+    }
 
-  const isStaticArg =
-    dir.arg.type === NodeTypes.SIMPLE_EXPRESSION && dir.arg.isStatic
+    const isStaticArg =
+      dir.arg.type === NodeTypes.SIMPLE_EXPRESSION && dir.arg.isStatic
 
-  if (isStaticArg) {
-    return `${(dir.arg as SimpleExpressionNode).content}:${genExpr(dir.exp)}`
+    if (isStaticArg) {
+      return `${(dir.arg as SimpleExpressionNode).content}:${genExpr(dir.exp)}`
+    }
+    return `[${genExpr(dir.arg)}||'']:${genExpr(dir.exp)}`
   }
-  return `[${genExpr(dir.arg)}||'']:${genExpr(dir.exp)}`
+  if (dir.value) {
+    return `${dir.name}:${genExpr(dir.value)}`
+  }
 }

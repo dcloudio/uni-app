@@ -1,6 +1,7 @@
 import fs from 'fs'
 import os from 'os'
 import path from 'path'
+import colors from 'picocolors'
 import { camelize, capitalize } from '@vue/shared'
 export { default as hash } from 'hash-sum'
 import { EXTNAME_TS_RE, PAGE_EXTNAME, PAGE_EXTNAME_APP } from './constants'
@@ -13,6 +14,8 @@ import {
 } from '@vue/compiler-core'
 import { ParserPlugin } from '@babel/parser'
 import { getPlatformDir } from './platform'
+
+export const version = require('../package.json').version
 
 export let isRunningWithYarnPnp: boolean
 try {
@@ -109,9 +112,41 @@ export function pathToGlob(
   return path.posix.join(safeStr, glob)
 }
 
-export function resolveSourceMapPath() {
+export function resolveSourceMapPath(
+  outputDir?: string,
+  platform?: UniApp.PLATFORM
+) {
   return path.resolve(
-    process.env.UNI_OUTPUT_DIR,
-    '../.sourcemap/' + getPlatformDir()
+    outputDir || process.env.UNI_OUTPUT_DIR,
+    '../.sourcemap/' + (platform || getPlatformDir())
   )
+}
+
+function hasProjectYarn(cwd: string) {
+  return fs.existsSync(path.join(cwd, 'yarn.lock'))
+}
+
+function hasProjectPnpm(cwd: string) {
+  return fs.existsSync(path.join(cwd, 'pnpm-lock.yaml'))
+}
+
+function getInstallCommand(cwd: string) {
+  return hasProjectYarn(cwd)
+    ? 'yarn add'
+    : hasProjectPnpm(cwd)
+    ? 'pnpm i'
+    : 'npm i'
+}
+
+export function installDepTips(
+  type: 'dependencies' | 'devDependencies',
+  module: string,
+  version?: string
+) {
+  return `Cannot find module: ${module}
+Please run \`${colors.cyan(
+    `${getInstallCommand(process.cwd())} ${
+      module + (version ? '@' + version : '')
+    }${type === 'devDependencies' ? ' -D' : ''}`
+  )}\` and try again.`
 }

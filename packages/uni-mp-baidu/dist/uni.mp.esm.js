@@ -1,18 +1,7 @@
-import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, addLeadingSlash, stringifyQuery, ON_INIT, customizeEvent } from '@dcloudio/uni-shared';
+import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, isUniLifecycleHook, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, addLeadingSlash, stringifyQuery, ON_INIT, customizeEvent } from '@dcloudio/uni-shared';
 import { isArray, hasOwn, isFunction, extend, hyphenate, isPlainObject } from '@vue/shared';
-import { ref, nextTick, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, getExposeProxy, pruneComponentPropsCache } from 'vue';
+import { ref, nextTick, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, devtoolsComponentRemoved, devtoolsComponentAdded, getExposeProxy, pruneComponentPropsCache } from 'vue';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
-
-const eventChannels = {};
-const eventChannelStack = [];
-function getEventChannel(id) {
-    if (id) {
-        const eventChannel = eventChannels[id];
-        delete eventChannels[id];
-        return eventChannel;
-    }
-    return eventChannelStack.shift();
-}
 
 const MP_METHODS = [
     'createSelectorQuery',
@@ -102,9 +91,11 @@ function callHook(name, args) {
         this.$.isMounted = true;
         name = 'm';
     }
-    else if (name === 'onLoad' && args && args.__id__) {
-        this.__eventChannel__ = getEventChannel(args.__id__);
-        delete args.__id__;
+    {
+        if (name === 'onLoad' && args && args.__id__) {
+            this.__eventChannel__ = swan.getEventChannel(args.__id__);
+            delete args.__id__;
+        }
     }
     const hooks = this.$[name];
     return hooks && invokeArrayFns(hooks, args);
@@ -128,7 +119,7 @@ const PAGE_INIT_HOOKS = [
 function findHooks(vueOptions, hooks = new Set()) {
     if (vueOptions) {
         Object.keys(vueOptions).forEach((name) => {
-            if (name.indexOf('on') === 0 && isFunction(vueOptions[name])) {
+            if (isUniLifecycleHook(name, vueOptions[name])) {
                 hooks.add(name);
             }
         });
@@ -201,6 +192,14 @@ const HOOKS = [
 ];
 function parseApp(instance, parseAppOptions) {
     const internalInstance = instance.$;
+    if (__VUE_PROD_DEVTOOLS__) {
+        // 定制 App 的 $children
+        Object.defineProperty(internalInstance.ctx, '$children', {
+            get() {
+                return getCurrentPages().map((page) => page.$vm);
+            },
+        });
+    }
     const appOptions = {
         globalData: (instance.$options && instance.$options.globalData) || {},
         $vm: instance,
@@ -437,7 +436,7 @@ const builtInProps = [
     // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
     'uS',
 ];
-function initDefaultProps(isBehavior = false) {
+function initDefaultProps(options, isBehavior = false) {
     const properties = {};
     if (!isBehavior) {
         // 均不指定类型，避免微信小程序 property received type-uncompatible value 警告
@@ -463,6 +462,19 @@ function initDefaultProps(isBehavior = false) {
             },
         };
     }
+    if (options.behaviors) {
+        // wx://form-field
+        if (options.behaviors.includes('swan://form-field')) {
+            properties.name = {
+                type: null,
+                value: '',
+            };
+            properties.value = {
+                type: null,
+                value: '',
+            };
+        }
+    }
     return properties;
 }
 function initVirtualHostProps(options) {
@@ -478,7 +490,7 @@ function initProps(mpComponentOptions) {
     if (!mpComponentOptions.properties) {
         mpComponentOptions.properties = {};
     }
-    extend(mpComponentOptions.properties, initDefaultProps(), initVirtualHostProps(mpComponentOptions.options));
+    extend(mpComponentOptions.properties, initDefaultProps(mpComponentOptions), initVirtualHostProps(mpComponentOptions.options));
 }
 const PROP_TYPES = [String, Number, Boolean, Object, Array, null];
 function parsePropType(type, defaultValue) {
@@ -558,6 +570,22 @@ function findPagePropsData(properties) {
     }
     return propsData;
 }
+function initFormField(vm) {
+    // 同步 form-field 的 name,value 值
+    const vueOptions = vm.$options;
+    if (isArray(vueOptions.behaviors) &&
+        vueOptions.behaviors.includes('uni://form-field')) {
+        vm.$watch('modelValue', () => {
+            vm.$scope &&
+                vm.$scope.setData({
+                    name: vm.name,
+                    value: vm.modelValue,
+                });
+        }, {
+            immediate: true,
+        });
+    }
+}
 
 function initData(_) {
     return {};
@@ -630,14 +658,14 @@ function initBehaviors(vueOptions) {
             if (behavior === 'uni://form-field') {
                 if (isArray(vueProps)) {
                     vueProps.push('name');
-                    vueProps.push('value');
+                    vueProps.push('modelValue');
                 }
                 else {
                     vueProps.name = {
                         type: String,
                         default: '',
                     };
-                    vueProps.value = {
+                    vueProps.modelValue = {
                         type: [String, Number, Boolean, Array, Object, Date],
                         default: '',
                     };
@@ -667,6 +695,10 @@ function parseComponent(vueOptions, { parse, mocks, isPage, initRelation, handle
         lifetimes: initLifetimes({ mocks, isPage, initRelation, vueOptions }),
         pageLifetimes: {
             show() {
+                if (process.env.NODE_ENV !== 'production') {
+                    devtoolsComponentRemoved(this.$vm.$);
+                    devtoolsComponentAdded(this.$vm.$);
+                }
                 this.$vm && this.$vm.$callHook('onPageShow');
             },
             hide() {
@@ -717,7 +749,7 @@ function $createComponent(initialVNode, options) {
 }
 function $destroyComponent(instance) {
     if (!$destroyComponentFn) {
-        $destroyComponentFn = getApp().$vm.$destroyComponent;
+        $destroyComponentFn = getAppVm().$destroyComponent;
     }
     return $destroyComponentFn(instance);
 }
@@ -888,6 +920,9 @@ function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
                     initComponentInstance(instance, options);
                 },
             });
+            if (!isMiniProgramPage) {
+                initFormField(this.$vm);
+            }
         },
         ready() {
             // 当组件 props 默认值为 true，初始化时传入 false 会导致 created,ready 触发, 但 attached 不触发

@@ -37,3 +37,7 @@ export function createIntersectionObserver(
   }
   return (swan as any).createIntersectionObserver(component, options)
 }
+
+export function createVideoContext(videoId: string) {
+  return swan.createVideoContext(videoId)
+}

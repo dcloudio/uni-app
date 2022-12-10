@@ -1,11 +1,13 @@
 "use strict";
 Object.defineProperties(exports, { __esModule: { value: true }, [Symbol.toStringTag]: { value: "Module" } });
-var vue = require("vue");
-var shared = require("@vue/shared");
-var uniShared = require("@dcloudio/uni-shared");
-var uniI18n = require("@dcloudio/uni-i18n");
-var vueRouter = require("vue-router");
-const isEnableLocale = /* @__PURE__ */ uniShared.once(() => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length);
+const vue = require("vue");
+const shared = require("@vue/shared");
+const uniShared = require("@dcloudio/uni-shared");
+const uniI18n = require("@dcloudio/uni-i18n");
+const vueRouter = require("vue-router");
+const isEnableLocale = /* @__PURE__ */ uniShared.once(
+  () => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
+);
 let i18n;
 function getLocaleMessage() {
   const locale = uni.getLocale();
@@ -63,16 +65,18 @@ function useI18n() {
     if (isEnableLocale()) {
       const localeKeys = Object.keys(__uniConfig.locales || {});
       if (localeKeys.length) {
-        localeKeys.forEach((locale2) => i18n.add(locale2, __uniConfig.locales[locale2]));
+        localeKeys.forEach(
+          (locale2) => i18n.add(locale2, __uniConfig.locales[locale2])
+        );
       }
       i18n.setLocale(locale);
     }
   }
   return i18n;
 }
-function normalizeMessages(module, keys, values) {
+function normalizeMessages(module2, keys, values) {
   return keys.reduce((res, name, index2) => {
-    res[module + name] = values[index2];
+    res[module2 + name] = values[index2];
     return res;
   }, {});
 }
@@ -80,63 +84,123 @@ const initI18nAsyncMsgsOnce = /* @__PURE__ */ uniShared.once(() => {
   const name = "uni.async.";
   const keys = ["error"];
   if (__UNI_FEATURE_I18N_EN__) {
-    useI18n().add(uniI18n.LOCALE_EN, normalizeMessages(name, keys, [
-      "The connection timed out, click the screen to try again."
-    ]), false);
+    useI18n().add(
+      uniI18n.LOCALE_EN,
+      normalizeMessages(name, keys, [
+        "The connection timed out, click the screen to try again."
+      ]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    useI18n().add(uniI18n.LOCALE_ES, normalizeMessages(name, keys, [
-      "Se agot\xF3 el tiempo de conexi\xF3n, haga clic en la pantalla para volver a intentarlo."
-    ]), false);
+    useI18n().add(
+      uniI18n.LOCALE_ES,
+      normalizeMessages(name, keys, [
+        "Se agot\xF3 el tiempo de conexi\xF3n, haga clic en la pantalla para volver a intentarlo."
+      ]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    useI18n().add(uniI18n.LOCALE_FR, normalizeMessages(name, keys, [
-      "La connexion a expir\xE9, cliquez sur l'\xE9cran pour r\xE9essayer."
-    ]), false);
+    useI18n().add(
+      uniI18n.LOCALE_FR,
+      normalizeMessages(name, keys, [
+        "La connexion a expir\xE9, cliquez sur l'\xE9cran pour r\xE9essayer."
+      ]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    useI18n().add(uniI18n.LOCALE_ZH_HANS, normalizeMessages(name, keys, ["\u8FDE\u63A5\u670D\u52A1\u5668\u8D85\u65F6\uFF0C\u70B9\u51FB\u5C4F\u5E55\u91CD\u8BD5"]), false);
+    useI18n().add(
+      uniI18n.LOCALE_ZH_HANS,
+      normalizeMessages(name, keys, ["\u8FDE\u63A5\u670D\u52A1\u5668\u8D85\u65F6\uFF0C\u70B9\u51FB\u5C4F\u5E55\u91CD\u8BD5"]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    useI18n().add(uniI18n.LOCALE_ZH_HANT, normalizeMessages(name, keys, ["\u9023\u63A5\u670D\u52D9\u5668\u8D85\u6642\uFF0C\u9EDE\u64CA\u5C4F\u5E55\u91CD\u8A66"]), false);
+    useI18n().add(
+      uniI18n.LOCALE_ZH_HANT,
+      normalizeMessages(name, keys, ["\u9023\u63A5\u670D\u52D9\u5668\u8D85\u6642\uFF0C\u9EDE\u64CA\u5C4F\u5E55\u91CD\u8A66"]),
+      false
+    );
   }
 });
 const initI18nPickerMsgsOnce = /* @__PURE__ */ uniShared.once(() => {
   const name = "uni.picker.";
   const keys = ["done", "cancel"];
   if (__UNI_FEATURE_I18N_EN__) {
-    useI18n().add(uniI18n.LOCALE_EN, normalizeMessages(name, keys, ["Done", "Cancel"]), false);
+    useI18n().add(
+      uniI18n.LOCALE_EN,
+      normalizeMessages(name, keys, ["Done", "Cancel"]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    useI18n().add(uniI18n.LOCALE_ES, normalizeMessages(name, keys, ["OK", "Cancelar"]), false);
+    useI18n().add(
+      uniI18n.LOCALE_ES,
+      normalizeMessages(name, keys, ["OK", "Cancelar"]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    useI18n().add(uniI18n.LOCALE_FR, normalizeMessages(name, keys, ["OK", "Annuler"]), false);
+    useI18n().add(
+      uniI18n.LOCALE_FR,
+      normalizeMessages(name, keys, ["OK", "Annuler"]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    useI18n().add(uniI18n.LOCALE_ZH_HANS, normalizeMessages(name, keys, ["\u5B8C\u6210", "\u53D6\u6D88"]), false);
+    useI18n().add(
+      uniI18n.LOCALE_ZH_HANS,
+      normalizeMessages(name, keys, ["\u5B8C\u6210", "\u53D6\u6D88"]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    useI18n().add(uniI18n.LOCALE_ZH_HANT, normalizeMessages(name, keys, ["\u5B8C\u6210", "\u53D6\u6D88"]), false);
+    useI18n().add(
+      uniI18n.LOCALE_ZH_HANT,
+      normalizeMessages(name, keys, ["\u5B8C\u6210", "\u53D6\u6D88"]),
+      false
+    );
   }
 });
 const initI18nVideoMsgsOnce = /* @__PURE__ */ uniShared.once(() => {
   const name = "uni.video.";
   const keys = ["danmu", "volume"];
   if (__UNI_FEATURE_I18N_EN__) {
-    useI18n().add(uniI18n.LOCALE_EN, normalizeMessages(name, keys, ["Danmu", "Volume"]), false);
+    useI18n().add(
+      uniI18n.LOCALE_EN,
+      normalizeMessages(name, keys, ["Danmu", "Volume"]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_ES__) {
-    useI18n().add(uniI18n.LOCALE_ES, normalizeMessages(name, keys, ["Danmu", "Volumen"]), false);
+    useI18n().add(
+      uniI18n.LOCALE_ES,
+      normalizeMessages(name, keys, ["Danmu", "Volumen"]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_FR__) {
-    useI18n().add(uniI18n.LOCALE_FR, normalizeMessages(name, keys, ["Danmu", "Le Volume"]), false);
+    useI18n().add(
+      uniI18n.LOCALE_FR,
+      normalizeMessages(name, keys, ["Danmu", "Le Volume"]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    useI18n().add(uniI18n.LOCALE_ZH_HANS, normalizeMessages(name, keys, ["\u5F39\u5E55", "\u97F3\u91CF"]), false);
+    useI18n().add(
+      uniI18n.LOCALE_ZH_HANS,
+      normalizeMessages(name, keys, ["\u5F39\u5E55", "\u97F3\u91CF"]),
+      false
+    );
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    useI18n().add(uniI18n.LOCALE_ZH_HANT, normalizeMessages(name, keys, ["\u5F48\u5E55", "\u97F3\u91CF"]), false);
+    useI18n().add(
+      uniI18n.LOCALE_ZH_HANT,
+      normalizeMessages(name, keys, ["\u5F48\u5E55", "\u97F3\u91CF"]),
+      false
+    );
   }
 });
 function initNavigationBarI18n(navigationBar) {
@@ -200,9 +264,12 @@ function registerViewMethod(pageId, name, fn) {
     viewMethods[name] = fn;
   }
 }
-const ViewJSBridge = /* @__PURE__ */ shared.extend(/* @__PURE__ */ initBridge("service"), {
-  invokeServiceMethod
-});
+const ViewJSBridge = /* @__PURE__ */ shared.extend(
+  /* @__PURE__ */ initBridge("service"),
+  {
+    invokeServiceMethod
+  }
+);
 const onEventPrevent = /* @__PURE__ */ vue.withModifiers(() => {
 }, ["prevent"]);
 const onEventStop = /* @__PURE__ */ vue.withModifiers(() => {
@@ -244,16 +311,28 @@ const ICON_PATH_WARN = "M15.808 0.16q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.72
 const ICON_PATH_BACK = "M21.781 7.844l-9.063 8.594 9.063 8.594q0.25 0.25 0.25 0.609t-0.25 0.578q-0.25 0.25-0.578 0.25t-0.578-0.25l-9.625-9.125q-0.156-0.125-0.203-0.297t-0.047-0.359q0-0.156 0.047-0.328t0.203-0.297l9.625-9.125q0.25-0.25 0.578-0.25t0.578 0.25q0.25 0.219 0.25 0.578t-0.25 0.578z";
 const ICON_PATH_CLOSE = "M17.25 16.156l7.375-7.313q0.281-0.281 0.281-0.641t-0.281-0.641q-0.25-0.25-0.625-0.25t-0.625 0.25l-7.375 7.344-7.313-7.344q-0.25-0.25-0.625-0.25t-0.625 0.25q-0.281 0.25-0.281 0.625t0.281 0.625l7.313 7.344-7.375 7.344q-0.281 0.25-0.281 0.625t0.281 0.625q0.125 0.125 0.281 0.188t0.344 0.063q0.156 0 0.328-0.063t0.297-0.188l7.375-7.344 7.375 7.406q0.125 0.156 0.297 0.219t0.328 0.063q0.188 0 0.344-0.078t0.281-0.203q0.281-0.25 0.281-0.609t-0.281-0.641l-7.375-7.406z";
 function createSvgIconVNode(path, color = "#000", size = 27) {
-  return vue.createVNode("svg", {
-    width: size,
-    height: size,
-    viewBox: "0 0 32 32"
-  }, [
-    vue.createVNode("path", {
-      d: path,
-      fill: color
-    }, null, 8, ["d", "fill"])
-  ], 8, ["width", "height"]);
+  return vue.createVNode(
+    "svg",
+    {
+      width: size,
+      height: size,
+      viewBox: "0 0 32 32"
+    },
+    [
+      vue.createVNode(
+        "path",
+        {
+          d: path,
+          fill: color
+        },
+        null,
+        8,
+        ["d", "fill"]
+      )
+    ],
+    8,
+    ["width", "height"]
+  );
 }
 function useCurrentPageId() {
   {
@@ -313,8 +392,13 @@ function normalizePullToRefreshRpx(pullToRefresh) {
   }
   return pullToRefresh;
 }
-function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel) {
+function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel, themeMode) {
   const { id, route } = meta;
+  const titleColor = uniShared.normalizeStyles(
+    meta.navigationBar,
+    __uniConfig.themeConfig,
+    themeMode
+  ).titleColor;
   return {
     id,
     path: uniShared.addLeadingSlash(route),
@@ -324,7 +408,7 @@ function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel) 
     meta,
     openType,
     eventChannel,
-    statusBarStyle: meta.navigationBar.titleColor === "#000000" ? "dark" : "light"
+    statusBarStyle: titleColor === "#000000" ? "dark" : "light"
   };
 }
 function invokeHook(vm, name, args) {
@@ -364,6 +448,14 @@ function getRealRoute(fromRoute, toRoute) {
   fromRouteArray.splice(fromRouteArray.length - i - 1, i + 1);
   return uniShared.addLeadingSlash(fromRouteArray.concat(toRouteArray).join("/"));
 }
+function getRouteOptions(path, alias = false) {
+  if (alias) {
+    return __uniRoutes.find(
+      (route) => route.path === path || route.alias === path
+    );
+  }
+  return __uniRoutes.find((route) => route.path === path);
+}
 function findUniTarget(target) {
   while (target && target.tagName.indexOf("UNI-") !== 0) {
     target = target.parentElement;
@@ -375,7 +467,9 @@ function createNativeEvent(evt, htmlElement = false) {
   const event = {
     type,
     timeStamp,
-    target: uniShared.normalizeTarget(htmlElement ? target : findUniTarget(target)),
+    target: uniShared.normalizeTarget(
+      htmlElement ? target : findUniTarget(target)
+    ),
     detail: {},
     currentTarget: uniShared.normalizeTarget(currentTarget)
   };
@@ -422,11 +516,16 @@ const invokeViewMethodKeepAlive = (name, args, callback, pageId) => {
     unsubscribe(subscribeName);
   };
 };
-const ServiceJSBridge = /* @__PURE__ */ shared.extend(/* @__PURE__ */ initBridge("view"), {
-  invokeOnCallback,
-  invokeViewMethod,
-  invokeViewMethodKeepAlive
-});
+const ServiceJSBridge = /* @__PURE__ */ shared.extend(
+  /* @__PURE__ */ initBridge(
+    "view"
+  ),
+  {
+    invokeOnCallback,
+    invokeViewMethod,
+    invokeViewMethodKeepAlive
+  }
+);
 function initAppVm(appVm2) {
   appVm2.$vm = appVm2;
   appVm2.$mpType = "app";
@@ -529,7 +628,9 @@ function getStyle(action) {
     }
   });
   style.transform = style.webkitTransform = transform.join(" ");
-  style.transition = style.webkitTransition = Object.keys(style).map((type) => `${converType(type)} ${transition.duration}ms ${transition.timingFunction} ${transition.delay}ms`).join(",");
+  style.transition = style.webkitTransition = Object.keys(style).map(
+    (type) => `${converType(type)} ${transition.duration}ms ${transition.timingFunction} ${transition.delay}ms`
+  ).join(",");
   style.transformOrigin = style.webkitTransformOrigin = option.transformOrigin;
   return style;
 }
@@ -557,7 +658,7 @@ function startAnimation(context) {
     animate();
   }, 0);
 }
-var animation = {
+const animation = {
   props: ["animation"],
   watch: {
     animation: {
@@ -580,6 +681,7 @@ const defineBuiltInComponent = (options) => {
   return defineSystemComponent(options);
 };
 const defineSystemComponent = (options) => {
+  options.devtools = { hide: true };
   options.__reserved = true;
   options.compatConfig = {
     MODE: 3
@@ -728,7 +830,7 @@ function normalizeCustomEvent(name, domEvt, el, detail) {
   };
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-var index$E = /* @__PURE__ */ defineBuiltInComponent({
+const index$C = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   emits: ["submit", "reset"],
   setup(_props, {
@@ -788,7 +890,7 @@ function useProvideLabel() {
   });
   return handlers;
 }
-var index$D = /* @__PURE__ */ defineBuiltInComponent({
+const index$B = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: labelProps,
   setup(props2, {
@@ -862,7 +964,7 @@ const buttonProps = {
     default: false
   }
 };
-var index$C = /* @__PURE__ */ defineBuiltInComponent({
+const index$A = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   setup(props2, {
@@ -939,7 +1041,9 @@ function getRealPath(filePath) {
   }
   const pages = getCurrentPages();
   if (pages.length) {
-    return addBase(getRealRoute(pages[pages.length - 1].$page.route, filePath).slice(1));
+    return addBase(
+      getRealRoute(pages[pages.length - 1].$page.route, filePath).slice(1)
+    );
   }
   return filePath;
 }
@@ -968,7 +1072,12 @@ function validateProtocol(name, data, protocol, onFail) {
     onFail = validateProtocolFail;
   }
   for (const key in protocol) {
-    const errMsg = validateProp(key, data[key], protocol[key], !shared.hasOwn(data, key));
+    const errMsg = validateProp(
+      key,
+      data[key],
+      protocol[key],
+      !shared.hasOwn(data, key)
+    );
     if (shared.isString(errMsg)) {
       onFail(name, errMsg);
     }
@@ -979,7 +1088,12 @@ function validateProtocols(name, args, protocol, onFail) {
     return;
   }
   if (!shared.isArray(protocol)) {
-    return validateProtocol(name, args[0] || /* @__PURE__ */ Object.create(null), protocol, onFail);
+    return validateProtocol(
+      name,
+      args[0] || /* @__PURE__ */ Object.create(null),
+      protocol,
+      onFail
+    );
   }
   const len = protocol.length;
   const argsLen = args.length;
@@ -996,7 +1110,7 @@ function validateProp(name, value, prop, isAbsent) {
   if (!shared.isPlainObject(prop)) {
     prop = { type: prop };
   }
-  const { type, required, validator: validator2 } = prop;
+  const { type, required, validator } = prop;
   if (required && isAbsent) {
     return 'Missing required args: "' + name + '"';
   }
@@ -1016,11 +1130,13 @@ function validateProp(name, value, prop, isAbsent) {
       return getInvalidTypeMessage(name, value, expectedTypes);
     }
   }
-  if (validator2) {
-    return validator2(value);
+  if (validator) {
+    return validator(value);
   }
 }
-const isSimpleType = /* @__PURE__ */ shared.makeMap("String,Number,Boolean,Function,Symbol");
+const isSimpleType = /* @__PURE__ */ shared.makeMap(
+  "String,Number,Boolean,Function,Symbol"
+);
 function assertType(value, type) {
   let valid;
   const expectedType = getType(type);
@@ -1232,7 +1348,9 @@ function getApiInterceptorHooks(method) {
   if (scopedInterceptor) {
     Object.keys(scopedInterceptor).forEach((hook) => {
       if (hook !== "returnValue") {
-        interceptor[hook] = (interceptor[hook] || []).concat(scopedInterceptor[hook]);
+        interceptor[hook] = (interceptor[hook] || []).concat(
+          scopedInterceptor[hook]
+        );
       }
     });
   }
@@ -1253,7 +1371,9 @@ function invokeApi(method, api2, options, params) {
   return api2(options, ...params);
 }
 function hasCallback(args) {
-  if (shared.isPlainObject(args) && [API_SUCCESS, API_FAIL, API_COMPLETE].find((cb) => shared.isFunction(args[cb]))) {
+  if (shared.isPlainObject(args) && [API_SUCCESS, API_FAIL, API_COMPLETE].find(
+    (cb) => shared.isFunction(args[cb])
+  )) {
     return true;
   }
   return false;
@@ -1266,9 +1386,19 @@ function promisify(name, fn) {
     if (hasCallback(args)) {
       return wrapperReturnValue(name, invokeApi(name, fn, args, rest));
     }
-    return wrapperReturnValue(name, handlePromise(new Promise((resolve, reject) => {
-      invokeApi(name, fn, shared.extend(args, { success: resolve, fail: reject }), rest);
-    })));
+    return wrapperReturnValue(
+      name,
+      handlePromise(
+        new Promise((resolve, reject) => {
+          invokeApi(
+            name,
+            fn,
+            shared.extend(args, { success: resolve, fail: reject }),
+            rest
+          );
+        })
+      )
+    );
   };
 }
 function formatApiArgs(args, options) {
@@ -1294,10 +1424,16 @@ function formatApiArgs(args, options) {
   }
 }
 function invokeSuccess(id, name, res) {
-  return invokeCallback(id, shared.extend(res || {}, { errMsg: name + ":ok" }));
+  return invokeCallback(
+    id,
+    shared.extend(res || {}, { errMsg: name + ":ok" })
+  );
 }
 function invokeFail(id, name, errMsg, errRes) {
-  return invokeCallback(id, shared.extend({ errMsg: name + ":fail" + (errMsg ? " " + errMsg : "") }, errRes));
+  return invokeCallback(
+    id,
+    shared.extend({ errMsg: name + ":fail" + (errMsg ? " " + errMsg : "") }, errRes)
+  );
 }
 function beforeInvokeApi(name, args, protocol, options) {
   if (process.env.NODE_ENV !== "production") {
@@ -1350,35 +1486,45 @@ function wrapperAsyncApi(name, fn, protocol, options) {
   return wrapperTaskApi(name, fn, protocol, options);
 }
 function defineTaskApi(name, fn, protocol, options) {
-  return promisify(name, wrapperTaskApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
+  return promisify(
+    name,
+    wrapperTaskApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options)
+  );
 }
 function defineSyncApi(name, fn, protocol, options) {
-  return wrapperSyncApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options);
+  return wrapperSyncApi(
+    name,
+    fn,
+    process.env.NODE_ENV !== "production" ? protocol : void 0,
+    options
+  );
 }
 function defineAsyncApi(name, fn, protocol, options) {
-  return promisify(name, wrapperAsyncApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options));
+  return promisify(
+    name,
+    wrapperAsyncApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options)
+  );
 }
-new uniShared.Emitter();
-const validator = [
+const API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
+const API_GET_LOCALE = "getLocale";
+const getLocale = /* @__PURE__ */ defineSyncApi(
+  API_GET_LOCALE,
+  () => {
+    const app = getApp({ allowDefault: true });
+    if (app && app.$vm) {
+      return app.$vm.$locale;
+    }
+    return useI18n().getLocale();
+  }
+);
+const API_CAN_I_USE = "canIUse";
+const CanIUseProtocol = [
   {
-    name: "id",
+    name: "schema",
     type: String,
     required: true
   }
 ];
-validator.concat({
-  name: "componentInstance",
-  type: Object
-});
-const API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
-const API_GET_LOCALE = "getLocale";
-const getLocale = /* @__PURE__ */ defineSyncApi(API_GET_LOCALE, () => {
-  const app = getApp({ allowDefault: true });
-  if (app && app.$vm) {
-    return app.$vm.$locale;
-  }
-  return useI18n().getLocale();
-});
 const API_GET_STORAGE = "getStorage";
 const GetStorageProtocol = {
   key: {
@@ -1467,7 +1613,10 @@ const RequestProtocol = {
 const RequestOptions = {
   formatArgs: {
     method(value, params) {
-      params.method = elemInArray((value || "").toUpperCase(), HTTP_METHODS);
+      params.method = elemInArray(
+        (value || "").toUpperCase(),
+        HTTP_METHODS
+      );
     },
     data(value, params) {
       params.data = value || "";
@@ -1480,7 +1629,9 @@ const RequestOptions = {
     header(value, params) {
       const header = params.header = value || {};
       if (params.method !== HTTP_METHODS[0]) {
-        if (!Object.keys(header).find((key) => key.toLowerCase() === "content-type")) {
+        if (!Object.keys(header).find(
+          (key) => key.toLowerCase() === "content-type"
+        )) {
           header["Content-Type"] = "application/json";
         }
       }
@@ -1496,7 +1647,37 @@ const RequestOptions = {
     }
   }
 };
+const FRONT_COLORS = ["#ffffff", "#000000"];
 const API_SET_NAVIGATION_BAR_COLOR = "setNavigationBarColor";
+const SetNavigationBarColorOptions = {
+  formatArgs: {
+    animation(animation2, params) {
+      if (!animation2) {
+        animation2 = { duration: 0, timingFunc: "linear" };
+      }
+      params.animation = {
+        duration: animation2.duration || 0,
+        timingFunc: animation2.timingFunc || "linear"
+      };
+    }
+  }
+};
+const SetNavigationBarColorProtocol = {
+  frontColor: {
+    type: String,
+    required: true,
+    validator(frontColor) {
+      if (FRONT_COLORS.indexOf(frontColor) === -1) {
+        return `invalid frontColor "${frontColor}"`;
+      }
+    }
+  },
+  backgroundColor: {
+    type: String,
+    required: true
+  },
+  animation: Object
+};
 const API_SET_NAVIGATION_BAR_TITLE = "setNavigationBarTitle";
 const SetNavigationBarTitleProtocol = {
   title: {
@@ -1590,7 +1771,7 @@ const inflateRaw = (...args) => {
 };
 const deflateRaw = (...args) => {
 };
-var ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
+const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
   name: "ResizeSensor",
   props: {
     initial: {
@@ -1686,7 +1867,7 @@ const props$q = {
     default: true
   }
 };
-var index$B = /* @__PURE__ */ defineBuiltInComponent({
+const index$z = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "Canvas",
   compatConfig: {
@@ -1905,7 +2086,13 @@ function useMethods(props2, canvasRef, actionsWaiting) {
           _images = _images || {};
           if (!checkImageLoaded(url, actions.slice(index2 + 1), resolve, function(image) {
             if (image) {
-              c2d.drawImage.apply(c2d, [image].concat([...otherData.slice(4, 8)], [...otherData.slice(0, 4)]));
+              c2d.drawImage.apply(
+                c2d,
+                [image].concat(
+                  [...otherData.slice(4, 8)],
+                  [...otherData.slice(0, 4)]
+                )
+              );
             }
           }))
             return "break";
@@ -2150,7 +2337,7 @@ const props$p = {
     default: ""
   }
 };
-var index$A = /* @__PURE__ */ defineBuiltInComponent({
+const index$y = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
   props: props$p,
   emits: ["change"],
@@ -2226,7 +2413,7 @@ const props$o = {
     default: ""
   }
 };
-var index$z = /* @__PURE__ */ defineBuiltInComponent({
+const index$x = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
   props: props$o,
   setup(props2, {
@@ -2316,7 +2503,9 @@ const props$n = {
 const emit$1 = ["keyboardheightchange"];
 function useKeyboard$1(props2, elRef, trigger) {
   function initKeyboard(el) {
-    const isApple = vue.computed(() => String(navigator.vendor).indexOf("Apple") === 0);
+    const isApple = vue.computed(
+      () => String(navigator.vendor).indexOf("Apple") === 0
+    );
     el.addEventListener("focus", () => {
       clearTimeout(resetTimer);
       document.addEventListener("click", iosHideKeyboard, false);
@@ -2324,7 +2513,10 @@ function useKeyboard$1(props2, elRef, trigger) {
     const onKeyboardHide = () => {
       document.removeEventListener("click", iosHideKeyboard, false);
       if (isApple.value) {
-        document.documentElement.scrollTo(document.documentElement.scrollLeft, document.documentElement.scrollTop);
+        document.documentElement.scrollTo(
+          document.documentElement.scrollLeft,
+          document.documentElement.scrollTop
+        );
       }
     };
     el.addEventListener("blur", () => {
@@ -2334,16 +2526,29 @@ function useKeyboard$1(props2, elRef, trigger) {
       onKeyboardHide();
     });
   }
-  vue.watch(() => elRef.value, (el) => initKeyboard(el));
+  vue.watch(
+    () => elRef.value,
+    (el) => initKeyboard(el)
+  );
 }
 var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
 var endTag = /^<\/([-A-Za-z0-9_]+)[^>]*>/;
 var attr = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g;
-var empty = /* @__PURE__ */ makeMap("area,base,basefont,br,col,frame,hr,img,input,link,meta,param,embed,command,keygen,source,track,wbr");
-var block = /* @__PURE__ */ makeMap("a,address,article,applet,aside,audio,blockquote,button,canvas,center,dd,del,dir,div,dl,dt,fieldset,figcaption,figure,footer,form,frameset,h1,h2,h3,h4,h5,h6,header,hgroup,hr,iframe,isindex,li,map,menu,noframes,noscript,object,ol,output,p,pre,section,script,table,tbody,td,tfoot,th,thead,tr,ul,video");
-var inline = /* @__PURE__ */ makeMap("abbr,acronym,applet,b,basefont,bdo,big,br,button,cite,code,del,dfn,em,font,i,iframe,img,input,ins,kbd,label,map,object,q,s,samp,script,select,small,span,strike,strong,sub,sup,textarea,tt,u,var");
-var closeSelf = /* @__PURE__ */ makeMap("colgroup,dd,dt,li,options,p,td,tfoot,th,thead,tr");
-var fillAttrs = /* @__PURE__ */ makeMap("checked,compact,declare,defer,disabled,ismap,multiple,nohref,noresize,noshade,nowrap,readonly,selected");
+var empty = /* @__PURE__ */ makeMap(
+  "area,base,basefont,br,col,frame,hr,img,input,link,meta,param,embed,command,keygen,source,track,wbr"
+);
+var block = /* @__PURE__ */ makeMap(
+  "a,address,article,applet,aside,audio,blockquote,button,canvas,center,dd,del,dir,div,dl,dt,fieldset,figcaption,figure,footer,form,frameset,h1,h2,h3,h4,h5,h6,header,hgroup,hr,iframe,isindex,li,map,menu,noframes,noscript,object,ol,output,p,pre,section,script,table,tbody,td,tfoot,th,thead,tr,ul,video"
+);
+var inline = /* @__PURE__ */ makeMap(
+  "abbr,acronym,applet,b,basefont,bdo,big,br,button,cite,code,del,dfn,em,font,i,iframe,img,input,ins,kbd,label,map,object,q,s,samp,script,select,small,span,strike,strong,sub,sup,textarea,tt,u,var"
+);
+var closeSelf = /* @__PURE__ */ makeMap(
+  "colgroup,dd,dt,li,options,p,td,tfoot,th,thead,tr"
+);
+var fillAttrs = /* @__PURE__ */ makeMap(
+  "checked,compact,declare,defer,disabled,ismap,multiple,nohref,noresize,noshade,nowrap,readonly,selected"
+);
 var special = /* @__PURE__ */ makeMap("script,style");
 function HTMLParser(html, handler) {
   var index2;
@@ -2390,13 +2595,19 @@ function HTMLParser(html, handler) {
         }
       }
     } else {
-      html = html.replace(new RegExp("([\\s\\S]*?)</" + stack.last() + "[^>]*>"), function(all, text2) {
-        text2 = text2.replace(/<!--([\s\S]*?)-->|<!\[CDATA\[([\s\S]*?)]]>/g, "$1$2");
-        if (handler.chars) {
-          handler.chars(text2);
+      html = html.replace(
+        new RegExp("([\\s\\S]*?)</" + stack.last() + "[^>]*>"),
+        function(all, text2) {
+          text2 = text2.replace(
+            /<!--([\s\S]*?)-->|<!\[CDATA\[([\s\S]*?)]]>/g,
+            "$1$2"
+          );
+          if (handler.chars) {
+            handler.chars(text2);
+          }
+          return "";
         }
-        return "";
-      });
+      );
       parseEndTag("", stack.last());
     }
     if (html == last) {
@@ -2463,10 +2674,16 @@ function makeMap(str) {
   return obj;
 }
 function useQuill(props2, rootRef, trigger) {
-  vue.watch(() => props2.readOnly, (value) => {
-  });
-  vue.watch(() => props2.placeholder, (value) => {
-  });
+  vue.watch(
+    () => props2.readOnly,
+    (value) => {
+    }
+  );
+  vue.watch(
+    () => props2.placeholder,
+    (value) => {
+    }
+  );
   useContextInfo();
   useSubscribe();
 }
@@ -2496,7 +2713,7 @@ const props$m = /* @__PURE__ */ shared.extend({}, props$n, {
     default: false
   }
 });
-var index$y = /* @__PURE__ */ defineBuiltInComponent({
+const index$w = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: props$m,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
@@ -2557,7 +2774,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-var index$x = /* @__PURE__ */ defineBuiltInComponent({
+const index$v = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -2621,7 +2838,7 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-var index$w = /* @__PURE__ */ defineBuiltInComponent({
+const index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
   props: props$l,
   setup(props2, {
@@ -2829,7 +3046,10 @@ function useScopedAttrs() {
   };
 }
 function useFormField(nameKey, value) {
-  const uniForm = vue.inject(uniFormKey, false);
+  const uniForm = vue.inject(
+    uniFormKey,
+    false
+  );
   if (!uniForm) {
     return;
   }
@@ -2865,7 +3085,11 @@ function getSelectedTextRange(_, resolve) {
   resolve(data);
 }
 const UniViewJSBridgeSubscribe = function() {
-  registerViewMethod(getCurrentPageId(), "getSelectedTextRange", getSelectedTextRange);
+  registerViewMethod(
+    getCurrentPageId(),
+    "getSelectedTextRange",
+    getSelectedTextRange
+  );
 };
 function getValueString(value, type) {
   if (type === "number" && isNaN(Number(value))) {
@@ -2873,84 +3097,88 @@ function getValueString(value, type) {
   }
   return value === null ? "" : String(value);
 }
-const props$k = /* @__PURE__ */ shared.extend({}, {
-  name: {
-    type: String,
-    default: ""
+const props$k = /* @__PURE__ */ shared.extend(
+  {},
+  {
+    name: {
+      type: String,
+      default: ""
+    },
+    modelValue: {
+      type: [String, Number],
+      default: ""
+    },
+    value: {
+      type: [String, Number],
+      default: ""
+    },
+    disabled: {
+      type: [Boolean, String],
+      default: false
+    },
+    autoFocus: {
+      type: [Boolean, String],
+      default: false
+    },
+    focus: {
+      type: [Boolean, String],
+      default: false
+    },
+    cursor: {
+      type: [Number, String],
+      default: -1
+    },
+    selectionStart: {
+      type: [Number, String],
+      default: -1
+    },
+    selectionEnd: {
+      type: [Number, String],
+      default: -1
+    },
+    type: {
+      type: String,
+      default: "text"
+    },
+    password: {
+      type: [Boolean, String],
+      default: false
+    },
+    placeholder: {
+      type: String,
+      default: ""
+    },
+    placeholderStyle: {
+      type: String,
+      default: ""
+    },
+    placeholderClass: {
+      type: String,
+      default: ""
+    },
+    maxlength: {
+      type: [Number, String],
+      default: 140
+    },
+    confirmType: {
+      type: String,
+      default: "done"
+    },
+    confirmHold: {
+      type: Boolean,
+      default: false
+    },
+    ignoreCompositionEvent: {
+      type: Boolean,
+      default: true
+    },
+    step: {
+      type: String,
+      default: "0.000000000000000001"
+    }
   },
-  modelValue: {
-    type: [String, Number],
-    default: ""
-  },
-  value: {
-    type: [String, Number],
-    default: ""
-  },
-  disabled: {
-    type: [Boolean, String],
-    default: false
-  },
-  autoFocus: {
-    type: [Boolean, String],
-    default: false
-  },
-  focus: {
-    type: [Boolean, String],
-    default: false
-  },
-  cursor: {
-    type: [Number, String],
-    default: -1
-  },
-  selectionStart: {
-    type: [Number, String],
-    default: -1
-  },
-  selectionEnd: {
-    type: [Number, String],
-    default: -1
-  },
-  type: {
-    type: String,
-    default: "text"
-  },
-  password: {
-    type: [Boolean, String],
-    default: false
-  },
-  placeholder: {
-    type: String,
-    default: ""
-  },
-  placeholderStyle: {
-    type: String,
-    default: ""
-  },
-  placeholderClass: {
-    type: String,
-    default: ""
-  },
-  maxlength: {
-    type: [Number, String],
-    default: 140
-  },
-  confirmType: {
-    type: String,
-    default: "done"
-  },
-  confirmHold: {
-    type: Boolean,
-    default: false
-  },
-  ignoreCompositionEvent: {
-    type: Boolean,
-    default: true
-  },
-  step: {
-    type: String,
-    default: "0.000000000000000001"
-  }
-}, props$n);
+  props$n
+);
 const emit = [
   "input",
   "focus",
@@ -2993,8 +3221,14 @@ function useBase(props2, rootRef, emit2) {
     selectionEnd,
     cursor
   });
-  vue.watch(() => state.focus, (val) => emit2("update:focus", val));
-  vue.watch(() => state.maxlength, (val) => state.value = state.value.slice(0, val));
+  vue.watch(
+    () => state.focus,
+    (val) => emit2("update:focus", val)
+  );
+  vue.watch(
+    () => state.maxlength,
+    (val) => state.value = state.value.slice(0, val)
+  );
   return {
     fieldRef,
     state,
@@ -3002,9 +3236,13 @@ function useBase(props2, rootRef, emit2) {
   };
 }
 function useValueSync(props2, state, emit2, trigger) {
-  const valueChangeFn = uniShared.debounce((val) => {
-    state.value = getValueString(val, props2.type);
-  }, 100, { setTimeout, clearTimeout });
+  const valueChangeFn = uniShared.debounce(
+    (val) => {
+      state.value = getValueString(val, props2.type);
+    },
+    100,
+    { setTimeout, clearTimeout }
+  );
   vue.watch(() => props2.modelValue, valueChangeFn);
   vue.watch(() => props2.value, valueChangeFn);
   const triggerInputFn = throttle((event, detail) => {
@@ -3047,13 +3285,16 @@ function useAutoFocus(props2, fieldRef) {
       field.blur();
     }
   }
-  vue.watch(() => props2.focus, (value) => {
-    if (value) {
-      focus();
-    } else {
-      blur();
+  vue.watch(
+    () => props2.focus,
+    (value) => {
+      if (value) {
+        focus();
+      } else {
+        blur();
+      }
     }
-  });
+  );
 }
 function useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput) {
   function checkSelection() {
@@ -3093,10 +3334,14 @@ function useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput) {
       }
       state.value = field.value;
       if (!state.composing || !props2.ignoreCompositionEvent) {
-        triggerInput(event, {
-          value: field.value,
-          cursor: getFieldSelectionEnd(field)
-        }, force);
+        triggerInput(
+          event,
+          {
+            value: field.value,
+            cursor: getFieldSelectionEnd(field)
+          },
+          force
+        );
       }
     };
     const onBlur = function(event) {
@@ -3168,7 +3413,7 @@ const props$j = /* @__PURE__ */ shared.extend({}, props$k, {
     default: ""
   }
 });
-var Input = /* @__PURE__ */ defineBuiltInComponent({
+const Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
   props: props$j,
   emits: ["confirm", ...emit],
@@ -3203,6 +3448,14 @@ var Input = /* @__PURE__ */ defineBuiltInComponent({
       const index2 = camelizeIndex !== -1 ? camelizeIndex : kebabCaseIndex !== -1 ? kebabCaseIndex : 0;
       return AUTOCOMPLETES[index2];
     });
+    const inputmode = vue.computed(() => {
+      switch (props2.type) {
+        case "digit":
+          return "decimal";
+        default:
+          return void 0;
+      }
+    });
     let cache = vue.ref("");
     let resetCache;
     const rootRef = vue.ref(null);
@@ -3228,6 +3481,22 @@ var Input = /* @__PURE__ */ defineBuiltInComponent({
             };
             input.addEventListener("blur", resetCache);
             return false;
+          }
+          if (cache.value) {
+            if (cache.value.indexOf(".") !== -1) {
+              if (event.data !== "." && event.inputType === "deleteContentBackward") {
+                const dotIndex = cache.value.indexOf(".");
+                cache.value = input.value = state2.value = cache.value.slice(0, dotIndex);
+                return true;
+              }
+            } else if (event.data === ".") {
+              cache.value += ".";
+              resetCache = () => {
+                cache.value = input.value = cache.value.slice(0, -1);
+              };
+              input.addEventListener("blur", resetCache);
+              return false;
+            }
           }
           cache.value = state2.value = input.value = cache.value === "-" ? "" : cache.value;
           return false;
@@ -3282,8 +3551,9 @@ var Input = /* @__PURE__ */ defineBuiltInComponent({
         "pattern": props2.type === "number" ? "[0-9]*" : void 0,
         "class": "uni-input-input",
         "autocomplete": autocomplete.value,
-        "onKeyup": onKeyUpEnter
-      }, null, 40, ["value", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup"]);
+        "onKeyup": onKeyUpEnter,
+        "inputmode": inputmode.value
+      }, null, 40, ["value", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup", "inputmode"]);
       return vue.createVNode("uni-input", {
         "ref": rootRef
       }, [vue.createVNode("div", {
@@ -3313,23 +3583,26 @@ const useAttrs = (params = {}) => {
   const allExcludeKeys = excludeKeys.concat(DEFAULT_EXCLUDE_KEYS);
   instance.attrs = vue.reactive(instance.attrs);
   vue.watchEffect(() => {
-    const res = entries(instance.attrs).reduce((acc, [key, val]) => {
-      if (allExcludeKeys.includes(key)) {
-        acc.exclude[key] = val;
-      } else if (LISTENER_PREFIX.test(key)) {
-        if (!excludeListeners) {
+    const res = entries(instance.attrs).reduce(
+      (acc, [key, val]) => {
+        if (allExcludeKeys.includes(key)) {
+          acc.exclude[key] = val;
+        } else if (LISTENER_PREFIX.test(key)) {
+          if (!excludeListeners) {
+            acc.attrs[key] = val;
+          }
+          acc.listeners[key] = val;
+        } else {
           acc.attrs[key] = val;
         }
-        acc.listeners[key] = val;
-      } else {
-        acc.attrs[key] = val;
+        return acc;
+      },
+      {
+        exclude: {},
+        attrs: {},
+        listeners: {}
       }
-      return acc;
-    }, {
-      exclude: {},
-      attrs: {},
-      listeners: {}
-    });
+    );
     attrs.value = res.attrs;
     listeners.value = res.listeners;
     excludeAttrs.value = res.exclude;
@@ -3359,7 +3632,7 @@ const movableAreaProps = {
     default: false
   }
 };
-var index$v = /* @__PURE__ */ defineBuiltInComponent({
+const index$t = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
   props: movableAreaProps,
@@ -3587,7 +3860,7 @@ Friction.prototype.setS = function(x, y) {
   this._y_s = y;
 };
 Friction.prototype.s = function(t2) {
-  if (t2 === void 0) {
+  if (void 0 === t2) {
     t2 = (new Date().getTime() - this._startTime) / 1e3;
   }
   if (t2 > this._t) {
@@ -3608,7 +3881,7 @@ Friction.prototype.s = function(t2) {
   };
 };
 Friction.prototype.ds = function(t2) {
-  if (t2 === void 0) {
+  if (void 0 === t2) {
     t2 = (new Date().getTime() - this._startTime) / 1e3;
   }
   if (t2 > this._t) {
@@ -3725,13 +3998,13 @@ Spring.prototype._solve = function(e2, t2) {
   };
 };
 Spring.prototype.x = function(e2) {
-  if (e2 === void 0) {
+  if (void 0 === e2) {
     e2 = (new Date().getTime() - this._startTime) / 1e3;
   }
   return this._solution ? this._endPosition + this._solution.x(e2) : 0;
 };
 Spring.prototype.dx = function(e2) {
-  if (e2 === void 0) {
+  if (void 0 === e2) {
     e2 = (new Date().getTime() - this._startTime) / 1e3;
   }
   return this._solution ? this._solution.dx(e2) : 0;
@@ -3907,7 +4180,7 @@ const movableViewProps = {
 function v(a, b) {
   return +((1e3 * a - 1e3 * b) / 1e3).toFixed(1);
 }
-var index$u = /* @__PURE__ */ defineBuiltInComponent({
+const index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
   props: movableViewProps,
   emits: ["change", "scale"],
@@ -4169,11 +4442,13 @@ function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, ma
       });
     }
     let transform = "translateX(" + x + "px) translateY(" + y + "px) translateZ(0px) scale(" + scale + ")";
-    rootRef.value.style.transform = transform;
-    rootRef.value.style.webkitTransform = transform;
-    _translateX.value = x;
-    _translateY.value = y;
-    _scale.value = scale;
+    if (rootRef.value) {
+      rootRef.value.style.transform = transform;
+      rootRef.value.style.webkitTransform = transform;
+      _translateX.value = x;
+      _translateY.value = y;
+      _scale.value = scale;
+    }
   }
   function _revise(source) {
     let limitXY = _getLimitXY(_translateX.value, _translateY.value);
@@ -4509,7 +4784,9 @@ const navigatorProps = {
 function createNavigatorOnClick(props2) {
   return () => {
     if (props2.openType !== "navigateBack" && !props2.url) {
-      console.error("<navigator/> should have url attribute when using navigateTo, redirectTo, reLaunch or switchTab");
+      console.error(
+        "<navigator/> should have url attribute when using navigateTo, redirectTo, reLaunch or switchTab"
+      );
       return;
     }
     const animationDuration = parseInt(props2.animationDuration);
@@ -4547,7 +4824,7 @@ function createNavigatorOnClick(props2) {
     }
   };
 }
-var index$t = /* @__PURE__ */ defineBuiltInComponent({
+const index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   inheritAttrs: false,
   compatConfig: {
@@ -4630,7 +4907,7 @@ function useState$2(props2) {
   });
   return state;
 }
-var PickerView = /* @__PURE__ */ defineBuiltInComponent({
+const PickerView = /* @__PURE__ */ defineBuiltInComponent({
   name: "PickerView",
   props: pickerViewProps,
   emits: ["change", "pickstart", "pickend", "update:value"],
@@ -4714,7 +4991,7 @@ function useScopedClass(indicatorHeightRef) {
   vue.watch(() => indicatorHeightRef.value, updateStyle);
   return className;
 }
-var PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
+const PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
   name: "PickerViewColumn",
   setup(props2, {
     slots,
@@ -4872,7 +5149,7 @@ const progressProps = {
     default: 0
   }
 };
-var index$s = /* @__PURE__ */ defineBuiltInComponent({
+const index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: progressProps,
   setup(props2) {
@@ -4951,7 +5228,7 @@ const props$i = {
     default: ""
   }
 };
-var index$r = /* @__PURE__ */ defineBuiltInComponent({
+const index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
   props: props$i,
   setup(props2, {
@@ -5052,7 +5329,7 @@ const props$h = {
     default: ""
   }
 };
-var index$q = /* @__PURE__ */ defineBuiltInComponent({
+const index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
   props: props$h,
   setup(props2, {
@@ -5060,7 +5337,11 @@ var index$q = /* @__PURE__ */ defineBuiltInComponent({
   }) {
     const radioChecked = vue.ref(props2.checked);
     const radioValue = vue.ref(props2.value);
-    const checkedStyle = vue.computed(() => `background-color: ${props2.color};border-color: ${props2.color};`);
+    const checkedStyle = vue.computed(() => {
+      if (props2.disabled)
+        return "background-color: #E1E1E1;border-color: ##D1D1D1;";
+      return `background-color: ${props2.color};border-color: ${props2.color};`;
+    });
     vue.watch([() => props2.checked, () => props2.value], ([newChecked, newModelValue]) => {
       radioChecked.value = newChecked;
       radioValue.value = newModelValue;
@@ -5094,7 +5375,7 @@ var index$q = /* @__PURE__ */ defineBuiltInComponent({
           "uni-radio-input-disabled": props2.disabled
         }],
         "style": radioChecked.value ? checkedStyle.value : ""
-      }, [radioChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, "#fff", 18) : ""], 6), slots.default && slots.default()])], 16, ["onClick"]);
+      }, [radioChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : "#fff", 18) : ""], 6), slots.default && slots.default()])], 16, ["onClick"]);
     };
   }
 });
@@ -5214,18 +5495,21 @@ const CHARS = {
   hellip: "\u2026"
 };
 function decodeEntities(htmlString) {
-  return htmlString.replace(/&(([a-zA-Z]+)|(#x{0,1}[\da-zA-Z]+));/gi, function(match, stage) {
-    if (shared.hasOwn(CHARS, stage) && CHARS[stage]) {
-      return CHARS[stage];
+  return htmlString.replace(
+    /&(([a-zA-Z]+)|(#x{0,1}[\da-zA-Z]+));/gi,
+    function(match, stage) {
+      if (shared.hasOwn(CHARS, stage) && CHARS[stage]) {
+        return CHARS[stage];
+      }
+      if (/^#[0-9]{1,4}$/.test(stage)) {
+        return String.fromCharCode(stage.slice(1));
+      }
+      if (/^#x[0-9a-f]{1,4}$/i.test(stage)) {
+        return String.fromCharCode(0 + stage.slice(1));
+      }
+      return match;
     }
-    if (/^#[0-9]{1,4}$/.test(stage)) {
-      return String.fromCharCode(stage.slice(1));
-    }
-    if (/^#x[0-9a-f]{1,4}$/i.test(stage)) {
-      return String.fromCharCode(0 + stage.slice(1));
-    }
-    return match;
-  });
+  );
 }
 function processClickEvent(node, triggerItemClick) {
   if (["a", "img"].includes(node.name) && triggerItemClick) {
@@ -5264,8 +5548,16 @@ const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
         return;
       }
       normalizeAttrs(tagName, node.attrs);
-      nodeProps = shared.extend(nodeProps, processClickEvent(node, triggerItemClick), node.attrs);
-      return vue.h(node.name, nodeProps, nodeList2VNode(scopeId, triggerItemClick, node.children));
+      nodeProps = shared.extend(
+        nodeProps,
+        processClickEvent(node, triggerItemClick),
+        node.attrs
+      );
+      return vue.h(
+        node.name,
+        nodeProps,
+        nodeList2VNode(scopeId, triggerItemClick, node.children)
+      );
     }
     if (node.type === "text" && shared.isString(node.text) && node.text !== "")
       return vue.createTextVNode(decodeEntities(node.text || ""));
@@ -5369,7 +5661,7 @@ const props$g = {
     }
   }
 };
-var index$p = /* @__PURE__ */ defineBuiltInComponent({
+const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
     MODE: 3
@@ -5460,7 +5752,7 @@ const props$f = {
     default: false
   }
 };
-var index$o = /* @__PURE__ */ defineBuiltInComponent({
+const index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
   compatConfig: {
     MODE: 3
@@ -5787,7 +6079,7 @@ const props$e = {
     default: false
   }
 };
-var index$n = /* @__PURE__ */ defineBuiltInComponent({
+const index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
   props: props$e,
   emits: ["changing", "change"],
@@ -6344,7 +6636,7 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
     swiperEnabled
   };
 }
-var index$m = /* @__PURE__ */ defineBuiltInComponent({
+const index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "Swiper",
   props: props$d,
   emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
@@ -6481,8 +6773,10 @@ const useSwiperNavigation = (rootRef, props2, state, onSwiperDotClick, swiperCon
     onMouseover: (event) => navigationHover(event, "over"),
     onMouseout: (event) => navigationHover(event, "out")
   };
-  function navigationClick($event, type) {
+  function navigationClick($event, type, disabled) {
     $event.stopPropagation();
+    if (disabled)
+      return;
     const swiperItemLength = swiperContext.value.length;
     let _current = state.current;
     switch (type) {
@@ -6553,12 +6847,12 @@ const useSwiperNavigation = (rootRef, props2, state, onSwiperDotClick, swiperCon
         "class": ["uni-swiper-navigation uni-swiper-navigation-prev", shared.extend({
           "uni-swiper-navigation-disabled": prevDisabled
         }, navigationClass)],
-        "onClick": (e2) => navigationClick(e2, "prev")
+        "onClick": (e2) => navigationClick(e2, "prev", prevDisabled)
       }, navigationAttr), [createNavigationSVG()], 16, ["onClick"]), vue.createVNode("div", vue.mergeProps({
         "class": ["uni-swiper-navigation uni-swiper-navigation-next", shared.extend({
           "uni-swiper-navigation-disabled": nextDisabled
         }, navigationClass)],
-        "onClick": (e2) => navigationClick(e2, "next")
+        "onClick": (e2) => navigationClick(e2, "next", nextDisabled)
       }, navigationAttr), [createNavigationSVG()], 16, ["onClick"])]);
     }
     return null;
@@ -6571,7 +6865,7 @@ const props$c = {
     default: ""
   }
 };
-var index$l = /* @__PURE__ */ defineBuiltInComponent({
+const index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "SwiperItem",
   props: props$c,
   setup(props2, {
@@ -6616,7 +6910,7 @@ const props$b = {
     default: "#007aff"
   }
 };
-var index$k = /* @__PURE__ */ defineBuiltInComponent({
+const index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
   props: props$b,
   emits: ["change"],
@@ -6709,7 +7003,7 @@ function normalizeText(text, { space, decode }) {
   }
   return text.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
 }
-var index$j = /* @__PURE__ */ defineBuiltInComponent({
+const index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
   props: {
     selectable: {
@@ -6781,7 +7075,7 @@ const props$a = /* @__PURE__ */ shared.extend({}, props$k, {
 });
 let fixMargin = false;
 const ConfirmTypes = ["done", "go", "next", "search", "send"];
-var index$i = /* @__PURE__ */ defineBuiltInComponent({
+const index$g = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$a,
   emits: ["confirm", "linechange", ...emit],
@@ -6903,7 +7197,7 @@ var index$i = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-var index$h = /* @__PURE__ */ defineBuiltInComponent({
+const index$f = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
   props: shared.extend({}, hoverProps),
   setup(props2, {
@@ -6928,13 +7222,13 @@ function useSubscribe(callback, name, multiple, pageId) {
   const instance = vue.getCurrentInstance();
   instance.proxy;
 }
-let index$g = 0;
+let index$e = 0;
 function useContextInfo(_id) {
   useCurrentPageId();
   const instance = vue.getCurrentInstance();
   const vm = instance.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id = _id || vm.id || `context${index$g++}`;
+  const id = _id || vm.id || `context${index$e++}`;
   return `${type}.${id}`;
 }
 function injectLifecycleHook(name, hook, publicThis, instance) {
@@ -6944,14 +7238,16 @@ function injectLifecycleHook(name, hook, publicThis, instance) {
 }
 function initHooks(options, instance, publicThis) {
   const mpType = options.mpType || publicThis.$mpType;
-  if (!mpType) {
+  if (!mpType || mpType === "component") {
     return;
   }
   Object.keys(options).forEach((name) => {
-    if (name.indexOf("on") === 0) {
+    if (uniShared.isUniLifecycleHook(name, options[name], false)) {
       const hooks = options[name];
       if (shared.isArray(hooks)) {
-        hooks.forEach((hook) => injectLifecycleHook(name, hook, publicThis, instance));
+        hooks.forEach(
+          (hook) => injectLifecycleHook(name, hook, publicThis, instance)
+        );
       } else {
         injectLifecycleHook(name, hooks, publicThis, instance);
       }
@@ -7003,7 +7299,9 @@ if (typeof atob !== "function") {
   realAtob = function(str) {
     str = String(str).replace(/[\t\n\f\r ]+/g, "");
     if (!b64re.test(str)) {
-      throw new Error("Failed to execute 'atob' on 'Window': The string to be decoded is not correctly encoded.");
+      throw new Error(
+        "Failed to execute 'atob' on 'Window': The string to be decoded is not correctly encoded."
+      );
     }
     str += "==".slice(2 - (str.length & 3));
     var bitmap;
@@ -7013,7 +7311,11 @@ if (typeof atob !== "function") {
     var i = 0;
     for (; i < str.length; ) {
       bitmap = b64.indexOf(str.charAt(i++)) << 18 | b64.indexOf(str.charAt(i++)) << 12 | (r1 = b64.indexOf(str.charAt(i++))) << 6 | (r2 = b64.indexOf(str.charAt(i++)));
-      result += r1 === 64 ? String.fromCharCode(bitmap >> 16 & 255) : r2 === 64 ? String.fromCharCode(bitmap >> 16 & 255, bitmap >> 8 & 255) : String.fromCharCode(bitmap >> 16 & 255, bitmap >> 8 & 255, bitmap & 255);
+      result += r1 === 64 ? String.fromCharCode(bitmap >> 16 & 255) : r2 === 64 ? String.fromCharCode(bitmap >> 16 & 255, bitmap >> 8 & 255) : String.fromCharCode(
+        bitmap >> 16 & 255,
+        bitmap >> 8 & 255,
+        bitmap & 255
+      );
     }
     return result;
   };
@@ -7021,9 +7323,11 @@ if (typeof atob !== "function") {
   realAtob = atob;
 }
 function b64DecodeUnicode(str) {
-  return decodeURIComponent(realAtob(str).split("").map(function(c) {
-    return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-  }).join(""));
+  return decodeURIComponent(
+    realAtob(str).split("").map(function(c) {
+      return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join("")
+  );
 }
 function getCurrentUserInfo() {
   const token = uni.getStorageSync("uni_id_token") || "";
@@ -7063,9 +7367,7 @@ function uniIdMixin(globalProperties) {
 }
 function initApp$1(app) {
   const appConfig = app._context.config;
-  if (shared.isFunction(app._component.onError)) {
-    appConfig.errorHandler = createErrorHandler(app);
-  }
+  appConfig.errorHandler = uniShared.invokeCreateErrorHandler(app, createErrorHandler);
   initOptionMergeStrategies(appConfig.optionMergeStrategies);
   const globalProperties = appConfig.globalProperties;
   {
@@ -7099,7 +7401,9 @@ function usePageRoute() {
   const hashPos = url.indexOf("#", searchPos > -1 ? searchPos : 0);
   let query = {};
   if (searchPos > -1) {
-    query = uniShared.parseQuery(url.slice(searchPos + 1, hashPos > -1 ? hashPos : url.length));
+    query = uniShared.parseQuery(
+      url.slice(searchPos + 1, hashPos > -1 ? hashPos : url.length)
+    );
   }
   const { meta } = __uniRoutes[0];
   const path = uniShared.addLeadingSlash(meta.route);
@@ -7112,22 +7416,42 @@ function usePageRoute() {
 }
 function initPageMeta(id) {
   if (__UNI_FEATURE_PAGES__) {
-    return vue.reactive(normalizePageMeta(JSON.parse(JSON.stringify(initRouteMeta(vueRouter.useRoute().meta, id)))));
+    return vue.reactive(
+      normalizePageMeta(
+        JSON.parse(
+          JSON.stringify(
+            initRouteMeta(
+              vueRouter.useRoute().meta,
+              id
+            )
+          )
+        )
+      )
+    );
   }
-  return vue.reactive(normalizePageMeta(JSON.parse(JSON.stringify(initRouteMeta(__uniRoutes[0].meta, id)))));
+  return vue.reactive(
+    normalizePageMeta(
+      JSON.parse(JSON.stringify(initRouteMeta(__uniRoutes[0].meta, id)))
+    )
+  );
 }
 function normalizePageMeta(pageMeta) {
   if (__UNI_FEATURE_PULL_DOWN_REFRESH__) {
     const { enablePullDownRefresh, navigationBar } = pageMeta;
     if (enablePullDownRefresh) {
-      const pullToRefresh = normalizePullToRefreshRpx(shared.extend({
-        support: true,
-        color: "#2BD009",
-        style: "circle",
-        height: 70,
-        range: 150,
-        offset: 0
-      }, pageMeta.pullToRefresh));
+      const pullToRefresh = normalizePullToRefreshRpx(
+        shared.extend(
+          {
+            support: true,
+            color: "#2BD009",
+            style: "circle",
+            height: 70,
+            range: 150,
+            offset: 0
+          },
+          pageMeta.pullToRefresh
+        )
+      );
       const { type, style } = navigationBar;
       if (style !== "custom" && type !== "transparent") {
         pullToRefresh.offset += uniShared.NAVBAR_HEIGHT + 0;
@@ -7152,7 +7476,6 @@ function getStateId() {
     return 1;
   }
 }
-PolySymbol(process.env.NODE_ENV !== "production" ? "layout" : "l");
 let tabBar;
 function useTabBar() {
   if (!tabBar) {
@@ -7160,9 +7483,29 @@ function useTabBar() {
   }
   return tabBar;
 }
+const cssVar = true;
+const cssEnv = true;
+const cssConstant = true;
+const cssBackdropFilter = true;
+const SCHEMA_CSS = {
+  "css.var": cssVar,
+  "css.env": cssEnv,
+  "css.constant": cssConstant,
+  "css.backdrop-filter": cssBackdropFilter
+};
+/* @__PURE__ */ defineSyncApi(
+  API_CAN_I_USE,
+  (schema) => {
+    if (shared.hasOwn(SCHEMA_CSS, schema)) {
+      return SCHEMA_CSS[schema];
+    }
+    return true;
+  },
+  CanIUseProtocol
+);
 const envMethod = /* @__PURE__ */ (() => "env")();
 function normalizeWindowBottom(windowBottom) {
-  return `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))`;
+  return envMethod ? `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))` : `${windowBottom}px`;
 }
 const SEP = "$$";
 const currentPagesMap = /* @__PURE__ */ new Map();
@@ -7209,7 +7552,9 @@ function normalizeRouteKey(path, id2) {
 }
 function useKeepAliveRoute() {
   const route = vueRouter.useRoute();
-  const routeKey = vue.computed(() => normalizeRouteKey("/" + route.meta.route, getStateId()));
+  const routeKey = vue.computed(
+    () => normalizeRouteKey("/" + route.meta.route, getStateId())
+  );
   const isTabBar = vue.computed(() => route.meta.isTabBar);
   return {
     routeKey,
@@ -7284,10 +7629,12 @@ function initHistory() {
     return vueRouter.createMemoryHistory(routerBase);
   }
 }
-var index$f = {
+const index$d = {
   install(app) {
     initApp$1(app);
-    app.config.warnHandler = warnHandler;
+    if (!app.config.warnHandler) {
+      app.config.warnHandler = warnHandler;
+    }
     if (__UNI_FEATURE_PAGES__) {
       initRouter(app);
     }
@@ -7296,7 +7643,7 @@ var index$f = {
 function warnHandler(msg, instance, trace) {
   if (instance) {
     const name = instance.$.type.name;
-    if (name === "PageMetaHead") {
+    if ("PageMetaHead" === name) {
       return;
     }
     const parent = instance.$.parent;
@@ -7311,12 +7658,53 @@ function warnHandler(msg, instance, trace) {
   }
   console.warn(...warnArgs);
 }
+const clazz = { class: "uni-async-loading" };
+const loadingVNode = /* @__PURE__ */ vue.createVNode(
+  "i",
+  { class: "uni-loading" },
+  null,
+  -1
+);
+const AsyncLoadingComponent = /* @__PURE__ */ defineSystemComponent({
+  name: "AsyncLoading",
+  render() {
+    return vue.openBlock(), vue.createBlock("div", clazz, [loadingVNode]);
+  }
+});
+function reload() {
+  window.location.reload();
+}
+const AsyncErrorComponent = /* @__PURE__ */ defineSystemComponent({
+  name: "AsyncError",
+  setup() {
+    initI18nAsyncMsgsOnce();
+    const {
+      t: t2
+    } = useI18n();
+    return () => vue.createVNode("div", {
+      "class": "uni-async-error",
+      "onClick": reload
+    }, [t2("uni.async.error")], 8, ["onClick"]);
+  }
+});
 let appVm;
 function getApp$1() {
   return appVm;
 }
 function initApp(vm) {
   appVm = vm;
+  Object.defineProperty(appVm.$.ctx, "$children", {
+    get() {
+      return getCurrentPages().map((page) => page.$vm);
+    }
+  });
+  const app = appVm.$.appContext.app;
+  if (!app.component(AsyncLoadingComponent.name)) {
+    app.component(AsyncLoadingComponent.name, AsyncLoadingComponent);
+  }
+  if (!app.component(AsyncErrorComponent.name)) {
+    app.component(AsyncErrorComponent.name, AsyncErrorComponent);
+  }
   initAppVm(appVm);
   defineGlobalData(appVm);
 }
@@ -7948,7 +8336,7 @@ const props$9 = {
     default: true
   }
 };
-var index$e = /* @__PURE__ */ defineBuiltInComponent({
+const index$c = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
   props: props$9,
   emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
@@ -8181,7 +8569,7 @@ const props$8 = {
     default: true
   }
 };
-var index$d = /* @__PURE__ */ defineBuiltInComponent({
+const index$b = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
   props: props$8,
@@ -8333,7 +8721,7 @@ function useMarkerLabelStyle(id) {
     return className;
   };
 }
-var MapMarker = /* @__PURE__ */ defineSystemComponent({
+const MapMarker = /* @__PURE__ */ defineSystemComponent({
   name: "MapMarker",
   props: props$7,
   setup(props2) {
@@ -8714,7 +9102,7 @@ const props$6 = {
     default: ""
   }
 };
-var MapPolyline = /* @__PURE__ */ defineSystemComponent({
+const MapPolyline = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolyline",
   props: props$6,
   setup(props2) {
@@ -8822,7 +9210,7 @@ const props$5 = {
     default: ""
   }
 };
-var MapCircle = /* @__PURE__ */ defineSystemComponent({
+const MapCircle = /* @__PURE__ */ defineSystemComponent({
   name: "MapCircle",
   props: props$5,
   setup(props2) {
@@ -8910,7 +9298,7 @@ const props$4 = {
     required: true
   }
 };
-var MapControl = /* @__PURE__ */ defineSystemComponent({
+const MapControl = /* @__PURE__ */ defineSystemComponent({
   name: "MapControl",
   props: props$4,
   setup(props2) {
@@ -8945,7 +9333,7 @@ var MapControl = /* @__PURE__ */ defineSystemComponent({
   }
 });
 const CONTEXT_ID = "MAP_LOCATION";
-var MapLocation = /* @__PURE__ */ defineSystemComponent({
+const MapLocation = /* @__PURE__ */ defineSystemComponent({
   name: "MapLocation",
   setup() {
     const state = vue.reactive({
@@ -8966,7 +9354,7 @@ var MapLocation = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-var props$3 = {
+const props$3 = {
   dashArray: {
     type: Array,
     default: () => [0, 0]
@@ -8992,7 +9380,7 @@ var props$3 = {
     default: 0
   }
 };
-var MapPolygon = /* @__PURE__ */ defineSystemComponent({
+const MapPolygon = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolygon",
   props: props$3,
   setup(props2) {
@@ -9315,7 +9703,7 @@ function useMap(props2, rootRef, emit2) {
     trigger
   };
 }
-var index$c = /* @__PURE__ */ defineBuiltInComponent({
+const index$a = /* @__PURE__ */ defineBuiltInComponent({
   name: "Map",
   props: props$2,
   emits: ["markertap", "labeltap", "callouttap", "controltap", "regionchange", "tap", "click", "updated", "update:scale", "update:latitude", "update:longitude"],
@@ -9351,7 +9739,7 @@ const props$1 = {
     default: 0
   }
 };
-var index$b = /* @__PURE__ */ defineBuiltInComponent({
+const index$9 = /* @__PURE__ */ defineBuiltInComponent({
   name: "CoverView",
   compatConfig: {
     MODE: 3
@@ -9389,7 +9777,7 @@ var index$b = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-var index$a = /* @__PURE__ */ defineBuiltInComponent({
+const index$8 = /* @__PURE__ */ defineBuiltInComponent({
   name: "CoverImage",
   compatConfig: {
     MODE: 3
@@ -9432,7 +9820,9 @@ var index$a = /* @__PURE__ */ defineBuiltInComponent({
 function usePopupStyle(props2) {
   const popupWidth = vue.ref(0);
   const popupHeight = vue.ref(0);
-  const isDesktop = vue.computed(() => popupWidth.value >= 500 && popupHeight.value >= 500);
+  const isDesktop = vue.computed(
+    () => popupWidth.value >= 500 && popupHeight.value >= 500
+  );
   const popupStyle = vue.computed(() => {
     const style = {
       content: {
@@ -9636,7 +10026,7 @@ const props = {
     default: ""
   }
 };
-var index$9 = /* @__PURE__ */ defineBuiltInComponent({
+const index$7 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Picker",
   compatConfig: {
     MODE: 3
@@ -10251,97 +10641,106 @@ function usePickerForm(_resetFormData, _getFormData) {
     uniForm.addField(field);
   }
 }
-var index$8 = /* @__PURE__ */ defineUnsupportedComponent("ad");
-var index$7 = /* @__PURE__ */ defineUnsupportedComponent("ad-content-page");
-var index$6 = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
-var index$5 = /* @__PURE__ */ defineUnsupportedComponent("camera");
-var index$4 = /* @__PURE__ */ defineUnsupportedComponent("live-player");
-var index$3 = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
+const index$6 = /* @__PURE__ */ defineUnsupportedComponent("ad");
+const index$5 = /* @__PURE__ */ defineUnsupportedComponent("ad-content-page");
+const index$4 = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
+const index$3 = /* @__PURE__ */ defineUnsupportedComponent("camera");
+const index$2 = /* @__PURE__ */ defineUnsupportedComponent("live-player");
+const index$1 = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
 const UniViewJSBridge$1 = /* @__PURE__ */ shared.extend(ViewJSBridge, {
   publishHandler(event, args, pageId) {
     UniServiceJSBridge.subscribeHandler(event, args, pageId);
   }
 });
-const request = /* @__PURE__ */ defineTaskApi(API_REQUEST, ({
-  url,
-  data,
-  header,
-  method,
-  dataType: dataType2,
-  responseType,
-  withCredentials,
-  timeout = __uniConfig.networkTimeout.request
-}, { resolve, reject }) => {
-  let body = null;
-  const contentType = normalizeContentType(header);
-  if (method !== "GET") {
-    if (shared.isString(data) || data instanceof ArrayBuffer) {
-      body = data;
-    } else {
-      if (contentType === "json") {
-        try {
-          body = JSON.stringify(data);
-        } catch (error) {
+const request = /* @__PURE__ */ defineTaskApi(
+  API_REQUEST,
+  ({
+    url,
+    data,
+    header,
+    method,
+    dataType: dataType2,
+    responseType,
+    withCredentials,
+    timeout = __uniConfig.networkTimeout.request
+  }, { resolve, reject }) => {
+    let body = null;
+    const contentType = normalizeContentType(header);
+    if (method !== "GET") {
+      if (shared.isString(data) || data instanceof ArrayBuffer) {
+        body = data;
+      } else {
+        if (contentType === "json") {
+          try {
+            body = JSON.stringify(data);
+          } catch (error) {
+            body = data.toString();
+          }
+        } else if (contentType === "urlencoded") {
+          const bodyArray = [];
+          for (const key in data) {
+            if (shared.hasOwn(data, key)) {
+              bodyArray.push(
+                encodeURIComponent(key) + "=" + encodeURIComponent(data[key])
+              );
+            }
+          }
+          body = bodyArray.join("&");
+        } else {
           body = data.toString();
         }
-      } else if (contentType === "urlencoded") {
-        const bodyArray = [];
-        for (const key in data) {
-          if (shared.hasOwn(data, key)) {
-            bodyArray.push(encodeURIComponent(key) + "=" + encodeURIComponent(data[key]));
-          }
+      }
+    }
+    const xhr = new XMLHttpRequest();
+    const requestTask = new RequestTask(xhr);
+    xhr.open(method, url);
+    for (const key in header) {
+      if (shared.hasOwn(header, key)) {
+        xhr.setRequestHeader(key, header[key]);
+      }
+    }
+    const timer = setTimeout(function() {
+      xhr.onload = xhr.onabort = xhr.onerror = null;
+      requestTask.abort();
+      reject("timeout");
+    }, timeout);
+    xhr.responseType = responseType;
+    xhr.onload = function() {
+      clearTimeout(timer);
+      const statusCode = xhr.status;
+      let res = responseType === "text" ? xhr.responseText : xhr.response;
+      if (responseType === "text" && dataType2 === "json") {
+        try {
+          res = JSON.parse(res);
+        } catch (error) {
         }
-        body = bodyArray.join("&");
-      } else {
-        body = data.toString();
       }
-    }
-  }
-  const xhr = new XMLHttpRequest();
-  const requestTask = new RequestTask(xhr);
-  xhr.open(method, url);
-  for (const key in header) {
-    if (shared.hasOwn(header, key)) {
-      xhr.setRequestHeader(key, header[key]);
-    }
-  }
-  const timer = setTimeout(function() {
-    xhr.onload = xhr.onabort = xhr.onerror = null;
-    requestTask.abort();
-    reject("timeout");
-  }, timeout);
-  xhr.responseType = responseType;
-  xhr.onload = function() {
-    clearTimeout(timer);
-    const statusCode = xhr.status;
-    let res = responseType === "text" ? xhr.responseText : xhr.response;
-    if (responseType === "text" && dataType2 === "json") {
-      try {
-        res = JSON.parse(res);
-      } catch (error) {
-      }
-    }
-    resolve({
-      data: res,
-      statusCode,
-      header: parseHeaders(xhr.getAllResponseHeaders()),
-      cookies: []
-    });
-  };
-  xhr.onabort = function() {
-    clearTimeout(timer);
-    reject("abort");
-  };
-  xhr.onerror = function() {
-    clearTimeout(timer);
-    reject();
-  };
-  xhr.withCredentials = withCredentials;
-  xhr.send(body);
-  return requestTask;
-}, RequestProtocol, RequestOptions);
+      resolve({
+        data: res,
+        statusCode,
+        header: parseHeaders(xhr.getAllResponseHeaders()),
+        cookies: []
+      });
+    };
+    xhr.onabort = function() {
+      clearTimeout(timer);
+      reject("abort");
+    };
+    xhr.onerror = function() {
+      clearTimeout(timer);
+      reject();
+    };
+    xhr.withCredentials = withCredentials;
+    xhr.send(body);
+    return requestTask;
+  },
+  RequestProtocol,
+  RequestOptions
+);
 function normalizeContentType(header) {
-  const name = Object.keys(header).find((name2) => name2.toLowerCase() === "content-type");
+  const name = Object.keys(header).find(
+    (name2) => name2.toLowerCase() === "content-type"
+  );
   if (!name) {
     return;
   }
@@ -10407,22 +10806,30 @@ function parseValue(value) {
   } catch (error) {
   }
 }
-const setStorageSync = /* @__PURE__ */ defineSyncApi(API_SET_STORAGE_SYNC, (key, data) => {
-  const type = typeof data;
-  const value = type === "string" ? data : JSON.stringify({
-    type,
-    data
-  });
-  localStorage.setItem(key, value);
-}, SetStorageSyncProtocol);
-const setStorage = /* @__PURE__ */ defineAsyncApi(API_SET_STORAGE, ({ key, data }, { resolve, reject }) => {
-  try {
-    setStorageSync(key, data);
-    resolve();
-  } catch (error) {
-    reject(error.message);
-  }
-}, SetStorageProtocol);
+const setStorageSync = /* @__PURE__ */ defineSyncApi(
+  API_SET_STORAGE_SYNC,
+  (key, data) => {
+    const type = typeof data;
+    const value = type === "string" ? data : JSON.stringify({
+      type,
+      data
+    });
+    localStorage.setItem(key, value);
+  },
+  SetStorageSyncProtocol
+);
+const setStorage = /* @__PURE__ */ defineAsyncApi(
+  API_SET_STORAGE,
+  ({ key, data }, { resolve, reject }) => {
+    try {
+      setStorageSync(key, data);
+      resolve();
+    } catch (error) {
+      reject(error.message);
+    }
+  },
+  SetStorageProtocol
+);
 function getStorageOrigin(key) {
   const value = localStorage && localStorage.getItem(key);
   if (!shared.isString(value)) {
@@ -10439,124 +10846,170 @@ function getStorageOrigin(key) {
   }
   return data;
 }
-const getStorageSync = /* @__PURE__ */ defineSyncApi(API_GET_STORAGE_SYNC, (key) => {
-  try {
-    return getStorageOrigin(key);
-  } catch (error) {
-    return "";
-  }
-}, GetStorageSyncProtocol);
-const getStorage = /* @__PURE__ */ defineAsyncApi(API_GET_STORAGE, ({ key }, { resolve, reject }) => {
-  try {
-    const data = getStorageOrigin(key);
-    resolve({
-      data
-    });
-  } catch (error) {
-    reject(error.message);
-  }
-}, GetStorageProtocol);
-const removeStorageSync = /* @__PURE__ */ defineSyncApi(API_REMOVE_STORAGE, (key) => {
-  if (localStorage) {
-    localStorage.removeItem(key);
-  }
-}, RemoveStorageSyncProtocol);
-const removeStorage = /* @__PURE__ */ defineAsyncApi(API_REMOVE_STORAGE, ({ key }, { resolve }) => {
-  removeStorageSync(key);
-  resolve();
-}, RemoveStorageProtocol);
-const clearStorageSync = /* @__PURE__ */ defineSyncApi("clearStorageSync", () => {
-  if (localStorage) {
-    localStorage.clear();
-  }
-});
-const clearStorage = /* @__PURE__ */ defineAsyncApi("clearStorage", (_, { resolve }) => {
-  clearStorageSync();
-  resolve();
-});
-const getStorageInfoSync = /* @__PURE__ */ defineSyncApi("getStorageInfoSync", () => {
-  const length = localStorage && localStorage.length || 0;
-  const keys = [];
-  let currentSize = 0;
-  for (let index2 = 0; index2 < length; index2++) {
-    const key = localStorage.key(index2);
-    const value = localStorage.getItem(key) || "";
-    currentSize += key.length + value.length;
-    if (key !== STORAGE_KEYS) {
-      keys.push(key);
+const getStorageSync = /* @__PURE__ */ defineSyncApi(
+  API_GET_STORAGE_SYNC,
+  (key) => {
+    try {
+      return getStorageOrigin(key);
+    } catch (error) {
+      return "";
+    }
+  },
+  GetStorageSyncProtocol
+);
+const getStorage = /* @__PURE__ */ defineAsyncApi(
+  API_GET_STORAGE,
+  ({ key }, { resolve, reject }) => {
+    try {
+      const data = getStorageOrigin(key);
+      resolve({
+        data
+      });
+    } catch (error) {
+      reject(error.message);
+    }
+  },
+  GetStorageProtocol
+);
+const removeStorageSync = /* @__PURE__ */ defineSyncApi(
+  API_REMOVE_STORAGE,
+  (key) => {
+    if (localStorage) {
+      localStorage.removeItem(key);
+    }
+  },
+  RemoveStorageSyncProtocol
+);
+const removeStorage = /* @__PURE__ */ defineAsyncApi(
+  API_REMOVE_STORAGE,
+  ({ key }, { resolve }) => {
+    removeStorageSync(key);
+    resolve();
+  },
+  RemoveStorageProtocol
+);
+const clearStorageSync = /* @__PURE__ */ defineSyncApi(
+  "clearStorageSync",
+  () => {
+    if (localStorage) {
+      localStorage.clear();
     }
   }
-  return {
-    keys,
-    currentSize: Math.ceil(currentSize * 2 / 1024),
-    limitSize: Number.MAX_VALUE
-  };
-});
-const getStorageInfo = /* @__PURE__ */ defineAsyncApi("getStorageInfo", (_, { resolve }) => {
-  resolve(getStorageInfoSync());
-});
+);
+const clearStorage = /* @__PURE__ */ defineAsyncApi(
+  "clearStorage",
+  (_, { resolve }) => {
+    clearStorageSync();
+    resolve();
+  }
+);
+const getStorageInfoSync = /* @__PURE__ */ defineSyncApi(
+  "getStorageInfoSync",
+  () => {
+    const length = localStorage && localStorage.length || 0;
+    const keys = [];
+    let currentSize = 0;
+    for (let index2 = 0; index2 < length; index2++) {
+      const key = localStorage.key(index2);
+      const value = localStorage.getItem(key) || "";
+      currentSize += key.length + value.length;
+      if (key !== STORAGE_KEYS) {
+        keys.push(key);
+      }
+    }
+    return {
+      keys,
+      currentSize: Math.ceil(currentSize * 2 / 1024),
+      limitSize: Number.MAX_VALUE
+    };
+  }
+);
+const getStorageInfo = /* @__PURE__ */ defineAsyncApi(
+  "getStorageInfo",
+  (_, { resolve }) => {
+    resolve(getStorageInfoSync());
+  }
+);
+function getTheme() {
+  if (__uniConfig.darkmode !== true)
+    return shared.isString(__uniConfig.darkmode) ? __uniConfig.darkmode : "light";
+  try {
+    return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+  } catch (error) {
+    return "light";
+  }
+}
 let browserInfo;
 function initBrowserInfo() {
   {
     return browserInfo = {};
   }
 }
-const getDeviceInfo = /* @__PURE__ */ defineSyncApi("getDeviceInfo", () => {
-  initBrowserInfo();
-  const {
-    deviceBrand,
-    deviceModel,
-    brand,
-    model,
-    platform,
-    system,
-    deviceOrientation,
-    deviceType
-  } = browserInfo;
-  return {
-    brand,
-    deviceBrand,
-    deviceModel,
-    devicePixelRatio: 1,
-    deviceId: Date.now() + "" + Math.floor(Math.random() * 1e7),
-    deviceOrientation,
-    deviceType,
-    model,
-    platform,
-    system
-  };
-});
-const getAppBaseInfo = /* @__PURE__ */ defineSyncApi("getAppBaseInfo", () => {
-  initBrowserInfo();
-  const { theme, language, browserName, browserVersion } = browserInfo;
-  return {
-    appId: __uniConfig.appId,
-    appName: __uniConfig.appName,
-    appVersion: __uniConfig.appVersion,
-    appVersionCode: __uniConfig.appVersionCode,
-    appLanguage: getLocale ? getLocale() : language,
-    enableDebug: false,
-    hostSDKVersion: void 0,
-    hostPackageName: void 0,
-    hostFontSizeSetting: void 0,
-    hostName: browserName,
-    hostVersion: browserVersion,
-    hostTheme: theme,
-    hostLanguage: language,
-    language,
-    SDKVersion: "",
-    theme,
-    version: ""
-  };
-});
-const getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () => {
-  {
+const getDeviceInfo = /* @__PURE__ */ defineSyncApi(
+  "getDeviceInfo",
+  () => {
+    initBrowserInfo();
+    const {
+      deviceBrand,
+      deviceModel,
+      brand,
+      model,
+      platform,
+      system,
+      deviceOrientation,
+      deviceType
+    } = browserInfo;
     return {
+      brand,
+      deviceBrand,
+      deviceModel,
+      devicePixelRatio: 1,
       deviceId: Date.now() + "" + Math.floor(Math.random() * 1e7),
-      platform: "nodejs"
+      deviceOrientation,
+      deviceType,
+      model,
+      platform,
+      system
     };
   }
-});
+);
+const getAppBaseInfo = /* @__PURE__ */ defineSyncApi(
+  "getAppBaseInfo",
+  () => {
+    initBrowserInfo();
+    const { theme, language, browserName, browserVersion } = browserInfo;
+    return {
+      appId: __uniConfig.appId,
+      appName: __uniConfig.appName,
+      appVersion: __uniConfig.appVersion,
+      appVersionCode: __uniConfig.appVersionCode,
+      appLanguage: getLocale ? getLocale() : language,
+      enableDebug: false,
+      hostSDKVersion: void 0,
+      hostPackageName: void 0,
+      hostFontSizeSetting: void 0,
+      hostName: browserName,
+      hostVersion: browserVersion,
+      hostTheme: theme,
+      hostLanguage: language,
+      language,
+      SDKVersion: "",
+      theme,
+      version: ""
+    };
+  }
+);
+const getSystemInfoSync = /* @__PURE__ */ defineSyncApi(
+  "getSystemInfoSync",
+  () => {
+    {
+      return {
+        deviceId: Date.now() + "" + Math.floor(Math.random() * 1e7),
+        platform: "nodejs"
+      };
+    }
+  }
+);
 function updateDocumentTitle(title) {
   {
     const ssrContext = getApp$1().$.appContext.provides[vue.ssrContextKey];
@@ -10606,12 +11059,60 @@ function setNavigationBar(pageMeta, type, args, resolve, reject) {
   }
   resolve();
 }
-const setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BAR_TITLE, (args, { resolve, reject }) => {
-  setNavigationBar(getCurrentPageMeta(), API_SET_NAVIGATION_BAR_TITLE, args, resolve, reject);
-}, SetNavigationBarTitleProtocol);
+/* @__PURE__ */ defineAsyncApi(
+  API_SET_NAVIGATION_BAR_COLOR,
+  (args, { resolve, reject }) => {
+    setNavigationBar(
+      getCurrentPageMeta(),
+      API_SET_NAVIGATION_BAR_COLOR,
+      args,
+      resolve,
+      reject
+    );
+  },
+  SetNavigationBarColorProtocol,
+  SetNavigationBarColorOptions
+);
+/* @__PURE__ */ defineAsyncApi(
+  API_SHOW_NAVIGATION_BAR_LOADING,
+  (args, { resolve, reject }) => {
+    setNavigationBar(
+      getCurrentPageMeta(),
+      API_SHOW_NAVIGATION_BAR_LOADING,
+      args || {},
+      resolve,
+      reject
+    );
+  }
+);
+/* @__PURE__ */ defineAsyncApi(
+  API_HIDE_NAVIGATION_BAR_LOADING,
+  (args, { resolve, reject }) => {
+    setNavigationBar(
+      getCurrentPageMeta(),
+      API_HIDE_NAVIGATION_BAR_LOADING,
+      args || {},
+      resolve,
+      reject
+    );
+  }
+);
+const setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(
+  API_SET_NAVIGATION_BAR_TITLE,
+  (args, { resolve, reject }) => {
+    setNavigationBar(
+      getCurrentPageMeta(),
+      API_SET_NAVIGATION_BAR_TITLE,
+      args,
+      resolve,
+      reject
+    );
+  },
+  SetNavigationBarTitleProtocol
+);
 require("localstorage-polyfill");
 global.XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
-var api = /* @__PURE__ */ Object.defineProperty({
+const api = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   setNavigationBarTitle,
   request,
@@ -10635,11 +11136,33 @@ const UniServiceJSBridge$1 = /* @__PURE__ */ shared.extend(ServiceJSBridge, {
     UniViewJSBridge.subscribeHandler(event, args, pageId);
   }
 });
-var TabBar = /* @__PURE__ */ defineSystemComponent({
+function onThemeChange(callback) {
+  if (__uniConfig.darkmode) {
+    UniServiceJSBridge.on(uniShared.ON_THEME_CHANGE, callback);
+  }
+}
+function parseTheme(pageStyle) {
+  let parsedStyle = {};
+  if (__uniConfig.darkmode) {
+    parsedStyle = uniShared.normalizeStyles(
+      pageStyle,
+      __uniConfig.themeConfig,
+      getTheme()
+    );
+  }
+  return __uniConfig.darkmode ? parsedStyle : pageStyle;
+}
+const _middleButton = {
+  width: "50px",
+  height: "50px",
+  iconWidth: "24px"
+};
+const TabBar = /* @__PURE__ */ defineSystemComponent({
   name: "TabBar",
   setup() {
     const visibleList = vue.ref([]);
-    const tabBar2 = useTabBar();
+    const _tabBar = useTabBar();
+    const tabBar2 = vue.reactive(parseTheme(_tabBar));
     useVisibleList(tabBar2, visibleList);
     useTabBarCssVar(tabBar2);
     const onSwitchTab = useSwitchTab(vueRouter.useRoute(), tabBar2, visibleList);
@@ -10648,6 +11171,20 @@ var TabBar = /* @__PURE__ */ defineSystemComponent({
       borderStyle,
       placeholderStyle
     } = useTabBarStyle(tabBar2);
+    onThemeChange(() => {
+      const tabBarStyle = parseTheme(_tabBar);
+      tabBar2.backgroundColor = tabBarStyle.backgroundColor;
+      tabBar2.borderStyle = tabBarStyle.borderStyle;
+      tabBar2.color = tabBarStyle.color;
+      tabBar2.selectedColor = tabBarStyle.selectedColor;
+      tabBar2.blurEffect = tabBarStyle.blurEffect;
+      if (tabBarStyle.list && tabBarStyle.list.length) {
+        tabBarStyle.list.forEach((item, index2) => {
+          tabBar2.list[index2].iconPath = item.iconPath;
+          tabBar2.list[index2].selectedIconPath = item.selectedIconPath;
+        });
+      }
+    });
     return () => {
       const tabBarItemsTsx = createTabBarItemsTsx(tabBar2, onSwitchTab, visibleList);
       return vue.createVNode("uni-tabbar", {
@@ -10673,13 +11210,17 @@ function useTabBarCssVar(tabBar2) {
   });
 }
 function useVisibleList(tabBar2, visibleList) {
+  const internalMidButton = vue.ref(shared.extend({
+    type: "midButton"
+  }, tabBar2.midButton));
   function setVisibleList() {
     let tempList = [];
     tempList = tabBar2.list.filter((item) => item.visible !== false);
-    if (__UNI_FEATURE_TABBAR_MIDBUTTON__) {
+    if (__UNI_FEATURE_TABBAR_MIDBUTTON__ && tabBar2.midButton) {
+      internalMidButton.value = shared.extend({}, _middleButton, internalMidButton.value, tabBar2.midButton);
       tempList = tempList.filter((item) => !isMidButton(item));
       if (tempList.length % 2 === 0) {
-        tempList.splice(Math.floor(tempList.length / 2), 0, tabBar2.list[Math.floor(tabBar2.list.length / 2)]);
+        tempList.splice(Math.floor(tempList.length / 2), 0, internalMidButton.value);
       }
     }
     visibleList.value = tempList;
@@ -10743,7 +11284,7 @@ function useTabBarStyle(tabBar2) {
     let backgroundColor = tabBar2.backgroundColor;
     const blurEffect = tabBar2.blurEffect;
     if (!backgroundColor) {
-      if (blurEffect && blurEffect !== "none") {
+      if (cssBackdropFilter && blurEffect && blurEffect !== "none") {
         backgroundColor = BLUR_EFFECT_COLORS[blurEffect];
       }
     }
@@ -10912,7 +11453,7 @@ function createTabBarMidButtonTsx(color, iconPath, iconfontText, iconfontColor, 
     "src": getRealPath(iconPath)
   }, null, 12, ["src"])], 4), createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar2)], 12, ["onClick"]);
 }
-var LayoutComponent = /* @__PURE__ */ defineSystemComponent({
+const LayoutComponent = /* @__PURE__ */ defineSystemComponent({
   name: "Layout",
   setup(_props, {
     emit: emit2
@@ -10957,7 +11498,18 @@ function useMaxWidth(layoutState, rootRef) {
   const route = usePageRoute();
   function checkMaxWidth() {
     const windowWidth = document.body.clientWidth;
-    const maxWidth = parseInt(String(__uniConfig.globalStyle.maxWidth || Number.MAX_SAFE_INTEGER));
+    const pages = getCurrentPages();
+    let meta = {};
+    if (pages.length > 0) {
+      const curPage = pages[pages.length - 1];
+      meta = curPage.$page.meta;
+    } else {
+      const routeOptions = getRouteOptions(route.path, true);
+      if (routeOptions) {
+        meta = routeOptions.meta;
+      }
+    }
+    const maxWidth = parseInt(String((shared.hasOwn(meta, "maxWidth") ? meta.maxWidth : __uniConfig.globalStyle.maxWidth) || Number.MAX_SAFE_INTEGER));
     let showMaxWidth = false;
     if (windowWidth > maxWidth) {
       showMaxWidth = true;
@@ -10988,11 +11540,23 @@ function useState() {
   const route = usePageRoute();
   if (!__UNI_FEATURE_RESPONSIVE__) {
     const layoutState2 = vue.reactive({
-      marginWidth: 0
+      marginWidth: 0,
+      leftWindowWidth: 0,
+      rightWindowWidth: 0
     });
     vue.watch(() => layoutState2.marginWidth, (value) => updateCssVar({
       "--window-margin": value + "px"
     }));
+    vue.watch(() => layoutState2.leftWindowWidth + layoutState2.marginWidth, (value) => {
+      updateCssVar({
+        "--window-left": value + "px"
+      });
+    });
+    vue.watch(() => layoutState2.rightWindowWidth + layoutState2.marginWidth, (value) => {
+      updateCssVar({
+        "--window-right": value + "px"
+      });
+    });
     return {
       layoutState: layoutState2,
       windowState: vue.computed(() => ({}))
@@ -11039,12 +11603,16 @@ function useState() {
   vue.watch(() => layoutState.marginWidth, (value) => updateCssVar({
     "--window-margin": value + "px"
   }));
-  vue.watch(() => layoutState.leftWindowWidth + layoutState.marginWidth, (value) => updateCssVar({
-    "--window-left": value + "px"
-  }));
-  vue.watch(() => layoutState.rightWindowWidth + layoutState.marginWidth, (value) => updateCssVar({
-    "--window-right": value + "px"
-  }));
+  vue.watch(() => layoutState.leftWindowWidth + layoutState.marginWidth, (value) => {
+    updateCssVar({
+      "--window-left": value + "px"
+    });
+  });
+  vue.watch(() => layoutState.rightWindowWidth + layoutState.marginWidth, (value) => {
+    updateCssVar({
+      "--window-right": value + "px"
+    });
+  });
   UniServiceJSBridge.on(uniShared.ON_NAVIGATION_BAR_CHANGE, (navigationBar) => {
     layoutState.navigationBarTitleText = navigationBar.titleText;
   });
@@ -11243,21 +11811,26 @@ const ICON_PATHS = {
   menu: "M8.938 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM16.188 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM23.469 18.313q0.844 0 1.453-0.609t0.609-1.453-0.609-1.453-1.453-0.609q-0.875 0-1.484 0.609t-0.609 1.453 0.609 1.453 1.484 0.609z",
   close: ICON_PATH_CLOSE
 };
-var PageHead = /* @__PURE__ */ defineSystemComponent({
+const PageHead = /* @__PURE__ */ defineSystemComponent({
   name: "PageHead",
   setup() {
     const headRef = vue.ref(null);
     const pageMeta = usePageMeta();
-    const navigationBar = pageMeta.navigationBar;
+    const navigationBar = vue.reactive(parseTheme(pageMeta.navigationBar));
     const {
       clazz: clazz2,
       style
     } = usePageHead(navigationBar);
+    onThemeChange(() => {
+      const _navigationBar = parseTheme(pageMeta.navigationBar);
+      navigationBar.backgroundColor = _navigationBar.backgroundColor;
+      navigationBar.titleColor = _navigationBar.titleColor;
+    });
     const buttons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ && usePageHeadButtons(pageMeta);
     const searchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ && navigationBar.searchInput && usePageHeadSearchInput(pageMeta);
     __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" && usePageHeadTransparent(headRef, pageMeta);
     return () => {
-      const backButtonTsx = __UNI_FEATURE_PAGES__ ? createBackButtonTsx(pageMeta) : null;
+      const backButtonTsx = __UNI_FEATURE_PAGES__ ? createBackButtonTsx(navigationBar, pageMeta.isQuit) : null;
       const leftButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.left) : [];
       const rightButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.right) : [];
       const type = navigationBar.type || "default";
@@ -11281,11 +11854,7 @@ var PageHead = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-function createBackButtonTsx(pageMeta) {
-  const {
-    navigationBar,
-    isQuit
-  } = pageMeta;
+function createBackButtonTsx(navigationBar, isQuit) {
   if (!isQuit) {
     return vue.createVNode("div", {
       "class": "uni-page-head-btn",
@@ -11580,13 +12149,6 @@ function usePageHeadSearchInput({
     onKeyup
   };
 }
-var _export_sfc = (sfc, props2) => {
-  const target = sfc.__vccOpts || sfc;
-  for (const [key, val] of props2) {
-    target[key] = val;
-  }
-  return target;
-};
 const _sfc_main = {
   name: "PageRefresh",
   setup() {
@@ -11596,6 +12158,13 @@ const _sfc_main = {
       color: pullToRefresh.color
     };
   }
+};
+const _export_sfc = (sfc, props2) => {
+  const target = sfc.__vccOpts || sfc;
+  for (const [key, val] of props2) {
+    target[key] = val;
+  }
+  return target;
 };
 const _hoisted_1 = { class: "uni-page-refresh-inner" };
 const _hoisted_2 = ["fill"];
@@ -11645,8 +12214,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     ], 4)
   ]);
 }
-var PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
-var PageBody = defineSystemComponent({
+const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
+const PageBody = defineSystemComponent({
   name: "PageBody",
   setup(props2, ctx) {
     const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ && usePageMeta();
@@ -11666,91 +12235,75 @@ function createPageRefreshTsx(refreshRef, pageMeta) {
     "ref": refreshRef
   }, null, 512);
 }
-var index$2 = defineSystemComponent({
+const index = defineSystemComponent({
   name: "Page",
   setup(_props, ctx) {
     const pageMeta = providePageMeta(getStateId());
     const navigationBar = pageMeta.navigationBar;
     useDocumentTitle(pageMeta);
-    return () => vue.createVNode("uni-page", { "data-page": pageMeta.route }, __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [vue.createVNode(PageHead), createPageBodyVNode(ctx)] : [createPageBodyVNode(ctx)]);
+    return () => vue.createVNode(
+      "uni-page",
+      { "data-page": pageMeta.route },
+      __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [vue.createVNode(PageHead), createPageBodyVNode(ctx)] : [createPageBodyVNode(ctx)]
+    );
   }
 });
 function createPageBodyVNode(ctx) {
-  return vue.openBlock(), vue.createBlock(PageBody, { key: 0 }, {
-    default: vue.withCtx(() => [vue.renderSlot(ctx.slots, "page")]),
-    _: 3
-  });
+  return vue.openBlock(), vue.createBlock(
+    PageBody,
+    { key: 0 },
+    {
+      default: vue.withCtx(() => [vue.renderSlot(ctx.slots, "page")]),
+      _: 3
+    }
+  );
 }
-function reload() {
-  window.location.reload();
-}
-var index$1 = /* @__PURE__ */ defineSystemComponent({
-  name: "AsyncError",
-  setup() {
-    initI18nAsyncMsgsOnce();
-    const {
-      t: t2
-    } = useI18n();
-    return () => vue.createVNode("div", {
-      "class": "uni-async-error",
-      "onClick": reload
-    }, [t2("uni.async.error")], 8, ["onClick"]);
-  }
-});
-const clazz = { class: "uni-async-loading" };
-const loadingVNode = /* @__PURE__ */ vue.createVNode("i", { class: "uni-loading" }, null, -1);
-var index = /* @__PURE__ */ defineSystemComponent({
-  name: "AsyncLoading",
-  render() {
-    return vue.openBlock(), vue.createBlock("div", clazz, [loadingVNode]);
-  }
-});
-exports.Ad = index$8;
-exports.AdContentPage = index$7;
-exports.AdDraw = index$6;
-exports.AsyncErrorComponent = index$1;
-exports.AsyncLoadingComponent = index;
-exports.Button = index$C;
-exports.Camera = index$5;
-exports.Canvas = index$B;
-exports.Checkbox = index$z;
-exports.CheckboxGroup = index$A;
-exports.CoverImage = index$a;
-exports.CoverView = index$b;
-exports.Editor = index$y;
-exports.Form = index$E;
-exports.Icon = index$x;
-exports.Image = index$w;
+exports.Ad = index$6;
+exports.AdContentPage = index$5;
+exports.AdDraw = index$4;
+exports.AsyncErrorComponent = AsyncErrorComponent;
+exports.AsyncLoadingComponent = AsyncLoadingComponent;
+exports.Button = index$A;
+exports.Camera = index$3;
+exports.Canvas = index$z;
+exports.Checkbox = index$x;
+exports.CheckboxGroup = index$y;
+exports.CoverImage = index$8;
+exports.CoverView = index$9;
+exports.Editor = index$w;
+exports.Form = index$C;
+exports.Icon = index$v;
+exports.Image = index$u;
 exports.Input = Input;
-exports.Label = index$D;
+exports.Label = index$B;
 exports.LayoutComponent = LayoutComponent;
-exports.LivePlayer = index$4;
-exports.LivePusher = index$3;
-exports.Map = index$c;
-exports.MovableArea = index$v;
-exports.MovableView = index$u;
-exports.Navigator = index$t;
-exports.PageComponent = index$2;
-exports.Picker = index$9;
+exports.LivePlayer = index$2;
+exports.LivePusher = index$1;
+exports.Map = index$a;
+exports.MovableArea = index$t;
+exports.MovableView = index$s;
+exports.Navigator = index$r;
+exports.PageComponent = index;
+exports.Picker = index$7;
 exports.PickerView = PickerView;
 exports.PickerViewColumn = PickerViewColumn;
-exports.Progress = index$s;
-exports.Radio = index$q;
-exports.RadioGroup = index$r;
+exports.Progress = index$q;
+exports.Radio = index$o;
+exports.RadioGroup = index$p;
 exports.ResizeSensor = ResizeSensor;
-exports.RichText = index$p;
-exports.ScrollView = index$o;
-exports.Slider = index$n;
-exports.Swiper = index$m;
-exports.SwiperItem = index$l;
-exports.Switch = index$k;
-exports.Text = index$j;
-exports.Textarea = index$i;
+exports.RichText = index$n;
+exports.ScrollView = index$m;
+exports.Slider = index$l;
+exports.Swiper = index$k;
+exports.SwiperItem = index$j;
+exports.Switch = index$i;
+exports.Text = index$h;
+exports.Textarea = index$g;
 exports.UniServiceJSBridge = UniServiceJSBridge$1;
 exports.UniViewJSBridge = UniViewJSBridge$1;
-exports.Video = index$e;
-exports.View = index$h;
-exports.WebView = index$d;
+exports.Video = index$c;
+exports.View = index$f;
+exports.WebView = index$b;
 exports.clearStorage = clearStorage;
 exports.clearStorageSync = clearStorageSync;
 exports.getApp = getApp$1;
@@ -11763,7 +12316,7 @@ exports.getStorageInfo = getStorageInfo;
 exports.getStorageInfoSync = getStorageInfoSync;
 exports.getStorageSync = getStorageSync;
 exports.getSystemInfoSync = getSystemInfoSync;
-exports.plugin = index$f;
+exports.plugin = index$d;
 exports.removeStorage = removeStorage;
 exports.removeStorageSync = removeStorageSync;
 exports.request = request;

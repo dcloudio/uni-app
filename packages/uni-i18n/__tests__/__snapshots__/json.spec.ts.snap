@@ -2,76 +2,76 @@
 
 exports[`compileI18nJsonStr androidPrivacy.json 1`] = `
 "{
-  \\"version\\": \\"1\\",
-  \\"prompt\\": \\"template\\",
-  \\"title\\": \\"服务协议和隐私政策\\",
-  \\"message\\": \\"　　请你务必审慎阅读、充分理解“服务协议”和“隐私政策”各条款，包括但不限于：为了更好的向你提供服务，我们需要收集你的设备标识、操作日志等信息用于分析、优化应用性能。<br/>　　你可阅读<a href=\\\\\\"\\\\\\">《服务协议》</a>和<a href=\\\\\\"\\\\\\">《隐私政策》</a>了解详细信息。如果你同意，请点击下面按钮开始接受我们的服务。\\",
-  \\"buttonAccept\\": \\"同意并接受\\",
-  \\"buttonRefuse\\": \\"暂不同意\\",
-  \\"second\\": {
-    \\"title\\": \\"确认提示\\",
-    \\"message\\": \\"　　进入应用前，你需先同意<a href=\\\\\\"\\\\\\">《服务协议》</a>和<a href=\\\\\\"\\\\\\">《隐私政策》</a>，否则将退出应用。\\",
-    \\"buttonAccept\\": \\"同意并继续\\",
-    \\"buttonRefuse\\": \\"退出应用\\",
-    \\"titleLocales\\": {
-      \\"zh-Hans\\": \\"确认提示\\",
-      \\"en\\": \\"confirm\\"
+  "version": "1",
+  "prompt": "template",
+  "title": "服务协议和隐私政策",
+  "message": "　　请你务必审慎阅读、充分理解“服务协议”和“隐私政策”各条款，包括但不限于：为了更好的向你提供服务，我们需要收集你的设备标识、操作日志等信息用于分析、优化应用性能。<br/>　　你可阅读<a href=\\"\\">《服务协议》</a>和<a href=\\"\\">《隐私政策》</a>了解详细信息。如果你同意，请点击下面按钮开始接受我们的服务。",
+  "buttonAccept": "同意并接受",
+  "buttonRefuse": "暂不同意",
+  "second": {
+    "title": "确认提示",
+    "message": "　　进入应用前，你需先同意<a href=\\"\\">《服务协议》</a>和<a href=\\"\\">《隐私政策》</a>，否则将退出应用。",
+    "buttonAccept": "同意并继续",
+    "buttonRefuse": "退出应用",
+    "titleLocales": {
+      "zh-Hans": "确认提示",
+      "en": "confirm"
     }
   },
-  \\"styles\\": {
-    \\"backgroundColor\\": \\"#00FF00\\",
-    \\"borderRadius\\": \\"5px\\",
-    \\"title\\": {
-      \\"color\\": \\"#ff00ff\\",
-      \\"colorLocales\\": {
-        \\"zh-Hans\\": \\"#ff00ff\\",
-        \\"en\\": \\"#ff00ff\\"
+  "styles": {
+    "backgroundColor": "#00FF00",
+    "borderRadius": "5px",
+    "title": {
+      "color": "#ff00ff",
+      "colorLocales": {
+        "zh-Hans": "#ff00ff",
+        "en": "#ff00ff"
       }
     },
-    \\"buttonAccept\\": {
-      \\"color\\": \\"#ffff00\\"
+    "buttonAccept": {
+      "color": "#ffff00"
     },
-    \\"buttonRefuse\\": {
-      \\"color\\": \\"#00ffff\\"
+    "buttonRefuse": {
+      "color": "#00ffff"
     }
   },
-  \\"titleLocales\\": {
-    \\"zh-Hans\\": \\"服务协议和隐私政策\\",
-    \\"en\\": \\"Privacy\\"
+  "titleLocales": {
+    "zh-Hans": "服务协议和隐私政策",
+    "en": "Privacy"
   },
-  \\"messageLocales\\": {
-    \\"zh-Hans\\": \\"　　请你务必审慎阅读、充分理解“服务协议”和“隐私政策”各条款，包括但不限于：为了更好的向你提供服务，我们需要收集你的设备标识、操作日志等信息用于分析、优化应用性能。<br/>　　你可阅读<a href=\\\\\\"\\\\\\">《服务协议》</a>和<a href=\\\\\\"\\\\\\">《隐私政策》</a>了解详细信息。如果你同意，请点击下面按钮开始接受我们的服务。\\",
-    \\"en\\": \\"　　privacy\\"
+  "messageLocales": {
+    "zh-Hans": "　　请你务必审慎阅读、充分理解“服务协议”和“隐私政策”各条款，包括但不限于：为了更好的向你提供服务，我们需要收集你的设备标识、操作日志等信息用于分析、优化应用性能。<br/>　　你可阅读<a href=\\"\\">《服务协议》</a>和<a href=\\"\\">《隐私政策》</a>了解详细信息。如果你同意，请点击下面按钮开始接受我们的服务。",
+    "en": "　　privacy"
   },
-  \\"buttonAcceptLocales\\": {
-    \\"zh-Hans\\": \\"同意并接受\\",
-    \\"en\\": \\"accept\\"
+  "buttonAcceptLocales": {
+    "zh-Hans": "同意并接受",
+    "en": "accept"
   },
-  \\"buttonRefuseLocales\\": {
-    \\"zh-Hans\\": \\"暂不同意\\",
-    \\"en\\": \\"refuse\\"
+  "buttonRefuseLocales": {
+    "zh-Hans": "暂不同意",
+    "en": "refuse"
   }
 }"
 `;
 
 exports[`compileI18nJsonStr pages.json->tabBar 1`] = `
 "{
-  \\"color\\": \\"#7A7E83\\",
-  \\"selectedColor\\": \\"#007AFF\\",
-  \\"borderStyle\\": \\"black\\",
-  \\"backgroundColor\\": \\"#f8f8f8\\",
-  \\"list\\": [
+  "color": "#7A7E83",
+  "selectedColor": "#007AFF",
+  "borderStyle": "black",
+  "backgroundColor": "#f8f8f8",
+  "list": [
     {
-      \\"pagePath\\": \\"pages/tabBar/component/component\\",
-      \\"iconPath\\": \\"static/component.png\\",
-      \\"selectedIconPath\\": \\"static/componentHL.png\\",
-      \\"text\\": \\"组件\\"
+      "pagePath": "pages/tabBar/component/component",
+      "iconPath": "static/component.png",
+      "selectedIconPath": "static/componentHL.png",
+      "text": "组件"
     },
     {
-      \\"pagePath\\": \\"pages/tabBar/API/API\\",
-      \\"iconPath\\": \\"static/api.png\\",
-      \\"selectedIconPath\\": \\"static/apiHL.png\\",
-      \\"text\\": \\"接口\\"
+      "pagePath": "pages/tabBar/API/API",
+      "iconPath": "static/api.png",
+      "selectedIconPath": "static/apiHL.png",
+      "text": "接口"
     }
   ]
 }"
@@ -79,35 +79,35 @@ exports[`compileI18nJsonStr pages.json->tabBar 1`] = `
 
 exports[`compileI18nJsonStr pages.json->tabBar with multi language 1`] = `
 "{
-  \\"color\\": \\"#7A7E83\\",
-  \\"selectedColor\\": \\"#007AFF\\",
-  \\"borderStyle\\": \\"black\\",
-  \\"backgroundColor\\": \\"#f8f8f8\\",
-  \\"list\\": [
+  "color": "#7A7E83",
+  "selectedColor": "#007AFF",
+  "borderStyle": "black",
+  "backgroundColor": "#f8f8f8",
+  "list": [
     {
-      \\"pagePath\\": \\"pages/tabBar/component/component\\",
-      \\"iconPath\\": \\"static/component.png\\",
-      \\"selectedIconPath\\": \\"static/componentHL.png\\",
-      \\"text\\": \\"组件\\",
-      \\"textLocales\\": {
-        \\"zh-Hans\\": \\"组件\\",
-        \\"en\\": \\"Component\\"
+      "pagePath": "pages/tabBar/component/component",
+      "iconPath": "static/component.png",
+      "selectedIconPath": "static/componentHL.png",
+      "text": "组件",
+      "textLocales": {
+        "zh-Hans": "组件",
+        "en": "Component"
       }
     },
     {
-      \\"pagePath\\": \\"pages/tabBar/API/API\\",
-      \\"iconPath\\": \\"static/api.png\\",
-      \\"selectedIconPath\\": \\"static/apiHL.png\\",
-      \\"text\\": \\"接口\\",
-      \\"textLocales\\": {
-        \\"zh-Hans\\": \\"接口\\",
-        \\"en\\": \\"API\\"
+      "pagePath": "pages/tabBar/API/API",
+      "iconPath": "static/api.png",
+      "selectedIconPath": "static/apiHL.png",
+      "text": "接口",
+      "textLocales": {
+        "zh-Hans": "接口",
+        "en": "API"
       }
     }
   ],
-  \\"backgroundColorLocales\\": {
-    \\"zh-Hans\\": \\"#f8f8f8\\",
-    \\"en\\": \\"#f6f6f6\\"
+  "backgroundColorLocales": {
+    "zh-Hans": "#f8f8f8",
+    "en": "#f6f6f6"
   }
 }"
 `;

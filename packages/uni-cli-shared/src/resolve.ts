@@ -35,7 +35,11 @@ export const resolveMainPathOnce = once((inputDir: string) => {
   return normalizePath(path.resolve(inputDir, 'main.js'))
 })
 
-const ownerModules = ['@dcloudio/uni-app', '@dcloudio/vite-plugin-uni']
+const ownerModules = [
+  '@dcloudio/uni-app',
+  '@dcloudio/vite-plugin-uni',
+  '@dcloudio/uni-cli-shared',
+]
 
 const paths: string[] = []
 
@@ -53,7 +57,7 @@ function resolveNodeModulePath(modulePath: string) {
 }
 
 function initPaths() {
-  const cliContext = process.env.UNI_CLI_CONTEXT
+  const cliContext = process.env.UNI_CLI_CONTEXT || process.cwd()
   if (cliContext) {
     const pathSet = new Set<string>()
     pathSet.add(path.join(cliContext, 'node_modules'))
@@ -118,81 +122,4 @@ export function resolveComponentsLibPath() {
     }
   }
   return componentsLibPath
-}
-
-/**
- * 解析 app 平台的 uts 插件，任意平台（android|ios）存在即可
- * @param id
- * @param importer
- * @returns
- */
-export function resolveUtsAppModule(id: string, importer: string) {
-  id = path.resolve(importer, id)
-  if (id.includes('utssdk') || id.includes('uni_modules')) {
-    const parts = normalizePath(id).split('/')
-    const parentDir = parts[parts.length - 2]
-    if (parentDir === 'uni_modules' || parentDir === 'utssdk') {
-      if (fs.existsSync(path.resolve(id, 'index.uts'))) {
-        return id
-      }
-      const resolvePlatformDir = (p: typeof process.env.UNI_UTS_PLATFORM) => {
-        return path.resolve(id, parentDir === 'uni_modules' ? 'utssdk' : '', p)
-      }
-      const extname = ['.uts']
-      if (resolveUtsFile(resolvePlatformDir('app-android'), extname)) {
-        return id
-      }
-      if (resolveUtsFile(resolvePlatformDir('app-ios'), extname)) {
-        return id
-      }
-    }
-  }
-}
-
-export function resolveUtsModuleProxyFile(id: string, importer: string) {
-  const file = resolveUtsAppModule(id, importer)
-  if (file) {
-    return '\0' + file + '?uts-proxy'
-  }
-}
-// 仅限 root/uni_modules/test-plugin | root/utssdk/test-plugin 格式
-export function resolveUtsModule(
-  id: string,
-  importer: string,
-  platform: typeof process.env.UNI_UTS_PLATFORM
-) {
-  if (process.env.UNI_PLATFORM === 'app') {
-    return resolveUtsAppModule(id, importer)
-  }
-  id = path.resolve(importer, id)
-  if (id.includes('utssdk') || id.includes('uni_modules')) {
-    const parts = normalizePath(id).split('/')
-    const parentDir = parts[parts.length - 2]
-    if (parentDir === 'uni_modules' || parentDir === 'utssdk') {
-      const resolvePlatformDir = (p: typeof process.env.UNI_UTS_PLATFORM) => {
-        return path.resolve(id, parentDir === 'uni_modules' ? 'utssdk' : '', p)
-      }
-
-      let index = resolveUtsFile(resolvePlatformDir(platform))
-      if (index) {
-        return index
-      }
-      index = path.resolve(id, 'index.uts')
-      if (fs.existsSync(index)) {
-        return index
-      }
-    }
-  }
-}
-
-function resolveUtsFile(
-  dir: string,
-  extensions: string[] = ['.uts', '.ts', '.js']
-) {
-  for (let i = 0; i < extensions.length; i++) {
-    const indexFile = path.join(dir, 'index' + extensions[i])
-    if (fs.existsSync(indexFile)) {
-      return indexFile
-    }
-  }
 }

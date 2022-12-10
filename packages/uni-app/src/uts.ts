@@ -1,12 +1,15 @@
-import { isPlainObject, hasOwn, extend, capitalize } from '@vue/shared'
+import { isPlainObject, hasOwn, extend, capitalize } from './utils'
 declare const uni: any
 declare const plus: any
 let callbackId = 1
 let proxy: any
 const callbacks: Record<string, Function> = {}
+
 export function normalizeArg(arg: unknown) {
   if (typeof arg === 'function') {
-    const id = callbackId++
+    // 查找该函数是否已缓存
+    const oldId = Object.keys(callbacks).find((id) => callbacks[id] === arg)
+    const id = oldId ? parseInt(oldId) : callbackId++
     callbacks[id] = arg
     return id
   } else if (isPlainObject(arg)) {
@@ -58,6 +61,10 @@ interface ProxyFunctionOptions {
    * 方法参数列表
    */
   params: Parameter[]
+  /**
+   * 运行时提示的错误信息
+   */
+  errMsg?: string
 }
 
 interface ProxyClassOptions {
@@ -80,6 +87,10 @@ interface ProxyClassOptions {
       params: Parameter[]
     }
   }
+  /**
+   * 运行时提示的错误信息
+   */
+  errMsg?: string
 }
 
 interface InvokeInstanceArgs {
@@ -87,6 +98,10 @@ interface InvokeInstanceArgs {
   name: string
   params?: unknown[]
   method?: Parameter[]
+  /**
+   * 运行时提示的错误信息
+   */
+  errMsg?: string
 }
 interface InvokeStaticArgs {
   /**
@@ -113,6 +128,10 @@ interface InvokeStaticArgs {
    * 是否是伴生对象
    */
   companion?: boolean
+  /**
+   * 运行时提示的错误信息
+   */
+  errMsg?: string
 }
 
 type InvokeArgs = InvokeInstanceArgs | InvokeStaticArgs
@@ -121,6 +140,7 @@ interface InvokeCallbackReturnRes {
   type: 'return'
   params?: unknown[]
   errMsg?: string
+  errStackTrace?: string
 }
 interface InvokeCallbackParamsRes {
   type: 'params'
@@ -132,6 +152,7 @@ interface InvokeCallbackParamsRes {
 interface InvokeSyncRes {
   type: 'return'
   errMsg?: string
+  errStackTrace?: string
   params: unknown
 }
 type InvokeSyncCallback = (res: InvokeCallbackParamsRes) => void
@@ -156,6 +177,10 @@ function resolveSyncResult(res: InvokeSyncRes) {
 }
 
 function invokePropGetter(args: InvokeArgs) {
+  if (args.errMsg) {
+    throw new Error(args.errMsg)
+  }
+  delete args.errMsg
   return resolveSyncResult(getProxy().invokeSync(args, () => {}))
 }
 
@@ -168,6 +193,7 @@ function initProxyFunction(
     method,
     companion,
     params: methodParams,
+    errMsg,
   }: ProxyFunctionOptions,
   instanceId: number
 ) {
@@ -197,6 +223,9 @@ function initProxyFunction(
         method: methodParams,
       }
   return (...args: unknown[]) => {
+    if (errMsg) {
+      throw new Error(errMsg)
+    }
     const invokeArgs = extend({}, baseArgs, {
       params: args.map((arg) => normalizeArg(arg)),
     })
@@ -238,13 +267,18 @@ export function initUtsProxyClass({
   props,
   staticProps,
   staticMethods,
+  errMsg,
 }: ProxyClassOptions): any {
   const baseOptions = {
     package: pkg,
     class: cls,
+    errMsg,
   }
   const ProxyClass = class UtsClass {
     constructor(...params: unknown[]) {
+      if (errMsg) {
+        throw new Error(errMsg)
+      }
       const target: Record<string, Function> = {}
       // 初始化实例 ID
       const instanceId = initProxyFunction(
@@ -274,7 +308,11 @@ export function initUtsProxyClass({
               )
             } else if (props.includes(name as string)) {
               // 实例属性
-              return invokePropGetter({ id: instanceId, name: name as string })
+              return invokePropGetter({
+                id: instanceId,
+                name: name as string,
+                errMsg,
+              })
             }
           }
           return target[name as string]

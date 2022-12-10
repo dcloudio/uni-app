@@ -25,7 +25,7 @@ export const StartLocationUpdateOptions: ApiOptions<API_TYPE_START_LOCATION_UPDA
       type(value, params) {
         value = (value || '').toLowerCase()
         if (coordTypes.indexOf(value) === -1) {
-          params.type = coordTypes[0]
+          params.type = coordTypes[1]
         } else {
           params.type = value
         }

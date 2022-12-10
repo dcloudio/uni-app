@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uts-darwin-arm64",
-  "version": "3.0.0-3060520221121001",
+  "version": "3.0.0-alpha-3061220221207001",
   "os": [
     "darwin"
   ],

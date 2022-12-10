@@ -69,7 +69,6 @@ export function useQuill(
   let quillReady: boolean
   let skipMatcher: boolean
   let quill: QuillExt
-  let textChanging: Boolean = false
   watch(
     () => props.readOnly,
     (value) => {
@@ -177,6 +176,9 @@ export function useQuill(
       trigger('statuschange', {} as Event, status)
     }
   }
+  function textChangeHandler() {
+    trigger('input', {} as Event, getContents())
+  }
   function initQuill(imageResizeModules: ResizeModuleName[]) {
     const Quill = (window as WindowExt).Quill as typeof QuillClass
     formats.register(Quill)
@@ -220,11 +222,7 @@ export function useQuill(
         }
       })
     })
-    quill.on('text-change', () => {
-      if (!textChanging) {
-        trigger('input', {} as Event, getContents())
-      }
-    })
+    quill.on('text-change', textChangeHandler)
     quill.on('selection-change', updateStatus)
     quill.on('scroll-optimize', () => {
       const range = quill.selection.getRange()[0]
@@ -244,35 +242,6 @@ export function useQuill(
     quillReady = true
     trigger('ready', {} as Event, {})
   }
-  onMounted(() => {
-    const imageResizeModules: ResizeModuleName[] = []
-    if (props.showImgSize) {
-      imageResizeModules.push('DisplaySize')
-    }
-    if (props.showImgToolbar) {
-      imageResizeModules.push('Toolbar')
-    }
-    if (props.showImgResize) {
-      imageResizeModules.push('Resize')
-    }
-    const quillSrc =
-      __PLATFORM__ === 'app'
-        ? './__uniappquill.js'
-        : 'https://unpkg.com/quill@1.3.7/dist/quill.min.js'
-    loadScript((window as WindowExt).Quill, quillSrc, () => {
-      if (imageResizeModules.length) {
-        const imageResizeSrc =
-          __PLATFORM__ === 'app'
-            ? './__uniappquillimageresize.js'
-            : 'https://unpkg.com/quill-image-resize-mp@3.0.1/image-resize.min.js'
-        loadScript((window as WindowExt).ImageResize, imageResizeSrc, () => {
-          initQuill(imageResizeModules)
-        })
-      } else {
-        initQuill(imageResizeModules)
-      }
-    })
-  })
   const id = useContextInfo()
   useSubscribe<{ callbackId: string; data: any }>(
     (type, data: any, resolve) => {
@@ -338,24 +307,27 @@ export function useQuill(
                 data = {},
               } = options
               const path = getRealPath(src)
-              quill.insertEmbed(range.index, 'image', path, 'user')
+              quill.insertEmbed(range.index, 'image', path, 'silent')
               const local = /^(file|blob):/.test(path) ? path : false
-              textChanging = true
-              quill.formatText(range.index, 1, 'data-local', local)
-              quill.formatText(range.index, 1, 'alt', alt)
-              quill.formatText(range.index, 1, 'width', width)
-              quill.formatText(range.index, 1, 'height', height)
-              quill.formatText(range.index, 1, 'class', extClass)
-              textChanging = false
+              quill.formatText(range.index, 1, 'data-local', local, 'silent')
+              quill.formatText(range.index, 1, 'alt', alt, 'silent')
+              quill.formatText(range.index, 1, 'width', width, 'silent')
+              quill.formatText(range.index, 1, 'height', height, 'silent')
+              quill.formatText(range.index, 1, 'class', extClass, 'silent')
               quill.formatText(
                 range.index,
                 1,
                 'data-custom',
                 Object.keys(data)
                   .map((key) => `${key}=${data[key]}`)
-                  .join('&')
+                  .join('&'),
+                'silent'
               )
               quill.setSelection(range.index + 1, 0, 'silent')
+              quill.scrollIntoView()
+              setTimeout(() => {
+                textChangeHandler()
+              }, 1000)
             }
             break
           case 'insertText':
@@ -437,4 +409,33 @@ export function useQuill(
     id,
     true
   )
+  onMounted(() => {
+    const imageResizeModules: ResizeModuleName[] = []
+    if (props.showImgSize) {
+      imageResizeModules.push('DisplaySize')
+    }
+    if (props.showImgToolbar) {
+      imageResizeModules.push('Toolbar')
+    }
+    if (props.showImgResize) {
+      imageResizeModules.push('Resize')
+    }
+    const quillSrc =
+      __PLATFORM__ === 'app'
+        ? './__uniappquill.js'
+        : 'https://unpkg.com/quill@1.3.7/dist/quill.min.js'
+    loadScript((window as WindowExt).Quill, quillSrc, () => {
+      if (imageResizeModules.length) {
+        const imageResizeSrc =
+          __PLATFORM__ === 'app'
+            ? './__uniappquillimageresize.js'
+            : 'https://unpkg.com/quill-image-resize-mp@3.0.1/image-resize.min.js'
+        loadScript((window as WindowExt).ImageResize, imageResizeSrc, () => {
+          initQuill(imageResizeModules)
+        })
+      } else {
+        initQuill(imageResizeModules)
+      }
+    })
+  })
 }

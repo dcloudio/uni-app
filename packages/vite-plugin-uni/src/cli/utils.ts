@@ -3,7 +3,7 @@ import os from 'os'
 import path from 'path'
 import colors from 'picocolors'
 import { performance } from 'perf_hooks'
-import { BuildOptions, InlineConfig, Logger } from 'vite'
+import type { BuildOptions, InlineConfig, Logger } from 'vite'
 
 import {
   M,
@@ -136,6 +136,8 @@ export function initEnv(
 
   initAutomator(options)
 
+  initDevtools(options)
+
   if (process.env.UNI_PLATFORM === 'app') {
     const pkg = require('../../package.json')
     console.log(
@@ -199,6 +201,19 @@ function initUtsPlatform(options: CliOptions) {
   }
 }
 
+function initDevtools({ devtools, devtoolsHost, devtoolsPort }: CliOptions) {
+  if (!devtools) {
+    return
+  }
+  process.env.__VUE_PROD_DEVTOOLS__ = 'true'
+  if (devtoolsHost) {
+    process.env.__VUE_DEVTOOLS_HOST__ = devtoolsHost
+  }
+  if (devtoolsPort) {
+    process.env.__VUE_DEVTOOLS_PORT__ = devtoolsPort + ''
+  }
+}
+
 function initAutomator({ autoHost, autoPort }: CliOptions) {
   // 发行分包,插件也不需要自动化测试
   if (!autoPort || process.env.UNI_SUBPACKAGE || process.env.UNI_MP_PLUGIN) {
@@ -232,6 +247,9 @@ function resolveHostname() {
 export function cleanOptions(options: CliOptions) {
   const ret = { ...options }
   delete ret['--']
+
+  delete ret.c
+  delete ret.config
 
   delete ret.platform
   delete ret.p

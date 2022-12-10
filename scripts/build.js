@@ -121,12 +121,16 @@ async function build(target) {
   const env = devOnly ? 'development' : 'production'
 
   if (hasViteBundler) {
+    const env = {}
+    if (target === 'size-check') {
+      env.UNI_PLATFORM = 'h5'
+    }
     await execa(
       'vite',
       ['build', '--config', path.resolve(pkgDir, 'vite.config.ts')],
       {
         stdio: 'inherit',
-        env: Object.assign({ FORMAT: 'es' }, process.env),
+        env: Object.assign({ FORMAT: 'es' }, process.env, env),
         cwd: pkgDir,
       }
     )

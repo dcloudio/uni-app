@@ -1,7 +1,7 @@
 import { addMiniProgramPageJson } from '@dcloudio/uni-cli-shared'
 import { assert } from './testUtils'
 
-describe('mp-baidu: transform component', () => {
+describe('mp-toutiao: transform component', () => {
   test(`component with v-show`, () => {
     assert(
       `<custom v-show="ok"/>`,
@@ -29,7 +29,7 @@ describe('mp-baidu: transform component', () => {
     })
     assert(
       `<van-button/>`,
-      `<van-button u-t="m" u-i="dc555fe4-0" bind:__l="__l"/>`,
+      `<van-button tt:if="{{r0}}" u-t="m" u-i="dc555fe4-0" bind:__l="__l"/>`,
       `(_ctx, _cache) => {
   return {}
 }`,

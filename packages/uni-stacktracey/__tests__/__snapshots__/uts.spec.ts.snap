@@ -1,0 +1,49 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`code-frame-uts android 1`] = `
+"error: The integer literal does not conform to the expected type String
+at uni_modules/test-uts1/utssdk/index.uts:2:10
+1  |  export function test(): string {
+2  |    return 1;
+   |            ^
+3  |  }
+4  |  
+
+
+FAILURE: Build failed with an exception."
+`;
+
+exports[`code-frame-uts android 2`] = `
+"error: The integer literal does not conform to the expected type String
+at utssdk/test2/index.uts:2:10
+1  |  export function test(): string {
+2  |    return 2;
+   |            ^
+3  |  }
+4  |  
+
+
+FAILURE: Build failed with an exception."
+`;
+
+exports[`code-frame-uts ios 1`] = `
+"CompileSwift normal armv7 uni_modules/test-uts1/utssdk/app-ios/src/index.swift (in target 'uni_modules_test_uts1' from project 'UTS')
+error: cannot convert return expression of type 'Int' to return type 'String'
+at uni_modules/test-uts1/utssdk/app-ios/index.uts:2:10
+1  |  export function test(): string {
+2  |    return 1;
+   |            ^
+3  |  }
+4  |  
+
+
+CompileSwift normal arm64 uni_modules/test-uts1/utssdk/app-ios/src/index.swift (in target 'uni_modules_test_uts1' from project 'UTS')
+error: cannot convert return expression of type 'Int' to return type 'String'
+at uni_modules/test-uts1/utssdk/app-ios/index.uts:2:10
+1  |  export function test(): string {
+2  |    return 1;
+   |            ^
+3  |  }
+4  |  
+"
+`;

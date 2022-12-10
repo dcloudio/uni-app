@@ -1,4 +1,4 @@
-import { isFunction } from '@vue/shared'
+import { isFunction, isString } from '@vue/shared'
 import {
   ua,
   isIOS,
@@ -31,6 +31,20 @@ function IEVersion() {
     return 11
   } else {
     return -1
+  }
+}
+
+export function getTheme() {
+  if (__uniConfig.darkmode !== true)
+    return isString(__uniConfig.darkmode) ? __uniConfig.darkmode : 'light'
+  try {
+    return (
+      window.matchMedia('(prefers-color-scheme: light)').matches
+        ? 'light'
+        : 'dark'
+    ) as UniApp.ThemeMode
+  } catch (error) {
+    return 'light'
   }
 }
 
@@ -205,6 +219,6 @@ export function getBrowserInfo() {
     ua,
     osname,
     osversion,
-    theme: undefined,
+    theme: getTheme(),
   }
 }

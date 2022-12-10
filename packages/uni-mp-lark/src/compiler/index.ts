@@ -1,7 +1,10 @@
 import type { Plugin } from 'vite'
 import initMiniProgramPlugin from '@dcloudio/uni-mp-vite'
 
-import { ASSETS_INLINE_LIMIT } from '@dcloudio/uni-cli-shared'
+import {
+  ASSETS_INLINE_LIMIT,
+  copyMiniProgramThemeJson,
+} from '@dcloudio/uni-cli-shared'
 import { options } from '@dcloudio/uni-mp-toutiao/src/compiler/options'
 
 const uniMiniProgramToutiaoPlugin: Plugin = {
@@ -21,12 +24,7 @@ const uniMiniProgramToutiaoPlugin: Plugin = {
 
 options.vite.copyOptions.targets = [
   ...(options.vite.copyOptions.targets || []),
-  {
-    src: ['theme.json'],
-    get dest() {
-      return process.env.UNI_OUTPUT_DIR
-    },
-  },
+  ...copyMiniProgramThemeJson(),
 ]
 
 options.app.darkmode = true

@@ -129,3 +129,25 @@ uni-modal {
 .uni-modal__btn_primary {
   color: #007aff;
 }
+
+@media (prefers-color-scheme: dark) {
+  .uni-modal {
+    color: var(--UI-FG-0);
+    background-color: var(--UI-BG-2);
+  }
+
+  .uni-modal__bd {
+    color: var(--UI-FG-1);
+  }
+
+  .uni-modal__btn:active {
+    color: rgb(170, 170, 170);
+    background-color: var(--UI-BG-CLOLOR-ACTIVE);
+  }
+
+  .uni-modal__ft:after,
+  .uni-modal__btn:after {
+    color: var(--UI-BORDER-CLOLOR-1);
+    border-color: var(--UI-BORDER-CLOLOR-1);
+  }
+}

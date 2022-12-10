@@ -46,7 +46,7 @@ export function uniMainJsPlugin(
           })
           return {
             code:
-              `import 'plugin-vue:export-helper';import 'uni-mp-runtime';import './${PAGES_JSON_JS}';` +
+              `import '\0plugin-vue:export-helper';import 'uni-mp-runtime';import './${PAGES_JSON_JS}';` +
               code,
             map,
           }

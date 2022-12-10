@@ -1,3 +1,4 @@
+import os from 'os'
 import fs from 'fs'
 import path from 'path'
 import type { Plugin, ResolvedConfig, ServerOptions } from 'vite'
@@ -29,12 +30,21 @@ export function createConfig(options: {
 
     const server: ServerOptions = {
       host: true,
+      hmr: {
+        // mac 内置浏览器版本较低不支持 globalThis，而 overlay 使用了 globalThis
+        overlay:
+          os.platform() !== 'win32'
+            ? process.env.UNI_H5_BROWSER !== 'builtin'
+            : true,
+      },
       fs: { strict: false },
       watch: {
         ignored: [
           '**/uniCloud-aliyun/**',
           '**/uniCloud-tcb/**',
           '**/uni_modules/uniCloud/**',
+          normalizePath(path.join(inputDir, 'unpackage/**')),
+          normalizePath(path.join(inputDir, 'dist/**')),
         ],
       },
       ...getDevServerOptions(parseManifestJsonOnce(inputDir)),

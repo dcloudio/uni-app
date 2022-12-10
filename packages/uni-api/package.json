@@ -1,9 +1,10 @@
 {
   "private": true,
   "name": "@dcloudio/uni-api",
-  "version": "3.0.0-3060520221121001",
+  "version": "3.0.0-alpha-3061220221207001",
   "description": "@dcloudio/uni-api",
   "sideEffects": false,
+  "module": "src/index.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dcloudio/uni-app.git",
@@ -14,9 +15,9 @@
     "url": "https://github.com/dcloudio/uni-app/issues"
   },
   "dependencies": {
-    "@vue/shared": "3.2.39"
+    "@vue/shared": "3.2.45"
   },
   "devDependencies": {
-    "@dcloudio/uni-shared": "3.0.0-3060520221121001"
+    "@dcloudio/uni-shared": "3.0.0-alpha-3061220221207001"
   }
 }

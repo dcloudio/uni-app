@@ -1,0 +1,353 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`code-frame generateCodeFrame 1`] = `
+{
+  "code": "36 |   */
+37 |  const MEDIA_PROJECTIONS_API_16 = arrayOf(
+38 |    MediaStore.Images.ImageColumns.DATA,
+   |                                   ^
+39 |    MediaStore.Images.ImageColumns.DATE_TAKEN,
+40 |    MediaStore.Images.ImageColumns.WIDTH,",
+  "column": 33,
+  "file": "uni_modules/uts-screenshot-listener/utssdk/app-android/index.uts",
+  "line": 38,
+  "message": "'DATA: String' is deprecated. Deprecated in Java",
+  "type": "warning",
+}
+`;
+
+exports[`code-frame generateCodeFrame 2`] = `
+{
+  "code": "76 |        }
+77 |        lastFileObserverTime = System.currentTimeMillis()
+78 |        listenOption!.onImageCatchChange(newPath)
+   |        ^
+79 |      }
+80 |    }",
+  "column": 6,
+  "file": "uni_modules/uts-screenshot-listener/utssdk/app-android/index.uts",
+  "line": 78,
+  "message": "Unnecessary non-null assertion (!!) on a non-null receiver of type onImageCatchOptions",
+  "type": "warning",
+}
+`;
+
+exports[`code-frame generateCodeFrame 3`] = `
+{
+  "code": "124|  
+125|  
+126|      if (cursor == null) {
+   |          ^
+127|        return
+128|      }",
+  "column": 8,
+  "file": "uni_modules/uts-screenshot-listener/utssdk/app-android/index.uts",
+  "line": 126,
+  "message": "Condition 'cursor == null' is always 'false'",
+  "type": "warning",
+}
+`;
+
+exports[`code-frame generateCodeFrame 4`] = `
+{
+  "code": "133|  
+134|      // 获取各列的索引
+135|      let dataIndex = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA)
+   |                                                                           ^
+136|      let dateTakenIndex = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATE_TAKEN)
+137|      let widthIndex = cursor.getColumnIndex(MediaStore.Images.ImageColumns.WIDTH)",
+  "column": 73,
+  "file": "uni_modules/uts-screenshot-listener/utssdk/app-android/index.uts",
+  "line": 135,
+  "message": "'DATA: String' is deprecated. Deprecated in Java",
+  "type": "warning",
+}
+`;
+
+exports[`code-frame generateCodeFrame 5`] = `
+{
+  "code": "141|      let data = cursor.getString(dataIndex)
+142|      let dateTaken = cursor.getLong(dateTakenIndex)
+143|      let width = 0;
+   |                   ^
+144|      let height = 0;
+145|      if (widthIndex >= 0 && heightIndex >= 0) {",
+  "column": 17,
+  "file": "uni_modules/uts-screenshot-listener/utssdk/app-android/index.uts",
+  "line": 143,
+  "message": "Variable 'width' initializer is redundant",
+  "type": "warning",
+}
+`;
+
+exports[`code-frame generateCodeFrame 6`] = `
+{
+  "code": "142|      let dateTaken = cursor.getLong(dateTakenIndex)
+143|      let width = 0;
+144|      let height = 0;
+   |                    ^
+145|      if (widthIndex >= 0 && heightIndex >= 0) {
+146|        width = cursor.getInt(widthIndex)",
+  "column": 18,
+  "file": "uni_modules/uts-screenshot-listener/utssdk/app-android/index.uts",
+  "line": 144,
+  "message": "Variable 'height' initializer is redundant",
+  "type": "warning",
+}
+`;
+
+exports[`code-frame generateCodeFrame 7`] = `
+{
+  "code": "180|    if (checkScreenShot(data, dateTaken, width, height)) {
+181|      if (!checkCallback(data)) {
+182|        listenOption!.onImageCatchChange(data)
+   |        ^
+183|      }
+184|    } else {",
+  "column": 6,
+  "file": "uni_modules/uts-screenshot-listener/utssdk/app-android/index.uts",
+  "line": 182,
+  "message": "Unnecessary non-null assertion (!!) on a non-null receiver of type onImageCatchOptions",
+  "type": "warning",
+}
+`;
+
+exports[`code-frame generateCodeFrame 8`] = `
+{
+  "code": "248|    try {
+249|      let windowManager = getUniActivity()!.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+250|      let defaultDisplay = windowManager.defaultDisplay
+   |                                         ^
+251|      defaultDisplay.getRealSize(screenSize)
+252|    } catch (e) {",
+  "column": 39,
+  "file": "uni_modules/uts-screenshot-listener/utssdk/app-android/index.uts",
+  "line": 250,
+  "message": "'getter for defaultDisplay: Display!' is deprecated. Deprecated in Java",
+  "type": "warning",
+}
+`;
+
+exports[`code-frame generateCodeFrame 9`] = `
+{
+  "code": "249|      let windowManager = getUniActivity()!.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+250|      let defaultDisplay = windowManager.defaultDisplay
+251|      defaultDisplay.getRealSize(screenSize)
+   |                     ^
+252|    } catch (e) {
+253|      e.printStackTrace()",
+  "column": 19,
+  "file": "uni_modules/uts-screenshot-listener/utssdk/app-android/index.uts",
+  "line": 251,
+  "message": "'getRealSize(Point!): Unit' is deprecated. Deprecated in Java",
+  "type": "warning",
+}
+`;
+
+exports[`code-frame generateCodeFrame 10`] = `
+{
+  "code": "308|      var directory_screenshot: File;
+309|  
+310|      var directory_pictures = File(Environment.getExternalStorageDirectory(), Environment.DIRECTORY_PICTURES);
+   |                                                ^
+311|      var directory_dcim = File(Environment.getExternalStorageDirectory(), Environment.DIRECTORY_DCIM);
+312|  ",
+  "column": 46,
+  "file": "uni_modules/uts-screenshot-listener/utssdk/app-android/index.uts",
+  "line": 310,
+  "message": "'getExternalStorageDirectory(): File!' is deprecated. Deprecated in Java",
+  "type": "warning",
+}
+`;
+
+exports[`code-frame generateCodeFrame 11`] = `
+{
+  "code": "309|  
+310|      var directory_pictures = File(Environment.getExternalStorageDirectory(), Environment.DIRECTORY_PICTURES);
+311|      var directory_dcim = File(Environment.getExternalStorageDirectory(), Environment.DIRECTORY_DCIM);
+   |                                            ^
+312|  
+313|      if (Build.MANUFACTURER.equals("Xiaomi", true)) {",
+  "column": 42,
+  "file": "uni_modules/uts-screenshot-listener/utssdk/app-android/index.uts",
+  "line": 311,
+  "message": "'getExternalStorageDirectory(): File!' is deprecated. Deprecated in Java",
+  "type": "warning",
+}
+`;
+
+exports[`code-frame generateCodeFrameWithSourceMapPath 1`] = `
+{
+  "code": "36 |   */
+37 |  const MEDIA_PROJECTIONS_API_16 = arrayOf(
+38 |    MediaStore.Images.ImageColumns.DATA,
+   |                                   ^
+39 |    MediaStore.Images.ImageColumns.DATE_TAKEN,
+40 |    MediaStore.Images.ImageColumns.WIDTH,",
+  "column": 33,
+  "file": "uni_modules/uts-screenshot-listener/utssdk/app-android/index.uts",
+  "line": 38,
+  "message": "'DATA: String' is deprecated. Deprecated in Java",
+  "type": "warning",
+}
+`;
+
+exports[`code-frame generateCodeFrameWithSourceMapPath 2`] = `
+{
+  "code": "76 |        }
+77 |        lastFileObserverTime = System.currentTimeMillis()
+78 |        listenOption!.onImageCatchChange(newPath)
+   |        ^
+79 |      }
+80 |    }",
+  "column": 6,
+  "file": "uni_modules/uts-screenshot-listener/utssdk/app-android/index.uts",
+  "line": 78,
+  "message": "Unnecessary non-null assertion (!!) on a non-null receiver of type onImageCatchOptions",
+  "type": "warning",
+}
+`;
+
+exports[`code-frame generateCodeFrameWithSourceMapPath 3`] = `
+{
+  "code": "124|  
+125|  
+126|      if (cursor == null) {
+   |          ^
+127|        return
+128|      }",
+  "column": 8,
+  "file": "uni_modules/uts-screenshot-listener/utssdk/app-android/index.uts",
+  "line": 126,
+  "message": "Condition 'cursor == null' is always 'false'",
+  "type": "warning",
+}
+`;
+
+exports[`code-frame generateCodeFrameWithSourceMapPath 4`] = `
+{
+  "code": "133|  
+134|      // 获取各列的索引
+135|      let dataIndex = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA)
+   |                                                                           ^
+136|      let dateTakenIndex = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATE_TAKEN)
+137|      let widthIndex = cursor.getColumnIndex(MediaStore.Images.ImageColumns.WIDTH)",
+  "column": 73,
+  "file": "uni_modules/uts-screenshot-listener/utssdk/app-android/index.uts",
+  "line": 135,
+  "message": "'DATA: String' is deprecated. Deprecated in Java",
+  "type": "warning",
+}
+`;
+
+exports[`code-frame generateCodeFrameWithSourceMapPath 5`] = `
+{
+  "code": "141|      let data = cursor.getString(dataIndex)
+142|      let dateTaken = cursor.getLong(dateTakenIndex)
+143|      let width = 0;
+   |                   ^
+144|      let height = 0;
+145|      if (widthIndex >= 0 && heightIndex >= 0) {",
+  "column": 17,
+  "file": "uni_modules/uts-screenshot-listener/utssdk/app-android/index.uts",
+  "line": 143,
+  "message": "Variable 'width' initializer is redundant",
+  "type": "warning",
+}
+`;
+
+exports[`code-frame generateCodeFrameWithSourceMapPath 6`] = `
+{
+  "code": "142|      let dateTaken = cursor.getLong(dateTakenIndex)
+143|      let width = 0;
+144|      let height = 0;
+   |                    ^
+145|      if (widthIndex >= 0 && heightIndex >= 0) {
+146|        width = cursor.getInt(widthIndex)",
+  "column": 18,
+  "file": "uni_modules/uts-screenshot-listener/utssdk/app-android/index.uts",
+  "line": 144,
+  "message": "Variable 'height' initializer is redundant",
+  "type": "warning",
+}
+`;
+
+exports[`code-frame generateCodeFrameWithSourceMapPath 7`] = `
+{
+  "code": "180|    if (checkScreenShot(data, dateTaken, width, height)) {
+181|      if (!checkCallback(data)) {
+182|        listenOption!.onImageCatchChange(data)
+   |        ^
+183|      }
+184|    } else {",
+  "column": 6,
+  "file": "uni_modules/uts-screenshot-listener/utssdk/app-android/index.uts",
+  "line": 182,
+  "message": "Unnecessary non-null assertion (!!) on a non-null receiver of type onImageCatchOptions",
+  "type": "warning",
+}
+`;
+
+exports[`code-frame generateCodeFrameWithSourceMapPath 8`] = `
+{
+  "code": "248|    try {
+249|      let windowManager = getUniActivity()!.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+250|      let defaultDisplay = windowManager.defaultDisplay
+   |                                         ^
+251|      defaultDisplay.getRealSize(screenSize)
+252|    } catch (e) {",
+  "column": 39,
+  "file": "uni_modules/uts-screenshot-listener/utssdk/app-android/index.uts",
+  "line": 250,
+  "message": "'getter for defaultDisplay: Display!' is deprecated. Deprecated in Java",
+  "type": "warning",
+}
+`;
+
+exports[`code-frame generateCodeFrameWithSourceMapPath 9`] = `
+{
+  "code": "249|      let windowManager = getUniActivity()!.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+250|      let defaultDisplay = windowManager.defaultDisplay
+251|      defaultDisplay.getRealSize(screenSize)
+   |                     ^
+252|    } catch (e) {
+253|      e.printStackTrace()",
+  "column": 19,
+  "file": "uni_modules/uts-screenshot-listener/utssdk/app-android/index.uts",
+  "line": 251,
+  "message": "'getRealSize(Point!): Unit' is deprecated. Deprecated in Java",
+  "type": "warning",
+}
+`;
+
+exports[`code-frame generateCodeFrameWithSourceMapPath 10`] = `
+{
+  "code": "308|      var directory_screenshot: File;
+309|  
+310|      var directory_pictures = File(Environment.getExternalStorageDirectory(), Environment.DIRECTORY_PICTURES);
+   |                                                ^
+311|      var directory_dcim = File(Environment.getExternalStorageDirectory(), Environment.DIRECTORY_DCIM);
+312|  ",
+  "column": 46,
+  "file": "uni_modules/uts-screenshot-listener/utssdk/app-android/index.uts",
+  "line": 310,
+  "message": "'getExternalStorageDirectory(): File!' is deprecated. Deprecated in Java",
+  "type": "warning",
+}
+`;
+
+exports[`code-frame generateCodeFrameWithSourceMapPath 11`] = `
+{
+  "code": "309|  
+310|      var directory_pictures = File(Environment.getExternalStorageDirectory(), Environment.DIRECTORY_PICTURES);
+311|      var directory_dcim = File(Environment.getExternalStorageDirectory(), Environment.DIRECTORY_DCIM);
+   |                                            ^
+312|  
+313|      if (Build.MANUFACTURER.equals("Xiaomi", true)) {",
+  "column": 42,
+  "file": "uni_modules/uts-screenshot-listener/utssdk/app-android/index.uts",
+  "line": 311,
+  "message": "'getExternalStorageDirectory(): File!' is deprecated. Deprecated in Java",
+  "type": "warning",
+}
+`;

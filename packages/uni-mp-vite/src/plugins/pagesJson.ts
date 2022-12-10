@@ -1,4 +1,3 @@
-import fs from 'fs'
 import path from 'path'
 import debug from 'debug'
 import { Plugin, ResolvedConfig } from 'vite'
@@ -54,9 +53,7 @@ export function uniPagesJsonPlugin(
           platform,
           {
             debug: !!manifestJson.debug,
-            darkmode:
-              options.app.darkmode &&
-              fs.existsSync(path.resolve(inputDir, 'theme.json')),
+            darkmode: options.app.darkmode,
             networkTimeout: manifestJson.networkTimeout,
             subpackages: !!options.app.subpackages,
             ...options.json,
@@ -83,7 +80,9 @@ export function uniPagesJsonPlugin(
         const { normalize } = options.app
         addMiniProgramAppJson(normalize ? normalize(appJson) : appJson)
         Object.keys(pageJsons).forEach((name) => {
-          addMiniProgramPageJson(name, pageJsons[name])
+          if (isNormalPage(name)) {
+            addMiniProgramPageJson(name, pageJsons[name])
+          }
         })
         return {
           code: `import './${MANIFEST_JSON_JS}'\n` + importPagesCode(appJson),
@@ -105,10 +104,21 @@ export function uniPagesJsonPlugin(
     }
   })
 }
+/**
+ * 字节跳动小程序可以配置 ext:// 开头的插件页面模板，如 ext://microapp-trade-plugin/order-confirm
+ * @param pagePath
+ * @returns
+ */
+function isNormalPage(pagePath: string) {
+  return !pagePath.startsWith('ext://')
+}
 
 function importPagesCode(pagesJson: AppJson) {
   const importPagesCode: string[] = []
   function importPageCode(pagePath: string) {
+    if (!isNormalPage(pagePath)) {
+      return
+    }
     const pagePathWithExtname = normalizePagePath(
       pagePath,
       process.env.UNI_PLATFORM

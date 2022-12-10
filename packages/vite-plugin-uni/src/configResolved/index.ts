@@ -15,8 +15,10 @@ import { initOptions } from './options'
 import { initPlugins } from './plugins'
 import { customResolver } from '../config/resolve'
 
-export function createConfigResolved(options: VitePluginUniResolvedOptions) {
-  return ((config) => {
+export function createConfigResolved(
+  options: VitePluginUniResolvedOptions
+): Plugin['configResolved'] {
+  return (config) => {
     // 如果是混合编译且是 nvue 时，部分逻辑无需执行
     if (!isInHybridNVue(config)) {
       initEnv(config)
@@ -37,7 +39,7 @@ export function createConfigResolved(options: VitePluginUniResolvedOptions) {
         item.customResolver = customResolver
       }
     }
-  }) as Plugin['configResolved']
+  }
 }
 
 function initCheckUpdate() {

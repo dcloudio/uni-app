@@ -100,8 +100,7 @@ uni-swiper[hidden] {
 
 .uni-swiper-navigation-disabled {
   opacity: 0.35;
-  cursor: auto;
-  pointer-events: none;
+  cursor: not-allowed;
 }
 
 .uni-swiper-navigation-hide {

@@ -2,42 +2,6 @@ import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawTy
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 import { LINEFEED, Emitter, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
 
-const eventChannels = {};
-const eventChannelStack = [];
-let id = 0;
-function initEventChannel(events, cache = true) {
-    id++;
-    const eventChannel = new swan.EventChannel(id, events);
-    if (cache) {
-        eventChannels[id] = eventChannel;
-        eventChannelStack.push(eventChannel);
-    }
-    return eventChannel;
-}
-function getEventChannel(id) {
-    if (id) {
-        const eventChannel = eventChannels[id];
-        delete eventChannels[id];
-        return eventChannel;
-    }
-    return eventChannelStack.shift();
-}
-const navigateTo = {
-    args(fromArgs) {
-        const id = initEventChannel(fromArgs.events).id;
-        if (fromArgs.url) {
-            fromArgs.url =
-                fromArgs.url +
-                    (fromArgs.url.indexOf('?') === -1 ? '?' : '&') +
-                    '__id__=' +
-                    id;
-        }
-    },
-    returnValue(fromRes) {
-        fromRes.eventChannel = getEventChannel();
-    },
-};
-
 function getBaseSystemInfo() {
   return swan.getSystemInfoSync()
 }
@@ -915,67 +879,6 @@ if (typeof global !== 'undefined') {
     global.getLocale = getLocale;
 }
 
-const baseApis = {
-    $on,
-    $off,
-    $once,
-    $emit,
-    upx2px,
-    interceptors,
-    addInterceptor,
-    removeInterceptor,
-    onCreateVueApp,
-    invokeCreateVueAppHook,
-    getLocale,
-    setLocale,
-    onLocaleChange,
-    getPushClientId,
-    onPushMessage,
-    offPushMessage,
-    invokePushCallback,
-};
-function initUni(api, protocols) {
-    const wrapper = initWrapper(protocols);
-    const UniProxyHandlers = {
-        get(target, key) {
-            if (hasOwn(target, key)) {
-                return target[key];
-            }
-            if (hasOwn(api, key)) {
-                return promisify(key, api[key]);
-            }
-            if (hasOwn(baseApis, key)) {
-                return promisify(key, baseApis[key]);
-            }
-            // event-api
-            // provider-api?
-            return promisify(key, wrapper(key, swan[key]));
-        },
-    };
-    return new Proxy({}, UniProxyHandlers);
-}
-
-function initGetProvider(providers) {
-    return function getProvider({ service, success, fail, complete, }) {
-        let res;
-        if (providers[service]) {
-            res = {
-                errMsg: 'getProvider:ok',
-                service,
-                provider: providers[service],
-            };
-            isFunction(success) && success(res);
-        }
-        else {
-            res = {
-                errMsg: 'getProvider:fail:服务[' + service + ']不存在',
-            };
-            isFunction(fail) && fail(res);
-        }
-        isFunction(complete) && complete(res);
-    };
-}
-
 const UUID_KEY = '__DC_STAT_UUID';
 let deviceId;
 function useDeviceId(global = swan) {
@@ -1143,6 +1046,107 @@ const previewImage = {
     },
 };
 
+const eventChannels = {};
+const eventChannelStack = [];
+let id = 0;
+function initEventChannel(events, cache = true) {
+    id++;
+    const eventChannel = new swan.EventChannel(id, events);
+    if (cache) {
+        eventChannels[id] = eventChannel;
+        eventChannelStack.push(eventChannel);
+    }
+    return eventChannel;
+}
+function getEventChannel(id) {
+    if (id) {
+        const eventChannel = eventChannels[id];
+        delete eventChannels[id];
+        return eventChannel;
+    }
+    return eventChannelStack.shift();
+}
+const navigateTo = {
+    args(fromArgs) {
+        const id = initEventChannel(fromArgs.events).id;
+        if (fromArgs.url) {
+            fromArgs.url =
+                fromArgs.url +
+                    (fromArgs.url.indexOf('?') === -1 ? '?' : '&') +
+                    '__id__=' +
+                    id;
+        }
+    },
+    returnValue(fromRes) {
+        fromRes.eventChannel = getEventChannel();
+    },
+};
+
+const baseApis = {
+    $on,
+    $off,
+    $once,
+    $emit,
+    upx2px,
+    interceptors,
+    addInterceptor,
+    removeInterceptor,
+    onCreateVueApp,
+    invokeCreateVueAppHook,
+    getLocale,
+    setLocale,
+    onLocaleChange,
+    getPushClientId,
+    onPushMessage,
+    offPushMessage,
+    invokePushCallback,
+};
+function initUni(api, protocols) {
+    const wrapper = initWrapper(protocols);
+    const UniProxyHandlers = {
+        get(target, key) {
+            if (hasOwn(target, key)) {
+                return target[key];
+            }
+            if (hasOwn(api, key)) {
+                return promisify(key, api[key]);
+            }
+            if (hasOwn(baseApis, key)) {
+                return promisify(key, baseApis[key]);
+            }
+            // event-api
+            // provider-api?
+            return promisify(key, wrapper(key, swan[key]));
+        },
+    };
+    // 处理 api mp 打包后为不同js，getEventChannel 无法共享问题
+    {
+        swan.getEventChannel = getEventChannel;
+    }
+    return new Proxy({}, UniProxyHandlers);
+}
+
+function initGetProvider(providers) {
+    return function getProvider({ service, success, fail, complete, }) {
+        let res;
+        if (providers[service]) {
+            res = {
+                errMsg: 'getProvider:ok',
+                service,
+                provider: providers[service],
+            };
+            isFunction(success) && success(res);
+        }
+        else {
+            res = {
+                errMsg: 'getProvider:fail:服务[' + service + ']不存在',
+            };
+            isFunction(fail) && fail(res);
+        }
+        isFunction(complete) && complete(res);
+    };
+}
+
 const getProvider = initGetProvider({
     oauth: ['baidu'],
     share: ['baidu'],
@@ -1176,18 +1180,34 @@ function createIntersectionObserver(component, options) {
     }
     return swan.createIntersectionObserver(component, options);
 }
+function createVideoContext(videoId) {
+    return swan.createVideoContext(videoId);
+}
 
 var shims = /*#__PURE__*/Object.freeze({
   __proto__: null,
   getProvider: getProvider,
   requestPayment: requestPayment,
-  createIntersectionObserver: createIntersectionObserver
+  createIntersectionObserver: createIntersectionObserver,
+  createVideoContext: createVideoContext
 });
 
 function createTodoMethod(contextName, methodName) {
     return function unsupported() {
         console.error(`百度小程序 ${contextName}暂不支持${methodName}`);
     };
+}
+function returnValue(methodName, res = {}) {
+    // 通用 returnValue 解析
+    if (res.error || res.errorMessage) {
+        res.errMsg = `${methodName}:fail ${res.errorMessage || res.error}`;
+        delete res.error;
+        delete res.errorMessage;
+    }
+    else {
+        res.errMsg = `${methodName}:ok`;
+    }
+    return res;
 }
 const request = {
     args() {
@@ -1258,6 +1278,7 @@ const getAccountInfoSync = {
 
 var protocols = /*#__PURE__*/Object.freeze({
   __proto__: null,
+  returnValue: returnValue,
   request: request,
   connectSocket: connectSocket,
   getRecorderManager: getRecorderManager,

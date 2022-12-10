@@ -3,7 +3,9 @@ const path = require('path')
 const colors = require('picocolors')
 
 const priority = {
-  'uni-shared': 100,
+  uts: 100,
+  'uni-uts-v1': 99,
+  'uni-shared': 98,
   'uni-i18n': 90,
   'uni-app': 90,
   'uni-cli-shared': 80,
@@ -31,9 +33,8 @@ const priority = {
   'vite-plugin-uni': 20,
   'uni-cloud': 10,
   'uni-automator': 10,
-  uts: 10,
-  'uni-uts-vite': 9,
-  'uni-stacktracey': 9,
+  'uni-stacktracey': 8,
+  'uni-vue-devtools': 6,
   'size-check': 0,
 }
 
@@ -51,7 +52,7 @@ const targets = (exports.targets = fs.readdirSync('packages').filter((f) => {
       ) ||
       fs.existsSync(path.resolve(__dirname, `../packages/${f}/tsconfig.json`))
     )
-  } catch (e) {}
+  } catch (e) { }
   return false
 })).sort((a, b) => priority[b] - priority[a])
 exports.fuzzyMatchTarget = (partialTargets, includeAllMatching) => {

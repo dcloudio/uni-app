@@ -97,7 +97,7 @@ export function isEnableSecureNetwork(
 ) {
   const manifest = parseManifestJsonOnce(inputDir)
   if (platform === 'app') {
-    return false // 暂未支持app
+    return !!manifest['app-plus']?.modules?.SecureNetwork
   }
   return manifest[platform]?.secureNetwork?.enable === true
 }
@@ -123,4 +123,12 @@ export function isEnableTreeShaking(manifestJson: Record<string, any>) {
 
 export function getDevServerOptions(manifestJson: Record<string, any>) {
   return extend({}, manifestJson.h5?.devServer)
+}
+
+export function getPlatformManifestJsonOnce() {
+  const platform =
+    process.env.UNI_PLATFORM === 'app' ? 'app-plus' : process.env.UNI_PLATFORM
+  return !process.env.UNI_INPUT_DIR
+    ? {}
+    : parseManifestJsonOnce(process.env.UNI_INPUT_DIR)[platform] || {}
 }

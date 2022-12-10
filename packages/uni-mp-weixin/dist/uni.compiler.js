@@ -16,8 +16,8 @@ var uniad_app_json = function (appJson) {
   }
   if (!appJson.plugins['uni-ad']) {
     appJson.plugins['uni-ad'] = {
-      version: '1.1.0',
-      provider: 'wx999bf02c8e05dfc9',
+      version: '1.0.1',
+      provider: 'wxf72d316417b6767f',
     };
   }
   if (!appJson.plugins['coral-adv']) {
@@ -149,6 +149,12 @@ const miniProgram = {
                 arg: ['ready'],
             },
         ],
+        'scroll-view': [
+            {
+                name: 'on',
+                arg: ['dragstart', 'dragging', 'dragend'],
+            },
+        ],
         // iOS 平台需要延迟
         input: [{ name: 'bind', arg: ['type'] }],
         textarea: [{ name: 'on', arg: ['input'] }],
@@ -176,7 +182,6 @@ const options = {
                 ...(process.env.UNI_MP_PLUGIN ? [uniCliShared.copyMiniProgramPluginJson] : []),
                 {
                     src: [
-                        'theme.json',
                         'sitemap.json',
                         'ext.json',
                         'custom-tab-bar',
@@ -188,6 +193,7 @@ const options = {
                         return process.env.UNI_OUTPUT_DIR;
                     },
                 },
+                ...uniCliShared.copyMiniProgramThemeJson(),
             ],
         },
     },

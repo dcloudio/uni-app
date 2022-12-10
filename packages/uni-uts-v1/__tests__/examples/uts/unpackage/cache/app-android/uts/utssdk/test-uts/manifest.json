@@ -1,0 +1,20 @@
+{
+  "version": "1",
+  "env": {
+    "compilerVersion": "3.6.10"
+  },
+  "files": {
+    "common/test/test.uts": {
+      "md5": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "common/utils.uts": {
+      "md5": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "index.uts": {
+      "md5": "012e7488376fec3b6d104a0242a63535"
+    },
+    "package.json": {
+      "md5": "9595031a0d4158abb72060cdf3a200c1"
+    }
+  }
+}

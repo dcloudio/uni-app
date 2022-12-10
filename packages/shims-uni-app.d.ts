@@ -22,6 +22,7 @@ declare namespace UniNamespace {
   type ClassObj = Record<string, boolean>
   type StyleObj = Record<string, any>
   type PLATFORM = keyof PagesJsonPagePlatformStyle
+  type ThemeMode = 'light' | 'dark'
 
   type OpenType =
     | 'navigateTo'
@@ -93,6 +94,8 @@ declare namespace UniNamespace {
     appName: string
     appVersion: string
     appVersionCode: string
+    darkmode: Boolean | ThemeMode
+    themeConfig: ThemeJson
   }
 
   interface UniRoute {
@@ -182,6 +185,7 @@ declare namespace UniNamespace {
 
   interface PagesJsonPagePlatformStyle {
     h5?: PagesJsonPageStyle
+    web?: PagesJsonPageStyle
     app?: PagesJsonPageStyle
     'app-plus'?: PagesJsonPageStyle
     'mp-alipay'?: PagesJsonPageStyle
@@ -273,6 +277,9 @@ declare namespace UniNamespace {
         [name: string]: string
       }
     }
+    uni_modules?: {
+      exports?: boolean
+    }
     condition?: {
       current?: number
       list?: {
@@ -283,6 +290,11 @@ declare namespace UniNamespace {
         query?: string
       }[]
     }
+  }
+
+  interface ThemeJson {
+    light?: Record<string, string>
+    dark?: Record<string, string>
   }
 
   interface TabBarItemBaseOptions {

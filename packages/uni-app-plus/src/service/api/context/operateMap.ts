@@ -50,6 +50,9 @@ const METHODS: Methords = {
   moveAlong(ctx, args) {
     return invokeVmMethod(ctx, 'moveAlong', args)
   },
+  setLocMarkerIcon(ctx, args) {
+    return invokeVmMethod(ctx, 'setLocMarkerIcon', args)
+  },
   openMapApp(ctx, args) {
     return invokeVmMethod(ctx, 'openMapApp', args)
   },

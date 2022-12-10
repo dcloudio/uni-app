@@ -150,7 +150,6 @@ export function showToast({ icon = 'success' }: UniApp.ShowToastOptions = {}) {
   const args = {
     title: 'content',
     icon: 'type',
-    duration: false,
     image: false,
     mask: false,
   }
@@ -178,7 +177,6 @@ export const showActionSheet = {
 export const showLoading = {
   args: {
     title: 'content',
-    mask: false,
   },
 }
 export const uploadFile = {
