@@ -32,7 +32,8 @@ const pagesJson2AppJson = {
   tabBar: function (name, value, json) {
     json.tabBar = parseTabBar(value)
   },
-  preloadRule: defaultCopy
+  preloadRule: defaultCopy,
+  entryPagePath: defaultCopy
 }
 
 function copyToJson (json, fromJson, options) {
