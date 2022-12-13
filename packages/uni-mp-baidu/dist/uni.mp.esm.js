@@ -695,7 +695,7 @@ function parseComponent(vueOptions, { parse, mocks, isPage, initRelation, handle
         lifetimes: initLifetimes({ mocks, isPage, initRelation, vueOptions }),
         pageLifetimes: {
             show() {
-                if (process.env.NODE_ENV !== 'production') {
+                if (process.env.NODE_ENV !== 'production' && __VUE_PROD_DEVTOOLS__) {
                     devtoolsComponentRemoved(this.$vm.$);
                     devtoolsComponentAdded(this.$vm.$);
                 }
