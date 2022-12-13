@@ -101,7 +101,7 @@ export function parseComponent(
     lifetimes: initLifetimes({ mocks, isPage, initRelation, vueOptions }),
     pageLifetimes: {
       show() {
-        if (process.env.NODE_ENV !== 'production' && __VUE_PROD_DEVTOOLS__) {
+        if (__VUE_PROD_DEVTOOLS__) {
           devtoolsComponentRemoved(this.$vm!.$)
           devtoolsComponentAdded(this.$vm!.$)
         }
