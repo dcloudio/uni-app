@@ -757,7 +757,7 @@ function initCreatePage() {
                 this.$vm.$callHook(ON_LOAD, query);
             },
             onShow() {
-                if (process.env.NODE_ENV !== 'production') {
+                if (process.env.NODE_ENV !== 'production' && __VUE_PROD_DEVTOOLS__) {
                     devtoolsComponentRemoved(this.$vm.$);
                     devtoolsComponentAdded(this.$vm.$);
                 }
