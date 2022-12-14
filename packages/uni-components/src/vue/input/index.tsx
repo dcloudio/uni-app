@@ -83,7 +83,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           }
           if (input.validity && !input.validity.valid) {
             if (
-              (!cache.value && (event as InputEvent).data === '-') ||
+              ((!cache.value || !input.value) &&
+                (event as InputEvent).data === '-') ||
               (cache.value[0] === '-' &&
                 (event as InputEvent).inputType === 'deleteContentBackward')
             ) {
