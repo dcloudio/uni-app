@@ -237,10 +237,14 @@ export default {
         // 数字类型输入错误时无法获取具体的值，自定义校验和纠正。
         this.__clearCachedValue && $event.target.removeEventListener('blur', this.__clearCachedValue)
         if ($event.target.validity && !$event.target.validity.valid) {
-          if ((!this.cachedValue && $event.data === '-') || (this.cachedValue[0] === '-' && $event.inputType === 'deleteContentBackward')) {
+          if (
+            ((!this.cachedValue || !$event.target.value) && $event.data === '-') ||
+            (this.cachedValue[0] === '-' && $event.inputType === 'deleteContentBackward')
+          ) {
             this.cachedValue = '-'
+            this.valueSync = ''
             const clearCachedValue = this.__clearCachedValue = () => {
-              this.cachedValue = ''
+              this.cachedValue = $event.target.value = ''
             }
             $event.target.addEventListener('blur', clearCachedValue)
             return
