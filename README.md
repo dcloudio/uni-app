@@ -8,6 +8,7 @@
 
 开发者使用 `Vue` 语法编写代码，`uni-app` 框架将其编译到 小程序（微信/支付宝/百度/字节跳动/QQ/快手/钉钉/小红书）、App（iOS/Android）、H5等多个平台，保证其正确运行并达到优秀体验。
 
+[dev 分支](https://github.com/dcloudio/uni-app/tree/dev) 对应 `vue@2`，[next 分支](https://github.com/dcloudio/uni-app/tree/next) 对应 `vue@3`。
 
 # uni-app的特点
 
