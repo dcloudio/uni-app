@@ -8,6 +8,9 @@
 
 Developers use `Vue` syntax to write code, and `uni-app` framework compiles it into small programs (WeChat/Alipay/Baidu/ByteDance/QQ/Kuishou/Dingding/Xiaohongshu), App (iOS/Android) ), H5 and other platforms to ensure its correct operation and achieve an excellent experience.
 
+[dev branch](https://github.com/dcloudio/uni-app/tree/dev) is for `vue@2`, while [next branch](https://github.com/dcloudio/uni-app/tree/next) is for `vue@3`.
+
+
 # Features of uni-app
 
 - More developers and cases: HBuilder has installed 8 million units, the developer community has one million monthly active users, and more than 70 QQ and WeChat groups carry 100,000 people. There are many cases, and the uni statistics exceed 1 billion monthly active users ([see details](https://uniapp.dcloud.io/case))
