@@ -1604,9 +1604,13 @@ async function sendSelectedComponentData(appRecord, instanceId, ctx) {
     const parentInstances = await appRecord.backend.api.walkComponentParents(instance);
     const payload = {
       instanceId,
-      data: (0, shared_utils_1.stringify)(await appRecord.backend.api.inspectComponent(instance, ctx.currentAppRecord.options.app)),
+      data: await appRecord.backend.api.inspectComponent(instance, ctx.currentAppRecord.options.app),
       parentIds: parentInstances.map(i => i.__VUE_DEVTOOLS_UID__)
     };
+
+    if (false) {}
+
+    payload.data = (0, shared_utils_1.stringify)(payload.data);
     ctx.bridge.send(shared_utils_1.BridgeEvents.TO_FRONT_COMPONENT_SELECTED_DATA, payload);
     markSelectedInstance(instanceId, ctx);
   }
