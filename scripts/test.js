@@ -83,6 +83,47 @@ async function testKotlin() {
   })
 }
 
+
+async function testKotlinComponent() {
+  const start = Date.now()
+  await bundle(UtsTarget.KOTLIN, {
+    input: {
+      root: projectDir,
+      filename: path.resolve(
+        projectDir,
+        'uni_modules/test-component/utssdk/app-android/index.vue'
+      ),
+    },
+    output: {
+      outDir,
+      package: 'uts.modules.modules.testComponent',
+      imports: [
+        'kotlinx.coroutines.async',
+        'kotlinx.coroutines.CoroutineScope',
+        'kotlinx.coroutines.Deferred',
+        'kotlinx.coroutines.Dispatchers',
+        'io.dcloud.uts.*',
+      ],
+      sourceMap,
+      extname: 'kt',
+      logFilename: true,
+      isPlugin: true,
+    },
+  }).then((res) => {
+    console.log('bundle: ' + (Date.now() - start) + 'ms')
+    console.log(JSON.stringify(res))
+    console.log(
+      fs.readFileSync(
+        path.resolve(
+          projectDir,
+          'unpackage/dist/dev/app-plus/uni_modules/test-component/utssdk/app-android/index.kt'
+        ),
+        'utf8'
+      )
+    )
+  })
+}
+
 async function testSwift() {
   const start = Date.now()
   await bundle(UtsTarget.SWIFT, {
@@ -136,6 +177,7 @@ async function testSwift() {
 }
 
 async function test() {
+  await testKotlinComponent()
   await testKotlin()
   await testSwift()
 }
