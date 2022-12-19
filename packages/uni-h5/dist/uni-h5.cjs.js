@@ -3476,7 +3476,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
           resetCache = null;
         }
         if (input.validity && !input.validity.valid) {
-          if (!cache.value && event.data === "-" || cache.value[0] === "-" && event.inputType === "deleteContentBackward") {
+          if ((!cache.value || !input.value) && event.data === "-" || cache.value[0] === "-" && event.inputType === "deleteContentBackward") {
             cache.value = "-";
             state2.value = "";
             resetCache = () => {

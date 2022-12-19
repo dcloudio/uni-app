@@ -1,5 +1,6 @@
 import path from 'path'
 import { Plugin } from 'vite'
+import { capitalize, camelize } from '@vue/shared'
 import { createFilter, FilterPattern } from '@rollup/pluginutils'
 
 import {
@@ -45,7 +46,10 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
                 addImportDeclaration(
                   importDeclarations,
                   `__easycom_${i++}`,
-                  source
+                  source,
+                  source.includes('uts-proxy')
+                    ? capitalize(camelize(name)) + 'Component'
+                    : ''
                 )
               )
             }

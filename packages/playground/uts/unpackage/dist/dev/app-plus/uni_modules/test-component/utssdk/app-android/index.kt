@@ -28,7 +28,7 @@ open class CustomAnimListener : Animator.AnimatorListener {
     override fun onAnimationCancel(animation: Animator?) {}
     override fun onAnimationRepeat(animation: Animator?) {}
 }
-open class AnimationView : UTSComponent<LottieAnimationView>, IMeasureAble {
+open class AnimationViewComponent : UTSComponent<LottieAnimationView>, IMeasureAble {
     constructor(instance: UniSDKInstance?, parent: AbsVContainer<*>?, componentData: AbsComponentData<*>?) : super(instance, parent, componentData) ;
     override fun created() {}
     override fun NVBeforeLoad() {}
@@ -57,7 +57,7 @@ open class AnimationView : UTSComponent<LottieAnimationView>, IMeasureAble {
     }
     open fun privateMethod() {}
     override fun `$init`() {
-        this.`$watch`("path", fun(newPath: String, oldPath: String){
+        this.`$watch`<String>("path", fun(newPath, oldPath){
             var lottieAnimationView = this.`$el`;
             if (lottieAnimationView != null && !TextUtils.isEmpty(newPath)) {
                 if (newPath.startsWith("http://") || newPath.startsWith("https://")) lottieAnimationView.setAnimationFromUrl(newPath);
@@ -66,17 +66,17 @@ open class AnimationView : UTSComponent<LottieAnimationView>, IMeasureAble {
             if (this.autoplay) lottieAnimationView.playAnimation();
         }
         );
-        this.`$watch`("loop", fun(newLoop: Boolean, oldLoop: Boolean){
+        this.`$watch`<Boolean>("loop", fun(newLoop, oldLoop){
             if (newLoop) this.`$el`.repeatCount = Int.MAX_VALUE;
             else this.`$el`.repeatCount = 0;
             if (this.autoplay) this.`$el`.playAnimation();
         }
         );
-        this.`$watch`("autoplay", fun(newValue: Boolean, oldValue: Boolean){
+        this.`$watch`<Boolean>("autoplay", fun(newValue, oldValue){
             if (newValue) this.`$el`.playAnimation();
         }
         );
-        this.`$watch`("action", fun(newAction: String, oldAction: String){
+        this.`$watch`<String>("action", fun(newAction, oldAction){
             if (newAction == "play" || newAction == "pause" || newAction == "stop") {
                 if (this.action == "play") this.`$el`.playAnimation();
                 else if (this.action == "play") this.`$el`.pauseAnimation();
@@ -87,7 +87,7 @@ open class AnimationView : UTSComponent<LottieAnimationView>, IMeasureAble {
             }
         }
         );
-        this.`$watch`("hidden", fun(newValue: Boolean, oldValue: Boolean){
+        this.`$watch`<Boolean>("hidden", fun(newValue, oldValue){
             if (newValue) this.`$el`.visibility = View.GONE;
             else this.`$el`.visibility = View.VISIBLE;
         }

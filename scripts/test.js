@@ -91,8 +91,9 @@ async function testKotlinComponent() {
       root: projectDir,
       filename: path.resolve(
         projectDir,
-        'uni_modules/test-component/utssdk/app-android/index.vue'
+        'uni_modules/test-component/utssdk/app-android/index.uts'
       ),
+      fileContent: `export { default as AnimationViewComponent } from './index.vue'`
     },
     output: {
       outDir,

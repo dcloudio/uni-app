@@ -8,6 +8,7 @@ const errMsg = \`\`
 const is_uni_modules = false
 const pkg = initUtsPackageName(name, is_uni_modules)
 const cls = initUtsIndexClassName(name, is_uni_modules)
+
 export const onMemoryWarning = initUtsProxyFunction(false, { errMsg, main: true, package: pkg, class: cls, name: 'onMemoryWarning', params: [{"name":"callback","type":"UTSCallback"}]})
 export const offMemoryWarning = initUtsProxyFunction(false, { errMsg, main: true, package: pkg, class: cls, name: 'offMemoryWarning', params: [{"name":"callback","type":"UTSCallback","default":"UTSNull"}]})
 "
