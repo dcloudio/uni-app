@@ -24363,7 +24363,7 @@ function createPageHeadSearchInputTsx(navigationBar, {
   onBlur,
   onFocus,
   onInput,
-  onKeyup,
+  onConfirm,
   onClick
 }) {
   const {
@@ -24411,8 +24411,8 @@ function createPageHeadSearchInputTsx(navigationBar, {
     "onFocus": onFocus,
     "onBlur": onBlur,
     "onInput": onInput,
-    "onKeyup": onKeyup
-  }, null, 8, ["focus", "style", "placeholder-style", "onFocus", "onBlur", "onInput", "onKeyup"])], 4);
+    "onConfirm": onConfirm
+  }, null, 8, ["focus", "style", "placeholder-style", "onFocus", "onBlur", "onInput", "onConfirm"])], 4);
 }
 function onPageHeadBackButton() {
   if (getCurrentPages().length === 1) {
@@ -24570,12 +24570,10 @@ function usePageHeadSearchInput({
       text: text2.value
     });
   };
-  const onKeyup = (evt) => {
-    if (evt.key === "Enter" || evt.keyCode === 13) {
-      invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, {
-        text: text2.value
-      });
-    }
+  const onConfirm = (evt) => {
+    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, {
+      text: text2.value
+    });
   };
   return {
     focus,
@@ -24584,7 +24582,7 @@ function usePageHeadSearchInput({
     onFocus,
     onBlur,
     onInput,
-    onKeyup
+    onConfirm
   };
 }
 const _sfc_main = {
