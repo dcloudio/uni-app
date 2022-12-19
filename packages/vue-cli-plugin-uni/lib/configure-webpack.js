@@ -398,23 +398,32 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
       })
     })
 
+    const alias = {
+      '@': path.resolve(process.env.UNI_INPUT_DIR),
+      './@': path.resolve(process.env
+        .UNI_INPUT_DIR), // css中的'@/static/logo.png'会被转换成'./@/static/logo.png'加载
+      vue$: getPlatformVue(vueOptions),
+      'uni-pages': path.resolve(process.env.UNI_INPUT_DIR, 'pages.json'),
+      'uni-stat-config': path.resolve(process.env.UNI_INPUT_DIR, 'pages.json') +
+        '?' +
+        JSON.stringify({
+          type: 'stat'
+        }),
+      vuex: require.resolve('@dcloudio/vue-cli-plugin-uni/packages/vuex3'),
+      '@vue/composition-api': require.resolve('@dcloudio/vue-cli-plugin-uni/packages/@vue/composition-api')
+    }
+
+    if (process.env.UNI_PLATFORM.startsWith('mp')) {
+      const BabelRuntimeVersions = require('@babel/runtime/package.json').version.split('.')
+      if (BabelRuntimeVersions[0] === '7' && Number(BabelRuntimeVersions[1]) >= 18) {
+        alias['@babel/runtime/regenerator'] = require.resolve('@dcloudio/vue-cli-plugin-uni/packages/@babel/runtime/regenerator')
+      }
+    }
+
     return merge({
       devtool: false,
       resolve: {
-        alias: {
-          '@': path.resolve(process.env.UNI_INPUT_DIR),
-          './@': path.resolve(process.env
-            .UNI_INPUT_DIR), // css中的'@/static/logo.png'会被转换成'./@/static/logo.png'加载
-          vue$: getPlatformVue(vueOptions),
-          'uni-pages': path.resolve(process.env.UNI_INPUT_DIR, 'pages.json'),
-          'uni-stat-config': path.resolve(process.env.UNI_INPUT_DIR, 'pages.json') +
-            '?' +
-            JSON.stringify({
-              type: 'stat'
-            }),
-          vuex: require.resolve('@dcloudio/vue-cli-plugin-uni/packages/vuex3'),
-          '@vue/composition-api': require.resolve('@dcloudio/vue-cli-plugin-uni/packages/@vue/composition-api')
-        },
+        alias,
         modules: [
           process.env.UNI_INPUT_DIR,
           path.resolve(process.env.UNI_INPUT_DIR, 'node_modules')
