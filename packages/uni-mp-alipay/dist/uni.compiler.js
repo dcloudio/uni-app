@@ -276,6 +276,15 @@ const uniMiniProgramAlipayPlugin = {
             }, buildOptions),
         };
     },
+    // https://tower.im/teams/226535/todos/18316
+    transform(code, id) {
+        if (id.includes('@vue/shared')) {
+            return {
+                code: code.replace('//gs', '//g'),
+                map: { mappings: '' },
+            };
+        }
+    },
 };
 var index = [uniMiniProgramAlipayPlugin, ...initMiniProgramPlugin__default["default"](options)];
 
