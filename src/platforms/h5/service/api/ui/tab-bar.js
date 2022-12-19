@@ -4,7 +4,7 @@ import {
 
 const setTabBarItemProps = ['text', 'iconPath', 'iconfont', 'selectedIconPath', 'visible']
 
-const setTabBarStyleProps = ['color', 'selectedColor', 'backgroundColor', 'borderStyle']
+const setTabBarStyleProps = ['color', 'selectedColor', 'backgroundColor', 'borderStyle', 'midButton']
 
 const setTabBarBadgeProps = ['badge', 'redDot']
 

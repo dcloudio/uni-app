@@ -5541,8 +5541,8 @@ var Comment = /*@__PURE__*/(function (Node$$1) {
 
 function appendBody(doc, node, before) {
   var documentElement = doc.documentElement;
-
-  if (documentElement.pureChildren.length > 0 || node.parentNode) {
+  // fix append comment
+  if ((documentElement.pureChildren.length > 0 && node.nodeType === 1) || node.parentNode) {
     return
   }
   var children = documentElement.children;
@@ -7201,7 +7201,7 @@ function updateDOMListeners (oldVnode, vnode) {
 
   var parent = vnode.parent;
   while (parent && parent.componentInstance) { // 使用组件外壳节点id
-    var parentId = parent.data.attrs && parent.data.attrs['_i'];
+    var parentId = parent.componentInstance.$attrs && parent.componentInstance.$attrs['_i'];
     isDef(parentId) && (nid = 'r-' + parentId);
     parent = parent.parent;
   }

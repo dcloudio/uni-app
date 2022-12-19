@@ -1,5 +1,5 @@
 <template>
-  <uni-app :class="{'uni-app--showtabbar':showTabBar,'uni-app--maxwidth':showMaxWidth}">
+  <uni-app :class="{ 'uni-app--showtabbar': showTabBar, 'uni-app--maxwidth': showMaxWidth }">
     <layout
       ref="layout"
       :router-key="key"
@@ -27,7 +27,12 @@
       v-bind="showModal"
       @close="_onModalClose"
     />
-    <template v-if="sysComponents&&sysComponents.length">
+    <preview-image
+      v-if="$options.components.PreviewImage"
+      v-bind="previewImage"
+      @close="_onPreviewClose"
+    />
+    <template v-if="sysComponents && sysComponents.length">
       <component
         :is="item"
         v-for="(item, index) in sysComponents"
@@ -43,7 +48,8 @@ import {
 } from 'uni-shared'
 
 import {
-  TABBAR_HEIGHT
+  TABBAR_HEIGHT,
+  ON_THEME_CHANGE
 } from 'uni-helpers/constants'
 
 import components from './components'
@@ -53,6 +59,22 @@ import mixins from 'uni-h5-app-mixins'
 import {
   tabBar
 } from './observable'
+
+function onThemeChange () {
+  let mediaQueryList = null
+
+  try {
+    mediaQueryList = window.matchMedia('(prefers-color-scheme: dark)')
+  } catch (error) { }
+
+  if (mediaQueryList) {
+    mediaQueryList.addEventListener('change', (e) => {
+      UniServiceJSBridge.emit('api.' + ON_THEME_CHANGE, {
+        theme: e.matches ? 'dark' : 'light'
+      })
+    })
+  }
+}
 
 export default {
   name: 'App',
@@ -88,10 +110,10 @@ export default {
     },
     showTabBar () {
       return !this.hideTabBar &&
-          (
-            this.$route.meta.isTabBar ||
-            this.tabBarMediaQuery
-          )
+        (
+          this.$route.meta.isTabBar ||
+          this.tabBarMediaQuery
+        )
     }
   },
   watch: {
@@ -131,6 +153,7 @@ export default {
         UniServiceJSBridge.emit('onAppEnterBackground')
       }
     })
+    onThemeChange()
   },
   methods: {
     onLayout (showLayout) {
@@ -142,8 +165,8 @@ export default {
     initMediaQuery () {
       if (
         window.matchMedia &&
-          tabBar.matchMedia &&
-          hasOwn(tabBar.matchMedia, 'minWidth')
+        tabBar.matchMedia &&
+        hasOwn(tabBar.matchMedia, 'minWidth')
       ) {
         const mediaQueryList = window.matchMedia('(min-width: ' + tabBar.matchMedia.minWidth + 'px)')
         mediaQueryList.addListener((e) => {
@@ -157,12 +180,12 @@ export default {
 </script>
 
 <style>
-  @import "~uni-core/view/index.css";
+@import "~uni-core/view/index.css";
 
-  uni-app {
-    display: block;
-    box-sizing: border-box;
-    width: 100%;
-    height: 100%;
-  }
+uni-app {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+}
 </style>

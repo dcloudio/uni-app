@@ -29,6 +29,7 @@ export * from './file/open-document'
 export * from './location/choose-location'
 export * from './location/get-location'
 export * from './location/open-location'
+export * from './location/location-change'
 
 export * from './media/audio'
 export * from './media/choose-image'

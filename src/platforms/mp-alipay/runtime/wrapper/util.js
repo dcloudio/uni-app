@@ -6,10 +6,13 @@ import {
 } from 'uni-shared'
 
 import {
-  handleLink as handleBaseLink
+  handleLink as handleBaseLink,
+  toSkip
 } from '../../../mp-weixin/runtime/wrapper/util'
 
 import deepEqual from './deep-equal'
+
+export { markMPComponent } from '../../../mp-weixin/runtime/wrapper/util'
 
 const customizeRE = /:/g
 
@@ -108,25 +111,23 @@ export function initChildVues (mpInstance) {
   delete mpInstance._$childVues
 }
 
-function handleProps (ref) {
+export function handleProps (ref) {
   const eventProps = {}
   let refProps = ref.props
   const eventList = (refProps['data-event-list'] || '').split(',')
   // 初始化支付宝小程序组件事件
-  Object.keys(refProps).forEach(key => {
-    if (eventList.includes(key)) {
-      const handler = refProps[key]
-      const res = key.match(/^on([A-Z])(\S*)/)
-      const event = res && (res[1].toLowerCase() + res[2])
-      refProps[key] = eventProps[key] = function () {
-        const props = Object.assign({}, refProps)
-        props[key] = handler
-        // 由于支付宝事件可能包含多个参数，不使用微信小程序事件格式
-        delete props['data-com-type']
-        triggerEvent.bind({ props })(event, {
-          __args__: [...arguments]
-        })
-      }
+  eventList.forEach(key => {
+    const handler = refProps[key]
+    const res = key.match(/^on([A-Z])(\S*)/)
+    const event = res && (res[1].toLowerCase() + res[2])
+    refProps[key] = eventProps[key] = function () {
+      const props = Object.assign({}, refProps)
+      props[key] = handler
+      // 由于支付宝事件可能包含多个参数，不使用微信小程序事件格式
+      delete props['data-com-type']
+      triggerEvent.bind({ props })(event, {
+        __args__: [...arguments]
+      })
     }
   })
   // 处理 props 重写
@@ -141,18 +142,15 @@ function handleProps (ref) {
 }
 
 export function handleRef (ref) {
-  if (!ref) {
+  if (!(ref && this.$vm)) {
     return
-  }
-  if (ref.props['data-com-type'] === 'wx') {
-    handleProps(ref)
   }
   const refName = ref.props['data-ref']
   const refInForName = ref.props['data-ref-in-for']
   if (refName) {
-    this.$vm.$refs[refName] = ref.$vm || ref
+    this.$vm.$refs[refName] = ref.$vm || toSkip(ref)
   } else if (refInForName) {
-    (this.$vm.$refs[refInForName] || (this.$vm.$refs[refInForName] = [])).push(ref.$vm || ref)
+    (this.$vm.$refs[refInForName] || (this.$vm.$refs[refInForName] = [])).push(ref.$vm || toSkip(ref))
   }
 }
 

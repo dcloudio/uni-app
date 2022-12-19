@@ -24,6 +24,18 @@ export function requestPayment (params) {
   }
 }
 
+export function createIntersectionObserver (component, options) {
+  if (options && options.observeAll) {
+    options.selectAll = options.observeAll
+    delete options.observeAll
+  }
+  return swan.createIntersectionObserver(component, options)
+}
+
+export function createVideoContext (videoId) {
+  return swan.createVideoContext(videoId)
+}
+
 export {
   createMediaQueryObserver
 }

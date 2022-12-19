@@ -67,21 +67,14 @@
         this._uniAdPlugin.show()
       },
       getAdData() {
-        if (!this.adpid) {
-          this.$emit(events.error, {
-            code: -5002,
-            message: 'invalid adpid'
-          })
-          return
-        }
-
         this.loading = true
 
         uni.request({
           url: AD_URL,
           method: 'POST',
           data: {
-            adpid: this.adpid
+            adpid: this.adpid || '',
+            appid: uni.getAppBaseInfo().appId
           },
           timeout: 5000,
           dataType: 'json',

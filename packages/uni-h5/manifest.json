@@ -317,6 +317,30 @@
             ]
         ]
     ],
+    "onLocationChange": [
+        "/platforms/h5/service/api/location/location-change.js",
+        []
+    ],
+    "onLocationChangeError": [
+        "/platforms/h5/service/api/location/location-change.js",
+        []
+    ],
+    "startLocationUpdate": [
+        "/platforms/h5/service/api/location/location-change.js",
+        []
+    ],
+    "stopLocationUpdate": [
+        "/platforms/h5/service/api/location/location-change.js",
+        []
+    ],
+    "offLocationChange": [
+        "/platforms/h5/service/api/location/location-change.js",
+        []
+    ],
+    "offLocationChangeError": [
+        "/platforms/h5/service/api/location/location-change.js",
+        []
+    ],
     "chooseImage": [
         "/platforms/h5/service/api/media/choose-image.js",
         [
@@ -359,8 +383,12 @@
                 "MovableView"
             ],
             [
-                "/platforms/h5/components/system-routes/preview-image/index.vue",
+                "/platforms/h5/components/app/popup/preview-image/index.vue",
                 "PreviewImage"
+            ],
+            [
+                "/platforms/h5/components/app/popup/mixins/preview-image.js",
+                "PreviewImageMixin"
             ]
         ]
     ],
@@ -528,6 +556,10 @@
         []
     ],
     "onThemeChange": [
+        "/core/service/api/device/theme.js",
+        []
+    ],
+    "offThemeChange": [
         "/core/service/api/device/theme.js",
         []
     ],

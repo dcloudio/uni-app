@@ -64,7 +64,9 @@ class AdBase {
 
       const data = {
         code: e.code,
-        errMsg: e.message
+        errCode: e.code,
+        errMsg: e.message,
+        detail: e.detail
       }
 
       this._adError = data
@@ -74,6 +76,7 @@ class AdBase {
       const error = new Error(JSON.stringify(this._adError))
       error.code = e.code
       error.errMsg = e.message
+      error.detail = e.detail
 
       if (this._loadPromiseReject != null) {
         this._loadPromiseReject(error)

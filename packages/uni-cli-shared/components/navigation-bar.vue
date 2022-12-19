@@ -125,18 +125,24 @@ export default {
   methods: {
     setNavigationBarTitle () {
       uni.setNavigationBarTitle({
+        // #ifndef MP
         __page__: this.__$page,
+        // #endif
         title: this.title
       })
     },
     setNavigationBarLoading () {
       uni[(this.loading ? 'show' : 'hide') + 'NavigationBarLoading']({
+        // #ifndef MP
         __page__: this.__$page
+        // #endif
       })
     },
     setNavigationBarColor () {
       uni.setNavigationBarColor({
+        // #ifndef MP
         __page__: this.__$page,
+        // #endif
         frontColor: this.frontColor,
         backgroundColor: this.backgroundColor,
         animation: {

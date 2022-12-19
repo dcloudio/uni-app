@@ -4,7 +4,7 @@ module.exports = function (appJson) {
   }
   if (!appJson.plugins['uni-ad']) {
     appJson.plugins['uni-ad'] = {
-      version: '1.0.0',
+      version: '1.0.1',
       provider: 'wxf72d316417b6767f'
     }
   }

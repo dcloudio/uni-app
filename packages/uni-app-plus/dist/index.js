@@ -90,6 +90,10 @@ function isStr (str) {
   return typeof str === 'string'
 }
 
+function isObject (obj) {
+  return obj !== null && typeof obj === 'object'
+}
+
 function isPlainObject (obj) {
   return _toString.call(obj) === '[object Object]'
 }
@@ -1036,6 +1040,132 @@ var api = /*#__PURE__*/Object.freeze({
   requireNativePlugin: requireNativePlugin
 });
 
+const mocks = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__'];
+
+function findVmByVueId (vm, vuePid) {
+  const $children = vm.$children;
+  // 优先查找直属(反向查找:https://github.com/dcloudio/uni-app/issues/1200)
+  for (let i = $children.length - 1; i >= 0; i--) {
+    const childVm = $children[i];
+    if (childVm.$scope._$vueId === vuePid) {
+      return childVm
+    }
+  }
+  // 反向递归查找
+  let parentVm;
+  for (let i = $children.length - 1; i >= 0; i--) {
+    parentVm = findVmByVueId($children[i], vuePid);
+    if (parentVm) {
+      return parentVm
+    }
+  }
+}
+
+function initBehavior (options) {
+  return Behavior(options)
+}
+
+function isPage () {
+  return !!this.route
+}
+
+function initRelation (detail) {
+  this.triggerEvent('__l', detail);
+}
+
+function selectAllComponents (mpInstance, selector, $refs) {
+  const components = mpInstance.selectAllComponents(selector) || [];
+  components.forEach(component => {
+    const ref = component.dataset.ref;
+    $refs[ref] = component.$vm || toSkip(component);
+  });
+}
+
+function syncRefs (refs, newRefs) {
+  const oldKeys = new Set(...Object.keys(refs));
+  const newKeys = Object.keys(newRefs);
+  newKeys.forEach(key => {
+    const oldValue = refs[key];
+    const newValue = newRefs[key];
+    if (Array.isArray(oldValue) && Array.isArray(newValue) && oldValue.length === newValue.length && newValue.every(value => oldValue.includes(value))) {
+      return
+    }
+    refs[key] = newValue;
+    oldKeys.delete(key);
+  });
+  oldKeys.forEach(key => {
+    delete refs[key];
+  });
+  return refs
+}
+
+function initRefs (vm) {
+  const mpInstance = vm.$scope;
+  const refs = {};
+  Object.defineProperty(vm, '$refs', {
+    get () {
+      const $refs = {};
+      selectAllComponents(mpInstance, '.vue-ref', $refs);
+      // TODO 暂不考虑 for 中的 scoped
+      const forComponents = mpInstance.selectAllComponents('.vue-ref-in-for') || [];
+      forComponents.forEach(component => {
+        const ref = component.dataset.ref;
+        if (!$refs[ref]) {
+          $refs[ref] = [];
+        }
+        $refs[ref].push(component.$vm || toSkip(component));
+      });
+      return syncRefs(refs, $refs)
+    }
+  });
+}
+
+function handleLink (event) {
+  const {
+    vuePid,
+    vueOptions
+  } = event.detail || event.value; // detail 是微信,value 是百度(dipatch)
+
+  let parentVm;
+
+  if (vuePid) {
+    parentVm = findVmByVueId(this.$vm, vuePid);
+  }
+
+  if (!parentVm) {
+    parentVm = this.$vm;
+  }
+
+  vueOptions.parent = parentVm;
+}
+
+function markMPComponent (component) {
+  // 在 Vue 中标记为小程序组件
+  const IS_MP = '__v_isMPComponent';
+  Object.defineProperty(component, IS_MP, {
+    configurable: true,
+    enumerable: false,
+    value: true
+  });
+  return component
+}
+
+function toSkip (obj) {
+  const OB = '__ob__';
+  const SKIP = '__v_skip';
+  if (isObject(obj) && Object.isExtensible(obj)) {
+    // 避免被 @vue/composition-api 观测
+    Object.defineProperty(obj, OB, {
+      configurable: true,
+      enumerable: false,
+      value: {
+        [SKIP]: true
+      }
+    });
+  }
+  return obj
+}
+
 const MPPage = Page;
 const MPComponent = Component;
 
@@ -1064,16 +1194,13 @@ function initTriggerEvent (mpInstance) {
 
 function initHook (name, options, isComponent) {
   const oldHook = options[name];
-  if (!oldHook) {
-    options[name] = function () {
-      initTriggerEvent(this);
-    };
-  } else {
-    options[name] = function (...args) {
-      initTriggerEvent(this);
+  options[name] = function (...args) {
+    markMPComponent(this);
+    initTriggerEvent(this);
+    if (oldHook) {
       return oldHook.apply(this, args)
-    };
-  }
+    }
+  };
 }
 if (!MPPage.__$wrappered) {
   MPPage.__$wrappered = true;
@@ -1132,7 +1259,7 @@ function hasHook (hook, vueOptions) {
     return false
   }
 
-  if (isFn(vueOptions[hook])) {
+  if (isFn(vueOptions[hook]) || Array.isArray(vueOptions[hook])) {
     return true
   }
   const mixins = vueOptions.mixins;
@@ -1844,86 +1971,6 @@ function parseBaseApp (vm, {
   return appOptions
 }
 
-const mocks = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__'];
-
-function findVmByVueId (vm, vuePid) {
-  const $children = vm.$children;
-  // 优先查找直属(反向查找:https://github.com/dcloudio/uni-app/issues/1200)
-  for (let i = $children.length - 1; i >= 0; i--) {
-    const childVm = $children[i];
-    if (childVm.$scope._$vueId === vuePid) {
-      return childVm
-    }
-  }
-  // 反向递归查找
-  let parentVm;
-  for (let i = $children.length - 1; i >= 0; i--) {
-    parentVm = findVmByVueId($children[i], vuePid);
-    if (parentVm) {
-      return parentVm
-    }
-  }
-}
-
-function initBehavior (options) {
-  return Behavior(options)
-}
-
-function isPage () {
-  return !!this.route
-}
-
-function initRelation (detail) {
-  this.triggerEvent('__l', detail);
-}
-
-function selectAllComponents (mpInstance, selector, $refs) {
-  const components = mpInstance.selectAllComponents(selector);
-  components.forEach(component => {
-    const ref = component.dataset.ref;
-    $refs[ref] = component.$vm || component;
-  });
-}
-
-function initRefs (vm) {
-  const mpInstance = vm.$scope;
-  Object.defineProperty(vm, '$refs', {
-    get () {
-      const $refs = {};
-      selectAllComponents(mpInstance, '.vue-ref', $refs);
-      // TODO 暂不考虑 for 中的 scoped
-      const forComponents = mpInstance.selectAllComponents('.vue-ref-in-for');
-      forComponents.forEach(component => {
-        const ref = component.dataset.ref;
-        if (!$refs[ref]) {
-          $refs[ref] = [];
-        }
-        $refs[ref].push(component.$vm || component);
-      });
-      return $refs
-    }
-  });
-}
-
-function handleLink (event) {
-  const {
-    vuePid,
-    vueOptions
-  } = event.detail || event.value; // detail 是微信,value 是百度(dipatch)
-
-  let parentVm;
-
-  if (vuePid) {
-    parentVm = findVmByVueId(this.$vm, vuePid);
-  }
-
-  if (!parentVm) {
-    parentVm = this.$vm;
-  }
-
-  vueOptions.parent = parentVm;
-}
-
 function parseApp (vm) {
   return parseBaseApp(vm, {
     mocks,
@@ -1994,7 +2041,7 @@ function stringifyQuery (obj, encodeStr = encode) {
 function parseBaseComponent (vueComponentOptions, {
   isPage,
   initRelation
-} = {}) {
+} = {}, needVueOptions) {
   const [VueComponent, vueOptions] = initVueComponent(Vue, vueComponentOptions);
 
   const options = {
@@ -2077,26 +2124,29 @@ function parseBaseComponent (vueComponentOptions, {
     });
   }
 
+  if (needVueOptions) {
+    return [componentOptions, vueOptions, VueComponent]
+  }
   if (isPage) {
     return componentOptions
   }
   return [componentOptions, VueComponent]
 }
 
-function parseComponent (vueComponentOptions) {
+function parseComponent (vueComponentOptions, needVueOptions) {
   return parseBaseComponent(vueComponentOptions, {
     isPage,
     initRelation
-  })
+  }, needVueOptions)
 }
 
-function parseComponent$1 (vueComponentOptions) {
-  const componentOptions = parseComponent(vueComponentOptions);
+function parseComponent$1 (vueComponentOptions, needVueOptions) {
+  const [componentOptions, vueOptions] = parseComponent(vueComponentOptions, true);
 
   componentOptions.methods.$getAppWebview = function () {
     return plus.webview.getWebviewById(`${this.__wxWebviewId__}`)
   };
-  return componentOptions
+  return needVueOptions ? [componentOptions, vueOptions] : componentOptions
 }
 
 const hooks$2 = [
@@ -2107,13 +2157,10 @@ const hooks$2 = [
 
 hooks$2.push(...PAGE_EVENT_HOOKS);
 
-function parseBasePage (vuePageOptions, {
-  isPage,
-  initRelation
-}) {
-  const pageOptions = parseComponent$1(vuePageOptions);
+function parseBasePage (vuePageOptions) {
+  const [pageOptions, vueOptions] = parseComponent$1(vuePageOptions, true);
 
-  initHooks(pageOptions.methods, hooks$2, vuePageOptions);
+  initHooks(pageOptions.methods, hooks$2, vueOptions);
 
   pageOptions.methods.onLoad = function (query) {
     this.options = query;
@@ -2133,10 +2180,7 @@ function parseBasePage (vuePageOptions, {
 }
 
 function parsePage (vuePageOptions) {
-  return parseBasePage(vuePageOptions, {
-    isPage,
-    initRelation
-  })
+  return parseBasePage(vuePageOptions)
 }
 
 const hooks$3 = [
@@ -2252,7 +2296,7 @@ if (typeof Proxy !== 'undefined' && "app-plus" !== 'app-plus') {
       if (eventApi[name]) {
         return eventApi[name]
       }
-      if (!hasOwn(wx, name) && !hasOwn(protocols, name)) {
+      if (typeof wx[name] !== 'function' && !hasOwn(protocols, name)) {
         return
       }
       return promisify(name, wrapper(name, wx[name]))

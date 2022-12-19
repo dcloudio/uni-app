@@ -63,7 +63,12 @@ const {
   getPlatformUniCloud
 } = require('./platform')
 
+const uts = require('./uts')
+
+const { parseTheme, initTheme } = require('./theme')
+
 module.exports = {
+  uts,
   md5,
   tags,
   hasOwn,
@@ -112,5 +117,7 @@ module.exports = {
   getPlatformGlobal,
   getPlatformStat,
   getPlatformPush,
-  getPlatformUniCloud
+  getPlatformUniCloud,
+  parseTheme,
+  initTheme
 }

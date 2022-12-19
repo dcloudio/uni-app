@@ -10,7 +10,16 @@ export const protocols = {
   previewImage,
   getSystemInfo,
   getSystemInfoSync: getSystemInfo,
-  getUserProfile
+  getUserProfile,
+  requestPayment: {
+    name: ks.pay ? 'pay' : 'requestPayment',
+    args (fromArgs) {
+      if (typeof fromArgs === 'object') {
+        // ks.pay 服务类型 id（固定值为 '1'）
+        if (ks.pay && !fromArgs.serviceId) fromArgs.serviceId = '1'
+      }
+    }
+  }
 }
 export const todos = [
   'vibrate'

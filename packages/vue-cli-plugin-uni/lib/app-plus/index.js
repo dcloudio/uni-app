@@ -163,7 +163,7 @@ const v3 = {
               compiler: vueLoader.compiler,
               before: [
                 beforeCode + require('../util').getAutomatorCode() + statCode + pushCode + uniCloudCode +
-                getGlobalUsingComponentsCode()
+                  getGlobalUsingComponentsCode()
               ]
             }
           }]
@@ -176,6 +176,13 @@ const v3 = {
           }, {
             loader: path.resolve(__dirname,
               '../../packages/webpack-uni-app-loader/page-meta')
+          }]
+        },
+        {
+          type: 'javascript/auto',
+          resourceQuery: /uts-proxy/,
+          use: [{
+            loader: require.resolve('@dcloudio/uni-cli-shared/lib/uts/uts-loader.js')
           }]
         },
         ...rules

@@ -46,6 +46,8 @@
 
 * build：编译脚本
 * lib：其他编译依赖
+  * apis.js 参与编译的接口列表
+  * modules.json 摇树优化接口类别划分
 * dist：其他编译后的文件
 * docs：~~文档目录~~ ，现已迁移
 * examples：~~示例目录~~，现已迁移
@@ -97,6 +99,8 @@
   * assets：静态资源
   * core：运行时公共部分
     * helpers
+      * i18n：国际化资源文件
+      * protocol：App、H5 平台接口通用校验
     * runtime
     * service：逻辑层（App、H5）
       * api：uni 接口实现（App、H5 平台公共部分）

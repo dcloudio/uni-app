@@ -20,6 +20,8 @@ function formatMessage (msg) {
   return ''
 }
 
+const installPreprocessorTips = {}
+
 function ModuleBuildError (err) {
   const lines = err.message.split('\n')
   let firstLineMessage = lines[0]
@@ -78,6 +80,10 @@ function ModuleBuildError (err) {
       builtinCompile = 'pug/jade'
     }
     if (builtinCompile) {
+      if (installPreprocessorTips[name]) {
+        return false
+      }
+      installPreprocessorTips[name] = true
       installHBuilderXPlugin(name)
       return {
         message: '预编译器错误：代码使用了' + builtinCompile +

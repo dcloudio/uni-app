@@ -21,11 +21,12 @@ export default class UniHoverElement extends UniAnimationElement {
 
   set hovering (hovering) {
     this._hovering = hovering
-    const hoverClass = this.getAttribute('hover-class')
+    const hoverClass = this.getAttribute('hover-class').split(' ').filter(Boolean)
+    const ClassList = this.classList
     if (hovering) {
-      this.classList.add(hoverClass)
+      ClassList.add.apply(ClassList, hoverClass)
     } else {
-      this.classList.remove(hoverClass)
+      ClassList.remove.apply(ClassList, hoverClass)
     }
   }
 

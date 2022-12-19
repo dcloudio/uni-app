@@ -2,11 +2,6 @@ import {
   stringifyQuery
 } from 'uni-shared/query'
 
-import {
-  isPage,
-  initRelation
-} from './util'
-
 import parseBasePage from '../../../mp-weixin/runtime/wrapper/page-base-parser'
 
 function detached ($vm) {
@@ -24,10 +19,7 @@ function onPageUnload ($vm) {
 }
 
 export default function parsePage (vuePageOptions) {
-  const pageOptions = parseBasePage(vuePageOptions, {
-    isPage,
-    initRelation
-  })
+  const pageOptions = parseBasePage(vuePageOptions)
 
   // 纠正百度小程序生命周期methods:onShow在methods:onLoad之前触发的问题
   pageOptions.methods.onShow = function onShow () {

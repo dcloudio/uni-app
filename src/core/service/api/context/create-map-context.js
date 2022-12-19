@@ -33,6 +33,7 @@ const methods = ['getCenterLocation',
   'addMarkers',
   'removeMarkers',
   'moveAlong',
+  'setLocMarkerIcon',
   'openMapApp']
 
 export class MapContext {

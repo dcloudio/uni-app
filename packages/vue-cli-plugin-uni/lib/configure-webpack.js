@@ -24,7 +24,8 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
     isInHBuilderX, // 在 HBuilderX 的插件中
     hasModule,
     jsPreprocessOptions,
-    htmlPreprocessOptions
+    htmlPreprocessOptions,
+    uts
   } = require('@dcloudio/uni-cli-shared')
 
   const {
@@ -73,8 +74,8 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
         const normalized = RuleSet.normalizeRule(clone, {}, '')
         return (
           !rule.enforce &&
-        normalized.resource &&
-        normalized.resource(fakeFile)
+          normalized.resource &&
+          normalized.resource(fakeFile)
         )
       }
     }
@@ -106,7 +107,6 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
   const tsLoaderOptions = {
     context,
     configFile: tsConfigJsonFile,
-    transpileOnly: false,
     compilerOptions: {
       baseUrl: context,
       typeRoots: [
@@ -140,6 +140,12 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
         ],
         'mpvue-page-factory': [
           resolveModule('@dcloudio/vue-cli-plugin-uni/packages/mpvue-page-factory')
+        ],
+        '@vue/composition-api': [
+          resolveModule('@dcloudio/vue-cli-plugin-uni/packages/@vue/composition-api')
+        ],
+        '@dcloudio/uni-app': [
+          resolveModule('@dcloudio/uni-app')
         ]
       }
     },
@@ -160,7 +166,7 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
   function updateTsLoader (rawRules, fakeFile, loader) {
     const matchRule = rawRules.find(createMatcher(fakeFile))
     if (matchRule && matchRule.use) {
-      if (runByHBuilderX) {
+      if (isInHBuilderX) {
         matchRule.use.forEach(matchUse => {
           if (matchUse.loader.includes('ts-loader')) {
             Object.assign(matchUse.options, tsLoaderOptions)
@@ -174,8 +180,11 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
   function removeForkTsCheckerWebpackPlugin (rawPlugins) {
     if (isInHBuilderX && hasModule('fork-ts-checker-webpack-plugin')) {
       const pluginIndex = rawPlugins.findIndex(rawPlugin => rawPlugin.vue && rawPlugin.typescriptVersion)
-      if (pluginIndex !== -1) { // 移除fork-ts-checker-webpack-plugin
+      if (pluginIndex !== -1) {
+        // 移除fork-ts-checker-webpack-plugin
         rawPlugins.splice(pluginIndex, 1)
+        // 恢复vue-loader的ts检查
+        tsLoaderOptions.transpileOnly = false
       }
     }
   }
@@ -209,6 +218,8 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
       }
     }
 
+    // 如果在 HBuilderX 中
+    removeForkTsCheckerWebpackPlugin(webpackConfig.plugins)
     // js preprocess
     updateJsLoader(rawRules, 'foo.js', babelLoaderRe, {
       loader: resolve('packages/webpack-preprocess-loader'),
@@ -223,8 +234,6 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
       loader: resolve('packages/webpack-preprocess-loader'),
       options: jsPreprocessOptions
     })
-    // 如果在 HBuilderX 中
-    removeForkTsCheckerWebpackPlugin(webpackConfig.plugins)
 
     let platformWebpackConfig = platformOptions.webpackConfig
     if (typeof platformWebpackConfig === 'function') {
@@ -244,7 +253,16 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
 
     if (!isAppView) { // app-plus view不需要copy
       const patterns = getCopyWebpackPluginOptions(manifestPlatformOptions, vueOptions)
-      plugins.push(new CopyWebpackPlugin(CopyWebpackPluginVersion > 5 ? { patterns } : patterns))
+      plugins.push(new CopyWebpackPlugin(CopyWebpackPluginVersion > 5 ? {
+        patterns
+      } : patterns))
+
+      const uniExtApis = require('@dcloudio/uni-cli-shared/lib/uni_modules/uni_modules')
+        .parseUniExtApis(false)
+      const keys = Object.keys(uniExtApis)
+      if (keys.length) {
+        plugins.push(new webpack.ProvidePlugin(uniExtApis))
+      }
     }
     if (!process.env.UNI_SUBPACKGE || !process.env.UNI_MP_PLUGIN) {
       try {
@@ -263,7 +281,9 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
             return ''
           }
         }]
-        plugins.push(new CopyWebpackPlugin(CopyWebpackPluginVersion > 5 ? { patterns } : patterns))
+        plugins.push(new CopyWebpackPlugin(CopyWebpackPluginVersion > 5 ? {
+          patterns
+        } : patterns))
       } catch (e) { }
     }
 
@@ -314,7 +334,8 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
       })
     }
 
-    if (process.env.NODE_ENV === 'development' || (process.env.NODE_ENV === 'production' && process.env.SOURCEMAP === 'true')) {
+    if (process.env.NODE_ENV === 'development' || (process.env.NODE_ENV === 'production' && process.env
+      .SOURCEMAP === 'true')) {
       const sourceMap = require('@dcloudio/uni-cli-shared/lib/source-map')
       let isAppService = false
       if (
@@ -336,7 +357,9 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
           noSources: true,
           append: false
         }
-        if (isInHBuilderX && process.env.SOURCEMAP_PATH) { sourceMapOptions.filename = process.env.SOURCEMAP_PATH }
+        if (isInHBuilderX && process.env.SOURCEMAP_PATH) {
+          sourceMapOptions.filename = process.env.SOURCEMAP_PATH
+        }
         if (useEvalSourceMap || useSourceMap) {
           plugins.push(sourceMap.createSourceMapDevToolPlugin(!sourceMapOptions.filename, sourceMapOptions))
         }
@@ -344,7 +367,8 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
         if (useEvalSourceMap) {
           plugins.push(sourceMap.createEvalSourceMapDevToolPlugin())
         } else if (useSourceMap) {
-          plugins.push(sourceMap.createSourceMapDevToolPlugin(process.env.UNI_PLATFORM === 'mp-weixin' || process.env.UNI_PLATFORM === 'mp-toutiao'))
+          plugins.push(sourceMap.createSourceMapDevToolPlugin(process.env.UNI_PLATFORM === 'mp-weixin' || process
+            .env.UNI_PLATFORM === 'mp-toutiao'))
         }
       }
     }
@@ -359,7 +383,7 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
           dir: process.env.UNI_INPUT_DIR
         }))
       }
-    } catch (e) {}
+    } catch (e) { }
 
     const resolveLoaderAlias = {}
     const modules = ['@vue/cli-plugin-babel', '@vue/cli-service']
@@ -388,11 +412,15 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
             JSON.stringify({
               type: 'stat'
             }),
-          vuex: require.resolve('@dcloudio/vue-cli-plugin-uni/packages/vuex3')
+          vuex: require.resolve('@dcloudio/vue-cli-plugin-uni/packages/vuex3'),
+          '@vue/composition-api': require.resolve('@dcloudio/vue-cli-plugin-uni/packages/@vue/composition-api')
         },
         modules: [
           process.env.UNI_INPUT_DIR,
           path.resolve(process.env.UNI_INPUT_DIR, 'node_modules')
+        ],
+        plugins: [
+          new uts.UTSResolverPlugin()
         ]
       },
       module: {

@@ -57,7 +57,13 @@ var serviceContext = (function () {
     'getLocation',
     'chooseLocation',
     'openLocation',
-    'createMapContext'
+    'createMapContext',
+    'onLocationChange',
+    'onLocationChangeError',
+    'startLocationUpdate',
+    'stopLocationUpdate',
+    'offLocationChange',
+    'offLocationChangeError'
   ];
 
   const media = [
@@ -144,6 +150,7 @@ var serviceContext = (function () {
     'checkIsSoterEnrolledInDevice',
     'startSoterAuthentication',
     'onThemeChange',
+    'offThemeChange',
     'onUIStyleChange',
     'getSystemSetting',
     'getAppAuthorizeSetting',
@@ -634,6 +641,49 @@ var serviceContext = (function () {
     warp,
     invoke
   };
+
+  const borderStyles = {
+    black: 'rgba(0,0,0,0.4)',
+    white: 'rgba(255,255,255,0.4)'
+  };
+
+  function normalizeTabBarStyles (borderStyle) {
+    if (borderStyle && borderStyle in borderStyles) {
+      return borderStyles[borderStyle]
+    }
+    return borderStyle
+  }
+
+  function normallizeStyles (pageStyle, themeConfig = {}, mode = 'light') {
+    const modeStyle = themeConfig[mode];
+    const styles = {};
+    if (!modeStyle) {
+      return styles
+    }
+    Object.keys(pageStyle).forEach((key) => {
+      const styleItem = pageStyle[key]; // Object Array String
+      styles[key] = (() => {
+        if (isPlainObject(styleItem)) {
+          return normallizeStyles(styleItem, themeConfig, mode)
+        } else if (Array.isArray(styleItem)) {
+          return styleItem.map((item) => isPlainObject(item)
+            ? normallizeStyles(item, themeConfig, mode)
+            : item)
+        } else if (isStr(styleItem) && styleItem.startsWith('@')) {
+          const _key = styleItem.replace('@', '');
+          let _styleItem = modeStyle[_key] || styleItem;
+          switch (key) {
+            case 'borderStyle':
+              _styleItem = normalizeTabBarStyles(_styleItem);
+              break
+          }
+          return _styleItem
+        }
+        return styleItem
+      })();
+    });
+    return styles
+  }
 
   /**
    * 框架内 try-catch
@@ -1589,6 +1639,7 @@ var serviceContext = (function () {
   }
 
   const NAVBAR_HEIGHT = 44;
+  const ON_THEME_CHANGE = 'onThemeChange';
 
   var en = {
   	"uni.app.quit": "Press back button again to exit",
@@ -3110,7 +3161,7 @@ var serviceContext = (function () {
     },
     cancelColor: {
       type: String,
-      default: '#000000'
+      default: '#000'
     },
     confirmText: {
       type: String,
@@ -3198,7 +3249,7 @@ var serviceContext = (function () {
     },
     itemColor: {
       type: String,
-      default: '#000000'
+      default: '#000'
     },
     visible: {
       type: Boolean,
@@ -4959,6 +5010,9 @@ var serviceContext = (function () {
     moveAlong (ctx, args) {
       return invokeVmMethod(ctx, 'moveAlong', args)
     },
+    setLocMarkerIcon (ctx, args) {
+      return invokeVmMethod(ctx, 'setLocMarkerIcon', args)
+    },
     openMapApp (ctx, args) {
       return invokeVmMethod(ctx, 'openMapApp', args)
     },
@@ -6083,7 +6137,7 @@ var serviceContext = (function () {
       return {
         authMode: supportMode[0] || 'fingerPrint',
         errCode: 90001,
-        errMsg: 'startSoterAuthentication:fail'
+        errMsg: 'startSoterAuthentication:fail not support'
       }
     }
     const supportRequestAuthMode = [];
@@ -6117,8 +6171,14 @@ var serviceContext = (function () {
     }
     const realAuthMode = enrolledRequestAuthMode[0];
     if (realAuthMode === 'fingerPrint') {
+      let waiting = null;
+      let waitingTimer;
+      const waitingTitle =
+        authContent || t('uni.startSoterAuthentication.authContent');
       if (plus.os.name.toLowerCase() === 'android') {
-        plus.nativeUI.showWaiting(authContent || t('uni.startSoterAuthentication.authContent')).onclose = function () {
+        waiting = plus.nativeUI.showWaiting(waitingTitle);
+
+        waiting.onclose = function () {
           plus.fingerprint.cancel();
         };
       }
@@ -6132,6 +6192,13 @@ var serviceContext = (function () {
       }, (e) => {
         switch (e.code) {
           case e.AUTHENTICATE_MISMATCH:
+            if (waiting) {
+              clearTimeout(waitingTimer);
+              waiting.setTitle('无法识别');
+              waitingTimer = setTimeout(() => {
+                waiting && waiting.setTitle(waitingTitle);
+              }, 1000);
+            }
             // 微信小程序没有这个回调，如果要实现此处回调需要多次触发需要用事件publish实现
             // invoke(callbackId, {
             //   authMode: realAuthMode,
@@ -6215,6 +6282,1378 @@ var serviceContext = (function () {
     }
   }
 
+  function createButtonOnClick (index) {
+    return function onClick (btn) {
+      const pages = getCurrentPages();
+      if (!pages.length) {
+        return
+      }
+      btn.index = index;
+      const page = pages[pages.length - 1];
+      page.$vm &&
+        page.$vm.__call_hook &&
+        page.$vm.__call_hook('onNavigationBarButtonTap', btn);
+    }
+  }
+
+  function parseTitleNViewButtons (titleNView) {
+    const buttons = titleNView.buttons;
+    if (!Array.isArray(buttons)) {
+      return titleNView
+    }
+    buttons.forEach((btn, index) => {
+      btn.onclick = createButtonOnClick(index);
+    });
+    return titleNView
+  }
+
+  function parseTitleNView (id, routeOptions) {
+    const windowOptions = routeOptions.window;
+    const titleNView = windowOptions.titleNView;
+    routeOptions.meta.statusBarStyle =
+      windowOptions.navigationBarTextStyle === 'black' ? 'dark' : 'light';
+    if (
+      // 无头
+      titleNView === false ||
+      titleNView === 'false' ||
+      (windowOptions.navigationStyle === 'custom' &&
+        !isPlainObject(titleNView)) ||
+      (windowOptions.transparentTitle === 'always' && !isPlainObject(titleNView))
+    ) {
+      return false
+    }
+
+    const titleImage = windowOptions.titleImage || '';
+    const transparentTitle = windowOptions.transparentTitle || 'none';
+    const titleNViewTypeList = {
+      none: 'default',
+      auto: 'transparent',
+      always: 'float'
+    };
+
+    const navigationBarBackgroundColor =
+      windowOptions.navigationBarBackgroundColor;
+    const ret = {
+      autoBackButton: !routeOptions.meta.isQuit,
+      titleText:
+        titleImage === '' ? windowOptions.navigationBarTitleText || '' : '',
+      titleColor:
+        windowOptions.navigationBarTextStyle === 'black' ? '#000000' : '#ffffff',
+      type: titleNViewTypeList[transparentTitle],
+      backgroundColor:
+        /^#[a-z0-9]{6}$/i.test(navigationBarBackgroundColor) ||
+        navigationBarBackgroundColor === 'transparent'
+          ? navigationBarBackgroundColor
+          : '#f7f7f7',
+      tags:
+        titleImage === ''
+          ? []
+          : [
+            {
+              tag: 'img',
+              src: titleImage,
+              position: {
+                left: 'auto',
+                top: 'auto',
+                width: 'auto',
+                height: '26px'
+              }
+            }
+          ]
+    };
+
+    if (isPlainObject(titleNView)) {
+      return initTitleNViewI18n(
+        id,
+        Object.assign(ret, parseTitleNViewButtons(titleNView))
+      )
+    }
+    return initTitleNViewI18n(id, ret)
+  }
+
+  function initTitleNViewI18n (id, titleNView) {
+    const i18nResult = initNavigationBarI18n(titleNView);
+    if (!i18nResult) {
+      return titleNView
+    }
+    const [titleTextI18n, searchInputPlaceholderI18n] = i18nResult;
+    if (titleTextI18n || searchInputPlaceholderI18n) {
+      uni.onLocaleChange(() => {
+        const webview = plus.webview.getWebviewById(id + '');
+        if (!webview) {
+          return
+        }
+        const newTitleNView = {};
+        if (titleTextI18n) {
+          newTitleNView.titleText = titleNView.titleText;
+        }
+        if (searchInputPlaceholderI18n) {
+          newTitleNView.searchInput = {
+            placeholder: titleNView.searchInput.placeholder
+          };
+        }
+        if (process.env.NODE_ENV !== 'production') {
+          console.log('[uni-app] updateWebview', webview.id, newTitleNView);
+        }
+        webview.setStyle({
+          titleNView: newTitleNView
+        });
+      });
+    }
+    return titleNView
+  }
+
+  function parsePullToRefresh (routeOptions) {
+    const windowOptions = routeOptions.window;
+
+    if (windowOptions.enablePullDownRefresh || (windowOptions.pullToRefresh && windowOptions.pullToRefresh.support)) {
+      const pullToRefreshStyles = Object.create(null);
+      // 初始化默认值
+      if (plus.os.name === 'Android') {
+        Object.assign(pullToRefreshStyles, {
+          support: true,
+          style: 'circle'
+        });
+      } else {
+        Object.assign(pullToRefreshStyles, {
+          support: true,
+          style: 'default',
+          height: '50px',
+          range: '200px',
+          contentdown: {
+            caption: ''
+          },
+          contentover: {
+            caption: ''
+          },
+          contentrefresh: {
+            caption: ''
+          }
+        });
+      }
+
+      if (windowOptions.backgroundTextStyle) {
+        pullToRefreshStyles.color = windowOptions.backgroundTextStyle;
+        pullToRefreshStyles.snowColor = windowOptions.backgroundTextStyle;
+      }
+
+      Object.assign(pullToRefreshStyles, windowOptions.pullToRefresh || {});
+
+      return pullToRefreshStyles
+    }
+  }
+
+  const REGEX_UPX = /(\d+(\.\d+)?)[r|u]px/g;
+
+  function transformCSS (css) {
+    return css.replace(REGEX_UPX, (a, b) => {
+      return uni.upx2px(parseInt(b) || 0) + 'px'
+    })
+  }
+
+  function parseStyleUnit (styles) {
+    let newStyles = {};
+    const stylesStr = JSON.stringify(styles);
+    if (~stylesStr.indexOf('upx') || ~stylesStr.indexOf('rpx')) {
+      try {
+        newStyles = JSON.parse(transformCSS(stylesStr));
+      } catch (e) {
+        newStyles = styles;
+        console.error(e);
+      }
+    } else {
+      newStyles = JSON.parse(stylesStr);
+    }
+
+    return newStyles
+  }
+
+  const WEBVIEW_STYLE_BLACKLIST = [
+    'navigationBarBackgroundColor',
+    'navigationBarTextStyle',
+    'navigationBarTitleText',
+    'navigationBarShadow',
+    'navigationStyle',
+    'disableScroll',
+    'backgroundColor',
+    'backgroundTextStyle',
+    'enablePullDownRefresh',
+    'onReachBottomDistance',
+    'usingComponents',
+    // 需要解析的
+    'titleNView',
+    'pullToRefresh'
+  ];
+
+  function parseWebviewStyle (id, path, _routeOptions = {}) {
+    const webviewStyle = {
+      bounce: 'vertical'
+    };
+
+    // 合并
+    _routeOptions.window = parseStyleUnit(
+      Object.assign(
+        JSON.parse(JSON.stringify(__uniConfig.window || {})),
+        _routeOptions.window || {}
+      )
+    );
+
+    Object.keys(_routeOptions.window).forEach(name => {
+      if (WEBVIEW_STYLE_BLACKLIST.indexOf(name) === -1) {
+        webviewStyle[name] = _routeOptions.window[name];
+      }
+    });
+
+    const routeOptions = parseTheme(_routeOptions);
+
+    const backgroundColor = routeOptions.window.backgroundColor;
+    if (
+      /^#[a-z0-9]{6}$/i.test(backgroundColor) ||
+      backgroundColor === 'transparent'
+    ) {
+      if (!webviewStyle.background) {
+        webviewStyle.background = backgroundColor;
+      }
+      if (!webviewStyle.backgroundColorTop) {
+        webviewStyle.backgroundColorTop = backgroundColor;
+      }
+      if (!webviewStyle.backgroundColorBottom) {
+        webviewStyle.backgroundColorBottom = backgroundColor;
+      }
+      if (!webviewStyle.animationAlphaBGColor) {
+        webviewStyle.animationAlphaBGColor = backgroundColor;
+      }
+      if (typeof webviewStyle.webviewBGTransparent === 'undefined') {
+        webviewStyle.webviewBGTransparent = true;
+      }
+    }
+
+    const titleNView = parseTitleNView(id, routeOptions);
+    if (titleNView) {
+      if (
+        id === 1 &&
+        __uniConfig.realEntryPagePath &&
+        !routeOptions.meta.isQuit // 可能是tabBar
+      ) {
+        titleNView.autoBackButton = true;
+      }
+      webviewStyle.titleNView = titleNView;
+    }
+
+    const pullToRefresh = parsePullToRefresh(routeOptions);
+    if (pullToRefresh) {
+      if (pullToRefresh.style === 'circle') {
+        webviewStyle.bounce = 'none';
+      }
+      webviewStyle.pullToRefresh = pullToRefresh;
+    }
+
+    // 不支持 hide
+    if (webviewStyle.popGesture === 'hide') {
+      delete webviewStyle.popGesture;
+    }
+
+    if (routeOptions.meta.isQuit) {
+      // 退出
+      webviewStyle.popGesture = plus.os.name === 'iOS' ? 'appback' : 'none';
+    }
+
+    // TODO 下拉刷新
+
+    if (path && routeOptions.meta.isNVue) {
+      webviewStyle.uniNView = {
+        path,
+        defaultFontSize: __uniConfig.defaultFontSize,
+        viewport: __uniConfig.viewport
+      };
+    }
+
+    _routeOptions.meta = routeOptions.meta;
+    return webviewStyle
+  }
+
+  function backbuttonListener () {
+    uni.navigateBack({
+      from: 'backbutton'
+    });
+  }
+
+  function getStatusbarHeight () {
+    // 横屏时 iOS 获取的状态栏高度错误，进行纠正
+    return plus.navigator.isImmersedStatusbar() ? Math.round(plus.os.name === 'iOS' ? plus.navigator.getSafeAreaInsets().top : plus.navigator.getStatusbarHeight()) : 0
+  }
+
+  function initPopupSubNVue (subNVueWebview, style, maskWebview) {
+    if (!maskWebview.popupSubNVueWebviews) {
+      maskWebview.popupSubNVueWebviews = {};
+    }
+
+    maskWebview.popupSubNVueWebviews[subNVueWebview.id] = subNVueWebview;
+
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(
+        `UNIAPP[webview][${maskWebview.id}]:add.popupSubNVueWebview[${subNVueWebview.id}]`
+      );
+    }
+
+    const hideSubNVue = function () {
+      maskWebview.setStyle({
+        mask: 'none'
+      });
+      subNVueWebview.hide('auto');
+    };
+    maskWebview.addEventListener('maskClick', hideSubNVue);
+    let isRemoved = false; // 增加个 remove 标记，防止出错
+    subNVueWebview.addEventListener('show', () => {
+      if (!isRemoved) {
+        plus.key.removeEventListener('backbutton', backbuttonListener);
+        plus.key.addEventListener('backbutton', hideSubNVue);
+        isRemoved = true;
+      }
+    });
+    subNVueWebview.addEventListener('hide', () => {
+      if (isRemoved) {
+        plus.key.removeEventListener('backbutton', hideSubNVue);
+        plus.key.addEventListener('backbutton', backbuttonListener);
+        isRemoved = false;
+      }
+    });
+    subNVueWebview.addEventListener('close', () => {
+      delete maskWebview.popupSubNVueWebviews[subNVueWebview.id];
+      if (isRemoved) {
+        plus.key.removeEventListener('backbutton', hideSubNVue);
+        plus.key.addEventListener('backbutton', backbuttonListener);
+        isRemoved = false;
+      }
+    });
+  }
+
+  function initNormalSubNVue (subNVueWebview, style, webview) {
+    webview.append(subNVueWebview);
+  }
+
+  function initSubNVue (subNVue, routeOptions, webview) {
+    if (!subNVue.path) {
+      return
+    }
+    const style = subNVue.style || {};
+    const isNavigationBar = subNVue.type === 'navigationBar';
+    const isPopup = subNVue.type === 'popup';
+
+    delete style.type;
+
+    if (isPopup && !subNVue.id) {
+      console.warn('subNVue[' + subNVue.path + '] is missing id');
+    }
+    // TODO lazyload
+
+    style.uniNView = {
+      path: subNVue.path.replace('.nvue', '.js'),
+      defaultFontSize: __uniConfig.defaultFontSize,
+      viewport: __uniConfig.viewport
+    };
+
+    const extras = {
+      __uniapp_host: routeOptions.path,
+      __uniapp_origin: style.uniNView.path.split('?')[0].replace('.js', ''),
+      __uniapp_origin_id: webview.id,
+      __uniapp_origin_type: webview.__uniapp_type
+    };
+
+    let maskWebview;
+
+    if (isNavigationBar) {
+      style.position = 'dock';
+      style.dock = 'top';
+      style.top = 0;
+      style.width = '100%';
+      style.height = NAVBAR_HEIGHT + getStatusbarHeight();
+      delete style.left;
+      delete style.right;
+      delete style.bottom;
+      delete style.margin;
+    } else if (isPopup) {
+      style.position = 'absolute';
+      if (isTabBarPage(routeOptions.path)) {
+        maskWebview = tabBar$1;
+      } else {
+        maskWebview = webview;
+      }
+      extras.__uniapp_mask = style.mask || 'rgba(0,0,0,0.5)';
+      extras.__uniapp_mask_id = maskWebview.id;
+    }
+
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(
+        `UNIAPP[webview][${webview.id}]:create[${subNVue.id}]:${JSON.stringify(style)}`
+      );
+    }
+    delete style.mask;
+    const subNVueWebview = plus.webview.create('', subNVue.id, style, extras);
+
+    if (isPopup) {
+      initPopupSubNVue(subNVueWebview, style, maskWebview);
+    } else {
+      initNormalSubNVue(subNVueWebview, style, webview);
+    }
+  }
+
+  function initSubNVues (routeOptions, webview) {
+    const subNVues = routeOptions.window.subNVues;
+    if (!subNVues || !subNVues.length) {
+      return
+    }
+    subNVues.forEach(subNVue => {
+      initSubNVue(subNVue, routeOptions, webview);
+    });
+  }
+
+  function onWebviewClose (webview) {
+    webview.popupSubNVueWebviews && webview.addEventListener('close', () => {
+      Object.keys(webview.popupSubNVueWebviews).forEach(id => {
+        if (process.env.NODE_ENV !== 'production') {
+          console.log(
+            `UNIAPP[webview][${webview.id}]:popupSubNVueWebview[${id}].close`
+          );
+        }
+        webview.popupSubNVueWebviews[id].close('none');
+      });
+    });
+  }
+
+  function onWebviewResize (webview) {
+    const onResize = function ({
+      width,
+      height
+    }) {
+      const landscape = Math.abs(plus.navigator.getOrientation()) === 90;
+      const res = {
+        deviceOrientation: landscape ? 'landscape' : 'portrait',
+        size: {
+          windowWidth: Math.ceil(width),
+          windowHeight: Math.ceil(height)
+        }
+      };
+      publish('onViewDidResize', res); // API
+      UniServiceJSBridge.emit('onResize', res, parseInt(webview.id)); // Page lifecycle
+    };
+    webview.addEventListener('resize', debounce(onResize, 50));
+  }
+
+  const VD_SYNC_VERSION = 2;
+
+  const PAGE_CREATE = 2;
+  const MOUNTED_DATA = 4;
+  const UPDATED_DATA = 6;
+  const PAGE_CREATED = 10;
+
+  const UI_EVENT = 20;
+
+  const VD_SYNC = 'vdSync';
+
+  const WEBVIEW_READY = 'webviewReady';
+  const VD_SYNC_CALLBACK = 'vdSyncCallback';
+  const INVOKE_API = 'invokeApi';
+  const WEB_INVOKE_APPSERVICE$1 = 'WEB_INVOKE_APPSERVICE';
+  const WEBVIEW_INSERTED = 'webviewInserted';
+  const WEBVIEW_REMOVED = 'webviewRemoved';
+  const WEBVIEW_ID_PREFIX = 'webviewId';
+
+  function onWebviewRecovery (webview, routeOptions) {
+    const {
+      subscribe,
+      unsubscribe
+    } = UniServiceJSBridge;
+
+    const id = webview.id;
+    const onWebviewRecoveryReady = function (data, pageId) {
+      if (id !== pageId) {
+        return
+      }
+      unsubscribe(WEBVIEW_READY, onWebviewRecoveryReady);
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(`UNIAPP[webview][${id}]:onWebviewRecoveryReady ready`);
+      }
+      // 恢复目标页面
+      pageId = parseInt(pageId);
+      const page = getCurrentPages(true).find(page => page.$page.id === pageId);
+      if (!page) {
+        return console.error(`Page[${pageId}] not found`)
+      }
+      page.$vm._$vd.restore();
+    };
+
+    webview.addEventListener('recovery', e => {
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(`UNIAPP[webview][${this.id}].recovery.reload:` + JSON.stringify({
+          path: routeOptions.path,
+          webviewId: id
+        }));
+      }
+      subscribe(WEBVIEW_READY, onWebviewRecoveryReady);
+    });
+  }
+
+  function onWebviewPopGesture (webview) {
+    let popStartStatusBarStyle;
+    webview.addEventListener('popGesture', e => {
+      if (e.type === 'start') {
+        // 设置下一个页面的 statusBarStyle
+        const pages = getCurrentPages();
+        const page = pages[pages.length - 2];
+        popStartStatusBarStyle = lastStatusBarStyle;
+        const statusBarStyle = page && page.$page.meta.statusBarStyle;
+        statusBarStyle && setStatusBarStyle(statusBarStyle);
+      } else if (e.type === 'end' && !e.result) {
+        // 拖拽未完成,设置为当前状态栏前景色
+        setStatusBarStyle(popStartStatusBarStyle);
+      } else if (e.type === 'end' && e.result) {
+        const pages = getCurrentPages();
+        const len = pages.length;
+        const page = pages[pages.length - 1];
+        page && page.$remove();
+        setStatusBarStyle();
+        // 仅当存在一个页面，且是直达页面时，才 reLaunch 首页
+        if (page && len === 1 && isDirectPage(page)) {
+          reLaunchEntryPage();
+        } else {
+          UniServiceJSBridge.emit('onAppRoute', {
+            type: 'navigateBack'
+          });
+        }
+      }
+    });
+  }
+
+  /**
+   * 是否处于直达页面
+   * @param page
+   * @returns
+   */
+  function isDirectPage (page) {
+    return (
+      __uniConfig.realEntryPagePath &&
+      page.$page.route === __uniConfig.entryPagePath
+    )
+  }
+  /**
+   * 重新启动到首页
+   */
+  function reLaunchEntryPage () {
+    __uniConfig.entryPagePath = __uniConfig.realEntryPagePath;
+    delete __uniConfig.realEntryPagePath;
+    uni.reLaunch({
+      url: addLeadingSlash(__uniConfig.entryPagePath)
+    });
+  }
+
+  function hasLeadingSlash (str) {
+    return str.indexOf('/') === 0
+  }
+
+  function addLeadingSlash (str) {
+    return hasLeadingSlash(str) ? str : '/' + str
+  }
+
+  let preloadWebview;
+
+  let id$1 = 2;
+
+  const WEBVIEW_LISTENERS = {
+    pullToRefresh: 'onPullDownRefresh',
+    titleNViewSearchInputChanged: 'onNavigationBarSearchInputChanged',
+    titleNViewSearchInputConfirmed: 'onNavigationBarSearchInputConfirmed',
+    titleNViewSearchInputClicked: 'onNavigationBarSearchInputClicked',
+    titleNViewSearchInputFocusChanged: 'onNavigationBarSearchInputFocusChanged'
+  };
+
+  function setPreloadWebview (webview) {
+    preloadWebview = webview;
+  }
+
+  function noop$1 (str) {
+    return str
+  }
+
+  function getUniPageUrl (path, query) {
+    const queryString = query ? stringifyQuery(query, noop$1) : '';
+    return {
+      path: path.substr(1),
+      query: queryString ? queryString.substr(1) : queryString
+    }
+  }
+
+  function getDebugRefresh (path, query, routeOptions) {
+    const queryString = query ? stringifyQuery(query, noop$1) : '';
+    return {
+      isTab: routeOptions.meta.isTabBar,
+      arguments: JSON.stringify({
+        path: path.substr(1),
+        query: queryString ? queryString.substr(1) : queryString
+      })
+    }
+  }
+
+  function createWebview (path, routeOptions, query, extras = {}) {
+    if (routeOptions.meta.isNVue) {
+      const getWebviewStyle = () => parseWebviewStyle(
+        webviewId,
+        path,
+        routeOptions
+      );
+      const webviewId = id$1++;
+      const webviewStyle = getWebviewStyle();
+      webviewStyle.uniPageUrl = getUniPageUrl(path, query);
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('[uni-app] createWebview', webviewId, path, webviewStyle);
+      }
+      // android 需要使用
+      webviewStyle.isTab = !!routeOptions.meta.isTabBar;
+      const webview = plus.webview.create('', String(webviewId), webviewStyle, Object.assign({
+        nvue: true
+      }, extras));
+
+      useWebviewThemeChange(webview, getWebviewStyle);
+
+      return webview
+    }
+    if (id$1 === 2) { // 如果首页非 nvue，则直接返回 Launch Webview
+      return plus.webview.getLaunchWebview()
+    }
+    const webview = preloadWebview;
+    return webview
+  }
+
+  function initWebview (webview, routeOptions, path, query) {
+    // 首页或非 nvue 页面
+    if (webview.id === '1' || !routeOptions.meta.isNVue) {
+      const getWebviewStyle = () => parseWebviewStyle(
+        parseInt(webview.id),
+        '',
+        routeOptions
+      );
+      const webviewStyle = getWebviewStyle();
+
+      webviewStyle.uniPageUrl = getUniPageUrl(path, query);
+
+      if (!routeOptions.meta.isNVue) {
+        webviewStyle.debugRefresh = getDebugRefresh(path, query, routeOptions);
+      } else {
+        // android 需要使用
+        webviewStyle.isTab = !!routeOptions.meta.isTabBar;
+      }
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('[uni-app] updateWebview', webviewStyle);
+      }
+
+      useWebviewThemeChange(webview, getWebviewStyle);
+
+      webview.setStyle(webviewStyle);
+    }
+
+    const {
+      on,
+      emit
+    } = UniServiceJSBridge;
+
+    initSubNVues(routeOptions, webview);
+
+    Object.keys(WEBVIEW_LISTENERS).forEach(name => {
+      webview.addEventListener(name, (e) => {
+        emit(WEBVIEW_LISTENERS[name], e, parseInt(webview.id));
+      });
+    });
+
+    onWebviewClose(webview);
+    onWebviewResize(webview);
+
+    if (plus.os.name === 'iOS') {
+      !webview.nvue && onWebviewRecovery(webview, routeOptions);
+      onWebviewPopGesture(webview);
+    }
+
+    on(webview.id + '.startPullDownRefresh', () => {
+      webview.beginPullToRefresh();
+    });
+
+    on(webview.id + '.stopPullDownRefresh', () => {
+      webview.endPullToRefresh();
+    });
+
+    return webview
+  }
+
+  function createPreloadWebview () {
+    if (!preloadWebview || preloadWebview.__uniapp_route) { // 不存在，或已被使用
+      preloadWebview = plus.webview.create(VIEW_WEBVIEW_PATH, String(id$1++), { contentAdjust: false });
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(`[uni-app] preloadWebview[${preloadWebview.id}]`);
+      }
+    }
+    return preloadWebview
+  }
+
+  const webviewReadyCallbacks = {};
+
+  function registerWebviewReady (pageId, callback) {
+    (webviewReadyCallbacks[pageId] || (webviewReadyCallbacks[pageId] = [])).push(callback);
+  }
+
+  function consumeWebviewReady (pageId) {
+    const callbacks = webviewReadyCallbacks[pageId];
+    Array.isArray(callbacks) && callbacks.forEach(callback => callback());
+    delete webviewReadyCallbacks[pageId];
+  }
+
+  let todoNavigator = false;
+
+  function setTodoNavigator (path, callback, msg) {
+    todoNavigator = {
+      path: path,
+      nvue: __uniRoutes.find(route => route.path === path).meta.isNVue,
+      navigate: callback
+    };
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`todoNavigator:${todoNavigator.path} ${msg}`);
+    }
+  }
+
+  function navigate (path, callback, isAppLaunch) {
+    {
+      if (isAppLaunch && __uniConfig.splashscreen && __uniConfig.splashscreen.autoclose && (!__uniConfig.splashscreen.alwaysShowBeforeRender)) {
+        plus.navigator.closeSplashscreen();
+      }
+      if (!isAppLaunch && todoNavigator) {
+        return console.error(`Waiting to navigate to: ${todoNavigator.path}, do not operate continuously: ${path}.`)
+      }
+      if (__uniConfig.renderer === 'native') { // 纯原生无需wait逻辑
+        // 如果是首页还未初始化，需要等一等，其他无需等待
+        if (getCurrentPages().length === 0) {
+          return setTodoNavigator(path, callback, 'waitForReady')
+        }
+        return callback()
+      }
+      // 未创建 preloadWebview 或 preloadWebview 已被使用
+      const waitPreloadWebview = !preloadWebview || (preloadWebview && preloadWebview.__uniapp_route);
+      // 已创建未 loaded
+      const waitPreloadWebviewReady = preloadWebview && !preloadWebview.loaded;
+
+      if (waitPreloadWebview || waitPreloadWebviewReady) {
+        setTodoNavigator(path, callback, waitPreloadWebview ? 'waitForCreate' : 'waitForReady');
+      } else {
+        callback();
+      }
+      if (waitPreloadWebviewReady) {
+        registerWebviewReady(preloadWebview.id, todoNavigate);
+      }
+    }
+  }
+
+  function todoNavigate () {
+    if (!todoNavigator) {
+      return
+    }
+    const {
+      navigate
+    } = todoNavigator;
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`todoNavigate:${todoNavigator.path}`);
+    }
+    todoNavigator = false;
+    return navigate()
+  }
+
+  function navigateFinish () {
+    {
+      if (__uniConfig.renderer === 'native') {
+        if (!todoNavigator) {
+          return
+        }
+        if (todoNavigator.nvue) {
+          return todoNavigate()
+        }
+        return
+      }
+      // 创建预加载
+      const preloadWebview = createPreloadWebview();
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(`navigateFinish.preloadWebview:${preloadWebview.id}`);
+      }
+      if (!todoNavigator) {
+        return
+      }
+      if (todoNavigator.nvue) {
+        return todoNavigate()
+      }
+      preloadWebview.loaded
+        ? todoNavigator.navigate()
+        : registerWebviewReady(preloadWebview.id, todoNavigate);
+    }
+  }
+
+  const pageFactory = Object.create(null);
+
+  function definePage (name, createPageVueComponent) {
+    pageFactory[name] = createPageVueComponent;
+  }
+
+  const getPageVueComponent = cached(function (pagePath) {
+    return pageFactory[pagePath]()
+  });
+
+  function createPage (pagePath, pageId, pageQuery, pageInstance) {
+    if (!pageFactory[pagePath]) {
+      console.error(`${pagePath} not found`);
+    }
+    const startTime = Date.now();
+    const pageVm = new (getPageVueComponent(pagePath))({
+      mpType: 'page',
+      pageId,
+      pagePath,
+      pageQuery,
+      pageInstance
+    });
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`new ${pagePath}[${pageId}]:time(${Date.now() - startTime})`);
+    }
+    return pageVm
+  }
+
+  const loadedSubPackages = [];
+
+  /**
+   * 指定路由 ready 后，检查是否触发分包预加载
+   * @param {Object} route
+   */
+  function preloadSubPackages (route) {
+    if (!__uniConfig.preloadRule) {
+      return
+    }
+    const options = __uniConfig.preloadRule[route];
+    if (!options || !Array.isArray(options.packages)) {
+      return
+    }
+    const packages = options.packages.filter(root => loadedSubPackages.indexOf(root) === -1);
+    if (!packages.length) {
+      return
+    }
+    loadSubPackages(options.packages);
+    // 暂不需要网络下载
+    // const network = options.network || 'wifi'
+    // if (network === 'wifi') {
+    //   uni.getNetworkType({
+    //     success (res) {
+    //       if (process.env.NODE_ENV !== 'production') {
+    //         console.log('UNIAPP[preloadRule]:' + res.networkType + ':' + JSON.stringify(options))
+    //       }
+    //       if (res.networkType === 'wifi') {
+    //         loadSubPackages(options.packages)
+    //       }
+    //     }
+    //   })
+    // } else {
+    //   if (process.env.NODE_ENV !== 'production') {
+    //     console.log('UNIAPP[preloadRule]:' + JSON.stringify(options))
+    //   }
+    //   loadSubPackages(options.packages)
+    // }
+  }
+
+  function loadPage (route, callback) {
+    let isInSubPackage = false;
+    const subPackages = __uniConfig.subPackages;
+    if (Array.isArray(subPackages)) {
+      const subPackage = subPackages.find(subPackage => route.indexOf(subPackage.root) === 0);
+      if (subPackage) {
+        isInSubPackage = true;
+        loadSubPackage$1(subPackage.root, callback);
+      }
+    }
+    if (!isInSubPackage) {
+      callback();
+    }
+  }
+
+  function loadSubPackage$1 (root, callback) {
+    if (loadedSubPackages.indexOf(root) !== -1) {
+      return callback()
+    }
+    loadSubPackages([root], () => {
+      callback();
+    });
+  }
+
+  const SUB_FILENAME = 'app-sub-service.js';
+
+  function evaluateScriptFiles (files, callback) {
+    __uniConfig.onServiceReady(() => {
+      weex.requireModule('plus').evalJSFiles(files, callback);
+    });
+  }
+
+  function loadSubPackages (packages, callback) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('UNIAPP[loadSubPackages]:' + JSON.stringify(packages));
+    }
+    const startTime = Date.now();
+    evaluateScriptFiles(packages.map(root => {
+      loadedSubPackages.push(root);
+      return root + '/' + SUB_FILENAME
+    }), res => {
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('UNIAPP[loadSubPackages]:耗时(' + (Date.now() - startTime) + ')');
+      }
+      callback && callback(true);
+    });
+  }
+
+  const extend = Object.assign;
+
+  function createLaunchOptions () {
+    return {
+      path: '',
+      query: {},
+      scene: 1001,
+      referrerInfo: {
+        appId: '',
+        extraData: {}
+      }
+    }
+  }
+
+  const enterOptions = createLaunchOptions();
+  const launchOptions = createLaunchOptions();
+
+  function getLaunchOptions () {
+    return launchOptions
+  }
+
+  function getEnterOptions () {
+    return enterOptions
+  }
+
+  function initEnterOptions ({
+    path,
+    query,
+    referrerInfo
+  }) {
+    extend(enterOptions, {
+      path,
+      query: query ? parseQuery(query) : {},
+      referrerInfo: referrerInfo || {}
+    });
+  }
+
+  function initLaunchOptions ({
+    path,
+    query,
+    referrerInfo
+  }) {
+    extend(launchOptions, {
+      path,
+      query: query ? parseQuery(query) : {},
+      referrerInfo: referrerInfo || {},
+      channel: plus.runtime.channel,
+      launcher: plus.runtime.launcher
+    });
+    extend(enterOptions, launchOptions);
+    return launchOptions
+  }
+
+  function parseRedirectInfo () {
+    const weexPlus = weex.requireModule('plus');
+    if (weexPlus.getRedirectInfo) {
+      const {
+        path,
+        query,
+        extraData,
+        userAction,
+        fromAppid
+      } =
+        weexPlus.getRedirectInfo() || {};
+      const referrerInfo = {
+        appId: fromAppid,
+        extraData: {}
+      };
+      if (extraData) {
+        referrerInfo.extraData = extraData;
+      }
+      return {
+        path: path || '',
+        query: query ? '?' + query : '',
+        referrerInfo,
+        userAction
+      }
+    }
+  }
+
+  let isInitEntryPage = false;
+
+  function initEntryPage () {
+    if (isInitEntryPage) {
+      return
+    }
+    isInitEntryPage = true;
+
+    let entryPagePath;
+    let entryPageQuery;
+
+    const weexPlus = weex.requireModule('plus');
+
+    if (weexPlus.getRedirectInfo) {
+      const {
+        path,
+        query,
+        referrerInfo
+      } = parseRedirectInfo();
+      if (path) {
+        entryPagePath = path;
+        entryPageQuery = query;
+      }
+      __uniConfig.referrerInfo = referrerInfo;
+    } else {
+      const argsJsonStr = plus.runtime.arguments;
+      if (!argsJsonStr) {
+        return
+      }
+      try {
+        const args = JSON.parse(argsJsonStr);
+        entryPagePath = args.path || args.pathName;
+        entryPageQuery = args.query ? ('?' + args.query) : '';
+      } catch (e) {}
+    }
+
+    if (!entryPagePath || entryPagePath === __uniConfig.entryPagePath) {
+      if (entryPageQuery) {
+        __uniConfig.entryPageQuery = entryPageQuery;
+      }
+      return
+    }
+
+    const entryRoute = '/' + entryPagePath;
+    const routeOptions = __uniRoutes.find(route => route.path === entryRoute);
+    if (!routeOptions) {
+      console.error(`[uni-app] ${entryPagePath} not found...`);
+      return
+    }
+
+    if (!routeOptions.meta.isTabBar) {
+      __uniConfig.realEntryPagePath = __uniConfig.realEntryPagePath || __uniConfig.entryPagePath;
+    }
+
+    __uniConfig.entryPagePath = entryPagePath;
+    __uniConfig.entryPageQuery = entryPageQuery;
+
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`[uni-app] entryPagePath(${entryPagePath + entryPageQuery})`);
+    }
+  }
+
+  const pages = [];
+
+  function getCurrentPages$1 (returnAll) {
+    return returnAll ? pages.slice(0) : pages.filter(page => {
+      return !page.$page.meta.isTabBar || page.$page.meta.visible
+    })
+  }
+
+  const preloadWebviews = {};
+
+  function removePreloadWebview (webview) {
+    const url = Object.keys(preloadWebviews).find(url => preloadWebviews[url].id === webview.id);
+    if (url) {
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(`[uni-app] removePreloadWebview(${webview.id})`);
+      }
+      delete preloadWebviews[url];
+    }
+  }
+
+  function closePreloadWebview ({
+    url
+  }) {
+    const webview = preloadWebviews[url];
+    if (webview) {
+      if (webview.__page__) {
+        if (!getCurrentPages$1(true).find(page => page === webview.__page__)) {
+          // 未使用
+          webview.close('none');
+        } else { // 被使用
+          webview.__preload__ = false;
+        }
+      } else { // 未使用
+        webview.close('none');
+      }
+      delete preloadWebviews[url];
+    }
+    return webview
+  }
+
+  function preloadWebview$1 ({
+    url,
+    path,
+    query
+  }) {
+    if (!preloadWebviews[url]) {
+      const routeOptions = JSON.parse(JSON.stringify(__uniRoutes.find(route => route.path === path)));
+      preloadWebviews[url] = createWebview(path, routeOptions, query, {
+        __preload__: true,
+        __query__: JSON.stringify(query)
+      });
+    }
+    return preloadWebviews[url]
+  }
+
+  /**
+   * 首页需要主动registerPage，二级页面路由跳转时registerPage
+   */
+  function registerPage ({
+    url,
+    path,
+    query,
+    openType,
+    webview,
+    eventChannel
+  }) {
+    // fast 模式，nvue 首页时，初始化下 entry page
+    webview && initEntryPage();
+
+    if (preloadWebviews[url]) {
+      webview = preloadWebviews[url];
+      if (webview.__page__) {
+        // 该预载页面已处于显示状态,不再使用该预加载页面,直接新开
+        if (getCurrentPages$1(true).find(page => page === webview.__page__)) {
+          if (process.env.NODE_ENV !== 'production') {
+            console.log(`[uni-app] preloadWebview(${path},${webview.id}) already in use`);
+          }
+          webview = null;
+        } else {
+          if (eventChannel) {
+            webview.__page__.eventChannel = eventChannel;
+          }
+          pages.push(webview.__page__);
+          if (process.env.NODE_ENV !== 'production') {
+            console.log(`[uni-app] reuse preloadWebview(${path},${webview.id})`);
+          }
+          return webview
+        }
+      }
+    }
+    const routeOptions = JSON.parse(JSON.stringify(__uniRoutes.find(route => route.path === path)));
+
+    if (
+      openType === 'reLaunch' ||
+      (
+        !__uniConfig.realEntryPagePath &&
+        getCurrentPages$1().length === 0 // redirectTo
+      )
+    ) {
+      routeOptions.meta.isQuit = true;
+    } else if (!routeOptions.meta.isTabBar) {
+      routeOptions.meta.isQuit = false;
+    }
+
+    if (!webview) {
+      webview = createWebview(path, routeOptions, query);
+    } else {
+      webview = plus.webview.getWebviewById(webview.id);
+      webview.nvue = routeOptions.meta.isNVue;
+    }
+
+    if (routeOptions.meta.isTabBar) {
+      routeOptions.meta.visible = true;
+    }
+
+    if (routeOptions.meta.isTabBar) {
+      tabBar$1.append(webview);
+    }
+
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`[uni-app] registerPage(${path},${webview.id})`);
+    }
+
+    const isLaunchNVuePage = webview.id === '1' && webview.nvue;
+
+    initWebview(webview, routeOptions, path, query);
+
+    const route = path.slice(1);
+
+    webview.__uniapp_route = route;
+
+    const pageInstance = {
+      route,
+      options: Object.assign({}, query || {}),
+      $getAppWebview () {
+        // 重要，不能直接返回 webview 对象，因为 plus 可能会被二次替换，返回的 webview 对象内部的 plus 不正确
+        // 导致 webview.getStyle 等逻辑出错(旧的 webview 内部 plus 被释放)
+        return plus.webview.getWebviewById(webview.id)
+      },
+      eventChannel,
+      $page: {
+        id: parseInt(webview.id),
+        meta: routeOptions.meta,
+        path,
+        route,
+        fullPath: url,
+        openType
+      },
+      $remove () {
+        const index = pages.findIndex(page => page === this);
+        if (index !== -1) {
+          if (!webview.nvue) {
+            this.$vm.$destroy();
+          }
+          pages.splice(index, 1);
+          if (process.env.NODE_ENV !== 'production') {
+            console.log('[uni-app] removePage(' + path + ')[' + webview.id + ']');
+          }
+        }
+      },
+      // 兼容小程序框架
+      selectComponent (selector) {
+        return this.$vm.selectComponent(selector)
+      },
+      selectAllComponents (selector) {
+        return this.$vm.selectAllComponents(selector)
+      }
+    };
+
+    pages.push(pageInstance);
+
+    if (webview.__preload__) {
+      webview.__page__ = pageInstance;
+    }
+
+    // 首页是 nvue 时，在 registerPage 时，执行路由堆栈
+    if (isLaunchNVuePage) {
+      if (
+        __uniConfig.splashscreen &&
+        __uniConfig.splashscreen.autoclose &&
+        !__uniConfig.splashscreen.alwaysShowBeforeRender
+      ) {
+        plus.navigator.closeSplashscreen();
+      }
+      __uniConfig.onReady(function () {
+        navigateFinish();
+      });
+    }
+
+    {
+      if (!webview.nvue) {
+        const pageId = webview.id;
+        try {
+          loadPage(route, () => {
+            createPage(route, pageId, query, pageInstance).$mount();
+          });
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    }
+
+    return webview
+  }
+
+  const ON_THEME_CHANGE$1 = 'api.onThemeChange';
+
+  function onThemeChange (callback = () => { }) {
+    UniServiceJSBridge.on(ON_THEME_CHANGE$1, callback);
+  }
+
+  function offThemeChange (callback = () => { }) {
+    UniServiceJSBridge.off(ON_THEME_CHANGE$1, callback);
+  }
+
+  function getNavigatorStyle () {
+    return plus.navigator.getUIStyle() === 'dark' ? 'light' : 'dark'
+  }
+
+  function changePagesNavigatorStyle () {
+    if (__uniConfig.darkmode) {
+      const theme = getNavigatorStyle();
+
+      setStatusBarStyle(theme);
+
+      const pages = getCurrentPages$1(true);
+      pages.forEach((page) => {
+        page.$page.meta.statusBarStyle = theme;
+      });
+    }
+  }
+
+  function parseTheme (pageStyle) {
+    if (__uniConfig.darkmode) {
+      let parsedStyle = {};
+      let theme = plus.navigator.getUIStyle();
+
+      const systemInfo = weexGetSystemInfoSync();
+      // 小程序 SDK
+      if (systemInfo && systemInfo.hostTheme) {
+        theme = systemInfo.hostTheme;
+      }
+
+      parsedStyle = normallizeStyles(pageStyle, __uniConfig.themeConfig, theme);
+      return parsedStyle
+    }
+    return pageStyle
+  }
+
+  function useTabBarThemeChange (tabBar, options) {
+    if (__uniConfig.darkmode) {
+      const fn = () => {
+        const {
+          list = [], color, selectedColor,
+          backgroundColor, borderStyle
+        } = parseTheme(options);
+        const tabbarStyle = {
+          color,
+          selectedColor,
+          backgroundColor,
+          borderStyle
+        };
+
+        tabBar && tabBar.setTabBarStyle(tabbarStyle);
+        tabBar && tabBar.setTabBarItems({
+          list: list.map((item) => ({
+            iconPath: item.iconPath,
+            selectedIconPath: item.selectedIconPath,
+            visible: item.visible
+          }))
+        });
+        // TODO 暂未实现
+        // tabBar && tabBar.setAnimationAlphaBGColor(parseTheme((__uniConfig.window || {}).backgroundColor, false))
+      };
+
+      fn();
+
+      onThemeChange(fn);
+    }
+  }
+
+  function useWebviewThemeChange (webview, getWebviewStyle) {
+    if (__uniConfig.darkmode) {
+      const fn = () => {
+        const webviewStyle = getWebviewStyle();
+        const style = {
+          animationAlphaBGColor: webviewStyle.animationAlphaBGColor,
+          background: webviewStyle.background,
+          backgroundColorBottom: webviewStyle.backgroundColorBottom,
+          backgroundColorTop: webviewStyle.backgroundColorTop
+        };
+        var titleNView = webviewStyle.titleNView;
+        if (typeof titleNView !== 'undefined') {
+          style.titleNView = typeof titleNView === 'object' ? {
+            backgroundColor: titleNView.backgroundColor,
+            titleColor: titleNView.titleColor
+          } : titleNView;
+        }
+        webview && webview.setStyle(webviewStyle);
+      };
+      onThemeChange(fn);
+      webview.addEventListener('close', () => offThemeChange(fn));
+    }
+  }
+
   const TABBAR_HEIGHT = 50;
   let config;
 
@@ -6224,6 +7663,10 @@ var serviceContext = (function () {
   let visible = true;
 
   let tabBar;
+
+  function setTabBarItems (style) {
+    tabBar && tabBar.setTabBarItems(style);
+  }
 
   /**
    * 设置角标
@@ -6279,7 +7722,7 @@ var serviceContext = (function () {
       const tabbarItems = config.list.map(item => ({ visible: item.visible }));
       tabbarItems[index] = item;
 
-      tabBar && tabBar.setTabBarItems({ list: tabbarItems });
+      setTabBarItems({ list: tabbarItems });
     } else {
       tabBar && tabBar.setTabBarItem(item);
     }
@@ -6336,6 +7779,8 @@ var serviceContext = (function () {
       tabBar && tabBar.onMidButtonClick(() => {
         publish('onTabBarMidButtonTap', {});
       });
+
+      useTabBarThemeChange(tabBar, options);
     },
     indexOf (page) {
       const config = this.config;
@@ -6408,11 +7853,6 @@ var serviceContext = (function () {
       maskClickCallback.splice(callbackIndex, 1);
     }
   };
-
-  function getStatusbarHeight () {
-    // 横屏时 iOS 获取的状态栏高度错误，进行纠正
-    return plus.navigator.isImmersedStatusbar() ? Math.round(plus.os.name === 'iOS' ? plus.navigator.getSafeAreaInsets().top : plus.navigator.getStatusbarHeight()) : 0
-  }
 
   function getWindowInfo () {
     const ios = plus.os.name.toLowerCase() === 'ios';
@@ -6492,13 +7932,6 @@ var serviceContext = (function () {
     }
   }
 
-  let deviceId;
-
-  function deviceId$1 () {
-    deviceId = deviceId || plus.device.uuid;
-    return deviceId
-  }
-
   let systemInfo = {};
   let _initSystemInfo = true;
 
@@ -6509,15 +7942,17 @@ var serviceContext = (function () {
     if (typeof systemInfo === 'string') {
       try {
         systemInfo = JSON.parse(systemInfo);
-      } catch (error) {}
+      } catch (error) { }
     }
+    return systemInfo
   }
 
   function getDeviceInfo () {
     weexGetSystemInfoSync();
     const {
       deviceBrand = '', deviceModel, osName,
-      osVersion, deviceOrientation, deviceType
+      osVersion, deviceOrientation, deviceType,
+      deviceId
     } = systemInfo;
 
     const brand = deviceBrand.toLowerCase();
@@ -6528,7 +7963,7 @@ var serviceContext = (function () {
       deviceBrand: brand,
       deviceModel,
       devicePixelRatio: plus.screen.scale,
-      deviceId: deviceId$1(),
+      deviceId,
       deviceOrientation,
       deviceType,
       model: deviceModel,
@@ -6569,7 +8004,7 @@ var serviceContext = (function () {
       hostFontSizeSetting: undefined,
       language: osLanguage,
       SDKVersion: '',
-      theme: undefined,
+      theme: plus.navigator.getUIStyle(),
       version: plus.runtime.innerVersion
     }
   }
@@ -6608,7 +8043,9 @@ var serviceContext = (function () {
 
     delete _systemInfo.screenTop;
     delete _systemInfo.enableDebug;
-    delete _systemInfo.theme;
+    if (!__uniConfig.darkmode) {
+      delete _systemInfo.theme;
+    }
 
     return sortObject(_systemInfo)
   }
@@ -7084,6 +8521,80 @@ var serviceContext = (function () {
   function openLocation$3 (...array) {
     const api = __uniConfig.nvueCompiler !== 'weex' ? weex$3 : webview$2;
     return api.openLocation(...array)
+  }
+
+  let successCallbackIds = [];
+  let errorCallbackIds = [];
+  let started = false;
+  let watchId = 0;
+
+  function startLocationUpdate ({ type = 'gcj02' }, callbackId) {
+    watchId = watchId || plus.geolocation.watchPosition(
+      res => {
+        started = true;
+        successCallbackIds.forEach(callbackId => {
+          invoke$1(callbackId, res.coords);
+        });
+      },
+      error => {
+        if (!started) {
+          invoke$1(callbackId, { errMsg: `startLocationUpdate:fail ${error.message}` });
+          started = true;
+        }
+        errorCallbackIds.forEach(callbackId => {
+          invoke$1(callbackId, {
+            errMsg: `onLocationChange:fail ${error.message}`
+          });
+        });
+      },
+      {
+        coordsType: type
+      }
+    );
+    setTimeout(() => {
+      invoke$1(callbackId, {
+        errMsg: 'startLocationUpdate:ok'
+      });
+    }, 100);
+  }
+
+  function stopLocationUpdate () {
+    if (watchId !== 0) {
+      plus.geolocation.clearWatch(watchId);
+      started = false;
+      watchId = 0;
+    }
+    return {}
+  }
+
+  function onLocationChange (callbackId) {
+    successCallbackIds.push(callbackId);
+  }
+
+  function offLocationChange (callbackId) {
+    if (callbackId) {
+      const index = successCallbackIds.indexOf(callbackId);
+      if (index >= 0) {
+        successCallbackIds.splice(index, 1);
+      }
+    } else {
+      successCallbackIds = [];
+    }
+  }
+
+  function onLocationChangeError (callbackId) {
+    errorCallbackIds.push(callbackId);
+  }
+
+  function offLocationChangeError (callbackId) {
+    if (callbackId) {
+      const index = errorCallbackIds.indexOf(callbackId);
+      if (index >= 0) {
+        errorCallbackIds.splice(index, 1);
+      }
+    } else {
+      errorCallbackIds = [];
+    }
   }
 
   const RECORD_TIME = 60 * 60 * 1000;
@@ -8901,94 +10412,6 @@ var serviceContext = (function () {
     return weex.requireModule('plus').sendNativeEvent(event, data, callback)
   }
 
-  const loadedSubPackages = [];
-
-  /**
-   * 指定路由 ready 后，检查是否触发分包预加载
-   * @param {Object} route
-   */
-  function preloadSubPackages (route) {
-    if (!__uniConfig.preloadRule) {
-      return
-    }
-    const options = __uniConfig.preloadRule[route];
-    if (!options || !Array.isArray(options.packages)) {
-      return
-    }
-    const packages = options.packages.filter(root => loadedSubPackages.indexOf(root) === -1);
-    if (!packages.length) {
-      return
-    }
-    loadSubPackages(options.packages);
-    // 暂不需要网络下载
-    // const network = options.network || 'wifi'
-    // if (network === 'wifi') {
-    //   uni.getNetworkType({
-    //     success (res) {
-    //       if (process.env.NODE_ENV !== 'production') {
-    //         console.log('UNIAPP[preloadRule]:' + res.networkType + ':' + JSON.stringify(options))
-    //       }
-    //       if (res.networkType === 'wifi') {
-    //         loadSubPackages(options.packages)
-    //       }
-    //     }
-    //   })
-    // } else {
-    //   if (process.env.NODE_ENV !== 'production') {
-    //     console.log('UNIAPP[preloadRule]:' + JSON.stringify(options))
-    //   }
-    //   loadSubPackages(options.packages)
-    // }
-  }
-
-  function loadPage (route, callback) {
-    let isInSubPackage = false;
-    const subPackages = __uniConfig.subPackages;
-    if (Array.isArray(subPackages)) {
-      const subPackage = subPackages.find(subPackage => route.indexOf(subPackage.root) === 0);
-      if (subPackage) {
-        isInSubPackage = true;
-        loadSubPackage$1(subPackage.root, callback);
-      }
-    }
-    if (!isInSubPackage) {
-      callback();
-    }
-  }
-
-  function loadSubPackage$1 (root, callback) {
-    if (loadedSubPackages.indexOf(root) !== -1) {
-      return callback()
-    }
-    loadSubPackages([root], () => {
-      callback();
-    });
-  }
-
-  const SUB_FILENAME = 'app-sub-service.js';
-
-  function evaluateScriptFiles (files, callback) {
-    __uniConfig.onServiceReady(() => {
-      weex.requireModule('plus').evalJSFiles(files, callback);
-    });
-  }
-
-  function loadSubPackages (packages, callback) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.log('UNIAPP[loadSubPackages]:' + JSON.stringify(packages));
-    }
-    const startTime = Date.now();
-    evaluateScriptFiles(packages.map(root => {
-      loadedSubPackages.push(root);
-      return root + '/' + SUB_FILENAME
-    }), res => {
-      if (process.env.NODE_ENV !== 'production') {
-        console.log('UNIAPP[loadSubPackages]:耗时(' + (Date.now() - startTime) + ')');
-      }
-      callback && callback(true);
-    });
-  }
-
   const SUB_FILENAME$1 = 'app-sub-service.js';
 
   function evaluateScriptFile (file, callback) {
@@ -9039,875 +10462,11 @@ var serviceContext = (function () {
     );
   }
 
-  const extend = Object.assign;
-
-  function createLaunchOptions () {
-    return {
-      path: '',
-      query: {},
-      scene: 1001,
-      referrerInfo: {
-        appId: '',
-        extraData: {}
-      }
-    }
-  }
-
-  const enterOptions = createLaunchOptions();
-  const launchOptions = createLaunchOptions();
-
-  function getLaunchOptions () {
-    return launchOptions
-  }
-
-  function getEnterOptions () {
-    return enterOptions
-  }
-
-  function initEnterOptions ({
-    path,
-    query,
-    referrerInfo
-  }) {
-    extend(enterOptions, {
-      path,
-      query: query ? parseQuery(query) : {},
-      referrerInfo: referrerInfo || {}
-    });
-  }
-
-  function initLaunchOptions ({
-    path,
-    query,
-    referrerInfo
-  }) {
-    extend(launchOptions, {
-      path,
-      query: query ? parseQuery(query) : {},
-      referrerInfo: referrerInfo || {},
-      channel: plus.runtime.channel,
-      launcher: plus.runtime.launcher
-    });
-    extend(enterOptions, launchOptions);
-    return launchOptions
-  }
-
-  function parseRedirectInfo () {
-    const weexPlus = weex.requireModule('plus');
-    if (weexPlus.getRedirectInfo) {
-      const {
-        path,
-        query,
-        extraData,
-        userAction,
-        fromAppid
-      } =
-        weexPlus.getRedirectInfo() || {};
-      const referrerInfo = {
-        appId: fromAppid,
-        extraData: {}
-      };
-      if (extraData) {
-        referrerInfo.extraData = extraData;
-      }
-      return {
-        path: path || '',
-        query: query ? '?' + query : '',
-        referrerInfo,
-        userAction
-      }
-    }
-  }
-
   function getLaunchOptionsSync () {
     return getLaunchOptions()
   }
   function getEnterOptionsSync () {
     return getEnterOptions()
-  }
-
-  const VD_SYNC_VERSION = 2;
-
-  const PAGE_CREATE = 2;
-  const MOUNTED_DATA = 4;
-  const UPDATED_DATA = 6;
-  const PAGE_CREATED = 10;
-
-  const UI_EVENT = 20;
-
-  const VD_SYNC = 'vdSync';
-
-  const WEBVIEW_READY = 'webviewReady';
-  const VD_SYNC_CALLBACK = 'vdSyncCallback';
-  const INVOKE_API = 'invokeApi';
-  const WEB_INVOKE_APPSERVICE$1 = 'WEB_INVOKE_APPSERVICE';
-  const WEBVIEW_INSERTED = 'webviewInserted';
-  const WEBVIEW_REMOVED = 'webviewRemoved';
-  const WEBVIEW_ID_PREFIX = 'webviewId';
-
-  function createButtonOnClick (index) {
-    return function onClick (btn) {
-      const pages = getCurrentPages();
-      if (!pages.length) {
-        return
-      }
-      btn.index = index;
-      const page = pages[pages.length - 1];
-      page.$vm &&
-        page.$vm.__call_hook &&
-        page.$vm.__call_hook('onNavigationBarButtonTap', btn);
-    }
-  }
-
-  function parseTitleNViewButtons (titleNView) {
-    const buttons = titleNView.buttons;
-    if (!Array.isArray(buttons)) {
-      return titleNView
-    }
-    buttons.forEach((btn, index) => {
-      btn.onclick = createButtonOnClick(index);
-    });
-    return titleNView
-  }
-
-  function parseTitleNView (id, routeOptions) {
-    const windowOptions = routeOptions.window;
-    const titleNView = windowOptions.titleNView;
-    routeOptions.meta.statusBarStyle =
-      windowOptions.navigationBarTextStyle === 'black' ? 'dark' : 'light';
-    if (
-      // 无头
-      titleNView === false ||
-      titleNView === 'false' ||
-      (windowOptions.navigationStyle === 'custom' &&
-        !isPlainObject(titleNView)) ||
-      (windowOptions.transparentTitle === 'always' && !isPlainObject(titleNView))
-    ) {
-      return false
-    }
-
-    const titleImage = windowOptions.titleImage || '';
-    const transparentTitle = windowOptions.transparentTitle || 'none';
-    const titleNViewTypeList = {
-      none: 'default',
-      auto: 'transparent',
-      always: 'float'
-    };
-
-    const navigationBarBackgroundColor =
-      windowOptions.navigationBarBackgroundColor;
-    const ret = {
-      autoBackButton: !routeOptions.meta.isQuit,
-      titleText:
-        titleImage === '' ? windowOptions.navigationBarTitleText || '' : '',
-      titleColor:
-        windowOptions.navigationBarTextStyle === 'black' ? '#000000' : '#ffffff',
-      type: titleNViewTypeList[transparentTitle],
-      backgroundColor:
-        /^#[a-z0-9]{6}$/i.test(navigationBarBackgroundColor) ||
-        navigationBarBackgroundColor === 'transparent'
-          ? navigationBarBackgroundColor
-          : '#f7f7f7',
-      tags:
-        titleImage === ''
-          ? []
-          : [
-            {
-              tag: 'img',
-              src: titleImage,
-              position: {
-                left: 'auto',
-                top: 'auto',
-                width: 'auto',
-                height: '26px'
-              }
-            }
-          ]
-    };
-
-    if (isPlainObject(titleNView)) {
-      return initTitleNViewI18n(
-        id,
-        Object.assign(ret, parseTitleNViewButtons(titleNView))
-      )
-    }
-    return initTitleNViewI18n(id, ret)
-  }
-
-  function initTitleNViewI18n (id, titleNView) {
-    const i18nResult = initNavigationBarI18n(titleNView);
-    if (!i18nResult) {
-      return titleNView
-    }
-    const [titleTextI18n, searchInputPlaceholderI18n] = i18nResult;
-    if (titleTextI18n || searchInputPlaceholderI18n) {
-      uni.onLocaleChange(() => {
-        const webview = plus.webview.getWebviewById(id + '');
-        if (!webview) {
-          return
-        }
-        const newTitleNView = {};
-        if (titleTextI18n) {
-          newTitleNView.titleText = titleNView.titleText;
-        }
-        if (searchInputPlaceholderI18n) {
-          newTitleNView.searchInput = {
-            placeholder: titleNView.searchInput.placeholder
-          };
-        }
-        if (process.env.NODE_ENV !== 'production') {
-          console.log('[uni-app] updateWebview', webview.id, newTitleNView);
-        }
-        webview.setStyle({
-          titleNView: newTitleNView
-        });
-      });
-    }
-    return titleNView
-  }
-
-  function parsePullToRefresh (routeOptions) {
-    const windowOptions = routeOptions.window;
-
-    if (windowOptions.enablePullDownRefresh || (windowOptions.pullToRefresh && windowOptions.pullToRefresh.support)) {
-      const pullToRefreshStyles = Object.create(null);
-      // 初始化默认值
-      if (plus.os.name === 'Android') {
-        Object.assign(pullToRefreshStyles, {
-          support: true,
-          style: 'circle'
-        });
-      } else {
-        Object.assign(pullToRefreshStyles, {
-          support: true,
-          style: 'default',
-          height: '50px',
-          range: '200px',
-          contentdown: {
-            caption: ''
-          },
-          contentover: {
-            caption: ''
-          },
-          contentrefresh: {
-            caption: ''
-          }
-        });
-      }
-
-      if (windowOptions.backgroundTextStyle) {
-        pullToRefreshStyles.color = windowOptions.backgroundTextStyle;
-        pullToRefreshStyles.snowColor = windowOptions.backgroundTextStyle;
-      }
-
-      Object.assign(pullToRefreshStyles, windowOptions.pullToRefresh || {});
-
-      return pullToRefreshStyles
-    }
-  }
-
-  const REGEX_UPX = /(\d+(\.\d+)?)[r|u]px/g;
-
-  function transformCSS (css) {
-    return css.replace(REGEX_UPX, (a, b) => {
-      return uni.upx2px(parseInt(b) || 0) + 'px'
-    })
-  }
-
-  function parseStyleUnit (styles) {
-    let newStyles = {};
-    const stylesStr = JSON.stringify(styles);
-    if (~stylesStr.indexOf('upx') || ~stylesStr.indexOf('rpx')) {
-      try {
-        newStyles = JSON.parse(transformCSS(stylesStr));
-      } catch (e) {
-        newStyles = styles;
-        console.error(e);
-      }
-    } else {
-      newStyles = JSON.parse(stylesStr);
-    }
-
-    return newStyles
-  }
-
-  const WEBVIEW_STYLE_BLACKLIST = [
-    'navigationBarBackgroundColor',
-    'navigationBarTextStyle',
-    'navigationBarTitleText',
-    'navigationBarShadow',
-    'navigationStyle',
-    'disableScroll',
-    'backgroundColor',
-    'backgroundTextStyle',
-    'enablePullDownRefresh',
-    'onReachBottomDistance',
-    'usingComponents',
-    // 需要解析的
-    'titleNView',
-    'pullToRefresh'
-  ];
-
-  function parseWebviewStyle (id, path, routeOptions = {}) {
-    const webviewStyle = {
-      bounce: 'vertical'
-    };
-
-    // 合并
-    routeOptions.window = parseStyleUnit(
-      Object.assign(
-        JSON.parse(JSON.stringify(__uniConfig.window || {})),
-        routeOptions.window || {}
-      )
-    );
-
-    Object.keys(routeOptions.window).forEach(name => {
-      if (WEBVIEW_STYLE_BLACKLIST.indexOf(name) === -1) {
-        webviewStyle[name] = routeOptions.window[name];
-      }
-    });
-
-    const backgroundColor = routeOptions.window.backgroundColor;
-    if (
-      /^#[a-z0-9]{6}$/i.test(backgroundColor) ||
-      backgroundColor === 'transparent'
-    ) {
-      if (!webviewStyle.background) {
-        webviewStyle.background = backgroundColor;
-      }
-      if (!webviewStyle.backgroundColorTop) {
-        webviewStyle.backgroundColorTop = backgroundColor;
-      }
-    }
-
-    const titleNView = parseTitleNView(id, routeOptions);
-    if (titleNView) {
-      if (
-        id === 1 &&
-        __uniConfig.realEntryPagePath &&
-        !routeOptions.meta.isQuit // 可能是tabBar
-      ) {
-        titleNView.autoBackButton = true;
-      }
-      webviewStyle.titleNView = titleNView;
-    }
-
-    const pullToRefresh = parsePullToRefresh(routeOptions);
-    if (pullToRefresh) {
-      if (pullToRefresh.style === 'circle') {
-        webviewStyle.bounce = 'none';
-      }
-      webviewStyle.pullToRefresh = pullToRefresh;
-    }
-
-    // 不支持 hide
-    if (webviewStyle.popGesture === 'hide') {
-      delete webviewStyle.popGesture;
-    }
-
-    if (routeOptions.meta.isQuit) {
-      // 退出
-      webviewStyle.popGesture = plus.os.name === 'iOS' ? 'appback' : 'none';
-    }
-
-    // TODO 下拉刷新
-
-    if (path && routeOptions.meta.isNVue) {
-      webviewStyle.uniNView = {
-        path,
-        defaultFontSize: __uniConfig.defaultFontSize,
-        viewport: __uniConfig.viewport
-      };
-    }
-
-    return webviewStyle
-  }
-
-  function backbuttonListener () {
-    uni.navigateBack({
-      from: 'backbutton'
-    });
-  }
-
-  function initPopupSubNVue (subNVueWebview, style, maskWebview) {
-    if (!maskWebview.popupSubNVueWebviews) {
-      maskWebview.popupSubNVueWebviews = {};
-    }
-
-    maskWebview.popupSubNVueWebviews[subNVueWebview.id] = subNVueWebview;
-
-    if (process.env.NODE_ENV !== 'production') {
-      console.log(
-        `UNIAPP[webview][${maskWebview.id}]:add.popupSubNVueWebview[${subNVueWebview.id}]`
-      );
-    }
-
-    const hideSubNVue = function () {
-      maskWebview.setStyle({
-        mask: 'none'
-      });
-      subNVueWebview.hide('auto');
-    };
-    maskWebview.addEventListener('maskClick', hideSubNVue);
-    let isRemoved = false; // 增加个 remove 标记，防止出错
-    subNVueWebview.addEventListener('show', () => {
-      if (!isRemoved) {
-        plus.key.removeEventListener('backbutton', backbuttonListener);
-        plus.key.addEventListener('backbutton', hideSubNVue);
-        isRemoved = true;
-      }
-    });
-    subNVueWebview.addEventListener('hide', () => {
-      if (isRemoved) {
-        plus.key.removeEventListener('backbutton', hideSubNVue);
-        plus.key.addEventListener('backbutton', backbuttonListener);
-        isRemoved = false;
-      }
-    });
-    subNVueWebview.addEventListener('close', () => {
-      delete maskWebview.popupSubNVueWebviews[subNVueWebview.id];
-      if (isRemoved) {
-        plus.key.removeEventListener('backbutton', hideSubNVue);
-        plus.key.addEventListener('backbutton', backbuttonListener);
-        isRemoved = false;
-      }
-    });
-  }
-
-  function initNormalSubNVue (subNVueWebview, style, webview) {
-    webview.append(subNVueWebview);
-  }
-
-  function initSubNVue (subNVue, routeOptions, webview) {
-    if (!subNVue.path) {
-      return
-    }
-    const style = subNVue.style || {};
-    const isNavigationBar = subNVue.type === 'navigationBar';
-    const isPopup = subNVue.type === 'popup';
-
-    delete style.type;
-
-    if (isPopup && !subNVue.id) {
-      console.warn('subNVue[' + subNVue.path + '] is missing id');
-    }
-    // TODO lazyload
-
-    style.uniNView = {
-      path: subNVue.path.replace('.nvue', '.js'),
-      defaultFontSize: __uniConfig.defaultFontSize,
-      viewport: __uniConfig.viewport
-    };
-
-    const extras = {
-      __uniapp_host: routeOptions.path,
-      __uniapp_origin: style.uniNView.path.split('?')[0].replace('.js', ''),
-      __uniapp_origin_id: webview.id,
-      __uniapp_origin_type: webview.__uniapp_type
-    };
-
-    let maskWebview;
-
-    if (isNavigationBar) {
-      style.position = 'dock';
-      style.dock = 'top';
-      style.top = 0;
-      style.width = '100%';
-      style.height = NAVBAR_HEIGHT + getStatusbarHeight();
-      delete style.left;
-      delete style.right;
-      delete style.bottom;
-      delete style.margin;
-    } else if (isPopup) {
-      style.position = 'absolute';
-      if (isTabBarPage(routeOptions.path)) {
-        maskWebview = tabBar$1;
-      } else {
-        maskWebview = webview;
-      }
-      extras.__uniapp_mask = style.mask || 'rgba(0,0,0,0.5)';
-      extras.__uniapp_mask_id = maskWebview.id;
-    }
-
-    if (process.env.NODE_ENV !== 'production') {
-      console.log(
-        `UNIAPP[webview][${webview.id}]:create[${subNVue.id}]:${JSON.stringify(style)}`
-      );
-    }
-    delete style.mask;
-    const subNVueWebview = plus.webview.create('', subNVue.id, style, extras);
-
-    if (isPopup) {
-      initPopupSubNVue(subNVueWebview, style, maskWebview);
-    } else {
-      initNormalSubNVue(subNVueWebview, style, webview);
-    }
-  }
-
-  function initSubNVues (routeOptions, webview) {
-    const subNVues = routeOptions.window.subNVues;
-    if (!subNVues || !subNVues.length) {
-      return
-    }
-    subNVues.forEach(subNVue => {
-      initSubNVue(subNVue, routeOptions, webview);
-    });
-  }
-
-  function onWebviewClose (webview) {
-    webview.popupSubNVueWebviews && webview.addEventListener('close', () => {
-      Object.keys(webview.popupSubNVueWebviews).forEach(id => {
-        if (process.env.NODE_ENV !== 'production') {
-          console.log(
-            `UNIAPP[webview][${webview.id}]:popupSubNVueWebview[${id}].close`
-          );
-        }
-        webview.popupSubNVueWebviews[id].close('none');
-      });
-    });
-  }
-
-  function onWebviewResize (webview) {
-    const onResize = function ({
-      width,
-      height
-    }) {
-      const landscape = Math.abs(plus.navigator.getOrientation()) === 90;
-      const res = {
-        deviceOrientation: landscape ? 'landscape' : 'portrait',
-        size: {
-          windowWidth: Math.ceil(width),
-          windowHeight: Math.ceil(height)
-        }
-      };
-      publish('onViewDidResize', res); // API
-      UniServiceJSBridge.emit('onResize', res, parseInt(webview.id)); // Page lifecycle
-    };
-    webview.addEventListener('resize', debounce(onResize, 50));
-  }
-
-  function onWebviewRecovery (webview, routeOptions) {
-    const {
-      subscribe,
-      unsubscribe
-    } = UniServiceJSBridge;
-
-    const id = webview.id;
-    const onWebviewRecoveryReady = function (data, pageId) {
-      if (id !== pageId) {
-        return
-      }
-      unsubscribe(WEBVIEW_READY, onWebviewRecoveryReady);
-      if (process.env.NODE_ENV !== 'production') {
-        console.log(`UNIAPP[webview][${id}]:onWebviewRecoveryReady ready`);
-      }
-      // 恢复目标页面
-      pageId = parseInt(pageId);
-      const page = getCurrentPages(true).find(page => page.$page.id === pageId);
-      if (!page) {
-        return console.error(`Page[${pageId}] not found`)
-      }
-      page.$vm._$vd.restore();
-    };
-
-    webview.addEventListener('recovery', e => {
-      if (process.env.NODE_ENV !== 'production') {
-        console.log(`UNIAPP[webview][${this.id}].recovery.reload:` + JSON.stringify({
-          path: routeOptions.path,
-          webviewId: id
-        }));
-      }
-      subscribe(WEBVIEW_READY, onWebviewRecoveryReady);
-    });
-  }
-
-  function onWebviewPopGesture (webview) {
-    let popStartStatusBarStyle;
-    webview.addEventListener('popGesture', e => {
-      if (e.type === 'start') {
-        // 设置下一个页面的 statusBarStyle
-        const pages = getCurrentPages();
-        const page = pages[pages.length - 2];
-        popStartStatusBarStyle = lastStatusBarStyle;
-        const statusBarStyle = page && page.$page.meta.statusBarStyle;
-        statusBarStyle && setStatusBarStyle(statusBarStyle);
-      } else if (e.type === 'end' && !e.result) {
-        // 拖拽未完成,设置为当前状态栏前景色
-        setStatusBarStyle(popStartStatusBarStyle);
-      } else if (e.type === 'end' && e.result) {
-        const pages = getCurrentPages();
-        const len = pages.length;
-        const page = pages[pages.length - 1];
-        page && page.$remove();
-        setStatusBarStyle();
-        // 仅当存在一个页面，且是直达页面时，才 reLaunch 首页
-        if (page && len === 1 && isDirectPage(page)) {
-          reLaunchEntryPage();
-        } else {
-          UniServiceJSBridge.emit('onAppRoute', {
-            type: 'navigateBack'
-          });
-        }
-      }
-    });
-  }
-
-  /**
-   * 是否处于直达页面
-   * @param page
-   * @returns
-   */
-  function isDirectPage (page) {
-    return (
-      __uniConfig.realEntryPagePath &&
-      page.$page.route === __uniConfig.entryPagePath
-    )
-  }
-  /**
-   * 重新启动到首页
-   */
-  function reLaunchEntryPage () {
-    __uniConfig.entryPagePath = __uniConfig.realEntryPagePath;
-    delete __uniConfig.realEntryPagePath;
-    uni.reLaunch({
-      url: addLeadingSlash(__uniConfig.entryPagePath)
-    });
-  }
-
-  function hasLeadingSlash (str) {
-    return str.indexOf('/') === 0
-  }
-
-  function addLeadingSlash (str) {
-    return hasLeadingSlash(str) ? str : '/' + str
-  }
-
-  let preloadWebview;
-
-  let id$1 = 2;
-
-  const WEBVIEW_LISTENERS = {
-    pullToRefresh: 'onPullDownRefresh',
-    titleNViewSearchInputChanged: 'onNavigationBarSearchInputChanged',
-    titleNViewSearchInputConfirmed: 'onNavigationBarSearchInputConfirmed',
-    titleNViewSearchInputClicked: 'onNavigationBarSearchInputClicked',
-    titleNViewSearchInputFocusChanged: 'onNavigationBarSearchInputFocusChanged'
-  };
-
-  function setPreloadWebview (webview) {
-    preloadWebview = webview;
-  }
-
-  function noop$1 (str) {
-    return str
-  }
-
-  function getUniPageUrl (path, query) {
-    const queryString = query ? stringifyQuery(query, noop$1) : '';
-    return {
-      path: path.substr(1),
-      query: queryString ? queryString.substr(1) : queryString
-    }
-  }
-
-  function getDebugRefresh (path, query, routeOptions) {
-    const queryString = query ? stringifyQuery(query, noop$1) : '';
-    return {
-      isTab: routeOptions.meta.isTabBar,
-      arguments: JSON.stringify({
-        path: path.substr(1),
-        query: queryString ? queryString.substr(1) : queryString
-      })
-    }
-  }
-
-  function createWebview (path, routeOptions, query, extras = {}) {
-    if (routeOptions.meta.isNVue) {
-      const webviewId = id$1++;
-      const webviewStyle = parseWebviewStyle(
-        webviewId,
-        path,
-        routeOptions
-      );
-      webviewStyle.uniPageUrl = getUniPageUrl(path, query);
-      if (process.env.NODE_ENV !== 'production') {
-        console.log('[uni-app] createWebview', webviewId, path, webviewStyle);
-      }
-      // android 需要使用
-      webviewStyle.isTab = !!routeOptions.meta.isTabBar;
-      return plus.webview.create('', String(webviewId), webviewStyle, Object.assign({
-        nvue: true
-      }, extras))
-    }
-    if (id$1 === 2) { // 如果首页非 nvue，则直接返回 Launch Webview
-      return plus.webview.getLaunchWebview()
-    }
-    const webview = preloadWebview;
-    return webview
-  }
-
-  function initWebview (webview, routeOptions, path, query) {
-    // 首页或非 nvue 页面
-    if (webview.id === '1' || !routeOptions.meta.isNVue) {
-      const webviewStyle = parseWebviewStyle(
-        parseInt(webview.id),
-        '',
-        routeOptions
-      );
-
-      webviewStyle.uniPageUrl = getUniPageUrl(path, query);
-
-      if (!routeOptions.meta.isNVue) {
-        webviewStyle.debugRefresh = getDebugRefresh(path, query, routeOptions);
-      } else {
-        // android 需要使用
-        webviewStyle.isTab = !!routeOptions.meta.isTabBar;
-      }
-      if (process.env.NODE_ENV !== 'production') {
-        console.log('[uni-app] updateWebview', webviewStyle);
-      }
-
-      webview.setStyle(webviewStyle);
-    }
-
-    const {
-      on,
-      emit
-    } = UniServiceJSBridge;
-
-    initSubNVues(routeOptions, webview);
-
-    Object.keys(WEBVIEW_LISTENERS).forEach(name => {
-      webview.addEventListener(name, (e) => {
-        emit(WEBVIEW_LISTENERS[name], e, parseInt(webview.id));
-      });
-    });
-
-    onWebviewClose(webview);
-    onWebviewResize(webview);
-
-    if (plus.os.name === 'iOS') {
-      !webview.nvue && onWebviewRecovery(webview, routeOptions);
-      onWebviewPopGesture(webview);
-    }
-
-    on(webview.id + '.startPullDownRefresh', () => {
-      webview.beginPullToRefresh();
-    });
-
-    on(webview.id + '.stopPullDownRefresh', () => {
-      webview.endPullToRefresh();
-    });
-
-    return webview
-  }
-
-  function createPreloadWebview () {
-    if (!preloadWebview || preloadWebview.__uniapp_route) { // 不存在，或已被使用
-      preloadWebview = plus.webview.create(VIEW_WEBVIEW_PATH, String(id$1++), { contentAdjust: false });
-      if (process.env.NODE_ENV !== 'production') {
-        console.log(`[uni-app] preloadWebview[${preloadWebview.id}]`);
-      }
-    }
-    return preloadWebview
-  }
-
-  const webviewReadyCallbacks = {};
-
-  function registerWebviewReady (pageId, callback) {
-    (webviewReadyCallbacks[pageId] || (webviewReadyCallbacks[pageId] = [])).push(callback);
-  }
-
-  function consumeWebviewReady (pageId) {
-    const callbacks = webviewReadyCallbacks[pageId];
-    Array.isArray(callbacks) && callbacks.forEach(callback => callback());
-    delete webviewReadyCallbacks[pageId];
-  }
-
-  let todoNavigator = false;
-
-  function setTodoNavigator (path, callback, msg) {
-    todoNavigator = {
-      path: path,
-      nvue: __uniRoutes.find(route => route.path === path).meta.isNVue,
-      navigate: callback
-    };
-    if (process.env.NODE_ENV !== 'production') {
-      console.log(`todoNavigator:${todoNavigator.path} ${msg}`);
-    }
-  }
-
-  function navigate (path, callback, isAppLaunch) {
-    {
-      if (isAppLaunch && __uniConfig.splashscreen && __uniConfig.splashscreen.autoclose && (!__uniConfig.splashscreen.alwaysShowBeforeRender)) {
-        plus.navigator.closeSplashscreen();
-      }
-      if (!isAppLaunch && todoNavigator) {
-        return console.error(`Waiting to navigate to: ${todoNavigator.path}, do not operate continuously: ${path}.`)
-      }
-      if (__uniConfig.renderer === 'native') { // 纯原生无需wait逻辑
-        // 如果是首页还未初始化，需要等一等，其他无需等待
-        if (getCurrentPages().length === 0) {
-          return setTodoNavigator(path, callback, 'waitForReady')
-        }
-        return callback()
-      }
-      // 未创建 preloadWebview 或 preloadWebview 已被使用
-      const waitPreloadWebview = !preloadWebview || (preloadWebview && preloadWebview.__uniapp_route);
-      // 已创建未 loaded
-      const waitPreloadWebviewReady = preloadWebview && !preloadWebview.loaded;
-
-      if (waitPreloadWebview || waitPreloadWebviewReady) {
-        setTodoNavigator(path, callback, waitPreloadWebview ? 'waitForCreate' : 'waitForReady');
-      } else {
-        callback();
-      }
-      if (waitPreloadWebviewReady) {
-        registerWebviewReady(preloadWebview.id, todoNavigate);
-      }
-    }
-  }
-
-  function todoNavigate () {
-    if (!todoNavigator) {
-      return
-    }
-    const {
-      navigate
-    } = todoNavigator;
-    if (process.env.NODE_ENV !== 'production') {
-      console.log(`todoNavigate:${todoNavigator.path}`);
-    }
-    todoNavigator = false;
-    return navigate()
-  }
-
-  function navigateFinish () {
-    {
-      if (__uniConfig.renderer === 'native') {
-        if (!todoNavigator) {
-          return
-        }
-        if (todoNavigator.nvue) {
-          return todoNavigate()
-        }
-        return
-      }
-      // 创建预加载
-      const preloadWebview = createPreloadWebview();
-      if (process.env.NODE_ENV !== 'production') {
-        console.log(`navigateFinish.preloadWebview:${preloadWebview.id}`);
-      }
-      if (!todoNavigator) {
-        return
-      }
-      if (todoNavigator.nvue) {
-        return todoNavigate()
-      }
-      preloadWebview.loaded
-        ? todoNavigator.navigate()
-        : registerWebviewReady(preloadWebview.id, todoNavigate);
-    }
   }
 
   function closeWebview (webview, animationType, animationDuration) {
@@ -10153,301 +10712,6 @@ var serviceContext = (function () {
     id$2++;
     const eventChannel = new EventChannel(id$2, events);
     return eventChannel
-  }
-
-  const pageFactory = Object.create(null);
-
-  function definePage (name, createPageVueComponent) {
-    pageFactory[name] = createPageVueComponent;
-  }
-
-  const getPageVueComponent = cached(function (pagePath) {
-    return pageFactory[pagePath]()
-  });
-
-  function createPage (pagePath, pageId, pageQuery, pageInstance) {
-    if (!pageFactory[pagePath]) {
-      console.error(`${pagePath} not found`);
-    }
-    const startTime = Date.now();
-    const pageVm = new (getPageVueComponent(pagePath))({
-      mpType: 'page',
-      pageId,
-      pagePath,
-      pageQuery,
-      pageInstance
-    });
-    if (process.env.NODE_ENV !== 'production') {
-      console.log(`new ${pagePath}[${pageId}]:time(${Date.now() - startTime})`);
-    }
-    return pageVm
-  }
-
-  let isInitEntryPage = false;
-
-  function initEntryPage () {
-    if (isInitEntryPage) {
-      return
-    }
-    isInitEntryPage = true;
-
-    let entryPagePath;
-    let entryPageQuery;
-
-    const weexPlus = weex.requireModule('plus');
-
-    if (weexPlus.getRedirectInfo) {
-      const {
-        path,
-        query,
-        referrerInfo
-      } = parseRedirectInfo();
-      if (path) {
-        entryPagePath = path;
-        entryPageQuery = query;
-      }
-      __uniConfig.referrerInfo = referrerInfo;
-    } else {
-      const argsJsonStr = plus.runtime.arguments;
-      if (!argsJsonStr) {
-        return
-      }
-      try {
-        const args = JSON.parse(argsJsonStr);
-        entryPagePath = args.path || args.pathName;
-        entryPageQuery = args.query ? ('?' + args.query) : '';
-      } catch (e) {}
-    }
-
-    if (!entryPagePath || entryPagePath === __uniConfig.entryPagePath) {
-      if (entryPageQuery) {
-        __uniConfig.entryPageQuery = entryPageQuery;
-      }
-      return
-    }
-
-    const entryRoute = '/' + entryPagePath;
-    const routeOptions = __uniRoutes.find(route => route.path === entryRoute);
-    if (!routeOptions) {
-      console.error(`[uni-app] ${entryPagePath} not found...`);
-      return
-    }
-
-    if (!routeOptions.meta.isTabBar) {
-      __uniConfig.realEntryPagePath = __uniConfig.realEntryPagePath || __uniConfig.entryPagePath;
-    }
-
-    __uniConfig.entryPagePath = entryPagePath;
-    __uniConfig.entryPageQuery = entryPageQuery;
-
-    if (process.env.NODE_ENV !== 'production') {
-      console.log(`[uni-app] entryPagePath(${entryPagePath + entryPageQuery})`);
-    }
-  }
-
-  const pages = [];
-
-  function getCurrentPages$1 (returnAll) {
-    return returnAll ? pages.slice(0) : pages.filter(page => {
-      return !page.$page.meta.isTabBar || page.$page.meta.visible
-    })
-  }
-
-  const preloadWebviews = {};
-
-  function removePreloadWebview (webview) {
-    const url = Object.keys(preloadWebviews).find(url => preloadWebviews[url].id === webview.id);
-    if (url) {
-      if (process.env.NODE_ENV !== 'production') {
-        console.log(`[uni-app] removePreloadWebview(${webview.id})`);
-      }
-      delete preloadWebviews[url];
-    }
-  }
-
-  function closePreloadWebview ({
-    url
-  }) {
-    const webview = preloadWebviews[url];
-    if (webview) {
-      if (webview.__page__) {
-        if (!getCurrentPages$1(true).find(page => page === webview.__page__)) {
-          // 未使用
-          webview.close('none');
-        } else { // 被使用
-          webview.__preload__ = false;
-        }
-      } else { // 未使用
-        webview.close('none');
-      }
-      delete preloadWebviews[url];
-    }
-    return webview
-  }
-
-  function preloadWebview$1 ({
-    url,
-    path,
-    query
-  }) {
-    if (!preloadWebviews[url]) {
-      const routeOptions = JSON.parse(JSON.stringify(__uniRoutes.find(route => route.path === path)));
-      preloadWebviews[url] = createWebview(path, routeOptions, query, {
-        __preload__: true,
-        __query__: JSON.stringify(query)
-      });
-    }
-    return preloadWebviews[url]
-  }
-
-  /**
-   * 首页需要主动registerPage，二级页面路由跳转时registerPage
-   */
-  function registerPage ({
-    url,
-    path,
-    query,
-    openType,
-    webview,
-    eventChannel
-  }) {
-    // fast 模式，nvue 首页时，初始化下 entry page
-    webview && initEntryPage();
-
-    if (preloadWebviews[url]) {
-      webview = preloadWebviews[url];
-      if (webview.__page__) {
-        // 该预载页面已处于显示状态,不再使用该预加载页面,直接新开
-        if (getCurrentPages$1(true).find(page => page === webview.__page__)) {
-          if (process.env.NODE_ENV !== 'production') {
-            console.log(`[uni-app] preloadWebview(${path},${webview.id}) already in use`);
-          }
-          webview = null;
-        } else {
-          if (eventChannel) {
-            webview.__page__.eventChannel = eventChannel;
-          }
-          pages.push(webview.__page__);
-          if (process.env.NODE_ENV !== 'production') {
-            console.log(`[uni-app] reuse preloadWebview(${path},${webview.id})`);
-          }
-          return webview
-        }
-      }
-    }
-    const routeOptions = JSON.parse(JSON.stringify(__uniRoutes.find(route => route.path === path)));
-
-    if (
-      openType === 'reLaunch' ||
-      (
-        !__uniConfig.realEntryPagePath &&
-        getCurrentPages$1().length === 0 // redirectTo
-      )
-    ) {
-      routeOptions.meta.isQuit = true;
-    } else if (!routeOptions.meta.isTabBar) {
-      routeOptions.meta.isQuit = false;
-    }
-
-    if (!webview) {
-      webview = createWebview(path, routeOptions, query);
-    } else {
-      webview = plus.webview.getWebviewById(webview.id);
-      webview.nvue = routeOptions.meta.isNVue;
-    }
-
-    if (routeOptions.meta.isTabBar) {
-      routeOptions.meta.visible = true;
-    }
-
-    if (routeOptions.meta.isTabBar) {
-      tabBar$1.append(webview);
-    }
-
-    if (process.env.NODE_ENV !== 'production') {
-      console.log(`[uni-app] registerPage(${path},${webview.id})`);
-    }
-
-    const isLaunchNVuePage = webview.id === '1' && webview.nvue;
-
-    initWebview(webview, routeOptions, path, query);
-
-    const route = path.slice(1);
-
-    webview.__uniapp_route = route;
-
-    const pageInstance = {
-      route,
-      options: Object.assign({}, query || {}),
-      $getAppWebview () {
-        // 重要，不能直接返回 webview 对象，因为 plus 可能会被二次替换，返回的 webview 对象内部的 plus 不正确
-        // 导致 webview.getStyle 等逻辑出错(旧的 webview 内部 plus 被释放)
-        return plus.webview.getWebviewById(webview.id)
-      },
-      eventChannel,
-      $page: {
-        id: parseInt(webview.id),
-        meta: routeOptions.meta,
-        path,
-        route,
-        fullPath: url,
-        openType
-      },
-      $remove () {
-        const index = pages.findIndex(page => page === this);
-        if (index !== -1) {
-          if (!webview.nvue) {
-            this.$vm.$destroy();
-          }
-          pages.splice(index, 1);
-          if (process.env.NODE_ENV !== 'production') {
-            console.log('[uni-app] removePage(' + path + ')[' + webview.id + ']');
-          }
-        }
-      },
-      // 兼容小程序框架
-      selectComponent (selector) {
-        return this.$vm.selectComponent(selector)
-      },
-      selectAllComponents (selector) {
-        return this.$vm.selectAllComponents(selector)
-      }
-    };
-
-    pages.push(pageInstance);
-
-    if (webview.__preload__) {
-      webview.__page__ = pageInstance;
-    }
-
-    // 首页是 nvue 时，在 registerPage 时，执行路由堆栈
-    if (isLaunchNVuePage) {
-      if (
-        __uniConfig.splashscreen &&
-        __uniConfig.splashscreen.autoclose &&
-        !__uniConfig.splashscreen.alwaysShowBeforeRender
-      ) {
-        plus.navigator.closeSplashscreen();
-      }
-      __uniConfig.onReady(function () {
-        navigateFinish();
-      });
-    }
-
-    {
-      if (!webview.nvue) {
-        const pageId = webview.id;
-        try {
-          loadPage(route, () => {
-            createPage(route, pageId, query, pageInstance).$mount();
-          });
-        } catch (e) {
-          console.error(e);
-        }
-      }
-    }
-
-    return webview
   }
 
   function _navigateTo ({
@@ -11216,7 +11480,7 @@ var serviceContext = (function () {
     confirmText,
     confirmColor,
     editable = false,
-    placeholderText	= ''
+    placeholderText = ''
   } = {}, callbackId) {
     const buttons = showCancel ? [cancelText, confirmText] : [confirmText];
     const tip = editable ? placeholderText : buttons;
@@ -11243,12 +11507,27 @@ var serviceContext = (function () {
       }
     }, title, tip, buttons);
   }
+
+  const ACTION_SHEET_THEME = {
+    light: {
+      itemColor: '#000000'
+    },
+    dark: {
+      itemColor: 'rgba(255, 255, 255, 0.8)'
+    }
+  };
   function showActionSheet$1 ({
     itemList = [],
-    itemColor = '#000000',
+    itemColor,
     title = '',
     popover
   }, callbackId) {
+    // #000 by default in protocols
+    if (itemColor === '#000' && __uniConfig.darkmode) {
+      itemColor =
+        ACTION_SHEET_THEME[plus.navigator.getUIStyle()]
+          .itemColor;
+    }
     const options = {
       buttons: itemList.map(item => ({
         title: item,
@@ -11790,7 +12069,9 @@ var serviceContext = (function () {
 
         const data = {
           code: e.code,
-          errMsg: e.message
+          errCode: e.code,
+          errMsg: e.message,
+          detail: e.detail
         };
 
         this._adError = data;
@@ -11800,6 +12081,7 @@ var serviceContext = (function () {
         const error = new Error(JSON.stringify(this._adError));
         error.code = e.code;
         error.errMsg = e.message;
+        error.detail = e.detail;
 
         if (this._loadPromiseReject != null) {
           this._loadPromiseReject(error);
@@ -12216,6 +12498,7 @@ var serviceContext = (function () {
     checkIsSupportSoterAuthentication: checkIsSupportSoterAuthentication,
     checkIsSoterEnrolledInDevice: checkIsSoterEnrolledInDevice,
     startSoterAuthentication: startSoterAuthentication,
+    weexGetSystemInfoSync: weexGetSystemInfoSync,
     getDeviceInfo: getDeviceInfo,
     getAppBaseInfo: getAppBaseInfo,
     getSystemInfoSync: getSystemInfoSync,
@@ -12235,6 +12518,12 @@ var serviceContext = (function () {
     chooseLocation: chooseLocation$3,
     getLocation: getLocation$1,
     openLocation: openLocation$3,
+    startLocationUpdate: startLocationUpdate,
+    stopLocationUpdate: stopLocationUpdate,
+    onLocationChange: onLocationChange,
+    offLocationChange: offLocationChange,
+    onLocationChangeError: onLocationChangeError,
+    offLocationChangeError: offLocationChangeError,
     startRecord: startRecord,
     stopRecord: stopRecord,
     playVoice: playVoice,
@@ -20266,6 +20555,7 @@ var serviceContext = (function () {
     'addMarkers',
     'removeMarkers',
     'moveAlong',
+    'setLocMarkerIcon',
     'openMapApp'];
 
   class MapContext {
@@ -20654,32 +20944,44 @@ var serviceContext = (function () {
   });
 
   const callbacks$7 = [];
+  const oldCallbacks = [];
 
-  onMethod('onThemeChange', function (res) {
+  onMethod(ON_THEME_CHANGE, function (res) {
     callbacks$7.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
 
-  function onThemeChange (callbackId) {
+  function onThemeChange$1 (callbackId) {
     callbacks$7.push(callbackId);
+  }
+
+  function offThemeChange$1 (callbackId) {
+    // 暂不支持移除所有监听
+    if (callbackId) {
+      const index = callbacks$7.indexOf(callbackId);
+      if (index >= 0) {
+        callbacks$7.splice(index, 1);
+      }
+    }
   }
 
   // 旧版本 API，后期文档更新后考虑移除
   onMethod('onUIStyleChange', function (res) {
-    callbacks$7.forEach(callbackId => {
+    oldCallbacks.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
 
   function onUIStyleChange (callbackId) {
-    callbacks$7.push(callbackId);
+    oldCallbacks.push(callbackId);
     console.warn('The "uni.onUIStyleChange" API is deprecated, please use "uni.onThemeChange". Learn more: https://uniapp.dcloud.net.cn/api/system/theme.');
   }
 
   var require_context_module_1_12 = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    onThemeChange: onThemeChange,
+    onThemeChange: onThemeChange$1,
+    offThemeChange: offThemeChange$1,
     onUIStyleChange: onUIStyleChange
   });
 
@@ -21500,10 +21802,27 @@ var serviceContext = (function () {
   }
 
   const onPushMessageCallbacks = [];
+  let listening = false;
   // 不使用 defineOnApi 实现，是因为 defineOnApi 依赖 UniServiceJSBridge ，该对象目前在小程序上未提供，故简单实现
   const onPushMessage = (fn) => {
     if (onPushMessageCallbacks.indexOf(fn) === -1) {
       onPushMessageCallbacks.push(fn);
+    }
+    // 不能程序启动时就监听，因为离线事件，仅触发一次，框架监听后，无法转发给还没开始监听的开发者
+    if ( !listening) {
+      listening = true;
+      plus.push.addEventListener('click', (result) => {
+        invokePushCallback({
+          type: 'click',
+          message: result
+        });
+      });
+      plus.push.addEventListener('receive', (result) => {
+        invokePushCallback({
+          type: 'pushMsg',
+          message: result
+        });
+      });
     }
   };
 
@@ -22588,6 +22907,7 @@ var serviceContext = (function () {
       publish('onUIStyleChange', {
         style: event.uistyle
       });
+      changePagesNavigatorStyle();
     });
 
     globalEvent.addEventListener('uniMPNativeEvent', function (event) {
@@ -23348,6 +23668,11 @@ var serviceContext = (function () {
         break
       case V_FOR:
         return setForData.call(this, id, value)
+      case 'is': {
+        if (typeof value === 'function') {
+          value = value.options;
+        }
+      }
     }
 
     return ((this._$newData[id] || (this._$newData[id] = {}))[name] = value)

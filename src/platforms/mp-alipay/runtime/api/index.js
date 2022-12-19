@@ -4,6 +4,10 @@ import {
   hasOwn
 } from 'uni-shared'
 
+import { $on, $off } from 'uni-core/runtime/event-bus'
+
+let onKeyboardHeightChangeCallback
+
 export {
   setStorageSync,
   getStorageSync,
@@ -102,6 +106,21 @@ export function createIntersectionObserver (component, options) {
     delete options.observeAll
   }
   return my.createIntersectionObserver(options)
+}
+
+export function onKeyboardHeightChange (callback) {
+  // 与微信小程序一致仅保留最后一次监听
+  if (onKeyboardHeightChangeCallback) {
+    $off('uni:keyboardHeightChange', onKeyboardHeightChangeCallback)
+  }
+  onKeyboardHeightChangeCallback = callback
+  $on('uni:keyboardHeightChange', onKeyboardHeightChangeCallback)
+}
+
+export function offKeyboardHeightChange () {
+  // 与微信小程序一致移除最后一次监听
+  $off('uni:keyboardHeightChange', onKeyboardHeightChangeCallback)
+  onKeyboardHeightChangeCallback = null
 }
 
 export {

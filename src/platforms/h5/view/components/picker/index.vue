@@ -129,7 +129,7 @@ function getDefaultStartValue () {
     return '00:00'
   }
   if (this.mode === mode.DATE) {
-    const year = new Date().getFullYear() - 100
+    const year = new Date().getFullYear() - 150
     switch (this.fields) {
       case fields.YEAR:
         return year.toString()
@@ -147,7 +147,7 @@ function getDefaultEndValue () {
     return '23:59'
   }
   if (this.mode === mode.DATE) {
-    const year = new Date().getFullYear() + 100
+    const year = new Date().getFullYear() + 150
     switch (this.fields) {
       case fields.YEAR:
         return year.toString()
@@ -158,6 +158,29 @@ function getDefaultEndValue () {
     }
   }
   return ''
+}
+
+function getYearStartEnd (props) {
+  const year = new Date().getFullYear()
+  let start = year - 150
+  let end = year + 150
+  if (props.start) {
+    const _year = new Date(props.start).getFullYear()
+    if (!isNaN(_year) && _year < start) {
+      start = _year
+    }
+  }
+  if (props.end) {
+    const _year = new Date(props.start).getFullYear()
+    if (!isNaN(_year) && _year > end) {
+      end = _year
+    }
+  }
+
+  return {
+    start,
+    end
+  }
 }
 
 const mode = {
@@ -427,8 +450,8 @@ export default {
     },
     _createDate () {
       var years = []
-      var year = new Date().getFullYear()
-      for (let i = year - 150, end = year + 150; i <= end; i++) {
+      var year = getYearStartEnd(this)
+      for (let i = year.start, end = year.end; i <= end; i++) {
         years.push(String(i))
       }
       var months = []

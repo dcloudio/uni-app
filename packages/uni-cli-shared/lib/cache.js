@@ -1,6 +1,9 @@
 const fs = require('fs')
 const path = require('path')
 const crypto = require('crypto')
+const {
+  isNormalPage
+} = require('./util')
 /**
  * 1.page-loader 缓存基础的  app.json page.json project.config.json
  * 2.main-loader 缓存 app.json 中的 usingComponents 节点
@@ -49,7 +52,9 @@ function getJsonFile (name) {
 function getChangedJsonFileMap (clear = true) {
   const changedJsonFileMap = new Map()
   for (const name of changedJsonFileSet.values()) {
-    changedJsonFileMap.set(name + '.json', jsonFileMap.get(name))
+    if (isNormalPage(name)) {
+      changedJsonFileMap.set(name + '.json', jsonFileMap.get(name))
+    }
   }
   clear && changedJsonFileSet.clear()
   return changedJsonFileMap

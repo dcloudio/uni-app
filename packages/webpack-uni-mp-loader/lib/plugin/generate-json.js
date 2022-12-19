@@ -11,6 +11,8 @@ const {
   supportGlobalUsingComponents
 } = require('@dcloudio/uni-cli-shared/lib/cache')
 
+const { createSource } = require('../shared')
+
 // 主要解决 extends 且未实际引用的组件
 const EMPTY_COMPONENT = 'Component({})'
 
@@ -193,14 +195,7 @@ module.exports = function generateJson (compilation) {
       const scopedSlotComponentJsonSource = JSON.stringify(scopedSlotComponentJson, null, 2)
 
       scopedSlotComponents.forEach(scopedSlotComponent => {
-        compilation.assets[scopedSlotComponent] = {
-          size () {
-            return Buffer.byteLength(scopedSlotComponentJsonSource, 'utf8')
-          },
-          source () {
-            return scopedSlotComponentJsonSource
-          }
-        }
+        compilation.emitAsset(scopedSlotComponent, createSource(scopedSlotComponentJsonSource))
       })
     }
 
@@ -259,26 +254,9 @@ function emit (name, jsonObj, compilation) {
       'project.swan.js'
     ].includes(
       jsFile) &&
-      !compilation.assets[jsFile]
+    !compilation.getAsset(jsFile)
   ) {
-    const jsFileAsset = {
-      size () {
-        return Buffer.byteLength(EMPTY_COMPONENT, 'utf8')
-      },
-      source () {
-        return EMPTY_COMPONENT
-      }
-    }
-    compilation.assets[jsFile] = jsFileAsset
+    compilation.emitAsset(jsFile, createSource(EMPTY_COMPONENT))
   }
-  const jsonAsset = {
-    size () {
-      return Buffer.byteLength(source, 'utf8')
-    },
-    source () {
-      return source
-    }
-  }
-
-  compilation.assets[name] = jsonAsset
+  compilation.emitAsset(name, createSource(source))
 }

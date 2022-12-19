@@ -1,3 +1,5 @@
+import { isStr } from 'uni-shared'
+
 function IEVersion () {
   const userAgent = navigator.userAgent
   const isIE = userAgent.indexOf('compatible') > -1 && userAgent.indexOf('MSIE') > -1
@@ -18,6 +20,17 @@ function IEVersion () {
     return 11
   } else {
     return -1
+  }
+}
+
+export function getTheme () {
+  if (__uniConfig.darkmode !== true) return isStr(__uniConfig.darkmode) ? __uniConfig.darkmode : 'light'
+  try {
+    return window.matchMedia('(prefers-color-scheme: light)').matches
+      ? 'light'
+      : 'dark'
+  } catch (error) {
+    return 'light'
   }
 }
 
@@ -201,6 +214,6 @@ export function getBrowserInfo () {
     ua,
     osname,
     osversion,
-    theme: undefined
+    theme: getTheme()
   }
 }

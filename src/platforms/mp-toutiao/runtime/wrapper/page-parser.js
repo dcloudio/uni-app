@@ -1,17 +1,12 @@
 import {
-  isPage,
   instances,
-  components,
-  initRelation
+  components
 } from './util'
 
 import parseBasePage from '../../../mp-weixin/runtime/wrapper/page-base-parser'
 
 export default function parsePage (vuePageOptions) {
-  const pageOptions = parseBasePage(vuePageOptions, {
-    isPage,
-    initRelation
-  })
+  const pageOptions = parseBasePage(vuePageOptions)
   const lifetimes = pageOptions.lifetimes
   const oldCreated = lifetimes.created
   lifetimes.created = function created () {

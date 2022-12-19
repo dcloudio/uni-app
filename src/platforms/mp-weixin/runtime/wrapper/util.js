@@ -1,3 +1,7 @@
+import {
+  isObject
+} from 'uni-shared'
+
 export const mocks = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__']
 
 export function findVmByVueId (vm, vuePid) {
@@ -32,10 +36,10 @@ export function initRelation (detail) {
 }
 
 function selectAllComponents (mpInstance, selector, $refs) {
-  const components = mpInstance.selectAllComponents(selector)
+  const components = mpInstance.selectAllComponents(selector) || []
   components.forEach(component => {
     const ref = component.dataset.ref
-    $refs[ref] = component.$vm || component
+    $refs[ref] = component.$vm || toSkip(component)
     if (__PLATFORM__ === 'mp-weixin') {
       if (component.dataset.vueGeneric === 'scoped') {
         component.selectAllComponents('.scoped-ref').forEach(scopedComponent => {
@@ -46,22 +50,41 @@ function selectAllComponents (mpInstance, selector, $refs) {
   })
 }
 
+export function syncRefs (refs, newRefs) {
+  const oldKeys = new Set(...Object.keys(refs))
+  const newKeys = Object.keys(newRefs)
+  newKeys.forEach(key => {
+    const oldValue = refs[key]
+    const newValue = newRefs[key]
+    if (Array.isArray(oldValue) && Array.isArray(newValue) && oldValue.length === newValue.length && newValue.every(value => oldValue.includes(value))) {
+      return
+    }
+    refs[key] = newValue
+    oldKeys.delete(key)
+  })
+  oldKeys.forEach(key => {
+    delete refs[key]
+  })
+  return refs
+}
+
 export function initRefs (vm) {
   const mpInstance = vm.$scope
+  const refs = {}
   Object.defineProperty(vm, '$refs', {
     get () {
       const $refs = {}
       selectAllComponents(mpInstance, '.vue-ref', $refs)
       // TODO 暂不考虑 for 中的 scoped
-      const forComponents = mpInstance.selectAllComponents('.vue-ref-in-for')
+      const forComponents = mpInstance.selectAllComponents('.vue-ref-in-for') || []
       forComponents.forEach(component => {
         const ref = component.dataset.ref
         if (!$refs[ref]) {
           $refs[ref] = []
         }
-        $refs[ref].push(component.$vm || component)
+        $refs[ref].push(component.$vm || toSkip(component))
       })
-      return $refs
+      return syncRefs(refs, $refs)
     }
   })
 }
@@ -83,4 +106,31 @@ export function handleLink (event) {
   }
 
   vueOptions.parent = parentVm
+}
+
+export function markMPComponent (component) {
+  // 在 Vue 中标记为小程序组件
+  const IS_MP = '__v_isMPComponent'
+  Object.defineProperty(component, IS_MP, {
+    configurable: true,
+    enumerable: false,
+    value: true
+  })
+  return component
+}
+
+export function toSkip (obj) {
+  const OB = '__ob__'
+  const SKIP = '__v_skip'
+  if (isObject(obj) && Object.isExtensible(obj)) {
+    // 避免被 @vue/composition-api 观测
+    Object.defineProperty(obj, OB, {
+      configurable: true,
+      enumerable: false,
+      value: {
+        [SKIP]: true
+      }
+    })
+  }
+  return obj
 }

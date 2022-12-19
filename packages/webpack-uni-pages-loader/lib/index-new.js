@@ -18,7 +18,8 @@ const {
 
 const {
   initTheme,
-  parseTheme
+  parseTheme,
+  darkmode
 } = require('@dcloudio/uni-cli-shared/lib/theme')
 
 const {
@@ -39,17 +40,17 @@ const {
 
 // 将开发者手动设置的 usingComponents 调整名称，方便与自动解析到的 usingComponents 做最后合并
 function renameUsingComponents (jsonObj) {
-  if (jsonObj.usingComponents) {
-    jsonObj.customUsingComponents = jsonObj.usingComponents
+  if (jsonObj.usingComponents || jsonObj.usingSwanComponents) {
+    // 暂定 usingComponents 优先级高于 usingSwanComponents
+    jsonObj.customUsingComponents = Object.assign({}, jsonObj.usingSwanComponents, jsonObj.usingComponents)
     delete jsonObj.usingComponents
+    delete jsonObj.usingSwanComponents
   }
   return jsonObj
 }
 
 module.exports = function (content, map) {
   this.cacheable && this.cacheable()
-
-  initTheme()
 
   let isAppView = false
   if (this.resourceQuery) {
@@ -66,6 +67,8 @@ module.exports = function (content, map) {
     fs.readFileSync(manifestJsonPath, 'utf8')
   )
 
+  initTheme(manifestJson)
+
   // this.addDependency(pagesJsonJsPath)
   const localePath = path.resolve(process.env.UNI_INPUT_DIR, 'locale')
   // 路径不存在时会触发 webpack5 差量编译
@@ -74,7 +77,7 @@ module.exports = function (content, map) {
   }
   this.addDependency(manifestJsonPath)
 
-  let pagesJson = parsePagesJson(content, {
+  const pagesJson = parsePagesJson(content, {
     addDependency: file => {
       (process.UNI_PAGES_DEPS || (process.UNI_PAGES_DEPS = new Set())).add(
         normalizePath(file)
@@ -97,9 +100,15 @@ module.exports = function (content, map) {
     }
   }
 
+  const platformManifestJson = manifestJson[process.env.UNI_PLATFORM] || {}
+
   if (global.uniPlugin.defaultTheme) {
-    pagesJson = parseTheme(pagesJson)
-    this.addDependency(path.resolve(process.env.UNI_INPUT_DIR, 'theme.json'))
+    this.addDependency(
+      path.resolve(
+        process.env.UNI_INPUT_DIR,
+        platformManifestJson.themeLocation || 'theme.json'
+      )
+    )
   }
 
   // 组件自动导入配置
@@ -115,10 +124,22 @@ module.exports = function (content, map) {
     process.UNI_TRANSFORM_PX = true
   }
 
+  if (
+    (process.env.UNI_PLATFORM.indexOf('mp') !== -1 && !darkmode()) ||
+     process.env.VUE_APP_DARK_MODE !== 'true'
+  ) {
+    const { pages, globalStyle, tabBar } = parseTheme(pagesJson)
+    Object.assign(pagesJson, JSON.parse(JSON.stringify({ pages, globalStyle, tabBar })))
+  }
+
   if (process.env.UNI_PLATFORM === 'h5') {
     return this.callback(
       null,
-      require('./platforms/h5')(pagesJson, manifestJson, this),
+      require('./platforms/h5')(
+        pagesJson,
+        manifestJson,
+        this
+      ),
       map
     )
   }

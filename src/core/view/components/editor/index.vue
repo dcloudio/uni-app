@@ -29,7 +29,6 @@ function isiOS () {
   return false
 }
 
-let textChanging = false
 export default {
   name: 'Editor',
   mixins: [subscriber, emitter, keyboard],
@@ -106,6 +105,9 @@ export default {
     })
   },
   methods: {
+    _textChangeHandler () {
+      this.$trigger('input', {}, this.getContents())
+    },
     _handleSubscribe ({
       type,
       data
@@ -161,18 +163,19 @@ export default {
               range = quill.getSelection(true)
               const { src = '', alt = '', width = '', height = '', extClass = '', data = {} } = options
               const path = this.$getRealPath(src)
-              quill.insertEmbed(range.index, 'image', path, Quill.sources.USER)
+              quill.insertEmbed(range.index, 'image', path, Quill.sources.SILENT)
               const local = /^(file|blob):/.test(path) ? path : false
-              // 防止 formatText 多次触发 Quill.events.TEXT_CHANGE 事件
-              textChanging = true
-              quill.formatText(range.index, 1, 'data-local', local)
-              quill.formatText(range.index, 1, 'alt', alt)
-              quill.formatText(range.index, 1, 'width', width)
-              quill.formatText(range.index, 1, 'height', height)
-              quill.formatText(range.index, 1, 'class', extClass)
-              textChanging = false
-              quill.formatText(range.index, 1, 'data-custom', Object.keys(data).map(key => `${key}=${data[key]}`).join('&'))
+              quill.formatText(range.index, 1, 'data-local', local, Quill.sources.SILENT)
+              quill.formatText(range.index, 1, 'alt', alt, Quill.sources.SILENT)
+              quill.formatText(range.index, 1, 'width', width, Quill.sources.SILENT)
+              quill.formatText(range.index, 1, 'height', height, Quill.sources.SILENT)
+              quill.formatText(range.index, 1, 'class', extClass, Quill.sources.SILENT)
+              quill.formatText(range.index, 1, 'data-custom', Object.keys(data).map(key => `${key}=${data[key]}`).join('&'), Quill.sources.SILENT)
               quill.setSelection(range.index + 1, Quill.sources.SILENT)
+              quill.scrollIntoView()
+              setTimeout(() => {
+                this._textChangeHandler()
+              }, 1000)
             }
             break
           case 'insertText':
@@ -289,11 +292,7 @@ export default {
           }
         })
       })
-      quill.on(Quill.events.TEXT_CHANGE, () => {
-        if (!textChanging) {
-          this.$trigger('input', {}, this.getContents())
-        }
-      })
+      quill.on(Quill.events.TEXT_CHANGE, this._textChangeHandler)
       quill.on(Quill.events.SELECTION_CHANGE, this.updateStatus.bind(this))
       quill.on(Quill.events.SCROLL_OPTIMIZE, () => {
         const range = quill.selection.getRange()[0]

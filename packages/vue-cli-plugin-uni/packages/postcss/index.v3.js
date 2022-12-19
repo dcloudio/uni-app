@@ -1,6 +1,10 @@
 const selectorParser = require('postcss-selector-parser')
 
-const TAGS = Object.keys(require('@dcloudio/uni-cli-shared').tags)
+const {
+  tags
+} = require('@dcloudio/uni-cli-shared')
+
+const TAGS = Object.keys(tags)
 
 const transformSelector = (complexSelector, transformer) => {
   return selectorParser(transformer).processSync(complexSelector)

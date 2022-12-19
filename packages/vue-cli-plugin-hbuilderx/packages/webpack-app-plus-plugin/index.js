@@ -62,7 +62,7 @@ class WebpackAppPlusPlugin {
         callback()
       })
 
-      compiler.hooks.done.tapPromise('WebpackAppPlusPlugin', compilation => {
+      compiler.hooks.done.tapPromise('WebpackAppPlusPlugin', stats => {
         return new Promise((resolve, reject) => {
           isAppNVue && (nvueCompiled = true)
           isAppService && (serviceCompiled = true)
@@ -74,15 +74,26 @@ class WebpackAppPlusPlugin {
                 ...viewChangedFiles,
                 ...nvueChangedFiles
               ])]
+              let utsChangedFiles = []
+              try {
+                utsChangedFiles = JSON.parse(process.env.UNI_APP_UTS_CHANGED_FILES || '[]')
+                if (utsChangedFiles.length) {
+                  changedFiles.push(...utsChangedFiles)
+                }
+                process.env.UNI_APP_UTS_CHANGED_FILES = ''
+              } catch (e) {}
               if (!isFirst && changedFiles.length > 0) {
-                if (serviceChangedFiles.length === 0 && viewChangedFiles.length === 0) {
+                if (serviceChangedFiles.length === 0 && viewChangedFiles.length === 0 && utsChangedFiles
+                  .length === 0) {
                   // 仅 nvue 页面发生变化
                   done('Build complete. PAGES:' + JSON.stringify(changedFiles))
                 } else {
                   done('Build complete. FILES:' + JSON.stringify(changedFiles))
                 }
               } else {
+                // if (!stats.hasErrors()) {
                 !process.env.UNI_AUTOMATOR_WS_ENDPOINT && done('Build complete. Watching for changes...')
+                // };
               }
               isFirst = false
             } else {
@@ -97,7 +108,7 @@ class WebpackAppPlusPlugin {
         })
       })
     } else {
-      compiler.hooks.done.tapPromise('WebpackAppPlusPlugin', compilation => {
+      compiler.hooks.done.tapPromise('WebpackAppPlusPlugin', stats => {
         return new Promise((resolve, reject) => {
           if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
             return resolve()

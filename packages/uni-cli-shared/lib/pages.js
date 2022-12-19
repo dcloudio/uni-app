@@ -6,7 +6,8 @@ const {
   removeExt,
   normalizePath,
   camelize,
-  capitalize
+  capitalize,
+  isNormalPage
 } = require('./util')
 
 const {
@@ -113,7 +114,9 @@ function isNVuePage (page, root = '') {
 
 function isValidPage (page, root = '') {
   if (typeof page === 'string' || !page.path) { // 不合法的配置
-    console.warn(uniI18n.__('cliShared.pagesJsonError', { 0: 'https://uniapp.dcloud.io/collocation/pages?id=pages' }))
+    console.warn(uniI18n.__('cliShared.pagesJsonError', {
+      0: 'https://uniapp.dcloud.io/collocation/pages?id=pages'
+    }))
     return false
   }
   let pagePath = page.path
@@ -213,7 +216,10 @@ function parseEntry (pagesJson) {
   const weixinConfig = manifestConfig['mp-weixin'] || {}
   const independentSwitch = !!weixinConfig.independent
   if (independentSwitch) {
-    Object.values(process.UNI_SUBPACKAGES).forEach(({ root, independent = false }) => {
+    Object.values(process.UNI_SUBPACKAGES).forEach(({
+      root,
+      independent = false
+    }) => {
       if (root && independent) {
         const pkgRootMainJsKey = `${root}/common/main`
         // const pkgRootMainJsPath = `${process.env.UNI_INPUT_DIR}/${root}/main.js`;
@@ -239,7 +245,9 @@ function parseEntry (pagesJson) {
 
   // pages
   pagesJson.pages.forEach(page => {
-    process.UNI_ENTRY[page.path] = getMainJsPath(page.path)
+    if (isNormalPage(page.path)) {
+      process.UNI_ENTRY[page.path] = getMainJsPath(page.path)
+    }
   })
   // subPackages
   if (Array.isArray(pagesJson.subPackages) && pagesJson.subPackages.length) {
@@ -404,7 +412,11 @@ function initAutoComponents () {
   })
   if (conflictFiles.length > 0) {
     conflictFiles.forEach(files => {
-      console.warn(uniI18n.__('cliShared.easycomConflict', { 0: '[' + files.map((file, index) => { return file }).join(',') + ']' }))
+      console.warn(uniI18n.__('cliShared.easycomConflict', {
+        0: '[' + files.map((file, index) => {
+          return file
+        }).join(',') + ']'
+      }))
       console.log('\n')
     })
   }
@@ -451,7 +463,10 @@ function initAutoImportComponents (easycom = {}) {
   }
   initBuiltInEasycom(BUILT_IN_EASYCOMS, usingAutoImportComponents)
   // 目前仅 mp-weixin 内置支持 page-meta 等组件
-  if (process.env.UNI_PLATFORM !== 'mp-weixin') {
+  if (process.env.UNI_PLATFORM === 'mp-weixin') {
+  } else if (process.env.UNI_PLATFORM === 'mp-alipay') {
+    initBuiltInEasycom(BUILT_IN_COMPONENTS_ALIPAY, usingAutoImportComponents)
+  } else {
     initBuiltInEasycom(BUILT_IN_COMPONENTS, usingAutoImportComponents)
   }
 
@@ -518,8 +533,11 @@ function parseUsingAutoImportComponents (usingAutoImportComponents) {
 }
 
 const BUILT_IN_COMPONENTS = ['page-meta', 'navigation-bar', 'uni-match-media']
+const BUILT_IN_COMPONENTS_ALIPAY = ['navigation-bar']
 
-const BUILT_IN_EASYCOMS = ['unicloud-db', 'uniad', 'ad-rewarded-video', 'ad-fullscreen-video', 'ad-interstitial', 'ad-interactive']
+const BUILT_IN_EASYCOMS = ['unicloud-db', 'uniad', 'ad-rewarded-video', 'ad-fullscreen-video', 'ad-interstitial',
+  'ad-interactive'
+]
 
 function isBuiltInComponent (name) { // uni-template-compiler/lib/util.js 识别微信内置组件
   return BUILT_IN_COMPONENTS.includes(name)

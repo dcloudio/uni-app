@@ -1,5 +1,5 @@
 "use strict";
-var __importStar = (this && this.__importStar) || function(mod) {
+var __importStar = (this && this.__importStar) || function (mod) {
   if (mod && mod.__esModule) return mod;
   var result = {};
   if (mod != null)
@@ -14,8 +14,8 @@ Object.defineProperty(exports, "__esModule", {
 const postcss = __importStar(require("postcss"));
 // postcss-selector-parser does have typings but it's problematic to work with.
 const selectorParser = require('postcss-selector-parser');
-exports.default = postcss.plugin('remove-scoped', (options) => (root) => {
-  root.each(function rewriteSelector(node) {
+const once = (root) => {
+  root.each(function rewriteSelector (node) {
     if (!node.selector) {
       // handle media queries
       if (node.type === 'atrule') {
@@ -58,4 +58,22 @@ exports.default = postcss.plugin('remove-scoped', (options) => (root) => {
       });
     }).processSync(node.selector);
   });
-});
+};
+
+const version = Number(require('postcss/package.json').version.split('.')[0])
+
+if (version < 8) {
+  const postcss = require('postcss')
+  module.exports = postcss.plugin('remove-scoped', function (opts) {
+    return once
+  })
+} else {
+  module.exports = function (opts) {
+    return {
+      postcssPlugin: 'remove-scoped',
+      Once: once
+    }
+  }
+
+  module.exports.postcss = true
+}

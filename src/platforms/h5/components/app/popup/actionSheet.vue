@@ -34,7 +34,7 @@
             <div
               v-for="(itemTitle, index) in itemList"
               :key="index"
-              :style="{ color: itemColor }"
+              :style="{ color: listItemColor }"
               class="uni-actionsheet__cell"
               @click="_close(index)"
             >
@@ -45,7 +45,7 @@
       </div>
       <div class="uni-actionsheet__action">
         <div
-          :style="{ color: itemColor }"
+          :style="{ color: cancelItemColor }"
           class="uni-actionsheet__cell"
           @click="_close(-1)"
         >
@@ -78,6 +78,7 @@ import {
   initScrollBounce,
   disableScrollBounce
 } from 'uni-platform/helpers/scroll'
+import { onThemeChange, offThemeChange, getTheme } from '../../theme'
 
 // 由于模拟滚动阻止了点击，使用自定义事件来触发点击事件
 function initClick (dom) {
@@ -103,6 +104,23 @@ function initClick (dom) {
       })
       event.target.dispatchEvent(customEvent)
     }
+  })
+}
+
+const ACTION_SHEET_THEME = {
+  light: {
+    listItemColor: '#000000',
+    cancelItemColor: '#000000'
+  },
+  dark: {
+    listItemColor: 'rgba(255, 255, 255, 0.8)',
+    cancelItemColor: 'rgba(255, 255, 255)'
+  }
+}
+
+function setActionSheetTheme (theme) {
+  ['listItemColor', 'cancelItemColor'].forEach(key => {
+    this[key] = ACTION_SHEET_THEME[theme][key]
   })
 }
 
@@ -142,7 +160,9 @@ export default {
       contentHeight: 0,
       titleHeight: 0,
       deltaY: 0,
-      scrollTop: 0
+      scrollTop: 0,
+      listItemColor: '#000000',
+      cancelItemColor: '#000000'
     }
   },
   watch: {
@@ -162,6 +182,15 @@ export default {
             initClick(item)
           })
         })
+
+        this.listItemColor = this.cancelItemColor = this.itemColor
+        // #000 by default in protocols
+        if (this.$parent.showActionSheet.itemColor === '#000') {
+          if (getTheme() === 'dark') this._onThemeChange({ theme: 'dark' })
+          onThemeChange(this._onThemeChange)
+        }
+      } else {
+        offThemeChange(this._onThemeChange)
       }
     }
   },
@@ -181,6 +210,9 @@ export default {
     initScrollBounce()
   },
   methods: {
+    _onThemeChange ({ theme }) {
+      setActionSheetTheme.call(this, theme)
+    },
     _close (tapIndex) {
       this.$emit('close', tapIndex)
     },
@@ -277,6 +309,7 @@ export default {
     right: 0;
     left: 0;
     z-index: 1;
+    color: var(--UI-FG);
     background-color: #fff;
     border-radius: 5px 5px 0 0;
     border-bottom: 1px solid #e5e5e5;
@@ -330,6 +363,27 @@ export default {
 
     uni-actionsheet .uni-actionsheet__action {
       display: none;
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    uni-actionsheet .uni-actionsheet__title {
+      background-color: var(--UI-BG-1);
+      border-bottom-color: var(--UI-BORDER-CLOLOR-1);
+    }
+
+    uni-actionsheet .uni-actionsheet__action,
+    uni-actionsheet .uni-actionsheet__menu {
+      background-color: var(--UI-BG-2);
+    }
+
+    uni-actionsheet .uni-actionsheet__cell:active {
+      background-color: var(--UI-BG-CLOLOR-ACTIVE);
+    }
+
+    uni-actionsheet .uni-actionsheet__cell:before {
+      border-top-color: var(--UI-BORDER-CLOLOR-1);
+      color: var(--UI-BORDER-CLOLOR-1);
     }
   }
 </style>

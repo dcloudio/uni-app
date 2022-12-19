@@ -1,5 +1,7 @@
 import {
-  findVmByVueId
+  findVmByVueId,
+  initRefs as initRefsBase,
+  toSkip
 } from '../../../mp-weixin/runtime/wrapper/util'
 
 export const mocks = ['__route__', '__webviewId__', '__nodeid__', '__nodeId__']
@@ -13,31 +15,12 @@ export function initRefs (vm) {
   /* eslint-disable no-undef */
   const minorVersion = parseInt(tt.getSystemInfoSync().SDKVersion.split('.')[1])
   if (minorVersion > 16) {
-    Object.defineProperty(vm, '$refs', {
-      get () {
-        const $refs = {}
-        // mpInstance 销毁后 selectAllComponents 取值为 null
-        const components = mpInstance.selectAllComponents('.vue-ref') || []
-        components.forEach(component => {
-          const ref = component.dataset.ref
-          $refs[ref] = component.$vm || component
-        })
-        const forComponents = mpInstance.selectAllComponents('.vue-ref-in-for') || []
-        forComponents.forEach(component => {
-          const ref = component.dataset.ref
-          if (!$refs[ref]) {
-            $refs[ref] = []
-          }
-          $refs[ref].push(component.$vm || component)
-        })
-        return $refs
-      }
-    })
+    initRefsBase(vm)
   } else {
     mpInstance.selectAllComponents('.vue-ref', (components) => {
       components.forEach(component => {
         const ref = component.dataset.ref
-        vm.$refs[ref] = component.$vm || component
+        vm.$refs[ref] = component.$vm || toSkip(component)
       })
     })
     mpInstance.selectAllComponents('.vue-ref-in-for', (forComponents) => {
@@ -46,7 +29,7 @@ export function initRefs (vm) {
         if (!vm.$refs[ref]) {
           vm.$refs[ref] = []
         }
-        vm.$refs[ref].push(component.$vm || component)
+        vm.$refs[ref].push(component.$vm || toSkip(component))
       })
     })
   }
