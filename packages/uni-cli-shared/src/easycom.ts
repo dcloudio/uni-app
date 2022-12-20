@@ -278,12 +278,12 @@ function initAutoScanEasycoms(
       const curEasycoms = initAutoScanEasycom(dir, rootDir, extensions)
       Object.keys(curEasycoms).forEach((name) => {
         // Use the first component when name conflict
-        const compath = easycoms[name]
-        if (!compath) {
+        const componentPath = easycoms[name]
+        if (!componentPath) {
           easycoms[name] = curEasycoms[name]
         } else {
-          ;(conflict[compath] || (conflict[compath] = [])).push(
-            normalizeCompath(curEasycoms[name], rootDir)
+          ;(conflict[componentPath] || (conflict[componentPath] = [])).push(
+            normalizeComponentPath(curEasycoms[name], rootDir)
           )
         }
       })
@@ -291,18 +291,20 @@ function initAutoScanEasycoms(
     },
     Object.create(null)
   )
-  const conflictComs = Object.keys(conflict)
-  if (conflictComs.length) {
+  const conflictComponents = Object.keys(conflict)
+  if (conflictComponents.length) {
     console.warn(M['easycom.conflict'])
-    conflictComs.forEach((com) => {
-      console.warn([normalizeCompath(com, rootDir), conflict[com]].join(','))
+    conflictComponents.forEach((com) => {
+      console.warn(
+        [normalizeComponentPath(com, rootDir), conflict[com]].join(',')
+      )
     })
   }
   return res
 }
 
-function normalizeCompath(compath: string, rootDir: string) {
-  return normalizePath(path.relative(rootDir, compath))
+function normalizeComponentPath(componentPath: string, rootDir: string) {
+  return normalizePath(path.relative(rootDir, componentPath))
 }
 
 export function addImportDeclaration(
