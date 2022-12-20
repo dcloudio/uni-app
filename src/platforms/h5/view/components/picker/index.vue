@@ -171,7 +171,7 @@ function getYearStartEnd (props) {
     }
   }
   if (props.end) {
-    const _year = new Date(props.start).getFullYear()
+    const _year = new Date(props.end).getFullYear()
     if (!isNaN(_year) && _year > end) {
       end = _year
     }
