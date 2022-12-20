@@ -2,11 +2,14 @@ import { extend } from '@vue/shared'
 import { once } from '@dcloudio/uni-shared'
 import { resolveBuiltIn } from '@dcloudio/uni-cli-shared'
 import {
+  SFCAsyncStyleCompileOptions,
   SFCDescriptor,
   SFCParseOptions,
   SFCParseResult,
   SFCScriptBlock,
   SFCScriptCompileOptions,
+  SFCStyleCompileOptions,
+  SFCStyleCompileResults,
   SFCTemplateCompileOptions,
 } from '@vue/compiler-sfc'
 
@@ -15,7 +18,22 @@ export const rewriteCompilerSfcParseOnce = once(rewriteCompilerSfcParse)
 
 function rewriteCompileScript() {
   const compiler = require(resolveBuiltIn('@vue/compiler-sfc'))
-  const { compileScript, compileTemplate } = compiler
+  const { compileScript, compileTemplate, compileStyle, compileStyleAsync } =
+    compiler
+  compiler.compileStyle = (
+    options: SFCStyleCompileOptions
+  ): SFCStyleCompileResults => {
+    // https://github.com/dcloudio/uni-app/issues/4076
+    options.isProd = true
+    return compileStyle(options)
+  }
+  compiler.compileStyleAsync = (
+    options: SFCAsyncStyleCompileOptions
+  ): Promise<SFCStyleCompileResults> => {
+    // https://github.com/dcloudio/uni-app/issues/4076
+    options.isProd = true
+    return compileStyleAsync(options)
+  }
   // script-setup + v-bind
   compiler.compileScript = (
     sfc: SFCDescriptor,
@@ -25,6 +43,10 @@ function rewriteCompileScript() {
       ;(options.templateOptions.compilerOptions as any).bindingCssVars =
         sfc.cssVars || []
     }
+    // 强制生产模式，确保 cssVar 的生成使用 hash
+    // https://github.com/dcloudio/uni-app/issues/4076
+    // dev模式下，会生成：{ "83a5a03c-style.color": style.color}
+    options.isProd = true
     return compileScript(sfc, options)
   }
   // script + v-bind
@@ -33,6 +55,8 @@ function rewriteCompileScript() {
       ;(options.compilerOptions as any).bindingCssVars =
         options.ssrCssVars || []
     }
+    // 同上
+    options.isProd = true
     return compileTemplate(options)
   }
 }
