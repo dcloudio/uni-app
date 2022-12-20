@@ -3,9 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.resolveUTSCompiler = exports.resolveUtsModule = exports.resolveUtsAppModule = void 0;
+exports.initUTSComponents = exports.resolveUTSCompiler = exports.resolveUtsModule = exports.resolveUtsAppModule = void 0;
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
+const fast_glob_1 = __importDefault(require("fast-glob"));
 const hbx_1 = require("./hbx");
 const utils_1 = require("./utils");
 /**
@@ -99,3 +100,65 @@ function resolveUTSCompiler() {
     return require(compilerPath);
 }
 exports.resolveUTSCompiler = resolveUTSCompiler;
+function initUTSComponents(inputDir, platform) {
+    const components = [];
+    if (platform !== 'app' && platform !== 'app-plus') {
+        return components;
+    }
+    const easycomsObj = Object.create(null);
+    const dirs = resolveUTSComponentDirs(inputDir);
+    dirs.forEach((dir) => {
+        const is_uni_modules_utssdk = dir.endsWith('utssdk');
+        const is_ussdk = !is_uni_modules_utssdk && path_1.default.dirname(dir).endsWith('utssdk');
+        if (is_uni_modules_utssdk || is_ussdk) {
+            fast_glob_1.default
+                .sync('**/*.vue', {
+                cwd: dir,
+                absolute: true,
+            })
+                .forEach((file) => {
+                let name = parseVueComponentName(file);
+                if (!name) {
+                    if (file.endsWith('index.vue')) {
+                        name = path_1.default.basename(is_uni_modules_utssdk ? path_1.default.dirname(dir) : dir);
+                    }
+                }
+                if (name) {
+                    const importDir = (0, utils_1.normalizePath)(is_uni_modules_utssdk ? path_1.default.dirname(dir) : dir);
+                    easycomsObj[`^${name}$`] = `\0${importDir}?uts-proxy`;
+                }
+            });
+        }
+    });
+    Object.keys(easycomsObj).forEach((name) => {
+        components.push({
+            pattern: new RegExp(name),
+            replacement: easycomsObj[name],
+        });
+    });
+    return components;
+}
+exports.initUTSComponents = initUTSComponents;
+function resolveUTSComponentDirs(inputDir) {
+    const utssdkDir = path_1.default.resolve(inputDir, 'utssdk');
+    const uniModulesDir = path_1.default.resolve(inputDir, 'uni_modules');
+    return fast_glob_1.default
+        .sync('*', {
+        cwd: utssdkDir,
+        absolute: true,
+        onlyDirectories: true,
+    })
+        .concat(fast_glob_1.default.sync('*/utssdk', {
+        cwd: uniModulesDir,
+        absolute: true,
+        onlyDirectories: true,
+    }));
+}
+const nameRE = /name\s*:\s*['|"](.*)['|"]/;
+function parseVueComponentName(file) {
+    const content = fs_1.default.readFileSync(file, 'utf8');
+    const matches = content.match(nameRE);
+    if (matches) {
+        return matches[1];
+    }
+}

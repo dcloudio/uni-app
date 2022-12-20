@@ -32,7 +32,8 @@ const pagesJson2AppJson = {
   tabBar: function (name, value, json) {
     json.tabBar = parseTabBar(value)
   },
-  preloadRule: defaultCopy
+  preloadRule: defaultCopy,
+  entryPagePath: defaultCopy
 }
 
 function copyToJson (json, fromJson, options) {
@@ -96,10 +97,6 @@ module.exports = function (pagesJson, manifestJson) {
   if (fs.existsSync(projectPath)) {
     project = require(projectPath)
   } else {
-    if (platformJson.appid) {
-      project.appid = platformJson.appid
-    }
-
     project.component2 = hasOwn(platformJson, 'component2') ? platformJson.component2 : true
     project.enableAppxNg = hasOwn(platformJson, 'enableAppxNg') ? platformJson.enableAppxNg : true
   }

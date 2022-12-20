@@ -425,6 +425,16 @@ function initAutoComponents () {
 
 function initAutoImportScanComponents () {
   const components = initAutoComponents()
+
+  const {
+    initUTSComponents
+  } = require('./uts/uts.js')
+
+  initUTSComponents(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM).forEach((item) => {
+    components[item.pattern.source] = item.replacement.replace('\0', '').replace('?uts-proxy',
+      '/package.json?uts-proxy')
+  })
+
   if (process.env.UNI_PLATFORM === 'quickapp-native') {
     if (!uniQuickAppAutoImportScanComponents) {
       uniQuickAppAutoImportScanComponents = getAutoComponentsByDir(
@@ -463,8 +473,7 @@ function initAutoImportComponents (easycom = {}) {
   }
   initBuiltInEasycom(BUILT_IN_EASYCOMS, usingAutoImportComponents)
   // 目前仅 mp-weixin 内置支持 page-meta 等组件
-  if (process.env.UNI_PLATFORM === 'mp-weixin') {
-  } else if (process.env.UNI_PLATFORM === 'mp-alipay') {
+  if (process.env.UNI_PLATFORM === 'mp-weixin') {} else if (process.env.UNI_PLATFORM === 'mp-alipay') {
     initBuiltInEasycom(BUILT_IN_COMPONENTS_ALIPAY, usingAutoImportComponents)
   } else {
     initBuiltInEasycom(BUILT_IN_COMPONENTS, usingAutoImportComponents)

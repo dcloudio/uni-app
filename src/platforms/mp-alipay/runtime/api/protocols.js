@@ -484,6 +484,16 @@ const protocols = { // 需要做转换的 API 列表
   }
 }
 
+// 钉钉小程序处理
+if (!my.canIUse('saveImageToPhotosAlbum')) {
+  protocols.saveImageToPhotosAlbum = {
+    name: 'saveImage',
+    args: {
+      filePath: 'url'
+    }
+  }
+}
+
 export {
   protocols,
   todos,
