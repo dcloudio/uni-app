@@ -278,7 +278,7 @@ const uniMiniProgramAlipayPlugin = {
     },
     // https://tower.im/teams/226535/todos/18316
     transform(code, id) {
-        if (id.includes('@vue/shared')) {
+        if (id.includes('@vue/shared') || id.includes('@vue\\shared')) {
             return {
                 code: code.replace('//gs', '//g'),
                 map: { mappings: '' },
