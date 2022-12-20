@@ -10325,7 +10325,7 @@ function usePickerMethods(props2, state, trigger, rootRef, pickerRef, selectRef,
       }
     }
     if (props2.end) {
-      const _year = new Date(props2.start).getFullYear();
+      const _year = new Date(props2.end).getFullYear();
       if (!isNaN(_year) && _year > end) {
         end = _year;
       }

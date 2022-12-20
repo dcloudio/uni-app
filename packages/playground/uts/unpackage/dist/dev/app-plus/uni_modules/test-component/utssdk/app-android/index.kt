@@ -13,7 +13,6 @@ import com.taobao.weex.ui.component.WXComponentProp;
 import io.dcloud.feature.uniapp.UniSDKInstance;
 import io.dcloud.feature.uniapp.ui.action.AbsComponentData;
 import io.dcloud.feature.uniapp.ui.component.AbsVContainer;
-import io.dcloud.uts.component.IMeasureAble;
 import io.dcloud.uts.component.UTSComponent;
 open class CustomAnimListener : Animator.AnimatorListener {
     open var comp: UTSComponent<LottieAnimationView>;
@@ -28,7 +27,7 @@ open class CustomAnimListener : Animator.AnimatorListener {
     override fun onAnimationCancel(animation: Animator?) {}
     override fun onAnimationRepeat(animation: Animator?) {}
 }
-open class AnimationViewComponent : UTSComponent<LottieAnimationView>, IMeasureAble {
+open class AnimationViewComponent : UTSComponent<LottieAnimationView> {
     constructor(instance: UniSDKInstance?, parent: AbsVContainer<*>?, componentData: AbsComponentData<*>?) : super(instance, parent, componentData) ;
     override fun created() {}
     override fun NVBeforeLoad() {}
