@@ -177,9 +177,45 @@ async function testSwift() {
   })
 }
 
+async function testSwiftComponent() {
+  const start = Date.now()
+  await bundle(UtsTarget.SWIFT, {
+    input: {
+      root: projectDir,
+      filename: path.resolve(
+        projectDir,
+        'uni_modules/test-component/utssdk/app-ios/index.uts'
+      ),
+      fileContent: `export { default as AnimationViewComponent } from './index.vue'`
+    },
+    output: {
+      outDir,
+      package: 'UTSSDKModulesTestComponent',
+      imports: ['DCloudUTSPlugin'],
+      sourceMap,
+      extname: 'swift',
+      logFilename: true,
+      isPlugin: true,
+    },
+  }).then((res) => {
+    console.log('bundle: ' + (Date.now() - start) + 'ms')
+    console.log(JSON.stringify(res))
+    console.log(
+      fs.readFileSync(
+        path.resolve(
+          projectDir,
+          'unpackage/dist/dev/app-plus/uni_modules/test-component/utssdk/app-ios/index.swift'
+        ),
+        'utf8'
+      )
+    )
+  })
+}
+
 async function test() {
   await testKotlinComponent()
   await testKotlin()
+  await testSwiftComponent()
   await testSwift()
 }
 
