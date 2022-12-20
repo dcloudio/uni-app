@@ -1,9 +1,6 @@
 import {
-  initH5Provide,
   isVueSfcFile,
   uniCssScopedPlugin,
-  uniHBuilderXConsolePlugin,
-  uniViteInjectPlugin,
   UNI_EASYCOM_EXCLUDE,
 } from '@dcloudio/uni-cli-shared'
 import { uniH5Plugin } from './plugin'
@@ -25,12 +22,6 @@ export default [
     filter: (id) => isVueSfcFile(id) && !id.endsWith('App.vue'),
   }),
   uniResolveIdPlugin(),
-  ...(process.env.UNI_H5_BROWSER === 'builtin'
-    ? [
-        uniViteInjectPlugin('uni:h5-inject-hbx', initH5Provide()),
-        uniHBuilderXConsolePlugin(),
-      ]
-    : []),
   uniMainJsPlugin(),
   uniManifestJsonPlugin(),
   uniPagesJsonPlugin(),
