@@ -456,6 +456,15 @@ export const showShareMenu = {
 export const hideHomeButton = {
   name: 'hideBackHome',
 }
+// 钉钉小程序处理
+export const saveImageToPhotosAlbum = my.canIUse('saveImageToPhotosAlbum')
+  ? {}
+  : {
+      name: 'saveImage',
+      args: {
+        filePath: 'url',
+      },
+    }
 export const saveVideoToPhotosAlbum = {
   args: {
     filePath: 'src',
