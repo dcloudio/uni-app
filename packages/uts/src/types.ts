@@ -18,6 +18,8 @@ export type UtsParseOptions = UtsParserConfig & {
 export type UtsInputOptions = UtsParseOptions & {
   root: string
   filename: string
+  fileContent?: string
+  fileAppendContent?: string
 }
 
 export type UtsOutputOptions = {

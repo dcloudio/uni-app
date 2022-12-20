@@ -13,7 +13,7 @@ import {
   ON_TAB_ITEM_TAP,
   ON_UNLOAD,
 } from '@dcloudio/uni-shared'
-import { hasOwn, isArray } from '@vue/shared'
+import { hasOwn, isArray, isFunction } from '@vue/shared'
 
 import { ComponentOptions } from 'vue'
 
@@ -118,7 +118,7 @@ export function initRuntimeHooks(
 
 const findMixinRuntimeHooks = /*#__PURE__*/ once(() => {
   const runtimeHooks: string[] = []
-  const app = getApp({ allowDefault: true })
+  const app = isFunction(getApp) && getApp({ allowDefault: true })
   if (app && app.$vm && app.$vm.$) {
     const mixins = app.$vm.$.appContext.mixins as ComponentOptions[]
     if (isArray(mixins)) {

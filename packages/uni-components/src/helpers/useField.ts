@@ -363,7 +363,8 @@ function useEvent(
     }
   }
   function initField() {
-    const field = fieldRef.value as HTMLFieldElement
+    const field = fieldRef.value
+    if (!field) return
     const onFocus = function (event: Event) {
       state.focus = true
       trigger('focus', event, {

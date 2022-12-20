@@ -1,6 +1,13 @@
 import { extend } from '@vue/shared'
 
-import { ComponentOptions, ComponentPublicInstance } from 'vue'
+import {
+  ComponentOptions,
+  ComponentPublicInstance,
+  // @ts-ignore
+  devtoolsComponentAdded,
+  // @ts-ignore
+  devtoolsComponentRemoved,
+} from 'vue'
 // @ts-expect-error
 import { getExposeProxy } from 'vue'
 
@@ -94,6 +101,10 @@ export function parseComponent(
     lifetimes: initLifetimes({ mocks, isPage, initRelation, vueOptions }),
     pageLifetimes: {
       show() {
+        if (__VUE_PROD_DEVTOOLS__) {
+          devtoolsComponentRemoved(this.$vm!.$)
+          devtoolsComponentAdded(this.$vm!.$)
+        }
         this.$vm && this.$vm.$callHook('onPageShow')
       },
       hide() {

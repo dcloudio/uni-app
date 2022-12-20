@@ -236,8 +236,8 @@ uni-button[loading][native]:before {
 }
 
 .button-hover[type='primary'][plain] {
-  color: rgba(26, 173, 25, 0.6);
-  border-color: rgba(26, 173, 25, 0.6);
+  color: rgba(0, 122, 255, 0.6);
+  border-color: rgba(0, 122, 255, 0.6);
   background-color: transparent;
 }
 

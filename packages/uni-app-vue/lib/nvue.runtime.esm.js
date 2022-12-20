@@ -1802,7 +1802,7 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = EM
                     // pass undefined as the old value when it's changed for the first time
                     oldValue === INITIAL_WATCHER_VALUE
                         ? undefined
-                        : (isMultiSource && oldValue[0] === INITIAL_WATCHER_VALUE)
+                        : isMultiSource && oldValue[0] === INITIAL_WATCHER_VALUE
                             ? []
                             : oldValue,
                     onCleanup
@@ -8270,8 +8270,8 @@ function parseName(name) {
             options[m[0].toLowerCase()] = true;
         }
     }
-    name = name.slice(2);
-    return [formatEventName(hyphenate(name)), options];
+    const event = name[2] === ':' ? name.slice(3) : name.slice(2);
+    return [formatEventName(hyphenate(event)), options];
 }
 function createInvoker(initialValue, instance) {
     const invoker = (e) => {

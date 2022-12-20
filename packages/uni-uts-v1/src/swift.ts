@@ -1,19 +1,20 @@
 import fs from 'fs-extra'
-import { capitalize } from '@vue/shared'
+import path, { join } from 'path'
 import {
+  genComponentsCode,
   genUTSPlatformResource,
   getCompilerServer,
   getUtsCompiler,
   moveRootIndexSourceMap,
+  parseSwiftPackageWithPluginId,
   resolveIOSDir,
   resolvePackage,
   resolveUTSPlatformFile,
   resolveUTSSourceMapPath,
   ToSwiftOptions,
 } from './utils'
-import { isInHBuilderX } from './shared'
+import { isInHBuilderX, parseJson } from './shared'
 import { UtsResult } from '@dcloudio/uts'
-import path from 'path'
 
 function parseSwiftPackage(filename: string) {
   const res = resolvePackage(filename)
@@ -22,26 +23,30 @@ function parseSwiftPackage(filename: string) {
       namespace: '',
     }
   }
-  const namespace =
-    'UTSSDK' + (res.is_uni_modules ? 'Modules' : '') + capitalize(res.name)
+  const namespace = parseSwiftPackageWithPluginId(res.name, res.is_uni_modules)
   return {
     namespace,
   }
 }
 
-export async function runSwiftProd(filename: string) {
+export async function runSwiftProd(
+  filename: string,
+  components: Record<string, string>
+) {
   // 文件有可能是 app-android 里边的，因为编译到 ios 时，为了保证不报错，可能会去读取 android 下的 uts
   if (filename.includes('app-android')) {
     return
   }
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
-  await compile(filename, { inputDir, outputDir, sourceMap: true })
+  await compile(filename, { inputDir, outputDir, sourceMap: true, components })
   genUTSPlatformResource(filename, {
     inputDir,
     outputDir,
     platform: 'app-ios',
     extname: '.swift',
+    components,
+    package: parseSwiftPackage(filename).namespace,
   })
 }
 
@@ -53,7 +58,10 @@ export type RunSwiftDevResult = UtsResult & {
 }
 
 let isEnvReady = true
-export async function runSwiftDev(filename: string) {
+export async function runSwiftDev(
+  filename: string,
+  components: Record<string, string>
+) {
   // 文件有可能是 app-android 里边的，因为编译到 ios 时，为了保证不报错，可能会去读取 android 下的 uts
   if (filename.includes('app-android')) {
     return
@@ -82,6 +90,7 @@ export async function runSwiftDev(filename: string) {
     inputDir,
     outputDir,
     sourceMap: true,
+    components,
   })) as RunSwiftDevResult
 
   result.type = 'swift'
@@ -91,6 +100,8 @@ export async function runSwiftDev(filename: string) {
     outputDir,
     platform: 'app-ios',
     extname: '.swift',
+    components,
+    package: '',
   })
   result.changed = []
   // 开发模式下，需要生成 framework
@@ -104,7 +115,7 @@ export async function runSwiftDev(filename: string) {
     const { code, msg } = await compilerServer.compile({
       projectPath,
       isCli,
-      type: 1,
+      type: is_uni_modules ? 1 : 2,
       pluginName: id,
       utsPath: resolveCompilerUtsPath(inputDir, is_uni_modules),
       swiftPath: resolveCompilerSwiftPath(outputDir, is_uni_modules),
@@ -133,15 +144,24 @@ function isCliProject(projectPath: string) {
 
 export async function compile(
   filename: string,
-  { inputDir, outputDir, sourceMap }: ToSwiftOptions
+  { inputDir, outputDir, sourceMap, components }: ToSwiftOptions
 ) {
   const { bundle, UtsTarget } = getUtsCompiler()
   // let time = Date.now()
+  const componentsCode = genComponentsCode(filename, components)
+  const input: Parameters<typeof bundle>[1]['input'] = {
+    root: inputDir,
+    filename,
+  }
+  if (componentsCode) {
+    if (!fs.existsSync(filename)) {
+      input.fileContent = componentsCode
+    } else {
+      input.fileAppendContent = componentsCode
+    }
+  }
   const result = await bundle(UtsTarget.SWIFT, {
-    input: {
-      root: inputDir,
-      filename,
-    },
+    input,
     output: {
       isPlugin: true,
       outDir: outputDir,
@@ -159,6 +179,8 @@ export async function compile(
       outputDir,
       platform: 'app-ios',
       extname: '.swift',
+      components,
+      package: '',
     })
   return result
 }
@@ -180,4 +202,25 @@ interface SwiftCompilerServer {
     swiftPath: string
   }): Promise<{ code: number; msg: string }>
   checkEnv?: () => { code: number; msg: string }
+}
+
+export function checkIOSVersionTips(
+  pluginId: string,
+  pluginDir: string,
+  is_uni_modules: boolean
+) {
+  const configJsonFile = join(
+    pluginDir,
+    is_uni_modules ? 'utssdk' : '',
+    'app-ios',
+    'config.json'
+  )
+  if (configJsonFile && fs.existsSync(configJsonFile)) {
+    try {
+      const configJson = parseJson(fs.readFileSync(configJsonFile, 'utf8'))
+      if (configJson.deploymentTarget) {
+        return `uts插件[${pluginId}]需在 iOS ${configJson.deploymentTarget} 版本及以上方可正常使用`
+      }
+    } catch (e) {}
+  }
 }

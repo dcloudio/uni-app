@@ -166,7 +166,7 @@ function parsePagesJson(
       appJson.tabBar = tabBar
     }
   }
-  ;['preloadRule', 'workers', 'plugins'].forEach((name) => {
+  ;['preloadRule', 'workers', 'plugins', 'entryPagePath'].forEach((name) => {
     if (hasOwn(pagesJson, name)) {
       appJson[name] = pagesJson[name]
     }

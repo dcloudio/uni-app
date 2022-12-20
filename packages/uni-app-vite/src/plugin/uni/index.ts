@@ -1,6 +1,9 @@
 import fs from 'fs-extra'
 import path from 'path'
-import { isAppNativeTag, isAppNVueNativeTag } from '@dcloudio/uni-shared'
+import {
+  isAppNativeTag,
+  isAppNVueNativeTag as baseIsAppNVueNativeTag,
+} from '@dcloudio/uni-shared'
 import { compileI18nJsonStr } from '@dcloudio/uni-i18n'
 import {
   UniVitePlugin,
@@ -13,6 +16,11 @@ import {
 
 import { initNVueNodeTransforms } from '../../nvue'
 import { initNVueDirectiveTransforms } from '../../nvue/plugin'
+import { isUTSComponent } from '../../nvue/utils'
+
+function isAppNVueNativeTag(tag: string) {
+  return isUTSComponent(tag) || baseIsAppNVueNativeTag(tag)
+}
 
 export function uniOptions(): UniVitePlugin['uni'] {
   const isNVueCompiler = process.env.UNI_COMPILER === 'nvue'

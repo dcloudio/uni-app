@@ -3,7 +3,7 @@ import { isString, extend, isArray, remove, stringifyStyle, parseStringStyle, is
 import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, debounce, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, parseQuery, NAVBAR_HEIGHT, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, updateElementStyle, sortObject, OFF_THEME_CHANGE, ON_BACK_PRESS, parseUrl, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
-import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
+import { useRoute, createRouter, createWebHistory, createWebHashHistory, isNavigationFailure, RouterView } from "vue-router";
 const isEnableLocale = /* @__PURE__ */ once(
   () => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
 );
@@ -7803,6 +7803,7 @@ const index$t = /* @__PURE__ */ defineBuiltInComponent({
       }
       checkboxChecked.value = !checkboxChecked.value;
       uniCheckGroup && uniCheckGroup.checkboxChange($event);
+      $event.stopPropagation();
     };
     if (!!uniLabel) {
       uniLabel.addHandler(_onClick);
@@ -7903,7 +7904,7 @@ function useKeyboard$1(props2, elRef, trigger) {
   }
   watch(
     () => elRef.value,
-    (el) => initKeyboard(el)
+    (el) => el && initKeyboard(el)
   );
 }
 var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
@@ -9408,6 +9409,8 @@ function useEvent(fieldRef, state2, props2, trigger, triggerInput, beforeInput) 
   }
   function initField() {
     const field = fieldRef.value;
+    if (!field)
+      return;
     const onFocus = function(event) {
       state2.focus = true;
       trigger("focus", event, {
@@ -9562,7 +9565,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
           resetCache = null;
         }
         if (input.validity && !input.validity.valid) {
-          if (!cache.value && event.data === "-" || cache.value[0] === "-" && event.inputType === "deleteContentBackward") {
+          if ((!cache.value || !input.value) && event.data === "-" || cache.value[0] === "-" && event.inputType === "deleteContentBackward") {
             cache.value = "-";
             state3.value = "";
             resetCache = () => {
@@ -9620,6 +9623,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
     }
     return () => {
       let inputNode = props2.disabled && fixDisabledColor ? createVNode("input", {
+        "key": "disabled-input",
         "ref": fieldRef,
         "value": state2.value,
         "tabindex": "-1",
@@ -9630,6 +9634,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-input-input",
         "onFocus": (event) => event.target.blur()
       }, null, 40, ["value", "readonly", "type", "maxlength", "step", "onFocus"]) : createVNode("input", {
+        "key": "input",
         "ref": fieldRef,
         "value": state2.value,
         "disabled": !!props2.disabled,
@@ -12546,6 +12551,7 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
       }
       radioChecked.value = true;
       uniCheckGroup && uniCheckGroup.radioChange($event, field);
+      $event.stopPropagation();
     };
     if (!!uniLabel) {
       uniLabel.addHandler(_onClick);
@@ -14653,6 +14659,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
     }
     return () => {
       let textareaNode = props2.disabled && fixDisabledColor ? createVNode("textarea", {
+        "key": "disabled-textarea",
         "ref": fieldRef,
         "value": state2.value,
         "tabindex": "-1",
@@ -14667,6 +14674,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
         },
         "onFocus": (event) => event.target.blur()
       }, null, 46, ["value", "readonly", "maxlength", "onFocus"]) : createVNode("textarea", {
+        "key": "textarea",
         "ref": fieldRef,
         "value": state2.value,
         "disabled": !!props2.disabled,
@@ -15421,6 +15429,11 @@ function getApp$1() {
 }
 function initApp(vm) {
   appVm = vm;
+  Object.defineProperty(appVm.$.ctx, "$children", {
+    get() {
+      return getCurrentPages().map((page) => page.$vm);
+    }
+  });
   const app = appVm.$.appContext.app;
   if (!app.component(AsyncLoadingComponent.name)) {
     app.component(AsyncLoadingComponent.name, AsyncLoadingComponent);
@@ -15543,11 +15556,7 @@ function setupApp(comp) {
           }
         }
       };
-      if (__UNI_FEATURE_PAGES__) {
-        useRouter().isReady().then(onLaunch);
-      } else {
-        onBeforeMount(onLaunch);
-      }
+      onBeforeMount(onLaunch);
       onMounted(() => {
         window.addEventListener(
           "resize",
@@ -16378,9 +16387,9 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
           "uni-video-control-button-pause": videoState.playing
         },
         "onClick": withModifiers(toggle, ["stop"])
-      }, null, 10, ["onClick"]), [[vShow, props2.showPlayBtn]]), createVNode("div", {
+      }, null, 10, ["onClick"]), [[vShow, props2.showPlayBtn]]), withDirectives(createVNode("div", {
         "class": "uni-video-current-time"
-      }, [formatTime(videoState.currentTime)]), createVNode("div", {
+      }, [formatTime(videoState.currentTime)], 512), [[vShow, props2.showProgress]]), withDirectives(createVNode("div", {
         "ref": progressRef,
         "class": "uni-video-progress-container",
         "onClick": withModifiers(clickProgress, ["stop"])
@@ -16399,9 +16408,9 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-ball"
       }, [createVNode("div", {
         "class": "uni-video-inner"
-      }, null)], 4)])], 8, ["onClick"]), createVNode("div", {
+      }, null)], 4)])], 8, ["onClick"]), [[vShow, props2.showProgress]]), withDirectives(createVNode("div", {
         "class": "uni-video-duration"
-      }, [formatTime(Number(props2.duration) || videoState.duration)])]), withDirectives(createVNode("div", {
+      }, [formatTime(Number(props2.duration) || videoState.duration)], 512), [[vShow, props2.showProgress]])]), withDirectives(createVNode("div", {
         "class": {
           "uni-video-danmu-button": true,
           "uni-video-danmu-button-active": danmuState.enable
@@ -19852,6 +19861,26 @@ const getLocation = /* @__PURE__ */ defineAsyncApi(
               reject2(new Error("network error"));
             }
           });
+        } else if (mapInfo.type === MapType.AMAP) {
+          loadMaps([], () => {
+            window.AMap.plugin("AMap.Geolocation", () => {
+              const geolocation = new window.AMap.Geolocation({
+                enableHighAccuracy: true,
+                timeout: 1e4
+              });
+              geolocation.getCurrentPosition((status, data) => {
+                if (status === "complete") {
+                  resolve2({
+                    latitude: data.position.lat,
+                    longitude: data.position.lng,
+                    accuracy: data.accuracy
+                  });
+                } else {
+                  reject2(new Error(data.message));
+                }
+              });
+            });
+          });
         } else {
           reject2(error);
         }
@@ -19940,6 +19969,16 @@ const LocationView = /* @__PURE__ */ defineSystemComponent({
   }) {
     const state2 = useState$2(props2);
     usePreventScroll();
+    getLocation({
+      type: "gcj02",
+      success: ({
+        latitude,
+        longitude
+      }) => {
+        state2.location.latitude = latitude;
+        state2.location.longitude = longitude;
+      }
+    });
     function onRegionChange(event) {
       const centerLocation = event.detail.centerLocation;
       if (centerLocation) {
@@ -19965,31 +20004,12 @@ const LocationView = /* @__PURE__ */ defineSystemComponent({
     function back() {
       emit2("close");
     }
-    function move({
-      latitude,
-      longitude
-    }) {
-      state2.location.latitude = latitude;
-      state2.location.longitude = longitude;
-      setCenter({
-        latitude,
-        longitude
-      });
-    }
     function setCenter({
       latitude,
       longitude
     }) {
       state2.center.latitude = latitude;
       state2.center.longitude = longitude;
-    }
-    function moveToLocation() {
-      getLocation({
-        type: "gcj02",
-        success: move,
-        fail: () => {
-        }
-      });
     }
     return () => {
       return createVNode("div", {
@@ -20003,7 +20023,7 @@ const LocationView = /* @__PURE__ */ defineSystemComponent({
       }, {
         default: () => [createVNode("div", {
           "class": "map-move",
-          "onClick": moveToLocation
+          "onClick": () => setCenter(state2.location)
         }, [createSvgIconVNode(ICON_PATH_LOCTAION, "#000000", 24)], 8, ["onClick"])]
       }, 8, ["latitude", "longitude", "markers", "onRegionchange"]), createVNode("div", {
         "class": "info"
@@ -20500,8 +20520,8 @@ function navigate({ type, url, events }, __id__) {
         return reject(failure.message);
       }
       if (type === "navigateTo") {
-        const eventChannel = new EventChannel(state2.__id__, events);
-        router.currentRoute.value.meta.eventChannel = eventChannel;
+        const meta = router.currentRoute.value.meta;
+        const eventChannel = meta.eventChannel = meta.eventChannel || new EventChannel(state2.__id__, events);
         return resolve({
           eventChannel
         });
@@ -24343,7 +24363,7 @@ function createPageHeadSearchInputTsx(navigationBar, {
   onBlur,
   onFocus,
   onInput,
-  onKeyup,
+  onConfirm,
   onClick
 }) {
   const {
@@ -24391,8 +24411,8 @@ function createPageHeadSearchInputTsx(navigationBar, {
     "onFocus": onFocus,
     "onBlur": onBlur,
     "onInput": onInput,
-    "onKeyup": onKeyup
-  }, null, 8, ["focus", "style", "placeholder-style", "onFocus", "onBlur", "onInput", "onKeyup"])], 4);
+    "onConfirm": onConfirm
+  }, null, 8, ["focus", "style", "placeholder-style", "onFocus", "onBlur", "onInput", "onConfirm"])], 4);
 }
 function onPageHeadBackButton() {
   if (getCurrentPages().length === 1) {
@@ -24550,12 +24570,10 @@ function usePageHeadSearchInput({
       text: text2.value
     });
   };
-  const onKeyup = (evt) => {
-    if (evt.key === "Enter" || evt.keyCode === 13) {
-      invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, {
-        text: text2.value
-      });
-    }
+  const onConfirm = (evt) => {
+    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, {
+      text: text2.value
+    });
   };
   return {
     focus,
@@ -24564,7 +24582,7 @@ function usePageHeadSearchInput({
     onFocus,
     onBlur,
     onInput,
-    onKeyup
+    onConfirm
   };
 }
 const _sfc_main = {

@@ -3646,7 +3646,11 @@ function generateCodeFrame(source, start = 0, end) {
     }
     return res.join('\n');
 }
-const isWindows = os__default["default"].platform() === 'win32';
+let isWindows = false;
+try {
+    isWindows = os__default["default"].platform() === 'win32';
+}
+catch (error) { }
 function normalizePath(id) {
     return isWindows ? id.replace(/\\/g, '/') : id;
 }

@@ -2438,6 +2438,7 @@ const index$x = /* @__PURE__ */ defineBuiltInComponent({
       }
       checkboxChecked.value = !checkboxChecked.value;
       uniCheckGroup && uniCheckGroup.checkboxChange($event);
+      $event.stopPropagation();
     };
     if (!!uniLabel) {
       uniLabel.addHandler(_onClick);
@@ -2528,7 +2529,7 @@ function useKeyboard$1(props2, elRef, trigger) {
   }
   vue.watch(
     () => elRef.value,
-    (el) => initKeyboard(el)
+    (el) => el && initKeyboard(el)
   );
 }
 var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
@@ -3319,6 +3320,8 @@ function useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput) {
   }
   function initField() {
     const field = fieldRef.value;
+    if (!field)
+      return;
     const onFocus = function(event) {
       state.focus = true;
       trigger("focus", event, {
@@ -3473,7 +3476,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
           resetCache = null;
         }
         if (input.validity && !input.validity.valid) {
-          if (!cache.value && event.data === "-" || cache.value[0] === "-" && event.inputType === "deleteContentBackward") {
+          if ((!cache.value || !input.value) && event.data === "-" || cache.value[0] === "-" && event.inputType === "deleteContentBackward") {
             cache.value = "-";
             state2.value = "";
             resetCache = () => {
@@ -3531,6 +3534,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
     }
     return () => {
       let inputNode = props2.disabled && fixDisabledColor ? vue.createVNode("input", {
+        "key": "disabled-input",
         "ref": fieldRef,
         "value": state.value,
         "tabindex": "-1",
@@ -3541,6 +3545,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-input-input",
         "onFocus": (event) => event.target.blur()
       }, null, 40, ["value", "readonly", "type", "maxlength", "step", "onFocus"]) : vue.createVNode("input", {
+        "key": "input",
         "ref": fieldRef,
         "value": state.value,
         "disabled": !!props2.disabled,
@@ -5360,6 +5365,7 @@ const index$o = /* @__PURE__ */ defineBuiltInComponent({
       }
       radioChecked.value = true;
       uniCheckGroup && uniCheckGroup.radioChange($event, field);
+      $event.stopPropagation();
     };
     if (!!uniLabel) {
       uniLabel.addHandler(_onClick);
@@ -7144,6 +7150,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
     }
     return () => {
       let textareaNode = props2.disabled && fixDisabledColor ? vue.createVNode("textarea", {
+        "key": "disabled-textarea",
         "ref": fieldRef,
         "value": state.value,
         "tabindex": "-1",
@@ -7158,6 +7165,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
         },
         "onFocus": (event) => event.target.blur()
       }, null, 46, ["value", "readonly", "maxlength", "onFocus"]) : vue.createVNode("textarea", {
+        "key": "textarea",
         "ref": fieldRef,
         "value": state.value,
         "disabled": !!props2.disabled,
@@ -7693,6 +7701,11 @@ function getApp$1() {
 }
 function initApp(vm) {
   appVm = vm;
+  Object.defineProperty(appVm.$.ctx, "$children", {
+    get() {
+      return getCurrentPages().map((page) => page.$vm);
+    }
+  });
   const app = appVm.$.appContext.app;
   if (!app.component(AsyncLoadingComponent.name)) {
     app.component(AsyncLoadingComponent.name, AsyncLoadingComponent);
@@ -8458,9 +8471,9 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
           "uni-video-control-button-pause": videoState.playing
         },
         "onClick": vue.withModifiers(toggle, ["stop"])
-      }, null, 10, ["onClick"]), [[vue.vShow, props2.showPlayBtn]]), vue.createVNode("div", {
+      }, null, 10, ["onClick"]), [[vue.vShow, props2.showPlayBtn]]), vue.withDirectives(vue.createVNode("div", {
         "class": "uni-video-current-time"
-      }, [formatTime(videoState.currentTime)]), vue.createVNode("div", {
+      }, [formatTime(videoState.currentTime)], 512), [[vue.vShow, props2.showProgress]]), vue.withDirectives(vue.createVNode("div", {
         "ref": progressRef,
         "class": "uni-video-progress-container",
         "onClick": vue.withModifiers(clickProgress, ["stop"])
@@ -8479,9 +8492,9 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-ball"
       }, [vue.createVNode("div", {
         "class": "uni-video-inner"
-      }, null)], 4)])], 8, ["onClick"]), vue.createVNode("div", {
+      }, null)], 4)])], 8, ["onClick"]), [[vue.vShow, props2.showProgress]]), vue.withDirectives(vue.createVNode("div", {
         "class": "uni-video-duration"
-      }, [formatTime(Number(props2.duration) || videoState.duration)])]), vue.withDirectives(vue.createVNode("div", {
+      }, [formatTime(Number(props2.duration) || videoState.duration)], 512), [[vue.vShow, props2.showProgress]])]), vue.withDirectives(vue.createVNode("div", {
         "class": {
           "uni-video-danmu-button": true,
           "uni-video-danmu-button-active": danmuState.enable
@@ -11921,7 +11934,7 @@ function createPageHeadSearchInputTsx(navigationBar, {
   onBlur,
   onFocus,
   onInput,
-  onKeyup,
+  onConfirm,
   onClick
 }) {
   const {
@@ -11969,8 +11982,8 @@ function createPageHeadSearchInputTsx(navigationBar, {
     "onFocus": onFocus,
     "onBlur": onBlur,
     "onInput": onInput,
-    "onKeyup": onKeyup
-  }, null, 8, ["focus", "style", "placeholder-style", "onFocus", "onBlur", "onInput", "onKeyup"])], 4);
+    "onConfirm": onConfirm
+  }, null, 8, ["focus", "style", "placeholder-style", "onFocus", "onBlur", "onInput", "onConfirm"])], 4);
 }
 function onPageHeadBackButton() {
   if (getCurrentPages().length === 1) {
@@ -12127,12 +12140,10 @@ function usePageHeadSearchInput({
       text: text.value
     });
   };
-  const onKeyup = (evt) => {
-    if (evt.key === "Enter" || evt.keyCode === 13) {
-      invokeHook(id, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, {
-        text: text.value
-      });
-    }
+  const onConfirm = (evt) => {
+    invokeHook(id, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, {
+      text: text.value
+    });
   };
   return {
     focus,
@@ -12141,7 +12152,7 @@ function usePageHeadSearchInput({
     onFocus,
     onBlur,
     onInput,
-    onKeyup
+    onConfirm
   };
 }
 const _sfc_main = {

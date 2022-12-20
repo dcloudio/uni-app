@@ -16,6 +16,14 @@ export function getApp() {
 
 export function initApp(vm: ComponentPublicInstance) {
   appVm = vm
+
+  // 定制 App 的 $children 为 devtools 服务 __VUE_PROD_DEVTOOLS__
+  Object.defineProperty((appVm.$ as any).ctx, '$children', {
+    get() {
+      return getCurrentPages().map((page) => page.$vm)
+    },
+  })
+
   const app = appVm.$.appContext.app
   if (!app.component(AsyncLoadingComponent.name)) {
     app.component(AsyncLoadingComponent.name, AsyncLoadingComponent)

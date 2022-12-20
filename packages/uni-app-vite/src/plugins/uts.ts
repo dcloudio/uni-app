@@ -7,7 +7,6 @@ import {
 } from '@dcloudio/uni-cli-shared'
 
 const UTSProxyRE = /\?uts-proxy$/
-
 function isUTSProxy(id: string) {
   return UTSProxyRE.test(id)
 }
@@ -17,6 +16,9 @@ export function uniUtsV1Plugin(): Plugin {
     apply: 'build',
     enforce: 'pre',
     resolveId(id, importer) {
+      if (isUTSProxy(id)) {
+        return id
+      }
       const module = resolveUtsAppModule(
         id,
         importer ? path.dirname(importer) : process.env.UNI_INPUT_DIR
@@ -35,11 +37,12 @@ export function uniUtsV1Plugin(): Plugin {
       if (opts && opts.ssr) {
         return
       }
+
       if (!isUTSProxy(id)) {
         return
       }
-      const { filename: module } = parseVueRequest(id.replace('\0', ''))
-      const result = await resolveUTSCompiler().compile(module)
+      const { filename: pluginDir } = parseVueRequest(id.replace('\0', ''))
+      const result = await resolveUTSCompiler().compile(pluginDir)
       if (result) {
         result.deps.forEach((dep) => {
           this.addWatchFile(dep)

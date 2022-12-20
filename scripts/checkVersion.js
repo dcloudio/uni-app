@@ -19,13 +19,13 @@ const pkgs = {
     latest: '4.1.0',
   },
   pinia: {
-    latest: '2.0.26',
+    latest: '2.0.28',
   },
   'vue-i18n': {
     next: '9.1.9',
   },
   vite: {
-    latest: '3.2.4',
+    latest: '3.2.5',
   },
   '@vitejs/plugin-vue': {
     latest: '3.2.0',
@@ -37,7 +37,7 @@ const pkgs = {
     latest: '2.3.1',
   },
   '@dcloudio/types': {
-    next: '3.0.17',
+    next: '3.2.2',
   },
   autoprefixer: {
     latest: '10.4.13',
@@ -46,7 +46,7 @@ const pkgs = {
     latest: '3.4.0',
   },
   typescript: {
-    latest: '4.9.3',
+    latest: '4.9.4',
   },
 }
 

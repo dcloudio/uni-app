@@ -850,14 +850,14 @@ function initWrapper(protocols) {
 
 const getLocale = () => {
     // 优先使用 $locale
-    const app = getApp({ allowDefault: true });
+    const app = isFunction(getApp) && getApp({ allowDefault: true });
     if (app && app.$vm) {
         return app.$vm.$locale;
     }
     return normalizeLocale(ks.getSystemInfoSync().language) || LOCALE_EN;
 };
 const setLocale = (locale) => {
-    const app = getApp();
+    const app = isFunction(getApp) && getApp();
     if (!app) {
         return false;
     }

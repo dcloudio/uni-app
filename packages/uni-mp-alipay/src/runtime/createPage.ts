@@ -1,4 +1,10 @@
-import { ComponentOptions } from 'vue'
+import {
+  ComponentOptions,
+  // @ts-ignore
+  devtoolsComponentAdded,
+  // @ts-ignore
+  devtoolsComponentRemoved,
+} from 'vue'
 
 import {
   PAGE_INIT_HOOKS,
@@ -14,6 +20,7 @@ import {
   addLeadingSlash,
   ON_BACK_PRESS,
   ON_LOAD,
+  ON_SHOW,
   ON_READY,
   ON_UNLOAD,
   stringifyQuery,
@@ -45,6 +52,13 @@ export function initCreatePage() {
         this.$vm = createVueComponent('page', this, vueOptions)
         initSpecialMethods(this)
         this.$vm.$callHook(ON_LOAD, query)
+      },
+      onShow() {
+        if (__VUE_PROD_DEVTOOLS__) {
+          devtoolsComponentRemoved(this.$vm.$)
+          devtoolsComponentAdded(this.$vm.$)
+        }
+        this.$vm.$callHook(ON_SHOW)
       },
       onReady() {
         initChildVues(this)

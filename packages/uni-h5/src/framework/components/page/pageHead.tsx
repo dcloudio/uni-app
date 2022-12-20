@@ -207,7 +207,7 @@ function createPageHeadSearchInputTsx(
     onBlur,
     onFocus,
     onInput,
-    onKeyup,
+    onConfirm,
     onClick,
   }: PageHeadSearchInput
 ) {
@@ -258,7 +258,7 @@ function createPageHeadSearchInputTsx(
           onFocus={onFocus}
           onBlur={onBlur}
           onInput={onInput}
-          onKeyup={onKeyup}
+          onConfirm={onConfirm}
         />
       )}
     </div>
@@ -425,12 +425,10 @@ function usePageHeadSearchInput({
       text: text.value,
     })
   }
-  const onKeyup = (evt: KeyboardEvent) => {
-    if (evt.key === 'Enter' || evt.keyCode === 13) {
-      invokeHook(id!, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, {
-        text: text.value,
-      })
-    }
+  const onConfirm = (evt: KeyboardEvent) => {
+    invokeHook(id!, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, {
+      text: text.value,
+    })
   }
   return {
     focus,
@@ -439,6 +437,6 @@ function usePageHeadSearchInput({
     onFocus,
     onBlur,
     onInput,
-    onKeyup,
+    onConfirm,
   }
 }

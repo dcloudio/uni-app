@@ -1,3 +1,6 @@
+import { existsSync, readFileSync } from 'fs-extra'
+import { join } from 'path'
+import { parseJson } from '../shared'
 import {
   checkManifest,
   hasCustomResources,
@@ -27,14 +30,12 @@ const ANDROID_CUSTOM_RES = [
   'app-android/libs/',
   'app-android/res/',
   'app-android/AndroidManifest.xml',
-  'app-android/config.json',
 ]
 
 const IOS_CUSTOM_RES = [
   'app-ios/Frameworks/',
   'app-ios/Resources/',
   'app-ios/Info.plist',
-  'app-ios/config.json',
 ]
 
 export function checkKotlinCompile(
@@ -82,8 +83,21 @@ async function checkWithPlayground(
   const files = await resolvePluginFiles(platform, pluginDir, is_uni_modules)
   let tips = ''
   // 标准基座检查是否包含原生资源/配置
-  if (type === 'standard' && hasCustomResources(files, customRes)) {
-    tips = customResourceTips(id)
+  if (type === 'standard') {
+    if (hasCustomResources(files, customRes)) {
+      tips = customResourceTips(id)
+    } else {
+      // 检查 config.json
+      if (platform === 'app-android') {
+        if (androidHasCustomConfigJson(pluginDir, is_uni_modules)) {
+          tips = customResourceTips(id)
+        }
+      } else if (platform === 'app-ios') {
+        if (iOSHasCustomConfigJson(pluginDir, is_uni_modules)) {
+          tips = customResourceTips(id)
+        }
+      }
+    }
   }
   // 第二步：获取当前插件缓存文件信息
   const manifest = resolveManifestJson(platform, pluginRelativeDir, cacheDir)
@@ -109,4 +123,54 @@ export function initCheckOptionsEnv(): CheckOptions['env'] {
   return {
     compilerVersion: require('../../package.json').version,
   }
+}
+
+function androidHasCustomConfigJson(
+  pluginDir: string,
+  is_uni_modules: boolean
+) {
+  return hasCustomConfigJson(
+    'app-android',
+    'minSdkVersion',
+    pluginDir,
+    is_uni_modules
+  )
+}
+
+function iOSHasCustomConfigJson(pluginDir: string, is_uni_modules: boolean) {
+  return hasCustomConfigJson(
+    'app-ios',
+    'deploymentTarget',
+    pluginDir,
+    is_uni_modules
+  )
+}
+
+function hasCustomConfigJson(
+  platform: APP_PLATFORM,
+  key: 'minSdkVersion' | 'deploymentTarget',
+  pluginDir: string,
+  is_uni_modules: boolean
+) {
+  const configJsonFile = join(
+    pluginDir,
+    is_uni_modules ? 'utssdk' : '',
+    platform,
+    'config.json'
+  )
+  if (configJsonFile && existsSync(configJsonFile)) {
+    try {
+      const configJson = parseJson(readFileSync(configJsonFile, 'utf8'))
+      const len = Object.keys(configJson).length
+      if (len > 1) {
+        return true
+      }
+      if (len === 1) {
+        if (!configJson.hasOwnProperty(key)) {
+          return true
+        }
+      }
+    } catch (e) {}
+  }
+  return false
 }

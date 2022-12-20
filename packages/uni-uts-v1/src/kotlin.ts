@@ -1,10 +1,11 @@
 import os from 'os'
 import fs from 'fs-extra'
-import path from 'path'
+import path, { join } from 'path'
 import AdmZip from 'adm-zip'
 import { sync } from 'fast-glob'
 import { isArray } from '@vue/shared'
 import type { UtsResult } from '@dcloudio/uts'
+import { get } from 'android-versions'
 import {
   isInHBuilderX,
   normalizePath,
@@ -22,6 +23,8 @@ import {
   resolveUTSPlatformFile,
   resolveUTSSourceMapPath,
   ToKotlinOptions,
+  genComponentsCode,
+  parseKotlinPackageWithPluginId,
 } from './utils'
 import { Module } from '../types/types'
 
@@ -55,23 +58,28 @@ function parseKotlinPackage(filename: string) {
     return { package: '' }
   }
   return {
-    package: 'uts.sdk.' + (res.is_uni_modules ? 'modules.' : '') + res.name,
+    package: parseKotlinPackageWithPluginId(res.name, res.is_uni_modules),
   }
 }
 
-export async function runKotlinProd(filename: string) {
+export async function runKotlinProd(
+  filename: string,
+  components: Record<string, string>
+) {
   // 文件有可能是 app-ios 里边的，因为编译到 android 时，为了保证不报错，可能会去读取 ios 下的 uts
   if (filename.includes('app-ios')) {
     return
   }
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
-  await compile(filename, { inputDir, outputDir, sourceMap: true })
+  await compile(filename, { inputDir, outputDir, sourceMap: true, components })
   genUTSPlatformResource(filename, {
     inputDir,
     outputDir,
     platform: 'app-android',
     extname: '.kt',
+    components,
+    package: parseKotlinPackage(filename).package + '.',
   })
 }
 
@@ -81,7 +89,8 @@ export type RunKotlinDevResult = UtsResult & {
 }
 
 export async function runKotlinDev(
-  filename: string
+  filename: string,
+  components: Record<string, string>
 ): Promise<RunKotlinDevResult | undefined> {
   // 文件有可能是 app-ios 里边的，因为编译到 android 时，为了保证不报错，可能会去读取 ios 下的 uts
   if (filename.includes('app-ios')) {
@@ -93,6 +102,7 @@ export async function runKotlinDev(
     inputDir,
     outputDir,
     sourceMap: true,
+    components,
   })) as RunKotlinDevResult
 
   result.type = 'kotlin'
@@ -103,6 +113,8 @@ export async function runKotlinDev(
     outputDir,
     platform: 'app-android',
     extname: '.kt',
+    components,
+    package: '',
   })
   // 开发模式下，需要生成 dex
   if (fs.existsSync(kotlinFile)) {
@@ -160,16 +172,6 @@ export async function runKotlinDev(
     //     path.relative(process.env.UNI_INPUT_DIR, filename)
     //   )} 编译失败`
     // }
-    if (process.env.HX_USE_BASE_TYPE === 'standard') {
-      if (!isSupportStandardPlayground(filename)) {
-        const pkg = resolvePackage(filename)
-        if (pkg) {
-          console.warn(
-            `uts插件[${pkg.id}]依赖的原生配置或三方SDK在运行至标准基座时不能生效，如需正常调用请使用自定义基座`
-          )
-        }
-      }
-    }
   }
   return result
 }
@@ -288,7 +290,7 @@ const DEFAULT_IMPORTS = [
 
 export async function compile(
   filename: string,
-  { inputDir, outputDir, sourceMap }: ToKotlinOptions
+  { inputDir, outputDir, sourceMap, components }: ToKotlinOptions
 ) {
   const { bundle, UtsTarget } = getUtsCompiler()
   // let time = Date.now()
@@ -297,11 +299,21 @@ export async function compile(
   if (rClass) {
     imports.push(rClass)
   }
+  const componentsCode = genComponentsCode(filename, components)
+  const input: Parameters<typeof bundle>[1]['input'] = {
+    root: inputDir,
+    filename,
+  }
+  if (componentsCode) {
+    if (!fs.existsSync(filename)) {
+      input.fileContent = componentsCode
+    } else {
+      input.fileContent =
+        fs.readFileSync(filename, 'utf8') + `\n` + componentsCode
+    }
+  }
   const result = await bundle(UtsTarget.KOTLIN, {
-    input: {
-      root: inputDir,
-      filename,
-    },
+    input,
     output: {
       isPlugin: true,
       outDir: outputDir,
@@ -319,6 +331,8 @@ export async function compile(
       outputDir,
       platform: 'app-android',
       extname: '.kt',
+      components,
+      package: '',
     })
   return result
 }
@@ -393,29 +407,26 @@ function resolveClassPath(jars: string[]) {
   return jars.join(os.platform() === 'win32' ? ';' : ':')
 }
 
-const checkFiles = ['AndroidManifest.xml']
-const checkDirs = ['libs', 'assets', 'res']
-/**
- * 当前插件是否支持标准基座运行
- * @param filename
- * @returns
- */
-function isSupportStandardPlayground(filename: string) {
-  const baseDir = resolveAndroidDir(filename)
-  if (checkFiles.find((file) => fs.existsSync(path.resolve(baseDir, file)))) {
-    return false
+export function checkAndroidVersionTips(
+  pluginId: string,
+  pluginDir: string,
+  is_uni_modules: boolean
+) {
+  const configJsonFile = join(
+    pluginDir,
+    is_uni_modules ? 'utssdk' : '',
+    'app-android',
+    'config.json'
+  )
+  if (configJsonFile && fs.existsSync(configJsonFile)) {
+    try {
+      const configJson = parseJson(fs.readFileSync(configJsonFile, 'utf8'))
+      if (configJson.minSdkVersion) {
+        const androidVersion = get(configJson.minSdkVersion)
+        if (androidVersion) {
+          return `uts插件[${pluginId}]需在 Android ${androidVersion.semver} 版本及以上方可正常使用`
+        }
+      }
+    } catch (e) {}
   }
-  if (
-    checkDirs.find((dir) => {
-      const absDir = path.resolve(baseDir, dir)
-      return fs.existsSync(absDir) && fs.readdirSync(absDir).length
-    })
-  ) {
-    return false
-  }
-  const configJsonFile = resolveConfigJsonFile(filename)
-  if (configJsonFile && hasDeps(configJsonFile)) {
-    return false
-  }
-  return true
 }

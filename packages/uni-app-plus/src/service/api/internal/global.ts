@@ -2,6 +2,7 @@ import {
   newSetStatusBarStyle,
   restoreOldSetStatusBarStyle,
 } from '../../statusBar'
+import { extend } from '@vue/shared'
 
 export function restoreGlobal(
   newVue: unknown,
@@ -62,4 +63,8 @@ export function requireGlobal() {
     object[key] = (global as any)[key]
   }
   return object
+}
+
+export function syncDataToGlobal(data: AnyObject) {
+  extend(global, data)
 }

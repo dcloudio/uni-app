@@ -6,10 +6,12 @@ const semver = require('semver')
 const currentVersion = require('../package.json').version
 const { prompt } = require('enquirer')
 const execa = require('execa')
+const { targets } = require('./utils')
 
 const isDryRun = args.dry
 const skipTests = args.skipTests
 const skipBuild = args.skipBuild
+const onlyDist = args.onlyDist
 const packages = fs
   .readdirSync(path.resolve(__dirname, '../packages'))
   .filter(
@@ -67,7 +69,12 @@ async function main() {
   // build all packages with types
   step('\nBuilding all packages...')
   if (!skipBuild && !isDryRun) {
-    await run('pnpm', ['run', 'build'])
+    let args = ['run', 'build']
+    if (onlyDist) {
+      const gitignore = fs.readFileSync(path.join(__dirname, '../.gitignore'), 'utf-8')
+      args = args.concat(targets.filter(target => gitignore.includes(`packages/${target}/dist`)))
+    }
+    await run('pnpm', args)
     // test generated dts files
     step('\nVerifying type declarations...')
     await run('pnpm', ['run', 'test-dts'])

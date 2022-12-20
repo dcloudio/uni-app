@@ -8023,8 +8023,8 @@ function parseName(name) {
       options[m[0].toLowerCase()] = true;
     }
   }
-  name = name.slice(2);
-  return [formatEventName(hyphenate(name)), options];
+  var event = name[2] === ':' ? name.slice(3) : name.slice(2);
+  return [formatEventName(hyphenate(event)), options];
 }
 function createInvoker(initialValue, instance) {
   var invoker = e => {

@@ -33,9 +33,9 @@ export function uniCssPlugin(): Plugin {
       if (!isCombineBuiltInCss(resolvedConfig) || !buildInCssSet.size) {
         return
       }
-      // 生成框架css
+      // 生成框架css(需要排序，避免生成不一样的内容)
       const content = await minifyCSS(
-        generateBuiltInCssCode([...buildInCssSet]),
+        generateBuiltInCssCode([...buildInCssSet].sort()),
         resolvedConfig
       )
       const contentHash = getAssetHash(Buffer.from(content, 'utf-8'))

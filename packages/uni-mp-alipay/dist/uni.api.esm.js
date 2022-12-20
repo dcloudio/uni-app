@@ -850,14 +850,14 @@ function initWrapper(protocols) {
 
 const getLocale = () => {
     // 优先使用 $locale
-    const app = getApp({ allowDefault: true });
+    const app = isFunction(getApp) && getApp({ allowDefault: true });
     if (app && app.$vm) {
         return app.$vm.$locale;
     }
     return normalizeLocale(my.getSystemInfoSync().language) || LOCALE_EN;
 };
 const setLocale = (locale) => {
-    const app = getApp();
+    const app = isFunction(getApp) && getApp();
     if (!app) {
         return false;
     }
@@ -1652,6 +1652,15 @@ const showShareMenu = {
 const hideHomeButton = {
     name: 'hideBackHome',
 };
+// 钉钉小程序处理
+const saveImageToPhotosAlbum = my.canIUse('saveImageToPhotosAlbum')
+    ? {}
+    : {
+        name: 'saveImage',
+        args: {
+            filePath: 'url',
+        },
+    };
 const saveVideoToPhotosAlbum = {
     args: {
         filePath: 'src',
@@ -1719,6 +1728,7 @@ var protocols = /*#__PURE__*/Object.freeze({
   getScreenBrightness: getScreenBrightness,
   showShareMenu: showShareMenu,
   hideHomeButton: hideHomeButton,
+  saveImageToPhotosAlbum: saveImageToPhotosAlbum,
   saveVideoToPhotosAlbum: saveVideoToPhotosAlbum,
   chooseAddress: chooseAddress,
   redirectTo: redirectTo,

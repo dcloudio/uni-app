@@ -1,6 +1,8 @@
 import fs from 'fs'
 import path from 'path'
 import debug from 'debug'
+import glob from 'fast-glob'
+
 import { extend } from '@vue/shared'
 import { createFilter } from '@rollup/pluginutils'
 
@@ -45,6 +47,7 @@ export function initEasycoms(
   { dirs, platform }: { dirs: string[]; platform: UniApp.PLATFORM }
 ) {
   const componentsDir = path.resolve(inputDir, 'components')
+  const utssdkDir = path.resolve(inputDir, 'utssdk')
   const uniModulesDir = path.resolve(inputDir, 'uni_modules')
   const initEasycomOptions = (pagesJson?: UniApp.PagesJson) => {
     // 初始化时，从once中读取缓存，refresh时，实时读取
@@ -57,7 +60,21 @@ export function initEasycoms(
               ...dirs,
               componentsDir,
               ...initUniModulesEasycomDirs(uniModulesDir),
-            ],
+            ]
+              .concat(
+                platform === 'app'
+                  ? initUniModulesUTSSDKDirs(uniModulesDir)
+                  : []
+              )
+              .concat(
+                platform === 'app' && fs.existsSync(utssdkDir)
+                  ? glob.sync('*', {
+                      cwd: utssdkDir,
+                      absolute: true,
+                      onlyDirectories: true,
+                    })
+                  : []
+              ),
       rootDir: inputDir,
       autoscan: !!(easycom && easycom.autoscan),
       custom: (easycom && easycom.custom) || {},
@@ -73,6 +90,8 @@ export function initEasycoms(
       [
         'components/*/*.(vue|jsx|tsx)',
         'uni_modules/*/components/*/*.(vue|jsx|tsx)',
+        'utssdk/*/**/*.vue',
+        'uni_modules/*/utssdk/*/*.vue',
       ],
       [],
       {
@@ -101,6 +120,25 @@ function initUniModulesEasycomDirs(uniModulesDir: string) {
         uniModulesDir,
         uniModuleDir,
         'components'
+      )
+      if (fs.existsSync(uniModuleComponentsDir)) {
+        return uniModuleComponentsDir
+      }
+    })
+    .filter<string>(Boolean as any)
+}
+
+function initUniModulesUTSSDKDirs(uniModulesDir: string) {
+  if (!fs.existsSync(uniModulesDir)) {
+    return []
+  }
+  return fs
+    .readdirSync(uniModulesDir)
+    .map((uniModuleDir) => {
+      const uniModuleComponentsDir = path.resolve(
+        uniModulesDir,
+        uniModuleDir,
+        'utssdk'
       )
       if (fs.existsSync(uniModuleComponentsDir)) {
         return uniModuleComponentsDir
@@ -175,23 +213,58 @@ function initAutoScanEasycom(
   if (!fs.existsSync(dir)) {
     return easycoms
   }
-  fs.readdirSync(dir).forEach((name) => {
-    const folder = path.resolve(dir, name)
-    if (!isDir(folder)) {
-      return
-    }
-    const importDir = normalizePath(folder)
-    const files = fs.readdirSync(folder)
-    // 读取文件夹文件列表，比对文件名（fs.existsSync在大小写不敏感的系统会匹配不准确）
-    for (let i = 0; i < extensions.length; i++) {
-      const ext = extensions[i]
-      if (files.includes(name + ext)) {
-        easycoms[`^${name}$`] = `${importDir}/${name}${ext}`
-        break
+  const is_uni_modules_utssdk = dir.endsWith('utssdk')
+  const is_ussdk =
+    !is_uni_modules_utssdk && path.dirname(dir).endsWith('utssdk')
+  if (is_uni_modules_utssdk || is_ussdk) {
+    glob
+      .sync('**/*.vue', {
+        cwd: dir,
+        absolute: true,
+      })
+      .forEach((file) => {
+        let name = parseVueComponentName(file)
+        if (!name) {
+          if (file.endsWith('index.vue')) {
+            name = path.basename(
+              is_uni_modules_utssdk ? path.dirname(dir) : dir
+            )
+          }
+        }
+        if (name) {
+          const importDir = normalizePath(
+            is_uni_modules_utssdk ? path.dirname(dir) : dir
+          )
+          easycoms[`^${name}$`] = `\0${importDir}?uts-proxy`
+        }
+      })
+  } else {
+    fs.readdirSync(dir).forEach((name) => {
+      const folder = path.resolve(dir, name)
+      if (!isDir(folder)) {
+        return
       }
-    }
-  })
+      const importDir = normalizePath(folder)
+      const files = fs.readdirSync(folder)
+      // 读取文件夹文件列表，比对文件名（fs.existsSync在大小写不敏感的系统会匹配不准确）
+      for (let i = 0; i < extensions.length; i++) {
+        const ext = extensions[i]
+        if (files.includes(name + ext)) {
+          easycoms[`^${name}$`] = `${importDir}/${name}${ext}`
+          break
+        }
+      }
+    })
+  }
   return easycoms
+}
+const nameRE = /name\s*:\s*['|"](.*)['|"]/
+function parseVueComponentName(file: string) {
+  const content = fs.readFileSync(file, 'utf8')
+  const matches = content.match(nameRE)
+  if (matches) {
+    return matches[1]
+  }
 }
 
 function initAutoScanEasycoms(
@@ -205,12 +278,12 @@ function initAutoScanEasycoms(
       const curEasycoms = initAutoScanEasycom(dir, rootDir, extensions)
       Object.keys(curEasycoms).forEach((name) => {
         // Use the first component when name conflict
-        const compath = easycoms[name]
-        if (!compath) {
+        const componentPath = easycoms[name]
+        if (!componentPath) {
           easycoms[name] = curEasycoms[name]
         } else {
-          ;(conflict[compath] || (conflict[compath] = [])).push(
-            normalizeCompath(curEasycoms[name], rootDir)
+          ;(conflict[componentPath] || (conflict[componentPath] = [])).push(
+            normalizeComponentPath(curEasycoms[name], rootDir)
           )
         }
       })
@@ -218,18 +291,20 @@ function initAutoScanEasycoms(
     },
     Object.create(null)
   )
-  const conflictComs = Object.keys(conflict)
-  if (conflictComs.length) {
+  const conflictComponents = Object.keys(conflict)
+  if (conflictComponents.length) {
     console.warn(M['easycom.conflict'])
-    conflictComs.forEach((com) => {
-      console.warn([normalizeCompath(com, rootDir), conflict[com]].join(','))
+    conflictComponents.forEach((com) => {
+      console.warn(
+        [normalizeComponentPath(com, rootDir), conflict[com]].join(',')
+      )
     })
   }
   return res
 }
 
-function normalizeCompath(compath: string, rootDir: string) {
-  return normalizePath(path.relative(rootDir, compath))
+function normalizeComponentPath(componentPath: string, rootDir: string) {
+  return normalizePath(path.relative(rootDir, componentPath))
 }
 
 export function addImportDeclaration(
@@ -248,7 +323,7 @@ function createImportDeclaration(
   imported?: string
 ) {
   if (imported) {
-    return `import {${imported} as ${local}} from '${source}';`
+    return `import { ${imported} as ${local} } from '${source}';`
   }
   return `import ${local} from '${source}';`
 }

@@ -30,6 +30,7 @@ import { transformModel } from './transforms/vModel'
 import { transformShow } from './transforms/vShow'
 import { transformAttrs } from './transforms/transformAttrs'
 import { nvuePagesCache } from '../plugins/pagesJson'
+import { transformUTSComponent } from './transforms/transformUTSComponent'
 
 const uTags = {
   text: 'u-text',
@@ -49,6 +50,7 @@ export function initNVueNodeTransforms() {
     transformAttrs,
     transformText,
     transformVideo,
+    transformUTSComponent,
     // transformRenderWhole,
     // transformAppendAsTree,
   ]

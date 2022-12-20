@@ -1622,9 +1622,16 @@ async function sendSelectedComponentData(appRecord, instanceId, ctx) {
     const parentInstances = await appRecord.backend.api.walkComponentParents(instance);
     const payload = {
       instanceId,
-      data: (0, shared_utils_1.stringify)(await appRecord.backend.api.inspectComponent(instance, ctx.currentAppRecord.options.app)),
+      data: await appRecord.backend.api.inspectComponent(instance, ctx.currentAppRecord.options.app),
       parentIds: parentInstances.map(i => i.__VUE_DEVTOOLS_UID__)
     };
+
+    if (true) {
+      // 小程序及App端暂不支持 script setup 语法糖，增加提示
+      payload.data.isSetup = !!instance.type.setup && !instance.type.render;
+    }
+
+    payload.data = (0, shared_utils_1.stringify)(payload.data);
     ctx.bridge.send(shared_utils_1.BridgeEvents.TO_FRONT_COMPONENT_SELECTED_DATA, payload);
     markSelectedInstance(instanceId, ctx);
   }
@@ -2106,7 +2113,7 @@ async function connect() {
     await (0, app_1.removeApp)(app, ctx);
   }); // Components
 
-  const sendComponentUpdate = (0, throttle_1.default)(async (appRecord, id) => {
+  const _sendComponentUpdate = async (appRecord, id) => {
     try {
       // Update component inspector
       if (id && (0, subscriptions_1.isSubscribed)(shared_utils_1.BridgeSubscriptions.SELECTED_COMPONENT_DATA, sub => sub.payload.instanceId === id)) {
@@ -2122,7 +2129,9 @@ async function connect() {
         console.error(e);
       }
     }
-  }, 100);
+  };
+
+  const sendComponentUpdate =  false ? 0 : _sendComponentUpdate;
   global_hook_1.hook.on(shared_utils_1.HookEvents.COMPONENT_UPDATED, async (app, uid, parentUid, component) => {
     try {
       if (!app || typeof uid !== 'number' && !uid || !component) return;
@@ -2168,6 +2177,10 @@ async function connect() {
         }
       }
 
+      if (false) {}
+
+      if (false) {}
+
       if (parentUid != null) {
         const parentInstances = await appRecord.backend.api.walkComponentParents(component);
 
@@ -2212,6 +2225,8 @@ async function connect() {
     try {
       if (!app || typeof uid !== 'number' && !uid || !component) return;
       const appRecord = await (0, app_1.getAppRecord)(app, ctx);
+
+      if (false) {}
 
       if (parentUid != null) {
         const parentInstances = await appRecord.backend.api.walkComponentParents(component);
@@ -4682,6 +4697,7 @@ class ComponentWalker {
     this.maxDepth = maxDepth;
     this.recursively = recursively;
     this.componentFilter = new filter_1.ComponentFilter(filter);
+    this.uniAppPageNames = ['Page', 'KeepAlive', 'AsyncComponentWrapper', 'BaseTransition', 'Transition'];
   }
 
   getComponentTree(instance) {
@@ -4764,12 +4780,8 @@ class ComponentWalker {
 
 
   getInternalInstanceChildrenByInstance(instance, suspense = null) {
-    if (true) {
-      if (instance.ctx.$children) {
-        return instance.ctx.$children.map(proxy => proxy.$);
-      }
-
-      return [];
+    if (instance.ctx.$children) {
+      return instance.ctx.$children.map(proxy => proxy.$);
     }
 
     return this.getInternalInstanceChildren(instance.subTree, suspense);
@@ -4784,9 +4796,7 @@ class ComponentWalker {
 
     if (subTree) {
       if (subTree.component) {
-        !suspense ? list.push(subTree.component) : list.push({ ...subTree.component,
-          suspense
-        });
+        this.getInstanceChildrenBySubTreeComponent(list, subTree, suspense);
       } else if (subTree.suspense) {
         const suspenseKey = !subTree.suspense.isInFallback ? 'suspense default' : 'suspense fallback';
         list.push(...this.getInternalInstanceChildren(subTree.suspense.activeBranch, { ...subTree.suspense,
@@ -4795,9 +4805,7 @@ class ComponentWalker {
       } else if (Array.isArray(subTree.children)) {
         subTree.children.forEach(childSubTree => {
           if (childSubTree.component) {
-            !suspense ? list.push(childSubTree.component) : list.push({ ...childSubTree.component,
-              suspense
-            });
+            this.getInstanceChildrenBySubTreeComponent(list, childSubTree, suspense);
           } else {
             list.push(...this.getInternalInstanceChildren(childSubTree, suspense));
           }
@@ -4810,6 +4818,22 @@ class ComponentWalker {
 
       return !(0, util_1.isBeingDestroyed)(child) && !((_a = child.type.devtools) === null || _a === void 0 ? void 0 : _a.hide);
     });
+  }
+  /**
+   * getInternalInstanceChildren by subTree component for uni-app defineSystemComponent
+   */
+
+
+  getInstanceChildrenBySubTreeComponent(list, subTree, suspense) {
+    var _a;
+
+    if (((_a = subTree.type.devtools) === null || _a === void 0 ? void 0 : _a.hide) || this.uniAppPageNames.includes(subTree.type.name)) {
+      list.push(...this.getInternalInstanceChildren(subTree.component.subTree));
+    } else {
+      !suspense ? list.push(subTree.component) : list.push({ ...subTree.component,
+        suspense
+      });
+    }
   }
 
   captureId(instance) {
@@ -4838,7 +4862,7 @@ class ComponentWalker {
 
 
   async capture(instance, list, depth) {
-    var _a;
+    var _a, _b;
 
     if (!instance) return null;
     const id = this.captureId(instance);
@@ -4861,7 +4885,16 @@ class ComponentWalker {
         backgroundColor: 0xeeeeee
       }],
       autoOpen: this.recursively
-    }; // capture children
+    };
+
+    if ( true && instance.ctx.mpType === 'page') {
+      treeNode.route = instance.ctx.$scope.is || ((_a = instance.ctx.$scope.$page) === null || _a === void 0 ? void 0 : _a.fullPath);
+    }
+
+    if (false) {}
+
+    if (false) {} // capture children
+
 
     if (depth < this.maxDepth || instance.type.__isKeepAlive || parents.some(parent => parent.type.__isKeepAlive)) {
       treeNode.children = await Promise.all(children.map((child, index, list) => this.capture(child, list, depth + 1)).filter(Boolean));
@@ -4905,7 +4938,7 @@ class ComponentWalker {
       treeNode.domOrder = [-1];
     }
 
-    if ((_a = instance.suspense) === null || _a === void 0 ? void 0 : _a.suspenseKey) {
+    if ((_b = instance.suspense) === null || _b === void 0 ? void 0 : _b.suspenseKey) {
       treeNode.tags.push({
         label: instance.suspense.suspenseKey,
         backgroundColor: 0xe492e4,
@@ -7310,7 +7343,7 @@ function openInEditor(file) {
     env_1.target.chrome.devtools.inspectedWindow.eval(src);
   } else {
     // eslint-disable-next-line no-eval
-    eval(src);
+    [eval][0](src);
   }
 }
 
