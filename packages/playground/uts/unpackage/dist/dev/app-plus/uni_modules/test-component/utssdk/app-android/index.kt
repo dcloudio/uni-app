@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.view.View;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieDrawable;
+import com.taobao.weex.annotation.JSMethod;
 import com.taobao.weex.ui.component.WXComponentProp;
 import io.dcloud.feature.uniapp.UniSDKInstance;
 import io.dcloud.feature.uniapp.ui.action.AbsComponentData;
@@ -50,12 +51,12 @@ open class AnimationViewComponent : UTSComponent<LottieAnimationView> {
     private var loop: Boolean = false;
     private var hidden: Boolean = false;
     private var action: String = "stop";
-    @JSMethod(uiThread = true)
+    @JSMethod(uiThread = false)
     open fun setRepeatMode(repeat: String) {
         if ("RESTART" == repeat) this.`$el`.repeatMode = LottieDrawable.RESTART;
         else if ("REVERSE" == repeat) this.`$el`.repeatMode = LottieDrawable.RESTART;
     }
-    @JSMethod(uiThread = true)
+    @JSMethod(uiThread = false)
     open fun privateMethod() {}
     override fun `$init`() {
         this.`$watch`<String>("path", fun(newPath, oldPath){
