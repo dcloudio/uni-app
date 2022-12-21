@@ -50,10 +50,12 @@ open class AnimationViewComponent : UTSComponent<LottieAnimationView> {
     private var loop: Boolean = false;
     private var hidden: Boolean = false;
     private var action: String = "stop";
+    @JSMethod(uiThread = true)
     open fun setRepeatMode(repeat: String) {
         if ("RESTART" == repeat) this.`$el`.repeatMode = LottieDrawable.RESTART;
         else if ("REVERSE" == repeat) this.`$el`.repeatMode = LottieDrawable.RESTART;
     }
+    @JSMethod(uiThread = true)
     open fun privateMethod() {}
     override fun `$init`() {
         this.`$watch`<String>("path", fun(newPath, oldPath){
