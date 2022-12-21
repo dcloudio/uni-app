@@ -331,7 +331,7 @@ module.exports = function (pagesJson, manifestJson, project = {}) {
 
       Object.keys(platformJson).forEach(key => {
         if (
-          !projectKeys.includes(key) && ['usingComponents', 'optimization'].indexOf(key) === -1
+          !projectKeys.includes(key) && !NON_APP_JSON_KEYS.includes(key)
         ) {
           // usingComponents 是编译模式开关，需要过滤，不能拷贝到 app
           app[key] = platformJson[key]
