@@ -4,12 +4,7 @@ import glob from 'fast-glob'
 import colors from 'picocolors'
 import postcssrc from 'postcss-load-config'
 import { dataToEsm } from '@rollup/pluginutils'
-import {
-  ExistingRawSourceMap,
-  PluginContext,
-  RollupError,
-  SourceMapInput,
-} from 'rollup'
+import { ExistingRawSourceMap, RollupError, SourceMapInput } from 'rollup'
 import { RawSourceMap } from '@ampproject/remapping'
 import type * as PostCSS from 'postcss'
 import {
@@ -37,7 +32,6 @@ import type Stylus from 'stylus'
 import type Less from 'less'
 import type { Alias } from 'types/alias'
 import { preCss, preNVueCss } from '../../../../preprocess'
-import { PAGES_JSON_JS } from '../../../../constants'
 import { emptyCssComments } from '../cleanString'
 import { isArray, isFunction, isString } from '@vue/shared'
 // const debug = createDebugger('vite:css')
@@ -189,39 +183,6 @@ export function cssPlugin(config: ResolvedConfig): Plugin {
   }
 }
 
-function findCssModuleIds(
-  this: PluginContext,
-  moduleId: string,
-  cssModuleIds?: Set<string>,
-  seen?: Set<string>
-) {
-  if (!cssModuleIds) {
-    cssModuleIds = new Set<string>()
-  }
-  if (!seen) {
-    seen = new Set<string>()
-  }
-  if (seen.has(moduleId)) {
-    return cssModuleIds
-  }
-  seen.add(moduleId)
-  const moduleInfo = this.getModuleInfo(moduleId)
-  if (moduleInfo) {
-    moduleInfo.importedIds.forEach((id) => {
-      if (id.includes(PAGES_JSON_JS)) {
-        // 查询main.js时，需要忽略pages.json.js，否则会把所有页面样式加进来
-        return
-      }
-      if (cssLangRE.test(id) && !commonjsProxyRE.test(id)) {
-        cssModuleIds!.add(id)
-      } else {
-        findCssModuleIds.call(this, id, cssModuleIds, seen)
-      }
-    })
-  }
-  return cssModuleIds
-}
-
 /**
  * Plugin applied after user plugins
  */
@@ -240,11 +201,11 @@ export function cssPostPlugin(
 ): Plugin {
   // styles initialization in buildStart causes a styling loss in watch
   const styles: Map<string, string> = new Map<string, string>()
-  let cssChunks: Map<string, Set<string>>
+  let cssChunks: Map<string, string[]>
   return {
     name: 'vite:css-post',
     buildStart() {
-      cssChunks = new Map<string, Set<string>>()
+      cssChunks = new Map<string, string[]>()
     },
     async transform(css, id) {
       if (!cssLangRE.test(id) || commonjsProxyRE.test(id)) {
@@ -264,15 +225,18 @@ export function cssPostPlugin(
         moduleSideEffects: 'no-treeshake',
       }
     },
-
-    async generateBundle() {
-      const moduleIds = Array.from(this.getModuleIds())
-      moduleIds.forEach((id) => {
+    async renderChunk(_code, chunk, _opts) {
+      const id = chunk.facadeModuleId
+      if (id) {
         const filename = chunkCssFilename(id)
         if (filename) {
-          cssChunks.set(filename, findCssModuleIds.call(this, id))
+          const ids = Object.keys(chunk.modules).filter((id) => styles.has(id))
+          cssChunks.set(filename, ids)
         }
-      })
+      }
+      return null
+    },
+    async generateBundle() {
       if (!cssChunks.size) {
         return
       }
