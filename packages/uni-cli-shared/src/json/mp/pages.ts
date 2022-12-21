@@ -36,6 +36,7 @@ const NON_APP_JSON_KEYS = [
   'scopedSlotsCompiler',
   'usingComponents',
   'uniStatistics',
+  'mergeVirtualHostAttributes',
 ]
 
 export function mergeMiniProgramAppJson(
