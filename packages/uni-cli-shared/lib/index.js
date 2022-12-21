@@ -32,7 +32,9 @@ const {
   normalizePath,
   getComponentName,
   convertStaticStyle,
-  getTemplatePath
+  getTemplatePath,
+  createSource,
+  deleteAsset
 } = require('./util')
 
 const {
@@ -108,6 +110,8 @@ module.exports = {
   getComponentName,
   convertStaticStyle,
   getTemplatePath,
+  createSource,
+  deleteAsset,
   jsPreprocessOptions,
   cssPreprocessOptions,
   htmlPreprocessOptions,
