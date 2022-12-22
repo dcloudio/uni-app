@@ -4,6 +4,7 @@ const hash = require('hash-sum')
 const crypto = require('crypto')
 const escapeStringRegexp = require('escape-string-regexp')
 const escapeGlob = require('glob-escape')
+const webpack = require('webpack')
 
 const isWin = /^win/.test(process.platform)
 
@@ -159,6 +160,25 @@ function isNormalPage (pagePath) {
   return !pagePath.startsWith('ext://')
 }
 
+function createSource (content) {
+  return webpack.version[0] > 4 ? new webpack.sources.RawSource(content) : {
+    size () {
+      return Buffer.byteLength(content, 'utf8')
+    },
+    source () {
+      return content
+    }
+  }
+}
+
+function deleteAsset (compilation, name) {
+  if ('deleteAsset' in compilation) {
+    compilation.deleteAsset(name)
+  } else {
+    delete compilation.assets[name]
+  }
+}
+
 module.exports = {
   isNormalPage,
   isInHBuilderX,
@@ -198,5 +218,7 @@ module.exports = {
   }),
   getTemplatePath () {
     return path.join(__dirname, '../template')
-  }
+  },
+  createSource,
+  deleteAsset
 }

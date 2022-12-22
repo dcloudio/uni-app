@@ -9,7 +9,9 @@ const {
   getPlatformCssnano,
   getPlatformStat,
   getPlatformPush,
-  getPlatformUniCloud
+  getPlatformUniCloud,
+  createSource,
+  deleteAsset
 } = require('@dcloudio/uni-cli-shared')
 
 const WebpackUniAppPlugin = require('../../packages/webpack-uni-app-loader/plugin/index')
@@ -77,62 +79,61 @@ function getProvides () {
   return provides
 }
 
-function processWxss (name, assets) {
+function processWxss (compilation, name, assets) {
   const dirname = path.dirname(name)
   const mainWxssCode = `@import "${normalizePath(path.relative(dirname, 'common/main.wxss'))}";`
   const code = `${mainWxssCode}` + assets[name].source().toString()
-  assets[name] = {
-    size () {
-      return Buffer.byteLength(code, 'utf8')
-    },
-    source () {
-      return code
-    }
-  }
+  compilation.updateAsset(name, createSource(code))
 }
 
 const parseRequirePath = path => path.startsWith('common') ? `./${path}` : path
 
-function procssJs (name, assets, hasVendor) {
+function procssJs (compilation, name, assets, hasVendor) {
   const dirname = path.dirname(name)
   const runtimeJsCode = `require('${normalizePath(parseRequirePath(path.relative(dirname, 'common/runtime.js')))}');`
   const vendorJsCode = hasVendor
     ? `require('${normalizePath(parseRequirePath(path.relative(dirname, 'common/vendor.js')))}');` : ''
   const mainJsCode = `require('${normalizePath(parseRequirePath(path.relative(dirname, 'common/main.js')))}');`
   const code = `${runtimeJsCode}${vendorJsCode}${mainJsCode}` + assets[name].source().toString()
-  assets[name] = {
-    size () {
-      return Buffer.byteLength(code, 'utf8')
-    },
-    source () {
-      return code
+  compilation.updateAsset(name, createSource(code))
+}
+
+function processAssets (compilation) {
+  const assets = compilation.assets
+  const hasMainWxss = assets['common/main.wxss']
+  const hasVendor = assets['common/vendor.js']
+  Object.keys(assets).forEach(name => {
+    if (name.startsWith('common')) {
+      return
     }
-  }
+    const extname = path.extname(name)
+    if (extname === '.wxss' && hasMainWxss && process.UNI_ENTRY[name.replace(extname, '')]) {
+      processWxss(compilation, name, assets)
+    } else if (extname === '.js') {
+      procssJs(compilation, name, assets, hasVendor)
+    }
+  })
+  // delete assets['common/main.js']
+  deleteAsset(compilation, 'app.js')
+  deleteAsset(compilation, 'app.json')
+  deleteAsset(compilation, 'app.wxss')
+  deleteAsset(compilation, 'project.config.json')
 }
 
 class PreprocessAssetsPlugin {
   apply (compiler) {
-    compiler.hooks.emit.tap('PreprocessAssetsPlugin', compilation => {
-      const assets = compilation.assets
-      const hasMainWxss = assets['common/main.wxss']
-      const hasVendor = assets['common/vendor.js']
-      Object.keys(assets).forEach(name => {
-        if (name.startsWith('common')) {
-          return
-        }
-        const extname = path.extname(name)
-        if (extname === '.wxss' && hasMainWxss && process.UNI_ENTRY[name.replace(extname, '')]) {
-          processWxss(name, assets)
-        } else if (extname === '.js') {
-          procssJs(name, assets, hasVendor)
-        }
+    if (webpack.version[0] > 4) {
+      compiler.hooks.compilation.tap('PreprocessAssetsPlugin', compilation => {
+        compilation.hooks.processAssets.tap({
+          name: 'PreprocessAssetsPlugin',
+          stage: webpack.Compilation.PROCESS_ASSETS_STAGE_ADDITIONAL
+        }, (_) => {
+          processAssets(compilation)
+        })
       })
-      // delete assets['common/main.js']
-      delete assets['app.js']
-      delete assets['app.json']
-      delete assets['app.wxss']
-      delete assets['project.config.json']
-    })
+    } else {
+      compiler.hooks.emit.tap('PreprocessAssetsPlugin', (compilation) => processAssets(compilation))
+    }
   }
 }
 
@@ -143,7 +144,7 @@ function initSubpackageConfig (webpackConfig, vueOptions) {
   }
   vueOptions.outputDir = process.env.UNI_OUTPUT_DIR
   webpackConfig.output.path(process.env.UNI_OUTPUT_DIR)
-  webpackConfig.output.jsonpFunction('webpackJsonp_' + (process.env.UNI_SUBPACKGE || process.env.UNI_MP_PLUGIN))
+  webpackConfig.output.set(webpack.version[0] > 4 ? 'chunkLoadingGlobal' : 'jsonpFunction', 'webpackJsonp_' + (process.env.UNI_SUBPACKGE || process.env.UNI_MP_PLUGIN))
 }
 
 function addToUniEntry (fileName) {
