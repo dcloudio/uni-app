@@ -6,6 +6,12 @@ import DCloudUTSFoundation;
 @objc(UTSSDKModulesTestComponentAnimationViewComponent)
 @objcMembers
 class AnimationViewComponent : UTSComponent<UIView> {
+    private var path: String;
+    private var autoplay: Boolean;
+    private var loop: Boolean;
+    private var hidden: Boolean;
+    private var action: String;
+    private var animationView = LottieAnimationView!;
     public override func created() {}
     public override func measure(_ size: UTSSize) -> UTSSize {
         return UTSSize(100, 100);
@@ -29,12 +35,6 @@ class AnimationViewComponent : UTSComponent<UIView> {
     public override func NVBeforeUnload() {}
     public override func NVUnloaded() {}
     public override func unmounted() {}
-    private var path: String;
-    private var autoplay: Boolean;
-    private var loop: Boolean;
-    private var hidden: Boolean;
-    private var action: String;
-    private var animationView = LottieAnimationView!;
     public func setRepeatMode(_ repeatMode: String) {
         if (repeatMode == "RESTART") {
             if (self.loop) {
@@ -81,6 +81,12 @@ class AnimationViewComponent : UTSComponent<UIView> {
             }
             });
         }
+    }
+    public static func wx_export_method_0() -> String {
+        return "setRepeatMode:";
+    }
+    public static func wx_export_method_1() -> String {
+        return "playAnimation";
     }
     public override func __$$init() {
         self.__$$watch<String>("path", {
