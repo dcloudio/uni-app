@@ -6,7 +6,6 @@ import DCloudUTSFoundation;
 @objc(UTSSDKModulesTestComponentAnimationViewComponent)
 @objcMembers
 class AnimationViewComponent : UTSComponent<UIView> {
-    public init(_ instance: UniSDKInstance?, _ parent: AbsVContainer<unknown>?, _ componentData: AbsComponentData<unknown>?) : super.init(instance, parent, componentData) ;
     public override func created() {}
     public override func measure(_ size: UTSSize) -> UTSSize {
         return UTSSize(100, 100);
@@ -83,26 +82,26 @@ class AnimationViewComponent : UTSComponent<UIView> {
             });
         }
     }
-    public override func $init() {
-        self.$watch<String>("path", {
+    public override func __$$init() {
+        self.__$$watch<String>("path", {
         (newValue, oldValue) in
         self.path = newValue;
         if (self.autoplay) {
             self.playAnimation();
         }
         });
-        self.$watch<Bool>("loop", {
+        self.__$$watch<Bool>("loop", {
         (newValue, oldValue) in
         self.loop = newValue;
         if (self.loop) {
             self.animationView.loopMode = LottieLoopMode.loop;
         }
         });
-        self.$watch<Bool>("autoplay", {
+        self.__$$watch<Bool>("autoplay", {
         (newValue, oldValue) in
         self.autoplay = newValue;
         });
-        self.$watch<String>("action", {
+        self.__$$watch<String>("action", {
         (newValue, oldValue) in
         var action = newValue;
         if (action == "play" || action == "pause" || action == "stop") {
@@ -122,35 +121,10 @@ class AnimationViewComponent : UTSComponent<UIView> {
             }
         }
         });
-        self.$watch<Bool>("hidden", {
+        self.__$$watch<Bool>("hidden", {
         (newValue, oldValue) in
         self.hidden = newValue;
         self.animationView.isHidden = self.hidden;
         });
-    }
-    @WXComponentProp(name: "path")
-    public func componentSetPath(_ value: String) {
-        self.path = value;
-        self.$componentWatchDispatch("path", value);
-    }
-    @WXComponentProp(name: "autoplay")
-    public func componentSetAutoplay(_ value: Boolean) {
-        self.autoplay = value;
-        self.$componentWatchDispatch("autoplay", value);
-    }
-    @WXComponentProp(name: "loop")
-    public func componentSetLoop(_ value: Boolean) {
-        self.loop = value;
-        self.$componentWatchDispatch("loop", value);
-    }
-    @WXComponentProp(name: "hidden")
-    public func componentSetHidden(_ value: Boolean) {
-        self.hidden = value;
-        self.$componentWatchDispatch("hidden", value);
-    }
-    @WXComponentProp(name: "action")
-    public func componentSetAction(_ value: String) {
-        self.action = value;
-        self.$componentWatchDispatch("action", value);
     }
 }
