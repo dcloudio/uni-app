@@ -10,7 +10,7 @@ const {
   pagesJsonJsFileName
 } = require('@dcloudio/uni-cli-shared/lib/pages')
 
-const { createSource } = require('../shared')
+const { createSource, getModuleId } = require('../shared')
 
 const generateApp = require('./generate-app')
 const generateJson = require('./generate-json')
@@ -65,7 +65,13 @@ function addMPPluginRequire (compilation) {
       const orignalSource = compilation.getAsset(name).source.source()
       const globalEnv = process.env.UNI_PLATFORM === 'mp-alipay' ? 'my' : 'wx'
       const filePath = normalizePath(path.resolve(process.env.UNI_INPUT_DIR, name))
-      const uniModuleId = modules.find(module => module.resource && normalizePath(module.resource) === filePath).id
+      let uniModule = modules.find(module => module.resource && normalizePath(module.resource) === filePath)
+      if (!uniModule && webpack.version[0] > 4) {
+        uniModule = modules.find(module =>
+          module.rootModule && module.rootModule.resource && normalizePath(module.rootModule.resource) === filePath
+        )
+      }
+      const uniModuleId = getModuleId(compilation, uniModule)
 
       const source = orignalSource + `\nmodule.exports = ${globalEnv}.__webpack_require_UNI_MP_PLUGIN__('${uniModuleId}');\n`
 
