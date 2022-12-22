@@ -72,7 +72,15 @@ export async function runKotlinProd(
   }
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
-  await compile(filename, { inputDir, outputDir, sourceMap: true, components })
+  let res = await compile(filename, {
+    inputDir,
+    outputDir,
+    sourceMap: true,
+    components,
+  })
+  if (!res) {
+    return
+  }
   genUTSPlatformResource(filename, {
     inputDir,
     outputDir,
@@ -104,6 +112,9 @@ export async function runKotlinDev(
     sourceMap: true,
     components,
   })) as RunKotlinDevResult
+  if (!result) {
+    return
+  }
 
   result.type = 'kotlin'
   result.changed = []
@@ -127,7 +138,7 @@ export async function runKotlinDev(
     const {
       getDefaultJar,
       getKotlincHome,
-      compile,
+      compile: compileDex,
       checkDependencies,
       checkRResources,
     } = compilerServer
@@ -154,7 +165,7 @@ export async function runKotlinDev(
       sourceRoot: inputDir,
       sourceMapPath: resolveSourceMapFile(outputDir, kotlinFile),
     }
-    const res = await compile(options, inputDir)
+    const res = await compileDex(options, inputDir)
     // console.log('dex compile time: ' + (Date.now() - time) + 'ms')
     if (res) {
       try {
@@ -304,12 +315,18 @@ export async function compile(
     root: inputDir,
     filename,
   }
+  const isUTSFileExists = fs.existsSync(filename)
   if (componentsCode) {
-    if (!fs.existsSync(filename)) {
+    if (!isUTSFileExists) {
       input.fileContent = componentsCode
     } else {
       input.fileContent =
         fs.readFileSync(filename, 'utf8') + `\n` + componentsCode
+    }
+  } else {
+    // uts文件不存在，且也无组件
+    if (!isUTSFileExists) {
+      return
     }
   }
   const result = await bundle(UtsTarget.KOTLIN, {

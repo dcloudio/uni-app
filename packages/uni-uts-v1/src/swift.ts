@@ -39,7 +39,15 @@ export async function runSwiftProd(
   }
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
-  await compile(filename, { inputDir, outputDir, sourceMap: true, components })
+  const res = await compile(filename, {
+    inputDir,
+    outputDir,
+    sourceMap: true,
+    components,
+  })
+  if (!res) {
+    return
+  }
   genUTSPlatformResource(filename, {
     inputDir,
     outputDir,
@@ -92,6 +100,10 @@ export async function runSwiftDev(
     sourceMap: true,
     components,
   })) as RunSwiftDevResult
+
+  if (!result) {
+    return
+  }
 
   result.type = 'swift'
 
@@ -153,11 +165,18 @@ export async function compile(
     root: inputDir,
     filename,
   }
+  const isUTSFileExists = fs.existsSync(filename)
   if (componentsCode) {
-    if (!fs.existsSync(filename)) {
+    if (!isUTSFileExists) {
       input.fileContent = componentsCode
     } else {
-      input.fileAppendContent = componentsCode
+      input.fileContent =
+        fs.readFileSync(filename, 'utf8') + `\n` + componentsCode
+    }
+  } else {
+    // uts文件不存在，且也无组件
+    if (!isUTSFileExists) {
+      return
     }
   }
   const result = await bundle(UtsTarget.SWIFT, {
