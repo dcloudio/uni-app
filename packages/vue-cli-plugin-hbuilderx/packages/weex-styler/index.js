@@ -5,26 +5,6 @@ var util = require('./lib/util')
 var validateItem = require('./lib/validator').validate
 var shorthandParser = require('./lib/shorthand-parser')
 
-// padding & margin shorthand parsing
-function convertLengthShorthand (rule, prop) {
-  for (var i = 0; i < rule.declarations.length; i++) {
-    var declaration = rule.declarations[i]
-    if (declaration.property === prop) {
-      var values = declaration.value.split(/\s+/)
-      // values[0] = values[0] || 0
-      values[1] = values[1] || values[0]
-      values[2] = values[2] || values[0]
-      values[3] = values[3] || values[1]
-      rule.declarations.splice(i, 1)
-      rule.declarations.splice(i, 0, { type: 'declaration', property: prop + '-left', value: values[3], position: declaration.position })
-      rule.declarations.splice(i, 0, { type: 'declaration', property: prop + '-bottom', value: values[2], position: declaration.position })
-      rule.declarations.splice(i, 0, { type: 'declaration', property: prop + '-right', value: values[1], position: declaration.position })
-      rule.declarations.splice(i, 0, { type: 'declaration', property: prop + '-top', value: values[0], position: declaration.position })
-      // break
-    }
-  }
-}
-
 /**
  * mergeStyle
  * @param {*} object 
@@ -85,9 +65,6 @@ function parse (code, done) {
       if (type === 'rule') {
         if (rule.declarations && rule.declarations.length) {
           rule.declarations = shorthandParser(rule.declarations)
-          // padding & margin shorthand parsing
-          convertLengthShorthand(rule, 'padding')
-          convertLengthShorthand(rule, 'margin')
 
           rule.declarations.forEach(function (declaration) {
             var subType = declaration.type
