@@ -47,30 +47,36 @@ function transition (declaration) {
   return result
 }
 
-function margin (declaration) {
-  var { value, important } = clearImportant(declaration.value)
-  var position = declaration.position
-  var splitResult = value.split(/\s+/)
-  var result = []
-  switch (splitResult.length) {
-    case 1:
-      splitResult.push(splitResult[0], splitResult[0], splitResult[0])
-      break
-    case 2:
-      splitResult.push(splitResult[0], splitResult[1])
-      break
-    case 3:
-      splitResult.push(splitResult[1])
-      break
+function createParser (property) {
+  return function (declaration) {
+    var { value, important } = clearImportant(declaration.value)
+    var position = declaration.position
+    var splitResult = value.split(/\s+/)
+    var result = []
+    switch (splitResult.length) {
+      case 1:
+        splitResult.push(splitResult[0], splitResult[0], splitResult[0])
+        break
+      case 2:
+        splitResult.push(splitResult[0], splitResult[1])
+        break
+      case 3:
+        splitResult.push(splitResult[1])
+        break
+    }
+    result.push(
+      generateDeclaration(property + '-top', splitResult[0], important, position),
+      generateDeclaration(property + '-right', splitResult[1], important, position),
+      generateDeclaration(property + '-bottom', splitResult[2], important, position),
+      generateDeclaration(property + '-left', splitResult[3], important, position)
+    )
+    return result
   }
-  result.push(
-    generateDeclaration('margin-top', splitResult[0], important, position),
-    generateDeclaration('margin-right', splitResult[1], important, position),
-    generateDeclaration('margin-bottom', splitResult[2], important, position),
-    generateDeclaration('margin-left', splitResult[3], important, position)
-  )
-  return result
 }
+
+var margin = createParser('margin')
+
+var padding = createParser('padding')
 
 function border (declaration) {
   var { value, important } = clearImportant(declaration.value)
@@ -199,6 +205,7 @@ function background (declaration) {
 var parserCollection = {
   transition,
   margin,
+  padding,
   border,
   'border-top': border,
   'border-right': border,
