@@ -1,17 +1,16 @@
-import DCloudUTSPlugin;
+import DCloudUTSFoundation;
 import Lottie;
 import Foundation;
 import UIKit;
-import DCloudUTSFoundation;
 @objc(UTSSDKModulesTestComponentAnimationViewComponent)
 @objcMembers
 class AnimationViewComponent : UTSComponent<UIView> {
-    private var path: String;
-    private var autoplay: Bool;
-    private var loop: Bool;
-    private var hidden: Bool;
-    private var action: String;
-    private var animationView = LottieAnimationView!;
+    private var path: String?;
+    private var autoplay: Bool = false;
+    private var loop: Bool = false;
+    private var hidden: Bool = false;
+    private var action: String?;
+    private var animationView: LottieAnimationView? = nil;
     public override func created() {}
     public override func measure(_ size: UTSSize) -> UTSSize {
         return UTSSize(100, 100);

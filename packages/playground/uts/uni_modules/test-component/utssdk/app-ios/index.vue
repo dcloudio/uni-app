@@ -62,7 +62,7 @@ export default {
     },
     data() {
         return {
-            animationView: LottieAnimationView!
+            animationView: null as LottieAnimationView | null
         }
     },
     watch: {

@@ -1,4 +1,4 @@
-import DCloudUTSPlugin;
+import DCloudUTSFoundation;
 import UIKit;
 import CoreLocation;
 @objc(UTSSDKModulesTestUniPluginGetBatteryInfoOptions)

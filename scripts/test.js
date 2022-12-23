@@ -138,7 +138,7 @@ async function testSwift() {
     output: {
       outDir,
       package: 'UTSSDKModulesTestUniPlugin',
-      imports: ['DCloudUTSPlugin'],
+      imports: ['DCloudUTSFoundation'],
       sourceMap,
       extname: 'swift',
       logFilename: true,
@@ -191,7 +191,7 @@ async function testSwiftComponent() {
     output: {
       outDir,
       package: 'UTSSDKModulesTestComponent',
-      imports: ['DCloudUTSPlugin'],
+      imports: ['DCloudUTSFoundation'],
       sourceMap,
       extname: 'swift',
       logFilename: true,
