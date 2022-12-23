@@ -145,6 +145,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       return style
     })
 
+    const slots_default = slots.default && slots.default()
+
     return () => {
       const { refresherEnabled, refresherBackground, refresherDefaultStyle } =
         props
@@ -209,7 +211,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
                       : null}
                   </div>
                 ) : null}
-                {slots.default && slots.default()}
+                {slots_default}
               </div>
             </div>
           </div>
@@ -553,7 +555,7 @@ function useScrollViewLoader(
 
       if (_main.scrollTop === 0 && event.touches.length === 1) {
         // 如果容器滑动到达顶端，则进入下拉状态
-        state.refreshState = 'pulling'
+        _setRefreshState('pulling')
       }
 
       if (props.refresherEnabled && state.refreshState === 'pulling') {
