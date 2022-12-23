@@ -7,9 +7,9 @@ import DCloudUTSFoundation;
 @objcMembers
 class AnimationViewComponent : UTSComponent<UIView> {
     private var path: String;
-    private var autoplay: Boolean;
-    private var loop: Boolean;
-    private var hidden: Boolean;
+    private var autoplay: Bool;
+    private var loop: Bool;
+    private var hidden: Bool;
     private var action: String;
     private var animationView = LottieAnimationView!;
     public override func created() {}
