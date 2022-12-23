@@ -36,7 +36,7 @@ function b64DecodeUnicode (str) {
 }
 
 function getCurrentUserInfo () {
-  const token = (wx).getStorageSync('uni_id_token') || '';
+  const token = ( wx).getStorageSync('uni_id_token') || '';
   const tokenArr = token.split('.');
   if (!token || tokenArr.length !== 3) {
     return {
@@ -477,10 +477,10 @@ initI18nMessages();
 
 const i18n = initVueI18n(
   locale,
-  {}
+   {}
 );
 const t = i18n.t;
-(i18n.mixin = {
+const i18nMixin = (i18n.mixin = {
   beforeCreate () {
     const unwatch = i18n.i18n.watchLocale(() => {
       this.$forceUpdate();
@@ -495,8 +495,8 @@ const t = i18n.t;
     }
   }
 });
-i18n.setLocale;
-i18n.getLocale;
+const setLocale = i18n.setLocale;
+const getLocale = i18n.getLocale;
 
 function initAppLocale (Vue, appVm, locale) {
   const state = Vue.observable({
@@ -568,7 +568,7 @@ function normalizeLocale (locale, messages) {
 //   }
 // }
 
-function getLocale () {
+function getLocale$1 () {
   // 优先使用 $locale
   if (isFn(getApp)) {
     const app = getApp({
@@ -581,7 +581,7 @@ function getLocale () {
   return normalizeLocale(wx.getSystemInfoSync().language) || LOCALE_EN
 }
 
-function setLocale (locale) {
+function setLocale$1 (locale) {
   const app = isFn(getApp) ? getApp() : false;
   if (!app) {
     return false
@@ -605,7 +605,7 @@ function onLocaleChange (fn) {
 }
 
 if (typeof global !== 'undefined') {
-  global.getLocale = getLocale;
+  global.getLocale = getLocale$1;
 }
 
 const interceptors = {
@@ -615,8 +615,8 @@ const interceptors = {
 var baseApi = /*#__PURE__*/Object.freeze({
   __proto__: null,
   upx2px: upx2px,
-  getLocale: getLocale,
-  setLocale: setLocale,
+  getLocale: getLocale$1,
+  setLocale: setLocale$1,
   onLocaleChange: onLocaleChange,
   addInterceptor: addInterceptor,
   removeInterceptor: removeInterceptor,
@@ -822,13 +822,13 @@ function getDeviceBrand (brand) {
 }
 
 function getAppLanguage (defaultLanguage) {
-  return getLocale
-    ? getLocale()
+  return getLocale$1
+    ? getLocale$1()
     : defaultLanguage
 }
 
 function getHostName (result) {
-  const _platform = 'WeChat' ;
+  const _platform =  'WeChat' ;
   let _hostName = result.hostName || _platform; // mp-jd
   {
     if (result.environment) {
@@ -992,7 +992,7 @@ function processReturnValue (methodName, res, returnValue, keepReturnValue = fal
   return processArgs(methodName, res, returnValue, {}, keepReturnValue)
 }
 
-function wrapper$1 (methodName, method) {
+function wrapper (methodName, method) {
   if (hasOwn(protocols, methodName)) {
     const protocol = protocols[methodName];
     if (!protocol) { // 暂不支持的 api
@@ -1439,7 +1439,7 @@ function initTriggerEvent (mpInstance) {
   }
 }
 
-function initHook$1 (name, options, isComponent) {
+function initHook (name, options, isComponent) {
   const oldHook = options[name];
   options[name] = function (...args) {
     markMPComponent(this);
@@ -1452,13 +1452,13 @@ function initHook$1 (name, options, isComponent) {
 if (!MPPage.__$wrappered) {
   MPPage.__$wrappered = true;
   Page = function (options = {}) {
-    initHook$1('onLoad', options);
+    initHook('onLoad', options);
     return MPPage(options)
   };
   Page.after = MPPage.after;
 
   Component = function (options = {}) {
-    initHook$1('created', options);
+    initHook('created', options);
     return MPComponent(options)
   };
 }
@@ -1526,7 +1526,7 @@ function initHooks (mpOptions, hooks, vueOptions) {
 }
 
 function initUnknownHooks (mpOptions, vueOptions, excludes = []) {
-  findHooks(vueOptions).forEach((hook) => initHook(mpOptions, hook, excludes));
+  findHooks(vueOptions).forEach((hook) => initHook$1(mpOptions, hook, excludes));
 }
 
 function findHooks (vueOptions, hooks = []) {
@@ -1540,7 +1540,7 @@ function findHooks (vueOptions, hooks = []) {
   return hooks
 }
 
-function initHook (mpOptions, hook, excludes) {
+function initHook$1 (mpOptions, hook, excludes) {
   if (excludes.indexOf(hook) === -1 && !hasOwn(mpOptions, hook)) {
     mpOptions[hook] = function (args) {
       return this.$vm && this.$vm.__call_hook(hook, args)
@@ -1693,7 +1693,7 @@ function initProperties (props, isBehavior = false, file = '', options) {
       value: ''
     };
     {
-      if (options.virtualHost) {
+      if ( options.virtualHost) {
         properties.virtualHostStyle = {
           type: null,
           value: ''
@@ -1758,7 +1758,7 @@ function initProperties (props, isBehavior = false, file = '', options) {
   return properties
 }
 
-function wrapper (event) {
+function wrapper$1 (event) {
   // TODO 又得兼容 mpvue 的 mp 对象
   try {
     event.mp = JSON.parse(JSON.stringify(event));
@@ -1953,7 +1953,7 @@ function getContextVm (vm) {
 }
 
 function handleEvent (event) {
-  event = wrapper(event);
+  event = wrapper$1(event);
 
   // [['tap',[['handle',[1,2,a]],['handle1',[1,2,a]]]]]
   const dataset = (event.currentTarget || event.target).dataset;
@@ -2053,7 +2053,7 @@ function getEventChannel (id) {
   return eventChannelStack.shift()
 }
 
-const hooks$1 = [
+const hooks = [
   'onShow',
   'onHide',
   'onError',
@@ -2216,7 +2216,7 @@ function parseBaseApp (vm, {
 
   initAppLocale(Vue, vm, normalizeLocale(wx.getSystemInfoSync().language) || LOCALE_EN);
 
-  initHooks(appOptions, hooks$1);
+  initHooks(appOptions, hooks);
   initUnknownHooks(appOptions, vm.$options);
 
   return appOptions
@@ -2386,18 +2386,18 @@ function parseComponent (vueComponentOptions, needVueOptions) {
   }, needVueOptions)
 }
 
-const hooks = [
+const hooks$1 = [
   'onShow',
   'onHide',
   'onUnload'
 ];
 
-hooks.push(...PAGE_EVENT_HOOKS);
+hooks$1.push(...PAGE_EVENT_HOOKS);
 
 function parseBasePage (vuePageOptions) {
   const [pageOptions, vueOptions] = parseComponent(vuePageOptions, true);
 
-  initHooks(pageOptions.methods, hooks, vueOptions);
+  initHooks(pageOptions.methods, hooks$1, vueOptions);
 
   pageOptions.methods.onLoad = function (query) {
     this.options = query;
@@ -2527,7 +2527,7 @@ if (typeof Proxy !== 'undefined' && "mp-weixin" !== 'app-plus') {
       if (typeof wx[name] !== 'function' && !hasOwn(protocols, name)) {
         return
       }
-      return promisify(name, wrapper$1(name, wx[name]))
+      return promisify(name, wrapper(name, wx[name]))
     },
     set (target, name, value) {
       target[name] = value;
@@ -2558,7 +2558,7 @@ if (typeof Proxy !== 'undefined' && "mp-weixin" !== 'app-plus') {
 
   Object.keys(wx).forEach(name => {
     if (hasOwn(wx, name) || hasOwn(protocols, name)) {
-      uni[name] = promisify(name, wrapper$1(name, wx[name]));
+      uni[name] = promisify(name, wrapper(name, wx[name]));
     }
   });
 }
@@ -2571,4 +2571,5 @@ wx.createPlugin = createPlugin;
 
 var uni$1 = uni;
 
-export { createApp, createComponent, createPage, createPlugin, createSubpackageApp, uni$1 as default };
+export default uni$1;
+export { createApp, createComponent, createPage, createPlugin, createSubpackageApp };

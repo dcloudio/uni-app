@@ -560,17 +560,19 @@ function normalizeLocale (locale, messages) {
 
 function getLocale$1 () {
   // 优先使用 $locale
-  const app = getApp({
-    allowDefault: true
-  });
-  if (app && app.$vm) {
-    return app.$vm.$locale
+  if (isFn(getApp)) {
+    const app = getApp({
+      allowDefault: true
+    });
+    if (app && app.$vm) {
+      return app.$vm.$locale
+    }
   }
   return normalizeLocale(my.getSystemInfoSync().language) || LOCALE_EN
 }
 
 function setLocale$1 (locale) {
-  const app = getApp();
+  const app = isFn(getApp) ? getApp() : false;
   if (!app) {
     return false
   }
