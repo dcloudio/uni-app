@@ -89,26 +89,26 @@ class AnimationViewComponent : UTSComponent<UIView> {
         return "playAnimation";
     }
     public override func __$$init() {
-        self.__$$watch<String>("path", {
-        (newValue, oldValue) in
+        self.__$$watch("path", {
+        (newValue: String, oldValue: String) in
         self.path = newValue;
         if (self.autoplay) {
             self.playAnimation();
         }
         });
-        self.__$$watch<Bool>("loop", {
-        (newValue, oldValue) in
+        self.__$$watch("loop", {
+        (newValue: Bool, oldValue: Bool) in
         self.loop = newValue;
         if (self.loop) {
             self.animationView.loopMode = LottieLoopMode.loop;
         }
         });
-        self.__$$watch<Bool>("autoplay", {
-        (newValue, oldValue) in
+        self.__$$watch("autoplay", {
+        (newValue: Bool, oldValue: Bool) in
         self.autoplay = newValue;
         });
-        self.__$$watch<String>("action", {
-        (newValue, oldValue) in
+        self.__$$watch("action", {
+        (newValue: String, oldValue: String) in
         var action = newValue;
         if (action == "play" || action == "pause" || action == "stop") {
             self.action = action;
@@ -127,8 +127,8 @@ class AnimationViewComponent : UTSComponent<UIView> {
             }
         }
         });
-        self.__$$watch<Bool>("hidden", {
-        (newValue, oldValue) in
+        self.__$$watch("hidden", {
+        (newValue: Bool, oldValue: Bool) in
         self.hidden = newValue;
         self.animationView.isHidden = self.hidden;
         });
