@@ -609,12 +609,12 @@ importers:
 
   packages/uni-mp-jd:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3060920221117001
-      '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3060920221117001
-      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3060920221117001
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3060920221117001
-      '@dcloudio/uni-mp-weixin': 3.0.0-alpha-3060920221117001
-      '@dcloudio/uni-shared': 3.0.0-alpha-3060920221117001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061420221219001
+      '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3061420221219001
+      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3061420221219001
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3061420221219001
+      '@dcloudio/uni-mp-weixin': 3.0.0-alpha-3061420221219001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3061420221219001
       '@vue/compiler-core': 3.2.45
       '@vue/shared': 3.2.41
     dependencies:
@@ -3139,7 +3139,7 @@ packages:
       '@babel/core': 7.19.6
       '@babel/plugin-transform-typescript': 7.20.0_@babel+core@7.19.6
       '@vue/babel-plugin-jsx': 1.1.1_@babel+core@7.19.6
-      vite: 3.2.5_terser@5.15.1
+      vite: 3.2.5_vt5mbdnyaskrzqlb5l6kjsnhi4
       vue: 3.2.45
     transitivePeerDependencies:
       - supports-color
@@ -3151,7 +3151,7 @@ packages:
       vite: ^3.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 3.2.5
+      vite: 3.2.5_vt5mbdnyaskrzqlb5l6kjsnhi4
       vue: 3.2.45
 
   /@vue/babel-helper-vue-transform-on/1.0.2:
@@ -5359,7 +5359,7 @@ packages:
     resolution: {integrity: sha512-9ByhssR2fPVsNZj478qUUbKfmL0+t5BDVyjShtyZZLiK7ZDAArFFfopyOTj0M05wE2tJPisA4iTnnXl2YoPvOA==}
 
   /graceful-fs/4.2.9:
-    resolution: {integrity: sha512-NtNxqUcXgpW2iMrfqSfR73Glt39K+BLwWsPs94yR63v45T0Wbej7eRmL5cWfwEgqXnmjQp3zaJTshdRW/qC2ZQ==, registry: https://registry.yarnpkg.com/}
+    resolution: {integrity: sha512-NtNxqUcXgpW2iMrfqSfR73Glt39K+BLwWsPs94yR63v45T0Wbej7eRmL5cWfwEgqXnmjQp3zaJTshdRW/qC2ZQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.9.tgz}
     dev: true
 
   /grapheme-splitter/1.0.4:
@@ -8183,6 +8183,7 @@ packages:
       rollup: 2.79.1
     optionalDependencies:
       fsevents: 2.3.2
+    dev: true
 
   /vite/3.2.5_terser@5.15.1:
     resolution: {integrity: sha512-4mVEpXpSOgrssFZAOmGIr85wPHKvaDAcXqxVxVRZhljkJOMZi1ibLibzjLHzJvcok8BMguLc7g1W6W/GqZbLdQ==}
@@ -8250,7 +8251,6 @@ packages:
       terser: 5.15.1
     optionalDependencies:
       fsevents: 2.3.2
-    dev: true
 
   /vlq/0.2.3:
     resolution: {integrity: sha512-DRibZL6DsNhIgYQ+wNdWDL2SL3bKPlVrRiBqV5yuMm++op8W4kGFtaQfCs4KEJn0wBZcHVHJ3eoywX8983k1ow==}
