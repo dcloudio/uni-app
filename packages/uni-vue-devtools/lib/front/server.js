@@ -9,6 +9,7 @@ const path = require('path')
 const fs = require('fs')
 const colors = require('picocolors')
 const open = require('open')
+const { isInHBuilderX } = require('@dcloudio/uni-cli-shared')
 
 exports.initDevtoolsServer = async () => {
   const network = getNetwork()
@@ -17,6 +18,19 @@ exports.initDevtoolsServer = async () => {
   initSocketServer(socketHost, socketPort)
 
   const devtoolsPort = await detectPort(9098)
+
+  if(isInHBuilderX()){
+		const vueDevtoolsDir = path.resolve(
+			process.env.UNI_OUTPUT_DIR,
+			'..',
+			'.vue-devtools'
+		)
+		if (!fs.existsSync(vueDevtoolsDir)) {
+			fs.mkdirSync(vueDevtoolsDir, { recursive: true })
+		}
+		fs.writeFileSync(`${vueDevtoolsDir}/port.js`,`${devtoolsPort}`)
+	}
+
   initFrontServer(socketHost, socketPort, network, devtoolsPort)
 
   return { socketHost, socketPort }
@@ -75,7 +89,9 @@ function initFrontServer(socketHost, socketPort, network, devtoolsPort) {
 
     console.log(`\n${colors.cyan('uni-vue-devtools')} ${colors.green('server running at:')}\n ${colors.green('➜')} ${colorUrl(networkUrl)}\n`)
 
-    open(`http:localhost:${devtoolsPort}`)
+    if(!isInHBuilderX()){
+      open(`http:localhost:${devtoolsPort}`)
+    }
   })
 
 }

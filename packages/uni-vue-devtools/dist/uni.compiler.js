@@ -53,13 +53,14 @@ var index = () => {
     return [
         uniVueDevtoolsPlugin(),
         uniCliShared.defineUniMainJsPlugin((opts) => {
-            let devtoolsCode = `;import '@dcloudio/uni-vue-devtools';`;
+            const devtoolsPath = uniCliShared.normalizePath(path__default["default"].resolve(__dirname, '..'));
+            let devtoolsCode = `;import '${devtoolsPath}';`;
             if (uniCliShared.isMiniProgramPlatform()) {
                 devtoolsCode += `require('./vue-devtools/hook.js');require('./vue-devtools/backend.js');`;
             }
             else {
                 const dir = process.env.UNI_PLATFORM === 'app' ? 'app' : 'web';
-                devtoolsCode += `import '@dcloudio/uni-vue-devtools/lib/${dir}/hook.js';import '@dcloudio/uni-vue-devtools/lib/${dir}/backend.js';`;
+                devtoolsCode += `import '${devtoolsPath}/lib/${dir}/hook.js';import '${devtoolsPath}/lib/${dir}/backend.js';`;
             }
             return {
                 name: 'uni:vue-devtools-main-js',
