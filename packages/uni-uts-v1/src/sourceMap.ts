@@ -53,12 +53,16 @@ function resolvePluginDir(
   // 目标文件是编译后 kt 或 swift
   if (filename.startsWith(outputDir)) {
     const relativePath = relative(outputDir, filename)
+    const hasSrc = normalizePath(relativePath).includes('/src/')
     // uni_modules/test-uts
     if (relativePath.startsWith('uni_modules')) {
-      return join(inputDir, join(relativePath, '../../..'))
+      return join(
+        inputDir,
+        join(relativePath, hasSrc ? '../../../..' : '../../..')
+      )
     }
     // utssdk/test-uts
-    return join(inputDir, join(relativePath, '../..'))
+    return join(inputDir, join(relativePath, hasSrc ? '../../..' : '../..'))
   } else if (filename.startsWith(inputDir)) {
     let parent = dirname(filename)
     const utssdkDir = normalizePath(join(inputDir, 'utssdk'))
