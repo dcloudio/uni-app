@@ -124,6 +124,8 @@ export default {
       this.setPageMeta()
     }
     this.backgroundTextStyle && this.setBackgroundTextStyle()
+  },
+  mounted () {
     this.scrollTop && this.pageScrollTo()
   },
   methods: {
