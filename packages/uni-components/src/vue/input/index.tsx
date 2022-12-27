@@ -1,5 +1,5 @@
 import { extend, hyphenate } from '@vue/shared'
-import { Ref, ref, computed, watch } from 'vue'
+import { Ref, ref, computed, watch, HTMLAttributes } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import {
   props as fieldProps,
@@ -7,6 +7,17 @@ import {
   useField,
 } from '../../helpers/useField'
 
+type INPUT_MODE = HTMLAttributes['inputmode']
+const INPUT_MODES: INPUT_MODE[] = [
+  'none',
+  'text',
+  'decimal',
+  'numeric',
+  'tel',
+  'search',
+  'email',
+  'url',
+]
 const props = /*#__PURE__*/ extend({}, fieldProps, {
   placeholderClass: {
     type: String,
@@ -15,6 +26,11 @@ const props = /*#__PURE__*/ extend({}, fieldProps, {
   textContentType: {
     type: String,
     default: '',
+  },
+  inputmode: {
+    type: String,
+    default: undefined,
+    validator: (value: INPUT_MODE) => !!~INPUT_MODES.indexOf(value),
   },
 })
 
@@ -58,14 +74,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           ? kebabCaseIndex
           : 0
       return AUTOCOMPLETES[index]
-    })
-    const inputmode = computed(() => {
-      switch (props.type) {
-        case 'digit':
-          return 'decimal'
-        default:
-          return undefined
-      }
     })
 
     let cache = ref('')
@@ -198,7 +206,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             class="uni-input-input"
             autocomplete={autocomplete.value}
             onKeyup={onKeyUpEnter}
-            inputmode={inputmode.value}
+            inputmode={props.inputmode as HTMLAttributes['inputmode']}
           />
         )
       return (
