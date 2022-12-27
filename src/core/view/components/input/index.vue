@@ -60,6 +60,7 @@ import { kebabCase } from 'uni-shared'
 const INPUT_TYPES = ['text', 'number', 'idcard', 'digit', 'password', 'tel']
 const NUMBER_TYPES = ['number', 'digit']
 const AUTOCOMPLETES = ['off', 'one-time-code']
+const INPUT_MODE = ['none', 'text', 'decimal', 'numeric', 'tel', 'search', 'email', 'url']
 export default {
   name: 'Input',
   mixins: [field],
@@ -107,6 +108,13 @@ export default {
     step: {
       type: String,
       default: '0.000000000000000001'
+    },
+    inputmode: {
+      type: String,
+      default: undefined,
+      validator (value) {
+        return !!~INPUT_MODE.indexOf(value)
+      }
     }
   },
   data () {
@@ -148,14 +156,6 @@ export default {
           ? kebabCaseIndex
           : 0
       return AUTOCOMPLETES[index]
-    },
-    inputmode () {
-      switch (this.type) {
-        case 'digit':
-          return 'decimal'
-        default:
-          return undefined
-      }
     }
   },
   watch: {
