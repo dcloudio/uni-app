@@ -3,7 +3,7 @@ import { rpx2px } from '@dcloudio/uni-core'
 import { getRealPath } from '../platform/getRealPath'
 
 export function normalizeStyleValue(val: string) {
-  return normalizeUrl(rpx2px(val, true))
+  return normalizeUrl(normalizeRpx(val))
 }
 
 const urlRE = /url\(\s*'?"?([a-zA-Z0-9\.\-\_\/]+\.(jpg|gif|png))"?'?\s*\)/
@@ -14,6 +14,18 @@ const normalizeUrl = (val: string) => {
     if (matches && matches.length === 3) {
       val = val.replace(matches[1], getRealPath(matches[1]))
     }
+  }
+  return val
+}
+
+const rpxRE = /\b([+-]?\d+(\.\d+)?)[r|u]px\b/g
+
+const normalizeRpx = (val: string) => {
+  if (isString(val)) {
+    return val.replace(rpxRE, (a, b) => {
+      // @ts-ignore
+      return rpx2px(b) + 'px'
+    })
   }
   return val
 }
