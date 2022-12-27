@@ -55,6 +55,7 @@ function getTabBarPageId(url: string) {
 
 export const switchTab = defineAsyncApi<API_TYPE_SWITCH_TAB>(
   API_SWITCH_TAB,
+  // @ts-ignore
   ({ url, tabBarText }, { resolve, reject }) => {
     return (
       removeNonTabBarPages(),
