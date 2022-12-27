@@ -37,11 +37,13 @@ export function navigate(
           meta.eventChannel = new EventChannel(state.__id__, events)
         } else if (events) {
           Object.keys(events).forEach((eventName) => {
-            ;(meta.eventChannel as EventChannel).on(
+            ;(meta.eventChannel as EventChannel)._addListener(
               eventName,
+              'on',
               events[eventName]
             )
           })
+          ;(meta.eventChannel as EventChannel)._clearCache()
         }
         return resolve({
           eventChannel: meta.eventChannel as EventChannel,

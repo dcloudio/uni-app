@@ -8,11 +8,14 @@ interface EventChannelListener {
 export class EventChannel {
   id?: number
   private listener: Record<string, EventChannelListener[]>
-  private emitCache: Record<string, any[][]>
+  private emitCache: {
+    args: any[]
+    eventName: string
+  }[]
   constructor(id?: number, events?: NavigateToOptionEvents) {
     this.id = id
     this.listener = {}
-    this.emitCache = {}
+    this.emitCache = []
     if (events) {
       Object.keys(events).forEach((name) => {
         this.on(name, events[name])
@@ -23,9 +26,10 @@ export class EventChannel {
   emit(eventName: string, ...args: any[]) {
     const fns = this.listener[eventName]
     if (!fns) {
-      return (
-        this.emitCache[eventName] || (this.emitCache[eventName] = [])
-      ).push(args)
+      return this.emitCache.push({
+        eventName,
+        args,
+      })
     }
     fns.forEach((opt) => {
       opt.fn.apply(opt.fn, args)
@@ -61,12 +65,22 @@ export class EventChannel {
     }
   }
 
-  _clearCache(eventName: string) {
-    const cacheArgs = this.emitCache[eventName]
-    if (cacheArgs) {
-      for (; cacheArgs.length > 0; ) {
-        this.emit.apply(this, [eventName, ...cacheArgs.shift()!])
+  _clearCache(eventName?: string) {
+    for (let index = 0; index < this.emitCache.length; index++) {
+      const cache = this.emitCache[index]
+      const _name = eventName
+        ? cache.eventName === eventName
+          ? eventName
+          : null
+        : cache.eventName
+      if (!_name) continue
+      const location = this.emit.apply(this, [_name, ...cache.args])
+      if (typeof location === 'number') {
+        this.emitCache.pop()
+        continue
       }
+      this.emitCache.splice(index, 1)
+      index--
     }
   }
 
