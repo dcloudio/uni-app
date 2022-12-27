@@ -11,10 +11,11 @@ export type NavigateType =
 interface NavigateOptions {
   type: NavigateType
   url: string
+  tabBarText?: string
   events?: Record<string, any>
 }
 export function navigate(
-  { type, url, events }: NavigateOptions,
+  { type, url, tabBarText, events }: NavigateOptions,
   __id__?: number
 ): Promise<void | { eventChannel: EventChannel }> {
   const router = getApp().$router as Router
@@ -29,6 +30,9 @@ export function navigate(
     }).then((failure) => {
       if (isNavigationFailure(failure)) {
         return reject(failure.message)
+      }
+      if (type === 'switchTab') {
+        router.currentRoute.value.meta.tabBarText = tabBarText
       }
       if (type === 'navigateTo') {
         const meta = router.currentRoute.value.meta
