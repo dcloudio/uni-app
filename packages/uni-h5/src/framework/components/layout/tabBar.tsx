@@ -162,7 +162,7 @@ function useSwitchTab(
         url = '/'
       }
       if (route.path !== url) {
-        uni.switchTab({ from: 'tabBar', url } as any)
+        uni.switchTab({ from: 'tabBar', url, tabBarText: text } as any)
       } else {
         invokeHook('onTabItemTap', {
           index,

@@ -234,6 +234,7 @@ declare namespace UniNamespace {
     isEntry?: boolean
     isTabBar?: boolean
     tabBarIndex?: number
+    tabBarText?: string
     windowTop?: number
     topWindow?: boolean
     leftWindow?: boolean
