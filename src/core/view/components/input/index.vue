@@ -60,7 +60,7 @@ import { kebabCase } from 'uni-shared'
 const INPUT_TYPES = ['text', 'number', 'idcard', 'digit', 'password', 'tel']
 const NUMBER_TYPES = ['number', 'digit']
 const AUTOCOMPLETES = ['off', 'one-time-code']
-const INPUT_MODE = ['none', 'text', 'decimal', 'numeric', 'tel', 'search', 'email', 'url']
+const INPUT_MODES = ['none', 'text', 'decimal', 'numeric', 'tel', 'search', 'email', 'url']
 export default {
   name: 'Input',
   mixins: [field],
@@ -113,7 +113,7 @@ export default {
       type: String,
       default: undefined,
       validator (value) {
-        return !!~INPUT_MODE.indexOf(value)
+        return !!~INPUT_MODES.indexOf(value)
       }
     }
   },
