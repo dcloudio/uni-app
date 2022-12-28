@@ -30,11 +30,11 @@ open class CustomAnimListener : Animator.AnimatorListener {
 }
 open class AnimationViewComponent : UTSComponent<LottieAnimationView> {
     constructor(instance: UniSDKInstance?, parent: AbsVContainer<*>?, componentData: AbsComponentData<*>?) : super(instance, parent, componentData) ;
-    private var path: String = "";
-    private var autoplay: Boolean = false;
-    private var loop: Boolean = false;
-    private var hidden: Boolean = false;
-    private var action: String = "stop";
+    open var path: String = "";
+    open var autoplay: Boolean = false;
+    open var loop: Boolean = false;
+    open var hidden: Boolean = false;
+    open var action: String = "stop";
     override fun created() {}
     override fun NVBeforeLoad() {}
     override fun NVLoad(): LottieAnimationView {

@@ -9495,6 +9495,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
+const INPUT_MODES = ["none", "text", "decimal", "numeric", "tel", "search", "email", "url"];
 const props$q = /* @__PURE__ */ extend({}, props$r, {
   placeholderClass: {
     type: String,
@@ -9503,6 +9504,11 @@ const props$q = /* @__PURE__ */ extend({}, props$r, {
   textContentType: {
     type: String,
     default: ""
+  },
+  inputmode: {
+    type: String,
+    default: void 0,
+    validator: (value) => !!~INPUT_MODES.indexOf(value)
   }
 });
 const Input = /* @__PURE__ */ defineBuiltInComponent({
@@ -9539,14 +9545,6 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       const kebabCaseIndex = AUTOCOMPLETES.indexOf(hyphenate(props2.textContentType));
       const index2 = camelizeIndex !== -1 ? camelizeIndex : kebabCaseIndex !== -1 ? kebabCaseIndex : 0;
       return AUTOCOMPLETES[index2];
-    });
-    const inputmode = computed(() => {
-      switch (props2.type) {
-        case "digit":
-          return "decimal";
-        default:
-          return void 0;
-      }
     });
     let cache = ref("");
     let resetCache;
@@ -9646,7 +9644,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-input-input",
         "autocomplete": autocomplete.value,
         "onKeyup": onKeyUpEnter,
-        "inputmode": inputmode.value
+        "inputmode": props2.inputmode
       }, null, 40, ["value", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup", "inputmode"]);
       return createVNode("uni-input", {
         "ref": rootRef
@@ -12984,6 +12982,7 @@ const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
       props2.scrollY ? style += "overflow-y:auto;" : style += "overflow-y:hidden;";
       return style;
     });
+    const slots_default = slots.default && slots.default();
     return () => {
       const {
         refresherEnabled,
@@ -13046,7 +13045,7 @@ const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
         "fill": "none",
         "style": "color: #2bd009",
         "stroke-width": "3"
-      }, null)]) : null])]) : null, refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null], 4) : null, slots.default && slots.default()], 512)], 4)], 512)], 512);
+      }, null)]) : null])]) : null, refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null], 4) : null, slots_default], 512)], 4)], 512)], 512);
     };
   }
 });
@@ -13308,7 +13307,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
         event.stopPropagation();
       }
       if (_main.scrollTop === 0 && event.touches.length === 1) {
-        state2.refreshState = "pulling";
+        _setRefreshState("pulling");
       }
       if (props2.refresherEnabled && state2.refreshState === "pulling") {
         const dy = y - touchStart.y;
@@ -15501,6 +15500,7 @@ function setupPage(comp) {
         onPageReady(instance2);
         const { onReady } = instance2;
         onReady && invokeArrayFns$1(onReady);
+        invokeOnTabItemTap(route);
       });
       onBeforeActivate(() => {
         if (!instance2.__isVisible) {
@@ -15508,6 +15508,9 @@ function setupPage(comp) {
           instance2.__isVisible = true;
           const { onShow } = instance2;
           onShow && invokeArrayFns$1(onShow);
+          nextTick(() => {
+            invokeOnTabItemTap(route);
+          });
         }
       });
       onBeforeDeactivate(() => {
@@ -15624,6 +15627,16 @@ function onThemeChange$2() {
       UniServiceJSBridge.emit(ON_THEME_CHANGE, {
         theme: e2.matches ? "dark" : "light"
       });
+    });
+  }
+}
+function invokeOnTabItemTap(route) {
+  const { tabBarText, tabBarIndex, route: pagePath } = route.meta;
+  if (tabBarText) {
+    invokeHook("onTabItemTap", {
+      index: tabBarIndex,
+      text: tabBarText,
+      pagePath
     });
   }
 }
@@ -20505,7 +20518,7 @@ const navigateBack = /* @__PURE__ */ defineAsyncApi(
   NavigateBackProtocol,
   NavigateBackOptions
 );
-function navigate({ type, url, events }, __id__) {
+function navigate({ type, url, tabBarText, events }, __id__) {
   const router = getApp().$router;
   const { path, query } = parseUrl(url);
   return new Promise((resolve, reject) => {
@@ -20519,11 +20532,25 @@ function navigate({ type, url, events }, __id__) {
       if (isNavigationFailure(failure)) {
         return reject(failure.message);
       }
+      if (type === "switchTab") {
+        router.currentRoute.value.meta.tabBarText = tabBarText;
+      }
       if (type === "navigateTo") {
         const meta = router.currentRoute.value.meta;
-        const eventChannel = meta.eventChannel = meta.eventChannel || new EventChannel(state2.__id__, events);
+        if (!meta.eventChannel) {
+          meta.eventChannel = new EventChannel(state2.__id__, events);
+        } else if (events) {
+          Object.keys(events).forEach((eventName) => {
+            meta.eventChannel._addListener(
+              eventName,
+              "on",
+              events[eventName]
+            );
+          });
+          meta.eventChannel._clearCache();
+        }
         return resolve({
-          eventChannel
+          eventChannel: meta.eventChannel
         });
       }
       return resolve();
@@ -20601,8 +20628,8 @@ function getTabBarPageId(url) {
 }
 const switchTab = /* @__PURE__ */ defineAsyncApi(
   API_SWITCH_TAB,
-  ({ url }, { resolve, reject }) => {
-    return removeNonTabBarPages(), navigate({ type: API_SWITCH_TAB, url }, getTabBarPageId(url)).then(resolve).catch(reject);
+  ({ url, tabBarText }, { resolve, reject }) => {
+    return removeNonTabBarPages(), navigate({ type: API_SWITCH_TAB, url, tabBarText }, getTabBarPageId(url)).then(resolve).catch(reject);
   },
   SwitchTabProtocol,
   SwitchTabOptions
@@ -21775,7 +21802,8 @@ function useSwitchTab(route, tabBar2, visibleList) {
       if (route.path !== url) {
         uni.switchTab({
           from: "tabBar",
-          url
+          url,
+          tabBarText: text2
         });
       } else {
         invokeHook("onTabItemTap", {

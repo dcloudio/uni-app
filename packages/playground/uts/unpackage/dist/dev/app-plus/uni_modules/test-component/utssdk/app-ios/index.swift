@@ -5,12 +5,12 @@ import UIKit;
 @objc(UTSSDKModulesTestComponentAnimationViewComponent)
 @objcMembers
 class AnimationViewComponent : UTSComponent<UIView> {
-    private var path: String?;
-    private var autoplay: Bool = false;
-    private var loop: Bool = false;
-    private var hidden: Bool = false;
-    private var action: String?;
-    private var animationView: LottieAnimationView? = nil;
+    public var path: String?;
+    public var autoplay: Bool = false;
+    public var loop: Bool = false;
+    public var hidden: Bool = false;
+    public var action: String?;
+    public var animationView: LottieAnimationView? = nil;
     public override func created() {}
     public override func measure(_ size: UTSSize) -> UTSSize {
         return UTSSize(100, 100);
@@ -89,25 +89,33 @@ class AnimationViewComponent : UTSComponent<UIView> {
     }
     public override func __$$init() {
         self.__$$watch("path", {
-        (newValue: String, oldValue: String) in
+        (__newValue, __oldValue) in
+        var newValue = UTSiOS.convertString(__newValue);
+        var oldValue = UTSiOS.convertString(__oldValue);
         self.path = newValue;
         if (self.autoplay) {
             self.playAnimation();
         }
         });
         self.__$$watch("loop", {
-        (newValue: Bool, oldValue: Bool) in
+        (__newValue, __oldValue) in
+        var newValue = UTSiOS.convertBool(__newValue);
+        var oldValue = UTSiOS.convertBool(__oldValue);
         self.loop = newValue;
         if (self.loop) {
             self.animationView.loopMode = LottieLoopMode.loop;
         }
         });
         self.__$$watch("autoplay", {
-        (newValue: Bool, oldValue: Bool) in
+        (__newValue, __oldValue) in
+        var newValue = UTSiOS.convertBool(__newValue);
+        var oldValue = UTSiOS.convertBool(__oldValue);
         self.autoplay = newValue;
         });
         self.__$$watch("action", {
-        (newValue: String, oldValue: String) in
+        (__newValue, __oldValue) in
+        var newValue = UTSiOS.convertString(__newValue);
+        var oldValue = UTSiOS.convertString(__oldValue);
         var action = newValue;
         if (action == "play" || action == "pause" || action == "stop") {
             self.action = action;
@@ -127,7 +135,9 @@ class AnimationViewComponent : UTSComponent<UIView> {
         }
         });
         self.__$$watch("hidden", {
-        (newValue: Bool, oldValue: Bool) in
+        (__newValue, __oldValue) in
+        var newValue = UTSiOS.convertBool(__newValue);
+        var oldValue = UTSiOS.convertBool(__oldValue);
         self.hidden = newValue;
         self.animationView.isHidden = self.hidden;
         });

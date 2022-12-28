@@ -3406,6 +3406,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
+const INPUT_MODES = ["none", "text", "decimal", "numeric", "tel", "search", "email", "url"];
 const props$j = /* @__PURE__ */ shared.extend({}, props$k, {
   placeholderClass: {
     type: String,
@@ -3414,6 +3415,11 @@ const props$j = /* @__PURE__ */ shared.extend({}, props$k, {
   textContentType: {
     type: String,
     default: ""
+  },
+  inputmode: {
+    type: String,
+    default: void 0,
+    validator: (value) => !!~INPUT_MODES.indexOf(value)
   }
 });
 const Input = /* @__PURE__ */ defineBuiltInComponent({
@@ -3450,14 +3456,6 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       const kebabCaseIndex = AUTOCOMPLETES.indexOf(shared.hyphenate(props2.textContentType));
       const index2 = camelizeIndex !== -1 ? camelizeIndex : kebabCaseIndex !== -1 ? kebabCaseIndex : 0;
       return AUTOCOMPLETES[index2];
-    });
-    const inputmode = vue.computed(() => {
-      switch (props2.type) {
-        case "digit":
-          return "decimal";
-        default:
-          return void 0;
-      }
     });
     let cache = vue.ref("");
     let resetCache;
@@ -3557,7 +3555,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-input-input",
         "autocomplete": autocomplete.value,
         "onKeyup": onKeyUpEnter,
-        "inputmode": inputmode.value
+        "inputmode": props2.inputmode
       }, null, 40, ["value", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup", "inputmode"]);
       return vue.createVNode("uni-input", {
         "ref": rootRef
@@ -5787,6 +5785,7 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
       props2.scrollY ? style += "overflow-y:auto;" : style += "overflow-y:hidden;";
       return style;
     });
+    const slots_default = slots.default && slots.default();
     return () => {
       const {
         refresherEnabled,
@@ -5849,7 +5848,7 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
         "fill": "none",
         "style": "color: #2bd009",
         "stroke-width": "3"
-      }, null)]) : null])]) : null, refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null], 4) : null, slots.default && slots.default()], 512)], 4)], 512)], 512);
+      }, null)]) : null])]) : null, refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null], 4) : null, slots_default], 512)], 4)], 512)], 512);
     };
   }
 });
@@ -11263,7 +11262,8 @@ function useSwitchTab(route, tabBar2, visibleList) {
       if (route.path !== url) {
         uni.switchTab({
           from: "tabBar",
-          url
+          url,
+          tabBarText: text
         });
       } else {
         invokeHook("onTabItemTap", {

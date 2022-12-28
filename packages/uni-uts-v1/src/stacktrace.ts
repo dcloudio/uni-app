@@ -62,7 +62,7 @@ async function parseUtsStacktraceLine(
         generateCodeFrame(originalPosition.sourceContent, {
           line: originalPosition.line,
           column: originalPosition.column,
-        })
+        }).replace(/\t/g, ' ')
       )
     }
   }
