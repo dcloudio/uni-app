@@ -315,6 +315,37 @@ describe('nvue-styler: objectifier', () => {
       },
     })
   })
+  test('padding & margin shorthand with important', async () => {
+    const code =
+      '.foo { padding: 20px !important; margin: 30px 40 !important; } .bar { margin: 10px 20 30 !important; padding: 10 20px 30px 40 !important;}'
+    const { json } = await objectifierRoot(code)
+    expect(json).toEqual({
+      foo: {
+        '': {
+          '!paddingTop': 20,
+          '!paddingRight': 20,
+          '!paddingBottom': 20,
+          '!paddingLeft': 20,
+          '!marginTop': 30,
+          '!marginRight': 40,
+          '!marginBottom': 30,
+          '!marginLeft': 40,
+        },
+      },
+      bar: {
+        '': {
+          '!paddingTop': 10,
+          '!paddingRight': 20,
+          '!paddingBottom': 30,
+          '!paddingLeft': 40,
+          '!marginTop': 10,
+          '!marginRight': 20,
+          '!marginBottom': 30,
+          '!marginLeft': 20,
+        },
+      },
+    })
+  })
   test('override padding & margin shorthand', async () => {
     const code =
       '.foo { padding: 20px; padding-left: 30px; } .bar { margin: 10px 20; margin-bottom: 30px;}'
