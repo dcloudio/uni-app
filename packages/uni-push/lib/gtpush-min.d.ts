@@ -5,6 +5,11 @@ declare namespace GtPush {
    */
   function setDebugMode(debugMode: boolean): void
   /**
+   * 重新连接或断开socket
+   * @param enable 
+   */
+  function enableSocket(enable: boolean): void
+  /**
    * 初始化GtPush
    */
   function init(obj: {
@@ -15,7 +20,7 @@ declare namespace GtPush {
     /**
      * 错误回调
      */
-    onError?: (res: {error: any}) => void
+    onError?: (res: { error: any }) => void
     /**
      * 个推终端ID回调，标识当前终端和应用
      */
@@ -29,5 +34,6 @@ declare namespace GtPush {
      */
     onPushMsg?: (res: { message: string }) => void
   }): void
+
 }
 export default GtPush
