@@ -21,13 +21,17 @@ export function createDecl(
   raws: Record<string, unknown>,
   source?: Source
 ) {
-  return {
+  const decl = {
     type: 'decl',
     prop,
-    value: value + (important ? ' !important' : ''),
+    value: value.toString(),
     raws,
     source,
   } as Declaration
+  if (important) {
+    decl.important = true
+  }
+  return decl
 }
 
 export const NUM_REGEXP = /^[-]?\d*\.?\d+$/
