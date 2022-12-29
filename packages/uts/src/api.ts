@@ -94,5 +94,6 @@ export function bundleSwift(options: UtsBundleOptions): Promise<UtsResult> {
 }
 
 function toBuffer(t: any): Buffer {
+  // @ts-ignore 'Buffer' only refers to a type, but is being used as a value here
   return Buffer.from(JSON.stringify(t))
 }

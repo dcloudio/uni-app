@@ -3,9 +3,9 @@
 var path = require('path');
 var uniCliShared = require('@dcloudio/uni-cli-shared');
 
-function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
 
-var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
+var path__default = /*#__PURE__*/_interopDefault(path);
 
 var index = () => [
     uniCliShared.defineUniMainJsPlugin((opts) => {
@@ -43,7 +43,7 @@ var index = () => [
             },
             resolveId(id) {
                 if (id === '@dcloudio/uni-push') {
-                    return uniCliShared.resolveBuiltIn(path__default["default"].join('@dcloudio/uni-push', isOffline || isEnableV1
+                    return uniCliShared.resolveBuiltIn(path__default.default.join('@dcloudio/uni-push', isOffline || isEnableV1
                         ? 'dist/uni-push.plus.es.js'
                         : 'dist/uni-push.es.js'));
                 }

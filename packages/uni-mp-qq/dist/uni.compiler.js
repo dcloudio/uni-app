@@ -5,11 +5,11 @@ var initMiniProgramPlugin = require('@dcloudio/uni-mp-vite');
 var path = require('path');
 var fs = require('fs-extra');
 
-function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
 
-var initMiniProgramPlugin__default = /*#__PURE__*/_interopDefaultLegacy(initMiniProgramPlugin);
-var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
-var fs__default = /*#__PURE__*/_interopDefaultLegacy(fs);
+var initMiniProgramPlugin__default = /*#__PURE__*/_interopDefault(initMiniProgramPlugin);
+var path__default = /*#__PURE__*/_interopDefault(path);
+var fs__default = /*#__PURE__*/_interopDefault(fs);
 
 let isFixed = false;
 function fix2648(bundle) {
@@ -23,9 +23,9 @@ function fix2648(bundle) {
     try {
         const { usingComponents } = JSON.parse(appJsonAsset.source.toString());
         if (usingComponents && usingComponents['fix-2648']) {
-            fs__default["default"].outputFileSync(path__default["default"].resolve(process.env.UNI_OUTPUT_DIR, 'fix-2648.json'), `{"component":true}`);
-            fs__default["default"].outputFileSync(path__default["default"].resolve(process.env.UNI_OUTPUT_DIR, 'fix-2648.qml'), `<!-- https://github.com/dcloudio/uni-app/issues/2648 -->`);
-            fs__default["default"].outputFileSync(path__default["default"].resolve(process.env.UNI_OUTPUT_DIR, 'fix-2648.js'), `Component({})`);
+            fs__default.default.outputFileSync(path__default.default.resolve(process.env.UNI_OUTPUT_DIR, 'fix-2648.json'), `{"component":true}`);
+            fs__default.default.outputFileSync(path__default.default.resolve(process.env.UNI_OUTPUT_DIR, 'fix-2648.qml'), `<!-- https://github.com/dcloudio/uni-app/issues/2648 -->`);
+            fs__default.default.outputFileSync(path__default.default.resolve(process.env.UNI_OUTPUT_DIR, 'fix-2648.js'), `Component({})`);
         }
         isFixed = true;
     }
@@ -110,6 +110,21 @@ const miniProgram = {
                 arg: ['ready'],
             },
         ],
+        video: [
+            {
+                name: 'on',
+                arg: [
+                    'play',
+                    'pause',
+                    'ended',
+                    'timeupdate',
+                    'fullscreenchange',
+                    'waiting',
+                    'error',
+                    'progress',
+                ],
+            },
+        ],
     },
     component: {
         dir: COMPONENTS_DIR,
@@ -121,10 +136,10 @@ const options = {
     cdn: 5,
     vite: {
         inject: {
-            uni: [path__default["default"].resolve(__dirname, 'uni.api.esm.js'), 'default'],
+            uni: [path__default.default.resolve(__dirname, 'uni.api.esm.js'), 'default'],
         },
         alias: {
-            'uni-mp-runtime': path__default["default"].resolve(__dirname, 'uni.mp.esm.js'),
+            'uni-mp-runtime': path__default.default.resolve(__dirname, 'uni.mp.esm.js'),
         },
         copyOptions: {
             assets: [COMPONENTS_DIR],
@@ -200,6 +215,6 @@ const uniMiniProgramQQPlugin = {
         fix2648(bundle);
     },
 };
-var index = [uniMiniProgramQQPlugin, ...initMiniProgramPlugin__default["default"](options)];
+var index = [uniMiniProgramQQPlugin, ...initMiniProgramPlugin__default.default(options)];
 
 module.exports = index;

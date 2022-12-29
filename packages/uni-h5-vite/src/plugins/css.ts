@@ -1,6 +1,5 @@
 import fs from 'fs'
 import path from 'path'
-
 import { normalizePath, Plugin, ResolvedConfig } from 'vite'
 
 import {
@@ -38,6 +37,7 @@ export function uniCssPlugin(): Plugin {
         generateBuiltInCssCode([...buildInCssSet].sort()),
         resolvedConfig
       )
+      // @ts-ignore 'Buffer' only refers to a type, but is being used as a value here
       const contentHash = getAssetHash(Buffer.from(content, 'utf-8'))
       const assetFileNames = path.posix.join(
         resolvedConfig.build.assetsDir,

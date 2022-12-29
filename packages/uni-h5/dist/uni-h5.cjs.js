@@ -1,5 +1,5 @@
 "use strict";
-Object.defineProperties(exports, { __esModule: { value: true }, [Symbol.toStringTag]: { value: "Module" } });
+Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 const vue = require("vue");
 const shared = require("@vue/shared");
 const uniShared = require("@dcloudio/uni-shared");
@@ -96,7 +96,7 @@ const initI18nAsyncMsgsOnce = /* @__PURE__ */ uniShared.once(() => {
     useI18n().add(
       uniI18n.LOCALE_ES,
       normalizeMessages(name, keys, [
-        "Se agot\xF3 el tiempo de conexi\xF3n, haga clic en la pantalla para volver a intentarlo."
+        "Se agotó el tiempo de conexión, haga clic en la pantalla para volver a intentarlo."
       ]),
       false
     );
@@ -105,7 +105,7 @@ const initI18nAsyncMsgsOnce = /* @__PURE__ */ uniShared.once(() => {
     useI18n().add(
       uniI18n.LOCALE_FR,
       normalizeMessages(name, keys, [
-        "La connexion a expir\xE9, cliquez sur l'\xE9cran pour r\xE9essayer."
+        "La connexion a expiré, cliquez sur l'écran pour réessayer."
       ]),
       false
     );
@@ -113,14 +113,14 @@ const initI18nAsyncMsgsOnce = /* @__PURE__ */ uniShared.once(() => {
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
     useI18n().add(
       uniI18n.LOCALE_ZH_HANS,
-      normalizeMessages(name, keys, ["\u8FDE\u63A5\u670D\u52A1\u5668\u8D85\u65F6\uFF0C\u70B9\u51FB\u5C4F\u5E55\u91CD\u8BD5"]),
+      normalizeMessages(name, keys, ["连接服务器超时，点击屏幕重试"]),
       false
     );
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
     useI18n().add(
       uniI18n.LOCALE_ZH_HANT,
-      normalizeMessages(name, keys, ["\u9023\u63A5\u670D\u52D9\u5668\u8D85\u6642\uFF0C\u9EDE\u64CA\u5C4F\u5E55\u91CD\u8A66"]),
+      normalizeMessages(name, keys, ["連接服務器超時，點擊屏幕重試"]),
       false
     );
   }
@@ -152,14 +152,14 @@ const initI18nPickerMsgsOnce = /* @__PURE__ */ uniShared.once(() => {
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
     useI18n().add(
       uniI18n.LOCALE_ZH_HANS,
-      normalizeMessages(name, keys, ["\u5B8C\u6210", "\u53D6\u6D88"]),
+      normalizeMessages(name, keys, ["完成", "取消"]),
       false
     );
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
     useI18n().add(
       uniI18n.LOCALE_ZH_HANT,
-      normalizeMessages(name, keys, ["\u5B8C\u6210", "\u53D6\u6D88"]),
+      normalizeMessages(name, keys, ["完成", "取消"]),
       false
     );
   }
@@ -191,14 +191,14 @@ const initI18nVideoMsgsOnce = /* @__PURE__ */ uniShared.once(() => {
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
     useI18n().add(
       uniI18n.LOCALE_ZH_HANS,
-      normalizeMessages(name, keys, ["\u5F39\u5E55", "\u97F3\u91CF"]),
+      normalizeMessages(name, keys, ["弹幕", "音量"]),
       false
     );
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
     useI18n().add(
       uniI18n.LOCALE_ZH_HANT,
-      normalizeMessages(name, keys, ["\u5F48\u5E55", "\u97F3\u91CF"]),
+      normalizeMessages(name, keys, ["彈幕", "音量"]),
       false
     );
   }
@@ -5488,15 +5488,15 @@ const CHARS = {
   nbsp: " ",
   quot: '"',
   apos: "'",
-  ldquo: "\u201C",
-  rdquo: "\u201D",
-  yen: "\uFFE5",
-  radic: "\u221A",
-  lceil: "\u2308",
-  rceil: "\u2309",
-  lfloor: "\u230A",
-  rfloor: "\u230B",
-  hellip: "\u2026"
+  ldquo: "“",
+  rdquo: "”",
+  yen: "￥",
+  radic: "√",
+  lceil: "⌈",
+  rceil: "⌉",
+  lfloor: "⌊",
+  rfloor: "⌋",
+  hellip: "…"
 };
 function decodeEntities(htmlString) {
   return htmlString.replace(
@@ -6987,9 +6987,9 @@ function useSwitchInject(props2, switchChecked) {
   return uniLabel;
 }
 const SPACE_UNICODE = {
-  ensp: "\u2002",
-  emsp: "\u2003",
-  nbsp: "\xA0"
+  ensp: " ",
+  emsp: " ",
+  nbsp: " "
 };
 function parseText(text, options) {
   return text.replace(/\\n/g, uniShared.LINEFEED).split(uniShared.LINEFEED).map((text2) => {
@@ -7351,7 +7351,7 @@ function getCurrentUserInfo() {
   try {
     userInfo = JSON.parse(b64DecodeUnicode(tokenArr[1]));
   } catch (error) {
-    throw new Error("\u83B7\u53D6\u5F53\u524D\u7528\u6237\u4FE1\u606F\u51FA\u9519\uFF0C\u8BE6\u7EC6\u9519\u8BEF\u4FE1\u606F\u4E3A\uFF1A" + error.message);
+    throw new Error("获取当前用户信息出错，详细错误信息为：" + error.message);
   }
   userInfo.tokenExpired = userInfo.exp * 1e3;
   delete userInfo.exp;
@@ -10523,16 +10523,16 @@ function usePickerMethods(props2, state, trigger, rootRef, pickerRef, selectRef,
     if (props2.mode === mode.DATE) {
       const locale = getLocale2();
       if (locale.startsWith("zh")) {
-        const array = ["\u5E74", "\u6708", "\u65E5"];
+        const array = ["年", "月", "日"];
         return item + array[index2];
       } else if (props2.fields !== fields.YEAR && index2 === (props2.fields !== fields.MONTH && (locale === "es" || locale === "fr") ? 1 : 0)) {
         let array;
         switch (locale) {
           case "es":
-            array = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "\u200B\u200Bjulio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+            array = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "​​julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
             break;
           case "fr":
-            array = ["janvier", "f\xE9vrier", "mars", "avril", "mai", "juin", "juillet", "ao\xFBt", "septembre", "octobre", "novembre", "d\xE9cembre"];
+            array = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
             break;
           default:
             array = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];

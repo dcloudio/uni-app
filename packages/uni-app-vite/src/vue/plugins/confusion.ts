@@ -7,7 +7,7 @@ import {
   isConfusionFile,
   removeExt,
 } from '@dcloudio/uni-cli-shared'
-import { OutputChunk } from 'rollup'
+import type { OutputChunk } from 'rollup'
 
 export function uniConfusionPlugin(): Plugin {
   const inputDir = process.env.UNI_INPUT_DIR

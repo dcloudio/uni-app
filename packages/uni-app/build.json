@@ -6,11 +6,18 @@
     "output": {
       "format": "cjs"
     },
-    "external": ["@dcloudio/uni-cloud", "@dcloudio/uni-stat"]
+    "external": [
+      "@dcloudio/uni-cloud",
+      "@dcloudio/uni-push",
+      "@dcloudio/uni-stat"
+    ]
   },
   {
     "input": {
-      "src/index.ts": ["dist/uni-app.es.js", "dist/uni-app.cjs.js"]
+      "src/index.ts": [
+        "dist/uni-app.es.js",
+        "dist/uni-app.cjs.js"
+      ]
     },
     "compilerOptions": {
       "declaration": true

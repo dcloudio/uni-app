@@ -38,7 +38,8 @@ export async function runDev(options: CliOptions & ServerOptions) {
       watcher.on('event', (event) => {
         if (event.code === 'BUNDLE_START') {
           if (isFirstStart) {
-            return (isFirstStart = false)
+            isFirstStart = false
+            return
           }
           output('log', M['dev.watching.start'])
         } else if (event.code === 'BUNDLE_END') {

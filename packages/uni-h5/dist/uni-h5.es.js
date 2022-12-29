@@ -95,7 +95,7 @@ const initI18nAsyncMsgsOnce = /* @__PURE__ */ once(() => {
     useI18n().add(
       LOCALE_ES,
       normalizeMessages(name, keys, [
-        "Se agot\xF3 el tiempo de conexi\xF3n, haga clic en la pantalla para volver a intentarlo."
+        "Se agotó el tiempo de conexión, haga clic en la pantalla para volver a intentarlo."
       ]),
       false
     );
@@ -104,7 +104,7 @@ const initI18nAsyncMsgsOnce = /* @__PURE__ */ once(() => {
     useI18n().add(
       LOCALE_FR,
       normalizeMessages(name, keys, [
-        "La connexion a expir\xE9, cliquez sur l'\xE9cran pour r\xE9essayer."
+        "La connexion a expiré, cliquez sur l'écran pour réessayer."
       ]),
       false
     );
@@ -112,14 +112,14 @@ const initI18nAsyncMsgsOnce = /* @__PURE__ */ once(() => {
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
     useI18n().add(
       LOCALE_ZH_HANS,
-      normalizeMessages(name, keys, ["\u8FDE\u63A5\u670D\u52A1\u5668\u8D85\u65F6\uFF0C\u70B9\u51FB\u5C4F\u5E55\u91CD\u8BD5"]),
+      normalizeMessages(name, keys, ["连接服务器超时，点击屏幕重试"]),
       false
     );
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
     useI18n().add(
       LOCALE_ZH_HANT,
-      normalizeMessages(name, keys, ["\u9023\u63A5\u670D\u52D9\u5668\u8D85\u6642\uFF0C\u9EDE\u64CA\u5C4F\u5E55\u91CD\u8A66"]),
+      normalizeMessages(name, keys, ["連接服務器超時，點擊屏幕重試"]),
       false
     );
   }
@@ -139,14 +139,14 @@ const initI18nShowActionSheetMsgsOnce = /* @__PURE__ */ once(() => {
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
     useI18n().add(
       LOCALE_ZH_HANS,
-      normalizeMessages(name, keys, ["\u53D6\u6D88"]),
+      normalizeMessages(name, keys, ["取消"]),
       false
     );
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
     useI18n().add(
       LOCALE_ZH_HANT,
-      normalizeMessages(name, keys, ["\u53D6\u6D88"]),
+      normalizeMessages(name, keys, ["取消"]),
       false
     );
   }
@@ -176,7 +176,7 @@ const initI18nShowToastMsgsOnce = /* @__PURE__ */ once(() => {
     useI18n().add(
       LOCALE_FR,
       normalizeMessages(name, keys, [
-        "Veuillez noter que showToast doit \xEAtre associ\xE9 \xE0 hideToast"
+        "Veuillez noter que showToast doit être associé à hideToast"
       ]),
       false
     );
@@ -185,7 +185,7 @@ const initI18nShowToastMsgsOnce = /* @__PURE__ */ once(() => {
     useI18n().add(
       LOCALE_ZH_HANS,
       normalizeMessages(name, keys, [
-        "\u8BF7\u6CE8\u610F showToast \u4E0E hideToast \u5FC5\u987B\u914D\u5BF9\u4F7F\u7528"
+        "请注意 showToast 与 hideToast 必须配对使用"
       ]),
       false
     );
@@ -194,7 +194,7 @@ const initI18nShowToastMsgsOnce = /* @__PURE__ */ once(() => {
     useI18n().add(
       LOCALE_ZH_HANT,
       normalizeMessages(name, keys, [
-        "\u8ACB\u6CE8\u610F showToast \u8207 hideToast \u5FC5\u9808\u914D\u5C0D\u4F7F\u7528"
+        "請注意 showToast 與 hideToast 必須配對使用"
       ]),
       false
     );
@@ -225,7 +225,7 @@ const initI18nShowLoadingMsgsOnce = /* @__PURE__ */ once(() => {
     useI18n().add(
       LOCALE_FR,
       normalizeMessages(name, keys, [
-        "Veuillez noter que showLoading doit \xEAtre associ\xE9 \xE0 hideLoading"
+        "Veuillez noter que showLoading doit être associé à hideLoading"
       ]),
       false
     );
@@ -234,7 +234,7 @@ const initI18nShowLoadingMsgsOnce = /* @__PURE__ */ once(() => {
     useI18n().add(
       LOCALE_ZH_HANS,
       normalizeMessages(name, keys, [
-        "\u8BF7\u6CE8\u610F showLoading \u4E0E hideLoading \u5FC5\u987B\u914D\u5BF9\u4F7F\u7528"
+        "请注意 showLoading 与 hideLoading 必须配对使用"
       ]),
       false
     );
@@ -243,7 +243,7 @@ const initI18nShowLoadingMsgsOnce = /* @__PURE__ */ once(() => {
     useI18n().add(
       LOCALE_ZH_HANT,
       normalizeMessages(name, keys, [
-        "\u8ACB\u6CE8\u610F showLoading \u8207 hideLoading \u5FC5\u9808\u914D\u5C0D\u4F7F\u7528"
+        "請注意 showLoading 與 hideLoading 必須配對使用"
       ]),
       false
     );
@@ -276,14 +276,14 @@ const initI18nShowModalMsgsOnce = /* @__PURE__ */ once(() => {
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
     useI18n().add(
       LOCALE_ZH_HANS,
-      normalizeMessages(name, keys, ["\u53D6\u6D88", "\u786E\u5B9A"]),
+      normalizeMessages(name, keys, ["取消", "确定"]),
       false
     );
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
     useI18n().add(
       LOCALE_ZH_HANT,
-      normalizeMessages(name, keys, ["\u53D6\u6D88", "\u78BA\u5B9A"]),
+      normalizeMessages(name, keys, ["取消", "確定"]),
       false
     );
   }
@@ -304,7 +304,7 @@ const initI18nChooseFileMsgsOnce = /* @__PURE__ */ once(() => {
     useI18n().add(
       LOCALE_ES,
       normalizeMessages(name, keys, [
-        "El cuadro de di\xE1logo del selector de archivos solo se puede mostrar con la activaci\xF3n del usuario"
+        "El cuadro de diálogo del selector de archivos solo se puede mostrar con la activación del usuario"
       ]),
       false
     );
@@ -313,7 +313,7 @@ const initI18nChooseFileMsgsOnce = /* @__PURE__ */ once(() => {
     useI18n().add(
       LOCALE_FR,
       normalizeMessages(name, keys, [
-        "La bo\xEEte de dialogue du s\xE9lecteur de fichier ne peut \xEAtre affich\xE9e qu'avec une activation par l'utilisateur"
+        "La boîte de dialogue du sélecteur de fichier ne peut être affichée qu'avec une activation par l'utilisateur"
       ]),
       false
     );
@@ -321,14 +321,14 @@ const initI18nChooseFileMsgsOnce = /* @__PURE__ */ once(() => {
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
     useI18n().add(
       LOCALE_ZH_HANS,
-      normalizeMessages(name, keys, ["\u6587\u4EF6\u9009\u62E9\u5668\u5BF9\u8BDD\u6846\u53EA\u80FD\u5728\u7528\u6237\u6FC0\u6D3B\u65F6\u663E\u793A"]),
+      normalizeMessages(name, keys, ["文件选择器对话框只能在用户激活时显示"]),
       false
     );
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
     useI18n().add(
       LOCALE_ZH_HANT,
-      normalizeMessages(name, keys, ["\u6587\u4EF6\u9078\u64C7\u5668\u5C0D\u8A71\u6846\u53EA\u80FD\u5728\u7528\u6236\u6FC0\u6D3B\u6642\u986F\u793A"]),
+      normalizeMessages(name, keys, ["文件選擇器對話框只能在用戶激活時顯示"]),
       false
     );
   }
@@ -360,8 +360,8 @@ const initI18nSetClipboardDataMsgsOnce = /* @__PURE__ */ once(() => {
     useI18n().add(
       LOCALE_FR,
       normalizeMessages(name, keys, [
-        "Contenu copi\xE9",
-        "\xC9chec de la copie, copiez manuellement"
+        "Contenu copié",
+        "Échec de la copie, copiez manuellement"
       ]),
       false
     );
@@ -369,14 +369,14 @@ const initI18nSetClipboardDataMsgsOnce = /* @__PURE__ */ once(() => {
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
     useI18n().add(
       LOCALE_ZH_HANS,
-      normalizeMessages(name, keys, ["\u5185\u5BB9\u5DF2\u590D\u5236", "\u590D\u5236\u5931\u8D25\uFF0C\u8BF7\u624B\u52A8\u590D\u5236"]),
+      normalizeMessages(name, keys, ["内容已复制", "复制失败，请手动复制"]),
       false
     );
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
     useI18n().add(
       LOCALE_ZH_HANT,
-      normalizeMessages(name, keys, ["\u5167\u5BB9\u5DF2\u5FA9\u5236", "\u5FA9\u5236\u5931\u6557\uFF0C\u8ACB\u624B\u52D5\u5FA9\u88FD"]),
+      normalizeMessages(name, keys, ["內容已復制", "復制失敗，請手動復製"]),
       false
     );
   }
@@ -402,7 +402,7 @@ const initI18nGetClipboardDataMsgsOnce = /* @__PURE__ */ once(() => {
     useI18n().add(
       LOCALE_FR,
       normalizeMessages(name, keys, [
-        "\xC9chec de la lecture, veuillez coller manuellement"
+        "Échec de la lecture, veuillez coller manuellement"
       ]),
       false
     );
@@ -410,14 +410,14 @@ const initI18nGetClipboardDataMsgsOnce = /* @__PURE__ */ once(() => {
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
     useI18n().add(
       LOCALE_ZH_HANS,
-      normalizeMessages(name, keys, ["\u8BFB\u53D6\u5931\u8D25\uFF0C\u8BF7\u624B\u52A8\u7C98\u8D34"]),
+      normalizeMessages(name, keys, ["读取失败，请手动粘贴"]),
       false
     );
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
     useI18n().add(
       LOCALE_ZH_HANT,
-      normalizeMessages(name, keys, ["\u8B80\u53D6\u5931\u6557\uFF0C\u8ACB\u624B\u52D5\u7C98\u8CBC"]),
+      normalizeMessages(name, keys, ["讀取失敗，請手動粘貼"]),
       false
     );
   }
@@ -449,14 +449,14 @@ const initI18nPickerMsgsOnce = /* @__PURE__ */ once(() => {
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
     useI18n().add(
       LOCALE_ZH_HANS,
-      normalizeMessages(name, keys, ["\u5B8C\u6210", "\u53D6\u6D88"]),
+      normalizeMessages(name, keys, ["完成", "取消"]),
       false
     );
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
     useI18n().add(
       LOCALE_ZH_HANT,
-      normalizeMessages(name, keys, ["\u5B8C\u6210", "\u53D6\u6D88"]),
+      normalizeMessages(name, keys, ["完成", "取消"]),
       false
     );
   }
@@ -488,14 +488,14 @@ const initI18nVideoMsgsOnce = /* @__PURE__ */ once(() => {
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
     useI18n().add(
       LOCALE_ZH_HANS,
-      normalizeMessages(name, keys, ["\u5F39\u5E55", "\u97F3\u91CF"]),
+      normalizeMessages(name, keys, ["弹幕", "音量"]),
       false
     );
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
     useI18n().add(
       LOCALE_ZH_HANT,
-      normalizeMessages(name, keys, ["\u5F48\u5E55", "\u97F3\u91CF"]),
+      normalizeMessages(name, keys, ["彈幕", "音量"]),
       false
     );
   }
@@ -527,14 +527,14 @@ const initI18nChooseLocationMsgsOnce = /* @__PURE__ */ once(() => {
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
     useI18n().add(
       LOCALE_ZH_HANS,
-      normalizeMessages(name, keys, ["\u641C\u7D22\u5730\u70B9", "\u53D6\u6D88"]),
+      normalizeMessages(name, keys, ["搜索地点", "取消"]),
       false
     );
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
     useI18n().add(
       LOCALE_ZH_HANT,
-      normalizeMessages(name, keys, ["\u641C\u7D22\u5730\u9EDE", "\u53D6\u6D88"]),
+      normalizeMessages(name, keys, ["搜索地點", "取消"]),
       false
     );
   }
@@ -12684,15 +12684,15 @@ const CHARS = {
   nbsp: " ",
   quot: '"',
   apos: "'",
-  ldquo: "\u201C",
-  rdquo: "\u201D",
-  yen: "\uFFE5",
-  radic: "\u221A",
-  lceil: "\u2308",
-  rceil: "\u2309",
-  lfloor: "\u230A",
-  rfloor: "\u230B",
-  hellip: "\u2026"
+  ldquo: "“",
+  rdquo: "”",
+  yen: "￥",
+  radic: "√",
+  lceil: "⌈",
+  rceil: "⌉",
+  lfloor: "⌊",
+  rfloor: "⌋",
+  hellip: "…"
 };
 function decodeEntities(htmlString) {
   return htmlString.replace(
@@ -14489,9 +14489,9 @@ function useSwitchInject(props2, switchChecked) {
   return uniLabel;
 }
 const SPACE_UNICODE = {
-  ensp: "\u2002",
-  emsp: "\u2003",
-  nbsp: "\xA0"
+  ensp: " ",
+  emsp: " ",
+  nbsp: " "
 };
 function parseText(text2, options) {
   return text2.replace(/\\n/g, LINEFEED).split(LINEFEED).map((text22) => {
@@ -14917,7 +14917,7 @@ function getCurrentUserInfo() {
   try {
     userInfo = JSON.parse(b64DecodeUnicode(tokenArr[1]));
   } catch (error) {
-    throw new Error("\u83B7\u53D6\u5F53\u524D\u7528\u6237\u4FE1\u606F\u51FA\u9519\uFF0C\u8BE6\u7EC6\u9519\u8BEF\u4FE1\u606F\u4E3A\uFF1A" + error.message);
+    throw new Error("获取当前用户信息出错，详细错误信息为：" + error.message);
   }
   userInfo.tokenExpired = userInfo.exp * 1e3;
   delete userInfo.exp;
@@ -20006,11 +20006,11 @@ const LocationView = /* @__PURE__ */ defineSystemComponent({
         const origin = state2.location.latitude ? `&origin=${state2.location.latitude}%2C${state2.location.longitude}` : "";
         url = `https://www.google.com/maps/dir/?api=1${origin}&destination=${props2.latitude}%2C${props2.longitude}`;
       } else if (mapInfo.type === MapType.QQ) {
-        const fromcoord = state2.location.latitude ? `&fromcoord=${state2.location.latitude}%2C${state2.location.longitude}&from=${encodeURIComponent("\u6211\u7684\u4F4D\u7F6E")}` : "";
-        url = `https://apis.map.qq.com/uri/v1/routeplan?type=drive${fromcoord}&tocoord=${props2.latitude}%2C${props2.longitude}&to=${encodeURIComponent(props2.name || "\u76EE\u7684\u5730")}&ref=${mapInfo.key}`;
+        const fromcoord = state2.location.latitude ? `&fromcoord=${state2.location.latitude}%2C${state2.location.longitude}&from=${encodeURIComponent("我的位置")}` : "";
+        url = `https://apis.map.qq.com/uri/v1/routeplan?type=drive${fromcoord}&tocoord=${props2.latitude}%2C${props2.longitude}&to=${encodeURIComponent(props2.name || "目的地")}&ref=${mapInfo.key}`;
       } else if (mapInfo.type === MapType.AMAP) {
-        const from = state2.location.latitude ? `from=${state2.location.longitude},${state2.location.latitude},${encodeURIComponent("\u6211\u7684\u4F4D\u7F6E")}&` : "";
-        url = `https://uri.amap.com/navigation?${from}to=${props2.longitude},${props2.latitude},${encodeURIComponent(props2.name || "\u76EE\u7684\u5730")}`;
+        const from = state2.location.latitude ? `from=${state2.location.longitude},${state2.location.latitude},${encodeURIComponent("我的位置")}&` : "";
+        url = `https://uri.amap.com/navigation?${from}to=${props2.longitude},${props2.latitude},${encodeURIComponent(props2.name || "目的地")}`;
       }
       window.open(url);
     }
@@ -20206,7 +20206,7 @@ function useList(state2) {
     } else if (mapInfo.type === MapType.AMAP) {
       window.AMap.plugin("AMap.PlaceSearch", function() {
         const placeSearch = new window.AMap.PlaceSearch({
-          city: "\u5168\u56FD",
+          city: "全国",
           pageSize: 10,
           pageIndex: listState.pageIndex
         });
@@ -24057,16 +24057,16 @@ function usePickerMethods(props2, state2, trigger, rootRef, pickerRef, selectRef
     if (props2.mode === mode.DATE) {
       const locale = getLocale2();
       if (locale.startsWith("zh")) {
-        const array = ["\u5E74", "\u6708", "\u65E5"];
+        const array = ["年", "月", "日"];
         return item + array[index2];
       } else if (props2.fields !== fields.YEAR && index2 === (props2.fields !== fields.MONTH && (locale === "es" || locale === "fr") ? 1 : 0)) {
         let array;
         switch (locale) {
           case "es":
-            array = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "\u200B\u200Bjulio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+            array = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "​​julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
             break;
           case "fr":
-            array = ["janvier", "f\xE9vrier", "mars", "avril", "mai", "juin", "juillet", "ao\xFBt", "septembre", "octobre", "novembre", "d\xE9cembre"];
+            array = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
             break;
           default:
             array = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];

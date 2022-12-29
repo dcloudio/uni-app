@@ -11,7 +11,7 @@ import {
   MANIFEST_JSON_JS,
   APP_CONFIG_SERVICE,
 } from '@dcloudio/uni-cli-shared'
-import { OutputAsset } from 'rollup'
+import type { OutputAsset } from 'rollup'
 import { wrapperNVueAppStyles } from '../../nvue/plugins/esbuild'
 
 export function uniPagesJsonPlugin(): Plugin {

@@ -14,7 +14,7 @@ import {
   polyfillCode,
   resolveBuiltIn,
 } from '@dcloudio/uni-cli-shared'
-import { OutputBundle } from 'rollup'
+import type { OutputBundle } from 'rollup'
 import { APP_RENDERJS_JS, APP_WXS_JS } from '../plugins/renderjs'
 
 import { createConfigResolved } from '../../plugin/configResolved'
