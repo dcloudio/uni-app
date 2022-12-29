@@ -3339,7 +3339,7 @@ packages:
       vite: ^4.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 4.0.3_qfz55zahqkp66vn23sxaaw3yfe
+      vite: 4.0.3
       vue: 3.2.45
 
   /@vue/babel-helper-vue-transform-on/1.0.2:
@@ -8144,7 +8144,6 @@ packages:
       rollup: 3.8.1
     optionalDependencies:
       fsevents: 2.3.2
-    dev: true
 
   /vite/4.0.3_qfz55zahqkp66vn23sxaaw3yfe:
     resolution: {integrity: sha512-HvuNv1RdE7deIfQb8mPk51UKjqptO/4RXZ5yXSAvurd5xOckwS/gg8h9Tky3uSbnjYTgUm0hVCet1cyhKd73ZA==}
