@@ -19,19 +19,21 @@ exports.initDevtoolsServer = async () => {
 
   const devtoolsPort = await detectPort(9098)
 
-  if(isInHBuilderX()){
-		const vueDevtoolsDir = path.resolve(
-			process.env.UNI_OUTPUT_DIR,
-			'..',
-			'.vue-devtools'
-		)
-		if (!fs.existsSync(vueDevtoolsDir)) {
-			fs.mkdirSync(vueDevtoolsDir, { recursive: true })
-		}
-		fs.writeFileSync(`${vueDevtoolsDir}/port.js`,`${devtoolsPort}`)
-	}
+  let vueDevtoolsDirInHBuilderX
 
-  initFrontServer(socketHost, socketPort, network, devtoolsPort)
+  if (isInHBuilderX()) {
+    vueDevtoolsDirInHBuilderX = path.resolve(
+      process.env.UNI_OUTPUT_DIR,
+      '..',
+      '.vue-devtools'
+    )
+    if (!fs.existsSync(vueDevtoolsDirInHBuilderX)) {
+      fs.mkdirSync(vueDevtoolsDirInHBuilderX, { recursive: true })
+    }
+    fs.writeFileSync(`${vueDevtoolsDirInHBuilderX}/port.js`, `${devtoolsPort}`)
+  }
+
+  initFrontServer(socketHost, socketPort, network, devtoolsPort, vueDevtoolsDirInHBuilderX)
 
   return { socketHost, socketPort }
 }
@@ -65,7 +67,7 @@ function detectPort(port) {
     })
 }
 
-function initFrontServer(socketHost, socketPort, network, devtoolsPort) {
+function initFrontServer(socketHost, socketPort, network, devtoolsPort, vueDevtoolsDirInHBuilderX) {
   app.use(express.static(__dirname))
 
   app.get('/', (_, res) => {
@@ -89,7 +91,9 @@ function initFrontServer(socketHost, socketPort, network, devtoolsPort) {
 
     console.log(`\n${colors.cyan('uni-vue-devtools')} ${colors.green('server running at:')}\n ${colors.green('➜')} ${colorUrl(networkUrl)}\n`)
 
-    if(!isInHBuilderX()){
+    if (isInHBuilderX()) {
+      fs.writeFileSync(`${vueDevtoolsDirInHBuilderX}/frontServer.js`, '')
+    } else {
       open(`http:localhost:${devtoolsPort}`)
     }
   })
