@@ -33,7 +33,7 @@ export async function createServer(options: CliOptions & ServerOptions) {
       configFile: options.config,
       base: options.base,
       mode: options.mode,
-      logLevel: options.logLevel || 'info',
+      logLevel: options.logLevel,
       clearScreen: options.clearScreen,
       server: cleanOptions(options) as ServerOptions,
     })

@@ -36,7 +36,7 @@ export function createConfig(
       publicDir: config.publicDir || '__static__',
       define: createDefine(options),
       resolve: createResolve(options, config),
-      logLevel: config.logLevel || 'warn',
+      logLevel: config.logLevel,
       optimizeDeps: createOptimizeDeps(options),
       build: createBuild(options, config),
       css: createCss(options, config),
