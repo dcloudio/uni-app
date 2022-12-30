@@ -42,7 +42,7 @@ const props = {
   },
   color: {
     type: String,
-    default: '#007aff',
+    default: '',
   },
 }
 
@@ -88,6 +88,14 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     return () => {
       const { color, type } = props
       const booleanAttrs = useBooleanAttr(props, 'disabled')
+      const switchInputStyle: {
+        backgroundColor?: string
+        borderColor?: string
+      } = {}
+      if (color && switchChecked.value) {
+        switchInputStyle['backgroundColor'] = color
+        switchInputStyle['borderColor'] = color
+      }
 
       return (
         <uni-switch ref={rootRef} {...booleanAttrs} onClick={_onClick}>
@@ -97,10 +105,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
               class="uni-switch-input"
               // @ts-ignore
               class={[switchChecked.value ? 'uni-switch-input-checked' : '']}
-              style={{
-                backgroundColor: switchChecked.value ? color : '#DFDFDF',
-                borderColor: switchChecked.value ? color : '#DFDFDF',
-              }}
+              style={switchInputStyle}
             />
 
             <div v-show={type === 'checkbox'} class="uni-checkbox-input">

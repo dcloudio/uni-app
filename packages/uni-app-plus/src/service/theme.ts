@@ -16,7 +16,11 @@ function offThemeChange(callback: ThemeChangeCallBack) {
 }
 
 function getNavigatorStyle() {
-  return plus.navigator.getUIStyle() === 'dark' ? 'light' : 'dark'
+  return getTheme() === 'dark' ? 'light' : 'dark'
+}
+
+export function getTheme() {
+  return plus.navigator.getUIStyle()
 }
 
 export function changePagesNavigatorStyle() {
