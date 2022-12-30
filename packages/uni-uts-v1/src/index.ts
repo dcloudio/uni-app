@@ -102,6 +102,14 @@ export async function compile(pluginDir: string) {
       if (filename) {
         await getCompiler('kotlin').runProd(filename, androidComponents)
         if (cacheDir) {
+          // 存储 sourcemap
+          storeSourceMap(
+            'app-android',
+            pluginRelativeDir,
+            outputDir,
+            cacheDir,
+            pkg.is_uni_modules
+          )
           genManifestFile('app-android', {
             pluginDir,
             env,
@@ -122,6 +130,13 @@ export async function compile(pluginDir: string) {
       if (filename) {
         await getCompiler('swift').runProd(filename, iosComponents)
         if (cacheDir) {
+          storeSourceMap(
+            'app-ios',
+            pluginRelativeDir,
+            outputDir,
+            cacheDir,
+            pkg.is_uni_modules
+          )
           genManifestFile('app-ios', {
             pluginDir,
             env,
