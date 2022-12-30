@@ -55,9 +55,10 @@ export function createKotlinResolveTypeReferenceName(
 function parseKotlinPackage(filename: string) {
   const res = resolvePackage(filename)
   if (!res) {
-    return { package: '' }
+    return { id: '', package: '' }
   }
   return {
+    id: res.id,
     package: parseKotlinPackageWithPluginId(res.name, res.is_uni_modules),
   }
 }
@@ -311,9 +312,11 @@ export async function compile(
     imports.push(rClass)
   }
   const componentsCode = genComponentsCode(filename, components)
+  const { package: pluginPackage, id: pluginId } = parseKotlinPackage(filename)
   const input: Parameters<typeof bundle>[1]['input'] = {
     root: inputDir,
     filename,
+    pluginId,
   }
   const isUTSFileExists = fs.existsSync(filename)
   if (componentsCode) {
@@ -329,12 +332,13 @@ export async function compile(
       return
     }
   }
+
   const result = await bundle(UtsTarget.KOTLIN, {
     input,
     output: {
       isPlugin: true,
       outDir: outputDir,
-      package: parseKotlinPackage(filename).package,
+      package: pluginPackage,
       sourceMap: sourceMap ? resolveUTSSourceMapPath() : false,
       extname: 'kt',
       imports,

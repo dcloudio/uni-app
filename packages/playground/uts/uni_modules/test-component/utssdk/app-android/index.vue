@@ -38,7 +38,6 @@ class CustomAnimListener extends Animator.AnimatorListener {
 
 //原生提供以下属性或方法的实现  
 export default {
-    name: "animation-view",
     /**
      * 当播放到末尾时触发 ended 事件（自然播放结束会触发回调，循环播放结束及手动停止动画不会触发）
      */

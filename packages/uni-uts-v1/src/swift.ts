@@ -20,11 +20,13 @@ function parseSwiftPackage(filename: string) {
   const res = resolvePackage(filename)
   if (!res) {
     return {
+      id: '',
       namespace: '',
     }
   }
   const namespace = parseSwiftPackageWithPluginId(res.name, res.is_uni_modules)
   return {
+    id: res.id,
     namespace,
   }
 }
@@ -161,9 +163,11 @@ export async function compile(
   const { bundle, UtsTarget } = getUtsCompiler()
   // let time = Date.now()
   const componentsCode = genComponentsCode(filename, components)
+  const { namespace, id: pluginId } = parseSwiftPackage(filename)
   const input: Parameters<typeof bundle>[1]['input'] = {
     root: inputDir,
     filename,
+    pluginId,
   }
   const isUTSFileExists = fs.existsSync(filename)
   if (componentsCode) {
@@ -184,7 +188,7 @@ export async function compile(
     output: {
       isPlugin: true,
       outDir: outputDir,
-      package: parseSwiftPackage(filename).namespace,
+      package: namespace,
       sourceMap: sourceMap ? resolveUTSSourceMapPath() : false,
       extname: 'swift',
       imports: ['DCloudUTSFoundation'],

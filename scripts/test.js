@@ -89,6 +89,7 @@ async function testKotlinComponent() {
   await bundle(UtsTarget.KOTLIN, {
     input: {
       root: projectDir,
+      pluginId: 'animation-view',
       filename: path.resolve(
         projectDir,
         'uni_modules/test-component/utssdk/app-android/index.uts'
