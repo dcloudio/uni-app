@@ -373,7 +373,7 @@ if (!Promise.prototype.finally) {
 }
 
 function promisify (name, api) {
-  if (!shouldPromise(name)) {
+  if (!shouldPromise(name) || !isFn(api)) {
     return api
   }
   return function promiseApi (options = {}, ...params) {
@@ -2901,9 +2901,6 @@ if (typeof Proxy !== 'undefined' && "mp-baidu" !== 'app-plus') {
       }
       if (eventApi[name]) {
         return eventApi[name]
-      }
-      if (typeof swan[name] !== 'function' && !hasOwn(protocols, name)) {
-        return
       }
       return promisify(name, wrapper(name, swan[name]))
     },
