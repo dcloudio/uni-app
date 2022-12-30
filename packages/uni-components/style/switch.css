@@ -94,7 +94,7 @@ uni-switch:not([disabled]) .uni-checkbox-input:hover {
 }
 
 uni-switch .uni-checkbox-input svg {
-  color: inherit;
+  fill: #007aff;
   font-size: 22px;
   position: absolute;
   top: 50%;
