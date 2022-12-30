@@ -270,6 +270,33 @@ function hasEscapeQuote (path) {
   }
   return has
 }
+/**
+ * 是否包含属性 length 访问
+ * @param {*} path
+ * @returns {boolean}
+ */
+function hasLengthProperty (path) {
+  let has = false
+  function hasLengthProperty (node) {
+    const property = node.property
+    // 暂不考虑动态拼接和模板字符串
+    return t.isIdentifier(property, { name: 'length' }) || t.isStringLiteral(property, { value: 'length' })
+  }
+  if (path.isMemberExpression()) {
+    return hasLengthProperty(path.node)
+  } else {
+    path.traverse({
+      noScope: true,
+      MemberExpression (path) {
+        if (hasLengthProperty(path.node)) {
+          has = true
+          path.stop()
+        }
+      }
+    })
+  }
+  return has
+}
 
 function isRootElement (path) {
   const result = path.findParent(path => (path.isCallExpression() && path.get('callee').isIdentifier({ name: METHOD_CREATE_ELEMENT })) || path.isReturnStatement())
@@ -308,5 +335,6 @@ module.exports = {
   getForIndexIdentifier,
   isSimpleObjectExpression,
   hasEscapeQuote,
+  hasLengthProperty,
   isRootElement
 }

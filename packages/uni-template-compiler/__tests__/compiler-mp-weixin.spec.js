@@ -359,4 +359,52 @@ describe('mp:compiler-mp-weixin', () => {
       '<test data-custom-hidden="{{!(shown)}}" vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}">hello world</test>'
     )
   })
+
+  it('template with array length', () => {
+    assertCodegen(
+      '<view>{{array.length}}</view>',
+      '<view>{{$root.g0}}</view>',
+      'with(this){var g0=array.length;$mp.data=Object.assign({},{$root:{g0:g0}})}'
+    )
+    assertCodegen(
+      '<view>{{array[\'length\']}}</view>',
+      '<view>{{$root.g0}}</view>',
+      'with(this){var g0=array["length"];$mp.data=Object.assign({},{$root:{g0:g0}})}'
+    )
+    assertCodegen(
+      '<button :disabled="array.length===0">hello world</button>',
+      '<button disabled="{{$root.g0===0}}">hello world</button>',
+      'with(this){var g0=array.length;$mp.data=Object.assign({},{$root:{g0:g0}})}'
+    )
+    assertCodegen(
+      '<view :class="\'c\'+array.length">hello world</view>',
+      '<view class="{{[\'c\'+$root.g0]}}">hello world</view>',
+      'with(this){var g0=array.length;$mp.data=Object.assign({},{$root:{g0:g0}})}'
+    )
+    assertCodegen(
+      '<view :style="array.length===0?\'height:30px;\':\'height:10px;\'">hello world</view>',
+      '<view style="{{($root.g0===0?\'height:30px;\':\'height:10px;\')}}">hello world</view>',
+      'with(this){var g0=array.length;$mp.data=Object.assign({},{$root:{g0:g0}})}'
+    )
+    assertCodegen(
+      '<view v-if="array.length">hello</view>',
+      '<block wx:if="{{$root.g0}}"><view>hello</view></block>',
+      'with(this){var g0=array.length;$mp.data=Object.assign({},{$root:{g0:g0}})}'
+    )
+    assertCodegen(
+      '<view v-show="array.length">hello</view>',
+      '<view hidden="{{!($root.g0)}}">hello</view>',
+      'with(this){var g0=array.length;$mp.data=Object.assign({},{$root:{g0:g0}})}'
+    )
+    assertCodegen(
+      '<view v-for="(item,index) in list" :key="index"><view v-if="item.length">{{getValue(item)}}</view></view>',
+      '<block wx:for="{{$root.l0}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view><block wx:if="{{item.g0}}"><view>{{item.m0}}</view></block></view></block>',
+      'with(this){var l0=__map(list,function(item,index){var $orig=__get_orig(item);var g0=item.length;var m0=g0?getValue(item):null;return{$orig:$orig,g0:g0,m0:m0}});$mp.data=Object.assign({},{$root:{l0:l0}})}'
+    )
+    assertCodegen(
+      '<view v-for="(item,index) in list" :key="index"><view v-if="Object.values(item.list).length">{{test(item.list)}}</view></view>',
+      '<block wx:for="{{$root.l0}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view><block wx:if="{{item.g0}}"><view>{{item.m0}}</view></block></view></block>',
+      'with(this){var l0=__map(list,function(item,index){var $orig=__get_orig(item);var g0=Object.values(item.list).length;var m0=g0?test(item.list):null;return{$orig:$orig,g0:g0,m0:m0}});$mp.data=Object.assign({},{$root:{l0:l0}})}'
+    )
+  })
 })

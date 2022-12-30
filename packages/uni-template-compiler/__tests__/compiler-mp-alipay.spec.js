@@ -288,4 +288,10 @@ describe('mp:compiler-mp-alipay', () => {
       '<life-follow data-event-opts="{{[[\'close\',[[\'close\',[\'$event\']]]]]}}" onClose="__e"></life-follow>'
     )
   })
+  it('template with array length', () => {
+    assertCodegen(
+      '<view>{{array.length}}</view>',
+      '<view>{{array.length}}</view>'
+    )
+  })
 })

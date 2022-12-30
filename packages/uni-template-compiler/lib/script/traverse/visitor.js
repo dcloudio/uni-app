@@ -25,6 +25,7 @@ const {
   traverseFilter,
   getComponentName,
   hasEscapeQuote,
+  hasLengthProperty,
   isRootElement
 } = require('../../util')
 
@@ -147,6 +148,10 @@ module.exports = {
       this.options.filterModules.includes(path.node.object.name)
     ) {
       path.skip()
+    }
+    // 微信小程序平台无法观测 Array length 访问：https://developers.weixin.qq.com/community/develop/doc/000c8ee47d87a0d5b6685a8cb57000
+    if (this.options.platform.name === 'mp-weixin' && hasLengthProperty(path)) {
+      path.replaceWith(getMemberExpr(path, IDENTIFIER_GLOBAL, path.node, this))
     }
   },
   CallExpression (path) {
