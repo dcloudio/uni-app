@@ -14405,7 +14405,7 @@ const props$i = {
   },
   color: {
     type: String,
-    default: "#007aff"
+    default: ""
   }
 };
 const index$j = /* @__PURE__ */ defineBuiltInComponent({
@@ -14446,6 +14446,11 @@ const index$j = /* @__PURE__ */ defineBuiltInComponent({
         type
       } = props2;
       const booleanAttrs = useBooleanAttr(props2, "disabled");
+      const switchInputStyle = {};
+      if (color && switchChecked.value) {
+        switchInputStyle["backgroundColor"] = color;
+        switchInputStyle["borderColor"] = color;
+      }
       return createVNode("uni-switch", mergeProps({
         "ref": rootRef
       }, booleanAttrs, {
@@ -14454,10 +14459,7 @@ const index$j = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-switch-wrapper"
       }, [withDirectives(createVNode("div", {
         "class": ["uni-switch-input", [switchChecked.value ? "uni-switch-input-checked" : ""]],
-        "style": {
-          backgroundColor: switchChecked.value ? color : "#DFDFDF",
-          borderColor: switchChecked.value ? color : "#DFDFDF"
-        }
+        "style": switchInputStyle
       }, null, 6), [[vShow, type === "switch"]]), withDirectives(createVNode("div", {
         "class": "uni-checkbox-input"
       }, [switchChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.color, 22) : ""], 512), [[vShow, type === "checkbox"]])])], 16, ["onClick"]);

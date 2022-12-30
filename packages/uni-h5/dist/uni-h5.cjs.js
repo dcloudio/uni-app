@@ -6912,7 +6912,7 @@ const props$b = {
   },
   color: {
     type: String,
-    default: "#007aff"
+    default: ""
   }
 };
 const index$i = /* @__PURE__ */ defineBuiltInComponent({
@@ -6947,6 +6947,11 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
         type
       } = props2;
       const booleanAttrs = useBooleanAttr(props2, "disabled");
+      const switchInputStyle = {};
+      if (color && switchChecked.value) {
+        switchInputStyle["backgroundColor"] = color;
+        switchInputStyle["borderColor"] = color;
+      }
       return vue.createVNode("uni-switch", vue.mergeProps({
         "ref": rootRef
       }, booleanAttrs, {
@@ -6955,10 +6960,7 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-switch-wrapper"
       }, [vue.withDirectives(vue.createVNode("div", {
         "class": ["uni-switch-input", [switchChecked.value ? "uni-switch-input-checked" : ""]],
-        "style": {
-          backgroundColor: switchChecked.value ? color : "#DFDFDF",
-          borderColor: switchChecked.value ? color : "#DFDFDF"
-        }
+        "style": switchInputStyle
       }, null, 6), [[vue.vShow, type === "switch"]]), vue.withDirectives(vue.createVNode("div", {
         "class": "uni-checkbox-input"
       }, [switchChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.color, 22) : ""], 512), [[vue.vShow, type === "checkbox"]])])], 16, ["onClick"]);

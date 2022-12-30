@@ -13184,7 +13184,10 @@ function offThemeChange$1(callback) {
     UniServiceJSBridge.off(ON_THEME_CHANGE, callback);
 }
 function getNavigatorStyle() {
-    return plus.navigator.getUIStyle() === 'dark' ? 'light' : 'dark';
+    return getTheme() === 'dark' ? 'light' : 'dark';
+}
+function getTheme() {
+    return plus.navigator.getUIStyle();
 }
 function changePagesNavigatorStyle() {
     if (__uniConfig.darkmode) {
@@ -13651,7 +13654,7 @@ const getAppBaseInfo = defineSyncApi('getAppBaseInfo', () => {
         hostSDKVersion: undefined,
         language: osLanguage,
         SDKVersion: '',
-        theme: plus.navigator.getUIStyle(),
+        theme: getTheme(),
         version: plus.runtime.innerVersion,
     };
 });
