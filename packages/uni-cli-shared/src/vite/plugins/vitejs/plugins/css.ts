@@ -4,7 +4,12 @@ import glob from 'fast-glob'
 import colors from 'picocolors'
 import postcssrc from 'postcss-load-config'
 import { dataToEsm } from '@rollup/pluginutils'
-import { ExistingRawSourceMap, RollupError, SourceMapInput } from 'rollup'
+import {
+  ExistingRawSourceMap,
+  PluginContext,
+  RollupError,
+  SourceMapInput,
+} from 'rollup'
 import { RawSourceMap } from '@ampproject/remapping'
 import type * as PostCSS from 'postcss'
 import {
@@ -34,6 +39,7 @@ import type { Alias } from 'types/alias'
 import { preCss, preNVueCss } from '../../../../preprocess'
 import { emptyCssComments } from '../cleanString'
 import { isArray, isFunction, isString } from '@vue/shared'
+import { PAGES_JSON_JS } from '../../../../constants'
 // const debug = createDebugger('vite:css')
 
 export interface CSSOptions {
@@ -183,15 +189,50 @@ export function cssPlugin(config: ResolvedConfig): Plugin {
   }
 }
 
+function findCssModuleIds(
+  this: PluginContext,
+  moduleId: string,
+  cssModuleIds?: Set<string>,
+  seen?: Set<string>
+) {
+  if (!cssModuleIds) {
+    cssModuleIds = new Set<string>()
+  }
+  if (!seen) {
+    seen = new Set<string>()
+  }
+  if (seen.has(moduleId)) {
+    return cssModuleIds
+  }
+  seen.add(moduleId)
+  const moduleInfo = this.getModuleInfo(moduleId)
+  if (moduleInfo) {
+    moduleInfo.importedIds.forEach((id) => {
+      if (id.includes(PAGES_JSON_JS)) {
+        // 查询main.js时，需要忽略pages.json.js，否则会把所有页面样式加进来
+        return
+      }
+      if (cssLangRE.test(id) && !commonjsProxyRE.test(id)) {
+        cssModuleIds!.add(id)
+      } else {
+        findCssModuleIds.call(this, id, cssModuleIds, seen)
+      }
+    })
+  }
+  return cssModuleIds
+}
+
 /**
  * Plugin applied after user plugins
  */
 export function cssPostPlugin(
   config: ResolvedConfig,
   {
+    platform,
     chunkCssFilename,
     chunkCssCode,
   }: {
+    platform: UniApp.PLATFORM
     chunkCssFilename: (id: string) => string | void
     chunkCssCode: (
       filename: string,
@@ -237,6 +278,17 @@ export function cssPostPlugin(
       return null
     },
     async generateBundle() {
+      // app 平台页面并未 chunk，所以 renderChunk 并不会处理页面的 css，需要这里再补充查找
+      if (platform === 'app') {
+        const moduleIds = Array.from(this.getModuleIds())
+        moduleIds.forEach((id) => {
+          const filename = chunkCssFilename(id)
+          if (filename && !cssChunks.has(filename)) {
+            cssChunks.set(filename, [...findCssModuleIds.call(this, id)])
+          }
+        })
+      }
+
       if (!cssChunks.size) {
         return
       }

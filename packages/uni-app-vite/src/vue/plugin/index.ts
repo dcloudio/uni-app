@@ -63,6 +63,7 @@ export function uniAppVuePlugin(): UniVitePlugin {
     configResolved: createConfigResolved({
       createCssPostPlugin(config) {
         return cssPostPlugin(config, {
+          platform: 'app',
           chunkCssFilename(id: string) {
             if (id === mainPath) {
               return 'app.css'

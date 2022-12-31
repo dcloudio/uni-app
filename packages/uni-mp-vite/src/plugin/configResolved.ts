@@ -63,6 +63,7 @@ export function createConfigResolved({
     injectCssPostPlugin(
       config,
       cssPostPlugin(config, {
+        platform: process.env.UNI_PLATFORM,
         chunkCssFilename(id: string) {
           if (id === mainPath) {
             return 'app' + cssExtname
