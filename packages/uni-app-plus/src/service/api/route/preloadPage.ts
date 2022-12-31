@@ -9,10 +9,13 @@ import {
   defineAsyncApi,
   defineSyncApi,
 } from '@dcloudio/uni-api'
+import { initPageInternalInstance } from '@dcloudio/uni-core'
 import {
   preloadWebview,
   closePreloadWebview,
 } from '../../framework/page/preLoad'
+import { createNVuePage } from '../../framework/page/register'
+import { initRouteOptions } from '../../framework/page/routeOptions'
 
 export const unPreloadPage = defineSyncApi<API_TYPE_UN_PRELOAD_PAGE>(
   API_UN_PRELOAD_PAGE,
@@ -46,6 +49,18 @@ export const preloadPage = defineAsyncApi<API_TYPE_PRELOAD_PAGE>(
       path,
       query,
     })
+    const routeOptions = initRouteOptions(path, 'preloadPage')
+    const pageInstance = initPageInternalInstance(
+      'preloadPage',
+      url,
+      query,
+      routeOptions.meta,
+      undefined,
+      (__uniConfig.darkmode
+        ? plus.navigator.getUIStyle()
+        : 'light') as UniApp.ThemeMode
+    )
+    createNVuePage(parseInt(webview.id), webview, pageInstance)
     resolve({
       id: webview.id,
       url,
