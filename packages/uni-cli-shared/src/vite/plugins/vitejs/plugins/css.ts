@@ -271,8 +271,20 @@ export function cssPostPlugin(
       if (id) {
         const filename = chunkCssFilename(id)
         if (filename) {
-          const ids = Object.keys(chunk.modules).filter((id) => styles.has(id))
-          cssChunks.set(filename, ids)
+          if (platform === 'app' && filename === 'app.css') {
+            // 获取 unocss 的样式文件信息
+            const ids = Object.keys(chunk.modules).filter(
+              (id) =>
+                styles.has(id) &&
+                (id.includes('__uno.css') || id.includes('-unocss-'))
+            )
+            cssChunks.set(filename, ids)
+          } else {
+            const ids = Object.keys(chunk.modules).filter((id) =>
+              styles.has(id)
+            )
+            cssChunks.set(filename, ids)
+          }
         }
       }
       return null
@@ -283,8 +295,14 @@ export function cssPostPlugin(
         const moduleIds = Array.from(this.getModuleIds())
         moduleIds.forEach((id) => {
           const filename = chunkCssFilename(id)
-          if (filename && !cssChunks.has(filename)) {
-            cssChunks.set(filename, [...findCssModuleIds.call(this, id)])
+          if (filename) {
+            const ids = findCssModuleIds.call(this, id)
+            if (cssChunks.has(filename)) {
+              cssChunks.get(filename)!.forEach((id) => {
+                ids.add(id)
+              })
+            }
+            cssChunks.set(filename, [...ids])
           }
         })
       }
