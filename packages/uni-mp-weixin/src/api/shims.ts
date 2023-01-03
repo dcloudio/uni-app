@@ -27,7 +27,11 @@ function initComponentMocks(
 export function createSelectorQuery() {
   const query = wx.createSelectorQuery()
   const oldIn = query.in
-  query.in = function newIn(component) {
+  query.in = function newIn(
+    component:
+      | WechatMiniprogram.Component.TrivialInstance
+      | WechatMiniprogram.Page.TrivialInstance
+  ) {
     return oldIn.call(this, initComponentMocks(component))
   }
   return query

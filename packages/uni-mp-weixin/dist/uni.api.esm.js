@@ -1139,7 +1139,7 @@ const baseApis = {
     offPushMessage,
     invokePushCallback,
 };
-function initUni(api, protocols) {
+function initUni(api, protocols, platform = wx) {
     const wrapper = initWrapper(protocols);
     const UniProxyHandlers = {
         get(target, key) {
@@ -1154,7 +1154,7 @@ function initUni(api, protocols) {
             }
             // event-api
             // provider-api?
-            return promisify(key, wrapper(key, wx[key]));
+            return promisify(key, wrapper(key, platform[key]));
         },
     };
     return new Proxy({}, UniProxyHandlers);
@@ -1179,6 +1179,30 @@ function initGetProvider(providers) {
         }
         isFunction(complete) && complete(res);
     };
+}
+
+const objectKeys = [
+    'env',
+    'error',
+    'version',
+    'lanDebug',
+    'cloud',
+    'serviceMarket',
+    'router',
+    'worklet',
+];
+function initWx() {
+    const WxProxyHandlers = {
+        get(target, key) {
+            if (hasOwn(target, key)) {
+                return target[key];
+            }
+            if (objectKeys.indexOf(key) > -1 || isFunction(wx[key])) {
+                return wx[key];
+            }
+        },
+    };
+    return new Proxy({}, WxProxyHandlers);
 }
 
 const mocks = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__'];
@@ -1229,6 +1253,7 @@ var protocols = /*#__PURE__*/Object.freeze({
   getAppAuthorizeSetting: getAppAuthorizeSetting
 });
 
-var index = initUni(shims, protocols);
+const wx$1 = initWx();
+var index = initUni(shims, protocols, wx$1);
 
-export { index as default };
+export { index as default, wx$1 as wx };
