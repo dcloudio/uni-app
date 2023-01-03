@@ -1064,7 +1064,7 @@ const baseApis = {
     offPushMessage,
     invokePushCallback,
 };
-function initUni(api, protocols) {
+function initUni(api, protocols, platform = my) {
     const wrapper = initWrapper(protocols);
     const UniProxyHandlers = {
         get(target, key) {
@@ -1079,16 +1079,16 @@ function initUni(api, protocols) {
             }
             // event-api
             // provider-api?
-            return promisify(key, wrapper(key, my[key]));
+            return promisify(key, wrapper(key, platform[key]));
         },
     };
     // 处理 api mp 打包后为不同js，emitter 无法共享问题
     {
-        my.$emit = $emit;
+        platform.$emit = $emit;
     }
     // 处理 api mp 打包后为不同js，getEventChannel 无法共享问题
     {
-        my.getEventChannel = getEventChannel;
+        platform.getEventChannel = getEventChannel;
     }
     return new Proxy({}, UniProxyHandlers);
 }

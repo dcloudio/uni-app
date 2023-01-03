@@ -19497,6 +19497,11 @@ const preloadPage = defineAsyncApi(API_PRELOAD_PAGE, ({ url }, { resolve, reject
         path,
         query,
     });
+    const routeOptions = initRouteOptions(path, 'preloadPage');
+    const pageInstance = initPageInternalInstance('preloadPage', url, query, routeOptions.meta, undefined, (__uniConfig.darkmode
+        ? plus.navigator.getUIStyle()
+        : 'light'));
+    createNVuePage(parseInt(webview.id), webview, pageInstance);
     resolve({
         id: webview.id,
         url,
