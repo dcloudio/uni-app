@@ -76,6 +76,9 @@ function getProvides () {
   ) { // 非微信小程序，自动注入 wx 对象
     provides.wx = provides.uni
   }
+  if (process.env.UNI_PLATFORM === 'mp-weixin') {
+    provides.wx = [path.resolve(uniPath, '../wx.js'), 'default']
+  }
   return provides
 }
 
@@ -144,7 +147,8 @@ function initSubpackageConfig (webpackConfig, vueOptions) {
   }
   vueOptions.outputDir = process.env.UNI_OUTPUT_DIR
   webpackConfig.output.path(process.env.UNI_OUTPUT_DIR)
-  webpackConfig.output.set(webpack.version[0] > 4 ? 'chunkLoadingGlobal' : 'jsonpFunction', 'webpackJsonp_' + (process.env.UNI_SUBPACKGE || process.env.UNI_MP_PLUGIN))
+  webpackConfig.output.set(webpack.version[0] > 4 ? 'chunkLoadingGlobal' : 'jsonpFunction', 'webpackJsonp_' + (process
+    .env.UNI_SUBPACKGE || process.env.UNI_MP_PLUGIN))
 }
 
 function addToUniEntry (fileName) {
