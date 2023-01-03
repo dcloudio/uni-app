@@ -40,7 +40,8 @@ export class User implements IUser {
     //#ifdef MP-WEIXIN
     console.log('def weixin')
     //#endif
-
+    const a = -3
+    console.log(~a)
     new XToast<XToast<unknown>>(getUniActivity())
       .setContentView(R.layout.toast_hint)
       .setDuration(1000)
