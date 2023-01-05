@@ -122,7 +122,7 @@ export class UniComponent extends UniNode {
         JOB_PRIORITY_RENDERJS
       )
     } else if (name === ATTR_STYLE) {
-      const newStyle = decodeAttr(this.$ || $(this.pid).$, value)
+      const newStyle = decodeAttr(value, this.$ || $(this.pid).$)
       const oldStyle = this.$props.style
       if (isPlainObject(newStyle) && isPlainObject(oldStyle)) {
         Object.keys(newStyle).forEach((n) => {
@@ -134,7 +134,7 @@ export class UniComponent extends UniNode {
     } else if (isCssVar(name)) {
       this.$.style.setProperty(name, normalizeStyleValue(value as string))
     } else {
-      value = decodeAttr(this.$ || $(this.pid).$, value)
+      value = decodeAttr(value, this.$ || $(this.pid).$)
       if (!this.wxsPropsInvoke(name, value, true)) {
         this.$props[name] = value
       }
