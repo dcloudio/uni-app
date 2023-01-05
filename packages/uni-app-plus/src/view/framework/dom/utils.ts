@@ -6,7 +6,7 @@ import { invokeWxs } from './wxs'
 
 const JSON_PROTOCOL_LEN = JSON_PROTOCOL.length
 
-export function decodeAttr(el: UniCustomElement, value: unknown) {
+export function decodeAttr(value: unknown, el?: UniCustomElement) {
   if (!isString(value)) {
     return value
   }

@@ -6,6 +6,7 @@ import { JOB_PRIORITY_WXS_PROPS, queuePostActionJob } from '../scheduler'
 import { createWxsPropsInvoker, WxsPropsInvoker } from '../wxs'
 import { destroyRenderjs } from '../renderjs'
 import { nextTick } from 'vue'
+import { decodeAttr } from '../utils'
 
 export class UniNode {
   id: number
@@ -107,7 +108,7 @@ export class UniNode {
     Object.keys(attrs).forEach((name) => {
       if (name.indexOf(ATTR_CHANGE_PREFIX) === 0) {
         const propName = name.replace(ATTR_CHANGE_PREFIX, '')
-        const value = attrs[propName]
+        const value = decodeAttr(attrs[propName])
         const invoker = createWxsPropsInvoker(this, attrs[name], value)
         // 队列后再执行
         queuePostActionJob(() => invoker(value), JOB_PRIORITY_WXS_PROPS)
