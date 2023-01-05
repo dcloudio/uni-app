@@ -1,5 +1,6 @@
 import { initGetProvider, MPComponentInstance } from '@dcloudio/uni-mp-core'
 import { mocks } from '../runtime/parseOptions'
+import { initWx } from './wx'
 
 export const getProvider = initGetProvider({
   oauth: ['weixin'],
@@ -36,3 +37,10 @@ export function createSelectorQuery() {
   }
   return query
 }
+
+const wx = initWx()
+const host = wx.getAppBaseInfo().host
+export const shareVideoMessage =
+  host && host.env === 'SAAASDK'
+    ? wx.miniapp.shareVideoMessage
+    : wx.shareVideoMessage
