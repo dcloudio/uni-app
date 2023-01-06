@@ -1496,7 +1496,7 @@ function getWxsVm(el) {
 }
 const isClickEvent = (val) => val.type === "click";
 const isMouseEvent = (val) => val.type.indexOf("mouse") === 0 || ["contextmenu"].includes(val.type);
-const isTouchEvent = (val) => val.type.indexOf("touch") === 0;
+const isTouchEvent = (val) => typeof TouchEvent !== "undefined" && val instanceof TouchEvent || val.type.indexOf("touch") === 0;
 function $nne(evt, eventValue, instance2) {
   const { currentTarget } = evt;
   if (!(evt instanceof Event) || !(currentTarget instanceof HTMLElement)) {
@@ -1518,7 +1518,7 @@ function $nne(evt, eventValue, instance2) {
     normalizeClickEvent(res, evt);
   } else if (isMouseEvent(evt)) {
     normalizeMouseEvent(res, evt);
-  } else if (typeof TouchEvent !== "undefined" && evt instanceof TouchEvent || isTouchEvent(evt)) {
+  } else if (isTouchEvent(evt)) {
     const top = getWindowTop();
     res.touches = normalizeTouchEvent(
       evt.touches,
