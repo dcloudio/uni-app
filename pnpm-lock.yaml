@@ -1,4 +1,4 @@
-lockfileVersion: 5.4
+lockfileVersion: 5.3
 
 importers:
 
@@ -7,8 +7,8 @@ importers:
       '@babel/core': ^7.17.10
       '@babel/preset-env': ^7.16.11
       '@dcloudio/types': 3.2.7
-      '@dcloudio/uni-api': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-app': 3.0.0-alpha-3061620221230002
+      '@dcloudio/uni-api': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-app': 3.0.0-alpha-3061620230106001
       '@jest/types': ^29.0.3
       '@microsoft/api-extractor': ^7.33.6
       '@rollup/plugin-alias': ^4.0.2
@@ -64,7 +64,7 @@ importers:
       '@jest/types': 29.3.1
       '@microsoft/api-extractor': 7.33.7
       '@rollup/plugin-alias': 4.0.2_rollup@3.8.1
-      '@rollup/plugin-babel': 6.0.3_dfwdex4qe3e2dx2m4b7f5c5gee
+      '@rollup/plugin-babel': 6.0.3_@babel+core@7.20.7+rollup@3.8.1
       '@rollup/plugin-commonjs': 24.0.0_rollup@3.8.1
       '@rollup/plugin-json': 6.0.0_rollup@3.8.1
       '@rollup/plugin-node-resolve': 15.0.1_rollup@3.8.1
@@ -73,7 +73,7 @@ importers:
       '@rollup/plugin-terser': 0.2.1_rollup@3.8.1
       '@types/jest': 29.2.4
       '@types/node': 18.11.18
-      '@typescript-eslint/parser': 5.47.0_lzzuuodtsqwxnvqeq4g4likcqa
+      '@typescript-eslint/parser': 5.47.0_eslint@8.30.0+typescript@4.9.4
       '@vitejs/plugin-vue': 4.0.0_vite@4.0.4+vue@3.2.45
       '@vitejs/plugin-vue-jsx': 3.0.0_vite@4.0.4+vue@3.2.45
       '@vue/compiler-sfc': 3.2.45
@@ -97,13 +97,13 @@ importers:
       rollup-plugin-jscc: 2.0.0_rollup@3.8.1
       rollup-plugin-node-builtins: 2.1.2
       rollup-plugin-node-globals: 1.4.0
-      rollup-plugin-typescript2: 0.29.0_q6nddm75e3egjsxnhzkgx66xvi
+      rollup-plugin-typescript2: 0.29.0_rollup@3.8.1+typescript@4.9.4
       semver: 7.3.8
       simple-git-hooks: 2.8.1
       terser: 5.16.1
-      ts-jest: 29.0.3_2k44ldq77a2w6iqrsrhaboqvci
+      ts-jest: 29.0.3_d2b9c58e1ff8356f2211944e00ba1512
       typescript: 4.9.4
-      vite: 4.0.4_qfz55zahqkp66vn23sxaaw3yfe
+      vite: 4.0.4_8173dee407829fef55badcae005b7829
       vue: 3.2.45
       vue-router: 4.1.6_vue@3.2.45
       yorkie: 2.0.0
@@ -133,15 +133,15 @@ importers:
       compression: 1.7.4
       cypress: 10.11.0
       serve-static: 1.15.0
-      vite: 4.0.4
+      vite: 4.0.4_8173dee407829fef55badcae005b7829
 
   packages/size-check:
     specifiers:
-      '@dcloudio/uni-app': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-components': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-h5': 3.0.0-alpha-3061620221230002
-      '@dcloudio/vite-plugin-uni': 3.0.0-alpha-3061620221230002
+      '@dcloudio/uni-app': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-components': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-h5': 3.0.0-alpha-3061620230106001
+      '@dcloudio/vite-plugin-uni': 3.0.0-alpha-3061620230106001
       vue: 3.2.45
       vue-i18n: 9.1.9
       vuex: ^4.1.0
@@ -158,7 +158,7 @@ importers:
 
   packages/uni-api:
     specifiers:
-      '@dcloudio/uni-shared': 3.0.0-alpha-3061620221230002
+      '@dcloudio/uni-shared': 3.0.0-alpha-3061620230106001
       '@vue/shared': 3.2.45
     dependencies:
       '@vue/shared': 3.2.45
@@ -168,12 +168,12 @@ importers:
   packages/uni-app:
     specifiers:
       '@dcloudio/types': 3.2.7
-      '@dcloudio/uni-cloud': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-components': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-i18n': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-push': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-stat': 3.0.0-alpha-3061620221230002
+      '@dcloudio/uni-cloud': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-components': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-i18n': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-push': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-stat': 3.0.0-alpha-3061620230106001
       '@vue/shared': 3.2.45
     dependencies:
       '@dcloudio/uni-cloud': link:../uni-cloud
@@ -188,13 +188,13 @@ importers:
 
   packages/uni-app-plus:
     specifiers:
-      '@dcloudio/uni-app-vite': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-app-vue': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-components': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-h5': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-i18n': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3061620221230002
+      '@dcloudio/uni-app-vite': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-app-vue': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-components': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-h5': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-i18n': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3061620230106001
       '@types/pako': 1.0.2
       '@vue/compiler-sfc': 3.2.45
       autoprefixer: ^10.4.13
@@ -219,10 +219,10 @@ importers:
 
   packages/uni-app-vite:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-i18n': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-nvue-styler': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3061620221230002
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-i18n': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-nvue-styler': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3061620230106001
       '@rollup/pluginutils': ^4.2.0
       '@types/debug': ^4.1.7
       '@types/fs-extra': ^9.0.13
@@ -257,18 +257,18 @@ importers:
       esbuild: 0.16.10
       postcss: 8.4.20
       rollup: 3.8.1
-      vite: 4.0.4
+      vite: 4.0.4_8173dee407829fef55badcae005b7829
       vue: 3.2.45
 
   packages/uni-app-vue:
     specifiers:
-      '@dcloudio/uni-shared': 3.0.0-alpha-3061620221230002
+      '@dcloudio/uni-shared': 3.0.0-alpha-3061620230106001
     devDependencies:
       '@dcloudio/uni-shared': link:../uni-shared
 
   packages/uni-automator:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061620221230002
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061620230106001
       '@types/debug': ^4.1.7
       '@types/fs-extra': ^9.0.13
       address: ^1.1.2
@@ -303,9 +303,9 @@ importers:
       '@babel/core': ^7.20.5
       '@babel/parser': ^7.20.5
       '@babel/types': ^7.20.7
-      '@dcloudio/uni-i18n': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-uts-v1': 3.0.0-alpha-3061620221230002
+      '@dcloudio/uni-i18n': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-uts-v1': 3.0.0-alpha-3061620230106001
       '@intlify/core-base': 9.1.9
       '@intlify/shared': 9.1.9
       '@intlify/vue-devtools': 9.1.9
@@ -412,9 +412,9 @@ importers:
 
   packages/uni-cloud:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-i18n': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3061620221230002
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-i18n': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3061620230106001
       '@vue/shared': 3.2.45
       fast-glob: ^3.2.11
     dependencies:
@@ -426,7 +426,7 @@ importers:
 
   packages/uni-components:
     specifiers:
-      '@dcloudio/uni-shared': 3.0.0-alpha-3061620221230002
+      '@dcloudio/uni-shared': 3.0.0-alpha-3061620230106001
       '@types/quill': ^1.3.7
     devDependencies:
       '@dcloudio/uni-shared': link:../uni-shared
@@ -434,9 +434,9 @@ importers:
 
   packages/uni-core:
     specifiers:
-      '@dcloudio/uni-i18n': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3061620221230002
+      '@dcloudio/uni-i18n': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3061620230106001
       safe-area-insets: ^1.4.1
     devDependencies:
       '@dcloudio/uni-i18n': link:../uni-i18n
@@ -447,11 +447,11 @@ importers:
   packages/uni-h5:
     specifiers:
       '@amap/amap-jsapi-types': ^0.0.8
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-h5-vite': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-h5-vue': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-i18n': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3061620221230002
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-h5-vite': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-h5-vue': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-i18n': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3061620230106001
       '@types/estree': ^0.0.51
       '@types/google.maps': ^3.45.6
       '@vue/server-renderer': 3.2.45
@@ -487,8 +487,8 @@ importers:
 
   packages/uni-h5-vite:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3061620221230002
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3061620230106001
       '@rollup/pluginutils': ^4.2.0
       '@types/debug': ^4.1.7
       '@types/fs-extra': ^9.0.13
@@ -530,7 +530,7 @@ importers:
 
   packages/uni-h5-vue:
     specifiers:
-      '@dcloudio/uni-shared': 3.0.0-alpha-3061620221230002
+      '@dcloudio/uni-shared': 3.0.0-alpha-3061620230106001
     dependencies:
       '@dcloudio/uni-shared': link:../uni-shared
 
@@ -539,10 +539,10 @@ importers:
 
   packages/uni-mp-alipay:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3061620221230002
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3061620230106001
       '@vue/compiler-core': 3.2.45
       '@vue/shared': 3.2.45
     dependencies:
@@ -555,12 +555,12 @@ importers:
 
   packages/uni-mp-baidu:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-mp-weixin': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3061620221230002
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-mp-weixin': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3061620230106001
       '@vue/compiler-core': 3.2.45
       '@vue/shared': 3.2.45
     dependencies:
@@ -578,8 +578,8 @@ importers:
       '@babel/generator': ^7.20.5
       '@babel/parser': ^7.20.5
       '@babel/types': ^7.20.7
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3061620221230002
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3061620230106001
       '@types/babel__generator': ^7.6.4
       '@vue/compiler-core': 3.2.45
       '@vue/compiler-dom': 3.2.45
@@ -607,12 +607,12 @@ importers:
 
   packages/uni-mp-kuaishou:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-mp-weixin': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3061620221230002
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-mp-weixin': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3061620230106001
       '@vue/compiler-core': 3.2.45
       '@vue/shared': 3.2.45
     dependencies:
@@ -627,12 +627,12 @@ importers:
 
   packages/uni-mp-lark:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-mp-toutiao': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3061620221230002
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-mp-toutiao': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3061620230106001
       '@vue/compiler-core': 3.2.45
       '@vue/shared': 3.2.45
     dependencies:
@@ -647,11 +647,11 @@ importers:
 
   packages/uni-mp-qq:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-mp-weixin': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3061620221230002
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-mp-weixin': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3061620230106001
       '@types/fs-extra': ^9.0.13
       '@vue/compiler-core': 3.2.45
       '@vue/shared': 3.2.45
@@ -670,11 +670,11 @@ importers:
 
   packages/uni-mp-toutiao:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3061620221230002
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3061620230106001
       '@vue/compiler-core': 3.2.45
       '@vue/shared': 3.2.45
     dependencies:
@@ -688,11 +688,11 @@ importers:
 
   packages/uni-mp-vite:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-i18n': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3061620221230002
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-i18n': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-mp-compiler': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3061620230106001
       '@types/debug': ^4.1.7
       '@vue/compiler-sfc': 3.2.45
       '@vue/shared': 3.2.45
@@ -711,8 +711,8 @@ importers:
 
   packages/uni-mp-vue:
     specifiers:
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3061620221230002
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3061620230106001
       '@vue/shared': 3.2.45
     dependencies:
       '@dcloudio/uni-shared': link:../uni-shared
@@ -722,10 +722,10 @@ importers:
 
   packages/uni-mp-weixin:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3061620221230002
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3061620230106001
       '@vue/compiler-core': 3.2.45
       '@vue/shared': 3.2.45
     dependencies:
@@ -749,16 +749,16 @@ importers:
 
   packages/uni-push:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061620221230002
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061620230106001
     dependencies:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
 
   packages/uni-quickapp-webview:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3061620221230002
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-mp-vite': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3061620230106001
       '@vue/compiler-core': 3.2.45
       '@vue/shared': 3.2.45
     dependencies:
@@ -787,8 +787,8 @@ importers:
 
   packages/uni-stat:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3061620221230002
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3061620230106001
       '@types/debug': ^4.1.7
       debug: ^4.3.3
     dependencies:
@@ -800,7 +800,7 @@ importers:
 
   packages/uni-uts-v1:
     specifiers:
-      '@dcloudio/uts': 3.0.0-alpha-3061620221230002
+      '@dcloudio/uts': 3.0.0-alpha-3061620230106001
       '@types/adm-zip': ^0.5.0
       '@types/android-versions': ^1.8.0
       '@types/fs-extra': ^9.0.13
@@ -829,15 +829,15 @@ importers:
 
   packages/uni-vue:
     specifiers:
-      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3061620221230002
+      '@dcloudio/uni-mp-vue': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3061620230106001
     devDependencies:
       '@dcloudio/uni-mp-vue': link:../uni-mp-vue
       '@dcloudio/uni-shared': link:../uni-shared
 
   packages/uni-vue-devtools:
     specifiers:
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061620221230002
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061620230106001
       detect-port: ^1.5.1
       express: ^4.17.1
       open: ^8.4.0
@@ -851,10 +851,10 @@ importers:
 
   packages/uts:
     specifiers:
-      '@dcloudio/uts-darwin-arm64': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uts-darwin-x64': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uts-win32-ia32-msvc': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uts-win32-x64-msvc': 3.0.0-alpha-3061620221230002
+      '@dcloudio/uts-darwin-arm64': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uts-darwin-x64': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uts-win32-ia32-msvc': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uts-win32-x64-msvc': 3.0.0-alpha-3061620230106001
     optionalDependencies:
       '@dcloudio/uts-darwin-arm64': link:../uts-darwin-arm64
       '@dcloudio/uts-darwin-x64': link:../uts-darwin-x64
@@ -878,8 +878,8 @@ importers:
       '@babel/core': ^7.20.5
       '@babel/plugin-syntax-import-meta': ^7.10.4
       '@babel/plugin-transform-typescript': ^7.20.2
-      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061620221230002
-      '@dcloudio/uni-shared': 3.0.0-alpha-3061620221230002
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3061620230106001
+      '@dcloudio/uni-shared': 3.0.0-alpha-3061620230106001
       '@rollup/pluginutils': ^4.2.0
       '@types/debug': ^4.1.7
       '@types/estree': ^0.0.51
@@ -939,7 +939,7 @@ importers:
       '@types/sass': 1.43.1
       '@vue/babel-plugin-jsx': 1.1.1_@babel+core@7.20.7
       chokidar: 3.5.3
-      vite: 4.0.4_terser@5.16.1
+      vite: 4.0.4_8173dee407829fef55badcae005b7829
       vue: 3.2.45
 
 packages:
@@ -2156,13 +2156,11 @@ packages:
       uuid: 8.3.2
     dev: true
 
-  /@cypress/xvfb/1.2.4_supports-color@8.1.1:
+  /@cypress/xvfb/1.2.4:
     resolution: {integrity: sha512-skbBzPggOVYCbnGgV+0dmBdW/s77ZkAOXIC1knS8NagwDjBrNC1LuXtQJeiN6l+m7lzmHtaoUw/ctJKdqkG57Q==}
     dependencies:
-      debug: 3.2.7_supports-color@8.1.1
+      debug: 3.2.7
       lodash.once: 4.1.1
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /@dcloudio/types/2.6.12:
@@ -2789,7 +2787,7 @@ packages:
       slash: 4.0.0
     dev: true
 
-  /@rollup/plugin-babel/6.0.3_dfwdex4qe3e2dx2m4b7f5c5gee:
+  /@rollup/plugin-babel/6.0.3_@babel+core@7.20.7+rollup@3.8.1:
     resolution: {integrity: sha512-fKImZKppa1A/gX73eg4JGo+8kQr/q1HBQaCGKECZ0v4YBBv3lFqi14+7xyApECzvkLTHCifx+7ntcrvtBIRcpg==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -3239,7 +3237,7 @@ packages:
     dev: true
     optional: true
 
-  /@typescript-eslint/parser/5.47.0_lzzuuodtsqwxnvqeq4g4likcqa:
+  /@typescript-eslint/parser/5.47.0_eslint@8.30.0+typescript@4.9.4:
     resolution: {integrity: sha512-udPU4ckK+R1JWCGdQC4Qa27NtBg7w020ffHqGyAK8pAgOVuNw7YaKXGChk+udh+iiGIJf6/E/0xhVXyPAbsczw==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
@@ -3314,7 +3312,7 @@ packages:
       regenerator-runtime: 0.13.11
       systemjs: 6.13.0
       terser: 5.16.1
-      vite: 4.0.4_terser@5.16.1
+      vite: 4.0.4_8173dee407829fef55badcae005b7829
     dev: false
 
   /@vitejs/plugin-vue-jsx/3.0.0_vite@4.0.4+vue@3.2.45:
@@ -3327,7 +3325,7 @@ packages:
       '@babel/core': 7.20.7
       '@babel/plugin-transform-typescript': 7.20.7_@babel+core@7.20.7
       '@vue/babel-plugin-jsx': 1.1.1_@babel+core@7.20.7
-      vite: 4.0.4_qfz55zahqkp66vn23sxaaw3yfe
+      vite: 4.0.4_8173dee407829fef55badcae005b7829
       vue: 3.2.45
     transitivePeerDependencies:
       - supports-color
@@ -3339,7 +3337,7 @@ packages:
       vite: ^4.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 4.0.4_qfz55zahqkp66vn23sxaaw3yfe
+      vite: 4.0.4_8173dee407829fef55badcae005b7829
       vue: 3.2.45
 
   /@vue/babel-helper-vue-transform-on/1.0.2:
@@ -3814,8 +3812,6 @@ packages:
       raw-body: 2.5.1
       type-is: 1.6.18
       unpipe: 1.0.0
-    transitivePeerDependencies:
-      - supports-color
     dev: false
 
   /brace-expansion/1.1.11:
@@ -4193,8 +4189,6 @@ packages:
       on-headers: 1.0.2
       safe-buffer: 5.1.2
       vary: 1.1.2
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /concat-map/0.0.1:
@@ -4396,7 +4390,7 @@ packages:
     requiresBuild: true
     dependencies:
       '@cypress/request': 2.88.10
-      '@cypress/xvfb': 1.2.4_supports-color@8.1.1
+      '@cypress/xvfb': 1.2.4
       '@types/node': 14.18.35
       '@types/sinonjs__fake-timers': 8.1.1
       '@types/sizzle': 2.3.3
@@ -4452,24 +4446,13 @@ packages:
 
   /debug/2.6.9:
     resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}
-    peerDependencies:
-      supports-color: '*'
-    peerDependenciesMeta:
-      supports-color:
-        optional: true
     dependencies:
       ms: 2.0.0
 
-  /debug/3.2.7_supports-color@8.1.1:
+  /debug/3.2.7:
     resolution: {integrity: sha512-CFjzYYAi4ThfiQvizrFQevTTXHtnCqWfe7x1AhgEscTz6ZbLbfoLRLPugTQyBth6f8ZERVUSyWHFD/7Wu4t1XQ==}
-    peerDependencies:
-      supports-color: '*'
-    peerDependenciesMeta:
-      supports-color:
-        optional: true
     dependencies:
       ms: 2.1.3
-      supports-color: 8.1.1
     dev: true
 
   /debug/4.3.4:
@@ -4977,8 +4960,6 @@ packages:
       type-is: 1.6.18
       utils-merge: 1.0.1
       vary: 1.1.2
-    transitivePeerDependencies:
-      - supports-color
     dev: false
 
   /extend/3.0.2:
@@ -5074,8 +5055,6 @@ packages:
       parseurl: 1.3.3
       statuses: 2.0.1
       unpipe: 1.0.0
-    transitivePeerDependencies:
-      - supports-color
     dev: false
 
   /find-cache-dir/3.3.2:
@@ -7411,7 +7390,7 @@ packages:
       rollup-pluginutils: 2.8.2
     dev: true
 
-  /rollup-plugin-typescript2/0.29.0_q6nddm75e3egjsxnhzkgx66xvi:
+  /rollup-plugin-typescript2/0.29.0_rollup@3.8.1+typescript@4.9.4:
     resolution: {integrity: sha512-YytahBSZCIjn/elFugEGQR5qTsVhxhUwGZIsA9TmrSsC88qroGo65O5HZP/TTArH2dm0vUmYWhKchhwi2wL9bw==}
     peerDependencies:
       rollup: '>=1.26.3'
@@ -7438,6 +7417,7 @@ packages:
     hasBin: true
     optionalDependencies:
       fsevents: 2.3.2
+    dev: true
 
   /run-parallel/1.2.0:
     resolution: {integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==}
@@ -7506,8 +7486,6 @@ packages:
       on-finished: 2.4.1
       range-parser: 1.2.1
       statuses: 2.0.1
-    transitivePeerDependencies:
-      - supports-color
 
   /serialize-javascript/6.0.0:
     resolution: {integrity: sha512-Qr3TosvguFt8ePWqsvRfrKyQXIiW+nGbYpy8XK24NQHE83caxWt+mIymTT19DGFbNWNLfEwsrkSmN64lVWB9ag==}
@@ -7523,8 +7501,6 @@ packages:
       escape-html: 1.0.3
       parseurl: 1.3.3
       send: 0.18.0
-    transitivePeerDependencies:
-      - supports-color
 
   /setprototypeof/1.2.0:
     resolution: {integrity: sha512-E5LDX7Wrp85Kil5bhZv46j8jOeboKq5JMmYM3gVGdGH8xFpPWXUMsNrlODCrkoxMEeNi/XZIwuRvY4XNwYMJpw==}
@@ -7894,7 +7870,7 @@ packages:
       punycode: 2.1.1
     dev: true
 
-  /ts-jest/29.0.3_2k44ldq77a2w6iqrsrhaboqvci:
+  /ts-jest/29.0.3_d2b9c58e1ff8356f2211944e00ba1512:
     resolution: {integrity: sha512-Ibygvmuyq1qp/z3yTh9QTwVVAbFdDy/+4BtIQR2sp6baF2SJU/8CKK/hhnGIDY2L90Az2jIqTwZPnN2p+BweiQ==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     hasBin: true
@@ -8113,40 +8089,7 @@ packages:
       extsprintf: 1.3.0
     dev: true
 
-  /vite/4.0.4:
-    resolution: {integrity: sha512-xevPU7M8FU0i/80DMR+YhgrzR5KS2ORy1B4xcX/cXLsvnUWvfHuqMmVU6N0YiJ4JWGRJJsLCgjEzKjG9/GKoSw==}
-    engines: {node: ^14.18.0 || >=16.0.0}
-    hasBin: true
-    peerDependencies:
-      '@types/node': '>= 14'
-      less: '*'
-      sass: '*'
-      stylus: '*'
-      sugarss: '*'
-      terser: ^5.4.0
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-      less:
-        optional: true
-      sass:
-        optional: true
-      stylus:
-        optional: true
-      sugarss:
-        optional: true
-      terser:
-        optional: true
-    dependencies:
-      esbuild: 0.16.10
-      postcss: 8.4.20
-      resolve: 1.22.1
-      rollup: 3.8.1
-    optionalDependencies:
-      fsevents: 2.3.2
-    dev: true
-
-  /vite/4.0.4_qfz55zahqkp66vn23sxaaw3yfe:
+  /vite/4.0.4_8173dee407829fef55badcae005b7829:
     resolution: {integrity: sha512-xevPU7M8FU0i/80DMR+YhgrzR5KS2ORy1B4xcX/cXLsvnUWvfHuqMmVU6N0YiJ4JWGRJJsLCgjEzKjG9/GKoSw==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
@@ -8179,39 +8122,7 @@ packages:
       terser: 5.16.1
     optionalDependencies:
       fsevents: 2.3.2
-
-  /vite/4.0.4_terser@5.16.1:
-    resolution: {integrity: sha512-xevPU7M8FU0i/80DMR+YhgrzR5KS2ORy1B4xcX/cXLsvnUWvfHuqMmVU6N0YiJ4JWGRJJsLCgjEzKjG9/GKoSw==}
-    engines: {node: ^14.18.0 || >=16.0.0}
-    hasBin: true
-    peerDependencies:
-      '@types/node': '>= 14'
-      less: '*'
-      sass: '*'
-      stylus: '*'
-      sugarss: '*'
-      terser: ^5.4.0
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-      less:
-        optional: true
-      sass:
-        optional: true
-      stylus:
-        optional: true
-      sugarss:
-        optional: true
-      terser:
-        optional: true
-    dependencies:
-      esbuild: 0.16.10
-      postcss: 8.4.20
-      resolve: 1.22.1
-      rollup: 3.8.1
-      terser: 5.16.1
-    optionalDependencies:
-      fsevents: 2.3.2
+    dev: true
 
   /vlq/0.2.3:
     resolution: {integrity: sha512-DRibZL6DsNhIgYQ+wNdWDL2SL3bKPlVrRiBqV5yuMm++op8W4kGFtaQfCs4KEJn0wBZcHVHJ3eoywX8983k1ow==}
