@@ -9388,17 +9388,11 @@ function autoPrefix(style, rawName) {
 }
 // fixed by xxxxxx
 // upx,rpx
-const rpxRE = /\b([+-]?\d+(\.\d+)?)[r|u]px\b/g;
+const { unit, unitRatio, unitPrecision } = uniShared.defaultRpx2Unit;
+const rpx2Unit = uniShared.createRpx2Unit(unit, unitRatio, unitPrecision);
 const normalizeRpx = (val) => {
-    // @ts-ignore
-    if (typeof rpx2px !== 'function') {
-        return val;
-    }
     if (shared.isString(val)) {
-        return val.replace(rpxRE, (a, b) => {
-            // @ts-ignore
-            return rpx2px(b) + 'px';
-        });
+        return rpx2Unit(val);
     }
     return val;
 };

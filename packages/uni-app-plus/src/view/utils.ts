@@ -1,6 +1,6 @@
 import { camelize, capitalize, isString } from '@vue/shared'
-import { rpx2px } from '@dcloudio/uni-core'
 import { getRealPath } from '../platform/getRealPath'
+import { defaultRpx2Unit, createRpx2Unit } from '@dcloudio/uni-shared'
 
 export function normalizeStyleValue(val: string) {
   return normalizeUrl(normalizeRpx(val))
@@ -18,14 +18,12 @@ const normalizeUrl = (val: string) => {
   return val
 }
 
-const rpxRE = /\b([+-]?\d+(\.\d+)?)[r|u]px\b/g
+const { unit, unitRatio, unitPrecision } = defaultRpx2Unit
+const rpx2Unit = createRpx2Unit(unit, unitRatio, unitPrecision)
 
 const normalizeRpx = (val: string) => {
   if (isString(val)) {
-    return val.replace(rpxRE, (a, b) => {
-      // @ts-ignore
-      return rpx2px(b) + 'px'
-    })
+    return rpx2Unit(val)
   }
   return val
 }
