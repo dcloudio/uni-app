@@ -681,7 +681,6 @@ const defineBuiltInComponent = (options) => {
   return defineSystemComponent(options);
 };
 const defineSystemComponent = (options) => {
-  options.devtools = { hide: true };
   options.__reserved = true;
   options.compatConfig = {
     MODE: 3
