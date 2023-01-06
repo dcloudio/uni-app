@@ -35,6 +35,7 @@ import { initPage, onPageShow, onPageReady } from './page'
 import { usePageMeta, usePageRoute } from './provide'
 import { initLaunchOptions, getEnterOptions } from './utils'
 import type { RouteLocationNormalizedLoaded } from 'vue-router'
+import { useRouter } from 'vue-router'
 
 interface SetupComponentOptions {
   clone?: boolean
@@ -178,8 +179,12 @@ export function setupApp(comp: any) {
           }
         }
       }
-      // https://tower.im/teams/226535/todos/18307
-      onBeforeMount(onLaunch)
+      if (__UNI_FEATURE_PAGES__) {
+        // 等待ready后，再onLaunch，可以顺利获取到正确的path和query
+        useRouter().isReady().then(onLaunch)
+      } else {
+        onBeforeMount(onLaunch)
+      }
 
       onMounted(() => {
         window.addEventListener(
