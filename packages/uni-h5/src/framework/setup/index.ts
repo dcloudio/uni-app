@@ -180,7 +180,7 @@ export function setupApp(comp: any) {
         }
       }
       if (__UNI_FEATURE_PAGES__) {
-        // 等待ready后，再onLaunch，可以顺利获取到正确的path和query
+        // 等待ready后，再onLaunch，否则直达非首页无法获取到正确的path和query
         useRouter().isReady().then(onLaunch)
       } else {
         onBeforeMount(onLaunch)
