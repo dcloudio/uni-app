@@ -16,6 +16,7 @@ const isRelease = args.release
 const multiProcess = args.m
 // const buildTypes = args.t || args.types || isRelease
 const buildAllMatching = args.all || args.a
+const transpileOnly = args.transpileOnly
 
 run()
 
@@ -164,7 +165,7 @@ async function build(target) {
       [
         '-c',
         '--environment',
-        [`NODE_ENV:${env}`, types ? `TYPES:true` : ``, `TARGET:${target}`]
+        [`NODE_ENV:${env}`, types ? `TYPES:true` : ``, `TARGET:${target}`, transpileOnly ? `TRANSPILE_ONLY:true` : ``]
           .filter(Boolean)
           .join(','),
       ],

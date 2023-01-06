@@ -86,8 +86,8 @@ function resolveTsconfigJson() {
 function createConfig(entryFile, output, buildOption) {
   const shouldEmitDeclarations = process.env.TYPES != null && !hasTSChecked
   const tsOptions = {
-    check:
-      !process.env.CI && process.env.NODE_ENV === 'production' && !hasTSChecked,
+    check: !process.env.TRANSPILE_ONLY &&
+      (!process.env.CI && process.env.NODE_ENV === 'production' && !hasTSChecked),
     tsconfig: resolveTsconfigJson(),
     cacheRoot: path.resolve(__dirname, 'node_modules/.rts2_cache'),
     tsconfigOverride: {
