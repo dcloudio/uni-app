@@ -164,8 +164,13 @@ function beforeEach (to, from, next, routes) {
 function afterEach (to, from) {
   const fromId = from.params.__id__
   const toId = to.params.__id__
-
-  const fromVm = currentPages.find(pageVm => pageVm.$page.id === fromId) // 使用 beforeEach 时的 pages
+  let fromVm
+  // 使用 beforeEach 时的 pages
+  if (from.meta.isSet) {
+    fromVm = currentPages.find(pageVm => pageVm.$page.meta.pagePath === from.meta.pagePath)
+  } else {
+    fromVm = currentPages.find(pageVm => pageVm.$page.id === fromId)
+  }
 
   function unloadPage (vm) {
     if (vm) {
@@ -209,7 +214,14 @@ function afterEach (to, from) {
 
   if (to.type !== 'reLaunch') { // 因为 reLaunch 会重置 id，故不触发 onShow,switchTab 在 beforeRouteEnter 中触发
     // 直接获取所有 pages,getCurrentPages 正常情况下仅返回页面栈内，传 true 则返回所有已存在（主要是 tabBar 页面）
-    const toVm = getCurrentPages(true).find(pageVm => pageVm.$page.id === toId) // 使用最新的 pages
+    const pages = getCurrentPages(true)
+    let toVm
+    // 使用最新的 pages
+    if (to.meta.isSet) {
+      toVm = pages.find(pageVm => pageVm.$page.meta.pagePath === to.meta.pagePath)
+    } else {
+      toVm = pages.find(pageVm => pageVm.$page.id === toId)
+    }
     if (toVm) { // 目标页面若已存在，则触发 onShow
       // 延迟执行 onShow，防止与 UniServiceJSBridge.emit('onHidePopup') 冲突。
       setTimeout(function () {
