@@ -251,7 +251,7 @@ ${globalEnv}.__webpack_require_UNI_MP_PLUGIN__ = __webpack_require__;`
         hints: false
       },
       resolve: {
-        extensions: ['.nvue'],
+        extensions: ['.uts', '.nvue'],
         alias
       },
       module: {
