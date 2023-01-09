@@ -1,8 +1,8 @@
 import Log from 'android.util.Log'
 import FrameLayout from 'android.widget.FrameLayout'
 import View from 'android.view.View'
-import { IUser } from './interface.uts'
-import { login } from './login.uts'
+import { IUser } from './interface'
+import { login } from './login'
 import logo from '../../static/logo.png'
 
 const test = arrayOf(1, 2, 3)
