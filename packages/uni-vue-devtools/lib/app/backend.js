@@ -4787,9 +4787,7 @@ class ComponentWalker {
 
 
   getInstanceChildrenBySubTreeComponent(list, subTree, suspense) {
-    var _a;
-
-    if (((_a = subTree.type.devtools) === null || _a === void 0 ? void 0 : _a.hide) || this.uniAppPageNames.includes(subTree.type.name)) {
+    if (subTree.type.__reserved || this.uniAppPageNames.includes(subTree.type.name)) {
       list.push(...this.getInternalInstanceChildren(subTree.component.subTree));
     } else {
       !suspense ? list.push(subTree.component) : list.push({ ...subTree.component,
