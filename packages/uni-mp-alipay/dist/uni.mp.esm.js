@@ -224,9 +224,12 @@ function initCreateApp(parseAppOptions) {
 function initCreateSubpackageApp(parseAppOptions) {
     return function createApp(vm) {
         const appOptions = parseApp(vm, parseAppOptions);
-        const app = getApp({
-            allowDefault: true,
-        });
+        const app = isFunction(getApp) &&
+            getApp({
+                allowDefault: true,
+            });
+        if (!app)
+            return;
         vm.$.ctx.$scope = app;
         const globalData = app.globalData;
         if (globalData) {

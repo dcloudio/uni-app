@@ -850,14 +850,14 @@ function initWrapper(protocols) {
 
 const getLocale = () => {
     // 优先使用 $locale
-    const app = getApp({ allowDefault: true });
+    const app = isFunction(getApp) && getApp({ allowDefault: true });
     if (app && app.$vm) {
         return app.$vm.$locale;
     }
     return normalizeLocale(wx.getSystemInfoSync().language) || LOCALE_EN;
 };
 const setLocale = (locale) => {
-    const app = getApp();
+    const app = isFunction(getApp) && getApp();
     if (!app) {
         return false;
     }
@@ -1226,18 +1226,24 @@ function initComponentMocks(component) {
  * @returns
  */
 function createSelectorQuery() {
-    const query = wx.createSelectorQuery();
+    const query = wx$2.createSelectorQuery();
     const oldIn = query.in;
     query.in = function newIn(component) {
         return oldIn.call(this, initComponentMocks(component));
     };
     return query;
 }
+const wx$2 = initWx();
+const host = wx$2.getAppBaseInfo().host;
+const shareVideoMessage = host && host.env === 'SAAASDK'
+    ? wx$2.miniapp.shareVideoMessage
+    : wx$2.shareVideoMessage;
 
 var shims = /*#__PURE__*/Object.freeze({
   __proto__: null,
   getProvider: getProvider,
-  createSelectorQuery: createSelectorQuery
+  createSelectorQuery: createSelectorQuery,
+  shareVideoMessage: shareVideoMessage
 });
 
 var protocols = /*#__PURE__*/Object.freeze({

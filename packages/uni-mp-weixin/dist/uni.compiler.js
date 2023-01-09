@@ -172,6 +172,7 @@ const options = {
     vite: {
         inject: {
             uni: [path__default["default"].resolve(__dirname, 'uni.api.esm.js'), 'default'],
+            wx: [path__default["default"].resolve(__dirname, 'uni.api.esm.js'), 'wx'],
         },
         alias: {
             'uni-mp-runtime': path__default["default"].resolve(__dirname, 'uni.mp.esm.js'),

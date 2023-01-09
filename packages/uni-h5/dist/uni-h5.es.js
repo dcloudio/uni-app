@@ -1496,6 +1496,7 @@ function getWxsVm(el) {
 }
 const isClickEvent = (val) => val.type === "click";
 const isMouseEvent = (val) => val.type.indexOf("mouse") === 0 || ["contextmenu"].includes(val.type);
+const isTouchEvent = (val) => val.type.indexOf("touch") === 0;
 function $nne(evt, eventValue, instance2) {
   const { currentTarget } = evt;
   if (!(evt instanceof Event) || !(currentTarget instanceof HTMLElement)) {
@@ -1517,10 +1518,16 @@ function $nne(evt, eventValue, instance2) {
     normalizeClickEvent(res, evt);
   } else if (isMouseEvent(evt)) {
     normalizeMouseEvent(res, evt);
-  } else if (evt instanceof TouchEvent) {
+  } else if (typeof TouchEvent !== "undefined" && evt instanceof TouchEvent || isTouchEvent(evt)) {
     const top = getWindowTop();
-    res.touches = normalizeTouchEvent(evt.touches, top);
-    res.changedTouches = normalizeTouchEvent(evt.changedTouches, top);
+    res.touches = normalizeTouchEvent(
+      evt.touches,
+      top
+    );
+    res.changedTouches = normalizeTouchEvent(
+      evt.changedTouches,
+      top
+    );
   }
   {
     return wrapperH5WxsEvent(
@@ -7903,7 +7910,7 @@ function useKeyboard$1(props2, elRef, trigger) {
   }
   watch(
     () => elRef.value,
-    (el) => initKeyboard(el)
+    (el) => el && initKeyboard(el)
   );
 }
 var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
@@ -9408,6 +9415,8 @@ function useEvent(fieldRef, state2, props2, trigger, triggerInput, beforeInput) 
   }
   function initField() {
     const field = fieldRef.value;
+    if (!field)
+      return;
     const onFocus = function(event) {
       state2.focus = true;
       trigger("focus", event, {
@@ -9492,6 +9501,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
+const INPUT_MODES = ["none", "text", "decimal", "numeric", "tel", "search", "email", "url"];
 const props$q = /* @__PURE__ */ extend({}, props$r, {
   placeholderClass: {
     type: String,
@@ -9500,6 +9510,11 @@ const props$q = /* @__PURE__ */ extend({}, props$r, {
   textContentType: {
     type: String,
     default: ""
+  },
+  inputmode: {
+    type: String,
+    default: void 0,
+    validator: (value) => !!~INPUT_MODES.indexOf(value)
   }
 });
 const Input = /* @__PURE__ */ defineBuiltInComponent({
@@ -9537,14 +9552,6 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       const index2 = camelizeIndex !== -1 ? camelizeIndex : kebabCaseIndex !== -1 ? kebabCaseIndex : 0;
       return AUTOCOMPLETES[index2];
     });
-    const inputmode = computed(() => {
-      switch (props2.type) {
-        case "digit":
-          return "decimal";
-        default:
-          return void 0;
-      }
-    });
     let cache = ref("");
     let resetCache;
     const rootRef = ref(null);
@@ -9562,7 +9569,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
           resetCache = null;
         }
         if (input.validity && !input.validity.valid) {
-          if (!cache.value && event.data === "-" || cache.value[0] === "-" && event.inputType === "deleteContentBackward") {
+          if ((!cache.value || !input.value) && event.data === "-" || cache.value[0] === "-" && event.inputType === "deleteContentBackward") {
             cache.value = "-";
             state3.value = "";
             resetCache = () => {
@@ -9620,6 +9627,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
     }
     return () => {
       let inputNode = props2.disabled && fixDisabledColor ? createVNode("input", {
+        "key": "disabled-input",
         "ref": fieldRef,
         "value": state2.value,
         "tabindex": "-1",
@@ -9630,6 +9638,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-input-input",
         "onFocus": (event) => event.target.blur()
       }, null, 40, ["value", "readonly", "type", "maxlength", "step", "onFocus"]) : createVNode("input", {
+        "key": "input",
         "ref": fieldRef,
         "value": state2.value,
         "disabled": !!props2.disabled,
@@ -9641,7 +9650,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-input-input",
         "autocomplete": autocomplete.value,
         "onKeyup": onKeyUpEnter,
-        "inputmode": inputmode.value
+        "inputmode": props2.inputmode
       }, null, 40, ["value", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup", "inputmode"]);
       return createVNode("uni-input", {
         "ref": rootRef
@@ -12978,6 +12987,7 @@ const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
       props2.scrollY ? style += "overflow-y:auto;" : style += "overflow-y:hidden;";
       return style;
     });
+    const slots_default = slots.default && slots.default();
     return () => {
       const {
         refresherEnabled,
@@ -13040,7 +13050,7 @@ const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
         "fill": "none",
         "style": "color: #2bd009",
         "stroke-width": "3"
-      }, null)]) : null])]) : null, refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null], 4) : null, slots.default && slots.default()], 512)], 4)], 512)], 512);
+      }, null)]) : null])]) : null, refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null], 4) : null, slots_default], 512)], 4)], 512)], 512);
     };
   }
 });
@@ -13302,7 +13312,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
         event.stopPropagation();
       }
       if (_main.scrollTop === 0 && event.touches.length === 1) {
-        state2.refreshState = "pulling";
+        _setRefreshState("pulling");
       }
       if (props2.refresherEnabled && state2.refreshState === "pulling") {
         const dy = y - touchStart.y;
@@ -14653,6 +14663,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
     }
     return () => {
       let textareaNode = props2.disabled && fixDisabledColor ? createVNode("textarea", {
+        "key": "disabled-textarea",
         "ref": fieldRef,
         "value": state2.value,
         "tabindex": "-1",
@@ -14667,6 +14678,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
         },
         "onFocus": (event) => event.target.blur()
       }, null, 46, ["value", "readonly", "maxlength", "onFocus"]) : createVNode("textarea", {
+        "key": "textarea",
         "ref": fieldRef,
         "value": state2.value,
         "disabled": !!props2.disabled,
@@ -15493,6 +15505,7 @@ function setupPage(comp) {
         onPageReady(instance2);
         const { onReady } = instance2;
         onReady && invokeArrayFns$1(onReady);
+        invokeOnTabItemTap(route);
       });
       onBeforeActivate(() => {
         if (!instance2.__isVisible) {
@@ -15500,6 +15513,9 @@ function setupPage(comp) {
           instance2.__isVisible = true;
           const { onShow } = instance2;
           onShow && invokeArrayFns$1(onShow);
+          nextTick(() => {
+            invokeOnTabItemTap(route);
+          });
         }
       });
       onBeforeDeactivate(() => {
@@ -15620,6 +15636,16 @@ function onThemeChange$2() {
       UniServiceJSBridge.emit(ON_THEME_CHANGE, {
         theme: e2.matches ? "dark" : "light"
       });
+    });
+  }
+}
+function invokeOnTabItemTap(route) {
+  const { tabBarText, tabBarIndex, route: pagePath } = route.meta;
+  if (tabBarText) {
+    invokeHook("onTabItemTap", {
+      index: tabBarIndex,
+      text: tabBarText,
+      pagePath
     });
   }
 }
@@ -20490,7 +20516,7 @@ const navigateBack = /* @__PURE__ */ defineAsyncApi(
   NavigateBackProtocol,
   NavigateBackOptions
 );
-function navigate({ type, url, events }, __id__) {
+function navigate({ type, url, tabBarText, events }, __id__) {
   const router = getApp().$router;
   const { path, query } = parseUrl(url);
   return new Promise((resolve, reject) => {
@@ -20504,11 +20530,25 @@ function navigate({ type, url, events }, __id__) {
       if (isNavigationFailure(failure)) {
         return reject(failure.message);
       }
+      if (type === "switchTab") {
+        router.currentRoute.value.meta.tabBarText = tabBarText;
+      }
       if (type === "navigateTo") {
-        const eventChannel = new EventChannel(state2.__id__, events);
-        router.currentRoute.value.meta.eventChannel = eventChannel;
+        const meta = router.currentRoute.value.meta;
+        if (!meta.eventChannel) {
+          meta.eventChannel = new EventChannel(state2.__id__, events);
+        } else if (events) {
+          Object.keys(events).forEach((eventName) => {
+            meta.eventChannel._addListener(
+              eventName,
+              "on",
+              events[eventName]
+            );
+          });
+          meta.eventChannel._clearCache();
+        }
         return resolve({
-          eventChannel
+          eventChannel: meta.eventChannel
         });
       }
       return resolve();
@@ -20586,8 +20626,8 @@ function getTabBarPageId(url) {
 }
 const switchTab = /* @__PURE__ */ defineAsyncApi(
   API_SWITCH_TAB,
-  ({ url }, { resolve, reject }) => {
-    return removeNonTabBarPages(), navigate({ type: API_SWITCH_TAB, url }, getTabBarPageId(url)).then(resolve).catch(reject);
+  ({ url, tabBarText }, { resolve, reject }) => {
+    return removeNonTabBarPages(), navigate({ type: API_SWITCH_TAB, url, tabBarText }, getTabBarPageId(url)).then(resolve).catch(reject);
   },
   SwitchTabProtocol,
   SwitchTabOptions
@@ -21760,7 +21800,8 @@ function useSwitchTab(route, tabBar2, visibleList) {
       if (route.path !== url) {
         uni.switchTab({
           from: "tabBar",
-          url
+          url,
+          tabBarText: text2
         });
       } else {
         invokeHook("onTabItemTap", {
@@ -23815,7 +23856,7 @@ function usePickerMethods(props2, state2, trigger, rootRef, pickerRef, selectRef
       }
     }
     if (props2.end) {
-      const _year = new Date(props2.start).getFullYear();
+      const _year = new Date(props2.end).getFullYear();
       if (!isNaN(_year) && _year > end) {
         end = _year;
       }
@@ -24348,7 +24389,7 @@ function createPageHeadSearchInputTsx(navigationBar, {
   onBlur,
   onFocus,
   onInput,
-  onKeyup,
+  onConfirm,
   onClick
 }) {
   const {
@@ -24396,8 +24437,8 @@ function createPageHeadSearchInputTsx(navigationBar, {
     "onFocus": onFocus,
     "onBlur": onBlur,
     "onInput": onInput,
-    "onKeyup": onKeyup
-  }, null, 8, ["focus", "style", "placeholder-style", "onFocus", "onBlur", "onInput", "onKeyup"])], 4);
+    "onConfirm": onConfirm
+  }, null, 8, ["focus", "style", "placeholder-style", "onFocus", "onBlur", "onInput", "onConfirm"])], 4);
 }
 function onPageHeadBackButton() {
   if (getCurrentPages().length === 1) {
@@ -24555,12 +24596,10 @@ function usePageHeadSearchInput({
       text: text2.value
     });
   };
-  const onKeyup = (evt) => {
-    if (evt.key === "Enter" || evt.keyCode === 13) {
-      invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, {
-        text: text2.value
-      });
-    }
+  const onConfirm = (evt) => {
+    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, {
+      text: text2.value
+    });
   };
   return {
     focus,
@@ -24569,7 +24608,7 @@ function usePageHeadSearchInput({
     onFocus,
     onBlur,
     onInput,
-    onKeyup
+    onConfirm
   };
 }
 const _sfc_main = {

@@ -110,6 +110,21 @@ const miniProgram = {
                 arg: ['ready'],
             },
         ],
+        video: [
+            {
+                name: 'on',
+                arg: [
+                    'play',
+                    'pause',
+                    'ended',
+                    'timeupdate',
+                    'fullscreenchange',
+                    'waiting',
+                    'error',
+                    'progress',
+                ],
+            },
+        ],
     },
     component: {
         dir: COMPONENTS_DIR,

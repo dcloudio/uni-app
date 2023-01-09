@@ -2528,7 +2528,7 @@ function useKeyboard$1(props2, elRef, trigger) {
   }
   vue.watch(
     () => elRef.value,
-    (el) => initKeyboard(el)
+    (el) => el && initKeyboard(el)
   );
 }
 var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
@@ -3319,6 +3319,8 @@ function useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput) {
   }
   function initField() {
     const field = fieldRef.value;
+    if (!field)
+      return;
     const onFocus = function(event) {
       state.focus = true;
       trigger("focus", event, {
@@ -3403,6 +3405,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
+const INPUT_MODES = ["none", "text", "decimal", "numeric", "tel", "search", "email", "url"];
 const props$j = /* @__PURE__ */ shared.extend({}, props$k, {
   placeholderClass: {
     type: String,
@@ -3411,6 +3414,11 @@ const props$j = /* @__PURE__ */ shared.extend({}, props$k, {
   textContentType: {
     type: String,
     default: ""
+  },
+  inputmode: {
+    type: String,
+    default: void 0,
+    validator: (value) => !!~INPUT_MODES.indexOf(value)
   }
 });
 const Input = /* @__PURE__ */ defineBuiltInComponent({
@@ -3448,14 +3456,6 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       const index2 = camelizeIndex !== -1 ? camelizeIndex : kebabCaseIndex !== -1 ? kebabCaseIndex : 0;
       return AUTOCOMPLETES[index2];
     });
-    const inputmode = vue.computed(() => {
-      switch (props2.type) {
-        case "digit":
-          return "decimal";
-        default:
-          return void 0;
-      }
-    });
     let cache = vue.ref("");
     let resetCache;
     const rootRef = vue.ref(null);
@@ -3473,7 +3473,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
           resetCache = null;
         }
         if (input.validity && !input.validity.valid) {
-          if (!cache.value && event.data === "-" || cache.value[0] === "-" && event.inputType === "deleteContentBackward") {
+          if ((!cache.value || !input.value) && event.data === "-" || cache.value[0] === "-" && event.inputType === "deleteContentBackward") {
             cache.value = "-";
             state2.value = "";
             resetCache = () => {
@@ -3531,6 +3531,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
     }
     return () => {
       let inputNode = props2.disabled && fixDisabledColor ? vue.createVNode("input", {
+        "key": "disabled-input",
         "ref": fieldRef,
         "value": state.value,
         "tabindex": "-1",
@@ -3541,6 +3542,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-input-input",
         "onFocus": (event) => event.target.blur()
       }, null, 40, ["value", "readonly", "type", "maxlength", "step", "onFocus"]) : vue.createVNode("input", {
+        "key": "input",
         "ref": fieldRef,
         "value": state.value,
         "disabled": !!props2.disabled,
@@ -3552,7 +3554,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-input-input",
         "autocomplete": autocomplete.value,
         "onKeyup": onKeyUpEnter,
-        "inputmode": inputmode.value
+        "inputmode": props2.inputmode
       }, null, 40, ["value", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup", "inputmode"]);
       return vue.createVNode("uni-input", {
         "ref": rootRef
@@ -5781,6 +5783,7 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
       props2.scrollY ? style += "overflow-y:auto;" : style += "overflow-y:hidden;";
       return style;
     });
+    const slots_default = slots.default && slots.default();
     return () => {
       const {
         refresherEnabled,
@@ -5843,7 +5846,7 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
         "fill": "none",
         "style": "color: #2bd009",
         "stroke-width": "3"
-      }, null)]) : null])]) : null, refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null], 4) : null, slots.default && slots.default()], 512)], 4)], 512)], 512);
+      }, null)]) : null])]) : null, refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null], 4) : null, slots_default], 512)], 4)], 512)], 512);
     };
   }
 });
@@ -7144,6 +7147,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
     }
     return () => {
       let textareaNode = props2.disabled && fixDisabledColor ? vue.createVNode("textarea", {
+        "key": "disabled-textarea",
         "ref": fieldRef,
         "value": state.value,
         "tabindex": "-1",
@@ -7158,6 +7162,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
         },
         "onFocus": (event) => event.target.blur()
       }, null, 46, ["value", "readonly", "maxlength", "onFocus"]) : vue.createVNode("textarea", {
+        "key": "textarea",
         "ref": fieldRef,
         "value": state.value,
         "disabled": !!props2.disabled,
@@ -10317,7 +10322,7 @@ function usePickerMethods(props2, state, trigger, rootRef, pickerRef, selectRef,
       }
     }
     if (props2.end) {
-      const _year = new Date(props2.start).getFullYear();
+      const _year = new Date(props2.end).getFullYear();
       if (!isNaN(_year) && _year > end) {
         end = _year;
       }
@@ -11255,7 +11260,8 @@ function useSwitchTab(route, tabBar2, visibleList) {
       if (route.path !== url) {
         uni.switchTab({
           from: "tabBar",
-          url
+          url,
+          tabBarText: text
         });
       } else {
         invokeHook("onTabItemTap", {
@@ -11926,7 +11932,7 @@ function createPageHeadSearchInputTsx(navigationBar, {
   onBlur,
   onFocus,
   onInput,
-  onKeyup,
+  onConfirm,
   onClick
 }) {
   const {
@@ -11974,8 +11980,8 @@ function createPageHeadSearchInputTsx(navigationBar, {
     "onFocus": onFocus,
     "onBlur": onBlur,
     "onInput": onInput,
-    "onKeyup": onKeyup
-  }, null, 8, ["focus", "style", "placeholder-style", "onFocus", "onBlur", "onInput", "onKeyup"])], 4);
+    "onConfirm": onConfirm
+  }, null, 8, ["focus", "style", "placeholder-style", "onFocus", "onBlur", "onInput", "onConfirm"])], 4);
 }
 function onPageHeadBackButton() {
   if (getCurrentPages().length === 1) {
@@ -12132,12 +12138,10 @@ function usePageHeadSearchInput({
       text: text.value
     });
   };
-  const onKeyup = (evt) => {
-    if (evt.key === "Enter" || evt.keyCode === 13) {
-      invokeHook(id, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, {
-        text: text.value
-      });
-    }
+  const onConfirm = (evt) => {
+    invokeHook(id, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, {
+      text: text.value
+    });
   };
   return {
     focus,
@@ -12146,7 +12150,7 @@ function usePageHeadSearchInput({
     onFocus,
     onBlur,
     onInput,
-    onKeyup
+    onConfirm
   };
 }
 const _sfc_main = {
