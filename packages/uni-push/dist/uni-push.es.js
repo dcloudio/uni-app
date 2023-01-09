@@ -187,6 +187,13 @@ else {
     // #ifdef H5
     initBroadcastChannel(GtPush);
     // #endif
+    // #ifdef MP
+    if (typeof uni.onAppShow === 'function') {
+        uni.onAppShow(() => {
+            GtPush.enableSocket(true);
+        });
+    }
+    // #endif
     GtPush.init({
         appid,
         onError: (res) => {
