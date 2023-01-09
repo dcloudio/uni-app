@@ -968,7 +968,7 @@ var serviceContext = (function () {
   }
 
   function promisify (name, api) {
-    if (!shouldPromise(name)) {
+    if (!shouldPromise(name) || !isFn(api)) {
       return api
     }
     return function promiseApi (options = {}, ...params) {

@@ -373,7 +373,7 @@ if (!Promise.prototype.finally) {
 }
 
 function promisify (name, api) {
-  if (!shouldPromise(name)) {
+  if (!shouldPromise(name) || !isFn(api)) {
     return api
   }
   return function promiseApi (options = {}, ...params) {
@@ -560,17 +560,19 @@ function normalizeLocale (locale, messages) {
 
 function getLocale$1 () {
   // 优先使用 $locale
-  const app = getApp({
-    allowDefault: true
-  });
-  if (app && app.$vm) {
-    return app.$vm.$locale
+  if (isFn(getApp)) {
+    const app = getApp({
+      allowDefault: true
+    });
+    if (app && app.$vm) {
+      return app.$vm.$locale
+    }
   }
   return normalizeLocale(xhs.getSystemInfoSync().language) || LOCALE_EN
 }
 
 function setLocale$1 (locale) {
-  const app = getApp();
+  const app = isFn(getApp) ? getApp() : false;
   if (!app) {
     return false
   }
@@ -2544,9 +2546,6 @@ if (typeof Proxy !== 'undefined' && "mp-xhs" !== 'app-plus') {
       }
       if (eventApi[name]) {
         return eventApi[name]
-      }
-      if (typeof xhs[name] !== 'function' && !hasOwn(protocols, name)) {
-        return
       }
       return promisify(name, wrapper(name, xhs[name]))
     },
