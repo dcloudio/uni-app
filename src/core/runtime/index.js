@@ -84,7 +84,7 @@ if (typeof Proxy !== 'undefined' && __PLATFORM__ !== 'app-plus') {
       uni[name] = promisify(name, todoApi[name])
     })
     Object.keys(extraApi).forEach(name => {
-      uni[name] = promisify(name, todoApi[name])
+      uni[name] = promisify(name, extraApi[name])
     })
   }
 
