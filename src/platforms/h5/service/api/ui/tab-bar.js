@@ -59,6 +59,7 @@ function setTabBar (type, args = {}) {
           meta.tabBarIndex = index
           meta.isQuit = true
           meta.isSet = true
+          meta.id = index + 1
           const tabBar = __uniConfig.tabBar
           if (tabBar && tabBar.list && tabBar.list[index]) {
             tabBar.list[index].pagePath = pagePath.startsWith('/') ? pagePath.substring(1) : pagePath
