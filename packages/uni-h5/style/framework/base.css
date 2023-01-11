@@ -92,6 +92,7 @@ uni-button[loading]:before {
 
 html {
   /* --UI-BG-0: #ededed; */
+  --primary-color: #007aff;
   --UI-BG: #fff;
   --UI-BG-1: #f7f7f7;
   --UI-BG-2: #fff;
@@ -124,5 +125,9 @@ html {
     --UI-FG-1: hsla(0, 0%, 100%, 0.5);
     --UI-FG-2: hsla(0, 0%, 100%, 0.3);
     --UI-FG-3: hsla(0, 0%, 100%, 0.05);
+  }
+
+  .uni-mask {
+    background: rgba(0,0,0,.6);
   }
 }
