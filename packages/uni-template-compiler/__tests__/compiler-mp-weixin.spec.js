@@ -377,6 +377,11 @@ describe('mp:compiler-mp-weixin', () => {
       'with(this){var g0=array.length;$mp.data=Object.assign({},{$root:{g0:g0}})}'
     )
     assertCodegen(
+      '<button :disabled="array.test&&test(array.test.test).length===0">hello world</button>',
+      '<button disabled="{{$root.g0}}">hello world</button>',
+      'with(this){var g0=array.test&&test(array.test.test).length===0;$mp.data=Object.assign({},{$root:{g0:g0}})}'
+    )
+    assertCodegen(
       '<view :class="\'c\'+array.length">hello world</view>',
       '<view class="{{[\'c\'+$root.g0]}}">hello world</view>',
       'with(this){var g0=array.length;$mp.data=Object.assign({},{$root:{g0:g0}})}'
@@ -390,6 +395,16 @@ describe('mp:compiler-mp-weixin', () => {
       '<view v-if="array.length">hello</view>',
       '<block wx:if="{{$root.g0}}"><view>hello</view></block>',
       'with(this){var g0=array.length;$mp.data=Object.assign({},{$root:{g0:g0}})}'
+    )
+    assertCodegen(
+      '<view v-if="array&&array.length">hello</view>',
+      '<block wx:if="{{$root.g0}}"><view>hello</view></block>',
+      'with(this){var g0=array&&array.length;$mp.data=Object.assign({},{$root:{g0:g0}})}'
+    )
+    assertCodegen(
+      '<view v-if="test1&&!test2&&array&&array.length">hello</view>',
+      '<block wx:if="{{$root.g0}}"><view>hello</view></block>',
+      'with(this){var g0=test1&&!test2&&array&&array.length;$mp.data=Object.assign({},{$root:{g0:g0}})}'
     )
     assertCodegen(
       '<view v-show="array.length">hello</view>',
