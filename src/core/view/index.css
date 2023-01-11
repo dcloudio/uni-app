@@ -224,5 +224,9 @@ html {
         --UI-FG-2: hsla(0, 0%, 100%, 0.3);
         --UI-FG-3: hsla(0, 0%, 100%, 0.05);
     }
+
+    .uni-mask {
+        background: rgba(0,0,0,.6);
+    }
 }
   

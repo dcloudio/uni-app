@@ -350,4 +350,21 @@ export default {
     height: 1px;
     color: #e5e5e5;
   }
+
+  @media (prefers-color-scheme: dark) {
+    .uni-picker-view-indicator:before {
+      border-top-color: var(--UI-FG-3);
+    }
+    .uni-picker-view-indicator:after {
+      border-bottom-color: var(--UI-FG-3);
+    }
+    .uni-picker-view-mask {
+      background-image: linear-gradient(
+          180deg,
+          rgba(35, 35, 35, 0.95),
+          rgba(35, 35, 35, 0.6)
+        ),
+        linear-gradient(0deg, rgba(35, 35, 35, 0.95), rgba(35, 35, 35, 0.6));
+    }
+  }
 </style>
