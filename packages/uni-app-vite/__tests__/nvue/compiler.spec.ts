@@ -7,8 +7,7 @@ import {
 } from '@vue/compiler-core'
 import { compileTemplate } from '@vue/compiler-sfc'
 import { uniOptions } from '../../src/plugin/uni/index'
-process.env.UNI_COMPILER = 'nvue'
-const { compilerOptions } = uniOptions()!
+const { compilerOptions } = uniOptions('nvue')!
 const filename = 'foo.vue'
 
 function compile(source: string) {

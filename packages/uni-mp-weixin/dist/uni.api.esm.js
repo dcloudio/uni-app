@@ -1235,7 +1235,9 @@ function createSelectorQuery() {
     return query;
 }
 const wx$2 = initWx();
-const host = wx$2.getAppBaseInfo().host;
+const host = wx$2.getAppBaseInfo
+    ? wx$2.getAppBaseInfo().host
+    : wx$2.getSystemInfoSync().host;
 const shareVideoMessage = host && host.env === 'SAAASDK'
     ? wx$2.miniapp.shareVideoMessage
     : wx$2.shareVideoMessage;

@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`app-vue: compiler <view :prop="options" :change:prop="renderScript.updateOptions"/> 1`] = `
+"import { wp as _wp, openBlock as _openBlock, createElementBlock as _createElementBlock } from "vue"
+
+const _hoisted_1 = ["prop", "change:prop"]
+
+export function render(_ctx, _cache) {
+  return (_openBlock(), _createElementBlock("view", {
+    prop: _wp(_ctx.options),
+    "change:prop": _ctx.renderScript.updateOptions
+  }, null, 8 /* PROPS */, _hoisted_1))
+}"
+`;
