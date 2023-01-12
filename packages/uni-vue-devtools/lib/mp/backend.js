@@ -2179,7 +2179,10 @@ async function connect() {
 
       if (false) {}
 
-      if (false) {}
+      if (( true) && uid !== 0) {
+        const parentId = `${id.split(':')[0]}:root`;
+        (0, component_1.sendComponentTreeData)(appRecord, parentId, appRecord.componentFilter, null, false, ctx);
+      }
 
       if (parentUid != null) {
         const parentInstances = await appRecord.backend.api.walkComponentParents(component);

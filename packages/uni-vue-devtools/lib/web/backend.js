@@ -2154,7 +2154,7 @@ async function connect() {
 
       if (false) {}
 
-      if ( true && uid !== 0) {
+      if (( true) && uid !== 0) {
         const parentId = `${id.split(':')[0]}:root`;
         (0, component_1.sendComponentTreeData)(appRecord, parentId, appRecord.componentFilter, null, false, ctx);
       }
