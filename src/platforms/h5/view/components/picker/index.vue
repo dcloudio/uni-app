@@ -907,7 +907,7 @@ uni-picker[disabled] {
     color: var(--UI-FG-0);
   }
   .uni-picker-container .uni-picker-header:after {
-    border-bottom-color: var(-UI-FG-3);
+    border-bottom-color: var(--UI-FG-3);
   }
 }
 </style>
