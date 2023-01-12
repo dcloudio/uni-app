@@ -1,11 +1,5 @@
-import {
-  isElementNode,
-} from '@dcloudio/uni-cli-shared'
-import {
-  ElementTypes,
-  findDir,
-  NodeTypes,
-} from '@vue/compiler-core'
+import { isElementNode } from '@dcloudio/uni-cli-shared'
+import { ElementTypes, findDir, NodeTypes } from '@vue/compiler-core'
 import { NodeTransform } from '../transform'
 
 export const transformText: NodeTransform = (node, _) => {
@@ -22,9 +16,11 @@ export const transformText: NodeTransform = (node, _) => {
     return
   }
   node.isSelfClosing = false
-  node.children = [{
-    type: NodeTypes.INTERPOLATION,
-    loc: dir.exp!.loc,
-    content: dir.exp!
-  }]
+  node.children = [
+    {
+      type: NodeTypes.INTERPOLATION,
+      loc: dir.exp!.loc,
+      content: dir.exp!,
+    },
+  ]
 }

@@ -35,8 +35,10 @@
     "@dcloudio/uni-shared": "3.0.0-alpha-3061620230106001",
     "@vue/server-renderer": "3.2.45",
     "@vue/shared": "3.2.45",
+    "debug": "^4.3.3",
     "localstorage-polyfill": "^1.0.1",
     "safe-area-insets": "^1.4.1",
+    "postcss-selector-parser": "^6.0.6",
     "vue-router": "^4.1.6",
     "xmlhttprequest": "^1.8.0"
   },

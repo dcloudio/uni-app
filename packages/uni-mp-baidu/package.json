@@ -33,6 +33,11 @@
     "@dcloudio/uni-mp-weixin": "3.0.0-alpha-3061620230106001",
     "@dcloudio/uni-shared": "3.0.0-alpha-3061620230106001",
     "@vue/compiler-core": "3.2.45",
-    "@vue/shared": "3.2.45"
+    "@vue/shared": "3.2.45",
+    "jimp": "^0.10.1",
+    "licia": "^1.29.0",
+    "qrcode-reader": "^1.0.4",
+    "qrcode-terminal": "^0.12.0",
+    "ws": "^8.4.2"
   }
 }

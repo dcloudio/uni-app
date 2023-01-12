@@ -1266,8 +1266,14 @@ function handleSystemInfo(fromRes, toRes) {
     })(fromRes, toRes);
     populateParameters(fromRes, toRes);
     let platform = fromRes.platform ? fromRes.platform.toLowerCase() : 'devtools';
-    if (!~['android', 'ios'].indexOf(platform)) {
-        platform = 'devtools';
+    if (my.canIUse('isIDE')) {
+        // @ts-expect-error Property 'isIDE' does not exist on type 'typeof my'
+        platform = my.isIDE ? 'devtools' : platform;
+    }
+    else {
+        if (!~['android', 'ios'].indexOf(platform)) {
+            platform = 'devtools';
+        }
     }
     toRes.platform = platform;
 }

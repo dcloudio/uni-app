@@ -34,7 +34,6 @@
     "default-gateway": "^6.0.3",
     "fs-extra": "^10.0.0",
     "licia": "^1.29.0",
-    "postcss-selector-parser": "^6.0.6",
     "qrcode-reader": "^1.0.4",
     "qrcode-terminal": "^0.12.0",
     "ws": "^8.4.2"
@@ -42,5 +41,9 @@
   "devDependencies": {
     "@types/debug": "^4.1.7",
     "@types/fs-extra": "^9.0.13"
+  },
+  "peerDependencies": {
+    "jest": "27.0.4",
+    "jest-environment-node": "27.5.1"
   }
 }
