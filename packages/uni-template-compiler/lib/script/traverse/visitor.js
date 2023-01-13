@@ -157,7 +157,7 @@ module.exports = {
         newPath = path.findParent((path) => path.isLogicalExpression())
       }
       path.skip()
-      if (path.findParent((path) => path.shouldSkip)) {
+      if (path.findParent((path) => path.shouldSkip || (this.options.scopedSlotsCompiler === 'legacy' && path.isCallExpression() && path.node.callee.name === METHOD_RESOLVE_SCOPED_SLOTS))) {
         return
       }
       path.replaceWith(getMemberExpr(path, IDENTIFIER_GLOBAL, path.node, this))

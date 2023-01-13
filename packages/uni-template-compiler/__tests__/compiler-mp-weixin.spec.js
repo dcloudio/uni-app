@@ -421,5 +421,21 @@ describe('mp:compiler-mp-weixin', () => {
       '<block wx:for="{{$root.l0}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view><block wx:if="{{item.g0}}"><view>{{item.m0}}</view></block></view></block>',
       'with(this){var l0=__map(list,function(item,index){var $orig=__get_orig(item);var g0=Object.values(item.list).length;var m0=g0?test(item.list):null;return{$orig:$orig,g0:g0,m0:m0}});$mp.data=Object.assign({},{$root:{l0:l0}})}'
     )
+    assertCodegen(
+      '<my-component><template v-slot="{item}">{{item.length}}<template></my-component>',
+      '<my-component scoped-slots-compiler="augmented" vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"><block wx:if="{{$root.m0}}">{{$root.g0}}</block></my-component>',
+      'with(this){var m0=$hasScopedSlotsParams("551070e6-1");var g0=m0?$getScopedSlotsParams("551070e6-1","default","item").length:null;$mp.data=Object.assign({},{$root:{m0:m0,g0:g0}})}',
+      {
+        scopedSlotsCompiler: 'auto'
+      }
+    )
+    assertCodegen(
+      '<my-component><template v-slot="{item}">{{item.length}}<template></my-component>',
+      '<my-component generic:scoped-slots-default="test-my-component-default" data-vue-generic="scoped" vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"></my-component>',
+      undefined,
+      {
+        scopedSlotsCompiler: 'legacy'
+      }
+    )
   })
 })
