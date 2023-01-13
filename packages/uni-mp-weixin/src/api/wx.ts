@@ -1,6 +1,7 @@
 import { hasOwn, isFunction } from '@vue/shared'
 
 const objectKeys = [
+  'qy',
   'env',
   'error',
   'version',
