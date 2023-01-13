@@ -265,13 +265,9 @@ module.exports = function (pagesJson, manifestJson, project = {}) {
 
   const projectName = getPlatformProject()
 
-  const rootProjectPath =
+  const projectPath =
     projectName &&
     path.resolve(process.env.VUE_CLI_CONTEXT || process.cwd(), projectName)
-
-  const srcProjectPath = projectName && path.resolve(process.env.UNI_INPUT_DIR, projectName)
-
-  const projectPath = rootProjectPath && fs.existsSync(rootProjectPath) ? rootProjectPath : srcProjectPath
 
   if (projectPath && fs.existsSync(projectPath)) {
     // 自定义 project.config.json
@@ -293,6 +289,18 @@ module.exports = function (pagesJson, manifestJson, project = {}) {
       })
     }
 
+    if (
+      process.env.UNI_PLATFORM === 'mp-weixin' ||
+      process.env.UNI_PLATFORM === 'mp-qq'
+    ) {
+      // 微信不需要生成，其他平台做拷贝
+      return {
+        app: {
+          name: 'app',
+          content: trimMPJson(app)
+        }
+      }
+    }
     return {
       app: {
         name: 'app',
