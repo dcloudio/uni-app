@@ -1182,6 +1182,7 @@ function initGetProvider(providers) {
 }
 
 const objectKeys = [
+    'qy',
     'env',
     'error',
     'version',

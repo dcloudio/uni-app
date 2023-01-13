@@ -276,7 +276,7 @@ const uniMiniProgramAlipayPlugin = {
             }, buildOptions),
         };
     },
-    // https://tower.im/teams/226535/todos/18316
+    // fix question/159362
     transform(code, id) {
         if (id.includes('@vue/shared') || id.includes('@vue\\shared')) {
             return {
