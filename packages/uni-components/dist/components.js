@@ -171,7 +171,14 @@ function PolySymbol(name) {
   return Symbol(process.env.NODE_ENV !== "production" ? "[uni-app]: " + name : name);
 }
 function useCurrentPageId() {
-  return getCurrentInstance().root.proxy.$page.id;
+  let pageId;
+  try {
+    pageId = getCurrentInstance().root.proxy.$page.id;
+  } catch {
+    const webviewId = plus.webview.currentWebview().id;
+    pageId = isNaN(Number(webviewId)) ? webviewId : Number(webviewId);
+  }
+  return pageId;
 }
 let plus_;
 let weex_;
@@ -244,6 +251,7 @@ function showPage({
   onMessage,
   onClose
 }) {
+  let darkmode = __uniConfig.darkmode;
   plus_ = context.plus || plus;
   weex_ = context.weex || (typeof weex === "object" ? weex : null);
   BroadcastChannel_ = context.BroadcastChannel || (typeof BroadcastChannel === "object" ? BroadcastChannel : null);
@@ -275,7 +283,7 @@ function showPage({
     extras: {
       from: getPageId(),
       runtime: getRuntime(),
-      data,
+      data: extend({}, data, { darkmode }),
       useGlobalEvent: !BroadcastChannel_
     }
   });

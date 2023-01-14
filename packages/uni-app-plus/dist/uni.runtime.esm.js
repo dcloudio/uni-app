@@ -1727,6 +1727,7 @@ class Page {
     }
 }
 function showPage({ context = {}, url, data = {}, style = {}, onMessage, onClose, }) {
+    let darkmode = __uniConfig.darkmode;
     // eslint-disable-next-line
     plus_ = context.plus || plus;
     // eslint-disable-next-line
@@ -1763,7 +1764,7 @@ function showPage({ context = {}, url, data = {}, style = {}, onMessage, onClose
         extras: {
             from: getPageId(),
             runtime: getRuntime(),
-            data,
+            data: extend({}, data, { darkmode }),
             useGlobalEvent: !BroadcastChannel_,
         },
     });
@@ -19791,7 +19792,7 @@ function initTabBar() {
 function initGlobalEvent() {
     const plusGlobalEvent = plus.globalEvent;
     const weexGlobalEvent = weex.requireModule('globalEvent');
-    const emit = UniServiceJSBridge.emit;
+    const { emit, publishHandler } = UniServiceJSBridge;
     if (weex.config.preload) {
         plus.key.addEventListener(EVENT_BACKBUTTON, backbuttonListener);
     }
@@ -19815,6 +19816,7 @@ function initGlobalEvent() {
             theme: event.uistyle,
         };
         emit(ON_THEME_CHANGE, args);
+        publishHandler(ON_THEME_CHANGE, args, getCurrentPageId());
         changePagesNavigatorStyle();
     });
     let keyboardHeightChange = 0;
