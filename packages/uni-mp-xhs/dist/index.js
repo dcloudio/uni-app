@@ -648,6 +648,8 @@ function populateParameters (result) {
   } = result;
   // const isQuickApp = "mp-xhs".indexOf('quickapp-webview') !== -1
 
+  const extraParam = {};
+
   // osName osVersion
   let osName = '';
   let osVersion = '';
@@ -713,7 +715,7 @@ function populateParameters (result) {
     browserVersion: undefined
   };
 
-  Object.assign(result, parameters);
+  Object.assign(result, parameters, extraParam);
 }
 
 function getGetDeviceType (result, model) {

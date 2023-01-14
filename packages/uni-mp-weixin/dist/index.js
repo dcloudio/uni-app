@@ -724,6 +724,8 @@ function populateParameters (result) {
   } = result;
   // const isQuickApp = "mp-weixin".indexOf('quickapp-webview') !== -1
 
+  const extraParam = {};
+
   // osName osVersion
   let osName = '';
   let osVersion = '';
@@ -789,7 +791,7 @@ function populateParameters (result) {
     browserVersion: undefined
   };
 
-  Object.assign(result, parameters);
+  Object.assign(result, parameters, extraParam);
 }
 
 function getGetDeviceType (result, model) {
@@ -1266,7 +1268,7 @@ const offPushMessage = (fn) => {
   }
 };
 
-const host = wx.getAppBaseInfo().host;
+const host = wx.getAppBaseInfo ? wx.getAppBaseInfo().host : wx.getSystemInfoSync().host;
 const shareVideoMessage =
 host && host.env === 'SAAASDK' ? wx.miniapp.shareVideoMessage : wx.shareVideoMessage;
 
