@@ -1266,9 +1266,13 @@ const offPushMessage = (fn) => {
   }
 };
 
-const host = wx.getAppBaseInfo ? wx.getAppBaseInfo().host : wx.getSystemInfoSync().host;
+let baseInfo = wx.getAppBaseInfo && wx.getAppBaseInfo();
+if (!baseInfo) {
+  baseInfo = wx.getSystemInfoSync();
+}
+const host = baseInfo ? baseInfo.host : null;
 const shareVideoMessage =
-host && host.env === 'SAAASDK' ? wx.miniapp.shareVideoMessage : wx.shareVideoMessage;
+  host && host.env === 'SAAASDK' ? wx.miniapp.shareVideoMessage : wx.shareVideoMessage;
 
 var api = /*#__PURE__*/Object.freeze({
   __proto__: null,
