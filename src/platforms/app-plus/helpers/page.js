@@ -111,7 +111,7 @@ export function showPage ({
     extras: {
       from: getPageId(),
       runtime: getRuntime(),
-      data,
+      data: Object.assign({}, data, { darkmode: __uniConfig.darkmode }),
       useGlobalEvent: !BroadcastChannel_
     }
   })

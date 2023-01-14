@@ -29,6 +29,11 @@ export function getCurrentPages (returnAll) {
   })
 }
 
+export function getCurrentPageId () {
+  const pages = getCurrentPages()
+  return pages[pages.length - 1].$page.id
+}
+
 const preloadWebviews = {}
 
 export function removePreloadWebview (webview) {
