@@ -41,7 +41,7 @@ export function $nne(
 
   if (isClickEvent(evt)) {
     normalizeClickEvent(res as unknown as WechatMiniprogram.Touch, evt)
-  } else if (__PLATFORM__ === 'h5' && isMouseEvent(evt)) {
+  } else if (isMouseEvent(evt)) {
     normalizeMouseEvent(res as unknown as WechatMiniprogram.Touch, evt)
   } else if (isTouchEvent(evt)) {
     const top = getWindowTop()
