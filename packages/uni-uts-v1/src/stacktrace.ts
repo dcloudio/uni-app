@@ -1,8 +1,8 @@
 import { originalPositionFor } from './sourceMap'
 
 const splitRE = /\r?\n/
-const uniModulesUtsRe =
-  /\/unimodule(.*)\/src\/index.swift:([0-9]+):([0-9]+):\s+error:\s+(.*)/
+const uniModulesSwiftUtsRe =
+  /(.*)index.swift:([0-9]+):([0-9]+):\s+error:\s+(.*)/
 
 interface ParseUtsPluginStacktraceOptions {
   stacktrace: string
@@ -21,7 +21,7 @@ export async function parseUtsSwiftPluginStacktrace({
     const line = lines[i]
     const codes = await parseUtsStacktraceLine(
       line,
-      uniModulesUtsRe,
+      uniModulesSwiftUtsRe,
       sourceMapFile,
       sourceRoot
     )
@@ -52,8 +52,9 @@ async function parseUtsStacktraceLine(
     column: parseInt(column),
     withSourceContent: true,
   })
-  lines.push(`${message}`)
+
   if (originalPosition.source && originalPosition.sourceContent) {
+    lines.push(`${message}`)
     lines.push(
       `at ${originalPosition.source}:${originalPosition.line}:${originalPosition.column}`
     )
@@ -65,6 +66,8 @@ async function parseUtsStacktraceLine(
         }).replace(/\t/g, ' ')
       )
     }
+  } else {
+    lines.push(lineStr)
   }
   return lines
 }

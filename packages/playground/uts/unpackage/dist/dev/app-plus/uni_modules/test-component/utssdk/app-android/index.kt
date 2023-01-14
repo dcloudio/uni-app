@@ -15,6 +15,7 @@ import io.dcloud.feature.uniapp.UniSDKInstance;
 import io.dcloud.feature.uniapp.ui.action.AbsComponentData;
 import io.dcloud.feature.uniapp.ui.component.AbsVContainer;
 import io.dcloud.uts.component.UTSComponent;
+import io.dcloud.uts.component.UTSContainer;
 import io.dcloud.uts.component.UTSSize;
 open class CustomAnimListener : Animator.AnimatorListener {
     open var comp: UTSComponent<LottieAnimationView>;
