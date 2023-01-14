@@ -113,6 +113,7 @@ const miniProgram = {
                 arg: ['ready'],
             },
         ],
+        'animation-view': true,
     },
     component: {
         dir: COMPONENTS_DIR,

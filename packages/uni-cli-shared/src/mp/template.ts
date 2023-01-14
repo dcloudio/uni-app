@@ -15,7 +15,7 @@ type LazyElementFn = (
   }
 ) =>
   | {
-      [name: string]: { name: 'on' | 'bind'; arg: string[] }[]
+      [name: string]: { name: 'on' | 'bind'; arg: string[] }[] | true
     }
   | boolean
 export interface MiniProgramCompilerOptions {
@@ -24,7 +24,7 @@ export interface MiniProgramCompilerOptions {
    */
   lazyElement?:
     | {
-        [name: string]: { name: 'on' | 'bind'; arg: string[] }[]
+        [name: string]: { name: 'on' | 'bind'; arg: string[] }[] | true
       }
     | LazyElementFn
   event?: {

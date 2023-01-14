@@ -279,7 +279,7 @@ function isLazyElement(node: ElementNode, context: TemplateCodegenContext) {
   if (!context.lazyElement) {
     return false
   }
-  let lazyProps: { name: 'on' | 'bind'; arg: string[] }[] | undefined
+  let lazyProps: { name: 'on' | 'bind'; arg: string[] }[] | true | undefined
   if (isFunction(context.lazyElement)) {
     const res = context.lazyElement(node, context)
     if (!isPlainObject(res)) {
@@ -289,19 +289,24 @@ function isLazyElement(node: ElementNode, context: TemplateCodegenContext) {
   } else {
     lazyProps = context.lazyElement[node.tag]
   }
+  if (lazyProps === true) {
+    return true
+  }
   if (!lazyProps) {
     return
   }
   return node.props.some(
     (prop) =>
       prop.type === NodeTypes.DIRECTIVE &&
-      lazyProps!.find((lazyProp) => {
-        return (
-          prop.name === lazyProp.name &&
-          prop.arg?.type === NodeTypes.SIMPLE_EXPRESSION &&
-          lazyProp.arg.includes(prop.arg.content)
-        )
-      })
+      (lazyProps as { name: 'on' | 'bind'; arg: string[] }[]).find(
+        (lazyProp) => {
+          return (
+            prop.name === lazyProp.name &&
+            prop.arg?.type === NodeTypes.SIMPLE_EXPRESSION &&
+            lazyProp.arg.includes(prop.arg.content)
+          )
+        }
+      )
   )
 }
 /**

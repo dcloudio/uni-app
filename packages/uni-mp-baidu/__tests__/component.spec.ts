@@ -6,7 +6,10 @@ describe('mp-baidu: transform component', () => {
     const code = customElements.map((tag) => `<${tag}/>`).join('')
     assert(
       code,
-      code,
+      code.replace(
+        `<animation-view/>`,
+        `<block s-if="{{r0}}"><animation-view/></block>`
+      ),
       `(_ctx, _cache) => {
   return {}
 }`
@@ -40,6 +43,31 @@ describe('mp-baidu: transform component', () => {
       {
         filename,
       }
+    )
+  })
+  test('lazy element: editor', () => {
+    assert(
+      `<editor/>`,
+      `<editor/>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+    assert(
+      `<editor @ready="ready"/>`,
+      `<block s-if="{{r0}}"><editor bindready="{{a}}"/></block>`,
+      `(_ctx, _cache) => {
+  return { a: _o(_ctx.ready) }
+}`
+    )
+  })
+  test('lazy element: animation-view', () => {
+    assert(
+      `<animation-view/>`,
+      `<block s-if="{{r0}}"><animation-view/></block>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
     )
   })
 })
