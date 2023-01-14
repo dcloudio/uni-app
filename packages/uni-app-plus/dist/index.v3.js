@@ -5937,7 +5937,7 @@ var serviceContext = (function () {
       extras: {
         from: getPageId(),
         runtime: getRuntime(),
-        data,
+        data: Object.assign({}, data, { darkmode: __uniConfig.darkmode }),
         useGlobalEvent: !BroadcastChannel_
       }
     });
@@ -7355,6 +7355,11 @@ var serviceContext = (function () {
     return returnAll ? pages.slice(0) : pages.filter(page => {
       return !page.$page.meta.isTabBar || page.$page.meta.visible
     })
+  }
+
+  function getCurrentPageId () {
+    const pages = getCurrentPages$1();
+    return pages[pages.length - 1].$page.id
   }
 
   const preloadWebviews = {};
@@ -12650,7 +12655,7 @@ var serviceContext = (function () {
     return page.$vm
   }
 
-  function getCurrentPageId () {
+  function getCurrentPageId$1 () {
     const pages = getCurrentPages();
     const page = pages[pages.length - 1];
     return page && page.$page.id
@@ -20401,7 +20406,7 @@ var serviceContext = (function () {
     if (context) {
       return new CanvasContext(id, context.$page.id)
     }
-    const pageId = getCurrentPageId();
+    const pageId = getCurrentPageId$1();
     if (pageId) {
       return new CanvasContext(id, pageId)
     } else {
@@ -20416,7 +20421,7 @@ var serviceContext = (function () {
     width,
     height
   }, callbackId) {
-    const pageId = getCurrentPageId();
+    const pageId = getCurrentPageId$1();
     if (!pageId) {
       invoke$1(callbackId, {
         errMsg: 'canvasGetImageData:fail'
@@ -20452,7 +20457,7 @@ var serviceContext = (function () {
     width,
     height
   }, callbackId) {
-    var pageId = getCurrentPageId();
+    var pageId = getCurrentPageId$1();
     if (!pageId) {
       invoke$1(callbackId, {
         errMsg: 'canvasPutImageData:fail'
@@ -20495,7 +20500,7 @@ var serviceContext = (function () {
     fileType,
     quality
   }, callbackId) {
-    var pageId = getCurrentPageId();
+    var pageId = getCurrentPageId$1();
     if (!pageId) {
       invoke$1(callbackId, {
         errMsg: 'canvasToTempFilePath:fail'
@@ -20999,7 +21004,7 @@ var serviceContext = (function () {
   });
 
   function getSelectedTextRange (_, callbackId) {
-    const pageId = getCurrentPageId();
+    const pageId = getCurrentPageId$1();
     UniServiceJSBridge.publishHandler('getSelectedTextRange', {
       pageId,
       callbackId: getSelectedTextRangeEventCallbacks.push(function (res) {
@@ -22203,7 +22208,7 @@ var serviceContext = (function () {
   });
 
   function loadFontFace$1 (options, callbackId) {
-    const pageId = getCurrentPageId();
+    const pageId = getCurrentPageId$1();
     if (!pageId) {
       return {
         errMsg: 'loadFontFace:fail not font page'
@@ -22900,9 +22905,9 @@ var serviceContext = (function () {
         theme: event.uistyle
       };
 
-      callAppHook(appCtx, 'onThemeChange', args);
-      publish('onThemeChange', args);
-
+      callAppHook(appCtx, ON_THEME_CHANGE, args);
+      publish(ON_THEME_CHANGE, args);
+      UniServiceJSBridge.publishHandler(ON_THEME_CHANGE, args, getCurrentPageId());
       // 兼容旧版本 API
       publish('onUIStyleChange', {
         style: event.uistyle
