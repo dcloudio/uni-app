@@ -1,4 +1,7 @@
 const fs = require('fs')
+const {
+  parseTheme
+} = require('@dcloudio/uni-cli-shared/lib/theme')
 
 function generatePageCode (pages, pageOptions) {
   return pages.map(pagePath => {
@@ -10,7 +13,12 @@ function generatePageCode (pages, pageOptions) {
 }
 
 function generateUniConfig (appJson, isAppView) {
-  return isAppView ? `window.__uniConfig = ${JSON.stringify({ window: appJson.window }, null)};` : ''
+  return isAppView ? `window.__uniConfig = ${JSON.stringify(
+    {
+      window: parseTheme(appJson.window),
+      darkmode: appJson.darkmode
+    }
+  , null)};` : ''
 }
 
 function generatePolyfill () {
