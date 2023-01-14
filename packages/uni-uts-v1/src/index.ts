@@ -253,6 +253,15 @@ export async function compile(pluginDir: string) {
         } else {
           deps.push(...resolveIOSDepFiles(filename))
         }
+        // 处理 config.json
+        genConfigJson(
+          utsPlatform,
+          components,
+          pluginRelativeDir,
+          pkg.is_uni_modules,
+          inputDir,
+          outputDir
+        )
         const res = await getCompiler(compilerType).runDev(filename, components)
         if (res) {
           if (isArray(res.deps) && res.deps.length) {
@@ -285,15 +294,6 @@ export async function compile(pluginDir: string) {
             }
           }
           if (isSuccess) {
-            // 处理 config.json
-            genConfigJson(
-              utsPlatform,
-              components,
-              pluginRelativeDir,
-              pkg.is_uni_modules,
-              inputDir,
-              outputDir
-            )
             // 生成缓存文件
             if (cacheDir) {
               // 存储 sourcemap
