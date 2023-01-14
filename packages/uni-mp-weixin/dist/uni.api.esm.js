@@ -1192,18 +1192,18 @@ const objectKeys = [
     'router',
     'worklet',
 ];
+function isWxKey(key) {
+    return objectKeys.indexOf(key) > -1 || typeof wx[key] === 'function';
+}
 function initWx() {
-    const WxProxyHandlers = {
-        get(target, key) {
-            if (hasOwn(target, key)) {
-                return target[key];
-            }
-            if (objectKeys.indexOf(key) > -1 || isFunction(wx[key])) {
-                return wx[key];
-            }
-        },
-    };
-    return new Proxy({}, WxProxyHandlers);
+    const newWx = {};
+    for (const key in wx) {
+        if (isWxKey(key)) {
+            // TODO wrapper function
+            newWx[key] = wx[key];
+        }
+    }
+    return newWx;
 }
 
 const mocks = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__'];
@@ -1264,7 +1264,7 @@ var protocols = /*#__PURE__*/Object.freeze({
   getAppAuthorizeSetting: getAppAuthorizeSetting
 });
 
-const wx$1 = initWx();
+const wx$1 = (globalThis.wx = initWx());
 var index = initUni(shims, protocols, wx$1);
 
 export { index as default, wx$1 as wx };
