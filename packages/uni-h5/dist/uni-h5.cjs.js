@@ -5783,7 +5783,6 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
       props2.scrollY ? style += "overflow-y:auto;" : style += "overflow-y:hidden;";
       return style;
     });
-    const slots_default = slots.default && slots.default();
     return () => {
       const {
         refresherEnabled,
@@ -5846,7 +5845,7 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
         "fill": "none",
         "style": "color: #2bd009",
         "stroke-width": "3"
-      }, null)]) : null])]) : null, refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null], 4) : null, slots_default], 512)], 4)], 512)], 512);
+      }, null)]) : null])]) : null, refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null], 4) : null, slots.default && slots.default()], 512)], 4)], 512)], 512);
     };
   }
 });
@@ -5986,6 +5985,8 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
     content.value.removeEventListener("webkitTransitionEnd", __transitionEnd);
   }
   function _setRefreshState(_state) {
+    if (!props2.refresherEnabled)
+      return;
     switch (_state) {
       case "refreshing":
         state.refresherHeight = props2.refresherThreshold;
