@@ -65,6 +65,13 @@ const transformOn = uniCliShared.createTransformOn(uniMpCompiler.transformOn);
 const transformModel = uniCliShared.createTransformModel(uniMpCompiler.transformModel);
 
 const customElements = [
+    'animation-video',
+    'animation-view',
+    'ar-camera',
+    'rtc-room',
+    'rtc-room-item',
+    'tabs',
+    'tab-item',
     'follow-swan',
     'login',
     'inline-payment-panel',
