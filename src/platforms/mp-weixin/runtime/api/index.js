@@ -6,6 +6,10 @@ export {
 }
   from 'uni-core/service/api/plugin/push'
 
-const host = wx.getAppBaseInfo ? wx.getAppBaseInfo().host : wx.getSystemInfoSync().host
+let baseInfo = wx.getAppBaseInfo && wx.getAppBaseInfo()
+if (!baseInfo) {
+  baseInfo = wx.getSystemInfoSync()
+}
+const host = baseInfo ? baseInfo.host : null
 export const shareVideoMessage =
-host && host.env === 'SAAASDK' ? wx.miniapp.shareVideoMessage : wx.shareVideoMessage
+  host && host.env === 'SAAASDK' ? wx.miniapp.shareVideoMessage : wx.shareVideoMessage
