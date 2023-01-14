@@ -22,7 +22,15 @@ export function useCurrentPageId() {
     const { $pageInstance } = getCurrentInstance()!
     return $pageInstance && $pageInstance.proxy!.$page.id
   }
-  return getCurrentInstance()!.root.proxy!.$page.id
+  // App
+  let pageId
+  try {
+    pageId = getCurrentInstance()!.root.proxy!.$page.id
+  } catch {
+    const webviewId = plus.webview.currentWebview().id
+    pageId = isNaN(Number(webviewId)) ? webviewId : Number(webviewId)
+  }
+  return pageId as number
 }
 
 export function getPageIdByVm(
