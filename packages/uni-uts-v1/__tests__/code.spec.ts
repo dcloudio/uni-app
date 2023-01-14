@@ -9,9 +9,11 @@ describe('code', () => {
     expect(
       (
         await genProxyCode(pluginDir, {
+          id: 'test-uts',
           is_uni_modules: false,
           name: 'test-uts',
           namespace: 'uts.sdk.testUts',
+          extname: '.uts',
         })
       ).replace(ERR_MSG_PLACEHOLDER, '')
     ).toMatchSnapshot()

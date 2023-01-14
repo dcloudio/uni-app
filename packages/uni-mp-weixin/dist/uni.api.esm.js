@@ -227,20 +227,20 @@ const HOOK_FAIL = 'fail';
 const HOOK_COMPLETE = 'complete';
 const globalInterceptors = {};
 const scopedInterceptors = {};
-function wrapperHook(hook) {
+function wrapperHook(hook, params) {
     return function (data) {
-        return hook(data) || data;
+        return hook(data, params) || data;
     };
 }
-function queue(hooks, data) {
+function queue(hooks, data, params) {
     let promise = false;
     for (let i = 0; i < hooks.length; i++) {
         const hook = hooks[i];
         if (promise) {
-            promise = Promise.resolve(wrapperHook(hook));
+            promise = Promise.resolve(wrapperHook(hook, params));
         }
         else {
-            const res = hook(data);
+            const res = hook(data, params);
             if (isPromise(res)) {
                 promise = Promise.resolve(res);
             }
@@ -267,7 +267,7 @@ function wrapperOptions(interceptors, options = {}) {
         }
         const oldCallback = options[name];
         options[name] = function callbackInterceptor(res) {
-            queue(hooks, res).then((res) => {
+            queue(hooks, res, options).then((res) => {
                 return (isFunction(oldCallback) && oldCallback(res)) || res;
             });
         };
@@ -311,7 +311,8 @@ function invokeApi(method, api, options, params) {
         if (isArray(interceptor.invoke)) {
             const res = queue(interceptor.invoke, options);
             return res.then((options) => {
-                return api(wrapperOptions(interceptor, options), ...params);
+                // 重新访问 getApiInterceptorHooks, 允许 invoke 中再次调用 addInterceptor,removeInterceptor
+                return api(wrapperOptions(getApiInterceptorHooks(method), options), ...params);
             });
         }
         else {
@@ -850,14 +851,14 @@ function initWrapper(protocols) {
 
 const getLocale = () => {
     // 优先使用 $locale
-    const app = getApp({ allowDefault: true });
+    const app = isFunction(getApp) && getApp({ allowDefault: true });
     if (app && app.$vm) {
         return app.$vm.$locale;
     }
     return normalizeLocale(wx.getSystemInfoSync().language) || LOCALE_EN;
 };
 const setLocale = (locale) => {
-    const app = getApp();
+    const app = isFunction(getApp) && getApp();
     if (!app) {
         return false;
     }
@@ -1139,7 +1140,7 @@ const baseApis = {
     offPushMessage,
     invokePushCallback,
 };
-function initUni(api, protocols) {
+function initUni(api, protocols, platform = wx) {
     const wrapper = initWrapper(protocols);
     const UniProxyHandlers = {
         get(target, key) {
@@ -1154,7 +1155,7 @@ function initUni(api, protocols) {
             }
             // event-api
             // provider-api?
-            return promisify(key, wrapper(key, wx[key]));
+            return promisify(key, wrapper(key, platform[key]));
         },
     };
     return new Proxy({}, UniProxyHandlers);
@@ -1181,6 +1182,31 @@ function initGetProvider(providers) {
     };
 }
 
+const objectKeys = [
+    'qy',
+    'env',
+    'error',
+    'version',
+    'lanDebug',
+    'cloud',
+    'serviceMarket',
+    'router',
+    'worklet',
+];
+function isWxKey(key) {
+    return objectKeys.indexOf(key) > -1 || typeof wx[key] === 'function';
+}
+function initWx() {
+    const newWx = {};
+    for (const key in wx) {
+        if (isWxKey(key)) {
+            // TODO wrapper function
+            newWx[key] = wx[key];
+        }
+    }
+    return newWx;
+}
+
 const mocks = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__'];
 
 const getProvider = initGetProvider({
@@ -1202,18 +1228,28 @@ function initComponentMocks(component) {
  * @returns
  */
 function createSelectorQuery() {
-    const query = wx.createSelectorQuery();
+    const query = wx$2.createSelectorQuery();
     const oldIn = query.in;
     query.in = function newIn(component) {
         return oldIn.call(this, initComponentMocks(component));
     };
     return query;
 }
+const wx$2 = initWx();
+let baseInfo = wx$2.getAppBaseInfo && wx$2.getAppBaseInfo();
+if (!baseInfo) {
+    baseInfo = wx$2.getSystemInfoSync();
+}
+const host = baseInfo ? baseInfo.host : null;
+const shareVideoMessage = host && host.env === 'SAAASDK'
+    ? wx$2.miniapp.shareVideoMessage
+    : wx$2.shareVideoMessage;
 
 var shims = /*#__PURE__*/Object.freeze({
   __proto__: null,
   getProvider: getProvider,
-  createSelectorQuery: createSelectorQuery
+  createSelectorQuery: createSelectorQuery,
+  shareVideoMessage: shareVideoMessage
 });
 
 var protocols = /*#__PURE__*/Object.freeze({
@@ -1229,6 +1265,7 @@ var protocols = /*#__PURE__*/Object.freeze({
   getAppAuthorizeSetting: getAppAuthorizeSetting
 });
 
-var index = initUni(shims, protocols);
+const wx$1 = (globalThis.wx = initWx());
+var index = initUni(shims, protocols, wx$1);
 
-export { index as default };
+export { index as default, wx$1 as wx };

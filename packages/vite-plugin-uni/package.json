@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/vite-plugin-uni",
-  "version": "3.0.0-alpha-3061420221216001",
+  "version": "3.0.0-alpha-3070020230114002",
   "description": "uni-app vite plugin",
   "bin": {
     "uni": "bin/uni.js"
@@ -25,15 +25,15 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@babel/core": "^7.19.6",
+    "@babel/core": "^7.20.5",
     "@babel/plugin-syntax-import-meta": "^7.10.4",
-    "@babel/plugin-transform-typescript": "^7.20.0",
-    "@dcloudio/uni-cli-shared": "3.0.0-alpha-3061420221216001",
-    "@dcloudio/uni-shared": "3.0.0-alpha-3061420221216001",
+    "@babel/plugin-transform-typescript": "^7.20.2",
+    "@dcloudio/uni-cli-shared": "3.0.0-alpha-3070020230114002",
+    "@dcloudio/uni-shared": "3.0.0-alpha-3070020230114002",
     "@rollup/pluginutils": "^4.2.0",
-    "@vitejs/plugin-legacy": "^2.3.1",
-    "@vitejs/plugin-vue": "^3.2.0",
-    "@vitejs/plugin-vue-jsx": "^2.1.1",
+    "@vitejs/plugin-legacy": "^3.0.1",
+    "@vitejs/plugin-vue": "^4.0.0",
+    "@vitejs/plugin-vue-jsx": "^3.0.0",
     "@vue/compiler-core": "3.2.45",
     "@vue/compiler-dom": "3.2.45",
     "@vue/compiler-sfc": "3.2.45",
@@ -57,14 +57,14 @@
     "@types/sass": "^1.16.0",
     "@vue/babel-plugin-jsx": "^1.1.1",
     "chokidar": "^3.5.3",
-    "vite": "3.2.4",
+    "vite": "4.0.4",
     "vue": "3.2.45"
   },
   "peerDependencies": {
-    "vite": "3.2.4"
+    "vite": "4.0.4"
   },
   "uni-app": {
-    "compilerVersion": "3.6.14"
+    "compilerVersion": "3.7.0"
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da"
 }

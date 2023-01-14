@@ -116,6 +116,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       let textareaNode =
         props.disabled && fixDisabledColor ? (
           <textarea
+            key="disabled-textarea"
             ref={fieldRef}
             value={state.value}
             tabindex="-1"
@@ -133,6 +134,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           />
         ) : (
           <textarea
+            key="textarea"
             ref={fieldRef}
             value={state.value}
             disabled={!!props.disabled}

@@ -197,7 +197,7 @@ export declare class EventChannel {
     on(eventName: string, fn: EventChannelListener['fn']): void;
     once(eventName: string, fn: EventChannelListener['fn']): void;
     off(eventName: string, fn: EventChannelListener['fn']): void;
-    _clearCache(eventName: string): void;
+    _clearCache(eventName?: string): void;
     _addListener(eventName: string, type: EventChannelListener['type'], fn: EventChannelListener['fn']): void;
 }
 

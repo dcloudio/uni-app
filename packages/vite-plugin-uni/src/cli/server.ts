@@ -33,7 +33,7 @@ export async function createServer(options: CliOptions & ServerOptions) {
       configFile: options.config,
       base: options.base,
       mode: options.mode,
-      logLevel: options.logLevel,
+      logLevel: options.logLevel || 'info',
       clearScreen: options.clearScreen,
       server: cleanOptions(options) as ServerOptions,
     })
@@ -72,7 +72,7 @@ export async function createSSRServer(
       configFile: options.config,
       base: options.base,
       mode: options.mode,
-      logLevel: options.logLevel,
+      logLevel: options.logLevel || 'info',
       clearScreen: options.clearScreen,
       server: {
         middlewareMode: true,

@@ -59,6 +59,9 @@ export function normalizeNetworkTimeout(
 
 export function getUniStatistics(inputDir: string, platform: UniApp.PLATFORM) {
   const manifest = parseManifestJsonOnce(inputDir)
+  if (platform === 'app') {
+    platform = 'app-plus'
+  }
   return extend(
     {},
     manifest.uniStatistics,

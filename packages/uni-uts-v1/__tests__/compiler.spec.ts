@@ -23,6 +23,7 @@ describe('compiler', () => {
       inputDir,
       outputDir,
       sourceMap: false,
+      components: {},
     })
     expect(existsSync(kotlinFile)).toBeTruthy()
   })
@@ -36,6 +37,7 @@ describe('compiler', () => {
       inputDir,
       outputDir,
       sourceMap: false,
+      components: {},
     })
     expect(existsSync(swiftFile)).toBeTruthy()
   })

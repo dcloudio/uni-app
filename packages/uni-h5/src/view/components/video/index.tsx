@@ -935,13 +935,14 @@ export default /*#__PURE__*/ defineBuiltInComponent({
                   }}
                   onClick={withModifiers(toggle, ['stop'])}
                 />
-                <div class="uni-video-current-time">
+                <div class="uni-video-current-time" v-show={props.showProgress}>
                   {formatTime(videoState.currentTime)}
                 </div>
                 <div
                   ref={progressRef}
                   class="uni-video-progress-container"
                   onClick={withModifiers(clickProgress, ['stop'])}
+                  v-show={props.showProgress}
                 >
                   <div class="uni-video-progress">
                     <div
@@ -957,7 +958,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
                     </div>
                   </div>
                 </div>
-                <div class="uni-video-duration">
+                <div class="uni-video-duration" v-show={props.showProgress}>
                   {formatTime(Number(props.duration) || videoState.duration)}
                 </div>
               </div>

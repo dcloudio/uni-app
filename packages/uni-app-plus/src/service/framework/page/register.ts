@@ -174,7 +174,7 @@ function initNVuePage(
   }
 }
 
-function createNVuePage(
+export function createNVuePage(
   pageId: number,
   webview: PlusWebviewWebviewObject,
   pageInstance: Page.PageInstance['$page']

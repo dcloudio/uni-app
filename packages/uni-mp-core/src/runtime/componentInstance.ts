@@ -4,7 +4,15 @@ import {
   SLOT_DEFAULT_NAME,
 } from '@dcloudio/uni-shared'
 import { capitalize, hasOwn, isArray } from '@vue/shared'
-import { ComponentPublicInstance, ComponentInternalInstance } from 'vue'
+
+import {
+  ComponentPublicInstance,
+  ComponentInternalInstance,
+  // @ts-ignore
+  devtoolsComponentRemoved,
+  // @ts-ignore
+  devtoolsComponentAdded,
+} from 'vue'
 import { MPComponentInstance } from './component'
 
 const MP_METHODS = [
@@ -152,6 +160,15 @@ function callHook(this: ComponentPublicInstance, name: string, args?: unknown) {
       )
       delete (args as any).__id__
     }
+  }
+  // 处理飞书小程序页面切换uni-vue-devtools无法更新数据问题
+  if (
+    __PLATFORM__ === 'mp-lark' &&
+    __VUE_PROD_DEVTOOLS__ &&
+    name === 'onShow'
+  ) {
+    devtoolsComponentRemoved(this.$)
+    devtoolsComponentAdded(this.$)
   }
   const hooks = (this.$ as any)[name]
   return hooks && invokeArrayFns(hooks, args)

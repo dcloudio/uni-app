@@ -378,7 +378,7 @@ function normalizeNavigationBarButton(
   type: UniApp.PageNavigationBar['type'],
   titleColor: UniApp.PageNavigationBar['titleColor']
 ) {
-  btn.color = type === 'transparent' ? '#ffffff' : btn.color || titleColor!
+  btn.color = btn.color || titleColor!
   if (!btn.fontSize) {
     btn.fontSize =
       type === 'transparent' || (btn.text && /\\u/.test(btn.text))

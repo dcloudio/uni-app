@@ -1,7 +1,12 @@
 import { extend } from '@vue/shared'
 import { RollupWatcher } from 'rollup'
 import type { BuildOptions, ServerOptions } from 'vite'
-import { APP_CONFIG_SERVICE, M, output } from '@dcloudio/uni-cli-shared'
+import {
+  APP_CONFIG_SERVICE,
+  APP_SERVICE_FILENAME,
+  M,
+  output,
+} from '@dcloudio/uni-cli-shared'
 import { CliOptions } from '.'
 import { build, buildSSR } from './build'
 import { createServer, createSSRServer } from './server'
@@ -33,7 +38,8 @@ export async function runDev(options: CliOptions & ServerOptions) {
       watcher.on('event', (event) => {
         if (event.code === 'BUNDLE_START') {
           if (isFirstStart) {
-            return (isFirstStart = false)
+            isFirstStart = false
+            return
           }
           output('log', M['dev.watching.start'])
         } else if (event.code === 'BUNDLE_END') {
@@ -62,7 +68,9 @@ export async function runDev(options: CliOptions & ServerOptions) {
             process.env.UNI_APP_CHANGED_FILES = ''
             process.env.UNI_APP_UTS_CHANGED_FILES = ''
             if (
-              (changedFiles && !changedFiles.includes(APP_CONFIG_SERVICE)) ||
+              (changedFiles &&
+                !changedFiles.includes(APP_CONFIG_SERVICE) &&
+                !changedFiles.includes(APP_SERVICE_FILENAME)) ||
               dex
             ) {
               if (pages) {

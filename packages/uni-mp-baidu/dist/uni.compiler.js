@@ -5,10 +5,10 @@ var path = require('path');
 var uniCliShared = require('@dcloudio/uni-cli-shared');
 var uniMpCompiler = require('@dcloudio/uni-mp-compiler');
 
-function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
 
-var initMiniProgramPlugin__default = /*#__PURE__*/_interopDefaultLegacy(initMiniProgramPlugin);
-var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
+var initMiniProgramPlugin__default = /*#__PURE__*/_interopDefault(initMiniProgramPlugin);
+var path__default = /*#__PURE__*/_interopDefault(path);
 
 var appid = "";
 var host = "baiduboxapp";
@@ -64,7 +64,32 @@ const transformOn = uniCliShared.createTransformOn(uniMpCompiler.transformOn);
  */
 const transformModel = uniCliShared.createTransformModel(uniMpCompiler.transformModel);
 
-const customElements = ['follow-swan', 'login', 'inline-payment-panel'];
+const customElements = [
+    'animation-video',
+    'animation-view',
+    'ar-camera',
+    'rtc-room',
+    'rtc-room-item',
+    'tabs',
+    'tab-item',
+    'follow-swan',
+    'login',
+    'inline-payment-panel',
+    'talos-linear-gradient',
+    'talos-rc-view',
+    'talos-nested-scroll-view',
+    'talos-nested-scroll-top-container',
+    'talos-nested-scroll-bottom-container',
+    'talos-waterfall-view',
+    'talos-waterfall-item',
+    'talos-waterfall-header',
+    'talos-waterfall-footer',
+    'talos-pull-refresh',
+    'talos-control-container',
+    'talos-na-refresh-control',
+    'talos-modal',
+    'talos-svg',
+];
 const nodeTransforms = [uniCliShared.transformRef, transformFor, uniCliShared.transformMatchMedia];
 const directiveTransforms = {
     on: transformOn,
@@ -102,10 +127,10 @@ const options = {
     cdn: 3,
     vite: {
         inject: {
-            uni: [path__default["default"].resolve(__dirname, 'uni.api.esm.js'), 'default'],
+            uni: [path__default.default.resolve(__dirname, 'uni.api.esm.js'), 'default'],
         },
         alias: {
-            'uni-mp-runtime': path__default["default"].resolve(__dirname, 'uni.mp.esm.js'),
+            'uni-mp-runtime': path__default.default.resolve(__dirname, 'uni.mp.esm.js'),
         },
         copyOptions: {
             assets: [COMPONENTS_DIR],
@@ -157,6 +182,6 @@ const uniMiniProgramBaiduPlugin = {
         };
     },
 };
-var index = [uniMiniProgramBaiduPlugin, ...initMiniProgramPlugin__default["default"](options)];
+var index = [uniMiniProgramBaiduPlugin, ...initMiniProgramPlugin__default.default(options)];
 
 module.exports = index;

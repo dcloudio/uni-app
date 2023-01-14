@@ -71,6 +71,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       }
       radioChecked.value = true
       uniCheckGroup && uniCheckGroup.radioChange($event, field)
+      $event.stopPropagation()
     }
 
     if (!!uniLabel) {

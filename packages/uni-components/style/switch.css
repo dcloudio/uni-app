@@ -94,7 +94,7 @@ uni-switch:not([disabled]) .uni-checkbox-input:hover {
 }
 
 uni-switch .uni-checkbox-input svg {
-  color: inherit;
+  fill: #007aff;
   font-size: 22px;
   position: absolute;
   top: 50%;
@@ -108,4 +108,25 @@ uni-switch .uni-checkbox-input svg {
 
 .uni-checkbox-input.uni-checkbox-input-disabled:before {
   color: #adadad;
+}
+
+@media (prefers-color-scheme: dark) {
+  uni-switch .uni-switch-input {
+    border-color: #3b3b3f;
+  }
+
+  uni-switch .uni-switch-input,
+  uni-switch .uni-switch-input:before {
+    background-color: #3b3b3f;
+  }
+
+  uni-switch .uni-switch-input:after {
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  }
+
+  uni-switch .uni-checkbox-input {
+    background-color: #2c2c2c;
+    border: 1px solid #656565;
+  }
 }

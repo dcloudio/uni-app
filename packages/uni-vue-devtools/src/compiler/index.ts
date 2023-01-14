@@ -4,6 +4,7 @@ import path from 'path'
 import {
   defineUniMainJsPlugin,
   isMiniProgramPlatform,
+  normalizePath,
 } from '@dcloudio/uni-cli-shared'
 // eslint-disable-next-line no-restricted-globals
 const { initDevtoolsServer } = require('../lib/front/server.js')
@@ -63,12 +64,13 @@ export default () => {
   return [
     uniVueDevtoolsPlugin(),
     defineUniMainJsPlugin((opts) => {
-      let devtoolsCode = `;import '@dcloudio/uni-vue-devtools';`
+      const devtoolsPath = normalizePath(path.resolve(__dirname, '..'))
+      let devtoolsCode = `;import '${devtoolsPath}';`
       if (isMiniProgramPlatform()) {
         devtoolsCode += `require('./vue-devtools/hook.js');require('./vue-devtools/backend.js');`
       } else {
         const dir = process.env.UNI_PLATFORM === 'app' ? 'app' : 'web'
-        devtoolsCode += `import '@dcloudio/uni-vue-devtools/lib/${dir}/hook.js';import '@dcloudio/uni-vue-devtools/lib/${dir}/backend.js';`
+        devtoolsCode += `import '${devtoolsPath}/lib/${dir}/hook.js';import '${devtoolsPath}/lib/${dir}/backend.js';`
       }
 
       return {

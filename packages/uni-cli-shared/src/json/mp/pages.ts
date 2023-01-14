@@ -36,6 +36,7 @@ const NON_APP_JSON_KEYS = [
   'scopedSlotsCompiler',
   'usingComponents',
   'uniStatistics',
+  'mergeVirtualHostAttributes',
 ]
 
 export function mergeMiniProgramAppJson(
@@ -166,7 +167,7 @@ function parsePagesJson(
       appJson.tabBar = tabBar
     }
   }
-  ;['preloadRule', 'workers', 'plugins'].forEach((name) => {
+  ;['preloadRule', 'workers', 'plugins', 'entryPagePath'].forEach((name) => {
     if (hasOwn(pagesJson, name)) {
       appJson[name] = pagesJson[name]
     }

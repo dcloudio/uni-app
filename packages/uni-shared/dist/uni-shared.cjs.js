@@ -1,7 +1,5 @@
 'use strict';
 
-Object.defineProperty(exports, '__esModule', { value: true });
-
 var shared = require('@vue/shared');
 
 const BUILT_IN_TAG_NAMES = [
@@ -1171,7 +1169,7 @@ class EventChannel {
     constructor(id, events) {
         this.id = id;
         this.listener = {};
-        this.emitCache = {};
+        this.emitCache = [];
         if (events) {
             Object.keys(events).forEach((name) => {
                 this.on(name, events[name]);
@@ -1181,7 +1179,10 @@ class EventChannel {
     emit(eventName, ...args) {
         const fns = this.listener[eventName];
         if (!fns) {
-            return (this.emitCache[eventName] || (this.emitCache[eventName] = [])).push(args);
+            return this.emitCache.push({
+                eventName,
+                args,
+            });
         }
         fns.forEach((opt) => {
             opt.fn.apply(opt.fn, args);
@@ -1215,11 +1216,22 @@ class EventChannel {
         }
     }
     _clearCache(eventName) {
-        const cacheArgs = this.emitCache[eventName];
-        if (cacheArgs) {
-            for (; cacheArgs.length > 0;) {
-                this.emit.apply(this, [eventName, ...cacheArgs.shift()]);
+        for (let index = 0; index < this.emitCache.length; index++) {
+            const cache = this.emitCache[index];
+            const _name = eventName
+                ? cache.eventName === eventName
+                    ? eventName
+                    : null
+                : cache.eventName;
+            if (!_name)
+                continue;
+            const location = this.emit.apply(this, [_name, ...cache.args]);
+            if (typeof location === 'number') {
+                this.emitCache.pop();
+                continue;
             }
+            this.emitCache.splice(index, 1);
+            index--;
         }
     }
     _addListener(eventName, type, fn) {

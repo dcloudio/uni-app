@@ -252,6 +252,6 @@ export function useKeyboard(
   }
   watch(
     () => elRef.value,
-    (el) => initKeyboard(el as HTMLElement)
+    (el) => el && initKeyboard(el)
   )
 }

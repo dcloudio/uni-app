@@ -1,11 +1,12 @@
 import fs from 'fs-extra'
 import path, { join } from 'path'
-import { capitalize } from '@vue/shared'
 import {
+  genComponentsCode,
   genUTSPlatformResource,
   getCompilerServer,
   getUtsCompiler,
   moveRootIndexSourceMap,
+  parseSwiftPackageWithPluginId,
   resolveIOSDir,
   resolvePackage,
   resolveUTSPlatformFile,
@@ -19,29 +20,43 @@ function parseSwiftPackage(filename: string) {
   const res = resolvePackage(filename)
   if (!res) {
     return {
+      id: '',
       namespace: '',
     }
   }
-  const namespace =
-    'UTSSDK' + (res.is_uni_modules ? 'Modules' : '') + capitalize(res.name)
+  const namespace = parseSwiftPackageWithPluginId(res.name, res.is_uni_modules)
   return {
+    id: res.id,
     namespace,
   }
 }
 
-export async function runSwiftProd(filename: string) {
+export async function runSwiftProd(
+  filename: string,
+  components: Record<string, string>
+) {
   // 文件有可能是 app-android 里边的，因为编译到 ios 时，为了保证不报错，可能会去读取 android 下的 uts
   if (filename.includes('app-android')) {
     return
   }
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
-  await compile(filename, { inputDir, outputDir, sourceMap: true })
+  const res = await compile(filename, {
+    inputDir,
+    outputDir,
+    sourceMap: true,
+    components,
+  })
+  if (!res) {
+    return
+  }
   genUTSPlatformResource(filename, {
     inputDir,
     outputDir,
     platform: 'app-ios',
     extname: '.swift',
+    components,
+    package: parseSwiftPackage(filename).namespace,
   })
 }
 
@@ -53,7 +68,10 @@ export type RunSwiftDevResult = UtsResult & {
 }
 
 let isEnvReady = true
-export async function runSwiftDev(filename: string) {
+export async function runSwiftDev(
+  filename: string,
+  components: Record<string, string>
+) {
   // 文件有可能是 app-android 里边的，因为编译到 ios 时，为了保证不报错，可能会去读取 android 下的 uts
   if (filename.includes('app-android')) {
     return
@@ -82,7 +100,12 @@ export async function runSwiftDev(filename: string) {
     inputDir,
     outputDir,
     sourceMap: true,
+    components,
   })) as RunSwiftDevResult
+
+  if (!result) {
+    return
+  }
 
   result.type = 'swift'
 
@@ -91,6 +114,8 @@ export async function runSwiftDev(filename: string) {
     outputDir,
     platform: 'app-ios',
     extname: '.swift',
+    components,
+    package: '',
   })
   result.changed = []
   // 开发模式下，需要生成 framework
@@ -104,7 +129,7 @@ export async function runSwiftDev(filename: string) {
     const { code, msg } = await compilerServer.compile({
       projectPath,
       isCli,
-      type: 1,
+      type: is_uni_modules ? 1 : 2,
       pluginName: id,
       utsPath: resolveCompilerUtsPath(inputDir, is_uni_modules),
       swiftPath: resolveCompilerSwiftPath(outputDir, is_uni_modules),
@@ -133,19 +158,37 @@ function isCliProject(projectPath: string) {
 
 export async function compile(
   filename: string,
-  { inputDir, outputDir, sourceMap }: ToSwiftOptions
+  { inputDir, outputDir, sourceMap, components }: ToSwiftOptions
 ) {
   const { bundle, UtsTarget } = getUtsCompiler()
   // let time = Date.now()
+  const componentsCode = genComponentsCode(filename, components)
+  const { namespace, id: pluginId } = parseSwiftPackage(filename)
+  const input: Parameters<typeof bundle>[1]['input'] = {
+    root: inputDir,
+    filename,
+    pluginId,
+  }
+  const isUTSFileExists = fs.existsSync(filename)
+  if (componentsCode) {
+    if (!isUTSFileExists) {
+      input.fileContent = componentsCode
+    } else {
+      input.fileContent =
+        fs.readFileSync(filename, 'utf8') + `\n` + componentsCode
+    }
+  } else {
+    // uts文件不存在，且也无组件
+    if (!isUTSFileExists) {
+      return
+    }
+  }
   const result = await bundle(UtsTarget.SWIFT, {
-    input: {
-      root: inputDir,
-      filename,
-    },
+    input,
     output: {
       isPlugin: true,
       outDir: outputDir,
-      package: parseSwiftPackage(filename).namespace,
+      package: namespace,
       sourceMap: sourceMap ? resolveUTSSourceMapPath() : false,
       extname: 'swift',
       imports: ['DCloudUTSFoundation'],
@@ -159,6 +202,8 @@ export async function compile(
       outputDir,
       platform: 'app-ios',
       extname: '.swift',
+      components,
+      package: '',
     })
   return result
 }

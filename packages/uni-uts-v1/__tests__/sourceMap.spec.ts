@@ -91,6 +91,13 @@ describe('uts:sourceMap', () => {
       outputDir
     )
     expect(sourceMapFile).toBeDefined()
+    const sourceMapFile2 = resolveUtsPluginSourceMapFile(
+      'swift',
+      resolve(outputDir, uniModulesPluginDir, 'utssdk/app-ios/src/index.swift'),
+      inputDir,
+      outputDir
+    )
+    expect(sourceMapFile2).toBeDefined()
   })
   test('resolveUtsPluginSourceMapFile with utssdk kt', () => {
     const sourceMapFile = resolveUtsPluginSourceMapFile(
@@ -161,5 +168,27 @@ describe('uts:sourceMap', () => {
     expect(line).toBe(3)
     expect(column).toBe(14)
     expect(source).toContain('login.uts')
+  })
+  test('originalPositionFor ios', async () => {
+    const filename = resolve(
+      outputDir,
+      uniModulesPluginDir,
+      'utssdk/app-ios/src/index.kt'
+    )
+    const sourceMapFile = resolveUtsPluginSourceMapFile(
+      'swift',
+      filename,
+      inputDir,
+      outputDir
+    )
+    const { line, column, source } = await originalPositionFor({
+      sourceMapFile,
+      line: 18,
+      column: 16,
+    })
+
+    expect(line).toBe(21)
+    expect(column).toBe(4)
+    expect(source).toContain('index.uts')
   })
 })

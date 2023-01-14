@@ -3,9 +3,9 @@
 var debug = require('debug');
 var uniCliShared = require('@dcloudio/uni-cli-shared');
 
-function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
 
-var debug__default = /*#__PURE__*/_interopDefaultLegacy(debug);
+var debug__default = /*#__PURE__*/_interopDefault(debug);
 
 function once(fn, ctx = null) {
     let res;
@@ -98,7 +98,7 @@ var index = () => [
                             }
                         }
                     }
-                    debug__default["default"]('uni:stat')('isEnable', isEnable);
+                    debug__default.default('uni:stat')('isEnable', isEnable);
                 }
                 process.env.UNI_STAT_TITLE_JSON = JSON.stringify(titlesJson);
                 return {

@@ -36,7 +36,7 @@ export function createConfig(
       publicDir: config.publicDir || '__static__',
       define: createDefine(options),
       resolve: createResolve(options, config),
-      logLevel: config.logLevel || 'warn',
+      logLevel: config.logLevel || 'warn', // 默认使用 warn 等级，因为 info 等级vite:report 会输出文件列表等信息
       optimizeDeps: createOptimizeDeps(options),
       build: createBuild(options, config),
       css: createCss(options, config),

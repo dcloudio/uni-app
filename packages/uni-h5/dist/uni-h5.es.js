@@ -95,7 +95,7 @@ const initI18nAsyncMsgsOnce = /* @__PURE__ */ once(() => {
     useI18n().add(
       LOCALE_ES,
       normalizeMessages(name, keys, [
-        "Se agot\xF3 el tiempo de conexi\xF3n, haga clic en la pantalla para volver a intentarlo."
+        "Se agotó el tiempo de conexión, haga clic en la pantalla para volver a intentarlo."
       ]),
       false
     );
@@ -104,7 +104,7 @@ const initI18nAsyncMsgsOnce = /* @__PURE__ */ once(() => {
     useI18n().add(
       LOCALE_FR,
       normalizeMessages(name, keys, [
-        "La connexion a expir\xE9, cliquez sur l'\xE9cran pour r\xE9essayer."
+        "La connexion a expiré, cliquez sur l'écran pour réessayer."
       ]),
       false
     );
@@ -112,14 +112,14 @@ const initI18nAsyncMsgsOnce = /* @__PURE__ */ once(() => {
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
     useI18n().add(
       LOCALE_ZH_HANS,
-      normalizeMessages(name, keys, ["\u8FDE\u63A5\u670D\u52A1\u5668\u8D85\u65F6\uFF0C\u70B9\u51FB\u5C4F\u5E55\u91CD\u8BD5"]),
+      normalizeMessages(name, keys, ["连接服务器超时，点击屏幕重试"]),
       false
     );
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
     useI18n().add(
       LOCALE_ZH_HANT,
-      normalizeMessages(name, keys, ["\u9023\u63A5\u670D\u52D9\u5668\u8D85\u6642\uFF0C\u9EDE\u64CA\u5C4F\u5E55\u91CD\u8A66"]),
+      normalizeMessages(name, keys, ["連接服務器超時，點擊屏幕重試"]),
       false
     );
   }
@@ -139,14 +139,14 @@ const initI18nShowActionSheetMsgsOnce = /* @__PURE__ */ once(() => {
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
     useI18n().add(
       LOCALE_ZH_HANS,
-      normalizeMessages(name, keys, ["\u53D6\u6D88"]),
+      normalizeMessages(name, keys, ["取消"]),
       false
     );
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
     useI18n().add(
       LOCALE_ZH_HANT,
-      normalizeMessages(name, keys, ["\u53D6\u6D88"]),
+      normalizeMessages(name, keys, ["取消"]),
       false
     );
   }
@@ -176,7 +176,7 @@ const initI18nShowToastMsgsOnce = /* @__PURE__ */ once(() => {
     useI18n().add(
       LOCALE_FR,
       normalizeMessages(name, keys, [
-        "Veuillez noter que showToast doit \xEAtre associ\xE9 \xE0 hideToast"
+        "Veuillez noter que showToast doit être associé à hideToast"
       ]),
       false
     );
@@ -185,7 +185,7 @@ const initI18nShowToastMsgsOnce = /* @__PURE__ */ once(() => {
     useI18n().add(
       LOCALE_ZH_HANS,
       normalizeMessages(name, keys, [
-        "\u8BF7\u6CE8\u610F showToast \u4E0E hideToast \u5FC5\u987B\u914D\u5BF9\u4F7F\u7528"
+        "请注意 showToast 与 hideToast 必须配对使用"
       ]),
       false
     );
@@ -194,7 +194,7 @@ const initI18nShowToastMsgsOnce = /* @__PURE__ */ once(() => {
     useI18n().add(
       LOCALE_ZH_HANT,
       normalizeMessages(name, keys, [
-        "\u8ACB\u6CE8\u610F showToast \u8207 hideToast \u5FC5\u9808\u914D\u5C0D\u4F7F\u7528"
+        "請注意 showToast 與 hideToast 必須配對使用"
       ]),
       false
     );
@@ -225,7 +225,7 @@ const initI18nShowLoadingMsgsOnce = /* @__PURE__ */ once(() => {
     useI18n().add(
       LOCALE_FR,
       normalizeMessages(name, keys, [
-        "Veuillez noter que showLoading doit \xEAtre associ\xE9 \xE0 hideLoading"
+        "Veuillez noter que showLoading doit être associé à hideLoading"
       ]),
       false
     );
@@ -234,7 +234,7 @@ const initI18nShowLoadingMsgsOnce = /* @__PURE__ */ once(() => {
     useI18n().add(
       LOCALE_ZH_HANS,
       normalizeMessages(name, keys, [
-        "\u8BF7\u6CE8\u610F showLoading \u4E0E hideLoading \u5FC5\u987B\u914D\u5BF9\u4F7F\u7528"
+        "请注意 showLoading 与 hideLoading 必须配对使用"
       ]),
       false
     );
@@ -243,7 +243,7 @@ const initI18nShowLoadingMsgsOnce = /* @__PURE__ */ once(() => {
     useI18n().add(
       LOCALE_ZH_HANT,
       normalizeMessages(name, keys, [
-        "\u8ACB\u6CE8\u610F showLoading \u8207 hideLoading \u5FC5\u9808\u914D\u5C0D\u4F7F\u7528"
+        "請注意 showLoading 與 hideLoading 必須配對使用"
       ]),
       false
     );
@@ -276,14 +276,14 @@ const initI18nShowModalMsgsOnce = /* @__PURE__ */ once(() => {
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
     useI18n().add(
       LOCALE_ZH_HANS,
-      normalizeMessages(name, keys, ["\u53D6\u6D88", "\u786E\u5B9A"]),
+      normalizeMessages(name, keys, ["取消", "确定"]),
       false
     );
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
     useI18n().add(
       LOCALE_ZH_HANT,
-      normalizeMessages(name, keys, ["\u53D6\u6D88", "\u78BA\u5B9A"]),
+      normalizeMessages(name, keys, ["取消", "確定"]),
       false
     );
   }
@@ -304,7 +304,7 @@ const initI18nChooseFileMsgsOnce = /* @__PURE__ */ once(() => {
     useI18n().add(
       LOCALE_ES,
       normalizeMessages(name, keys, [
-        "El cuadro de di\xE1logo del selector de archivos solo se puede mostrar con la activaci\xF3n del usuario"
+        "El cuadro de diálogo del selector de archivos solo se puede mostrar con la activación del usuario"
       ]),
       false
     );
@@ -313,7 +313,7 @@ const initI18nChooseFileMsgsOnce = /* @__PURE__ */ once(() => {
     useI18n().add(
       LOCALE_FR,
       normalizeMessages(name, keys, [
-        "La bo\xEEte de dialogue du s\xE9lecteur de fichier ne peut \xEAtre affich\xE9e qu'avec une activation par l'utilisateur"
+        "La boîte de dialogue du sélecteur de fichier ne peut être affichée qu'avec une activation par l'utilisateur"
       ]),
       false
     );
@@ -321,14 +321,14 @@ const initI18nChooseFileMsgsOnce = /* @__PURE__ */ once(() => {
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
     useI18n().add(
       LOCALE_ZH_HANS,
-      normalizeMessages(name, keys, ["\u6587\u4EF6\u9009\u62E9\u5668\u5BF9\u8BDD\u6846\u53EA\u80FD\u5728\u7528\u6237\u6FC0\u6D3B\u65F6\u663E\u793A"]),
+      normalizeMessages(name, keys, ["文件选择器对话框只能在用户激活时显示"]),
       false
     );
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
     useI18n().add(
       LOCALE_ZH_HANT,
-      normalizeMessages(name, keys, ["\u6587\u4EF6\u9078\u64C7\u5668\u5C0D\u8A71\u6846\u53EA\u80FD\u5728\u7528\u6236\u6FC0\u6D3B\u6642\u986F\u793A"]),
+      normalizeMessages(name, keys, ["文件選擇器對話框只能在用戶激活時顯示"]),
       false
     );
   }
@@ -360,8 +360,8 @@ const initI18nSetClipboardDataMsgsOnce = /* @__PURE__ */ once(() => {
     useI18n().add(
       LOCALE_FR,
       normalizeMessages(name, keys, [
-        "Contenu copi\xE9",
-        "\xC9chec de la copie, copiez manuellement"
+        "Contenu copié",
+        "Échec de la copie, copiez manuellement"
       ]),
       false
     );
@@ -369,14 +369,14 @@ const initI18nSetClipboardDataMsgsOnce = /* @__PURE__ */ once(() => {
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
     useI18n().add(
       LOCALE_ZH_HANS,
-      normalizeMessages(name, keys, ["\u5185\u5BB9\u5DF2\u590D\u5236", "\u590D\u5236\u5931\u8D25\uFF0C\u8BF7\u624B\u52A8\u590D\u5236"]),
+      normalizeMessages(name, keys, ["内容已复制", "复制失败，请手动复制"]),
       false
     );
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
     useI18n().add(
       LOCALE_ZH_HANT,
-      normalizeMessages(name, keys, ["\u5167\u5BB9\u5DF2\u5FA9\u5236", "\u5FA9\u5236\u5931\u6557\uFF0C\u8ACB\u624B\u52D5\u5FA9\u88FD"]),
+      normalizeMessages(name, keys, ["內容已復制", "復制失敗，請手動復製"]),
       false
     );
   }
@@ -402,7 +402,7 @@ const initI18nGetClipboardDataMsgsOnce = /* @__PURE__ */ once(() => {
     useI18n().add(
       LOCALE_FR,
       normalizeMessages(name, keys, [
-        "\xC9chec de la lecture, veuillez coller manuellement"
+        "Échec de la lecture, veuillez coller manuellement"
       ]),
       false
     );
@@ -410,14 +410,14 @@ const initI18nGetClipboardDataMsgsOnce = /* @__PURE__ */ once(() => {
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
     useI18n().add(
       LOCALE_ZH_HANS,
-      normalizeMessages(name, keys, ["\u8BFB\u53D6\u5931\u8D25\uFF0C\u8BF7\u624B\u52A8\u7C98\u8D34"]),
+      normalizeMessages(name, keys, ["读取失败，请手动粘贴"]),
       false
     );
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
     useI18n().add(
       LOCALE_ZH_HANT,
-      normalizeMessages(name, keys, ["\u8B80\u53D6\u5931\u6557\uFF0C\u8ACB\u624B\u52D5\u7C98\u8CBC"]),
+      normalizeMessages(name, keys, ["讀取失敗，請手動粘貼"]),
       false
     );
   }
@@ -449,14 +449,14 @@ const initI18nPickerMsgsOnce = /* @__PURE__ */ once(() => {
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
     useI18n().add(
       LOCALE_ZH_HANS,
-      normalizeMessages(name, keys, ["\u5B8C\u6210", "\u53D6\u6D88"]),
+      normalizeMessages(name, keys, ["完成", "取消"]),
       false
     );
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
     useI18n().add(
       LOCALE_ZH_HANT,
-      normalizeMessages(name, keys, ["\u5B8C\u6210", "\u53D6\u6D88"]),
+      normalizeMessages(name, keys, ["完成", "取消"]),
       false
     );
   }
@@ -488,14 +488,14 @@ const initI18nVideoMsgsOnce = /* @__PURE__ */ once(() => {
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
     useI18n().add(
       LOCALE_ZH_HANS,
-      normalizeMessages(name, keys, ["\u5F39\u5E55", "\u97F3\u91CF"]),
+      normalizeMessages(name, keys, ["弹幕", "音量"]),
       false
     );
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
     useI18n().add(
       LOCALE_ZH_HANT,
-      normalizeMessages(name, keys, ["\u5F48\u5E55", "\u97F3\u91CF"]),
+      normalizeMessages(name, keys, ["彈幕", "音量"]),
       false
     );
   }
@@ -527,14 +527,14 @@ const initI18nChooseLocationMsgsOnce = /* @__PURE__ */ once(() => {
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
     useI18n().add(
       LOCALE_ZH_HANS,
-      normalizeMessages(name, keys, ["\u641C\u7D22\u5730\u70B9", "\u53D6\u6D88"]),
+      normalizeMessages(name, keys, ["搜索地点", "取消"]),
       false
     );
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
     useI18n().add(
       LOCALE_ZH_HANT,
-      normalizeMessages(name, keys, ["\u641C\u7D22\u5730\u9EDE", "\u53D6\u6D88"]),
+      normalizeMessages(name, keys, ["搜索地點", "取消"]),
       false
     );
   }
@@ -1496,6 +1496,7 @@ function getWxsVm(el) {
 }
 const isClickEvent = (val) => val.type === "click";
 const isMouseEvent = (val) => val.type.indexOf("mouse") === 0 || ["contextmenu"].includes(val.type);
+const isTouchEvent = (val) => typeof TouchEvent !== "undefined" && val instanceof TouchEvent || val.type.indexOf("touch") === 0;
 function $nne(evt, eventValue, instance2) {
   const { currentTarget } = evt;
   if (!(evt instanceof Event) || !(currentTarget instanceof HTMLElement)) {
@@ -1517,10 +1518,16 @@ function $nne(evt, eventValue, instance2) {
     normalizeClickEvent(res, evt);
   } else if (isMouseEvent(evt)) {
     normalizeMouseEvent(res, evt);
-  } else if (evt instanceof TouchEvent) {
+  } else if (isTouchEvent(evt)) {
     const top = getWindowTop();
-    res.touches = normalizeTouchEvent(evt.touches, top);
-    res.changedTouches = normalizeTouchEvent(evt.changedTouches, top);
+    res.touches = normalizeTouchEvent(
+      evt.touches,
+      top
+    );
+    res.changedTouches = normalizeTouchEvent(
+      evt.changedTouches,
+      top
+    );
   }
   {
     return wrapperH5WxsEvent(
@@ -1911,7 +1918,6 @@ const defineBuiltInComponent = (options) => {
   return defineSystemComponent(options);
 };
 const defineSystemComponent = (options) => {
-  options.devtools = { hide: true };
   options.__reserved = true;
   options.compatConfig = {
     MODE: 3
@@ -2860,19 +2866,19 @@ const HOOK_FAIL = "fail";
 const HOOK_COMPLETE = "complete";
 const globalInterceptors = {};
 const scopedInterceptors = {};
-function wrapperHook(hook) {
+function wrapperHook(hook, params) {
   return function(data) {
-    return hook(data) || data;
+    return hook(data, params) || data;
   };
 }
-function queue(hooks, data) {
+function queue(hooks, data, params) {
   let promise = false;
   for (let i = 0; i < hooks.length; i++) {
     const hook = hooks[i];
     if (promise) {
-      promise = Promise.resolve(wrapperHook(hook));
+      promise = Promise.resolve(wrapperHook(hook, params));
     } else {
-      const res = hook(data);
+      const res = hook(data, params);
       if (isPromise(res)) {
         promise = Promise.resolve(res);
       }
@@ -2902,7 +2908,7 @@ function wrapperOptions(interceptors2, options = {}) {
     }
     const oldCallback = options[name];
     options[name] = function callbackInterceptor(res) {
-      queue(hooks, res).then((res2) => {
+      queue(hooks, res, options).then((res2) => {
         return isFunction(oldCallback) && oldCallback(res2) || res2;
       });
     };
@@ -2948,7 +2954,10 @@ function invokeApi(method, api2, options, params) {
     if (isArray(interceptor.invoke)) {
       const res = queue(interceptor.invoke, options);
       return res.then((options2) => {
-        return api2(wrapperOptions(interceptor, options2), ...params);
+        return api2(
+          wrapperOptions(getApiInterceptorHooks(method), options2),
+          ...params
+        );
       });
     } else {
       return api2(wrapperOptions(interceptor, options), ...params);
@@ -7803,6 +7812,7 @@ const index$t = /* @__PURE__ */ defineBuiltInComponent({
       }
       checkboxChecked.value = !checkboxChecked.value;
       uniCheckGroup && uniCheckGroup.checkboxChange($event);
+      $event.stopPropagation();
     };
     if (!!uniLabel) {
       uniLabel.addHandler(_onClick);
@@ -7903,7 +7913,7 @@ function useKeyboard$1(props2, elRef, trigger) {
   }
   watch(
     () => elRef.value,
-    (el) => initKeyboard(el)
+    (el) => el && initKeyboard(el)
   );
 }
 var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
@@ -9408,6 +9418,8 @@ function useEvent(fieldRef, state2, props2, trigger, triggerInput, beforeInput) 
   }
   function initField() {
     const field = fieldRef.value;
+    if (!field)
+      return;
     const onFocus = function(event) {
       state2.focus = true;
       trigger("focus", event, {
@@ -9492,6 +9504,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
+const INPUT_MODES = ["none", "text", "decimal", "numeric", "tel", "search", "email", "url"];
 const props$q = /* @__PURE__ */ extend({}, props$r, {
   placeholderClass: {
     type: String,
@@ -9500,6 +9513,11 @@ const props$q = /* @__PURE__ */ extend({}, props$r, {
   textContentType: {
     type: String,
     default: ""
+  },
+  inputmode: {
+    type: String,
+    default: void 0,
+    validator: (value) => !!~INPUT_MODES.indexOf(value)
   }
 });
 const Input = /* @__PURE__ */ defineBuiltInComponent({
@@ -9537,14 +9555,6 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       const index2 = camelizeIndex !== -1 ? camelizeIndex : kebabCaseIndex !== -1 ? kebabCaseIndex : 0;
       return AUTOCOMPLETES[index2];
     });
-    const inputmode = computed(() => {
-      switch (props2.type) {
-        case "digit":
-          return "decimal";
-        default:
-          return void 0;
-      }
-    });
     let cache = ref("");
     let resetCache;
     const rootRef = ref(null);
@@ -9562,7 +9572,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
           resetCache = null;
         }
         if (input.validity && !input.validity.valid) {
-          if (!cache.value && event.data === "-" || cache.value[0] === "-" && event.inputType === "deleteContentBackward") {
+          if ((!cache.value || !input.value) && event.data === "-" || cache.value[0] === "-" && event.inputType === "deleteContentBackward") {
             cache.value = "-";
             state3.value = "";
             resetCache = () => {
@@ -9620,6 +9630,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
     }
     return () => {
       let inputNode = props2.disabled && fixDisabledColor ? createVNode("input", {
+        "key": "disabled-input",
         "ref": fieldRef,
         "value": state2.value,
         "tabindex": "-1",
@@ -9630,6 +9641,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-input-input",
         "onFocus": (event) => event.target.blur()
       }, null, 40, ["value", "readonly", "type", "maxlength", "step", "onFocus"]) : createVNode("input", {
+        "key": "input",
         "ref": fieldRef,
         "value": state2.value,
         "disabled": !!props2.disabled,
@@ -9641,7 +9653,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-input-input",
         "autocomplete": autocomplete.value,
         "onKeyup": onKeyUpEnter,
-        "inputmode": inputmode.value
+        "inputmode": props2.inputmode
       }, null, 40, ["value", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup", "inputmode"]);
       return createVNode("uni-input", {
         "ref": rootRef
@@ -12546,6 +12558,7 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
       }
       radioChecked.value = true;
       uniCheckGroup && uniCheckGroup.radioChange($event, field);
+      $event.stopPropagation();
     };
     if (!!uniLabel) {
       uniLabel.addHandler(_onClick);
@@ -12680,15 +12693,15 @@ const CHARS = {
   nbsp: " ",
   quot: '"',
   apos: "'",
-  ldquo: "\u201C",
-  rdquo: "\u201D",
-  yen: "\uFFE5",
-  radic: "\u221A",
-  lceil: "\u2308",
-  rceil: "\u2309",
-  lfloor: "\u230A",
-  rfloor: "\u230B",
-  hellip: "\u2026"
+  ldquo: "“",
+  rdquo: "”",
+  yen: "￥",
+  radic: "√",
+  lceil: "⌈",
+  rceil: "⌉",
+  lfloor: "⌊",
+  rfloor: "⌋",
+  hellip: "…"
 };
 function decodeEntities(htmlString) {
   return htmlString.replace(
@@ -13222,6 +13235,8 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
     content.value.removeEventListener("webkitTransitionEnd", __transitionEnd);
   }
   function _setRefreshState(_state) {
+    if (!props2.refresherEnabled)
+      return;
     switch (_state) {
       case "refreshing":
         state2.refresherHeight = props2.refresherThreshold;
@@ -13302,7 +13317,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
         event.stopPropagation();
       }
       if (_main.scrollTop === 0 && event.touches.length === 1) {
-        state2.refreshState = "pulling";
+        _setRefreshState("pulling");
       }
       if (props2.refresherEnabled && state2.refreshState === "pulling") {
         const dy = y - touchStart.y;
@@ -14400,7 +14415,7 @@ const props$i = {
   },
   color: {
     type: String,
-    default: "#007aff"
+    default: ""
   }
 };
 const index$j = /* @__PURE__ */ defineBuiltInComponent({
@@ -14441,6 +14456,11 @@ const index$j = /* @__PURE__ */ defineBuiltInComponent({
         type
       } = props2;
       const booleanAttrs = useBooleanAttr(props2, "disabled");
+      const switchInputStyle = {};
+      if (color && switchChecked.value) {
+        switchInputStyle["backgroundColor"] = color;
+        switchInputStyle["borderColor"] = color;
+      }
       return createVNode("uni-switch", mergeProps({
         "ref": rootRef
       }, booleanAttrs, {
@@ -14449,10 +14469,7 @@ const index$j = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-switch-wrapper"
       }, [withDirectives(createVNode("div", {
         "class": ["uni-switch-input", [switchChecked.value ? "uni-switch-input-checked" : ""]],
-        "style": {
-          backgroundColor: switchChecked.value ? color : "#DFDFDF",
-          borderColor: switchChecked.value ? color : "#DFDFDF"
-        }
+        "style": switchInputStyle
       }, null, 6), [[vShow, type === "switch"]]), withDirectives(createVNode("div", {
         "class": "uni-checkbox-input"
       }, [switchChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.color, 22) : ""], 512), [[vShow, type === "checkbox"]])])], 16, ["onClick"]);
@@ -14484,9 +14501,9 @@ function useSwitchInject(props2, switchChecked) {
   return uniLabel;
 }
 const SPACE_UNICODE = {
-  ensp: "\u2002",
-  emsp: "\u2003",
-  nbsp: "\xA0"
+  ensp: " ",
+  emsp: " ",
+  nbsp: " "
 };
 function parseText(text2, options) {
   return text2.replace(/\\n/g, LINEFEED).split(LINEFEED).map((text22) => {
@@ -14653,6 +14670,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
     }
     return () => {
       let textareaNode = props2.disabled && fixDisabledColor ? createVNode("textarea", {
+        "key": "disabled-textarea",
         "ref": fieldRef,
         "value": state2.value,
         "tabindex": "-1",
@@ -14667,6 +14685,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
         },
         "onFocus": (event) => event.target.blur()
       }, null, 46, ["value", "readonly", "maxlength", "onFocus"]) : createVNode("textarea", {
+        "key": "textarea",
         "ref": fieldRef,
         "value": state2.value,
         "disabled": !!props2.disabled,
@@ -14910,7 +14929,7 @@ function getCurrentUserInfo() {
   try {
     userInfo = JSON.parse(b64DecodeUnicode(tokenArr[1]));
   } catch (error) {
-    throw new Error("\u83B7\u53D6\u5F53\u524D\u7528\u6237\u4FE1\u606F\u51FA\u9519\uFF0C\u8BE6\u7EC6\u9519\u8BEF\u4FE1\u606F\u4E3A\uFF1A" + error.message);
+    throw new Error("获取当前用户信息出错，详细错误信息为：" + error.message);
   }
   userInfo.tokenExpired = userInfo.exp * 1e3;
   delete userInfo.exp;
@@ -15493,6 +15512,7 @@ function setupPage(comp) {
         onPageReady(instance2);
         const { onReady } = instance2;
         onReady && invokeArrayFns$1(onReady);
+        invokeOnTabItemTap(route);
       });
       onBeforeActivate(() => {
         if (!instance2.__isVisible) {
@@ -15500,6 +15520,9 @@ function setupPage(comp) {
           instance2.__isVisible = true;
           const { onShow } = instance2;
           onShow && invokeArrayFns$1(onShow);
+          nextTick(() => {
+            invokeOnTabItemTap(route);
+          });
         }
       });
       onBeforeDeactivate(() => {
@@ -15620,6 +15643,16 @@ function onThemeChange$2() {
       UniServiceJSBridge.emit(ON_THEME_CHANGE, {
         theme: e2.matches ? "dark" : "light"
       });
+    });
+  }
+}
+function invokeOnTabItemTap(route) {
+  const { tabBarText, tabBarIndex, route: pagePath } = route.meta;
+  if (tabBarText) {
+    invokeHook("onTabItemTap", {
+      index: tabBarIndex,
+      text: tabBarText,
+      pagePath
     });
   }
 }
@@ -16383,9 +16416,9 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
           "uni-video-control-button-pause": videoState.playing
         },
         "onClick": withModifiers(toggle, ["stop"])
-      }, null, 10, ["onClick"]), [[vShow, props2.showPlayBtn]]), createVNode("div", {
+      }, null, 10, ["onClick"]), [[vShow, props2.showPlayBtn]]), withDirectives(createVNode("div", {
         "class": "uni-video-current-time"
-      }, [formatTime(videoState.currentTime)]), createVNode("div", {
+      }, [formatTime(videoState.currentTime)], 512), [[vShow, props2.showProgress]]), withDirectives(createVNode("div", {
         "ref": progressRef,
         "class": "uni-video-progress-container",
         "onClick": withModifiers(clickProgress, ["stop"])
@@ -16404,9 +16437,9 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-ball"
       }, [createVNode("div", {
         "class": "uni-video-inner"
-      }, null)], 4)])], 8, ["onClick"]), createVNode("div", {
+      }, null)], 4)])], 8, ["onClick"]), [[vShow, props2.showProgress]]), withDirectives(createVNode("div", {
         "class": "uni-video-duration"
-      }, [formatTime(Number(props2.duration) || videoState.duration)])]), withDirectives(createVNode("div", {
+      }, [formatTime(Number(props2.duration) || videoState.duration)], 512), [[vShow, props2.showProgress]])]), withDirectives(createVNode("div", {
         "class": {
           "uni-video-danmu-button": true,
           "uni-video-danmu-button-active": danmuState.enable
@@ -19857,6 +19890,26 @@ const getLocation = /* @__PURE__ */ defineAsyncApi(
               reject2(new Error("network error"));
             }
           });
+        } else if (mapInfo.type === MapType.AMAP) {
+          loadMaps([], () => {
+            window.AMap.plugin("AMap.Geolocation", () => {
+              const geolocation = new window.AMap.Geolocation({
+                enableHighAccuracy: true,
+                timeout: 1e4
+              });
+              geolocation.getCurrentPosition((status, data) => {
+                if (status === "complete") {
+                  resolve2({
+                    latitude: data.position.lat,
+                    longitude: data.position.lng,
+                    accuracy: data.accuracy
+                  });
+                } else {
+                  reject2(new Error(data.message));
+                }
+              });
+            });
+          });
         } else {
           reject2(error);
         }
@@ -19945,6 +19998,16 @@ const LocationView = /* @__PURE__ */ defineSystemComponent({
   }) {
     const state2 = useState$2(props2);
     usePreventScroll();
+    getLocation({
+      type: "gcj02",
+      success: ({
+        latitude,
+        longitude
+      }) => {
+        state2.location.latitude = latitude;
+        state2.location.longitude = longitude;
+      }
+    });
     function onRegionChange(event) {
       const centerLocation = event.detail.centerLocation;
       if (centerLocation) {
@@ -19959,27 +20022,16 @@ const LocationView = /* @__PURE__ */ defineSystemComponent({
         const origin = state2.location.latitude ? `&origin=${state2.location.latitude}%2C${state2.location.longitude}` : "";
         url = `https://www.google.com/maps/dir/?api=1${origin}&destination=${props2.latitude}%2C${props2.longitude}`;
       } else if (mapInfo.type === MapType.QQ) {
-        const fromcoord = state2.location.latitude ? `&fromcoord=${state2.location.latitude}%2C${state2.location.longitude}&from=${encodeURIComponent("\u6211\u7684\u4F4D\u7F6E")}` : "";
-        url = `https://apis.map.qq.com/uri/v1/routeplan?type=drive${fromcoord}&tocoord=${props2.latitude}%2C${props2.longitude}&to=${encodeURIComponent(props2.name || "\u76EE\u7684\u5730")}&ref=${mapInfo.key}`;
+        const fromcoord = state2.location.latitude ? `&fromcoord=${state2.location.latitude}%2C${state2.location.longitude}&from=${encodeURIComponent("我的位置")}` : "";
+        url = `https://apis.map.qq.com/uri/v1/routeplan?type=drive${fromcoord}&tocoord=${props2.latitude}%2C${props2.longitude}&to=${encodeURIComponent(props2.name || "目的地")}&ref=${mapInfo.key}`;
       } else if (mapInfo.type === MapType.AMAP) {
-        const from = state2.location.latitude ? `from=${state2.location.longitude},${state2.location.latitude},${encodeURIComponent("\u6211\u7684\u4F4D\u7F6E")}&` : "";
-        url = `https://uri.amap.com/navigation?${from}to=${props2.longitude},${props2.latitude},${encodeURIComponent(props2.name || "\u76EE\u7684\u5730")}`;
+        const from = state2.location.latitude ? `from=${state2.location.longitude},${state2.location.latitude},${encodeURIComponent("我的位置")}&` : "";
+        url = `https://uri.amap.com/navigation?${from}to=${props2.longitude},${props2.latitude},${encodeURIComponent(props2.name || "目的地")}`;
       }
       window.open(url);
     }
     function back() {
       emit2("close");
-    }
-    function move({
-      latitude,
-      longitude
-    }) {
-      state2.location.latitude = latitude;
-      state2.location.longitude = longitude;
-      setCenter({
-        latitude,
-        longitude
-      });
     }
     function setCenter({
       latitude,
@@ -19987,14 +20039,6 @@ const LocationView = /* @__PURE__ */ defineSystemComponent({
     }) {
       state2.center.latitude = latitude;
       state2.center.longitude = longitude;
-    }
-    function moveToLocation() {
-      getLocation({
-        type: "gcj02",
-        success: move,
-        fail: () => {
-        }
-      });
     }
     return () => {
       return createVNode("div", {
@@ -20008,7 +20052,7 @@ const LocationView = /* @__PURE__ */ defineSystemComponent({
       }, {
         default: () => [createVNode("div", {
           "class": "map-move",
-          "onClick": moveToLocation
+          "onClick": () => setCenter(state2.location)
         }, [createSvgIconVNode(ICON_PATH_LOCTAION, "#000000", 24)], 8, ["onClick"])]
       }, 8, ["latitude", "longitude", "markers", "onRegionchange"]), createVNode("div", {
         "class": "info"
@@ -20178,7 +20222,7 @@ function useList(state2) {
     } else if (mapInfo.type === MapType.AMAP) {
       window.AMap.plugin("AMap.PlaceSearch", function() {
         const placeSearch = new window.AMap.PlaceSearch({
-          city: "\u5168\u56FD",
+          city: "全国",
           pageSize: 10,
           pageIndex: listState.pageIndex
         });
@@ -20490,7 +20534,7 @@ const navigateBack = /* @__PURE__ */ defineAsyncApi(
   NavigateBackProtocol,
   NavigateBackOptions
 );
-function navigate({ type, url, events }, __id__) {
+function navigate({ type, url, tabBarText, events }, __id__) {
   const router = getApp().$router;
   const { path, query } = parseUrl(url);
   return new Promise((resolve, reject) => {
@@ -20504,11 +20548,25 @@ function navigate({ type, url, events }, __id__) {
       if (isNavigationFailure(failure)) {
         return reject(failure.message);
       }
+      if (type === "switchTab") {
+        router.currentRoute.value.meta.tabBarText = tabBarText;
+      }
       if (type === "navigateTo") {
-        const eventChannel = new EventChannel(state2.__id__, events);
-        router.currentRoute.value.meta.eventChannel = eventChannel;
+        const meta = router.currentRoute.value.meta;
+        if (!meta.eventChannel) {
+          meta.eventChannel = new EventChannel(state2.__id__, events);
+        } else if (events) {
+          Object.keys(events).forEach((eventName) => {
+            meta.eventChannel._addListener(
+              eventName,
+              "on",
+              events[eventName]
+            );
+          });
+          meta.eventChannel._clearCache();
+        }
         return resolve({
-          eventChannel
+          eventChannel: meta.eventChannel
         });
       }
       return resolve();
@@ -20586,8 +20644,8 @@ function getTabBarPageId(url) {
 }
 const switchTab = /* @__PURE__ */ defineAsyncApi(
   API_SWITCH_TAB,
-  ({ url }, { resolve, reject }) => {
-    return removeNonTabBarPages(), navigate({ type: API_SWITCH_TAB, url }, getTabBarPageId(url)).then(resolve).catch(reject);
+  ({ url, tabBarText }, { resolve, reject }) => {
+    return removeNonTabBarPages(), navigate({ type: API_SWITCH_TAB, url, tabBarText }, getTabBarPageId(url)).then(resolve).catch(reject);
   },
   SwitchTabProtocol,
   SwitchTabOptions
@@ -21760,7 +21818,8 @@ function useSwitchTab(route, tabBar2, visibleList) {
       if (route.path !== url) {
         uni.switchTab({
           from: "tabBar",
-          url
+          url,
+          tabBarText: text2
         });
       } else {
         invokeHook("onTabItemTap", {
@@ -23815,7 +23874,7 @@ function usePickerMethods(props2, state2, trigger, rootRef, pickerRef, selectRef
       }
     }
     if (props2.end) {
-      const _year = new Date(props2.start).getFullYear();
+      const _year = new Date(props2.end).getFullYear();
       if (!isNaN(_year) && _year > end) {
         end = _year;
       }
@@ -24014,16 +24073,16 @@ function usePickerMethods(props2, state2, trigger, rootRef, pickerRef, selectRef
     if (props2.mode === mode.DATE) {
       const locale = getLocale2();
       if (locale.startsWith("zh")) {
-        const array = ["\u5E74", "\u6708", "\u65E5"];
+        const array = ["年", "月", "日"];
         return item + array[index2];
       } else if (props2.fields !== fields.YEAR && index2 === (props2.fields !== fields.MONTH && (locale === "es" || locale === "fr") ? 1 : 0)) {
         let array;
         switch (locale) {
           case "es":
-            array = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "\u200B\u200Bjulio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+            array = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "​​julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
             break;
           case "fr":
-            array = ["janvier", "f\xE9vrier", "mars", "avril", "mai", "juin", "juillet", "ao\xFBt", "septembre", "octobre", "novembre", "d\xE9cembre"];
+            array = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
             break;
           default:
             array = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -24348,7 +24407,7 @@ function createPageHeadSearchInputTsx(navigationBar, {
   onBlur,
   onFocus,
   onInput,
-  onKeyup,
+  onConfirm,
   onClick
 }) {
   const {
@@ -24396,8 +24455,8 @@ function createPageHeadSearchInputTsx(navigationBar, {
     "onFocus": onFocus,
     "onBlur": onBlur,
     "onInput": onInput,
-    "onKeyup": onKeyup
-  }, null, 8, ["focus", "style", "placeholder-style", "onFocus", "onBlur", "onInput", "onKeyup"])], 4);
+    "onConfirm": onConfirm
+  }, null, 8, ["focus", "style", "placeholder-style", "onFocus", "onBlur", "onInput", "onConfirm"])], 4);
 }
 function onPageHeadBackButton() {
   if (getCurrentPages().length === 1) {
@@ -24555,12 +24614,10 @@ function usePageHeadSearchInput({
       text: text2.value
     });
   };
-  const onKeyup = (evt) => {
-    if (evt.key === "Enter" || evt.keyCode === 13) {
-      invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, {
-        text: text2.value
-      });
-    }
+  const onConfirm = (evt) => {
+    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, {
+      text: text2.value
+    });
   };
   return {
     focus,
@@ -24569,7 +24626,7 @@ function usePageHeadSearchInput({
     onFocus,
     onBlur,
     onInput,
-    onKeyup
+    onConfirm
   };
 }
 const _sfc_main = {

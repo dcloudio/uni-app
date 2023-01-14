@@ -7,6 +7,9 @@ import { wrapperH5WxsEvent } from './componentWxs'
 const isClickEvent = (val: Event): val is MouseEvent => val.type === 'click'
 const isMouseEvent = (val: Event): val is MouseEvent =>
   val.type.indexOf('mouse') === 0 || ['contextmenu'].includes(val.type)
+const isTouchEvent = (val: Event): val is TouchEvent =>
+  (typeof TouchEvent !== 'undefined' && val instanceof TouchEvent) ||
+  val.type.indexOf('touch') === 0
 // normalizeNativeEvent
 export function $nne(
   evt: Event,
@@ -38,12 +41,18 @@ export function $nne(
 
   if (isClickEvent(evt)) {
     normalizeClickEvent(res as unknown as WechatMiniprogram.Touch, evt)
-  } else if (__PLATFORM__ === 'h5' && isMouseEvent(evt)) {
+  } else if (isMouseEvent(evt)) {
     normalizeMouseEvent(res as unknown as WechatMiniprogram.Touch, evt)
-  } else if (evt instanceof TouchEvent) {
+  } else if (isTouchEvent(evt)) {
     const top = getWindowTop()
-    ;(res as any).touches = normalizeTouchEvent(evt.touches, top)
-    ;(res as any).changedTouches = normalizeTouchEvent(evt.changedTouches, top)
+    ;(res as any).touches = normalizeTouchEvent(
+      (evt as TouchEvent).touches,
+      top
+    )
+    ;(res as any).changedTouches = normalizeTouchEvent(
+      (evt as TouchEvent).changedTouches,
+      top
+    )
   }
   if (__PLATFORM__ === 'h5') {
     return (

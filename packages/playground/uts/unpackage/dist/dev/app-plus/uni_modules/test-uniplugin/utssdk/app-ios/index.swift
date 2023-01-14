@@ -1,4 +1,4 @@
-import DCloudUTSPlugin;
+import DCloudUTSFoundation;
 import UIKit;
 import CoreLocation;
 @objc(UTSSDKModulesTestUniPluginGetBatteryInfoOptions)
@@ -33,6 +33,8 @@ func test1(_ callback: UTSCallback) -> String {
     console.log("ndef android", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:41");
     console.log("def android || def ios", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:47");
     console.log(CLLocationManager, CLAuthorizationStatus, " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:52");
+    var a = -3;
+    console.log(~a, " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:54");
     return "test1";
 }
 @objc

@@ -1,3 +1,5 @@
+import { createRequire } from 'module'
+import { fileURLToPath } from 'url'
 import fs from 'fs'
 import path from 'path'
 import ts from 'rollup-plugin-typescript2'
@@ -11,6 +13,9 @@ import { getBabelOutputPlugin } from '@rollup/plugin-babel'
 if (!process.env.TARGET) {
   throw new Error('TARGET package must be specified via --environment flag.')
 }
+
+const require = createRequire(import.meta.url)
+const __dirname = fileURLToPath(new URL('.', import.meta.url))
 
 const packagesDir = path.resolve(__dirname, 'packages')
 const packageDir = path.resolve(packagesDir, process.env.TARGET)
@@ -30,6 +35,7 @@ function normalizeOutput(file, output = {}) {
       file,
       format: file.includes('.cjs.') ? 'cjs' : 'es',
       exports: 'auto',
+      interop: 'auto'
     },
     output
   )
@@ -79,9 +85,9 @@ function resolveTsconfigJson() {
 
 function createConfig(entryFile, output, buildOption) {
   const shouldEmitDeclarations = process.env.TYPES != null && !hasTSChecked
-  const tsPlugin = ts({
-    check:
-      !process.env.CI && process.env.NODE_ENV === 'production' && !hasTSChecked,
+  const tsOptions = {
+    check: !process.env.TRANSPILE_ONLY &&
+      (!process.env.CI && process.env.NODE_ENV === 'production' && !hasTSChecked),
     tsconfig: resolveTsconfigJson(),
     cacheRoot: path.resolve(__dirname, 'node_modules/.rts2_cache'),
     tsconfigOverride: {
@@ -95,7 +101,8 @@ function createConfig(entryFile, output, buildOption) {
       exclude: ['**/__tests__', 'test-dts'],
     },
     useTsconfigDeclarationDir: true,
-  })
+  }
+  const tsPlugin = ts(tsOptions)
 
   // we only need to check TS and generate declarations once for each build.
   // it also seems to run into weird issues when checking multiple times
@@ -106,8 +113,8 @@ function createConfig(entryFile, output, buildOption) {
     buildOption.external === false
       ? []
       : Array.isArray(buildOption.external)
-      ? buildOption.external
-      : [
+        ? buildOption.external
+        : [
           'vue',
           '@vue/shared',
           ...Object.keys(pkg.dependencies || {}),
@@ -169,14 +176,14 @@ function createConfig(entryFile, output, buildOption) {
       buildOption.treeshake === false
         ? false
         : {
-            moduleSideEffects(id) {
-              if (id.endsWith('polyfill.ts')) {
-                console.log('[WARN]:sideEffects[' + id + ']')
-                return true
-              }
-              return false
-            },
+          moduleSideEffects(id) {
+            if (id.endsWith('polyfill.ts')) {
+              console.log('[WARN]:sideEffects[' + id + ']')
+              return true
+            }
+            return false
           },
+        },
   }
 }
 
@@ -202,5 +209,5 @@ function createReplacePlugin(buildOption, format) {
       replacements[key] = process.env[key]
     }
   })
-  return replace({ values: replacements, preventAssignment: true })
+  return replace({ delimiters: ['', ''], values: replacements, preventAssignment: true })
 }

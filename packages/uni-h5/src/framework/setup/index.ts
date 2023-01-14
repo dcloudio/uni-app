@@ -11,8 +11,8 @@ import {
   onBeforeDeactivate,
   onBeforeMount,
   onBeforeUnmount,
+  nextTick,
 } from 'vue'
-import { useRouter } from 'vue-router'
 import {
   debounce,
   decodedQuery,
@@ -24,12 +24,18 @@ import {
   ON_THEME_CHANGE,
 } from '@dcloudio/uni-shared'
 import { injectAppHooks } from '@dcloudio/uni-api'
-import { subscribeViewMethod, unsubscribeViewMethod } from '@dcloudio/uni-core'
+import {
+  subscribeViewMethod,
+  unsubscribeViewMethod,
+  invokeHook,
+} from '@dcloudio/uni-core'
 import { LayoutComponent } from '../..'
 import { initApp } from './app'
 import { initPage, onPageShow, onPageReady } from './page'
 import { usePageMeta, usePageRoute } from './provide'
 import { initLaunchOptions, getEnterOptions } from './utils'
+import type { RouteLocationNormalizedLoaded } from 'vue-router'
+import { useRouter } from 'vue-router'
 
 interface SetupComponentOptions {
   clone?: boolean
@@ -106,6 +112,7 @@ export function setupPage(comp: any) {
         onPageReady(instance)
         const { onReady } = instance
         onReady && invokeArrayFns(onReady)
+        invokeOnTabItemTap(route)
       })
       onBeforeActivate(() => {
         if (!instance.__isVisible) {
@@ -113,6 +120,9 @@ export function setupPage(comp: any) {
           instance.__isVisible = true
           const { onShow } = instance
           onShow && invokeArrayFns(onShow)
+          nextTick(() => {
+            invokeOnTabItemTap(route)
+          })
         }
       })
       onBeforeDeactivate(() => {
@@ -170,11 +180,12 @@ export function setupApp(comp: any) {
         }
       }
       if (__UNI_FEATURE_PAGES__) {
-        // 等待ready后，再onLaunch，可以顺利获取到正确的path和query
+        // 等待ready后，再onLaunch，否则直达非首页无法获取到正确的path和query
         useRouter().isReady().then(onLaunch)
       } else {
         onBeforeMount(onLaunch)
       }
+
       onMounted(() => {
         window.addEventListener(
           'resize',
@@ -247,6 +258,27 @@ function onThemeChange() {
       UniServiceJSBridge.emit(ON_THEME_CHANGE, {
         theme: e.matches ? 'dark' : 'light',
       })
+    })
+  }
+}
+function invokeOnTabItemTap(
+  route:
+    | RouteLocationNormalizedLoaded
+    | {
+        meta: UniApp.PageRouteMeta
+        query: {}
+        path: string
+        matched: {
+          path: string
+        }[]
+      }
+) {
+  const { tabBarText, tabBarIndex, route: pagePath } = route.meta
+  if (tabBarText) {
+    invokeHook('onTabItemTap', {
+      index: tabBarIndex,
+      text: tabBarText,
+      pagePath,
     })
   }
 }

@@ -25,6 +25,15 @@ const uniMiniProgramAlipayPlugin: Plugin = {
       ),
     }
   },
+  // fix question/159362
+  transform(code, id) {
+    if (id.includes('@vue/shared') || id.includes('@vue\\shared')) {
+      return {
+        code: code.replace('//gs', '//g'),
+        map: { mappings: '' },
+      }
+    }
+  },
 }
 
 export default [uniMiniProgramAlipayPlugin, ...initMiniProgramPlugin(options)]

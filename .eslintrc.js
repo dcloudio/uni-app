@@ -46,7 +46,7 @@ module.exports = {
       files: [
         '.eslintrc.js',
         'jest.config.js',
-        'rollup.config.js',
+        'rollup.config.mjs',
         'scripts/**',
         'packages/{uni-cli-shared,uni-app-vite,uni-h5-vite,uni-mp-vite,uni-mp-compiler,vite-plugin-uni,uts,uni-uts-v1}/**',
         'packages/*/vite.config.ts',

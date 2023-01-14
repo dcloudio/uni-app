@@ -1,4 +1,4 @@
-import { isArray } from '@vue/shared'
+import { extend, isArray } from '@vue/shared'
 import { join, relative } from 'path'
 
 import {
@@ -14,8 +14,19 @@ import {
   checkIOSVersionTips,
 } from './swift'
 
-import { genProxyCode, resolvePlatformIndex, resolveRootIndex } from './code'
-import { ERR_MSG_PLACEHOLDER, resolvePackage } from './utils'
+import {
+  genProxyCode,
+  resolvePlatformIndex,
+  resolvePlatformIndexFilename,
+  resolveRootIndex,
+} from './code'
+import {
+  ERR_MSG_PLACEHOLDER,
+  genConfigJson,
+  resolveAndroidComponents,
+  resolveIOSComponents,
+  resolvePackage,
+} from './utils'
 import { parseUtsSwiftPluginStacktrace } from './stacktrace'
 import { resolveUtsPluginSourceMapFile } from './sourceMap'
 import { isWindows } from './shared'
@@ -66,19 +77,39 @@ export async function compile(pluginDir: string) {
   const outputDir = process.env.UNI_OUTPUT_DIR
   const utsPlatform = process.env.UNI_UTS_PLATFORM
   const pluginRelativeDir = relative(inputDir, pluginDir)
+  const androidComponents = resolveAndroidComponents(
+    pluginDir,
+    pkg.is_uni_modules
+  )
+  const iosComponents = resolveIOSComponents(pluginDir, pkg.is_uni_modules)
+
   const env = initCheckOptionsEnv()
   const deps: string[] = []
-  const code = await genProxyCode(pluginDir, pkg)
+  const code = await genProxyCode(
+    pluginDir,
+    extend({ androidComponents, iosComponents }, pkg)
+  )
   let errMsg = ''
   if (process.env.NODE_ENV !== 'development') {
     // 生产模式 支持同时生成 android 和 ios 的 uts 插件
     if (utsPlatform === 'app-android' || utsPlatform === 'app') {
-      const filename =
+      let filename =
         resolvePlatformIndex('app-android', pluginDir, pkg) ||
         resolveRootIndex(pluginDir, pkg)
+      if (!filename && Object.keys(androidComponents).length) {
+        filename = resolvePlatformIndexFilename('app-android', pluginDir, pkg)
+      }
       if (filename) {
-        await getCompiler('kotlin').runProd(filename)
+        await getCompiler('kotlin').runProd(filename, androidComponents)
         if (cacheDir) {
+          // 存储 sourcemap
+          storeSourceMap(
+            'app-android',
+            pluginRelativeDir,
+            outputDir,
+            cacheDir,
+            pkg.is_uni_modules
+          )
           genManifestFile('app-android', {
             pluginDir,
             env,
@@ -90,12 +121,22 @@ export async function compile(pluginDir: string) {
       }
     }
     if (utsPlatform === 'app-ios' || utsPlatform === 'app') {
-      const filename =
+      let filename =
         resolvePlatformIndex('app-ios', pluginDir, pkg) ||
         resolveRootIndex(pluginDir, pkg)
+      if (!filename && Object.keys(androidComponents).length) {
+        filename = resolvePlatformIndexFilename('app-ios', pluginDir, pkg)
+      }
       if (filename) {
-        await getCompiler('swift').runProd(filename)
+        await getCompiler('swift').runProd(filename, iosComponents)
         if (cacheDir) {
+          storeSourceMap(
+            'app-ios',
+            pluginRelativeDir,
+            outputDir,
+            cacheDir,
+            pkg.is_uni_modules
+          )
           genManifestFile('app-ios', {
             pluginDir,
             env,
@@ -132,6 +173,8 @@ export async function compile(pluginDir: string) {
       }
     }
     if (utsPlatform === 'app-android' || utsPlatform === 'app-ios') {
+      const components =
+        utsPlatform === 'app-android' ? androidComponents : iosComponents
       let tips = ''
       // dev 模式
       if (cacheDir) {
@@ -169,6 +212,15 @@ export async function compile(pluginDir: string) {
             cacheDir,
             pkg.is_uni_modules
           )
+          // 处理 config.json
+          genConfigJson(
+            utsPlatform,
+            components,
+            pluginRelativeDir,
+            pkg.is_uni_modules,
+            inputDir,
+            outputDir
+          )
 
           console.log(cacheTips(pkg.id))
 
@@ -186,9 +238,13 @@ export async function compile(pluginDir: string) {
           }
         }
       }
-      const filename =
+      let filename =
         resolvePlatformIndex(utsPlatform, pluginDir, pkg) ||
         resolveRootIndex(pluginDir, pkg)
+
+      if (!filename && Object.keys(androidComponents).length) {
+        filename = resolvePlatformIndexFilename(utsPlatform, pluginDir, pkg)
+      }
 
       if (filename) {
         deps.push(filename)
@@ -197,8 +253,16 @@ export async function compile(pluginDir: string) {
         } else {
           deps.push(...resolveIOSDepFiles(filename))
         }
-
-        const res = await getCompiler(compilerType).runDev(filename)
+        // 处理 config.json
+        genConfigJson(
+          utsPlatform,
+          components,
+          pluginRelativeDir,
+          pkg.is_uni_modules,
+          inputDir,
+          outputDir
+        )
+        const res = await getCompiler(compilerType).runDev(filename, components)
         if (res) {
           if (isArray(res.deps) && res.deps.length) {
             // 添加其他文件的依赖

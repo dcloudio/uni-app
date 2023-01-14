@@ -45,7 +45,11 @@ const baseApis = {
   offPushMessage,
   invokePushCallback,
 }
-export function initUni(api: Record<string, any>, protocols: MPProtocols) {
+export function initUni(
+  api: Record<string, any>,
+  protocols: MPProtocols,
+  platform: any = __GLOBAL__
+) {
   const wrapper = initWrapper(protocols)
   const UniProxyHandlers: ProxyHandler<any> = {
     get(target: object, key: string) {
@@ -60,17 +64,17 @@ export function initUni(api: Record<string, any>, protocols: MPProtocols) {
       }
       // event-api
       // provider-api?
-      return promisify(key, wrapper(key, __GLOBAL__[key]))
+      return promisify(key, wrapper(key, platform[key]))
     },
   }
 
   // 处理 api mp 打包后为不同js，emitter 无法共享问题
   if (__PLATFORM__ === 'mp-alipay') {
-    __GLOBAL__.$emit = $emit
+    platform.$emit = $emit
   }
   // 处理 api mp 打包后为不同js，getEventChannel 无法共享问题
   if (__PLATFORM__ !== 'mp-weixin') {
-    __GLOBAL__.getEventChannel = getEventChannel
+    platform.getEventChannel = getEventChannel
   }
 
   return new Proxy({}, UniProxyHandlers)

@@ -18,6 +18,7 @@ import { transformSlot } from './transforms/vSlot'
 import { transformRoot } from './transforms/transformRoot'
 import { transformTag } from './transforms/transformTag'
 import { transformHtml } from './transforms/vHtml'
+import { transformText } from './transforms/vText'
 import { transformAttr } from './transforms/transformAttr'
 
 export type TransformPreset = [
@@ -38,6 +39,7 @@ export function getBaseTransformPreset({
     transformAttr,
     transformTag,
     transformHtml,
+    transformText,
     transformIf,
     transformFor,
     transformSlot,

@@ -1,6 +1,6 @@
 import { extend, isArray, toNumber, isMap, isIntegerKey, hasOwn, isSymbol, isObject, hasChanged, makeMap, capitalize, toRawType, def, isFunction, NOOP, isString, isPromise, getGlobalThis, EMPTY_OBJ, toHandlerKey, hyphenate, camelize, isOn, isModelListener, remove, isSet, isPlainObject, invokeArrayFns, isBuiltInDirective, isGloballyWhitelisted, isReservedProp, EMPTY_ARR, NO, normalizeClass, normalizeStyle, isSpecialBooleanAttr, includeBooleanAttr, looseIndexOf, looseEqual, isHTMLTag, isSVGTag } from '@vue/shared';
 export { camelize, capitalize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
-import { isRootHook, isRootImmediateHook, ON_LOAD } from '@dcloudio/uni-shared';
+import { isRootHook, isRootImmediateHook, ON_LOAD, createRpx2Unit, defaultRpx2Unit } from '@dcloudio/uni-shared';
 
 function warn(msg, ...args) {
     console.warn(`[Vue warn] ${msg}`, ...args);
@@ -9488,17 +9488,11 @@ function autoPrefix(style, rawName) {
 }
 // fixed by xxxxxx
 // upx,rpx
-const rpxRE = /\b([+-]?\d+(\.\d+)?)[r|u]px\b/g;
+const { unit, unitRatio, unitPrecision } = defaultRpx2Unit;
+const rpx2Unit = createRpx2Unit(unit, unitRatio, unitPrecision);
 const normalizeRpx = (val) => {
-    // @ts-ignore
-    if (typeof rpx2px !== 'function') {
-        return val;
-    }
     if (isString(val)) {
-        return val.replace(rpxRE, (a, b) => {
-            // @ts-ignore
-            return rpx2px(b) + 'px';
-        });
+        return rpx2Unit(val);
     }
     return val;
 };

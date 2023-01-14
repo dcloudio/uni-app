@@ -1,9 +1,3 @@
-var __defProp = Object.defineProperty;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField = (obj, key, value) => {
-  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
 import { createElementVNode, defineComponent, createVNode, mergeProps, getCurrentInstance, provide, watch, onUnmounted, shallowRef, reactive, watchEffect, ref, inject, onBeforeUnmount, computed, Text as Text$1, isVNode, Fragment, onMounted, nextTick, Comment, resolveComponent, parseClassList } from "vue";
 import { hasOwn, extend, isFunction, isPlainObject, isArray, isString } from "@vue/shared";
 import { cacheStringFunction, PRIMARY_COLOR } from "@dcloudio/uni-shared";
@@ -158,7 +152,7 @@ const navigatorStyles = [{
     }
   }
 }];
-const Navigator = defineComponent({
+const Navigator = /* @__PURE__ */ defineComponent({
   name: "Navigator",
   props: navigatorProps,
   styles: navigatorStyles,
@@ -177,7 +171,14 @@ function PolySymbol(name) {
   return Symbol(process.env.NODE_ENV !== "production" ? "[uni-app]: " + name : name);
 }
 function useCurrentPageId() {
-  return getCurrentInstance().root.proxy.$page.id;
+  let pageId;
+  try {
+    pageId = getCurrentInstance().root.proxy.$page.id;
+  } catch {
+    const webviewId = plus.webview.currentWebview().id;
+    pageId = isNaN(Number(webviewId)) ? webviewId : Number(webviewId);
+  }
+  return pageId;
 }
 let plus_;
 let weex_;
@@ -220,7 +221,6 @@ function addEventListener(pageId, callback) {
 }
 class Page {
   constructor(webview) {
-    __publicField(this, "webview");
     this.webview = webview;
   }
   sendMessage(data) {
@@ -251,6 +251,7 @@ function showPage({
   onMessage,
   onClose
 }) {
+  let darkmode = __uniConfig.darkmode;
   plus_ = context.plus || plus;
   weex_ = context.weex || (typeof weex === "object" ? weex : null);
   BroadcastChannel_ = context.BroadcastChannel || (typeof BroadcastChannel === "object" ? BroadcastChannel : null);
@@ -282,7 +283,7 @@ function showPage({
     extras: {
       from: getPageId(),
       runtime: getRuntime(),
-      data,
+      data: extend({}, data, { darkmode }),
       useGlobalEvent: !BroadcastChannel_
     }
   });
@@ -746,7 +747,7 @@ const TYPES = {
   primary: "p",
   warn: "w"
 };
-const Button = defineComponent({
+const Button = /* @__PURE__ */ defineComponent({
   inheritAttrs: false,
   name: "Button",
   props: extend(buttonProps, {
@@ -907,7 +908,7 @@ const getComponentSize = (el) => {
     });
   });
 };
-const MovableArea = defineComponent({
+const MovableArea = /* @__PURE__ */ defineComponent({
   name: "MovableArea",
   props: movableAreaProps,
   styles: [{
@@ -1526,7 +1527,7 @@ function cancelAnimationFrame(id) {
   clearTimeout(id);
 }
 const animation = weex.requireModule("animation");
-const MovableView = defineComponent({
+const MovableView = /* @__PURE__ */ defineComponent({
   name: "MovableView",
   props: movableViewProps,
   emits: ["change", "scale"],
@@ -2140,7 +2141,7 @@ const progressStyles = [{
     }
   }
 }];
-const Progress = defineComponent({
+const Progress = /* @__PURE__ */ defineComponent({
   name: "Progress",
   props: progressProps,
   styles: progressStyles,
@@ -2287,7 +2288,7 @@ const nvuePickerViewProps = extend({}, pickerViewProps, {
     default: ""
   }
 });
-const PickerView = defineComponent({
+const PickerView = /* @__PURE__ */ defineComponent({
   name: "PickerView",
   props: nvuePickerViewProps,
   emits: ["change", "update:value"],
@@ -2394,7 +2395,7 @@ const props$2 = {
     default: 0
   }
 };
-const PickerViewColumn = defineComponent({
+const PickerViewColumn = /* @__PURE__ */ defineComponent({
   name: "PickerViewColumn",
   props: props$2,
   data: () => ({
@@ -3000,7 +3001,7 @@ const slierStyles = [{
     }
   }
 }];
-const USlider = defineComponent({
+const USlider = /* @__PURE__ */ defineComponent({
   name: "USlider",
   props: sliderProps,
   styles: slierStyles,
@@ -3219,7 +3220,7 @@ const DCSwitchSize = {
   width: 52,
   height: 32
 };
-const Switch = defineComponent({
+const Switch = /* @__PURE__ */ defineComponent({
   name: "Switch",
   props: switchProps,
   emits: ["change"],
@@ -3385,7 +3386,7 @@ const checkboxStyles = [{
     }
   }
 }];
-const Checkbox = defineComponent({
+const Checkbox = /* @__PURE__ */ defineComponent({
   name: "Checkbox",
   props: checkboxProps,
   styles: checkboxStyles,
@@ -3446,7 +3447,7 @@ const Checkbox = defineComponent({
         "class": ["uni-checkbox-input", {
           "uni-checkbox-input-disabled": props2.disabled
         }]
-      }, [checkboxChecked.value ? createNVueTextVNode("\uEA08", {
+      }, [checkboxChecked.value ? createNVueTextVNode("", {
         class: "uni-icon",
         style: {
           color: checkboxColor.value
@@ -3482,7 +3483,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
     uniLabel
   };
 }
-const CheckboxGroup = defineComponent({
+const CheckboxGroup = /* @__PURE__ */ defineComponent({
   name: "CheckboxGroup",
   props: checkboxGroupProps,
   emits: ["change"],
@@ -3609,7 +3610,7 @@ const radioStyles = [{
     }
   }
 }];
-const Radio = defineComponent({
+const Radio = /* @__PURE__ */ defineComponent({
   name: "Radio",
   props: radioProps,
   styles: radioStyles,
@@ -3687,7 +3688,7 @@ const Radio = defineComponent({
         "class": ["uni-radio-input", {
           "uni-radio-input-disabled": disabled
         }]
-      }, [radioChecked.value ? createNVueTextVNode("\uEA08", {
+      }, [radioChecked.value ? createNVueTextVNode("", {
         class: "uni-radio-input-icon"
       }) : null]), ...wrapSlots()]);
     };
@@ -3728,7 +3729,7 @@ function useRadioInject(radioChecked, radioValue, reset) {
     field
   };
 }
-const RadioGroup = defineComponent({
+const RadioGroup = /* @__PURE__ */ defineComponent({
   name: "RadioGroup",
   props: radioGroupProps,
   emits: ["change"],
@@ -3806,7 +3807,7 @@ function useProvideRadioGroup(props2, trigger) {
   return fields2;
 }
 const NATIVE_COMPONENTS = ["u-input", "u-textarea"];
-const Form = defineComponent({
+const Form = /* @__PURE__ */ defineComponent({
   name: "Form",
   emits: ["submit", "reset"],
   setup({}, {
@@ -3904,21 +3905,21 @@ const iconColors = {
   clear: "#b2b2b2"
 };
 const iconChars = {
-  success: "\uEA06",
-  info: "\uEA03",
-  warn: "\uEA0B",
-  waiting: "\uEA09",
-  safe_success: "\uEA04",
-  safe_warn: "\uEA05",
-  success_circle: "\uEA07",
-  success_no_circle: "\uEA08",
-  waiting_circle: "\uEA0A",
-  circle: "\uEA01",
-  download: "\uEA02",
-  info_circle: "\uEA0C",
-  cancel: "\uEA0D",
-  search: "\uEA0E",
-  clear: "\uEA0F"
+  success: "",
+  info: "",
+  warn: "",
+  waiting: "",
+  safe_success: "",
+  safe_warn: "",
+  success_circle: "",
+  success_no_circle: "",
+  waiting_circle: "",
+  circle: "",
+  download: "",
+  info_circle: "",
+  cancel: "",
+  search: "",
+  clear: ""
 };
 const iconStyles = [{
   "uni-icon": {
@@ -3927,7 +3928,7 @@ const iconStyles = [{
     }
   }
 }];
-const Icon = defineComponent({
+const Icon = /* @__PURE__ */ defineComponent({
   name: "Icon",
   props: iconProps,
   styles: iconStyles,
@@ -4032,7 +4033,7 @@ const swiperStyles = [{
     }
   }
 }];
-const Swiper = defineComponent({
+const Swiper = /* @__PURE__ */ defineComponent({
   name: "Swiper",
   props: swiperProps,
   styles: swiperStyles,
@@ -4195,7 +4196,7 @@ const swiperItemProps = {
     default: ""
   }
 };
-const SwiperItem = defineComponent({
+const SwiperItem = /* @__PURE__ */ defineComponent({
   name: "SwiperItem",
   props: swiperItemProps,
   setup(props2, {
@@ -4457,7 +4458,7 @@ const props = {
   }
 };
 const defaultFontSize = 16;
-const RichText = defineComponent({
+const RichText = /* @__PURE__ */ defineComponent({
   name: "RichText",
   props,
   setup(props2) {
@@ -4670,7 +4671,7 @@ const AdEventType$1 = {
   error: "error",
   downloadchange: "downloadchange"
 };
-const Ad = defineComponent({
+const Ad = /* @__PURE__ */ defineComponent({
   name: "Ad",
   props: adProps,
   emits: [AdEventType$1.load, AdEventType$1.close, AdEventType$1.error, AdEventType$1.downloadchange],
@@ -4779,7 +4780,7 @@ const AdEventType = {
   close: "close",
   error: "error"
 };
-const AdDraw = defineComponent({
+const AdDraw = /* @__PURE__ */ defineComponent({
   name: "AdDraw",
   props: adDrawProps,
   emits: [AdEventType.load, AdEventType.close, AdEventType.error],

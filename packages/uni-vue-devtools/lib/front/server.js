@@ -9,6 +9,7 @@ const path = require('path')
 const fs = require('fs')
 const colors = require('picocolors')
 const open = require('open')
+const { isInHBuilderX } = require('@dcloudio/uni-cli-shared')
 
 exports.initDevtoolsServer = async () => {
   const network = getNetwork()
@@ -17,7 +18,22 @@ exports.initDevtoolsServer = async () => {
   initSocketServer(socketHost, socketPort)
 
   const devtoolsPort = await detectPort(9098)
-  initFrontServer(socketHost, socketPort, network, devtoolsPort)
+
+  let vueDevtoolsDirInHBuilderX
+
+  if (isInHBuilderX()) {
+    vueDevtoolsDirInHBuilderX = path.resolve(
+      process.env.UNI_OUTPUT_DIR,
+      '..',
+      '.vue-devtools'
+    )
+    if (!fs.existsSync(vueDevtoolsDirInHBuilderX)) {
+      fs.mkdirSync(vueDevtoolsDirInHBuilderX, { recursive: true })
+    }
+    fs.writeFileSync(`${vueDevtoolsDirInHBuilderX}/port.js`, `${devtoolsPort}`)
+  }
+
+  initFrontServer(socketHost, socketPort, network, devtoolsPort, vueDevtoolsDirInHBuilderX)
 
   return { socketHost, socketPort }
 }
@@ -51,7 +67,7 @@ function detectPort(port) {
     })
 }
 
-function initFrontServer(socketHost, socketPort, network, devtoolsPort) {
+function initFrontServer(socketHost, socketPort, network, devtoolsPort, vueDevtoolsDirInHBuilderX) {
   app.use(express.static(__dirname))
 
   app.get('/', (_, res) => {
@@ -75,7 +91,11 @@ function initFrontServer(socketHost, socketPort, network, devtoolsPort) {
 
     console.log(`\n${colors.cyan('uni-vue-devtools')} ${colors.green('server running at:')}\n ${colors.green('➜')} ${colorUrl(networkUrl)}\n`)
 
-    open(`http:localhost:${devtoolsPort}`)
+    if (isInHBuilderX()) {
+      fs.writeFileSync(`${vueDevtoolsDirInHBuilderX}/frontServer.js`, '')
+    } else {
+      open(`http:localhost:${devtoolsPort}`)
+    }
   })
 
 }

@@ -1,7 +1,5 @@
 'use strict';
 
-Object.defineProperty(exports, '__esModule', { value: true });
-
 var vue = require('vue');
 var shared = require('@vue/shared');
 var uniShared = require('@dcloudio/uni-shared');

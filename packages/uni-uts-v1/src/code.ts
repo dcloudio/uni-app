@@ -16,10 +16,15 @@ import {
 } from '../types/types'
 import { createResolveTypeReferenceName, ERR_MSG_PLACEHOLDER } from './utils'
 import { isInHBuilderX } from './shared'
+import { camelize, capitalize } from '@vue/shared'
 interface GenProxyCodeOptions {
   is_uni_modules: boolean
+  id: string
   name: string
+  extname: string
   namespace: string
+  androidComponents?: Record<string, string>
+  iosComponents?: Record<string, string>
 }
 
 export async function genProxyCode(
@@ -29,22 +34,53 @@ export async function genProxyCode(
   const { name, is_uni_modules } = options
   return `
 import { initUtsProxyClass, initUtsProxyFunction, initUtsPackageName, initUtsIndexClassName, initUtsClassName } from '@dcloudio/uni-app'
+// const { initUtsProxyClass, initUtsProxyFunction, initUtsPackageName, initUtsIndexClassName, initUtsClassName } = uni
 const name = '${name}'
 const errMsg = \`${ERR_MSG_PLACEHOLDER}\`
 const is_uni_modules = ${is_uni_modules}
 const pkg = initUtsPackageName(name, is_uni_modules)
 const cls = initUtsIndexClassName(name, is_uni_modules)
+${genComponentsCode(
+  options.androidComponents || {},
+  options.iosComponents || {}
+)}
 ${genModuleCode(await parseModuleDecls(module, options))}
 `
+}
+
+export function genComponentsCode(
+  androidComponents: Record<string, string>,
+  iosComponents: Record<string, string>
+) {
+  const codes: string[] = []
+  Object.keys(Object.assign({}, androidComponents, iosComponents)).forEach(
+    (name) => {
+      codes.push(`export const ${capitalize(camelize(name))}Component = {}`)
+    }
+  )
+  return codes.join('\n')
 }
 
 export function resolveRootIndex(module: string, options: GenProxyCodeOptions) {
   const filename = path.resolve(
     module,
     options.is_uni_modules ? 'utssdk' : '',
-    'index.uts'
+    `index${options.extname}`
   )
   return fs.existsSync(filename) && filename
+}
+
+export function resolvePlatformIndexFilename(
+  platform: 'app-android' | 'app-ios',
+  module: string,
+  options: GenProxyCodeOptions
+) {
+  return path.resolve(
+    module,
+    options.is_uni_modules ? 'utssdk' : '',
+    platform,
+    `index${options.extname}`
+  )
 }
 
 export function resolvePlatformIndex(
@@ -52,12 +88,7 @@ export function resolvePlatformIndex(
   module: string,
   options: GenProxyCodeOptions
 ) {
-  const filename = path.resolve(
-    module,
-    options.is_uni_modules ? 'utssdk' : '',
-    platform,
-    'index.uts'
-  )
+  const filename = resolvePlatformIndexFilename(platform, module, options)
   return fs.existsSync(filename) && filename
 }
 

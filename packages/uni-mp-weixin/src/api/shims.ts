@@ -1,5 +1,6 @@
 import { initGetProvider, MPComponentInstance } from '@dcloudio/uni-mp-core'
 import { mocks } from '../runtime/parseOptions'
+import { initWx } from './wx'
 
 export const getProvider = initGetProvider({
   oauth: ['weixin'],
@@ -27,8 +28,23 @@ function initComponentMocks(
 export function createSelectorQuery() {
   const query = wx.createSelectorQuery()
   const oldIn = query.in
-  query.in = function newIn(component) {
+  query.in = function newIn(
+    component:
+      | WechatMiniprogram.Component.TrivialInstance
+      | WechatMiniprogram.Page.TrivialInstance
+  ) {
     return oldIn.call(this, initComponentMocks(component))
   }
   return query
 }
+
+const wx = initWx()
+let baseInfo = wx.getAppBaseInfo && wx.getAppBaseInfo()
+if (!baseInfo) {
+  baseInfo = wx.getSystemInfoSync()
+}
+const host = baseInfo ? baseInfo.host : null
+export const shareVideoMessage =
+  host && host.env === 'SAAASDK'
+    ? wx.miniapp.shareVideoMessage
+    : wx.shareVideoMessage

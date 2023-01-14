@@ -1,5 +1,5 @@
 import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, isUniLifecycleHook, ON_READY, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, customizeEvent, addLeadingSlash, stringifyQuery, ON_BACK_PRESS } from '@dcloudio/uni-shared';
-import { ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, getExposeProxy, EMPTY_OBJ, isRef, setTemplateRef, devtoolsComponentRemoved, devtoolsComponentAdded, pruneComponentPropsCache } from 'vue';
+import { ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, getExposeProxy, EMPTY_OBJ, isRef, setTemplateRef, devtoolsComponentAdded, pruneComponentPropsCache } from 'vue';
 import { isArray, hasOwn, capitalize, isFunction, extend, isPlainObject, isString } from '@vue/shared';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 
@@ -224,9 +224,12 @@ function initCreateApp(parseAppOptions) {
 function initCreateSubpackageApp(parseAppOptions) {
     return function createApp(vm) {
         const appOptions = parseApp(vm, parseAppOptions);
-        const app = getApp({
-            allowDefault: true,
-        });
+        const app = isFunction(getApp) &&
+            getApp({
+                allowDefault: true,
+            });
+        if (!app)
+            return;
         vm.$.ctx.$scope = app;
         const globalData = app.globalData;
         if (globalData) {
@@ -755,7 +758,6 @@ function initCreatePage() {
             },
             onShow() {
                 if (__VUE_PROD_DEVTOOLS__) {
-                    devtoolsComponentRemoved(this.$vm.$);
                     devtoolsComponentAdded(this.$vm.$);
                 }
                 this.$vm.$callHook(ON_SHOW);

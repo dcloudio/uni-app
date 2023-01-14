@@ -77,6 +77,7 @@ export const options: UniMiniProgramPluginOptions = {
   vite: {
     inject: {
       uni: [path.resolve(__dirname, 'uni.api.esm.js'), 'default'],
+      wx: [path.resolve(__dirname, 'uni.api.esm.js'), 'wx'],
     },
     alias: {
       'uni-mp-runtime': path.resolve(__dirname, 'uni.mp.esm.js'),

@@ -1,3 +1,5 @@
+import { matchEasycom } from '@dcloudio/uni-cli-shared'
+
 export function external(appService: boolean) {
   return appService ? ['vue'] : ['vue', 'vuex', 'pinia']
 }
@@ -20,4 +22,9 @@ export function esbuildGlobals(appService: boolean): {
         vuex: 'uni.Vuex',
         pinia: 'uni.Pinia',
       }
+}
+
+export function isUTSComponent(tag: string) {
+  const source = matchEasycom(tag)
+  return !!(source && source.includes('uts-proxy'))
 }

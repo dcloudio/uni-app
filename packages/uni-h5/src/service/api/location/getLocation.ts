@@ -13,6 +13,7 @@ import {
 } from '../../../helpers/location'
 import { getJSONP } from '../../../helpers/getJSONP'
 import { request } from '../network/request'
+import { loadMaps } from '../../../view/components/map/maps'
 
 export const getLocation = defineAsyncApi<API_TYPE_GET_LOCATION>(
   API_GET_LOCATION,
@@ -83,6 +84,27 @@ export const getLocation = defineAsyncApi<API_TYPE_GET_LOCATION>(
               fail() {
                 reject(new Error('network error'))
               },
+            })
+          } else if (mapInfo.type === MapType.AMAP) {
+            loadMaps([], () => {
+              window.AMap.plugin('AMap.Geolocation', () => {
+                const geolocation = new (window.AMap as any).Geolocation({
+                  enableHighAccuracy: true,
+                  timeout: 10000,
+                })
+
+                geolocation.getCurrentPosition((status: string, data: any) => {
+                  if (status === 'complete') {
+                    resolve({
+                      latitude: data.position.lat,
+                      longitude: data.position.lng,
+                      accuracy: data.accuracy,
+                    } as GeolocationCoordinates)
+                  } else {
+                    reject(new Error(data.message))
+                  }
+                })
+              })
             })
           } else {
             reject(error)

@@ -50,6 +50,8 @@ export function test1(callback: () => void): string {
   console.log('def weixin')
   //#endif
   console.log(CLLocationManager, CLAuthorizationStatus)
+  const a = -3
+  console.log(~a)
   return 'test1'
 }
 

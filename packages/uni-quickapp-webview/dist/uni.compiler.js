@@ -5,10 +5,10 @@ var initMiniProgramPlugin = require('@dcloudio/uni-mp-vite');
 var path = require('path');
 var shared = require('@vue/shared');
 
-function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
 
-var initMiniProgramPlugin__default = /*#__PURE__*/_interopDefaultLegacy(initMiniProgramPlugin);
-var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
+var initMiniProgramPlugin__default = /*#__PURE__*/_interopDefault(initMiniProgramPlugin);
+var path__default = /*#__PURE__*/_interopDefault(path);
 
 var compilerOptions$1 = {
 	target: "es6",
@@ -31,9 +31,9 @@ function formatAppJson(_appJson, manifestJson, _pagesJson) {
     });
     if (!appJson.name) {
         const inputDir = process.env.UNI_INPUT_DIR;
-        let projectname = path__default["default"].basename(inputDir);
+        let projectname = path__default.default.basename(inputDir);
         if (projectname === 'src') {
-            projectname = path__default["default"].basename(path__default["default"].dirname(inputDir));
+            projectname = path__default.default.basename(path__default.default.dirname(inputDir));
         }
         appJson.name = projectname;
     }
@@ -73,10 +73,10 @@ const options = {
     cdn: process.env.UNI_SUB_PLATFORM === 'quickapp-webview-huawei' ? 200 : 201,
     vite: {
         inject: {
-            uni: [path__default["default"].resolve(__dirname, 'uni.api.esm.js'), 'default'],
+            uni: [path__default.default.resolve(__dirname, 'uni.api.esm.js'), 'default'],
         },
         alias: {
-            'uni-mp-runtime': path__default["default"].resolve(__dirname, 'uni.mp.esm.js'),
+            'uni-mp-runtime': path__default.default.resolve(__dirname, 'uni.mp.esm.js'),
         },
         copyOptions: {},
     },
@@ -125,6 +125,6 @@ const uniQuickappWebviewPlugin = {
         };
     },
 };
-var index = [uniQuickappWebviewPlugin, ...initMiniProgramPlugin__default["default"](options)];
+var index = [uniQuickappWebviewPlugin, ...initMiniProgramPlugin__default.default(options)];
 
 module.exports = index;

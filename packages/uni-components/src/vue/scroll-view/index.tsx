@@ -454,6 +454,7 @@ function useScrollViewLoader(
     content.value!.removeEventListener('webkitTransitionEnd', __transitionEnd)
   }
   function _setRefreshState(_state: RefreshState) {
+    if (!props.refresherEnabled) return
     switch (_state) {
       case 'refreshing':
         state.refresherHeight = props.refresherThreshold
@@ -553,7 +554,7 @@ function useScrollViewLoader(
 
       if (_main.scrollTop === 0 && event.touches.length === 1) {
         // 如果容器滑动到达顶端，则进入下拉状态
-        state.refreshState = 'pulling'
+        _setRefreshState('pulling')
       }
 
       if (props.refresherEnabled && state.refreshState === 'pulling') {

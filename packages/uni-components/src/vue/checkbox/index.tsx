@@ -65,6 +65,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       }
       checkboxChecked.value = !checkboxChecked.value
       uniCheckGroup && uniCheckGroup.checkboxChange($event)
+      $event.stopPropagation()
     }
 
     if (!!uniLabel) {

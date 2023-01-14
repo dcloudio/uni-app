@@ -1,16 +1,14 @@
 'use strict';
 
-Object.defineProperty(exports, '__esModule', { value: true });
-
 var fs = require('fs');
 var path = require('path');
 var os = require('os');
 
-function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
 
-var fs__default = /*#__PURE__*/_interopDefaultLegacy(fs);
-var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
-var os__default = /*#__PURE__*/_interopDefaultLegacy(os);
+var fs__default = /*#__PURE__*/_interopDefault(fs);
+var path__default = /*#__PURE__*/_interopDefault(path);
+var os__default = /*#__PURE__*/_interopDefault(os);
 
 /*  ------------------------------------------------------------------------ */
 const O = Object, isBrowser = 
@@ -209,7 +207,14 @@ function parseItem(e, maxColumnWidths, isMP) {
 /*  ------------------------------------------------------------------------ */
 var StackTracey$1 = StackTracey;
 
+var sourceMapGenerator = {};
+
+var base64Vlq = {};
+
+var base64$1 = {};
+
 /* -*- Mode: js; js-indent-level: 2; -*- */
+
 /*
  * Copyright 2011 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE or:
@@ -222,18 +227,12 @@ const intToCharMap =
 /**
  * Encode an integer in the range of 0 to 63 to a single base 64 digit.
  */
-var encode$1 = function (number) {
+base64$1.encode = function (number) {
   if (0 <= number && number < intToCharMap.length) {
     return intToCharMap[number]
   }
   throw new TypeError('Must be between 0 and 63: ' + number)
 };
-
-var base64$1 = {
-	encode: encode$1
-};
-
-var base64 = base64$1;
 
 /* -*- Mode: js; js-indent-level: 2; -*- */
 
@@ -273,7 +272,7 @@ var base64 = base64$1;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+const base64 = base64$1;
 
 // A single base 64 digit can contain 6 bits of data. For the base 64 variable
 // length quantities we use in the source map spec, the first bit is the sign,
@@ -311,7 +310,7 @@ function toVLQSigned(aValue) {
 /**
  * Returns the base 64 VLQ encoded value.
  */
-var encode = function base64VLQ_encode(aValue) {
+base64Vlq.encode = function base64VLQ_encode(aValue) {
   let encoded = '';
   let digit;
 
@@ -331,575 +330,571 @@ var encode = function base64VLQ_encode(aValue) {
   return encoded
 };
 
-var base64Vlq = {
-	encode: encode
-};
-
-function createCommonjsModule(fn) {
-  var module = { exports: {} };
-	return fn(module, module.exports), module.exports;
-}
+var util$4 = {};
 
 /* -*- Mode: js; js-indent-level: 2; -*- */
 
-var util$1 = createCommonjsModule(function (module, exports) {
-/*
- * Copyright 2011 Mozilla Foundation and contributors
- * Licensed under the New BSD license. See LICENSE or:
- * http://opensource.org/licenses/BSD-3-Clause
- */
-
-/**
- * This is a helper function for getting values from parameter/options
- * objects.
- *
- * @param args The object we are extracting values from
- * @param name The name of the property we are getting.
- * @param defaultValue An optional value to return if the property is missing
- * from the object. If this is not specified and the property is missing, an
- * error will be thrown.
- */
-function getArg(aArgs, aName, aDefaultValue) {
-  if (aName in aArgs) {
-    return aArgs[aName]
-  } else if (arguments.length === 3) {
-    return aDefaultValue
-  }
-  throw new Error('"' + aName + '" is a required argument.')
-}
-exports.getArg = getArg;
-
-const urlRegexp =
-  /^(?:([\w+\-.]+):)?\/\/(?:(\w+:\w+)@)?([\w.-]*)(?::(\d+))?(.*)$/;
-const dataUrlRegexp = /^data:.+\,.+$/;
-
-function urlParse(aUrl) {
-  const match = aUrl.match(urlRegexp);
-  if (!match) {
-    return null
-  }
-  return {
-    scheme: match[1],
-    auth: match[2],
-    host: match[3],
-    port: match[4],
-    path: match[5],
-  }
-}
-exports.urlParse = urlParse;
-
-function urlGenerate(aParsedUrl) {
-  let url = '';
-  if (aParsedUrl.scheme) {
-    url += aParsedUrl.scheme + ':';
-  }
-  url += '//';
-  if (aParsedUrl.auth) {
-    url += aParsedUrl.auth + '@';
-  }
-  if (aParsedUrl.host) {
-    url += aParsedUrl.host;
-  }
-  if (aParsedUrl.port) {
-    url += ':' + aParsedUrl.port;
-  }
-  if (aParsedUrl.path) {
-    url += aParsedUrl.path;
-  }
-  return url
-}
-exports.urlGenerate = urlGenerate;
-
-const MAX_CACHED_INPUTS = 32;
-
-/**
- * Takes some function `f(input) -> result` and returns a memoized version of
- * `f`.
- *
- * We keep at most `MAX_CACHED_INPUTS` memoized results of `f` alive. The
- * memoization is a dumb-simple, linear least-recently-used cache.
- */
-function lruMemoize(f) {
-  const cache = [];
-
-  return function (input) {
-    for (let i = 0; i < cache.length; i++) {
-      if (cache[i].input === input) {
-        const temp = cache[0];
-        cache[0] = cache[i];
-        cache[i] = temp;
-        return cache[0].result
-      }
-    }
-
-    const result = f(input);
-
-    cache.unshift({
-      input,
-      result,
-    });
-
-    if (cache.length > MAX_CACHED_INPUTS) {
-      cache.pop();
-    }
-
-    return result
-  }
-}
-
-/**
- * Normalizes a path, or the path portion of a URL:
- *
- * - Replaces consecutive slashes with one slash.
- * - Removes unnecessary '.' parts.
- * - Removes unnecessary '<dir>/..' parts.
- *
- * Based on code in the Node.js 'path' core module.
- *
- * @param aPath The path or url to normalize.
- */
-const normalize = lruMemoize(function normalize(aPath) {
-  let path = aPath;
-  const url = urlParse(aPath);
-  if (url) {
-    if (!url.path) {
-      return aPath
-    }
-    path = url.path;
-  }
-  const isAbsolute = exports.isAbsolute(path);
-
-  // Split the path into parts between `/` characters. This is much faster than
-  // using `.split(/\/+/g)`.
-  const parts = [];
-  let start = 0;
-  let i = 0;
-  while (true) {
-    start = i;
-    i = path.indexOf('/', start);
-    if (i === -1) {
-      parts.push(path.slice(start));
-      break
-    } else {
-      parts.push(path.slice(start, i));
-      while (i < path.length && path[i] === '/') {
-        i++;
-      }
-    }
-  }
-
-  let up = 0;
-  for (i = parts.length - 1; i >= 0; i--) {
-    const part = parts[i];
-    if (part === '.') {
-      parts.splice(i, 1);
-    } else if (part === '..') {
-      up++;
-    } else if (up > 0) {
-      if (part === '') {
-        // The first part is blank if the path is absolute. Trying to go
-        // above the root is a no-op. Therefore we can remove all '..' parts
-        // directly after the root.
-        parts.splice(i + 1, up);
-        up = 0;
-      } else {
-        parts.splice(i, 2);
-        up--;
-      }
-    }
-  }
-  path = parts.join('/');
-
-  if (path === '') {
-    path = isAbsolute ? '/' : '.';
-  }
-
-  if (url) {
-    url.path = path;
-    return urlGenerate(url)
-  }
-  return path
-});
-exports.normalize = normalize;
-
-/**
- * Joins two paths/URLs.
- *
- * @param aRoot The root path or URL.
- * @param aPath The path or URL to be joined with the root.
- *
- * - If aPath is a URL or a data URI, aPath is returned, unless aPath is a
- *   scheme-relative URL: Then the scheme of aRoot, if any, is prepended
- *   first.
- * - Otherwise aPath is a path. If aRoot is a URL, then its path portion
- *   is updated with the result and aRoot is returned. Otherwise the result
- *   is returned.
- *   - If aPath is absolute, the result is aPath.
- *   - Otherwise the two paths are joined with a slash.
- * - Joining for example 'http://' and 'www.example.com' is also supported.
- */
-function join(aRoot, aPath) {
-  if (aRoot === '') {
-    aRoot = '.';
-  }
-  if (aPath === '') {
-    aPath = '.';
-  }
-  const aPathUrl = urlParse(aPath);
-  const aRootUrl = urlParse(aRoot);
-  if (aRootUrl) {
-    aRoot = aRootUrl.path || '/';
-  }
-
-  // `join(foo, '//www.example.org')`
-  if (aPathUrl && !aPathUrl.scheme) {
-    if (aRootUrl) {
-      aPathUrl.scheme = aRootUrl.scheme;
-    }
-    return urlGenerate(aPathUrl)
-  }
-
-  if (aPathUrl || aPath.match(dataUrlRegexp)) {
-    return aPath
-  }
-
-  // `join('http://', 'www.example.com')`
-  if (aRootUrl && !aRootUrl.host && !aRootUrl.path) {
-    aRootUrl.host = aPath;
-    return urlGenerate(aRootUrl)
-  }
-
-  const joined =
-    aPath.charAt(0) === '/'
-      ? aPath
-      : normalize(aRoot.replace(/\/+$/, '') + '/' + aPath);
-
-  if (aRootUrl) {
-    aRootUrl.path = joined;
-    return urlGenerate(aRootUrl)
-  }
-  return joined
-}
-exports.join = join;
-
-exports.isAbsolute = function (aPath) {
-  return aPath.charAt(0) === '/' || urlRegexp.test(aPath)
-};
-
-/**
- * Make a path relative to a URL or another path.
- *
- * @param aRoot The root path or URL.
- * @param aPath The path or URL to be made relative to aRoot.
- */
-function relative(aRoot, aPath) {
-  if (aRoot === '') {
-    aRoot = '.';
-  }
-
-  aRoot = aRoot.replace(/\/$/, '');
-
-  // It is possible for the path to be above the root. In this case, simply
-  // checking whether the root is a prefix of the path won't work. Instead, we
-  // need to remove components from the root one by one, until either we find
-  // a prefix that fits, or we run out of components to remove.
-  let level = 0;
-  while (aPath.indexOf(aRoot + '/') !== 0) {
-    const index = aRoot.lastIndexOf('/');
-    if (index < 0) {
-      return aPath
-    }
-
-    // If the only part of the root that is left is the scheme (i.e. http://,
-    // file:///, etc.), one or more slashes (/), or simply nothing at all, we
-    // have exhausted all components, so the path is not relative to the root.
-    aRoot = aRoot.slice(0, index);
-    if (aRoot.match(/^([^\/]+:\/)?\/*$/)) {
-      return aPath
-    }
-
-    ++level;
-  }
-
-  // Make sure we add a "../" for each component we removed from the root.
-  return Array(level + 1).join('../') + aPath.substr(aRoot.length + 1)
-}
-exports.relative = relative;
-
-const supportsNullProto = (function () {
-  const obj = Object.create(null);
-  return !('__proto__' in obj)
-})();
-
-function identity(s) {
-  return s
-}
-
-/**
- * Because behavior goes wacky when you set `__proto__` on objects, we
- * have to prefix all the strings in our set with an arbitrary character.
- *
- * See https://github.com/mozilla/source-map/pull/31 and
- * https://github.com/mozilla/source-map/issues/30
- *
- * @param String aStr
- */
-function toSetString(aStr) {
-  if (isProtoString(aStr)) {
-    return '$' + aStr
-  }
-
-  return aStr
-}
-exports.toSetString = supportsNullProto ? identity : toSetString;
-
-function fromSetString(aStr) {
-  if (isProtoString(aStr)) {
-    return aStr.slice(1)
-  }
-
-  return aStr
-}
-exports.fromSetString = supportsNullProto ? identity : fromSetString;
-
-function isProtoString(s) {
-  if (!s) {
-    return false
-  }
-
-  const length = s.length;
-
-  if (length < 9 /* "__proto__".length */) {
-    return false
-  }
-
-  /* eslint-disable no-multi-spaces */
-  if (
-    s.charCodeAt(length - 1) !== 95 /* '_' */ ||
-    s.charCodeAt(length - 2) !== 95 /* '_' */ ||
-    s.charCodeAt(length - 3) !== 111 /* 'o' */ ||
-    s.charCodeAt(length - 4) !== 116 /* 't' */ ||
-    s.charCodeAt(length - 5) !== 111 /* 'o' */ ||
-    s.charCodeAt(length - 6) !== 114 /* 'r' */ ||
-    s.charCodeAt(length - 7) !== 112 /* 'p' */ ||
-    s.charCodeAt(length - 8) !== 95 /* '_' */ ||
-    s.charCodeAt(length - 9) !== 95 /* '_' */
-  ) {
-    return false
-  }
-  /* eslint-enable no-multi-spaces */
-
-  for (let i = length - 10; i >= 0; i--) {
-    if (s.charCodeAt(i) !== 36 /* '$' */) {
-      return false
-    }
-  }
-
-  return true
-}
-
-/**
- * Comparator between two mappings where the original positions are compared.
- *
- * Optionally pass in `true` as `onlyCompareGenerated` to consider two
- * mappings with the same original source/line/column, but different generated
- * line and column the same. Useful when searching for a mapping with a
- * stubbed out mapping.
- */
-function compareByOriginalPositions(mappingA, mappingB, onlyCompareOriginal) {
-  let cmp = strcmp(mappingA.source, mappingB.source);
-  if (cmp !== 0) {
-    return cmp
-  }
-
-  cmp = mappingA.originalLine - mappingB.originalLine;
-  if (cmp !== 0) {
-    return cmp
-  }
-
-  cmp = mappingA.originalColumn - mappingB.originalColumn;
-  if (cmp !== 0 || onlyCompareOriginal) {
-    return cmp
-  }
-
-  cmp = mappingA.generatedColumn - mappingB.generatedColumn;
-  if (cmp !== 0) {
-    return cmp
-  }
-
-  cmp = mappingA.generatedLine - mappingB.generatedLine;
-  if (cmp !== 0) {
-    return cmp
-  }
-
-  return strcmp(mappingA.name, mappingB.name)
-}
-exports.compareByOriginalPositions = compareByOriginalPositions;
-
-/**
- * Comparator between two mappings with deflated source and name indices where
- * the generated positions are compared.
- *
- * Optionally pass in `true` as `onlyCompareGenerated` to consider two
- * mappings with the same generated line and column, but different
- * source/name/original line and column the same. Useful when searching for a
- * mapping with a stubbed out mapping.
- */
-function compareByGeneratedPositionsDeflated(
-  mappingA,
-  mappingB,
-  onlyCompareGenerated
-) {
-  let cmp = mappingA.generatedLine - mappingB.generatedLine;
-  if (cmp !== 0) {
-    return cmp
-  }
-
-  cmp = mappingA.generatedColumn - mappingB.generatedColumn;
-  if (cmp !== 0 || onlyCompareGenerated) {
-    return cmp
-  }
-
-  cmp = strcmp(mappingA.source, mappingB.source);
-  if (cmp !== 0) {
-    return cmp
-  }
-
-  cmp = mappingA.originalLine - mappingB.originalLine;
-  if (cmp !== 0) {
-    return cmp
-  }
-
-  cmp = mappingA.originalColumn - mappingB.originalColumn;
-  if (cmp !== 0) {
-    return cmp
-  }
-
-  return strcmp(mappingA.name, mappingB.name)
-}
-exports.compareByGeneratedPositionsDeflated =
-  compareByGeneratedPositionsDeflated;
-
-function strcmp(aStr1, aStr2) {
-  if (aStr1 === aStr2) {
-    return 0
-  }
-
-  if (aStr1 === null) {
-    return 1 // aStr2 !== null
-  }
-
-  if (aStr2 === null) {
-    return -1 // aStr1 !== null
-  }
-
-  if (aStr1 > aStr2) {
-    return 1
-  }
-
-  return -1
-}
-
-/**
- * Comparator between two mappings with inflated source and name strings where
- * the generated positions are compared.
- */
-function compareByGeneratedPositionsInflated(mappingA, mappingB) {
-  let cmp = mappingA.generatedLine - mappingB.generatedLine;
-  if (cmp !== 0) {
-    return cmp
-  }
-
-  cmp = mappingA.generatedColumn - mappingB.generatedColumn;
-  if (cmp !== 0) {
-    return cmp
-  }
-
-  cmp = strcmp(mappingA.source, mappingB.source);
-  if (cmp !== 0) {
-    return cmp
-  }
-
-  cmp = mappingA.originalLine - mappingB.originalLine;
-  if (cmp !== 0) {
-    return cmp
-  }
-
-  cmp = mappingA.originalColumn - mappingB.originalColumn;
-  if (cmp !== 0) {
-    return cmp
-  }
-
-  return strcmp(mappingA.name, mappingB.name)
-}
-exports.compareByGeneratedPositionsInflated =
-  compareByGeneratedPositionsInflated;
-
-/**
- * Strip any JSON XSSI avoidance prefix from the string (as documented
- * in the source maps specification), and then parse the string as
- * JSON.
- */
-function parseSourceMapInput(str) {
-  return JSON.parse(str.replace(/^\)]}'[^\n]*\n/, ''))
-}
-exports.parseSourceMapInput = parseSourceMapInput;
-
-/**
- * Compute the URL of a source given the the source root, the source's
- * URL, and the source map's URL.
- */
-function computeSourceURL(sourceRoot, sourceURL, sourceMapURL) {
-  sourceURL = sourceURL || '';
-
-  if (sourceRoot) {
-    // This follows what Chrome does.
-    if (sourceRoot[sourceRoot.length - 1] !== '/' && sourceURL[0] !== '/') {
-      sourceRoot += '/';
-    }
-    // The spec says:
-    //   Line 4: An optional source root, useful for relocating source
-    //   files on a server or removing repeated values in the
-    //   “sources” entry.  This value is prepended to the individual
-    //   entries in the “source” field.
-    sourceURL = sourceRoot + sourceURL;
-  }
-
-  // Historically, SourceMapConsumer did not take the sourceMapURL as
-  // a parameter.  This mode is still somewhat supported, which is why
-  // this code block is conditional.  However, it's preferable to pass
-  // the source map URL to SourceMapConsumer, so that this function
-  // can implement the source URL resolution algorithm as outlined in
-  // the spec.  This block is basically the equivalent of:
-  //    new URL(sourceURL, sourceMapURL).toString()
-  // ... except it avoids using URL, which wasn't available in the
-  // older releases of node still supported by this library.
-  //
-  // The spec says:
-  //   If the sources are not absolute URLs after prepending of the
-  //   “sourceRoot”, the sources are resolved relative to the
-  //   SourceMap (like resolving script src in a html document).
-  if (sourceMapURL) {
-    const parsed = urlParse(sourceMapURL);
-    if (!parsed) {
-      throw new Error('sourceMapURL could not be parsed')
-    }
-    if (parsed.path) {
-      // Strip the last path component, but keep the "/".
-      const index = parsed.path.lastIndexOf('/');
-      if (index >= 0) {
-        parsed.path = parsed.path.substring(0, index + 1);
-      }
-    }
-    sourceURL = join(urlGenerate(parsed), sourceURL);
-  }
-
-  return normalize(sourceURL)
-}
-exports.computeSourceURL = computeSourceURL;
-});
+(function (exports) {
+	/*
+	 * Copyright 2011 Mozilla Foundation and contributors
+	 * Licensed under the New BSD license. See LICENSE or:
+	 * http://opensource.org/licenses/BSD-3-Clause
+	 */
+
+	/**
+	 * This is a helper function for getting values from parameter/options
+	 * objects.
+	 *
+	 * @param args The object we are extracting values from
+	 * @param name The name of the property we are getting.
+	 * @param defaultValue An optional value to return if the property is missing
+	 * from the object. If this is not specified and the property is missing, an
+	 * error will be thrown.
+	 */
+	function getArg(aArgs, aName, aDefaultValue) {
+	  if (aName in aArgs) {
+	    return aArgs[aName]
+	  } else if (arguments.length === 3) {
+	    return aDefaultValue
+	  }
+	  throw new Error('"' + aName + '" is a required argument.')
+	}
+	exports.getArg = getArg;
+
+	const urlRegexp =
+	  /^(?:([\w+\-.]+):)?\/\/(?:(\w+:\w+)@)?([\w.-]*)(?::(\d+))?(.*)$/;
+	const dataUrlRegexp = /^data:.+\,.+$/;
+
+	function urlParse(aUrl) {
+	  const match = aUrl.match(urlRegexp);
+	  if (!match) {
+	    return null
+	  }
+	  return {
+	    scheme: match[1],
+	    auth: match[2],
+	    host: match[3],
+	    port: match[4],
+	    path: match[5],
+	  }
+	}
+	exports.urlParse = urlParse;
+
+	function urlGenerate(aParsedUrl) {
+	  let url = '';
+	  if (aParsedUrl.scheme) {
+	    url += aParsedUrl.scheme + ':';
+	  }
+	  url += '//';
+	  if (aParsedUrl.auth) {
+	    url += aParsedUrl.auth + '@';
+	  }
+	  if (aParsedUrl.host) {
+	    url += aParsedUrl.host;
+	  }
+	  if (aParsedUrl.port) {
+	    url += ':' + aParsedUrl.port;
+	  }
+	  if (aParsedUrl.path) {
+	    url += aParsedUrl.path;
+	  }
+	  return url
+	}
+	exports.urlGenerate = urlGenerate;
+
+	const MAX_CACHED_INPUTS = 32;
+
+	/**
+	 * Takes some function `f(input) -> result` and returns a memoized version of
+	 * `f`.
+	 *
+	 * We keep at most `MAX_CACHED_INPUTS` memoized results of `f` alive. The
+	 * memoization is a dumb-simple, linear least-recently-used cache.
+	 */
+	function lruMemoize(f) {
+	  const cache = [];
+
+	  return function (input) {
+	    for (let i = 0; i < cache.length; i++) {
+	      if (cache[i].input === input) {
+	        const temp = cache[0];
+	        cache[0] = cache[i];
+	        cache[i] = temp;
+	        return cache[0].result
+	      }
+	    }
+
+	    const result = f(input);
+
+	    cache.unshift({
+	      input,
+	      result,
+	    });
+
+	    if (cache.length > MAX_CACHED_INPUTS) {
+	      cache.pop();
+	    }
+
+	    return result
+	  }
+	}
+
+	/**
+	 * Normalizes a path, or the path portion of a URL:
+	 *
+	 * - Replaces consecutive slashes with one slash.
+	 * - Removes unnecessary '.' parts.
+	 * - Removes unnecessary '<dir>/..' parts.
+	 *
+	 * Based on code in the Node.js 'path' core module.
+	 *
+	 * @param aPath The path or url to normalize.
+	 */
+	const normalize = lruMemoize(function normalize(aPath) {
+	  let path = aPath;
+	  const url = urlParse(aPath);
+	  if (url) {
+	    if (!url.path) {
+	      return aPath
+	    }
+	    path = url.path;
+	  }
+	  const isAbsolute = exports.isAbsolute(path);
+
+	  // Split the path into parts between `/` characters. This is much faster than
+	  // using `.split(/\/+/g)`.
+	  const parts = [];
+	  let start = 0;
+	  let i = 0;
+	  while (true) {
+	    start = i;
+	    i = path.indexOf('/', start);
+	    if (i === -1) {
+	      parts.push(path.slice(start));
+	      break
+	    } else {
+	      parts.push(path.slice(start, i));
+	      while (i < path.length && path[i] === '/') {
+	        i++;
+	      }
+	    }
+	  }
+
+	  let up = 0;
+	  for (i = parts.length - 1; i >= 0; i--) {
+	    const part = parts[i];
+	    if (part === '.') {
+	      parts.splice(i, 1);
+	    } else if (part === '..') {
+	      up++;
+	    } else if (up > 0) {
+	      if (part === '') {
+	        // The first part is blank if the path is absolute. Trying to go
+	        // above the root is a no-op. Therefore we can remove all '..' parts
+	        // directly after the root.
+	        parts.splice(i + 1, up);
+	        up = 0;
+	      } else {
+	        parts.splice(i, 2);
+	        up--;
+	      }
+	    }
+	  }
+	  path = parts.join('/');
+
+	  if (path === '') {
+	    path = isAbsolute ? '/' : '.';
+	  }
+
+	  if (url) {
+	    url.path = path;
+	    return urlGenerate(url)
+	  }
+	  return path
+	});
+	exports.normalize = normalize;
+
+	/**
+	 * Joins two paths/URLs.
+	 *
+	 * @param aRoot The root path or URL.
+	 * @param aPath The path or URL to be joined with the root.
+	 *
+	 * - If aPath is a URL or a data URI, aPath is returned, unless aPath is a
+	 *   scheme-relative URL: Then the scheme of aRoot, if any, is prepended
+	 *   first.
+	 * - Otherwise aPath is a path. If aRoot is a URL, then its path portion
+	 *   is updated with the result and aRoot is returned. Otherwise the result
+	 *   is returned.
+	 *   - If aPath is absolute, the result is aPath.
+	 *   - Otherwise the two paths are joined with a slash.
+	 * - Joining for example 'http://' and 'www.example.com' is also supported.
+	 */
+	function join(aRoot, aPath) {
+	  if (aRoot === '') {
+	    aRoot = '.';
+	  }
+	  if (aPath === '') {
+	    aPath = '.';
+	  }
+	  const aPathUrl = urlParse(aPath);
+	  const aRootUrl = urlParse(aRoot);
+	  if (aRootUrl) {
+	    aRoot = aRootUrl.path || '/';
+	  }
+
+	  // `join(foo, '//www.example.org')`
+	  if (aPathUrl && !aPathUrl.scheme) {
+	    if (aRootUrl) {
+	      aPathUrl.scheme = aRootUrl.scheme;
+	    }
+	    return urlGenerate(aPathUrl)
+	  }
+
+	  if (aPathUrl || aPath.match(dataUrlRegexp)) {
+	    return aPath
+	  }
+
+	  // `join('http://', 'www.example.com')`
+	  if (aRootUrl && !aRootUrl.host && !aRootUrl.path) {
+	    aRootUrl.host = aPath;
+	    return urlGenerate(aRootUrl)
+	  }
+
+	  const joined =
+	    aPath.charAt(0) === '/'
+	      ? aPath
+	      : normalize(aRoot.replace(/\/+$/, '') + '/' + aPath);
+
+	  if (aRootUrl) {
+	    aRootUrl.path = joined;
+	    return urlGenerate(aRootUrl)
+	  }
+	  return joined
+	}
+	exports.join = join;
+
+	exports.isAbsolute = function (aPath) {
+	  return aPath.charAt(0) === '/' || urlRegexp.test(aPath)
+	};
+
+	/**
+	 * Make a path relative to a URL or another path.
+	 *
+	 * @param aRoot The root path or URL.
+	 * @param aPath The path or URL to be made relative to aRoot.
+	 */
+	function relative(aRoot, aPath) {
+	  if (aRoot === '') {
+	    aRoot = '.';
+	  }
+
+	  aRoot = aRoot.replace(/\/$/, '');
+
+	  // It is possible for the path to be above the root. In this case, simply
+	  // checking whether the root is a prefix of the path won't work. Instead, we
+	  // need to remove components from the root one by one, until either we find
+	  // a prefix that fits, or we run out of components to remove.
+	  let level = 0;
+	  while (aPath.indexOf(aRoot + '/') !== 0) {
+	    const index = aRoot.lastIndexOf('/');
+	    if (index < 0) {
+	      return aPath
+	    }
+
+	    // If the only part of the root that is left is the scheme (i.e. http://,
+	    // file:///, etc.), one or more slashes (/), or simply nothing at all, we
+	    // have exhausted all components, so the path is not relative to the root.
+	    aRoot = aRoot.slice(0, index);
+	    if (aRoot.match(/^([^\/]+:\/)?\/*$/)) {
+	      return aPath
+	    }
+
+	    ++level;
+	  }
+
+	  // Make sure we add a "../" for each component we removed from the root.
+	  return Array(level + 1).join('../') + aPath.substr(aRoot.length + 1)
+	}
+	exports.relative = relative;
+
+	const supportsNullProto = (function () {
+	  const obj = Object.create(null);
+	  return !('__proto__' in obj)
+	})();
+
+	function identity(s) {
+	  return s
+	}
+
+	/**
+	 * Because behavior goes wacky when you set `__proto__` on objects, we
+	 * have to prefix all the strings in our set with an arbitrary character.
+	 *
+	 * See https://github.com/mozilla/source-map/pull/31 and
+	 * https://github.com/mozilla/source-map/issues/30
+	 *
+	 * @param String aStr
+	 */
+	function toSetString(aStr) {
+	  if (isProtoString(aStr)) {
+	    return '$' + aStr
+	  }
+
+	  return aStr
+	}
+	exports.toSetString = supportsNullProto ? identity : toSetString;
+
+	function fromSetString(aStr) {
+	  if (isProtoString(aStr)) {
+	    return aStr.slice(1)
+	  }
+
+	  return aStr
+	}
+	exports.fromSetString = supportsNullProto ? identity : fromSetString;
+
+	function isProtoString(s) {
+	  if (!s) {
+	    return false
+	  }
+
+	  const length = s.length;
+
+	  if (length < 9 /* "__proto__".length */) {
+	    return false
+	  }
+
+	  /* eslint-disable no-multi-spaces */
+	  if (
+	    s.charCodeAt(length - 1) !== 95 /* '_' */ ||
+	    s.charCodeAt(length - 2) !== 95 /* '_' */ ||
+	    s.charCodeAt(length - 3) !== 111 /* 'o' */ ||
+	    s.charCodeAt(length - 4) !== 116 /* 't' */ ||
+	    s.charCodeAt(length - 5) !== 111 /* 'o' */ ||
+	    s.charCodeAt(length - 6) !== 114 /* 'r' */ ||
+	    s.charCodeAt(length - 7) !== 112 /* 'p' */ ||
+	    s.charCodeAt(length - 8) !== 95 /* '_' */ ||
+	    s.charCodeAt(length - 9) !== 95 /* '_' */
+	  ) {
+	    return false
+	  }
+	  /* eslint-enable no-multi-spaces */
+
+	  for (let i = length - 10; i >= 0; i--) {
+	    if (s.charCodeAt(i) !== 36 /* '$' */) {
+	      return false
+	    }
+	  }
+
+	  return true
+	}
+
+	/**
+	 * Comparator between two mappings where the original positions are compared.
+	 *
+	 * Optionally pass in `true` as `onlyCompareGenerated` to consider two
+	 * mappings with the same original source/line/column, but different generated
+	 * line and column the same. Useful when searching for a mapping with a
+	 * stubbed out mapping.
+	 */
+	function compareByOriginalPositions(mappingA, mappingB, onlyCompareOriginal) {
+	  let cmp = strcmp(mappingA.source, mappingB.source);
+	  if (cmp !== 0) {
+	    return cmp
+	  }
+
+	  cmp = mappingA.originalLine - mappingB.originalLine;
+	  if (cmp !== 0) {
+	    return cmp
+	  }
+
+	  cmp = mappingA.originalColumn - mappingB.originalColumn;
+	  if (cmp !== 0 || onlyCompareOriginal) {
+	    return cmp
+	  }
+
+	  cmp = mappingA.generatedColumn - mappingB.generatedColumn;
+	  if (cmp !== 0) {
+	    return cmp
+	  }
+
+	  cmp = mappingA.generatedLine - mappingB.generatedLine;
+	  if (cmp !== 0) {
+	    return cmp
+	  }
+
+	  return strcmp(mappingA.name, mappingB.name)
+	}
+	exports.compareByOriginalPositions = compareByOriginalPositions;
+
+	/**
+	 * Comparator between two mappings with deflated source and name indices where
+	 * the generated positions are compared.
+	 *
+	 * Optionally pass in `true` as `onlyCompareGenerated` to consider two
+	 * mappings with the same generated line and column, but different
+	 * source/name/original line and column the same. Useful when searching for a
+	 * mapping with a stubbed out mapping.
+	 */
+	function compareByGeneratedPositionsDeflated(
+	  mappingA,
+	  mappingB,
+	  onlyCompareGenerated
+	) {
+	  let cmp = mappingA.generatedLine - mappingB.generatedLine;
+	  if (cmp !== 0) {
+	    return cmp
+	  }
+
+	  cmp = mappingA.generatedColumn - mappingB.generatedColumn;
+	  if (cmp !== 0 || onlyCompareGenerated) {
+	    return cmp
+	  }
+
+	  cmp = strcmp(mappingA.source, mappingB.source);
+	  if (cmp !== 0) {
+	    return cmp
+	  }
+
+	  cmp = mappingA.originalLine - mappingB.originalLine;
+	  if (cmp !== 0) {
+	    return cmp
+	  }
+
+	  cmp = mappingA.originalColumn - mappingB.originalColumn;
+	  if (cmp !== 0) {
+	    return cmp
+	  }
+
+	  return strcmp(mappingA.name, mappingB.name)
+	}
+	exports.compareByGeneratedPositionsDeflated =
+	  compareByGeneratedPositionsDeflated;
+
+	function strcmp(aStr1, aStr2) {
+	  if (aStr1 === aStr2) {
+	    return 0
+	  }
+
+	  if (aStr1 === null) {
+	    return 1 // aStr2 !== null
+	  }
+
+	  if (aStr2 === null) {
+	    return -1 // aStr1 !== null
+	  }
+
+	  if (aStr1 > aStr2) {
+	    return 1
+	  }
+
+	  return -1
+	}
+
+	/**
+	 * Comparator between two mappings with inflated source and name strings where
+	 * the generated positions are compared.
+	 */
+	function compareByGeneratedPositionsInflated(mappingA, mappingB) {
+	  let cmp = mappingA.generatedLine - mappingB.generatedLine;
+	  if (cmp !== 0) {
+	    return cmp
+	  }
+
+	  cmp = mappingA.generatedColumn - mappingB.generatedColumn;
+	  if (cmp !== 0) {
+	    return cmp
+	  }
+
+	  cmp = strcmp(mappingA.source, mappingB.source);
+	  if (cmp !== 0) {
+	    return cmp
+	  }
+
+	  cmp = mappingA.originalLine - mappingB.originalLine;
+	  if (cmp !== 0) {
+	    return cmp
+	  }
+
+	  cmp = mappingA.originalColumn - mappingB.originalColumn;
+	  if (cmp !== 0) {
+	    return cmp
+	  }
+
+	  return strcmp(mappingA.name, mappingB.name)
+	}
+	exports.compareByGeneratedPositionsInflated =
+	  compareByGeneratedPositionsInflated;
+
+	/**
+	 * Strip any JSON XSSI avoidance prefix from the string (as documented
+	 * in the source maps specification), and then parse the string as
+	 * JSON.
+	 */
+	function parseSourceMapInput(str) {
+	  return JSON.parse(str.replace(/^\)]}'[^\n]*\n/, ''))
+	}
+	exports.parseSourceMapInput = parseSourceMapInput;
+
+	/**
+	 * Compute the URL of a source given the the source root, the source's
+	 * URL, and the source map's URL.
+	 */
+	function computeSourceURL(sourceRoot, sourceURL, sourceMapURL) {
+	  sourceURL = sourceURL || '';
+
+	  if (sourceRoot) {
+	    // This follows what Chrome does.
+	    if (sourceRoot[sourceRoot.length - 1] !== '/' && sourceURL[0] !== '/') {
+	      sourceRoot += '/';
+	    }
+	    // The spec says:
+	    //   Line 4: An optional source root, useful for relocating source
+	    //   files on a server or removing repeated values in the
+	    //   “sources” entry.  This value is prepended to the individual
+	    //   entries in the “source” field.
+	    sourceURL = sourceRoot + sourceURL;
+	  }
+
+	  // Historically, SourceMapConsumer did not take the sourceMapURL as
+	  // a parameter.  This mode is still somewhat supported, which is why
+	  // this code block is conditional.  However, it's preferable to pass
+	  // the source map URL to SourceMapConsumer, so that this function
+	  // can implement the source URL resolution algorithm as outlined in
+	  // the spec.  This block is basically the equivalent of:
+	  //    new URL(sourceURL, sourceMapURL).toString()
+	  // ... except it avoids using URL, which wasn't available in the
+	  // older releases of node still supported by this library.
+	  //
+	  // The spec says:
+	  //   If the sources are not absolute URLs after prepending of the
+	  //   “sourceRoot”, the sources are resolved relative to the
+	  //   SourceMap (like resolving script src in a html document).
+	  if (sourceMapURL) {
+	    const parsed = urlParse(sourceMapURL);
+	    if (!parsed) {
+	      throw new Error('sourceMapURL could not be parsed')
+	    }
+	    if (parsed.path) {
+	      // Strip the last path component, but keep the "/".
+	      const index = parsed.path.lastIndexOf('/');
+	      if (index >= 0) {
+	        parsed.path = parsed.path.substring(0, index + 1);
+	      }
+	    }
+	    sourceURL = join(urlGenerate(parsed), sourceURL);
+	  }
+
+	  return normalize(sourceURL)
+	}
+	exports.computeSourceURL = computeSourceURL;
+} (util$4));
+
+var arraySet = {};
 
 /* -*- Mode: js; js-indent-level: 2; -*- */
+
 /*
  * Copyright 2011 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE or:
@@ -912,7 +907,7 @@ exports.computeSourceURL = computeSourceURL;
  * element is O(1). Removing elements from the set is not supported. Only
  * strings are supported for membership.
  */
-class ArraySet$2 {
+let ArraySet$2 = class ArraySet {
   constructor() {
     this._array = [];
     this._set = new Map();
@@ -997,14 +992,10 @@ class ArraySet$2 {
   toArray() {
     return this._array.slice()
   }
-}
-var ArraySet_1 = ArraySet$2;
-
-var arraySet = {
-	ArraySet: ArraySet_1
 };
+arraySet.ArraySet = ArraySet$2;
 
-var util = util$1;
+var mappingList = {};
 
 /* -*- Mode: js; js-indent-level: 2; -*- */
 
@@ -1014,7 +1005,7 @@ var util = util$1;
  * http://opensource.org/licenses/BSD-3-Clause
  */
 
-
+const util$3 = util$4;
 
 /**
  * Determine whether mappingB is after mappingA with respect to generated
@@ -1029,7 +1020,7 @@ function generatedPositionAfter(mappingA, mappingB) {
   return (
     lineB > lineA ||
     (lineB == lineA && columnB >= columnA) ||
-    util.compareByGeneratedPositionsInflated(mappingA, mappingB) <= 0
+    util$3.compareByGeneratedPositionsInflated(mappingA, mappingB) <= 0
   )
 }
 
@@ -1038,7 +1029,7 @@ function generatedPositionAfter(mappingA, mappingB) {
  * performance conscious manner. It trades a negligible overhead in general
  * case for a large speedup in case of mappings being added in order.
  */
-class MappingList$1 {
+let MappingList$1 = class MappingList {
   constructor() {
     this._array = [];
     this._sorted = true;
@@ -1082,24 +1073,14 @@ class MappingList$1 {
    */
   toArray() {
     if (!this._sorted) {
-      this._array.sort(util.compareByGeneratedPositionsInflated);
+      this._array.sort(util$3.compareByGeneratedPositionsInflated);
       this._sorted = true;
     }
     return this._array
   }
-}
-
-var MappingList_1 = MappingList$1;
-
-var mappingList = {
-	MappingList: MappingList_1
 };
 
-var base64VLQ = base64Vlq;
-
-var require$$0$1 = arraySet;
-
-var require$$1$1 = mappingList;
+mappingList.MappingList = MappingList$1;
 
 /* -*- Mode: js; js-indent-level: 2; -*- */
 
@@ -1109,10 +1090,10 @@ var require$$1$1 = mappingList;
  * http://opensource.org/licenses/BSD-3-Clause
  */
 
-
-
-const ArraySet$1 = require$$0$1.ArraySet;
-const MappingList = require$$1$1.MappingList;
+const base64VLQ = base64Vlq;
+const util$2 = util$4;
+const ArraySet$1 = arraySet.ArraySet;
+const MappingList = mappingList.MappingList;
 
 /**
  * An instance of the SourceMapGenerator represents a source map which is
@@ -1122,14 +1103,14 @@ const MappingList = require$$1$1.MappingList;
  *   - file: The filename of the generated source.
  *   - sourceRoot: A root for all relative URLs in this source map.
  */
-class SourceMapGenerator$1 {
+let SourceMapGenerator$1 = class SourceMapGenerator {
   constructor(aArgs) {
     if (!aArgs) {
       aArgs = {};
     }
-    this._file = util.getArg(aArgs, 'file', null);
-    this._sourceRoot = util.getArg(aArgs, 'sourceRoot', null);
-    this._skipValidation = util.getArg(aArgs, 'skipValidation', false);
+    this._file = util$2.getArg(aArgs, 'file', null);
+    this._sourceRoot = util$2.getArg(aArgs, 'sourceRoot', null);
+    this._skipValidation = util$2.getArg(aArgs, 'skipValidation', false);
     this._sources = new ArraySet$1();
     this._names = new ArraySet$1();
     this._mappings = new MappingList();
@@ -1158,7 +1139,7 @@ class SourceMapGenerator$1 {
       if (mapping.source != null) {
         newMapping.source = mapping.source;
         if (sourceRoot != null) {
-          newMapping.source = util.relative(sourceRoot, newMapping.source);
+          newMapping.source = util$2.relative(sourceRoot, newMapping.source);
         }
 
         newMapping.original = {
@@ -1176,7 +1157,7 @@ class SourceMapGenerator$1 {
     aSourceMapConsumer.sources.forEach(function (sourceFile) {
       let sourceRelative = sourceFile;
       if (sourceRoot !== null) {
-        sourceRelative = util.relative(sourceRoot, sourceFile);
+        sourceRelative = util$2.relative(sourceRoot, sourceFile);
       }
 
       if (!generator._sources.has(sourceRelative)) {
@@ -1202,10 +1183,10 @@ class SourceMapGenerator$1 {
    *   - name: An optional original token name for this mapping.
    */
   addMapping(aArgs) {
-    const generated = util.getArg(aArgs, 'generated');
-    const original = util.getArg(aArgs, 'original', null);
-    let source = util.getArg(aArgs, 'source', null);
-    let name = util.getArg(aArgs, 'name', null);
+    const generated = util$2.getArg(aArgs, 'generated');
+    const original = util$2.getArg(aArgs, 'original', null);
+    let source = util$2.getArg(aArgs, 'source', null);
+    let name = util$2.getArg(aArgs, 'name', null);
 
     if (!this._skipValidation) {
       this._validateMapping(generated, original, source, name);
@@ -1241,7 +1222,7 @@ class SourceMapGenerator$1 {
   setSourceContent(aSourceFile, aSourceContent) {
     let source = aSourceFile;
     if (this._sourceRoot != null) {
-      source = util.relative(this._sourceRoot, source);
+      source = util$2.relative(this._sourceRoot, source);
     }
 
     if (aSourceContent != null) {
@@ -1250,11 +1231,11 @@ class SourceMapGenerator$1 {
       if (!this._sourcesContents) {
         this._sourcesContents = Object.create(null);
       }
-      this._sourcesContents[util.toSetString(source)] = aSourceContent;
+      this._sourcesContents[util$2.toSetString(source)] = aSourceContent;
     } else if (this._sourcesContents) {
       // Remove the source file from the _sourcesContents map.
       // If the _sourcesContents map is empty, set the property to null.
-      delete this._sourcesContents[util.toSetString(source)];
+      delete this._sourcesContents[util$2.toSetString(source)];
       if (Object.keys(this._sourcesContents).length === 0) {
         this._sourcesContents = null;
       }
@@ -1292,7 +1273,7 @@ class SourceMapGenerator$1 {
     const sourceRoot = this._sourceRoot;
     // Make "sourceFile" relative if an absolute Url is passed.
     if (sourceRoot != null) {
-      sourceFile = util.relative(sourceRoot, sourceFile);
+      sourceFile = util$2.relative(sourceRoot, sourceFile);
     }
     // Applying the SourceMap can add and remove items from the sources and
     // the names array.
@@ -1312,10 +1293,10 @@ class SourceMapGenerator$1 {
           // Copy mapping
           mapping.source = original.source;
           if (aSourceMapPath != null) {
-            mapping.source = util.join(aSourceMapPath, mapping.source);
+            mapping.source = util$2.join(aSourceMapPath, mapping.source);
           }
           if (sourceRoot != null) {
-            mapping.source = util.relative(sourceRoot, mapping.source);
+            mapping.source = util$2.relative(sourceRoot, mapping.source);
           }
           mapping.originalLine = original.line;
           mapping.originalColumn = original.column;
@@ -1343,10 +1324,10 @@ class SourceMapGenerator$1 {
       const content = aSourceMapConsumer.sourceContentFor(srcFile);
       if (content != null) {
         if (aSourceMapPath != null) {
-          srcFile = util.join(aSourceMapPath, srcFile);
+          srcFile = util$2.join(aSourceMapPath, srcFile);
         }
         if (sourceRoot != null) {
-          srcFile = util.relative(sourceRoot, srcFile);
+          srcFile = util$2.relative(sourceRoot, srcFile);
         }
         this.setSourceContent(srcFile, content);
       }
@@ -1445,7 +1426,7 @@ class SourceMapGenerator$1 {
         }
       } else if (i > 0) {
         if (
-          !util.compareByGeneratedPositionsInflated(mapping, mappings[i - 1])
+          !util$2.compareByGeneratedPositionsInflated(mapping, mappings[i - 1])
         ) {
           continue
         }
@@ -1492,9 +1473,9 @@ class SourceMapGenerator$1 {
         return null
       }
       if (aSourceRoot != null) {
-        source = util.relative(aSourceRoot, source);
+        source = util$2.relative(aSourceRoot, source);
       }
-      const key = util.toSetString(source);
+      const key = util$2.toSetString(source);
       return Object.prototype.hasOwnProperty.call(this._sourcesContents, key)
         ? this._sourcesContents[key]
         : null
@@ -1533,141 +1514,145 @@ class SourceMapGenerator$1 {
   toString() {
     return JSON.stringify(this.toJSON())
   }
-}
+};
 
 SourceMapGenerator$1.prototype._version = 3;
-var SourceMapGenerator_1 = SourceMapGenerator$1;
+sourceMapGenerator.SourceMapGenerator = SourceMapGenerator$1;
 
-var sourceMapGenerator = {
-	SourceMapGenerator: SourceMapGenerator_1
-};
+var sourceMapConsumer = {};
+
+var binarySearch$1 = {};
 
 /* -*- Mode: js; js-indent-level: 2; -*- */
 
-var binarySearch$1 = createCommonjsModule(function (module, exports) {
-/*
- * Copyright 2011 Mozilla Foundation and contributors
- * Licensed under the New BSD license. See LICENSE or:
- * http://opensource.org/licenses/BSD-3-Clause
- */
+(function (exports) {
+	/*
+	 * Copyright 2011 Mozilla Foundation and contributors
+	 * Licensed under the New BSD license. See LICENSE or:
+	 * http://opensource.org/licenses/BSD-3-Clause
+	 */
 
-exports.GREATEST_LOWER_BOUND = 1;
-exports.LEAST_UPPER_BOUND = 2;
+	exports.GREATEST_LOWER_BOUND = 1;
+	exports.LEAST_UPPER_BOUND = 2;
 
-/**
- * Recursive implementation of binary search.
- *
- * @param aLow Indices here and lower do not contain the needle.
- * @param aHigh Indices here and higher do not contain the needle.
- * @param aNeedle The element being searched for.
- * @param aHaystack The non-empty array being searched.
- * @param aCompare Function which takes two elements and returns -1, 0, or 1.
- * @param aBias Either 'binarySearch.GREATEST_LOWER_BOUND' or
- *     'binarySearch.LEAST_UPPER_BOUND'. Specifies whether to return the
- *     closest element that is smaller than or greater than the one we are
- *     searching for, respectively, if the exact element cannot be found.
- */
-function recursiveSearch(aLow, aHigh, aNeedle, aHaystack, aCompare, aBias) {
-  // This function terminates when one of the following is true:
-  //
-  //   1. We find the exact element we are looking for.
-  //
-  //   2. We did not find the exact element, but we can return the index of
-  //      the next-closest element.
-  //
-  //   3. We did not find the exact element, and there is no next-closest
-  //      element than the one we are searching for, so we return -1.
-  const mid = Math.floor((aHigh - aLow) / 2) + aLow;
-  const cmp = aCompare(aNeedle, aHaystack[mid], true);
-  if (cmp === 0) {
-    // Found the element we are looking for.
-    return mid
-  } else if (cmp > 0) {
-    // Our needle is greater than aHaystack[mid].
-    if (aHigh - mid > 1) {
-      // The element is in the upper half.
-      return recursiveSearch(mid, aHigh, aNeedle, aHaystack, aCompare, aBias)
-    }
+	/**
+	 * Recursive implementation of binary search.
+	 *
+	 * @param aLow Indices here and lower do not contain the needle.
+	 * @param aHigh Indices here and higher do not contain the needle.
+	 * @param aNeedle The element being searched for.
+	 * @param aHaystack The non-empty array being searched.
+	 * @param aCompare Function which takes two elements and returns -1, 0, or 1.
+	 * @param aBias Either 'binarySearch.GREATEST_LOWER_BOUND' or
+	 *     'binarySearch.LEAST_UPPER_BOUND'. Specifies whether to return the
+	 *     closest element that is smaller than or greater than the one we are
+	 *     searching for, respectively, if the exact element cannot be found.
+	 */
+	function recursiveSearch(aLow, aHigh, aNeedle, aHaystack, aCompare, aBias) {
+	  // This function terminates when one of the following is true:
+	  //
+	  //   1. We find the exact element we are looking for.
+	  //
+	  //   2. We did not find the exact element, but we can return the index of
+	  //      the next-closest element.
+	  //
+	  //   3. We did not find the exact element, and there is no next-closest
+	  //      element than the one we are searching for, so we return -1.
+	  const mid = Math.floor((aHigh - aLow) / 2) + aLow;
+	  const cmp = aCompare(aNeedle, aHaystack[mid], true);
+	  if (cmp === 0) {
+	    // Found the element we are looking for.
+	    return mid
+	  } else if (cmp > 0) {
+	    // Our needle is greater than aHaystack[mid].
+	    if (aHigh - mid > 1) {
+	      // The element is in the upper half.
+	      return recursiveSearch(mid, aHigh, aNeedle, aHaystack, aCompare, aBias)
+	    }
 
-    // The exact needle element was not found in this haystack. Determine if
-    // we are in termination case (3) or (2) and return the appropriate thing.
-    if (aBias == exports.LEAST_UPPER_BOUND) {
-      return aHigh < aHaystack.length ? aHigh : -1
-    }
-    return mid
-  }
+	    // The exact needle element was not found in this haystack. Determine if
+	    // we are in termination case (3) or (2) and return the appropriate thing.
+	    if (aBias == exports.LEAST_UPPER_BOUND) {
+	      return aHigh < aHaystack.length ? aHigh : -1
+	    }
+	    return mid
+	  }
 
-  // Our needle is less than aHaystack[mid].
-  if (mid - aLow > 1) {
-    // The element is in the lower half.
-    return recursiveSearch(aLow, mid, aNeedle, aHaystack, aCompare, aBias)
-  }
+	  // Our needle is less than aHaystack[mid].
+	  if (mid - aLow > 1) {
+	    // The element is in the lower half.
+	    return recursiveSearch(aLow, mid, aNeedle, aHaystack, aCompare, aBias)
+	  }
 
-  // we are in termination case (3) or (2) and return the appropriate thing.
-  if (aBias == exports.LEAST_UPPER_BOUND) {
-    return mid
-  }
-  return aLow < 0 ? -1 : aLow
-}
+	  // we are in termination case (3) or (2) and return the appropriate thing.
+	  if (aBias == exports.LEAST_UPPER_BOUND) {
+	    return mid
+	  }
+	  return aLow < 0 ? -1 : aLow
+	}
 
-/**
- * This is an implementation of binary search which will always try and return
- * the index of the closest element if there is no exact hit. This is because
- * mappings between original and generated line/col pairs are single points,
- * and there is an implicit region between each of them, so a miss just means
- * that you aren't on the very start of a region.
- *
- * @param aNeedle The element you are looking for.
- * @param aHaystack The array that is being searched.
- * @param aCompare A function which takes the needle and an element in the
- *     array and returns -1, 0, or 1 depending on whether the needle is less
- *     than, equal to, or greater than the element, respectively.
- * @param aBias Either 'binarySearch.GREATEST_LOWER_BOUND' or
- *     'binarySearch.LEAST_UPPER_BOUND'. Specifies whether to return the
- *     closest element that is smaller than or greater than the one we are
- *     searching for, respectively, if the exact element cannot be found.
- *     Defaults to 'binarySearch.GREATEST_LOWER_BOUND'.
- */
-exports.search = function search(aNeedle, aHaystack, aCompare, aBias) {
-  if (aHaystack.length === 0) {
-    return -1
-  }
+	/**
+	 * This is an implementation of binary search which will always try and return
+	 * the index of the closest element if there is no exact hit. This is because
+	 * mappings between original and generated line/col pairs are single points,
+	 * and there is an implicit region between each of them, so a miss just means
+	 * that you aren't on the very start of a region.
+	 *
+	 * @param aNeedle The element you are looking for.
+	 * @param aHaystack The array that is being searched.
+	 * @param aCompare A function which takes the needle and an element in the
+	 *     array and returns -1, 0, or 1 depending on whether the needle is less
+	 *     than, equal to, or greater than the element, respectively.
+	 * @param aBias Either 'binarySearch.GREATEST_LOWER_BOUND' or
+	 *     'binarySearch.LEAST_UPPER_BOUND'. Specifies whether to return the
+	 *     closest element that is smaller than or greater than the one we are
+	 *     searching for, respectively, if the exact element cannot be found.
+	 *     Defaults to 'binarySearch.GREATEST_LOWER_BOUND'.
+	 */
+	exports.search = function search(aNeedle, aHaystack, aCompare, aBias) {
+	  if (aHaystack.length === 0) {
+	    return -1
+	  }
 
-  let index = recursiveSearch(
-    -1,
-    aHaystack.length,
-    aNeedle,
-    aHaystack,
-    aCompare,
-    aBias || exports.GREATEST_LOWER_BOUND
-  );
-  if (index < 0) {
-    return -1
-  }
+	  let index = recursiveSearch(
+	    -1,
+	    aHaystack.length,
+	    aNeedle,
+	    aHaystack,
+	    aCompare,
+	    aBias || exports.GREATEST_LOWER_BOUND
+	  );
+	  if (index < 0) {
+	    return -1
+	  }
 
-  // We have found either the exact element, or the next-closest element than
-  // the one we are searching for. However, there may be more than one such
-  // element. Make sure we always return the smallest of these.
-  while (index - 1 >= 0) {
-    if (aCompare(aHaystack[index], aHaystack[index - 1], true) !== 0) {
-      break
-    }
-    --index;
-  }
+	  // We have found either the exact element, or the next-closest element than
+	  // the one we are searching for. However, there may be more than one such
+	  // element. Make sure we always return the smallest of these.
+	  while (index - 1 >= 0) {
+	    if (aCompare(aHaystack[index], aHaystack[index - 1], true) !== 0) {
+	      break
+	    }
+	    --index;
+	  }
 
-  return index
+	  return index
+	};
+} (binarySearch$1));
+
+var readWasmExports = {};
+var readWasm$2 = {
+  get exports(){ return readWasmExports; },
+  set exports(v){ readWasmExports = v; },
 };
-});
 
 /* Determine browser vs node environment by testing the default top level context. Solution courtesy of: https://stackoverflow.com/questions/17575790/environment-detection-node-js-or-browser */
-
-var readWasm$1 = createCommonjsModule(function (module) {
 {
   // Node version of reading a wasm file into an array buffer.
-  const fs = fs__default["default"];
-  const path = path__default["default"];
+  const fs = fs__default.default;
+  const path = path__default.default;
 
-  module.exports = function readWasm() {
+  readWasm$2.exports = function readWasm() {
     return new Promise((resolve, reject) => {
       const wasmPath = path.join(
         __dirname,
@@ -1685,15 +1670,14 @@ var readWasm$1 = createCommonjsModule(function (module) {
     })
   };
 
-  module.exports.initialize = (_) => {
+  readWasmExports.initialize = (_) => {
     console.debug(
       'SourceMapConsumer.initialize is a no-op when running in node.js'
     );
   };
 }
-});
 
-var readWasm = readWasm$1;
+const readWasm$1 = readWasmExports;
 
 /**
  * Provide the JIT with a nice shape / hidden class.
@@ -1717,7 +1701,7 @@ var wasm$1 = function wasm() {
 
   const callbackStack = [];
 
-  cachedWasm = readWasm()
+  cachedWasm = readWasm$1()
     .then((buffer) => {
       return WebAssembly.instantiate(buffer, {
         env: {
@@ -1832,10 +1816,6 @@ var wasm$1 = function wasm() {
   return cachedWasm
 };
 
-var binarySearch = binarySearch$1;
-
-var wasm = wasm$1;
-
 /* -*- Mode: js; js-indent-level: 2; -*- */
 
 /*
@@ -1844,16 +1824,15 @@ var wasm = wasm$1;
  * http://opensource.org/licenses/BSD-3-Clause
  */
 
-
-
-const ArraySet = require$$0$1.ArraySet;
- // eslint-disable-line no-unused-vars
-
-
+const util$1 = util$4;
+const binarySearch = binarySearch$1;
+const ArraySet = arraySet.ArraySet;
+const readWasm = readWasmExports;
+const wasm = wasm$1;
 
 const INTERNAL = Symbol('smcInternal');
 
-class SourceMapConsumer$1 {
+let SourceMapConsumer$1 = class SourceMapConsumer {
   constructor(aSourceMap, aSourceMapURL) {
     // If the constructor was called by super(), just return Promise<this>.
     // Yes, this is a hack to retain the pre-existing API of the base-class
@@ -1970,7 +1949,7 @@ class SourceMapConsumer$1 {
   destroy() {
     throw new Error('Subclasses must implement destroy')
   }
-}
+};
 
 /**
  * The version of the source mapping spec that we are consuming.
@@ -1982,7 +1961,7 @@ SourceMapConsumer$1.ORIGINAL_ORDER = 2;
 SourceMapConsumer$1.GREATEST_LOWER_BOUND = 1;
 SourceMapConsumer$1.LEAST_UPPER_BOUND = 2;
 
-var SourceMapConsumer_1 = SourceMapConsumer$1;
+sourceMapConsumer.SourceMapConsumer = SourceMapConsumer$1;
 
 /**
  * A BasicSourceMapConsumer instance represents a parsed source map which we can
@@ -2023,18 +2002,18 @@ class BasicSourceMapConsumer extends SourceMapConsumer$1 {
     return super(INTERNAL).then((that) => {
       let sourceMap = aSourceMap;
       if (typeof aSourceMap === 'string') {
-        sourceMap = util.parseSourceMapInput(aSourceMap);
+        sourceMap = util$1.parseSourceMapInput(aSourceMap);
       }
 
-      const version = util.getArg(sourceMap, 'version');
-      let sources = util.getArg(sourceMap, 'sources');
+      const version = util$1.getArg(sourceMap, 'version');
+      let sources = util$1.getArg(sourceMap, 'sources');
       // Sass 3.3 leaves out the 'names' array, so we deviate from the spec (which
       // requires the array) to play nice here.
-      const names = util.getArg(sourceMap, 'names', []);
-      let sourceRoot = util.getArg(sourceMap, 'sourceRoot', null);
-      const sourcesContent = util.getArg(sourceMap, 'sourcesContent', null);
-      const mappings = util.getArg(sourceMap, 'mappings');
-      const file = util.getArg(sourceMap, 'file', null);
+      const names = util$1.getArg(sourceMap, 'names', []);
+      let sourceRoot = util$1.getArg(sourceMap, 'sourceRoot', null);
+      const sourcesContent = util$1.getArg(sourceMap, 'sourcesContent', null);
+      const mappings = util$1.getArg(sourceMap, 'mappings');
+      const file = util$1.getArg(sourceMap, 'file', null);
 
       // Once again, Sass deviates from the spec and supplies the version as a
       // string rather than a number, so we use loose equality checking here.
@@ -2043,7 +2022,7 @@ class BasicSourceMapConsumer extends SourceMapConsumer$1 {
       }
 
       if (sourceRoot) {
-        sourceRoot = util.normalize(sourceRoot);
+        sourceRoot = util$1.normalize(sourceRoot);
       }
 
       sources = sources
@@ -2051,16 +2030,16 @@ class BasicSourceMapConsumer extends SourceMapConsumer$1 {
         // Some source maps produce relative source paths like "./foo.js" instead of
         // "foo.js".  Normalize these first so that future comparisons will succeed.
         // See bugzil.la/1090768.
-        .map(util.normalize)
+        .map(util$1.normalize)
         // Always ensure that absolute sources are internally stored relative to
         // the source root, if the source root is absolute. Not doing this would
         // be particularly problematic when the source root is a prefix of the
         // source (valid, but why??). See github issue #199 and bugzil.la/1188982.
         .map(function (source) {
           return sourceRoot &&
-            util.isAbsolute(sourceRoot) &&
-            util.isAbsolute(source)
-            ? util.relative(sourceRoot, source)
+            util$1.isAbsolute(sourceRoot) &&
+            util$1.isAbsolute(source)
+            ? util$1.relative(sourceRoot, source)
             : source
         });
 
@@ -2072,7 +2051,7 @@ class BasicSourceMapConsumer extends SourceMapConsumer$1 {
       that._sources = ArraySet.fromArray(sources, true);
 
       that._absoluteSources = that._sources.toArray().map(function (s) {
-        return util.computeSourceURL(sourceRoot, s, aSourceMapURL)
+        return util$1.computeSourceURL(sourceRoot, s, aSourceMapURL)
       });
 
       that.sourceRoot = sourceRoot;
@@ -2099,7 +2078,7 @@ class BasicSourceMapConsumer extends SourceMapConsumer$1 {
   _findSourceIndex(aSource) {
     let relativeSource = aSource;
     if (this.sourceRoot != null) {
-      relativeSource = util.relative(this.sourceRoot, relativeSource);
+      relativeSource = util$1.relative(this.sourceRoot, relativeSource);
     }
 
     if (this._sources.has(relativeSource)) {
@@ -2201,7 +2180,7 @@ class BasicSourceMapConsumer extends SourceMapConsumer$1 {
       (mapping) => {
         if (mapping.source !== null) {
           mapping.source = this._sources.at(mapping.source);
-          mapping.source = util.computeSourceURL(
+          mapping.source = util$1.computeSourceURL(
             sourceRoot,
             mapping.source,
             this._sourceMapURL
@@ -2230,8 +2209,8 @@ class BasicSourceMapConsumer extends SourceMapConsumer$1 {
   }
 
   allGeneratedPositionsFor(aArgs) {
-    let source = util.getArg(aArgs, 'source');
-    const originalLine = util.getArg(aArgs, 'line');
+    let source = util$1.getArg(aArgs, 'source');
+    const originalLine = util$1.getArg(aArgs, 'line');
     const originalColumn = aArgs.column || 0;
 
     source = this._findSourceIndex(source);
@@ -2321,8 +2300,8 @@ class BasicSourceMapConsumer extends SourceMapConsumer$1 {
    */
   originalPositionFor(aArgs) {
     const needle = {
-      generatedLine: util.getArg(aArgs, 'line'),
-      generatedColumn: util.getArg(aArgs, 'column'),
+      generatedLine: util$1.getArg(aArgs, 'line'),
+      generatedColumn: util$1.getArg(aArgs, 'column'),
     };
 
     if (needle.generatedLine < 1) {
@@ -2333,7 +2312,7 @@ class BasicSourceMapConsumer extends SourceMapConsumer$1 {
       throw new Error('Column numbers must be >= 0')
     }
 
-    let bias = util.getArg(
+    let bias = util$1.getArg(
       aArgs,
       'bias',
       SourceMapConsumer$1.GREATEST_LOWER_BOUND
@@ -2357,25 +2336,25 @@ class BasicSourceMapConsumer extends SourceMapConsumer$1 {
 
     if (mapping) {
       if (mapping.generatedLine === needle.generatedLine) {
-        let source = util.getArg(mapping, 'source', null);
+        let source = util$1.getArg(mapping, 'source', null);
         if (source !== null) {
           source = this._sources.at(source);
-          source = util.computeSourceURL(
+          source = util$1.computeSourceURL(
             this.sourceRoot,
             source,
             this._sourceMapURL
           );
         }
 
-        let name = util.getArg(mapping, 'name', null);
+        let name = util$1.getArg(mapping, 'name', null);
         if (name !== null) {
           name = this._names.at(name);
         }
 
         return {
           source,
-          line: util.getArg(mapping, 'originalLine', null),
-          column: util.getArg(mapping, 'originalColumn', null),
+          line: util$1.getArg(mapping, 'originalLine', null),
+          column: util$1.getArg(mapping, 'originalColumn', null),
           name,
         }
       }
@@ -2422,11 +2401,11 @@ class BasicSourceMapConsumer extends SourceMapConsumer$1 {
 
     let relativeSource = aSource;
     if (this.sourceRoot != null) {
-      relativeSource = util.relative(this.sourceRoot, relativeSource);
+      relativeSource = util$1.relative(this.sourceRoot, relativeSource);
     }
 
     let url;
-    if (this.sourceRoot != null && (url = util.urlParse(this.sourceRoot))) {
+    if (this.sourceRoot != null && (url = util$1.urlParse(this.sourceRoot))) {
       // XXX: file:// URIs and absolute paths lead to unexpected behavior for
       // many users. We can help them out when they expect file:// URIs to
       // behave like it would if they were running a local HTTP server. See
@@ -2479,7 +2458,7 @@ class BasicSourceMapConsumer extends SourceMapConsumer$1 {
    *     The column number is 0-based.
    */
   generatedPositionFor(aArgs) {
-    let source = util.getArg(aArgs, 'source');
+    let source = util$1.getArg(aArgs, 'source');
     source = this._findSourceIndex(source);
     if (source < 0) {
       return {
@@ -2491,8 +2470,8 @@ class BasicSourceMapConsumer extends SourceMapConsumer$1 {
 
     const needle = {
       source,
-      originalLine: util.getArg(aArgs, 'line'),
-      originalColumn: util.getArg(aArgs, 'column'),
+      originalLine: util$1.getArg(aArgs, 'line'),
+      originalColumn: util$1.getArg(aArgs, 'column'),
     };
 
     if (needle.originalLine < 1) {
@@ -2503,7 +2482,7 @@ class BasicSourceMapConsumer extends SourceMapConsumer$1 {
       throw new Error('Column numbers must be >= 0')
     }
 
-    let bias = util.getArg(
+    let bias = util$1.getArg(
       aArgs,
       'bias',
       SourceMapConsumer$1.GREATEST_LOWER_BOUND
@@ -2533,8 +2512,8 @@ class BasicSourceMapConsumer extends SourceMapConsumer$1 {
           lastColumn = Infinity;
         }
         return {
-          line: util.getArg(mapping, 'generatedLine', null),
-          column: util.getArg(mapping, 'generatedColumn', null),
+          line: util$1.getArg(mapping, 'generatedLine', null),
+          column: util$1.getArg(mapping, 'generatedColumn', null),
           lastColumn,
         }
       }
@@ -2549,7 +2528,7 @@ class BasicSourceMapConsumer extends SourceMapConsumer$1 {
 }
 
 BasicSourceMapConsumer.prototype.consumer = SourceMapConsumer$1;
-var BasicSourceMapConsumer_1 = BasicSourceMapConsumer;
+sourceMapConsumer.BasicSourceMapConsumer = BasicSourceMapConsumer;
 
 /**
  * An IndexedSourceMapConsumer instance represents a parsed source map which
@@ -2605,11 +2584,11 @@ class IndexedSourceMapConsumer extends SourceMapConsumer$1 {
     return super(INTERNAL).then((that) => {
       let sourceMap = aSourceMap;
       if (typeof aSourceMap === 'string') {
-        sourceMap = util.parseSourceMapInput(aSourceMap);
+        sourceMap = util$1.parseSourceMapInput(aSourceMap);
       }
 
-      const version = util.getArg(sourceMap, 'version');
-      const sections = util.getArg(sourceMap, 'sections');
+      const version = util$1.getArg(sourceMap, 'version');
+      const sections = util$1.getArg(sourceMap, 'sections');
 
       if (version != that._version) {
         throw new Error('Unsupported version: ' + version)
@@ -2635,9 +2614,9 @@ class IndexedSourceMapConsumer extends SourceMapConsumer$1 {
               'Support for url field in sections not implemented.'
             )
           }
-          const offset = util.getArg(s, 'offset');
-          const offsetLine = util.getArg(offset, 'line');
-          const offsetColumn = util.getArg(offset, 'column');
+          const offset = util$1.getArg(s, 'offset');
+          const offsetLine = util$1.getArg(offset, 'line');
+          const offsetColumn = util$1.getArg(offset, 'column');
 
           if (
             offsetLine < lastOffset.line ||
@@ -2650,7 +2629,7 @@ class IndexedSourceMapConsumer extends SourceMapConsumer$1 {
           lastOffset = offset;
 
           const cons = new SourceMapConsumer$1(
-            util.getArg(s, 'map'),
+            util$1.getArg(s, 'map'),
             aSourceMapURL
           );
           return cons.then((consumer) => {
@@ -2735,13 +2714,13 @@ class IndexedSourceMapConsumer extends SourceMapConsumer$1 {
 
   _sortGeneratedMappings() {
     const mappings = this._generatedMappingsUnsorted;
-    mappings.sort(util.compareByGeneratedPositionsDeflated);
+    mappings.sort(util$1.compareByGeneratedPositionsDeflated);
     this.__generatedMappings = mappings;
   }
 
   _sortOriginalMappings() {
     const mappings = this._originalMappingsUnsorted;
-    mappings.sort(util.compareByOriginalPositions);
+    mappings.sort(util$1.compareByOriginalPositions);
     this.__originalMappings = mappings;
   }
 
@@ -2779,8 +2758,8 @@ class IndexedSourceMapConsumer extends SourceMapConsumer$1 {
    */
   originalPositionFor(aArgs) {
     const needle = {
-      generatedLine: util.getArg(aArgs, 'line'),
-      generatedColumn: util.getArg(aArgs, 'column'),
+      generatedLine: util$1.getArg(aArgs, 'line'),
+      generatedColumn: util$1.getArg(aArgs, 'column'),
     };
 
     // Find the section containing the generated position we're trying to map
@@ -2875,7 +2854,7 @@ class IndexedSourceMapConsumer extends SourceMapConsumer$1 {
       // Only consider this section if the requested source is in the list of
       // sources of the consumer.
       if (
-        section.consumer._findSourceIndex(util.getArg(aArgs, 'source')) === -1
+        section.consumer._findSourceIndex(util$1.getArg(aArgs, 'source')) === -1
       ) {
         continue
       }
@@ -2922,7 +2901,7 @@ class IndexedSourceMapConsumer extends SourceMapConsumer$1 {
         // `source`, which would actually have gotten used as null because
         // var's get hoisted.
         // See: https://github.com/mozilla/source-map/issues/333
-        let source = util.computeSourceURL(
+        let source = util$1.computeSourceURL(
           section.consumer.sourceRoot,
           null,
           this._sourceMapURL
@@ -2984,7 +2963,7 @@ class IndexedSourceMapConsumer extends SourceMapConsumer$1 {
         let source = null;
         if (mapping.source !== null) {
           source = this._sources.at(mapping.source);
-          source = util.computeSourceURL(sourceRoot, source, this._sourceMapURL);
+          source = util$1.computeSourceURL(sourceRoot, source, this._sourceMapURL);
         }
         return {
           source,
@@ -3023,16 +3002,16 @@ class IndexedSourceMapConsumer extends SourceMapConsumer$1 {
   }
 
   allGeneratedPositionsFor(aArgs) {
-    const line = util.getArg(aArgs, 'line');
+    const line = util$1.getArg(aArgs, 'line');
 
     // When there is no exact match, BasicSourceMapConsumer.prototype._findMapping
     // returns the index of the closest mapping less than the needle. By
     // setting needle.originalColumn to 0, we thus find the last mapping for
     // the given line, provided such a mapping exists.
     const needle = {
-      source: util.getArg(aArgs, 'source'),
+      source: util$1.getArg(aArgs, 'source'),
       originalLine: line,
-      originalColumn: util.getArg(aArgs, 'column', 0),
+      originalColumn: util$1.getArg(aArgs, 'column', 0),
     };
 
     needle.source = this._findSourceIndex(needle.source);
@@ -3055,7 +3034,7 @@ class IndexedSourceMapConsumer extends SourceMapConsumer$1 {
       this._originalMappings,
       'originalLine',
       'originalColumn',
-      util.compareByOriginalPositions,
+      util$1.compareByOriginalPositions,
       binarySearch.LEAST_UPPER_BOUND
     );
     if (index >= 0) {
@@ -3074,8 +3053,8 @@ class IndexedSourceMapConsumer extends SourceMapConsumer$1 {
             lastColumn = Infinity;
           }
           mappings.push({
-            line: util.getArg(mapping, 'generatedLine', null),
-            column: util.getArg(mapping, 'generatedColumn', null),
+            line: util$1.getArg(mapping, 'generatedLine', null),
+            column: util$1.getArg(mapping, 'generatedColumn', null),
             lastColumn,
           });
 
@@ -3098,8 +3077,8 @@ class IndexedSourceMapConsumer extends SourceMapConsumer$1 {
             lastColumn = Infinity;
           }
           mappings.push({
-            line: util.getArg(mapping, 'generatedLine', null),
-            column: util.getArg(mapping, 'generatedColumn', null),
+            line: util$1.getArg(mapping, 'generatedLine', null),
+            column: util$1.getArg(mapping, 'generatedColumn', null),
             lastColumn,
           });
 
@@ -3117,7 +3096,7 @@ class IndexedSourceMapConsumer extends SourceMapConsumer$1 {
     }
   }
 }
-var IndexedSourceMapConsumer_1 = IndexedSourceMapConsumer;
+sourceMapConsumer.IndexedSourceMapConsumer = IndexedSourceMapConsumer;
 
 /*
  * Cheat to get around inter-twingled classes.  `factory()` can be at the end
@@ -3126,7 +3105,7 @@ var IndexedSourceMapConsumer_1 = IndexedSourceMapConsumer;
 function _factory(aSourceMap, aSourceMapURL) {
   let sourceMap = aSourceMap;
   if (typeof aSourceMap === 'string') {
-    sourceMap = util.parseSourceMapInput(aSourceMap);
+    sourceMap = util$1.parseSourceMapInput(aSourceMap);
   }
 
   const consumer =
@@ -3140,13 +3119,7 @@ function _factoryBSM(aSourceMap, aSourceMapURL) {
   return BasicSourceMapConsumer.fromSourceMap(aSourceMap, aSourceMapURL)
 }
 
-var sourceMapConsumer = {
-	SourceMapConsumer: SourceMapConsumer_1,
-	BasicSourceMapConsumer: BasicSourceMapConsumer_1,
-	IndexedSourceMapConsumer: IndexedSourceMapConsumer_1
-};
-
-var require$$0 = sourceMapGenerator;
+var sourceNode = {};
 
 /* -*- Mode: js; js-indent-level: 2; -*- */
 
@@ -3156,8 +3129,8 @@ var require$$0 = sourceMapGenerator;
  * http://opensource.org/licenses/BSD-3-Clause
  */
 
-const SourceMapGenerator = require$$0.SourceMapGenerator;
-
+const SourceMapGenerator = sourceMapGenerator.SourceMapGenerator;
+const util = util$4;
 
 // Matches a Windows-style `\r\n` newline or a `\n` newline used by all other
 // operating systems these days (capturing the result).
@@ -3578,15 +3551,7 @@ class SourceNode {
   }
 }
 
-var SourceNode_1 = SourceNode;
-
-var sourceNode = {
-	SourceNode: SourceNode_1
-};
-
-var require$$1 = sourceMapConsumer;
-
-var require$$2 = sourceNode;
+sourceNode.SourceNode = SourceNode;
 
 /*
  * Copyright 2009-2011 Mozilla Foundation and contributors
@@ -3594,10 +3559,9 @@ var require$$2 = sourceNode;
  * http://opensource.org/licenses/BSD-3-Clause
  */
 
-require$$0.SourceMapGenerator;
-var SourceMapConsumer =
-  require$$1.SourceMapConsumer;
-require$$2.SourceNode;
+sourceMapGenerator.SourceMapGenerator;
+var SourceMapConsumer = sourceMapConsumer.SourceMapConsumer;
+sourceNode.SourceNode;
 
 const splitRE = /\r?\n/;
 const range = 2;
@@ -3646,7 +3610,11 @@ function generateCodeFrame(source, start = 0, end) {
     }
     return res.join('\n');
 }
-const isWindows = os__default["default"].platform() === 'win32';
+let isWindows = false;
+try {
+    isWindows = os__default.default.platform() === 'win32';
+}
+catch (error) { }
 function normalizePath(id) {
     return isWindows ? id.replace(/\\/g, '/') : id;
 }
@@ -3666,7 +3634,7 @@ function generateCodeFrameSourceMapConsumer(consumer, m, options = {}) {
                 return {
                     type: m.type,
                     file: options.sourceRoot
-                        ? normalizePath(path__default["default"].relative(options.sourceRoot, res.source.replace('\\\\?\\', '')))
+                        ? normalizePath(path__default.default.relative(options.sourceRoot, res.source.replace('\\\\?\\', '')))
                         : res.source,
                     line: res.line,
                     column: res.column,
@@ -3678,8 +3646,8 @@ function generateCodeFrameSourceMapConsumer(consumer, m, options = {}) {
     }
 }
 function initConsumer(filename) {
-    if (fs__default["default"].existsSync(filename)) {
-        return new SourceMapConsumer(fs__default["default"].readFileSync(filename, 'utf8'));
+    if (fs__default.default.existsSync(filename)) {
+        return new SourceMapConsumer(fs__default.default.readFileSync(filename, 'utf8'));
     }
     return Promise.resolve(undefined);
 }
@@ -3713,8 +3681,8 @@ function generateCodeFrameWithSourceMapPath(filename, messages, options = {}) {
     return Promise.resolve([]);
 }
 function resolveSourceMapPath(sourceMapFilename, name, outputDir) {
-    const is_uni_modules = path__default["default"].basename(path__default["default"].dirname(name)) === 'uni_modules';
-    return path__default["default"].resolve(outputDir, '../.sourcemap/app', name, is_uni_modules ? 'utssdk' : '', sourceMapFilename);
+    const is_uni_modules = path__default.default.basename(path__default.default.dirname(name)) === 'uni_modules';
+    return path__default.default.resolve(outputDir, '../.sourcemap/app', name, is_uni_modules ? 'utssdk' : '', sourceMapFilename);
 }
 function generateCodeFrameWithKotlinStacktrace(stacktrace, { name, inputDir, outputDir }) {
     const sourceMapFilename = resolveSourceMapPath('app-android/index.kt.map', name, outputDir);
@@ -3886,7 +3854,7 @@ function getSourceMapContent(sourcemapUrl) {
                         });
                     }
                     else {
-                        sourcemapCatch[sourcemapUrl] = fs__default["default"].readFileSync(sourcemapUrl, 'utf-8');
+                        sourcemapCatch[sourcemapUrl] = fs__default.default.readFileSync(sourcemapUrl, 'utf-8');
                         resolve(sourcemapCatch[sourcemapUrl]);
                     }
                 }
@@ -4018,7 +3986,7 @@ function utsStracktraceyPreset(opts) {
     let errStack = [];
     return {
         parseSourceMapUrl(file, fileName, fileRelative) {
-            return path__default["default"].resolve(sourceMapRoot, path__default["default"].relative(outputRoot, file) + '.map');
+            return path__default.default.resolve(sourceMapRoot, path__default.default.relative(outputRoot, file) + '.map');
         },
         getSourceMapContent(file, fileName, fileRelative) {
             // 根据 base,filename 组合 sourceMapUrl
@@ -4066,7 +4034,7 @@ function utsStracktraceyPreset(opts) {
                 if (item === '%StacktraceyItem%') {
                     const _stack = stack.items.shift();
                     if (_stack) {
-                        return `at ${nixSlashes(path__default["default"].relative(inputRoot, _stack.file.replace('\\\\?\\', '')))}:${_stack.line}:${_stack.column}
+                        return `at ${nixSlashes(path__default.default.relative(inputRoot, _stack.file.replace('\\\\?\\', '')))}:${_stack.line}:${_stack.column}
 ${_stack.errMsg}`;
                     }
                     return '';

@@ -2179,7 +2179,10 @@ async function connect() {
 
       if (false) {}
 
-      if (false) {}
+      if (( true) && uid !== 0) {
+        const parentId = `${id.split(':')[0]}:root`;
+        (0, component_1.sendComponentTreeData)(appRecord, parentId, appRecord.componentFilter, null, false, ctx);
+      }
 
       if (parentUid != null) {
         const parentInstances = await appRecord.backend.api.walkComponentParents(component);
@@ -4825,9 +4828,7 @@ class ComponentWalker {
 
 
   getInstanceChildrenBySubTreeComponent(list, subTree, suspense) {
-    var _a;
-
-    if (((_a = subTree.type.devtools) === null || _a === void 0 ? void 0 : _a.hide) || this.uniAppPageNames.includes(subTree.type.name)) {
+    if (subTree.type.__reserved || this.uniAppPageNames.includes(subTree.type.name)) {
       list.push(...this.getInternalInstanceChildren(subTree.component.subTree));
     } else {
       !suspense ? list.push(subTree.component) : list.push({ ...subTree.component,

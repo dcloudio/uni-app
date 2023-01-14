@@ -12,7 +12,32 @@ import { transformFor } from './transforms/vFor'
 import { transformOn } from './transforms/vOn'
 import { transformModel } from './transforms/vModel'
 
-export const customElements = ['follow-swan', 'login', 'inline-payment-panel']
+export const customElements = [
+  'animation-video',
+  'animation-view',
+  'ar-camera',
+  'rtc-room',
+  'rtc-room-item',
+  'tabs',
+  'tab-item',
+  'follow-swan',
+  'login',
+  'inline-payment-panel',
+  'talos-linear-gradient',
+  'talos-rc-view',
+  'talos-nested-scroll-view',
+  'talos-nested-scroll-top-container',
+  'talos-nested-scroll-bottom-container',
+  'talos-waterfall-view',
+  'talos-waterfall-item',
+  'talos-waterfall-header',
+  'talos-waterfall-footer',
+  'talos-pull-refresh',
+  'talos-control-container',
+  'talos-na-refresh-control',
+  'talos-modal',
+  'talos-svg',
+]
 const nodeTransforms = [transformRef, transformFor, transformMatchMedia]
 const directiveTransforms = {
   on: transformOn,

@@ -1,8 +1,8 @@
 import Log from 'android.util.Log'
 import FrameLayout from 'android.widget.FrameLayout'
 import View from 'android.view.View'
-import { IUser } from './interface.uts'
-import { login } from './login.uts'
+import { IUser } from './interface'
+import { login } from './login'
 import logo from '../../static/logo.png'
 
 const test = arrayOf(1, 2, 3)
@@ -40,7 +40,8 @@ export class User implements IUser {
     //#ifdef MP-WEIXIN
     console.log('def weixin')
     //#endif
-
+    const a = -3
+    console.log(~a)
     new XToast<XToast<unknown>>(getUniActivity())
       .setContentView(R.layout.toast_hint)
       .setDuration(1000)

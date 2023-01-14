@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import debug from 'debug'
+
 import { extend } from '@vue/shared'
 import { createFilter } from '@rollup/pluginutils'
 
@@ -8,6 +9,7 @@ import { once } from '@dcloudio/uni-shared'
 import { normalizePath } from './utils'
 import { parsePagesJson, parsePagesJsonOnce } from './json/pages'
 import { M } from './messages'
+import { initUTSComponents } from './uts'
 
 interface EasycomOption {
   dirs?: string[]
@@ -16,7 +18,7 @@ interface EasycomOption {
   autoscan?: boolean
   custom?: EasycomCustom
 }
-interface EasycomMatcher {
+export interface EasycomMatcher {
   pattern: RegExp
   replacement: string
 }
@@ -66,13 +68,28 @@ export function initEasycoms(
     return easycomOptions
   }
   const options = initEasycomOptions(parsePagesJsonOnce(inputDir, platform))
+  const initUTSEasycom = () => {
+    initUTSComponents(inputDir, platform).forEach((item) => {
+      const index = easycoms.findIndex(
+        (easycom) => item.pattern.toString() === easycom.pattern.toString()
+      )
+      if (index > -1) {
+        easycoms.splice(index, 1, item)
+      } else {
+        easycoms.push(item)
+      }
+    })
+  }
   initEasycom(options)
+  initUTSEasycom()
   const res = {
     options,
     filter: createFilter(
       [
         'components/*/*.(vue|jsx|tsx)',
         'uni_modules/*/components/*/*.(vue|jsx|tsx)',
+        'utssdk/*/**/*.vue',
+        'uni_modules/*/utssdk/*/*.vue',
       ],
       [],
       {
@@ -82,6 +99,7 @@ export function initEasycoms(
     refresh() {
       res.options = initEasycomOptions()
       initEasycom(res.options)
+      initUTSEasycom()
     },
     easycoms,
   }
@@ -205,12 +223,12 @@ function initAutoScanEasycoms(
       const curEasycoms = initAutoScanEasycom(dir, rootDir, extensions)
       Object.keys(curEasycoms).forEach((name) => {
         // Use the first component when name conflict
-        const compath = easycoms[name]
-        if (!compath) {
+        const componentPath = easycoms[name]
+        if (!componentPath) {
           easycoms[name] = curEasycoms[name]
         } else {
-          ;(conflict[compath] || (conflict[compath] = [])).push(
-            normalizeCompath(curEasycoms[name], rootDir)
+          ;(conflict[componentPath] || (conflict[componentPath] = [])).push(
+            normalizeComponentPath(curEasycoms[name], rootDir)
           )
         }
       })
@@ -218,18 +236,20 @@ function initAutoScanEasycoms(
     },
     Object.create(null)
   )
-  const conflictComs = Object.keys(conflict)
-  if (conflictComs.length) {
+  const conflictComponents = Object.keys(conflict)
+  if (conflictComponents.length) {
     console.warn(M['easycom.conflict'])
-    conflictComs.forEach((com) => {
-      console.warn([normalizeCompath(com, rootDir), conflict[com]].join(','))
+    conflictComponents.forEach((com) => {
+      console.warn(
+        [normalizeComponentPath(com, rootDir), conflict[com]].join(',')
+      )
     })
   }
   return res
 }
 
-function normalizeCompath(compath: string, rootDir: string) {
-  return normalizePath(path.relative(rootDir, compath))
+function normalizeComponentPath(componentPath: string, rootDir: string) {
+  return normalizePath(path.relative(rootDir, componentPath))
 }
 
 export function addImportDeclaration(
@@ -248,7 +268,7 @@ function createImportDeclaration(
   imported?: string
 ) {
   if (imported) {
-    return `import {${imported} as ${local}} from '${source}';`
+    return `import { ${imported} as ${local} } from '${source}';`
   }
   return `import ${local} from '${source}';`
 }

@@ -1,6 +1,5 @@
 import fs from 'fs'
 import path from 'path'
-
 import { normalizePath, Plugin, ResolvedConfig } from 'vite'
 
 import {
@@ -33,11 +32,12 @@ export function uniCssPlugin(): Plugin {
       if (!isCombineBuiltInCss(resolvedConfig) || !buildInCssSet.size) {
         return
       }
-      // 生成框架css
+      // 生成框架css(需要排序，避免生成不一样的内容)
       const content = await minifyCSS(
-        generateBuiltInCssCode([...buildInCssSet]),
+        generateBuiltInCssCode([...buildInCssSet].sort()),
         resolvedConfig
       )
+      // @ts-ignore 'Buffer' only refers to a type, but is being used as a value here
       const contentHash = getAssetHash(Buffer.from(content, 'utf-8'))
       const assetFileNames = path.posix.join(
         resolvedConfig.build.assetsDir,

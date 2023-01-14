@@ -1,10 +1,12 @@
 import fs from 'fs'
 import path from 'path'
+import glob from 'fast-glob'
 
 import * as UTSCompiler from '@dcloudio/uni-uts-v1'
 
 import { isInHBuilderX } from './hbx'
 import { installDepTips, normalizePath, version } from './utils'
+import type { EasycomMatcher } from './easycom'
 
 /**
  * 解析 app 平台的 uts 插件，任意平台（android|ios）存在即可
@@ -110,4 +112,78 @@ export function resolveUTSCompiler(): typeof UTSCompiler {
     }
   }
   return require(compilerPath)
+}
+
+export function initUTSComponents(
+  inputDir: string,
+  platform: UniApp.PLATFORM
+): EasycomMatcher[] {
+  const components: EasycomMatcher[] = []
+  if (platform !== 'app' && platform !== 'app-plus') {
+    return components
+  }
+  const easycomsObj = Object.create(null)
+  const dirs = resolveUTSComponentDirs(inputDir)
+  dirs.forEach((dir) => {
+    const is_uni_modules_utssdk = dir.endsWith('utssdk')
+    const is_ussdk =
+      !is_uni_modules_utssdk && path.dirname(dir).endsWith('utssdk')
+    if (is_uni_modules_utssdk || is_ussdk) {
+      glob
+        .sync('**/*.vue', {
+          cwd: dir,
+          absolute: true,
+        })
+        .forEach((file) => {
+          let name = parseVueComponentName(file)
+          if (!name) {
+            if (file.endsWith('index.vue')) {
+              name = path.basename(
+                is_uni_modules_utssdk ? path.dirname(dir) : dir
+              )
+            }
+          }
+          if (name) {
+            const importDir = normalizePath(
+              is_uni_modules_utssdk ? path.dirname(dir) : dir
+            )
+            easycomsObj[`^${name}$`] = `\0${importDir}?uts-proxy`
+          }
+        })
+    }
+  })
+  Object.keys(easycomsObj).forEach((name) => {
+    components.push({
+      pattern: new RegExp(name),
+      replacement: easycomsObj[name],
+    })
+  })
+  return components
+}
+
+function resolveUTSComponentDirs(inputDir: string) {
+  const utssdkDir = path.resolve(inputDir, 'utssdk')
+  const uniModulesDir = path.resolve(inputDir, 'uni_modules')
+  return glob
+    .sync('*', {
+      cwd: utssdkDir,
+      absolute: true,
+      onlyDirectories: true,
+    })
+    .concat(
+      glob.sync('*/utssdk', {
+        cwd: uniModulesDir,
+        absolute: true,
+        onlyDirectories: true,
+      })
+    )
+}
+
+const nameRE = /name\s*:\s*['|"](.*)['|"]/
+function parseVueComponentName(file: string) {
+  const content = fs.readFileSync(file, 'utf8')
+  const matches = content.match(nameRE)
+  if (matches) {
+    return matches[1]
+  }
 }

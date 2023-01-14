@@ -26,7 +26,7 @@ export const defineBuiltInComponent: typeof defineComponent = (
  */
 export const defineSystemComponent: typeof defineComponent = (options: any) => {
   // 标记 devtools 隐藏
-  options.devtools = { hide: true }
+  // options.devtools = { hide: true }
   // 标记为保留组件
   options.__reserved = true
   options.compatConfig = {

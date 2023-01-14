@@ -1,6 +1,7 @@
 import { defineAsyncApi, defineSyncApi, getLocale } from '@dcloudio/uni-api'
 import { extend, isString } from '@vue/shared'
 import { getWindowInfo } from './getWindowInfo'
+import { getTheme } from '../../theme'
 import { sortObject } from '@dcloudio/uni-shared'
 
 let systemInfo: any
@@ -85,7 +86,7 @@ export const getAppBaseInfo = defineSyncApi<typeof uni.getAppBaseInfo>(
       hostSDKVersion: undefined,
       language: osLanguage,
       SDKVersion: '',
-      theme: plus.navigator.getUIStyle(),
+      theme: getTheme(),
       version: plus.runtime.innerVersion!,
     }
   }
