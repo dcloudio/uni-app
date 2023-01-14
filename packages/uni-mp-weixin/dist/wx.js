@@ -1,13 +1,3 @@
-const hasOwnProperty = Object.prototype.hasOwnProperty
-
-function hasOwn(obj, key) {
-  return hasOwnProperty.call(obj, key)
-}
-
-function isFn(fn) {
-  return typeof fn === 'function'
-}
-
 const objectKeys = [
   'qy',
   'env',
@@ -17,22 +7,24 @@ const objectKeys = [
   'cloud',
   'serviceMarket',
   'router',
-  'worklet'
+  'worklet',
 ]
+
 const oldWx = globalThis[['w', 'x'].join('')]
 
+function isWxKey(key) {
+  return objectKeys.indexOf(key) > -1 || typeof oldWx[key] === 'function'
+}
+
 function initWx() {
-  const WxProxyHandlers = {
-    get(target, key) {
-      if (hasOwn(target, key)) {
-        return target[key]
-      }
-      if (objectKeys.indexOf(key) > -1 || isFn(oldWx[key])) {
-        return oldWx[key]
+  const newWx = {}
+    for (const key in oldWx) {
+      if (isWxKey(key)) {
+        // TODO wrapper function
+        newWx[key] = oldWx[key]
       }
     }
-  }
-  return new Proxy({}, WxProxyHandlers)
+    return newWx
 }
 const wxProxy = initWx()
 globalThis[['w', 'x'].join('')] = wxProxy
