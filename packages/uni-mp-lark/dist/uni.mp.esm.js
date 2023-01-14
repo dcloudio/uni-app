@@ -1,6 +1,6 @@
 import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, isUniLifecycleHook, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, addLeadingSlash, stringifyQuery, customizeEvent } from '@dcloudio/uni-shared';
 import { isArray, hasOwn, isFunction, extend, isPlainObject, isObject } from '@vue/shared';
-import { ref, nextTick, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, devtoolsComponentAdded, getExposeProxy, pruneComponentPropsCache } from 'vue';
+import { devtoolsComponentRemoved, devtoolsComponentAdded, ref, nextTick, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, getExposeProxy, pruneComponentPropsCache } from 'vue';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 
 const MP_METHODS = [
@@ -92,6 +92,12 @@ function callHook(name, args) {
             this.__eventChannel__ = tt.getEventChannel(args.__id__);
             delete args.__id__;
         }
+    }
+    // 处理飞书小程序页面切换uni-vue-devtools无法更新数据问题
+    if (__VUE_PROD_DEVTOOLS__ &&
+        name === 'onShow') {
+        devtoolsComponentRemoved(this.$);
+        devtoolsComponentAdded(this.$);
     }
     const hooks = this.$[name];
     return hooks && invokeArrayFns(hooks, args);
