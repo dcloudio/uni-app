@@ -1,5 +1,3 @@
-import { hasOwn, isFunction } from '@vue/shared'
-
 const objectKeys = [
   'qy',
   'env',
@@ -12,16 +10,17 @@ const objectKeys = [
   'worklet',
 ]
 
+function isWxKey(key: string) {
+  return objectKeys.indexOf(key) > -1 || typeof __GLOBAL__[key] === 'function'
+}
+
 export function initWx() {
-  const WxProxyHandlers: ProxyHandler<any> = {
-    get(target: object, key: string) {
-      if (hasOwn(target, key)) {
-        return target[key]
-      }
-      if (objectKeys.indexOf(key) > -1 || isFunction(__GLOBAL__[key])) {
-        return __GLOBAL__[key]
-      }
-    },
+  const newWx: Record<string, any> = {}
+  for (const key in __GLOBAL__) {
+    if (isWxKey(key)) {
+      // TODO wrapper function
+      newWx[key] = __GLOBAL__[key]
+    }
   }
-  return new Proxy({}, WxProxyHandlers)
+  return newWx
 }
