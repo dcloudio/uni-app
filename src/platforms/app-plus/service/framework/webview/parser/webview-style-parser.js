@@ -36,13 +36,13 @@ export function parseWebviewStyle (id, path, _routeOptions = {}) {
     )
   )
 
-  Object.keys(_routeOptions.window).forEach(name => {
+  const routeOptions = parseTheme(_routeOptions)
+
+  Object.keys(routeOptions.window).forEach(name => {
     if (WEBVIEW_STYLE_BLACKLIST.indexOf(name) === -1) {
-      webviewStyle[name] = _routeOptions.window[name]
+      webviewStyle[name] = routeOptions.window[name]
     }
   })
-
-  const routeOptions = parseTheme(_routeOptions)
 
   const backgroundColor = routeOptions.window.backgroundColor
   if (

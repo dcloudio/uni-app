@@ -377,6 +377,11 @@ describe('mp:compiler-mp-weixin', () => {
       'with(this){var g0=array.length;$mp.data=Object.assign({},{$root:{g0:g0}})}'
     )
     assertCodegen(
+      '<button :disabled="array.test&&test(array.test.test).length===0">hello world</button>',
+      '<button disabled="{{$root.g0}}">hello world</button>',
+      'with(this){var g0=array.test&&test(array.test.test).length===0;$mp.data=Object.assign({},{$root:{g0:g0}})}'
+    )
+    assertCodegen(
       '<view :class="\'c\'+array.length">hello world</view>',
       '<view class="{{[\'c\'+$root.g0]}}">hello world</view>',
       'with(this){var g0=array.length;$mp.data=Object.assign({},{$root:{g0:g0}})}'
@@ -392,6 +397,16 @@ describe('mp:compiler-mp-weixin', () => {
       'with(this){var g0=array.length;$mp.data=Object.assign({},{$root:{g0:g0}})}'
     )
     assertCodegen(
+      '<view v-if="array&&array.length">hello</view>',
+      '<block wx:if="{{$root.g0}}"><view>hello</view></block>',
+      'with(this){var g0=array&&array.length;$mp.data=Object.assign({},{$root:{g0:g0}})}'
+    )
+    assertCodegen(
+      '<view v-if="test1&&!test2&&array&&array.length">hello</view>',
+      '<block wx:if="{{$root.g0}}"><view>hello</view></block>',
+      'with(this){var g0=test1&&!test2&&array&&array.length;$mp.data=Object.assign({},{$root:{g0:g0}})}'
+    )
+    assertCodegen(
       '<view v-show="array.length">hello</view>',
       '<view hidden="{{!($root.g0)}}">hello</view>',
       'with(this){var g0=array.length;$mp.data=Object.assign({},{$root:{g0:g0}})}'
@@ -405,6 +420,22 @@ describe('mp:compiler-mp-weixin', () => {
       '<view v-for="(item,index) in list" :key="index"><view v-if="Object.values(item.list).length">{{test(item.list)}}</view></view>',
       '<block wx:for="{{$root.l0}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view><block wx:if="{{item.g0}}"><view>{{item.m0}}</view></block></view></block>',
       'with(this){var l0=__map(list,function(item,index){var $orig=__get_orig(item);var g0=Object.values(item.list).length;var m0=g0?test(item.list):null;return{$orig:$orig,g0:g0,m0:m0}});$mp.data=Object.assign({},{$root:{l0:l0}})}'
+    )
+    assertCodegen(
+      '<my-component><template v-slot="{item}">{{item.length}}<template></my-component>',
+      '<my-component scoped-slots-compiler="augmented" vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"><block wx:if="{{$root.m0}}">{{$root.g0}}</block></my-component>',
+      'with(this){var m0=$hasScopedSlotsParams("551070e6-1");var g0=m0?$getScopedSlotsParams("551070e6-1","default","item").length:null;$mp.data=Object.assign({},{$root:{m0:m0,g0:g0}})}',
+      {
+        scopedSlotsCompiler: 'auto'
+      }
+    )
+    assertCodegen(
+      '<my-component><template v-slot="{item}">{{item.length}}<template></my-component>',
+      '<my-component generic:scoped-slots-default="test-my-component-default" data-vue-generic="scoped" vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"></my-component>',
+      undefined,
+      {
+        scopedSlotsCompiler: 'legacy'
+      }
     )
   })
 })

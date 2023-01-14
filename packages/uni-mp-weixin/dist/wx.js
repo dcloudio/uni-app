@@ -9,6 +9,7 @@ function isFn(fn) {
 }
 
 const objectKeys = [
+  'qy',
   'env',
   'error',
   'version',

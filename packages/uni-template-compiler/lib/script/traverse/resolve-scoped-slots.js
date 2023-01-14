@@ -28,6 +28,9 @@ function needSlotMode (path, ids) {
         } else if (!path.scope.hasBinding(name) && !METHOD_BUILT_IN.includes(name)) {
           need = true
         }
+      } else if (path.key === 'property' && name === 'length') {
+        // 微信小程序平台无法观测 Array length 访问：https://developers.weixin.qq.com/community/develop/doc/000c8ee47d87a0d5b6685a8cb57000
+        need = true
       }
     }
   })

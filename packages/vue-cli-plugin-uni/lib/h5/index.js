@@ -107,7 +107,7 @@ module.exports = {
 
     return {
       resolve: {
-        extensions: ['.nvue'],
+        extensions: ['.uts', '.nvue'],
         alias: {
           'vue-router': resolve('packages/h5-vue-router'),
           'uni-h5': require.resolve('@dcloudio/uni-h5')

@@ -151,6 +151,15 @@ module.exports = {
     }
     // 微信小程序平台无法观测 Array length 访问：https://developers.weixin.qq.com/community/develop/doc/000c8ee47d87a0d5b6685a8cb57000
     if (this.options.platform.name === 'mp-weixin' && hasLengthProperty(path)) {
+      let newPath = path
+      while (newPath) {
+        path = newPath
+        newPath = path.findParent((path) => path.isLogicalExpression())
+      }
+      path.skip()
+      if (path.findParent((path) => path.shouldSkip || (this.options.scopedSlotsCompiler === 'legacy' && path.isCallExpression() && path.node.callee.name === METHOD_RESOLVE_SCOPED_SLOTS))) {
+        return
+      }
       path.replaceWith(getMemberExpr(path, IDENTIFIER_GLOBAL, path.node, this))
     }
   },
