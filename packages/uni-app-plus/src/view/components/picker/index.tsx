@@ -1,14 +1,19 @@
 import { Ref, ref, watch, onBeforeUnmount, ExtractPropTypes, inject } from 'vue'
-import { isArray } from '@vue/shared'
+import { extend, isArray } from '@vue/shared'
 import {
   defineBuiltInComponent,
   useCustomEvent,
   EmitEvent,
 } from '@dcloudio/uni-components'
-import { useI18n, initI18nPickerMsgsOnce } from '@dcloudio/uni-core'
+import {
+  useI18n,
+  initI18nPickerMsgsOnce,
+  showPage,
+  Page,
+} from '@dcloudio/uni-core'
 import { UniFormCtx, uniFormKey } from '@dcloudio/uni-components'
-import { showPage, Page } from '@dcloudio/uni-core'
 import { getNavigationBarHeight } from '../../../helpers/navigationBar'
+import { ON_THEME_CHANGE } from '@dcloudio/uni-shared'
 
 type Mode = 'selector' | 'multiSelector' | 'time' | 'date'
 type Field = 'year' | 'month' | 'day'
@@ -143,6 +148,17 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     const valueSync: Ref<Array<number> | number | string | null> = ref(null)
     const page: Ref<Page | null> = ref(null)
 
+    let theme: UniApp.ThemeMode = __uniConfig.darkmode
+      ? (plus.navigator.getUIStyle() as UniApp.ThemeMode)
+      : 'light'
+    function onThemeChange(res: { theme: UniApp.ThemeMode }) {
+      theme = res.theme
+    }
+    UniViewJSBridge.subscribe(ON_THEME_CHANGE, onThemeChange)
+    onBeforeUnmount(() => {
+      UniViewJSBridge.unsubscribe(ON_THEME_CHANGE, onThemeChange)
+    })
+
     type ShowPickerData = Props & {
       value: typeof valueSync.value
       locale: ReturnType<typeof getLocale>
@@ -193,7 +209,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       let res: { event?: Parameters<typeof emit>[0] } = { event: 'cancel' }
       page.value = showPage({
         url: '__uniapppicker',
-        data,
+        data: extend({}, data, {
+          theme,
+        }),
         style: {
           titleNView: false,
           animationType: 'none',

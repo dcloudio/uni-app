@@ -15,11 +15,12 @@ import {
   initEnterOptions,
 } from './utils'
 import { changePagesNavigatorStyle } from '../../theme'
+import { getCurrentPageId } from '@dcloudio/uni-core'
 
 export function initGlobalEvent() {
   const plusGlobalEvent = (plus as any).globalEvent
   const weexGlobalEvent = weex.requireModule('globalEvent')
-  const emit = UniServiceJSBridge.emit
+  const { emit, publishHandler } = UniServiceJSBridge
 
   if (weex.config.preload) {
     plus.key.addEventListener(EVENT_BACKBUTTON, backbuttonListener)
@@ -48,6 +49,7 @@ export function initGlobalEvent() {
         theme: event.uistyle,
       }
       emit(ON_THEME_CHANGE, args)
+      publishHandler(ON_THEME_CHANGE, args, getCurrentPageId())
       changePagesNavigatorStyle()
     }
   )
