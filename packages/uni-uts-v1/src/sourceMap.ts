@@ -84,7 +84,7 @@ function resolvePluginDir(
   }
 }
 
-enum BIAS {
+const enum BIAS {
   GREATEST_LOWER_BOUND = 1,
   LEAST_UPPER_BOUND = 2,
 }

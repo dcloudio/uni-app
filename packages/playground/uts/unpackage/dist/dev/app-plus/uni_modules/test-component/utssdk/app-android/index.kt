@@ -15,6 +15,7 @@ import io.dcloud.feature.uniapp.UniSDKInstance;
 import io.dcloud.feature.uniapp.ui.action.AbsComponentData;
 import io.dcloud.feature.uniapp.ui.component.AbsVContainer;
 import io.dcloud.uts.component.UTSComponent;
+import io.dcloud.uts.component.UTSSize;
 open class CustomAnimListener : Animator.AnimatorListener {
     open var comp: UTSComponent<LottieAnimationView>;
     constructor(com: UTSComponent<LottieAnimationView>) : super() {
@@ -50,6 +51,9 @@ open class AnimationViewComponent : UTSComponent<LottieAnimationView> {
     override fun NVLayouted() {}
     override fun NVBeforeUnload() {}
     override fun NVUnloaded() {}
+    override fun NVMeasure(size: UTSSize): UTSSize {
+        return UTSSize(100, 100);
+    }
     override fun unmounted() {}
     @JSMethod(uiThread = false)
     open fun setRepeatMode(repeat: String) {

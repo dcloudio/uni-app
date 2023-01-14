@@ -222,6 +222,9 @@ export default {
     NVUnloaded() { //原生View已释放  
         //可选实现，这里可以做释放View之后的操作  
     },
+    NVMeasure(size: UTSSize): UTSSize {
+        return UTSSize(100, 100)
+    },
     unmounted() { //组件销毁  
         //可选实现  
     }

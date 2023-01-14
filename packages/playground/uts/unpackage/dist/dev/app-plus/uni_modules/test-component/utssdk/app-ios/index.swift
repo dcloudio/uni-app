@@ -33,6 +33,9 @@ class AnimationViewComponent : UTSComponent<UIView> {
     public override func NVLayouted() {}
     public override func NVBeforeUnload() {}
     public override func NVUnloaded() {}
+    public override func NVMeasure(size: UTSSize) -> UTSSize {
+        return UTSSize(100, 100);
+    }
     public override func unmounted() {}
     public func setRepeatMode(_ repeatMode: String) {
         if (repeatMode == "RESTART") {
