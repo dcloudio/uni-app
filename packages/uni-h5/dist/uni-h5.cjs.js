@@ -3100,6 +3100,16 @@ function getValueString(value, type) {
   }
   return value === null ? "" : String(value);
 }
+const INPUT_MODES = [
+  "none",
+  "text",
+  "decimal",
+  "numeric",
+  "tel",
+  "search",
+  "email",
+  "url"
+];
 const props$k = /* @__PURE__ */ shared.extend(
   {},
   {
@@ -3178,6 +3188,11 @@ const props$k = /* @__PURE__ */ shared.extend(
     step: {
       type: String,
       default: "0.000000000000000001"
+    },
+    inputmode: {
+      type: String,
+      default: void 0,
+      validator: (value) => !!~INPUT_MODES.indexOf(value)
     }
   },
   props$n
@@ -3408,7 +3423,6 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const INPUT_MODES = ["none", "text", "decimal", "numeric", "tel", "search", "email", "url"];
 const props$j = /* @__PURE__ */ shared.extend({}, props$k, {
   placeholderClass: {
     type: String,
@@ -3417,11 +3431,6 @@ const props$j = /* @__PURE__ */ shared.extend({}, props$k, {
   textContentType: {
     type: String,
     default: ""
-  },
-  inputmode: {
-    type: String,
-    default: void 0,
-    validator: (value) => !!~INPUT_MODES.indexOf(value)
   }
 });
 const Input = /* @__PURE__ */ defineBuiltInComponent({
@@ -7175,6 +7184,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
         "disabled": !!props2.disabled,
         "maxlength": state.maxlength,
         "enterkeyhint": props2.confirmType,
+        "inputmode": props2.inputmode,
         "class": {
           "uni-textarea-textarea": true,
           "uni-textarea-textarea-fix-margin": fixMargin
@@ -7184,7 +7194,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
         },
         "onKeydown": onKeyDownEnter,
         "onKeyup": onKeyUpEnter
-      }, null, 46, ["value", "disabled", "maxlength", "enterkeyhint", "onKeydown", "onKeyup"]);
+      }, null, 46, ["value", "disabled", "maxlength", "enterkeyhint", "inputmode", "onKeydown", "onKeyup"]);
       return vue.createVNode("uni-textarea", {
         "ref": rootRef
       }, [vue.createVNode("div", {
