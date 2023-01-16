@@ -700,6 +700,11 @@ describe('mp:compiler-extra', () => {
       '<view><block wx:for="{{list[$root.m0]}}" wx:for-item="item" wx:for-index="index"><view><view>{{item}}</view></view></block></view>',
       'with(this){var m0=get(test);$mp.data=Object.assign({},{$root:{m0:m0}})}'
     )
+    assertCodegen(
+      '<view v-for="(item,index) in items" :key="index"><view v-if="item"><input v-for="(item1,index1) in item" :key="index1" :placehold="getValue(item1)" :value="getValue(item)"></view></view>',
+      '<block wx:for="{{$root.l1}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view><block wx:if="{{item.$orig}}"><view><block wx:for="{{item.l0}}" wx:for-item="item1" wx:for-index="index1" wx:key="index1"><input placehold="{{item1.m0}}" value="{{item1.m1}}"/></block></view></block></view></block>',
+      'with(this){var l1=__map(items,function(item,index){var $orig=__get_orig(item);var l0=item?__map(item,function(item1,index1){var $orig=__get_orig(item1);var m0=getValue(item1);var m1=getValue(item);return{$orig:$orig,m0:m0,m1:m1}}):null;return{$orig:$orig,l0:l0}});$mp.data=Object.assign({},{$root:{l1:l1}})}'
+    )
   })
 
   it('generate TemplateLiteral ', () => {

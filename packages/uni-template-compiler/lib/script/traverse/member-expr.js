@@ -5,7 +5,8 @@ const {
   VAR_ROOT,
   IDENTIFIER_METHOD,
   IDENTIFIER_FILTER,
-  IDENTIFIER_GLOBAL
+  IDENTIFIER_GLOBAL,
+  METHOD_RENDER_LIST
 } = require('../../constants')
 
 function isMatch (name, forItem, forIndex) {
@@ -19,8 +20,19 @@ function findScoped (path, test, state) {
   const scoped = state.scoped.find(scoped => {
     const {
       forItem,
-      forIndex
+      forIndex,
+      path: listPath
     } = scoped
+    const funPath = path.findParent(path => path.isFunctionExpression() && path.parentPath.node.callee.name === METHOD_RENDER_LIST)
+    if (funPath && funPath.parentPath === listPath) {
+      // TODO 为兼容历史结构仅在当前 list 父级存在 v-if 返回
+      const parent = listPath.findParent(path => path.isFunctionExpression() || path.isConditionalExpression())
+      if (parent && parent.isConditionalExpression()) {
+        return true
+      }
+    } else {
+      return false
+    }
     let match = false
     path.traverse({
       noScope: true,
