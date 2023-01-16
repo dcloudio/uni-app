@@ -78,6 +78,7 @@ function initFrontServer(socketHost, socketPort, network, devtoolsPort, vueDevto
     res.send(
       `window.process = {
         env: {
+          platform: '${process.env.UNI_PLATFORM}',
           HOST: '${socketHost}',
           PORT: '${socketPort}',
         }

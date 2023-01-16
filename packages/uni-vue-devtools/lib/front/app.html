@@ -48,12 +48,18 @@
   <div id="intro">
     <img src="./icons/128.png" alt="" id="logo" />
     <h2 class="title">
-      Waiting for connection...
+      等待连接......
     </h2>
+		<h3 id="web-prompt"></h3>
   </div>
   <div id="app">
   </div>
   <script src='./env'></script>
+	<script>
+		if(window.process.env.platform === 'h5'){
+			document.getElementById('web-prompt').innerText = '如浏览器页面已打开，请刷新页面'
+		}
+	</script>
   <script src='./devtools.js'></script>
 </body>
 
