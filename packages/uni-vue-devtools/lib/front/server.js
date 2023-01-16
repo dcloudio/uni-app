@@ -15,7 +15,16 @@ exports.initDevtoolsServer = async () => {
   const network = getNetwork()
   const socketHost = process.env.__VUE_DEVTOOLS_HOST__ || network
   const socketPort = await detectPort(process.env.__VUE_DEVTOOLS_PORT__ || 8098)
-  initSocketServer(socketHost, socketPort)
+  // HBuilderX 调试按钮未处理防抖，额外做一次端口校验
+  _detectPort(socketPort)
+    .then(_port => {
+      if(socketPort == _port){
+        initSocketServer(socketHost, socketPort)
+      }
+    })
+    .catch(err => {
+      console.log(colors.red(err))
+    })
 
   const devtoolsPort = await detectPort(9098)
 
@@ -32,8 +41,16 @@ exports.initDevtoolsServer = async () => {
     }
     fs.writeFileSync(`${vueDevtoolsDirInHBuilderX}/port.js`, `${devtoolsPort}`)
   }
-
-  initFrontServer(socketHost, socketPort, network, devtoolsPort, vueDevtoolsDirInHBuilderX)
+  // HBuilderX 调试按钮未处理防抖，额外做一次端口校验
+  _detectPort(devtoolsPort)
+    .then(_port => {
+      if(devtoolsPort == _port){
+        initFrontServer(socketHost, socketPort, network, devtoolsPort, vueDevtoolsDirInHBuilderX)
+      }
+    })
+    .catch(err => {
+      console.log(colors.red(err))
+    })
 
   return { socketHost, socketPort }
 }
