@@ -22,5 +22,8 @@ export function initWx() {
       newWx[key] = __GLOBAL__[key]
     }
   }
+  if (typeof globalThis !== 'undefined') {
+    ;(globalThis as any).wx = newWx
+  }
   return newWx
 }
