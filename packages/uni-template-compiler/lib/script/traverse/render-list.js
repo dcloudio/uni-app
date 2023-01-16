@@ -136,7 +136,8 @@ module.exports = function traverseRenderList (path, state) {
     forExtra: getForExtra(forItem, forIndex, path, state),
     propertyArray: [],
     declarationArray: [],
-    renderSlotStatementArray: []
+    renderSlotStatementArray: [],
+    path
   }
 
   const forState = {
