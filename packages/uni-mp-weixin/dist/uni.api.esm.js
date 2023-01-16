@@ -1204,6 +1204,9 @@ function initWx() {
             newWx[key] = wx[key];
         }
     }
+    if (typeof globalThis !== 'undefined') {
+        globalThis.wx = newWx;
+    }
     return newWx;
 }
 
@@ -1265,7 +1268,7 @@ var protocols = /*#__PURE__*/Object.freeze({
   getAppAuthorizeSetting: getAppAuthorizeSetting
 });
 
-const wx$1 = (globalThis.wx = initWx());
+const wx$1 = initWx();
 var index = initUni(shims, protocols, wx$1);
 
 export { index as default, wx$1 as wx };
