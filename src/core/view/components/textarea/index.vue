@@ -39,6 +39,7 @@
         :class="{ 'uni-textarea-textarea-fix-margin': fixMargin }"
         :style="{ 'overflow-y': autoHeight ? 'hidden' : 'auto' }"
         :enterkeyhint="confirmType"
+        :inputmode="inputmode"
         class="uni-textarea-textarea"
         @change.stop
         @compositionstart.stop="_onComposition"
@@ -73,6 +74,7 @@ import {
 } from 'uni-mixins'
 const DARK_TEST_STRING = '(prefers-color-scheme: dark)'
 const ConfirmTypes = ['done', 'go', 'next', 'search', 'send'] // 'return'
+const INPUT_MODES = ['none', 'text', 'decimal', 'numeric', 'tel', 'search', 'email', 'url']
 export default {
   name: 'Textarea',
   mixins: [field],
@@ -110,6 +112,13 @@ export default {
       default: 'return',
       validator (val) {
         return ConfirmTypes.concat('return').includes(val)
+      }
+    },
+    inputmode: {
+      type: String,
+      default: undefined,
+      validator (value) {
+        return !!~INPUT_MODES.indexOf(value)
       }
     }
   },
