@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-app-plus",
-  "version": "3.0.0-3061720230112004",
+  "version": "3.0.0-3061820230117001",
   "description": "@dcloudio/uni-app-plus",
   "files": [
     "dist",
@@ -28,11 +28,11 @@
     "main": "dist/uni.compiler.js"
   },
   "devDependencies": {
-    "@dcloudio/uni-cli-shared": "3.0.0-3061720230112004",
-    "@dcloudio/uni-components": "3.0.0-3061720230112004",
-    "@dcloudio/uni-h5": "3.0.0-3061720230112004",
-    "@dcloudio/uni-i18n": "3.0.0-3061720230112004",
-    "@dcloudio/uni-shared": "3.0.0-3061720230112004",
+    "@dcloudio/uni-cli-shared": "3.0.0-3061820230117001",
+    "@dcloudio/uni-components": "3.0.0-3061820230117001",
+    "@dcloudio/uni-h5": "3.0.0-3061820230117001",
+    "@dcloudio/uni-i18n": "3.0.0-3061820230117001",
+    "@dcloudio/uni-shared": "3.0.0-3061820230117001",
     "@types/pako": "1.0.2",
     "@vue/compiler-sfc": "3.2.45",
     "autoprefixer": "^10.4.13",
@@ -41,7 +41,7 @@
     "vue": "3.2.45"
   },
   "dependencies": {
-    "@dcloudio/uni-app-vite": "3.0.0-3061720230112004",
-    "@dcloudio/uni-app-vue": "3.0.0-3061720230112004"
+    "@dcloudio/uni-app-vite": "3.0.0-3061820230117001",
+    "@dcloudio/uni-app-vue": "3.0.0-3061820230117001"
   }
 }
