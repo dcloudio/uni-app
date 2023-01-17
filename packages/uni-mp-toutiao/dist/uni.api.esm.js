@@ -1203,12 +1203,6 @@ const showLoading = {
         mask: false,
     },
 };
-const showModal = {
-    args: {
-        cancelColor: false,
-        confirmColor: false,
-    },
-};
 const showActionSheet = {
     args: {
         itemColor: false,
@@ -1247,7 +1241,6 @@ var protocols = /*#__PURE__*/Object.freeze({
   startAccelerometer: startAccelerometer,
   showToast: showToast,
   showLoading: showLoading,
-  showModal: showModal,
   showActionSheet: showActionSheet,
   login: login,
   getUserInfo: getUserInfo,
