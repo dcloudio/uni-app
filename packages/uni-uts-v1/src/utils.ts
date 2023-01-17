@@ -258,7 +258,7 @@ export function resolveIOSComponents(
   return resolveComponents('app-ios', pluginDir, is_uni_modules)
 }
 
-const nameRE = /name\s*:\s*['|"](.*)['|"]/
+const nameRE = /export\s+default\s+[\s\S]*?name\s*:\s*['|"](.*?)['|"]/
 function parseVueComponentName(file: string) {
   const content = fs.readFileSync(file, 'utf8')
   const matches = content.match(nameRE)

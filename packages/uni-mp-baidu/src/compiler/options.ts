@@ -61,6 +61,7 @@ export const miniProgram: MiniProgramCompilerOptions = {
         arg: ['ready'],
       },
     ],
+    'animation-view': true,
   },
   component: {
     dir: COMPONENTS_DIR,

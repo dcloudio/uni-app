@@ -8,6 +8,7 @@ import {
   computed,
   reactive,
   nextTick,
+  HTMLAttributes,
 } from 'vue'
 import { extend, isFunction } from '@vue/shared'
 import { debounce } from '@dcloudio/uni-shared'
@@ -64,6 +65,18 @@ interface InputEventDetail {
 }
 
 type HTMLFieldElement = HTMLInputElement | HTMLTextAreaElement
+
+type INPUT_MODE = HTMLAttributes['inputmode']
+const INPUT_MODES: INPUT_MODE[] = [
+  'none',
+  'text',
+  'decimal',
+  'numeric',
+  'tel',
+  'search',
+  'email',
+  'url',
+]
 
 export const props = /*#__PURE__*/ extend(
   {},
@@ -146,6 +159,11 @@ export const props = /*#__PURE__*/ extend(
     step: {
       type: String,
       default: '0.000000000000000001',
+    },
+    inputmode: {
+      type: String,
+      default: undefined,
+      validator: (value: INPUT_MODE) => !!~INPUT_MODES.indexOf(value),
     },
   },
   keyboardProps

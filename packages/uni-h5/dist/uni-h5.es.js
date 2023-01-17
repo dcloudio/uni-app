@@ -9187,6 +9187,16 @@ function getValueString(value, type) {
   }
   return value === null ? "" : String(value);
 }
+const INPUT_MODES = [
+  "none",
+  "text",
+  "decimal",
+  "numeric",
+  "tel",
+  "search",
+  "email",
+  "url"
+];
 const props$r = /* @__PURE__ */ extend(
   {},
   {
@@ -9265,6 +9275,11 @@ const props$r = /* @__PURE__ */ extend(
     step: {
       type: String,
       default: "0.000000000000000001"
+    },
+    inputmode: {
+      type: String,
+      default: void 0,
+      validator: (value) => !!~INPUT_MODES.indexOf(value)
     }
   },
   props$u
@@ -9504,7 +9519,6 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const INPUT_MODES = ["none", "text", "decimal", "numeric", "tel", "search", "email", "url"];
 const props$q = /* @__PURE__ */ extend({}, props$r, {
   placeholderClass: {
     type: String,
@@ -9513,11 +9527,6 @@ const props$q = /* @__PURE__ */ extend({}, props$r, {
   textContentType: {
     type: String,
     default: ""
-  },
-  inputmode: {
-    type: String,
-    default: void 0,
-    validator: (value) => !!~INPUT_MODES.indexOf(value)
   }
 });
 const Input = /* @__PURE__ */ defineBuiltInComponent({
@@ -14691,6 +14700,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
         "disabled": !!props2.disabled,
         "maxlength": state2.maxlength,
         "enterkeyhint": props2.confirmType,
+        "inputmode": props2.inputmode,
         "class": {
           "uni-textarea-textarea": true,
           "uni-textarea-textarea-fix-margin": fixMargin
@@ -14700,7 +14710,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
         },
         "onKeydown": onKeyDownEnter,
         "onKeyup": onKeyUpEnter
-      }, null, 46, ["value", "disabled", "maxlength", "enterkeyhint", "onKeydown", "onKeyup"]);
+      }, null, 46, ["value", "disabled", "maxlength", "enterkeyhint", "inputmode", "onKeydown", "onKeyup"]);
       return createVNode("uni-textarea", {
         "ref": rootRef
       }, [createVNode("div", {
