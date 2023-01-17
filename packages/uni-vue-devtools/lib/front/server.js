@@ -5,6 +5,7 @@ const { createServer } = require('http')
 const { Server } = require('socket.io')
 const express = require('express')
 const app = express()
+const testConnectionApp = express()
 const path = require('path')
 const fs = require('fs')
 const colors = require('picocolors')
@@ -12,14 +13,13 @@ const open = require('open')
 const { isInHBuilderX } = require('@dcloudio/uni-cli-shared')
 
 exports.initDevtoolsServer = async () => {
-  const network = getNetwork()
-  const socketHost = process.env.__VUE_DEVTOOLS_HOST__ || network
+  const socketHosts = getNetworks()
   const socketPort = await detectPort(process.env.__VUE_DEVTOOLS_PORT__ || 8098)
   // HBuilderX 调试按钮未处理防抖，额外做一次端口校验
   _detectPort(socketPort)
     .then(_port => {
       if(socketPort == _port){
-        initSocketServer(socketHost, socketPort)
+        initSocketServer(socketPort)
       }
     })
     .catch(err => {
@@ -45,17 +45,25 @@ exports.initDevtoolsServer = async () => {
   _detectPort(devtoolsPort)
     .then(_port => {
       if(devtoolsPort == _port){
-        initFrontServer(socketHost, socketPort, network, devtoolsPort, vueDevtoolsDirInHBuilderX)
+        initFrontServer(socketPort, devtoolsPort, vueDevtoolsDirInHBuilderX)
       }
     })
     .catch(err => {
       console.log(colors.red(err))
     })
 
-  return { socketHost, socketPort }
+  const testConnectionPort = await detectPort(9500)
+  testConnectionApp.get('/', (_, res) => {
+    res.header('Access-Control-Allow-Origin', '*')
+    res.send('test connection ok!')
+  })
+  testConnectionApp.listen(testConnectionPort, '0.0.0.0', () => {
+  })
+  return { socketHosts, socketPort, testConnectionPort }
 }
 
-function getNetwork() {
+
+function getNetworks() {
   const networks = Object.values(os.networkInterfaces())
     .flatMap((nInterface) => nInterface ?? [])
     .filter(
@@ -67,11 +75,17 @@ function getNetwork() {
           // Node >= v18
           (typeof detail.family === 'number' && detail.family === 4))
     )
+
+  let result = ''
   for (let network of networks) {
     if (!network.address.includes('127.0.0.1')) {
-      return network.address
+      if(result){
+        result += ','
+      }
+      result += network.address
     }
   }
+  return result
 }
 
 function detectPort(port) {
@@ -84,7 +98,7 @@ function detectPort(port) {
     })
 }
 
-function initFrontServer(socketHost, socketPort, network, devtoolsPort, vueDevtoolsDirInHBuilderX) {
+function initFrontServer(socketPort, devtoolsPort, vueDevtoolsDirInHBuilderX) {
   app.use(express.static(__dirname))
 
   app.get('/', (_, res) => {
@@ -96,7 +110,7 @@ function initFrontServer(socketHost, socketPort, network, devtoolsPort, vueDevto
       `window.process = {
         env: {
           platform: '${process.env.UNI_PLATFORM}',
-          HOST: '${socketHost}',
+          HOST: 'localhost',
           PORT: '${socketPort}',
         }
       } `
@@ -105,7 +119,7 @@ function initFrontServer(socketHost, socketPort, network, devtoolsPort, vueDevto
 
   app.listen(devtoolsPort, 'localhost', () => {
     const colorUrl = (url) => colors.cyan(url.replace(/:(\d+)\//, (_, port) => `:${colors.bold(port)}/`))
-    const networkUrl = `http://${network}:${devtoolsPort}`
+    const networkUrl = `http://localhost:${devtoolsPort}`
 
     console.log(`\n${colors.cyan('uni-vue-devtools')} ${colors.green('server running at:')}\n ${colors.green('➜')} ${colorUrl(networkUrl)}\n`)
 
@@ -118,7 +132,7 @@ function initFrontServer(socketHost, socketPort, network, devtoolsPort, vueDevto
 
 }
 
-function initSocketServer(host, port) {
+function initSocketServer(port) {
   const httpServer = createServer(app)
   const io = new Server(httpServer, {
     cors: {
@@ -145,5 +159,5 @@ function initSocketServer(host, port) {
     })
   })
 
-  httpServer.listen(port, host)
+  httpServer.listen(port, '0.0.0.0')
 }

@@ -10912,40 +10912,42 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const socket = _vue_devtools_shared_utils__WEBPACK_IMPORTED_MODULE_1__.target.__VUE_DEVTOOLS_SOCKET__;
-const connectedMessage = () => {
-  if (_vue_devtools_shared_utils__WEBPACK_IMPORTED_MODULE_1__.target.__VUE_DEVTOOLS_TOAST__) {
-    _vue_devtools_shared_utils__WEBPACK_IMPORTED_MODULE_1__.target.__VUE_DEVTOOLS_TOAST__("Remote Devtools Connected", "normal");
-  }
-};
-const disconnectedMessage = () => {
-  if (_vue_devtools_shared_utils__WEBPACK_IMPORTED_MODULE_1__.target.__VUE_DEVTOOLS_TOAST__) {
-    _vue_devtools_shared_utils__WEBPACK_IMPORTED_MODULE_1__.target.__VUE_DEVTOOLS_TOAST__("Remote Devtools Disconnected", "error");
-  }
-};
-socket.on("connect", () => {
-  connectedMessage();
-  (0,_back_index__WEBPACK_IMPORTED_MODULE_0__.initBackend)(bridge);
-  socket.emit("vue-devtools-init");
-});
-socket.on("disconnect", () => {
-  socket.disconnect();
-  disconnectedMessage();
-});
-socket.on("vue-devtools-disconnect-backend", () => {
-  socket.disconnect();
-});
-const bridge = new _vue_devtools_shared_utils__WEBPACK_IMPORTED_MODULE_1__.Bridge({
-  listen(fn) {
-    socket.on("vue-message", (data) => fn(data));
-  },
-  send(data) {
-    socket.emit("vue-message", data);
-  }
-});
-bridge.on("shutdown", () => {
-  socket.disconnect();
-  disconnectedMessage();
+_vue_devtools_shared_utils__WEBPACK_IMPORTED_MODULE_1__.target.__VUE_DEVTOOLS_ON_SOCKET_READY__(() => {
+  const socket = _vue_devtools_shared_utils__WEBPACK_IMPORTED_MODULE_1__.target.__VUE_DEVTOOLS_SOCKET__;
+  const connectedMessage = () => {
+    if (_vue_devtools_shared_utils__WEBPACK_IMPORTED_MODULE_1__.target.__VUE_DEVTOOLS_TOAST__) {
+      _vue_devtools_shared_utils__WEBPACK_IMPORTED_MODULE_1__.target.__VUE_DEVTOOLS_TOAST__("Remote Devtools Connected", "normal");
+    }
+  };
+  const disconnectedMessage = () => {
+    if (_vue_devtools_shared_utils__WEBPACK_IMPORTED_MODULE_1__.target.__VUE_DEVTOOLS_TOAST__) {
+      _vue_devtools_shared_utils__WEBPACK_IMPORTED_MODULE_1__.target.__VUE_DEVTOOLS_TOAST__("Remote Devtools Disconnected", "error");
+    }
+  };
+  socket.on("connect", () => {
+    connectedMessage();
+    (0,_back_index__WEBPACK_IMPORTED_MODULE_0__.initBackend)(bridge);
+    socket.emit("vue-devtools-init");
+  });
+  socket.on("disconnect", () => {
+    socket.disconnect();
+    disconnectedMessage();
+  });
+  socket.on("vue-devtools-disconnect-backend", () => {
+    socket.disconnect();
+  });
+  const bridge = new _vue_devtools_shared_utils__WEBPACK_IMPORTED_MODULE_1__.Bridge({
+    listen(fn) {
+      socket.on("vue-message", (data) => fn(data));
+    },
+    send(data) {
+      socket.emit("vue-message", data);
+    }
+  });
+  bridge.on("shutdown", () => {
+    socket.disconnect();
+    disconnectedMessage();
+  });
 });
 
 })();
