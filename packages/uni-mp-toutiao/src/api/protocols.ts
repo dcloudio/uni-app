@@ -42,12 +42,6 @@ export const showLoading = {
     mask: false,
   },
 }
-export const showModal = {
-  args: {
-    cancelColor: false,
-    confirmColor: false,
-  },
-}
 export const showActionSheet = {
   args: {
     itemColor: false,
