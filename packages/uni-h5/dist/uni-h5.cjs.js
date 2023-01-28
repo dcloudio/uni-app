@@ -3710,8 +3710,8 @@ const index$t = /* @__PURE__ */ defineBuiltInComponent({
       return vue.createVNode("uni-movable-area", vue.mergeProps({
         "ref": rootRef
       }, $attrs.value, $excludeAttrs.value, _listeners), [vue.createVNode(ResizeSensor, {
-        "onReize": movableAreaEvents._resize
-      }, null, 8, ["onReize"]), movableViewItems], 16);
+        "onResize": movableAreaEvents._resize
+      }, null, 8, ["onResize"]), movableViewItems], 16);
     };
   }
 });

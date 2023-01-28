@@ -9810,8 +9810,8 @@ const MovableArea = /* @__PURE__ */ defineBuiltInComponent({
       return createVNode("uni-movable-area", mergeProps({
         "ref": rootRef
       }, $attrs.value, $excludeAttrs.value, _listeners), [createVNode(ResizeSensor, {
-        "onReize": movableAreaEvents._resize
-      }, null, 8, ["onReize"]), movableViewItems], 16);
+        "onResize": movableAreaEvents._resize
+      }, null, 8, ["onResize"]), movableViewItems], 16);
     };
   }
 });
