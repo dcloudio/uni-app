@@ -916,7 +916,7 @@ importers:
       '@types/express': ^4.17.12
       '@types/fs-extra': ^9.0.13
       '@types/sass': ^1.16.0
-      '@vitejs/plugin-legacy': ^3.0.1
+      '@vitejs/plugin-legacy': ^3.0.2
       '@vitejs/plugin-vue': ^4.0.0
       '@vitejs/plugin-vue-jsx': ^3.0.0
       '@vue/babel-plugin-jsx': ^1.1.1
@@ -944,7 +944,7 @@ importers:
       '@dcloudio/uni-cli-shared': link:../uni-cli-shared
       '@dcloudio/uni-shared': link:../uni-shared
       '@rollup/pluginutils': 4.2.1
-      '@vitejs/plugin-legacy': 3.0.1_terser@5.16.1+vite@4.0.4
+      '@vitejs/plugin-legacy': 3.0.2_terser@5.16.1+vite@4.0.4
       '@vitejs/plugin-vue': 4.0.0_vite@4.0.4+vue@3.2.45
       '@vitejs/plugin-vue-jsx': 3.0.0_vite@4.0.4+vue@3.2.45
       '@vue/compiler-core': 3.2.45
@@ -2112,8 +2112,8 @@ packages:
     dependencies:
       regenerator-runtime: 0.13.11
 
-  /@babel/standalone/7.20.10:
-    resolution: {integrity: sha512-DT7ZAEoPDXPR8EkfiaHTjbbkdAVYhGfrgzBoZSMfWdIZgkVVscQqTwLdzANUkeULQspeOsXdxyvrCCdNUg4QFg==}
+  /@babel/standalone/7.20.14:
+    resolution: {integrity: sha512-zxdQD6+eMQumJFPOLpOZE34JAAGrZPMXCKvHR7Mtat/l+nHDOxlit5u85HDk5WkBXmvN5PhUMeimiC95KXD9+A==}
     engines: {node: '>=6.9.0'}
     dev: false
 
@@ -3735,15 +3735,15 @@ packages:
       eslint-visitor-keys: 3.3.0
     dev: true
 
-  /@vitejs/plugin-legacy/3.0.1_terser@5.16.1+vite@4.0.4:
-    resolution: {integrity: sha512-XCtEjxoR3rmy000ujYRBp5kggWqzHz9+F20/yIMUWOzbvu0+KW1e14Fvb8h7SpNn+bfjGW1RiAs1Vrgb7Js+iQ==}
+  /@vitejs/plugin-legacy/3.0.2_terser@5.16.1+vite@4.0.4:
+    resolution: {integrity: sha512-9BT2mXunC7kQGKHP70BIbNZ/85P/KUMGKBS9CiV+XKNDZGNBjUnyrh3ofgtqgObmxKaEP2xJsEIRNIFJ+hjI8w==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       terser: ^5.4.0
       vite: ^4.0.0
     dependencies:
-      '@babel/standalone': 7.20.10
-      core-js: 3.26.1
+      '@babel/standalone': 7.20.14
+      core-js: 3.27.2
       magic-string: 0.27.0
       regenerator-runtime: 0.13.11
       systemjs: 6.13.0
@@ -4703,6 +4703,11 @@ packages:
 
   /core-js/3.26.1:
     resolution: {integrity: sha512-21491RRQVzUn0GGM9Z1Jrpr6PNPxPi+Za8OM9q4tksTSnlbXXGKK1nXNg/QvwFYettXvSX6zWKCtHHfjN4puyA==}
+    requiresBuild: true
+    dev: false
+
+  /core-js/3.27.2:
+    resolution: {integrity: sha512-9ashVQskuh5AZEZ1JdQWp1GqSoC1e1G87MzRqg2gIfVAQ7Qn9K+uFj8EcniUFA4P2NLZfV+TOlX1SzoKfo+s7w==}
     requiresBuild: true
     dev: false
 

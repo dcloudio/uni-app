@@ -34,7 +34,7 @@ const pkgs = {
     latest: '3.0.0',
   },
   '@vitejs/plugin-legacy': {
-    latest: '3.0.1',
+    latest: '3.0.2',
   },
   '@dcloudio/types': {
     latest: '3.2.7',
