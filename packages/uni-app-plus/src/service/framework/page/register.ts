@@ -5,9 +5,15 @@ import {
   formatLog,
   NAVBAR_HEIGHT,
   ON_REACH_BOTTOM_DISTANCE,
+  ON_SHOW,
+  ON_HIDE,
   PageNodeOptions,
 } from '@dcloudio/uni-shared'
-import { initPageInternalInstance, initPageVm } from '@dcloudio/uni-core'
+import {
+  initPageInternalInstance,
+  initPageVm,
+  invokeHook,
+} from '@dcloudio/uni-core'
 
 import { initEntry } from '../app/initEntry'
 import { initRouteOptions } from './routeOptions'
@@ -64,7 +70,20 @@ export function registerPage({
         if (eventChannel) {
           _webview.__page__.$page.eventChannel = eventChannel
         }
-        addCurrentPage(_webview.__page__)
+        if (openType === 'launch') {
+          // 热更 preloadPage
+          updatePreloadPageVm(
+            url,
+            path,
+            query,
+            _webview,
+            nvuePageVm!,
+            eventChannel
+          )
+        } else {
+          addCurrentPage(_webview.__page__)
+        }
+
         if (__DEV__) {
           console.log(
             formatLog('uni-app', `reuse preloadWebview(${path},${_webview.id})`)
@@ -125,6 +144,30 @@ export function registerPage({
     createVuePage(id, route, query, pageInstance, initPageOptions(routeOptions))
   }
   return webview
+}
+
+function updatePreloadPageVm(
+  url: string,
+  path: string,
+  query: Record<string, string>,
+  webview: PreloadWebviewObject,
+  nvuePageVm: ComponentPublicInstance,
+  eventChannel?: EventChannel
+) {
+  const routeOptions = initRouteOptions(path, 'preloadPage')
+  routeOptions.meta.id = parseInt(webview.id)
+  const pageInstance = initPageInternalInstance(
+    'preloadPage',
+    url,
+    query,
+    routeOptions.meta,
+    eventChannel,
+    (__uniConfig.darkmode
+      ? plus.navigator.getUIStyle()
+      : 'light') as UniApp.ThemeMode
+  )
+  initPageVm(nvuePageVm!, pageInstance)
+  webview.__page__ = nvuePageVm
 }
 
 function initPageOptions({ meta }: UniApp.UniRoute): PageNodeOptions {
@@ -208,6 +251,13 @@ export function createNVuePage(
   initPageVm(fakeNVueVm, pageInstance)
   if ((webview as PreloadWebviewObject).__preload__) {
     ;(webview as PreloadWebviewObject).__page__ = fakeNVueVm
+
+    webview.addEventListener('show', () => {
+      invokeHook((webview as PreloadWebviewObject).__page__!, ON_SHOW)
+    })
+    webview.addEventListener('hide', () => {
+      invokeHook((webview as PreloadWebviewObject).__page__!, ON_HIDE)
+    })
   } else {
     addCurrentPage(fakeNVueVm)
   }

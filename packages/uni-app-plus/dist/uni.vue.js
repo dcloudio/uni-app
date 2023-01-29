@@ -50,6 +50,7 @@ function injectLifecycleHook(name, hook, publicThis, instance) {
     }
 }
 function initHooks(options, instance, publicThis) {
+    var _a;
     const mpType = options.mpType || publicThis.$mpType;
     if (!mpType || mpType === 'component') {
         // 仅 App,Page 类型支持在 options 中配置 on 生命周期，组件可以使用组合式 API 定义页面生命周期
@@ -72,7 +73,9 @@ function initHooks(options, instance, publicThis) {
         try {
             invokeHook(publicThis, ON_LOAD, instance.attrs.__pageQuery);
             delete instance.attrs.__pageQuery;
-            invokeHook(publicThis, ON_SHOW);
+            if (((_a = publicThis.$page) === null || _a === void 0 ? void 0 : _a.openType) !== 'preloadPage') {
+                invokeHook(publicThis, ON_SHOW);
+            }
         }
         catch (e) {
             console.error(e.message + LINEFEED + e.stack);

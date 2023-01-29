@@ -16,6 +16,7 @@ import {
 } from '../../framework/page/preLoad'
 import { createNVuePage } from '../../framework/page/register'
 import { initRouteOptions } from '../../framework/page/routeOptions'
+import { preloadWebviews } from '../../framework/page/preLoad'
 
 export const unPreloadPage = defineSyncApi<API_TYPE_UN_PRELOAD_PAGE>(
   API_UN_PRELOAD_PAGE,
@@ -40,7 +41,11 @@ export const unPreloadPage = defineSyncApi<API_TYPE_UN_PRELOAD_PAGE>(
 
 export const preloadPage = defineAsyncApi<API_TYPE_PRELOAD_PAGE>(
   API_PRELOAD_PAGE,
-  ({ url }, { resolve, reject }) => {
+  ({ url }, { resolve }) => {
+    // 防止热更等情况重复 preloadPage
+    if (preloadWebviews[url]) {
+      return
+    }
     const urls = url.split('?')
     const path = urls[0]
     const query = parseQuery(urls[1] || '')
@@ -50,6 +55,8 @@ export const preloadPage = defineAsyncApi<API_TYPE_PRELOAD_PAGE>(
       query,
     })
     const routeOptions = initRouteOptions(path, 'preloadPage')
+    routeOptions.meta.id = parseInt(webview.id)
+
     const pageInstance = initPageInternalInstance(
       'preloadPage',
       url,
