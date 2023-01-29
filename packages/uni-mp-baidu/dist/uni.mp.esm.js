@@ -1,5 +1,5 @@
 import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, isUniLifecycleHook, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, addLeadingSlash, stringifyQuery, ON_INIT, customizeEvent } from '@dcloudio/uni-shared';
-import { isArray, hasOwn, isFunction, extend, hyphenate, isPlainObject } from '@vue/shared';
+import { isArray, hasOwn, isFunction, extend, hyphenate, isPlainObject, isObject } from '@vue/shared';
 import { ref, nextTick, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, devtoolsComponentAdded, getExposeProxy, pruneComponentPropsCache } from 'vue';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 
@@ -690,6 +690,13 @@ function parseComponent(vueOptions, { parse, mocks, isPage, initRelation, handle
         addGlobalClass: true,
         pureDataPattern: /^uP$/,
     };
+    if (isArray(vueOptions.mixins)) {
+        vueOptions.mixins.forEach((item) => {
+            if (isObject(item.options)) {
+                extend(options, item.options);
+            }
+        });
+    }
     if (vueOptions.options) {
         extend(options, vueOptions.options);
     }
