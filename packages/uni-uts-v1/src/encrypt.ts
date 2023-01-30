@@ -1,6 +1,7 @@
 import path, { join, relative } from 'path'
 import fs from 'fs-extra'
 import { APP_PLATFORM } from './manifest/utils'
+import { normalizePath } from './shared'
 
 export function isEncrypt(pluginDir: string) {
   return fs.existsSync(path.resolve(pluginDir, 'encrypt'))
@@ -15,8 +16,11 @@ export async function compileEncrypt(pluginDir: string) {
     // 复制插件目录
     fs.copySync(pluginDir, join(outputDir, pluginRelativeDir))
     return {
-      code: ``,
+      code: `export default uni.requireUTSPlugin('${normalizePath(
+        pluginRelativeDir
+      )}')`,
       deps: [] as string[],
+      encrypt: true,
     }
   }
   // 读取缓存目录的 js code
@@ -34,6 +38,7 @@ export async function compileEncrypt(pluginDir: string) {
   return {
     code: fs.readFileSync(indexJsPath, 'utf-8'),
     deps: [] as string[],
+    encrypt: true,
   }
 }
 

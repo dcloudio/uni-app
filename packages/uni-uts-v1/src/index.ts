@@ -167,6 +167,7 @@ export async function compile(pluginDir: string) {
         return {
           code: parseErrMsg(code, errMsg),
           deps,
+          encrypt: false,
         }
       }
       // ios 模拟器不支持
@@ -175,6 +176,7 @@ export async function compile(pluginDir: string) {
         return {
           code: parseErrMsg(code, compileErrMsg(pkg.id)),
           deps,
+          encrypt: false,
         }
       }
     }
@@ -241,6 +243,7 @@ export async function compile(pluginDir: string) {
             code: parseErrMsg(code, errMsg),
             // 所有文件加入依赖
             deps: res.files.map((name) => join(pluginDir, name)),
+            encrypt: false,
           }
         }
       }
@@ -359,6 +362,7 @@ export async function compile(pluginDir: string) {
   return {
     code: parseErrMsg(code, errMsg),
     deps,
+    encrypt: false,
   }
 }
 
