@@ -1193,11 +1193,7 @@ const objectKeys = [
     'router',
     'worklet',
 ];
-const singlePageDisableKey = [
-    'lanDebug',
-    'router',
-    'worklet',
-];
+const singlePageDisableKey = ['lanDebug', 'router', 'worklet'];
 const launchOption = wx.getLaunchOptionsSync();
 function isWxKey(key) {
     if (launchOption.scene === 1154 && singlePageDisableKey.includes(key)) {

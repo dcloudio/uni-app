@@ -5,6 +5,11 @@ import { resolveBuiltIn } from '../resolve'
 import { isWindows } from '../utils'
 
 export const isInHBuilderX = once(() => {
+  // 自动化测试传入了 HX_APP_ROOT(其实就是UNI_HBUILDERX_PLUGINS)
+  if (process.env.HX_APP_ROOT) {
+    process.env.UNI_HBUILDERX_PLUGINS = process.env.HX_APP_ROOT
+    return true
+  }
   try {
     const { name } = require(path.resolve(
       process.cwd(),
