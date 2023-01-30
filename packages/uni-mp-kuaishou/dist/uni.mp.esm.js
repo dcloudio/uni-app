@@ -384,7 +384,7 @@ const EVENT_OPTS = 'eO';
  * @returns
  */
 function handleEvent(event) {
-    const { type, target: { dataset }, detail: { __ins__ }, } = event;
+    const { type, currentTarget: { dataset }, detail: { __ins__ }, } = event;
     let methodName = type;
     // 快手小程序的 __l 方法也会走此处逻辑，但没有 __ins__
     if (__ins__) {
