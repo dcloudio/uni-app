@@ -20,10 +20,10 @@ const target = typeof globalThis !== 'undefined' ? globalThis : (function() {
 
 const key = ['w', 'x'].join('')
 const oldWx = target[key]
-const launchOption = oldWx.getLaunchOptionsSync()
+const launchOption = oldWx.getLaunchOptionsSync ? oldWx.getLaunchOptionsSync() : null
 
 function isWxKey(key) {
-  if (launchOption.scene === 1154 && singlePageDisableKey.includes(key)) {
+  if (launchOption && launchOption.scene === 1154 && singlePageDisableKey.includes(key)) {
     return false
   }
   return objectKeys.indexOf(key) > -1 || typeof oldWx[key] === 'function'
