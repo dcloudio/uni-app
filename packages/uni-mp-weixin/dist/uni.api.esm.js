@@ -1193,7 +1193,16 @@ const objectKeys = [
     'router',
     'worklet',
 ];
+const singlePageDisableKey = [
+    'lanDebug',
+    'router',
+    'worklet',
+];
+const launchOption = wx.getLaunchOptionsSync();
 function isWxKey(key) {
+    if (launchOption.scene === 1154 && singlePageDisableKey.includes(key)) {
+        return false;
+    }
     return objectKeys.indexOf(key) > -1 || typeof wx[key] === 'function';
 }
 function initWx() {

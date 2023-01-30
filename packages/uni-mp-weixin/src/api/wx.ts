@@ -10,7 +10,13 @@ const objectKeys = [
   'worklet',
 ]
 
+const singlePageDisableKey = ['lanDebug', 'router', 'worklet']
+const launchOption = __GLOBAL__.getLaunchOptionsSync()
+
 function isWxKey(key: string) {
+  if (launchOption.scene === 1154 && singlePageDisableKey.includes(key)) {
+    return false
+  }
   return objectKeys.indexOf(key) > -1 || typeof __GLOBAL__[key] === 'function'
 }
 
