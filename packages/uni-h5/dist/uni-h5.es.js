@@ -14832,6 +14832,7 @@ function injectLifecycleHook(name, hook, publicThis, instance2) {
   }
 }
 function initHooks(options, instance2, publicThis) {
+  var _a;
   const mpType = options.mpType || publicThis.$mpType;
   if (!mpType || mpType === "component") {
     return;
@@ -14853,7 +14854,9 @@ function initHooks(options, instance2, publicThis) {
     try {
       invokeHook(publicThis, ON_LOAD, instance2.attrs.__pageQuery);
       delete instance2.attrs.__pageQuery;
-      invokeHook(publicThis, ON_SHOW);
+      if (((_a = publicThis.$page) == null ? void 0 : _a.openType) !== "preloadPage") {
+        invokeHook(publicThis, ON_SHOW);
+      }
     } catch (e2) {
       console.error(e2.message + LINEFEED + e2.stack);
     }

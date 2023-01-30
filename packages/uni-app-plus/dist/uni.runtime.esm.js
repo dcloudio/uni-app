@@ -14565,6 +14565,13 @@ const saveImageToPhotosAlbum = defineAsyncApi(API_SAVE_IMAGE_TO_PHOTOS_ALBUM, (o
 
 const compressImage = defineAsyncApi(API_COMPRESS_IMAGE, (options, { resolve, reject }) => {
     const dst = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(options.src)}`;
+    const { compressedWidth, compressedHeight } = options;
+    if (typeof compressedWidth === 'number') {
+        options.width = compressedWidth + 'px';
+    }
+    if (typeof compressedHeight === 'number') {
+        options.height = compressedHeight + 'px';
+    }
     plus.zip.compressImage(extend({}, options, {
         dst,
     }), () => {
@@ -19125,7 +19132,13 @@ function registerPage({ url, path, query, openType, webview, nvuePageVm, eventCh
                 if (eventChannel) {
                     _webview.__page__.$page.eventChannel = eventChannel;
                 }
-                addCurrentPage(_webview.__page__);
+                if (openType === 'launch') {
+                    // 热更 preloadPage
+                    updatePreloadPageVm(url, path, query, _webview, nvuePageVm, eventChannel);
+                }
+                else {
+                    addCurrentPage(_webview.__page__);
+                }
                 if ((process.env.NODE_ENV !== 'production')) {
                     console.log(formatLog('uni-app', `reuse preloadWebview(${path},${_webview.id})`));
                 }
@@ -19170,6 +19183,15 @@ function registerPage({ url, path, query, openType, webview, nvuePageVm, eventCh
         createVuePage(id, route, query, pageInstance, initPageOptions(routeOptions));
     }
     return webview;
+}
+function updatePreloadPageVm(url, path, query, webview, nvuePageVm, eventChannel) {
+    const routeOptions = initRouteOptions(path, 'preloadPage');
+    routeOptions.meta.id = parseInt(webview.id);
+    const pageInstance = initPageInternalInstance('preloadPage', url, query, routeOptions.meta, eventChannel, (__uniConfig.darkmode
+        ? plus.navigator.getUIStyle()
+        : 'light'));
+    initPageVm(nvuePageVm, pageInstance);
+    webview.__page__ = nvuePageVm;
 }
 function initPageOptions({ meta }) {
     const statusbarHeight = getStatusbarHeight();
@@ -19238,6 +19260,12 @@ function createNVuePage(pageId, webview, pageInstance) {
     initPageVm(fakeNVueVm, pageInstance);
     if (webview.__preload__) {
         webview.__page__ = fakeNVueVm;
+        webview.addEventListener('show', () => {
+            invokeHook(webview.__page__, ON_SHOW);
+        });
+        webview.addEventListener('hide', () => {
+            invokeHook(webview.__page__, ON_HIDE);
+        });
     }
     else {
         addCurrentPage(fakeNVueVm);
@@ -19490,7 +19518,11 @@ const unPreloadPage = defineSyncApi(API_UN_PRELOAD_PAGE, ({ url }) => {
         errMsg: 'unPreloadPage:fail not found',
     };
 }, UnPreloadPageProtocol);
-const preloadPage = defineAsyncApi(API_PRELOAD_PAGE, ({ url }, { resolve, reject }) => {
+const preloadPage = defineAsyncApi(API_PRELOAD_PAGE, ({ url }, { resolve }) => {
+    // 防止热更等情况重复 preloadPage
+    if (preloadWebviews[url]) {
+        return;
+    }
     const urls = url.split('?');
     const path = urls[0];
     const query = parseQuery(urls[1] || '');
@@ -19500,6 +19532,7 @@ const preloadPage = defineAsyncApi(API_PRELOAD_PAGE, ({ url }, { resolve, reject
         query,
     });
     const routeOptions = initRouteOptions(path, 'preloadPage');
+    routeOptions.meta.id = parseInt(webview.id);
     const pageInstance = initPageInternalInstance('preloadPage', url, query, routeOptions.meta, undefined, (__uniConfig.darkmode
         ? plus.navigator.getUIStyle()
         : 'light'));

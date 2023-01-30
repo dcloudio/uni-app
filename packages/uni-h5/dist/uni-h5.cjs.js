@@ -7259,6 +7259,7 @@ function injectLifecycleHook(name, hook, publicThis, instance) {
   }
 }
 function initHooks(options, instance, publicThis) {
+  var _a;
   const mpType = options.mpType || publicThis.$mpType;
   if (!mpType || mpType === "component") {
     return;
@@ -7280,7 +7281,9 @@ function initHooks(options, instance, publicThis) {
     try {
       invokeHook(publicThis, uniShared.ON_LOAD, instance.attrs.__pageQuery);
       delete instance.attrs.__pageQuery;
-      invokeHook(publicThis, uniShared.ON_SHOW);
+      if (((_a = publicThis.$page) == null ? void 0 : _a.openType) !== "preloadPage") {
+        invokeHook(publicThis, uniShared.ON_SHOW);
+      }
     } catch (e2) {
       console.error(e2.message + uniShared.LINEFEED + e2.stack);
     }
