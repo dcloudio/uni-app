@@ -176,7 +176,7 @@ setTimeout(() => {
       }
     },
   })
-}, 100)
+}, 0)
 
 throwConnectionError()
 
@@ -185,7 +185,7 @@ function throwConnectionError() {
     if (!targetHost) {
       throw new Error('未能获取局域网地址，本地调试服务不可用')
     }
-  }, hosts.length * 1200)
+  }, (hosts.length + 1) * 1100)
 }
 
 function initSocket() {

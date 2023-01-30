@@ -12,9 +12,11 @@ const colors = require('picocolors')
 const open = require('open')
 const { isInHBuilderX } = require('@dcloudio/uni-cli-shared')
 
+const __DEFAULT_VUE_DEVTOOLS_PORT__ = 8098
+
 exports.initDevtoolsServer = async () => {
   const socketHosts = getNetworks()
-  const socketPort = await detectPort(process.env.__VUE_DEVTOOLS_PORT__ || 8098)
+  const socketPort = await detectPort(process.env.__VUE_DEVTOOLS_PORT__ || __DEFAULT_VUE_DEVTOOLS_PORT__)
   // HBuilderX 调试按钮未处理防抖，额外做一次端口校验
   _detectPort(socketPort)
     .then(_port => {
@@ -52,6 +54,7 @@ exports.initDevtoolsServer = async () => {
       console.log(colors.red(err))
     })
 
+  // 针对多网卡情况，需要遍历 socketHosts 尝试连接，确认可用 ip
   const testConnectionPort = await detectPort(9500)
   testConnectionApp.get('/', (_, res) => {
     res.header('Access-Control-Allow-Origin', '*')
@@ -110,7 +113,6 @@ function initFrontServer(socketPort, devtoolsPort, vueDevtoolsDirInHBuilderX) {
       `window.process = {
         env: {
           platform: '${process.env.UNI_PLATFORM}',
-          HOST: 'localhost',
           PORT: '${socketPort}',
         }
       } `
