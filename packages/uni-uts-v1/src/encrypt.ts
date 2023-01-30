@@ -14,25 +14,27 @@ export async function compileEncrypt(pluginDir: string) {
   if (process.env.NODE_ENV !== 'development') {
     // 复制插件目录
     fs.copySync(pluginDir, join(outputDir, pluginRelativeDir))
-  } else {
-    // 读取缓存目录的 js code
-    const cacheDir = process.env.HX_DEPENDENCIES_DIR!
-    const indexJsPath = resolveJsCodeCacheFilename(
-      utsPlatform,
-      cacheDir,
-      pluginRelativeDir
-    )
-    if (!fs.existsSync(indexJsPath)) {
-      return console.error(
-        `uts插件[${path.dirname(pluginDir)}]不存在，请重新云打包`
-      )
-    }
     return {
-      code: fs.readFileSync(indexJsPath, 'utf-8'),
+      code: ``,
       deps: [] as string[],
     }
   }
-  return
+  // 读取缓存目录的 js code
+  const cacheDir = process.env.HX_DEPENDENCIES_DIR!
+  const indexJsPath = resolveJsCodeCacheFilename(
+    utsPlatform,
+    cacheDir,
+    pluginRelativeDir
+  )
+  if (!fs.existsSync(indexJsPath)) {
+    return console.error(
+      `uts插件[${path.dirname(pluginDir)}]不存在，请重新云打包`
+    )
+  }
+  return {
+    code: fs.readFileSync(indexJsPath, 'utf-8'),
+    deps: [] as string[],
+  }
 }
 
 export function resolveJsCodeCacheFilename(
