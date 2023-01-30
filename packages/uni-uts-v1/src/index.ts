@@ -44,6 +44,7 @@ import {
   storeSourceMap,
 } from './manifest'
 import { cacheTips } from './manifest/utils'
+import { compileEncrypt, isEncrypt } from './encrypt'
 
 export const sourcemap = {
   generateCodeFrameWithKotlinStacktrace,
@@ -72,10 +73,15 @@ export async function compile(pluginDir: string) {
   if (!pkg) {
     return
   }
+  // 加密插件
+  if (isEncrypt(pluginDir)) {
+    return compileEncrypt(pluginDir)
+  }
   const cacheDir = process.env.HX_DEPENDENCIES_DIR
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
   const utsPlatform = process.env.UNI_UTS_PLATFORM
+
   const pluginRelativeDir = relative(inputDir, pluginDir)
   const androidComponents = resolveAndroidComponents(
     pluginDir,

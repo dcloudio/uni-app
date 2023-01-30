@@ -14,7 +14,7 @@ function isUTSProxy(id: string) {
 
 const utsModuleCaches = new Map<
   string,
-  () => Promise<undefined | { code: string; deps: string[] }>
+  () => Promise<void | { code: string; deps: string[] }>
 >()
 export function uniUtsV1Plugin(): Plugin {
   return {
