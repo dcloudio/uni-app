@@ -37,7 +37,7 @@ const pkgs = {
     latest: '3.0.2',
   },
   '@dcloudio/types': {
-    latest: '3.2.10',
+    latest: '3.2.11',
   },
   autoprefixer: {
     latest: '10.4.13',
