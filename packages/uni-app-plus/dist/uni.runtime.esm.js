@@ -17435,6 +17435,17 @@ function initUtsClassName(moduleName, className, is_uni_modules) {
     }
     return '';
 }
+const pluginDefines = {};
+function registerUTSPlugin(name, define) {
+    pluginDefines[name] = define;
+}
+function requireUTSPlugin(name) {
+    const define = pluginDefines[name];
+    if (!define) {
+        console.error(`${name} is not found`);
+    }
+    return define;
+}
 
 const EventType = {
     load: 'load',
@@ -19556,6 +19567,8 @@ var uni$1 = {
   initUtsIndexClassName: initUtsIndexClassName,
   initUtsClassName: initUtsClassName,
   initUtsPackageName: initUtsPackageName,
+  requireUTSPlugin: requireUTSPlugin,
+  registerUTSPlugin: registerUTSPlugin,
   navigateTo: navigateTo,
   reLaunch: reLaunch,
   switchTab: switchTab,

@@ -90,6 +90,8 @@ export {
   initUtsIndexClassName,
   initUtsClassName,
   initUtsPackageName,
+  requireUTSPlugin,
+  registerUTSPlugin,
 } from './plugin/uts'
 
 export * from './ad/rewardedVideoAd'

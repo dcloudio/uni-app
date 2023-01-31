@@ -12,5 +12,26 @@ const cls = initUtsIndexClassName(name, is_uni_modules)
 
 export const onMemoryWarning = initUtsProxyFunction(false, { errMsg, main: true, package: pkg, class: cls, name: 'onMemoryWarning', params: [{"name":"callback","type":"UTSCallback"}]})
 export const offMemoryWarning = initUtsProxyFunction(false, { errMsg, main: true, package: pkg, class: cls, name: 'offMemoryWarning', params: [{"name":"callback","type":"UTSCallback","default":"UTSNull"}]})
+export default initUtsProxyClass(Object.assign({ errMsg, package: pkg, class: initUtsClassName(name, 'User', is_uni_modules) }, {"constructor":{"params":[]},"methods":{},"staticMethods":{},"props":[],"staticProps":[]} ))
+export const a = 1
+"
+`;
+
+exports[`code genProxyCode cjs 1`] = `
+"
+import { initUtsProxyClass, initUtsProxyFunction, initUtsPackageName, initUtsIndexClassName, initUtsClassName } from '@dcloudio/uni-app'
+// const { initUtsProxyClass, initUtsProxyFunction, initUtsPackageName, initUtsIndexClassName, initUtsClassName } = uni
+const name = 'test-uts'
+const errMsg = \`\`
+const is_uni_modules = false
+const pkg = initUtsPackageName(name, is_uni_modules)
+const cls = initUtsIndexClassName(name, is_uni_modules)
+
+Object.defineProperty(exports, '__esModule', { value: true })
+exports.onMemoryWarning = initUtsProxyFunction(false, { errMsg, main: true, package: pkg, class: cls, name: 'onMemoryWarning', params: [{"name":"callback","type":"UTSCallback"}]})
+exports.offMemoryWarning = initUtsProxyFunction(false, { errMsg, main: true, package: pkg, class: cls, name: 'offMemoryWarning', params: [{"name":"callback","type":"UTSCallback","default":"UTSNull"}]})
+exports.default = initUtsProxyClass(Object.assign({ errMsg, package: pkg, class: initUtsClassName(name, 'User', is_uni_modules) }, {"constructor":{"params":[]},"methods":{},"staticMethods":{},"props":[],"staticProps":[]} ))
+const a = 1
+exports.a = a
 "
 `;

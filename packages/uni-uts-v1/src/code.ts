@@ -13,10 +13,16 @@ import {
   Param,
   TsTypeAnnotation,
   VariableDeclaration,
+  VariableDeclarationKind,
 } from '../types/types'
 import { createResolveTypeReferenceName, ERR_MSG_PLACEHOLDER } from './utils'
 import { isInHBuilderX } from './shared'
 import { camelize, capitalize } from '@vue/shared'
+
+export const enum FORMATS {
+  ES = 'es',
+  CJS = 'cjs',
+}
 interface GenProxyCodeOptions {
   is_uni_modules: boolean
   id: string
@@ -25,13 +31,14 @@ interface GenProxyCodeOptions {
   namespace: string
   androidComponents?: Record<string, string>
   iosComponents?: Record<string, string>
+  format?: FORMATS
 }
 
 export async function genProxyCode(
   module: string,
   options: GenProxyCodeOptions
 ) {
-  const { name, is_uni_modules } = options
+  const { name, is_uni_modules, format } = options
   return `
 import { initUtsProxyClass, initUtsProxyFunction, initUtsPackageName, initUtsIndexClassName, initUtsClassName } from '@dcloudio/uni-app'
 // const { initUtsProxyClass, initUtsProxyFunction, initUtsPackageName, initUtsIndexClassName, initUtsClassName } = uni
@@ -44,7 +51,7 @@ ${genComponentsCode(
   options.androidComponents || {},
   options.iosComponents || {}
 )}
-${genModuleCode(await parseModuleDecls(module, options))}
+${genModuleCode(await parseModuleDecls(module, options), format)}
 `
 }
 
@@ -92,19 +99,35 @@ export function resolvePlatformIndex(
   return fs.existsSync(filename) && filename
 }
 
-function genModuleCode(decls: ProxyDecl[]) {
+function exportDefaultCode(format: FORMATS) {
+  return format === FORMATS.ES ? 'export default ' : 'exports.default = '
+}
+
+function exportVarCode(format: FORMATS, kind: VariableDeclarationKind) {
+  if (format === FORMATS.ES) {
+    return `export ${kind} `
+  }
+  return `exports.`
+}
+
+function genModuleCode(decls: ProxyDecl[], format: FORMATS = FORMATS.ES) {
   const codes: string[] = []
+  if (format === FORMATS.CJS) {
+    codes.push(`Object.defineProperty(exports, '__esModule', { value: true })`)
+  }
+  const exportDefault = exportDefaultCode(format)
+  const exportConst = exportVarCode(format, 'const')
   decls.forEach((decl) => {
     if (decl.type === 'Class') {
       if (decl.isDefault) {
         codes.push(
-          `export default initUtsProxyClass(Object.assign({ errMsg, package: pkg, class: initUtsClassName(name, '${
+          `${exportDefault}initUtsProxyClass(Object.assign({ errMsg, package: pkg, class: initUtsClassName(name, '${
             decl.cls
           }', is_uni_modules) }, ${JSON.stringify(decl.options)} ))`
         )
       } else {
         codes.push(
-          `export const ${
+          `${exportConst}${
             decl.cls
           } = initUtsProxyClass(Object.assign({ errMsg, package: pkg, class: initUtsClassName(name, '${
             decl.cls
@@ -114,7 +137,7 @@ function genModuleCode(decls: ProxyDecl[]) {
     } else if (decl.type === 'FunctionDeclaration') {
       if (decl.isDefault) {
         codes.push(
-          `export default initUtsProxyFunction(${
+          `${exportDefault}nitUtsProxyFunction(${
             decl.async
           }, { errMsg, main: true, package: pkg, class: cls, name: '${
             decl.method
@@ -122,7 +145,7 @@ function genModuleCode(decls: ProxyDecl[]) {
         )
       } else {
         codes.push(
-          `export const ${decl.method} = initUtsProxyFunction(${
+          `${exportConst}${decl.method} = initUtsProxyFunction(${
             decl.async
           }, { errMsg, main: true, package: pkg, class: cls, name: '${
             decl.method
@@ -130,11 +153,28 @@ function genModuleCode(decls: ProxyDecl[]) {
         )
       }
     } else if (decl.type === 'VariableDeclaration') {
-      codes.push(
-        `export ${decl.kind} ${decl.declarations
-          .map((d) => `${(d.id as Identifier).value} = ${genInitCode(d.init!)}`)
-          .join(', ')}`
-      )
+      if (format === FORMATS.ES) {
+        codes.push(
+          `export ${decl.kind} ${decl.declarations
+            .map(
+              (d) => `${(d.id as Identifier).value} = ${genInitCode(d.init!)}`
+            )
+            .join(', ')}`
+        )
+      } else if (format === FORMATS.CJS) {
+        codes.push(
+          `${decl.kind} ${decl.declarations
+            .map(
+              (d) => `${(d.id as Identifier).value} = ${genInitCode(d.init!)}`
+            )
+            .join(', ')}`
+        )
+        const exportVar = exportVarCode(format, decl.kind)
+        decl.declarations.forEach((d) => {
+          const name = (d.id as Identifier).value
+          codes.push(`${exportVar}${name} = ${name}`)
+        })
+      }
     }
   })
   return codes.join(`\n`)

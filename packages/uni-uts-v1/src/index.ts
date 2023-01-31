@@ -15,6 +15,7 @@ import {
 } from './swift'
 
 import {
+  FORMATS,
   genProxyCode,
   resolvePlatformIndex,
   resolvePlatformIndexFilename,
@@ -93,7 +94,17 @@ export async function compile(pluginDir: string) {
   const deps: string[] = []
   const code = await genProxyCode(
     pluginDir,
-    extend({ androidComponents, iosComponents }, pkg)
+    extend(
+      {
+        androidComponents,
+        iosComponents,
+        format:
+          process.env.UNI_UTS_JS_CODE_FORMAT === 'cjs'
+            ? FORMATS.CJS
+            : FORMATS.ES,
+      },
+      pkg
+    )
   )
   let errMsg = ''
   if (process.env.NODE_ENV !== 'development') {
