@@ -65,11 +65,11 @@ export * from './plugin/get-launch-options-sync'
 
 // 内部使用
 export {
-  initUtsProxyClass,
-  initUtsProxyFunction,
-  initUtsIndexClassName,
-  initUtsClassName,
-  initUtsPackageName,
+  initUTSProxyClass,
+  initUTSProxyFunction,
+  initUTSIndexClassName,
+  initUTSClassName,
+  initUTSPackageName,
   requireUTSPlugin,
   registerUTSPlugin,
 } from './plugin/uts'

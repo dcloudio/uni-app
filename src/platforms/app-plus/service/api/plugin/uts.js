@@ -18,7 +18,7 @@ function normalizeArg(arg) {
     }
     return arg;
 }
-function initUtsInstanceMethod(async, opts, instanceId) {
+function initUTSInstanceMethod(async, opts, instanceId) {
     return initProxyFunction(async, opts, instanceId);
 }
 function getProxy() {
@@ -40,7 +40,7 @@ function invokePropGetter(args) {
     delete args.errMsg;
     return resolveSyncResult(getProxy().invokeSync(args, () => { }));
 }
-function initProxyFunction(async, { package: pkg, class: cls, name: propOrMethod, method, companion, params: methodParams, errMsg, }, instanceId) {
+function initProxyFunction(async, { moduleName, moduleType, package: pkg, class: cls, name: propOrMethod, method, companion, params: methodParams, errMsg, }, instanceId) {
     const invokeCallback = ({ id, name, params, keepAlive, }) => {
         const callback = callbacks[id];
         if (callback) {
@@ -54,8 +54,16 @@ function initProxyFunction(async, { package: pkg, class: cls, name: propOrMethod
         }
     };
     const baseArgs = instanceId
-        ? { id: instanceId, name: propOrMethod, method: methodParams }
+        ? {
+            moduleName,
+            moduleType,
+            id: instanceId,
+            name: propOrMethod,
+            method: methodParams,
+        }
         : {
+            moduleName,
+            moduleType,
             package: pkg,
             class: cls,
             name: method || propOrMethod,
@@ -89,7 +97,7 @@ function initProxyFunction(async, { package: pkg, class: cls, name: propOrMethod
         return resolveSyncResult(getProxy().invokeSync(invokeArgs, invokeCallback));
     };
 }
-function initUtsStaticMethod(async, opts) {
+function initUTSStaticMethod(async, opts) {
     if (opts.main && !opts.method) {
         if (typeof plus !== 'undefined' && plus.os.name === 'iOS') {
             opts.method = 's_' + opts.name;
@@ -97,14 +105,16 @@ function initUtsStaticMethod(async, opts) {
     }
     return initProxyFunction(async, opts, 0);
 }
-const initUtsProxyFunction = initUtsStaticMethod;
-function initUtsProxyClass({ package: pkg, class: cls, constructor: { params: constructorParams }, methods, props, staticProps, staticMethods, errMsg, }) {
+const initUTSProxyFunction = initUTSStaticMethod;
+function initUTSProxyClass({ moduleName, moduleType, package: pkg, class: cls, constructor: { params: constructorParams }, methods, props, staticProps, staticMethods, errMsg, }) {
     const baseOptions = {
+        moduleName,
+        moduleType,
         package: pkg,
         class: cls,
         errMsg,
     };
-    const ProxyClass = class UtsClass {
+    const ProxyClass = class UTSClass {
         constructor(...params) {
             if (errMsg) {
                 throw new Error(errMsg);
@@ -121,7 +131,7 @@ function initUtsProxyClass({ package: pkg, class: cls, constructor: { params: co
                         //实例方法
                         if (hasOwn(methods, name)) {
                             const { async, params } = methods[name];
-                            target[name] = initUtsInstanceMethod(!!async, extend({
+                            target[name] = initUTSInstanceMethod(!!async, extend({
                                 name,
                                 params,
                             }, baseOptions), instanceId);
@@ -129,6 +139,8 @@ function initUtsProxyClass({ package: pkg, class: cls, constructor: { params: co
                         else if (props.includes(name)) {
                             // 实例属性
                             return invokePropGetter({
+                                moduleName,
+                                moduleType,
                                 id: instanceId,
                                 name: name,
                                 errMsg,
@@ -147,7 +159,7 @@ function initUtsProxyClass({ package: pkg, class: cls, constructor: { params: co
                 if (!staticMethodCache[name]) {
                     const { async, params } = staticMethods[name];
                     // 静态方法
-                    staticMethodCache[name] = initUtsStaticMethod(!!async, extend({ name, companion: true, params }, baseOptions));
+                    staticMethodCache[name] = initUTSStaticMethod(!!async, extend({ name, companion: true, params }, baseOptions));
                 }
                 return staticMethodCache[name];
             }
@@ -159,19 +171,19 @@ function initUtsProxyClass({ package: pkg, class: cls, constructor: { params: co
         },
     });
 }
-function initUtsPackageName(name, is_uni_modules) {
+function initUTSPackageName(name, is_uni_modules) {
     if (typeof plus !== 'undefined' && plus.os.name === 'Android') {
         return 'uts.sdk.' + (is_uni_modules ? 'modules.' : '') + name;
     }
     return '';
 }
-function initUtsIndexClassName(moduleName, is_uni_modules) {
+function initUTSIndexClassName(moduleName, is_uni_modules) {
     if (typeof plus === 'undefined') {
         return '';
     }
-    return initUtsClassName(moduleName, plus.os.name === 'iOS' ? 'IndexSwift' : 'IndexKt', is_uni_modules);
+    return initUTSClassName(moduleName, plus.os.name === 'iOS' ? 'IndexSwift' : 'IndexKt', is_uni_modules);
 }
-function initUtsClassName(moduleName, className, is_uni_modules) {
+function initUTSClassName(moduleName, className, is_uni_modules) {
     if (typeof plus === 'undefined') {
         return '';
     }
@@ -198,4 +210,4 @@ function requireUTSPlugin(name) {
     return define;
 }
 
-export { initUtsClassName, initUtsIndexClassName, initUtsPackageName, initUtsProxyClass, initUtsProxyFunction, normalizeArg, registerUTSPlugin, requireUTSPlugin };
+export { initUTSClassName, initUTSIndexClassName, initUTSPackageName, initUTSProxyClass, initUTSProxyFunction, normalizeArg, registerUTSPlugin, requireUTSPlugin };
