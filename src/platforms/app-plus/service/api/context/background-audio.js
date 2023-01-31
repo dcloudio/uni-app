@@ -75,6 +75,7 @@ function initMusic () {
 
 function startTimeUpdateTimer () {
   stopTimeUpdateTimer()
+  publishBackgroundAudioStateChange('timeUpdate', {})
   timeUpdateTimer = setInterval(() => {
     publishBackgroundAudioStateChange('timeUpdate', {})
   }, TIME_UPDATE)
