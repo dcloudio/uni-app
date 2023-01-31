@@ -25,7 +25,7 @@ const is_uni_modules = false
 const pkg = initUTSPackageName(name, is_uni_modules)
 const cls = initUTSIndexClassName(name, is_uni_modules)
 
-const exports = {}
+const exports = { __esModule: true }
 exports.onMemoryWarning = initUTSProxyFunction(false, { errMsg, main: true, package: pkg, class: cls, name: 'onMemoryWarning', params: [{"name":"callback","type":"UTSCallback"}]})
 exports.offMemoryWarning = initUTSProxyFunction(false, { errMsg, main: true, package: pkg, class: cls, name: 'offMemoryWarning', params: [{"name":"callback","type":"UTSCallback","default":"UTSNull"}]})
 exports.default = initUTSProxyClass(Object.assign({ errMsg, package: pkg, class: initUTSClassName(name, 'User', is_uni_modules) }, {"constructor":{"params":[]},"methods":{},"staticMethods":{},"props":[],"staticProps":[]} ))
