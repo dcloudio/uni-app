@@ -41,7 +41,7 @@ describe('uts-module', () => {
     ;[true, false].forEach((async) => {
       const preparePermission = initUTSProxyFunction(async, {
         moduleName: '权限管理',
-        moduleType: '',
+        moduleType: 'built-in',
         package: 'uts.modules.TestPlugin',
         class: 'TestKt',
         name: 'preparePermission',
