@@ -20,7 +20,7 @@ export function normalizeArg(arg: unknown) {
   return arg
 }
 
-function initUtsInstanceMethod(
+function initUTSInstanceMethod(
   async: boolean,
   opts: ProxyFunctionOptions,
   instanceId: number
@@ -248,7 +248,7 @@ function initProxyFunction(
   }
 }
 
-function initUtsStaticMethod(async: boolean, opts: ProxyFunctionOptions) {
+function initUTSStaticMethod(async: boolean, opts: ProxyFunctionOptions) {
   if (opts.main && !opts.method) {
     if (typeof plus !== 'undefined' && plus.os.name === 'iOS') {
       opts.method = 's_' + opts.name
@@ -257,9 +257,9 @@ function initUtsStaticMethod(async: boolean, opts: ProxyFunctionOptions) {
   return initProxyFunction(async, opts, 0)
 }
 
-export const initUtsProxyFunction = initUtsStaticMethod
+export const initUTSProxyFunction = initUTSStaticMethod
 
-export function initUtsProxyClass({
+export function initUTSProxyClass({
   package: pkg,
   class: cls,
   constructor: { params: constructorParams },
@@ -274,7 +274,7 @@ export function initUtsProxyClass({
     class: cls,
     errMsg,
   }
-  const ProxyClass = class UtsClass {
+  const ProxyClass = class UTSClass {
     constructor(...params: unknown[]) {
       if (errMsg) {
         throw new Error(errMsg)
@@ -295,7 +295,7 @@ export function initUtsProxyClass({
             //实例方法
             if (hasOwn(methods, name)) {
               const { async, params } = methods[name]
-              target[name] = initUtsInstanceMethod(
+              target[name] = initUTSInstanceMethod(
                 !!async,
                 extend(
                   {
@@ -327,7 +327,7 @@ export function initUtsProxyClass({
         if (!staticMethodCache[name as string]) {
           const { async, params } = staticMethods[name]
           // 静态方法
-          staticMethodCache[name] = initUtsStaticMethod(
+          staticMethodCache[name] = initUTSStaticMethod(
             !!async,
             extend({ name, companion: true, params }, baseOptions)
           )
@@ -345,28 +345,28 @@ export function initUtsProxyClass({
   })
 }
 
-export function initUtsPackageName(name: string, is_uni_modules: boolean) {
+export function initUTSPackageName(name: string, is_uni_modules: boolean) {
   if (typeof plus !== 'undefined' && plus.os.name === 'Android') {
     return 'uts.sdk.' + (is_uni_modules ? 'modules.' : '') + name
   }
   return ''
 }
 
-export function initUtsIndexClassName(
+export function initUTSIndexClassName(
   moduleName: string,
   is_uni_modules: boolean
 ) {
   if (typeof plus === 'undefined') {
     return ''
   }
-  return initUtsClassName(
+  return initUTSClassName(
     moduleName,
     plus.os.name === 'iOS' ? 'IndexSwift' : 'IndexKt',
     is_uni_modules
   )
 }
 
-export function initUtsClassName(
+export function initUTSClassName(
   moduleName: string,
   className: string,
   is_uni_modules: boolean

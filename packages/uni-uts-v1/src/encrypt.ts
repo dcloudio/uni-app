@@ -12,16 +12,18 @@ export async function compileEncrypt(pluginDir: string) {
   const outputDir = process.env.UNI_OUTPUT_DIR
   const utsPlatform = process.env.UNI_UTS_PLATFORM as APP_PLATFORM
   const pluginRelativeDir = relative(inputDir, pluginDir)
+  const code = `
+  Object.defineProperty(exports, '__esModule', { value: true })      
+  module.exports = uni.requireUTSPlugin('${normalizePath(pluginRelativeDir)}')
+  `
   if (process.env.NODE_ENV !== 'development') {
     // 复制插件目录
     fs.copySync(pluginDir, join(outputDir, pluginRelativeDir))
     return {
-      code: `
-Object.defineProperty(exports, '__esModule', { value: true })      
-module.exports = uni.requireUTSPlugin('${normalizePath(pluginRelativeDir)}')
-`,
+      code,
       deps: [] as string[],
       encrypt: true,
+      meta: { commonjs: { isCommonJS: true } },
     }
   }
   // 读取缓存目录的 js code
@@ -37,9 +39,10 @@ module.exports = uni.requireUTSPlugin('${normalizePath(pluginRelativeDir)}')
     )
   }
   return {
-    code: fs.readFileSync(indexJsPath, 'utf-8'),
+    code: fs.readFileSync(indexJsPath, 'utf-8') + code,
     deps: [] as string[],
     encrypt: true,
+    meta: { commonjs: { isCommonJS: true } },
   }
 }
 

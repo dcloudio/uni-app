@@ -69,7 +69,29 @@ function warn(msg: string) {
   console.warn(`提示：${msg}`)
 }
 
-export async function compile(pluginDir: string) {
+export interface CompileResult {
+  code: string
+  deps: string[]
+  encrypt: boolean
+  meta?: any
+}
+
+function createResult(
+  errMsg: string,
+  code: string,
+  deps: string[]
+): CompileResult {
+  return {
+    code: parseErrMsg(code, errMsg),
+    deps,
+    encrypt: false,
+    meta: {},
+  }
+}
+
+export async function compile(
+  pluginDir: string
+): Promise<CompileResult | void> {
   const pkg = resolvePackage(pluginDir)
   if (!pkg) {
     return
@@ -176,20 +198,12 @@ export async function compile(pluginDir: string) {
     if (utsPlatform === 'app-ios') {
       if (isWindows) {
         process.env.UNI_UTS_TIPS = `iOS手机在windows上真机运行时uts插件代码修改需提交云端打包自定义基座才能生效`
-        return {
-          code: parseErrMsg(code, errMsg),
-          deps,
-          encrypt: false,
-        }
+        return createResult(errMsg, code, deps)
       }
       // ios 模拟器不支持
       if (process.env.HX_RUN_DEVICE_TYPE === 'ios_simulator') {
         process.env.UNI_UTS_TIPS = `iOS手机在模拟器运行暂不支持uts插件，如需调用uts插件请使用自定义基座`
-        return {
-          code: parseErrMsg(code, compileErrMsg(pkg.id)),
-          deps,
-          encrypt: false,
-        }
+        return createResult(compileErrMsg(pkg.id), code, deps)
       }
     }
     if (utsPlatform === 'app-android' || utsPlatform === 'app-ios') {
@@ -250,13 +264,12 @@ export async function compile(pluginDir: string) {
           if (versionTips) {
             warn(versionTips)
           }
-
-          return {
-            code: parseErrMsg(code, errMsg),
-            // 所有文件加入依赖
-            deps: res.files.map((name) => join(pluginDir, name)),
-            encrypt: false,
-          }
+          // 所有文件加入依赖
+          return createResult(
+            errMsg,
+            code,
+            res.files.map((name) => join(pluginDir, name))
+          )
         }
       }
       let filename =
@@ -371,11 +384,7 @@ export async function compile(pluginDir: string) {
       }
     }
   }
-  return {
-    code: parseErrMsg(code, errMsg),
-    deps,
-    encrypt: false,
-  }
+  return createResult(errMsg, code, deps)
 }
 
 function getCompiler(type: 'kotlin' | 'swift') {
