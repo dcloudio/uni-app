@@ -22,6 +22,7 @@ const utsModuleCaches = new Map<
   }>
 >()
 export function uniUtsV1Plugin(): Plugin {
+  process.env.UNI_UTS_USING_ROLLUP = 'true'
   return {
     name: 'uni:uts',
     apply: 'build',
@@ -36,7 +37,7 @@ export function uniUtsV1Plugin(): Plugin {
       )
       if (module) {
         // prefix the polyfill id with \0 to tell other plugins not to try to load or transform it
-        return '\0' + module + '?uts-proxy'
+        return module + '?uts-proxy'
       }
     },
     load(id) {

@@ -7,15 +7,39 @@ export function isEncrypt(pluginDir: string) {
   return fs.existsSync(path.resolve(pluginDir, 'encrypt'))
 }
 
+function createRollupCommonjsCode(
+  pluginDir: string,
+  pluginRelativeDir: string
+) {
+  return `
+import * as commonjsHelpers from "\0commonjsHelpers.js"
+
+import { __module, exports as __exports } from "\0${normalizePath(
+    pluginDir
+  )}?commonjs-module"
+
+Object.defineProperty(__exports, '__esModule', { value: true })      
+__module.exports = uni.requireUTSPlugin('${normalizePath(pluginRelativeDir)}')
+
+export default /*@__PURE__*/commonjsHelpers.getDefaultExportFromCjs(__exports);
+export { __exports as __moduleExports };
+`
+}
+function createWebpackCommonjsCode(pluginRelativeDir: string) {
+  return `
+module.exports = uni.requireUTSPlugin('${normalizePath(pluginRelativeDir)}')
+`
+}
+
 export async function compileEncrypt(pluginDir: string) {
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
   const utsPlatform = process.env.UNI_UTS_PLATFORM as APP_PLATFORM
+  const isRollup = !!process.env.UNI_UTS_USING_ROLLUP
   const pluginRelativeDir = relative(inputDir, pluginDir)
-  const code = `
-  Object.defineProperty(exports, '__esModule', { value: true })      
-  module.exports = uni.requireUTSPlugin('${normalizePath(pluginRelativeDir)}')
-  `
+  let code = isRollup
+    ? createRollupCommonjsCode(pluginDir, pluginRelativeDir)
+    : createWebpackCommonjsCode(pluginRelativeDir)
   if (process.env.NODE_ENV !== 'development') {
     // 复制插件目录
     fs.copySync(pluginDir, join(outputDir, pluginRelativeDir))
@@ -33,13 +57,15 @@ export async function compileEncrypt(pluginDir: string) {
     cacheDir,
     pluginRelativeDir
   )
-  if (!fs.existsSync(indexJsPath)) {
-    return console.error(
-      `uts插件[${path.dirname(pluginDir)}]不存在，请重新云打包`
+  if (fs.existsSync(indexJsPath)) {
+    code = fs.readFileSync(indexJsPath, 'utf-8') + code
+  } else {
+    console.error(
+      `uts插件[${path.basename(pluginDir)}]不存在，请重新打包自定义基座`
     )
   }
   return {
-    code: fs.readFileSync(indexJsPath, 'utf-8') + code,
+    code,
     deps: [] as string[],
     encrypt: true,
     meta: { commonjs: { isCommonJS: true } },

@@ -121,7 +121,7 @@ function genModuleCode(
 ) {
   const codes: string[] = []
   if (format === FORMATS.CJS) {
-    codes.push(`const exports = {}`)
+    codes.push(`const exports = { __esModule: true }`)
   }
   const exportDefault = exportDefaultCode(format)
   const exportConst = exportVarCode(format, 'const')

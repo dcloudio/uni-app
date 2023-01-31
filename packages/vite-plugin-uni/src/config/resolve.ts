@@ -13,7 +13,7 @@ import { VitePluginUniResolvedOptions } from '..'
 function resolveUtsModuleProxyFile(id: string, importer: string) {
   const file = resolveUtsAppModule(id, importer)
   if (file) {
-    return '\0' + file + '?uts-proxy'
+    return file + '?uts-proxy'
   }
 }
 

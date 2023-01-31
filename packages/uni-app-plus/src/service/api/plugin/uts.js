@@ -1,4 +1,4 @@
-import { isPlainObject, hasOwn, extend, capitalize } from '@vue/shared';
+import { isPlainObject, hasOwn, extend, capitalize } from 'uni-shared';
 
 let callbackId = 1;
 let proxy;

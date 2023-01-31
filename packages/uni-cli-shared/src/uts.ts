@@ -147,7 +147,7 @@ export function initUTSComponents(
             const importDir = normalizePath(
               is_uni_modules_utssdk ? path.dirname(dir) : dir
             )
-            easycomsObj[`^${name}$`] = `\0${importDir}?uts-proxy`
+            easycomsObj[`^${name}$`] = `${importDir}?uts-proxy`
           }
         })
     }

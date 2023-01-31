@@ -5,7 +5,10 @@
     },
     "external": [
       "@vue/shared"
-    ]
+    ],
+    "replaceAfterBundled": {
+      "@vue/shared": "uni-shared"
+    }
   },
   {
     "input": {
