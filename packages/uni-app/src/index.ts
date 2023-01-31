@@ -3,14 +3,6 @@ import { createLifeCycle as createLifeCycleBase, ComponentInternalInstance } fro
 import * as app from './app'
 import * as mp from './mp'
 
-export {
-  initUtsProxyClass,
-  initUtsProxyFunction,
-  initUtsIndexClassName,
-  initUtsClassName,
-  initUtsPackageName,
-} from './uts'
-
 const lifecycles: string[] = []
 
 const createLifeCycle = <T extends Function>(lifecycle: string) => {

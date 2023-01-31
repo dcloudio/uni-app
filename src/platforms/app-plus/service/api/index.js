@@ -63,6 +63,18 @@ export * from './plugin/load-sub-package'
 export * from './plugin/sdk'
 export * from './plugin/get-launch-options-sync'
 
+// 内部使用
+export {
+  initUtsProxyClass,
+  initUtsProxyFunction,
+  initUtsIndexClassName,
+  initUtsClassName,
+  initUtsPackageName,
+  requireUTSPlugin,
+  registerUTSPlugin,
+} from './plugin/uts'
+
+
 export * from './route/navigate-back'
 export * from './route/navigate-to'
 export * from './route/re-launch'
