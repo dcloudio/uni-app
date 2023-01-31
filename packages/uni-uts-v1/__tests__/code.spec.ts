@@ -9,6 +9,8 @@ describe('code', () => {
     expect(
       (
         await genProxyCode(pluginDir, {
+          moduleName: '测试',
+          moduleType: 'built-in',
           id: 'test-uts',
           is_uni_modules: false,
           name: 'test-uts',

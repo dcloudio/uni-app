@@ -40,6 +40,8 @@ describe('uts-module', () => {
   test(`initProxyFunction`, () => {
     ;[true, false].forEach((async) => {
       const preparePermission = initUTSProxyFunction(async, {
+        moduleName: '权限管理',
+        moduleType: '',
         package: 'uts.modules.TestPlugin',
         class: 'TestKt',
         name: 'preparePermission',
@@ -81,6 +83,8 @@ describe('uts-module', () => {
   })
   test(`initProxyClass`, () => {
     const WifiManager = initUTSProxyClass({
+      moduleName: 'Wifi管理',
+      moduleType: '',
       package: 'uni.modules.TestPlugin',
       class: 'WifiManager',
       constructor: {

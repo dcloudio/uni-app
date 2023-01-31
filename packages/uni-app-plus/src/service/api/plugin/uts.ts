@@ -32,7 +32,13 @@ interface Parameter {
   name: string
   type: string
 }
-interface ProxyFunctionOptions {
+
+interface ModuleOptions {
+  moduleName: string
+  moduleType: 'built-in' | ''
+}
+
+interface ProxyFunctionOptions extends ModuleOptions {
   /**
    * 是否是入口类
    */
@@ -67,7 +73,7 @@ interface ProxyFunctionOptions {
   errMsg?: string
 }
 
-interface ProxyClassOptions {
+interface ProxyClassOptions extends ModuleOptions {
   package: string
   class: string
   constructor: {
@@ -93,7 +99,7 @@ interface ProxyClassOptions {
   errMsg?: string
 }
 
-interface InvokeInstanceArgs {
+interface InvokeInstanceArgs extends ModuleOptions {
   id: number
   name: string
   params?: unknown[]
@@ -103,7 +109,7 @@ interface InvokeInstanceArgs {
    */
   errMsg?: string
 }
-interface InvokeStaticArgs {
+interface InvokeStaticArgs extends ModuleOptions {
   /**
    * 包名
    */
@@ -187,6 +193,8 @@ function invokePropGetter(args: InvokeArgs) {
 function initProxyFunction(
   async: boolean,
   {
+    moduleName,
+    moduleType,
     package: pkg,
     class: cls,
     name: propOrMethod,
@@ -214,8 +222,16 @@ function initProxyFunction(
     }
   }
   const baseArgs: InvokeArgs = instanceId
-    ? { id: instanceId, name: propOrMethod, method: methodParams }
+    ? {
+        moduleName,
+        moduleType,
+        id: instanceId,
+        name: propOrMethod,
+        method: methodParams,
+      }
     : {
+        moduleName,
+        moduleType,
         package: pkg,
         class: cls,
         name: method || propOrMethod,
@@ -260,6 +276,8 @@ function initUTSStaticMethod(async: boolean, opts: ProxyFunctionOptions) {
 export const initUTSProxyFunction = initUTSStaticMethod
 
 export function initUTSProxyClass({
+  moduleName,
+  moduleType,
   package: pkg,
   class: cls,
   constructor: { params: constructorParams },
@@ -270,6 +288,8 @@ export function initUTSProxyClass({
   errMsg,
 }: ProxyClassOptions): any {
   const baseOptions = {
+    moduleName,
+    moduleType,
     package: pkg,
     class: cls,
     errMsg,
@@ -309,6 +329,8 @@ export function initUTSProxyClass({
             } else if (props.includes(name as string)) {
               // 实例属性
               return invokePropGetter({
+                moduleName,
+                moduleType,
                 id: instanceId,
                 name: name as string,
                 errMsg,

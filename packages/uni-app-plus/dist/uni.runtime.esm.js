@@ -17289,7 +17289,7 @@ function invokePropGetter(args) {
     delete args.errMsg;
     return resolveSyncResult(getProxy().invokeSync(args, () => { }));
 }
-function initProxyFunction(async, { package: pkg, class: cls, name: propOrMethod, method, companion, params: methodParams, errMsg, }, instanceId) {
+function initProxyFunction(async, { moduleName, moduleType, package: pkg, class: cls, name: propOrMethod, method, companion, params: methodParams, errMsg, }, instanceId) {
     const invokeCallback = ({ id, name, params, keepAlive, }) => {
         const callback = callbacks[id];
         if (callback) {
@@ -17303,8 +17303,16 @@ function initProxyFunction(async, { package: pkg, class: cls, name: propOrMethod
         }
     };
     const baseArgs = instanceId
-        ? { id: instanceId, name: propOrMethod, method: methodParams }
+        ? {
+            moduleName,
+            moduleType,
+            id: instanceId,
+            name: propOrMethod,
+            method: methodParams,
+        }
         : {
+            moduleName,
+            moduleType,
             package: pkg,
             class: cls,
             name: method || propOrMethod,
@@ -17347,8 +17355,10 @@ function initUTSStaticMethod(async, opts) {
     return initProxyFunction(async, opts, 0);
 }
 const initUTSProxyFunction = initUTSStaticMethod;
-function initUTSProxyClass({ package: pkg, class: cls, constructor: { params: constructorParams }, methods, props, staticProps, staticMethods, errMsg, }) {
+function initUTSProxyClass({ moduleName, moduleType, package: pkg, class: cls, constructor: { params: constructorParams }, methods, props, staticProps, staticMethods, errMsg, }) {
     const baseOptions = {
+        moduleName,
+        moduleType,
         package: pkg,
         class: cls,
         errMsg,
@@ -17378,6 +17388,8 @@ function initUTSProxyClass({ package: pkg, class: cls, constructor: { params: co
                         else if (props.includes(name)) {
                             // 实例属性
                             return invokePropGetter({
+                                moduleName,
+                                moduleType,
                                 id: instanceId,
                                 name: name,
                                 errMsg,

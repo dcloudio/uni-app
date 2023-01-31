@@ -125,6 +125,9 @@ export async function compile(
             ? FORMATS.CJS
             : FORMATS.ES,
         pluginRelativeDir,
+        moduleName:
+          require(join(pluginDir, 'package.json')).displayName || pkg.id,
+        moduleType: process.env.UNI_UTS_MODULE_TYPE || '',
       },
       pkg
     )

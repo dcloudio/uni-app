@@ -33,16 +33,20 @@ interface GenProxyCodeOptions {
   iosComponents?: Record<string, string>
   format?: FORMATS
   pluginRelativeDir?: string
+  moduleName?: string
+  moduleType?: string
 }
 
 export async function genProxyCode(
   module: string,
   options: GenProxyCodeOptions
 ) {
-  const { name, is_uni_modules, format } = options
+  const { name, is_uni_modules, format, moduleName, moduleType } = options
   return `
 const { initUTSProxyClass, initUTSProxyFunction, initUTSPackageName, initUTSIndexClassName, initUTSClassName } = uni
 const name = '${name}'
+const moduleName = '${moduleName || ''}'
+const moduleType = '${moduleType || ''}'
 const errMsg = \`${ERR_MSG_PLACEHOLDER}\`
 const is_uni_modules = ${is_uni_modules}
 const pkg = initUTSPackageName(name, is_uni_modules)
@@ -129,7 +133,7 @@ function genModuleCode(
     if (decl.type === 'Class') {
       if (decl.isDefault) {
         codes.push(
-          `${exportDefault}initUTSProxyClass(Object.assign({ errMsg, package: pkg, class: initUTSClassName(name, '${
+          `${exportDefault}initUTSProxyClass(Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, '${
             decl.cls
           }', is_uni_modules) }, ${JSON.stringify(decl.options)} ))`
         )
@@ -137,7 +141,7 @@ function genModuleCode(
         codes.push(
           `${exportConst}${
             decl.cls
-          } = initUTSProxyClass(Object.assign({ errMsg, package: pkg, class: initUTSClassName(name, '${
+          } = initUTSProxyClass(Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, '${
             decl.cls
           }', is_uni_modules) }, ${JSON.stringify(decl.options)} ))`
         )
@@ -147,7 +151,7 @@ function genModuleCode(
         codes.push(
           `${exportDefault}initUTSProxyFunction(${
             decl.async
-          }, { errMsg, main: true, package: pkg, class: cls, name: '${
+          }, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: '${
             decl.method
           }', params: ${JSON.stringify(decl.params)}})`
         )
@@ -155,7 +159,7 @@ function genModuleCode(
         codes.push(
           `${exportConst}${decl.method} = initUTSProxyFunction(${
             decl.async
-          }, { errMsg, main: true, package: pkg, class: cls, name: '${
+          }, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: '${
             decl.method
           }', params: ${JSON.stringify(decl.params)}})`
         )
