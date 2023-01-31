@@ -15347,6 +15347,7 @@ const evts = [
     'pause',
 ];
 const AUDIO_DEFAULT_SESSION_CATEGORY = 'playback';
+const TIME_UPDATE$1 = 200;
 const initStateChage = (audioId) => {
     const audio = audios[audioId];
     if (!audio) {
@@ -15466,12 +15467,13 @@ const onAudioStateChange = ({ state, audioId, errMsg, errCode, }) => {
         emit(audio, state, errMsg, errCode);
         if (state === 'play') {
             const oldCurrentTime = audio.currentTime;
+            emit(audio, 'timeUpdate');
             audio.__timing = setInterval(() => {
                 const currentTime = audio.currentTime;
                 if (currentTime !== oldCurrentTime) {
                     emit(audio, 'timeUpdate');
                 }
-            }, 200);
+            }, TIME_UPDATE$1);
         }
         else if (state === 'pause' || state === 'stop' || state === 'error') {
             clearInterval(audio.__timing);
@@ -15665,6 +15667,7 @@ const TIME_UPDATE = 250;
 const events = ['play', 'pause', 'ended', 'stop', 'canplay'];
 function startTimeUpdateTimer() {
     stopTimeUpdateTimer();
+    onBackgroundAudioStateChange({ state: 'timeUpdate' });
     timeUpdateTimer = setInterval(() => {
         onBackgroundAudioStateChange({ state: 'timeUpdate' });
     }, TIME_UPDATE);
