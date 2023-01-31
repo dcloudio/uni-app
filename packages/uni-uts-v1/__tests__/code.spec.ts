@@ -28,6 +28,7 @@ describe('code', () => {
           namespace: 'uts.sdk.testUts',
           extname: '.uts',
           format: FORMATS.CJS,
+          pluginRelativeDir: 'utssdk/test-uts',
         })
       ).replace(ERR_MSG_PLACEHOLDER, '')
     ).toMatchSnapshot()

@@ -102,6 +102,7 @@ export async function compile(pluginDir: string) {
           process.env.UNI_UTS_JS_CODE_FORMAT === 'cjs'
             ? FORMATS.CJS
             : FORMATS.ES,
+        pluginRelativeDir,
       },
       pkg
     )

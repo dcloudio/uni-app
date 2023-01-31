@@ -16,7 +16,7 @@ import {
   VariableDeclarationKind,
 } from '../types/types'
 import { createResolveTypeReferenceName, ERR_MSG_PLACEHOLDER } from './utils'
-import { isInHBuilderX } from './shared'
+import { isInHBuilderX, normalizePath } from './shared'
 import { camelize, capitalize } from '@vue/shared'
 
 export const enum FORMATS {
@@ -32,6 +32,7 @@ interface GenProxyCodeOptions {
   androidComponents?: Record<string, string>
   iosComponents?: Record<string, string>
   format?: FORMATS
+  pluginRelativeDir?: string
 }
 
 export async function genProxyCode(
@@ -40,8 +41,7 @@ export async function genProxyCode(
 ) {
   const { name, is_uni_modules, format } = options
   return `
-import { initUtsProxyClass, initUtsProxyFunction, initUtsPackageName, initUtsIndexClassName, initUtsClassName } from '@dcloudio/uni-app'
-// const { initUtsProxyClass, initUtsProxyFunction, initUtsPackageName, initUtsIndexClassName, initUtsClassName } = uni
+const { initUtsProxyClass, initUtsProxyFunction, initUtsPackageName, initUtsIndexClassName, initUtsClassName } = uni
 const name = '${name}'
 const errMsg = \`${ERR_MSG_PLACEHOLDER}\`
 const is_uni_modules = ${is_uni_modules}
@@ -51,7 +51,11 @@ ${genComponentsCode(
   options.androidComponents || {},
   options.iosComponents || {}
 )}
-${genModuleCode(await parseModuleDecls(module, options), format)}
+${genModuleCode(
+  await parseModuleDecls(module, options),
+  format,
+  options.pluginRelativeDir!
+)}
 `
 }
 
@@ -110,10 +114,14 @@ function exportVarCode(format: FORMATS, kind: VariableDeclarationKind) {
   return `exports.`
 }
 
-function genModuleCode(decls: ProxyDecl[], format: FORMATS = FORMATS.ES) {
+function genModuleCode(
+  decls: ProxyDecl[],
+  format: FORMATS = FORMATS.ES,
+  pluginRelativeDir: string
+) {
   const codes: string[] = []
   if (format === FORMATS.CJS) {
-    codes.push(`Object.defineProperty(exports, '__esModule', { value: true })`)
+    codes.push(`const exports = {}`)
   }
   const exportDefault = exportDefaultCode(format)
   const exportConst = exportVarCode(format, 'const')
@@ -177,6 +185,11 @@ function genModuleCode(decls: ProxyDecl[], format: FORMATS = FORMATS.ES) {
       }
     }
   })
+  if (format === FORMATS.CJS) {
+    codes.push(
+      `uni.registerUTSPlugin('${normalizePath(pluginRelativeDir)}', exports)`
+    )
+  }
   return codes.join(`\n`)
 }
 

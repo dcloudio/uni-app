@@ -27,11 +27,12 @@ const is_uni_modules = false
 const pkg = initUtsPackageName(name, is_uni_modules)
 const cls = initUtsIndexClassName(name, is_uni_modules)
 
-Object.defineProperty(exports, '__esModule', { value: true })
+const exports = {}
 exports.onMemoryWarning = initUtsProxyFunction(false, { errMsg, main: true, package: pkg, class: cls, name: 'onMemoryWarning', params: [{"name":"callback","type":"UTSCallback"}]})
 exports.offMemoryWarning = initUtsProxyFunction(false, { errMsg, main: true, package: pkg, class: cls, name: 'offMemoryWarning', params: [{"name":"callback","type":"UTSCallback","default":"UTSNull"}]})
 exports.default = initUtsProxyClass(Object.assign({ errMsg, package: pkg, class: initUtsClassName(name, 'User', is_uni_modules) }, {"constructor":{"params":[]},"methods":{},"staticMethods":{},"props":[],"staticProps":[]} ))
 const a = 1
 exports.a = a
+uni.registerUTSPlugin('utssdk/test-uts', exports)
 "
 `;

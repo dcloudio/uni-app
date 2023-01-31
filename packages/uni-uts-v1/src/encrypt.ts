@@ -16,9 +16,10 @@ export async function compileEncrypt(pluginDir: string) {
     // 复制插件目录
     fs.copySync(pluginDir, join(outputDir, pluginRelativeDir))
     return {
-      code: `export default uni.requireUTSPlugin('${normalizePath(
-        pluginRelativeDir
-      )}')`,
+      code: `
+Object.defineProperty(exports, '__esModule', { value: true })      
+module.exports = uni.requireUTSPlugin('${normalizePath(pluginRelativeDir)}')
+`,
       deps: [] as string[],
       encrypt: true,
     }
