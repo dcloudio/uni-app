@@ -46,7 +46,7 @@ export function resolvePackage(filename: string) {
     : parts.findIndex((part) => part === 'utssdk')
   if (index > -1) {
     const id = parts[index + 1]
-    const name = camelize(id)
+    const name = camelize(prefix(id))
     return {
       id,
       name,
@@ -369,18 +369,32 @@ function genComponentsConfigJson(
   return res
 }
 
+function prefix(id: string) {
+  if (
+    process.env.UNI_UTS_MODULE_PREFIX &&
+    !id.startsWith(process.env.UNI_UTS_MODULE_PREFIX)
+  ) {
+    return process.env.UNI_UTS_MODULE_PREFIX + '-' + id
+  }
+  return id
+}
+
 export function parseKotlinPackageWithPluginId(
   id: string,
   is_uni_modules: boolean
 ) {
-  return 'uts.sdk.' + (is_uni_modules ? 'modules.' : '') + camelize(id)
+  return 'uts.sdk.' + (is_uni_modules ? 'modules.' : '') + camelize(prefix(id))
 }
 
 export function parseSwiftPackageWithPluginId(
   id: string,
   is_uni_modules: boolean
 ) {
-  return 'UTSSDK' + (is_uni_modules ? 'Modules' : '') + capitalize(camelize(id))
+  return (
+    'UTSSDK' +
+    (is_uni_modules ? 'Modules' : '') +
+    capitalize(camelize(prefix(id)))
+  )
 }
 
 export function isColorSupported() {
