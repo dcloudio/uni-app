@@ -16,6 +16,7 @@
   "optionalDependencies": {
     "@dcloudio/uts-darwin-arm64": "3.0.0-alpha-3070020230201002",
     "@dcloudio/uts-darwin-x64": "3.0.0-alpha-3070020230201002",
+    "@dcloudio/uts-linux-x64-gnu": "3.0.0-alpha-3070020230201002",
     "@dcloudio/uts-linux-x64-musl": "3.0.0-alpha-3070020230201002",
     "@dcloudio/uts-win32-ia32-msvc": "3.0.0-alpha-3070020230201002",
     "@dcloudio/uts-win32-x64-msvc": "3.0.0-alpha-3070020230201002"
