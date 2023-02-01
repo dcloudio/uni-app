@@ -5,6 +5,7 @@ import {
   genUTSPlatformResource,
   getCompilerServer,
   getUtsCompiler,
+  isColorSupported,
   moveRootIndexSourceMap,
   parseSwiftPackageWithPluginId,
   resolveIOSDir,
@@ -13,7 +14,7 @@ import {
   resolveUTSSourceMapPath,
   ToSwiftOptions,
 } from './utils'
-import { isInHBuilderX, parseJson } from './shared'
+import { parseJson } from './shared'
 import { UtsResult } from '@dcloudio/uts'
 
 function parseSwiftPackage(filename: string) {
@@ -193,7 +194,7 @@ export async function compile(
       extname: 'swift',
       imports: ['DCloudUTSFoundation'],
       logFilename: true,
-      noColor: isInHBuilderX(),
+      noColor: !isColorSupported(),
     },
   })
   sourceMap &&

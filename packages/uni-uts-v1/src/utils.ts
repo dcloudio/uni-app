@@ -6,6 +6,7 @@ import glob from 'fast-glob'
 import { Module, ModuleItem } from '../types/types'
 import {
   installHBuilderXPlugin,
+  isInHBuilderX,
   normalizePath,
   parseJson,
   resolveSourceMapPath,
@@ -380,4 +381,11 @@ export function parseSwiftPackageWithPluginId(
   is_uni_modules: boolean
 ) {
   return 'UTSSDK' + (is_uni_modules ? 'Modules' : '') + capitalize(camelize(id))
+}
+
+export function isColorSupported() {
+  if ('NO_COLOR' in process.env || isInHBuilderX()) {
+    return false
+  }
+  return true
 }

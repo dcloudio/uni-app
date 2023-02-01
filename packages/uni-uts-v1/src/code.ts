@@ -15,8 +15,12 @@ import {
   VariableDeclaration,
   VariableDeclarationKind,
 } from '../types/types'
-import { createResolveTypeReferenceName, ERR_MSG_PLACEHOLDER } from './utils'
-import { isInHBuilderX, normalizePath } from './shared'
+import {
+  createResolveTypeReferenceName,
+  ERR_MSG_PLACEHOLDER,
+  isColorSupported,
+} from './utils'
+import { normalizePath } from './shared'
 import { camelize, capitalize } from '@vue/shared'
 
 export const enum FORMATS {
@@ -287,7 +291,7 @@ async function parseCode(code: string, namespace: string) {
   // 懒加载 uts 编译器
   // eslint-disable-next-line no-restricted-globals
   const { parse } = require('@dcloudio/uts')
-  const ast = await parse(code, { noColor: isInHBuilderX() })
+  const ast = await parse(code, { noColor: !isColorSupported() })
   return parseAst(ast, createResolveTypeReferenceName(namespace, ast))
 }
 

@@ -6,12 +6,7 @@ import { sync } from 'fast-glob'
 import { isArray } from '@vue/shared'
 import type { UtsResult } from '@dcloudio/uts'
 import { get } from 'android-versions'
-import {
-  isInHBuilderX,
-  normalizePath,
-  parseJson,
-  resolveSourceMapPath,
-} from './shared'
+import { normalizePath, parseJson, resolveSourceMapPath } from './shared'
 import {
   CompilerServer,
   genUTSPlatformResource,
@@ -25,6 +20,7 @@ import {
   ToKotlinOptions,
   genComponentsCode,
   parseKotlinPackageWithPluginId,
+  isColorSupported,
 } from './utils'
 import { Module } from '../types/types'
 
@@ -343,7 +339,7 @@ export async function compile(
       extname: 'kt',
       imports,
       logFilename: true,
-      noColor: isInHBuilderX(),
+      noColor: !isColorSupported(),
     },
   })
   sourceMap &&
