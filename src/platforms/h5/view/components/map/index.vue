@@ -627,7 +627,9 @@ export default {
           this._location = location
           refreshLocation()
           this.__onCompassChange = function (res) {
-            location.setRotation(res.direction)
+            if ('setRotation' in location) {
+              location.setRotation(res.direction)
+            }
           }
           uni.onCompassChange(this.__onCompassChange)
         },
