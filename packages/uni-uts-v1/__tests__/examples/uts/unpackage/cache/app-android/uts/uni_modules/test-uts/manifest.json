@@ -16,6 +16,9 @@
     "package.json": {
       "md5": "2a19a08ee8a5d77c1e2dfcef55a8f1c1"
     },
+    "utssdk/app-android/index.vue": {
+      "md5": "d41d8cd98f00b204e9800998ecf8427e"
+    },
     "utssdk/app-android/assets/test.json": {
       "md5": "d41d8cd98f00b204e9800998ecf8427e"
     }

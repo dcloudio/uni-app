@@ -16,6 +16,7 @@ describe('code', () => {
           name: 'test-uts',
           namespace: 'uts.sdk.testUts',
           extname: '.uts',
+          androidComponents: { TestUts: '' },
         })
       ).replace(ERR_MSG_PLACEHOLDER, '')
     ).toMatchSnapshot()
@@ -31,6 +32,7 @@ describe('code', () => {
           extname: '.uts',
           format: FORMATS.CJS,
           pluginRelativeDir: 'utssdk/test-uts',
+          androidComponents: { TestUts: '' },
         })
       ).replace(ERR_MSG_PLACEHOLDER, '')
     ).toMatchSnapshot()

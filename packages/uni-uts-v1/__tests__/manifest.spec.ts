@@ -53,6 +53,7 @@ describe('manifest', () => {
       'utssdk/index.uts',
       'utssdk/common/utils.uts',
       'utssdk/app-android/index.uts',
+      'utssdk/app-android/index.vue',
       'utssdk/app-android/assets/test.json',
     ])
   })
@@ -109,7 +110,7 @@ describe('manifest', () => {
   test('gen android manifest', async () => {
     const res = await checkKotlinCompile('standard', pluginModuleOptions)
     expect(res.expired).toBe(false)
-    expect(res.files.length).toBe(5)
+    expect(res.files.length).toBe(6)
     expect(res.tips).toBeTruthy()
 
     const res1 = await checkKotlinCompile('standard', pluginOptions)

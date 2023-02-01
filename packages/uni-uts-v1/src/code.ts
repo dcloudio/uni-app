@@ -51,10 +51,19 @@ const errMsg = \`${ERR_MSG_PLACEHOLDER}\`
 const is_uni_modules = ${is_uni_modules}
 const pkg = initUTSPackageName(name, is_uni_modules)
 const cls = initUTSIndexClassName(name, is_uni_modules)
+${
+  format === FORMATS.CJS
+    ? `
+const exports = { __esModule: true }
+`
+    : ''
+}
 ${genComponentsCode(
+  format,
   options.androidComponents || {},
   options.iosComponents || {}
 )}
+
 ${genModuleCode(
   await parseModuleDecls(module, options),
   format,
@@ -64,13 +73,18 @@ ${genModuleCode(
 }
 
 export function genComponentsCode(
+  format: FORMATS = FORMATS.ES,
   androidComponents: Record<string, string>,
   iosComponents: Record<string, string>
 ) {
   const codes: string[] = []
   Object.keys(Object.assign({}, androidComponents, iosComponents)).forEach(
     (name) => {
-      codes.push(`export const ${capitalize(camelize(name))}Component = {}`)
+      if (format === FORMATS.CJS) {
+        codes.push(`exports.${capitalize(camelize(name))}Component = {}`)
+      } else {
+        codes.push(`export const ${capitalize(camelize(name))}Component = {}`)
+      }
     }
   )
   return codes.join('\n')
@@ -124,9 +138,6 @@ function genModuleCode(
   pluginRelativeDir: string
 ) {
   const codes: string[] = []
-  if (format === FORMATS.CJS) {
-    codes.push(`const exports = { __esModule: true }`)
-  }
   const exportDefault = exportDefaultCode(format)
   const exportConst = exportVarCode(format, 'const')
   decls.forEach((decl) => {
