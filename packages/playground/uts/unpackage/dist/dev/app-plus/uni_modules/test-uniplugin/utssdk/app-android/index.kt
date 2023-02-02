@@ -53,9 +53,13 @@ open class User : IUser {
     override fun register(name: String, callback: UTSCallback) {
         Log.info(default as FrameLayout);
     }
-    open fun test(view: View) {}
+    open fun test(view: View) {
+        console.log(TestClass(), " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:56");
+    }
 }
 fun login(name: String, callback: () -> Unit) {}
 @Suppress("DEPRECATION")
 fun register(name: String, callback: UTSCallback) {}
 fun offMemoryWarning(callback: (UTSCallback)? = null) {}
+open class TestClass {
+}
