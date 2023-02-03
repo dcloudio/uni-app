@@ -206,6 +206,15 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
     if (process.env.BUILD_ENV === 'ali-ide') {
       webpackConfig.plugins.delete('progress')
     }
+
+    // webpack4 support import mjs
+    if (webpack.version[0] < 5) {
+      webpackConfig.module
+        .rule('mjs')
+        .test(/.mjs$/)
+        .type('javascript/auto')
+    }
+
     webpackConfig.resolve.alias
       .delete('@')
       .set(
