@@ -137,7 +137,7 @@ function createConfig(entryFile, output, buildOption) {
       getBabelOutputPlugin({
         allowAllFormats: true,
         sourceType: 'module',
-        presets: [['@babel/preset-env', { targets: ['iOS 10'] }]],
+        presets: [['@babel/preset-env', { targets: ['iOS 10'], exclude: ['transform-block-scoping'] }]],
       })
     )
   }
