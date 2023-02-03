@@ -5,6 +5,8 @@ const _completeValue = value => {
   return value > 9 ? value : ('0' + value)
 }
 
+export const extend = Object.assign
+
 export function isFn (fn) {
   return typeof fn === 'function'
 }

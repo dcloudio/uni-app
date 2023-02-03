@@ -141,12 +141,6 @@ const protocols = {
       mask: false
     }
   },
-  showModal: {
-    args: {
-      cancelColor: false,
-      confirmColor: false
-    }
-  },
   showActionSheet: {
     args: {
       itemColor: false

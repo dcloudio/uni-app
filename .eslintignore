@@ -1,5 +1,6 @@
 src/core/helpers/html-parser.js
 src/platforms/app-plus-nvue/runtime
+src/platforms/app-plus/service/api/plugin/uts.js
 build/rollup-plugin-require-context
 packages/*/packages/uni-app-plus
 packages/*/packages/uni-app-plus-nvue
