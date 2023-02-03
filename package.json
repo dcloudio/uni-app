@@ -92,6 +92,9 @@
     "vue-router": "^4.1.6",
     "yorkie": "^2.0.0"
   },
+  "resolutions": {
+    "@babel/plugin-transform-block-scoping": "7.19.4"
+  },
   "packageManager": "pnpm@7.5.2",
   "name": "uni-app-next"
 }
