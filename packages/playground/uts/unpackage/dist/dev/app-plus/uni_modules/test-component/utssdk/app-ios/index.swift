@@ -41,17 +41,14 @@ class AnimationViewComponent : UTSComponent<UIView> {
         if (repeatMode == "RESTART") {
             if (self.loop) {
                 self.animationView.loopMode = LottieLoopMode.loop;
-            }
-             else {
+            } else {
                 self.animationView.loopMode = LottieLoopMode.playOnce;
             }
-        }
-         else {
+        } else {
             if (repeatMode == "REVERSE") {
                 if (self.loop) {
                     self.animationView.loopMode = LottieLoopMode.autoReverse;
-                }
-                 else {
+                } else {
                     self.animationView.loopMode = LottieLoopMode.repeatBackwards(1);
                 }
             }
@@ -64,8 +61,7 @@ class AnimationViewComponent : UTSComponent<UIView> {
         var animationUrl: URL?;
         if (self.path!.hasPrefix("http")) {
             animationUrl = URL(string: self.path!);
-        }
-         else {
+        } else {
             var filePath = UTSiOS.getResourcePath(self.path!);
             animationUrl = URL(filePath: filePath);
         }
