@@ -664,6 +664,7 @@ function touchstart(evt) {
     const customEvent = new CustomEvent("longpress", {
       bubbles: true,
       cancelable: true,
+      // @ts-ignore
       target: evt.target,
       currentTarget: evt.currentTarget
     });
@@ -1510,6 +1511,7 @@ function $nne(evt, eventValue, instance2) {
         eventValue,
         instance2,
         false
+        // 原生标签事件可能被cache，参数长度不准确，故默认不校验
       ) || [evt];
     }
   }
@@ -1654,6 +1656,7 @@ const invokeViewMethodKeepAlive = (name, args, callback, pageId) => {
 const ServiceJSBridge = /* @__PURE__ */ extend(
   /* @__PURE__ */ initBridge(
     "view"
+    /* view 指的是 service 层订阅的是 view 层事件 */
   ),
   {
     invokeOnCallback,
@@ -1748,11 +1751,11 @@ function selectAllComponents(selector) {
 }
 const wxInstance = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  createSelectorQuery: createSelectorQuery$1,
-  createMediaQueryObserver: createMediaQueryObserver$1,
   createIntersectionObserver: createIntersectionObserver$1,
-  selectComponent,
-  selectAllComponents
+  createMediaQueryObserver: createMediaQueryObserver$1,
+  createSelectorQuery: createSelectorQuery$1,
+  selectAllComponents,
+  selectComponent
 }, Symbol.toStringTag, { value: "Module" });
 function getOpenerEventChannel() {
   {
@@ -1921,6 +1924,7 @@ const defineSystemComponent = (options) => {
   options.__reserved = true;
   options.compatConfig = {
     MODE: 3
+    // 标记为vue3
   };
   return defineComponent(options);
 };
@@ -4255,6 +4259,7 @@ const initCanvasContextProperty = /* @__PURE__ */ once(() => {
           return function() {
             this.actions.push({
               method: method2 + "Path",
+              // @ts-ignore
               data: [...this.path]
             });
           };
@@ -4898,7 +4903,15 @@ const createSelectorQuery = /* @__PURE__ */ defineSyncApi("createSelectorQuery",
 });
 const API_CREATE_ANIMATION = "createAnimation";
 const CreateAnimationOptions = {
-  formatArgs: {}
+  // 目前参数校验不支持此api校验
+  formatArgs: {
+    /* duration: 400,
+    timingFunction(timingFunction, params) {
+      params.timingFunction = elemInArray(timingFunction, timingFunctions)
+    },
+    delay: 0,
+    transformOrigin: '50% 50% 0', */
+  }
 };
 const CreateAnimationProtocol = {
   duration: Number,
@@ -6508,7 +6521,8 @@ const initIntersectionObserverPolyfill = function() {
       var parentComputedStyle = parent.nodeType == 1 ? window.getComputedStyle(parent) : {};
       if (parentComputedStyle.display == "none")
         return null;
-      if (parent == this.root || parent.nodeType == 9) {
+      if (parent == this.root || parent.nodeType == /* DOCUMENT */
+      9) {
         atRoot = true;
         if (parent == this.root || parent == document2) {
           if (crossOriginUpdater && !this.root) {
@@ -6723,7 +6737,8 @@ const initIntersectionObserverPolyfill = function() {
   }
   function getParentNode(node) {
     var parent = node.parentNode;
-    if (node.nodeType == 9 && node != document2) {
+    if (node.nodeType == /* DOCUMENT */
+    9 && node != document2) {
       return getFrameElement(node);
     }
     if (parent && parent.assignedSlot) {
@@ -7462,7 +7477,9 @@ function useMethods(props2, canvasRef, actionsWaiting) {
             if (image2) {
               c2d.drawImage.apply(
                 c2d,
+                // @ts-ignore
                 [image2].concat(
+                  // @ts-ignore
                   [...otherData.slice(4, 8)],
                   [...otherData.slice(0, 4)]
                 )
@@ -8023,6 +8040,7 @@ function HTMLParser(html, handler) {
           name,
           value,
           escaped: value.replace(/(^|[^\\])"/g, '$1\\"')
+          // "
         });
       });
       if (handler.start) {
@@ -8877,9 +8895,12 @@ const index$q = /* @__PURE__ */ defineBuiltInComponent({
         "ref": rootRef
       }, [createVNode("div", {
         "style": state2.modeStyle
-      }, null, 4), FIX_MODES[props2.mode] ? createVNode(ResizeSensor, {
-        "onResize": fixSize
-      }, null, 8, ["onResize"]) : createVNode("span", null, null)], 512);
+      }, null, 4), FIX_MODES[props2.mode] ? (
+        // @ts-ignore
+        createVNode(ResizeSensor, {
+          "onResize": fixSize
+        }, null, 8, ["onResize"])
+      ) : createVNode("span", null, null)], 512);
     };
   }
 });
@@ -9102,6 +9123,9 @@ function removeInteractListener(vm) {
 const getInteractStatus = () => !!userInteract;
 function useUserAction() {
   const state2 = reactive({
+    /**
+     * 是否用户激活
+     */
     userAction: false
   });
   onMounted(() => {
@@ -9136,6 +9160,7 @@ function useFormField(nameKey, value) {
   const uniForm = inject(
     uniFormKey,
     false
+    // remove warning
   );
   if (!uniForm) {
     return;
@@ -9216,6 +9241,9 @@ const props$r = /* @__PURE__ */ extend(
       type: [Boolean, String],
       default: false
     },
+    /**
+     * 已废弃属性，用于历史兼容
+     */
     autoFocus: {
       type: [Boolean, String],
       default: false
@@ -9978,6 +10006,7 @@ function useTouchtrack(element, method, useCancel) {
   let y1 = 0;
   const fn = function($event, state2, x, y) {
     if (method({
+      // @ts-expect-error
       cancelable: $event.cancelable,
       target: $event.target,
       currentTarget: $event.currentTarget,
@@ -10849,10 +10878,12 @@ function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScal
     }
   }
   return {
+    // scale
     _updateOldScale,
     _endScale,
     _setScale,
     scaleValueSync,
+    // layout
     _updateBoundary,
     _updateOffset,
     _updateWH,
@@ -10861,6 +10892,7 @@ function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScal
     minY,
     maxX,
     maxY,
+    // transform
     FAandSFACancel,
     _getLimitXY,
     _animationTo,
@@ -10908,10 +10940,12 @@ function useMovableViewState(props2, trigger, rootRef) {
     __handleTouchStart();
   });
   const {
+    // scale
     _updateOldScale,
     _endScale,
     _setScale,
     scaleValueSync,
+    // layout
     _updateBoundary,
     _updateOffset,
     _updateWH,
@@ -10920,6 +10954,7 @@ function useMovableViewState(props2, trigger, rootRef) {
     minY,
     maxX,
     maxY,
+    // transform
     FAandSFACancel,
     _getLimitXY,
     _setTransform,
@@ -11212,6 +11247,7 @@ function createNavigatorOnClick(props2) {
       case "redirect":
         uni.redirectTo({
           url: props2.url,
+          // @ts-ignore
           exists: props2.exists
         });
         break;
@@ -12378,9 +12414,12 @@ const index$o = /* @__PURE__ */ defineBuiltInComponent({
       }, [createVNode("div", {
         "style": innerBarStyle,
         "class": "uni-progress-inner-bar"
-      }, null, 4)], 4), showInfo ? createVNode("p", {
-        "class": "uni-progress-info"
-      }, [currentPercent + "%"]) : ""]);
+      }, null, 4)], 4), showInfo ? (
+        // {currentPercent}% 的写法会影响 SSR Hydration (tsx插件的问题)
+        createVNode("p", {
+          "class": "uni-progress-info"
+        }, [currentPercent + "%"])
+      ) : ""]);
     };
   }
 });
@@ -12432,6 +12471,7 @@ const props$p = {
 const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
   props: props$p,
+  // emits: ['change'],
   setup(props2, {
     emit: emit2,
     slots
@@ -15424,6 +15464,7 @@ const loadingVNode = /* @__PURE__ */ createVNode(
   { class: "uni-loading" },
   null,
   -1
+  /* HOISTED */
 );
 const AsyncLoadingComponent = /* @__PURE__ */ defineSystemComponent({
   name: "AsyncLoading",
@@ -15510,6 +15551,7 @@ function setupPage(comp) {
   }
   return setupComponent(comp, {
     clone: true,
+    // 页面组件可能会被其他地方手动引用，比如 windows 等，需要 clone 一份新的作为页面组件
     init: initPage,
     setup(instance2) {
       instance2.$pageInstance = instance2;
@@ -16705,7 +16747,10 @@ const getIsAMap = () => {
 };
 function translateGeo(type, coords, skip) {
   const mapInfo = getMapInfo();
-  const wgs84Map = ["google"];
+  const wgs84Map = [
+    "google"
+    /* GOOGLE */
+  ];
   if (type && type.toUpperCase() === "WGS84" || wgs84Map.includes(mapInfo.type) || skip) {
     return Promise.resolve(coords);
   }
@@ -16781,6 +16826,7 @@ function createCallout(maps2) {
     this.Text = new maps2.Text({
       text: option.content,
       anchor: "bottom-center",
+      // 设置文本标记锚点
       offset: new maps2.Pixel(0, option.offsetY - 16),
       style: {
         padding: (option.padding || 8) + "px",
@@ -17201,6 +17247,7 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
               position,
               map,
               top,
+              // handle AMap callout offset
               offsetY: -option.height / 2,
               content: calloutOpt.content,
               color: calloutOpt.color,
@@ -17214,6 +17261,7 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
               position,
               map,
               top,
+              // handle AMap callout offset
               offsetY: -option.height / 2,
               content: title,
               boxShadow
@@ -17711,6 +17759,9 @@ const initInnerAudioContextEventOnce = /* @__PURE__ */ once(() => {
   });
 });
 class InnerAudioContext {
+  /**
+   * 音频上下文初始化
+   */
   constructor() {
     this._src = "";
     var audio = this._audio = new Audio();
@@ -17790,13 +17841,22 @@ class InnerAudioContext {
     });
     initInnerAudioContextEventOnce();
   }
+  /**
+   * 播放
+   */
   play() {
     this._stoping = false;
     this._audio.play();
   }
+  /**
+   * 暂停
+   */
   pause() {
     this._audio.pause();
   }
+  /**
+   * 停止
+   */
   stop() {
     this._stoping = true;
     this._audio.pause();
@@ -17805,6 +17865,10 @@ class InnerAudioContext {
       callback();
     });
   }
+  /**
+   * 跳转到
+   * @param {number} position
+   */
   seek(position) {
     this._stoping = false;
     position = Number(position);
@@ -17812,6 +17876,9 @@ class InnerAudioContext {
       this._audio.currentTime = position;
     }
   }
+  /**
+   * 销毁
+   */
   destroy() {
     this.stop();
   }
@@ -18697,6 +18764,9 @@ const getVideoInfo = /* @__PURE__ */ defineAsyncApi(
   GetVideoInfoOptions
 );
 const MIMEType = {
+  /**
+   * 关于图片常见的MIME类型
+   */
   image: {
     jpg: "jpeg",
     jpe: "jpeg",
@@ -18716,6 +18786,9 @@ const MIMEType = {
     xbm: "x-xbitmap",
     ico: "x-icon"
   },
+  /**
+   * 关于视频常见的MIME类型
+   */
   video: {
     "3g2": "3gpp2",
     "3gp": "3gpp",
@@ -18791,6 +18864,7 @@ let fileInput = null;
 const chooseFile = /* @__PURE__ */ defineAsyncApi(
   API_CHOOSE_FILE,
   ({
+    // sizeType,
     count,
     sourceType,
     type,
@@ -18848,6 +18922,7 @@ const chooseImage = /* @__PURE__ */ defineAsyncApi(
   API_CHOOSE_IMAGE,
   ({
     count,
+    // sizeType,
     sourceType,
     extension
   }, { resolve, reject }) => {
@@ -18900,7 +18975,14 @@ const chooseImage = /* @__PURE__ */ defineAsyncApi(
 );
 const KEY_MAPS = {
   esc: ["Esc", "Escape"],
+  // tab: ['Tab'],
   enter: ["Enter"]
+  // space: [' ', 'Spacebar'],
+  // up: ['Up', 'ArrowUp'],
+  // left: ['Left', 'ArrowLeft'],
+  // right: ['Right', 'ArrowRight'],
+  // down: ['Down', 'ArrowDown'],
+  // delete: ['Backspace', 'Delete', 'Del'],
 };
 const KEYS = Object.keys(KEY_MAPS);
 function useKeyboard() {
@@ -18934,13 +19016,20 @@ const VNODE_MASK = /* @__PURE__ */ createVNode(
   { class: "uni-mask" },
   null,
   -1
+  /* HOISTED */
 );
 function createRootApp(component, rootState, callback) {
   rootState.onClose = (...args) => (rootState.visible = false, callback.apply(null, args));
   return createApp(
     defineComponent({
       setup() {
-        return () => (openBlock(), createBlock(component, rootState, null, 16));
+        return () => (openBlock(), createBlock(
+          component,
+          rootState,
+          null,
+          16
+          /* FULL_PROPS */
+        ));
       }
     })
   );
@@ -19446,6 +19535,10 @@ class DownloadTask {
     this._callbacks = [];
     this._xhr = xhr;
   }
+  /**
+   * 监听下载进度
+   * @param {Function} callback 回调
+   */
   onProgressUpdate(callback) {
     if (!isFunction(callback)) {
       return;
@@ -19458,6 +19551,9 @@ class DownloadTask {
       this._callbacks.splice(index2, 1);
     }
   }
+  /**
+   * 停止任务
+   */
   abort() {
     if (this._xhr) {
       this._xhr.abort();
@@ -19538,6 +19634,10 @@ class UploadTask {
     this._callbacks = [];
     this._xhr = xhr;
   }
+  /**
+   * 监听上传进度
+   * @param callback 回调
+   */
   onProgressUpdate(callback) {
     if (!isFunction(callback)) {
       return;
@@ -19550,6 +19650,9 @@ class UploadTask {
       this._callbacks.splice(index2, 1);
     }
   }
+  /**
+   * 中断上传任务
+   */
   abort() {
     this._isAbort = true;
     if (this._xhr) {
@@ -19665,6 +19768,11 @@ const globalEvent = {
   message: ""
 };
 class SocketTask {
+  /**
+   * 构造函数
+   * @param {string} url
+   * @param {Array} protocols
+   */
   constructor(url, protocols, callback) {
     this._callbacks = {
       open: [],
@@ -19727,6 +19835,10 @@ ${e2};at socketTask.on${capitalize(
     }
     callback && callback(error, this);
   }
+  /**
+   * 发送
+   * @param {any} data
+   */
   send(options) {
     const data = (options || {}).data;
     const ws = this._webSocket;
@@ -19740,6 +19852,11 @@ ${e2};at socketTask.on${capitalize(
       callOptions(options, `sendSocketMessage:fail ${error}`);
     }
   }
+  /**
+   * 关闭
+   * @param {number} code
+   * @param {string} reason
+   */
   close(options = {}) {
     const ws = this._webSocket;
     try {
@@ -19936,6 +20053,7 @@ const getLocation = /* @__PURE__ */ defineAsyncApi(
           speed: coords2.altitude || 0,
           altitude: coords2.altitude || 0,
           verticalAccuracy: coords2.altitudeAccuracy || 0,
+          // 无专门水平精度，使用位置精度替代
           horizontalAccuracy: coords2.accuracy || 0
         });
       }).catch((error) => {
@@ -20152,6 +20270,7 @@ function useList(state2) {
   const selectedRef = computed(() => list2[selectedIndexRef.value]);
   const listState = reactive({
     loading: true,
+    // google map default
     pageSize: 20,
     pageIndex: 1,
     hasNextPage: true,
@@ -20603,7 +20722,10 @@ function removeLastPage() {
 const redirectTo = /* @__PURE__ */ defineAsyncApi(
   API_REDIRECT_TO,
   ({ url }, { resolve, reject }) => {
-    return removeLastPage(), navigate({ type: API_REDIRECT_TO, url }).then(resolve).catch(reject);
+    return (
+      // TODO exists 属性未实现
+      removeLastPage(), navigate({ type: API_REDIRECT_TO, url }).then(resolve).catch(reject)
+    );
   },
   RedirectToProtocol,
   RedirectToOptions
@@ -20657,6 +20779,7 @@ function getTabBarPageId(url) {
 }
 const switchTab = /* @__PURE__ */ defineAsyncApi(
   API_SWITCH_TAB,
+  // @ts-ignore
   ({ url, tabBarText }, { resolve, reject }) => {
     return removeNonTabBarPages(), navigate({ type: API_SWITCH_TAB, url, tabBarText }, getTabBarPageId(url)).then(resolve).catch(reject);
   },
@@ -20867,7 +20990,8 @@ const showModal = /* @__PURE__ */ defineAsyncApi(
       nextTick(
         () => (createRootApp(modal, showModalState, onModalClose).mount(
           ensureRoot("u-a-m")
-        ), nextTick(() => showModalState.visible = true))
+        ), //下一帧执行，确保首次显示时有动画效果
+        nextTick(() => showModalState.visible = true))
       );
     } else {
       extend(showModalState, args);
@@ -21441,7 +21565,8 @@ const showActionSheet = /* @__PURE__ */ defineAsyncApi(
           actionSheet,
           showActionSheetState,
           onActionSheetClose
-        ).mount(ensureRoot("u-s-a-s")), nextTick(() => showActionSheetState.visible = true))
+        ).mount(ensureRoot("u-s-a-s")), //下一帧执行，确保首次显示时有动画效果
+        nextTick(() => showActionSheetState.visible = true))
       );
     } else {
       extend(showActionSheetState, args);
@@ -22282,6 +22407,7 @@ function createRouterViewVNode({
       key: routeKey.value
     }))], 1032, ["cache"]))]),
     _: 1
+    /* STABLE */
   });
 }
 function useTopWindow(layoutState) {
@@ -22621,180 +22747,180 @@ const getProvider = /* @__PURE__ */ defineAsyncApi(
 );
 const api = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  upx2px,
+  $emit,
+  $off,
+  $on,
+  $once,
   addInterceptor,
-  removeInterceptor,
-  interceptors,
+  addPhoneContact,
   arrayBufferToBase64,
   base64ToArrayBuffer,
-  createIntersectionObserver,
-  createMediaQueryObserver,
-  createSelectorQuery,
-  createVideoContext,
-  createMapContext,
-  createAnimation: createAnimation$1,
-  onWindowResize,
-  offWindowResize,
-  onTabBarMidButtonTap,
-  createCanvasContext,
+  canIUse,
   canvasGetImageData,
   canvasPutImageData,
   canvasToTempFilePath,
-  getSelectedTextRange: getSelectedTextRange$1,
-  getLocale,
-  setLocale,
-  $on,
-  $off,
-  $once,
-  $emit,
-  onCreateVueApp,
-  onLocaleChange,
-  setPageMeta,
-  getEnterOptionsSync,
-  getLaunchOptionsSync,
-  getPushClientId,
-  onPushMessage,
-  offPushMessage,
-  onAppHide,
-  onAppShow,
-  onError,
-  onPageNotFound,
-  onUnhandledRejection,
-  offAppHide,
-  offAppShow,
-  offError,
-  offPageNotFound,
-  offUnhandledRejection,
-  invokePushCallback,
-  cssVar,
-  cssEnv,
-  cssConstant,
-  cssBackdropFilter,
-  canIUse,
-  createInnerAudioContext,
-  makePhoneCall,
-  getSystemInfo,
-  getDeviceInfo,
-  getAppBaseInfo,
-  getSystemInfoSync,
-  onNetworkStatusChange,
-  offNetworkStatusChange,
-  getNetworkType,
-  onAccelerometerChange,
-  offAccelerometerChange,
-  startAccelerometer,
-  stopAccelerometer,
-  onCompassChange,
-  offCompassChange,
-  startCompass,
-  stopCompass,
-  vibrateShort,
-  vibrateLong,
-  getClipboardData,
-  setClipboardData,
-  getWindowInfo,
-  onThemeChange: onThemeChange$1,
-  offThemeChange: offThemeChange$1,
-  setStorageSync,
-  setStorage,
-  getStorageSync,
-  getStorage,
-  removeStorageSync,
-  removeStorage,
-  clearStorageSync,
-  clearStorage,
-  getStorageInfoSync,
-  getStorageInfo,
-  getFileInfo,
-  openDocument,
-  hideKeyboard,
-  getImageInfo,
-  getVideoInfo,
   chooseFile,
   chooseImage,
-  previewImage,
-  closePreviewImage,
-  chooseVideo,
-  request,
-  downloadFile,
-  uploadFile,
-  connectSocket,
-  sendSocketMessage,
-  closeSocket,
-  onSocketOpen,
-  onSocketError,
-  onSocketMessage,
-  onSocketClose,
-  getLocation,
-  openLocation,
   chooseLocation,
-  startLocationUpdate,
-  stopLocationUpdate,
-  onLocationChange,
-  offLocationChange,
-  onLocationChangeError,
-  offLocationChangeError,
+  chooseVideo,
+  clearStorage,
+  clearStorageSync,
+  closePreviewImage,
+  closeSocket,
+  connectSocket,
+  createAnimation: createAnimation$1,
+  createCameraContext,
+  createCanvasContext,
+  createInnerAudioContext,
+  createIntersectionObserver,
+  createLivePlayerContext,
+  createMapContext,
+  createMediaQueryObserver,
+  createSelectorQuery,
+  createVideoContext,
+  cssBackdropFilter,
+  cssConstant,
+  cssEnv,
+  cssVar,
+  downloadFile,
+  getAppBaseInfo,
+  getClipboardData,
+  getDeviceInfo,
+  getEnterOptionsSync,
+  getFileInfo,
+  getImageInfo,
+  getLaunchOptionsSync,
+  getLeftWindowStyle,
+  getLocale,
+  getLocation,
+  getNetworkType,
+  getProvider,
+  getPushClientId,
+  getRecorderManager,
+  getRightWindowStyle,
+  getSavedFileInfo,
+  getSavedFileList,
+  getScreenBrightness,
+  getSelectedTextRange: getSelectedTextRange$1,
+  getStorage,
+  getStorageInfo,
+  getStorageInfoSync,
+  getStorageSync,
+  getSystemInfo,
+  getSystemInfoSync,
+  getTopWindowStyle,
+  getVideoInfo,
+  getWindowInfo,
+  hideKeyboard,
+  hideLeftWindow,
+  hideLoading,
+  hideNavigationBarLoading,
+  hideRightWindow,
+  hideTabBar,
+  hideTabBarRedDot,
+  hideToast,
+  hideTopWindow,
+  interceptors,
+  invokePushCallback,
+  loadFontFace,
+  login,
+  makePhoneCall,
   navigateBack,
   navigateTo,
-  redirectTo,
-  reLaunch,
-  switchTab,
-  preloadPage,
-  showModal,
-  showToast,
-  showLoading,
-  hideToast,
-  hideLoading,
-  showActionSheet,
-  loadFontFace,
-  setNavigationBarColor,
-  showNavigationBarLoading,
-  hideNavigationBarLoading,
-  setNavigationBarTitle,
+  offAccelerometerChange,
+  offAppHide,
+  offAppShow,
+  offCompassChange,
+  offError,
+  offLocationChange,
+  offLocationChangeError,
+  offNetworkStatusChange,
+  offPageNotFound,
+  offPushMessage,
+  offThemeChange: offThemeChange$1,
+  offUnhandledRejection,
+  offWindowResize,
+  onAccelerometerChange,
+  onAppHide,
+  onAppShow,
+  onCompassChange,
+  onCreateVueApp,
+  onError,
+  onGyroscopeChange,
+  onLocaleChange,
+  onLocationChange,
+  onLocationChangeError,
+  onMemoryWarning,
+  onNetworkStatusChange,
+  onPageNotFound,
+  onPushMessage,
+  onSocketClose,
+  onSocketError,
+  onSocketMessage,
+  onSocketOpen,
+  onTabBarMidButtonTap,
+  onThemeChange: onThemeChange$1,
+  onUnhandledRejection,
+  onUserCaptureScreen,
+  onWindowResize,
+  openDocument,
+  openLocation,
   pageScrollTo,
-  startPullDownRefresh,
-  stopPullDownRefresh,
+  preloadPage,
+  previewImage,
+  reLaunch,
+  redirectTo,
+  removeInterceptor,
+  removeSavedFile,
+  removeStorage,
+  removeStorageSync,
+  removeTabBarBadge,
+  request,
+  saveFile,
+  saveImageToPhotosAlbum,
+  saveVideoToPhotosAlbum,
+  scanCode,
+  sendSocketMessage,
+  setClipboardData,
+  setKeepScreenOn,
+  setLeftWindowStyle,
+  setLocale,
+  setNavigationBarColor,
+  setNavigationBarTitle,
+  setPageMeta,
+  setRightWindowStyle,
+  setScreenBrightness,
+  setStorage,
+  setStorageSync,
+  setTabBarBadge,
   setTabBarItem,
   setTabBarStyle,
-  hideTabBar,
-  showTabBar,
-  hideTabBarRedDot,
-  showTabBarRedDot,
-  removeTabBarBadge,
-  setTabBarBadge,
-  showTopWindow,
-  hideTopWindow,
-  showLeftWindow,
-  hideLeftWindow,
-  showRightWindow,
-  hideRightWindow,
-  getTopWindowStyle,
   setTopWindowStyle,
-  getLeftWindowStyle,
-  setLeftWindowStyle,
-  getRightWindowStyle,
-  setRightWindowStyle,
-  saveImageToPhotosAlbum,
-  getRecorderManager,
-  saveVideoToPhotosAlbum,
-  createCameraContext,
-  createLivePlayerContext,
-  saveFile,
-  getSavedFileList,
-  getSavedFileInfo,
-  removeSavedFile,
-  onMemoryWarning,
-  onGyroscopeChange,
+  showActionSheet,
+  showLeftWindow,
+  showLoading,
+  showModal,
+  showNavigationBarLoading,
+  showRightWindow,
+  showTabBar,
+  showTabBarRedDot,
+  showToast,
+  showTopWindow,
+  startAccelerometer,
+  startCompass,
   startGyroscope,
+  startLocationUpdate,
+  startPullDownRefresh,
+  stopAccelerometer,
+  stopCompass,
   stopGyroscope,
-  scanCode,
-  setScreenBrightness,
-  getScreenBrightness,
-  setKeepScreenOn,
-  onUserCaptureScreen,
-  addPhoneContact,
-  login,
-  getProvider
+  stopLocationUpdate,
+  stopPullDownRefresh,
+  switchTab,
+  uploadFile,
+  upx2px,
+  vibrateLong,
+  vibrateShort
 }, Symbol.toStringTag, { value: "Module" });
 const CONTEXT_ID = "MAP_LOCATION";
 const MapLocation = /* @__PURE__ */ defineSystemComponent({
@@ -22853,26 +22979,32 @@ const MapLocation = /* @__PURE__ */ defineSystemComponent({
   }
 });
 const props$3 = {
+  // 边框虚线，腾讯地图支持，google 高德 地图不支持，默认值为[0, 0] 为实线，非 [0, 0] 为虚线，H5 端无法像微信小程序一样控制虚线的间隔像素大小
   dashArray: {
     type: Array,
     default: () => [0, 0]
   },
+  // 经纬度数组，[{latitude: 0, longitude: 0}]
   points: {
     type: Array,
     required: true
   },
+  // 描边的宽度
   strokeWidth: {
     type: Number,
     default: 1
   },
+  // 描边的颜色，十六进制
   strokeColor: {
     type: String,
     default: "#000000"
   },
+  // 填充颜色，十六进制
   fillColor: {
     type: String,
     default: "#00000000"
   },
+  // 设置多边形 Z 轴数值
   zIndex: {
     type: Number,
     default: 0
@@ -22914,16 +23046,28 @@ const MapPolygon = /* @__PURE__ */ defineSystemComponent({
           a: scA
         } = hexToRgba(strokeColor);
         const polygonOptions = {
+          //多边形是否可点击。
           clickable: true,
+          //鼠标在多边形内的光标样式。
           cursor: "crosshair",
+          //多边形是否可编辑。
           editable: false,
+          // 地图实例，即要显示多边形的地图
+          // @ts-ignore
           map,
+          // 区域填充色
           fillColor: "",
+          //多边形的路径，以经纬度坐标数组构成。
           path,
+          // 区域边框
           strokeColor: "",
+          //多边形的边框样式。实线是solid，虚线是dash。
           strokeDashStyle: dashArray.some((item) => item > 0) ? "dash" : "solid",
+          //多边形的边框线宽。
           strokeWeight: strokeWidth,
+          //多边形是否可见。
           visible: true,
+          //多边形的zIndex值。
           zIndex
         };
         if (maps2.Color) {
@@ -23155,6 +23299,7 @@ function useMap(props2, rootRef, emit2) {
     const map2 = new maps2.Map(mapEl, {
       center,
       zoom: Number(props2.scale),
+      // scrollwheel: false,
       disableDoubleClickZoom: true,
       mapTypeControl: false,
       zoomControl: false,
@@ -23512,6 +23657,8 @@ const mode = {
   MULTISELECTOR: "multiSelector",
   TIME: "time",
   DATE: "date"
+  // 暂不支持城市选择
+  // REGION: 'region'
 };
 const fields = {
   YEAR: "year",
@@ -24481,6 +24628,7 @@ function onPageHeadBackButton() {
       from: "backbutton",
       success() {
       }
+      // 传入空方法，避免返回Promise，因为onBackPress可能导致fail
     });
   }
 }
@@ -24566,6 +24714,7 @@ function usePageHeadButton(pageId, index2, btn, isTransparent) {
   }
   return {
     btnClass: {
+      // 类似这样的大量重复的字符串，会在gzip时压缩大小，无需在代码层考虑优化相同字符串
       "uni-page-head-btn": true,
       "uni-page-head-btn-red-dot": !!(btn.redDot || btn.badgeText),
       "uni-page-head-btn-select": !!btn.select

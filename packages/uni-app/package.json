@@ -30,7 +30,7 @@
     "@dcloudio/uni-push": "3.0.0-alpha-3070020230202001",
     "@dcloudio/uni-shared": "3.0.0-alpha-3070020230202001",
     "@dcloudio/uni-stat": "3.0.0-alpha-3070020230202001",
-    "@vue/shared": "3.2.45"
+    "@vue/shared": "3.2.47"
   },
   "peerDependencies": {
     "@dcloudio/types": "^3.2.11"

@@ -18,7 +18,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@dcloudio/uts": "3.0.0-alpha-3070020230202001",
-    "@vue/shared": "3.2.45",
+    "@vue/shared": "3.2.47",
     "android-versions": "^1.8.1",
     "adm-zip": "^0.5.9",
     "fast-glob": "^3.2.11",

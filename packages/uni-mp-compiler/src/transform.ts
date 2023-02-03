@@ -161,7 +161,7 @@ export function transform(root: CodegenRootNode, options: TransformOptions) {
   traverseNode(root, context)
   root.renderData = createRenderDataExpr(context.scope.properties, context)
   // finalize meta information
-  root.helpers = [...context.helpers.keys()]
+  root.helpers = new Set([...context.helpers.keys()])
   root.components = [...context.components]
   root.imports = context.imports
   root.cached = context.cached

@@ -519,6 +519,7 @@ const invokeViewMethodKeepAlive = (name, args, callback, pageId) => {
 const ServiceJSBridge = /* @__PURE__ */ shared.extend(
   /* @__PURE__ */ initBridge(
     "view"
+    /* view 指的是 service 层订阅的是 view 层事件 */
   ),
   {
     invokeOnCallback,
@@ -684,6 +685,7 @@ const defineSystemComponent = (options) => {
   options.__reserved = true;
   options.compatConfig = {
     MODE: 3
+    // 标记为vue3
   };
   return vue.defineComponent(options);
 };
@@ -2090,7 +2092,9 @@ function useMethods(props2, canvasRef, actionsWaiting) {
             if (image) {
               c2d.drawImage.apply(
                 c2d,
+                // @ts-ignore
                 [image].concat(
+                  // @ts-ignore
                   [...otherData.slice(4, 8)],
                   [...otherData.slice(0, 4)]
                 )
@@ -2641,6 +2645,7 @@ function HTMLParser(html, handler) {
           name,
           value,
           escaped: value.replace(/(^|[^\\])"/g, '$1\\"')
+          // "
         });
       });
       if (handler.start) {
@@ -2859,9 +2864,12 @@ const index$u = /* @__PURE__ */ defineBuiltInComponent({
         "ref": rootRef
       }, [vue.createVNode("div", {
         "style": state.modeStyle
-      }, null, 4), FIX_MODES[props2.mode] ? vue.createVNode(ResizeSensor, {
-        "onResize": fixSize
-      }, null, 8, ["onResize"]) : vue.createVNode("span", null, null)], 512);
+      }, null, 4), FIX_MODES[props2.mode] ? (
+        // @ts-ignore
+        vue.createVNode(ResizeSensor, {
+          "onResize": fixSize
+        }, null, 8, ["onResize"])
+      ) : vue.createVNode("span", null, null)], 512);
     };
   }
 });
@@ -3034,6 +3042,9 @@ function throttle(fn, wait) {
 }
 function useUserAction() {
   const state = vue.reactive({
+    /**
+     * 是否用户激活
+     */
     userAction: false
   });
   return {
@@ -3052,6 +3063,7 @@ function useFormField(nameKey, value) {
   const uniForm = vue.inject(
     uniFormKey,
     false
+    // remove warning
   );
   if (!uniForm) {
     return;
@@ -3129,6 +3141,9 @@ const props$k = /* @__PURE__ */ shared.extend(
       type: [Boolean, String],
       default: false
     },
+    /**
+     * 已废弃属性，用于历史兼容
+     */
     autoFocus: {
       type: [Boolean, String],
       default: false
@@ -4615,10 +4630,12 @@ function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScal
     }
   }
   return {
+    // scale
     _updateOldScale,
     _endScale,
     _setScale,
     scaleValueSync,
+    // layout
     _updateBoundary,
     _updateOffset,
     _updateWH,
@@ -4627,6 +4644,7 @@ function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScal
     minY,
     maxX,
     maxY,
+    // transform
     FAandSFACancel,
     _getLimitXY,
     _animationTo,
@@ -4662,10 +4680,12 @@ function useMovableViewState(props2, trigger, rootRef) {
     __handleTouchStart();
   });
   const {
+    // scale
     _updateOldScale,
     _endScale,
     _setScale,
     scaleValueSync,
+    // layout
     _updateBoundary,
     _updateOffset,
     _updateWH,
@@ -4674,6 +4694,7 @@ function useMovableViewState(props2, trigger, rootRef) {
     minY,
     maxX,
     maxY,
+    // transform
     FAandSFACancel,
     _getLimitXY,
     _setTransform,
@@ -4815,6 +4836,7 @@ function createNavigatorOnClick(props2) {
       case "redirect":
         uni.redirectTo({
           url: props2.url,
+          // @ts-ignore
           exists: props2.exists
         });
         break;
@@ -5191,9 +5213,12 @@ const index$q = /* @__PURE__ */ defineBuiltInComponent({
       }, [vue.createVNode("div", {
         "style": innerBarStyle,
         "class": "uni-progress-inner-bar"
-      }, null, 4)], 4), showInfo ? vue.createVNode("p", {
-        "class": "uni-progress-info"
-      }, [currentPercent + "%"]) : ""]);
+      }, null, 4)], 4), showInfo ? (
+        // {currentPercent}% 的写法会影响 SSR Hydration (tsx插件的问题)
+        vue.createVNode("p", {
+          "class": "uni-progress-info"
+        }, [currentPercent + "%"])
+      ) : ""]);
     };
   }
 });
@@ -5245,6 +5270,7 @@ const props$i = {
 const index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
   props: props$i,
+  // emits: ['change'],
   setup(props2, {
     emit: emit2,
     slots
@@ -7689,6 +7715,7 @@ const loadingVNode = /* @__PURE__ */ vue.createVNode(
   { class: "uni-loading" },
   null,
   -1
+  /* HOISTED */
 );
 const AsyncLoadingComponent = /* @__PURE__ */ defineSystemComponent({
   name: "AsyncLoading",
@@ -7773,6 +7800,7 @@ function setupPage(comp) {
   }
   return setupComponent(comp, {
     clone: true,
+    // 页面组件可能会被其他地方手动引用，比如 windows 等，需要 clone 一份新的作为页面组件
     init: initPage,
     setup(instance) {
       instance.$pageInstance = instance;
@@ -8870,6 +8898,7 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
               position,
               map,
               top,
+              // handle AMap callout offset
               offsetY: -option.height / 2,
               content: calloutOpt.content,
               color: calloutOpt.color,
@@ -8883,6 +8912,7 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
               position,
               map,
               top,
+              // handle AMap callout offset
               offsetY: -option.height / 2,
               content: title,
               boxShadow
@@ -9380,26 +9410,32 @@ const MapLocation = /* @__PURE__ */ defineSystemComponent({
   }
 });
 const props$3 = {
+  // 边框虚线，腾讯地图支持，google 高德 地图不支持，默认值为[0, 0] 为实线，非 [0, 0] 为虚线，H5 端无法像微信小程序一样控制虚线的间隔像素大小
   dashArray: {
     type: Array,
     default: () => [0, 0]
   },
+  // 经纬度数组，[{latitude: 0, longitude: 0}]
   points: {
     type: Array,
     required: true
   },
+  // 描边的宽度
   strokeWidth: {
     type: Number,
     default: 1
   },
+  // 描边的颜色，十六进制
   strokeColor: {
     type: String,
     default: "#000000"
   },
+  // 填充颜色，十六进制
   fillColor: {
     type: String,
     default: "#00000000"
   },
+  // 设置多边形 Z 轴数值
   zIndex: {
     type: Number,
     default: 0
@@ -9441,16 +9477,28 @@ const MapPolygon = /* @__PURE__ */ defineSystemComponent({
           a: scA
         } = hexToRgba(strokeColor);
         const polygonOptions = {
+          //多边形是否可点击。
           clickable: true,
+          //鼠标在多边形内的光标样式。
           cursor: "crosshair",
+          //多边形是否可编辑。
           editable: false,
+          // 地图实例，即要显示多边形的地图
+          // @ts-ignore
           map,
+          // 区域填充色
           fillColor: "",
+          //多边形的路径，以经纬度坐标数组构成。
           path,
+          // 区域边框
           strokeColor: "",
+          //多边形的边框样式。实线是solid，虚线是dash。
           strokeDashStyle: dashArray.some((item) => item > 0) ? "dash" : "solid",
+          //多边形的边框线宽。
           strokeWeight: strokeWidth,
+          //多边形是否可见。
           visible: true,
+          //多边形的zIndex值。
           zIndex
         };
         if (maps.Color) {
@@ -9990,6 +10038,8 @@ const mode = {
   MULTISELECTOR: "multiSelector",
   TIME: "time",
   DATE: "date"
+  // 暂不支持城市选择
+  // REGION: 'region'
 };
 const fields = {
   YEAR: "year",
@@ -11139,21 +11189,21 @@ require("localstorage-polyfill");
 global.XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const api = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  setNavigationBarTitle,
-  request,
-  setStorageSync,
-  setStorage,
-  getStorageSync,
-  getStorage,
-  removeStorageSync,
-  removeStorage,
-  clearStorageSync,
   clearStorage,
-  getStorageInfoSync,
-  getStorageInfo,
-  getDeviceInfo,
+  clearStorageSync,
   getAppBaseInfo,
-  getSystemInfoSync
+  getDeviceInfo,
+  getStorage,
+  getStorageInfo,
+  getStorageInfoSync,
+  getStorageSync,
+  getSystemInfoSync,
+  removeStorage,
+  removeStorageSync,
+  request,
+  setNavigationBarTitle,
+  setStorage,
+  setStorageSync
 }, Symbol.toStringTag, { value: "Module" });
 const uni$1 = api;
 const UniServiceJSBridge$1 = /* @__PURE__ */ shared.extend(ServiceJSBridge, {
@@ -11699,6 +11749,7 @@ function createRouterViewVNode({
       key: routeKey.value
     }))], 1032, ["cache"]))]),
     _: 1
+    /* STABLE */
   });
 }
 function useTopWindow(layoutState) {
@@ -12013,6 +12064,7 @@ function onPageHeadBackButton() {
       from: "backbutton",
       success() {
       }
+      // 传入空方法，避免返回Promise，因为onBackPress可能导致fail
     });
   }
 }
@@ -12097,6 +12149,7 @@ function usePageHeadButton(pageId, index2, btn, isTransparent) {
   }
   return {
     btnClass: {
+      // 类似这样的大量重复的字符串，会在gzip时压缩大小，无需在代码层考虑优化相同字符串
       "uni-page-head-btn": true,
       "uni-page-head-btn-red-dot": !!(btn.redDot || btn.badgeText),
       "uni-page-head-btn-select": !!btn.select

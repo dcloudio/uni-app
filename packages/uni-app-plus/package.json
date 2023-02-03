@@ -42,10 +42,10 @@
     "@dcloudio/uni-i18n": "3.0.0-alpha-3070020230202001",
     "@dcloudio/uni-shared": "3.0.0-alpha-3070020230202001",
     "@types/pako": "1.0.2",
-    "@vue/compiler-sfc": "3.2.45",
+    "@vue/compiler-sfc": "3.2.47",
     "autoprefixer": "^10.4.13",
     "pako": "^1.0.11",
-    "postcss": "^8.4.16",
-    "vue": "3.2.45"
+    "postcss": "^8.4.21",
+    "vue": "3.2.47"
   }
 }

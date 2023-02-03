@@ -98,6 +98,7 @@ function createNavigatorOnClick(props2) {
       case "redirect":
         uni.redirectTo({
           url: props2.url,
+          // @ts-ignore
           exists: props2.exists
         });
         break;
@@ -2628,6 +2629,8 @@ const mode = {
   MULTISELECTOR: "multiSelector",
   TIME: "time",
   DATE: "date"
+  // 暂不支持城市选择
+  // REGION: 'region'
 };
 const fields = {
   YEAR: "year",
@@ -4098,6 +4101,7 @@ function useSwiperState(props2) {
     itemColor: props2.indicatorColor,
     itemSelectedColor: props2.indicatorActiveColor,
     itemSize: 8,
+    // 动态创建 indicator 在安卓上有问题，改成透明度控制显示和隐藏
     opacity: props2.indicatorDots ? 1 : 0
   }));
   const state = reactive({
@@ -4324,6 +4328,7 @@ function HTMLParser(html, handler) {
           name,
           value,
           escaped: value.replace(/(^|[^\\])"/g, '$1\\"')
+          // "
         });
       });
       if (handler.start) {

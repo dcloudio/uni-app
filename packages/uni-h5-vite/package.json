@@ -22,10 +22,10 @@
     "@dcloudio/uni-cli-shared": "3.0.0-alpha-3070020230202001",
     "@dcloudio/uni-shared": "3.0.0-alpha-3070020230202001",
     "@rollup/pluginutils": "^4.2.0",
-    "@vue/compiler-dom": "3.2.45",
-    "@vue/compiler-sfc": "3.2.45",
-    "@vue/server-renderer": "3.2.45",
-    "@vue/shared": "3.2.45",
+    "@vue/compiler-dom": "3.2.47",
+    "@vue/compiler-sfc": "3.2.47",
+    "@vue/server-renderer": "3.2.47",
+    "@vue/shared": "3.2.47",
     "debug": "^4.3.3",
     "fs-extra": "^10.0.0",
     "mime": "^3.0.0",
@@ -37,8 +37,8 @@
     "@types/mime": "^2.0.3",
     "@types/module-alias": "^2.0.1",
     "@types/resolve": "^1.20.2",
-    "@vue/compiler-core": "3.2.45",
+    "@vue/compiler-core": "3.2.47",
     "esbuild": "^0.16.3",
-    "vue": "3.2.45"
+    "vue": "3.2.47"
   }
 }
