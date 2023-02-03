@@ -48,6 +48,12 @@ class Test : NSObject {
         Test1();
     }
     public func test() -> String? {
+        #if swift(>=1)
+            console.log("swift(>=1)", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:65");
+        #endif
+        #if arch(i386) || arch(arm)
+            console.log("arch(i386) || arch(arm)", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:68");
+        #endif
         return nil;
     }
 }
