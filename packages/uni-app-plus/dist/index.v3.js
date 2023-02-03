@@ -274,7 +274,14 @@ var serviceContext = (function () {
     'sendHostEvent',
     'navigateToMiniProgram',
     'getLaunchOptionsSync',
-    'getEnterOptionsSync'
+    'getEnterOptionsSync',
+    'initUTSProxyClass',
+    'initUTSProxyFunction',
+    'initUTSIndexClassName',
+    'initUTSClassName',
+    'initUTSPackageName',
+    'requireUTSPlugin',
+    'registerUTSPlugin',
   ];
 
   const ad = [
@@ -405,6 +412,8 @@ var serviceContext = (function () {
   const _toString = Object.prototype.toString;
   const hasOwnProperty = Object.prototype.hasOwnProperty;
 
+  const extend = Object.assign;
+
   function isFn (fn) {
     return typeof fn === 'function'
   }
@@ -448,6 +457,13 @@ var serviceContext = (function () {
   const camelizeRE = /-(\w)/g;
   const camelize = cached((str) => {
     return str.replace(camelizeRE, (_, c) => c ? c.toUpperCase() : '')
+  });
+
+  /**
+   * Capitalize a string.
+   */
+  const capitalize = cached((str) => {
+    return str.charAt(0).toUpperCase() + str.slice(1)
   });
 
   function getLen (str = '') {
@@ -907,7 +923,7 @@ var serviceContext = (function () {
   };
 
   const SYNC_API_RE =
-    /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback|getWindowInfo|getDeviceInfo|getAppBaseInfo|getSystemSetting|getAppAuthorizeSetting/;
+    /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback|getWindowInfo|getDeviceInfo|getAppBaseInfo|getSystemSetting|getAppAuthorizeSetting|initUTS|requireUTS|registerUTS/;
 
   const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -4707,6 +4723,7 @@ var serviceContext = (function () {
 
   function startTimeUpdateTimer () {
     stopTimeUpdateTimer();
+    publishBackgroundAudioStateChange('timeUpdate', {});
     timeUpdateTimer = setInterval(() => {
       publishBackgroundAudioStateChange('timeUpdate', {});
     }, TIME_UPDATE);
@@ -7207,7 +7224,7 @@ var serviceContext = (function () {
     });
   }
 
-  const extend = Object.assign;
+  const extend$1 = Object.assign;
 
   function createLaunchOptions () {
     return {
@@ -7237,7 +7254,7 @@ var serviceContext = (function () {
     query,
     referrerInfo
   }) {
-    extend(enterOptions, {
+    extend$1(enterOptions, {
       path,
       query: query ? parseQuery(query) : {},
       referrerInfo: referrerInfo || {}
@@ -7249,14 +7266,14 @@ var serviceContext = (function () {
     query,
     referrerInfo
   }) {
-    extend(launchOptions, {
+    extend$1(launchOptions, {
       path,
       query: query ? parseQuery(query) : {},
       referrerInfo: referrerInfo || {},
       channel: plus.runtime.channel,
       launcher: plus.runtime.launcher
     });
-    extend(enterOptions, launchOptions);
+    extend$1(enterOptions, launchOptions);
     return launchOptions
   }
 
@@ -8880,6 +8897,13 @@ var serviceContext = (function () {
   function compressImage$1 (options, callbackId) {
     const dst = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(options.src)}`;
     const errorCallback = warpPlusErrorCallback(callbackId, 'compressImage');
+    const { compressedWidth, compressedHeight } = options;
+    if (typeof compressedWidth === 'number') {
+      options.width = compressedWidth + 'px';
+    }
+    if (typeof compressedHeight === 'number') {
+      options.height = compressedHeight + 'px';
+    }
     plus.zip.compressImage(Object.assign({}, options, {
       dst
     }), () => {
@@ -10474,6 +10498,216 @@ var serviceContext = (function () {
     return getEnterOptions()
   }
 
+  let callbackId = 1;
+  let proxy;
+  const callbacks$4 = {};
+  function normalizeArg(arg) {
+      if (typeof arg === 'function') {
+          // 查找该函数是否已缓存
+          const oldId = Object.keys(callbacks$4).find((id) => callbacks$4[id] === arg);
+          const id = oldId ? parseInt(oldId) : callbackId++;
+          callbacks$4[id] = arg;
+          return id;
+      }
+      else if (isPlainObject(arg)) {
+          Object.keys(arg).forEach((name) => {
+              arg[name] = normalizeArg(arg[name]);
+          });
+      }
+      return arg;
+  }
+  function initUTSInstanceMethod(async, opts, instanceId) {
+      return initProxyFunction(async, opts, instanceId);
+  }
+  function getProxy() {
+      if (!proxy) {
+          proxy = uni.requireNativePlugin('UTS-Proxy');
+      }
+      return proxy;
+  }
+  function resolveSyncResult(res) {
+      if (res.errMsg) {
+          throw new Error(res.errMsg);
+      }
+      return res.params;
+  }
+  function invokePropGetter(args) {
+      if (args.errMsg) {
+          throw new Error(args.errMsg);
+      }
+      delete args.errMsg;
+      return resolveSyncResult(getProxy().invokeSync(args, () => { }));
+  }
+  function initProxyFunction(async, { moduleName, moduleType, package: pkg, class: cls, name: propOrMethod, method, companion, params: methodParams, errMsg, }, instanceId) {
+      const invokeCallback = ({ id, name, params, keepAlive, }) => {
+          const callback = callbacks$4[id];
+          if (callback) {
+              callback(...params);
+              if (!keepAlive) {
+                  delete callbacks$4[id];
+              }
+          }
+          else {
+              console.error(`${pkg}${cls}.${propOrMethod} ${name} is not found`);
+          }
+      };
+      const baseArgs = instanceId
+          ? {
+              moduleName,
+              moduleType,
+              id: instanceId,
+              name: propOrMethod,
+              method: methodParams,
+          }
+          : {
+              moduleName,
+              moduleType,
+              package: pkg,
+              class: cls,
+              name: method || propOrMethod,
+              companion,
+              method: methodParams,
+          };
+      return (...args) => {
+          if (errMsg) {
+              throw new Error(errMsg);
+          }
+          const invokeArgs = extend({}, baseArgs, {
+              params: args.map((arg) => normalizeArg(arg)),
+          });
+          if (async) {
+              return new Promise((resolve, reject) => {
+                  getProxy().invokeAsync(invokeArgs, (res) => {
+                      if (res.type !== 'return') {
+                          invokeCallback(res);
+                      }
+                      else {
+                          if (res.errMsg) {
+                              reject(res.errMsg);
+                          }
+                          else {
+                              resolve(res.params);
+                          }
+                      }
+                  });
+              });
+          }
+          return resolveSyncResult(getProxy().invokeSync(invokeArgs, invokeCallback));
+      };
+  }
+  function initUTSStaticMethod(async, opts) {
+      if (opts.main && !opts.method) {
+          if (typeof plus !== 'undefined' && plus.os.name === 'iOS') {
+              opts.method = 's_' + opts.name;
+          }
+      }
+      return initProxyFunction(async, opts, 0);
+  }
+  const initUTSProxyFunction = initUTSStaticMethod;
+  function initUTSProxyClass({ moduleName, moduleType, package: pkg, class: cls, constructor: { params: constructorParams }, methods, props, staticProps, staticMethods, errMsg, }) {
+      const baseOptions = {
+          moduleName,
+          moduleType,
+          package: pkg,
+          class: cls,
+          errMsg,
+      };
+      const ProxyClass = class UTSClass {
+          constructor(...params) {
+              if (errMsg) {
+                  throw new Error(errMsg);
+              }
+              const target = {};
+              // 初始化实例 ID
+              const instanceId = initProxyFunction(false, extend({ name: 'constructor', params: constructorParams }, baseOptions), 0).apply(null, params);
+              if (!instanceId) {
+                  throw new Error(`new ${cls} is failed`);
+              }
+              return new Proxy(this, {
+                  get(_, name) {
+                      if (!target[name]) {
+                          //实例方法
+                          if (hasOwn(methods, name)) {
+                              const { async, params } = methods[name];
+                              target[name] = initUTSInstanceMethod(!!async, extend({
+                                  name,
+                                  params,
+                              }, baseOptions), instanceId);
+                          }
+                          else if (props.includes(name)) {
+                              // 实例属性
+                              return invokePropGetter({
+                                  moduleName,
+                                  moduleType,
+                                  id: instanceId,
+                                  name: name,
+                                  errMsg,
+                              });
+                          }
+                      }
+                      return target[name];
+                  },
+              });
+          }
+      };
+      const staticMethodCache = {};
+      return new Proxy(ProxyClass, {
+          get(target, name, receiver) {
+              if (hasOwn(staticMethods, name)) {
+                  if (!staticMethodCache[name]) {
+                      const { async, params } = staticMethods[name];
+                      // 静态方法
+                      staticMethodCache[name] = initUTSStaticMethod(!!async, extend({ name, companion: true, params }, baseOptions));
+                  }
+                  return staticMethodCache[name];
+              }
+              if (staticProps.includes(name)) {
+                  // 静态属性
+                  return invokePropGetter(extend({ name: name, companion: true }, baseOptions));
+              }
+              return Reflect.get(target, name, receiver);
+          },
+      });
+  }
+  function initUTSPackageName(name, is_uni_modules) {
+      if (typeof plus !== 'undefined' && plus.os.name === 'Android') {
+          return 'uts.sdk.' + (is_uni_modules ? 'modules.' : '') + name;
+      }
+      return '';
+  }
+  function initUTSIndexClassName(moduleName, is_uni_modules) {
+      if (typeof plus === 'undefined') {
+          return '';
+      }
+      return initUTSClassName(moduleName, plus.os.name === 'iOS' ? 'IndexSwift' : 'IndexKt', is_uni_modules);
+  }
+  function initUTSClassName(moduleName, className, is_uni_modules) {
+      if (typeof plus === 'undefined') {
+          return '';
+      }
+      if (plus.os.name === 'Android') {
+          return className;
+      }
+      if (plus.os.name === 'iOS') {
+          return ('UTSSDK' +
+              (is_uni_modules ? 'Modules' : '') +
+              capitalize(moduleName) +
+              capitalize(className));
+      }
+      return '';
+  }
+  const pluginDefines = {};
+  function registerUTSPlugin(name, define) {
+      pluginDefines[name] = define;
+  }
+  function requireUTSPlugin(name) {
+      const define = pluginDefines[name];
+      if (!define) {
+          console.error(`${name} is not found`);
+      }
+      return define;
+  }
+
   function closeWebview (webview, animationType, animationDuration) {
     webview[webview.__preload__ ? 'hide' : 'close'](animationType, animationDuration);
   }
@@ -11688,16 +11922,16 @@ var serviceContext = (function () {
     }
   }
 
-  const callbacks$4 = {};
+  const callbacks$5 = {};
 
   function createCallbacks (namespace) {
-    let scopedCallbacks = callbacks$4[namespace];
+    let scopedCallbacks = callbacks$5[namespace];
     if (!scopedCallbacks) {
       scopedCallbacks = {
         id: 1,
         callbacks: Object.create(null)
       };
-      callbacks$4[namespace] = scopedCallbacks;
+      callbacks$5[namespace] = scopedCallbacks;
     }
     return {
       get (id) {
@@ -12438,6 +12672,13 @@ var serviceContext = (function () {
 
   var api = /*#__PURE__*/Object.freeze({
     __proto__: null,
+    initUTSProxyClass: initUTSProxyClass,
+    initUTSProxyFunction: initUTSProxyFunction,
+    initUTSIndexClassName: initUTSIndexClassName,
+    initUTSClassName: initUTSClassName,
+    initUTSPackageName: initUTSPackageName,
+    requireUTSPlugin: requireUTSPlugin,
+    registerUTSPlugin: registerUTSPlugin,
     startPullDownRefresh: startPullDownRefresh,
     stopPullDownRefresh: stopPullDownRefresh,
     $on: $on$1,
@@ -12673,9 +12914,9 @@ var serviceContext = (function () {
     'error',
     'waiting'
   ];
-  const callbacks$5 = {};
+  const callbacks$6 = {};
   eventNames$2.forEach(name => {
-    callbacks$5[name] = [];
+    callbacks$6[name] = [];
   });
 
   const props = [
@@ -12746,7 +12987,7 @@ var serviceContext = (function () {
         errMsg,
         errCode
       }) => {
-        callbacks$5[state].forEach(callback => {
+        callbacks$6[state].forEach(callback => {
           if (typeof callback === 'function') {
             callback(state === 'error' ? {
               errMsg,
@@ -12757,7 +12998,7 @@ var serviceContext = (function () {
       });
       backgroundEvents.forEach((name) => {
         onMethod(`onBackgroundAudio${name[0].toUpperCase() + name.substr(1)}`, () => {
-          callbacks$5[name].forEach(callback => {
+          callbacks$6[name].forEach(callback => {
             if (typeof callback === 'function') {
               callback({});
             }
@@ -12812,7 +13053,7 @@ var serviceContext = (function () {
   eventNames$2.forEach(item => {
     const name = item[0].toUpperCase() + item.substr(1);
     BackgroundAudioManager.prototype[`on${name}`] = function (callback) {
-      callbacks$5[item].push(callback);
+      callbacks$6[item].push(callback);
     };
   });
 
@@ -20892,6 +21133,7 @@ var serviceContext = (function () {
       emit(audio, state, errMsg, errCode);
       if (state === 'play') {
         const oldCurrentTime = audio.currentTime;
+        emit(audio, 'timeupdate');
         audio.__timing = setInterval(() => {
           const currentTime = audio.currentTime;
           if (currentTime !== oldCurrentTime) {
@@ -20920,24 +21162,24 @@ var serviceContext = (function () {
     createInnerAudioContext: createInnerAudioContext
   });
 
-  const callbacks$6 = [];
+  const callbacks$7 = [];
 
   onMethod('onNetworkStatusChange', res => {
-    callbacks$6.forEach(callbackId => {
+    callbacks$7.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
 
   function onNetworkStatusChange (callbackId) {
-    callbacks$6.push(callbackId);
+    callbacks$7.push(callbackId);
   }
 
   function offNetworkStatusChange (callbackId) {
     // 暂不支持移除所有监听
     if (callbackId) {
-      const index = callbacks$6.indexOf(callbackId);
+      const index = callbacks$7.indexOf(callbackId);
       if (index >= 0) {
-        callbacks$6.splice(index, 1);
+        callbacks$7.splice(index, 1);
       }
     }
   }
@@ -20948,25 +21190,25 @@ var serviceContext = (function () {
     offNetworkStatusChange: offNetworkStatusChange
   });
 
-  const callbacks$7 = [];
+  const callbacks$8 = [];
   const oldCallbacks = [];
 
   onMethod(ON_THEME_CHANGE, function (res) {
-    callbacks$7.forEach(callbackId => {
+    callbacks$8.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
 
   function onThemeChange$1 (callbackId) {
-    callbacks$7.push(callbackId);
+    callbacks$8.push(callbackId);
   }
 
   function offThemeChange$1 (callbackId) {
     // 暂不支持移除所有监听
     if (callbackId) {
-      const index = callbacks$7.indexOf(callbackId);
+      const index = callbacks$8.indexOf(callbackId);
       if (index >= 0) {
-        callbacks$7.splice(index, 1);
+        callbacks$8.splice(index, 1);
       }
     }
   }
@@ -21076,7 +21318,7 @@ var serviceContext = (function () {
     closePreviewImage: closePreviewImage
   });
 
-  const callbacks$8 = {
+  const callbacks$9 = {
     pause: null,
     resume: null,
     start: null,
@@ -21090,14 +21332,14 @@ var serviceContext = (function () {
         const state = res.state;
         delete res.state;
         delete res.errMsg;
-        if (typeof callbacks$8[state] === 'function') {
-          callbacks$8[state](res);
+        if (typeof callbacks$9[state] === 'function') {
+          callbacks$9[state](res);
         }
       });
     }
 
     onError (callback) {
-      callbacks$8.error = callback;
+      callbacks$9.error = callback;
     }
 
     onFrameRecorded (callback) {
@@ -21113,19 +21355,19 @@ var serviceContext = (function () {
     }
 
     onPause (callback) {
-      callbacks$8.pause = callback;
+      callbacks$9.pause = callback;
     }
 
     onResume (callback) {
-      callbacks$8.resume = callback;
+      callbacks$9.resume = callback;
     }
 
     onStart (callback) {
-      callbacks$8.start = callback;
+      callbacks$9.start = callback;
     }
 
     onStop (callback) {
-      callbacks$8.stop = callback;
+      callbacks$9.stop = callback;
     }
 
     pause () {
@@ -21457,7 +21699,7 @@ var serviceContext = (function () {
 
   const socketTasks$1 = Object.create(null);
   const socketTasksArray = [];
-  const callbacks$9 = Object.create(null);
+  const callbacks$a = Object.create(null);
   onMethod('onSocketTaskStateChange', ({
     socketTaskId,
     state,
@@ -21471,8 +21713,8 @@ var serviceContext = (function () {
     if (state === 'open') {
       socketTask.readyState = socketTask.OPEN;
     }
-    if (socketTask === socketTasksArray[0] && callbacks$9[state]) {
-      invoke$1(callbacks$9[state], state === 'message' ? {
+    if (socketTask === socketTasksArray[0] && callbacks$a[state]) {
+      invoke$1(callbacks$a[state], state === 'message' ? {
         data
       } : {});
     }
@@ -21538,19 +21780,19 @@ var serviceContext = (function () {
   }
 
   function onSocketOpen (callbackId) {
-    callbacks$9.open = callbackId;
+    callbacks$a.open = callbackId;
   }
 
   function onSocketError (callbackId) {
-    callbacks$9.error = callbackId;
+    callbacks$a.error = callbackId;
   }
 
   function onSocketMessage (callbackId) {
-    callbacks$9.message = callbackId;
+    callbacks$a.message = callbackId;
   }
 
   function onSocketClose (callbackId) {
-    callbacks$9.close = callbackId;
+    callbacks$a.close = callbackId;
   }
 
   var require_context_module_1_19 = /*#__PURE__*/Object.freeze({
@@ -22251,16 +22493,16 @@ var serviceContext = (function () {
         });
         weex.requireModule('plus').setLanguage(locale);
       }
-      callbacks$a.forEach(callbackId => {
+      callbacks$b.forEach(callbackId => {
         invoke$1(callbackId, { locale });
       });
       return true
     }
     return false
   }
-  const callbacks$a = [];
+  const callbacks$b = [];
   function onLocaleChange (callbackId) {
-    callbacks$a.push(callbackId);
+    callbacks$b.push(callbackId);
   }
 
   var require_context_module_1_28 = /*#__PURE__*/Object.freeze({
@@ -22316,16 +22558,16 @@ var serviceContext = (function () {
 
   const hideTabBarRedDot$1 = removeTabBarBadge$1;
 
-  const callbacks$b = [];
+  const callbacks$c = [];
 
   onMethod('onTabBarMidButtonTap', res => {
-    callbacks$b.forEach(callbackId => {
+    callbacks$c.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
 
   function onTabBarMidButtonTap (callbackId) {
-    callbacks$b.push(callbackId);
+    callbacks$c.push(callbackId);
   }
 
   var require_context_module_1_31 = /*#__PURE__*/Object.freeze({
@@ -22336,20 +22578,20 @@ var serviceContext = (function () {
     onTabBarMidButtonTap: onTabBarMidButtonTap
   });
 
-  const callbacks$c = [];
+  const callbacks$d = [];
   onMethod('onViewDidResize', res => {
-    callbacks$c.forEach(callbackId => {
+    callbacks$d.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
 
   function onWindowResize (callbackId) {
-    callbacks$c.push(callbackId);
+    callbacks$d.push(callbackId);
   }
 
   function offWindowResize (callbackId) {
     // 此处和微信平台一致查询不到去掉最后一个
-    callbacks$c.splice(callbacks$c.indexOf(callbackId), 1);
+    callbacks$d.splice(callbacks$d.indexOf(callbackId), 1);
   }
 
   var require_context_module_1_32 = /*#__PURE__*/Object.freeze({
