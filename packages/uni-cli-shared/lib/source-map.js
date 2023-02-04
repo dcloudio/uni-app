@@ -48,6 +48,7 @@ module.exports = {
       ...args
     }
     if (filename) {
+      options.publicPath = "../"
       options.filename = '../.sourcemap/' + process.env.UNI_PLATFORM + '/[file].map'
     }
     return new webpack.SourceMapDevToolPlugin(options)
