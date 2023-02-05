@@ -35,7 +35,7 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
           const keys = ['publicPath', 'outputPath']
           keys.forEach(key => {
             generator[key] = pathData => {
-              const outputPath = oldOptions.outputPath(null, pathData.module.request)
+              const outputPath = oldOptions.publicPath(null, pathData.module.request)
               const basename = path.basename(outputPath)
               return outputPath.substring(0, outputPath.length - basename.length)
             }
