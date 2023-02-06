@@ -19,9 +19,10 @@ export const compressVideo = defineAsyncApi<API_TYPE_COMPRESS_VIDEO>(
       extend({}, options, {
         filename,
       }),
-      () => {
+      (videoInfo) => {
         resolve({
           tempFilePath: filename,
+          size: videoInfo.size,
         })
       },
       reject
