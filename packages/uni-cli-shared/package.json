@@ -42,7 +42,7 @@
     "compare-versions": "^3.6.0",
     "debug": "^4.3.3",
     "es-module-lexer": "^0.9.3",
-    "esbuild": "^0.16.3",
+    "esbuild": "^0.16.14",
     "estree-walker": "^2.0.2",
     "fast-glob": "^3.2.11",
     "fs-extra": "^10.0.0",
