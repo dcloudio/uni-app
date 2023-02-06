@@ -5,13 +5,13 @@ import {
   extensions,
   normalizePath,
   requireResolve,
-  resolveUtsModule,
-  resolveUtsAppModule,
+  resolveUTSModule,
+  resolveUTSAppModule,
 } from '@dcloudio/uni-cli-shared'
 import { VitePluginUniResolvedOptions } from '..'
 
-function resolveUtsModuleProxyFile(id: string, importer: string) {
-  const file = resolveUtsAppModule(id, importer)
+function resolveUTSModuleProxyFile(id: string, importer: string) {
+  const file = resolveUTSAppModule(id, importer)
   if (file) {
     return file + '?uts-proxy'
   }
@@ -23,8 +23,8 @@ export const customResolver: ResolverFunction = (updatedId, importer) => {
     : process.env.UNI_INPUT_DIR
   const utsModuleFile =
     process.env.UNI_PLATFORM === 'app'
-      ? resolveUtsModuleProxyFile(updatedId, utsImporter)
-      : resolveUtsModule(updatedId, utsImporter)
+      ? resolveUTSModuleProxyFile(updatedId, utsImporter)
+      : resolveUTSModule(updatedId, utsImporter)
   if (utsModuleFile) {
     return isWindows ? normalizePath(utsModuleFile) : utsModuleFile
   }

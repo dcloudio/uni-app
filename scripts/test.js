@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const { parse, bundle, UtsTarget } = require('../packages/uts/dist')
+const { parse, bundle, UTSTarget } = require('../packages/uts/dist')
 const projectDir = path.resolve(__dirname, '../packages/playground/uts')
 
 const outDir = path.resolve(projectDir, 'unpackage/dist/dev/app-plus')
@@ -21,7 +21,7 @@ parse(
 })
 async function testKotlin() {
   const start = Date.now()
-  await bundle(UtsTarget.KOTLIN, {
+  await bundle(UTSTarget.KOTLIN, {
     input: {
       root: projectDir,
       filename: path.resolve(
@@ -60,7 +60,7 @@ async function testKotlin() {
       )
     )
   })
-  await bundle(UtsTarget.KOTLIN, {
+  await bundle(UTSTarget.KOTLIN, {
     input: {
       root: projectDir,
       filename: path.resolve(
@@ -89,7 +89,7 @@ async function testKotlin() {
 
 async function testKotlinComponent() {
   const start = Date.now()
-  await bundle(UtsTarget.KOTLIN, {
+  await bundle(UTSTarget.KOTLIN, {
     input: {
       root: projectDir,
       pluginId: 'animation-view',
@@ -131,7 +131,7 @@ async function testKotlinComponent() {
 
 async function testSwift() {
   const start = Date.now()
-  await bundle(UtsTarget.SWIFT, {
+  await bundle(UTSTarget.SWIFT, {
     input: {
       root: projectDir,
       filename: path.resolve(
@@ -161,7 +161,7 @@ async function testSwift() {
       )
     )
   })
-  await bundle(UtsTarget.SWIFT, {
+  await bundle(UTSTarget.SWIFT, {
     input: {
       root: projectDir,
       filename: path.resolve(
@@ -183,7 +183,7 @@ async function testSwift() {
 
 async function testSwiftComponent() {
   const start = Date.now()
-  await bundle(UtsTarget.SWIFT, {
+  await bundle(UTSTarget.SWIFT, {
     input: {
       root: projectDir,
       filename: path.resolve(

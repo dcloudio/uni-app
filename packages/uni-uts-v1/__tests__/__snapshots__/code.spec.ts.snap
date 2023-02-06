@@ -11,7 +11,7 @@ const is_uni_modules = false
 const pkg = initUTSPackageName(name, is_uni_modules)
 const cls = initUTSIndexClassName(name, is_uni_modules)
 
-export const TestUtsComponent = {}
+export const TestUTSComponent = {}
 
 export const onMemoryWarning = initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'onMemoryWarning', params: [{"name":"callback","type":"UTSCallback"}]})
 export const offMemoryWarning = initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'offMemoryWarning', params: [{"name":"callback","type":"UTSCallback","default":"UTSNull"}]})
@@ -33,7 +33,7 @@ const cls = initUTSIndexClassName(name, is_uni_modules)
 
 const exports = { __esModule: true }
 
-exports.TestUtsComponent = {}
+exports.TestUTSComponent = {}
 
 exports.onMemoryWarning = initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'onMemoryWarning', params: [{"name":"callback","type":"UTSCallback"}]})
 exports.offMemoryWarning = initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'offMemoryWarning', params: [{"name":"callback","type":"UTSCallback","default":"UTSNull"}]})

@@ -14585,9 +14585,10 @@ const compressVideo = defineAsyncApi(API_COMPRESS_VIDEO, (options, { resolve, re
     const filename = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(options.src)}`;
     plus.zip.compressVideo(extend({}, options, {
         filename,
-    }), () => {
+    }), (videoInfo) => {
         resolve({
             tempFilePath: filename,
+            size: videoInfo.size,
         });
     }, reject);
 }, CompressVideoProtocol, CompressVideoOptions);

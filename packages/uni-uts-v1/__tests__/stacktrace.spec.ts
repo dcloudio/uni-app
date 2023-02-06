@@ -1,12 +1,12 @@
 import path from 'path'
-import { parseUtsSwiftPluginStacktrace } from '../src/stacktrace'
-const stacktrace = `/uts-development-ios/dependences/buildFramework/template/xcode_ust_template/unimoduleTestUts1/src/index.swift:3:12: error: cannot convert return expression of type 'Int' to return type 'String'
-/uts-development-ios/dependences/buildFramework/template/xcode_ust_template/unimoduleTestUts1/src/index.swift:6:12: error: cannot convert return expression of type 'Int' to return type 'String'
+import { parseUTSSwiftPluginStacktrace } from '../src/stacktrace'
+const stacktrace = `/uts-development-ios/dependences/buildFramework/template/xcode_ust_template/unimoduleTestUTS1/src/index.swift:3:12: error: cannot convert return expression of type 'Int' to return type 'String'
+/uts-development-ios/dependences/buildFramework/template/xcode_ust_template/unimoduleTestUTS1/src/index.swift:6:12: error: cannot convert return expression of type 'Int' to return type 'String'
 `
 
 describe('uts:stacktrace', () => {
-  test('parseUtsSwiftPluginStacktrace', async () => {
-    const codes = await parseUtsSwiftPluginStacktrace({
+  test('parseUTSSwiftPluginStacktrace', async () => {
+    const codes = await parseUTSSwiftPluginStacktrace({
       stacktrace,
       sourceMapFile: path.resolve(
         __dirname,

@@ -28,8 +28,8 @@ import {
   resolveIOSComponents,
   resolvePackage,
 } from './utils'
-import { parseUtsSwiftPluginStacktrace } from './stacktrace'
-import { resolveUtsPluginSourceMapFile } from './sourceMap'
+import { parseUTSSwiftPluginStacktrace } from './stacktrace'
+import { resolveUTSPluginSourceMapFile } from './sourceMap'
 import { isWindows } from './shared'
 import {
   generateCodeFrameWithKotlinStacktrace,
@@ -311,9 +311,9 @@ export async function compile(
               errMsg = compileErrMsg(pkg.id)
               console.error(
                 `error: ` +
-                  (await parseUtsSwiftPluginStacktrace({
+                  (await parseUTSSwiftPluginStacktrace({
                     stacktrace: res.msg,
-                    sourceMapFile: resolveUtsPluginSourceMapFile(
+                    sourceMapFile: resolveUTSPluginSourceMapFile(
                       'swift',
                       filename,
                       inputDir,

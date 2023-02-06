@@ -2,7 +2,7 @@ import type { Plugin } from 'vite'
 import path from 'path'
 import {
   parseVueRequest,
-  resolveUtsAppModule,
+  resolveUTSAppModule,
   resolveUTSCompiler,
 } from '@dcloudio/uni-cli-shared'
 import { once } from '@dcloudio/uni-shared'
@@ -21,7 +21,7 @@ const utsModuleCaches = new Map<
     meta?: any
   }>
 >()
-export function uniUtsV1Plugin(): Plugin {
+export function uniUTSV1Plugin(): Plugin {
   process.env.UNI_UTS_USING_ROLLUP = 'true'
   return {
     name: 'uni:uts',
@@ -31,7 +31,7 @@ export function uniUtsV1Plugin(): Plugin {
       if (isUTSProxy(id)) {
         return id
       }
-      const module = resolveUtsAppModule(
+      const module = resolveUTSAppModule(
         id,
         importer ? path.dirname(importer) : process.env.UNI_INPUT_DIR
       )

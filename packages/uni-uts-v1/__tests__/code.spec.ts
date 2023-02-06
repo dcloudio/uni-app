@@ -14,9 +14,9 @@ describe('code', () => {
           id: 'test-uts',
           is_uni_modules: false,
           name: 'test-uts',
-          namespace: 'uts.sdk.testUts',
+          namespace: 'uts.sdk.testUTS',
           extname: '.uts',
-          androidComponents: { TestUts: '' },
+          androidComponents: { TestUTS: '' },
         })
       ).replace(ERR_MSG_PLACEHOLDER, '')
     ).toMatchSnapshot()
@@ -28,11 +28,11 @@ describe('code', () => {
           id: 'test-uts',
           is_uni_modules: false,
           name: 'test-uts',
-          namespace: 'uts.sdk.testUts',
+          namespace: 'uts.sdk.testUTS',
           extname: '.uts',
           format: FORMATS.CJS,
           pluginRelativeDir: 'utssdk/test-uts',
-          androidComponents: { TestUts: '' },
+          androidComponents: { TestUTS: '' },
         })
       ).replace(ERR_MSG_PLACEHOLDER, '')
     ).toMatchSnapshot()

@@ -1,21 +1,21 @@
-export enum UtsTarget {
+export enum UTSTarget {
   KOTLIN = 'kotlin',
   SWIFT = 'swift',
 }
-export interface UtsParserConfig {
+export interface UTSParserConfig {
   /**
    * Defaults to `false`
    */
   allowImportWithoutSpecifiers?: boolean
 }
 
-export type UtsParseOptions = UtsParserConfig & {
+export type UTSParseOptions = UTSParserConfig & {
   filename?: string
   comments?: boolean
   noColor?: boolean
 }
 
-export type UtsInputOptions = UtsParseOptions & {
+export type UTSInputOptions = UTSParseOptions & {
   root: string
   pluginId: string
   filename: string
@@ -24,7 +24,7 @@ export type UtsInputOptions = UtsParseOptions & {
   paths: Record<string, string>
 }
 
-export type UtsOutputOptions = {
+export type UTSOutputOptions = {
   outDir: string
   package: string
   imports?: string[]
@@ -35,16 +35,16 @@ export type UtsOutputOptions = {
   noColor?: boolean
   isPlugin?: boolean
 }
-export interface UtsOptions {
-  input: UtsInputOptions
-  output: UtsOutputOptions
+export interface UTSOptions {
+  input: UTSInputOptions
+  output: UTSOutputOptions
 }
 
-export interface UtsResult {
+export interface UTSResult {
   filename?: string
   deps?: string[]
   time?: number
   error?: Error
 }
 
-export interface UtsBundleOptions extends UtsOptions {}
+export interface UTSBundleOptions extends UTSOptions {}

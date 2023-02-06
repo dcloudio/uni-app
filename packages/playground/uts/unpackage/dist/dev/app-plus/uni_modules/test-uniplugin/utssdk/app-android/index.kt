@@ -8,12 +8,22 @@ import io.dcloud.uts.UTSAndroid;
 import android.util.Log;
 import android.widget.FrameLayout;
 import android.view.View;
-import login.login;
+fun test() {
+    console.log("test", " at uni_modules/test-uniplugin/utssdk/app-android/utils.uts:2");
+}
+fun login(name: String, pwd: String): UTSJSONObject {
+    console.log("login", " at uni_modules/test-uniplugin/utssdk/app-android/login.uts:3");
+    test();
+    return object : UTSJSONObject() {
+        var name = name
+        var pwd = pwd
+    };
+}
 interface IUser {
     fun register(name: String): Unit;
 }
 val default = UTSAndroid.getResourcePath("uni_modules/test-uniplugin/static/logo.png");
-val test = arrayOf(1, 2, 3);
+val test1 = arrayOf(1, 2, 3);
 open class GetBatteryInfoOptions : UTSJSONObject() {
     open var success: UTSCallback? = null;
     open var fail: UTSCallback? = null;

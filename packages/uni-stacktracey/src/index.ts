@@ -417,7 +417,7 @@ export function uniStracktraceyPreset(
   }
 }
 
-interface UtsStracktraceyPreset {
+interface UTSStracktraceyPreset {
   /**
    * 源码根目录
    */
@@ -432,7 +432,7 @@ interface UtsStracktraceyPreset {
   sourceMapRoot: string
 }
 export function utsStracktraceyPreset(
-  opts: UtsStracktraceyPreset
+  opts: UTSStracktraceyPreset
 ): StacktraceyPreset {
   const { inputRoot, outputRoot, sourceMapRoot } = opts
 

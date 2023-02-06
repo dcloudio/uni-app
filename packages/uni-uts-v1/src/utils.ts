@@ -1,6 +1,6 @@
 import path, { basename, resolve } from 'path'
 import fs from 'fs-extra'
-import type { parse, bundle, UtsTarget } from '@dcloudio/uts'
+import type { parse, bundle, UTSTarget } from '@dcloudio/uts'
 import { camelize, capitalize, extend } from '@vue/shared'
 import glob from 'fast-glob'
 import { Module, ModuleItem } from '../types/types'
@@ -28,10 +28,10 @@ export function resolveUTSSourceMapPath() {
   return resolveSourceMapPath()
 }
 
-export function getUtsCompiler(): {
+export function getUTSCompiler(): {
   parse: typeof parse
   bundle: typeof bundle
-  UtsTarget: typeof UtsTarget
+  UTSTarget: typeof UTSTarget
 } {
   // eslint-disable-next-line no-restricted-globals
   return require('@dcloudio/uts')
