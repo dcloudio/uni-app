@@ -1,4 +1,4 @@
-import { isString } from '@vue/shared'
+import { isArray, isString } from '@vue/shared'
 import {
   getEnvLocale,
   I18N_JSON_DELIMITERS,
@@ -37,10 +37,7 @@ function resolveJsonObj(
       const _isI18nStr = (value: any) =>
         isString(value) && isI18nStr(value, I18N_JSON_DELIMITERS)
       const _name = names[0]
-      if (
-        Array.isArray(jsonObj) &&
-        jsonObj.some((item) => _isI18nStr(item[_name]))
-      ) {
+      if (isArray(jsonObj) && jsonObj.some((item) => _isI18nStr(item[_name]))) {
         return jsonObj
       }
       const value = jsonObj[names[0]]
@@ -67,7 +64,7 @@ export function defineI18nProperty(obj: Record<string, any>, names: string[]) {
     return false
   }
   const prop = names[names.length - 1]
-  if (Array.isArray(jsonObj)) {
+  if (isArray(jsonObj)) {
     jsonObj
       .filter((item) => isI18nStr(item[prop], I18N_JSON_DELIMITERS))
       .forEach((item) => defineI18nProperty(item, [prop]))

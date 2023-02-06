@@ -1,5 +1,5 @@
 import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, h, createTextVNode, createBlock, onBeforeActivate, onBeforeDeactivate, renderList, onDeactivated, createApp, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
-import { isString, extend, isArray, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
+import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
 import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, debounce, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, parseQuery, NAVBAR_HEIGHT, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, updateElementStyle, sortObject, OFF_THEME_CHANGE, ON_BACK_PRESS, parseUrl, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -22,6 +22,11 @@ function formatI18n(message) {
 function resolveJsonObj(jsonObj, names) {
   if (names.length === 1) {
     if (jsonObj) {
+      const _isI18nStr = (value2) => isString(value2) && isI18nStr(value2, I18N_JSON_DELIMITERS);
+      const _name = names[0];
+      if (isArray(jsonObj) && jsonObj.some((item) => _isI18nStr(item[_name]))) {
+        return jsonObj;
+      }
       const value = jsonObj[names[0]];
       if (isString(value) && isI18nStr(value, I18N_JSON_DELIMITERS)) {
         return jsonObj;
@@ -41,15 +46,19 @@ function defineI18nProperty(obj, names) {
     return false;
   }
   const prop = names[names.length - 1];
-  let value = jsonObj[prop];
-  Object.defineProperty(jsonObj, prop, {
-    get() {
-      return formatI18n(value);
-    },
-    set(v2) {
-      value = v2;
-    }
-  });
+  if (isArray(jsonObj)) {
+    jsonObj.filter((item) => isI18nStr(item[prop], I18N_JSON_DELIMITERS)).forEach((item) => defineI18nProperty(item, [prop]));
+  } else {
+    let value = jsonObj[prop];
+    Object.defineProperty(jsonObj, prop, {
+      get() {
+        return formatI18n(value);
+      },
+      set(v2) {
+        value = v2;
+      }
+    });
+  }
   return true;
 }
 function useI18n() {
@@ -543,7 +552,8 @@ function initNavigationBarI18n(navigationBar) {
   if (isEnableLocale()) {
     return defineI18nProperties(navigationBar, [
       ["titleText"],
-      ["searchInput", "placeholder"]
+      ["searchInput", "placeholder"],
+      ["buttons", "text"]
     ]);
   }
 }
@@ -24712,7 +24722,7 @@ function usePageHeadButton(pageId, index2, btn, isTransparent) {
   if (btn.fontFamily) {
     iconStyle.fontFamily = btn.fontFamily;
   }
-  return {
+  return new Proxy({
     btnClass: {
       // 类似这样的大量重复的字符串，会在gzip时压缩大小，无需在代码层考虑优化相同字符串
       "uni-page-head-btn": true,
@@ -24723,7 +24733,7 @@ function usePageHeadButton(pageId, index2, btn, isTransparent) {
       backgroundColor: isTransparent ? btn.background : "transparent",
       width: btn.width
     },
-    btnText: btn.fontSrc && btn.fontFamily ? btn.text.replace("\\u", "&#x") : btn.text,
+    btnText: "",
     btnIconPath: ICON_PATHS[btn.type],
     badgeText: btn.badgeText,
     iconStyle,
@@ -24733,7 +24743,15 @@ function usePageHeadButton(pageId, index2, btn, isTransparent) {
       }, btn));
     },
     btnSelect: btn.select
-  };
+  }, {
+    get(target, key, receiver) {
+      if (["btnText"].includes(key)) {
+        return btn.fontSrc && btn.fontFamily ? btn.text.replace("\\u", "&#x") : btn.text;
+      } else {
+        return Reflect.get(target, key, receiver);
+      }
+    }
+  });
 }
 function usePageHeadSearchInput({
   id: id2,

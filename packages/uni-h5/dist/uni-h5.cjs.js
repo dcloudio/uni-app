@@ -23,6 +23,11 @@ function formatI18n(message) {
 function resolveJsonObj(jsonObj, names) {
   if (names.length === 1) {
     if (jsonObj) {
+      const _isI18nStr = (value2) => shared.isString(value2) && uniI18n.isI18nStr(value2, uniShared.I18N_JSON_DELIMITERS);
+      const _name = names[0];
+      if (shared.isArray(jsonObj) && jsonObj.some((item) => _isI18nStr(item[_name]))) {
+        return jsonObj;
+      }
       const value = jsonObj[names[0]];
       if (shared.isString(value) && uniI18n.isI18nStr(value, uniShared.I18N_JSON_DELIMITERS)) {
         return jsonObj;
@@ -42,15 +47,19 @@ function defineI18nProperty(obj, names) {
     return false;
   }
   const prop = names[names.length - 1];
-  let value = jsonObj[prop];
-  Object.defineProperty(jsonObj, prop, {
-    get() {
-      return formatI18n(value);
-    },
-    set(v2) {
-      value = v2;
-    }
-  });
+  if (shared.isArray(jsonObj)) {
+    jsonObj.filter((item) => uniI18n.isI18nStr(item[prop], uniShared.I18N_JSON_DELIMITERS)).forEach((item) => defineI18nProperty(item, [prop]));
+  } else {
+    let value = jsonObj[prop];
+    Object.defineProperty(jsonObj, prop, {
+      get() {
+        return formatI18n(value);
+      },
+      set(v2) {
+        value = v2;
+      }
+    });
+  }
   return true;
 }
 function useI18n() {
@@ -207,7 +216,8 @@ function initNavigationBarI18n(navigationBar) {
   if (isEnableLocale()) {
     return defineI18nProperties(navigationBar, [
       ["titleText"],
-      ["searchInput", "placeholder"]
+      ["searchInput", "placeholder"],
+      ["buttons", "text"]
     ]);
   }
 }
@@ -12147,7 +12157,7 @@ function usePageHeadButton(pageId, index2, btn, isTransparent) {
   if (btn.fontFamily) {
     iconStyle.fontFamily = btn.fontFamily;
   }
-  return {
+  return new Proxy({
     btnClass: {
       // 类似这样的大量重复的字符串，会在gzip时压缩大小，无需在代码层考虑优化相同字符串
       "uni-page-head-btn": true,
@@ -12158,7 +12168,7 @@ function usePageHeadButton(pageId, index2, btn, isTransparent) {
       backgroundColor: isTransparent ? btn.background : "transparent",
       width: btn.width
     },
-    btnText: btn.fontSrc && btn.fontFamily ? btn.text.replace("\\u", "&#x") : btn.text,
+    btnText: "",
     btnIconPath: ICON_PATHS[btn.type],
     badgeText: btn.badgeText,
     iconStyle,
@@ -12168,7 +12178,15 @@ function usePageHeadButton(pageId, index2, btn, isTransparent) {
       }, btn));
     },
     btnSelect: btn.select
-  };
+  }, {
+    get(target, key, receiver) {
+      if (["btnText"].includes(key)) {
+        return btn.fontSrc && btn.fontFamily ? btn.text.replace("\\u", "&#x") : btn.text;
+      } else {
+        return Reflect.get(target, key, receiver);
+      }
+    }
+  });
 }
 function usePageHeadSearchInput({
   id,

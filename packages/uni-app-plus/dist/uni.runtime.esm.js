@@ -1095,6 +1095,11 @@ function formatI18n(message) {
 function resolveJsonObj(jsonObj, names) {
     if (names.length === 1) {
         if (jsonObj) {
+            const _isI18nStr = (value) => isString(value) && isI18nStr(value, I18N_JSON_DELIMITERS);
+            const _name = names[0];
+            if (isArray(jsonObj) && jsonObj.some((item) => _isI18nStr(item[_name]))) {
+                return jsonObj;
+            }
             const value = jsonObj[names[0]];
             if (isString(value) && isI18nStr(value, I18N_JSON_DELIMITERS)) {
                 return jsonObj;
@@ -1114,15 +1119,22 @@ function defineI18nProperty(obj, names) {
         return false;
     }
     const prop = names[names.length - 1];
-    let value = jsonObj[prop];
-    Object.defineProperty(jsonObj, prop, {
-        get() {
-            return formatI18n(value);
-        },
-        set(v) {
-            value = v;
-        },
-    });
+    if (isArray(jsonObj)) {
+        jsonObj
+            .filter((item) => isI18nStr(item[prop], I18N_JSON_DELIMITERS))
+            .forEach((item) => defineI18nProperty(item, [prop]));
+    }
+    else {
+        let value = jsonObj[prop];
+        Object.defineProperty(jsonObj, prop, {
+            get() {
+                return formatI18n(value);
+            },
+            set(v) {
+                value = v;
+            },
+        });
+    }
     return true;
 }
 function useI18n() {
@@ -1402,6 +1414,7 @@ function initNavigationBarI18n(navigationBar) {
         return defineI18nProperties(navigationBar, [
             ['titleText'],
             ['searchInput', 'placeholder'],
+            ['buttons', 'text'],
         ]);
     }
 }
