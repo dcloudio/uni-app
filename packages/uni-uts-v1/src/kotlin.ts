@@ -313,6 +313,7 @@ export async function compile(
     root: inputDir,
     filename,
     pluginId,
+    paths: {},
   }
   const isUTSFileExists = fs.existsSync(filename)
   if (componentsCode) {

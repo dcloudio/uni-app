@@ -1,8 +1,8 @@
 import Log from 'android.util.Log'
 import FrameLayout from 'android.widget.FrameLayout'
 import View from 'android.view.View'
+import { login } from 'login'
 import { IUser } from './interface'
-import { login } from './login'
 import logo from '../../static/logo.png'
 
 const test = arrayOf(1, 2, 3)
@@ -52,7 +52,7 @@ export class User implements IUser {
   register(name: string, callback: () => void) {
     Log.info(logo as FrameLayout)
   }
-  test(view: View) { 
+  test(view: View) {
     console.log(new TestClass())
   }
 }
@@ -63,6 +63,6 @@ export function register(name: string, callback: () => void) { }
 export function offMemoryWarning(
   callback: null | ((level: number) => void) = null
 ) { }
-class TestClass{
+class TestClass {
 
 }

@@ -21,6 +21,7 @@ export type UtsInputOptions = UtsParseOptions & {
   filename: string
   fileContent?: string
   fileAppendContent?: string
+  paths: Record<string, string>
 }
 
 export type UtsOutputOptions = {

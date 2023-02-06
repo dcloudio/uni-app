@@ -28,6 +28,9 @@ async function testKotlin() {
         projectDir,
         'uni_modules/test-uniplugin/utssdk/app-android/index.uts'
       ),
+      paths: {
+        'login': './login'
+      }
     },
     output: {
       outDir,
