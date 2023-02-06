@@ -8,6 +8,7 @@ export function initNavigationBarI18n(
     return defineI18nProperties(navigationBar, [
       ['titleText'],
       ['searchInput', 'placeholder'],
+      ['buttons', 'text'],
     ]) as [boolean, boolean]
   }
 }

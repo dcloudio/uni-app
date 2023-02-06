@@ -31,9 +31,18 @@ export function formatI18n(message: string) {
 function resolveJsonObj(
   jsonObj: Record<string, any> | undefined,
   names: string[]
-): Record<string, any> | undefined {
+): Record<string, any> | Array<Record<string, any>> | undefined {
   if (names.length === 1) {
     if (jsonObj) {
+      const _isI18nStr = (value: any) =>
+        isString(value) && isI18nStr(value, I18N_JSON_DELIMITERS)
+      const _name = names[0]
+      if (
+        Array.isArray(jsonObj) &&
+        jsonObj.some((item) => _isI18nStr(item[_name]))
+      ) {
+        return jsonObj
+      }
       const value = jsonObj[names[0]]
       if (isString(value) && isI18nStr(value, I18N_JSON_DELIMITERS)) {
         return jsonObj
@@ -58,15 +67,21 @@ export function defineI18nProperty(obj: Record<string, any>, names: string[]) {
     return false
   }
   const prop = names[names.length - 1]
-  let value = jsonObj[prop]
-  Object.defineProperty(jsonObj, prop, {
-    get() {
-      return formatI18n(value)
-    },
-    set(v) {
-      value = v
-    },
-  })
+  if (Array.isArray(jsonObj)) {
+    jsonObj
+      .filter((item) => isI18nStr(item[prop], I18N_JSON_DELIMITERS))
+      .forEach((item) => defineI18nProperty(item, [prop]))
+  } else {
+    let value = jsonObj[prop]
+    Object.defineProperty(jsonObj, prop, {
+      get() {
+        return formatI18n(value)
+      },
+      set(v) {
+        value = v
+      },
+    })
+  }
   return true
 }
 
