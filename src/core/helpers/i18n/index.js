@@ -130,8 +130,13 @@ export function formatI18n (message) {
 function resolveJsonObj (jsonObj, names) {
   if (names.length === 1) {
     if (jsonObj) {
-      const value = jsonObj[names[0]]
-      if (isStr(value) && isI18nStr(value, I18N_JSON_DELIMITERS)) {
+      const _isI18nStr = (value) => isStr(value) && isI18nStr(value, I18N_JSON_DELIMITERS)
+      const _name = names[0]
+      if (Array.isArray(jsonObj) && jsonObj.some(item => _isI18nStr(item[_name]))) {
+        return jsonObj
+      }
+      const value = jsonObj[_name]
+      if (_isI18nStr(value)) {
         return jsonObj
       }
     }
@@ -151,15 +156,21 @@ export function defineI18nProperty (obj, names) {
     return false
   }
   const prop = names[names.length - 1]
-  let value = jsonObj[prop]
-  Object.defineProperty(jsonObj, prop, {
-    get () {
-      return formatI18n(value)
-    },
-    set (v) {
-      value = v
-    }
-  })
+  if (Array.isArray(jsonObj)) {
+    jsonObj
+      .filter(item => isI18nStr(item[prop], I18N_JSON_DELIMITERS))
+      .forEach(item => defineI18nProperty(item, [prop]))
+  } else {
+    let value = jsonObj[prop]
+    Object.defineProperty(jsonObj, prop, {
+      get () {
+        return formatI18n(value)
+      },
+      set (v) {
+        value = v
+      }
+    })
+  }
   return true
 }
 
@@ -171,7 +182,8 @@ export function initNavigationBarI18n (navigationBar) {
   if (isEnableLocale()) {
     return defineI18nProperties(navigationBar, [
       ['titleText'],
-      ['searchInput', 'placeholder']
+      ['searchInput', 'placeholder'],
+      ['buttons', 'text']
     ])
   }
 }
