@@ -11,9 +11,12 @@ function resolveAdditionalData(inputDir: string, config: UserConfig) {
   if (!fs.existsSync(uniScssFile)) {
     return userAdditionalData
   }
-  return (
-    preCss(fs.readFileSync(uniScssFile, 'utf8')) + '\n' + userAdditionalData
-  )
+
+  let content = fs.readFileSync(uniScssFile, 'utf8')
+  if (content.includes('#endif')) {
+    content = preCss(content)
+  }
+  return content + '\n' + userAdditionalData
 }
 
 export function createCss(
