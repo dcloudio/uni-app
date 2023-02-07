@@ -132,8 +132,9 @@ function resolveJsonObj (jsonObj, names) {
     if (jsonObj) {
       const _isI18nStr = (value) => isStr(value) && isI18nStr(value, I18N_JSON_DELIMITERS)
       const _name = names[0]
-      if (Array.isArray(jsonObj) && jsonObj.some(item => _isI18nStr(item[_name]))) {
-        return jsonObj
+      let filterJsonObj = []
+      if (Array.isArray(jsonObj) && (filterJsonObj = jsonObj.filter(item => _isI18nStr(item[_name]))).length) {
+        return filterJsonObj
       }
       const value = jsonObj[_name]
       if (_isI18nStr(value)) {
@@ -158,7 +159,6 @@ export function defineI18nProperty (obj, names) {
   const prop = names[names.length - 1]
   if (Array.isArray(jsonObj)) {
     jsonObj
-      .filter(item => isI18nStr(item[prop], I18N_JSON_DELIMITERS))
       .forEach(item => defineI18nProperty(item, [prop]))
   } else {
     let value = jsonObj[prop]
