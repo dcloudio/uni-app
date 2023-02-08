@@ -111,27 +111,6 @@ importers:
       vue-router: 4.1.6_vue@3.2.47
       yorkie: 2.0.0
 
-  packages/playground/nvue:
-    specifiers:
-      '@dcloudio/uni-app': ../../uni-app
-      '@dcloudio/uni-app-plus': ../../uni-app-plus
-      '@dcloudio/uni-components': ../../uni-components
-      '@dcloudio/vite-plugin-uni': ../../vite-plugin-uni
-      vite: ^4.1.0
-      vue: 3.2.47
-      vue-router: ^4.1.6
-      vuex: ^4.1.0
-    dependencies:
-      '@dcloudio/uni-app': link:../../uni-app
-      '@dcloudio/uni-app-plus': link:../../uni-app-plus
-      '@dcloudio/uni-components': link:../../uni-components
-      vue: 3.2.47
-      vue-router: 4.1.6_vue@3.2.47
-      vuex: 4.1.0_vue@3.2.47
-    devDependencies:
-      '@dcloudio/vite-plugin-uni': link:../../vite-plugin-uni
-      vite: 4.1.1
-
   packages/playground/ssr:
     specifiers:
       '@dcloudio/uni-app': ../../uni-app
