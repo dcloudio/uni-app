@@ -6,7 +6,7 @@ import { walk } from 'estree-walker'
 import { CallExpression } from 'estree'
 
 import { createFilter } from '@rollup/pluginutils'
-import { MagicString } from '@vue/compiler-sfc'
+import MagicString from 'magic-string'
 import {
   isIdentifier,
   isCallExpression,

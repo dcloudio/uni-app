@@ -46,8 +46,9 @@
     "fs-extra": "^10.0.0",
     "hash-sum": "^2.0.0",
     "jsonc-parser": "^3.0.0",
-    "terser": "^5.4.0",
-    "picocolors": "^1.0.0"
+    "magic-string": "^0.27.0",
+    "picocolors": "^1.0.0",
+    "terser": "^5.4.0"
   },
   "devDependencies": {
     "@types/debug": "^4.1.7",
