@@ -19,6 +19,15 @@ parse(
   console.log('parse: ' + (Date.now() - start) + 'ms')
   console.log(JSON.stringify(res))
 })
+
+const kotlinImports = [
+  'kotlinx.coroutines.async',
+  'kotlinx.coroutines.CoroutineScope',
+  'kotlinx.coroutines.Deferred',
+  'kotlinx.coroutines.Dispatchers',
+  'io.dcloud.uts.Map',
+  'io.dcloud.uts.*',
+]
 async function testKotlin() {
   const start = Date.now()
   await bundle(UTSTarget.KOTLIN, {
@@ -35,13 +44,7 @@ async function testKotlin() {
     output: {
       outDir,
       package: 'uts.modules.modules.testUniPlugin',
-      imports: [
-        'kotlinx.coroutines.async',
-        'kotlinx.coroutines.CoroutineScope',
-        'kotlinx.coroutines.Deferred',
-        'kotlinx.coroutines.Dispatchers',
-        'io.dcloud.uts.*',
-      ],
+      imports: kotlinImports,
       sourceMap,
       extname: 'kt',
       logFilename: true,
@@ -71,13 +74,7 @@ async function testKotlin() {
     output: {
       outDir,
       package: 'uts.sdk.testUts',
-      imports: [
-        'kotlinx.coroutines.async',
-        'kotlinx.coroutines.CoroutineScope',
-        'kotlinx.coroutines.Deferred',
-        'kotlinx.coroutines.Dispatchers',
-        'io.dcloud.uts.*',
-      ],
+      imports: kotlinImports,
       sourceMap,
       extname: 'kt',
       logFilename: true,
@@ -102,13 +99,7 @@ async function testKotlinComponent() {
     output: {
       outDir,
       package: 'uts.modules.modules.testComponent',
-      imports: [
-        'kotlinx.coroutines.async',
-        'kotlinx.coroutines.CoroutineScope',
-        'kotlinx.coroutines.Deferred',
-        'kotlinx.coroutines.Dispatchers',
-        'io.dcloud.uts.*',
-      ],
+      imports: kotlinImports,
       sourceMap,
       extname: 'kt',
       logFilename: true,
@@ -172,7 +163,7 @@ async function testSwift() {
     output: {
       outDir,
       package: 'UTSSDKModulesTestUts',
-      imports: ['DCUTSPlugin'],
+      imports: ['DCloudUTSFoundation'],
       sourceMap,
       extname: 'swift',
       logFilename: true,

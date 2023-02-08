@@ -133,11 +133,11 @@ describe('uts:sourceMap', () => {
       sourceMapFile,
       filename,
       line: 3,
-      column: 15,
+      column: 16,
       outputDir,
     })
     expect(res).toEqual({
-      line: 15,
+      line: 16,
       column: 16,
       lastColumn: null,
       source: resolve(
@@ -166,7 +166,7 @@ describe('uts:sourceMap', () => {
     })
 
     expect(line).toBe(5)
-    expect(column).toBe(11)
+    expect(column).toBe(9)
     expect(source).toContain('login.uts')
   })
   test('originalPositionFor ios', async () => {

@@ -3974,7 +3974,7 @@ function uniStracktraceyPreset(opts) {
                 return errorName;
             }
         },
-        lineOffset
+        lineOffset,
     };
 }
 function utsStracktraceyPreset(opts) {
