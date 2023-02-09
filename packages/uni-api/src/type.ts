@@ -52,7 +52,7 @@ type TaskApiLike = ApiLike
 
 type AsyncApiLike = (args: any) => Promise<unknown> | void
 
-type AsyncApiOptions<T extends ApiLike> = Parameters<T>[0]
+type AsyncApiOptions<T extends ApiLike> = Required<Parameters<T>>[0]
 
 type AsyncApiRes<T extends AsyncMethodOptionLike> = Omit<
   Parameters<Exclude<T['success'], undefined>>[0],
