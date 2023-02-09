@@ -217,7 +217,10 @@ function useImageLoader(
     }
   )
   onMounted(() => loadImage(state.src))
-  onBeforeUnmount(() => resetImage())
+  onBeforeUnmount(() => {
+    cleanupObserver()
+    resetImage()
+  })
 }
 
 const isChrome = __NODE_JS__ ? false : navigator.vendor === 'Google Inc.'
