@@ -34,6 +34,9 @@ export type UTSOutputOptions = {
   logFilename?: boolean
   noColor?: boolean
   isPlugin?: boolean
+  transform?: {
+    paramDefaultValue: boolean
+  }
 }
 export interface UTSOptions {
   input: UTSInputOptions
