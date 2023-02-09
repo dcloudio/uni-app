@@ -16,7 +16,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     MODE: 3,
   },
   props: extend({}, navigatorProps, {
-    ssr: {
+    renderLink: {
       type: Boolean,
       default: true,
     },
@@ -46,7 +46,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         </uni-navigator>
       )
 
-      return props.ssr ? (
+      return props.renderLink ? (
         <a
           class="navigator-wrap"
           href={url}
