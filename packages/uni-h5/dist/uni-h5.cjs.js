@@ -4877,7 +4877,12 @@ const index$r = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: navigatorProps,
+  props: shared.extend({}, navigatorProps, {
+    renderLink: {
+      type: Boolean,
+      default: true
+    }
+  }),
   setup(props2, {
     slots
   }) {
@@ -4894,18 +4899,19 @@ const index$r = /* @__PURE__ */ defineBuiltInComponent({
         url
       } = props2;
       const hasHoverClass = props2.hoverClass && props2.hoverClass !== "none";
-      return vue.createVNode("a", {
-        "class": "navigator-wrap",
-        "href": url,
-        "onClick": onEventPrevent,
-        "onMousedown": onEventPrevent
-      }, [vue.createVNode("uni-navigator", vue.mergeProps({
+      const navigatorTsx = vue.createVNode("uni-navigator", vue.mergeProps({
         "class": hasHoverClass && hovering.value ? hoverClass : ""
       }, hasHoverClass && binding, vm ? vm.attrs : {}, {
         [__scopeId]: ""
       }, {
         "onClick": onClick
-      }), [slots.default && slots.default()], 16, ["onClick"])], 40, ["href", "onClick", "onMousedown"]);
+      }), [slots.default && slots.default()], 16, ["onClick"]);
+      return props2.renderLink ? vue.createVNode("a", {
+        "class": "navigator-wrap",
+        "href": url,
+        "onClick": onEventPrevent,
+        "onMousedown": onEventPrevent
+      }, [navigatorTsx], 40, ["href", "onClick", "onMousedown"]) : navigatorTsx;
     };
   }
 });
