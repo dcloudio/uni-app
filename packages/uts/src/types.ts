@@ -36,6 +36,7 @@ export type UTSOutputOptions = {
   isPlugin?: boolean
   transform?: {
     paramDefaultValue: boolean
+    constructorInvocation: boolean
   }
 }
 export interface UTSOptions {
