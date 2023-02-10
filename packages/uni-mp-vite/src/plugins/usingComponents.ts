@@ -140,7 +140,8 @@ export function uniUsingComponentsPlugin(
 
 export function dynamicImport(name: string, value: string) {
   // 开发者可能将页面作为组件来引用
-  if (isMiniProgramPageFile(value)) {
+  const pagePath = value.replace(process.env.UNI_INPUT_DIR + '/', '')
+  if (isMiniProgramPageFile(pagePath)) {
     return `const ${name} = ()=>import('${virtualPagePath(value)}')`
   }
   return `const ${name} = ()=>import('${virtualComponentPath(value)}')`
