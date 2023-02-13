@@ -33,6 +33,6 @@
     "@vue/shared": "3.2.47"
   },
   "peerDependencies": {
-    "@dcloudio/types": "^3.2.11"
+    "@dcloudio/types": "^3.3.0"
   }
 }

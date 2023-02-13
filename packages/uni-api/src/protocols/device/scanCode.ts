@@ -9,7 +9,10 @@ export const ScanCodeProtocol: ApiProtocol<API_TYPE_SCAN_CODE> = {
   autoZoom: Boolean,
 }
 
-const SOUND: Parameters<API_TYPE_SCAN_CODE>[0]['sound'][] = ['default', 'none']
+const SOUND: NonNullable<Parameters<API_TYPE_SCAN_CODE>[0]>['sound'][] = [
+  'default',
+  'none',
+]
 export const ScanCodeOptions: ApiOptions<API_TYPE_SCAN_CODE> = {
   formatArgs: {
     sound(value, params) {
