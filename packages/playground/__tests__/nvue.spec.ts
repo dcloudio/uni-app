@@ -1,11 +1,12 @@
-const execa = require('execa')
-const fs = require('fs')
+import fs from 'fs'
+import path from 'path'
+import execa from 'execa'
 
-const nvuePath = require('path').resolve(__dirname, '../nvue')
+const projectDir = path.resolve(__dirname, '../nvue')
 
 beforeAll(async () => {
-  await execa('npm run', ['build:app'], {
-    cwd: nvuePath,
+  await execa('npm', ['run', 'build:app'], {
+    cwd: projectDir,
   })
 })
 
@@ -13,8 +14,8 @@ describe('nvue playground', () => {
   jest.setTimeout(50 * 1000)
   test('template scroll-view', () => {
     const s = fs.readFileSync(
-      require('path').resolve(nvuePath, 'dist/build/app/pages/index/index.js'),
-      { encoding: 'utf8' }
+      path.resolve(projectDir, 'dist/build/app/pages/index/index.js'),
+      'utf8'
     )
     expect(s).toContain('scroll-view')
   })
