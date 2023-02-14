@@ -7,6 +7,10 @@ export interface UTSParserConfig {
    * Defaults to `false`
    */
   allowImportWithoutSpecifiers?: boolean
+  /**
+   * Defaults to `false`
+   */
+  noGetterOrSetterProp?: boolean
 }
 
 export type UTSParseOptions = UTSParserConfig & {

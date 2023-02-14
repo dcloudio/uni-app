@@ -14,7 +14,9 @@ parse(
       'uni_modules/test-uniplugin/utssdk/app-android/index.uts'
     ),
     'utf8'
-  )
+  ), {
+  noGetterOrSetterProp: false
+}
 ).then((res) => {
   console.log('parse: ' + (Date.now() - start) + 'ms')
   console.log(JSON.stringify(res))

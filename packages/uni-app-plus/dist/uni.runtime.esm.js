@@ -11523,7 +11523,10 @@ const ScanCodeProtocol = {
     sound: String,
     autoZoom: Boolean,
 };
-const SOUND = ['default', 'none'];
+const SOUND = [
+    'default',
+    'none',
+];
 const ScanCodeOptions = {
     formatArgs: {
         sound(value, params) {

@@ -18760,7 +18760,7 @@ const getVideoInfo = /* @__PURE__ */ defineAsyncApi(
           clearTimeout(handle);
           video.onerror = null;
           resolve({
-            size: file ? file.size : void 0,
+            size: file ? file.size : 0,
             duration: video.duration || 0,
             width: video.videoWidth || 0,
             height: video.videoHeight || 0
