@@ -308,6 +308,19 @@ function initExtraOptions(miniProgramComponentOptions, vueOptions) {
         }
     });
 }
+const WORKLET_RE = /_(.*)_worklet_factory_/;
+function initWorkletMethods(mpMethods, vueMethods) {
+    if (vueMethods) {
+        Object.keys(vueMethods).forEach((name) => {
+            const matches = name.match(WORKLET_RE);
+            if (matches) {
+                const workletName = matches[1];
+                mpMethods[name] = vueMethods[name];
+                mpMethods[workletName] = vueMethods[workletName];
+            }
+        });
+    }
+}
 function initWxsCallMethods(methods, wxsCallMethods) {
     if (!isArray(wxsCallMethods)) {
         return;
@@ -671,6 +684,9 @@ function parseComponent(vueOptions, { parse, mocks, isPage, initRelation, handle
     initPropsObserver(mpComponentOptions);
     initExtraOptions(mpComponentOptions, vueOptions);
     initWxsCallMethods(mpComponentOptions.methods, vueOptions.wxsCallMethods);
+    {
+        initWorkletMethods(mpComponentOptions.methods, vueOptions.methods);
+    }
     if (parse) {
         parse(mpComponentOptions, { handleLink });
     }

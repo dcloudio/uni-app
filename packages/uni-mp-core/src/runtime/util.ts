@@ -39,6 +39,23 @@ export function initExtraOptions(
   })
 }
 
+const WORKLET_RE = /_(.*)_worklet_factory_/
+export function initWorkletMethods(
+  mpMethods: WechatMiniprogram.Component.MethodOption,
+  vueMethods: ComponentOptions['methods']
+) {
+  if (vueMethods) {
+    Object.keys(vueMethods).forEach((name) => {
+      const matches = name.match(WORKLET_RE)
+      if (matches) {
+        const workletName = matches[1]
+        mpMethods[name] = vueMethods[name]
+        mpMethods[workletName] = vueMethods[workletName]
+      }
+    })
+  }
+}
+
 export function initWxsCallMethods(
   methods: WechatMiniprogram.Component.MethodOption,
   wxsCallMethods: WechatMiniprogram.Component.MethodOption

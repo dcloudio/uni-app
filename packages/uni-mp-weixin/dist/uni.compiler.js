@@ -118,6 +118,14 @@ const customElements = [
     'navigation-bar',
     'match-media',
     'ad-custom',
+    // 手势组件
+    'tap-gesture-handler',
+    'double-tap-gesture-handler',
+    'pan-gesture-handler',
+    'scale-gesture-handler',
+    'force-press-gesture-handler',
+    'vertical-drag-gesture-handler',
+    'horizontal-drag-gesture-handler',
 ];
 const compilerOptions = {
     nodeTransforms: [uniCliShared.transformRef, uniCliShared.transformComponentLink, transformAd],

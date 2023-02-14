@@ -9,7 +9,11 @@ import {
 // @ts-expect-error
 import { getExposeProxy } from 'vue'
 
-import { initExtraOptions, initWxsCallMethods } from './util'
+import {
+  initExtraOptions,
+  initWorkletMethods,
+  initWxsCallMethods,
+} from './util'
 
 import { initProps } from './componentProps'
 import { applyOptions, initPropsObserver } from './componentOptions'
@@ -138,6 +142,12 @@ export function parseComponent(
     mpComponentOptions.methods as Component.MethodOption,
     vueOptions.wxsCallMethods
   )
+  if (__PLATFORM__ === 'mp-weixin') {
+    initWorkletMethods(
+      mpComponentOptions.methods as Component.MethodOption,
+      vueOptions.methods
+    )
+  }
 
   if (parse) {
     parse(mpComponentOptions, { handleLink })
