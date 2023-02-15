@@ -23358,13 +23358,15 @@ function useMap(props2, rootRef, emit2) {
         causedBy: "drag"
       }, getMapInfo2()));
     });
-    event.addListener(map2, "zoom_changed", () => {
+    const zoomChangedCallback = () => {
       emit2("update:scale", map2.getZoom());
       trigger("regionchange", {}, extend({
         type: "end",
         causedBy: "scale"
       }, getMapInfo2()));
-    });
+    };
+    event.addListener(map2, "zoom_changed", zoomChangedCallback);
+    event.addListener(map2, "zoomend", zoomChangedCallback);
     event.addListener(map2, "center_changed", () => {
       const center2 = map2.getCenter();
       const latitude = getLat(center2);
