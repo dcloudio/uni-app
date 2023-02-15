@@ -25,11 +25,6 @@ interface IUser {
 }
 val default = UTSAndroid.getResourcePath("uni_modules/test-uniplugin/static/logo.png");
 val test1 = arrayOf(1, 2, 3);
-open class GetBatteryInfoOptions : UTSJSONObject() {
-    open var success: UTSCallback? = null;
-    open var fail: UTSCallback? = null;
-    open var complete: UTSCallback? = null;
-}
 open class User : IUser {
     open suspend fun login(name: String, pwd: String) = CoroutineScope(Dispatchers.Default).async {
         setTimeout(fun(){
