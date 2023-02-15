@@ -438,4 +438,11 @@ describe('mp:compiler-mp-weixin', () => {
       }
     )
   })
+
+  it('skyline gesture', () => {
+    assertCodegen(
+      '<vertical-drag-gesture-handler onGestureEvent="handlePan" native-view="scroll-view" shouldResponseOnMove="shouldResponse" shouldAcceptGesture="shouldAccept"/>',
+      '<vertical-drag-gesture-handler onGestureEvent="handlePan" native-view="scroll-view" shouldResponseOnMove="shouldResponse" shouldAcceptGesture="shouldAccept"></vertical-drag-gesture-handler>'
+    )
+  })
 })

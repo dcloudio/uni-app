@@ -213,6 +213,19 @@ function getCondition (pagesJson) {
   return false
 }
 
+function weixinSkyline (config) {
+  return config.renderer === 'skyline' && config.lazyCodeLoading === 'requiredComponents'
+}
+
+function openES62ES5 (config) {
+  if (!config.setting) {
+    config.setting = {}
+  }
+  if (!config.setting.es6) {
+    config.setting.es6 = true
+  }
+}
+
 module.exports = function (pagesJson, manifestJson, project = {}) {
   const app = {
     pages: [],
@@ -291,8 +304,8 @@ module.exports = function (pagesJson, manifestJson, project = {}) {
     }
 
     if (
-      process.env.UNI_PLATFORM === 'mp-weixin' ||
-      process.env.UNI_PLATFORM === 'mp-qq'
+      platform === 'mp-weixin' ||
+      platform === 'mp-qq'
     ) {
       // 微信不需要生成，其他平台做拷贝
       return {
@@ -353,6 +366,9 @@ module.exports = function (pagesJson, manifestJson, project = {}) {
         project.setting.es6 = true
       }
     }
+
+    // 使用了微信小程序手势系统，自动开启 ES6=>ES5
+    platform === 'mp-weixin' && weixinSkyline(manifestJson[platform]) && openES62ES5(project)
 
     if (process.env.UNI_AUTOMATOR_WS_ENDPOINT) {
       if (!project.setting) {
