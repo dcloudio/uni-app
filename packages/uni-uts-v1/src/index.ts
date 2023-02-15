@@ -30,7 +30,7 @@ import {
 } from './utils'
 import { parseUTSSwiftPluginStacktrace } from './stacktrace'
 import { resolveUTSPluginSourceMapFile } from './sourceMap'
-import { isWindows } from './shared'
+import { isWindows, normalizePath } from './shared'
 import {
   generateCodeFrameWithKotlinStacktrace,
   generateCodeFrameWithSwiftStacktrace,
@@ -74,14 +74,17 @@ export interface CompileResult {
   deps: string[]
   encrypt: boolean
   meta?: any
+  dir: string
 }
 
 function createResult(
+  dir: string,
   errMsg: string,
   code: string,
   deps: string[]
 ): CompileResult {
   return {
+    dir,
     code: parseErrMsg(code, errMsg),
     deps,
     encrypt: false,
@@ -106,6 +109,7 @@ export async function compile(
   const utsPlatform = process.env.UNI_UTS_PLATFORM
 
   const pluginRelativeDir = relative(inputDir, pluginDir)
+  const outputPluginDir = normalizePath(join(outputDir, pluginRelativeDir))
   const androidComponents = resolveAndroidComponents(
     pluginDir,
     pkg.is_uni_modules
@@ -201,12 +205,12 @@ export async function compile(
     if (utsPlatform === 'app-ios') {
       if (isWindows) {
         process.env.UNI_UTS_TIPS = `iOS手机在windows上真机运行时uts插件代码修改需提交云端打包自定义基座才能生效`
-        return createResult(errMsg, code, deps)
+        return createResult(outputPluginDir, errMsg, code, deps)
       }
       // ios 模拟器不支持
       if (process.env.HX_RUN_DEVICE_TYPE === 'ios_simulator') {
         process.env.UNI_UTS_TIPS = `iOS手机在模拟器运行暂不支持uts插件，如需调用uts插件请使用自定义基座`
-        return createResult(compileErrMsg(pkg.id), code, deps)
+        return createResult(outputPluginDir, compileErrMsg(pkg.id), code, deps)
       }
     }
     if (utsPlatform === 'app-android' || utsPlatform === 'app-ios') {
@@ -269,6 +273,7 @@ export async function compile(
           }
           // 所有文件加入依赖
           return createResult(
+            outputPluginDir,
             errMsg,
             code,
             res.files.map((name) => join(pluginDir, name))
@@ -387,7 +392,7 @@ export async function compile(
       }
     }
   }
-  return createResult(errMsg, code, deps)
+  return createResult(outputPluginDir, errMsg, code, deps)
 }
 
 function getCompiler(type: 'kotlin' | 'swift') {
