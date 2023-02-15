@@ -61,6 +61,10 @@ export function parseMiniProgramProjectJson(
           }
         }
       })
+      // 使用了微信小程序手势系统，自动开启 ES6=>ES5
+      platform === 'mp-weixin' &&
+        weixinSkyline(platformConfig) &&
+        openES62ES5(projectJson)
     }
   }
   // 其实仅开发期间 condition 生效即可，暂不做判断
@@ -75,6 +79,22 @@ export function parseMiniProgramProjectJson(
     projectJson.appid = 'touristappid'
   }
   return projectJson
+}
+
+function weixinSkyline(config: any) {
+  return (
+    config.renderer === 'skyline' &&
+    config.lazyCodeLoading === 'requiredComponents'
+  )
+}
+
+function openES62ES5(config: any) {
+  if (!config.setting) {
+    config.setting = {}
+  }
+  if (!config.setting.es6) {
+    config.setting.es6 = true
+  }
 }
 
 function parseMiniProgramCondition(pagesJson: UniApp.PagesJson) {
