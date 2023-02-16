@@ -59,18 +59,20 @@ function getH5Options (manifestJson) {
 
   let base = h5.router.base
 
-  if (!base.startsWith('/') && !base.startsWith('./')) {
-    base = '/' + base
+  // base 支持完整 http 格式的 cdn 地址
+  if (!base.startsWith('http')) {
+    if (!base.startsWith('/') && !base.startsWith('./')) {
+      base = '/' + base
+    }
+    if (!base.endsWith('/')) {
+      base = base + '/'
+    }
+    // 相对路径仅支持 hash 模式
+    if (base.startsWith('./')) {
+      h5.router.mode = defaultRouter.mode
+    }
+    h5.router.base = base
   }
-  if (!base.endsWith('/')) {
-    base = base + '/'
-  }
-  // 相对路径仅支持 hash 模式
-  if (base.startsWith('./')) {
-    h5.router.mode = defaultRouter.mode
-  }
-
-  h5.router.base = base
 
   if (process.env.NODE_ENV === 'production') { // 生产模式，启用 publicPath
     h5.publicPath = h5.publicPath || base
