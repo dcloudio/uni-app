@@ -59,10 +59,14 @@ export class User implements IUser {
 function login(name: string, callback: () => void) { }
 
 @Suppress("DEPRECATION")
-export function register(name: string, callback: () => void) { }
+  export function register(name: string, callback: () => void) { }
 export function offMemoryWarning(
   callback: null | ((level: number) => void) = null
-) { }
+) {
+  uni.showToast()
+  uni.showToast()
+  uni.showModel()
+}
 class TestClass {
 
 }

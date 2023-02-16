@@ -79,5 +79,8 @@ export class Test {
 }
 
 export async function testAsync() {
+  uni.showToast()
+  uni.showToast()
+  uni.showModel()
   return { a: 1 }
 }

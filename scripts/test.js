@@ -51,6 +51,9 @@ async function testKotlin() {
       extname: 'kt',
       logFilename: true,
       isPlugin: true,
+      transform: {
+        uniExtApiPackage: 'io.dcloud.uts.extapi'
+      }
     },
   }).then((res) => {
     console.log('bundle: ' + (Date.now() - start) + 'ms')
@@ -140,6 +143,9 @@ async function testSwift() {
       extname: 'swift',
       logFilename: true,
       isPlugin: true,
+      transform: {
+        uniExtApiPackage: 'DCloudUTSExtAPI'
+      }
     },
   }).then((res) => {
     console.log('bundle: ' + (Date.now() - start) + 'ms')

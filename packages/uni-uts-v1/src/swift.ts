@@ -196,6 +196,9 @@ export async function compile(
       imports: ['DCloudUTSFoundation'],
       logFilename: true,
       noColor: !isColorSupported(),
+      transform: {
+        uniExtApiPackage: 'DCloudUTSExtAPI',
+      },
     },
   })
   sourceMap &&

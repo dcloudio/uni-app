@@ -1,6 +1,9 @@
+import DCloudUTSExtAPI;
 import DCloudUTSFoundation;
 import UIKit;
 import CoreLocation;
+var uni_showToast = DCloudUTSExtAPI.showToast;
+var uni_showModel = DCloudUTSExtAPI.showModel;
 @objc(UTSSDKModulesTestUniPluginGetBatteryInfoOptions)
 @objcMembers
 class GetBatteryInfoOptions : NSObject {
@@ -70,6 +73,9 @@ class Test : NSObject {
 }
 @available(iOS 13.0.0, *)
 func testAsync() async -> UTSJSONObject {
+    uni_showToast();
+    uni_showToast();
+    uni_showModel();
     return UTSJSONObject([
         "a": 1
     ]);

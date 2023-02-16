@@ -5,6 +5,8 @@ import kotlinx.coroutines.Deferred;
 import kotlinx.coroutines.Dispatchers;
 import io.dcloud.uts.Map;
 import io.dcloud.uts.*;
+import io.dcloud.uts.extapi.showToast as uni_showToast;
+import io.dcloud.uts.extapi.showModel as uni_showModel;
 import io.dcloud.uts.UTSAndroid;
 import android.util.Log;
 import android.widget.FrameLayout;
@@ -56,6 +58,10 @@ open class User : IUser {
 fun login(name: String, callback: () -> Unit) {}
 @Suppress("DEPRECATION")
 fun register(name: String, callback: UTSCallback) {}
-fun offMemoryWarning(callback: (UTSCallback)? = null) {}
+fun offMemoryWarning(callback: (UTSCallback)? = null) {
+    uni_showToast();
+    uni_showToast();
+    uni_showModel();
+}
 open class TestClass {
 }
