@@ -26,33 +26,34 @@ interface IUser {
     fun register(name: String): Unit;
 }
 val default = UTSAndroid.getResourcePath("uni_modules/test-uniplugin/static/logo.png");
+typealias ShowToast = (msg: String) -> Unit;
 val test1 = arrayOf(1, 2, 3);
 open class User : IUser {
     open suspend fun login(name: String, pwd: String) = CoroutineScope(Dispatchers.Default).async {
         setTimeout(fun(){
-            console.log("timeout", " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:18");
+            console.log("timeout", " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:19");
         }
         , 1000);
         login(name, pwd);
         run {
             var i = 0;
             while(i < 10){
-                console.log(i, " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:22");
+                console.log(i, " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:23");
                 i++;
             }
         }
         Log.info(default);
-        console.log("def android", " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:26");
-        console.log("ndef ios", " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:35");
-        console.log("def android || def ios", " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:38");
-        console.log((-3).inv(), " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:44");
+        console.log("def android", " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:27");
+        console.log("ndef ios", " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:36");
+        console.log("def android || def ios", " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:39");
+        console.log((-3).inv(), " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:45");
         XToast<XToast<*>>(getUniActivity()).setContentView(R.layout.toast_hint).setDuration(1000).setImageDrawable(android.R.id.icon, R.mipmap.ic_dialog_tip_finish).setText(android.R.id.message, "点我消失").show();
     }
     override fun register(name: String, callback: UTSCallback) {
         Log.info(default as FrameLayout);
     }
     open fun test(view: View) {
-        console.log(TestClass(), " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:56");
+        console.log(TestClass(), " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:57");
     }
 }
 fun login(name: String, callback: () -> Unit) {}
@@ -65,3 +66,6 @@ fun offMemoryWarning(callback: (UTSCallback)? = null) {
 }
 open class TestClass {
 }
+val showToast1: ShowToast = fun(msg){};
+val showToast2: ShowToast = fun(msg) {};
+val showToast3: ShowToast = fun(msg) {};

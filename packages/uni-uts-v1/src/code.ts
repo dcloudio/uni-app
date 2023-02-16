@@ -1,7 +1,10 @@
 import fs from 'fs'
 import path from 'path'
 
-import {
+import { camelize, capitalize } from '@vue/shared'
+
+import type {
+  ArrowFunctionExpression,
   BindingIdentifier,
   ClassDeclaration,
   ClassExpression,
@@ -11,6 +14,8 @@ import {
   Identifier,
   Module,
   Param,
+  Span,
+  TsFnParameter,
   TsTypeAnnotation,
   VariableDeclaration,
   VariableDeclarationKind,
@@ -21,7 +26,6 @@ import {
   isColorSupported,
 } from './utils'
 import { normalizePath } from './shared'
-import { camelize, capitalize } from '@vue/shared'
 
 export const enum FORMATS {
   ES = 'es',
@@ -39,6 +43,7 @@ interface GenProxyCodeOptions {
   pluginRelativeDir?: string
   moduleName?: string
   moduleType?: string
+  types?: Types
 }
 
 export async function genProxyCode(
@@ -46,6 +51,7 @@ export async function genProxyCode(
   options: GenProxyCodeOptions
 ) {
   const { name, is_uni_modules, format, moduleName, moduleType } = options
+  options.types = await parseInterfaceTypes(module, options)
   return `
 const { initUTSProxyClass, initUTSProxyFunction, initUTSPackageName, initUTSIndexClassName, initUTSClassName } = uni
 const name = '${name}'
@@ -99,6 +105,18 @@ export function resolveRootIndex(module: string, options: GenProxyCodeOptions) {
     module,
     options.is_uni_modules ? 'utssdk' : '',
     `index${options.extname}`
+  )
+  return fs.existsSync(filename) && filename
+}
+
+export function resolveRootInterface(
+  module: string,
+  options: GenProxyCodeOptions
+) {
+  const filename = path.resolve(
+    module,
+    options.is_uni_modules ? 'utssdk' : '',
+    `interface${options.extname}`
   )
   return fs.existsSync(filename) && filename
 }
@@ -212,6 +230,57 @@ function genModuleCode(
   return codes.join(`\n`)
 }
 
+/**
+ * 解析接口文件中定义的类型信息（主要是解析函数类型参数类型列表）
+ * @param module
+ * @param options
+ * @returns
+ */
+async function parseInterfaceTypes(
+  module: string,
+  options: GenProxyCodeOptions
+) {
+  const interfaceFilename = resolveRootInterface(module, options)
+  if (!interfaceFilename) {
+    return {}
+  }
+  // 懒加载 uts 编译器
+  // eslint-disable-next-line no-restricted-globals
+  const { parse } = require('@dcloudio/uts')
+  const ast: Module = await parse(fs.readFileSync(interfaceFilename, 'utf8'), {
+    noColor: !isColorSupported(),
+  })
+  const types: Record<string, Param[]> = {}
+  ast.body.filter((node) => {
+    if (
+      node.type === 'ExportDeclaration' &&
+      node.declaration.type === 'TsTypeAliasDeclaration' &&
+      node.declaration.typeAnnotation.type === 'TsFunctionType'
+    ) {
+      const params = createParams(node.declaration.typeAnnotation.params)
+      if (params.length) {
+        types[node.declaration.id.value] = params
+      }
+    }
+  })
+  return types
+}
+
+function createParams(tsParams: TsFnParameter[]) {
+  const params: Param[] = []
+  tsParams.forEach((pat) => {
+    if (pat.type === 'Identifier') {
+      params.push({
+        type: 'Parameter',
+        pat,
+        span: {} as Span,
+      })
+    }
+  })
+  return params
+}
+
+type Types = Awaited<ReturnType<typeof parseInterfaceTypes>>
 async function parseModuleDecls(module: string, options: GenProxyCodeOptions) {
   // 优先合并 ios + android，如果没有，查找根目录 index.uts
   const iosDecls = await parseFile(
@@ -282,17 +351,21 @@ async function parseFile(
   options: GenProxyCodeOptions
 ) {
   if (filename) {
-    return parseCode(fs.readFileSync(filename, 'utf8'), options.namespace)
+    return parseCode(
+      fs.readFileSync(filename, 'utf8'),
+      options.namespace,
+      options.types!
+    )
   }
   return []
 }
 
-async function parseCode(code: string, namespace: string) {
+async function parseCode(code: string, namespace: string, types: Types) {
   // 懒加载 uts 编译器
   // eslint-disable-next-line no-restricted-globals
   const { parse } = require('@dcloudio/uts')
   const ast = await parse(code, { noColor: !isColorSupported() })
-  return parseAst(ast, createResolveTypeReferenceName(namespace, ast))
+  return parseAst(ast, createResolveTypeReferenceName(namespace, ast), types)
 }
 
 type ProxyDecl = ProxyFunctionDeclaration | ProxyClass | VariableDeclaration
@@ -320,7 +393,8 @@ interface ProxyClass {
 
 function parseAst(
   { body }: Module,
-  resolveTypeReferenceName: ResolveTypeReferenceName
+  resolveTypeReferenceName: ResolveTypeReferenceName,
+  types: Types
 ) {
   const decls: Array<
     ProxyFunctionDeclaration | ProxyClass | VariableDeclaration
@@ -339,7 +413,11 @@ function parseAst(
           decls.push(genClassDeclaration(decl, resolveTypeReferenceName, false))
           break
         case 'VariableDeclaration':
-          const varDecl = genVariableDeclaration(decl)
+          const varDecl = genVariableDeclaration(
+            decl,
+            resolveTypeReferenceName,
+            types
+          )
           if (varDecl) {
             decls.push(varDecl)
           }
@@ -576,8 +654,10 @@ function genInitCode(expr: Expression) {
 }
 
 function genVariableDeclaration(
-  decl: VariableDeclaration
-): VariableDeclaration | undefined {
+  decl: VariableDeclaration,
+  resolveTypeReferenceName: ResolveTypeReferenceName,
+  types: Types
+): VariableDeclaration | ProxyFunctionDeclaration | undefined {
   // 目前仅支持 const 的 boolean,number,string
   const lits = ['BooleanLiteral', 'NumericLiteral', 'StringLiteral']
   if (
@@ -597,5 +677,72 @@ function genVariableDeclaration(
     })
   ) {
     return decl
+  }
+  if (decl.declarations.length === 1) {
+    // 识别是否是定义的 function,如：export const showToast:ShowToast = ()=>{}
+    const { id, init } = decl.declarations[0]
+    if (
+      id.type === 'Identifier' &&
+      init &&
+      (init.type === 'ArrowFunctionExpression' ||
+        init.type === 'FunctionExpression')
+    ) {
+      // 根据类型信息查找参数列表
+      let params: Param[] | undefined
+      const typeAnn = (id as BindingIdentifier).typeAnnotation
+      if (typeAnn && typeAnn.typeAnnotation.type === 'TsTypeReference') {
+        const { typeName } = typeAnn.typeAnnotation
+        if (typeName.type === 'Identifier') {
+          params = types[typeName.value]
+        }
+      }
+      return genFunctionDeclaration(
+        createFunctionDeclaration(id.value, init, params),
+        resolveTypeReferenceName,
+        false
+      )
+    }
+  }
+}
+
+function createIdentifier(name: string): Identifier {
+  return {
+    type: 'Identifier',
+    value: name,
+    optional: false,
+    span: {} as Span,
+  }
+}
+
+function createFunctionDeclaration(
+  name: string,
+  func: ArrowFunctionExpression | FunctionExpression,
+  params?: Param[]
+): FunctionDeclaration {
+  if (!params) {
+    if (func.type === 'FunctionExpression') {
+      params = func.params
+    } else if (func.type === 'ArrowFunctionExpression') {
+      func.params.forEach((p) => {
+        if (p.type === 'Identifier') {
+          params!.push({
+            type: 'Parameter',
+            pat: p,
+            span: {} as Span,
+          })
+        }
+      })
+    }
+  }
+  return {
+    type: 'FunctionDeclaration',
+    identifier: createIdentifier(name),
+    declare: false,
+    params: params!,
+    generator: false,
+    async: func.async,
+    typeParameters: func.typeParameters,
+    returnType: func.returnType,
+    span: {} as Span,
   }
 }

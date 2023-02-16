@@ -17,6 +17,8 @@ export const onMemoryWarning = initUTSProxyFunction(false, { moduleName, moduleT
 export const offMemoryWarning = initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'offMemoryWarning', params: [{"name":"callback","type":"UTSCallback","default":"UTSNull"}]})
 export default initUTSProxyClass(Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, 'User', is_uni_modules) }, {"constructor":{"params":[]},"methods":{},"staticMethods":{},"props":[],"staticProps":[]} ))
 export const a = 1
+export const showToast1 = initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'showToast1', params: [{"name":"msg","type":"string"}]})
+export const showToast2 = initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'showToast2', params: [{"name":"msg","type":"string"}]})
 "
 `;
 
@@ -40,6 +42,8 @@ exports.offMemoryWarning = initUTSProxyFunction(false, { moduleName, moduleType,
 exports.default = initUTSProxyClass(Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, 'User', is_uni_modules) }, {"constructor":{"params":[]},"methods":{},"staticMethods":{},"props":[],"staticProps":[]} ))
 const a = 1
 exports.a = a
+exports.showToast1 = initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'showToast1', params: [{"name":"msg","type":"string"}]})
+exports.showToast2 = initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'showToast2', params: [{"name":"msg","type":"string"}]})
 uni.registerUTSPlugin('utssdk/test-uts', exports)
 "
 `;

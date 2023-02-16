@@ -188,7 +188,7 @@ describe('uts:sourceMap', () => {
     })
 
     expect(line).toBe(19)
-    expect(column).toBe(4)
+    expect(column).toBe(14)
     expect(source).toContain('index.uts')
   })
 })
