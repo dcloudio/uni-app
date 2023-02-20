@@ -1172,11 +1172,11 @@ var shims = /*#__PURE__*/Object.freeze({
 
 var protocols = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  redirectTo: redirectTo,
+  getSystemInfo: getSystemInfo,
+  getSystemInfoSync: getSystemInfoSync,
   navigateTo: navigateTo,
   previewImage: previewImage,
-  getSystemInfo: getSystemInfo,
-  getSystemInfoSync: getSystemInfoSync
+  redirectTo: redirectTo
 });
 
 var index = initUni(shims, protocols);

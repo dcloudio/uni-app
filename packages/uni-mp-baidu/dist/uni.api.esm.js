@@ -1187,10 +1187,10 @@ function createVideoContext(videoId) {
 
 var shims = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  getProvider: getProvider,
-  requestPayment: requestPayment,
   createIntersectionObserver: createIntersectionObserver,
-  createVideoContext: createVideoContext
+  createVideoContext: createVideoContext,
+  getProvider: getProvider,
+  requestPayment: requestPayment
 });
 
 function createTodoMethod(contextName, methodName) {
@@ -1279,22 +1279,22 @@ const getAccountInfoSync = {
 
 var protocols = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  returnValue: returnValue,
-  request: request,
   connectSocket: connectSocket,
-  getRecorderManager: getRecorderManager,
-  getBackgroundAudioManager: getBackgroundAudioManager,
-  scanCode: scanCode,
-  navigateToMiniProgram: navigateToMiniProgram,
-  navigateBackMiniProgram: navigateBackMiniProgram,
-  showShareMenu: showShareMenu,
-  login: login,
   getAccountInfoSync: getAccountInfoSync,
-  redirectTo: redirectTo,
-  navigateTo: navigateTo,
-  previewImage: previewImage,
+  getBackgroundAudioManager: getBackgroundAudioManager,
+  getRecorderManager: getRecorderManager,
   getSystemInfo: getSystemInfo,
-  getSystemInfoSync: getSystemInfoSync
+  getSystemInfoSync: getSystemInfoSync,
+  login: login,
+  navigateBackMiniProgram: navigateBackMiniProgram,
+  navigateTo: navigateTo,
+  navigateToMiniProgram: navigateToMiniProgram,
+  previewImage: previewImage,
+  redirectTo: redirectTo,
+  request: request,
+  returnValue: returnValue,
+  scanCode: scanCode,
+  showShareMenu: showShareMenu
 });
 
 var index = initUni(shims, protocols);

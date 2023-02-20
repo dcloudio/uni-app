@@ -33,7 +33,7 @@ type ConsoleMethod = 'warn' | 'error'
 function overridedConsole(
   name: ConsoleMethod,
   oldFn: (...args: any[]) => any,
-  char: typeof ZERO_WIDTH_CHAR[ZERO_WIDTH_CHAR_KEY]
+  char: (typeof ZERO_WIDTH_CHAR)[ZERO_WIDTH_CHAR_KEY]
 ) {
   console[name] = function (...args) {
     oldFn.apply(

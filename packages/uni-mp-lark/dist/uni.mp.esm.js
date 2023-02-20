@@ -1,4 +1,4 @@
-import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, isUniLifecycleHook, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, addLeadingSlash, stringifyQuery, customizeEvent } from '@dcloudio/uni-shared';
+import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, addLeadingSlash, stringifyQuery, customizeEvent } from '@dcloudio/uni-shared';
 import { isArray, hasOwn, isFunction, extend, isPlainObject, isObject } from '@vue/shared';
 import { devtoolsComponentRemoved, devtoolsComponentAdded, ref, nextTick, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, getExposeProxy, pruneComponentPropsCache } from 'vue';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
@@ -992,13 +992,13 @@ function parse(componentOptions, { handleLink }) {
 
 var parseComponentOptions = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  mocks: mocks,
-  isPage: isPage,
-  instances: instances,
-  initRelation: initRelation,
   handleLink: handleLink,
-  parse: parse,
-  initLifetimes: initLifetimes$1
+  initLifetimes: initLifetimes$1,
+  initRelation: initRelation,
+  instances: instances,
+  isPage: isPage,
+  mocks: mocks,
+  parse: parse
 });
 
 function initLifetimes(lifetimesOptions) {
@@ -1034,12 +1034,12 @@ function initLifetimes(lifetimesOptions) {
 
 var parsePageOptions = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  mocks: mocks,
-  isPage: isPage,
-  initRelation: initRelation,
   handleLink: handleLink,
-  parse: parse,
-  initLifetimes: initLifetimes
+  initLifetimes: initLifetimes,
+  initRelation: initRelation,
+  isPage: isPage,
+  mocks: mocks,
+  parse: parse
 });
 
 const createApp = initCreateApp();
