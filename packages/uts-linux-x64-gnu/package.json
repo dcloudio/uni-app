@@ -1,0 +1,25 @@
+{
+  "name": "@dcloudio/uts-linux-x64-gnu",
+  "version": "3.0.0-alpha-3070120230210001",
+  "os": [
+    "linux"
+  ],
+  "cpu": [
+    "x64"
+  ],
+  "main": "uts.linux-x64-gnu.node",
+  "files": [
+    "uts.linux-x64-gnu.node"
+  ],
+  "libc": [
+    "gnu"
+  ],
+  "engines": {
+    "node": ">=10"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uts-linux-x64-gnu"
+  }
+}

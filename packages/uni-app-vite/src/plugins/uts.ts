@@ -2,7 +2,7 @@ import type { Plugin } from 'vite'
 import path from 'path'
 import {
   parseVueRequest,
-  resolveUtsAppModule,
+  resolveUTSAppModule,
   resolveUTSCompiler,
 } from '@dcloudio/uni-cli-shared'
 import { once } from '@dcloudio/uni-shared'
@@ -14,9 +14,15 @@ function isUTSProxy(id: string) {
 
 const utsModuleCaches = new Map<
   string,
-  () => Promise<undefined | { code: string; deps: string[] }>
+  () => Promise<void | {
+    code: string
+    deps: string[]
+    encrypt: boolean
+    meta?: any
+  }>
 >()
-export function uniUtsV1Plugin(): Plugin {
+export function uniUTSV1Plugin(): Plugin {
+  process.env.UNI_UTS_USING_ROLLUP = 'true'
   return {
     name: 'uni:uts',
     apply: 'build',
@@ -25,13 +31,13 @@ export function uniUtsV1Plugin(): Plugin {
       if (isUTSProxy(id)) {
         return id
       }
-      const module = resolveUtsAppModule(
+      const module = resolveUTSAppModule(
         id,
         importer ? path.dirname(importer) : process.env.UNI_INPUT_DIR
       )
       if (module) {
         // prefix the polyfill id with \0 to tell other plugins not to try to load or transform it
-        return '\0' + module + '?uts-proxy'
+        return module + '?uts-proxy'
       }
     },
     load(id) {
@@ -58,7 +64,11 @@ export function uniUtsV1Plugin(): Plugin {
             result.deps.forEach((dep) => {
               this.addWatchFile(dep)
             })
-            return result.code
+            return {
+              code: result.code,
+              syntheticNamedExports: result.encrypt,
+              meta: result.meta,
+            }
           }
         })
       }
@@ -71,7 +81,11 @@ export function uniUtsV1Plugin(): Plugin {
         result.deps.forEach((dep) => {
           this.addWatchFile(dep)
         })
-        return result.code
+        return {
+          code: result.code,
+          syntheticNamedExports: result.encrypt,
+          meta: result.meta,
+        }
       }
     },
   }

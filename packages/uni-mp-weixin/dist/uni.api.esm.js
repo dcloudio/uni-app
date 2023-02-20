@@ -1193,7 +1193,16 @@ const objectKeys = [
     'router',
     'worklet',
 ];
+const singlePageDisableKey = ['lanDebug', 'router', 'worklet'];
+const launchOption = wx.getLaunchOptionsSync
+    ? wx.getLaunchOptionsSync()
+    : null;
 function isWxKey(key) {
+    if (launchOption &&
+        launchOption.scene === 1154 &&
+        singlePageDisableKey.includes(key)) {
+        return false;
+    }
     return objectKeys.indexOf(key) > -1 || typeof wx[key] === 'function';
 }
 function initWx() {
@@ -1255,8 +1264,23 @@ var shims = /*#__PURE__*/Object.freeze({
   shareVideoMessage: shareVideoMessage
 });
 
+const compressImage = {
+    args(fromArgs, toArgs) {
+        // https://developers.weixin.qq.com/community/develop/doc/000c08940c865011298e0a43256800?highLine=compressHeight
+        if (fromArgs.compressedHeight && !toArgs.compressHeight) {
+            toArgs.compressHeight = fromArgs.compressedHeight;
+        }
+        // @ts-expect-error
+        if (fromArgs.compressedWidth && !toArgs.compressWidth) {
+            // @ts-expect-error
+            toArgs.compressWidth = fromArgs.compressedWidth;
+        }
+    },
+};
+
 var protocols = /*#__PURE__*/Object.freeze({
   __proto__: null,
+  compressImage: compressImage,
   redirectTo: redirectTo,
   previewImage: previewImage,
   getSystemInfo: getSystemInfo,

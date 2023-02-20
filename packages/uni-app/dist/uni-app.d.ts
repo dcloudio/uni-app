@@ -26,18 +26,6 @@ export declare function getSsrGlobalData(): any;
 
 export { hasOwn }
 
-export declare function initUtsClassName(moduleName: string, className: string, is_uni_modules: boolean): string;
-
-export declare function initUtsIndexClassName(moduleName: string, is_uni_modules: boolean): string;
-
-export declare function initUtsPackageName(name: string, is_uni_modules: boolean): string;
-
-export declare function initUtsProxyClass({ package: pkg, class: cls, constructor: { params: constructorParams }, methods, props, staticProps, staticMethods, errMsg, }: ProxyClassOptions): any;
-
-export declare const initUtsProxyFunction: typeof initUtsStaticMethod;
-
-declare function initUtsStaticMethod(async: boolean, opts: ProxyFunctionOptions): (...args: unknown[]) => unknown;
-
 export { isPlainObject }
 
 declare interface NavigationBarSearchInputFocusChanged {
@@ -99,72 +87,6 @@ export declare const onThemeChange: (hook: (options: UniApp.OnThemeChangeCallbac
 export declare const onUnhandledRejection: (hook: (options: UniApp.OnUnhandledRejectionCallbackResult) => void, target?: ComponentInternalInstance | null) => void;
 
 export declare const onUnload: (hook: () => any, target?: ComponentInternalInstance | null) => void;
-
-declare interface Parameter {
-    name: string;
-    type: string;
-}
-
-declare interface ProxyClassOptions {
-    package: string;
-    class: string;
-    constructor: {
-        params: Parameter[];
-    };
-    props: string[];
-    staticProps: string[];
-    methods: {
-        [name: string]: {
-            async?: boolean;
-            params: Parameter[];
-        };
-    };
-    staticMethods: {
-        [name: string]: {
-            async?: boolean;
-            params: Parameter[];
-        };
-    };
-    /**
-     * 运行时提示的错误信息
-     */
-    errMsg?: string;
-}
-
-declare interface ProxyFunctionOptions {
-    /**
-     * 是否是入口类
-     */
-    main?: boolean;
-    /**
-     * 包名
-     */
-    package: string;
-    /**
-     * 类名
-     */
-    class: string;
-    /**
-     * 属性名或方法名
-     */
-    name: string;
-    /**
-     * 方法名 指定的方法名（用于 IndexSwift 静态方法，自动补充前缀 s_）
-     */
-    method?: string;
-    /**
-     * 是否伴生对象
-     */
-    companion?: boolean;
-    /**
-     * 方法参数列表
-     */
-    params: Parameter[];
-    /**
-     * 运行时提示的错误信息
-     */
-    errMsg?: string;
-}
 
 export declare function requireNativePlugin(name: string): any;
 

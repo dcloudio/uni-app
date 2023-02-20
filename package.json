@@ -1,6 +1,6 @@
 {
   "private": true,
-  "version": "3.0.0-alpha-3070020230117001",
+  "version": "3.0.0-alpha-3070120230210001",
   "workspaces": [
     "packages/*"
   ],
@@ -42,9 +42,9 @@
   "devDependencies": {
     "@babel/core": "^7.17.10",
     "@babel/preset-env": "^7.16.11",
-    "@dcloudio/types": "3.2.7",
-    "@dcloudio/uni-api": "3.0.0-alpha-3070020230117001",
-    "@dcloudio/uni-app": "3.0.0-alpha-3070020230117001",
+    "@dcloudio/types": "3.2.11",
+    "@dcloudio/uni-api": "3.0.0-alpha-3070120230210001",
+    "@dcloudio/uni-app": "3.0.0-alpha-3070120230210001",
     "@jest/types": "^29.0.3",
     "@microsoft/api-extractor": "^7.33.6",
     "@rollup/plugin-alias": "^4.0.2",
@@ -60,11 +60,11 @@
     "@typescript-eslint/parser": "^5.44.0",
     "@vitejs/plugin-vue": "^4.0.0",
     "@vitejs/plugin-vue-jsx": "^3.0.0",
-    "@vue/compiler-sfc": "3.2.45",
-    "@vue/reactivity": "3.2.45",
-    "@vue/runtime-core": "3.2.45",
-    "@vue/runtime-dom": "3.2.45",
-    "@vue/shared": "3.2.45",
+    "@vue/compiler-sfc": "3.2.47",
+    "@vue/reactivity": "3.2.47",
+    "@vue/runtime-core": "3.2.47",
+    "@vue/runtime-dom": "3.2.47",
+    "@vue/shared": "3.2.47",
     "core-js": "^2.6.12",
     "enquirer": "^2.3.6",
     "eslint": "^8.28.0",
@@ -86,11 +86,14 @@
     "simple-git-hooks": "^2.8.0",
     "terser": "^5.4.0",
     "ts-jest": "^29.0.3",
-    "typescript": "^4.9.4",
-    "vite": "4.0.4",
-    "vue": "3.2.45",
+    "typescript": "^4.9.5",
+    "vite": "4.1.1",
+    "vue": "3.2.47",
     "vue-router": "^4.1.6",
     "yorkie": "^2.0.0"
+  },
+  "resolutions": {
+    "@babel/plugin-transform-block-scoping": "7.19.4"
   },
   "packageManager": "pnpm@7.5.2",
   "name": "uni-app-next"

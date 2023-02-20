@@ -51,6 +51,7 @@ const evts: AudioEvnets[] = [
 ]
 
 const AUDIO_DEFAULT_SESSION_CATEGORY: string = 'playback'
+const TIME_UPDATE = 200
 
 const initStateChage = (audioId: string) => {
   const audio = audios[audioId]
@@ -209,12 +210,13 @@ const onAudioStateChange = ({
     emit(audio, state, errMsg, errCode)
     if (state === 'play') {
       const oldCurrentTime = audio.currentTime
+      emit(audio, 'timeUpdate' as any)
       audio.__timing = setInterval(() => {
         const currentTime = audio.currentTime
         if (currentTime !== oldCurrentTime) {
           emit(audio, 'timeUpdate' as any)
         }
-      }, 200)
+      }, TIME_UPDATE)
     } else if (state === 'pause' || state === 'stop' || state === 'error') {
       clearInterval(audio.__timing!)
     }

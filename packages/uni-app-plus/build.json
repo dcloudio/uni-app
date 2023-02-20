@@ -1,12 +1,25 @@
 [
   {
     "input": {
+      "src/service/api/plugin/uts.ts": "src/service/api/plugin/uts.js"
+    },
+    "external": [
+      "@vue/shared"
+    ],
+    "replaceAfterBundled": {
+      "@vue/shared": "uni-shared"
+    }
+  },
+  {
+    "input": {
       "src/compiler/index.ts": "dist/uni.compiler.js"
     },
     "output": {
       "format": "cjs"
     },
-    "external": ["@dcloudio/uni-app-vite"]
+    "external": [
+      "@dcloudio/uni-app-vite"
+    ]
   },
   {
     "input": {
@@ -28,7 +41,11 @@
       "__UNI_FEATURE_I18N_ZH_HANS__": "true",
       "__UNI_FEATURE_I18N_ZH_HANT__": "true"
     },
-    "external": ["vue", "@vue/shared", "@dcloudio/uni-shared"]
+    "external": [
+      "vue",
+      "@vue/shared",
+      "@dcloudio/uni-shared"
+    ]
   },
   {
     "input": {
@@ -58,6 +75,10 @@
       "__UNI_FEATURE_I18N_ZH_HANS__": "true",
       "__UNI_FEATURE_I18N_ZH_HANT__": "true"
     },
-    "external": ["@dcloudio/uni-shared", "@vue/shared", "vue"]
+    "external": [
+      "@dcloudio/uni-shared",
+      "@vue/shared",
+      "vue"
+    ]
   }
 ]

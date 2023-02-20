@@ -14,7 +14,7 @@ import type { EasycomMatcher } from './easycom'
  * @param importer
  * @returns
  */
-export function resolveUtsAppModule(id: string, importer: string) {
+export function resolveUTSAppModule(id: string, importer: string) {
   id = path.resolve(importer, id)
   if (id.includes('utssdk') || id.includes('uni_modules')) {
     const parts = normalizePath(id).split('/')
@@ -28,10 +28,10 @@ export function resolveUtsAppModule(id: string, importer: string) {
         return path.resolve(id, basedir, p)
       }
       const extname = ['.uts']
-      if (resolveUtsFile(resolvePlatformDir('app-android'), extname)) {
+      if (resolveUTSFile(resolvePlatformDir('app-android'), extname)) {
         return id
       }
-      if (resolveUtsFile(resolvePlatformDir('app-ios'), extname)) {
+      if (resolveUTSFile(resolvePlatformDir('app-ios'), extname)) {
         return id
       }
     }
@@ -39,12 +39,12 @@ export function resolveUtsAppModule(id: string, importer: string) {
 }
 
 // 仅限 root/uni_modules/test-plugin | root/utssdk/test-plugin 格式
-export function resolveUtsModule(id: string, importer: string) {
+export function resolveUTSModule(id: string, importer: string) {
   if (
     process.env.UNI_PLATFORM === 'app' ||
     process.env.UNI_PLATFORM === 'app-plus'
   ) {
-    return resolveUtsAppModule(id, importer)
+    return resolveUTSAppModule(id, importer)
   }
   id = path.resolve(importer, id)
   if (id.includes('utssdk') || id.includes('uni_modules')) {
@@ -56,7 +56,7 @@ export function resolveUtsModule(id: string, importer: string) {
         return path.resolve(id, basedir, p)
       }
 
-      let index = resolveUtsFile(
+      let index = resolveUTSFile(
         resolvePlatformDir(process.env.UNI_UTS_PLATFORM)
       )
       if (index) {
@@ -70,7 +70,7 @@ export function resolveUtsModule(id: string, importer: string) {
   }
 }
 
-function resolveUtsFile(
+function resolveUTSFile(
   dir: string,
   extensions: string[] = ['.uts', '.ts', '.js']
 ) {
@@ -147,7 +147,7 @@ export function initUTSComponents(
             const importDir = normalizePath(
               is_uni_modules_utssdk ? path.dirname(dir) : dir
             )
-            easycomsObj[`^${name}$`] = `\0${importDir}?uts-proxy`
+            easycomsObj[`^${name}$`] = `${importDir}?uts-proxy`
           }
         })
     }

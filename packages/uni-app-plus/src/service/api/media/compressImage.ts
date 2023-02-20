@@ -15,6 +15,13 @@ export const compressImage = defineAsyncApi<API_TYPE_COMPRESS_IMAGE>(
     const dst = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(
       options.src
     )}`
+    const { compressedWidth, compressedHeight } = options
+    if (typeof compressedWidth === 'number') {
+      options.width = compressedWidth + 'px'
+    }
+    if (typeof compressedHeight === 'number') {
+      options.height = compressedHeight + 'px'
+    }
     plus.zip.compressImage(
       extend({}, options, {
         dst,

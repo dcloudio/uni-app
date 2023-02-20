@@ -3737,7 +3737,7 @@ function stacktracey(stacktrace, opts) {
                     if (content) {
                         return getConsumer(content).then((consumer) => {
                             return parseSourceMapContent(consumer, {
-                                line,
+                                line: line + (opts.preset.lineOffset || 0),
                                 column,
                             }, !!opts.withSourceContent);
                         });
@@ -3891,7 +3891,7 @@ function joinItem(item) {
     return `${a}${b}${c}`;
 }
 function uniStracktraceyPreset(opts) {
-    const { base, sourceRoot, splitThirdParty, uniPlatform } = opts;
+    const { base, sourceRoot, splitThirdParty, uniPlatform, lineOffset } = opts;
     let stack;
     return {
         /**
@@ -3974,6 +3974,7 @@ function uniStracktraceyPreset(opts) {
                 return errorName;
             }
         },
+        lineOffset,
     };
 }
 function utsStracktraceyPreset(opts) {

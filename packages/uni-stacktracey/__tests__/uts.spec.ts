@@ -17,7 +17,7 @@ describe('code-frame-uts', () => {
       })
     ).toMatchSnapshot()
     expect(
-      await generateCodeFrameWithKotlinStacktrace(androidUtssdkError, {
+      await generateCodeFrameWithKotlinStacktrace(androidUTSsdkError, {
         name: 'utssdk/test2',
         inputDir: '/Users/fxy/DCloud/test-uts',
         outputDir: path.resolve(utsProjectDir, 'unpackage/dist/dev/app-plus'),
@@ -39,7 +39,7 @@ const androidUniModulesError = `e: uni_modules/test-uts1/utssdk/app-android/inde
 
 FAILURE: Build failed with an exception.`
 
-const androidUtssdkError = `e: utssdk/test2/app-android/index.kt: (8, 12): The integer literal does not conform to the expected type String
+const androidUTSsdkError = `e: utssdk/test2/app-android/index.kt: (8, 12): The integer literal does not conform to the expected type String
 
 FAILURE: Build failed with an exception.`
 

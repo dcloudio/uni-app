@@ -3,14 +3,12 @@ import kotlinx.coroutines.async;
 import kotlinx.coroutines.CoroutineScope;
 import kotlinx.coroutines.Deferred;
 import kotlinx.coroutines.Dispatchers;
+import io.dcloud.uts.Map;
 import io.dcloud.uts.*;
 import io.dcloud.uts.UTSAndroid;
 import android.util.Log;
 import android.widget.FrameLayout;
 import android.view.View;
-interface IUser {
-    fun register(name: String): Unit;
-}
 fun test() {
     console.log("test", " at uni_modules/test-uniplugin/utssdk/app-android/utils.uts:2");
 }
@@ -21,6 +19,9 @@ fun login(name: String, pwd: String): UTSJSONObject {
         var name = name
         var pwd = pwd
     };
+}
+interface IUser {
+    fun register(name: String): Unit;
 }
 val default = UTSAndroid.getResourcePath("uni_modules/test-uniplugin/static/logo.png");
 val test1 = arrayOf(1, 2, 3);
@@ -53,9 +54,13 @@ open class User : IUser {
     override fun register(name: String, callback: UTSCallback) {
         Log.info(default as FrameLayout);
     }
-    open fun test(view: View) {}
+    open fun test(view: View) {
+        console.log(TestClass(), " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:56");
+    }
 }
 fun login(name: String, callback: () -> Unit) {}
 @Suppress("DEPRECATION")
 fun register(name: String, callback: UTSCallback) {}
 fun offMemoryWarning(callback: (UTSCallback)? = null) {}
+open class TestClass {
+}

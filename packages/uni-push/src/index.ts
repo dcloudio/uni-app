@@ -28,7 +28,7 @@ if (!appid) {
   // #ifdef H5
   initBroadcastChannel(GtPush)
   // #endif
-  // #ifdef MP
+  // #ifdef MP || APP
   if (typeof uni.onAppShow === 'function') {
     uni.onAppShow(() => {
       GtPush.enableSocket(true)

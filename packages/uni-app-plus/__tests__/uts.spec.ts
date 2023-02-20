@@ -1,7 +1,7 @@
 import {
   normalizeArg,
-  initUtsProxyFunction,
-  initUtsProxyClass,
+  initUTSProxyFunction,
+  initUTSProxyClass,
 } from '../src/service/api/plugin/uts'
 
 describe('uts-module', () => {
@@ -39,7 +39,9 @@ describe('uts-module', () => {
   })
   test(`initProxyFunction`, () => {
     ;[true, false].forEach((async) => {
-      const preparePermission = initUtsProxyFunction(async, {
+      const preparePermission = initUTSProxyFunction(async, {
+        moduleName: '权限管理',
+        moduleType: 'built-in',
         package: 'uts.modules.TestPlugin',
         class: 'TestKt',
         name: 'preparePermission',
@@ -73,14 +75,16 @@ describe('uts-module', () => {
 
       const errMsg = 'xx插件编译失败，无法使用'
       expect(
-        initUtsProxyFunction(async, {
+        initUTSProxyFunction(async, {
           errMsg,
         } as any)
       ).toThrowError(errMsg)
     })
   })
   test(`initProxyClass`, () => {
-    const WifiManager = initUtsProxyClass({
+    const WifiManager = initUTSProxyClass({
+      moduleName: 'Wifi管理',
+      moduleType: '',
       package: 'uni.modules.TestPlugin',
       class: 'WifiManager',
       constructor: {
@@ -110,7 +114,7 @@ describe('uts-module', () => {
     WifiManager.staticPreparePermission(1)
 
     const errMsg = 'xx插件编译失败，无法使用'
-    const WifiManagerError = initUtsProxyClass({
+    const WifiManagerError = initUTSProxyClass({
       errMsg,
       staticMethods: {
         staticPreparePermission: {

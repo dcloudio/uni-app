@@ -363,27 +363,39 @@ function usePageHeadButton(
   if (btn.fontFamily) {
     iconStyle.fontFamily = btn.fontFamily
   }
-  return {
-    btnClass: {
-      // 类似这样的大量重复的字符串，会在gzip时压缩大小，无需在代码层考虑优化相同字符串
-      'uni-page-head-btn': true,
-      'uni-page-head-btn-red-dot': !!(btn.redDot || btn.badgeText),
-      'uni-page-head-btn-select': !!btn.select,
+  return new Proxy(
+    {
+      btnClass: {
+        // 类似这样的大量重复的字符串，会在gzip时压缩大小，无需在代码层考虑优化相同字符串
+        'uni-page-head-btn': true,
+        'uni-page-head-btn-red-dot': !!(btn.redDot || btn.badgeText),
+        'uni-page-head-btn-select': !!btn.select,
+      },
+      btnStyle: {
+        backgroundColor: isTransparent ? btn.background : 'transparent',
+        width: btn.width,
+      },
+      btnText: '',
+      btnIconPath: ICON_PATHS[btn.type],
+      badgeText: btn.badgeText,
+      iconStyle,
+      onClick() {
+        invokeHook(pageId, ON_NAVIGATION_BAR_BUTTON_TAP, extend({ index }, btn))
+      },
+      btnSelect: btn.select,
     },
-    btnStyle: {
-      backgroundColor: isTransparent ? btn.background : 'transparent',
-      width: btn.width,
-    },
-    btnText:
-      btn.fontSrc && btn.fontFamily ? btn.text.replace('\\u', '&#x') : btn.text,
-    btnIconPath: ICON_PATHS[btn.type],
-    badgeText: btn.badgeText,
-    iconStyle,
-    onClick() {
-      invokeHook(pageId, ON_NAVIGATION_BAR_BUTTON_TAP, extend({ index }, btn))
-    },
-    btnSelect: btn.select,
-  }
+    {
+      get(target, key, receiver) {
+        if (['btnText'].includes(key as string)) {
+          return btn.fontSrc && btn.fontFamily
+            ? btn.text.replace('\\u', '&#x')
+            : btn.text
+        } else {
+          return Reflect.get(target, key, receiver)
+        }
+      },
+    }
+  )
 }
 
 type PageHeadSearchInput = ReturnType<typeof usePageHeadSearchInput>

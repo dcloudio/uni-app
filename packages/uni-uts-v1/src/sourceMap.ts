@@ -18,7 +18,7 @@ const PLATFORM_DIR = {
   swift: 'app-ios',
 }
 
-export function resolveUtsPluginSourceMapFile(
+export function resolveUTSPluginSourceMapFile(
   target: 'kotlin' | 'swift',
   filename: string,
   inputDir: string,
@@ -44,6 +44,8 @@ export function resolveUtsPluginSourceMapFile(
   }
   return sourceMapFile
 }
+// 兼容旧版本
+export const resolveUtsPluginSourceMapFile = resolveUTSPluginSourceMapFile
 
 function resolvePluginDir(
   inputDir: string,

@@ -1,4 +1,4 @@
-import { extend } from '@vue/shared'
+import { extend, isArray, isObject } from '@vue/shared'
 
 import {
   ComponentOptions,
@@ -88,6 +88,14 @@ export function parseComponent(
     multipleSlots: true,
     addGlobalClass: true,
     pureDataPattern: /^uP$/,
+  }
+
+  if (isArray(vueOptions.mixins)) {
+    vueOptions.mixins.forEach((item) => {
+      if (isObject(item.options)) {
+        extend(options, item.options)
+      }
+    })
   }
 
   if (vueOptions.options) {

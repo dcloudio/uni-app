@@ -1,4 +1,4 @@
-import { isString } from '@vue/shared'
+import { isArray, isString } from '@vue/shared'
 import {
   getEnvLocale,
   I18N_JSON_DELIMITERS,
@@ -31,11 +31,22 @@ export function formatI18n(message: string) {
 function resolveJsonObj(
   jsonObj: Record<string, any> | undefined,
   names: string[]
-): Record<string, any> | undefined {
+): Record<string, any> | Array<Record<string, any>> | undefined {
   if (names.length === 1) {
     if (jsonObj) {
+      const _isI18nStr = (value: any) =>
+        isString(value) && isI18nStr(value, I18N_JSON_DELIMITERS)
+      const _name = names[0]
+      let filterJsonObj = []
+      if (
+        isArray(jsonObj) &&
+        (filterJsonObj = jsonObj.filter((item) => _isI18nStr(item[_name])))
+          .length
+      ) {
+        return filterJsonObj
+      }
       const value = jsonObj[names[0]]
-      if (isString(value) && isI18nStr(value, I18N_JSON_DELIMITERS)) {
+      if (_isI18nStr(value)) {
         return jsonObj
       }
     }
@@ -58,15 +69,19 @@ export function defineI18nProperty(obj: Record<string, any>, names: string[]) {
     return false
   }
   const prop = names[names.length - 1]
-  let value = jsonObj[prop]
-  Object.defineProperty(jsonObj, prop, {
-    get() {
-      return formatI18n(value)
-    },
-    set(v) {
-      value = v
-    },
-  })
+  if (isArray(jsonObj)) {
+    jsonObj.forEach((item) => defineI18nProperty(item, [prop]))
+  } else {
+    let value = jsonObj[prop]
+    Object.defineProperty(jsonObj, prop, {
+      get() {
+        return formatI18n(value)
+      },
+      set(v) {
+        value = v
+      },
+    })
+  }
   return true
 }
 

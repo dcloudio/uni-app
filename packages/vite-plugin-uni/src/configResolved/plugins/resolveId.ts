@@ -1,7 +1,7 @@
 import path from 'path'
 import debug from 'debug'
 import { Plugin } from 'vite'
-import { resolveBuiltIn, resolveUtsModule } from '@dcloudio/uni-cli-shared'
+import { resolveBuiltIn, resolveUTSModule } from '@dcloudio/uni-cli-shared'
 
 import { VitePluginUniResolvedOptions } from '../..'
 
@@ -40,7 +40,7 @@ export function uniResolveIdPlugin(
         ))
       }
       if (process.env.UNI_PLATFORM !== 'app') {
-        return resolveUtsModule(
+        return resolveUTSModule(
           id,
           importer ? path.dirname(importer) : process.env.UNI_INPUT_DIR
         )

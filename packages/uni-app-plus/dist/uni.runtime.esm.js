@@ -1095,8 +1095,16 @@ function formatI18n(message) {
 function resolveJsonObj(jsonObj, names) {
     if (names.length === 1) {
         if (jsonObj) {
+            const _isI18nStr = (value) => isString(value) && isI18nStr(value, I18N_JSON_DELIMITERS);
+            const _name = names[0];
+            let filterJsonObj = [];
+            if (isArray(jsonObj) &&
+                (filterJsonObj = jsonObj.filter((item) => _isI18nStr(item[_name])))
+                    .length) {
+                return filterJsonObj;
+            }
             const value = jsonObj[names[0]];
-            if (isString(value) && isI18nStr(value, I18N_JSON_DELIMITERS)) {
+            if (_isI18nStr(value)) {
                 return jsonObj;
             }
         }
@@ -1114,15 +1122,20 @@ function defineI18nProperty(obj, names) {
         return false;
     }
     const prop = names[names.length - 1];
-    let value = jsonObj[prop];
-    Object.defineProperty(jsonObj, prop, {
-        get() {
-            return formatI18n(value);
-        },
-        set(v) {
-            value = v;
-        },
-    });
+    if (isArray(jsonObj)) {
+        jsonObj.forEach((item) => defineI18nProperty(item, [prop]));
+    }
+    else {
+        let value = jsonObj[prop];
+        Object.defineProperty(jsonObj, prop, {
+            get() {
+                return formatI18n(value);
+            },
+            set(v) {
+                value = v;
+            },
+        });
+    }
     return true;
 }
 function useI18n() {
@@ -1402,6 +1415,7 @@ function initNavigationBarI18n(navigationBar) {
         return defineI18nProperties(navigationBar, [
             ['titleText'],
             ['searchInput', 'placeholder'],
+            ['buttons', 'text'],
         ]);
     }
 }
@@ -14565,6 +14579,13 @@ const saveImageToPhotosAlbum = defineAsyncApi(API_SAVE_IMAGE_TO_PHOTOS_ALBUM, (o
 
 const compressImage = defineAsyncApi(API_COMPRESS_IMAGE, (options, { resolve, reject }) => {
     const dst = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(options.src)}`;
+    const { compressedWidth, compressedHeight } = options;
+    if (typeof compressedWidth === 'number') {
+        options.width = compressedWidth + 'px';
+    }
+    if (typeof compressedHeight === 'number') {
+        options.height = compressedHeight + 'px';
+    }
     plus.zip.compressImage(extend({}, options, {
         dst,
     }), () => {
@@ -14578,9 +14599,10 @@ const compressVideo = defineAsyncApi(API_COMPRESS_VIDEO, (options, { resolve, re
     const filename = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(options.src)}`;
     plus.zip.compressVideo(extend({}, options, {
         filename,
-    }), () => {
+    }), (videoInfo) => {
         resolve({
             tempFilePath: filename,
+            size: videoInfo.size,
         });
     }, reject);
 }, CompressVideoProtocol, CompressVideoOptions);
@@ -15340,6 +15362,7 @@ const evts = [
     'pause',
 ];
 const AUDIO_DEFAULT_SESSION_CATEGORY = 'playback';
+const TIME_UPDATE$1 = 200;
 const initStateChage = (audioId) => {
     const audio = audios[audioId];
     if (!audio) {
@@ -15459,12 +15482,13 @@ const onAudioStateChange = ({ state, audioId, errMsg, errCode, }) => {
         emit(audio, state, errMsg, errCode);
         if (state === 'play') {
             const oldCurrentTime = audio.currentTime;
+            emit(audio, 'timeUpdate');
             audio.__timing = setInterval(() => {
                 const currentTime = audio.currentTime;
                 if (currentTime !== oldCurrentTime) {
                     emit(audio, 'timeUpdate');
                 }
-            }, 200);
+            }, TIME_UPDATE$1);
         }
         else if (state === 'pause' || state === 'stop' || state === 'error') {
             clearInterval(audio.__timing);
@@ -15658,6 +15682,7 @@ const TIME_UPDATE = 250;
 const events = ['play', 'pause', 'ended', 'stop', 'canplay'];
 function startTimeUpdateTimer() {
     stopTimeUpdateTimer();
+    onBackgroundAudioStateChange({ state: 'timeUpdate' });
     timeUpdateTimer = setInterval(() => {
         onBackgroundAudioStateChange({ state: 'timeUpdate' });
     }, TIME_UPDATE);
@@ -17260,7 +17285,7 @@ function normalizeArg(arg) {
     }
     return arg;
 }
-function initUtsInstanceMethod(async, opts, instanceId) {
+function initUTSInstanceMethod(async, opts, instanceId) {
     return initProxyFunction(async, opts, instanceId);
 }
 function getProxy() {
@@ -17282,7 +17307,7 @@ function invokePropGetter(args) {
     delete args.errMsg;
     return resolveSyncResult(getProxy().invokeSync(args, () => { }));
 }
-function initProxyFunction(async, { package: pkg, class: cls, name: propOrMethod, method, companion, params: methodParams, errMsg, }, instanceId) {
+function initProxyFunction(async, { moduleName, moduleType, package: pkg, class: cls, name: propOrMethod, method, companion, params: methodParams, errMsg, }, instanceId) {
     const invokeCallback = ({ id, name, params, keepAlive, }) => {
         const callback = callbacks[id];
         if (callback) {
@@ -17296,8 +17321,16 @@ function initProxyFunction(async, { package: pkg, class: cls, name: propOrMethod
         }
     };
     const baseArgs = instanceId
-        ? { id: instanceId, name: propOrMethod, method: methodParams }
+        ? {
+            moduleName,
+            moduleType,
+            id: instanceId,
+            name: propOrMethod,
+            method: methodParams,
+        }
         : {
+            moduleName,
+            moduleType,
             package: pkg,
             class: cls,
             name: method || propOrMethod,
@@ -17331,7 +17364,7 @@ function initProxyFunction(async, { package: pkg, class: cls, name: propOrMethod
         return resolveSyncResult(getProxy().invokeSync(invokeArgs, invokeCallback));
     };
 }
-function initUtsStaticMethod(async, opts) {
+function initUTSStaticMethod(async, opts) {
     if (opts.main && !opts.method) {
         if (typeof plus !== 'undefined' && plus.os.name === 'iOS') {
             opts.method = 's_' + opts.name;
@@ -17339,14 +17372,16 @@ function initUtsStaticMethod(async, opts) {
     }
     return initProxyFunction(async, opts, 0);
 }
-const initUtsProxyFunction = initUtsStaticMethod;
-function initUtsProxyClass({ package: pkg, class: cls, constructor: { params: constructorParams }, methods, props, staticProps, staticMethods, errMsg, }) {
+const initUTSProxyFunction = initUTSStaticMethod;
+function initUTSProxyClass({ moduleName, moduleType, package: pkg, class: cls, constructor: { params: constructorParams }, methods, props, staticProps, staticMethods, errMsg, }) {
     const baseOptions = {
+        moduleName,
+        moduleType,
         package: pkg,
         class: cls,
         errMsg,
     };
-    const ProxyClass = class UtsClass {
+    const ProxyClass = class UTSClass {
         constructor(...params) {
             if (errMsg) {
                 throw new Error(errMsg);
@@ -17363,7 +17398,7 @@ function initUtsProxyClass({ package: pkg, class: cls, constructor: { params: co
                         //实例方法
                         if (hasOwn$1(methods, name)) {
                             const { async, params } = methods[name];
-                            target[name] = initUtsInstanceMethod(!!async, extend({
+                            target[name] = initUTSInstanceMethod(!!async, extend({
                                 name,
                                 params,
                             }, baseOptions), instanceId);
@@ -17371,6 +17406,8 @@ function initUtsProxyClass({ package: pkg, class: cls, constructor: { params: co
                         else if (props.includes(name)) {
                             // 实例属性
                             return invokePropGetter({
+                                moduleName,
+                                moduleType,
                                 id: instanceId,
                                 name: name,
                                 errMsg,
@@ -17389,7 +17426,7 @@ function initUtsProxyClass({ package: pkg, class: cls, constructor: { params: co
                 if (!staticMethodCache[name]) {
                     const { async, params } = staticMethods[name];
                     // 静态方法
-                    staticMethodCache[name] = initUtsStaticMethod(!!async, extend({ name, companion: true, params }, baseOptions));
+                    staticMethodCache[name] = initUTSStaticMethod(!!async, extend({ name, companion: true, params }, baseOptions));
                 }
                 return staticMethodCache[name];
             }
@@ -17401,19 +17438,19 @@ function initUtsProxyClass({ package: pkg, class: cls, constructor: { params: co
         },
     });
 }
-function initUtsPackageName(name, is_uni_modules) {
+function initUTSPackageName(name, is_uni_modules) {
     if (typeof plus !== 'undefined' && plus.os.name === 'Android') {
         return 'uts.sdk.' + (is_uni_modules ? 'modules.' : '') + name;
     }
     return '';
 }
-function initUtsIndexClassName(moduleName, is_uni_modules) {
+function initUTSIndexClassName(moduleName, is_uni_modules) {
     if (typeof plus === 'undefined') {
         return '';
     }
-    return initUtsClassName(moduleName, plus.os.name === 'iOS' ? 'IndexSwift' : 'IndexKt', is_uni_modules);
+    return initUTSClassName(moduleName, plus.os.name === 'iOS' ? 'IndexSwift' : 'IndexKt', is_uni_modules);
 }
-function initUtsClassName(moduleName, className, is_uni_modules) {
+function initUTSClassName(moduleName, className, is_uni_modules) {
     if (typeof plus === 'undefined') {
         return '';
     }
@@ -17427,6 +17464,17 @@ function initUtsClassName(moduleName, className, is_uni_modules) {
             capitalize(className));
     }
     return '';
+}
+const pluginDefines = {};
+function registerUTSPlugin(name, define) {
+    pluginDefines[name] = define;
+}
+function requireUTSPlugin(name) {
+    const define = pluginDefines[name];
+    if (!define) {
+        console.error(`${name} is not found`);
+    }
+    return define;
 }
 
 const EventType = {
@@ -19125,7 +19173,13 @@ function registerPage({ url, path, query, openType, webview, nvuePageVm, eventCh
                 if (eventChannel) {
                     _webview.__page__.$page.eventChannel = eventChannel;
                 }
-                addCurrentPage(_webview.__page__);
+                if (openType === 'launch') {
+                    // 热更 preloadPage
+                    updatePreloadPageVm(url, path, query, _webview, nvuePageVm, eventChannel);
+                }
+                else {
+                    addCurrentPage(_webview.__page__);
+                }
                 if ((process.env.NODE_ENV !== 'production')) {
                     console.log(formatLog('uni-app', `reuse preloadWebview(${path},${_webview.id})`));
                 }
@@ -19170,6 +19224,15 @@ function registerPage({ url, path, query, openType, webview, nvuePageVm, eventCh
         createVuePage(id, route, query, pageInstance, initPageOptions(routeOptions));
     }
     return webview;
+}
+function updatePreloadPageVm(url, path, query, webview, nvuePageVm, eventChannel) {
+    const routeOptions = initRouteOptions(path, 'preloadPage');
+    routeOptions.meta.id = parseInt(webview.id);
+    const pageInstance = initPageInternalInstance('preloadPage', url, query, routeOptions.meta, eventChannel, (__uniConfig.darkmode
+        ? plus.navigator.getUIStyle()
+        : 'light'));
+    initPageVm(nvuePageVm, pageInstance);
+    webview.__page__ = nvuePageVm;
 }
 function initPageOptions({ meta }) {
     const statusbarHeight = getStatusbarHeight();
@@ -19238,6 +19301,12 @@ function createNVuePage(pageId, webview, pageInstance) {
     initPageVm(fakeNVueVm, pageInstance);
     if (webview.__preload__) {
         webview.__page__ = fakeNVueVm;
+        webview.addEventListener('show', () => {
+            invokeHook(webview.__page__, ON_SHOW);
+        });
+        webview.addEventListener('hide', () => {
+            invokeHook(webview.__page__, ON_HIDE);
+        });
     }
     else {
         addCurrentPage(fakeNVueVm);
@@ -19490,7 +19559,11 @@ const unPreloadPage = defineSyncApi(API_UN_PRELOAD_PAGE, ({ url }) => {
         errMsg: 'unPreloadPage:fail not found',
     };
 }, UnPreloadPageProtocol);
-const preloadPage = defineAsyncApi(API_PRELOAD_PAGE, ({ url }, { resolve, reject }) => {
+const preloadPage = defineAsyncApi(API_PRELOAD_PAGE, ({ url }, { resolve }) => {
+    // 防止热更等情况重复 preloadPage
+    if (preloadWebviews[url]) {
+        return;
+    }
     const urls = url.split('?');
     const path = urls[0];
     const query = parseQuery(urls[1] || '');
@@ -19500,6 +19573,7 @@ const preloadPage = defineAsyncApi(API_PRELOAD_PAGE, ({ url }, { resolve, reject
         query,
     });
     const routeOptions = initRouteOptions(path, 'preloadPage');
+    routeOptions.meta.id = parseInt(webview.id);
     const pageInstance = initPageInternalInstance('preloadPage', url, query, routeOptions.meta, undefined, (__uniConfig.darkmode
         ? plus.navigator.getUIStyle()
         : 'light'));
@@ -19518,11 +19592,13 @@ var uni$1 = {
   onHostEventReceive: onHostEventReceive,
   onNativeEventReceive: onNativeEventReceive,
   __log__: __log__,
-  initUtsProxyClass: initUtsProxyClass,
-  initUtsProxyFunction: initUtsProxyFunction,
-  initUtsIndexClassName: initUtsIndexClassName,
-  initUtsClassName: initUtsClassName,
-  initUtsPackageName: initUtsPackageName,
+  initUTSProxyClass: initUTSProxyClass,
+  initUTSProxyFunction: initUTSProxyFunction,
+  initUTSIndexClassName: initUTSIndexClassName,
+  initUTSClassName: initUTSClassName,
+  initUTSPackageName: initUTSPackageName,
+  requireUTSPlugin: requireUTSPlugin,
+  registerUTSPlugin: registerUTSPlugin,
   navigateTo: navigateTo,
   reLaunch: reLaunch,
   switchTab: switchTab,

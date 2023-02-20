@@ -644,6 +644,13 @@ function parseComponent(vueOptions, { parse, mocks, isPage, initRelation, handle
         addGlobalClass: true,
         pureDataPattern: /^uP$/,
     };
+    if (isArray(vueOptions.mixins)) {
+        vueOptions.mixins.forEach((item) => {
+            if (isObject(item.options)) {
+                extend(options, item.options);
+            }
+        });
+    }
     if (vueOptions.options) {
         extend(options, vueOptions.options);
     }

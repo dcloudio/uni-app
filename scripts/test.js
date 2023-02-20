@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const { parse, bundle, UtsTarget } = require('../packages/uts/dist')
+const { parse, bundle, UTSTarget } = require('../packages/uts/dist')
 const projectDir = path.resolve(__dirname, '../packages/playground/uts')
 
 const outDir = path.resolve(projectDir, 'unpackage/dist/dev/app-plus')
@@ -19,26 +19,32 @@ parse(
   console.log('parse: ' + (Date.now() - start) + 'ms')
   console.log(JSON.stringify(res))
 })
+
+const kotlinImports = [
+  'kotlinx.coroutines.async',
+  'kotlinx.coroutines.CoroutineScope',
+  'kotlinx.coroutines.Deferred',
+  'kotlinx.coroutines.Dispatchers',
+  'io.dcloud.uts.Map',
+  'io.dcloud.uts.*',
+]
 async function testKotlin() {
   const start = Date.now()
-  await bundle(UtsTarget.KOTLIN, {
+  await bundle(UTSTarget.KOTLIN, {
     input: {
       root: projectDir,
       filename: path.resolve(
         projectDir,
         'uni_modules/test-uniplugin/utssdk/app-android/index.uts'
       ),
+      paths: {
+        'login': './login'
+      }
     },
     output: {
       outDir,
       package: 'uts.modules.modules.testUniPlugin',
-      imports: [
-        'kotlinx.coroutines.async',
-        'kotlinx.coroutines.CoroutineScope',
-        'kotlinx.coroutines.Deferred',
-        'kotlinx.coroutines.Dispatchers',
-        'io.dcloud.uts.*',
-      ],
+      imports: kotlinImports,
       sourceMap,
       extname: 'kt',
       logFilename: true,
@@ -57,7 +63,7 @@ async function testKotlin() {
       )
     )
   })
-  await bundle(UtsTarget.KOTLIN, {
+  await bundle(UTSTarget.KOTLIN, {
     input: {
       root: projectDir,
       filename: path.resolve(
@@ -68,13 +74,7 @@ async function testKotlin() {
     output: {
       outDir,
       package: 'uts.sdk.testUts',
-      imports: [
-        'kotlinx.coroutines.async',
-        'kotlinx.coroutines.CoroutineScope',
-        'kotlinx.coroutines.Deferred',
-        'kotlinx.coroutines.Dispatchers',
-        'io.dcloud.uts.*',
-      ],
+      imports: kotlinImports,
       sourceMap,
       extname: 'kt',
       logFilename: true,
@@ -86,7 +86,7 @@ async function testKotlin() {
 
 async function testKotlinComponent() {
   const start = Date.now()
-  await bundle(UtsTarget.KOTLIN, {
+  await bundle(UTSTarget.KOTLIN, {
     input: {
       root: projectDir,
       pluginId: 'animation-view',
@@ -99,13 +99,7 @@ async function testKotlinComponent() {
     output: {
       outDir,
       package: 'uts.modules.modules.testComponent',
-      imports: [
-        'kotlinx.coroutines.async',
-        'kotlinx.coroutines.CoroutineScope',
-        'kotlinx.coroutines.Deferred',
-        'kotlinx.coroutines.Dispatchers',
-        'io.dcloud.uts.*',
-      ],
+      imports: kotlinImports,
       sourceMap,
       extname: 'kt',
       logFilename: true,
@@ -128,7 +122,7 @@ async function testKotlinComponent() {
 
 async function testSwift() {
   const start = Date.now()
-  await bundle(UtsTarget.SWIFT, {
+  await bundle(UTSTarget.SWIFT, {
     input: {
       root: projectDir,
       filename: path.resolve(
@@ -158,7 +152,7 @@ async function testSwift() {
       )
     )
   })
-  await bundle(UtsTarget.SWIFT, {
+  await bundle(UTSTarget.SWIFT, {
     input: {
       root: projectDir,
       filename: path.resolve(
@@ -169,7 +163,7 @@ async function testSwift() {
     output: {
       outDir,
       package: 'UTSSDKModulesTestUts',
-      imports: ['DCUTSPlugin'],
+      imports: ['DCloudUTSFoundation'],
       sourceMap,
       extname: 'swift',
       logFilename: true,
@@ -180,7 +174,7 @@ async function testSwift() {
 
 async function testSwiftComponent() {
   const start = Date.now()
-  await bundle(UtsTarget.SWIFT, {
+  await bundle(UTSTarget.SWIFT, {
     input: {
       root: projectDir,
       filename: path.resolve(

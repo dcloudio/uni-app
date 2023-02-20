@@ -1,6 +1,6 @@
 import { resolve } from 'path'
 import {
-  resolveUtsPluginSourceMapFile,
+  resolveUTSPluginSourceMapFile,
   generatedPositionFor,
   originalPositionFor,
 } from '../src'
@@ -15,8 +15,8 @@ const utssdkPluginDir = 'utssdk/test-uts'
 const uniModulesPluginDir = 'uni_modules/test-uniplugin'
 
 describe('uts:sourceMap', () => {
-  test('resolveUtsPluginSourceMapFile with uni_modules uts=>kotlin', () => {
-    const sourceMapFile = resolveUtsPluginSourceMapFile(
+  test('resolveUTSPluginSourceMapFile with uni_modules uts=>kotlin', () => {
+    const sourceMapFile = resolveUTSPluginSourceMapFile(
       'kotlin',
       resolve(inputDir, uniModulesPluginDir, 'utssdk/app-android/index.uts'),
       inputDir,
@@ -24,7 +24,7 @@ describe('uts:sourceMap', () => {
     )
     expect(sourceMapFile).toBeDefined()
     expect(
-      resolveUtsPluginSourceMapFile(
+      resolveUTSPluginSourceMapFile(
         'kotlin',
         resolve(inputDir, uniModulesPluginDir, 'utssdk/index.uts'),
         inputDir,
@@ -32,7 +32,7 @@ describe('uts:sourceMap', () => {
       )
     ).toBe(sourceMapFile)
     expect(
-      resolveUtsPluginSourceMapFile(
+      resolveUTSPluginSourceMapFile(
         'kotlin',
         resolve(
           inputDir,
@@ -45,8 +45,8 @@ describe('uts:sourceMap', () => {
     ).toBe(sourceMapFile)
   })
 
-  test('resolveUtsPluginSourceMapFile with uni_modules uts=>swift', () => {
-    const sourceMapFile = resolveUtsPluginSourceMapFile(
+  test('resolveUTSPluginSourceMapFile with uni_modules uts=>swift', () => {
+    const sourceMapFile = resolveUTSPluginSourceMapFile(
       'swift',
       resolve(inputDir, uniModulesPluginDir, 'utssdk/app-ios/index.uts'),
       inputDir,
@@ -55,8 +55,8 @@ describe('uts:sourceMap', () => {
     expect(sourceMapFile).toBeDefined()
   })
 
-  test('resolveUtsPluginSourceMapFile with utssdk uts=>kotlin', () => {
-    const sourceMapFile = resolveUtsPluginSourceMapFile(
+  test('resolveUTSPluginSourceMapFile with utssdk uts=>kotlin', () => {
+    const sourceMapFile = resolveUTSPluginSourceMapFile(
       'kotlin',
       resolve(inputDir, utssdkPluginDir, 'app-android/index.uts'),
       inputDir,
@@ -64,8 +64,8 @@ describe('uts:sourceMap', () => {
     )
     expect(sourceMapFile).toBeDefined()
   })
-  test('resolveUtsPluginSourceMapFile with utssdk uts=>swift', () => {
-    const sourceMapFile = resolveUtsPluginSourceMapFile(
+  test('resolveUTSPluginSourceMapFile with utssdk uts=>swift', () => {
+    const sourceMapFile = resolveUTSPluginSourceMapFile(
       'swift',
       resolve(inputDir, utssdkPluginDir, 'app-ios/index.uts'),
       inputDir,
@@ -74,8 +74,8 @@ describe('uts:sourceMap', () => {
     expect(sourceMapFile).toBeDefined()
   })
 
-  test('resolveUtsPluginSourceMapFile with uni_modules kt', () => {
-    const sourceMapFile = resolveUtsPluginSourceMapFile(
+  test('resolveUTSPluginSourceMapFile with uni_modules kt', () => {
+    const sourceMapFile = resolveUTSPluginSourceMapFile(
       'kotlin',
       resolve(outputDir, uniModulesPluginDir, 'utssdk/app-android/index.kt'),
       inputDir,
@@ -83,15 +83,15 @@ describe('uts:sourceMap', () => {
     )
     expect(sourceMapFile).toBeDefined()
   })
-  test('resolveUtsPluginSourceMapFile with uni_modules swift', () => {
-    const sourceMapFile = resolveUtsPluginSourceMapFile(
+  test('resolveUTSPluginSourceMapFile with uni_modules swift', () => {
+    const sourceMapFile = resolveUTSPluginSourceMapFile(
       'swift',
       resolve(outputDir, uniModulesPluginDir, 'utssdk/app-ios/index.swift'),
       inputDir,
       outputDir
     )
     expect(sourceMapFile).toBeDefined()
-    const sourceMapFile2 = resolveUtsPluginSourceMapFile(
+    const sourceMapFile2 = resolveUTSPluginSourceMapFile(
       'swift',
       resolve(outputDir, uniModulesPluginDir, 'utssdk/app-ios/src/index.swift'),
       inputDir,
@@ -99,8 +99,8 @@ describe('uts:sourceMap', () => {
     )
     expect(sourceMapFile2).toBeDefined()
   })
-  test('resolveUtsPluginSourceMapFile with utssdk kt', () => {
-    const sourceMapFile = resolveUtsPluginSourceMapFile(
+  test('resolveUTSPluginSourceMapFile with utssdk kt', () => {
+    const sourceMapFile = resolveUTSPluginSourceMapFile(
       'kotlin',
       resolve(outputDir, utssdkPluginDir, 'app-android/index.kt'),
       inputDir,
@@ -108,8 +108,8 @@ describe('uts:sourceMap', () => {
     )
     expect(sourceMapFile).toBeDefined()
   })
-  test('resolveUtsPluginSourceMapFile with utssdk swift', () => {
-    const sourceMapFile = resolveUtsPluginSourceMapFile(
+  test('resolveUTSPluginSourceMapFile with utssdk swift', () => {
+    const sourceMapFile = resolveUTSPluginSourceMapFile(
       'swift',
       resolve(outputDir, utssdkPluginDir, 'app-ios/index.swift'),
       inputDir,
@@ -123,7 +123,7 @@ describe('uts:sourceMap', () => {
       uniModulesPluginDir,
       'utssdk/app-android/login.uts'
     )
-    const sourceMapFile = resolveUtsPluginSourceMapFile(
+    const sourceMapFile = resolveUTSPluginSourceMapFile(
       'kotlin',
       filename,
       inputDir,
@@ -133,11 +133,11 @@ describe('uts:sourceMap', () => {
       sourceMapFile,
       filename,
       line: 3,
-      column: 15,
+      column: 16,
       outputDir,
     })
     expect(res).toEqual({
-      line: 18,
+      line: 16,
       column: 16,
       lastColumn: null,
       source: resolve(
@@ -153,7 +153,7 @@ describe('uts:sourceMap', () => {
       uniModulesPluginDir,
       'utssdk/app-android/index.kt'
     )
-    const sourceMapFile = resolveUtsPluginSourceMapFile(
+    const sourceMapFile = resolveUTSPluginSourceMapFile(
       'kotlin',
       filename,
       inputDir,
@@ -165,8 +165,8 @@ describe('uts:sourceMap', () => {
       column: 16,
     })
 
-    expect(line).toBe(3)
-    expect(column).toBe(14)
+    expect(line).toBe(5)
+    expect(column).toBe(9)
     expect(source).toContain('login.uts')
   })
   test('originalPositionFor ios', async () => {
@@ -175,7 +175,7 @@ describe('uts:sourceMap', () => {
       uniModulesPluginDir,
       'utssdk/app-ios/src/index.kt'
     )
-    const sourceMapFile = resolveUtsPluginSourceMapFile(
+    const sourceMapFile = resolveUTSPluginSourceMapFile(
       'swift',
       filename,
       inputDir,

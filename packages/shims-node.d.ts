@@ -11,6 +11,10 @@ declare namespace NodeJS {
     UNI_SUB_PLATFORM: 'quickapp-webview-huawei' | 'quickapp-webview-union'
     UNI_UTS_PLATFORM: 'app-android' | 'app-ios' | 'web' | UniApp.PLATFORM
 
+    UNI_UTS_JS_CODE_FORMAT?: 'cjs' | 'es'
+    UNI_UTS_MODULE_TYPE?: 'built-in' | ''
+    UNI_UTS_MODULE_PREFIX?: string
+
     UNI_INPUT_DIR: string
     UNI_OUTPUT_DIR: string
     UNI_CLI_CONTEXT: string

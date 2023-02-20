@@ -103,8 +103,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           {...$excludeAttrs.value}
           {..._listeners}
         >
-          {/* @ts-ignore */}
-          <ResizeSensor onReize={movableAreaEvents._resize}></ResizeSensor>
+          <ResizeSensor onResize={movableAreaEvents._resize}></ResizeSensor>
           {movableViewItems}
         </uni-movable-area>
       )

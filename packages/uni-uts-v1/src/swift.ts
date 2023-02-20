@@ -4,7 +4,8 @@ import {
   genComponentsCode,
   genUTSPlatformResource,
   getCompilerServer,
-  getUtsCompiler,
+  getUTSCompiler,
+  isColorSupported,
   moveRootIndexSourceMap,
   parseSwiftPackageWithPluginId,
   resolveIOSDir,
@@ -13,8 +14,8 @@ import {
   resolveUTSSourceMapPath,
   ToSwiftOptions,
 } from './utils'
-import { isInHBuilderX, parseJson } from './shared'
-import { UtsResult } from '@dcloudio/uts'
+import { parseJson } from './shared'
+import { UTSResult } from '@dcloudio/uts'
 
 function parseSwiftPackage(filename: string) {
   const res = resolvePackage(filename)
@@ -60,7 +61,7 @@ export async function runSwiftProd(
   })
 }
 
-export type RunSwiftDevResult = UtsResult & {
+export type RunSwiftDevResult = UTSResult & {
   type: 'swift'
   code: number
   msg: string
@@ -131,7 +132,7 @@ export async function runSwiftDev(
       isCli,
       type: is_uni_modules ? 1 : 2,
       pluginName: id,
-      utsPath: resolveCompilerUtsPath(inputDir, is_uni_modules),
+      utsPath: resolveCompilerUTSPath(inputDir, is_uni_modules),
       swiftPath: resolveCompilerSwiftPath(outputDir, is_uni_modules),
     })
     result.code = code
@@ -141,7 +142,7 @@ export async function runSwiftDev(
   return result
 }
 
-function resolveCompilerUtsPath(projectPath: string, is_uni_modules: boolean) {
+function resolveCompilerUTSPath(projectPath: string, is_uni_modules: boolean) {
   return path.resolve(projectPath, is_uni_modules ? 'uni_modules' : 'utssdk')
 }
 
@@ -160,7 +161,7 @@ export async function compile(
   filename: string,
   { inputDir, outputDir, sourceMap, components }: ToSwiftOptions
 ) {
-  const { bundle, UtsTarget } = getUtsCompiler()
+  const { bundle, UTSTarget } = getUTSCompiler()
   // let time = Date.now()
   const componentsCode = genComponentsCode(filename, components)
   const { namespace, id: pluginId } = parseSwiftPackage(filename)
@@ -168,6 +169,7 @@ export async function compile(
     root: inputDir,
     filename,
     pluginId,
+    paths: {},
   }
   const isUTSFileExists = fs.existsSync(filename)
   if (componentsCode) {
@@ -183,7 +185,7 @@ export async function compile(
       return
     }
   }
-  const result = await bundle(UtsTarget.SWIFT, {
+  const result = await bundle(UTSTarget.SWIFT, {
     input,
     output: {
       isPlugin: true,
@@ -193,7 +195,7 @@ export async function compile(
       extname: 'swift',
       imports: ['DCloudUTSFoundation'],
       logFilename: true,
-      noColor: isInHBuilderX(),
+      noColor: !isColorSupported(),
     },
   })
   sourceMap &&

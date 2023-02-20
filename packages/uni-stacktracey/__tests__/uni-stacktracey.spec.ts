@@ -11,8 +11,8 @@ const utsErrorMsg = `Error:
 ${path.resolve(
   utsProjectDir,
   'unpackage/dist/dev/app-plus/uni_modules/test-uts/app-android/index.kt'
-)}:59:67: error: unresolved reference: UtsJSONObject
-open suspend fun testClassAsync(opts: AsyncOptions): Deferred<UtsJSONObject> = CoroutineScope(Dispatchers.Default).async {
+)}:59:67: error: unresolved reference: UTSJSONObject
+open suspend fun testClassAsync(opts: AsyncOptions): Deferred<UTSJSONObject> = CoroutineScope(Dispatchers.Default).async {
                                                               ^
 `
 
@@ -59,8 +59,8 @@ at   node_modules/@dcloudio/vue-cli-plugin-uni/packages/h5-vue/dist/vue.runtime.
     }).then((res: string) => {
       expect(res).toEqual(`Error:
 at uni_modules/test-uts/app-android/index.uts:82:52
-error: unresolved reference: UtsJSONObject
-open suspend fun testClassAsync(opts: AsyncOptions): Deferred<UtsJSONObject> = CoroutineScope(Dispatchers.Default).async {
+error: unresolved reference: UTSJSONObject
+open suspend fun testClassAsync(opts: AsyncOptions): Deferred<UTSJSONObject> = CoroutineScope(Dispatchers.Default).async {
 ^
 `)
     })

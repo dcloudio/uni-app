@@ -4,18 +4,13 @@ import path, { join } from 'path'
 import AdmZip from 'adm-zip'
 import { sync } from 'fast-glob'
 import { isArray } from '@vue/shared'
-import type { UtsResult } from '@dcloudio/uts'
+import type { UTSResult } from '@dcloudio/uts'
 import { get } from 'android-versions'
-import {
-  isInHBuilderX,
-  normalizePath,
-  parseJson,
-  resolveSourceMapPath,
-} from './shared'
+import { normalizePath, parseJson, resolveSourceMapPath } from './shared'
 import {
   CompilerServer,
   genUTSPlatformResource,
-  getUtsCompiler,
+  getUTSCompiler,
   getCompilerServer,
   moveRootIndexSourceMap,
   resolveAndroidDir,
@@ -25,6 +20,7 @@ import {
   ToKotlinOptions,
   genComponentsCode,
   parseKotlinPackageWithPluginId,
+  isColorSupported,
 } from './utils'
 import { Module } from '../types/types'
 
@@ -92,7 +88,7 @@ export async function runKotlinProd(
   })
 }
 
-export type RunKotlinDevResult = UtsResult & {
+export type RunKotlinDevResult = UTSResult & {
   type: 'kotlin'
   changed: string[]
 }
@@ -297,6 +293,7 @@ const DEFAULT_IMPORTS = [
   'kotlinx.coroutines.CoroutineScope',
   'kotlinx.coroutines.Deferred',
   'kotlinx.coroutines.Dispatchers',
+  'io.dcloud.uts.Map',
   'io.dcloud.uts.*',
 ]
 
@@ -304,7 +301,7 @@ export async function compile(
   filename: string,
   { inputDir, outputDir, sourceMap, components }: ToKotlinOptions
 ) {
-  const { bundle, UtsTarget } = getUtsCompiler()
+  const { bundle, UTSTarget } = getUTSCompiler()
   // let time = Date.now()
   const imports = [...DEFAULT_IMPORTS]
   const rClass = resolveAndroidResourceClass(filename)
@@ -317,6 +314,7 @@ export async function compile(
     root: inputDir,
     filename,
     pluginId,
+    paths: {},
   }
   const isUTSFileExists = fs.existsSync(filename)
   if (componentsCode) {
@@ -333,7 +331,7 @@ export async function compile(
     }
   }
 
-  const result = await bundle(UtsTarget.KOTLIN, {
+  const result = await bundle(UTSTarget.KOTLIN, {
     input,
     output: {
       isPlugin: true,
@@ -343,7 +341,7 @@ export async function compile(
       extname: 'kt',
       imports,
       logFilename: true,
-      noColor: isInHBuilderX(),
+      noColor: !isColorSupported(),
     },
   })
   sourceMap &&
