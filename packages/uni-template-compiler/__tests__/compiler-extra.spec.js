@@ -21,22 +21,22 @@ describe('mp:compiler-extra', () => {
       '<view @touchmove="a.touchmove">{{t.a}}{{t[\'a\']}}{{t.a(b)}}{{t[\'a\'](b)}}{{u.t.a(b)}}{{u.t.a}}</view>',
       '<view bindtouchmove="{{a.touchmove}}">{{t.a+t[\'a\']+t.a(b)+t[\'a\'](b)+$root.g0+u.t.a}}</view>',
       'with(this){var g0=u.t.a(b);$mp.data=Object.assign({},{$root:{g0:g0}})}', {
-        filterModules: {
-          t: {},
-          a: {}
-        }
+      filterModules: {
+        t: {},
+        a: {}
       }
+    }
     )
     assertCodegen(
       /* eslint-disable no-template-curly-in-string */
       '<view v-for="(item, index) in a.test()" :key="index">{{item}}</view>',
       '<block wx:for="{{a.test()}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view>{{item}}</view></block>',
       'with(this){}', {
-        filterModules: {
-          t: {},
-          a: {}
-        }
+      filterModules: {
+        t: {},
+        a: {}
       }
+    }
     )
   })
 
@@ -45,43 +45,43 @@ describe('mp:compiler-extra', () => {
       '<view></view>',
       '<view class="data-v-1"></view>',
       undefined, {
-        scopeId: 'data-v-1'
-      }
+      scopeId: 'data-v-1'
+    }
     )
     assertCodegen(
       '<view class="view"></view>',
       '<view class="view data-v-2"></view>',
       undefined, {
-        scopeId: 'data-v-2'
-      }
+      scopeId: 'data-v-2'
+    }
     )
     assertCodegen(
       '<view :class="[{ active: isActive }, errorClass]"></view>',
       '<view class="{{[\'data-v-3\',[(isActive)?\'active\':\'\'],errorClass]}}"></view>',
       undefined, {
-        scopeId: 'data-v-3'
-      }
+      scopeId: 'data-v-3'
+    }
     )
     assertCodegen(
       '<view class="static" :class="[{ active: isActive }, errorClass]"></view>',
       '<view class="{{[\'static\',\'data-v-4\',[(isActive)?\'active\':\'\'],errorClass]}}"></view>',
       undefined, {
-        scopeId: 'data-v-4'
-      }
+      scopeId: 'data-v-4'
+    }
     )
     assertCodegen(
       '<view ref="ref" :class="[{ active: isActive }, errorClass]"></view>',
       '<view data-ref="ref" class="{{[\'data-v-5\',\'vue-ref\',[(isActive)?\'active\':\'\'],errorClass]}}"></view>',
       undefined, {
-        scopeId: 'data-v-5'
-      }
+      scopeId: 'data-v-5'
+    }
     )
     assertCodegen(
       '<view :class="view"></view>',
       '<view class="{{[\'data-v-6\',view]}}"></view>',
       undefined, {
-        scopeId: 'data-v-6'
-      }
+      scopeId: 'data-v-6'
+    }
     )
     //     assertCodegen(
     //       '<view :class="view"></view>',
@@ -94,8 +94,8 @@ describe('mp:compiler-extra', () => {
       '<view :class="view" class="view"></view>',
       '<view class="{{[\'view\',\'data-v-7\',view]}}"></view>',
       undefined, {
-        scopeId: 'data-v-7'
-      }
+      scopeId: 'data-v-7'
+    }
     )
     //         assertCodegen(
     //             '<view :class="view" class="view"></view>',
@@ -124,8 +124,8 @@ describe('mp:compiler-extra', () => {
       '<view style="height:100rpx;width:100rpx;">text</view>',
       undefined,
       undefined, {
-        transformPx: true
-      }
+      transformPx: true
+    }
     )
   })
 
@@ -763,7 +763,12 @@ describe('mp:compiler-extra', () => {
     )
     assertCodegen(
       '<button type="primary" @click="test(arr, arr[index+1])">click me</button>',
-      '<button type="primary" data-event-opts="{{[[\'tap\',[[\'test\',[\'$0\',\'$1\'],[\'arr\',\'arr.\'+index+1+\'\']]]]]}}" bindtap="__e">click me</button>'
+      '<button type="primary" data-event-opts="{{[[\'tap\',[[\'test\',[\'$0\',\'$1\'],[\'arr\',\'arr.\'+(index+1)+\'\']]]]]}}" bindtap="__e">click me</button>'
+    )
+    assertCodegen(
+      '<button type="primary" @click="test(arr, arr[getVal(index+1)])">click me</button>',
+      '<button type="primary" data-event-opts="{{[[\'tap\',[[\'test\',[\'$0\',\'$1\'],[\'arr\',\'arr.\'+$root.m0+\'\']]]]]}}" bindtap="__e">click me</button>',
+      'with(this){var m0=getVal(index+1);$mp.data=Object.assign({},{$root:{m0:m0}})}'
     )
     assertCodegen(
       '<button type="primary" @click="test(arr, arr[0])">click me</button>',
@@ -772,6 +777,20 @@ describe('mp:compiler-extra', () => {
     assertCodegen(
       '<view v-for="item in list" @click="test(item)">{{ item }}</view>',
       '<block wx:for="{{list}}" wx:for-item="item" wx:for-index="__i0__"><view data-event-opts="{{[[\'tap\',[[\'test\',[\'$0\'],[[[\'list\',\'\',__i0__]]]]]]]}}" bindtap="__e">{{item}}</view></block>'
+    )
+    assertCodegen(
+      '<view v-for="item in list" @click="test(arr[item])">{{ item }}</view>',
+      '<block wx:for="{{list}}" wx:for-item="item" wx:for-index="__i0__"><view data-event-opts="{{[[\'tap\',[[\'test\',[\'$0\'],[\'arr.\'+item+\'\']]]]]}}" bindtap="__e">{{item}}</view></block>'
+    )
+    assertCodegen(
+      '<view v-for="item in list" @click="test(arr[getVal(item)])">{{ item }}</view>',
+      '<block wx:for="{{$root.l0}}" wx:for-item="item" wx:for-index="__i0__"><view data-event-opts="{{[[\'tap\',[[\'test\',[\'$0\'],[\'arr.\'+item.m0+\'\']]]]]}}" bindtap="__e">{{item.$orig}}</view></block>',
+      'with(this){var l0=__map(list,function(item,__i0__){var $orig=__get_orig(item);var m0=getVal(item);return{$orig:$orig,m0:m0}});$mp.data=Object.assign({},{$root:{l0:l0}})}'
+    )
+    assertCodegen(
+      '<view v-for="item in list" :data-val="getVal(item)" @click="test(arr[(item)])">{{ item }}</view>',
+      '<block wx:for="{{$root.l0}}" wx:for-item="item" wx:for-index="__i0__"><view data-val="{{item.m0}}" data-event-opts="{{[[\'tap\',[[\'test\',[\'$0\'],[\'arr.\'+item.$orig+\'\']]]]]}}" bindtap="__e">{{item.$orig}}</view></block>',
+      'with(this){var l0=__map(list,function(item,__i0__){var $orig=__get_orig(item);var m0=getVal(item);return{$orig:$orig,m0:m0}});$mp.data=Object.assign({},{$root:{l0:l0}})}'
     )
     assertCodegen(
       '<view v-for="item in list" @click.stop="test(item)">{{ item }}</view>',

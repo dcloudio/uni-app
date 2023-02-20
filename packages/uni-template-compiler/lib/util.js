@@ -1,6 +1,7 @@
 const t = require('@babel/types')
 const babelTraverse = require('@babel/traverse').default
 const babelGenerate = require('@babel/generator').default
+const babelTemplate = require('@babel/template').default
 const uniI18n = require('@dcloudio/uni-cli-i18n')
 
 const {
@@ -139,7 +140,11 @@ function processMemberProperty (node, state) {
         state.options.replaceCodes = {}
       }
       const identifier = '__$m' + (state.options.__m__++) + '__'
-      state.options.replaceCodes[identifier] = `'+${genCode(property, true)}+'`
+      const code = { property }
+      code.toString = function () {
+        return `'+${genCode(this.property, true)}+'`
+      }
+      state.options.replaceCodes[identifier] = code
       if (state.computedProperty) {
         state.computedProperty[identifier] = property
       }
@@ -147,6 +152,27 @@ function processMemberProperty (node, state) {
     }
     node.computed = false
   }
+}
+
+function replaceMemberExpression (stringLiteral, state) {
+  let code = `'${stringLiteral.value}'`
+  const replaceCodes = state.options.replaceCodes
+  if (replaceCodes) {
+    const options = {}
+    Object.keys(replaceCodes).forEach(key => {
+      const newCode = code.replace(new RegExp(key.replace('$', '\\$'), 'g'), `'+%%${key}%%+'`)
+      if (newCode !== code) {
+        options[key] = replaceCodes[key].property
+        code = newCode
+      }
+    })
+    const buildRequire = babelTemplate(code)
+    if (Object.keys(options).length) {
+      const ast = buildRequire(options)
+      return ast.expression
+    }
+  }
+  return stringLiteral
 }
 
 function processMemberExpression (element, state) {
@@ -332,6 +358,7 @@ module.exports = {
     return str
   }),
   processMemberExpression,
+  replaceMemberExpression,
   getForIndexIdentifier,
   isSimpleObjectExpression,
   hasEscapeQuote,
