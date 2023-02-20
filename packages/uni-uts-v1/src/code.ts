@@ -59,8 +59,8 @@ const moduleName = '${moduleName || ''}'
 const moduleType = '${moduleType || ''}'
 const errMsg = \`${ERR_MSG_PLACEHOLDER}\`
 const is_uni_modules = ${is_uni_modules}
-const pkg = initUTSPackageName(name, is_uni_modules)
-const cls = initUTSIndexClassName(name, is_uni_modules)
+const pkg = /*#__PURE__*/ initUTSPackageName(name, is_uni_modules)
+const cls = /*#__PURE__*/ initUTSIndexClassName(name, is_uni_modules)
 ${
   format === FORMATS.CJS
     ? `
@@ -144,7 +144,9 @@ export function resolvePlatformIndex(
 }
 
 function exportDefaultCode(format: FORMATS) {
-  return format === FORMATS.ES ? 'export default ' : 'exports.default = '
+  return format === FORMATS.ES
+    ? 'export default /*#__PURE__*/ '
+    : 'exports.default = '
 }
 
 function exportVarCode(format: FORMATS, kind: VariableDeclarationKind) {
@@ -174,7 +176,7 @@ function genModuleCode(
         codes.push(
           `${exportConst}${
             decl.cls
-          } = initUTSProxyClass(Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, '${
+          } = /*#__PURE__*/ initUTSProxyClass(Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, '${
             decl.cls
           }', is_uni_modules) }, ${JSON.stringify(decl.options)} ))`
         )
@@ -190,7 +192,7 @@ function genModuleCode(
         )
       } else {
         codes.push(
-          `${exportConst}${decl.method} = initUTSProxyFunction(${
+          `${exportConst}${decl.method} = /*#__PURE__*/ initUTSProxyFunction(${
             decl.async
           }, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: '${
             decl.method
@@ -304,7 +306,12 @@ function mergeDecls(from: ProxyDecl[], to: ProxyDecl[]) {
   from.forEach((item) => {
     if (item.type === 'Class') {
       if (
-        !to.find((toItem) => toItem.type === 'Class' && toItem.cls === item.cls)
+        !to.find(
+          (toItem) =>
+            toItem.type === 'Class' &&
+            toItem.cls === item.cls &&
+            toItem.isDefault === item.isDefault
+        )
       ) {
         to.push(item)
       }
@@ -313,7 +320,8 @@ function mergeDecls(from: ProxyDecl[], to: ProxyDecl[]) {
         !to.find(
           (toItem) =>
             toItem.type === 'FunctionDeclaration' &&
-            toItem.method === item.method
+            toItem.method === item.method &&
+            toItem.isDefault === item.isDefault
         )
       ) {
         to.push(item)
