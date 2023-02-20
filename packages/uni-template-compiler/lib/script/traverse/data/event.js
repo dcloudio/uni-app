@@ -13,7 +13,8 @@ const {
 const {
   getCode,
   customize,
-  processMemberExpression
+  processMemberExpression,
+  replaceMemberExpression
 } = require('../../../util')
 
 const {
@@ -124,18 +125,18 @@ function parseMethod (method, state) {
             if (isForIndex(state.scoped, element)) {
               return element
             } else {
-              extraArrayElements.push(t.stringLiteral(
+              extraArrayElements.push(replaceMemberExpression(t.stringLiteral(
                 getExtraDataPath(getCode(processMemberExpression(element, state)),
                   methodName)
-              ))
+              ), state))
             }
           } else {
             extraArrayElements.push(forExtra)
           }
         } else {
-          extraArrayElements.push(t.stringLiteral(
+          extraArrayElements.push(replaceMemberExpression(t.stringLiteral(
             getExtraDataPath(getCode(processMemberExpression(element, state)), methodName)
-          ))
+          ), state))
         }
         return t.stringLiteral('$' + (extraArrayElements.length - 1))
       } else if ( // +1=>1

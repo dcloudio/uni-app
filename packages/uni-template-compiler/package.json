@@ -18,6 +18,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@babel/parser": "^7.3.3",
+    "@babel/template": "^7.3.3",
     "@babel/traverse": "^7.3.3",
     "@babel/types": "^7.3.3",
     "vue-template-compiler": "^2.6.10"
