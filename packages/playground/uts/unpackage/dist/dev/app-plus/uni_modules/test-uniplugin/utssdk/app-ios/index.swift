@@ -1,20 +1,20 @@
 import DCloudUTSExtAPI;
 import DCloudUTSFoundation;
-var uni_showToast = DCloudUTSExtAPI.showToast;
-var uni_showModel = DCloudUTSExtAPI.showModel;
+public var uni_showToast = DCloudUTSExtAPI.showToast;
+public var uni_showModel = DCloudUTSExtAPI.showModel;
 typealias ShowToast = (_ msg: String) -> Void;
 import UIKit;
 import CoreLocation;
 @objc(UTSSDKModulesTestUniPluginGetBatteryInfoOptions)
 @objcMembers
-class GetBatteryInfoOptions : NSObject {
+public class GetBatteryInfoOptions : NSObject {
     public var name: String!;
     public var pwd: NSNumber!;
     public var success: UTSCallback?;
     public var fail: UTSCallback?;
     public var complete: UTSCallback?;
 }
-func getBatteryInfo(_ options: GetBatteryInfoOptions) {
+public func getBatteryInfo(_ options: GetBatteryInfoOptions) {
     UIAlertController(title: title, message: message, preferredStyle: UIAlertController.Style.alert);
     var res = UTSJSONObject([
         "errMsg": "getBatteryInfo:ok",
@@ -28,7 +28,7 @@ func getBatteryInfo(_ options: GetBatteryInfoOptions) {
         options.complete!(res);
     }
 }
-func test1(_ callback: UTSCallback) -> String {
+public func test1(_ callback: UTSCallback) -> String {
     console.log(UTSJSONObject([
         "a": "b"
     ]), " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:33");
@@ -43,11 +43,11 @@ func test1(_ callback: UTSCallback) -> String {
 }
 @objc
 @objcMembers
-class Test1 : NSObject {
+public class Test1 : NSObject {
 }
 @objc(UTSSDKModulesTestUniPluginTest)
 @objcMembers
-class Test : NSObject {
+public class Test : NSObject {
     public init(){
         Test1();
     }
@@ -73,7 +73,7 @@ class Test : NSObject {
     }
 }
 @available(iOS 13.0.0, *)
-func testAsync() async -> UTSJSONObject {
+public func testAsync() async -> UTSJSONObject {
     uni_showToast();
     uni_showToast();
     uni_showModel();
@@ -81,18 +81,12 @@ func testAsync() async -> UTSJSONObject {
         "a": 1
     ]);
 }
-var showToast1: ShowToast = {
-(_ msg) in
-};
-var showToast2: ShowToast = {
-(_ msg) in
-};
-var showToast3: ShowToast = {
-(_ msg) in
-};
+public func showToast1(_ msg: String) {}
+public func showToast2(_ msg: String) {}
+public func showToast3(_ msg: String) {}
 @objc(UTSSDKModulesTestUniPluginIndexSwift)
 @objcMembers
-class IndexSwift : NSObject {
+public class IndexSwift : NSObject {
     public static func s_getBatteryInfo(_ options: GetBatteryInfoOptions) {
         return getBatteryInfo(options);
     }

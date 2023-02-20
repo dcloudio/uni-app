@@ -66,6 +66,6 @@ fun offMemoryWarning(callback: (UTSCallback)? = null) {
 }
 open class TestClass {
 }
-val showToast1: ShowToast = fun(msg){};
-val showToast2: ShowToast = fun(msg) {};
-val showToast3: ShowToast = fun(msg) {};
+fun showToast1(msg: String) {}
+fun showToast2(msg: String) {}
+fun showToast3(msg: String) {}
