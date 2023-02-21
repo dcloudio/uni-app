@@ -8,17 +8,17 @@ const moduleName = '测试'
 const moduleType = 'built-in'
 const errMsg = \`\`
 const is_uni_modules = false
-const pkg = initUTSPackageName(name, is_uni_modules)
-const cls = initUTSIndexClassName(name, is_uni_modules)
+const pkg = /*#__PURE__*/ initUTSPackageName(name, is_uni_modules)
+const cls = /*#__PURE__*/ initUTSIndexClassName(name, is_uni_modules)
 
 export const TestUTSComponent = {}
 
-export const onMemoryWarning = initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'onMemoryWarning', params: [{"name":"callback","type":"UTSCallback"}]})
-export const offMemoryWarning = initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'offMemoryWarning', params: [{"name":"callback","type":"UTSCallback","default":"UTSNull"}]})
-export default initUTSProxyClass(Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, 'User', is_uni_modules) }, {"constructor":{"params":[]},"methods":{},"staticMethods":{},"props":[],"staticProps":[]} ))
+export const onMemoryWarning = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'onMemoryWarning', params: [{"name":"callback","type":"UTSCallback"}]})
+export const offMemoryWarning = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'offMemoryWarning', params: [{"name":"callback","type":"UTSCallback","default":"UTSNull"}]})
+export default /*#__PURE__*/ initUTSProxyClass(Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, 'User', is_uni_modules) }, {"constructor":{"params":[]},"methods":{},"staticMethods":{},"props":[],"staticProps":[]} ))
 export const a = 1
-export const showToast1 = initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'showToast1', params: [{"name":"msg","type":"string"}]})
-export const showToast2 = initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'showToast2', params: [{"name":"msg","type":"string"}]})
+export const showToast1 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'showToast1', params: [{"name":"msg","type":"string"}]})
+export const showToast2 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'showToast2', params: [{"name":"msg","type":"string"}]})
 "
 `;
 
@@ -30,20 +30,20 @@ const moduleName = ''
 const moduleType = ''
 const errMsg = \`\`
 const is_uni_modules = false
-const pkg = initUTSPackageName(name, is_uni_modules)
-const cls = initUTSIndexClassName(name, is_uni_modules)
+const pkg = /*#__PURE__*/ initUTSPackageName(name, is_uni_modules)
+const cls = /*#__PURE__*/ initUTSIndexClassName(name, is_uni_modules)
 
 const exports = { __esModule: true }
 
 exports.TestUTSComponent = {}
 
-exports.onMemoryWarning = initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'onMemoryWarning', params: [{"name":"callback","type":"UTSCallback"}]})
-exports.offMemoryWarning = initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'offMemoryWarning', params: [{"name":"callback","type":"UTSCallback","default":"UTSNull"}]})
+exports.onMemoryWarning = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'onMemoryWarning', params: [{"name":"callback","type":"UTSCallback"}]})
+exports.offMemoryWarning = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'offMemoryWarning', params: [{"name":"callback","type":"UTSCallback","default":"UTSNull"}]})
 exports.default = initUTSProxyClass(Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, 'User', is_uni_modules) }, {"constructor":{"params":[]},"methods":{},"staticMethods":{},"props":[],"staticProps":[]} ))
 const a = 1
 exports.a = a
-exports.showToast1 = initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'showToast1', params: [{"name":"msg","type":"string"}]})
-exports.showToast2 = initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'showToast2', params: [{"name":"msg","type":"string"}]})
+exports.showToast1 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'showToast1', params: [{"name":"msg","type":"string"}]})
+exports.showToast2 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'showToast2', params: [{"name":"msg","type":"string"}]})
 uni.registerUTSPlugin('utssdk/test-uts', exports)
 "
 `;
