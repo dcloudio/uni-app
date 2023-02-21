@@ -1,5 +1,5 @@
 const t = require('@babel/types')
-const parser = require('@babel/parser')
+const template = require('@babel/template').default
 
 const {
   IDENTIFIER_EVENT,
@@ -7,7 +7,8 @@ const {
   INTERNAL_EVENT_PROXY,
   ATTR_DATA_EVENT_OPTS,
   ATTR_DATA_EVENT_PARAMS,
-  INTERNAL_SET_SYNC
+  INTERNAL_SET_SYNC,
+  INTERNAL_SET_MODEL
 } = require('../../../constants')
 
 const {
@@ -387,6 +388,13 @@ function parseEvent (keyPath, valuePath, state, isComponent, isNativeOn = false,
             funcPath.node.params.push(t.identifier(name))
           })
           if (params.length) {
+            if (!isCustom) {
+              const bodyStatements = funcPath.get('body.body')
+              const returnStatement = bodyStatements[0]
+              if (t.isReturnStatement(returnStatement) && t.isCallExpression(returnStatement.node.argument) && returnStatement.node.argument.callee.name === INTERNAL_SET_MODEL) {
+                funcPath.node.body.body.unshift(template('$event=$event.target.value')())
+              }
+            }
             let argumentsName = 'arguments'
             if (funcPath.isArrowFunctionExpression()) {
               argumentsName = 'args'
@@ -396,7 +404,7 @@ function parseEvent (keyPath, valuePath, state, isComponent, isNativeOn = false,
             const paramsUid = funcPath.scope.generateDeclaredUidIdentifier().name
             const dataset = ATTR_DATA_EVENT_PARAMS.substring(5)
             const code = `var ${datasetUid}=${argumentsName}[${argumentsName}.length-1].currentTarget.dataset,${paramsUid}=${datasetUid}.${dataset.replace(/-([a-z])/, (_, str) => str.toUpperCase())}||${datasetUid}['${dataset}'],${params.map(item => `${item}=${paramsUid}.${item}`).join(',')}`
-            funcPath.node.body.body.unshift(parser.parse(code).program.body[0])
+            funcPath.node.body.body.unshift(template(code)())
           }
           methods.push(addEventExpressionStatement(funcPath, state, isComponent, isNativeOn))
         }
