@@ -53,6 +53,7 @@ export class UniComponent extends UniNode {
     this.$app = createApp(createWrapper(component, this.$props))
     this.$app.mount(container)
     this.$ = container.firstElementChild! as UniCustomElement
+    this.$.__id = id
     if (selector) {
       this.$holder = this.$.querySelector(selector)!
       if (__DEV__) {
