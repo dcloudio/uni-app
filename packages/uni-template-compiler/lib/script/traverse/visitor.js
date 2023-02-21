@@ -230,6 +230,8 @@ module.exports = {
                 path =>
                   path.isObjectProperty() && ['on', 'nativeOn'].includes(path.node.key.name)
               )
+              // path is model.callback
+              // || path.findParent(path => path.isObjectProperty() && path.node.key.name === 'callback' && t.isFunctionExpression(path.node.value) && t.isObjectProperty(path.parentPath.parentPath) && path.parentPath.parentPath.node.key.name === 'model')
             ) {
               // event
               return path.skip()

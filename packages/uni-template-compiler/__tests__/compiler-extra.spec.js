@@ -21,22 +21,22 @@ describe('mp:compiler-extra', () => {
       '<view @touchmove="a.touchmove">{{t.a}}{{t[\'a\']}}{{t.a(b)}}{{t[\'a\'](b)}}{{u.t.a(b)}}{{u.t.a}}</view>',
       '<view bindtouchmove="{{a.touchmove}}">{{t.a+t[\'a\']+t.a(b)+t[\'a\'](b)+$root.g0+u.t.a}}</view>',
       'with(this){var g0=u.t.a(b);$mp.data=Object.assign({},{$root:{g0:g0}})}', {
-      filterModules: {
-        t: {},
-        a: {}
+        filterModules: {
+          t: {},
+          a: {}
+        }
       }
-    }
     )
     assertCodegen(
       /* eslint-disable no-template-curly-in-string */
       '<view v-for="(item, index) in a.test()" :key="index">{{item}}</view>',
       '<block wx:for="{{a.test()}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view>{{item}}</view></block>',
       'with(this){}', {
-      filterModules: {
-        t: {},
-        a: {}
+        filterModules: {
+          t: {},
+          a: {}
+        }
       }
-    }
     )
   })
 
@@ -45,43 +45,43 @@ describe('mp:compiler-extra', () => {
       '<view></view>',
       '<view class="data-v-1"></view>',
       undefined, {
-      scopeId: 'data-v-1'
-    }
+        scopeId: 'data-v-1'
+      }
     )
     assertCodegen(
       '<view class="view"></view>',
       '<view class="view data-v-2"></view>',
       undefined, {
-      scopeId: 'data-v-2'
-    }
+        scopeId: 'data-v-2'
+      }
     )
     assertCodegen(
       '<view :class="[{ active: isActive }, errorClass]"></view>',
       '<view class="{{[\'data-v-3\',[(isActive)?\'active\':\'\'],errorClass]}}"></view>',
       undefined, {
-      scopeId: 'data-v-3'
-    }
+        scopeId: 'data-v-3'
+      }
     )
     assertCodegen(
       '<view class="static" :class="[{ active: isActive }, errorClass]"></view>',
       '<view class="{{[\'static\',\'data-v-4\',[(isActive)?\'active\':\'\'],errorClass]}}"></view>',
       undefined, {
-      scopeId: 'data-v-4'
-    }
+        scopeId: 'data-v-4'
+      }
     )
     assertCodegen(
       '<view ref="ref" :class="[{ active: isActive }, errorClass]"></view>',
       '<view data-ref="ref" class="{{[\'data-v-5\',\'vue-ref\',[(isActive)?\'active\':\'\'],errorClass]}}"></view>',
       undefined, {
-      scopeId: 'data-v-5'
-    }
+        scopeId: 'data-v-5'
+      }
     )
     assertCodegen(
       '<view :class="view"></view>',
       '<view class="{{[\'data-v-6\',view]}}"></view>',
       undefined, {
-      scopeId: 'data-v-6'
-    }
+        scopeId: 'data-v-6'
+      }
     )
     //     assertCodegen(
     //       '<view :class="view"></view>',
@@ -94,8 +94,8 @@ describe('mp:compiler-extra', () => {
       '<view :class="view" class="view"></view>',
       '<view class="{{[\'view\',\'data-v-7\',view]}}"></view>',
       undefined, {
-      scopeId: 'data-v-7'
-    }
+        scopeId: 'data-v-7'
+      }
     )
     //         assertCodegen(
     //             '<view :class="view" class="view"></view>',
@@ -124,8 +124,8 @@ describe('mp:compiler-extra', () => {
       '<view style="height:100rpx;width:100rpx;">text</view>',
       undefined,
       undefined, {
-      transformPx: true
-    }
+        transformPx: true
+      }
     )
   })
 
@@ -825,6 +825,16 @@ describe('mp:compiler-extra', () => {
       '<view v-for="(item, index) in array()"><view @click="test(item)">{{get(item)}}</view></view>',
       '<block wx:for="{{$root.l0}}" wx:for-item="item" wx:for-index="index"><view><view data-event-opts="{{[[\'tap\',[[\'e0\',[\'$event\']]]]]}}" data-event-params="{{({item:item.$orig})}}" bindtap="__e">{{item.m0}}</view></view></block>',
       'with(this){var l0=__map(array(),function(item,index){var $orig=__get_orig(item);var m0=get(item);return{$orig:$orig,m0:m0}});if(!_isMounted){e0=function($event,item){var _temp=arguments[arguments.length-1].currentTarget.dataset,_temp2=_temp.eventParams||_temp["event-params"],item=_temp2.item;var _temp,_temp2;return test(item)}}$mp.data=Object.assign({},{$root:{l0:l0}})}'
+    )
+    assertCodegen(
+      '<template v-for="item in [1,2]"><input v-model="values[item]" /></template>',
+      '<block wx:for="{{[1,2]}}" wx:for-item="item" wx:for-index="__i0__"><input data-event-opts="{{[[\'input\',[[\'e0\',[\'$event\']]]]]}}" data-event-params="{{({item})}}" value="{{values[item]}}" bindinput="__e"/></block>',
+      'with(this){if(!_isMounted){e0=function($event,item){var _temp=arguments[arguments.length-1].currentTarget.dataset,_temp2=_temp.eventParams||_temp["event-params"],item=_temp2.item;var _temp,_temp2;$event=$event.target.value;return __set_model(values,item,$event,[])}}}'
+    )
+    assertCodegen(
+      '<template v-for="item in [1,2]"><custom-input v-model="values[item]" /></template>',
+      '<block wx:for="{{[1,2]}}" wx:for-item="item" wx:for-index="__i0__"><custom-input bind:input="__e" vue-id="{{\'551070e6-1-\'+__i0__}}" value="{{values[item]}}" data-event-opts="{{[[\'^input\',[[\'e0\']]]]}}" data-event-params="{{({item})}}" bind:__l="__l"></custom-input></block>',
+      'with(this){if(!_isMounted){e0=function($event,item){var _temp=arguments[arguments.length-1].currentTarget.dataset,_temp2=_temp.eventParams||_temp["event-params"],item=_temp2.item;var _temp,_temp2;return __set_model(values,item,$event,[])}}}'
     )
   })
   it('generate bool attr', () => {

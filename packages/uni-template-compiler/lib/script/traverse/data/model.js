@@ -7,13 +7,14 @@ const {
 module.exports = function processRef (paths, path, state) {
   const modelPath = paths.model
   if (modelPath) {
-    const callbackProperty = modelPath.node.value.properties.find(property => {
+    const properties = modelPath.node.value.properties
+    const [callbackProperty] = properties.splice(properties.findIndex(property => {
       return property.key.name === 'callback'
-    })
-    const valueProperty = modelPath.node.value.properties.find(
+    }), 1)
+    const valueProperty = properties.find(
       property => property.key.name === 'value'
     )
-    const exprProperty = modelPath.node.value.properties.find(
+    const exprProperty = properties.find(
       property => property.key.name === 'expression'
     )
 
