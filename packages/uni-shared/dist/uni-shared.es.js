@@ -291,7 +291,7 @@ function resolveOwnerEl(instance, multi = false) {
         const elemVNodes = subTree.children.filter((vnode) => vnode.el && isElement(vnode.el));
         if (elemVNodes.length > 0) {
             if (multi) {
-                return elemVNodes.map(node => node.el);
+                return elemVNodes.map((node) => node.el);
             }
             return elemVNodes[0].el;
         }

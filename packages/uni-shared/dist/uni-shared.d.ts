@@ -619,6 +619,8 @@ export declare function resolveComponentInstance(instance?: ComponentInternalIns
 
 export declare function resolveOwnerEl(instance: ComponentInternalInstance, multi: true): RendererNode[];
 
+export declare function resolveOwnerEl(instance: ComponentInternalInstance): RendererNode | null;
+
 export declare function resolveOwnerVm(vm: ComponentInternalInstance): ComponentPublicInstance<{}, {}, {}, {}, {}, {}, {}, {}, false, ComponentOptionsBase<any, any, any, any, any, any, any, any, any, {}, {}, string>, {}> | undefined;
 
 export declare const RESPONSIVE_MIN_WIDTH = 768;
