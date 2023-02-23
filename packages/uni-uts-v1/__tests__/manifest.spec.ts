@@ -42,6 +42,7 @@ describe('manifest', () => {
   test('resolve android files', async () => {
     expect(await resolvePluginFiles('app-android', pluginDir, false)).toEqual([
       'index.uts',
+      'interface.uts',
       'package.json',
       'common/utils.uts',
       'common/test/test.uts',
@@ -53,12 +54,14 @@ describe('manifest', () => {
       'utssdk/index.uts',
       'utssdk/common/utils.uts',
       'utssdk/app-android/index.uts',
+      'utssdk/app-android/index.vue',
       'utssdk/app-android/assets/test.json',
     ])
   })
   test('resolve ios files', async () => {
     expect(await resolvePluginFiles('app-ios', pluginDir, false)).toEqual([
       'index.uts',
+      'interface.uts',
       'package.json',
       'common/utils.uts',
       'common/test/test.uts',
@@ -109,12 +112,12 @@ describe('manifest', () => {
   test('gen android manifest', async () => {
     const res = await checkKotlinCompile('standard', pluginModuleOptions)
     expect(res.expired).toBe(false)
-    expect(res.files.length).toBe(5)
+    expect(res.files.length).toBe(6)
     expect(res.tips).toBeTruthy()
 
     const res1 = await checkKotlinCompile('standard', pluginOptions)
     expect(res1.expired).toBe(false)
-    expect(res1.files.length).toBe(4)
+    expect(res1.files.length).toBe(5)
     expect(res1.tips).toBe('')
   })
   test('gen ios manifest', async () => {
@@ -124,7 +127,7 @@ describe('manifest', () => {
     expect(res.tips).toBe('')
     const res1 = await checkSwiftCompile('standard', pluginOptions)
     expect(res1.expired).toBe(false)
-    expect(res1.files.length).toBe(4)
+    expect(res1.files.length).toBe(5)
     expect(res1.tips).toBe('')
   })
   test('sourcemap', () => {

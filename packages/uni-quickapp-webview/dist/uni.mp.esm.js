@@ -1,6 +1,6 @@
-import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, isUniLifecycleHook, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, addLeadingSlash, stringifyQuery, customizeEvent } from '@dcloudio/uni-shared';
+import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, addLeadingSlash, stringifyQuery, customizeEvent } from '@dcloudio/uni-shared';
 import { isArray, hasOwn, isFunction, extend, isPlainObject, isObject } from '@vue/shared';
-import { ref, nextTick, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, devtoolsComponentRemoved, devtoolsComponentAdded, getExposeProxy, pruneComponentPropsCache } from 'vue';
+import { ref, nextTick, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, devtoolsComponentAdded, getExposeProxy, pruneComponentPropsCache } from 'vue';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 
 const MP_METHODS = [
@@ -616,6 +616,13 @@ function parseComponent(vueOptions, { parse, mocks, isPage, initRelation, handle
         addGlobalClass: true,
         pureDataPattern: /^uP$/,
     };
+    if (isArray(vueOptions.mixins)) {
+        vueOptions.mixins.forEach((item) => {
+            if (isObject(item.options)) {
+                extend(options, item.options);
+            }
+        });
+    }
     if (vueOptions.options) {
         extend(options, vueOptions.options);
     }
@@ -625,7 +632,6 @@ function parseComponent(vueOptions, { parse, mocks, isPage, initRelation, handle
         pageLifetimes: {
             show() {
                 if (__VUE_PROD_DEVTOOLS__) {
-                    devtoolsComponentRemoved(this.$vm.$);
                     devtoolsComponentAdded(this.$vm.$);
                 }
                 this.$vm && this.$vm.$callHook('onPageShow');
@@ -878,6 +884,12 @@ function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
         if (mpType === 'component') {
             initFormField(this.$vm);
         }
+        if (mpType === 'page') {
+            if (__VUE_OPTIONS_API__) {
+                initInjections(this.$vm);
+                initProvide(this.$vm);
+            }
+        }
         // 处理父子关系
         initRelation(this, relationOptions);
     }
@@ -990,22 +1002,22 @@ function handleLink({ detail: { nodeId, webviewId }, }) {
 
 var parseComponentOptions = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  initRelation: initRelation,
   handleLink: handleLink,
-  mocks: mocks,
+  initLifetimes: initLifetimes$1,
+  initRelation: initRelation,
   isPage: isPage,
-  parse: parse,
-  initLifetimes: initLifetimes$1
+  mocks: mocks,
+  parse: parse
 });
 
 var parsePageOptions = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  mocks: mocks,
-  isPage: isPage,
-  initRelation: initRelation,
   handleLink: handleLink,
-  parse: parse,
-  initLifetimes: initLifetimes
+  initLifetimes: initLifetimes,
+  initRelation: initRelation,
+  isPage: isPage,
+  mocks: mocks,
+  parse: parse
 });
 
 const createApp = initCreateApp();

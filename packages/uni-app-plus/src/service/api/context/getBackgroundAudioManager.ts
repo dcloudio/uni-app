@@ -85,6 +85,7 @@ const events: Events[] = ['play', 'pause', 'ended', 'stop', 'canplay']
 
 function startTimeUpdateTimer() {
   stopTimeUpdateTimer()
+  onBackgroundAudioStateChange({ state: 'timeUpdate' })
   timeUpdateTimer = setInterval(() => {
     onBackgroundAudioStateChange({ state: 'timeUpdate' })
   }, TIME_UPDATE)

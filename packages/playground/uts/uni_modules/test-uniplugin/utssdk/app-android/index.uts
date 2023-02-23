@@ -1,9 +1,10 @@
 import Log from 'android.util.Log'
 import FrameLayout from 'android.widget.FrameLayout'
 import View from 'android.view.View'
-import { IUser } from './interface.uts'
-import { login } from './login.uts'
+import { login } from 'login'
+import { IUser } from './interface'
 import logo from '../../static/logo.png'
+import { ShowToast } from '../interface.uts'
 
 const test = arrayOf(1, 2, 3)
 
@@ -40,7 +41,8 @@ export class User implements IUser {
     //#ifdef MP-WEIXIN
     console.log('def weixin')
     //#endif
-
+    const a = -3
+    console.log(~a)
     new XToast<XToast<unknown>>(getUniActivity())
       .setContentView(R.layout.toast_hint)
       .setDuration(1000)
@@ -51,12 +53,24 @@ export class User implements IUser {
   register(name: string, callback: () => void) {
     Log.info(logo as FrameLayout)
   }
-  test(view: View) { }
+  test(view: View) {
+    console.log(new TestClass())
+  }
 }
 function login(name: string, callback: () => void) { }
 
 @Suppress("DEPRECATION")
-export function register(name: string, callback: () => void) { }
+  export function register(name: string, callback: () => void) { }
 export function offMemoryWarning(
   callback: null | ((level: number) => void) = null
-) { }
+) {
+  uni.showToast()
+  uni.showToast()
+  uni.showModel()
+}
+class TestClass {
+
+}
+export const showToast1: ShowToast = (msg) => { }
+export const showToast2: ShowToast = function (msg) { }
+export const showToast3: ShowToast = function showToast(msg) { }

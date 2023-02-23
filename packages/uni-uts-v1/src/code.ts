@@ -1,7 +1,10 @@
 import fs from 'fs'
 import path from 'path'
 
-import {
+import { camelize, capitalize, isArray } from '@vue/shared'
+
+import type {
+  ArrowFunctionExpression,
   BindingIdentifier,
   ClassDeclaration,
   ClassExpression,
@@ -11,12 +14,23 @@ import {
   Identifier,
   Module,
   Param,
+  Span,
+  TsFnParameter,
   TsTypeAnnotation,
   VariableDeclaration,
+  VariableDeclarationKind,
 } from '../types/types'
-import { createResolveTypeReferenceName, ERR_MSG_PLACEHOLDER } from './utils'
-import { isInHBuilderX } from './shared'
-import { camelize, capitalize } from '@vue/shared'
+import {
+  createResolveTypeReferenceName,
+  ERR_MSG_PLACEHOLDER,
+  isColorSupported,
+} from './utils'
+import { normalizePath } from './shared'
+
+export const enum FORMATS {
+  ES = 'es',
+  CJS = 'cjs',
+}
 interface GenProxyCodeOptions {
   is_uni_modules: boolean
   id: string
@@ -25,36 +39,62 @@ interface GenProxyCodeOptions {
   namespace: string
   androidComponents?: Record<string, string>
   iosComponents?: Record<string, string>
+  format?: FORMATS
+  pluginRelativeDir?: string
+  moduleName?: string
+  moduleType?: string
+  types?: Types
 }
 
 export async function genProxyCode(
   module: string,
   options: GenProxyCodeOptions
 ) {
-  const { name, is_uni_modules } = options
+  const { name, is_uni_modules, format, moduleName, moduleType } = options
+  options.types = await parseInterfaceTypes(module, options)
   return `
-import { initUtsProxyClass, initUtsProxyFunction, initUtsPackageName, initUtsIndexClassName, initUtsClassName } from '@dcloudio/uni-app'
+const { initUTSProxyClass, initUTSProxyFunction, initUTSPackageName, initUTSIndexClassName, initUTSClassName } = uni
 const name = '${name}'
+const moduleName = '${moduleName || ''}'
+const moduleType = '${moduleType || ''}'
 const errMsg = \`${ERR_MSG_PLACEHOLDER}\`
 const is_uni_modules = ${is_uni_modules}
-const pkg = initUtsPackageName(name, is_uni_modules)
-const cls = initUtsIndexClassName(name, is_uni_modules)
+const pkg = /*#__PURE__*/ initUTSPackageName(name, is_uni_modules)
+const cls = /*#__PURE__*/ initUTSIndexClassName(name, is_uni_modules)
+${
+  format === FORMATS.CJS
+    ? `
+const exports = { __esModule: true }
+`
+    : ''
+}
 ${genComponentsCode(
+  format,
   options.androidComponents || {},
   options.iosComponents || {}
 )}
-${genModuleCode(await parseModuleDecls(module, options))}
+
+${genModuleCode(
+  await parseModuleDecls(module, options),
+  format,
+  options.pluginRelativeDir!
+)}
 `
 }
 
 export function genComponentsCode(
+  format: FORMATS = FORMATS.ES,
   androidComponents: Record<string, string>,
   iosComponents: Record<string, string>
 ) {
   const codes: string[] = []
   Object.keys(Object.assign({}, androidComponents, iosComponents)).forEach(
     (name) => {
-      codes.push(`export const ${capitalize(camelize(name))}Component = {}`)
+      if (format === FORMATS.CJS) {
+        codes.push(`exports.${capitalize(camelize(name))}Component = {}`)
+      } else {
+        codes.push(`export const ${capitalize(camelize(name))}Component = {}`)
+      }
     }
   )
   return codes.join('\n')
@@ -65,6 +105,18 @@ export function resolveRootIndex(module: string, options: GenProxyCodeOptions) {
     module,
     options.is_uni_modules ? 'utssdk' : '',
     `index${options.extname}`
+  )
+  return fs.existsSync(filename) && filename
+}
+
+export function resolveRootInterface(
+  module: string,
+  options: GenProxyCodeOptions
+) {
+  const filename = path.resolve(
+    module,
+    options.is_uni_modules ? 'utssdk' : '',
+    `interface${options.extname}`
   )
   return fs.existsSync(filename) && filename
 }
@@ -91,21 +143,40 @@ export function resolvePlatformIndex(
   return fs.existsSync(filename) && filename
 }
 
-function genModuleCode(decls: ProxyDecl[]) {
+function exportDefaultCode(format: FORMATS) {
+  return format === FORMATS.ES
+    ? 'export default /*#__PURE__*/ '
+    : 'exports.default = '
+}
+
+function exportVarCode(format: FORMATS, kind: VariableDeclarationKind) {
+  if (format === FORMATS.ES) {
+    return `export ${kind} `
+  }
+  return `exports.`
+}
+
+function genModuleCode(
+  decls: ProxyDecl[],
+  format: FORMATS = FORMATS.ES,
+  pluginRelativeDir: string
+) {
   const codes: string[] = []
+  const exportDefault = exportDefaultCode(format)
+  const exportConst = exportVarCode(format, 'const')
   decls.forEach((decl) => {
     if (decl.type === 'Class') {
       if (decl.isDefault) {
         codes.push(
-          `export default initUtsProxyClass(Object.assign({ errMsg, package: pkg, class: initUtsClassName(name, '${
+          `${exportDefault}initUTSProxyClass(Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, '${
             decl.cls
           }', is_uni_modules) }, ${JSON.stringify(decl.options)} ))`
         )
       } else {
         codes.push(
-          `export const ${
+          `${exportConst}${
             decl.cls
-          } = initUtsProxyClass(Object.assign({ errMsg, package: pkg, class: initUtsClassName(name, '${
+          } = /*#__PURE__*/ initUTSProxyClass(Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, '${
             decl.cls
           }', is_uni_modules) }, ${JSON.stringify(decl.options)} ))`
         )
@@ -113,32 +184,110 @@ function genModuleCode(decls: ProxyDecl[]) {
     } else if (decl.type === 'FunctionDeclaration') {
       if (decl.isDefault) {
         codes.push(
-          `export default initUtsProxyFunction(${
+          `${exportDefault}initUTSProxyFunction(${
             decl.async
-          }, { errMsg, main: true, package: pkg, class: cls, name: '${
+          }, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: '${
             decl.method
           }', params: ${JSON.stringify(decl.params)}})`
         )
       } else {
         codes.push(
-          `export const ${decl.method} = initUtsProxyFunction(${
+          `${exportConst}${decl.method} = /*#__PURE__*/ initUTSProxyFunction(${
             decl.async
-          }, { errMsg, main: true, package: pkg, class: cls, name: '${
+          }, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: '${
             decl.method
           }', params: ${JSON.stringify(decl.params)}})`
         )
       }
     } else if (decl.type === 'VariableDeclaration') {
-      codes.push(
-        `export ${decl.kind} ${decl.declarations
-          .map((d) => `${(d.id as Identifier).value} = ${genInitCode(d.init!)}`)
-          .join(', ')}`
-      )
+      if (format === FORMATS.ES) {
+        codes.push(
+          `export ${decl.kind} ${decl.declarations
+            .map(
+              (d) => `${(d.id as Identifier).value} = ${genInitCode(d.init!)}`
+            )
+            .join(', ')}`
+        )
+      } else if (format === FORMATS.CJS) {
+        codes.push(
+          `${decl.kind} ${decl.declarations
+            .map(
+              (d) => `${(d.id as Identifier).value} = ${genInitCode(d.init!)}`
+            )
+            .join(', ')}`
+        )
+        const exportVar = exportVarCode(format, decl.kind)
+        decl.declarations.forEach((d) => {
+          const name = (d.id as Identifier).value
+          codes.push(`${exportVar}${name} = ${name}`)
+        })
+      }
     }
   })
+  if (format === FORMATS.CJS) {
+    codes.push(
+      `uni.registerUTSPlugin('${normalizePath(pluginRelativeDir)}', exports)`
+    )
+  }
   return codes.join(`\n`)
 }
 
+/**
+ * 解析接口文件中定义的类型信息（主要是解析函数类型参数类型列表）
+ * @param module
+ * @param options
+ * @returns
+ */
+async function parseInterfaceTypes(
+  module: string,
+  options: GenProxyCodeOptions
+) {
+  const interfaceFilename = resolveRootInterface(module, options)
+  if (!interfaceFilename) {
+    return {}
+  }
+  // 懒加载 uts 编译器
+  // eslint-disable-next-line no-restricted-globals
+  const { parse } = require('@dcloudio/uts')
+  const ast: Module = await parse(fs.readFileSync(interfaceFilename, 'utf8'), {
+    noColor: !isColorSupported(),
+  })
+  const types: Record<string, Param[] | string> = {}
+  ast.body.filter((node) => {
+    if (
+      node.type === 'ExportDeclaration' &&
+      node.declaration.type === 'TsTypeAliasDeclaration'
+    ) {
+      switch (node.declaration.typeAnnotation.type) {
+        case 'TsFunctionType':
+          const params = createParams(node.declaration.typeAnnotation.params)
+          if (params.length) {
+            types[node.declaration.id.value] = params
+          }
+          break
+        case 'TsTypeLiteral':
+          types[node.declaration.id.value] = node.declaration.id.value
+      }
+    }
+  })
+  return types
+}
+
+function createParams(tsParams: TsFnParameter[]) {
+  const params: Param[] = []
+  tsParams.forEach((pat) => {
+    if (pat.type === 'Identifier') {
+      params.push({
+        type: 'Parameter',
+        pat,
+        span: {} as Span,
+      })
+    }
+  })
+  return params
+}
+
+type Types = Awaited<ReturnType<typeof parseInterfaceTypes>>
 async function parseModuleDecls(module: string, options: GenProxyCodeOptions) {
   // 优先合并 ios + android，如果没有，查找根目录 index.uts
   const iosDecls = await parseFile(
@@ -162,7 +311,12 @@ function mergeDecls(from: ProxyDecl[], to: ProxyDecl[]) {
   from.forEach((item) => {
     if (item.type === 'Class') {
       if (
-        !to.find((toItem) => toItem.type === 'Class' && toItem.cls === item.cls)
+        !to.find(
+          (toItem) =>
+            toItem.type === 'Class' &&
+            toItem.cls === item.cls &&
+            toItem.isDefault === item.isDefault
+        )
       ) {
         to.push(item)
       }
@@ -171,7 +325,8 @@ function mergeDecls(from: ProxyDecl[], to: ProxyDecl[]) {
         !to.find(
           (toItem) =>
             toItem.type === 'FunctionDeclaration' &&
-            toItem.method === item.method
+            toItem.method === item.method &&
+            toItem.isDefault === item.isDefault
         )
       ) {
         to.push(item)
@@ -209,17 +364,25 @@ async function parseFile(
   options: GenProxyCodeOptions
 ) {
   if (filename) {
-    return parseCode(fs.readFileSync(filename, 'utf8'), options.namespace)
+    return parseCode(
+      fs.readFileSync(filename, 'utf8'),
+      options.namespace,
+      options.types!
+    )
   }
   return []
 }
 
-async function parseCode(code: string, namespace: string) {
+async function parseCode(code: string, namespace: string, types: Types) {
   // 懒加载 uts 编译器
   // eslint-disable-next-line no-restricted-globals
   const { parse } = require('@dcloudio/uts')
-  const ast = await parse(code, { noColor: isInHBuilderX() })
-  return parseAst(ast, createResolveTypeReferenceName(namespace, ast))
+  const ast = await parse(code, { noColor: !isColorSupported() })
+  return parseAst(
+    ast,
+    createResolveTypeReferenceName(namespace, ast, types),
+    types
+  )
 }
 
 type ProxyDecl = ProxyFunctionDeclaration | ProxyClass | VariableDeclaration
@@ -247,7 +410,8 @@ interface ProxyClass {
 
 function parseAst(
   { body }: Module,
-  resolveTypeReferenceName: ResolveTypeReferenceName
+  resolveTypeReferenceName: ResolveTypeReferenceName,
+  types: Types
 ) {
   const decls: Array<
     ProxyFunctionDeclaration | ProxyClass | VariableDeclaration
@@ -266,7 +430,11 @@ function parseAst(
           decls.push(genClassDeclaration(decl, resolveTypeReferenceName, false))
           break
         case 'VariableDeclaration':
-          const varDecl = genVariableDeclaration(decl)
+          const varDecl = genVariableDeclaration(
+            decl,
+            resolveTypeReferenceName,
+            types
+          )
           if (varDecl) {
             decls.push(varDecl)
           }
@@ -503,8 +671,10 @@ function genInitCode(expr: Expression) {
 }
 
 function genVariableDeclaration(
-  decl: VariableDeclaration
-): VariableDeclaration | undefined {
+  decl: VariableDeclaration,
+  resolveTypeReferenceName: ResolveTypeReferenceName,
+  types: Types
+): VariableDeclaration | ProxyFunctionDeclaration | undefined {
   // 目前仅支持 const 的 boolean,number,string
   const lits = ['BooleanLiteral', 'NumericLiteral', 'StringLiteral']
   if (
@@ -524,5 +694,75 @@ function genVariableDeclaration(
     })
   ) {
     return decl
+  }
+  if (decl.declarations.length === 1) {
+    // 识别是否是定义的 function,如：export const showToast:ShowToast = ()=>{}
+    const { id, init } = decl.declarations[0]
+    if (
+      id.type === 'Identifier' &&
+      init &&
+      (init.type === 'ArrowFunctionExpression' ||
+        init.type === 'FunctionExpression')
+    ) {
+      // 根据类型信息查找参数列表
+      let params: Param[] | undefined
+      const typeAnn = (id as BindingIdentifier).typeAnnotation
+      if (typeAnn && typeAnn.typeAnnotation.type === 'TsTypeReference') {
+        const { typeName } = typeAnn.typeAnnotation
+        if (typeName.type === 'Identifier') {
+          const value = types[typeName.value]
+          if (isArray(value)) {
+            params = value
+          }
+        }
+      }
+      return genFunctionDeclaration(
+        createFunctionDeclaration(id.value, init, params),
+        resolveTypeReferenceName,
+        false
+      )
+    }
+  }
+}
+
+function createIdentifier(name: string): Identifier {
+  return {
+    type: 'Identifier',
+    value: name,
+    optional: false,
+    span: {} as Span,
+  }
+}
+
+function createFunctionDeclaration(
+  name: string,
+  func: ArrowFunctionExpression | FunctionExpression,
+  params?: Param[]
+): FunctionDeclaration {
+  if (!params) {
+    if (func.type === 'FunctionExpression') {
+      params = func.params
+    } else if (func.type === 'ArrowFunctionExpression') {
+      func.params.forEach((p) => {
+        if (p.type === 'Identifier') {
+          params!.push({
+            type: 'Parameter',
+            pat: p,
+            span: {} as Span,
+          })
+        }
+      })
+    }
+  }
+  return {
+    type: 'FunctionDeclaration',
+    identifier: createIdentifier(name),
+    declare: false,
+    params: params!,
+    generator: false,
+    async: func.async,
+    typeParameters: func.typeParameters,
+    returnType: func.returnType,
+    span: {} as Span,
   }
 }

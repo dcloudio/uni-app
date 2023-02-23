@@ -2,12 +2,7 @@ import type { Plugin } from 'vite'
 import type { PluginContext, RollupError } from 'rollup'
 import path from 'path'
 import fs from 'fs-extra'
-import {
-  CompilerError,
-  parse,
-  SFCBlock,
-  SFCDescriptor,
-} from '@vue/compiler-sfc'
+import { CompilerError, SFCBlock, SFCDescriptor } from '@vue/compiler-sfc'
 import {
   hash,
   normalizePath,
@@ -104,12 +99,12 @@ function createAppDescriptor(
   const source = readAppCode(filename)
   const id = hash(source)
   if (!appDescriptor || appDescriptor.id !== id) {
-    const { descriptor, errors } = parse(source, {
+    const { descriptor, errors } = require('@vue/compiler-sfc').parse(source, {
       filename,
     })
     descriptor.id = id
     if (errors.length) {
-      errors.forEach((error) =>
+      errors.forEach((error: any) =>
         pluginContext.error(createRollupError(filename, error))
       )
     }

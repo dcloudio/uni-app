@@ -13,6 +13,13 @@ import { transformOn } from './transforms/vOn'
 import { transformModel } from './transforms/vModel'
 
 export const customElements = [
+  'animation-video',
+  'animation-view',
+  'ar-camera',
+  'rtc-room',
+  'rtc-room-item',
+  'tabs',
+  'tab-item',
   'follow-swan',
   'login',
   'inline-payment-panel',
@@ -54,6 +61,7 @@ export const miniProgram: MiniProgramCompilerOptions = {
         arg: ['ready'],
       },
     ],
+    'animation-view': true,
   },
   component: {
     dir: COMPONENTS_DIR,

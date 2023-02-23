@@ -228,4 +228,13 @@ describe('mp-weixin: transform component', () => {
 }`
     )
   })
+  test(`skyline gesture`, () => {
+    assert(
+      `<vertical-drag-gesture-handler onGestureEvent="handlePan" native-view="scroll-view" shouldResponseOnMove="shouldResponse" shouldAcceptGesture="shouldAccept"/>`,
+      `<vertical-drag-gesture-handler onGestureEvent="handlePan" native-view="scroll-view" shouldResponseOnMove="shouldResponse" shouldAcceptGesture="shouldAccept"/>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+  })
 })

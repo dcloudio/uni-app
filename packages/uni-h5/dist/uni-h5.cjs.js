@@ -1,5 +1,5 @@
 "use strict";
-Object.defineProperties(exports, { __esModule: { value: true }, [Symbol.toStringTag]: { value: "Module" } });
+Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 const vue = require("vue");
 const shared = require("@vue/shared");
 const uniShared = require("@dcloudio/uni-shared");
@@ -23,8 +23,14 @@ function formatI18n(message) {
 function resolveJsonObj(jsonObj, names) {
   if (names.length === 1) {
     if (jsonObj) {
+      const _isI18nStr = (value2) => shared.isString(value2) && uniI18n.isI18nStr(value2, uniShared.I18N_JSON_DELIMITERS);
+      const _name = names[0];
+      let filterJsonObj = [];
+      if (shared.isArray(jsonObj) && (filterJsonObj = jsonObj.filter((item) => _isI18nStr(item[_name]))).length) {
+        return filterJsonObj;
+      }
       const value = jsonObj[names[0]];
-      if (shared.isString(value) && uniI18n.isI18nStr(value, uniShared.I18N_JSON_DELIMITERS)) {
+      if (_isI18nStr(value)) {
         return jsonObj;
       }
     }
@@ -42,15 +48,19 @@ function defineI18nProperty(obj, names) {
     return false;
   }
   const prop = names[names.length - 1];
-  let value = jsonObj[prop];
-  Object.defineProperty(jsonObj, prop, {
-    get() {
-      return formatI18n(value);
-    },
-    set(v2) {
-      value = v2;
-    }
-  });
+  if (shared.isArray(jsonObj)) {
+    jsonObj.forEach((item) => defineI18nProperty(item, [prop]));
+  } else {
+    let value = jsonObj[prop];
+    Object.defineProperty(jsonObj, prop, {
+      get() {
+        return formatI18n(value);
+      },
+      set(v2) {
+        value = v2;
+      }
+    });
+  }
   return true;
 }
 function useI18n() {
@@ -96,7 +106,7 @@ const initI18nAsyncMsgsOnce = /* @__PURE__ */ uniShared.once(() => {
     useI18n().add(
       uniI18n.LOCALE_ES,
       normalizeMessages(name, keys, [
-        "Se agot\xF3 el tiempo de conexi\xF3n, haga clic en la pantalla para volver a intentarlo."
+        "Se agotó el tiempo de conexión, haga clic en la pantalla para volver a intentarlo."
       ]),
       false
     );
@@ -105,7 +115,7 @@ const initI18nAsyncMsgsOnce = /* @__PURE__ */ uniShared.once(() => {
     useI18n().add(
       uniI18n.LOCALE_FR,
       normalizeMessages(name, keys, [
-        "La connexion a expir\xE9, cliquez sur l'\xE9cran pour r\xE9essayer."
+        "La connexion a expiré, cliquez sur l'écran pour réessayer."
       ]),
       false
     );
@@ -113,14 +123,14 @@ const initI18nAsyncMsgsOnce = /* @__PURE__ */ uniShared.once(() => {
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
     useI18n().add(
       uniI18n.LOCALE_ZH_HANS,
-      normalizeMessages(name, keys, ["\u8FDE\u63A5\u670D\u52A1\u5668\u8D85\u65F6\uFF0C\u70B9\u51FB\u5C4F\u5E55\u91CD\u8BD5"]),
+      normalizeMessages(name, keys, ["连接服务器超时，点击屏幕重试"]),
       false
     );
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
     useI18n().add(
       uniI18n.LOCALE_ZH_HANT,
-      normalizeMessages(name, keys, ["\u9023\u63A5\u670D\u52D9\u5668\u8D85\u6642\uFF0C\u9EDE\u64CA\u5C4F\u5E55\u91CD\u8A66"]),
+      normalizeMessages(name, keys, ["連接服務器超時，點擊屏幕重試"]),
       false
     );
   }
@@ -152,14 +162,14 @@ const initI18nPickerMsgsOnce = /* @__PURE__ */ uniShared.once(() => {
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
     useI18n().add(
       uniI18n.LOCALE_ZH_HANS,
-      normalizeMessages(name, keys, ["\u5B8C\u6210", "\u53D6\u6D88"]),
+      normalizeMessages(name, keys, ["完成", "取消"]),
       false
     );
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
     useI18n().add(
       uniI18n.LOCALE_ZH_HANT,
-      normalizeMessages(name, keys, ["\u5B8C\u6210", "\u53D6\u6D88"]),
+      normalizeMessages(name, keys, ["完成", "取消"]),
       false
     );
   }
@@ -191,14 +201,14 @@ const initI18nVideoMsgsOnce = /* @__PURE__ */ uniShared.once(() => {
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
     useI18n().add(
       uniI18n.LOCALE_ZH_HANS,
-      normalizeMessages(name, keys, ["\u5F39\u5E55", "\u97F3\u91CF"]),
+      normalizeMessages(name, keys, ["弹幕", "音量"]),
       false
     );
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
     useI18n().add(
       uniI18n.LOCALE_ZH_HANT,
-      normalizeMessages(name, keys, ["\u5F48\u5E55", "\u97F3\u91CF"]),
+      normalizeMessages(name, keys, ["彈幕", "音量"]),
       false
     );
   }
@@ -207,7 +217,8 @@ function initNavigationBarI18n(navigationBar) {
   if (isEnableLocale()) {
     return defineI18nProperties(navigationBar, [
       ["titleText"],
-      ["searchInput", "placeholder"]
+      ["searchInput", "placeholder"],
+      ["buttons", "text"]
     ]);
   }
 }
@@ -519,6 +530,7 @@ const invokeViewMethodKeepAlive = (name, args, callback, pageId) => {
 const ServiceJSBridge = /* @__PURE__ */ shared.extend(
   /* @__PURE__ */ initBridge(
     "view"
+    /* view 指的是 service 层订阅的是 view 层事件 */
   ),
   {
     invokeOnCallback,
@@ -681,10 +693,10 @@ const defineBuiltInComponent = (options) => {
   return defineSystemComponent(options);
 };
 const defineSystemComponent = (options) => {
-  options.devtools = { hide: true };
   options.__reserved = true;
   options.compatConfig = {
     MODE: 3
+    // 标记为vue3
   };
   return vue.defineComponent(options);
 };
@@ -1274,19 +1286,19 @@ const HOOK_FAIL = "fail";
 const HOOK_COMPLETE = "complete";
 const globalInterceptors = {};
 const scopedInterceptors = {};
-function wrapperHook(hook) {
+function wrapperHook(hook, params) {
   return function(data) {
-    return hook(data) || data;
+    return hook(data, params) || data;
   };
 }
-function queue(hooks, data) {
+function queue(hooks, data, params) {
   let promise = false;
   for (let i = 0; i < hooks.length; i++) {
     const hook = hooks[i];
     if (promise) {
-      promise = Promise.resolve(wrapperHook(hook));
+      promise = Promise.resolve(wrapperHook(hook, params));
     } else {
-      const res = hook(data);
+      const res = hook(data, params);
       if (shared.isPromise(res)) {
         promise = Promise.resolve(res);
       }
@@ -1316,7 +1328,7 @@ function wrapperOptions(interceptors, options = {}) {
     }
     const oldCallback = options[name];
     options[name] = function callbackInterceptor(res) {
-      queue(hooks, res).then((res2) => {
+      queue(hooks, res, options).then((res2) => {
         return shared.isFunction(oldCallback) && oldCallback(res2) || res2;
       });
     };
@@ -1362,7 +1374,10 @@ function invokeApi(method, api2, options, params) {
     if (shared.isArray(interceptor.invoke)) {
       const res = queue(interceptor.invoke, options);
       return res.then((options2) => {
-        return api2(wrapperOptions(interceptor, options2), ...params);
+        return api2(
+          wrapperOptions(getApiInterceptorHooks(method), options2),
+          ...params
+        );
       });
     } else {
       return api2(wrapperOptions(interceptor, options), ...params);
@@ -1517,14 +1532,6 @@ const getLocale = /* @__PURE__ */ defineSyncApi(
     return useI18n().getLocale();
   }
 );
-const API_CAN_I_USE = "canIUse";
-const CanIUseProtocol = [
-  {
-    name: "schema",
-    type: String,
-    required: true
-  }
-];
 const API_GET_STORAGE = "getStorage";
 const GetStorageProtocol = {
   key: {
@@ -1647,37 +1654,7 @@ const RequestOptions = {
     }
   }
 };
-const FRONT_COLORS = ["#ffffff", "#000000"];
 const API_SET_NAVIGATION_BAR_COLOR = "setNavigationBarColor";
-const SetNavigationBarColorOptions = {
-  formatArgs: {
-    animation(animation2, params) {
-      if (!animation2) {
-        animation2 = { duration: 0, timingFunc: "linear" };
-      }
-      params.animation = {
-        duration: animation2.duration || 0,
-        timingFunc: animation2.timingFunc || "linear"
-      };
-    }
-  }
-};
-const SetNavigationBarColorProtocol = {
-  frontColor: {
-    type: String,
-    required: true,
-    validator(frontColor) {
-      if (FRONT_COLORS.indexOf(frontColor) === -1) {
-        return `invalid frontColor "${frontColor}"`;
-      }
-    }
-  },
-  backgroundColor: {
-    type: String,
-    required: true
-  },
-  animation: Object
-};
 const API_SET_NAVIGATION_BAR_TITLE = "setNavigationBarTitle";
 const SetNavigationBarTitleProtocol = {
   title: {
@@ -2088,7 +2065,9 @@ function useMethods(props2, canvasRef, actionsWaiting) {
             if (image) {
               c2d.drawImage.apply(
                 c2d,
+                // @ts-ignore
                 [image].concat(
+                  // @ts-ignore
                   [...otherData.slice(4, 8)],
                   [...otherData.slice(0, 4)]
                 )
@@ -2639,6 +2618,7 @@ function HTMLParser(html, handler) {
           name,
           value,
           escaped: value.replace(/(^|[^\\])"/g, '$1\\"')
+          // "
         });
       });
       if (handler.start) {
@@ -2857,9 +2837,12 @@ const index$u = /* @__PURE__ */ defineBuiltInComponent({
         "ref": rootRef
       }, [vue.createVNode("div", {
         "style": state.modeStyle
-      }, null, 4), FIX_MODES[props2.mode] ? vue.createVNode(ResizeSensor, {
-        "onResize": fixSize
-      }, null, 8, ["onResize"]) : vue.createVNode("span", null, null)], 512);
+      }, null, 4), FIX_MODES[props2.mode] ? (
+        // @ts-ignore
+        vue.createVNode(ResizeSensor, {
+          "onResize": fixSize
+        }, null, 8, ["onResize"])
+      ) : vue.createVNode("span", null, null)], 512);
     };
   }
 });
@@ -3032,6 +3015,9 @@ function throttle(fn, wait) {
 }
 function useUserAction() {
   const state = vue.reactive({
+    /**
+     * 是否用户激活
+     */
     userAction: false
   });
   return {
@@ -3050,6 +3036,7 @@ function useFormField(nameKey, value) {
   const uniForm = vue.inject(
     uniFormKey,
     false
+    // remove warning
   );
   if (!uniForm) {
     return;
@@ -3098,6 +3085,16 @@ function getValueString(value, type) {
   }
   return value === null ? "" : String(value);
 }
+const INPUT_MODES = [
+  "none",
+  "text",
+  "decimal",
+  "numeric",
+  "tel",
+  "search",
+  "email",
+  "url"
+];
 const props$k = /* @__PURE__ */ shared.extend(
   {},
   {
@@ -3117,6 +3114,9 @@ const props$k = /* @__PURE__ */ shared.extend(
       type: [Boolean, String],
       default: false
     },
+    /**
+     * 已废弃属性，用于历史兼容
+     */
     autoFocus: {
       type: [Boolean, String],
       default: false
@@ -3176,6 +3176,11 @@ const props$k = /* @__PURE__ */ shared.extend(
     step: {
       type: String,
       default: "0.000000000000000001"
+    },
+    inputmode: {
+      type: String,
+      default: void 0,
+      validator: (value) => !!~INPUT_MODES.indexOf(value)
     }
   },
   props$n
@@ -3451,14 +3456,6 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       const index2 = camelizeIndex !== -1 ? camelizeIndex : kebabCaseIndex !== -1 ? kebabCaseIndex : 0;
       return AUTOCOMPLETES[index2];
     });
-    const inputmode = vue.computed(() => {
-      switch (props2.type) {
-        case "digit":
-          return "decimal";
-        default:
-          return void 0;
-      }
-    });
     let cache = vue.ref("");
     let resetCache;
     const rootRef = vue.ref(null);
@@ -3557,7 +3554,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-input-input",
         "autocomplete": autocomplete.value,
         "onKeyup": onKeyUpEnter,
-        "inputmode": inputmode.value
+        "inputmode": props2.inputmode
       }, null, 40, ["value", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup", "inputmode"]);
       return vue.createVNode("uni-input", {
         "ref": rootRef
@@ -3701,8 +3698,8 @@ const index$t = /* @__PURE__ */ defineBuiltInComponent({
       return vue.createVNode("uni-movable-area", vue.mergeProps({
         "ref": rootRef
       }, $attrs.value, $excludeAttrs.value, _listeners), [vue.createVNode(ResizeSensor, {
-        "onReize": movableAreaEvents._resize
-      }, null, 8, ["onReize"]), movableViewItems], 16);
+        "onResize": movableAreaEvents._resize
+      }, null, 8, ["onResize"]), movableViewItems], 16);
     };
   }
 });
@@ -4606,10 +4603,12 @@ function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScal
     }
   }
   return {
+    // scale
     _updateOldScale,
     _endScale,
     _setScale,
     scaleValueSync,
+    // layout
     _updateBoundary,
     _updateOffset,
     _updateWH,
@@ -4618,6 +4617,7 @@ function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScal
     minY,
     maxX,
     maxY,
+    // transform
     FAandSFACancel,
     _getLimitXY,
     _animationTo,
@@ -4653,10 +4653,12 @@ function useMovableViewState(props2, trigger, rootRef) {
     __handleTouchStart();
   });
   const {
+    // scale
     _updateOldScale,
     _endScale,
     _setScale,
     scaleValueSync,
+    // layout
     _updateBoundary,
     _updateOffset,
     _updateWH,
@@ -4665,6 +4667,7 @@ function useMovableViewState(props2, trigger, rootRef) {
     minY,
     maxX,
     maxY,
+    // transform
     FAandSFACancel,
     _getLimitXY,
     _setTransform,
@@ -4806,6 +4809,7 @@ function createNavigatorOnClick(props2) {
       case "redirect":
         uni.redirectTo({
           url: props2.url,
+          // @ts-ignore
           exists: props2.exists
         });
         break;
@@ -4835,7 +4839,12 @@ const index$r = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: navigatorProps,
+  props: shared.extend({}, navigatorProps, {
+    renderLink: {
+      type: Boolean,
+      default: true
+    }
+  }),
   setup(props2, {
     slots
   }) {
@@ -4852,18 +4861,19 @@ const index$r = /* @__PURE__ */ defineBuiltInComponent({
         url
       } = props2;
       const hasHoverClass = props2.hoverClass && props2.hoverClass !== "none";
-      return vue.createVNode("a", {
-        "class": "navigator-wrap",
-        "href": url,
-        "onClick": onEventPrevent,
-        "onMousedown": onEventPrevent
-      }, [vue.createVNode("uni-navigator", vue.mergeProps({
+      const navigatorTsx = vue.createVNode("uni-navigator", vue.mergeProps({
         "class": hasHoverClass && hovering.value ? hoverClass : ""
       }, hasHoverClass && binding, vm ? vm.attrs : {}, {
         [__scopeId]: ""
       }, {
         "onClick": onClick
-      }), [slots.default && slots.default()], 16, ["onClick"])], 40, ["href", "onClick", "onMousedown"]);
+      }), [slots.default && slots.default()], 16, ["onClick"]);
+      return props2.renderLink ? vue.createVNode("a", {
+        "class": "navigator-wrap",
+        "href": url,
+        "onClick": onEventPrevent,
+        "onMousedown": onEventPrevent
+      }, [navigatorTsx], 40, ["href", "onClick", "onMousedown"]) : navigatorTsx;
     };
   }
 });
@@ -5182,9 +5192,12 @@ const index$q = /* @__PURE__ */ defineBuiltInComponent({
       }, [vue.createVNode("div", {
         "style": innerBarStyle,
         "class": "uni-progress-inner-bar"
-      }, null, 4)], 4), showInfo ? vue.createVNode("p", {
-        "class": "uni-progress-info"
-      }, [currentPercent + "%"]) : ""]);
+      }, null, 4)], 4), showInfo ? (
+        // {currentPercent}% 的写法会影响 SSR Hydration (tsx插件的问题)
+        vue.createVNode("p", {
+          "class": "uni-progress-info"
+        }, [currentPercent + "%"])
+      ) : ""]);
     };
   }
 });
@@ -5236,6 +5249,7 @@ const props$i = {
 const index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
   props: props$i,
+  // emits: ['change'],
   setup(props2, {
     emit: emit2,
     slots
@@ -5490,15 +5504,15 @@ const CHARS = {
   nbsp: " ",
   quot: '"',
   apos: "'",
-  ldquo: "\u201C",
-  rdquo: "\u201D",
-  yen: "\uFFE5",
-  radic: "\u221A",
-  lceil: "\u2308",
-  rceil: "\u2309",
-  lfloor: "\u230A",
-  rfloor: "\u230B",
-  hellip: "\u2026"
+  ldquo: "“",
+  rdquo: "”",
+  yen: "￥",
+  radic: "√",
+  lceil: "⌈",
+  rceil: "⌉",
+  lfloor: "⌊",
+  rfloor: "⌋",
+  hellip: "…"
 };
 function decodeEntities(htmlString) {
   return htmlString.replace(
@@ -5989,6 +6003,8 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
     content.value.removeEventListener("webkitTransitionEnd", __transitionEnd);
   }
   function _setRefreshState(_state) {
+    if (!props2.refresherEnabled)
+      return;
     switch (_state) {
       case "refreshing":
         state.refresherHeight = props2.refresherThreshold;
@@ -6913,7 +6929,7 @@ const props$b = {
   },
   color: {
     type: String,
-    default: "#007aff"
+    default: ""
   }
 };
 const index$i = /* @__PURE__ */ defineBuiltInComponent({
@@ -6948,6 +6964,11 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
         type
       } = props2;
       const booleanAttrs = useBooleanAttr(props2, "disabled");
+      const switchInputStyle = {};
+      if (color && switchChecked.value) {
+        switchInputStyle["backgroundColor"] = color;
+        switchInputStyle["borderColor"] = color;
+      }
       return vue.createVNode("uni-switch", vue.mergeProps({
         "ref": rootRef
       }, booleanAttrs, {
@@ -6956,10 +6977,7 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-switch-wrapper"
       }, [vue.withDirectives(vue.createVNode("div", {
         "class": ["uni-switch-input", [switchChecked.value ? "uni-switch-input-checked" : ""]],
-        "style": {
-          backgroundColor: switchChecked.value ? color : "#DFDFDF",
-          borderColor: switchChecked.value ? color : "#DFDFDF"
-        }
+        "style": switchInputStyle
       }, null, 6), [[vue.vShow, type === "switch"]]), vue.withDirectives(vue.createVNode("div", {
         "class": "uni-checkbox-input"
       }, [switchChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.color, 22) : ""], 512), [[vue.vShow, type === "checkbox"]])])], 16, ["onClick"]);
@@ -6988,9 +7006,9 @@ function useSwitchInject(props2, switchChecked) {
   return uniLabel;
 }
 const SPACE_UNICODE = {
-  ensp: "\u2002",
-  emsp: "\u2003",
-  nbsp: "\xA0"
+  ensp: " ",
+  emsp: " ",
+  nbsp: " "
 };
 function parseText(text, options) {
   return text.replace(/\\n/g, uniShared.LINEFEED).split(uniShared.LINEFEED).map((text2) => {
@@ -7171,6 +7189,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
         "disabled": !!props2.disabled,
         "maxlength": state.maxlength,
         "enterkeyhint": props2.confirmType,
+        "inputmode": props2.inputmode,
         "class": {
           "uni-textarea-textarea": true,
           "uni-textarea-textarea-fix-margin": fixMargin
@@ -7180,7 +7199,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
         },
         "onKeydown": onKeyDownEnter,
         "onKeyup": onKeyUpEnter
-      }, null, 46, ["value", "disabled", "maxlength", "enterkeyhint", "onKeydown", "onKeyup"]);
+      }, null, 46, ["value", "disabled", "maxlength", "enterkeyhint", "inputmode", "onKeydown", "onKeyup"]);
       return vue.createVNode("uni-textarea", {
         "ref": rootRef
       }, [vue.createVNode("div", {
@@ -7245,6 +7264,7 @@ function injectLifecycleHook(name, hook, publicThis, instance) {
   }
 }
 function initHooks(options, instance, publicThis) {
+  var _a;
   const mpType = options.mpType || publicThis.$mpType;
   if (!mpType || mpType === "component") {
     return;
@@ -7266,7 +7286,9 @@ function initHooks(options, instance, publicThis) {
     try {
       invokeHook(publicThis, uniShared.ON_LOAD, instance.attrs.__pageQuery);
       delete instance.attrs.__pageQuery;
-      invokeHook(publicThis, uniShared.ON_SHOW);
+      if (((_a = publicThis.$page) == null ? void 0 : _a.openType) !== "preloadPage") {
+        invokeHook(publicThis, uniShared.ON_SHOW);
+      }
     } catch (e2) {
       console.error(e2.message + uniShared.LINEFEED + e2.stack);
     }
@@ -7352,7 +7374,7 @@ function getCurrentUserInfo() {
   try {
     userInfo = JSON.parse(b64DecodeUnicode(tokenArr[1]));
   } catch (error) {
-    throw new Error("\u83B7\u53D6\u5F53\u524D\u7528\u6237\u4FE1\u606F\u51FA\u9519\uFF0C\u8BE6\u7EC6\u9519\u8BEF\u4FE1\u606F\u4E3A\uFF1A" + error.message);
+    throw new Error("获取当前用户信息出错，详细错误信息为：" + error.message);
   }
   userInfo.tokenExpired = userInfo.exp * 1e3;
   delete userInfo.exp;
@@ -7491,26 +7513,6 @@ function useTabBar() {
   }
   return tabBar;
 }
-const cssVar = true;
-const cssEnv = true;
-const cssConstant = true;
-const cssBackdropFilter = true;
-const SCHEMA_CSS = {
-  "css.var": cssVar,
-  "css.env": cssEnv,
-  "css.constant": cssConstant,
-  "css.backdrop-filter": cssBackdropFilter
-};
-/* @__PURE__ */ defineSyncApi(
-  API_CAN_I_USE,
-  (schema) => {
-    if (shared.hasOwn(SCHEMA_CSS, schema)) {
-      return SCHEMA_CSS[schema];
-    }
-    return true;
-  },
-  CanIUseProtocol
-);
 const envMethod = /* @__PURE__ */ (() => "env")();
 function normalizeWindowBottom(windowBottom) {
   return envMethod ? `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))` : `${windowBottom}px`;
@@ -7672,6 +7674,7 @@ const loadingVNode = /* @__PURE__ */ vue.createVNode(
   { class: "uni-loading" },
   null,
   -1
+  /* HOISTED */
 );
 const AsyncLoadingComponent = /* @__PURE__ */ defineSystemComponent({
   name: "AsyncLoading",
@@ -7756,6 +7759,7 @@ function setupPage(comp) {
   }
   return setupComponent(comp, {
     clone: true,
+    // 页面组件可能会被其他地方手动引用，比如 windows 等，需要 clone 一份新的作为页面组件
     init: initPage,
     setup(instance) {
       instance.$pageInstance = instance;
@@ -8853,6 +8857,7 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
               position,
               map,
               top,
+              // handle AMap callout offset
               offsetY: -option.height / 2,
               content: calloutOpt.content,
               color: calloutOpt.color,
@@ -8866,6 +8871,7 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
               position,
               map,
               top,
+              // handle AMap callout offset
               offsetY: -option.height / 2,
               content: title,
               boxShadow
@@ -9363,26 +9369,32 @@ const MapLocation = /* @__PURE__ */ defineSystemComponent({
   }
 });
 const props$3 = {
+  // 边框虚线，腾讯地图支持，google 高德 地图不支持，默认值为[0, 0] 为实线，非 [0, 0] 为虚线，H5 端无法像微信小程序一样控制虚线的间隔像素大小
   dashArray: {
     type: Array,
     default: () => [0, 0]
   },
+  // 经纬度数组，[{latitude: 0, longitude: 0}]
   points: {
     type: Array,
     required: true
   },
+  // 描边的宽度
   strokeWidth: {
     type: Number,
     default: 1
   },
+  // 描边的颜色，十六进制
   strokeColor: {
     type: String,
     default: "#000000"
   },
+  // 填充颜色，十六进制
   fillColor: {
     type: String,
     default: "#00000000"
   },
+  // 设置多边形 Z 轴数值
   zIndex: {
     type: Number,
     default: 0
@@ -9424,16 +9436,28 @@ const MapPolygon = /* @__PURE__ */ defineSystemComponent({
           a: scA
         } = hexToRgba(strokeColor);
         const polygonOptions = {
+          //多边形是否可点击。
           clickable: true,
+          //鼠标在多边形内的光标样式。
           cursor: "crosshair",
+          //多边形是否可编辑。
           editable: false,
+          // 地图实例，即要显示多边形的地图
+          // @ts-ignore
           map,
+          // 区域填充色
           fillColor: "",
+          //多边形的路径，以经纬度坐标数组构成。
           path,
+          // 区域边框
           strokeColor: "",
+          //多边形的边框样式。实线是solid，虚线是dash。
           strokeDashStyle: dashArray.some((item) => item > 0) ? "dash" : "solid",
+          //多边形的边框线宽。
           strokeWeight: strokeWidth,
+          //多边形是否可见。
           visible: true,
+          //多边形的zIndex值。
           zIndex
         };
         if (maps.Color) {
@@ -9973,6 +9997,8 @@ const mode = {
   MULTISELECTOR: "multiSelector",
   TIME: "time",
   DATE: "date"
+  // 暂不支持城市选择
+  // REGION: 'region'
 };
 const fields = {
   YEAR: "year",
@@ -10325,7 +10351,7 @@ function usePickerMethods(props2, state, trigger, rootRef, pickerRef, selectRef,
       }
     }
     if (props2.end) {
-      const _year = new Date(props2.start).getFullYear();
+      const _year = new Date(props2.end).getFullYear();
       if (!isNaN(_year) && _year > end) {
         end = _year;
       }
@@ -10524,16 +10550,16 @@ function usePickerMethods(props2, state, trigger, rootRef, pickerRef, selectRef,
     if (props2.mode === mode.DATE) {
       const locale = getLocale2();
       if (locale.startsWith("zh")) {
-        const array = ["\u5E74", "\u6708", "\u65E5"];
+        const array = ["年", "月", "日"];
         return item + array[index2];
       } else if (props2.fields !== fields.YEAR && index2 === (props2.fields !== fields.MONTH && (locale === "es" || locale === "fr") ? 1 : 0)) {
         let array;
         switch (locale) {
           case "es":
-            array = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "\u200B\u200Bjulio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+            array = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "​​julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
             break;
           case "fr":
-            array = ["janvier", "f\xE9vrier", "mars", "avril", "mai", "juin", "juillet", "ao\xFBt", "septembre", "octobre", "novembre", "d\xE9cembre"];
+            array = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
             break;
           default:
             array = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -11067,44 +11093,6 @@ function setNavigationBar(pageMeta, type, args, resolve, reject) {
   }
   resolve();
 }
-/* @__PURE__ */ defineAsyncApi(
-  API_SET_NAVIGATION_BAR_COLOR,
-  (args, { resolve, reject }) => {
-    setNavigationBar(
-      getCurrentPageMeta(),
-      API_SET_NAVIGATION_BAR_COLOR,
-      args,
-      resolve,
-      reject
-    );
-  },
-  SetNavigationBarColorProtocol,
-  SetNavigationBarColorOptions
-);
-/* @__PURE__ */ defineAsyncApi(
-  API_SHOW_NAVIGATION_BAR_LOADING,
-  (args, { resolve, reject }) => {
-    setNavigationBar(
-      getCurrentPageMeta(),
-      API_SHOW_NAVIGATION_BAR_LOADING,
-      args || {},
-      resolve,
-      reject
-    );
-  }
-);
-/* @__PURE__ */ defineAsyncApi(
-  API_HIDE_NAVIGATION_BAR_LOADING,
-  (args, { resolve, reject }) => {
-    setNavigationBar(
-      getCurrentPageMeta(),
-      API_HIDE_NAVIGATION_BAR_LOADING,
-      args || {},
-      resolve,
-      reject
-    );
-  }
-);
 const setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(
   API_SET_NAVIGATION_BAR_TITLE,
   (args, { resolve, reject }) => {
@@ -11122,21 +11110,21 @@ require("localstorage-polyfill");
 global.XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const api = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  setNavigationBarTitle,
-  request,
-  setStorageSync,
-  setStorage,
-  getStorageSync,
-  getStorage,
-  removeStorageSync,
-  removeStorage,
-  clearStorageSync,
   clearStorage,
-  getStorageInfoSync,
-  getStorageInfo,
-  getDeviceInfo,
+  clearStorageSync,
   getAppBaseInfo,
-  getSystemInfoSync
+  getDeviceInfo,
+  getStorage,
+  getStorageInfo,
+  getStorageInfoSync,
+  getStorageSync,
+  getSystemInfoSync,
+  removeStorage,
+  removeStorageSync,
+  request,
+  setNavigationBarTitle,
+  setStorage,
+  setStorageSync
 }, Symbol.toStringTag, { value: "Module" });
 const uni$1 = api;
 const UniServiceJSBridge$1 = /* @__PURE__ */ shared.extend(ServiceJSBridge, {
@@ -11263,7 +11251,8 @@ function useSwitchTab(route, tabBar2, visibleList) {
       if (route.path !== url) {
         uni.switchTab({
           from: "tabBar",
-          url
+          url,
+          tabBarText: text
         });
       } else {
         invokeHook("onTabItemTap", {
@@ -11292,7 +11281,7 @@ function useTabBarStyle(tabBar2) {
     let backgroundColor = tabBar2.backgroundColor;
     const blurEffect = tabBar2.blurEffect;
     if (!backgroundColor) {
-      if (cssBackdropFilter && blurEffect && blurEffect !== "none") {
+      if (blurEffect && blurEffect !== "none") {
         backgroundColor = BLUR_EFFECT_COLORS[blurEffect];
       }
     }
@@ -11681,6 +11670,7 @@ function createRouterViewVNode({
       key: routeKey.value
     }))], 1032, ["cache"]))]),
     _: 1
+    /* STABLE */
   });
 }
 function useTopWindow(layoutState) {
@@ -11995,6 +11985,7 @@ function onPageHeadBackButton() {
       from: "backbutton",
       success() {
       }
+      // 传入空方法，避免返回Promise，因为onBackPress可能导致fail
     });
   }
 }
@@ -12077,8 +12068,9 @@ function usePageHeadButton(pageId, index2, btn, isTransparent) {
   if (btn.fontFamily) {
     iconStyle.fontFamily = btn.fontFamily;
   }
-  return {
+  return new Proxy({
     btnClass: {
+      // 类似这样的大量重复的字符串，会在gzip时压缩大小，无需在代码层考虑优化相同字符串
       "uni-page-head-btn": true,
       "uni-page-head-btn-red-dot": !!(btn.redDot || btn.badgeText),
       "uni-page-head-btn-select": !!btn.select
@@ -12087,7 +12079,7 @@ function usePageHeadButton(pageId, index2, btn, isTransparent) {
       backgroundColor: isTransparent ? btn.background : "transparent",
       width: btn.width
     },
-    btnText: btn.fontSrc && btn.fontFamily ? btn.text.replace("\\u", "&#x") : btn.text,
+    btnText: "",
     btnIconPath: ICON_PATHS[btn.type],
     badgeText: btn.badgeText,
     iconStyle,
@@ -12097,7 +12089,15 @@ function usePageHeadButton(pageId, index2, btn, isTransparent) {
       }, btn));
     },
     btnSelect: btn.select
-  };
+  }, {
+    get(target, key, receiver) {
+      if (["btnText"].includes(key)) {
+        return btn.fontSrc && btn.fontFamily ? btn.text.replace("\\u", "&#x") : btn.text;
+      } else {
+        return Reflect.get(target, key, receiver);
+      }
+    }
+  });
 }
 function usePageHeadSearchInput({
   id,

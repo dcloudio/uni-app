@@ -45,12 +45,12 @@ export function invokeWxs(
   const ownerEl = resolveOwnerEl(el!, ownerId)
   if (isArray(invokerArgs) || isArray(args)) {
     // methods
-    const [moduleName, mehtodName] = invoker.split('.')
+    const [moduleName, methodName] = invoker.split('.')
     return invokeWxsMethod(
       ownerEl,
       moduleId,
       moduleName,
-      mehtodName,
+      methodName,
       invokerArgs || args
     )
   }
@@ -63,9 +63,9 @@ export function invokeWxsEvent(
   event: Record<string, any>
 ) {
   const [ownerId, moduleId, invoker] = parseWxs(wxsStr)
-  const [moduleName, mehtodName] = invoker.split('.')
+  const [moduleName, methodName] = invoker.split('.')
   const ownerEl = resolveOwnerEl(el, ownerId)
-  return invokeWxsMethod(ownerEl, moduleId, moduleName, mehtodName, [
+  return invokeWxsMethod(ownerEl, moduleId, moduleName, methodName, [
     wrapperWxsEvent(event, el),
     getComponentDescriptor(createComponentDescriptorVm(ownerEl), false),
   ])
@@ -102,8 +102,8 @@ export function invokeWxsProps(
 ) {
   const [ownerId, moduleId, invoker] = parseWxs(wxsStr)
   const ownerEl = resolveOwnerEl(el, ownerId)
-  const [moduleName, mehtodName] = invoker.split('.')
-  return invokeWxsMethod(ownerEl, moduleId, moduleName, mehtodName, [
+  const [moduleName, methodName] = invoker.split('.')
+  return invokeWxsMethod(ownerEl, moduleId, moduleName, methodName, [
     newValue,
     oldValue,
     getComponentDescriptor(createComponentDescriptorVm(ownerEl), false),

@@ -1,4 +1,6 @@
 declare const __VUE_DEVTOOLS_HOST__: string
+declare const __VUE_DEVTOOLS_HOSTS__: string
+declare const __VUE_DEVTOOLS_TEST_PORT__: string
 declare const __VUE_DEVTOOLS_PORT__: string
 declare const my: any
 
@@ -139,8 +141,58 @@ class Socket {
   }
 }
 
-;(getTarget() as any).__VUE_DEVTOOLS_SOCKET__ = new Socket(
-  __VUE_DEVTOOLS_HOST__ + ':' + __VUE_DEVTOOLS_PORT__
-)
+let socketReadyCallback: () => void
+;(getTarget() as any).__VUE_DEVTOOLS_ON_SOCKET_READY__ = (
+  callback: () => void
+) => {
+  socketReadyCallback = callback
+}
+
+let targetHost = ''
+const hosts = __VUE_DEVTOOLS_HOSTS__.split(',')
+
+setTimeout(() => {
+  uni.request({
+    url: `http://${__VUE_DEVTOOLS_HOST__}:${__VUE_DEVTOOLS_TEST_PORT__}`,
+    timeout: 1000,
+    success() {
+      targetHost = __VUE_DEVTOOLS_HOST__
+      initSocket()
+    },
+    fail() {
+      if (!targetHost && hosts.length) {
+        hosts.forEach((host) => {
+          uni.request({
+            url: `http://${host}:${__VUE_DEVTOOLS_TEST_PORT__}`,
+            timeout: 1000,
+            success() {
+              if (!targetHost) {
+                targetHost = host
+                initSocket()
+              }
+            },
+          })
+        })
+      }
+    },
+  })
+}, 0)
+
+throwConnectionError()
+
+function throwConnectionError() {
+  setTimeout(() => {
+    if (!targetHost) {
+      throw new Error('未能获取局域网地址，本地调试服务不可用')
+    }
+  }, (hosts.length + 1) * 1100)
+}
+
+function initSocket() {
+  getTarget().__VUE_DEVTOOLS_SOCKET__ = new Socket(
+    targetHost + ':' + __VUE_DEVTOOLS_PORT__
+  )
+  socketReadyCallback()
+}
 
 export default {}

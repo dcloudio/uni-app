@@ -88,7 +88,7 @@ export function initEnv(
     : process.cwd()
 
   // TODO 待优化
-  initUtsPlatform(options)
+  initUTSPlatform(options)
 
   if (
     options.platform === 'quickapp-webview-huawei' ||
@@ -170,7 +170,7 @@ export function initEnv(
   console.log(M['compiling'])
 }
 
-function initUtsPlatform(options: CliOptions) {
+function initUTSPlatform(options: CliOptions) {
   if (options.platform === 'app-android') {
     process.env.UNI_UTS_PLATFORM = 'app-android'
     options.platform = 'app'

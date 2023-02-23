@@ -5,7 +5,7 @@ import { ComponentOptionsBase as ComponentOptionsBase_2 } from 'vue';
 import type { ComponentPublicInstance } from '@vue/runtime-core';
 import { ComponentPublicInstance as ComponentPublicInstance_2 } from 'vue';
 import { createApp } from 'vue';
-import { RendererNode } from '@vue/runtime-core';
+import type { RendererNode } from '@vue/runtime-core';
 
 export declare const ACTION_TYPE_ADD_EVENT = 8;
 
@@ -197,7 +197,7 @@ export declare class EventChannel {
     on(eventName: string, fn: EventChannelListener['fn']): void;
     once(eventName: string, fn: EventChannelListener['fn']): void;
     off(eventName: string, fn: EventChannelListener['fn']): void;
-    _clearCache(eventName: string): void;
+    _clearCache(eventName?: string): void;
     _addListener(eventName: string, type: EventChannelListener['type'], fn: EventChannelListener['fn']): void;
 }
 
@@ -616,6 +616,8 @@ export declare function removeLeadingSlash(str: string): string;
 export declare const RENDERJS_MODULES = "renderjsModules";
 
 export declare function resolveComponentInstance(instance?: ComponentInternalInstance | ComponentPublicInstance): ComponentPublicInstance<{}, {}, {}, {}, {}, {}, {}, {}, false, ComponentOptionsBase<any, any, any, any, any, any, any, any, any, {}, {}, string>, {}> | undefined;
+
+export declare function resolveOwnerEl(instance: ComponentInternalInstance, multi: true): RendererNode[];
 
 export declare function resolveOwnerEl(instance: ComponentInternalInstance): RendererNode | null;
 

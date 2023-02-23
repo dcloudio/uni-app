@@ -184,7 +184,9 @@ function callSocketTask(
   resolve: Function,
   reject: Function
 ) {
-  const fn = socketTask[method]
+  const fn = socketTask[method] as
+    | (typeof socketTask)['send']
+    | (typeof socketTask)['close']
   if (isFunction(fn)) {
     fn.call(
       socketTask,

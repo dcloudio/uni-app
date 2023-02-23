@@ -1,13 +1,13 @@
 import { bundleKotlin, bundleSwift } from './api'
-import { UtsBundleOptions, UtsResult, UtsTarget } from './types'
+import { UTSBundleOptions, UTSResult, UTSTarget } from './types'
 
-export { UtsTarget, UtsResult } from './types'
+export { UTSTarget, UTSResult } from './types'
 
-export type UtsMode = 'dev' | 'build'
+export type UTSMode = 'dev' | 'build'
 
-export const UtsTargetExtNames = {
-  [UtsTarget.KOTLIN]: 'kt',
-  [UtsTarget.SWIFT]: 'swift',
+export const UTSTargetExtNames = {
+  [UTSTarget.KOTLIN]: 'kt',
+  [UTSTarget.SWIFT]: 'swift',
 } as const
 export interface ToOptions {
   /**
@@ -52,12 +52,12 @@ export interface ToOptions {
 export { parse, bundleKotlin, bundleSwift } from './api'
 
 export function bundle(
-  target: UtsTarget,
-  opts: UtsBundleOptions
-): Promise<UtsResult> {
-  if (target === UtsTarget.KOTLIN) {
+  target: UTSTarget,
+  opts: UTSBundleOptions
+): Promise<UTSResult> {
+  if (target === UTSTarget.KOTLIN) {
     return bundleKotlin(opts)
-  } else if (target === UtsTarget.SWIFT) {
+  } else if (target === UTSTarget.SWIFT) {
     return bundleSwift(opts)
   }
   return Promise.resolve({})

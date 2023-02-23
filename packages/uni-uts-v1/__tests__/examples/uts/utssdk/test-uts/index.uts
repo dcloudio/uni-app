@@ -1,4 +1,17 @@
-export function onMemoryWarning(callback: (level: number) => void) {}
+import { ShowToast } from "./interface.uts"
+
+export function onMemoryWarning(callback: (level: number) => void) { }
 export function offMemoryWarning(
   callback: ((level: number) => void) | null = null
-) {}
+) { }
+export default class User {
+
+}
+export const a = 1
+export let b = 2, c = 3
+export const showToast1: ShowToast = (msg) => {
+  console.log(msg)
+}
+export const showToast2: ShowToast = function showToast(msg) {
+  console.log(msg)
+}

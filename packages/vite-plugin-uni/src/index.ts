@@ -44,8 +44,6 @@ const pkg = require(path.resolve(__dirname, '../package.json'))
 
 initModuleAlias()
 
-rewriteCompilerSfcParse()
-
 process.env.UNI_COMPILER_VERSION = pkg['uni-app']?.['compilerVersion'] || ''
 process.env.UNI_COMPILER_VERSION_TYPE = pkg.version.includes('alpha')
   ? 'a'
@@ -201,6 +199,8 @@ export default function uniPlugin(
       })
     )
   }
+
+  rewriteCompilerSfcParse()
 
   return plugins
 }

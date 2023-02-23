@@ -1,7 +1,6 @@
 import fs from 'fs'
 import path from 'path'
 import debug from 'debug'
-import glob from 'fast-glob'
 
 import { extend } from '@vue/shared'
 import { createFilter } from '@rollup/pluginutils'
@@ -10,6 +9,7 @@ import { once } from '@dcloudio/uni-shared'
 import { normalizePath } from './utils'
 import { parsePagesJson, parsePagesJsonOnce } from './json/pages'
 import { M } from './messages'
+import { initUTSComponents } from './uts'
 
 interface EasycomOption {
   dirs?: string[]
@@ -18,7 +18,7 @@ interface EasycomOption {
   autoscan?: boolean
   custom?: EasycomCustom
 }
-interface EasycomMatcher {
+export interface EasycomMatcher {
   pattern: RegExp
   replacement: string
 }
@@ -47,7 +47,6 @@ export function initEasycoms(
   { dirs, platform }: { dirs: string[]; platform: UniApp.PLATFORM }
 ) {
   const componentsDir = path.resolve(inputDir, 'components')
-  const utssdkDir = path.resolve(inputDir, 'utssdk')
   const uniModulesDir = path.resolve(inputDir, 'uni_modules')
   const initEasycomOptions = (pagesJson?: UniApp.PagesJson) => {
     // 初始化时，从once中读取缓存，refresh时，实时读取
@@ -60,21 +59,7 @@ export function initEasycoms(
               ...dirs,
               componentsDir,
               ...initUniModulesEasycomDirs(uniModulesDir),
-            ]
-              .concat(
-                platform === 'app'
-                  ? initUniModulesUTSSDKDirs(uniModulesDir)
-                  : []
-              )
-              .concat(
-                platform === 'app' && fs.existsSync(utssdkDir)
-                  ? glob.sync('*', {
-                      cwd: utssdkDir,
-                      absolute: true,
-                      onlyDirectories: true,
-                    })
-                  : []
-              ),
+            ],
       rootDir: inputDir,
       autoscan: !!(easycom && easycom.autoscan),
       custom: (easycom && easycom.custom) || {},
@@ -83,7 +68,20 @@ export function initEasycoms(
     return easycomOptions
   }
   const options = initEasycomOptions(parsePagesJsonOnce(inputDir, platform))
+  const initUTSEasycom = () => {
+    initUTSComponents(inputDir, platform).forEach((item) => {
+      const index = easycoms.findIndex(
+        (easycom) => item.pattern.toString() === easycom.pattern.toString()
+      )
+      if (index > -1) {
+        easycoms.splice(index, 1, item)
+      } else {
+        easycoms.push(item)
+      }
+    })
+  }
   initEasycom(options)
+  initUTSEasycom()
   const res = {
     options,
     filter: createFilter(
@@ -101,6 +99,7 @@ export function initEasycoms(
     refresh() {
       res.options = initEasycomOptions()
       initEasycom(res.options)
+      initUTSEasycom()
     },
     easycoms,
   }
@@ -120,25 +119,6 @@ function initUniModulesEasycomDirs(uniModulesDir: string) {
         uniModulesDir,
         uniModuleDir,
         'components'
-      )
-      if (fs.existsSync(uniModuleComponentsDir)) {
-        return uniModuleComponentsDir
-      }
-    })
-    .filter<string>(Boolean as any)
-}
-
-function initUniModulesUTSSDKDirs(uniModulesDir: string) {
-  if (!fs.existsSync(uniModulesDir)) {
-    return []
-  }
-  return fs
-    .readdirSync(uniModulesDir)
-    .map((uniModuleDir) => {
-      const uniModuleComponentsDir = path.resolve(
-        uniModulesDir,
-        uniModuleDir,
-        'utssdk'
       )
       if (fs.existsSync(uniModuleComponentsDir)) {
         return uniModuleComponentsDir
@@ -213,58 +193,23 @@ function initAutoScanEasycom(
   if (!fs.existsSync(dir)) {
     return easycoms
   }
-  const is_uni_modules_utssdk = dir.endsWith('utssdk')
-  const is_ussdk =
-    !is_uni_modules_utssdk && path.dirname(dir).endsWith('utssdk')
-  if (is_uni_modules_utssdk || is_ussdk) {
-    glob
-      .sync('**/*.vue', {
-        cwd: dir,
-        absolute: true,
-      })
-      .forEach((file) => {
-        let name = parseVueComponentName(file)
-        if (!name) {
-          if (file.endsWith('index.vue')) {
-            name = path.basename(
-              is_uni_modules_utssdk ? path.dirname(dir) : dir
-            )
-          }
-        }
-        if (name) {
-          const importDir = normalizePath(
-            is_uni_modules_utssdk ? path.dirname(dir) : dir
-          )
-          easycoms[`^${name}$`] = `\0${importDir}?uts-proxy`
-        }
-      })
-  } else {
-    fs.readdirSync(dir).forEach((name) => {
-      const folder = path.resolve(dir, name)
-      if (!isDir(folder)) {
-        return
+  fs.readdirSync(dir).forEach((name) => {
+    const folder = path.resolve(dir, name)
+    if (!isDir(folder)) {
+      return
+    }
+    const importDir = normalizePath(folder)
+    const files = fs.readdirSync(folder)
+    // 读取文件夹文件列表，比对文件名（fs.existsSync在大小写不敏感的系统会匹配不准确）
+    for (let i = 0; i < extensions.length; i++) {
+      const ext = extensions[i]
+      if (files.includes(name + ext)) {
+        easycoms[`^${name}$`] = `${importDir}/${name}${ext}`
+        break
       }
-      const importDir = normalizePath(folder)
-      const files = fs.readdirSync(folder)
-      // 读取文件夹文件列表，比对文件名（fs.existsSync在大小写不敏感的系统会匹配不准确）
-      for (let i = 0; i < extensions.length; i++) {
-        const ext = extensions[i]
-        if (files.includes(name + ext)) {
-          easycoms[`^${name}$`] = `${importDir}/${name}${ext}`
-          break
-        }
-      }
-    })
-  }
+    }
+  })
   return easycoms
-}
-const nameRE = /name\s*:\s*['|"](.*)['|"]/
-function parseVueComponentName(file: string) {
-  const content = fs.readFileSync(file, 'utf8')
-  const matches = content.match(nameRE)
-  if (matches) {
-    return matches[1]
-  }
 }
 
 function initAutoScanEasycoms(

@@ -80,6 +80,7 @@ interface StacktraceyPreset {
     fileName: string,
     fileRelative: string
   ): Promise<string>
+  lineOffset?: number
 }
 
 interface StacktraceyOptions {
@@ -120,7 +121,7 @@ export function stacktracey(
                 return parseSourceMapContent(
                   consumer,
                   {
-                    line,
+                    line: line + (opts.preset.lineOffset || 0),
                     column,
                   },
                   !!opts.withSourceContent
@@ -312,6 +313,7 @@ interface UniStracktraceyPresetOptions {
   sourceRoot: string
   splitThirdParty?: boolean
   uniPlatform?: string
+  lineOffset?: number
 }
 
 function joinItem(item: string[] | string) {
@@ -327,7 +329,7 @@ function joinItem(item: string[] | string) {
 export function uniStracktraceyPreset(
   opts: UniStracktraceyPresetOptions
 ): StacktraceyPreset {
-  const { base, sourceRoot, splitThirdParty, uniPlatform } = opts
+  const { base, sourceRoot, splitThirdParty, uniPlatform, lineOffset } = opts
 
   let stack: StackTracey
 
@@ -414,10 +416,11 @@ export function uniStracktraceyPreset(
         return errorName
       }
     },
+    lineOffset,
   }
 }
 
-interface UtsStracktraceyPreset {
+interface UTSStracktraceyPreset {
   /**
    * 源码根目录
    */
@@ -432,7 +435,7 @@ interface UtsStracktraceyPreset {
   sourceMapRoot: string
 }
 export function utsStracktraceyPreset(
-  opts: UtsStracktraceyPreset
+  opts: UTSStracktraceyPreset
 ): StacktraceyPreset {
   const { inputRoot, outputRoot, sourceMapRoot } = opts
 

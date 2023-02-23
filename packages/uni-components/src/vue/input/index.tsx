@@ -1,5 +1,5 @@
 import { extend, hyphenate } from '@vue/shared'
-import { Ref, ref, computed, watch } from 'vue'
+import { Ref, ref, computed, watch, HTMLAttributes } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import {
   props as fieldProps,
@@ -58,14 +58,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           ? kebabCaseIndex
           : 0
       return AUTOCOMPLETES[index]
-    })
-    const inputmode = computed(() => {
-      switch (props.type) {
-        case 'digit':
-          return 'decimal'
-        default:
-          return undefined
-      }
     })
 
     let cache = ref('')
@@ -198,7 +190,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             class="uni-input-input"
             autocomplete={autocomplete.value}
             onKeyup={onKeyUpEnter}
-            inputmode={inputmode.value}
+            inputmode={props.inputmode as HTMLAttributes['inputmode']}
           />
         )
       return (

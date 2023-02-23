@@ -1,6 +1,11 @@
 import fs from 'fs-extra'
 import path from 'path'
-import { defineUniMainJsPlugin, getPlatformDir } from '@dcloudio/uni-cli-shared'
+import {
+  defineUniMainJsPlugin,
+  getPlatformDir,
+  normalizePath,
+  resolveBuiltIn,
+} from '@dcloudio/uni-cli-shared'
 
 export default [
   defineUniMainJsPlugin((opts) => {
@@ -32,12 +37,15 @@ export default [
         }
         if (opts.filter(id)) {
           const platform = process.env.UNI_PLATFORM
-          return {
-            code:
-              code +
-              `;import '@dcloudio/uni-${
+          const automatorPath = normalizePath(
+            resolveBuiltIn(
+              `@dcloudio/uni-${
                 platform === 'app' ? 'app-plus' : platform
-              }/lib/automator.js';`,
+              }/lib/automator.js`
+            )
+          )
+          return {
+            code: code + `;import '${automatorPath}';`,
             map: null,
           }
         }

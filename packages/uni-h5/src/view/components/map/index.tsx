@@ -343,7 +343,8 @@ function useMap(
         )
       )
     })
-    event.addListener(map, 'zoom_changed', () => {
+
+    const zoomChangedCallback = () => {
       emit('update:scale', map.getZoom())
       trigger(
         'regionchange',
@@ -356,7 +357,12 @@ function useMap(
           getMapInfo()
         )
       )
-    })
+    }
+    // QQ or Google
+    event.addListener(map, 'zoom_changed', zoomChangedCallback)
+    // AMAP
+    event.addListener(map, 'zoomend', zoomChangedCallback)
+
     event.addListener(map, 'center_changed', () => {
       const center = map.getCenter()!
       const latitude = getLat(center as LatLng)

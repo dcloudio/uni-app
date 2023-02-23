@@ -1,17 +1,19 @@
-import { extend } from '@vue/shared'
+import { extend, isArray, isObject } from '@vue/shared'
 
 import {
   ComponentOptions,
   ComponentPublicInstance,
   // @ts-ignore
   devtoolsComponentAdded,
-  // @ts-ignore
-  devtoolsComponentRemoved,
 } from 'vue'
 // @ts-expect-error
 import { getExposeProxy } from 'vue'
 
-import { initExtraOptions, initWxsCallMethods } from './util'
+import {
+  initExtraOptions,
+  initWorkletMethods,
+  initWxsCallMethods,
+} from './util'
 
 import { initProps } from './componentProps'
 import { applyOptions, initPropsObserver } from './componentOptions'
@@ -92,6 +94,14 @@ export function parseComponent(
     pureDataPattern: /^uP$/,
   }
 
+  if (isArray(vueOptions.mixins)) {
+    vueOptions.mixins.forEach((item) => {
+      if (isObject(item.options)) {
+        extend(options, item.options)
+      }
+    })
+  }
+
   if (vueOptions.options) {
     extend(options, vueOptions.options)
   }
@@ -102,7 +112,6 @@ export function parseComponent(
     pageLifetimes: {
       show() {
         if (__VUE_PROD_DEVTOOLS__) {
-          devtoolsComponentRemoved(this.$vm!.$)
           devtoolsComponentAdded(this.$vm!.$)
         }
         this.$vm && this.$vm.$callHook('onPageShow')
@@ -133,6 +142,12 @@ export function parseComponent(
     mpComponentOptions.methods as Component.MethodOption,
     vueOptions.wxsCallMethods
   )
+  if (__PLATFORM__ === 'mp-weixin') {
+    initWorkletMethods(
+      mpComponentOptions.methods as Component.MethodOption,
+      vueOptions.methods
+    )
+  }
 
   if (parse) {
     parse(mpComponentOptions, { handleLink })

@@ -227,20 +227,20 @@ const HOOK_FAIL = 'fail';
 const HOOK_COMPLETE = 'complete';
 const globalInterceptors = {};
 const scopedInterceptors = {};
-function wrapperHook(hook) {
+function wrapperHook(hook, params) {
     return function (data) {
-        return hook(data) || data;
+        return hook(data, params) || data;
     };
 }
-function queue(hooks, data) {
+function queue(hooks, data, params) {
     let promise = false;
     for (let i = 0; i < hooks.length; i++) {
         const hook = hooks[i];
         if (promise) {
-            promise = Promise.resolve(wrapperHook(hook));
+            promise = Promise.resolve(wrapperHook(hook, params));
         }
         else {
-            const res = hook(data);
+            const res = hook(data, params);
             if (isPromise(res)) {
                 promise = Promise.resolve(res);
             }
@@ -267,7 +267,7 @@ function wrapperOptions(interceptors, options = {}) {
         }
         const oldCallback = options[name];
         options[name] = function callbackInterceptor(res) {
-            queue(hooks, res).then((res) => {
+            queue(hooks, res, options).then((res) => {
                 return (isFunction(oldCallback) && oldCallback(res)) || res;
             });
         };
@@ -311,7 +311,8 @@ function invokeApi(method, api, options, params) {
         if (isArray(interceptor.invoke)) {
             const res = queue(interceptor.invoke, options);
             return res.then((options) => {
-                return api(wrapperOptions(interceptor, options), ...params);
+                // 重新访问 getApiInterceptorHooks, 允许 invoke 中再次调用 addInterceptor,removeInterceptor
+                return api(wrapperOptions(getApiInterceptorHooks(method), options), ...params);
             });
         }
         else {
@@ -1064,7 +1065,7 @@ const baseApis = {
     offPushMessage,
     invokePushCallback,
 };
-function initUni(api, protocols) {
+function initUni(api, protocols, platform = my) {
     const wrapper = initWrapper(protocols);
     const UniProxyHandlers = {
         get(target, key) {
@@ -1079,16 +1080,16 @@ function initUni(api, protocols) {
             }
             // event-api
             // provider-api?
-            return promisify(key, wrapper(key, my[key]));
+            return promisify(key, wrapper(key, platform[key]));
         },
     };
     // 处理 api mp 打包后为不同js，emitter 无法共享问题
     {
-        my.$emit = $emit;
+        platform.$emit = $emit;
     }
     // 处理 api mp 打包后为不同js，getEventChannel 无法共享问题
     {
-        my.getEventChannel = getEventChannel;
+        platform.getEventChannel = getEventChannel;
     }
     return new Proxy({}, UniProxyHandlers);
 }
@@ -1232,15 +1233,15 @@ function offKeyboardHeightChange() {
 
 var shims = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  getProvider: getProvider,
-  setStorageSync: setStorageSync,
-  getStorageSync: getStorageSync,
-  removeStorageSync: removeStorageSync,
-  startGyroscope: startGyroscope,
-  createSelectorQuery: createSelectorQuery,
   createIntersectionObserver: createIntersectionObserver,
+  createSelectorQuery: createSelectorQuery,
+  getProvider: getProvider,
+  getStorageSync: getStorageSync,
+  offKeyboardHeightChange: offKeyboardHeightChange,
   onKeyboardHeightChange: onKeyboardHeightChange,
-  offKeyboardHeightChange: offKeyboardHeightChange
+  removeStorageSync: removeStorageSync,
+  setStorageSync: setStorageSync,
+  startGyroscope: startGyroscope
 });
 
 function handleNetworkInfo(fromRes, toRes) {
@@ -1265,8 +1266,14 @@ function handleSystemInfo(fromRes, toRes) {
     })(fromRes, toRes);
     populateParameters(fromRes, toRes);
     let platform = fromRes.platform ? fromRes.platform.toLowerCase() : 'devtools';
-    if (!~['android', 'ios'].indexOf(platform)) {
-        platform = 'devtools';
+    if (my.canIUse('isIDE')) {
+        // @ts-expect-error Property 'isIDE' does not exist on type 'typeof my'
+        platform = my.isIDE ? 'devtools' : platform;
+    }
+    else {
+        if (!~['android', 'ios'].indexOf(platform)) {
+            platform = 'devtools';
+        }
     }
     toRes.platform = platform;
 }
@@ -1682,57 +1689,57 @@ const chooseAddress = {
 
 var protocols = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  returnValue: returnValue,
-  request: request,
-  setNavigationBarColor: setNavigationBarColor,
-  setNavigationBarTitle: setNavigationBarTitle,
-  showModal: showModal,
-  showToast: showToast,
-  showActionSheet: showActionSheet,
-  showLoading: showLoading,
-  uploadFile: uploadFile,
-  downloadFile: downloadFile,
-  getFileInfo: getFileInfo,
-  compressImage: compressImage,
-  chooseVideo: chooseVideo,
-  connectSocket: connectSocket,
+  canvasToTempFilePath: canvasToTempFilePath,
+  chooseAddress: chooseAddress,
   chooseImage: chooseImage,
-  previewImage: previewImage,
-  saveFile: saveFile,
+  chooseVideo: chooseVideo,
+  closeBLEConnection: closeBLEConnection,
+  compressImage: compressImage,
+  connectSocket: connectSocket,
+  createBLEConnection: createBLEConnection,
+  downloadFile: downloadFile,
+  getBLEDeviceServices: getBLEDeviceServices,
+  getClipboardData: getClipboardData,
+  getFileInfo: getFileInfo,
+  getLocation: getLocation,
+  getNetworkType: getNetworkType,
   getSavedFileInfo: getSavedFileInfo,
   getSavedFileList: getSavedFileList,
-  removeSavedFile: removeSavedFile,
-  getLocation: getLocation,
-  openLocation: openLocation,
-  getNetworkType: getNetworkType,
-  onNetworkStatusChange: onNetworkStatusChange,
-  stopAccelerometer: stopAccelerometer,
-  stopCompass: stopCompass,
-  scanCode: scanCode,
-  setClipboardData: setClipboardData,
-  getClipboardData: getClipboardData,
-  pageScrollTo: pageScrollTo,
-  login: login,
-  getUserInfo: getUserInfo,
-  requestPayment: requestPayment,
-  getBLEDeviceServices: getBLEDeviceServices,
-  createBLEConnection: createBLEConnection,
-  closeBLEConnection: closeBLEConnection,
-  onBLEConnectionStateChange: onBLEConnectionStateChange,
-  makePhoneCall: makePhoneCall,
-  stopGyroscope: stopGyroscope,
+  getScreenBrightness: getScreenBrightness,
   getSystemInfo: getSystemInfo,
   getSystemInfoSync: getSystemInfoSync,
-  canvasToTempFilePath: canvasToTempFilePath,
-  setScreenBrightness: setScreenBrightness,
-  getScreenBrightness: getScreenBrightness,
-  showShareMenu: showShareMenu,
+  getUserInfo: getUserInfo,
   hideHomeButton: hideHomeButton,
+  login: login,
+  makePhoneCall: makePhoneCall,
+  navigateTo: navigateTo,
+  onBLEConnectionStateChange: onBLEConnectionStateChange,
+  onNetworkStatusChange: onNetworkStatusChange,
+  openLocation: openLocation,
+  pageScrollTo: pageScrollTo,
+  previewImage: previewImage,
+  redirectTo: redirectTo,
+  removeSavedFile: removeSavedFile,
+  request: request,
+  requestPayment: requestPayment,
+  returnValue: returnValue,
+  saveFile: saveFile,
   saveImageToPhotosAlbum: saveImageToPhotosAlbum,
   saveVideoToPhotosAlbum: saveVideoToPhotosAlbum,
-  chooseAddress: chooseAddress,
-  redirectTo: redirectTo,
-  navigateTo: navigateTo
+  scanCode: scanCode,
+  setClipboardData: setClipboardData,
+  setNavigationBarColor: setNavigationBarColor,
+  setNavigationBarTitle: setNavigationBarTitle,
+  setScreenBrightness: setScreenBrightness,
+  showActionSheet: showActionSheet,
+  showLoading: showLoading,
+  showModal: showModal,
+  showShareMenu: showShareMenu,
+  showToast: showToast,
+  stopAccelerometer: stopAccelerometer,
+  stopCompass: stopCompass,
+  stopGyroscope: stopGyroscope,
+  uploadFile: uploadFile
 });
 
 var index = initUni(shims, protocols);

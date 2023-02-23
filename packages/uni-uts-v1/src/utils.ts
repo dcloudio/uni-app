@@ -1,11 +1,12 @@
 import path, { basename, resolve } from 'path'
 import fs from 'fs-extra'
-import type { parse, bundle, UtsTarget } from '@dcloudio/uts'
-import { camelize, capitalize, extend } from '@vue/shared'
+import type { parse, bundle, UTSTarget } from '@dcloudio/uts'
+import { camelize, capitalize, extend, isString } from '@vue/shared'
 import glob from 'fast-glob'
 import { Module, ModuleItem } from '../types/types'
 import {
   installHBuilderXPlugin,
+  isInHBuilderX,
   normalizePath,
   parseJson,
   resolveSourceMapPath,
@@ -27,10 +28,10 @@ export function resolveUTSSourceMapPath() {
   return resolveSourceMapPath()
 }
 
-export function getUtsCompiler(): {
+export function getUTSCompiler(): {
   parse: typeof parse
   bundle: typeof bundle
-  UtsTarget: typeof UtsTarget
+  UTSTarget: typeof UTSTarget
 } {
   // eslint-disable-next-line no-restricted-globals
   return require('@dcloudio/uts')
@@ -45,7 +46,7 @@ export function resolvePackage(filename: string) {
     : parts.findIndex((part) => part === 'utssdk')
   if (index > -1) {
     const id = parts[index + 1]
-    const name = camelize(id)
+    const name = camelize(prefix(id))
     return {
       id,
       name,
@@ -183,10 +184,14 @@ function resolveTypeAliasDeclNames(items: ModuleItem[]) {
   return names
 }
 
-export function createResolveTypeReferenceName(namespace: string, ast: Module) {
+export function createResolveTypeReferenceName(
+  namespace: string,
+  ast: Module,
+  types: Record<string, unknown>
+) {
   const names = resolveTypeAliasDeclNames(ast.body)
   return (name: string) => {
-    if (names.includes(name)) {
+    if (names.includes(name) || isString(types[name])) {
       return namespace + capitalize(name)
     }
     return name
@@ -258,7 +263,7 @@ export function resolveIOSComponents(
   return resolveComponents('app-ios', pluginDir, is_uni_modules)
 }
 
-const nameRE = /name\s*:\s*['|"](.*)['|"]/
+const nameRE = /export\s+default\s+[\s\S]*?name\s*:\s*['|"](.*?)['|"]/
 function parseVueComponentName(file: string) {
   const content = fs.readFileSync(file, 'utf8')
   const matches = content.match(nameRE)
@@ -368,16 +373,37 @@ function genComponentsConfigJson(
   return res
 }
 
+function prefix(id: string) {
+  if (
+    process.env.UNI_UTS_MODULE_PREFIX &&
+    !id.startsWith(process.env.UNI_UTS_MODULE_PREFIX)
+  ) {
+    return process.env.UNI_UTS_MODULE_PREFIX + '-' + id
+  }
+  return id
+}
+
 export function parseKotlinPackageWithPluginId(
   id: string,
   is_uni_modules: boolean
 ) {
-  return 'uts.sdk.' + (is_uni_modules ? 'modules.' : '') + camelize(id)
+  return 'uts.sdk.' + (is_uni_modules ? 'modules.' : '') + camelize(prefix(id))
 }
 
 export function parseSwiftPackageWithPluginId(
   id: string,
   is_uni_modules: boolean
 ) {
-  return 'UTSSDK' + (is_uni_modules ? 'Modules' : '') + capitalize(camelize(id))
+  return (
+    'UTSSDK' +
+    (is_uni_modules ? 'Modules' : '') +
+    capitalize(camelize(prefix(id)))
+  )
+}
+
+export function isColorSupported() {
+  if ('NO_COLOR' in process.env || isInHBuilderX()) {
+    return false
+  }
+  return true
 }

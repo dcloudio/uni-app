@@ -2,6 +2,7 @@ import path from 'path'
 import fs from 'fs-extra'
 import { UserConfig } from 'vite'
 import { VitePluginUniResolvedOptions } from '..'
+import { preCss } from '@dcloudio/uni-cli-shared'
 
 function resolveAdditionalData(inputDir: string, config: UserConfig) {
   const uniScssFile = path.resolve(inputDir, 'uni.scss')
@@ -10,7 +11,12 @@ function resolveAdditionalData(inputDir: string, config: UserConfig) {
   if (!fs.existsSync(uniScssFile)) {
     return userAdditionalData
   }
-  return fs.readFileSync(uniScssFile, 'utf8') + '\n' + userAdditionalData
+
+  let content = fs.readFileSync(uniScssFile, 'utf8')
+  if (content.includes('#endif')) {
+    content = preCss(content)
+  }
+  return content + '\n' + userAdditionalData
 }
 
 export function createCss(

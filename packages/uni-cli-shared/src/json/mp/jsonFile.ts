@@ -68,13 +68,14 @@ export function findChangedJsonFiles(
     // app.json mp-baidu 在 win 不支持相对路径。所有平台改用绝对路径
     if (filename !== 'app') {
       let usingComponents = newJson.usingComponents as Record<string, string>
-
-      const globalUsingComponents = appJsonCache?.usingComponents ?? {}
       // 如果小程序不支持 global 的 usingComponents
       if (!supportGlobalUsingComponents) {
-        // 从 appJsonCache 中读取全局的 usingComponents 并补充到子组件 usingComponents 中
+        // 从取全局的 usingComponents 并补充到子组件 usingComponents 中
+        const globalUsingComponents = appJsonCache?.usingComponents || {}
+        const globalComponents = findUsingComponents('app') || {}
         usingComponents = {
           ...globalUsingComponents,
+          ...globalComponents,
           ...newJson.usingComponents,
         }
       }

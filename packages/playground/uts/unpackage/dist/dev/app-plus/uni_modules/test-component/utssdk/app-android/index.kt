@@ -3,18 +3,21 @@ import kotlinx.coroutines.async;
 import kotlinx.coroutines.CoroutineScope;
 import kotlinx.coroutines.Deferred;
 import kotlinx.coroutines.Dispatchers;
+import io.dcloud.uts.Map;
 import io.dcloud.uts.*;
 import android.animation.Animator;
 import android.text.TextUtils;
 import android.view.View;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieDrawable;
+import com.taobao.weex.annotation.JSMethod;
 import com.taobao.weex.ui.component.WXComponentProp;
 import io.dcloud.feature.uniapp.UniSDKInstance;
 import io.dcloud.feature.uniapp.ui.action.AbsComponentData;
 import io.dcloud.feature.uniapp.ui.component.AbsVContainer;
-import io.dcloud.uts.component.IMeasureAble;
 import io.dcloud.uts.component.UTSComponent;
+import io.dcloud.uts.component.UTSContainer;
+import io.dcloud.uts.component.UTSSize;
 open class CustomAnimListener : Animator.AnimatorListener {
     open var comp: UTSComponent<LottieAnimationView>;
     constructor(com: UTSComponent<LottieAnimationView>) : super() {
@@ -28,8 +31,13 @@ open class CustomAnimListener : Animator.AnimatorListener {
     override fun onAnimationCancel(animation: Animator?) {}
     override fun onAnimationRepeat(animation: Animator?) {}
 }
-open class AnimationViewComponent : UTSComponent<LottieAnimationView>, IMeasureAble {
+open class AnimationViewComponent : UTSComponent<LottieAnimationView> {
     constructor(instance: UniSDKInstance?, parent: AbsVContainer<*>?, componentData: AbsComponentData<*>?) : super(instance, parent, componentData) ;
+    open var path: String = "";
+    open var autoplay: Boolean = false;
+    open var loop: Boolean = false;
+    open var hidden: Boolean = false;
+    open var action: String = "stop";
     override fun created() {}
     override fun NVBeforeLoad() {}
     override fun NVLoad(): LottieAnimationView {
@@ -45,16 +53,16 @@ open class AnimationViewComponent : UTSComponent<LottieAnimationView>, IMeasureA
     override fun NVLayouted() {}
     override fun NVBeforeUnload() {}
     override fun NVUnloaded() {}
+    override fun NVMeasure(size: UTSSize): UTSSize {
+        return UTSSize(100, 100);
+    }
     override fun unmounted() {}
-    private var path: String = "";
-    private var autoplay: Boolean = false;
-    private var loop: Boolean = false;
-    private var hidden: Boolean = false;
-    private var action: String = "stop";
+    @JSMethod(uiThread = false)
     open fun setRepeatMode(repeat: String) {
         if ("RESTART" == repeat) this.`$el`.repeatMode = LottieDrawable.RESTART;
         else if ("REVERSE" == repeat) this.`$el`.repeatMode = LottieDrawable.RESTART;
     }
+    @JSMethod(uiThread = false)
     open fun privateMethod() {}
     override fun `$init`() {
         this.`$watch`<String>("path", fun(newPath, oldPath){

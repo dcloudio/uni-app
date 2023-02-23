@@ -47,15 +47,23 @@ export function createConfigResolved({
     fixUnocss(config)
     injectCssPlugin(config)
 
-    const unocssGlobalBuildGenerateIndex = config.plugins.findIndex(
-      (p) => p.name === 'unocss:global:build:generate'
+    let unocssGlobalBuildBundleIndex = config.plugins.findIndex(
+      (p) => p.name === 'unocss:global:build:bundle'
     )
-    const hasUnocssGlobalBuildGenerate = unocssGlobalBuildGenerateIndex > -1
+
+    if (unocssGlobalBuildBundleIndex === -1) {
+      unocssGlobalBuildBundleIndex = config.plugins.findIndex(
+        (p) => p.name === 'unocss:global:build:generate'
+      )
+    }
+
+    const hasUnocssGlobalBuildBundle = unocssGlobalBuildBundleIndex > -1
     // unocss 是根据 .css 后缀来编译文件，需要先保持 css 文件后缀为 .css，等 unocss 处理完后，再重置回正确的文件后缀
-    const cssExtname = hasUnocssGlobalBuildGenerate ? '.css' : extname
+    const cssExtname = hasUnocssGlobalBuildBundle ? '.css' : extname
     injectCssPostPlugin(
       config,
       cssPostPlugin(config, {
+        platform: process.env.UNI_PLATFORM,
         chunkCssFilename(id: string) {
           if (id === mainPath) {
             return 'app' + cssExtname
@@ -109,9 +117,9 @@ export function createConfigResolved({
     )
     injectAssetPlugin(config)
 
-    if (hasUnocssGlobalBuildGenerate && extname !== '.css') {
+    if (hasUnocssGlobalBuildBundle && extname !== '.css') {
       ;(config.plugins as Plugin[]).splice(
-        unocssGlobalBuildGenerateIndex + 1,
+        unocssGlobalBuildBundleIndex + 1,
         0,
         adjustCssExtname(extname)
       )

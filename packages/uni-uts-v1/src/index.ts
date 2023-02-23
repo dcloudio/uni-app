@@ -15,6 +15,7 @@ import {
 } from './swift'
 
 import {
+  FORMATS,
   genProxyCode,
   resolvePlatformIndex,
   resolvePlatformIndexFilename,
@@ -27,9 +28,9 @@ import {
   resolveIOSComponents,
   resolvePackage,
 } from './utils'
-import { parseUtsSwiftPluginStacktrace } from './stacktrace'
-import { resolveUtsPluginSourceMapFile } from './sourceMap'
-import { isWindows } from './shared'
+import { parseUTSSwiftPluginStacktrace } from './stacktrace'
+import { resolveUTSPluginSourceMapFile } from './sourceMap'
+import { isWindows, normalizePath } from './shared'
 import {
   generateCodeFrameWithKotlinStacktrace,
   generateCodeFrameWithSwiftStacktrace,
@@ -44,6 +45,7 @@ import {
   storeSourceMap,
 } from './manifest'
 import { cacheTips } from './manifest/utils'
+import { compileEncrypt, isEncrypt } from './encrypt'
 
 export const sourcemap = {
   generateCodeFrameWithKotlinStacktrace,
@@ -67,16 +69,47 @@ function warn(msg: string) {
   console.warn(`提示：${msg}`)
 }
 
-export async function compile(pluginDir: string) {
+export interface CompileResult {
+  code: string
+  deps: string[]
+  encrypt: boolean
+  meta?: any
+  dir: string
+}
+
+function createResult(
+  dir: string,
+  errMsg: string,
+  code: string,
+  deps: string[]
+): CompileResult {
+  return {
+    dir,
+    code: parseErrMsg(code, errMsg),
+    deps,
+    encrypt: false,
+    meta: {},
+  }
+}
+
+export async function compile(
+  pluginDir: string
+): Promise<CompileResult | void> {
   const pkg = resolvePackage(pluginDir)
   if (!pkg) {
     return
+  }
+  // 加密插件
+  if (isEncrypt(pluginDir)) {
+    return compileEncrypt(pluginDir)
   }
   const cacheDir = process.env.HX_DEPENDENCIES_DIR
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
   const utsPlatform = process.env.UNI_UTS_PLATFORM
+
   const pluginRelativeDir = relative(inputDir, pluginDir)
+  const outputPluginDir = normalizePath(join(outputDir, pluginRelativeDir))
   const androidComponents = resolveAndroidComponents(
     pluginDir,
     pkg.is_uni_modules
@@ -87,7 +120,21 @@ export async function compile(pluginDir: string) {
   const deps: string[] = []
   const code = await genProxyCode(
     pluginDir,
-    extend({ androidComponents, iosComponents }, pkg)
+    extend(
+      {
+        androidComponents,
+        iosComponents,
+        format:
+          process.env.UNI_UTS_JS_CODE_FORMAT === 'cjs'
+            ? FORMATS.CJS
+            : FORMATS.ES,
+        pluginRelativeDir,
+        moduleName:
+          require(join(pluginDir, 'package.json')).displayName || pkg.id,
+        moduleType: process.env.UNI_UTS_MODULE_TYPE || '',
+      },
+      pkg
+    )
   )
   let errMsg = ''
   if (process.env.NODE_ENV !== 'development') {
@@ -102,6 +149,14 @@ export async function compile(pluginDir: string) {
       if (filename) {
         await getCompiler('kotlin').runProd(filename, androidComponents)
         if (cacheDir) {
+          // 存储 sourcemap
+          storeSourceMap(
+            'app-android',
+            pluginRelativeDir,
+            outputDir,
+            cacheDir,
+            pkg.is_uni_modules
+          )
           genManifestFile('app-android', {
             pluginDir,
             env,
@@ -122,6 +177,13 @@ export async function compile(pluginDir: string) {
       if (filename) {
         await getCompiler('swift').runProd(filename, iosComponents)
         if (cacheDir) {
+          storeSourceMap(
+            'app-ios',
+            pluginRelativeDir,
+            outputDir,
+            cacheDir,
+            pkg.is_uni_modules
+          )
           genManifestFile('app-ios', {
             pluginDir,
             env,
@@ -143,18 +205,12 @@ export async function compile(pluginDir: string) {
     if (utsPlatform === 'app-ios') {
       if (isWindows) {
         process.env.UNI_UTS_TIPS = `iOS手机在windows上真机运行时uts插件代码修改需提交云端打包自定义基座才能生效`
-        return {
-          code: parseErrMsg(code, errMsg),
-          deps,
-        }
+        return createResult(outputPluginDir, errMsg, code, deps)
       }
       // ios 模拟器不支持
       if (process.env.HX_RUN_DEVICE_TYPE === 'ios_simulator') {
         process.env.UNI_UTS_TIPS = `iOS手机在模拟器运行暂不支持uts插件，如需调用uts插件请使用自定义基座`
-        return {
-          code: parseErrMsg(code, compileErrMsg(pkg.id)),
-          deps,
-        }
+        return createResult(outputPluginDir, compileErrMsg(pkg.id), code, deps)
       }
     }
     if (utsPlatform === 'app-android' || utsPlatform === 'app-ios') {
@@ -215,12 +271,13 @@ export async function compile(pluginDir: string) {
           if (versionTips) {
             warn(versionTips)
           }
-
-          return {
-            code: parseErrMsg(code, errMsg),
-            // 所有文件加入依赖
-            deps: res.files.map((name) => join(pluginDir, name)),
-          }
+          // 所有文件加入依赖
+          return createResult(
+            outputPluginDir,
+            errMsg,
+            code,
+            res.files.map((name) => join(pluginDir, name))
+          )
         }
       }
       let filename =
@@ -238,6 +295,15 @@ export async function compile(pluginDir: string) {
         } else {
           deps.push(...resolveIOSDepFiles(filename))
         }
+        // 处理 config.json
+        genConfigJson(
+          utsPlatform,
+          components,
+          pluginRelativeDir,
+          pkg.is_uni_modules,
+          inputDir,
+          outputDir
+        )
         const res = await getCompiler(compilerType).runDev(filename, components)
         if (res) {
           if (isArray(res.deps) && res.deps.length) {
@@ -250,9 +316,9 @@ export async function compile(pluginDir: string) {
               errMsg = compileErrMsg(pkg.id)
               console.error(
                 `error: ` +
-                  (await parseUtsSwiftPluginStacktrace({
+                  (await parseUTSSwiftPluginStacktrace({
                     stacktrace: res.msg,
-                    sourceMapFile: resolveUtsPluginSourceMapFile(
+                    sourceMapFile: resolveUTSPluginSourceMapFile(
                       'swift',
                       filename,
                       inputDir,
@@ -270,15 +336,6 @@ export async function compile(pluginDir: string) {
             }
           }
           if (isSuccess) {
-            // 处理 config.json
-            genConfigJson(
-              utsPlatform,
-              components,
-              pluginRelativeDir,
-              pkg.is_uni_modules,
-              inputDir,
-              outputDir
-            )
             // 生成缓存文件
             if (cacheDir) {
               // 存储 sourcemap
@@ -335,10 +392,7 @@ export async function compile(pluginDir: string) {
       }
     }
   }
-  return {
-    code: parseErrMsg(code, errMsg),
-    deps,
-  }
+  return createResult(outputPluginDir, errMsg, code, deps)
 }
 
 function getCompiler(type: 'kotlin' | 'swift') {

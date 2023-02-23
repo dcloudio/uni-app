@@ -19,6 +19,14 @@ export const customElements = [
   'navigation-bar',
   'match-media',
   'ad-custom',
+  // 手势组件
+  'tap-gesture-handler',
+  'double-tap-gesture-handler',
+  'pan-gesture-handler',
+  'scale-gesture-handler',
+  'force-press-gesture-handler',
+  'vertical-drag-gesture-handler',
+  'horizontal-drag-gesture-handler',
 ]
 
 export const compilerOptions: CompilerOptions = {
@@ -77,6 +85,7 @@ export const options: UniMiniProgramPluginOptions = {
   vite: {
     inject: {
       uni: [path.resolve(__dirname, 'uni.api.esm.js'), 'default'],
+      wx: [path.resolve(__dirname, 'uni.api.esm.js'), 'wx'],
     },
     alias: {
       'uni-mp-runtime': path.resolve(__dirname, 'uni.mp.esm.js'),

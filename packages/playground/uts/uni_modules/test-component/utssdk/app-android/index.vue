@@ -38,7 +38,6 @@ class CustomAnimListener extends Animator.AnimatorListener {
 
 //原生提供以下属性或方法的实现  
 export default {
-    name: "animation-view",
     /**
      * 当播放到末尾时触发 ended 事件（自然播放结束会触发回调，循环播放结束及手动停止动画不会触发）
      */
@@ -206,6 +205,9 @@ export default {
     },
     NVUnloaded() {			//原生View已释放  
         //可选实现，这里可以做释放View之后的操作  
+    },
+    NVMeasure(size: UTSSize): UTSSize {
+        return UTSSize(100, 100)
     },
     unmounted() {	//组件销毁  
         //可选实现  

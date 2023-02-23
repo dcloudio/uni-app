@@ -1,5 +1,6 @@
 import GtPush from '../lib/gtpush-min'
 import { initPushNotification } from './route'
+import { initBroadcastChannel, postPushMessage } from './broadcastChannel'
 
 // if (process.env.UNI_PUSH_DEBUG) {
 //   GtPush.setDebugMode(true)
@@ -24,37 +25,63 @@ if (!appid) {
   // #ifdef APP
   initPushNotification()
   // #endif
+  // #ifdef H5
+  initBroadcastChannel(GtPush)
+  // #endif
+  // #ifdef MP || APP
+  if (typeof uni.onAppShow === 'function') {
+    uni.onAppShow(() => {
+      GtPush.enableSocket(true)
+    })
+  }
+  // #endif
   GtPush.init({
     appid,
     onError: (res) => {
       console.error(res.error)
-      // @ts-expect-error
-      uni.invokePushCallback({
+      const data = {
         type: 'clientId',
         cid: '',
         errMsg: res.error,
-      })
+      }
+      // @ts-expect-error
+      uni.invokePushCallback(data)
+      // #ifdef H5
+      postPushMessage(data)
+      // #endif
     },
     onClientId: (res) => {
-      // @ts-expect-error
-      uni.invokePushCallback({
+      const data = {
         type: 'clientId',
         cid: res.cid,
-      })
+      }
+      // @ts-expect-error
+      uni.invokePushCallback(data)
+      // #ifdef H5
+      postPushMessage(data)
+      // #endif
     },
     onlineState: (res) => {
-      // @ts-expect-error
-      uni.invokePushCallback({
+      const data = {
         type: 'lineState',
         online: res.online,
-      })
+      }
+      // @ts-expect-error
+      uni.invokePushCallback(data)
+      // #ifdef H5
+      postPushMessage(data)
+      // #endif
     },
     onPushMsg: (res) => {
-      // @ts-expect-error
-      uni.invokePushCallback({
+      const data = {
         type: 'pushMsg',
         message: res.message,
-      })
+      }
+      // @ts-expect-error
+      uni.invokePushCallback(data)
+      // #ifdef H5
+      postPushMessage(data)
+      // #endif
     },
   })
   // 仅在 jssdk 中监听

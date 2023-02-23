@@ -134,7 +134,7 @@ export class UniElement<T extends object> extends UniNode {
     this.updateView()
   }
   setAttribute(name: string, value: unknown) {
-    value = decodeAttr(this.$, value)
+    value = decodeAttr(value, this.$)
     if (this.$propNames.indexOf(name) !== -1) {
       ;(this.$props as any)[name] = value
     } else if (isCssVar(name)) {

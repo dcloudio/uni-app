@@ -139,6 +139,10 @@ const props = {
     type: String,
     default: '',
   },
+  isLive: {
+    type: Boolean,
+    default: false,
+  },
 }
 
 type EventName =
@@ -193,13 +197,16 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     const containerRef: Ref<HTMLElement | null> = ref(null)
     const attrs = useNativeAttrs(props, ['id'])
     const { position, hidden, onParentReady } = useNative(containerRef)
+    const playStrategy = Number(props.isLive ? 3 : props.playStrategy)
 
     let video: ReturnType<typeof plus.video.createVideoPlayer>
 
     onParentReady(() => {
       video = plus.video.createVideoPlayer(
         'video' + Date.now(),
-        Object.assign({}, attrs.value, position)
+        Object.assign({}, attrs.value, position, {
+          playStrategy: isNaN(playStrategy) ? 0 : playStrategy,
+        })
       )
       plus.webview.currentWebview().append(video as any)
       if (hidden.value) {

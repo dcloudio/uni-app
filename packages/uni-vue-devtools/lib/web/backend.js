@@ -2154,7 +2154,7 @@ async function connect() {
 
       if (false) {}
 
-      if ( true && uid !== 0) {
+      if (( true) && uid !== 0) {
         const parentId = `${id.split(':')[0]}:root`;
         (0, component_1.sendComponentTreeData)(appRecord, parentId, appRecord.componentFilter, null, false, ctx);
       }
@@ -4804,9 +4804,7 @@ class ComponentWalker {
 
 
   getInstanceChildrenBySubTreeComponent(list, subTree, suspense) {
-    var _a;
-
-    if (((_a = subTree.type.devtools) === null || _a === void 0 ? void 0 : _a.hide) || this.uniAppPageNames.includes(subTree.type.name)) {
+    if (subTree.type.__reserved || this.uniAppPageNames.includes(subTree.type.name)) {
       list.push(...this.getInternalInstanceChildren(subTree.component.subTree));
     } else {
       !suspense ? list.push(subTree.component) : list.push({ ...subTree.component,
@@ -6126,23 +6124,20 @@ function initSharedData(params) {
         }
       }, 2000);
     } else {
-      if (true) {
-        // eslint-disable-next-line no-console
-        console.log('[shared data] Minion init in progress...');
+      if (true) {// eslint-disable-next-line no-console
+        // console.log('[shared data] Minion init in progress...')
       }
 
       bridge.on('shared-data:master-init-waiting', () => {
-        if (true) {
-          // eslint-disable-next-line no-console
-          console.log('[shared data] Minion loading data...');
+        if (true) {// eslint-disable-next-line no-console
+          // console.log('[shared data] Minion loading data...')
         } // Load all persisted shared data
 
 
         bridge.send('shared-data:load');
         bridge.once('shared-data:load-complete', () => {
-          if (true) {
-            // eslint-disable-next-line no-console
-            console.log('[shared data] Minion init complete');
+          if (true) {// eslint-disable-next-line no-console
+            // console.log('[shared data] Minion init complete')
           }
 
           bridge.send('shared-data:init-complete');
@@ -10934,40 +10929,42 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const socket = _vue_devtools_shared_utils__WEBPACK_IMPORTED_MODULE_1__.target.__VUE_DEVTOOLS_SOCKET__;
-const connectedMessage = () => {
-  if (_vue_devtools_shared_utils__WEBPACK_IMPORTED_MODULE_1__.target.__VUE_DEVTOOLS_TOAST__) {
-    _vue_devtools_shared_utils__WEBPACK_IMPORTED_MODULE_1__.target.__VUE_DEVTOOLS_TOAST__("Remote Devtools Connected", "normal");
-  }
-};
-const disconnectedMessage = () => {
-  if (_vue_devtools_shared_utils__WEBPACK_IMPORTED_MODULE_1__.target.__VUE_DEVTOOLS_TOAST__) {
-    _vue_devtools_shared_utils__WEBPACK_IMPORTED_MODULE_1__.target.__VUE_DEVTOOLS_TOAST__("Remote Devtools Disconnected", "error");
-  }
-};
-socket.on("connect", () => {
-  connectedMessage();
-  (0,_back_index__WEBPACK_IMPORTED_MODULE_0__.initBackend)(bridge);
-  socket.emit("vue-devtools-init");
-});
-socket.on("disconnect", () => {
-  socket.disconnect();
-  disconnectedMessage();
-});
-socket.on("vue-devtools-disconnect-backend", () => {
-  socket.disconnect();
-});
-const bridge = new _vue_devtools_shared_utils__WEBPACK_IMPORTED_MODULE_1__.Bridge({
-  listen(fn) {
-    socket.on("vue-message", (data) => fn(data));
-  },
-  send(data) {
-    socket.emit("vue-message", data);
-  }
-});
-bridge.on("shutdown", () => {
-  socket.disconnect();
-  disconnectedMessage();
+_vue_devtools_shared_utils__WEBPACK_IMPORTED_MODULE_1__.target.__VUE_DEVTOOLS_ON_SOCKET_READY__(() => {
+  const socket = _vue_devtools_shared_utils__WEBPACK_IMPORTED_MODULE_1__.target.__VUE_DEVTOOLS_SOCKET__;
+  const connectedMessage = () => {
+    if (_vue_devtools_shared_utils__WEBPACK_IMPORTED_MODULE_1__.target.__VUE_DEVTOOLS_TOAST__) {
+      _vue_devtools_shared_utils__WEBPACK_IMPORTED_MODULE_1__.target.__VUE_DEVTOOLS_TOAST__("Remote Devtools Connected", "normal");
+    }
+  };
+  const disconnectedMessage = () => {
+    if (_vue_devtools_shared_utils__WEBPACK_IMPORTED_MODULE_1__.target.__VUE_DEVTOOLS_TOAST__) {
+      _vue_devtools_shared_utils__WEBPACK_IMPORTED_MODULE_1__.target.__VUE_DEVTOOLS_TOAST__("Remote Devtools Disconnected", "error");
+    }
+  };
+  socket.on("connect", () => {
+    connectedMessage();
+    (0,_back_index__WEBPACK_IMPORTED_MODULE_0__.initBackend)(bridge);
+    socket.emit("vue-devtools-init");
+  });
+  socket.on("disconnect", () => {
+    socket.disconnect();
+    disconnectedMessage();
+  });
+  socket.on("vue-devtools-disconnect-backend", () => {
+    socket.disconnect();
+  });
+  const bridge = new _vue_devtools_shared_utils__WEBPACK_IMPORTED_MODULE_1__.Bridge({
+    listen(fn) {
+      socket.on("vue-message", (data) => fn(data));
+    },
+    send(data) {
+      socket.emit("vue-message", data);
+    }
+  });
+  bridge.on("shutdown", () => {
+    socket.disconnect();
+    disconnectedMessage();
+  });
 });
 
 })();

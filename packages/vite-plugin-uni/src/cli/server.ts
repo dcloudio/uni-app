@@ -72,7 +72,7 @@ export async function createSSRServer(
       configFile: options.config,
       base: options.base,
       mode: options.mode,
-      logLevel: options.logLevel,
+      logLevel: options.logLevel || 'info',
       clearScreen: options.clearScreen,
       server: {
         middlewareMode: true,

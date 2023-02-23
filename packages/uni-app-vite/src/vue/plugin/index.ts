@@ -13,8 +13,9 @@ import {
   parseRpx2UnitOnce,
   polyfillCode,
   resolveBuiltIn,
+  getPlatformManifestJsonOnce,
 } from '@dcloudio/uni-cli-shared'
-import { OutputBundle } from 'rollup'
+import type { OutputBundle } from 'rollup'
 import { APP_RENDERJS_JS, APP_WXS_JS } from '../plugins/renderjs'
 
 import { createConfigResolved } from '../../plugin/configResolved'
@@ -63,6 +64,7 @@ export function uniAppVuePlugin(): UniVitePlugin {
     configResolved: createConfigResolved({
       createCssPostPlugin(config) {
         return cssPostPlugin(config, {
+          platform: 'app',
           chunkCssFilename(id: string) {
             if (id === mainPath) {
               return 'app.css'
@@ -104,11 +106,13 @@ function genViewHtml(bundle: OutputBundle) {
     process.env.UNI_INPUT_DIR,
     process.env.UNI_PLATFORM
   )
+  const { darkmode = false } = getPlatformManifestJsonOnce()
   const __uniConfig = {
     globalStyle: {
       rpxCalcMaxDeviceWidth: (globalStyle as any).rpxCalcMaxDeviceWidth,
       rpxCalcBaseDeviceWidth: (globalStyle as any).rpxCalcBaseDeviceWidth,
     },
+    darkmode,
   }
   const wxsCode = bundle[APP_WXS_JS]
     ? `<script src="${APP_WXS_JS}"></script>`

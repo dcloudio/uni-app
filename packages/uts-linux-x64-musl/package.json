@@ -1,0 +1,25 @@
+{
+  "name": "@dcloudio/uts-linux-x64-musl",
+  "version": "3.0.0-alpha-3070420230223001",
+  "os": [
+    "linux"
+  ],
+  "cpu": [
+    "x64"
+  ],
+  "main": "uts.linux-x64-musl.node",
+  "files": [
+    "uts.linux-x64-musl.node"
+  ],
+  "libc": [
+    "musl"
+  ],
+  "engines": {
+    "node": ">=10"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uts-linux-x64-musl"
+  }
+}

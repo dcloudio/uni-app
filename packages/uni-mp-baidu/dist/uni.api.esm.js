@@ -227,20 +227,20 @@ const HOOK_FAIL = 'fail';
 const HOOK_COMPLETE = 'complete';
 const globalInterceptors = {};
 const scopedInterceptors = {};
-function wrapperHook(hook) {
+function wrapperHook(hook, params) {
     return function (data) {
-        return hook(data) || data;
+        return hook(data, params) || data;
     };
 }
-function queue(hooks, data) {
+function queue(hooks, data, params) {
     let promise = false;
     for (let i = 0; i < hooks.length; i++) {
         const hook = hooks[i];
         if (promise) {
-            promise = Promise.resolve(wrapperHook(hook));
+            promise = Promise.resolve(wrapperHook(hook, params));
         }
         else {
-            const res = hook(data);
+            const res = hook(data, params);
             if (isPromise(res)) {
                 promise = Promise.resolve(res);
             }
@@ -267,7 +267,7 @@ function wrapperOptions(interceptors, options = {}) {
         }
         const oldCallback = options[name];
         options[name] = function callbackInterceptor(res) {
-            queue(hooks, res).then((res) => {
+            queue(hooks, res, options).then((res) => {
                 return (isFunction(oldCallback) && oldCallback(res)) || res;
             });
         };
@@ -311,7 +311,8 @@ function invokeApi(method, api, options, params) {
         if (isArray(interceptor.invoke)) {
             const res = queue(interceptor.invoke, options);
             return res.then((options) => {
-                return api(wrapperOptions(interceptor, options), ...params);
+                // 重新访问 getApiInterceptorHooks, 允许 invoke 中再次调用 addInterceptor,removeInterceptor
+                return api(wrapperOptions(getApiInterceptorHooks(method), options), ...params);
             });
         }
         else {
@@ -1101,7 +1102,7 @@ const baseApis = {
     offPushMessage,
     invokePushCallback,
 };
-function initUni(api, protocols) {
+function initUni(api, protocols, platform = swan) {
     const wrapper = initWrapper(protocols);
     const UniProxyHandlers = {
         get(target, key) {
@@ -1116,12 +1117,12 @@ function initUni(api, protocols) {
             }
             // event-api
             // provider-api?
-            return promisify(key, wrapper(key, swan[key]));
+            return promisify(key, wrapper(key, platform[key]));
         },
     };
     // 处理 api mp 打包后为不同js，getEventChannel 无法共享问题
     {
-        swan.getEventChannel = getEventChannel;
+        platform.getEventChannel = getEventChannel;
     }
     return new Proxy({}, UniProxyHandlers);
 }
@@ -1186,10 +1187,10 @@ function createVideoContext(videoId) {
 
 var shims = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  getProvider: getProvider,
-  requestPayment: requestPayment,
   createIntersectionObserver: createIntersectionObserver,
-  createVideoContext: createVideoContext
+  createVideoContext: createVideoContext,
+  getProvider: getProvider,
+  requestPayment: requestPayment
 });
 
 function createTodoMethod(contextName, methodName) {
@@ -1278,22 +1279,22 @@ const getAccountInfoSync = {
 
 var protocols = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  returnValue: returnValue,
-  request: request,
   connectSocket: connectSocket,
-  getRecorderManager: getRecorderManager,
-  getBackgroundAudioManager: getBackgroundAudioManager,
-  scanCode: scanCode,
-  navigateToMiniProgram: navigateToMiniProgram,
-  navigateBackMiniProgram: navigateBackMiniProgram,
-  showShareMenu: showShareMenu,
-  login: login,
   getAccountInfoSync: getAccountInfoSync,
-  redirectTo: redirectTo,
-  navigateTo: navigateTo,
-  previewImage: previewImage,
+  getBackgroundAudioManager: getBackgroundAudioManager,
+  getRecorderManager: getRecorderManager,
   getSystemInfo: getSystemInfo,
-  getSystemInfoSync: getSystemInfoSync
+  getSystemInfoSync: getSystemInfoSync,
+  login: login,
+  navigateBackMiniProgram: navigateBackMiniProgram,
+  navigateTo: navigateTo,
+  navigateToMiniProgram: navigateToMiniProgram,
+  previewImage: previewImage,
+  redirectTo: redirectTo,
+  request: request,
+  returnValue: returnValue,
+  scanCode: scanCode,
+  showShareMenu: showShareMenu
 });
 
 var index = initUni(shims, protocols);

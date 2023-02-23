@@ -116,6 +116,7 @@ export function showPage({
   onMessage,
   onClose,
 }: ShowPage) {
+  let darkmode = __uniConfig.darkmode
   // eslint-disable-next-line
   plus_ = context.plus || plus
   // eslint-disable-next-line
@@ -152,7 +153,7 @@ export function showPage({
     extras: {
       from: getPageId(),
       runtime: getRuntime(),
-      data,
+      data: extend({}, data, { darkmode }),
       useGlobalEvent: !BroadcastChannel_,
     },
   })
