@@ -11,7 +11,7 @@ describe('mp-jd: transform component', () => {
     )
     assert(
       `<switch @change="change"/>`,
-      `<block jd:if="{{r0}}"><switch bindchange="{{a}}"/></block>`,
+      `<switch bindchange="{{a}}"/>`,
       `(_ctx, _cache) => {
   return { a: _o(_ctx.change) }
 }`

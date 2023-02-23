@@ -72,10 +72,7 @@ const options = {
             targets: [
                 {
                     // FileWatcher这个类监听的文件，文件改动触发整体编译？编译什么？
-                    src: [
-                        'project.config.json',
-                        'custom-tab-bar'
-                    ],
+                    src: ['project.config.json', 'custom-tab-bar'],
                     // 输出目录
                     get dest() {
                         return process.env.UNI_OUTPUT_DIR;

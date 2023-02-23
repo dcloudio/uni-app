@@ -1,8 +1,101 @@
-import { ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, isUniLifecycleHook, ON_READY, once, addLeadingSlash, stringifyQuery, EventChannel } from '@dcloudio/uni-shared';
-import { createApp, createSubpackageApp } from '@dcloudio/uni-mp-weixin/src/runtime';
-import { hasOwn, isFunction, isArray, extend, isPlainObject } from '@vue/shared';
-import { findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob } from 'vue';
-import * as baseParseOptions from '@dcloudio/uni-mp-weixin/src/runtime/parseOptions';
+import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, isUniLifecycleHook, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, customizeEvent, addLeadingSlash, stringifyQuery } from '@dcloudio/uni-shared';
+import { isArray, hasOwn, isFunction, extend, isPlainObject } from '@vue/shared';
+import { ref, nextTick, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, getExposeProxy, pruneComponentPropsCache } from 'vue';
+import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
+
+const MP_METHODS = [
+    'createSelectorQuery',
+    'createIntersectionObserver',
+    'selectAllComponents',
+    'selectComponent',
+];
+function createEmitFn(oldEmit, ctx) {
+    return function emit(event, ...args) {
+        const scope = ctx.$scope;
+        if (scope && event) {
+            const detail = { __args__: args };
+            {
+                (scope._triggerEvent || scope.triggerEvent)(event, detail);
+            }
+        }
+        return oldEmit.apply(this, [event, ...args]);
+    };
+}
+function initBaseInstance(instance, options) {
+    const ctx = instance.ctx;
+    // mp
+    ctx.mpType = options.mpType; // @deprecated
+    ctx.$mpType = options.mpType;
+    ctx.$mpPlatform = "mp-jd";
+    ctx.$scope = options.mpInstance;
+    // TODO @deprecated
+    ctx.$mp = {};
+    if (__VUE_OPTIONS_API__) {
+        ctx._self = {};
+    }
+    // slots
+    instance.slots = {};
+    if (isArray(options.slots) && options.slots.length) {
+        options.slots.forEach((name) => {
+            instance.slots[name] = true;
+        });
+        if (instance.slots[SLOT_DEFAULT_NAME]) {
+            instance.slots.default = true;
+        }
+    }
+    ctx.getOpenerEventChannel = function () {
+        if (!this.__eventChannel__) {
+            this.__eventChannel__ = new EventChannel();
+        }
+        return this.__eventChannel__;
+    };
+    ctx.$hasHook = hasHook;
+    ctx.$callHook = callHook;
+    // $emit
+    instance.emit = createEmitFn(instance.emit, ctx);
+}
+function initComponentInstance(instance, options) {
+    initBaseInstance(instance, options);
+    const ctx = instance.ctx;
+    MP_METHODS.forEach((method) => {
+        ctx[method] = function (...args) {
+            const mpInstance = ctx.$scope;
+            if (mpInstance && mpInstance[method]) {
+                return mpInstance[method].apply(mpInstance, args);
+            }
+        };
+    });
+}
+function initMocks(instance, mpInstance, mocks) {
+    const ctx = instance.ctx;
+    mocks.forEach((mock) => {
+        if (hasOwn(mpInstance, mock)) {
+            instance[mock] = ctx[mock] = mpInstance[mock];
+        }
+    });
+}
+function hasHook(name) {
+    const hooks = this.$[name];
+    if (hooks && hooks.length) {
+        return true;
+    }
+    return false;
+}
+function callHook(name, args) {
+    if (name === 'mounted') {
+        callHook.call(this, 'bm'); // beforeMount
+        this.$.isMounted = true;
+        name = 'm';
+    }
+    {
+        if (name === 'onLoad' && args && args.__id__) {
+            this.__eventChannel__ = jd.getEventChannel(args.__id__);
+            delete args.__id__;
+        }
+    }
+    const hooks = this.$[name];
+    return hooks && invokeArrayFns(hooks, args);
+}
 
 const PAGE_INIT_HOOKS = [
     ON_LOAD,
@@ -85,6 +178,134 @@ function initMixinRuntimeHooks(mpOptions) {
     initHooks(mpOptions, findMixinRuntimeHooks());
 }
 
+const HOOKS = [
+    ON_SHOW,
+    ON_HIDE,
+    ON_ERROR,
+    ON_THEME_CHANGE,
+    ON_PAGE_NOT_FOUND,
+    ON_UNHANDLE_REJECTION,
+];
+function parseApp(instance, parseAppOptions) {
+    const internalInstance = instance.$;
+    if (__VUE_PROD_DEVTOOLS__) {
+        // 定制 App 的 $children
+        Object.defineProperty(internalInstance.ctx, '$children', {
+            get() {
+                return getCurrentPages().map((page) => page.$vm);
+            },
+        });
+    }
+    const appOptions = {
+        globalData: (instance.$options && instance.$options.globalData) || {},
+        $vm: instance,
+        onLaunch(options) {
+            this.$vm = instance; // 飞书小程序可能会把 AppOptions 序列化，导致 $vm 对象部分属性丢失
+            const ctx = internalInstance.ctx;
+            if (this.$vm && ctx.$scope) {
+                // 已经初始化过了，主要是为了百度，百度 onShow 在 onLaunch 之前
+                return;
+            }
+            initBaseInstance(internalInstance, {
+                mpType: 'app',
+                mpInstance: this,
+                slots: [],
+            });
+            ctx.globalData = this.globalData;
+            instance.$callHook(ON_LAUNCH, options);
+        },
+    };
+    initLocale(instance);
+    const vueOptions = instance.$.type;
+    initHooks(appOptions, HOOKS);
+    initUnknownHooks(appOptions, vueOptions);
+    if (__VUE_OPTIONS_API__) {
+        const methods = vueOptions.methods;
+        methods && extend(appOptions, methods);
+    }
+    if (parseAppOptions) {
+        parseAppOptions.parse(appOptions);
+    }
+    return appOptions;
+}
+function initCreateApp(parseAppOptions) {
+    return function createApp(vm) {
+        return App(parseApp(vm, parseAppOptions));
+    };
+}
+function initCreateSubpackageApp(parseAppOptions) {
+    return function createApp(vm) {
+        const appOptions = parseApp(vm, parseAppOptions);
+        const app = isFunction(getApp) &&
+            getApp({
+                allowDefault: true,
+            });
+        if (!app)
+            return;
+        vm.$.ctx.$scope = app;
+        const globalData = app.globalData;
+        if (globalData) {
+            Object.keys(appOptions.globalData).forEach((name) => {
+                if (!hasOwn(globalData, name)) {
+                    globalData[name] = appOptions.globalData[name];
+                }
+            });
+        }
+        Object.keys(appOptions).forEach((name) => {
+            if (!hasOwn(app, name)) {
+                app[name] = appOptions[name];
+            }
+        });
+        initAppLifecycle(appOptions, vm);
+        if (process.env.UNI_SUBPACKAGE) {
+            (jd.$subpackages || (jd.$subpackages = {}))[process.env.UNI_SUBPACKAGE] = {
+                $vm: vm,
+            };
+        }
+    };
+}
+function initAppLifecycle(appOptions, vm) {
+    if (isFunction(appOptions.onLaunch)) {
+        const args = jd.getLaunchOptionsSync && jd.getLaunchOptionsSync();
+        appOptions.onLaunch(args);
+    }
+    if (isFunction(appOptions.onShow) && jd.onAppShow) {
+        jd.onAppShow((args) => {
+            vm.$callHook('onShow', args);
+        });
+    }
+    if (isFunction(appOptions.onHide) && jd.onAppHide) {
+        jd.onAppHide((args) => {
+            vm.$callHook('onHide', args);
+        });
+    }
+}
+function initLocale(appVm) {
+    const locale = ref(normalizeLocale(jd.getSystemInfoSync().language) || LOCALE_EN);
+    Object.defineProperty(appVm, '$locale', {
+        get() {
+            return locale.value;
+        },
+        set(v) {
+            locale.value = v;
+        },
+    });
+}
+
+function initVueIds(vueIds, mpInstance) {
+    if (!vueIds) {
+        return;
+    }
+    const ids = vueIds.split(',');
+    const len = ids.length;
+    if (len === 1) {
+        mpInstance._$vueId = ids[0];
+    }
+    else if (len === 2) {
+        mpInstance._$vueId = ids[0];
+        mpInstance._$vuePid = ids[1];
+    }
+}
 function initWxsCallMethods(methods, wxsCallMethods) {
     if (!isArray(wxsCallMethods)) {
         return;
@@ -94,6 +315,63 @@ function initWxsCallMethods(methods, wxsCallMethods) {
             return this.$vm[callMethod](args);
         };
     });
+}
+function selectAllComponents(mpInstance, selector, $refs) {
+    const components = mpInstance.selectAllComponents(selector);
+    components.forEach((component) => {
+        const ref = component.properties.uR;
+        $refs[ref] = component.$vm || component;
+    });
+}
+function initRefs(instance, mpInstance) {
+    Object.defineProperty(instance, 'refs', {
+        get() {
+            const $refs = {};
+            selectAllComponents(mpInstance, '.r', $refs);
+            const forComponents = mpInstance.selectAllComponents('.r-i-f');
+            forComponents.forEach((component) => {
+                const ref = component.properties.uR;
+                if (!ref) {
+                    return;
+                }
+                if (!$refs[ref]) {
+                    $refs[ref] = [];
+                }
+                $refs[ref].push(component.$vm || component);
+            });
+            return $refs;
+        },
+    });
+}
+function findVmByVueId(instance, vuePid) {
+    // 标准 vue3 中 没有 $children，定制了内核
+    const $children = instance.$children;
+    // 优先查找直属(反向查找:https://github.com/dcloudio/uni-app/issues/1200)
+    for (let i = $children.length - 1; i >= 0; i--) {
+        const childVm = $children[i];
+        if (childVm.$scope._$vueId === vuePid) {
+            return childVm;
+        }
+    }
+    // 反向递归查找
+    let parentVm;
+    for (let i = $children.length - 1; i >= 0; i--) {
+        parentVm = findVmByVueId($children[i], vuePid);
+        if (parentVm) {
+            return parentVm;
+        }
+    }
+}
+function nextSetDataTick(mpInstance, fn) {
+    // 随便设置一个字段来触发回调（部分平台必须有字段才可以，比如头条）
+    mpInstance.setData({ r1: 1 }, () => fn());
+}
+function initSetRef(mpInstance) {
+    if (!mpInstance._$setRef) {
+        mpInstance._$setRef = (fn) => {
+            nextTick(() => nextSetDataTick(mpInstance, fn));
+        };
+    }
 }
 
 const builtInProps = [
@@ -220,6 +498,38 @@ function initPageProps({ properties }, rawProps) {
         });
     }
 }
+function findPropsData(properties, isPage) {
+    return ((isPage
+        ? findPagePropsData(properties)
+        : findComponentPropsData(properties.uP)) || {});
+}
+function findPagePropsData(properties) {
+    const propsData = {};
+    if (isPlainObject(properties)) {
+        Object.keys(properties).forEach((name) => {
+            if (builtInProps.indexOf(name) === -1) {
+                propsData[name] = properties[name];
+            }
+        });
+    }
+    return propsData;
+}
+function initFormField(vm) {
+    // 同步 form-field 的 name,value 值
+    const vueOptions = vm.$options;
+    if (isArray(vueOptions.behaviors) &&
+        vueOptions.behaviors.includes('uni://form-field')) {
+        vm.$watch('modelValue', () => {
+            vm.$scope &&
+                vm.$scope.setData({
+                    name: vm.name,
+                    value: vm.modelValue,
+                });
+        }, {
+            immediate: true,
+        });
+    }
+}
 
 function initData(_) {
     return {};
@@ -305,6 +615,167 @@ function initBehaviors(vueOptions) {
     }
     return behaviors;
 }
+
+let $createComponentFn;
+let $destroyComponentFn;
+function getAppVm() {
+    if (process.env.UNI_MP_PLUGIN) {
+        return jd.$vm;
+    }
+    if (process.env.UNI_SUBPACKAGE) {
+        return jd.$subpackages[process.env.UNI_SUBPACKAGE].$vm;
+    }
+    return getApp().$vm;
+}
+function $createComponent(initialVNode, options) {
+    if (!$createComponentFn) {
+        $createComponentFn = getAppVm().$createComponent;
+    }
+    const proxy = $createComponentFn(initialVNode, options);
+    return getExposeProxy(proxy.$) || proxy;
+}
+function $destroyComponent(instance) {
+    if (!$destroyComponentFn) {
+        $destroyComponentFn = getAppVm().$destroyComponent;
+    }
+    return $destroyComponentFn(instance);
+}
+
+const MPPage = Page;
+const MPComponent = Component;
+function initTriggerEvent(mpInstance) {
+    const oldTriggerEvent = mpInstance.triggerEvent;
+    const newTriggerEvent = function (event, ...args) {
+        return oldTriggerEvent.apply(mpInstance, [customizeEvent(event), ...args]);
+    };
+    // 京东小程序triggerEvent为只读属性
+    try {
+        mpInstance.triggerEvent = newTriggerEvent;
+    }
+    catch (error) {
+        mpInstance._triggerEvent = newTriggerEvent;
+    }
+}
+function initMiniProgramHook(name, options, isComponent) {
+    const oldHook = options[name];
+    if (!oldHook) {
+        options[name] = function () {
+            initTriggerEvent(this);
+        };
+    }
+    else {
+        options[name] = function (...args) {
+            initTriggerEvent(this);
+            return oldHook.apply(this, args);
+        };
+    }
+}
+Page = function (options) {
+    initMiniProgramHook(ON_LOAD, options);
+    return MPPage(options);
+};
+Component = function (options) {
+    initMiniProgramHook('created', options);
+    // 小程序组件
+    const isVueComponent = options.properties && options.properties.uP;
+    if (!isVueComponent) {
+        initProps(options);
+        initPropsObserver(options);
+    }
+    return MPComponent(options);
+};
+
+// @ts-ignore
+function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
+    return {
+        attached() {
+            // 微信 和 QQ 不需要延迟 setRef
+            {
+                initSetRef(this);
+            }
+            let properties = this.properties;
+            initVueIds(properties.uI, this);
+            const relationOptions = {
+                vuePid: this._$vuePid,
+            };
+            // 处理父子关系
+            initRelation(this, relationOptions);
+            // 初始化 vue 实例
+            const mpInstance = this;
+            const isMiniProgramPage = isPage(mpInstance);
+            let propsData = properties;
+            this.$vm = $createComponent({
+                type: vueOptions,
+                props: findPropsData(propsData, isMiniProgramPage),
+            }, {
+                mpType: isMiniProgramPage ? 'page' : 'component',
+                mpInstance,
+                slots: properties.uS || {},
+                parentComponent: relationOptions.parent && relationOptions.parent.$,
+                onBeforeSetup(instance, options) {
+                    initRefs(instance, mpInstance);
+                    initMocks(instance, mpInstance, mocks);
+                    initComponentInstance(instance, options);
+                },
+            });
+            if (!isMiniProgramPage) {
+                initFormField(this.$vm);
+            }
+        },
+        ready() {
+            // 当组件 props 默认值为 true，初始化时传入 false 会导致 created,ready 触发, 但 attached 不触发
+            // https://developers.weixin.qq.com/community/develop/doc/00066ae2844cc0f8eb883e2a557800
+            if (this.$vm) {
+                {
+                    nextSetDataTick(this, () => {
+                        this.$vm.$callHook('mounted');
+                        this.$vm.$callHook(ON_READY);
+                    });
+                }
+            }
+        },
+        detached() {
+            if (this.$vm) {
+                pruneComponentPropsCache(this.$vm.$.uid);
+                $destroyComponent(this.$vm);
+            }
+        },
+    };
+}
+
+const mocks = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__'];
+function isPage(mpInstance) {
+    return !!mpInstance.route;
+}
+function initRelation$1(mpInstance, detail) {
+    mpInstance.triggerEvent('__l', detail);
+}
+function handleLink(event) {
+    // detail 是微信,value 是百度(dipatch)
+    const detail = (event.detail ||
+        event.value);
+    const vuePid = detail.vuePid;
+    let parentVm;
+    if (vuePid) {
+        parentVm = findVmByVueId(this.$vm, vuePid);
+    }
+    if (!parentVm) {
+        parentVm = this.$vm;
+    }
+    detail.parent = parentVm;
+}
+
+var baseParseOptions = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  mocks: mocks,
+  isPage: isPage,
+  initRelation: initRelation$1,
+  handleLink: handleLink,
+  initLifetimes: initLifetimes
+});
+
+const createApp = initCreateApp();
+const createSubpackageApp = initCreateSubpackageApp();
 
 function applyOptions(componentOptions, vueOptions) {
     componentOptions.data = initData();
