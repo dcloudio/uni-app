@@ -15310,6 +15310,10 @@ class UploadTask {
     offHeadersReceived() { }
 }
 const uploadFile = defineTaskApi(API_UPLOAD_FILE, ({ url, timeout, header, formData, files, filePath, name }, { resolve, reject }) => {
+    timeout =
+        (timeout ||
+            (__uniConfig.networkTimeout && __uniConfig.networkTimeout.uploadFile) ||
+            60 * 1000) / 1000;
     const uploader = plus.uploader.createUpload(url, {
         timeout,
         // 需要与其它平台上的表现保持一致，不走重试的逻辑。
