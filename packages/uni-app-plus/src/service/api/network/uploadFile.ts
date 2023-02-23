@@ -59,6 +59,10 @@ export const uploadFile = defineTaskApi<API_TYPE_UPLOAD_FILE>(
     { url, timeout, header, formData, files, filePath, name },
     { resolve, reject }
   ) => {
+    timeout =
+      (timeout ||
+        (__uniConfig.networkTimeout && __uniConfig.networkTimeout.uploadFile) ||
+        60 * 1000) / 1000
     const uploader = plus.uploader.createUpload(
       url,
       {
