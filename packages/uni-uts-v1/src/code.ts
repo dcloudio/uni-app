@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 
-import { camelize, capitalize } from '@vue/shared'
+import { camelize, capitalize, isArray } from '@vue/shared'
 
 import type {
   ArrowFunctionExpression,
@@ -252,16 +252,21 @@ async function parseInterfaceTypes(
   const ast: Module = await parse(fs.readFileSync(interfaceFilename, 'utf8'), {
     noColor: !isColorSupported(),
   })
-  const types: Record<string, Param[]> = {}
+  const types: Record<string, Param[] | string> = {}
   ast.body.filter((node) => {
     if (
       node.type === 'ExportDeclaration' &&
-      node.declaration.type === 'TsTypeAliasDeclaration' &&
-      node.declaration.typeAnnotation.type === 'TsFunctionType'
+      node.declaration.type === 'TsTypeAliasDeclaration'
     ) {
-      const params = createParams(node.declaration.typeAnnotation.params)
-      if (params.length) {
-        types[node.declaration.id.value] = params
+      switch (node.declaration.typeAnnotation.type) {
+        case 'TsFunctionType':
+          const params = createParams(node.declaration.typeAnnotation.params)
+          if (params.length) {
+            types[node.declaration.id.value] = params
+          }
+          break
+        case 'TsTypeLiteral':
+          types[node.declaration.id.value] = node.declaration.id.value
       }
     }
   })
@@ -373,7 +378,11 @@ async function parseCode(code: string, namespace: string, types: Types) {
   // eslint-disable-next-line no-restricted-globals
   const { parse } = require('@dcloudio/uts')
   const ast = await parse(code, { noColor: !isColorSupported() })
-  return parseAst(ast, createResolveTypeReferenceName(namespace, ast), types)
+  return parseAst(
+    ast,
+    createResolveTypeReferenceName(namespace, ast, types),
+    types
+  )
 }
 
 type ProxyDecl = ProxyFunctionDeclaration | ProxyClass | VariableDeclaration
@@ -701,7 +710,10 @@ function genVariableDeclaration(
       if (typeAnn && typeAnn.typeAnnotation.type === 'TsTypeReference') {
         const { typeName } = typeAnn.typeAnnotation
         if (typeName.type === 'Identifier') {
-          params = types[typeName.value]
+          const value = types[typeName.value]
+          if (isArray(value)) {
+            params = value
+          }
         }
       }
       return genFunctionDeclaration(
