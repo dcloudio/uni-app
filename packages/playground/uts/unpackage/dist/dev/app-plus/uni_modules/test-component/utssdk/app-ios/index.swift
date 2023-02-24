@@ -1,7 +1,7 @@
-import DCloudUTSFoundation;
 import Lottie;
 import Foundation;
 import UIKit;
+import DCloudUTSFoundation;
 @objc(UTSSDKModulesTestComponentAnimationViewComponent)
 @objcMembers
 public class AnimationViewComponent : UTSComponent<UIView> {
