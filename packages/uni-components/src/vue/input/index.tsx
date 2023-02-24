@@ -7,17 +7,6 @@ import {
   useField,
 } from '../../helpers/useField'
 
-type INPUT_MODE = HTMLAttributes['inputmode']
-const INPUT_MODES: INPUT_MODE[] = [
-  'none',
-  'text',
-  'decimal',
-  'numeric',
-  'tel',
-  'search',
-  'email',
-  'url',
-]
 const props = /*#__PURE__*/ extend({}, fieldProps, {
   placeholderClass: {
     type: String,
@@ -26,11 +15,6 @@ const props = /*#__PURE__*/ extend({}, fieldProps, {
   textContentType: {
     type: String,
     default: '',
-  },
-  inputmode: {
-    type: String,
-    default: undefined,
-    validator: (value: INPUT_MODE) => !!~INPUT_MODES.indexOf(value),
   },
 })
 

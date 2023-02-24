@@ -3449,7 +3449,6 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const INPUT_MODES = ["none", "text", "decimal", "numeric", "tel", "search", "email", "url"];
 const props$j = /* @__PURE__ */ shared.extend({}, props$k, {
   placeholderClass: {
     type: String,
@@ -3458,11 +3457,6 @@ const props$j = /* @__PURE__ */ shared.extend({}, props$k, {
   textContentType: {
     type: String,
     default: ""
-  },
-  inputmode: {
-    type: String,
-    default: void 0,
-    validator: (value) => !!~INPUT_MODES.indexOf(value)
   }
 });
 const Input = /* @__PURE__ */ defineBuiltInComponent({
