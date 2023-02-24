@@ -9,7 +9,7 @@ importers:
     specifiers:
       '@babel/core': ^7.17.10
       '@babel/preset-env': ^7.16.11
-      '@dcloudio/types': 3.3.1
+      '@dcloudio/types': 3.3.2
       '@dcloudio/uni-api': 3.0.0-alpha-3070420230224001
       '@dcloudio/uni-app': 3.0.0-alpha-3070420230224001
       '@jest/types': ^29.0.3
@@ -61,7 +61,7 @@ importers:
     devDependencies:
       '@babel/core': 7.21.0
       '@babel/preset-env': 7.20.2_@babel+core@7.21.0
-      '@dcloudio/types': 3.3.1
+      '@dcloudio/types': 3.3.2
       '@dcloudio/uni-api': link:packages/uni-api
       '@dcloudio/uni-app': link:packages/uni-app
       '@jest/types': 29.4.3
@@ -2179,8 +2179,8 @@ packages:
     resolution: {integrity: sha512-mrCMwcINy1IFjU9VUqLeWBkj404yWs5paLDttBcA+eqUjanuUQbBcTVPqlrGgkyzLXDcV2oDDZRSNxNpXi4kMQ==}
     dev: true
 
-  /@dcloudio/types/3.3.1:
-    resolution: {integrity: sha512-/Wz/mEPuRUZMnMFujd5EtZQWKj41iYnMHYRhyuqqE+h6g5EGiJXqfuvYuLC1MfmNVVRTEjAl6Jk6sqLlyqJ1HA==}
+  /@dcloudio/types/3.3.2:
+    resolution: {integrity: sha512-O+7M55RXqYJMCTh3MC86IGJvDPTR+v214yUeaoz1YUIHa2gJdgObs4RRwfAwZoLMtdoZ9J5BElZZqRy5oi+UTg==}
     dev: true
 
   /@esbuild/android-arm/0.16.17:
