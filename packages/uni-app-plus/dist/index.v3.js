@@ -9563,8 +9563,12 @@ var serviceContext = (function () {
     files,
     header,
     formData,
-    timeout = __uniConfig.networkTimeout.uploadFile ? __uniConfig.networkTimeout.uploadFile / 1000 : 120
+    timeout
   } = {}) {
+    timeout =
+      (timeout ||
+        (__uniConfig.networkTimeout && __uniConfig.networkTimeout.uploadFile) ||
+        60 * 1000) / 1000;
     const uploader = plus.uploader.createUpload(url, {
       timeout,
       // 需要与其它平台上的表现保持一致，不走重试的逻辑。
@@ -24058,6 +24062,21 @@ var serviceContext = (function () {
           if (LIFECYCLE_HOOKS.indexOf(methodName) !== -1) {
             extendOptions[methodName] = methods[methodName];
             delete methods[methodName];
+          }
+        });
+      }
+
+      // script setup onPageScroll、onReachBottom not effective
+      const setup = extendOptions.setup;
+      if (setup) {
+        const injectHooks = ['onPageScroll', 'onReachBottom'];
+        let setupString = '';
+        try {
+          setupString = setup.toString();
+        } catch (error) {}
+        injectHooks.forEach(hook => {
+          if (setupString.indexOf(`uniApp.${hook}`) && !extendOptions[hook]) {
+            extendOptions[hook] = [() => {}];
           }
         });
       }
