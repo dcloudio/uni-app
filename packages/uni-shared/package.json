@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-shared",
-  "version": "3.0.0-3061820230117001",
+  "version": "3.0.0-3070320230222002",
   "description": "@dcloudio/uni-shared",
   "main": "./dist/uni-shared.cjs.js",
   "module": "./dist/uni-shared.es.js",
@@ -20,9 +20,9 @@
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "devDependencies": {
-    "@vue/runtime-core": "3.2.45"
+    "@vue/runtime-core": "3.2.47"
   },
   "dependencies": {
-    "@vue/shared": "3.2.45"
+    "@vue/shared": "3.2.47"
   }
 }

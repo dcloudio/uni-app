@@ -1,11 +1,14 @@
-import path from 'path'
+import path, { basename, resolve } from 'path'
 import fs from 'fs-extra'
-import type { parse, bundle, UtsTarget } from '@dcloudio/uts'
-import { camelize, capitalize } from '@vue/shared'
+import type { parse, bundle, UTSTarget } from '@dcloudio/uts'
+import { camelize, capitalize, extend } from '@vue/shared'
+import glob from 'fast-glob'
 import { Module, ModuleItem } from '../types/types'
 import {
   installHBuilderXPlugin,
+  isInHBuilderX,
   normalizePath,
+  parseJson,
   resolveSourceMapPath,
   runByHBuilderX,
 } from './shared'
@@ -14,6 +17,7 @@ interface ToOptions {
   inputDir: string
   outputDir: string
   sourceMap: boolean
+  components: Record<string, string>
 }
 export type ToKotlinOptions = ToOptions
 export type ToSwiftOptions = ToOptions
@@ -24,10 +28,10 @@ export function resolveUTSSourceMapPath() {
   return resolveSourceMapPath()
 }
 
-export function getUtsCompiler(): {
+export function getUTSCompiler(): {
   parse: typeof parse
   bundle: typeof bundle
-  UtsTarget: typeof UtsTarget
+  UTSTarget: typeof UTSTarget
 } {
   // eslint-disable-next-line no-restricted-globals
   return require('@dcloudio/uts')
@@ -42,12 +46,13 @@ export function resolvePackage(filename: string) {
     : parts.findIndex((part) => part === 'utssdk')
   if (index > -1) {
     const id = parts[index + 1]
-    const name = camelize(id)
+    const name = camelize(prefix(id))
     return {
       id,
       name,
       namespace: 'UTSSDK' + (isUniModules ? 'Modules' : '') + capitalize(name),
       is_uni_modules: isUniModules,
+      extname: '.uts',
     }
   }
 }
@@ -57,6 +62,8 @@ export interface UTSPlatformResourceOptions {
   outputDir: string
   platform: typeof process.env.UNI_UTS_PLATFORM
   extname: '.kt' | '.swift'
+  components: Record<string, string>
+  package: string
 }
 export function genUTSPlatformResource(
   filename: string,
@@ -67,14 +74,19 @@ export function genUTSPlatformResource(
   const utsInputDir = resolveUTSPlatformDir(filename, platform)
   const utsOutputDir = resolveUTSPlatformDir(platformFile, platform)
 
-  // 拷贝所有非uts文件及目录
+  // 拷贝所有非uts,vue文件及目录
   if (fs.existsSync(utsInputDir)) {
     fs.copySync(utsInputDir, utsOutputDir, {
       filter(src) {
-        return path.extname(src) !== '.uts'
+        if (src.endsWith('config.json')) {
+          return false
+        }
+        return !['.uts', '.vue'].includes(path.extname(src))
       },
     })
   }
+
+  copyConfigJson(utsInputDir, utsOutputDir, options.components, options.package)
 
   // 生产模式下，需要将生成的平台文件转移到 src 下
   const srcDir = path.resolve(utsOutputDir, 'src')
@@ -202,4 +214,192 @@ export function getCompilerServer<T extends CompilerServer>(
       console.error(compilerServerPath + ' is not found')
     }
   }
+}
+
+function resolveComponents(
+  platform: 'app-android' | 'app-ios',
+  pluginDir: string,
+  is_uni_modules: boolean
+) {
+  const components: Record<string, string> = {}
+  const platformDir = path.resolve(
+    pluginDir,
+    is_uni_modules ? 'utssdk' : '',
+    platform
+  )
+  if (fs.existsSync(platformDir)) {
+    glob
+      .sync('**/*.vue', { cwd: platformDir, absolute: true })
+      .forEach((file) => {
+        let name = parseVueComponentName(file)
+        if (!name) {
+          if (file.endsWith('index.vue')) {
+            name = path.basename(pluginDir)
+          }
+        }
+        if (name && !components[name]) {
+          components[name] = file
+        }
+      })
+  }
+  return components
+}
+
+export function resolveAndroidComponents(
+  pluginDir: string,
+  is_uni_modules: boolean
+) {
+  return resolveComponents('app-android', pluginDir, is_uni_modules)
+}
+
+export function resolveIOSComponents(
+  pluginDir: string,
+  is_uni_modules: boolean
+) {
+  return resolveComponents('app-ios', pluginDir, is_uni_modules)
+}
+
+const nameRE = /export\s+default\s+[\s\S]*?name\s*:\s*['|"](.*?)['|"]/
+function parseVueComponentName(file: string) {
+  const content = fs.readFileSync(file, 'utf8')
+  const matches = content.match(nameRE)
+  if (matches) {
+    return matches[1]
+  }
+}
+
+export function genComponentsCode(
+  filename: string,
+  components: Record<string, string>
+) {
+  const codes: string[] = []
+  const dirname = path.dirname(filename)
+  Object.keys(components).forEach((name) => {
+    const source = normalizePath(path.relative(dirname, components[name]))
+    codes.push(
+      `export { default as ${capitalize(camelize(name))}Component } from '${
+        source.startsWith('.') ? source : './' + source
+      }'`
+    )
+  })
+  return codes.join('\n')
+}
+
+export function genConfigJson(
+  platform: 'app-android' | 'app-ios',
+  components: Record<string, string>,
+  pluginRelativeDir: string,
+  is_uni_modules: boolean,
+  inputDir: string,
+  outputDir: string
+) {
+  if (!Object.keys(components).length) {
+    return
+  }
+  const pluginId = basename(pluginRelativeDir)
+  const utsInputDir = resolve(
+    inputDir,
+    pluginRelativeDir,
+    is_uni_modules ? 'utssdk' : '',
+    platform
+  )
+  const utsOutputDir = resolve(
+    outputDir,
+    pluginRelativeDir,
+    is_uni_modules ? 'utssdk' : '',
+    platform
+  )
+  copyConfigJson(
+    utsInputDir,
+    utsOutputDir,
+    components,
+    platform === 'app-android'
+      ? parseKotlinPackageWithPluginId(pluginId, is_uni_modules) + '.'
+      : parseSwiftPackageWithPluginId(pluginId, is_uni_modules)
+  )
+}
+
+function copyConfigJson(
+  inputDir: string,
+  outputDir: string,
+  componentsObj: Record<string, string>,
+  namespace: string
+) {
+  const configJsonFilename = resolve(inputDir, 'config.json')
+  const outputConfigJsonFilename = resolve(outputDir, 'config.json')
+  if (Object.keys(componentsObj).length) {
+    //存在组件
+    const components = genComponentsConfigJson(componentsObj, namespace)
+    if (fs.existsSync(configJsonFilename)) {
+      fs.outputFileSync(
+        outputConfigJsonFilename,
+        JSON.stringify(
+          extend(
+            { components },
+            parseJson(fs.readFileSync(configJsonFilename, 'utf8'))
+          ),
+          null,
+          2
+        )
+      )
+    } else {
+      fs.outputFileSync(
+        outputConfigJsonFilename,
+        JSON.stringify({ components }, null, 2)
+      )
+    }
+  } else {
+    if (fs.existsSync(configJsonFilename)) {
+      fs.copySync(configJsonFilename, outputConfigJsonFilename)
+    }
+  }
+}
+
+function genComponentsConfigJson(
+  components: Record<string, string>,
+  namespace: string
+) {
+  const res: { name: string; class: string }[] = []
+  Object.keys(components).forEach((name) => {
+    res.push({
+      name,
+      class: namespace + capitalize(camelize(name)) + 'Component',
+    })
+  })
+  return res
+}
+
+function prefix(id: string) {
+  if (
+    process.env.UNI_UTS_MODULE_PREFIX &&
+    !id.startsWith(process.env.UNI_UTS_MODULE_PREFIX)
+  ) {
+    return process.env.UNI_UTS_MODULE_PREFIX + '-' + id
+  }
+  return id
+}
+
+export function parseKotlinPackageWithPluginId(
+  id: string,
+  is_uni_modules: boolean
+) {
+  return 'uts.sdk.' + (is_uni_modules ? 'modules.' : '') + camelize(prefix(id))
+}
+
+export function parseSwiftPackageWithPluginId(
+  id: string,
+  is_uni_modules: boolean
+) {
+  return (
+    'UTSSDK' +
+    (is_uni_modules ? 'Modules' : '') +
+    capitalize(camelize(prefix(id)))
+  )
+}
+
+export function isColorSupported() {
+  if ('NO_COLOR' in process.env || isInHBuilderX()) {
+    return false
+  }
+  return true
 }

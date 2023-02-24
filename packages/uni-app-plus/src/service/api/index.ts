@@ -85,11 +85,13 @@ export {
 export { __log__ } from './plugin/log'
 // 内部使用
 export {
-  initUtsProxyClass,
-  initUtsProxyFunction,
-  initUtsIndexClassName,
-  initUtsClassName,
-  initUtsPackageName,
+  initUTSProxyClass,
+  initUTSProxyFunction,
+  initUTSIndexClassName,
+  initUTSClassName,
+  initUTSPackageName,
+  requireUTSPlugin,
+  registerUTSPlugin,
 } from './plugin/uts'
 
 export * from './ad/rewardedVideoAd'

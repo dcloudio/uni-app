@@ -37,9 +37,9 @@ import type Stylus from 'stylus'
 import type Less from 'less'
 import type { Alias } from 'types/alias'
 import { preCss, preNVueCss } from '../../../../preprocess'
-import { PAGES_JSON_JS } from '../../../../constants'
 import { emptyCssComments } from '../cleanString'
 import { isArray, isFunction, isString } from '@vue/shared'
+import { PAGES_JSON_JS } from '../../../../constants'
 // const debug = createDebugger('vite:css')
 
 export interface CSSOptions {
@@ -228,9 +228,11 @@ function findCssModuleIds(
 export function cssPostPlugin(
   config: ResolvedConfig,
   {
+    platform,
     chunkCssFilename,
     chunkCssCode,
   }: {
+    platform: UniApp.PLATFORM
     chunkCssFilename: (id: string) => string | void
     chunkCssCode: (
       filename: string,
@@ -240,11 +242,11 @@ export function cssPostPlugin(
 ): Plugin {
   // styles initialization in buildStart causes a styling loss in watch
   const styles: Map<string, string> = new Map<string, string>()
-  let cssChunks: Map<string, Set<string>>
+  let cssChunks: Map<string, string[]>
   return {
     name: 'vite:css-post',
     buildStart() {
-      cssChunks = new Map<string, Set<string>>()
+      cssChunks = new Map<string, string[]>()
     },
     async transform(css, id) {
       if (!cssLangRE.test(id) || commonjsProxyRE.test(id)) {
@@ -264,15 +266,47 @@ export function cssPostPlugin(
         moduleSideEffects: 'no-treeshake',
       }
     },
-
-    async generateBundle() {
-      const moduleIds = Array.from(this.getModuleIds())
-      moduleIds.forEach((id) => {
+    async renderChunk(_code, chunk, _opts) {
+      const id = chunk.facadeModuleId
+      if (id) {
         const filename = chunkCssFilename(id)
         if (filename) {
-          cssChunks.set(filename, findCssModuleIds.call(this, id))
+          if (platform === 'app' && filename === 'app.css') {
+            // 获取 unocss 的样式文件信息
+            const ids = Object.keys(chunk.modules).filter(
+              (id) =>
+                styles.has(id) &&
+                (id.includes('__uno.css') || id.includes('-unocss-'))
+            )
+            cssChunks.set(filename, ids)
+          } else {
+            const ids = Object.keys(chunk.modules).filter((id) =>
+              styles.has(id)
+            )
+            cssChunks.set(filename, ids)
+          }
         }
-      })
+      }
+      return null
+    },
+    async generateBundle() {
+      // app 平台页面并未 chunk，所以 renderChunk 并不会处理页面的 css，需要这里再补充查找
+      if (platform === 'app') {
+        const moduleIds = Array.from(this.getModuleIds())
+        moduleIds.forEach((id) => {
+          const filename = chunkCssFilename(id)
+          if (filename) {
+            const ids = findCssModuleIds.call(this, id)
+            if (cssChunks.has(filename)) {
+              cssChunks.get(filename)!.forEach((id) => {
+                ids.add(id)
+              })
+            }
+            cssChunks.set(filename, [...ids])
+          }
+        })
+      }
+
       if (!cssChunks.size) {
         return
       }

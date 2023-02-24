@@ -39,14 +39,14 @@ export function normalizeIdentifier(str: string) {
 }
 
 export function normalizePagePath(pagePath: string, platform: UniApp.PLATFORM) {
-  const absoltePagePath = path.resolve(process.env.UNI_INPUT_DIR, pagePath)
-  let extnames = PAGE_EXTNAME
+  const absolutePagePath = path.resolve(process.env.UNI_INPUT_DIR, pagePath)
+  let extensions = PAGE_EXTNAME
   if (platform === 'app') {
-    extnames = PAGE_EXTNAME_APP
+    extensions = PAGE_EXTNAME_APP
   }
-  for (let i = 0; i < extnames.length; i++) {
-    const extname = extnames[i]
-    if (fs.existsSync(absoltePagePath + extname)) {
+  for (let i = 0; i < extensions.length; i++) {
+    const extname = extensions[i]
+    if (fs.existsSync(absolutePagePath + extname)) {
       return pagePath + extname
     }
   }

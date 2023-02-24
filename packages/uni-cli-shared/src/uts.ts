@@ -1,10 +1,12 @@
 import fs from 'fs'
 import path from 'path'
+import glob from 'fast-glob'
 
 import * as UTSCompiler from '@dcloudio/uni-uts-v1'
 
 import { isInHBuilderX } from './hbx'
 import { installDepTips, normalizePath, version } from './utils'
+import type { EasycomMatcher } from './easycom'
 
 /**
  * 解析 app 平台的 uts 插件，任意平台（android|ios）存在即可
@@ -12,7 +14,7 @@ import { installDepTips, normalizePath, version } from './utils'
  * @param importer
  * @returns
  */
-export function resolveUtsAppModule(id: string, importer: string) {
+export function resolveUTSAppModule(id: string, importer: string) {
   id = path.resolve(importer, id)
   if (id.includes('utssdk') || id.includes('uni_modules')) {
     const parts = normalizePath(id).split('/')
@@ -26,10 +28,10 @@ export function resolveUtsAppModule(id: string, importer: string) {
         return path.resolve(id, basedir, p)
       }
       const extname = ['.uts']
-      if (resolveUtsFile(resolvePlatformDir('app-android'), extname)) {
+      if (resolveUTSFile(resolvePlatformDir('app-android'), extname)) {
         return id
       }
-      if (resolveUtsFile(resolvePlatformDir('app-ios'), extname)) {
+      if (resolveUTSFile(resolvePlatformDir('app-ios'), extname)) {
         return id
       }
     }
@@ -37,12 +39,12 @@ export function resolveUtsAppModule(id: string, importer: string) {
 }
 
 // 仅限 root/uni_modules/test-plugin | root/utssdk/test-plugin 格式
-export function resolveUtsModule(id: string, importer: string) {
+export function resolveUTSModule(id: string, importer: string) {
   if (
     process.env.UNI_PLATFORM === 'app' ||
     process.env.UNI_PLATFORM === 'app-plus'
   ) {
-    return resolveUtsAppModule(id, importer)
+    return resolveUTSAppModule(id, importer)
   }
   id = path.resolve(importer, id)
   if (id.includes('utssdk') || id.includes('uni_modules')) {
@@ -54,7 +56,7 @@ export function resolveUtsModule(id: string, importer: string) {
         return path.resolve(id, basedir, p)
       }
 
-      let index = resolveUtsFile(
+      let index = resolveUTSFile(
         resolvePlatformDir(process.env.UNI_UTS_PLATFORM)
       )
       if (index) {
@@ -68,7 +70,7 @@ export function resolveUtsModule(id: string, importer: string) {
   }
 }
 
-function resolveUtsFile(
+function resolveUTSFile(
   dir: string,
   extensions: string[] = ['.uts', '.ts', '.js']
 ) {
@@ -110,4 +112,78 @@ export function resolveUTSCompiler(): typeof UTSCompiler {
     }
   }
   return require(compilerPath)
+}
+
+export function initUTSComponents(
+  inputDir: string,
+  platform: UniApp.PLATFORM
+): EasycomMatcher[] {
+  const components: EasycomMatcher[] = []
+  if (platform !== 'app' && platform !== 'app-plus') {
+    return components
+  }
+  const easycomsObj = Object.create(null)
+  const dirs = resolveUTSComponentDirs(inputDir)
+  dirs.forEach((dir) => {
+    const is_uni_modules_utssdk = dir.endsWith('utssdk')
+    const is_ussdk =
+      !is_uni_modules_utssdk && path.dirname(dir).endsWith('utssdk')
+    if (is_uni_modules_utssdk || is_ussdk) {
+      glob
+        .sync('**/*.vue', {
+          cwd: dir,
+          absolute: true,
+        })
+        .forEach((file) => {
+          let name = parseVueComponentName(file)
+          if (!name) {
+            if (file.endsWith('index.vue')) {
+              name = path.basename(
+                is_uni_modules_utssdk ? path.dirname(dir) : dir
+              )
+            }
+          }
+          if (name) {
+            const importDir = normalizePath(
+              is_uni_modules_utssdk ? path.dirname(dir) : dir
+            )
+            easycomsObj[`^${name}$`] = `${importDir}?uts-proxy`
+          }
+        })
+    }
+  })
+  Object.keys(easycomsObj).forEach((name) => {
+    components.push({
+      pattern: new RegExp(name),
+      replacement: easycomsObj[name],
+    })
+  })
+  return components
+}
+
+function resolveUTSComponentDirs(inputDir: string) {
+  const utssdkDir = path.resolve(inputDir, 'utssdk')
+  const uniModulesDir = path.resolve(inputDir, 'uni_modules')
+  return glob
+    .sync('*', {
+      cwd: utssdkDir,
+      absolute: true,
+      onlyDirectories: true,
+    })
+    .concat(
+      glob.sync('*/utssdk', {
+        cwd: uniModulesDir,
+        absolute: true,
+        onlyDirectories: true,
+      })
+    )
+}
+
+const nameRE = /name\s*:\s*['|"](.*)['|"]/
+function parseVueComponentName(file: string) {
+  const content = fs.readFileSync(file, 'utf8')
+  const matches = content.match(nameRE)
+  if (matches) {
+    return matches[1]
+  }
 }

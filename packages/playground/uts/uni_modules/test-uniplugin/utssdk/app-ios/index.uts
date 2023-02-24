@@ -50,6 +50,8 @@ export function test1(callback: () => void): string {
   console.log('def weixin')
   //#endif
   console.log(CLLocationManager, CLAuthorizationStatus)
+  const a = -3
+  console.log(~a)
   return 'test1'
 }
 
@@ -59,6 +61,19 @@ export class Test {
     new Test1()
   }
   test(): string | null {
+    if (UTSiOS.macros("swift(>=1)")) {
+      console.log("swift(>=1)")
+    }
+    if (UTSiOS.macros("arch(i386) || arch(arm)")) {
+      console.log("arch(i386) || arch(arm)")
+    }
+    if (UTSiOS.available("iOS 14, macOS 11.0, *")) {
+      console.log("iOS 14, macOS 11.0, *")
+    } else if (UTSiOS.available("iOS 13,*")) {
+      console.log("iOS 13,*")
+    } else if (UTSiOS.unavailable("tvOS 12")) {
+      console.log("tvOS 12")
+    }
     return null
   }
 }

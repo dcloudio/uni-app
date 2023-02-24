@@ -21,6 +21,9 @@ interface NVuePages {
 }
 
 export const nvuePagesCache = new Map<ResolvedConfig, NVuePages>()
+// 在 @vue/compiler-sfc@3.2.47 执行前重写 @vue/compiler-dom compile 方法
+const nvuePages: NVuePages = {}
+rewriteBindingMetadata(nvuePages)
 
 export function uniPagesJsonPlugin({
   renderer,
@@ -29,11 +32,6 @@ export function uniPagesJsonPlugin({
   renderer?: 'native'
   appService: boolean
 }): Plugin {
-  const nvuePages: NVuePages = {}
-  // 仅编译nvue页面时重写
-  if (!appService) {
-    rewriteBindingMetadata(nvuePages)
-  }
   return defineUniPagesJsonPlugin((opts) => {
     return {
       name: 'uni:app-nvue-pages-json',

@@ -55,7 +55,9 @@ export function initHooks(
     try {
       invokeHook(publicThis, ON_LOAD, instance.attrs.__pageQuery)
       delete instance.attrs.__pageQuery
-      invokeHook(publicThis, ON_SHOW)
+      if (publicThis.$page?.openType !== 'preloadPage') {
+        invokeHook(publicThis, ON_SHOW)
+      }
     } catch (e: any) {
       console.error(e.message + LINEFEED + e.stack)
     }

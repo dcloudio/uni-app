@@ -49,8 +49,8 @@ export function generate(
   const context = createCodegenContext(ast, options)
 
   const { mode, push, indent, deindent, newline, prefixIdentifiers } = context
-
-  const hasHelpers = ast.helpers.length > 0
+  const helpers = Array.from(ast.helpers)
+  const hasHelpers = helpers.length > 0
   const useWithBlock = !prefixIdentifiers && mode !== 'module'
   const isSetupInlined = !!options.inline
 
@@ -89,7 +89,7 @@ export function generate(
     indent()
     if (hasHelpers) {
       push(
-        `const { ${ast.helpers
+        `const { ${helpers
           .map((s) => `${helperNameMap[s]}: _${helperNameMap[s]}`)
           .join(', ')} } = _Vue`
       )
@@ -277,11 +277,10 @@ function genFunctionPreamble(ast: RootNode, context: CodegenContext) {
   } = context
   const VueBinding = runtimeGlobalName
   const aliasHelper = (s: symbol) => `${helperNameMap[s]}: _${helperNameMap[s]}`
-  if (ast.helpers.length > 0) {
+  const helpers = Array.from(ast.helpers)
+  if (helpers.length > 0) {
     if (prefixIdentifiers) {
-      push(
-        `const { ${ast.helpers.map(aliasHelper).join(', ')} } = ${VueBinding}\n`
-      )
+      push(`const { ${helpers.map(aliasHelper).join(', ')} } = ${VueBinding}\n`)
     } else {
       push(`const _Vue = ${VueBinding}\n`)
     }
@@ -297,9 +296,10 @@ function genModulePreamble(
   inline?: boolean
 ) {
   const { push, newline, runtimeModuleName, bindingComponents } = context
-  if (ast.helpers.length) {
+  const helpers = Array.from(ast.helpers)
+  if (helpers.length) {
     push(
-      `import { ${ast.helpers
+      `import { ${helpers
         .map((s) => `${helperNameMap[s]} as _${helperNameMap[s]}`)
         .join(', ')} } from ${JSON.stringify(runtimeModuleName)}\n`
     )

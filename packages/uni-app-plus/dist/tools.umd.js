@@ -179,6 +179,4 @@
     exports.decodeActions = decodeActions;
     exports.decodeNodeJson = decodeNodeJson;
 
-    Object.defineProperty(exports, '__esModule', { value: true });
-
 }));

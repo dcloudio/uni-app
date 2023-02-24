@@ -125,7 +125,7 @@ export function handleEvent(
   this: MPComponentInstance,
   event: {
     type: string
-    target: {
+    currentTarget: {
       dataset: Record<string, any>
     }
     detail: {
@@ -135,7 +135,7 @@ export function handleEvent(
 ) {
   const {
     type,
-    target: { dataset },
+    currentTarget: { dataset },
     detail: { __ins__ },
   } = event
   let methodName: string = type

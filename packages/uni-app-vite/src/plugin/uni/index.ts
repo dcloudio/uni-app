@@ -1,6 +1,9 @@
 import fs from 'fs-extra'
 import path from 'path'
-import { isAppNativeTag, isAppNVueNativeTag } from '@dcloudio/uni-shared'
+import {
+  isAppNativeTag,
+  isAppNVueNativeTag as baseIsAppNVueNativeTag,
+} from '@dcloudio/uni-shared'
 import { compileI18nJsonStr } from '@dcloudio/uni-i18n'
 import {
   UniVitePlugin,
@@ -13,9 +16,17 @@ import {
 
 import { initNVueNodeTransforms } from '../../nvue'
 import { initNVueDirectiveTransforms } from '../../nvue/plugin'
+import { isUTSComponent } from '../../nvue/utils'
+import { transformWxsProps } from './transforms/transformWxsProps'
 
-export function uniOptions(): UniVitePlugin['uni'] {
-  const isNVueCompiler = process.env.UNI_COMPILER === 'nvue'
+function isAppNVueNativeTag(tag: string) {
+  return isUTSComponent(tag) || baseIsAppNVueNativeTag(tag)
+}
+
+export function uniOptions(
+  compilerType = process.env.UNI_COMPILER
+): UniVitePlugin['uni'] {
+  const isNVueCompiler = compilerType === 'nvue'
   return {
     copyOptions() {
       const platform = process.env.UNI_PLATFORM
@@ -51,7 +62,7 @@ export function uniOptions(): UniVitePlugin['uni'] {
     compilerOptions: {
       isNativeTag: isNVueCompiler ? isAppNVueNativeTag : isAppNativeTag,
       nodeTransforms: [
-        ...(isNVueCompiler ? initNVueNodeTransforms() : []),
+        ...(isNVueCompiler ? initNVueNodeTransforms() : [transformWxsProps]),
         transformTapToClick,
         transformMatchMedia,
         transformPageHead,

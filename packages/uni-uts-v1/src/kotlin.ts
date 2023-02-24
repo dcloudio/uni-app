@@ -4,18 +4,13 @@ import path, { join } from 'path'
 import AdmZip from 'adm-zip'
 import { sync } from 'fast-glob'
 import { isArray } from '@vue/shared'
-import type { UtsResult } from '@dcloudio/uts'
+import type { UTSResult } from '@dcloudio/uts'
 import { get } from 'android-versions'
-import {
-  isInHBuilderX,
-  normalizePath,
-  parseJson,
-  resolveSourceMapPath,
-} from './shared'
+import { normalizePath, parseJson, resolveSourceMapPath } from './shared'
 import {
   CompilerServer,
   genUTSPlatformResource,
-  getUtsCompiler,
+  getUTSCompiler,
   getCompilerServer,
   moveRootIndexSourceMap,
   resolveAndroidDir,
@@ -23,6 +18,9 @@ import {
   resolveUTSPlatformFile,
   resolveUTSSourceMapPath,
   ToKotlinOptions,
+  genComponentsCode,
+  parseKotlinPackageWithPluginId,
+  isColorSupported,
 } from './utils'
 import { Module } from '../types/types'
 
@@ -53,36 +51,51 @@ export function createKotlinResolveTypeReferenceName(
 function parseKotlinPackage(filename: string) {
   const res = resolvePackage(filename)
   if (!res) {
-    return { package: '' }
+    return { id: '', package: '' }
   }
   return {
-    package: 'uts.sdk.' + (res.is_uni_modules ? 'modules.' : '') + res.name,
+    id: res.id,
+    package: parseKotlinPackageWithPluginId(res.name, res.is_uni_modules),
   }
 }
 
-export async function runKotlinProd(filename: string) {
+export async function runKotlinProd(
+  filename: string,
+  components: Record<string, string>
+) {
   // 文件有可能是 app-ios 里边的，因为编译到 android 时，为了保证不报错，可能会去读取 ios 下的 uts
   if (filename.includes('app-ios')) {
     return
   }
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
-  await compile(filename, { inputDir, outputDir, sourceMap: true })
+  let res = await compile(filename, {
+    inputDir,
+    outputDir,
+    sourceMap: true,
+    components,
+  })
+  if (!res) {
+    return
+  }
   genUTSPlatformResource(filename, {
     inputDir,
     outputDir,
     platform: 'app-android',
     extname: '.kt',
+    components,
+    package: parseKotlinPackage(filename).package + '.',
   })
 }
 
-export type RunKotlinDevResult = UtsResult & {
+export type RunKotlinDevResult = UTSResult & {
   type: 'kotlin'
   changed: string[]
 }
 
 export async function runKotlinDev(
-  filename: string
+  filename: string,
+  components: Record<string, string>
 ): Promise<RunKotlinDevResult | undefined> {
   // 文件有可能是 app-ios 里边的，因为编译到 android 时，为了保证不报错，可能会去读取 ios 下的 uts
   if (filename.includes('app-ios')) {
@@ -94,7 +107,11 @@ export async function runKotlinDev(
     inputDir,
     outputDir,
     sourceMap: true,
+    components,
   })) as RunKotlinDevResult
+  if (!result) {
+    return
+  }
 
   result.type = 'kotlin'
   result.changed = []
@@ -104,6 +121,8 @@ export async function runKotlinDev(
     outputDir,
     platform: 'app-android',
     extname: '.kt',
+    components,
+    package: '',
   })
   // 开发模式下，需要生成 dex
   if (fs.existsSync(kotlinFile)) {
@@ -116,7 +135,7 @@ export async function runKotlinDev(
     const {
       getDefaultJar,
       getKotlincHome,
-      compile,
+      compile: compileDex,
       checkDependencies,
       checkRResources,
     } = compilerServer
@@ -143,7 +162,7 @@ export async function runKotlinDev(
       sourceRoot: inputDir,
       sourceMapPath: resolveSourceMapFile(outputDir, kotlinFile),
     }
-    const res = await compile(options, inputDir)
+    const res = await compileDex(options, inputDir)
     // console.log('dex compile time: ' + (Date.now() - time) + 'ms')
     if (res) {
       try {
@@ -274,34 +293,55 @@ const DEFAULT_IMPORTS = [
   'kotlinx.coroutines.CoroutineScope',
   'kotlinx.coroutines.Deferred',
   'kotlinx.coroutines.Dispatchers',
+  'io.dcloud.uts.Map',
   'io.dcloud.uts.*',
 ]
 
 export async function compile(
   filename: string,
-  { inputDir, outputDir, sourceMap }: ToKotlinOptions
+  { inputDir, outputDir, sourceMap, components }: ToKotlinOptions
 ) {
-  const { bundle, UtsTarget } = getUtsCompiler()
+  const { bundle, UTSTarget } = getUTSCompiler()
   // let time = Date.now()
   const imports = [...DEFAULT_IMPORTS]
   const rClass = resolveAndroidResourceClass(filename)
   if (rClass) {
     imports.push(rClass)
   }
-  const result = await bundle(UtsTarget.KOTLIN, {
-    input: {
-      root: inputDir,
-      filename,
-    },
+  const componentsCode = genComponentsCode(filename, components)
+  const { package: pluginPackage, id: pluginId } = parseKotlinPackage(filename)
+  const input: Parameters<typeof bundle>[1]['input'] = {
+    root: inputDir,
+    filename,
+    pluginId,
+    paths: {},
+  }
+  const isUTSFileExists = fs.existsSync(filename)
+  if (componentsCode) {
+    if (!isUTSFileExists) {
+      input.fileContent = componentsCode
+    } else {
+      input.fileContent =
+        fs.readFileSync(filename, 'utf8') + `\n` + componentsCode
+    }
+  } else {
+    // uts文件不存在，且也无组件
+    if (!isUTSFileExists) {
+      return
+    }
+  }
+
+  const result = await bundle(UTSTarget.KOTLIN, {
+    input,
     output: {
       isPlugin: true,
       outDir: outputDir,
-      package: parseKotlinPackage(filename).package,
+      package: pluginPackage,
       sourceMap: sourceMap ? resolveUTSSourceMapPath() : false,
       extname: 'kt',
       imports,
       logFilename: true,
-      noColor: isInHBuilderX(),
+      noColor: !isColorSupported(),
     },
   })
   sourceMap &&
@@ -310,6 +350,8 @@ export async function compile(
       outputDir,
       platform: 'app-android',
       extname: '.kt',
+      components,
+      package: '',
     })
   return result
 }

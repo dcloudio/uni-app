@@ -28,9 +28,9 @@ exports.default = [
                 }
                 if (opts.filter(id)) {
                     const platform = process.env.UNI_PLATFORM;
+                    const automatorPath = (0, uni_cli_shared_1.normalizePath)((0, uni_cli_shared_1.resolveBuiltIn)(`@dcloudio/uni-${platform === 'app' ? 'app-plus' : platform}/lib/automator.js`));
                     return {
-                        code: code +
-                            `;import '@dcloudio/uni-${platform === 'app' ? 'app-plus' : platform}/lib/automator.js';`,
+                        code: code + `;import '${automatorPath}';`,
                         map: null,
                     };
                 }

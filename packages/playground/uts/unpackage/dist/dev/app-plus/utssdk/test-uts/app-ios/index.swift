@@ -1,4 +1,4 @@
-import DCUTSPlugin;
+import DCloudUTSFoundation;
 func test() -> String {
     return "1";
 }

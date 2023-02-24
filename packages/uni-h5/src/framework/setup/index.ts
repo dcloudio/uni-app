@@ -13,7 +13,6 @@ import {
   onBeforeUnmount,
   nextTick,
 } from 'vue'
-import { useRouter } from 'vue-router'
 import {
   debounce,
   decodedQuery,
@@ -36,6 +35,7 @@ import { initPage, onPageShow, onPageReady } from './page'
 import { usePageMeta, usePageRoute } from './provide'
 import { initLaunchOptions, getEnterOptions } from './utils'
 import type { RouteLocationNormalizedLoaded } from 'vue-router'
+import { useRouter } from 'vue-router'
 
 interface SetupComponentOptions {
   clone?: boolean
@@ -180,11 +180,12 @@ export function setupApp(comp: any) {
         }
       }
       if (__UNI_FEATURE_PAGES__) {
-        // 等待ready后，再onLaunch，可以顺利获取到正确的path和query
+        // 等待ready后，再onLaunch，否则直达非首页无法获取到正确的path和query
         useRouter().isReady().then(onLaunch)
       } else {
         onBeforeMount(onLaunch)
       }
+
       onMounted(() => {
         window.addEventListener(
           'resize',

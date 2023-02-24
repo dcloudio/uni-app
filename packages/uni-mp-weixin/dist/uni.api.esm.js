@@ -227,20 +227,20 @@ const HOOK_FAIL = 'fail';
 const HOOK_COMPLETE = 'complete';
 const globalInterceptors = {};
 const scopedInterceptors = {};
-function wrapperHook(hook) {
+function wrapperHook(hook, params) {
     return function (data) {
-        return hook(data) || data;
+        return hook(data, params) || data;
     };
 }
-function queue(hooks, data) {
+function queue(hooks, data, params) {
     let promise = false;
     for (let i = 0; i < hooks.length; i++) {
         const hook = hooks[i];
         if (promise) {
-            promise = Promise.resolve(wrapperHook(hook));
+            promise = Promise.resolve(wrapperHook(hook, params));
         }
         else {
-            const res = hook(data);
+            const res = hook(data, params);
             if (isPromise(res)) {
                 promise = Promise.resolve(res);
             }
@@ -267,7 +267,7 @@ function wrapperOptions(interceptors, options = {}) {
         }
         const oldCallback = options[name];
         options[name] = function callbackInterceptor(res) {
-            queue(hooks, res).then((res) => {
+            queue(hooks, res, options).then((res) => {
                 return (isFunction(oldCallback) && oldCallback(res)) || res;
             });
         };
@@ -311,7 +311,8 @@ function invokeApi(method, api, options, params) {
         if (isArray(interceptor.invoke)) {
             const res = queue(interceptor.invoke, options);
             return res.then((options) => {
-                return api(wrapperOptions(interceptor, options), ...params);
+                // 重新访问 getApiInterceptorHooks, 允许 invoke 中再次调用 addInterceptor,removeInterceptor
+                return api(wrapperOptions(getApiInterceptorHooks(method), options), ...params);
             });
         }
         else {
@@ -1192,7 +1193,16 @@ const objectKeys = [
     'router',
     'worklet',
 ];
+const singlePageDisableKey = ['lanDebug', 'router', 'worklet'];
+const launchOption = wx.getLaunchOptionsSync
+    ? wx.getLaunchOptionsSync()
+    : null;
 function isWxKey(key) {
+    if (launchOption &&
+        launchOption.scene === 1154 &&
+        singlePageDisableKey.includes(key)) {
+        return false;
+    }
     return objectKeys.indexOf(key) > -1 || typeof wx[key] === 'function';
 }
 function initWx() {
@@ -1254,8 +1264,23 @@ var shims = /*#__PURE__*/Object.freeze({
   shareVideoMessage: shareVideoMessage
 });
 
+const compressImage = {
+    args(fromArgs, toArgs) {
+        // https://developers.weixin.qq.com/community/develop/doc/000c08940c865011298e0a43256800?highLine=compressHeight
+        if (fromArgs.compressedHeight && !toArgs.compressHeight) {
+            toArgs.compressHeight = fromArgs.compressedHeight;
+        }
+        // @ts-expect-error
+        if (fromArgs.compressedWidth && !toArgs.compressWidth) {
+            // @ts-expect-error
+            toArgs.compressWidth = fromArgs.compressedWidth;
+        }
+    },
+};
+
 var protocols = /*#__PURE__*/Object.freeze({
   __proto__: null,
+  compressImage: compressImage,
   redirectTo: redirectTo,
   previewImage: previewImage,
   getSystemInfo: getSystemInfo,

@@ -1,9 +1,15 @@
-import { isFunction, isPromise, isArray, NOOP, EMPTY_OBJ, remove, isString, camelize, capitalize, isObject, toHandlerKey, getGlobalThis, normalizeClass, extend, normalizeStyle, isOn, hasChanged, toNumber, hyphenate, isSet, isMap, isPlainObject, invokeArrayFns, EMPTY_ARR, isModelListener, isReservedProp, hasOwn, def, NO, isGloballyWhitelisted } from '@vue/shared';
+import { isFunction, isPromise, isArray, NOOP, EMPTY_OBJ, remove, isString, camelize, capitalize, isObject, toHandlerKey, getGlobalThis, normalizeClass, extend, normalizeStyle, isOn, hasChanged, toNumber, hyphenate, isSet, isMap, isPlainObject, invokeArrayFns, isRegExp, EMPTY_ARR, isModelListener, isReservedProp, looseToNumber, hasOwn, def, NO, isGloballyWhitelisted } from '@vue/shared';
 export { camelize, capitalize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
-import { isRef, isShallow, isReactive, ReactiveEffect, ref, pauseTracking, resetTracking, isProxy, computed as computed$1, toRaw, proxyRefs, markRaw, EffectScope, track, reactive, shallowReactive, trigger } from '@vue/reactivity';
+import { getCurrentScope, isRef, isShallow, isReactive, ReactiveEffect, ref, pauseTracking, resetTracking, isProxy, computed as computed$1, toRaw, proxyRefs, markRaw, EffectScope, track, reactive, shallowReactive, trigger } from '@vue/reactivity';
 export { EffectScope, ReactiveEffect, customRef, effect, effectScope, getCurrentScope, isProxy, isReactive, isReadonly, isRef, isShallow, markRaw, onScopeDispose, proxyRefs, reactive, readonly, ref, shallowReactive, shallowReadonly, shallowRef, stop, toRaw, toRef, toRefs, triggerRef, unref } from '@vue/reactivity';
 import { isRootHook, isRootImmediateHook, ON_LOAD, UniInputElement, UniTextAreaElement, UniElement, UniTextNode, UniCommentNode, forcePatchProp, JSON_PROTOCOL, resolveOwnerEl, ATTR_V_OWNER_ID, ATTR_V_RENDERJS } from '@dcloudio/uni-shared';
 function warn(msg) {
+  return;
+}
+/**
+ * @internal
+ */
+function assertNumber(val, type) {
   return;
 }
 function callWithErrorHandling(fn, instance, type, args) {
@@ -263,7 +269,7 @@ function setDevtoolsHook(hook, target) {
     buffer = [];
   }
 }
-function emit$1(instance, event) {
+function emit(instance, event) {
   if (instance.isUnmounted) return;
   var props = instance.vnode.props || EMPTY_OBJ;
   for (var _len = arguments.length, rawArgs = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
@@ -283,7 +289,7 @@ function emit$1(instance, event) {
       args = rawArgs.map(a => isString(a) ? a.trim() : a);
     }
     if (number) {
-      args = rawArgs.map(toNumber);
+      args = rawArgs.map(looseToNumber);
     }
   }
   var handlerName;
@@ -842,7 +848,7 @@ function createSuspenseBoundary(vnode, parent, parentComponent, container, hidde
       remove
     }
   } = rendererInternals;
-  var timeout = toNumber(vnode.props && vnode.props.timeout);
+  var timeout = vnode.props ? toNumber(vnode.props.timeout) : undefined;
   var suspense = {
     vnode,
     parent,
@@ -1172,7 +1178,8 @@ function doWatch(source, cb) {
     onTrack,
     onTrigger
   } = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : EMPTY_OBJ;
-  var instance = currentInstance;
+  var instance = getCurrentScope() === (currentInstance === null || currentInstance === void 0 ? void 0 : currentInstance.scope) ? currentInstance : null;
+  // const instance = currentInstance
   var getter;
   var forceTrigger = false;
   var isMultiSource = false;
@@ -1373,28 +1380,29 @@ function useTransitionState() {
   return state;
 }
 var TransitionHookValidator = [Function, Array];
+var BaseTransitionPropsValidators = {
+  mode: String,
+  appear: Boolean,
+  persisted: Boolean,
+  // enter
+  onBeforeEnter: TransitionHookValidator,
+  onEnter: TransitionHookValidator,
+  onAfterEnter: TransitionHookValidator,
+  onEnterCancelled: TransitionHookValidator,
+  // leave
+  onBeforeLeave: TransitionHookValidator,
+  onLeave: TransitionHookValidator,
+  onAfterLeave: TransitionHookValidator,
+  onLeaveCancelled: TransitionHookValidator,
+  // appear
+  onBeforeAppear: TransitionHookValidator,
+  onAppear: TransitionHookValidator,
+  onAfterAppear: TransitionHookValidator,
+  onAppearCancelled: TransitionHookValidator
+};
 var BaseTransitionImpl = {
   name: "BaseTransition",
-  props: {
-    mode: String,
-    appear: Boolean,
-    persisted: Boolean,
-    // enter
-    onBeforeEnter: TransitionHookValidator,
-    onEnter: TransitionHookValidator,
-    onAfterEnter: TransitionHookValidator,
-    onEnterCancelled: TransitionHookValidator,
-    // leave
-    onBeforeLeave: TransitionHookValidator,
-    onLeave: TransitionHookValidator,
-    onAfterLeave: TransitionHookValidator,
-    onLeaveCancelled: TransitionHookValidator,
-    // appear
-    onBeforeAppear: TransitionHookValidator,
-    onAppear: TransitionHookValidator,
-    onAfterAppear: TransitionHookValidator,
-    onAppearCancelled: TransitionHookValidator
-  },
+  props: BaseTransitionPropsValidators,
   setup(props, _ref4) {
     var {
       slots
@@ -1919,7 +1927,7 @@ var KeepAliveImpl = {
     }
     function pruneCacheEntry(key) {
       var cached = cache.get(key);
-      if (!current || cached.type !== current.type) {
+      if (!current || !isSameVNodeType(cached, current)) {
         unmount(cached);
       } else if (current) {
         // current active instance should no longer be kept-alive.
@@ -1957,7 +1965,7 @@ var KeepAliveImpl = {
           suspense
         } = instance;
         var vnode = getInnerChild(subTree);
-        if (cached.type === vnode.type) {
+        if (cached.type === vnode.type && cached.key === vnode.key) {
           // current instance will be unmounted as part of keep-alive's unmount
           resetShapeFlag(vnode);
           // but invoke its deactivated hook here
@@ -2046,7 +2054,7 @@ function matches(pattern, name) {
     return pattern.some(p => matches(p, name));
   } else if (isString(pattern)) {
     return pattern.split(',').includes(name);
-  } else if (pattern.test) {
+  } else if (isRegExp(pattern)) {
     return pattern.test(name);
   }
   /* istanbul ignore next */
@@ -2598,7 +2606,7 @@ function applyOptions(instance) {
   // call beforeCreate first before accessing other options since
   // the hook may mutate resolved options (#2791)
   if (options.beforeCreate) {
-    callHook(options.beforeCreate, instance, "bc" /* LifecycleHooks.BEFORE_CREATE */);
+    callHook$1(options.beforeCreate, instance, "bc" /* LifecycleHooks.BEFORE_CREATE */);
   }
 
   var {
@@ -2698,7 +2706,7 @@ function applyOptions(instance) {
     });
   }
   if (created) {
-    callHook(created, instance, "c" /* LifecycleHooks.CREATED */);
+    callHook$1(created, instance, "c" /* LifecycleHooks.CREATED */);
   }
 
   function registerLifecycleHook(register, hook) {
@@ -2788,7 +2796,7 @@ function resolveInjections(injectOptions, ctx) {
     _loop3(key);
   }
 }
-function callHook(hook, instance, type) {
+function callHook$1(hook, instance, type) {
   callWithAsyncErrorHandling(isArray(hook) ? hook.map(h => h.bind(instance.proxy)) : hook.bind(instance.proxy), instance, type);
 }
 function createWatcher(raw, ctx, publicThis, key) {
@@ -3207,8 +3215,8 @@ function validatePropName(key) {
 // use function string name to check type constructors
 // so that it works across vms / iframes.
 function getType(ctor) {
-  var match = ctor && ctor.toString().match(/^\s*function (\w+)/);
-  return match ? match[1] : ctor === null ? 'null' : '';
+  var match = ctor && ctor.toString().match(/^\s*(function|class) (\w+)/);
+  return match ? match[2] : ctor === null ? 'null' : '';
 }
 function isSameType(a, b) {
   return getType(a) === getType(b);
@@ -3343,7 +3351,7 @@ function createAppContext() {
     emitsCache: new WeakMap()
   };
 }
-var uid = 0;
+var uid$1 = 0;
 function createAppAPI(render, hydrate) {
   return function createApp(rootComponent) {
     var rootProps = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -3357,7 +3365,7 @@ function createAppAPI(render, hydrate) {
     var installedPlugins = new Set();
     var isMounted = false;
     var app = context.app = {
-      _uid: uid++,
+      _uid: uid$1++,
       _component: rootComponent,
       _props: rootProps,
       _container: null,
@@ -4012,6 +4020,8 @@ function baseCreateRenderer(options, createHydrationFns) {
     if (dirs) {
       invokeDirectiveHook(vnode, null, parentComponent, 'created');
     }
+    // scopeId
+    setScopeId(el, vnode, vnode.scopeId, slotScopeIds, parentComponent);
     // props
     if (props) {
       for (var key in props) {
@@ -4035,8 +4045,6 @@ function baseCreateRenderer(options, createHydrationFns) {
         invokeVNodeHook(vnodeHook, parentComponent, vnode);
       }
     }
-    // scopeId
-    setScopeId(el, vnode, vnode.scopeId, slotScopeIds, parentComponent);
     // fixed by xxxxxx (框架始终都要能访问到__vueParentComponent，主要是renderjs)
     Object.defineProperty(el, '__vueParentComponent', {
       value: parentComponent,
@@ -5569,7 +5577,8 @@ function cloneVNode(vnode, extraProps) {
     ssFallback: vnode.ssFallback && cloneVNode(vnode.ssFallback),
     el: vnode.el,
     anchor: vnode.anchor,
-    ctx: vnode.ctx
+    ctx: vnode.ctx,
+    ce: vnode.ce
   };
   return cloned;
 }
@@ -5706,13 +5715,13 @@ function invokeVNodeHook(hook, instance, vnode) {
   callWithAsyncErrorHandling(hook, instance, 7 /* ErrorCodes.VNODE_HOOK */, [vnode, prevVNode]);
 }
 var emptyAppContext = createAppContext();
-var uid$1 = 0;
+var uid = 0;
 function createComponentInstance(vnode, parent, suspense) {
   var type = vnode.type;
   // inherit parent app context - or - if root, adopt from root vnode
   var appContext = (parent ? parent.appContext : vnode.appContext) || emptyAppContext;
   var instance = {
-    uid: uid$1++,
+    uid: uid++,
     vnode,
     type,
     parent,
@@ -5784,7 +5793,7 @@ function createComponentInstance(vnode, parent, suspense) {
     };
   }
   instance.root = parent ? parent.root : instance;
-  instance.emit = emit$1.bind(null, instance);
+  instance.emit = emit.bind(null, instance);
   // apply custom element special handling
   if (vnode.ce) {
     vnode.ce(instance);
@@ -6177,7 +6186,7 @@ function isMemoSame(cached, memo) {
 }
 
 // Core API ------------------------------------------------------------------
-var version = "3.2.45";
+var version = "3.2.47";
 var _ssrUtils = {
   createComponentInstance,
   setupComponent,
@@ -6550,7 +6559,7 @@ var TransitionPropsValidators = Transition.props = /*#__PURE__*/extend({}, BaseT
  * #3227 Incoming hooks may be merged into arrays when wrapping Transition
  * with custom HOCs.
  */
-var callHook$1 = function (hook) {
+var callHook = function (hook) {
   var args = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
   if (isArray(hook)) {
     hook.forEach(h => h(...args));
@@ -6616,7 +6625,7 @@ function resolveTransitionProps(rawProps) {
     return (el, done) => {
       var hook = isAppear ? onAppear : onEnter;
       var resolve = () => finishEnter(el, isAppear, done);
-      callHook$1(hook, [el, resolve]);
+      callHook(hook, [el, resolve]);
       nextFrame(() => {
         removeTransitionClass(el, isAppear ? appearFromClass : enterFromClass);
         addTransitionClass(el, isAppear ? appearToClass : enterToClass);
@@ -6628,12 +6637,12 @@ function resolveTransitionProps(rawProps) {
   };
   return extend(baseProps, {
     onBeforeEnter(el) {
-      callHook$1(onBeforeEnter, [el]);
+      callHook(onBeforeEnter, [el]);
       addTransitionClass(el, enterFromClass);
       addTransitionClass(el, enterActiveClass);
     },
     onBeforeAppear(el) {
-      callHook$1(onBeforeAppear, [el]);
+      callHook(onBeforeAppear, [el]);
       addTransitionClass(el, appearFromClass);
       addTransitionClass(el, appearActiveClass);
     },
@@ -6652,19 +6661,19 @@ function resolveTransitionProps(rawProps) {
           whenTransitionEnds(el, type, leaveDuration, resolve);
         }
       });
-      callHook$1(onLeave, [el, resolve]);
+      callHook(onLeave, [el, resolve]);
     },
     onEnterCancelled(el) {
       finishEnter(el, false);
-      callHook$1(onEnterCancelled, [el]);
+      callHook(onEnterCancelled, [el]);
     },
     onAppearCancelled(el) {
       finishEnter(el, true);
-      callHook$1(onAppearCancelled, [el]);
+      callHook(onAppearCancelled, [el]);
     },
     onLeaveCancelled(el) {
       finishLeave(el);
-      callHook$1(onLeaveCancelled, [el]);
+      callHook(onLeaveCancelled, [el]);
     }
   });
 }
@@ -6869,6 +6878,15 @@ var TransitionGroupImpl = {
     };
   }
 };
+/**
+ * TransitionGroup does not support "mode" so we need to remove it from the
+ * props declarations, but direct delete operation is considered a side effect
+ * and will make the entire transition feature non-tree-shakeable, so we do it
+ * in a function and mark the function's invocation as pure.
+ */
+var removeMode = props => delete props.mode;
+/*#__PURE__*/
+removeMode(TransitionGroupImpl.props);
 var TransitionGroup = TransitionGroupImpl;
 function callPendingCbs(c) {
   var el = c.el;
@@ -7074,4 +7092,11 @@ var createSSRApp = createApp;
 // 在h5平台测试时，需要的mock
 function onBeforeActivate() {}
 function onBeforeDeactivate() {}
-export { BaseTransition, Comment, Fragment, KeepAlive, Static, Suspense, Teleport, Text, Transition, TransitionGroup, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compatUtils, computed, createApp, createBlock, createComment, createCommentVNode, createElement, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createPropsRestProxy, createRenderer, createSSRApp, createSlots, createStaticVNode, createTextNode, createTextVNode, createVNode, createApp as createVueApp, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, devtools, getCurrentInstance, getTransitionRawChildren, guardReactiveProps, h, handleError, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isRuntimeOnly, isVNode, mergeDefaults, mergeProps, nextTick, onActivated, onBeforeActivate, onBeforeDeactivate, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onServerPrefetch, onUnmounted, onUpdated, openBlock, popScopeId, provide, pushScopeId, queuePostFlushCb, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, ssrContextKey, ssrUtils, toHandlers, transformVNodeArgs, useAttrs, useCssModule, useCssVars, useSSRContext, useSlots, useTransitionState, vModelDynamic, vModelText, vShow, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId };
+function wxsProp(prop) {
+  if (isObject(prop)) {
+    return JSON_PROTOCOL + JSON.stringify(prop);
+  }
+  return prop;
+}
+var wp = prop => wxsProp(prop);
+export { BaseTransition, BaseTransitionPropsValidators, Comment, Fragment, KeepAlive, Static, Suspense, Teleport, Text, Transition, TransitionGroup, assertNumber, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compatUtils, computed, createApp, createBlock, createComment, createCommentVNode, createElement, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createPropsRestProxy, createRenderer, createSSRApp, createSlots, createStaticVNode, createTextNode, createTextVNode, createVNode, createApp as createVueApp, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, devtools, getCurrentInstance, getTransitionRawChildren, guardReactiveProps, h, handleError, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isRuntimeOnly, isVNode, mergeDefaults, mergeProps, nextTick, onActivated, onBeforeActivate, onBeforeDeactivate, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onServerPrefetch, onUnmounted, onUpdated, openBlock, popScopeId, provide, pushScopeId, queuePostFlushCb, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, ssrContextKey, ssrUtils, toHandlers, transformVNodeArgs, useAttrs, useCssModule, useCssVars, useSSRContext, useSlots, useTransitionState, vModelDynamic, vModelText, vShow, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId, wp };

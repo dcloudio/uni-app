@@ -20,7 +20,7 @@ export function normalizeArg(arg: unknown) {
   return arg
 }
 
-function initUtsInstanceMethod(
+function initUTSInstanceMethod(
   async: boolean,
   opts: ProxyFunctionOptions,
   instanceId: number
@@ -32,7 +32,13 @@ interface Parameter {
   name: string
   type: string
 }
-interface ProxyFunctionOptions {
+
+interface ModuleOptions {
+  moduleName: string
+  moduleType: 'built-in' | ''
+}
+
+interface ProxyFunctionOptions extends ModuleOptions {
   /**
    * 是否是入口类
    */
@@ -67,7 +73,7 @@ interface ProxyFunctionOptions {
   errMsg?: string
 }
 
-interface ProxyClassOptions {
+interface ProxyClassOptions extends ModuleOptions {
   package: string
   class: string
   constructor: {
@@ -93,7 +99,7 @@ interface ProxyClassOptions {
   errMsg?: string
 }
 
-interface InvokeInstanceArgs {
+interface InvokeInstanceArgs extends ModuleOptions {
   id: number
   name: string
   params?: unknown[]
@@ -103,7 +109,7 @@ interface InvokeInstanceArgs {
    */
   errMsg?: string
 }
-interface InvokeStaticArgs {
+interface InvokeStaticArgs extends ModuleOptions {
   /**
    * 包名
    */
@@ -187,6 +193,8 @@ function invokePropGetter(args: InvokeArgs) {
 function initProxyFunction(
   async: boolean,
   {
+    moduleName,
+    moduleType,
     package: pkg,
     class: cls,
     name: propOrMethod,
@@ -214,8 +222,16 @@ function initProxyFunction(
     }
   }
   const baseArgs: InvokeArgs = instanceId
-    ? { id: instanceId, name: propOrMethod, method: methodParams }
+    ? {
+        moduleName,
+        moduleType,
+        id: instanceId,
+        name: propOrMethod,
+        method: methodParams,
+      }
     : {
+        moduleName,
+        moduleType,
         package: pkg,
         class: cls,
         name: method || propOrMethod,
@@ -248,7 +264,7 @@ function initProxyFunction(
   }
 }
 
-function initUtsStaticMethod(async: boolean, opts: ProxyFunctionOptions) {
+function initUTSStaticMethod(async: boolean, opts: ProxyFunctionOptions) {
   if (opts.main && !opts.method) {
     if (typeof plus !== 'undefined' && plus.os.name === 'iOS') {
       opts.method = 's_' + opts.name
@@ -257,9 +273,11 @@ function initUtsStaticMethod(async: boolean, opts: ProxyFunctionOptions) {
   return initProxyFunction(async, opts, 0)
 }
 
-export const initUtsProxyFunction = initUtsStaticMethod
+export const initUTSProxyFunction = initUTSStaticMethod
 
-export function initUtsProxyClass({
+export function initUTSProxyClass({
+  moduleName,
+  moduleType,
   package: pkg,
   class: cls,
   constructor: { params: constructorParams },
@@ -270,11 +288,13 @@ export function initUtsProxyClass({
   errMsg,
 }: ProxyClassOptions): any {
   const baseOptions = {
+    moduleName,
+    moduleType,
     package: pkg,
     class: cls,
     errMsg,
   }
-  const ProxyClass = class UtsClass {
+  const ProxyClass = class UTSClass {
     constructor(...params: unknown[]) {
       if (errMsg) {
         throw new Error(errMsg)
@@ -295,7 +315,7 @@ export function initUtsProxyClass({
             //实例方法
             if (hasOwn(methods, name)) {
               const { async, params } = methods[name]
-              target[name] = initUtsInstanceMethod(
+              target[name] = initUTSInstanceMethod(
                 !!async,
                 extend(
                   {
@@ -309,6 +329,8 @@ export function initUtsProxyClass({
             } else if (props.includes(name as string)) {
               // 实例属性
               return invokePropGetter({
+                moduleName,
+                moduleType,
                 id: instanceId,
                 name: name as string,
                 errMsg,
@@ -327,7 +349,7 @@ export function initUtsProxyClass({
         if (!staticMethodCache[name as string]) {
           const { async, params } = staticMethods[name]
           // 静态方法
-          staticMethodCache[name] = initUtsStaticMethod(
+          staticMethodCache[name] = initUTSStaticMethod(
             !!async,
             extend({ name, companion: true, params }, baseOptions)
           )
@@ -345,28 +367,28 @@ export function initUtsProxyClass({
   })
 }
 
-export function initUtsPackageName(name: string, is_uni_modules: boolean) {
+export function initUTSPackageName(name: string, is_uni_modules: boolean) {
   if (typeof plus !== 'undefined' && plus.os.name === 'Android') {
     return 'uts.sdk.' + (is_uni_modules ? 'modules.' : '') + name
   }
   return ''
 }
 
-export function initUtsIndexClassName(
+export function initUTSIndexClassName(
   moduleName: string,
   is_uni_modules: boolean
 ) {
   if (typeof plus === 'undefined') {
     return ''
   }
-  return initUtsClassName(
+  return initUTSClassName(
     moduleName,
     plus.os.name === 'iOS' ? 'IndexSwift' : 'IndexKt',
     is_uni_modules
   )
 }
 
-export function initUtsClassName(
+export function initUTSClassName(
   moduleName: string,
   className: string,
   is_uni_modules: boolean
@@ -386,4 +408,20 @@ export function initUtsClassName(
     )
   }
   return ''
+}
+
+const pluginDefines: Record<string, Record<string, unknown>> = {}
+export function registerUTSPlugin(
+  name: string,
+  define: Record<string, unknown>
+) {
+  pluginDefines[name] = define
+}
+
+export function requireUTSPlugin(name: string) {
+  const define = pluginDefines[name]
+  if (!define) {
+    console.error(`${name} is not found`)
+  }
+  return define
 }

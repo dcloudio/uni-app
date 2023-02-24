@@ -1,7 +1,5 @@
 'use strict';
 
-Object.defineProperty(exports, '__esModule', { value: true });
-
 var shared = require('@vue/shared');
 
 const BUILT_IN_TAG_NAMES = [

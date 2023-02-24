@@ -2,8 +2,6 @@ import {
   ComponentOptions,
   // @ts-ignore
   devtoolsComponentAdded,
-  // @ts-ignore
-  devtoolsComponentRemoved,
 } from 'vue'
 
 import {
@@ -54,8 +52,7 @@ export function initCreatePage() {
         this.$vm.$callHook(ON_LOAD, query)
       },
       onShow() {
-        if (process.env.NODE_ENV !== 'production') {
-          devtoolsComponentRemoved(this.$vm.$)
+        if (__VUE_PROD_DEVTOOLS__) {
           devtoolsComponentAdded(this.$vm.$)
         }
         this.$vm.$callHook(ON_SHOW)

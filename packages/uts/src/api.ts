@@ -1,9 +1,9 @@
 import { resolve } from 'path'
 import type {
-  UtsBundleOptions,
-  UtsOptions,
-  UtsParseOptions,
-  UtsResult,
+  UTSBundleOptions,
+  UTSOptions,
+  UTSParseOptions,
+  UTSResult,
 } from './types'
 import { normalizePath } from './utils'
 
@@ -12,7 +12,7 @@ const bindings = !!bindingsOverride
   ? require(resolve(bindingsOverride))
   : require('./binding').default
 
-function resolveOptions(options: UtsOptions) {
+function resolveOptions(options: UTSOptions) {
   const { input, output } = options
   if (!input?.root) {
     return
@@ -46,14 +46,14 @@ function resolveOptions(options: UtsOptions) {
   return options
 }
 
-export function parse(source: string, options: UtsParseOptions = {}) {
+export function parse(source: string, options: UTSParseOptions = {}) {
   options.noColor = !!options.noColor
   return bindings
     .parse(source, toBuffer(options))
     .then((res: string) => JSON.parse(res))
 }
 
-export function toKotlin(options: UtsOptions): Promise<UtsResult> {
+export function toKotlin(options: UTSOptions): Promise<UTSResult> {
   const kotlinOptions = resolveOptions(options)
   if (!kotlinOptions) {
     return Promise.resolve({})
@@ -63,7 +63,7 @@ export function toKotlin(options: UtsOptions): Promise<UtsResult> {
     .then((res: string) => JSON.parse(res))
 }
 
-export function bundleKotlin(options: UtsBundleOptions): Promise<UtsResult> {
+export function bundleKotlin(options: UTSBundleOptions): Promise<UTSResult> {
   const bundleOptions = resolveOptions(options)
   if (!bundleOptions) {
     return Promise.resolve({})
@@ -73,7 +73,7 @@ export function bundleKotlin(options: UtsBundleOptions): Promise<UtsResult> {
     .then((res: string) => JSON.parse(res))
 }
 
-export function toSwift(options: UtsOptions): Promise<UtsResult> {
+export function toSwift(options: UTSOptions): Promise<UTSResult> {
   const swiftOptions = resolveOptions(options)
   if (!swiftOptions) {
     return Promise.resolve({})
@@ -83,7 +83,7 @@ export function toSwift(options: UtsOptions): Promise<UtsResult> {
     .then((res: string) => JSON.parse(res))
 }
 
-export function bundleSwift(options: UtsBundleOptions): Promise<UtsResult> {
+export function bundleSwift(options: UTSBundleOptions): Promise<UTSResult> {
   const bundleOptions = resolveOptions(options)
   if (!bundleOptions) {
     return Promise.resolve({})
@@ -94,5 +94,6 @@ export function bundleSwift(options: UtsBundleOptions): Promise<UtsResult> {
 }
 
 function toBuffer(t: any): Buffer {
+  // @ts-ignore 'Buffer' only refers to a type, but is being used as a value here
   return Buffer.from(JSON.stringify(t))
 }

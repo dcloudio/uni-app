@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uts-win32-ia32-msvc",
-  "version": "3.0.0-3061820230117001",
+  "version": "3.0.0-3070320230222002",
   "os": [
     "win32"
   ],
@@ -17,6 +17,6 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dcloudio/uni-app.git",
-    "directory": "packages/uts.win32-ia32-msvc"
+    "directory": "packages/uts-win32-ia32-msvc"
   }
 }

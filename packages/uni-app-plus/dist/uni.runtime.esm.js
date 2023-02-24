@@ -358,20 +358,20 @@ const HOOK_FAIL = 'fail';
 const HOOK_COMPLETE = 'complete';
 const globalInterceptors = {};
 const scopedInterceptors = {};
-function wrapperHook(hook) {
+function wrapperHook(hook, params) {
     return function (data) {
-        return hook(data) || data;
+        return hook(data, params) || data;
     };
 }
-function queue(hooks, data) {
+function queue(hooks, data, params) {
     let promise = false;
     for (let i = 0; i < hooks.length; i++) {
         const hook = hooks[i];
         if (promise) {
-            promise = Promise.resolve(wrapperHook(hook));
+            promise = Promise.resolve(wrapperHook(hook, params));
         }
         else {
-            const res = hook(data);
+            const res = hook(data, params);
             if (isPromise(res)) {
                 promise = Promise.resolve(res);
             }
@@ -398,7 +398,7 @@ function wrapperOptions(interceptors, options = {}) {
         }
         const oldCallback = options[name];
         options[name] = function callbackInterceptor(res) {
-            queue(hooks, res).then((res) => {
+            queue(hooks, res, options).then((res) => {
                 return (isFunction(oldCallback) && oldCallback(res)) || res;
             });
         };
@@ -442,7 +442,8 @@ function invokeApi(method, api, options, params) {
         if (isArray(interceptor.invoke)) {
             const res = queue(interceptor.invoke, options);
             return res.then((options) => {
-                return api(wrapperOptions(interceptor, options), ...params);
+                // 重新访问 getApiInterceptorHooks, 允许 invoke 中再次调用 addInterceptor,removeInterceptor
+                return api(wrapperOptions(getApiInterceptorHooks(method), options), ...params);
             });
         }
         else {
@@ -1070,6 +1071,7 @@ function initVueI18n(locale, messages = {}, fallbackLocale, watcher) {
         },
     };
 }
+
 function isI18nStr(value, delimiters) {
     return value.indexOf(delimiters[0]) > -1;
 }
@@ -1093,8 +1095,16 @@ function formatI18n(message) {
 function resolveJsonObj(jsonObj, names) {
     if (names.length === 1) {
         if (jsonObj) {
+            const _isI18nStr = (value) => isString(value) && isI18nStr(value, I18N_JSON_DELIMITERS);
+            const _name = names[0];
+            let filterJsonObj = [];
+            if (isArray(jsonObj) &&
+                (filterJsonObj = jsonObj.filter((item) => _isI18nStr(item[_name])))
+                    .length) {
+                return filterJsonObj;
+            }
             const value = jsonObj[names[0]];
-            if (isString(value) && isI18nStr(value, I18N_JSON_DELIMITERS)) {
+            if (_isI18nStr(value)) {
                 return jsonObj;
             }
         }
@@ -1112,15 +1122,20 @@ function defineI18nProperty(obj, names) {
         return false;
     }
     const prop = names[names.length - 1];
-    let value = jsonObj[prop];
-    Object.defineProperty(jsonObj, prop, {
-        get() {
-            return formatI18n(value);
-        },
-        set(v) {
-            value = v;
-        },
-    });
+    if (isArray(jsonObj)) {
+        jsonObj.forEach((item) => defineI18nProperty(item, [prop]));
+    }
+    else {
+        let value = jsonObj[prop];
+        Object.defineProperty(jsonObj, prop, {
+            get() {
+                return formatI18n(value);
+            },
+            set(v) {
+                value = v;
+            },
+        });
+    }
     return true;
 }
 function useI18n() {
@@ -1400,6 +1415,7 @@ function initNavigationBarI18n(navigationBar) {
         return defineI18nProperties(navigationBar, [
             ['titleText'],
             ['searchInput', 'placeholder'],
+            ['buttons', 'text'],
         ]);
     }
 }
@@ -1725,6 +1741,7 @@ class Page {
     }
 }
 function showPage({ context = {}, url, data = {}, style = {}, onMessage, onClose, }) {
+    let darkmode = __uniConfig.darkmode;
     // eslint-disable-next-line
     plus_ = context.plus || plus;
     // eslint-disable-next-line
@@ -1761,7 +1778,7 @@ function showPage({ context = {}, url, data = {}, style = {}, onMessage, onClose
         extras: {
             from: getPageId(),
             runtime: getRuntime(),
-            data,
+            data: extend({}, data, { darkmode }),
             useGlobalEvent: !BroadcastChannel_,
         },
     });
@@ -2395,119 +2412,120 @@ function parseRedirectInfo() {
     }
 }
 
-function createCommonjsModule(fn) {
-  var module = { exports: {} };
-	return fn(module, module.exports), module.exports;
-}
+var common = {};
 
-var common = createCommonjsModule(function (module, exports) {
+(function (exports) {
 
 
-var TYPED_OK =  (typeof Uint8Array !== 'undefined') &&
-                (typeof Uint16Array !== 'undefined') &&
-                (typeof Int32Array !== 'undefined');
+	var TYPED_OK =  (typeof Uint8Array !== 'undefined') &&
+	                (typeof Uint16Array !== 'undefined') &&
+	                (typeof Int32Array !== 'undefined');
 
-function _has(obj, key) {
-  return Object.prototype.hasOwnProperty.call(obj, key);
-}
+	function _has(obj, key) {
+	  return Object.prototype.hasOwnProperty.call(obj, key);
+	}
 
-exports.assign = function (obj /*from1, from2, from3, ...*/) {
-  var sources = Array.prototype.slice.call(arguments, 1);
-  while (sources.length) {
-    var source = sources.shift();
-    if (!source) { continue; }
+	exports.assign = function (obj /*from1, from2, from3, ...*/) {
+	  var sources = Array.prototype.slice.call(arguments, 1);
+	  while (sources.length) {
+	    var source = sources.shift();
+	    if (!source) { continue; }
 
-    if (typeof source !== 'object') {
-      throw new TypeError(source + 'must be non-object');
-    }
+	    if (typeof source !== 'object') {
+	      throw new TypeError(source + 'must be non-object');
+	    }
 
-    for (var p in source) {
-      if (_has(source, p)) {
-        obj[p] = source[p];
-      }
-    }
-  }
+	    for (var p in source) {
+	      if (_has(source, p)) {
+	        obj[p] = source[p];
+	      }
+	    }
+	  }
 
-  return obj;
-};
-
-
-// reduce buffer size, avoiding mem copy
-exports.shrinkBuf = function (buf, size) {
-  if (buf.length === size) { return buf; }
-  if (buf.subarray) { return buf.subarray(0, size); }
-  buf.length = size;
-  return buf;
-};
+	  return obj;
+	};
 
 
-var fnTyped = {
-  arraySet: function (dest, src, src_offs, len, dest_offs) {
-    if (src.subarray && dest.subarray) {
-      dest.set(src.subarray(src_offs, src_offs + len), dest_offs);
-      return;
-    }
-    // Fallback to ordinary array
-    for (var i = 0; i < len; i++) {
-      dest[dest_offs + i] = src[src_offs + i];
-    }
-  },
-  // Join array of chunks to single array.
-  flattenChunks: function (chunks) {
-    var i, l, len, pos, chunk, result;
-
-    // calculate data length
-    len = 0;
-    for (i = 0, l = chunks.length; i < l; i++) {
-      len += chunks[i].length;
-    }
-
-    // join chunks
-    result = new Uint8Array(len);
-    pos = 0;
-    for (i = 0, l = chunks.length; i < l; i++) {
-      chunk = chunks[i];
-      result.set(chunk, pos);
-      pos += chunk.length;
-    }
-
-    return result;
-  }
-};
-
-var fnUntyped = {
-  arraySet: function (dest, src, src_offs, len, dest_offs) {
-    for (var i = 0; i < len; i++) {
-      dest[dest_offs + i] = src[src_offs + i];
-    }
-  },
-  // Join array of chunks to single array.
-  flattenChunks: function (chunks) {
-    return [].concat.apply([], chunks);
-  }
-};
+	// reduce buffer size, avoiding mem copy
+	exports.shrinkBuf = function (buf, size) {
+	  if (buf.length === size) { return buf; }
+	  if (buf.subarray) { return buf.subarray(0, size); }
+	  buf.length = size;
+	  return buf;
+	};
 
 
-// Enable/Disable typed arrays use, for testing
-//
-exports.setTyped = function (on) {
-  if (on) {
-    exports.Buf8  = Uint8Array;
-    exports.Buf16 = Uint16Array;
-    exports.Buf32 = Int32Array;
-    exports.assign(exports, fnTyped);
-  } else {
-    exports.Buf8  = Array;
-    exports.Buf16 = Array;
-    exports.Buf32 = Array;
-    exports.assign(exports, fnUntyped);
-  }
-};
+	var fnTyped = {
+	  arraySet: function (dest, src, src_offs, len, dest_offs) {
+	    if (src.subarray && dest.subarray) {
+	      dest.set(src.subarray(src_offs, src_offs + len), dest_offs);
+	      return;
+	    }
+	    // Fallback to ordinary array
+	    for (var i = 0; i < len; i++) {
+	      dest[dest_offs + i] = src[src_offs + i];
+	    }
+	  },
+	  // Join array of chunks to single array.
+	  flattenChunks: function (chunks) {
+	    var i, l, len, pos, chunk, result;
 
-exports.setTyped(TYPED_OK);
-});
+	    // calculate data length
+	    len = 0;
+	    for (i = 0, l = chunks.length; i < l; i++) {
+	      len += chunks[i].length;
+	    }
 
-var require$$0 = common;
+	    // join chunks
+	    result = new Uint8Array(len);
+	    pos = 0;
+	    for (i = 0, l = chunks.length; i < l; i++) {
+	      chunk = chunks[i];
+	      result.set(chunk, pos);
+	      pos += chunk.length;
+	    }
+
+	    return result;
+	  }
+	};
+
+	var fnUntyped = {
+	  arraySet: function (dest, src, src_offs, len, dest_offs) {
+	    for (var i = 0; i < len; i++) {
+	      dest[dest_offs + i] = src[src_offs + i];
+	    }
+	  },
+	  // Join array of chunks to single array.
+	  flattenChunks: function (chunks) {
+	    return [].concat.apply([], chunks);
+	  }
+	};
+
+
+	// Enable/Disable typed arrays use, for testing
+	//
+	exports.setTyped = function (on) {
+	  if (on) {
+	    exports.Buf8  = Uint8Array;
+	    exports.Buf16 = Uint16Array;
+	    exports.Buf32 = Int32Array;
+	    exports.assign(exports, fnTyped);
+	  } else {
+	    exports.Buf8  = Array;
+	    exports.Buf16 = Array;
+	    exports.Buf32 = Array;
+	    exports.assign(exports, fnUntyped);
+	  }
+	};
+
+	exports.setTyped(TYPED_OK);
+} (common));
+
+var deflate$4 = {};
+
+var deflate$3 = {};
+
+var trees$1 = {};
 
 // (C) 1995-2013 Jean-loup Gailly and Mark Adler
 // (C) 2014-2017 Vitaly Puzrin and Andrey Tupitsin
@@ -2530,7 +2548,7 @@ var require$$0 = common;
 
 /* eslint-disable space-unary-ops */
 
-
+var utils$6 = common;
 
 /* Public constants ==========================================================*/
 /* ===========================================================================*/
@@ -3069,7 +3087,7 @@ function copy_block(s, buf, len, header)
 //  while (len--) {
 //    put_byte(s, *buf++);
 //  }
-  require$$0.arraySet(s.pending_buf, s.window, buf, len, s.pending);
+  utils$6.arraySet(s.pending_buf, s.window, buf, len, s.pending);
   s.pending += len;
 }
 
@@ -3724,19 +3742,11 @@ function _tr_tally(s, dist, lc)
    */
 }
 
-var _tr_init_1  = _tr_init;
-var _tr_stored_block_1 = _tr_stored_block;
-var _tr_flush_block_1  = _tr_flush_block;
-var _tr_tally_1 = _tr_tally;
-var _tr_align_1 = _tr_align;
-
-var trees$1 = {
-	_tr_init: _tr_init_1,
-	_tr_stored_block: _tr_stored_block_1,
-	_tr_flush_block: _tr_flush_block_1,
-	_tr_tally: _tr_tally_1,
-	_tr_align: _tr_align_1
-};
+trees$1._tr_init  = _tr_init;
+trees$1._tr_stored_block = _tr_stored_block;
+trees$1._tr_flush_block  = _tr_flush_block;
+trees$1._tr_tally = _tr_tally;
+trees$1._tr_align = _tr_align;
 
 // Note: adler32 takes 12% for level 0 and 2% for level 6.
 // It isn't worth it to make additional optimizations as in original.
@@ -3761,7 +3771,7 @@ var trees$1 = {
 //   misrepresented as being the original software.
 // 3. This notice may not be removed or altered from any source distribution.
 
-function adler32$1(adler, buf, len, pos) {
+function adler32$2(adler, buf, len, pos) {
   var s1 = (adler & 0xffff) |0,
       s2 = ((adler >>> 16) & 0xffff) |0,
       n = 0;
@@ -3786,7 +3796,7 @@ function adler32$1(adler, buf, len, pos) {
 }
 
 
-var adler32_1 = adler32$1;
+var adler32_1 = adler32$2;
 
 // Note: we can't get significant speed boost here.
 // So write code to minimize size - no pregenerated tables
@@ -3830,7 +3840,7 @@ function makeTable() {
 var crcTable = makeTable();
 
 
-function crc32$1(crc, buf, len, pos) {
+function crc32$2(crc, buf, len, pos) {
   var t = crcTable,
       end = pos + len;
 
@@ -3844,7 +3854,7 @@ function crc32$1(crc, buf, len, pos) {
 }
 
 
-var crc32_1 = crc32$1;
+var crc32_1 = crc32$2;
 
 // (C) 1995-2013 Jean-loup Gailly and Mark Adler
 // (C) 2014-2017 Vitaly Puzrin and Andrey Tupitsin
@@ -3877,14 +3887,6 @@ var messages = {
   '-6':   'incompatible version' /* Z_VERSION_ERROR (-6) */
 };
 
-var trees = trees$1;
-
-var adler32 = adler32_1;
-
-var crc32 = crc32_1;
-
-var msg = messages;
-
 // (C) 1995-2013 Jean-loup Gailly and Mark Adler
 // (C) 2014-2017 Vitaly Puzrin and Andrey Tupitsin
 //
@@ -3904,11 +3906,11 @@ var msg = messages;
 //   misrepresented as being the original software.
 // 3. This notice may not be removed or altered from any source distribution.
 
-
-
-
-
-
+var utils$5   = common;
+var trees   = trees$1;
+var adler32$1 = adler32_1;
+var crc32$1   = crc32_1;
+var msg$2     = messages;
 
 /* Public constants ==========================================================*/
 /* ===========================================================================*/
@@ -4008,7 +4010,7 @@ var BS_FINISH_DONE    = 4; /* finish done, accept no more input or output */
 var OS_CODE = 0x03; // Unix :) . Don't detect, use this default.
 
 function err(strm, errorCode) {
-  strm.msg = msg[errorCode];
+  strm.msg = msg$2[errorCode];
   return errorCode;
 }
 
@@ -4035,7 +4037,7 @@ function flush_pending(strm) {
   }
   if (len === 0) { return; }
 
-  require$$0.arraySet(strm.output, s.pending_buf, s.pending_out, len, strm.next_out);
+  utils$5.arraySet(strm.output, s.pending_buf, s.pending_out, len, strm.next_out);
   strm.next_out += len;
   s.pending_out += len;
   strm.total_out += len;
@@ -4088,13 +4090,13 @@ function read_buf(strm, buf, start, size) {
   strm.avail_in -= len;
 
   // zmemcpy(buf, strm->next_in, len);
-  require$$0.arraySet(buf, strm.input, strm.next_in, len, start);
+  utils$5.arraySet(buf, strm.input, strm.next_in, len, start);
   if (strm.state.wrap === 1) {
-    strm.adler = adler32(strm.adler, buf, len, start);
+    strm.adler = adler32$1(strm.adler, buf, len, start);
   }
 
   else if (strm.state.wrap === 2) {
-    strm.adler = crc32(strm.adler, buf, len, start);
+    strm.adler = crc32$1(strm.adler, buf, len, start);
   }
 
   strm.next_in += len;
@@ -4255,7 +4257,7 @@ function fill_window(s) {
      */
     if (s.strstart >= _w_size + (_w_size - MIN_LOOKAHEAD)) {
 
-      require$$0.arraySet(s.window, s.window, _w_size, _w_size, 0);
+      utils$5.arraySet(s.window, s.window, _w_size, _w_size, 0);
       s.match_start -= _w_size;
       s.strstart -= _w_size;
       /* we now have strstart >= MAX_DIST */
@@ -5077,9 +5079,9 @@ function DeflateState() {
 
   // Use flat array of DOUBLE size, with interleaved fata,
   // because JS does not support effective
-  this.dyn_ltree  = new require$$0.Buf16(HEAP_SIZE * 2);
-  this.dyn_dtree  = new require$$0.Buf16((2 * D_CODES + 1) * 2);
-  this.bl_tree    = new require$$0.Buf16((2 * BL_CODES + 1) * 2);
+  this.dyn_ltree  = new utils$5.Buf16(HEAP_SIZE * 2);
+  this.dyn_dtree  = new utils$5.Buf16((2 * D_CODES + 1) * 2);
+  this.bl_tree    = new utils$5.Buf16((2 * BL_CODES + 1) * 2);
   zero(this.dyn_ltree);
   zero(this.dyn_dtree);
   zero(this.bl_tree);
@@ -5089,11 +5091,11 @@ function DeflateState() {
   this.bl_desc  = null;         /* desc. for bit length tree */
 
   //ush bl_count[MAX_BITS+1];
-  this.bl_count = new require$$0.Buf16(MAX_BITS + 1);
+  this.bl_count = new utils$5.Buf16(MAX_BITS + 1);
   /* number of codes at each bit length for an optimal tree */
 
   //int heap[2*L_CODES+1];      /* heap used to build the Huffman trees */
-  this.heap = new require$$0.Buf16(2 * L_CODES + 1);  /* heap used to build the Huffman trees */
+  this.heap = new utils$5.Buf16(2 * L_CODES + 1);  /* heap used to build the Huffman trees */
   zero(this.heap);
 
   this.heap_len = 0;               /* number of elements in the heap */
@@ -5102,7 +5104,7 @@ function DeflateState() {
    * The same heap array is used to build all trees.
    */
 
-  this.depth = new require$$0.Buf16(2 * L_CODES + 1); //uch depth[2*L_CODES+1];
+  this.depth = new utils$5.Buf16(2 * L_CODES + 1); //uch depth[2*L_CODES+1];
   zero(this.depth);
   /* Depth of each subtree used as tie breaker for trees of equal frequency
    */
@@ -5258,9 +5260,9 @@ function deflateInit2(strm, level, method, windowBits, memLevel, strategy) {
   s.hash_mask = s.hash_size - 1;
   s.hash_shift = ~~((s.hash_bits + MIN_MATCH - 1) / MIN_MATCH);
 
-  s.window = new require$$0.Buf8(s.w_size * 2);
-  s.head = new require$$0.Buf16(s.hash_size);
-  s.prev = new require$$0.Buf16(s.w_size);
+  s.window = new utils$5.Buf8(s.w_size * 2);
+  s.head = new utils$5.Buf16(s.hash_size);
+  s.prev = new utils$5.Buf16(s.w_size);
 
   // Don't need mem init magic for JS.
   //s.high_water = 0;  /* nothing written to s->window yet */
@@ -5271,7 +5273,7 @@ function deflateInit2(strm, level, method, windowBits, memLevel, strategy) {
 
   //overlay = (ushf *) ZALLOC(strm, s->lit_bufsize, sizeof(ush)+2);
   //s->pending_buf = (uchf *) overlay;
-  s.pending_buf = new require$$0.Buf8(s.pending_buf_size);
+  s.pending_buf = new utils$5.Buf8(s.pending_buf_size);
 
   // It is offset from `s.pending_buf` (size is `s.lit_bufsize * 2`)
   //s->d_buf = overlay + s->lit_bufsize/sizeof(ush);
@@ -5353,7 +5355,7 @@ function deflate$2(strm, flush) {
           put_byte(s, (s.gzhead.extra.length >> 8) & 0xff);
         }
         if (s.gzhead.hcrc) {
-          strm.adler = crc32(strm.adler, s.pending_buf, s.pending, 0);
+          strm.adler = crc32$1(strm.adler, s.pending_buf, s.pending, 0);
         }
         s.gzindex = 0;
         s.status = EXTRA_STATE;
@@ -5397,7 +5399,7 @@ function deflate$2(strm, flush) {
       while (s.gzindex < (s.gzhead.extra.length & 0xffff)) {
         if (s.pending === s.pending_buf_size) {
           if (s.gzhead.hcrc && s.pending > beg) {
-            strm.adler = crc32(strm.adler, s.pending_buf, s.pending - beg, beg);
+            strm.adler = crc32$1(strm.adler, s.pending_buf, s.pending - beg, beg);
           }
           flush_pending(strm);
           beg = s.pending;
@@ -5409,7 +5411,7 @@ function deflate$2(strm, flush) {
         s.gzindex++;
       }
       if (s.gzhead.hcrc && s.pending > beg) {
-        strm.adler = crc32(strm.adler, s.pending_buf, s.pending - beg, beg);
+        strm.adler = crc32$1(strm.adler, s.pending_buf, s.pending - beg, beg);
       }
       if (s.gzindex === s.gzhead.extra.length) {
         s.gzindex = 0;
@@ -5428,7 +5430,7 @@ function deflate$2(strm, flush) {
       do {
         if (s.pending === s.pending_buf_size) {
           if (s.gzhead.hcrc && s.pending > beg) {
-            strm.adler = crc32(strm.adler, s.pending_buf, s.pending - beg, beg);
+            strm.adler = crc32$1(strm.adler, s.pending_buf, s.pending - beg, beg);
           }
           flush_pending(strm);
           beg = s.pending;
@@ -5447,7 +5449,7 @@ function deflate$2(strm, flush) {
       } while (val !== 0);
 
       if (s.gzhead.hcrc && s.pending > beg) {
-        strm.adler = crc32(strm.adler, s.pending_buf, s.pending - beg, beg);
+        strm.adler = crc32$1(strm.adler, s.pending_buf, s.pending - beg, beg);
       }
       if (val === 0) {
         s.gzindex = 0;
@@ -5466,7 +5468,7 @@ function deflate$2(strm, flush) {
       do {
         if (s.pending === s.pending_buf_size) {
           if (s.gzhead.hcrc && s.pending > beg) {
-            strm.adler = crc32(strm.adler, s.pending_buf, s.pending - beg, beg);
+            strm.adler = crc32$1(strm.adler, s.pending_buf, s.pending - beg, beg);
           }
           flush_pending(strm);
           beg = s.pending;
@@ -5485,7 +5487,7 @@ function deflate$2(strm, flush) {
       } while (val !== 0);
 
       if (s.gzhead.hcrc && s.pending > beg) {
-        strm.adler = crc32(strm.adler, s.pending_buf, s.pending - beg, beg);
+        strm.adler = crc32$1(strm.adler, s.pending_buf, s.pending - beg, beg);
       }
       if (val === 0) {
         s.status = HCRC_STATE;
@@ -5680,7 +5682,7 @@ function deflateSetDictionary(strm, dictionary) {
   /* when using zlib wrappers, compute Adler-32 for provided dictionary */
   if (wrap === 1) {
     /* adler32(strm->adler, dictionary, dictLength); */
-    strm.adler = adler32(strm.adler, dictionary, dictLength, 0);
+    strm.adler = adler32$1(strm.adler, dictionary, dictLength, 0);
   }
 
   s.wrap = 0;   /* avoid computing Adler-32 in read_buf */
@@ -5696,8 +5698,8 @@ function deflateSetDictionary(strm, dictionary) {
     }
     /* use the tail */
     // dictionary = dictionary.slice(dictLength - s.w_size);
-    tmpDict = new require$$0.Buf8(s.w_size);
-    require$$0.arraySet(tmpDict, dictionary, dictLength - s.w_size, s.w_size, 0);
+    tmpDict = new utils$5.Buf8(s.w_size);
+    utils$5.arraySet(tmpDict, dictionary, dictLength - s.w_size, s.w_size, 0);
     dictionary = tmpDict;
     dictLength = s.w_size;
   }
@@ -5739,36 +5741,20 @@ function deflateSetDictionary(strm, dictionary) {
 }
 
 
-var deflateInit_1 = deflateInit;
-var deflateInit2_1 = deflateInit2;
-var deflateReset_1 = deflateReset;
-var deflateResetKeep_1 = deflateResetKeep;
-var deflateSetHeader_1 = deflateSetHeader;
-var deflate_2$1 = deflate$2;
-var deflateEnd_1 = deflateEnd;
-var deflateSetDictionary_1 = deflateSetDictionary;
-var deflateInfo = 'pako deflate (from Nodeca project)';
+deflate$3.deflateInit = deflateInit;
+deflate$3.deflateInit2 = deflateInit2;
+deflate$3.deflateReset = deflateReset;
+deflate$3.deflateResetKeep = deflateResetKeep;
+deflate$3.deflateSetHeader = deflateSetHeader;
+deflate$3.deflate = deflate$2;
+deflate$3.deflateEnd = deflateEnd;
+deflate$3.deflateSetDictionary = deflateSetDictionary;
+deflate$3.deflateInfo = 'pako deflate (from Nodeca project)';
 
-/* Not implemented
-exports.deflateBound = deflateBound;
-exports.deflateCopy = deflateCopy;
-exports.deflateParams = deflateParams;
-exports.deflatePending = deflatePending;
-exports.deflatePrime = deflatePrime;
-exports.deflateTune = deflateTune;
-*/
+var strings$2 = {};
 
-var deflate_1$1 = {
-	deflateInit: deflateInit_1,
-	deflateInit2: deflateInit2_1,
-	deflateReset: deflateReset_1,
-	deflateResetKeep: deflateResetKeep_1,
-	deflateSetHeader: deflateSetHeader_1,
-	deflate: deflate_2$1,
-	deflateEnd: deflateEnd_1,
-	deflateSetDictionary: deflateSetDictionary_1,
-	deflateInfo: deflateInfo
-};
+var utils$4 = common;
+
 
 // Quick check if we can use fast array to bin string conversion
 //
@@ -5785,7 +5771,7 @@ try { String.fromCharCode.apply(null, new Uint8Array(1)); } catch (__) { STR_APP
 // Table with utf8 lengths (calculated by first byte of sequence)
 // Note, that 5 & 6-byte values and some 4-byte values can not be represented in JS,
 // because max possible codepoint is 0x10ffff
-var _utf8len = new require$$0.Buf8(256);
+var _utf8len = new utils$4.Buf8(256);
 for (var q = 0; q < 256; q++) {
   _utf8len[q] = (q >= 252 ? 6 : q >= 248 ? 5 : q >= 240 ? 4 : q >= 224 ? 3 : q >= 192 ? 2 : 1);
 }
@@ -5793,7 +5779,7 @@ _utf8len[254] = _utf8len[254] = 1; // Invalid sequence start
 
 
 // convert string to array (typed, when possible)
-var string2buf = function (str) {
+strings$2.string2buf = function (str) {
   var buf, c, c2, m_pos, i, str_len = str.length, buf_len = 0;
 
   // count binary size
@@ -5810,7 +5796,7 @@ var string2buf = function (str) {
   }
 
   // allocate buffer
-  buf = new require$$0.Buf8(buf_len);
+  buf = new utils$4.Buf8(buf_len);
 
   // convert
   for (i = 0, m_pos = 0; i < buf_len; m_pos++) {
@@ -5853,7 +5839,7 @@ function buf2binstring(buf, len) {
   // otherwise we will take a slower path.
   if (len < 65534) {
     if ((buf.subarray && STR_APPLY_UIA_OK) || (!buf.subarray && STR_APPLY_OK)) {
-      return String.fromCharCode.apply(null, require$$0.shrinkBuf(buf, len));
+      return String.fromCharCode.apply(null, utils$4.shrinkBuf(buf, len));
     }
   }
 
@@ -5866,14 +5852,14 @@ function buf2binstring(buf, len) {
 
 
 // Convert byte array to binary string
-var buf2binstring_1 = function (buf) {
+strings$2.buf2binstring = function (buf) {
   return buf2binstring(buf, buf.length);
 };
 
 
 // Convert binary string (typed, when possible)
-var binstring2buf = function (str) {
-  var buf = new require$$0.Buf8(str.length);
+strings$2.binstring2buf = function (str) {
+  var buf = new utils$4.Buf8(str.length);
   for (var i = 0, len = buf.length; i < len; i++) {
     buf[i] = str.charCodeAt(i);
   }
@@ -5882,7 +5868,7 @@ var binstring2buf = function (str) {
 
 
 // convert array to string
-var buf2string = function (buf, max) {
+strings$2.buf2string = function (buf, max) {
   var i, out, c, c_len;
   var len = max || buf.length;
 
@@ -5930,7 +5916,7 @@ var buf2string = function (buf, max) {
 //
 // buf[] - utf8 bytes array
 // max   - length limit (mandatory);
-var utf8border = function (buf, max) {
+strings$2.utf8border = function (buf, max) {
   var pos;
 
   max = max || buf.length;
@@ -5949,14 +5935,6 @@ var utf8border = function (buf, max) {
   if (pos === 0) { return max; }
 
   return (pos + _utf8len[buf[pos]] > max) ? pos : max;
-};
-
-var strings$1 = {
-	string2buf: string2buf,
-	buf2binstring: buf2binstring_1,
-	binstring2buf: binstring2buf,
-	buf2string: buf2string,
-	utf8border: utf8border
 };
 
 // (C) 1995-2013 Jean-loup Gailly and Mark Adler
@@ -5978,7 +5956,7 @@ var strings$1 = {
 //   misrepresented as being the original software.
 // 3. This notice may not be removed or altered from any source distribution.
 
-function ZStream$1() {
+function ZStream$2() {
   /* next input byte */
   this.input = null; // JS specific, because we have no pointers
   this.next_in = 0;
@@ -6003,13 +5981,13 @@ function ZStream$1() {
   this.adler = 0;
 }
 
-var zstream = ZStream$1;
+var zstream = ZStream$2;
 
-var zlib_deflate = deflate_1$1;
-
-var strings = strings$1;
-
-var ZStream = zstream;
+var zlib_deflate = deflate$3;
+var utils$3        = common;
+var strings$1      = strings$2;
+var msg$1          = messages;
+var ZStream$1      = zstream;
 
 var toString$2 = Object.prototype.toString;
 
@@ -6124,7 +6102,7 @@ var Z_DEFLATED$1  = 8;
 function Deflate(options) {
   if (!(this instanceof Deflate)) return new Deflate(options);
 
-  this.options = require$$0.assign({
+  this.options = utils$3.assign({
     level: Z_DEFAULT_COMPRESSION,
     method: Z_DEFLATED$1,
     chunkSize: 16384,
@@ -6149,7 +6127,7 @@ function Deflate(options) {
   this.ended  = false;  // used to avoid multiple onEnd() calls
   this.chunks = [];     // chunks of compressed data
 
-  this.strm = new ZStream();
+  this.strm = new ZStream$1();
   this.strm.avail_out = 0;
 
   var status = zlib_deflate.deflateInit2(
@@ -6162,7 +6140,7 @@ function Deflate(options) {
   );
 
   if (status !== Z_OK$1) {
-    throw new Error(msg[status]);
+    throw new Error(msg$1[status]);
   }
 
   if (opt.header) {
@@ -6174,7 +6152,7 @@ function Deflate(options) {
     // Convert data if needed
     if (typeof opt.dictionary === 'string') {
       // If we need to compress text, change encoding to utf8.
-      dict = strings.string2buf(opt.dictionary);
+      dict = strings$1.string2buf(opt.dictionary);
     } else if (toString$2.call(opt.dictionary) === '[object ArrayBuffer]') {
       dict = new Uint8Array(opt.dictionary);
     } else {
@@ -6184,7 +6162,7 @@ function Deflate(options) {
     status = zlib_deflate.deflateSetDictionary(this.strm, dict);
 
     if (status !== Z_OK$1) {
-      throw new Error(msg[status]);
+      throw new Error(msg$1[status]);
     }
 
     this._dict_set = true;
@@ -6232,7 +6210,7 @@ Deflate.prototype.push = function (data, mode) {
   // Convert data if needed
   if (typeof data === 'string') {
     // If we need to compress text, change encoding to utf8.
-    strm.input = strings.string2buf(data);
+    strm.input = strings$1.string2buf(data);
   } else if (toString$2.call(data) === '[object ArrayBuffer]') {
     strm.input = new Uint8Array(data);
   } else {
@@ -6244,7 +6222,7 @@ Deflate.prototype.push = function (data, mode) {
 
   do {
     if (strm.avail_out === 0) {
-      strm.output = new require$$0.Buf8(chunkSize);
+      strm.output = new utils$3.Buf8(chunkSize);
       strm.next_out = 0;
       strm.avail_out = chunkSize;
     }
@@ -6257,9 +6235,9 @@ Deflate.prototype.push = function (data, mode) {
     }
     if (strm.avail_out === 0 || (strm.avail_in === 0 && (_mode === Z_FINISH$1 || _mode === Z_SYNC_FLUSH))) {
       if (this.options.to === 'string') {
-        this.onData(strings.buf2binstring(require$$0.shrinkBuf(strm.output, strm.next_out)));
+        this.onData(strings$1.buf2binstring(utils$3.shrinkBuf(strm.output, strm.next_out)));
       } else {
-        this.onData(require$$0.shrinkBuf(strm.output, strm.next_out));
+        this.onData(utils$3.shrinkBuf(strm.output, strm.next_out));
       }
     }
   } while ((strm.avail_in > 0 || strm.avail_out === 0) && status !== Z_STREAM_END$1);
@@ -6313,7 +6291,7 @@ Deflate.prototype.onEnd = function (status) {
     if (this.options.to === 'string') {
       this.result = this.chunks.join('');
     } else {
-      this.result = require$$0.flattenChunks(this.chunks);
+      this.result = utils$3.flattenChunks(this.chunks);
     }
   }
   this.chunks = [];
@@ -6362,7 +6340,7 @@ function deflate$1(input, options) {
   deflator.push(input, true);
 
   // That will never happens, if you don't cheat with options :)
-  if (deflator.err) { throw deflator.msg || msg[deflator.err]; }
+  if (deflator.err) { throw deflator.msg || msg$1[deflator.err]; }
 
   return deflator.result;
 }
@@ -6398,17 +6376,14 @@ function gzip(input, options) {
 }
 
 
-var Deflate_1 = Deflate;
-var deflate_2 = deflate$1;
-var deflateRaw_1 = deflateRaw;
-var gzip_1 = gzip;
+deflate$4.Deflate = Deflate;
+deflate$4.deflate = deflate$1;
+deflate$4.deflateRaw = deflateRaw;
+deflate$4.gzip = gzip;
 
-var deflate_1 = {
-	Deflate: Deflate_1,
-	deflate: deflate_2,
-	deflateRaw: deflateRaw_1,
-	gzip: gzip_1
-};
+var inflate$4 = {};
+
+var inflate$3 = {};
 
 // (C) 1995-2013 Jean-loup Gailly and Mark Adler
 // (C) 2014-2017 Vitaly Puzrin and Andrey Tupitsin
@@ -6773,7 +6748,7 @@ var inffast = function inflate_fast(strm, start) {
 //   misrepresented as being the original software.
 // 3. This notice may not be removed or altered from any source distribution.
 
-
+var utils$2 = common;
 
 var MAXBITS = 15;
 var ENOUGH_LENS$1 = 852;
@@ -6829,8 +6804,8 @@ var inftrees = function inflate_table(type, lens, lens_index, codes, table, tabl
   var base_index = 0;
 //  var shoextra;    /* extra bits table to use */
   var end;                    /* use base and extra for symbol > end */
-  var count = new require$$0.Buf16(MAXBITS + 1); //[MAXBITS+1];    /* number of codes of each length */
-  var offs = new require$$0.Buf16(MAXBITS + 1); //[MAXBITS+1];     /* offsets in table for each length */
+  var count = new utils$2.Buf16(MAXBITS + 1); //[MAXBITS+1];    /* number of codes of each length */
+  var offs = new utils$2.Buf16(MAXBITS + 1); //[MAXBITS+1];     /* offsets in table for each length */
   var extra = null;
   var extra_index = 0;
 
@@ -7096,10 +7071,6 @@ var inftrees = function inflate_table(type, lens, lens_index, codes, table, tabl
   return 0;
 };
 
-var inflate_fast = inffast;
-
-var inflate_table = inftrees;
-
 // (C) 1995-2013 Jean-loup Gailly and Mark Adler
 // (C) 2014-2017 Vitaly Puzrin and Andrey Tupitsin
 //
@@ -7119,11 +7090,11 @@ var inflate_table = inftrees;
 //   misrepresented as being the original software.
 // 3. This notice may not be removed or altered from any source distribution.
 
-
-
-
-
-
+var utils$1         = common;
+var adler32       = adler32_1;
+var crc32         = crc32_1;
+var inflate_fast  = inffast;
+var inflate_table = inftrees;
 
 var CODES = 0;
 var LENS = 1;
@@ -7261,8 +7232,8 @@ function InflateState() {
   this.have = 0;              /* number of code lengths in lens[] */
   this.next = null;              /* next available space in codes[] */
 
-  this.lens = new require$$0.Buf16(320); /* temporary storage for code lengths */
-  this.work = new require$$0.Buf16(288); /* work area for code table building */
+  this.lens = new utils$1.Buf16(320); /* temporary storage for code lengths */
+  this.work = new utils$1.Buf16(288); /* work area for code table building */
 
   /*
    because we don't have pointers in js, we use lencode and distcode directly
@@ -7294,8 +7265,8 @@ function inflateResetKeep(strm) {
   state.hold = 0;
   state.bits = 0;
   //state.lencode = state.distcode = state.next = state.codes;
-  state.lencode = state.lendyn = new require$$0.Buf32(ENOUGH_LENS);
-  state.distcode = state.distdyn = new require$$0.Buf32(ENOUGH_DISTS);
+  state.lencode = state.lendyn = new utils$1.Buf32(ENOUGH_LENS);
+  state.distcode = state.distdyn = new utils$1.Buf32(ENOUGH_DISTS);
 
   state.sane = 1;
   state.back = -1;
@@ -7393,8 +7364,8 @@ function fixedtables(state) {
   if (virgin) {
     var sym;
 
-    lenfix = new require$$0.Buf32(512);
-    distfix = new require$$0.Buf32(32);
+    lenfix = new utils$1.Buf32(512);
+    distfix = new utils$1.Buf32(32);
 
     /* literal/length table */
     sym = 0;
@@ -7446,12 +7417,12 @@ function updatewindow(strm, src, end, copy) {
     state.wnext = 0;
     state.whave = 0;
 
-    state.window = new require$$0.Buf8(state.wsize);
+    state.window = new utils$1.Buf8(state.wsize);
   }
 
   /* copy state->wsize or less output bytes into the circular window */
   if (copy >= state.wsize) {
-    require$$0.arraySet(state.window, src, end - state.wsize, state.wsize, 0);
+    utils$1.arraySet(state.window, src, end - state.wsize, state.wsize, 0);
     state.wnext = 0;
     state.whave = state.wsize;
   }
@@ -7461,11 +7432,11 @@ function updatewindow(strm, src, end, copy) {
       dist = copy;
     }
     //zmemcpy(state->window + state->wnext, end - copy, dist);
-    require$$0.arraySet(state.window, src, end - copy, dist, state.wnext);
+    utils$1.arraySet(state.window, src, end - copy, dist, state.wnext);
     copy -= dist;
     if (copy) {
       //zmemcpy(state->window, end - copy, copy);
-      require$$0.arraySet(state.window, src, end - copy, copy, 0);
+      utils$1.arraySet(state.window, src, end - copy, copy, 0);
       state.wnext = copy;
       state.whave = state.wsize;
     }
@@ -7496,7 +7467,7 @@ function inflate$2(strm, flush) {
   var last_bits, last_op, last_val; // paked "last" denormalized (JS specific)
   var len;                    /* length to copy for repeats, bits to drop */
   var ret;                    /* return code */
-  var hbuf = new require$$0.Buf8(4);    /* buffer for gzip header crc calculation */
+  var hbuf = new utils$1.Buf8(4);    /* buffer for gzip header crc calculation */
   var opts;
 
   var n; // temporary var for NEED_BITS
@@ -7728,7 +7699,7 @@ function inflate$2(strm, flush) {
                 // Use untyped array for more convenient processing later
                 state.head.extra = new Array(state.head.extra_len);
               }
-              require$$0.arraySet(
+              utils$1.arraySet(
                 state.head.extra,
                 input,
                 next,
@@ -7960,7 +7931,7 @@ function inflate$2(strm, flush) {
           if (copy > left) { copy = left; }
           if (copy === 0) { break inf_leave; }
           //--- zmemcpy(put, next, copy); ---
-          require$$0.arraySet(output, input, next, copy, put);
+          utils$1.arraySet(output, input, next, copy, put);
           //---//
           have -= copy;
           next += copy;
@@ -8631,39 +8602,16 @@ function inflateSetDictionary(strm, dictionary) {
   return Z_OK;
 }
 
-var inflateReset_1 = inflateReset;
-var inflateReset2_1 = inflateReset2;
-var inflateResetKeep_1 = inflateResetKeep;
-var inflateInit_1 = inflateInit;
-var inflateInit2_1 = inflateInit2;
-var inflate_2$1 = inflate$2;
-var inflateEnd_1 = inflateEnd;
-var inflateGetHeader_1 = inflateGetHeader;
-var inflateSetDictionary_1 = inflateSetDictionary;
-var inflateInfo = 'pako inflate (from Nodeca project)';
-
-/* Not implemented
-exports.inflateCopy = inflateCopy;
-exports.inflateGetDictionary = inflateGetDictionary;
-exports.inflateMark = inflateMark;
-exports.inflatePrime = inflatePrime;
-exports.inflateSync = inflateSync;
-exports.inflateSyncPoint = inflateSyncPoint;
-exports.inflateUndermine = inflateUndermine;
-*/
-
-var inflate_1$1 = {
-	inflateReset: inflateReset_1,
-	inflateReset2: inflateReset2_1,
-	inflateResetKeep: inflateResetKeep_1,
-	inflateInit: inflateInit_1,
-	inflateInit2: inflateInit2_1,
-	inflate: inflate_2$1,
-	inflateEnd: inflateEnd_1,
-	inflateGetHeader: inflateGetHeader_1,
-	inflateSetDictionary: inflateSetDictionary_1,
-	inflateInfo: inflateInfo
-};
+inflate$3.inflateReset = inflateReset;
+inflate$3.inflateReset2 = inflateReset2;
+inflate$3.inflateResetKeep = inflateResetKeep;
+inflate$3.inflateInit = inflateInit;
+inflate$3.inflateInit2 = inflateInit2;
+inflate$3.inflate = inflate$2;
+inflate$3.inflateEnd = inflateEnd;
+inflate$3.inflateGetHeader = inflateGetHeader;
+inflate$3.inflateSetDictionary = inflateSetDictionary;
+inflate$3.inflateInfo = 'pako inflate (from Nodeca project)';
 
 // (C) 1995-2013 Jean-loup Gailly and Mark Adler
 // (C) 2014-2017 Vitaly Puzrin and Andrey Tupitsin
@@ -8789,11 +8737,13 @@ function GZheader$1() {
 
 var gzheader = GZheader$1;
 
-var zlib_inflate = inflate_1$1;
-
-var constants = constants$1;
-
-var GZheader = gzheader;
+var zlib_inflate = inflate$3;
+var utils        = common;
+var strings      = strings$2;
+var c            = constants$1;
+var msg          = messages;
+var ZStream      = zstream;
+var GZheader     = gzheader;
 
 var toString$1 = Object.prototype.toString;
 
@@ -8879,7 +8829,7 @@ var toString$1 = Object.prototype.toString;
 function Inflate(options) {
   if (!(this instanceof Inflate)) return new Inflate(options);
 
-  this.options = require$$0.assign({
+  this.options = utils.assign({
     chunkSize: 16384,
     windowBits: 0,
     to: ''
@@ -8923,7 +8873,7 @@ function Inflate(options) {
     opt.windowBits
   );
 
-  if (status !== constants.Z_OK) {
+  if (status !== c.Z_OK) {
     throw new Error(msg[status]);
   }
 
@@ -8941,7 +8891,7 @@ function Inflate(options) {
     }
     if (opt.raw) { //In raw mode we need to set the dictionary early
       status = zlib_inflate.inflateSetDictionary(this.strm, opt.dictionary);
-      if (status !== constants.Z_OK) {
+      if (status !== c.Z_OK) {
         throw new Error(msg[status]);
       }
     }
@@ -8988,7 +8938,7 @@ Inflate.prototype.push = function (data, mode) {
   var allowBufError = false;
 
   if (this.ended) { return false; }
-  _mode = (mode === ~~mode) ? mode : ((mode === true) ? constants.Z_FINISH : constants.Z_NO_FLUSH);
+  _mode = (mode === ~~mode) ? mode : ((mode === true) ? c.Z_FINISH : c.Z_NO_FLUSH);
 
   // Convert data if needed
   if (typeof data === 'string') {
@@ -9005,30 +8955,30 @@ Inflate.prototype.push = function (data, mode) {
 
   do {
     if (strm.avail_out === 0) {
-      strm.output = new require$$0.Buf8(chunkSize);
+      strm.output = new utils.Buf8(chunkSize);
       strm.next_out = 0;
       strm.avail_out = chunkSize;
     }
 
-    status = zlib_inflate.inflate(strm, constants.Z_NO_FLUSH);    /* no bad return value */
+    status = zlib_inflate.inflate(strm, c.Z_NO_FLUSH);    /* no bad return value */
 
-    if (status === constants.Z_NEED_DICT && dictionary) {
+    if (status === c.Z_NEED_DICT && dictionary) {
       status = zlib_inflate.inflateSetDictionary(this.strm, dictionary);
     }
 
-    if (status === constants.Z_BUF_ERROR && allowBufError === true) {
-      status = constants.Z_OK;
+    if (status === c.Z_BUF_ERROR && allowBufError === true) {
+      status = c.Z_OK;
       allowBufError = false;
     }
 
-    if (status !== constants.Z_STREAM_END && status !== constants.Z_OK) {
+    if (status !== c.Z_STREAM_END && status !== c.Z_OK) {
       this.onEnd(status);
       this.ended = true;
       return false;
     }
 
     if (strm.next_out) {
-      if (strm.avail_out === 0 || status === constants.Z_STREAM_END || (strm.avail_in === 0 && (_mode === constants.Z_FINISH || _mode === constants.Z_SYNC_FLUSH))) {
+      if (strm.avail_out === 0 || status === c.Z_STREAM_END || (strm.avail_in === 0 && (_mode === c.Z_FINISH || _mode === c.Z_SYNC_FLUSH))) {
 
         if (this.options.to === 'string') {
 
@@ -9040,12 +8990,12 @@ Inflate.prototype.push = function (data, mode) {
           // move tail
           strm.next_out = tail;
           strm.avail_out = chunkSize - tail;
-          if (tail) { require$$0.arraySet(strm.output, strm.output, next_out_utf8, tail, 0); }
+          if (tail) { utils.arraySet(strm.output, strm.output, next_out_utf8, tail, 0); }
 
           this.onData(utf8str);
 
         } else {
-          this.onData(require$$0.shrinkBuf(strm.output, strm.next_out));
+          this.onData(utils.shrinkBuf(strm.output, strm.next_out));
         }
       }
     }
@@ -9061,23 +9011,23 @@ Inflate.prototype.push = function (data, mode) {
       allowBufError = true;
     }
 
-  } while ((strm.avail_in > 0 || strm.avail_out === 0) && status !== constants.Z_STREAM_END);
+  } while ((strm.avail_in > 0 || strm.avail_out === 0) && status !== c.Z_STREAM_END);
 
-  if (status === constants.Z_STREAM_END) {
-    _mode = constants.Z_FINISH;
+  if (status === c.Z_STREAM_END) {
+    _mode = c.Z_FINISH;
   }
 
   // Finalize on the last chunk.
-  if (_mode === constants.Z_FINISH) {
+  if (_mode === c.Z_FINISH) {
     status = zlib_inflate.inflateEnd(this.strm);
     this.onEnd(status);
     this.ended = true;
-    return status === constants.Z_OK;
+    return status === c.Z_OK;
   }
 
   // callback interim results if Z_SYNC_FLUSH.
-  if (_mode === constants.Z_SYNC_FLUSH) {
-    this.onEnd(constants.Z_OK);
+  if (_mode === c.Z_SYNC_FLUSH) {
+    this.onEnd(c.Z_OK);
     strm.avail_out = 0;
     return true;
   }
@@ -9112,13 +9062,13 @@ Inflate.prototype.onData = function (chunk) {
  **/
 Inflate.prototype.onEnd = function (status) {
   // On success - join
-  if (status === constants.Z_OK) {
+  if (status === c.Z_OK) {
     if (this.options.to === 'string') {
       // Glue & convert here, until we teach pako to send
       // utf8 aligned strings to onData
       this.result = this.chunks.join('');
     } else {
-      this.result = require$$0.flattenChunks(this.chunks);
+      this.result = utils.flattenChunks(this.chunks);
     }
   }
   this.chunks = [];
@@ -9203,27 +9153,16 @@ function inflateRaw(input, options) {
  **/
 
 
-var Inflate_1 = Inflate;
-var inflate_2 = inflate$1;
-var inflateRaw_1 = inflateRaw;
-var ungzip  = inflate$1;
+inflate$4.Inflate = Inflate;
+inflate$4.inflate = inflate$1;
+inflate$4.inflateRaw = inflateRaw;
+inflate$4.ungzip  = inflate$1;
 
-var inflate_1 = {
-	Inflate: Inflate_1,
-	inflate: inflate_2,
-	inflateRaw: inflateRaw_1,
-	ungzip: ungzip
-};
+var assign    = common.assign;
 
-var deflate = deflate_1;
-
-var inflate = inflate_1;
-
-var assign    = require$$0.assign;
-
-
-
-
+var deflate   = deflate$4;
+var inflate   = inflate$4;
+var constants = constants$1;
 
 var pako = {};
 
@@ -13261,7 +13200,10 @@ function offThemeChange$1(callback) {
     UniServiceJSBridge.off(ON_THEME_CHANGE, callback);
 }
 function getNavigatorStyle() {
-    return plus.navigator.getUIStyle() === 'dark' ? 'light' : 'dark';
+    return getTheme() === 'dark' ? 'light' : 'dark';
+}
+function getTheme() {
+    return plus.navigator.getUIStyle();
 }
 function changePagesNavigatorStyle() {
     if (__uniConfig.darkmode) {
@@ -13728,7 +13670,7 @@ const getAppBaseInfo = defineSyncApi('getAppBaseInfo', () => {
         hostSDKVersion: undefined,
         language: osLanguage,
         SDKVersion: '',
-        theme: plus.navigator.getUIStyle(),
+        theme: getTheme(),
         version: plus.runtime.innerVersion,
     };
 });
@@ -14637,6 +14579,13 @@ const saveImageToPhotosAlbum = defineAsyncApi(API_SAVE_IMAGE_TO_PHOTOS_ALBUM, (o
 
 const compressImage = defineAsyncApi(API_COMPRESS_IMAGE, (options, { resolve, reject }) => {
     const dst = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(options.src)}`;
+    const { compressedWidth, compressedHeight } = options;
+    if (typeof compressedWidth === 'number') {
+        options.width = compressedWidth + 'px';
+    }
+    if (typeof compressedHeight === 'number') {
+        options.height = compressedHeight + 'px';
+    }
     plus.zip.compressImage(extend({}, options, {
         dst,
     }), () => {
@@ -14650,9 +14599,10 @@ const compressVideo = defineAsyncApi(API_COMPRESS_VIDEO, (options, { resolve, re
     const filename = `${TEMP_PATH}/compressed/${Date.now()}_${getFileName(options.src)}`;
     plus.zip.compressVideo(extend({}, options, {
         filename,
-    }), () => {
+    }), (videoInfo) => {
         resolve({
             tempFilePath: filename,
+            size: videoInfo.size,
         });
     }, reject);
 }, CompressVideoProtocol, CompressVideoOptions);
@@ -15412,6 +15362,7 @@ const evts = [
     'pause',
 ];
 const AUDIO_DEFAULT_SESSION_CATEGORY = 'playback';
+const TIME_UPDATE$1 = 200;
 const initStateChage = (audioId) => {
     const audio = audios[audioId];
     if (!audio) {
@@ -15531,12 +15482,13 @@ const onAudioStateChange = ({ state, audioId, errMsg, errCode, }) => {
         emit(audio, state, errMsg, errCode);
         if (state === 'play') {
             const oldCurrentTime = audio.currentTime;
+            emit(audio, 'timeUpdate');
             audio.__timing = setInterval(() => {
                 const currentTime = audio.currentTime;
                 if (currentTime !== oldCurrentTime) {
                     emit(audio, 'timeUpdate');
                 }
-            }, 200);
+            }, TIME_UPDATE$1);
         }
         else if (state === 'pause' || state === 'stop' || state === 'error') {
             clearInterval(audio.__timing);
@@ -15730,6 +15682,7 @@ const TIME_UPDATE = 250;
 const events = ['play', 'pause', 'ended', 'stop', 'canplay'];
 function startTimeUpdateTimer() {
     stopTimeUpdateTimer();
+    onBackgroundAudioStateChange({ state: 'timeUpdate' });
     timeUpdateTimer = setInterval(() => {
         onBackgroundAudioStateChange({ state: 'timeUpdate' });
     }, TIME_UPDATE);
@@ -17332,7 +17285,7 @@ function normalizeArg(arg) {
     }
     return arg;
 }
-function initUtsInstanceMethod(async, opts, instanceId) {
+function initUTSInstanceMethod(async, opts, instanceId) {
     return initProxyFunction(async, opts, instanceId);
 }
 function getProxy() {
@@ -17354,7 +17307,7 @@ function invokePropGetter(args) {
     delete args.errMsg;
     return resolveSyncResult(getProxy().invokeSync(args, () => { }));
 }
-function initProxyFunction(async, { package: pkg, class: cls, name: propOrMethod, method, companion, params: methodParams, errMsg, }, instanceId) {
+function initProxyFunction(async, { moduleName, moduleType, package: pkg, class: cls, name: propOrMethod, method, companion, params: methodParams, errMsg, }, instanceId) {
     const invokeCallback = ({ id, name, params, keepAlive, }) => {
         const callback = callbacks[id];
         if (callback) {
@@ -17368,8 +17321,16 @@ function initProxyFunction(async, { package: pkg, class: cls, name: propOrMethod
         }
     };
     const baseArgs = instanceId
-        ? { id: instanceId, name: propOrMethod, method: methodParams }
+        ? {
+            moduleName,
+            moduleType,
+            id: instanceId,
+            name: propOrMethod,
+            method: methodParams,
+        }
         : {
+            moduleName,
+            moduleType,
             package: pkg,
             class: cls,
             name: method || propOrMethod,
@@ -17403,7 +17364,7 @@ function initProxyFunction(async, { package: pkg, class: cls, name: propOrMethod
         return resolveSyncResult(getProxy().invokeSync(invokeArgs, invokeCallback));
     };
 }
-function initUtsStaticMethod(async, opts) {
+function initUTSStaticMethod(async, opts) {
     if (opts.main && !opts.method) {
         if (typeof plus !== 'undefined' && plus.os.name === 'iOS') {
             opts.method = 's_' + opts.name;
@@ -17411,14 +17372,16 @@ function initUtsStaticMethod(async, opts) {
     }
     return initProxyFunction(async, opts, 0);
 }
-const initUtsProxyFunction = initUtsStaticMethod;
-function initUtsProxyClass({ package: pkg, class: cls, constructor: { params: constructorParams }, methods, props, staticProps, staticMethods, errMsg, }) {
+const initUTSProxyFunction = initUTSStaticMethod;
+function initUTSProxyClass({ moduleName, moduleType, package: pkg, class: cls, constructor: { params: constructorParams }, methods, props, staticProps, staticMethods, errMsg, }) {
     const baseOptions = {
+        moduleName,
+        moduleType,
         package: pkg,
         class: cls,
         errMsg,
     };
-    const ProxyClass = class UtsClass {
+    const ProxyClass = class UTSClass {
         constructor(...params) {
             if (errMsg) {
                 throw new Error(errMsg);
@@ -17435,7 +17398,7 @@ function initUtsProxyClass({ package: pkg, class: cls, constructor: { params: co
                         //实例方法
                         if (hasOwn$1(methods, name)) {
                             const { async, params } = methods[name];
-                            target[name] = initUtsInstanceMethod(!!async, extend({
+                            target[name] = initUTSInstanceMethod(!!async, extend({
                                 name,
                                 params,
                             }, baseOptions), instanceId);
@@ -17443,6 +17406,8 @@ function initUtsProxyClass({ package: pkg, class: cls, constructor: { params: co
                         else if (props.includes(name)) {
                             // 实例属性
                             return invokePropGetter({
+                                moduleName,
+                                moduleType,
                                 id: instanceId,
                                 name: name,
                                 errMsg,
@@ -17461,7 +17426,7 @@ function initUtsProxyClass({ package: pkg, class: cls, constructor: { params: co
                 if (!staticMethodCache[name]) {
                     const { async, params } = staticMethods[name];
                     // 静态方法
-                    staticMethodCache[name] = initUtsStaticMethod(!!async, extend({ name, companion: true, params }, baseOptions));
+                    staticMethodCache[name] = initUTSStaticMethod(!!async, extend({ name, companion: true, params }, baseOptions));
                 }
                 return staticMethodCache[name];
             }
@@ -17473,19 +17438,19 @@ function initUtsProxyClass({ package: pkg, class: cls, constructor: { params: co
         },
     });
 }
-function initUtsPackageName(name, is_uni_modules) {
+function initUTSPackageName(name, is_uni_modules) {
     if (typeof plus !== 'undefined' && plus.os.name === 'Android') {
         return 'uts.sdk.' + (is_uni_modules ? 'modules.' : '') + name;
     }
     return '';
 }
-function initUtsIndexClassName(moduleName, is_uni_modules) {
+function initUTSIndexClassName(moduleName, is_uni_modules) {
     if (typeof plus === 'undefined') {
         return '';
     }
-    return initUtsClassName(moduleName, plus.os.name === 'iOS' ? 'IndexSwift' : 'IndexKt', is_uni_modules);
+    return initUTSClassName(moduleName, plus.os.name === 'iOS' ? 'IndexSwift' : 'IndexKt', is_uni_modules);
 }
-function initUtsClassName(moduleName, className, is_uni_modules) {
+function initUTSClassName(moduleName, className, is_uni_modules) {
     if (typeof plus === 'undefined') {
         return '';
     }
@@ -17499,6 +17464,17 @@ function initUtsClassName(moduleName, className, is_uni_modules) {
             capitalize(className));
     }
     return '';
+}
+const pluginDefines = {};
+function registerUTSPlugin(name, define) {
+    pluginDefines[name] = define;
+}
+function requireUTSPlugin(name) {
+    const define = pluginDefines[name];
+    if (!define) {
+        console.error(`${name} is not found`);
+    }
+    return define;
 }
 
 const EventType = {
@@ -19197,7 +19173,13 @@ function registerPage({ url, path, query, openType, webview, nvuePageVm, eventCh
                 if (eventChannel) {
                     _webview.__page__.$page.eventChannel = eventChannel;
                 }
-                addCurrentPage(_webview.__page__);
+                if (openType === 'launch') {
+                    // 热更 preloadPage
+                    updatePreloadPageVm(url, path, query, _webview, nvuePageVm, eventChannel);
+                }
+                else {
+                    addCurrentPage(_webview.__page__);
+                }
                 if ((process.env.NODE_ENV !== 'production')) {
                     console.log(formatLog('uni-app', `reuse preloadWebview(${path},${_webview.id})`));
                 }
@@ -19242,6 +19224,15 @@ function registerPage({ url, path, query, openType, webview, nvuePageVm, eventCh
         createVuePage(id, route, query, pageInstance, initPageOptions(routeOptions));
     }
     return webview;
+}
+function updatePreloadPageVm(url, path, query, webview, nvuePageVm, eventChannel) {
+    const routeOptions = initRouteOptions(path, 'preloadPage');
+    routeOptions.meta.id = parseInt(webview.id);
+    const pageInstance = initPageInternalInstance('preloadPage', url, query, routeOptions.meta, eventChannel, (__uniConfig.darkmode
+        ? plus.navigator.getUIStyle()
+        : 'light'));
+    initPageVm(nvuePageVm, pageInstance);
+    webview.__page__ = nvuePageVm;
 }
 function initPageOptions({ meta }) {
     const statusbarHeight = getStatusbarHeight();
@@ -19310,6 +19301,12 @@ function createNVuePage(pageId, webview, pageInstance) {
     initPageVm(fakeNVueVm, pageInstance);
     if (webview.__preload__) {
         webview.__page__ = fakeNVueVm;
+        webview.addEventListener('show', () => {
+            invokeHook(webview.__page__, ON_SHOW);
+        });
+        webview.addEventListener('hide', () => {
+            invokeHook(webview.__page__, ON_HIDE);
+        });
     }
     else {
         addCurrentPage(fakeNVueVm);
@@ -19562,7 +19559,11 @@ const unPreloadPage = defineSyncApi(API_UN_PRELOAD_PAGE, ({ url }) => {
         errMsg: 'unPreloadPage:fail not found',
     };
 }, UnPreloadPageProtocol);
-const preloadPage = defineAsyncApi(API_PRELOAD_PAGE, ({ url }, { resolve, reject }) => {
+const preloadPage = defineAsyncApi(API_PRELOAD_PAGE, ({ url }, { resolve }) => {
+    // 防止热更等情况重复 preloadPage
+    if (preloadWebviews[url]) {
+        return;
+    }
     const urls = url.split('?');
     const path = urls[0];
     const query = parseQuery(urls[1] || '');
@@ -19571,6 +19572,12 @@ const preloadPage = defineAsyncApi(API_PRELOAD_PAGE, ({ url }, { resolve, reject
         path,
         query,
     });
+    const routeOptions = initRouteOptions(path, 'preloadPage');
+    routeOptions.meta.id = parseInt(webview.id);
+    const pageInstance = initPageInternalInstance('preloadPage', url, query, routeOptions.meta, undefined, (__uniConfig.darkmode
+        ? plus.navigator.getUIStyle()
+        : 'light'));
+    createNVuePage(parseInt(webview.id), webview, pageInstance);
     resolve({
         id: webview.id,
         url,
@@ -19585,11 +19592,13 @@ var uni$1 = {
   onHostEventReceive: onHostEventReceive,
   onNativeEventReceive: onNativeEventReceive,
   __log__: __log__,
-  initUtsProxyClass: initUtsProxyClass,
-  initUtsProxyFunction: initUtsProxyFunction,
-  initUtsIndexClassName: initUtsIndexClassName,
-  initUtsClassName: initUtsClassName,
-  initUtsPackageName: initUtsPackageName,
+  initUTSProxyClass: initUTSProxyClass,
+  initUTSProxyFunction: initUTSProxyFunction,
+  initUTSIndexClassName: initUTSIndexClassName,
+  initUTSClassName: initUTSClassName,
+  initUTSPackageName: initUTSPackageName,
+  requireUTSPlugin: requireUTSPlugin,
+  registerUTSPlugin: registerUTSPlugin,
   navigateTo: navigateTo,
   reLaunch: reLaunch,
   switchTab: switchTab,
@@ -19859,7 +19868,7 @@ function initTabBar() {
 function initGlobalEvent() {
     const plusGlobalEvent = plus.globalEvent;
     const weexGlobalEvent = weex.requireModule('globalEvent');
-    const emit = UniServiceJSBridge.emit;
+    const { emit, publishHandler } = UniServiceJSBridge;
     if (weex.config.preload) {
         plus.key.addEventListener(EVENT_BACKBUTTON, backbuttonListener);
     }
@@ -19883,6 +19892,7 @@ function initGlobalEvent() {
             theme: event.uistyle,
         };
         emit(ON_THEME_CHANGE, args);
+        publishHandler(ON_THEME_CHANGE, args, getCurrentPageId());
         changePagesNavigatorStyle();
     });
     let keyboardHeightChange = 0;

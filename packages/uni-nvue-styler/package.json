@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-nvue-styler",
-  "version": "3.0.0-3061820230117001",
+  "version": "3.0.0-3070320230222002",
   "description": "uni-nvue-styler",
   "main": "./dist/uni-nvue-styler.cjs.js",
   "types": "./dist/uni-nvue-styler.d.ts",
@@ -17,8 +17,8 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@vue/shared": "3.2.45",
+    "@vue/shared": "3.2.47",
     "parse-css-font": "^4.0.0",
-    "postcss": "^8.4.18"
+    "postcss": "^8.4.21"
   }
 }

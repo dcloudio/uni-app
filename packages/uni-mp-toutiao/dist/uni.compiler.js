@@ -6,10 +6,10 @@ var path = require('path');
 var uniMpCompiler = require('@dcloudio/uni-mp-compiler');
 var compilerCore = require('@vue/compiler-core');
 
-function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
 
-var initMiniProgramPlugin__default = /*#__PURE__*/_interopDefaultLegacy(initMiniProgramPlugin);
-var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
+var initMiniProgramPlugin__default = /*#__PURE__*/_interopDefault(initMiniProgramPlugin);
+var path__default = /*#__PURE__*/_interopDefault(path);
 
 var setting = {
 	urlCheck: false,
@@ -91,10 +91,10 @@ const options = {
     cdn: 4,
     vite: {
         inject: {
-            uni: [path__default["default"].resolve(__dirname, 'uni.api.esm.js'), 'default'],
+            uni: [path__default.default.resolve(__dirname, 'uni.api.esm.js'), 'default'],
         },
         alias: {
-            'uni-mp-runtime': path__default["default"].resolve(__dirname, 'uni.mp.esm.js'),
+            'uni-mp-runtime': path__default.default.resolve(__dirname, 'uni.mp.esm.js'),
         },
         copyOptions: {
             assets: [COMPONENTS_DIR],
@@ -112,7 +112,7 @@ const options = {
     app: {
         darkmode: false,
         subpackages: true,
-        usingComponents: true,
+        usingComponents: false,
     },
     project: {
         filename: projectConfigFilename,
@@ -149,6 +149,6 @@ const uniMiniProgramToutiaoPlugin = {
         };
     },
 };
-var index = [uniMiniProgramToutiaoPlugin, ...initMiniProgramPlugin__default["default"](options)];
+var index = [uniMiniProgramToutiaoPlugin, ...initMiniProgramPlugin__default.default(options)];
 
 module.exports = index;

@@ -81,7 +81,10 @@ interface GenerateCodeFrameOptions {
   sourceRoot?: string
   replaceTabsWithSpace?: boolean
 }
-const isWindows = os.platform() === 'win32'
+let isWindows = false
+try {
+  isWindows = os.platform() === 'win32'
+} catch (error) {}
 function normalizePath(id: string): string {
   return isWindows ? id.replace(/\\/g, '/') : id
 }

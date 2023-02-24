@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-automator",
-  "version": "3.0.0-3061820230117001",
+  "version": "3.0.0-3070320230222002",
   "description": "@dcloudio/uni-automator",
   "main": "dist/index.js",
   "files": [
@@ -27,14 +27,13 @@
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "dependencies": {
-    "@dcloudio/uni-cli-shared": "3.0.0-3061820230117001",
+    "@dcloudio/uni-cli-shared": "3.0.0-3070320230222002",
     "address": "^1.1.2",
     "cross-env": "^7.0.3",
     "debug": "^4.3.3",
     "default-gateway": "^6.0.3",
     "fs-extra": "^10.0.0",
     "licia": "^1.29.0",
-    "postcss-selector-parser": "^6.0.6",
     "qrcode-reader": "^1.0.4",
     "qrcode-terminal": "^0.12.0",
     "ws": "^8.4.2"
@@ -42,5 +41,9 @@
   "devDependencies": {
     "@types/debug": "^4.1.7",
     "@types/fs-extra": "^9.0.13"
+  },
+  "peerDependencies": {
+    "jest": "27.0.4",
+    "jest-environment-node": "27.5.1"
   }
 }

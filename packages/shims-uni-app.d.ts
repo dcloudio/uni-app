@@ -31,6 +31,7 @@ declare namespace UniNamespace {
     | 'switchTab'
     | 'navigateBack'
     | 'preloadPage'
+    | 'launch'
   interface LayoutWindowOptions {
     matchMedia?: {
       minWidth?: number

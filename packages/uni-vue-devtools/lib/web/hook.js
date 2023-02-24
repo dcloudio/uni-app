@@ -1583,23 +1583,20 @@ function initSharedData(params) {
         }
       }, 2000);
     } else {
-      if (true) {
-        // eslint-disable-next-line no-console
-        console.log('[shared data] Minion init in progress...');
+      if (true) {// eslint-disable-next-line no-console
+        // console.log('[shared data] Minion init in progress...')
       }
 
       bridge.on('shared-data:master-init-waiting', () => {
-        if (true) {
-          // eslint-disable-next-line no-console
-          console.log('[shared data] Minion loading data...');
+        if (true) {// eslint-disable-next-line no-console
+          // console.log('[shared data] Minion loading data...')
         } // Load all persisted shared data
 
 
         bridge.send('shared-data:load');
         bridge.once('shared-data:load-complete', () => {
-          if (true) {
-            // eslint-disable-next-line no-console
-            console.log('[shared data] Minion init complete');
+          if (true) {// eslint-disable-next-line no-console
+            // console.log('[shared data] Minion init complete')
           }
 
           bridge.send('shared-data:init-complete');

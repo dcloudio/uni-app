@@ -1,4 +1,4 @@
-import DCloudUTSPlugin;
+import DCloudUTSFoundation;
 import UIKit;
 import CoreLocation;
 @objc(UTSSDKModulesTestUniPluginGetBatteryInfoOptions)
@@ -33,6 +33,8 @@ func test1(_ callback: UTSCallback) -> String {
     console.log("ndef android", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:41");
     console.log("def android || def ios", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:47");
     console.log(CLLocationManager, CLAuthorizationStatus, " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:52");
+    var a = -3;
+    console.log(~a, " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:54");
     return "test1";
 }
 @objc
@@ -46,6 +48,23 @@ class Test : NSObject {
         Test1();
     }
     public func test() -> String? {
+        #if swift(>=1)
+            console.log("swift(>=1)", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:65");
+        #endif
+        #if arch(i386) || arch(arm)
+            console.log("arch(i386) || arch(arm)", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:68");
+        #endif
+        if #available(iOS 14, macOS 11.0, *) {
+            console.log("iOS 14, macOS 11.0, *", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:71");
+        } else {
+            if #available(iOS 13,*) {
+                console.log("iOS 13,*", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:73");
+            } else {
+                if #unavailable(tvOS 12) {
+                    console.log("tvOS 12", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:75");
+                }
+            }
+        }
         return nil;
     }
 }

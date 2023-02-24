@@ -1,4 +1,4 @@
-import { Ref, ref, computed, watch, onMounted } from 'vue'
+import { Ref, ref, computed, watch, onMounted, HTMLAttributes } from 'vue'
 import { extend } from '@vue/shared'
 import { LINEFEED } from '@dcloudio/uni-shared'
 import { defineBuiltInComponent } from '../../helpers/component'
@@ -141,6 +141,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             maxlength={state.maxlength}
             // @ts-ignore
             enterkeyhint={props.confirmType}
+            inputmode={props.inputmode as HTMLAttributes['inputmode']}
             class={{
               'uni-textarea-textarea': true,
               'uni-textarea-textarea-fix-margin': fixMargin,

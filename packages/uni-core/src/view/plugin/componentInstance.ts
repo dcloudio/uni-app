@@ -8,6 +8,7 @@ const isClickEvent = (val: Event): val is MouseEvent => val.type === 'click'
 const isMouseEvent = (val: Event): val is MouseEvent =>
   val.type.indexOf('mouse') === 0 || ['contextmenu'].includes(val.type)
 const isTouchEvent = (val: Event): val is TouchEvent =>
+  (typeof TouchEvent !== 'undefined' && val instanceof TouchEvent) ||
   val.type.indexOf('touch') === 0
 // normalizeNativeEvent
 export function $nne(
@@ -40,12 +41,9 @@ export function $nne(
 
   if (isClickEvent(evt)) {
     normalizeClickEvent(res as unknown as WechatMiniprogram.Touch, evt)
-  } else if (__PLATFORM__ === 'h5' && isMouseEvent(evt)) {
+  } else if (isMouseEvent(evt)) {
     normalizeMouseEvent(res as unknown as WechatMiniprogram.Touch, evt)
-  } else if (
-    (typeof TouchEvent !== 'undefined' && evt instanceof TouchEvent) ||
-    isTouchEvent(evt)
-  ) {
+  } else if (isTouchEvent(evt)) {
     const top = getWindowTop()
     ;(res as any).touches = normalizeTouchEvent(
       (evt as TouchEvent).touches,

@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/vite-plugin-uni",
-  "version": "3.0.0-3061820230117001",
+  "version": "3.0.0-3070320230222002",
   "description": "uni-app vite plugin",
   "bin": {
     "uni": "bin/uni.js"
@@ -25,19 +25,19 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@babel/core": "^7.19.6",
+    "@babel/core": "^7.20.5",
     "@babel/plugin-syntax-import-meta": "^7.10.4",
-    "@babel/plugin-transform-typescript": "^7.20.0",
-    "@dcloudio/uni-cli-shared": "3.0.0-3061820230117001",
-    "@dcloudio/uni-shared": "3.0.0-3061820230117001",
+    "@babel/plugin-transform-typescript": "^7.20.2",
+    "@dcloudio/uni-cli-shared": "3.0.0-3070320230222002",
+    "@dcloudio/uni-shared": "3.0.0-3070320230222002",
     "@rollup/pluginutils": "^4.2.0",
-    "@vitejs/plugin-legacy": "^2.3.1",
-    "@vitejs/plugin-vue": "^3.2.0",
-    "@vitejs/plugin-vue-jsx": "^2.1.1",
-    "@vue/compiler-core": "3.2.45",
-    "@vue/compiler-dom": "3.2.45",
-    "@vue/compiler-sfc": "3.2.45",
-    "@vue/shared": "3.2.45",
+    "@vitejs/plugin-legacy": "^4.0.1",
+    "@vitejs/plugin-vue": "^4.0.0",
+    "@vitejs/plugin-vue-jsx": "^3.0.0",
+    "@vue/compiler-core": "3.2.47",
+    "@vue/compiler-dom": "3.2.47",
+    "@vue/compiler-sfc": "3.2.47",
+    "@vue/shared": "3.2.47",
     "cac": "6.7.9",
     "debug": "^4.3.3",
     "estree-walker": "^2.0.2",
@@ -46,8 +46,9 @@
     "fs-extra": "^10.0.0",
     "hash-sum": "^2.0.0",
     "jsonc-parser": "^3.0.0",
-    "terser": "^5.4.0",
-    "picocolors": "^1.0.0"
+    "magic-string": "^0.27.0",
+    "picocolors": "^1.0.0",
+    "terser": "^5.4.0"
   },
   "devDependencies": {
     "@types/debug": "^4.1.7",
@@ -57,14 +58,14 @@
     "@types/sass": "^1.16.0",
     "@vue/babel-plugin-jsx": "^1.1.1",
     "chokidar": "^3.5.3",
-    "vite": "3.2.4",
-    "vue": "3.2.45"
+    "vite": "^4.0.0",
+    "vue": "3.2.47"
   },
   "peerDependencies": {
-    "vite": "3.2.4"
+    "vite": "^4.0.0"
   },
   "uni-app": {
-    "compilerVersion": "3.6.18"
+    "compilerVersion": "3.7.3"
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da"
 }
