@@ -35,10 +35,13 @@ export function populateParameters (result) {
   } = result
   // const isQuickApp = __PLATFORM__.indexOf('quickapp-webview') !== -1
 
+  const extraParam = {}
+
   // osName osVersion
   let osName = ''
   let osVersion = ''
   if (__PLATFORM__ === 'mp-alipay') {
+    my.canIUse('isIDE') && my.isIDE && (extraParam.platform = 'devtools')
     osName = platform
     osVersion = system
   } else {
@@ -113,7 +116,7 @@ export function populateParameters (result) {
     browserVersion: undefined
   }
 
-  Object.assign(result, parameters)
+  Object.assign(result, parameters, extraParam)
 }
 
 export function getGetDeviceType (result, model) {

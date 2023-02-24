@@ -3,6 +3,10 @@ import {
 } from 'uni-helpers/i18n'
 
 import {
+  ON_THEME_CHANGE
+} from 'uni-helpers/constants'
+
+import {
   callAppHook
 } from 'uni-core/service/plugins/util'
 
@@ -19,7 +23,8 @@ import {
 } from './config'
 
 import {
-  getCurrentPages
+  getCurrentPages,
+  getCurrentPageId
 } from './page'
 
 import {
@@ -126,9 +131,9 @@ function initGlobalListeners () {
       theme: event.uistyle
     }
 
-    callAppHook(appCtx, 'onThemeChange', args)
-    publish('onThemeChange', args)
-
+    callAppHook(appCtx, ON_THEME_CHANGE, args)
+    publish(ON_THEME_CHANGE, args)
+    UniServiceJSBridge.publishHandler(ON_THEME_CHANGE, args, getCurrentPageId())
     // 兼容旧版本 API
     publish('onUIStyleChange', {
       style: event.uistyle

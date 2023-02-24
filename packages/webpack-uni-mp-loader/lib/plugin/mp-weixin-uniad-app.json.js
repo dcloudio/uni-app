@@ -10,7 +10,7 @@ module.exports = function (appJson) {
   }
   if (!appJson.plugins['coral-adv']) {
     appJson.plugins['coral-adv'] = {
-      version: '1.0.9',
+      version: '1.0.12',
       provider: 'wx0e203209e27b1e66'
     }
   }

@@ -9,7 +9,7 @@
     >
       <div
         class="map-move"
-        @click="moveToLocation"
+        @click="setCenter(location)"
       >
         <i>&#xec32;</i>
       </div>
@@ -99,6 +99,15 @@ export default {
       }
     }
   },
+  mounted () {
+    uni.getLocation({
+      type: 'gcj02',
+      success: ({ latitude, longitude }) => {
+        this.location.latitude = latitude
+        this.location.longitude = longitude
+      }
+    })
+  },
   methods: {
     onRegionChange (event) {
       const centerLocation = event.detail.centerLocation
@@ -110,23 +119,6 @@ export default {
     setCenter ({ latitude, longitude }) {
       this.center.latitude = latitude
       this.center.longitude = longitude
-    },
-    moveToLocation () {
-      uni.getLocation({
-        type: 'gcj02',
-        success: this.move.bind(this),
-        fail: () => {
-          // move({
-          //   latitude: 0,
-          //   longitude: 0
-          // })
-        }
-      })
-    },
-    move ({ latitude, longitude }) {
-      this.location.latitude = latitude
-      this.location.longitude = longitude
-      this.setCenter({ latitude, longitude })
     },
     back () {
       getApp().$router.back()

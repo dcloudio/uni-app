@@ -54,9 +54,30 @@ const tags = {
     'editor'
   ],
   'mp-baidu': [
+    'animation-video',
+    'animation-view',
+    'ar-camera',
+    'rtc-room',
+    'rtc-room-item',
+    'tabs',
+    'tab-item',
     'follow-swan',
     'login',
-    'inline-payment-panel'
+    'inline-payment-panel',
+    'talos-linear-gradient',
+    'talos-rc-view',
+    'talos-nested-scroll-view',
+    'talos-nested-scroll-top-container',
+    'talos-nested-scroll-bottom-container',
+    'talos-waterfall-view',
+    'talos-waterfall-item',
+    'talos-waterfall-header',
+    'talos-waterfall-footer',
+    'talos-pull-refresh',
+    'talos-control-container',
+    'talos-na-refresh-control',
+    'talos-modal',
+    'talos-svg'
   ],
   'mp-weixin': [
     'page-container',

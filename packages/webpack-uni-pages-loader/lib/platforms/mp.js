@@ -95,7 +95,8 @@ const pagesJson2AppJson = {
   },
   preloadRule: defaultCopy,
   workers: defaultCopy,
-  plugins: defaultCopy
+  plugins: defaultCopy,
+  entryPagePath: defaultCopy
 }
 
 const manifestJson2AppJson = {

@@ -8,7 +8,7 @@
       <div
         v-show="type === 'switch'"
         :class="[switchChecked ? 'uni-switch-input-checked' : '']"
-        :style="{backgroundColor: switchChecked ? color : '#DFDFDF',borderColor:switchChecked ? color : '#DFDFDF'}"
+        :style="checkedColor"
         class="uni-switch-input"
       />
       <div
@@ -52,12 +52,23 @@ export default {
     },
     color: {
       type: String,
-      default: '#007aff'
+      default: ''
     }
   },
   data () {
     return {
       switchChecked: this.checked
+    }
+  },
+  computed: {
+    checkedColor () {
+      if (this.switchChecked && this.color) {
+        return {
+          backgroundColor: this.color,
+          borderColor: this.color
+        }
+      }
+      return {}
     }
   },
   watch: {
@@ -228,4 +239,26 @@ export default {
 	uni-switch .uni-checkbox-input.uni-checkbox-input-disabled:before {
 		color: #ADADAD;
 	}
+
+	@media (prefers-color-scheme: dark) {
+		uni-switch .uni-switch-input {
+			border-color: #3b3b3f;
+		}
+
+		uni-switch .uni-switch-input,
+		uni-switch .uni-switch-input:before {
+			background-color: #3b3b3f;
+		}
+
+		uni-switch .uni-switch-input:after {
+			background-color: #fff;
+			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+		}
+
+		uni-switch .uni-checkbox-input {
+			background-color: #2c2c2c;
+			border: 1px solid #656565;
+		}
+	}
+
 </style>

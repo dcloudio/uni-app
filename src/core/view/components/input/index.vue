@@ -5,7 +5,7 @@
       class="uni-input-wrapper"
     >
       <div
-        v-show="!(composing || valueSync.length || cachedValue.length || cachedValue === '-')"
+        v-show="showPlaceholder"
         ref="placeholder"
         :style="placeholderStyle"
         :class="placeholderClass"
@@ -156,6 +156,13 @@ export default {
           ? kebabCaseIndex
           : 0
       return AUTOCOMPLETES[index]
+    },
+    showPlaceholder () {
+      const dotIndex = this.type === 'digit' ? this.cachedValue.indexOf('.') : -1
+      return !(
+        this.composing || this.valueSync.length || this.cachedValue === '-' ||
+        (dotIndex !== -1 && dotIndex === this.cachedValue.length - 1)
+      )
     }
   },
   watch: {

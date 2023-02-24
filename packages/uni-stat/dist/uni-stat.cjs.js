@@ -666,7 +666,9 @@ const FIRST_TIME = '__first_time';
  * 设置页面首次访问时间，用户获取页面/应用停留时常
  */
 const set_first_time = () => {
-	const time = new Date().getTime();
+	// 获取当前时间 ，以下代码获取到是毫秒级时间戳 ，实际上用到是秒级时间戳，所以需要除以1000
+	// const time = new Date().getTime()
+	let time = get_time();
 	const timeStorge = dbSet(FIRST_TIME,time);
 	return timeStorge
 };
@@ -690,8 +692,8 @@ const get_residence_time = (type) => {
 	if (first_time !== 0) {
 		residenceTime = last_time - first_time;
 	}
-
-	residenceTime = parseInt(residenceTime / 1000);
+	// 将毫秒级时间戳转换为秒级时间戳，因为直接获取的是秒级时间戳，所以不需要转换
+	// residenceTime = parseInt(residenceTime / 1000)
 	residenceTime = residenceTime < 1 ? 1 : residenceTime;
 	if (type === 'app') {
 		let overtime = residenceTime > APP_PVER_TIME ? true : false;

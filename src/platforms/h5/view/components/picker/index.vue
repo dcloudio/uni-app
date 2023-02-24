@@ -726,7 +726,7 @@ uni-picker[disabled] {
   backface-visibility: hidden;
   z-index: 999;
   width: 100%;
-  background-color: #efeff4;
+  background-color: #fff;
   visibility: hidden;
   transition: transform 0.3s, visibility 0.3s;
 }
@@ -762,7 +762,6 @@ uni-picker[disabled] {
   text-align: center;
   width: 100%;
   height: 45px;
-  background-color: #fff;
 }
 
 .uni-picker-container .uni-picker-header:after {
@@ -891,6 +890,24 @@ uni-picker[disabled] {
   }
   .uni-selector-select .uni-picker-item.selected {
     color: #007aff;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .uni-picker-container .uni-picker-content {
+    background-color: var(--UI-BG-2);
+  }
+  .uni-picker-container .uni-picker-action.uni-picker-action-cancel {
+    color: var(--UI-FG-0);
+  }
+  .uni-picker-container .uni-picker-custom {
+    background-color: var(--UI-BG-2);
+  }
+  .uni-selector-select .uni-picker-item {
+    color: var(--UI-FG-0);
+  }
+  .uni-picker-container .uni-picker-header:after {
+    border-bottom-color: var(--UI-FG-3);
   }
 }
 </style>

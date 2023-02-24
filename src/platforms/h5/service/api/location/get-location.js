@@ -6,6 +6,7 @@ import {
   getMapInfo,
   translateGeo
 } from '../../../helpers/location'
+import { loadMaps } from '../../../view/components/map/maps'
 
 /**
  * 获取定位信息
@@ -67,6 +68,27 @@ export function getLocation ({
           fail () {
             reject(new Error('network error'))
           }
+        })
+      } else if (mapInfo.type === MapType.AMAP) {
+        loadMaps([], () => {
+          window.AMap.plugin('AMap.Geolocation', () => {
+            const geolocation = new window.AMap.Geolocation({
+              enableHighAccuracy: true,
+              timeout: 10000
+            })
+
+            geolocation.getCurrentPosition((status, data) => {
+              if (status === 'complete') {
+                resolve({
+                  latitude: data.position.lat,
+                  longitude: data.position.lng,
+                  accuracy: data.accuracy
+                })
+              } else {
+                reject(new Error(data.message))
+              }
+            })
+          })
         })
       } else {
         reject(new Error('network error'))

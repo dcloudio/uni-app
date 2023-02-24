@@ -51,10 +51,14 @@
             class="uni-video-control-button"
             @click.stop="trigger"
           />
-          <div class="uni-video-current-time">
+          <div
+            v-show="showProgress"
+            class="uni-video-current-time"
+          >
             {{ currentTime|time }}
           </div>
           <div
+            v-show="showProgress"
             ref="progress"
             class="uni-video-progress-container"
             @click.stop="clickProgress($event)"
@@ -73,7 +77,10 @@
               </div>
             </div>
           </div>
-          <div class="uni-video-duration">
+          <div
+            v-show="showProgress"
+            class="uni-video-duration"
+          >
             {{ (duration||durationTime)|time }}
           </div>
         </div>

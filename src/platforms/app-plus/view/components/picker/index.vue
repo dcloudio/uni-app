@@ -16,6 +16,7 @@ import {
   i18nMixin,
   getLocale
 } from 'uni-core/helpers/i18n'
+import { ON_THEME_CHANGE } from 'uni-helpers/constants'
 
 const mode = {
   SELECTOR: 'selector',
@@ -134,7 +135,8 @@ export default {
   },
   data () {
     return {
-      valueSync: null
+      valueSync: null,
+      theme: __uniConfig.darkmode ? plus.navigator.getUIStyle() : 'light'
     }
   },
   watch: {
@@ -157,6 +159,7 @@ export default {
       }
     })
     this._setValueSync()
+    UniViewJSBridge.subscribe(ON_THEME_CHANGE, this._onThemeChange)
   },
   mounted () {
     webview.exists((exists) => {
@@ -170,6 +173,7 @@ export default {
       type: 'remove',
       vm: this
     })
+    UniViewJSBridge.unsubscribe(ON_THEME_CHANGE, this._onThemeChange)
   },
   methods: {
     _setValueSync () {
@@ -254,7 +258,7 @@ export default {
       let res = { event: 'cancel' }
       this.page = showPage({
         url: '__uniapppicker',
-        data,
+        data: Object.assign({}, data, { theme: this.theme }),
         style: {
           titleNView: false,
           animationType: 'none',
@@ -320,6 +324,9 @@ export default {
           this.page && this.page.sendMessage(data)
         }
       })
+    },
+    _onThemeChange  (res) {
+      this.theme = res.theme
     }
   }
 }
