@@ -263,6 +263,8 @@ async function parseInterfaceTypes(
           const params = createParams(node.declaration.typeAnnotation.params)
           if (params.length) {
             types[node.declaration.id.value] = params
+          } else {
+            types[node.declaration.id.value] = []
           }
           break
         case 'TsTypeLiteral':
