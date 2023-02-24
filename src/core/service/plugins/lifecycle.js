@@ -81,6 +81,21 @@ export function lifecycleMixin (Vue) {
       })
     }
 
+    // script setup onPageScroll、onReachBottom not effective
+    const setup = extendOptions.setup
+    if (setup) {
+      const injectHooks = ['onPageScroll', 'onReachBottom']
+      let setupString = ''
+      try {
+        setupString = setup.toString()
+      } catch (error) {}
+      injectHooks.forEach(hook => {
+        if (setupString.indexOf(`uniApp.${hook}`) && !extendOptions[hook]) {
+          extendOptions[hook] = [() => {}]
+        }
+      })
+    }
+
     return oldExtend.call(this, extendOptions)
   }
 

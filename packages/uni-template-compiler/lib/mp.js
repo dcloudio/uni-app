@@ -83,7 +83,15 @@ const tags = {
     'page-container',
     'page-meta',
     'navigation-bar',
-    'match-media'
+    'match-media',
+    // 手势组件
+    'tap-gesture-handler',
+    'double-tap-gesture-handler',
+    'pan-gesture-handler',
+    'scale-gesture-handler',
+    'force-press-gesture-handler',
+    'vertical-drag-gesture-handler',
+    'horizontal-drag-gesture-handler'
   ],
   // 支付宝小程序平台独有组件
   'mp-alipay': [

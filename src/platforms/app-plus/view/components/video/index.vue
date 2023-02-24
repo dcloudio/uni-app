@@ -203,6 +203,10 @@ export default {
     title: {
       type: String,
       default: ''
+    },
+    isLive: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
@@ -218,7 +222,13 @@ export default {
   },
   mounted () {
     this._onParentReady(() => {
-      const video = this.video = plus.video.createVideoPlayer('video' + Date.now(), Object.assign({}, this.attrs, this.position))
+      const playStrategy = Number(this.isLive ? 3 : this.playStrategy)
+      const video = this.video = plus.video.createVideoPlayer(
+        'video' + Date.now(),
+        Object.assign({}, this.attrs, this.position, {
+          playStrategy: isNaN(playStrategy) ? 0 : playStrategy
+        })
+      )
       plus.webview.currentWebview().append(video)
       if (this.hidden) {
         video.hide()

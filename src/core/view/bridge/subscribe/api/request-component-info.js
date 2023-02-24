@@ -2,6 +2,10 @@ import {
   getTargetDataset
 } from 'uni-helpers/index'
 
+import {
+  camelize
+} from 'uni-shared'
+
 import getWindowOffset from 'uni-platform/helpers/get-window-offset'
 
 import {
@@ -62,14 +66,18 @@ function getNodeInfo (el, fields) {
       info.height = rect.height
     }
   }
-  // TODO 组件 props
   if (Array.isArray(fields.properties)) {
-    fields.properties.forEach(prop => {
-      prop = prop.replace(/-([a-z])/g, function (e, t) {
-        return t.toUpperCase()
+    const props = el.__vue__ && el.__vue__.$props
+    if (props) {
+      fields.properties.forEach(prop => {
+        if (typeof prop === 'string') {
+          prop = camelize(prop)
+          if (props[prop] != null) {
+            info[prop] = props[prop]
+          }
+        }
       })
-      // props
-    })
+    }
   }
   if (fields.scrollOffset) {
     if (el.tagName === 'UNI-SCROLL-VIEW' && el.__vue__ && el.__vue__.getScrollPosition) {
