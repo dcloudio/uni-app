@@ -91,7 +91,8 @@ const tags = {
     'scale-gesture-handler',
     'force-press-gesture-handler',
     'vertical-drag-gesture-handler',
-    'horizontal-drag-gesture-handler'
+    'horizontal-drag-gesture-handler',
+    'channel-video'
   ],
   // 支付宝小程序平台独有组件
   'mp-alipay': [
