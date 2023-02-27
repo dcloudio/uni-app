@@ -155,6 +155,24 @@ const options = {
         filename: projectConfigFilename,
         config: ['project.swan.json'],
         source,
+        normalize(projectJson) {
+            var _a;
+            const miniprogram = (_a = projectJson.condition) === null || _a === void 0 ? void 0 : _a.miniprogram;
+            if (miniprogram && Array.isArray(miniprogram.list) && miniprogram.list.length) {
+                projectJson['compilation-args'].options = miniprogram.list.map((item) => {
+                    return {
+                        id: item.id,
+                        text: item.name,
+                        extra: {
+                            index: item.pathName,
+                            query: item.query
+                        }
+                    };
+                });
+                delete projectJson.condition;
+            }
+            return projectJson;
+        }
     },
     template: Object.assign(Object.assign({}, miniProgram), { customElements, filter: {
             extname: '.sjs',

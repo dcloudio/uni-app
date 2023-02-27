@@ -1,4 +1,5 @@
 {
+  "appid": "touristappid",
   "component2": true,
   "enableAppxNg": true,
   "enableNodeModuleBabelTransform": true
