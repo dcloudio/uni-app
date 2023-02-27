@@ -6,9 +6,19 @@ module.exports = function (pagesJson, manifestJson) {
 
   const content = project.content
 
-  if (content.condition && content.condition.miniprogram) {
-    content.condition.swan = content.condition.miniprogram
-    delete content.condition.miniprogram
+  const miniprogram = content.condition && content.condition.miniprogram
+  if (miniprogram && Array.isArray(miniprogram.list) && miniprogram.list.length) {
+    content['compilation-args'].options = miniprogram.list.map((item) => {
+      return {
+        id: item.id,
+        text: item.name,
+        extra: {
+          index: item.pathName,
+          query: item.query
+        }
+      }
+    })
+    delete content.condition
   }
 
   project.name = 'project.swan'

@@ -44,6 +44,41 @@ function copyToJson (json, fromJson, options) {
   })
 }
 
+function parseCondition (pagesJson) {
+  const condition = pagesJson.condition
+  const launchPagePath = process.env.UNI_CLI_LAUNCH_PAGE_PATH || ''
+  const launchPageQuery = process.env.UNI_CLI_LAUNCH_PAGE_QUERY || ''
+  const launchPageOptions = {
+    title: launchPagePath,
+    page: launchPagePath,
+    pageQuery: launchPageQuery
+  }
+  const compileModeJson = {
+    modes: []
+  }
+  if (condition && Array.isArray(condition.list) && condition.list.length) {
+    compileModeJson.modes = condition.list.map(item => {
+      return {
+        title: item.name,
+        page: item.path,
+        pageQuery: item.query
+      }
+    })
+    delete pagesJson.condition
+  }
+  if (launchPagePath) {
+    compileModeJson.modes = [launchPageOptions]
+  }
+  const miniIdeDir = path.join(process.env.UNI_OUTPUT_DIR, '.mini-ide')
+  if (!fs.existsSync(miniIdeDir)) {
+    fs.mkdirSync(miniIdeDir, { recursive: true })
+    fs.writeFileSync(
+      path.join(miniIdeDir, 'compileMode.json'),
+      JSON.stringify(compileModeJson, null, 2)
+    )
+  }
+}
+
 const projectKeys = ['component2', 'enableAppxNg']
 
 module.exports = function (pagesJson, manifestJson) {
@@ -100,6 +135,8 @@ module.exports = function (pagesJson, manifestJson) {
     project.component2 = hasOwn(platformJson, 'component2') ? platformJson.component2 : true
     project.enableAppxNg = hasOwn(platformJson, 'enableAppxNg') ? platformJson.enableAppxNg : true
   }
+
+  parseCondition(pagesJson)
 
   return [{
     name: 'app',

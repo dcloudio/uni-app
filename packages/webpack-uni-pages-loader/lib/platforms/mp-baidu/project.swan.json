@@ -1,5 +1,8 @@
 {
 	"appid": "",
+  "compilation-args": {
+    "selected": -3
+  },
 	"appInfo": {},
 	"appkey": "",
 	"condition": {},
