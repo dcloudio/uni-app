@@ -27,6 +27,7 @@ export const customElements = [
   'force-press-gesture-handler',
   'vertical-drag-gesture-handler',
   'horizontal-drag-gesture-handler',
+  'channel-video',
 ]
 
 export const compilerOptions: CompilerOptions = {
