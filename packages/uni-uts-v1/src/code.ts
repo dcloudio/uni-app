@@ -44,6 +44,7 @@ interface GenProxyCodeOptions {
   moduleName?: string
   moduleType?: string
   types?: Types
+  exports?: Record<string, 'var' | 'function' | 'class'>
 }
 
 export async function genProxyCode(
@@ -77,7 +78,8 @@ ${genComponentsCode(
 ${genModuleCode(
   await parseModuleDecls(module, options),
   format,
-  options.pluginRelativeDir!
+  options.pluginRelativeDir!,
+  options.exports
 )}
 `
 }
@@ -159,13 +161,16 @@ function exportVarCode(format: FORMATS, kind: VariableDeclarationKind) {
 function genModuleCode(
   decls: ProxyDecl[],
   format: FORMATS = FORMATS.ES,
-  pluginRelativeDir: string
+  pluginRelativeDir: string,
+  exports: Record<string, 'var' | 'function' | 'class'> = {}
 ) {
   const codes: string[] = []
   const exportDefault = exportDefaultCode(format)
   const exportConst = exportVarCode(format, 'const')
   decls.forEach((decl) => {
     if (decl.type === 'Class') {
+      exports[decl.cls] = decl.isVar ? 'var' : 'class'
+
       if (decl.isDefault) {
         codes.push(
           `${exportDefault}initUTSProxyClass(Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, '${
@@ -182,6 +187,8 @@ function genModuleCode(
         )
       }
     } else if (decl.type === 'FunctionDeclaration') {
+      exports[decl.method] = decl.isVar ? 'var' : 'function'
+
       if (decl.isDefault) {
         codes.push(
           `${exportDefault}initUTSProxyFunction(${
@@ -200,6 +207,10 @@ function genModuleCode(
         )
       }
     } else if (decl.type === 'VariableDeclaration') {
+      decl.declarations.forEach((d) => {
+        exports[(d.id as Identifier).value] = 'var'
+      })
+
       if (format === FORMATS.ES) {
         codes.push(
           `export ${decl.kind} ${decl.declarations
@@ -395,6 +406,7 @@ interface ProxyFunctionDeclaration {
   async: boolean
   params: Parameter[]
   isDefault: boolean
+  isVar: boolean
 }
 
 interface ProxyClass {
@@ -408,6 +420,7 @@ interface ProxyClass {
     staticProps: string[]
   }
   isDefault: boolean
+  isVar: boolean
 }
 
 function parseAst(
@@ -477,9 +490,17 @@ function genProxyFunction(
   method: string,
   async: boolean,
   params: Parameter[],
-  isDefault: boolean = false
+  isDefault: boolean = false,
+  isVar: boolean = false
 ): ProxyFunctionDeclaration {
-  return { type: 'FunctionDeclaration', method, async, params, isDefault }
+  return {
+    type: 'FunctionDeclaration',
+    method,
+    async,
+    params,
+    isDefault,
+    isVar,
+  }
 }
 
 function genProxyClass(
@@ -491,9 +512,10 @@ function genProxyClass(
     props: string[]
     staticProps: string[]
   },
-  isDefault: boolean = false
+  isDefault = false,
+  isVar = false
 ): ProxyClass {
-  return { type: 'Class', cls, options, isDefault }
+  return { type: 'Class', cls, options, isDefault, isVar }
 }
 
 interface Parameter {
@@ -596,13 +618,15 @@ function resolveFunctionParams(
 function genFunctionDeclaration(
   decl: FunctionDeclaration | FunctionExpression,
   resolveTypeReferenceName: ResolveTypeReferenceName,
-  isDefault: boolean = false
+  isDefault: boolean = false,
+  isVar: boolean = false
 ): ProxyFunctionDeclaration {
   return genProxyFunction(
     decl.identifier!.value,
     decl.async || isReturnPromise(decl.returnType),
     resolveFunctionParams(decl.params, resolveTypeReferenceName),
-    isDefault
+    isDefault,
+    isVar
   )
 }
 
@@ -721,7 +745,8 @@ function genVariableDeclaration(
       return genFunctionDeclaration(
         createFunctionDeclaration(id.value, init, params),
         resolveTypeReferenceName,
-        false
+        false,
+        true
       )
     }
   }
