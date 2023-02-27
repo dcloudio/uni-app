@@ -81,9 +81,15 @@ public func testAsync() async -> UTSJSONObject {
         "a": 1
     ]);
 }
-public func showToast1(_ msg: String) {}
-public func showToast2(_ msg: String) {}
-public func showToast3(_ msg: String) {}
+public var showToast1: ShowToast = {
+(_ msg) in
+};
+public var showToast2: ShowToast = {
+(_ msg) in
+};
+public var showToast3: ShowToast = {
+(_ msg) in
+};
 @objc(UTSSDKModulesTestUniPluginIndexSwift)
 @objcMembers
 public class IndexSwift : NSObject {
