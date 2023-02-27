@@ -5,11 +5,6 @@ export {
   getSystemInfo,
   getSystemInfoSync,
 } from '@dcloudio/uni-mp-core'
-export const chooseImage = {
-  args: {
-    sizeType: false,
-  },
-}
 export const connectSocket = {
   args: {
     method: false,
