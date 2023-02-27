@@ -37,6 +37,7 @@ export async function compileEncrypt(pluginDir: string) {
   const utsPlatform = process.env.UNI_UTS_PLATFORM as APP_PLATFORM
   const isRollup = !!process.env.UNI_UTS_USING_ROLLUP
   const pluginRelativeDir = relative(inputDir, pluginDir)
+  const outputPluginDir = normalizePath(join(outputDir, pluginRelativeDir))
   let code = isRollup
     ? createRollupCommonjsCode(pluginDir, pluginRelativeDir)
     : createWebpackCommonjsCode(pluginRelativeDir)
@@ -44,6 +45,7 @@ export async function compileEncrypt(pluginDir: string) {
     // 复制插件目录
     fs.copySync(pluginDir, join(outputDir, pluginRelativeDir))
     return {
+      dir: outputPluginDir,
       code,
       deps: [] as string[],
       encrypt: true,
@@ -65,6 +67,7 @@ export async function compileEncrypt(pluginDir: string) {
     )
   }
   return {
+    dir: outputPluginDir,
     code,
     deps: [] as string[],
     encrypt: true,

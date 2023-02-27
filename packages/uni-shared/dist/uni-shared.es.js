@@ -280,20 +280,23 @@ function isElement(el) {
     // Element
     return el.nodeType === 1;
 }
-function resolveOwnerEl(instance) {
+function resolveOwnerEl(instance, multi = false) {
     const { vnode } = instance;
     if (isElement(vnode.el)) {
-        return vnode.el;
+        return multi ? (vnode.el ? [vnode.el] : []) : vnode.el;
     }
     const { subTree } = instance;
     // ShapeFlags.ARRAY_CHILDREN = 1<<4
     if (subTree.shapeFlag & 16) {
-        const elemVNode = subTree.children.find((vnode) => vnode.el && isElement(vnode.el));
-        if (elemVNode) {
-            return elemVNode.el;
+        const elemVNodes = subTree.children.filter((vnode) => vnode.el && isElement(vnode.el));
+        if (elemVNodes.length > 0) {
+            if (multi) {
+                return elemVNodes.map((node) => node.el);
+            }
+            return elemVNodes[0].el;
         }
     }
-    return vnode.el;
+    return multi ? (vnode.el ? [vnode.el] : []) : vnode.el;
 }
 function dynamicSlotName(name) {
     return name === 'default' ? SLOT_DEFAULT_NAME : name;

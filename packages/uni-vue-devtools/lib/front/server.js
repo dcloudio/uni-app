@@ -58,7 +58,7 @@ exports.initDevtoolsServer = async () => {
   const testConnectionPort = await detectPort(9500)
   testConnectionApp.get('/', (_, res) => {
     res.header('Access-Control-Allow-Origin', '*')
-    res.send('test connection ok!')
+    res.send({message: 'test connection ok!'})
   })
   testConnectionApp.listen(testConnectionPort, '0.0.0.0', () => {
   })

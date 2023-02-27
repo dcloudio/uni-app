@@ -7,6 +7,10 @@ export interface UTSParserConfig {
    * Defaults to `false`
    */
   allowImportWithoutSpecifiers?: boolean
+  /**
+   * Defaults to `false`
+   */
+  noGetterOrSetterProp?: boolean
 }
 
 export type UTSParseOptions = UTSParserConfig & {
@@ -35,8 +39,9 @@ export type UTSOutputOptions = {
   noColor?: boolean
   isPlugin?: boolean
   transform?: {
-    paramDefaultValue: boolean
-    constructorInvocation: boolean
+    paramDefaultValue?: boolean
+    constructorInvocation?: boolean
+    uniExtApiPackage?: string
   }
 }
 export interface UTSOptions {

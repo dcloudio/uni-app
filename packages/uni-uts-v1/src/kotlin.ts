@@ -342,6 +342,9 @@ export async function compile(
       imports,
       logFilename: true,
       noColor: !isColorSupported(),
+      transform: {
+        uniExtApiPackage: 'io.dcloud.uts.extapi',
+      },
     },
   })
   sourceMap &&

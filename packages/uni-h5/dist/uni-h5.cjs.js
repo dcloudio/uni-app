@@ -1532,14 +1532,6 @@ const getLocale = /* @__PURE__ */ defineSyncApi(
     return useI18n().getLocale();
   }
 );
-const API_CAN_I_USE = "canIUse";
-const CanIUseProtocol = [
-  {
-    name: "schema",
-    type: String,
-    required: true
-  }
-];
 const API_GET_STORAGE = "getStorage";
 const GetStorageProtocol = {
   key: {
@@ -1662,37 +1654,7 @@ const RequestOptions = {
     }
   }
 };
-const FRONT_COLORS = ["#ffffff", "#000000"];
 const API_SET_NAVIGATION_BAR_COLOR = "setNavigationBarColor";
-const SetNavigationBarColorOptions = {
-  formatArgs: {
-    animation(animation2, params) {
-      if (!animation2) {
-        animation2 = { duration: 0, timingFunc: "linear" };
-      }
-      params.animation = {
-        duration: animation2.duration || 0,
-        timingFunc: animation2.timingFunc || "linear"
-      };
-    }
-  }
-};
-const SetNavigationBarColorProtocol = {
-  frontColor: {
-    type: String,
-    required: true,
-    validator(frontColor) {
-      if (FRONT_COLORS.indexOf(frontColor) === -1) {
-        return `invalid frontColor "${frontColor}"`;
-      }
-    }
-  },
-  backgroundColor: {
-    type: String,
-    required: true
-  },
-  animation: Object
-};
 const API_SET_NAVIGATION_BAR_TITLE = "setNavigationBarTitle";
 const SetNavigationBarTitleProtocol = {
   title: {
@@ -7551,26 +7513,6 @@ function useTabBar() {
   }
   return tabBar;
 }
-const cssVar = true;
-const cssEnv = true;
-const cssConstant = true;
-const cssBackdropFilter = true;
-const SCHEMA_CSS = {
-  "css.var": cssVar,
-  "css.env": cssEnv,
-  "css.constant": cssConstant,
-  "css.backdrop-filter": cssBackdropFilter
-};
-/* @__PURE__ */ defineSyncApi(
-  API_CAN_I_USE,
-  (schema) => {
-    if (shared.hasOwn(SCHEMA_CSS, schema)) {
-      return SCHEMA_CSS[schema];
-    }
-    return true;
-  },
-  CanIUseProtocol
-);
 const envMethod = /* @__PURE__ */ (() => "env")();
 function normalizeWindowBottom(windowBottom) {
   return envMethod ? `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))` : `${windowBottom}px`;
@@ -11151,44 +11093,6 @@ function setNavigationBar(pageMeta, type, args, resolve, reject) {
   }
   resolve();
 }
-/* @__PURE__ */ defineAsyncApi(
-  API_SET_NAVIGATION_BAR_COLOR,
-  (args, { resolve, reject }) => {
-    setNavigationBar(
-      getCurrentPageMeta(),
-      API_SET_NAVIGATION_BAR_COLOR,
-      args,
-      resolve,
-      reject
-    );
-  },
-  SetNavigationBarColorProtocol,
-  SetNavigationBarColorOptions
-);
-/* @__PURE__ */ defineAsyncApi(
-  API_SHOW_NAVIGATION_BAR_LOADING,
-  (args, { resolve, reject }) => {
-    setNavigationBar(
-      getCurrentPageMeta(),
-      API_SHOW_NAVIGATION_BAR_LOADING,
-      args || {},
-      resolve,
-      reject
-    );
-  }
-);
-/* @__PURE__ */ defineAsyncApi(
-  API_HIDE_NAVIGATION_BAR_LOADING,
-  (args, { resolve, reject }) => {
-    setNavigationBar(
-      getCurrentPageMeta(),
-      API_HIDE_NAVIGATION_BAR_LOADING,
-      args || {},
-      resolve,
-      reject
-    );
-  }
-);
 const setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(
   API_SET_NAVIGATION_BAR_TITLE,
   (args, { resolve, reject }) => {
@@ -11377,7 +11281,7 @@ function useTabBarStyle(tabBar2) {
     let backgroundColor = tabBar2.backgroundColor;
     const blurEffect = tabBar2.blurEffect;
     if (!backgroundColor) {
-      if (cssBackdropFilter && blurEffect && blurEffect !== "none") {
+      if (blurEffect && blurEffect !== "none") {
         backgroundColor = BLUR_EFFECT_COLORS[blurEffect];
       }
     }

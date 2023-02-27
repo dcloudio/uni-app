@@ -1,10 +1,10 @@
-import DCloudUTSFoundation;
 import Lottie;
 import Foundation;
 import UIKit;
+import DCloudUTSFoundation;
 @objc(UTSSDKModulesTestComponentAnimationViewComponent)
 @objcMembers
-class AnimationViewComponent : UTSComponent<UIView> {
+public class AnimationViewComponent : UTSComponent<UIView> {
     public var path: String?;
     public var autoplay: Bool = false;
     public var loop: Bool = false;

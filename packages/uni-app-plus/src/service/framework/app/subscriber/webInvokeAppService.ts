@@ -25,7 +25,7 @@ export const onWebInvokeAppService: WebInvokeAppService = (
   if (name === 'postMessage') {
     onMessage(pageIds[0], arg)
   } else {
-    uni[name](
+    ;(uni[name] as (options: any) => void)(
       extend(arg, {
         fail(res: { errMsg: string }) {
           console.error(res.errMsg)

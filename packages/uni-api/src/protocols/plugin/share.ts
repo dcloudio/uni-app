@@ -2,7 +2,7 @@ import { elemInArray } from '../../helpers/protocol'
 
 export const API_SHREA = 'share'
 export type API_TYPE_SHARE = typeof uni.share
-const SCENE: Parameters<API_TYPE_SHARE>[0]['scene'][] = [
+const SCENE: NonNullable<Parameters<API_TYPE_SHARE>[0]>['scene'][] = [
   'WXSceneSession',
   'WXSceneTimeline',
   'WXSceneFavorite',
@@ -73,7 +73,7 @@ export const ShareProtocols: ApiProtocol<API_TYPE_SHARE> = {
 
 export const API_SHARE_WITH_SYSTEM = 'shareWithSystem'
 export type API_TYPE_SHARE_WITH_SYSTEM = typeof uni.shareWithSystem
-const TYPE: Parameters<API_TYPE_SHARE_WITH_SYSTEM>[0]['type'][] = [
+const TYPE: NonNullable<Parameters<API_TYPE_SHARE_WITH_SYSTEM>[0]>['type'][] = [
   'text',
   'image',
 ]
