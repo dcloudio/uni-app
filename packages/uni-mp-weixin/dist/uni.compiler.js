@@ -126,6 +126,7 @@ const customElements = [
     'force-press-gesture-handler',
     'vertical-drag-gesture-handler',
     'horizontal-drag-gesture-handler',
+    'channel-video',
 ];
 const compilerOptions = {
     nodeTransforms: [uniCliShared.transformRef, uniCliShared.transformComponentLink, transformAd],
