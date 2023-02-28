@@ -8,3 +8,6 @@ import io.dcloud.uts.*;
 fun test(): Number {
     return 1;
 }
+fun testWithJSON(): Number {
+    return test();
+}

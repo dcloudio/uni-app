@@ -2,17 +2,38 @@ import DCloudUTSExtAPI;
 import DCloudUTSFoundation;
 public var uni_showToast = DCloudUTSExtAPI.showToast;
 public var uni_showModel = DCloudUTSExtAPI.showModel;
-typealias ShowToast = (_ msg: String) -> Void;
+public typealias ShowToast = (_ msg: String) -> Void;
 import UIKit;
 import CoreLocation;
 @objc(UTSSDKModulesTestUniPluginGetBatteryInfoOptions)
 @objcMembers
-public class GetBatteryInfoOptions : NSObject {
+public class GetBatteryInfoOptions : NSObject, UTSCallbackDelegate {
     public var name: String!;
     public var pwd: NSNumber!;
     public var success: UTSCallback?;
     public var fail: UTSCallback?;
     public var complete: UTSCallback?;
+    public func callUTSNativeCallback(_ name: String, _ callback: Any, _ args: [Any]) {
+        switch(name){
+            case "success":
+                typealias successType = (_ res: UTSJSONObject) -> Void;
+                if (callback is successType) {
+                    (callback as! successType)(args[0] as! UTSJSONObject);
+                }
+            case "fail":
+                typealias failType = (_ res: UTSJSONObject) -> Void;
+                if (callback is failType) {
+                    (callback as! failType)(args[0] as! UTSJSONObject);
+                }
+            case "complete":
+                typealias completeType = (_ res: UTSJSONObject) -> Void;
+                if (callback is completeType) {
+                    (callback as! completeType)(args[0] as! UTSJSONObject);
+                }
+            default:
+                break;
+        }
+    }
 }
 public func getBatteryInfo(_ options: GetBatteryInfoOptions) {
     UIAlertController(title: title, message: message, preferredStyle: UIAlertController.Style.alert);
@@ -112,4 +133,13 @@ public class IndexSwift : NSObject {
     public static func s_showToast3(_ msg: String) {
         return showToast3(msg);
     }
+}
+public func getBatteryInfoWithJSON(_ options: UTSJSONObject) {
+    return getBatteryInfo(UTSiOS.parseObject(options));
+}
+public func test1WithJSON(_ callback: UTSJSONObject) -> String {
+    return test1(UTSiOS.parseObject(callback));
+}
+public func testAsyncWithJSON() -> UTSJSONObject {
+    return testAsync();
 }
