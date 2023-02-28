@@ -121,13 +121,10 @@ public class AnimationViewComponent : UTSComponent<UIView> {
             switch(action){
                 case "play":
                     self.playAnimation();
-                    break;
                 case "pause":
                     self.animationView.pause();
-                    break;
                 case "stop":
                     self.animationView.stop();
-                    break;
                 default:
                     break;
             }

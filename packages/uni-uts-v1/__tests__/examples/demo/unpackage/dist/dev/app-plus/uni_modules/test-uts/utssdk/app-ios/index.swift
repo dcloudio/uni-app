@@ -7,3 +7,6 @@ public class IndexSwift : NSObject {
         return test();
     }
 }
+public func testWithJSON() {
+    return test();
+}

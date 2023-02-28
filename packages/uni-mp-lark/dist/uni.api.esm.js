@@ -1166,11 +1166,6 @@ var shims = /*#__PURE__*/Object.freeze({
   getProvider: getProvider
 });
 
-const chooseImage = {
-    args: {
-        sizeType: false,
-    },
-};
 const connectSocket = {
     args: {
         method: false,
@@ -1234,7 +1229,6 @@ const getFileInfo = {
 
 var protocols = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  chooseImage: chooseImage,
   chooseVideo: chooseVideo,
   connectSocket: connectSocket,
   getFileInfo: getFileInfo,

@@ -69,3 +69,9 @@ open class TestClass {
 val showToast1: ShowToast = fun(msg){};
 val showToast2: ShowToast = fun(msg) {};
 val showToast3: ShowToast = fun(msg) {};
+fun registerWithJSON(name: String, callback: UTSJSONObject) {
+    return register(name, UTSAndroid.parseObject(callback));
+}
+fun offMemoryWarningWithJSON() {
+    return offMemoryWarning();
+}

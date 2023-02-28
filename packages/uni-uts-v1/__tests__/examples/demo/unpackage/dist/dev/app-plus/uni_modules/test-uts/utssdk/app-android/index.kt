@@ -6,3 +6,6 @@ import kotlinx.coroutines.Dispatchers;
 import io.dcloud.uts.Map;
 import io.dcloud.uts.*;
 fun test() {}
+fun testWithJSON() {
+    return test();
+}
