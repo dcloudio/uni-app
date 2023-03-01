@@ -84,15 +84,24 @@ const tags = {
     'page-meta',
     'navigation-bar',
     'match-media',
+    'share-element',
+    'channel-live',
+    'channel-video',
+    'voip-room',
+    'root-portal',
     // 手势组件
     'tap-gesture-handler',
     'double-tap-gesture-handler',
-    'pan-gesture-handler',
     'scale-gesture-handler',
     'force-press-gesture-handler',
+    'pan-gesture-handler',
     'vertical-drag-gesture-handler',
     'horizontal-drag-gesture-handler',
-    'channel-video'
+    'long-press-gesture-handler',
+    'grid-view',
+    'list-view',
+    'sticky-header',
+    'sticky-section'
   ],
   // 支付宝小程序平台独有组件
   'mp-alipay': [
