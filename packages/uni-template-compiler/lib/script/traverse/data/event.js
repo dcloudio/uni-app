@@ -15,7 +15,8 @@ const {
   getCode,
   customize,
   processMemberExpression,
-  replaceMemberExpression
+  replaceMemberExpression,
+  hasMemberExpression
 } = require('../../../util')
 
 const {
@@ -296,7 +297,7 @@ function parseEvent (keyPath, valuePath, state, isComponent, isNativeOn = false,
         // "click":function($event) {click1(item);click2(item);}
         const body = funcPath.node.body && funcPath.node.body.body
         const funcParams = funcPath.node.params
-        if (body && body.length && funcParams && funcParams.length === 1) {
+        if (body && body.length && funcParams && funcParams.length === 1 && !hasMemberExpression(funcPath)) {
           const exprStatements = body.filter(node => {
             return t.isExpressionStatement(node) && t.isCallExpression(node.expression)
           })

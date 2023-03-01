@@ -836,6 +836,11 @@ describe('mp:compiler-extra', () => {
       '<block wx:for="{{[1,2]}}" wx:for-item="item" wx:for-index="__i0__"><custom-input bind:input="__e" vue-id="{{\'551070e6-1-\'+__i0__}}" value="{{values[item]}}" data-event-opts="{{[[\'^input\',[[\'e0\']]]]}}" data-event-params="{{({item})}}" bind:__l="__l"></custom-input></block>',
       'with(this){if(!_isMounted){e0=function($event,item){var _temp=arguments[arguments.length-1].currentTarget.dataset,_temp2=_temp.eventParams||_temp["event-params"],item=_temp2.item;var _temp,_temp2;return __set_model(values,item,$event,[])}}}'
     )
+    assertCodegen(
+      '<button type="primary" @click="click1();obj.click2();">click me</button>',
+      '<button type="primary" data-event-opts="{{[[\'tap\',[[\'e0\',[\'$event\']]]]]}}" bindtap="__e">click me</button>',
+      'with(this){if(!_isMounted){e0=function($event){click1();obj.click2()}}}'
+    )
   })
   it('generate bool attr', () => {
     assertCodegen(
