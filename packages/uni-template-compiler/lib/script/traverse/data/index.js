@@ -6,7 +6,7 @@ const {
   ATTR_DATA_COM_TYPE,
   ATTR_DATA_EVENT_LIST,
   ATTR_DATA_EVENT_PARAMS,
-  ATTE_DATA_CUSTOM_HIDDEN,
+  ATTR_DATA_CUSTOM_HIDDEN,
   INTERNAL_EVENT_WRAP
 } = require('../../../constants')
 
@@ -98,7 +98,7 @@ module.exports = function traverseData (path, state, tagName) {
           ATTR_DATA_COM_TYPE,
           ATTR_DATA_EVENT_PARAMS,
           ATTR_DATA_EVENT_LIST,
-          ATTE_DATA_CUSTOM_HIDDEN,
+          ATTR_DATA_CUSTOM_HIDDEN,
           'vue-id'
         ]
         for (let a = orgOptionsProps.length - 1; a >= 0; a--) {

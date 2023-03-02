@@ -15,7 +15,7 @@ const {
 } = require('../util')
 
 const {
-  ATTE_DATA_CUSTOM_HIDDEN,
+  ATTR_DATA_CUSTOM_HIDDEN,
   ATTR_SLOT_ORIGIN
 } = require('../constants')
 
@@ -235,7 +235,7 @@ function traverseDataNode (dataNode, state, node) {
                   const platforms = ['mp-weixin', 'mp-qq', 'mp-jd', 'mp-xhs', 'mp-toutiao', 'mp-lark']
                   if (isComponent(node.type) && platforms.includes(platform)) {
                     // 字节跳动|飞书小程序自定义属性不会反应在DOM上，只能使用事件格式
-                    key = `${platform === 'mp-toutiao' || platform === 'mp-lark' ? 'bind:-' : ''}${ATTE_DATA_CUSTOM_HIDDEN}`
+                    key = `${platform === 'mp-toutiao' || platform === 'mp-lark' ? 'bind:-' : ''}${ATTR_DATA_CUSTOM_HIDDEN}`
                   } else {
                     key = 'hidden'
                   }
