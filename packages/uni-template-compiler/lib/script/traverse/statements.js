@@ -4,6 +4,7 @@ const {
   VAR_MP,
   VAR_ROOT,
   VAR_ORIGINAL,
+  VAR_INDEX,
   INTERNAL_GET_ORIG,
   IDENTIFIER_METHOD,
   IDENTIFIER_FILTER
@@ -90,6 +91,7 @@ function getMapCallExpression (
   renderSlotStatementArray,
   eventPropertyArray,
   forItem,
+  forKey,
   forIndex,
   state
 ) {
@@ -119,10 +121,17 @@ function getMapCallExpression (
           t.identifier(VAR_ORIGINAL)
         )
       ].concat(objectPropertyArray)
+        .concat(forKey && forIndex ? [t.objectProperty(
+          t.identifier(VAR_INDEX),
+          t.identifier(forIndex)
+        )] : [])
     )
   ))
 
   const params = [t.identifier(forItem)]
+  if (forKey) {
+    params.push(t.identifier(forKey))
+  }
   if (forIndex) {
     params.push(t.identifier(forIndex))
   }

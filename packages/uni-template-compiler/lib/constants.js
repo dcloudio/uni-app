@@ -60,6 +60,7 @@ module.exports = {
   VAR_MP: '$mp',
   VAR_ROOT: '$root',
   VAR_ORIGINAL: '$orig',
+  VAR_INDEX: '$index',
   VAR_FILTER: 'F',
   ATTR_DATA_EVENT_OPTS: 'data-event-opts',
   ATTR_DATA_COM_TYPE: 'data-com-type',

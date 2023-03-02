@@ -67,7 +67,7 @@ function getIdentifierName (element) {
 function getScoped (scopedArray, element, methodName, state) {
   const identifierName = getIdentifierName(element)
   const scoped = scopedArray.find(scoped => {
-    if (scoped.forItem === identifierName) {
+    if (scoped.forItem === identifierName && !scoped.forKey) {
       return true
     }
   })
@@ -104,6 +104,28 @@ function isForIndex (scopedArray, element) {
   return false
 }
 
+function isForItem (scopedArray, element) {
+  if (t.isIdentifier(element)) {
+    return scopedArray.find(scoped => {
+      if (scoped.forItem === element.name) {
+        return true
+      }
+    })
+  }
+  return false
+}
+
+function isForKey (scopedArray, element) {
+  if (t.isIdentifier(element)) {
+    return scopedArray.find(scoped => {
+      if (scoped.forKey === element.name) {
+        return true
+      }
+    })
+  }
+  return false
+}
+
 function getExtraDataPath (dataPath, methodName) {
   if (methodName === INTERNAL_SET_SYNC) {
     const dataPaths = dataPath.split('.')
@@ -124,7 +146,7 @@ function parseMethod (method, state) {
         if (state.scoped.length) {
           const forExtra = getScoped(state.scoped, element, methodName, state)
           if (!forExtra) {
-            if (isForIndex(state.scoped, element)) {
+            if (isForIndex(state.scoped, element) || isForItem(state.scoped, element) || isForKey(state.scoped, element)) {
               return element
             } else {
               extraArrayElements.push(replaceMemberExpression(t.stringLiteral(
