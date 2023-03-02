@@ -15,7 +15,8 @@ const {
 } = require('../util')
 
 const {
-  ATTE_DATA_CUSTOM_HIDDEN
+  ATTE_DATA_CUSTOM_HIDDEN,
+  ATTR_SLOT_ORIGIN
 } = require('../constants')
 
 module.exports = function traverse (ast, state = {}) {
@@ -119,9 +120,9 @@ function traverseConditionalExpr (conditionalExprNode, state) {
   }]
   if (
     !(
-      t.isCallExpression(conditionalExprNode.alternate) &&
-      t.isIdentifier(conditionalExprNode.alternate.callee) &&
-      conditionalExprNode.alternate.callee.name === '_e'
+      (t.isCallExpression(conditionalExprNode.alternate) &&
+        t.isIdentifier(conditionalExprNode.alternate.callee) &&
+        conditionalExprNode.alternate.callee.name === '_e') || t.isNullLiteral(conditionalExprNode.alternate)
     )
   ) {
     // test?_c():_e()
@@ -340,44 +341,78 @@ function traverseRenderSlot (callExprNode, state) {
 
 function traverseResolveScopedSlots (callExprNode, state) {
   const options = state.options
-  const vIfAttrName = options.platform.directive + 'if'
-  function single (node, slotName, vIfCode, ignore) {
-    let last = node
-    const vIfs = vIfCode ? [vIfCode] : []
-    function find (children) {
-      if (Array.isArray(children) && children.length === 1) {
-        const child = children[0]
-        if (!child.type) {
-          return
+  const prefix = options.platform.directive
+  const platformName = options.platform.name
+  const vIfAttrName = prefix + 'if'
+  const vForAttrName = prefix + 'for'
+  // 模板标签支持 slot 属性的平台
+  // 百度、字节小程序仅支持在根节点使用 slot 属性
+  const supportTemplateSlotPlatforms = ['mp-baidu', 'mp-toutiao']
+  // 支持访问当前节点 v-for 作用域的平台
+  const supportCurrentScopePlatforms = ['mp-weixin', 'mp-alipay']
+  function merge (node, ignore, vIfs = [], top) {
+    if (!top) {
+      node = { children: [node] }
+      top = node
+    }
+    const children = node.children
+    let nodeAttr = node.attr || {}
+    function resolveVIf () {
+      if (vIfs.length) {
+        // 简易合并
+        nodeAttr[vIfAttrName] = vIfs.length > 1 ? `{{${vIfs.map(str => str.replace(/^\{\{(.+)\}\}$/, '($1)')).join('&&')}}}` : vIfs[0]
+        vIfs.length = 0
+      }
+    }
+    if (Array.isArray(children) && children.length === 1) {
+      let child = children[0]
+      if (child.type) {
+        const attr = child.attr || {}
+        // 除 v-if 外与父节点无同名属性且当前节点无 v-for 作用域且父节点 v-for 支持访问当前节点作用域，向上合并
+        // TODO 父节点访问变量不与当前 v-for 作用域内变量同名时，可向上合并
+        if (!Object.keys(attr).find(key => key !== vIfAttrName && key in nodeAttr) && !attr[vForAttrName] && (supportCurrentScopePlatforms.includes(platformName) || !nodeAttr[vForAttrName])) {
+          if (attr[vIfAttrName]) {
+            vIfs.push(attr[vIfAttrName])
+            delete attr[vIfAttrName]
+          }
+          node.type = child.type
+          node.attr = child.attr = nodeAttr = Object.assign(attr, nodeAttr)
+          node.children = child.children
+          child = node
+        } else {
+          resolveVIf()
         }
-        last = child
-        if (child.attr && child.attr[vIfAttrName]) {
-          vIfs.push(child.attr[vIfAttrName])
-          delete child.attr[vIfAttrName]
-        }
-        if (ignore.includes(child.type) && !(child.attr && Object.keys(child.attr).length)) {
-          find(child.children, ignore)
+        if (ignore.includes(child.type)) {
+          return merge(child, ignore, vIfs, top)
+        } else if (!supportTemplateSlotPlatforms.includes(platformName)) {
+          // 其他小程序 named slot 需移动到实体节点
+          const slot = top.attr.slot
+          if (slot && slot !== 'default') {
+            // TODO 多层 v-for 嵌套时，此处理导致作用域发生变化，需安全重命名
+            delete top.attr.slot
+            attr.slot = slot
+          }
         }
       }
     }
-    find(node.children)
-    last.attr = last.attr || {}
-    last.attr.slot = slotName
-    if (vIfs.length) {
-      // 简易合并
-      last.attr[vIfAttrName] = vIfs.length > 1 ? `{{${vIfs.map(str => str.replace(/^\{\{(.+)\}\}$/, '($1)')).join('&&')}}}` : vIfs[0]
-    }
-    return last
+    resolveVIf()
+    return top
   }
   return callExprNode.arguments[0].elements.map(slotNode => {
     let keyProperty = false
     let fnProperty = false
     let proxyProperty = false
-    let vIfCode
+    let vIfNode
+    let vForNode
     // TODO v-else
     if (t.isConditionalExpression(slotNode)) {
-      vIfCode = genCode(slotNode.test)
+      // vIfCode = genCode(slotNode.test)
+      vIfNode = t.cloneNode(slotNode, true)
       slotNode = slotNode.consequent
+    }
+    if (t.isCallExpression(slotNode)) {
+      vForNode = t.cloneNode(slotNode, true)
+      slotNode = slotNode.arguments[1].body.body[0].argument
     }
     slotNode.properties.forEach(property => {
       switch (property.key.name) {
@@ -391,10 +426,23 @@ function traverseResolveScopedSlots (callExprNode, state) {
           proxyProperty = property
       }
     })
-    const slotName = keyProperty.value.value
-    const returnExprNodes = fnProperty.value.body.body[0].argument
+    const slotNameNode = keyProperty.value
+    const isStaticSlotName = t.isStringLiteral(slotNameNode)
+    const slotName = isStaticSlotName ? slotNameNode.value : genCode(slotNameNode)
+    // TODO 动态 slotName 如使用到 v-for 作用域变量，输出固定名称 $dynamic
+    const slotNameOrigin = slotName
+    let returnExprNodes = fnProperty.value.body.body[0].argument
+    if (vForNode) {
+      vForNode.arguments[1].body.body[0].argument = returnExprNodes
+      returnExprNodes = vForNode
+    }
+    if (vIfNode) {
+      vIfNode.consequent = returnExprNodes
+      returnExprNodes = vIfNode
+    }
     const parentNode = callExprNode.$node
     if (options.scopedSlotsCompiler !== 'augmented' && slotNode.scopedSlotsCompiler !== 'augmented' && !proxyProperty) {
+    // 暂不处理旧版编译模式对于动态 slotName 的处理
       const resourcePath = options.resourcePath
       const ownerName = path.basename(resourcePath, path.extname(resourcePath))
 
@@ -425,10 +473,14 @@ function traverseResolveScopedSlots (callExprNode, state) {
       parentNode.attr['scoped-slots-compiler'] = 'augmented'
     }
     // 除百度、字节外其他小程序仅默认插槽可以支持多个节点
-    return single({
+    return merge({
       type: 'block',
-      children: normalizeChildren(traverseExpr(returnExprNodes, state))
-    }, slotName, vIfCode, ['template', 'block'])
+      children: normalizeChildren(traverseExpr(returnExprNodes, state)),
+      attr: {
+        slot: slotName,
+        [ATTR_SLOT_ORIGIN]: slotNameOrigin
+      }
+    }, ['template', 'block'])
   })
 }
 

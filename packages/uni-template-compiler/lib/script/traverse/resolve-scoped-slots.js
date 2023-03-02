@@ -44,7 +44,7 @@ function replaceId (path, ids) {
     noScope: false,
     Identifier (path) {
       const name = path.node.name
-      if (name in ids && path.key !== 'key' && (path.key !== 'property' || path.parent.computed) && path.scope.path === fnPath) {
+      if (name in ids && path === fnPath.scope.bindings[name].referencePaths[0]) {
         path.replaceWith(ids[name])
         replaced = true
       }
@@ -59,6 +59,9 @@ module.exports = function getResolveScopedSlots (parent, state) {
   if (objectPath.isConditionalExpression()) {
     objectPath = objectPath.get('consequent')
   }
+  if (objectPath.isCallExpression()) {
+    objectPath = objectPath.get('arguments.1.body.body.0.argument')
+  }
   const properties = objectPath.get('properties')
   const fn = properties.find(path => path.get('key').isIdentifier({ name: 'fn' }))
   const params = fn.get('value.params.0')
@@ -66,10 +69,11 @@ module.exports = function getResolveScopedSlots (parent, state) {
     return
   }
   const vueId = parent.parentPath.parentPath.get('properties').find(path => path.get('key').isIdentifier({ name: 'attrs' })).get('value').get('properties').find(path => path.get('key').isStringLiteral({ value: 'vue-id' })).get('value').node
-  const slot = properties.find(path => path.get('key').isIdentifier({ name: 'key' })).get('value').node.value
+  // TODO 多层 v-for 嵌套时，后续处理作用域可能发生变化，需安全重命名
+  const slot = properties.find(path => path.get('key').isIdentifier({ name: 'key' })).get('value').node
   const ids = {}
   function updateIds (vueId, slot, value, key) {
-    const array = [vueId, t.stringLiteral(slot)]
+    const array = [vueId, slot]
     if (key) {
       array.push(t.stringLiteral(key))
     }
@@ -83,7 +87,9 @@ module.exports = function getResolveScopedSlots (parent, state) {
     updateIds(vueId, slot, params.node.name)
   }
   const fnBody = fn.get('value.body')
-  if (state.options.scopedSlotsCompiler === 'augmented' || needSlotMode(fnBody, ids)) {
+  // 暂不处理旧版编译模式对于动态 slotName 的处理，含有动态 slotName 的情况下，scopedSlotsCompiler 指定使用新版编译模式
+  const isStaticSlotName = t.isStringLiteral(slot)
+  if (state.options.scopedSlotsCompiler === 'augmented' || needSlotMode(fnBody, ids) || !isStaticSlotName) {
     if (replaceId(fnBody, ids)) {
       const orgin = fnBody.get('body.0.argument')
       const elements = orgin.get('elements')

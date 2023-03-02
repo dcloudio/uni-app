@@ -214,6 +214,14 @@ describe('mp:compiler-mp-weixin', () => {
         scopedSlotsCompiler: 'auto'
       }
     )
+    assertCodegen(
+      '<custom-view><template v-slot:[name]="{item}"><view>{{item}}</view></template></custom-view>',
+      '<custom-view scoped-slots-compiler="augmented" vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[name]}}"><view slot="{{name}}" wx:if="{{$root.m0}}">{{$root.m1}}</view></custom-view>',
+      'with(this){var m0=$hasScopedSlotsParams("551070e6-1");var m1=m0?$getScopedSlotsParams("551070e6-1",name,"item"):null;$mp.data=Object.assign({},{$root:{m0:m0,m1:m1}})}',
+      {
+        scopedSlotsCompiler: 'auto'
+      }
+    )
   })
 
   it('generate scoped slot with scopedSlotsCompiler: augmented', () => {
@@ -277,6 +285,14 @@ describe('mp:compiler-mp-weixin', () => {
       '<my-component><template v-slot="{item}">{{item}}<my-component><template v-slot="{item}">{{item}}</template></my-component></template></my-component>',
       '<my-component vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"><block wx:if="{{$root.m0}}">{{$root.m1}}<my-component vue-id="{{(\'551070e6-2\')+\',\'+(\'551070e6-1\')}}" bind:__l="__l" vue-slots="{{[\'default\']}}"><block wx:if="{{$root.m2}}">{{$root.m3}}</block></my-component></block></my-component>',
       'with(this){var m0=$hasScopedSlotsParams("551070e6-1");var m1=m0?$getScopedSlotsParams("551070e6-1","default","item"):null;var m2=$hasScopedSlotsParams("551070e6-2");var m3=m2?$getScopedSlotsParams("551070e6-2","default","item"):null;$mp.data=Object.assign({},{$root:{m0:m0,m1:m1,m2:m2,m3:m3}})}',
+      {
+        scopedSlotsCompiler: 'augmented'
+      }
+    )
+    assertCodegen(
+      '<custom-view><template v-if="test" v-for="(item1, index1) in array1" v-slot:name="{item}"><template v-for="(item2, index2) in array"><view>{{item}}</view></template></template></custom-view>',
+      '<custom-view vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'name\']}}"><block wx:if="{{test}}"><block wx:for="{{$root.l1}}" wx:for-item="item1" wx:for-index="index1" wx:if="{{item1.m0}}"><view wx:for="{{item1.l0}}" wx:for-item="item2" wx:for-index="index2" slot="name">{{item2.m1}}</view></block></block></custom-view>',
+      'with(this){var l1=test?__map(array1,function(item1,index1){var $orig=__get_orig(item1);var m0=$hasScopedSlotsParams("551070e6-1");var l0=m0?__map(array,function(item2,index2){var $orig=__get_orig(item2);var m1=$getScopedSlotsParams("551070e6-1","name","item");return{$orig:$orig,m1:m1}}):null;return{$orig:$orig,m0:m0,l0:l0}}):null;$mp.data=Object.assign({},{$root:{l1:l1}})}',
       {
         scopedSlotsCompiler: 'augmented'
       }

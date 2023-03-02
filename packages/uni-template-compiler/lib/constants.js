@@ -66,6 +66,7 @@ module.exports = {
   ATTR_DATA_COM_TYPE: 'data-com-type',
   ATTR_DATA_EVENT_PARAMS: 'data-event-params',
   ATTR_DATA_EVENT_LIST: 'data-event-list',
+  ATTR_SLOT_ORIGIN: 'slot-origin',
   ATTE_DATA_CUSTOM_HIDDEN: 'data-custom-hidden',
   VIRTUAL_HOST_STYLE: 'virtualHostStyle',
   VIRTUAL_HOST_CLASS: 'virtualHostClass',

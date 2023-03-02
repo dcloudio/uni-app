@@ -6,7 +6,8 @@ const {
   SELF_CLOSING_TAGS,
   INTERNAL_EVENT_LINK,
   VIRTUAL_HOST_STYLE,
-  VIRTUAL_HOST_CLASS
+  VIRTUAL_HOST_CLASS,
+  ATTR_SLOT_ORIGIN
 } = require('../constants')
 const uniI18n = require('@dcloudio/uni-cli-i18n')
 
@@ -73,15 +74,18 @@ function processElement (ast, state, isRoot) {
         const childElement = children[i]
         /**
          * 仅百度、字节支持使用 block 作为命名插槽根节点
-         * 此处为了统一仅忽略默认插槽
          * <block slot="left"></block> => <view slot="left"></view>
          */
-        if (typeof childElement !== 'string' && childElement.attr.slot) {
-          const slot = childElement.attr.slot
-          if (slot && slot !== 'default' && childElement.type === 'block') {
+        const attr = typeof childElement !== 'string' && childElement.attr
+        const slot = attr && (attr[ATTR_SLOT_ORIGIN] || attr.slot)
+        if (slot) {
+          delete attr[ATTR_SLOT_ORIGIN]
+          if (!['mp-baidu', 'mp-toutiao'].includes(platformName) && attr.slot && attr.slot !== 'default' && childElement.type === 'block') {
             childElement.type = 'view'
           }
-          slots.push(slot)
+          if (!slots.includes(slot)) {
+            slots.push(slot)
+          }
         } else {
           defaultSlot = true
         }
@@ -101,7 +105,10 @@ function processElement (ast, state, isRoot) {
         }
       }
       if (slots.length) { // 标记 slots
-        ast.attr['vue-slots'] = '{{[' + slots.reverse().map(slotName => `'${slotName}'`).join(',') + ']}}'
+        ast.attr['vue-slots'] = '{{[' + slots.reverse().map(slotName => {
+          const res = slotName.match(/\{\{(.+?)\}\}/)
+          return res ? res[1] : `'${slotName}'`
+        }).join(',') + ']}}'
       }
     }
     if (ast.attr.id && ast.attr.id.indexOf('{{') === 0) {
