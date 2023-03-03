@@ -1,1 +1,1 @@
-{"version":3,"sources":["utssdk/test-uts/app-ios/index.uts"],"sourcesContent":["export function test(): string {\n  return '1'\n}\n"],"names":[],"mappings":";AAAO,YAAS,UAAQ,MAAM,CAAC;IAC7B,OAAO;AACT;;;;mCAFwB,MAAM;eAAd;;;8BAAQ,MAAM"}
+{"version":3,"sources":["utssdk/test-uts/app-ios/index.uts"],"sourcesContent":["export function test(): string {\n  return '1'\n}\n"],"names":[],"mappings":";AAAO,YAAS,UAAQ,MAAM,CAAC;IAC7B,OAAO;AACT;0BAFwB,MAAM;;;;;;uCAAN,MAAM"}
