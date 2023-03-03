@@ -251,13 +251,13 @@ const options = {
             const miniprogram = (_a = projectJson.condition) === null || _a === void 0 ? void 0 : _a.miniprogram;
             if (miniprogram && shared.isArray(miniprogram.list) && miniprogram.list.length) {
                 const compileModeJson = {
-                    modes: []
+                    modes: [],
                 };
-                compileModeJson.modes = miniprogram.list.map(item => {
+                compileModeJson.modes = miniprogram.list.map((item) => {
                     return {
                         title: item.name,
                         page: item.pathName,
-                        pageQuery: item.query
+                        pageQuery: item.query,
                     };
                 });
                 const miniIdeDir = path__default.default.join(process.env.UNI_OUTPUT_DIR, '.mini-ide');
@@ -268,7 +268,7 @@ const options = {
                 delete projectJson.condition;
             }
             return projectJson;
-        }
+        },
     },
     template: Object.assign(Object.assign({}, miniProgram), { customElements, filter: {
             extname: '.sjs',

@@ -1,39 +1,16 @@
-import DCloudUTSExtAPI;
 import DCloudUTSFoundation;
+import DCloudUTSExtAPI;
+import UIKit;
+import CoreLocation;
 public var uni_showToast = DCloudUTSExtAPI.showToast;
 public var uni_showModel = DCloudUTSExtAPI.showModel;
 public typealias ShowToast = (_ msg: String) -> Void;
-import UIKit;
-import CoreLocation;
-@objc(UTSSDKModulesTestUniPluginGetBatteryInfoOptions)
-@objcMembers
-public class GetBatteryInfoOptions : NSObject, UTSCallbackDelegate {
+public struct GetBatteryInfoOptions {
     public var name: String!;
     public var pwd: NSNumber!;
-    public var success: UTSCallback?;
-    public var fail: UTSCallback?;
-    public var complete: UTSCallback?;
-    public func callUTSNativeCallback(_ name: String, _ callback: Any, _ args: [Any]) {
-        switch(name){
-            case "success":
-                typealias successType = (_ res: UTSJSONObject) -> Void;
-                if (callback is successType) {
-                    (callback as! successType)(args[0] as! UTSJSONObject);
-                }
-            case "fail":
-                typealias failType = (_ res: UTSJSONObject) -> Void;
-                if (callback is failType) {
-                    (callback as! failType)(args[0] as! UTSJSONObject);
-                }
-            case "complete":
-                typealias completeType = (_ res: UTSJSONObject) -> Void;
-                if (callback is completeType) {
-                    (callback as! completeType)(args[0] as! UTSJSONObject);
-                }
-            default:
-                break;
-        }
-    }
+    public var success: ((_ res: UTSJSONObject) -> Void)?;
+    public var fail: ((_ res: UTSJSONObject) -> Void)?;
+    public var complete: ((_ res: UTSJSONObject) -> Void)?;
 }
 public func getBatteryInfo(_ options: GetBatteryInfoOptions) {
     UIAlertController(title: title, message: message, preferredStyle: UIAlertController.Style.alert);
@@ -62,7 +39,7 @@ public func test1(_ callback: UTSCallback) -> String {
     console.log(~a, " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:55");
     return "test1";
 }
-@objc
+@objc(UTSSDKModulesTestUniPluginTest1)
 @objcMembers
 public class Test1 : NSObject {
 }
@@ -111,35 +88,64 @@ public var showToast2: ShowToast = {
 public var showToast3: ShowToast = {
 (_ msg) in
 };
+@objc(UTSSDKModulesTestUniPluginGetBatteryInfoOptionsJSONObject)
+@objcMembers
+public class GetBatteryInfoOptionsJSONObject : NSObject {
+    public var name: String!;
+    public var pwd: NSNumber!;
+    public var success: UTSCallback?;
+    public var fail: UTSCallback?;
+    public var complete: UTSCallback?;
+}
+public func getBatteryInfoByJs(_ options: GetBatteryInfoOptionsJSONObject) {
+    return getBatteryInfo(GetBatteryInfoOptions(name: options.name, pwd: options.pwd, success: {
+    (res) in
+    options.success?(res);
+    }, fail: {
+    (res) in
+    options.fail?(res);
+    }, complete: {
+    (res) in
+    options.complete?(res);
+    }));
+}
+public func test1ByJs(_ callback: UTSCallback) -> String {
+    return test1({
+        callback(res);
+    }
+    );
+}
+public func testAsyncByJs() {
+    return testAsync();
+}
+public func showToast1ByJs(_ msg: String) -> Void {
+    return showToast1(msg);
+}
+public func showToast2ByJs(_ msg: String) -> Void {
+    return showToast2(msg);
+}
+public func showToast3ByJs(_ msg: String) -> Void {
+    return showToast3(msg);
+}
 @objc(UTSSDKModulesTestUniPluginIndexSwift)
 @objcMembers
 public class IndexSwift : NSObject {
-    public static func s_getBatteryInfo(_ options: GetBatteryInfoOptions) {
-        return getBatteryInfo(options);
+    public static func s_getBatteryInfoByJs(_ options: GetBatteryInfoOptionsJSONObject) {
+        return getBatteryInfoByJs(options);
     }
-    public static func s_test1(_ callback: UTSCallback) -> String {
-        return test1(callback);
+    public static func s_test1ByJs(_ callback: UTSCallback) -> String {
+        return test1ByJs(callback);
     }
-    @available(iOS 13.0.0, *)
-    public static func s_testAsync() async -> UTSJSONObject {
-        return await testAsync();
+    public static func s_testAsyncByJs() {
+        return testAsyncByJs();
     }
-    public static func s_showToast1(_ msg: String) {
-        return showToast1(msg);
+    public static func s_showToast1ByJs(_ msg: String) -> Void {
+        return showToast1ByJs(msg);
     }
-    public static func s_showToast2(_ msg: String) {
-        return showToast2(msg);
+    public static func s_showToast2ByJs(_ msg: String) -> Void {
+        return showToast2ByJs(msg);
     }
-    public static func s_showToast3(_ msg: String) {
-        return showToast3(msg);
+    public static func s_showToast3ByJs(_ msg: String) -> Void {
+        return showToast3ByJs(msg);
     }
-}
-public func getBatteryInfoWithJSON(_ options: UTSJSONObject) {
-    return getBatteryInfo(UTSiOS.parseObject(options));
-}
-public func test1WithJSON(_ callback: UTSJSONObject) -> String {
-    return test1(UTSiOS.parseObject(callback));
-}
-public func testAsyncWithJSON() -> UTSJSONObject {
-    return testAsync();
 }

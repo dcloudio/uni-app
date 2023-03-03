@@ -183,12 +183,12 @@ describe('uts:sourceMap', () => {
     )
     const { line, column, source } = await originalPositionFor({
       sourceMapFile,
-      line: 40,
-      column: 16,
+      line: 17,
+      column: 0,
     })
 
     expect(line).toBe(19)
-    expect(column).toBe(14)
+    expect(column).toBe(2)
     expect(source).toContain('index.uts')
   })
 })
