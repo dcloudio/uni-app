@@ -82,14 +82,14 @@ function createResult(
   errMsg: string,
   code: string,
   deps: string[],
-  exports: Record<string, 'var' | 'function' | 'class'>
+  meta: unknown
 ): CompileResult {
   return {
     dir,
     code: parseErrMsg(code, errMsg),
     deps,
     encrypt: false,
-    meta: { exports },
+    meta,
   }
 }
 
@@ -119,7 +119,12 @@ export async function compile(
 
   const env = initCheckOptionsEnv()
   const deps: string[] = []
-  const exports = {}
+
+  const meta = {
+    exports: {},
+    types: {},
+  }
+
   const code = await genProxyCode(
     pluginDir,
     extend(
@@ -134,7 +139,7 @@ export async function compile(
         moduleName:
           require(join(pluginDir, 'package.json')).displayName || pkg.id,
         moduleType: process.env.UNI_UTS_MODULE_TYPE || '',
-        exports,
+        meta,
       },
       pkg
     )
@@ -208,7 +213,7 @@ export async function compile(
     if (utsPlatform === 'app-ios') {
       if (isWindows) {
         process.env.UNI_UTS_TIPS = `iOS手机在windows上真机运行时uts插件代码修改需提交云端打包自定义基座才能生效`
-        return createResult(outputPluginDir, errMsg, code, deps, exports)
+        return createResult(outputPluginDir, errMsg, code, deps, meta)
       }
       // ios 模拟器不支持
       if (process.env.HX_RUN_DEVICE_TYPE === 'ios_simulator') {
@@ -218,7 +223,7 @@ export async function compile(
           compileErrMsg(pkg.id),
           code,
           deps,
-          exports
+          meta
         )
       }
     }
@@ -286,7 +291,7 @@ export async function compile(
             errMsg,
             code,
             res.files.map((name) => join(pluginDir, name)),
-            exports
+            meta
           )
         }
       }
@@ -402,7 +407,7 @@ export async function compile(
       }
     }
   }
-  return createResult(outputPluginDir, errMsg, code, deps, exports)
+  return createResult(outputPluginDir, errMsg, code, deps, meta)
 }
 
 function getCompiler(type: 'kotlin' | 'swift') {
