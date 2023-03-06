@@ -1,7 +1,7 @@
 import path, { basename, resolve } from 'path'
 import fs from 'fs-extra'
 import type { parse, bundle, UTSTarget } from '@dcloudio/uts'
-import { camelize, capitalize, extend, isString } from '@vue/shared'
+import { camelize, capitalize, extend } from '@vue/shared'
 import glob from 'fast-glob'
 import { Module, ModuleItem } from '../types/types'
 import {
@@ -187,12 +187,12 @@ function resolveTypeAliasDeclNames(items: ModuleItem[]) {
 export function createResolveTypeReferenceName(
   namespace: string,
   ast: Module,
-  types: Record<string, unknown>
+  interfaceTypes: string[]
 ) {
   const names = resolveTypeAliasDeclNames(ast.body)
   return (name: string) => {
-    if (names.includes(name) || isString(types[name])) {
-      return namespace + capitalize(name)
+    if (names.includes(name) || interfaceTypes.includes(name)) {
+      return namespace + capitalize(name) + 'JSONObject'
     }
     return name
   }

@@ -5,12 +5,20 @@ import CoreLocation;
 public var uni_showToast = DCloudUTSExtAPI.showToast;
 public var uni_showModel = DCloudUTSExtAPI.showModel;
 public typealias ShowToast = (_ msg: String) -> Void;
-public struct GetBatteryInfoOptions {
+public class GetBatteryInfoOptions {
     public var name: String!;
     public var pwd: NSNumber!;
     public var success: ((_ res: UTSJSONObject) -> Void)?;
     public var fail: ((_ res: UTSJSONObject) -> Void)?;
     public var complete: ((_ res: UTSJSONObject) -> Void)?;
+    public init() {}
+    public init(name: String, pwd: NSNumber, success:@escaping ((_ res: UTSJSONObject) -> Void), fail:@escaping ((_ res: UTSJSONObject) -> Void), complete:@escaping ((_ res: UTSJSONObject) -> Void)) {
+        self.name = name;
+        self.pwd = pwd;
+        self.success = success;
+        self.fail = fail;
+        self.complete = complete;
+    }
 }
 public func getBatteryInfo(_ options: GetBatteryInfoOptions) {
     UIAlertController(title: title, message: message, preferredStyle: UIAlertController.Style.alert);
@@ -26,7 +34,7 @@ public func getBatteryInfo(_ options: GetBatteryInfoOptions) {
         options.complete!(res);
     }
 }
-public func test1(_ callback: UTSCallback) -> String {
+public func test1(_ callback:@escaping () -> Void) -> String {
     console.log(UTSJSONObject([
         "a": "b"
     ]), " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:33");
@@ -111,12 +119,14 @@ public func getBatteryInfoByJs(_ options: GetBatteryInfoOptionsJSONObject) {
 }
 public func test1ByJs(_ callback: UTSCallback) -> String {
     return test1({
-        callback(res);
+        callback();
     }
     );
 }
-public func testAsyncByJs() {
-    return testAsync();
+@available(iOS 13.0.0, *)
+@available(iOS 13.0.0, *)
+public func testAsyncByJs() async -> UTSJSONObject {
+    return await testAsync();
 }
 public func showToast1ByJs(_ msg: String) -> Void {
     return showToast1(msg);
@@ -136,8 +146,10 @@ public class IndexSwift : NSObject {
     public static func s_test1ByJs(_ callback: UTSCallback) -> String {
         return test1ByJs(callback);
     }
-    public static func s_testAsyncByJs() {
-        return testAsyncByJs();
+    @available(iOS 13.0.0, *)
+    @available(iOS 13.0.0, *)
+    public static func s_testAsyncByJs() async -> UTSJSONObject {
+        return await testAsyncByJs();
     }
     public static func s_showToast1ByJs(_ msg: String) -> Void {
         return showToast1ByJs(msg);

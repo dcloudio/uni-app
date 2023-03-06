@@ -58,8 +58,8 @@ open class User : IUser {
 }
 fun login(name: String, callback: () -> Unit) {}
 @Suppress("DEPRECATION")
-fun register(name: String, callback: UTSCallback) {}
-fun offMemoryWarning(callback: (UTSCallback)? = null) {
+fun register(name: String, callback: () -> Unit) {}
+fun offMemoryWarning(callback: ((level: Number) -> Unit)? = null) {
     uni_showToast();
     uni_showToast();
     uni_showModel();
@@ -71,11 +71,11 @@ val showToast2: ShowToast = fun(msg) {};
 val showToast3: ShowToast = fun(msg) {};
 fun registerByJs(name: String, callback: UTSCallback) {
     return register(name, fun(){
-        callback(res);
+        callback();
     }
     );
 }
-fun offMemoryWarningByJs(callback: (UTSCallback)? = null) {
+fun offMemoryWarningByJs(callback: ((level: Number) -> Unit)? = null) {
     return offMemoryWarning();
 }
 fun showToast1ByJs(msg: String): Unit {

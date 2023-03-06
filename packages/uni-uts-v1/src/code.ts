@@ -31,6 +31,13 @@ export const enum FORMATS {
   ES = 'es',
   CJS = 'cjs',
 }
+
+type Types = { class: string[]; fn: Record<string, Param[]> }
+
+interface Meta {
+  exports: Record<string, 'var' | 'function' | 'class'>
+  types: Record<string, 'function' | 'class'>
+}
 interface GenProxyCodeOptions {
   is_uni_modules: boolean
   id: string
@@ -44,7 +51,7 @@ interface GenProxyCodeOptions {
   moduleName?: string
   moduleType?: string
   types?: Types
-  exports?: Record<string, 'var' | 'function' | 'class'>
+  meta?: Meta
 }
 
 export async function genProxyCode(
@@ -52,7 +59,13 @@ export async function genProxyCode(
   options: GenProxyCodeOptions
 ) {
   const { name, is_uni_modules, format, moduleName, moduleType } = options
+
+  if (!options.meta) {
+    options.meta = { exports: {}, types: {} }
+  }
+
   options.types = await parseInterfaceTypes(module, options)
+  options.meta!.types = parseMetaTypes(options.types)
   return `
 const { initUTSProxyClass, initUTSProxyFunction, initUTSPackageName, initUTSIndexClassName, initUTSClassName } = uni
 const name = '${name}'
@@ -79,9 +92,20 @@ ${genModuleCode(
   await parseModuleDecls(module, options),
   format,
   options.pluginRelativeDir!,
-  options.exports
+  options.meta!
 )}
 `
+}
+
+function parseMetaTypes(types: Types) {
+  let res: Meta['types'] = {}
+  types.class.forEach((n) => {
+    res[n] = 'class'
+  })
+  Object.keys(types.fn).forEach((n) => {
+    res[n] = 'function'
+  })
+  return res
 }
 
 export function genComponentsCode(
@@ -162,14 +186,14 @@ function genModuleCode(
   decls: ProxyDecl[],
   format: FORMATS = FORMATS.ES,
   pluginRelativeDir: string,
-  exports: Record<string, 'var' | 'function' | 'class'> = {}
+  meta: Meta
 ) {
   const codes: string[] = []
   const exportDefault = exportDefaultCode(format)
   const exportConst = exportVarCode(format, 'const')
   decls.forEach((decl) => {
     if (decl.type === 'Class') {
-      exports[decl.cls] = decl.isVar ? 'var' : 'class'
+      meta.exports[decl.cls] = decl.isVar ? 'var' : 'class'
 
       if (decl.isDefault) {
         codes.push(
@@ -187,7 +211,7 @@ function genModuleCode(
         )
       }
     } else if (decl.type === 'FunctionDeclaration') {
-      exports[decl.method] = decl.isVar ? 'var' : 'function'
+      meta.exports[decl.method] = decl.isVar ? 'var' : 'function'
 
       if (decl.isDefault) {
         codes.push(
@@ -195,7 +219,7 @@ function genModuleCode(
             decl.async
           }, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: '${
             decl.method
-          }', params: ${JSON.stringify(decl.params)}})`
+          }ByJs', params: ${JSON.stringify(decl.params)}})`
         )
       } else {
         codes.push(
@@ -203,12 +227,12 @@ function genModuleCode(
             decl.async
           }, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: '${
             decl.method
-          }', params: ${JSON.stringify(decl.params)}})`
+          }ByJs', params: ${JSON.stringify(decl.params)}})`
         )
       }
     } else if (decl.type === 'VariableDeclaration') {
       decl.declarations.forEach((d) => {
-        exports[(d.id as Identifier).value] = 'var'
+        meta.exports[(d.id as Identifier).value] = 'var'
       })
 
       if (format === FORMATS.ES) {
@@ -252,10 +276,13 @@ function genModuleCode(
 async function parseInterfaceTypes(
   module: string,
   options: GenProxyCodeOptions
-) {
+): Promise<Types> {
   const interfaceFilename = resolveRootInterface(module, options)
   if (!interfaceFilename) {
-    return {}
+    return {
+      class: [],
+      fn: {},
+    }
   }
   // 懒加载 uts 编译器
   // eslint-disable-next-line no-restricted-globals
@@ -263,27 +290,33 @@ async function parseInterfaceTypes(
   const ast: Module = await parse(fs.readFileSync(interfaceFilename, 'utf8'), {
     noColor: !isColorSupported(),
   })
-  const types: Record<string, Param[] | string> = {}
+  const classTypes: string[] = []
+  const fnTypes: Record<string, Param[]> = {}
   ast.body.filter((node) => {
     if (
       node.type === 'ExportDeclaration' &&
       node.declaration.type === 'TsTypeAliasDeclaration'
     ) {
       switch (node.declaration.typeAnnotation.type) {
+        // export type ShowLoading = ()=>void
         case 'TsFunctionType':
           const params = createParams(node.declaration.typeAnnotation.params)
           if (params.length) {
-            types[node.declaration.id.value] = params
+            fnTypes[node.declaration.id.value] = params
           } else {
-            types[node.declaration.id.value] = []
+            fnTypes[node.declaration.id.value] = []
           }
           break
+        // export type ShowLoadingOptions = {}
         case 'TsTypeLiteral':
-          types[node.declaration.id.value] = node.declaration.id.value
+          classTypes.push(node.declaration.id.value)
       }
     }
   })
-  return types
+  return {
+    class: classTypes,
+    fn: fnTypes,
+  }
 }
 
 function createParams(tsParams: TsFnParameter[]) {
@@ -300,7 +333,6 @@ function createParams(tsParams: TsFnParameter[]) {
   return params
 }
 
-type Types = Awaited<ReturnType<typeof parseInterfaceTypes>>
 async function parseModuleDecls(module: string, options: GenProxyCodeOptions) {
   // 优先合并 ios + android，如果没有，查找根目录 index.uts
   const iosDecls = await parseFile(
@@ -393,7 +425,7 @@ async function parseCode(code: string, namespace: string, types: Types) {
   const ast = await parse(code, { noColor: !isColorSupported() })
   return parseAst(
     ast,
-    createResolveTypeReferenceName(namespace, ast, types),
+    createResolveTypeReferenceName(namespace, ast, types.class),
     types
   )
 }
@@ -736,7 +768,7 @@ function genVariableDeclaration(
       if (typeAnn && typeAnn.typeAnnotation.type === 'TsTypeReference') {
         const { typeName } = typeAnn.typeAnnotation
         if (typeName.type === 'Identifier') {
-          const value = types[typeName.value]
+          const value = types.fn[typeName.value]
           if (isArray(value)) {
             params = value
           }
