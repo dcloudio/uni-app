@@ -5,19 +5,21 @@ import CoreLocation;
 public var uni_showToast = DCloudUTSExtAPI.showToast;
 public var uni_showModel = DCloudUTSExtAPI.showModel;
 public typealias ShowToast = (_ msg: String) -> Void;
-public class GetBatteryInfoOptions {
+@objc(UTSSDKModulesTestUniPluginGetBatteryInfoOptions)
+@objcMembers
+public class GetBatteryInfoOptions : NSObject {
     public var name: String!;
     public var pwd: NSNumber!;
     public var success: ((_ res: UTSJSONObject) -> Void)?;
     public var fail: ((_ res: UTSJSONObject) -> Void)?;
     public var complete: ((_ res: UTSJSONObject) -> Void)?;
-    public init() {}
-    public init(name: String, pwd: NSNumber, success:@escaping ((_ res: UTSJSONObject) -> Void), fail:@escaping ((_ res: UTSJSONObject) -> Void), complete:@escaping ((_ res: UTSJSONObject) -> Void)) {
-        self.name = name;
-        self.pwd = pwd;
-        self.success = success;
-        self.fail = fail;
-        self.complete = complete;
+    public override init() {}
+    public init(_ obj: UTSJSONObject) {
+        name = obj["name"] as! String;
+        pwd = obj["pwd"] as! NSNumber;
+        success = obj["success"] as? ((_ res: UTSJSONObject) -> Void);
+        fail = obj["fail"] as? ((_ res: UTSJSONObject) -> Void);
+        complete = obj["complete"] as? ((_ res: UTSJSONObject) -> Void);
     }
 }
 public func getBatteryInfo(_ options: GetBatteryInfoOptions) {
@@ -106,16 +108,22 @@ public class GetBatteryInfoOptionsJSONObject : NSObject {
     public var complete: UTSCallback?;
 }
 public func getBatteryInfoByJs(_ options: GetBatteryInfoOptionsJSONObject) {
-    return getBatteryInfo(GetBatteryInfoOptions(name: options.name, pwd: options.pwd, success: {
-    (res) in
-    options.success?(res);
-    }, fail: {
-    (res) in
-    options.fail?(res);
-    }, complete: {
-    (res) in
-    options.complete?(res);
-    }));
+    return getBatteryInfo(GetBatteryInfoOptions(UTSJSONObject([
+        "name": options.name,
+        "pwd": options.pwd,
+        "success": {
+        (res: UTSJSONObject) in
+        options.success?(res);
+        },
+        "fail": {
+        (res: UTSJSONObject) in
+        options.fail?(res);
+        },
+        "complete": {
+        (res: UTSJSONObject) in
+        options.complete?(res);
+        }
+    ])));
 }
 public func test1ByJs(_ callback: UTSCallback) -> String {
     return test1({
@@ -123,7 +131,6 @@ public func test1ByJs(_ callback: UTSCallback) -> String {
     }
     );
 }
-@available(iOS 13.0.0, *)
 @available(iOS 13.0.0, *)
 public func testAsyncByJs() async -> UTSJSONObject {
     return await testAsync();
@@ -146,7 +153,6 @@ public class IndexSwift : NSObject {
     public static func s_test1ByJs(_ callback: UTSCallback) -> String {
         return test1ByJs(callback);
     }
-    @available(iOS 13.0.0, *)
     @available(iOS 13.0.0, *)
     public static func s_testAsyncByJs() async -> UTSJSONObject {
         return await testAsyncByJs();
