@@ -183,7 +183,7 @@ describe('uts:sourceMap', () => {
     )
     const { line, column, source } = await originalPositionFor({
       sourceMapFile,
-      line: 25,
+      line: 27,
       column: 0,
     })
 
