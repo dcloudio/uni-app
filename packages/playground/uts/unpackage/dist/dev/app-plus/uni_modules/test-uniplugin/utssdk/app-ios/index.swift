@@ -13,13 +13,15 @@ public class GetBatteryInfoOptions : NSObject {
     public var success: ((_ res: UTSJSONObject) -> Void)?;
     public var fail: ((_ res: UTSJSONObject) -> Void)?;
     public var complete: ((_ res: UTSJSONObject) -> Void)?;
-    public override init() {}
+    public override init() {
+        super.init();
+    }
     public init(_ obj: UTSJSONObject) {
         name = obj["name"] as! String;
         pwd = obj["pwd"] as! NSNumber;
-        success = obj["success"] as? ((_ res: UTSJSONObject) -> Void);
-        fail = obj["fail"] as? ((_ res: UTSJSONObject) -> Void);
-        complete = obj["complete"] as? ((_ res: UTSJSONObject) -> Void);
+        success = obj["success"] as! ((_ res: UTSJSONObject) -> Void)?;
+        fail = obj["fail"] as! ((_ res: UTSJSONObject) -> Void)?;
+        complete = obj["complete"] as! ((_ res: UTSJSONObject) -> Void)?;
     }
 }
 public func getBatteryInfo(_ options: GetBatteryInfoOptions) {
@@ -112,15 +114,15 @@ public func getBatteryInfoByJs(_ options: GetBatteryInfoOptionsJSONObject) {
         "name": options.name,
         "pwd": options.pwd,
         "success": {
-        (res: UTSJSONObject) in
+        (res: UTSJSONObject) -> Void in
         options.success?(res);
         },
         "fail": {
-        (res: UTSJSONObject) in
+        (res: UTSJSONObject) -> Void in
         options.fail?(res);
         },
         "complete": {
-        (res: UTSJSONObject) in
+        (res: UTSJSONObject) -> Void in
         options.complete?(res);
         }
     ])));
