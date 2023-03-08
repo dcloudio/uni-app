@@ -283,7 +283,8 @@ function genSlotNode (slotName, slotNode, fallbackNodes, state, isStaticSlotName
   return [{
     type: 'block',
     attr: {
-      [prefix + 'if']: isStaticSlotName ? '{{$slots.' + slotName + '}}' : '{{$slots[' + slotName.replace(/^{{/, '').replace(/}}$/, '') + ']}}'
+      // 移除动态拼接的 index 部分
+      [prefix + 'if']: isStaticSlotName ? '{{$slots.' + slotName + '}}' : '{{$slots[' + slotName.replace(/^{{/, '').replace(/}}$/, '').replace(/\+\('\.'\+\S+?\)$/, '') + ']}}'
     },
     children: [].concat(slotNode)
   }, {
@@ -429,8 +430,9 @@ function traverseResolveScopedSlots (callExprNode, state) {
     const slotNameNode = keyProperty.value
     const isStaticSlotName = t.isStringLiteral(slotNameNode)
     const slotName = isStaticSlotName ? slotNameNode.value : genCode(slotNameNode)
+    // 移除动态拼接的 index 部分
     // TODO 动态 slotName 如使用到 v-for 作用域变量，输出固定名称 $dynamic
-    const slotNameOrigin = slotName
+    const slotNameOrigin = isStaticSlotName ? slotName : slotName.replace(/\+\('\.'\+\S+?\)\}\}$/, '}}')
     let returnExprNodes = fnProperty.value.body.body[0].argument
     if (vForNode) {
       vForNode.arguments[1].body.body[0].argument = returnExprNodes
@@ -442,7 +444,7 @@ function traverseResolveScopedSlots (callExprNode, state) {
     }
     const parentNode = callExprNode.$node
     if (options.scopedSlotsCompiler !== 'augmented' && slotNode.scopedSlotsCompiler !== 'augmented' && !proxyProperty) {
-    // 暂不处理旧版编译模式对于动态 slotName 的处理
+      // 暂不处理旧版编译模式对于动态 slotName 的处理
       const resourcePath = options.resourcePath
       const ownerName = path.basename(resourcePath, path.extname(resourcePath))
 

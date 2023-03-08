@@ -158,7 +158,8 @@ module.exports = function traverseRenderList (path, state) {
     declarationArray: [],
     computedProperty: {},
     initExpressionStatementArray: state.initExpressionStatementArray,
-    renderSlotStatementArray: state.renderSlotStatementArray
+    renderSlotStatementArray: state.renderSlotStatementArray,
+    resolveSlotStatementArray: state.resolveSlotStatementArray
   }
 
   functionExpression.traverse(require('./visitor'), forState)

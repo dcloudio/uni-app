@@ -1,9 +1,11 @@
 const t = require('@babel/types')
+const template = require('@babel/template').default
 
 const {
   METHOD_BUILT_IN,
   METHOD_CREATE_EMPTY_VNODE,
-  METHOD_CREATE_ELEMENT
+  METHOD_CREATE_ELEMENT,
+  METHOD_RENDER_LIST
 } = require('../../constants')
 
 function needSlotMode (path, ids) {
@@ -44,8 +46,8 @@ function replaceId (path, ids) {
     noScope: false,
     Identifier (path) {
       const name = path.node.name
-      if (name in ids && path === fnPath.scope.bindings[name].referencePaths[0]) {
-        path.replaceWith(ids[name])
+      if (name in ids && fnPath.scope.bindings[name].referencePaths.find(refPath => refPath === path)) {
+        path.replaceWith(t.cloneNode(ids[name], true))
         replaced = true
       }
     }
@@ -54,7 +56,8 @@ function replaceId (path, ids) {
 }
 
 module.exports = function getResolveScopedSlots (parent, state) {
-  let objectPath = parent.get('arguments.0.elements.0')
+  const elements0 = parent.get('arguments.0.elements.0')
+  let objectPath = elements0
   // TODO v-else
   if (objectPath.isConditionalExpression()) {
     objectPath = objectPath.get('consequent')
@@ -70,34 +73,57 @@ module.exports = function getResolveScopedSlots (parent, state) {
   }
   const vueId = parent.parentPath.parentPath.get('properties').find(path => path.get('key').isIdentifier({ name: 'attrs' })).get('value').get('properties').find(path => path.get('key').isStringLiteral({ value: 'vue-id' })).get('value').node
   // TODO 多层 v-for 嵌套时，后续处理作用域可能发生变化，需安全重命名
-  const slot = properties.find(path => path.get('key').isIdentifier({ name: 'key' })).get('value').node
+  const slotPath = properties.find(path => path.get('key').isIdentifier({ name: 'key' })).get('value')
+  const slotNode = slotPath.node
+  const slotMultipleInstance = state.options.scopedSlotsCompiler === 'augmented' && state.options.slotMultipleInstance
+  const scopedSlotsParams = {
+    item: elements0.scope.generateUidIdentifier('item'),
+    index: elements0.scope.generateUidIdentifier('index')
+  }
   const ids = {}
   function updateIds (vueId, slot, value, key) {
-    const array = [vueId, slot]
+    let node = slotMultipleInstance ? scopedSlotsParams.item : t.callExpression(t.identifier('$getSSP'), [vueId, slot])
     if (key) {
-      array.push(t.stringLiteral(key))
+      node = t.memberExpression(node, t.stringLiteral(key), true)
     }
-    ids[value] = t.callExpression(t.identifier('$getScopedSlotsParams'), array)
+    ids[value] = node
   }
   if (params.isObjectPattern()) {
     params.get('properties').forEach(prop => {
-      updateIds(vueId, slot, prop.get('value').node.name, prop.get('key').node.name)
+      updateIds(vueId, slotNode, prop.get('value').node.name, prop.get('key').node.name)
     })
   } else if (params.isIdentifier()) {
-    updateIds(vueId, slot, params.node.name)
+    updateIds(vueId, slotNode, params.node.name)
   }
   const fnBody = fn.get('value.body')
   // 暂不处理旧版编译模式对于动态 slotName 的处理，含有动态 slotName 的情况下，scopedSlotsCompiler 指定使用新版编译模式
-  const isStaticSlotName = t.isStringLiteral(slot)
+  const isStaticSlotName = t.isStringLiteral(slotNode)
   if (state.options.scopedSlotsCompiler === 'augmented' || needSlotMode(fnBody, ids) || !isStaticSlotName) {
     if (replaceId(fnBody, ids)) {
-      const orgin = fnBody.get('body.0.argument')
-      const elements = orgin.get('elements')
-      const node = (elements.length === 1 ? elements[0] : orgin).node
-      const test = t.callExpression(t.identifier('$hasScopedSlotsParams'), [vueId])
-      orgin.replaceWith(t.arrayExpression([t.conditionalExpression(test, node, t.callExpression(t.identifier(METHOD_CREATE_EMPTY_VNODE), []))]))
+      const test = t.callExpression(t.identifier('$hasSSP'), [vueId])
       // scopedSlotsCompiler auto
       objectPath.node.scopedSlotsCompiler = 'augmented'
+      if (slotMultipleInstance) {
+        // elements0 节点替换增加一层循环
+        let node = elements0.node
+        const builder = template(`${METHOD_RENDER_LIST}($getSSP(%%vueId%%, %%slot%%, true), function (%%item%%, %%index%%) {return %%node%%})`)
+        node = builder({
+          vueId,
+          slot: slotNode,
+          node,
+          item: scopedSlotsParams.item,
+          index: scopedSlotsParams.index
+        }).expression
+        node = t.conditionalExpression(test, node, t.callExpression(t.identifier(METHOD_CREATE_EMPTY_VNODE), []))
+        elements0.replaceWith(node)
+        // 插槽名拼接 '.'+index
+        slotPath.replaceWith(t.binaryExpression('+', slotNode, t.binaryExpression('+', t.stringLiteral('.'), scopedSlotsParams.index)))
+      } else {
+        const orgin = fnBody.get('body.0.argument')
+        const elements = orgin.get('elements')
+        const node = (elements.length === 1 ? elements[0] : orgin).node
+        orgin.replaceWith(t.arrayExpression([t.conditionalExpression(test, node, t.callExpression(t.identifier(METHOD_CREATE_EMPTY_VNODE), []))]))
+      }
     }
   }
 }

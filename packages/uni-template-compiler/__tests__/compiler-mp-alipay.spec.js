@@ -117,7 +117,7 @@ describe('mp:compiler-mp-alipay', () => {
     assertCodegen(
       '<my-component><template v-slot="{item}">{{getValue(item)}}<template></my-component>',
       '<my-component scoped-slots-compiler="augmented" vue-id="551070e6-1" onVueInit="__l" vue-slots="{{[\'default\']}}"><block a:if="{{$root.m0}}">{{$root.m1}}</block></my-component>',
-      'with(this){var m0=$hasScopedSlotsParams("551070e6-1");var m1=m0?getValue($getScopedSlotsParams("551070e6-1","default","item")):null;$mp.data=Object.assign({},{$root:{m0:m0,m1:m1}})}',
+      'with(this){var m0=$hasSSP("551070e6-1");var m1=m0?getValue($getSSP("551070e6-1","default")["item"]):null;$mp.data=Object.assign({},{$root:{m0:m0,m1:m1}})}',
       {
         scopedSlotsCompiler: 'auto'
       }
@@ -125,7 +125,7 @@ describe('mp:compiler-mp-alipay', () => {
     assertCodegen(
       '<my-component><template v-slot="item">{{getValue(item.text)}}<template></my-component>',
       '<my-component scoped-slots-compiler="augmented" vue-id="551070e6-1" onVueInit="__l" vue-slots="{{[\'default\']}}"><block a:if="{{$root.m0}}">{{$root.m1}}</block></my-component>',
-      'with(this){var m0=$hasScopedSlotsParams("551070e6-1");var m1=m0?getValue($getScopedSlotsParams("551070e6-1","default").text):null;$mp.data=Object.assign({},{$root:{m0:m0,m1:m1}})}',
+      'with(this){var m0=$hasSSP("551070e6-1");var m1=m0?getValue($getSSP("551070e6-1","default").text):null;$mp.data=Object.assign({},{$root:{m0:m0,m1:m1}})}',
       {
         scopedSlotsCompiler: 'auto'
       }
@@ -133,7 +133,7 @@ describe('mp:compiler-mp-alipay', () => {
     assertCodegen(
       '<view><slot :item="item"><slot></view>',
       '<view><block a:if="{{$slots.$default}}"><slot item="{{item}}"></slot></block><block a:else><slot></slot></block></view>',
-      'with(this){if($scope.props.scopedSlotsCompiler==="augmented"){$setScopedSlotsParams("default",{"item":item})}}',
+      'with(this){$initSSP();if($scope.props.scopedSlotsCompiler==="augmented"){$setSSP("default",{"item":item})}$callSSP()}',
       {
         scopedSlotsCompiler: 'auto'
       }
@@ -141,7 +141,7 @@ describe('mp:compiler-mp-alipay', () => {
     assertCodegen(
       '<view><slot v-bind="object"><slot></view>',
       '<view><block a:if="{{$slots.$default}}"><slot></slot></block><block a:else><slot></slot></block></view>',
-      'with(this){if($scope.props.scopedSlotsCompiler==="augmented"){$setScopedSlotsParams("default",object)}}',
+      'with(this){$initSSP();if($scope.props.scopedSlotsCompiler==="augmented"){$setSSP("default",object)}$callSSP()}',
       {
         scopedSlotsCompiler: 'auto'
       }
