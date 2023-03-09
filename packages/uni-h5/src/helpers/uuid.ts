@@ -1,5 +1,7 @@
 const UUID_KEY = '__DC_STAT_UUID'
-const storage = window.localStorage || window.sessionStorage || {}
+const storage: Record<string, string> =
+  (navigator.cookieEnabled && (window.localStorage || window.sessionStorage)) ||
+  {}
 let deviceId: string
 
 export default function () {
