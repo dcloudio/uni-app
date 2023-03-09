@@ -175,6 +175,7 @@ const customElements = [
     'ix-native-list',
     'mkt',
     'page-container',
+    'page-meta',
 ];
 const options = {
     cdn: 2,
