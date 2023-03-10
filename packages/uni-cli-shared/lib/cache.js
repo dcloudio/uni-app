@@ -78,8 +78,10 @@ const supportGlobalUsingComponents = process.env.UNI_PLATFORM === 'mp-weixin' ||
 function updateComponentJson (name, jsonObj, usingComponents = true, type = 'Component') {
   if (type === 'Component') {
     jsonObj.component = true
-  }
-  if (type === 'Page') {
+    if (process.env.UNI_PLATFORM === 'mp-alipay') {
+      jsonObj.styleIsolation = 'apply-shared'
+    }
+  } else if (type === 'Page') {
     if (process.env.UNI_PLATFORM === 'mp-baidu') {
       jsonObj.component = true
     }
@@ -162,6 +164,9 @@ function updateUsingComponents (name, usingComponents, type) {
     const jsonObj = JSON.parse(oldJsonStr)
     if (type === 'Component') {
       jsonObj.component = true
+      if (process.env.UNI_PLATFORM === 'mp-alipay') {
+        jsonObj.styleIsolation = 'apply-shared'
+      }
     } else if (type === 'Page') {
       if (process.env.UNI_PLATFORM === 'mp-baidu') {
         jsonObj.component = true
@@ -179,6 +184,9 @@ function updateUsingComponents (name, usingComponents, type) {
     }
     if (type === 'Component') {
       jsonObj.component = true
+      if (process.env.UNI_PLATFORM === 'mp-alipay') {
+        jsonObj.styleIsolation = 'apply-shared'
+      }
     } else if (type === 'Page') {
       if (process.env.UNI_PLATFORM === 'mp-baidu') {
         jsonObj.component = true
@@ -322,7 +330,7 @@ module.exports = {
     if (!fs.existsSync(filepath)) {
       try {
         clearCache()
-      } catch (e) {}
+      } catch (e) { }
       return
     }
     const pagesJsonPath = path.resolve(process.env.UNI_INPUT_DIR, 'pages.json')
@@ -331,7 +339,7 @@ module.exports = {
     if (jsonCache.mtimeMs !== mtimeMs) {
       try {
         clearCache()
-      } catch (e) {}
+      } catch (e) { }
       return
     }
     jsonFileMap = new Map(jsonCache.files)
