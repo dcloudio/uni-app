@@ -1,6 +1,8 @@
 export interface ComponentJson {
   component: true
   usingComponents?: UsingComponents
+  // mp-alipay
+  styleIsolation?: 'apply-shared' | 'shared'
 }
 
 interface ShareWindowOptions {
