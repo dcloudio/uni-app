@@ -67,7 +67,7 @@ function useI18n() {
     let locale;
     {
       {
-        locale = window.localStorage && localStorage[UNI_STORAGE_LOCALE] || __uniConfig.locale || navigator.language;
+        locale = navigator.cookieEnabled && window.localStorage && localStorage[UNI_STORAGE_LOCALE] || __uniConfig.locale || navigator.language;
       }
     }
     i18n = initVueI18n(locale);
@@ -5086,7 +5086,7 @@ const setLocale = /* @__PURE__ */ defineSyncApi(
     if (oldLocale !== locale) {
       app.$vm.$locale = locale;
       {
-        window.localStorage && (localStorage[UNI_STORAGE_LOCALE] = locale);
+        navigator.cookieEnabled && window.localStorage && (localStorage[UNI_STORAGE_LOCALE] = locale);
       }
       UniServiceJSBridge.invokeOnCallback(API_ON_LOCALE_CHANGE, { locale });
       return true;
@@ -15622,7 +15622,7 @@ function setupApp(comp) {
       const route = usePageRoute();
       const onLaunch = () => {
         injectAppHooks(instance2);
-        const { onLaunch: onLaunch2, onShow, onPageNotFound: onPageNotFound2 } = instance2;
+        const { onLaunch: onLaunch2, onShow, onPageNotFound: onPageNotFound2, onError: onError2 } = instance2;
         const path = route.path.slice(1);
         const launchOptions2 = initLaunchOptions({
           path: path || __uniRoutes[0].meta.route,
@@ -15641,6 +15641,11 @@ function setupApp(comp) {
             };
             onPageNotFound2 && invokeArrayFns$1(onPageNotFound2, pageNotFoundOptions);
           }
+        }
+        if (onError2) {
+          instance2.appContext.config.errorHandler = (err) => {
+            invokeArrayFns$1(onError2, err);
+          };
         }
       };
       if (__UNI_FEATURE_PAGES__) {
@@ -17915,7 +17920,7 @@ const makePhoneCall = /* @__PURE__ */ defineAsyncApi(
   MakePhoneCallProtocol
 );
 const UUID_KEY = "__DC_STAT_UUID";
-const storage = window.localStorage || window.sessionStorage || {};
+const storage = navigator.cookieEnabled && (window.localStorage || window.sessionStorage) || {};
 let deviceId;
 function deviceId$1() {
   deviceId = deviceId || storage[UUID_KEY];

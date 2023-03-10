@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 
-import { camelize, capitalize, isArray } from '@vue/shared'
+import { camelize, capitalize, hasOwn, isArray } from '@vue/shared'
 
 import type {
   ArrowFunctionExpression,
@@ -16,6 +16,7 @@ import type {
   Param,
   Span,
   TsFnParameter,
+  TsType,
   TsTypeAnnotation,
   VariableDeclaration,
   VariableDeclarationKind,
@@ -470,17 +471,19 @@ function parseAst(
       switch (decl.type) {
         case 'FunctionDeclaration':
           decls.push(
-            genFunctionDeclaration(decl, resolveTypeReferenceName, false)
+            genFunctionDeclaration(types, decl, resolveTypeReferenceName, false)
           )
           break
         case 'ClassDeclaration':
-          decls.push(genClassDeclaration(decl, resolveTypeReferenceName, false))
+          decls.push(
+            genClassDeclaration(types, decl, resolveTypeReferenceName, false)
+          )
           break
         case 'VariableDeclaration':
           const varDecl = genVariableDeclaration(
+            types,
             decl,
-            resolveTypeReferenceName,
-            types
+            resolveTypeReferenceName
           )
           if (varDecl) {
             decls.push(varDecl)
@@ -492,12 +495,14 @@ function parseAst(
       if (decl.type === 'ClassExpression') {
         if (decl.identifier) {
           // export default class test{}
-          decls.push(genClassDeclaration(decl, resolveTypeReferenceName, true))
+          decls.push(
+            genClassDeclaration(types, decl, resolveTypeReferenceName, true)
+          )
         }
       } else if (decl.type === 'FunctionExpression') {
         if (decl.identifier) {
           decls.push(
-            genFunctionDeclaration(decl, resolveTypeReferenceName, true)
+            genFunctionDeclaration(types, decl, resolveTypeReferenceName, true)
           )
         }
       }
@@ -571,47 +576,57 @@ function resolveIdentifierDefaultValue(ident: Expression) {
   return null
 }
 
-function resolveIdentifierType(
-  ident: BindingIdentifier,
+function resolveType(
+  types: Types,
+  typeAnnotation: TsType,
   resolveTypeReferenceName: ResolveTypeReferenceName
-) {
-  if (ident.typeAnnotation) {
-    const { typeAnnotation } = ident.typeAnnotation
-    if (typeAnnotation.type === 'TsKeywordType') {
-      return typeAnnotation.kind
-    } else if (typeAnnotation.type === 'TsFunctionType') {
+): string {
+  if (typeAnnotation.type === 'TsKeywordType') {
+    return typeAnnotation.kind
+  } else if (typeAnnotation.type === 'TsFunctionType') {
+    return 'UTSCallback'
+  } else if (
+    typeAnnotation.type === 'TsTypeReference' &&
+    typeAnnotation.typeName.type === 'Identifier'
+  ) {
+    if (hasOwn(types.fn, typeAnnotation.typeName.value)) {
       return 'UTSCallback'
-    } else if (
-      typeAnnotation.type === 'TsTypeReference' &&
-      typeAnnotation.typeName.type === 'Identifier'
-    ) {
-      return resolveTypeReferenceName(typeAnnotation.typeName.value)
-    } else if (typeAnnotation.type === 'TsUnionType') {
-      if (typeAnnotation.types.length === 2) {
-        const [type1, type2] = typeAnnotation.types
-        if (type1.type === 'TsKeywordType' && type1.kind === 'null') {
-          if (
-            type2.type === 'TsParenthesizedType' &&
-            type2.typeAnnotation.type === 'TsFunctionType'
-          ) {
-            return 'UTSCallback'
-          }
-        }
-        if (type2.type === 'TsKeywordType' && type2.kind === 'null') {
-          if (
-            type1.type === 'TsParenthesizedType' &&
-            type1.typeAnnotation.type === 'TsFunctionType'
-          ) {
-            return 'UTSCallback'
-          }
-        }
+    }
+    return resolveTypeReferenceName(typeAnnotation.typeName.value)
+  } else if (typeAnnotation.type === 'TsParenthesizedType') {
+    return resolveType(
+      types,
+      typeAnnotation.typeAnnotation,
+      resolveTypeReferenceName
+    )
+  } else if (typeAnnotation.type === 'TsUnionType') {
+    for (const type of typeAnnotation.types) {
+      if (type.type === 'TsKeywordType') {
+        continue
       }
+      return resolveType(types, type, resolveTypeReferenceName)
     }
   }
   return ''
 }
 
+function resolveIdentifierType(
+  types: Types,
+  ident: BindingIdentifier,
+  resolveTypeReferenceName: ResolveTypeReferenceName
+) {
+  if (ident.typeAnnotation) {
+    return resolveType(
+      types,
+      ident.typeAnnotation.typeAnnotation,
+      resolveTypeReferenceName
+    )
+  }
+  return ''
+}
+
 function resolveFunctionParams(
+  types: Types,
   params: Param[],
   resolveTypeReferenceName: ResolveTypeReferenceName
 ) {
@@ -621,6 +636,7 @@ function resolveFunctionParams(
       result.push({
         name: pat.value,
         type: resolveIdentifierType(
+          types,
           pat as BindingIdentifier,
           resolveTypeReferenceName
         ),
@@ -630,6 +646,7 @@ function resolveFunctionParams(
         const param: Parameter = {
           name: pat.left.value,
           type: resolveIdentifierType(
+            types,
             pat.left as BindingIdentifier,
             resolveTypeReferenceName
           ),
@@ -648,6 +665,7 @@ function resolveFunctionParams(
 }
 
 function genFunctionDeclaration(
+  types: Types,
   decl: FunctionDeclaration | FunctionExpression,
   resolveTypeReferenceName: ResolveTypeReferenceName,
   isDefault: boolean = false,
@@ -656,13 +674,14 @@ function genFunctionDeclaration(
   return genProxyFunction(
     decl.identifier!.value,
     decl.async || isReturnPromise(decl.returnType),
-    resolveFunctionParams(decl.params, resolveTypeReferenceName),
+    resolveFunctionParams(types, decl.params, resolveTypeReferenceName),
     isDefault,
     isVar
   )
 }
 
 function genClassDeclaration(
+  types: Types,
   decl: ClassDeclaration | ClassExpression,
   resolveTypeReferenceName: ResolveTypeReferenceName,
   isDefault: boolean = false
@@ -679,6 +698,7 @@ function genClassDeclaration(
   decl.body.forEach((item) => {
     if (item.type === 'Constructor') {
       constructor.params = resolveFunctionParams(
+        types,
         item.params as Param[],
         resolveTypeReferenceName
       )
@@ -689,6 +709,7 @@ function genClassDeclaration(
           async:
             item.function.async || isReturnPromise(item.function.returnType),
           params: resolveFunctionParams(
+            types,
             item.function.params,
             resolveTypeReferenceName
           ),
@@ -729,9 +750,9 @@ function genInitCode(expr: Expression) {
 }
 
 function genVariableDeclaration(
+  types: Types,
   decl: VariableDeclaration,
-  resolveTypeReferenceName: ResolveTypeReferenceName,
-  types: Types
+  resolveTypeReferenceName: ResolveTypeReferenceName
 ): VariableDeclaration | ProxyFunctionDeclaration | undefined {
   // 目前仅支持 const 的 boolean,number,string
   const lits = ['BooleanLiteral', 'NumericLiteral', 'StringLiteral']
@@ -775,6 +796,7 @@ function genVariableDeclaration(
         }
       }
       return genFunctionDeclaration(
+        types,
         createFunctionDeclaration(id.value, init, params),
         resolveTypeReferenceName,
         false,
