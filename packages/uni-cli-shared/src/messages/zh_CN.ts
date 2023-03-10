@@ -31,7 +31,7 @@ export default {
   'uts.android.compiler.server':
     '项目使用了uts插件，正在安装 uts Android 运行扩展...',
   'uts.ios.windows.tips':
-    'iOS手机在windows上真机运行时uts插件代码修改需提交云端打包自定义基座才能生效',
+    'iOS手机在windows上使用标准基座真机运行无法使用uts插件，如需使用uts插件请提交云端打包自定义基座',
   'uts.ios.standard.tips':
     'iOS手机在标准基座真机运行暂不支持uts插件，如需调用uts插件请使用自定义基座',
 } as const

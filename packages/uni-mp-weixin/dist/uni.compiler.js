@@ -16,13 +16,13 @@ var uniad_app_json = function (appJson) {
   }
   if (!appJson.plugins['uni-ad']) {
     appJson.plugins['uni-ad'] = {
-      version: '1.0.1',
+      version: '1.1.1',
       provider: 'wxf72d316417b6767f',
     };
   }
   if (!appJson.plugins['coral-adv']) {
     appJson.plugins['coral-adv'] = {
-      version: '1.0.9',
+      version: '1.0.15',
       provider: 'wx0e203209e27b1e66',
     };
   }

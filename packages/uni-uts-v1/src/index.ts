@@ -212,7 +212,7 @@ export async function compile(
     // iOS windows 平台，标准基座不编译
     if (utsPlatform === 'app-ios') {
       if (isWindows) {
-        process.env.UNI_UTS_TIPS = `iOS手机在windows上真机运行时uts插件代码修改需提交云端打包自定义基座才能生效`
+        process.env.UNI_UTS_ERRORS = `iOS手机在windows上使用标准基座真机运行无法使用uts插件，如需使用uts插件请提交云端打包自定义基座`
         return createResult(outputPluginDir, errMsg, code, deps, meta)
       }
       // ios 模拟器不支持
