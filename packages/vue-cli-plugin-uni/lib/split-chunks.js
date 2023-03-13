@@ -10,6 +10,7 @@ const independentFilter = ({ independent }) => independent
 const map2Root = ({ root }) => root + '/'
 const normalSubPackageRoots = subPkgsInfo.filter(normalFilter).map(map2Root)
 const independentSubpackageRoots = subPkgsInfo.filter(independentFilter).map(map2Root)
+const RequireAsyncDependency = require('@dcloudio/uni-mp-weixin/lib/support-require-async/RequireAsyncDependency')
 
 function createCacheGroups () {
   const cacheGroups = {}
@@ -87,6 +88,13 @@ module.exports = function getSplitChunks () {
             if (module.type === 'css/mini-extract') {
               return false
             }
+
+            // require.async()的模块不应该被分割
+            const reason = (module && module.reasons && module.reasons[0]) || {}
+            if (reason.dependency instanceof RequireAsyncDependency) {
+              return false
+            }
+
             if (module.resource && (
               module.resource.indexOf('.vue') !== -1 ||
               module.resource.indexOf('.nvue') !== -1 ||
@@ -139,6 +147,13 @@ module.exports = function getSplitChunks () {
         if (!baseTest(module)) {
           return false
         }
+
+        // require.async()的模块不应该被分割
+        const reason = (module && module.reasons && module.reasons[0]) || {}
+        if (reason.dependency instanceof RequireAsyncDependency) {
+          return false
+        }
+
         chunks = getModuleChunks(module, chunks)
         const matchSubPackages = findSubPackages(chunks)
         const matchSubPackagesCount = matchSubPackages.size
@@ -220,6 +235,13 @@ module.exports = function getSplitChunks () {
           if (!baseTest(module)) {
             return false
           }
+
+          // require.async()的模块不应该被分割
+          const reason = (module && module.reasons && module.reasons[0]) || {}
+          if (reason.dependency instanceof RequireAsyncDependency) {
+            return false
+          }
+
           chunks = getModuleChunks(module, chunks)
           const matchSubPackages = findSubPackages(chunks)
           if (
