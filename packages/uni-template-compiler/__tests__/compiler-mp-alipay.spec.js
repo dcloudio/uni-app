@@ -105,6 +105,17 @@ describe('mp:compiler-mp-alipay', () => {
     )
   })
 
+  it('generate scoped slot with dynamic slot name', () => {
+    assertCodegen(
+      '<view><slot :name="test" :user="user"></slot></view>',
+      '<view><slot name="{{test}}" user="{{user}}"></slot></view>'
+    )
+    assertCodegen(
+      '<foo><template v-slot:[test]="{user}"><view>{{user}}</view></template></foo>',
+      '<foo vue-id="551070e6-1" onVueInit="__l" vue-slots="{{[test]}}"><view slot="{{test}}" slot-scope="__SCOPED__"><view>{{__SCOPED__.user}}</view></view></foo>'
+    )
+  })
+
   it('generate scoped slot with scopedSlotsCompiler: auto', () => {
     assertCodegen(
       '<my-component><template v-slot="{item}">{{item}}<template></my-component>',

@@ -124,9 +124,9 @@ module.exports = function getResolveScopedSlots (parent, state) {
     updateIds(vueId, slotNode, params.node.name)
   }
   const fnBody = fn.get('value.body')
-  // 暂不处理旧版编译模式对于动态 slotName 的处理，含有动态 slotName 的情况下，scopedSlotsCompiler 指定使用增强编译模式
+  // 非原生支持作用域插槽的平台在含有动态 slotName 的情况下，scopedSlotsCompiler 指定使用增强编译模式
   const isStaticSlotName = t.isStringLiteral(slotNode)
-  if (state.options.scopedSlotsCompiler === 'augmented' || needAugmentedSlotMode(fnBody, ids, state) || !isStaticSlotName) {
+  if (state.options.scopedSlotsCompiler === 'augmented' || needAugmentedSlotMode(fnBody, ids, state) || (!['mp-baidu', 'mp-alipay'].includes(state.options.platform.name) && !isStaticSlotName)) {
     if (replaceId(fnBody, ids)) {
       const test = t.callExpression(t.identifier('$hasSSP'), [vueId])
       // scopedSlotsCompiler auto

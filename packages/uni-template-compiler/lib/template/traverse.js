@@ -318,7 +318,8 @@ function traverseRenderSlot (callExprNode, state) {
     }
     deleteSlotName = props.SLOT_DEFAULT && Object.keys(props).length === 1
     if (!deleteSlotName) {
-      if (!isStaticSlotName) {
+      // TODO 非原生支持作用域插槽的平台在未启用增强的模式下也允许使用动态插槽名
+      if (!isStaticSlotName && !['mp-baidu', 'mp-alipay'].includes(state.options.platform.name)) {
         state.errors.add(uniI18n.__('templateCompiler.notSupportDynamicSlotName', { 0: 'v-slot' }))
         return
       }
