@@ -68,7 +68,10 @@ ${global}.createPage(MiniProgramPage)`,
           removeExt(normalizeMiniProgramFilename(filepath, inputDir)),
           {
             component: true,
-            styleIsolation: process.env.UNI_PLATFORM === 'mp-baidu' ? 'apply-shared' : undefined,
+            styleIsolation:
+              process.env.UNI_PLATFORM === 'mp-baidu'
+                ? 'apply-shared'
+                : undefined,
           }
         )
         return {

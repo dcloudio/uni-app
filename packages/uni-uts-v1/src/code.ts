@@ -17,6 +17,7 @@ import type {
   Span,
   TsFnParameter,
   TsType,
+  TsTypeAliasDeclaration,
   TsTypeAnnotation,
   VariableDeclaration,
   VariableDeclarationKind,
@@ -200,7 +201,7 @@ function genModuleCode(
         codes.push(
           `${exportDefault}initUTSProxyClass(Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, '${
             decl.cls
-          }', is_uni_modules) }, ${JSON.stringify(decl.options)} ))`
+          }ByJs', is_uni_modules) }, ${JSON.stringify(decl.options)} ))`
         )
       } else {
         codes.push(
@@ -208,7 +209,7 @@ function genModuleCode(
             decl.cls
           } = /*#__PURE__*/ initUTSProxyClass(Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, '${
             decl.cls
-          }', is_uni_modules) }, ${JSON.stringify(decl.options)} ))`
+          }ByJs', is_uni_modules) }, ${JSON.stringify(decl.options)} ))`
         )
       }
     } else if (decl.type === 'FunctionDeclaration') {
@@ -293,30 +294,61 @@ async function parseInterfaceTypes(
   })
   const classTypes: string[] = []
   const fnTypes: Record<string, Param[]> = {}
+
+  const exportNamed: string[] = []
+
+  ast.body.filter((node) => {
+    if (node.type === 'ExportNamedDeclaration') {
+      node.specifiers.forEach((s) => {
+        if (s.type === 'ExportSpecifier') {
+          if (s.exported) {
+            if (s.exported.type === 'Identifier') {
+              exportNamed.push(s.exported.value)
+            }
+          } else {
+            exportNamed.push(s.orig.value)
+          }
+        }
+      })
+    }
+  })
+
   ast.body.filter((node) => {
     if (
       node.type === 'ExportDeclaration' &&
       node.declaration.type === 'TsTypeAliasDeclaration'
     ) {
-      switch (node.declaration.typeAnnotation.type) {
-        // export type ShowLoading = ()=>void
-        case 'TsFunctionType':
-          const params = createParams(node.declaration.typeAnnotation.params)
-          if (params.length) {
-            fnTypes[node.declaration.id.value] = params
-          } else {
-            fnTypes[node.declaration.id.value] = []
-          }
-          break
-        // export type ShowLoadingOptions = {}
-        case 'TsTypeLiteral':
-          classTypes.push(node.declaration.id.value)
+      parseTypes(node.declaration, classTypes, fnTypes)
+    } else if (node.type === 'TsTypeAliasDeclaration') {
+      if (exportNamed.includes(node.id.value)) {
+        parseTypes(node, classTypes, fnTypes)
       }
     }
   })
   return {
     class: classTypes,
     fn: fnTypes,
+  }
+}
+
+function parseTypes(
+  decl: TsTypeAliasDeclaration,
+  classTypes: string[],
+  fnTypes: Record<string, Param[]>
+) {
+  switch (decl.typeAnnotation.type) {
+    // export type ShowLoading = ()=>void
+    case 'TsFunctionType':
+      const params = createParams(decl.typeAnnotation.params)
+      if (params.length) {
+        fnTypes[decl.id.value] = params
+      } else {
+        fnTypes[decl.id.value] = []
+      }
+      break
+    // export type ShowLoadingOptions = {}
+    case 'TsTypeLiteral':
+      classTypes.push(decl.id.value)
   }
 }
 
@@ -715,9 +747,9 @@ function genClassDeclaration(
           ),
         }
         if (item.isStatic) {
-          staticMethods[name] = value
+          staticMethods[name + 'ByJs'] = value
         } else {
-          methods[name] = value
+          methods[name + 'ByJs'] = value
         }
       }
     } else if (item.type === 'ClassProperty') {
