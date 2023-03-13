@@ -75,6 +75,10 @@ describe('mp:compiler-mp-baidu', () => {
       '<span><slot name="header" v-bind:user="user">{{ user.lastName }}</slot></span>',
       '<label class="_span"><block s-if="{{$slots.header}}"><slot name="header" var-user="user"></slot></block><block s-else>{{user.lastName}}</block></label>'
     )
+    assertCodegen(
+      '<span><slot name="header" v-bind="user"></slot></span>',
+      '<label class="_span"><slot name="header" s-bind="user"></slot></label>'
+    )
   })
 
   it('generate scoped slot with scopedSlotsCompiler: auto', () => {

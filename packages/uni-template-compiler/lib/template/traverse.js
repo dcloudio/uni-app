@@ -306,9 +306,16 @@ function traverseRenderSlot (callExprNode, state) {
   let deleteSlotName = false // 标记是否组件 slot 手动指定了 name="default"
   if (state.options.scopedSlotsCompiler !== 'augmented' && callExprNode.arguments.length > 2) { // 作用域插槽
     const props = {}
-    callExprNode.arguments[2].properties.forEach(property => {
-      props[property.key.value] = genCode(property.value)
-    })
+    const arg2 = callExprNode.arguments[2]
+    const arg3 = callExprNode.arguments[3]
+    let bindings
+    if (t.isObjectExpression(arg2)) {
+      arg2.properties.forEach(property => {
+        props[property.key.value] = genCode(property.value)
+      })
+    } else if (arg3) {
+      bindings = genCode(arg3)
+    }
     deleteSlotName = props.SLOT_DEFAULT && Object.keys(props).length === 1
     if (!deleteSlotName) {
       if (!isStaticSlotName) {
@@ -318,7 +325,7 @@ function traverseRenderSlot (callExprNode, state) {
       delete props.SLOT_DEFAULT
       return genSlotNode(
         slotName,
-        state.options.platform.createScopedSlots(slotName, props, state),
+        state.options.platform.createScopedSlots(slotName, bindings || props, state),
         callExprNode.arguments[1],
         state
       )

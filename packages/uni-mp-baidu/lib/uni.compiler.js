@@ -8,9 +8,13 @@ module.exports = {
       },
       children: []
     }
-    Object.keys(props).forEach(name => {
-      node.attr['var-' + name] = props[name].replace('{{', '').replace('}}', '')
-    })
+    if (typeof props === 'string') {
+      node.attr['s-bind'] = props.replace('{{', '').replace('}}', '')
+    } else {
+      Object.keys(props).forEach(name => {
+        node.attr['var-' + name] = props[name].replace('{{', '').replace('}}', '')
+      })
+    }
     return node
   },
   resolveScopedSlots (slotName, {
