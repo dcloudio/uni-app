@@ -135,6 +135,14 @@ describe('mp:compiler-mp-weixin', () => {
       }
     )
     assertCodegen(
+      '<my-component><template v-slot="{item}">{{item}}{{title}}<template></my-component>',
+      '<my-component scoped-slots-compiler="augmented" vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"><block wx:if="{{$root.m0}}">{{$root.m1[\'item\']+title}}</block></my-component>',
+      'with(this){var m0=$hasSSP("551070e6-1");var m1=m0?$getSSP("551070e6-1","default"):null;$mp.data=Object.assign({},{$root:{m0:m0,m1:m1}})}',
+      {
+        scopedSlotsCompiler: 'auto'
+      }
+    )
+    assertCodegen(
       '<my-component><template v-slot="{item}"><view @click="getValue(item)">{{item}}</view><template></my-component>',
       '<my-component generic:scoped-slots-default="test-my-component-default" data-vue-generic="scoped" vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"></my-component>',
       'with(this){}',

@@ -123,6 +123,22 @@ describe('mp:compiler-mp-alipay', () => {
       }
     )
     assertCodegen(
+      '<my-component><template v-slot="{item}">{{item}}{{title}}<template></my-component>',
+      '<my-component vue-id="551070e6-1" onVueInit="__l" vue-slots="{{[\'default\']}}"><view slot-scope="__SCOPED__">{{__SCOPED__.item+title}}</view></my-component>',
+      'with(this){}',
+      {
+        scopedSlotsCompiler: 'auto'
+      }
+    )
+    assertCodegen(
+      '<my-component><template v-slot="{item}">{{item}}{{getValue(title)}}<template></my-component>',
+      '<my-component vue-id="551070e6-1" onVueInit="__l" vue-slots="{{[\'default\']}}"><view slot-scope="__SCOPED__">{{__SCOPED__.item+$root.m0}}</view></my-component>',
+      'with(this){var m0=getValue(title);$mp.data=Object.assign({},{$root:{m0:m0}})}',
+      {
+        scopedSlotsCompiler: 'auto'
+      }
+    )
+    assertCodegen(
       '<my-component><template v-slot="item">{{getValue(item.text)}}<template></my-component>',
       '<my-component scoped-slots-compiler="augmented" vue-id="551070e6-1" onVueInit="__l" vue-slots="{{[\'default\']}}"><block a:if="{{$root.m0}}">{{$root.m1}}</block></my-component>',
       'with(this){var m0=$hasSSP("551070e6-1");var m1=m0?getValue($getSSP("551070e6-1","default").text):null;$mp.data=Object.assign({},{$root:{m0:m0,m1:m1}})}',

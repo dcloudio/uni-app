@@ -8,7 +8,14 @@ const {
   METHOD_RENDER_LIST
 } = require('../../constants')
 
-function needSlotMode (path, ids) {
+function findBinding (fnPath, idPath) {
+  const name = idPath.node.name
+  return fnPath.scope.bindings[name].referencePaths.find(refPath => refPath === idPath)
+}
+
+function needAugmentedSlotMode (path, ids, state) {
+  const platformName = state.options.platform.name
+  const fnPath = path.parentPath
   let need
   path.traverse({
     noScope: false,
@@ -26,13 +33,34 @@ function needSlotMode (path, ids) {
       if (path.key !== 'key' && (path.key !== 'property' || path.parent.computed)) {
         // 使用作用域内方法或作用域外数据
         if (name in ids) {
-          need = path.key === 'callee' ? true : need
+          if (path.key === 'callee') {
+            need = true
+          }
         } else if (!path.scope.hasBinding(name) && !METHOD_BUILT_IN.includes(name)) {
-          need = true
+          // 原生支持作用域插槽的平台允许使用作用域外数据，暂时只考虑作用内的数据作为方法参数的情况
+          if (['mp-baidu', 'mp-alipay'].includes(platformName)) {
+            if (path.key === 'callee') {
+              path.parentPath.traverse({
+                noScope: false,
+                Identifier (path) {
+                  const name = path.node.name
+                  if (name in ids && findBinding(fnPath, path)) {
+                    need = true
+                    path.stop()
+                  }
+                }
+              })
+            }
+          } else {
+            need = true
+          }
         }
-      } else if (path.key === 'property' && name === 'length') {
+      } else if (platformName === 'mp-weixin' && path.key === 'property' && name === 'length') {
         // 微信小程序平台无法观测 Array length 访问：https://developers.weixin.qq.com/community/develop/doc/000c8ee47d87a0d5b6685a8cb57000
         need = true
+      }
+      if (need) {
+        path.stop()
       }
     }
   })
@@ -46,7 +74,7 @@ function replaceId (path, ids) {
     noScope: false,
     Identifier (path) {
       const name = path.node.name
-      if (name in ids && fnPath.scope.bindings[name].referencePaths.find(refPath => refPath === path)) {
+      if (name in ids && findBinding(fnPath, path)) {
         path.replaceWith(t.cloneNode(ids[name], true))
         replaced = true
       }
@@ -96,9 +124,9 @@ module.exports = function getResolveScopedSlots (parent, state) {
     updateIds(vueId, slotNode, params.node.name)
   }
   const fnBody = fn.get('value.body')
-  // 暂不处理旧版编译模式对于动态 slotName 的处理，含有动态 slotName 的情况下，scopedSlotsCompiler 指定使用新版编译模式
+  // 暂不处理旧版编译模式对于动态 slotName 的处理，含有动态 slotName 的情况下，scopedSlotsCompiler 指定使用增强编译模式
   const isStaticSlotName = t.isStringLiteral(slotNode)
-  if (state.options.scopedSlotsCompiler === 'augmented' || needSlotMode(fnBody, ids) || !isStaticSlotName) {
+  if (state.options.scopedSlotsCompiler === 'augmented' || needAugmentedSlotMode(fnBody, ids, state) || !isStaticSlotName) {
     if (replaceId(fnBody, ids)) {
       const test = t.callExpression(t.identifier('$hasSSP'), [vueId])
       // scopedSlotsCompiler auto
