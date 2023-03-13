@@ -49,7 +49,7 @@ open class User : IUser {
         console.log((-3).inv(), " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:45");
         XToast<XToast<*>>(getUniActivity()).setContentView(R.layout.toast_hint).setDuration(1000).setImageDrawable(android.R.id.icon, R.mipmap.ic_dialog_tip_finish).setText(android.R.id.message, "点我消失").show();
     }
-    override fun register(name: String, callback: UTSCallback) {
+    override fun register(name: String, callback: () -> Unit) {
         Log.info(default as FrameLayout);
     }
     open fun test(view: View) {
@@ -69,6 +69,21 @@ open class TestClass {
 val showToast1: ShowToast = fun(msg){};
 val showToast2: ShowToast = fun(msg) {};
 val showToast3: ShowToast = fun(msg) {};
+open class UserByJs : User {
+    constructor() : super() {}
+    open fun loginByJs(name: String, pwd: String) {
+        return login(name, pwd);
+    }
+    open fun registerByJs(name: String, callback: UTSCallback) {
+        return register(name, fun(){
+            callback();
+        }
+        );
+    }
+    open fun testByJs(view: View) {
+        return test(view);
+    }
+}
 fun registerByJs(name: String, callback: UTSCallback) {
     return register(name, fun(){
         callback();
