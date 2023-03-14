@@ -307,54 +307,52 @@ describe('mp:compiler-mp-weixin', () => {
     )
   })
 
-  describe('mp:compiler-mp-weixin', () => {
-    it('generate scoped slot with slotMultipleInstance', () => {
-      assertCodegen(
-        '<my-component><template v-slot="{item}"><view>{{item}}</view></template></my-component>',
-        '<my-component vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"><block wx:if="{{$root.m0}}"><view wx:for="{{$root.l0}}" wx:for-item="_item" wx:for-index="_index" slot="{{\'default\'+(\'.\'+_index)}}">{{_item[\'item\']}}</view></block></my-component>',
-        'with(this){var m0=$hasSSP("551070e6-1");var l0=m0?$getSSP("551070e6-1","default",true):null;$mp.data=Object.assign({},{$root:{m0:m0,l0:l0}})}',
-        {
-          scopedSlotsCompiler: 'augmented',
-          slotMultipleInstance: true
-        }
-      )
-      assertCodegen(
-        '<my-component><template v-slot="item"><view>{{item}}</view></template></my-component>',
-        '<my-component vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"><block wx:if="{{$root.m0}}"><view wx:for="{{$root.l0}}" wx:for-item="_item" wx:for-index="_index" slot="{{\'default\'+(\'.\'+_index)}}">{{_item}}</view></block></my-component>',
-        'with(this){var m0=$hasSSP("551070e6-1");var l0=m0?$getSSP("551070e6-1","default",true):null;$mp.data=Object.assign({},{$root:{m0:m0,l0:l0}})}',
-        {
-          scopedSlotsCompiler: 'augmented',
-          slotMultipleInstance: true
-        }
-      )
-      assertCodegen(
-        '<my-component><template v-slot="item"><view>{{item.text}}</view></template></my-component>',
-        '<my-component vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"><block wx:if="{{$root.m0}}"><view wx:for="{{$root.l0}}" wx:for-item="_item" wx:for-index="_index" slot="{{\'default\'+(\'.\'+_index)}}">{{_item.text}}</view></block></my-component>',
-        'with(this){var m0=$hasSSP("551070e6-1");var l0=m0?$getSSP("551070e6-1","default",true):null;$mp.data=Object.assign({},{$root:{m0:m0,l0:l0}})}',
-        {
-          scopedSlotsCompiler: 'augmented',
-          slotMultipleInstance: true
-        }
-      )
-      assertCodegen(
-        '<view><slot :item="item"><slot></view>',
-        '<view><block wx:if="{{$slots[\'default\']}}"><slot name="{{\'default\'+(\'.\'+$root.m0)}}"></slot></block><block wx:else><slot></slot></block></view>',
-        'with(this){$initSSP();var m0=$setSSP("default",{"item":item});$mp.data=Object.assign({},{$root:{m0:m0}});$callSSP()}',
-        {
-          scopedSlotsCompiler: 'augmented',
-          slotMultipleInstance: true
-        }
-      )
-      assertCodegen(
-        '<view><slot v-bind="item"><slot></view>',
-        '<view><block wx:if="{{$slots[\'default\']}}"><slot name="{{\'default\'+(\'.\'+$root.m0)}}"></slot></block><block wx:else><slot></slot></block></view>',
-        'with(this){$initSSP();var m0=$setSSP("default",item);$mp.data=Object.assign({},{$root:{m0:m0}});$callSSP()}',
-        {
-          scopedSlotsCompiler: 'augmented',
-          slotMultipleInstance: true
-        }
-      )
-    })
+  it('generate scoped slot with slotMultipleInstance', () => {
+    assertCodegen(
+      '<my-component><template v-slot="{item}"><view>{{item}}</view></template></my-component>',
+      '<my-component vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"><block wx:if="{{$root.m0}}"><view wx:for="{{$root.l0}}" wx:for-item="_item" wx:for-index="_index" slot="{{\'default\'+(\'.\'+_index)}}">{{_item[\'item\']}}</view></block></my-component>',
+      'with(this){var m0=$hasSSP("551070e6-1");var l0=m0?$getSSP("551070e6-1","default",true):null;$mp.data=Object.assign({},{$root:{m0:m0,l0:l0}})}',
+      {
+        scopedSlotsCompiler: 'augmented',
+        slotMultipleInstance: true
+      }
+    )
+    assertCodegen(
+      '<my-component><template v-slot="item"><view>{{item}}</view></template></my-component>',
+      '<my-component vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"><block wx:if="{{$root.m0}}"><view wx:for="{{$root.l0}}" wx:for-item="_item" wx:for-index="_index" slot="{{\'default\'+(\'.\'+_index)}}">{{_item}}</view></block></my-component>',
+      'with(this){var m0=$hasSSP("551070e6-1");var l0=m0?$getSSP("551070e6-1","default",true):null;$mp.data=Object.assign({},{$root:{m0:m0,l0:l0}})}',
+      {
+        scopedSlotsCompiler: 'augmented',
+        slotMultipleInstance: true
+      }
+    )
+    assertCodegen(
+      '<my-component><template v-slot="item"><view>{{item.text}}</view></template></my-component>',
+      '<my-component vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"><block wx:if="{{$root.m0}}"><view wx:for="{{$root.l0}}" wx:for-item="_item" wx:for-index="_index" slot="{{\'default\'+(\'.\'+_index)}}">{{_item.text}}</view></block></my-component>',
+      'with(this){var m0=$hasSSP("551070e6-1");var l0=m0?$getSSP("551070e6-1","default",true):null;$mp.data=Object.assign({},{$root:{m0:m0,l0:l0}})}',
+      {
+        scopedSlotsCompiler: 'augmented',
+        slotMultipleInstance: true
+      }
+    )
+    assertCodegen(
+      '<view><slot :item="item"><slot></view>',
+      '<view><block wx:if="{{$slots[\'default\']}}"><slot name="{{\'default\'+(\'.\'+$root.m0)}}"></slot></block><block wx:else><slot></slot></block></view>',
+      'with(this){$initSSP();var m0=$setSSP("default",{"item":item});$mp.data=Object.assign({},{$root:{m0:m0}});$callSSP()}',
+      {
+        scopedSlotsCompiler: 'augmented',
+        slotMultipleInstance: true
+      }
+    )
+    assertCodegen(
+      '<view><slot v-bind="item"><slot></view>',
+      '<view><block wx:if="{{$slots[\'default\']}}"><slot name="{{\'default\'+(\'.\'+$root.m0)}}"></slot></block><block wx:else><slot></slot></block></view>',
+      'with(this){$initSSP();var m0=$setSSP("default",item);$mp.data=Object.assign({},{$root:{m0:m0}});$callSSP()}',
+      {
+        scopedSlotsCompiler: 'augmented',
+        slotMultipleInstance: true
+      }
+    )
   })
 
   it('generate scoped slot', () => {

@@ -162,6 +162,18 @@ describe('mp:compiler-mp-baidu', () => {
     )
   })
 
+  it('generate scoped slot with slotMultipleInstance', () => {
+    assertCodegen(
+      '<my-component><template v-slot="item"><view>{{item}}</view></template></my-component>',
+      '<my-component vue-id="551070e6-1" vue-slots="{{[\'default\']}}"><block slot="{{\'default\'+(\'.\'+0)}}" s-if="{{$root.m0}}"><block s-for="$root.l0" s-for-item="_item" s-for-index="_index"><view>{{_item}}</view></block></block></my-component>',
+      'with(this){var m0=$hasSSP("551070e6-1");var l0=m0?$getSSP("551070e6-1","default",true):null;$mp.data=Object.assign({},{$root:{m0:m0,l0:l0}})}',
+      {
+        scopedSlotsCompiler: 'augmented',
+        slotMultipleInstance: true
+      }
+    )
+  })
+
   it('generate vue id', () => {
     assertCodegen(
       '<Test/>',

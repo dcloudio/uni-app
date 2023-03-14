@@ -145,7 +145,9 @@ module.exports = function getResolveScopedSlots (parent, state) {
         node = t.conditionalExpression(test, node, t.callExpression(t.identifier(METHOD_CREATE_EMPTY_VNODE), []))
         elements0.replaceWith(node)
         // 插槽名拼接 '.'+index
-        slotPath.replaceWith(t.binaryExpression('+', slotNode, t.binaryExpression('+', t.stringLiteral('.'), scopedSlotsParams.index)))
+        // 百度、字节小程序不支持 v-for 嵌套 slot，且支持渲染多个实例，固定输出到第一个
+        const indexNode = ['mp-baidu', 'mp-toutiao'].includes(state.options.platform.name) ? t.numericLiteral(0) : scopedSlotsParams.index
+        slotPath.replaceWith(t.binaryExpression('+', slotNode, t.binaryExpression('+', t.stringLiteral('.'), indexNode)))
       } else {
         const orgin = fnBody.get('body.0.argument')
         const elements = orgin.get('elements')

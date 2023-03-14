@@ -91,4 +91,16 @@ describe('mp:compiler-mp-toutiao', () => {
       '<test bind:-data-custom-hidden="{{!(shown)}}" vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}">hello world</test>'
     )
   })
+
+  it('generate scoped slot with slotMultipleInstance', () => {
+    assertCodegen(
+      '<my-component><template v-slot="item"><view>{{item}}</view></template></my-component>',
+      '<my-component vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}"><block slot="{{\'default\'+(\'.\'+0)}}" tt:if="{{$root.m0}}"><block tt:for="{{$root.l0}}" tt:for-item="_item" tt:for-index="_index"><view>{{_item}}</view></block></block></my-component>',
+      'with(this){var m0=$hasSSP("551070e6-1");var l0=m0?$getSSP("551070e6-1","default",true):null;$mp.data=Object.assign({},{$root:{m0:m0,l0:l0}})}',
+      {
+        scopedSlotsCompiler: 'augmented',
+        slotMultipleInstance: true
+      }
+    )
+  })
 })
