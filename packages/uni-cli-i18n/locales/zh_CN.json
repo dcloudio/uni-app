@@ -67,5 +67,17 @@
   "pagesLoader.pagesTabbarMinItem2": "{{0}} 需至少包含2项",
   "pagesLoader.needInPagesNode": "{{0}} 需在 pages 数组中",
   "i18n.fallbackLocale.default": "当前应用未在 manifest.json 配置 fallbackLocale，默认使用：{{locale}}",
-  "i18n.fallbackLocale.missing": "当前应用配置的 fallbackLocale 或 locale 为：{locale}，但 locale 目录缺少该语言文件"
+  "i18n.fallbackLocale.missing": "当前应用配置的 fallbackLocale 或 locale 为：{locale}，但 locale 目录缺少该语言文件",
+  "prompt.run.message": "运行方式：打开 {{devtools}}, 导入 {{outputDir}} 运行。",
+  "prompt.run.devtools.app-plus": "HBuilderX",
+  "prompt.run.devtools.mp-alipay": "支付宝小程序开发者工具",
+  "prompt.run.devtools.mp-baidu": "百度开发者工具",
+  "prompt.run.devtools.mp--kuaishou": "快手开发者工具",
+  "prompt.run.devtools.mp-lark": "飞书开发者工具",
+  "prompt.run.devtools.mp-qq": "QQ小程序开发者工具",
+  "prompt.run.devtools.mp-toutiao": "字节跳动开发者工具",
+  "prompt.run.devtools.mp-weixin": "微信开发者工具",
+  "prompt.run.devtools.quickapp-webview": "快应用联盟开发者工具 | 华为快应用开发者工具",
+  "prompt.run.devtools.quickapp-webview-huawei": "华为快应用开发者工具",
+  "prompt.run.devtools.quickapp-webview-union": "快应用联盟开发者工具"
 }

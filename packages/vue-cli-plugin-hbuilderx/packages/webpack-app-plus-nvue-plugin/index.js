@@ -1,6 +1,7 @@
 const {
   done
 } = require('@vue/cli-shared-utils')
+const { showRunPrompt } = require('@dcloudio/uni-cli-shared')
 
 class WebpackAppPlusNVuePlugin {
   apply (compiler) {
@@ -38,9 +39,11 @@ class WebpackAppPlusNVuePlugin {
               done('Build complete. PAGES:' + JSON.stringify(changedFiles))
             } else {
               done('Build complete. Watching for changes...')
+              showRunPrompt()
             }
           } else {
             done('Build complete. ')
+            showRunPrompt()
           }
         }
         resolve()

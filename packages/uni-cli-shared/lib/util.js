@@ -5,6 +5,7 @@ const crypto = require('crypto')
 const escapeStringRegexp = require('escape-string-regexp')
 const escapeGlob = require('glob-escape')
 const webpack = require('webpack')
+const uniI18n = require('@dcloudio/uni-cli-i18n')
 
 const isWin = /^win/.test(process.platform)
 
@@ -179,6 +180,34 @@ function deleteAsset (compilation, name) {
   }
 }
 
+/**
+ * cli 项目增加运行方式提示 https://ask.dcloud.net.cn/question/165071
+ * App 端存在多次编译问题(vue 2 nvue 3)，故做防抖处理
+ * @param delay
+ * @returns
+ */
+let runPromptTimer = null
+function showRunPrompt (delay = 300) {
+  if (runPromptTimer) {
+    clearTimeout(runPromptTimer)
+  }
+  runPromptTimer = setTimeout(() => {
+    if (!isInHBuilderX) {
+      const chalk = require('chalk')
+      const outputDir = path.relative(
+        process.env.UNI_CLI_CONTEXT,
+        process.env.UNI_OUTPUT_DIR
+      )
+      const platform = process.env.UNI_PLATFORM.startsWith('quickapp-webview') && process.env.UNI_SUB_PLATFORM ? process.env.UNI_SUB_PLATFORM : process.env.UNI_PLATFORM
+      console.log(uniI18n.__('prompt.run.message', {
+        devtools: uniI18n.__(`prompt.run.devtools.${platform}`),
+        outputDir: chalk.cyan(outputDir)
+      }))
+    }
+    runPromptTimer = null
+  }, delay)
+}
+
 module.exports = {
   isNormalPage,
   isInHBuilderX,
@@ -220,5 +249,6 @@ module.exports = {
     return path.join(__dirname, '../template')
   },
   createSource,
-  deleteAsset
+  deleteAsset,
+  showRunPrompt
 }

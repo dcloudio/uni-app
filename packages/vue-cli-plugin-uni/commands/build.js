@@ -6,7 +6,8 @@ const {
   isInHBuilderX,
   parseJson,
   parsePagesJson,
-  parseManifestJson
+  parseManifestJson,
+  showRunPrompt
 } = require('@dcloudio/uni-cli-shared')
 
 const uniI18n = require('@dcloudio/uni-cli-i18n')
@@ -207,6 +208,9 @@ async function build (args, api, options) {
           const dirMsg = runByHBuilderX ? ''
             : `The ${chalk.cyan(targetDirShort)} directory is ready to be deployed.`
           done(`Build complete. ${dirMsg}`)
+          if (process.env.UNI_PLATFORM !== 'h5') {
+            showRunPrompt()
+          }
 
           if (process.env.UNI_PLATFORM === 'h5' && !isInHBuilderX) {
             console.log()
@@ -216,6 +220,7 @@ async function build (args, api, options) {
           const dirMsg = runByHBuilderX ? ''
             : `The ${chalk.cyan(targetDirShort)} directory is ready. `
           done(`Build complete. ${dirMsg}Watching for changes...`)
+          showRunPrompt()
         }
       }
 
