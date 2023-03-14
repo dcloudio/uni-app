@@ -641,7 +641,6 @@ function parseComponent(vueOptions, { parse, mocks, isPage, initRelation, handle
     vueOptions = vueOptions.default || vueOptions;
     const options = {
         multipleSlots: true,
-        // styleIsolation: 'apply-shared',
         addGlobalClass: true,
         pureDataPattern: /^uP$/,
     };
