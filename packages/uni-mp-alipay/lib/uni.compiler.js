@@ -92,7 +92,7 @@ module.exports = {
     normalizeChildren
   }, state) {
     const node = {
-      type: 'view',
+      type: 'block',
       attr: {
         slot: slotName
       }

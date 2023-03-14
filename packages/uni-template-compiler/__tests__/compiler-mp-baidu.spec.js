@@ -36,33 +36,33 @@ describe('mp:compiler-mp-baidu', () => {
   it('generate scoped slot', () => {
     assertCodegen(
       '<foo><template slot-scope="bar">{{ bar.foo }}</template></foo>',
-      '<foo vue-id="551070e6-1" vue-slots="{{[\'default\']}}"><view>{{foo}}</view></foo>'
+      '<foo vue-id="551070e6-1" vue-slots="{{[\'default\']}}"><block>{{foo}}</block></foo>'
     )
     assertCodegen(
       '<foo><view slot-scope="bar">{{ bar.foo }}</view></foo>',
-      '<foo vue-id="551070e6-1" vue-slots="{{[\'default\']}}"><view><view>{{foo}}</view></view></foo>'
+      '<foo vue-id="551070e6-1" vue-slots="{{[\'default\']}}"><block><view>{{foo}}</view></block></foo>'
     )
   })
 
   it('generate named scoped slot', () => {
     assertCodegen(
       '<foo><template slot="foo" slot-scope="bar">{{ bar.foo }}</template></foo>',
-      '<foo vue-id="551070e6-1" vue-slots="{{[\'foo\']}}"><view slot="foo">{{foo}}</view></foo>'
+      '<foo vue-id="551070e6-1" vue-slots="{{[\'foo\']}}"><block slot="foo">{{foo}}</block></foo>'
     )
     assertCodegen(
       '<foo><view slot="foo" slot-scope="bar">{{ bar.foo }}</view></foo>',
-      '<foo vue-id="551070e6-1" vue-slots="{{[\'foo\']}}"><view slot="foo"><view>{{foo}}</view></view></foo>'
+      '<foo vue-id="551070e6-1" vue-slots="{{[\'foo\']}}"><block slot="foo"><view>{{foo}}</view></block></foo>'
     )
   })
 
   it('generate scoped slot with multiline v-if', () => {
     assertCodegen(
       '<foo><template v-if="\nshow\n" slot-scope="bar">{{ bar.foo }}</template></foo>',
-      '<foo vue-id="551070e6-1" vue-slots="{{[\'default\']}}"><view><block s-if="{{show}}">{{foo}}</block><block s-else><block></block></block></view></foo>'
+      '<foo vue-id="551070e6-1" vue-slots="{{[\'default\']}}"><block><block s-if="{{show}}">{{foo}}</block><block s-else><block></block></block></block></foo>'
     )
     assertCodegen(
       '<foo><view v-if="\nshow\n" slot="foo" slot-scope="bar">{{ bar.foo }}</view></foo>',
-      '<foo vue-id="551070e6-1" vue-slots="{{[\'foo\']}}"><view slot="foo"><block s-if="{{show}}"><view>{{foo}}</view></block></view></foo>'
+      '<foo vue-id="551070e6-1" vue-slots="{{[\'foo\']}}"><block slot="foo"><block s-if="{{show}}"><view>{{foo}}</view></block></block></foo>'
     )
   })
 
@@ -88,14 +88,14 @@ describe('mp:compiler-mp-baidu', () => {
     )
     assertCodegen(
       '<foo><template v-slot:[test]="{user}"><view>{{user}}</view></template></foo>',
-      '<foo vue-id="551070e6-1" vue-slots="{{[test]}}"><view slot="{{test}}"><view>{{user}}</view></view></foo>'
+      '<foo vue-id="551070e6-1" vue-slots="{{[test]}}"><block slot="{{test}}"><view>{{user}}</view></block></foo>'
     )
   })
 
   it('generate scoped slot with scopedSlotsCompiler: auto', () => {
     assertCodegen(
       '<my-component><template v-slot="{item}">{{item}}<template></my-component>',
-      '<my-component vue-id="551070e6-1" vue-slots="{{[\'default\']}}"><view>{{item}}</view></my-component>',
+      '<my-component vue-id="551070e6-1" vue-slots="{{[\'default\']}}"><block>{{item}}</block></my-component>',
       'with(this){}',
       {
         scopedSlotsCompiler: 'auto'
@@ -111,7 +111,7 @@ describe('mp:compiler-mp-baidu', () => {
     )
     assertCodegen(
       '<my-component><template v-slot="{item}">{{item}}{{title}}<template></my-component>',
-      '<my-component vue-id="551070e6-1" vue-slots="{{[\'default\']}}"><view>{{item+title}}</view></my-component>',
+      '<my-component vue-id="551070e6-1" vue-slots="{{[\'default\']}}"><block>{{item+title}}</block></my-component>',
       'with(this){}',
       {
         scopedSlotsCompiler: 'auto'
@@ -119,7 +119,7 @@ describe('mp:compiler-mp-baidu', () => {
     )
     assertCodegen(
       '<my-component><template v-slot="{item}">{{item}}{{getValue(title)}}<template></my-component>',
-      '<my-component vue-id="551070e6-1" vue-slots="{{[\'default\']}}"><view>{{item+$root.m0}}</view></my-component>',
+      '<my-component vue-id="551070e6-1" vue-slots="{{[\'default\']}}"><block>{{item+$root.m0}}</block></my-component>',
       'with(this){var m0=getValue(title);$mp.data=Object.assign({},{$root:{m0:m0}})}',
       {
         scopedSlotsCompiler: 'auto'

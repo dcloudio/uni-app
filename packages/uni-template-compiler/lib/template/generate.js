@@ -73,14 +73,14 @@ function processElement (ast, state, isRoot) {
       for (let i = children.length - 1; i >= 0; i--) {
         const childElement = children[i]
         /**
-         * 仅百度、字节支持使用 block 作为命名插槽根节点
+         * 百度、字节、支付宝小程序支持使用 block 作为命名插槽根节点，支付宝不支持在 block 使用动态插槽名
          * <block slot="left"></block> => <view slot="left"></view>
          */
         const attr = typeof childElement !== 'string' && childElement.attr
         const slot = attr && (attr[ATTR_SLOT_ORIGIN] || attr.slot)
         if (slot) {
           delete attr[ATTR_SLOT_ORIGIN]
-          if (!['mp-baidu', 'mp-toutiao'].includes(platformName) && attr.slot && attr.slot !== 'default' && childElement.type === 'block') {
+          if (!['mp-baidu', 'mp-toutiao'].includes(platformName) && !(platformName === 'mp-alipay' && !/\{\{.+?\}\}/.test(attr.slot)) && attr.slot && attr.slot !== 'default' && childElement.type === 'block') {
             childElement.type = 'view'
           }
           if (!slots.includes(slot)) {
