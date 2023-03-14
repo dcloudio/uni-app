@@ -28,6 +28,9 @@ function getProxy() {
     return proxy;
 }
 function resolveSyncResult(res) {
+    if ((process.env.NODE_ENV !== 'production')) {
+        console.log('uts.invokeSync.result', res);
+    }
     if (res.errMsg) {
         throw new Error(res.errMsg);
     }
@@ -38,6 +41,9 @@ function invokePropGetter(args) {
         throw new Error(args.errMsg);
     }
     delete args.errMsg;
+    if ((process.env.NODE_ENV !== 'production')) {
+        console.log('uts.invokePropGetter.args', args);
+    }
     return resolveSyncResult(getProxy().invokeSync(args, () => { }));
 }
 function initProxyFunction(async, { moduleName, moduleType, package: pkg, class: cls, name: propOrMethod, method, companion, params: methodParams, errMsg, }, instanceId) {
@@ -79,7 +85,13 @@ function initProxyFunction(async, { moduleName, moduleType, package: pkg, class:
         });
         if (async) {
             return new Promise((resolve, reject) => {
+                if ((process.env.NODE_ENV !== 'production')) {
+                    console.log('uts.invokeAsync.args', invokeArgs);
+                }
                 getProxy().invokeAsync(invokeArgs, (res) => {
+                    if ((process.env.NODE_ENV !== 'production')) {
+                        console.log('uts.invokeAsync.result', res);
+                    }
                     if (res.type !== 'return') {
                         invokeCallback(res);
                     }
@@ -94,6 +106,9 @@ function initProxyFunction(async, { moduleName, moduleType, package: pkg, class:
                 });
             });
         }
+        if ((process.env.NODE_ENV !== 'production')) {
+            console.log('uts.invokeSync.args', invokeArgs);
+        }
         return resolveSyncResult(getProxy().invokeSync(invokeArgs, invokeCallback));
     };
 }
@@ -106,6 +121,12 @@ function initUTSStaticMethod(async, opts) {
     return initProxyFunction(async, opts, 0);
 }
 const initUTSProxyFunction = initUTSStaticMethod;
+function parseClassMethodName(name, methods) {
+    if (hasOwn(methods, name + 'ByJs')) {
+        return name + 'ByJs';
+    }
+    return name;
+}
 function initUTSProxyClass({ moduleName, moduleType, package: pkg, class: cls, constructor: { params: constructorParams }, methods, props, staticProps, staticMethods, errMsg, }) {
     const baseOptions = {
         moduleName,
@@ -114,6 +135,12 @@ function initUTSProxyClass({ moduleName, moduleType, package: pkg, class: cls, c
         class: cls,
         errMsg,
     };
+    // iOS 需要为 ByJs 的 class 构造函数（如果包含JSONObject或UTSCallback类型）补充最后一个参数
+    if (typeof plus !== 'undefined' && plus.os.name === 'iOS') {
+        if (constructorParams.find((p) => p.type === 'UTSCallback' || p.type.indexOf('JSONObject') > 0)) {
+            constructorParams.push({ name: '_byJs', type: 'boolean' });
+        }
+    }
     const ProxyClass = class UTSClass {
         constructor(...params) {
             if (errMsg) {
@@ -129,6 +156,7 @@ function initUTSProxyClass({ moduleName, moduleType, package: pkg, class: cls, c
                 get(_, name) {
                     if (!target[name]) {
                         //实例方法
+                        name = parseClassMethodName(name, methods);
                         if (hasOwn(methods, name)) {
                             const { async, params } = methods[name];
                             target[name] = initUTSInstanceMethod(!!async, extend({
@@ -155,6 +183,7 @@ function initUTSProxyClass({ moduleName, moduleType, package: pkg, class: cls, c
     const staticMethodCache = {};
     return new Proxy(ProxyClass, {
         get(target, name, receiver) {
+            name = parseClassMethodName(name, staticMethods);
             if (hasOwn(staticMethods, name)) {
                 if (!staticMethodCache[name]) {
                     const { async, params } = staticMethods[name];

@@ -176,6 +176,9 @@ function getProxy(): {
 }
 
 function resolveSyncResult(res: InvokeSyncRes) {
+  if (__DEV__) {
+    console.log('uts.invokeSync.result', res)
+  }
   if (res.errMsg) {
     throw new Error(res.errMsg)
   }
@@ -187,6 +190,9 @@ function invokePropGetter(args: InvokeArgs) {
     throw new Error(args.errMsg)
   }
   delete args.errMsg
+  if (__DEV__) {
+    console.log('uts.invokePropGetter.args', args)
+  }
   return resolveSyncResult(getProxy().invokeSync(args, () => {}))
 }
 
@@ -247,7 +253,13 @@ function initProxyFunction(
     })
     if (async) {
       return new Promise((resolve, reject) => {
+        if (__DEV__) {
+          console.log('uts.invokeAsync.args', invokeArgs)
+        }
         getProxy().invokeAsync(invokeArgs, (res) => {
+          if (__DEV__) {
+            console.log('uts.invokeAsync.result', res)
+          }
           if (res.type !== 'return') {
             invokeCallback(res)
           } else {
@@ -259,6 +271,9 @@ function initProxyFunction(
           }
         })
       })
+    }
+    if (__DEV__) {
+      console.log('uts.invokeSync.args', invokeArgs)
     }
     return resolveSyncResult(getProxy().invokeSync(invokeArgs, invokeCallback))
   }
@@ -274,6 +289,13 @@ function initUTSStaticMethod(async: boolean, opts: ProxyFunctionOptions) {
 }
 
 export const initUTSProxyFunction = initUTSStaticMethod
+
+function parseClassMethodName(name: string, methods: Record<string, unknown>) {
+  if (hasOwn(methods, name + 'ByJs')) {
+    return name + 'ByJs'
+  }
+  return name
+}
 
 export function initUTSProxyClass({
   moduleName,
@@ -294,6 +316,16 @@ export function initUTSProxyClass({
     class: cls,
     errMsg,
   }
+  // iOS 需要为 ByJs 的 class 构造函数（如果包含JSONObject或UTSCallback类型）补充最后一个参数
+  if (typeof plus !== 'undefined' && plus.os.name === 'iOS') {
+    if (
+      constructorParams.find(
+        (p) => p.type === 'UTSCallback' || p.type.indexOf('JSONObject') > 0
+      )
+    ) {
+      constructorParams.push({ name: '_byJs', type: 'boolean' })
+    }
+  }
   const ProxyClass = class UTSClass {
     constructor(...params: unknown[]) {
       if (errMsg) {
@@ -313,6 +345,7 @@ export function initUTSProxyClass({
         get(_, name) {
           if (!target[name as string]) {
             //实例方法
+            name = parseClassMethodName(name as string, methods)
             if (hasOwn(methods, name)) {
               const { async, params } = methods[name]
               target[name] = initUTSInstanceMethod(
@@ -345,6 +378,7 @@ export function initUTSProxyClass({
   const staticMethodCache: Record<string, Function> = {}
   return new Proxy(ProxyClass, {
     get(target, name, receiver) {
+      name = parseClassMethodName(name as string, staticMethods)
       if (hasOwn(staticMethods, name)) {
         if (!staticMethodCache[name as string]) {
           const { async, params } = staticMethods[name]
