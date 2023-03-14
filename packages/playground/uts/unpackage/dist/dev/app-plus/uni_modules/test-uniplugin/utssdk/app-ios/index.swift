@@ -136,9 +136,6 @@ public func test1ByJs(_ callback: UTSCallback) -> String {
 @objc(UTSSDKModulesTestUniPluginTestByJs)
 @objcMembers
 public class TestByJs : Test {
-    override public init(){
-        super.init();
-    }
     public func testByJs() -> String? {
         return test();
     }
