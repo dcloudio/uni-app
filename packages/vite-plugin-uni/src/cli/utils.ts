@@ -11,6 +11,7 @@ import {
   initModulePaths,
   parseScripts,
   getPlatformDir,
+  output,
 } from '@dcloudio/uni-cli-shared'
 
 import { CliOptions } from '.'
@@ -29,6 +30,19 @@ export const PLATFORMS = [
   'quickapp-webview-huawei',
   'quickapp-webview-union',
 ]
+
+export type PLATFORM =
+  | 'app'
+  | 'mp-alipay'
+  | 'mp-baidu'
+  | 'mp-kuaishou'
+  | 'mp-lark'
+  | 'mp-qq'
+  | 'mp-toutiao'
+  | 'mp-weixin'
+  | 'quickapp-webview'
+  | 'quickapp-webview-huawei'
+  | 'quickapp-webview-union'
 
 function resolveConfigFile() {
   const viteConfigJs = path.resolve(process.env.UNI_INPUT_DIR, 'vite.config.js')
@@ -300,4 +314,31 @@ function initCustomScripts(options: CliOptions) {
   process.env.UNI_CUSTOM_SCRIPT = custom.name
   process.env.UNI_CUSTOM_DEFINE = JSON.stringify(custom.define)
   process.env.UNI_CUSTOM_CONTEXT = JSON.stringify(custom.context)
+}
+
+export function showRunPrompt(platform: PLATFORM) {
+  if (!isInHBuilderX()) {
+    const devtools = getPlatformDevtools(getOriginalPlatform(platform))
+    const outputDir = path.relative(
+      process.env.UNI_CLI_CONTEXT,
+      process.env.UNI_OUTPUT_DIR
+    )
+    output(
+      'log',
+      `${M['prompt.run.message']
+        .replace('{devtools}', M[devtools])
+        .replace('{outputDir}', colors.cyan(outputDir))}`
+    )
+  }
+}
+
+function getOriginalPlatform(platform: PLATFORM) {
+  if (platform.startsWith('quickapp-webview') && process.env.UNI_SUB_PLATFORM) {
+    return process.env.UNI_SUB_PLATFORM
+  }
+  return platform
+}
+
+function getPlatformDevtools(platform: PLATFORM) {
+  return `prompt.run.devtools.${platform}` as keyof typeof M
 }
