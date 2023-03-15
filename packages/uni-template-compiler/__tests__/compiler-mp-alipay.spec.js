@@ -175,6 +175,33 @@ describe('mp:compiler-mp-alipay', () => {
     )
   })
 
+  it('generate scoped slot with scopedSlotsCompiler: augmented', () => {
+    assertCodegen(
+      '<my-component><template v-slot="{item}">{{item}}<template></my-component>',
+      '<my-component vue-id="551070e6-1" onVueInit="__l" vue-slots="{{[\'default\']}}"><block a:if="{{$root.m0}}">{{$root.m1[\'item\']}}</block></my-component>',
+      'with(this){var m0=$hasSSP("551070e6-1");var m1=m0?$getSSP("551070e6-1","default"):null;$mp.data=Object.assign({},{$root:{m0:m0,m1:m1}})}',
+      {
+        scopedSlotsCompiler: 'augmented'
+      }
+    )
+    assertCodegen(
+      '<my-component><template v-slot:test="{item}">{{item}}<template></my-component>',
+      '<my-component vue-id="551070e6-1" onVueInit="__l" vue-slots="{{[\'test\']}}"><block slot="test" a:if="{{$root.m0}}">{{$root.m1[\'item\']}}</block></my-component>',
+      'with(this){var m0=$hasSSP("551070e6-1");var m1=m0?$getSSP("551070e6-1","test"):null;$mp.data=Object.assign({},{$root:{m0:m0,m1:m1}})}',
+      {
+        scopedSlotsCompiler: 'augmented'
+      }
+    )
+    assertCodegen(
+      '<my-component><template v-slot:[test]="{item}">{{item}}<template></my-component>',
+      '<my-component vue-id="551070e6-1" onVueInit="__l" vue-slots="{{[test]}}"><text slot="{{test}}" a:if="{{$root.m0}}">{{$root.m1[\'item\']}}</text></my-component>',
+      'with(this){var m0=$hasSSP("551070e6-1");var m1=m0?$getSSP("551070e6-1",test):null;$mp.data=Object.assign({},{$root:{m0:m0,m1:m1}})}',
+      {
+        scopedSlotsCompiler: 'augmented'
+      }
+    )
+  })
+
   it('generate class binding', () => {
     assertCodegen(
       '<div :class="{ active: isActive }">1</div>',

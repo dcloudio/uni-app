@@ -359,12 +359,15 @@ function traverseResolveScopedSlots (callExprNode, state) {
   const supportTemplateSlotPlatforms = ['mp-baidu', 'mp-toutiao']
   // 支持访问当前节点 v-for 作用域的平台
   const supportCurrentScopePlatforms = ['mp-weixin', 'mp-alipay']
-  function merge (node, ignore, vIfs = [], top) {
+  function merge (node, ignore, vIfs = [], top, needRealNode) {
     if (!top) {
+      // 支付宝小程序使用静态插槽时可以在非实体节点使用 slot 属性，其他小程序 named slot 需移动到实体节点
+      const slot = node.attr.slot
+      needRealNode = slot && slot !== 'default' && !supportTemplateSlotPlatforms.includes(platformName) && !(platformName === 'mp-alipay' && !/\{\{.+?\}\}/.test(slot))
       node = { children: [node] }
       top = node
     }
-    const children = node.children
+    let children = node.children
     let nodeAttr = node.attr || {}
     function resolveVIf () {
       if (vIfs.length) {
@@ -373,35 +376,45 @@ function traverseResolveScopedSlots (callExprNode, state) {
         vIfs.length = 0
       }
     }
-    if (Array.isArray(children) && children.length === 1) {
-      let child = children[0]
-      if (child.type) {
-        const attr = child.attr || {}
-        // 除 v-if 外与父节点无同名属性且当前节点无 v-for 作用域且父节点 v-for 支持访问当前节点作用域，向上合并
-        // TODO 父节点访问变量不与当前 v-for 作用域内变量同名时，可向上合并
-        if (!Object.keys(attr).find(key => key !== vIfAttrName && key in nodeAttr) && !attr[vForAttrName] && (supportCurrentScopePlatforms.includes(platformName) || !nodeAttr[vForAttrName])) {
-          if (attr[vIfAttrName]) {
-            vIfs.push(attr[vIfAttrName])
-            delete attr[vIfAttrName]
+    if (Array.isArray(children)) {
+      children = children.filter(child => !!child)
+      let slotNode
+      if (children.length === 1) {
+        let child = children[0]
+        if (child.type) {
+          const attr = child.attr || {}
+          // 除 v-if 外与父节点无同名属性且当前节点无 v-for 作用域且父节点 v-for 支持访问当前节点作用域，向上合并
+          // TODO 父节点访问变量不与当前 v-for 作用域内变量同名时，可向上合并
+          if (!Object.keys(attr).find(key => key !== vIfAttrName && key in nodeAttr) && !attr[vForAttrName] && (supportCurrentScopePlatforms.includes(platformName) || !nodeAttr[vForAttrName])) {
+            if (attr[vIfAttrName]) {
+              vIfs.push(attr[vIfAttrName])
+              delete attr[vIfAttrName]
+            }
+            node.type = child.type
+            node.attr = child.attr = nodeAttr = Object.assign(attr, nodeAttr)
+            node.children = child.children
+            child = node
+          } else {
+            resolveVIf()
           }
-          node.type = child.type
-          node.attr = child.attr = nodeAttr = Object.assign(attr, nodeAttr)
-          node.children = child.children
-          child = node
-        } else {
-          resolveVIf()
-        }
-        if (ignore.includes(child.type)) {
-          return merge(child, ignore, vIfs, top)
-        } else if (!supportTemplateSlotPlatforms.includes(platformName)) {
-          // 其他小程序 named slot 需移动到实体节点
-          const slot = top.attr.slot
-          if (slot && slot !== 'default') {
-            // TODO 多层 v-for 嵌套时，此处理导致作用域发生变化，需安全重命名
-            delete top.attr.slot
-            attr.slot = slot
+          if (ignore.includes(child.type)) {
+            return merge(child, ignore, vIfs, top, needRealNode)
+          } else if (needRealNode) {
+            slotNode = child
           }
+        } else if (needRealNode) {
+          node.type = 'text'
+          slotNode = node
         }
+      } else if (needRealNode) {
+        // TODO 依据子节点类型
+        node.type = 'view'
+        slotNode = node
+      }
+      if (slotNode && slotNode !== top) {
+        // TODO 多层 v-for 嵌套时，此处理导致作用域发生变化，需安全重命名
+        slotNode.attr.slot = top.attr.slot
+        delete top.attr.slot
       }
     }
     resolveVIf()
@@ -461,21 +474,21 @@ function traverseResolveScopedSlots (callExprNode, state) {
       const paramExprNode = fnProperty.value.params[0]
       return options.platform.resolveScopedSlots(
         slotName, {
-          genCode,
-          generate,
-          ownerName,
-          parentName,
-          parentNode,
-          resourcePath,
-          paramExprNode,
-          returnExprNodes,
-          traverseExpr: function (exprNode, state) {
-            const ast = traverseExpr(exprNode, state)
-            initParent(ast)
-            return ast
-          },
-          normalizeChildren
+        genCode,
+        generate,
+        ownerName,
+        parentName,
+        parentNode,
+        resourcePath,
+        paramExprNode,
+        returnExprNodes,
+        traverseExpr: function (exprNode, state) {
+          const ast = traverseExpr(exprNode, state)
+          initParent(ast)
+          return ast
         },
+        normalizeChildren
+      },
         state
       )
     }

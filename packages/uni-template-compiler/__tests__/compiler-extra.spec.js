@@ -281,7 +281,7 @@ describe('mp:compiler-extra', () => {
     )
     assertCodegen(
       '<custom-view><template v-if="show" #name>hello</template></custom-view>',
-      '<custom-view vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'name\']}}"><view slot="name" wx:if="{{show}}">hello</view></custom-view>'
+      '<custom-view vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'name\']}}"><text slot="name" wx:if="{{show}}">hello</text></custom-view>'
     )
     assertCodegen(
       '<custom-view><template v-if="show" #name><text>hello</text></template></custom-view>',
