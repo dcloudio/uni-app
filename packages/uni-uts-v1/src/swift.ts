@@ -43,18 +43,17 @@ export async function runSwiftProd(
   }
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
-  const res = await compile(filename, {
+  const result = await compile(filename, {
     inputDir,
     outputDir,
     sourceMap: true,
     components,
   })
-  if (!res) {
+  if (!result) {
     return
   }
-  if (res.error) {
-    console.error(parseUTSSyntaxError(res.error, inputDir))
-    return
+  if (result.error) {
+    throw parseUTSSyntaxError(result.error, inputDir)
   }
   genUTSPlatformResource(filename, {
     inputDir,
@@ -113,8 +112,7 @@ export async function runSwiftDev(
     return
   }
   if (result.error) {
-    console.error(parseUTSSyntaxError(result.error, inputDir))
-    return
+    throw parseUTSSyntaxError(result.error, inputDir)
   }
   result.type = 'swift'
 
