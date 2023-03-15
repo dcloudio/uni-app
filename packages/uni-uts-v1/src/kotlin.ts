@@ -23,6 +23,7 @@ import {
   isColorSupported,
 } from './utils'
 import { Module } from '../types/types'
+import { parseUTSSyntaxError } from './stacktrace'
 
 interface KotlinCompilerServer extends CompilerServer {
   getKotlincHome(): string
@@ -78,6 +79,10 @@ export async function runKotlinProd(
   if (!res) {
     return
   }
+  if (res.error) {
+    console.error(parseUTSSyntaxError(res.error, inputDir))
+    return
+  }
   genUTSPlatformResource(filename, {
     inputDir,
     outputDir,
@@ -112,7 +117,10 @@ export async function runKotlinDev(
   if (!result) {
     return
   }
-
+  if (result.error) {
+    console.error(parseUTSSyntaxError(result.error, inputDir))
+    return
+  }
   result.type = 'kotlin'
   result.changed = []
 

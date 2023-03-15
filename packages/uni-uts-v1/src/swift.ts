@@ -16,6 +16,7 @@ import {
 } from './utils'
 import { parseJson } from './shared'
 import { UTSResult } from '@dcloudio/uts'
+import { parseUTSSyntaxError } from './stacktrace'
 
 function parseSwiftPackage(filename: string) {
   const res = resolvePackage(filename)
@@ -49,6 +50,10 @@ export async function runSwiftProd(
     components,
   })
   if (!res) {
+    return
+  }
+  if (res.error) {
+    console.error(parseUTSSyntaxError(res.error, inputDir))
     return
   }
   genUTSPlatformResource(filename, {
@@ -107,7 +112,10 @@ export async function runSwiftDev(
   if (!result) {
     return
   }
-
+  if (result.error) {
+    console.error(parseUTSSyntaxError(result.error, inputDir))
+    return
+  }
   result.type = 'swift'
 
   const swiftFile = resolveUTSPlatformFile(filename, {

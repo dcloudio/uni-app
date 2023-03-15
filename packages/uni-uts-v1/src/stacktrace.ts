@@ -1,4 +1,5 @@
 import { originalPositionFor } from './sourceMap'
+import { relative } from './utils'
 
 const splitRE = /\r?\n/
 const uniModulesSwiftUTSRe =
@@ -130,4 +131,18 @@ export function generateCodeFrame(
     }
   }
   return res.join('\n')
+}
+
+export function parseUTSSyntaxError(error: any, inputDir: string): string {
+  let msg = String(error).replace(/\t/g, ' ')
+  let res: RegExpExecArray | null = null
+  const syntaxErrorRe = /(,-\[(.*):(\d+):(\d+)\])/g
+  while ((res = syntaxErrorRe.exec(msg))) {
+    const [row, filename, line, column] = res.slice(1)
+    msg = msg.replace(
+      row,
+      `at ${relative(filename, inputDir)}:${parseInt(line) + 1}:${column}`
+    )
+  }
+  return msg
 }

@@ -26,8 +26,10 @@ import {
   createResolveTypeReferenceName,
   ERR_MSG_PLACEHOLDER,
   isColorSupported,
+  relative,
 } from './utils'
 import { normalizePath } from './shared'
+import { parseUTSSyntaxError } from './stacktrace'
 
 export const enum FORMATS {
   ES = 'es',
@@ -289,42 +291,49 @@ async function parseInterfaceTypes(
   // 懒加载 uts 编译器
   // eslint-disable-next-line no-restricted-globals
   const { parse } = require('@dcloudio/uts')
-  const ast: Module = await parse(fs.readFileSync(interfaceFilename, 'utf8'), {
-    noColor: !isColorSupported(),
-  })
+  let ast: Module | null = null
+  try {
+    ast = await parse(fs.readFileSync(interfaceFilename, 'utf8'), {
+      filename: relative(interfaceFilename, process.env.UNI_INPUT_DIR),
+      noColor: !isColorSupported(),
+    })
+  } catch (e) {
+    console.error(parseUTSSyntaxError(e, process.env.UNI_INPUT_DIR))
+  }
   const classTypes: string[] = []
   const fnTypes: Record<string, Param[]> = {}
 
   const exportNamed: string[] = []
-
-  ast.body.filter((node) => {
-    if (node.type === 'ExportNamedDeclaration') {
-      node.specifiers.forEach((s) => {
-        if (s.type === 'ExportSpecifier') {
-          if (s.exported) {
-            if (s.exported.type === 'Identifier') {
-              exportNamed.push(s.exported.value)
+  if (ast) {
+    ast.body.filter((node) => {
+      if (node.type === 'ExportNamedDeclaration') {
+        node.specifiers.forEach((s) => {
+          if (s.type === 'ExportSpecifier') {
+            if (s.exported) {
+              if (s.exported.type === 'Identifier') {
+                exportNamed.push(s.exported.value)
+              }
+            } else {
+              exportNamed.push(s.orig.value)
             }
-          } else {
-            exportNamed.push(s.orig.value)
           }
-        }
-      })
-    }
-  })
-
-  ast.body.filter((node) => {
-    if (
-      node.type === 'ExportDeclaration' &&
-      node.declaration.type === 'TsTypeAliasDeclaration'
-    ) {
-      parseTypes(node.declaration, classTypes, fnTypes)
-    } else if (node.type === 'TsTypeAliasDeclaration') {
-      if (exportNamed.includes(node.id.value)) {
-        parseTypes(node, classTypes, fnTypes)
+        })
       }
-    }
-  })
+    })
+
+    ast.body.filter((node) => {
+      if (
+        node.type === 'ExportDeclaration' &&
+        node.declaration.type === 'TsTypeAliasDeclaration'
+      ) {
+        parseTypes(node.declaration, classTypes, fnTypes)
+      } else if (node.type === 'TsTypeAliasDeclaration') {
+        if (exportNamed.includes(node.id.value)) {
+          parseTypes(node, classTypes, fnTypes)
+        }
+      }
+    })
+  }
   return {
     class: classTypes,
     fn: fnTypes,
@@ -440,27 +449,41 @@ function mergeDecls(from: ProxyDecl[], to: ProxyDecl[]) {
 async function parseFile(
   filename: string | undefined | false,
   options: GenProxyCodeOptions
-) {
+): Promise<ProxyDecl[]> {
   if (filename) {
     return parseCode(
       fs.readFileSync(filename, 'utf8'),
       options.namespace,
-      options.types!
+      options.types!,
+      filename
     )
   }
   return []
 }
 
-async function parseCode(code: string, namespace: string, types: Types) {
+async function parseCode(
+  code: string,
+  namespace: string,
+  types: Types,
+  filename: string
+): Promise<ProxyDecl[]> {
   // 懒加载 uts 编译器
   // eslint-disable-next-line no-restricted-globals
   const { parse } = require('@dcloudio/uts')
-  const ast = await parse(code, { noColor: !isColorSupported() })
-  return parseAst(
-    ast,
-    createResolveTypeReferenceName(namespace, ast, types.class),
-    types
-  )
+  try {
+    const ast = await parse(code, {
+      filename: relative(filename, process.env.UNI_INPUT_DIR),
+      noColor: !isColorSupported(),
+    })
+    return parseAst(
+      ast,
+      createResolveTypeReferenceName(namespace, ast, types.class),
+      types
+    )
+  } catch (e: any) {
+    console.error(parseUTSSyntaxError(e, process.env.UNI_INPUT_DIR))
+  }
+  return []
 }
 
 type ProxyDecl = ProxyFunctionDeclaration | ProxyClass | VariableDeclaration
@@ -492,10 +515,8 @@ function parseAst(
   { body }: Module,
   resolveTypeReferenceName: ResolveTypeReferenceName,
   types: Types
-) {
-  const decls: Array<
-    ProxyFunctionDeclaration | ProxyClass | VariableDeclaration
-  > = []
+): ProxyDecl[] {
+  const decls: ProxyDecl[] = []
 
   body.forEach((item) => {
     if (item.type === 'ExportDeclaration') {

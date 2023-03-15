@@ -407,3 +407,10 @@ export function isColorSupported() {
   }
   return true
 }
+
+export function relative(filename: string, inputDir: string) {
+  if (path.isAbsolute(filename)) {
+    return normalizePath(path.relative(inputDir, filename))
+  }
+  return filename
+}
