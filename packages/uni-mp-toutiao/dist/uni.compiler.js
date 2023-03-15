@@ -62,9 +62,7 @@ function transformSwiper(node) {
     }
 }
 
-const customElements = [
-    'aweme-data'
-];
+const customElements = ['aweme-data'];
 const projectConfigFilename = 'project.config.json';
 const nodeTransforms = [
     uniCliShared.transformRef,
