@@ -259,11 +259,16 @@ function onThemeChange() {
   } catch (error) {}
 
   if (mediaQueryList) {
-    mediaQueryList.addEventListener('change', (e) => {
+    let callback = (e: MediaQueryListEvent) => {
       UniServiceJSBridge.emit(ON_THEME_CHANGE, {
         theme: e.matches ? 'dark' : 'light',
       })
-    })
+    }
+    if (mediaQueryList.addEventListener) {
+      mediaQueryList.addEventListener('change', callback)
+    } else {
+      mediaQueryList.addListener(callback)
+    }
   }
 }
 function invokeOnTabItemTap(
