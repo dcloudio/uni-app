@@ -51,6 +51,7 @@ interface GenProxyCodeOptions {
   androidComponents?: Record<string, string>
   iosComponents?: Record<string, string>
   format?: FORMATS
+  inputDir?: string
   pluginRelativeDir?: string
   moduleName?: string
   moduleType?: string
@@ -63,11 +64,10 @@ export async function genProxyCode(
   options: GenProxyCodeOptions
 ) {
   const { name, is_uni_modules, format, moduleName, moduleType } = options
-
+  options.inputDir = options.inputDir || process.env.UNI_INPUT_DIR
   if (!options.meta) {
     options.meta = { exports: {}, types: {} }
   }
-
   options.types = await parseInterfaceTypes(module, options)
   options.meta!.types = parseMetaTypes(options.types)
   return `
@@ -294,11 +294,11 @@ async function parseInterfaceTypes(
   let ast: Module | null = null
   try {
     ast = await parse(fs.readFileSync(interfaceFilename, 'utf8'), {
-      filename: relative(interfaceFilename, process.env.UNI_INPUT_DIR),
+      filename: relative(interfaceFilename, options.inputDir!),
       noColor: !isColorSupported(),
     })
   } catch (e) {
-    console.error(parseUTSSyntaxError(e, process.env.UNI_INPUT_DIR))
+    console.error(parseUTSSyntaxError(e, options.inputDir!))
   }
   const classTypes: string[] = []
   const fnTypes: Record<string, Param[]> = {}
@@ -455,7 +455,8 @@ async function parseFile(
       fs.readFileSync(filename, 'utf8'),
       options.namespace,
       options.types!,
-      filename
+      filename,
+      options.inputDir!
     )
   }
   return []
@@ -465,14 +466,15 @@ async function parseCode(
   code: string,
   namespace: string,
   types: Types,
-  filename: string
+  filename: string,
+  inputDir: string
 ): Promise<ProxyDecl[]> {
   // 懒加载 uts 编译器
   // eslint-disable-next-line no-restricted-globals
   const { parse } = require('@dcloudio/uts')
   try {
     const ast = await parse(code, {
-      filename: relative(filename, process.env.UNI_INPUT_DIR),
+      filename: relative(filename, inputDir),
       noColor: !isColorSupported(),
     })
     return parseAst(
@@ -481,7 +483,7 @@ async function parseCode(
       types
     )
   } catch (e: any) {
-    console.error(parseUTSSyntaxError(e, process.env.UNI_INPUT_DIR))
+    console.error(parseUTSSyntaxError(e, inputDir))
   }
   return []
 }

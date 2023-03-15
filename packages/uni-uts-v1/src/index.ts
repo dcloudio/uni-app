@@ -140,6 +140,7 @@ export async function compile(
           require(join(pluginDir, 'package.json')).displayName || pkg.id,
         moduleType: process.env.UNI_UTS_MODULE_TYPE || '',
         meta,
+        inputDir,
       },
       pkg
     )
