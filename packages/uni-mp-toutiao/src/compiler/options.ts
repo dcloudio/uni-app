@@ -12,6 +12,8 @@ import { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
 import source from './project.config.json'
 import { transformSwiper } from './transforms/transformSwiper'
 
+export const customElements = ['aweme-data']
+
 const projectConfigFilename = 'project.config.json'
 
 const nodeTransforms = [
@@ -75,6 +77,7 @@ export const options: UniMiniProgramPluginOptions = {
   template: {
     /* eslint-disable no-restricted-syntax */
     ...miniProgram,
+    customElements,
     filter: {
       extname: '.sjs',
       lang: 'sjs',
