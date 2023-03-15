@@ -71,6 +71,9 @@ export function bundleKotlin(options: UTSBundleOptions): Promise<UTSResult> {
   return bindings
     .bundleKotlin(toBuffer(bundleOptions))
     .then((res: string) => JSON.parse(res))
+    .catch((error: Error) => {
+      return { error }
+    })
 }
 
 export function toSwift(options: UTSOptions): Promise<UTSResult> {
@@ -81,6 +84,9 @@ export function toSwift(options: UTSOptions): Promise<UTSResult> {
   return bindings
     .toSwift(toBuffer(swiftOptions))
     .then((res: string) => JSON.parse(res))
+    .catch((error: Error) => {
+      return { error }
+    })
 }
 
 export function bundleSwift(options: UTSBundleOptions): Promise<UTSResult> {
