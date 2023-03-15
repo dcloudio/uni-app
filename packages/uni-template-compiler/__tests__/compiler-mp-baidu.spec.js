@@ -40,7 +40,7 @@ describe('mp:compiler-mp-baidu', () => {
     )
     assertCodegen(
       '<foo><view slot-scope="bar">{{ bar.foo }}</view></foo>',
-      '<foo vue-id="551070e6-1" vue-slots="{{[\'default\']}}"><block><view>{{foo}}</view></block></foo>'
+      '<foo vue-id="551070e6-1" vue-slots="{{[\'default\']}}"><view>{{foo}}</view></foo>'
     )
   })
 
@@ -51,7 +51,7 @@ describe('mp:compiler-mp-baidu', () => {
     )
     assertCodegen(
       '<foo><view slot="foo" slot-scope="bar">{{ bar.foo }}</view></foo>',
-      '<foo vue-id="551070e6-1" vue-slots="{{[\'foo\']}}"><block slot="foo"><view>{{foo}}</view></block></foo>'
+      '<foo vue-id="551070e6-1" vue-slots="{{[\'foo\']}}"><view slot="foo">{{foo}}</view></foo>'
     )
   })
 
@@ -62,7 +62,7 @@ describe('mp:compiler-mp-baidu', () => {
     )
     assertCodegen(
       '<foo><view v-if="\nshow\n" slot="foo" slot-scope="bar">{{ bar.foo }}</view></foo>',
-      '<foo vue-id="551070e6-1" vue-slots="{{[\'foo\']}}"><block slot="foo"><block s-if="{{show}}"><view>{{foo}}</view></block></block></foo>'
+      '<foo vue-id="551070e6-1" vue-slots="{{[\'foo\']}}"><view slot="foo" s-if="{{show}}">{{foo}}</view></foo>'
     )
   })
 
@@ -88,7 +88,7 @@ describe('mp:compiler-mp-baidu', () => {
     )
     assertCodegen(
       '<foo><template v-slot:[test]="{user}"><view>{{user}}</view></template></foo>',
-      '<foo vue-id="551070e6-1" vue-slots="{{[test]}}"><block slot="{{test}}"><view>{{user}}</view></block></foo>'
+      '<foo vue-id="551070e6-1" vue-slots="{{[test]}}"><view slot="{{test}}">{{user}}</view></foo>'
     )
   })
 

@@ -390,9 +390,10 @@ function traverseResolveScopedSlots (callExprNode, state) {
               vIfs.push(attr[vIfAttrName])
               delete attr[vIfAttrName]
             }
-            node.type = child.type
-            node.attr = child.attr = nodeAttr = Object.assign(attr, nodeAttr)
-            node.children = child.children
+            child.attr = nodeAttr = Object.assign(attr, nodeAttr)
+            for (const key in child) {
+              node[key] = child[key]
+            }
             child = node
           } else {
             resolveVIf()
@@ -412,9 +413,14 @@ function traverseResolveScopedSlots (callExprNode, state) {
         slotNode = node
       }
       if (slotNode && slotNode !== top) {
-        // TODO 多层 v-for 嵌套时，此处理导致作用域发生变化，需安全重命名
-        slotNode.attr.slot = top.attr.slot
-        delete top.attr.slot
+        // TODO 多层 v-for 嵌套时，此处理导致作用域发生变化，需安全重命名 slot name
+        ['slot', 'slot-scope'].forEach(key => {
+          const topAttr = top.attr
+          if (key in topAttr) {
+            slotNode.attr[key] = topAttr[key]
+            delete topAttr[key]
+          }
+        })
       }
     }
     resolveVIf()
@@ -472,25 +478,31 @@ function traverseResolveScopedSlots (callExprNode, state) {
       const parentName = parentNode.type
 
       const paramExprNode = fnProperty.value.params[0]
-      return options.platform.resolveScopedSlots(
+      const node = options.platform.resolveScopedSlots(
         slotName, {
-        genCode,
-        generate,
-        ownerName,
-        parentName,
-        parentNode,
-        resourcePath,
-        paramExprNode,
-        returnExprNodes,
-        traverseExpr: function (exprNode, state) {
-          const ast = traverseExpr(exprNode, state)
-          initParent(ast)
-          return ast
+          genCode,
+          generate,
+          ownerName,
+          parentName,
+          parentNode,
+          resourcePath,
+          paramExprNode,
+          returnExprNodes,
+          traverseExpr: function (exprNode, state) {
+            const ast = traverseExpr(exprNode, state)
+            initParent(ast)
+            return ast
+          },
+          normalizeChildren
         },
-        normalizeChildren
-      },
         state
       )
+      // 对原生支持作用域插槽的小程序平台，优化节点
+      if (['mp-baidu', 'mp-alipay'].includes(platformName)) {
+        node.attr[ATTR_SLOT_ORIGIN] = slotNameOrigin
+        return merge(node, ['template', 'block'])
+      }
+      return node
     }
     if (options.scopedSlotsCompiler === 'auto' && slotNode.scopedSlotsCompiler === 'augmented') {
       parentNode.attr['scoped-slots-compiler'] = 'augmented'
