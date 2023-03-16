@@ -90,8 +90,11 @@ fun registerByJs(name: String, callback: UTSCallback) {
     }
     );
 }
-fun offMemoryWarningByJs(callback: ((level: Number) -> Unit)? = null) {
-    return offMemoryWarning();
+fun offMemoryWarningByJs(callback: UTSCallback? = null) {
+    return offMemoryWarning(fun(level: Number){
+        callback(level);
+    }
+    );
 }
 fun showToast1ByJs(msg: String): Unit {
     return showToast1(msg);
