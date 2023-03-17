@@ -62,7 +62,6 @@ function transformSwiper(node) {
     }
 }
 
-const customElements = ['aweme-data'];
 const projectConfigFilename = 'project.config.json';
 const nodeTransforms = [
     uniCliShared.transformRef,
@@ -120,7 +119,7 @@ const options = {
         config: ['project.tt.json'],
         source,
     },
-    template: Object.assign(Object.assign({}, miniProgram), { customElements, filter: {
+    template: Object.assign(Object.assign({}, miniProgram), { filter: {
             extname: '.sjs',
             lang: 'sjs',
             generate(filter, filename) {
