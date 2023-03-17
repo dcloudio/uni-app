@@ -62,7 +62,8 @@ export function uniPagesJsonPlugin({
               disableScroll: page.style.disableScroll,
               scrollIndicator: page.style.scrollIndicator,
             }
-            this.addWatchFile(filename)
+            // fix: question/164673
+            // this.addWatchFile(filename)
           }
         })
         if (renderer === 'native' && appService) {
