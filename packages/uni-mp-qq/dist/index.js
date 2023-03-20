@@ -2231,40 +2231,59 @@ function initScopedSlotsParams () {
   const center = {};
   const parents = {};
 
-  Vue.prototype.$hasScopedSlotsParams = function (vueId) {
-    const has = center[vueId];
-    if (!has) {
-      parents[vueId] = this;
-      this.$on('hook:destroyed', () => {
-        delete parents[vueId];
-      });
-    }
-    return has
-  };
-
-  Vue.prototype.$getScopedSlotsParams = function (vueId, name, key) {
-    const data = center[vueId];
-    if (data) {
-      const object = data[name] || {};
-      return key ? object[key] : object
-    } else {
-      parents[vueId] = this;
-      this.$on('hook:destroyed', () => {
-        delete parents[vueId];
-      });
-    }
-  };
-
-  Vue.prototype.$setScopedSlotsParams = function (name, value) {
+  function currentId (fn) {
     const vueIds = this.$options.propsData.vueId;
     if (vueIds) {
       const vueId = vueIds.split(',')[0];
-      const object = center[vueId] = center[vueId] || {};
-      object[name] = value;
+      fn(vueId);
+    }
+  }
+
+  Vue.prototype.$hasSSP = function (vueId) {
+    const slot = center[vueId];
+    if (!slot) {
+      parents[vueId] = this;
+      this.$on('hook:destroyed', () => {
+        delete parents[vueId];
+      });
+    }
+    return slot
+  };
+
+  Vue.prototype.$getSSP = function (vueId, name, needAll) {
+    const slot = center[vueId];
+    if (slot) {
+      const params = slot[name] || [];
+      if (needAll) {
+        return params
+      }
+      return params[0]
+    }
+  };
+
+  Vue.prototype.$setSSP = function (name, value) {
+    let index = 0;
+    currentId.call(this, vueId => {
+      const slot = center[vueId];
+      const params = slot[name] = slot[name] || [];
+      params.push(value);
+      index = params.length - 1;
+    });
+    return index
+  };
+
+  Vue.prototype.$initSSP = function () {
+    currentId.call(this, vueId => {
+      center[vueId] = {};
+    });
+  };
+
+  Vue.prototype.$callSSP = function () {
+    currentId.call(this, vueId => {
       if (parents[vueId]) {
         parents[vueId].$forceUpdate();
       }
-    }
+    });
   };
 
   Vue.mixin({
@@ -2437,6 +2456,7 @@ function parseBaseComponent (vueComponentOptions, {
 
   const options = {
     multipleSlots: true,
+    // styleIsolation: 'apply-shared',
     addGlobalClass: true,
     ...(vueOptions.options || {})
   };
