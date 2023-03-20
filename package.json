@@ -43,6 +43,7 @@
     "safe-area-insets": "^1.4.1"
   },
   "private": true,
+  "workspaces":["packages/*"],
   "devDependencies": {
     "@rollup/plugin-alias": "^3.1.0",
     "@rollup/plugin-commonjs": "^11.1.0",

@@ -128,7 +128,7 @@ if (!process.env.UNI_CLOUD_PROVIDER && process.env.UNI_CLOUD_SPACES) {
         }
       }))
     }
-  } catch (e) {}
+  } catch (e) { }
 }
 
 // 安全网络
@@ -256,7 +256,7 @@ if (process.env.UNI_PLATFORM === 'h5') {
         try {
           const modules = require('@dcloudio/uni-h5/lib/modules.json')
           process.UNI_USER_APIS = parseUserApis(treeShaking.modules || [], modules)
-        } catch (e) {}
+        } catch (e) { }
       }
     }
     if (optimization.prefetch) {
@@ -350,6 +350,12 @@ if ((process.env.UNI_PLATFORM === 'mp-kuaishou' || process.env.UNI_PLATFORM === 
   .SCOPED_SLOTS_COMPILER !== modes[0]) {
   process.env.SCOPED_SLOTS_COMPILER = modes[2]
 }
+const slotMultipleInstance = !!platformOptions.slotMultipleInstance
+// 配置 slotMultipleInstance 时，切换 scopedSlotsCompiler 的值 auto 为 augmented 模式
+if (slotMultipleInstance && process.env.SCOPED_SLOTS_COMPILER === modes[1]) {
+  process.env.SCOPED_SLOTS_COMPILER = modes[2]
+}
+process.env.SLOT_MULTIPLE_INSTANCE = (slotMultipleInstance).toString()
 
 process.env.MERGE_VIRTUAL_HOST_ATTRIBUTES = (!!platformOptions.mergeVirtualHostAttributes).toString()
 
@@ -479,7 +485,7 @@ if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
         console.log(warningMsg)
       }
     }
-  } catch (e) {}
+  } catch (e) { }
 }
 if (process.env.NODE_ENV !== 'production') { // 运行模式性能提示
   let perfMsg = uniI18n.__('pluginUni.runDebugMode')

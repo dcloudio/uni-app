@@ -67,6 +67,7 @@ module.exports = function (content, map) {
       mp: {
         platform: process.env.UNI_PLATFORM,
         scopedSlotsCompiler: process.env.SCOPED_SLOTS_COMPILER,
+        slotMultipleInstance: process.env.SLOT_MULTIPLE_INSTANCE === 'true',
         mergeVirtualHostAttributes: process.env.MERGE_VIRTUAL_HOST_ATTRIBUTES === 'true'
       },
       filterModules,

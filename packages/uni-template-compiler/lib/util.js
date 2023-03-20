@@ -329,6 +329,25 @@ function isRootElement (path) {
   return result.isReturnStatement()
 }
 
+/**
+ * 事件绑定是否存在成员表达式 => obj.click2()
+ * @param {*} path
+ * @returns {boolean}
+*/
+const hasMemberExpression = (funcPath) => {
+  let result = false
+
+  funcPath.get('body').traverse({
+    CallExpression (path) {
+      if (t.isMemberExpression(path.node.callee)) {
+        result = true
+        path.stop()
+      }
+    }
+  })
+  return result
+}
+
 module.exports = {
   hasOwn,
   isUnaryTag: makeMap(
@@ -363,5 +382,6 @@ module.exports = {
   isSimpleObjectExpression,
   hasEscapeQuote,
   hasLengthProperty,
-  isRootElement
+  isRootElement,
+  hasMemberExpression
 }
