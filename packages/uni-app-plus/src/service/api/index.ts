@@ -92,6 +92,7 @@ export {
   initUTSPackageName,
   requireUTSPlugin,
   registerUTSPlugin,
+  registerUTSInterface,
 } from './plugin/uts'
 
 export * from './ad/rewardedVideoAd'
