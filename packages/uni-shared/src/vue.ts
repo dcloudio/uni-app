@@ -1,6 +1,7 @@
 import type {
   ComponentInternalInstance,
   ComponentPublicInstance,
+  RendererNode,
   VNode,
 } from '@vue/runtime-core'
 import { camelize, hyphenate } from '@vue/shared'
@@ -40,23 +41,35 @@ function isElement(el: Element) {
   // Element
   return el.nodeType === 1
 }
-
-export function resolveOwnerEl(instance: ComponentInternalInstance) {
+export function resolveOwnerEl(
+  instance: ComponentInternalInstance,
+  multi: true
+): RendererNode[]
+export function resolveOwnerEl(
+  instance: ComponentInternalInstance
+): RendererNode | null
+export function resolveOwnerEl(
+  instance: ComponentInternalInstance,
+  multi: boolean = false
+): RendererNode | null {
   const { vnode } = instance
   if (isElement(vnode.el as Element)) {
-    return vnode.el
+    return multi ? (vnode.el ? [vnode.el] : []) : vnode.el
   }
   const { subTree } = instance
   // ShapeFlags.ARRAY_CHILDREN = 1<<4
   if (subTree.shapeFlag & 16) {
-    const elemVNode = (subTree.children as VNode[]).find(
+    const elemVNodes = (subTree.children as VNode[]).filter(
       (vnode) => vnode.el && isElement(vnode.el as Element)
     )
-    if (elemVNode) {
-      return elemVNode.el
+    if (elemVNodes.length > 0) {
+      if (multi) {
+        return elemVNodes.map((node) => node.el)
+      }
+      return elemVNodes[0].el
     }
   }
-  return vnode.el
+  return multi ? (vnode.el ? [vnode.el] : []) : vnode.el
 }
 
 export function dynamicSlotName(name: string) {

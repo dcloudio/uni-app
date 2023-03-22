@@ -1,0 +1,6 @@
+{
+  "compileType": "miniprogram",
+  "setting": {
+    "es6": true
+  }
+}

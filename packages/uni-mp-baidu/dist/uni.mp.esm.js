@@ -1,4 +1,4 @@
-import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, isUniLifecycleHook, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, addLeadingSlash, stringifyQuery, ON_INIT, customizeEvent } from '@dcloudio/uni-shared';
+import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, addLeadingSlash, stringifyQuery, ON_INIT, customizeEvent } from '@dcloudio/uni-shared';
 import { isArray, hasOwn, isFunction, extend, hyphenate, isPlainObject, isObject } from '@vue/shared';
 import { ref, nextTick, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, devtoolsComponentAdded, getExposeProxy, pruneComponentPropsCache } from 'vue';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
@@ -839,9 +839,16 @@ const MPPage = Page;
 const MPComponent = Component;
 function initTriggerEvent(mpInstance) {
     const oldTriggerEvent = mpInstance.triggerEvent;
-    mpInstance.triggerEvent = function (event, ...args) {
+    const newTriggerEvent = function (event, ...args) {
         return oldTriggerEvent.apply(mpInstance, [customizeEvent(event), ...args]);
     };
+    // 京东小程序triggerEvent为只读属性
+    try {
+        mpInstance.triggerEvent = newTriggerEvent;
+    }
+    catch (error) {
+        mpInstance._triggerEvent = newTriggerEvent;
+    }
 }
 function initMiniProgramHook(name, options, isComponent) {
     const oldHook = options[name];
@@ -1040,12 +1047,12 @@ function parse$1(componentOptions) {
 
 var parseComponentOptions = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  mocks: mocks,
-  isPage: isPage,
-  initRelation: initRelation,
-  parse: parse$1,
   handleLink: handleLink,
-  initLifetimes: initLifetimes
+  initLifetimes: initLifetimes,
+  initRelation: initRelation,
+  isPage: isPage,
+  mocks: mocks,
+  parse: parse$1
 });
 
 function parse(pageOptions) {
@@ -1078,12 +1085,12 @@ function parse(pageOptions) {
 
 var parsePageOptions = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  parse: parse,
   handleLink: handleLink,
   initLifetimes: initLifetimes,
-  mocks: mocks,
+  initRelation: initRelation,
   isPage: isPage,
-  initRelation: initRelation
+  mocks: mocks,
+  parse: parse
 });
 
 const createApp = initCreateApp(parseAppOptions);

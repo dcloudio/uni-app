@@ -16,6 +16,7 @@ import {
 } from './utils'
 import { parseJson } from './shared'
 import { UTSResult } from '@dcloudio/uts'
+import { parseUTSSyntaxError } from './stacktrace'
 
 function parseSwiftPackage(filename: string) {
   const res = resolvePackage(filename)
@@ -42,14 +43,17 @@ export async function runSwiftProd(
   }
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
-  const res = await compile(filename, {
+  const result = await compile(filename, {
     inputDir,
     outputDir,
     sourceMap: true,
     components,
   })
-  if (!res) {
+  if (!result) {
     return
+  }
+  if (result.error) {
+    throw parseUTSSyntaxError(result.error, inputDir)
   }
   genUTSPlatformResource(filename, {
     inputDir,
@@ -107,7 +111,9 @@ export async function runSwiftDev(
   if (!result) {
     return
   }
-
+  if (result.error) {
+    throw parseUTSSyntaxError(result.error, inputDir)
+  }
   result.type = 'swift'
 
   const swiftFile = resolveUTSPlatformFile(filename, {
@@ -196,6 +202,9 @@ export async function compile(
       imports: ['DCloudUTSFoundation'],
       logFilename: true,
       noColor: !isColorSupported(),
+      transform: {
+        uniExtApiPackage: 'DCloudUTSExtAPI',
+      },
     },
   })
   sourceMap &&

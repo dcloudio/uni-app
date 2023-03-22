@@ -14,7 +14,9 @@ parse(
       'uni_modules/test-uniplugin/utssdk/app-android/index.uts'
     ),
     'utf8'
-  )
+  ), {
+  noGetterOrSetterProp: false
+}
 ).then((res) => {
   console.log('parse: ' + (Date.now() - start) + 'ms')
   console.log(JSON.stringify(res))
@@ -49,6 +51,9 @@ async function testKotlin() {
       extname: 'kt',
       logFilename: true,
       isPlugin: true,
+      transform: {
+        uniExtApiPackage: 'io.dcloud.uts.extapi'
+      }
     },
   }).then((res) => {
     console.log('bundle: ' + (Date.now() - start) + 'ms')
@@ -138,6 +143,9 @@ async function testSwift() {
       extname: 'swift',
       logFilename: true,
       isPlugin: true,
+      transform: {
+        uniExtApiPackage: 'DCloudUTSExtAPI'
+      }
     },
   }).then((res) => {
     console.log('bundle: ' + (Date.now() - start) + 'ms')

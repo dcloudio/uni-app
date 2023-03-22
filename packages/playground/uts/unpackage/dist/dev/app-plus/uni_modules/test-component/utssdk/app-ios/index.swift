@@ -1,10 +1,10 @@
-import DCloudUTSFoundation;
 import Lottie;
 import Foundation;
 import UIKit;
+import DCloudUTSFoundation;
 @objc(UTSSDKModulesTestComponentAnimationViewComponent)
 @objcMembers
-class AnimationViewComponent : UTSComponent<UIView> {
+public class AnimationViewComponent : UTSComponent<UIView> {
     public var path: String?;
     public var autoplay: Bool = false;
     public var loop: Bool = false;
@@ -67,11 +67,11 @@ class AnimationViewComponent : UTSComponent<UIView> {
         }
         if (animationUrl != nil) {
             LottieAnimation.loadedFrom(url: animationUrl!, closure: {
-            (animation: LottieAnimation) in
+            (_ animation: LottieAnimation) -> Void in
             if (animation != nil) {
                 self.animationView.animation = animation;
                 self.animationView.play(completion: {
-                (isFinish: Bool) in
+                (_ isFinish: Bool) -> Void in
                 if (isFinish) {
                     self.fireEvent("bindended");
                 }
@@ -121,13 +121,10 @@ class AnimationViewComponent : UTSComponent<UIView> {
             switch(action){
                 case "play":
                     self.playAnimation();
-                    break;
                 case "pause":
                     self.animationView.pause();
-                    break;
                 case "stop":
                     self.animationView.stop();
-                    break;
                 default:
                     break;
             }

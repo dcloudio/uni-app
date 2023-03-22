@@ -54,6 +54,9 @@ export async function runDev(options: CliOptions & ServerOptions) {
             isFirstEnd = false
             output('log', M['dev.watching.end'])
             printStartupDuration(createLogger(options.logLevel), false)
+            if (process.env.UNI_UTS_ERRORS) {
+              console.error(process.env.UNI_UTS_ERRORS)
+            }
             if (process.env.UNI_UTS_TIPS) {
               console.warn(process.env.UNI_UTS_TIPS)
             }

@@ -1179,11 +1179,11 @@ const requestPayment = {
 
 var protocols = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  redirectTo: redirectTo,
-  navigateTo: navigateTo,
-  previewImage: previewImage,
   getSystemInfo: getSystemInfo,
   getSystemInfoSync: getSystemInfoSync,
+  navigateTo: navigateTo,
+  previewImage: previewImage,
+  redirectTo: redirectTo,
   requestPayment: requestPayment
 });
 

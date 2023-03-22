@@ -1,5 +1,6 @@
 import { UIDevice } from 'UIKit'
 import { CLLocationManager, CLAuthorizationStatus } from 'CoreLocation'
+import { ShowToast } from '../interface.uts'
 
 type GetBatteryInfoOptions = {
   name: string
@@ -79,5 +80,12 @@ export class Test {
 }
 
 export async function testAsync() {
+  uni.showToast()
+  uni.showToast()
+  uni.showModel()
   return { a: 1 }
 }
+
+export const showToast1: ShowToast = (msg) => { }
+export const showToast2: ShowToast = function (msg) { }
+export const showToast3: ShowToast = function showToast(msg) { }

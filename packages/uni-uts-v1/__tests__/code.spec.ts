@@ -2,6 +2,7 @@ import { resolve } from 'path'
 import { FORMATS, genProxyCode } from '../src/code'
 import { ERR_MSG_PLACEHOLDER } from '../src/utils'
 
+const inputDir = resolve(__dirname, 'examples/uts')
 const pluginDir = resolve(__dirname, 'examples/uts/utssdk/test-uts')
 
 describe('code', () => {
@@ -17,6 +18,7 @@ describe('code', () => {
           namespace: 'uts.sdk.testUTS',
           extname: '.uts',
           androidComponents: { TestUTS: '' },
+          inputDir,
         })
       ).replace(ERR_MSG_PLACEHOLDER, '')
     ).toMatchSnapshot()
@@ -33,6 +35,7 @@ describe('code', () => {
           format: FORMATS.CJS,
           pluginRelativeDir: 'utssdk/test-uts',
           androidComponents: { TestUTS: '' },
+          inputDir,
         })
       ).replace(ERR_MSG_PLACEHOLDER, '')
     ).toMatchSnapshot()

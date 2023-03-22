@@ -1166,11 +1166,6 @@ var shims = /*#__PURE__*/Object.freeze({
   getProvider: getProvider
 });
 
-const chooseImage = {
-    args: {
-        sizeType: false,
-    },
-};
 const connectSocket = {
     args: {
         method: false,
@@ -1234,23 +1229,22 @@ const getFileInfo = {
 
 var protocols = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  chooseImage: chooseImage,
-  connectSocket: connectSocket,
   chooseVideo: chooseVideo,
-  scanCode: scanCode,
-  startAccelerometer: startAccelerometer,
-  showToast: showToast,
-  showLoading: showLoading,
-  showActionSheet: showActionSheet,
-  login: login,
-  getUserInfo: getUserInfo,
-  requestPayment: requestPayment,
+  connectSocket: connectSocket,
   getFileInfo: getFileInfo,
-  redirectTo: redirectTo,
+  getSystemInfo: getSystemInfo,
+  getSystemInfoSync: getSystemInfoSync,
+  getUserInfo: getUserInfo,
+  login: login,
   navigateTo: navigateTo,
   previewImage: previewImage,
-  getSystemInfo: getSystemInfo,
-  getSystemInfoSync: getSystemInfoSync
+  redirectTo: redirectTo,
+  requestPayment: requestPayment,
+  scanCode: scanCode,
+  showActionSheet: showActionSheet,
+  showLoading: showLoading,
+  showToast: showToast,
+  startAccelerometer: startAccelerometer
 });
 
 var uni = initUni(shims, protocols);

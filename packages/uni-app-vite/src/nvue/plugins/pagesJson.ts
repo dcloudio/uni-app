@@ -95,10 +95,11 @@ function rewriteBindingMetadata(nvuePages: NVuePages) {
   const compilerDom = require(resolveBuiltIn('@vue/compiler-dom'))
   const { compile } = compilerDom
   compilerDom.compile = (template: string, options: CompilerOptions = {}) => {
-    if (options.filename && options.bindingMetadata) {
+    if (options.filename) {
       if (nvuePages[options.filename]) {
-        ;(options.bindingMetadata as any).__pageOptions =
-          nvuePages[options.filename]
+        ;(
+          options.bindingMetadata || ((options.bindingMetadata = {}) as any)
+        ).__pageOptions = nvuePages[options.filename]
       }
     }
     return compile(template, options)

@@ -1259,8 +1259,8 @@ const shareVideoMessage = host && host.env === 'SAAASDK'
 
 var shims = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  getProvider: getProvider,
   createSelectorQuery: createSelectorQuery,
+  getProvider: getProvider,
   shareVideoMessage: shareVideoMessage
 });
 
@@ -1281,15 +1281,15 @@ const compressImage = {
 var protocols = /*#__PURE__*/Object.freeze({
   __proto__: null,
   compressImage: compressImage,
-  redirectTo: redirectTo,
-  previewImage: previewImage,
+  getAppAuthorizeSetting: getAppAuthorizeSetting,
+  getAppBaseInfo: getAppBaseInfo,
+  getDeviceInfo: getDeviceInfo,
   getSystemInfo: getSystemInfo,
   getSystemInfoSync: getSystemInfoSync,
-  showActionSheet: showActionSheet,
-  getDeviceInfo: getDeviceInfo,
-  getAppBaseInfo: getAppBaseInfo,
   getWindowInfo: getWindowInfo,
-  getAppAuthorizeSetting: getAppAuthorizeSetting
+  previewImage: previewImage,
+  redirectTo: redirectTo,
+  showActionSheet: showActionSheet
 });
 
 const wx$1 = initWx();

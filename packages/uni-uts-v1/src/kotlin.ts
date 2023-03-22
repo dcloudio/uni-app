@@ -23,6 +23,7 @@ import {
   isColorSupported,
 } from './utils'
 import { Module } from '../types/types'
+import { parseUTSSyntaxError } from './stacktrace'
 
 interface KotlinCompilerServer extends CompilerServer {
   getKotlincHome(): string
@@ -69,14 +70,17 @@ export async function runKotlinProd(
   }
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
-  let res = await compile(filename, {
+  const result = await compile(filename, {
     inputDir,
     outputDir,
     sourceMap: true,
     components,
   })
-  if (!res) {
+  if (!result) {
     return
+  }
+  if (result.error) {
+    throw parseUTSSyntaxError(result.error, inputDir)
   }
   genUTSPlatformResource(filename, {
     inputDir,
@@ -112,7 +116,9 @@ export async function runKotlinDev(
   if (!result) {
     return
   }
-
+  if (result.error) {
+    throw parseUTSSyntaxError(result.error, inputDir)
+  }
   result.type = 'kotlin'
   result.changed = []
 
@@ -342,6 +348,9 @@ export async function compile(
       imports,
       logFilename: true,
       noColor: !isColorSupported(),
+      transform: {
+        uniExtApiPackage: 'io.dcloud.uts.extapi',
+      },
     },
   })
   sourceMap &&

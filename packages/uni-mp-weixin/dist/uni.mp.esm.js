@@ -1,4 +1,4 @@
-import { SLOT_DEFAULT_NAME, invokeArrayFns, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, isUniLifecycleHook, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, addLeadingSlash, stringifyQuery, customizeEvent } from '@dcloudio/uni-shared';
+import { SLOT_DEFAULT_NAME, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, addLeadingSlash, stringifyQuery, customizeEvent } from '@dcloudio/uni-shared';
 import { isArray, hasOwn, isFunction, extend, isPlainObject, isObject } from '@vue/shared';
 import { ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, devtoolsComponentAdded, getExposeProxy, pruneComponentPropsCache } from 'vue';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
@@ -307,6 +307,19 @@ function initExtraOptions(miniProgramComponentOptions, vueOptions) {
             miniProgramComponentOptions[name] = vueOptions[name];
         }
     });
+}
+const WORKLET_RE = /_(.*)_worklet_factory_/;
+function initWorkletMethods(mpMethods, vueMethods) {
+    if (vueMethods) {
+        Object.keys(vueMethods).forEach((name) => {
+            const matches = name.match(WORKLET_RE);
+            if (matches) {
+                const workletName = matches[1];
+                mpMethods[name] = vueMethods[name];
+                mpMethods[workletName] = vueMethods[workletName];
+            }
+        });
+    }
 }
 function initWxsCallMethods(methods, wxsCallMethods) {
     if (!isArray(wxsCallMethods)) {
@@ -671,6 +684,9 @@ function parseComponent(vueOptions, { parse, mocks, isPage, initRelation, handle
     initPropsObserver(mpComponentOptions);
     initExtraOptions(mpComponentOptions, vueOptions);
     initWxsCallMethods(mpComponentOptions.methods, vueOptions.wxsCallMethods);
+    {
+        initWorkletMethods(mpComponentOptions.methods, vueOptions.methods);
+    }
     if (parse) {
         parse(mpComponentOptions, { handleLink });
     }
@@ -752,9 +768,16 @@ const MPPage = Page;
 const MPComponent = Component;
 function initTriggerEvent(mpInstance) {
     const oldTriggerEvent = mpInstance.triggerEvent;
-    mpInstance.triggerEvent = function (event, ...args) {
+    const newTriggerEvent = function (event, ...args) {
         return oldTriggerEvent.apply(mpInstance, [customizeEvent(event), ...args]);
     };
+    // 京东小程序triggerEvent为只读属性
+    try {
+        mpInstance.triggerEvent = newTriggerEvent;
+    }
+    catch (error) {
+        mpInstance._triggerEvent = newTriggerEvent;
+    }
 }
 function initMiniProgramHook(name, options, isComponent) {
     const oldHook = options[name];
@@ -861,11 +884,11 @@ function handleLink(event) {
 
 var parseOptions = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  mocks: mocks,
-  isPage: isPage,
-  initRelation: initRelation,
   handleLink: handleLink,
-  initLifetimes: initLifetimes
+  initLifetimes: initLifetimes,
+  initRelation: initRelation,
+  isPage: isPage,
+  mocks: mocks
 });
 
 const createApp = initCreateApp();

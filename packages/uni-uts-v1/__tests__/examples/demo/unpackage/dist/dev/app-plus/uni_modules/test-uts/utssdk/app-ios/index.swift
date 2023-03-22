@@ -1,9 +1,12 @@
 import DCloudUTSFoundation;
-func test() {}
+public func test() {}
+public func testByJs() {
+    return test();
+}
 @objc(UTSSDKModulesTestUtsIndexSwift)
 @objcMembers
-class IndexSwift : NSObject {
-    public static func s_test() {
-        return test();
+public class IndexSwift : NSObject {
+    public static func s_testByJs() {
+        return testByJs();
     }
 }

@@ -133,11 +133,11 @@ describe('uts:sourceMap', () => {
       sourceMapFile,
       filename,
       line: 3,
-      column: 16,
+      column: 17,
       outputDir,
     })
     expect(res).toEqual({
-      line: 16,
+      line: 18,
       column: 16,
       lastColumn: null,
       source: resolve(
@@ -165,8 +165,8 @@ describe('uts:sourceMap', () => {
       column: 16,
     })
 
-    expect(line).toBe(5)
-    expect(column).toBe(9)
+    expect(line).toBe(3)
+    expect(column).toBe(14)
     expect(source).toContain('login.uts')
   })
   test('originalPositionFor ios', async () => {
@@ -183,12 +183,12 @@ describe('uts:sourceMap', () => {
     )
     const { line, column, source } = await originalPositionFor({
       sourceMapFile,
-      line: 18,
-      column: 16,
+      line: 29,
+      column: 0,
     })
 
-    expect(line).toBe(21)
-    expect(column).toBe(4)
+    expect(line).toBe(19)
+    expect(column).toBe(2)
     expect(source).toContain('index.uts')
   })
 })

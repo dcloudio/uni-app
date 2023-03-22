@@ -184,11 +184,15 @@ function resolveTypeAliasDeclNames(items: ModuleItem[]) {
   return names
 }
 
-export function createResolveTypeReferenceName(namespace: string, ast: Module) {
+export function createResolveTypeReferenceName(
+  namespace: string,
+  ast: Module,
+  interfaceTypes: string[]
+) {
   const names = resolveTypeAliasDeclNames(ast.body)
   return (name: string) => {
-    if (names.includes(name)) {
-      return namespace + capitalize(name)
+    if (names.includes(name) || interfaceTypes.includes(name)) {
+      return namespace + capitalize(name) + 'JSONObject'
     }
     return name
   }
@@ -402,4 +406,11 @@ export function isColorSupported() {
     return false
   }
   return true
+}
+
+export function relative(filename: string, inputDir: string) {
+  if (path.isAbsolute(filename)) {
+    return normalizePath(path.relative(inputDir, filename))
+  }
+  return filename
 }

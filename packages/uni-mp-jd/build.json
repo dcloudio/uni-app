@@ -1,0 +1,51 @@
+[
+  {
+    "input": { 
+      "src/compiler/index.ts": "dist/uni.compiler.js"
+    },
+    "output": { 
+      "format": "cjs" 
+    },
+    "external": [
+      "@vue/compiler-core",
+      "@dcloudio/uni-shared",
+      "@dcloudio/uni-cli-shared",
+      "@dcloudio/uni-mp-vite",
+      "@dcloudio/uni-mp-compiler"
+    ]
+  },
+  {
+    "input": {
+
+      "src/runtime/index.ts": "dist/uni.mp.esm.js",
+
+      "src/api/index.ts": "dist/uni.api.esm.js"
+    },
+    "alias": {
+
+      "entries": [
+        {
+          "find": "@dcloudio/uni-platform",
+          "replacement": "packages/uni-mp-jd/src/platform/index.ts"
+        },
+        {
+          "find": "@dcloudio/uni-mp-platform",
+          "replacement": "packages/uni-mp-core/src/platform/index.ts"
+        }
+      ]
+    },
+
+    "replacements": {
+      "__GLOBAL__": "jd",
+      "__PLATFORM__": "\"mp-jd\"",
+      "__PLATFORM_TITLE__": "京东小程序"
+    },
+
+    "external": [
+      "@dcloudio/uni-i18n",
+      "@dcloudio/uni-shared",
+      "@vue/shared",
+      "vue"
+    ]
+  }
+]

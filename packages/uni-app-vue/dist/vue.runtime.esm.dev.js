@@ -5453,13 +5453,15 @@ function baseCreateRenderer(options, createHydrationFns) {
     setupRenderEffect(instance, initialVNode, container, anchor, parentSuspense, isSVG, optimized);
     // fixed by xxxxxx 对根节点设置ownerid
     if (instance.$wxsModules) {
-      var el = resolveOwnerEl(instance);
-      if (el) {
-        el.setAttribute(ATTR_V_OWNER_ID, instance.uid);
-        var {
-          $renderjsModules
-        } = instance.type;
-        $renderjsModules && el.setAttribute(ATTR_V_RENDERJS, $renderjsModules);
+      var els = resolveOwnerEl(instance, true);
+      if (els.length) {
+        els.forEach(el => {
+          el.setAttribute(ATTR_V_OWNER_ID, instance.uid);
+          var {
+            $renderjsModules
+          } = instance.type;
+          $renderjsModules && el.setAttribute(ATTR_V_RENDERJS, $renderjsModules);
+        });
       }
     }
     {

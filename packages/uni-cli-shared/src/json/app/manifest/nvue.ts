@@ -30,7 +30,7 @@ export function getNVueStyleCompiler(manifestJson: Record<string, any>) {
 
 const flexDirs = ['row', 'row-reverse', 'column', 'column-reverse'] as const
 
-type FlexDir = typeof flexDirs[number]
+type FlexDir = (typeof flexDirs)[number]
 
 export function getNVueFlexDirection(manifestJson: Record<string, any>) {
   let flexDir: FlexDir = 'column'

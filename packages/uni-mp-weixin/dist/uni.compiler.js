@@ -16,13 +16,13 @@ var uniad_app_json = function (appJson) {
   }
   if (!appJson.plugins['uni-ad']) {
     appJson.plugins['uni-ad'] = {
-      version: '1.0.1',
+      version: '1.1.1',
       provider: 'wxf72d316417b6767f',
     };
   }
   if (!appJson.plugins['coral-adv']) {
     appJson.plugins['coral-adv'] = {
-      version: '1.0.9',
+      version: '1.0.15',
       provider: 'wx0e203209e27b1e66',
     };
   }
@@ -118,6 +118,24 @@ const customElements = [
     'navigation-bar',
     'match-media',
     'ad-custom',
+    'share-element',
+    'channel-live',
+    'channel-video',
+    'voip-room',
+    'root-portal',
+    // 手势组件
+    'tap-gesture-handler',
+    'double-tap-gesture-handler',
+    'scale-gesture-handler',
+    'force-press-gesture-handler',
+    'pan-gesture-handler',
+    'vertical-drag-gesture-handler',
+    'horizontal-drag-gesture-handler',
+    'long-press-gesture-handler',
+    'grid-view',
+    'list-view',
+    'sticky-header',
+    'sticky-section',
 ];
 const compilerOptions = {
     nodeTransforms: [uniCliShared.transformRef, uniCliShared.transformComponentLink, transformAd],

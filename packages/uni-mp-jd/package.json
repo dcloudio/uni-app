@@ -1,0 +1,40 @@
+{
+  "name": "@dcloudio/uni-mp-jd",
+  "version": "3.0.0-alpha-3070720230316001",
+  "description": "uni-app mp-jd",
+  "main": "dist/index.js",
+  "files": [
+    "dist",
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uni-mp-jd"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "Apache-2.0",
+  "uni-app": {
+    "name": "mp-jd",
+    "title": "京东小程序",
+    "apply": [
+      "mp-jd"
+    ],
+    "main": "dist/uni.compiler.js"
+  },
+  "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
+  "devDependencies": {
+    "@dcloudio/uni-mp-weixin": "3.0.0-alpha-3070720230316001",
+    "@vue/compiler-core": "3.2.47"
+  },
+  "dependencies": {
+    "@dcloudio/uni-cli-shared": "3.0.0-alpha-3070720230316001",
+    "@dcloudio/uni-mp-compiler": "3.0.0-alpha-3070720230316001",
+    "@dcloudio/uni-mp-vite": "3.0.0-alpha-3070720230316001",
+    "@dcloudio/uni-mp-vue": "3.0.0-alpha-3070720230316001",
+    "@dcloudio/uni-shared": "3.0.0-alpha-3070720230316001",
+    "@vue/shared": "3.2.47"
+  }
+}
