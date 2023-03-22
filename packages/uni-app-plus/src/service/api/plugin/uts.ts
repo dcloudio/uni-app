@@ -218,7 +218,13 @@ function resolveSyncResult(
     res = JSON.parse(res)
   }
   if (__DEV__) {
-    console.log('uts.invokeSync.result', res, returnOptions, instanceId, proxy)
+    console.log(
+      'uts.invokeSync.result',
+      res,
+      returnOptions,
+      instanceId,
+      typeof proxy
+    )
   }
   if (res.errMsg) {
     throw new Error(res.errMsg)

@@ -33,7 +33,7 @@ function resolveSyncResult(res, returnOptions, instanceId, proxy) {
         res = JSON.parse(res);
     }
     if ((process.env.NODE_ENV !== 'production')) {
-        console.log('uts.invokeSync.result', res, returnOptions, instanceId, proxy);
+        console.log('uts.invokeSync.result', res, returnOptions, instanceId, typeof proxy);
     }
     if (res.errMsg) {
         throw new Error(res.errMsg);

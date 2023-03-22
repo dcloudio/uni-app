@@ -912,7 +912,7 @@ function tsParamsToParams(tsParams: TsFnParameter[]) {
     if (p.type === 'Identifier') {
       params.push({
         type: 'Parameter',
-        pat: createIdentifier(p.value),
+        pat: p,
         span: {} as Span,
       })
     }
@@ -1057,6 +1057,16 @@ function genVariableDeclaration(
     }
   }
 }
+
+// function createBindingIdentifier(name: string, typeAnnotation?: TsTypeAnnotation): BindingIdentifier {
+//   return {
+//     type: 'Identifier',
+//     value: name,
+//     optional: false,
+//     span: {} as Span,
+//     typeAnnotation
+//   }
+// }
 
 function createIdentifier(name: string): Identifier {
   return {
