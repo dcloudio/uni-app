@@ -1122,7 +1122,7 @@ function validateProp(name, value, prop, isAbsent) {
   if (!shared.isPlainObject(prop)) {
     prop = { type: prop };
   }
-  const { type, required, validator } = prop;
+  const { type, required, validator: validator2 } = prop;
   if (required && isAbsent) {
     return 'Missing required args: "' + name + '"';
   }
@@ -1142,8 +1142,8 @@ function validateProp(name, value, prop, isAbsent) {
       return getInvalidTypeMessage(name, value, expectedTypes);
     }
   }
-  if (validator) {
-    return validator(value);
+  if (validator2) {
+    return validator2(value);
   }
 }
 const isSimpleType = /* @__PURE__ */ shared.makeMap(
@@ -1520,6 +1520,18 @@ function defineAsyncApi(name, fn, protocol, options) {
     wrapperAsyncApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options)
   );
 }
+new uniShared.Emitter();
+const validator = [
+  {
+    name: "id",
+    type: String,
+    required: true
+  }
+];
+validator.concat({
+  name: "componentInstance",
+  type: Object
+});
 const API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
 const API_GET_LOCALE = "getLocale";
 const getLocale = /* @__PURE__ */ defineSyncApi(
@@ -7506,6 +7518,7 @@ function getStateId() {
     return 1;
   }
 }
+PolySymbol(process.env.NODE_ENV !== "production" ? "layout" : "l");
 let tabBar;
 function useTabBar() {
   if (!tabBar) {
@@ -7515,7 +7528,7 @@ function useTabBar() {
 }
 const envMethod = /* @__PURE__ */ (() => "env")();
 function normalizeWindowBottom(windowBottom) {
-  return envMethod ? `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))` : `${windowBottom}px`;
+  return `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))`;
 }
 const SEP = "$$";
 const currentPagesMap = /* @__PURE__ */ new Map();

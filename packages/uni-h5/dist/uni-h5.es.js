@@ -15149,6 +15149,7 @@ function checkMinWidth(minWidth) {
 function getStateId() {
   return history.state && history.state.__id__ || 1;
 }
+PolySymbol(process.env.NODE_ENV !== "production" ? "layout" : "l");
 let tabBar;
 function useTabBar() {
   if (!tabBar) {
@@ -18838,7 +18839,6 @@ const MIMEType = {
     wvx: "x-ms-wvx"
   }
 };
-const MIMEType$1 = MIMEType;
 const ALL = "all";
 addInteractListener();
 function isWXEnv() {
@@ -18866,7 +18866,7 @@ function _createInput({
   inputEl.accept = extension.map((item) => {
     if (type !== ALL) {
       const MIMEKey = item.replace(".", "");
-      return `${type}/${MIMEType$1[type][MIMEKey] || MIMEKey}`;
+      return `${type}/${MIMEType[type][MIMEKey] || MIMEKey}`;
     } else {
       if (isWXEnv()) {
         return ".";
