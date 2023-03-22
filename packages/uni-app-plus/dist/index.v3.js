@@ -9563,8 +9563,12 @@ var serviceContext = (function () {
     files,
     header,
     formData,
-    timeout = __uniConfig.networkTimeout.uploadFile ? __uniConfig.networkTimeout.uploadFile / 1000 : 120
+    timeout
   } = {}) {
+    timeout =
+      (timeout ||
+        (__uniConfig.networkTimeout && __uniConfig.networkTimeout.uploadFile) ||
+        60 * 1000) / 1000;
     const uploader = plus.uploader.createUpload(url, {
       timeout,
       // 需要与其它平台上的表现保持一致，不走重试的逻辑。
@@ -10538,6 +10542,9 @@ var serviceContext = (function () {
       return proxy;
   }
   function resolveSyncResult(res) {
+      if ((process.env.NODE_ENV !== 'production')) {
+          console.log('uts.invokeSync.result', res);
+      }
       if (res.errMsg) {
           throw new Error(res.errMsg);
       }
@@ -10548,6 +10555,9 @@ var serviceContext = (function () {
           throw new Error(args.errMsg);
       }
       delete args.errMsg;
+      if ((process.env.NODE_ENV !== 'production')) {
+          console.log('uts.invokePropGetter.args', args);
+      }
       return resolveSyncResult(getProxy().invokeSync(args, () => { }));
   }
   function initProxyFunction(async, { moduleName, moduleType, package: pkg, class: cls, name: propOrMethod, method, companion, params: methodParams, errMsg, }, instanceId) {
@@ -10589,7 +10599,13 @@ var serviceContext = (function () {
           });
           if (async) {
               return new Promise((resolve, reject) => {
+                  if ((process.env.NODE_ENV !== 'production')) {
+                      console.log('uts.invokeAsync.args', invokeArgs);
+                  }
                   getProxy().invokeAsync(invokeArgs, (res) => {
+                      if ((process.env.NODE_ENV !== 'production')) {
+                          console.log('uts.invokeAsync.result', res);
+                      }
                       if (res.type !== 'return') {
                           invokeCallback(res);
                       }
@@ -10604,6 +10620,9 @@ var serviceContext = (function () {
                   });
               });
           }
+          if ((process.env.NODE_ENV !== 'production')) {
+              console.log('uts.invokeSync.args', invokeArgs);
+          }
           return resolveSyncResult(getProxy().invokeSync(invokeArgs, invokeCallback));
       };
   }
@@ -10616,6 +10635,12 @@ var serviceContext = (function () {
       return initProxyFunction(async, opts, 0);
   }
   const initUTSProxyFunction = initUTSStaticMethod;
+  function parseClassMethodName(name, methods) {
+      if (hasOwn(methods, name + 'ByJs')) {
+          return name + 'ByJs';
+      }
+      return name;
+  }
   function initUTSProxyClass({ moduleName, moduleType, package: pkg, class: cls, constructor: { params: constructorParams }, methods, props, staticProps, staticMethods, errMsg, }) {
       const baseOptions = {
           moduleName,
@@ -10624,6 +10649,12 @@ var serviceContext = (function () {
           class: cls,
           errMsg,
       };
+      // iOS 需要为 ByJs 的 class 构造函数（如果包含JSONObject或UTSCallback类型）补充最后一个参数
+      if (typeof plus !== 'undefined' && plus.os.name === 'iOS') {
+          if (constructorParams.find((p) => p.type === 'UTSCallback' || p.type.indexOf('JSONObject') > 0)) {
+              constructorParams.push({ name: '_byJs', type: 'boolean' });
+          }
+      }
       const ProxyClass = class UTSClass {
           constructor(...params) {
               if (errMsg) {
@@ -10639,6 +10670,7 @@ var serviceContext = (function () {
                   get(_, name) {
                       if (!target[name]) {
                           //实例方法
+                          name = parseClassMethodName(name, methods);
                           if (hasOwn(methods, name)) {
                               const { async, params } = methods[name];
                               target[name] = initUTSInstanceMethod(!!async, extend({
@@ -10665,6 +10697,7 @@ var serviceContext = (function () {
       const staticMethodCache = {};
       return new Proxy(ProxyClass, {
           get(target, name, receiver) {
+              name = parseClassMethodName(name, staticMethods);
               if (hasOwn(staticMethods, name)) {
                   if (!staticMethodCache[name]) {
                       const { async, params } = staticMethods[name];
@@ -24058,6 +24091,21 @@ var serviceContext = (function () {
           if (LIFECYCLE_HOOKS.indexOf(methodName) !== -1) {
             extendOptions[methodName] = methods[methodName];
             delete methods[methodName];
+          }
+        });
+      }
+
+      // script setup onPageScroll、onReachBottom not effective
+      const setup = extendOptions.setup;
+      if (setup) {
+        const injectHooks = ['onPageScroll', 'onReachBottom'];
+        let setupString = '';
+        try {
+          setupString = setup.toString();
+        } catch (error) {}
+        injectHooks.forEach(hook => {
+          if (setupString.indexOf(`uniApp.${hook}`) && !extendOptions[hook]) {
+            extendOptions[hook] = [() => {}];
           }
         });
       }

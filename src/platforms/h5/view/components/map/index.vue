@@ -424,13 +424,19 @@ export default {
           causedBy: 'drag'
         }, getMapInfo()))
       })
-      maps.event.addListener(map, 'zoom_changed', () => {
+
+      const zoomChangedCallback = () => {
         this.$emit('update:scale', map.getZoom())
         this.$trigger('regionchange', {}, Object.assign({
           type: 'end',
           causedBy: 'scale'
         }, getMapInfo()))
-      })
+      }
+      // QQ or Google
+      maps.event.addListener(map, 'zoom_changed', zoomChangedCallback)
+      // AMAP
+      maps.event.addListener(map, 'zoomend', zoomChangedCallback)
+
       maps.event.addListener(map, 'center_changed', () => {
         var latitude
         var longitude

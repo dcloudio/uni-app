@@ -101,8 +101,16 @@ export default {
         marker.dom.addEventListener('click', e => {
           this.handleAMapMarkerClick(e, marker)
         })
+        // 地图缩放会触发touchend，故判断 touchstart 和 touchend touches[0] 是否相同确定是否点击
+        let touchStartTouch = {}
+        marker.dom.addEventListener('touchstart', e => {
+          touchStartTouch = e.touches[0]
+        })
         marker.dom.addEventListener('touchend', e => {
-          this.handleAMapMarkerClick(e, marker)
+          const touchEndTouch = e.changedTouches[0]
+          if (touchStartTouch.clientX === touchEndTouch.clientX && touchStartTouch.clientY === touchEndTouch.clientY) {
+            this.handleAMapMarkerClick(e, marker)
+          }
         })
       } else {
         maps.event.addListener(marker, 'click', (e) => {

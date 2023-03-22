@@ -1431,6 +1431,20 @@ function toSkip (obj) {
   return obj
 }
 
+const WORKLET_RE = /_(.*)_worklet_factory_/;
+function initWorkletMethods (mpMethods, vueMethods) {
+  if (vueMethods) {
+    Object.keys(vueMethods).forEach((name) => {
+      const matches = name.match(WORKLET_RE);
+      if (matches) {
+        const workletName = matches[1];
+        mpMethods[name] = vueMethods[name];
+        mpMethods[workletName] = vueMethods[workletName];
+      }
+    });
+  }
+}
+
 const MPPage = Page;
 const MPComponent = Component;
 
@@ -2435,6 +2449,9 @@ function parseBasePage (vuePageOptions) {
   };
   {
     initUnknownHooks(pageOptions.methods, vuePageOptions, ['onReady']);
+  }
+  {
+    initWorkletMethods(pageOptions.methods, vueOptions.methods);
   }
 
   return pageOptions

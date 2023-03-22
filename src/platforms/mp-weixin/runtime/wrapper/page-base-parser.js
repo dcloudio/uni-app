@@ -10,6 +10,8 @@ import {
 
 import parseComponent from 'uni-platform/runtime/wrapper/component-parser'
 
+import { initWorkletMethods } from './util'
+
 const hooks = [
   'onShow',
   'onHide',
@@ -37,6 +39,9 @@ export default function parseBasePage (vuePageOptions) {
     initUnknownHooks(pageOptions.methods, vuePageOptions, ['onInit', 'onReady'])
   } else {
     initUnknownHooks(pageOptions.methods, vuePageOptions, ['onReady'])
+  }
+  if (__PLATFORM__ === 'mp-weixin') {
+    initWorkletMethods(pageOptions.methods, vueOptions.methods)
   }
 
   return pageOptions

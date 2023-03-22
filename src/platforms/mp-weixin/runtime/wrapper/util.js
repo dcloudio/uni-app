@@ -134,3 +134,17 @@ export function toSkip (obj) {
   }
   return obj
 }
+
+const WORKLET_RE = /_(.*)_worklet_factory_/
+export function initWorkletMethods (mpMethods, vueMethods) {
+  if (vueMethods) {
+    Object.keys(vueMethods).forEach((name) => {
+      const matches = name.match(WORKLET_RE)
+      if (matches) {
+        const workletName = matches[1]
+        mpMethods[name] = vueMethods[name]
+        mpMethods[workletName] = vueMethods[workletName]
+      }
+    })
+  }
+}
