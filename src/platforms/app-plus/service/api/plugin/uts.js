@@ -1,4 +1,4 @@
-import { isPlainObject, hasOwn, extend, capitalize, isString } from 'uni-shared';
+import { isPlainObject, hasOwn, extend, capitalize, isStr as isString } from 'uni-shared';
 
 let callbackId = 1;
 let proxy;
