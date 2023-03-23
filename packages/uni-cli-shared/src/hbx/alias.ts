@@ -29,6 +29,7 @@ export function initModuleAlias() {
   if (process.env.VITEST) {
     moduleAlias.addAliases({
       vue: '@dcloudio/uni-h5-vue',
+      'vue/package.json': '@dcloudio/uni-h5-vue/package.json',
     })
   }
   if (isInHBuilderX()) {

@@ -81,10 +81,10 @@ export function generateSsrEntryServerCode() {
 
 export function rewriteSsrVue() {
   // 解决 @vue/server-renderer 中引入 vue 的映射
-  require('module-alias').addAlias(
-    'vue',
-    resolveBuiltIn('@dcloudio/uni-h5-vue/dist/vue.runtime.cjs.js')
-  )
+  require('module-alias').addAliases({
+    vue: resolveBuiltIn('@dcloudio/uni-h5-vue/dist/vue.runtime.cjs.js'),
+    'vue/package.json': resolveBuiltIn('@dcloudio/uni-h5-vue/package.json'),
+  })
   // TODO vite 2.7.0 版本会定制 require 的解析，解析后缓存的文件路径会被格式化，导致 windows 平台路径不一致，导致 cache 不生效
   if (require('os').platform() === 'win32') {
     require('vue')

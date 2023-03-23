@@ -615,7 +615,7 @@ export declare function removeLeadingSlash(str: string): string;
 
 export declare const RENDERJS_MODULES = "renderjsModules";
 
-export declare function resolveComponentInstance(instance?: ComponentInternalInstance | ComponentPublicInstance): ComponentPublicInstance<{}, {}, {}, {}, {}, {}, {}, {}, false, ComponentOptionsBase<any, any, any, any, any, any, any, any, any, {}, {}, string>, {}> | undefined;
+export declare function resolveComponentInstance(instance?: ComponentInternalInstance | ComponentPublicInstance): ComponentPublicInstance | undefined;
 
 export declare function resolveOwnerEl(instance: ComponentInternalInstance, multi: true): RendererNode[];
 

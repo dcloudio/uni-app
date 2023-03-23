@@ -3,7 +3,7 @@ import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 import { LINEFEED, Emitter, sortObject, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
 
 function getBaseSystemInfo() {
-  return wx.getSystemInfoSync()
+    return wx.getSystemInfoSync();
 }
 
 function validateProtocolFail(name, msg) {

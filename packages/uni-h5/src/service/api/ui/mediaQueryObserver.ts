@@ -22,7 +22,7 @@ function handleMediaQueryStr($props: UniApp.DescriptorOptions) {
     if (
       item !== 'orientation' &&
       $props[item as keyof UniApp.DescriptorOptions] &&
-      Number($props[item as keyof UniApp.DescriptorOptions] >= 0)
+      Number(($props[item as keyof UniApp.DescriptorOptions] as number) >= 0)
     ) {
       mediaQueryArr.push(
         `(${humpToLine(item)}: ${Number(
