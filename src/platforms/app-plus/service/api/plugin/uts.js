@@ -1,4 +1,4 @@
-import { isPlainObject, hasOwn, extend, capitalize, isStr as isString } from 'uni-shared';
+import { isPlainObject, hasOwn, extend, capitalize, isString } from 'uni-shared';
 
 let callbackId = 1;
 let proxy;
@@ -33,7 +33,7 @@ function resolveSyncResult(res, returnOptions, instanceId, proxy) {
         res = JSON.parse(res);
     }
     if ((process.env.NODE_ENV !== 'production')) {
-        console.log('uts.invokeSync.result', res, returnOptions, instanceId, proxy);
+        console.log('uts.invokeSync.result', res, returnOptions, instanceId, typeof proxy);
     }
     if (res.errMsg) {
         throw new Error(res.errMsg);
@@ -195,10 +195,11 @@ function initUTSProxyClass(options) {
                         //实例方法
                         name = parseClassMethodName(name, methods);
                         if (hasOwn(methods, name)) {
-                            const { async, params } = methods[name];
+                            const { async, params, return: returnOptions } = methods[name];
                             target[name] = initUTSInstanceMethod(!!async, extend({
                                 name,
                                 params,
+                                return: returnOptions,
                             }, baseOptions), instanceId, proxy);
                         }
                         else if (props.includes(name)) {
@@ -224,9 +225,9 @@ function initUTSProxyClass(options) {
             name = parseClassMethodName(name, staticMethods);
             if (hasOwn(staticMethods, name)) {
                 if (!staticMethodCache[name]) {
-                    const { async, params } = staticMethods[name];
+                    const { async, params, return: returnOptions } = staticMethods[name];
                     // 静态方法
-                    staticMethodCache[name] = initUTSStaticMethod(!!async, extend({ name, companion: true, params }, baseOptions));
+                    staticMethodCache[name] = initUTSStaticMethod(!!async, extend({ name, companion: true, params, return: returnOptions }, baseOptions));
                 }
                 return staticMethodCache[name];
             }
