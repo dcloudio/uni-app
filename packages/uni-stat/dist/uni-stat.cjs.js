@@ -581,6 +581,20 @@ const is_push_clientid = () => {
   return false
 };
 
+/**
+ * 是否上报页面数据
+ * @returns 
+ */
+const is_page_report = ()=>{
+  if(uniStatisticsConfig.collectItems){
+    const statPageLog = uniStatisticsConfig.collectItems.uniStatPageLog;
+    // 如果字段不存在返回 true , 如果是boolean 值按原值返回，如果是其他类型 返回false
+    if(statPageLog === undefined) return true
+    return typeof statPageLog === 'boolean' ? statPageLog : true
+  }
+  return true
+};
+
 // 首次访问时间
 const FIRST_VISIT_TIME_KEY = '__first__visit__time';
 // 最后访问时间
@@ -1315,7 +1329,7 @@ class Stat extends Report {
           const cid = res.cid || false;
           //  只有获取到才会上传
           if (cid) {
-            this.sendPushRequest(options,cid);
+            this.sendPushRequest(options, cid);
           }
         },
       });
@@ -1352,7 +1366,10 @@ class Stat extends Report {
   show(self) {
     this.self = self;
     if (get_page_types(self) === 'page') {
-      this.pageShow(self);
+      const isPageReport = is_page_report();
+      if (isPageReport) {
+        this.pageShow(self);
+      }
     }
 
     // #ifdef VUE3
@@ -1373,7 +1390,10 @@ class Stat extends Report {
   hide(self) {
     this.self = self;
     if (get_page_types(self) === 'page') {
-      this.pageHide(self);
+      const isPageReport = is_page_report();
+      if (isPageReport) {
+        this.pageHide(self);
+      }
     }
 
     // #ifdef VUE3

@@ -573,6 +573,20 @@ export const is_push_clientid = () => {
 }
 
 /**
+ * 是否上报页面数据
+ * @returns 
+ */
+export const is_page_report = ()=>{
+  if(uniStatisticsConfig.collectItems){
+    const statPageLog = uniStatisticsConfig.collectItems.uniStatPageLog
+    // 如果字段不存在返回 true , 如果是boolean 值按原值返回，如果是其他类型 返回false
+    if(statPageLog === undefined) return true
+    return typeof statPageLog === 'boolean' ? statPageLog : true
+  }
+  return true
+}
+
+/**
  * 是否已处理设备 DeviceId
  * 如果值为 1 则表示已处理
  */
