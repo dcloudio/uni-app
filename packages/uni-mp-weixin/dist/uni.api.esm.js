@@ -3,7 +3,7 @@ import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 import { LINEFEED, Emitter, sortObject, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
 
 function getBaseSystemInfo() {
-    return wx.getSystemInfoSync();
+  return wx.getSystemInfoSync()
 }
 
 function validateProtocolFail(name, msg) {
@@ -1206,11 +1206,15 @@ function isWxKey(key) {
     return objectKeys.indexOf(key) > -1 || typeof wx[key] === 'function';
 }
 function initWx() {
+    let global = wx;
+    if (typeof globalThis !== 'undefined' && globalThis.wx && wx !== globalThis.wx) {
+        global = globalThis.wx;
+    }
     const newWx = {};
-    for (const key in wx) {
+    for (const key in global) {
         if (isWxKey(key)) {
             // TODO wrapper function
-            newWx[key] = wx[key];
+            newWx[key] = global[key];
         }
     }
     if (typeof globalThis !== 'undefined') {
