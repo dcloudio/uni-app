@@ -17974,7 +17974,7 @@ function isColor(color) {
 }
 
 function initBackgroundColor(webviewStyle, routeMeta) {
-    const { backgroundColor } = routeMeta;
+    let { backgroundColor } = routeMeta;
     if (!backgroundColor) {
         return;
     }
@@ -17983,6 +17983,9 @@ function initBackgroundColor(webviewStyle, routeMeta) {
     }
     if (!webviewStyle.background) {
         webviewStyle.background = backgroundColor;
+    }
+    else {
+        backgroundColor = webviewStyle.background;
     }
     if (!webviewStyle.backgroundColorTop) {
         webviewStyle.backgroundColorTop = backgroundColor;
