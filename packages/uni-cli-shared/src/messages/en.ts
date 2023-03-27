@@ -34,4 +34,17 @@ export default {
     'When running on Windows to iOS mobile phone, the modification of the uts plugin code needs to be submitted to the cloud to package the custom playground to take effect.',
   'uts.ios.standard.tips':
     'When the standard playground runs to an IOS phone, the uts plugin is temporarily not supported. If you need to call the uts plugin, please use a custom playground',
+  'prompt.run.message': 'Run method: open {devtools}, import {outputDir} run.',
+  'prompt.run.devtools.app': 'HBuilderX',
+  'prompt.run.devtools.mp-alipay': 'Alipay Mini Program Devtools',
+  'prompt.run.devtools.mp-baidu': 'Baidu Mini Program Devtools',
+  'prompt.run.devtools.mp--kuaishou': 'Kuaishou Mini Program Devtools',
+  'prompt.run.devtools.mp-lark': 'Lark Mini Program Devtools',
+  'prompt.run.devtools.mp-qq': 'QQ Mini Program Devtools',
+  'prompt.run.devtools.mp-toutiao': 'ByteDance Mini Program Devtools',
+  'prompt.run.devtools.mp-weixin': 'Weixin Mini Program Devtools',
+  'prompt.run.devtools.quickapp-webview':
+    'Quick App Alliance Devtools | Huawei Quick App Devtools',
+  'prompt.run.devtools.quickapp-webview-huawei': 'Huawei Quick App Devtools',
+  'prompt.run.devtools.quickapp-webview-union': 'Quick App Alliance Devtools',
 } as const

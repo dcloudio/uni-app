@@ -104,11 +104,13 @@ export function compile(
         compiled.push(token.value)
         break
       case 'list':
-        compiled.push(values[parseInt(token.value, 10)])
+        compiled.push(
+          (values as Record<string, unknown>)[parseInt(token.value, 10)]
+        )
         break
       case 'named':
         if (mode === 'named') {
-          compiled.push(values[token.value])
+          compiled.push((values as Record<string, unknown>)[token.value])
         } else {
           if (process.env.NODE_ENV !== 'production') {
             console.warn(

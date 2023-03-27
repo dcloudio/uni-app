@@ -1,4 +1,5 @@
 import path from 'path'
+import fs from 'fs'
 import { CompilerOptions, NodeTypes } from '@vue/compiler-core'
 import {
   COMPONENT_ON_LINK,
@@ -12,9 +13,23 @@ import source from './mini.project.json'
 import { transformRef } from './transforms/transformRef'
 import { event } from './event'
 import { transformOpenType } from './transforms/transformOpenType'
+import { isArray } from '@vue/shared'
 
 const projectConfigFilename = 'mini.project.json'
 const COMPONENTS_DIR = 'mycomponents'
+
+interface ConditionConfig {
+  miniprogram?: UniApp.PagesJson['condition']
+}
+
+interface CompileModeJsonConfig {
+  modes: {
+    title?: string
+    page?: string
+    pageQuery?: string
+  }[]
+}
+
 export const miniProgram: MiniProgramCompilerOptions = {
   event,
   class: {
@@ -124,6 +139,32 @@ export const options: UniMiniProgramPluginOptions = {
     filename: projectConfigFilename,
     config: ['mini.project.json', 'project.my.json'],
     source,
+    normalize(projectJson) {
+      const miniprogram = (projectJson.condition as ConditionConfig)
+        ?.miniprogram
+      if (miniprogram && isArray(miniprogram.list) && miniprogram.list.length) {
+        const compileModeJson: CompileModeJsonConfig = {
+          modes: [],
+        }
+        compileModeJson.modes = miniprogram.list.map((item) => {
+          return {
+            title: item.name,
+            page: item.pathName,
+            pageQuery: item.query,
+          }
+        })
+        const miniIdeDir = path.join(process.env.UNI_OUTPUT_DIR, '.mini-ide')
+        if (!fs.existsSync(miniIdeDir)) {
+          fs.mkdirSync(miniIdeDir, { recursive: true })
+          fs.writeFileSync(
+            path.join(miniIdeDir, 'compileMode.json'),
+            JSON.stringify(compileModeJson, null, 2)
+          )
+        }
+        delete projectJson.condition
+      }
+      return projectJson
+    },
   },
   template: {
     /* eslint-disable no-restricted-syntax */

@@ -90,6 +90,7 @@ export function parseComponent(
 
   const options: Component.ComponentOptions = {
     multipleSlots: true,
+    // styleIsolation: 'apply-shared',
     addGlobalClass: true,
     pureDataPattern: /^uP$/,
   }

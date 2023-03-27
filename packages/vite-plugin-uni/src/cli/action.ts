@@ -10,7 +10,12 @@ import {
 import { CliOptions } from '.'
 import { build, buildSSR } from './build'
 import { createServer, createSSRServer } from './server'
-import { initEnv, printStartupDuration } from './utils'
+import {
+  type PLATFORM,
+  initEnv,
+  printStartupDuration,
+  showRunPrompt,
+} from './utils'
 import { initEasycom } from '../utils/easycom'
 
 export async function runDev(options: CliOptions & ServerOptions) {
@@ -53,6 +58,7 @@ export async function runDev(options: CliOptions & ServerOptions) {
             }
             isFirstEnd = false
             output('log', M['dev.watching.end'])
+            showRunPrompt(options.platform as PLATFORM)
             printStartupDuration(createLogger(options.logLevel), false)
             if (process.env.UNI_UTS_ERRORS) {
               console.error(process.env.UNI_UTS_ERRORS)
@@ -116,6 +122,9 @@ export async function runBuild(options: CliOptions & BuildOptions) {
       ? buildSSR(options)
       : build(options))
     console.log(M['build.done'])
+    if (options.platform !== 'h5') {
+      showRunPrompt(options.platform as PLATFORM)
+    }
   } catch (e: any) {
     console.error(`Build failed with errors.`)
     process.exit(1)

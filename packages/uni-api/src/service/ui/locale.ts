@@ -45,7 +45,9 @@ export const setLocale = defineSyncApi<typeof uni.setLocale>(
         weex.requireModule('plus').setLanguage(locale)
       }
       if (__PLATFORM__ === 'h5') {
-        window.localStorage && (localStorage[UNI_STORAGE_LOCALE] = locale)
+        navigator.cookieEnabled &&
+          window.localStorage &&
+          (localStorage[UNI_STORAGE_LOCALE] = locale)
       }
       // 执行 uni.onLocaleChange
       UniServiceJSBridge.invokeOnCallback(API_ON_LOCALE_CHANGE, { locale })

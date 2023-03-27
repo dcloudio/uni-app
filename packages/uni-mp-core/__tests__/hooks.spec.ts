@@ -1,26 +1,26 @@
-import { defineComponent } from 'vue'
+import { ComponentOptions, defineComponent } from 'vue'
 import { initHooks, initUnknownHooks } from '../src/runtime/componentHooks'
 
 const vueBasicOptions = defineComponent({
   onLoad() {},
   beforeCreate() {},
-})
+}) as ComponentOptions
 
 const vueExtendsOptions = defineComponent({
   extends: vueBasicOptions,
   onShow() {},
-})
+}) as ComponentOptions
 
 const vueMixinsOptions = defineComponent({
   mixins: [vueExtendsOptions],
   onHide() {},
-})
+}) as ComponentOptions
 
 const vueExtendsANdMixinsOptions = defineComponent({
   extends: vueBasicOptions,
   mixins: [vueMixinsOptions],
   onReady() {},
-})
+}) as ComponentOptions
 
 describe('hooks', () => {
   test('basic', () => {

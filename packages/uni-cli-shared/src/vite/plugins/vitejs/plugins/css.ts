@@ -280,9 +280,12 @@ export function cssPostPlugin(
             )
             cssChunks.set(filename, ids)
           } else {
-            const ids = Object.keys(chunk.modules).filter((id) =>
-              styles.has(id)
-            )
+            let ids = Object.keys(chunk.modules).filter((id) => styles.has(id))
+            // 当页面作为组件使用时，上一步找不到依赖的css，需要再次查找
+            // renderChunk会执行两次，一次是页面chunk，一次是组件chunk，两者生成的css文件名和内容都是一样的
+            if (!ids.length) {
+              ids = [...findCssModuleIds.call(this, id)]
+            }
             cssChunks.set(filename, ids)
           }
         }

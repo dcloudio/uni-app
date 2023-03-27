@@ -27,11 +27,20 @@ function isWxKey(key: string) {
 }
 
 export function initWx() {
+  let global = __GLOBAL__
+  if (
+    typeof globalThis !== 'undefined' &&
+    globalThis.__GLOBAL__ &&
+    __GLOBAL__ !== globalThis.__GLOBAL__
+  ) {
+    global = globalThis.__GLOBAL__
+  }
+
   const newWx: Record<string, any> = {}
-  for (const key in __GLOBAL__) {
+  for (const key in global) {
     if (isWxKey(key)) {
       // TODO wrapper function
-      newWx[key] = __GLOBAL__[key]
+      newWx[key] = global[key]
     }
   }
   if (typeof globalThis !== 'undefined') {

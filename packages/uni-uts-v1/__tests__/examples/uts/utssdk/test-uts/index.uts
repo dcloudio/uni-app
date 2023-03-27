@@ -1,4 +1,4 @@
-import { ShowToast } from "./interface.uts"
+import { ShowToast, RequestTask } from "./interface.uts"
 
 export function onMemoryWarning(callback: (level: number) => void) { }
 export function offMemoryWarning(
@@ -15,3 +15,5 @@ export const showToast1: ShowToast = (msg) => {
 export const showToast2: ShowToast = function showToast(msg) {
   console.log(msg)
 }
+
+export function request(): RequestTask { }

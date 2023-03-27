@@ -134,6 +134,9 @@ export function generateCodeFrame(
 }
 
 export function parseUTSSyntaxError(error: any, inputDir: string): string {
+  if (error instanceof Error) {
+    error = error.message + (error.stack ? `\n` + error.stack : ``)
+  }
   let msg = String(error).replace(/\t/g, ' ')
   let res: RegExpExecArray | null = null
   const syntaxErrorRe = /(,-\[(.*):(\d+):(\d+)\])/g
