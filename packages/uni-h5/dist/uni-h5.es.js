@@ -19810,9 +19810,8 @@ class SocketTask {
       eventNames.forEach((name) => {
         this._callbacks[name] = [];
         webSocket.addEventListener(name, (event) => {
-          const res = name === "message" ? {
-            data: event.data
-          } : {};
+          const { data, code, reason } = event;
+          const res = name === "message" ? { data } : name === "close" ? { code, reason } : {};
           this._callbacks[name].forEach((callback2) => {
             try {
               callback2(res);
@@ -20081,6 +20080,8 @@ const getLocation = /* @__PURE__ */ defineAsyncApi(
       }).catch((error) => {
         reject(error.message);
       });
+    }).catch((err) => {
+      reject(err.message);
     });
   },
   GetLocationProtocol,
