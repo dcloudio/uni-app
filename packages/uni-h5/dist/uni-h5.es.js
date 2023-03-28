@@ -20080,8 +20080,8 @@ const getLocation = /* @__PURE__ */ defineAsyncApi(
       }).catch((error) => {
         reject(error.message);
       });
-    }).catch((err) => {
-      reject(err.message);
+    }).catch((error) => {
+      reject(error.message || JSON.stringify(error));
     });
   },
   GetLocationProtocol,
