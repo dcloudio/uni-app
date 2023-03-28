@@ -112,5 +112,9 @@ export function getLocation ({
           errMsg: 'getLocation:fail ' + error.message
         })
       })
+  }).catch((error) => {
+    invoke(callbackId, {
+      errMsg: 'getLocation:fail ' + error.message || JSON.stringify(error)
+    })
   })
 }
