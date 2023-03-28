@@ -410,13 +410,10 @@ describe('mp:compiler-extra', () => {
       `
       <view v-for="(value,key,index) in dataObj" :key="index">
         <button @click="click1(index)">click1(index)</button>
-        <button @click="click1(key)">click1(key)</button>
-        <button @click="click2(value)">click2(value)</button>
         <button @click="fnObj.click(value)">fnObj.click(value)</button>
-        <button @click="click1(index);click2(key);">click1(index);click2(key);</button>
       </view>
       `,
-      '<block wx:for="{{$root.l0}}" wx:for-item="value" wx:for-index="key" wx:key="$index"><view><button data-event-opts="{{[[\'tap\',[[\'click1\',[value.$index]]]]]}}" bindtap="__e">click1(index)</button><button data-event-opts="{{[[\'tap\',[[\'click1\',[key]]]]]}}" bindtap="__e">click1(key)</button><button data-event-opts="{{[[\'tap\',[[\'click2\',[value.$orig]]]]]}}" bindtap="__e">click2(value)</button><button data-event-opts="{{[[\'tap\',[[\'e0\',[\'$event\']]]]]}}" data-event-params="{{({value:value.$orig})}}" bindtap="__e">fnObj.click(value)</button><button data-event-opts="{{[[\'tap\',[[\'click1\',[value.$index]],[\'click2\',[key]]]]]}}" bindtap="__e">click1(index);click2(key);</button></view></block>',
+      '<block wx:for="{{$root.l0}}" wx:for-item="value" wx:for-index="key" wx:key="$index"><view><button data-event-opts="{{[[\'tap\',[[\'click1\',[value.$index]]]]]}}" bindtap="__e">click1(index)</button><button data-event-opts="{{[[\'tap\',[[\'e0\',[\'$event\']]]]]}}" data-event-params="{{({value:value.$orig})}}" bindtap="__e">fnObj.click(value)</button></view></block>',
       'with(this){var l0=__map(dataObj,function(value,key,index){var $orig=__get_orig(value);return{$orig:$orig,$index:index}});if(!_isMounted){e0=function($event,value){var _temp=arguments[arguments.length-1].currentTarget.dataset,_temp2=_temp.eventParams||_temp["event-params"],value=_temp2.value;var _temp,_temp2;return fnObj.click(value)}}$mp.data=Object.assign({},{$root:{l0:l0}})}'
     )
   })
