@@ -200,6 +200,7 @@ export default /*#__PURE__*/ defineSystemComponent({
               option.longitude
             )
         const img = new Image()
+        let imgHeight = 0
         img.onload = () => {
           const anchor = option.anchor || {}
           let icon: MarkerImage | Icon
@@ -215,6 +216,7 @@ export default /*#__PURE__*/ defineSystemComponent({
             w = img.width / 2
             h = img.height / 2
           }
+          imgHeight = h
           top = h - (h - y * h)
           if ('MarkerImage' in maps) {
             icon = new maps.MarkerImage(
@@ -306,14 +308,21 @@ export default /*#__PURE__*/ defineSystemComponent({
           let callout = marker.callout
           let calloutStyle: CalloutOptions
           if (calloutOpt.content || title) {
+            if (getIsAMap() && calloutOpt.content) {
+              calloutOpt.content = calloutOpt.content.replaceAll('\n', '<br/>')
+            }
             const boxShadow = '0px 0px 3px 1px rgba(0,0,0,0.5)'
+            let offsetY = -imgHeight / 2
+            if (option.width || option.height) {
+              offsetY += 14 - imgHeight / 2
+            }
             calloutStyle = calloutOpt.content
               ? {
                   position,
                   map,
                   top,
                   // handle AMap callout offset
-                  offsetY: -option.height / 2,
+                  offsetY,
                   content: calloutOpt.content,
                   color: calloutOpt.color,
                   fontSize: calloutOpt.fontSize,
@@ -328,7 +337,7 @@ export default /*#__PURE__*/ defineSystemComponent({
                   map,
                   top,
                   // handle AMap callout offset
-                  offsetY: -option.height / 2,
+                  offsetY,
                   content: title,
                   boxShadow,
                 }
