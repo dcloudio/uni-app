@@ -2,12 +2,24 @@ import path from 'path'
 import fs from 'fs-extra'
 import { recursive } from 'merge'
 
-type Define = string | string[] | Record<string, string> | false
+type DefineOptions = {
+  name?: string
+  app?:
+    | boolean
+    | {
+        js?: boolean
+        kotlin?: boolean
+        swift?: boolean
+      }
+  [key: string]: any
+}
+
+type Define = string | string[] | Record<string, string | DefineOptions> | false
 type Defines = {
   [name: string]: Define
 }
 
-interface Exports {
+export interface Exports {
   [name: string]: Define | Defines | false
 }
 
@@ -50,7 +62,11 @@ export function parseUniExtApis(vite = true) {
 
 type Inject = string | string[]
 type Injects = {
-  [name: string]: string | string[] | false
+  [name: string]:
+    | string
+    | [string, string]
+    | [string, string, DefineOptions['app']]
+    | false
 }
 /**
  *  uni:'getBatteryInfo'
@@ -95,13 +111,17 @@ export function parseInjects(
   }
   const injects: Injects = {}
   for (const key in rootDefines) {
-    Object.assign(injects, parseInject(vite, source, 'uni', rootDefines[key]))
+    Object.assign(
+      injects,
+      parseInject(vite, platform, source, 'uni', rootDefines[key])
+    )
   }
   return injects
 }
 
 export function parseInject(
   vite = true,
+  platform: UniApp.PLATFORM,
   source: string,
   globalObject: string,
   define: Define
@@ -119,7 +139,22 @@ export function parseInject(
   } else {
     const keys = Object.keys(define)
     keys.forEach((d) => {
-      injects[globalObject + '.' + d] = [source, define[d]]
+      if (typeof define[d] === 'string') {
+        injects[globalObject + '.' + d] = [source, define[d] as string]
+      } else {
+        const defineOptions = define[d] as DefineOptions
+        if (defineOptions[platform] !== false) {
+          if (platform === 'app') {
+            injects[globalObject + '.' + d] = [
+              source,
+              defineOptions.name || d,
+              defineOptions.app,
+            ]
+          } else {
+            injects[globalObject + '.' + d] = [source, defineOptions.name || d]
+          }
+        }
+      }
     })
   }
   return injects
