@@ -880,7 +880,11 @@ function normalizeLocale(locale, messages) {
         }
         return LOCALE_ZH_HANS;
     }
-    const lang = startsWith(locale, [LOCALE_EN, LOCALE_FR, LOCALE_ES]);
+    let locales = [LOCALE_EN, LOCALE_FR, LOCALE_ES];
+    if (messages && Object.keys(messages).length > 0) {
+        locales = Object.keys(messages);
+    }
+    const lang = startsWith(locale, locales);
     if (lang) {
         return lang;
     }
@@ -15114,10 +15118,11 @@ function bindSocketCallBack(socket) {
         curSocket._socketOnError();
     });
     socket.onclose((e) => {
-        const curSocket = socketsMap[e.id];
+        const { id, code, reason } = e;
+        const curSocket = socketsMap[id];
         if (!curSocket)
             return;
-        curSocket._socketOnClose();
+        curSocket._socketOnClose({ code, reason });
     });
 }
 class SocketTask {
@@ -15153,8 +15158,8 @@ class SocketTask {
         this.socketStateChange('error');
         this.onErrorOrClose();
     }
-    _socketOnClose() {
-        this.socketStateChange('close');
+    _socketOnClose(res) {
+        this.socketStateChange('close', res);
         this.onErrorOrClose();
     }
     onErrorOrClose() {
@@ -15166,7 +15171,12 @@ class SocketTask {
         }
     }
     socketStateChange(name, res = {}) {
-        const data = name === 'message' ? res : {};
+        const { code, reason } = res;
+        const data = name === 'message'
+            ? { data: res.data }
+            : name === 'close'
+                ? { code, reason }
+                : {};
         if (this === socketTasks[0] && globalEvent[name]) {
             UniServiceJSBridge.invokeOnCallback(globalEvent[name], data);
         }
