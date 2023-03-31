@@ -1326,7 +1326,6 @@ var serviceContext = (function () {
     scanCode: scanCode
   });
 
-  const isArray = Array.isArray;
   const isObject$1 = (val) => val !== null && typeof val === 'object';
   const defaultDelimiters = ['{', '}'];
   class BaseFormatter {
@@ -1388,7 +1387,7 @@ var serviceContext = (function () {
   function compile(tokens, values) {
       const compiled = [];
       let index = 0;
-      const mode = isArray(values)
+      const mode = Array.isArray(values)
           ? 'list'
           : isObject$1(values)
               ? 'named'
@@ -1449,6 +1448,10 @@ var serviceContext = (function () {
           return locale;
       }
       locale = locale.toLowerCase();
+      if (locale === 'chinese') {
+          // 支付宝
+          return LOCALE_ZH_HANS;
+      }
       if (locale.indexOf('zh') === 0) {
           if (locale.indexOf('-hans') > -1) {
               return LOCALE_ZH_HANS;
@@ -1461,7 +1464,11 @@ var serviceContext = (function () {
           }
           return LOCALE_ZH_HANS;
       }
-      const lang = startsWith(locale, [LOCALE_EN, LOCALE_FR, LOCALE_ES]);
+      let locales = [LOCALE_EN, LOCALE_FR, LOCALE_ES];
+      if (messages && Object.keys(messages).length > 0) {
+          locales = Object.keys(messages);
+      }
+      const lang = startsWith(locale, locales);
       if (lang) {
           return lang;
       }
@@ -9475,10 +9482,13 @@ var serviceContext = (function () {
     });
     socket.onclose(function (e) {
       const socketTaskId = e.id;
+      const { code, reason } = e;
       delete socketTasks[socketTaskId];
       publishStateChange$2({
         socketTaskId,
-        state: 'close'
+        state: 'close',
+        code,
+        reason
       });
     });
     return socket
@@ -21797,19 +21807,24 @@ var serviceContext = (function () {
     socketTaskId,
     state,
     data,
+    code,
+    reason,
     errMsg
   }) => {
     const socketTask = socketTasks$1[socketTaskId];
     if (!socketTask) {
       return
     }
+    const callbackRes = state === 'message'
+      ? { data }
+      : state === 'close'
+        ? { code, reason }
+        : {};
     if (state === 'open') {
       socketTask.readyState = socketTask.OPEN;
     }
     if (socketTask === socketTasksArray[0] && callbacks$a[state]) {
-      invoke$1(callbacks$a[state], state === 'message' ? {
-        data
-      } : {});
+      invoke$1(callbacks$a[state], callbackRes);
     }
     if (state === 'error' || state === 'close') {
       socketTask.readyState = socketTask.CLOSED;
@@ -21821,9 +21836,7 @@ var serviceContext = (function () {
     }
     socketTask._callbacks[state].forEach(callback => {
       if (typeof callback === 'function') {
-        callback(state === 'message' ? {
-          data
-        } : {});
+        callback(callbackRes);
       }
     });
   });
