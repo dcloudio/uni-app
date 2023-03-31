@@ -559,6 +559,10 @@
         "/core/service/api/device/theme.js",
         []
     ],
+    "offThemeChange": [
+        "/core/service/api/device/theme.js",
+        []
+    ],
     "onUIStyleChange": [
         "/core/service/api/device/theme.js",
         []

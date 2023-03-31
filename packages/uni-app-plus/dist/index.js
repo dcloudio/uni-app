@@ -1,5 +1,5 @@
-import Vue from 'vue';
 import { initVueI18n } from '@dcloudio/uni-i18n';
+import Vue from 'vue';
 
 let realAtob;
 
@@ -88,6 +88,10 @@ function isFn (fn) {
 
 function isStr (str) {
   return typeof str === 'string'
+}
+
+function isObject (obj) {
+  return obj !== null && typeof obj === 'object'
 }
 
 function isPlainObject (obj) {
@@ -314,7 +318,7 @@ const promiseInterceptor = {
 };
 
 const SYNC_API_RE =
-  /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback/;
+  /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback|getWindowInfo|getDeviceInfo|getAppBaseInfo|getSystemSetting|getAppAuthorizeSetting|initUTS|requireUTS|registerUTS/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -322,7 +326,7 @@ const CONTEXT_API_RE = /^create|Manager$/;
 const CONTEXT_API_RE_EXC = ['createBLEConnection'];
 
 // 同步例外情况
-const ASYNC_API = ['createBLEConnection'];
+const ASYNC_API = ['createBLEConnection', 'createPushMessage'];
 
 const CALLBACK_API_RE = /^on|^off/;
 
@@ -369,7 +373,7 @@ if (!Promise.prototype.finally) {
 }
 
 function promisify (name, api) {
-  if (!shouldPromise(name)) {
+  if (!shouldPromise(name) || !isFn(api)) {
     return api
   }
   return function promiseApi (options = {}, ...params) {
@@ -427,19 +431,342 @@ function upx2px (number, newDeviceWidth) {
   return number < 0 ? -result : result
 }
 
-function getLocale () {
-  // 优先使用 $locale
-  const app = getApp({
-    allowDefault: true
+var en = {
+	"uni.app.quit": "Press back button again to exit",
+	"uni.async.error": "The connection timed out, click the screen to try again.",
+	"uni.showActionSheet.cancel": "Cancel",
+	"uni.showToast.unpaired": "Please note showToast must be paired with hideToast",
+	"uni.showLoading.unpaired": "Please note showLoading must be paired with hideLoading",
+	"uni.showModal.cancel": "Cancel",
+	"uni.showModal.confirm": "OK",
+	"uni.chooseImage.cancel": "Cancel",
+	"uni.chooseImage.sourceType.album": "Album",
+	"uni.chooseImage.sourceType.camera": "Camera",
+	"uni.chooseVideo.cancel": "Cancel",
+	"uni.chooseVideo.sourceType.album": "Album",
+	"uni.chooseVideo.sourceType.camera": "Camera",
+	"uni.chooseFile.notUserActivation": "File chooser dialog can only be shown with a user activation",
+	"uni.previewImage.cancel": "Cancel",
+	"uni.previewImage.button.save": "Save Image",
+	"uni.previewImage.save.success": "Saved successfully",
+	"uni.previewImage.save.fail": "Save failed",
+	"uni.setClipboardData.success": "Content copied",
+	"uni.scanCode.title": "Scan code",
+	"uni.scanCode.album": "Album",
+	"uni.scanCode.fail": "Recognition failure",
+	"uni.scanCode.flash.on": "Tap to turn light on",
+	"uni.scanCode.flash.off": "Tap to turn light off",
+	"uni.startSoterAuthentication.authContent": "Fingerprint recognition",
+	"uni.picker.done": "Done",
+	"uni.picker.cancel": "Cancel",
+	"uni.video.danmu": "Danmu",
+	"uni.video.volume": "Volume",
+	"uni.button.feedback.title": "feedback",
+	"uni.button.feedback.send": "send",
+	"uni.chooseLocation.search": "Find Place",
+	"uni.chooseLocation.cancel": "Cancel"
+};
+
+var es = {
+	"uni.app.quit": "Pulse otra vez para salir",
+	"uni.async.error": "Se agotó el tiempo de conexión, haga clic en la pantalla para volver a intentarlo.",
+	"uni.showActionSheet.cancel": "Cancelar",
+	"uni.showToast.unpaired": "Tenga en cuenta que showToast debe estar emparejado con hideToast",
+	"uni.showLoading.unpaired": "Tenga en cuenta que showLoading debe estar emparejado con hideLoading",
+	"uni.showModal.cancel": "Cancelar",
+	"uni.showModal.confirm": "OK",
+	"uni.chooseImage.cancel": "Cancelar",
+	"uni.chooseImage.sourceType.album": "Álbum",
+	"uni.chooseImage.sourceType.camera": "Cámara",
+	"uni.chooseVideo.cancel": "Cancelar",
+	"uni.chooseVideo.sourceType.album": "Álbum",
+	"uni.chooseVideo.sourceType.camera": "Cámara",
+	"uni.chooseFile.notUserActivation": "El cuadro de diálogo del selector de archivos solo se puede mostrar con la activación del usuario",
+	"uni.previewImage.cancel": "Cancelar",
+	"uni.previewImage.button.save": "Guardar imagen",
+	"uni.previewImage.save.success": "Guardado exitosamente",
+	"uni.previewImage.save.fail": "Error al guardar",
+	"uni.setClipboardData.success": "Contenido copiado",
+	"uni.scanCode.title": "Código de escaneo",
+	"uni.scanCode.album": "Álbum",
+	"uni.scanCode.fail": "Échec de la reconnaissance",
+	"uni.scanCode.flash.on": "Toque para encender la luz",
+	"uni.scanCode.flash.off": "Toque para apagar la luz",
+	"uni.startSoterAuthentication.authContent": "Reconocimiento de huellas dactilares",
+	"uni.picker.done": "OK",
+	"uni.picker.cancel": "Cancelar",
+	"uni.video.danmu": "Danmu",
+	"uni.video.volume": "Volumen",
+	"uni.button.feedback.title": "realimentación",
+	"uni.button.feedback.send": "enviar",
+	"uni.chooseLocation.search": "Encontrar",
+	"uni.chooseLocation.cancel": "Cancelar"
+};
+
+var fr = {
+	"uni.app.quit": "Appuyez à nouveau pour quitter l'application",
+	"uni.async.error": "La connexion a expiré, cliquez sur l'écran pour réessayer.",
+	"uni.showActionSheet.cancel": "Annuler",
+	"uni.showToast.unpaired": "Veuillez noter que showToast doit être associé à hideToast",
+	"uni.showLoading.unpaired": "Veuillez noter que showLoading doit être associé à hideLoading",
+	"uni.showModal.cancel": "Annuler",
+	"uni.showModal.confirm": "OK",
+	"uni.chooseImage.cancel": "Annuler",
+	"uni.chooseImage.sourceType.album": "Album",
+	"uni.chooseImage.sourceType.camera": "Caméra",
+	"uni.chooseVideo.cancel": "Annuler",
+	"uni.chooseVideo.sourceType.album": "Album",
+	"uni.chooseVideo.sourceType.camera": "Caméra",
+	"uni.chooseFile.notUserActivation": "La boîte de dialogue du sélecteur de fichier ne peut être affichée qu'avec une activation par l'utilisateur",
+	"uni.previewImage.cancel": "Annuler",
+	"uni.previewImage.button.save": "Guardar imagen",
+	"uni.previewImage.save.success": "Enregistré avec succès",
+	"uni.previewImage.save.fail": "Échec de la sauvegarde",
+	"uni.setClipboardData.success": "Contenu copié",
+	"uni.scanCode.title": "Code d’analyse",
+	"uni.scanCode.album": "Album",
+	"uni.scanCode.fail": "Fallo de reconocimiento",
+	"uni.scanCode.flash.on": "Appuyez pour activer l'éclairage",
+	"uni.scanCode.flash.off": "Appuyez pour désactiver l'éclairage",
+	"uni.startSoterAuthentication.authContent": "Reconnaissance de l'empreinte digitale",
+	"uni.picker.done": "OK",
+	"uni.picker.cancel": "Annuler",
+	"uni.video.danmu": "Danmu",
+	"uni.video.volume": "Le Volume",
+	"uni.button.feedback.title": "retour d'information",
+	"uni.button.feedback.send": "envoyer",
+	"uni.chooseLocation.search": "Trouve",
+	"uni.chooseLocation.cancel": "Annuler"
+};
+
+var zhHans = {
+	"uni.app.quit": "再按一次退出应用",
+	"uni.async.error": "连接服务器超时，点击屏幕重试",
+	"uni.showActionSheet.cancel": "取消",
+	"uni.showToast.unpaired": "请注意 showToast 与 hideToast 必须配对使用",
+	"uni.showLoading.unpaired": "请注意 showLoading 与 hideLoading 必须配对使用",
+	"uni.showModal.cancel": "取消",
+	"uni.showModal.confirm": "确定",
+	"uni.chooseImage.cancel": "取消",
+	"uni.chooseImage.sourceType.album": "从相册选择",
+	"uni.chooseImage.sourceType.camera": "拍摄",
+	"uni.chooseVideo.cancel": "取消",
+	"uni.chooseVideo.sourceType.album": "从相册选择",
+	"uni.chooseVideo.sourceType.camera": "拍摄",
+	"uni.chooseFile.notUserActivation": "文件选择器对话框只能在由用户激活时显示",
+	"uni.previewImage.cancel": "取消",
+	"uni.previewImage.button.save": "保存图像",
+	"uni.previewImage.save.success": "保存图像到相册成功",
+	"uni.previewImage.save.fail": "保存图像到相册失败",
+	"uni.setClipboardData.success": "内容已复制",
+	"uni.scanCode.title": "扫码",
+	"uni.scanCode.album": "相册",
+	"uni.scanCode.fail": "识别失败",
+	"uni.scanCode.flash.on": "轻触照亮",
+	"uni.scanCode.flash.off": "轻触关闭",
+	"uni.startSoterAuthentication.authContent": "指纹识别中...",
+	"uni.picker.done": "完成",
+	"uni.picker.cancel": "取消",
+	"uni.video.danmu": "弹幕",
+	"uni.video.volume": "音量",
+	"uni.button.feedback.title": "问题反馈",
+	"uni.button.feedback.send": "发送",
+	"uni.chooseLocation.search": "搜索地点",
+	"uni.chooseLocation.cancel": "取消"
+};
+
+var zhHant = {
+	"uni.app.quit": "再按一次退出應用",
+	"uni.async.error": "連接服務器超時，點擊屏幕重試",
+	"uni.showActionSheet.cancel": "取消",
+	"uni.showToast.unpaired": "請注意 showToast 與 hideToast 必須配對使用",
+	"uni.showLoading.unpaired": "請注意 showLoading 與 hideLoading 必須配對使用",
+	"uni.showModal.cancel": "取消",
+	"uni.showModal.confirm": "確定",
+	"uni.chooseImage.cancel": "取消",
+	"uni.chooseImage.sourceType.album": "從相冊選擇",
+	"uni.chooseImage.sourceType.camera": "拍攝",
+	"uni.chooseVideo.cancel": "取消",
+	"uni.chooseVideo.sourceType.album": "從相冊選擇",
+	"uni.chooseVideo.sourceType.camera": "拍攝",
+	"uni.chooseFile.notUserActivation": "文件選擇器對話框只能在由用戶激活時顯示",
+	"uni.previewImage.cancel": "取消",
+	"uni.previewImage.button.save": "保存圖像",
+	"uni.previewImage.save.success": "保存圖像到相冊成功",
+	"uni.previewImage.save.fail": "保存圖像到相冊失敗",
+	"uni.setClipboardData.success": "內容已復制",
+	"uni.scanCode.title": "掃碼",
+	"uni.scanCode.album": "相冊",
+	"uni.scanCode.fail": "識別失敗",
+	"uni.scanCode.flash.on": "輕觸照亮",
+	"uni.scanCode.flash.off": "輕觸關閉",
+	"uni.startSoterAuthentication.authContent": "指紋識別中...",
+	"uni.picker.done": "完成",
+	"uni.picker.cancel": "取消",
+	"uni.video.danmu": "彈幕",
+	"uni.video.volume": "音量",
+	"uni.button.feedback.title": "問題反饋",
+	"uni.button.feedback.send": "發送",
+	"uni.chooseLocation.search": "搜索地點",
+	"uni.chooseLocation.cancel": "取消"
+};
+
+const LOCALE_ZH_HANS = 'zh-Hans';
+const LOCALE_ZH_HANT = 'zh-Hant';
+const LOCALE_EN = 'en';
+const LOCALE_FR = 'fr';
+const LOCALE_ES = 'es';
+
+const messages = {};
+
+{
+  Object.assign(messages, {
+    [LOCALE_EN]: en,
+    [LOCALE_ES]: es,
+    [LOCALE_FR]: fr,
+    [LOCALE_ZH_HANS]: zhHans,
+    [LOCALE_ZH_HANT]: zhHant
   });
-  if (app && app.$vm) {
-    return app.$vm.$locale
-  }
-  return wx.getSystemInfoSync().language || 'zh-Hans'
 }
 
-function setLocale (locale) {
-  const app = getApp();
+let locale;
+
+{
+  if (typeof weex === 'object') {
+    locale = weex.requireModule('plus').getLanguage();
+  } else {
+    locale = '';
+  }
+}
+
+function initI18nMessages () {
+  if (!isEnableLocale()) {
+    return
+  }
+  const localeKeys = Object.keys(__uniConfig.locales);
+  if (localeKeys.length) {
+    localeKeys.forEach((locale) => {
+      const curMessages = messages[locale];
+      const userMessages = __uniConfig.locales[locale];
+      if (curMessages) {
+        Object.assign(curMessages, userMessages);
+      } else {
+        messages[locale] = userMessages;
+      }
+    });
+  }
+}
+
+initI18nMessages();
+
+const i18n = initVueI18n(
+  locale,
+   messages 
+);
+const t = i18n.t;
+const i18nMixin = (i18n.mixin = {
+  beforeCreate () {
+    const unwatch = i18n.i18n.watchLocale(() => {
+      this.$forceUpdate();
+    });
+    this.$once('hook:beforeDestroy', function () {
+      unwatch();
+    });
+  },
+  methods: {
+    $$t (key, values) {
+      return t(key, values)
+    }
+  }
+});
+const setLocale = i18n.setLocale;
+const getLocale = i18n.getLocale;
+
+function initAppLocale (Vue, appVm, locale) {
+  const state = Vue.observable({
+    locale: locale || i18n.getLocale()
+  });
+  const localeWatchers = [];
+  appVm.$watchLocale = fn => {
+    localeWatchers.push(fn);
+  };
+  Object.defineProperty(appVm, '$locale', {
+    get () {
+      return state.locale
+    },
+    set (v) {
+      state.locale = v;
+      localeWatchers.forEach(watch => watch(v));
+    }
+  });
+}
+
+function isEnableLocale () {
+  return typeof __uniConfig !== 'undefined' && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
+}
+
+function include (str, parts) {
+  return !!parts.find((part) => str.indexOf(part) !== -1)
+}
+
+function startsWith (str, parts) {
+  return parts.find((part) => str.indexOf(part) === 0)
+}
+
+function normalizeLocale (locale, messages) {
+  if (!locale) {
+    return
+  }
+  locale = locale.trim().replace(/_/g, '-');
+  if (messages && messages[locale]) {
+    return locale
+  }
+  locale = locale.toLowerCase();
+  if (locale === 'chinese') {
+    // 支付宝
+    return LOCALE_ZH_HANS
+  }
+  if (locale.indexOf('zh') === 0) {
+    if (locale.indexOf('-hans') > -1) {
+      return LOCALE_ZH_HANS
+    }
+    if (locale.indexOf('-hant') > -1) {
+      return LOCALE_ZH_HANT
+    }
+    if (include(locale, ['-tw', '-hk', '-mo', '-cht'])) {
+      return LOCALE_ZH_HANT
+    }
+    return LOCALE_ZH_HANS
+  }
+  const lang = startsWith(locale, [LOCALE_EN, LOCALE_FR, LOCALE_ES]);
+  if (lang) {
+    return lang
+  }
+}
+// export function initI18n() {
+//   const localeKeys = Object.keys(__uniConfig.locales || {})
+//   if (localeKeys.length) {
+//     localeKeys.forEach((locale) =>
+//       i18n.add(locale, __uniConfig.locales[locale])
+//     )
+//   }
+// }
+
+function getLocale$1 () {
+  // 优先使用 $locale
+  if (isFn(getApp)) {
+    const app = getApp({
+      allowDefault: true
+    });
+    if (app && app.$vm) {
+      return app.$vm.$locale
+    }
+  }
+  return normalizeLocale(wx.getSystemInfoSync().language) || LOCALE_EN
+}
+
+function setLocale$1 (locale) {
+  const app = isFn(getApp) ? getApp() : false;
   if (!app) {
     return false
   }
@@ -462,7 +789,7 @@ function onLocaleChange (fn) {
 }
 
 if (typeof global !== 'undefined') {
-  global.getLocale = getLocale;
+  global.getLocale = getLocale$1;
 }
 
 const interceptors = {
@@ -472,8 +799,8 @@ const interceptors = {
 var baseApi = /*#__PURE__*/Object.freeze({
   __proto__: null,
   upx2px: upx2px,
-  getLocale: getLocale,
-  setLocale: setLocale,
+  getLocale: getLocale$1,
+  setLocale: setLocale$1,
   onLocaleChange: onLocaleChange,
   addInterceptor: addInterceptor,
   removeInterceptor: removeInterceptor,
@@ -715,6 +1042,132 @@ var api = /*#__PURE__*/Object.freeze({
   requireNativePlugin: requireNativePlugin
 });
 
+const mocks = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__'];
+
+function findVmByVueId (vm, vuePid) {
+  const $children = vm.$children;
+  // 优先查找直属(反向查找:https://github.com/dcloudio/uni-app/issues/1200)
+  for (let i = $children.length - 1; i >= 0; i--) {
+    const childVm = $children[i];
+    if (childVm.$scope._$vueId === vuePid) {
+      return childVm
+    }
+  }
+  // 反向递归查找
+  let parentVm;
+  for (let i = $children.length - 1; i >= 0; i--) {
+    parentVm = findVmByVueId($children[i], vuePid);
+    if (parentVm) {
+      return parentVm
+    }
+  }
+}
+
+function initBehavior (options) {
+  return Behavior(options)
+}
+
+function isPage () {
+  return !!this.route
+}
+
+function initRelation (detail) {
+  this.triggerEvent('__l', detail);
+}
+
+function selectAllComponents (mpInstance, selector, $refs) {
+  const components = mpInstance.selectAllComponents(selector) || [];
+  components.forEach(component => {
+    const ref = component.dataset.ref;
+    $refs[ref] = component.$vm || toSkip(component);
+  });
+}
+
+function syncRefs (refs, newRefs) {
+  const oldKeys = new Set(...Object.keys(refs));
+  const newKeys = Object.keys(newRefs);
+  newKeys.forEach(key => {
+    const oldValue = refs[key];
+    const newValue = newRefs[key];
+    if (Array.isArray(oldValue) && Array.isArray(newValue) && oldValue.length === newValue.length && newValue.every(value => oldValue.includes(value))) {
+      return
+    }
+    refs[key] = newValue;
+    oldKeys.delete(key);
+  });
+  oldKeys.forEach(key => {
+    delete refs[key];
+  });
+  return refs
+}
+
+function initRefs (vm) {
+  const mpInstance = vm.$scope;
+  const refs = {};
+  Object.defineProperty(vm, '$refs', {
+    get () {
+      const $refs = {};
+      selectAllComponents(mpInstance, '.vue-ref', $refs);
+      // TODO 暂不考虑 for 中的 scoped
+      const forComponents = mpInstance.selectAllComponents('.vue-ref-in-for') || [];
+      forComponents.forEach(component => {
+        const ref = component.dataset.ref;
+        if (!$refs[ref]) {
+          $refs[ref] = [];
+        }
+        $refs[ref].push(component.$vm || toSkip(component));
+      });
+      return syncRefs(refs, $refs)
+    }
+  });
+}
+
+function handleLink (event) {
+  const {
+    vuePid,
+    vueOptions
+  } = event.detail || event.value; // detail 是微信,value 是百度(dipatch)
+
+  let parentVm;
+
+  if (vuePid) {
+    parentVm = findVmByVueId(this.$vm, vuePid);
+  }
+
+  if (!parentVm) {
+    parentVm = this.$vm;
+  }
+
+  vueOptions.parent = parentVm;
+}
+
+function markMPComponent (component) {
+  // 在 Vue 中标记为小程序组件
+  const IS_MP = '__v_isMPComponent';
+  Object.defineProperty(component, IS_MP, {
+    configurable: true,
+    enumerable: false,
+    value: true
+  });
+  return component
+}
+
+function toSkip (obj) {
+  const OB = '__ob__';
+  const SKIP = '__v_skip';
+  if (isObject(obj) && Object.isExtensible(obj)) {
+    // 避免被 @vue/composition-api 观测
+    Object.defineProperty(obj, OB, {
+      configurable: true,
+      enumerable: false,
+      value: {
+        [SKIP]: true
+      }
+    });
+  }
+  return obj
+}
+
 const MPPage = Page;
 const MPComponent = Component;
 
@@ -727,7 +1180,11 @@ const customize = cached((str) => {
 function initTriggerEvent (mpInstance) {
   const oldTriggerEvent = mpInstance.triggerEvent;
   const newTriggerEvent = function (event, ...args) {
-    return oldTriggerEvent.apply(mpInstance, [customize(event), ...args])
+    // 事件名统一转驼峰格式，仅处理：当前组件为 vue 组件、当前组件为 vue 组件子组件
+    if (this.$vm || (this.dataset && this.dataset.comType)) {
+      event = customize(event);
+    }
+    return oldTriggerEvent.apply(this, [event, ...args])
   };
   try {
     // 京东小程序 triggerEvent 为只读
@@ -739,16 +1196,13 @@ function initTriggerEvent (mpInstance) {
 
 function initHook (name, options, isComponent) {
   const oldHook = options[name];
-  if (!oldHook) {
-    options[name] = function () {
-      initTriggerEvent(this);
-    };
-  } else {
-    options[name] = function (...args) {
-      initTriggerEvent(this);
+  options[name] = function (...args) {
+    markMPComponent(this);
+    initTriggerEvent(this);
+    if (oldHook) {
       return oldHook.apply(this, args)
-    };
-  }
+    }
+  };
 }
 if (!MPPage.__$wrappered) {
   MPPage.__$wrappered = true;
@@ -807,7 +1261,7 @@ function hasHook (hook, vueOptions) {
     return false
   }
 
-  if (isFn(vueOptions[hook])) {
+  if (isFn(vueOptions[hook]) || Array.isArray(vueOptions[hook])) {
     return true
   }
   const mixins = vueOptions.mixins;
@@ -824,6 +1278,29 @@ function initHooks (mpOptions, hooks, vueOptions) {
       };
     }
   });
+}
+
+function initUnknownHooks (mpOptions, vueOptions, excludes = []) {
+  findHooks(vueOptions).forEach((hook) => initHook$1(mpOptions, hook, excludes));
+}
+
+function findHooks (vueOptions, hooks = []) {
+  if (vueOptions) {
+    Object.keys(vueOptions).forEach((name) => {
+      if (name.indexOf('on') === 0 && isFn(vueOptions[name])) {
+        hooks.push(name);
+      }
+    });
+  }
+  return hooks
+}
+
+function initHook$1 (mpOptions, hook, excludes) {
+  if (excludes.indexOf(hook) === -1 && !hasOwn(mpOptions, hook)) {
+    mpOptions[hook] = function (args) {
+      return this.$vm && this.$vm.__call_hook(hook, args)
+    };
+  }
 }
 
 function initVueComponent (Vue, vueOptions) {
@@ -876,7 +1353,7 @@ function initData (vueOptions, context) {
     try {
       // 对 data 格式化
       data = JSON.parse(JSON.stringify(data));
-    } catch (e) {}
+    } catch (e) { }
   }
 
   if (!isPlainObject(data)) {
@@ -963,17 +1440,12 @@ function parsePropType (key, type, defaultValue, file) {
   return type
 }
 
-function initProperties (props, isBehavior = false, file = '') {
+function initProperties (props, isBehavior = false, file = '', options) {
   const properties = {};
   if (!isBehavior) {
     properties.vueId = {
       type: String,
       value: ''
-    };
-    // 用于字节跳动小程序模拟抽象节点
-    properties.generic = {
-      type: Object,
-      value: null
     };
     // scopedSlotsCompiler auto
     properties.scopedSlotsCompiler = {
@@ -1033,7 +1505,7 @@ function wrapper$2 (event) {
   // TODO 又得兼容 mpvue 的 mp 对象
   try {
     event.mp = JSON.parse(JSON.stringify(event));
-  } catch (e) {}
+  } catch (e) { }
 
   event.stopPropagation = noop;
   event.preventDefault = noop;
@@ -1104,7 +1576,7 @@ function getExtraValue (vm, dataPathsArray) {
   return context
 }
 
-function processEventExtra (vm, extra, event) {
+function processEventExtra (vm, extra, event, __args__) {
   const extraObj = {};
 
   if (Array.isArray(extra) && extra.length) {
@@ -1127,11 +1599,7 @@ function processEventExtra (vm, extra, event) {
           if (dataPath === '$event') { // $event
             extraObj['$' + index] = event;
           } else if (dataPath === 'arguments') {
-            if (event.detail && event.detail.__args__) {
-              extraObj['$' + index] = event.detail.__args__;
-            } else {
-              extraObj['$' + index] = [event];
-            }
+            extraObj['$' + index] = event.detail ? event.detail.__args__ || __args__ : __args__;
           } else if (dataPath.indexOf('$event.') === 0) { // $event.target.value
             extraObj['$' + index] = vm.__get_value(dataPath.replace('$event.', ''), event);
           } else {
@@ -1158,6 +1626,12 @@ function getObjByArray (arr) {
 
 function processEventArgs (vm, event, args = [], extra = [], isCustom, methodName) {
   let isCustomMPEvent = false; // wxcomponent 组件，传递原始 event 对象
+
+  // fixed 用户直接触发 mpInstance.triggerEvent
+  const __args__ = isPlainObject(event.detail)
+    ? event.detail.__args__ || [event.detail]
+    : [event.detail];
+
   if (isCustom) { // 自定义事件
     isCustomMPEvent = event.currentTarget &&
       event.currentTarget.dataset &&
@@ -1166,11 +1640,11 @@ function processEventArgs (vm, event, args = [], extra = [], isCustom, methodNam
       if (isCustomMPEvent) {
         return [event]
       }
-      return event.detail.__args__ || event.detail
+      return __args__
     }
   }
 
-  const extraObj = processEventExtra(vm, extra, event);
+  const extraObj = processEventExtra(vm, extra, event, __args__);
 
   const ret = [];
   args.forEach(arg => {
@@ -1179,7 +1653,7 @@ function processEventArgs (vm, event, args = [], extra = [], isCustom, methodNam
         ret.push(event.target.value);
       } else {
         if (isCustom && !isCustomMPEvent) {
-          ret.push(event.detail.__args__[0]);
+          ret.push(__args__[0]);
         } else { // wxcomponent 组件或内置组件
           ret.push(event);
         }
@@ -1270,7 +1744,9 @@ function handleEvent (event) {
           }
           const handler = handlerCtx[methodName];
           if (!isFn(handler)) {
-            throw new Error(` _vm.${methodName} is not a function`)
+            const type = this.$vm.mpType === 'page' ? 'Page' : 'Component';
+            const path = this.route || this.is;
+            throw new Error(`${type} "${path}" does not have a method "${methodName}"`)
           }
           if (isOnce) {
             if (handler.once) {
@@ -1306,283 +1782,6 @@ function handleEvent (event) {
     return ret[0]
   }
 }
-
-var en = {
-	"uni.app.quit": "Press back button again to exit",
-	"uni.async.error": "The connection timed out, click the screen to try again.",
-	"uni.showActionSheet.cancel": "Cancel",
-	"uni.showToast.unpaired": "Please note showToast must be paired with hideToast",
-	"uni.showLoading.unpaired": "Please note showLoading must be paired with hideLoading",
-	"uni.showModal.cancel": "Cancel",
-	"uni.showModal.confirm": "OK",
-	"uni.chooseImage.cancel": "Cancel",
-	"uni.chooseImage.sourceType.album": "Album",
-	"uni.chooseImage.sourceType.camera": "Camera",
-	"uni.chooseVideo.cancel": "Cancel",
-	"uni.chooseVideo.sourceType.album": "Album",
-	"uni.chooseVideo.sourceType.camera": "Camera",
-	"uni.chooseFile.notUserActivation": "File chooser dialog can only be shown with a user activation",
-	"uni.previewImage.cancel": "Cancel",
-	"uni.previewImage.button.save": "Save Image",
-	"uni.previewImage.save.success": "Saved successfully",
-	"uni.previewImage.save.fail": "Save failed",
-	"uni.setClipboardData.success": "Content copied",
-	"uni.scanCode.title": "Scan code",
-	"uni.scanCode.album": "Album",
-	"uni.scanCode.fail": "Recognition failure",
-	"uni.scanCode.flash.on": "Tap to turn light on",
-	"uni.scanCode.flash.off": "Tap to turn light off",
-	"uni.startSoterAuthentication.authContent": "Fingerprint recognition",
-	"uni.picker.done": "Done",
-	"uni.picker.cancel": "Cancel",
-	"uni.video.danmu": "Danmu",
-	"uni.video.volume": "Volume",
-	"uni.button.feedback.title": "feedback",
-	"uni.button.feedback.send": "send",
-	"uni.chooseLocation.search": "Find Place",
-	"uni.chooseLocation.cancel": "Cancel"
-};
-
-var es = {
-	"uni.app.quit": "Pulse otra vez para salir",
-	"uni.async.error": "Se agotó el tiempo de conexión, haga clic en la pantalla para volver a intentarlo.",
-	"uni.showActionSheet.cancel": "Cancelar",
-	"uni.showToast.unpaired": "Tenga en cuenta que showToast debe estar emparejado con hideToast",
-	"uni.showLoading.unpaired": "Tenga en cuenta que showLoading debe estar emparejado con hideLoading",
-	"uni.showModal.cancel": "Cancelar",
-	"uni.showModal.confirm": "OK",
-	"uni.chooseImage.cancel": "Cancelar",
-	"uni.chooseImage.sourceType.album": "Álbum",
-	"uni.chooseImage.sourceType.camera": "Cámara",
-	"uni.chooseVideo.cancel": "Cancelar",
-	"uni.chooseVideo.sourceType.album": "Álbum",
-	"uni.chooseVideo.sourceType.camera": "Cámara",
-	"uni.chooseFile.notUserActivation": "El cuadro de diálogo del selector de archivos solo se puede mostrar con la activación del usuario",
-	"uni.previewImage.cancel": "Cancelar",
-	"uni.previewImage.button.save": "Guardar imagen",
-	"uni.previewImage.save.success": "Guardado exitosamente",
-	"uni.previewImage.save.fail": "Error al guardar",
-	"uni.setClipboardData.success": "Contenido copiado",
-	"uni.scanCode.title": "Código de escaneo",
-	"uni.scanCode.album": "Álbum",
-	"uni.scanCode.fail": "Échec de la reconnaissance",
-	"uni.scanCode.flash.on": "Toque para encender la luz",
-	"uni.scanCode.flash.off": "Toque para apagar la luz",
-	"uni.startSoterAuthentication.authContent": "Reconocimiento de huellas dactilares",
-	"uni.picker.done": "OK",
-	"uni.picker.cancel": "Cancelar",
-	"uni.video.danmu": "Danmu",
-	"uni.video.volume": "Volumen",
-	"uni.button.feedback.title": "realimentación",
-	"uni.button.feedback.send": "enviar",
-	"uni.chooseLocation.search": "Encontrar",
-	"uni.chooseLocation.cancel": "Cancelar"
-};
-
-var fr = {
-	"uni.app.quit": "Appuyez à nouveau pour quitter l'application",
-	"uni.async.error": "La connexion a expiré, cliquez sur l'écran pour réessayer.",
-	"uni.showActionSheet.cancel": "Annuler",
-	"uni.showToast.unpaired": "Veuillez noter que showToast doit être associé à hideToast",
-	"uni.showLoading.unpaired": "Veuillez noter que showLoading doit être associé à hideLoading",
-	"uni.showModal.cancel": "Annuler",
-	"uni.showModal.confirm": "OK",
-	"uni.chooseImage.cancel": "Annuler",
-	"uni.chooseImage.sourceType.album": "Album",
-	"uni.chooseImage.sourceType.camera": "Caméra",
-	"uni.chooseVideo.cancel": "Annuler",
-	"uni.chooseVideo.sourceType.album": "Album",
-	"uni.chooseVideo.sourceType.camera": "Caméra",
-	"uni.chooseFile.notUserActivation": "La boîte de dialogue du sélecteur de fichier ne peut être affichée qu'avec une activation par l'utilisateur",
-	"uni.previewImage.cancel": "Annuler",
-	"uni.previewImage.button.save": "Guardar imagen",
-	"uni.previewImage.save.success": "Enregistré avec succès",
-	"uni.previewImage.save.fail": "Échec de la sauvegarde",
-	"uni.setClipboardData.success": "Contenu copié",
-	"uni.scanCode.title": "Code d’analyse",
-	"uni.scanCode.album": "Album",
-	"uni.scanCode.fail": "Fallo de reconocimiento",
-	"uni.scanCode.flash.on": "Appuyez pour activer l'éclairage",
-	"uni.scanCode.flash.off": "Appuyez pour désactiver l'éclairage",
-	"uni.startSoterAuthentication.authContent": "Reconnaissance de l'empreinte digitale",
-	"uni.picker.done": "OK",
-	"uni.picker.cancel": "Annuler",
-	"uni.video.danmu": "Danmu",
-	"uni.video.volume": "Le Volume",
-	"uni.button.feedback.title": "retour d'information",
-	"uni.button.feedback.send": "envoyer",
-	"uni.chooseLocation.search": "Trouve",
-	"uni.chooseLocation.cancel": "Annuler"
-};
-
-var zhHans = {
-	"uni.app.quit": "再按一次退出应用",
-	"uni.async.error": "连接服务器超时，点击屏幕重试",
-	"uni.showActionSheet.cancel": "取消",
-	"uni.showToast.unpaired": "请注意 showToast 与 hideToast 必须配对使用",
-	"uni.showLoading.unpaired": "请注意 showLoading 与 hideLoading 必须配对使用",
-	"uni.showModal.cancel": "取消",
-	"uni.showModal.confirm": "确定",
-	"uni.chooseImage.cancel": "取消",
-	"uni.chooseImage.sourceType.album": "从相册选择",
-	"uni.chooseImage.sourceType.camera": "拍摄",
-	"uni.chooseVideo.cancel": "取消",
-	"uni.chooseVideo.sourceType.album": "从相册选择",
-	"uni.chooseVideo.sourceType.camera": "拍摄",
-	"uni.chooseFile.notUserActivation": "文件选择器对话框只能在由用户激活时显示",
-	"uni.previewImage.cancel": "取消",
-	"uni.previewImage.button.save": "保存图像",
-	"uni.previewImage.save.success": "保存图像到相册成功",
-	"uni.previewImage.save.fail": "保存图像到相册失败",
-	"uni.setClipboardData.success": "内容已复制",
-	"uni.scanCode.title": "扫码",
-	"uni.scanCode.album": "相册",
-	"uni.scanCode.fail": "识别失败",
-	"uni.scanCode.flash.on": "轻触照亮",
-	"uni.scanCode.flash.off": "轻触关闭",
-	"uni.startSoterAuthentication.authContent": "指纹识别中...",
-	"uni.picker.done": "完成",
-	"uni.picker.cancel": "取消",
-	"uni.video.danmu": "弹幕",
-	"uni.video.volume": "音量",
-	"uni.button.feedback.title": "问题反馈",
-	"uni.button.feedback.send": "发送",
-	"uni.chooseLocation.search": "搜索地点",
-	"uni.chooseLocation.cancel": "取消"
-};
-
-var zhHant = {
-	"uni.app.quit": "再按一次退出應用",
-	"uni.async.error": "連接服務器超時，點擊屏幕重試",
-	"uni.showActionSheet.cancel": "取消",
-	"uni.showToast.unpaired": "請注意 showToast 與 hideToast 必須配對使用",
-	"uni.showLoading.unpaired": "請注意 showLoading 與 hideLoading 必須配對使用",
-	"uni.showModal.cancel": "取消",
-	"uni.showModal.confirm": "確定",
-	"uni.chooseImage.cancel": "取消",
-	"uni.chooseImage.sourceType.album": "從相冊選擇",
-	"uni.chooseImage.sourceType.camera": "拍攝",
-	"uni.chooseVideo.cancel": "取消",
-	"uni.chooseVideo.sourceType.album": "從相冊選擇",
-	"uni.chooseVideo.sourceType.camera": "拍攝",
-	"uni.chooseFile.notUserActivation": "文件選擇器對話框只能在由用戶激活時顯示",
-	"uni.previewImage.cancel": "取消",
-	"uni.previewImage.button.save": "保存圖像",
-	"uni.previewImage.save.success": "保存圖像到相冊成功",
-	"uni.previewImage.save.fail": "保存圖像到相冊失敗",
-	"uni.setClipboardData.success": "內容已復制",
-	"uni.scanCode.title": "掃碼",
-	"uni.scanCode.album": "相冊",
-	"uni.scanCode.fail": "識別失敗",
-	"uni.scanCode.flash.on": "輕觸照亮",
-	"uni.scanCode.flash.off": "輕觸關閉",
-	"uni.startSoterAuthentication.authContent": "指紋識別中...",
-	"uni.picker.done": "完成",
-	"uni.picker.cancel": "取消",
-	"uni.video.danmu": "彈幕",
-	"uni.video.volume": "音量",
-	"uni.button.feedback.title": "問題反饋",
-	"uni.button.feedback.send": "發送",
-	"uni.chooseLocation.search": "搜索地點",
-	"uni.chooseLocation.cancel": "取消"
-};
-
-const messages = {};
-
-{
-  Object.assign(messages, {
-    en,
-    es,
-    fr,
-    'zh-Hans': zhHans,
-    'zh-Hant': zhHant
-  });
-}
-
-let locale;
-
-{
-  if (typeof weex === 'object') {
-    locale = weex.requireModule('plus').getLanguage();
-  } else {
-    locale = '';
-  }
-}
-
-function initI18nMessages () {
-  if (!isEnableLocale()) {
-    return
-  }
-  const localeKeys = Object.keys(__uniConfig.locales);
-  if (localeKeys.length) {
-    localeKeys.forEach((locale) => {
-      const curMessages = messages[locale];
-      const userMessages = __uniConfig.locales[locale];
-      if (curMessages) {
-        Object.assign(curMessages, userMessages);
-      } else {
-        messages[locale] = userMessages;
-      }
-    });
-  }
-}
-
-initI18nMessages();
-
-const i18n = initVueI18n(
-  locale,
-   messages 
-);
-const t = i18n.t;
-const i18nMixin = (i18n.mixin = {
-  beforeCreate () {
-    const unwatch = i18n.i18n.watchLocale(() => {
-      this.$forceUpdate();
-    });
-    this.$once('hook:beforeDestroy', function () {
-      unwatch();
-    });
-  },
-  methods: {
-    $$t (key, values) {
-      return t(key, values)
-    }
-  }
-});
-const setLocale$1 = i18n.setLocale;
-const getLocale$1 = i18n.getLocale;
-
-function initAppLocale (Vue, appVm, locale) {
-  const state = Vue.observable({
-    locale: locale || i18n.getLocale()
-  });
-  const localeWatchers = [];
-  appVm.$watchLocale = fn => {
-    localeWatchers.push(fn);
-  };
-  Object.defineProperty(appVm, '$locale', {
-    get () {
-      return state.locale
-    },
-    set (v) {
-      state.locale = v;
-      localeWatchers.forEach(watch => watch(v));
-    }
-  });
-}
-
-function isEnableLocale () {
-  return typeof __uniConfig !== 'undefined' && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
-}
-
-// export function initI18n() {
-//   const localeKeys = Object.keys(__uniConfig.locales || {})
-//   if (localeKeys.length) {
-//     localeKeys.forEach((locale) =>
-//       i18n.add(locale, __uniConfig.locales[locale])
-//     )
-//   }
-// }
 
 class EventChannel {
   constructor (id, events) {
@@ -1766,91 +1965,12 @@ function parseBaseApp (vm, {
     });
   }
 
-  initAppLocale(Vue, vm, wx.getSystemInfoSync().language || 'zh-Hans');
+  initAppLocale(Vue, vm, normalizeLocale(wx.getSystemInfoSync().language) || LOCALE_EN);
 
   initHooks(appOptions, hooks);
+  initUnknownHooks(appOptions, vm.$options);
 
   return appOptions
-}
-
-const mocks = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__'];
-
-function findVmByVueId (vm, vuePid) {
-  const $children = vm.$children;
-  // 优先查找直属(反向查找:https://github.com/dcloudio/uni-app/issues/1200)
-  for (let i = $children.length - 1; i >= 0; i--) {
-    const childVm = $children[i];
-    if (childVm.$scope._$vueId === vuePid) {
-      return childVm
-    }
-  }
-  // 反向递归查找
-  let parentVm;
-  for (let i = $children.length - 1; i >= 0; i--) {
-    parentVm = findVmByVueId($children[i], vuePid);
-    if (parentVm) {
-      return parentVm
-    }
-  }
-}
-
-function initBehavior (options) {
-  return Behavior(options)
-}
-
-function isPage () {
-  return !!this.route
-}
-
-function initRelation (detail) {
-  this.triggerEvent('__l', detail);
-}
-
-function selectAllComponents (mpInstance, selector, $refs) {
-  const components = mpInstance.selectAllComponents(selector);
-  components.forEach(component => {
-    const ref = component.dataset.ref;
-    $refs[ref] = component.$vm || component;
-  });
-}
-
-function initRefs (vm) {
-  const mpInstance = vm.$scope;
-  Object.defineProperty(vm, '$refs', {
-    get () {
-      const $refs = {};
-      selectAllComponents(mpInstance, '.vue-ref', $refs);
-      // TODO 暂不考虑 for 中的 scoped
-      const forComponents = mpInstance.selectAllComponents('.vue-ref-in-for');
-      forComponents.forEach(component => {
-        const ref = component.dataset.ref;
-        if (!$refs[ref]) {
-          $refs[ref] = [];
-        }
-        $refs[ref].push(component.$vm || component);
-      });
-      return $refs
-    }
-  });
-}
-
-function handleLink (event) {
-  const {
-    vuePid,
-    vueOptions
-  } = event.detail || event.value; // detail 是微信,value 是百度(dipatch)
-
-  let parentVm;
-
-  if (vuePid) {
-    parentVm = findVmByVueId(this.$vm, vuePid);
-  }
-
-  if (!parentVm) {
-    parentVm = this.$vm;
-  }
-
-  vueOptions.parent = parentVm;
 }
 
 function parseApp (vm) {
@@ -1923,11 +2043,12 @@ function stringifyQuery (obj, encodeStr = encode) {
 function parseBaseComponent (vueComponentOptions, {
   isPage,
   initRelation
-} = {}) {
+} = {}, needVueOptions) {
   const [VueComponent, vueOptions] = initVueComponent(Vue, vueComponentOptions);
 
   const options = {
     multipleSlots: true,
+    // styleIsolation: 'apply-shared',
     addGlobalClass: true,
     ...(vueOptions.options || {})
   };
@@ -2006,26 +2127,29 @@ function parseBaseComponent (vueComponentOptions, {
     });
   }
 
+  if (needVueOptions) {
+    return [componentOptions, vueOptions, VueComponent]
+  }
   if (isPage) {
     return componentOptions
   }
   return [componentOptions, VueComponent]
 }
 
-function parseComponent (vueComponentOptions) {
+function parseComponent (vueComponentOptions, needVueOptions) {
   return parseBaseComponent(vueComponentOptions, {
     isPage,
     initRelation
-  })
+  }, needVueOptions)
 }
 
-function parseComponent$1 (vueComponentOptions) {
-  const componentOptions = parseComponent(vueComponentOptions);
+function parseComponent$1 (vueComponentOptions, needVueOptions) {
+  const [componentOptions, vueOptions] = parseComponent(vueComponentOptions, true);
 
   componentOptions.methods.$getAppWebview = function () {
     return plus.webview.getWebviewById(`${this.__wxWebviewId__}`)
   };
-  return componentOptions
+  return needVueOptions ? [componentOptions, vueOptions] : componentOptions
 }
 
 const hooks$2 = [
@@ -2036,13 +2160,10 @@ const hooks$2 = [
 
 hooks$2.push(...PAGE_EVENT_HOOKS);
 
-function parseBasePage (vuePageOptions, {
-  isPage,
-  initRelation
-}) {
-  const pageOptions = parseComponent$1(vuePageOptions);
+function parseBasePage (vuePageOptions) {
+  const [pageOptions, vueOptions] = parseComponent$1(vuePageOptions, true);
 
-  initHooks(pageOptions.methods, hooks$2, vuePageOptions);
+  initHooks(pageOptions.methods, hooks$2, vueOptions);
 
   pageOptions.methods.onLoad = function (query) {
     this.options = query;
@@ -2054,15 +2175,15 @@ function parseBasePage (vuePageOptions, {
     this.$vm.$mp.query = query; // 兼容 mpvue
     this.$vm.__call_hook('onLoad', query);
   };
+  {
+    initUnknownHooks(pageOptions.methods, vuePageOptions, ['onReady']);
+  }
 
   return pageOptions
 }
 
 function parsePage (vuePageOptions) {
-  return parseBasePage(vuePageOptions, {
-    isPage,
-    initRelation
-  })
+  return parseBasePage(vuePageOptions)
 }
 
 const hooks$3 = [
@@ -2177,9 +2298,6 @@ if (typeof Proxy !== 'undefined' && "app-plus" !== 'app-plus') {
       }
       if (eventApi[name]) {
         return eventApi[name]
-      }
-      if (!hasOwn(wx, name) && !hasOwn(protocols, name)) {
-        return
       }
       return promisify(name, wrapper(name, wx[name]))
     },

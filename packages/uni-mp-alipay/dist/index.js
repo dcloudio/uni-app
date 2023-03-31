@@ -1,5 +1,5 @@
-import Vue from 'vue';
 import { initVueI18n } from '@dcloudio/uni-i18n';
+import Vue from 'vue';
 
 let realAtob;
 
@@ -88,6 +88,10 @@ function isFn (fn) {
 
 function isStr (str) {
   return typeof str === 'string'
+}
+
+function isObject (obj) {
+  return obj !== null && typeof obj === 'object'
 }
 
 function isPlainObject (obj) {
@@ -314,7 +318,7 @@ const promiseInterceptor = {
 };
 
 const SYNC_API_RE =
-  /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback/;
+  /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback|getWindowInfo|getDeviceInfo|getAppBaseInfo|getSystemSetting|getAppAuthorizeSetting|initUTS|requireUTS|registerUTS/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -322,7 +326,7 @@ const CONTEXT_API_RE = /^create|Manager$/;
 const CONTEXT_API_RE_EXC = ['createBLEConnection'];
 
 // 同步例外情况
-const ASYNC_API = ['createBLEConnection'];
+const ASYNC_API = ['createBLEConnection', 'createPushMessage'];
 
 const CALLBACK_API_RE = /^on|^off/;
 
@@ -369,7 +373,7 @@ if (!Promise.prototype.finally) {
 }
 
 function promisify (name, api) {
-  if (!shouldPromise(name)) {
+  if (!shouldPromise(name) || !isFn(api)) {
     return api
   }
   return function promiseApi (options = {}, ...params) {
@@ -427,19 +431,148 @@ function upx2px (number, newDeviceWidth) {
   return number < 0 ? -result : result
 }
 
-function getLocale () {
-  // 优先使用 $locale
-  const app = getApp({
-    allowDefault: true
-  });
-  if (app && app.$vm) {
-    return app.$vm.$locale
-  }
-  return my.getSystemInfoSync().language || 'zh-Hans'
+const LOCALE_ZH_HANS = 'zh-Hans';
+const LOCALE_ZH_HANT = 'zh-Hant';
+const LOCALE_EN = 'en';
+const LOCALE_FR = 'fr';
+const LOCALE_ES = 'es';
+
+const messages = {};
+
+let locale;
+
+{
+  locale = normalizeLocale(my.getSystemInfoSync().language) || LOCALE_EN;
 }
 
-function setLocale (locale) {
-  const app = getApp();
+function initI18nMessages () {
+  if (!isEnableLocale()) {
+    return
+  }
+  const localeKeys = Object.keys(__uniConfig.locales);
+  if (localeKeys.length) {
+    localeKeys.forEach((locale) => {
+      const curMessages = messages[locale];
+      const userMessages = __uniConfig.locales[locale];
+      if (curMessages) {
+        Object.assign(curMessages, userMessages);
+      } else {
+        messages[locale] = userMessages;
+      }
+    });
+  }
+}
+
+initI18nMessages();
+
+const i18n = initVueI18n(
+  locale,
+   {}
+);
+const t = i18n.t;
+const i18nMixin = (i18n.mixin = {
+  beforeCreate () {
+    const unwatch = i18n.i18n.watchLocale(() => {
+      this.$forceUpdate();
+    });
+    this.$once('hook:beforeDestroy', function () {
+      unwatch();
+    });
+  },
+  methods: {
+    $$t (key, values) {
+      return t(key, values)
+    }
+  }
+});
+const setLocale = i18n.setLocale;
+const getLocale = i18n.getLocale;
+
+function initAppLocale (Vue, appVm, locale) {
+  const state = Vue.observable({
+    locale: locale || i18n.getLocale()
+  });
+  const localeWatchers = [];
+  appVm.$watchLocale = fn => {
+    localeWatchers.push(fn);
+  };
+  Object.defineProperty(appVm, '$locale', {
+    get () {
+      return state.locale
+    },
+    set (v) {
+      state.locale = v;
+      localeWatchers.forEach(watch => watch(v));
+    }
+  });
+}
+
+function isEnableLocale () {
+  return typeof __uniConfig !== 'undefined' && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
+}
+
+function include (str, parts) {
+  return !!parts.find((part) => str.indexOf(part) !== -1)
+}
+
+function startsWith (str, parts) {
+  return parts.find((part) => str.indexOf(part) === 0)
+}
+
+function normalizeLocale (locale, messages) {
+  if (!locale) {
+    return
+  }
+  locale = locale.trim().replace(/_/g, '-');
+  if (messages && messages[locale]) {
+    return locale
+  }
+  locale = locale.toLowerCase();
+  if (locale === 'chinese') {
+    // 支付宝
+    return LOCALE_ZH_HANS
+  }
+  if (locale.indexOf('zh') === 0) {
+    if (locale.indexOf('-hans') > -1) {
+      return LOCALE_ZH_HANS
+    }
+    if (locale.indexOf('-hant') > -1) {
+      return LOCALE_ZH_HANT
+    }
+    if (include(locale, ['-tw', '-hk', '-mo', '-cht'])) {
+      return LOCALE_ZH_HANT
+    }
+    return LOCALE_ZH_HANS
+  }
+  const lang = startsWith(locale, [LOCALE_EN, LOCALE_FR, LOCALE_ES]);
+  if (lang) {
+    return lang
+  }
+}
+// export function initI18n() {
+//   const localeKeys = Object.keys(__uniConfig.locales || {})
+//   if (localeKeys.length) {
+//     localeKeys.forEach((locale) =>
+//       i18n.add(locale, __uniConfig.locales[locale])
+//     )
+//   }
+// }
+
+function getLocale$1 () {
+  // 优先使用 $locale
+  if (isFn(getApp)) {
+    const app = getApp({
+      allowDefault: true
+    });
+    if (app && app.$vm) {
+      return app.$vm.$locale
+    }
+  }
+  return normalizeLocale(my.getSystemInfoSync().language) || LOCALE_EN
+}
+
+function setLocale$1 (locale) {
+  const app = isFn(getApp) ? getApp() : false;
   if (!app) {
     return false
   }
@@ -462,7 +595,7 @@ function onLocaleChange (fn) {
 }
 
 if (typeof global !== 'undefined') {
-  global.getLocale = getLocale;
+  global.getLocale = getLocale$1;
 }
 
 const interceptors = {
@@ -472,8 +605,8 @@ const interceptors = {
 var baseApi = /*#__PURE__*/Object.freeze({
   __proto__: null,
   upx2px: upx2px,
-  getLocale: getLocale,
-  setLocale: setLocale,
+  getLocale: getLocale$1,
+  setLocale: setLocale$1,
   onLocaleChange: onLocaleChange,
   addInterceptor: addInterceptor,
   removeInterceptor: removeInterceptor,
@@ -636,6 +769,142 @@ function removeStorageSync (key) {
   })
 }
 
+function addSafeAreaInsets (result) {
+  if (result.safeArea) {
+    const safeArea = result.safeArea;
+    result.safeAreaInsets = {
+      top: safeArea.top,
+      left: safeArea.left,
+      right: result.windowWidth - safeArea.right,
+      bottom: result.screenHeight - safeArea.bottom
+    };
+  }
+}
+
+function populateParameters (result) {
+  const {
+    brand = '', model = '', system = '',
+    language = '', theme, version,
+    platform, fontSizeSetting,
+    SDKVersion, pixelRatio, deviceOrientation
+  } = result;
+  // const isQuickApp = "mp-alipay".indexOf('quickapp-webview') !== -1
+
+  const extraParam = {};
+
+  // osName osVersion
+  let osName = '';
+  let osVersion = '';
+  {
+    my.canIUse('isIDE') && my.isIDE && (extraParam.platform = 'devtools');
+    osName = platform;
+    osVersion = system;
+  }
+  let hostVersion = version;
+
+  // deviceType
+  const deviceType = getGetDeviceType(result, model);
+
+  // deviceModel
+  const deviceBrand = getDeviceBrand(brand);
+
+  // hostName
+  const _hostName = getHostName(result);
+
+  // deviceOrientation
+  let _deviceOrientation = deviceOrientation; // 仅 微信 百度 支持
+
+  // devicePixelRatio
+  let _devicePixelRatio = pixelRatio;
+
+  // SDKVersion
+  let _SDKVersion = SDKVersion;
+  { _SDKVersion = my.SDKVersion; }
+
+  // hostLanguage
+  const hostLanguage = language.replace(/_/g, '-');
+
+  // wx.getAccountInfoSync
+
+  const parameters = {
+    appId: process.env.UNI_APP_ID,
+    appName: process.env.UNI_APP_NAME,
+    appVersion: process.env.UNI_APP_VERSION_NAME,
+    appVersionCode: process.env.UNI_APP_VERSION_CODE,
+    appLanguage: getAppLanguage(hostLanguage),
+    uniCompileVersion: process.env.UNI_COMPILER_VERSION,
+    uniRuntimeVersion: process.env.UNI_COMPILER_VERSION,
+    uniPlatform: process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM,
+    deviceBrand,
+    deviceModel: model,
+    deviceType,
+    devicePixelRatio: _devicePixelRatio,
+    deviceOrientation: _deviceOrientation,
+    osName: osName.toLocaleLowerCase(),
+    osVersion,
+    hostTheme: theme,
+    hostVersion,
+    hostLanguage,
+    hostName: _hostName,
+    hostSDKVersion: _SDKVersion,
+    hostFontSizeSetting: fontSizeSetting,
+    windowTop: 0,
+    windowBottom: 0,
+    // TODO
+    osLanguage: undefined,
+    osTheme: undefined,
+    ua: undefined,
+    hostPackageName: undefined,
+    browserName: undefined,
+    browserVersion: undefined
+  };
+
+  Object.assign(result, parameters, extraParam);
+}
+
+function getGetDeviceType (result, model) {
+  let deviceType = result.deviceType || 'phone';
+  {
+    const deviceTypeMaps = {
+      ipad: 'pad',
+      windows: 'pc',
+      mac: 'pc'
+    };
+    const deviceTypeMapsKeys = Object.keys(deviceTypeMaps);
+    const _model = model.toLocaleLowerCase();
+    for (let index = 0; index < deviceTypeMapsKeys.length; index++) {
+      const _m = deviceTypeMapsKeys[index];
+      if (_model.indexOf(_m) !== -1) {
+        deviceType = deviceTypeMaps[_m];
+        break
+      }
+    }
+  }
+  return deviceType
+}
+
+function getDeviceBrand (brand) {
+  let deviceBrand = brand;
+  if (deviceBrand) {
+    deviceBrand = brand.toLocaleLowerCase();
+  }
+  return deviceBrand
+}
+
+function getAppLanguage (defaultLanguage) {
+  return getLocale$1
+    ? getLocale$1()
+    : defaultLanguage
+}
+
+function getHostName (result) {
+  const _platform =  "mp-alipay".split('-')[1];
+  let _hostName = result.hostName || _platform; // mp-jd
+  _hostName = result.app;
+
+  return _hostName
+}
+
 const UUID_KEY = '__DC_STAT_UUID';
 let deviceId;
 function addUuid (result) {
@@ -648,18 +917,6 @@ function addUuid (result) {
     });
   }
   result.deviceId = deviceId;
-}
-
-function addSafeAreaInsets (result) {
-  if (result.safeArea) {
-    const safeArea = result.safeArea;
-    result.safeAreaInsets = {
-      top: safeArea.top,
-      left: safeArea.left,
-      right: result.windowWidth - safeArea.right,
-      bottom: result.windowHeight - safeArea.bottom
-    };
-  }
 }
 
 function normalizePlatform (result) {
@@ -675,6 +932,7 @@ var getSystemInfo = {
     addUuid(result);
     addSafeAreaInsets(result);
     normalizePlatform(result);
+    populateParameters(result);
   }
 };
 
@@ -849,7 +1107,6 @@ const protocols = { // 需要做转换的 API 列表
     const args = {
       title: 'content',
       icon: 'type',
-      duration: false,
       image: false,
       mask: false
     };
@@ -876,8 +1133,7 @@ const protocols = { // 需要做转换的 API 列表
   },
   showLoading: {
     args: {
-      title: 'content',
-      mask: false
+      title: 'content'
     }
   },
   uploadFile: {
@@ -1138,12 +1394,6 @@ const protocols = { // 需要做转换的 API 列表
   hideHomeButton: {
     name: 'hideBackHome'
   },
-  saveImageToPhotosAlbum: {
-    name: 'saveImage',
-    args: {
-      filePath: 'url'
-    }
-  },
   saveVideoToPhotosAlbum: {
     args: {
       filePath: 'src'
@@ -1163,6 +1413,16 @@ const protocols = { // 需要做转换的 API 列表
     }
   }
 };
+
+// 钉钉小程序处理
+if (!my.canIUse('saveImageToPhotosAlbum')) {
+  protocols.saveImageToPhotosAlbum = {
+    name: 'saveImage',
+    args: {
+      filePath: 'url'
+    }
+  };
+}
 
 const CALLBACKS = ['success', 'fail', 'cancel', 'complete'];
 
@@ -1471,6 +1731,7 @@ function getApiCallbacks (params) {
 
 let cid;
 let cidErrMsg;
+let enabled;
 
 function normalizePushMessage (message) {
   try {
@@ -1482,17 +1743,25 @@ function normalizePushMessage (message) {
 function invokePushCallback (
   args
 ) {
-  if (args.type === 'clientId') {
+  if (args.type === 'enabled') {
+    enabled = true;
+  } else if (args.type === 'clientId') {
     cid = args.cid;
     cidErrMsg = args.errMsg;
     invokeGetPushCidCallbacks(cid, args.errMsg);
   } else if (args.type === 'pushMsg') {
-    onPushMessageCallbacks.forEach((callback) => {
-      callback({
-        type: 'receive',
-        data: normalizePushMessage(args.message)
-      });
-    });
+    const message = {
+      type: 'receive',
+      data: normalizePushMessage(args.message)
+    };
+    for (let i = 0; i < onPushMessageCallbacks.length; i++) {
+      const callback = onPushMessageCallbacks[i];
+      callback(message);
+      // 该消息已被阻止
+      if (message.stopped) {
+        break
+      }
+    }
   } else if (args.type === 'click') {
     onPushMessageCallbacks.forEach((callback) => {
       callback({
@@ -1512,7 +1781,7 @@ function invokeGetPushCidCallbacks (cid, errMsg) {
   getPushCidCallbacks.length = 0;
 }
 
-function getPushCid (args) {
+function getPushClientId (args) {
   if (!isPlainObject(args)) {
     args = {};
   }
@@ -1524,25 +1793,33 @@ function getPushCid (args) {
   const hasSuccess = isFn(success);
   const hasFail = isFn(fail);
   const hasComplete = isFn(complete);
-  getPushCidCallbacks.push((cid, errMsg) => {
-    let res;
-    if (cid) {
-      res = {
-        errMsg: 'getPushCid:ok',
-        cid
-      };
-      hasSuccess && success(res);
-    } else {
-      res = {
-        errMsg: 'getPushCid:fail' + (errMsg ? ' ' + errMsg : '')
-      };
-      hasFail && fail(res);
+
+  Promise.resolve().then(() => {
+    if (typeof enabled === 'undefined') {
+      enabled = false;
+      cid = '';
+      cidErrMsg = 'uniPush is not enabled';
     }
-    hasComplete && complete(res);
+    getPushCidCallbacks.push((cid, errMsg) => {
+      let res;
+      if (cid) {
+        res = {
+          errMsg: 'getPushClientId:ok',
+          cid
+        };
+        hasSuccess && success(res);
+      } else {
+        res = {
+          errMsg: 'getPushClientId:fail' + (errMsg ? ' ' + errMsg : '')
+        };
+        hasFail && fail(res);
+      }
+      hasComplete && complete(res);
+    });
+    if (typeof cid !== 'undefined') {
+      invokeGetPushCidCallbacks(cid, cidErrMsg);
+    }
   });
-  if (typeof cid !== 'undefined') {
-    Promise.resolve().then(() => invokeGetPushCidCallbacks(cid, cidErrMsg));
-  }
 }
 
 const onPushMessageCallbacks = [];
@@ -1564,6 +1841,7 @@ const offPushMessage = (fn) => {
   }
 };
 
+let onKeyboardHeightChangeCallback;
 function startGyroscope (params) {
   if (hasOwn(params, 'interval')) {
     console.warn('支付宝小程序 startGyroscope暂不支持interval');
@@ -1651,783 +1929,37 @@ function createIntersectionObserver (component, options) {
   return my.createIntersectionObserver(options)
 }
 
+function onKeyboardHeightChange (callback) {
+  // 与微信小程序一致仅保留最后一次监听
+  if (onKeyboardHeightChangeCallback) {
+    $off('uni:keyboardHeightChange', onKeyboardHeightChangeCallback);
+  }
+  onKeyboardHeightChangeCallback = callback;
+  $on('uni:keyboardHeightChange', onKeyboardHeightChangeCallback);
+}
+
+function offKeyboardHeightChange () {
+  // 与微信小程序一致移除最后一次监听
+  $off('uni:keyboardHeightChange', onKeyboardHeightChangeCallback);
+  onKeyboardHeightChangeCallback = null;
+}
+
 var api = /*#__PURE__*/Object.freeze({
   __proto__: null,
   startGyroscope: startGyroscope,
   createSelectorQuery: createSelectorQuery,
   createIntersectionObserver: createIntersectionObserver,
+  onKeyboardHeightChange: onKeyboardHeightChange,
+  offKeyboardHeightChange: offKeyboardHeightChange,
   createMediaQueryObserver: createMediaQueryObserver,
   setStorageSync: setStorageSync,
   getStorageSync: getStorageSync,
   removeStorageSync: removeStorageSync,
-  getPushCid: getPushCid,
+  getPushClientId: getPushClientId,
   onPushMessage: onPushMessage,
   offPushMessage: offPushMessage,
   invokePushCallback: invokePushCallback
 });
-
-const PAGE_EVENT_HOOKS = [
-  'onPullDownRefresh',
-  'onReachBottom',
-  'onAddToFavorites',
-  'onShareTimeline',
-  'onShareAppMessage',
-  'onPageScroll',
-  'onResize',
-  'onTabItemTap'
-];
-
-function initMocks (vm, mocks) {
-  const mpInstance = vm.$mp[vm.mpType];
-  mocks.forEach(mock => {
-    if (hasOwn(mpInstance, mock)) {
-      vm[mock] = mpInstance[mock];
-    }
-  });
-}
-
-function hasHook (hook, vueOptions) {
-  if (!vueOptions) {
-    return true
-  }
-
-  if (Vue.options && Array.isArray(Vue.options[hook])) {
-    return true
-  }
-
-  vueOptions = vueOptions.default || vueOptions;
-
-  if (isFn(vueOptions)) {
-    if (isFn(vueOptions.extendOptions[hook])) {
-      return true
-    }
-    if (vueOptions.super &&
-      vueOptions.super.options &&
-      Array.isArray(vueOptions.super.options[hook])) {
-      return true
-    }
-    return false
-  }
-
-  if (isFn(vueOptions[hook])) {
-    return true
-  }
-  const mixins = vueOptions.mixins;
-  if (Array.isArray(mixins)) {
-    return !!mixins.find(mixin => hasHook(hook, mixin))
-  }
-}
-
-function initHooks (mpOptions, hooks, vueOptions) {
-  hooks.forEach(hook => {
-    if (hasHook(hook, vueOptions)) {
-      mpOptions[hook] = function (args) {
-        return this.$vm && this.$vm.__call_hook(hook, args)
-      };
-    }
-  });
-}
-
-function initVueComponent (Vue, vueOptions) {
-  vueOptions = vueOptions.default || vueOptions;
-  let VueComponent;
-  if (isFn(vueOptions)) {
-    VueComponent = vueOptions;
-  } else {
-    VueComponent = Vue.extend(vueOptions);
-  }
-  vueOptions = VueComponent.options;
-  return [VueComponent, vueOptions]
-}
-
-function initVueIds (vueIds, mpInstance) {
-  vueIds = (vueIds || '').split(',');
-  const len = vueIds.length;
-
-  if (len === 1) {
-    mpInstance._$vueId = vueIds[0];
-  } else if (len === 2) {
-    mpInstance._$vueId = vueIds[0];
-    mpInstance._$vuePid = vueIds[1];
-  }
-}
-
-function initData (vueOptions, context) {
-  let data = vueOptions.data || {};
-  const methods = vueOptions.methods || {};
-
-  if (typeof data === 'function') {
-    try {
-      data = data.call(context); // 支持 Vue.prototype 上挂的数据
-    } catch (e) {
-      if (process.env.VUE_APP_DEBUG) {
-        console.warn('根据 Vue 的 data 函数初始化小程序 data 失败，请尽量确保 data 函数中不访问 vm 对象，否则可能影响首次数据渲染速度。', data);
-      }
-    }
-  } else {
-    try {
-      // 对 data 格式化
-      data = JSON.parse(JSON.stringify(data));
-    } catch (e) {}
-  }
-
-  if (!isPlainObject(data)) {
-    data = {};
-  }
-
-  Object.keys(methods).forEach(methodName => {
-    if (context.__lifecycle_hooks__.indexOf(methodName) === -1 && !hasOwn(data, methodName)) {
-      data[methodName] = methods[methodName];
-    }
-  });
-
-  return data
-}
-
-const PROP_TYPES = [String, Number, Boolean, Object, Array, null];
-
-function createObserver (name) {
-  return function observer (newVal, oldVal) {
-    if (this.$vm) {
-      this.$vm[name] = newVal; // 为了触发其他非 render watcher
-    }
-  }
-}
-
-function initBehaviors (vueOptions, initBehavior) {
-  const vueBehaviors = vueOptions.behaviors;
-  const vueExtends = vueOptions.extends;
-  const vueMixins = vueOptions.mixins;
-
-  let vueProps = vueOptions.props;
-
-  if (!vueProps) {
-    vueOptions.props = vueProps = [];
-  }
-
-  const behaviors = [];
-  if (Array.isArray(vueBehaviors)) {
-    vueBehaviors.forEach(behavior => {
-      behaviors.push(behavior.replace('uni://', `${"my"}://`));
-      if (behavior === 'uni://form-field') {
-        if (Array.isArray(vueProps)) {
-          vueProps.push('name');
-          vueProps.push('value');
-        } else {
-          vueProps.name = {
-            type: String,
-            default: ''
-          };
-          vueProps.value = {
-            type: [String, Number, Boolean, Array, Object, Date],
-            default: ''
-          };
-        }
-      }
-    });
-  }
-  { // alipay 重复定义props会报错,下边的代码对于其他平台也没有意义，保险起见，仅对alipay做处理
-    return
-  }
-}
-
-function parsePropType (key, type, defaultValue, file) {
-  // [String]=>String
-  if (Array.isArray(type) && type.length === 1) {
-    return type[0]
-  }
-  return type
-}
-
-function initProperties (props, isBehavior = false, file = '') {
-  const properties = {};
-  if (!isBehavior) {
-    properties.vueId = {
-      type: String,
-      value: ''
-    };
-    // 用于字节跳动小程序模拟抽象节点
-    properties.generic = {
-      type: Object,
-      value: null
-    };
-    // scopedSlotsCompiler auto
-    properties.scopedSlotsCompiler = {
-      type: String,
-      value: ''
-    };
-    properties.vueSlots = { // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
-      type: null,
-      value: [],
-      observer: function (newVal, oldVal) {
-        const $slots = Object.create(null);
-        newVal.forEach(slotName => {
-          $slots[slotName] = true;
-        });
-        this.setData({
-          $slots
-        });
-      }
-    };
-  }
-  if (Array.isArray(props)) { // ['title']
-    props.forEach(key => {
-      properties[key] = {
-        type: null,
-        observer: createObserver(key)
-      };
-    });
-  } else if (isPlainObject(props)) { // {title:{type:String,default:''},content:String}
-    Object.keys(props).forEach(key => {
-      const opts = props[key];
-      if (isPlainObject(opts)) { // title:{type:String,default:''}
-        let value = opts.default;
-        if (isFn(value)) {
-          value = value();
-        }
-
-        opts.type = parsePropType(key, opts.type);
-
-        properties[key] = {
-          type: PROP_TYPES.indexOf(opts.type) !== -1 ? opts.type : null,
-          value,
-          observer: createObserver(key)
-        };
-      } else { // content:String
-        const type = parsePropType(key, opts);
-        properties[key] = {
-          type: PROP_TYPES.indexOf(type) !== -1 ? type : null,
-          observer: createObserver(key)
-        };
-      }
-    });
-  }
-  return properties
-}
-
-function wrapper$1 (event) {
-  // TODO 又得兼容 mpvue 的 mp 对象
-  try {
-    event.mp = JSON.parse(JSON.stringify(event));
-  } catch (e) {}
-
-  event.stopPropagation = noop;
-  event.preventDefault = noop;
-
-  event.target = event.target || {};
-
-  if (!hasOwn(event, 'detail')) {
-    event.detail = {};
-  }
-
-  if (hasOwn(event, 'markerId')) {
-    event.detail = typeof event.detail === 'object' ? event.detail : {};
-    event.detail.markerId = event.markerId;
-  }
-
-  if (isPlainObject(event.detail)) {
-    event.target = Object.assign({}, event.target, event.detail);
-  }
-
-  return event
-}
-
-function getExtraValue (vm, dataPathsArray) {
-  let context = vm;
-  dataPathsArray.forEach(dataPathArray => {
-    const dataPath = dataPathArray[0];
-    const value = dataPathArray[2];
-    if (dataPath || typeof value !== 'undefined') { // ['','',index,'disable']
-      const propPath = dataPathArray[1];
-      const valuePath = dataPathArray[3];
-
-      let vFor;
-      if (Number.isInteger(dataPath)) {
-        vFor = dataPath;
-      } else if (!dataPath) {
-        vFor = context;
-      } else if (typeof dataPath === 'string' && dataPath) {
-        if (dataPath.indexOf('#s#') === 0) {
-          vFor = dataPath.substr(3);
-        } else {
-          vFor = vm.__get_value(dataPath, context);
-        }
-      }
-
-      if (Number.isInteger(vFor)) {
-        context = value;
-      } else if (!propPath) {
-        context = vFor[value];
-      } else {
-        if (Array.isArray(vFor)) {
-          context = vFor.find(vForItem => {
-            return vm.__get_value(propPath, vForItem) === value
-          });
-        } else if (isPlainObject(vFor)) {
-          context = Object.keys(vFor).find(vForKey => {
-            return vm.__get_value(propPath, vFor[vForKey]) === value
-          });
-        } else {
-          console.error('v-for 暂不支持循环数据：', vFor);
-        }
-      }
-
-      if (valuePath) {
-        context = vm.__get_value(valuePath, context);
-      }
-    }
-  });
-  return context
-}
-
-function processEventExtra (vm, extra, event) {
-  const extraObj = {};
-
-  if (Array.isArray(extra) && extra.length) {
-    /**
-     *[
-     *    ['data.items', 'data.id', item.data.id],
-     *    ['metas', 'id', meta.id]
-     *],
-     *[
-     *    ['data.items', 'data.id', item.data.id],
-     *    ['metas', 'id', meta.id]
-     *],
-     *'test'
-     */
-    extra.forEach((dataPath, index) => {
-      if (typeof dataPath === 'string') {
-        if (!dataPath) { // model,prop.sync
-          extraObj['$' + index] = vm;
-        } else {
-          if (dataPath === '$event') { // $event
-            extraObj['$' + index] = event;
-          } else if (dataPath === 'arguments') {
-            if (event.detail && event.detail.__args__) {
-              extraObj['$' + index] = event.detail.__args__;
-            } else {
-              extraObj['$' + index] = [event];
-            }
-          } else if (dataPath.indexOf('$event.') === 0) { // $event.target.value
-            extraObj['$' + index] = vm.__get_value(dataPath.replace('$event.', ''), event);
-          } else {
-            extraObj['$' + index] = vm.__get_value(dataPath);
-          }
-        }
-      } else {
-        extraObj['$' + index] = getExtraValue(vm, dataPath);
-      }
-    });
-  }
-
-  return extraObj
-}
-
-function getObjByArray (arr) {
-  const obj = {};
-  for (let i = 1; i < arr.length; i++) {
-    const element = arr[i];
-    obj[element[0]] = element[1];
-  }
-  return obj
-}
-
-function processEventArgs (vm, event, args = [], extra = [], isCustom, methodName) {
-  let isCustomMPEvent = false; // wxcomponent 组件，传递原始 event 对象
-  if (isCustom) { // 自定义事件
-    isCustomMPEvent = event.currentTarget &&
-      event.currentTarget.dataset &&
-      event.currentTarget.dataset.comType === 'wx';
-    if (!args.length) { // 无参数，直接传入 event 或 detail 数组
-      if (isCustomMPEvent) {
-        return [event]
-      }
-      return event.detail.__args__ || event.detail
-    }
-  }
-
-  const extraObj = processEventExtra(vm, extra, event);
-
-  const ret = [];
-  args.forEach(arg => {
-    if (arg === '$event') {
-      if (methodName === '__set_model' && !isCustom) { // input v-model value
-        ret.push(event.target.value);
-      } else {
-        if (isCustom && !isCustomMPEvent) {
-          ret.push(event.detail.__args__[0]);
-        } else { // wxcomponent 组件或内置组件
-          ret.push(event);
-        }
-      }
-    } else {
-      if (Array.isArray(arg) && arg[0] === 'o') {
-        ret.push(getObjByArray(arg));
-      } else if (typeof arg === 'string' && hasOwn(extraObj, arg)) {
-        ret.push(extraObj[arg]);
-      } else {
-        ret.push(arg);
-      }
-    }
-  });
-
-  return ret
-}
-
-const ONCE = '~';
-const CUSTOM = '^';
-
-function isMatchEventType (eventType, optType) {
-  return (eventType === optType) ||
-    (
-      optType === 'regionchange' &&
-      (
-        eventType === 'begin' ||
-        eventType === 'end'
-      )
-    )
-}
-
-function getContextVm (vm) {
-  let $parent = vm.$parent;
-  // 父组件是 scoped slots 或者其他自定义组件时继续查找
-  while ($parent && $parent.$parent && ($parent.$options.generic || $parent.$parent.$options.generic || $parent.$scope._$vuePid)) {
-    $parent = $parent.$parent;
-  }
-  return $parent && $parent.$parent
-}
-
-function handleEvent (event) {
-  event = wrapper$1(event);
-
-  // [['tap',[['handle',[1,2,a]],['handle1',[1,2,a]]]]]
-  const dataset = (event.currentTarget || event.target).dataset;
-  if (!dataset) {
-    return console.warn('事件信息不存在')
-  }
-  const eventOpts = dataset.eventOpts || dataset['event-opts']; // 支付宝 web-view 组件 dataset 非驼峰
-  if (!eventOpts) {
-    return console.warn('事件信息不存在')
-  }
-
-  // [['handle',[1,2,a]],['handle1',[1,2,a]]]
-  const eventType = event.type;
-
-  const ret = [];
-
-  eventOpts.forEach(eventOpt => {
-    let type = eventOpt[0];
-    const eventsArray = eventOpt[1];
-
-    const isCustom = type.charAt(0) === CUSTOM;
-    type = isCustom ? type.slice(1) : type;
-    const isOnce = type.charAt(0) === ONCE;
-    type = isOnce ? type.slice(1) : type;
-
-    if (eventsArray && isMatchEventType(eventType, type)) {
-      eventsArray.forEach(eventArray => {
-        const methodName = eventArray[0];
-        if (methodName) {
-          let handlerCtx = this.$vm;
-          if (handlerCtx.$options.generic) { // mp-weixin,mp-toutiao 抽象节点模拟 scoped slots
-            handlerCtx = getContextVm(handlerCtx) || handlerCtx;
-          }
-          if (methodName === '$emit') {
-            handlerCtx.$emit.apply(handlerCtx,
-              processEventArgs(
-                this.$vm,
-                event,
-                eventArray[1],
-                eventArray[2],
-                isCustom,
-                methodName
-              ));
-            return
-          }
-          const handler = handlerCtx[methodName];
-          if (!isFn(handler)) {
-            throw new Error(` _vm.${methodName} is not a function`)
-          }
-          if (isOnce) {
-            if (handler.once) {
-              return
-            }
-            handler.once = true;
-          }
-          let params = processEventArgs(
-            this.$vm,
-            event,
-            eventArray[1],
-            eventArray[2],
-            isCustom,
-            methodName
-          );
-          params = Array.isArray(params) ? params : [];
-          // 参数尾部增加原始事件对象用于复杂表达式内获取额外数据
-          if (/=\s*\S+\.eventParams\s*\|\|\s*\S+\[['"]event-params['"]\]/.test(handler.toString())) {
-            // eslint-disable-next-line no-sparse-arrays
-            params = params.concat([, , , , , , , , , , event]);
-          }
-          ret.push(handler.apply(handlerCtx, params));
-        }
-      });
-    }
-  });
-
-  if (
-    eventType === 'input' &&
-    ret.length === 1 &&
-    typeof ret[0] !== 'undefined'
-  ) {
-    return ret[0]
-  }
-}
-
-const messages = {};
-
-let locale;
-
-{
-  locale = my.getSystemInfoSync().language;
-}
-
-function initI18nMessages () {
-  if (!isEnableLocale()) {
-    return
-  }
-  const localeKeys = Object.keys(__uniConfig.locales);
-  if (localeKeys.length) {
-    localeKeys.forEach((locale) => {
-      const curMessages = messages[locale];
-      const userMessages = __uniConfig.locales[locale];
-      if (curMessages) {
-        Object.assign(curMessages, userMessages);
-      } else {
-        messages[locale] = userMessages;
-      }
-    });
-  }
-}
-
-initI18nMessages();
-
-const i18n = initVueI18n(
-  locale,
-   {}
-);
-const t = i18n.t;
-const i18nMixin = (i18n.mixin = {
-  beforeCreate () {
-    const unwatch = i18n.i18n.watchLocale(() => {
-      this.$forceUpdate();
-    });
-    this.$once('hook:beforeDestroy', function () {
-      unwatch();
-    });
-  },
-  methods: {
-    $$t (key, values) {
-      return t(key, values)
-    }
-  }
-});
-const setLocale$1 = i18n.setLocale;
-const getLocale$1 = i18n.getLocale;
-
-function initAppLocale (Vue, appVm, locale) {
-  const state = Vue.observable({
-    locale: locale || i18n.getLocale()
-  });
-  const localeWatchers = [];
-  appVm.$watchLocale = fn => {
-    localeWatchers.push(fn);
-  };
-  Object.defineProperty(appVm, '$locale', {
-    get () {
-      return state.locale
-    },
-    set (v) {
-      state.locale = v;
-      localeWatchers.forEach(watch => watch(v));
-    }
-  });
-}
-
-function isEnableLocale () {
-  return typeof __uniConfig !== 'undefined' && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
-}
-
-// export function initI18n() {
-//   const localeKeys = Object.keys(__uniConfig.locales || {})
-//   if (localeKeys.length) {
-//     localeKeys.forEach((locale) =>
-//       i18n.add(locale, __uniConfig.locales[locale])
-//     )
-//   }
-// }
-
-const hooks = [
-  'onShow',
-  'onHide',
-  'onError',
-  'onPageNotFound',
-  'onThemeChange',
-  'onUnhandledRejection'
-];
-
-function initEventChannel$1 () {
-  Vue.prototype.getOpenerEventChannel = function () {
-    if (!this.__eventChannel__) {
-      this.__eventChannel__ = new EventChannel();
-    }
-    return this.__eventChannel__
-  };
-  const callHook = Vue.prototype.__call_hook;
-  Vue.prototype.__call_hook = function (hook, args) {
-    if (hook === 'onLoad' && args && args.__id__) {
-      this.__eventChannel__ = getEventChannel(args.__id__);
-      delete args.__id__;
-    }
-    return callHook.call(this, hook, args)
-  };
-}
-
-function initScopedSlotsParams () {
-  const center = {};
-  const parents = {};
-
-  Vue.prototype.$hasScopedSlotsParams = function (vueId) {
-    const has = center[vueId];
-    if (!has) {
-      parents[vueId] = this;
-      this.$on('hook:destroyed', () => {
-        delete parents[vueId];
-      });
-    }
-    return has
-  };
-
-  Vue.prototype.$getScopedSlotsParams = function (vueId, name, key) {
-    const data = center[vueId];
-    if (data) {
-      const object = data[name] || {};
-      return key ? object[key] : object
-    } else {
-      parents[vueId] = this;
-      this.$on('hook:destroyed', () => {
-        delete parents[vueId];
-      });
-    }
-  };
-
-  Vue.prototype.$setScopedSlotsParams = function (name, value) {
-    const vueIds = this.$options.propsData.vueId;
-    if (vueIds) {
-      const vueId = vueIds.split(',')[0];
-      const object = center[vueId] = center[vueId] || {};
-      object[name] = value;
-      if (parents[vueId]) {
-        parents[vueId].$forceUpdate();
-      }
-    }
-  };
-
-  Vue.mixin({
-    destroyed () {
-      const propsData = this.$options.propsData;
-      const vueId = propsData && propsData.vueId;
-      if (vueId) {
-        delete center[vueId];
-        delete parents[vueId];
-      }
-    }
-  });
-}
-
-function parseBaseApp (vm, {
-  mocks,
-  initRefs
-}) {
-  initEventChannel$1();
-  {
-    initScopedSlotsParams();
-  }
-  if (vm.$options.store) {
-    Vue.prototype.$store = vm.$options.store;
-  }
-  uniIdMixin(Vue);
-
-  Vue.prototype.mpHost = "mp-alipay";
-
-  Vue.mixin({
-    beforeCreate () {
-      if (!this.$options.mpType) {
-        return
-      }
-
-      this.mpType = this.$options.mpType;
-
-      this.$mp = {
-        data: {},
-        [this.mpType]: this.$options.mpInstance
-      };
-
-      this.$scope = this.$options.mpInstance;
-
-      delete this.$options.mpType;
-      delete this.$options.mpInstance;
-      if (this.mpType === 'page' && typeof getApp === 'function') { // hack vue-i18n
-        const app = getApp();
-        if (app.$vm && app.$vm.$i18n) {
-          this._i18n = app.$vm.$i18n;
-        }
-      }
-      if (this.mpType !== 'app') {
-        initRefs(this);
-        initMocks(this, mocks);
-      }
-    }
-  });
-
-  const appOptions = {
-    onLaunch (args) {
-      if (this.$vm) { // 已经初始化过了，主要是为了百度，百度 onShow 在 onLaunch 之前
-        return
-      }
-
-      this.$vm = vm;
-
-      this.$vm.$mp = {
-        app: this
-      };
-
-      this.$vm.$scope = this;
-      // vm 上也挂载 globalData
-      this.$vm.globalData = this.globalData;
-
-      this.$vm._isMounted = true;
-      this.$vm.__call_hook('mounted', args);
-
-      this.$vm.__call_hook('onLaunch', args);
-    }
-  };
-
-  // 兼容旧版本 globalData
-  appOptions.globalData = vm.$options.globalData || {};
-  // 将 methods 中的方法挂在 getApp() 中
-  const methods = vm.$options.methods;
-  if (methods) {
-    Object.keys(methods).forEach(name => {
-      appOptions[name] = methods[name];
-    });
-  }
-
-  initAppLocale(Vue, vm, my.getSystemInfoSync().language || 'zh-Hans');
-
-  initHooks(appOptions, hooks);
-
-  return appOptions
-}
 
 function findVmByVueId (vm, vuePid) {
   const $children = vm.$children;
@@ -2465,6 +1997,33 @@ function handleLink (event) {
   }
 
   vueOptions.parent = parentVm;
+}
+
+function markMPComponent (component) {
+  // 在 Vue 中标记为小程序组件
+  const IS_MP = '__v_isMPComponent';
+  Object.defineProperty(component, IS_MP, {
+    configurable: true,
+    enumerable: false,
+    value: true
+  });
+  return component
+}
+
+function toSkip (obj) {
+  const OB = '__ob__';
+  const SKIP = '__v_skip';
+  if (isObject(obj) && Object.isExtensible(obj)) {
+    // 避免被 @vue/composition-api 观测
+    Object.defineProperty(obj, OB, {
+      configurable: true,
+      enumerable: false,
+      value: {
+        [SKIP]: true
+      }
+    });
+  }
+  return obj
 }
 
 const isArray = Array.isArray;
@@ -2602,23 +2161,21 @@ function initChildVues (mpInstance) {
 function handleProps (ref) {
   const eventProps = {};
   let refProps = ref.props;
-  const eventList = refProps['data-event-list'].split(',');
+  const eventList = (refProps['data-event-list'] || '').split(',');
   // 初始化支付宝小程序组件事件
-  Object.keys(refProps).forEach(key => {
-    if (eventList.includes(key)) {
-      const handler = refProps[key];
-      const res = key.match(/^on([A-Z])(\S*)/);
-      const event = res && (res[1].toLowerCase() + res[2]);
-      refProps[key] = eventProps[key] = function () {
-        const props = Object.assign({}, refProps);
-        props[key] = handler;
-        // 由于支付宝事件可能包含多个参数，不使用微信小程序事件格式
-        delete props['data-com-type'];
-        triggerEvent.bind({ props })(event, {
-          __args__: [...arguments]
-        });
-      };
-    }
+  eventList.forEach(key => {
+    const handler = refProps[key];
+    const res = key.match(/^on([A-Z])(\S*)/);
+    const event = res && (res[1].toLowerCase() + res[2]);
+    refProps[key] = eventProps[key] = function () {
+      const props = Object.assign({}, refProps);
+      props[key] = handler;
+      // 由于支付宝事件可能包含多个参数，不使用微信小程序事件格式
+      delete props['data-com-type'];
+      triggerEvent.bind({ props })(event, {
+        __args__: [...arguments]
+      });
+    };
   });
   // 处理 props 重写
   Object.defineProperty(ref, 'props', {
@@ -2632,18 +2189,15 @@ function handleProps (ref) {
 }
 
 function handleRef (ref) {
-  if (!ref) {
+  if (!(ref && this.$vm)) {
     return
-  }
-  if (ref.props['data-com-type'] === 'wx') {
-    handleProps(ref);
   }
   const refName = ref.props['data-ref'];
   const refInForName = ref.props['data-ref-in-for'];
   if (refName) {
-    this.$vm.$refs[refName] = ref.$vm || ref;
+    this.$vm.$refs[refName] = ref.$vm || toSkip(ref);
   } else if (refInForName) {
-    (this.$vm.$refs[refInForName] || (this.$vm.$refs[refInForName] = [])).push(ref.$vm || ref);
+    (this.$vm.$refs[refInForName] || (this.$vm.$refs[refInForName] = [])).push(ref.$vm || toSkip(ref));
   }
 }
 
@@ -2675,7 +2229,7 @@ function triggerEvent (type, detail, options) {
 
 const IGNORES = ['$slots', '$scopedSlots'];
 
-function createObserver$1 (isDidUpdate) {
+function createObserver (isDidUpdate) {
   return function observe (props) {
     const prevProps = isDidUpdate ? props : this.props;
     const nextProps = isDidUpdate ? this.props : props;
@@ -2718,7 +2272,7 @@ const handleLink$1 = (function () {
 
 const handleWrap = function (mp, destory) {
   const vueId = mp.props.vueId;
-  const list = mp.props['data-event-list'].split(',');
+  const list = (mp.props['data-event-list'] || '').split(',');
   list.forEach(eventName => {
     const key = `${eventName}${vueId}`;
     if (destory) {
@@ -2734,24 +2288,765 @@ const handleWrap = function (mp, destory) {
   }
 };
 
+const MPComponent = Component;
+
+function initHook (name, options) {
+  const oldHook = options[name];
+  options[name] = function (...args) {
+    markMPComponent(this);
+    const props = this.props;
+    if (props && props['data-com-type'] === 'wx') {
+      handleProps(this);
+    }
+    if (oldHook) {
+      return oldHook.apply(this, args)
+    }
+  };
+}
+
+if (!MPComponent.__$wrappered) {
+  MPComponent.__$wrappered = true;
+  Component = function (options = {}) {
+    initHook('onInit', options);
+    return MPComponent(options)
+  };
+}
+
+const PAGE_EVENT_HOOKS = [
+  'onPullDownRefresh',
+  'onReachBottom',
+  'onAddToFavorites',
+  'onShareTimeline',
+  'onShareAppMessage',
+  'onPageScroll',
+  'onResize',
+  'onTabItemTap'
+];
+
+function initMocks (vm, mocks) {
+  const mpInstance = vm.$mp[vm.mpType];
+  mocks.forEach(mock => {
+    if (hasOwn(mpInstance, mock)) {
+      vm[mock] = mpInstance[mock];
+    }
+  });
+}
+
+function hasHook (hook, vueOptions) {
+  if (!vueOptions) {
+    return true
+  }
+
+  if (Vue.options && Array.isArray(Vue.options[hook])) {
+    return true
+  }
+
+  vueOptions = vueOptions.default || vueOptions;
+
+  if (isFn(vueOptions)) {
+    if (isFn(vueOptions.extendOptions[hook])) {
+      return true
+    }
+    if (vueOptions.super &&
+      vueOptions.super.options &&
+      Array.isArray(vueOptions.super.options[hook])) {
+      return true
+    }
+    return false
+  }
+
+  if (isFn(vueOptions[hook]) || Array.isArray(vueOptions[hook])) {
+    return true
+  }
+  const mixins = vueOptions.mixins;
+  if (Array.isArray(mixins)) {
+    return !!mixins.find(mixin => hasHook(hook, mixin))
+  }
+}
+
+function initHooks (mpOptions, hooks, vueOptions) {
+  hooks.forEach(hook => {
+    if (hasHook(hook, vueOptions)) {
+      mpOptions[hook] = function (args) {
+        return this.$vm && this.$vm.__call_hook(hook, args)
+      };
+    }
+  });
+}
+
+function initUnknownHooks (mpOptions, vueOptions, excludes = []) {
+  findHooks(vueOptions).forEach((hook) => initHook$1(mpOptions, hook, excludes));
+}
+
+function findHooks (vueOptions, hooks = []) {
+  if (vueOptions) {
+    Object.keys(vueOptions).forEach((name) => {
+      if (name.indexOf('on') === 0 && isFn(vueOptions[name])) {
+        hooks.push(name);
+      }
+    });
+  }
+  return hooks
+}
+
+function initHook$1 (mpOptions, hook, excludes) {
+  if (excludes.indexOf(hook) === -1 && !hasOwn(mpOptions, hook)) {
+    mpOptions[hook] = function (args) {
+      return this.$vm && this.$vm.__call_hook(hook, args)
+    };
+  }
+}
+
+function initVueComponent (Vue, vueOptions) {
+  vueOptions = vueOptions.default || vueOptions;
+  let VueComponent;
+  if (isFn(vueOptions)) {
+    VueComponent = vueOptions;
+  } else {
+    VueComponent = Vue.extend(vueOptions);
+  }
+  vueOptions = VueComponent.options;
+  return [VueComponent, vueOptions]
+}
+
+function initVueIds (vueIds, mpInstance) {
+  vueIds = (vueIds || '').split(',');
+  const len = vueIds.length;
+
+  if (len === 1) {
+    mpInstance._$vueId = vueIds[0];
+  } else if (len === 2) {
+    mpInstance._$vueId = vueIds[0];
+    mpInstance._$vuePid = vueIds[1];
+  }
+}
+
+function initData (vueOptions, context) {
+  let data = vueOptions.data || {};
+  const methods = vueOptions.methods || {};
+
+  if (typeof data === 'function') {
+    try {
+      data = data.call(context); // 支持 Vue.prototype 上挂的数据
+    } catch (e) {
+      if (process.env.VUE_APP_DEBUG) {
+        console.warn('根据 Vue 的 data 函数初始化小程序 data 失败，请尽量确保 data 函数中不访问 vm 对象，否则可能影响首次数据渲染速度。', data);
+      }
+    }
+  } else {
+    try {
+      // 对 data 格式化
+      data = JSON.parse(JSON.stringify(data));
+    } catch (e) { }
+  }
+
+  if (!isPlainObject(data)) {
+    data = {};
+  }
+
+  Object.keys(methods).forEach(methodName => {
+    if (context.__lifecycle_hooks__.indexOf(methodName) === -1 && !hasOwn(data, methodName)) {
+      data[methodName] = methods[methodName];
+    }
+  });
+
+  return data
+}
+
+const PROP_TYPES = [String, Number, Boolean, Object, Array, null];
+
+function createObserver$1 (name) {
+  return function observer (newVal, oldVal) {
+    if (this.$vm) {
+      this.$vm[name] = newVal; // 为了触发其他非 render watcher
+    }
+  }
+}
+
+function initBehaviors (vueOptions, initBehavior) {
+  const vueBehaviors = vueOptions.behaviors;
+  const vueExtends = vueOptions.extends;
+  const vueMixins = vueOptions.mixins;
+
+  let vueProps = vueOptions.props;
+
+  if (!vueProps) {
+    vueOptions.props = vueProps = [];
+  }
+
+  const behaviors = [];
+  if (Array.isArray(vueBehaviors)) {
+    vueBehaviors.forEach(behavior => {
+      behaviors.push(behavior.replace('uni://', `${"my"}://`));
+      if (behavior === 'uni://form-field') {
+        if (Array.isArray(vueProps)) {
+          vueProps.push('name');
+          vueProps.push('value');
+        } else {
+          vueProps.name = {
+            type: String,
+            default: ''
+          };
+          vueProps.value = {
+            type: [String, Number, Boolean, Array, Object, Date],
+            default: ''
+          };
+        }
+      }
+    });
+  }
+  { // alipay 重复定义props会报错,下边的代码对于其他平台也没有意义，保险起见，仅对alipay做处理
+    return
+  }
+}
+
+function parsePropType (key, type, defaultValue, file) {
+  // [String]=>String
+  if (Array.isArray(type) && type.length === 1) {
+    return type[0]
+  }
+  return type
+}
+
+function initProperties (props, isBehavior = false, file = '', options) {
+  const properties = {};
+  if (!isBehavior) {
+    properties.vueId = {
+      type: String,
+      value: ''
+    };
+    {
+      {
+        properties.virtualHostStyle = {
+          type: null,
+          value: ''
+        };
+        properties.virtualHostClass = {
+          type: null,
+          value: ''
+        };
+      }
+    }
+    // scopedSlotsCompiler auto
+    properties.scopedSlotsCompiler = {
+      type: String,
+      value: ''
+    };
+    properties.vueSlots = { // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
+      type: null,
+      value: [],
+      observer: function (newVal, oldVal) {
+        const $slots = Object.create(null);
+        newVal.forEach(slotName => {
+          $slots[slotName] = true;
+        });
+        this.setData({
+          $slots
+        });
+      }
+    };
+  }
+  if (Array.isArray(props)) { // ['title']
+    props.forEach(key => {
+      properties[key] = {
+        type: null,
+        observer: createObserver$1(key)
+      };
+    });
+  } else if (isPlainObject(props)) { // {title:{type:String,default:''},content:String}
+    Object.keys(props).forEach(key => {
+      const opts = props[key];
+      if (isPlainObject(opts)) { // title:{type:String,default:''}
+        let value = opts.default;
+        if (isFn(value)) {
+          value = value();
+        }
+
+        opts.type = parsePropType(key, opts.type);
+
+        properties[key] = {
+          type: PROP_TYPES.indexOf(opts.type) !== -1 ? opts.type : null,
+          value,
+          observer: createObserver$1(key)
+        };
+      } else { // content:String
+        const type = parsePropType(key, opts);
+        properties[key] = {
+          type: PROP_TYPES.indexOf(type) !== -1 ? type : null,
+          observer: createObserver$1(key)
+        };
+      }
+    });
+  }
+  return properties
+}
+
+function wrapper$1 (event) {
+  // TODO 又得兼容 mpvue 的 mp 对象
+  try {
+    event.mp = JSON.parse(JSON.stringify(event));
+  } catch (e) { }
+
+  event.stopPropagation = noop;
+  event.preventDefault = noop;
+
+  event.target = event.target || {};
+
+  if (!hasOwn(event, 'detail')) {
+    event.detail = {};
+  }
+
+  if (hasOwn(event, 'markerId')) {
+    event.detail = typeof event.detail === 'object' ? event.detail : {};
+    event.detail.markerId = event.markerId;
+  }
+
+  if (isPlainObject(event.detail)) {
+    event.target = Object.assign({}, event.target, event.detail);
+  }
+
+  return event
+}
+
+function getExtraValue (vm, dataPathsArray) {
+  let context = vm;
+  dataPathsArray.forEach(dataPathArray => {
+    const dataPath = dataPathArray[0];
+    const value = dataPathArray[2];
+    if (dataPath || typeof value !== 'undefined') { // ['','',index,'disable']
+      const propPath = dataPathArray[1];
+      const valuePath = dataPathArray[3];
+
+      let vFor;
+      if (Number.isInteger(dataPath)) {
+        vFor = dataPath;
+      } else if (!dataPath) {
+        vFor = context;
+      } else if (typeof dataPath === 'string' && dataPath) {
+        if (dataPath.indexOf('#s#') === 0) {
+          vFor = dataPath.substr(3);
+        } else {
+          vFor = vm.__get_value(dataPath, context);
+        }
+      }
+
+      if (Number.isInteger(vFor)) {
+        context = value;
+      } else if (!propPath) {
+        context = vFor[value];
+      } else {
+        if (Array.isArray(vFor)) {
+          context = vFor.find(vForItem => {
+            return vm.__get_value(propPath, vForItem) === value
+          });
+        } else if (isPlainObject(vFor)) {
+          context = Object.keys(vFor).find(vForKey => {
+            return vm.__get_value(propPath, vFor[vForKey]) === value
+          });
+        } else {
+          console.error('v-for 暂不支持循环数据：', vFor);
+        }
+      }
+
+      if (valuePath) {
+        context = vm.__get_value(valuePath, context);
+      }
+    }
+  });
+  return context
+}
+
+function processEventExtra (vm, extra, event, __args__) {
+  const extraObj = {};
+
+  if (Array.isArray(extra) && extra.length) {
+    /**
+     *[
+     *    ['data.items', 'data.id', item.data.id],
+     *    ['metas', 'id', meta.id]
+     *],
+     *[
+     *    ['data.items', 'data.id', item.data.id],
+     *    ['metas', 'id', meta.id]
+     *],
+     *'test'
+     */
+    extra.forEach((dataPath, index) => {
+      if (typeof dataPath === 'string') {
+        if (!dataPath) { // model,prop.sync
+          extraObj['$' + index] = vm;
+        } else {
+          if (dataPath === '$event') { // $event
+            extraObj['$' + index] = event;
+          } else if (dataPath === 'arguments') {
+            extraObj['$' + index] = event.detail ? event.detail.__args__ || __args__ : __args__;
+          } else if (dataPath.indexOf('$event.') === 0) { // $event.target.value
+            extraObj['$' + index] = vm.__get_value(dataPath.replace('$event.', ''), event);
+          } else {
+            extraObj['$' + index] = vm.__get_value(dataPath);
+          }
+        }
+      } else {
+        extraObj['$' + index] = getExtraValue(vm, dataPath);
+      }
+    });
+  }
+
+  return extraObj
+}
+
+function getObjByArray (arr) {
+  const obj = {};
+  for (let i = 1; i < arr.length; i++) {
+    const element = arr[i];
+    obj[element[0]] = element[1];
+  }
+  return obj
+}
+
+function processEventArgs (vm, event, args = [], extra = [], isCustom, methodName) {
+  let isCustomMPEvent = false; // wxcomponent 组件，传递原始 event 对象
+
+  // fixed 用户直接触发 mpInstance.triggerEvent
+  const __args__ = isPlainObject(event.detail)
+    ? event.detail.__args__ || [event.detail]
+    : [event.detail];
+
+  if (isCustom) { // 自定义事件
+    isCustomMPEvent = event.currentTarget &&
+      event.currentTarget.dataset &&
+      event.currentTarget.dataset.comType === 'wx';
+    if (!args.length) { // 无参数，直接传入 event 或 detail 数组
+      if (isCustomMPEvent) {
+        return [event]
+      }
+      return __args__
+    }
+  }
+
+  const extraObj = processEventExtra(vm, extra, event, __args__);
+
+  const ret = [];
+  args.forEach(arg => {
+    if (arg === '$event') {
+      if (methodName === '__set_model' && !isCustom) { // input v-model value
+        ret.push(event.target.value);
+      } else {
+        if (isCustom && !isCustomMPEvent) {
+          ret.push(__args__[0]);
+        } else { // wxcomponent 组件或内置组件
+          ret.push(event);
+        }
+      }
+    } else {
+      if (Array.isArray(arg) && arg[0] === 'o') {
+        ret.push(getObjByArray(arg));
+      } else if (typeof arg === 'string' && hasOwn(extraObj, arg)) {
+        ret.push(extraObj[arg]);
+      } else {
+        ret.push(arg);
+      }
+    }
+  });
+
+  return ret
+}
+
+const ONCE = '~';
+const CUSTOM = '^';
+
+function isMatchEventType (eventType, optType) {
+  return (eventType === optType) ||
+    (
+      optType === 'regionchange' &&
+      (
+        eventType === 'begin' ||
+        eventType === 'end'
+      )
+    )
+}
+
+function getContextVm (vm) {
+  let $parent = vm.$parent;
+  // 父组件是 scoped slots 或者其他自定义组件时继续查找
+  while ($parent && $parent.$parent && ($parent.$options.generic || $parent.$parent.$options.generic || $parent.$scope._$vuePid)) {
+    $parent = $parent.$parent;
+  }
+  return $parent && $parent.$parent
+}
+
+function handleEvent (event) {
+  event = wrapper$1(event);
+
+  // [['tap',[['handle',[1,2,a]],['handle1',[1,2,a]]]]]
+  const dataset = (event.currentTarget || event.target).dataset;
+  if (!dataset) {
+    return console.warn('事件信息不存在')
+  }
+  const eventOpts = dataset.eventOpts || dataset['event-opts']; // 支付宝 web-view 组件 dataset 非驼峰
+  if (!eventOpts) {
+    return console.warn('事件信息不存在')
+  }
+
+  // [['handle',[1,2,a]],['handle1',[1,2,a]]]
+  const eventType = event.type;
+
+  const ret = [];
+
+  eventOpts.forEach(eventOpt => {
+    let type = eventOpt[0];
+    const eventsArray = eventOpt[1];
+
+    const isCustom = type.charAt(0) === CUSTOM;
+    type = isCustom ? type.slice(1) : type;
+    const isOnce = type.charAt(0) === ONCE;
+    type = isOnce ? type.slice(1) : type;
+
+    if (eventsArray && isMatchEventType(eventType, type)) {
+      eventsArray.forEach(eventArray => {
+        const methodName = eventArray[0];
+        if (methodName) {
+          let handlerCtx = this.$vm;
+          if (handlerCtx.$options.generic) { // mp-weixin,mp-toutiao 抽象节点模拟 scoped slots
+            handlerCtx = getContextVm(handlerCtx) || handlerCtx;
+          }
+          if (methodName === '$emit') {
+            handlerCtx.$emit.apply(handlerCtx,
+              processEventArgs(
+                this.$vm,
+                event,
+                eventArray[1],
+                eventArray[2],
+                isCustom,
+                methodName
+              ));
+            return
+          }
+          const handler = handlerCtx[methodName];
+          if (!isFn(handler)) {
+            const type = this.$vm.mpType === 'page' ? 'Page' : 'Component';
+            const path = this.route || this.is;
+            throw new Error(`${type} "${path}" does not have a method "${methodName}"`)
+          }
+          if (isOnce) {
+            if (handler.once) {
+              return
+            }
+            handler.once = true;
+          }
+          let params = processEventArgs(
+            this.$vm,
+            event,
+            eventArray[1],
+            eventArray[2],
+            isCustom,
+            methodName
+          );
+          params = Array.isArray(params) ? params : [];
+          // 参数尾部增加原始事件对象用于复杂表达式内获取额外数据
+          if (/=\s*\S+\.eventParams\s*\|\|\s*\S+\[['"]event-params['"]\]/.test(handler.toString())) {
+            // eslint-disable-next-line no-sparse-arrays
+            params = params.concat([, , , , , , , , , , event]);
+          }
+          ret.push(handler.apply(handlerCtx, params));
+        }
+      });
+    }
+  });
+
+  if (
+    eventType === 'input' &&
+    ret.length === 1 &&
+    typeof ret[0] !== 'undefined'
+  ) {
+    return ret[0]
+  }
+}
+
+const hooks = [
+  'onShow',
+  'onHide',
+  'onError',
+  'onPageNotFound',
+  'onThemeChange',
+  'onUnhandledRejection'
+];
+
+function initEventChannel$1 () {
+  Vue.prototype.getOpenerEventChannel = function () {
+    if (!this.__eventChannel__) {
+      this.__eventChannel__ = new EventChannel();
+    }
+    return this.__eventChannel__
+  };
+  const callHook = Vue.prototype.__call_hook;
+  Vue.prototype.__call_hook = function (hook, args) {
+    if (hook === 'onLoad' && args && args.__id__) {
+      this.__eventChannel__ = getEventChannel(args.__id__);
+      delete args.__id__;
+    }
+    return callHook.call(this, hook, args)
+  };
+}
+
+function initScopedSlotsParams () {
+  const center = {};
+  const parents = {};
+
+  function currentId (fn) {
+    const vueIds = this.$options.propsData.vueId;
+    if (vueIds) {
+      const vueId = vueIds.split(',')[0];
+      fn(vueId);
+    }
+  }
+
+  Vue.prototype.$hasSSP = function (vueId) {
+    const slot = center[vueId];
+    if (!slot) {
+      parents[vueId] = this;
+      this.$on('hook:destroyed', () => {
+        delete parents[vueId];
+      });
+    }
+    return slot
+  };
+
+  Vue.prototype.$getSSP = function (vueId, name, needAll) {
+    const slot = center[vueId];
+    if (slot) {
+      const params = slot[name] || [];
+      if (needAll) {
+        return params
+      }
+      return params[0]
+    }
+  };
+
+  Vue.prototype.$setSSP = function (name, value) {
+    let index = 0;
+    currentId.call(this, vueId => {
+      const slot = center[vueId];
+      const params = slot[name] = slot[name] || [];
+      params.push(value);
+      index = params.length - 1;
+    });
+    return index
+  };
+
+  Vue.prototype.$initSSP = function () {
+    currentId.call(this, vueId => {
+      center[vueId] = {};
+    });
+  };
+
+  Vue.prototype.$callSSP = function () {
+    currentId.call(this, vueId => {
+      if (parents[vueId]) {
+        parents[vueId].$forceUpdate();
+      }
+    });
+  };
+
+  Vue.mixin({
+    destroyed () {
+      const propsData = this.$options.propsData;
+      const vueId = propsData && propsData.vueId;
+      if (vueId) {
+        delete center[vueId];
+        delete parents[vueId];
+      }
+    }
+  });
+}
+
+function parseBaseApp (vm, {
+  mocks,
+  initRefs
+}) {
+  initEventChannel$1();
+  {
+    initScopedSlotsParams();
+  }
+  if (vm.$options.store) {
+    Vue.prototype.$store = vm.$options.store;
+  }
+  uniIdMixin(Vue);
+
+  Vue.prototype.mpHost = "mp-alipay";
+
+  Vue.mixin({
+    beforeCreate () {
+      if (!this.$options.mpType) {
+        return
+      }
+
+      this.mpType = this.$options.mpType;
+
+      this.$mp = {
+        data: {},
+        [this.mpType]: this.$options.mpInstance
+      };
+
+      this.$scope = this.$options.mpInstance;
+
+      delete this.$options.mpType;
+      delete this.$options.mpInstance;
+      if (this.mpType === 'page' && typeof getApp === 'function') { // hack vue-i18n
+        const app = getApp();
+        if (app.$vm && app.$vm.$i18n) {
+          this._i18n = app.$vm.$i18n;
+        }
+      }
+      if (this.mpType !== 'app') {
+        initRefs(this);
+        initMocks(this, mocks);
+      }
+    }
+  });
+
+  const appOptions = {
+    onLaunch (args) {
+      if (this.$vm) { // 已经初始化过了，主要是为了百度，百度 onShow 在 onLaunch 之前
+        return
+      }
+
+      this.$vm = vm;
+
+      this.$vm.$mp = {
+        app: this
+      };
+
+      this.$vm.$scope = this;
+      // vm 上也挂载 globalData
+      this.$vm.globalData = this.globalData;
+
+      this.$vm._isMounted = true;
+      this.$vm.__call_hook('mounted', args);
+
+      this.$vm.__call_hook('onLaunch', args);
+    }
+  };
+
+  // 兼容旧版本 globalData
+  appOptions.globalData = vm.$options.globalData || {};
+  // 将 methods 中的方法挂在 getApp() 中
+  const methods = vm.$options.methods;
+  if (methods) {
+    Object.keys(methods).forEach(name => {
+      appOptions[name] = methods[name];
+    });
+  }
+
+  initAppLocale(Vue, vm, normalizeLocale(my.getSystemInfoSync().language) || LOCALE_EN);
+
+  initHooks(appOptions, hooks);
+  initUnknownHooks(appOptions, vm.$options);
+
+  return appOptions
+}
+
 function parseApp (vm) {
-  Object.defineProperty(Vue.prototype, '$slots', {
-    get () {
-      return this.$scope && this.$scope.props.$slots
-    },
-    set () {
-
-    }
-  });
-  Object.defineProperty(Vue.prototype, '$scopedSlots', {
-    get () {
-      return this.$scope && this.$scope.props.$scopedSlots
-    },
-    set () {
-
-    }
-  });
-
   Vue.prototype.$onAliGetAuthorize = function onAliGetAuthorize (method, $event) {
     my.getPhoneNumber({
       success: (res) => {
@@ -2890,6 +3185,9 @@ function parsePage (vuePageOptions) {
       // 支付宝小程序有些页面事件只能放在events下
       onBack () {
         this.$vm.__call_hook('onBackPress');
+      },
+      onKeyboardHeight (res) {
+        $emit('uni:keyboardHeightChange', res);
       }
     },
     __r: handleRef,
@@ -2899,7 +3197,10 @@ function parsePage (vuePageOptions) {
     triggerEvent
   };
 
-  initHooks(pageOptions, hooks$1, vuePageOptions);
+  Object.assign(pageOptions.events, vueOptions.events || {});
+
+  initHooks(pageOptions, hooks$1, vueOptions);
+  initUnknownHooks(pageOptions, vueOptions, ['onReady']);
 
   if (Array.isArray(vueOptions.wxsCallMethods)) {
     vueOptions.wxsCallMethods.forEach(callMethod => {
@@ -2915,6 +3216,29 @@ function parsePage (vuePageOptions) {
 function createPage (vuePageOptions) {
   {
     return Page(parsePage(vuePageOptions))
+  }
+}
+
+function initSlots (vm, vueSlots) {
+  const $slots = Object.create(null);
+  // 未启用小程序基础库 2.0 时，组件实例支持支持访问 $slots、$scopedSlots
+  Object.defineProperty(vm, '$slots', {
+    get () {
+      const $scope = this.$scope;
+      return ($scope && $scope.props.$slots) || ($scope && $scope.props.$scopedSlots ? {} : $slots)
+    }
+  });
+  Object.defineProperty(vm, '$scopedSlots', {
+    get () {
+      const $scope = this.$scope;
+      return ($scope && $scope.props.$scopedSlots) || ($scope && $scope.props.$slots ? {} : $slots)
+    }
+  });
+  // 处理$slots,$scopedSlots（暂不支持动态变化$slots）
+  if (Array.isArray(vueSlots) && vueSlots.length) {
+    vueSlots.forEach(slotName => {
+      $slots[slotName] = true;
+    });
   }
 }
 
@@ -2942,6 +3266,8 @@ function initVm (VueComponent) {
     // 初始化 vue 实例
     this.$vm = new VueComponent(options);
 
+    initSlots(this.$vm, properties.vueSlots);
+
     // 触发首次 setData
     this.$vm.$mount();
   } else {
@@ -2957,6 +3283,9 @@ function initVm (VueComponent) {
       // 初始化 vue 实例
       this.$vm = new VueComponent(options);
       handleRef.call(options.parent.$scope, this);
+
+      initSlots(this.$vm, properties.vueSlots);
+
       // 触发首次 setData
       this.$vm.$mount();
 
@@ -2969,7 +3298,7 @@ function initVm (VueComponent) {
   }
 }
 
-function parseComponent (vueComponentOptions) {
+function parseComponent (vueComponentOptions, needVueOptions) {
   const [VueComponent, vueOptions] = initVueComponent(Vue, vueComponentOptions);
 
   const properties = initProperties(vueOptions.props, false, vueOptions.__file);
@@ -2979,9 +3308,7 @@ function parseComponent (vueComponentOptions) {
   };
 
   Object.keys(properties).forEach(key => {
-    if (key !== 'vueSlots') {
-      props[key] = properties[key].value;
-    }
+    props[key] = properties[key].value;
   });
 
   const componentOptions = {
@@ -3021,9 +3348,9 @@ function parseComponent (vueComponentOptions) {
     componentOptions.onInit = function onInit () {
       initVm.call(this, VueComponent);
     };
-    componentOptions.deriveDataFromProps = createObserver$1();
+    componentOptions.deriveDataFromProps = createObserver();
   } else {
-    componentOptions.didUpdate = createObserver$1(true);
+    componentOptions.didUpdate = createObserver(true);
   }
 
   if (Array.isArray(vueOptions.wxsCallMethods)) {
@@ -3034,7 +3361,7 @@ function parseComponent (vueComponentOptions) {
     });
   }
 
-  return componentOptions
+  return needVueOptions ? [componentOptions, vueOptions] : componentOptions
 }
 
 function createComponent (vueOptions) {
@@ -3134,9 +3461,6 @@ if (typeof Proxy !== 'undefined' && "mp-alipay" !== 'app-plus') {
       }
       if (eventApi[name]) {
         return eventApi[name]
-      }
-      if (!hasOwn(my, name) && !hasOwn(protocols, name)) {
-        return
       }
       return promisify(name, wrapper(name, my[name]))
     },
