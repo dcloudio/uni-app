@@ -212,9 +212,9 @@ function removeInterceptor (method, option) {
   }
 }
 
-function wrapperHook (hook) {
+function wrapperHook (hook, params) {
   return function (data) {
-    return hook(data) || data
+    return hook(data, params) || data
   }
 }
 
@@ -222,14 +222,14 @@ function isPromise (obj) {
   return !!obj && (typeof obj === 'object' || typeof obj === 'function') && typeof obj.then === 'function'
 }
 
-function queue (hooks, data) {
+function queue (hooks, data, params) {
   let promise = false;
   for (let i = 0; i < hooks.length; i++) {
     const hook = hooks[i];
     if (promise) {
-      promise = Promise.resolve(wrapperHook(hook));
+      promise = Promise.resolve(wrapperHook(hook, params));
     } else {
-      const res = hook(data);
+      const res = hook(data, params);
       if (isPromise(res)) {
         promise = Promise.resolve(res);
       }
@@ -252,7 +252,7 @@ function wrapperOptions (interceptor, options = {}) {
     if (Array.isArray(interceptor[name])) {
       const oldCallback = options[name];
       options[name] = function callbackInterceptor (res) {
-        queue(interceptor[name], res).then((res) => {
+        queue(interceptor[name], res, options).then((res) => {
           /* eslint-disable no-mixed-operators */
           return isFn(oldCallback) && oldCallback(res) || res
         });
@@ -301,7 +301,11 @@ function invokeApi (method, api, options, ...params) {
     if (Array.isArray(interceptor.invoke)) {
       const res = queue(interceptor.invoke, options);
       return res.then((options) => {
-        return api(wrapperOptions(interceptor, options), ...params)
+        // 重新访问 getApiInterceptorHooks, 允许 invoke 中再次调用 addInterceptor,removeInterceptor
+        return api(
+          wrapperOptions(getApiInterceptorHooks(method), options),
+          ...params
+        )
       })
     } else {
       return api(wrapperOptions(interceptor, options), ...params)
