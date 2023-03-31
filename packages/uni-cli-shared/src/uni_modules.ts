@@ -28,7 +28,12 @@ export function parseUniExtApis(vite = true) {
   if (!fs.existsSync(uniModulesDir)) {
     return {}
   }
-
+  let platform = process.env.UNI_PLATFORM
+  if (platform === 'h5') {
+    platform = 'web'
+  } else if (platform === 'app-plus') {
+    platform = 'app'
+  }
   const injects: Injects = {}
   fs.readdirSync(uniModulesDir).forEach((uniModuleDir) => {
     // 必须以 uni- 开头
@@ -43,17 +48,24 @@ export function parseUniExtApis(vite = true) {
       const exports = JSON.parse(fs.readFileSync(pkgPath, 'utf8'))
         ?.uni_modules?.['uni-ext-api'] as Exports | undefined
       if (exports) {
-        Object.assign(
-          injects,
-          parseInjects(
-            vite,
-            process.env.UNI_PLATFORM === 'h5'
-              ? 'web'
-              : process.env.UNI_PLATFORM,
-            `@/uni_modules/${uniModuleDir}`,
-            exports
-          )
+        const curInjects = parseInjects(
+          vite,
+          platform,
+          `@/uni_modules/${uniModuleDir}`,
+          exports
         )
+        if (platform === 'app') {
+          Object.keys(curInjects).forEach((name) => {
+            const options = curInjects[name]
+            // js 平台禁用了
+            if (Array.isArray(options) && options.length === 3) {
+              if (options[2] && (options[2] as any).js === false) {
+                delete curInjects[name]
+              }
+            }
+          })
+        }
+        Object.assign(injects, curInjects)
       }
     } catch (e) {}
   })
