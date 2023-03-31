@@ -34,8 +34,8 @@ type FlexDir = (typeof flexDirs)[number]
 
 export function getNVueFlexDirection(manifestJson: Record<string, any>) {
   let flexDir: FlexDir = 'column'
-  if (manifestJson['app-plus']?.nvue?.['flex-direction']) {
-    flexDir = manifestJson['app-plus'].nvue['flex-direction'] as FlexDir
+  if (manifestJson['plus']?.nvue?.['flex-direction']) {
+    flexDir = manifestJson['plus'].nvue['flex-direction'] as FlexDir
     if (flexDirs.indexOf(flexDir) === -1) {
       flexDir = 'column'
     }
