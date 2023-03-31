@@ -8753,6 +8753,7 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
         const title = option.title;
         const position = getIsAMap() ? new maps.LngLat(option.longitude, option.latitude) : new maps.LatLng(option.latitude, option.longitude);
         const img = new Image();
+        let imgHeight = 0;
         img.onload = () => {
           const anchor = option.anchor || {};
           let icon;
@@ -8768,6 +8769,7 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
             w = img.width / 2;
             h = img.height / 2;
           }
+          imgHeight = h;
           top = h - (h - y * h);
           if ("MarkerImage" in maps) {
             icon = new maps.MarkerImage(img.src, null, null, new maps.Point(x * w, y * h), new maps.Size(w, h));
@@ -8852,13 +8854,20 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
           let callout = marker.callout;
           let calloutStyle;
           if (calloutOpt.content || title) {
+            if (getIsAMap() && calloutOpt.content) {
+              calloutOpt.content = calloutOpt.content.replaceAll("\n", "<br/>");
+            }
             const boxShadow = "0px 0px 3px 1px rgba(0,0,0,0.5)";
+            let offsetY = -imgHeight / 2;
+            if (option.width || option.height) {
+              offsetY += 14 - imgHeight / 2;
+            }
             calloutStyle = calloutOpt.content ? {
               position,
               map,
               top,
               // handle AMap callout offset
-              offsetY: -option.height / 2,
+              offsetY,
               content: calloutOpt.content,
               color: calloutOpt.color,
               fontSize: calloutOpt.fontSize,
@@ -8872,7 +8881,7 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
               map,
               top,
               // handle AMap callout offset
-              offsetY: -option.height / 2,
+              offsetY,
               content: title,
               boxShadow
             };
@@ -9690,8 +9699,9 @@ function useMap(props2, rootRef, emit2) {
           break;
         case "includePoints":
           state.includePoints = getPoints(data.includePoints);
-          if (isBoundsReady)
-            ;
+          if (isBoundsReady || getIsAMap()) {
+            updateBounds();
+          }
           onBoundsReady(() => {
             uniShared.callOptions(data, `${type}:ok`);
           });
