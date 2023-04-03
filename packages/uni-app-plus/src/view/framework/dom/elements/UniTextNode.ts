@@ -1,7 +1,8 @@
 import { LINEFEED, UniNodeJSON } from '@dcloudio/uni-shared'
-import { UniNode } from './UniNode'
 import { parseText } from '@dcloudio/uni-components'
-import { UniTextElement } from './UniTextElement'
+import { UniNode } from './UniNode'
+import { UniElement } from './UniElement'
+import { TextProps } from './UniTextElement'
 
 export class UniTextNode extends UniNode {
   private _text: string = ''
@@ -29,9 +30,8 @@ export class UniTextNode extends UniNode {
   }
 
   update() {
-    const {
-      $props: { space, decode },
-    } = this.$parent as UniTextElement
+    const { space, decode } =
+      (this.$parent && (this.$parent as UniElement<TextProps>).$props) || {}
     this.$.textContent = parseText(this._text, { space, decode }).join(LINEFEED)
   }
 }
