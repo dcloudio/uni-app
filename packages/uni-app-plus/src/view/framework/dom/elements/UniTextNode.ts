@@ -15,8 +15,11 @@ export class UniTextNode extends UniNode {
     this.init(nodeJson)
     this.insert(parentNodeId, refNodeId)
   }
-  init(nodeJson: Partial<UniNodeJSON>) {
+  init(nodeJson: Partial<UniNodeJSON>, isCreate: boolean = true) {
     this._text = nodeJson.t || ''
+    if (isCreate) {
+      this.update()
+    }
   }
 
   setText(text: string) {
