@@ -75,7 +75,11 @@ export function normalizeLocale(
     }
     return LOCALE_ZH_HANS
   }
-  const lang = startsWith(locale, [LOCALE_EN, LOCALE_FR, LOCALE_ES])
+  let locales = [LOCALE_EN, LOCALE_FR, LOCALE_ES]
+  if (messages && Object.keys(messages).length > 0) {
+    locales = Object.keys(messages)
+  }
+  const lang = startsWith(locale, locales)
   if (lang) {
     return lang as BuiltInLocale
   }

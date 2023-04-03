@@ -880,7 +880,11 @@ function normalizeLocale(locale, messages) {
         }
         return LOCALE_ZH_HANS;
     }
-    const lang = startsWith(locale, [LOCALE_EN, LOCALE_FR, LOCALE_ES]);
+    let locales = [LOCALE_EN, LOCALE_FR, LOCALE_ES];
+    if (messages && Object.keys(messages).length > 0) {
+        locales = Object.keys(messages);
+    }
+    const lang = startsWith(locale, locales);
     if (lang) {
         return lang;
     }
@@ -15114,10 +15118,11 @@ function bindSocketCallBack(socket) {
         curSocket._socketOnError();
     });
     socket.onclose((e) => {
-        const curSocket = socketsMap[e.id];
+        const { id, code, reason } = e;
+        const curSocket = socketsMap[id];
         if (!curSocket)
             return;
-        curSocket._socketOnClose();
+        curSocket._socketOnClose({ code, reason });
     });
 }
 class SocketTask {
@@ -15153,8 +15158,8 @@ class SocketTask {
         this.socketStateChange('error');
         this.onErrorOrClose();
     }
-    _socketOnClose() {
-        this.socketStateChange('close');
+    _socketOnClose(res) {
+        this.socketStateChange('close', res);
         this.onErrorOrClose();
     }
     onErrorOrClose() {
@@ -15166,7 +15171,12 @@ class SocketTask {
         }
     }
     socketStateChange(name, res = {}) {
-        const data = name === 'message' ? res : {};
+        const { code, reason } = res;
+        const data = name === 'message'
+            ? { data: res.data }
+            : name === 'close'
+                ? { code, reason }
+                : {};
         if (this === socketTasks[0] && globalEvent[name]) {
             UniServiceJSBridge.invokeOnCallback(globalEvent[name], data);
         }
@@ -17307,13 +17317,17 @@ function resolveSyncResult(res, returnOptions, instanceId, proxy) {
         res = JSON.parse(res);
     }
     if ((process.env.NODE_ENV !== 'production')) {
-        console.log('uts.invokeSync.result', res, returnOptions, instanceId, proxy);
+        console.log('uts.invokeSync.result', res, returnOptions, instanceId, typeof proxy);
     }
     if (res.errMsg) {
         throw new Error(res.errMsg);
     }
     if (returnOptions) {
         if (returnOptions.type === 'interface' && typeof res.params === 'number') {
+            // 返回了 0
+            if (!res.params) {
+                return null;
+            }
             if (res.params === instanceId && proxy) {
                 return proxy;
             }
@@ -17469,10 +17483,11 @@ function initUTSProxyClass(options) {
                         //实例方法
                         name = parseClassMethodName(name, methods);
                         if (hasOwn$1(methods, name)) {
-                            const { async, params } = methods[name];
+                            const { async, params, return: returnOptions } = methods[name];
                             target[name] = initUTSInstanceMethod(!!async, extend({
                                 name,
                                 params,
+                                return: returnOptions,
                             }, baseOptions), instanceId, proxy);
                         }
                         else if (props.includes(name)) {
@@ -17498,9 +17513,9 @@ function initUTSProxyClass(options) {
             name = parseClassMethodName(name, staticMethods);
             if (hasOwn$1(staticMethods, name)) {
                 if (!staticMethodCache[name]) {
-                    const { async, params } = staticMethods[name];
+                    const { async, params, return: returnOptions } = staticMethods[name];
                     // 静态方法
-                    staticMethodCache[name] = initUTSStaticMethod(!!async, extend({ name, companion: true, params }, baseOptions));
+                    staticMethodCache[name] = initUTSStaticMethod(!!async, extend({ name, companion: true, params, return: returnOptions }, baseOptions));
                 }
                 return staticMethodCache[name];
             }
@@ -17973,7 +17988,7 @@ function isColor(color) {
 }
 
 function initBackgroundColor(webviewStyle, routeMeta) {
-    const { backgroundColor } = routeMeta;
+    let { backgroundColor } = routeMeta;
     if (!backgroundColor) {
         return;
     }
@@ -17982,6 +17997,9 @@ function initBackgroundColor(webviewStyle, routeMeta) {
     }
     if (!webviewStyle.background) {
         webviewStyle.background = backgroundColor;
+    }
+    else {
+        backgroundColor = webviewStyle.background;
     }
     if (!webviewStyle.backgroundColorTop) {
         webviewStyle.backgroundColorTop = backgroundColor;

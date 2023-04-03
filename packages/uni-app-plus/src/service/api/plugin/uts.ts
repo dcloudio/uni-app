@@ -97,6 +97,7 @@ interface ProxyInterfaceOptions extends ModuleOptions {
     [name: string]: {
       async?: boolean
       params: Parameter[]
+      return?: ProxyFunctionReturnOptions
     }
   }
   /**
@@ -117,12 +118,14 @@ interface ProxyClassOptions extends ModuleOptions {
     [name: string]: {
       async?: boolean
       params: Parameter[]
+      return?: ProxyFunctionReturnOptions
     }
   }
   staticMethods: {
     [name: string]: {
       async?: boolean
       params: Parameter[]
+      return?: ProxyFunctionReturnOptions
     }
   }
   /**
@@ -218,13 +221,23 @@ function resolveSyncResult(
     res = JSON.parse(res)
   }
   if (__DEV__) {
-    console.log('uts.invokeSync.result', res, returnOptions, instanceId, proxy)
+    console.log(
+      'uts.invokeSync.result',
+      res,
+      returnOptions,
+      instanceId,
+      typeof proxy
+    )
   }
   if (res.errMsg) {
     throw new Error(res.errMsg)
   }
   if (returnOptions) {
     if (returnOptions.type === 'interface' && typeof res.params === 'number') {
+      // 返回了 0
+      if (!res.params) {
+        return null
+      }
       if (res.params === instanceId && proxy) {
         return proxy
       }
@@ -442,13 +455,14 @@ export function initUTSProxyClass(
             //实例方法
             name = parseClassMethodName(name as string, methods)
             if (hasOwn(methods, name)) {
-              const { async, params } = methods[name]
+              const { async, params, return: returnOptions } = methods[name]
               target[name] = initUTSInstanceMethod(
                 !!async,
                 extend(
                   {
                     name,
                     params,
+                    return: returnOptions,
                   },
                   baseOptions
                 ),
@@ -478,11 +492,14 @@ export function initUTSProxyClass(
       name = parseClassMethodName(name as string, staticMethods)
       if (hasOwn(staticMethods, name)) {
         if (!staticMethodCache[name as string]) {
-          const { async, params } = staticMethods[name]
+          const { async, params, return: returnOptions } = staticMethods[name]
           // 静态方法
           staticMethodCache[name] = initUTSStaticMethod(
             !!async,
-            extend({ name, companion: true, params }, baseOptions)
+            extend(
+              { name, companion: true, params, return: returnOptions },
+              baseOptions
+            )
           )
         }
         return staticMethodCache[name]

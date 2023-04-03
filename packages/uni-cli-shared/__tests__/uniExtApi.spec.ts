@@ -72,5 +72,28 @@ describe('uni_modules:uni-ext-api', () => {
     ).toEqual({
       'uni.chooseLocation': ['@/uni_modules/uni-location', 'chooseLocation'],
     })
+
+    expect(
+      parseInjects(true, 'app', `@/uni_modules/uni-request`, {
+        uni: {
+          request: {
+            app: {
+              js: false,
+            },
+          },
+        },
+      })
+    ).toEqual({
+      'uni.request': ['@/uni_modules/uni-request', 'request', { js: false }],
+    })
+    expect(
+      parseInjects(true, 'app', `@/uni_modules/uni-request`, {
+        uni: {
+          request: {
+            app: false,
+          },
+        },
+      })
+    ).toEqual({})
   })
 })

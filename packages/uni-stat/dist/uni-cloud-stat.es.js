@@ -601,6 +601,20 @@ const is_push_clientid = () => {
 };
 
 /**
+ * 是否上报页面数据
+ * @returns 
+ */
+const is_page_report = ()=>{
+  if(uniStatisticsConfig.collectItems){
+    const statPageLog = uniStatisticsConfig.collectItems.uniStatPageLog;
+    // 如果字段不存在返回 true , 如果是boolean 值按原值返回，如果是其他类型 返回false
+    if(statPageLog === undefined) return true
+    return typeof statPageLog === 'boolean' ? statPageLog : true
+  }
+  return true
+};
+
+/**
  * 是否已处理设备 DeviceId
  * 如果值为 1 则表示已处理
  */
@@ -1341,9 +1355,7 @@ class Stat extends Report {
           //     uni.__stat_uniCloud_space.config.spaceId
           // )
         } else {
-          console.error(
-            '应用未关联服务空间，请在uniCloud目录右键关联服务空间'
-          );
+          console.error('应用未关联服务空间，请在uniCloud目录右键关联服务空间');
         }
       }
     }
@@ -1365,7 +1377,7 @@ class Stat extends Report {
           const cid = res.cid || false;
           //  只有获取到才会上传
           if (cid) {
-            this.sendPushRequest(options,cid);
+            this.sendPushRequest(options, cid);
           }
         },
       });
@@ -1402,7 +1414,10 @@ class Stat extends Report {
   show(self) {
     this.self = self;
     if (get_page_types(self) === 'page') {
-      this.pageShow(self);
+      const isPageReport = is_page_report();
+      if (isPageReport) {
+        this.pageShow(self);
+      }
     }
 
     // #ifdef VUE3
@@ -1423,7 +1438,10 @@ class Stat extends Report {
   hide(self) {
     this.self = self;
     if (get_page_types(self) === 'page') {
-      this.pageHide(self);
+      const isPageReport = is_page_report();
+      if (isPageReport) {
+        this.pageHide(self);
+      }
     }
 
     // #ifdef VUE3

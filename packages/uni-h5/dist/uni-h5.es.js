@@ -10141,7 +10141,7 @@ Friction$1.prototype.setV = function(x, y) {
   this._y_a = -this._f * this._y_v / n;
   this._t = Math.abs(x / this._x_a) || Math.abs(y / this._y_a);
   this._lastDt = null;
-  this._startTime = new Date().getTime();
+  this._startTime = (/* @__PURE__ */ new Date()).getTime();
 };
 Friction$1.prototype.setS = function(x, y) {
   this._x_s = x;
@@ -10149,7 +10149,7 @@ Friction$1.prototype.setS = function(x, y) {
 };
 Friction$1.prototype.s = function(t2) {
   if (void 0 === t2) {
-    t2 = (new Date().getTime() - this._startTime) / 1e3;
+    t2 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
   }
   if (t2 > this._t) {
     t2 = this._t;
@@ -10170,7 +10170,7 @@ Friction$1.prototype.s = function(t2) {
 };
 Friction$1.prototype.ds = function(t2) {
   if (void 0 === t2) {
-    t2 = (new Date().getTime() - this._startTime) / 1e3;
+    t2 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
   }
   if (t2 > this._t) {
     t2 = this._t;
@@ -10287,19 +10287,19 @@ Spring$1.prototype._solve = function(e2, t2) {
 };
 Spring$1.prototype.x = function(e2) {
   if (void 0 === e2) {
-    e2 = (new Date().getTime() - this._startTime) / 1e3;
+    e2 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
   }
   return this._solution ? this._endPosition + this._solution.x(e2) : 0;
 };
 Spring$1.prototype.dx = function(e2) {
   if (void 0 === e2) {
-    e2 = (new Date().getTime() - this._startTime) / 1e3;
+    e2 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
   }
   return this._solution ? this._solution.dx(e2) : 0;
 };
 Spring$1.prototype.setEnd = function(e2, n, i) {
   if (!i) {
-    i = new Date().getTime();
+    i = (/* @__PURE__ */ new Date()).getTime();
   }
   if (e2 !== this._endPosition || !t(n, 0.1)) {
     n = n || 0;
@@ -10325,7 +10325,7 @@ Spring$1.prototype.setEnd = function(e2, n, i) {
   }
 };
 Spring$1.prototype.snap = function(e2) {
-  this._startTime = new Date().getTime();
+  this._startTime = (/* @__PURE__ */ new Date()).getTime();
   this._endPosition = e2;
   this._solution = {
     x: function() {
@@ -10338,7 +10338,7 @@ Spring$1.prototype.snap = function(e2) {
 };
 Spring$1.prototype.done = function(n) {
   if (!n) {
-    n = new Date().getTime();
+    n = (/* @__PURE__ */ new Date()).getTime();
   }
   return e(this.x(), this._endPosition, 0.1) && t(this.dx(), 0.1);
 };
@@ -10348,7 +10348,7 @@ Spring$1.prototype.reconfigure = function(m, t2, c) {
   this._c = c;
   if (!this.done()) {
     this._solution = this._solve(this.x() - this._endPosition, this.dx());
-    this._startTime = new Date().getTime();
+    this._startTime = (/* @__PURE__ */ new Date()).getTime();
   }
 };
 Spring$1.prototype.springConstant = function() {
@@ -10388,14 +10388,14 @@ function STD(e2, t2, n) {
   this._startTime = 0;
 }
 STD.prototype.setEnd = function(e2, t2, n, i) {
-  const r = new Date().getTime();
+  const r = (/* @__PURE__ */ new Date()).getTime();
   this._springX.setEnd(e2, i, r);
   this._springY.setEnd(t2, i, r);
   this._springScale.setEnd(n, i, r);
   this._startTime = r;
 };
 STD.prototype.x = function() {
-  const e2 = (new Date().getTime() - this._startTime) / 1e3;
+  const e2 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
   return {
     x: this._springX.x(e2),
     y: this._springY.x(e2),
@@ -10403,7 +10403,7 @@ STD.prototype.x = function() {
   };
 };
 STD.prototype.done = function() {
-  const e2 = new Date().getTime();
+  const e2 = (/* @__PURE__ */ new Date()).getTime();
   return this._springX.done(e2) && this._springY.done(e2) && this._springScale.done(e2);
 };
 STD.prototype.reconfigure = function(e2, t2, n) {
@@ -11462,14 +11462,14 @@ class Friction {
   set(x, v2) {
     this._x = x;
     this._v = v2;
-    this._startTime = new Date().getTime();
+    this._startTime = (/* @__PURE__ */ new Date()).getTime();
   }
   setVelocityByEnd(e2) {
     this._v = (e2 - this._x) * this._dragLog / (Math.pow(this._drag, 100) - 1);
   }
   x(e2) {
     if (e2 === void 0) {
-      e2 = (new Date().getTime() - this._startTime) / 1e3;
+      e2 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
     }
     const t2 = e2 === this._dt && this._powDragDt ? this._powDragDt : this._powDragDt = Math.pow(this._drag, e2);
     this._dt = e2;
@@ -11477,7 +11477,7 @@ class Friction {
   }
   dx(e2) {
     if (e2 === void 0) {
-      e2 = (new Date().getTime() - this._startTime) / 1e3;
+      e2 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
     }
     const t2 = e2 === this._dt && this._powDragDt ? this._powDragDt : this._powDragDt = Math.pow(this._drag, e2);
     this._dt = e2;
@@ -11603,19 +11603,19 @@ class Spring {
   }
   x(e2) {
     if (e2 === void 0) {
-      e2 = (new Date().getTime() - this._startTime) / 1e3;
+      e2 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
     }
     return this._solution ? this._endPosition + this._solution.x(e2) : 0;
   }
   dx(e2) {
     if (e2 === void 0) {
-      e2 = (new Date().getTime() - this._startTime) / 1e3;
+      e2 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
     }
     return this._solution ? this._solution.dx(e2) : 0;
   }
   setEnd(e2, t2, n) {
     if (!n) {
-      n = new Date().getTime();
+      n = (/* @__PURE__ */ new Date()).getTime();
     }
     if (e2 !== this._endPosition || !a(t2, 0.4)) {
       t2 = t2 || 0;
@@ -11641,7 +11641,7 @@ class Spring {
     }
   }
   snap(e2) {
-    this._startTime = new Date().getTime();
+    this._startTime = (/* @__PURE__ */ new Date()).getTime();
     this._endPosition = e2;
     this._solution = {
       x: function() {
@@ -11654,7 +11654,7 @@ class Spring {
   }
   done(e2) {
     if (!e2) {
-      e2 = new Date().getTime();
+      e2 = (/* @__PURE__ */ new Date()).getTime();
     }
     return o(this.x(), this._endPosition, 0.4) && a(this.dx(), 0.4);
   }
@@ -11664,7 +11664,7 @@ class Spring {
     this._c = n;
     if (!this.done()) {
       this._solution = this._solve(this.x() - this._endPosition, this.dx());
-      this._startTime = new Date().getTime();
+      this._startTime = (/* @__PURE__ */ new Date()).getTime();
     }
   }
   springConstant() {
@@ -11730,14 +11730,14 @@ class Scroll {
         this._springing = false;
       }
     }
-    this._startTime = new Date().getTime();
+    this._startTime = (/* @__PURE__ */ new Date()).getTime();
   }
   x(e2) {
     if (!this._startTime) {
       return 0;
     }
     if (!e2) {
-      e2 = (new Date().getTime() - this._startTime) / 1e3;
+      e2 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
     }
     if (this._springing) {
       return this._spring.x() + this._springOffset;
@@ -17165,6 +17165,7 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
         const title = option.title;
         const position = getIsAMap() ? new maps2.LngLat(option.longitude, option.latitude) : new maps2.LatLng(option.latitude, option.longitude);
         const img = new Image();
+        let imgHeight = 0;
         img.onload = () => {
           const anchor = option.anchor || {};
           let icon;
@@ -17180,6 +17181,7 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
             w = img.width / 2;
             h2 = img.height / 2;
           }
+          imgHeight = h2;
           top = h2 - (h2 - y * h2);
           if ("MarkerImage" in maps2) {
             icon = new maps2.MarkerImage(img.src, null, null, new maps2.Point(x * w, y * h2), new maps2.Size(w, h2));
@@ -17264,13 +17266,20 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
           let callout = marker.callout;
           let calloutStyle;
           if (calloutOpt.content || title) {
+            if (getIsAMap() && calloutOpt.content) {
+              calloutOpt.content = calloutOpt.content.replaceAll("\n", "<br/>");
+            }
             const boxShadow = "0px 0px 3px 1px rgba(0,0,0,0.5)";
+            let offsetY = -imgHeight / 2;
+            if (option.width || option.height) {
+              offsetY += 14 - imgHeight / 2;
+            }
             calloutStyle = calloutOpt.content ? {
               position,
               map,
               top,
               // handle AMap callout offset
-              offsetY: -option.height / 2,
+              offsetY,
               content: calloutOpt.content,
               color: calloutOpt.color,
               fontSize: calloutOpt.fontSize,
@@ -17284,7 +17293,7 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
               map,
               top,
               // handle AMap callout offset
-              offsetY: -option.height / 2,
+              offsetY,
               content: title,
               boxShadow
             };
@@ -19810,9 +19819,8 @@ class SocketTask {
       eventNames.forEach((name) => {
         this._callbacks[name] = [];
         webSocket.addEventListener(name, (event) => {
-          const res = name === "message" ? {
-            data: event.data
-          } : {};
+          const { data, code, reason } = event;
+          const res = name === "message" ? { data } : name === "close" ? { code, reason } : {};
           this._callbacks[name].forEach((callback2) => {
             try {
               callback2(res);
@@ -20081,6 +20089,8 @@ const getLocation = /* @__PURE__ */ defineAsyncApi(
       }).catch((error) => {
         reject(error.message);
       });
+    }).catch((error) => {
+      reject(error.message || JSON.stringify(error));
     });
   },
   GetLocationProtocol,
@@ -23438,7 +23448,7 @@ function useMap(props2, rootRef, emit2) {
           break;
         case "includePoints":
           state2.includePoints = getPoints(data.includePoints);
-          if (isBoundsReady) {
+          if (isBoundsReady || getIsAMap()) {
             updateBounds();
           }
           onBoundsReady(() => {
@@ -23617,7 +23627,7 @@ function getDefaultStartValue(props2) {
     return "00:00";
   }
   if (props2.mode === mode.DATE) {
-    const year = new Date().getFullYear() - 150;
+    const year = (/* @__PURE__ */ new Date()).getFullYear() - 150;
     switch (props2.fields) {
       case fields.YEAR:
         return year.toString();
@@ -23634,7 +23644,7 @@ function getDefaultEndValue(props2) {
     return "23:59";
   }
   if (props2.mode === mode.DATE) {
-    const year = new Date().getFullYear() + 150;
+    const year = (/* @__PURE__ */ new Date()).getFullYear() + 150;
     switch (props2.fields) {
       case fields.YEAR:
         return year.toString();
@@ -24048,7 +24058,7 @@ function usePickerMethods(props2, state2, trigger, rootRef, pickerRef, selectRef
     state2.timeArray.push(hours, minutes);
   }
   function getYearStartEnd() {
-    let year = new Date().getFullYear();
+    let year = (/* @__PURE__ */ new Date()).getFullYear();
     let start = year - 150;
     let end = year + 150;
     if (props2.start) {
@@ -24304,7 +24314,7 @@ function usePickerMethods(props2, state2, trigger, rootRef, pickerRef, selectRef
         const dateArray = state2.dateArray;
         const max = dateArray[2].length;
         const day = Number(dateArray[2][valueArray[2]]) || 1;
-        const realDay = new Date(`${dateArray[0][valueArray[0]]}/${dateArray[1][valueArray[1]]}/${day}`).getDate();
+        const realDay = (/* @__PURE__ */ new Date(`${dateArray[0][valueArray[0]]}/${dateArray[1][valueArray[1]]}/${day}`)).getDate();
         if (realDay < day) {
           valueArray[2] -= realDay + max - day;
         }

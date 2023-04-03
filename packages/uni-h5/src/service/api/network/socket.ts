@@ -56,11 +56,12 @@ class SocketTask implements UniApp.SocketTask {
       eventNames.forEach((name: eventName) => {
         this._callbacks[name] = []
         webSocket.addEventListener(name, (event) => {
+          const { data, code, reason } = <any>event
           const res =
             name === 'message'
-              ? {
-                  data: (<any>event).data,
-                }
+              ? { data }
+              : name === 'close'
+              ? { code, reason }
               : {}
           this._callbacks[name].forEach((callback) => {
             try {

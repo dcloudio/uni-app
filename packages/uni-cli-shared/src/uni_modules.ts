@@ -2,12 +2,24 @@ import path from 'path'
 import fs from 'fs-extra'
 import { recursive } from 'merge'
 
-type Define = string | string[] | Record<string, string> | false
+type DefineOptions = {
+  name?: string
+  app?:
+    | boolean
+    | {
+        js?: boolean
+        kotlin?: boolean
+        swift?: boolean
+      }
+  [key: string]: any
+}
+
+type Define = string | string[] | Record<string, string | DefineOptions> | false
 type Defines = {
   [name: string]: Define
 }
 
-interface Exports {
+export interface Exports {
   [name: string]: Define | Defines | false
 }
 
@@ -16,7 +28,12 @@ export function parseUniExtApis(vite = true) {
   if (!fs.existsSync(uniModulesDir)) {
     return {}
   }
-
+  let platform = process.env.UNI_PLATFORM
+  if (platform === 'h5') {
+    platform = 'web'
+  } else if (platform === 'app-plus') {
+    platform = 'app'
+  }
   const injects: Injects = {}
   fs.readdirSync(uniModulesDir).forEach((uniModuleDir) => {
     // 必须以 uni- 开头
@@ -31,17 +48,24 @@ export function parseUniExtApis(vite = true) {
       const exports = JSON.parse(fs.readFileSync(pkgPath, 'utf8'))
         ?.uni_modules?.['uni-ext-api'] as Exports | undefined
       if (exports) {
-        Object.assign(
-          injects,
-          parseInjects(
-            vite,
-            process.env.UNI_PLATFORM === 'h5'
-              ? 'web'
-              : process.env.UNI_PLATFORM,
-            `@/uni_modules/${uniModuleDir}`,
-            exports
-          )
+        const curInjects = parseInjects(
+          vite,
+          platform,
+          `@/uni_modules/${uniModuleDir}`,
+          exports
         )
+        if (platform === 'app') {
+          Object.keys(curInjects).forEach((name) => {
+            const options = curInjects[name]
+            // js 平台禁用了
+            if (Array.isArray(options) && options.length === 3) {
+              if (options[2] && (options[2] as any).js === false) {
+                delete curInjects[name]
+              }
+            }
+          })
+        }
+        Object.assign(injects, curInjects)
       }
     } catch (e) {}
   })
@@ -50,7 +74,11 @@ export function parseUniExtApis(vite = true) {
 
 type Inject = string | string[]
 type Injects = {
-  [name: string]: string | string[] | false
+  [name: string]:
+    | string
+    | [string, string]
+    | [string, string, DefineOptions['app']]
+    | false
 }
 /**
  *  uni:'getBatteryInfo'
@@ -95,13 +123,17 @@ export function parseInjects(
   }
   const injects: Injects = {}
   for (const key in rootDefines) {
-    Object.assign(injects, parseInject(vite, source, 'uni', rootDefines[key]))
+    Object.assign(
+      injects,
+      parseInject(vite, platform, source, 'uni', rootDefines[key])
+    )
   }
   return injects
 }
 
 export function parseInject(
   vite = true,
+  platform: UniApp.PLATFORM,
   source: string,
   globalObject: string,
   define: Define
@@ -119,7 +151,22 @@ export function parseInject(
   } else {
     const keys = Object.keys(define)
     keys.forEach((d) => {
-      injects[globalObject + '.' + d] = [source, define[d]]
+      if (typeof define[d] === 'string') {
+        injects[globalObject + '.' + d] = [source, define[d] as string]
+      } else {
+        const defineOptions = define[d] as DefineOptions
+        if (defineOptions[platform] !== false) {
+          if (platform === 'app') {
+            injects[globalObject + '.' + d] = [
+              source,
+              defineOptions.name || d,
+              defineOptions.app,
+            ]
+          } else {
+            injects[globalObject + '.' + d] = [source, defineOptions.name || d]
+          }
+        }
+      }
     })
   }
   return injects

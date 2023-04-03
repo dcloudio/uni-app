@@ -129,6 +129,9 @@ export const getLocation = defineAsyncApi<API_TYPE_GET_LOCATION>(
             reject(error.message)
           })
       })
+      .catch((error) => {
+        reject(error.message || JSON.stringify(error))
+      })
   },
   GetLocationProtocol,
   GetLocationOptions

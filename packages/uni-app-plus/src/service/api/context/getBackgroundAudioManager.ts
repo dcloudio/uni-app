@@ -403,7 +403,7 @@ class BackgroundAudioManager implements UniApp.BackgroundAudioManager {
       Object.defineProperty(this, name, {
         get: () => {
           const result = item.cache ? this._options : getBackgroundAudioState()
-          return name in result ? result[name] : item.default
+          return name in result ? (result as any)[name] : item.default
         },
         set: item.readonly
           ? undefined

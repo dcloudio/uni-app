@@ -71,7 +71,7 @@ export function scrollTo(
       }
     }
   }
-  if (scrollTop < 0) {
+  if ((scrollTop as number) < 0) {
     scrollTop = 0
   }
   const documentElement = document.documentElement

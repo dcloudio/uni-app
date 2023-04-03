@@ -3,7 +3,7 @@ import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 import { LINEFEED, Emitter, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
 
 function getBaseSystemInfo() {
-  return jd.getSystemInfoSync()
+    return jd.getSystemInfoSync();
 }
 
 function validateProtocolFail(name, msg) {

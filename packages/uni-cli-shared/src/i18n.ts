@@ -18,7 +18,7 @@ export function initI18nOptions(
     return
   }
   const manifestJson = parseManifestJsonOnce(inputDir)
-  const fallbackLocale = manifestJson.fallbackLocale || manifestJson.locale
+  let fallbackLocale = manifestJson.fallbackLocale || 'en'
   const locale = resolveI18nLocale(
     platform,
     Object.keys(locales),

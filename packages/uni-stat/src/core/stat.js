@@ -6,7 +6,8 @@ import {
   get_platform_name,
   get_space,
   is_debug,
-  is_push_clientid
+  is_push_clientid,
+  is_page_report,
 } from '../utils/pageInfo.js'
 import { dbSet } from '../utils/db.js'
 class Stat extends Report {
@@ -35,9 +36,7 @@ class Stat extends Report {
           //     uni.__stat_uniCloud_space.config.spaceId
           // )
         } else {
-          console.error(
-            '应用未关联服务空间，请在uniCloud目录右键关联服务空间'
-          )
+          console.error('应用未关联服务空间，请在uniCloud目录右键关联服务空间')
         }
       }
     }
@@ -59,7 +58,7 @@ class Stat extends Report {
           const cid = res.cid || false
           //  只有获取到才会上传
           if (cid) {
-            this.sendPushRequest(options,cid)
+            this.sendPushRequest(options, cid)
           }
         },
       })
@@ -96,7 +95,10 @@ class Stat extends Report {
   show(self) {
     this.self = self
     if (get_page_types(self) === 'page') {
-      this.pageShow(self)
+      const isPageReport = is_page_report()
+      if (isPageReport) {
+        this.pageShow(self)
+      }
     }
 
     // #ifdef VUE3
@@ -117,7 +119,10 @@ class Stat extends Report {
   hide(self) {
     this.self = self
     if (get_page_types(self) === 'page') {
-      this.pageHide(self)
+      const isPageReport = is_page_report()
+      if (isPageReport) {
+        this.pageHide(self)
+      }
     }
 
     // #ifdef VUE3

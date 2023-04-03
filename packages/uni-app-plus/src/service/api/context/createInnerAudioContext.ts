@@ -354,7 +354,7 @@ class InnerAudioContext implements UniApp.InnerAudioContext {
             : getAudioState({
                 audioId: this.id,
               })
-          const value = name in result ? result[name] : item.default
+          const value = name in result ? (result as any)[name] : item.default
           return typeof value === 'number' && name !== 'volume'
             ? value / 1e3
             : value
