@@ -124,7 +124,7 @@ function invokeWxsMethod(
       formatLog('wxs', 'module ' + moduleName + ' not found')
     )
   }
-  const method = module[methodName]
+  const method = (module as Record<string, any>)[methodName]
   if (!isFunction(method)) {
     return console.error(moduleName + '.' + methodName + ' is not a function')
   }

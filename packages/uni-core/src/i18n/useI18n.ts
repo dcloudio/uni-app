@@ -45,7 +45,7 @@ function resolveJsonObj(
       ) {
         return filterJsonObj
       }
-      const value = jsonObj[names[0]]
+      const value = (jsonObj as Record<string, any>)[names[0]]
       if (_isI18nStr(value)) {
         return jsonObj
       }
