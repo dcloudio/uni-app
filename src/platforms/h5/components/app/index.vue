@@ -65,14 +65,19 @@ function onThemeChange () {
 
   try {
     mediaQueryList = window.matchMedia('(prefers-color-scheme: dark)')
-  } catch (error) { }
+  } catch (error) {}
 
   if (mediaQueryList) {
-    mediaQueryList.addEventListener('change', (e) => {
-      UniServiceJSBridge.emit('api.' + ON_THEME_CHANGE, {
+    const callback = (e) => {
+      UniServiceJSBridge.emit(ON_THEME_CHANGE, {
         theme: e.matches ? 'dark' : 'light'
       })
-    })
+    }
+    if (mediaQueryList.addEventListener) {
+      mediaQueryList.addEventListener('change', callback)
+    } else {
+      mediaQueryList.addListener(callback)
+    }
   }
 }
 
