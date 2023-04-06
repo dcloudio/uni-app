@@ -179,7 +179,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           <input
             key="input"
             ref={fieldRef}
-            value={state.value}
+            v-model={state.value}
             disabled={!!props.disabled}
             type={type.value}
             maxlength={state.maxlength}
