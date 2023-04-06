@@ -21,7 +21,13 @@ export const enum MapType {
   UNKNOWN = '',
 }
 
-export type GeoRes = (coords: GeolocationCoordinates, skip?: boolean) => void
+export type TranslateCoordinateSystemOptions = ({
+  coords,
+  skip,
+}: {
+  coords: GeolocationCoordinates
+  skip?: boolean
+}) => void
 
 export function getMapInfo() {
   if (__uniConfig.qqMapKey) {
@@ -61,7 +67,7 @@ export const getIsAMap = () => {
   }
 }
 
-export function translateGeo(
+export function translateCoordinateSystem(
   type: string | undefined,
   coords: GeolocationCoordinates,
   skip?: boolean
@@ -76,7 +82,7 @@ export function translateGeo(
     return Promise.resolve(coords)
   }
   if (mapInfo.type === MapType.QQ) {
-    return new Promise((resolve: GeoRes) => {
+    return new Promise((resolve: GeolocationCoordinates | any) => {
       getJSONP(
         `https://apis.map.qq.com/jsapi?qt=translate&type=1&points=${coords.longitude},${coords.latitude}&key=${mapInfo.key}&output=jsonp&pf=jsapi&ref=jsapi`,
         {
@@ -107,7 +113,7 @@ export function translateGeo(
     })
   }
   if (mapInfo.type === MapType.AMAP) {
-    return new Promise((resolve: GeoRes) => {
+    return new Promise((resolve: GeolocationCoordinates | any) => {
       loadMaps([], () => {
         window.AMap.convertFrom(
           [coords.longitude, coords.latitude],
@@ -132,5 +138,5 @@ export function translateGeo(
       })
     })
   }
-  return Promise.reject(new Error('translateGeo faild'))
+  return Promise.reject(new Error('translate coordinate system faild'))
 }
