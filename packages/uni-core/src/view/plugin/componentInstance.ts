@@ -9,7 +9,8 @@ const isMouseEvent = (val: Event): val is MouseEvent =>
   val.type.indexOf('mouse') === 0 || ['contextmenu'].includes(val.type)
 const isTouchEvent = (val: Event): val is TouchEvent =>
   (typeof TouchEvent !== 'undefined' && val instanceof TouchEvent) ||
-  val.type.indexOf('touch') === 0
+  val.type.indexOf('touch') === 0 ||
+  ['longpress'].indexOf(val.type) >= 0
 // normalizeNativeEvent
 export function $nne(
   evt: Event,
@@ -45,14 +46,8 @@ export function $nne(
     normalizeMouseEvent(res as unknown as WechatMiniprogram.Touch, evt)
   } else if (isTouchEvent(evt)) {
     const top = getWindowTop()
-    ;(res as any).touches = normalizeTouchEvent(
-      (evt as TouchEvent).touches,
-      top
-    )
-    ;(res as any).changedTouches = normalizeTouchEvent(
-      (evt as TouchEvent).changedTouches,
-      top
-    )
+    ;(res as any).touches = normalizeTouchEvent(evt.touches, top)
+    ;(res as any).changedTouches = normalizeTouchEvent(evt.changedTouches, top)
   }
   if (__PLATFORM__ === 'h5') {
     return (
