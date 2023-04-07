@@ -64,7 +64,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     const resizeSensorRef: Ref<ComponentPublicInstance | null> = ref(null)
     const onMountedCallback = () => {
       const resizeSensor = resizeSensorRef.value as ComponentPublicInstance
-      state.height = resizeSensor.$el.offsetHeight
+      resizeSensor && (state.height = resizeSensor.$el.offsetHeight)
     }
     if (__PLATFORM__ !== 'app') {
       onMounted(onMountedCallback)
@@ -117,7 +117,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       useRebuild(() => {
         // 由于 App 端 onMounted 时机未插入真实位置，需重新执行
         onMountedCallback()
-        columnsRef.value = (wrapperRef.value as HTMLElement).children
+        wrapperRef.value &&
+          (columnsRef.value = (wrapperRef.value as HTMLElement).children)
       })
     }
 
