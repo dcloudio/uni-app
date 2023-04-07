@@ -216,17 +216,6 @@ export async function compile(
         process.env.UNI_UTS_ERRORS = `iOS手机在windows上使用标准基座真机运行无法使用uts插件，如需使用uts插件请提交云端打包自定义基座`
         return createResult(outputPluginDir, errMsg, code, deps, meta)
       }
-      // ios 模拟器不支持
-      if (process.env.HX_RUN_DEVICE_TYPE === 'ios_simulator') {
-        process.env.UNI_UTS_TIPS = `iOS手机在模拟器运行暂不支持uts插件，如需调用uts插件请使用自定义基座`
-        return createResult(
-          outputPluginDir,
-          compileErrMsg(pkg.id),
-          code,
-          deps,
-          meta
-        )
-      }
     }
     if (utsPlatform === 'app-android' || utsPlatform === 'app-ios') {
       const components =
