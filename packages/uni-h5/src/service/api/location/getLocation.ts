@@ -8,8 +8,8 @@ import {
 import {
   MapType,
   getMapInfo,
-  GeoRes,
-  translateGeo,
+  TranslateCoordinateSystemOptions,
+  translateCoordinateSystem,
 } from '../../../helpers/location'
 import { getJSONP } from '../../../helpers/getJSONP'
 import { request } from '../network/request'
@@ -23,10 +23,10 @@ export const getLocation = defineAsyncApi<API_TYPE_GET_LOCATION>(
   ) => {
     const mapInfo = getMapInfo()
 
-    new Promise((resolve: GeoRes, reject) => {
+    new Promise((resolve: TranslateCoordinateSystemOptions, reject) => {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
-          (res) => resolve(res.coords),
+          (res) => resolve({ coords: res.coords }),
           reject,
           {
             enableHighAccuracy: isHighAccuracy || altitude,
@@ -38,81 +38,92 @@ export const getLocation = defineAsyncApi<API_TYPE_GET_LOCATION>(
       }
     })
       .catch((error) => {
-        return new Promise((resolve: GeoRes, reject) => {
-          if (mapInfo.type === MapType.QQ) {
-            getJSONP(
-              `https://apis.map.qq.com/ws/location/v1/ip?output=jsonp&key=${mapInfo.key}`,
-              {
-                callback: 'callback',
-              },
-              (res: any) => {
-                if ('result' in res && res.result.location) {
-                  const location = res.result.location
-                  resolve(
-                    {
-                      latitude: location.lat,
-                      longitude: location.lng,
-                    } as GeolocationCoordinates,
-                    true
-                  )
-                } else {
-                  reject(new Error(res.message || JSON.stringify(res)))
-                }
-              },
-              () => reject(new Error('network error'))
-            )
-          } else if (mapInfo.type === MapType.GOOGLE) {
-            request({
-              method: 'POST',
-              url: `https://www.googleapis.com/geolocation/v1/geolocate?key=${mapInfo.key}`,
-              success(res) {
-                const data: AnyObject = res.data as AnyObject
-                if ('location' in data) {
-                  resolve({
-                    latitude: data.location.lat,
-                    longitude: data.location.lng,
-                    accuracy: data.accuracy,
-                  } as GeolocationCoordinates)
-                } else {
-                  reject(
-                    new Error(
-                      (data.error && data.error.message) || JSON.stringify(res)
-                    )
-                  )
-                }
-              },
-              fail() {
-                reject(new Error('network error'))
-              },
-            })
-          } else if (mapInfo.type === MapType.AMAP) {
-            loadMaps([], () => {
-              window.AMap.plugin('AMap.Geolocation', () => {
-                const geolocation = new (window.AMap as any).Geolocation({
-                  enableHighAccuracy: true,
-                  timeout: 10000,
-                })
-
-                geolocation.getCurrentPosition((status: string, data: any) => {
-                  if (status === 'complete') {
+        return new Promise(
+          (resolve: TranslateCoordinateSystemOptions, reject) => {
+            if (mapInfo.type === MapType.QQ) {
+              getJSONP(
+                `https://apis.map.qq.com/ws/location/v1/ip?output=jsonp&key=${mapInfo.key}`,
+                {
+                  callback: 'callback',
+                },
+                (res: any) => {
+                  if ('result' in res && res.result.location) {
+                    const location = res.result.location
                     resolve({
-                      latitude: data.position.lat,
-                      longitude: data.position.lng,
-                      accuracy: data.accuracy,
-                    } as GeolocationCoordinates)
+                      coords: {
+                        latitude: location.lat,
+                        longitude: location.lng,
+                      } as GeolocationCoordinates,
+                      skip: true,
+                    })
                   } else {
-                    reject(new Error(data.message))
+                    reject(new Error(res.message || JSON.stringify(res)))
                   }
+                },
+                () => reject(new Error('network error'))
+              )
+            } else if (mapInfo.type === MapType.GOOGLE) {
+              request({
+                method: 'POST',
+                url: `https://www.googleapis.com/geolocation/v1/geolocate?key=${mapInfo.key}`,
+                success(res) {
+                  const data: AnyObject = res.data as AnyObject
+                  if ('location' in data) {
+                    resolve({
+                      coords: {
+                        latitude: data.location.lat,
+                        longitude: data.location.lng,
+                        accuracy: data.accuracy,
+                      } as GeolocationCoordinates,
+                      skip: true,
+                    })
+                  } else {
+                    reject(
+                      new Error(
+                        (data.error && data.error.message) ||
+                          JSON.stringify(res)
+                      )
+                    )
+                  }
+                },
+                fail() {
+                  reject(new Error('network error'))
+                },
+              })
+            } else if (mapInfo.type === MapType.AMAP) {
+              loadMaps([], () => {
+                window.AMap.plugin('AMap.Geolocation', () => {
+                  const geolocation = new (window.AMap as any).Geolocation({
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                  })
+
+                  geolocation.getCurrentPosition(
+                    (status: string, data: any) => {
+                      if (status === 'complete') {
+                        resolve({
+                          coords: {
+                            latitude: data.position.lat,
+                            longitude: data.position.lng,
+                            accuracy: data.accuracy,
+                          } as GeolocationCoordinates,
+                          skip: true,
+                        })
+                      } else {
+                        reject(new Error(data.message))
+                      }
+                    }
+                  )
                 })
               })
-            })
-          } else {
-            reject(error)
+            } else {
+              reject(error)
+            }
           }
-        })
+        )
       })
-      .then((coords: GeolocationCoordinates, skip?: boolean) => {
-        translateGeo(type, coords, skip)
+      .then(({ coords, skip }) => {
+        translateCoordinateSystem(type, coords, skip)
           .then((coords: GeolocationCoordinates | any) => {
             resolve({
               latitude: coords.latitude,

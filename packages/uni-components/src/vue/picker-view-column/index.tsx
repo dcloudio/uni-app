@@ -253,7 +253,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     if (__PLATFORM__ === 'app') {
       let isMounted: boolean = false
       useRebuild(() => {
-        state.length = (contentRef.value as HTMLElement).children.length
+        contentRef.value &&
+          (state.length = (contentRef.value as HTMLElement).children.length)
         if (!isMounted) {
           isMounted = true
           // 由于 App 端 onMounted 时机未插入真实位置，需重新执行

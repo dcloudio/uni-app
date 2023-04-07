@@ -46,7 +46,7 @@ const pkgs = {
     latest: '3.4.0',
   },
   typescript: {
-    latest: '5.0.2',
+    latest: '5.0.3',
   },
 }
 

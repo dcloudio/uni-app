@@ -3,7 +3,7 @@ import { LINEFEED, UniNodeJSON } from '@dcloudio/uni-shared'
 import { DecodeOptions, parseText } from '@dcloudio/uni-components'
 import { UniAnimationElement } from './UniAnimationElement'
 
-interface TextProps {
+export interface TextProps {
   space: DecodeOptions['space']
   decode: boolean
 }

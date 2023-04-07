@@ -15716,11 +15716,16 @@ function onThemeChange$2() {
   } catch (error) {
   }
   if (mediaQueryList) {
-    mediaQueryList.addEventListener("change", (e2) => {
+    let callback = (e2) => {
       UniServiceJSBridge.emit(ON_THEME_CHANGE, {
         theme: e2.matches ? "dark" : "light"
       });
-    });
+    };
+    if (mediaQueryList.addEventListener) {
+      mediaQueryList.addEventListener("change", callback);
+    } else {
+      mediaQueryList.addListener(callback);
+    }
   }
 }
 function invokeOnTabItemTap(route) {
@@ -16767,7 +16772,7 @@ const getIsAMap = () => {
     return IS_AMAP = getMapInfo().type === "AMap";
   }
 };
-function translateGeo(type, coords, skip) {
+function translateCoordinateSystem(type, coords, skip) {
   const mapInfo = getMapInfo();
   const wgs84Map = [
     "google"
@@ -16829,7 +16834,7 @@ function translateGeo(type, coords, skip) {
       });
     });
   }
-  return Promise.reject(new Error("translateGeo faild"));
+  return Promise.reject(new Error("translate coordinate system faild"));
 }
 function createCallout(maps2) {
   function onAdd() {
@@ -19992,7 +19997,7 @@ const getLocation = /* @__PURE__ */ defineAsyncApi(
     new Promise((resolve2, reject2) => {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
-          (res) => resolve2(res.coords),
+          (res) => resolve2({ coords: res.coords }),
           reject2,
           {
             enableHighAccuracy: isHighAccuracy || altitude,
@@ -20013,13 +20018,13 @@ const getLocation = /* @__PURE__ */ defineAsyncApi(
             (res) => {
               if ("result" in res && res.result.location) {
                 const location2 = res.result.location;
-                resolve2(
-                  {
+                resolve2({
+                  coords: {
                     latitude: location2.lat,
                     longitude: location2.lng
                   },
-                  true
-                );
+                  skip: true
+                });
               } else {
                 reject2(new Error(res.message || JSON.stringify(res)));
               }
@@ -20034,9 +20039,12 @@ const getLocation = /* @__PURE__ */ defineAsyncApi(
               const data = res.data;
               if ("location" in data) {
                 resolve2({
-                  latitude: data.location.lat,
-                  longitude: data.location.lng,
-                  accuracy: data.accuracy
+                  coords: {
+                    latitude: data.location.lat,
+                    longitude: data.location.lng,
+                    accuracy: data.accuracy
+                  },
+                  skip: true
                 });
               } else {
                 reject2(
@@ -20060,9 +20068,12 @@ const getLocation = /* @__PURE__ */ defineAsyncApi(
               geolocation.getCurrentPosition((status, data) => {
                 if (status === "complete") {
                   resolve2({
-                    latitude: data.position.lat,
-                    longitude: data.position.lng,
-                    accuracy: data.accuracy
+                    coords: {
+                      latitude: data.position.lat,
+                      longitude: data.position.lng,
+                      accuracy: data.accuracy
+                    },
+                    skip: true
                   });
                 } else {
                   reject2(new Error(data.message));
@@ -20074,8 +20085,8 @@ const getLocation = /* @__PURE__ */ defineAsyncApi(
           reject2(error);
         }
       });
-    }).then((coords, skip) => {
-      translateGeo(type, coords, skip).then((coords2) => {
+    }).then(({ coords, skip }) => {
+      translateCoordinateSystem(type, coords, skip).then((coords2) => {
         resolve({
           latitude: coords2.latitude,
           longitude: coords2.longitude,
@@ -20621,7 +20632,7 @@ const startLocationUpdate = /* @__PURE__ */ defineAsyncApi(
     watchId = watchId || navigator.geolocation.watchPosition(
       (res) => {
         started = true;
-        translateGeo(options == null ? void 0 : options.type, res.coords).then((coords) => {
+        translateCoordinateSystem(options == null ? void 0 : options.type, res.coords).then((coords) => {
           UniServiceJSBridge.invokeOnCallback(
             API_ON_LOCATION_CHANGE,
             coords

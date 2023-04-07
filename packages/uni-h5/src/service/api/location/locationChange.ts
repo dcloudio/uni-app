@@ -17,7 +17,7 @@ import {
   API_TYPE_ON_LOCATION_CHANGE_ERROR,
   API_ON_LOCATION_CHANGE_ERROR,
 } from '@dcloudio/uni-api'
-import { translateGeo } from '../../../helpers/location'
+import { translateCoordinateSystem } from '../../../helpers/location'
 
 let started = false
 let watchId: number = 0
@@ -36,7 +36,7 @@ export const startLocationUpdate =
         navigator.geolocation.watchPosition(
           (res) => {
             started = true
-            translateGeo(options?.type, res.coords)
+            translateCoordinateSystem(options?.type, res.coords)
               .then((coords) => {
                 UniServiceJSBridge.invokeOnCallback(
                   API_ON_LOCATION_CHANGE,

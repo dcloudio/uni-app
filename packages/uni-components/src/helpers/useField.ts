@@ -9,6 +9,7 @@ import {
   reactive,
   nextTick,
   HTMLAttributes,
+  ExtractPropTypes,
 } from 'vue'
 import { extend, isFunction } from '@vue/shared'
 import { debounce } from '@dcloudio/uni-shared'
@@ -182,12 +183,12 @@ export const emit = [
   ...keyboardEmit,
 ]
 
-type Props = Record<keyof typeof props, any>
+type Props = ExtractPropTypes<typeof props>
 
 interface State {
   value: string
   maxlength: number
-  focus: boolean
+  focus: boolean | string
   composing: boolean
   selectionStart: number
   selectionEnd: number

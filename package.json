@@ -87,7 +87,7 @@
     "simple-git-hooks": "^2.8.0",
     "terser": "^5.4.0",
     "ts-jest": "^29.0.3",
-    "typescript": "^5.0.2",
+    "typescript": "^5.0.3",
     "vite": "4.2.1",
     "vue": "3.2.47",
     "vue-router": "^4.1.6",

@@ -1,6 +1,7 @@
 export interface ComponentJson {
   component: true
   usingComponents?: UsingComponents
+  usingSwanComponents?: UsingComponents // 百度小程序特有
   // mp-alipay
   styleIsolation?: 'apply-shared' | 'shared'
 }
