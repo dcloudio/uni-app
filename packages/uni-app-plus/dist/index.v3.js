@@ -11447,9 +11447,9 @@ var serviceContext = (function () {
     });
     try {
       if (type === 'string' && parseValue(value) !== undefined) {
-        plus.storage.setItemAsync(key + STORAGE_DATA_TYPE, type);
+        plus.storage.setItemAsync(key + STORAGE_DATA_TYPE, type, () => {});
       } else {
-        plus.storage.removeItemAsync(key + STORAGE_DATA_TYPE);
+        plus.storage.removeItemAsync(key + STORAGE_DATA_TYPE, () => {});
       }
       plus.storage.setItemAsync(key, value, function () {
         invoke$1(callbackId, {
@@ -11552,7 +11552,7 @@ var serviceContext = (function () {
     key
   } = {}, callbackId) {
     // 兼容App端历史格式
-    plus.storage.removeItemAsync(key + STORAGE_DATA_TYPE);
+    plus.storage.removeItemAsync(key + STORAGE_DATA_TYPE, () => {});
     plus.storage.removeItemAsync(key, function (res) {
       invoke$1(callbackId, {
         errMsg: 'removeStorage:ok'
