@@ -12,9 +12,15 @@ function parseUniExtApis(vite = true) {
     if (!fs_extra_1.default.existsSync(uniModulesDir)) {
         return {};
     }
+    let platform = process.env.UNI_PLATFORM;
+    if (platform === 'h5') {
+        platform = 'web';
+    }
+    else if (platform === 'app-plus') {
+        platform = 'app';
+    }
     const injects = {};
     fs_extra_1.default.readdirSync(uniModulesDir).forEach((uniModuleDir) => {
-        var _a, _b;
         // 必须以 uni- 开头
         if (!uniModuleDir.startsWith('uni-')) {
             return;
@@ -24,13 +30,25 @@ function parseUniExtApis(vite = true) {
             return;
         }
         try {
-            const exports = (_b = (_a = JSON.parse(fs_extra_1.default.readFileSync(pkgPath, 'utf8'))) === null || _a === void 0 ? void 0 : _a.uni_modules) === null || _b === void 0 ? void 0 : _b['uni-ext-api'];
+            const exports = JSON.parse(fs_extra_1.default.readFileSync(pkgPath, 'utf8'))
+                ?.uni_modules?.['uni-ext-api'];
             if (exports) {
-                Object.assign(injects, parseInjects(vite, process.env.UNI_PLATFORM === 'h5' ? 'web' : process.env.UNI_PLATFORM, `@/uni_modules/${uniModuleDir}`, exports));
+                const curInjects = parseInjects(vite, platform, `@/uni_modules/${uniModuleDir}`, exports);
+                if (platform === 'app') {
+                    Object.keys(curInjects).forEach((name) => {
+                        const options = curInjects[name];
+                        // js 平台禁用了
+                        if (Array.isArray(options) && options.length === 3) {
+                            if (options[2] && options[2].js === false) {
+                                delete curInjects[name];
+                            }
+                        }
+                    });
+                }
+                Object.assign(injects, curInjects);
             }
         }
-        catch (e) {
-        }
+        catch (e) { }
     });
     return injects;
 }
@@ -73,12 +91,12 @@ function parseInjects(vite = true, platform, source, exports = {}) {
     }
     const injects = {};
     for (const key in rootDefines) {
-        Object.assign(injects, parseInject(vite, source, 'uni', rootDefines[key]));
+        Object.assign(injects, parseInject(vite, platform, source, 'uni', rootDefines[key]));
     }
     return injects;
 }
 exports.parseInjects = parseInjects;
-function parseInject(vite = true, source, globalObject, define) {
+function parseInject(vite = true, platform, source, globalObject, define) {
     const injects = {};
     if (define === false) {
     }
@@ -95,7 +113,24 @@ function parseInject(vite = true, source, globalObject, define) {
     else {
         const keys = Object.keys(define);
         keys.forEach((d) => {
-            injects[globalObject + '.' + d] = [source, define[d]];
+            if (typeof define[d] === 'string') {
+                injects[globalObject + '.' + d] = [source, define[d]];
+            }
+            else {
+                const defineOptions = define[d];
+                if (defineOptions[platform] !== false) {
+                    if (platform === 'app') {
+                        injects[globalObject + '.' + d] = [
+                            source,
+                            defineOptions.name || d,
+                            defineOptions.app,
+                        ];
+                    }
+                    else {
+                        injects[globalObject + '.' + d] = [source, defineOptions.name || d];
+                    }
+                }
+            }
         });
     }
     return injects;

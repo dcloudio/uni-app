@@ -41,9 +41,9 @@ export function setStorage ({
   })
   try {
     if (type === 'string' && parseValue(value) !== undefined) {
-      plus.storage.setItemAsync(key + STORAGE_DATA_TYPE, type)
+      plus.storage.setItemAsync(key + STORAGE_DATA_TYPE, type, () => {})
     } else {
-      plus.storage.removeItemAsync(key + STORAGE_DATA_TYPE)
+      plus.storage.removeItemAsync(key + STORAGE_DATA_TYPE, () => {})
     }
     plus.storage.setItemAsync(key, value, function () {
       invoke(callbackId, {
@@ -146,7 +146,7 @@ export function removeStorage ({
   key
 } = {}, callbackId) {
   // 兼容App端历史格式
-  plus.storage.removeItemAsync(key + STORAGE_DATA_TYPE)
+  plus.storage.removeItemAsync(key + STORAGE_DATA_TYPE, () => {})
   plus.storage.removeItemAsync(key, function (res) {
     invoke(callbackId, {
       errMsg: 'removeStorage:ok'

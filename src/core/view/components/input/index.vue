@@ -293,7 +293,7 @@ export default {
 
       if (outOfMaxlength) return
 
-      if (!this.ignoreCompositionEvent) this.valueSync = this.$refs.input.value
+      this.valueSync = this.$refs.input.value
 
       this.$triggerInput($event, {
         value: this.valueSync

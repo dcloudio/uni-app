@@ -42,7 +42,7 @@ export function getMapInfo () {
 
 export const IS_AMAP = getMapInfo().type === MapType.AMAP
 
-export function translateGeo (type, coords, skip) {
+export function translateCoordinateSystem (type, coords, skip) {
   const mapInfo = getMapInfo()
   const wgs84Map = [MapType.GOOGLE]
   if (
@@ -77,10 +77,10 @@ export function translateGeo (type, coords, skip) {
               speed: coords.speed
             })
           } else {
-            reject(new Error('translate geo fail'))
+            reject(new Error('translate coordinate system fail'))
           }
         },
-        () => reject(new Error('translate geo fail'))
+        () => reject(new Error('translate coordinate system fail'))
       )
     })
   }
@@ -104,7 +104,7 @@ export function translateGeo (type, coords, skip) {
                 speed: coords.speed
               })
             } else {
-              reject(new Error('translate geo fail'))
+              reject(new Error('translate coordinate system fail'))
             }
           }
         )

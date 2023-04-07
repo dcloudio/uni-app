@@ -4,7 +4,7 @@ import {
 import {
   MapType,
   getMapInfo,
-  translateGeo
+  translateCoordinateSystem
 } from '../../../helpers/location'
 import { loadMaps } from '../../../view/components/map/maps'
 
@@ -26,7 +26,7 @@ export function getLocation ({
 
   new Promise((resolve, reject) => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(res => resolve(res.coords), reject, {
+      navigator.geolocation.getCurrentPosition(res => resolve({ coords: res.coords }), reject, {
         enableHighAccuracy: isHighAccuracy || altitude,
         timeout: highAccuracyExpireTime || 1000 * 100
       })
@@ -42,9 +42,12 @@ export function getLocation ({
           if ('result' in res && res.result.location) {
             const location = res.result.location
             resolve({
-              latitude: location.lat,
-              longitude: location.lng
-            }, true)
+              coords: {
+                latitude: location.lat,
+                longitude: location.lng
+              },
+              skip: true
+            })
           } else {
             reject(new Error(res.message || JSON.stringify(res)))
           }
@@ -57,9 +60,12 @@ export function getLocation ({
             const data = res.data
             if ('location' in data) {
               resolve({
-                latitude: data.location.lat,
-                longitude: data.location.lng,
-                accuracy: data.accuracy
+                coords: {
+                  latitude: data.location.lat,
+                  longitude: data.location.lng,
+                  accuracy: data.accuracy
+                },
+                skip: true
               })
             } else {
               reject(new Error((data.error && data.error.message) || JSON.stringify(res)))
@@ -80,9 +86,12 @@ export function getLocation ({
             geolocation.getCurrentPosition((status, data) => {
               if (status === 'complete') {
                 resolve({
-                  latitude: data.position.lat,
-                  longitude: data.position.lng,
-                  accuracy: data.accuracy
+                  coords: {
+                    latitude: data.position.lat,
+                    longitude: data.position.lng,
+                    accuracy: data.accuracy
+                  },
+                  skip: true
                 })
               } else {
                 reject(new Error(data.message))
@@ -94,8 +103,8 @@ export function getLocation ({
         reject(new Error('network error'))
       }
     })
-  }).then((coords, skip) => {
-    translateGeo(type, coords, skip)
+  }).then(({ coords, skip }) => {
+    translateCoordinateSystem(type, coords, skip)
       .then(coords => {
         invoke(
           callbackId,
