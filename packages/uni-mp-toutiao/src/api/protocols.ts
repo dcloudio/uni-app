@@ -26,22 +26,6 @@ export const startAccelerometer = {
     interval: false,
   },
 }
-export const showToast = {
-  args: {
-    image: false,
-    mask: false,
-  },
-}
-export const showLoading = {
-  args: {
-    mask: false,
-  },
-}
-export const showActionSheet = {
-  args: {
-    itemColor: false,
-  },
-}
 export const login = {
   args: {
     scopes: false,
