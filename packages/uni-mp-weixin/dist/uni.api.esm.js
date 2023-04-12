@@ -1206,20 +1206,14 @@ function isWxKey(key) {
     return objectKeys.indexOf(key) > -1 || typeof wx[key] === 'function';
 }
 function initWx() {
-    let global = wx;
-    if (typeof globalThis !== 'undefined' &&
-        globalThis.wx &&
-        wx !== globalThis.wx) {
-        global = globalThis.wx;
-    }
     const newWx = {};
-    for (const key in global) {
+    for (const key in wx) {
         if (isWxKey(key)) {
             // TODO wrapper function
-            newWx[key] = global[key];
+            newWx[key] = wx[key];
         }
     }
-    if (typeof globalThis !== 'undefined') {
+    if (typeof globalThis !== 'undefined' && typeof requireMiniProgram === 'undefined') {
         globalThis.wx = newWx;
     }
     return newWx;
