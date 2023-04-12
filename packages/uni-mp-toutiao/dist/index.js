@@ -1072,22 +1072,6 @@ const protocols = {
       interval: false
     }
   },
-  showToast: {
-    args: {
-      image: false,
-      mask: false
-    }
-  },
-  showLoading: {
-    args: {
-      mask: false
-    }
-  },
-  showActionSheet: {
-    args: {
-      itemColor: false
-    }
-  },
   login: {
     args: {
       scopes: false,
@@ -2993,7 +2977,7 @@ if (typeof Proxy !== 'undefined' && "mp-toutiao" !== 'app-plus') {
       uni[name] = promisify(name, todoApis[name]);
     });
     Object.keys(extraApi).forEach(name => {
-      uni[name] = promisify(name, todoApis[name]);
+      uni[name] = promisify(name, extraApi[name]);
     });
   }
 

@@ -125,22 +125,6 @@ const protocols = {
       interval: false
     }
   },
-  showToast: {
-    args: {
-      image: false,
-      mask: false
-    }
-  },
-  showLoading: {
-    args: {
-      mask: false
-    }
-  },
-  showActionSheet: {
-    args: {
-      itemColor: false
-    }
-  },
   login: {
     args: {
       scopes: false,
