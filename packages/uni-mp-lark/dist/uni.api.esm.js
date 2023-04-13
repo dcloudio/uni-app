@@ -1187,22 +1187,6 @@ const startAccelerometer = {
         interval: false,
     },
 };
-const showToast = {
-    args: {
-        image: false,
-        mask: false,
-    },
-};
-const showLoading = {
-    args: {
-        mask: false,
-    },
-};
-const showActionSheet = {
-    args: {
-        itemColor: false,
-    },
-};
 const login = {
     args: {
         scopes: false,
@@ -1241,9 +1225,6 @@ var protocols = /*#__PURE__*/Object.freeze({
   redirectTo: redirectTo,
   requestPayment: requestPayment,
   scanCode: scanCode,
-  showActionSheet: showActionSheet,
-  showLoading: showLoading,
-  showToast: showToast,
   startAccelerometer: startAccelerometer
 });
 

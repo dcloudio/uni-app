@@ -5,7 +5,7 @@ public func testByJs() {
 }
 @objc(UTSSDKModulesTestUtsIndexSwift)
 @objcMembers
-public class IndexSwift : NSObject {
+public class UTSSDKModulesTestUtsIndexSwift : NSObject {
     public static func s_testByJs() {
         return testByJs();
     }

@@ -1,4 +1,4 @@
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, h, createTextVNode, createBlock, onBeforeActivate, onBeforeDeactivate, renderList, onDeactivated, createApp, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vModelDynamic, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, h, createTextVNode, createBlock, onBeforeActivate, onBeforeDeactivate, renderList, onDeactivated, createApp, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
 import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, debounce, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, parseQuery, NAVBAR_HEIGHT, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, updateElementStyle, sortObject, OFF_THEME_CHANGE, ON_BACK_PRESS, parseUrl, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
@@ -1508,7 +1508,7 @@ function getWxsVm(el) {
 }
 const isClickEvent = (val) => val.type === "click";
 const isMouseEvent = (val) => val.type.indexOf("mouse") === 0 || ["contextmenu"].includes(val.type);
-const isTouchEvent = (val) => typeof TouchEvent !== "undefined" && val instanceof TouchEvent || val.type.indexOf("touch") === 0;
+const isTouchEvent = (val) => typeof TouchEvent !== "undefined" && val instanceof TouchEvent || val.type.indexOf("touch") === 0 || ["longpress"].indexOf(val.type) >= 0;
 function $nne(evt, eventValue, instance2) {
   const { currentTarget } = evt;
   if (!(evt instanceof Event) || !(currentTarget instanceof HTMLElement)) {
@@ -1533,14 +1533,8 @@ function $nne(evt, eventValue, instance2) {
     normalizeMouseEvent(res, evt);
   } else if (isTouchEvent(evt)) {
     const top = getWindowTop();
-    res.touches = normalizeTouchEvent(
-      evt.touches,
-      top
-    );
-    res.changedTouches = normalizeTouchEvent(
-      evt.changedTouches,
-      top
-    );
+    res.touches = normalizeTouchEvent(evt.touches, top);
+    res.changedTouches = normalizeTouchEvent(evt.changedTouches, top);
   }
   {
     return wrapperH5WxsEvent(
@@ -9688,10 +9682,10 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "step": step.value,
         "class": "uni-input-input",
         "onFocus": (event) => event.target.blur()
-      }, null, 40, ["value", "readonly", "type", "maxlength", "step", "onFocus"]) : createVNode("input", {
+      }, null, 40, ["value", "readonly", "type", "maxlength", "step", "onFocus"]) : withDirectives(createVNode("input", {
         "key": "input",
         "ref": fieldRef,
-        "value": state2.value,
+        "onUpdate:modelValue": ($event) => state2.value = $event,
         "disabled": !!props2.disabled,
         "type": type.value,
         "maxlength": state2.maxlength,
@@ -9702,7 +9696,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "autocomplete": autocomplete.value,
         "onKeyup": onKeyUpEnter,
         "inputmode": props2.inputmode
-      }, null, 40, ["value", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup", "inputmode"]);
+      }, null, 40, ["onUpdate:modelValue", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup", "inputmode"]), [[vModelDynamic, state2.value]]);
       return createVNode("uni-input", {
         "ref": rootRef
       }, [createVNode("div", {
@@ -11386,7 +11380,7 @@ const PickerView = /* @__PURE__ */ defineBuiltInComponent({
     const resizeSensorRef = ref(null);
     const onMountedCallback = () => {
       const resizeSensor = resizeSensorRef.value;
-      state2.height = resizeSensor.$el.offsetHeight;
+      resizeSensor && (state2.height = resizeSensor.$el.offsetHeight);
     };
     {
       onMounted(onMountedCallback);
@@ -20008,83 +20002,87 @@ const getLocation = /* @__PURE__ */ defineAsyncApi(
         reject2(new Error("device nonsupport geolocation"));
       }
     }).catch((error) => {
-      return new Promise((resolve2, reject2) => {
-        if (mapInfo.type === MapType.QQ) {
-          getJSONP(
-            `https://apis.map.qq.com/ws/location/v1/ip?output=jsonp&key=${mapInfo.key}`,
-            {
-              callback: "callback"
-            },
-            (res) => {
-              if ("result" in res && res.result.location) {
-                const location2 = res.result.location;
-                resolve2({
-                  coords: {
-                    latitude: location2.lat,
-                    longitude: location2.lng
-                  },
-                  skip: true
-                });
-              } else {
-                reject2(new Error(res.message || JSON.stringify(res)));
-              }
-            },
-            () => reject2(new Error("network error"))
-          );
-        } else if (mapInfo.type === MapType.GOOGLE) {
-          request({
-            method: "POST",
-            url: `https://www.googleapis.com/geolocation/v1/geolocate?key=${mapInfo.key}`,
-            success(res) {
-              const data = res.data;
-              if ("location" in data) {
-                resolve2({
-                  coords: {
-                    latitude: data.location.lat,
-                    longitude: data.location.lng,
-                    accuracy: data.accuracy
-                  },
-                  skip: true
-                });
-              } else {
-                reject2(
-                  new Error(
-                    data.error && data.error.message || JSON.stringify(res)
-                  )
-                );
-              }
-            },
-            fail() {
-              reject2(new Error("network error"));
-            }
-          });
-        } else if (mapInfo.type === MapType.AMAP) {
-          loadMaps([], () => {
-            window.AMap.plugin("AMap.Geolocation", () => {
-              const geolocation = new window.AMap.Geolocation({
-                enableHighAccuracy: true,
-                timeout: 1e4
-              });
-              geolocation.getCurrentPosition((status, data) => {
-                if (status === "complete") {
+      return new Promise(
+        (resolve2, reject2) => {
+          if (mapInfo.type === MapType.QQ) {
+            getJSONP(
+              `https://apis.map.qq.com/ws/location/v1/ip?output=jsonp&key=${mapInfo.key}`,
+              {
+                callback: "callback"
+              },
+              (res) => {
+                if ("result" in res && res.result.location) {
+                  const location2 = res.result.location;
                   resolve2({
                     coords: {
-                      latitude: data.position.lat,
-                      longitude: data.position.lng,
+                      latitude: location2.lat,
+                      longitude: location2.lng
+                    },
+                    skip: true
+                  });
+                } else {
+                  reject2(new Error(res.message || JSON.stringify(res)));
+                }
+              },
+              () => reject2(new Error("network error"))
+            );
+          } else if (mapInfo.type === MapType.GOOGLE) {
+            request({
+              method: "POST",
+              url: `https://www.googleapis.com/geolocation/v1/geolocate?key=${mapInfo.key}`,
+              success(res) {
+                const data = res.data;
+                if ("location" in data) {
+                  resolve2({
+                    coords: {
+                      latitude: data.location.lat,
+                      longitude: data.location.lng,
                       accuracy: data.accuracy
                     },
                     skip: true
                   });
                 } else {
-                  reject2(new Error(data.message));
+                  reject2(
+                    new Error(
+                      data.error && data.error.message || JSON.stringify(res)
+                    )
+                  );
                 }
+              },
+              fail() {
+                reject2(new Error("network error"));
+              }
+            });
+          } else if (mapInfo.type === MapType.AMAP) {
+            loadMaps([], () => {
+              window.AMap.plugin("AMap.Geolocation", () => {
+                const geolocation = new window.AMap.Geolocation({
+                  enableHighAccuracy: true,
+                  timeout: 1e4
+                });
+                geolocation.getCurrentPosition(
+                  (status, data) => {
+                    if (status === "complete") {
+                      resolve2({
+                        coords: {
+                          latitude: data.position.lat,
+                          longitude: data.position.lng,
+                          accuracy: data.accuracy
+                        },
+                        skip: true
+                      });
+                    } else {
+                      reject2(new Error(data.message));
+                    }
+                  }
+                );
               });
             });
-          });
-        } else {
-          reject2(error);
+          } else {
+            reject2(error);
+          }
         }
-      });
+      );
     }).then(({ coords, skip }) => {
       translateCoordinateSystem(type, coords, skip).then((coords2) => {
         resolve({

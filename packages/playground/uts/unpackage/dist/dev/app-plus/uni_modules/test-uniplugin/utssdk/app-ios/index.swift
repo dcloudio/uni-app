@@ -155,7 +155,7 @@ public func showToast3ByJs(_ msg: String) -> Void {
 }
 @objc(UTSSDKModulesTestUniPluginIndexSwift)
 @objcMembers
-public class IndexSwift : NSObject {
+public class UTSSDKModulesTestUniPluginIndexSwift : NSObject {
     public static func s_getBatteryInfoByJs(_ options: GetBatteryInfoOptionsJSONObject) {
         return getBatteryInfoByJs(options);
     }

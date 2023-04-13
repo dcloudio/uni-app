@@ -1213,7 +1213,8 @@ function initWx() {
             newWx[key] = wx[key];
         }
     }
-    if (typeof globalThis !== 'undefined' && typeof requireMiniProgram === 'undefined') {
+    if (typeof globalThis !== 'undefined' &&
+        typeof requireMiniProgram === 'undefined') {
         globalThis.wx = newWx;
     }
     return newWx;
