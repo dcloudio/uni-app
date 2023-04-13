@@ -349,6 +349,8 @@ importers:
         specifier: 3.2.47
         version: 3.2.47
 
+  packages/uni-app-uts: {}
+
   packages/uni-app-vite:
     dependencies:
       '@dcloudio/uni-cli-shared':

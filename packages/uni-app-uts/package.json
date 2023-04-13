@@ -1,0 +1,23 @@
+{
+  "name": "@dcloudio/uni-app-uts",
+  "version": "3.0.0-alpha-3071220230324001",
+  "description": "uni-app-uts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "bin",
+    "dist",
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uni-app-uts"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "Apache-2.0",
+  "dependencies": {
+  }
+}
