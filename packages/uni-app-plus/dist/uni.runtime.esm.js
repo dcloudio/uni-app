@@ -12949,10 +12949,10 @@ const setStorage = defineAsyncApi(API_SET_STORAGE, ({ key, data }, { resolve, re
     try {
         const storage = plus.storage;
         if (type === 'string' && parseValue(value) !== undefined) {
-            storage.setItemAsync(key + STORAGE_DATA_TYPE, type);
+            storage.setItemAsync(key + STORAGE_DATA_TYPE, type, () => { });
         }
         else {
-            storage.removeItemAsync(key + STORAGE_DATA_TYPE);
+            storage.removeItemAsync(key + STORAGE_DATA_TYPE, () => { });
         }
         storage.setItemAsync(key, value, resolve, warpPlusErrorCallback(reject));
     }
@@ -13023,7 +13023,7 @@ const removeStorageSync = defineSyncApi(API_REMOVE_STORAGE, (key) => {
 }, RemoveStorageSyncProtocol);
 const removeStorage = defineAsyncApi(API_REMOVE_STORAGE, ({ key }, { resolve, reject }) => {
     // 兼容App端历史格式
-    plus.storage.removeItemAsync(key + STORAGE_DATA_TYPE);
+    plus.storage.removeItemAsync(key + STORAGE_DATA_TYPE, () => { });
     plus.storage.removeItemAsync(key, resolve, warpPlusErrorCallback(reject));
 }, RemoveStorageProtocol);
 const clearStorageSync = defineSyncApi('clearStorageSync', () => {
