@@ -29,6 +29,7 @@ const DEFAULT_KEYS = [
 
 const preVueContext = Object.create(null)
 const preNVueContext = Object.create(null)
+const preUVueContext = Object.create(null)
 
 export function getPreVueContext() {
   return preVueContext
@@ -38,12 +39,18 @@ export function getPreNVueContext() {
   return preNVueContext
 }
 
+export function getPreUVueContext() {
+  return preUVueContext
+}
+
 export function initPreContext(
   platform: UniApp.PLATFORM,
-  userPreContext?: Record<string, boolean> | string
+  userPreContext?: Record<string, boolean> | string,
+  utsPlatform?: typeof process.env.UNI_UTS_PLATFORM
 ) {
   const vueContext = Object.create(null)
   const nvueContext = Object.create(null)
+  const uvueContext = Object.create(null)
 
   const defaultContext = Object.create(null)
   DEFAULT_KEYS.forEach((key) => {
@@ -54,6 +61,7 @@ export function initPreContext(
 
   vueContext.VUE3 = true
   nvueContext.VUE3 = true
+  uvueContext.VUE3 = true
 
   if (platform === 'app' || platform === 'app-plus') {
     defaultContext.APP = true
@@ -63,6 +71,14 @@ export function initPreContext(
 
     nvueContext.APP_NVUE = true
     nvueContext.APP_PLUS_NVUE = true
+
+    uvueContext.APP_UVUE = true
+
+    if (utsPlatform === 'app-android') {
+      uvueContext.APP_ANDROID = true
+    } else if (utsPlatform === 'app-ios') {
+      uvueContext.APP_IOS = true
+    }
   } else if (platform.startsWith('mp-')) {
     defaultContext.MP = true
   } else if (platform.startsWith('quickapp-webview')) {
@@ -87,6 +103,7 @@ export function initPreContext(
   }
   extend(preVueContext, defaultContext, vueContext)
   extend(preNVueContext, defaultContext, nvueContext)
+  extend(preUVueContext, defaultContext, uvueContext)
 }
 
 function normalizeKey(name: string) {

@@ -16,6 +16,7 @@ import {
 
 import { CliOptions } from '.'
 import { initNVueEnv } from './nvue'
+import { initUVueEnv } from './uvue'
 
 export const PLATFORMS = [
   'app',
@@ -180,6 +181,8 @@ export function initEnv(
   }
 
   initModulePaths()
+
+  initUVueEnv()
 
   console.log(M['compiling'])
 }

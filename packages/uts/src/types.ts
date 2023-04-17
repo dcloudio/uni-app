@@ -21,7 +21,7 @@ export type UTSParseOptions = UTSParserConfig & {
 
 export type UTSInputOptions = UTSParseOptions & {
   root: string
-  pluginId: string
+  pluginId?: string
   filename: string
   fileContent?: string
   fileAppendContent?: string

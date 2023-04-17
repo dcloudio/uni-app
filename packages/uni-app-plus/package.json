@@ -25,9 +25,11 @@
     "apply": [
       "app"
     ],
+    "uvue": true,
     "main": "dist/uni.compiler.js"
   },
   "dependencies": {
+    "@dcloudio/uni-app-uts": "3.0.0-alpha-3071220230324001",
     "@dcloudio/uni-app-vite": "3.0.0-alpha-3071220230324001",
     "@dcloudio/uni-app-vue": "3.0.0-alpha-3071220230324001",
     "debug": "^4.3.3",

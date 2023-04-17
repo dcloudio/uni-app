@@ -36,6 +36,7 @@ import {
   initPluginVueOptions,
 } from './vue'
 import { initEnv } from './cli/utils'
+import { uniUVuePlugin } from './uvue/plugins'
 
 export type ViteLegacyOptions = Parameters<typeof ViteLegacyPlugin>[0]
 
@@ -51,6 +52,7 @@ process.env.UNI_COMPILER_VERSION_TYPE = pkg.version.includes('alpha')
   : 'r'
 
 export interface VitePluginUniOptions {
+  uvue?: boolean
   vueOptions?: VueOptions
   vueJsxOptions?: (VueJSXPluginOptions & { babelPlugins?: any[] }) | boolean
   viteLegacyOptions?: ViteLegacyOptions | false
@@ -91,6 +93,12 @@ export default function uniPlugin(
 
   initPreContext(options.platform, process.env.UNI_CUSTOM_CONTEXT)
 
+  return process.env.UNI_UVUE === 'true'
+    ? createUVuePlugins(options)
+    : createPlugins(options)
+}
+
+function createPlugins(options: VitePluginUniResolvedOptions) {
   const plugins: Plugin[] = []
 
   const injects = parseUniExtApis()
@@ -204,6 +212,49 @@ export default function uniPlugin(
   }
 
   rewriteCompilerSfcParse()
+
+  return plugins
+}
+
+function createUVuePlugins(options: VitePluginUniResolvedOptions) {
+  const plugins: Plugin[] = []
+
+  options.uvue = true
+
+  const uniPlugins = initExtraPlugins(
+    process.env.UNI_CLI_CONTEXT || process.cwd(),
+    (process.env.UNI_PLATFORM as UniApp.PLATFORM) || 'h5',
+    options
+  )
+  debugUni(uniPlugins)
+
+  const uniPluginOptions = initPluginUniOptions(uniPlugins)
+
+  options.copyOptions = uniPluginOptions.copyOptions
+
+  plugins.push(uniUVuePlugin(options))
+
+  plugins.push(...uniPlugins)
+
+  plugins.push(...initFixedEsbuildInitTSConfck(process.env.UNI_INPUT_DIR))
+
+  // 执行 build 命令时，vite 强制了 NODE_ENV
+  // https://github.com/vitejs/vite/blob/main/packages/vite/src/node/build.ts#L405
+  // const config = await resolveConfig(inlineConfig, 'build', 'production')
+  // 在 @vitejs/plugin-vue 之前校正回来
+  if (
+    process.env.UNI_NODE_ENV &&
+    process.env.UNI_NODE_ENV !== process.env.NODE_ENV
+  ) {
+    process.env.NODE_ENV = process.env.UNI_NODE_ENV
+  }
+
+  plugins.push(
+    uniCopyPlugin({
+      outputDir: process.env.UNI_OUTPUT_DIR,
+      copyOptions: options.copyOptions,
+    })
+  )
 
   return plugins
 }

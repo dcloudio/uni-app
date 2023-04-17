@@ -52,6 +52,8 @@ export const sourcemap = {
   generateCodeFrameWithSwiftStacktrace,
 }
 
+export { compileApp } from './uvue/index'
+
 export * from './sourceMap'
 
 export { compile as toKotlin } from './kotlin'

@@ -1,2 +1,2 @@
-declare const _default: never[];
+declare const _default: () => import("vite").Plugin[];
 export default _default;

@@ -25,9 +25,9 @@ import {
 import { Module } from '../types/types'
 import { parseUTSSyntaxError } from './stacktrace'
 
-interface KotlinCompilerServer extends CompilerServer {
+export interface KotlinCompilerServer extends CompilerServer {
   getKotlincHome(): string
-  getDefaultJar(): string[]
+  getDefaultJar(arg?: any): string[]
   compile(
     options: { kotlinc: string[]; d8: string[] },
     projectPath: string
@@ -365,7 +365,11 @@ export async function compile(
   return result
 }
 
-function resolveKotlincArgs(filename: string, kotlinc: string, jars: string[]) {
+export function resolveKotlincArgs(
+  filename: string,
+  kotlinc: string,
+  jars: string[]
+) {
   return [
     filename,
     '-cp',
@@ -377,7 +381,7 @@ function resolveKotlincArgs(filename: string, kotlinc: string, jars: string[]) {
   ]
 }
 
-function resolveD8Args(filename: string) {
+export function resolveD8Args(filename: string) {
   return [
     filename,
     '--no-desugaring',
@@ -419,7 +423,7 @@ function resolveAndroidArchiveOutputPath(aar?: string) {
     aar ? aar.replace('.aar', '') : ''
   )
 }
-function resolveDexFile(jarFile: string) {
+export function resolveDexFile(jarFile: string) {
   return normalizePath(path.resolve(path.dirname(jarFile), 'classes.dex'))
 }
 
@@ -427,7 +431,7 @@ function resolveDexPath(filename: string) {
   return path.dirname(filename)
 }
 
-function resolveJarPath(filename: string) {
+export function resolveJarPath(filename: string) {
   return filename.replace(path.extname(filename), '.jar')
 }
 
