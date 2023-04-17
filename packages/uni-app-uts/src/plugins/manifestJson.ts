@@ -45,15 +45,12 @@ export function uniAppManifestPlugin(): Plugin {
         asset.source =
           asset.source +
           `
-import "io.dcloud.uniapp.appframe.IAppConfig"
-export class UniAppConfig extends IAppConfig {
+import "io.dcloud.uniapp.appframe.AppConfig"
+export class UniAppConfig extends AppConfig {
     override name: string = "${manifestJson.name || ''}"
     override appid: string = "${manifestJson.appid || ''}"
     override versionName: string = "${manifestJson.versionName || ''}"
     override versionCode: string = "${manifestJson.versionCode || ''}"
-    // 以下要移除
-    override pageMode: string = "${manifestJson.pageMode || ''}"
-    override launchPath: string = "${manifestJson.launchPath || ''}"
 }
 `
       }
