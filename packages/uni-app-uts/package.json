@@ -20,6 +20,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@dcloudio/uni-cli-shared": "3.0.0-alpha-3071220230324001",
+    "@dcloudio/uni-nvue-styler": "3.0.0-alpha-3071220230324001",
     "@rollup/pluginutils": "^4.2.0",
     "@vue/compiler-core": "3.2.47",
     "@vue/compiler-sfc": "3.2.47",
@@ -27,6 +28,7 @@
     "debug": "^4.3.3",
     "es-module-lexer": "^1.2.1",
     "fs-extra": "^10.0.0",
+    "picocolors": "^1.0.0",
     "source-map": "^0.6.1"
   },
   "devDependencies": {

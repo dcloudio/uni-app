@@ -2,8 +2,7 @@ import path from 'path'
 import fs from 'fs-extra'
 import type { OutputAsset } from 'rollup'
 import type { Plugin } from 'vite'
-import { parseJson } from '@dcloudio/uni-cli-shared'
-import { MANIFEST_JSON_UTS } from './mainUTS'
+import { MANIFEST_JSON_UTS, parseJson } from '@dcloudio/uni-cli-shared'
 import { ENTRY_FILENAME } from './utils'
 
 function isManifest(id: string) {

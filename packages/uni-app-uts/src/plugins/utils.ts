@@ -24,3 +24,7 @@ export function genClassName(fileName: string) {
     camelize(removeExt(normalizePath(fileName).replace(/\//g, '-')))
   )
 }
+
+export function isVue(filename: string) {
+  return filename.endsWith('.vue') || filename.endsWith('.uvue')
+}

@@ -1,10 +1,9 @@
 import path from 'path'
 import fs from 'fs-extra'
-import { normalizePagesJson } from '@dcloudio/uni-cli-shared'
+import { PAGES_JSON_UTS, normalizePagesJson } from '@dcloudio/uni-cli-shared'
 import type { OutputAsset } from 'rollup'
 import type { Plugin } from 'vite'
 
-import { PAGES_JSON_UTS } from './mainUTS'
 import { ENTRY_FILENAME, genClassName } from './utils'
 
 function isPages(id: string) {
@@ -44,7 +43,7 @@ export function uniAppPagesPlugin(): Plugin {
             `{ path: "${page.path}", component: ${className}Class, meta: { isQuit: true, navigationBar: { titleText: "uni-app" } as PageNavigationBar } as PageMeta  } as PageRoute`
           )
         })
-        return `${imports.map((p) => `import './${p}.uvue'`).join('\n')}
+        return `${imports.map((p) => `import('./${p}.uvue')`).join('\n')}
 export default 'pages.json'`
       }
     },

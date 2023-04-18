@@ -1,10 +1,12 @@
-import { normalizePath, resolveMainPathOnce } from '@dcloudio/uni-cli-shared'
+import {
+  MANIFEST_JSON_UTS,
+  PAGES_JSON_UTS,
+  normalizePath,
+  resolveMainPathOnce,
+} from '@dcloudio/uni-cli-shared'
 
 import type { Plugin } from 'vite'
 import { parseImports } from './utils'
-
-export const MANIFEST_JSON_UTS = 'manifest-json-uts'
-export const PAGES_JSON_UTS = 'pages-json-uts'
 
 export function uniAppMainPlugin(): Plugin {
   const mainUTS = resolveMainPathOnce(process.env.UNI_INPUT_DIR)
@@ -17,6 +19,7 @@ export function uniAppMainPlugin(): Plugin {
         return `
 import './${MANIFEST_JSON_UTS}'
 import './${PAGES_JSON_UTS}'
+${code}
 export default 'main.uts'
 `
       }

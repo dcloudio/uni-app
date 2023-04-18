@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const plugins_1 = require("./plugins");
+const css_1 = require("./plugins/css");
 const mainUTS_1 = require("./plugins/mainUTS");
 const manifestJson_1 = require("./plugins/manifestJson");
 const pagesJson_1 = require("./plugins/pagesJson");
@@ -14,5 +15,6 @@ exports.default = () => {
         (0, mainUTS_1.uniAppMainPlugin)(),
         (0, manifestJson_1.uniAppManifestPlugin)(),
         (0, pagesJson_1.uniAppPagesPlugin)(),
+        (0, css_1.uniAppCssPlugin)(),
     ];
 };

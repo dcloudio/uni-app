@@ -74,11 +74,12 @@ export function uniAppUTSPlugin(): Plugin {
       }
     },
     configResolved(config) {
-      const len = config.plugins.length
+      const plugins = config.plugins as Plugin[]
+      const len = plugins.length
       for (let i = len - 1; i >= 0; i--) {
-        const plugin = config.plugins[i]
+        const plugin = plugins[i]
         if (REMOVED_PLUGINS.includes(plugin.name)) {
-          ;(config.plugins as any).splice(i, 1)
+          plugins.splice(i, 1)
         }
       }
     },

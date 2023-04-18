@@ -357,6 +357,9 @@ importers:
       '@dcloudio/uni-cli-shared':
         specifier: 3.0.0-alpha-3071220230324001
         version: link:../uni-cli-shared
+      '@dcloudio/uni-nvue-styler':
+        specifier: 3.0.0-alpha-3071220230324001
+        version: link:../uni-nvue-styler
       '@rollup/pluginutils':
         specifier: ^4.2.0
         version: 4.2.1
@@ -378,6 +381,9 @@ importers:
       fs-extra:
         specifier: ^10.0.0
         version: 10.1.0
+      picocolors:
+        specifier: ^1.0.0
+        version: 1.0.0
       source-map:
         specifier: ^0.6.1
         version: 0.6.1

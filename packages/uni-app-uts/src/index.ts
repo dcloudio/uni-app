@@ -1,4 +1,5 @@
 import { uniAppUTSPlugin } from './plugins'
+import { uniAppCssPlugin } from './plugins/css'
 import { uniAppMainPlugin } from './plugins/mainUTS'
 import { uniAppManifestPlugin } from './plugins/manifestJson'
 import { uniAppPagesPlugin } from './plugins/pagesJson'
@@ -12,5 +13,6 @@ export default () => {
     uniAppMainPlugin(),
     uniAppManifestPlugin(),
     uniAppPagesPlugin(),
+    uniAppCssPlugin(),
   ]
 }
