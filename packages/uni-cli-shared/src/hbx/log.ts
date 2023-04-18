@@ -33,7 +33,7 @@ type ConsoleMethod = 'warn' | 'error'
 function overridedConsole(
   name: ConsoleMethod,
   oldFn: (...args: any[]) => any,
-  char: (typeof ZERO_WIDTH_CHAR)[ZERO_WIDTH_CHAR_KEY]
+  char: typeof ZERO_WIDTH_CHAR[ZERO_WIDTH_CHAR_KEY]
 ) {
   console[name] = function (...args) {
     oldFn.apply(
@@ -130,7 +130,7 @@ export const errorFormatter: Formatter<LogErrorOptions> = {
     return !!(opts && opts.error)
   },
   format(_, opts) {
-    return buildErrorMessage(opts!.error!, [], false)
+    return buildErrorMessage(opts!.error as RollupError, [], false)
   },
 }
 

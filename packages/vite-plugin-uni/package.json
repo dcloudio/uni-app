@@ -25,9 +25,9 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@babel/core": "^7.20.5",
+    "@babel/core": "^7.21.0",
     "@babel/plugin-syntax-import-meta": "^7.10.4",
-    "@babel/plugin-transform-typescript": "^7.20.2",
+    "@babel/plugin-transform-typescript": "^7.20.7",
     "@dcloudio/uni-cli-shared": "3.0.0-alpha-3071220230324001",
     "@dcloudio/uni-shared": "3.0.0-alpha-3071220230324001",
     "@rollup/pluginutils": "^4.2.0",
@@ -46,7 +46,7 @@
     "fs-extra": "^10.0.0",
     "hash-sum": "^2.0.0",
     "jsonc-parser": "^3.0.0",
-    "magic-string": "^0.27.0",
+    "magic-string": "^0.30.0",
     "picocolors": "^1.0.0",
     "terser": "^5.4.0"
   },

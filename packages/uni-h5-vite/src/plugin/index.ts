@@ -46,5 +46,5 @@ function rewriteReadFileSync() {
       return preCss(content)
     }
     return content
-  }) as (typeof fs)['readFileSync']
+  }) as typeof fs['readFileSync']
 }
