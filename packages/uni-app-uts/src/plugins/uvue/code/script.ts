@@ -15,7 +15,7 @@ class ${filename} extends ${parentClass} {
         return ${filename}Render(ctx)
     }
 }
-export default UTSAndroid.getKotlinClass(${filename})
+export const ${filename}Class = UTSAndroid.getKotlinClass(${filename})
 `
   }
   return (
@@ -29,7 +29,7 @@ class ${filename} extends ${parentClass} {
     }
 
 }
-export default UTSAndroid.getKotlinClass(${filename})
+export const ${filename}Class = UTSAndroid.getKotlinClass(${filename})
 `
   )
 }

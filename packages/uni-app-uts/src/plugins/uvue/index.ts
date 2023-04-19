@@ -74,6 +74,7 @@ export function uniAppUVuePlugin(): Plugin {
                 | 'swift',
               mode: 'function',
               filename: className,
+              prefixIdentifiers: true,
             })
           : ''),
     })

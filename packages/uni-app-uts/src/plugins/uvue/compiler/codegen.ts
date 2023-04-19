@@ -59,6 +59,7 @@ function createCodegenContext(
     targetLanguage,
     mode = 'default',
     prefixIdentifiers = false,
+    bindingMetadata = {},
     sourceMap = false,
     filename = '',
   }: CodegenOptions
@@ -67,6 +68,7 @@ function createCodegenContext(
     targetLanguage,
     mode,
     prefixIdentifiers,
+    bindingMetadata,
     sourceMap,
     filename,
     source: ast.loc.source,
@@ -84,7 +86,7 @@ function createCodegenContext(
       if (context.map) {
         if (node) {
           let name
-          if (node.type === NodeTypes.SIMPLE_EXPRESSION && !node.isStatic) {
+          if (node.type === NodeTypes.SIMPLE_EXPRESSION) {
             const content = node.content.replace(/^_ctx\./, '')
             if (content !== node.content && isSimpleIdentifier(content)) {
               name = content

@@ -117,6 +117,7 @@ export function createTransformContext(
     targetLanguage,
     selfName: nameMatch && capitalize(camelize(nameMatch[1])),
     prefixIdentifiers,
+    bindingMetadata: {},
     nodeTransforms,
     directiveTransforms,
     isBuiltInComponent,

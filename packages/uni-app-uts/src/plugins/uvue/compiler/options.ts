@@ -1,4 +1,4 @@
-import { CompilerError } from '@vue/compiler-core'
+import { BindingMetadata, CompilerError } from '@vue/compiler-core'
 import { RawSourceMap } from 'source-map'
 import { DirectiveTransform, NodeTransform } from './transform'
 
@@ -9,6 +9,11 @@ interface SharedTransformCodegenOptions {
    * @default false
    */
   prefixIdentifiers?: boolean
+  /**
+   * Optional binding metadata analyzed from script - used to optimize
+   * binding access when `prefixIdentifiers` is enabled.
+   */
+  bindingMetadata?: BindingMetadata
   /**
    * Filename for source map generation.
    * Also used for self-recursive reference in templates
