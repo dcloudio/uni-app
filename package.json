@@ -86,7 +86,7 @@
     "semver": "^7.3.5",
     "simple-git-hooks": "^2.8.0",
     "terser": "^5.4.0",
-    "ts-jest": "^29.0.3",
+    "ts-jest": "^29.1.0",
     "typescript": "^5.0.4",
     "vite": "4.2.2",
     "vue": "3.2.47",
