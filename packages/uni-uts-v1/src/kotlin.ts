@@ -453,7 +453,7 @@ export function checkAndroidVersionTips(
   if (configJsonFile && fs.existsSync(configJsonFile)) {
     try {
       const configJson = parseJson(fs.readFileSync(configJsonFile, 'utf8'))
-      if (configJson.minSdkVersion) {
+      if (configJson.minSdkVersion && parseInt(configJson.minSdkVersion) > 19) {
         const androidVersion = get(configJson.minSdkVersion)
         if (androidVersion) {
           return `uts插件[${pluginId}]需在 Android ${androidVersion.semver} 版本及以上方可正常使用`

@@ -36,12 +36,12 @@ export const ${filename}Class = UTSAndroid.getKotlinClass(${filename})
 
 function genStylesCode(filename: string) {
   return `
-static $normalizeStyle: Map<string,Map<string, Map<string, any>>> | null = null
+static $normalizedStyle: Map<string,Map<string, Map<string, any>>> | null = null
 override get $styles(): Map<string,Map<string, Map<string, any>>> {
-  if (${filename}.$normalizeStyle == null) {
-    ${filename}.$normalizeStyle = normalizeCssStyles(${filename}Styles, mutableListOf())
+  if (${filename}.$normalizedStyle == null) {
+    ${filename}.$normalizedStyle = normalizeCssStyles(${filename}Styles, mutableListOf())
   }
-  return ${filename}.$normalizeStyle!
+  return ${filename}.$normalizedStyle!
 }
 `
 }
