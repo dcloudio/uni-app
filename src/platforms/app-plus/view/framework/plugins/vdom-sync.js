@@ -50,11 +50,7 @@ export class VDomSync {
     vm._$id = generateId(vm, findParent(vm), this.version)
     let vData = this.addBatchVData[vm._$id]
     if (!vData) {
-      console.error('cid unmatched', vm)
-      vData = {
-        data: {},
-        options: {}
-      }
+      vData = [{}, {}]
     } else {
       delete this.addBatchVData[vm._$id]
     }
