@@ -12,7 +12,7 @@ import { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
 import source from './project.config.json'
 import { transformSwiper } from './transforms/transformSwiper'
 
-export const customElements = ['aweme-data']
+export const customElements = ['aweme-data', 'consume-card']
 
 const projectConfigFilename = 'project.config.json'
 
