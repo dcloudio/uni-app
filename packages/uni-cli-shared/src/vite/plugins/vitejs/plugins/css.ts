@@ -358,18 +358,8 @@ export function cssPostPlugin(
           .map((id) => styles.get(id) || '')
           .join('\n')
       }
-      const genJsCode = (fileName: string) => {
-        const res: string[] = []
-        ;[...cssChunks.get(fileName)!].forEach((id) => {
-          const jsCode = styles.get(id) || ''
-          if (jsCode) {
-            res.push(jsCode)
-          }
-        })
-        return `[${res.join(', ')}]`
-      }
       for (const filename of cssChunks.keys()) {
-        const cssCode = isJsCode ? genJsCode(filename) : genCssCode(filename)
+        const cssCode = genCssCode(filename)
         let source = await processChunkCSS(cssCode, {
           filename: filename,
           inlined: false,

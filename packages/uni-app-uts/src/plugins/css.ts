@@ -9,6 +9,7 @@ import {
   cssPostPlugin,
   formatAtFilename,
   generateCodeFrame,
+  insertBeforePlugin,
   normalizePath,
   parseVueRequest,
   resolveMainPathOnce,
@@ -20,14 +21,12 @@ import { genClassName, isVue } from './utils'
 export function uniAppCssPlugin(): Plugin {
   const mainUTS = resolveMainPathOnce(process.env.UNI_INPUT_DIR)
   let resolvedConfig: ResolvedConfig
+  const name = 'uni:app-uvue-css'
   return {
-    name: 'uni:app-uvue-css',
+    name,
     apply: 'build',
     configResolved(config) {
       resolvedConfig = config
-      const plugins = config.plugins as Plugin[]
-      // 增加 css plugins
-      plugins.push(cssPlugin(config))
       const uvueCssPostPlugin = cssPostPlugin(config, {
         isJsCode: true,
         platform: process.env.UNI_PLATFORM,
@@ -42,25 +41,46 @@ export function uniAppCssPlugin(): Plugin {
             )
           }
         },
-        chunkCssCode(filename, cssCode) {
-          return (
-            `export const ${genClassName(
-              filename.replace('.style.uts', '')
-            )}Styles = ` + cssCode
-          )
+        async chunkCssCode(filename, cssCode) {
+          const { code, messages } = await parse(cssCode, {
+            filename,
+            logLevel: 'ERROR',
+            map: true,
+            ts: true,
+          })
+          messages.forEach((message) => {
+            if (message.type === 'error') {
+              let msg = `[plugin:uni:app-uvue-css] ${message.text}`
+              if (message.line && message.column) {
+                msg += `\n${generateCodeFrame(cssCode, {
+                  line: message.line,
+                  column: message.column,
+                })}`
+              }
+              msg += `\n${formatAtFilename(filename)}`
+              resolvedConfig.logger.error(colors.red(msg))
+            }
+          })
+          return `export const ${genClassName(
+            filename.replace('.style.uts', '')
+          )}Styles = [${code}]`
         },
       })
-      plugins.push(uvueCssPostPlugin)
+      // 增加 css plugins
+      insertBeforePlugin(cssPlugin(config), name, config)
+      ;(config.plugins as Plugin[]).push(uvueCssPostPlugin)
     },
     async transform(source, filename) {
       if (!cssLangRE.test(filename) || commonjsProxyRE.test(filename)) {
         return
       }
-      const { code, messages } = await parse(source, {
+      // 仅做校验使用
+      const { messages } = await parse(source, {
         filename,
         logLevel: 'WARNING',
         map: true,
         ts: true,
+        noCode: true,
       })
       messages.forEach((message) => {
         if (message.type === 'warning') {
@@ -75,7 +95,7 @@ export function uniAppCssPlugin(): Plugin {
           resolvedConfig.logger.warn(colors.yellow(msg))
         }
       })
-      return { code, map: { mappings: '' } }
+      return { code: source }
     },
   }
 }

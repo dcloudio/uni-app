@@ -7,6 +7,7 @@ interface ParseOptions extends NormalizeOptions {
   filename?: string
   map?: boolean
   ts?: boolean
+  noCode?: boolean
 }
 
 export async function parse(input: string, options: ParseOptions = {}) {
@@ -19,12 +20,15 @@ export async function parse(input: string, options: ParseOptions = {}) {
         root: null,
         messages: [
           {
-            type: 'warning',
+            type: 'error',
             text: err.message,
           } as Message,
         ],
       }
     })
+  if (options.noCode === true) {
+    return { code: '', messages }
+  }
   const obj = root ? objectifier(root) : {}
   if (options.map) {
     return { code: mapToInitString(objToMap(obj), options.ts), messages }
