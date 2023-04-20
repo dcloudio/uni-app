@@ -8,6 +8,7 @@ declare var swan: any
 declare var qq: any
 declare var ks: any
 declare var jd: any
+declare var xhs: any
 declare var __NVUE__: undefined | boolean
 declare var __PLATFORM__: UniApp.PLATFORM
 declare var __PLATFORM_PREFIX__:
@@ -19,6 +20,7 @@ declare var __PLATFORM_PREFIX__:
   | 'qa'
   | 'ks'
   | 'jd'
+  | 'xhs'
 declare var __GLOBAL__: Record<string, any>
 
 // importMeta(es|cjs)

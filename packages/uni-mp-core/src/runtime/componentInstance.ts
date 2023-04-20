@@ -32,7 +32,11 @@ function createEmitFn(oldEmit: Function, ctx: Record<string, any>) {
     if (scope && event) {
       const detail: Record<string, any> = { __args__: args }
       // 百度小程序，快手小程序，自定义组件不能绑定动态事件
-      if (__PLATFORM__ === 'mp-baidu' || __PLATFORM__ === 'mp-kuaishou') {
+      if (
+        __PLATFORM__ === 'mp-baidu' ||
+        __PLATFORM__ === 'mp-kuaishou' ||
+        __PLATFORM__ === 'mp-xhs'
+      ) {
         detail.__ins__ = scope
       }
       if (__PLATFORM__ === 'mp-jd') {
