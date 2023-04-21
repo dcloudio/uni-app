@@ -10,9 +10,12 @@ import {
   transformOn,
 } from '@vue/compiler-core'
 
+import './runtimeHelpers'
+
 import { CodegenResult, CompilerOptions } from './options'
 import { generate } from './codegen'
 import { DirectiveTransform, NodeTransform, transform } from './transform'
+import { transformIf } from './transforms/vIf'
 
 export type TransformPreset = [
   NodeTransform[],
@@ -24,6 +27,7 @@ export function getBaseTransformPreset(
 ): TransformPreset {
   return [
     [
+      transformIf,
       // order is important
       trackVForSlotScopes,
       transformExpression,

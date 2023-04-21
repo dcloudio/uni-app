@@ -1,5 +1,5 @@
 import { isString } from '@vue/shared'
-import { parseExpression } from '@babel/parser'
+import { ParseResult, parseExpression } from '@babel/parser'
 import {
   identifier,
   objectProperty,
@@ -83,7 +83,7 @@ export function parseExpr(
   code: string | ExpressionNode,
   context: TransformContext,
   node?: ExpressionNode
-) {
+): ParseResult<Expression> | undefined {
   if (!isString(code)) {
     node = code
     code = genExpr(code)

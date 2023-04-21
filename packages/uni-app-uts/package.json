@@ -19,6 +19,8 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
+    "@babel/parser": "^7.16.4",
+    "@babel/types": "^7.20.7",
     "@dcloudio/uni-cli-shared": "3.0.0-alpha-3071220230324001",
     "@dcloudio/uni-nvue-styler": "3.0.0-alpha-3071220230324001",
     "@rollup/pluginutils": "^4.2.0",

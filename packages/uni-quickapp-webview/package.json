@@ -26,7 +26,7 @@
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "devDependencies": {
-    "@vue/compiler-core": "3.2.47"
+    "@dcloudio/uni-mp-compiler": "3.0.0-alpha-3071220230324001"
   },
   "dependencies": {
     "@dcloudio/uni-cli-shared": "3.0.0-alpha-3071220230324001",

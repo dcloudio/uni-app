@@ -35,6 +35,7 @@ import {
 import { CodegenOptions, CodegenResult } from './options'
 import { isArray, isString, isSymbol } from '@vue/shared'
 import { genRenderFunctionDecl } from './utils'
+import { IS_TRUE } from './runtimeHelpers'
 
 type CodegenNode = TemplateChildNode | JSChildNode | SSRCodegenNode
 
@@ -478,16 +479,13 @@ function genConditionalExpression(
 ) {
   const { test, consequent, alternate, newline: needNewline } = node
   const { push, indent, deindent, newline } = context
+  push(`${context.helper(IS_TRUE)}(`)
   if (test.type === NodeTypes.SIMPLE_EXPRESSION) {
-    const needsParens = !isSimpleIdentifier(test.content)
-    needsParens && push(`(`)
     genExpression(test, context)
-    needsParens && push(`)`)
   } else {
-    push(`(`)
     genNode(test, context)
-    push(`)`)
   }
+  push(`)`)
   needNewline && indent()
   context.indentLevel++
   needNewline || push(` `)

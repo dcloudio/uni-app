@@ -62,7 +62,7 @@ function transformSwiper(node) {
     }
 }
 
-const customElements = ['aweme-data', 'consume-card'];
+const customElements = ['aweme-data', 'consume-card', 'pay-button'];
 const projectConfigFilename = 'project.config.json';
 const nodeTransforms = [
     uniCliShared.transformRef,
