@@ -40,17 +40,6 @@ jobs:
       - name: Build
         run: npm run build:h5
 
-      - name: verify Cypress
-        working-directory: ./packages/playground/ssr
-        run: |
-          npx cypress verify
-          npx cypress info
-          npx cypress version
-          npx cypress version --component package
-          npx cypress version --component binary
-          npx cypress version --component electron
-          npx cypress version --component node
-
       - name: Cypress run
         uses: cypress-io/github-action@v5
         with:
