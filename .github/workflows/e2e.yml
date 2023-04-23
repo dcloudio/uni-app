@@ -41,7 +41,7 @@ jobs:
         run: npm run build:h5
 
       - name: Cypress run
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v4
         with:
           install: true
           start: npm run dev:ssr
