@@ -20,8 +20,6 @@ jobs:
             node_version: 16
       fail-fast: false
     name: 'e2e: node-${{ matrix.node_version }}, ${{ matrix.os }}'
-    env:
-      CYPRESS_CACHE_FOLDER: '~/.cache/Cypress'
     steps:
       - name: Checkout
         uses: actions/checkout@v2
