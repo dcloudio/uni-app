@@ -41,11 +41,11 @@ jobs:
         run: npm run build:h5
 
       - name: Cypress run
-        uses: cypress-io/github-action@v4
+        uses: cypress-io/github-action@v5
         with:
           install: true
-          start: npm run dev:ssr
-          working-directory: ./packages/playground/ssr
+          start: npm run e2e:ssr:dev
+          working-directory: ./
           wait-on: 'http://localhost:5173'
           wait-on-timeout: 480
           browser: chrome
