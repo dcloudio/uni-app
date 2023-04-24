@@ -16,6 +16,7 @@ import { CodegenResult, CompilerOptions } from './options'
 import { generate } from './codegen'
 import { DirectiveTransform, NodeTransform, transform } from './transform'
 import { transformIf } from './transforms/vIf'
+import { transformShow } from './transforms/vShow'
 
 export type TransformPreset = [
   NodeTransform[],
@@ -38,6 +39,7 @@ export function getBaseTransformPreset(
       on: transformOn,
       bind: transformBind,
       model: transformModel,
+      show: transformShow,
     } as any,
   ]
 }
