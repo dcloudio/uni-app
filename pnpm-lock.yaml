@@ -88,6 +88,9 @@ importers:
       core-js:
         specifier: ^2.6.12
         version: 2.6.12
+      cypress:
+        specifier: ^10.7.0
+        version: 10.7.0
       enquirer:
         specifier: ^2.3.6
         version: 2.3.6
@@ -307,7 +310,7 @@ importers:
         version: link:../uni-app-vue
       debug:
         specifier: ^4.3.3
-        version: 4.3.3(supports-color@8.1.1)
+        version: 4.3.3
       fs-extra:
         specifier: ^10.0.0
         version: 10.0.0
@@ -380,7 +383,7 @@ importers:
         version: 3.2.47
       debug:
         specifier: ^4.3.3
-        version: 4.3.3(supports-color@8.1.1)
+        version: 4.3.3
       es-module-lexer:
         specifier: ^1.2.1
         version: 1.2.1
@@ -429,7 +432,7 @@ importers:
         version: 3.2.47
       debug:
         specifier: ^4.3.3
-        version: 4.3.3(supports-color@8.1.1)
+        version: 4.3.3
       fs-extra:
         specifier: ^10.0.0
         version: 10.0.0
@@ -481,7 +484,7 @@ importers:
         version: 7.0.3
       debug:
         specifier: ^4.3.3
-        version: 4.3.3(supports-color@8.1.1)
+        version: 4.3.3
       default-gateway:
         specifier: ^6.0.3
         version: 6.0.3
@@ -575,7 +578,7 @@ importers:
         version: 3.6.0
       debug:
         specifier: ^4.3.3
-        version: 4.3.3(supports-color@8.1.1)
+        version: 4.3.3
       es-module-lexer:
         specifier: ^1.2.1
         version: 1.2.1
@@ -744,7 +747,7 @@ importers:
         version: 3.2.47
       debug:
         specifier: ^4.3.3
-        version: 4.3.3(supports-color@8.1.1)
+        version: 4.3.3
       localstorage-polyfill:
         specifier: ^1.0.1
         version: 1.0.1
@@ -811,7 +814,7 @@ importers:
         version: 3.2.47
       debug:
         specifier: ^4.3.3
-        version: 4.3.3(supports-color@8.1.1)
+        version: 4.3.3
       fs-extra:
         specifier: ^10.0.0
         version: 10.0.0
@@ -1122,7 +1125,7 @@ importers:
         version: 3.2.47
       debug:
         specifier: ^4.3.3
-        version: 4.3.3(supports-color@8.1.1)
+        version: 4.3.3
     devDependencies:
       '@types/debug':
         specifier: ^4.1.7
@@ -1244,7 +1247,7 @@ importers:
         version: link:../uni-shared
       debug:
         specifier: ^4.3.3
-        version: 4.3.3(supports-color@8.1.1)
+        version: 4.3.3
     devDependencies:
       '@types/debug':
         specifier: ^4.1.7
@@ -1396,7 +1399,7 @@ importers:
         version: 6.7.9
       debug:
         specifier: ^4.3.3
-        version: 4.3.3(supports-color@8.1.1)
+        version: 4.3.3
       estree-walker:
         specifier: ^2.0.2
         version: 2.0.2
@@ -1498,7 +1501,7 @@ packages:
       '@babel/traverse': 7.21.4
       '@babel/types': 7.21.4
       convert-source-map: 1.9.0
-      debug: 4.3.3(supports-color@8.1.1)
+      debug: 4.3.3
       gensync: 1.0.0-beta.2
       json5: 2.2.3
       semver: 6.3.0
@@ -1584,7 +1587,7 @@ packages:
       '@babel/core': 7.21.0
       '@babel/helper-compilation-targets': 7.21.4(@babel/core@7.21.0)
       '@babel/helper-plugin-utils': 7.20.2
-      debug: 4.3.3(supports-color@8.1.1)
+      debug: 4.3.3
       lodash.debounce: 4.0.8
       resolve: 1.22.1
       semver: 6.3.0
@@ -2653,7 +2656,7 @@ packages:
       '@babel/helper-split-export-declaration': 7.18.6
       '@babel/parser': 7.21.4
       '@babel/types': 7.21.4
-      debug: 4.3.3(supports-color@8.1.1)
+      debug: 4.3.3
       globals: 11.12.0
     transitivePeerDependencies:
       - supports-color
@@ -2905,7 +2908,7 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dependencies:
       ajv: 6.12.6
-      debug: 4.3.3(supports-color@8.1.1)
+      debug: 4.3.3
       espree: 9.5.1
       globals: 13.20.0
       ignore: 5.2.4
@@ -2922,7 +2925,7 @@ packages:
     engines: {node: '>=10.10.0'}
     dependencies:
       '@humanwhocodes/object-schema': 1.2.1
-      debug: 4.3.3(supports-color@8.1.1)
+      debug: 4.3.3
       minimatch: 3.1.2
     transitivePeerDependencies:
       - supports-color
@@ -4414,7 +4417,7 @@ packages:
       '@typescript-eslint/scope-manager': 5.44.0
       '@typescript-eslint/types': 5.44.0
       '@typescript-eslint/typescript-estree': 5.44.0(typescript@5.0.4)
-      debug: 4.3.4
+      debug: 4.3.4(supports-color@8.1.1)
       eslint: 8.28.0
       typescript: 5.0.4
     transitivePeerDependencies:
@@ -4445,7 +4448,7 @@ packages:
     dependencies:
       '@typescript-eslint/types': 5.44.0
       '@typescript-eslint/visitor-keys': 5.44.0
-      debug: 4.3.4
+      debug: 4.3.4(supports-color@8.1.1)
       globby: 11.1.0
       is-glob: 4.0.3
       semver: 7.5.0
@@ -4683,7 +4686,7 @@ packages:
     resolution: {integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==}
     engines: {node: '>= 6.0.0'}
     dependencies:
-      debug: 4.3.3(supports-color@8.1.1)
+      debug: 4.3.4(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -5687,7 +5690,7 @@ packages:
       commander: 5.1.0
       common-tags: 1.8.2
       dayjs: 1.11.7
-      debug: 4.3.3(supports-color@8.1.1)
+      debug: 4.3.4(supports-color@8.1.1)
       enquirer: 2.3.6
       eventemitter2: 6.4.9
       execa: 4.1.0
@@ -5707,7 +5710,7 @@ packages:
       pretty-bytes: 5.6.0
       proxy-from-env: 1.0.0
       request-progress: 3.0.0
-      semver: 7.3.5
+      semver: 7.5.0
       supports-color: 8.1.1
       tmp: 0.2.1
       untildify: 4.0.0
@@ -5756,7 +5759,7 @@ packages:
       supports-color: 8.1.1
     dev: true
 
-  /debug@4.3.3(supports-color@8.1.1):
+  /debug@4.3.3:
     resolution: {integrity: sha512-/zxw5+vh1Tfv+4Qn7a5nsbcJKPaSvCDhojn6FEl9vupwK2VCSDtEiEtqr8DFtzYFOdz63LBkxec7DYuc2jon6Q==}
     engines: {node: '>=6.0'}
     peerDependencies:
@@ -5766,9 +5769,8 @@ packages:
         optional: true
     dependencies:
       ms: 2.1.2
-      supports-color: 8.1.1
 
-  /debug@4.3.4:
+  /debug@4.3.4(supports-color@8.1.1):
     resolution: {integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==}
     engines: {node: '>=6.0'}
     peerDependencies:
@@ -5778,7 +5780,7 @@ packages:
         optional: true
     dependencies:
       ms: 2.1.2
-    dev: true
+      supports-color: 8.1.1
 
   /decimal.js@10.4.3:
     resolution: {integrity: sha512-VBBaLc1MgL5XpzgIP7ny5Z6Nx3UrRkIViUkPUdtl9aya5amy3De1gsUUSB1g3+3sExYNjCAsAznmukyxCb1GRA==}
@@ -5851,7 +5853,7 @@ packages:
     hasBin: true
     dependencies:
       address: 1.1.2
-      debug: 4.3.3(supports-color@8.1.1)
+      debug: 4.3.3
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -5963,7 +5965,7 @@ packages:
       base64id: 2.0.0
       cookie: 0.4.2
       cors: 2.8.5
-      debug: 4.3.3(supports-color@8.1.1)
+      debug: 4.3.3
       engine.io-parser: 5.0.6
       ws: 8.2.3
     transitivePeerDependencies:
@@ -6097,7 +6099,7 @@ packages:
       ajv: 6.12.6
       chalk: 4.1.2
       cross-spawn: 7.0.3
-      debug: 4.3.3(supports-color@8.1.1)
+      debug: 4.3.3
       doctrine: 3.0.0
       escape-string-regexp: 4.0.0
       eslint-scope: 7.2.0
@@ -6324,7 +6326,7 @@ packages:
     engines: {node: '>= 10.17.0'}
     hasBin: true
     dependencies:
-      debug: 4.3.3(supports-color@8.1.1)
+      debug: 4.3.4(supports-color@8.1.1)
       get-stream: 5.2.0
       yauzl: 2.10.0
     optionalDependencies:
@@ -6779,7 +6781,7 @@ packages:
     dependencies:
       '@tootallnate/once': 1.1.2
       agent-base: 6.0.2
-      debug: 4.3.3(supports-color@8.1.1)
+      debug: 4.3.4(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -6798,7 +6800,7 @@ packages:
     engines: {node: '>= 6'}
     dependencies:
       agent-base: 6.0.2
-      debug: 4.3.3(supports-color@8.1.1)
+      debug: 4.3.4(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -7089,7 +7091,7 @@ packages:
     resolution: {integrity: sha512-n3s8EwkdFIJCG3BPKBYvskgXGoy88ARzvegkitk60NxRdwltLOTaH7CUiMRXvwYorl0Q712iEjcWB+fK/MrWVw==}
     engines: {node: '>=10'}
     dependencies:
-      debug: 4.3.3(supports-color@8.1.1)
+      debug: 4.3.3
       istanbul-lib-coverage: 3.2.0
       source-map: 0.6.1
     transitivePeerDependencies:
@@ -8266,7 +8268,7 @@ packages:
       cli-truncate: 2.1.0
       commander: 6.2.1
       cosmiconfig: 7.1.0
-      debug: 4.3.3(supports-color@8.1.1)
+      debug: 4.3.3
       dedent: 0.7.0
       enquirer: 2.3.6
       execa: 4.1.0
@@ -9713,7 +9715,7 @@ packages:
     dependencies:
       '@types/component-emitter': 1.2.11
       component-emitter: 1.3.0
-      debug: 4.3.3(supports-color@8.1.1)
+      debug: 4.3.3
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -9724,7 +9726,7 @@ packages:
     dependencies:
       accepts: 1.3.8
       base64id: 2.0.0
-      debug: 4.3.3(supports-color@8.1.1)
+      debug: 4.3.3
       engine.io: 6.1.3
       socket.io-adapter: 2.3.3
       socket.io-parser: 4.0.5

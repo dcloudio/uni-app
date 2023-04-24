@@ -67,6 +67,7 @@
     "@vue/runtime-dom": "3.2.47",
     "@vue/shared": "3.2.47",
     "core-js": "^2.6.12",
+    "cypress": "^10.7.0",
     "enquirer": "^2.3.6",
     "eslint": "^8.28.0",
     "execa": "^5.1.1",
