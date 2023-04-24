@@ -20,6 +20,8 @@ jobs:
             node_version: 16
       fail-fast: false
     name: 'e2e: node-${{ matrix.node_version }}, ${{ matrix.os }}'
+    env:
+      CYPRESS_CACHE_FOLDER: './node_modules/.cache/Cypress'
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -40,12 +42,23 @@ jobs:
       - name: Build
         run: npm run build:h5
 
+      - name: verify Cypress
+        working-directory: ./packages/playground/ssr
+        run: |
+          npx cypress verify
+          npx cypress info
+          npx cypress version
+          npx cypress version --component package
+          npx cypress version --component binary
+          npx cypress version --component electron
+          npx cypress version --component node
+
       - name: Cypress run
         uses: cypress-io/github-action@v5
         with:
-          install: true
-          start: npm run e2e:ssr:dev
-          working-directory: ./
+          install: false
+          start: npm run dev:ssr
+          working-directory: ./packages/playground/ssr
           wait-on: 'http://localhost:5173'
           wait-on-timeout: 480
           browser: chrome
