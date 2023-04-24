@@ -282,6 +282,7 @@ var serviceContext = (function () {
     'initUTSPackageName',
     'requireUTSPlugin',
     'registerUTSPlugin',
+    'registerUTSInterface',
   ];
 
   const ad = [
@@ -10572,6 +10573,10 @@ var serviceContext = (function () {
       }
       if (returnOptions) {
           if (returnOptions.type === 'interface' && typeof res.params === 'number') {
+              // 返回了 0
+              if (!res.params) {
+                  return null;
+              }
               if (res.params === instanceId && proxy) {
                   return proxy;
               }
