@@ -185,6 +185,7 @@ async function testSwiftComponent() {
   await bundle(UTSTarget.SWIFT, {
     input: {
       root: projectDir,
+      pluginId: 'animation-view',
       filename: path.resolve(
         projectDir,
         'uni_modules/test-component/utssdk/app-ios/index.uts'
