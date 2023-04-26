@@ -166,7 +166,8 @@ export function createTransformContext(
       }
     },
     helperString(name) {
-      return `_${helperNameMap[context.helper(name)]}`
+      // return `_${helperNameMap[context.helper(name)]}`
+      return `${helperNameMap[context.helper(name)]}`
     },
     replaceNode(node) {
       if (!context.currentNode) {
