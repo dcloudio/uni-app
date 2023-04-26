@@ -227,6 +227,7 @@ function genNode(node: CodegenNode | symbol | string, context: CodegenContext) {
     return
   }
   if (isSymbol(node)) {
+    context.push(context.helper(node))
     return
   }
   switch (node.type) {
@@ -392,6 +393,28 @@ function genCallExpression(node: CallExpression, context: CodegenContext) {
   const { push, helper } = context
   const callee = isString(node.callee) ? node.callee : helper(node.callee)
   push(callee + `(`, node)
+
+  if (callee === 'renderList') {
+    node.arguments.forEach((item: any) => {
+      if (item.type === 18) {
+        item.returnType = 'VNode'
+
+        if (item.params.length === 1) {
+          const key = { ...item.params[0] }
+          key.content = '_key_'
+          item.params.push(key)
+          const index = { ...item.params[0] }
+          index.content = '_index_'
+          item.params.push(index)
+        } else if (item.params.length === 2) {
+          const index = { ...item.params[0] }
+          index.content = '_index_'
+          item.params.push(index)
+        }
+      }
+    })
+  }
+
   genNodeList(node.arguments, context)
   push(`)`)
 }
@@ -447,7 +470,11 @@ function genFunctionExpression(
   } else if (params) {
     genNode(params, context)
   }
-  push(`) => `)
+  if ((node as any).returnType) {
+    push(`):${(node as any).returnType} => `)
+  } else {
+    push(`) => `)
+  }
   if (newline || body) {
     push(`{`)
     indent()

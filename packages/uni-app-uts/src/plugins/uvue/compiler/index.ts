@@ -16,6 +16,7 @@ import { CodegenResult, CompilerOptions } from './options'
 import { generate } from './codegen'
 import { DirectiveTransform, NodeTransform, transform } from './transform'
 import { transformIf } from './transforms/vIf'
+import { transformFor } from './transforms/vFor'
 import { transformShow } from './transforms/vShow'
 
 export type TransformPreset = [
@@ -29,6 +30,7 @@ export function getBaseTransformPreset(
   return [
     [
       transformIf,
+      transformFor,
       // order is important
       trackVForSlotScopes,
       transformExpression,
