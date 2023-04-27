@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@dcloudio/uni-vue",
-  "version": "3.0.0-3071020230425003",
+  "version": "3.0.0-3071120230427001",
   "description": "@dcloudio/uni-vue",
   "files": [
     "dist"
@@ -17,7 +17,7 @@
     "url": "https://github.com/dcloudio/uni-app/issues"
   },
   "devDependencies": {
-    "@dcloudio/uni-mp-vue": "3.0.0-3071020230425003",
-    "@dcloudio/uni-shared": "3.0.0-3071020230425003"
+    "@dcloudio/uni-mp-vue": "3.0.0-3071120230427001",
+    "@dcloudio/uni-shared": "3.0.0-3071120230427001"
   }
 }

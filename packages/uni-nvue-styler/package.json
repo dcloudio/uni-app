@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-nvue-styler",
-  "version": "3.0.0-3071020230425003",
+  "version": "3.0.0-3071120230427001",
   "description": "uni-nvue-styler",
   "main": "./dist/uni-nvue-styler.cjs.js",
   "types": "./dist/uni-nvue-styler.d.ts",
