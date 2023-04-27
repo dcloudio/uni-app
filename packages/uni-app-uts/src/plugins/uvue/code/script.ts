@@ -1,47 +1,19 @@
 import { SFCDescriptor } from '@vue/compiler-sfc'
 
 export function genScript(
-  { script, styles }: SFCDescriptor,
+  { script }: SFCDescriptor,
   { filename }: { filename: string }
 ) {
-  const parentClass = filename === 'App' ? 'BaseApp' : 'BasePage'
-  const stylesCode = styles.length ? genStylesCode(filename) : ''
   if (!script) {
     return `
-class ${filename} extends ${parentClass} {
-    ${stylesCode}
-    constructor() {}
-    render(ctx: ${filename}): VNode | null {
-        return ${filename}Render(ctx)
-    }
-}
+export default {}
 export const ${filename}Class = UTSAndroid.getKotlinClass(${filename})
 `
   }
   return (
     '\n'.repeat(script.loc.start.line - 1) +
-    `
-class ${filename} extends ${parentClass} {
-    ${stylesCode}
-    constructor() {}
-    render(ctx: ${filename}): VNode | null {
-        return ${filename}Render(ctx)
-    }
-
-}
+    `${script.content}
 export const ${filename}Class = UTSAndroid.getKotlinClass(${filename})
 `
   )
-}
-
-function genStylesCode(filename: string) {
-  return `
-static $normalizedStyle: Map<string,Map<string, Map<string, any>>> | null = null
-override get $styles(): Map<string,Map<string, Map<string, any>>> {
-  if (${filename}.$normalizedStyle == null) {
-    ${filename}.$normalizedStyle = normalizeCssStyles(${filename}Styles, mutableListOf())
-  }
-  return ${filename}.$normalizedStyle!
-}
-`
 }

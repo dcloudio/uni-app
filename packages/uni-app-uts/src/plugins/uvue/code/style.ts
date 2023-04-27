@@ -8,11 +8,11 @@ export function genStyle(
   { className, filename }: { className: string; filename: string }
 ) {
   if (styles.length === 0) {
-    return ''
+    return `
+const ${className}Styles: Array<Map<String, Any>> = []`
   }
-  return `import { ${className}Styles } from './${path.basename(
-    filename
-  )}.style.uts'`
+  return `
+import { ${className}Styles } from './${path.basename(filename)}.style.uts'`
 }
 
 export async function genJsStylesCode(

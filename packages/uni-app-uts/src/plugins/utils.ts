@@ -20,8 +20,9 @@ export function uvueOutDir() {
 }
 
 export function genClassName(fileName: string) {
-  return capitalize(
-    camelize(removeExt(normalizePath(fileName).replace(/\//g, '-')))
+  return (
+    'Gen' +
+    capitalize(camelize(removeExt(normalizePath(fileName).replace(/\//g, '-'))))
   )
 }
 

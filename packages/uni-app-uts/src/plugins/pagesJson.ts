@@ -56,7 +56,7 @@ export default 'pages.json'`
 ${imports
   .map((p) => {
     const className = genClassName(p)
-    return `import { ${className}Class } from './${p}.uvue'`
+    return `import { ${className}Class } from './${p}.uvue?type=page'`
   })
   .join('\n')}
 const __uniRoutes = [${routes.join(',\n')}]

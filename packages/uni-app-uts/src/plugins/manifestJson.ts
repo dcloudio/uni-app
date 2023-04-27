@@ -52,6 +52,7 @@ export class UniAppConfig extends AppConfig {
     override versionCode: string = "${manifestJson.versionCode || ''}"
     constructor() {}
 }
+export * from './App.vue.style.uts'
 `
       }
     },
