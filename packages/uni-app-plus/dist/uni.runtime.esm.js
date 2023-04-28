@@ -1394,23 +1394,30 @@ const initI18nScanCodeMsgsOnce = /*#__PURE__*/ once(() => {
 });
 const initI18nStartSoterAuthenticationMsgsOnce = /*#__PURE__*/ once(() => {
     const name = 'uni.startSoterAuthentication.';
-    const keys = ['authContent'];
+    const keys = ['authContent', 'waitingContent'];
     {
-        useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ['Fingerprint recognition']), false);
+        useI18n().add(LOCALE_EN, normalizeMessages(name, keys, [
+            'Fingerprint recognition',
+            'Unrecognizable',
+        ]), false);
     }
     {
-        useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ['Reconocimiento de huellas dactilares']), false);
+        useI18n().add(LOCALE_ES, normalizeMessages(name, keys, [
+            'Reconocimiento de huellas dactilares',
+            'Irreconocible',
+        ]), false);
     }
     {
         useI18n().add(LOCALE_FR, normalizeMessages(name, keys, [
             "Reconnaissance de l'empreinte digitale",
+            'Méconnaissable',
         ]), false);
     }
     {
-        useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ['指纹识别中...']), false);
+        useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ['指纹识别中...', '无法识别']), false);
     }
     {
-        useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ['指紋識別中...']), false);
+        useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ['指紋識別中...', '無法識別']), false);
     }
 });
 
@@ -14151,7 +14158,7 @@ const startSoterAuthentication = defineAsyncApi(API_START_SOTER_AUTHENTICATION, 
             4: () => {
                 if (waiting) {
                     clearTimeout(waitingTimer);
-                    waiting.setTitle('无法识别');
+                    waiting.setTitle(t('uni.startSoterAuthentication.waitingContent'));
                     waitingTimer = setTimeout(() => {
                         waiting && waiting.setTitle(authenticateMessage);
                     }, 1000);

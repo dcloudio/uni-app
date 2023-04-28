@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@ampproject/remapping": "^2.1.2",
-    "@babel/core": "^7.21.0",
+    "@babel/core": "^7.21.3",
     "@babel/parser": "^7.16.4",
     "@babel/types": "^7.20.7",
     "@dcloudio/uni-i18n": "3.0.0-alpha-3080220230428001",
