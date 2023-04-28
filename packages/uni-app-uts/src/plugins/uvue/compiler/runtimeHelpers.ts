@@ -8,6 +8,6 @@ export const OPEN_BLOCK = Symbol(`openBlock`)
 registerRuntimeHelpers({
   [IS_TRUE]: 'isTrue',
   [V_SHOW]: 'vShow',
-  [RENDER_LIST]: 'renderList',
+  [RENDER_LIST]: 'RenderHelpers.renderList',
   [FRAGMENT]: 'Fragment',
 })

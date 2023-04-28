@@ -272,6 +272,26 @@ export function processFor(
   const { addIdentifiers, removeIdentifiers, scopes } = context
   const { source, value, key, index } = parseResult
 
+  if (key === undefined) {
+    parseResult.key = {
+      constType: 2,
+      content: '_key_',
+      isStatic: false,
+      loc: value?.loc!,
+      type: 4,
+    }
+  }
+
+  if (index === undefined) {
+    parseResult.index = {
+      constType: 2,
+      content: '_index_',
+      isStatic: false,
+      loc: value?.loc!,
+      type: 4,
+    }
+  }
+
   const forNode: ForNode = {
     type: NodeTypes.FOR,
     loc: dir.loc,
