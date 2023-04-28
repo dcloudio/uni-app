@@ -200,6 +200,9 @@ importers:
       '@dcloudio/uni-app':
         specifier: ../../uni-app
         version: link:../../uni-app
+      '@dcloudio/uni-cloud':
+        specifier: ../../uni-cloud
+        version: link:../../uni-cloud
       '@dcloudio/uni-components':
         specifier: ../../uni-components
         version: link:../../uni-components
