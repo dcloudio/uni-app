@@ -409,14 +409,18 @@ function initDefaultProps(options, isBehavior = false) {
     if (options.behaviors) {
         // wx://form-field
         if (options.behaviors.includes('qa://form-field')) {
-            properties.name = {
-                type: null,
-                value: '',
-            };
-            properties.value = {
-                type: null,
-                value: '',
-            };
+            if (!options.properties || !options.properties.name) {
+                properties.name = {
+                    type: null,
+                    value: '',
+                };
+            }
+            if (!options.properties || !options.properties.value) {
+                properties.value = {
+                    type: null,
+                    value: '',
+                };
+            }
         }
     }
     return properties;
