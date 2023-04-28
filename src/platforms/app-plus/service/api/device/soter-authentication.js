@@ -153,7 +153,7 @@ export function startSoterAuthentication ({
         case e.AUTHENTICATE_MISMATCH:
           if (waiting) {
             clearTimeout(waitingTimer)
-            waiting.setTitle('无法识别')
+            waiting.setTitle(t('uni.startSoterAuthentication.waitingContent'))
             waitingTimer = setTimeout(() => {
               waiting && waiting.setTitle(waitingTitle)
             }, 1000)
