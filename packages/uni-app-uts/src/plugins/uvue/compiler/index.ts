@@ -6,7 +6,6 @@ import {
   transformBind,
   transformElement,
   transformExpression,
-  transformModel,
   transformOn,
 } from '@vue/compiler-core'
 
@@ -17,6 +16,7 @@ import { generate } from './codegen'
 import { DirectiveTransform, NodeTransform, transform } from './transform'
 import { transformIf } from './transforms/vIf'
 import { transformFor } from './transforms/vFor'
+import { transformModel } from './transforms/vModel'
 import { transformShow } from './transforms/vShow'
 
 export type TransformPreset = [
