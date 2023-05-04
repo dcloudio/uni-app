@@ -59,7 +59,9 @@ ${imports
     return `import { ${className}Class } from './${p}.uvue?type=page'`
   })
   .join('\n')}
-const __uniRoutes = [${routes.join(',\n')}]
+function definePageRoutes() {
+${routes.map((route) => `__uniRoutes.push(${route})`).join('\n')}
+}
 `
       }
     },

@@ -124,6 +124,7 @@ function normalizeCode(code: string, isMain = false) {
   }
   return `
 export function main() {
+    definePageRoutes()
     createPage(__uniRoutes[0])
 }
 `

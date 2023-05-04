@@ -265,6 +265,8 @@ export declare function isAppNativeTag(tag: string): boolean;
 
 export declare function isAppNVueNativeTag(tag: string): boolean;
 
+export declare function isAppUVueNativeTag(tag: string): boolean;
+
 export declare function isBuiltInComponent(tag: string): boolean;
 
 export declare function isComponentInternalInstance(vm: unknown): vm is ComponentInternalInstance;

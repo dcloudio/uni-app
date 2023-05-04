@@ -8,6 +8,7 @@ import {
   transformOn,
 } from '@vue/compiler-core'
 
+import { isAppUVueNativeTag } from '@dcloudio/uni-shared'
 import './runtimeHelpers'
 
 import { CodegenResult, CompilerOptions } from './options'
@@ -55,6 +56,9 @@ export function compile(
   options: CompilerOptions
 ): CodegenResult {
   const ast = baseParse(template, {
+    isNativeTag(tag) {
+      return isAppUVueNativeTag(tag)
+    },
     isCustomElement(tag) {
       return true
     },

@@ -172,6 +172,20 @@ const NVUE_CUSTOM_COMPONENTS = [
   'picker-view-column',
 ]
 
+export function isAppUVueNativeTag(tag: string) {
+  if (NVUE_CUSTOM_COMPONENTS.includes(tag)) {
+    return false
+  }
+  if (isBuiltInComponent(tag)) {
+    return true
+  }
+  // u-text,u-video...
+  if (NVUE_U_BUILT_IN_TAGS.includes(tag)) {
+    return true
+  }
+  return false
+}
+
 export function isAppNVueNativeTag(tag: string) {
   if (NVUE_BUILT_IN_TAGS.includes(tag)) {
     return true

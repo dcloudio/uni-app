@@ -162,6 +162,19 @@ const NVUE_CUSTOM_COMPONENTS = [
     'picker-view',
     'picker-view-column',
 ];
+function isAppUVueNativeTag(tag) {
+    if (NVUE_CUSTOM_COMPONENTS.includes(tag)) {
+        return false;
+    }
+    if (isBuiltInComponent(tag)) {
+        return true;
+    }
+    // u-text,u-video...
+    if (NVUE_U_BUILT_IN_TAGS.includes(tag)) {
+        return true;
+    }
+    return false;
+}
 function isAppNVueNativeTag(tag) {
     if (NVUE_BUILT_IN_TAGS.includes(tag)) {
         return true;
@@ -1586,6 +1599,7 @@ exports.invokeCreateErrorHandler = invokeCreateErrorHandler;
 exports.invokeCreateVueAppHook = invokeCreateVueAppHook;
 exports.isAppNVueNativeTag = isAppNVueNativeTag;
 exports.isAppNativeTag = isAppNativeTag;
+exports.isAppUVueNativeTag = isAppUVueNativeTag;
 exports.isBuiltInComponent = isBuiltInComponent;
 exports.isComponentInternalInstance = isComponentInternalInstance;
 exports.isComponentTag = isComponentTag;
