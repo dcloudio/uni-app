@@ -18,6 +18,7 @@ import { transformIf } from './transforms/vIf'
 import { transformFor } from './transforms/vFor'
 import { transformModel } from './transforms/vModel'
 import { transformShow } from './transforms/vShow'
+import { transformVText } from './transforms/vText'
 import { transformText } from './transforms/transformText'
 
 export type TransformPreset = [
@@ -44,6 +45,7 @@ export function getBaseTransformPreset(
       bind: transformBind,
       model: transformModel,
       show: transformShow,
+      text: transformVText,
     } as any,
   ]
 }
