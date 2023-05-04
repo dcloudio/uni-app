@@ -18,6 +18,7 @@ import { transformIf } from './transforms/vIf'
 import { transformFor } from './transforms/vFor'
 import { transformModel } from './transforms/vModel'
 import { transformShow } from './transforms/vShow'
+import { transformText } from './transforms/transformText'
 
 export type TransformPreset = [
   NodeTransform[],
@@ -36,6 +37,7 @@ export function getBaseTransformPreset(
       transformExpression,
       transformElement,
       trackSlotScopes,
+      transformText,
     ] as any,
     {
       on: transformOn,
