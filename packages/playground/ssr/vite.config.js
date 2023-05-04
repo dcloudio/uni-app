@@ -14,5 +14,5 @@ process.env.UNI_CLOUD_SPACES = JSON.stringify([
  */
 export default defineConfig({
   build: { minify: false },
-  plugins: [uni({ viteLegacyOptions: false })],
+  plugins: [uni({ viteLegacyOptions: false }), { name: 'ttt', configResolved(config) { console.log(config.resolve)} }],
 })

@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@dcloudio/uni-app": "../../uni-app",
-    "@dcloudio/uni-cloud": "../../uni-cloud",
     "@dcloudio/uni-components": "../../uni-components",
     "@dcloudio/uni-h5": "../../uni-h5",
     "vue": "3.2.47",

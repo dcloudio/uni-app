@@ -5,7 +5,8 @@
   "main": "dist/vue.runtime.cjs.js",
   "module": "dist/vue.runtime.esm.js",
   "files": [
-    "dist"
+    "dist",
+    "server-renderer"
   ],
   "sideEffects": false,
   "repository": {
@@ -19,6 +20,7 @@
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "dependencies": {
-    "@dcloudio/uni-shared": "3.0.0-alpha-3080220230428001"
+    "@dcloudio/uni-shared": "3.0.0-alpha-3080220230428001",
+    "@vue/server-renderer": "3.2.47"
   }
 }

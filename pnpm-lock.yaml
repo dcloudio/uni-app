@@ -200,9 +200,6 @@ importers:
       '@dcloudio/uni-app':
         specifier: ../../uni-app
         version: link:../../uni-app
-      '@dcloudio/uni-cloud':
-        specifier: ../../uni-cloud
-        version: link:../../uni-cloud
       '@dcloudio/uni-components':
         specifier: ../../uni-components
         version: link:../../uni-components
@@ -705,6 +702,16 @@ importers:
         version: 3.2.11
 
   packages/uni-components:
+    dependencies:
+      '@dcloudio/uni-cloud':
+        specifier: 3.0.0-alpha-3080220230428001
+        version: link:../uni-cloud
+      '@dcloudio/uni-h5':
+        specifier: 3.0.0-alpha-3080220230428001
+        version: link:../uni-h5
+      '@dcloudio/uni-i18n':
+        specifier: 3.0.0-alpha-3080220230428001
+        version: link:../uni-i18n
     devDependencies:
       '@dcloudio/uni-shared':
         specifier: 3.0.0-alpha-3080220230428001
@@ -858,6 +865,9 @@ importers:
       '@dcloudio/uni-shared':
         specifier: 3.0.0-alpha-3080220230428001
         version: link:../uni-shared
+      '@vue/server-renderer':
+        specifier: 3.2.47
+        version: 3.2.47(vue@3.2.47)
 
   packages/uni-i18n: {}
 
