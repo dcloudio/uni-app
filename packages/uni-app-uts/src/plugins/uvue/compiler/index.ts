@@ -3,7 +3,6 @@ import {
   baseParse,
   trackSlotScopes,
   trackVForSlotScopes,
-  transformBind,
   transformElement,
   transformExpression,
   transformOn,
@@ -20,6 +19,7 @@ import { transformModel } from './transforms/vModel'
 import { transformShow } from './transforms/vShow'
 import { transformVText } from './transforms/vText'
 import { transformText } from './transforms/transformText'
+import { transformBind } from './transforms/vBind'
 
 export type TransformPreset = [
   NodeTransform[],
