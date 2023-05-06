@@ -249,6 +249,7 @@ export function transform(root: RootNode, options: TransformOptions) {
   const context = createTransformContext(root, options)
   traverseNode(root, context)
   createRootCodegen(root, context)
+  root.components = [...context.components]
 }
 
 export function isSingleElementRoot(

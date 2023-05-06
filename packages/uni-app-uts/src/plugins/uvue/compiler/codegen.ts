@@ -31,11 +31,17 @@ import {
   helperNameMap,
   isSimpleIdentifier,
   locStub,
+  toValidAssetId,
 } from '@vue/compiler-core'
 import { CodegenOptions, CodegenResult } from './options'
 import { isArray, isString, isSymbol } from '@vue/shared'
 import { genRenderFunctionDecl } from './utils'
-import { IS_TRUE } from './runtimeHelpers'
+import {
+  IS_TRUE,
+  RENDER_LIST,
+  RESOLVE_COMPONENT,
+  RESOLVE_DIRECTIVE,
+} from './runtimeHelpers'
 
 type CodegenNode = TemplateChildNode | JSChildNode | SSRCodegenNode
 
@@ -149,9 +155,26 @@ export function generate(
   options: CodegenOptions
 ): CodegenResult {
   const context = createCodegenContext(ast, options)
-  const { mode, deindent, indent, push } = context
+  const { mode, deindent, indent, push, newline } = context
   if (mode === 'function') {
     push(genRenderFunctionDecl(options) + ` {`)
+    // generate asset resolution statements
+    if (ast.components.length) {
+      newline()
+      genAssets(ast.components, 'component', context)
+      if (ast.directives.length || ast.temps > 0) {
+        newline()
+      }
+    }
+    if (ast.directives.length) {
+      genAssets(ast.directives, 'directive', context)
+      if (ast.temps > 0) {
+        newline()
+      }
+    }
+    if (ast.components.length || ast.directives.length || ast.temps) {
+      newline()
+    }
     indent()
     push(`return `)
   }
@@ -168,6 +191,33 @@ export function generate(
     code: context.code,
     // SourceMapGenerator does have toJSON() method but it's not in the types
     map: context.map ? (context.map as any).toJSON() : undefined,
+  }
+}
+
+function genAssets(
+  assets: string[],
+  type: 'component' | 'directive',
+  { helper, push, newline }: CodegenContext
+) {
+  debugger
+  const resolver = helper(
+    type === 'component' ? RESOLVE_COMPONENT : RESOLVE_DIRECTIVE
+  )
+  for (let i = 0; i < assets.length; i++) {
+    let id = assets[i]
+    // potential component implicit self-reference inferred from SFC filename
+    const maybeSelfReference = id.endsWith('__self')
+    if (maybeSelfReference) {
+      id = id.slice(0, -6)
+    }
+    push(
+      `const ${toValidAssetId(id, type)} = ${resolver}(${JSON.stringify(id)}${
+        maybeSelfReference ? `, true` : ``
+      })`
+    )
+    if (i < assets.length - 1) {
+      newline()
+    }
   }
 }
 
@@ -394,7 +444,7 @@ function genCallExpression(node: CallExpression, context: CodegenContext) {
   const callee = isString(node.callee) ? node.callee : helper(node.callee)
   push(callee + `(`, node)
 
-  if (callee === 'RenderHelpers.renderList') {
+  if (callee === helper(RENDER_LIST)) {
     node.arguments.forEach((item: any) => {
       if (item.type === 18) {
         item.returnType = 'VNode'

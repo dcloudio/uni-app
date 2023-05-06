@@ -61,9 +61,6 @@ export function compile(
     isNativeTag(tag) {
       return isAppUVueNativeTag(tag)
     },
-    isCustomElement(tag) {
-      return true
-    },
   })
   const [nodeTransforms, directiveTransforms] = getBaseTransformPreset(
     options.prefixIdentifiers
