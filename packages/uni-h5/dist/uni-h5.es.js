@@ -1643,21 +1643,21 @@ function initViewPlugin(app) {
 }
 const invokeOnCallback = (name, res) => UniServiceJSBridge.emit("api." + name, res);
 let invokeViewMethodId = 1;
-function publishViewMethodName() {
-  return getCurrentPageId() + "." + INVOKE_VIEW_API;
+function publishViewMethodName(pageId) {
+  return (pageId || getCurrentPageId()) + "." + INVOKE_VIEW_API;
 }
 const invokeViewMethod = (name, args, pageId, callback) => {
   const { subscribe, publishHandler } = UniServiceJSBridge;
   const id2 = callback ? invokeViewMethodId++ : 0;
   callback && subscribe(INVOKE_VIEW_API + "." + id2, callback, true);
-  publishHandler(publishViewMethodName(), { id: id2, name, args }, pageId);
+  publishHandler(publishViewMethodName(pageId), { id: id2, name, args }, pageId);
 };
 const invokeViewMethodKeepAlive = (name, args, callback, pageId) => {
   const { subscribe, unsubscribe, publishHandler } = UniServiceJSBridge;
   const id2 = invokeViewMethodId++;
   const subscribeName = INVOKE_VIEW_API + "." + id2;
   subscribe(subscribeName, callback);
-  publishHandler(publishViewMethodName(), { id: id2, name, args }, pageId);
+  publishHandler(publishViewMethodName(pageId), { id: id2, name, args }, pageId);
   return () => {
     unsubscribe(subscribeName);
   };
