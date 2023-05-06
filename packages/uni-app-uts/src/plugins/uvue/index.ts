@@ -86,9 +86,7 @@ export function uniAppUVuePlugin(): Plugin {
     if (descriptor.styles.length) {
       jsCode += '\n' + (await genJsStylesCode(descriptor, pluginContext))
     }
-    if (!jsCode) {
-      jsCode = 'export default {}'
-    }
+    jsCode += `\nexport default "${className}"`
     return {
       code: jsCode,
     }

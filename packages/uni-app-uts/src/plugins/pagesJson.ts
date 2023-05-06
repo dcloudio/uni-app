@@ -47,7 +47,7 @@ export function uniAppPagesPlugin(): Plugin {
             )}  } as PageRoute`
           )
         })
-        return `${imports.map((p) => `import('./${p}.uvue')`).join('\n')}
+        return `${imports.map((p) => `import './${p}.uvue'`).join('\n')}
 export default 'pages.json'`
       }
     },
