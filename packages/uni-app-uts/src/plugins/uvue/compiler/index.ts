@@ -19,8 +19,8 @@ import { transformFor } from './transforms/vFor'
 import { transformModel } from './transforms/vModel'
 import { transformShow } from './transforms/vShow'
 import { transformVText } from './transforms/vText'
+import { transformInterpolation } from './transforms/transformInterpolation'
 import { transformText } from './transforms/transformText'
-import { transformViewText } from './transforms/transformViewText'
 import { transformBind } from './transforms/vBind'
 
 export type TransformPreset = [
@@ -40,8 +40,8 @@ export function getBaseTransformPreset(
       transformExpression,
       transformElement,
       trackSlotScopes,
+      transformInterpolation,
       transformText,
-      transformViewText,
     ] as any,
     {
       on: transformOn,
