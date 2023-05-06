@@ -1,107 +1,124 @@
-import { isElementNode } from '@dcloudio/uni-cli-shared'
+import { NodeTransform } from '../transform'
 import {
-  CompoundExpressionNode,
-  ElementNode,
-  ElementTypes,
-  InterpolationNode,
-  NodeTransform,
   NodeTypes,
-  TemplateChildNode,
-  TextCallNode,
+  CompoundExpressionNode,
+  // createCallExpression,
+  // CallExpression,
+  // ElementTypes,
+  createCompoundExpression,
   TextNode,
+  InterpolationNode,
+  TemplateChildNode,
 } from '@vue/compiler-core'
+// import { CREATE_TEXT } from '../runtimeHelpers'
 
-function isTextNode({ tag }: ElementNode) {
-  return tag === 'text' || tag === 'u-text' || tag === 'button'
-}
-
-function isTextElement(node: TemplateChildNode) {
-  return node.type === NodeTypes.ELEMENT && node.tag === 'text'
-}
-
-function isText(
+export function isText(
   node: TemplateChildNode
-): node is
-  | TextNode
-  | TextCallNode
-  | InterpolationNode
-  | CompoundExpressionNode {
-  const { type } = node
-  return (
-    type === NodeTypes.TEXT ||
-    type === NodeTypes.TEXT_CALL ||
-    type === NodeTypes.INTERPOLATION ||
-    type === NodeTypes.COMPOUND_EXPRESSION
-  )
+): node is TextNode | InterpolationNode {
+  return node.type === NodeTypes.INTERPOLATION || node.type === NodeTypes.TEXT
 }
 
-export const transformText: NodeTransform = (node, _) => {
-  if (!isElementNode(node)) {
-    return
-  }
-  if (isTextNode(node)) {
-    return
-  }
-  const { children } = node
-  if (!children.length) {
-    return
-  }
-  children.forEach((child, index) => {
-    if (isTextElement(child)) {
-      parseText(child as ElementNode)
-    }
+// Merge adjacent text nodes and expressions into a single expression
+// e.g. <div>abc {{ d }} {{ e }}</div> should have a single expression node as child.
+export const transformText: NodeTransform = (node, context) => {
+  if (
+    node.type === NodeTypes.ROOT ||
+    node.type === NodeTypes.ELEMENT ||
+    node.type === NodeTypes.FOR ||
+    node.type === NodeTypes.IF_BRANCH
+  ) {
+    // perform the transform on node exit so that all expressions have already
+    // been processed.
+    return () => {
+      const children = node.children
+      let currentContainer: CompoundExpressionNode | undefined = undefined
+      // let hasText = false
 
-    if (isText(child)) {
-      children.splice(index, 1, createText(node, child))
-    }
-  })
-}
-
-/*
-  1. 转换 \\n 为 \n
-  2. u-text 下只能有一个文本节点（不支持 children），需要移除子组件并合并文本
-*/
-function parseText(node: ElementNode) {
-  if (node.children.length) {
-    let firstTextChild
-    for (let i = 0; i < node.children.length; i++) {
-      const child = node.children[i]
-      if (isText(child) && typeof (child as TextNode).content === 'string') {
-        if (!firstTextChild) {
-          firstTextChild = child
-          ;(firstTextChild as TextNode).content = (
-            firstTextChild as TextNode
-          ).content.replace(/\\n/g, '\n')
-        } else {
-          ;(firstTextChild as TextNode).content += (
-            child as TextNode
-          ).content.replace(/\\n/g, '\n')
-          node.children.splice(i, 1)
-          i--
+      for (let i = 0; i < children.length; i++) {
+        const child = children[i]
+        if (isText(child)) {
+          // hasText = true
+          for (let j = i + 1; j < children.length; j++) {
+            const next = children[j]
+            if (isText(next)) {
+              if (!currentContainer) {
+                currentContainer = children[i] = createCompoundExpression(
+                  [child],
+                  child.loc
+                )
+              }
+              // merge adjacent text node into current
+              currentContainer.children.push(` + `, next)
+              children.splice(j, 1)
+              j--
+            } else {
+              currentContainer = undefined
+              break
+            }
+          }
         }
-      } else if (child.type === 1 || child.type === 3) {
-        node.children.splice(i, 1)
-        i--
-      } else {
-        firstTextChild = null
       }
-    }
-  }
-}
 
-function createText(
-  parent: ElementNode,
-  node: TextNode | TextCallNode | InterpolationNode | CompoundExpressionNode
-): ElementNode {
-  return {
-    tag: 'text',
-    type: NodeTypes.ELEMENT,
-    tagType: ElementTypes.ELEMENT,
-    props: [],
-    isSelfClosing: false,
-    children: [node],
-    codegenNode: undefined,
-    ns: parent.ns,
-    loc: node.loc,
+      // if (
+      //   !hasText ||
+      //   // if this is a plain element with a single text child, leave it
+      //   // as-is since the runtime has dedicated fast path for this by directly
+      //   // setting textContent of the element.
+      //   // for component root it's always normalized anyway.
+      //   (children.length === 1 &&
+      //     (node.type === NodeTypes.ROOT ||
+      //       (node.type === NodeTypes.ELEMENT &&
+      //         node.tagType === ElementTypes.ELEMENT &&
+      //         // #3756
+      //         // custom directives can potentially add DOM elements arbitrarily,
+      //         // we need to avoid setting textContent of the element at runtime
+      //         // to avoid accidentally overwriting the DOM elements added
+      //         // by the user through custom directives.
+      //         !node.props.find(
+      //           p =>
+      //             p.type === NodeTypes.DIRECTIVE &&
+      //             !context.directiveTransforms[p.name]
+      //         ) &&
+      //         // in compat mode, <template> tags with no special directives
+      //         // will be rendered as a fragment so its children must be
+      //         // converted into vnodes.
+      //         (node.tag !== 'template'))))
+      // ) {
+      //   return
+      // }
+
+      // pre-convert text nodes into createTextVNode(text) calls to avoid
+      // runtime normalization.
+      // for (let i = 0; i < children.length; i++) {
+      //   const child = children[i]
+      //   if (isText(child) || child.type === NodeTypes.COMPOUND_EXPRESSION) {
+      //     const callArgs: CallExpression['arguments'] = []
+      //     // createTextVNode defaults to single whitespace, so if it is a
+      //     // single space the code could be an empty call to save bytes.
+      //     if (child.type !== NodeTypes.TEXT || child.content !== ' ') {
+      //       callArgs.push(child)
+      //     }
+      //     // mark dynamic text with flag so it gets patched inside a block
+      //     if (
+      //       !context.ssr &&
+      //       getConstantType(child, context) === ConstantTypes.NOT_CONSTANT
+      //     ) {
+      //       callArgs.push(
+      //         PatchFlags.TEXT +
+      //           (__DEV__ ? ` /* ${PatchFlagNames[PatchFlags.TEXT]} */` : ``)
+      //       )
+      //     }
+      //     children[i] = {
+      //       type: NodeTypes.TEXT_CALL,
+      //       content: child,
+      //       loc: child.loc,
+      //       codegenNode: createCallExpression(
+      //         context.helper(CREATE_TEXT),
+      //         callArgs
+      //       )
+      //     }
+      //   }
+      // }
+    }
   }
 }
