@@ -123,9 +123,11 @@ function normalizeCode(code: string, isMain = false) {
     return code
   }
   return `
-export function main() {
-    definePageRoutes()
-    createPage(__uniRoutes[0])
+${code}  
+export function main(app: IApp) {
+    defineAppConfig();
+    definePageRoutes();
+    (createApp()['app'] as VueApp).mount(app);
 }
 `
 }

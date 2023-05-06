@@ -4,7 +4,7 @@ import { PAGES_JSON_UTS, normalizePagesJson } from '@dcloudio/uni-cli-shared'
 import type { OutputAsset } from 'rollup'
 import type { Plugin } from 'vite'
 
-import { ENTRY_FILENAME, genClassName } from './utils'
+import { ENTRY_FILENAME, genClassName, stringifyMap } from './utils'
 
 function isPages(id: string) {
   return id.endsWith(PAGES_JSON_UTS)
@@ -40,7 +40,11 @@ export function uniAppPagesPlugin(): Plugin {
           const className = genClassName(page.path)
           imports.push(page.path)
           routes.push(
-            `{ path: "${page.path}", component: ${className}Class, meta: { isQuit: true, navigationBar: { titleText: "uni-app" } as PageNavigationBar } as PageMeta  } as PageRoute`
+            `{ path: "${
+              page.path
+            }", component: ${className}Class, meta: { isQuit: true } as PageMeta, style: ${stringifyPageStyle(
+              page.style
+            )}  } as PageRoute`
           )
         })
         return `${imports.map((p) => `import('./${p}.uvue')`).join('\n')}
@@ -56,14 +60,23 @@ export default 'pages.json'`
 ${imports
   .map((p) => {
     const className = genClassName(p)
-    return `import { ${className}Class } from './${p}.uvue?type=page'`
+    return `import ${className}Class from './${p}.uvue?type=page'`
   })
   .join('\n')}
 function definePageRoutes() {
 ${routes.map((route) => `__uniRoutes.push(${route})`).join('\n')}
 }
+function defineAppConfig(){
+  __uniConfig.entryPagePath = '/${imports[0]}'
+}
 `
       }
     },
   }
+}
+
+function stringifyPageStyle(pageStyle: UniApp.PagesJsonPageStyle) {
+  delete pageStyle.isNVue
+  delete pageStyle.isSubNVue
+  return stringifyMap(pageStyle)
 }

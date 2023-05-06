@@ -22,12 +22,7 @@ const DEFAULT_IMPORTS = [
   'io.dcloud.uts.vue.*',
   'io.dcloud.uts.vue.shared.*',
   'io.dcloud.uts.vue.reactivity.*',
-  'io.dcloud.uniapp.appframe.*',
-  'io.dcloud.uniapp.interfaces.*',
-  'io.dcloud.uniapp.interfaces.htmlex.*',
-  'io.dcloud.uniapp.interfaces.htmlex.event.*',
-  'io.dcloud.uniapp.dom.*',
-  'io.dcloud.uniapp.dom.node.*',
+  'io.dcloud.uniapp.runtime.*',
 ]
 
 export interface CompileAppOptions {

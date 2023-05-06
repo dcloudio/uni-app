@@ -95,8 +95,13 @@ function createResult(
   }
 }
 
+interface CompilerOptions {
+  isPlugin: boolean
+}
+
 export async function compile(
-  pluginDir: string
+  pluginDir: string,
+  { isPlugin }: CompilerOptions = { isPlugin: true }
 ): Promise<CompileResult | void> {
   const pkg = resolvePackage(pluginDir)
   if (!pkg) {
@@ -158,7 +163,11 @@ export async function compile(
         filename = resolvePlatformIndexFilename('app-android', pluginDir, pkg)
       }
       if (filename) {
-        await getCompiler('kotlin').runProd(filename, androidComponents)
+        await getCompiler('kotlin').runProd(
+          filename,
+          androidComponents,
+          isPlugin
+        )
         if (cacheDir) {
           // 存储 sourcemap
           storeSourceMap(
@@ -186,7 +195,7 @@ export async function compile(
         filename = resolvePlatformIndexFilename('app-ios', pluginDir, pkg)
       }
       if (filename) {
-        await getCompiler('swift').runProd(filename, iosComponents)
+        await getCompiler('swift').runProd(filename, iosComponents, isPlugin)
         if (cacheDir) {
           storeSourceMap(
             'app-ios',
@@ -311,7 +320,11 @@ export async function compile(
           inputDir,
           outputDir
         )
-        const res = await getCompiler(compilerType).runDev(filename, components)
+        const res = await getCompiler(compilerType).runDev(
+          filename,
+          components,
+          isPlugin
+        )
         if (res) {
           if (isArray(res.deps) && res.deps.length) {
             // 添加其他文件的依赖

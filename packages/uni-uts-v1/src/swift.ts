@@ -35,7 +35,8 @@ function parseSwiftPackage(filename: string) {
 
 export async function runSwiftProd(
   filename: string,
-  components: Record<string, string>
+  components: Record<string, string>,
+  isPlugin = true
 ) {
   // 文件有可能是 app-android 里边的，因为编译到 ios 时，为了保证不报错，可能会去读取 android 下的 uts
   if (filename.includes('app-android')) {
@@ -48,6 +49,7 @@ export async function runSwiftProd(
     outputDir,
     sourceMap: true,
     components,
+    isPlugin,
   })
   if (!result) {
     return
@@ -75,7 +77,8 @@ export type RunSwiftDevResult = UTSResult & {
 let isEnvReady = true
 export async function runSwiftDev(
   filename: string,
-  components: Record<string, string>
+  components: Record<string, string>,
+  isPlugin = true
 ) {
   // 文件有可能是 app-android 里边的，因为编译到 ios 时，为了保证不报错，可能会去读取 android 下的 uts
   if (filename.includes('app-android')) {
@@ -106,6 +109,7 @@ export async function runSwiftDev(
     outputDir,
     sourceMap: true,
     components,
+    isPlugin,
   })) as RunSwiftDevResult
 
   if (!result) {
@@ -165,7 +169,7 @@ function isCliProject(projectPath: string) {
 
 export async function compile(
   filename: string,
-  { inputDir, outputDir, sourceMap, components }: ToSwiftOptions
+  { inputDir, outputDir, sourceMap, components, isPlugin }: ToSwiftOptions
 ) {
   const { bundle, UTSTarget } = getUTSCompiler()
   // let time = Date.now()
@@ -194,7 +198,7 @@ export async function compile(
   const result = await bundle(UTSTarget.SWIFT, {
     input,
     output: {
-      isPlugin: true,
+      isPlugin,
       outDir: outputDir,
       package: namespace,
       sourceMap: sourceMap ? resolveUTSSourceMapPath() : false,

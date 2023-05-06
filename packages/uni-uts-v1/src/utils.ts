@@ -18,6 +18,7 @@ interface ToOptions {
   outputDir: string
   sourceMap: boolean
   components: Record<string, string>
+  isPlugin: boolean
 }
 export type ToKotlinOptions = ToOptions
 export type ToSwiftOptions = ToOptions

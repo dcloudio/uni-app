@@ -62,7 +62,8 @@ function parseKotlinPackage(filename: string) {
 
 export async function runKotlinProd(
   filename: string,
-  components: Record<string, string>
+  components: Record<string, string>,
+  isPlugin = true
 ) {
   // 文件有可能是 app-ios 里边的，因为编译到 android 时，为了保证不报错，可能会去读取 ios 下的 uts
   if (filename.includes('app-ios')) {
@@ -75,6 +76,7 @@ export async function runKotlinProd(
     outputDir,
     sourceMap: true,
     components,
+    isPlugin,
   })
   if (!result) {
     return
@@ -99,7 +101,8 @@ export type RunKotlinDevResult = UTSResult & {
 
 export async function runKotlinDev(
   filename: string,
-  components: Record<string, string>
+  components: Record<string, string>,
+  isPlugin = true
 ): Promise<RunKotlinDevResult | undefined> {
   // 文件有可能是 app-ios 里边的，因为编译到 android 时，为了保证不报错，可能会去读取 ios 下的 uts
   if (filename.includes('app-ios')) {
@@ -112,6 +115,7 @@ export async function runKotlinDev(
     outputDir,
     sourceMap: true,
     components,
+    isPlugin,
   })) as RunKotlinDevResult
   if (!result) {
     return
@@ -305,7 +309,7 @@ const DEFAULT_IMPORTS = [
 
 export async function compile(
   filename: string,
-  { inputDir, outputDir, sourceMap, components }: ToKotlinOptions
+  { inputDir, outputDir, sourceMap, components, isPlugin }: ToKotlinOptions
 ) {
   const { bundle, UTSTarget } = getUTSCompiler()
   // let time = Date.now()
@@ -340,7 +344,7 @@ export async function compile(
   const result = await bundle(UTSTarget.KOTLIN, {
     input,
     output: {
-      isPlugin: true,
+      isPlugin,
       outDir: outputDir,
       package: pluginPackage,
       sourceMap: sourceMap ? resolveUTSSourceMapPath() : false,
