@@ -199,7 +199,6 @@ function genAssets(
   type: 'component' | 'directive',
   { helper, push, newline }: CodegenContext
 ) {
-  debugger
   const resolver = helper(
     type === 'component' ? RESOLVE_COMPONENT : RESOLVE_DIRECTIVE
   )
