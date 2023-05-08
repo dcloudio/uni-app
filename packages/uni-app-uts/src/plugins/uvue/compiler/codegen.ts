@@ -23,7 +23,7 @@ import {
   TemplateChildNode,
   TextNode,
   VNodeCall,
-  WITH_CTX,
+  // WITH_CTX,
   WITH_DIRECTIVES,
   advancePositionWithMutation,
   getVNodeBlockHelper,
@@ -469,17 +469,26 @@ function genObjectExpression(node: ObjectExpression, context: CodegenContext) {
   multilines && indent()
   for (let i = 0; i < properties.length; i++) {
     const { key, value } = properties[i]
-    push(`[`)
-    // key
-    genExpressionAsPropertyKey(key, context)
-    push(`, `)
+    if ((key as SimpleExpressionNode).content === '_') {
+      continue
+    }
+    if (!(value as FunctionExpression).isSlot) {
+      push(`[`)
+      // key
+      genExpressionAsPropertyKey(key, context)
+      push(`, `)
+    }
     // value
     genNode(value, context)
-    push(`]`)
+    if (!(value as FunctionExpression).isSlot) {
+      push(`]`)
+    }
     if (i < properties.length - 1) {
       // will only reach this if it's multilines
       push(`,`)
-      newline()
+      if (!(value as FunctionExpression).isSlot) {
+        newline()
+      }
     }
   }
   multilines && deindent()
@@ -498,9 +507,10 @@ function genFunctionExpression(
   const { params, returns, body, newline, isSlot } = node
   if (isSlot) {
     // wrap slot functions with owner context
-    push(`_${helperNameMap[WITH_CTX]}(`)
+    // push(`_${helperNameMap[WITH_CTX]}(`)
+  } else {
+    push(`(`, node)
   }
-  push(`(`, node)
   if (isArray(params)) {
     genNodeList(params, context)
   } else if (params) {
@@ -509,7 +519,9 @@ function genFunctionExpression(
   if ((node as any).returnType) {
     push(`):${(node as any).returnType} => `)
   } else {
-    push(`) => `)
+    if (!isSlot) {
+      push(`) => `)
+    }
   }
   if (newline || body) {
     push(`{`)
@@ -531,9 +543,9 @@ function genFunctionExpression(
     deindent()
     push(`}`)
   }
-  if (isSlot) {
-    push(`)`)
-  }
+  // if (isSlot) {
+  //   push(`)`)
+  // }
 }
 
 function genConditionalExpression(

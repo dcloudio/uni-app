@@ -6,6 +6,7 @@ export const FRAGMENT = Symbol(`Fragment`)
 export const OPEN_BLOCK = Symbol(`openBlock`)
 export const RESOLVE_COMPONENT = Symbol(`resolveComponent`)
 export const RESOLVE_DIRECTIVE = Symbol(`resolveDirective`)
+export const RENDER_SLOT = Symbol(`renderSlot`)
 
 registerRuntimeHelpers({
   [IS_TRUE]: 'isTrue',
@@ -14,4 +15,5 @@ registerRuntimeHelpers({
   [FRAGMENT]: 'Fragment',
   [RESOLVE_COMPONENT]: 'resolveComponent',
   [RESOLVE_DIRECTIVE]: 'resolveDirective',
+  [RENDER_SLOT]: `renderSlot`,
 })

@@ -22,6 +22,7 @@ import { transformVText } from './transforms/vText'
 import { transformInterpolation } from './transforms/transformInterpolation'
 import { transformText } from './transforms/transformText'
 import { transformBind } from './transforms/vBind'
+import { transformSlotOutlet } from './transforms/transformSlotOutlet'
 
 export type TransformPreset = [
   NodeTransform[],
@@ -42,6 +43,7 @@ export function getBaseTransformPreset(
       trackSlotScopes,
       transformInterpolation,
       transformText,
+      transformSlotOutlet,
     ] as any,
     {
       on: transformOn,
