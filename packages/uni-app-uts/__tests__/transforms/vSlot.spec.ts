@@ -23,11 +23,9 @@ describe('compiler: slot', () => {
 const _component_Foo = resolveComponent("Foo")
 
   return createElementVNode("view", null, [
-    createVNode(_component_Foo, null, new Map<string,any>([
-      [
-        createElementVNode("text", null, "test")
-      ],
-    ]))
+    createVNode(_component_Foo, null, [
+      createElementVNode("text", null, "test")
+    ],)
   ])
 }`,
       {

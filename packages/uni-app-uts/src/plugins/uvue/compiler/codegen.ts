@@ -458,6 +458,9 @@ function genCallExpression(node: CallExpression, context: CodegenContext) {
 function genObjectExpression(node: ObjectExpression, context: CodegenContext) {
   const { push, indent, deindent, newline } = context
   const { properties } = node
+  const hasSlotChild = properties.some((property) => {
+    return (property.value as FunctionExpression).isSlot
+  })
   if (!properties.length) {
     push(`new Map<string,any>()`, node)
     return
@@ -465,8 +468,10 @@ function genObjectExpression(node: ObjectExpression, context: CodegenContext) {
   const multilines =
     properties.length > 1 ||
     properties.some((p) => p.value.type !== NodeTypes.SIMPLE_EXPRESSION)
-  push(`new Map<string,any>([`)
-  multilines && indent()
+  if (!hasSlotChild) {
+    push(`new Map<string,any>([`)
+  }
+  multilines && !hasSlotChild && indent()
   for (let i = 0; i < properties.length; i++) {
     const { key, value } = properties[i]
     if ((key as SimpleExpressionNode).content === '_') {
@@ -491,8 +496,10 @@ function genObjectExpression(node: ObjectExpression, context: CodegenContext) {
       }
     }
   }
-  multilines && deindent()
-  push(`])`)
+  multilines && !hasSlotChild && deindent()
+  if (!hasSlotChild) {
+    push(`])`)
+  }
 }
 
 function genArrayExpression(node: ArrayExpression, context: CodegenContext) {
