@@ -93,7 +93,7 @@ export default function uniPlugin(
 
   initPreContext(options.platform, process.env.UNI_CUSTOM_CONTEXT)
 
-  return process.env.UNI_UVUE === 'true'
+  return process.env.UNI_APP_X === 'true'
     ? createUVuePlugins(options)
     : createPlugins(options)
 }

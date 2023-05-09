@@ -5,7 +5,7 @@ describe('compiler:codegen', () => {
     assert(`<view/>`, `createElementVNode("view")`)
     assert(
       `<view style="width:100px;height:100px;"/>`,
-      `createElementVNode("view", new Map<string,any>([["style", "width:100px;height:100px;"]]))`
+      `createElementVNode("view", new Map<string,any | null>([["style", "width:100px;height:100px;"]]))`
     )
     assert(
       `<text>{{msg}}</text>`,

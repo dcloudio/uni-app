@@ -91,7 +91,7 @@ const injectPrefix = (arg: ExpressionNode, prefix: string) => {
 function object2Map(content: string) {
   const matched = content.match(objectExp)![0]
   const keyValues = matched.replace(/\{|\}/g, '').split(',')
-  let mapConstructor = 'new Map<string,any>(['
+  let mapConstructor = 'new Map<string,any | null>(['
 
   keyValues.forEach((keyValue: string, index: number) => {
     const [key, value] = keyValue.split(':')

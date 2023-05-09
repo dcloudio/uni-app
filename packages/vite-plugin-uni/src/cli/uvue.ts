@@ -1,19 +1,19 @@
 import { BuildOptions, ServerOptions, createLogger } from 'vite'
+import { extend, hasOwn } from '@vue/shared'
 import { M, output, parseManifestJsonOnce } from '@dcloudio/uni-cli-shared'
 import { RollupWatcher } from 'rollup'
 
 import { CliOptions } from '.'
 import { buildByVite, initBuildOptions } from './build'
 import { addConfigFile, cleanOptions, printStartupDuration } from './utils'
-import { extend } from '@vue/shared'
 
 export function initUVueEnv() {
   const manifestJson = parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
-  const isNVueEnabled = manifestJson?.uvue?.enable === true
+  const isNVueEnabled = hasOwn(manifestJson, 'uni-app-x')
   if (!isNVueEnabled) {
     return
   }
-  process.env.UNI_UVUE = 'true'
+  process.env.UNI_APP_X = 'true'
   process.env.UNI_UVUE_TARGET_LANGUAGE = 'javascript'
   if (process.env.UNI_UTS_PLATFORM === 'app-android') {
     process.env.UNI_UVUE_TARGET_LANGUAGE = 'kotlin'

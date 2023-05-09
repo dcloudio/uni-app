@@ -462,14 +462,14 @@ function genObjectExpression(node: ObjectExpression, context: CodegenContext) {
     return (property.value as FunctionExpression).isSlot
   })
   if (!properties.length) {
-    push(`new Map<string,any>()`, node)
+    push(`new Map<string,any | null>()`, node)
     return
   }
   const multilines =
     properties.length > 1 ||
     properties.some((p) => p.value.type !== NodeTypes.SIMPLE_EXPRESSION)
   if (!hasSlotChild) {
-    push(`new Map<string,any>([`)
+    push(`new Map<string,any | null>([`)
   }
   multilines && !hasSlotChild && indent()
   for (let i = 0; i < properties.length; i++) {
