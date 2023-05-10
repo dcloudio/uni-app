@@ -113,6 +113,8 @@ export const NVUE_BUILT_IN_TAGS = [
   'gcanvas',
 ]
 
+export const UVUE_BUILT_IN_TAGS = ['loading-indicator']
+
 export const NVUE_U_BUILT_IN_TAGS = [
   'u-text',
   'u-image',
@@ -173,6 +175,9 @@ const NVUE_CUSTOM_COMPONENTS = [
 ]
 
 export function isAppUVueNativeTag(tag: string) {
+  if (UVUE_BUILT_IN_TAGS.includes(tag)) {
+    return true
+  }
   if (NVUE_CUSTOM_COMPONENTS.includes(tag)) {
     return false
   }
