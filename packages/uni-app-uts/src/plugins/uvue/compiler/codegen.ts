@@ -490,7 +490,10 @@ function genObjectExpression(node: ObjectExpression, context: CodegenContext) {
     }
     if (i < properties.length - 1) {
       // will only reach this if it's multilines
-      push(`,`)
+      // properties[i].type.content = _ 会跳过，避免多余 ，
+      if ((properties[i + 1].key as SimpleExpressionNode).content !== '_') {
+        push(`,`)
+      }
       if (!(value as FunctionExpression).isSlot) {
         newline()
       }

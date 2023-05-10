@@ -18,14 +18,14 @@ describe('compiler: slot', () => {
 
   test('template component with slot', () => {
     assert(
-      `<view><Foo>test</Foo></view>`,
+      `<view><Foo @click="test">test</Foo></view>`,
       `@Suppress("UNUSED_PARAMETER") function PagesIndexIndexRender(_ctx: PagesIndexIndex): VNode | null {
 const _component_Foo = resolveComponent("Foo")
 
   return createElementVNode("view", null, [
-    createVNode(_component_Foo, null, [
+    createVNode(_component_Foo, new Map<string,any | null>([["onClick", _ctx.test]]), [
       createElementVNode("text", null, "test")
-    ],)
+    ], 8 /* PROPS */, ["onClick"])
   ])
 }`,
       {
