@@ -17,7 +17,6 @@ const DEFAULT_IMPORTS = [
   'kotlinx.coroutines.Dispatchers',
   'io.dcloud.uts.Map',
   'io.dcloud.uts.*',
-  'io.dcloud.uts.shared.*',
   'io.dcloud.uts.framework.*',
   'io.dcloud.uts.vue.*',
   'io.dcloud.uts.vue.shared.*',

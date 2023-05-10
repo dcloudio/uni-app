@@ -158,7 +158,8 @@ export function initEnv(
     console.log(
       M['app.compiler.version'].replace(
         '{version}',
-        pkg['uni-app']['compilerVersion'] + '（vue3）'
+        pkg['uni-app']['compilerVersion'] +
+          `（${process.env.UNI_APP_X === 'true' ? 'uni-app-x' : 'vue3'}）`
       )
     )
     initNVueEnv()
