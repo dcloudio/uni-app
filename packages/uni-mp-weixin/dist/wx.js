@@ -8,13 +8,14 @@ const objectKeys = [
   'serviceMarket',
   'router',
   'worklet',
+  '__webpack_require_UNI_MP_PLUGIN__'
 ]
 const singlePageDisableKey = [
   'lanDebug',
   'router',
-  'worklet',
+  'worklet'
 ]
-const target = typeof globalThis !== 'undefined' ? globalThis : (function() {
+const target = typeof globalThis !== 'undefined' ? globalThis : (function () {
   return this
 })()
 
@@ -22,14 +23,14 @@ const key = ['w', 'x'].join('')
 const oldWx = target[key]
 const launchOption = oldWx.getLaunchOptionsSync ? oldWx.getLaunchOptionsSync() : null
 
-function isWxKey(key) {
+function isWxKey (key) {
   if (launchOption && launchOption.scene === 1154 && singlePageDisableKey.includes(key)) {
     return false
   }
   return objectKeys.indexOf(key) > -1 || typeof oldWx[key] === 'function'
 }
 
-function initWx() {
+function initWx () {
   const newWx = {}
   for (const key in oldWx) {
     if (isWxKey(key)) {
