@@ -40,9 +40,9 @@ export function uniAppPagesPlugin(): Plugin {
         const pagesJson = normalizeUniAppXAppPagesJson(code)
         imports = []
         routes = []
-        pagesJson.pages.forEach((page) => {
+        pagesJson.pages.forEach((page, index) => {
           const className = genClassName(page.path)
-          let isQuit = false
+          let isQuit = index === 0
           imports.push(page.path)
           routes.push(
             `{ path: "${
