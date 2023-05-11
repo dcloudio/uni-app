@@ -10,7 +10,10 @@ export const normalizeLength = createNormalizeLength()
 export const normalizeLengthWithPercent = createNormalizeLength({
   percent: true,
 })
-export const normalizeLengthWithAuto = createNormalizeLength({ auto: true })
+export const normalizeLengthWithAutoAndPercent = createNormalizeLength({
+  auto: true,
+  percent: true,
+})
 
 interface NormalizeLengthOptions {
   percent?: boolean

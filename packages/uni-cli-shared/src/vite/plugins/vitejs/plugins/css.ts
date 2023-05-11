@@ -273,7 +273,10 @@ export function cssPostPlugin(
       if (id) {
         const filename = chunkCssFilename(id)
         if (filename) {
-          if (platform === 'app' && filename === 'app.css') {
+          if (
+            platform === 'app' &&
+            (filename === 'app.css' || filename === 'App.vue.style.uts')
+          ) {
             // 获取 unocss 的样式文件信息
             const ids = Object.keys(chunk.modules).filter(
               (id) =>

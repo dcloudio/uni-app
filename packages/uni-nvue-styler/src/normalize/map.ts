@@ -6,8 +6,8 @@ import { normalizeFlexWrap } from './flexWrap'
 import { normalizeInteger } from './integer'
 import {
   normalizeLength,
-  normalizeLengthWithAuto,
   normalizeLengthWithPercent,
+  normalizeLengthWithAutoAndPercent,
 } from './length'
 import { normalizeNumber } from './number'
 import { normalizeShorthandLength } from './shorthandLength'
@@ -34,15 +34,15 @@ export function getNormalizeMap(options: NormalizeOptions) {
       height: uvue ? normalizeLengthWithPercent : normalizeLength,
       overflow: createEnumNormalize(['hidden']),
       padding: normalizeShorthandLength,
-      paddingLeft: uvue ? normalizeLengthWithAuto : normalizeLength,
-      paddingRight: uvue ? normalizeLengthWithAuto : normalizeLength,
-      paddingTop: uvue ? normalizeLengthWithAuto : normalizeLength,
-      paddingBottom: uvue ? normalizeLengthWithAuto : normalizeLength,
+      paddingLeft: uvue ? normalizeLengthWithAutoAndPercent : normalizeLength,
+      paddingRight: uvue ? normalizeLengthWithAutoAndPercent : normalizeLength,
+      paddingTop: uvue ? normalizeLengthWithAutoAndPercent : normalizeLength,
+      paddingBottom: uvue ? normalizeLengthWithAutoAndPercent : normalizeLength,
       margin: normalizeShorthandLength,
-      marginLeft: uvue ? normalizeLengthWithAuto : normalizeLength,
-      marginRight: uvue ? normalizeLengthWithAuto : normalizeLength,
-      marginTop: uvue ? normalizeLengthWithAuto : normalizeLength,
-      marginBottom: uvue ? normalizeLengthWithAuto : normalizeLength,
+      marginLeft: uvue ? normalizeLengthWithAutoAndPercent : normalizeLength,
+      marginRight: uvue ? normalizeLengthWithAutoAndPercent : normalizeLength,
+      marginTop: uvue ? normalizeLengthWithAutoAndPercent : normalizeLength,
+      marginBottom: uvue ? normalizeLengthWithAutoAndPercent : normalizeLength,
       borderWidth: normalizeLength,
       borderLeftWidth: normalizeLength,
       borderTopWidth: normalizeLength,
@@ -65,7 +65,7 @@ export function getNormalizeMap(options: NormalizeOptions) {
       borderTopRightRadius: normalizeLength,
     },
     flexbox: {
-      flex: normalizeNumber,
+      flex: uvue ? normalizeDefault : normalizeNumber,
       flexWrap: normalizeFlexWrap,
       flexDirection: createEnumNormalize([
         'column',
@@ -94,10 +94,10 @@ export function getNormalizeMap(options: NormalizeOptions) {
         'sticky',
         'fixed',
       ]),
-      top: normalizeLength,
-      bottom: normalizeLength,
-      left: normalizeLength,
-      right: normalizeLength,
+      top: uvue ? normalizeLengthWithPercent : normalizeLength,
+      bottom: uvue ? normalizeLengthWithPercent : normalizeLength,
+      left: uvue ? normalizeLengthWithPercent : normalizeLength,
+      right: uvue ? normalizeLengthWithPercent : normalizeLength,
       zIndex: normalizeInteger,
     },
     common: {

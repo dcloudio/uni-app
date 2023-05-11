@@ -31,14 +31,15 @@ export async function parse(input: string, options: ParseOptions = {}) {
   }
   const obj = root ? objectifier(root) : {}
   if (options.map) {
-    return { code: mapToInitString(objToMap(obj), options.ts), messages }
+    return { code: mapToInitString(objToMap(obj), options.ts, true), messages }
   }
   return { code: JSON.stringify(obj), messages }
 }
 
 function mapToInitString(
   map: Map<string, unknown>,
-  ts: boolean = false
+  ts: boolean = false,
+  isRoot: boolean = false
 ): string {
   let entries = []
   for (let [key, value] of map) {
@@ -48,7 +49,13 @@ function mapToInitString(
       entries.push(`["${key}", ${JSON.stringify(value)}]`)
     }
   }
-  return `new Map${ts ? '<string, any>' : ''}([${entries.join(', ')}])`
+  return `new Map${
+    ts
+      ? isRoot
+        ? '<string, Map<string, Map<string, any>>>'
+        : '<string, any>'
+      : ''
+  }([${entries.join(', ')}])`
 }
 
 function objToMap(obj: Record<string, unknown>) {

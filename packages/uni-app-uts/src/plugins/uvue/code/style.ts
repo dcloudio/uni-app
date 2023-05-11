@@ -9,7 +9,7 @@ export function genStyle(
 ) {
   if (styles.length === 0) {
     return `
-const ${className}Styles: Array<Map<String, Any>> = []`
+const ${className}Styles: Map<string, Map<string, Map<string, any>>>[] = []`
   }
   return `
 import { ${className}Styles } from './${path.basename(filename)}.style.uts'`
