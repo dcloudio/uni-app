@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.transformVue = void 0;
 const plugins_1 = require("./plugins");
 const css_1 = require("./plugins/css");
 const mainUTS_1 = require("./plugins/mainUTS");
@@ -18,3 +19,5 @@ exports.default = () => {
         (0, css_1.uniAppCssPlugin)(),
     ];
 };
+var index_1 = require("./plugins/uvue/index");
+Object.defineProperty(exports, "transformVue", { enumerable: true, get: function () { return index_1.transformVue; } });

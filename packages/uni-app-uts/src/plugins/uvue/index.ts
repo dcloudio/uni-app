@@ -2,7 +2,7 @@ import path from 'path'
 import fs from 'fs-extra'
 
 import type { Plugin } from 'vite'
-import type { SFCBlock } from '@vue/compiler-sfc'
+import type { SFCBlock, SFCParseResult } from '@vue/compiler-sfc'
 import type { TransformPluginContext } from 'rollup'
 
 import { normalizePath, parseVueRequest } from '@dcloudio/uni-cli-shared'
@@ -38,58 +38,6 @@ export function uniAppUVuePlugin(): Plugin {
   const appVue = resolveAppVue(process.env.UNI_INPUT_DIR)
   function isAppVue(id: string) {
     return normalizePath(id) === appVue
-  }
-
-  async function transformMain(
-    code: string,
-    filename: string,
-    options: ResolvedOptions,
-    pluginContext: TransformPluginContext
-  ) {
-    // prev descriptor is only set and used for hmr
-    const { descriptor, errors } = createDescriptor(filename, code, options)
-
-    if (errors.length) {
-      errors.forEach((error) =>
-        pluginContext.error(createRollupError(filename, error))
-      )
-      return null
-    }
-    const isApp = isAppVue(filename)
-    const fileName = path.relative(process.env.UNI_INPUT_DIR, filename)
-    const className = genClassName(fileName)
-    // 生成 script 文件
-    pluginContext.emitFile({
-      type: 'asset',
-      fileName,
-      source:
-        genScript(descriptor, { filename: className }) +
-        '\n' +
-        genStyle(descriptor, { filename: fileName, className }) +
-        '\n' +
-        (!isApp
-          ? genTemplate(descriptor, {
-              targetLanguage: process.env.UNI_UVUE_TARGET_LANGUAGE as
-                | 'kotlin'
-                | 'swift',
-              mode: 'function',
-              filename: className,
-              prefixIdentifiers: true,
-            })
-          : ''),
-    })
-    let jsCode = ''
-    const content = descriptor.script?.content
-    if (content) {
-      jsCode += await parseImports(content)
-    }
-    if (descriptor.styles.length) {
-      jsCode += '\n' + (await genJsStylesCode(descriptor, pluginContext))
-    }
-    jsCode += `\nexport default "${className}"`
-    return {
-      code: jsCode,
-    }
   }
 
   return {
@@ -131,7 +79,29 @@ export function uniAppUVuePlugin(): Plugin {
       }
       if (!query.vue) {
         // main request
-        return transformMain(code, filename, options, this)
+        const { errors, uts, js } = await transformVue(
+          code,
+          filename,
+          options,
+          this,
+          isAppVue
+        )
+        if (errors.length) {
+          errors.forEach((error) =>
+            this.error(createRollupError(filename, error))
+          )
+          return null
+        }
+        const fileName = path.relative(process.env.UNI_INPUT_DIR, filename)
+
+        this.emitFile({
+          type: 'asset',
+          fileName,
+          source: uts,
+        })
+        return {
+          code: js,
+        }
       } else {
         // sub block request
         const descriptor = query.src
@@ -150,5 +120,59 @@ export function uniAppUVuePlugin(): Plugin {
         }
       }
     },
+  }
+}
+
+interface TransformVueResult {
+  errors: SFCParseResult['errors']
+  uts?: string
+  js?: string
+}
+
+export async function transformVue(
+  code: string,
+  filename: string,
+  options: ResolvedOptions,
+  pluginContext: TransformPluginContext | undefined,
+  isAppVue: (id: string) => boolean = () => false
+): Promise<TransformVueResult> {
+  // prev descriptor is only set and used for hmr
+  const { descriptor, errors } = createDescriptor(filename, code, options)
+
+  if (errors.length) {
+    return { errors }
+  }
+  const isApp = isAppVue(filename)
+  const fileName = path.relative(process.env.UNI_INPUT_DIR, filename)
+  const className = genClassName(fileName)
+  // 生成 script 文件
+  const utsCode =
+    genScript(descriptor, { filename: className }) +
+    '\n' +
+    genStyle(descriptor, { filename: fileName, className }) +
+    '\n' +
+    (!isApp
+      ? genTemplate(descriptor, {
+          targetLanguage: process.env.UNI_UVUE_TARGET_LANGUAGE as
+            | 'kotlin'
+            | 'swift',
+          mode: 'function',
+          filename: className,
+          prefixIdentifiers: true,
+        })
+      : '')
+  let jsCode = ''
+  const content = descriptor.script?.content
+  if (content) {
+    jsCode += await parseImports(content)
+  }
+  if (descriptor.styles.length) {
+    jsCode += '\n' + (await genJsStylesCode(descriptor, pluginContext!))
+  }
+  jsCode += `\nexport default "${className}"`
+  return {
+    errors: [],
+    uts: utsCode,
+    js: jsCode,
   }
 }

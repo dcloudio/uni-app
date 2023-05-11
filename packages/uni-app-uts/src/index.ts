@@ -16,3 +16,5 @@ export default () => {
     uniAppCssPlugin(),
   ]
 }
+
+export { transformVue } from './plugins/uvue/index'
