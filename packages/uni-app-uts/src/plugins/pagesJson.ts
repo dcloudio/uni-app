@@ -1,6 +1,9 @@
 import path from 'path'
 import fs from 'fs-extra'
-import { PAGES_JSON_UTS, normalizePagesJson } from '@dcloudio/uni-cli-shared'
+import {
+  PAGES_JSON_UTS,
+  normalizeUniAppXAppPagesJson,
+} from '@dcloudio/uni-cli-shared'
 import type { OutputAsset } from 'rollup'
 import type { Plugin } from 'vite'
 
@@ -33,16 +36,17 @@ export function uniAppPagesPlugin(): Plugin {
     },
     transform(code, id) {
       if (isPages(id)) {
-        const pagesJson = normalizePagesJson(code, process.env.UNI_PLATFORM)
+        const pagesJson = normalizeUniAppXAppPagesJson(code)
         imports = []
         routes = []
         pagesJson.pages.forEach((page) => {
           const className = genClassName(page.path)
+          let isQuit = false
           imports.push(page.path)
           routes.push(
             `{ path: "${
               page.path
-            }", component: ${className}Class, meta: { isQuit: true } as PageMeta, style: ${stringifyPageStyle(
+            }", component: ${className}Class, meta: { isQuit: ${isQuit} } as PageMeta, style: ${stringifyPageStyle(
               page.style
             )}  } as PageRoute`
           )
@@ -76,7 +80,5 @@ function defineAppConfig(){
 }
 
 function stringifyPageStyle(pageStyle: UniApp.PagesJsonPageStyle) {
-  delete pageStyle.isNVue
-  delete pageStyle.isSubNVue
   return stringifyMap(pageStyle)
 }
