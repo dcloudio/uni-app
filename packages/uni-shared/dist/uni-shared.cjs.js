@@ -111,9 +111,7 @@ const NVUE_BUILT_IN_TAGS = [
     'barcode',
     'gcanvas',
 ];
-const UVUE_BUILT_IN_TAGS = [
-    'loading-indicator'
-];
+const UVUE_BUILT_IN_TAGS = ['loading-indicator'];
 const NVUE_U_BUILT_IN_TAGS = [
     'u-text',
     'u-image',
