@@ -254,9 +254,6 @@ function normalizePageStyle(
     }
     if (platform === 'app') {
       extend(pageStyle, pageStyle['app'] || pageStyle['app-plus'])
-      // 基于现有表现，补充默认值
-      ;(pageStyle as Record<string, any>).navigationBarTextStyle =
-        (pageStyle as Record<string, any>).navigationBarTextStyle || '#000000'
     } else {
       extend(pageStyle, pageStyle[platform])
     }
