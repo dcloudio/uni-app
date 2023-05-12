@@ -37,6 +37,7 @@ export function uniAppPagesPlugin(): Plugin {
     },
     transform(code, id) {
       if (isPages(id)) {
+        this.addWatchFile(path.resolve(process.env.UNI_INPUT_DIR, 'pages.json'))
         const pagesJson = normalizeUniAppXAppPagesJson(code)
         imports = []
         routes = []
