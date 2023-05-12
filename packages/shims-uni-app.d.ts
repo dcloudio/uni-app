@@ -213,7 +213,6 @@ declare namespace UniNamespace {
     isSubNVue?: boolean
     disableScroll?: boolean
     enablePullDownRefresh?: boolean
-    navigationBarTextStyle?: 'white' | 'black'
     navigationBar: PageNavigationBar
     pullToRefresh?: PageRefreshOptions
     onReachBottomDistance?: number
