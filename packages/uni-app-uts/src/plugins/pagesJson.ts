@@ -53,6 +53,8 @@ export function uniAppPagesPlugin(): Plugin {
           )
         })
         if (pagesJson.globalStyle) {
+          pagesJson.globalStyle.navigationBarTextStyle =
+            pagesJson.globalStyle.navigationBarTextStyle || 'black'
           globalStyle = stringifyPageStyle(pagesJson.globalStyle)
         }
         return `${imports.map((p) => `import './${p}.uvue'`).join('\n')}
