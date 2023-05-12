@@ -56,6 +56,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
       noColor: true,
       transform: {
         uniExtApiPackage: 'io.dcloud.uts.extapi',
+        uvueClassNamePrefix: 'Gen',
       },
     },
   })

@@ -17,4 +17,5 @@ export default () => {
   ]
 }
 
+export { genClassName } from './plugins/utils'
 export { transformVue } from './plugins/uvue/index'

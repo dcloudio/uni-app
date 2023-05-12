@@ -2,7 +2,7 @@ import path from 'path'
 import fs from 'fs-extra'
 
 import type { Plugin } from 'vite'
-import type { SFCBlock, SFCParseResult } from '@vue/compiler-sfc'
+import type { SFCBlock, SFCDescriptor, SFCParseResult } from '@vue/compiler-sfc'
 import type { TransformPluginContext } from 'rollup'
 
 import { normalizePath, parseVueRequest } from '@dcloudio/uni-cli-shared'
@@ -33,6 +33,7 @@ export function uniAppUVuePlugin(): Plugin {
     sourceMap: false,
     // eslint-disable-next-line no-restricted-globals
     compiler: require('@vue/compiler-sfc'),
+    targetLanguage: process.env.UNI_UVUE_TARGET_LANGUAGE,
   }
 
   const appVue = resolveAppVue(process.env.UNI_INPUT_DIR)
@@ -127,6 +128,7 @@ interface TransformVueResult {
   errors: SFCParseResult['errors']
   uts?: string
   js?: string
+  descriptor: SFCDescriptor
 }
 
 export async function transformVue(
@@ -136,15 +138,18 @@ export async function transformVue(
   pluginContext: TransformPluginContext | undefined,
   isAppVue: (id: string) => boolean = () => false
 ): Promise<TransformVueResult> {
+  if (!options.compiler) {
+    options.compiler = require('@vue/compiler-sfc')
+  }
   // prev descriptor is only set and used for hmr
   const { descriptor, errors } = createDescriptor(filename, code, options)
 
   if (errors.length) {
-    return { errors }
+    return { errors, descriptor }
   }
   const isApp = isAppVue(filename)
-  const fileName = path.relative(process.env.UNI_INPUT_DIR, filename)
-  const className = genClassName(fileName)
+  const fileName = path.relative(options.root, filename)
+  const className = genClassName(fileName, options.classNamePrefix)
   // 生成 script 文件
   const utsCode =
     genScript(descriptor, { filename: className }) +
@@ -153,9 +158,7 @@ export async function transformVue(
     '\n' +
     (!isApp
       ? genTemplate(descriptor, {
-          targetLanguage: process.env.UNI_UVUE_TARGET_LANGUAGE as
-            | 'kotlin'
-            | 'swift',
+          targetLanguage: options.targetLanguage as any,
           mode: 'function',
           filename: className,
           prefixIdentifiers: true,
@@ -174,5 +177,6 @@ export async function transformVue(
     errors: [],
     uts: utsCode,
     js: jsCode,
+    descriptor,
   }
 }

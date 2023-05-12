@@ -42,6 +42,8 @@ export type UTSOutputOptions = {
     paramDefaultValue?: boolean
     constructorInvocation?: boolean
     uniExtApiPackage?: string
+    uvueClassNamePrefix?: string
+    uvueClassNameOnlyBasename?: boolean
   }
 }
 export interface UTSOptions {

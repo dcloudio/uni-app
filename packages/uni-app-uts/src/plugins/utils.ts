@@ -19,9 +19,9 @@ export function uvueOutDir() {
   return path.join(process.env.UNI_OUTPUT_DIR, '../.uvue')
 }
 
-export function genClassName(fileName: string) {
+export function genClassName(fileName: string, prefix: string = 'Gen') {
   return (
-    'Gen' +
+    prefix +
     capitalize(camelize(removeExt(normalizePath(fileName).replace(/\//g, '-'))))
   )
 }
