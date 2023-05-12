@@ -7,9 +7,7 @@ import { normalizePath } from '../utils'
 export function normalizeUniAppXAppPagesJson(jsonStr: string) {
   let pagesJson: UniApp.PagesJson = {
     pages: [],
-    globalStyle: {
-      navigationBar: {},
-    },
+    globalStyle: {} as UniApp.PagesJson['globalStyle'],
   }
   // preprocess
   try {
