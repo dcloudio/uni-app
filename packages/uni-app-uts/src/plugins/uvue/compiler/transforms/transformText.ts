@@ -59,7 +59,7 @@ export const transformText: NodeTransform = (node, _) => {
 
 /*
   1. 转换 \\n 为 \n
-  2. u-text 下只能有一个文本节点（不支持 children），需要移除子组件并合并文本
+  2. u-text 下仅支持 slot 及 文本节点
 */
 function parseText(node: ElementNode) {
   if (node.children.length) {
@@ -79,7 +79,7 @@ function parseText(node: ElementNode) {
           node.children.splice(i, 1)
           i--
         }
-      } else if (child.type === 1 || child.type === 3) {
+      } else if (child.type === 3) {
         node.children.splice(i, 1)
         i--
       } else {

@@ -34,4 +34,21 @@ const _component_Foo = resolveComponent("Foo")
       }
     )
   })
+
+  test('slot in text', () => {
+    assert(
+      `<view><text><slot/></text></view>`,
+      `@Suppress("UNUSED_PARAMETER") function PagesIndexIndexRender(_ctx: PagesIndexIndex): VNode | null {
+  return createElementVNode("view", null, [
+    createElementVNode("text", null, [
+      renderSlot(_ctx.$slots, "default")
+    ])
+  ])
+}`,
+      {
+        targetLanguage: 'kotlin',
+        mode: 'function',
+      }
+    )
+  })
 })
