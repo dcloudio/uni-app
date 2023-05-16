@@ -11,6 +11,7 @@ import { parseUTSSyntaxError } from '../stacktrace'
 import {
   getCompilerServer,
   getUTSCompiler,
+  resolveSourceMapFile,
   resolveUTSSourceMapPath,
 } from '../utils'
 
@@ -96,7 +97,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
       ),
       d8: resolveD8Args(jarFile),
       sourceRoot: inputDir,
-      // sourceMapPath: resolveSourceMapFile(outputDir, kotlinFile),
+      sourceMapPath: resolveSourceMapFile(outputDir, kotlinFile),
     }
     const res = await compileDex(options, inputDir)
     // console.log('dex compile time: ' + (Date.now() - time) + 'ms')

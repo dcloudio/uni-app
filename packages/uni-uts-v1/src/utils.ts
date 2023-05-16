@@ -415,3 +415,10 @@ export function relative(filename: string, inputDir: string) {
   }
   return filename
 }
+
+export function resolveSourceMapFile(outputDir: string, kotlinFile: string) {
+  return (
+    path.resolve(resolveSourceMapPath(), path.relative(outputDir, kotlinFile)) +
+    '.map'
+  )
+}

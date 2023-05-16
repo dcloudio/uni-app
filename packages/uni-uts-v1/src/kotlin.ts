@@ -6,7 +6,7 @@ import { sync } from 'fast-glob'
 import { isArray } from '@vue/shared'
 import type { UTSResult } from '@dcloudio/uts'
 import { get } from 'android-versions'
-import { normalizePath, parseJson, resolveSourceMapPath } from './shared'
+import { normalizePath, parseJson } from './shared'
 import {
   CompilerServer,
   genUTSPlatformResource,
@@ -21,6 +21,7 @@ import {
   genComponentsCode,
   parseKotlinPackageWithPluginId,
   isColorSupported,
+  resolveSourceMapFile,
 } from './utils'
 import { Module } from '../types/types'
 import { parseUTSSyntaxError } from './stacktrace'
@@ -289,13 +290,6 @@ function resolveConfigJsonFile(filename: string) {
   if (fs.existsSync(configJsonFile)) {
     return configJsonFile
   }
-}
-
-function resolveSourceMapFile(outputDir: string, kotlinFile: string) {
-  return (
-    path.resolve(resolveSourceMapPath(), path.relative(outputDir, kotlinFile)) +
-    '.map'
-  )
 }
 
 const DEFAULT_IMPORTS = [
