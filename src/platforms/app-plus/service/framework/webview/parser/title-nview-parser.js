@@ -31,7 +31,7 @@ export function parseTitleNView (id, routeOptions) {
   const windowOptions = routeOptions.window
   const titleNView = windowOptions.titleNView
   routeOptions.meta.statusBarStyle =
-    windowOptions.navigationBarTextStyle === 'black' ? 'dark' : 'light'
+    windowOptions.navigationBarTextStyle === 'white' ? 'light' : 'dark'
   if (
     // 无头
     titleNView === false ||
@@ -58,13 +58,13 @@ export function parseTitleNView (id, routeOptions) {
     titleText:
       titleImage === '' ? windowOptions.navigationBarTitleText || '' : '',
     titleColor:
-      windowOptions.navigationBarTextStyle === 'black' ? '#000000' : '#ffffff',
+      windowOptions.navigationBarTextStyle === 'white' ? '#ffffff' : '#000000',
     type: titleNViewTypeList[transparentTitle],
     backgroundColor:
       /^#[a-z0-9]{6}$/i.test(navigationBarBackgroundColor) ||
       navigationBarBackgroundColor === 'transparent'
         ? navigationBarBackgroundColor
-        : '#f7f7f7',
+        : '#f8f8f8',
     tags:
       titleImage === ''
         ? []
