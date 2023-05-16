@@ -137,7 +137,7 @@ module.exports = function (pagesJson, userManifestJson, isAppView) {
   const navigationBarTextStyle =
   (pagesJson.pages[0].style && pagesJson.pages[0].style.navigationBarTextStyle) ||
   (pagesJson.globalStyle && pagesJson.globalStyle.navigationBarTextStyle) ||
-  'white'
+  'black'
   const navigationBarBackgroundColor = (parsedThemeAppJsonWindow && parsedThemeAppJsonWindow.navigationBarBackgroundColor) || '#000000'
 
   const TABBAR_HEIGHT = 50
@@ -149,7 +149,7 @@ module.exports = function (pagesJson, userManifestJson, isAppView) {
   // 状态栏
   manifestJson.plus.statusbar = {
     immersed: 'supportedDevice',
-    style: navigationBarTextStyle === 'black' ? 'dark' : 'light',
+    style: navigationBarTextStyle === 'white' ? 'light' : 'dark',
     background: navigationBarBackgroundColor
   }
   // 用户配置覆盖默认配置
