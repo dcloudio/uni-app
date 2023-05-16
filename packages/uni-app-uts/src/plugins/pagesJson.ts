@@ -22,6 +22,7 @@ export function uniAppPagesPlugin(): Plugin {
   let imports: string[] = []
   let routes: string[] = []
   let globalStyle: string = 'new Map()'
+  let tabBar: string = 'null'
   return {
     name: 'uni:app-pages',
     apply: 'build',
@@ -56,6 +57,9 @@ export function uniAppPagesPlugin(): Plugin {
         if (pagesJson.globalStyle) {
           globalStyle = stringifyPageStyle(pagesJson.globalStyle)
         }
+        if (pagesJson.tabBar) {
+          tabBar = stringifyMap(pagesJson.tabBar)
+        }
         return `${imports.map((p) => `import './${p}.uvue'`).join('\n')}
 export default 'pages.json'`
       }
@@ -78,6 +82,7 @@ ${routes.map((route) => `__uniRoutes.push(${route})`).join('\n')}
 function defineAppConfig(){
   __uniConfig.entryPagePath = '/${imports[0]}'
   __uniConfig.globalStyle = ${globalStyle}
+  __uniConfig.tabBar = ${tabBar}
 }
 `
       }

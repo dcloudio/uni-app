@@ -1,7 +1,13 @@
 import path from 'path'
 import { init, parse } from 'es-module-lexer'
 import { normalizePath, removeExt } from '@dcloudio/uni-cli-shared'
-import { camelize, capitalize } from '@vue/shared'
+import {
+  camelize,
+  capitalize,
+  isArray,
+  isPlainObject,
+  isString,
+} from '@vue/shared'
 
 export const ENTRY_FILENAME = 'index.uts'
 
@@ -31,33 +37,20 @@ export function isVue(filename: string) {
 }
 
 export function stringifyMap(obj: unknown) {
-  return mapToInitString(objToMap(obj as Record<string, unknown>), true)
+  return serialize(obj, true)
 }
 
-function mapToInitString(
-  map: Map<string, unknown>,
-  ts: boolean = false
-): string {
-  let entries = []
-  for (let [key, value] of map) {
-    if (value instanceof Map) {
-      entries.push(`["${key}", ${mapToInitString(value, ts)}]`)
-    } else {
-      entries.push(`["${key}", ${JSON.stringify(value)}]`)
-    }
+function serialize(obj: unknown, ts: boolean = false): string {
+  if (isString(obj)) {
+    return `"${obj}"`
+  } else if (isPlainObject(obj)) {
+    const entries = Object.entries(obj).map(
+      ([key, value]) => `[${serialize(key, ts)},${serialize(value, ts)}]`
+    )
+    return `new Map${ts ? '<string, any>' : ''}([${entries.join(',')}])`
+  } else if (isArray(obj)) {
+    return `[${obj.map((item) => serialize(item, ts)).join(',')}]`
+  } else {
+    return String(obj)
   }
-  return `new Map${ts ? '<string, any>' : ''}([${entries.join(', ')}])`
-}
-
-function objToMap(obj: Record<string, unknown>) {
-  const map = new Map()
-  for (const key in obj) {
-    const value = obj[key]
-    if (typeof value === 'object') {
-      map.set(key, objToMap(value as Record<string, unknown>))
-    } else {
-      map.set(key, value)
-    }
-  }
-  return map
 }

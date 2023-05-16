@@ -5,31 +5,36 @@ import { removePlatformStyle, validatePages } from './pages'
 import { normalizePath } from '../utils'
 
 export function normalizeUniAppXAppPagesJson(jsonStr: string) {
-  let pagesJson: UniApp.PagesJson = {
+  const pagesJson: UniApp.PagesJson = {
+    pages: [],
+    globalStyle: {} as UniApp.PagesJson['globalStyle'],
+  }
+  let userPagesJson: UniApp.PagesJson = {
     pages: [],
     globalStyle: {} as UniApp.PagesJson['globalStyle'],
   }
   // preprocess
   try {
-    pagesJson = parseJson(jsonStr, true)
+    userPagesJson = parseJson(jsonStr, true)
   } catch (e) {
     console.error(`[vite] Error: pages.json parse failed.\n`, jsonStr, e)
   }
   // pages
-  validatePages(pagesJson, jsonStr)
-  pagesJson.subPackages = pagesJson.subPackages || pagesJson.subpackages
-  delete pagesJson.subpackages
+  validatePages(userPagesJson, jsonStr)
+  userPagesJson.subPackages =
+    userPagesJson.subPackages || userPagesJson.subpackages
   // subPackages
-  if (pagesJson.subPackages) {
-    pagesJson.pages.push(...normalizeSubPackages(pagesJson.subPackages))
-    delete pagesJson.subPackages
-  } else {
-    delete pagesJson.subPackages
+  if (userPagesJson.subPackages) {
+    pagesJson.pages.push(...normalizeSubPackages(userPagesJson.subPackages))
   }
   // pageStyle
   normalizePages(pagesJson.pages)
   // globalStyle
-  pagesJson.globalStyle = normalizePageStyle(pagesJson.globalStyle) as any
+  pagesJson.globalStyle = normalizePageStyle(userPagesJson.globalStyle) as any
+  // tabBar
+  if (userPagesJson.tabBar) {
+    pagesJson.tabBar = userPagesJson.tabBar
+  }
   return pagesJson
 }
 
