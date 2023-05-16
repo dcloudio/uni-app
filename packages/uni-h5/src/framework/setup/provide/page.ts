@@ -102,8 +102,8 @@ function normalizePageMeta(pageMeta: UniApp.PageRouteMeta) {
     navigationBar.titleText = navigationBar.titleText || ''
     navigationBar.type = navigationBar.type || 'default'
     navigationBar.titleSize = titleSize || '16px'
-    navigationBar.titleColor = titleColor || '#ffffff'
-    navigationBar.backgroundColor = backgroundColor || '#F7F7F7'
+    navigationBar.titleColor = titleColor || '#000000'
+    navigationBar.backgroundColor = backgroundColor || '#F8F8F8'
     __UNI_FEATURE_I18N_LOCALE__ && initNavigationBarI18n(navigationBar)
   }
   if (!__NODE_JS__ && __UNI_FEATURE_PAGES__ && history.state) {

@@ -1146,7 +1146,7 @@ function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel, 
     meta,
     openType,
     eventChannel,
-    statusBarStyle: titleColor === "#000000" ? "dark" : "light"
+    statusBarStyle: titleColor === "#ffffff" ? "light" : "dark"
   };
 }
 function removeHook(vm, name, hook) {
@@ -15128,8 +15128,8 @@ function normalizePageMeta(pageMeta) {
     navigationBar.titleText = navigationBar.titleText || "";
     navigationBar.type = navigationBar.type || "default";
     navigationBar.titleSize = titleSize || "16px";
-    navigationBar.titleColor = titleColor || "#ffffff";
-    navigationBar.backgroundColor = backgroundColor || "#F7F7F7";
+    navigationBar.titleColor = titleColor || "#000000";
+    navigationBar.backgroundColor = backgroundColor || "#F8F8F8";
     __UNI_FEATURE_I18N_LOCALE__ && initNavigationBarI18n(navigationBar);
   }
   if (__UNI_FEATURE_PAGES__ && history.state) {
