@@ -1510,6 +1510,7 @@ function getWxsVm(el) {
     return el.__vueParentComponent && el.__vueParentComponent.proxy;
   }
 }
+const isKeyboardEvent = (val) => !val.type.indexOf("key") && val instanceof KeyboardEvent;
 const isClickEvent = (val) => val.type === "click";
 const isMouseEvent = (val) => val.type.indexOf("mouse") === 0 || ["contextmenu"].includes(val.type);
 const isTouchEvent = (val) => typeof TouchEvent !== "undefined" && val instanceof TouchEvent || val.type.indexOf("touch") === 0 || ["longpress"].indexOf(val.type) >= 0;
@@ -1539,6 +1540,15 @@ function $nne(evt, eventValue, instance2) {
     const top = getWindowTop();
     res.touches = normalizeTouchEvent(evt.touches, top);
     res.changedTouches = normalizeTouchEvent(evt.changedTouches, top);
+  } else if (isKeyboardEvent(evt)) {
+    const proxyKeys = ["key", "code"];
+    proxyKeys.forEach((key) => {
+      Object.defineProperty(res, key, {
+        get() {
+          return evt[key];
+        }
+      });
+    });
   }
   {
     return wrapperH5WxsEvent(

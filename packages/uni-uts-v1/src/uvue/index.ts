@@ -8,7 +8,11 @@ import {
   resolveKotlincArgs,
 } from '../kotlin'
 import { parseUTSSyntaxError } from '../stacktrace'
-import { getCompilerServer, getUTSCompiler } from '../utils'
+import {
+  getCompilerServer,
+  getUTSCompiler,
+  resolveUTSSourceMapPath,
+} from '../utils'
 
 const DEFAULT_IMPORTS = [
   'kotlinx.coroutines.async',
@@ -28,12 +32,13 @@ export interface CompileAppOptions {
   inputDir: string
   outputDir: string
   package: string
+  sourceMap: boolean
 }
 export async function compileApp(entry: string, options: CompileAppOptions) {
   const { bundle, UTSTarget } = getUTSCompiler()
   const imports = [...DEFAULT_IMPORTS]
 
-  const { package: pkg, inputDir, outputDir } = options
+  const { package: pkg, inputDir, outputDir, sourceMap } = options
 
   const input: Parameters<typeof bundle>[1]['input'] = {
     root: inputDir,
@@ -49,7 +54,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
       isPlugin: false,
       outDir: outputDir,
       package: pkg,
-      sourceMap: false,
+      sourceMap: sourceMap !== false ? resolveUTSSourceMapPath() : false,
       extname: 'kt',
       imports,
       logFilename: true,

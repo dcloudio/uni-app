@@ -105,6 +105,7 @@ export function uniAppUTSPlugin(): Plugin {
           inputDir: tempOutputDir,
           outputDir: outputDir,
           package: 'uni.' + (manifestJson.appid || '').replace(/_/g, ''),
+          sourceMap: true,
         }
       )
     },
