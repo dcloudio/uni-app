@@ -23,9 +23,12 @@ describe('compiler: slot', () => {
 const _component_Foo = resolveComponent("Foo")
 
   return createElementVNode("view", null, [
-    createVNode(_component_Foo, new Map<string,any | null>([["onClick", _ctx.test]]), [
-      createElementVNode("text", null, "test")
-    ], 8 /* PROPS */, ["onClick"])
+    createVNode(_component_Foo, new Map<string,any | null>([["onClick", _ctx.test]]), new Map<string,any | null>([
+      ["default", ((prop: Data): MutableList<VNode> => [
+        createElementVNode("text", null, "test")
+      ])],
+      ["_", 1 /* STABLE */]
+    ]), 8 /* PROPS */, ["onClick"])
   ])
 }`,
       {

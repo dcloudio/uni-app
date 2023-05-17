@@ -458,9 +458,6 @@ function genCallExpression(node: CallExpression, context: CodegenContext) {
 function genObjectExpression(node: ObjectExpression, context: CodegenContext) {
   const { push, indent, deindent, newline } = context
   const { properties } = node
-  const hasSlotChild = properties.some((property) => {
-    return (property.value as FunctionExpression).isSlot
-  })
   if (!properties.length) {
     push(`new Map<string,any | null>()`, node)
     return
@@ -468,41 +465,25 @@ function genObjectExpression(node: ObjectExpression, context: CodegenContext) {
   const multilines =
     properties.length > 1 ||
     properties.some((p) => p.value.type !== NodeTypes.SIMPLE_EXPRESSION)
-  if (!hasSlotChild) {
-    push(`new Map<string,any | null>([`)
-  }
-  multilines && !hasSlotChild && indent()
+  push(`new Map<string,any | null>([`)
+  multilines && indent()
   for (let i = 0; i < properties.length; i++) {
     const { key, value } = properties[i]
-    if ((key as SimpleExpressionNode).content === '_') {
-      continue
-    }
-    if (!(value as FunctionExpression).isSlot) {
-      push(`[`)
-      // key
-      genExpressionAsPropertyKey(key, context)
-      push(`, `)
-    }
+    push(`[`)
+    // key
+    genExpressionAsPropertyKey(key, context)
+    push(`, `)
     // value
     genNode(value, context)
-    if (!(value as FunctionExpression).isSlot) {
-      push(`]`)
-    }
+    push(`]`)
     if (i < properties.length - 1) {
       // will only reach this if it's multilines
-      // properties[i].type.content = _ 会跳过，避免多余 ，
-      if ((properties[i + 1].key as SimpleExpressionNode).content !== '_') {
-        push(`,`)
-      }
-      if (!(value as FunctionExpression).isSlot) {
-        newline()
-      }
+      push(`,`)
+      newline()
     }
   }
-  multilines && !hasSlotChild && deindent()
-  if (!hasSlotChild) {
-    push(`])`)
-  }
+  multilines && deindent()
+  push(`])`)
 }
 
 function genArrayExpression(node: ArrayExpression, context: CodegenContext) {
@@ -518,9 +499,9 @@ function genFunctionExpression(
   if (isSlot) {
     // wrap slot functions with owner context
     // push(`_${helperNameMap[WITH_CTX]}(`)
-  } else {
-    push(`(`, node)
+    push('(')
   }
+  push(`(`, node)
   if (isArray(params)) {
     genNodeList(params, context)
   } else if (params) {
@@ -529,7 +510,9 @@ function genFunctionExpression(
   if ((node as any).returnType) {
     push(`):${(node as any).returnType} => `)
   } else {
-    if (!isSlot) {
+    if (isSlot) {
+      push(`prop: Data): MutableList<VNode> => `)
+    } else {
       push(`) => `)
     }
   }
@@ -553,9 +536,9 @@ function genFunctionExpression(
     deindent()
     push(`}`)
   }
-  // if (isSlot) {
-  //   push(`)`)
-  // }
+  if (isSlot) {
+    push(`)`)
+  }
 }
 
 function genConditionalExpression(
