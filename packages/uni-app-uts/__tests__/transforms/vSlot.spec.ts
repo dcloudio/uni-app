@@ -24,7 +24,7 @@ const _component_Foo = resolveComponent("Foo")
 
   return createElementVNode("view", null, [
     createVNode(_component_Foo, new Map<string,any | null>([["onClick", _ctx.test]]), new Map<string,any | null>([
-      ["default", ((prop: Data): MutableList<VNode> => [
+      ["default", ((prop: Data): MutableList<Any> => [
         createElementVNode("text", null, "test")
       ])],
       ["_", 1 /* STABLE */]
@@ -63,7 +63,29 @@ const _component_Foo = resolveComponent("Foo")
 
   return createElementVNode("view", null, [
     createVNode(_component_Foo, null, new Map<string,any | null>([
-      ["default", ((props: Data): MutableList<VNode> => [
+      ["default", ((props: Data): MutableList<Any> => [
+        createElementVNode("text", null, "msg: " + toDisplayString(props.msg), 1 /* TEXT */)
+      ])],
+      ["_", 1 /* STABLE */]
+    ]))
+  ])
+}`,
+      {
+        targetLanguage: 'kotlin',
+        mode: 'function',
+      }
+    )
+  })
+
+  test('scoped slots shorthand', () => {
+    assert(
+      `<view><Foo><template #default="props"><text>msg: {{props.msg}}</text></template></Foo></view>`,
+      `@Suppress("UNUSED_PARAMETER") function PagesIndexIndexRender(_ctx: PagesIndexIndex): VNode | null {
+const _component_Foo = resolveComponent("Foo")
+
+  return createElementVNode("view", null, [
+    createVNode(_component_Foo, null, new Map<string,any | null>([
+      ["default", ((props: Data): MutableList<Any> => [
         createElementVNode("text", null, "msg: " + toDisplayString(props.msg), 1 /* TEXT */)
       ])],
       ["_", 1 /* STABLE */]
