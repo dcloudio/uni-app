@@ -107,6 +107,8 @@ export function createTransformContext(
     prefixIdentifiers = false,
     nodeTransforms = [],
     directiveTransforms = {},
+    scopeId = null,
+    slotted = true,
     isBuiltInComponent = NOOP,
     isCustomElement = NOOP,
     onError = defaultOnError,
@@ -124,6 +126,8 @@ export function createTransformContext(
     directiveTransforms,
     isBuiltInComponent,
     isCustomElement,
+    scopeId,
+    slotted,
     onError,
     onWarn,
 

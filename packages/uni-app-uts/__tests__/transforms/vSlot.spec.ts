@@ -3,10 +3,10 @@ import { assert } from '../testUtils'
 describe('compiler: slot', () => {
   test('component with slot', () => {
     assert(
-      `<view><slot></slot></view>`,
+      `<view><slot data="data"></slot></view>`,
       `@Suppress("UNUSED_PARAMETER") function PagesIndexIndexRender(_ctx: PagesIndexIndex): VNode | null {
   return createElementVNode("view", null, [
-    renderSlot(_ctx.$slots, "default")
+    renderSlot(_ctx.$slots, "default", new Map<string,any | null>([["data", "data"]]))
   ])
 }`,
       {
@@ -46,6 +46,28 @@ const _component_Foo = resolveComponent("Foo")
     createElementVNode("text", null, [
       renderSlot(_ctx.$slots, "default")
     ])
+  ])
+}`,
+      {
+        targetLanguage: 'kotlin',
+        mode: 'function',
+      }
+    )
+  })
+
+  test('scoped slots', () => {
+    assert(
+      `<view><Foo><template v-slot="props"><text>msg: {{props.msg}}</text></template></Foo></view>`,
+      `@Suppress("UNUSED_PARAMETER") function PagesIndexIndexRender(_ctx: PagesIndexIndex): VNode | null {
+const _component_Foo = resolveComponent("Foo")
+
+  return createElementVNode("view", null, [
+    createVNode(_component_Foo, null, new Map<string,any | null>([
+      ["default", ((props: Data): MutableList<VNode> => [
+        createElementVNode("text", null, "msg: " + toDisplayString(props.msg), 1 /* TEXT */)
+      ])],
+      ["_", 1 /* STABLE */]
+    ]))
   ])
 }`,
       {

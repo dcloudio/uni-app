@@ -61,6 +61,16 @@ export interface TransformOptions
    * Used by some transforms that expects only native elements
    */
   isCustomElement?: (tag: string) => boolean | void
+  /**
+   * SFC scoped styles ID
+   */
+  scopeId?: string | null
+  /**
+   * Indicates this SFC template has used :slotted in its styles
+   * Defaults to `true` for backwards compatibility - SFC tooling should set it
+   * to `false` if no `:slotted` usage is detected in `<style>`
+   */
+  slotted?: boolean
 }
 
 export type CompilerOptions = TransformOptions & CodegenOptions
