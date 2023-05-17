@@ -17,12 +17,18 @@ describe('compiler:v-bind', () => {
 ]))`
     )
   })
-  test('template v-bind with object', () => {
+  test('template v-bind with array', () => {
     assert(
       `<view v-bind:class="[classA, {classB: true, classC: false}]"></view>`,
       `createElementVNode("view", new Map<string,any | null>([
   ["class", normalizeClass([_ctx.classA, new Map<string,any | null>([[classB, true],[ classC, false]])])]
 ]), null, 2 /* CLASS */)`
+    )
+  })
+  test('template v-bind with object', () => {
+    assert(
+      `<view :style="{color: true ? 'blue' : 'red'}"></view>`,
+      "createElementVNode(\"view\", new Map<string,any | null>([[\"style\", new Map<string,any | null>([['color', true ? 'blue' : 'red']])]]))"
     )
   })
 })

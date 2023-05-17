@@ -4,9 +4,11 @@ import {
   createSimpleExpression,
   ExpressionNode,
   NodeTypes,
+  SimpleExpressionNode,
+  ConstantTypes,
 } from '@vue/compiler-core'
 import { createCompilerError, ErrorCodes } from '../errors'
-import { camelize } from '@vue/shared'
+import { camelize, isString } from '@vue/shared'
 import { CAMELIZE } from '@vue/compiler-core'
 
 const objectExp = /\{.*\}/g
@@ -59,7 +61,7 @@ export const transformBind: DirectiveTransform = (dir, _node, context) => {
   }
 
   if ((exp as any).content && objectExp.test((exp as any).content)) {
-    ;(exp as any).content = object2Map((exp as any).content)
+    ;(exp as any).content = object2Map(exp)
   } else if ((exp as any).children) {
     ;(exp as any).children.forEach(
       (child: ExpressionNode | string, index: number) => {
@@ -88,13 +90,18 @@ const injectPrefix = (arg: ExpressionNode, prefix: string) => {
   }
 }
 
-function object2Map(content: string) {
+function object2Map(exp: ExpressionNode | string) {
+  const content = isString(exp) ? exp : (exp as SimpleExpressionNode).content
   const matched = content.match(objectExp)![0]
   const keyValues = matched.replace(/\{|\}/g, '').split(',')
   let mapConstructor = 'new Map<string,any | null>(['
 
   keyValues.forEach((keyValue: string, index: number) => {
-    const [key, value] = keyValue.split(':')
+    const colonIndex = keyValue.indexOf(':')
+    const key = needAddQuotes(exp, keyValue)
+      ? `'${keyValue.substring(0, colonIndex)}'`
+      : keyValue.substring(0, colonIndex)
+    const value = keyValue.substring(colonIndex + 1)
     if (key && value) {
       mapConstructor += `[${key},${value}]`
       if (index < keyValues.length - 1) {
@@ -106,4 +113,16 @@ function object2Map(content: string) {
   mapConstructor += '])'
 
   return content.replace(matched, mapConstructor)
+}
+
+function needAddQuotes(
+  exp: ExpressionNode | string,
+  keyValue: string
+): boolean {
+  return (
+    !isString(exp) &&
+    (exp as SimpleExpressionNode).constType === ConstantTypes.CAN_STRINGIFY &&
+    !keyValue.startsWith("'") &&
+    !keyValue.startsWith('"')
+  )
 }
