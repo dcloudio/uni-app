@@ -3642,7 +3642,7 @@ const Radio = /* @__PURE__ */ defineComponent({
       field
     } = useRadioInject(radioChecked, radioValue, reset);
     const _onClick = ($event, isLabelClick) => {
-      if (props2.disabled) {
+      if (props2.disabled || radioChecked.value) {
         return;
       }
       radioChecked.value = !radioChecked.value;

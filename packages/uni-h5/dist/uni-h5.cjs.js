@@ -5374,7 +5374,7 @@ const index$o = /* @__PURE__ */ defineBuiltInComponent({
       field
     } = useRadioInject(radioChecked, radioValue, reset);
     const _onClick = ($event) => {
-      if (props2.disabled) {
+      if (props2.disabled || radioChecked.value) {
         return;
       }
       radioChecked.value = true;
