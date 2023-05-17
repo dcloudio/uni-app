@@ -2,6 +2,7 @@ import path from 'path'
 import fs from 'fs-extra'
 import {
   KotlinCompilerServer,
+  RunKotlinDevResult,
   resolveD8Args,
   resolveDexFile,
   resolveJarPath,
@@ -14,6 +15,8 @@ import {
   resolveSourceMapFile,
   resolveUTSSourceMapPath,
 } from '../utils'
+import { UTSResult } from '@dcloudio/uts'
+import { normalizePath } from '../shared'
 
 const DEFAULT_IMPORTS = [
   'kotlinx.coroutines.async',
@@ -72,6 +75,21 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
   if (result.error) {
     throw parseUTSSyntaxError(result.error, inputDir)
   }
+
+  if (process.env.NODE_ENV !== 'development') {
+    return runKotlinBuild(options, result)
+  }
+  return runKotlinDev(options, result as RunKotlinDevResult)
+}
+
+async function runKotlinDev(
+  options: CompileAppOptions,
+  result: RunKotlinDevResult
+) {
+  result.type = 'kotlin'
+  result.changed = []
+
+  const { inputDir, outputDir } = options
   const kotlinFile = path.resolve(outputDir, result.filename!)
   // 开发模式下，需要生成 dex
   if (fs.existsSync(kotlinFile)) {
@@ -109,8 +127,21 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
       } catch (e) {}
       const dexFile = resolveDexFile(jarFile)
       if (fs.existsSync(dexFile)) {
-        // result.changed = [normalizePath(path.relative(outputDir, dexFile))]
+        result.changed = [normalizePath(path.relative(outputDir, dexFile))]
       }
     }
   }
+  return result
+}
+
+async function runKotlinBuild(options: CompileAppOptions, result: UTSResult) {
+  const { outputDir } = options
+  const kotlinFile = path.resolve(outputDir, result.filename!)
+  fs.moveSync(
+    kotlinFile,
+    path.resolve(
+      outputDir,
+      '.uniappx/android/src/' + path.basename(result.filename!)
+    )
+  )
 }

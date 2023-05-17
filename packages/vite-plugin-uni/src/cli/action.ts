@@ -17,7 +17,7 @@ import {
   showRunPrompt,
 } from './utils'
 import { initEasycom } from '../utils/easycom'
-import { runUVueDev } from './uvue'
+import { runUVueBuild, runUVueDev } from './uvue'
 
 export async function runDev(options: CliOptions & ServerOptions) {
   extend(options, {
@@ -121,6 +121,9 @@ export async function runDev(options: CliOptions & ServerOptions) {
 
 export async function runBuild(options: CliOptions & BuildOptions) {
   initEnv('build', options)
+  if (process.env.UNI_APP_X === 'true') {
+    return runUVueBuild(options)
+  }
   try {
     await (options.ssr && options.platform === 'h5'
       ? buildSSR(options)

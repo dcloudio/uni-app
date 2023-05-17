@@ -49,16 +49,19 @@ export async function runUVueDev(options: CliOptions & ServerOptions) {
         printStartupDuration(createLogger(options.logLevel), false)
         return
       }
-      return output(
-        'log',
-        M['dev.watching.end.files'].replace(
-          '{files}',
-          JSON.stringify(['classes.dex'])
-        )
-      )
       return output('log', M['dev.watching.end'])
     }
   })
+}
+
+export async function runUVueBuild(options: CliOptions & BuildOptions) {
+  try {
+    await buildUVue(options)
+    console.log(M['build.done'])
+  } catch (e: any) {
+    console.error(`Build failed with errors.`)
+    process.exit(1)
+  }
 }
 
 /**
