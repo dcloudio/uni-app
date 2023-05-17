@@ -68,7 +68,23 @@ export function uniAppUTSPlugin(): Plugin {
             formats: ['cjs'],
           },
           rollupOptions: {
-            external: ['vue', 'vuex', 'pinia'],
+            external(source) {
+              if (['vue', 'vuex', 'pinia'].includes(source)) {
+                return true
+              }
+              // 相对目录
+              if (source.startsWith('@/') || source.startsWith('.')) {
+                return false
+              }
+              if (path.isAbsolute(source)) {
+                return false
+              }
+              // android 系统库，三方库
+              if (source.includes('.')) {
+                return true
+              }
+              return false
+            },
           },
         },
       }
