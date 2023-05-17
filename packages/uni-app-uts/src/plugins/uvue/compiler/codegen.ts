@@ -511,7 +511,7 @@ function genFunctionExpression(
     push(`):${(node as any).returnType} => `)
   } else {
     if (isSlot) {
-      push(`${params ? '' : 'prop'}: Data): MutableList<Any> => `)
+      push(`${params ? '' : 'prop'}: Map<string, any>): any[] => `)
     } else {
       push(`) => `)
     }

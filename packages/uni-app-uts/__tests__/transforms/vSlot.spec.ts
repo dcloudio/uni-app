@@ -24,7 +24,7 @@ const _component_Foo = resolveComponent("Foo")
 
   return createElementVNode("view", null, [
     createVNode(_component_Foo, new Map<string,any | null>([["onClick", _ctx.test]]), new Map<string,any | null>([
-      ["default", ((prop: Data): MutableList<Any> => [
+      ["default", ((prop: Map<string, any>): any[] => [
         createElementVNode("text", null, "test")
       ])],
       ["_", 1 /* STABLE */]
@@ -63,7 +63,7 @@ const _component_Foo = resolveComponent("Foo")
 
   return createElementVNode("view", null, [
     createVNode(_component_Foo, null, new Map<string,any | null>([
-      ["default", ((props: Data): MutableList<Any> => [
+      ["default", ((props: Map<string, any>): any[] => [
         createElementVNode("text", null, "msg: " + toDisplayString(props.msg), 1 /* TEXT */)
       ])],
       ["_", 1 /* STABLE */]
@@ -85,7 +85,7 @@ const _component_Foo = resolveComponent("Foo")
 
   return createElementVNode("view", null, [
     createVNode(_component_Foo, null, new Map<string,any | null>([
-      ["default", ((props: Data): MutableList<Any> => [
+      ["default", ((props: Map<string, any>): any[] => [
         createElementVNode("text", null, "msg: " + toDisplayString(props.msg), 1 /* TEXT */)
       ])],
       ["_", 1 /* STABLE */]
