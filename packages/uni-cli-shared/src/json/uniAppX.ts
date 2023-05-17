@@ -25,8 +25,10 @@ export function normalizeUniAppXAppPagesJson(jsonStr: string) {
     userPagesJson.subPackages || userPagesJson.subpackages
   // subPackages
   if (userPagesJson.subPackages) {
-    pagesJson.pages.push(...normalizeSubPackages(userPagesJson.subPackages))
+    userPagesJson.pages.push(...normalizeSubPackages(userPagesJson.subPackages))
   }
+  pagesJson.pages = userPagesJson.pages
+
   // pageStyle
   normalizePages(pagesJson.pages)
   // globalStyle
