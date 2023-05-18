@@ -115,7 +115,7 @@ export function uniAppUTSPlugin(): Plugin {
       return code
     },
     async writeBundle() {
-      await resolveUTSCompiler().compileApp(
+      const res = await resolveUTSCompiler().compileApp(
         path.join(tempOutputDir, 'index.uts'),
         {
           inputDir: tempOutputDir,
@@ -124,6 +124,20 @@ export function uniAppUTSPlugin(): Plugin {
           sourceMap: true,
         }
       )
+      if (res) {
+        const files: string[] = []
+        if (process.env.UNI_APP_UTS_CHANGED_FILES) {
+          try {
+            files.push(...JSON.parse(process.env.UNI_APP_UTS_CHANGED_FILES))
+          } catch (e) {}
+        }
+        if (res.changed && res.changed.length) {
+          files.push(...res.changed)
+        }
+        process.env.UNI_APP_UTS_CHANGED_FILES = JSON.stringify([
+          ...new Set(files),
+        ])
+      }
     },
   }
 }

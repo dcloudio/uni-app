@@ -49,6 +49,17 @@ export async function runUVueDev(options: CliOptions & ServerOptions) {
         printStartupDuration(createLogger(options.logLevel), false)
         return
       }
+      const dex = process.env.UNI_APP_UTS_CHANGED_FILES
+      process.env.UNI_APP_UTS_CHANGED_FILES = ''
+      if (dex) {
+        return output(
+          'log',
+          M['dev.watching.end.files'].replace(
+            '{files}',
+            JSON.stringify(JSON.parse(dex))
+          )
+        )
+      }
       return output('log', M['dev.watching.end'])
     }
   })

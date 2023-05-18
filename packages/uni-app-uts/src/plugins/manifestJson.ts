@@ -64,8 +64,11 @@ export * from './App.vue.style.uts'
           {
             name: manifestJson.name || '',
             appid: manifestJson.appid || '',
-            versionName: manifestJson.versionName || '',
-            versionCode: manifestJson.versionCode || '',
+            description: manifestJson.description || '',
+            version: {
+              name: manifestJson.versionName || '',
+              code: manifestJson.versionCode || '',
+            },
           },
           null,
           2
