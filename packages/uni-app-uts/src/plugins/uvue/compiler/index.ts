@@ -39,11 +39,11 @@ export function getBaseTransformPreset(
       // order is important
       trackVForSlotScopes,
       transformExpression,
+      transformSlotOutlet,
       transformElement,
       trackSlotScopes,
-      transformInterpolation,
       transformText,
-      transformSlotOutlet,
+      transformInterpolation,
     ] as any,
     {
       on: transformOn,

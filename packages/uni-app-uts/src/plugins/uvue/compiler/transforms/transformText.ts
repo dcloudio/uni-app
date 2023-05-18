@@ -4,12 +4,12 @@ import {
   ElementNode,
   ElementTypes,
   InterpolationNode,
-  NodeTransform,
   NodeTypes,
   TemplateChildNode,
   TextCallNode,
   TextNode,
 } from '@vue/compiler-core'
+import { NodeTransform } from '../transform'
 
 function isTextNode({ tag }: ElementNode) {
   return tag === 'text' || tag === 'u-text' || tag === 'button'
@@ -46,15 +46,32 @@ export const transformText: NodeTransform = (node, _) => {
   if (!children.length) {
     return
   }
-  children.forEach((child, index) => {
+
+  for (let i = 0; i < children.length; i++) {
+    const child = children[i]
     if (isTextElement(child)) {
       parseText(child as ElementNode)
     }
 
+    let currentContainer: ElementNode | undefined = undefined
     if (isText(child)) {
-      children.splice(index, 1, createText(node, child))
+      if (!currentContainer) {
+        currentContainer = children[i] = createText(node, child)
+      }
+      for (let j = i + 1; j < children.length; j++) {
+        const next = children[j]
+        if (isText(next)) {
+          // 合并相邻的文本节点
+          currentContainer.children.push(next)
+          children.splice(j, 1)
+          j--
+        } else {
+          currentContainer = undefined
+          break
+        }
+      }
     }
-  })
+  }
 }
 
 /*
