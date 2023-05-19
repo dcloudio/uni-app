@@ -203,6 +203,10 @@ export type CompilerServer = {}
 export function getCompilerServer<T extends CompilerServer>(
   pluginName: 'uts-development-ios' | 'uniapp-runextension'
 ): T | undefined {
+  if (!process.env.UNI_HBUILDERX_PLUGINS) {
+    console.error(`HBuilderX is not found`)
+    return
+  }
   const compilerServerPath = path.resolve(
     process.env.UNI_HBUILDERX_PLUGINS,
     `${pluginName}/out/${

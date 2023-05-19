@@ -1,3 +1,4 @@
+import { uniUTSPlugin } from '@dcloudio/uni-cli-shared'
 import { uniAppUTSPlugin } from './plugins'
 import { uniAppCssPlugin } from './plugins/css'
 import { uniAppMainPlugin } from './plugins/mainUTS'
@@ -8,6 +9,7 @@ import { uniAppUVuePlugin } from './plugins/uvue'
 export default () => {
   return [
     uniPrePlugin(),
+    uniUTSPlugin({ x: true }),
     uniAppUTSPlugin(),
     uniAppUVuePlugin(),
     uniAppMainPlugin(),

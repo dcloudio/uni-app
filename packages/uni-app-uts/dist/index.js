@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.transformVue = exports.genClassName = void 0;
+const uni_cli_shared_1 = require("@dcloudio/uni-cli-shared");
 const plugins_1 = require("./plugins");
 const css_1 = require("./plugins/css");
 const mainUTS_1 = require("./plugins/mainUTS");
@@ -11,6 +12,7 @@ const uvue_1 = require("./plugins/uvue");
 exports.default = () => {
     return [
         (0, pre_1.uniPrePlugin)(),
+        (0, uni_cli_shared_1.uniUTSPlugin)({ x: true }),
         (0, plugins_1.uniAppUTSPlugin)(),
         (0, uvue_1.uniAppUVuePlugin)(),
         (0, mainUTS_1.uniAppMainPlugin)(),

@@ -1,5 +1,6 @@
 import path from 'path'
 import fs from 'fs-extra'
+import { sync } from 'fast-glob'
 import {
   KotlinCompilerServer,
   RunKotlinDevResult,
@@ -111,7 +112,7 @@ async function runKotlinDev(
       kotlinc: resolveKotlincArgs(
         kotlinFile,
         getKotlincHome(),
-        getDefaultJar(2)
+        getDefaultJar(2).concat(getUniModulesJars(outputDir))
       ),
       d8: resolveD8Args(jarFile),
       sourceRoot: inputDir,
@@ -144,4 +145,11 @@ async function runKotlinBuild(options: CompileAppOptions, result: UTSResult) {
       '.uniappx/android/src/' + path.basename(result.filename!)
     )
   )
+}
+
+function getUniModulesJars(outputDir: string) {
+  return sync('*/utssdk/app-android/index.jar', {
+    cwd: path.resolve(outputDir, 'uni_modules'),
+    absolute: true,
+  })
 }

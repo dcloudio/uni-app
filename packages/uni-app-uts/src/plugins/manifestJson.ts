@@ -62,13 +62,15 @@ export * from './App.vue.style.uts'
         path.resolve(process.env.UNI_OUTPUT_DIR, 'manifest.json'),
         JSON.stringify(
           {
+            id: manifestJson.appid || '',
             name: manifestJson.name || '',
-            appid: manifestJson.appid || '',
             description: manifestJson.description || '',
             version: {
               name: manifestJson.versionName || '',
               code: manifestJson.versionCode || '',
             },
+            'uni-app-x': manifestJson['uni-app-x'] || {},
+            app: manifestJson.app || {},
           },
           null,
           2

@@ -177,7 +177,8 @@ export async function runKotlinDev(
     // console.log('dex compile time: ' + (Date.now() - time) + 'ms')
     if (res) {
       try {
-        fs.unlinkSync(jarFile)
+        // 其他插件或 x 需要该插件的 jar 做编译
+        // fs.unlinkSync(jarFile)
         // 短期内先不删除，方便排查问题
         // fs.unlinkSync(kotlinFile)
       } catch (e) {}

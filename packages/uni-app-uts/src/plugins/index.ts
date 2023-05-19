@@ -104,6 +104,7 @@ export function uniAppUTSPlugin(): Plugin {
       if (!filename.endsWith('.uts')) {
         return
       }
+      // 仅处理 uts 文件
       const isMainUTS = normalizePath(id) === mainUTS
       const fileName = path.relative(inputDir, id)
       this.emitFile({
