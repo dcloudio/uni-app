@@ -343,27 +343,33 @@ async function parseInterfaceTypes(
   } catch (e) {
     console.error(parseUTSSyntaxError(e, options.inputDir!))
   }
+  return parseAstTypes(ast, true)
+}
+
+function parseAstTypes(ast: Module | null, isInterface: boolean) {
   const interfaceTypes: Types['interface'] = {}
   const classTypes: Types['class'] = []
   const fnTypes: Types['fn'] = {}
 
   const exportNamed: string[] = []
   if (ast) {
-    ast.body.filter((node) => {
-      if (node.type === 'ExportNamedDeclaration') {
-        node.specifiers.forEach((s) => {
-          if (s.type === 'ExportSpecifier') {
-            if (s.exported) {
-              if (s.exported.type === 'Identifier') {
-                exportNamed.push(s.exported.value)
+    if (isInterface) {
+      ast.body.filter((node) => {
+        if (node.type === 'ExportNamedDeclaration') {
+          node.specifiers.forEach((s) => {
+            if (s.type === 'ExportSpecifier') {
+              if (s.exported) {
+                if (s.exported.type === 'Identifier') {
+                  exportNamed.push(s.exported.value)
+                }
+              } else {
+                exportNamed.push(s.orig.value)
               }
-            } else {
-              exportNamed.push(s.orig.value)
             }
-          }
-        })
-      }
-    })
+          })
+        }
+      })
+    }
 
     ast.body.filter((node) => {
       if (node.type === 'ExportDeclaration') {
@@ -376,7 +382,7 @@ async function parseInterfaceTypes(
           }
         }
       } else if (node.type === 'TsTypeAliasDeclaration') {
-        if (exportNamed.includes(node.id.value)) {
+        if (!isInterface || exportNamed.includes(node.id.value)) {
           parseTypes(node, classTypes, fnTypes)
         }
       } else if (node.type === 'TsInterfaceDeclaration') {
@@ -593,14 +599,36 @@ interface ProxyClass {
   isVar: boolean
 }
 
+function mergeAstTypes(to: Types, from: Types) {
+  if (from.class.length) {
+    to.class = [...new Set(...[...to.class, ...from.class])]
+  }
+  if (Object.keys(from.fn).length) {
+    for (const name in from.fn) {
+      if (!hasOwn(to.fn, name)) {
+        to.fn[name] = from.fn[name]
+      }
+    }
+  }
+  if (Object.keys(from.interface).length) {
+    for (const name in from.interface) {
+      if (!hasOwn(to.interface, name)) {
+        to.interface[name] = from.interface[name]
+      }
+    }
+  }
+}
+
 function parseAst(
-  { body }: Module,
+  ast: Module,
   resolveTypeReferenceName: ResolveTypeReferenceName,
   types: Types
 ): ProxyDecl[] {
   const decls: ProxyDecl[] = []
 
-  body.forEach((item) => {
+  mergeAstTypes(types, parseAstTypes(ast, false))
+
+  ast.body.forEach((item) => {
     if (item.type === 'ExportDeclaration') {
       const decl = item.declaration
       switch (decl.type) {
