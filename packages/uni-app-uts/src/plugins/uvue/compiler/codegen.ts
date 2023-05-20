@@ -511,7 +511,11 @@ function genFunctionExpression(
     push(`):${(node as any).returnType} => `)
   } else {
     if (isSlot) {
-      push(`${params ? '' : 'prop'}: Map<string, any | null>): any[] => `)
+      if (params) {
+        push(`: Map<string, any | null>): any[] => `)
+      } else {
+        push(`): any[] => `)
+      }
     } else {
       push(`) => `)
     }

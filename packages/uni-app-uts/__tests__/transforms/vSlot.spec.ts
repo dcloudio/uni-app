@@ -24,7 +24,7 @@ const _component_Foo = resolveComponent("Foo")
 
   return createElementVNode("view", null, [
     createVNode(_component_Foo, new Map<string,any | null>([["onClick", _ctx.test]]), new Map<string,any | null>([
-      ["default", ((prop: Map<string, any | null>): any[] => [
+      ["default", ((): any[] => [
         createElementVNode("text", null, "test")
       ])],
       ["_", 1 /* STABLE */]
