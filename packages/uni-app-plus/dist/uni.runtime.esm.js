@@ -1572,7 +1572,7 @@ function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel, 
         meta,
         openType,
         eventChannel,
-        statusBarStyle: titleColor === '#000000' ? 'dark' : 'light',
+        statusBarStyle: titleColor === '#ffffff' ? 'light' : 'dark',
     };
 }
 
