@@ -150,20 +150,24 @@ export async function transformVue(
   const isApp = isAppVue(filename)
   const fileName = path.relative(options.root, filename)
   const className = genClassName(fileName, options.classNamePrefix)
+  let templateCode = ''
+  if (!isApp) {
+    const templateResult = genTemplate(descriptor, {
+      targetLanguage: options.targetLanguage as any,
+      mode: 'function',
+      filename: className,
+      prefixIdentifiers: true,
+      sourceMap: true,
+    })
+    templateCode = templateResult.code
+  }
   // 生成 script 文件
   const utsCode =
     genScript(descriptor, { filename: className }) +
     '\n' +
     genStyle(descriptor, { filename: fileName, className }) +
     '\n' +
-    (!isApp
-      ? genTemplate(descriptor, {
-          targetLanguage: options.targetLanguage as any,
-          mode: 'function',
-          filename: className,
-          prefixIdentifiers: true,
-        })
-      : '')
+    templateCode
   let jsCode = ''
   const content = descriptor.script?.content
   if (content) {

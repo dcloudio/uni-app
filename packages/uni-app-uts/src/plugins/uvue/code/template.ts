@@ -8,7 +8,7 @@ export function genTemplate(
   options: CompilerOptions
 ) {
   if (!template) {
-    return genRenderFunctionDecl(options) + ` { return null }`
+    return { code: genRenderFunctionDecl(options) + ` { return null }` }
   }
-  return compile(template.content, options).code
+  return compile(template.content, options)
 }
