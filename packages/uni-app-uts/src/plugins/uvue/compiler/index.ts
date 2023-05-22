@@ -8,6 +8,7 @@ import {
 } from '@vue/compiler-core'
 
 import { isAppUVueNativeTag } from '@dcloudio/uni-shared'
+import { transformTapToClick } from '@dcloudio/uni-cli-shared'
 import './runtimeHelpers'
 
 import { CodegenResult, CompilerOptions } from './options'
@@ -43,6 +44,7 @@ export function getBaseTransformPreset(
       transformElement,
       trackSlotScopes,
       transformText,
+      transformTapToClick,
       transformInterpolation,
     ] as any,
     {
