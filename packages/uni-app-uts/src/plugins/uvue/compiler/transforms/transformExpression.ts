@@ -249,7 +249,7 @@ function canPrefix(id: Identifier) {
     return false
   }
   // special case for webpack compilation
-  if (id.name === 'require') {
+  if (id.name === 'require' || (id.loc as any)?.identifierName === 'console') {
     return false
   }
   return true
