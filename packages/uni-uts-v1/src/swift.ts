@@ -75,10 +75,15 @@ export type RunSwiftDevResult = UTSResult & {
 }
 
 let isEnvReady = true
+
+interface RunSwiftDevOptions {
+  components: Record<string, string>
+  isPlugin: boolean
+}
+
 export async function runSwiftDev(
   filename: string,
-  components: Record<string, string>,
-  isPlugin = true
+  { components, isPlugin }: RunSwiftDevOptions
 ) {
   // 文件有可能是 app-android 里边的，因为编译到 ios 时，为了保证不报错，可能会去读取 android 下的 uts
   if (filename.includes('app-android')) {

@@ -7,6 +7,7 @@ import {
   parseVueRequest,
   resolveMainPathOnce,
   resolveUTSCompiler,
+  utsPlugins,
 } from '@dcloudio/uni-cli-shared'
 import type { Plugin } from 'vite'
 import { parseImports, uvueOutDir } from './utils'
@@ -123,6 +124,7 @@ export function uniAppUTSPlugin(): Plugin {
           outputDir: outputDir,
           package: 'uni.' + (manifestJson.appid || '').replace(/_/g, ''),
           sourceMap: true,
+          uni_modules: [...utsPlugins],
         }
       )
       if (res) {

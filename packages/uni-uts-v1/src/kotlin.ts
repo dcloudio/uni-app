@@ -25,6 +25,7 @@ import {
 } from './utils'
 import { Module } from '../types/types'
 import { parseUTSSyntaxError } from './stacktrace'
+import { APP_PLATFORM } from './manifest/utils'
 
 export interface KotlinCompilerServer extends CompilerServer {
   getKotlincHome(): string
@@ -100,10 +101,16 @@ export type RunKotlinDevResult = UTSResult & {
   changed: string[]
 }
 
+interface RunKotlinDevOptions {
+  components: Record<string, string>
+  isPlugin: boolean
+  cacheDir: string
+  pluginRelativeDir: string
+}
+
 export async function runKotlinDev(
   filename: string,
-  components: Record<string, string>,
-  isPlugin = true
+  { components, isPlugin, cacheDir, pluginRelativeDir }: RunKotlinDevOptions
 ): Promise<RunKotlinDevResult | undefined> {
   // 文件有可能是 app-ios 里边的，因为编译到 android 时，为了保证不报错，可能会去读取 ios 下的 uts
   if (filename.includes('app-ios')) {
@@ -159,10 +166,16 @@ export async function runKotlinDev(
       resDeps = await checkRes(filename, checkRResources)
     }
     // time = Date.now()
-    const jarFile = resolveJarPath(kotlinFile)
+    const jarFile = resolveJarPath(
+      'app-android',
+      cacheDir,
+      pluginRelativeDir,
+      kotlinFile
+    )
     const options = {
       kotlinc: resolveKotlincArgs(
         kotlinFile,
+        resolveJarPath('app-android', cacheDir, pluginRelativeDir, filename),
         getKotlincHome(),
         getDefaultJar()
           .concat(resolveLibs(filename))
@@ -366,6 +379,7 @@ export async function compile(
 
 export function resolveKotlincArgs(
   filename: string,
+  dest: string,
   kotlinc: string,
   jars: string[]
 ) {
@@ -374,7 +388,7 @@ export function resolveKotlincArgs(
     '-cp',
     resolveClassPath(jars),
     '-d',
-    resolveJarPath(filename),
+    dest,
     '-kotlin-home',
     kotlinc,
   ]
@@ -430,7 +444,21 @@ function resolveDexPath(filename: string) {
   return path.dirname(filename)
 }
 
-export function resolveJarPath(filename: string) {
+export function resolveJarPath(
+  platform: APP_PLATFORM,
+  cacheDir: string,
+  pluginRelativeDir: string,
+  filename: string
+) {
+  if (cacheDir) {
+    return join(
+      cacheDir,
+      platform,
+      'uts',
+      pluginRelativeDir,
+      path.basename(filename).replace(path.extname(filename), '.jar')
+    )
+  }
   return filename.replace(path.extname(filename), '.jar')
 }
 

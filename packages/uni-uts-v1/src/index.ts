@@ -111,7 +111,7 @@ export async function compile(
   if (isEncrypt(pluginDir)) {
     return compileEncrypt(pluginDir)
   }
-  const cacheDir = process.env.HX_DEPENDENCIES_DIR
+  const cacheDir = process.env.HX_DEPENDENCIES_DIR || ''
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
   const utsPlatform = process.env.UNI_UTS_PLATFORM
@@ -320,11 +320,12 @@ export async function compile(
           inputDir,
           outputDir
         )
-        const res = await getCompiler(compilerType).runDev(
-          filename,
+        const res = await getCompiler(compilerType).runDev(filename, {
           components,
-          isPlugin
-        )
+          isPlugin,
+          cacheDir,
+          pluginRelativeDir,
+        })
         if (res) {
           if (isArray(res.deps) && res.deps.length) {
             // 添加其他文件的依赖

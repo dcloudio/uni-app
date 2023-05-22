@@ -24,6 +24,9 @@ const utsModuleCaches = new Map<
 interface UniUTSPluginOptions {
   x?: boolean
 }
+
+export const utsPlugins = new Set<string>()
+
 export function uniUTSPlugin(options: UniUTSPluginOptions = {}): Plugin {
   process.env.UNI_UTS_USING_ROLLUP = 'true'
   return {
@@ -77,6 +80,7 @@ export function uniUTSPlugin(options: UniUTSPluginOptions = {}): Plugin {
         })
       }
       const compile = once(() => {
+        utsPlugins.add(path.basename(pluginDir))
         return resolveUTSCompiler().compile(pluginDir)
       })
       utsModuleCaches.set(pluginDir, compile)

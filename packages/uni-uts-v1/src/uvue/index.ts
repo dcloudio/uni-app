@@ -38,12 +38,13 @@ export interface CompileAppOptions {
   outputDir: string
   package: string
   sourceMap: boolean
+  uni_modules: string[]
 }
 export async function compileApp(entry: string, options: CompileAppOptions) {
   const { bundle, UTSTarget } = getUTSCompiler()
   const imports = [...DEFAULT_IMPORTS]
 
-  const { package: pkg, inputDir, outputDir, sourceMap } = options
+  const { package: pkg, inputDir, outputDir, sourceMap, uni_modules } = options
 
   const input: Parameters<typeof bundle>[1]['input'] = {
     root: inputDir,
@@ -51,9 +52,9 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
     paths: {
       vue: 'io.dcloud.uts.vue',
     },
+    uniModules: uni_modules,
   }
-
-  const result = await bundle(UTSTarget.KOTLIN, {
+  const bundleOptions: Parameters<typeof bundle>[1] = {
     input,
     output: {
       isPlugin: false,
@@ -69,7 +70,8 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
         uvueClassNamePrefix: 'Gen',
       },
     },
-  })
+  }
+  const result = await bundle(UTSTarget.KOTLIN, bundleOptions)
   if (!result) {
     return
   }
@@ -106,13 +108,18 @@ async function runKotlinDev(
       compile: compileDex,
     } = compilerServer
 
+    const cacheDir = process.env.HX_DEPENDENCIES_DIR || ''
+
     // time = Date.now()
-    const jarFile = resolveJarPath(kotlinFile)
+    const jarFile = resolveJarPath('app-android', '', '', kotlinFile)
     const options = {
       kotlinc: resolveKotlincArgs(
         kotlinFile,
+        jarFile,
         getKotlincHome(),
-        getDefaultJar(2).concat(getUniModulesJars(outputDir))
+        getDefaultJar(2)
+          .concat(getUniModulesCacheJars(cacheDir))
+          .concat(getUniModulesJars(outputDir))
       ),
       d8: resolveD8Args(jarFile),
       sourceRoot: inputDir,
@@ -145,6 +152,16 @@ async function runKotlinBuild(options: CompileAppOptions, result: UTSResult) {
       '.uniappx/android/src/' + path.basename(result.filename!)
     )
   )
+}
+
+function getUniModulesCacheJars(cacheDir: string) {
+  if (cacheDir) {
+    return sync('app-android/uts/uni_modules/*/index.jar', {
+      cwd: cacheDir,
+      absolute: true,
+    })
+  }
+  return []
 }
 
 function getUniModulesJars(outputDir: string) {
