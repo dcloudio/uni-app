@@ -5,7 +5,6 @@ import {
   trackVForSlotScopes,
   transformElement,
   transformExpression,
-  transformOn,
 } from '@vue/compiler-core'
 
 import { isAppUVueNativeTag } from '@dcloudio/uni-shared'
@@ -21,6 +20,7 @@ import { transformShow } from './transforms/vShow'
 import { transformVText } from './transforms/vText'
 import { transformInterpolation } from './transforms/transformInterpolation'
 import { transformText } from './transforms/transformText'
+import { transformOn } from './transforms/vOn'
 import { transformBind } from './transforms/vBind'
 import { transformSlotOutlet } from './transforms/transformSlotOutlet'
 
