@@ -31,7 +31,7 @@ exports.default = [
                     if (platform === 'app' && process.env.UNI_APP_X === 'true') {
                         const automatorPath = (0, uni_cli_shared_1.normalizePath)((0, uni_cli_shared_1.resolveBuiltIn)(`@dcloudio/uni-app-uts/lib/automator/index.uts`));
                         return {
-                            code: code + `;import { initAutomator } = '${automatorPath}';`,
+                            code: code + `;import { initAutomator } from '${automatorPath}';`,
                             map: null,
                         };
                     }

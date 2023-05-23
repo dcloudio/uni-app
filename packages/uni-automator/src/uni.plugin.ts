@@ -42,7 +42,7 @@ export default [
               resolveBuiltIn(`@dcloudio/uni-app-uts/lib/automator/index.uts`)
             )
             return {
-              code: code + `;import { initAutomator } = '${automatorPath}';`,
+              code: code + `;import { initAutomator } from '${automatorPath}';`,
               map: null,
             }
           }

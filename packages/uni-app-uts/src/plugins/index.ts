@@ -2,6 +2,7 @@ import path from 'path'
 import fs from 'fs-extra'
 import {
   emptyDir,
+  normalizeNodeModules,
   normalizePath,
   parseManifestJsonOnce,
   parseVueRequest,
@@ -106,13 +107,16 @@ export function uniAppUTSPlugin(): Plugin {
         return
       }
       // 仅处理 uts 文件
-      const isMainUTS = normalizePath(id) === mainUTS
-      const fileName = path.relative(inputDir, id)
-      this.emitFile({
-        type: 'asset',
-        fileName: normalizeFilename(fileName, isMainUTS),
-        source: normalizeCode(code, isMainUTS),
-      })
+      // 忽略 uni-app-uts/lib/automator/index.uts
+      if (!filename.includes('uni-app-uts')) {
+        const isMainUTS = normalizePath(id) === mainUTS
+        const fileName = path.relative(inputDir, id)
+        this.emitFile({
+          type: 'asset',
+          fileName: normalizeFilename(fileName, isMainUTS),
+          source: normalizeCode(code, isMainUTS),
+        })
+      }
       code = await parseImports(code)
       return code
     },
@@ -149,7 +153,7 @@ function normalizeFilename(filename: string, isMain = false) {
   if (isMain) {
     return 'index.uts'
   }
-  return filename
+  return normalizeNodeModules(filename)
 }
 
 function normalizeCode(code: string, isMain = false) {
