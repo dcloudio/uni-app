@@ -9,7 +9,7 @@
 //   support and the code is wrapped in `with (this) { ... }`.
 import { NodeTransform, TransformContext } from '../transform'
 
-import { isGloballyWhitelisted, makeMap, hasOwn, isString } from '@vue/shared'
+import { makeMap, hasOwn, isString } from '@vue/shared'
 import { Node, Identifier } from '@babel/types'
 
 import { parse } from '@babel/parser'
@@ -30,6 +30,11 @@ import {
 } from '@vue/compiler-core'
 
 import { createCompilerError, ErrorCodes } from '../errors'
+
+const GLOBALS_WHITE_LISTED = `Infinity,undefined,NaN,isFinite,isNaN,parseFloat,parseInt,decodeURI,
+    decodeURIComponent,encodeURI,encodeURIComponent,Math,Number,Date,Array,
+    Object,Boolean,String,RegExp,Map,Set,JSON,Intl,BigInt,console`
+const isGloballyWhitelisted = /*#__PURE__*/ makeMap(GLOBALS_WHITE_LISTED)
 
 const isLiteralWhitelisted = /*#__PURE__*/ makeMap('true,false,null,this')
 
@@ -249,7 +254,7 @@ function canPrefix(id: Identifier) {
     return false
   }
   // special case for webpack compilation
-  if (id.name === 'require' || (id.loc as any)?.identifierName === 'console') {
+  if (id.name === 'require') {
     return false
   }
   return true
