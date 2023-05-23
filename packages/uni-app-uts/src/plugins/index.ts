@@ -156,11 +156,15 @@ function normalizeCode(code: string, isMain = false) {
   if (!isMain) {
     return code
   }
+  const automatorCode = process.env.UNI_AUTOMATOR_WS_ENDPOINT
+    ? 'initAutomator();'
+    : ''
   return `
 ${code}  
 export function main(app: IApp) {
     defineAppConfig();
     definePageRoutes();
+    ${automatorCode}
     (createApp()['app'] as VueApp).mount(app);
 }
 `

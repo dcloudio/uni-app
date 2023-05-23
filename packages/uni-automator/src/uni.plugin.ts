@@ -37,6 +37,15 @@ export default [
         }
         if (opts.filter(id)) {
           const platform = process.env.UNI_PLATFORM
+          if (platform === 'app' && process.env.UNI_APP_X === 'true') {
+            const automatorPath = normalizePath(
+              resolveBuiltIn(`@dcloudio/uni-app-uts/lib/automator/index.uts`)
+            )
+            return {
+              code: code + `;import { initAutomator } = '${automatorPath}';`,
+              map: null,
+            }
+          }
           const automatorPath = normalizePath(
             resolveBuiltIn(
               `@dcloudio/uni-${

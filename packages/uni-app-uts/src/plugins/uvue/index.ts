@@ -162,12 +162,12 @@ export async function transformVue(
     templateCode = templateResult.code
   }
   // 生成 script 文件
-  const utsCode =
+  let utsCode =
     genScript(descriptor, { filename: className }) +
     '\n' +
     genStyle(descriptor, { filename: fileName, className }) +
-    '\n' +
-    templateCode
+    '\n'
+  utsCode += templateCode
   let jsCode = ''
   const content = descriptor.script?.content
   if (content) {

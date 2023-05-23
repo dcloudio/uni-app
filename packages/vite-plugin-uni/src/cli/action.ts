@@ -27,7 +27,7 @@ export async function runDev(options: CliOptions & ServerOptions) {
     ;(options as BuildOptions).minify = true
   }
   initEnv('dev', options)
-  if (process.env.UNI_APP_X === 'true') {
+  if (process.env.UNI_APP_X === 'true' && options.platform === 'app') {
     return runUVueDev(options)
   }
   const createLogger = await import('vite').then(

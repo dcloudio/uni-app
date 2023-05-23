@@ -28,6 +28,13 @@ exports.default = [
                 }
                 if (opts.filter(id)) {
                     const platform = process.env.UNI_PLATFORM;
+                    if (platform === 'app' && process.env.UNI_APP_X === 'true') {
+                        const automatorPath = (0, uni_cli_shared_1.normalizePath)((0, uni_cli_shared_1.resolveBuiltIn)(`@dcloudio/uni-app-uts/lib/automator/index.uts`));
+                        return {
+                            code: code + `;import { initAutomator } = '${automatorPath}';`,
+                            map: null,
+                        };
+                    }
                     const automatorPath = (0, uni_cli_shared_1.normalizePath)((0, uni_cli_shared_1.resolveBuiltIn)(`@dcloudio/uni-${platform === 'app' ? 'app-plus' : platform}/lib/automator.js`));
                     return {
                         code: code + `;import '${automatorPath}';`,
