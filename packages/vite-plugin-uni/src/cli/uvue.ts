@@ -8,6 +8,10 @@ import { buildByVite, initBuildOptions } from './build'
 import { addConfigFile, cleanOptions, printStartupDuration } from './utils'
 
 export function initUVueEnv() {
+  // 直接指定了
+  if (process.env.UNI_APP_X === 'false') {
+    return
+  }
   const manifestJson = parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
   const isNVueEnabled = hasOwn(manifestJson, 'uni-app-x')
   if (!isNVueEnabled) {
