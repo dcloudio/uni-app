@@ -52,8 +52,8 @@ type Types = {
 }
 
 interface Meta {
-  exports: Record<string, 'var' | 'function' | 'class'>
-  types: Record<string, 'function' | 'class'>
+  exports: Record<string, 'var' | 'function' | 'class' | 'interface'>
+  types: Record<string, 'function' | 'class' | 'interface'>
 }
 interface GenProxyCodeOptions {
   is_uni_modules: boolean
@@ -117,6 +117,9 @@ function parseMetaTypes(types: Types) {
   })
   Object.keys(types.fn).forEach((n) => {
     res[n] = 'function'
+  })
+  Object.keys(types.interface).forEach((n) => {
+    res[n] = 'interface'
   })
   return res
 }
@@ -225,6 +228,7 @@ function genModuleCode(
   const exportConst = exportVarCode(format, 'const')
   decls.forEach((decl) => {
     if (decl.type === 'InterfaceDeclaration') {
+      meta.exports[decl.cls] = 'interface'
       codes.push(
         `registerUTSInterface('${
           decl.cls
