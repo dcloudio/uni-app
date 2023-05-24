@@ -275,7 +275,7 @@ export function processFor(
   if (key === undefined) {
     parseResult.key = {
       constType: 2,
-      content: '_key_',
+      content: '_',
       isStatic: false,
       loc: value?.loc!,
       type: 4,
@@ -285,7 +285,7 @@ export function processFor(
   if (index === undefined) {
     parseResult.index = {
       constType: 2,
-      content: '_index_',
+      content: '_',
       isStatic: false,
       loc: value?.loc!,
       type: 4,
