@@ -5,6 +5,7 @@ import type { Plugin } from 'vite'
 import type { SFCBlock, SFCDescriptor, SFCParseResult } from '@vue/compiler-sfc'
 import type { TransformPluginContext } from 'rollup'
 
+import { isString } from '@vue/shared'
 import { normalizePath, parseVueRequest } from '@dcloudio/uni-cli-shared'
 
 import {
@@ -120,6 +121,39 @@ export function uniAppUVuePlugin(): Plugin {
           )
         }
       }
+    },
+    generateBundle(_, bundle) {
+      // 遍历vue文件，填充style，尽量减少全局变量
+      Object.keys(bundle).forEach((name) => {
+        const file = bundle[name]
+        if (
+          file &&
+          file.type === 'asset' &&
+          file.fileName !== 'App.vue' &&
+          isVue(file.fileName) &&
+          isString(file.source)
+        ) {
+          const classNameComment = `/*${genClassName(
+            file.fileName,
+            options.classNamePrefix
+          )}Styles*/`
+          if (file.source.includes(classNameComment)) {
+            const styleAssetName = file.fileName + '.style.uts'
+            const styleAsset = bundle[styleAssetName]
+            if (
+              styleAsset &&
+              styleAsset.type === 'asset' &&
+              isString(styleAsset.source)
+            ) {
+              file.source = file.source.replace(
+                classNameComment,
+                styleAsset.source.replace('export ', '')
+              )
+              delete bundle[styleAssetName]
+            }
+          }
+        }
+      })
     },
   }
 }

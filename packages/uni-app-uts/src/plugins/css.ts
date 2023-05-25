@@ -69,7 +69,9 @@ export function uniAppCssPlugin(): Plugin {
       })
       // 增加 css plugins
       insertBeforePlugin(cssPlugin(config), name, config)
-      ;(config.plugins as Plugin[]).push(uvueCssPostPlugin)
+      const plugins = config.plugins as Plugin[]
+      const index = plugins.findIndex((p) => p.name === 'uni:app-uvue')
+      plugins.splice(index, 0, uvueCssPostPlugin)
     },
     async transform(source, filename) {
       if (!cssLangRE.test(filename) || commonjsProxyRE.test(filename)) {

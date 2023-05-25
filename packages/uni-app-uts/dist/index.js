@@ -14,11 +14,11 @@ exports.default = () => {
         (0, pre_1.uniPrePlugin)(),
         (0, uni_cli_shared_1.uniUTSPlugin)({ x: true }),
         (0, plugins_1.uniAppUTSPlugin)(),
-        (0, uvue_1.uniAppUVuePlugin)(),
         (0, mainUTS_1.uniAppMainPlugin)(),
         (0, manifestJson_1.uniAppManifestPlugin)(),
         (0, pagesJson_1.uniAppPagesPlugin)(),
         (0, css_1.uniAppCssPlugin)(),
+        (0, uvue_1.uniAppUVuePlugin)(),
     ];
 };
 var utils_1 = require("./plugins/utils");

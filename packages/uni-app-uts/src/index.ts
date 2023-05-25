@@ -11,11 +11,11 @@ export default () => {
     uniPrePlugin(),
     uniUTSPlugin({ x: true }),
     uniAppUTSPlugin(),
-    uniAppUVuePlugin(),
     uniAppMainPlugin(),
     uniAppManifestPlugin(),
     uniAppPagesPlugin(),
     uniAppCssPlugin(),
+    uniAppUVuePlugin(),
   ]
 }
 
