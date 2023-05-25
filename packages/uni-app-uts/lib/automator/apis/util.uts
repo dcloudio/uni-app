@@ -35,7 +35,6 @@ export function getData(
   let data = new Map<string, any | null>()
   if (vm !== null) {
     // TODO: path
-    // data = path ? getDataByPath(vm.$data, path) : Object.assign({}, vm.$data)
     if(path !== null){
       data.set("errMsg", `getData:fail, path:${path} is not supported.`)
     }else{
