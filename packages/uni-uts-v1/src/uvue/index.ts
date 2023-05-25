@@ -54,6 +54,12 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
       vue: 'io.dcloud.uts.vue',
     },
     uniModules: uni_modules,
+    globals: {
+      envs: {
+        // 自动化测试
+        UNI_AUTOMATOR_WS_ENDPOINT: process.env.UNI_AUTOMATOR_WS_ENDPOINT || '',
+      },
+    },
   }
   const bundleOptions: Parameters<typeof bundle>[1] = {
     input,
