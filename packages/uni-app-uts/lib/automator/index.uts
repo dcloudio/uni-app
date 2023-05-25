@@ -18,7 +18,7 @@ import {
 } from './apis/Page.uts'
 
 let socketTask: SocketTask | null = null
-const wsEndpoint = ""
+const wsEndpoint = process.env.UNI_AUTOMATOR_WS_ENDPOINT
 
 function send(data: any) {
   socketTask?.send({ data: JSON.stringify(data) } as SendSocketMessageOptions)
