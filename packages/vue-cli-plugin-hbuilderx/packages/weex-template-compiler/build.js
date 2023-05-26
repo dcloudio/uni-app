@@ -2401,7 +2401,7 @@ var acorn = require('acorn'); // $flow-disable-line
 var walk = require('acorn/dist/walk'); // $flow-disable-line
 var escodegen = require('escodegen');
 
-var functionCallRE = /^\s*([A-Za-z_$0-9\['\."\]]+)*\s*\(\s*(([A-Za-z_$0-9\['\."\]]+)?(\s*,\s*([A-Za-z_$0-9\['\."\]]+))*)\s*\)$/;
+var functionCallRE = /(\w+)\((.*)\)/;
 
 function nodeToBinding (node) {
   switch (node.type) {
