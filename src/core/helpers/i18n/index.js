@@ -37,7 +37,7 @@ if (__PLATFORM__ === 'h5' || __PLATFORM__ === 'app-plus') {
 let locale
 
 if (__PLATFORM__ === 'h5') {
-  locale = (window.localStorage && localStorage[UNI_STORAGE_LOCALE]) || __uniConfig.locale || navigator.language
+  locale = (navigator.cookieEnabled && window.localStorage && localStorage[UNI_STORAGE_LOCALE]) || __uniConfig.locale || navigator.language
 } else if (__PLATFORM__ === 'app-plus') {
   if (typeof weex === 'object') {
     locale = weex.requireModule('plus').getLanguage()

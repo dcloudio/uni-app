@@ -102,7 +102,7 @@ function hasOwn (obj, key) {
   return hasOwnProperty.call(obj, key)
 }
 
-function noop () { }
+function noop () {}
 
 /**
  * Create a cached version of a pure function.
@@ -202,9 +202,9 @@ function removeInterceptor (method, option) {
   }
 }
 
-function wrapperHook (hook) {
+function wrapperHook (hook, params) {
   return function (data) {
-    return hook(data) || data
+    return hook(data, params) || data
   }
 }
 
@@ -212,14 +212,14 @@ function isPromise (obj) {
   return !!obj && (typeof obj === 'object' || typeof obj === 'function') && typeof obj.then === 'function'
 }
 
-function queue (hooks, data) {
+function queue (hooks, data, params) {
   let promise = false;
   for (let i = 0; i < hooks.length; i++) {
     const hook = hooks[i];
     if (promise) {
-      promise = Promise.resolve(wrapperHook(hook));
+      promise = Promise.resolve(wrapperHook(hook, params));
     } else {
-      const res = hook(data);
+      const res = hook(data, params);
       if (isPromise(res)) {
         promise = Promise.resolve(res);
       }
@@ -242,7 +242,7 @@ function wrapperOptions (interceptor, options = {}) {
     if (Array.isArray(interceptor[name])) {
       const oldCallback = options[name];
       options[name] = function callbackInterceptor (res) {
-        queue(interceptor[name], res).then((res) => {
+        queue(interceptor[name], res, options).then((res) => {
           /* eslint-disable no-mixed-operators */
           return isFn(oldCallback) && oldCallback(res) || res
         });
@@ -291,7 +291,11 @@ function invokeApi (method, api, options, ...params) {
     if (Array.isArray(interceptor.invoke)) {
       const res = queue(interceptor.invoke, options);
       return res.then((options) => {
-        return api(wrapperOptions(interceptor, options), ...params)
+        // 重新访问 getApiInterceptorHooks, 允许 invoke 中再次调用 addInterceptor,removeInterceptor
+        return api(
+          wrapperOptions(getApiInterceptorHooks(method), options),
+          ...params
+        )
       })
     } else {
       return api(wrapperOptions(interceptor, options), ...params)
@@ -1977,40 +1981,59 @@ function initScopedSlotsParams () {
   const center = {};
   const parents = {};
 
-  Vue.prototype.$hasScopedSlotsParams = function (vueId) {
-    const has = center[vueId];
-    if (!has) {
-      parents[vueId] = this;
-      this.$on('hook:destroyed', () => {
-        delete parents[vueId];
-      });
-    }
-    return has
-  };
-
-  Vue.prototype.$getScopedSlotsParams = function (vueId, name, key) {
-    const data = center[vueId];
-    if (data) {
-      const object = data[name] || {};
-      return key ? object[key] : object
-    } else {
-      parents[vueId] = this;
-      this.$on('hook:destroyed', () => {
-        delete parents[vueId];
-      });
-    }
-  };
-
-  Vue.prototype.$setScopedSlotsParams = function (name, value) {
+  function currentId (fn) {
     const vueIds = this.$options.propsData.vueId;
     if (vueIds) {
       const vueId = vueIds.split(',')[0];
-      const object = center[vueId] = center[vueId] || {};
-      object[name] = value;
+      fn(vueId);
+    }
+  }
+
+  Vue.prototype.$hasSSP = function (vueId) {
+    const slot = center[vueId];
+    if (!slot) {
+      parents[vueId] = this;
+      this.$on('hook:destroyed', () => {
+        delete parents[vueId];
+      });
+    }
+    return slot
+  };
+
+  Vue.prototype.$getSSP = function (vueId, name, needAll) {
+    const slot = center[vueId];
+    if (slot) {
+      const params = slot[name] || [];
+      if (needAll) {
+        return params
+      }
+      return params[0]
+    }
+  };
+
+  Vue.prototype.$setSSP = function (name, value) {
+    let index = 0;
+    currentId.call(this, vueId => {
+      const slot = center[vueId];
+      const params = slot[name] = slot[name] || [];
+      params.push(value);
+      index = params.length - 1;
+    });
+    return index
+  };
+
+  Vue.prototype.$initSSP = function () {
+    currentId.call(this, vueId => {
+      center[vueId] = {};
+    });
+  };
+
+  Vue.prototype.$callSSP = function () {
+    currentId.call(this, vueId => {
       if (parents[vueId]) {
         parents[vueId].$forceUpdate();
       }
-    }
+    });
   };
 
   Vue.mixin({
@@ -2178,6 +2201,7 @@ function parseBaseComponent (vueComponentOptions, {
 
   const options = {
     multipleSlots: true,
+    // styleIsolation: 'apply-shared',
     addGlobalClass: true,
     ...(vueOptions.options || {})
   };

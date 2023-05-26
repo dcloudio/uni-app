@@ -23,6 +23,7 @@ export default function parseBaseComponent (vueComponentOptions, {
 
   const options = {
     multipleSlots: true,
+    // styleIsolation: 'apply-shared',
     addGlobalClass: true,
     ...(vueOptions.options || {})
   }

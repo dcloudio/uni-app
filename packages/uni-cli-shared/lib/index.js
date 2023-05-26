@@ -34,7 +34,8 @@ const {
   convertStaticStyle,
   getTemplatePath,
   createSource,
-  deleteAsset
+  deleteAsset,
+  showRunPrompt
 } = require('./util')
 
 const {
@@ -112,6 +113,7 @@ module.exports = {
   getTemplatePath,
   createSource,
   deleteAsset,
+  showRunPrompt,
   jsPreprocessOptions,
   cssPreprocessOptions,
   htmlPreprocessOptions,

@@ -26,9 +26,12 @@ class SocketTask {
       eventNames.forEach(name => {
         this._callbacks[name] = []
         webSocket.addEventListener(name, event => {
-          const res = name === 'message' ? {
-            data: event.data
-          } : {}
+          const { data, code, reason } = event
+          const res = name === 'message'
+            ? { data }
+            : name === 'close'
+              ? { code, reason }
+              : {}
           this._callbacks[name].forEach(callback => {
             try {
               callback(res)

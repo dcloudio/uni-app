@@ -1,6 +1,6 @@
 /*!
  * Vue.js v2.6.11
- * (c) 2014-2022 Evan You
+ * (c) 2014-2023 Evan You
  * Released under the MIT License.
  */
 /*  */
@@ -6021,12 +6021,13 @@ var LIFECYCLE_HOOKS$1 = [
     'onNavigationBarSearchInputChanged',
     'onNavigationBarSearchInputConfirmed',
     'onNavigationBarSearchInputClicked',
+    'onUploadDouyinVideo',
+    'onNFCReadMessage',
     //Component
     // 'onReady', // 兼容旧版本，应该移除该事件
     'onPageShow',
     'onPageHide',
-    'onPageResize',
-    'onUploadDouyinVideo'
+    'onPageResize'
 ];
 function lifecycleMixin$1(Vue) {
 

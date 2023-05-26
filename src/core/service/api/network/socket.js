@@ -93,19 +93,24 @@ onMethod('onSocketTaskStateChange', ({
   socketTaskId,
   state,
   data,
+  code,
+  reason,
   errMsg
 }) => {
   const socketTask = socketTasks[socketTaskId]
   if (!socketTask) {
     return
   }
+  const callbackRes = state === 'message'
+    ? { data }
+    : state === 'close'
+      ? { code, reason }
+      : {}
   if (state === 'open') {
     socketTask.readyState = socketTask.OPEN
   }
   if (socketTask === socketTasksArray[0] && callbacks[state]) {
-    invoke(callbacks[state], state === 'message' ? {
-      data
-    } : {})
+    invoke(callbacks[state], callbackRes)
   }
   if (state === 'error' || state === 'close') {
     socketTask.readyState = socketTask.CLOSED
@@ -117,9 +122,7 @@ onMethod('onSocketTaskStateChange', ({
   }
   socketTask._callbacks[state].forEach(callback => {
     if (typeof callback === 'function') {
-      callback(state === 'message' ? {
-        data
-      } : {})
+      callback(callbackRes)
     }
   })
 })

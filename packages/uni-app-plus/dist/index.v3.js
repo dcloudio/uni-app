@@ -282,6 +282,7 @@ var serviceContext = (function () {
     'initUTSPackageName',
     'requireUTSPlugin',
     'registerUTSPlugin',
+    'registerUTSInterface',
   ];
 
   const ad = [
@@ -422,6 +423,8 @@ var serviceContext = (function () {
     return typeof str === 'string'
   }
 
+  const isString = isStr;
+
   function isObject (obj) {
     return obj !== null && typeof obj === 'object'
   }
@@ -434,7 +437,7 @@ var serviceContext = (function () {
     return hasOwnProperty.call(obj, key)
   }
 
-  function noop () { }
+  function noop () {}
 
   function toRawType (val) {
     return _toString.call(val).slice(8, -1)
@@ -807,9 +810,9 @@ var serviceContext = (function () {
     }
   }
 
-  function wrapperHook (hook) {
+  function wrapperHook (hook, params) {
     return function (data) {
-      return hook(data) || data
+      return hook(data, params) || data
     }
   }
 
@@ -817,14 +820,14 @@ var serviceContext = (function () {
     return !!obj && (typeof obj === 'object' || typeof obj === 'function') && typeof obj.then === 'function'
   }
 
-  function queue (hooks, data) {
+  function queue (hooks, data, params) {
     let promise = false;
     for (let i = 0; i < hooks.length; i++) {
       const hook = hooks[i];
       if (promise) {
-        promise = Promise.resolve(wrapperHook(hook));
+        promise = Promise.resolve(wrapperHook(hook, params));
       } else {
-        const res = hook(data);
+        const res = hook(data, params);
         if (isPromise(res)) {
           promise = Promise.resolve(res);
         }
@@ -847,7 +850,7 @@ var serviceContext = (function () {
       if (Array.isArray(interceptor[name])) {
         const oldCallback = options[name];
         options[name] = function callbackInterceptor (res) {
-          queue(interceptor[name], res).then((res) => {
+          queue(interceptor[name], res, options).then((res) => {
             /* eslint-disable no-mixed-operators */
             return isFn(oldCallback) && oldCallback(res) || res
           });
@@ -896,7 +899,11 @@ var serviceContext = (function () {
       if (Array.isArray(interceptor.invoke)) {
         const res = queue(interceptor.invoke, options);
         return res.then((options) => {
-          return api(wrapperOptions(interceptor, options), ...params)
+          // 重新访问 getApiInterceptorHooks, 允许 invoke 中再次调用 addInterceptor,removeInterceptor
+          return api(
+            wrapperOptions(getApiInterceptorHooks(method), options),
+            ...params
+          )
         })
       } else {
         return api(wrapperOptions(interceptor, options), ...params)
@@ -1324,7 +1331,6 @@ var serviceContext = (function () {
     scanCode: scanCode
   });
 
-  const isArray = Array.isArray;
   const isObject$1 = (val) => val !== null && typeof val === 'object';
   const defaultDelimiters = ['{', '}'];
   class BaseFormatter {
@@ -1386,7 +1392,7 @@ var serviceContext = (function () {
   function compile(tokens, values) {
       const compiled = [];
       let index = 0;
-      const mode = isArray(values)
+      const mode = Array.isArray(values)
           ? 'list'
           : isObject$1(values)
               ? 'named'
@@ -1447,6 +1453,10 @@ var serviceContext = (function () {
           return locale;
       }
       locale = locale.toLowerCase();
+      if (locale === 'chinese') {
+          // 支付宝
+          return LOCALE_ZH_HANS;
+      }
       if (locale.indexOf('zh') === 0) {
           if (locale.indexOf('-hans') > -1) {
               return LOCALE_ZH_HANS;
@@ -1459,7 +1469,11 @@ var serviceContext = (function () {
           }
           return LOCALE_ZH_HANS;
       }
-      const lang = startsWith(locale, [LOCALE_EN, LOCALE_FR, LOCALE_ES]);
+      let locales = [LOCALE_EN, LOCALE_FR, LOCALE_ES];
+      if (messages && Object.keys(messages).length > 0) {
+          locales = Object.keys(messages);
+      }
+      const lang = startsWith(locale, locales);
       if (lang) {
           return lang;
       }
@@ -6340,7 +6354,7 @@ var serviceContext = (function () {
     const windowOptions = routeOptions.window;
     const titleNView = windowOptions.titleNView;
     routeOptions.meta.statusBarStyle =
-      windowOptions.navigationBarTextStyle === 'black' ? 'dark' : 'light';
+      windowOptions.navigationBarTextStyle === 'white' ? 'light' : 'dark';
     if (
       // 无头
       titleNView === false ||
@@ -6367,13 +6381,13 @@ var serviceContext = (function () {
       titleText:
         titleImage === '' ? windowOptions.navigationBarTitleText || '' : '',
       titleColor:
-        windowOptions.navigationBarTextStyle === 'black' ? '#000000' : '#ffffff',
+        windowOptions.navigationBarTextStyle === 'white' ? '#ffffff' : '#000000',
       type: titleNViewTypeList[transparentTitle],
       backgroundColor:
         /^#[a-z0-9]{6}$/i.test(navigationBarBackgroundColor) ||
         navigationBarBackgroundColor === 'transparent'
           ? navigationBarBackgroundColor
-          : '#f7f7f7',
+          : '#f8f8f8',
       tags:
         titleImage === ''
           ? []
@@ -6535,13 +6549,15 @@ var serviceContext = (function () {
       }
     });
 
-    const backgroundColor = routeOptions.window.backgroundColor;
+    let backgroundColor = routeOptions.window.backgroundColor;
     if (
       /^#[a-z0-9]{6}$/i.test(backgroundColor) ||
       backgroundColor === 'transparent'
     ) {
       if (!webviewStyle.background) {
         webviewStyle.background = backgroundColor;
+      } else {
+        backgroundColor = webviewStyle.background;
       }
       if (!webviewStyle.backgroundColorTop) {
         webviewStyle.backgroundColorTop = backgroundColor;
@@ -9471,10 +9487,13 @@ var serviceContext = (function () {
     });
     socket.onclose(function (e) {
       const socketTaskId = e.id;
+      const { code, reason } = e;
       delete socketTasks[socketTaskId];
       publishStateChange$2({
         socketTaskId,
-        state: 'close'
+        state: 'close',
+        code,
+        reason
       });
     });
     return socket
@@ -10532,8 +10551,8 @@ var serviceContext = (function () {
       }
       return arg;
   }
-  function initUTSInstanceMethod(async, opts, instanceId) {
-      return initProxyFunction(async, opts, instanceId);
+  function initUTSInstanceMethod(async, opts, instanceId, proxy) {
+      return initProxyFunction(async, opts, instanceId, proxy);
   }
   function getProxy() {
       if (!proxy) {
@@ -10541,12 +10560,31 @@ var serviceContext = (function () {
       }
       return proxy;
   }
-  function resolveSyncResult(res) {
+  function resolveSyncResult(res, returnOptions, instanceId, proxy) {
+      // devtools 环境是字符串？
+      if (isString(res)) {
+          res = JSON.parse(res);
+      }
       if ((process.env.NODE_ENV !== 'production')) {
-          console.log('uts.invokeSync.result', res);
+          console.log('uts.invokeSync.result', res, returnOptions, instanceId, typeof proxy);
       }
       if (res.errMsg) {
           throw new Error(res.errMsg);
+      }
+      if (returnOptions) {
+          if (returnOptions.type === 'interface' && typeof res.params === 'number') {
+              // 返回了 0
+              if (!res.params) {
+                  return null;
+              }
+              if (res.params === instanceId && proxy) {
+                  return proxy;
+              }
+              if (interfaceDefines[returnOptions.options]) {
+                  const ProxyClass = initUTSProxyClass(extend({ instanceId: res.params }, interfaceDefines[returnOptions.options]));
+                  return new ProxyClass();
+              }
+          }
       }
       return res.params;
   }
@@ -10560,7 +10598,7 @@ var serviceContext = (function () {
       }
       return resolveSyncResult(getProxy().invokeSync(args, () => { }));
   }
-  function initProxyFunction(async, { moduleName, moduleType, package: pkg, class: cls, name: propOrMethod, method, companion, params: methodParams, errMsg, }, instanceId) {
+  function initProxyFunction(async, { moduleName, moduleType, package: pkg, class: cls, name: propOrMethod, method, companion, params: methodParams, return: returnOptions, errMsg, }, instanceId, proxy) {
       const invokeCallback = ({ id, name, params, keepAlive, }) => {
           const callback = callbacks$4[id];
           if (callback) {
@@ -10623,7 +10661,7 @@ var serviceContext = (function () {
           if ((process.env.NODE_ENV !== 'production')) {
               console.log('uts.invokeSync.args', invokeArgs);
           }
-          return resolveSyncResult(getProxy().invokeSync(invokeArgs, invokeCallback));
+          return resolveSyncResult(getProxy().invokeSync(invokeArgs, invokeCallback), returnOptions, instanceId, proxy);
       };
   }
   function initUTSStaticMethod(async, opts) {
@@ -10641,7 +10679,14 @@ var serviceContext = (function () {
       }
       return name;
   }
-  function initUTSProxyClass({ moduleName, moduleType, package: pkg, class: cls, constructor: { params: constructorParams }, methods, props, staticProps, staticMethods, errMsg, }) {
+  function isUndefined(value) {
+      return typeof value === 'undefined';
+  }
+  function isProxyInterfaceOptions(options) {
+      return !isUndefined(options.instanceId);
+  }
+  function initUTSProxyClass(options) {
+      const { moduleName, moduleType, package: pkg, class: cls, methods, props, errMsg, } = options;
       const baseOptions = {
           moduleName,
           moduleType,
@@ -10649,6 +10694,18 @@ var serviceContext = (function () {
           class: cls,
           errMsg,
       };
+      let instanceId;
+      let constructorParams = [];
+      let staticMethods = {};
+      let staticProps = [];
+      if (isProxyInterfaceOptions(options)) {
+          instanceId = options.instanceId;
+      }
+      else {
+          constructorParams = options.constructor.params;
+          staticMethods = options.staticMethods;
+          staticProps = options.staticProps;
+      }
       // iOS 需要为 ByJs 的 class 构造函数（如果包含JSONObject或UTSCallback类型）补充最后一个参数
       if (typeof plus !== 'undefined' && plus.os.name === 'iOS') {
           if (constructorParams.find((p) => p.type === 'UTSCallback' || p.type.indexOf('JSONObject') > 0)) {
@@ -10662,21 +10719,25 @@ var serviceContext = (function () {
               }
               const target = {};
               // 初始化实例 ID
-              const instanceId = initProxyFunction(false, extend({ name: 'constructor', params: constructorParams }, baseOptions), 0).apply(null, params);
+              if (isUndefined(instanceId)) {
+                  // 未指定instanceId
+                  instanceId = initProxyFunction(false, extend({ name: 'constructor', params: constructorParams }, baseOptions), 0).apply(null, params);
+              }
               if (!instanceId) {
                   throw new Error(`new ${cls} is failed`);
               }
-              return new Proxy(this, {
+              const proxy = new Proxy(this, {
                   get(_, name) {
                       if (!target[name]) {
                           //实例方法
                           name = parseClassMethodName(name, methods);
                           if (hasOwn(methods, name)) {
-                              const { async, params } = methods[name];
+                              const { async, params, return: returnOptions } = methods[name];
                               target[name] = initUTSInstanceMethod(!!async, extend({
                                   name,
                                   params,
-                              }, baseOptions), instanceId);
+                                  return: returnOptions,
+                              }, baseOptions), instanceId, proxy);
                           }
                           else if (props.includes(name)) {
                               // 实例属性
@@ -10692,6 +10753,7 @@ var serviceContext = (function () {
                       return target[name];
                   },
               });
+              return proxy;
           }
       };
       const staticMethodCache = {};
@@ -10700,9 +10762,9 @@ var serviceContext = (function () {
               name = parseClassMethodName(name, staticMethods);
               if (hasOwn(staticMethods, name)) {
                   if (!staticMethodCache[name]) {
-                      const { async, params } = staticMethods[name];
+                      const { async, params, return: returnOptions } = staticMethods[name];
                       // 静态方法
-                      staticMethodCache[name] = initUTSStaticMethod(!!async, extend({ name, companion: true, params }, baseOptions));
+                      staticMethodCache[name] = initUTSStaticMethod(!!async, extend({ name, companion: true, params, return: returnOptions }, baseOptions));
                   }
                   return staticMethodCache[name];
               }
@@ -10740,6 +10802,10 @@ var serviceContext = (function () {
               capitalize(className));
       }
       return '';
+  }
+  const interfaceDefines = {};
+  function registerUTSInterface(name, define) {
+      interfaceDefines[name] = define;
   }
   const pluginDefines = {};
   function registerUTSPlugin(name, define) {
@@ -11386,9 +11452,9 @@ var serviceContext = (function () {
     });
     try {
       if (type === 'string' && parseValue(value) !== undefined) {
-        plus.storage.setItemAsync(key + STORAGE_DATA_TYPE, type);
+        plus.storage.setItemAsync(key + STORAGE_DATA_TYPE, type, () => {});
       } else {
-        plus.storage.removeItemAsync(key + STORAGE_DATA_TYPE);
+        plus.storage.removeItemAsync(key + STORAGE_DATA_TYPE, () => {});
       }
       plus.storage.setItemAsync(key, value, function () {
         invoke$1(callbackId, {
@@ -11491,7 +11557,7 @@ var serviceContext = (function () {
     key
   } = {}, callbackId) {
     // 兼容App端历史格式
-    plus.storage.removeItemAsync(key + STORAGE_DATA_TYPE);
+    plus.storage.removeItemAsync(key + STORAGE_DATA_TYPE, () => {});
     plus.storage.removeItemAsync(key, function (res) {
       invoke$1(callbackId, {
         errMsg: 'removeStorage:ok'
@@ -12724,6 +12790,7 @@ var serviceContext = (function () {
     initUTSPackageName: initUTSPackageName,
     requireUTSPlugin: requireUTSPlugin,
     registerUTSPlugin: registerUTSPlugin,
+    registerUTSInterface: registerUTSInterface,
     startPullDownRefresh: startPullDownRefresh,
     stopPullDownRefresh: stopPullDownRefresh,
     $on: $on$1,
@@ -21749,19 +21816,24 @@ var serviceContext = (function () {
     socketTaskId,
     state,
     data,
+    code,
+    reason,
     errMsg
   }) => {
     const socketTask = socketTasks$1[socketTaskId];
     if (!socketTask) {
       return
     }
+    const callbackRes = state === 'message'
+      ? { data }
+      : state === 'close'
+        ? { code, reason }
+        : {};
     if (state === 'open') {
       socketTask.readyState = socketTask.OPEN;
     }
     if (socketTask === socketTasksArray[0] && callbacks$a[state]) {
-      invoke$1(callbacks$a[state], state === 'message' ? {
-        data
-      } : {});
+      invoke$1(callbacks$a[state], callbackRes);
     }
     if (state === 'error' || state === 'close') {
       socketTask.readyState = socketTask.CLOSED;
@@ -21773,9 +21845,7 @@ var serviceContext = (function () {
     }
     socketTask._callbacks[state].forEach(callback => {
       if (typeof callback === 'function') {
-        callback(state === 'message' ? {
-          data
-        } : {});
+        callback(callbackRes);
       }
     });
   });

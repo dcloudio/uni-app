@@ -193,7 +193,7 @@ describe('mp:compiler', () => {
     assertCodegen(
       '<view><slot :name="one" :test="test"></slot></view>',
       '<view><slot name="{{one}}"></slot></view>',
-      'with(this){{$setScopedSlotsParams(one,{"test":test})}}',
+      'with(this){$initSSP();{$setSSP(one,{"test":test})}$callSSP()}',
       {
         scopedSlotsCompiler: 'augmented'
       }

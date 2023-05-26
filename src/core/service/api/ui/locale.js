@@ -35,7 +35,7 @@ export function setLocale (locale) {
       weex.requireModule('plus').setLanguage(locale)
     }
     if (__PLATFORM__ === 'h5') {
-      window.localStorage && (localStorage[UNI_STORAGE_LOCALE] = locale)
+      navigator.cookieEnabled && window.localStorage && (localStorage[UNI_STORAGE_LOCALE] = locale)
     }
     callbacks.forEach(callbackId => {
       invoke(callbackId, { locale })

@@ -1,4 +1,3 @@
-const isArray = Array.isArray;
 const isObject = (val) => val !== null && typeof val === 'object';
 const defaultDelimiters = ['{', '}'];
 class BaseFormatter {
@@ -60,7 +59,7 @@ function parse(format, [startDelimiter, endDelimiter]) {
 function compile(tokens, values) {
     const compiled = [];
     let index = 0;
-    const mode = isArray(values)
+    const mode = Array.isArray(values)
         ? 'list'
         : isObject(values)
             ? 'named'
@@ -121,6 +120,10 @@ function normalizeLocale(locale, messages) {
         return locale;
     }
     locale = locale.toLowerCase();
+    if (locale === 'chinese') {
+        // 支付宝
+        return LOCALE_ZH_HANS;
+    }
     if (locale.indexOf('zh') === 0) {
         if (locale.indexOf('-hans') > -1) {
             return LOCALE_ZH_HANS;
@@ -133,7 +136,11 @@ function normalizeLocale(locale, messages) {
         }
         return LOCALE_ZH_HANS;
     }
-    const lang = startsWith(locale, [LOCALE_EN, LOCALE_FR, LOCALE_ES]);
+    let locales = [LOCALE_EN, LOCALE_FR, LOCALE_ES];
+    if (messages && Object.keys(messages).length > 0) {
+        locales = Object.keys(messages);
+    }
+    const lang = startsWith(locale, locales);
     if (lang) {
         return lang;
     }
@@ -415,7 +422,7 @@ function compileJsonObj(jsonObj, localeValues, delimiters) {
     return jsonObj;
 }
 function walkJsonObj(jsonObj, walk) {
-    if (isArray(jsonObj)) {
+    if (Array.isArray(jsonObj)) {
         for (let i = 0; i < jsonObj.length; i++) {
             if (walk(jsonObj, i)) {
                 return true;

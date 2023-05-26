@@ -7,6 +7,8 @@ const {
   done
 } = require('@vue/cli-shared-utils')
 
+const { showRunPrompt } = require('@dcloudio/uni-cli-shared')
+
 let nvueCompiled = true
 let serviceCompiled = true
 let viewCompiled = true
@@ -93,11 +95,13 @@ class WebpackAppPlusPlugin {
               } else {
                 // if (!stats.hasErrors()) {
                 !process.env.UNI_AUTOMATOR_WS_ENDPOINT && done('Build complete. Watching for changes...')
+                showRunPrompt()
                 // };
               }
               isFirst = false
             } else {
               done('Build complete. ')
+              showRunPrompt()
             }
             nvueChangedFiles.length = 0
             serviceChangedFiles.length = 0
@@ -124,6 +128,7 @@ class WebpackAppPlusPlugin {
             } else {
               done('Build complete. ')
             }
+            showRunPrompt()
             resolve()
           }
           // Copy manifest.json

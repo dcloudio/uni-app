@@ -98,6 +98,7 @@ module.exports = function traverse (ast, state) {
   const objectPropertyArray = []
   const initExpressionStatementArray = []
   const renderSlotStatementArray = []
+  const resolveSlotStatementArray = []
   // TODO 待重构，至少 filter，method 等实现方式要调整
   babelTraverse(ast, visitor, undefined, {
     scoped: [],
@@ -109,7 +110,8 @@ module.exports = function traverse (ast, state) {
     propertyArray: objectPropertyArray,
     declarationArray: blockStatementBody,
     initExpressionStatementArray: initExpressionStatementArray,
-    renderSlotStatementArray
+    renderSlotStatementArray,
+    resolveSlotStatementArray
   })
 
   if (initExpressionStatementArray.length) {
@@ -122,6 +124,10 @@ module.exports = function traverse (ast, state) {
 
   if (renderSlotStatementArray.length) {
     blockStatementBody.push(getRenderSlotStatement(state, renderSlotStatementArray))
+  }
+
+  if (resolveSlotStatementArray.length) {
+    blockStatementBody.push(...resolveSlotStatementArray)
   }
 
   reIdentifier(identifierArray)

@@ -71,7 +71,8 @@ export {
   initUTSClassName,
   initUTSPackageName,
   requireUTSPlugin,
-  registerUTSPlugin
+  registerUTSPlugin,
+  registerUTSInterface
 } from './plugin/uts'
 
 export * from './route/navigate-back'

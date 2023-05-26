@@ -37,7 +37,11 @@ function getAssetsCopyOptions (assetsDir) {
 
   global.uniPlugin.platforms.forEach(platform => {
     if (global.uniPlugin.name !== platform) {
-      ignore.push(platform + '/**/*')
+      if (CopyWebpackPluginVersion > 5) {
+        ignore.push(`${process.env.UNI_INPUT_DIR.replace(/\\/g, '/')}/static/${platform}/**/*`)
+      } else {
+        ignore.push(platform + '/**/*')
+      }
     }
   })
 

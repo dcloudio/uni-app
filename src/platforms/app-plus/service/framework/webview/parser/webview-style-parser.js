@@ -44,13 +44,15 @@ export function parseWebviewStyle (id, path, _routeOptions = {}) {
     }
   })
 
-  const backgroundColor = routeOptions.window.backgroundColor
+  let backgroundColor = routeOptions.window.backgroundColor
   if (
     /^#[a-z0-9]{6}$/i.test(backgroundColor) ||
     backgroundColor === 'transparent'
   ) {
     if (!webviewStyle.background) {
       webviewStyle.background = backgroundColor
+    } else {
+      backgroundColor = webviewStyle.background
     }
     if (!webviewStyle.backgroundColorTop) {
       webviewStyle.backgroundColorTop = backgroundColor

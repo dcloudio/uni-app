@@ -15,6 +15,8 @@ export function isStr (str) {
   return typeof str === 'string'
 }
 
+export const isString = isStr
+
 export function isObject (obj) {
   return obj !== null && typeof obj === 'object'
 }
@@ -27,7 +29,7 @@ export function hasOwn (obj, key) {
   return hasOwnProperty.call(obj, key)
 }
 
-export function noop () { }
+export function noop () {}
 
 export function toRawType (val) {
   return _toString.call(val).slice(8, -1)

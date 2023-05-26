@@ -103,7 +103,7 @@ function normalizeNavigationBar () {
     loading: false,
     backButton: !this.isQuit && !this.$route.meta.isQuit, // redirectTo,reLaunch时可能动态修改 meta.isQuit
     backgroundColor: this.navigationBarBackgroundColor,
-    textColor: parseTheme({ testStyle: this.navigationBarTextStyle }).testStyle === 'black' ? '#000' : '#fff',
+    textColor: parseTheme({ testStyle: this.navigationBarTextStyle }).testStyle === 'white' ? '#fff' : '#000',
     titleText: this.navigationBarTitleText,
     titleImage: this.titleImage,
     duration: '0',
@@ -170,10 +170,10 @@ export default {
     },
     navigationBarBackgroundColor: {
       type: String,
-      default: '#000'
+      default: '#f8f8f8'
     },
     navigationBarTextStyle: {
-      default: 'white',
+      default: 'black',
       validator (value) {
         return ['white', 'black'].indexOf(value) !== -1 || value.indexOf('@') === 0
       }

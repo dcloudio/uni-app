@@ -84,7 +84,7 @@ function resolveI18nLocale (platfrom, locales, locale) {
     return locale
   }
   const defaultLocales = ['zh-Hans', 'zh-Hant']
-  if (platfrom === 'app' || platfrom === 'h5') {
+  if (platfrom === 'app-plus' || platfrom === 'h5') {
     defaultLocales.unshift('en')
   } else {
     // 小程序

@@ -141,7 +141,7 @@ export default {
           }%2C${this.longitude}&to=${encodeURIComponent(this.name || '目的地')}&ref=${mapInfo.key}`
       } else if (mapInfo.type === MapType.AMAP) {
         const from = this.location.latitude ? `from=${this.location.longitude},${this.location.latitude},${encodeURIComponent('我的位置')}&` : ''
-        url = `https://uri.amap.com/navigation?${from}to=${this.longitude},${this.latitude},${encodeURIComponent(this.name || '目的地')}}`
+        url = `https://uri.amap.com/navigation?${from}to=${this.longitude},${this.latitude},${encodeURIComponent(this.name || '目的地')}`
       }
       window.open(url)
     }

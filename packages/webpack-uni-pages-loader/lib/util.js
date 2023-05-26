@@ -143,7 +143,7 @@ const NON_APP_JSON_KEYS = [
   'usingComponents',
   'optimization',
   'scopedSlotsCompiler',
-  'usingComponents',
+  'slotMultipleInstance',
   'uniStatistics',
   'mergeVirtualHostAttributes'
 ]

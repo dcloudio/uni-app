@@ -1,4 +1,4 @@
-import { translateGeo } from '../../../helpers/location'
+import { translateCoordinateSystem } from '../../../helpers/location'
 
 const { invokeCallbackHandler: invoke } = UniServiceJSBridge
 let successCallbackIds = []
@@ -16,7 +16,7 @@ export function startLocationUpdate ({ type = 'gcj02' }, callbackId) {
   watchId = watchId || navigator.geolocation.watchPosition(
     res => {
       started = true
-      translateGeo(type, res.coords)
+      translateCoordinateSystem(type, res.coords)
         .then((coords) => {
           successCallbackIds.forEach(callbackId => {
             invoke(callbackId, coords)
