@@ -133,12 +133,13 @@ export function uniAppUVuePlugin(): Plugin {
           isVue(file.fileName) &&
           isString(file.source)
         ) {
+          const fileName = normalizePath(file.fileName)
           const classNameComment = `/*${genClassName(
-            file.fileName,
+            fileName,
             options.classNamePrefix
           )}Styles*/`
           if (file.source.includes(classNameComment)) {
-            const styleAssetName = file.fileName + '.style.uts'
+            const styleAssetName = fileName + '.style.uts'
             const styleAsset = bundle[styleAssetName]
             if (
               styleAsset &&
