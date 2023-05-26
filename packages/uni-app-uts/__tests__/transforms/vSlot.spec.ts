@@ -6,7 +6,7 @@ describe('compiler: slot', () => {
       `<view><slot data="data"></slot></view>`,
       `@Suppress("UNUSED_PARAMETER") function PagesIndexIndexRender(_ctx: PagesIndexIndex): VNode | null {
   return createElementVNode("view", null, [
-    renderSlot(_ctx.$slots, "default", new Map<string,any | null>([["data", "data"]]))
+    renderSlot(_ctx.$slots, "default", new Map<string, any | null>([["data", "data"]]))
   ])
 }`,
       {
@@ -23,7 +23,7 @@ describe('compiler: slot', () => {
 const _component_Foo = resolveComponent("Foo")
 
   return createElementVNode("view", null, [
-    createVNode(_component_Foo, new Map<string,any | null>([["onClick", _ctx.test]]), new Map<string,any | null>([
+    createVNode(_component_Foo, new Map<string, any | null>([["onClick", _ctx.test]]), new Map<string, any | null>([
       ["default", ((): any[] => [
         createElementVNode("text", null, "test")
       ])],
@@ -62,7 +62,7 @@ const _component_Foo = resolveComponent("Foo")
 const _component_Foo = resolveComponent("Foo")
 
   return createElementVNode("view", null, [
-    createVNode(_component_Foo, null, new Map<string,any | null>([
+    createVNode(_component_Foo, null, new Map<string, any | null>([
       ["default", ((props: Map<string, any | null>): any[] => [
         createElementVNode("text", null, "msg: " + toDisplayString(props.msg), 1 /* TEXT */)
       ])],
@@ -84,7 +84,7 @@ const _component_Foo = resolveComponent("Foo")
 const _component_Foo = resolveComponent("Foo")
 
   return createElementVNode("view", null, [
-    createVNode(_component_Foo, null, new Map<string,any | null>([
+    createVNode(_component_Foo, null, new Map<string, any | null>([
       ["default", ((props: Map<string, any | null>): any[] => [
         createElementVNode("text", null, "msg: " + toDisplayString(props.msg), 1 /* TEXT */)
       ])],

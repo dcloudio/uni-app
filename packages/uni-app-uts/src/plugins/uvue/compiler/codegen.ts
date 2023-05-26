@@ -460,13 +460,13 @@ function genObjectExpression(node: ObjectExpression, context: CodegenContext) {
   const { push, indent, deindent, newline } = context
   const { properties } = node
   if (!properties.length) {
-    push(`new Map<string,any | null>()`, node)
+    push(`new Map<string, any | null>()`, node)
     return
   }
   const multilines =
     properties.length > 1 ||
     properties.some((p) => p.value.type !== NodeTypes.SIMPLE_EXPRESSION)
-  push(`new Map<string,any | null>([`)
+  push(`new Map<string, any | null>([`)
   multilines && indent()
   for (let i = 0; i < properties.length; i++) {
     const { key, value } = properties[i]

@@ -4,31 +4,31 @@ describe('compiler:v-on', () => {
   test('basic', () => {
     assert(
       `<text v-on:click="() => console.log('v-on:click')"/>`,
-      `createElementVNode("text", new Map<string,any | null>([
+      `createElementVNode("text", new Map<string, any | null>([
   ["onClick", () => console.log('v-on:click')]
 ]), null, 8 /* PROPS */, ["onClick"])`
     )
     assert(
       `<text v-on:click="onClick"/>`,
-      `createElementVNode("text", new Map<string,any | null>([["onClick", _ctx.onClick]]), null, 8 /* PROPS */, ["onClick"])`
+      `createElementVNode("text", new Map<string, any | null>([["onClick", _ctx.onClick]]), null, 8 /* PROPS */, ["onClick"])`
     )
   })
   test('dynamic arg', () => {
     assert(
       `<text v-on:[event]="handler"/>`,
-      `createElementVNode("text", new Map<string,any | null>([[toHandlerKey(_ctx.event), _ctx.handler]]), null, 16 /* FULL_PROPS */)`
+      `createElementVNode("text", new Map<string, any | null>([[toHandlerKey(_ctx.event), _ctx.handler]]), null, 16 /* FULL_PROPS */)`
     )
   })
   test('dynamic arg with complex exp', () => {
     assert(
       `<text v-on:[event(foo)]="handler"/>`,
-      `createElementVNode("text", new Map<string,any | null>([[toHandlerKey(_ctx.event(_ctx.foo)), _ctx.handler]]), null, 16 /* FULL_PROPS */)`
+      `createElementVNode("text", new Map<string, any | null>([[toHandlerKey(_ctx.event(_ctx.foo)), _ctx.handler]]), null, 16 /* FULL_PROPS */)`
     )
   })
   test('shorthand', () => {
     assert(
       `<text @click="() => console.warn('@click')"/>`,
-      `createElementVNode("text", new Map<string,any | null>([
+      `createElementVNode("text", new Map<string, any | null>([
   ["onClick", () => console.warn('@click')]
 ]), null, 8 /* PROPS */, ["onClick"])`
     )
@@ -36,7 +36,7 @@ describe('compiler:v-on', () => {
   test('inline statement handler', () => {
     assert(
       `<text @click="count++"/>`,
-      `createElementVNode("text", new Map<string,any | null>([
+      `createElementVNode("text", new Map<string, any | null>([
   ["onClick", () => {_ctx.count++}]
 ]), null, 8 /* PROPS */, ["onClick"])`
     )
@@ -44,7 +44,7 @@ describe('compiler:v-on', () => {
   test('should handle multi-line statement', () => {
     assert(
       `<text @click="\nfoo();\nbar()\n"/>`,
-      `createElementVNode(\"text\", new Map<string,any | null>([
+      `createElementVNode(\"text\", new Map<string, any | null>([
   [\"onClick\", () => {
 _ctx.foo();
 _ctx.bar()
@@ -53,7 +53,7 @@ _ctx.bar()
     )
     assert(
       `<text @click="a.get('b' + c)()"/>`,
-      `createElementVNode("text", new Map<string,any | null>([
+      `createElementVNode("text", new Map<string, any | null>([
   [\"onClick\", () => {_ctx.a.get('b' + _ctx.c)()}]
 ]), null, 8 /* PROPS */, [\"onClick\"])`
     )
@@ -92,7 +92,7 @@ _ctx.bar()
   test('should NOT wrap as function if expression is complex member expression', () => {
     assert(
       `<text @click="a['b' + c]"/>`,
-      `createElementVNode("text", new Map<string,any | null>([
+      `createElementVNode("text", new Map<string, any | null>([
   [\"onClick\", _ctx.a['b' + _ctx.c]]
 ]), null, 8 /* PROPS */, [\"onClick\"])`
     )
@@ -100,7 +100,7 @@ _ctx.bar()
   test('case conversion for vnode hooks', () => {
     assert(
       `<text v-on:vue:mounted="onMount" @vue:before-update="onBeforeUpdate" />`,
-      `createElementVNode("text", new Map<string,any | null>([
+      `createElementVNode("text", new Map<string, any | null>([
   ["onVnodeMounted", _ctx.onMount],
   ["onVnodeBeforeUpdate", _ctx.onBeforeUpdate]
 ]), null, 8 /* PROPS */, ["onVnodeMounted", "onVnodeBeforeUpdate"])`
@@ -109,7 +109,7 @@ _ctx.bar()
   test('inline function expression handler', () => {
     assert(
       `<text v-on:click="() => foo()" />`,
-      `createElementVNode("text", new Map<string,any | null>([
+      `createElementVNode("text", new Map<string, any | null>([
   ["onClick", () => _ctx.foo()]
 ]), null, 8 /* PROPS */, ["onClick"])`
     )

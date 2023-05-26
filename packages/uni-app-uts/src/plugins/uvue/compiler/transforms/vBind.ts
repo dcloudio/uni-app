@@ -94,7 +94,7 @@ function object2Map(exp: ExpressionNode | string) {
   const content = isString(exp) ? exp : (exp as SimpleExpressionNode).content
   const matched = content.match(objectExp)![0]
   const keyValues = matched.replace(/\{|\}/g, '').split(',')
-  let mapConstructor = 'new Map<string,any | null>(['
+  let mapConstructor = 'new Map<string, any | null>(['
 
   keyValues.forEach((keyValue: string, index: number) => {
     const colonIndex = keyValue.indexOf(':')
