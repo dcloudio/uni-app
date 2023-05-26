@@ -373,9 +373,10 @@ function genExpressionAsPropertyKey(
 ) {
   const { push } = context
   if (node.type === NodeTypes.COMPOUND_EXPRESSION) {
-    push(`[`)
+    // dynamic arg genObjectExpression have added []
+    // push(`[`)
     genCompoundExpression(node, context)
-    push(`]`)
+    // push(`]`)
   } else if (node.isStatic) {
     // only quote keys if necessary
     const text = JSON.stringify(node.content)
