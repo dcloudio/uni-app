@@ -89,7 +89,7 @@ function createInvoker(
     const eventTarget = (e as MPEvent).target
     const eventSync = eventTarget
       ? eventTarget.dataset
-        ? eventTarget.dataset.eventsync === 'true'
+        ? String(eventTarget.dataset.eventsync) === 'true'
         : false
       : false
     if (bubbles.includes(e.type) && !eventSync) {

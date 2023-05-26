@@ -1,7 +1,14 @@
 import fs from 'fs'
 import path from 'path'
 
-import { camelize, capitalize, hasOwn, isArray } from '@vue/shared'
+import {
+  camelize,
+  capitalize,
+  hasOwn,
+  isArray,
+  isPlainObject,
+  isString,
+} from '@vue/shared'
 
 import type {
   ArrowFunctionExpression,
@@ -16,6 +23,7 @@ import type {
   Param,
   Span,
   TsFnParameter,
+  TsInterfaceDeclaration,
   TsType,
   TsTypeAliasDeclaration,
   TsTypeAnnotation,
@@ -36,7 +44,12 @@ export const enum FORMATS {
   CJS = 'cjs',
 }
 
-type Types = { class: string[]; fn: Record<string, Param[]> }
+// 不应该用 class，应该用lit，调整起来影响较多，暂不调整
+type Types = {
+  interface: Record<string, { returned: boolean; decl: TsInterfaceDeclaration }>
+  class: string[]
+  fn: Record<string, Param[]>
+}
 
 interface Meta {
   exports: Record<string, 'var' | 'function' | 'class'>
@@ -70,8 +83,9 @@ export async function genProxyCode(
   }
   options.types = await parseInterfaceTypes(module, options)
   options.meta!.types = parseMetaTypes(options.types)
+  const decls = await parseModuleDecls(module, options)
   return `
-const { initUTSProxyClass, initUTSProxyFunction, initUTSPackageName, initUTSIndexClassName, initUTSClassName } = uni
+const { registerUTSInterface, initUTSProxyClass, initUTSProxyFunction, initUTSPackageName, initUTSIndexClassName, initUTSClassName } = uni
 const name = '${name}'
 const moduleName = '${moduleName || ''}'
 const moduleType = '${moduleType || ''}'
@@ -92,12 +106,7 @@ ${genComponentsCode(
   options.iosComponents || {}
 )}
 
-${genModuleCode(
-  await parseModuleDecls(module, options),
-  format,
-  options.pluginRelativeDir!,
-  options.meta!
-)}
+${genModuleCode(decls, format, options.pluginRelativeDir!, options.meta!)}
 `
 }
 
@@ -186,6 +195,25 @@ function exportVarCode(format: FORMATS, kind: VariableDeclarationKind) {
   return `exports.`
 }
 
+function isClassReturnOptions(value: unknown): value is { options: string } {
+  return (
+    isPlainObject(value) &&
+    (value as any).type === 'interface' &&
+    isString((value as any).options)
+  )
+}
+
+function genClassOptionsCode(
+  options: ProxyClass['options'] | ProxyInterface['options']
+): string {
+  return JSON.stringify(options, (key, value) => {
+    if (key === 'return' && isClassReturnOptions(value)) {
+      return { type: 'interface', options: `${value.options}Options` }
+    }
+    return value
+  })
+}
+
 function genModuleCode(
   decls: ProxyDecl[],
   format: FORMATS = FORMATS.ES,
@@ -196,14 +224,22 @@ function genModuleCode(
   const exportDefault = exportDefaultCode(format)
   const exportConst = exportVarCode(format, 'const')
   decls.forEach((decl) => {
-    if (decl.type === 'Class') {
+    if (decl.type === 'InterfaceDeclaration') {
+      codes.push(
+        `registerUTSInterface('${
+          decl.cls
+        }Options',Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, '${
+          decl.cls
+        }ByJsProxy', is_uni_modules) }, ${genClassOptionsCode(decl.options)} ))`
+      )
+    } else if (decl.type === 'Class') {
       meta.exports[decl.cls] = decl.isVar ? 'var' : 'class'
 
       if (decl.isDefault) {
         codes.push(
           `${exportDefault}initUTSProxyClass(Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, '${
             decl.cls
-          }ByJs', is_uni_modules) }, ${JSON.stringify(decl.options)} ))`
+          }ByJs', is_uni_modules) }, ${genClassOptionsCode(decl.options)} ))`
         )
       } else {
         codes.push(
@@ -211,19 +247,23 @@ function genModuleCode(
             decl.cls
           } = /*#__PURE__*/ initUTSProxyClass(Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, '${
             decl.cls
-          }ByJs', is_uni_modules) }, ${JSON.stringify(decl.options)} ))`
+          }ByJs', is_uni_modules) }, ${genClassOptionsCode(decl.options)} ))`
         )
       }
     } else if (decl.type === 'FunctionDeclaration') {
       meta.exports[decl.method] = decl.isVar ? 'var' : 'function'
-
+      const returnOptions = decl.return
+        ? { type: decl.return.type, options: decl.return.options + 'Options' }
+        : ''
       if (decl.isDefault) {
         codes.push(
           `${exportDefault}initUTSProxyFunction(${
             decl.async
           }, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: '${
             decl.method
-          }ByJs', params: ${JSON.stringify(decl.params)}})`
+          }ByJs', params: ${JSON.stringify(
+            decl.params
+          )}, return: ${JSON.stringify(returnOptions)}})`
         )
       } else {
         codes.push(
@@ -231,7 +271,9 @@ function genModuleCode(
             decl.async
           }, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: '${
             decl.method
-          }ByJs', params: ${JSON.stringify(decl.params)}})`
+          }ByJs', params: ${JSON.stringify(
+            decl.params
+          )}, return: ${JSON.stringify(returnOptions)}})`
         )
       }
     } else if (decl.type === 'VariableDeclaration') {
@@ -272,7 +314,7 @@ function genModuleCode(
 }
 
 /**
- * 解析接口文件中定义的类型信息（主要是解析函数类型参数类型列表）
+ * 解析接口文件中定义的类型信息
  * @param module
  * @param options
  * @returns
@@ -284,6 +326,7 @@ async function parseInterfaceTypes(
   const interfaceFilename = resolveRootInterface(module, options)
   if (!interfaceFilename) {
     return {
+      interface: {},
       class: [],
       fn: {},
     }
@@ -300,8 +343,9 @@ async function parseInterfaceTypes(
   } catch (e) {
     console.error(parseUTSSyntaxError(e, options.inputDir!))
   }
-  const classTypes: string[] = []
-  const fnTypes: Record<string, Param[]> = {}
+  const interfaceTypes: Types['interface'] = {}
+  const classTypes: Types['class'] = []
+  const fnTypes: Types['fn'] = {}
 
   const exportNamed: string[] = []
   if (ast) {
@@ -322,19 +366,29 @@ async function parseInterfaceTypes(
     })
 
     ast.body.filter((node) => {
-      if (
-        node.type === 'ExportDeclaration' &&
-        node.declaration.type === 'TsTypeAliasDeclaration'
-      ) {
-        parseTypes(node.declaration, classTypes, fnTypes)
+      if (node.type === 'ExportDeclaration') {
+        if (node.declaration.type === 'TsTypeAliasDeclaration') {
+          parseTypes(node.declaration, classTypes, fnTypes)
+        } else if (node.declaration.type === 'TsInterfaceDeclaration') {
+          interfaceTypes[node.declaration.id.value] = {
+            returned: false,
+            decl: node.declaration,
+          }
+        }
       } else if (node.type === 'TsTypeAliasDeclaration') {
         if (exportNamed.includes(node.id.value)) {
           parseTypes(node, classTypes, fnTypes)
+        }
+      } else if (node.type === 'TsInterfaceDeclaration') {
+        interfaceTypes[node.id.value] = {
+          returned: false,
+          decl: node,
         }
       }
     })
   }
   return {
+    interface: interfaceTypes,
     class: classTypes,
     fn: fnTypes,
   }
@@ -396,7 +450,16 @@ async function parseModuleDecls(module: string, options: GenProxyCodeOptions) {
 
 function mergeDecls(from: ProxyDecl[], to: ProxyDecl[]) {
   from.forEach((item) => {
-    if (item.type === 'Class') {
+    if (item.type === 'InterfaceDeclaration') {
+      if (
+        !to.find(
+          (toItem) =>
+            toItem.type === 'InterfaceDeclaration' && toItem.cls === item.cls
+        )
+      ) {
+        to.push(item)
+      }
+    } else if (item.type === 'Class') {
       if (
         !to.find(
           (toItem) =>
@@ -488,7 +551,20 @@ async function parseCode(
   return []
 }
 
-type ProxyDecl = ProxyFunctionDeclaration | ProxyClass | VariableDeclaration
+type ProxyDecl =
+  | ProxyInterface
+  | ProxyFunctionDeclaration
+  | ProxyClass
+  | VariableDeclaration
+
+interface ProxyInterface {
+  type: 'InterfaceDeclaration'
+  cls: string
+  options: {
+    methods: Record<string, any>
+    props: string[]
+  }
+}
 
 interface ProxyFunctionDeclaration {
   type: 'FunctionDeclaration'
@@ -497,6 +573,10 @@ interface ProxyFunctionDeclaration {
   params: Parameter[]
   isDefault: boolean
   isVar: boolean
+  return?: {
+    type: 'interface'
+    options: string
+  }
 }
 
 interface ProxyClass {
@@ -563,7 +643,16 @@ function parseAst(
       }
     }
   })
-  return decls
+  const interfaces: ProxyInterface[] = []
+  Object.keys(types.interface).forEach((name) => {
+    const options = types.interface[name]
+    if (options.returned) {
+      interfaces.push(
+        genInterfaceDeclaration(types, options.decl, resolveTypeReferenceName)
+      )
+    }
+  })
+  return [...interfaces, ...decls]
 }
 
 function isReturnPromise(anno?: TsTypeAnnotation) {
@@ -582,6 +671,7 @@ function genProxyFunction(
   method: string,
   async: boolean,
   params: Parameter[],
+  ret: string = '',
   isDefault: boolean = false,
   isVar: boolean = false
 ): ProxyFunctionDeclaration {
@@ -590,6 +680,7 @@ function genProxyFunction(
     method,
     async,
     params,
+    return: ret ? { type: 'interface', options: ret } : undefined,
     isDefault,
     isVar,
   }
@@ -719,6 +810,30 @@ function resolveFunctionParams(
   return result
 }
 
+function parseReturnInterface(types: Types, returnType: TsType): string {
+  switch (returnType.type) {
+    case 'TsTypeReference':
+      if (returnType.typeName.type === 'Identifier') {
+        if (hasOwn(types.interface, returnType.typeName.value)) {
+          types.interface[returnType.typeName.value].returned = true
+          return returnType.typeName.value
+        }
+      }
+      break
+    case 'TsUnionType':
+      for (const type of returnType.types) {
+        if (type.type === 'TsKeywordType') {
+          continue
+        }
+        return parseReturnInterface(types, type)
+      }
+      break
+    case 'TsParenthesizedType':
+      return parseReturnInterface(types, returnType.typeAnnotation)
+  }
+  return ''
+}
+
 function genFunctionDeclaration(
   types: Types,
   decl: FunctionDeclaration | FunctionExpression,
@@ -730,9 +845,79 @@ function genFunctionDeclaration(
     decl.identifier!.value,
     decl.async || isReturnPromise(decl.returnType),
     resolveFunctionParams(types, decl.params, resolveTypeReferenceName),
+    decl.returnType
+      ? parseReturnInterface(types, decl.returnType.typeAnnotation)
+      : '',
     isDefault,
     isVar
   )
+}
+
+function genInterfaceDeclaration(
+  types: Types,
+  decl: TsInterfaceDeclaration,
+  resolveTypeReferenceName: ResolveTypeReferenceName
+): ProxyInterface {
+  const cls = decl.id.value
+  const methods: ProxyClass['options']['methods'] = {}
+  const props: string[] = []
+  decl.body.body.forEach((item) => {
+    if (item.type === 'TsMethodSignature') {
+      if (item.key.type === 'Identifier') {
+        let returnOptions = {}
+        if (item.typeAnn) {
+          let returnInterface = parseReturnInterface(
+            types,
+            item.typeAnn.typeAnnotation
+          )
+          if (returnInterface) {
+            returnOptions = {
+              type: 'interface',
+              options: returnInterface,
+            }
+          }
+        }
+
+        const name = item.key.value
+        const value = {
+          async: isReturnPromise(item.typeAnn),
+          params: resolveFunctionParams(
+            types,
+            tsParamsToParams(item.params),
+            resolveTypeReferenceName
+          ),
+          return: returnOptions,
+        }
+        methods[name + 'ByJs'] = value
+      }
+    } else if (item.type === 'TsPropertySignature') {
+      if (item.key.type === 'Identifier') {
+        props.push(item.key.value)
+      }
+    }
+  })
+  return {
+    type: 'InterfaceDeclaration',
+    cls,
+    options: {
+      methods,
+      props,
+    },
+  }
+}
+
+function tsParamsToParams(tsParams: TsFnParameter[]) {
+  const params: Param[] = []
+  tsParams.forEach((p) => {
+    if (p.type === 'Identifier') {
+      params.push({
+        type: 'Parameter',
+        pat: p,
+        span: {} as Span,
+      })
+    }
+  })
+  return params
 }
 
 function genClassDeclaration(
@@ -743,11 +928,8 @@ function genClassDeclaration(
 ): ProxyClass {
   const cls = decl.identifier!.value
   const constructor: { params: Parameter[] } = { params: [] }
-  const methods: Record<string, { async?: boolean; params: Parameter[] }> = {}
-  const staticMethods: Record<
-    string,
-    { async?: boolean; params: Parameter[] }
-  > = {}
+  const methods: ProxyClass['options']['methods'] = {}
+  const staticMethods: ProxyClass['options']['staticMethods'] = {}
   const props: string[] = []
   const staticProps: string[] = []
   decl.body.forEach((item) => {
@@ -759,6 +941,20 @@ function genClassDeclaration(
       )
     } else if (item.type === 'ClassMethod') {
       if (item.key.type === 'Identifier') {
+        let returnOptions = {}
+        if (item.function.returnType) {
+          let returnInterface = parseReturnInterface(
+            types,
+            item.function.returnType.typeAnnotation
+          )
+          if (returnInterface) {
+            returnOptions = {
+              type: 'interface',
+              options: returnInterface,
+            }
+          }
+        }
+
         const name = item.key.value
         const value = {
           async:
@@ -768,6 +964,7 @@ function genClassDeclaration(
             item.function.params,
             resolveTypeReferenceName
           ),
+          returnOptions,
         }
         if (item.isStatic) {
           staticMethods[name + 'ByJs'] = value
@@ -861,6 +1058,16 @@ function genVariableDeclaration(
   }
 }
 
+// function createBindingIdentifier(name: string, typeAnnotation?: TsTypeAnnotation): BindingIdentifier {
+//   return {
+//     type: 'Identifier',
+//     value: name,
+//     optional: false,
+//     span: {} as Span,
+//     typeAnnotation
+//   }
+// }
+
 function createIdentifier(name: string): Identifier {
   return {
     type: 'Identifier',
@@ -879,6 +1086,7 @@ function createFunctionDeclaration(
     if (func.type === 'FunctionExpression') {
       params = func.params
     } else if (func.type === 'ArrowFunctionExpression') {
+      params = []
       func.params.forEach((p) => {
         if (p.type === 'Identifier') {
           params!.push({

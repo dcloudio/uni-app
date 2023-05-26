@@ -74,6 +74,9 @@ export const compilerOptions: CompilerOptions = {
 }
 
 const projectConfigFilename = 'project.swan.json'
+interface ConditionConfig {
+  miniprogram?: UniApp.PagesJson['condition']
+}
 
 export const options: UniMiniProgramPluginOptions = {
   cdn: 3,
@@ -106,6 +109,29 @@ export const options: UniMiniProgramPluginOptions = {
     filename: projectConfigFilename,
     config: ['project.swan.json'],
     source,
+    normalize(projectJson) {
+      const miniprogram = (projectJson.condition as ConditionConfig)
+        ?.miniprogram
+      if (
+        miniprogram &&
+        Array.isArray(miniprogram.list) &&
+        miniprogram.list.length
+      ) {
+        ;(projectJson['compilation-args'] as any).options =
+          miniprogram.list.map((item) => {
+            return {
+              id: item.id,
+              text: item.name,
+              extra: {
+                index: item.pathName,
+                query: item.query,
+              },
+            }
+          })
+        delete projectJson.condition
+      }
+      return projectJson
+    },
   },
   template: {
     /* eslint-disable no-restricted-syntax */

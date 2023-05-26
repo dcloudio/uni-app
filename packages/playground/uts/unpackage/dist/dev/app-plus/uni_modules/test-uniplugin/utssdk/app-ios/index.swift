@@ -92,13 +92,13 @@ public func testAsync() async -> UTSJSONObject {
     ]);
 }
 public var showToast1: ShowToast = {
-(_ msg) in
+(_ msg) -> Void in
 };
 public var showToast2: ShowToast = {
-(_ msg) in
+(_ msg) -> Void in
 };
 public var showToast3: ShowToast = {
-(_ msg) in
+(_ msg) -> Void in
 };
 @objc(UTSSDKModulesTestUniPluginGetBatteryInfoOptionsJSONObject)
 @objcMembers
@@ -129,9 +129,9 @@ public func getBatteryInfoByJs(_ options: GetBatteryInfoOptionsJSONObject) {
 }
 public func test1ByJs(_ callback: UTSCallback) -> String {
     return test1({
-        callback();
-    }
-    );
+    () -> Void in
+    callback();
+    });
 }
 @objc(UTSSDKModulesTestUniPluginTestByJs)
 @objcMembers

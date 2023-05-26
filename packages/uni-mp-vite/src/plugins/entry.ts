@@ -66,7 +66,13 @@ ${global}.createPage(MiniProgramPage)`,
         this.addWatchFile(filepath)
         addMiniProgramComponentJson(
           removeExt(normalizeMiniProgramFilename(filepath, inputDir)),
-          { component: true }
+          {
+            component: true,
+            styleIsolation:
+              process.env.UNI_PLATFORM === 'mp-baidu'
+                ? 'apply-shared'
+                : undefined,
+          }
         )
         return {
           code: `import Component from '${filepath}'

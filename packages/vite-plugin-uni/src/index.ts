@@ -10,6 +10,7 @@ import legacyPlugin from '@vitejs/plugin-legacy'
 
 import {
   CopyOptions,
+  InjectOptions,
   emptyDir,
   initModuleAlias,
   initPreContext,
@@ -94,7 +95,9 @@ export default function uniPlugin(
 
   const injects = parseUniExtApis()
   if (Object.keys(injects).length) {
-    plugins.push(uniViteInjectPlugin('uni:ext-api-inject', injects))
+    plugins.push(
+      uniViteInjectPlugin('uni:ext-api-inject', injects as InjectOptions)
+    )
   }
 
   // 仅限 h5

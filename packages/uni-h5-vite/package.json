@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-h5-vite",
-  "version": "3.0.0-3071120230427001",
+  "version": "3.0.0-alpha-3080320230523001",
   "description": "uni-h5-vite",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -19,8 +19,8 @@
   "license": "Apache-2.0",
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "dependencies": {
-    "@dcloudio/uni-cli-shared": "3.0.0-3071120230427001",
-    "@dcloudio/uni-shared": "3.0.0-3071120230427001",
+    "@dcloudio/uni-cli-shared": "3.0.0-alpha-3080320230523001",
+    "@dcloudio/uni-shared": "3.0.0-alpha-3080320230523001",
     "@rollup/pluginutils": "^4.2.0",
     "@vue/compiler-dom": "3.2.47",
     "@vue/compiler-sfc": "3.2.47",
@@ -38,7 +38,7 @@
     "@types/module-alias": "^2.0.1",
     "@types/resolve": "^1.20.2",
     "@vue/compiler-core": "3.2.47",
-    "esbuild": "^0.16.14",
+    "esbuild": "^0.17.5",
     "vue": "3.2.47"
   }
 }

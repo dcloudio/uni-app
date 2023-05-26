@@ -34,4 +34,17 @@ export default {
     'iOS手机在windows上使用标准基座真机运行无法使用uts插件，如需使用uts插件请提交云端打包自定义基座',
   'uts.ios.standard.tips':
     'iOS手机在标准基座真机运行暂不支持uts插件，如需调用uts插件请使用自定义基座',
+  'prompt.run.message': '运行方式：打开 {devtools}, 导入 {outputDir} 运行。',
+  'prompt.run.devtools.app': 'HBuilderX',
+  'prompt.run.devtools.mp-alipay': '支付宝小程序开发者工具',
+  'prompt.run.devtools.mp-baidu': '百度开发者工具',
+  'prompt.run.devtools.mp--kuaishou': '快手开发者工具',
+  'prompt.run.devtools.mp-lark': '飞书开发者工具',
+  'prompt.run.devtools.mp-qq': 'QQ小程序开发者工具',
+  'prompt.run.devtools.mp-toutiao': '字节跳动开发者工具',
+  'prompt.run.devtools.mp-weixin': '微信开发者工具',
+  'prompt.run.devtools.quickapp-webview':
+    '快应用联盟开发者工具 | 华为快应用开发者工具',
+  'prompt.run.devtools.quickapp-webview-huawei': '华为快应用开发者工具',
+  'prompt.run.devtools.quickapp-webview-union': '快应用联盟开发者工具',
 } as const

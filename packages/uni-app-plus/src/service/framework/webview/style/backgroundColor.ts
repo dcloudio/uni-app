@@ -4,7 +4,7 @@ export function initBackgroundColor(
   webviewStyle: PlusWebviewWebviewStyles,
   routeMeta: UniApp.PageRouteMeta
 ) {
-  const { backgroundColor } = routeMeta
+  let { backgroundColor } = routeMeta
   if (!backgroundColor) {
     return
   }
@@ -13,6 +13,8 @@ export function initBackgroundColor(
   }
   if (!webviewStyle.background) {
     webviewStyle.background = backgroundColor
+  } else {
+    backgroundColor = webviewStyle.background
   }
   if (!webviewStyle.backgroundColorTop) {
     webviewStyle.backgroundColorTop = backgroundColor

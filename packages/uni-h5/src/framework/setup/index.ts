@@ -157,7 +157,7 @@ export function setupApp(comp: any) {
       }
       const onLaunch = () => {
         injectAppHooks(instance)
-        const { onLaunch, onShow, onPageNotFound } = instance
+        const { onLaunch, onShow, onPageNotFound, onError } = instance
         const path = route.path.slice(1)
         const launchOptions = initLaunchOptions({
           path: path || __uniRoutes[0].meta.route,
@@ -176,6 +176,11 @@ export function setupApp(comp: any) {
             }
             onPageNotFound &&
               invokeArrayFns(onPageNotFound, pageNotFoundOptions)
+          }
+        }
+        if (onError) {
+          instance.appContext.config.errorHandler = (err) => {
+            invokeArrayFns(onError, err)
           }
         }
       }
@@ -254,11 +259,16 @@ function onThemeChange() {
   } catch (error) {}
 
   if (mediaQueryList) {
-    mediaQueryList.addEventListener('change', (e) => {
+    let callback = (e: MediaQueryListEvent) => {
       UniServiceJSBridge.emit(ON_THEME_CHANGE, {
         theme: e.matches ? 'dark' : 'light',
       })
-    })
+    }
+    if (mediaQueryList.addEventListener) {
+      mediaQueryList.addEventListener('change', callback)
+    } else {
+      mediaQueryList.addListener(callback)
+    }
   }
 }
 function invokeOnTabItemTap(

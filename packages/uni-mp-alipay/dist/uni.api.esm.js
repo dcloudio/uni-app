@@ -3,7 +3,7 @@ import { LINEFEED, Emitter, onCreateVueApp, invokeCreateVueAppHook } from '@dclo
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 
 function getBaseSystemInfo() {
-  return my.getSystemInfoSync()
+    return my.getSystemInfoSync();
 }
 
 function validateProtocolFail(name, msg) {

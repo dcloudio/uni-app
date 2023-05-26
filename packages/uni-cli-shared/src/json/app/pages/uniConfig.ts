@@ -71,6 +71,7 @@ export function normalizeAppUniConfig(
     ...parseEntryPagePath(pagesJson),
     networkTimeout: normalizeNetworkTimeout(manifestJson.networkTimeout),
     tabBar: pagesJson.tabBar,
+    fallbackLocale: manifestJson.fallbackLocale,
     locales: initLocales(path.join(process.env.UNI_INPUT_DIR, 'locale')),
     darkmode: platformConfig.darkmode || false,
     themeConfig: normalizeThemeConfigOnce(platformConfig),

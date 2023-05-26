@@ -6,9 +6,7 @@ import animation from './animation'
  * @param options
  * @returns
  */
-export const defineBuiltInComponent: typeof defineComponent = (
-  options: any
-) => {
+export const defineBuiltInComponent = ((options: any) => {
   // 标记为保留组件，这样框架其他地方可以据此来识别，比如 onLoad 等生命周期的注入会忽略系统保留组件
   options.__reserved = true
   // TODO 可能会补充特殊标记
@@ -18,13 +16,13 @@ export const defineBuiltInComponent: typeof defineComponent = (
     ;(mixins || (options.mixins = [])).push(animation)
   }
   return defineSystemComponent(options)
-}
+}) as typeof defineComponent
 /**
  * 系统组件（不对外，比如App,Page等）
  * @param options
  * @returns
  */
-export const defineSystemComponent: typeof defineComponent = (options: any) => {
+export const defineSystemComponent = ((options: any) => {
   // 标记 devtools 隐藏
   // options.devtools = { hide: true }
   // 标记为保留组件
@@ -33,7 +31,7 @@ export const defineSystemComponent: typeof defineComponent = (options: any) => {
     MODE: 3, // 标记为vue3
   }
   return defineComponent(options)
-}
+}) as typeof defineComponent
 /**
  * 暂未支持的组件
  * @param name

@@ -1,4 +1,10 @@
-import { isPlainObject, hasOwn, extend, capitalize } from '@vue/shared'
+import {
+  isPlainObject,
+  hasOwn,
+  extend,
+  capitalize,
+  isString,
+} from '@vue/shared'
 declare const uni: any
 declare const plus: any
 let callbackId = 1
@@ -23,9 +29,10 @@ export function normalizeArg(arg: unknown) {
 function initUTSInstanceMethod(
   async: boolean,
   opts: ProxyFunctionOptions,
-  instanceId: number
+  instanceId: number,
+  proxy: unknown
 ) {
-  return initProxyFunction(async, opts, instanceId)
+  return initProxyFunction(async, opts, instanceId, proxy)
 }
 
 interface Parameter {
@@ -38,6 +45,10 @@ interface ModuleOptions {
   moduleType: 'built-in' | ''
 }
 
+interface ProxyFunctionReturnOptions {
+  type: 'interface'
+  options: string
+}
 interface ProxyFunctionOptions extends ModuleOptions {
   /**
    * 是否是入口类
@@ -68,6 +79,28 @@ interface ProxyFunctionOptions extends ModuleOptions {
    */
   params: Parameter[]
   /**
+   * 返回值类型
+   */
+  return?: ProxyFunctionReturnOptions
+  /**
+   * 运行时提示的错误信息
+   */
+  errMsg?: string
+}
+
+interface ProxyInterfaceOptions extends ModuleOptions {
+  instanceId: number
+  package: string
+  class: string
+  props: string[]
+  methods: {
+    [name: string]: {
+      async?: boolean
+      params: Parameter[]
+      return?: ProxyFunctionReturnOptions
+    }
+  }
+  /**
    * 运行时提示的错误信息
    */
   errMsg?: string
@@ -85,12 +118,14 @@ interface ProxyClassOptions extends ModuleOptions {
     [name: string]: {
       async?: boolean
       params: Parameter[]
+      return?: ProxyFunctionReturnOptions
     }
   }
   staticMethods: {
     [name: string]: {
       async?: boolean
       params: Parameter[]
+      return?: ProxyFunctionReturnOptions
     }
   }
   /**
@@ -175,12 +210,47 @@ function getProxy(): {
   return proxy
 }
 
-function resolveSyncResult(res: InvokeSyncRes) {
+function resolveSyncResult(
+  res: InvokeSyncRes,
+  returnOptions?: ProxyFunctionReturnOptions,
+  instanceId?: number,
+  proxy?: unknown
+) {
+  // devtools 环境是字符串？
+  if (isString(res)) {
+    res = JSON.parse(res)
+  }
   if (__DEV__) {
-    console.log('uts.invokeSync.result', res)
+    console.log(
+      'uts.invokeSync.result',
+      res,
+      returnOptions,
+      instanceId,
+      typeof proxy
+    )
   }
   if (res.errMsg) {
     throw new Error(res.errMsg)
+  }
+  if (returnOptions) {
+    if (returnOptions.type === 'interface' && typeof res.params === 'number') {
+      // 返回了 0
+      if (!res.params) {
+        return null
+      }
+      if (res.params === instanceId && proxy) {
+        return proxy
+      }
+      if (interfaceDefines[returnOptions.options]) {
+        const ProxyClass = initUTSProxyClass(
+          extend(
+            { instanceId: res.params },
+            interfaceDefines[returnOptions.options]
+          )
+        )
+        return new ProxyClass()
+      }
+    }
   }
   return res.params
 }
@@ -207,9 +277,11 @@ function initProxyFunction(
     method,
     companion,
     params: methodParams,
+    return: returnOptions,
     errMsg,
   }: ProxyFunctionOptions,
-  instanceId: number
+  instanceId: number,
+  proxy?: unknown
 ) {
   const invokeCallback = ({
     id,
@@ -275,7 +347,12 @@ function initProxyFunction(
     if (__DEV__) {
       console.log('uts.invokeSync.args', invokeArgs)
     }
-    return resolveSyncResult(getProxy().invokeSync(invokeArgs, invokeCallback))
+    return resolveSyncResult(
+      getProxy().invokeSync(invokeArgs, invokeCallback),
+      returnOptions,
+      instanceId,
+      proxy
+    )
   }
 }
 
@@ -297,18 +374,29 @@ function parseClassMethodName(name: string, methods: Record<string, unknown>) {
   return name
 }
 
-export function initUTSProxyClass({
-  moduleName,
-  moduleType,
-  package: pkg,
-  class: cls,
-  constructor: { params: constructorParams },
-  methods,
-  props,
-  staticProps,
-  staticMethods,
-  errMsg,
-}: ProxyClassOptions): any {
+function isUndefined(value: unknown): boolean {
+  return typeof value === 'undefined'
+}
+
+function isProxyInterfaceOptions(
+  options: unknown
+): options is ProxyInterfaceOptions {
+  return !isUndefined((options as any).instanceId)
+}
+
+export function initUTSProxyClass(
+  options: ProxyClassOptions | ProxyInterfaceOptions
+): any {
+  const {
+    moduleName,
+    moduleType,
+    package: pkg,
+    class: cls,
+    methods,
+    props,
+    errMsg,
+  } = options
+
   const baseOptions = {
     moduleName,
     moduleType,
@@ -316,6 +404,20 @@ export function initUTSProxyClass({
     class: cls,
     errMsg,
   }
+
+  let instanceId: number | undefined
+  let constructorParams: Parameter[] = []
+  let staticMethods: ProxyClassOptions['staticMethods'] = {}
+  let staticProps: ProxyClassOptions['staticProps'] = []
+
+  if (isProxyInterfaceOptions(options)) {
+    instanceId = options.instanceId
+  } else {
+    constructorParams = options.constructor.params
+    staticMethods = options.staticMethods
+    staticProps = options.staticProps
+  }
+
   // iOS 需要为 ByJs 的 class 构造函数（如果包含JSONObject或UTSCallback类型）补充最后一个参数
   if (typeof plus !== 'undefined' && plus.os.name === 'iOS') {
     if (
@@ -333,38 +435,46 @@ export function initUTSProxyClass({
       }
       const target: Record<string, Function> = {}
       // 初始化实例 ID
-      const instanceId = initProxyFunction(
-        false,
-        extend({ name: 'constructor', params: constructorParams }, baseOptions),
-        0
-      ).apply(null, params) as number
+      if (isUndefined(instanceId)) {
+        // 未指定instanceId
+        instanceId = initProxyFunction(
+          false,
+          extend(
+            { name: 'constructor', params: constructorParams },
+            baseOptions
+          ),
+          0
+        ).apply(null, params) as number
+      }
       if (!instanceId) {
         throw new Error(`new ${cls} is failed`)
       }
-      return new Proxy(this, {
+      const proxy = new Proxy(this, {
         get(_, name) {
           if (!target[name as string]) {
             //实例方法
             name = parseClassMethodName(name as string, methods)
             if (hasOwn(methods, name)) {
-              const { async, params } = methods[name]
+              const { async, params, return: returnOptions } = methods[name]
               target[name] = initUTSInstanceMethod(
                 !!async,
                 extend(
                   {
                     name,
                     params,
+                    return: returnOptions,
                   },
                   baseOptions
                 ),
-                instanceId
+                instanceId!,
+                proxy
               )
             } else if (props.includes(name as string)) {
               // 实例属性
               return invokePropGetter({
                 moduleName,
                 moduleType,
-                id: instanceId,
+                id: instanceId!,
                 name: name as string,
                 errMsg,
               })
@@ -373,6 +483,7 @@ export function initUTSProxyClass({
           return target[name as string]
         },
       })
+      return proxy
     }
   }
   const staticMethodCache: Record<string, Function> = {}
@@ -381,11 +492,14 @@ export function initUTSProxyClass({
       name = parseClassMethodName(name as string, staticMethods)
       if (hasOwn(staticMethods, name)) {
         if (!staticMethodCache[name as string]) {
-          const { async, params } = staticMethods[name]
+          const { async, params, return: returnOptions } = staticMethods[name]
           // 静态方法
           staticMethodCache[name] = initUTSStaticMethod(
             !!async,
-            extend({ name, companion: true, params }, baseOptions)
+            extend(
+              { name, companion: true, params, return: returnOptions },
+              baseOptions
+            )
           )
         }
         return staticMethodCache[name]
@@ -442,6 +556,11 @@ export function initUTSClassName(
     )
   }
   return ''
+}
+
+const interfaceDefines: Record<string, ProxyClassOptions> = {}
+export function registerUTSInterface(name: string, define: ProxyClassOptions) {
+  interfaceDefines[name] = define
 }
 
 const pluginDefines: Record<string, Record<string, unknown>> = {}

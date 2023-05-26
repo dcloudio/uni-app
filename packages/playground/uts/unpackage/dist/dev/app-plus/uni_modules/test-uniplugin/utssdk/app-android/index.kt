@@ -92,7 +92,7 @@ fun registerByJs(name: String, callback: UTSCallback) {
 }
 fun offMemoryWarningByJs(callback: UTSCallback? = null) {
     return offMemoryWarning(fun(level: Number){
-        callback(level);
+        callback?.invoke(level);
     }
     );
 }

@@ -3,6 +3,7 @@
 var initMiniProgramPlugin = require('@dcloudio/uni-mp-vite');
 var shared = require('@vue/shared');
 var path = require('path');
+var fs = require('fs');
 var uniCliShared = require('@dcloudio/uni-cli-shared');
 var compilerCore = require('@vue/compiler-core');
 
@@ -10,11 +11,14 @@ function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
 
 var initMiniProgramPlugin__default = /*#__PURE__*/_interopDefault(initMiniProgramPlugin);
 var path__default = /*#__PURE__*/_interopDefault(path);
+var fs__default = /*#__PURE__*/_interopDefault(fs);
 
+var appid = "touristappid";
 var component2 = true;
 var enableAppxNg = true;
 var enableNodeModuleBabelTransform = true;
 var source = {
+	appid: appid,
 	component2: component2,
 	enableAppxNg: enableAppxNg,
 	enableNodeModuleBabelTransform: enableNodeModuleBabelTransform
@@ -243,6 +247,29 @@ const options = {
         filename: projectConfigFilename,
         config: ['mini.project.json', 'project.my.json'],
         source,
+        normalize(projectJson) {
+            var _a;
+            const miniprogram = (_a = projectJson.condition) === null || _a === void 0 ? void 0 : _a.miniprogram;
+            if (miniprogram && shared.isArray(miniprogram.list) && miniprogram.list.length) {
+                const compileModeJson = {
+                    modes: [],
+                };
+                compileModeJson.modes = miniprogram.list.map((item) => {
+                    return {
+                        title: item.name,
+                        page: item.pathName,
+                        pageQuery: item.query,
+                    };
+                });
+                const miniIdeDir = path__default.default.join(process.env.UNI_OUTPUT_DIR, '.mini-ide');
+                if (!fs__default.default.existsSync(miniIdeDir)) {
+                    fs__default.default.mkdirSync(miniIdeDir, { recursive: true });
+                    fs__default.default.writeFileSync(path__default.default.join(miniIdeDir, 'compileMode.json'), JSON.stringify(compileModeJson, null, 2));
+                }
+                delete projectJson.condition;
+            }
+            return projectJson;
+        },
     },
     template: Object.assign(Object.assign({}, miniProgram), { customElements, filter: {
             extname: '.sjs',

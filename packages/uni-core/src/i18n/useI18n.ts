@@ -45,7 +45,7 @@ function resolveJsonObj(
       ) {
         return filterJsonObj
       }
-      const value = jsonObj[names[0]]
+      const value = (jsonObj as Record<string, any>)[names[0]]
       if (_isI18nStr(value)) {
         return jsonObj
       }
@@ -92,7 +92,9 @@ export function useI18n() {
       if (__NODE_JS__) {
         locale = getEnvLocale() as BuiltInLocale
       } else {
-        locale = ((window.localStorage && localStorage[UNI_STORAGE_LOCALE]) ||
+        locale = ((navigator.cookieEnabled &&
+          window.localStorage &&
+          localStorage[UNI_STORAGE_LOCALE]) ||
           __uniConfig.locale ||
           navigator.language) as BuiltInLocale
       }

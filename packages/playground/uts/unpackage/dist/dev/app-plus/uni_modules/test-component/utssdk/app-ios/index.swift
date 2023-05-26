@@ -88,7 +88,7 @@ public class AnimationViewComponent : UTSComponent<UIView> {
     }
     public override func __$$init() {
         self.__$$watch("path", {
-        (__newValue, __oldValue) in
+        (__newValue, __oldValue) -> Void in
         var newValue = UTSiOS.convertString(__newValue);
         var oldValue = UTSiOS.convertString(__oldValue);
         self.path = newValue;
@@ -97,7 +97,7 @@ public class AnimationViewComponent : UTSComponent<UIView> {
         }
         });
         self.__$$watch("loop", {
-        (__newValue, __oldValue) in
+        (__newValue, __oldValue) -> Void in
         var newValue = UTSiOS.convertBool(__newValue);
         var oldValue = UTSiOS.convertBool(__oldValue);
         self.loop = newValue;
@@ -106,13 +106,13 @@ public class AnimationViewComponent : UTSComponent<UIView> {
         }
         });
         self.__$$watch("autoplay", {
-        (__newValue, __oldValue) in
+        (__newValue, __oldValue) -> Void in
         var newValue = UTSiOS.convertBool(__newValue);
         var oldValue = UTSiOS.convertBool(__oldValue);
         self.autoplay = newValue;
         });
         self.__$$watch("action", {
-        (__newValue, __oldValue) in
+        (__newValue, __oldValue) -> Void in
         var newValue = UTSiOS.convertString(__newValue);
         var oldValue = UTSiOS.convertString(__oldValue);
         var action = newValue;
@@ -131,7 +131,7 @@ public class AnimationViewComponent : UTSComponent<UIView> {
         }
         });
         self.__$$watch("hidden", {
-        (__newValue, __oldValue) in
+        (__newValue, __oldValue) -> Void in
         var newValue = UTSiOS.convertBool(__newValue);
         var oldValue = UTSiOS.convertBool(__oldValue);
         self.hidden = newValue;
