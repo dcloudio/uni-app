@@ -24,7 +24,7 @@ export const transformBind: DirectiveTransform = (dir, _node, context) => {
     arg.children.unshift(`(`)
     arg.children.push(`) || ""`)
   } else if (!arg.isStatic) {
-    arg.content = `${arg.content} || ""`
+    arg.content = `${arg.content} !== null ? ${arg.content} : ""`
   }
 
   // .sync is replaced by v-model:arg

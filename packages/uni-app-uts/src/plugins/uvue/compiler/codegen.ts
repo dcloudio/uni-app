@@ -382,7 +382,9 @@ function genExpressionAsPropertyKey(
     const text = JSON.stringify(node.content)
     push(text, node)
   } else {
-    push(`[${node.content}]`, node)
+    // dynamic arg genObjectExpression have added []
+    // push(`[${node.content}]`, node)
+    push(`${node.content}`, node)
   }
 }
 
