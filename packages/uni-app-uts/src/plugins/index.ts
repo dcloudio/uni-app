@@ -1,7 +1,10 @@
 import path from 'path'
 import fs from 'fs-extra'
 import {
+  UniViteCopyPluginOptions,
+  UniVitePlugin,
   emptyDir,
+  initI18nOptions,
   normalizeNodeModules,
   normalizePath,
   parseManifestJsonOnce,
@@ -10,6 +13,7 @@ import {
   resolveUTSCompiler,
   utsPlugins,
 } from '@dcloudio/uni-cli-shared'
+import { compileI18nJsonStr } from '@dcloudio/uni-i18n'
 import type { Plugin } from 'vite'
 import { parseImports, uvueOutDir } from './utils'
 
@@ -41,7 +45,7 @@ const REMOVED_PLUGINS = [
   'vite:reporter',
 ]
 
-export function uniAppUTSPlugin(): Plugin {
+export function uniAppUTSPlugin(): UniVitePlugin {
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
   const mainUTS = resolveMainPathOnce(inputDir)
@@ -58,6 +62,7 @@ export function uniAppUTSPlugin(): Plugin {
   return {
     name: 'uni:app-uts',
     apply: 'build',
+    uni: createUniOptions(),
     config() {
       return {
         base: '/', // 强制 base
@@ -172,4 +177,40 @@ export function main(app: IApp) {
     (createApp()['app'] as VueApp).mount(app);
 }
 `
+}
+
+function createUniOptions(): UniVitePlugin['uni'] {
+  return {
+    copyOptions() {
+      const platform = process.env.UNI_PLATFORM
+      const inputDir = process.env.UNI_INPUT_DIR
+      const outputDir = process.env.UNI_OUTPUT_DIR
+      const targets: UniViteCopyPluginOptions['targets'] = []
+      // 自动化测试时，不启用隐私政策
+      if (!process.env.UNI_AUTOMATOR_WS_ENDPOINT) {
+        targets.push({
+          src: 'androidPrivacy.json',
+          dest: outputDir,
+          transform(source) {
+            const options = initI18nOptions(platform, inputDir, false, true)
+            if (!options) {
+              return
+            }
+            return compileI18nJsonStr(source.toString(), options)
+          },
+        })
+        const debugFilename = '__nvue_debug__'
+        if (fs.existsSync(path.resolve(inputDir, debugFilename))) {
+          targets.push({
+            src: debugFilename,
+            dest: outputDir,
+          })
+        }
+      }
+      return {
+        assets: ['hybrid/html/**/*', 'uni_modules/*/hybrid/html/**/*'],
+        targets,
+      }
+    },
+  }
 }

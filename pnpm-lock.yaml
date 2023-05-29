@@ -366,6 +366,9 @@ importers:
       '@dcloudio/uni-cli-shared':
         specifier: 3.0.0-alpha-3080220230428002
         version: link:../uni-cli-shared
+      '@dcloudio/uni-i18n':
+        specifier: 3.0.0-alpha-3080220230428002
+        version: link:../uni-i18n
       '@dcloudio/uni-nvue-styler':
         specifier: 3.0.0-alpha-3080220230428002
         version: link:../uni-nvue-styler
