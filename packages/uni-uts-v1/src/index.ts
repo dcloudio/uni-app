@@ -41,7 +41,6 @@ import {
   initCheckOptionsEnv,
   restoreDex,
   restoreSourceMap,
-  storeDex,
   storeSourceMap,
 } from './manifest'
 import { cacheTips } from './manifest/utils'
@@ -257,7 +256,12 @@ export async function compile(
         // console.log('uts插件[' + pkg.id + ']缓存检查耗时：', Date.now() - start)
         if (!res.expired) {
           if (utsPlatform === 'app-android') {
-            restoreDex(pluginRelativeDir, outputDir, pkg.is_uni_modules)
+            restoreDex(
+              pluginRelativeDir,
+              cacheDir,
+              outputDir,
+              pkg.is_uni_modules
+            )
           }
 
           // 还原 sourcemap
@@ -325,6 +329,7 @@ export async function compile(
           isPlugin,
           cacheDir,
           pluginRelativeDir,
+          is_uni_modules: pkg.is_uni_modules,
         })
         if (res) {
           if (isArray(res.deps) && res.deps.length) {
@@ -391,14 +396,6 @@ export async function compile(
           }
           if (res.changed && res.changed.length) {
             files.push(...res.changed)
-            // 需要缓存 dex 文件
-            if (cacheDir && res.type === 'kotlin') {
-              res.changed.forEach((file) => {
-                if (file.endsWith('classes.dex')) {
-                  storeDex(join(outputDir, file), pluginRelativeDir, outputDir)
-                }
-              })
-            }
           } else {
             if (res.type === 'kotlin') {
               errMsg = compileErrMsg(pkg.id)

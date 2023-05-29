@@ -48,6 +48,7 @@ export type UTSOutputOptions = {
     uniExtApiPackage?: string
     uvueClassNamePrefix?: string
     uvueClassNameOnlyBasename?: boolean
+    disableReactiveObject?: boolean
   }
 }
 export interface UTSOptions {

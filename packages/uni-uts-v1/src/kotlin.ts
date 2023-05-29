@@ -26,6 +26,7 @@ import {
 import { Module } from '../types/types'
 import { parseUTSSyntaxError } from './stacktrace'
 import { APP_PLATFORM } from './manifest/utils'
+import { restoreDex } from './manifest'
 
 export interface KotlinCompilerServer extends CompilerServer {
   getKotlincHome(): string
@@ -106,11 +107,18 @@ interface RunKotlinDevOptions {
   isPlugin: boolean
   cacheDir: string
   pluginRelativeDir: string
+  is_uni_modules: boolean
 }
 
 export async function runKotlinDev(
   filename: string,
-  { components, isPlugin, cacheDir, pluginRelativeDir }: RunKotlinDevOptions
+  {
+    components,
+    isPlugin,
+    cacheDir,
+    pluginRelativeDir,
+    is_uni_modules,
+  }: RunKotlinDevOptions
 ): Promise<RunKotlinDevResult | undefined> {
   // 文件有可能是 app-ios 里边的，因为编译到 android 时，为了保证不报错，可能会去读取 ios 下的 uts
   if (filename.includes('app-ios')) {
@@ -181,6 +189,8 @@ export async function runKotlinDev(
           .concat(resolveLibs(filename))
           .concat(deps)
           .concat(resDeps)
+        // .concat(getUniModulesCacheJars(cacheDir))
+        // .concat(getUniModulesJars(outputDir))
       ),
       d8: resolveD8Args(jarFile),
       sourceRoot: inputDir,
@@ -197,7 +207,15 @@ export async function runKotlinDev(
       } catch (e) {}
       const dexFile = resolveDexFile(jarFile)
       if (fs.existsSync(dexFile)) {
-        result.changed = [normalizePath(path.relative(outputDir, dexFile))]
+        const newDexFile = restoreDex(
+          pluginRelativeDir,
+          cacheDir,
+          outputDir,
+          is_uni_modules
+        )
+        result.changed = [
+          normalizePath(path.relative(outputDir, newDexFile || dexFile)),
+        ]
       }
     }
     // else {
@@ -489,4 +507,21 @@ export function checkAndroidVersionTips(
       }
     } catch (e) {}
   }
+}
+
+export function getUniModulesCacheJars(cacheDir: string) {
+  if (cacheDir) {
+    return sync('app-android/uts/uni_modules/*/index.jar', {
+      cwd: cacheDir,
+      absolute: true,
+    })
+  }
+  return []
+}
+
+export function getUniModulesJars(outputDir: string) {
+  return sync('*/utssdk/app-android/index.jar', {
+    cwd: path.resolve(outputDir, 'uni_modules'),
+    absolute: true,
+  })
 }

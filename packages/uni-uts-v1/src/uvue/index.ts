@@ -1,9 +1,10 @@
 import path from 'path'
 import fs from 'fs-extra'
-import { sync } from 'fast-glob'
 import {
   KotlinCompilerServer,
   RunKotlinDevResult,
+  getUniModulesCacheJars,
+  getUniModulesJars,
   resolveD8Args,
   resolveDexFile,
   resolveJarPath,
@@ -159,21 +160,4 @@ async function runKotlinBuild(options: CompileAppOptions, result: UTSResult) {
       '.uniappx/android/src/' + path.basename(result.filename!)
     )
   )
-}
-
-function getUniModulesCacheJars(cacheDir: string) {
-  if (cacheDir) {
-    return sync('app-android/uts/uni_modules/*/index.jar', {
-      cwd: cacheDir,
-      absolute: true,
-    })
-  }
-  return []
-}
-
-function getUniModulesJars(outputDir: string) {
-  return sync('*/utssdk/app-android/index.jar', {
-    cwd: path.resolve(outputDir, 'uni_modules'),
-    absolute: true,
-  })
 }
