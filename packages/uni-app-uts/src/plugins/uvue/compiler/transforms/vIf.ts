@@ -15,6 +15,7 @@ import {
   MemoExpression,
   NodeTypes,
   SimpleExpressionNode,
+  TextNode,
   createCallExpression,
   createConditionalExpression,
   createObjectExpression,
@@ -129,8 +130,11 @@ export function processIf(
 
       if (
         sibling &&
-        sibling.type === NodeTypes.TEXT &&
-        !sibling.content.trim().length
+        ((sibling.type === NodeTypes.TEXT && !sibling.content.trim().length) ||
+          // handle tag text but type = NodeTypes.ELEMENT
+          (sibling.type === NodeTypes.ELEMENT &&
+            sibling.tag === 'text' &&
+            !(sibling.children[0] as TextNode).content.trim().length))
       ) {
         context.removeNode(sibling)
         continue
