@@ -2401,7 +2401,7 @@ var acorn = require('acorn'); // $flow-disable-line
 var walk = require('acorn/dist/walk'); // $flow-disable-line
 var escodegen = require('escodegen');
 
-var functionCallRE = /(\w+)\((.*)\)/;
+var functionCallRE = /^\s*([A-Za-z_$0-9\['\."\]]+)*\s*\(\s*(([A-Za-z_$0-9\['\."\]]+)?(\s*,\s*([A-Za-z_$0-9\['\."\]]+))*)\s*\)$/;
 
 function nodeToBinding (node) {
   switch (node.type) {
@@ -2488,10 +2488,9 @@ function genWeexHandler (handler, options) {
   var code = handler.value;
   var isMethodPath = simplePathRE.test(code);
   var isFunctionExpression = fnExpRE.test(code);
-  var isFunctionCall = functionCallRE.test(code);
-
   // TODO: binding this to recyclable event handlers
   if (options.recyclable) {
+    var isFunctionCall = functionCallRE.test(code);
     if (isMethodPath) {
       return ("function($event){this." + code + "()}")
     }
