@@ -860,6 +860,11 @@ describe('mp:compiler-extra', () => {
       '<button type="primary" data-event-opts="{{[[\'tap\',[[\'e0\',[\'$event\']]]]]}}" bindtap="__e">click me</button>',
       'with(this){if(!_isMounted){e0=function($event){click1();obj.click2()}}}'
     )
+    assertCodegen(
+      '<button type="primary" @click="()=>test(encodeURIComponent(JSON.stringify(arr)))">click me</button>',
+      '<button type="primary" data-event-opts="{{[[\'tap\',[[\'e0\',[\'$event\']]]]]}}" bindtap="__e">click me</button>',
+      'with(this){if(!_isMounted){e0=()=>test(encodeURIComponent(JSON.stringify(arr)))}}'
+    )
   })
   it('generate bool attr', () => {
     assertCodegen(
