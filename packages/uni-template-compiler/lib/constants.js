@@ -43,7 +43,20 @@ const ALLOWED_GLOBAL_OBJECT = [
   'Set',
   'JSON',
   'Intl',
-  'console'
+  'console',
+  'Infinity',
+  'undefined',
+  'NaN',
+  'isFinite',
+  'isNaN',
+  'parseFloat',
+  'parseInt',
+  'decodeURI',
+  'decodeURIComponent',
+  'encodeURI',
+  'encodeURIComponent',
+  'require',
+  'arguments'
 ]
 
 module.exports = {

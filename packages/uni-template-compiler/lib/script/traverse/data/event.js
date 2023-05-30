@@ -8,7 +8,8 @@ const {
   ATTR_DATA_EVENT_OPTS,
   ATTR_DATA_EVENT_PARAMS,
   INTERNAL_SET_SYNC,
-  INTERNAL_SET_MODEL
+  INTERNAL_SET_MODEL,
+  ALLOWED_GLOBAL_OBJECT
 } = require('../../../constants')
 
 const {
@@ -402,7 +403,7 @@ function parseEvent (keyPath, valuePath, state, isComponent, isNativeOn = false,
               const scope = path.scope
               const node = path.node
               const name = node.name
-              if (isValuePath(path) && scope && !scope.hasOwnBinding(name) && scope.hasBinding(name) && !params.includes(name) && name !== 'undefined') {
+              if (!ALLOWED_GLOBAL_OBJECT.includes(name) && isValuePath(path) && scope && !scope.hasOwnBinding(name) && scope.hasBinding(name) && !params.includes(name) && name !== 'undefined') {
                 params.push(name)
               }
             }
