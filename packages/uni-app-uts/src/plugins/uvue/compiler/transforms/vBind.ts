@@ -4,14 +4,11 @@ import {
   createSimpleExpression,
   ExpressionNode,
   NodeTypes,
-  SimpleExpressionNode,
-  ConstantTypes,
 } from '@vue/compiler-core'
 import { createCompilerError, ErrorCodes } from '../errors'
-import { camelize, isString } from '@vue/shared'
+import { camelize } from '@vue/shared'
 import { CAMELIZE } from '@vue/compiler-core'
-
-const objectExp = /\{.*\}/g
+import { objectExp, object2Map } from '../utils'
 
 // v-bind without arg is handled directly in ./transformElements.ts due to it affecting
 // codegen for the entire props object. This transform here is only for v-bind
@@ -88,41 +85,4 @@ const injectPrefix = (arg: ExpressionNode, prefix: string) => {
     arg.children.unshift(`'${prefix}' + (`)
     arg.children.push(`)`)
   }
-}
-
-function object2Map(exp: ExpressionNode | string) {
-  const content = isString(exp) ? exp : (exp as SimpleExpressionNode).content
-  const matched = content.match(objectExp)![0]
-  const keyValues = matched.replace(/\{|\}/g, '').split(',')
-  let mapConstructor = 'new Map<string, any | null>(['
-
-  keyValues.forEach((keyValue: string, index: number) => {
-    const colonIndex = keyValue.indexOf(':')
-    const key = needAddQuotes(exp, keyValue)
-      ? `'${keyValue.substring(0, colonIndex)}'`
-      : keyValue.substring(0, colonIndex)
-    const value = keyValue.substring(colonIndex + 1)
-    if (key && value) {
-      mapConstructor += `[${key},${value}]`
-      if (index < keyValues.length - 1) {
-        mapConstructor += ','
-      }
-    }
-  })
-
-  mapConstructor += '])'
-
-  return content.replace(matched, mapConstructor)
-}
-
-function needAddQuotes(
-  exp: ExpressionNode | string,
-  keyValue: string
-): boolean {
-  return (
-    !isString(exp) &&
-    (exp as SimpleExpressionNode).constType === ConstantTypes.CAN_STRINGIFY &&
-    !keyValue.startsWith("'") &&
-    !keyValue.startsWith('"')
-  )
 }

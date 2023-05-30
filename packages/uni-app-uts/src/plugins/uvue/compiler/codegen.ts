@@ -41,7 +41,9 @@ import {
   RENDER_LIST,
   RESOLVE_COMPONENT,
   RESOLVE_DIRECTIVE,
+  TO_HANDLERS,
 } from './runtimeHelpers'
+import { object2Map } from './utils'
 
 type CodegenNode = TemplateChildNode | JSChildNode | SSRCodegenNode
 
@@ -447,15 +449,61 @@ function genCallExpression(node: CallExpression, context: CodegenContext) {
   push(callee + `(`, node)
 
   if (callee === helper(RENDER_LIST)) {
-    node.arguments.forEach((item: any) => {
-      if (item.type === 18) {
-        item.returnType = 'VNode'
-      }
-    })
+    genRenderList(node)
+  }
+  if (callee === helper(TO_HANDLERS)) {
+    genToHandlers(node, push)
   }
 
   genNodeList(node.arguments, context)
   push(`)`)
+}
+
+function genRenderList(node: CallExpression) {
+  node.arguments.forEach((argument: any) => {
+    if (argument.type === NodeTypes.JS_FUNCTION_EXPRESSION) {
+      argument.returnType = 'VNode'
+    }
+  })
+}
+
+function genToHandlers(
+  node: CallExpression,
+  push: (code: string, node?: CodegenNode) => void
+) {
+  push(`new Map<string, any | null>([`)
+  const argument = node.arguments[0]
+  if (
+    (argument as CompoundExpressionNode)?.type === NodeTypes.COMPOUND_EXPRESSION
+  ) {
+    ;(argument as CompoundExpressionNode).children.forEach(
+      (child: any, index: number) => {
+        if (isString(child)) {
+          if (
+            index ===
+            (argument as CompoundExpressionNode).children.length - 1
+          ) {
+            ;(argument as CompoundExpressionNode).children[index] =
+              child.replace('}', '])')
+          } else {
+            ;(argument as CompoundExpressionNode).children[index] = child
+              .replace('{', '["')
+              .replace(',', ',["')
+              .replace(':', '",')
+              .replaceAll(' ', '')
+          }
+        } else {
+          child.content = child.content += ']'
+        }
+      }
+    )
+  }
+  if (
+    (argument as SimpleExpressionNode)?.type === NodeTypes.SIMPLE_EXPRESSION
+  ) {
+    ;(argument as SimpleExpressionNode).content =
+      object2Map((argument as SimpleExpressionNode).content, false) + '])'
+  }
 }
 
 function genObjectExpression(node: ObjectExpression, context: CodegenContext) {

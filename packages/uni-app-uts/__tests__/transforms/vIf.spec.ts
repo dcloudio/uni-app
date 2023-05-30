@@ -189,7 +189,7 @@ describe('compiler:v-if', () => {
     assert(
       `<view v-on="{ click: clickEvent }" v-if="true">w/ v-if</view>`,
       `isTrue(true)
-  ? createElementVNode(\"view\", mergeProps(new Map<string, any | null>([[\"key\", 0]]), toHandlers({ click: _ctx.clickEvent }, true)), [
+  ? createElementVNode(\"view\", mergeProps(new Map<string, any | null>([[\"key\", 0]]), toHandlers(new Map<string, any | null>([["click",_ctx.clickEvent] ]), true)), [
       createElementVNode(\"text\", null, \"w/ v-if\")
     ], 16 /* FULL_PROPS */)
   : createCommentVNode(\"v-if\", true)`

@@ -114,4 +114,22 @@ _ctx.bar()
 ]), null, 8 /* PROPS */, ["onClick"])`
     )
   })
+  test('object syntax', () => {
+    assert(
+      `<text v-on="{mousedown: doThis, mouseup: doThat}"/>`,
+      `createElementVNode("text", toHandlers(new Map<string, any | null>([["mousedown",_ctx.doThis],["mouseup",_ctx.doThat]]), true), null, 16 /* FULL_PROPS */)`
+    )
+  })
+  test('empty object syntax', () => {
+    assert(
+      `<text v-on="{ }"/>`,
+      `createElementVNode("text", toHandlers(new Map<string, any | null>([]), true), null, 16 /* FULL_PROPS */)`
+    )
+  })
+  test('simple object syntax', () => {
+    assert(
+      `<text v-on="{'a':'aaa'}"/>`,
+      `createElementVNode("text", toHandlers(new Map<string, any | null>([['a','aaa']]), true), null, 16 /* FULL_PROPS */)`
+    )
+  })
 })
