@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-template-compiler",
-  "version": "2.0.2-3080320230526001",
+  "version": "2.0.2-3080420230530001",
   "description": "uni-template-compiler",
   "main": "lib/index.js",
   "repository": {
