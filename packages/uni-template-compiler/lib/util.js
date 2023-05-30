@@ -166,7 +166,7 @@ function replaceMemberExpression (stringLiteral, state) {
         code = newCode
       }
     })
-    const buildRequire = babelTemplate(code)
+    const buildRequire = babelTemplate(code, { syntacticPlaceholders: true })
     if (Object.keys(options).length) {
       const ast = buildRequire(options)
       return ast.expression
