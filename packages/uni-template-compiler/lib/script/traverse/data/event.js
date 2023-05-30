@@ -427,7 +427,7 @@ function parseEvent (keyPath, valuePath, state, isComponent, isNativeOn = false,
             const paramsUid = funcPath.scope.generateDeclaredUidIdentifier().name
             const dataset = ATTR_DATA_EVENT_PARAMS.substring(5)
             const code = `var ${datasetUid}=${argumentsName}[${argumentsName}.length-1].currentTarget.dataset,${paramsUid}=${datasetUid}.${dataset.replace(/-([a-z])/, (_, str) => str.toUpperCase())}||${datasetUid}['${dataset}'],${params.map(item => `${item}=${paramsUid}.${item}`).join(',')}`
-            funcPath.node.body.body.unshift(template(code)())
+            funcPath.node.body.body.unshift(template(code, { syntacticPlaceholders: true })())
           }
           methods.push(addEventExpressionStatement(funcPath, state, isComponent, isNativeOn))
         }
