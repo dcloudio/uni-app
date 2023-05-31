@@ -265,6 +265,8 @@ export declare function isAppNativeTag(tag: string): boolean;
 
 export declare function isAppNVueNativeTag(tag: string): boolean;
 
+export declare function isAppUVueNativeTag(tag: string): boolean;
+
 export declare function isBuiltInComponent(tag: string): boolean;
 
 export declare function isComponentInternalInstance(vm: unknown): vm is ComponentInternalInstance;
@@ -864,6 +866,8 @@ export declare class UniTextNode extends UniBaseNode {
 }
 
 export declare function updateElementStyle(element: HTMLElement, styles: Partial<CSSStyleDeclaration>): void;
+
+export declare const UVUE_BUILT_IN_TAGS: string[];
 
 declare interface Vue_2 {
     createApp: typeof createApp;

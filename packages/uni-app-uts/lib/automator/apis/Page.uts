@@ -1,0 +1,31 @@
+// @ts-ignore
+import { JSONObject } from 'com.alibaba.fastjson'
+import { getData, setData, getPageVm } from './util.uts'
+
+export type getDataParams = {
+  pageId: number
+  path: string
+  callback: (res: any) => void
+}
+export const pageGetData = (params: getDataParams): void => {
+  const callback = params.callback
+  const result = getData(getPageVm(params.pageId)!, params.path)
+  callback(result)
+}
+
+export type setDataParams = {
+  pageId: number
+  data: JSONObject
+  callback: (res?: any | null) => void
+}
+export const pageSetData = (params: setDataParams): void => {
+  const pageId = params.pageId
+  const callback = params.callback
+  const page = getPageVm(pageId)
+  if (page !== null) {
+    setData(page, params.data)
+    callback(null)
+  } else {
+    callback({ errMsg: `setData:fail, Page:${pageId} is not found.` })
+  }
+}

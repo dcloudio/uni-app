@@ -1,4 +1,4 @@
-import { CompilerError } from '@vue/compiler-core'
+import { BindingMetadata, CompilerError } from '@vue/compiler-core'
 import { RawSourceMap } from 'source-map'
 import { DirectiveTransform, NodeTransform } from './transform'
 
@@ -9,6 +9,11 @@ interface SharedTransformCodegenOptions {
    * @default false
    */
   prefixIdentifiers?: boolean
+  /**
+   * Optional binding metadata analyzed from script - used to optimize
+   * binding access when `prefixIdentifiers` is enabled.
+   */
+  bindingMetadata?: BindingMetadata
   /**
    * Filename for source map generation.
    * Also used for self-recursive reference in templates
@@ -56,6 +61,16 @@ export interface TransformOptions
    * Used by some transforms that expects only native elements
    */
   isCustomElement?: (tag: string) => boolean | void
+  /**
+   * SFC scoped styles ID
+   */
+  scopeId?: string | null
+  /**
+   * Indicates this SFC template has used :slotted in its styles
+   * Defaults to `true` for backwards compatibility - SFC tooling should set it
+   * to `false` if no `:slotted` usage is detected in `<style>`
+   */
+  slotted?: boolean
 }
 
 export type CompilerOptions = TransformOptions & CodegenOptions

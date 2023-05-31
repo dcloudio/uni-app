@@ -37,9 +37,10 @@ import type Stylus from 'stylus'
 import type Less from 'less'
 import type { Alias } from 'types/alias'
 import { preCss, preNVueCss } from '../../../../preprocess'
+import { filterPrefersColorScheme } from '../../../../postcss/plugins/uniapp'
 import { emptyCssComments } from '../cleanString'
 import { isArray, isFunction, isString } from '@vue/shared'
-import { PAGES_JSON_JS } from '../../../../constants'
+import { PAGES_JSON_JS, PAGES_JSON_UTS } from '../../../../constants'
 // const debug = createDebugger('vite:css')
 
 export interface CSSOptions {
@@ -208,7 +209,7 @@ function findCssModuleIds(
   const moduleInfo = this.getModuleInfo(moduleId)
   if (moduleInfo) {
     moduleInfo.importedIds.forEach((id) => {
-      if (id.includes(PAGES_JSON_JS)) {
+      if (id.includes(PAGES_JSON_JS) || id.includes(PAGES_JSON_UTS)) {
         // 查询main.js时，需要忽略pages.json.js，否则会把所有页面样式加进来
         return
       }
@@ -229,10 +230,12 @@ export function cssPostPlugin(
   config: ResolvedConfig,
   {
     platform,
+    isJsCode,
     chunkCssFilename,
     chunkCssCode,
   }: {
     platform: UniApp.PLATFORM
+    isJsCode?: boolean
     chunkCssFilename: (id: string) => string | void
     chunkCssCode: (
       filename: string,
@@ -271,7 +274,10 @@ export function cssPostPlugin(
       if (id) {
         const filename = chunkCssFilename(id)
         if (filename) {
-          if (platform === 'app' && filename === 'app.css') {
+          if (
+            platform === 'app' &&
+            (filename === 'app.css' || filename === 'App.vue.style.uts')
+          ) {
             // 获取 unocss 的样式文件信息
             const ids = Object.keys(chunk.modules).filter(
               (id) =>
@@ -336,6 +342,9 @@ export function cssPostPlugin(
             )
           )
         })
+        if (isJsCode) {
+          return chunkCssCode(filename, css)
+        }
         // only external @imports and @charset should exist at this point
         // hoist them to the top of the CSS chunk per spec (#1845 and #6333)
         if (css.includes('@import') || css.includes('@charset')) {
@@ -940,6 +949,11 @@ async function doImportCSSReplace(
 export async function minifyCSS(css: string, config: ResolvedConfig) {
   try {
     const { code, warnings } = await import('esbuild').then(({ transform }) => {
+      if (process.env.VUE_APP_DARK_MODE !== 'true') {
+        const postcssRoot = Postcss.parse(css)
+        filterPrefersColorScheme(postcssRoot, true)
+        css = postcssRoot.toResult().css
+      }
       return transform(css, {
         loader: 'css',
         minify: true,

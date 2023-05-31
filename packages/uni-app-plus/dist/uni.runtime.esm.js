@@ -1394,23 +1394,30 @@ const initI18nScanCodeMsgsOnce = /*#__PURE__*/ once(() => {
 });
 const initI18nStartSoterAuthenticationMsgsOnce = /*#__PURE__*/ once(() => {
     const name = 'uni.startSoterAuthentication.';
-    const keys = ['authContent'];
+    const keys = ['authContent', 'waitingContent'];
     {
-        useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ['Fingerprint recognition']), false);
+        useI18n().add(LOCALE_EN, normalizeMessages(name, keys, [
+            'Fingerprint recognition',
+            'Unrecognizable',
+        ]), false);
     }
     {
-        useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ['Reconocimiento de huellas dactilares']), false);
+        useI18n().add(LOCALE_ES, normalizeMessages(name, keys, [
+            'Reconocimiento de huellas dactilares',
+            'Irreconocible',
+        ]), false);
     }
     {
         useI18n().add(LOCALE_FR, normalizeMessages(name, keys, [
             "Reconnaissance de l'empreinte digitale",
+            'Méconnaissable',
         ]), false);
     }
     {
-        useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ['指纹识别中...']), false);
+        useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ['指纹识别中...', '无法识别']), false);
     }
     {
-        useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ['指紋識別中...']), false);
+        useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ['指紋識別中...', '無法識別']), false);
     }
 });
 
@@ -1572,7 +1579,7 @@ function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel, 
         meta,
         openType,
         eventChannel,
-        statusBarStyle: titleColor === '#000000' ? 'dark' : 'light',
+        statusBarStyle: titleColor === '#ffffff' ? 'light' : 'dark',
     };
 }
 
@@ -1802,21 +1809,21 @@ function showPage({ context = {}, url, data = {}, style = {}, onMessage, onClose
 const invokeOnCallback = (name, res) => UniServiceJSBridge.emit('api.' + name, res);
 
 let invokeViewMethodId = 1;
-function publishViewMethodName() {
-    return getCurrentPageId() + '.' + INVOKE_VIEW_API;
+function publishViewMethodName(pageId) {
+    return (pageId || getCurrentPageId()) + '.' + INVOKE_VIEW_API;
 }
 const invokeViewMethod = (name, args, pageId, callback) => {
     const { subscribe, publishHandler } = UniServiceJSBridge;
     const id = callback ? invokeViewMethodId++ : 0;
     callback && subscribe(INVOKE_VIEW_API + '.' + id, callback, true);
-    publishHandler(publishViewMethodName(), { id, name, args }, pageId);
+    publishHandler(publishViewMethodName(pageId), { id, name, args }, pageId);
 };
 const invokeViewMethodKeepAlive = (name, args, callback, pageId) => {
     const { subscribe, unsubscribe, publishHandler } = UniServiceJSBridge;
     const id = invokeViewMethodId++;
     const subscribeName = INVOKE_VIEW_API + '.' + id;
     subscribe(subscribeName, callback);
-    publishHandler(publishViewMethodName(), { id, name, args }, pageId);
+    publishHandler(publishViewMethodName(pageId), { id, name, args }, pageId);
     return () => {
         unsubscribe(subscribeName);
     };
@@ -14151,7 +14158,7 @@ const startSoterAuthentication = defineAsyncApi(API_START_SOTER_AUTHENTICATION, 
             4: () => {
                 if (waiting) {
                     clearTimeout(waitingTimer);
-                    waiting.setTitle('无法识别');
+                    waiting.setTitle(t('uni.startSoterAuthentication.waitingContent'));
                     waitingTimer = setTimeout(() => {
                         waiting && waiting.setTitle(authenticateMessage);
                     }, 1000);

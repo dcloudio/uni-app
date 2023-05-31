@@ -1,7 +1,8 @@
 import path from 'path'
-import fs from 'fs-extra'
+import fs from 'fs'
 import { extend, isArray, isString, NormalizedStyle } from '@vue/shared'
 import {
+  once,
   isH5NativeTag,
   createRpx2Unit,
   Rpx2UnitOptions,
@@ -32,6 +33,43 @@ export function isSsrManifest(
   }
   return false
 }
+
+const SSR_ALIAS: Record<string, string> = {
+  vue: '@dcloudio/uni-h5-vue',
+  'vue/server-renderer': 'vue/server-renderer',
+  '@vue/server-renderer': '@vue/server-renderer',
+  '@dcloudio/uni-cloud': '@dcloudio/uni-cloud',
+  '@dcloudio/uni-h5': '@dcloudio/uni-h5',
+  '@dcloudio/uni-i18n': '@dcloudio/uni-i18n',
+  '@dcloudio/uni-shared': '@dcloudio/uni-shared',
+}
+export const initSsrAliasOnce = once(() => {
+  // 重写 package.json 的读取
+  const oldJoin = path.join
+  const alias = Object.keys(SSR_ALIAS).reduce((alias, key) => {
+    const newKey = oldJoin('node_modules', key, 'package.json')
+    if (key.endsWith('vue/server-renderer')) {
+      alias[newKey] = path.join(
+        path.dirname(resolveBuiltIn(SSR_ALIAS[key])),
+        'package.json'
+      )
+    } else {
+      alias[newKey] = resolveBuiltIn(SSR_ALIAS[key] + '/package.json')
+    }
+    return alias
+  }, {} as Record<string, string>)
+  // console.log(alias)
+  path.join = (...paths: string[]): string => {
+    let res = oldJoin.apply(path, paths)
+    if (res.endsWith('package.json')) {
+      const key = Object.keys(alias).find((key) => res.endsWith(key))
+      if (key) {
+        res = alias[key]
+      }
+    }
+    return res
+  }
+})
 
 export function initSsrDefine(config: ResolvedConfig) {
   return extend(globalThis, {

@@ -97,7 +97,7 @@ export default defineComponent({
     )
 
     const _onClick = ($event: Event, isLabelClick?: boolean) => {
-      if (props.disabled) {
+      if (props.disabled || radioChecked.value) {
         return
       }
       if (isLabelClick) {

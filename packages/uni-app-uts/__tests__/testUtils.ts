@@ -1,5 +1,5 @@
-import { compile } from '../src/plugins/uvue/code/template/compiler/index'
-import { CompilerOptions } from '../src/plugins/uvue/code/template/compiler/options'
+import { compile } from '../src/plugins/uvue/compiler/index'
+import { CompilerOptions } from '../src/plugins/uvue/compiler/options'
 
 export function assert(
   template: string,

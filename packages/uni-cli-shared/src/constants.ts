@@ -18,7 +18,10 @@ export const extensions = [
 ].concat(EXTNAME_VUE)
 
 export const PAGES_JSON_JS = 'pages-json-js'
+export const PAGES_JSON_UTS = 'pages-json-uts'
 export const MANIFEST_JSON_JS = 'manifest-json-js'
+export const MANIFEST_JSON_UTS = 'manifest-json-uts'
+
 export const JSON_JS_MAP = {
   'pages.json': PAGES_JSON_JS,
   'manifest.json': MANIFEST_JSON_JS,

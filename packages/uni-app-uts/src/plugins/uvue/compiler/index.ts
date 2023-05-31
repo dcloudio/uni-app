@@ -3,16 +3,27 @@ import {
   baseParse,
   trackSlotScopes,
   trackVForSlotScopes,
-  transformBind,
   transformElement,
   transformExpression,
-  transformModel,
-  transformOn,
 } from '@vue/compiler-core'
+
+import { isAppUVueNativeTag } from '@dcloudio/uni-shared'
+import { transformTapToClick } from '@dcloudio/uni-cli-shared'
+import './runtimeHelpers'
 
 import { CodegenResult, CompilerOptions } from './options'
 import { generate } from './codegen'
 import { DirectiveTransform, NodeTransform, transform } from './transform'
+import { transformIf } from './transforms/vIf'
+import { transformFor } from './transforms/vFor'
+import { transformModel } from './transforms/vModel'
+import { transformShow } from './transforms/vShow'
+import { transformVText } from './transforms/vText'
+import { transformInterpolation } from './transforms/transformInterpolation'
+import { transformText } from './transforms/transformText'
+import { transformOn } from './transforms/vOn'
+import { transformBind } from './transforms/vBind'
+import { transformSlotOutlet } from './transforms/transformSlotOutlet'
 
 export type TransformPreset = [
   NodeTransform[],
@@ -24,16 +35,24 @@ export function getBaseTransformPreset(
 ): TransformPreset {
   return [
     [
+      transformIf,
+      transformFor,
       // order is important
       trackVForSlotScopes,
       transformExpression,
+      transformSlotOutlet,
       transformElement,
       trackSlotScopes,
+      transformText,
+      transformTapToClick,
+      transformInterpolation,
     ] as any,
     {
       on: transformOn,
       bind: transformBind,
       model: transformModel,
+      show: transformShow,
+      text: transformVText,
     } as any,
   ]
 }
@@ -43,8 +62,8 @@ export function compile(
   options: CompilerOptions
 ): CodegenResult {
   const ast = baseParse(template, {
-    isCustomElement(tag) {
-      return true
+    isNativeTag(tag) {
+      return isAppUVueNativeTag(tag)
     },
   })
   const [nodeTransforms, directiveTransforms] = getBaseTransformPreset(

@@ -57,7 +57,9 @@ async function parseUTSStacktraceLine(
   if (originalPosition.source && originalPosition.sourceContent) {
     lines.push(`${message}`)
     lines.push(
-      `at ${originalPosition.source}:${originalPosition.line}:${originalPosition.column}`
+      `at ${originalPosition.source.split('?')[0]}:${originalPosition.line}:${
+        originalPosition.column
+      }`
     )
     if (originalPosition.line !== null && originalPosition.column !== null) {
       lines.push(
@@ -144,7 +146,9 @@ export function parseUTSSyntaxError(error: any, inputDir: string): string {
     const [row, filename, line, column] = res.slice(1)
     msg = msg.replace(
       row,
-      `at ${relative(filename, inputDir)}:${parseInt(line) + 1}:${column}`
+      `at ${relative(filename.split('?')[0], inputDir)}:${
+        parseInt(line) + 1
+      }:${column}`
     )
   }
   return msg

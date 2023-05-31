@@ -1,14 +1,24 @@
 import path from 'path'
 import fs from 'fs-extra'
-import { normalizePath, parseVueRequest } from '@dcloudio/uni-cli-shared'
-import type { Plugin } from 'vite'
 
-import { ResolvedOptions, createDescriptor } from './descriptorCache'
+import type { Plugin } from 'vite'
+import type { SFCBlock, SFCDescriptor, SFCParseResult } from '@vue/compiler-sfc'
+import type { TransformPluginContext } from 'rollup'
+
+import { isString } from '@vue/shared'
+import { normalizePath, parseVueRequest } from '@dcloudio/uni-cli-shared'
+
+import {
+  ResolvedOptions,
+  createDescriptor,
+  getDescriptor,
+  getSrcDescriptor,
+} from './descriptorCache'
 import { createRollupError } from './error'
-import { genClassName, parseImports } from '../utils'
+import { genClassName, isVue, parseImports } from '../utils'
 import { genScript } from './code/script'
 import { genTemplate } from './code/template'
-import { genStyle } from './code/style'
+import { genJsStylesCode, genStyle, transformStyle } from './code/style'
 
 function resolveAppVue(inputDir: string) {
   const appUVue = path.resolve(inputDir, 'app.uvue')
@@ -24,6 +34,7 @@ export function uniAppUVuePlugin(): Plugin {
     sourceMap: false,
     // eslint-disable-next-line no-restricted-globals
     compiler: require('@vue/compiler-sfc'),
+    targetLanguage: process.env.UNI_UVUE_TARGET_LANGUAGE,
   }
 
   const appVue = resolveAppVue(process.env.UNI_INPUT_DIR)
@@ -34,50 +45,177 @@ export function uniAppUVuePlugin(): Plugin {
   return {
     name: 'uni:app-uvue',
     apply: 'build',
-    transform(code, id) {
-      const { filename } = parseVueRequest(id)
-      const isVue = filename.endsWith('.vue') || filename.endsWith('.uvue')
-      if (!isVue) {
-        return
-      }
-      // prev descriptor is only set and used for hmr
-      const { descriptor, errors } = createDescriptor(filename, code, options)
-
-      if (errors.length) {
-        errors.forEach((error) =>
-          this.error(createRollupError(filename, error))
-        )
-        return null
-      }
-      const isApp = isAppVue(id)
-      const fileName = path.relative(process.env.UNI_INPUT_DIR, id)
-      const className = genClassName(fileName)
-      // 生成 script 文件
-      this.emitFile({
-        type: 'asset',
-        fileName,
-        source:
-          genScript(descriptor.script, { filename: className }) +
-          '\n' +
-          genStyle(descriptor.styles, { filename: className }) +
-          '\n' +
-          (!isApp
-            ? genTemplate(descriptor.template, {
-                targetLanguage: process.env.UNI_UVUE_TARGET_LANGUAGE as
-                  | 'kotlin'
-                  | 'swift',
-                mode: 'function',
-                filename: className,
-              })
-            : ''),
-      })
-      const content = descriptor.script?.content
-      if (content) {
-        return parseImports(content)
-      }
-      return {
-        code: 'export default {}',
+    async resolveId(id) {
+      // serve sub-part requests (*?vue) as virtual modules
+      if (parseVueRequest(id).query.vue) {
+        return id
       }
     },
+
+    load(id) {
+      const { filename, query } = parseVueRequest(id)
+      // select corresponding block for sub-part virtual modules
+      if (query.vue) {
+        if (query.src) {
+          return fs.readFileSync(filename, 'utf-8')
+        }
+        const descriptor = getDescriptor(filename, options)!
+        let block: SFCBlock | null | undefined
+        if (query.type === 'style') {
+          block = descriptor.styles[query.index!]
+        } else if (query.index != null) {
+          block = descriptor.customBlocks[query.index]
+        }
+        if (block) {
+          return {
+            code: block.content,
+            map: block.map as any,
+          }
+        }
+      }
+    },
+    async transform(code, id) {
+      const { filename, query } = parseVueRequest(id)
+      if (!isVue(filename)) {
+        return
+      }
+      if (!query.vue) {
+        // main request
+        const { errors, uts, js } = await transformVue(
+          code,
+          filename,
+          options,
+          this,
+          isAppVue
+        )
+        if (errors.length) {
+          errors.forEach((error) =>
+            this.error(createRollupError(filename, error))
+          )
+          return null
+        }
+        const fileName = path.relative(process.env.UNI_INPUT_DIR, filename)
+
+        this.emitFile({
+          type: 'asset',
+          fileName,
+          source: uts,
+        })
+        return {
+          code: js,
+        }
+      } else {
+        // sub block request
+        const descriptor = query.src
+          ? getSrcDescriptor(filename)!
+          : getDescriptor(filename, options)!
+
+        if (query.type === 'style') {
+          return transformStyle(
+            code,
+            descriptor,
+            Number(query.index),
+            options,
+            this,
+            filename
+          )
+        }
+      }
+    },
+    generateBundle(_, bundle) {
+      // 遍历vue文件，填充style，尽量减少全局变量
+      Object.keys(bundle).forEach((name) => {
+        const file = bundle[name]
+        if (
+          file &&
+          file.type === 'asset' &&
+          file.fileName !== 'App.vue' &&
+          isVue(file.fileName) &&
+          isString(file.source)
+        ) {
+          const fileName = normalizePath(file.fileName)
+          const classNameComment = `/*${genClassName(
+            fileName,
+            options.classNamePrefix
+          )}Styles*/`
+          if (file.source.includes(classNameComment)) {
+            const styleAssetName = fileName + '.style.uts'
+            const styleAsset = bundle[styleAssetName]
+            if (
+              styleAsset &&
+              styleAsset.type === 'asset' &&
+              isString(styleAsset.source)
+            ) {
+              file.source = file.source.replace(
+                classNameComment,
+                styleAsset.source.replace('export ', '')
+              )
+              delete bundle[styleAssetName]
+            }
+          }
+        }
+      })
+    },
+  }
+}
+
+interface TransformVueResult {
+  errors: SFCParseResult['errors']
+  uts?: string
+  js?: string
+  descriptor: SFCDescriptor
+}
+
+export async function transformVue(
+  code: string,
+  filename: string,
+  options: ResolvedOptions,
+  pluginContext: TransformPluginContext | undefined,
+  isAppVue: (id: string) => boolean = () => false
+): Promise<TransformVueResult> {
+  if (!options.compiler) {
+    options.compiler = require('@vue/compiler-sfc')
+  }
+  // prev descriptor is only set and used for hmr
+  const { descriptor, errors } = createDescriptor(filename, code, options)
+
+  if (errors.length) {
+    return { errors, descriptor }
+  }
+  const isApp = isAppVue(filename)
+  const fileName = path.relative(options.root, filename)
+  const className = genClassName(fileName, options.classNamePrefix)
+  let templateCode = ''
+  if (!isApp) {
+    const templateResult = genTemplate(descriptor, {
+      targetLanguage: options.targetLanguage as any,
+      mode: 'function',
+      filename: className,
+      prefixIdentifiers: true,
+      sourceMap: true,
+    })
+    templateCode = templateResult.code
+  }
+  // 生成 script 文件
+  let utsCode =
+    genScript(descriptor, { filename: className }) +
+    '\n' +
+    genStyle(descriptor, { filename: fileName, className }) +
+    '\n'
+  utsCode += templateCode
+  let jsCode = ''
+  const content = descriptor.script?.content
+  if (content) {
+    jsCode += await parseImports(content)
+  }
+  if (descriptor.styles.length) {
+    jsCode += '\n' + (await genJsStylesCode(descriptor, pluginContext!))
+  }
+  jsCode += `\nexport default "${className}"`
+  return {
+    errors: [],
+    uts: utsCode,
+    js: jsCode,
+    descriptor,
   }
 }

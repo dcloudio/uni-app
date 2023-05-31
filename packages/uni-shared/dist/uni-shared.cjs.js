@@ -111,6 +111,7 @@ const NVUE_BUILT_IN_TAGS = [
     'barcode',
     'gcanvas',
 ];
+const UVUE_BUILT_IN_TAGS = ['loading-indicator'];
 const NVUE_U_BUILT_IN_TAGS = [
     'u-text',
     'u-image',
@@ -162,6 +163,22 @@ const NVUE_CUSTOM_COMPONENTS = [
     'picker-view',
     'picker-view-column',
 ];
+function isAppUVueNativeTag(tag) {
+    if (UVUE_BUILT_IN_TAGS.includes(tag)) {
+        return true;
+    }
+    if (NVUE_CUSTOM_COMPONENTS.includes(tag)) {
+        return false;
+    }
+    if (isBuiltInComponent(tag)) {
+        return true;
+    }
+    // u-text,u-video...
+    if (NVUE_U_BUILT_IN_TAGS.includes(tag)) {
+        return true;
+    }
+    return false;
+}
 function isAppNVueNativeTag(tag) {
     if (NVUE_BUILT_IN_TAGS.includes(tag)) {
         return true;
@@ -1544,6 +1561,7 @@ exports.UNI_SSR_GLOBAL_DATA = UNI_SSR_GLOBAL_DATA;
 exports.UNI_SSR_STORE = UNI_SSR_STORE;
 exports.UNI_SSR_TITLE = UNI_SSR_TITLE;
 exports.UNI_STORAGE_LOCALE = UNI_STORAGE_LOCALE;
+exports.UVUE_BUILT_IN_TAGS = UVUE_BUILT_IN_TAGS;
 exports.UniBaseNode = UniBaseNode;
 exports.UniCommentNode = UniCommentNode;
 exports.UniElement = UniElement;
@@ -1586,6 +1604,7 @@ exports.invokeCreateErrorHandler = invokeCreateErrorHandler;
 exports.invokeCreateVueAppHook = invokeCreateVueAppHook;
 exports.isAppNVueNativeTag = isAppNVueNativeTag;
 exports.isAppNativeTag = isAppNativeTag;
+exports.isAppUVueNativeTag = isAppUVueNativeTag;
 exports.isBuiltInComponent = isBuiltInComponent;
 exports.isComponentInternalInstance = isComponentInternalInstance;
 exports.isComponentTag = isComponentTag;

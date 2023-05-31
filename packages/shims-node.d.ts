@@ -48,5 +48,7 @@ declare namespace NodeJS {
     __VUE_PROD_DEVTOOLS__?: 'true'
     __VUE_DEVTOOLS_HOST__: string
     __VUE_DEVTOOLS_PORT__: string
+
+    UNI_APP_X?: 'true' | 'false'
   }
 }

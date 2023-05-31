@@ -4,6 +4,7 @@ import {
   ConstantTypes,
   DirectiveNode,
   ElementNode,
+  ElementTypes,
   ExpressionNode,
   JSChildNode,
   NodeTypes,
@@ -17,6 +18,7 @@ import {
   createCacheExpression,
   helperNameMap,
   isSlotOutlet,
+  isVSlot,
   makeBlock,
 } from '@vue/compiler-core'
 import { NOOP, camelize, capitalize, isArray, isString } from '@vue/shared'
@@ -105,6 +107,8 @@ export function createTransformContext(
     prefixIdentifiers = false,
     nodeTransforms = [],
     directiveTransforms = {},
+    scopeId = null,
+    slotted = true,
     isBuiltInComponent = NOOP,
     isCustomElement = NOOP,
     onError = defaultOnError,
@@ -117,10 +121,13 @@ export function createTransformContext(
     targetLanguage,
     selfName: nameMatch && capitalize(camelize(nameMatch[1])),
     prefixIdentifiers,
+    bindingMetadata: {},
     nodeTransforms,
     directiveTransforms,
     isBuiltInComponent,
     isCustomElement,
+    scopeId,
+    slotted,
     onError,
     onWarn,
 
@@ -163,7 +170,8 @@ export function createTransformContext(
       }
     },
     helperString(name) {
-      return `_${helperNameMap[context.helper(name)]}`
+      // return `_${helperNameMap[context.helper(name)]}`
+      return `${helperNameMap[context.helper(name)]}`
     },
     replaceNode(node) {
       if (!context.currentNode) {
@@ -245,6 +253,7 @@ export function transform(root: RootNode, options: TransformOptions) {
   const context = createTransformContext(root, options)
   traverseNode(root, context)
   createRootCodegen(root, context)
+  root.components = [...context.components]
 }
 
 export function isSingleElementRoot(
@@ -376,5 +385,39 @@ export function traverseNode(
   let i = exitFns.length
   while (i--) {
     exitFns[i]()
+  }
+}
+
+export function createStructuralDirectiveTransform(
+  name: string | RegExp,
+  fn: StructuralDirectiveTransform
+): NodeTransform {
+  const matches = isString(name)
+    ? (n: string) => n === name
+    : (n: string) => name.test(n)
+
+  return (node, context) => {
+    if (node.type === NodeTypes.ELEMENT) {
+      const { props } = node
+      // structural directive transforms are not concerned with slots
+      // as they are handled separately in vSlot.ts
+      if (node.tagType === ElementTypes.TEMPLATE && props.some(isVSlot)) {
+        return
+      }
+      const exitFns = []
+      for (let i = 0; i < props.length; i++) {
+        const prop = props[i]
+        if (prop.type === NodeTypes.DIRECTIVE && matches(prop.name)) {
+          // structural directives are removed to avoid infinite recursion
+          // also we remove them *before* applying so that it can further
+          // traverse itself in case it moves the node around
+          props.splice(i, 1)
+          i--
+          const onExit = fn(node, prop, context)
+          if (onExit) exitFns.push(onExit)
+        }
+      }
+      return exitFns
+    }
   }
 }

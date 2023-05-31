@@ -5,13 +5,13 @@ export function initAppStatusbar(
   const titleColor =
     pagesJson.pages[0].style.navigationBar.titleColor ||
     pagesJson.globalStyle.navigationBar.titleColor ||
-    '#ffffff'
+    '#000000'
   const backgroundColor =
     pagesJson.globalStyle.navigationBar.backgroundColor || '#000000'
 
   manifestJson.plus.statusbar = {
     immersed: 'supportedDevice',
-    style: titleColor === '#000000' ? 'dark' : 'light',
+    style: titleColor === '#ffffff' ? 'light' : 'dark',
     background: backgroundColor,
   }
   return manifestJson

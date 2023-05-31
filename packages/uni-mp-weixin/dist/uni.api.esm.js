@@ -1192,6 +1192,7 @@ const objectKeys = [
     'serviceMarket',
     'router',
     'worklet',
+    '__webpack_require_UNI_MP_PLUGIN__',
 ];
 const singlePageDisableKey = ['lanDebug', 'router', 'worklet'];
 const launchOption = wx.getLaunchOptionsSync
@@ -1268,7 +1269,9 @@ var shims = /*#__PURE__*/Object.freeze({
 const compressImage = {
     args(fromArgs, toArgs) {
         // https://developers.weixin.qq.com/community/develop/doc/000c08940c865011298e0a43256800?highLine=compressHeight
+        // @ts-expect-error
         if (fromArgs.compressedHeight && !toArgs.compressHeight) {
+            // @ts-expect-error
             toArgs.compressHeight = fromArgs.compressedHeight;
         }
         // @ts-expect-error

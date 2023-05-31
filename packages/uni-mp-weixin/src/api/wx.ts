@@ -8,6 +8,7 @@ const objectKeys = [
   'serviceMarket',
   'router',
   'worklet',
+  '__webpack_require_UNI_MP_PLUGIN__',
 ]
 
 const singlePageDisableKey = ['lanDebug', 'router', 'worklet']

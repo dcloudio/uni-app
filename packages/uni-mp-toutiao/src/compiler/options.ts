@@ -1,5 +1,5 @@
 import path from 'path'
-import type { CompilerOptions } from '@vue/compiler-core'
+import type { CompilerOptions } from '@dcloudio/uni-mp-compiler'
 import {
   COMPONENT_CUSTOM_HIDDEN_BIND,
   MiniProgramCompilerOptions,
@@ -12,7 +12,13 @@ import { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
 import source from './project.config.json'
 import { transformSwiper } from './transforms/transformSwiper'
 
-export const customElements = ['aweme-data']
+export const customElements = [
+  'aweme-data',
+  'consume-card',
+  'pay-button',
+  'rate-button',
+  'member-button',
+]
 
 const projectConfigFilename = 'project.config.json'
 

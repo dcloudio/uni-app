@@ -4,6 +4,8 @@ import { normalizeTarget } from '@dcloudio/uni-shared'
 import { getWindowTop } from '../../helpers'
 import { wrapperH5WxsEvent } from './componentWxs'
 
+const isKeyboardEvent = (val: Event): val is KeyboardEvent =>
+  !val.type.indexOf('key') && val instanceof KeyboardEvent
 const isClickEvent = (val: Event): val is MouseEvent => val.type === 'click'
 const isMouseEvent = (val: Event): val is MouseEvent =>
   val.type.indexOf('mouse') === 0 || ['contextmenu'].includes(val.type)
@@ -41,13 +43,22 @@ export function $nne(
   const res = createNativeEvent(evt, isHTMLTarget)
 
   if (isClickEvent(evt)) {
-    normalizeClickEvent(res as unknown as WechatMiniprogram.Touch, evt)
+    normalizeClickEvent(res as WechatMiniprogram.Touch, evt)
   } else if (isMouseEvent(evt)) {
-    normalizeMouseEvent(res as unknown as WechatMiniprogram.Touch, evt)
+    normalizeMouseEvent(res as WechatMiniprogram.Touch, evt)
   } else if (isTouchEvent(evt)) {
     const top = getWindowTop()
     ;(res as any).touches = normalizeTouchEvent(evt.touches, top)
     ;(res as any).changedTouches = normalizeTouchEvent(evt.changedTouches, top)
+  } else if (isKeyboardEvent(evt)) {
+    const proxyKeys: (keyof KeyboardEvent)[] = ['key', 'code']
+    proxyKeys.forEach((key) => {
+      Object.defineProperty(res, key, {
+        get() {
+          return evt[key]
+        },
+      })
+    })
   }
   if (__PLATFORM__ === 'h5') {
     return (

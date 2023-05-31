@@ -331,14 +331,14 @@ const initI18nChooseFileMsgsOnce = /* @__PURE__ */ once(() => {
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
     useI18n().add(
       LOCALE_ZH_HANS,
-      normalizeMessages(name, keys, ["文件选择器对话框只能在用户激活时显示"]),
+      normalizeMessages(name, keys, ["文件选择器对话框只能在由用户激活时显示"]),
       false
     );
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
     useI18n().add(
       LOCALE_ZH_HANT,
-      normalizeMessages(name, keys, ["文件選擇器對話框只能在用戶激活時顯示"]),
+      normalizeMessages(name, keys, ["文件選擇器對話框只能在由用戶激活時顯示"]),
       false
     );
   }
@@ -738,6 +738,9 @@ function initView() {
     initLongPress();
   }
 }
+function getDefaultExportFromCjs(x) {
+  return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, "default") ? x["default"] : x;
+}
 var attrs = ["top", "left", "right", "bottom"];
 var inited$1;
 var elementComputedStyle = {};
@@ -924,6 +927,7 @@ var safeAreaInsets = {
   offChange
 };
 var out = safeAreaInsets;
+const safeAreaInsets$1 = /* @__PURE__ */ getDefaultExportFromCjs(out);
 const onEventPrevent = /* @__PURE__ */ withModifiers(() => {
 }, ["prevent"]);
 const onEventStop = /* @__PURE__ */ withModifiers(() => {
@@ -934,7 +938,7 @@ function getWindowOffsetCssVar(style, name) {
 function getWindowTop() {
   const style = document.documentElement.style;
   const top = getWindowOffsetCssVar(style, "--window-top");
-  return top ? top + out.top : 0;
+  return top ? top + safeAreaInsets$1.top : 0;
 }
 function getWindowOffset() {
   const style = document.documentElement.style;
@@ -945,9 +949,9 @@ function getWindowOffset() {
   const topWindowHeight = getWindowOffsetCssVar(style, "--top-window-height");
   return {
     top,
-    bottom: bottom ? bottom + out.bottom : 0,
-    left: left ? left + out.left : 0,
-    right: right ? right + out.right : 0,
+    bottom: bottom ? bottom + safeAreaInsets$1.bottom : 0,
+    left: left ? left + safeAreaInsets$1.left : 0,
+    right: right ? right + safeAreaInsets$1.right : 0,
     topWindowHeight: topWindowHeight || 0
   };
 }
@@ -1142,7 +1146,7 @@ function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel, 
     meta,
     openType,
     eventChannel,
-    statusBarStyle: titleColor === "#000000" ? "dark" : "light"
+    statusBarStyle: titleColor === "#ffffff" ? "light" : "dark"
   };
 }
 function removeHook(vm, name, hook) {
@@ -1506,6 +1510,7 @@ function getWxsVm(el) {
     return el.__vueParentComponent && el.__vueParentComponent.proxy;
   }
 }
+const isKeyboardEvent = (val) => !val.type.indexOf("key") && val instanceof KeyboardEvent;
 const isClickEvent = (val) => val.type === "click";
 const isMouseEvent = (val) => val.type.indexOf("mouse") === 0 || ["contextmenu"].includes(val.type);
 const isTouchEvent = (val) => typeof TouchEvent !== "undefined" && val instanceof TouchEvent || val.type.indexOf("touch") === 0 || ["longpress"].indexOf(val.type) >= 0;
@@ -1535,6 +1540,15 @@ function $nne(evt, eventValue, instance2) {
     const top = getWindowTop();
     res.touches = normalizeTouchEvent(evt.touches, top);
     res.changedTouches = normalizeTouchEvent(evt.changedTouches, top);
+  } else if (isKeyboardEvent(evt)) {
+    const proxyKeys = ["key", "code"];
+    proxyKeys.forEach((key) => {
+      Object.defineProperty(res, key, {
+        get() {
+          return evt[key];
+        }
+      });
+    });
   }
   {
     return wrapperH5WxsEvent(
@@ -1639,21 +1653,21 @@ function initViewPlugin(app) {
 }
 const invokeOnCallback = (name, res) => UniServiceJSBridge.emit("api." + name, res);
 let invokeViewMethodId = 1;
-function publishViewMethodName() {
-  return getCurrentPageId() + "." + INVOKE_VIEW_API;
+function publishViewMethodName(pageId) {
+  return (pageId || getCurrentPageId()) + "." + INVOKE_VIEW_API;
 }
 const invokeViewMethod = (name, args, pageId, callback) => {
   const { subscribe, publishHandler } = UniServiceJSBridge;
   const id2 = callback ? invokeViewMethodId++ : 0;
   callback && subscribe(INVOKE_VIEW_API + "." + id2, callback, true);
-  publishHandler(publishViewMethodName(), { id: id2, name, args }, pageId);
+  publishHandler(publishViewMethodName(pageId), { id: id2, name, args }, pageId);
 };
 const invokeViewMethodKeepAlive = (name, args, callback, pageId) => {
   const { subscribe, unsubscribe, publishHandler } = UniServiceJSBridge;
   const id2 = invokeViewMethodId++;
   const subscribeName = INVOKE_VIEW_API + "." + id2;
   subscribe(subscribeName, callback);
-  publishHandler(publishViewMethodName(), { id: id2, name, args }, pageId);
+  publishHandler(publishViewMethodName(pageId), { id: id2, name, args }, pageId);
   return () => {
     unsubscribe(subscribeName);
   };
@@ -12613,7 +12627,7 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
       field
     } = useRadioInject(radioChecked, radioValue, reset);
     const _onClick = ($event) => {
-      if (props2.disabled) {
+      if (props2.disabled || radioChecked.value) {
         return;
       }
       radioChecked.value = true;
@@ -15103,7 +15117,7 @@ function normalizePageMeta(pageMeta) {
       );
       const { type, style } = navigationBar;
       if (style !== "custom" && type !== "transparent") {
-        pullToRefresh.offset += NAVBAR_HEIGHT + out.top;
+        pullToRefresh.offset += NAVBAR_HEIGHT + safeAreaInsets$1.top;
       }
       pageMeta.pullToRefresh = pullToRefresh;
     }
@@ -15114,8 +15128,8 @@ function normalizePageMeta(pageMeta) {
     navigationBar.titleText = navigationBar.titleText || "";
     navigationBar.type = navigationBar.type || "default";
     navigationBar.titleSize = titleSize || "16px";
-    navigationBar.titleColor = titleColor || "#ffffff";
-    navigationBar.backgroundColor = backgroundColor || "#F7F7F7";
+    navigationBar.titleColor = titleColor || "#000000";
+    navigationBar.backgroundColor = backgroundColor || "#F8F8F8";
     __UNI_FEATURE_I18N_LOCALE__ && initNavigationBarI18n(navigationBar);
   }
   if (__UNI_FEATURE_PAGES__ && history.state) {
@@ -18136,14 +18150,14 @@ const getWindowInfo = /* @__PURE__ */ defineSyncApi(
     const screenHeight = getScreenHeight(screenFix, landscape);
     const windowWidth = getWindowWidth(screenWidth);
     let windowHeight = window.innerHeight;
-    const statusBarHeight = out.top;
+    const statusBarHeight = safeAreaInsets$1.top;
     const safeArea = {
-      left: out.left,
-      right: windowWidth - out.right,
-      top: out.top,
-      bottom: windowHeight - out.bottom,
-      width: windowWidth - out.left - out.right,
-      height: windowHeight - out.top - out.bottom
+      left: safeAreaInsets$1.left,
+      right: windowWidth - safeAreaInsets$1.right,
+      top: safeAreaInsets$1.top,
+      bottom: windowHeight - safeAreaInsets$1.bottom,
+      width: windowWidth - safeAreaInsets$1.left - safeAreaInsets$1.right,
+      height: windowHeight - safeAreaInsets$1.top - safeAreaInsets$1.bottom
     };
     const { top: windowTop, bottom: windowBottom } = getWindowOffset();
     windowHeight -= windowTop;
@@ -18159,10 +18173,10 @@ const getWindowInfo = /* @__PURE__ */ defineSyncApi(
       statusBarHeight,
       safeArea,
       safeAreaInsets: {
-        top: out.top,
-        right: out.right,
-        bottom: out.bottom,
-        left: out.left
+        top: safeAreaInsets$1.top,
+        right: safeAreaInsets$1.right,
+        bottom: safeAreaInsets$1.bottom,
+        left: safeAreaInsets$1.left
       },
       screenTop: screenHeight - windowHeight
     };

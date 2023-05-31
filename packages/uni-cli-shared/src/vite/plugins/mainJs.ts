@@ -12,7 +12,7 @@ export function defineUniMainJsPlugin(
   const opts = {
     resolvedConfig: {},
     filter(id) {
-      return id === mainJsPath || id === mainTsPath
+      return id === mainJsPath || id === mainTsPath || id === mainUTsPath
     },
   } as UniViteFilterPluginOptions
 
@@ -21,6 +21,7 @@ export function defineUniMainJsPlugin(
 
   let mainJsPath = ''
   let mainTsPath = ''
+  let mainUTsPath = ''
   plugin.configResolved = function (config) {
     opts.resolvedConfig = config
     const mainPath = normalizePath(
@@ -28,6 +29,7 @@ export function defineUniMainJsPlugin(
     )
     mainJsPath = mainPath + '.js'
     mainTsPath = mainPath + '.ts'
+    mainUTsPath = mainPath + '.uts'
     return origConfigResolved && origConfigResolved(config)
   }
 
