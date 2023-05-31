@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uts-linux-x64-musl",
-  "version": "3.0.0-3080320230526001",
+  "version": "3.0.0-3080420230531001",
   "os": [
     "linux"
   ],
