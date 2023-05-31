@@ -322,7 +322,16 @@ function parseEvent (keyPath, valuePath, state, isComponent, isNativeOn = false,
         const funcParams = funcPath.node.params
         if (body && body.length && funcParams && funcParams.length === 1 && !hasMemberExpression(funcPath)) {
           const exprStatements = body.filter(node => {
-            return t.isExpressionStatement(node) && t.isCallExpression(node.expression)
+            return t.isExpressionStatement(node) && t.isCallExpression(node.expression) && !node.expression.arguments.find(element => {
+              // click1(item().a)
+              if (t.isMemberExpression(element)) {
+                try {
+                  getIdentifierName(element)
+                } catch {
+                  return true
+                }
+              }
+            })
           })
           if (exprStatements.length === body.length) {
             const paramPath = funcPath.get('params')[0]
