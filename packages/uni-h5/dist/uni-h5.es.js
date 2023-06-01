@@ -20338,7 +20338,7 @@ function useList(state2) {
   function pushData(array) {
     array.forEach((item) => {
       list2.push({
-        name: item.title,
+        name: item.title || item.name,
         address: item.address,
         distance: item._distance || item.distance,
         latitude: item.location.lat,

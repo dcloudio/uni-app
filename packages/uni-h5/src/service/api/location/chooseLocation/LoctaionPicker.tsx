@@ -105,7 +105,7 @@ function useList(state: State) {
   function pushData(array: any[]) {
     array.forEach((item) => {
       list.push({
-        name: item.title,
+        name: item.title || item.name,
         address: item.address,
         distance: item._distance || item.distance,
         latitude: item.location.lat,
