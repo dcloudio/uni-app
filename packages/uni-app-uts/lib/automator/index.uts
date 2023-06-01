@@ -50,7 +50,8 @@ function onMessage(msg: string) {
           break
           case 'App.captureScreenshot':
           const id = params['id'] !== null ? (params['id'] as string) : null
-          captureScreenshot({ id, path, callback } as captureScreenshotParams)
+          const fullPage = params['fullPage'] !== null ? (params['fullPage'] as boolean) : false
+          captureScreenshot({ id, fullPage, path, callback } as captureScreenshotParams)
           break
         case 'App.getPageStack':
           getPageStack({ callback } as getPageStackParams)
