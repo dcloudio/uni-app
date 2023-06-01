@@ -183,7 +183,7 @@ export async function runKotlinDev(
     const options = {
       kotlinc: resolveKotlincArgs(
         kotlinFile,
-        resolveJarPath('app-android', cacheDir, pluginRelativeDir, filename),
+        jarFile,
         getKotlincHome(),
         getDefaultJar()
           .concat(resolveLibs(filename))
