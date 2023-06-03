@@ -77,7 +77,7 @@ function onMessage(msg: string) {
           break
         case 'Page.callMethodWithCallback':
           const methodName = params['method'] as string
-          const args = params['args'] as Array<any | null>
+          const args = params['args'] !== null ? params['args'] as Array<any | null> : [] as Array<any | null>
           args.push(callback)
           callMethodWithCallback({pageId, methodName, args} as CallMethodWithCallbackParams)
           break;
