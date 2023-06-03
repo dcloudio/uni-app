@@ -36,7 +36,7 @@ function parseSwiftPackage(filename: string) {
 export async function runSwiftProd(
   filename: string,
   components: Record<string, string>,
-  isPlugin = true
+  { isPlugin, isX }: { isPlugin: boolean; isX: boolean }
 ) {
   // 文件有可能是 app-android 里边的，因为编译到 ios 时，为了保证不报错，可能会去读取 android 下的 uts
   if (filename.includes('app-android')) {
@@ -49,6 +49,7 @@ export async function runSwiftProd(
     outputDir,
     sourceMap: true,
     components,
+    isX,
     isPlugin,
   })
   if (!result) {
@@ -78,12 +79,13 @@ let isEnvReady = true
 
 interface RunSwiftDevOptions {
   components: Record<string, string>
+  isX: boolean
   isPlugin: boolean
 }
 
 export async function runSwiftDev(
   filename: string,
-  { components, isPlugin }: RunSwiftDevOptions
+  { components, isX, isPlugin }: RunSwiftDevOptions
 ) {
   // 文件有可能是 app-android 里边的，因为编译到 ios 时，为了保证不报错，可能会去读取 android 下的 uts
   if (filename.includes('app-android')) {
@@ -114,6 +116,7 @@ export async function runSwiftDev(
     outputDir,
     sourceMap: true,
     components,
+    isX,
     isPlugin,
   })) as RunSwiftDevResult
 

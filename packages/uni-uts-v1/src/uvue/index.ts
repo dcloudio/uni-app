@@ -65,6 +65,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
   const bundleOptions: Parameters<typeof bundle>[1] = {
     input,
     output: {
+      isX: true,
       isPlugin: false,
       outDir: outputDir,
       package: pkg,

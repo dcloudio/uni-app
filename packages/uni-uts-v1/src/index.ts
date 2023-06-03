@@ -95,12 +95,13 @@ function createResult(
 }
 
 interface CompilerOptions {
+  isX: boolean
   isPlugin: boolean
 }
 
 export async function compile(
   pluginDir: string,
-  { isPlugin }: CompilerOptions = { isPlugin: true }
+  { isX, isPlugin }: CompilerOptions = { isX: false, isPlugin: true }
 ): Promise<CompileResult | void> {
   const pkg = resolvePackage(pluginDir)
   if (!pkg) {
@@ -162,11 +163,10 @@ export async function compile(
         filename = resolvePlatformIndexFilename('app-android', pluginDir, pkg)
       }
       if (filename) {
-        await getCompiler('kotlin').runProd(
-          filename,
-          androidComponents,
-          isPlugin
-        )
+        await getCompiler('kotlin').runProd(filename, androidComponents, {
+          isX,
+          isPlugin,
+        })
         if (cacheDir) {
           // 存储 sourcemap
           storeSourceMap(
@@ -194,7 +194,10 @@ export async function compile(
         filename = resolvePlatformIndexFilename('app-ios', pluginDir, pkg)
       }
       if (filename) {
-        await getCompiler('swift').runProd(filename, iosComponents, isPlugin)
+        await getCompiler('swift').runProd(filename, iosComponents, {
+          isX,
+          isPlugin,
+        })
         if (cacheDir) {
           storeSourceMap(
             'app-ios',
@@ -326,6 +329,7 @@ export async function compile(
         )
         const res = await getCompiler(compilerType).runDev(filename, {
           components,
+          isX,
           isPlugin,
           cacheDir,
           pluginRelativeDir,

@@ -81,7 +81,10 @@ export function uniUTSPlugin(options: UniUTSPluginOptions = {}): Plugin {
       }
       const compile = once(() => {
         utsPlugins.add(path.basename(pluginDir))
-        return resolveUTSCompiler().compile(pluginDir)
+        return resolveUTSCompiler().compile(pluginDir, {
+          isX: !!options.x,
+          isPlugin: true,
+        })
       })
       utsModuleCaches.set(pluginDir, compile)
       const result = await compile()

@@ -23,6 +23,7 @@ describe('compiler', () => {
       inputDir,
       outputDir,
       sourceMap: false,
+      isX: false,
       isPlugin: true,
       components: {},
     })
@@ -38,6 +39,7 @@ describe('compiler', () => {
       inputDir,
       outputDir,
       sourceMap: false,
+      isX: false,
       isPlugin: true,
       components: {},
     })

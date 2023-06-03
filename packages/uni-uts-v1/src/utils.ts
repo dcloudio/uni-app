@@ -18,6 +18,7 @@ interface ToOptions {
   outputDir: string
   sourceMap: boolean
   components: Record<string, string>
+  isX: boolean
   isPlugin: boolean
 }
 export type ToKotlinOptions = ToOptions

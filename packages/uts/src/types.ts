@@ -41,6 +41,7 @@ export type UTSOutputOptions = {
   extname: string
   logFilename?: boolean
   noColor?: boolean
+  isX?: boolean
   isPlugin?: boolean
   transform?: {
     paramDefaultValue?: boolean

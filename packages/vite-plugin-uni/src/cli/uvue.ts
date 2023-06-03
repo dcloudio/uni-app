@@ -6,6 +6,7 @@ import { RollupWatcher } from 'rollup'
 import { CliOptions } from '.'
 import { buildByVite, initBuildOptions } from './build'
 import { addConfigFile, cleanOptions, printStartupDuration } from './utils'
+import { initEasycom } from '../utils/easycom'
 
 export function initUVueEnv() {
   // 直接指定了
@@ -34,6 +35,7 @@ export async function runUVueDev(options: CliOptions & ServerOptions) {
     )
     return process.exit(0)
   }
+  initEasycom()
   const watcher = (await buildUVue(options)) as RollupWatcher
   let isFirstStart = true
   let isFirstEnd = true
