@@ -7,17 +7,17 @@ import {
 import { getCurrentPages } from 'io.dcloud.uts.framework'
 import { parsePage } from './util.uts'
 
-export type getPageStackParams = {
+export type GetPageStackParams = {
   callback: (res: any) => void
 }
-export const getPageStack = (params: getPageStackParams): void => {
+export const getPageStack = (params: GetPageStackParams): void => {
   params.callback({
     pageStack: getCurrentPages().map((page: BasePage): UTSJSONObject => {
       return parsePage(page)
     })
   })
 }
-export type getCurrentPageParams = {
+export type GetCurrentPageParams = {
   callback: (res: any) => void
 }
 
@@ -26,7 +26,7 @@ function _getCurrentPage(): BasePage | null {
   return pages.length > 0 ? pages[pages.length - 1] : null
 }
 
-export const getCurrentPage = (params: getCurrentPageParams): void => {
+export const getCurrentPage = (params: GetCurrentPageParams): void => {
   const page = _getCurrentPage()
   params.callback({ page: page !== null ? parsePage(page) : null })
 }
@@ -111,13 +111,13 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
   }
 }
 
-export type captureScreenshotParams = {
+export type CaptureScreenshotParams = {
   id?: string | null,
   fullPage: boolean,
   path: string
   callback: (res: any) => void
 }
-export const captureScreenshot = (params: captureScreenshotParams): void => {
+export const captureScreenshot = (params: CaptureScreenshotParams): void => {
   const callback = params.callback
   const currentPage = _getCurrentPage()
   if (currentPage !== null) {
