@@ -18,6 +18,7 @@ import {
 } from './utils'
 import { initEasycom } from '../utils/easycom'
 import { runUVueDev } from './uvue'
+import { formatWeiboHtml, copyWeiboSrc } from '../platform/weiboSpecial'
 
 export async function runDev(options: CliOptions & ServerOptions) {
   extend(options, {
@@ -119,7 +120,15 @@ export async function runDev(options: CliOptions & ServerOptions) {
   }
 }
 
-export async function runBuild(options: CliOptions & BuildOptions) {
+export async function runBuild(
+  options: CliOptions &
+    BuildOptions & {
+      inputDir?: string
+    }
+) {
+  if (options.platform === 'mp-weibo' && options.inputDir) {
+    copyWeiboSrc(options.inputDir)
+  }
   initEnv('build', options)
   try {
     await (options.ssr && options.platform === 'h5'
@@ -127,6 +136,10 @@ export async function runBuild(options: CliOptions & BuildOptions) {
       : build(options))
     console.log(M['build.done'])
     if (options.platform !== 'h5') {
+      if (options.platform === 'mp-weibo') {
+        // 微博小程序
+        formatWeiboHtml()
+      }
       showRunPrompt(options.platform as PLATFORM)
     }
   } catch (e: any) {

@@ -1,0 +1,8 @@
+uni-camera {
+  display: block;
+  overflow: hidden;
+}
+
+uni-camera[hidden] {
+  display: none;
+}

@@ -20,7 +20,8 @@
     "postinstall": "simple-git-hooks",
     "e2e:ssr:dev": "cd packages/playground/ssr && npm run dev:ssr",
     "e2e:ssr:open": "cd packages/playground/ssr && npx cypress open",
-    "release": "node scripts/release.js"
+    "release": "node scripts/release.js",
+    "build:weibo": "npm run build:h5 && node scripts/build.js uni-mp-weibo uni-mp-weibo-vite"
   },
   "types": "test-dts/index.d.ts",
   "tsd": {

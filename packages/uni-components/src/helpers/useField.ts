@@ -300,7 +300,7 @@ function useAutoFocus(props: Props, fieldRef: Ref<HTMLFieldElement | null>) {
       setTimeout(focus, 100)
       return
     }
-    if (__PLATFORM__ === 'h5') {
+    if (__PLATFORM__ === 'h5' || __PLATFORM__ === 'mp-weibo') {
       field.focus()
     } else {
       const timeout = FOCUS_DELAY - (Date.now() - startTime)

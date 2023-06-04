@@ -1,0 +1,7 @@
+{
+  "extends": "../../tsconfig.node.json",
+  "compilerOptions": {
+    "outDir": "dist"
+  },
+  "include": ["src", "../shims-node.d.ts", "../shims-uni-app.d.ts"]
+}

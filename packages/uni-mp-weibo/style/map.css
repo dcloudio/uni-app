@@ -1,0 +1,34 @@
+uni-map {
+  position: relative;
+  width: 300px;
+  height: 150px;
+  display: block;
+}
+
+uni-map[hidden] {
+  display: none;
+}
+/* 处理高德地图 marker label 默认样式 */
+.amap-marker-label{
+  padding:0;
+  border:none;
+  background-color: transparent;
+}
+/* 处理高德地图 open-location icon 被遮挡问题 */
+.amap-marker>.amap-icon>img{
+  left:0!important;
+  top:0!important;
+}
+
+.uni-map-control{
+  position:absolute;
+  width:0;
+  height:0;
+  top:0;
+  left:0;
+  z-index:999;
+}
+.uni-map-control-icon{
+  position:absolute;
+  max-width:initial;
+}

@@ -135,7 +135,7 @@ async function build(target) {
         cwd: pkgDir,
       }
     )
-    if (target === 'uni-h5') {
+    if (target === 'uni-h5' || target === 'uni-mp-weibo') {
       await execa(
         'vite',
         ['build', '--config', path.resolve(pkgDir, 'vite.config.ts')],

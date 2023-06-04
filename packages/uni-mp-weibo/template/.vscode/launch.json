@@ -1,0 +1,43 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "wbox-debugger",
+      "request": "launch",
+      "name": "模拟器",
+      "target": "simulator"
+    },
+    {
+      "type": "wbox-debugger",
+      "request": "launch",
+      "name": "微博",
+      "target": "remote"
+    },
+    {
+      "type": "wbox-debugger",
+      "request": "launch",
+      "name": "微博lazy",
+      "target": "remote"
+    },
+    {
+      "type": "wbox-debugger",
+      "request": "launch",
+      "name": "模拟器HMR",
+      "target": "simulator",
+      "wboxBuildTask": "BuildHMR"
+    },
+    {
+      "type": "wbox-debugger",
+      "request": "launch",
+      "name": "微博HMR",
+      "target": "remote",
+      "wboxBuildTask": "BuildHMR"
+    },
+    {
+      "type": "wbox-debugger",
+      "request": "launch",
+      "name": "插件",
+      "target": "plugin"
+    }
+  ]
+}

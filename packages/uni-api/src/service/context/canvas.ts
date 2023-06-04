@@ -442,7 +442,7 @@ export class CanvasContext implements UniApp.CanvasContext {
   measureText(text: string) {
     const font = this.state.font
     let width = 0
-    if (__PLATFORM__ === 'h5') {
+    if (__PLATFORM__ === 'h5' || __PLATFORM__ === 'mp-weibo') {
       width = measureText(text, font)
     } else {
       const webview = plus.webview

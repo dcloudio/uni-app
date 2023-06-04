@@ -75,26 +75,62 @@ export function offPageNotFound(hook: UniApp.OnPageNotFoundCallback) {
 }
 
 export function onError(hook: UniApp.OnAppErrorCallback) {
+  // @ts-ignore
+  if (window.weibo) {
+    // @ts-ignore
+    window.weibo.onError(hook)
+    return
+  }
   onAppHook(ON_ERROR, hook)
 }
 
 export function offError(hook: UniApp.OnAppErrorCallback) {
+  // @ts-ignore
+  if (window.weibo) {
+    // @ts-ignore
+    window.weibo.offError(hook)
+    return
+  }
   offAppHook(ON_ERROR, hook)
 }
 
 export function onAppShow(hook: AppShowHook) {
+  // @ts-ignore
+  if (window.weibo) {
+    // @ts-ignore
+    window.weibo.onAppShow(hook)
+    return
+  }
   onAppHook(ON_SHOW, hook)
 }
 
 export function offAppShow(hook: AppShowHook) {
+  // @ts-ignore
+  if (window.weibo) {
+    // @ts-ignore
+    window.weibo.offAppShow(hook)
+    return
+  }
   offAppHook(ON_SHOW, hook)
 }
 
 export function onAppHide(hook: AppHideHook) {
+  // @ts-ignore
+  if (window.weibo) {
+    // @ts-ignore
+    window.weibo.onAppHide(hook)
+    return
+  }
   onAppHook(ON_HIDE, hook)
 }
 
 export function offAppHide(hook: AppHideHook) {
+  // @ts-ignore
+  if (window.weibo) {
+    // @ts-ignore
+    window.weibo.offAppHide(hook)
+    return
+  }
   offAppHook(ON_HIDE, hook)
 }
 

@@ -25,7 +25,7 @@ export function $nne(
   }
   const isHTMLTarget = currentTarget.tagName.indexOf('UNI-') !== 0
   // App 平台时不返回原始事件对象 https://github.com/dcloudio/uni-app/issues/3240
-  if (__PLATFORM__ === 'h5') {
+  if (__PLATFORM__ === 'h5' || __PLATFORM__ === 'mp-weibo') {
     if (isHTMLTarget) {
       return (
         wrapperH5WxsEvent(
@@ -49,7 +49,7 @@ export function $nne(
     ;(res as any).touches = normalizeTouchEvent(evt.touches, top)
     ;(res as any).changedTouches = normalizeTouchEvent(evt.changedTouches, top)
   }
-  if (__PLATFORM__ === 'h5') {
+  if (__PLATFORM__ === 'h5' || __PLATFORM__ === 'mp-weibo') {
     return (
       wrapperH5WxsEvent(
         res,
@@ -93,7 +93,7 @@ export function createNativeEvent(
     ;(event as any).changedTouches = (evt as TouchEvent).changedTouches
   }
 
-  if (__PLATFORM__ === 'h5') {
+  if (__PLATFORM__ === 'h5' || __PLATFORM__ === 'mp-weibo') {
     wrapperEvent(event, evt)
   }
 

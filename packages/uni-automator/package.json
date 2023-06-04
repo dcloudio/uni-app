@@ -22,7 +22,8 @@
     "apply": [
       "app",
       "h5",
-      "mp-weixin"
+      "mp-weixin",
+      "mp-weibo"
     ]
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",

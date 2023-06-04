@@ -44,7 +44,11 @@ export const upx2px = defineSyncApi<API_TYPE_UPX2PX>(
     }
     if (deviceWidth === 0) {
       checkDeviceWidth()
-      if (__PLATFORM__ === 'app' || __PLATFORM__ === 'h5') {
+      if (
+        __PLATFORM__ === 'app' ||
+        __PLATFORM__ === 'h5' ||
+        __PLATFORM__ === 'mp-weibo'
+      ) {
         checkMaxWidth()
       }
     }
@@ -54,7 +58,11 @@ export const upx2px = defineSyncApi<API_TYPE_UPX2PX>(
       return 0
     }
     let width = newDeviceWidth || deviceWidth
-    if (__PLATFORM__ === 'app' || __PLATFORM__ === 'h5') {
+    if (
+      __PLATFORM__ === 'app' ||
+      __PLATFORM__ === 'h5' ||
+      __PLATFORM__ === 'mp-weibo'
+    ) {
       width = number === includeWidth || width <= maxWidth ? width : baseWidth
     }
     let result = (number / BASE_DEVICE_WIDTH) * width

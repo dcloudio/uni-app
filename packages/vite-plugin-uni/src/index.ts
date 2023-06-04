@@ -109,7 +109,10 @@ function createPlugins(options: VitePluginUniResolvedOptions) {
   }
 
   // 仅限 h5
-  if (options.viteLegacyOptions && options.platform === 'h5') {
+  if (
+    (options.viteLegacyOptions && options.platform === 'h5') ||
+    options.platform === 'mp-weibo'
+  ) {
     plugins.push(
       ...(legacyPlugin(
         initPluginViteLegacyOptions(options)

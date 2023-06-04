@@ -18,7 +18,7 @@ export function useCurrentPageId() {
     return getCurrentPageId()
   }
   // 暂时仅在 h5 平台实现 $pageInstance，避免影响过大
-  if (__PLATFORM__ === 'h5') {
+  if (__PLATFORM__ === 'h5' || __PLATFORM__ === 'mp-weibo') {
     const { $pageInstance } = getCurrentInstance()!
     return $pageInstance && $pageInstance.proxy!.$page.id
   }
@@ -44,7 +44,7 @@ export function getPageIdByVm(
     return
   }
   // 暂时仅在 h5 平台实现 $pageInstance，避免影响过大
-  if (__PLATFORM__ === 'h5') {
+  if (__PLATFORM__ === 'h5' || __PLATFORM__ === 'mp-weibo') {
     const { $pageInstance } = vm.$
     return $pageInstance && $pageInstance.proxy!.$page.id
   }

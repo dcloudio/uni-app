@@ -4,7 +4,7 @@ import { ComponentPublicInstance } from 'vue'
 export function getOpenerEventChannel(
   this: ComponentPublicInstance
 ): EventChannel | undefined {
-  if (__PLATFORM__ === 'h5') {
+  if (__PLATFORM__ === 'h5' || __PLATFORM__ === 'mp-weibo') {
     if (this.$route) {
       const meta = this.$route.meta
       if (!meta.eventChannel) {

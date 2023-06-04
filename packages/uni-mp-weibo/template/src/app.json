@@ -1,0 +1,9 @@
+{
+  "pages": [
+    "pages/index/index"
+  ],
+  "window": {},
+  "externalJSFileNameList": [
+    "web-view"
+  ]
+}

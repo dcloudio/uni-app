@@ -1,0 +1,17 @@
+body::after {
+  position: fixed;
+  content: '';
+  left: -1000px;
+  top: -1000px;
+  animation: shadow-preload 0.1s;
+  animation-delay: 3s;
+}
+
+@keyframes shadow-preload {
+  0% {
+    background-image: url(https://cdn.dcloud.net.cn/img/shadow-grey.png);
+  }
+  100% {
+    background-image: url(https://cdn.dcloud.net.cn/img/shadow-grey.png);
+  }
+}

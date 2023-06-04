@@ -1,0 +1,222 @@
+uni-picker {
+  position: relative;
+  display: block;
+  cursor: pointer;
+}
+
+uni-picker[hidden] {
+  display: none;
+}
+
+uni-picker[disabled] {
+  cursor: not-allowed;
+}
+
+.uni-picker-container {
+  display: none;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  box-sizing: border-box;
+  z-index: 999;
+  font-size: 16px;
+}
+
+.uni-picker-container .uni-picker-custom * {
+  box-sizing: border-box;
+}
+
+.uni-picker-container .uni-picker-custom {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  transform: translate(0, 100%);
+  backface-visibility: hidden;
+  z-index: 999;
+  width: 100%;
+  background-color: #fff;
+  visibility: hidden;
+  transition: transform 0.3s, visibility 0.3s;
+}
+
+.uni-picker-container .uni-picker-custom.uni-picker-toggle {
+  visibility: visible;
+  transform: translate(0, 0);
+}
+
+.uni-picker-container .uni-picker-content {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 238px;
+  background-color: white;
+}
+
+.uni-picker-container .uni-picker-item {
+  padding: 0;
+  height: 34px;
+  line-height: 34px;
+  text-align: center;
+  color: #000;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.uni-picker-container .uni-picker-header {
+  display: block;
+  position: relative;
+  text-align: center;
+  width: 100%;
+  height: 45px;
+}
+
+.uni-picker-container .uni-picker-header:after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  height: 1px;
+  clear: both;
+  border-bottom: 1px solid #e5e5e5;
+  color: #e5e5e5;
+  transform-origin: 0 100%;
+  transform: scaleY(0.5);
+}
+
+.uni-picker-container .uni-picker-action {
+  display: block;
+  max-width: 50%;
+  top: 0;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 0 14px;
+  font-size: 17px;
+  line-height: 45px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.uni-picker-container .uni-picker-action.uni-picker-action-cancel {
+  float: left;
+  color: #888;
+}
+
+.uni-picker-container .uni-picker-action.uni-picker-action-confirm {
+  float: right;
+  color: #007aff;
+}
+
+.uni-picker-container .uni-picker-select {
+  display: none;
+}
+
+.uni-picker-system {
+  position: absolute;
+  display: none;
+  display: block;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.uni-picker-system > .uni-picker-system_input {
+  position: absolute;
+  border: none;
+  height: 100%;
+  opacity: 0;
+  /* Chrome 无效 */
+  cursor: pointer;
+}
+
+.uni-picker-system > .uni-picker-system_input.firefox {
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+.uni-picker-system > .uni-picker-system_input.chrome {
+  /* 日历空白位置宽度 32px */
+  top: 0;
+  left: 0;
+  width: 2em;
+  font-size: 32px;
+  height: 32px;
+}
+
+@media screen and (min-width: 500px) and (min-height: 500px) {
+  .uni-mask.uni-picker-mask {
+    background: none;
+  }
+  .uni-picker-container .uni-picker-custom {
+    width: 300px;
+    left: 50%;
+    right: auto;
+    top: 50%;
+    bottom: auto;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    border-radius: 5px;
+    transition: opacity 0.3s, visibility 0.3s;
+    box-shadow: 0px 0 20px 5px rgba(0, 0, 0, 0.3);
+  }
+  .uni-picker-container .uni-picker-header {
+    border-radius: 5px 5px 0 0;
+  }
+  .uni-picker-container .uni-picker-content {
+    /* transform 用于解决 Safari overflow 失效的问题 */
+    transform: translate(0 0);
+    overflow: hidden;
+    border-radius: 0 0 5px 5px;
+  }
+  .uni-picker-container .uni-picker-custom.uni-picker-toggle {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+  .uni-selector-select .uni-picker-header,
+  .uni-selector-select .uni-picker-content {
+    display: none;
+  }
+  .uni-selector-select .uni-picker-select {
+    display: block;
+    max-height: 300px;
+    overflow: auto;
+    background-color: white;
+    border-radius: 5px;
+    padding: 6px 0;
+  }
+  .uni-selector-select .uni-picker-item {
+    padding: 0 10px;
+    color: #555555;
+  }
+  .uni-selector-select .uni-picker-item:hover {
+    background-color: #f6f6f6;
+  }
+  .uni-selector-select .uni-picker-item.selected {
+    color: #007aff;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .uni-picker-container .uni-picker-content {
+    background-color: var(--UI-BG-2);
+  }
+  .uni-picker-container .uni-picker-action.uni-picker-action-cancel {
+    color: var(--UI-FG-0);
+  }
+  .uni-picker-container .uni-picker-custom {
+    background-color: var(--UI-BG-2);
+  }
+  .uni-selector-select .uni-picker-item {
+    color: var(--UI-FG-0);
+  }
+  .uni-picker-container .uni-picker-header:after {
+    border-bottom-color: var(--UI-FG-3);
+  }
+}

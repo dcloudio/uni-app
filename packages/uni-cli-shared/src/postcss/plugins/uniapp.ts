@@ -128,6 +128,7 @@ const transforms: Record<string, RewriteTag | undefined> = {
   h5: rewriteUniH5Tags,
   app: rewriteUniAppTags,
   'mp-baidu': rewriteBaiduTags,
+  'mp-weibo': rewriteUniH5Tags,
 }
 
 const uniapp = (opts?: UniAppCssProcessorOptions) => {

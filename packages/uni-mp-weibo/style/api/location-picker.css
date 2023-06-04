@@ -1,0 +1,220 @@
+.uni-system-choose-location {
+  display: block;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: #f8f8f8;
+  z-index: 999;
+}
+
+.uni-system-choose-location .map {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 300px;
+}
+
+.uni-system-choose-location .map-location {
+  position: absolute;
+  left: 50%;
+  bottom: 50%;
+  width: 32px;
+  height: 52px;
+  margin-left: -16px;
+  cursor: pointer;
+  background-size: 100%;
+}
+
+.uni-system-choose-location .map-move {
+  position: absolute;
+  bottom: 50px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  box-sizing: border-box;
+  line-height: 40px;
+  background-color: white;
+  border-radius: 50%;
+  pointer-events: auto;
+  cursor: pointer;
+  box-shadow: 0px 0 5px 1px rgba(0, 0, 0, 0.3);
+}
+
+.uni-system-choose-location .map-move>svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 8px;
+}
+
+.uni-system-choose-location .nav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 44px;
+  background-color: transparent;
+  background-image: linear-gradient( to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0));
+}
+
+.uni-system-choose-location .nav-btn {
+  position: absolute;
+  box-sizing: border-box;
+  top: 0;
+  left: 0;
+  width: 60px;
+  height: 44px;
+  padding: 6px;
+  line-height: 32px;
+  font-size: 26px;
+  color: white;
+  text-align: center;
+  cursor: pointer;
+}
+
+.uni-system-choose-location .nav-btn.confirm {
+  left: auto;
+  right: 0;
+}
+
+.uni-system-choose-location .nav-btn.disable {
+  opacity: 0.4;
+}
+
+.uni-system-choose-location .nav-btn>svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* line-height: inherit; */
+  border-radius: 2px;
+  box-sizing: border-box;
+  padding: 3px;
+}
+
+.uni-system-choose-location .nav-btn.confirm>svg {
+  background-color: #007aff;
+  padding: 5px;
+}
+
+.uni-system-choose-location .menu {
+  position: absolute;
+  top: 300px;
+  left: 0;
+  width: 100%;
+  bottom: 0;
+  background-color: white;
+}
+
+.uni-system-choose-location .search {
+  display: flex;
+  flex-direction: row;
+  height: 50px;
+  padding: 8px;
+  line-height: 34px;
+  box-sizing: border-box;
+  background-color: white;
+}
+
+.uni-system-choose-location .search-input {
+  flex: 1;
+  height: 100%;
+  border-radius: 5px;
+  padding: 0 5px;
+  background: #ebebeb;
+}
+
+.uni-system-choose-location .search-btn {
+  margin-left: 5px;
+  color: #007aff;
+  font-size: 17px;
+  text-align: center;
+}
+
+.uni-system-choose-location .list {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  width: 100%;
+  bottom: 0;
+  padding-bottom: 10px;
+  /* background-color: #f6f6f6; */
+}
+
+.uni-system-choose-location .list-loading {
+  display: flex;
+  height: 50px;
+  justify-content: center;
+  align-items: center;
+}
+
+.uni-system-choose-location .list-item {
+  position: relative;
+  padding: 10px;
+  padding-right: 40px;
+  cursor: pointer;
+}
+
+.uni-system-choose-location .list-item>svg {
+  display: none;
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  margin-top: -15px;
+  box-sizing: border-box;
+  padding: 5px;
+}
+
+.uni-system-choose-location .list-item.selected>svg {
+  display: block;
+}
+
+.uni-system-choose-location .list-item:not(:last-child)::after {
+  position: absolute;
+  content: "";
+  height: 1px;
+  left: 10px;
+  bottom: 0;
+  width: 100%;
+  background-color: #d3d3d3;
+}
+
+.uni-system-choose-location .list-item-title {
+  font-size: 14px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.uni-system-choose-location .list-item-detail {
+  font-size: 12px;
+  color: #808080;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+@media screen and (min-width: 800px) {
+  .uni-system-choose-location .map {
+    top: 0;
+    height: 100%;
+  }
+  .uni-system-choose-location .map-move {
+    bottom: 10px;
+    right: 320px;
+  }
+  .uni-system-choose-location .menu {
+    top: 54px;
+    left: auto;
+    right: 10px;
+    width: 300px;
+    bottom: 10px;
+    max-height: 600px;
+    box-shadow: 0px 0 20px 5px rgba(0, 0, 0, 0.3);
+  }
+}

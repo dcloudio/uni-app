@@ -40,7 +40,7 @@ export class ComponentDescriptor {
   private $bindStyle: boolean = false
   constructor(vm: ComponentDescriptorVm) {
     this.$vm = vm
-    if (__PLATFORM__ === 'h5') {
+    if (__PLATFORM__ === 'h5' || __PLATFORM__ === 'mp-weibo') {
       this.$el = resolveOwnerEl((vm as ComponentPublicInstance).$) as WxsElement
     } else {
       this.$el = vm.$el
@@ -222,7 +222,7 @@ function createComponentDescriptor(
   vm: ComponentDescriptorVm,
   isOwnerInstance = true
 ) {
-  if (__PLATFORM__ === 'h5') {
+  if (__PLATFORM__ === 'h5' || __PLATFORM__ === 'mp-weibo') {
     if (isOwnerInstance && vm) {
       vm = resolveOwnerVm((vm as ComponentPublicInstance).$)!
     }
@@ -296,7 +296,7 @@ function getWxsVm(el: WxsElement) {
   }
   if (__PLATFORM__ === 'app') {
     return createComponentDescriptorVm(el)
-  } else if (__PLATFORM__ === 'h5') {
+  } else if (__PLATFORM__ === 'h5' || __PLATFORM__ === 'mp-weibo') {
     return el.__vueParentComponent && el.__vueParentComponent.proxy!
   }
 }

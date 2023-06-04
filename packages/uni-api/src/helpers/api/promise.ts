@@ -28,6 +28,18 @@ export function handlePromise(promise: Promise<unknown>) {
 
 export function promisify(name: string, fn: Function) {
   return (args = {}, ...rest: unknown[]) => {
+    try {
+      // @ts-ignore
+      if (__PLATFORM__ === 'mp-weibo' && window.weibo && window.weibo[name]) {
+        // @ts-ignore
+        window.currentWeiboApiName = name
+        // @ts-ignore
+        const value = window.weibo[name](args)
+        if (name !== 'switchTab') {
+          return value
+        }
+      }
+    } catch (e) {}
     if (hasCallback(args)) {
       return wrapperReturnValue(name, invokeApi(name, fn, args, rest))
     }
