@@ -34,6 +34,9 @@ export function uniAppManifestPlugin(): Plugin {
     },
     transform(code, id) {
       if (isManifest(id)) {
+        this.addWatchFile(
+          path.resolve(process.env.UNI_INPUT_DIR, 'manifest.json')
+        )
         manifestJson = parseJson(code)
         return `export default 'manifest.json'`
       }
@@ -55,6 +58,24 @@ export class UniAppConfig extends AppConfig {
 export * from './App.vue.style.uts'
 `
       }
+      fs.outputFileSync(
+        path.resolve(process.env.UNI_OUTPUT_DIR, 'manifest.json'),
+        JSON.stringify(
+          {
+            id: manifestJson.appid || '',
+            name: manifestJson.name || '',
+            description: manifestJson.description || '',
+            version: {
+              name: manifestJson.versionName || '',
+              code: manifestJson.versionCode || '',
+            },
+            'uni-app-x': manifestJson['uni-app-x'] || {},
+            app: manifestJson.app || {},
+          },
+          null,
+          2
+        )
+      )
     },
   }
 }

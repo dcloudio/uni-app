@@ -14,12 +14,19 @@ import type { EasycomMatcher } from './easycom'
  * @param importer
  * @returns
  */
-export function resolveUTSAppModule(id: string, importer: string) {
+export function resolveUTSAppModule(
+  id: string,
+  importer: string,
+  includeUTSSDK = true
+) {
   id = path.resolve(importer, id)
-  if (id.includes('utssdk') || id.includes('uni_modules')) {
+  if (id.includes('uni_modules') || (includeUTSSDK && id.includes('utssdk'))) {
     const parts = normalizePath(id).split('/')
     const parentDir = parts[parts.length - 2]
-    if (parentDir === 'uni_modules' || parentDir === 'utssdk') {
+    if (
+      parentDir === 'uni_modules' ||
+      (includeUTSSDK && parentDir === 'utssdk')
+    ) {
       const basedir = parentDir === 'uni_modules' ? 'utssdk' : ''
       if (fs.existsSync(path.resolve(id, basedir, 'index.uts'))) {
         return id
@@ -39,7 +46,11 @@ export function resolveUTSAppModule(id: string, importer: string) {
 }
 
 // 仅限 root/uni_modules/test-plugin | root/utssdk/test-plugin 格式
-export function resolveUTSModule(id: string, importer: string) {
+export function resolveUTSModule(
+  id: string,
+  importer: string,
+  includeUTSSDK = true
+) {
   if (
     process.env.UNI_PLATFORM === 'app' ||
     process.env.UNI_PLATFORM === 'app-plus'
@@ -47,10 +58,13 @@ export function resolveUTSModule(id: string, importer: string) {
     return resolveUTSAppModule(id, importer)
   }
   id = path.resolve(importer, id)
-  if (id.includes('utssdk') || id.includes('uni_modules')) {
+  if (id.includes('uni_modules') || (includeUTSSDK && id.includes('utssdk'))) {
     const parts = normalizePath(id).split('/')
     const parentDir = parts[parts.length - 2]
-    if (parentDir === 'uni_modules' || parentDir === 'utssdk') {
+    if (
+      parentDir === 'uni_modules' ||
+      (includeUTSSDK && parentDir === 'utssdk')
+    ) {
       const basedir = parentDir === 'uni_modules' ? 'utssdk' : ''
       const resolvePlatformDir = (p: typeof process.env.UNI_UTS_PLATFORM) => {
         return path.resolve(id, basedir, p)

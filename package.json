@@ -1,6 +1,6 @@
 {
   "private": true,
-  "version": "3.0.0-alpha-3080220230428001",
+  "version": "3.0.0-alpha-3080220230428002",
   "workspaces": [
     "packages/*"
   ],
@@ -10,7 +10,7 @@
     "build": "node scripts/build.js",
     "build:h5": "node scripts/build.js uni-app uts uni-uts-v1 uni-app-uvue uni-cli-shared uni-h5 uni-i18n uni-stat uni-shared uni-h5-vite vite-plugin-uni",
     "build:app": "node scripts/build.js uni-app-plus uni-app-vite uni-app-vue uni-app-uvue",
-    "build:mp": "node scripts/build.js uni-mp-vue uni-mp-vite uni-mp-compiler uni-mp-alipay uni-mp-baidu uni-mp-kuaishou uni-mp-lark uni-mp-qq uni-mp-toutiao uni-mp-weixin uni-quickapp-webview",
+    "build:mp": "node scripts/build.js uni-mp-vue uni-mp-vite uni-mp-compiler uni-mp-alipay uni-mp-baidu uni-mp-kuaishou uni-mp-lark uni-mp-qq uni-mp-toutiao uni-mp-weixin uni-mp-xhs uni-quickapp-webview",
     "size": "npm run build size-check",
     "lint": "eslint packages/*/src/**/*.ts",
     "format": "prettier --write --parser typescript \"packages/**/*.ts?(x)\"",
@@ -44,8 +44,8 @@
     "@babel/core": "^7.21.3",
     "@babel/preset-env": "^7.20.2",
     "@dcloudio/types": "3.3.2",
-    "@dcloudio/uni-api": "3.0.0-alpha-3080220230428001",
-    "@dcloudio/uni-app": "3.0.0-alpha-3080220230428001",
+    "@dcloudio/uni-api": "3.0.0-alpha-3080220230428002",
+    "@dcloudio/uni-app": "3.0.0-alpha-3080220230428002",
     "@jest/types": "^29.0.3",
     "@microsoft/api-extractor": "^7.34.5",
     "@rollup/plugin-alias": "^4.0.2",
@@ -90,7 +90,7 @@
     "terser": "^5.4.0",
     "ts-jest": "^29.1.0",
     "typescript": "^5.0.4",
-    "vite": "4.3.3",
+    "vite": "4.3.5",
     "vue": "3.2.47",
     "vue-router": "^4.1.6",
     "yorkie": "^2.0.0"

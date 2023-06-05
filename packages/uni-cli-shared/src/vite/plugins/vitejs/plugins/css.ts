@@ -37,6 +37,7 @@ import type Stylus from 'stylus'
 import type Less from 'less'
 import type { Alias } from 'types/alias'
 import { preCss, preNVueCss } from '../../../../preprocess'
+import { filterPrefersColorScheme } from '../../../../postcss/plugins/uniapp'
 import { emptyCssComments } from '../cleanString'
 import { isArray, isFunction, isString } from '@vue/shared'
 import { PAGES_JSON_JS, PAGES_JSON_UTS } from '../../../../constants'
@@ -273,7 +274,10 @@ export function cssPostPlugin(
       if (id) {
         const filename = chunkCssFilename(id)
         if (filename) {
-          if (platform === 'app' && filename === 'app.css') {
+          if (
+            platform === 'app' &&
+            (filename === 'app.css' || filename === 'App.vue.style.uts')
+          ) {
             // 获取 unocss 的样式文件信息
             const ids = Object.keys(chunk.modules).filter(
               (id) =>
@@ -945,6 +949,11 @@ async function doImportCSSReplace(
 export async function minifyCSS(css: string, config: ResolvedConfig) {
   try {
     const { code, warnings } = await import('esbuild').then(({ transform }) => {
+      if (process.env.VUE_APP_DARK_MODE !== 'true') {
+        const postcssRoot = Postcss.parse(css)
+        filterPrefersColorScheme(postcssRoot, true)
+        css = postcssRoot.toResult().css
+      }
       return transform(css, {
         loader: 'css',
         minify: true,

@@ -9,6 +9,8 @@ export interface ResolvedOptions {
   compiler: typeof _compiler
   root: string
   sourceMap: boolean
+  targetLanguage?: 'kotlin' | 'swift' | 'javascript'
+  classNamePrefix?: string
 }
 
 // compiler-sfc should be exported so it can be re-used

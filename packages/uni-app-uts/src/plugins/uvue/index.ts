@@ -2,9 +2,10 @@ import path from 'path'
 import fs from 'fs-extra'
 
 import type { Plugin } from 'vite'
-import type { SFCBlock } from '@vue/compiler-sfc'
+import type { SFCBlock, SFCDescriptor, SFCParseResult } from '@vue/compiler-sfc'
 import type { TransformPluginContext } from 'rollup'
 
+import { isString } from '@vue/shared'
 import { normalizePath, parseVueRequest } from '@dcloudio/uni-cli-shared'
 
 import {
@@ -33,65 +34,12 @@ export function uniAppUVuePlugin(): Plugin {
     sourceMap: false,
     // eslint-disable-next-line no-restricted-globals
     compiler: require('@vue/compiler-sfc'),
+    targetLanguage: process.env.UNI_UVUE_TARGET_LANGUAGE,
   }
 
   const appVue = resolveAppVue(process.env.UNI_INPUT_DIR)
   function isAppVue(id: string) {
     return normalizePath(id) === appVue
-  }
-
-  async function transformMain(
-    code: string,
-    filename: string,
-    options: ResolvedOptions,
-    pluginContext: TransformPluginContext
-  ) {
-    // prev descriptor is only set and used for hmr
-    const { descriptor, errors } = createDescriptor(filename, code, options)
-
-    if (errors.length) {
-      errors.forEach((error) =>
-        pluginContext.error(createRollupError(filename, error))
-      )
-      return null
-    }
-    const isApp = isAppVue(filename)
-    const fileName = path.relative(process.env.UNI_INPUT_DIR, filename)
-    const className = genClassName(fileName)
-    // 生成 script 文件
-    pluginContext.emitFile({
-      type: 'asset',
-      fileName,
-      source:
-        genScript(descriptor, { filename: className }) +
-        '\n' +
-        genStyle(descriptor, { filename: fileName, className }) +
-        '\n' +
-        (!isApp
-          ? genTemplate(descriptor, {
-              targetLanguage: process.env.UNI_UVUE_TARGET_LANGUAGE as
-                | 'kotlin'
-                | 'swift',
-              mode: 'function',
-              filename: className,
-              prefixIdentifiers: true,
-            })
-          : ''),
-    })
-    let jsCode = ''
-    const content = descriptor.script?.content
-    if (content) {
-      jsCode += await parseImports(content)
-    }
-    if (descriptor.styles.length) {
-      jsCode += '\n' + (await genJsStylesCode(descriptor, pluginContext))
-    }
-    if (!jsCode) {
-      jsCode = 'export default {}'
-    }
-    return {
-      code: jsCode,
-    }
   }
 
   return {
@@ -133,7 +81,29 @@ export function uniAppUVuePlugin(): Plugin {
       }
       if (!query.vue) {
         // main request
-        return transformMain(code, filename, options, this)
+        const { errors, uts, js } = await transformVue(
+          code,
+          filename,
+          options,
+          this,
+          isAppVue
+        )
+        if (errors.length) {
+          errors.forEach((error) =>
+            this.error(createRollupError(filename, error))
+          )
+          return null
+        }
+        const fileName = path.relative(process.env.UNI_INPUT_DIR, filename)
+
+        this.emitFile({
+          type: 'asset',
+          fileName,
+          source: uts,
+        })
+        return {
+          code: js,
+        }
       } else {
         // sub block request
         const descriptor = query.src
@@ -152,5 +122,100 @@ export function uniAppUVuePlugin(): Plugin {
         }
       }
     },
+    generateBundle(_, bundle) {
+      // 遍历vue文件，填充style，尽量减少全局变量
+      Object.keys(bundle).forEach((name) => {
+        const file = bundle[name]
+        if (
+          file &&
+          file.type === 'asset' &&
+          file.fileName !== 'App.vue' &&
+          isVue(file.fileName) &&
+          isString(file.source)
+        ) {
+          const fileName = normalizePath(file.fileName)
+          const classNameComment = `/*${genClassName(
+            fileName,
+            options.classNamePrefix
+          )}Styles*/`
+          if (file.source.includes(classNameComment)) {
+            const styleAssetName = fileName + '.style.uts'
+            const styleAsset = bundle[styleAssetName]
+            if (
+              styleAsset &&
+              styleAsset.type === 'asset' &&
+              isString(styleAsset.source)
+            ) {
+              file.source = file.source.replace(
+                classNameComment,
+                styleAsset.source.replace('export ', '')
+              )
+              delete bundle[styleAssetName]
+            }
+          }
+        }
+      })
+    },
+  }
+}
+
+interface TransformVueResult {
+  errors: SFCParseResult['errors']
+  uts?: string
+  js?: string
+  descriptor: SFCDescriptor
+}
+
+export async function transformVue(
+  code: string,
+  filename: string,
+  options: ResolvedOptions,
+  pluginContext: TransformPluginContext | undefined,
+  isAppVue: (id: string) => boolean = () => false
+): Promise<TransformVueResult> {
+  if (!options.compiler) {
+    options.compiler = require('@vue/compiler-sfc')
+  }
+  // prev descriptor is only set and used for hmr
+  const { descriptor, errors } = createDescriptor(filename, code, options)
+
+  if (errors.length) {
+    return { errors, descriptor }
+  }
+  const isApp = isAppVue(filename)
+  const fileName = path.relative(options.root, filename)
+  const className = genClassName(fileName, options.classNamePrefix)
+  let templateCode = ''
+  if (!isApp) {
+    const templateResult = genTemplate(descriptor, {
+      targetLanguage: options.targetLanguage as any,
+      mode: 'function',
+      filename: className,
+      prefixIdentifiers: true,
+      sourceMap: true,
+    })
+    templateCode = templateResult.code
+  }
+  // 生成 script 文件
+  let utsCode =
+    genScript(descriptor, { filename: className }) +
+    '\n' +
+    genStyle(descriptor, { filename: fileName, className }) +
+    '\n'
+  utsCode += templateCode
+  let jsCode = ''
+  const content = descriptor.script?.content
+  if (content) {
+    jsCode += await parseImports(content)
+  }
+  if (descriptor.styles.length) {
+    jsCode += '\n' + (await genJsStylesCode(descriptor, pluginContext!))
+  }
+  jsCode += `\nexport default "${className}"`
+  return {
+    errors: [],
+    uts: utsCode,
+    js: jsCode,
+    descriptor,
   }
 }

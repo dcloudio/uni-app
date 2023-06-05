@@ -3237,19 +3237,11 @@ const Switch = /* @__PURE__ */ defineComponent({
     watch(() => props2.checked, (val) => {
       switchChecked.value = val;
     });
-    const listeners = {
-      onChange(e2) {
-        switchChecked.value = e2.detail.value;
-        trigger("change", {
-          value: switchChecked.value
-        });
-      }
-    };
     const _onClick = ($event, isLabelClick) => {
       if (props2.disabled) {
         return;
       }
-      switchChecked.value = !switchChecked.value;
+      switchChecked.value = $event.detail ? $event.detail.value : !switchChecked.value;
       trigger("change", {
         value: switchChecked.value
       });
@@ -3273,7 +3265,9 @@ const Switch = /* @__PURE__ */ defineComponent({
         "ref": rootRef
       }, [type === SwitchType.switch ? createVNode("dc-switch", mergeProps({
         dataUncType: "uni-switch"
-      }, listeners, {
+      }, {
+        "onChange": _onClick
+      }, {
         checked: switchChecked.value,
         color,
         disabled
@@ -3284,8 +3278,11 @@ const Switch = /* @__PURE__ */ defineComponent({
           color
         }
       }, {
-        checked: switchChecked.value
-      }, listeners), null) : null]);
+        checked: switchChecked.value,
+        disabled
+      }, {
+        "onClick": _onClick
+      }), null) : null]);
     };
   }
 });
@@ -3645,7 +3642,7 @@ const Radio = /* @__PURE__ */ defineComponent({
       field
     } = useRadioInject(radioChecked, radioValue, reset);
     const _onClick = ($event, isLabelClick) => {
-      if (props2.disabled) {
+      if (props2.disabled || radioChecked.value) {
         return;
       }
       radioChecked.value = !radioChecked.value;

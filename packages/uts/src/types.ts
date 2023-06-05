@@ -26,6 +26,10 @@ export type UTSInputOptions = UTSParseOptions & {
   fileContent?: string
   fileAppendContent?: string
   paths: Record<string, string>
+  uniModules?: string[]
+  globals?: {
+    envs?: Record<string, string>
+  }
 }
 
 export type UTSOutputOptions = {
@@ -37,11 +41,15 @@ export type UTSOutputOptions = {
   extname: string
   logFilename?: boolean
   noColor?: boolean
+  isX?: boolean
   isPlugin?: boolean
   transform?: {
     paramDefaultValue?: boolean
     constructorInvocation?: boolean
     uniExtApiPackage?: string
+    uvueClassNamePrefix?: string
+    uvueClassNameOnlyBasename?: boolean
+    disableReactiveObject?: boolean
   }
 }
 export interface UTSOptions {

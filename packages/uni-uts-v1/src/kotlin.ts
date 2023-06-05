@@ -6,7 +6,7 @@ import { sync } from 'fast-glob'
 import { isArray } from '@vue/shared'
 import type { UTSResult } from '@dcloudio/uts'
 import { get } from 'android-versions'
-import { normalizePath, parseJson, resolveSourceMapPath } from './shared'
+import { normalizePath, parseJson } from './shared'
 import {
   CompilerServer,
   genUTSPlatformResource,
@@ -21,9 +21,12 @@ import {
   genComponentsCode,
   parseKotlinPackageWithPluginId,
   isColorSupported,
+  resolveSourceMapFile,
 } from './utils'
 import { Module } from '../types/types'
 import { parseUTSSyntaxError } from './stacktrace'
+import { APP_PLATFORM } from './manifest/utils'
+import { restoreDex } from './manifest'
 
 export interface KotlinCompilerServer extends CompilerServer {
   getKotlincHome(): string
@@ -62,7 +65,8 @@ function parseKotlinPackage(filename: string) {
 
 export async function runKotlinProd(
   filename: string,
-  components: Record<string, string>
+  components: Record<string, string>,
+  { isPlugin, isX }: { isPlugin: boolean; isX: boolean }
 ) {
   // 文件有可能是 app-ios 里边的，因为编译到 android 时，为了保证不报错，可能会去读取 ios 下的 uts
   if (filename.includes('app-ios')) {
@@ -75,6 +79,8 @@ export async function runKotlinProd(
     outputDir,
     sourceMap: true,
     components,
+    isX,
+    isPlugin,
   })
   if (!result) {
     return
@@ -97,9 +103,25 @@ export type RunKotlinDevResult = UTSResult & {
   changed: string[]
 }
 
+interface RunKotlinDevOptions {
+  components: Record<string, string>
+  isX: boolean
+  isPlugin: boolean
+  cacheDir: string
+  pluginRelativeDir: string
+  is_uni_modules: boolean
+}
+
 export async function runKotlinDev(
   filename: string,
-  components: Record<string, string>
+  {
+    components,
+    isX,
+    isPlugin,
+    cacheDir,
+    pluginRelativeDir,
+    is_uni_modules,
+  }: RunKotlinDevOptions
 ): Promise<RunKotlinDevResult | undefined> {
   // 文件有可能是 app-ios 里边的，因为编译到 android 时，为了保证不报错，可能会去读取 ios 下的 uts
   if (filename.includes('app-ios')) {
@@ -112,6 +134,8 @@ export async function runKotlinDev(
     outputDir,
     sourceMap: true,
     components,
+    isX,
+    isPlugin,
   })) as RunKotlinDevResult
   if (!result) {
     return
@@ -154,15 +178,23 @@ export async function runKotlinDev(
       resDeps = await checkRes(filename, checkRResources)
     }
     // time = Date.now()
-    const jarFile = resolveJarPath(kotlinFile)
+    const jarFile = resolveJarPath(
+      'app-android',
+      cacheDir,
+      pluginRelativeDir,
+      kotlinFile
+    )
     const options = {
       kotlinc: resolveKotlincArgs(
         kotlinFile,
+        jarFile,
         getKotlincHome(),
         getDefaultJar()
           .concat(resolveLibs(filename))
           .concat(deps)
           .concat(resDeps)
+        // .concat(getUniModulesCacheJars(cacheDir))
+        // .concat(getUniModulesJars(outputDir))
       ),
       d8: resolveD8Args(jarFile),
       sourceRoot: inputDir,
@@ -172,13 +204,22 @@ export async function runKotlinDev(
     // console.log('dex compile time: ' + (Date.now() - time) + 'ms')
     if (res) {
       try {
-        fs.unlinkSync(jarFile)
+        // 其他插件或 x 需要该插件的 jar 做编译
+        // fs.unlinkSync(jarFile)
         // 短期内先不删除，方便排查问题
         // fs.unlinkSync(kotlinFile)
       } catch (e) {}
       const dexFile = resolveDexFile(jarFile)
       if (fs.existsSync(dexFile)) {
-        result.changed = [normalizePath(path.relative(outputDir, dexFile))]
+        const newDexFile = restoreDex(
+          pluginRelativeDir,
+          cacheDir,
+          outputDir,
+          is_uni_modules
+        )
+        result.changed = [
+          normalizePath(path.relative(outputDir, newDexFile || dexFile)),
+        ]
       }
     }
     // else {
@@ -287,25 +328,19 @@ function resolveConfigJsonFile(filename: string) {
   }
 }
 
-function resolveSourceMapFile(outputDir: string, kotlinFile: string) {
-  return (
-    path.resolve(resolveSourceMapPath(), path.relative(outputDir, kotlinFile)) +
-    '.map'
-  )
-}
-
 const DEFAULT_IMPORTS = [
   'kotlinx.coroutines.async',
   'kotlinx.coroutines.CoroutineScope',
   'kotlinx.coroutines.Deferred',
   'kotlinx.coroutines.Dispatchers',
   'io.dcloud.uts.Map',
+  'io.dcloud.uts.UTSAndroid',
   'io.dcloud.uts.*',
 ]
 
 export async function compile(
   filename: string,
-  { inputDir, outputDir, sourceMap, components }: ToKotlinOptions
+  { inputDir, outputDir, sourceMap, components, isX, isPlugin }: ToKotlinOptions
 ) {
   const { bundle, UTSTarget } = getUTSCompiler()
   // let time = Date.now()
@@ -340,7 +375,8 @@ export async function compile(
   const result = await bundle(UTSTarget.KOTLIN, {
     input,
     output: {
-      isPlugin: true,
+      isX,
+      isPlugin,
       outDir: outputDir,
       package: pluginPackage,
       sourceMap: sourceMap ? resolveUTSSourceMapPath() : false,
@@ -367,6 +403,7 @@ export async function compile(
 
 export function resolveKotlincArgs(
   filename: string,
+  dest: string,
   kotlinc: string,
   jars: string[]
 ) {
@@ -375,7 +412,7 @@ export function resolveKotlincArgs(
     '-cp',
     resolveClassPath(jars),
     '-d',
-    resolveJarPath(filename),
+    dest,
     '-kotlin-home',
     kotlinc,
   ]
@@ -431,7 +468,21 @@ function resolveDexPath(filename: string) {
   return path.dirname(filename)
 }
 
-export function resolveJarPath(filename: string) {
+export function resolveJarPath(
+  platform: APP_PLATFORM,
+  cacheDir: string,
+  pluginRelativeDir: string,
+  filename: string
+) {
+  if (cacheDir) {
+    return join(
+      cacheDir,
+      platform,
+      'uts',
+      pluginRelativeDir,
+      path.basename(filename).replace(path.extname(filename), '.jar')
+    )
+  }
   return filename.replace(path.extname(filename), '.jar')
 }
 
@@ -461,4 +512,21 @@ export function checkAndroidVersionTips(
       }
     } catch (e) {}
   }
+}
+
+export function getUniModulesCacheJars(cacheDir: string) {
+  if (cacheDir) {
+    return sync('app-android/uts/uni_modules/*/index.jar', {
+      cwd: cacheDir,
+      absolute: true,
+    })
+  }
+  return []
+}
+
+export function getUniModulesJars(outputDir: string) {
+  return sync('*/utssdk/app-android/index.jar', {
+    cwd: path.resolve(outputDir, 'uni_modules'),
+    absolute: true,
+  })
 }

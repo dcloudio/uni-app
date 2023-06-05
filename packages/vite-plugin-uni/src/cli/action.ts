@@ -17,7 +17,7 @@ import {
   showRunPrompt,
 } from './utils'
 import { initEasycom } from '../utils/easycom'
-import { runUVueDev } from './uvue'
+import { runUVueBuild, runUVueDev } from './uvue'
 import { formatWeiboHtml, copyWeiboSrc } from '../platform/weiboSpecial'
 
 export async function runDev(options: CliOptions & ServerOptions) {
@@ -28,7 +28,7 @@ export async function runDev(options: CliOptions & ServerOptions) {
     ;(options as BuildOptions).minify = true
   }
   initEnv('dev', options)
-  if (process.env.UNI_UVUE === 'true') {
+  if (process.env.UNI_APP_X === 'true' && options.platform === 'app') {
     return runUVueDev(options)
   }
   const createLogger = await import('vite').then(
@@ -130,6 +130,9 @@ export async function runBuild(
     copyWeiboSrc(options.inputDir)
   }
   initEnv('build', options)
+  if (process.env.UNI_APP_X === 'true') {
+    return runUVueBuild(options)
+  }
   try {
     await (options.ssr && options.platform === 'h5'
       ? buildSSR(options)

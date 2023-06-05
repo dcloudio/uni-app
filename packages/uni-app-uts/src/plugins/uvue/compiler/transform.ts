@@ -107,6 +107,8 @@ export function createTransformContext(
     prefixIdentifiers = false,
     nodeTransforms = [],
     directiveTransforms = {},
+    scopeId = null,
+    slotted = true,
     isBuiltInComponent = NOOP,
     isCustomElement = NOOP,
     onError = defaultOnError,
@@ -124,6 +126,8 @@ export function createTransformContext(
     directiveTransforms,
     isBuiltInComponent,
     isCustomElement,
+    scopeId,
+    slotted,
     onError,
     onWarn,
 
@@ -249,6 +253,7 @@ export function transform(root: RootNode, options: TransformOptions) {
   const context = createTransformContext(root, options)
   traverseNode(root, context)
   createRootCodegen(root, context)
+  root.components = [...context.components]
 }
 
 export function isSingleElementRoot(

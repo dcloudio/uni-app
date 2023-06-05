@@ -1,19 +1,24 @@
 import { BuildOptions, ServerOptions, createLogger } from 'vite'
+import { extend, hasOwn } from '@vue/shared'
 import { M, output, parseManifestJsonOnce } from '@dcloudio/uni-cli-shared'
 import { RollupWatcher } from 'rollup'
 
 import { CliOptions } from '.'
 import { buildByVite, initBuildOptions } from './build'
 import { addConfigFile, cleanOptions, printStartupDuration } from './utils'
-import { extend } from '@vue/shared'
+import { initEasycom } from '../utils/easycom'
 
 export function initUVueEnv() {
+  // 直接指定了
+  if (process.env.UNI_APP_X === 'false') {
+    return
+  }
   const manifestJson = parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
-  const isNVueEnabled = manifestJson?.uvue?.enable === true
+  const isNVueEnabled = hasOwn(manifestJson, 'uni-app-x')
   if (!isNVueEnabled) {
     return
   }
-  process.env.UNI_UVUE = 'true'
+  process.env.UNI_APP_X = 'true'
   process.env.UNI_UVUE_TARGET_LANGUAGE = 'javascript'
   if (process.env.UNI_UTS_PLATFORM === 'app-android') {
     process.env.UNI_UVUE_TARGET_LANGUAGE = 'kotlin'
@@ -30,6 +35,7 @@ export async function runUVueDev(options: CliOptions & ServerOptions) {
     )
     return process.exit(0)
   }
+  initEasycom()
   const watcher = (await buildUVue(options)) as RollupWatcher
   let isFirstStart = true
   let isFirstEnd = true
@@ -49,16 +55,30 @@ export async function runUVueDev(options: CliOptions & ServerOptions) {
         printStartupDuration(createLogger(options.logLevel), false)
         return
       }
-      return output(
-        'log',
-        M['dev.watching.end.files'].replace(
-          '{files}',
-          JSON.stringify(['classes.dex'])
+      const dex = process.env.UNI_APP_UTS_CHANGED_FILES
+      process.env.UNI_APP_UTS_CHANGED_FILES = ''
+      if (dex) {
+        return output(
+          'log',
+          M['dev.watching.end.files'].replace(
+            '{files}',
+            JSON.stringify(JSON.parse(dex))
+          )
         )
-      )
+      }
       return output('log', M['dev.watching.end'])
     }
   })
+}
+
+export async function runUVueBuild(options: CliOptions & BuildOptions) {
+  try {
+    await buildUVue(options)
+    console.log(M['build.done'])
+  } catch (e: any) {
+    console.error(`Build failed with errors.`)
+    process.exit(1)
+  }
 }
 
 /**

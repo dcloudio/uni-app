@@ -1,7 +1,13 @@
 import path from 'path'
 import { init, parse } from 'es-module-lexer'
 import { normalizePath, removeExt } from '@dcloudio/uni-cli-shared'
-import { camelize, capitalize } from '@vue/shared'
+import {
+  camelize,
+  capitalize,
+  isArray,
+  isPlainObject,
+  isString,
+} from '@vue/shared'
 
 export const ENTRY_FILENAME = 'index.uts'
 
@@ -19,13 +25,32 @@ export function uvueOutDir() {
   return path.join(process.env.UNI_OUTPUT_DIR, '../.uvue')
 }
 
-export function genClassName(fileName: string) {
+export function genClassName(fileName: string, prefix: string = 'Gen') {
   return (
-    'Gen' +
+    prefix +
     capitalize(camelize(removeExt(normalizePath(fileName).replace(/\//g, '-'))))
   )
 }
 
 export function isVue(filename: string) {
   return filename.endsWith('.vue') || filename.endsWith('.uvue')
+}
+
+export function stringifyMap(obj: unknown) {
+  return serialize(obj, true)
+}
+
+function serialize(obj: unknown, ts: boolean = false): string {
+  if (isString(obj)) {
+    return `"${obj}"`
+  } else if (isPlainObject(obj)) {
+    const entries = Object.entries(obj).map(
+      ([key, value]) => `[${serialize(key, ts)},${serialize(value, ts)}]`
+    )
+    return `new Map${ts ? '<string, any>' : ''}([${entries.join(',')}])`
+  } else if (isArray(obj)) {
+    return `[${obj.map((item) => serialize(item, ts)).join(',')}]`
+  } else {
+    return String(obj)
+  }
 }

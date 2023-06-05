@@ -83,10 +83,10 @@ function walkDecls(rpx2unit: ReturnType<typeof createRpx2Unit>) {
   }
 }
 
-function filterPrefersColorScheme(root: Root) {
+export function filterPrefersColorScheme(root: Root, force: boolean = false) {
   if (process.env.VUE_APP_DARK_MODE !== 'true') {
     const filePath = root.source?.input.file
-    if (filePath && filePath.includes('@dcloudio')) {
+    if (force || (filePath && filePath.includes('@dcloudio'))) {
       root.walkAtRules((rule) => {
         if (rule.params.includes('prefers-color-scheme')) {
           rule.remove()

@@ -169,6 +169,6 @@ export function initPageInternalInstance(
     meta,
     openType,
     eventChannel,
-    statusBarStyle: titleColor === '#000000' ? 'dark' : 'light',
+    statusBarStyle: titleColor === '#ffffff' ? 'light' : 'dark',
   }
 }

@@ -419,7 +419,7 @@ function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel, 
     meta,
     openType,
     eventChannel,
-    statusBarStyle: titleColor === "#000000" ? "dark" : "light"
+    statusBarStyle: titleColor === "#ffffff" ? "light" : "dark"
   };
 }
 function invokeHook(vm, name, args) {
@@ -5407,7 +5407,7 @@ const index$o = /* @__PURE__ */ defineBuiltInComponent({
       field
     } = useRadioInject(radioChecked, radioValue, reset);
     const _onClick = ($event) => {
-      if (props2.disabled) {
+      if (props2.disabled || radioChecked.value) {
         return;
       }
       radioChecked.value = true;

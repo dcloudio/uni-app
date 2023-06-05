@@ -8,8 +8,7 @@ import {
 import { createCompilerError, ErrorCodes } from '../errors'
 import { camelize } from '@vue/shared'
 import { CAMELIZE } from '@vue/compiler-core'
-
-const objectExp = /\{.*\}/g
+import { objectExp, object2Map } from '../utils'
 
 // v-bind without arg is handled directly in ./transformElements.ts due to it affecting
 // codegen for the entire props object. This transform here is only for v-bind
@@ -22,7 +21,7 @@ export const transformBind: DirectiveTransform = (dir, _node, context) => {
     arg.children.unshift(`(`)
     arg.children.push(`) || ""`)
   } else if (!arg.isStatic) {
-    arg.content = `${arg.content} || ""`
+    arg.content = `${arg.content} !== null ? ${arg.content} : ""`
   }
 
   // .sync is replaced by v-model:arg
@@ -59,7 +58,7 @@ export const transformBind: DirectiveTransform = (dir, _node, context) => {
   }
 
   if ((exp as any).content && objectExp.test((exp as any).content)) {
-    ;(exp as any).content = object2Map((exp as any).content)
+    ;(exp as any).content = object2Map(exp)
   } else if ((exp as any).children) {
     ;(exp as any).children.forEach(
       (child: ExpressionNode | string, index: number) => {
@@ -86,24 +85,4 @@ const injectPrefix = (arg: ExpressionNode, prefix: string) => {
     arg.children.unshift(`'${prefix}' + (`)
     arg.children.push(`)`)
   }
-}
-
-function object2Map(content: string) {
-  const matched = content.match(objectExp)![0]
-  const keyValues = matched.replace(/\{|\}/g, '').split(',')
-  let mapConstructor = 'new Map<string,any>(['
-
-  keyValues.forEach((keyValue: string, index: number) => {
-    const [key, value] = keyValue.split(':')
-    if (key && value) {
-      mapConstructor += `[${key},${value}]`
-      if (index < keyValues.length - 1) {
-        mapConstructor += ','
-      }
-    }
-  })
-
-  mapConstructor += '])'
-
-  return content.replace(matched, mapConstructor)
 }

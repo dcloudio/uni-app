@@ -1579,7 +1579,7 @@ function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel, 
         meta,
         openType,
         eventChannel,
-        statusBarStyle: titleColor === '#000000' ? 'dark' : 'light',
+        statusBarStyle: titleColor === '#ffffff' ? 'light' : 'dark',
     };
 }
 
@@ -1809,21 +1809,21 @@ function showPage({ context = {}, url, data = {}, style = {}, onMessage, onClose
 const invokeOnCallback = (name, res) => UniServiceJSBridge.emit('api.' + name, res);
 
 let invokeViewMethodId = 1;
-function publishViewMethodName() {
-    return getCurrentPageId() + '.' + INVOKE_VIEW_API;
+function publishViewMethodName(pageId) {
+    return (pageId || getCurrentPageId()) + '.' + INVOKE_VIEW_API;
 }
 const invokeViewMethod = (name, args, pageId, callback) => {
     const { subscribe, publishHandler } = UniServiceJSBridge;
     const id = callback ? invokeViewMethodId++ : 0;
     callback && subscribe(INVOKE_VIEW_API + '.' + id, callback, true);
-    publishHandler(publishViewMethodName(), { id, name, args }, pageId);
+    publishHandler(publishViewMethodName(pageId), { id, name, args }, pageId);
 };
 const invokeViewMethodKeepAlive = (name, args, callback, pageId) => {
     const { subscribe, unsubscribe, publishHandler } = UniServiceJSBridge;
     const id = invokeViewMethodId++;
     const subscribeName = INVOKE_VIEW_API + '.' + id;
     subscribe(subscribeName, callback);
-    publishHandler(publishViewMethodName(), { id, name, args }, pageId);
+    publishHandler(publishViewMethodName(pageId), { id, name, args }, pageId);
     return () => {
         unsubscribe(subscribeName);
     };

@@ -419,7 +419,7 @@ function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel, 
     meta,
     openType,
     eventChannel,
-    statusBarStyle: titleColor === "#000000" ? "dark" : "light"
+    statusBarStyle: titleColor === "#ffffff" ? "light" : "dark"
   };
 }
 function invokeHook(vm, name, args) {
@@ -5402,7 +5402,7 @@ const index$o = /* @__PURE__ */ defineBuiltInComponent({
       field
     } = useRadioInject(radioChecked, radioValue, reset);
     const _onClick = ($event) => {
-      if (props2.disabled) {
+      if (props2.disabled || radioChecked.value) {
         return;
       }
       radioChecked.value = true;
@@ -7523,8 +7523,8 @@ function normalizePageMeta(pageMeta) {
     navigationBar.titleText = navigationBar.titleText || "";
     navigationBar.type = navigationBar.type || "default";
     navigationBar.titleSize = titleSize || "16px";
-    navigationBar.titleColor = titleColor || "#ffffff";
-    navigationBar.backgroundColor = backgroundColor || "#F7F7F7";
+    navigationBar.titleColor = titleColor || "#000000";
+    navigationBar.backgroundColor = backgroundColor || "#F8F8F8";
     __UNI_FEATURE_I18N_LOCALE__ && initNavigationBarI18n(navigationBar);
   }
   return pageMeta;

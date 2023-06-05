@@ -198,6 +198,7 @@ declare namespace UniNamespace {
     'mp-lark'?: PagesJsonPageStyle
     'mp-jd'?: PagesJsonPageStyle
     'mp-weibo'?: PagesJsonPageStyle
+    'mp-xhs'?: PagesJsonPageStyle
     'quickapp-webview'?: PagesJsonPageStyle
     'quickapp-webview-huawei'?: PagesJsonPageStyle
     'quickapp-webview-union'?: PagesJsonPageStyle

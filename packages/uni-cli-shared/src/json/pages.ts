@@ -151,6 +151,16 @@ export function validatePages(pagesJson: Record<string, any>, jsonStr: string) {
     throw new Error(
       `[uni-app] Error: pages.json->pages must contain at least 1 page.`
     )
+  } else {
+    const pages: string[] = []
+    pagesJson.pages.forEach((page) => {
+      if (pages.indexOf(page.path) !== -1) {
+        throw new Error(
+          `[uni-app] Error: pages.json->${page.path} duplication.`
+        )
+      }
+      pages.push(page.path)
+    })
   }
 }
 

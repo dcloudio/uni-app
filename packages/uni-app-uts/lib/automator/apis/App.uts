@@ -1,0 +1,144 @@
+
+import { JSONArray, JSONObject } from 'com.alibaba.fastjson'
+import {
+  ViewToTempFilePathSuccess,
+  ViewToTempFilePathFail
+} from 'io.dcloud.uniapp.runtime'
+import { getCurrentPages } from 'io.dcloud.uts.framework'
+import { parsePage } from './util.uts'
+
+export type GetPageStackParams = {
+  callback: (res: any) => void
+}
+export const getPageStack = (params: GetPageStackParams): void => {
+  params.callback({
+    pageStack: getCurrentPages().map((page: BasePage): UTSJSONObject => {
+      return parsePage(page)
+    })
+  })
+}
+export type GetCurrentPageParams = {
+  callback: (res: any) => void
+}
+
+function _getCurrentPage(): BasePage | null {
+  const pages = getCurrentPages()
+  return pages.length > 0 ? pages[pages.length - 1] : null
+}
+
+export const getCurrentPage = (params: GetCurrentPageParams): void => {
+  const page = _getCurrentPage()
+  params.callback({ page: page !== null ? parsePage(page) : null })
+}
+
+export type CallUniMethodParams = {
+  method: string
+  args: JSONArray
+  callback: (res: any) => void
+}
+
+
+export const callUniMethod = (params: CallUniMethodParams): void => {
+  const method = params.method
+  const args = params.args
+  const callback = params.callback
+  let animationType: string = 'pop-in'
+  let animationDuration: number = 300
+  let arg = {} as JSONObject
+  if (args.size > 0) {
+    arg = args[0] as JSONObject
+  }
+  const success = (result: any) => {
+    const timeout = method == 'pageScrollTo' ? 350 : 0
+    setTimeout(() => {
+      callback(result)
+    }, timeout)
+  }
+  const fail = (err: any) => {
+    callback(err)
+  }
+  switch (method) {
+    case 'navigateTo':
+      if (arg['animationType'] !== null) {
+        animationType = arg['animationType'] as string
+      }
+      if (arg['animationDuration'] !== null) {
+        animationDuration = arg['animationDuration'] as number
+      }
+      uni.navigateTo({
+        url: arg['url'] as string,
+        animationType,
+        animationDuration,
+        success,
+        fail
+      })
+      break
+
+    case 'redirectTo':
+      uni.redirectTo({
+        url: arg['url'] as string,
+        success,
+        fail
+      })
+      break
+
+    case 'reLaunch':
+      uni.reLaunch({
+        url: arg['url'] as string,
+        success,
+        fail
+      })
+      break
+
+    case 'navigateBack':
+      animationType = 'pop-out'
+      if (arg['animationType'] !== null) {
+        animationType = arg['animationType'] as string
+      }
+      if (arg['animationDuration'] !== null) {
+        animationDuration = arg['animationDuration'] as number
+      }
+      uni.navigateBack({
+        animationType,
+        animationDuration,
+        success,
+        fail
+      })
+      break
+    default:
+      callback({ errMsg: 'uni.' + method + ' not exists' })
+      break
+  }
+}
+
+export type CaptureScreenshotParams = {
+  id?: string | null,
+  fullPage: boolean,
+  path: string
+  callback: (res: any) => void
+}
+export const captureScreenshot = (params: CaptureScreenshotParams): void => {
+  const callback = params.callback
+  const currentPage = _getCurrentPage()
+  if (currentPage !== null) {
+    currentPage.$viewToTempFilePath({
+      id: params.fullPage ? null : params.id,
+      wholeContent: params.fullPage,
+      path: params.path,
+      success: (res: ViewToTempFilePathSuccess) => {
+        callback({
+          errMsg: 'screenshot:ok',
+          tempFilePath: res.tempFilePath,
+          data: UTSAndroid.dcloud_private_getFileBase64(res.tempFilePath)
+        })
+      },
+      fail: (err: ViewToTempFilePathFail) => {
+        callback(err)
+      }
+    })
+  } else {
+    callback({
+      errMsg: `captureScreenshot:fail, currentPage is not found.`
+    })
+  }
+}

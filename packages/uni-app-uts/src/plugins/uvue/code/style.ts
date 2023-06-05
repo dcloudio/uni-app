@@ -1,18 +1,12 @@
-import path from 'path'
 import type { SFCBlock, SFCDescriptor } from '@vue/compiler-sfc'
 import type { PluginContext, TransformPluginContext } from 'rollup'
 import { ResolvedOptions, setSrcDescriptor } from '../descriptorCache'
 
 export function genStyle(
-  { styles }: SFCDescriptor,
-  { className, filename }: { className: string; filename: string }
+  _: SFCDescriptor,
+  { className }: { className: string; filename: string }
 ) {
-  if (styles.length === 0) {
-    return `
-const ${className}Styles: Array<Map<String, Any>> = []`
-  }
-  return `
-import { ${className}Styles } from './${path.basename(filename)}.style.uts'`
+  return `/*${className}Styles*/`
 }
 
 export async function genJsStylesCode(

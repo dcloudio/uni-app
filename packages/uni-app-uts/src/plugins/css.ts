@@ -47,6 +47,7 @@ export function uniAppCssPlugin(): Plugin {
             logLevel: 'ERROR',
             map: true,
             ts: true,
+            type: 'uvue',
           })
           messages.forEach((message) => {
             if (message.type === 'error') {
@@ -55,7 +56,7 @@ export function uniAppCssPlugin(): Plugin {
                 msg += `\n${generateCodeFrame(cssCode, {
                   line: message.line,
                   column: message.column,
-                })}`
+                }).replace(/\t/g, ' ')}`
               }
               msg += `\n${formatAtFilename(filename)}`
               resolvedConfig.logger.error(colors.red(msg))
@@ -68,7 +69,9 @@ export function uniAppCssPlugin(): Plugin {
       })
       // 增加 css plugins
       insertBeforePlugin(cssPlugin(config), name, config)
-      ;(config.plugins as Plugin[]).push(uvueCssPostPlugin)
+      const plugins = config.plugins as Plugin[]
+      const index = plugins.findIndex((p) => p.name === 'uni:app-uvue')
+      plugins.splice(index, 0, uvueCssPostPlugin)
     },
     async transform(source, filename) {
       if (!cssLangRE.test(filename) || commonjsProxyRE.test(filename)) {
@@ -81,6 +84,7 @@ export function uniAppCssPlugin(): Plugin {
         map: true,
         ts: true,
         noCode: true,
+        type: 'uvue',
       })
       messages.forEach((message) => {
         if (message.type === 'warning') {
@@ -89,7 +93,7 @@ export function uniAppCssPlugin(): Plugin {
             msg += `\n${generateCodeFrame(source, {
               line: message.line,
               column: message.column,
-            })}`
+            }).replace(/\t/g, ' ')}`
           }
           msg += `\n${formatAtFilename(filename)}`
           resolvedConfig.logger.warn(colors.yellow(msg))

@@ -23,7 +23,7 @@ import {
   TemplateChildNode,
   TextNode,
   VNodeCall,
-  WITH_CTX,
+  // WITH_CTX,
   WITH_DIRECTIVES,
   advancePositionWithMutation,
   getVNodeBlockHelper,
@@ -31,11 +31,19 @@ import {
   helperNameMap,
   isSimpleIdentifier,
   locStub,
+  toValidAssetId,
 } from '@vue/compiler-core'
 import { CodegenOptions, CodegenResult } from './options'
 import { isArray, isString, isSymbol } from '@vue/shared'
 import { genRenderFunctionDecl } from './utils'
-import { IS_TRUE } from './runtimeHelpers'
+import {
+  IS_TRUE,
+  RENDER_LIST,
+  RESOLVE_COMPONENT,
+  RESOLVE_DIRECTIVE,
+  TO_HANDLERS,
+} from './runtimeHelpers'
+import { object2Map } from './utils'
 
 type CodegenNode = TemplateChildNode | JSChildNode | SSRCodegenNode
 
@@ -149,9 +157,26 @@ export function generate(
   options: CodegenOptions
 ): CodegenResult {
   const context = createCodegenContext(ast, options)
-  const { mode, deindent, indent, push } = context
+  const { mode, deindent, indent, push, newline } = context
   if (mode === 'function') {
     push(genRenderFunctionDecl(options) + ` {`)
+    // generate asset resolution statements
+    if (ast.components.length) {
+      newline()
+      genAssets(ast.components, 'component', context)
+      if (ast.directives.length || ast.temps > 0) {
+        newline()
+      }
+    }
+    if (ast.directives.length) {
+      genAssets(ast.directives, 'directive', context)
+      if (ast.temps > 0) {
+        newline()
+      }
+    }
+    if (ast.components.length || ast.directives.length || ast.temps) {
+      newline()
+    }
     indent()
     push(`return `)
   }
@@ -168,6 +193,32 @@ export function generate(
     code: context.code,
     // SourceMapGenerator does have toJSON() method but it's not in the types
     map: context.map ? (context.map as any).toJSON() : undefined,
+  }
+}
+
+function genAssets(
+  assets: string[],
+  type: 'component' | 'directive',
+  { helper, push, newline }: CodegenContext
+) {
+  const resolver = helper(
+    type === 'component' ? RESOLVE_COMPONENT : RESOLVE_DIRECTIVE
+  )
+  for (let i = 0; i < assets.length; i++) {
+    let id = assets[i]
+    // potential component implicit self-reference inferred from SFC filename
+    const maybeSelfReference = id.endsWith('__self')
+    if (maybeSelfReference) {
+      id = id.slice(0, -6)
+    }
+    push(
+      `const ${toValidAssetId(id, type)} = ${resolver}(${JSON.stringify(id)}${
+        maybeSelfReference ? `, true` : ``
+      })`
+    )
+    if (i < assets.length - 1) {
+      newline()
+    }
   }
 }
 
@@ -324,15 +375,18 @@ function genExpressionAsPropertyKey(
 ) {
   const { push } = context
   if (node.type === NodeTypes.COMPOUND_EXPRESSION) {
-    push(`[`)
+    // dynamic arg genObjectExpression have added []
+    // push(`[`)
     genCompoundExpression(node, context)
-    push(`]`)
+    // push(`]`)
   } else if (node.isStatic) {
     // only quote keys if necessary
     const text = JSON.stringify(node.content)
     push(text, node)
   } else {
-    push(`[${node.content}]`, node)
+    // dynamic arg genObjectExpression have added []
+    // push(`[${node.content}]`, node)
+    push(`${node.content}`, node)
   }
 }
 
@@ -394,29 +448,75 @@ function genCallExpression(node: CallExpression, context: CodegenContext) {
   const callee = isString(node.callee) ? node.callee : helper(node.callee)
   push(callee + `(`, node)
 
-  if (callee === 'RenderHelpers.renderList') {
-    node.arguments.forEach((item: any) => {
-      if (item.type === 18) {
-        item.returnType = 'VNode'
-      }
-    })
+  if (callee === helper(RENDER_LIST)) {
+    genRenderList(node)
+  }
+  if (callee === helper(TO_HANDLERS)) {
+    genToHandlers(node, push)
   }
 
   genNodeList(node.arguments, context)
   push(`)`)
 }
 
+function genRenderList(node: CallExpression) {
+  node.arguments.forEach((argument: any) => {
+    if (argument.type === NodeTypes.JS_FUNCTION_EXPRESSION) {
+      argument.returnType = 'VNode'
+    }
+  })
+}
+
+function genToHandlers(
+  node: CallExpression,
+  push: (code: string, node?: CodegenNode) => void
+) {
+  push(`new Map<string, any | null>([`)
+  const argument = node.arguments[0]
+  if (
+    (argument as CompoundExpressionNode)?.type === NodeTypes.COMPOUND_EXPRESSION
+  ) {
+    ;(argument as CompoundExpressionNode).children.forEach(
+      (child: any, index: number) => {
+        if (isString(child)) {
+          if (
+            index ===
+            (argument as CompoundExpressionNode).children.length - 1
+          ) {
+            ;(argument as CompoundExpressionNode).children[index] =
+              child.replace('}', '])')
+          } else {
+            ;(argument as CompoundExpressionNode).children[index] = child
+              .replace('{', '["')
+              .replace(',', ',["')
+              .replace(':', '",')
+              .replaceAll(' ', '')
+          }
+        } else {
+          child.content = child.content += ']'
+        }
+      }
+    )
+  }
+  if (
+    (argument as SimpleExpressionNode)?.type === NodeTypes.SIMPLE_EXPRESSION
+  ) {
+    ;(argument as SimpleExpressionNode).content =
+      object2Map((argument as SimpleExpressionNode).content, false) + '])'
+  }
+}
+
 function genObjectExpression(node: ObjectExpression, context: CodegenContext) {
   const { push, indent, deindent, newline } = context
   const { properties } = node
   if (!properties.length) {
-    push(`new Map<string,any>()`, node)
+    push(`new Map<string, any | null>()`, node)
     return
   }
   const multilines =
     properties.length > 1 ||
     properties.some((p) => p.value.type !== NodeTypes.SIMPLE_EXPRESSION)
-  push(`new Map<string,any>([`)
+  push(`new Map<string, any | null>([`)
   multilines && indent()
   for (let i = 0; i < properties.length; i++) {
     const { key, value } = properties[i]
@@ -449,7 +549,8 @@ function genFunctionExpression(
   const { params, returns, body, newline, isSlot } = node
   if (isSlot) {
     // wrap slot functions with owner context
-    push(`_${helperNameMap[WITH_CTX]}(`)
+    // push(`_${helperNameMap[WITH_CTX]}(`)
+    push('(')
   }
   push(`(`, node)
   if (isArray(params)) {
@@ -460,7 +561,15 @@ function genFunctionExpression(
   if ((node as any).returnType) {
     push(`):${(node as any).returnType} => `)
   } else {
-    push(`) => `)
+    if (isSlot) {
+      if (params) {
+        push(`: Map<string, any | null>): any[] => `)
+      } else {
+        push(`): any[] => `)
+      }
+    } else {
+      push(`) => `)
+    }
   }
   if (newline || body) {
     push(`{`)

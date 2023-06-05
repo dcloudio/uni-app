@@ -159,13 +159,6 @@ export function initEnv(
   initDevtools(options)
 
   if (process.env.UNI_PLATFORM === 'app') {
-    const pkg = require('../../package.json')
-    console.log(
-      M['app.compiler.version'].replace(
-        '{version}',
-        pkg['uni-app']['compilerVersion'] + '（vue3）'
-      )
-    )
     initNVueEnv()
   }
 
@@ -192,6 +185,17 @@ export function initEnv(
   if (options.platform === 'mp-weibo') {
     options.base = './'
   }
+  if (process.env.UNI_PLATFORM === 'app') {
+    const pkg = require('../../package.json')
+    console.log(
+      M['app.compiler.version'].replace(
+        '{version}',
+        pkg['uni-app']['compilerVersion'] +
+          `（${process.env.UNI_APP_X === 'true' ? 'uni-app x' : 'vue3'}）`
+      )
+    )
+  }
+
   console.log(M['compiling'])
 }
 
