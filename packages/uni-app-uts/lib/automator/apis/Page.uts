@@ -1,7 +1,7 @@
 // @ts-ignore
 import { JSONObject } from 'com.alibaba.fastjson'
 import { getData, setData, getPageVm } from './util.uts'
-import { callVueMethod } from 'io.dcloud.uts.vue.shared'
+import { hasVueMethod, callVueMethod } from 'io.dcloud.uts.vue.shared'
 
 export type GetDataParams = {
   pageId: number
@@ -37,8 +37,18 @@ export type CallMethodWithCallbackParams = {
   args: Array<any | null>
 }
 export const callMethodWithCallback = (params: CallMethodWithCallbackParams): void => {
+  const page = getPageVm(params.pageId)
+  const callback = params.args[params.args.length - 1] as (data: any) => void
+  if (page === null) {
+    callback({ errMsg: `callMethodWithCallback:fail, Page[${params.pageId}] not exists` })
+    return
+  }
+  if (!hasVueMethod(page, params.methodName)) {
+    callback({ errMsg: `callMethodWithCallback:fail, Page.${params.methodName} not exists` })
+    return
+  }
   callVueMethod(
-    getPageVm(params.pageId),
+    page,
     params.methodName,
     params.args
   )
