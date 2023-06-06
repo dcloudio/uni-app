@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { callWbxApi } from '@wbox/uni-weibo/dist/service'
+import { callWbxApi } from '@wbox_developer/uni-weibo/dist/service'
 const baseHerf = "res/h5/index.html"
 
 /**

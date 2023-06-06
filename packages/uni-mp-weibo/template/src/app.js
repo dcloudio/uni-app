@@ -1,4 +1,4 @@
-import { appFuncCallBacks } from '@wbox/uni-weibo/dist/service'
+import { appFuncCallBacks } from '@wbox_developer/uni-weibo/dist/service'
 /**
 * @type WBXAppOption 
 */
