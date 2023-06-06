@@ -6,7 +6,12 @@ import type { SFCBlock, SFCDescriptor, SFCParseResult } from '@vue/compiler-sfc'
 import type { TransformPluginContext } from 'rollup'
 
 import { isString } from '@vue/shared'
-import { normalizePath, parseVueRequest } from '@dcloudio/uni-cli-shared'
+import {
+  matchEasycom,
+  normalizePath,
+  parseUTSComponent,
+  parseVueRequest,
+} from '@dcloudio/uni-cli-shared'
 
 import {
   ResolvedOptions,
@@ -15,7 +20,13 @@ import {
   getSrcDescriptor,
 } from './descriptorCache'
 import { createRollupError } from './error'
-import { genClassName, isVue, parseImports } from '../utils'
+import {
+  genClassName,
+  isVue,
+  parseImports,
+  parseUTSImportFilename,
+  parseUTSRelativeFilename,
+} from '../utils'
 import { genScript } from './code/script'
 import { genTemplate } from './code/template'
 import { genJsStylesCode, genStyle, transformStyle } from './code/style'
@@ -41,7 +52,10 @@ export function uniAppUVuePlugin(): Plugin {
   function isAppVue(id: string) {
     return normalizePath(id) === appVue
   }
-
+  function normalizeEasyComSource(source: string) {
+    // 把源码source调整为.uvue目录
+    return parseUTSImportFilename(source)
+  }
   return {
     name: 'uni:app-uvue',
     apply: 'build',
@@ -86,7 +100,8 @@ export function uniAppUVuePlugin(): Plugin {
           filename,
           options,
           this,
-          isAppVue
+          isAppVue,
+          normalizeEasyComSource
         )
         if (errors.length) {
           errors.forEach((error) =>
@@ -94,11 +109,9 @@ export function uniAppUVuePlugin(): Plugin {
           )
           return null
         }
-        const fileName = path.relative(process.env.UNI_INPUT_DIR, filename)
-
         this.emitFile({
           type: 'asset',
-          fileName,
+          fileName: parseUTSRelativeFilename(filename),
           source: uts,
         })
         return {
@@ -171,7 +184,8 @@ export async function transformVue(
   filename: string,
   options: ResolvedOptions,
   pluginContext: TransformPluginContext | undefined,
-  isAppVue: (id: string) => boolean = () => false
+  isAppVue: (id: string) => boolean = () => false,
+  normalizeEasyComSource: (source: string) => string
 ): Promise<TransformVueResult> {
   if (!options.compiler) {
     options.compiler = require('@vue/compiler-sfc')
@@ -195,6 +209,14 @@ export async function transformVue(
       filename: className,
       prefixIdentifiers: true,
       sourceMap: true,
+      matchEasyCom: (tag, uts) => {
+        const source = matchEasycom(tag)
+        if (uts && source) {
+          return normalizeEasyComSource(source)
+        }
+        return source
+      },
+      parseUTSComponent: parseUTSComponent,
     })
     templateCode = templateResult.code
     templateImportEasyComponentsCode =

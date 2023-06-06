@@ -32,6 +32,30 @@ export interface CodegenOptions extends SharedTransformCodegenOptions {
    * @default false
    */
   sourceMap?: boolean
+  /**
+   * 匹配 easycom 组件
+   * @param tag
+   */
+  matchEasyCom?: (
+    tag: string,
+    uts: boolean
+  ) => string | false | undefined | void
+  /**
+   * 解析 uts component 组件
+   * @param name
+   * @param type
+   */
+  parseUTSComponent?: (
+    name: string,
+    type: 'kotlin' | 'swift'
+  ) =>
+    | {
+        className: string
+        namespace: string
+        source: string
+      }
+    | undefined
+    | void
 }
 
 export interface ErrorHandlingOptions {

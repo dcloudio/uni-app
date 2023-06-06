@@ -34,7 +34,7 @@ import {
   toValidAssetId,
 } from '@vue/compiler-core'
 import { CodegenOptions, CodegenResult } from './options'
-import { isArray, isString, isSymbol } from '@vue/shared'
+import { NOOP, isArray, isString, isSymbol } from '@vue/shared'
 import { genRenderFunctionDecl } from './utils'
 import {
   IS_TRUE,
@@ -44,7 +44,6 @@ import {
   TO_HANDLERS,
 } from './runtimeHelpers'
 import { object2Map } from './utils'
-import { matchEasycom, parseUTSComponent } from '@dcloudio/uni-cli-shared'
 
 type CodegenNode = TemplateChildNode | JSChildNode | SSRCodegenNode
 
@@ -74,6 +73,8 @@ function createCodegenContext(
     bindingMetadata = {},
     sourceMap = false,
     filename = '',
+    matchEasyCom = NOOP,
+    parseUTSComponent = NOOP,
   }: CodegenOptions
 ): CodegenContext {
   const context: CodegenContext = {
@@ -92,6 +93,8 @@ function createCodegenContext(
     offset: 0,
     indentLevel: 0,
     map: undefined,
+    matchEasyCom,
+    parseUTSComponent,
     helper(key) {
       return `${helperNameMap[key]}`
     },
@@ -164,6 +167,7 @@ export function generate(
   const context = createCodegenContext(ast, options)
   const { mode, deindent, indent, push, newline } = context
   if (mode === 'function') {
+    genEasyComImports(ast.components, context)
     push(genRenderFunctionDecl(options) + ` {`)
     // generate asset resolution statements
     if (ast.components.length) {
@@ -203,6 +207,35 @@ export function generate(
   }
 }
 
+function genEasyComImports(
+  components: string[],
+  {
+    push,
+    newline,
+    matchEasyCom,
+    parseUTSComponent,
+    targetLanguage,
+  }: CodegenContext
+) {
+  for (let i = 0; i < components.length; i++) {
+    let id = components[i]
+    const maybeSelfReference = id.endsWith('__self')
+    if (maybeSelfReference) {
+      id = id.slice(0, -6)
+    }
+    const utsComponentOptions = parseUTSComponent(id, targetLanguage)
+    if (utsComponentOptions) {
+      continue
+    }
+    const source = matchEasyCom(id, true)
+    if (source) {
+      const componentId = toValidAssetId(id, 'component')
+      push(`import ${componentId} from '${source}'`)
+      newline()
+    }
+  }
+}
+
 function genAssets(
   assets: string[],
   type: 'component' | 'directive',
@@ -213,6 +246,8 @@ function genAssets(
     targetLanguage,
     importEasyComponents,
     importUTSComponents,
+    matchEasyCom,
+    parseUTSComponent,
   }: CodegenContext
 ) {
   const resolver = helper(
@@ -239,10 +274,10 @@ function genAssets(
         }
       }
       if (!assetCode) {
-        const source = matchEasycom(id)
+        const source = matchEasyCom(id, false)
         if (source) {
           const componentId = toValidAssetId(id, type)
-          assetCode = `const ${componentId} = ${resolver}(${JSON.stringify(
+          assetCode = `// const ${componentId} = ${resolver}(${JSON.stringify(
             id
           )}${maybeSelfReference ? `, true` : ``})`
           const importCode = `import ${componentId} from '${source}'`

@@ -1,6 +1,10 @@
 import path from 'path'
 import { init, parse } from 'es-module-lexer'
-import { normalizePath, removeExt } from '@dcloudio/uni-cli-shared'
+import {
+  normalizeNodeModules,
+  normalizePath,
+  removeExt,
+} from '@dcloudio/uni-cli-shared'
 import {
   camelize,
   capitalize,
@@ -53,4 +57,25 @@ function serialize(obj: unknown, ts: boolean = false): string {
   } else {
     return String(obj)
   }
+}
+
+export function parseUTSRelativeFilename(filename: string) {
+  if (!path.isAbsolute(filename)) {
+    return filename
+  }
+  return normalizeNodeModules(
+    path.relative(process.env.UNI_INPUT_DIR, filename)
+  )
+}
+
+export function parseUTSImportFilename(filename: string) {
+  if (!path.isAbsolute(filename)) {
+    return filename
+  }
+  return normalizePath(
+    path.join(
+      uvueOutDir(),
+      normalizeNodeModules(path.relative(process.env.UNI_INPUT_DIR, filename))
+    )
+  )
 }

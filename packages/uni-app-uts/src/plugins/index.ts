@@ -5,7 +5,6 @@ import {
   UniVitePlugin,
   emptyDir,
   initI18nOptions,
-  normalizeNodeModules,
   normalizePath,
   parseManifestJsonOnce,
   parseVueRequest,
@@ -15,7 +14,7 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import { compileI18nJsonStr } from '@dcloudio/uni-i18n'
 import type { Plugin } from 'vite'
-import { parseImports, uvueOutDir } from './utils'
+import { parseImports, parseUTSRelativeFilename, uvueOutDir } from './utils'
 
 const REMOVED_PLUGINS = [
   'vite:build-metadata',
@@ -158,7 +157,7 @@ function normalizeFilename(filename: string, isMain = false) {
   if (isMain) {
     return 'index.uts'
   }
-  return normalizeNodeModules(filename)
+  return parseUTSRelativeFilename(filename)
 }
 
 function normalizeCode(code: string, isMain = false) {
