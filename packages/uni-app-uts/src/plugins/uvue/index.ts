@@ -186,6 +186,8 @@ export async function transformVue(
   const fileName = path.relative(options.root, filename)
   const className = genClassName(fileName, options.classNamePrefix)
   let templateCode = ''
+  let templateImportEasyComponentsCode = ''
+  let templateImportUTSComponentsCode = ''
   if (!isApp) {
     const templateResult = genTemplate(descriptor, {
       targetLanguage: options.targetLanguage as any,
@@ -195,6 +197,10 @@ export async function transformVue(
       sourceMap: true,
     })
     templateCode = templateResult.code
+    templateImportEasyComponentsCode =
+      templateResult.importEasyComponents.join('\n')
+    templateImportUTSComponentsCode =
+      templateResult.importUTSComponents.join('\n')
   }
   // 生成 script 文件
   let utsCode =
@@ -203,7 +209,8 @@ export async function transformVue(
     genStyle(descriptor, { filename: fileName, className }) +
     '\n'
   utsCode += templateCode
-  let jsCode = ''
+  let jsCode =
+    templateImportEasyComponentsCode + '\n' + templateImportUTSComponentsCode
   const content = descriptor.script?.content
   if (content) {
     jsCode += await parseImports(content)

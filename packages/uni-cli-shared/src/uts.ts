@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import glob from 'fast-glob'
-
+import { camelize, capitalize } from '@vue/shared'
 import * as UTSCompiler from '@dcloudio/uni-uts-v1'
 
 import { isInHBuilderX } from './hbx'
@@ -128,20 +128,54 @@ export function resolveUTSCompiler(): typeof UTSCompiler {
   return require(compilerPath)
 }
 
+interface UTSComponentMeta {
+  source: string
+  kotlinPackage: string
+  swiftModule: string
+}
+
+const utsComponents = new Map<string, UTSComponentMeta>()
+
+export function isUTSComponent(name: string) {
+  return utsComponents.has(name)
+}
+
+export function parseUTSComponent(name: string, type: 'kotlin' | 'swift') {
+  const meta = utsComponents.get(name)
+  if (meta) {
+    const namespace =
+      meta[type === 'swift' ? 'swiftModule' : 'kotlinPackage'] || ''
+    const className = capitalize(camelize(name)) + 'Component'
+    return {
+      className,
+      namespace,
+      source: meta.source,
+    }
+  }
+}
+
 export function initUTSComponents(
   inputDir: string,
   platform: UniApp.PLATFORM
 ): EasycomMatcher[] {
+  utsComponents.clear()
   const components: EasycomMatcher[] = []
   if (platform !== 'app' && platform !== 'app-plus') {
     return components
   }
-  const easycomsObj = Object.create(null)
+  const easycomsObj: Record<
+    string,
+    { source: string; kotlinPackage: string; swiftModule: string }
+  > = {}
   const dirs = resolveUTSComponentDirs(inputDir)
   dirs.forEach((dir) => {
     const is_uni_modules_utssdk = dir.endsWith('utssdk')
     const is_ussdk =
       !is_uni_modules_utssdk && path.dirname(dir).endsWith('utssdk')
+
+    const pluginId = is_uni_modules_utssdk
+      ? path.basename(path.dirname(dir))
+      : path.basename(dir)
     if (is_uni_modules_utssdk || is_ussdk) {
       glob
         .sync('**/*.vue', {
@@ -161,15 +195,33 @@ export function initUTSComponents(
             const importDir = normalizePath(
               is_uni_modules_utssdk ? path.dirname(dir) : dir
             )
-            easycomsObj[`^${name}$`] = `${importDir}?uts-proxy`
+            easycomsObj[`^${name}$`] = {
+              source: `${importDir}?uts-proxy`,
+              kotlinPackage: parseKotlinPackageWithPluginId(
+                pluginId,
+                is_uni_modules_utssdk
+              ),
+              swiftModule: parseSwiftPackageWithPluginId(
+                pluginId,
+                is_uni_modules_utssdk
+              ),
+            }
           }
         })
     }
   })
   Object.keys(easycomsObj).forEach((name) => {
+    const obj = easycomsObj[name]
+    const componentName = name.slice(1, -1)
     components.push({
+      name: componentName,
       pattern: new RegExp(name),
-      replacement: easycomsObj[name],
+      replacement: obj.source,
+    })
+    utsComponents.set(componentName, {
+      source: obj.source,
+      kotlinPackage: obj.kotlinPackage,
+      swiftModule: obj.swiftModule,
     })
   })
   return components
@@ -200,4 +252,32 @@ function parseVueComponentName(file: string) {
   if (matches) {
     return matches[1]
   }
+}
+
+function prefix(id: string) {
+  if (
+    process.env.UNI_UTS_MODULE_PREFIX &&
+    !id.startsWith(process.env.UNI_UTS_MODULE_PREFIX)
+  ) {
+    return process.env.UNI_UTS_MODULE_PREFIX + '-' + id
+  }
+  return id
+}
+
+export function parseKotlinPackageWithPluginId(
+  id: string,
+  is_uni_modules: boolean
+) {
+  return 'uts.sdk.' + (is_uni_modules ? 'modules.' : '') + camelize(prefix(id))
+}
+
+export function parseSwiftPackageWithPluginId(
+  id: string,
+  is_uni_modules: boolean
+) {
+  return (
+    'UTSSDK' +
+    (is_uni_modules ? 'Modules' : '') +
+    capitalize(camelize(prefix(id)))
+  )
 }

@@ -10,24 +10,28 @@ describe('easycom', () => {
       initEasycoms(rootDir, { platform: 'h5', dirs: [] }).easycoms
     ).toEqual([
       {
+        name: 'test',
         pattern: new RegExp('^test$'),
         replacement: normalizePath(
           path.resolve(rootDir, 'components/test/test.vue')
         ),
       },
       {
+        name: 'test1',
         pattern: new RegExp('^test1$'),
         replacement: normalizePath(
           path.resolve(rootDir, 'components/test1/test1.vue')
         ),
       },
       {
+        name: 'test2',
         pattern: new RegExp('^test2$'),
         replacement: normalizePath(
           path.resolve(rootDir, 'uni_modules/plugin/components/test2/test2.vue')
         ),
       },
       {
+        name: '^uni-(.*)',
         pattern: new RegExp('^uni-(.*)'),
         replacement: normalizePath(
           path.resolve(rootDir, 'components/uni-$1.vue')

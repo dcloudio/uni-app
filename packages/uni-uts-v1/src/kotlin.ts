@@ -189,7 +189,7 @@ export async function runKotlinDev(
         kotlinFile,
         jarFile,
         getKotlincHome(),
-        getDefaultJar()
+        (isX ? getDefaultJar(2) : getDefaultJar())
           .concat(resolveLibs(filename))
           .concat(deps)
           .concat(resDeps)
@@ -349,7 +349,7 @@ export async function compile(
   if (rClass) {
     imports.push(rClass)
   }
-  const componentsCode = genComponentsCode(filename, components)
+  const componentsCode = genComponentsCode(filename, components, isX)
   const { package: pluginPackage, id: pluginId } = parseKotlinPackage(filename)
   const input: Parameters<typeof bundle>[1]['input'] = {
     root: inputDir,
@@ -371,8 +371,7 @@ export async function compile(
       return
     }
   }
-
-  const result = await bundle(UTSTarget.KOTLIN, {
+  const options = {
     input,
     output: {
       isX,
@@ -388,7 +387,8 @@ export async function compile(
         uniExtApiPackage: 'io.dcloud.uts.extapi',
       },
     },
-  })
+  }
+  const result = await bundle(UTSTarget.KOTLIN, options)
   sourceMap &&
     moveRootIndexSourceMap(filename, {
       inputDir,

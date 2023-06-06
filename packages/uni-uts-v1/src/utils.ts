@@ -280,16 +280,18 @@ function parseVueComponentName(file: string) {
 
 export function genComponentsCode(
   filename: string,
-  components: Record<string, string>
+  components: Record<string, string>,
+  isX: boolean
 ) {
   const codes: string[] = []
   const dirname = path.dirname(filename)
   Object.keys(components).forEach((name) => {
     const source = normalizePath(path.relative(dirname, components[name]))
+    const className = capitalize(camelize(name))
     codes.push(
-      `export { default as ${capitalize(camelize(name))}Component } from '${
-        source.startsWith('.') ? source : './' + source
-      }'`
+      `export { default as ${className}Component${
+        isX ? `, ${className}Node` : ''
+      } } from '${source.startsWith('.') ? source : './' + source}'`
     )
   })
   return codes.join('\n')

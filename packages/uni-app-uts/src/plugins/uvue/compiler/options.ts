@@ -77,5 +77,7 @@ export type CompilerOptions = TransformOptions & CodegenOptions
 
 export interface CodegenResult {
   code: string
+  importEasyComponents: string[]
+  importUTSComponents: string[]
   map?: RawSourceMap
 }

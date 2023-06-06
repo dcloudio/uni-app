@@ -44,12 +44,15 @@ import {
   TO_HANDLERS,
 } from './runtimeHelpers'
 import { object2Map } from './utils'
+import { matchEasycom, parseUTSComponent } from '@dcloudio/uni-cli-shared'
 
 type CodegenNode = TemplateChildNode | JSChildNode | SSRCodegenNode
 
 export interface CodegenContext extends Required<CodegenOptions> {
   source: string
   code: string
+  importEasyComponents: string[]
+  importUTSComponents: string[]
   line: number
   column: number
   offset: number
@@ -82,6 +85,8 @@ function createCodegenContext(
     filename,
     source: ast.loc.source,
     code: ``,
+    importEasyComponents: [],
+    importUTSComponents: [],
     column: 1,
     line: 1,
     offset: 0,
@@ -191,6 +196,8 @@ export function generate(
   }
   return {
     code: context.code,
+    importEasyComponents: context.importEasyComponents,
+    importUTSComponents: context.importUTSComponents,
     // SourceMapGenerator does have toJSON() method but it's not in the types
     map: context.map ? (context.map as any).toJSON() : undefined,
   }
@@ -199,7 +206,14 @@ export function generate(
 function genAssets(
   assets: string[],
   type: 'component' | 'directive',
-  { helper, push, newline }: CodegenContext
+  {
+    helper,
+    push,
+    newline,
+    targetLanguage,
+    importEasyComponents,
+    importUTSComponents,
+  }: CodegenContext
 ) {
   const resolver = helper(
     type === 'component' ? RESOLVE_COMPONENT : RESOLVE_DIRECTIVE
@@ -211,11 +225,42 @@ function genAssets(
     if (maybeSelfReference) {
       id = id.slice(0, -6)
     }
-    push(
-      `const ${toValidAssetId(id, type)} = ${resolver}(${JSON.stringify(id)}${
+    let assetCode = ''
+    if (type === 'component') {
+      // 原生UTS组件
+      const utsComponentOptions = parseUTSComponent(id, targetLanguage)
+      if (utsComponentOptions) {
+        assetCode = `const ${toValidAssetId(id, type)} = ${
+          utsComponentOptions.namespace
+        }.${utsComponentOptions.className}.name`
+        const importCode = `import '${utsComponentOptions.source}'`
+        if (!importUTSComponents.includes(importCode)) {
+          importUTSComponents.push(importCode)
+        }
+      }
+      if (!assetCode) {
+        const source = matchEasycom(id)
+        if (source) {
+          const componentId = toValidAssetId(id, type)
+          assetCode = `const ${componentId} = ${resolver}(${JSON.stringify(
+            id
+          )}${maybeSelfReference ? `, true` : ``})`
+          const importCode = `import ${componentId} from '${source}'`
+          if (!importEasyComponents.includes(importCode)) {
+            importEasyComponents.push(importCode)
+          }
+        }
+      }
+    }
+    if (!assetCode) {
+      assetCode = `const ${toValidAssetId(
+        id,
+        type
+      )} = ${resolver}(${JSON.stringify(id)}${
         maybeSelfReference ? `, true` : ``
       })`
-    )
+    }
+    push(assetCode)
     if (i < assets.length - 1) {
       newline()
     }

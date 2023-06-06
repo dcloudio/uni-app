@@ -8,7 +8,11 @@ export function genTemplate(
   options: CompilerOptions
 ) {
   if (!template) {
-    return { code: genRenderFunctionDecl(options) + ` { return null }` }
+    return {
+      code: genRenderFunctionDecl(options) + ` { return null }`,
+      importEasyComponents: [],
+      importUTSComponents: [],
+    }
   }
   return compile(template.content, options)
 }

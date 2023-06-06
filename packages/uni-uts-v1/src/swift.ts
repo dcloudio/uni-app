@@ -177,11 +177,11 @@ function isCliProject(projectPath: string) {
 
 export async function compile(
   filename: string,
-  { inputDir, outputDir, sourceMap, components, isPlugin }: ToSwiftOptions
+  { inputDir, outputDir, sourceMap, components, isX, isPlugin }: ToSwiftOptions
 ) {
   const { bundle, UTSTarget } = getUTSCompiler()
   // let time = Date.now()
-  const componentsCode = genComponentsCode(filename, components)
+  const componentsCode = genComponentsCode(filename, components, isX)
   const { namespace, id: pluginId } = parseSwiftPackage(filename)
   const input: Parameters<typeof bundle>[1]['input'] = {
     root: inputDir,
@@ -206,6 +206,7 @@ export async function compile(
   const result = await bundle(UTSTarget.SWIFT, {
     input,
     output: {
+      isX,
       isPlugin,
       outDir: outputDir,
       package: namespace,

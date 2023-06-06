@@ -19,6 +19,7 @@ interface EasycomOption {
   custom?: EasycomCustom
 }
 export interface EasycomMatcher {
+  name: string
   pattern: RegExp
   replacement: string
 }
@@ -70,9 +71,7 @@ export function initEasycoms(
   const options = initEasycomOptions(parsePagesJsonOnce(inputDir, platform))
   const initUTSEasycom = () => {
     initUTSComponents(inputDir, platform).forEach((item) => {
-      const index = easycoms.findIndex(
-        (easycom) => item.pattern.toString() === easycom.pattern.toString()
-      )
+      const index = easycoms.findIndex((easycom) => item.name === easycom.name)
       if (index > -1) {
         easycoms.splice(index, 1, item)
       } else {
@@ -148,6 +147,8 @@ function initEasycom({
   }
   Object.keys(easycomsObj).forEach((name) => {
     easycoms.push({
+      name:
+        name.startsWith('^') && name.endsWith('$') ? name.slice(1, -1) : name,
       pattern: new RegExp(name),
       replacement: easycomsObj[name],
     })
