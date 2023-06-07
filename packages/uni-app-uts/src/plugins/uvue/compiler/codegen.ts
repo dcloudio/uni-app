@@ -41,6 +41,7 @@ import {
   RENDER_LIST,
   RESOLVE_COMPONENT,
   RESOLVE_DIRECTIVE,
+  RESOLVE_EASY_COMPONENT,
   TO_HANDLERS,
 } from './runtimeHelpers'
 import { object2Map } from './utils'
@@ -229,7 +230,7 @@ function genEasyComImports(
     }
     const source = matchEasyCom(id, true)
     if (source) {
-      const componentId = toValidAssetId(id, 'component')
+      const componentId = toValidAssetId(id, 'easycom' as 'component')
       push(`import ${componentId} from '${source}'`)
       newline()
     }
@@ -276,11 +277,14 @@ function genAssets(
       if (!assetCode) {
         const source = matchEasyCom(id, false)
         if (source) {
+          const easyComponentId = toValidAssetId(id, 'easycom' as 'component')
           const componentId = toValidAssetId(id, type)
-          assetCode = `// const ${componentId} = ${resolver}(${JSON.stringify(
-            id
-          )}${maybeSelfReference ? `, true` : ``})`
-          const importCode = `import ${componentId} from '${source}'`
+          assetCode = `const ${componentId} = ${helper(
+            RESOLVE_EASY_COMPONENT
+          )}(${JSON.stringify(id)},${easyComponentId}${
+            maybeSelfReference ? `, true` : ``
+          })`
+          const importCode = `import ${easyComponentId} from '${source}'`
           if (!importEasyComponents.includes(importCode)) {
             importEasyComponents.push(importCode)
           }

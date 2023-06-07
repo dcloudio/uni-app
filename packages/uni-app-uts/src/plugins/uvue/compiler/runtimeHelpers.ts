@@ -6,6 +6,7 @@ export const FRAGMENT = Symbol(`Fragment`)
 export const OPEN_BLOCK = Symbol(`openBlock`)
 export const RESOLVE_COMPONENT = Symbol(`resolveComponent`)
 export const RESOLVE_DIRECTIVE = Symbol(`resolveDirective`)
+export const RESOLVE_EASY_COMPONENT = Symbol(`resolveEasyComponent`)
 export const RENDER_SLOT = Symbol(`renderSlot`)
 export const TO_HANDLERS = Symbol(`toHandlers`)
 
@@ -15,6 +16,7 @@ registerRuntimeHelpers({
   [RENDER_LIST]: 'RenderHelpers.renderList',
   [FRAGMENT]: 'Fragment',
   [RESOLVE_COMPONENT]: 'resolveComponent',
+  [RESOLVE_EASY_COMPONENT]: 'resolveEasyComponent',
   [RESOLVE_DIRECTIVE]: 'resolveDirective',
   [RENDER_SLOT]: `renderSlot`,
   [TO_HANDLERS]: `toHandlers`,
