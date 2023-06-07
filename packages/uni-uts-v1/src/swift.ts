@@ -15,7 +15,7 @@ import {
   ToSwiftOptions,
 } from './utils'
 import { parseJson } from './shared'
-import { UTSResult } from '@dcloudio/uts'
+import { UTSBundleOptions, UTSInputOptions, UTSResult } from '@dcloudio/uts'
 import { parseUTSSyntaxError } from './stacktrace'
 
 function parseSwiftPackage(filename: string) {
@@ -183,7 +183,7 @@ export async function compile(
   // let time = Date.now()
   const componentsCode = genComponentsCode(filename, components, isX)
   const { namespace, id: pluginId } = parseSwiftPackage(filename)
-  const input: Parameters<typeof bundle>[1]['input'] = {
+  const input: UTSInputOptions = {
     root: inputDir,
     filename,
     pluginId,
@@ -203,7 +203,7 @@ export async function compile(
       return
     }
   }
-  const result = await bundle(UTSTarget.SWIFT, {
+  const options: UTSBundleOptions = {
     input,
     output: {
       isX,
@@ -216,10 +216,11 @@ export async function compile(
       logFilename: true,
       noColor: !isColorSupported(),
       transform: {
-        uniExtApiPackage: 'DCloudUTSExtAPI',
+        uniExtApiDefaultNamespace: 'DCloudUTSExtAPI',
       },
     },
-  })
+  }
+  const result = await bundle(UTSTarget.SWIFT, options)
   sourceMap &&
     moveRootIndexSourceMap(filename, {
       inputDir,

@@ -1,7 +1,14 @@
 import { bundleKotlin, bundleSwift } from './api'
 import { UTSBundleOptions, UTSResult, UTSTarget } from './types'
 
-export { UTSTarget, UTSResult } from './types'
+export {
+  UTSTarget,
+  UTSResult,
+  UTSBundleOptions,
+  UTSInputOptions,
+  UTSOutputOptions,
+  UTSParseOptions,
+} from './types'
 
 export type UTSMode = 'dev' | 'build'
 

@@ -17,7 +17,7 @@ import {
   resolveSourceMapFile,
   resolveUTSSourceMapPath,
 } from '../utils'
-import { UTSResult } from '@dcloudio/uts'
+import { UTSBundleOptions, UTSInputOptions, UTSResult } from '@dcloudio/uts'
 import { normalizePath } from '../shared'
 
 const DEFAULT_IMPORTS = [
@@ -48,7 +48,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
 
   const { package: pkg, inputDir, outputDir, sourceMap, uni_modules } = options
 
-  const input: Parameters<typeof bundle>[1]['input'] = {
+  const input: UTSInputOptions = {
     root: inputDir,
     filename: entry,
     paths: {
@@ -62,7 +62,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
       },
     },
   }
-  const bundleOptions: Parameters<typeof bundle>[1] = {
+  const bundleOptions: UTSBundleOptions = {
     input,
     output: {
       isX: true,
@@ -75,7 +75,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
       logFilename: true,
       noColor: true,
       transform: {
-        uniExtApiPackage: 'io.dcloud.uts.extapi',
+        uniExtApiDefaultNamespace: 'io.dcloud.uts.extapi',
         uvueClassNamePrefix: 'Gen',
       },
     },

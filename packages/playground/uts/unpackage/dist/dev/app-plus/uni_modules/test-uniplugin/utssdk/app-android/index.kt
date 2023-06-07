@@ -5,12 +5,12 @@ import kotlinx.coroutines.Deferred;
 import kotlinx.coroutines.Dispatchers;
 import io.dcloud.uts.Map;
 import io.dcloud.uts.*;
-import io.dcloud.uts.extapi.showToast as uni_showToast;
-import io.dcloud.uts.extapi.showModel as uni_showModel;
 import io.dcloud.uts.UTSAndroid;
 import android.util.Log;
 import android.widget.FrameLayout;
 import android.view.View;
+import io.dcloud.uts.extapi.showToast as uni_showToast;
+import io.dcloud.uts.extapi.showModel as uni_showModel;
 fun test() {
     console.log("test", " at uni_modules/test-uniplugin/utssdk/app-android/utils.uts:2");
 }

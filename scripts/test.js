@@ -52,7 +52,7 @@ async function testKotlin() {
       logFilename: true,
       isPlugin: true,
       transform: {
-        uniExtApiPackage: 'io.dcloud.uts.extapi'
+        uniExtApiDefaultNamespace: 'io.dcloud.uts.extapi'
       }
     },
   }).then((res) => {
@@ -144,7 +144,7 @@ async function testSwift() {
       logFilename: true,
       isPlugin: true,
       transform: {
-        uniExtApiPackage: 'DCloudUTSExtAPI'
+        uniExtApiDefaultNamespace: 'DCloudUTSExtAPI'
       }
     },
   }).then((res) => {

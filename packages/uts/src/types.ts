@@ -46,7 +46,8 @@ export type UTSOutputOptions = {
   transform?: {
     paramDefaultValue?: boolean
     constructorInvocation?: boolean
-    uniExtApiPackage?: string
+    uniExtApiDefaultNamespace?: string
+    uniExtApiNamespaces?: Record<string, string>
     uvueClassNamePrefix?: string
     uvueClassNameOnlyBasename?: boolean
     disableReactiveObject?: boolean

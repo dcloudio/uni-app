@@ -4,7 +4,11 @@ import path, { join } from 'path'
 import AdmZip from 'adm-zip'
 import { sync } from 'fast-glob'
 import { isArray } from '@vue/shared'
-import type { UTSResult } from '@dcloudio/uts'
+import type {
+  UTSBundleOptions,
+  UTSInputOptions,
+  UTSResult,
+} from '@dcloudio/uts'
 import { get } from 'android-versions'
 import { normalizePath, parseJson } from './shared'
 import {
@@ -351,7 +355,7 @@ export async function compile(
   }
   const componentsCode = genComponentsCode(filename, components, isX)
   const { package: pluginPackage, id: pluginId } = parseKotlinPackage(filename)
-  const input: Parameters<typeof bundle>[1]['input'] = {
+  const input: UTSInputOptions = {
     root: inputDir,
     filename,
     pluginId,
@@ -371,7 +375,7 @@ export async function compile(
       return
     }
   }
-  const options = {
+  const options: UTSBundleOptions = {
     input,
     output: {
       isX,
@@ -384,7 +388,7 @@ export async function compile(
       logFilename: true,
       noColor: !isColorSupported(),
       transform: {
-        uniExtApiPackage: 'io.dcloud.uts.extapi',
+        uniExtApiDefaultNamespace: 'io.dcloud.uts.extapi',
       },
     },
   }
