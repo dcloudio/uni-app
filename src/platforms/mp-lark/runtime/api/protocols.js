@@ -6,7 +6,7 @@ import getUserProfile from '../../../mp-weixin/helpers/get-user-profile'
 
 // 需要做转换的 API 列表
 export const protocols = {
-  navigateTo,
+  navigateTo: navigateTo(),
   redirectTo,
   previewImage,
   getSystemInfo,
