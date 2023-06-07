@@ -3,7 +3,7 @@ import {
   invokeArrayFns,
   SLOT_DEFAULT_NAME,
 } from '@dcloudio/uni-shared'
-import { capitalize, hasOwn, isArray } from '@vue/shared'
+import { capitalize, hasOwn, isArray, isFunction } from '@vue/shared'
 
 import {
   ComponentPublicInstance,
@@ -97,6 +97,10 @@ export function initBaseInstance(
     if (__PLATFORM__ === 'mp-weixin') {
       return options.mpInstance.getOpenerEventChannel()
     }
+    if (__PLATFORM__ === 'mp-alipay') {
+      if (my.canIUse('getOpenerEventChannel'))
+        return options.mpInstance.getOpenerEventChannel()
+    }
     if (!this.__eventChannel__) {
       this.__eventChannel__ = new EventChannel()
     }
@@ -158,7 +162,12 @@ function callHook(this: ComponentPublicInstance, name: string, args?: unknown) {
     name = 'm'
   }
   if (__PLATFORM__ !== 'mp-weixin') {
-    if (name === 'onLoad' && args && (args as any).__id__) {
+    if (
+      name === 'onLoad' &&
+      args &&
+      (args as any).__id__ &&
+      isFunction(__GLOBAL__.getEventChannel)
+    ) {
       ;(this as any).__eventChannel__ = __GLOBAL__.getEventChannel(
         (args as any).__id__
       )

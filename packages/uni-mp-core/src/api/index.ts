@@ -71,9 +71,11 @@ export function initUni(
   // 处理 api mp 打包后为不同js，emitter 无法共享问题
   if (__PLATFORM__ === 'mp-alipay') {
     platform.$emit = $emit
+    if (!my.canIUse('getOpenerEventChannel'))
+      platform.getEventChannel = getEventChannel
   }
   // 处理 api mp 打包后为不同js，getEventChannel 无法共享问题
-  if (__PLATFORM__ !== 'mp-weixin') {
+  if (__PLATFORM__ !== 'mp-weixin' && __PLATFORM__ !== 'mp-alipay') {
     platform.getEventChannel = getEventChannel
   }
 

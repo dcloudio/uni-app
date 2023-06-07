@@ -1,6 +1,6 @@
 import {
   redirectTo,
-  navigateTo,
+  navigateTo as _navigateTo,
   previewImage,
   getSystemInfo,
   getSystemInfoSync,
@@ -19,9 +19,10 @@ const requestPayment: MPProtocol = {
 
 export {
   redirectTo,
-  navigateTo,
   previewImage,
   getSystemInfo,
   getSystemInfoSync,
   requestPayment,
 }
+
+export const navigateTo = _navigateTo()
