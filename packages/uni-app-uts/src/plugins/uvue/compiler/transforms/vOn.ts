@@ -18,6 +18,8 @@ import { processExpression } from './transformExpression'
 
 const fnExpRE =
   /^\s*([\w$_]+|(async\s*)?\([^)]*?\))\s*(:[^=]+)?=>|^\s*(async\s+)?function(?:\s+[\w$]+)?\s*\(/
+export const inlineStatementCannotUseEventMsg =
+  'Inline statement cannot use $event, please use a function expression instead.'
 
 export interface VOnDirectiveNode extends DirectiveNode {
   // v-on without arg is handled directly in ./transformElements.ts due to it affecting
@@ -29,6 +31,7 @@ export interface VOnDirectiveNode extends DirectiveNode {
   exp: SimpleExpressionNode | undefined
 }
 
+// TODO: inline statement $event type complement
 export const transformOn: DirectiveTransform = (
   dir,
   node,
@@ -36,6 +39,9 @@ export const transformOn: DirectiveTransform = (
   augmentor
 ) => {
   const { loc, modifiers, arg } = dir as VOnDirectiveNode
+  if (loc.source.indexOf('($event)') !== -1) {
+    throw new Error(inlineStatementCannotUseEventMsg)
+  }
   if (!dir.exp && !modifiers.length) {
     context.onError(createCompilerError(ErrorCodes.X_V_ON_NO_EXPRESSION, loc))
   }
@@ -133,9 +139,7 @@ export const transformOn: DirectiveTransform = (
     if (isInlineStatement || (shouldCache && isMemberExp)) {
       // wrap inline statement in a function expression
       if (isInlineStatement && exp.loc.source.includes('$event')) {
-        throw new Error(
-          'Inline statement cannot use $event, please use a function expression instead.'
-        )
+        throw new Error(inlineStatementCannotUseEventMsg)
       }
       exp = createCompoundExpression([
         `${

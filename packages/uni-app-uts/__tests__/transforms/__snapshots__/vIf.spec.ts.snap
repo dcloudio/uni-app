@@ -1,0 +1,69 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`compiler: v-if codegen basic v-if 1`] = `
+"isTrue(ok)
+  ? createElementVNode("view", new Map<string, any | null>([["key", 0]]))
+  : createCommentVNode("v-if", true)"
+`;
+
+exports[`compiler: v-if codegen increasing key: v-if + v-else-if + v-else 1`] = `
+"createElementVNode(Fragment, null, [
+  isTrue(ok)
+    ? createElementVNode("view", new Map<string, any | null>([["key", 0]]))
+    : createElementVNode("p", new Map<string, any | null>([["key", 1]])),
+  isTrue(another)
+    ? createElementVNode("view", new Map<string, any | null>([["key", 2]]))
+    : isTrue(orNot)
+      ? createElementVNode("p", new Map<string, any | null>([["key", 3]]))
+      : createElementVNode("p", new Map<string, any | null>([["key", 4]]))
+], 64 /* STABLE_FRAGMENT */)"
+`;
+
+exports[`compiler: v-if codegen multiple v-if that are sibling nodes should have different keys 1`] = `
+"createElementVNode(Fragment, null, [
+  isTrue(ok)
+    ? createElementVNode("view", new Map<string, any | null>([["key", 0]]))
+    : createCommentVNode("v-if", true),
+  isTrue(orNot)
+    ? createElementVNode("p", new Map<string, any | null>([["key", 1]]))
+    : createCommentVNode("v-if", true)
+], 64 /* STABLE_FRAGMENT */)"
+`;
+
+exports[`compiler: v-if codegen template v-if 1`] = `
+"isTrue(ok)
+  ? createElementVNode(Fragment, new Map<string, any | null>([["key", 0]]), [
+      createElementVNode("view"),
+      "hello",
+      createElementVNode("p")
+    ], 64 /* STABLE_FRAGMENT */)
+  : createCommentVNode("v-if", true)"
+`;
+
+exports[`compiler: v-if codegen v-if + v-else 1`] = `
+"isTrue(ok)
+  ? createElementVNode("view", new Map<string, any | null>([["key", 0]]))
+  : createElementVNode("p", new Map<string, any | null>([["key", 1]]))"
+`;
+
+exports[`compiler: v-if codegen v-if + v-else-if + v-else 1`] = `
+"isTrue(ok)
+  ? createElementVNode("view", new Map<string, any | null>([["key", 0]]))
+  : isTrue(orNot)
+    ? createElementVNode("p", new Map<string, any | null>([["key", 1]]))
+    : createElementVNode(Fragment, new Map<string, any | null>([["key", 2]]), ["fine"], 64 /* STABLE_FRAGMENT */)"
+`;
+
+exports[`compiler: v-if codegen v-if + v-else-if 1`] = `
+"isTrue(ok)
+  ? createElementVNode("view", new Map<string, any | null>([["key", 0]]))
+  : isTrue(orNot)
+    ? createElementVNode("p", new Map<string, any | null>([["key", 1]]))
+    : createCommentVNode("v-if", true)"
+`;
+
+exports[`compiler: v-if codegen v-if on <slot/> 1`] = `
+"isTrue(ok)
+  ? renderSlot($slots, "default", new Map<string, any | null>([["key", 0]]))
+  : createCommentVNode("v-if", true)"
+`;

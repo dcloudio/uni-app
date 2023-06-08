@@ -646,6 +646,7 @@ function genFunctionExpression(
     push(`):${(node as any).returnType} => `)
   } else {
     if (isSlot) {
+      // TODO: supplement types slots params type based on user-defined slots
       if (params) {
         push(`: Map<string, any | null>): any[] => `)
       } else {
