@@ -3,6 +3,7 @@ import { init, parse } from 'es-module-lexer'
 import {
   normalizeNodeModules,
   normalizePath,
+  parseUniExtApiNamespacesJsOnce,
   removeExt,
 } from '@dcloudio/uni-cli-shared'
 import {
@@ -22,7 +23,28 @@ export async function parseImports(code: string) {
     .map(({ s, e }) => {
       return `import "${code.slice(s, e)}"`
     })
+    .concat(parseUniExtApiImports(code))
     .join('\n')
+}
+
+function parseUniExtApiImports(code: string): string[] {
+  const extApis = parseUniExtApiNamespacesJsOnce(
+    process.env.UNI_UTS_TARGET_LANGUAGE
+  )
+  const pattern = /uni\.(\w+)/g
+  const apis = new Set<string>()
+  let match
+  while ((match = pattern.exec(code)) !== null) {
+    apis.add(match[1])
+  }
+  const imports: string[] = []
+  apis.forEach((api) => {
+    const extApi = extApis[api]
+    if (extApi) {
+      imports.push(`import "${extApi[0]}"`)
+    }
+  })
+  return imports
 }
 
 export function uvueOutDir() {

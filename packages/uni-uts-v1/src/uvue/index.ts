@@ -41,12 +41,20 @@ export interface CompileAppOptions {
   package: string
   sourceMap: boolean
   uni_modules: string[]
+  extApis?: Record<string, [string, string]>
 }
 export async function compileApp(entry: string, options: CompileAppOptions) {
   const { bundle, UTSTarget } = getUTSCompiler()
   const imports = [...DEFAULT_IMPORTS]
 
-  const { package: pkg, inputDir, outputDir, sourceMap, uni_modules } = options
+  const {
+    package: pkg,
+    inputDir,
+    outputDir,
+    sourceMap,
+    uni_modules,
+    extApis,
+  } = options
 
   const input: UTSInputOptions = {
     root: inputDir,
@@ -76,6 +84,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
       noColor: true,
       transform: {
         uniExtApiDefaultNamespace: 'io.dcloud.uts.extapi',
+        uniExtApiNamespaces: extApis,
         uvueClassNamePrefix: 'Gen',
       },
     },

@@ -47,7 +47,7 @@ export type UTSOutputOptions = {
     paramDefaultValue?: boolean
     constructorInvocation?: boolean
     uniExtApiDefaultNamespace?: string
-    uniExtApiNamespaces?: Record<string, string>
+    uniExtApiNamespaces?: Record<string, [string, string]>
     uvueClassNamePrefix?: string
     uvueClassNameOnlyBasename?: boolean
     disableReactiveObject?: boolean

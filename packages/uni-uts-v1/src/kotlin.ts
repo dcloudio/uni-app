@@ -70,7 +70,15 @@ function parseKotlinPackage(filename: string) {
 export async function runKotlinProd(
   filename: string,
   components: Record<string, string>,
-  { isPlugin, isX }: { isPlugin: boolean; isX: boolean }
+  {
+    isPlugin,
+    isX,
+    extApis,
+  }: {
+    isPlugin: boolean
+    isX: boolean
+    extApis?: Record<string, [string, string]>
+  }
 ) {
   // 文件有可能是 app-ios 里边的，因为编译到 android 时，为了保证不报错，可能会去读取 ios 下的 uts
   if (filename.includes('app-ios')) {
@@ -85,6 +93,7 @@ export async function runKotlinProd(
     components,
     isX,
     isPlugin,
+    extApis,
   })
   if (!result) {
     return
@@ -114,6 +123,7 @@ interface RunKotlinDevOptions {
   cacheDir: string
   pluginRelativeDir: string
   is_uni_modules: boolean
+  extApis?: Record<string, [string, string]>
 }
 
 export async function runKotlinDev(
@@ -125,6 +135,7 @@ export async function runKotlinDev(
     cacheDir,
     pluginRelativeDir,
     is_uni_modules,
+    extApis,
   }: RunKotlinDevOptions
 ): Promise<RunKotlinDevResult | undefined> {
   // 文件有可能是 app-ios 里边的，因为编译到 android 时，为了保证不报错，可能会去读取 ios 下的 uts
@@ -140,6 +151,7 @@ export async function runKotlinDev(
     components,
     isX,
     isPlugin,
+    extApis,
   })) as RunKotlinDevResult
   if (!result) {
     return
@@ -344,7 +356,15 @@ const DEFAULT_IMPORTS = [
 
 export async function compile(
   filename: string,
-  { inputDir, outputDir, sourceMap, components, isX, isPlugin }: ToKotlinOptions
+  {
+    inputDir,
+    outputDir,
+    sourceMap,
+    components,
+    isX,
+    isPlugin,
+    extApis,
+  }: ToKotlinOptions
 ) {
   const { bundle, UTSTarget } = getUTSCompiler()
   // let time = Date.now()
@@ -389,6 +409,7 @@ export async function compile(
       noColor: !isColorSupported(),
       transform: {
         uniExtApiDefaultNamespace: 'io.dcloud.uts.extapi',
+        uniExtApiNamespaces: extApis,
       },
     },
   }

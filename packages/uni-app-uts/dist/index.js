@@ -12,7 +12,10 @@ const uvue_1 = require("./plugins/uvue");
 exports.default = () => {
     return [
         (0, pre_1.uniPrePlugin)(),
-        (0, uni_cli_shared_1.uniUTSPlugin)({ x: true }),
+        (0, uni_cli_shared_1.uniUTSPlugin)({
+            x: true,
+            extApis: (0, uni_cli_shared_1.parseUniExtApiNamespacesOnce)(process.env.UNI_UTS_TARGET_LANGUAGE),
+        }),
         (0, plugins_1.uniAppUTSPlugin)(),
         (0, mainUTS_1.uniAppMainPlugin)(),
         (0, manifestJson_1.uniAppManifestPlugin)(),

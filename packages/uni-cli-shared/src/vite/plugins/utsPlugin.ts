@@ -23,6 +23,7 @@ const utsModuleCaches = new Map<
 
 interface UniUTSPluginOptions {
   x?: boolean
+  extApis?: Record<string, [string, string]>
 }
 
 export const utsPlugins = new Set<string>()
@@ -84,6 +85,7 @@ export function uniUTSPlugin(options: UniUTSPluginOptions = {}): Plugin {
         return resolveUTSCompiler().compile(pluginDir, {
           isX: !!options.x,
           isPlugin: true,
+          extApis: options.extApis,
         })
       })
       utsModuleCaches.set(pluginDir, compile)

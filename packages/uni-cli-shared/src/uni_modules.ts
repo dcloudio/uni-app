@@ -1,6 +1,12 @@
 import path from 'path'
 import fs from 'fs-extra'
 import { recursive } from 'merge'
+import { once } from '@dcloudio/uni-shared'
+import { isArray } from '@vue/shared'
+import {
+  parseKotlinPackageWithPluginId,
+  parseSwiftPackageWithPluginId,
+} from './uts'
 
 type DefineOptions = {
   name?: string
@@ -23,7 +29,45 @@ export interface Exports {
   [name: string]: Define | Defines | false
 }
 
-export function parseUniExtApis(vite = true) {
+type UTSTargetLanguage = typeof process.env.UNI_UTS_TARGET_LANGUAGE
+
+export const parseUniExtApiNamespacesOnce = once(
+  (language: UTSTargetLanguage) => {
+    const extApis = parseUniExtApiNamespacesJsOnce(language)
+    const namespaces: Record<string, [string, string]> = {}
+    Object.keys(extApis).forEach((name) => {
+      const options = extApis[name]
+      let source = options[0]
+      const pluginId = path.basename(options[0])
+      if (language === 'kotlin') {
+        source = parseKotlinPackageWithPluginId(pluginId, true)
+      } else if (language === 'swift') {
+        source = parseSwiftPackageWithPluginId(pluginId, true)
+      }
+      namespaces[name] = [source, options[1]]
+    })
+    return namespaces
+  }
+)
+
+export const parseUniExtApiNamespacesJsOnce = once(
+  (language: UTSTargetLanguage) => {
+    const extApis = parseUniExtApis(true, language)
+    const namespaces: Record<string, [string, string]> = {}
+    Object.keys(extApis).forEach((name) => {
+      const options = extApis[name]
+      if (isArray(options) && options.length >= 2) {
+        namespaces[name.replace('uni.', '')] = [options[0], options[1]]
+      }
+    })
+    return namespaces
+  }
+)
+
+export function parseUniExtApis(
+  vite = true,
+  language: UTSTargetLanguage = 'javascript'
+) {
   const uniModulesDir = path.resolve(process.env.UNI_INPUT_DIR, 'uni_modules')
   if (!fs.existsSync(uniModulesDir)) {
     return {}
@@ -59,7 +103,12 @@ export function parseUniExtApis(vite = true) {
             const options = curInjects[name]
             // js 平台禁用了
             if (Array.isArray(options) && options.length === 3) {
-              if (options[2] && (options[2] as any).js === false) {
+              if (
+                options[2] &&
+                (options[2] as any)[
+                  language === 'javascript' ? 'js' : language
+                ] === false
+              ) {
                 delete curInjects[name]
               }
             }

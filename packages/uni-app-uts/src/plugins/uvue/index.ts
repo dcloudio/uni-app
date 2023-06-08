@@ -45,7 +45,7 @@ export function uniAppUVuePlugin(): Plugin {
     sourceMap: false,
     // eslint-disable-next-line no-restricted-globals
     compiler: require('@vue/compiler-sfc'),
-    targetLanguage: process.env.UNI_UVUE_TARGET_LANGUAGE,
+    targetLanguage: process.env.UNI_UTS_TARGET_LANGUAGE,
   }
 
   const appVue = resolveAppVue(process.env.UNI_INPUT_DIR)

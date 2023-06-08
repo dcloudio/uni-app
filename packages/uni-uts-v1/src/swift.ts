@@ -36,7 +36,15 @@ function parseSwiftPackage(filename: string) {
 export async function runSwiftProd(
   filename: string,
   components: Record<string, string>,
-  { isPlugin, isX }: { isPlugin: boolean; isX: boolean }
+  {
+    isPlugin,
+    isX,
+    extApis,
+  }: {
+    isPlugin: boolean
+    isX: boolean
+    extApis?: Record<string, [string, string]>
+  }
 ) {
   // 文件有可能是 app-android 里边的，因为编译到 ios 时，为了保证不报错，可能会去读取 android 下的 uts
   if (filename.includes('app-android')) {
@@ -51,6 +59,7 @@ export async function runSwiftProd(
     components,
     isX,
     isPlugin,
+    extApis,
   })
   if (!result) {
     return
@@ -81,11 +90,12 @@ interface RunSwiftDevOptions {
   components: Record<string, string>
   isX: boolean
   isPlugin: boolean
+  extApis?: Record<string, [string, string]>
 }
 
 export async function runSwiftDev(
   filename: string,
-  { components, isX, isPlugin }: RunSwiftDevOptions
+  { components, isX, isPlugin, extApis }: RunSwiftDevOptions
 ) {
   // 文件有可能是 app-android 里边的，因为编译到 ios 时，为了保证不报错，可能会去读取 android 下的 uts
   if (filename.includes('app-android')) {
@@ -118,6 +128,7 @@ export async function runSwiftDev(
     components,
     isX,
     isPlugin,
+    extApis,
   })) as RunSwiftDevResult
 
   if (!result) {
@@ -177,7 +188,15 @@ function isCliProject(projectPath: string) {
 
 export async function compile(
   filename: string,
-  { inputDir, outputDir, sourceMap, components, isX, isPlugin }: ToSwiftOptions
+  {
+    inputDir,
+    outputDir,
+    sourceMap,
+    components,
+    isX,
+    isPlugin,
+    extApis,
+  }: ToSwiftOptions
 ) {
   const { bundle, UTSTarget } = getUTSCompiler()
   // let time = Date.now()
@@ -217,6 +236,7 @@ export async function compile(
       noColor: !isColorSupported(),
       transform: {
         uniExtApiDefaultNamespace: 'DCloudUTSExtAPI',
+        uniExtApiNamespaces: extApis,
       },
     },
   }

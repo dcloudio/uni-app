@@ -97,11 +97,12 @@ function createResult(
 interface CompilerOptions {
   isX: boolean
   isPlugin: boolean
+  extApis?: Record<string, [string, string]>
 }
 
 export async function compile(
   pluginDir: string,
-  { isX, isPlugin }: CompilerOptions = { isX: false, isPlugin: true }
+  { isX, isPlugin, extApis }: CompilerOptions = { isX: false, isPlugin: true }
 ): Promise<CompileResult | void> {
   const pkg = resolvePackage(pluginDir)
   if (!pkg) {
@@ -166,6 +167,7 @@ export async function compile(
         await getCompiler('kotlin').runProd(filename, androidComponents, {
           isX,
           isPlugin,
+          extApis,
         })
         if (cacheDir) {
           // 存储 sourcemap
@@ -197,6 +199,7 @@ export async function compile(
         await getCompiler('swift').runProd(filename, iosComponents, {
           isX,
           isPlugin,
+          extApis,
         })
         if (cacheDir) {
           storeSourceMap(
@@ -334,6 +337,7 @@ export async function compile(
           cacheDir,
           pluginRelativeDir,
           is_uni_modules: pkg.is_uni_modules,
+          extApis,
         })
         if (res) {
           if (isArray(res.deps) && res.deps.length) {

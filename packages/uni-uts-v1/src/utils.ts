@@ -20,6 +20,7 @@ interface ToOptions {
   components: Record<string, string>
   isX: boolean
   isPlugin: boolean
+  extApis?: Record<string, [string, string]>
 }
 export type ToKotlinOptions = ToOptions
 export type ToSwiftOptions = ToOptions

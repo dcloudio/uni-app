@@ -7,6 +7,7 @@ import {
   initI18nOptions,
   normalizePath,
   parseManifestJsonOnce,
+  parseUniExtApiNamespacesOnce,
   parseVueRequest,
   resolveMainPathOnce,
   resolveUTSCompiler,
@@ -133,6 +134,9 @@ export function uniAppUTSPlugin(): UniVitePlugin {
           package: 'uni.' + (manifestJson.appid || '').replace(/_/g, ''),
           sourceMap: true,
           uni_modules: [...utsPlugins],
+          extApis: parseUniExtApiNamespacesOnce(
+            process.env.UNI_UTS_TARGET_LANGUAGE
+          ),
         }
       )
       if (res) {
