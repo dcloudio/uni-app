@@ -28,6 +28,9 @@ export function parseUniExtApis(
   platform: typeof process.env.UNI_UTS_PLATFORM,
   language: UTSTargetLanguage = 'javascript'
 ) {
+  if (!process.env.UNI_INPUT_DIR) {
+    return {}
+  }
   const uniModulesDir = path.resolve(process.env.UNI_INPUT_DIR, 'uni_modules')
   if (!fs.existsSync(uniModulesDir)) {
     return {}
