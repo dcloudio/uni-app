@@ -258,7 +258,7 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
       } : patterns))
 
       const uniExtApis = require('@dcloudio/uni-cli-shared/lib/uni_modules/uni_modules')
-        .parseUniExtApis(false)
+        .parseUniExtApis(false, process.env.UNI_UTS_PLATFORM, 'javascript')
       const keys = Object.keys(uniExtApis)
       if (keys.length) {
         plugins.push(new webpack.ProvidePlugin(uniExtApis))
@@ -284,7 +284,7 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
         plugins.push(new CopyWebpackPlugin(CopyWebpackPluginVersion > 5 ? {
           patterns
         } : patterns))
-      } catch (e) { }
+      } catch (e) {}
     }
 
     if (process.UNI_SCRIPT_ENV && Object.keys(process.UNI_SCRIPT_ENV).length) {
@@ -383,7 +383,7 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
           dir: process.env.UNI_INPUT_DIR
         }))
       }
-    } catch (e) { }
+    } catch (e) {}
 
     const resolveLoaderAlias = {}
     const modules = ['@vue/cli-plugin-babel', '@vue/cli-service']
@@ -416,7 +416,8 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
     if (process.env.UNI_PLATFORM.startsWith('mp')) {
       const BabelRuntimeVersions = require('@babel/runtime/package.json').version.split('.')
       if (BabelRuntimeVersions[0] === '7' && Number(BabelRuntimeVersions[1]) >= 18) {
-        alias['@babel/runtime/regenerator'] = require.resolve('@dcloudio/vue-cli-plugin-uni/packages/@babel/runtime/regenerator')
+        alias['@babel/runtime/regenerator'] = require.resolve(
+          '@dcloudio/vue-cli-plugin-uni/packages/@babel/runtime/regenerator')
       }
     }
 
