@@ -101,7 +101,11 @@ export default function uniPlugin(
 function createPlugins(options: VitePluginUniResolvedOptions) {
   const plugins: Plugin[] = []
 
-  const injects = parseUniExtApis()
+  const injects = parseUniExtApis(
+    true,
+    process.env.UNI_UTS_PLATFORM,
+    'javascript'
+  )
   if (Object.keys(injects).length) {
     plugins.push(
       uniViteInjectPlugin('uni:ext-api-inject', injects as InjectOptions)

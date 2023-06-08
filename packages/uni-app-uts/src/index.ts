@@ -15,6 +15,7 @@ export default () => {
     uniUTSPlugin({
       x: true,
       extApis: parseUniExtApiNamespacesOnce(
+        process.env.UNI_UTS_PLATFORM,
         process.env.UNI_UTS_TARGET_LANGUAGE
       ),
     }),

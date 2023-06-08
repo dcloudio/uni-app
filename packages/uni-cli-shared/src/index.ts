@@ -22,11 +22,7 @@ export * from './resolve'
 export * from './scripts'
 export * from './platform'
 
-export {
-  parseUniExtApis,
-  parseUniExtApiNamespacesOnce,
-  parseUniExtApiNamespacesJsOnce,
-} from './uni_modules'
+export { parseUniExtApis, parseInjects } from './uni_modules'
 
 export { M } from './messages'
 

@@ -1,12 +1,14 @@
 import fs from 'fs'
 import path from 'path'
 import glob from 'fast-glob'
-import { camelize, capitalize } from '@vue/shared'
+import { camelize, capitalize, isArray } from '@vue/shared'
 import * as UTSCompiler from '@dcloudio/uni-uts-v1'
 
 import { isInHBuilderX } from './hbx'
 import { installDepTips, normalizePath, version } from './utils'
 import type { EasycomMatcher } from './easycom'
+import { once } from '@dcloudio/uni-shared'
+import { parseUniExtApis } from './uni_modules'
 
 /**
  * 解析 app 平台的 uts 插件，任意平台（android|ios）存在即可
@@ -281,3 +283,44 @@ export function parseSwiftPackageWithPluginId(
     capitalize(camelize(prefix(id)))
   )
 }
+
+export type UTSTargetLanguage = typeof process.env.UNI_UTS_TARGET_LANGUAGE
+
+export const parseUniExtApiNamespacesOnce = once(
+  (
+    platform: typeof process.env.UNI_UTS_PLATFORM,
+    language: UTSTargetLanguage
+  ) => {
+    const extApis = parseUniExtApiNamespacesJsOnce(platform, language)
+    const namespaces: Record<string, [string, string]> = {}
+    Object.keys(extApis).forEach((name) => {
+      const options = extApis[name]
+      let source = options[0]
+      const pluginId = path.basename(options[0])
+      if (language === 'kotlin') {
+        source = parseKotlinPackageWithPluginId(pluginId, true)
+      } else if (language === 'swift') {
+        source = parseSwiftPackageWithPluginId(pluginId, true)
+      }
+      namespaces[name] = [source, options[1]]
+    })
+    return namespaces
+  }
+)
+
+export const parseUniExtApiNamespacesJsOnce = once(
+  (
+    platform: typeof process.env.UNI_UTS_PLATFORM,
+    language: UTSTargetLanguage
+  ) => {
+    const extApis = parseUniExtApis(true, platform, language)
+    const namespaces: Record<string, [string, string]> = {}
+    Object.keys(extApis).forEach((name) => {
+      const options = extApis[name]
+      if (isArray(options) && options.length >= 2) {
+        namespaces[name.replace('uni.', '')] = [options[0], options[1]]
+      }
+    })
+    return namespaces
+  }
+)

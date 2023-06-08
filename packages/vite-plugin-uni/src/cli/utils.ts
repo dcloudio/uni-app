@@ -220,6 +220,13 @@ function initUTSPlatform(options: CliOptions) {
       process.env.UNI_UTS_PLATFORM = options.platform as any
     }
   }
+
+  process.env.UNI_UTS_TARGET_LANGUAGE = 'javascript'
+  if (process.env.UNI_UTS_PLATFORM === 'app-android') {
+    process.env.UNI_UTS_TARGET_LANGUAGE = 'kotlin'
+  } else if (process.env.UNI_UTS_PLATFORM === 'app-ios') {
+    process.env.UNI_UTS_TARGET_LANGUAGE = 'swift'
+  }
 }
 
 function initDevtools({ devtools, devtoolsHost, devtoolsPort }: CliOptions) {

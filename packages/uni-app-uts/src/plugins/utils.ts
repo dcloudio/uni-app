@@ -29,6 +29,7 @@ export async function parseImports(code: string) {
 
 function parseUniExtApiImports(code: string): string[] {
   const extApis = parseUniExtApiNamespacesJsOnce(
+    process.env.UNI_UTS_PLATFORM,
     process.env.UNI_UTS_TARGET_LANGUAGE
   )
   const pattern = /uni\.(\w+)/g

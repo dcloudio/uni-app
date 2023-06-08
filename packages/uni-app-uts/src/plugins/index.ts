@@ -135,6 +135,7 @@ export function uniAppUTSPlugin(): UniVitePlugin {
           sourceMap: true,
           uni_modules: [...utsPlugins],
           extApis: parseUniExtApiNamespacesOnce(
+            process.env.UNI_UTS_PLATFORM,
             process.env.UNI_UTS_TARGET_LANGUAGE
           ),
         }
