@@ -18343,7 +18343,7 @@ let listener$1 = null;
 const onAccelerometerChange = /* @__PURE__ */ defineOnApi(API_ON_ACCELEROMETER, () => {
   startAccelerometer();
 });
-const offAccelerometerChange = /* @__PURE__ */ defineOnApi(API_OFF_ACCELEROMETER, () => {
+const offAccelerometerChange = /* @__PURE__ */ defineOffApi(API_OFF_ACCELEROMETER, () => {
   stopAccelerometer();
 });
 const startAccelerometer = /* @__PURE__ */ defineAsyncApi(
