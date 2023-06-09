@@ -67,6 +67,7 @@ const UVUE_PROP_NAME_GROUPS: Record<string, Record<string, Normalize>> = {
     flexGrow: normalizeDefault,
     flexBasis: normalizeDefault,
     flexWrap: normalizeFlexWrap,
+    flexFlow: normalizeDefault,
     flexDirection: createEnumNormalize([
       'column',
       'row',
@@ -86,6 +87,14 @@ const UVUE_PROP_NAME_GROUPS: Record<string, Record<string, Normalize>> = {
       'flex-end',
       'center',
       'baseline',
+    ]),
+    alignContent: createEnumNormalize([
+      'stretch',
+      'flex-start',
+      'flex-end',
+      'center',
+      'space-between',
+      'space-around',
     ]),
   },
   position: {
