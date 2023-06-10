@@ -20,10 +20,20 @@ import {
   isSlotOutlet,
   isVSlot,
   makeBlock,
+  createVNodeCall,
 } from '@vue/compiler-core'
-import { NOOP, camelize, capitalize, isArray, isString } from '@vue/shared'
+import {
+  NOOP,
+  camelize,
+  capitalize,
+  isArray,
+  isString,
+  PatchFlags,
+  PatchFlagNames,
+} from '@vue/shared'
 import { defaultOnError, defaultOnWarn } from './errors'
 import { TransformOptions } from './options'
+import { FRAGMENT } from './runtimeHelpers'
 
 // There are two types of transforms:
 //
@@ -269,6 +279,7 @@ export function isSingleElementRoot(
 }
 
 function createRootCodegen(root: RootNode, context: TransformContext) {
+  const { helper } = context
   const { children } = root
   if (children.length === 1) {
     const child = children[0]
@@ -289,28 +300,27 @@ function createRootCodegen(root: RootNode, context: TransformContext) {
     }
   } else if (children.length > 1) {
     // root has multiple nodes - return a fragment block.
-    // let patchFlag = PatchFlags.STABLE_FRAGMENT
-    // let patchFlagText = PatchFlagNames[PatchFlags.STABLE_FRAGMENT]
-    // // check if the fragment actually contains a single valid child with
-    // // the rest being comments
-    // if (
-    //     children.filter(c => c.type !== NodeTypes.COMMENT).length === 1
-    // ) {
-    //     patchFlag |= PatchFlags.DEV_ROOT_FRAGMENT
-    //     patchFlagText += `, ${PatchFlagNames[PatchFlags.DEV_ROOT_FRAGMENT]}`
-    // }
-    // root.codegenNode = createVNodeCall(
-    //     context,
-    //     helper(FRAGMENT),
-    //     undefined,
-    //     root.children,
-    //     patchFlag + ` /* ${patchFlagText} */`,
-    //     undefined,
-    //     undefined,
-    //     true,
-    //     undefined,
-    //     false /* isComponent */
-    // )
+    let patchFlag = PatchFlags.STABLE_FRAGMENT
+    let patchFlagText = PatchFlagNames[PatchFlags.STABLE_FRAGMENT]
+    // check if the fragment actually contains a single valid child with
+    // the rest being comments
+    if (children.filter((c) => c.type !== NodeTypes.COMMENT).length === 1) {
+      patchFlag |= PatchFlags.DEV_ROOT_FRAGMENT
+      patchFlagText += `, ${PatchFlagNames[PatchFlags.DEV_ROOT_FRAGMENT]}`
+    }
+    root.codegenNode = createVNodeCall(
+      // @ts-ignore
+      context,
+      helper(FRAGMENT),
+      undefined,
+      root.children,
+      patchFlag + ` /* ${patchFlagText} */`,
+      undefined,
+      undefined,
+      true,
+      undefined,
+      false /* isComponent */
+    )
   } else {
     // no children = noop. codegen will return null.
   }
