@@ -4,7 +4,7 @@
     "sourceMap": false,
     "declaration": true,
     "declarationDir": "./dist/packages/uni-nvue-styler/src",
-    "target": "es2015",
+    "target": "esnext",
     "module": "esnext",
     "moduleResolution": "node",
     "allowJs": false,

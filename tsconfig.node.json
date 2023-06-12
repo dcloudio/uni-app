@@ -10,8 +10,7 @@
     "outDir": "dist",
     "module": "commonjs",
     "lib": [
-      "ESNext",
-      "DOM"
+      "ESNext"
     ],
     "sourceMap": false,
     "skipLibCheck": true

@@ -7,12 +7,13 @@ import {
   isNumber,
   COMBINATORS_RE,
 } from '../utils'
-import { normalizeMap } from './map'
+import { getNormalizeMap } from './map'
 
 const normalized = Symbol('normalized')
 
 export interface NormalizeOptions {
   logLevel?: 'NOTE' | 'WARNING' | 'ERROR'
+  type?: 'nvue' | 'uvue'
 }
 
 export function normalize(opts: NormalizeOptions = {}): Plugin {
@@ -20,7 +21,7 @@ export function normalize(opts: NormalizeOptions = {}): Plugin {
     opts.logLevel = 'WARNING'
   }
   const plugin: Plugin = {
-    postcssPlugin: 'nvue:normalize',
+    postcssPlugin: `${opts.type || 'nvue'}:normalize`,
     Declaration: createDeclarationProcessor(opts),
   }
   if (__NODE_JS__) {
@@ -59,22 +60,22 @@ function createRuleProcessor() {
   }
 }
 
-function createDeclarationProcessor({ logLevel }: NormalizeOptions) {
+function createDeclarationProcessor(options: NormalizeOptions) {
   return (decl: Declaration, helper: Helpers) => {
     if ((decl as any)[normalized]) {
       return
     }
     decl.prop = camelize(decl.prop)
-    const { value, log } = normalizeDecl(decl.prop, decl.value)
+    const { value, log } = normalizeDecl(decl.prop, decl.value, options)
     if (isString(value) || isNumber(value)) {
       decl.value = value
     }
     if (log && log.reason && helper) {
       const { reason } = log
       let needLog = false
-      if (logLevel === 'NOTE') {
+      if (options.logLevel === 'NOTE') {
         needLog = true
-      } else if (logLevel === 'ERROR') {
+      } else if (options.logLevel === 'ERROR') {
         if (reason.startsWith('ERROR:')) {
           needLog = true
         }
@@ -92,13 +93,17 @@ function createDeclarationProcessor({ logLevel }: NormalizeOptions) {
   }
 }
 
-export function normalizeDecl(name: string, value: string) {
+export function normalizeDecl(
+  name: string,
+  value: string,
+  options: NormalizeOptions
+) {
   let result, log
-  const normalize = normalizeMap[name]
+  const normalize = getNormalizeMap(options)[name]
 
   if (isFunction(normalize)) {
     if (!isFunction(value)) {
-      result = normalize(value)
+      result = normalize(value, options)
     } else {
       result = { value: value }
     }

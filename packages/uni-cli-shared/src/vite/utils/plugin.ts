@@ -57,3 +57,14 @@ export function removePlugins(
     }
   })
 }
+
+export function insertBeforePlugin(
+  plugin: Plugin,
+  before: string,
+  config: ResolvedConfig
+) {
+  const index = config.plugins.findIndex((p) => p.name === before)
+  if (index > -1) {
+    ;(config.plugins as Plugin[]).splice(index, 0, plugin)
+  }
+}

@@ -27,13 +27,21 @@ function getProxy() {
     }
     return proxy;
 }
-function resolveSyncResult(res, returnOptions, instanceId, proxy) {
-    // devtools 环境是字符串？
-    if (isString(res)) {
-        res = JSON.parse(res);
-    }
+function resolveSyncResult(args, res, returnOptions, instanceId, proxy) {
     if ((process.env.NODE_ENV !== 'production')) {
         console.log('uts.invokeSync.result', res, returnOptions, instanceId, typeof proxy);
+    }
+    if (!res) {
+        throw new Error(JSON.stringify(args));
+    }
+    // devtools 环境是字符串？
+    if (isString(res)) {
+        try {
+            res = JSON.parse(res);
+        }
+        catch (e) {
+            throw new Error(`JSON.parse(${res}): ` + e);
+        }
     }
     if (res.errMsg) {
         throw new Error(res.errMsg);
@@ -63,7 +71,7 @@ function invokePropGetter(args) {
     if ((process.env.NODE_ENV !== 'production')) {
         console.log('uts.invokePropGetter.args', args);
     }
-    return resolveSyncResult(getProxy().invokeSync(args, () => { }));
+    return resolveSyncResult(args, getProxy().invokeSync(args, () => { }));
 }
 function initProxyFunction(async, { moduleName, moduleType, package: pkg, class: cls, name: propOrMethod, method, companion, params: methodParams, return: returnOptions, errMsg, }, instanceId, proxy) {
     const invokeCallback = ({ id, name, params, keepAlive, }) => {
@@ -128,7 +136,7 @@ function initProxyFunction(async, { moduleName, moduleType, package: pkg, class:
         if ((process.env.NODE_ENV !== 'production')) {
             console.log('uts.invokeSync.args', invokeArgs);
         }
-        return resolveSyncResult(getProxy().invokeSync(invokeArgs, invokeCallback), returnOptions, instanceId, proxy);
+        return resolveSyncResult(invokeArgs, getProxy().invokeSync(invokeArgs, invokeCallback), returnOptions, instanceId, proxy);
     };
 }
 function initUTSStaticMethod(async, opts) {

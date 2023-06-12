@@ -207,7 +207,7 @@ export const startSoterAuthentication =
           4: () => {
             if (waiting) {
               clearTimeout(waitingTimer)
-              waiting.setTitle('无法识别')
+              waiting.setTitle(t('uni.startSoterAuthentication.waitingContent'))
               waitingTimer = setTimeout(() => {
                 waiting && waiting.setTitle(authenticateMessage)
               }, 1000)

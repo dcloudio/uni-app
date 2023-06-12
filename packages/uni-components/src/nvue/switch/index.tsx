@@ -43,23 +43,16 @@ export default defineComponent({
       }
     )
 
-    const listeners = {
-      onChange(e: CustomEvent) {
-        switchChecked.value = e.detail.value
-        trigger('change', {
-          value: switchChecked.value,
-        })
-      },
-    }
-
-    const _onClick = ($event: Event, isLabelClick?: boolean) => {
+    const _onClick = ($event: Event | CustomEvent, isLabelClick?: boolean) => {
       if (props.disabled) {
         return
       }
       if (isLabelClick) {
         // TODO
       }
-      switchChecked.value = !switchChecked.value
+      switchChecked.value = ($event as CustomEvent).detail
+        ? ($event as CustomEvent).detail.value
+        : !switchChecked.value
       trigger('change', {
         value: switchChecked.value,
       })
@@ -81,7 +74,7 @@ export default defineComponent({
           {type === SwitchType.switch ? (
             <dc-switch
               {...{ dataUncType: 'uni-switch' }}
-              {...listeners}
+              onChange={_onClick}
               {...{
                 checked: switchChecked.value,
                 color: color,
@@ -93,8 +86,8 @@ export default defineComponent({
           {type === SwitchType.checkbox ? (
             <checkbox
               style={{ color: color }}
-              {...{ checked: switchChecked.value }}
-              {...listeners}
+              {...{ checked: switchChecked.value, disabled: disabled }}
+              onClick={_onClick}
             />
           ) : null}
         </div>

@@ -3,16 +3,30 @@ import { parseInjects } from '../src/uni_modules'
 describe('uni_modules:uni-ext-api', () => {
   test('parseInjects', () => {
     expect(
-      parseInjects(true, 'app', `@/uni_modules/uni-getbatteryinfo`, {
-        uni: 'getBatteryInfo',
-      })
+      parseInjects(
+        true,
+        'app-android',
+        'kotlin',
+        `@/uni_modules/uni-getbatteryinfo`,
+        '',
+        {
+          uni: 'getBatteryInfo',
+        }
+      )
     ).toEqual({
       'uni.getBatteryInfo': '@/uni_modules/uni-getbatteryinfo',
     })
     expect(
-      parseInjects(true, 'app', `@/uni_modules/uni-getbatteryinfo`, {
-        uni: ['getBatteryInfo'],
-      })
+      parseInjects(
+        true,
+        'app-android',
+        'kotlin',
+        `@/uni_modules/uni-getbatteryinfo`,
+        '',
+        {
+          uni: ['getBatteryInfo'],
+        }
+      )
     ).toEqual({
       'uni.getBatteryInfo': [
         '@/uni_modules/uni-getbatteryinfo',
@@ -20,20 +34,34 @@ describe('uni_modules:uni-ext-api', () => {
       ],
     })
     expect(
-      parseInjects(true, 'app', `@/uni_modules/uni-location`, {
-        uni: ['openLocation', 'chooseLocation'],
-      })
+      parseInjects(
+        true,
+        'app-android',
+        'kotlin',
+        `@/uni_modules/uni-location`,
+        '',
+        {
+          uni: ['openLocation', 'chooseLocation'],
+        }
+      )
     ).toEqual({
       'uni.openLocation': ['@/uni_modules/uni-location', 'openLocation'],
       'uni.chooseLocation': ['@/uni_modules/uni-location', 'chooseLocation'],
     })
     expect(
-      parseInjects(true, 'app', `@/uni_modules/uni-capturescreen`, {
-        uni: {
-          onUserCaptureScreen: 'onCaptureScreen',
-          offUserCaptureScreen: 'offUserCaptureScreen',
-        },
-      })
+      parseInjects(
+        true,
+        'app-android',
+        'kotlin',
+        `@/uni_modules/uni-capturescreen`,
+        '',
+        {
+          uni: {
+            onUserCaptureScreen: 'onCaptureScreen',
+            offUserCaptureScreen: 'offUserCaptureScreen',
+          },
+        }
+      )
     ).toEqual({
       'uni.onUserCaptureScreen': [
         '@/uni_modules/uni-capturescreen',
@@ -47,34 +75,59 @@ describe('uni_modules:uni-ext-api', () => {
   })
   test('parseInjects with platform', () => {
     expect(
-      parseInjects(true, 'web', `@/uni_modules/uni-getbatteryinfo`, {
-        uni: 'getBatteryInfo1',
-        web: {
-          uni: 'getBatteryInfo',
-        },
-      })
+      parseInjects(
+        true,
+        'web',
+        'javascript',
+        `@/uni_modules/uni-getbatteryinfo`,
+        '',
+        {
+          uni: {
+            getBatteryInfo: {
+              name: 'getBatteryInfo1',
+            },
+          },
+        }
+      )
     ).toEqual({
-      'uni.getBatteryInfo': '@/uni_modules/uni-getbatteryinfo',
+      'uni.getBatteryInfo': [
+        '@/uni_modules/uni-getbatteryinfo',
+        'getBatteryInfo1',
+      ],
     })
     expect(
-      parseInjects(true, 'web', `@/uni_modules/uni-getbatteryinfo`, {
-        uni: 'getBatteryInfo1',
-        web: false,
-      })
+      parseInjects(
+        true,
+        'web',
+        'javascript',
+        `@/uni_modules/uni-getbatteryinfo`,
+        '',
+        {
+          uni: {
+            getBatteryInfo: {
+              web: false,
+            },
+          },
+        }
+      )
     ).toEqual({})
     expect(
-      parseInjects(true, 'web', `@/uni_modules/uni-location`, {
-        uni: ['openLocation'],
-        web: {
-          uni: ['chooseLocation'],
-        },
-      })
+      parseInjects(
+        true,
+        'web',
+        'javascript',
+        `@/uni_modules/uni-location`,
+        '',
+        {
+          uni: ['openLocation'],
+        }
+      )
     ).toEqual({
-      'uni.chooseLocation': ['@/uni_modules/uni-location', 'chooseLocation'],
+      'uni.openLocation': ['@/uni_modules/uni-location', 'openLocation'],
     })
 
     expect(
-      parseInjects(true, 'app', `@/uni_modules/uni-request`, {
+      parseInjects(true, 'app-ios', 'swift', `@/uni_modules/uni-request`, '', {
         uni: {
           request: {
             app: {
@@ -87,13 +140,79 @@ describe('uni_modules:uni-ext-api', () => {
       'uni.request': ['@/uni_modules/uni-request', 'request', { js: false }],
     })
     expect(
-      parseInjects(true, 'app', `@/uni_modules/uni-request`, {
+      parseInjects(
+        true,
+        'app-android',
+        'kotlin',
+        `@/uni_modules/uni-request`,
+        '',
+        {
+          uni: {
+            request: {
+              app: false,
+            },
+          },
+        }
+      )
+    ).toEqual({})
+    expect(
+      parseInjects(
+        true,
+        'app-android',
+        'javascript',
+        `@/uni_modules/uni-request`,
+        '',
+        {
+          uni: {
+            request: {
+              app: {
+                js: false,
+                kotlin: false,
+                swift: true,
+              },
+            },
+          },
+        }
+      )
+    ).toEqual({})
+    expect(
+      parseInjects(
+        true,
+        'app-android',
+        'kotlin',
+        `@/uni_modules/uni-request`,
+        '',
+        {
+          uni: {
+            request: {
+              app: {
+                js: false,
+                kotlin: false,
+                swift: true,
+              },
+            },
+          },
+        }
+      )
+    ).toEqual({})
+    expect(
+      parseInjects(true, 'app-ios', 'swift', `@/uni_modules/uni-request`, '', {
         uni: {
           request: {
-            app: false,
+            app: {
+              js: false,
+              kotlin: false,
+              swift: true,
+            },
           },
         },
       })
-    ).toEqual({})
+    ).toEqual({
+      'uni.request': [
+        '@/uni_modules/uni-request',
+        'request',
+        { js: false, kotlin: false, swift: true },
+      ],
+    })
   })
 })

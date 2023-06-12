@@ -1,6 +1,6 @@
 import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, customizeEvent, addLeadingSlash, stringifyQuery, ON_BACK_PRESS } from '@dcloudio/uni-shared';
 import { ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, getExposeProxy, EMPTY_OBJ, isRef, setTemplateRef, devtoolsComponentAdded, pruneComponentPropsCache } from 'vue';
-import { isArray, capitalize, hasOwn, isFunction, extend, isPlainObject, isString } from '@vue/shared';
+import { isArray, isFunction, capitalize, hasOwn, extend, isPlainObject, isString } from '@vue/shared';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 
 const MP_METHODS = [
@@ -50,6 +50,10 @@ function initBaseInstance(instance, options) {
         }
     }
     ctx.getOpenerEventChannel = function () {
+        {
+            if (my.canIUse('getOpenerEventChannel'))
+                return options.mpInstance.getOpenerEventChannel();
+        }
         if (!this.__eventChannel__) {
             this.__eventChannel__ = new EventChannel();
         }
@@ -97,7 +101,10 @@ function callHook(name, args) {
         name = 'm';
     }
     {
-        if (name === 'onLoad' && args && args.__id__) {
+        if (name === 'onLoad' &&
+            args &&
+            args.__id__ &&
+            isFunction(my.getEventChannel)) {
             this.__eventChannel__ = my.getEventChannel(args.__id__);
             delete args.__id__;
         }
@@ -370,14 +377,18 @@ function initDefaultProps(options, isBehavior = false) {
     if (options.behaviors) {
         // wx://form-field
         if (options.behaviors.includes('my://form-field')) {
-            properties.name = {
-                type: null,
-                value: '',
-            };
-            properties.value = {
-                type: null,
-                value: '',
-            };
+            if (!options.properties || !options.properties.name) {
+                properties.name = {
+                    type: null,
+                    value: '',
+                };
+            }
+            if (!options.properties || !options.properties.value) {
+                properties.value = {
+                    type: null,
+                    value: '',
+                };
+            }
         }
     }
     return properties;

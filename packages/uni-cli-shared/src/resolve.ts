@@ -28,6 +28,10 @@ export function relativeFile(from: string, to: string) {
 }
 
 export const resolveMainPathOnce = once((inputDir: string) => {
+  const mainUTSPath = path.resolve(inputDir, 'main.uts')
+  if (fs.existsSync(mainUTSPath)) {
+    return normalizePath(mainUTSPath)
+  }
   const mainTsPath = path.resolve(inputDir, 'main.ts')
   if (fs.existsSync(mainTsPath)) {
     return normalizePath(mainTsPath)

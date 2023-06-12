@@ -10,14 +10,13 @@ import android.text.TextUtils;
 import android.view.View;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieDrawable;
+import io.dcloud.uts.component.UTSComponent;
+import io.dcloud.uts.component.UTSSize;
 import com.taobao.weex.annotation.JSMethod;
 import com.taobao.weex.ui.component.WXComponentProp;
 import io.dcloud.feature.uniapp.UniSDKInstance;
 import io.dcloud.feature.uniapp.ui.action.AbsComponentData;
 import io.dcloud.feature.uniapp.ui.component.AbsVContainer;
-import io.dcloud.uts.component.UTSComponent;
-import io.dcloud.uts.component.UTSContainer;
-import io.dcloud.uts.component.UTSSize;
 open class CustomAnimListener : Animator.AnimatorListener {
     open var comp: UTSComponent<LottieAnimationView>;
     constructor(com: UTSComponent<LottieAnimationView>) : super() {

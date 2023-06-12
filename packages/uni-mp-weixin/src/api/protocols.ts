@@ -18,7 +18,9 @@ export const compressImage: MPProtocol = {
     toArgs: WechatMiniprogram.CompressImageOption
   ) {
     // https://developers.weixin.qq.com/community/develop/doc/000c08940c865011298e0a43256800?highLine=compressHeight
+    // @ts-expect-error
     if (fromArgs.compressedHeight && !toArgs.compressHeight) {
+      // @ts-expect-error
       toArgs.compressHeight = fromArgs.compressedHeight
     }
     // @ts-expect-error

@@ -211,15 +211,12 @@ function getProxy(): {
 }
 
 function resolveSyncResult(
+  args: InvokeArgs,
   res: InvokeSyncRes,
   returnOptions?: ProxyFunctionReturnOptions,
   instanceId?: number,
   proxy?: unknown
 ) {
-  // devtools 环境是字符串？
-  if (isString(res)) {
-    res = JSON.parse(res)
-  }
   if (__DEV__) {
     console.log(
       'uts.invokeSync.result',
@@ -228,6 +225,17 @@ function resolveSyncResult(
       instanceId,
       typeof proxy
     )
+  }
+  if (!res) {
+    throw new Error(JSON.stringify(args))
+  }
+  // devtools 环境是字符串？
+  if (isString(res)) {
+    try {
+      res = JSON.parse(res)
+    } catch (e) {
+      throw new Error(`JSON.parse(${res}): ` + e)
+    }
   }
   if (res.errMsg) {
     throw new Error(res.errMsg)
@@ -263,7 +271,10 @@ function invokePropGetter(args: InvokeArgs) {
   if (__DEV__) {
     console.log('uts.invokePropGetter.args', args)
   }
-  return resolveSyncResult(getProxy().invokeSync(args, () => {}))
+  return resolveSyncResult(
+    args,
+    getProxy().invokeSync(args, () => {})
+  )
 }
 
 function initProxyFunction(
@@ -348,6 +359,7 @@ function initProxyFunction(
       console.log('uts.invokeSync.args', invokeArgs)
     }
     return resolveSyncResult(
+      invokeArgs,
       getProxy().invokeSync(invokeArgs, invokeCallback),
       returnOptions,
       instanceId,

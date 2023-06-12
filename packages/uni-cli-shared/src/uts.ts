@@ -1,12 +1,14 @@
 import fs from 'fs'
 import path from 'path'
 import glob from 'fast-glob'
-
+import { camelize, capitalize, isArray } from '@vue/shared'
 import * as UTSCompiler from '@dcloudio/uni-uts-v1'
 
 import { isInHBuilderX } from './hbx'
 import { installDepTips, normalizePath, version } from './utils'
 import type { EasycomMatcher } from './easycom'
+import { once } from '@dcloudio/uni-shared'
+import { parseUniExtApis } from './uni_modules'
 
 /**
  * 解析 app 平台的 uts 插件，任意平台（android|ios）存在即可
@@ -14,12 +16,19 @@ import type { EasycomMatcher } from './easycom'
  * @param importer
  * @returns
  */
-export function resolveUTSAppModule(id: string, importer: string) {
+export function resolveUTSAppModule(
+  id: string,
+  importer: string,
+  includeUTSSDK = true
+) {
   id = path.resolve(importer, id)
-  if (id.includes('utssdk') || id.includes('uni_modules')) {
+  if (id.includes('uni_modules') || (includeUTSSDK && id.includes('utssdk'))) {
     const parts = normalizePath(id).split('/')
     const parentDir = parts[parts.length - 2]
-    if (parentDir === 'uni_modules' || parentDir === 'utssdk') {
+    if (
+      parentDir === 'uni_modules' ||
+      (includeUTSSDK && parentDir === 'utssdk')
+    ) {
       const basedir = parentDir === 'uni_modules' ? 'utssdk' : ''
       if (fs.existsSync(path.resolve(id, basedir, 'index.uts'))) {
         return id
@@ -39,7 +48,11 @@ export function resolveUTSAppModule(id: string, importer: string) {
 }
 
 // 仅限 root/uni_modules/test-plugin | root/utssdk/test-plugin 格式
-export function resolveUTSModule(id: string, importer: string) {
+export function resolveUTSModule(
+  id: string,
+  importer: string,
+  includeUTSSDK = true
+) {
   if (
     process.env.UNI_PLATFORM === 'app' ||
     process.env.UNI_PLATFORM === 'app-plus'
@@ -47,10 +60,13 @@ export function resolveUTSModule(id: string, importer: string) {
     return resolveUTSAppModule(id, importer)
   }
   id = path.resolve(importer, id)
-  if (id.includes('utssdk') || id.includes('uni_modules')) {
+  if (id.includes('uni_modules') || (includeUTSSDK && id.includes('utssdk'))) {
     const parts = normalizePath(id).split('/')
     const parentDir = parts[parts.length - 2]
-    if (parentDir === 'uni_modules' || parentDir === 'utssdk') {
+    if (
+      parentDir === 'uni_modules' ||
+      (includeUTSSDK && parentDir === 'utssdk')
+    ) {
       const basedir = parentDir === 'uni_modules' ? 'utssdk' : ''
       const resolvePlatformDir = (p: typeof process.env.UNI_UTS_PLATFORM) => {
         return path.resolve(id, basedir, p)
@@ -114,20 +130,54 @@ export function resolveUTSCompiler(): typeof UTSCompiler {
   return require(compilerPath)
 }
 
+interface UTSComponentMeta {
+  source: string
+  kotlinPackage: string
+  swiftModule: string
+}
+
+const utsComponents = new Map<string, UTSComponentMeta>()
+
+export function isUTSComponent(name: string) {
+  return utsComponents.has(name)
+}
+
+export function parseUTSComponent(name: string, type: 'kotlin' | 'swift') {
+  const meta = utsComponents.get(name)
+  if (meta) {
+    const namespace =
+      meta[type === 'swift' ? 'swiftModule' : 'kotlinPackage'] || ''
+    const className = capitalize(camelize(name)) + 'Component'
+    return {
+      className,
+      namespace,
+      source: meta.source,
+    }
+  }
+}
+
 export function initUTSComponents(
   inputDir: string,
   platform: UniApp.PLATFORM
 ): EasycomMatcher[] {
+  utsComponents.clear()
   const components: EasycomMatcher[] = []
   if (platform !== 'app' && platform !== 'app-plus') {
     return components
   }
-  const easycomsObj = Object.create(null)
+  const easycomsObj: Record<
+    string,
+    { source: string; kotlinPackage: string; swiftModule: string }
+  > = {}
   const dirs = resolveUTSComponentDirs(inputDir)
   dirs.forEach((dir) => {
     const is_uni_modules_utssdk = dir.endsWith('utssdk')
     const is_ussdk =
       !is_uni_modules_utssdk && path.dirname(dir).endsWith('utssdk')
+
+    const pluginId = is_uni_modules_utssdk
+      ? path.basename(path.dirname(dir))
+      : path.basename(dir)
     if (is_uni_modules_utssdk || is_ussdk) {
       glob
         .sync('**/*.vue', {
@@ -147,15 +197,33 @@ export function initUTSComponents(
             const importDir = normalizePath(
               is_uni_modules_utssdk ? path.dirname(dir) : dir
             )
-            easycomsObj[`^${name}$`] = `${importDir}?uts-proxy`
+            easycomsObj[`^${name}$`] = {
+              source: `${importDir}?uts-proxy`,
+              kotlinPackage: parseKotlinPackageWithPluginId(
+                pluginId,
+                is_uni_modules_utssdk
+              ),
+              swiftModule: parseSwiftPackageWithPluginId(
+                pluginId,
+                is_uni_modules_utssdk
+              ),
+            }
           }
         })
     }
   })
   Object.keys(easycomsObj).forEach((name) => {
+    const obj = easycomsObj[name]
+    const componentName = name.slice(1, -1)
     components.push({
+      name: componentName,
       pattern: new RegExp(name),
-      replacement: easycomsObj[name],
+      replacement: obj.source,
+    })
+    utsComponents.set(componentName, {
+      source: obj.source,
+      kotlinPackage: obj.kotlinPackage,
+      swiftModule: obj.swiftModule,
     })
   })
   return components
@@ -187,3 +255,72 @@ function parseVueComponentName(file: string) {
     return matches[1]
   }
 }
+
+function prefix(id: string) {
+  if (
+    process.env.UNI_UTS_MODULE_PREFIX &&
+    !id.startsWith(process.env.UNI_UTS_MODULE_PREFIX)
+  ) {
+    return process.env.UNI_UTS_MODULE_PREFIX + '-' + id
+  }
+  return id
+}
+
+export function parseKotlinPackageWithPluginId(
+  id: string,
+  is_uni_modules: boolean
+) {
+  return 'uts.sdk.' + (is_uni_modules ? 'modules.' : '') + camelize(prefix(id))
+}
+
+export function parseSwiftPackageWithPluginId(
+  id: string,
+  is_uni_modules: boolean
+) {
+  return (
+    'UTSSDK' +
+    (is_uni_modules ? 'Modules' : '') +
+    capitalize(camelize(prefix(id)))
+  )
+}
+
+export type UTSTargetLanguage = typeof process.env.UNI_UTS_TARGET_LANGUAGE
+
+export const parseUniExtApiNamespacesOnce = once(
+  (
+    platform: typeof process.env.UNI_UTS_PLATFORM,
+    language: UTSTargetLanguage
+  ) => {
+    const extApis = parseUniExtApiNamespacesJsOnce(platform, language)
+    const namespaces: Record<string, [string, string]> = {}
+    Object.keys(extApis).forEach((name) => {
+      const options = extApis[name]
+      let source = options[0]
+      const pluginId = path.basename(options[0])
+      if (language === 'kotlin') {
+        source = parseKotlinPackageWithPluginId(pluginId, true)
+      } else if (language === 'swift') {
+        source = parseSwiftPackageWithPluginId(pluginId, true)
+      }
+      namespaces[name] = [source, options[1]]
+    })
+    return namespaces
+  }
+)
+
+export const parseUniExtApiNamespacesJsOnce = once(
+  (
+    platform: typeof process.env.UNI_UTS_PLATFORM,
+    language: UTSTargetLanguage
+  ) => {
+    const extApis = parseUniExtApis(true, platform, language)
+    const namespaces: Record<string, [string, string]> = {}
+    Object.keys(extApis).forEach((name) => {
+      const options = extApis[name]
+      if (isArray(options) && options.length >= 2) {
+        namespaces[name.replace('uni.', '')] = [options[0], options[1]]
+      }
+    })
+    return namespaces
+  }
+)

@@ -3,8 +3,8 @@ import { getCurrentPageId } from '../../helpers/page'
 
 let invokeViewMethodId = 1
 
-function publishViewMethodName() {
-  return getCurrentPageId() + '.' + INVOKE_VIEW_API
+function publishViewMethodName(pageId?: number) {
+  return (pageId || getCurrentPageId()) + '.' + INVOKE_VIEW_API
 }
 
 export const invokeViewMethod: UniApp.UniServiceJSBridge['invokeViewMethod'] = (
@@ -16,7 +16,7 @@ export const invokeViewMethod: UniApp.UniServiceJSBridge['invokeViewMethod'] = (
   const { subscribe, publishHandler } = UniServiceJSBridge
   const id = callback ? invokeViewMethodId++ : 0
   callback && subscribe(INVOKE_VIEW_API + '.' + id, callback, true)
-  publishHandler(publishViewMethodName(), { id, name, args }, pageId)
+  publishHandler(publishViewMethodName(pageId), { id, name, args }, pageId)
 }
 
 export const invokeViewMethodKeepAlive: UniApp.UniServiceJSBridge['invokeViewMethodKeepAlive'] =
@@ -30,7 +30,7 @@ export const invokeViewMethodKeepAlive: UniApp.UniServiceJSBridge['invokeViewMet
     const id = invokeViewMethodId++
     const subscribeName = INVOKE_VIEW_API + '.' + id
     subscribe(subscribeName, callback)
-    publishHandler(publishViewMethodName(), { id, name, args }, pageId)
+    publishHandler(publishViewMethodName(pageId), { id, name, args }, pageId)
     return () => {
       unsubscribe(subscribeName)
     }

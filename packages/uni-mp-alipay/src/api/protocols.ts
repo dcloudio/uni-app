@@ -4,11 +4,12 @@ import {
   addSafeAreaInsets,
   useDeviceId,
   populateParameters,
+  navigateTo as _navigateTo,
 } from '@dcloudio/uni-mp-core'
 
 import { getStorageSync } from './shims'
 
-export { redirectTo, navigateTo } from '@dcloudio/uni-mp-core'
+export { redirectTo } from '@dcloudio/uni-mp-core'
 
 function handleNetworkInfo(
   fromRes: my.IGetNetworkTypeSuccessResult,
@@ -488,3 +489,6 @@ export const chooseAddress = {
     toRes.errMsg = toRes.errMsg + ' ' + fromRes.resultStatus
   },
 }
+export const navigateTo = my.canIUse('getOpenerEventChannel')
+  ? {}
+  : _navigateTo()

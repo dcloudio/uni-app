@@ -18,6 +18,9 @@ interface ToOptions {
   outputDir: string
   sourceMap: boolean
   components: Record<string, string>
+  isX: boolean
+  isPlugin: boolean
+  extApis?: Record<string, [string, string]>
 }
 export type ToKotlinOptions = ToOptions
 export type ToSwiftOptions = ToOptions
@@ -202,6 +205,10 @@ export type CompilerServer = {}
 export function getCompilerServer<T extends CompilerServer>(
   pluginName: 'uts-development-ios' | 'uniapp-runextension'
 ): T | undefined {
+  if (!process.env.UNI_HBUILDERX_PLUGINS) {
+    console.error(`HBuilderX is not found`)
+    return
+  }
   const compilerServerPath = path.resolve(
     process.env.UNI_HBUILDERX_PLUGINS,
     `${pluginName}/out/${
@@ -274,16 +281,18 @@ function parseVueComponentName(file: string) {
 
 export function genComponentsCode(
   filename: string,
-  components: Record<string, string>
+  components: Record<string, string>,
+  isX: boolean
 ) {
   const codes: string[] = []
   const dirname = path.dirname(filename)
   Object.keys(components).forEach((name) => {
     const source = normalizePath(path.relative(dirname, components[name]))
+    const className = capitalize(camelize(name))
     codes.push(
-      `export { default as ${capitalize(camelize(name))}Component } from '${
-        source.startsWith('.') ? source : './' + source
-      }'`
+      `export { default as ${className}Component${
+        isX ? `, ${className}Node` : ''
+      } } from '${source.startsWith('.') ? source : './' + source}'`
     )
   })
   return codes.join('\n')
@@ -413,4 +422,11 @@ export function relative(filename: string, inputDir: string) {
     return normalizePath(path.relative(inputDir, filename))
   }
   return filename
+}
+
+export function resolveSourceMapFile(outputDir: string, kotlinFile: string) {
+  return (
+    path.resolve(resolveSourceMapPath(), path.relative(outputDir, kotlinFile)) +
+    '.map'
+  )
 }

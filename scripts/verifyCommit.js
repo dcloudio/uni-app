@@ -11,7 +11,7 @@ const commitRE =
 if (!commitRE.test(msg)) {
   console.log()
   console.error(
-    `  ${colors.bgRed.white(' ERROR ')} ${colors.red(
+    `  ${colors.bgRed(' ERROR ')} ${colors.red(
       `invalid commit message format.`
     )}\n\n` +
       colors.red(

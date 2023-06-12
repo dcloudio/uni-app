@@ -48,7 +48,7 @@ module.exports = {
         'jest.config.js',
         'rollup.config.mjs',
         'scripts/**',
-        'packages/{uni-cli-shared,uni-app-vite,uni-h5-vite,uni-mp-vite,uni-mp-compiler,vite-plugin-uni,uts,uni-uts-v1}/**',
+        'packages/{uni-cli-shared,uni-app-vite,uni-h5-vite,uni-mp-vite,uni-mp-compiler,vite-plugin-uni,uts,uni-uts-v1,uni-app-uts}/**',
         'packages/*/vite.config.ts',
       ],
       rules: {

@@ -2,11 +2,11 @@ import { isFunction } from '@vue/shared'
 import { Normalize } from '../utils'
 import { normalizeLength } from './length'
 
-export const normalizeShorthandLength: Normalize = (v) => {
+export const normalizeShorthandLength: Normalize = (v, options) => {
   v = (v || '').toString()
   let value: unknown[] | null = []
   let reason: unknown[] = []
-  const results = v.split(/\s+/).map(normalizeLength)
+  const results = v.split(/\s+/).map((v) => normalizeLength(v, options))
   for (let i = 0; i < results.length; ++i) {
     const res = results[i]
     if (res.value === null) {

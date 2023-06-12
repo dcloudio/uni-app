@@ -14,6 +14,7 @@ interface PluginConfig {
   id: string
   name: string
   apply?: UniApp.PLATFORM | UniApp.PLATFORM[]
+  uvue?: boolean
   config: {
     name: string
     main?: string
@@ -89,7 +90,11 @@ export function initExtraPlugins(
   platform: UniApp.PLATFORM,
   options: VitePluginUniResolvedOptions
 ) {
-  return initPlugins(cliRoot, resolvePlugins(cliRoot, platform), options)
+  return initPlugins(
+    cliRoot,
+    resolvePlugins(cliRoot, platform, options.uvue),
+    options
+  )
 }
 
 function initPlugin(
@@ -126,7 +131,11 @@ function initPlugins(
     .flat()
 }
 
-function resolvePlugins(cliRoot: string, platform: UniApp.PLATFORM) {
+function resolvePlugins(
+  cliRoot: string,
+  platform: UniApp.PLATFORM,
+  uvue: boolean = false
+) {
   const pkg = require(path.join(cliRoot, 'package.json'))
   return Object.keys(pkg.devDependencies || {})
     .concat(Object.keys(pkg.dependencies || {}))
@@ -150,6 +159,10 @@ function resolvePlugins(cliRoot: string, platform: UniApp.PLATFORM) {
           if (!new RegExp(apply).test(platform)) {
             return
           }
+        }
+        // 插件必须支持 uvue
+        if (uvue && !config.uvue) {
+          return
         }
         return {
           id,

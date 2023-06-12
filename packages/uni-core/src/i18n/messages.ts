@@ -377,14 +377,14 @@ export const initI18nChooseFileMsgsOnce = /*#__PURE__*/ once(() => {
   if (__UNI_FEATURE_I18N_ZH_HANS__) {
     useI18n().add(
       LOCALE_ZH_HANS,
-      normalizeMessages(name, keys, ['文件选择器对话框只能在用户激活时显示']),
+      normalizeMessages(name, keys, ['文件选择器对话框只能在由用户激活时显示']),
       false
     )
   }
   if (__UNI_FEATURE_I18N_ZH_HANT__) {
     useI18n().add(
       LOCALE_ZH_HANT,
-      normalizeMessages(name, keys, ['文件選擇器對話框只能在用戶激活時顯示']),
+      normalizeMessages(name, keys, ['文件選擇器對話框只能在由用戶激活時顯示']),
       false
     )
   }
@@ -614,18 +614,24 @@ export const initI18nScanCodeMsgsOnce = /*#__PURE__*/ once(() => {
 export const initI18nStartSoterAuthenticationMsgsOnce = /*#__PURE__*/ once(
   () => {
     const name = 'uni.startSoterAuthentication.'
-    const keys = ['authContent']
+    const keys = ['authContent', 'waitingContent']
     if (__UNI_FEATURE_I18N_EN__) {
       useI18n().add(
         LOCALE_EN,
-        normalizeMessages(name, keys, ['Fingerprint recognition']),
+        normalizeMessages(name, keys, [
+          'Fingerprint recognition',
+          'Unrecognizable',
+        ]),
         false
       )
     }
     if (__UNI_FEATURE_I18N_ES__) {
       useI18n().add(
         LOCALE_ES,
-        normalizeMessages(name, keys, ['Reconocimiento de huellas dactilares']),
+        normalizeMessages(name, keys, [
+          'Reconocimiento de huellas dactilares',
+          'Irreconocible',
+        ]),
         false
       )
     }
@@ -634,6 +640,7 @@ export const initI18nStartSoterAuthenticationMsgsOnce = /*#__PURE__*/ once(
         LOCALE_FR,
         normalizeMessages(name, keys, [
           "Reconnaissance de l'empreinte digitale",
+          'Méconnaissable',
         ]),
         false
       )
@@ -641,14 +648,14 @@ export const initI18nStartSoterAuthenticationMsgsOnce = /*#__PURE__*/ once(
     if (__UNI_FEATURE_I18N_ZH_HANS__) {
       useI18n().add(
         LOCALE_ZH_HANS,
-        normalizeMessages(name, keys, ['指纹识别中...']),
+        normalizeMessages(name, keys, ['指纹识别中...', '无法识别']),
         false
       )
     }
     if (__UNI_FEATURE_I18N_ZH_HANT__) {
       useI18n().add(
         LOCALE_ZH_HANT,
-        normalizeMessages(name, keys, ['指紋識別中...']),
+        normalizeMessages(name, keys, ['指紋識別中...', '無法識別']),
         false
       )
     }

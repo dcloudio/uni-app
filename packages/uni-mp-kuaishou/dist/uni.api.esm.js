@@ -1054,39 +1054,37 @@ const previewImage = {
 };
 
 const eventChannels = {};
-const eventChannelStack = [];
 let id = 0;
 function initEventChannel(events, cache = true) {
     id++;
     const eventChannel = new ks.EventChannel(id, events);
     if (cache) {
         eventChannels[id] = eventChannel;
-        eventChannelStack.push(eventChannel);
     }
     return eventChannel;
 }
 function getEventChannel(id) {
-    if (id) {
-        const eventChannel = eventChannels[id];
-        delete eventChannels[id];
-        return eventChannel;
-    }
-    return eventChannelStack.shift();
+    const eventChannel = eventChannels[id];
+    delete eventChannels[id];
+    return eventChannel;
 }
-const navigateTo = {
-    args(fromArgs) {
-        const id = initEventChannel(fromArgs.events).id;
-        if (fromArgs.url) {
-            fromArgs.url =
-                fromArgs.url +
-                    (fromArgs.url.indexOf('?') === -1 ? '?' : '&') +
-                    '__id__=' +
-                    id;
-        }
-    },
-    returnValue(fromRes) {
-        fromRes.eventChannel = getEventChannel();
-    },
+const navigateTo$1 = () => {
+    let eventChannel;
+    return {
+        args(fromArgs) {
+            eventChannel = initEventChannel(fromArgs.events);
+            if (fromArgs.url) {
+                fromArgs.url =
+                    fromArgs.url +
+                        (fromArgs.url.indexOf('?') === -1 ? '?' : '&') +
+                        '__id__=' +
+                        eventChannel.id;
+            }
+        },
+        returnValue(fromRes) {
+            fromRes.eventChannel = eventChannel;
+        },
+    };
 };
 
 const baseApis = {
@@ -1176,6 +1174,7 @@ const requestPayment = {
         }
     },
 };
+const navigateTo = navigateTo$1();
 
 var protocols = /*#__PURE__*/Object.freeze({
   __proto__: null,

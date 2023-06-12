@@ -1,0 +1,63 @@
+import { JSONObject } from 'com.alibaba.fastjson'
+import { getCurrentPages } from 'io.dcloud.uts.framework'
+
+function getPageId(page: BasePage): number {
+  return page.$.uid
+}
+
+function getPagePath(page: BasePage): string {
+  return page.route
+}
+
+function getPageQuery(page: BasePage): VueComponentOptions {
+  return page.$options
+}
+
+function getPageById(id: number): BasePage | null {
+  const pages = getCurrentPages()
+  let result: BasePage | null = null
+  pages.forEach((page: BasePage) => {
+    if (getPageId(page) === id) {
+      result = page
+    }
+  })
+  return result
+}
+
+export function getPageVm(id: number): BasePage | null {
+  return getPageById(id)
+}
+
+export function getData(
+  vm: BasePage | null,
+  path?: string
+): Map<string, any | null> {
+  let data = new Map<string, any | null>()
+  if (vm !== null) {
+    // TODO: path
+    if(path !== null){
+      data.set("errMsg", `getData:fail, path:${path} is not supported.`)
+    }else{
+      data = vm.$data
+    }
+  }
+  return data
+}
+
+export function setData(vm: BasePage, data: JSONObject): void {
+  for (const key in data) {
+    // @ts-ignore
+    const _key = key.key
+    // @ts-ignore
+    const value = key.value
+    vm.$data.set(_key, value)
+  }
+}
+
+export function parsePage(page: BasePage): UTSJSONObject {
+  return {
+    id: getPageId(page),
+    path: getPagePath(page),
+    query: getPageQuery(page),
+  } as UTSJSONObject
+}

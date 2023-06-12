@@ -1,11 +1,10 @@
 import type { Plugin } from 'vite'
 import path from 'path'
-import {
-  parseVueRequest,
-  resolveUTSAppModule,
-  resolveUTSCompiler,
-} from '@dcloudio/uni-cli-shared'
+
 import { once } from '@dcloudio/uni-shared'
+
+import { resolveUTSAppModule, resolveUTSCompiler } from '../../uts'
+import { parseVueRequest } from '../utils'
 
 const UTSProxyRE = /\?uts-proxy$/
 function isUTSProxy(id: string) {
@@ -21,7 +20,15 @@ const utsModuleCaches = new Map<
     meta?: any
   }>
 >()
-export function uniUTSV1Plugin(): Plugin {
+
+interface UniUTSPluginOptions {
+  x?: boolean
+  extApis?: Record<string, [string, string]>
+}
+
+export const utsPlugins = new Set<string>()
+
+export function uniUTSPlugin(options: UniUTSPluginOptions = {}): Plugin {
   process.env.UNI_UTS_USING_ROLLUP = 'true'
   return {
     name: 'uni:uts',
@@ -33,7 +40,8 @@ export function uniUTSV1Plugin(): Plugin {
       }
       const module = resolveUTSAppModule(
         id,
-        importer ? path.dirname(importer) : process.env.UNI_INPUT_DIR
+        importer ? path.dirname(importer) : process.env.UNI_INPUT_DIR,
+        options.x !== true
       )
       if (module) {
         // prefix the polyfill id with \0 to tell other plugins not to try to load or transform it
@@ -73,7 +81,12 @@ export function uniUTSV1Plugin(): Plugin {
         })
       }
       const compile = once(() => {
-        return resolveUTSCompiler().compile(pluginDir)
+        utsPlugins.add(path.basename(pluginDir))
+        return resolveUTSCompiler().compile(pluginDir, {
+          isX: !!options.x,
+          isPlugin: true,
+          extApis: options.extApis,
+        })
       })
       utsModuleCaches.set(pluginDir, compile)
       const result = await compile()

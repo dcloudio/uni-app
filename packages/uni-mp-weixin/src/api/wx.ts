@@ -8,6 +8,7 @@ const objectKeys = [
   'serviceMarket',
   'router',
   'worklet',
+  '__webpack_require_UNI_MP_PLUGIN__',
 ]
 
 const singlePageDisableKey = ['lanDebug', 'router', 'worklet']
@@ -27,23 +28,17 @@ function isWxKey(key: string) {
 }
 
 export function initWx() {
-  let global = __GLOBAL__
-  if (
-    typeof globalThis !== 'undefined' &&
-    globalThis.__GLOBAL__ &&
-    __GLOBAL__ !== globalThis.__GLOBAL__
-  ) {
-    global = globalThis.__GLOBAL__
-  }
-
   const newWx: Record<string, any> = {}
-  for (const key in global) {
+  for (const key in __GLOBAL__) {
     if (isWxKey(key)) {
       // TODO wrapper function
-      newWx[key] = global[key]
+      newWx[key] = __GLOBAL__[key]
     }
   }
-  if (typeof globalThis !== 'undefined') {
+  if (
+    typeof globalThis !== 'undefined' &&
+    typeof requireMiniProgram === 'undefined'
+  ) {
     ;(globalThis as any).wx = newWx
   }
   return newWx
