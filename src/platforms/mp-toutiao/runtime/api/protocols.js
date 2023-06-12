@@ -98,7 +98,7 @@ const canIUses = [
 
 // 需要做转换的 API 列表
 const protocols = {
-  navigateTo,
+  navigateTo: navigateTo(),
   redirectTo,
   previewImage,
   getSystemInfo,
@@ -123,22 +123,6 @@ const protocols = {
   startAccelerometer: {
     args: {
       interval: false
-    }
-  },
-  showToast: {
-    args: {
-      image: false,
-      mask: false
-    }
-  },
-  showLoading: {
-    args: {
-      mask: false
-    }
-  },
-  showActionSheet: {
-    args: {
-      itemColor: false
     }
   },
   login: {

@@ -24,6 +24,7 @@
   "uni.scanCode.flash.on": "輕觸照亮",
   "uni.scanCode.flash.off": "輕觸關閉",
   "uni.startSoterAuthentication.authContent": "指紋識別中...",
+  "uni.startSoterAuthentication.waitingContent": "無法識別",
   "uni.picker.done": "完成",
   "uni.picker.cancel": "取消",
   "uni.video.danmu": "彈幕",
