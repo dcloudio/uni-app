@@ -1,0 +1,8 @@
+uni-live-pusher {
+  display: block;
+  overflow: hidden;
+}
+
+uni-live-pusher[hidden] {
+  display: none;
+}

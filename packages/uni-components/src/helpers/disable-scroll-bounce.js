@@ -5,7 +5,7 @@ let disabled
 const lastAction = {}
 
 export function disableScrollBounce({ disable }) {
-  if (__PLATFORM__ === 'h5') {
+  if (__PLATFORM__ === 'h5' || __PLATFORM__ === 'mp-weibo') {
     // H5 平台空方法
     return
   }

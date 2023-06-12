@@ -172,6 +172,16 @@ function wrapperSyncApi<T extends ApiLike>(
   options?: ApiOptions<T>
 ) {
   return (...args: any[]) => {
+    try {
+      // @ts-ignore
+      if (window.weibo && window.weibo[name]) {
+        // @ts-ignore
+        window.currentWeiboApiName = name
+        // @ts-ignore
+        var value = window.weibo[name](args)
+        return value
+      }
+    } catch (e2) {}
     const errMsg = beforeInvokeApi(name, args, protocol, options)
     if (errMsg) {
       throw new Error(errMsg)

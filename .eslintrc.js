@@ -35,7 +35,7 @@ module.exports = {
     // Packages targeting DOM
     {
       files: [
-        'packages/{uni-api,uni-app,uni-components,uni-core,uni-h5,uni-h5-vue,uni-i18n,uni-shared,uni-vue,uni-app-plus}/**',
+        'packages/{uni-api,uni-app,uni-components,uni-core,uni-h5,uni-h5-vue,uni-i18n,uni-shared,uni-vue,uni-app-plus,uni-mp-weibo}/**',
       ],
       rules: {
         'no-restricted-globals': ['error', ...NodeGlobals],

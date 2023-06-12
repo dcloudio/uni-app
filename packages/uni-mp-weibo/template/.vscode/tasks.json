@@ -1,0 +1,76 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "wbox.build",
+      "label": "Build",
+      "config": "development",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": [
+        "$wbox-js",
+        "$wbox-app",
+        "$wbox-ts"
+      ],
+      "presentation": {
+        "clear": true
+      },
+    },
+    {
+      "type": "wbox.build",
+      "label": "Publish",
+      "config": "production",
+      "problemMatcher": [
+        "$wbox-js",
+        "$wbox-app",
+        "$wbox-ts"
+      ],
+      "presentation": {
+        "clear": true
+      },
+    },
+    {
+      "type": "wbox.build",
+      "label": "BuildHMR",
+      "config": "development",
+      "wboxHMR": true,
+      "isBackground": true,
+      "problemMatcher": [
+        "$wbox-js",
+        "$wbox-app",
+        "$wbox-ts"
+      ],
+      "presentation": {
+        "clear": true
+      },
+    },
+    {
+      "type": "wbox.plugin",
+      "label": "RenderPluginDebug",
+      "config": "development",
+      "problemMatcher": [
+        "$wbox-js",
+        "$wbox-app",
+        "$wbox-ts"
+      ],
+      "presentation": {
+        "clear": true
+      }
+    },
+    {
+      "type": "wbox.plugin",
+      "label": "RenderPlugin",
+      "config": "production",
+      "problemMatcher": [
+        "$wbox-js",
+        "$wbox-app",
+        "$wbox-ts"
+      ],
+      "presentation": {
+        "clear": true
+      }
+    }
+  ]
+}

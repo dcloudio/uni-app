@@ -18,6 +18,7 @@ const DEFAULT_KEYS = [
   'MP_WEIXIN',
   'MP_KUAISHOU',
   'MP_JD',
+  'MP_WEIBO',
   'QUICKAPP_NATIVE',
   'QUICKAPP_WEBVIEW',
   'QUICKAPP_WEBVIEW_HUAWEI',
@@ -79,11 +80,11 @@ export function initPreContext(
     } else if (utsPlatform === 'app-ios') {
       uvueContext.APP_IOS = true
     }
-  } else if (platform.startsWith('mp-')) {
+  } else if (platform.startsWith('mp-') && platform !== 'mp-weibo') {
     defaultContext.MP = true
   } else if (platform.startsWith('quickapp-webview')) {
     defaultContext.QUICKAPP_WEBVIEW = true
-  } else if (platform === 'h5') {
+  } else if (platform === 'h5' || platform === 'mp-weibo') {
     defaultContext.WEB = true
   }
 

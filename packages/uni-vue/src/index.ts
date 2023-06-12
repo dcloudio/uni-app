@@ -17,7 +17,7 @@ export function initApp(app: App) {
   initOptionMergeStrategies(appConfig.optionMergeStrategies)
 
   const globalProperties = appConfig.globalProperties
-  if (__PLATFORM__ === 'h5') {
+  if (__PLATFORM__ === 'h5' || __PLATFORM__ === 'mp-weibo') {
     if (__UNI_FEATURE_UNI_CLOUD__) {
       uniIdMixin(globalProperties)
     }
@@ -28,7 +28,11 @@ export function initApp(app: App) {
     globalProperties.$set = set
     globalProperties.$applyOptions = applyOptions
   }
-  if (__PLATFORM__ === 'app' || __PLATFORM__ === 'h5') {
+  if (
+    __PLATFORM__ === 'app' ||
+    __PLATFORM__ === 'h5' ||
+    __PLATFORM__ === 'mp-weibo'
+  ) {
     invokeCreateVueAppHook(app)
   } else {
     ;(uni as any).invokeCreateVueAppHook(app)

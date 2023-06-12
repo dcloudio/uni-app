@@ -48,6 +48,16 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           t('uni.button.feedback.send')
         )
       }
+      if (
+        // @ts-ignore
+        window.weibo &&
+        // @ts-ignore
+        typeof window.weibo.share === 'function' &&
+        props.openType === 'share'
+      ) {
+        // @ts-ignore
+        window.weibo.share()
+      }
     })
 
     const uniLabel = inject<UniLabelCtx>(

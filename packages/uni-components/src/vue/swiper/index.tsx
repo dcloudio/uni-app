@@ -724,7 +724,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     )
 
     let createNavigationTsx: () => JSX.Element | null = () => null
-    if (__PLATFORM__ === 'h5') {
+    if (__PLATFORM__ === 'h5' || __PLATFORM__ === 'mp-weibo') {
       createNavigationTsx = useSwiperNavigation(
         rootRef,
         props,

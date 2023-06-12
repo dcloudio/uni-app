@@ -1,0 +1,133 @@
+* {
+  margin: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  -webkit-user-select: none;
+  user-select: none;
+  width: 100%;
+  height: 100%;
+}
+
+body,
+uni-page-body {
+  background-color: var(--UI-BG-0);
+  color: var(--UI-FG-0);
+}
+
+body {
+  overflow-x: hidden;
+  font-size: 16px;
+}
+
+uni-app,
+uni-page,
+uni-page-wrapper,
+uni-page-body {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+uni-page-wrapper {
+  position: relative;
+}
+
+#app,
+uni-app,
+uni-page,
+uni-page-wrapper {
+  height: 100%;
+}
+
+/* toast,modal,actionSheet,picker,layout */
+.uni-mask {
+  position: fixed;
+  z-index: 999;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+/* toast,modal,actionSheet,picker */
+.uni-fade-enter-active,
+.uni-fade-leave-active {
+  transition-duration: 0.25s;
+  transition-property: opacity;
+  transition-timing-function: ease;
+}
+.uni-fade-enter-from,
+.uni-fade-leave-active {
+  opacity: 0;
+}
+
+.uni-loading,
+uni-button[loading]:before {
+  background-color: transparent;
+  background-image: url('data:image/svg+xml;base64, PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+PHBhdGggZmlsbD0ibm9uZSIgZD0iTTAgMGgxMDB2MTAwSDB6Ii8+PHJlY3Qgd2lkdGg9IjciIGhlaWdodD0iMjAiIHg9IjQ2LjUiIHk9IjQwIiBmaWxsPSIjRTlFOUU5IiByeD0iNSIgcnk9IjUiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAgLTMwKSIvPjxyZWN0IHdpZHRoPSI3IiBoZWlnaHQ9IjIwIiB4PSI0Ni41IiB5PSI0MCIgZmlsbD0iIzk4OTY5NyIgcng9IjUiIHJ5PSI1IiB0cmFuc2Zvcm09InJvdGF0ZSgzMCAxMDUuOTggNjUpIi8+PHJlY3Qgd2lkdGg9IjciIGhlaWdodD0iMjAiIHg9IjQ2LjUiIHk9IjQwIiBmaWxsPSIjOUI5OTlBIiByeD0iNSIgcnk9IjUiIHRyYW5zZm9ybT0icm90YXRlKDYwIDc1Ljk4IDY1KSIvPjxyZWN0IHdpZHRoPSI3IiBoZWlnaHQ9IjIwIiB4PSI0Ni41IiB5PSI0MCIgZmlsbD0iI0EzQTFBMiIgcng9IjUiIHJ5PSI1IiB0cmFuc2Zvcm09InJvdGF0ZSg5MCA2NSA2NSkiLz48cmVjdCB3aWR0aD0iNyIgaGVpZ2h0PSIyMCIgeD0iNDYuNSIgeT0iNDAiIGZpbGw9IiNBQkE5QUEiIHJ4PSI1IiByeT0iNSIgdHJhbnNmb3JtPSJyb3RhdGUoMTIwIDU4LjY2IDY1KSIvPjxyZWN0IHdpZHRoPSI3IiBoZWlnaHQ9IjIwIiB4PSI0Ni41IiB5PSI0MCIgZmlsbD0iI0IyQjJCMiIgcng9IjUiIHJ5PSI1IiB0cmFuc2Zvcm09InJvdGF0ZSgxNTAgNTQuMDIgNjUpIi8+PHJlY3Qgd2lkdGg9IjciIGhlaWdodD0iMjAiIHg9IjQ2LjUiIHk9IjQwIiBmaWxsPSIjQkFCOEI5IiByeD0iNSIgcnk9IjUiIHRyYW5zZm9ybT0icm90YXRlKDE4MCA1MCA2NSkiLz48cmVjdCB3aWR0aD0iNyIgaGVpZ2h0PSIyMCIgeD0iNDYuNSIgeT0iNDAiIGZpbGw9IiNDMkMwQzEiIHJ4PSI1IiByeT0iNSIgdHJhbnNmb3JtPSJyb3RhdGUoLTE1MCA0NS45OCA2NSkiLz48cmVjdCB3aWR0aD0iNyIgaGVpZ2h0PSIyMCIgeD0iNDYuNSIgeT0iNDAiIGZpbGw9IiNDQkNCQ0IiIHJ4PSI1IiByeT0iNSIgdHJhbnNmb3JtPSJyb3RhdGUoLTEyMCA0MS4zNCA2NSkiLz48cmVjdCB3aWR0aD0iNyIgaGVpZ2h0PSIyMCIgeD0iNDYuNSIgeT0iNDAiIGZpbGw9IiNEMkQyRDIiIHJ4PSI1IiByeT0iNSIgdHJhbnNmb3JtPSJyb3RhdGUoLTkwIDM1IDY1KSIvPjxyZWN0IHdpZHRoPSI3IiBoZWlnaHQ9IjIwIiB4PSI0Ni41IiB5PSI0MCIgZmlsbD0iI0RBREFEQSIgcng9IjUiIHJ5PSI1IiB0cmFuc2Zvcm09InJvdGF0ZSgtNjAgMjQuMDIgNjUpIi8+PHJlY3Qgd2lkdGg9IjciIGhlaWdodD0iMjAiIHg9IjQ2LjUiIHk9IjQwIiBmaWxsPSIjRTJFMkUyIiByeD0iNSIgcnk9IjUiIHRyYW5zZm9ybT0icm90YXRlKC0zMCAtNS45OCA2NSkiLz48L3N2Zz4=');
+  background-repeat: no-repeat;
+}
+
+.uni-loading {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  vertical-align: middle;
+  animation: uni-loading 1s steps(12, end) infinite;
+  background-size: 100%;
+}
+
+@keyframes uni-loading {
+  0% {
+    transform: rotate3d(0, 0, 1, 0deg);
+  }
+
+  100% {
+    transform: rotate3d(0, 0, 1, 360deg);
+  }
+}
+
+html {
+  /* --UI-BG-0: #ededed; */
+  --primary-color: #007aff;
+  --UI-BG: #fff;
+  --UI-BG-1: #f7f7f7;
+  --UI-BG-2: #fff;
+  --UI-BG-3: #f7f7f7;
+  --UI-BG-4: #4c4c4c;
+  --UI-BG-5: #fff;
+  --UI-FG: #000;
+  --UI-FG-0: rgba(0, 0, 0, 0.9);
+  --UI-FG-HALF: rgba(0, 0, 0, 0.9);
+  --UI-FG-1: rgba(0, 0, 0, 0.5);
+  --UI-FG-2: rgba(0, 0, 0, 0.3);
+  --UI-FG-3: rgba(0, 0, 0, 0.1);
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    --UI-BG-CLOLOR-ACTIVE: #373737;
+    --UI-BORDER-CLOLOR-1: #373737;
+    /* UI */
+    --UI-BG: #000;
+    --UI-BG-0: #191919;
+    --UI-BG-1: #1f1f1f;
+    --UI-BG-2: #232323;
+    --UI-BG-3: #2f2f2f;
+    --UI-BG-4: #606060;
+    --UI-BG-5: #2c2c2c;
+    --UI-FG: #fff;
+    --UI-FG-0: hsla(0, 0%, 100%, 0.8);
+    --UI-FG-HALF: hsla(0, 0%, 100%, 0.6);
+    --UI-FG-1: hsla(0, 0%, 100%, 0.5);
+    --UI-FG-2: hsla(0, 0%, 100%, 0.3);
+    --UI-FG-3: hsla(0, 0%, 100%, 0.05);
+  }
+
+  .uni-mask {
+    background: rgba(0,0,0,.6);
+  }
+}

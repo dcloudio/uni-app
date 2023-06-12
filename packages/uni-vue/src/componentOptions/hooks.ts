@@ -49,7 +49,12 @@ export function initHooks(
       }
     }
   })
-  if ((__PLATFORM__ === 'app' || __PLATFORM__ === 'h5') && mpType === 'page') {
+  if (
+    (__PLATFORM__ === 'app' ||
+      __PLATFORM__ === 'h5' ||
+      __PLATFORM__ === 'mp-weibo') &&
+    mpType === 'page'
+  ) {
     instance.__isVisible = true
     // 直接触发页面 onLoad、onShow 组件内的 onLoad 和 onShow 在注册时，直接触发一次
     try {

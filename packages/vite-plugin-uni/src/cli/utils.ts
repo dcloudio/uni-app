@@ -27,6 +27,7 @@ export const PLATFORMS = [
   'mp-lark',
   'mp-toutiao',
   'mp-weixin',
+  'mp-weibo',
   'quickapp-webview',
   'quickapp-webview-huawei',
   'quickapp-webview-union',
@@ -44,6 +45,7 @@ export type PLATFORM =
   | 'quickapp-webview'
   | 'quickapp-webview-huawei'
   | 'quickapp-webview-union'
+  | 'mp-weibo'
 
 function resolveConfigFile() {
   const viteConfigJs = path.resolve(process.env.UNI_INPUT_DIR, 'vite.config.js')
@@ -133,6 +135,9 @@ export function initEnv(
         process.env.NODE_ENV === 'production' ? 'build' : 'dev',
         getPlatformDir()
       )
+      if (options.platform === 'mp-weibo' && options.outDir) {
+        options.outDir = path.join(options.outDir, 'src', 'res', 'h5')
+      }
     }
     process.env.UNI_OUTPUT_DIR = (options as BuildOptions).outDir!
   }
@@ -177,6 +182,9 @@ export function initEnv(
 
   initUVueEnv()
 
+  if (options.platform === 'mp-weibo') {
+    options.base = './'
+  }
   if (process.env.UNI_PLATFORM === 'app') {
     const pkg = require('../../package.json')
     console.log(
@@ -210,7 +218,7 @@ function initUTSPlatform(options: CliOptions) {
       options.platform = 'app'
     }
   }
-  if (options.platform === 'h5') {
+  if (options.platform === 'h5' || options.platform === 'mp-weibo') {
     process.env.UNI_UTS_PLATFORM = 'web'
   }
   // 非 app 平台，自动补充 UNI_UTS_PLATFORM
@@ -333,10 +341,15 @@ function initCustomScripts(options: CliOptions) {
 export function showRunPrompt(platform: PLATFORM) {
   if (!isInHBuilderX()) {
     const devtools = getPlatformDevtools(getOriginalPlatform(platform))
-    const outputDir = path.relative(
+    let outputDir = path.relative(
       process.env.UNI_CLI_CONTEXT,
       process.env.UNI_OUTPUT_DIR
     )
+    if (platform === 'mp-weibo') {
+      outputDir = path.resolve(
+        path.join(outputDir, '..', '..', '..', 'weibomini.wbox-workspace')
+      )
+    }
     output(
       'log',
       `${M['prompt.run.message']

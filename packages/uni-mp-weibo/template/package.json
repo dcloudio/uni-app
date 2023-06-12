@@ -1,0 +1,19 @@
+{
+  "name": "weibomini",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "node .postinstall.js"
+  },
+  "devDependencies": {
+    "@wbox-types/wbox-typings": "^1.0.35",
+    "typescript": "^4.6.2"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@wbox/web-view": "file:renderPlugin/web-view",
+    "@wbox_developer/uni-weibo": "1.0.0"
+  }
+}

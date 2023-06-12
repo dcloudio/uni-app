@@ -2312,6 +2312,13 @@ const index$x = /* @__PURE__ */ defineBuiltInComponent({
         }
         return;
       }
+      if (
+        // @ts-ignore
+        window.weibo && // @ts-ignore
+        typeof window.weibo.share === "function" && props2.openType === "share"
+      ) {
+        window.weibo.share();
+      }
     });
     const uniLabel = inject(uniLabelKey, false);
     if (uniLabel) {
@@ -3001,6 +3008,11 @@ function handlePromise(promise) {
 }
 function promisify(name, fn) {
   return (args = {}, ...rest) => {
+    try {
+      if (false)
+        ;
+    } catch (e2) {
+    }
     if (hasCallback(args)) {
       return wrapperReturnValue(name, invokeApi(name, fn, args, rest));
     }
@@ -3131,6 +3143,14 @@ function wrapperTaskApi(name, fn, protocol, options) {
 }
 function wrapperSyncApi(name, fn, protocol, options) {
   return (...args) => {
+    try {
+      if (window.weibo && window.weibo[name]) {
+        window.currentWeiboApiName = name;
+        var value = window.weibo[name](args);
+        return value;
+      }
+    } catch (e2) {
+    }
     const errMsg = beforeInvokeApi(name, args, protocol, options);
     if (errMsg) {
       throw new Error(errMsg);
@@ -5163,21 +5183,45 @@ function offPageNotFound(hook) {
   offAppHook(ON_PAGE_NOT_FOUND, hook);
 }
 function onError(hook) {
+  if (window.weibo) {
+    window.weibo.onError(hook);
+    return;
+  }
   onAppHook(ON_ERROR, hook);
 }
 function offError(hook) {
+  if (window.weibo) {
+    window.weibo.offError(hook);
+    return;
+  }
   offAppHook(ON_ERROR, hook);
 }
 function onAppShow(hook) {
+  if (window.weibo) {
+    window.weibo.onAppShow(hook);
+    return;
+  }
   onAppHook(ON_SHOW, hook);
 }
 function offAppShow(hook) {
+  if (window.weibo) {
+    window.weibo.offAppShow(hook);
+    return;
+  }
   offAppHook(ON_SHOW, hook);
 }
 function onAppHide(hook) {
+  if (window.weibo) {
+    window.weibo.onAppHide(hook);
+    return;
+  }
   onAppHook(ON_HIDE, hook);
 }
 function offAppHide(hook) {
+  if (window.weibo) {
+    window.weibo.offAppHide(hook);
+    return;
+  }
   offAppHook(ON_HIDE, hook);
 }
 const API_GET_ENTER_OPTIONS_SYNC = "getEnterOptionsSync";
@@ -8936,11 +8980,19 @@ function useImageState(rootRef, props2) {
       opts[0] && (position = opts[0]);
       opts[1] && (size = opts[1]);
     }
+    if (window.weibo && props2.src.startsWith("Temp")) {
+      imgSrc.value = `../../${props2.src}`;
+    }
     return `background-image:${imgSrc.value ? 'url("' + imgSrc.value + '")' : "none"};background-position:${position};background-size:${size};`;
   });
   const state2 = reactive({
     rootEl: rootRef,
-    src: computed(() => props2.src ? getRealPath(props2.src) : ""),
+    src: computed(function() {
+      if (window.weibo && props2.src.startsWith("Temp")) {
+        return `../../${props2.src}`;
+      }
+      return props2.src ? getRealPath(props2.src) : "";
+    }),
     origWidth: 0,
     origHeight: 0,
     origStyle: {

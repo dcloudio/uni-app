@@ -99,13 +99,25 @@ function useImageState(rootRef: Ref<HTMLElement | null>, props: ImageProps) {
       opts[0] && (position = opts[0])
       opts[1] && (size = opts[1])
     }
+    // @ts-ignore
+    if (window.weibo && props.src.startsWith('Temp')) {
+      // @ts-ignore
+      imgSrc.value = `../../${props.src}`
+    }
     return `background-image:${
       imgSrc.value ? 'url("' + imgSrc.value + '")' : 'none'
     };background-position:${position};background-size:${size};`
   })
   const state = reactive({
     rootEl: rootRef,
-    src: computed(() => (props.src ? getRealPath(props.src) : '')),
+    src: computed(function () {
+      // @ts-ignore
+      if (window.weibo && props.src.startsWith('Temp')) {
+        // @ts-ignore
+        return `../../${props.src}`
+      }
+      return props.src ? getRealPath(props.src) : ''
+    }),
     origWidth: 0,
     origHeight: 0,
     origStyle: { width: '', height: '' },

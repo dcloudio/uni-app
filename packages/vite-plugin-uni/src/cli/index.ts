@@ -40,6 +40,7 @@ export interface CliOptions {
 
   subpackage?: string
   plugin?: boolean
+  outDir?: string
 }
 
 cli
@@ -87,6 +88,7 @@ cli
 cli
   .command('build')
   .option('--outDir <dir>', `[string] output directory (default: dist)`)
+  .option('--inputDir <dir>', `[string] input directory (default: src)`)
   .option(
     '--assetsInlineLimit <number>',
     `[number] static asset base64 inline threshold in bytes (default: 4096)`

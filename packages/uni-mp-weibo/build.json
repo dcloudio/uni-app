@@ -1,0 +1,11 @@
+[
+  {
+    "input": {
+      "src/compiler/index.ts": "dist/uni.compiler.js"
+    },
+    "output": {
+      "format": "cjs"
+    },
+    "external": ["@dcloudio/uni-mp-weibo-vite"]
+  }
+]

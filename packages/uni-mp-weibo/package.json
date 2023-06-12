@@ -1,0 +1,60 @@
+{
+  "name": "@dcloudio/uni-mp-weibo",
+  "version": "3.0.0-alpha-3080220230428002",
+  "description": "@dcloudio/uni-mp-weibo",
+  "main": "./dist/uni-mp-weibo.cjs.js",
+  "module": "./dist/uni-mp-weibo.es.js",
+  "files": [
+    "dist",
+    "lib",
+    "style",
+    "template"
+  ],
+  "sideEffects": [
+    "lib/automator.js"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uni-mp-weibo"
+  },
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/dcloudio/uni-app/issues"
+  },
+  "uni-app": {
+    "name": "uni-mp-weibo",
+    "apply": [
+      "mp-weibo"
+    ],
+    "main": "dist/uni.compiler.js"
+  },
+  "dependencies": {
+    "@dcloudio/uni-h5-vue": "3.0.0-alpha-3080220230428002",
+    "@dcloudio/uni-i18n": "3.0.0-alpha-3080220230428002",
+    "@dcloudio/uni-mp-weibo-vite": "3.0.0-alpha-3080220230428002",
+    "@dcloudio/uni-shared": "3.0.0-alpha-3080220230428002",
+    "@vue/server-renderer": "3.2.47",
+    "@vue/shared": "3.2.47",
+    "comment-json": "^4.2.3",
+    "debug": "^4.3.3",
+    "fs-extra": "^10.0.0",
+    "localstorage-polyfill": "^1.0.1",
+    "postcss-selector-parser": "^6.0.6",
+    "safe-area-insets": "^1.4.1",
+    "vue-router": "^4.1.6",
+    "xmlhttprequest": "^1.8.0",
+    "xregexp": "3.1.0"
+  },
+  "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
+  "devDependencies": {
+    "@amap/amap-jsapi-types": "^0.0.8",
+    "@dcloudio/uni-cli-shared": "3.0.0-alpha-3080220230428002",
+    "@types/estree": "^0.0.51",
+    "@types/google.maps": "^3.45.6",
+    "acorn-loose": "^8.2.1",
+    "acorn-walk": "^8.2.0",
+    "estree-walker": "^2.0.2",
+    "vue": "3.2.47"
+  }
+}

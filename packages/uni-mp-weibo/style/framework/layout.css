@@ -1,0 +1,56 @@
+uni-content {
+  display: flex;
+  flex: 1 0 auto;
+  height: 100%;
+}
+
+uni-main {
+  flex: 1;
+  width: 100%;
+}
+
+uni-top-window + uni-content {
+  height: calc(100vh - var(--top-window-height));
+}
+
+uni-left-window {
+  position: relative;
+  width: var(--window-left);
+  order: -1;
+  overflow-x: hidden;
+}
+
+uni-right-window {
+  position: relative;
+  width: var(--window-right);
+  overflow-x: hidden;
+}
+
+uni-left-window[data-show],
+uni-right-window[data-show] {
+  position: absolute;
+}
+
+uni-right-window[data-show] {
+  right: 0;
+}
+
+uni-content .uni-mask,
+.uni-left-window,
+.uni-right-window {
+  z-index: 997;
+}
+
+.uni-mask + .uni-left-window,
+.uni-mask + .uni-right-window {
+  position: fixed;
+}
+
+.uni-top-window {
+  position: fixed;
+  left: var(--window-margin);
+  right: var(--window-margin);
+  top: 0;
+  z-index: 998;
+  overflow: hidden;
+}

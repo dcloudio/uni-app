@@ -259,7 +259,7 @@ function normalizePageStyle(
   }
 
   if (pageStyle) {
-    if (platform === 'h5') {
+    if (platform === 'h5' || platform === 'mp-weibo') {
       extend(pageStyle, pageStyle['app'] || pageStyle['app-plus'])
     }
     if (platform === 'app') {
@@ -267,7 +267,7 @@ function normalizePageStyle(
     } else {
       extend(pageStyle, pageStyle[platform])
     }
-    if (['h5', 'app'].includes(platform)) {
+    if (['h5', 'app', 'mp-weibo'].includes(platform)) {
       pageStyle.navigationBar = normalizeNavigationBar(pageStyle)
       if (isEnablePullDownRefresh(pageStyle)) {
         pageStyle.enablePullDownRefresh = true

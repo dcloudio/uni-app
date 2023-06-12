@@ -88,7 +88,7 @@ export function defineI18nProperty(obj: Record<string, any>, names: string[]) {
 export function useI18n() {
   if (!i18n) {
     let locale: BuiltInLocale
-    if (__PLATFORM__ === 'h5') {
+    if (__PLATFORM__ === 'h5' || __PLATFORM__ === 'mp-weibo') {
       if (__NODE_JS__) {
         locale = getEnvLocale() as BuiltInLocale
       } else {

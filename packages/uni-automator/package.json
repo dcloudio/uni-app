@@ -22,7 +22,8 @@
     "apply": [
       "app",
       "h5",
-      "mp-weixin"
+      "mp-weixin",
+      "mp-weibo"
     ],
     "uvue": true
   },
