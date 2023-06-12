@@ -687,8 +687,6 @@ class EventChannel {
 
 const eventChannels = {};
 
-const eventChannelStack = [];
-
 let id = 0;
 
 function initEventChannel (events, cache = true) {
@@ -696,31 +694,30 @@ function initEventChannel (events, cache = true) {
   const eventChannel = new EventChannel(id, events);
   if (cache) {
     eventChannels[id] = eventChannel;
-    eventChannelStack.push(eventChannel);
   }
   return eventChannel
 }
 
 function getEventChannel (id) {
-  if (id) {
-    const eventChannel = eventChannels[id];
-    delete eventChannels[id];
-    return eventChannel
-  }
-  return eventChannelStack.shift()
+  const eventChannel = eventChannels[id];
+  delete eventChannels[id];
+  return eventChannel
 }
 
-var navigateTo = {
-  args (fromArgs, toArgs) {
-    const id = initEventChannel(fromArgs.events).id;
-    if (fromArgs.url) {
-      fromArgs.url = fromArgs.url + (fromArgs.url.indexOf('?') === -1 ? '?' : '&') + '__id__=' + id;
+function navigateTo () {
+  let eventChannel;
+  return {
+    args (fromArgs, toArgs) {
+      eventChannel = initEventChannel(fromArgs.events);
+      if (fromArgs.url) {
+        fromArgs.url = fromArgs.url + (fromArgs.url.indexOf('?') === -1 ? '?' : '&') + '__id__=' + eventChannel.id;
+      }
+    },
+    returnValue (fromRes, toRes) {
+      fromRes.eventChannel = eventChannel;
     }
-  },
-  returnValue (fromRes, toRes) {
-    fromRes.eventChannel = getEventChannel();
   }
-};
+}
 
 function findExistsPageIndex (url) {
   const pages = getCurrentPages();
@@ -1045,7 +1042,7 @@ const canIUses = [
 
 // 需要做转换的 API 列表
 const protocols = {
-  navigateTo,
+  navigateTo: navigateTo(),
   redirectTo,
   previewImage,
   getSystemInfo,

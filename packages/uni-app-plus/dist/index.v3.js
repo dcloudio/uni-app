@@ -677,7 +677,7 @@ var serviceContext = (function () {
     const modeStyle = themeConfig[mode];
     const styles = {};
     if (!modeStyle) {
-      return styles
+      return pageStyle
     }
     Object.keys(pageStyle).forEach((key) => {
       const styleItem = pageStyle[key]; // Object Array String
@@ -1697,6 +1697,7 @@ var serviceContext = (function () {
   	"uni.scanCode.flash.on": "Tap to turn light on",
   	"uni.scanCode.flash.off": "Tap to turn light off",
   	"uni.startSoterAuthentication.authContent": "Fingerprint recognition",
+  	"uni.startSoterAuthentication.waitingContent": "Unrecognizable",
   	"uni.picker.done": "Done",
   	"uni.picker.cancel": "Cancel",
   	"uni.video.danmu": "Danmu",
@@ -1733,6 +1734,7 @@ var serviceContext = (function () {
   	"uni.scanCode.flash.on": "Toque para encender la luz",
   	"uni.scanCode.flash.off": "Toque para apagar la luz",
   	"uni.startSoterAuthentication.authContent": "Reconocimiento de huellas dactilares",
+  	"uni.startSoterAuthentication.waitingContent": "Irreconocible",
   	"uni.picker.done": "OK",
   	"uni.picker.cancel": "Cancelar",
   	"uni.video.danmu": "Danmu",
@@ -1769,6 +1771,7 @@ var serviceContext = (function () {
   	"uni.scanCode.flash.on": "Appuyez pour activer l'éclairage",
   	"uni.scanCode.flash.off": "Appuyez pour désactiver l'éclairage",
   	"uni.startSoterAuthentication.authContent": "Reconnaissance de l'empreinte digitale",
+  	"uni.startSoterAuthentication.waitingContent": "Méconnaissable",
   	"uni.picker.done": "OK",
   	"uni.picker.cancel": "Annuler",
   	"uni.video.danmu": "Danmu",
@@ -1805,6 +1808,7 @@ var serviceContext = (function () {
   	"uni.scanCode.flash.on": "轻触照亮",
   	"uni.scanCode.flash.off": "轻触关闭",
   	"uni.startSoterAuthentication.authContent": "指纹识别中...",
+  	"uni.startSoterAuthentication.waitingContent": "无法识别",
   	"uni.picker.done": "完成",
   	"uni.picker.cancel": "取消",
   	"uni.video.danmu": "弹幕",
@@ -1841,6 +1845,7 @@ var serviceContext = (function () {
   	"uni.scanCode.flash.on": "輕觸照亮",
   	"uni.scanCode.flash.off": "輕觸關閉",
   	"uni.startSoterAuthentication.authContent": "指紋識別中...",
+  	"uni.startSoterAuthentication.waitingContent": "無法識別",
   	"uni.picker.done": "完成",
   	"uni.picker.cancel": "取消",
   	"uni.video.danmu": "彈幕",
@@ -6237,7 +6242,7 @@ var serviceContext = (function () {
           case e.AUTHENTICATE_MISMATCH:
             if (waiting) {
               clearTimeout(waitingTimer);
-              waiting.setTitle('无法识别');
+              waiting.setTitle(t('uni.startSoterAuthentication.waitingContent'));
               waitingTimer = setTimeout(() => {
                 waiting && waiting.setTitle(waitingTitle);
               }, 1000);
@@ -10560,13 +10565,21 @@ var serviceContext = (function () {
       }
       return proxy;
   }
-  function resolveSyncResult(res, returnOptions, instanceId, proxy) {
-      // devtools 环境是字符串？
-      if (isString(res)) {
-          res = JSON.parse(res);
-      }
+  function resolveSyncResult(args, res, returnOptions, instanceId, proxy) {
       if ((process.env.NODE_ENV !== 'production')) {
           console.log('uts.invokeSync.result', res, returnOptions, instanceId, typeof proxy);
+      }
+      if (!res) {
+          throw new Error(JSON.stringify(args));
+      }
+      // devtools 环境是字符串？
+      if (isString(res)) {
+          try {
+              res = JSON.parse(res);
+          }
+          catch (e) {
+              throw new Error(`JSON.parse(${res}): ` + e);
+          }
       }
       if (res.errMsg) {
           throw new Error(res.errMsg);
@@ -10596,7 +10609,7 @@ var serviceContext = (function () {
       if ((process.env.NODE_ENV !== 'production')) {
           console.log('uts.invokePropGetter.args', args);
       }
-      return resolveSyncResult(getProxy().invokeSync(args, () => { }));
+      return resolveSyncResult(args, getProxy().invokeSync(args, () => { }));
   }
   function initProxyFunction(async, { moduleName, moduleType, package: pkg, class: cls, name: propOrMethod, method, companion, params: methodParams, return: returnOptions, errMsg, }, instanceId, proxy) {
       const invokeCallback = ({ id, name, params, keepAlive, }) => {
@@ -10661,7 +10674,7 @@ var serviceContext = (function () {
           if ((process.env.NODE_ENV !== 'production')) {
               console.log('uts.invokeSync.args', invokeArgs);
           }
-          return resolveSyncResult(getProxy().invokeSync(invokeArgs, invokeCallback), returnOptions, instanceId, proxy);
+          return resolveSyncResult(invokeArgs, getProxy().invokeSync(invokeArgs, invokeCallback), returnOptions, instanceId, proxy);
       };
   }
   function initUTSStaticMethod(async, opts) {
