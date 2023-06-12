@@ -43,6 +43,8 @@ export default {
   'prompt.run.devtools.mp-qq': 'QQ小程序开发者工具',
   'prompt.run.devtools.mp-toutiao': '字节跳动开发者工具',
   'prompt.run.devtools.mp-weixin': '微信开发者工具',
+  'prompt.run.devtools.mp-jd': '京东开发者工具',
+  'prompt.run.devtools.mp-xhs': '小红书开发者工具',
   'prompt.run.devtools.quickapp-webview':
     '快应用联盟开发者工具 | 华为快应用开发者工具',
   'prompt.run.devtools.quickapp-webview-huawei': '华为快应用开发者工具',

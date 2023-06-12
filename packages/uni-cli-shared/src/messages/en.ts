@@ -43,6 +43,8 @@ export default {
   'prompt.run.devtools.mp-qq': 'QQ Mini Program Devtools',
   'prompt.run.devtools.mp-toutiao': 'ByteDance Mini Program Devtools',
   'prompt.run.devtools.mp-weixin': 'Weixin Mini Program Devtools',
+  'prompt.run.devtools.mp-jd': 'Jingdong Mini Program Devtools',
+  'prompt.run.devtools.mp-xhs': 'Xiaohongshu Mini Program Devtools',
   'prompt.run.devtools.quickapp-webview':
     'Quick App Alliance Devtools | Huawei Quick App Devtools',
   'prompt.run.devtools.quickapp-webview-huawei': 'Huawei Quick App Devtools',
