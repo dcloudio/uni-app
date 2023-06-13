@@ -41,7 +41,7 @@ export default {
   'prompt.run.devtools.mp--kuaishou': 'Kuaishou Mini Program Devtools',
   'prompt.run.devtools.mp-lark': 'Lark Mini Program Devtools',
   'prompt.run.devtools.mp-qq': 'QQ Mini Program Devtools',
-  'prompt.run.devtools.mp-toutiao': 'ByteDance Mini Program Devtools',
+  'prompt.run.devtools.mp-toutiao': 'Douyin Mini Program Devtools',
   'prompt.run.devtools.mp-weixin': 'Weixin Mini Program Devtools',
   'prompt.run.devtools.mp-jd': 'Jingdong Mini Program Devtools',
   'prompt.run.devtools.mp-xhs': 'Xiaohongshu Mini Program Devtools',
