@@ -269,7 +269,7 @@ function genAssets(
         assetCode = `const ${toValidAssetId(id, type)} = ${
           utsComponentOptions.namespace
         }.${utsComponentOptions.className}.name`
-        const importCode = `import '${utsComponentOptions.source}'`
+        const importCode = `import '${utsComponentOptions.source}';`
         if (!importUTSComponents.includes(importCode)) {
           importUTSComponents.push(importCode)
         }
@@ -284,7 +284,7 @@ function genAssets(
           )}(${JSON.stringify(id)},${easyComponentId}${
             maybeSelfReference ? `, true` : ``
           })`
-          const importCode = `import ${easyComponentId} from '${source}'`
+          const importCode = `import ${easyComponentId} from '${source}';`
           if (!importEasyComponents.includes(importCode)) {
             importEasyComponents.push(importCode)
           }
