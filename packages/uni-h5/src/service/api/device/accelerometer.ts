@@ -9,7 +9,7 @@ import {
   API_STOP_ACCELEROMETER,
   API_TYPE_STOP_ACCELEROMETER,
   defineOnApi,
-  defineOffApi
+  defineOffApi,
 } from '@dcloudio/uni-api'
 
 let listener: ((event: DeviceMotionEvent) => void) | null = null

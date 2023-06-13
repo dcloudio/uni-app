@@ -161,7 +161,9 @@ function parseInject(
     const keys = Object.keys(define)
     keys.forEach((d) => {
       if (typeof define[d] === 'string') {
-        injects[globalObject + '.' + d] = [source, define[d] as string]
+        if (hasPlatformFile) {
+          injects[globalObject + '.' + d] = [source, define[d] as string]
+        }
       } else {
         const defineOptions = define[d] as DefineOptions
         const p =
