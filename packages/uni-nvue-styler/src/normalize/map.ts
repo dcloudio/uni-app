@@ -108,6 +108,7 @@ const UVUE_PROP_NAME_GROUPS: Record<string, Record<string, Normalize>> = {
   common: {
     opacity: normalizeNumber,
     boxShadow: normalizeDefault,
+    boxSizing: createEnumNormalize(['content-box', 'border-box']),
     backgroundColor: normalizeColor,
     backgroundImage: normalizeDefault,
     backgroundClip: createEnumNormalize([
