@@ -63,7 +63,10 @@ export function compile(
 ): CodegenResult {
   const ast = baseParse(template, {
     isNativeTag(tag) {
-      return isAppUVueNativeTag(tag)
+      return (
+        isAppUVueNativeTag(tag) ||
+        !!options.parseUTSComponent?.(tag, options.targetLanguage)
+      )
     },
   })
   const [nodeTransforms, directiveTransforms] = getBaseTransformPreset(

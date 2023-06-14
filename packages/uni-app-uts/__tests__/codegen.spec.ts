@@ -25,7 +25,7 @@ describe('compiler:codegen', () => {
   test(`UTSComponents:kotlin`, () => {
     assert(
       `<view><uts-hello/><uts-hello/></view>`,
-      `@Suppress("UNUSED_PARAMETER") function PagesIndexIndexRender(_ctx: PagesIndexIndex): VNode | null {\nconst _component_uts_hello = uts.sdk.modules.utsHello.UtsHelloComponent.name\n\n  return createElementVNode("view", null, [\n    createVNode(_component_uts_hello),\n    createVNode(_component_uts_hello)\n  ])\n}`,
+      `@Suppress("UNUSED_PARAMETER") function PagesIndexIndexRender(_ctx: PagesIndexIndex): VNode | null {\n  return createElementVNode("view", null, [\n    createElementVNode(uts.sdk.modules.utsHello.UtsHelloComponent.name),\n    createElementVNode(uts.sdk.modules.utsHello.UtsHelloComponent.name)\n  ])\n}`,
       {
         targetLanguage: 'kotlin',
         mode: 'function',
