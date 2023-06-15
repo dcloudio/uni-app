@@ -142,7 +142,6 @@ export function uniAppUVuePlugin(): Plugin {
         if (
           file &&
           file.type === 'asset' &&
-          file.fileName !== 'App.vue' &&
           isVue(file.fileName) &&
           isString(file.source)
         ) {

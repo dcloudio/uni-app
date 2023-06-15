@@ -47,6 +47,7 @@ export function uniAppCssPlugin(): Plugin {
             logLevel: 'ERROR',
             map: true,
             ts: true,
+            chunk: 100,
             type: 'uvue',
           })
           messages.forEach((message) => {
@@ -64,7 +65,7 @@ export function uniAppCssPlugin(): Plugin {
           })
           return `export const ${genClassName(
             filename.replace('.style.uts', '')
-          )}Styles = [${code}]`
+          )}Styles = ${code}`
         },
       })
       // 增加 css plugins
