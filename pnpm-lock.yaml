@@ -503,6 +503,9 @@ importers:
       jest-environment-node:
         specifier: 27.5.1
         version: 27.5.1
+      jsonc-parser:
+        specifier: ^3.2.0
+        version: 3.2.0
       licia:
         specifier: ^1.29.0
         version: 1.29.0
@@ -8289,6 +8292,10 @@ packages:
 
   /jsonc-parser@3.0.0:
     resolution: {integrity: sha512-fQzRfAbIBnR0IQvftw9FJveWiHp72Fg20giDrHz6TdfB12UH/uue0D3hm57UB5KgAVuniLMCaS8P1IMj9NR7cA==}
+    dev: false
+
+  /jsonc-parser@3.2.0:
+    resolution: {integrity: sha512-gfFQZrcTc8CnKXp6Y4/CBT3fTc0OVuDofpre4aEeEpSBPV5X5v4+Vmx+8snU7RLPrNHPKSgLxGo9YuQzz20o+w==}
     dev: false
 
   /jsonfile@4.0.0:
