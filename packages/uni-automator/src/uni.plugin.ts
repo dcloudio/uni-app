@@ -42,7 +42,9 @@ export default [
               resolveBuiltIn(`@dcloudio/uni-app-uts/lib/automator/index.uts`)
             )
             return {
-              code: code + `;import { initAutomator } from '${automatorPath}';`,
+              code:
+                // 增加个换行，避免最后是注释且无换行
+                code + `;\nimport { initAutomator } from '${automatorPath}';`,
               map: null,
             }
           }
@@ -54,7 +56,7 @@ export default [
             )
           )
           return {
-            code: code + `;import '${automatorPath}';`,
+            code: code + `;\nimport '${automatorPath}';`,
             map: null,
           }
         }
