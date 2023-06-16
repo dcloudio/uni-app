@@ -34,6 +34,7 @@
     "debug": "^4.3.3",
     "default-gateway": "^6.0.3",
     "fs-extra": "^10.0.0",
+    "jsonc-parser": "^3.2.0",
     "licia": "^1.29.0",
     "qrcode-reader": "^1.0.4",
     "qrcode-terminal": "^0.12.0",
