@@ -9,21 +9,20 @@ const EventType = {
 const ProviderType = 'wm'
 
 class Process {
-
-  static Start(cmd, args) {
-    return new Process().openScheme(cmd);
+  static Start (cmd, args) {
+    return new Process().openScheme(cmd)
   }
 
-  constructor() {
-    this._a = null;
+  constructor () {
+    this._a = null
   }
 
-  openScheme(url) {
+  openScheme (url) {
     if (this._a == null) {
-      this._a = document.createElement('a');
+      this._a = document.createElement('a')
     }
-    this._a.href = url;
-    this._a.click();
+    this._a.href = url
+    this._a.click()
   }
 }
 
@@ -54,7 +53,7 @@ export default {
       }
     }
   },
-  data() {
+  data () {
     return {
       adData: null,
       loading: false,
@@ -62,31 +61,31 @@ export default {
       errorMessage: null
     }
   },
-  created() {
+  created () {
     this._loading = false
     this.adConfigData = null
   },
   methods: {
-    load() {
+    load () {
       setTimeout(() => {
         this._onmpload()
       }, 200)
     },
 
-    show(options) {
+    show (options) {
       if (!this._isMobile()) {
         this._dispatchEvent(EventType.Error, {
           errCode: -1,
-          errMsg: "当前设备环境无效"
+          errMsg: '当前设备环境无效'
         })
-        return;
+        return
       }
 
       this.errorMessage = null
       if (this._loading) {
-        return;
+        return
       }
-      this._loading = true;
+      this._loading = true
 
       this._requestScheme(options)
     },
@@ -95,7 +94,7 @@ export default {
       return ProviderType
     },
 
-    _onclick() {
+    _onclick () {
       if (this.disabled) {
         return
       }
@@ -103,7 +102,7 @@ export default {
       this.show()
     },
 
-    _requestScheme(options = {}) {
+    _requestScheme (options = {}) {
       const urlCallback = options.urlCallback || this.urlCallback
       uni.request({
         url: AD_SERVER_URL,
@@ -146,26 +145,26 @@ export default {
       })
     },
 
-    _isMobile() {
+    _isMobile () {
       return /android|iphone/i.test(navigator.userAgent.toLowerCase())
     },
 
-    _onmpload(e) {
+    _onmpload (e) {
       this.loading = false
       this._dispatchEvent(EventType.Load, {})
     },
 
-    _onmpclose(e) {
+    _onmpclose (e) {
       this._dispatchEvent(EventType.Close, e.detail)
     },
 
-    _onmperror(e) {
+    _onmperror (e) {
       this.loading = false
       this.errorMessage = JSON.stringify(e.detail)
       this._dispatchEvent(EventType.Error, e.detail)
     },
 
-    _dispatchEvent(type, data) {
+    _dispatchEvent (type, data) {
       this.$emit(type, {
         detail: data
       })

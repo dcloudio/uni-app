@@ -11,7 +11,7 @@ const UNI_PLUGINS = [{
 ]
 
 const {
-  getManifestJson,
+  getManifestJson
 } = require('@dcloudio/uni-cli-shared/lib/manifest.js')
 
 module.exports = function (appJson, useAD) {
