@@ -27,4 +27,5 @@ export { parseUniExtApis, parseInjects } from './uni_modules'
 export { M } from './messages'
 
 export * from './exports'
+// @ts-ignore
 export { checkUpdate } from './checkUpdate'
