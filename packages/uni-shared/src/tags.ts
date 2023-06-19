@@ -113,7 +113,15 @@ export const NVUE_BUILT_IN_TAGS = [
   'gcanvas',
 ]
 
-export const UVUE_BUILT_IN_TAGS = ['loading-indicator']
+export const UVUE_BUILT_IN_TAGS = [
+  'loading-indicator',
+  'webview',
+  'scroll-view',
+  'list',
+  'cell',
+  'rich-text',
+  'video',
+]
 
 export const NVUE_U_BUILT_IN_TAGS = [
   'u-text',
