@@ -84,10 +84,6 @@ function getH5Options (manifestJson) {
       h5.publicPath = base.substr(1)
     } else {
       h5.publicPath = base
-      h5.router = {
-        mode: 'hash',
-        base: './'
-      }
     }
   }
 
