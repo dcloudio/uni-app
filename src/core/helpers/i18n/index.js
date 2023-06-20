@@ -24,7 +24,7 @@ export const LOCALE_ES = 'es'
 
 const messages = {}
 
-if (__PLATFORM__ === 'h5' || __PLATFORM__ === 'app-plus') {
+if (__PLATFORM__ === 'h5' || __PLATFORM__ === 'app-plus' || __PLATFORM__ === 'mp-weibo') {
   Object.assign(messages, {
     [LOCALE_EN]: en,
     [LOCALE_ES]: es,
@@ -36,7 +36,7 @@ if (__PLATFORM__ === 'h5' || __PLATFORM__ === 'app-plus') {
 
 let locale
 
-if (__PLATFORM__ === 'h5') {
+if (__PLATFORM__ === 'h5' || __PLATFORM__ === 'mp-weibo') {
   locale = (navigator.cookieEnabled && window.localStorage && localStorage[UNI_STORAGE_LOCALE]) || __uniConfig.locale || navigator.language
 } else if (__PLATFORM__ === 'app-plus') {
   if (typeof weex === 'object') {
@@ -70,7 +70,7 @@ initI18nMessages()
 
 export const i18n = initVueI18n(
   locale,
-  __PLATFORM__ === 'app-plus' || __PLATFORM__ === 'h5' ? messages : {}
+  __PLATFORM__ === 'app-plus' || __PLATFORM__ === 'h5' || __PLATFORM__ === 'mp-weibo' ? messages : {}
 )
 export const t = i18n.t
 export const i18nMixin = (i18n.mixin = {

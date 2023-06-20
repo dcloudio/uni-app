@@ -72,7 +72,7 @@ export default {
     routes
   } = {}) {
     if (
-      __PLATFORM__ === 'h5' &&
+      (__PLATFORM__ === 'h5' || __PLATFORM__ === 'mp-weibo') &&
       Vue.config.devtools &&
       typeof window !== 'undefined' &&
       window.navigator.userAgent.toLowerCase().indexOf('hbuilderx') !== -1
@@ -134,7 +134,7 @@ export default {
     }
 
     /* eslint-disable no-undef */
-    if (__PLATFORM__ === 'h5') {
+    if (__PLATFORM__ === 'h5' || __PLATFORM__ === 'mp-weibo') {
       if (entryRoute.meta && entryRoute.meta.name) {
         document.body.className = 'uni-body ' + entryRoute.meta.name
         if (entryRoute.meta.isNVue) {

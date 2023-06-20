@@ -258,7 +258,7 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
       } : patterns))
 
       const uniExtApis = require('@dcloudio/uni-cli-shared/lib/uni_modules/uni_modules')
-        .parseUniExtApis(false)
+        .parseUniExtApis(false)      
       const keys = Object.keys(uniExtApis)
       if (keys.length) {
         plugins.push(new webpack.ProvidePlugin(uniExtApis))
@@ -284,7 +284,7 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
         plugins.push(new CopyWebpackPlugin(CopyWebpackPluginVersion > 5 ? {
           patterns
         } : patterns))
-      } catch (e) { }
+      } catch (e) {}
     }
 
     if (process.UNI_SCRIPT_ENV && Object.keys(process.UNI_SCRIPT_ENV).length) {
@@ -294,6 +294,10 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
         envs['process.env.' + name] = JSON.stringify(process.UNI_SCRIPT_ENV[name])
       })
       plugins.push(new webpack.DefinePlugin(envs))
+    }
+
+    if (process.env.UNI_PLATFORM === 'mp-weibo') {
+      require('./mp-weibo/templateDeal').templateDeal(manifestPlatformOptions)
     }
 
     if (runByHBuilderX) { // 使用 HBuilderX 中运行时，调整错误日志输出
@@ -383,7 +387,7 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
           dir: process.env.UNI_INPUT_DIR
         }))
       }
-    } catch (e) { }
+    } catch (e) {}
 
     const resolveLoaderAlias = {}
     const modules = ['@vue/cli-plugin-babel', '@vue/cli-service']

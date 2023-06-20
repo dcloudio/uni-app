@@ -84,6 +84,10 @@ function getH5Options (manifestJson) {
       h5.publicPath = base.substr(1)
     } else {
       h5.publicPath = base
+      h5.router = {
+        mode: 'hash',
+        base: './'
+      }
     }
   }
 
@@ -97,6 +101,15 @@ function getH5Options (manifestJson) {
   global.uniPlugin.configureH5.forEach(configureH5 => {
     configureH5(h5)
   })
+
+  // 处理微博小程序
+  if (process.env.UNI_PLATFORM === 'mp-weibo') {
+    h5.publicPath = './'
+    h5.router = {
+      base: './',
+      mode: 'hash'
+    }
+  }
 
   return h5
 }

@@ -30,7 +30,7 @@ module.exports = function initOptions (options) {
     options.transpileDependencies.push('@dcloudio/uni-mp-weixin')
   }
 
-  if (process.env.UNI_PLATFORM === 'h5') { // h5 dev 用到了这两个，需要 babel
+  if (process.env.UNI_PLATFORM === 'h5' || process.env.UNI_PLATFORM === 'mp-weibo') { // h5 dev 用到了这两个，需要 babel
     options.transpileDependencies.push('ansi-regex')
     options.transpileDependencies.push('strip-ansi')
   }
@@ -39,7 +39,7 @@ module.exports = function initOptions (options) {
     options.css = {}
   }
 
-  if (process.env.UNI_PLATFORM === 'h5' || process.env.UNI_USING_V3) {
+  if (process.env.UNI_PLATFORM === 'h5' || process.env.UNI_USING_V3 || process.env.UNI_PLATFORM === 'mp-weibo') {
     options.css.extract = false
   } else {
     options.css.extract = true

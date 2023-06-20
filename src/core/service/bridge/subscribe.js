@@ -67,7 +67,7 @@ export default function initSubscribe (subscribe, {
     }
   }
 
-  if (__PLATFORM__ === 'h5') {
+  if (__PLATFORM__ === 'h5' || __PLATFORM__ === 'mp-weibo') {
     subscribe('onPageReady', createPageEvent('onReady'))
   }
 

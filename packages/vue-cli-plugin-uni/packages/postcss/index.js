@@ -33,7 +33,7 @@ if (process.env.UNI_USING_V3) {
       if (u === 'px' && process.UNI_TRANSFORM_PX) { // TODO px 转换为 upx
         u = 'upx'
       }
-      if (process.env.UNI_PLATFORM === 'h5') {
+      if (process.env.UNI_PLATFORM === 'h5' || process.env.UNI_PLATFORM === 'mp-weibo') {
         if (u === 'upx' || u === 'rpx') {
           node.value = `%?${num}?%`
         }
@@ -167,7 +167,7 @@ if (process.env.UNI_USING_V3) {
       }
       rewriteUrl(root)
 
-      if (process.env.UNI_PLATFORM === 'h5') {
+      if (process.env.UNI_PLATFORM === 'h5' || process.env.UNI_PLATFORM === 'mp-weibo') {
         // Transform CSS AST here
 
         root.walkRules(rule => {
