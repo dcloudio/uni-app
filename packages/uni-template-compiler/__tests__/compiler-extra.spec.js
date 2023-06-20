@@ -416,6 +416,20 @@ describe('mp:compiler-extra', () => {
       '<block wx:for="{{$root.l0}}" wx:for-item="value" wx:for-index="key" wx:key="$index"><view><button data-event-opts="{{[[\'tap\',[[\'click1\',[value.$index]]]]]}}" bindtap="__e">click1(index)</button><button data-event-opts="{{[[\'tap\',[[\'e0\',[\'$event\']]]]]}}" data-event-params="{{({value:value.$orig})}}" bindtap="__e">fnObj.click(value)</button></view></block>',
       'with(this){var l0=__map(dataObj,function(value,key,index){var $orig=__get_orig(value);return{$orig:$orig,$index:index}});if(!_isMounted){e0=function($event,value){var _temp=arguments[arguments.length-1].currentTarget.dataset,_temp2=_temp.eventParams||_temp["event-params"],value=_temp2.value;var _temp,_temp2;return fnObj.click(value)}}$mp.data=Object.assign({},{$root:{l0:l0}})}'
     )
+    assertCodegen(
+      `<view v-for="(value,key,index) in obj" :key="key" @click="test(index)">
+        <view v-for="(item,key1,index1) in value" :key="key1" @click="test(index1)">text</view>
+      </view>`,
+      '<block wx:for="{{$root.l1}}" wx:for-item="value" wx:for-index="key" wx:key="key"><view data-event-opts="{{[[\'tap\',[[\'test\',[value.$index]]]]]}}" bindtap="__e"><block wx:for="{{value.l0}}" wx:for-item="item" wx:for-index="key1" wx:key="key1"><view data-event-opts="{{[[\'tap\',[[\'test\',[item.$index]]]]]}}" bindtap="__e">text</view></block></view></block>',
+      'with(this){var l1=__map(obj,function(value,key,index){var $orig=__get_orig(value);var l0=__map(value,function(item,key1,index1){var $orig=__get_orig(item);return{$orig:$orig,$index:index1}});return{$orig:$orig,l0:l0,$index:index}});$mp.data=Object.assign({},{$root:{l1:l1}})}'
+    )
+    assertCodegen(
+      `<view v-for="(value,key,index) in obj" :key="key" @click="test(index)">
+        <view v-for="(item,index1) in value" :key="key1" @click="test(index1)">text</view>
+      </view>`,
+      '<block wx:for="{{$root.l0}}" wx:for-item="value" wx:for-index="key" wx:key="key"><view data-event-opts="{{[[\'tap\',[[\'test\',[value.$index]]]]]}}" bindtap="__e"><block wx:for="{{value.$orig}}" wx:for-item="item" wx:for-index="index1" wx:key="*this"><view data-event-opts="{{[[\'tap\',[[\'e0\',[\'$event\']]]]]}}" data-event-params="{{({index1})}}" bindtap="__e">text</view></block></view></block>',
+      'with(this){var l0=__map(obj,function(value,key,index){var $orig=__get_orig(value);return{$orig:$orig,$index:index}});if(!_isMounted){e0=function($event,index1){var _temp=arguments[arguments.length-1].currentTarget.dataset,_temp2=_temp.eventParams||_temp["event-params"],index1=_temp2.index1;var _temp,_temp2;return test(index1)}}$mp.data=Object.assign({},{$root:{l0:l0}})}'
+    )
   })
 
   it('generate class binding', () => {
@@ -859,6 +873,16 @@ describe('mp:compiler-extra', () => {
       '<button type="primary" @click="click1();obj.click2();">click me</button>',
       '<button type="primary" data-event-opts="{{[[\'tap\',[[\'e0\',[\'$event\']]]]]}}" bindtap="__e">click me</button>',
       'with(this){if(!_isMounted){e0=function($event){click1();obj.click2()}}}'
+    )
+    assertCodegen(
+      '<button type="primary" @click="()=>test(encodeURIComponent(JSON.stringify(arr)))">click me</button>',
+      '<button type="primary" data-event-opts="{{[[\'tap\',[[\'e0\',[\'$event\']]]]]}}" bindtap="__e">click me</button>',
+      'with(this){if(!_isMounted){e0=()=>test(encodeURIComponent(JSON.stringify(arr)))}}'
+    )
+    assertCodegen(
+      '<button type="primary" @click="test(a().b)">click me</button>',
+      '<button type="primary" data-event-opts="{{[[\'tap\',[[\'e0\',[\'$event\']]]]]}}" bindtap="__e">click me</button>',
+      'with(this){if(!_isMounted){e0=function($event){test(a().b)}}}'
     )
   })
   it('generate bool attr', () => {

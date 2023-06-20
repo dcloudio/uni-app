@@ -85,7 +85,7 @@ const protocols = {
       method: false
     }
   },
-  navigateTo,
+  navigateTo: navigateTo(),
   redirectTo,
   previewImage,
   getSystemInfo,

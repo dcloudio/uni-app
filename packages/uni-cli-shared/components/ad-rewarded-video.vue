@@ -8,8 +8,11 @@
 </template>
 
 <script>
-  // #ifndef MP-WEIXIN
+  // #ifdef APP
   import adMixin from "./ad.mixin.js"
+  // #endif
+  // #ifdef H5
+  import adMixin from "./ad.mixin.web.js"
   // #endif
   // #ifdef MP-WEIXIN
   import adMixin from "./ad.mixin.mp.js"

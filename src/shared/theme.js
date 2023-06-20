@@ -16,7 +16,7 @@ export function normallizeStyles (pageStyle, themeConfig = {}, mode = 'light') {
   const modeStyle = themeConfig[mode]
   const styles = {}
   if (!modeStyle) {
-    return styles
+    return pageStyle
   }
   Object.keys(pageStyle).forEach((key) => {
     const styleItem = pageStyle[key] // Object Array String

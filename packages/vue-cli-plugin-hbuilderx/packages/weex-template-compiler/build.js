@@ -2488,10 +2488,9 @@ function genWeexHandler (handler, options) {
   var code = handler.value;
   var isMethodPath = simplePathRE.test(code);
   var isFunctionExpression = fnExpRE.test(code);
-  var isFunctionCall = functionCallRE.test(code);
-
   // TODO: binding this to recyclable event handlers
   if (options.recyclable) {
+    var isFunctionCall = functionCallRE.test(code);
     if (isMethodPath) {
       return ("function($event){this." + code + "()}")
     }

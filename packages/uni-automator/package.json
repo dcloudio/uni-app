@@ -18,6 +18,7 @@
     "debug": "^4.1.1",
     "default-gateway": "^6.0.0",
     "kill-port": "^1.6.0",
+    "jsonc-parser": "^3.2.0",
     "licia": "^1.21.0",
     "postcss-selector-parser": "^6.0.2",
     "qrcode-reader": "^1.0.4",

@@ -196,7 +196,7 @@ export default {
     pushData (array) {
       array.forEach(item => {
         this.list.push({
-          name: item.title,
+          name: item.title || item.name,
           address: item.address,
           distance: item._distance || item.distance,
           latitude: item.location.lat,
@@ -269,22 +269,24 @@ export default {
         const self = this
 
         window.AMap.plugin('AMap.PlaceSearch', function () {
-          const placeSearch = new window.AMap.PlaceSearch({
-            city: '全国',
-            pageSize: 10,
-            pageIndex: self.pageIndex
-          })
-          const keyword = self.searching ? self.keyword : ''
-          const radius = self.searching ? 50000 : 5000
-          placeSearch.searchNearBy(keyword, [self.longitude, self.latitude], radius, function (status, result) {
-            if (status === 'error') {
-              console.error(result)
-            } else if (status === 'no_data') {
-              self.hasNextPage = false
-            } else {
-              self.pushData(result.poiList.pois)
-            }
-          })
+          if (self.longitude && self.latitude) {
+            const placeSearch = new window.AMap.PlaceSearch({
+              city: '全国',
+              pageSize: 10,
+              pageIndex: self.pageIndex
+            })
+            const keyword = self.searching ? self.keyword : ''
+            const radius = self.searching ? 50000 : 5000
+            placeSearch.searchNearBy(keyword, [self.longitude, self.latitude], radius, function (status, result) {
+              if (status === 'error') {
+                console.error(result)
+              } else if (status === 'no_data') {
+                self.hasNextPage = false
+              } else {
+                self.pushData(result.poiList.pois)
+              }
+            })
+          }
           self.loading = false
         })
       }

@@ -5,7 +5,7 @@ import getSystemInfo from '../../../mp-weixin/helpers/system-info'
 import getUserProfile from '../../../mp-weixin/helpers/get-user-profile'
 
 export const protocols = {
-  navigateTo,
+  navigateTo: navigateTo(),
   redirectTo,
   previewImage,
   getSystemInfo,

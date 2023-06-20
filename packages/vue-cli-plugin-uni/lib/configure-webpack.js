@@ -420,7 +420,8 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
     if (process.env.UNI_PLATFORM.startsWith('mp')) {
       const BabelRuntimeVersions = require('@babel/runtime/package.json').version.split('.')
       if (BabelRuntimeVersions[0] === '7' && Number(BabelRuntimeVersions[1]) >= 18) {
-        alias['@babel/runtime/regenerator'] = require.resolve('@dcloudio/vue-cli-plugin-uni/packages/@babel/runtime/regenerator')
+        alias['@babel/runtime/regenerator'] = require.resolve(
+          '@dcloudio/vue-cli-plugin-uni/packages/@babel/runtime/regenerator')
       }
     }
 

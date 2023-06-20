@@ -98,7 +98,7 @@ const canIUses = [
 
 // 需要做转换的 API 列表
 const protocols = {
-  navigateTo,
+  navigateTo: navigateTo(),
   redirectTo,
   previewImage,
   getSystemInfo,

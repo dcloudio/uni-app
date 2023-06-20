@@ -130,7 +130,7 @@ uni-toast .uni-simple-toast__text {
   font-size: 13px;
   text-align: center;
   max-width: 100%;
-  word-break: break-all;
+  word-break: break-word;
   white-space: normal;
 }
 

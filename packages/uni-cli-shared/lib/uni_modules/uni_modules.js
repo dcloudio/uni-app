@@ -3,21 +3,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.parseInject = exports.parseInjects = exports.parseUniExtApis = void 0;
+exports.parseInjects = exports.parseUniExtApis = void 0;
 const path_1 = __importDefault(require("path"));
 const fs_extra_1 = __importDefault(require("fs-extra"));
-const merge_1 = require("merge");
-function parseUniExtApis(vite = true) {
+function parseUniExtApis(vite = true, platform, language = 'javascript') {
     const uniModulesDir = path_1.default.resolve(process.env.UNI_INPUT_DIR, 'uni_modules');
     if (!fs_extra_1.default.existsSync(uniModulesDir)) {
         return {};
-    }
-    let platform = process.env.UNI_PLATFORM;
-    if (platform === 'h5') {
-        platform = 'web';
-    }
-    else if (platform === 'app-plus') {
-        platform = 'app';
     }
     const injects = {};
     fs_extra_1.default.readdirSync(uniModulesDir).forEach((uniModuleDir) => {
@@ -25,7 +17,8 @@ function parseUniExtApis(vite = true) {
         if (!uniModuleDir.startsWith('uni-')) {
             return;
         }
-        const pkgPath = path_1.default.resolve(uniModulesDir, uniModuleDir, 'package.json');
+        const uniModuleRootDir = path_1.default.resolve(uniModulesDir, uniModuleDir);
+        const pkgPath = path_1.default.resolve(uniModuleRootDir, 'package.json');
         if (!fs_extra_1.default.existsSync(pkgPath)) {
             return;
         }
@@ -33,18 +26,7 @@ function parseUniExtApis(vite = true) {
             const exports = JSON.parse(fs_extra_1.default.readFileSync(pkgPath, 'utf8'))
                 ?.uni_modules?.['uni-ext-api'];
             if (exports) {
-                const curInjects = parseInjects(vite, platform, `@/uni_modules/${uniModuleDir}`, exports);
-                if (platform === 'app') {
-                    Object.keys(curInjects).forEach((name) => {
-                        const options = curInjects[name];
-                        // js 平台禁用了
-                        if (Array.isArray(options) && options.length === 3) {
-                            if (options[2] && options[2].js === false) {
-                                delete curInjects[name];
-                            }
-                        }
-                    });
-                }
+                const curInjects = parseInjects(vite, platform, language, `@/uni_modules/${uniModuleDir}`, uniModuleRootDir, exports);
                 Object.assign(injects, curInjects);
             }
         }
@@ -74,41 +56,43 @@ exports.parseUniExtApis = parseUniExtApis;
  * @param define
  * @returns
  */
-function parseInjects(vite = true, platform, source, exports = {}) {
+function parseInjects(vite = true, platform, language, source, uniModuleRootDir, exports = {}) {
     let rootDefines = {};
     Object.keys(exports).forEach((name) => {
         if (name.startsWith('uni')) {
             rootDefines[name] = exports[name];
         }
     });
-    const platformDefines = exports[platform];
-    // 该平台不支持
-    if (platformDefines === false) {
-        return {};
-    }
-    if (platformDefines) {
-        rootDefines = (0, merge_1.recursive)(true, rootDefines, platformDefines);
-    }
     const injects = {};
-    for (const key in rootDefines) {
-        Object.assign(injects, parseInject(vite, platform, source, 'uni', rootDefines[key]));
+    if (Object.keys(rootDefines).length) {
+        const hasPlatformFile = uniModuleRootDir
+            ? fs_extra_1.default.existsSync(path_1.default.resolve(uniModuleRootDir, 'utssdk', 'index.uts')) ||
+                fs_extra_1.default.existsSync(path_1.default.resolve(uniModuleRootDir, 'utssdk', platform))
+            : true;
+        for (const key in rootDefines) {
+            Object.assign(injects, parseInject(vite, platform, language, source, 'uni', rootDefines[key], hasPlatformFile));
+        }
     }
     return injects;
 }
 exports.parseInjects = parseInjects;
-function parseInject(vite = true, platform, source, globalObject, define) {
+function parseInject(vite = true, platform, language, source, globalObject, define, hasPlatformFile) {
     const injects = {};
     if (define === false) {
     }
     else if (typeof define === 'string') {
         // {'uni.getBatteryInfo' : '@dcloudio/uni-getbatteryinfo'}
-        injects[globalObject + '.' + define] = vite ? source : [source, 'default'];
+        if (hasPlatformFile) {
+            injects[globalObject + '.' + define] = vite ? source : [source, 'default'];
+        }
     }
     else if (Array.isArray(define)) {
         // {'uni.getBatteryInfo' : ['@dcloudio/uni-getbatteryinfo','getBatteryInfo]}
-        define.forEach((d) => {
-            injects[globalObject + '.' + d] = [source, d];
-        });
+        if (hasPlatformFile) {
+            define.forEach((d) => {
+                injects[globalObject + '.' + d] = [source, d];
+            });
+        }
     }
     else {
         const keys = Object.keys(define);
@@ -118,16 +102,47 @@ function parseInject(vite = true, platform, source, globalObject, define) {
             }
             else {
                 const defineOptions = define[d];
-                if (defineOptions[platform] !== false) {
-                    if (platform === 'app') {
-                        injects[globalObject + '.' + d] = [
-                            source,
-                            defineOptions.name || d,
-                            defineOptions.app,
-                        ];
-                    }
-                    else {
+                const p = platform === 'app-android' || platform === 'app-ios'
+                    ? 'app'
+                    : platform;
+                if (!(p in defineOptions)) {
+                    if (hasPlatformFile) {
                         injects[globalObject + '.' + d] = [source, defineOptions.name || d];
+                    }
+                }
+                else {
+                    if (defineOptions[p] !== false) {
+                        if (p === 'app') {
+                            const appOptions = defineOptions.app;
+                            if (isPlainObject(appOptions)) {
+                                if (language === 'javascript') {
+                                    if (appOptions.js === false) {
+                                        return;
+                                    }
+                                }
+                                else if (language === 'kotlin') {
+                                    if (appOptions.kotlin === false) {
+                                        return;
+                                    }
+                                }
+                                else if (language === 'swift') {
+                                    if (appOptions.swift === false) {
+                                        return;
+                                    }
+                                }
+                            }
+                            injects[globalObject + '.' + d] = [
+                                source,
+                                defineOptions.name || d,
+                                defineOptions.app,
+                            ];
+                        }
+                        else {
+                            injects[globalObject + '.' + d] = [
+                                source,
+                                defineOptions.name || d,
+                            ];
+                        }
                     }
                 }
             }
@@ -135,4 +150,8 @@ function parseInject(vite = true, platform, source, globalObject, define) {
     }
     return injects;
 }
-exports.parseInject = parseInject;
+const objectToString = Object.prototype.toString;
+const toTypeString = (value) => objectToString.call(value);
+function isPlainObject(val) {
+    return toTypeString(val) === '[object Object]';
+}
