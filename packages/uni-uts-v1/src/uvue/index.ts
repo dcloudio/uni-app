@@ -26,12 +26,12 @@ const DEFAULT_IMPORTS = [
   'kotlinx.coroutines.Deferred',
   'kotlinx.coroutines.Dispatchers',
   'io.dcloud.uts.Map',
+  'io.dcloud.uts.Set',
   'io.dcloud.uts.UTSAndroid',
   'io.dcloud.uts.*',
   'io.dcloud.uts.framework.*',
   'io.dcloud.uts.vue.*',
   'io.dcloud.uts.vue.shared.*',
-  'io.dcloud.uts.vue.reactivity.*',
   'io.dcloud.uniapp.runtime.*',
 ]
 
