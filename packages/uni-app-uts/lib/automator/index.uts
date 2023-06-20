@@ -29,7 +29,7 @@ function send(data: any) {
 function onMessage(msg: string) {
   const json = JSON.parse(msg)!
   const method = json['method'] as string
-  const params = json['params'] as JSONObject
+  const params = json['params'] as UTSJSONObject
   const path = params['path'] !== null ? (params['path'] as string) : ''
   const res = new Map<string, any | null>([['id', json['id'] as string]])
   try {
@@ -43,14 +43,14 @@ function onMessage(msg: string) {
       switch (method) {
         case 'App.callUniMethod':
           const method = params['method'] as string
-          const args = params['args'] as JSONArray
+          const args = (params['args'] as UTSJSONObject).toJSONObject() as JSONArray
           callUniMethod({
             method,
             args,
             callback
           } as CallUniMethodParams)
           break
-          case 'App.captureScreenshot':
+        case 'App.captureScreenshot':
           const id = params['id'] !== null ? (params['id'] as string) : null
           const fullPage = params['fullPage'] !== null ? (params['fullPage'] as boolean) : false
           captureScreenshot({ id, fullPage, path, callback } as CaptureScreenshotParams)
@@ -79,7 +79,7 @@ function onMessage(msg: string) {
           const methodName = params['method'] as string
           const args = params['args'] !== null ? params['args'] as Array<any | null> : [] as Array<any | null>
           args.push(callback)
-          callMethodWithCallback({pageId, methodName, args} as CallMethodWithCallbackParams)
+          callMethodWithCallback({ pageId, methodName, args } as CallMethodWithCallbackParams)
           break;
       }
     }
@@ -93,7 +93,7 @@ export function initAutomator() {
   socketTask = uni.connectSocket({
     url: wsEndpoint
   });
-  socketTask!.onMessage((res) => {onMessage(res.data as string)})
+  socketTask!.onMessage((res) => { onMessage(res.data as string) })
   socketTask!.onOpen((_) => {
     console.warn("automator.onOpen")
   })

@@ -73,7 +73,7 @@ exports.fuzzyMatchTarget = (partialTargets, includeAllMatching) => {
   } else {
     console.log()
     console.error(
-      `  ${colors.bgRed.white(' ERROR ')} ${colors.red(
+      `  ${colors.bgRed(' ERROR ')} ${colors.red(
         `Target ${colors.underline(partialTargets)} not found!`
       )}`
     )

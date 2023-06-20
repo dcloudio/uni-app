@@ -210,23 +210,13 @@ export function generate(
 
 function genEasyComImports(
   components: string[],
-  {
-    push,
-    newline,
-    matchEasyCom,
-    parseUTSComponent,
-    targetLanguage,
-  }: CodegenContext
+  { push, newline, matchEasyCom, targetLanguage }: CodegenContext
 ) {
   for (let i = 0; i < components.length; i++) {
     let id = components[i]
     const maybeSelfReference = id.endsWith('__self')
     if (maybeSelfReference) {
       id = id.slice(0, -6)
-    }
-    const utsComponentOptions = parseUTSComponent(id, targetLanguage)
-    if (utsComponentOptions) {
-      continue
     }
     const source = matchEasyCom(id, true)
     if (source) {
@@ -240,16 +230,7 @@ function genEasyComImports(
 function genAssets(
   assets: string[],
   type: 'component' | 'directive',
-  {
-    helper,
-    push,
-    newline,
-    targetLanguage,
-    importEasyComponents,
-    importUTSComponents,
-    matchEasyCom,
-    parseUTSComponent,
-  }: CodegenContext
+  { helper, push, newline, importEasyComponents, matchEasyCom }: CodegenContext
 ) {
   const resolver = helper(
     type === 'component' ? RESOLVE_COMPONENT : RESOLVE_DIRECTIVE
@@ -263,31 +244,18 @@ function genAssets(
     }
     let assetCode = ''
     if (type === 'component') {
-      // 原生UTS组件
-      const utsComponentOptions = parseUTSComponent(id, targetLanguage)
-      if (utsComponentOptions) {
-        assetCode = `const ${toValidAssetId(id, type)} = ${
-          utsComponentOptions.namespace
-        }.${utsComponentOptions.className}.name`
-        const importCode = `import '${utsComponentOptions.source}'`
-        if (!importUTSComponents.includes(importCode)) {
-          importUTSComponents.push(importCode)
-        }
-      }
-      if (!assetCode) {
-        const source = matchEasyCom(id, false)
-        if (source) {
-          const easyComponentId = toValidAssetId(id, 'easycom' as 'component')
-          const componentId = toValidAssetId(id, type)
-          assetCode = `const ${componentId} = ${helper(
-            RESOLVE_EASY_COMPONENT
-          )}(${JSON.stringify(id)},${easyComponentId}${
-            maybeSelfReference ? `, true` : ``
-          })`
-          const importCode = `import ${easyComponentId} from '${source}'`
-          if (!importEasyComponents.includes(importCode)) {
-            importEasyComponents.push(importCode)
-          }
+      const source = matchEasyCom(id, false)
+      if (source) {
+        const easyComponentId = toValidAssetId(id, 'easycom' as 'component')
+        const componentId = toValidAssetId(id, type)
+        assetCode = `const ${componentId} = ${helper(
+          RESOLVE_EASY_COMPONENT
+        )}(${JSON.stringify(id)},${easyComponentId}${
+          maybeSelfReference ? `, true` : ``
+        })`
+        const importCode = `import ${easyComponentId} from '${source}';`
+        if (!importEasyComponents.includes(importCode)) {
+          importEasyComponents.push(importCode)
         }
       }
     }
@@ -479,6 +447,32 @@ function genComment(node: CommentNode, context: CodegenContext) {
   push(`${helper(CREATE_COMMENT)}(${JSON.stringify(node.content)})`, node)
 }
 
+function parseTag(
+  tag: string | symbol | CallExpression,
+  { parseUTSComponent, targetLanguage, importUTSComponents }: CodegenContext
+) {
+  if (isString(tag)) {
+    // 原生UTS组件
+    const utsComponentOptions = parseUTSComponent(
+      tag.slice(1, -1),
+      targetLanguage
+    )
+    if (utsComponentOptions) {
+      const importCode = `import '${utsComponentOptions.source}';`
+      if (!importUTSComponents.includes(importCode)) {
+        importUTSComponents.push(importCode)
+      }
+      return (
+        utsComponentOptions.namespace +
+        '.' +
+        utsComponentOptions.className +
+        '.name'
+      )
+    }
+  }
+  return tag
+}
+
 function genVNodeCall(node: VNodeCall, context: CodegenContext) {
   const { push, helper } = context
   const {
@@ -504,7 +498,13 @@ function genVNodeCall(node: VNodeCall, context: CodegenContext) {
     : getVNodeHelper(false, isComponent)
   push(helper(callHelper) + `(`, node)
   genNodeList(
-    genNullableArgs([tag, props, children, patchFlag, dynamicProps]),
+    genNullableArgs([
+      parseTag(tag, context),
+      props,
+      children,
+      patchFlag,
+      dynamicProps,
+    ]),
     context
   )
   push(`)`)

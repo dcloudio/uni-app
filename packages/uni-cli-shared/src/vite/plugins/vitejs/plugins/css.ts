@@ -193,6 +193,7 @@ export function cssPlugin(config: ResolvedConfig): Plugin {
 function findCssModuleIds(
   this: PluginContext,
   moduleId: string,
+  includeComponentCss: boolean = true,
   cssModuleIds?: Set<string>,
   seen?: Set<string>
 ) {
@@ -216,7 +217,14 @@ function findCssModuleIds(
       if (cssLangRE.test(id) && !commonjsProxyRE.test(id)) {
         cssModuleIds!.add(id)
       } else {
-        findCssModuleIds.call(this, id, cssModuleIds, seen)
+        if (
+          !includeComponentCss &&
+          (id.includes('.vue') || id.includes('.uvue') || id.includes('.nvue'))
+        ) {
+          // 不包含组件样式，不需要继续查找，uni x中不需要包含
+          return
+        }
+        findCssModuleIds.call(this, id, includeComponentCss, cssModuleIds, seen)
       }
     })
   }
@@ -233,6 +241,7 @@ export function cssPostPlugin(
     isJsCode,
     chunkCssFilename,
     chunkCssCode,
+    includeComponentCss,
   }: {
     platform: UniApp.PLATFORM
     isJsCode?: boolean
@@ -241,6 +250,7 @@ export function cssPostPlugin(
       filename: string,
       cssCode: string
     ) => Promise<string> | string
+    includeComponentCss?: boolean
   }
 ): Plugin {
   // styles initialization in buildStart causes a styling loss in watch
@@ -276,7 +286,7 @@ export function cssPostPlugin(
         if (filename) {
           if (
             platform === 'app' &&
-            (filename === 'app.css' || filename === 'App.vue.style.uts')
+            (filename === 'app.css' || filename.startsWith('App.vue.style'))
           ) {
             // 获取 unocss 的样式文件信息
             const ids = Object.keys(chunk.modules).filter(
@@ -290,7 +300,7 @@ export function cssPostPlugin(
             // 当页面作为组件使用时，上一步找不到依赖的css，需要再次查找
             // renderChunk会执行两次，一次是页面chunk，一次是组件chunk，两者生成的css文件名和内容都是一样的
             if (!ids.length) {
-              ids = [...findCssModuleIds.call(this, id)]
+              ids = [...findCssModuleIds.call(this, id, includeComponentCss)]
             }
             cssChunks.set(filename, ids)
           }
@@ -305,7 +315,7 @@ export function cssPostPlugin(
         moduleIds.forEach((id) => {
           const filename = chunkCssFilename(id)
           if (filename) {
-            const ids = findCssModuleIds.call(this, id)
+            const ids = findCssModuleIds.call(this, id, includeComponentCss)
             if (cssChunks.has(filename)) {
               cssChunks.get(filename)!.forEach((id) => {
                 ids.add(id)

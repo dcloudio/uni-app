@@ -7,6 +7,7 @@ interface ParseOptions extends NormalizeOptions {
   filename?: string
   map?: boolean
   ts?: boolean
+  chunk?: number
   noCode?: boolean
 }
 
@@ -31,9 +32,44 @@ export async function parse(input: string, options: ParseOptions = {}) {
   }
   const obj = root ? objectifier(root) : {}
   if (options.map) {
-    return { code: mapToInitString(objToMap(obj), options.ts, true), messages }
+    return {
+      code: mapToInitStringChunk(
+        objToMap(obj),
+        options.ts,
+        true,
+        options.chunk
+      ),
+      messages,
+    }
   }
   return { code: JSON.stringify(obj), messages }
+}
+
+function mapToInitStringChunk(
+  map: Map<string, unknown>,
+  ts: boolean = false,
+  isRoot: boolean = false,
+  chunk: number = 0
+): string {
+  if (!chunk) {
+    return mapToInitString(map, ts, isRoot)
+  }
+  const chunks: string[] = []
+  let chunkMap: Map<string, unknown> = new Map()
+  let chunkCount = 0
+  for (const [key, value] of map) {
+    if (chunkCount === chunk) {
+      chunks.push(mapToInitString(chunkMap, ts, isRoot))
+      chunkMap = new Map()
+      chunkCount = 0
+    }
+    chunkMap.set(key, value)
+    chunkCount++
+  }
+  if (chunkCount) {
+    chunks.push(mapToInitString(chunkMap, ts, isRoot))
+  }
+  return `[${chunks.join(',')}]`
 }
 
 function mapToInitString(
@@ -41,7 +77,7 @@ function mapToInitString(
   ts: boolean = false,
   isRoot: boolean = false
 ): string {
-  let entries = []
+  const entries = []
   for (let [key, value] of map) {
     if (value instanceof Map) {
       entries.push(`["${key}", ${mapToInitString(value, ts)}]`)
