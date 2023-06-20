@@ -1,0 +1,125 @@
+import {
+  setProperties
+} from 'uni-shared'
+
+const setTabBarItemProps = ['text', 'iconPath', 'iconfont', 'selectedIconPath', 'visible']
+
+const setTabBarStyleProps = ['color', 'selectedColor', 'backgroundColor', 'borderStyle', 'midButton']
+
+const setTabBarBadgeProps = ['badge', 'redDot']
+
+const setTabBarIconfontStyles = ['text', 'selectedText', 'fontSize', 'color', 'selectedColor']
+
+function setTabBar (type, args = {}) {
+  const app = getApp()
+
+  if (app) {
+    let isTabBar = false
+    const pages = getCurrentPages()
+    if (pages.length) {
+      if (pages[pages.length - 1].$page.meta.isTabBar) {
+        isTabBar = true
+      }
+    } else if (app.$children[0].hasTabBar) {
+      isTabBar = true
+    }
+    if (!isTabBar) {
+      return {
+        errMsg: `${type}:fail not TabBar page`
+      }
+    }
+
+    const {
+      index
+    } = args
+    const tabBar = __uniConfig.tabBar
+    if (index >= __uniConfig.tabBar.list.length) {
+      return {
+        errMsg: `${type}:fail tabbar item not found`
+      }
+    }
+    switch (type) {
+      case 'showTabBar':
+        app.$children[0].hideTabBar = false
+        break
+      case 'hideTabBar':
+        app.$children[0].hideTabBar = true
+        break
+      case 'setTabBarItem': {
+        if (args.iconfont) {
+          setProperties(tabBar.list[index].iconfont, setTabBarIconfontStyles, args.iconfont)
+          args.iconfont = tabBar.list[index].iconfont
+        }
+        setProperties(tabBar.list[index], setTabBarItemProps, args)
+        const pagePath = args.pagePath
+        const route = pagePath && __uniRoutes.find(({ path }) => path === pagePath)
+        if (route) {
+          const meta = route.meta
+          meta.isTabBar = true
+          meta.tabBarIndex = index
+          meta.isQuit = true
+          meta.isSet = true
+          meta.id = index + 1
+          const tabBar = __uniConfig.tabBar
+          if (tabBar && tabBar.list && tabBar.list[index]) {
+            tabBar.list[index].pagePath = pagePath.startsWith('/') ? pagePath.substring(1) : pagePath
+          }
+        }
+        break
+      }
+      case 'setTabBarStyle':
+        setProperties(tabBar, setTabBarStyleProps, args)
+        break
+      case 'showTabBarRedDot':
+        setProperties(tabBar.list[index], setTabBarBadgeProps, {
+          badge: '',
+          redDot: true
+        })
+        break
+      case 'setTabBarBadge':
+        setProperties(tabBar.list[index], setTabBarBadgeProps, {
+          badge: args.text,
+          redDot: true
+        })
+        break
+      case 'hideTabBarRedDot':
+      case 'removeTabBarBadge':
+        setProperties(tabBar.list[index], setTabBarBadgeProps, {
+          badge: '',
+          redDot: false
+        })
+        break
+    }
+  }
+  return {}
+}
+export function setTabBarItem (args) {
+  return setTabBar('setTabBarItem', args)
+}
+
+export function setTabBarStyle (args) {
+  return setTabBar('setTabBarStyle', args)
+}
+
+export function hideTabBar (args) {
+  return setTabBar('hideTabBar', args)
+}
+
+export function showTabBar (args) {
+  return setTabBar('showTabBar', args)
+}
+export function hideTabBarRedDot (args) {
+  return setTabBar('hideTabBarRedDot', args)
+}
+
+export function showTabBarRedDot (args) {
+  return setTabBar('showTabBarRedDot', args)
+}
+
+export function removeTabBarBadge (args) {
+  return setTabBar('removeTabBarBadge', args)
+}
+
+export function setTabBarBadge (args) {
+  return setTabBar('setTabBarBadge', args)
+}
