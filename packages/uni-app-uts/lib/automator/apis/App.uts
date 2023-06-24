@@ -6,6 +6,7 @@ import {
 } from 'io.dcloud.uniapp.runtime'
 import { getCurrentPages } from 'io.dcloud.uts.framework'
 import { parsePage } from './util.uts'
+import { ShowToastOptions, ShowLoadingOptions, ShowModalOptions } from "io.dcloud.uts.extapi";
 
 export type GetPageStackParams = {
   callback: (res: any) => void
@@ -45,10 +46,6 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
   const callback = params.callback
   let animationType: string = 'pop-in'
   let animationDuration: number = 300
-  let arg = {} as JSONObject
-  if (args.size > 0) {
-    arg = args[0] as JSONObject
-  }
   const success = (result: any) => {
     const timeout = method == 'pageScrollTo' ? 350 : 0
     setTimeout(() => {
@@ -60,14 +57,14 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
   }
   switch (method) {
     case 'navigateTo':
-      if (arg['animationType'] !== null) {
-        animationType = arg['animationType'] as string
+      if ((args[0] as JSONObject)['animationType'] !== null) {
+        animationType = (args[0] as JSONObject)['animationType'] as string
       }
-      if (arg['animationDuration'] !== null) {
-        animationDuration = arg['animationDuration'] as number
+      if ((args[0] as JSONObject)['animationDuration'] !== null) {
+        animationDuration = (args[0] as JSONObject)['animationDuration'] as number
       }
       uni.navigateTo({
-        url: arg['url'] as string,
+        url: (args[0] as JSONObject)['url'] as string,
         animationType,
         animationDuration,
         success,
@@ -77,7 +74,7 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
 
     case 'redirectTo':
       uni.redirectTo({
-        url: arg['url'] as string,
+        url: (args[0] as JSONObject)['url'] as string,
         success,
         fail
       })
@@ -85,7 +82,7 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
 
     case 'reLaunch':
       uni.reLaunch({
-        url: arg['url'] as string,
+        url: (args[0] as JSONObject)['url'] as string,
         success,
         fail
       })
@@ -93,11 +90,11 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
 
     case 'navigateBack':
       animationType = 'pop-out'
-      if (arg['animationType'] !== null) {
-        animationType = arg['animationType'] as string
+      if ((args[0] as JSONObject)['animationType'] !== null) {
+        animationType = (args[0] as JSONObject)['animationType'] as string
       }
-      if (arg['animationDuration'] !== null) {
-        animationDuration = arg['animationDuration'] as number
+      if ((args[0] as JSONObject)['animationDuration'] !== null) {
+        animationDuration = (args[0] as JSONObject)['animationDuration'] as number
       }
       uni.navigateBack({
         animationType,
@@ -106,8 +103,115 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
         fail
       })
       break
+      case 'switchTab':
+        uni.switchTab({
+          url: (args[0] as JSONObject)['url'] as string,
+          success,
+          fail
+        })
+        break
+      case 'setStorage':
+        uni.setStorage({
+          key: (args[0] as JSONObject)['key'] as string,
+          data: (args[0] as JSONObject)['data'] as any,
+          success,
+          fail
+        })
+        break
+      case 'getStorage':
+        uni.getStorage({
+          key: (args[0] as JSONObject)['key'] as string,
+          success(result: any) {
+            callback({ result })
+          },
+          fail
+        })
+        break
+      case 'setStorageSync':
+        uni.setStorageSync(args[0] as string, args[1] as any)
+        callback({ result: { errMsg: 'uni.setStorageSync success' } })
+        break
+      case 'getStorageSync':
+        const result = uni.getStorageSync((args[0] as string))
+        callback({ result })
+      break
+      case 'showToast':
+        const icon = (args[0] as JSONObject)['icon'] != null ? (args[0] as JSONObject)['icon'] as string : 'success'
+        const image = (args[0] as JSONObject)['image'] != null && (args[0] as JSONObject)['image'] !== '' ? (args[0] as JSONObject)['image'] as string : null
+        const toastMask = (args[0] as JSONObject)['mask'] != null ? (args[0] as JSONObject)['mask'] as boolean : false
+        const duration: number = (args[0] as JSONObject)['duration'] != null ? (args[0] as JSONObject)['duration'] as number : 1500
+        const position = (args[0] as JSONObject)['position'] != null ? (args[0] as JSONObject)['position'] as string : null
+        uni.showToast({
+          title: (args[0] as JSONObject)['title'] as string,
+          icon,
+          image,
+          mask: toastMask,
+          duration,
+          position,
+          success,
+          fail
+        } as ShowToastOptions)
+        break
+      case 'hideToast':
+        uni.hideToast()
+        break
+      case 'showLoading':
+        const loadingMask = (args[0] as JSONObject)['mask'] != null ? (args[0] as JSONObject)['mask'] as boolean : false
+        uni.showLoading({
+          title: (args[0] as JSONObject)['title'] as string,
+          mask: loadingMask,
+          success,
+          fail
+        } as ShowLoadingOptions)
+        break
+      case 'hideLoading':
+        uni.hideLoading()
+        break
+      case 'showModal':
+        const showModalTitle = (args[0] as JSONObject)['title'] != null ? (args[0] as JSONObject)['title'] as string : null
+        const content = (args[0] as JSONObject)['content'] != null ? (args[0] as JSONObject)['content'] as string : null
+        const showCancel = (args[0] as JSONObject)['showCancel'] != null ? (args[0] as JSONObject)['showCancel'] as boolean : true
+        const cancelText = (args[0] as JSONObject)['cancelText'] != null ? (args[0] as JSONObject)['cancelText'] as string : null
+        const cancelColor: string | null = (args[0] as JSONObject)['cancelColor'] != null ? (args[0] as JSONObject)['cancelColor'] as string : null
+        const confirmText = (args[0] as JSONObject)['confirmText'] != null ? (args[0] as JSONObject)['confirmText'] as string : null
+        const confirmColor = (args[0] as JSONObject)['confirmColor'] != null ? (args[0] as JSONObject)['confirmColor'] as string : null
+        const editable = (args[0] as JSONObject)['editable'] != null ? (args[0] as JSONObject)['editable'] as boolean : false
+        const placeholderText = (args[0] as JSONObject)['placeholderText'] != null ? (args[0] as JSONObject)['placeholderText'] as string : null
+        uni.showModal({
+          title: showModalTitle,
+          content,
+          showCancel,
+          cancelText,
+          cancelColor,
+          confirmText,
+          confirmColor,
+          editable,
+          placeholderText,
+          success(result: any) {
+            callback({ result })
+          },
+          fail(error: any) {
+            callback({ result: error })
+          }
+        } as ShowModalOptions)
+        break
+      // case 'showActionSheet':
+      //   const showActionSheetTitle = (args[0] as JSONObject)['title'] != null ? (args[0] as JSONObject)['title'] as string : null
+      //   const itemColor = (args[0] as JSONObject)['itemColor'] != null ? (args[0] as JSONObject)['itemColor'] as string : null
+      //   uni.showActionSheet({
+      //     title: showActionSheetTitle,
+      //     itemList: (args[0] as JSONObject)['itemList'] as string[],
+      //     itemColor,
+      //     success(result: any) {
+      //       callback({ result })
+      //     },
+      //     fail(error: any) {
+      //       callback({ result: error })
+      //     }
+      //   } as ShowActionSheetOptions)
+      //   break
     default:
-      callback({ errMsg: 'uni.' + method + ' not exists' })
+      callback({ result: { errMsg: 'uni.' + method + ' not exists.' } })
       break
   }
 }
