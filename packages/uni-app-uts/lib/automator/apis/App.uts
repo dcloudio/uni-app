@@ -18,7 +18,7 @@ export const getPageStack = (params: GetPageStackParams): void => {
   })
 }
 export type GetCurrentPageParams = {
-  callback: (res: UTSJSONObject) => void
+  callback: (res: UTSJSONObject | null) => void
 }
 
 function _getCurrentPage(): BasePage | null {

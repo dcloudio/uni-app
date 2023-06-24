@@ -29,17 +29,15 @@ export function getPageVm(id: number): BasePage | null {
 }
 
 export function getData(
-  vm: BasePage | null,
+  vm: BasePage,
   path?: string
 ): Map<string, any | null> {
   let data = new Map<string, any | null>()
-  if (vm !== null) {
-    // TODO: path
-    if(path !== null){
-      data.set("errMsg", `getData:fail, path:${path} is not supported.`)
-    }else{
-      data = vm.$data
-    }
+  // TODO: path
+  if (path !== null && path.length != 0) {
+    data.set("errMsg", `getData:fail, path:${path} is not supported.`)
+  } else {
+    data = vm.$data
   }
   return data
 }

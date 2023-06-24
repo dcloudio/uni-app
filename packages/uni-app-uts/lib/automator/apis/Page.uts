@@ -9,8 +9,13 @@ export type GetDataParams = {
 }
 export const pageGetData = (params: GetDataParams): void => {
   const callback = params.callback
-  const result = getData(getPageVm(params.pageId)!, params.path)
-  callback(result)
+  const page = getPageVm(params.pageId)
+  if (page === null) {
+    callback({ result: { errMsg: 'Page.getData:fail, Page not found.' } })
+    return
+  }
+  const data = getData(page, params.path)
+  callback({ data })
 }
 
 export type SetDataParams = {
