@@ -1,4 +1,4 @@
-import { JSONArray, JSONObject } from 'com.alibaba.fastjson'
+import { JSONArray } from 'com.alibaba.fastjson'
 import { SocketTask, SendSocketMessageOptions } from 'uts.sdk.modules.DCloudUniWebsocket'
 import {
   callUniMethod,
@@ -64,8 +64,8 @@ function onMessage(msg: string) {
       const pageId = params['pageId'] as number
       const data =
         params['data'] !== null
-          ? (params['data'] as JSONObject)
-          : ({} as JSONObject)
+          ? (params['data'] as UTSJSONObject)
+          : ({} as UTSJSONObject)
       switch (method) {
         case 'Page.getData':
           pageGetData({ pageId, path, callback } as GetDataParams)

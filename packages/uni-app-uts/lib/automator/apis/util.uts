@@ -1,4 +1,3 @@
-import { JSONObject } from 'com.alibaba.fastjson'
 import { getCurrentPages } from 'io.dcloud.uts.framework'
 
 function getPageId(page: BasePage): number {
@@ -42,14 +41,11 @@ export function getData(
   return data
 }
 
-export function setData(vm: BasePage, data: JSONObject): void {
-  for (const key in data) {
-    // @ts-ignore
-    const _key = key.key
-    // @ts-ignore
-    const value = key.value
-    vm.$data.set(_key, value)
-  }
+export function setData(vm: BasePage, data: UTSJSONObject): void {
+  const _data = data.toMap()
+  _data.forEach((value: any | null, key: string) => {
+    vm.$data.set(key, value)
+	})
 }
 
 export function parsePage(page: BasePage): UTSJSONObject {
