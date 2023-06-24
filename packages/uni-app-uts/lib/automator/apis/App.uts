@@ -18,7 +18,7 @@ export const getPageStack = (params: GetPageStackParams): void => {
   })
 }
 export type GetCurrentPageParams = {
-  callback: (res: any) => void
+  callback: (res: UTSJSONObject) => void
 }
 
 function _getCurrentPage(): BasePage | null {
@@ -28,7 +28,8 @@ function _getCurrentPage(): BasePage | null {
 
 export const getCurrentPage = (params: GetCurrentPageParams): void => {
   const page = _getCurrentPage()
-  params.callback({ page: page !== null ? parsePage(page) : null })
+	const result = page != null ? parsePage(page) : null
+	params.callback(result)
 }
 
 export type CallUniMethodParams = {
