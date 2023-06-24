@@ -9,13 +9,14 @@ import {
   GetPageStackParams,
   getCurrentPage,
   GetCurrentPageParams
-} from './apis/App.uts'
+} from './apis/App/index.uts'
 import {
   pageGetData,
   GetDataParams,
   pageSetData,
   SetDataParams,
 } from './apis/Page.uts'
+import { socketEmitter, SocketEmitterParams } from './apis/App/Socket.uts'
 
 let socketTask: SocketTask | null = null
 const wsEndpoint = process.env.UNI_AUTOMATOR_WS_ENDPOINT
@@ -59,6 +60,12 @@ function onMessage(msg: string) {
         case 'App.getCurrentPage':
           getCurrentPage({ callback } as GetCurrentPageParams)
           break
+        case 'App.socketEmitter':
+          const socketId: string = params['id'] != null ? (params['id'] as string) : ''
+          const socketMethod: string = params['method'] != null ? (params['method'] as string) : ''
+          const data = params['data'] != null ? (params['data'] as any) : null
+          socketEmitter({ id: socketId, method: socketMethod, data, callback } as SocketEmitterParams)
+          break
       }
     } else if (method.startsWith('Page.')) {
       const pageId = params['pageId'] as number
@@ -76,7 +83,7 @@ function onMessage(msg: string) {
       }
     }
   } catch (error) {
-    res.set('error', error)
+    res.set('error', error.stackTraceToString())
     send(res)
   }
 }

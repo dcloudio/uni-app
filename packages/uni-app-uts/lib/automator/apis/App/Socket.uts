@@ -1,0 +1,92 @@
+import { SocketTask, OnSocketOpenCallbackResult, OnSocketMessageCallbackResult, GeneralCallbackResult, SendSocketMessageOptions, CloseSocketOptions } from "io.dcloud.uts.extapi";
+
+type SocketInstanceData = {
+  instance: SocketTask,
+  isOpend: boolean,
+  openData?: OnSocketOpenCallbackResult | null
+}
+const socketInstanceMap = new Map<string, SocketInstanceData>()
+
+export const connectSocket = (url: string, callback: (res: any) => void): void => {
+  const socketTask: SocketTask = uni.connectSocket({
+    url,
+    success() {
+      callback({ result: { errMsg: 'connectSocket:ok', url } })
+    },
+    fail(error: any) {
+      callback({ result: { error } })
+    }
+  })
+  socketInstanceMap.set(url, { instance: socketTask, isOpend: false } as SocketInstanceData)
+  socketTask.onOpen((data: OnSocketOpenCallbackResult) => {
+    socketInstanceMap.get(url)!.isOpend = true
+    socketInstanceMap.get(url)!.openData = data
+  })
+}
+
+export type SocketEmitterParams = {
+  id: string,
+  method: string,
+  data?: any | null,
+  code?: number | null,
+  reason?: string | null,
+  callback: (res: any) => void
+}
+export const socketEmitter = (params: SocketEmitterParams): void => {
+  if (!socketInstanceMap.has(params.id)) {
+    params.callback({ result: { errMsg: 'socketTask not exists.' } })
+  } else {
+    const socketInstanceData = socketInstanceMap.get(params.id)!
+    const socketTask = socketInstanceData.instance
+    if (params.method == 'onOpen') {
+      const isOpend = socketInstanceData.isOpend
+      if (isOpend) {
+        params.callback({ method: 'Socket.onOpen', id: params.id, data: socketInstanceData.openData })
+      } else {
+        let timer: number | null = null
+        timer = setInterval(() => {
+          if (socketInstanceData.isOpend) {
+            clearInterval(timer!)
+            params.callback({ method: 'Socket.onOpen', id: params.id, data: socketInstanceData.openData })
+          }
+        }, 200)
+        setTimeout(() => {
+          clearInterval(timer)
+        }, 2000)
+      }
+    } else if (params.method == 'onMessage') {
+      socketTask.onMessage((data: OnSocketMessageCallbackResult) => {
+        params.callback({ method: 'Socket.onMessage', id: params.id, data })
+      })
+    } else if (params.method == 'onClose') {
+      socketTask.onClose((data: any) => {
+        params.callback({ method: 'Socket.onClose', id: params.id, data })
+      })
+    } else if (params.method == 'onError') {
+      socketTask.onError((data: GeneralCallbackResult) => {
+        params.callback({ method: 'Socket.onError', id: params.id, data })
+      })
+    } else if (params.method == 'send') {
+      socketTask.send({
+        data: params.data!,
+        success(res: GeneralCallbackResult) {
+          params.callback({ id: params.id, result: res })
+        },
+        fail(error: any) {
+          params.callback({ id: params.id, result: error })
+        }
+      } as SendSocketMessageOptions)
+    } else if (params.method == 'close') {
+      socketTask.close({
+        code: params.code!,
+        reason: params.reason!,
+        success(res: GeneralCallbackResult) {
+          params.callback({ id: params.id, result: res })
+        },
+        fail(error: any) {
+          params.callback({ id: params.id, result: error })
+        }
+      } as CloseSocketOptions)
+    }
+  }
+}
