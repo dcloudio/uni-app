@@ -15,6 +15,8 @@ import {
   GetDataParams,
   pageSetData,
   SetDataParams,
+  CallMethodParams,
+  callMethod as pageCallMethod,
 } from './apis/Page.uts'
 import { socketEmitter, SocketEmitterParams } from './apis/App/Socket.uts'
 
@@ -81,6 +83,11 @@ function onMessage(msg: string) {
           break
         case 'Page.setData':
           pageSetData({ pageId, data, callback } as SetDataParams)
+          break
+        case 'Page.callMethod':
+          const method = params['method'] as string
+          const args = ((params['args'] as UTSJSONObject).toJSONObject() as JSONArray).toUTSArray()
+          pageCallMethod({ pageId, method, args, callback } as CallMethodParams)
           break
       }
     }
