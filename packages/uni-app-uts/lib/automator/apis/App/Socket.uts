@@ -78,8 +78,8 @@ export const socketEmitter = (params: SocketEmitterParams): void => {
       } as SendSocketMessageOptions)
     } else if (params.method == 'close') {
       socketTask.close({
-        code: params.code!,
-        reason: params.reason!,
+        code: params.code,
+        reason: params.reason,
         success(res: GeneralCallbackResult) {
           params.callback({ id: params.id, result: res })
         },

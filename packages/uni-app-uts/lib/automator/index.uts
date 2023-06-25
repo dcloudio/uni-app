@@ -64,7 +64,9 @@ function onMessage(msg: string) {
           const socketId: string = params['id'] != null ? (params['id'] as string) : ''
           const socketMethod: string = params['method'] != null ? (params['method'] as string) : ''
           const data = params['data'] != null ? (params['data'] as any) : null
-          socketEmitter({ id: socketId, method: socketMethod, data, callback } as SocketEmitterParams)
+          const code: number | null = params['code'] != null ? (params['code'] as number) : null
+          const reason: string | null = params['reason'] != null ? (params['reason'] as string) : null
+          socketEmitter({ id: socketId, method: socketMethod, data, code, reason, callback } as SocketEmitterParams)
           break
       }
     } else if (method.startsWith('Page.')) {
