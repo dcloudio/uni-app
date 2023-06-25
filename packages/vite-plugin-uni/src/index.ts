@@ -91,7 +91,11 @@ export default function uniPlugin(
   options.platform = (process.env.UNI_PLATFORM as UniApp.PLATFORM) || 'h5'
   options.inputDir = process.env.UNI_INPUT_DIR
 
-  initPreContext(options.platform, process.env.UNI_CUSTOM_CONTEXT)
+  initPreContext(
+    options.platform,
+    process.env.UNI_CUSTOM_CONTEXT,
+    process.env.UNI_UTS_PLATFORM
+  )
 
   return process.env.UNI_APP_X === 'true' && process.env.UNI_PLATFORM === 'app'
     ? createUVuePlugins(options)
