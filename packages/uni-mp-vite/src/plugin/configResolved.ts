@@ -1,4 +1,5 @@
 import debug from 'debug'
+import { isString } from '@vue/shared'
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { EmittedAsset } from 'rollup'
 import {
@@ -135,6 +136,8 @@ function adjustCssExtname(extname: string): Plugin {
       files.forEach((name) => {
         if (name.endsWith('.css')) {
           const asset = bundle[name] as EmittedAsset
+          isString(asset.source) &&
+            (asset.source = asset.source.replace(/\*\,/g, ''))
           this.emitFile({
             fileName: name.replace('.css', extname),
             type: 'asset',
