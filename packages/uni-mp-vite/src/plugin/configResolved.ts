@@ -137,7 +137,7 @@ function adjustCssExtname(extname: string): Plugin {
         if (name.endsWith('.css')) {
           const asset = bundle[name] as EmittedAsset
           isString(asset.source) &&
-            (asset.source = asset.source.replace(/\*\,/g, ''))
+            (asset.source = asset.source.replace(/\*\,/g, 'page,'))
           this.emitFile({
             fileName: name.replace('.css', extname),
             type: 'asset',
