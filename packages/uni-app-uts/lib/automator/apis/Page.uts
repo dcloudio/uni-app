@@ -27,9 +27,9 @@ export const pageSetData = (params: SetDataParams): void => {
   const page = getPageVm(pageId)
   if (page !== null) {
     setData(page, params.data)
-    callback({ result: { errMsg: 'setData: ok.' } })
+    callback({ result: { errMsg: 'Page.setData: ok.' } })
   } else {
-    callback({ result: { errMsg: `setData:fail, Page:${pageId} is not found.` } })
+    callback({ result: { errMsg: `Page.setData:fail, Page:${pageId} is not found.` } })
   }
 }
 export type CallMethodParams = {
@@ -48,5 +48,42 @@ export const callMethod = (params: CallMethodParams): void => {
   } else {
 		const result = params.args.length > 0 ? page.$callMethod(params.method, params.args[0]) : page.$callMethod(params.method)
     params.callback({result: {result}})
+  }
+}
+
+export type GetElementParams = {
+  pageId: number
+  selector: string
+  callback: (res?: any | null) => void
+}
+
+export const getElement = (params: GetElementParams): void => {
+  const page = getPageVm(params.pageId)
+  if (page === null) {
+    params.callback({ result: { errMsg: `Page[${params.pageId}] not exists` } })
+  } else {
+    const element = page.$querySelector(params.selector)
+    const result = {
+      elementId: element !== null ? element.id : null,
+      tagName: element !== null ? element.tagName : null
+    }
+    params.callback(result)
+  }
+}
+
+export const getElements = (params: GetElementParams): void => {
+  const page = getPageVm(params.pageId)
+  if (page === null) {
+    params.callback({ result: { errMsg: `Page[${params.pageId}] not exists` } })
+  } else {
+    const elements = page.$querySelectorAll(params.selector)
+    const result = [] as UTSJSONObject[]
+    elements?.forEach(element => {
+      result.push({
+        elementId: element.id,
+        tagName: element.tagName
+      })
+    })
+    params.callback({ elements: result })
   }
 }

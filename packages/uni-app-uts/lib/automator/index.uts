@@ -17,6 +17,9 @@ import {
   SetDataParams,
   CallMethodParams,
   callMethod as pageCallMethod,
+  GetElementParams as PageGetElementParams,
+  getElement as pageGetElement,
+  getElements as pageGetElements,
 } from './apis/Page.uts'
 import { socketEmitter, SocketEmitterParams } from './apis/App/Socket.uts'
 
@@ -88,6 +91,14 @@ function onMessage(msg: string) {
           const method = params['method'] as string
           const args = ((params['args'] as UTSJSONObject).toJSONObject() as JSONArray).toUTSArray()
           pageCallMethod({ pageId, method, args, callback } as CallMethodParams)
+          break
+        case 'Page.getElement':
+          const selector = params['selector'] as string
+          pageGetElement({ pageId, selector, callback } as PageGetElementParams)
+          break
+        case 'Page.getElements':
+          const selector = params['selector'] as string
+          pageGetElements({ pageId, selector, callback } as PageGetElementParams)
           break
       }
     }
