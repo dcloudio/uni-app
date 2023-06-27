@@ -40,6 +40,8 @@ import {
   getData as elementGetData,
   SetDataParams as ElementSetDataParams,
   setData as elementSetData,
+  GetOffsetParams,
+  getOffset,
 } from './apis/Element.uts'
 
 let socketTask: SocketTask | null = null
@@ -173,6 +175,11 @@ export function onMessage(msg: string) {
               ? (params['data'] as UTSJSONObject)
               : ({} as UTSJSONObject)
           elementSetData({ pageId, nodeId: setDataNodeId, data, callback } as ElementSetDataParams)
+          break
+        case 'Element.getOffset':
+          const getOffsetElementId = params['elementId'] !== null ? params['elementId'] as string : null
+          const getOffsetNodeId = params['nodeId'] !== null ? params['nodeId'] as number : null
+          getOffset({ pageId, elementId: getOffsetElementId, nodeId: getOffsetNodeId, callback } as GetOffsetParams)
           break
       }
     }

@@ -179,3 +179,22 @@ export const setData = (params: SetDataParams): void => {
     params.callback({ result: { errMsg: 'Page.setData: ok.' } })
   }
 }
+
+export type GetOffsetParams = {
+  pageId: number
+  elementId?: string | null
+  nodeId?: number | null
+  callback: (res?: any | null) => void
+}
+
+export const getOffset = (params: GetOffsetParams): void => {
+  let dom: INode | null = null
+  if (params.elementId !== null) {
+    dom = getElementById(params.pageId, params.elementId!, params.callback)
+  } else if (params.nodeId !== null) {
+    dom = getComponentDomByNodeId(params.pageId, params.nodeId!, params.callback)
+  }
+  if (dom !== null) {
+    params.callback({ left: dom.offsetLeft, top: dom.offsetTop })
+  }
+}
