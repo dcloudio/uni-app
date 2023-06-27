@@ -46,6 +46,8 @@ import {
   longpress,
   HandleTouchEventParams,
   handleTouchEvent,
+  GetAttributesParams,
+  getAttributes,
 } from './apis/Element.uts'
 
 let socketTask: SocketTask | null = null
@@ -200,6 +202,11 @@ export function onMessage(msg: string) {
           const touchstartChangedTouches = ((params['changedTouches'] as UTSJSONObject).toJSONObject() as JSONArray).toUTSArray()
           handleTouchEvent({ pageId, elementId: touchstartElementId, nodeId: touchstartNodeId, eventName, touches: touchstartTouches, changedTouches: touchstartChangedTouches, callback } as HandleTouchEventParams)
           break
+        case 'Element.getAttributes':
+          const getAttributesElementId = params['elementId'] !== null ? params['elementId'] as string : null
+          const getAttributesNodeId = params['nodeId'] !== null ? params['nodeId'] as number : null
+          const getAttributesNames = ((params['names'] as UTSJSONObject).toJSONObject() as JSONArray).toUTSArray() as string[]
+          getAttributes({ pageId, elementId: getAttributesElementId, nodeId: getAttributesNodeId, names: getAttributesNames, callback } as GetAttributesParams)
       }
     }
   } catch (error) {

@@ -265,3 +265,26 @@ function getTouches(touches: any[]): Touch[] {
     return result
   })
 }
+
+export type GetAttributesParams = {
+  pageId: number
+  elementId?: string | null
+  nodeId?: number | null
+  names: string[]
+  callback: (res?: any | null) => void
+}
+
+export const getAttributes = (params: GetAttributesParams): void => {
+  let dom: INode | null = null
+  if (params.elementId !== null) {
+    dom = getElementById(params.pageId, params.elementId!, params.callback)
+  } else if (params.nodeId !== null) {
+    dom = getComponentDomByNodeId(params.pageId, params.nodeId!, params.callback)
+  }
+  if (dom !== null) {
+    const attributes = params.names.map((name: string): any | null => {
+      return dom.getAttribute(name)
+    })
+    params.callback({ attributes })
+  }
+}
