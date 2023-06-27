@@ -1,5 +1,6 @@
 import { getElementById, getComponentVmBySelector, getValidNodes, getComponentVmByNodeId, componentGetData, componentSetData, getComponentDomByNodeId } from './util.uts'
-import { INode } from 'io.dcloud.uniapp.runtime'
+import { INode, Touch } from 'io.dcloud.uniapp.runtime'
+import { JSONObject } from 'com.alibaba.fastjson'
 
 export type GetElementParams = {
   pageId: number
@@ -219,4 +220,40 @@ export const longpress = (params: LongpressParams): void => {
     dom.dispatchEvent("longpress", MouseEvent("longpress", x.toFloat(), y.toFloat()))
     params.callback({ result: `Element.longpress success` })
   }
+}
+
+export type HandleTouchEventParams = {
+  pageId: number
+  elementId?: string | null
+  nodeId?: number | null
+  eventName: string
+  touches: any[],
+  changedTouches: any[],
+  callback: (res?: any | null) => void
+}
+
+export const handleTouchEvent = (params: HandleTouchEventParams): void => {
+  let dom: INode | null = null
+  if (params.elementId !== null) {
+    dom = getElementById(params.pageId, params.elementId!, params.callback)
+  } else if (params.nodeId !== null) {
+    dom = getComponentDomByNodeId(params.pageId, params.nodeId!, params.callback)
+  }
+  if (dom !== null) {
+    const touches = getTouches(params.touches)
+    const changedTouches = getTouches(params.changedTouches)
+    dom.dispatchEvent(params.eventName, TouchEvent(params.eventName, touches, changedTouches))
+    params.callback({ result: `Element.${params.eventName} success` })
+  }
+}
+
+function getTouches(touches: any[]): Touch[] {
+  return touches.map((touch): Touch => {
+    const touchObj = JSON.parse((touch as JSONObject).toString())!
+    const result = Touch()
+    result.identifier = (touchObj['identifier'] as number).toFloat()
+    result.pageX = (touchObj['pageX'] as number).toFloat()
+    result.pageY = (touchObj['pageY'] as number).toFloat()
+    return result
+  })
 }

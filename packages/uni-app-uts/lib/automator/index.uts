@@ -44,6 +44,8 @@ import {
   getOffset,
   LongpressParams,
   longpress,
+  HandleTouchEventParams,
+  handleTouchEvent,
 } from './apis/Element.uts'
 
 let socketTask: SocketTask | null = null
@@ -187,6 +189,16 @@ export function onMessage(msg: string) {
           const longpressElementId = params['elementId'] !== null ? params['elementId'] as string : null
           const longpressNodeId = params['nodeId'] !== null ? params['nodeId'] as number : null
           longpress({ pageId, elementId: longpressElementId, nodeId: longpressNodeId, callback } as LongpressParams)
+          break
+        case 'Element.touchstart':
+        case 'Element.touchmove':
+        case 'Element.touchend':
+          const touchstartElementId = params['elementId'] !== null ? params['elementId'] as string : null
+          const touchstartNodeId = params['nodeId'] !== null ? params['nodeId'] as number : null
+          const eventName = method.split('.')[1]
+          const touchstartTouches = ((params['touches'] as UTSJSONObject).toJSONObject() as JSONArray).toUTSArray()
+          const touchstartChangedTouches = ((params['changedTouches'] as UTSJSONObject).toJSONObject() as JSONArray).toUTSArray()
+          handleTouchEvent({ pageId, elementId: touchstartElementId, nodeId: touchstartNodeId, eventName, touches: touchstartTouches, changedTouches: touchstartChangedTouches, callback } as HandleTouchEventParams)
           break
       }
     }
