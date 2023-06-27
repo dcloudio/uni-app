@@ -111,11 +111,7 @@ const UVUE_PROP_NAME_GROUPS: Record<string, Record<string, Normalize>> = {
     boxSizing: createEnumNormalize(['content-box', 'border-box']),
     backgroundColor: normalizeColor,
     backgroundImage: normalizeDefault,
-    backgroundClip: createEnumNormalize([
-      'border-box',
-      'padding-box',
-      'content-box',
-    ]),
+    backgroundClip: createEnumNormalize(['border-box']),
   },
   text: {
     lines: normalizeInteger,
@@ -136,9 +132,12 @@ const UVUE_PROP_NAME_GROUPS: Record<string, Record<string, Normalize>> = {
       '800',
       '900',
     ]),
-    textDecoration: createEnumNormalize(['none', 'underline', 'line-through']),
+    textDecorationLine: createEnumNormalize([
+      'none',
+      'underline',
+      'line-through',
+    ]),
     textAlign: createEnumNormalize(['left', 'center', 'right']),
-    textOverflow: createEnumNormalize(['clip', 'ellipsis', 'unset', 'fade']),
     lineHeight: normalizeLength,
   },
   transition: {
