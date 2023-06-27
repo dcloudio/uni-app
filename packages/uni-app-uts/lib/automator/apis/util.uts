@@ -95,6 +95,14 @@ export function getComponentVmByNodeId(pageId: number, nodeId: number, callback:
   return component
 }
 
+export function getComponentDomByNodeId(pageId: number, nodeId: number, callback: (res: any) => void): INode | null {
+  const component = getComponentVmByNodeId(pageId, nodeId, callback)
+  if (component === null) {
+    return null
+  }
+  return component.$el
+}
+
 export function getElementById(pageId: number, elementId: string, callback: (res?: any | null) => void): INode | null {
   const page = getPageVm(pageId)
   if (page === null) {

@@ -1,4 +1,4 @@
-import { getElementById, getComponentVmBySelector, getValidNodes, getComponentVmByNodeId, componentGetData, componentSetData } from './util.uts'
+import { getElementById, getComponentVmBySelector, getValidNodes, getComponentVmByNodeId, componentGetData, componentSetData, getComponentDomByNodeId } from './util.uts'
 import { INode } from 'io.dcloud.uniapp.runtime'
 
 export type GetElementParams = {
@@ -50,17 +50,29 @@ export const getElements = (params: GetElementParams): void => {
 
 export type GetDOMPropertiesParams = {
   pageId: number
-  elementId: string
+  elementId?: string | null
+  nodeId?: number | null
   names: string[]
   callback: (res?: any | null) => void
 }
 
 export const getDOMProperties = (params: GetDOMPropertiesParams): void => {
-  const element = getElementById(params.pageId, params.elementId, params.callback)
-  if (element !== null) {
+  let dom: INode | null = null
+  if (params.elementId !== null) {
+    dom = getElementById(params.pageId, params.elementId!, params.callback)
+  } else if (params.nodeId !== null) {
+    dom = getComponentDomByNodeId(params.pageId, params.nodeId!, params.callback)
+  }
+  if (dom !== null) {
     const properties = params.names.map((name: string): any | null => {
       if (name == 'innerText' || name == 'value') {
-        return element.getAttribute('value')
+        return dom.getAttribute('value')
+      }
+      if (name == 'offsetWidth') {
+        return dom.offsetWidth
+      }
+      if (name == 'offsetHeight') {
+        return dom.offsetHeight
       }
       return `Element.getDOMProperties not support ${name}`
     })

@@ -135,9 +135,10 @@ export function onMessage(msg: string) {
           elementGetElements({ pageId, elementId: getElementsElementId, selector: getElementsSelector, callback } as ElementGetElementParams)
           break
         case 'Element.getDOMProperties':
-          const getDOMPropertiesElementId = params['elementId'] as string
+          const getDOMPropertiesElementId = params['elementId'] !== null ? params['elementId'] as string : null
+          const getDOMPropertiesNodeId = params['nodeId'] !== null ? params['nodeId'] as number : null
           const getDOMPropertiesNames = ((params['names'] as UTSJSONObject).toJSONObject() as JSONArray).toUTSArray() as string[]
-          getDOMProperties({ pageId, elementId: getDOMPropertiesElementId, names: getDOMPropertiesNames, callback } as GetDOMPropertiesParams)
+          getDOMProperties({ pageId, elementId: getDOMPropertiesElementId, nodeId: getDOMPropertiesNodeId, names: getDOMPropertiesNames, callback } as GetDOMPropertiesParams)
           break
         case 'Element.getProperties':
           const getPropertiesElementId = params['elementId'] as string
