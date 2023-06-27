@@ -42,6 +42,8 @@ import {
   setData as elementSetData,
   GetOffsetParams,
   getOffset,
+  LongpressParams,
+  longpress,
 } from './apis/Element.uts'
 
 let socketTask: SocketTask | null = null
@@ -180,6 +182,11 @@ export function onMessage(msg: string) {
           const getOffsetElementId = params['elementId'] !== null ? params['elementId'] as string : null
           const getOffsetNodeId = params['nodeId'] !== null ? params['nodeId'] as number : null
           getOffset({ pageId, elementId: getOffsetElementId, nodeId: getOffsetNodeId, callback } as GetOffsetParams)
+          break
+        case 'Element.longpress':
+          const longpressElementId = params['elementId'] !== null ? params['elementId'] as string : null
+          const longpressNodeId = params['nodeId'] !== null ? params['nodeId'] as number : null
+          longpress({ pageId, elementId: longpressElementId, nodeId: longpressNodeId, callback } as LongpressParams)
           break
       }
     }

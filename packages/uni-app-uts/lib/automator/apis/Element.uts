@@ -198,3 +198,25 @@ export const getOffset = (params: GetOffsetParams): void => {
     params.callback({ left: dom.offsetLeft, top: dom.offsetTop })
   }
 }
+
+export type LongpressParams = {
+  pageId: number
+  elementId?: string | null
+  nodeId?: number | null
+  callback: (res?: any | null) => void
+}
+
+export const longpress = (params: LongpressParams): void => {
+  let dom: INode | null = null
+  if (params.elementId !== null) {
+    dom = getElementById(params.pageId, params.elementId!, params.callback)
+  } else if (params.nodeId !== null) {
+    dom = getComponentDomByNodeId(params.pageId, params.nodeId!, params.callback)
+  }
+  const x: number = 0
+  const y: number = 0
+  if (dom !== null) {
+    dom.dispatchEvent("longpress", MouseEvent("longpress", x.toFloat(), y.toFloat()))
+    params.callback({ result: `Element.longpress success` })
+  }
+}
