@@ -1,18 +1,18 @@
-import { getData, setData, getPageVm, getComponentVmBySelector } from './util.uts'
+import { pageGetData, pageSetData, getPageVm, getComponentVmBySelector } from './util.uts'
 
 export type GetDataParams = {
   pageId: number
   path: string
   callback: (res: any) => void
 }
-export const pageGetData = (params: GetDataParams): void => {
+export const getData = (params: GetDataParams): void => {
   const callback = params.callback
   const page = getPageVm(params.pageId)
   if (page === null) {
     callback({ result: { errMsg: 'Page.getData:fail, Page not found.' } })
     return
   }
-  const data = getData(page, params.path)
+  const data = pageGetData(page, params.path)
   callback({ data })
 }
 
@@ -21,12 +21,12 @@ export type SetDataParams = {
   data: UTSJSONObject
   callback: (res?: any | null) => void
 }
-export const pageSetData = (params: SetDataParams): void => {
+export const setData = (params: SetDataParams): void => {
   const pageId = params.pageId
   const callback = params.callback
   const page = getPageVm(pageId)
   if (page !== null) {
-    setData(page, params.data)
+    pageSetData(page, params.data)
     callback({ result: { errMsg: 'Page.setData: ok.' } })
   } else {
     callback({ result: { errMsg: `Page.setData:fail, Page:${pageId} is not found.` } })

@@ -1,4 +1,4 @@
-import { getElementById, getComponentVmBySelector, getValidNodes, getComponentVmByNodeId } from './util.uts'
+import { getElementById, getComponentVmBySelector, getValidNodes, getComponentVmByNodeId, componentGetData, componentSetData } from './util.uts'
 import { INode } from 'io.dcloud.uniapp.runtime'
 
 export type GetElementParams = {
@@ -129,7 +129,7 @@ export type CallMethodParams = {
   nodeId: number
   method: string
   args: any[]
-  callback: (res?: any | null) => void
+  callback: (res: any) => void
 }
 
 export const callMethod = (params: CallMethodParams): void => {
@@ -137,5 +137,33 @@ export const callMethod = (params: CallMethodParams): void => {
   if (component !== null) {
     const result = params.args.length > 0 ? component.$callMethod(params.method, params.args[0]) : component.$callMethod(params.method)
     params.callback({ result: { result } })
+  }
+}
+
+export type GetDataParams = {
+  pageId: number
+  nodeId: number
+  path: string
+  callback: (res: any) => void
+}
+export const getData = (params: GetDataParams): void => {
+  const component = getComponentVmByNodeId(params.pageId, params.nodeId, params.callback)
+  if (component !== null) {
+    const data = componentGetData(component, params.path)
+    params.callback({ data })
+  }
+}
+
+export type SetDataParams = {
+  pageId: number
+  nodeId: number
+  data: UTSJSONObject
+  callback: (res: any) => void
+}
+export const setData = (params: SetDataParams): void => {
+  const component = getComponentVmByNodeId(params.pageId, params.nodeId, params.callback)
+  if (component !== null) {
+    componentSetData(component, params.data)
+    params.callback({ result: { errMsg: 'Page.setData: ok.' } })
   }
 }

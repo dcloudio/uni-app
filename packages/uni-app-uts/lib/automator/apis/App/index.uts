@@ -6,7 +6,7 @@ import {
 } from 'io.dcloud.uniapp.runtime'
 import { getCurrentPages } from 'io.dcloud.uts.framework'
 import { parsePage } from '../util.uts'
-import { ShowToastOptions, ShowLoadingOptions, ShowModalOptions } from "io.dcloud.uts.extapi";
+import { ShowToastOptions, ShowLoadingOptions, ShowModalOptions, ShowActionSheetOptions } from "io.dcloud.uts.extapi";
 import { connectSocket } from './Socket.uts'
 
 export type GetPageStackParams = {
@@ -196,21 +196,22 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
         }
       } as ShowModalOptions)
       break
-    // case 'showActionSheet':
-    //   const showActionSheetTitle = (args[0] as JSONObject)['title'] != null ? (args[0] as JSONObject)['title'] as string : null
-    //   const itemColor = (args[0] as JSONObject)['itemColor'] != null ? (args[0] as JSONObject)['itemColor'] as string : null
-    //   uni.showActionSheet({
-    //     title: showActionSheetTitle,
-    //     itemList: (args[0] as JSONObject)['itemList'] as string[],
-    //     itemColor,
-    //     success(result: any) {
-    //       callback({ result })
-    //     },
-    //     fail(error: any) {
-    //       callback({ result: error })
-    //     }
-    //   } as ShowActionSheetOptions)
-    //   break
+    case 'showActionSheet':
+      const showActionSheetTitle = (args[0] as JSONObject)['title'] != null ? (args[0] as JSONObject)['title'] as string : null
+      const itemList = ((args[0] as JSONObject)['itemList'] as JSONArray).toUTSArray() as string[]
+      const itemColor = (args[0] as JSONObject)['itemColor'] != null ? (args[0] as JSONObject)['itemColor'] as string : null
+      uni.showActionSheet({
+        title: showActionSheetTitle,
+        itemList,
+        itemColor,
+        success(result: any) {
+          callback({ result })
+        },
+        fail(error: any) {
+          callback({ result: error })
+        }
+      } as ShowActionSheetOptions)
+      break
     case 'connectSocket':
       const url = (args[0] as JSONObject)['url'] as string
       connectSocket(url, callback)

@@ -28,7 +28,7 @@ export function getPageVm(id: number): BasePage | null {
   return getPageById(id)
 }
 
-export function getData(
+export function pageGetData(
   vm: BasePage,
   path?: string
 ): Map<string, any | null> {
@@ -42,7 +42,7 @@ export function getData(
   return data
 }
 
-export function setData(vm: BasePage, data: UTSJSONObject): void {
+export function pageSetData(vm: BasePage, data: UTSJSONObject): void {
   const _data = data.toMap()
   _data.forEach((value: any | null, key: string) => {
     vm.$data.set(key, value)
@@ -76,7 +76,7 @@ export function getComponentVmBySelector(pageId: number, selector: string, callb
   return component
 }
 
-export function getComponentVmByNodeId(pageId: number, nodeId: number, callback: (res?: any | null) => void): ComponentPublicInstance | null {
+export function getComponentVmByNodeId(pageId: number, nodeId: number, callback: (res: any) => void): ComponentPublicInstance | null {
   const page = getPageVm(pageId)
   if (page === null) {
     callback({ result: { errMsg: `Page[${pageId}] not exists` } })
@@ -140,4 +140,25 @@ function isValidNode(node: INode, selector: string): boolean {
     return node.getAttribute('id') == selector.substring(1)
   }
   return node.tagName?.toUpperCase() == selector.toUpperCase()
+}
+
+export function componentGetData(
+  vm: ComponentPublicInstance,
+  path?: string
+): Map<string, any | null> {
+  let data = new Map<string, any | null>()
+  // TODO: path
+  if (path !== null && path.length != 0) {
+    data.set("errMsg", `getData:fail, path:${path} is not supported.`)
+  } else {
+    data = vm.$data
+  }
+  return data
+}
+
+export function componentSetData(vm: ComponentPublicInstance, data: UTSJSONObject): void {
+  const _data = data.toMap()
+  _data.forEach((value: any | null, key: string) => {
+    vm.$data.set(key, value)
+  })
 }

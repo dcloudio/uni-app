@@ -11,10 +11,10 @@ import {
   GetCurrentPageParams
 } from './apis/App/index.uts'
 import {
-  pageGetData,
-  GetDataParams,
-  pageSetData,
-  SetDataParams,
+  GetDataParams as PageGetDataParams,
+  getData as pageGetData,
+  SetDataParams as PageSetDataParams,
+  setData as pageSetData,
   CallMethodParams,
   callMethod as pageCallMethod,
   GetElementParams as PageGetElementParams,
@@ -36,6 +36,10 @@ import {
   tap,
   CallMethodParams as ElementCallMethodParams,
   callMethod as elementCallMethod,
+  GetDataParams as ElementGetDataParams,
+  getData as elementGetData,
+  SetDataParams as ElementSetDataParams,
+  setData as elementSetData,
 } from './apis/Element.uts'
 
 let socketTask: SocketTask | null = null
@@ -91,17 +95,17 @@ export function onMessage(msg: string) {
       }
     } else if (method.startsWith('Page.')) {
       const pageId = params['pageId'] as number
-      const data =
-        params['data'] !== null
-          ? (params['data'] as UTSJSONObject)
-          : ({} as UTSJSONObject)
       switch (method) {
         case 'Page.getData':
           const path = params['path'] !== null ? (params['path'] as string) : ''
-          pageGetData({ pageId, path, callback } as GetDataParams)
+          pageGetData({ pageId, path, callback } as PageGetDataParams)
           break
         case 'Page.setData':
-          pageSetData({ pageId, data, callback } as SetDataParams)
+          const data =
+            params['data'] !== null
+              ? (params['data'] as UTSJSONObject)
+              : ({} as UTSJSONObject)
+          pageSetData({ pageId, data, callback } as PageSetDataParams)
           break
         case 'Page.callMethod':
           const method = params['method'] as string
@@ -155,6 +159,19 @@ export function onMessage(msg: string) {
           const callMethodMethod = params['method'] as string
           const callMethodArgs = ((params['args'] as UTSJSONObject).toJSONObject() as JSONArray).toUTSArray()
           elementCallMethod({ pageId, nodeId: callMethodNodeId, method: callMethodMethod, args: callMethodArgs, callback } as ElementCallMethodParams)
+          break
+        case 'Element.getData':
+          const getDataNodeId = params['nodeId'] as number
+          const path = params['path'] !== null ? (params['path'] as string) : ''
+          elementGetData({ pageId, nodeId: getDataNodeId, path, callback } as ElementGetDataParams)
+          break
+        case 'Element.setData':
+          const setDataNodeId = params['nodeId'] as number
+          const data =
+            params['data'] !== null
+              ? (params['data'] as UTSJSONObject)
+              : ({} as UTSJSONObject)
+          elementSetData({ pageId, nodeId: setDataNodeId, data, callback } as ElementSetDataParams)
           break
       }
     }
