@@ -38,7 +38,7 @@ function parseText (el) {
       }
     })
     el.children = [{ type: 2, expression: expression.join('+'), tokens: [] }]
-  } else if (children.length === 1) {
+  } else if (children.length === 1 && children[0].text) {
     children[0].text = children[0].text.replace(/\n/g, '').replace(/\\n/g, '\n')
   }
 }
