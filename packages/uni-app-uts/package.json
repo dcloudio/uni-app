@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-app-uts",
-  "version": "3.0.0-alpha-3080720230627001",
+  "version": "3.0.0-alpha-3080720230627002",
   "description": "uni-app-uts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -21,10 +21,10 @@
   "dependencies": {
     "@babel/parser": "^7.16.4",
     "@babel/types": "^7.20.7",
-    "@dcloudio/uni-cli-shared": "3.0.0-alpha-3080720230627001",
-    "@dcloudio/uni-i18n": "3.0.0-alpha-3080720230627001",
-    "@dcloudio/uni-nvue-styler": "3.0.0-alpha-3080720230627001",
-    "@dcloudio/uni-shared": "3.0.0-alpha-3080720230627001",
+    "@dcloudio/uni-cli-shared": "3.0.0-alpha-3080720230627002",
+    "@dcloudio/uni-i18n": "3.0.0-alpha-3080720230627002",
+    "@dcloudio/uni-nvue-styler": "3.0.0-alpha-3080720230627002",
+    "@dcloudio/uni-shared": "3.0.0-alpha-3080720230627002",
     "@rollup/pluginutils": "^4.2.0",
     "@vue/compiler-core": "3.2.47",
     "@vue/compiler-sfc": "3.2.47",
