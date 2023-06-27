@@ -91,19 +91,22 @@ export const getDOMProperties = (params: GetDOMPropertiesParams): void => {
 
 export type GetPropertiesParams = {
   pageId: number
-  elementId: string
+  elementId?: string | null
+  nodeId?: number | null
   names: string[]
   callback: (res?: any | null) => void
 }
 
 export const getProperties = (params: GetPropertiesParams): void => {
-  const element = getElementById(params.pageId, params.elementId, params.callback)
-  if (element !== null) {
+  let dom: INode | null = null
+  if (params.elementId !== null) {
+    dom = getElementById(params.pageId, params.elementId!, params.callback)
+  } else if (params.nodeId !== null) {
+    dom = getComponentDomByNodeId(params.pageId, params.nodeId!, params.callback)
+  }
+  if (dom !== null) {
     const properties = params.names.map((name: string): any | null => {
-      if (name == 'value') {
-        return element.getAttribute('value')
-      }
-      return `Element.getProperties not support ${name}`
+      return dom.getAttribute(name)
     })
     params.callback({ properties })
   }
@@ -131,16 +134,22 @@ export const callFunction = (params: CallFunctionParams): void => {
 
 export type TapParams = {
   pageId: number
-  elementId: string
+  elementId?: string | null
+  nodeId?: number | null
   callback: (res?: any | null) => void
 }
 
 export const tap = (params: TapParams): void => {
-  const element = getElementById(params.pageId, params.elementId, params.callback)
-  if (element !== null) {
+  let dom: INode | null = null
+  if (params.elementId !== null) {
+    dom = getElementById(params.pageId, params.elementId!, params.callback)
+  } else if (params.nodeId !== null) {
+    dom = getComponentDomByNodeId(params.pageId, params.nodeId!, params.callback)
+  }
+  if (dom !== null) {
     const x: number = 0
     const y: number = 0
-    element.dispatchEvent("click", MouseEvent("click", x.toFloat(), y.toFloat()))
+    dom.dispatchEvent("click", MouseEvent("click", x.toFloat(), y.toFloat()))
     params.callback({ result: `Element.tap success` })
   }
 }
@@ -222,9 +231,9 @@ export const longpress = (params: LongpressParams): void => {
   } else if (params.nodeId !== null) {
     dom = getComponentDomByNodeId(params.pageId, params.nodeId!, params.callback)
   }
-  const x: number = 0
-  const y: number = 0
   if (dom !== null) {
+    const x: number = 0
+    const y: number = 0
     dom.dispatchEvent("longpress", MouseEvent("longpress", x.toFloat(), y.toFloat()))
     params.callback({ result: `Element.longpress success` })
   }
@@ -286,5 +295,28 @@ export const getAttributes = (params: GetAttributesParams): void => {
       return dom.getAttribute(name)
     })
     params.callback({ attributes })
+  }
+}
+
+export type GetStylesParams = {
+  pageId: number
+  elementId?: string | null
+  nodeId?: number | null
+  names: string[]
+  callback: (res?: any | null) => void
+}
+
+export const getStyles = (params: GetStylesParams): void => {
+  let dom: INode | null = null
+  if (params.elementId !== null) {
+    dom = getElementById(params.pageId, params.elementId!, params.callback)
+  } else if (params.nodeId !== null) {
+    dom = getComponentDomByNodeId(params.pageId, params.nodeId!, params.callback)
+  }
+  if (dom !== null) {
+    const styles = params.names.map((name: string): any | null => {
+      return dom.style.getPropertyValue(name)
+    })
+    params.callback({ styles })
   }
 }

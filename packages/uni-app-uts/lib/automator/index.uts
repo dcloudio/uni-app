@@ -48,6 +48,8 @@ import {
   handleTouchEvent,
   GetAttributesParams,
   getAttributes,
+  GetStylesParams,
+  getStyles,
 } from './apis/Element.uts'
 
 let socketTask: SocketTask | null = null
@@ -149,9 +151,10 @@ export function onMessage(msg: string) {
           getDOMProperties({ pageId, elementId: getDOMPropertiesElementId, nodeId: getDOMPropertiesNodeId, names: getDOMPropertiesNames, callback } as GetDOMPropertiesParams)
           break
         case 'Element.getProperties':
-          const getPropertiesElementId = params['elementId'] as string
+          const getPropertiesElementId = params['elementId'] !== null ? params['elementId'] as string : null
+          const getPropertiesNodeId = params['nodeId'] !== null ? params['nodeId'] as number : null
           const getPropertiesNames = ((params['names'] as UTSJSONObject).toJSONObject() as JSONArray).toUTSArray() as string[]
-          getProperties({ pageId, elementId: getPropertiesElementId, names: getPropertiesNames, callback } as GetPropertiesParams)
+          getProperties({ pageId, elementId: getPropertiesElementId, nodeId: getPropertiesNodeId, names: getPropertiesNames, callback } as GetPropertiesParams)
           break
         case 'Element.callFunction':
           const callFunctionElementId = params['elementId'] as string
@@ -160,8 +163,9 @@ export function onMessage(msg: string) {
           elementCallFunction({ pageId, elementId: callFunctionElementId, functionName, args: callFunctionArgs, callback } as ElementCallFunctionParams)
           break
         case 'Element.tap':
-          const tapElementId = params['elementId'] as string
-          tap({ pageId, elementId: tapElementId, callback } as TapParams)
+          const tapElementId = params['elementId'] !== null ? params['elementId'] as string : null
+          const tapNodeId = params['nodeId'] !== null ? params['nodeId'] as number : null
+          tap({ pageId, elementId: tapElementId, nodeId: tapNodeId, callback } as TapParams)
           break
         case 'Element.callMethod':
           const callMethodNodeId = params['nodeId'] as number
@@ -207,6 +211,13 @@ export function onMessage(msg: string) {
           const getAttributesNodeId = params['nodeId'] !== null ? params['nodeId'] as number : null
           const getAttributesNames = ((params['names'] as UTSJSONObject).toJSONObject() as JSONArray).toUTSArray() as string[]
           getAttributes({ pageId, elementId: getAttributesElementId, nodeId: getAttributesNodeId, names: getAttributesNames, callback } as GetAttributesParams)
+          break
+        case 'Element.getStyles':
+          const getStylesElementId = params['elementId'] !== null ? params['elementId'] as string : null
+          const getStylesNodeId = params['nodeId'] !== null ? params['nodeId'] as number : null
+          const getStylesNames = ((params['names'] as UTSJSONObject).toJSONObject() as JSONArray).toUTSArray() as string[]
+          getStyles({ pageId, elementId: getStylesElementId, nodeId: getStylesNodeId, names: getStylesNames, callback } as GetStylesParams)
+          break
       }
     }
   } catch (error) {
