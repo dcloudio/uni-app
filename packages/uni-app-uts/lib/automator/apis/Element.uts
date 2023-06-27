@@ -1,6 +1,7 @@
 import { getElementById, getComponentVmBySelector, getValidNodes, getComponentVmByNodeId, componentGetData, componentSetData, getComponentDomByNodeId } from './util.uts'
 import { INode, Touch } from 'io.dcloud.uniapp.runtime'
 import { JSONObject } from 'com.alibaba.fastjson'
+import { getChildrenText } from './util.uts'
 
 export type GetElementParams = {
   pageId: number
@@ -66,7 +67,14 @@ export const getDOMProperties = (params: GetDOMPropertiesParams): void => {
   }
   if (dom !== null) {
     const properties = params.names.map((name: string): any | null => {
-      if (name == 'innerText' || name == 'value') {
+      if (name == 'innerText') {
+        if (dom.tagName == 'text') {
+          return dom.getAttribute('value')
+        } else {
+          return getChildrenText(dom)
+        }
+      }
+      if (name == 'value') {
         return dom.getAttribute('value')
       }
       if (name == 'offsetWidth') {

@@ -170,3 +170,15 @@ export function componentSetData(vm: ComponentPublicInstance, data: UTSJSONObjec
     vm.$data.set(key, value)
   })
 }
+
+export function getChildrenText(node: INode): string {
+  let result = ''
+  node.childNodes.forEach(child => {
+    if (child.tagName == 'text') {
+      result += child.getAttribute('value')
+    } else {
+      result += getChildrenText(child)
+    }
+  })
+  return result
+}
