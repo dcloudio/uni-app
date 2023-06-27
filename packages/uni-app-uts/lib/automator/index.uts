@@ -22,6 +22,21 @@ import {
   getElements as pageGetElements,
 } from './apis/Page.uts'
 import { socketEmitter, SocketEmitterParams } from './apis/App/Socket.uts'
+import {
+  GetElementParams as ElementGetElementParams,
+  getElement as elementGetElement,
+  getElements as elementGetElements,
+  GetDOMPropertiesParams,
+  getDOMProperties,
+  GetPropertiesParams,
+  getProperties,
+  CallFunctionParams as ElementCallFunctionParams,
+  callFunction as elementCallFunction,
+  TapParams,
+  tap,
+  CallMethodParams as ElementCallMethodParams,
+  callMethod as elementCallMethod,
+} from './apis/Element.uts'
 
 let socketTask: SocketTask | null = null
 const wsEndpoint = process.env.UNI_AUTOMATOR_WS_ENDPOINT
@@ -30,11 +45,10 @@ function send(data: any) {
   socketTask?.send({ data: JSON.stringify(data) } as SendSocketMessageOptions)
 }
 
-function onMessage(msg: string) {
+export function onMessage(msg: string) {
   const json = JSON.parse(msg)!
   const method = json['method'] as string
   const params = json['params'] as UTSJSONObject
-  const path = params['path'] !== null ? (params['path'] as string) : ''
   const res = new Map<string, any | null>([['id', json['id'] as string]])
   try {
     const callback = (result?: any | null) => {
@@ -57,6 +71,7 @@ function onMessage(msg: string) {
         case 'App.captureScreenshot':
           const id = params['id'] !== null ? (params['id'] as string) : null
           const fullPage = params['fullPage'] !== null ? (params['fullPage'] as boolean) : false
+          const path = params['path'] !== null ? (params['path'] as string) : ''
           captureScreenshot({ id, fullPage, path, callback } as CaptureScreenshotParams)
           break
         case 'App.getPageStack':
@@ -82,6 +97,7 @@ function onMessage(msg: string) {
           : ({} as UTSJSONObject)
       switch (method) {
         case 'Page.getData':
+          const path = params['path'] !== null ? (params['path'] as string) : ''
           pageGetData({ pageId, path, callback } as GetDataParams)
           break
         case 'Page.setData':
@@ -93,12 +109,52 @@ function onMessage(msg: string) {
           pageCallMethod({ pageId, method, args, callback } as CallMethodParams)
           break
         case 'Page.getElement':
-          const selector = params['selector'] as string
-          pageGetElement({ pageId, selector, callback } as PageGetElementParams)
+          const getElementSelector = params['selector'] as string
+          pageGetElement({ pageId, selector: getElementSelector, callback } as PageGetElementParams)
           break
         case 'Page.getElements':
-          const selector = params['selector'] as string
-          pageGetElements({ pageId, selector, callback } as PageGetElementParams)
+          const getElementsSelector = params['selector'] as string
+          pageGetElements({ pageId, selector: getElementsSelector, callback } as PageGetElementParams)
+          break
+      }
+    } else if (method.startsWith('Element.')) {
+      const pageId = params['pageId'] as number
+      switch (method) {
+        case 'Element.getElement':
+          const getElementElementId = params['elementId'] as string
+          const getElementSelector = params['selector'] as string
+          elementGetElement({ pageId, elementId: getElementElementId, selector: getElementSelector, callback } as ElementGetElementParams)
+          break
+        case 'Element.getElements':
+          const getElementsElementId = params['elementId'] as string
+          const getElementsSelector = params['selector'] as string
+          elementGetElements({ pageId, elementId: getElementsElementId, selector: getElementsSelector, callback } as ElementGetElementParams)
+          break
+        case 'Element.getDOMProperties':
+          const getDOMPropertiesElementId = params['elementId'] as string
+          const getDOMPropertiesNames = ((params['names'] as UTSJSONObject).toJSONObject() as JSONArray).toUTSArray() as string[]
+          getDOMProperties({ pageId, elementId: getDOMPropertiesElementId, names: getDOMPropertiesNames, callback } as GetDOMPropertiesParams)
+          break
+        case 'Element.getProperties':
+          const getPropertiesElementId = params['elementId'] as string
+          const getPropertiesNames = ((params['names'] as UTSJSONObject).toJSONObject() as JSONArray).toUTSArray() as string[]
+          getProperties({ pageId, elementId: getPropertiesElementId, names: getPropertiesNames, callback } as GetPropertiesParams)
+          break
+        case 'Element.callFunction':
+          const callFunctionElementId = params['elementId'] as string
+          const functionName = params['functionName'] as string
+          const callFunctionArgs = ((params['args'] as UTSJSONObject).toJSONObject() as JSONArray).toUTSArray()
+          elementCallFunction({ pageId, elementId: callFunctionElementId, functionName, args: callFunctionArgs, callback } as ElementCallFunctionParams)
+          break
+        case 'Element.tap':
+          const tapElementId = params['elementId'] as string
+          tap({ pageId, elementId: tapElementId, callback } as TapParams)
+          break
+        case 'Element.callMethod':
+          const callMethodNodeId = params['nodeId'] as number
+          const callMethodMethod = params['method'] as string
+          const callMethodArgs = ((params['args'] as UTSJSONObject).toJSONObject() as JSONArray).toUTSArray()
+          elementCallMethod({ pageId, nodeId: callMethodNodeId, method: callMethodMethod, args: callMethodArgs, callback } as ElementCallMethodParams)
           break
       }
     }

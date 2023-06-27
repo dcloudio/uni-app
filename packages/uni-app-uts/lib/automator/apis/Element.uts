@@ -1,0 +1,141 @@
+import { getElementById, getComponentVmBySelector, getValidNodes, getComponentVmByNodeId } from './util.uts'
+import { INode } from 'io.dcloud.uniapp.runtime'
+
+export type GetElementParams = {
+  pageId: number
+  elementId: string
+  selector: string
+  callback: (res?: any | null) => void
+}
+
+export const getElement = (params: GetElementParams): void => {
+  const element = getElementById(params.pageId, params.elementId, params.callback)
+  if (element !== null) {
+    let selector = params.selector
+    if (selector.startsWith('uni-')) {
+      selector = selector.replace('uni-', '')
+      const component = getComponentVmBySelector(params.pageId, selector, params.callback)
+      const result = {
+        nodeId: component !== null ? component.$.uid : null,
+        tagName: component !== null ? selector : null
+      }
+      params.callback(result)
+      return
+    }
+    const list: INode[] = []
+    getValidNodes(element, selector, list)
+    const result = list.length > 0 ? {
+      elementId: list[0].id,
+      tagName: list[0].tagName
+    } : null
+    params.callback(result)
+  }
+}
+
+export const getElements = (params: GetElementParams): void => {
+  const element = getElementById(params.pageId, params.elementId, params.callback)
+  if (element !== null) {
+    const list: INode[] = []
+    getValidNodes(element, params.selector, list, true)
+    const result = [] as UTSJSONObject[]
+    list.forEach(node => {
+      result.push({
+        elementId: node.id,
+        tagName: node.tagName
+      })
+    })
+    params.callback({ elements: result })
+  }
+}
+
+export type GetDOMPropertiesParams = {
+  pageId: number
+  elementId: string
+  names: string[]
+  callback: (res?: any | null) => void
+}
+
+export const getDOMProperties = (params: GetDOMPropertiesParams): void => {
+  const element = getElementById(params.pageId, params.elementId, params.callback)
+  if (element !== null) {
+    const properties = params.names.map((name: string): any | null => {
+      if (name == 'innerText' || name == 'value') {
+        return element.getAttribute('value')
+      }
+      return `Element.getDOMProperties not support ${name}`
+    })
+    params.callback({ properties })
+  }
+}
+
+export type GetPropertiesParams = {
+  pageId: number
+  elementId: string
+  names: string[]
+  callback: (res?: any | null) => void
+}
+
+export const getProperties = (params: GetPropertiesParams): void => {
+  const element = getElementById(params.pageId, params.elementId, params.callback)
+  if (element !== null) {
+    const properties = params.names.map((name: string): any | null => {
+      if (name == 'value') {
+        return element.getAttribute('value')
+      }
+      return `Element.getProperties not support ${name}`
+    })
+    params.callback({ properties })
+  }
+}
+
+export type CallFunctionParams = {
+  pageId: number
+  elementId: string
+  functionName: string
+  args: any[]
+  callback: (res?: any | null) => void
+}
+
+export const callFunction = (params: CallFunctionParams): void => {
+  const element = getElementById(params.pageId, params.elementId, params.callback)
+  if (element !== null) {
+    switch (params.functionName) {
+      case 'input.input':
+        element.setAttribute('value', params.args[0])
+        break
+    }
+    params.callback({ result: `Element.callFunction success` })
+  }
+}
+
+export type TapParams = {
+  pageId: number
+  elementId: string
+  callback: (res?: any | null) => void
+}
+
+export const tap = (params: TapParams): void => {
+  const element = getElementById(params.pageId, params.elementId, params.callback)
+  if (element !== null) {
+    const x: number = 0
+    const y: number = 0
+    element.dispatchEvent("click", MouseEvent("click", x.toFloat(), y.toFloat()))
+    params.callback({ result: `Element.tap success` })
+  }
+}
+
+export type CallMethodParams = {
+  pageId: number
+  nodeId: number
+  method: string
+  args: any[]
+  callback: (res?: any | null) => void
+}
+
+export const callMethod = (params: CallMethodParams): void => {
+  const component = getComponentVmByNodeId(params.pageId, params.nodeId, params.callback)
+  if (component !== null) {
+    const result = params.args.length > 0 ? component.$callMethod(params.method, params.args[0]) : component.$callMethod(params.method)
+    params.callback({ result: { result } })
+  }
+}

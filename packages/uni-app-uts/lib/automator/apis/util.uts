@@ -1,4 +1,5 @@
 import { getCurrentPages } from 'io.dcloud.uts.framework'
+import { INode } from 'io.dcloud.uniapp.runtime'
 
 function getPageId(page: BasePage): number {
   return page.$.uid
@@ -45,7 +46,7 @@ export function setData(vm: BasePage, data: UTSJSONObject): void {
   const _data = data.toMap()
   _data.forEach((value: any | null, key: string) => {
     vm.$data.set(key, value)
-	})
+  })
 }
 
 export function parsePage(page: BasePage): UTSJSONObject {
@@ -54,4 +55,89 @@ export function parsePage(page: BasePage): UTSJSONObject {
     path: getPagePath(page),
     query: getPageQuery(page),
   } as UTSJSONObject
+}
+
+export function getComponentVmBySelector(pageId: number, selector: string, callback: (res?: any | null) => void): ComponentPublicInstance | null {
+  const page = getPageVm(pageId)
+  if (page === null) {
+    callback({ result: { errMsg: `Page[${pageId}] not exists` } })
+    return null
+  }
+  let component: ComponentPublicInstance | null = null
+  page.$children.forEach((child: ComponentPublicInstance) => {
+    if (child.$options.name == selector) {
+      component = child
+    }
+  })
+  if (component === null) {
+    callback({ result: { errMsg: `component[${selector}] not exists` } })
+    return null
+  }
+  return component
+}
+
+export function getComponentVmByNodeId(pageId: number, nodeId: number, callback: (res?: any | null) => void): ComponentPublicInstance | null {
+  const page = getPageVm(pageId)
+  if (page === null) {
+    callback({ result: { errMsg: `Page[${pageId}] not exists` } })
+    return null
+  }
+  let component: ComponentPublicInstance | null = null
+  page.$children.forEach((child: ComponentPublicInstance) => {
+    if (child.$.uid == nodeId) {
+      component = child
+    }
+  })
+  if (component === null) {
+    callback({ result: { errMsg: `component[${nodeId}] not exists` } })
+    return null
+  }
+  return component
+}
+
+export function getElementById(pageId: number, elementId: string, callback: (res?: any | null) => void): INode | null {
+  const page = getPageVm(pageId)
+  if (page === null) {
+    callback({ result: { errMsg: `Page[${pageId}] not exists` } })
+    return null
+  }
+  const document = page.$innerPage!.document
+  const element = document.getElementById(elementId)
+  if (element === null) {
+    callback({ result: { errMsg: `element[${elementId}] not exists` } })
+    return null
+  }
+  return element
+}
+
+export function getValidNodes(
+  node: INode | null,
+  selector: string,
+  list: INode[],
+  getAll = false
+): void {
+  if (node == null) {
+    return
+  }
+  if (isValidNode(node, selector)) {
+    list.push(node)
+    if (!getAll) {
+      return
+    }
+  }
+  node.childNodes.forEach(child => {
+    getValidNodes(child, selector, list, getAll)
+  })
+}
+
+function isValidNode(node: INode, selector: string): boolean {
+  if (selector.startsWith('.')) {
+    return (
+      node.ext['classList'] !== null &&
+      (node.ext['classList'] as string[]).includes(selector.substring(1))
+    )
+  } else if (selector.startsWith('#')) {
+    return node.getAttribute('id') == selector.substring(1)
+  }
+  return node.tagName?.toUpperCase() == selector.toUpperCase()
 }

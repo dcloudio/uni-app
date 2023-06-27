@@ -1,4 +1,4 @@
-import { getData, setData, getPageVm } from './util.uts'
+import { getData, setData, getPageVm, getComponentVmBySelector } from './util.uts'
 
 export type GetDataParams = {
   pageId: number
@@ -62,7 +62,18 @@ export const getElement = (params: GetElementParams): void => {
   if (page === null) {
     params.callback({ result: { errMsg: `Page[${params.pageId}] not exists` } })
   } else {
-    const element = page.$querySelector(params.selector)
+    let selector = params.selector
+    if (selector.startsWith('uni-')) {
+      selector = selector.replace('uni-', '')
+      const component = getComponentVmBySelector(params.pageId, selector, params.callback)
+      const result = {
+        nodeId: component !== null ? component.$.uid : null,
+        tagName: component !== null ? selector : null
+      }
+      params.callback(result)
+      return
+    }
+    const element = page.$querySelector(selector)
     const result = {
       elementId: element !== null ? element.id : null,
       tagName: element !== null ? element.tagName : null
