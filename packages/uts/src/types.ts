@@ -43,6 +43,7 @@ export type UTSOutputOptions = {
   noColor?: boolean
   isX?: boolean
   isPlugin?: boolean
+  split?: boolean
   transform?: {
     paramDefaultValue?: boolean
     constructorInvocation?: boolean
@@ -61,6 +62,8 @@ export interface UTSOptions {
 export interface UTSResult {
   filename?: string
   deps?: string[]
+  chunks?: string[]
+  changed?: string[]
   time?: number
   error?: Error
 }

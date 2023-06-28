@@ -106,6 +106,11 @@ export async function runDev(options: CliOptions & ServerOptions) {
             }
           }
           return output('log', M['dev.watching.end'])
+        } else if (event.code === 'END') {
+          if (process.env.UNI_AUTOMATOR_WS_ENDPOINT) {
+            output('log', M['build.failed'])
+            process.exit(0)
+          }
         }
       })
     }
