@@ -447,7 +447,7 @@ export function resolveKotlincArgs(
 export function resolveD8Args(filename: string) {
   return [
     filename,
-    '--no-desugaring',
+    // '--no-desugaring',
     '--min-api',
     '19',
     '--output',
