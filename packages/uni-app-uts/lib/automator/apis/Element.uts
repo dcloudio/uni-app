@@ -1,4 +1,4 @@
-import { getElementById, getComponentVmBySelector, getValidNodes, getComponentVmByNodeId, componentGetData, componentSetData, getComponentDomByNodeId } from './util.uts'
+import { getElementById, getComponentVmBySelector, getValidNodes, getComponentVmByNodeId, componentGetData, componentSetData, getElementByIdOrNodeId } from './util.uts'
 import { INode, Touch } from 'io.dcloud.uniapp.runtime'
 import { JSONObject } from 'com.alibaba.fastjson'
 import { getChildrenText } from './util.uts'
@@ -59,12 +59,7 @@ export type GetDOMPropertiesParams = {
 }
 
 export const getDOMProperties = (params: GetDOMPropertiesParams): void => {
-  let dom: INode | null = null
-  if (params.elementId !== null) {
-    dom = getElementById(params.pageId, params.elementId!, params.callback)
-  } else if (params.nodeId !== null) {
-    dom = getComponentDomByNodeId(params.pageId, params.nodeId!, params.callback)
-  }
+  const dom = getElementByIdOrNodeId(params.pageId, params.elementId, params.nodeId, params.callback)
   if (dom !== null) {
     const properties = params.names.map((name: string): any | null => {
       if (name == 'innerText') {
@@ -98,12 +93,7 @@ export type GetPropertiesParams = {
 }
 
 export const getProperties = (params: GetPropertiesParams): void => {
-  let dom: INode | null = null
-  if (params.elementId !== null) {
-    dom = getElementById(params.pageId, params.elementId!, params.callback)
-  } else if (params.nodeId !== null) {
-    dom = getComponentDomByNodeId(params.pageId, params.nodeId!, params.callback)
-  }
+  const dom = getElementByIdOrNodeId(params.pageId, params.elementId, params.nodeId, params.callback)
   if (dom !== null) {
     const properties = params.names.map((name: string): any | null => {
       return dom.getAttribute(name)
@@ -140,12 +130,7 @@ export type TapParams = {
 }
 
 export const tap = (params: TapParams): void => {
-  let dom: INode | null = null
-  if (params.elementId !== null) {
-    dom = getElementById(params.pageId, params.elementId!, params.callback)
-  } else if (params.nodeId !== null) {
-    dom = getComponentDomByNodeId(params.pageId, params.nodeId!, params.callback)
-  }
+  const dom = getElementByIdOrNodeId(params.pageId, params.elementId, params.nodeId, params.callback)
   if (dom !== null) {
     const x: number = 0
     const y: number = 0
@@ -206,12 +191,7 @@ export type GetOffsetParams = {
 }
 
 export const getOffset = (params: GetOffsetParams): void => {
-  let dom: INode | null = null
-  if (params.elementId !== null) {
-    dom = getElementById(params.pageId, params.elementId!, params.callback)
-  } else if (params.nodeId !== null) {
-    dom = getComponentDomByNodeId(params.pageId, params.nodeId!, params.callback)
-  }
+  const dom = getElementByIdOrNodeId(params.pageId, params.elementId, params.nodeId, params.callback)
   if (dom !== null) {
     params.callback({ left: dom.offsetLeft, top: dom.offsetTop })
   }
@@ -225,12 +205,7 @@ export type LongpressParams = {
 }
 
 export const longpress = (params: LongpressParams): void => {
-  let dom: INode | null = null
-  if (params.elementId !== null) {
-    dom = getElementById(params.pageId, params.elementId!, params.callback)
-  } else if (params.nodeId !== null) {
-    dom = getComponentDomByNodeId(params.pageId, params.nodeId!, params.callback)
-  }
+  const dom = getElementByIdOrNodeId(params.pageId, params.elementId, params.nodeId, params.callback)
   if (dom !== null) {
     const x: number = 0
     const y: number = 0
@@ -250,12 +225,7 @@ export type HandleTouchEventParams = {
 }
 
 export const handleTouchEvent = (params: HandleTouchEventParams): void => {
-  let dom: INode | null = null
-  if (params.elementId !== null) {
-    dom = getElementById(params.pageId, params.elementId!, params.callback)
-  } else if (params.nodeId !== null) {
-    dom = getComponentDomByNodeId(params.pageId, params.nodeId!, params.callback)
-  }
+  const dom = getElementByIdOrNodeId(params.pageId, params.elementId, params.nodeId, params.callback)
   if (dom !== null) {
     const touches = getTouches(params.touches)
     const changedTouches = getTouches(params.changedTouches)
@@ -284,12 +254,7 @@ export type GetAttributesParams = {
 }
 
 export const getAttributes = (params: GetAttributesParams): void => {
-  let dom: INode | null = null
-  if (params.elementId !== null) {
-    dom = getElementById(params.pageId, params.elementId!, params.callback)
-  } else if (params.nodeId !== null) {
-    dom = getComponentDomByNodeId(params.pageId, params.nodeId!, params.callback)
-  }
+  const dom = getElementByIdOrNodeId(params.pageId, params.elementId, params.nodeId, params.callback)
   if (dom !== null) {
     const attributes = params.names.map((name: string): any | null => {
       return dom.getAttribute(name)
@@ -307,12 +272,7 @@ export type GetStylesParams = {
 }
 
 export const getStyles = (params: GetStylesParams): void => {
-  let dom: INode | null = null
-  if (params.elementId !== null) {
-    dom = getElementById(params.pageId, params.elementId!, params.callback)
-  } else if (params.nodeId !== null) {
-    dom = getComponentDomByNodeId(params.pageId, params.nodeId!, params.callback)
-  }
+  const dom = getElementByIdOrNodeId(params.pageId, params.elementId, params.nodeId, params.callback)
   if (dom !== null) {
     const styles = params.names.map((name: string): any | null => {
       return dom.style.getPropertyValue(name)

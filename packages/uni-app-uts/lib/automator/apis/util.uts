@@ -95,6 +95,15 @@ export function getComponentVmByNodeId(pageId: number, nodeId: number, callback:
   return component
 }
 
+export function getElementByIdOrNodeId(pageId: number, elementId: string | null, nodeId: number | null, callback: (res: any) => void): INode | null {
+  if (elementId !== null) {
+    return getElementById(pageId, elementId!, callback)
+  } else if (nodeId !== null) {
+    return getComponentDomByNodeId(pageId, nodeId!, callback)
+  }
+  return null
+}
+
 export function getComponentDomByNodeId(pageId: number, nodeId: number, callback: (res: any) => void): INode | null {
   const component = getComponentVmByNodeId(pageId, nodeId, callback)
   if (component === null) {
@@ -103,7 +112,7 @@ export function getComponentDomByNodeId(pageId: number, nodeId: number, callback
   return component.$el
 }
 
-export function getElementById(pageId: number, elementId: string, callback: (res?: any | null) => void): INode | null {
+export function getElementById(pageId: number, elementId: string, callback: (res: any) => void): INode | null {
   const page = getPageVm(pageId)
   if (page === null) {
     callback({ result: { errMsg: `Page[${pageId}] not exists` } })
