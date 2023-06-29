@@ -48,8 +48,11 @@ export function parseUniExtApis(
       return
     }
     try {
-      const exports = JSON.parse(fs.readFileSync(pkgPath, 'utf8'))
-        ?.uni_modules?.['uni-ext-api'] as Exports | undefined
+      let exports: Exports | undefined
+      const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'))
+      if (pkg && pkg.uni_modules && pkg.uni_modules['uni-ext-api']) {
+        exports = pkg.uni_modules['uni-ext-api']
+      }
       if (exports) {
         const curInjects = parseInjects(
           vite,
