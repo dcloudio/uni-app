@@ -1,4 +1,4 @@
-import { pageGetData, pageSetData, getPageVm, getComponentVmBySelector } from './util.uts'
+import { pageGetData, pageSetData, getPageVm, getValidComponentsOrNodes } from './util.uts'
 
 export type GetDataParams = {
   pageId: number
@@ -47,7 +47,7 @@ export const callMethod = (params: CallMethodParams): void => {
     params.callback({ result: { errMsg: `Page.${params.method} not exists` } })
   } else {
 		const result = params.args.length > 0 ? page.$callMethod(params.method, params.args[0]) : page.$callMethod(params.method)
-    params.callback({result: {result}})
+    params.callback({ result })
   }
 }
 
@@ -65,19 +65,11 @@ export const getElement = (params: GetElementParams): void => {
     let selector = params.selector
     if (selector.startsWith('uni-')) {
       selector = selector.replace('uni-', '')
-      const component = getComponentVmBySelector(params.pageId, selector, params.callback)
-      const result = {
-        nodeId: component !== null ? component.$.uid : null,
-        tagName: component !== null ? selector : null
-      }
-      params.callback(result)
-      return
     }
-    const element = page.$querySelector(selector)
-    const result = {
-      elementId: element !== null ? element.id : null,
-      tagName: element !== null ? element.tagName : null
-    }
+    const list: UTSJSONObject[] = []
+    getValidComponentsOrNodes(page.$.subTree, selector, list)
+    const result = list.length > 0 ? list[0] : null
+    console.warn('Page.getElement result', result)
     params.callback(result)
   }
 }

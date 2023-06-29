@@ -11,6 +11,7 @@ export type GetElementParams = {
 }
 
 export const getElement = (params: GetElementParams): void => {
+  // TODO: support get component by class or id selector
   const element = getElementById(params.pageId, params.elementId, params.callback)
   if (element !== null) {
     let selector = params.selector
@@ -24,12 +25,9 @@ export const getElement = (params: GetElementParams): void => {
       params.callback(result)
       return
     }
-    const list: INode[] = []
+    const list: UTSJSONObject[] = []
     getValidNodes(element, selector, list)
-    const result = list.length > 0 ? {
-      elementId: list[0].id,
-      tagName: list[0].tagName
-    } : null
+    const result = list.length > 0 ? list[0] : null
     params.callback(result)
   }
 }
@@ -37,16 +35,9 @@ export const getElement = (params: GetElementParams): void => {
 export const getElements = (params: GetElementParams): void => {
   const element = getElementById(params.pageId, params.elementId, params.callback)
   if (element !== null) {
-    const list: INode[] = []
+    const list: UTSJSONObject[] = []
     getValidNodes(element, params.selector, list, true)
-    const result = [] as UTSJSONObject[]
-    list.forEach(node => {
-      result.push({
-        elementId: node.id,
-        tagName: node.tagName
-      })
-    })
-    params.callback({ elements: result })
+    params.callback({ elements: list })
   }
 }
 
@@ -94,11 +85,37 @@ export type GetPropertiesParams = {
 
 export const getProperties = (params: GetPropertiesParams): void => {
   const dom = getElementByIdOrNodeId(params.pageId, params.elementId, params.nodeId, params.callback)
+  let component: ComponentPublicInstance | null = null
+  if (params.nodeId !== null) {
+    component = getComponentVmByNodeId(params.pageId, params.nodeId!, params.callback)
+  }
   if (dom !== null) {
     const properties = params.names.map((name: string): any | null => {
-      return dom.getAttribute(name)
+      const attribute = dom.getAttribute(name) !== null ? dom.getAttribute(name) : component !== null ? component.$props[name] : null
+      return attribute
     })
     params.callback({ properties })
+  }
+}
+
+export type GetAttributesParams = {
+  pageId: number
+  elementId?: string | null
+  nodeId?: number | null
+  names: string[]
+  callback: (res?: any | null) => void
+}
+
+export const getAttributes = (params: GetAttributesParams): void => {
+  const dom = getElementByIdOrNodeId(params.pageId, params.elementId, params.nodeId, params.callback)
+  if (dom !== null) {
+    const attributes = params.names.map((name: string): any | null => {
+      if (name == 'class') {
+        return (dom.ext["classList"] as string[]).join(' ')
+      }
+      return dom.getAttribute(name)
+    })
+    params.callback({ attributes })
   }
 }
 
@@ -151,7 +168,7 @@ export const callMethod = (params: CallMethodParams): void => {
   const component = getComponentVmByNodeId(params.pageId, params.nodeId, params.callback)
   if (component !== null) {
     const result = params.args.length > 0 ? component.$callMethod(params.method, params.args[0]) : component.$callMethod(params.method)
-    params.callback({ result: { result } })
+    params.callback({ result })
   }
 }
 
@@ -243,24 +260,6 @@ function getTouches(touches: any[]): Touch[] {
     result.pageY = (touchObj['pageY'] as number).toFloat()
     return result
   })
-}
-
-export type GetAttributesParams = {
-  pageId: number
-  elementId?: string | null
-  nodeId?: number | null
-  names: string[]
-  callback: (res?: any | null) => void
-}
-
-export const getAttributes = (params: GetAttributesParams): void => {
-  const dom = getElementByIdOrNodeId(params.pageId, params.elementId, params.nodeId, params.callback)
-  if (dom !== null) {
-    const attributes = params.names.map((name: string): any | null => {
-      return dom.getAttribute(name)
-    })
-    params.callback({ attributes })
-  }
 }
 
 export type GetStylesParams = {

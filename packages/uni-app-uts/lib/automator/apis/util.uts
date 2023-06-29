@@ -1,5 +1,6 @@
 import { getCurrentPages } from 'io.dcloud.uts.framework'
 import { INode } from 'io.dcloud.uniapp.runtime'
+import { isArray } from 'io.dcloud.uts.vue.shared'
 
 function getPageId(page: BasePage): number {
   return page.$.uid
@@ -64,11 +65,7 @@ export function getComponentVmBySelector(pageId: number, selector: string, callb
     return null
   }
   let component: ComponentPublicInstance | null = null
-  page.$children.forEach((child: ComponentPublicInstance) => {
-    if (child.$options.name == selector) {
-      component = child
-    }
-  })
+  const component = page.$children.find((child: ComponentPublicInstance) => child.$options.name == selector)
   if (component === null) {
     callback({ result: { errMsg: `component[${selector}] not exists` } })
     return null
@@ -118,7 +115,7 @@ export function getElementById(pageId: number, elementId: string, callback: (res
     callback({ result: { errMsg: `Page[${pageId}] not exists` } })
     return null
   }
-  const document = page.$innerPage!.document
+  const document = page.$appPage!.document
   const element = document.getElementById(elementId)
   if (element === null) {
     callback({ result: { errMsg: `element[${elementId}] not exists` } })
@@ -127,17 +124,71 @@ export function getElementById(pageId: number, elementId: string, callback: (res
   return element
 }
 
+export function getValidComponentsOrNodes(
+  vnode: VNode | null,
+  selector: string,
+  list: UTSJSONObject[],
+  getAll = false
+): void {
+  if (vnode == null) {
+    return
+  }
+  if (isValidComponentOrNode(vnode, selector)) {
+    if (vnode.component !== null) {
+      list.push({
+        nodeId: (vnode.component as ComponentInternalInstance).uid,
+        tagName: (vnode.component as ComponentInternalInstance).options.name
+      })
+    } else {
+      list.push({
+        elementId: vnode.el!.id,
+        tagName: vnode.el!.tagName
+      })
+    }
+    if (!getAll) {
+      return
+    }
+  }
+  if (vnode.children !== null && isArray(vnode.children)) {
+    (vnode.children as VNode[]).forEach(child => {
+      getValidComponentsOrNodes(child, selector, list, getAll)
+    })
+  }
+}
+
+function isValidComponentOrNode(vnode: VNode, selector: string): boolean {
+  if (vnode.component !== null && (vnode.component as ComponentInternalInstance).options.name == selector) {
+    return true
+  }
+  if (vnode.el !== null) {
+    const node = vnode.el
+    if (selector.startsWith('.')) {
+      return (
+        node!.ext['classList'] !== null &&
+        (node!.ext['classList'] as string[]).includes(selector.substring(1))
+      )
+    } else if (selector.startsWith('#')) {
+      return node!.getAttribute('id') == selector.substring(1)
+    }
+    return node!.tagName?.toUpperCase() == selector.toUpperCase()
+  }
+  return false
+}
+
 export function getValidNodes(
   node: INode | null,
   selector: string,
-  list: INode[],
+  list: UTSJSONObject[],
   getAll = false
 ): void {
   if (node == null) {
     return
   }
   if (isValidNode(node, selector)) {
-    list.push(node)
+    list.push({
+      elementId: node!.id,
+      tagName: node!.tagName
+    })
     if (!getAll) {
       return
     }
