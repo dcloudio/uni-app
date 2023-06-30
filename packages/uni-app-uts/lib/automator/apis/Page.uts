@@ -1,0 +1,55 @@
+// @ts-ignore
+import { JSONObject } from 'com.alibaba.fastjson'
+import { getData, setData, getPageVm } from './util.uts'
+import { hasVueMethod, callVueMethod } from 'io.dcloud.uts.vue.shared'
+
+export type GetDataParams = {
+  pageId: number
+  path: string
+  callback: (res: any) => void
+}
+export const pageGetData = (params: GetDataParams): void => {
+  const callback = params.callback
+  const result = getData(getPageVm(params.pageId)!, params.path)
+  callback(result)
+}
+
+export type SetDataParams = {
+  pageId: number
+  data: JSONObject
+  callback: (res?: any | null) => void
+}
+export const pageSetData = (params: SetDataParams): void => {
+  const pageId = params.pageId
+  const callback = params.callback
+  const page = getPageVm(pageId)
+  if (page !== null) {
+    setData(page, params.data)
+    callback(null)
+  } else {
+    callback({ errMsg: `setData:fail, Page:${pageId} is not found.` })
+  }
+}
+
+export type CallMethodWithCallbackParams = {
+  pageId: number
+  methodName: string
+  args: Array<any | null>
+}
+export const callMethodWithCallback = (params: CallMethodWithCallbackParams): void => {
+  const page = getPageVm(params.pageId)
+  const callback = params.args[params.args.length - 1] as (data: any) => void
+  if (page === null) {
+    callback({ errMsg: `callMethodWithCallback:fail, Page[${params.pageId}] not exists` })
+    return
+  }
+  if (!hasVueMethod(page, params.methodName)) {
+    callback({ errMsg: `callMethodWithCallback:fail, Page.${params.methodName} not exists` })
+    return
+  }
+  callVueMethod(
+    page,
+    params.methodName,
+    params.args
+  )
+}

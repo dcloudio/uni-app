@@ -1,5 +1,5 @@
 import path from 'path'
-import type { CompilerOptions } from '@vue/compiler-core'
+import type { CompilerOptions } from '@dcloudio/uni-mp-compiler'
 import {
   COMPONENT_CUSTOM_HIDDEN,
   MiniProgramCompilerOptions,

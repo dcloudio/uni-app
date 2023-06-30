@@ -21,7 +21,7 @@ jobs:
       fail-fast: false
     name: 'e2e: node-${{ matrix.node_version }}, ${{ matrix.os }}'
     env:
-      CYPRESS_CACHE_FOLDER: '~/.cache/Cypress'
+      CYPRESS_CACHE_FOLDER: ${{ github.workspace }}/node_modules/.cache/Cypress
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -29,13 +29,12 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v2.0.1
         with:
-          version: 6.15.1
+          version: 8
 
       - name: Set node version to ${{ matrix.node_version }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node_version }}
-          cache: 'pnpm'
 
       - run: pnpm install
 
@@ -54,7 +53,7 @@ jobs:
           npx cypress version --component node
 
       - name: Cypress run
-        uses: cypress-io/github-action@v4
+        uses: cypress-io/github-action@v5
         with:
           install: false
           start: npm run dev:ssr

@@ -1,6 +1,7 @@
 import path from 'path'
 import fs from 'fs'
-import { CompilerOptions, NodeTypes } from '@vue/compiler-core'
+import { NodeTypes } from '@vue/compiler-core'
+import type { CompilerOptions } from '@dcloudio/uni-mp-compiler'
 import {
   COMPONENT_ON_LINK,
   copyMiniProgramPluginJson,

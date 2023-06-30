@@ -1,0 +1,106 @@
+import { JSONArray, JSONObject } from 'com.alibaba.fastjson'
+import { SocketTask, SendSocketMessageOptions } from 'uts.sdk.modules.DCloudUniWebsocket'
+import {
+  callUniMethod,
+  CallUniMethodParams,
+  captureScreenshot,
+  CaptureScreenshotParams,
+  getPageStack,
+  GetPageStackParams,
+  getCurrentPage,
+  GetCurrentPageParams
+} from './apis/App.uts'
+import {
+  pageGetData,
+  GetDataParams,
+  pageSetData,
+  SetDataParams,
+  CallMethodWithCallbackParams,
+  callMethodWithCallback
+} from './apis/Page.uts'
+
+let socketTask: SocketTask | null = null
+const wsEndpoint = process.env.UNI_AUTOMATOR_WS_ENDPOINT
+
+function send(data: any) {
+  socketTask?.send({ data: JSON.stringify(data) } as SendSocketMessageOptions)
+}
+
+function onMessage(msg: string) {
+  const json = JSON.parse(msg)!
+  const method = json['method'] as string
+  const params = json['params'] as UTSJSONObject
+  const path = params['path'] !== null ? (params['path'] as string) : ''
+  const res = new Map<string, any | null>([['id', json['id'] as string]])
+  try {
+    const callback = (result?: any | null) => {
+      if (result !== null) {
+        res.set('result', result)
+      }
+      send(res)
+    }
+    if (method.startsWith('App.')) {
+      switch (method) {
+        case 'App.callUniMethod':
+          const method = params['method'] as string
+          const args = (params['args'] as UTSJSONObject).toJSONObject() as JSONArray
+          callUniMethod({
+            method,
+            args,
+            callback
+          } as CallUniMethodParams)
+          break
+        case 'App.captureScreenshot':
+          const id = params['id'] !== null ? (params['id'] as string) : null
+          const fullPage = params['fullPage'] !== null ? (params['fullPage'] as boolean) : false
+          captureScreenshot({ id, fullPage, path, callback } as CaptureScreenshotParams)
+          break
+        case 'App.getPageStack':
+          getPageStack({ callback } as GetPageStackParams)
+          break
+        case 'App.getCurrentPage':
+          getCurrentPage({ callback } as GetCurrentPageParams)
+          break
+      }
+    } else if (method.startsWith('Page.')) {
+      const pageId = params['pageId'] as number
+      const data =
+        params['data'] !== null
+          ? (params['data'] as JSONObject)
+          : ({} as JSONObject)
+      switch (method) {
+        case 'Page.getData':
+          pageGetData({ pageId, path, callback } as GetDataParams)
+          break
+        case 'Page.setData':
+          pageSetData({ pageId, data, callback } as SetDataParams)
+          break
+        case 'Page.callMethodWithCallback':
+          const methodName = params['method'] as string
+          const args = params['args'] !== null ? params['args'] as Array<any | null> : [] as Array<any | null>
+          args.push(callback)
+          callMethodWithCallback({ pageId, methodName, args } as CallMethodWithCallbackParams)
+          break;
+      }
+    }
+  } catch (error) {
+    res.set('error', error)
+    send(res)
+  }
+}
+
+export function initAutomator() {
+  socketTask = uni.connectSocket({
+    url: wsEndpoint
+  });
+  socketTask!.onMessage((res) => { onMessage(res.data as string) })
+  socketTask!.onOpen((_) => {
+    console.warn("automator.onOpen")
+  })
+  socketTask!.onError((err) => {
+    console.warn(`automator.onError: ${JSON.stringify(err)}`);
+  })
+  socketTask!.onClose((_) => {
+    console.warn("automator.onClose");
+  })
+}

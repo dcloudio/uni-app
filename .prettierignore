@@ -19,3 +19,4 @@ packages/uni-mp-weixin/lib
 packages/uni-mp-quickapp-webview/lib
 packages/vite-plugin-uni/lib
 packages/uni-uts-vite/lib
+packages/uni-cli-shared/src/checkUpdate.ts

@@ -1192,6 +1192,7 @@ const objectKeys = [
     'serviceMarket',
     'router',
     'worklet',
+    '__webpack_require_UNI_MP_PLUGIN__',
 ];
 const singlePageDisableKey = ['lanDebug', 'router', 'worklet'];
 const launchOption = wx.getLaunchOptionsSync
@@ -1206,20 +1207,15 @@ function isWxKey(key) {
     return objectKeys.indexOf(key) > -1 || typeof wx[key] === 'function';
 }
 function initWx() {
-    let global = wx;
-    if (typeof globalThis !== 'undefined' &&
-        globalThis.wx &&
-        wx !== globalThis.wx) {
-        global = globalThis.wx;
-    }
     const newWx = {};
-    for (const key in global) {
+    for (const key in wx) {
         if (isWxKey(key)) {
             // TODO wrapper function
-            newWx[key] = global[key];
+            newWx[key] = wx[key];
         }
     }
-    if (typeof globalThis !== 'undefined') {
+    if (typeof globalThis !== 'undefined' &&
+        typeof requireMiniProgram === 'undefined') {
         globalThis.wx = newWx;
     }
     return newWx;
@@ -1273,7 +1269,9 @@ var shims = /*#__PURE__*/Object.freeze({
 const compressImage = {
     args(fromArgs, toArgs) {
         // https://developers.weixin.qq.com/community/develop/doc/000c08940c865011298e0a43256800?highLine=compressHeight
+        // @ts-expect-error
         if (fromArgs.compressedHeight && !toArgs.compressHeight) {
+            // @ts-expect-error
             toArgs.compressHeight = fromArgs.compressedHeight;
         }
         // @ts-expect-error

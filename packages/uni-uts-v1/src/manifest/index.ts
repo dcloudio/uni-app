@@ -18,7 +18,7 @@ import {
 
 export { genManifestFile } from './manifest'
 
-export { restoreDex, storeDex } from './dex'
+export { restoreDex } from './dex'
 export { restoreSourceMap, storeSourceMap } from './sourceMap'
 
 interface PlatformOptions {

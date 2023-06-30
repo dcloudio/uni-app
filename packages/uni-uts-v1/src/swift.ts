@@ -15,7 +15,7 @@ import {
   ToSwiftOptions,
 } from './utils'
 import { parseJson } from './shared'
-import { UTSResult } from '@dcloudio/uts'
+import { UTSBundleOptions, UTSInputOptions, UTSResult } from '@dcloudio/uts'
 import { parseUTSSyntaxError } from './stacktrace'
 
 function parseSwiftPackage(filename: string) {
@@ -35,7 +35,16 @@ function parseSwiftPackage(filename: string) {
 
 export async function runSwiftProd(
   filename: string,
-  components: Record<string, string>
+  components: Record<string, string>,
+  {
+    isPlugin,
+    isX,
+    extApis,
+  }: {
+    isPlugin: boolean
+    isX: boolean
+    extApis?: Record<string, [string, string]>
+  }
 ) {
   // 文件有可能是 app-android 里边的，因为编译到 ios 时，为了保证不报错，可能会去读取 android 下的 uts
   if (filename.includes('app-android')) {
@@ -48,6 +57,9 @@ export async function runSwiftProd(
     outputDir,
     sourceMap: true,
     components,
+    isX,
+    isPlugin,
+    extApis,
   })
   if (!result) {
     return
@@ -73,9 +85,17 @@ export type RunSwiftDevResult = UTSResult & {
 }
 
 let isEnvReady = true
+
+interface RunSwiftDevOptions {
+  components: Record<string, string>
+  isX: boolean
+  isPlugin: boolean
+  extApis?: Record<string, [string, string]>
+}
+
 export async function runSwiftDev(
   filename: string,
-  components: Record<string, string>
+  { components, isX, isPlugin, extApis }: RunSwiftDevOptions
 ) {
   // 文件有可能是 app-android 里边的，因为编译到 ios 时，为了保证不报错，可能会去读取 android 下的 uts
   if (filename.includes('app-android')) {
@@ -106,6 +126,9 @@ export async function runSwiftDev(
     outputDir,
     sourceMap: true,
     components,
+    isX,
+    isPlugin,
+    extApis,
   })) as RunSwiftDevResult
 
   if (!result) {
@@ -165,13 +188,21 @@ function isCliProject(projectPath: string) {
 
 export async function compile(
   filename: string,
-  { inputDir, outputDir, sourceMap, components }: ToSwiftOptions
+  {
+    inputDir,
+    outputDir,
+    sourceMap,
+    components,
+    isX,
+    isPlugin,
+    extApis,
+  }: ToSwiftOptions
 ) {
   const { bundle, UTSTarget } = getUTSCompiler()
   // let time = Date.now()
-  const componentsCode = genComponentsCode(filename, components)
+  const componentsCode = genComponentsCode(filename, components, isX)
   const { namespace, id: pluginId } = parseSwiftPackage(filename)
-  const input: Parameters<typeof bundle>[1]['input'] = {
+  const input: UTSInputOptions = {
     root: inputDir,
     filename,
     pluginId,
@@ -191,10 +222,11 @@ export async function compile(
       return
     }
   }
-  const result = await bundle(UTSTarget.SWIFT, {
+  const options: UTSBundleOptions = {
     input,
     output: {
-      isPlugin: true,
+      isX,
+      isPlugin,
       outDir: outputDir,
       package: namespace,
       sourceMap: sourceMap ? resolveUTSSourceMapPath() : false,
@@ -203,10 +235,12 @@ export async function compile(
       logFilename: true,
       noColor: !isColorSupported(),
       transform: {
-        uniExtApiPackage: 'DCloudUTSExtAPI',
+        uniExtApiDefaultNamespace: 'DCloudUTSExtAPI',
+        uniExtApiNamespaces: extApis,
       },
     },
-  })
+  }
+  const result = await bundle(UTSTarget.SWIFT, options)
   sourceMap &&
     moveRootIndexSourceMap(filename, {
       inputDir,

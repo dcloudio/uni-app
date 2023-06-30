@@ -41,7 +41,6 @@ import {
   initCheckOptionsEnv,
   restoreDex,
   restoreSourceMap,
-  storeDex,
   storeSourceMap,
 } from './manifest'
 import { cacheTips } from './manifest/utils'
@@ -51,6 +50,8 @@ export const sourcemap = {
   generateCodeFrameWithKotlinStacktrace,
   generateCodeFrameWithSwiftStacktrace,
 }
+
+export { compileApp } from './uvue/index'
 
 export * from './sourceMap'
 
@@ -93,8 +94,15 @@ function createResult(
   }
 }
 
+interface CompilerOptions {
+  isX: boolean
+  isPlugin: boolean
+  extApis?: Record<string, [string, string]>
+}
+
 export async function compile(
-  pluginDir: string
+  pluginDir: string,
+  { isX, isPlugin, extApis }: CompilerOptions = { isX: false, isPlugin: true }
 ): Promise<CompileResult | void> {
   const pkg = resolvePackage(pluginDir)
   if (!pkg) {
@@ -104,7 +112,7 @@ export async function compile(
   if (isEncrypt(pluginDir)) {
     return compileEncrypt(pluginDir)
   }
-  const cacheDir = process.env.HX_DEPENDENCIES_DIR
+  const cacheDir = process.env.HX_DEPENDENCIES_DIR || ''
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
   const utsPlatform = process.env.UNI_UTS_PLATFORM
@@ -156,7 +164,11 @@ export async function compile(
         filename = resolvePlatformIndexFilename('app-android', pluginDir, pkg)
       }
       if (filename) {
-        await getCompiler('kotlin').runProd(filename, androidComponents)
+        await getCompiler('kotlin').runProd(filename, androidComponents, {
+          isX,
+          isPlugin,
+          extApis,
+        })
         if (cacheDir) {
           // 存储 sourcemap
           storeSourceMap(
@@ -184,7 +196,11 @@ export async function compile(
         filename = resolvePlatformIndexFilename('app-ios', pluginDir, pkg)
       }
       if (filename) {
-        await getCompiler('swift').runProd(filename, iosComponents)
+        await getCompiler('swift').runProd(filename, iosComponents, {
+          isX,
+          isPlugin,
+          extApis,
+        })
         if (cacheDir) {
           storeSourceMap(
             'app-ios',
@@ -246,7 +262,12 @@ export async function compile(
         // console.log('uts插件[' + pkg.id + ']缓存检查耗时：', Date.now() - start)
         if (!res.expired) {
           if (utsPlatform === 'app-android') {
-            restoreDex(pluginRelativeDir, outputDir, pkg.is_uni_modules)
+            restoreDex(
+              pluginRelativeDir,
+              cacheDir,
+              outputDir,
+              pkg.is_uni_modules
+            )
           }
 
           // 还原 sourcemap
@@ -309,7 +330,15 @@ export async function compile(
           inputDir,
           outputDir
         )
-        const res = await getCompiler(compilerType).runDev(filename, components)
+        const res = await getCompiler(compilerType).runDev(filename, {
+          components,
+          isX,
+          isPlugin,
+          cacheDir,
+          pluginRelativeDir,
+          is_uni_modules: pkg.is_uni_modules,
+          extApis,
+        })
         if (res) {
           if (isArray(res.deps) && res.deps.length) {
             // 添加其他文件的依赖
@@ -375,14 +404,6 @@ export async function compile(
           }
           if (res.changed && res.changed.length) {
             files.push(...res.changed)
-            // 需要缓存 dex 文件
-            if (cacheDir && res.type === 'kotlin') {
-              res.changed.forEach((file) => {
-                if (file.endsWith('classes.dex')) {
-                  storeDex(join(outputDir, file), pluginRelativeDir, outputDir)
-                }
-              })
-            }
           } else {
             if (res.type === 'kotlin') {
               errMsg = compileErrMsg(pkg.id)

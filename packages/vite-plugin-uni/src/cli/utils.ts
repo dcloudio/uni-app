@@ -16,6 +16,7 @@ import {
 
 import { CliOptions } from '.'
 import { initNVueEnv } from './nvue'
+import { initUVueEnv } from './uvue'
 
 export const PLATFORMS = [
   'app',
@@ -153,13 +154,6 @@ export function initEnv(
   initDevtools(options)
 
   if (process.env.UNI_PLATFORM === 'app') {
-    const pkg = require('../../package.json')
-    console.log(
-      M['app.compiler.version'].replace(
-        '{version}',
-        pkg['uni-app']['compilerVersion'] + '（vue3）'
-      )
-    )
     initNVueEnv()
   }
 
@@ -180,6 +174,19 @@ export function initEnv(
   }
 
   initModulePaths()
+
+  initUVueEnv()
+
+  if (process.env.UNI_PLATFORM === 'app') {
+    const pkg = require('../../package.json')
+    console.log(
+      M['app.compiler.version'].replace(
+        '{version}',
+        pkg['uni-app']['compilerVersion'] +
+          `（${process.env.UNI_APP_X === 'true' ? 'uni-app x' : 'vue3'}）`
+      )
+    )
+  }
 
   console.log(M['compiling'])
 }
@@ -212,6 +219,13 @@ function initUTSPlatform(options: CliOptions) {
     if (!process.env.UNI_UTS_PLATFORM) {
       process.env.UNI_UTS_PLATFORM = options.platform as any
     }
+  }
+
+  process.env.UNI_UTS_TARGET_LANGUAGE = 'javascript'
+  if (process.env.UNI_UTS_PLATFORM === 'app-android') {
+    process.env.UNI_UTS_TARGET_LANGUAGE = 'kotlin'
+  } else if (process.env.UNI_UTS_PLATFORM === 'app-ios') {
+    process.env.UNI_UTS_TARGET_LANGUAGE = 'swift'
   }
 }
 

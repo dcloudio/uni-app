@@ -12,7 +12,7 @@ import { CliOptions } from '.'
 import { addConfigFile, cleanOptions } from './utils'
 import { RollupWatcher, RollupWatcherEvent } from 'rollup'
 
-async function buildByVite(inlineConfig: InlineConfig) {
+export async function buildByVite(inlineConfig: InlineConfig) {
   return import('vite').then(({ build }) => build(inlineConfig))
 }
 
@@ -63,7 +63,7 @@ export async function buildSSR(options: CliOptions) {
   })
 }
 
-function initBuildOptions(
+export function initBuildOptions(
   options: CliOptions,
   build: BuildOptions
 ): InlineConfig {

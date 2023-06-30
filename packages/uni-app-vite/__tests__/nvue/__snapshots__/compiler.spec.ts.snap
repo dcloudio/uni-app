@@ -103,19 +103,15 @@ export function render(_ctx, _cache) {
 `;
 
 exports[`app-nvue: compiler <view>hello{{a}}<view>aaa{{a}}</view>{{b}}</view> 1`] = `
-"import { createElementVNode as _createElementVNode, toDisplayString as _toDisplayString, openBlock as _openBlock, createElementBlock as _createElementBlock } from "vue"
+"import { toDisplayString as _toDisplayString, createElementVNode as _createElementVNode, openBlock as _openBlock, createElementBlock as _createElementBlock } from "vue"
 
 const _hoisted_1 = { renderWhole: true }
-const _hoisted_2 = /*#__PURE__*/_createElementVNode("u-text", null, "hello", -1 /* HOISTED */)
-const _hoisted_3 = /*#__PURE__*/_createElementVNode("u-text", null, "aaa", -1 /* HOISTED */)
 
 export function render(_ctx, _cache) {
   return (_openBlock(), _createElementBlock("view", _hoisted_1, [
-    _hoisted_2,
-    _createElementVNode("u-text", null, _toDisplayString(_ctx.a), 1 /* TEXT */),
+    _createElementVNode("u-text", null, "hello" + _toDisplayString(_ctx.a), 1 /* TEXT */),
     _createElementVNode("view", null, [
-      _hoisted_3,
-      _createElementVNode("u-text", null, _toDisplayString(_ctx.a), 1 /* TEXT */)
+      _createElementVNode("u-text", null, "aaa" + _toDisplayString(_ctx.a), 1 /* TEXT */)
     ]),
     _createElementVNode("u-text", null, _toDisplayString(_ctx.b), 1 /* TEXT */)
   ]))

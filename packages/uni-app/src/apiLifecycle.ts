@@ -50,7 +50,7 @@ type onNavigationBarSearchInputFocusChangedHook = (
 
 const createHook =
   <T extends Function = () => any>(
-    lifecycle: (typeof UniLifecycleHooks)[number]
+    lifecycle: typeof UniLifecycleHooks[number]
   ) =>
   (
     hook: T,

@@ -19,7 +19,7 @@ declare module '@vue/runtime-core' {
   type LifecycleHook = Function[] | null
 
   type UniLifecycleHookInstance = {
-    [name in (typeof UniLifecycleHooks)[number]]: LifecycleHook
+    [name in typeof UniLifecycleHooks[number]]: LifecycleHook
   }
   interface ComponentInternalInstance extends UniLifecycleHookInstance {
     __isUnload: boolean

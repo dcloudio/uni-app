@@ -9,10 +9,9 @@ import {
 import { baseCompile } from './compile'
 import { parserOptions } from './parserOptions'
 import { CompilerOptions } from './options'
-
+export type { CompilerOptions } from './options'
 export { findProp } from '@vue/compiler-core'
 export type {
-  CompilerOptions,
   DirectiveNode,
   NodeTransform,
   DirectiveTransform,

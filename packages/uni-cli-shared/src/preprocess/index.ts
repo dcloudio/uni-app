@@ -1,4 +1,8 @@
-import { getPreNVueContext, getPreVueContext } from './context'
+import {
+  getPreNVueContext,
+  getPreUVueContext,
+  getPreVueContext,
+} from './context'
 /* eslint-disable no-restricted-globals */
 const { preprocess } = require('../../lib/preprocess')
 
@@ -25,3 +29,14 @@ export function preNVueHtml(htmlCode: string) {
 
 export const preNVueCss = preNVueJs
 export const preNVueJson = preNVueJs
+
+export function preUVueJs(jsCode: string) {
+  return preprocess(jsCode, getPreUVueContext(), { type: 'js' })
+}
+
+export function preUVueHtml(htmlCode: string) {
+  return preprocess(htmlCode, getPreUVueContext(), { type: 'html' })
+}
+
+export const preUVueCss = preUVueJs
+export const preUVueJson = preUVueJs

@@ -12,6 +12,7 @@ import {
   isStringLiteral,
   isUnaryExpression,
   isVariableDeclaration,
+  Node,
   ObjectProperty,
   Program,
   Statement,

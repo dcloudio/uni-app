@@ -50,7 +50,10 @@ function initCheckUpdate() {
   })
 }
 
-function initLogger({ logger, nvue }: ResolvedConfig & { nvue?: boolean }) {
+export function initLogger({
+  logger,
+  nvue,
+}: ResolvedConfig & { nvue?: boolean }) {
   const { info, warn, error } = logger
   logger.info = (msg, opts) => {
     msg = formatInfoMsg(msg, extend(opts || {}, { nvue }))

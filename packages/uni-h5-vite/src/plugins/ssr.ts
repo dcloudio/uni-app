@@ -3,12 +3,16 @@ import type { Plugin, ResolvedConfig } from 'vite'
 
 import { OutputChunk } from 'rollup'
 
-import { isSsr, parseRpx2UnitOnce } from '@dcloudio/uni-cli-shared'
+import {
+  isSsr,
+  parseRpx2UnitOnce,
+  resolveBuiltIn,
+} from '@dcloudio/uni-cli-shared'
 
 import {
+  initSsrAliasOnce,
   initSsrDefine,
   rewriteSsrVue,
-  rewriteSsrResolve,
   rewriteSsrNativeTag,
   rewriteSsrRenderStyle,
   generateSsrDefineCode,
@@ -25,10 +29,26 @@ export function uniSSRPlugin(): Plugin {
     name: 'uni:h5-ssr',
     config(userConfig, env) {
       if (isSsr(env.command, userConfig)) {
+        initSsrAliasOnce()
         rewriteSsrVue()
-        rewriteSsrResolve()
         rewriteSsrNativeTag()
         rewriteSsrRenderStyle(process.env.UNI_INPUT_DIR)
+        return {
+          resolve: {
+            alias: [
+              {
+                find: 'vue',
+                replacement: resolveBuiltIn(
+                  '@dcloudio/uni-h5-vue/dist/vue.runtime.esm.js'
+                ),
+              },
+              {
+                find: 'vue/server-renderer',
+                replacement: resolveBuiltIn('@vue/server-renderer'),
+              },
+            ],
+          },
+        }
       }
     },
     configResolved(config: ResolvedConfig) {

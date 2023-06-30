@@ -66,7 +66,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     )
 
     const _onClick = ($event: Event) => {
-      if (props.disabled) {
+      if (props.disabled || radioChecked.value) {
         return
       }
       radioChecked.value = true

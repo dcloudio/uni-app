@@ -9,6 +9,7 @@ import {
   API_STOP_ACCELEROMETER,
   API_TYPE_STOP_ACCELEROMETER,
   defineOnApi,
+  defineOffApi,
 } from '@dcloudio/uni-api'
 
 let listener: ((event: DeviceMotionEvent) => void) | null = null
@@ -19,7 +20,7 @@ export const onAccelerometerChange =
   })
 
 export const offAccelerometerChange =
-  defineOnApi<API_TYPE_OFF_ACCELEROMETER_CHANGE>(API_OFF_ACCELEROMETER, () => {
+  defineOffApi<API_TYPE_OFF_ACCELEROMETER_CHANGE>(API_OFF_ACCELEROMETER, () => {
     stopAccelerometer()
   })
 

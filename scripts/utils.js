@@ -30,6 +30,7 @@ const priority = {
   'uni-nvue-styler': 35,
   'uni-app-plus': 30,
   'uni-app-vite': 30,
+  'uni-app-uts': 30,
   'vite-plugin-uni': 20,
   'uni-cloud': 10,
   'uni-automator': 10,
@@ -72,7 +73,7 @@ exports.fuzzyMatchTarget = (partialTargets, includeAllMatching) => {
   } else {
     console.log()
     console.error(
-      `  ${colors.bgRed.white(' ERROR ')} ${colors.red(
+      `  ${colors.bgRed(' ERROR ')} ${colors.red(
         `Target ${colors.underline(partialTargets)} not found!`
       )}`
     )

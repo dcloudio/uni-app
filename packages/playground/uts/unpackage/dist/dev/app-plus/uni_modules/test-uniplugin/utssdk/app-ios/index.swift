@@ -1,7 +1,7 @@
 import DCloudUTSFoundation;
-import DCloudUTSExtAPI;
 import UIKit;
 import CoreLocation;
+import DCloudUTSExtAPI;
 public var uni_showToast = DCloudUTSExtAPI.showToast;
 public var uni_showModel = DCloudUTSExtAPI.showModel;
 public typealias ShowToast = (_ msg: String) -> Void;
@@ -155,7 +155,7 @@ public func showToast3ByJs(_ msg: String) -> Void {
 }
 @objc(UTSSDKModulesTestUniPluginIndexSwift)
 @objcMembers
-public class IndexSwift : NSObject {
+public class UTSSDKModulesTestUniPluginIndexSwift : NSObject {
     public static func s_getBatteryInfoByJs(_ options: GetBatteryInfoOptionsJSONObject) {
         return getBatteryInfoByJs(options);
     }
