@@ -64,8 +64,7 @@ export function getComponentVmBySelector(pageId: number, selector: string, callb
     callback({ result: { errMsg: `Page[${pageId}] not exists` } })
     return null
   }
-  let component: ComponentPublicInstance | null = null
-  const component = page.$children.find((child: ComponentPublicInstance) => child.$options.name == selector)
+  const component = page.$children.find((child: ComponentPublicInstance): boolean => child.$options.name == selector)
   if (component === null) {
     callback({ result: { errMsg: `component[${selector}] not exists` } })
     return null
@@ -80,11 +79,18 @@ export function getComponentVmByNodeId(pageId: number, nodeId: number, callback:
     return null
   }
   let component: ComponentPublicInstance | null = null
-  page.$children.forEach((child: ComponentPublicInstance) => {
-    if (child.$.uid == nodeId) {
-      component = child
+  function getComponentChild(parent: ComponentPublicInstance) {
+    if (parent !== null) {
+      if (parent.$.uid == nodeId) {
+        component = parent
+        return
+      }
+      parent.$children.forEach((child: ComponentPublicInstance) => {
+        getComponentChild(child)
+      })
     }
-  })
+  }
+  getComponentChild(page)
   if (component === null) {
     callback({ result: { errMsg: `component[${nodeId}] not exists` } })
     return null
@@ -93,10 +99,10 @@ export function getComponentVmByNodeId(pageId: number, nodeId: number, callback:
 }
 
 export function getElementByIdOrNodeId(pageId: number, elementId: string | null, nodeId: number | null, callback: (res: any) => void): INode | null {
-  if (elementId !== null) {
-    return getElementById(pageId, elementId!, callback)
-  } else if (nodeId !== null) {
+  if (nodeId !== null) {
     return getComponentDomByNodeId(pageId, nodeId!, callback)
+  } else if (elementId !== null) {
+    return getElementById(pageId, elementId!, callback)
   }
   return null
 }
@@ -137,7 +143,8 @@ export function getValidComponentsOrNodes(
     if (vnode.component !== null) {
       list.push({
         nodeId: (vnode.component as ComponentInternalInstance).uid,
-        tagName: (vnode.component as ComponentInternalInstance).options.name
+        tagName: (vnode.component as ComponentInternalInstance).options.name,
+        elementId: `${Date.now()}`
       })
     } else {
       list.push({
@@ -153,6 +160,10 @@ export function getValidComponentsOrNodes(
     (vnode.children as VNode[]).forEach(child => {
       getValidComponentsOrNodes(child, selector, list, getAll)
     })
+  }
+  if (vnode.component !== null) {
+    const component = vnode.component
+    getValidComponentsOrNodes(component!.subTree, selector, list, getAll)
   }
 }
 
@@ -241,4 +252,13 @@ export function getChildrenText(node: INode): string {
     }
   })
   return result
+}
+
+export function toCamelCase(str: string): string {
+  const wordList = str.split('-')
+  for (let i = 1; i < wordList.length; i++) {
+    const word = wordList[i]
+    wordList[i] = word[0].toUpperCase() + word.substring(1)
+  }
+  return wordList.join('')
 }

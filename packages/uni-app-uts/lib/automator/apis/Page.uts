@@ -69,7 +69,6 @@ export const getElement = (params: GetElementParams): void => {
     const list: UTSJSONObject[] = []
     getValidComponentsOrNodes(page.$.subTree, selector, list)
     const result = list.length > 0 ? list[0] : null
-    console.warn('Page.getElement result', result)
     params.callback(result)
   }
 }

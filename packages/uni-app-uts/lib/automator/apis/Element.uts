@@ -1,7 +1,7 @@
 import { getElementById, getComponentVmBySelector, getValidNodes, getComponentVmByNodeId, componentGetData, componentSetData, getElementByIdOrNodeId } from './util.uts'
-import { INode, Touch } from 'io.dcloud.uniapp.runtime'
+import { Touch } from 'io.dcloud.uniapp.runtime'
 import { JSONObject } from 'com.alibaba.fastjson'
-import { getChildrenText } from './util.uts'
+import { getChildrenText, toCamelCase } from './util.uts'
 
 export type GetElementParams = {
   pageId: number
@@ -20,7 +20,8 @@ export const getElement = (params: GetElementParams): void => {
       const component = getComponentVmBySelector(params.pageId, selector, params.callback)
       const result = {
         nodeId: component !== null ? component.$.uid : null,
-        tagName: component !== null ? selector : null
+        tagName: component !== null ? selector : null,
+        elementId: component !== null ? `${Date.now()}` : null
       }
       params.callback(result)
       return
@@ -91,7 +92,7 @@ export const getProperties = (params: GetPropertiesParams): void => {
   }
   if (dom !== null) {
     const properties = params.names.map((name: string): any | null => {
-      const attribute = dom.getAttribute(name) !== null ? dom.getAttribute(name) : component !== null ? component.$props[name] : null
+      const attribute = dom.getAttribute(name) !== null ? dom.getAttribute(name) : component !== null ? component.$props[toCamelCase(name)] : null
       return attribute
     })
     params.callback({ properties })
