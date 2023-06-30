@@ -9,8 +9,7 @@
   "types": "dist/index.d.ts",
   "files": [
     "bin",
-    "dist",
-    "lib"
+    "dist"
   ],
   "engines": {
     "node": "^14.18.0 || >=16.0.0"
