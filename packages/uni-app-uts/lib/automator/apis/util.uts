@@ -115,6 +115,20 @@ export function getComponentDomByNodeId(pageId: number, nodeId: number, callback
   return component.$el
 }
 
+export function getElementByNodeIdOrElementId(pageId: number, nodeId: number | null, elementId: string | null, callback: (res: any) => void): INode | null {
+  const page = getPageVm(pageId)
+  if (page === null) {
+    callback({ result: { errMsg: `Page[${pageId}] not exists` } })
+    return null
+  }
+  if (nodeId !== null) {
+    return getComponentDomByNodeId(pageId, nodeId!, callback)
+  } else if (elementId !== null) {
+    return getElementById(pageId, elementId!, callback)
+  }
+  return null
+}
+
 export function getElementById(pageId: number, elementId: string, callback: (res: any) => void): INode | null {
   const page = getPageVm(pageId)
   if (page === null) {

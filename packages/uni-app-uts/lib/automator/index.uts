@@ -135,14 +135,16 @@ export function onMessage(msg: string) {
       const pageId = params['pageId'] as number
       switch (method) {
         case 'Element.getElement':
-          const getElementElementId = params['elementId'] as string
+          const getElementElementId = params['elementId'] !== null ? params['elementId'] as string : null
+          const getElementNodeId = params['nodeId'] !== null ? params['nodeId'] as number : null
           const getElementSelector = params['selector'] as string
-          elementGetElement({ pageId, elementId: getElementElementId, selector: getElementSelector, callback } as ElementGetElementParams)
+          elementGetElement({ pageId, nodeId: getElementNodeId, elementId: getElementElementId, selector: getElementSelector, callback } as ElementGetElementParams)
           break
         case 'Element.getElements':
-          const getElementsElementId = params['elementId'] as string
+          const getElementsElementId = params['elementId'] !== null ? params['elementId'] as string : null
+          const getElementsNodeId = params['nodeId'] !== null ? params['nodeId'] as number : null
           const getElementsSelector = params['selector'] as string
-          elementGetElements({ pageId, elementId: getElementsElementId, selector: getElementsSelector, callback } as ElementGetElementParams)
+          elementGetElements({ pageId, nodeId: getElementsNodeId, elementId: getElementsElementId, selector: getElementsSelector, callback } as ElementGetElementParams)
           break
         case 'Element.getDOMProperties':
           const getDOMPropertiesElementId = params['elementId'] !== null ? params['elementId'] as string : null
