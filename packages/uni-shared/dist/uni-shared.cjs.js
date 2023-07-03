@@ -117,6 +117,7 @@ const UVUE_BUILT_IN_TAGS = [
     'cell',
     'swiper',
     'swiper-item',
+    'rich-text',
 ];
 const NVUE_U_BUILT_IN_TAGS = [
     'u-text',

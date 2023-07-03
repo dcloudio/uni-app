@@ -119,6 +119,7 @@ export const UVUE_BUILT_IN_TAGS = [
   'cell',
   'swiper',
   'swiper-item',
+  'rich-text',
 ]
 
 export const NVUE_U_BUILT_IN_TAGS = [
