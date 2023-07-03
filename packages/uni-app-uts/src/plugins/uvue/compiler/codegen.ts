@@ -44,7 +44,7 @@ import {
   RESOLVE_EASY_COMPONENT,
   TO_HANDLERS,
 } from './runtimeHelpers'
-import { object2Map } from './utils'
+import { objectStringToMapString } from './utils'
 
 type CodegenNode = TemplateChildNode | JSChildNode | SSRCodegenNode
 
@@ -586,7 +586,10 @@ function genToHandlers(
     (argument as SimpleExpressionNode)?.type === NodeTypes.SIMPLE_EXPRESSION
   ) {
     ;(argument as SimpleExpressionNode).content =
-      object2Map((argument as SimpleExpressionNode).content, false) + '])'
+      objectStringToMapString(
+        (argument as SimpleExpressionNode).content,
+        false
+      ) + '])'
   }
 }
 

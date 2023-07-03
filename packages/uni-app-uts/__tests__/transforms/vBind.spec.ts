@@ -113,6 +113,12 @@ describe('compiler: v-bind', () => {
       "createElementVNode(\"view\", new Map<string, any | null>([[\"style\", new Map<string, any | null>([['color', true ? 'blue' : 'red']])]]))"
     )
   })
+  test('complex expression', () => {
+    assert(
+      `<rich-text :nodes="[{'name':'div','attrs':{'class':'div-class','style':'line-height: 60px; color: red; text-align:center;'},'children':[{'type':'text','text':'this is text'}]}]" />`,
+      `createElementVNode(\"rich-text\", new Map<string, any | null>([[\"nodes\", [new Map<string, any | null>([['name', 'div'], ['attrs', new Map<string, any | null>([['class', 'div-class'], ['style', 'line-height: 60px; color: red; text-align:center;']])], ['children', [new Map<string, any | null>([['type', 'text'], ['text', 'this is text']])]]])]]]))`
+    )
+  })
   test('basic', () => {
     const node = parseWithVBind(`<view v-bind:id="id"/>`)
     const props = (node.codegenNode as VNodeCall).props as ObjectExpression
