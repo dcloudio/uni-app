@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-app",
-  "version": "2.0.2-3080720230630001",
+  "version": "2.0.2-3080720230703001",
   "description": "uni-app composition-api",
   "main": "dist/index.js",
   "repository": {
