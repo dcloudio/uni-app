@@ -12,10 +12,17 @@ import {
   resolveMainPathOnce,
   resolveUTSCompiler,
   utsPlugins,
+  injectAssetPlugin,
 } from '@dcloudio/uni-cli-shared'
 import { compileI18nJsonStr } from '@dcloudio/uni-i18n'
 import type { Plugin } from 'vite'
-import { parseImports, parseUTSRelativeFilename, uvueOutDir } from './utils'
+import {
+  DEFAULT_APPID,
+  kotlinOutDir,
+  parseImports,
+  parseUTSRelativeFilename,
+  uvueOutDir,
+} from './utils'
 
 const REMOVED_PLUGINS = [
   'vite:build-metadata',
@@ -25,7 +32,7 @@ const REMOVED_PLUGINS = [
   'vite:json',
   'vite:wasm-helper',
   'vite:worker',
-  'vite:asset',
+  // 'vite:asset', // replace
   'vite:wasm-fallback',
   'vite:define',
   'vite:css-post',
@@ -50,12 +57,17 @@ export function uniAppUTSPlugin(): UniVitePlugin {
   const outputDir = process.env.UNI_OUTPUT_DIR
   const mainUTS = resolveMainPathOnce(inputDir)
   const tempOutputDir = uvueOutDir()
+  const tempKotlinOutputDir = kotlinOutDir()
   const manifestJson = parseManifestJsonOnce(inputDir)
-
+  // 预留一个口子，方便切换测试
+  const split = manifestJson['uni-app-x']?.split
   // 开始编译时，清空输出目录
   function emptyOutDir() {
     if (fs.existsSync(outputDir)) {
       emptyDir(outputDir)
+    }
+    if (fs.existsSync(tempKotlinOutputDir)) {
+      emptyDir(tempKotlinOutputDir)
     }
   }
   emptyOutDir()
@@ -105,6 +117,9 @@ export function uniAppUTSPlugin(): UniVitePlugin {
           plugins.splice(i, 1)
         }
       }
+      // 强制不inline
+      config.build.assetsInlineLimit = 0
+      injectAssetPlugin(config)
     },
     async transform(code, id) {
       const { filename } = parseVueRequest(id)
@@ -129,9 +144,12 @@ export function uniAppUTSPlugin(): UniVitePlugin {
       const res = await resolveUTSCompiler().compileApp(
         path.join(tempOutputDir, 'index.uts'),
         {
+          split: split !== false,
+          disableSplitManifest: process.env.NODE_ENV !== 'development',
           inputDir: tempOutputDir,
           outputDir: outputDir,
-          package: 'uni.' + (manifestJson.appid || '').replace(/_/g, ''),
+          package:
+            'uni.' + (manifestJson.appid || DEFAULT_APPID).replace(/_/g, ''),
           sourceMap: true,
           uni_modules: [...utsPlugins],
           extApis: parseUniExtApiNamespacesOnce(

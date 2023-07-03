@@ -44,6 +44,7 @@ export type UTSOutputOptions = {
   isX?: boolean
   isPlugin?: boolean
   split?: boolean
+  disableSplitManifest?: boolean
   transform?: {
     paramDefaultValue?: boolean
     constructorInvocation?: boolean

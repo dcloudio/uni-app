@@ -42,6 +42,8 @@ export async function runUVueDev(options: CliOptions & ServerOptions) {
       output('log', M['dev.watching.start'])
     } else if (event.code === 'BUNDLE_END') {
       event.result.close()
+      const dex = process.env.UNI_APP_UTS_CHANGED_FILES
+      process.env.UNI_APP_UTS_CHANGED_FILES = ''
       if (isFirstEnd) {
         // 首次全量同步
         isFirstEnd = false
@@ -49,8 +51,6 @@ export async function runUVueDev(options: CliOptions & ServerOptions) {
         printStartupDuration(createLogger(options.logLevel), false)
         return
       }
-      const dex = process.env.UNI_APP_UTS_CHANGED_FILES
-      process.env.UNI_APP_UTS_CHANGED_FILES = ''
       if (dex) {
         return output(
           'log',

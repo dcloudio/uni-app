@@ -5,7 +5,7 @@ import {
   IndexedSourceMapConsumer,
   SourceMapConsumer,
 } from 'source-map'
-import { generateCodeFrame } from '../stacktrace'
+import { generateCodeFrame } from '../stacktrace/utils'
 
 interface MessageSourceLocation {
   type: 'exception' | 'error' | 'warning' | 'info' | 'logging' | 'output'

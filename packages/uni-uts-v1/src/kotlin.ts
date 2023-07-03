@@ -10,7 +10,7 @@ import type {
   UTSResult,
 } from '@dcloudio/uts'
 import { get } from 'android-versions'
-import { normalizePath, parseJson } from './shared'
+import { normalizePath, parseJson, resolveSourceMapPath } from './shared'
 import {
   CompilerServer,
   genUTSPlatformResource,
@@ -28,17 +28,22 @@ import {
   resolveSourceMapFile,
 } from './utils'
 import { Module } from '../types/types'
-import { parseUTSSyntaxError } from './stacktrace'
+import { parseUTSKotlinStacktrace, parseUTSSyntaxError } from './stacktrace'
 import { APP_PLATFORM } from './manifest/utils'
 import { restoreDex } from './manifest'
+import { MessageSourceLocation, hbuilderFormatter } from './stacktrace/kotlin'
 
 export interface KotlinCompilerServer extends CompilerServer {
   getKotlincHome(): string
   getDefaultJar(arg?: any): string[]
   compile(
-    options: { kotlinc: string[]; d8: string[] },
+    options: {
+      kotlinc: string[]
+      d8: string[]
+      stderrListener: (data: string) => void
+    },
     projectPath: string
-  ): Promise<boolean>
+  ): Promise<{ code: number; msg: string; data?: { dexList: string[] } }>
   checkDependencies?: (
     configJsonPath: string
   ) => Promise<{ code: number; msg: string; data: string[] }>
@@ -200,9 +205,10 @@ export async function runKotlinDev(
       pluginRelativeDir,
       kotlinFile
     )
+    const waiting = { done: undefined }
     const options = {
       kotlinc: resolveKotlincArgs(
-        kotlinFile,
+        [kotlinFile],
         jarFile,
         getKotlincHome(),
         (isX ? getDefaultJar(2) : getDefaultJar())
@@ -215,10 +221,19 @@ export async function runKotlinDev(
       d8: resolveD8Args(jarFile),
       sourceRoot: inputDir,
       sourceMapPath: resolveSourceMapFile(outputDir, kotlinFile),
+      stderrListener: createStderrListener(
+        outputDir,
+        resolveSourceMapPath(),
+        waiting
+      ),
     }
-    const res = await compileDex(options, inputDir)
+    const { code, msg } = await compileDex(options, inputDir)
     // console.log('dex compile time: ' + (Date.now() - time) + 'ms')
-    if (res) {
+    // 等待 stderrListener 执行完毕
+    if (waiting.done) {
+      await waiting.done
+    }
+    if (!code) {
       try {
         // 其他插件或 x 需要该插件的 jar 做编译
         // fs.unlinkSync(jarFile)
@@ -237,6 +252,8 @@ export async function runKotlinDev(
           normalizePath(path.relative(outputDir, newDexFile || dexFile)),
         ]
       }
+    } else if (msg) {
+      console.error(msg)
     }
     // else {
     //   throw `${normalizePath(
@@ -428,13 +445,13 @@ export async function compile(
 }
 
 export function resolveKotlincArgs(
-  filename: string,
+  files: string[],
   dest: string,
   kotlinc: string,
   jars: string[]
 ) {
   return [
-    filename,
+    ...files,
     '-cp',
     resolveClassPath(jars),
     '-d',
@@ -444,15 +461,10 @@ export function resolveKotlincArgs(
   ]
 }
 
+export const D8_DEFAULT_ARGS = ['--min-api', '19']
+
 export function resolveD8Args(filename: string) {
-  return [
-    filename,
-    // '--no-desugaring',
-    '--min-api',
-    '19',
-    '--output',
-    resolveDexPath(filename),
-  ]
+  return [filename, ...D8_DEFAULT_ARGS, '--output', resolveDexPath(filename)]
 }
 
 function resolveLibs(filename: string) {
@@ -555,4 +567,44 @@ export function getUniModulesJars(outputDir: string) {
     cwd: path.resolve(outputDir, 'uni_modules'),
     absolute: true,
   })
+}
+
+export function createStderrListener(
+  inputDir: string,
+  sourceMapDir: string,
+  waiting: { done: Promise<void> | undefined }
+) {
+  return async function stderrListener(data: any) {
+    waiting.done = new Promise(async (resolve) => {
+      let message = data.toString().trim()
+      if (message) {
+        try {
+          const messages = JSON.parse(message) as MessageSourceLocation[]
+          if (messages.length) {
+            const msg = await parseUTSKotlinStacktrace(messages, {
+              inputDir,
+              sourceMapDir,
+              replaceTabsWithSpace: true,
+              format: hbuilderFormatter,
+            })
+            if (msg) {
+              console.log(msg)
+            }
+          }
+        } catch (e) {
+          if (
+            // 屏蔽部分不需要的警告信息
+            !(
+              message === ':' ||
+              message.includes('Warning in') ||
+              message.includes('desugaring of')
+            )
+          ) {
+            console.error(message)
+          }
+        }
+      }
+      resolve()
+    })
+  }
 }

@@ -14,6 +14,8 @@ import {
   isString,
 } from '@vue/shared'
 
+export const DEFAULT_APPID = 'HBuilder'
+
 export const ENTRY_FILENAME = 'index.uts'
 
 export async function parseImports(code: string) {
@@ -46,6 +48,10 @@ function parseUniExtApiImports(code: string): string[] {
     }
   })
   return imports
+}
+
+export function kotlinOutDir() {
+  return path.join(process.env.UNI_OUTPUT_DIR, '../.kotlin')
 }
 
 export function uvueOutDir() {

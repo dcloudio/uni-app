@@ -1,14 +1,13 @@
 import path from 'path'
 import fs from 'fs-extra'
 import {
+  D8_DEFAULT_ARGS,
   KotlinCompilerServer,
   RunKotlinDevResult,
   getUniModulesCacheJars,
   getUniModulesJars,
-  resolveD8Args,
-  resolveDexFile,
-  resolveJarPath,
   resolveKotlincArgs,
+  createStderrListener,
 } from '../kotlin'
 import { parseUTSSyntaxError } from '../stacktrace'
 import {
@@ -18,7 +17,7 @@ import {
   resolveUTSSourceMapPath,
 } from '../utils'
 import { UTSBundleOptions, UTSInputOptions, UTSResult } from '@dcloudio/uts'
-import { normalizePath } from '../shared'
+import { resolveSourceMapPath } from '../shared'
 
 const DEFAULT_IMPORTS = [
   'kotlinx.coroutines.async',
@@ -42,11 +41,14 @@ export interface CompileAppOptions {
   sourceMap: boolean
   uni_modules: string[]
   extApis?: Record<string, [string, string]>
+  split?: boolean
+  disableSplitManifest?: boolean
 }
 export async function compileApp(entry: string, options: CompileAppOptions) {
+  const split = !!options.split
   const { bundle, UTSTarget } = getUTSCompiler()
   const imports = [...DEFAULT_IMPORTS]
-
+  const isProd = process.env.NODE_ENV !== 'development'
   const {
     package: pkg,
     inputDir,
@@ -70,18 +72,23 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
       },
     },
   }
+
   const bundleOptions: UTSBundleOptions = {
     input,
     output: {
       isX: true,
       isPlugin: false,
-      outDir: outputDir,
+      outDir: isProd
+        ? kotlinSrcDir(path.resolve(outputDir, '.uniappx/android/'))
+        : kotlinSrcDir(kotlinDir(outputDir)),
       package: pkg,
       sourceMap: sourceMap !== false ? resolveUTSSourceMapPath() : false,
       extname: 'kt',
       imports,
       logFilename: true,
       noColor: true,
+      split,
+      disableSplitManifest: options.disableSplitManifest,
       transform: {
         uniExtApiDefaultNamespace: 'io.dcloud.uts.extapi',
         uniExtApiNamespaces: extApis,
@@ -89,18 +96,35 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
       },
     },
   }
+  // const time = Date.now()
+  // console.log(bundleOptions)
   const result = await bundle(UTSTarget.KOTLIN, bundleOptions)
+  // console.log('UTS编译耗时: ' + (Date.now() - time) + 'ms')
   if (!result) {
     return
   }
+
   if (result.error) {
     throw parseUTSSyntaxError(result.error, inputDir)
   }
 
-  if (process.env.NODE_ENV !== 'development') {
+  if (isProd) {
     return runKotlinBuild(options, result)
   }
+
   return runKotlinDev(options, result as RunKotlinDevResult)
+}
+
+function kotlinDir(outputDir: string) {
+  return path.resolve(outputDir, '../.kotlin')
+}
+
+function kotlinSrcDir(kotlinDir: string) {
+  return path.resolve(kotlinDir, 'src')
+}
+
+function kotlinClassDir(kotlinDir: string) {
+  return path.resolve(kotlinDir, 'class')
 }
 
 async function runKotlinDev(
@@ -108,12 +132,16 @@ async function runKotlinDev(
   result: RunKotlinDevResult
 ) {
   result.type = 'kotlin'
-  result.changed = []
+  const kotlinRootOutDir = kotlinDir(options.outputDir)
+  const kotlinSrcOutDir = kotlinSrcDir(kotlinRootOutDir)
+  const kotlinChangedFiles = result.changed.map((file) => {
+    return path.resolve(kotlinSrcOutDir, file)
+  })
 
   const { inputDir, outputDir } = options
-  const kotlinFile = path.resolve(outputDir, result.filename!)
+  const kotlinMainFile = path.resolve(kotlinSrcOutDir, result.filename!)
   // 开发模式下，需要生成 dex
-  if (fs.existsSync(kotlinFile)) {
+  if (kotlinChangedFiles.length && fs.existsSync(kotlinMainFile)) {
     const compilerServer = getCompilerServer<KotlinCompilerServer>(
       'uniapp-runextension'
     )
@@ -128,46 +156,51 @@ async function runKotlinDev(
 
     const cacheDir = process.env.HX_DEPENDENCIES_DIR || ''
 
-    // time = Date.now()
-    const jarFile = resolveJarPath('app-android', '', '', kotlinFile)
+    const kotlinClassOutDir = kotlinClassDir(kotlinRootOutDir)
+    const waiting = { done: undefined }
     const options = {
+      version: 'v2',
       kotlinc: resolveKotlincArgs(
-        kotlinFile,
-        jarFile,
+        kotlinChangedFiles,
+        kotlinClassOutDir,
         getKotlincHome(),
-        getDefaultJar(2)
-          .concat(getUniModulesCacheJars(cacheDir))
-          .concat(getUniModulesJars(outputDir))
-      ),
-      d8: resolveD8Args(jarFile),
+        [kotlinClassOutDir].concat(
+          getDefaultJar(2)
+            .concat(getUniModulesCacheJars(cacheDir))
+            .concat(getUniModulesJars(outputDir))
+        )
+      ).concat(['-module-name', `main-${+Date.now()}`]),
+      d8: D8_DEFAULT_ARGS,
+      kotlinOutDir: kotlinClassOutDir,
+      dexOutDir: outputDir,
+      inputDir: kotlinSrcOutDir,
       sourceRoot: inputDir,
-      sourceMapPath: resolveSourceMapFile(outputDir, kotlinFile),
+      sourceMapPath: resolveSourceMapFile(outputDir, kotlinMainFile),
+      stderrListener: createStderrListener(
+        kotlinSrcOutDir,
+        resolveSourceMapPath(),
+        waiting
+      ),
     }
-    const res = await compileDex(options, inputDir)
-    // console.log('dex compile time: ' + (Date.now() - time) + 'ms')
-    if (res) {
-      try {
-        fs.unlinkSync(jarFile)
-        // 短期内先不删除，方便排查问题
-        // fs.unlinkSync(kotlinFile)
-      } catch (e) {}
-      const dexFile = resolveDexFile(jarFile)
-      if (fs.existsSync(dexFile)) {
-        result.changed = [normalizePath(path.relative(outputDir, dexFile))]
+    // console.log('DEX编译参数:', options)
+    const { code, msg, data } = await compileDex(options, inputDir)
+    // 等待 stderrListener 执行完毕
+    if (waiting.done) {
+      await waiting.done
+    }
+    // console.log('DEX编译结果:', code, data)
+    if (!code && data) {
+      result.changed = data.dexList
+    } else {
+      result.changed = []
+      if (msg) {
+        console.error(msg)
       }
     }
   }
   return result
 }
 
-async function runKotlinBuild(options: CompileAppOptions, result: UTSResult) {
-  const { outputDir } = options
-  const kotlinFile = path.resolve(outputDir, result.filename!)
-  fs.moveSync(
-    kotlinFile,
-    path.resolve(
-      outputDir,
-      '.uniappx/android/src/' + path.basename(result.filename!)
-    )
-  )
+async function runKotlinBuild(_options: CompileAppOptions, _result: UTSResult) {
+  // TODO
 }
