@@ -9,7 +9,9 @@ export function initWebviewApi (readyCallback) {
   if (!isAppPlus && !isHtml5Plus) {
     return
   }
-  if (window.__dcloud_weex_postMessage || window.__dcloud_weex_) { // nvue web-view
+  if (window.__uniapp_x_postMessage || window.__uniapp_x_) { // uvue web-view
+    document.addEventListener('DOMContentLoaded', readyCallback)
+  } else if (window.__dcloud_weex_postMessage || window.__dcloud_weex_) { // nvue web-view
     document.addEventListener('DOMContentLoaded', readyCallback)
   } else if (window.plus && readyRE.test(document.readyState)) {
     setTimeout(readyCallback, 0)
