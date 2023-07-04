@@ -11,7 +11,7 @@ export const connectSocket = (url: string, callback: (res: any) => void): void =
   const socketTask: SocketTask = uni.connectSocket({
     url,
     success() {
-      callback({ result: { errMsg: 'connectSocket:ok', url } })
+      callback({ result: { errMsg: 'connectSocket:ok' } })
     },
     fail(error: any) {
       callback({ result: { error } })

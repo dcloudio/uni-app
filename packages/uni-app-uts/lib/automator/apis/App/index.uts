@@ -6,7 +6,7 @@ import {
 } from 'io.dcloud.uniapp.runtime'
 import { getCurrentPages } from 'io.dcloud.uts.framework'
 import { parsePage } from '../util.uts'
-import { ShowToastOptions, ShowLoadingOptions, ShowModalOptions, ShowActionSheetOptions } from "io.dcloud.uts.extapi";
+import { ShowToastOptions, ShowLoadingOptions, ShowModalOptions, ShowActionSheetOptions } from "io.dcloud.uts.extapi"
 import { connectSocket } from './Socket.uts'
 
 export type GetPageStackParams = {
@@ -111,14 +111,6 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
         fail
       })
       break
-    case 'setStorage':
-      uni.setStorage({
-        key: (args[0] as JSONObject)['key'] as string,
-        data: (args[0] as JSONObject)['data'] as any,
-        success,
-        fail
-      })
-      break
     case 'getStorage':
       uni.getStorage({
         key: (args[0] as JSONObject)['key'] as string,
@@ -128,13 +120,48 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
         fail
       })
       break
+    case 'setStorage':
+      uni.setStorage({
+        key: (args[0] as JSONObject)['key'] as string,
+        data: (args[0] as JSONObject)['data'] as any,
+        success,
+        fail
+      })
+      break
+    case 'getStorageSync':
+      callback({ result: uni.getStorageSync((args[0] as string)) })
+      break
     case 'setStorageSync':
       uni.setStorageSync(args[0] as string, args[1] as any)
       callback({ result: { errMsg: 'uni.setStorageSync success' } })
       break
-    case 'getStorageSync':
-      const result = uni.getStorageSync((args[0] as string))
-      callback({ result })
+    case 'getStorageInfo':
+      uni.getStorageInfo({
+        success(result: any) {
+          callback({ result })
+        },
+        fail
+      })
+      break
+    case 'getStorageInfoSync':
+      callback({ result: uni.getStorageInfoSync() })
+      break
+    case 'removeStorage':
+      uni.removeStorage({
+        key: (args[0] as JSONObject)['key'] as string,
+        success,
+        fail
+      })
+      break
+    case 'removeStorageSync':
+      uni.removeStorageSync(args[0] as string)
+      callback({ result: {} })
+      break
+    case 'clearStorage':
+      callback({ result: uni.clearStorage() })
+      break
+    case 'clearStorageSync':
+      callback({ result: uni.clearStorageSync() })
       break
     case 'showToast':
       const icon = (args[0] as JSONObject)['icon'] != null ? (args[0] as JSONObject)['icon'] as string : 'success'
@@ -215,6 +242,38 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
     case 'connectSocket':
       const url = (args[0] as JSONObject)['url'] as string
       connectSocket(url, callback)
+      break
+    case 'getSystemInfo':
+      uni.getSystemInfo({
+        success(result: any) {
+          callback({ result })
+        },
+        fail(error: any) {
+          callback({ result: error })
+        }
+      })
+      break
+    case 'getSystemInfoSync':
+      callback({ result: uni.getSystemInfoSync() })
+      break
+    case 'getDeviceInfo':
+      callback({ result: uni.getDeviceInfo() })
+      break
+    case 'getAppBaseInfo':
+      callback({ result: uni.getAppBaseInfo() })
+      break
+    case 'getAppAuthorizeSetting':
+      callback({ result: uni.getAppAuthorizeSetting() })
+      break
+    case 'openAppAuthorizeSetting':
+      uni.openAppAuthorizeSetting({
+        success(result: any) {
+          callback({ result })
+        },
+        fail(error: any) {
+          callback({ result: error })
+        }
+      })
       break
     default:
       callback({ result: { errMsg: 'uni.' + method + ' not exists.' } })

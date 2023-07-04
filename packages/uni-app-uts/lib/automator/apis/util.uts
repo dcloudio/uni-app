@@ -80,15 +80,13 @@ export function getComponentVmByNodeId(pageId: number, nodeId: number, callback:
   }
   let component: ComponentPublicInstance | null = null
   function getComponentChild(parent: ComponentPublicInstance) {
-    if (parent !== null) {
-      if (parent.$.uid == nodeId) {
-        component = parent
-        return
-      }
-      parent.$children.forEach((child: ComponentPublicInstance) => {
-        getComponentChild(child)
-      })
+    if (parent.$.uid == nodeId) {
+      component = parent
+      return
     }
+    parent.$children.forEach((child: ComponentPublicInstance) => {
+      getComponentChild(child)
+    })
   }
   getComponentChild(page)
   if (component === null) {

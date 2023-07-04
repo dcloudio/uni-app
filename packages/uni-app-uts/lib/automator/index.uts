@@ -223,7 +223,7 @@ export function onMessage(msg: string) {
       }
     }
   } catch (error) {
-    res.set('error', error.stackTraceToString())
+    res.set('error', { message: error.stackTraceToString() })
     send(res)
   }
 }
