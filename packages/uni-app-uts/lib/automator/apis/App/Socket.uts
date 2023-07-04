@@ -13,8 +13,8 @@ export const connectSocket = (url: string, callback: (res: any) => void): void =
     success() {
       callback({ result: { errMsg: 'connectSocket:ok' } })
     },
-    fail(error: any) {
-      callback({ result: { error } })
+    fail() {
+      callback({ result: { errMsg: 'connectSocket:fail' } })
     }
   })
   socketInstanceMap.set(url, { instance: socketTask, isOpend: false } as SocketInstanceData)
@@ -69,22 +69,22 @@ export const socketEmitter = (params: SocketEmitterParams): void => {
     } else if (params.method == 'send') {
       socketTask.send({
         data: params.data!,
-        success(res: GeneralCallbackResult) {
-          params.callback({ id: params.id, result: res })
+        success(result: GeneralCallbackResult) {
+          params.callback(result)
         },
         fail(error: any) {
-          params.callback({ id: params.id, result: error })
+          params.callback(error)
         }
       } as SendSocketMessageOptions)
     } else if (params.method == 'close') {
       socketTask.close({
         code: params.code,
         reason: params.reason,
-        success(res: GeneralCallbackResult) {
-          params.callback({ id: params.id, result: res })
+        success(result: GeneralCallbackResult) {
+          params.callback(result)
         },
         fail(error: any) {
-          params.callback({ id: params.id, result: error })
+          params.callback(error)
         }
       } as CloseSocketOptions)
     }
