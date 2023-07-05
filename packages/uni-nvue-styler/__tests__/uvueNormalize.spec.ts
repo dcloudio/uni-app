@@ -64,7 +64,7 @@ paddingTop: 11upx;
     expect(messages[0]).toEqual(
       expect.objectContaining({
         type: 'warning',
-        text: 'ERROR: property value `asdf` is not supported for `margin-right` (supported values are: `number`|`pixel`|`percent`)',
+        text: 'ERROR: property value `asdf` is not supported for `margin-right` (supported values are: `number`|`pixel`|`percent`|`auto`)',
       })
     )
   })
@@ -179,6 +179,52 @@ right: auto;
     expect(messages[1]).toEqual(
       expect.objectContaining({
         text: 'ERROR: property value `0.5a` is not supported for `opacity` (supported values are: `number`)',
+      })
+    )
+  })
+  test('integer', async () => {
+    const { json, messages } = await objectifierRule(`
+.foo{
+  lines: 1
+},
+.bar{
+  lines: 0.5
+},
+.baz{
+  lines: a
+},
+.boo{
+  lines: 0.5a
+},
+.zero{
+  lines: 0
+}
+`)
+    expect(json).toEqual({
+      foo: {
+        '': {
+          lines: 1,
+        },
+      },
+      zero: {
+        '': {
+          lines: 0,
+        },
+      },
+    })
+    expect(messages[0]).toEqual(
+      expect.objectContaining({
+        text: 'ERROR: property value `0.5` is not supported for `lines` (supported values are: `integer`)',
+      })
+    )
+    expect(messages[1]).toEqual(
+      expect.objectContaining({
+        text: 'ERROR: property value `a` is not supported for `lines` (supported values are: `integer`)',
+      })
+    )
+    expect(messages[2]).toEqual(
+      expect.objectContaining({
+        text: 'ERROR: property value `0.5a` is not supported for `lines` (supported values are: `integer`)',
       })
     )
   })

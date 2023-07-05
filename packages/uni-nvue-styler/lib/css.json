@@ -1174,6 +1174,11 @@
     {
       "name": "margin",
       "restrictions": ["length", "percentage"],
+      "values": [
+        {
+          "name": "auto"
+        }
+      ],
       "uniPlatform": {
         "app": {
           "android": {
@@ -1191,6 +1196,11 @@
     {
       "name": "margin-left",
       "restrictions": ["length", "percentage"],
+      "values": [
+        {
+          "name": "auto"
+        }
+      ],
       "uniPlatform": {
         "app": {
           "android": {
@@ -1208,6 +1218,11 @@
     {
       "name": "margin-top",
       "restrictions": ["length", "percentage"],
+      "values": [
+        {
+          "name": "auto"
+        }
+      ],
       "uniPlatform": {
         "app": {
           "android": {
@@ -1225,6 +1240,11 @@
     {
       "name": "margin-right",
       "restrictions": ["length", "percentage"],
+      "values": [
+        {
+          "name": "auto"
+        }
+      ],
       "uniPlatform": {
         "app": {
           "android": {
@@ -1242,6 +1262,11 @@
     {
       "name": "margin-bottom",
       "restrictions": ["length", "percentage"],
+      "values": [
+        {
+          "name": "auto"
+        }
+      ],
       "uniPlatform": {
         "app": {
           "android": {
@@ -1959,6 +1984,24 @@
     {
       "name": "line-height",
       "restrictions": ["length", "percentage"],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      },
+      "unixTags": ["text"]
+    },
+    {
+      "name": "lines",
+      "restrictions": ["integer"],
       "uniPlatform": {
         "app": {
           "android": {

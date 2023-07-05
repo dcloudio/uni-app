@@ -148,6 +148,7 @@ const restrictionMap: Partial<Record<Restriction, Normalize>> = {
   [Restriction.PERCENTAGE]: normalizePercent,
   [Restriction.NUMBER]: normalizeNumber,
   [Restriction.NUMBER_0_1]: normalizeNumber,
+  [Restriction.INTEGER]: normalizeInteger,
   [Restriction.COLOR]: normalizeColor,
   [Restriction.TIME]: normalizeInterval,
   [Restriction.PROPERTY]: normalizeProperty,
