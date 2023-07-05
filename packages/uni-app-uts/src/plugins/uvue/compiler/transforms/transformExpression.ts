@@ -151,7 +151,7 @@ export function processExpression(
     : `(${rawExp})${asParams ? `=>{}` : ``}`
   try {
     ast = parse(source, {
-      // plugins: context.expressionPlugins
+      plugins: ['typescript'],
     }).program
   } catch (e: any) {
     context.onError(
@@ -218,18 +218,20 @@ export function processExpression(
       children.push(leadingText + (id.prefix || ``))
     }
     const source = rawExp.slice(start, end)
-    children.push(
-      createSimpleExpression(
-        id.name,
-        false,
-        {
-          source,
-          start: advancePositionWithClone(node.loc.start, source, start),
-          end: advancePositionWithClone(node.loc.start, source, end),
-        },
-        id.isConstant ? ConstantTypes.CAN_STRINGIFY : ConstantTypes.NOT_CONSTANT
-      )
+    const child = createSimpleExpression(
+      id.name,
+      false,
+      {
+        source,
+        start: advancePositionWithClone(node.loc.start, source, start),
+        end: advancePositionWithClone(node.loc.start, source, end),
+      },
+      id.isConstant ? ConstantTypes.CAN_STRINGIFY : ConstantTypes.NOT_CONSTANT
     )
+    if (id.typeAnnotation?.type === 'TSTypeAnnotation') {
+      child.content = child.loc.source
+    }
+    children.push(child)
     if (i === ids.length - 1 && end < rawExp.length) {
       children.push(rawExp.slice(end))
     }

@@ -115,10 +115,10 @@ _ctx.bar()
     expect(() => {
       assert(
         `<text @click="
-        $event => {
-          foo($event)
-        }
-      "/>`,
+          $event => {
+            foo($event)
+          }
+        "/>`,
         ``
       )
     }).toThrow(inlineStatementCannotUseEventMsg)
@@ -134,10 +134,10 @@ _ctx.bar()
     expect(() => {
       assert(
         `<text @click="
-        function($event) {
-          foo($event)
-        }
-      "/>`,
+          function($event) {
+            foo($event)
+          }
+        "/>`,
         ``
       )
     }).toThrow(inlineStatementCannotUseEventMsg)
@@ -191,6 +191,14 @@ _ctx.bar()
     assert(
       `<text v-on="{'a':'aaa'}"/>`,
       `createElementVNode("text", toHandlers(new Map<string, any | null>([['a', 'aaa']]), true), null, 16 /* FULL_PROPS */)`
+    )
+  })
+  test('parameter with type', () => {
+    assert(
+      `<text @click="(e: any) => click(e)" />`,
+      `createElementVNode(\"text\", new Map<string, any | null>([
+  [\"onClick\", (e: any) => _ctx.click(e)]
+]), null, 8 /* PROPS */, [\"onClick\"])`
     )
   })
 
@@ -463,10 +471,10 @@ _ctx.bar()
     expect(() => {
       parseWithVOn(
         `<view @click="
-          $event => {
-            foo($event)
-          }
-        "/>`
+            $event => {
+              foo($event)
+            }
+          "/>`
       )
     }).toThrow(inlineStatementCannotUseEventMsg)
     // const { node } = parseWithVOn(
@@ -497,10 +505,10 @@ _ctx.bar()
     expect(() => {
       parseWithVOn(
         `<view @click="
-      function($event) {
-        foo($event)
-      }
-    "/>`
+        function($event) {
+          foo($event)
+        }
+      "/>`
       )
     }).toThrow(inlineStatementCannotUseEventMsg)
     // const { node } = parseWithVOn(
