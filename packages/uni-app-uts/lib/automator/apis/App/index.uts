@@ -158,7 +158,14 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
       callback({ result: {} })
       break
     case 'clearStorage':
-      callback({ result: uni.clearStorage() })
+      uni.clearStorage({
+        success(res: any) {
+          callback({ result: res })
+        },
+        fail(err: any) {
+          callback({ result: err })
+        }
+      })
       break
     case 'clearStorageSync':
       callback({ result: uni.clearStorageSync() })
