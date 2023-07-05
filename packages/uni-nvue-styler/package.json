@@ -5,7 +5,8 @@
   "main": "./dist/uni-nvue-styler.cjs.js",
   "types": "./dist/uni-nvue-styler.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "lib"
   ],
   "repository": {
     "type": "git",

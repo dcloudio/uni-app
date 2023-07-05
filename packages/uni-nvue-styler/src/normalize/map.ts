@@ -1,163 +1,23 @@
 import { NormalizeOptions } from '.'
-import { Normalize } from '../utils'
+import cssJSON from '../../lib/css.json'
+import { camelize } from '@vue/shared'
+import { CssJSON, Normalize, Property, Restriction } from '../utils'
 import { normalizeColor } from './color'
-import { createEnumNormalize } from './enum'
+import { createEnumNormalize, createEnumNormalizeWithPlatform } from './enum'
 import { normalizeFlexWrap } from './flexWrap'
 import { normalizeInteger } from './integer'
-import {
-  normalizeLength,
-  normalizeLengthWithPercent,
-  normalizeLengthWithAutoAndPercent,
-} from './length'
+import { normalizeLength, normalizePercent } from './length'
 import { normalizeNumber } from './number'
 import { normalizeShorthandLength } from './shorthandLength'
 import { normalizeTransform } from './transform'
-import { normalizeTransitionInterval } from './transitionInterval'
-import { normalizeTransitionProperty } from './transitionProperty'
-import { normalizeTransitionTimingFunction } from './transitionTimingFunction'
+import { normalizeInterval } from './interval'
+import { normalizeProperty } from './property'
+import { normalizeTimingFunction } from './timingFunction'
+import { createCombinedNormalize } from './combined'
+import { normalizePlatform } from './platform'
 
-const normalizeDefault: Normalize = (v) => {
+export const normalizeDefault: Normalize = (v) => {
   return { value: v }
-}
-
-const UVUE_PROP_NAME_GROUPS: Record<string, Record<string, Normalize>> = {
-  boxModel: {
-    display: createEnumNormalize(['flex', 'none']),
-    width: normalizeLengthWithPercent,
-    height: normalizeLengthWithPercent,
-    minWidth: normalizeLengthWithPercent,
-    minHeight: normalizeLengthWithPercent,
-    maxWidth: normalizeLengthWithPercent,
-    maxHeight: normalizeLengthWithPercent,
-    overflow: createEnumNormalize(['hidden', 'visible']),
-    padding: normalizeShorthandLength,
-    paddingLeft: normalizeLengthWithAutoAndPercent,
-    paddingRight: normalizeLengthWithAutoAndPercent,
-    paddingTop: normalizeLengthWithAutoAndPercent,
-    paddingBottom: normalizeLengthWithAutoAndPercent,
-    margin: normalizeShorthandLength,
-    marginLeft: normalizeLengthWithAutoAndPercent,
-    marginRight: normalizeLengthWithAutoAndPercent,
-    marginTop: normalizeLengthWithAutoAndPercent,
-    marginBottom: normalizeLengthWithAutoAndPercent,
-    borderWidth: normalizeLength,
-    borderLeftWidth: normalizeLength,
-    borderTopWidth: normalizeLength,
-    borderRightWidth: normalizeLength,
-    borderBottomWidth: normalizeLength,
-    borderColor: normalizeColor,
-    borderLeftColor: normalizeColor,
-    borderTopColor: normalizeColor,
-    borderRightColor: normalizeColor,
-    borderBottomColor: normalizeColor,
-    borderStyle: createEnumNormalize(['dotted', 'dashed', 'solid']),
-    borderTopStyle: createEnumNormalize(['dotted', 'dashed', 'solid']),
-    borderRightStyle: createEnumNormalize(['dotted', 'dashed', 'solid']),
-    borderBottomStyle: createEnumNormalize(['dotted', 'dashed', 'solid']),
-    borderLeftStyle: createEnumNormalize(['dotted', 'dashed', 'solid']),
-    borderRadius: normalizeLength,
-    borderBottomLeftRadius: normalizeLength,
-    borderBottomRightRadius: normalizeLength,
-    borderTopLeftRadius: normalizeLength,
-    borderTopRightRadius: normalizeLength,
-  },
-  flexbox: {
-    flex: normalizeDefault,
-    flexShrink: normalizeDefault,
-    flexGrow: normalizeDefault,
-    flexBasis: normalizeDefault,
-    flexWrap: normalizeFlexWrap,
-    flexFlow: normalizeDefault,
-    flexDirection: createEnumNormalize([
-      'column',
-      'row',
-      'column-reverse',
-      'row-reverse',
-    ]),
-    justifyContent: createEnumNormalize([
-      'flex-start',
-      'flex-end',
-      'center',
-      'space-between',
-      'space-around',
-    ]),
-    alignItems: createEnumNormalize([
-      'stretch',
-      'flex-start',
-      'flex-end',
-      'center',
-      'baseline',
-    ]),
-    alignContent: createEnumNormalize([
-      'stretch',
-      'flex-start',
-      'flex-end',
-      'center',
-      'space-between',
-      'space-around',
-    ]),
-  },
-  position: {
-    position: createEnumNormalize(['relative', 'absolute', 'sticky', 'fixed']),
-    top: normalizeLengthWithAutoAndPercent,
-    bottom: normalizeLengthWithAutoAndPercent,
-    left: normalizeLengthWithAutoAndPercent,
-    right: normalizeLengthWithAutoAndPercent,
-    zIndex: normalizeInteger,
-  },
-  common: {
-    opacity: normalizeNumber,
-    boxShadow: normalizeDefault,
-    boxSizing: createEnumNormalize(['content-box', 'border-box']),
-    backgroundColor: normalizeColor,
-    backgroundImage: normalizeDefault,
-    backgroundClip: createEnumNormalize(['border-box']),
-  },
-  text: {
-    lines: normalizeInteger,
-    color: normalizeColor,
-    fontSize: normalizeLength,
-    fontStyle: createEnumNormalize(['normal', 'italic']),
-    fontFamily: normalizeDefault,
-    fontWeight: createEnumNormalize([
-      'normal',
-      'bold',
-      '100',
-      '200',
-      '300',
-      '400',
-      '500',
-      '600',
-      '700',
-      '800',
-      '900',
-    ]),
-    textDecorationLine: createEnumNormalize([
-      'none',
-      'underline',
-      'line-through',
-    ]),
-    textAlign: createEnumNormalize(['left', 'center', 'right']),
-    lineHeight: normalizeLength,
-  },
-  transition: {
-    transitionProperty: normalizeTransitionProperty,
-    transitionDuration: normalizeTransitionInterval,
-    transitionDelay: normalizeTransitionInterval,
-    transitionTimingFunction: normalizeTransitionTimingFunction,
-  },
-  transform: {
-    transform: normalizeTransform,
-    transformOrigin: normalizeTransform, // fixed by xxxxxx
-  },
-  customized: {
-    itemSize: normalizeLength,
-    itemColor: normalizeColor,
-    itemSelectedColor: normalizeColor,
-    textColor: normalizeColor,
-    timeColor: normalizeColor,
-    textHighlightColor: normalizeColor,
-  },
 }
 
 const NVUE_PROP_NAME_GROUPS: Record<string, Record<string, Normalize>> = {
@@ -259,10 +119,10 @@ const NVUE_PROP_NAME_GROUPS: Record<string, Record<string, Normalize>> = {
     lineHeight: normalizeLength,
   },
   transition: {
-    transitionProperty: normalizeTransitionProperty,
-    transitionDuration: normalizeTransitionInterval,
-    transitionDelay: normalizeTransitionInterval,
-    transitionTimingFunction: normalizeTransitionTimingFunction,
+    transitionProperty: normalizeProperty,
+    transitionDuration: normalizeInterval,
+    transitionDelay: normalizeInterval,
+    transitionTimingFunction: normalizeTimingFunction,
   },
   transform: {
     transform: normalizeTransform,
@@ -278,6 +138,64 @@ const NVUE_PROP_NAME_GROUPS: Record<string, Record<string, Normalize>> = {
   },
 }
 
+const uvueNormalizeMap: Record<string, Normalize> = {
+  margin: normalizeShorthandLength,
+  padding: normalizeShorthandLength,
+  transform: normalizeTransform,
+}
+
+const restrictionMap: Partial<Record<Restriction, Normalize>> = {
+  [Restriction.LENGTH]: normalizeLength,
+  [Restriction.PERCENTAGE]: normalizePercent,
+  [Restriction.NUMBER]: normalizeNumber,
+  [Restriction.NUMBER_0_1]: normalizeNumber,
+  [Restriction.COLOR]: normalizeColor,
+  [Restriction.TIME]: normalizeInterval,
+  [Restriction.PROPERTY]: normalizeProperty,
+  [Restriction.TIMING_FUNCTION]: normalizeTimingFunction,
+}
+
+function getUvueNormalizeMap() {
+  const result: Record<string, Normalize> = {}
+  const _cssJSON = cssJSON as CssJSON
+  const { properties } = _cssJSON
+
+  for (let i = 0; i < properties.length; i++) {
+    const property = properties[i]
+    const prop = camelize(property.name)
+    let normalize: Normalize
+    if (uvueNormalizeMap[prop]) {
+      normalize = uvueNormalizeMap[prop]
+    } else {
+      const normalizes = getNormalizes(property)
+      if (normalizes.length > 1) {
+        normalize = createCombinedNormalize(normalizes)
+      } else if (normalizes.length === 1) {
+        normalize = normalizes[0]
+      } else {
+        normalize = normalizeDefault
+      }
+    }
+    result[prop] = normalizePlatform(normalize, property.uniPlatform)
+  }
+  return result
+}
+
+function getNormalizes(property: Property) {
+  const normalizes: Normalize[] = []
+  property.restrictions.forEach((restriction) => {
+    const normalize = restrictionMap[restriction]
+    if (normalize) {
+      normalizes.push(normalize)
+    }
+  })
+  // enum
+  if (property?.values?.length) {
+    normalizes.push(createEnumNormalizeWithPlatform(property.values))
+  }
+  return normalizes
+}
+
 let normalizeMap: Record<string, Normalize>
 
 export function getNormalizeMap(options: NormalizeOptions) {
@@ -285,15 +203,19 @@ export function getNormalizeMap(options: NormalizeOptions) {
     return normalizeMap
   }
   const uvue = options.type === 'uvue'
-  const PROP_NAME_GROUPS = uvue ? UVUE_PROP_NAME_GROUPS : NVUE_PROP_NAME_GROUPS
-  normalizeMap = Object.keys(PROP_NAME_GROUPS).reduce<
-    Record<string, Normalize>
-  >((res, name) => {
-    const group = PROP_NAME_GROUPS[name]
-    Object.keys(group).forEach((prop) => {
-      res[prop] = group[prop]
-    })
-    return res
-  }, {})
+  if (uvue) {
+    normalizeMap = getUvueNormalizeMap()
+  } else {
+    normalizeMap = Object.keys(NVUE_PROP_NAME_GROUPS).reduce<
+      Record<string, Normalize>
+    >((res, name) => {
+      const group = NVUE_PROP_NAME_GROUPS[name]
+      Object.keys(group).forEach((prop) => {
+        res[prop] = group[prop]
+      })
+      return res
+    }, {})
+  }
+
   return normalizeMap
 }

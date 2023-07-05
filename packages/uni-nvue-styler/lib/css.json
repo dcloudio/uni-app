@@ -1,0 +1,2129 @@
+{
+  "version": 1.0,
+  "properties": [
+    {
+      "name": "width",
+      "restrictions": ["length", "percentage"],
+      "values": [
+        {
+          "name": "fit-content",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "4.4",
+                "uniVer": "",
+                "unixVer": "x"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "",
+                "unixVer": "x"
+              }
+            }
+          }
+        },
+        {
+          "name": "max-content",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "4.4",
+                "uniVer": "",
+                "unixVer": "x"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "",
+                "unixVer": "x"
+              }
+            }
+          }
+        },
+        {
+          "name": "min-content",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "4.4",
+                "uniVer": "",
+                "unixVer": "x"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "",
+                "unixVer": "x"
+              }
+            }
+          }
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "min-width",
+      "restrictions": ["length"],
+      "values": [
+        {
+          "name": "fit-content",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "4.4",
+                "uniVer": "",
+                "unixVer": "x"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "",
+                "unixVer": "x"
+              }
+            }
+          }
+        },
+        {
+          "name": "max-content",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "4.4",
+                "uniVer": "",
+                "unixVer": "x"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "",
+                "unixVer": "x"
+              }
+            }
+          }
+        },
+        {
+          "name": "min-content",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "4.4",
+                "uniVer": "",
+                "unixVer": "x"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "",
+                "unixVer": "x"
+              }
+            }
+          }
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "max-width",
+      "restrictions": ["length"],
+      "values": [
+        {
+          "name": "fit-content",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "4.4",
+                "uniVer": "",
+                "unixVer": "x"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "",
+                "unixVer": "x"
+              }
+            }
+          }
+        },
+        {
+          "name": "max-content",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "4.4",
+                "uniVer": "",
+                "unixVer": "x"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "",
+                "unixVer": "x"
+              }
+            }
+          }
+        },
+        {
+          "name": "min-content",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "4.4",
+                "uniVer": "",
+                "unixVer": "x"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "",
+                "unixVer": "x"
+              }
+            }
+          }
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "height",
+      "restrictions": ["length", "percentage"],
+      "values": [
+        {
+          "name": "fit-content",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "4.4",
+                "uniVer": "",
+                "unixVer": "x"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "",
+                "unixVer": "x"
+              }
+            }
+          }
+        },
+        {
+          "name": "max-content",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "4.4",
+                "uniVer": "",
+                "unixVer": "x"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "",
+                "unixVer": "x"
+              }
+            }
+          }
+        },
+        {
+          "name": "min-content",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "4.4",
+                "uniVer": "",
+                "unixVer": "x"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "",
+                "unixVer": "x"
+              }
+            }
+          }
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "min-height",
+      "restrictions": ["length"],
+      "values": [
+        {
+          "name": "fit-content",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "4.4",
+                "uniVer": "",
+                "unixVer": "x"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "",
+                "unixVer": "x"
+              }
+            }
+          }
+        },
+        {
+          "name": "max-content",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "4.4",
+                "uniVer": "",
+                "unixVer": "x"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "",
+                "unixVer": "x"
+              }
+            }
+          }
+        },
+        {
+          "name": "min-content",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "4.4",
+                "uniVer": "",
+                "unixVer": "x"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "",
+                "unixVer": "x"
+              }
+            }
+          }
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "max-height",
+      "restrictions": ["length"],
+      "values": [
+        {
+          "name": "fit-content",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "4.4",
+                "uniVer": "",
+                "unixVer": "x"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "",
+                "unixVer": "x"
+              }
+            }
+          }
+        },
+        {
+          "name": "max-content",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "4.4",
+                "uniVer": "",
+                "unixVer": "x"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "",
+                "unixVer": "x"
+              }
+            }
+          }
+        },
+        {
+          "name": "min-content",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "4.4",
+                "uniVer": "",
+                "unixVer": "x"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "",
+                "unixVer": "x"
+              }
+            }
+          }
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "position",
+      "restrictions": ["enum"],
+      "values": [
+        {
+          "name": "relative"
+        },
+        {
+          "name": "absolute"
+        },
+        {
+          "name": "fixed"
+        },
+        {
+          "name": "static",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "4.4",
+                "uniVer": "",
+                "unixVer": "x"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "",
+                "unixVer": "x"
+              }
+            }
+          }
+        },
+        {
+          "name": "sticky",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "4.4",
+                "uniVer": "",
+                "unixVer": "x"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "",
+                "unixVer": "x"
+              }
+            }
+          }
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "top",
+      "restrictions": ["length", "percentage"],
+      "values": [
+        {
+          "name": "auto"
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "bottom",
+      "restrictions": ["length", "percentage"],
+      "values": [
+        {
+          "name": "auto"
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "left",
+      "restrictions": ["length", "percentage"],
+      "values": [
+        {
+          "name": "auto"
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "right",
+      "restrictions": ["length", "percentage"],
+      "values": [
+        {
+          "name": "auto"
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "flex-direction",
+      "restrictions": ["enum"],
+      "values": [
+        {
+          "name": "row"
+        },
+        {
+          "name": "row-reverse"
+        },
+        {
+          "name": "column"
+        },
+        {
+          "name": "column-reverse"
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "justify-content",
+      "restrictions": ["enum"],
+      "values": [
+        {
+          "name": "center"
+        },
+        {
+          "name": "flex-start"
+        },
+        {
+          "name": "flex-end"
+        },
+        {
+          "name": "space-between"
+        },
+        {
+          "name": "space-around"
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "flex-wrap",
+      "restrictions": ["enum"],
+      "values": [
+        {
+          "name": "nowrap"
+        },
+        {
+          "name": "wrap"
+        },
+        {
+          "name": "wrap-reverse"
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "align-items",
+      "restrictions": ["enum"],
+      "values": [
+        {
+          "name": "center"
+        },
+        {
+          "name": "flex-start"
+        },
+        {
+          "name": "flex-end"
+        },
+        {
+          "name": "stretch"
+        },
+        {
+          "name": "baseline",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "4.4",
+                "uniVer": "",
+                "unixVer": "x"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "",
+                "unixVer": "x"
+              }
+            }
+          }
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "align-content",
+      "restrictions": ["enum"],
+      "values": [
+        {
+          "name": "center"
+        },
+        {
+          "name": "flex-start"
+        },
+        {
+          "name": "flex-end"
+        },
+        {
+          "name": "space-between"
+        },
+        {
+          "name": "space-around"
+        },
+        {
+          "name": "stretch"
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "flex",
+      "restrictions": ["number", "length"],
+      "values": [
+        {
+          "name": "auto"
+        },
+        {
+          "name": "none"
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "flex-grow",
+      "restrictions": ["number"],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "flex-shrink",
+      "restrictions": ["number"],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "flex-basis",
+      "restrictions": ["number", "length", "percentage"],
+      "values": [
+        {
+          "name": "auto"
+        },
+        {
+          "name": "content",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "4.4",
+                "uniVer": "",
+                "unixVer": "x"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "",
+                "unixVer": "x"
+              }
+            }
+          }
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "flex-flow",
+      "restrictions": ["enum"],
+      "values": [
+        {
+          "name": "column"
+        },
+        {
+          "name": "column-reverse"
+        },
+        {
+          "name": "row"
+        },
+        {
+          "name": "row-reverse"
+        },
+        {
+          "name": "nowrap"
+        },
+        {
+          "name": "wrap"
+        },
+        {
+          "name": "wrap-reverse"
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "display",
+      "restrictions": ["enum"],
+      "values": [
+        {
+          "name": "flex"
+        },
+        {
+          "name": "none"
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "overflow",
+      "restrictions": ["enum"],
+      "values": [
+        {
+          "name": "visible"
+        },
+        {
+          "name": "hidden"
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "opacity",
+      "restrictions": ["number(0-1)"],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "box-sizing",
+      "restrictions": ["enum"],
+      "values": [
+        {
+          "name": "content-box"
+        },
+        {
+          "name": "border-box"
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "background",
+      "restrictions": [],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "background-color",
+      "restrictions": ["color"],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "background-image",
+      "restrictions": ["image"],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "background-clip",
+      "restrictions": ["enum"],
+      "values": [
+        {
+          "name": "border-box"
+        },
+        {
+          "name": "padding-box",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "4.4",
+                "uniVer": "",
+                "unixVer": "x"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "",
+                "unixVer": "x"
+              }
+            }
+          }
+        },
+        {
+          "name": "content-box",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "4.4",
+                "uniVer": "",
+                "unixVer": "x"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "",
+                "unixVer": "x"
+              }
+            }
+          }
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "padding",
+      "restrictions": ["length", "percentage"],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "padding-left",
+      "restrictions": ["length", "percentage"],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "padding-top",
+      "restrictions": ["length", "percentage"],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "padding-right",
+      "restrictions": ["length", "percentage"],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "padding-bottom",
+      "restrictions": ["length", "percentage"],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "margin",
+      "restrictions": ["length", "percentage"],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "margin-left",
+      "restrictions": ["length", "percentage"],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "margin-top",
+      "restrictions": ["length", "percentage"],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "margin-right",
+      "restrictions": ["length", "percentage"],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "margin-bottom",
+      "restrictions": ["length", "percentage"],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "border",
+      "restrictions": [],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "border-style",
+      "restrictions": [],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "border-left-style",
+      "restrictions": ["enum"],
+      "values": [
+        {
+          "name": "solid"
+        },
+        {
+          "name": "dashed"
+        },
+        {
+          "name": "dotted"
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "border-top-style",
+      "restrictions": ["enum"],
+      "values": [
+        {
+          "name": "solid"
+        },
+        {
+          "name": "dashed"
+        },
+        {
+          "name": "dotted"
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "border-right-style",
+      "restrictions": ["enum"],
+      "values": [
+        {
+          "name": "solid"
+        },
+        {
+          "name": "dashed"
+        },
+        {
+          "name": "dotted"
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "border-bottom-style",
+      "restrictions": ["enum"],
+      "values": [
+        {
+          "name": "solid"
+        },
+        {
+          "name": "dashed"
+        },
+        {
+          "name": "dotted"
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "border-width",
+      "restrictions": ["length"],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "border-left-width",
+      "restrictions": ["length"],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "border-top-width",
+      "restrictions": ["length"],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "border-right-width",
+      "restrictions": ["length"],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "border-bottom-width",
+      "restrictions": ["length"],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "border-color",
+      "restrictions": [],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "border-left-color",
+      "restrictions": ["color"],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "border-top-color",
+      "restrictions": ["color"],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "border-right-color",
+      "restrictions": ["color"],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "border-bottom-color",
+      "restrictions": ["color"],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "border-radius",
+      "restrictions": [],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "border-top-left-radius",
+      "restrictions": ["length", "percentage"],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "border-top-right-radius",
+      "restrictions": ["length", "percentage"],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "border-bottom-left-radius",
+      "restrictions": ["length", "percentage"],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "border-bottom-right-radius",
+      "restrictions": ["length", "percentage"],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "color",
+      "restrictions": ["color"],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      },
+      "unixTags": ["text"]
+    },
+    {
+      "name": "font-size",
+      "restrictions": ["length", "percentage"],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      },
+      "unixTags": ["text"]
+    },
+    {
+      "name": "font-style",
+      "restrictions": ["enum"],
+      "values": [
+        {
+          "name": "italic"
+        },
+        {
+          "name": "normal"
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      },
+      "unixTags": ["text"]
+    },
+    {
+      "name": "font-weight",
+      "restrictions": ["enum"],
+      "values": [
+        {
+          "name": "normal"
+        },
+        {
+          "name": "bold"
+        },
+        {
+          "name": "400"
+        },
+        {
+          "name": "700"
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      },
+      "unixTags": ["text"]
+    },
+    {
+      "name": "text-decoration",
+      "restrictions": [],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      },
+      "unixTags": ["text"]
+    },
+    {
+      "name": "text-decoration-line",
+      "restrictions": ["enum"],
+      "values": [
+        {
+          "name": "none"
+        },
+        {
+          "name": "underline"
+        },
+        {
+          "name": "line-through"
+        },
+        {
+          "name": "overline",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "4.4",
+                "uniVer": "",
+                "unixVer": "x"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "",
+                "unixVer": "x"
+              }
+            }
+          }
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      },
+      "unixTags": ["text"]
+    },
+    {
+      "name": "text-decoration-color",
+      "restrictions": ["color"],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      },
+      "unixTags": ["text"]
+    },
+    {
+      "name": "text-decoration-style",
+      "restrictions": ["enum"],
+      "values": [
+        {
+          "name": "solid"
+        },
+        {
+          "name": "dashed"
+        },
+        {
+          "name": "dotted"
+        },
+        {
+          "name": "wavy"
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      },
+      "unixTags": ["text"]
+    },
+    {
+      "name": "text-decoration-thickness",
+      "restrictions": ["length", "percentage"],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      },
+      "unixTags": ["text"]
+    },
+    {
+      "name": "text-align",
+      "restrictions": ["enum"],
+      "values": [
+        {
+          "name": "left"
+        },
+        {
+          "name": "center"
+        },
+        {
+          "name": "right"
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      },
+      "unixTags": ["text"]
+    },
+    {
+      "name": "font-family",
+      "restrictions": [],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      },
+      "unixTags": ["text"]
+    },
+    {
+      "name": "text-overflow",
+      "restrictions": ["enum"],
+      "values": [
+        {
+          "name": "clip"
+        },
+        {
+          "name": "ellipsis"
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      },
+      "unixTags": ["text"]
+    },
+    {
+      "name": "line-height",
+      "restrictions": ["length", "percentage"],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      },
+      "unixTags": ["text"]
+    },
+    {
+      "name": "box-shadow",
+      "restrictions": [],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "transition",
+      "restrictions": ["time", "property", "timing-function"],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "transition-property",
+      "restrictions": ["property"],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "transition-duration",
+      "restrictions": ["time"],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "transition-timing-function",
+      "restrictions": ["timing-function"],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "transition-delay",
+      "restrictions": ["time"],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    },
+    {
+      "name": "transform",
+      "restrictions": ["enum"],
+      "values": [
+        {
+          "name": "rotate(<angle>)"
+        },
+        {
+          "name": "rotateX(<angle>)"
+        },
+        {
+          "name": "rotateY(<angle>)"
+        },
+        {
+          "name": "rotateZ(<angle>)"
+        },
+        {
+          "name": "scale(<number> <number>)"
+        },
+        {
+          "name": "scaleX(<number>)"
+        },
+        {
+          "name": "scaleY(<number>)"
+        },
+        {
+          "name": "translate(<length/percentage> <length/percentage>)"
+        },
+        {
+          "name": "translateX(<length/percentage>)"
+        },
+        {
+          "name": "translateY(<length/percentage>)"
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "4.4",
+            "uniVer": "",
+            "unixVer": "4.0.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": ""
+          }
+        }
+      }
+    }
+  ]
+}

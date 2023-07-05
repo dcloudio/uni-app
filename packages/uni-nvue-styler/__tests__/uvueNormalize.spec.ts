@@ -1,52 +1,61 @@
 import { parse } from '../src'
 
 async function objectifierRule(input: string) {
-  const { code, messages } = await parse(input, { logLevel: 'NOTE' })
+  const { code, messages } = await parse(input, {
+    logLevel: 'NOTE',
+    type: 'uvue',
+    platform: 'app-android',
+  })
   return {
     json: JSON.parse(code),
     messages,
   }
 }
 
-describe('nvue-styler: normalize', () => {
+describe('uvue-styler: normalize', () => {
   test('basic', async () => {
     const { json, messages } = await objectifierRule(`.foo{
 color: #FF0000;
 width: 200;
-position: sticky;
-zIndex: 4;
+height: 200;
+position: relative;
 }`)
     expect(json).toEqual({
       foo: {
         '': {
           color: '#FF0000',
           width: 200,
-          position: 'sticky',
-          zIndex: 4,
+          height: 200,
+          position: 'relative',
         },
       },
     })
     expect(messages.length).toBe(0)
   })
+
   test('length', async () => {
     const { json, messages } = await objectifierRule(`.foo{
-  width: 200px;
-  paddingLeft: 300;
-  borderWidth: 1pt;
-  left: 0;
-  right: 0px;
-  marginRight: asdf;
-  height: 10rpx;
-  paddingTop: 11upx;
+width: 200px;
+minWidth: 100px;
+paddingLeft: 300;
+borderWidth: 1pt;
+left: 0;
+right: 0px;
+top: auto;
+marginRight: asdf;
+height: 10rpx;
+paddingTop: 11upx;
 }`)
     expect(json).toEqual({
       foo: {
         '': {
           width: 200,
+          minWidth: 100,
           paddingLeft: 300,
           borderWidth: '1pt',
           left: 0,
           right: 0,
+          top: 'auto',
           height: '10rpx',
           paddingTop: '11upx',
         },
@@ -55,10 +64,78 @@ zIndex: 4;
     expect(messages[0]).toEqual(
       expect.objectContaining({
         type: 'warning',
-        text: 'ERROR: property value `asdf` is not supported for `margin-right` (supported values are: `number`|`pixel`)',
+        text: 'ERROR: property value `asdf` is not supported for `margin-right` (supported values are: `number`|`pixel`|`percent`)',
       })
     )
   })
+
+  test('enum', async () => {
+    const { json, messages } = await objectifierRule(`.foo{
+position: absolute;
+display: flex;
+flexDirection: row;
+alignItems: baseline;
+justifyContent: center;
+flexWrap: nowrap;
+borderLeftStyle: solid;
+borderRightStyle: abc;
+}`)
+    expect(json).toEqual({
+      foo: {
+        '': {
+          position: 'absolute',
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'center',
+          flexWrap: 'nowrap',
+          borderLeftStyle: 'solid',
+        },
+      },
+    })
+    expect(messages[0]).toEqual(
+      expect.objectContaining({
+        type: 'warning',
+        text: 'ERROR: property value `baseline` is not supported for `align-items` (supported values are: `center`|`flex-start`|`flex-end`|`stretch`)',
+      })
+    )
+    expect(messages[1]).toEqual(
+      expect.objectContaining({
+        type: 'warning',
+        text: 'ERROR: property value `abc` is not supported for `border-right-style` (supported values are: `solid`|`dashed`|`dotted`)',
+      })
+    )
+  })
+
+  test('combined: length percentage enum', async () => {
+    const { json, messages } = await objectifierRule(`.foo{
+width: 200px;
+maxWidth: 500px;
+height: max-content;
+top: 20%;
+bottom: 30%;
+left: auto;
+right: auto;
+}`)
+    expect(json).toEqual({
+      foo: {
+        '': {
+          width: 200,
+          maxWidth: 500,
+          top: '20%',
+          bottom: '30%',
+          left: 'auto',
+          right: 'auto',
+        },
+      },
+    })
+    expect(messages[0]).toEqual(
+      expect.objectContaining({
+        type: 'warning',
+        text: 'ERROR: property value `max-content` is not supported for `height` (supported values are: `number`|`pixel`|`percent`)',
+      })
+    )
+  })
+
   test('number', async () => {
     const { json, messages } = await objectifierRule(`
 .foo{
@@ -102,52 +179,6 @@ zIndex: 4;
     expect(messages[1]).toEqual(
       expect.objectContaining({
         text: 'ERROR: property value `0.5a` is not supported for `opacity` (supported values are: `number`)',
-      })
-    )
-  })
-  test('integer', async () => {
-    const { json, messages } = await objectifierRule(`
-.foo{
-  zIndex: 1
-},
-.bar{
-  zIndex: 0.5
-},
-.baz{
-  zIndex: a
-},
-.boo{
-  zIndex: 0.5a
-},
-.zero{
-  zIndex: 0
-}
-`)
-    expect(json).toEqual({
-      foo: {
-        '': {
-          zIndex: 1,
-        },
-      },
-      zero: {
-        '': {
-          zIndex: 0,
-        },
-      },
-    })
-    expect(messages[0]).toEqual(
-      expect.objectContaining({
-        text: 'ERROR: property value `0.5` is not supported for `z-index` (supported values are: `integer`)',
-      })
-    )
-    expect(messages[1]).toEqual(
-      expect.objectContaining({
-        text: 'ERROR: property value `a` is not supported for `z-index` (supported values are: `integer`)',
-      })
-    )
-    expect(messages[2]).toEqual(
-      expect.objectContaining({
-        text: 'ERROR: property value `0.5a` is not supported for `z-index` (supported values are: `integer`)',
       })
     )
   })
@@ -242,26 +273,6 @@ zIndex: 4;
     expect(messages[6]).toEqual(
       expect.objectContaining({
         text: 'ERROR: property value `rgba(234,45,99,1.3)` is not valid for `background-color`',
-      })
-    )
-  })
-  test('flex-wrap', async () => {
-    const { json, messages } = await objectifierRule(`
-.foo { flex-wrap: nowrap }
-.bar { flex-wrap: wrap }
-`)
-    expect(json).toEqual({
-      foo: { '': { flexWrap: 'nowrap' } },
-      bar: { '': { flexWrap: 'wrap' } },
-    })
-    expect(messages[0]).toEqual(
-      expect.objectContaining({
-        text: 'NOTE: property value `nowrap` is the DEFAULT value for `flex-wrap` (could be removed)',
-      })
-    )
-    expect(messages[1]).toEqual(
-      expect.objectContaining({
-        text: 'NOTE: the flex-wrap property may have compatibility problem on native',
       })
     )
   })

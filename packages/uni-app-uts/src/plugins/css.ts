@@ -49,6 +49,7 @@ export function uniAppCssPlugin(): Plugin {
             ts: true,
             chunk: 100,
             type: 'uvue',
+            platform: process.env.UNI_UTS_PLATFORM,
           })
           messages.forEach((message) => {
             if (message.type === 'error') {
@@ -86,6 +87,7 @@ export function uniAppCssPlugin(): Plugin {
         ts: true,
         noCode: true,
         type: 'uvue',
+        platform: process.env.UNI_UTS_PLATFORM,
       })
       messages.forEach((message) => {
         if (message.type === 'warning') {
