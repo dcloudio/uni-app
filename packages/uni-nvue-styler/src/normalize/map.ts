@@ -1,5 +1,4 @@
 import { NormalizeOptions } from '.'
-import cssJSON from '../../lib/css.json'
 import { camelize } from '@vue/shared'
 import { CssJSON, Normalize, Property, Restriction } from '../utils'
 import { normalizeColor } from './color'
@@ -155,10 +154,20 @@ const restrictionMap: Partial<Record<Restriction, Normalize>> = {
   [Restriction.TIMING_FUNCTION]: normalizeTimingFunction,
 }
 
-function getUvueNormalizeMap() {
+function getUVueNormalizeMap() {
   const result: Record<string, Normalize> = {}
-  const _cssJSON = cssJSON as CssJSON
-  const { properties } = _cssJSON
+
+  let cssJson: CssJSON
+  try {
+    // eslint-disable-next-line no-restricted-globals
+    cssJson = require('../lib/css.json') as CssJSON
+  } catch (e) {
+    // 单元测试环境，源码目录
+    // eslint-disable-next-line no-restricted-globals
+    cssJson = require('../../lib/css.json') as CssJSON
+  }
+
+  const { properties } = cssJson
 
   for (let i = 0; i < properties.length; i++) {
     const property = properties[i]
@@ -204,7 +213,7 @@ export function getNormalizeMap(options: NormalizeOptions) {
   }
   const uvue = options.type === 'uvue'
   if (uvue) {
-    normalizeMap = getUvueNormalizeMap()
+    normalizeMap = getUVueNormalizeMap()
   } else {
     normalizeMap = Object.keys(NVUE_PROP_NAME_GROUPS).reduce<
       Record<string, Normalize>
