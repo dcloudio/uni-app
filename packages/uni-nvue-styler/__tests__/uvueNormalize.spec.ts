@@ -322,6 +322,31 @@ right: auto;
       })
     )
   })
+
+  test('string', async () => {
+    const { json, messages } = await objectifierRule(`
+.foo {
+  fontFamily: "Gill Sans", sans-serif;
+}
+.bar {
+  fontFamily: 'Goudy Bookletter 1911', sans-serif;
+}
+`)
+    expect(json).toEqual({
+      foo: {
+        '': {
+          fontFamily: 'Gill Sans, sans-serif',
+        },
+      },
+      bar: {
+        '': {
+          fontFamily: 'Goudy Bookletter 1911, sans-serif',
+        },
+      },
+    })
+    expect(messages.length).toEqual(0)
+  })
+
   test('transition-property', async () => {
     const { json, messages } = await objectifierRule(`
 .foo {

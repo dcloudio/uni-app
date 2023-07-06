@@ -7,6 +7,7 @@ import { normalizeFlexWrap } from './flexWrap'
 import { normalizeInteger } from './integer'
 import { normalizeLength, normalizePercent } from './length'
 import { normalizeNumber } from './number'
+import { normalizeString } from './string'
 import { normalizeShorthandLength } from './shorthandLength'
 import { normalizeTransform } from './transform'
 import { normalizeInterval } from './interval'
@@ -141,6 +142,7 @@ const uvueNormalizeMap: Record<string, Normalize> = {
   margin: normalizeShorthandLength,
   padding: normalizeShorthandLength,
   transform: normalizeTransform,
+  fontFamily: normalizeString,
 }
 
 const restrictionMap: Partial<Record<Restriction, Normalize>> = {
