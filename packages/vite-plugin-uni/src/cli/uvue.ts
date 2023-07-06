@@ -1,6 +1,12 @@
 import { BuildOptions, ServerOptions, createLogger } from 'vite'
 import { extend, hasOwn } from '@vue/shared'
-import { M, output, parseManifestJsonOnce } from '@dcloudio/uni-cli-shared'
+import {
+  M,
+  initEasycomsOnce,
+  output,
+  parseManifestJsonOnce,
+  resolveComponentsLibPath,
+} from '@dcloudio/uni-cli-shared'
 import { RollupWatcher } from 'rollup'
 
 import { CliOptions } from '.'
@@ -67,6 +73,10 @@ export async function runUVueDev(options: CliOptions & ServerOptions) {
 
 export async function runUVueBuild(options: CliOptions & BuildOptions) {
   try {
+    initEasycomsOnce(process.env.UNI_INPUT_DIR, {
+      dirs: [resolveComponentsLibPath()],
+      platform: process.env.UNI_PLATFORM,
+    })
     await buildUVue(options)
     console.log(M['build.done'])
   } catch (e: any) {

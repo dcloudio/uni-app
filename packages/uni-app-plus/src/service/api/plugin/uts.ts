@@ -422,7 +422,9 @@ export function initUTSProxyClass(
   let staticMethods: ProxyClassOptions['staticMethods'] = {}
   let staticProps: ProxyClassOptions['staticProps'] = []
 
+  let isProxyInterface = false
   if (isProxyInterfaceOptions(options)) {
+    isProxyInterface = true
     instanceId = options.instanceId
   } else {
     constructorParams = options.constructor.params
@@ -447,8 +449,8 @@ export function initUTSProxyClass(
       }
       const target: Record<string, Function> = {}
       // 初始化实例 ID
-      if (isUndefined(instanceId)) {
-        // 未指定instanceId
+      if (!isProxyInterface) {
+        // 初始化未指定时，每次都要创建instanceId
         instanceId = initProxyFunction(
           false,
           extend(
