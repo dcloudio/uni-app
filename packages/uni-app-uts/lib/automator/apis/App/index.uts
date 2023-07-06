@@ -10,17 +10,17 @@ import { ShowToastOptions, ShowLoadingOptions, ShowModalOptions, ShowActionSheet
 import { connectSocket } from './Socket.uts'
 
 export type GetPageStackParams = {
-  callback: (res: any) => void
+  callback: (result: any | null, error: any | null) => void
 }
 export const getPageStack = (params: GetPageStackParams): void => {
   params.callback({
     pageStack: getCurrentPages().map((page: BasePage): UTSJSONObject => {
       return parsePage(page)
     })
-  })
+  }, null)
 }
 export type GetCurrentPageParams = {
-  callback: (res: UTSJSONObject | null) => void
+  callback: (result: UTSJSONObject | null, error: any | null) => void
 }
 
 function _getCurrentPage(): BasePage | null {
@@ -31,13 +31,13 @@ function _getCurrentPage(): BasePage | null {
 export const getCurrentPage = (params: GetCurrentPageParams): void => {
   const page = _getCurrentPage()
   const result = page != null ? parsePage(page) : null
-  params.callback(result)
+  params.callback(result, null)
 }
 
 export type CallUniMethodParams = {
   method: string
   args: JSONArray
-  callback: (res: any) => void
+  callback: (result: any | null, error: any | null) => void
 }
 
 
@@ -50,11 +50,11 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
   const success = (result: any) => {
     const timeout = method == 'pageScrollTo' ? 350 : 0
     setTimeout(() => {
-      callback(result)
+      callback({ result }, null)
     }, timeout)
   }
-  const fail = (err: any) => {
-    callback(err)
+  const fail = (error: any) => {
+    callback(null, error)
   }
   switch (method) {
     case 'navigateTo':
@@ -68,24 +68,36 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
         url: (args[0] as JSONObject)['url'] as string,
         animationType,
         animationDuration,
-        success,
-        fail
+        success(result: any) {
+          callback({ result }, null)
+        },
+        fail(error: any) {
+          callback(null, error)
+        },
       })
       break
 
     case 'redirectTo':
       uni.redirectTo({
         url: (args[0] as JSONObject)['url'] as string,
-        success,
-        fail
+        success(result: any) {
+          callback({ result }, null)
+        },
+        fail(error: any) {
+          callback(null, error)
+        },
       })
       break
 
     case 'reLaunch':
       uni.reLaunch({
         url: (args[0] as JSONObject)['url'] as string,
-        success,
-        fail
+        success(result: any) {
+          callback({ result }, null)
+        },
+        fail(error: any) {
+          callback(null, error)
+        },
       })
       break
 
@@ -100,75 +112,95 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
       uni.navigateBack({
         animationType,
         animationDuration,
-        success,
-        fail
+        success(result: any) {
+          callback({ result }, null)
+        },
+        fail(error: any) {
+          callback(null, error)
+        },
       })
       break
     case 'switchTab':
       uni.switchTab({
         url: (args[0] as JSONObject)['url'] as string,
-        success,
-        fail
+        success(result: any) {
+          callback({ result }, null)
+        },
+        fail(error: any) {
+          callback(null, error)
+        },
       })
       break
     case 'getStorage':
       uni.getStorage({
         key: (args[0] as JSONObject)['key'] as string,
         success(result: any) {
-          callback({ result })
+          callback({ result }, null)
         },
-        fail
+        fail(error: any) {
+          callback(null, error)
+        },
       })
       break
     case 'setStorage':
       uni.setStorage({
         key: (args[0] as JSONObject)['key'] as string,
         data: (args[0] as JSONObject)['data'] as any,
-        success,
-        fail
+        success(result: any) {
+          callback({ result }, null)
+        },
+        fail(error: any) {
+          callback(null, error)
+        },
       })
       break
     case 'getStorageSync':
-      callback({ result: uni.getStorageSync((args[0] as string)) })
+      callback({ result: uni.getStorageSync((args[0] as string)) }, null)
       break
     case 'setStorageSync':
       uni.setStorageSync(args[0] as string, args[1] as any)
-      callback({ result: { errMsg: 'uni.setStorageSync success' } })
+      callback({ result: { errMsg: 'uni.setStorageSync success' } }, null)
       break
     case 'getStorageInfo':
       uni.getStorageInfo({
         success(result: any) {
-          callback({ result })
+          callback({ result }, null)
         },
-        fail
+        fail(error: any) {
+          callback(null, error)
+        },
       })
       break
     case 'getStorageInfoSync':
-      callback({ result: uni.getStorageInfoSync() })
+      callback({ result: uni.getStorageInfoSync() }, null)
       break
     case 'removeStorage':
       uni.removeStorage({
         key: (args[0] as JSONObject)['key'] as string,
-        success,
-        fail
+        success(result: any) {
+          callback({ result }, null)
+        },
+        fail(error: any) {
+          callback(null, error)
+        },
       })
       break
     case 'removeStorageSync':
       uni.removeStorageSync(args[0] as string)
-      callback({ result: {} })
+      callback({ result: {} }, null)
       break
     case 'clearStorage':
       uni.clearStorage({
-        success(res: any) {
-          callback({ result: res })
+        success(result: any) {
+          callback({ result }, null)
         },
-        fail(err: any) {
-          callback({ result: err })
+        fail(error: any) {
+          callback(null, error)
         }
       })
       break
     case 'clearStorageSync':
-      callback({ result: uni.clearStorageSync() })
+      callback({ result: uni.clearStorageSync() }, null)
       break
     case 'showToast':
       const icon = (args[0] as JSONObject)['icon'] != null ? (args[0] as JSONObject)['icon'] as string : 'success'
@@ -183,8 +215,12 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
         mask: toastMask,
         duration,
         position,
-        success,
-        fail
+        success(result: any) {
+          callback({ result }, null)
+        },
+        fail(error: any) {
+          callback(null, error)
+        }
       } as ShowToastOptions)
       break
     case 'hideToast':
@@ -195,8 +231,12 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
       uni.showLoading({
         title: (args[0] as JSONObject)['title'] as string,
         mask: loadingMask,
-        success,
-        fail
+        success(result: any) {
+          callback({ result }, null)
+        },
+        fail(error: any) {
+          callback(null, error)
+        },
       } as ShowLoadingOptions)
       break
     case 'hideLoading':
@@ -223,10 +263,10 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
         editable,
         placeholderText,
         success(result: any) {
-          callback({ result })
+          callback({ result }, null)
         },
         fail(error: any) {
-          callback({ result: error })
+          callback(null, error)
         }
       } as ShowModalOptions)
       break
@@ -239,51 +279,52 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
         itemList,
         itemColor,
         success(result: any) {
-          callback({ result })
+          callback({ result }, null)
         },
         fail(error: any) {
-          callback({ result: error })
+          callback(null, error)
         }
       } as ShowActionSheetOptions)
       break
     case 'connectSocket':
+      const id = (args[0] as JSONObject)['id'] as string
       const url = (args[0] as JSONObject)['url'] as string
-      connectSocket(url, callback)
+      connectSocket(id, url, callback)
       break
     case 'getSystemInfo':
       uni.getSystemInfo({
         success(result: any) {
-          callback({ result })
+          callback({ result }, null)
         },
         fail(error: any) {
-          callback({ result: error })
+          callback(null, error)
         }
       })
       break
     case 'getSystemInfoSync':
-      callback({ result: uni.getSystemInfoSync() })
+      callback({ result: uni.getSystemInfoSync() }, null)
       break
     case 'getDeviceInfo':
-      callback({ result: uni.getDeviceInfo() })
+      callback({ result: uni.getDeviceInfo() }, null)
       break
     case 'getAppBaseInfo':
-      callback({ result: uni.getAppBaseInfo() })
+      callback({ result: uni.getAppBaseInfo() }, null)
       break
     case 'getAppAuthorizeSetting':
-      callback({ result: uni.getAppAuthorizeSetting() })
+      callback({ result: uni.getAppAuthorizeSetting() }, null)
       break
     case 'openAppAuthorizeSetting':
       uni.openAppAuthorizeSetting({
         success(result: any) {
-          callback({ result })
+          callback({ result }, null)
         },
         fail(error: any) {
-          callback({ result: error })
+          callback(null, error)
         }
       })
       break
     default:
-      callback({ result: { errMsg: 'uni.' + method + ' not exists.' } })
+      callback(null, { errMsg: 'uni.' + method + ' not exists.' })
       break
   }
 }
@@ -292,7 +333,7 @@ export type CaptureScreenshotParams = {
   id?: string | null,
   fullPage: boolean,
   path: string
-  callback: (res: any) => void
+  callback: (result: any | null, error: any | null) => void
 }
 export const captureScreenshot = (params: CaptureScreenshotParams): void => {
   const callback = params.callback
@@ -307,15 +348,15 @@ export const captureScreenshot = (params: CaptureScreenshotParams): void => {
           errMsg: 'screenshot:ok',
           tempFilePath: res.tempFilePath,
           data: UTSAndroid.dcloud_private_getFileBase64(res.tempFilePath)
-        })
+        }, null)
       },
-      fail: (err: ViewToTempFilePathFail) => {
-        callback(err)
+      fail: (error: ViewToTempFilePathFail) => {
+        callback(null, error)
       }
     })
   } else {
     callback({
       errMsg: `captureScreenshot:fail, currentPage is not found.`
-    })
+    }, null)
   }
 }

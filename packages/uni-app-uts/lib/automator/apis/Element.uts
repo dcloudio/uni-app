@@ -8,7 +8,7 @@ export type GetElementParams = {
   nodeId?: number | null
   elementId?: string | null
   selector: string
-  callback: (res?: any | null) => void
+  callback: (result: any | null, error: any | null) => void
 }
 
 export const getElement = (params: GetElementParams): void => {
@@ -24,13 +24,13 @@ export const getElement = (params: GetElementParams): void => {
         tagName: component !== null ? selector : null,
         elementId: component !== null ? `${Date.now()}` : null
       }
-      params.callback(result)
+      params.callback(result, null)
       return
     }
     const list: UTSJSONObject[] = []
     getValidNodes(element, selector, list)
     const result = list.length > 0 ? list[0] : null
-    params.callback(result)
+    params.callback(result, null)
   }
 }
 
@@ -39,7 +39,7 @@ export const getElements = (params: GetElementParams): void => {
   if (element !== null) {
     const list: UTSJSONObject[] = []
     getValidNodes(element, params.selector, list, true)
-    params.callback({ elements: list })
+    params.callback({ elements: list }, null)
   }
 }
 
@@ -48,7 +48,7 @@ export type GetDOMPropertiesParams = {
   elementId?: string | null
   nodeId?: number | null
   names: string[]
-  callback: (res?: any | null) => void
+  callback: (result: any | null, error: any | null) => void
 }
 
 export const getDOMProperties = (params: GetDOMPropertiesParams): void => {
@@ -73,7 +73,7 @@ export const getDOMProperties = (params: GetDOMPropertiesParams): void => {
       }
       return `Element.getDOMProperties not support ${name}`
     })
-    params.callback({ properties })
+    params.callback({ properties }, null)
   }
 }
 
@@ -82,7 +82,7 @@ export type GetPropertiesParams = {
   elementId?: string | null
   nodeId?: number | null
   names: string[]
-  callback: (res?: any | null) => void
+  callback: (result: any | null, error: any | null) => void
 }
 
 export const getProperties = (params: GetPropertiesParams): void => {
@@ -96,7 +96,7 @@ export const getProperties = (params: GetPropertiesParams): void => {
       const attribute = dom.getAttribute(name) !== null ? dom.getAttribute(name) : component !== null ? component.$props[toCamelCase(name)] : null
       return attribute
     })
-    params.callback({ properties })
+    params.callback({ properties }, null)
   }
 }
 
@@ -105,7 +105,7 @@ export type GetAttributesParams = {
   elementId?: string | null
   nodeId?: number | null
   names: string[]
-  callback: (res?: any | null) => void
+  callback: (result: any | null, error: any | null) => void
 }
 
 export const getAttributes = (params: GetAttributesParams): void => {
@@ -117,7 +117,7 @@ export const getAttributes = (params: GetAttributesParams): void => {
       }
       return dom.getAttribute(name)
     })
-    params.callback({ attributes })
+    params.callback({ attributes }, null)
   }
 }
 
@@ -126,7 +126,7 @@ export type CallFunctionParams = {
   elementId: string
   functionName: string
   args: any[]
-  callback: (res?: any | null) => void
+  callback: (result: any | null, error: any | null) => void
 }
 
 export const callFunction = (params: CallFunctionParams): void => {
@@ -137,7 +137,7 @@ export const callFunction = (params: CallFunctionParams): void => {
         element.setAttribute('value', params.args[0])
         break
     }
-    params.callback({ result: `Element.callFunction success` })
+    params.callback({ result: `Element.callFunction success` }, null)
   }
 }
 
@@ -145,7 +145,7 @@ export type TapParams = {
   pageId: number
   elementId?: string | null
   nodeId?: number | null
-  callback: (res?: any | null) => void
+  callback: (result: any | null, error: any | null) => void
 }
 
 export const tap = (params: TapParams): void => {
@@ -154,7 +154,7 @@ export const tap = (params: TapParams): void => {
     const x: number = 0
     const y: number = 0
     dom.dispatchEvent("click", MouseEvent("click", x.toFloat(), y.toFloat()))
-    params.callback({ result: `Element.tap success` })
+    params.callback({ result: `Element.tap success` }, null)
   }
 }
 
@@ -163,14 +163,14 @@ export type CallMethodParams = {
   nodeId: number
   method: string
   args: any[]
-  callback: (res: any) => void
+  callback: (result: any | null, error: any | null) => void
 }
 
 export const callMethod = (params: CallMethodParams): void => {
   const component = getComponentVmByNodeId(params.pageId, params.nodeId, params.callback)
   if (component !== null) {
     const result = params.args.length > 0 ? component.$callMethod(params.method, params.args[0]) : component.$callMethod(params.method)
-    params.callback({ result })
+    params.callback({ result }, null)
   }
 }
 
@@ -178,13 +178,13 @@ export type GetDataParams = {
   pageId: number
   nodeId: number
   path: string
-  callback: (res: any) => void
+  callback: (result: any | null, error: any | null) => void
 }
 export const getData = (params: GetDataParams): void => {
   const component = getComponentVmByNodeId(params.pageId, params.nodeId, params.callback)
   if (component !== null) {
     const data = componentGetData(component, params.path)
-    params.callback({ data })
+    params.callback({ data }, null)
   }
 }
 
@@ -192,13 +192,13 @@ export type SetDataParams = {
   pageId: number
   nodeId: number
   data: UTSJSONObject
-  callback: (res: any) => void
+  callback: (result: any | null, error: any | null) => void
 }
 export const setData = (params: SetDataParams): void => {
   const component = getComponentVmByNodeId(params.pageId, params.nodeId, params.callback)
   if (component !== null) {
     componentSetData(component, params.data)
-    params.callback({ result: { errMsg: 'Page.setData: ok.' } })
+    params.callback({ result: { errMsg: 'Page.setData: ok.' } }, null)
   }
 }
 
@@ -206,13 +206,13 @@ export type GetOffsetParams = {
   pageId: number
   elementId?: string | null
   nodeId?: number | null
-  callback: (res?: any | null) => void
+  callback: (result: any | null, error: any | null) => void
 }
 
 export const getOffset = (params: GetOffsetParams): void => {
   const dom = getElementByIdOrNodeId(params.pageId, params.elementId, params.nodeId, params.callback)
   if (dom !== null) {
-    params.callback({ left: dom.offsetLeft, top: dom.offsetTop })
+    params.callback({ left: dom.offsetLeft, top: dom.offsetTop }, null)
   }
 }
 
@@ -220,7 +220,7 @@ export type LongpressParams = {
   pageId: number
   elementId?: string | null
   nodeId?: number | null
-  callback: (res?: any | null) => void
+  callback: (result: any | null, error: any | null) => void
 }
 
 export const longpress = (params: LongpressParams): void => {
@@ -229,7 +229,7 @@ export const longpress = (params: LongpressParams): void => {
     const x: number = 0
     const y: number = 0
     dom.dispatchEvent("longpress", MouseEvent("longpress", x.toFloat(), y.toFloat()))
-    params.callback({ result: `Element.longpress success` })
+    params.callback({ result: `Element.longpress success` }, null)
   }
 }
 
@@ -240,7 +240,7 @@ export type HandleTouchEventParams = {
   eventName: string
   touches: any[],
   changedTouches: any[],
-  callback: (res?: any | null) => void
+  callback: (result: any | null, error: any | null) => void
 }
 
 export const handleTouchEvent = (params: HandleTouchEventParams): void => {
@@ -249,7 +249,7 @@ export const handleTouchEvent = (params: HandleTouchEventParams): void => {
     const touches = getTouches(params.touches)
     const changedTouches = getTouches(params.changedTouches)
     dom.dispatchEvent(params.eventName, TouchEvent(params.eventName, touches, changedTouches))
-    params.callback({ result: `Element.${params.eventName} success` })
+    params.callback({ result: `Element.${params.eventName} success` }, null)
   }
 }
 
@@ -269,7 +269,7 @@ export type GetStylesParams = {
   elementId?: string | null
   nodeId?: number | null
   names: string[]
-  callback: (res?: any | null) => void
+  callback: (result: any | null, error: any | null) => void
 }
 
 export const getStyles = (params: GetStylesParams): void => {
@@ -278,6 +278,6 @@ export const getStyles = (params: GetStylesParams): void => {
     const styles = params.names.map((name: string): any | null => {
       return dom.style.getPropertyValue(name)
     })
-    params.callback({ styles })
+    params.callback({ styles }, null)
   }
 }

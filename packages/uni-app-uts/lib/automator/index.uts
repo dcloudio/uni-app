@@ -65,10 +65,9 @@ export function onMessage(msg: string) {
   const params = json['params'] as UTSJSONObject
   const res = new Map<string, any | null>([['id', json['id'] as string]])
   try {
-    const callback = (result?: any | null) => {
-      if (result !== null) {
-        res.set('result', result)
-      }
+    const callback = (result?: any | null, error?: any | null) => {
+      res.set('result', result)
+      res.set('error', error)
       send(res)
     }
     if (method.startsWith('App.')) {

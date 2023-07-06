@@ -58,24 +58,24 @@ export function parsePage(page: BasePage): UTSJSONObject {
   } as UTSJSONObject
 }
 
-export function getComponentVmBySelector(pageId: number, selector: string, callback: (res?: any | null) => void): ComponentPublicInstance | null {
+export function getComponentVmBySelector(pageId: number, selector: string, callback: (result: any | null, error: any | null) => void): ComponentPublicInstance | null {
   const page = getPageVm(pageId)
   if (page === null) {
-    callback({ result: { errMsg: `Page[${pageId}] not exists` } })
+    callback(null, { errMsg: `Page[${pageId}] not exists` })
     return null
   }
   const component = page.$children.find((child: ComponentPublicInstance): boolean => child.$options.name == selector)
   if (component === null) {
-    callback({ result: { errMsg: `component[${selector}] not exists` } })
+    callback(null, { errMsg: `component[${selector}] not exists` })
     return null
   }
   return component
 }
 
-export function getComponentVmByNodeId(pageId: number, nodeId: number, callback: (res: any) => void): ComponentPublicInstance | null {
+export function getComponentVmByNodeId(pageId: number, nodeId: number, callback: (result: any | null, error: any | null) => void): ComponentPublicInstance | null {
   const page = getPageVm(pageId)
   if (page === null) {
-    callback({ result: { errMsg: `Page[${pageId}] not exists` } })
+    callback(null, { errMsg: `Page[${pageId}] not exists` })
     return null
   }
   let component: ComponentPublicInstance | null = null
@@ -90,22 +90,22 @@ export function getComponentVmByNodeId(pageId: number, nodeId: number, callback:
   }
   getComponentChild(page)
   if (component === null) {
-    callback({ result: { errMsg: `component[${nodeId}] not exists` } })
+    callback(null, { errMsg: `component[${nodeId}] not exists` })
     return null
   }
   return component
 }
 
-export function getElementByIdOrNodeId(pageId: number, elementId: string | null, nodeId: number | null, callback: (res: any) => void): INode | null {
+export function getElementByIdOrNodeId(pageId: number, elementId: string | null, nodeId: number | null, callback: (result: any | null, error: any | null) => void): INode | null {
   if (nodeId !== null) {
-    return getComponentDomByNodeId(pageId, nodeId!, callback)
+    return getComponentDomByNodeId(pageId, nodeId, callback)
   } else if (elementId !== null) {
-    return getElementById(pageId, elementId!, callback)
+    return getElementById(pageId, elementId, callback)
   }
   return null
 }
 
-export function getComponentDomByNodeId(pageId: number, nodeId: number, callback: (res: any) => void): INode | null {
+export function getComponentDomByNodeId(pageId: number, nodeId: number, callback: (result: any | null, error: any | null) => void): INode | null {
   const component = getComponentVmByNodeId(pageId, nodeId, callback)
   if (component === null) {
     return null
@@ -113,30 +113,30 @@ export function getComponentDomByNodeId(pageId: number, nodeId: number, callback
   return component.$el
 }
 
-export function getElementByNodeIdOrElementId(pageId: number, nodeId: number | null, elementId: string | null, callback: (res: any) => void): INode | null {
+export function getElementByNodeIdOrElementId(pageId: number, nodeId: number | null, elementId: string | null, callback: (result: any | null, error: any | null) => void): INode | null {
   const page = getPageVm(pageId)
   if (page === null) {
-    callback({ result: { errMsg: `Page[${pageId}] not exists` } })
+    callback(null, { errMsg: `Page[${pageId}] not exists` })
     return null
   }
   if (nodeId !== null) {
-    return getComponentDomByNodeId(pageId, nodeId!, callback)
+    return getComponentDomByNodeId(pageId, nodeId, callback)
   } else if (elementId !== null) {
-    return getElementById(pageId, elementId!, callback)
+    return getElementById(pageId, elementId, callback)
   }
   return null
 }
 
-export function getElementById(pageId: number, elementId: string, callback: (res: any) => void): INode | null {
+export function getElementById(pageId: number, elementId: string, callback: (result: any | null, error: any | null) => void): INode | null {
   const page = getPageVm(pageId)
   if (page === null) {
-    callback({ result: { errMsg: `Page[${pageId}] not exists` } })
+    callback(null, { errMsg: `Page[${pageId}] not exists` })
     return null
   }
   const document = page.$appPage!.document
   const element = document.getElementById(elementId)
   if (element === null) {
-    callback({ result: { errMsg: `element[${elementId}] not exists` } })
+    callback(null, { errMsg: `element[${elementId}] not exists` })
     return null
   }
   return element
@@ -209,8 +209,8 @@ export function getValidNodes(
   }
   if (isValidNode(node, selector)) {
     list.push({
-      elementId: node!.id,
-      tagName: node!.tagName
+      elementId: node.id,
+      tagName: node.tagName
     })
     if (!getAll) {
       return
