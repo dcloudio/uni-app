@@ -220,7 +220,11 @@ export function getCompilerServer<T extends CompilerServer>(
     return require(compilerServerPath)
   } else {
     if (runByHBuilderX()) {
-      installHBuilderXPlugin(pluginName)
+      installHBuilderXPlugin(
+        pluginName === 'uniapp-runextension'
+          ? 'uts-development-android'
+          : pluginName
+      )
     } else {
       console.error(compilerServerPath + ' is not found')
     }

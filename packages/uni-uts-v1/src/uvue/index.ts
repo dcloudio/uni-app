@@ -68,6 +68,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
     globals: {
       envs: {
         // 自动化测试
+        NODE_ENV: process.env.NODE_ENV,
         UNI_AUTOMATOR_WS_ENDPOINT: process.env.UNI_AUTOMATOR_WS_ENDPOINT || '',
       },
     },
