@@ -143,6 +143,7 @@ const uvueNormalizeMap: Record<string, Normalize> = {
   padding: normalizeShorthandLength,
   transform: normalizeTransform,
   fontFamily: normalizeString,
+  borderRadius: normalizeLength,
 }
 
 const restrictionMap: Partial<Record<Restriction, Normalize>> = {

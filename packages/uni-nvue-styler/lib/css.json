@@ -1616,7 +1616,7 @@
     },
     {
       "name": "border-top-left-radius",
-      "restrictions": ["length", "percentage"],
+      "restrictions": ["length"],
       "uniPlatform": {
         "app": {
           "android": {
@@ -1633,7 +1633,7 @@
     },
     {
       "name": "border-top-right-radius",
-      "restrictions": ["length", "percentage"],
+      "restrictions": ["length"],
       "uniPlatform": {
         "app": {
           "android": {
@@ -1650,7 +1650,7 @@
     },
     {
       "name": "border-bottom-left-radius",
-      "restrictions": ["length", "percentage"],
+      "restrictions": ["length"],
       "uniPlatform": {
         "app": {
           "android": {
@@ -1667,7 +1667,7 @@
     },
     {
       "name": "border-bottom-right-radius",
-      "restrictions": ["length", "percentage"],
+      "restrictions": ["length"],
       "uniPlatform": {
         "app": {
           "android": {
