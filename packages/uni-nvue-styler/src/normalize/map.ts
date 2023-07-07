@@ -1,4 +1,4 @@
-import { NormalizeOptions } from '.'
+import { NormalizeOptions } from '../utils'
 import { camelize } from '@vue/shared'
 import { CssJSON, Normalize, Property, Restriction } from '../utils'
 import { normalizeColor } from './color'
@@ -15,6 +15,7 @@ import { normalizeProperty } from './property'
 import { normalizeTimingFunction } from './timingFunction'
 import { createCombinedNormalize } from './combined'
 import { normalizePlatform } from './platform'
+import { normalizeShorthandProperty } from './shorthandProperty'
 
 export const normalizeDefault: Normalize = (v) => {
   return { value: v }
@@ -139,12 +140,12 @@ const NVUE_PROP_NAME_GROUPS: Record<string, Record<string, Normalize>> = {
 }
 
 const uvueNormalizeMap: Record<string, Normalize> = {
-  margin: normalizeShorthandLength,
-  padding: normalizeShorthandLength,
   transform: normalizeTransform,
   fontFamily: normalizeString,
   borderRadius: normalizeLength,
 }
+// 支持的简写属性
+const shorthandProperties = ['margin', 'padding']
 
 const restrictionMap: Partial<Record<Restriction, Normalize>> = {
   [Restriction.LENGTH]: normalizeLength,
@@ -187,6 +188,9 @@ function getUVueNormalizeMap() {
         normalize = normalizes[0]
       } else {
         normalize = normalizeDefault
+      }
+      if (shorthandProperties.includes(prop)) {
+        normalize = normalizeShorthandProperty(normalize)
       }
     }
     result[prop] = normalizePlatform(normalize, property.uniPlatform)

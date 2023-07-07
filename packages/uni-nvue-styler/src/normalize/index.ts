@@ -6,16 +6,11 @@ import {
   hyphenateStyleProperty,
   isNumber,
   COMBINATORS_RE,
+  NormalizeOptions,
 } from '../utils'
 import { getNormalizeMap } from './map'
 
 const normalized = Symbol('normalized')
-
-export interface NormalizeOptions {
-  logLevel?: 'NOTE' | 'WARNING' | 'ERROR'
-  type?: 'nvue' | 'uvue'
-  platform?: typeof process.env.UNI_UTS_PLATFORM
-}
 
 export function normalize(opts: NormalizeOptions = {}): Plugin {
   if (!hasOwn(opts, 'logLevel')) {

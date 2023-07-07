@@ -1,10 +1,15 @@
 import type { Declaration, Source } from 'postcss'
-import { NormalizeOptions } from './normalize'
 
 export const COMBINATORS_RE =
   /^((?:(?:\.[A-Za-z0-9_\-]+)+[\+\~\> ])*)((?:\.[A-Za-z0-9_\-\:]+)+)$/
 
 export type TransformDecl = (decl: Declaration) => Declaration[]
+
+export interface NormalizeOptions {
+  logLevel?: 'NOTE' | 'WARNING' | 'ERROR'
+  type?: 'nvue' | 'uvue'
+  platform?: typeof process.env.UNI_UTS_PLATFORM
+}
 
 export type Normalize = (
   v: string | number,

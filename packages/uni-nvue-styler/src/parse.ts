@@ -1,7 +1,8 @@
 import postcss, { Message } from 'postcss'
 import { objectifier } from './objectifier'
 import { expand } from './expand'
-import { NormalizeOptions, normalize } from './normalize'
+import { normalize } from './normalize'
+import { NormalizeOptions } from './utils'
 
 interface ParseOptions extends NormalizeOptions {
   filename?: string
@@ -12,7 +13,10 @@ interface ParseOptions extends NormalizeOptions {
 }
 
 export async function parse(input: string, options: ParseOptions = {}) {
-  const { root, messages } = await postcss([expand, normalize(options)])
+  const { root, messages } = await postcss([
+    expand(options),
+    normalize(options),
+  ])
     .process(input, {
       from: options.filename || 'foo.css',
     })

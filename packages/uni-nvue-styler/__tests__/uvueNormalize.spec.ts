@@ -347,6 +347,61 @@ right: auto;
     expect(messages.length).toEqual(0)
   })
 
+  test('shorthand', async () => {
+    const { json, messages } = await objectifierRule(`
+.foo {
+  margin: 100px;
+  padding: 50px;
+}
+.bar {
+  margin: 10px auto;
+  padding: 10px auto;
+}
+.baz {
+  margin: 10rpx 20px 30px;
+  padding: 10px 20px 30px 40rpx;
+}
+.boo {
+  margin: abc;
+  padding: abc;
+}
+`)
+    expect(json).toEqual({
+      foo: {
+        '': {
+          margin: '100',
+          padding: '50',
+        },
+      },
+      bar: {
+        '': {
+          margin: '10 auto',
+        },
+      },
+      baz: {
+        '': {
+          margin: '10rpx 20 30',
+          padding: '10 20 30 40rpx',
+        },
+      },
+    })
+    expect(messages[0]).toEqual(
+      expect.objectContaining({
+        text: 'ERROR: property value `10px auto` is not supported for `padding` (supported values are: `number`|`pixel`|`percent`)',
+      })
+    )
+    expect(messages[1]).toEqual(
+      expect.objectContaining({
+        text: 'ERROR: property value `abc` is not supported for `margin` (supported values are: `number`|`pixel`|`percent`|`auto`)',
+      })
+    )
+    expect(messages[2]).toEqual(
+      expect.objectContaining({
+        text: 'ERROR: property value `abc` is not supported for `padding` (supported values are: `number`|`pixel`|`percent`)',
+      })
+    )
+  })
+
   test('transition-property', async () => {
     const { json, messages } = await objectifierRule(`
 .foo {
