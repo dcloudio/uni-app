@@ -30,6 +30,7 @@ const DEFAULT_IMPORTS = [
   'io.dcloud.uts.*',
   'io.dcloud.uniapp.framework.*',
   'io.dcloud.uniapp.vue.*',
+  'io.dcloud.uniapp.vue.shared.*',
   'io.dcloud.uniapp.runtime.*',
   'io.dcloud.uniapp.extapi.*',
 ]
