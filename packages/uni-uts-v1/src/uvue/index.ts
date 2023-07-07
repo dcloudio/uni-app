@@ -28,10 +28,10 @@ const DEFAULT_IMPORTS = [
   'io.dcloud.uts.Set',
   'io.dcloud.uts.UTSAndroid',
   'io.dcloud.uts.*',
-  'io.dcloud.uts.framework.*',
-  'io.dcloud.uts.vue.*',
-  'io.dcloud.uts.vue.shared.*',
+  'io.dcloud.uniapp.framework.*',
+  'io.dcloud.uniapp.vue.*',
   'io.dcloud.uniapp.runtime.*',
+  'io.dcloud.uniapp.extapi.*',
 ]
 
 export interface CompileAppOptions {
@@ -62,7 +62,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
     root: inputDir,
     filename: entry,
     paths: {
-      vue: 'io.dcloud.uts.vue',
+      vue: 'io.dcloud.uniapp.vue',
     },
     uniModules: uni_modules,
     globals: {
@@ -91,7 +91,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
       split,
       disableSplitManifest: options.disableSplitManifest,
       transform: {
-        uniExtApiDefaultNamespace: 'io.dcloud.uts.extapi',
+        uniExtApiDefaultNamespace: 'io.dcloud.uniapp.extapi',
         uniExtApiNamespaces: extApis,
         uvueClassNamePrefix: 'Gen',
       },

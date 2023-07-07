@@ -426,7 +426,7 @@ export async function compile(
       logFilename: true,
       noColor: !isColorSupported(),
       transform: {
-        uniExtApiDefaultNamespace: 'io.dcloud.uts.extapi',
+        uniExtApiDefaultNamespace: 'io.dcloud.uniapp.extapi',
         uniExtApiNamespaces: extApis,
       },
     },
