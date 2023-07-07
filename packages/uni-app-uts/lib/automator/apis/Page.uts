@@ -9,7 +9,7 @@ export const getData = (params: GetDataParams): void => {
   const callback = params.callback
   const page = getPageVm(params.pageId)
   if (page === null) {
-    callback({ result: { errMsg: 'Page.getData:fail, Page not found.' } }, null)
+    callback(null, { errMsg: 'Page.getData:fail, Page not found.' })
     return
   }
   const data = pageGetData(page, params.path)

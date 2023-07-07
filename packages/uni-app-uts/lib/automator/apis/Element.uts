@@ -1,5 +1,4 @@
 import { getElementById, getElementByNodeIdOrElementId, getComponentVmBySelector, getValidNodes, getComponentVmByNodeId, componentGetData, componentSetData, getElementByIdOrNodeId } from './util.uts'
-import { Touch } from 'io.dcloud.uniapp.runtime'
 import { JSONObject } from 'com.alibaba.fastjson'
 import { getChildrenText, toCamelCase } from './util.uts'
 

@@ -1,7 +1,3 @@
-import { getCurrentPages } from 'io.dcloud.uts.framework'
-import { INode } from 'io.dcloud.uniapp.runtime'
-import { isArray } from 'io.dcloud.uts.vue.shared'
-
 function getPageId(page: BasePage): number {
   return page.$.uid
 }

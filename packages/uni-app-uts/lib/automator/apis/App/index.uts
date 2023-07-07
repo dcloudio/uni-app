@@ -4,7 +4,6 @@ import {
   ViewToTempFilePathSuccess,
   ViewToTempFilePathFail
 } from 'io.dcloud.uniapp.runtime'
-import { getCurrentPages } from 'io.dcloud.uts.framework'
 import { parsePage } from '../util.uts'
 import { ShowToastOptions, ShowLoadingOptions, ShowModalOptions, ShowActionSheetOptions } from "io.dcloud.uts.extapi"
 import { connectSocket } from './Socket.uts'
@@ -53,9 +52,6 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
       callback({ result }, null)
     }, timeout)
   }
-  const fail = (error: any) => {
-    callback(null, error)
-  }
   switch (method) {
     case 'navigateTo':
       if ((args[0] as JSONObject)['animationType'] !== null) {
@@ -68,10 +64,9 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
         url: (args[0] as JSONObject)['url'] as string,
         animationType,
         animationDuration,
-        success(result: any) {
-          callback({ result }, null)
-        },
-        fail(error: any) {
+        success,
+        fail(error) {
+          error.errMsg = error.errMsg.replace(`${method}: fail `, '')
           callback(null, error)
         },
       })
@@ -80,10 +75,9 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
     case 'redirectTo':
       uni.redirectTo({
         url: (args[0] as JSONObject)['url'] as string,
-        success(result: any) {
-          callback({ result }, null)
-        },
-        fail(error: any) {
+        success,
+        fail(error) {
+          error.errMsg = error.errMsg.replace(`${method}: fail `, '')
           callback(null, error)
         },
       })
@@ -92,10 +86,9 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
     case 'reLaunch':
       uni.reLaunch({
         url: (args[0] as JSONObject)['url'] as string,
-        success(result: any) {
-          callback({ result }, null)
-        },
-        fail(error: any) {
+        success,
+        fail(error) {
+          error.errMsg = error.errMsg.replace(`${method}: fail `, '')
           callback(null, error)
         },
       })
@@ -112,10 +105,9 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
       uni.navigateBack({
         animationType,
         animationDuration,
-        success(result: any) {
-          callback({ result }, null)
-        },
-        fail(error: any) {
+        success,
+        fail(error) {
+          error.errMsg = error.errMsg.replace(`${method}: fail `, '')
           callback(null, error)
         },
       })
@@ -123,10 +115,9 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
     case 'switchTab':
       uni.switchTab({
         url: (args[0] as JSONObject)['url'] as string,
-        success(result: any) {
-          callback({ result }, null)
-        },
-        fail(error: any) {
+        success,
+        fail(error) {
+          error.errMsg = error.errMsg.replace(`${method}: fail `, '')
           callback(null, error)
         },
       })
@@ -134,10 +125,9 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
     case 'getStorage':
       uni.getStorage({
         key: (args[0] as JSONObject)['key'] as string,
-        success(result: any) {
-          callback({ result }, null)
-        },
-        fail(error: any) {
+        success,
+        fail(error) {
+          error.errMsg = error.errMsg.replace(`${method}: fail `, '')
           callback(null, error)
         },
       })
@@ -146,10 +136,9 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
       uni.setStorage({
         key: (args[0] as JSONObject)['key'] as string,
         data: (args[0] as JSONObject)['data'] as any,
-        success(result: any) {
-          callback({ result }, null)
-        },
-        fail(error: any) {
+        success,
+        fail(error) {
+          error.errMsg = error.errMsg.replace(`${method}: fail `, '')
           callback(null, error)
         },
       })
@@ -163,10 +152,9 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
       break
     case 'getStorageInfo':
       uni.getStorageInfo({
-        success(result: any) {
-          callback({ result }, null)
-        },
-        fail(error: any) {
+        success,
+        fail(error) {
+          error.errMsg = error.errMsg.replace(`${method}: fail `, '')
           callback(null, error)
         },
       })
@@ -177,10 +165,9 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
     case 'removeStorage':
       uni.removeStorage({
         key: (args[0] as JSONObject)['key'] as string,
-        success(result: any) {
-          callback({ result }, null)
-        },
-        fail(error: any) {
+        success,
+        fail(error) {
+          error.errMsg = error.errMsg.replace(`${method}: fail `, '')
           callback(null, error)
         },
       })
@@ -191,12 +178,11 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
       break
     case 'clearStorage':
       uni.clearStorage({
-        success(result: any) {
-          callback({ result }, null)
-        },
-        fail(error: any) {
+        success,
+        fail(error) {
+          error.errMsg = error.errMsg.replace(`${method}: fail `, '')
           callback(null, error)
-        }
+        },
       })
       break
     case 'clearStorageSync':
@@ -215,12 +201,11 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
         mask: toastMask,
         duration,
         position,
-        success(result: any) {
-          callback({ result }, null)
-        },
-        fail(error: any) {
+        success,
+        fail(error) {
+          error.errMsg = error.errMsg.replace(`${method}: fail `, '')
           callback(null, error)
-        }
+        },
       } as ShowToastOptions)
       break
     case 'hideToast':
@@ -231,10 +216,9 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
       uni.showLoading({
         title: (args[0] as JSONObject)['title'] as string,
         mask: loadingMask,
-        success(result: any) {
-          callback({ result }, null)
-        },
-        fail(error: any) {
+        success,
+        fail(error) {
+          error.errMsg = error.errMsg.replace(`${method}: fail `, '')
           callback(null, error)
         },
       } as ShowLoadingOptions)
@@ -262,12 +246,11 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
         confirmColor,
         editable,
         placeholderText,
-        success(result: any) {
-          callback({ result }, null)
-        },
-        fail(error: any) {
+        success,
+        fail(error) {
+          error.errMsg = error.errMsg.replace(`${method}: fail `, '')
           callback(null, error)
-        }
+        },
       } as ShowModalOptions)
       break
     case 'showActionSheet':
@@ -278,12 +261,11 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
         title: showActionSheetTitle,
         itemList,
         itemColor,
-        success(result: any) {
-          callback({ result }, null)
-        },
-        fail(error: any) {
+        success,
+        fail(error) {
+          error.errMsg = error.errMsg.replace(`${method}: fail `, '')
           callback(null, error)
-        }
+        },
       } as ShowActionSheetOptions)
       break
     case 'connectSocket':
@@ -293,12 +275,11 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
       break
     case 'getSystemInfo':
       uni.getSystemInfo({
-        success(result: any) {
-          callback({ result }, null)
-        },
-        fail(error: any) {
+        success,
+        fail(error) {
+          error.errMsg = error.errMsg.replace(`${method}: fail `, '')
           callback(null, error)
-        }
+        },
       })
       break
     case 'getSystemInfoSync':
@@ -315,12 +296,11 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
       break
     case 'openAppAuthorizeSetting':
       uni.openAppAuthorizeSetting({
-        success(result: any) {
-          callback({ result }, null)
-        },
-        fail(error: any) {
+        success,
+        fail(error) {
+          error.errMsg = error.errMsg.replace(`${method}: fail `, '')
           callback(null, error)
-        }
+        },
       })
       break
     default:
@@ -355,8 +335,6 @@ export const captureScreenshot = (params: CaptureScreenshotParams): void => {
       }
     })
   } else {
-    callback({
-      errMsg: `captureScreenshot:fail, currentPage is not found.`
-    }, null)
+    callback(null, { errMsg: `currentPage is not found.` })
   }
 }
