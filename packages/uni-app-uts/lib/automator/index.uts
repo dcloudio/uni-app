@@ -1,5 +1,4 @@
 import { JSONArray } from 'com.alibaba.fastjson'
-import { SocketTask, SendSocketMessageOptions } from 'uts.sdk.modules.DCloudUniWebsocket'
 import {
   callUniMethod,
   CallUniMethodParams,
@@ -20,6 +19,8 @@ import {
   GetElementParams as PageGetElementParams,
   getElement as pageGetElement,
   getElements as pageGetElements,
+  GetWindowPropertiesParams,
+  getWindowProperties,
 } from './apis/Page.uts'
 import { socketEmitter, SocketEmitterParams } from './apis/App/Socket.uts'
 import {
@@ -55,7 +56,7 @@ import {
 let socketTask: SocketTask | null = null
 const wsEndpoint = process.env.UNI_AUTOMATOR_WS_ENDPOINT
 
-function send(data: any) {
+export function send(data: any) {
   socketTask?.send({ data: JSON.stringify(data) } as SendSocketMessageOptions)
 }
 
@@ -128,6 +129,10 @@ export function onMessage(msg: string) {
         case 'Page.getElements':
           const getElementsSelector = params['selector'] as string
           pageGetElements({ pageId, selector: getElementsSelector, callback } as PageGetElementParams)
+          break
+        case 'Page.getWindowProperties':
+          const getWindowPropertiesNames = params['names'] as string[]
+          getWindowProperties({ pageId, names: getWindowPropertiesNames, callback } as GetWindowPropertiesParams)
           break
       }
     } else if (method.startsWith('Element.')) {

@@ -89,3 +89,18 @@ export const getElements = (params: GetElementParams): void => {
     params.callback({ elements: result }, null)
   }
 }
+
+export type GetWindowPropertiesParams = {
+  pageId: number,
+  names: string[],
+  callback: (result: any | null, error: any | null) => void
+}
+export const getWindowProperties = (params: GetWindowPropertiesParams): void => {
+  const callback = params.callback
+  const page = getPageVm(params.pageId)
+  if (page === null) {
+    callback(null, { errMsg: 'Page.getData:fail, Page not found.' })
+    return
+  }
+  callback({ result: {} }, null)
+}

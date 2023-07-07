@@ -1,12 +1,8 @@
 
 import { JSONArray, JSONObject } from 'com.alibaba.fastjson'
-import {
-  ViewToTempFilePathSuccess,
-  ViewToTempFilePathFail
-} from 'io.dcloud.uniapp.runtime'
 import { parsePage } from '../util.uts'
-import { ShowToastOptions, ShowLoadingOptions, ShowModalOptions, ShowActionSheetOptions } from "io.dcloud.uts.extapi"
-import { connectSocket } from './Socket.uts'
+import { send } from '../../index.uts'
+import { connectSocket, FirstSocketTaskEmitterParams, firstSocketTaskEmitter } from './Socket.uts'
 
 export type GetPageStackParams = {
   callback: (result: any | null, error: any | null) => void
@@ -51,6 +47,10 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
     setTimeout(() => {
       callback({ result }, null)
     }, timeout)
+  }
+  const onApiCallback = (data: any | null, err: any | null) => {
+    const id = args[0] as string
+    send({ id, result: { method, data } })
   }
   switch (method) {
     case 'navigateTo':
@@ -147,8 +147,7 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
       callback({ result: uni.getStorageSync((args[0] as string)) }, null)
       break
     case 'setStorageSync':
-      uni.setStorageSync(args[0] as string, args[1] as any)
-      callback({ result: { errMsg: 'uni.setStorageSync success' } }, null)
+      callback({ result: uni.setStorageSync(args[0] as string, args[1] as any) }, null)
       break
     case 'getStorageInfo':
       uni.getStorageInfo({
@@ -173,8 +172,7 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
       })
       break
     case 'removeStorageSync':
-      uni.removeStorageSync(args[0] as string)
-      callback({ result: {} }, null)
+      callback({ result: uni.removeStorageSync(args[0] as string) }, null)
       break
     case 'clearStorage':
       uni.clearStorage({
@@ -206,7 +204,7 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
           error.errMsg = error.errMsg.replace(`${method}: fail `, '')
           callback(null, error)
         },
-      } as ShowToastOptions)
+      })
       break
     case 'hideToast':
       uni.hideToast()
@@ -221,7 +219,7 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
           error.errMsg = error.errMsg.replace(`${method}: fail `, '')
           callback(null, error)
         },
-      } as ShowLoadingOptions)
+      })
       break
     case 'hideLoading':
       uni.hideLoading()
@@ -251,7 +249,7 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
           error.errMsg = error.errMsg.replace(`${method}: fail `, '')
           callback(null, error)
         },
-      } as ShowModalOptions)
+      })
       break
     case 'showActionSheet':
       const showActionSheetTitle = (args[0] as JSONObject)['title'] != null ? (args[0] as JSONObject)['title'] as string : null
@@ -266,12 +264,31 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
           error.errMsg = error.errMsg.replace(`${method}: fail `, '')
           callback(null, error)
         },
-      } as ShowActionSheetOptions)
+      })
       break
     case 'connectSocket':
       const id = (args[0] as JSONObject)['id'] as string
       const url = (args[0] as JSONObject)['url'] as string
       connectSocket(id, url, callback)
+      break
+    case 'onSocketOpen':
+
+      firstSocketTaskEmitter({ method: 'onOpen', callback: onApiCallback } as FirstSocketTaskEmitterParams)
+      break
+    case 'onSocketMessage':
+      firstSocketTaskEmitter({ method: 'onMessage', callback: onApiCallback } as FirstSocketTaskEmitterParams)
+      break
+    case 'onSocketError':
+      firstSocketTaskEmitter({ method: 'onError', callback: onApiCallback } as FirstSocketTaskEmitterParams)
+      break
+    case 'onSocketClose':
+      firstSocketTaskEmitter({ method: 'onClose', callback: onApiCallback } as FirstSocketTaskEmitterParams)
+      break
+    case 'sendSocketMessage':
+      firstSocketTaskEmitter({ method: 'send', data: (args[0] as JSONObject)['data'], callback } as FirstSocketTaskEmitterParams)
+      break
+    case 'closeSocket':
+      firstSocketTaskEmitter({ method: 'close', code: (args[0] as JSONObject)['code'] as number, reason: (args[0] as JSONObject)['reason'] as string, callback } as FirstSocketTaskEmitterParams)
       break
     case 'getSystemInfo':
       uni.getSystemInfo({
@@ -288,6 +305,9 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
     case 'getDeviceInfo':
       callback({ result: uni.getDeviceInfo() }, null)
       break
+    case 'getSystemSetting':
+      callback({ result: uni.getSystemSetting() }, null)
+      break
     case 'getAppBaseInfo':
       callback({ result: uni.getAppBaseInfo() }, null)
       break
@@ -296,6 +316,17 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
       break
     case 'openAppAuthorizeSetting':
       uni.openAppAuthorizeSetting({
+        success,
+        fail(error) {
+          error.errMsg = error.errMsg.replace(`${method}: fail `, '')
+          callback(null, error)
+        },
+      })
+      break
+    case 'pageScrollTo':
+      uni.pageScrollTo({
+        scrollTop: (args[0] as JSONObject)['scrollTop'] as number,
+        duration: (args[0] as JSONObject)['duration'] as number,
         success,
         fail(error) {
           error.errMsg = error.errMsg.replace(`${method}: fail `, '')
@@ -323,14 +354,14 @@ export const captureScreenshot = (params: CaptureScreenshotParams): void => {
       id: params.fullPage ? null : params.id,
       wholeContent: params.fullPage,
       path: params.path,
-      success: (res: ViewToTempFilePathSuccess) => {
+      success: (res) => {
         callback({
           errMsg: 'screenshot:ok',
           tempFilePath: res.tempFilePath,
           data: UTSAndroid.dcloud_private_getFileBase64(res.tempFilePath)
         }, null)
       },
-      fail: (error: ViewToTempFilePathFail) => {
+      fail: (error) => {
         callback(null, error)
       }
     })

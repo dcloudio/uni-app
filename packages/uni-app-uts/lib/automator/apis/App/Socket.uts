@@ -1,5 +1,3 @@
-import { SocketTask, OnSocketOpenCallbackResult, OnSocketMessageCallbackResult, GeneralCallbackResult, SendSocketMessageOptions, CloseSocketOptions } from "io.dcloud.uts.extapi";
-
 type SocketInstanceData = {
   instance: SocketTask,
   isOpend: boolean,
@@ -8,7 +6,7 @@ type SocketInstanceData = {
 const socketInstanceMap = new Map<string, SocketInstanceData>()
 
 export const connectSocket = (id: string, url: string, callback: (result: any | null, error: any | null) => void): void => {
-  const socketTask: SocketTask = uni.connectSocket({
+  const socketTask = uni.connectSocket({
     url,
     success() {
       callback({ result: { errMsg: 'connectSocket:ok' } }, null)
@@ -22,6 +20,80 @@ export const connectSocket = (id: string, url: string, callback: (result: any | 
     socketInstanceMap.get(id)!.isOpend = true
     socketInstanceMap.get(id)!.openData = data
   })
+}
+
+export type FirstSocketTaskEmitterParams = {
+  method: string,
+  data?: any | null,
+  code?: number | null,
+  reason?: string | null,
+  callback: (result: any | null, error: any | null) => void
+}
+export const firstSocketTaskEmitter = (params: FirstSocketTaskEmitterParams): void => {
+  const callback = params.callback
+  let socketInstanceData: SocketInstanceData | null = null;
+  socketInstanceMap.forEach((value: SocketInstanceData) => {
+    if (socketInstanceData === null) {
+      socketInstanceData = value
+    }
+  })
+  if (socketInstanceData === null) {
+    callback(null, { errMsg: "socketTask not exists." });
+  } else {
+    const _socketInstanceData = socketInstanceData!
+    const socketTask = _socketInstanceData.instance
+    if (params.method == 'onOpen') {
+      const isOpend = _socketInstanceData.isOpend
+      if (isOpend) {
+        callback(_socketInstanceData.openData, null)
+      } else {
+        let timer: number | null = null
+        timer = setInterval(() => {
+          if (_socketInstanceData.isOpend) {
+            clearInterval(timer!)
+            callback(_socketInstanceData.openData, null)
+          }
+        }, 200)
+        setTimeout(() => {
+          clearInterval(timer)
+        }, 2000)
+      }
+    } else if (params.method == 'onMessage') {
+      socketTask.onMessage((data: any) => {
+        callback(data, null)
+      })
+    } else if (params.method == 'onClose') {
+      socketTask.onClose((data: any) => {
+        callback(data, null)
+      })
+    } else if (params.method == 'onError') {
+      socketTask.onError((data: any) => {
+        callback(data, null)
+      })
+    } else if (params.method == 'send') {
+      socketTask.send({
+        data: params.data!,
+        success(result: any) {
+          callback({ result }, null)
+        },
+        fail(error: any) {
+          callback(null, error)
+        }
+      } as SendSocketMessageOptions)
+    } else if (params.method == 'close') {
+      socketTask.close({
+        code: params.code,
+        reason: params.reason,
+        success(result: any) {
+          callback({ result }, null)
+          socketInstanceMap.clear();
+        },
+        fail(error: any) {
+          callback(null, error)
+        }
+      } as CloseSocketOptions)
+    }
+  }
 }
 
 export type SocketEmitterParams = {
@@ -55,7 +127,7 @@ export const socketEmitter = (params: SocketEmitterParams): void => {
         }, 2000)
       }
     } else if (params.method == 'onMessage') {
-      socketTask.onMessage((data: OnSocketMessageCallbackResult) => {
+      socketTask.onMessage((data: any) => {
         params.callback({ method: 'Socket.onMessage', id: params.id, data }, null)
       })
     } else if (params.method == 'onClose') {
@@ -63,13 +135,13 @@ export const socketEmitter = (params: SocketEmitterParams): void => {
         params.callback({ method: 'Socket.onClose', id: params.id, data }, null)
       })
     } else if (params.method == 'onError') {
-      socketTask.onError((data: GeneralCallbackResult) => {
+      socketTask.onError((data: any) => {
         params.callback({ method: 'Socket.onError', id: params.id, data }, null)
       })
     } else if (params.method == 'send') {
       socketTask.send({
         data: params.data!,
-        success(result: GeneralCallbackResult) {
+        success(result: any) {
           params.callback(result, null)
         },
         fail(error: any) {
@@ -80,7 +152,7 @@ export const socketEmitter = (params: SocketEmitterParams): void => {
       socketTask.close({
         code: params.code,
         reason: params.reason,
-        success(result: GeneralCallbackResult) {
+        success(result: any) {
           params.callback(result, null)
           socketInstanceMap.delete(params.id);
         },
