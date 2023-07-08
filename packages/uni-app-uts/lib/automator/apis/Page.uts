@@ -102,5 +102,17 @@ export const getWindowProperties = (params: GetWindowPropertiesParams): void => 
     callback(null, { errMsg: 'Page.getData:fail, Page not found.' })
     return
   }
-  callback({ result: {} }, null)
+  const properties = params.names.map((name): any | null => {
+    switch (name) {
+      case 'document.documentElement.scrollTop':
+        const document = page.$appPage!.document
+        const scrollViews = document.getElementsByTagName('scroll-view')
+        const scrollView = scrollViews.size > 0 ? scrollViews[0] : null
+        const scrollTop: any | null = scrollView !== null ? scrollView.getAttribute('scrollTop') : 0
+        return scrollTop === null ? 0 : scrollTop
+    }
+    return null
+  })
+
+  callback({ properties }, null)
 }

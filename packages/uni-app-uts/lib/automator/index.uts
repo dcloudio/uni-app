@@ -131,7 +131,7 @@ export function onMessage(msg: string) {
           pageGetElements({ pageId, selector: getElementsSelector, callback } as PageGetElementParams)
           break
         case 'Page.getWindowProperties':
-          const getWindowPropertiesNames = params['names'] as string[]
+          const getWindowPropertiesNames = ((params['names'] as UTSJSONObject).toJSONObject() as JSONArray).toUTSArray() as string[]
           getWindowProperties({ pageId, names: getWindowPropertiesNames, callback } as GetWindowPropertiesParams)
           break
       }
