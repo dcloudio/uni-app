@@ -43,9 +43,14 @@ var index = () => [
             },
             resolveId(id) {
                 if (id === '@dcloudio/uni-push') {
-                    return uniCliShared.resolveBuiltIn(path__default.default.join('@dcloudio/uni-push', isOffline || isEnableV1
-                        ? 'dist/uni-push.plus.es.js'
-                        : 'dist/uni-push.es.js'));
+                    let file = 'dist/uni-push.es.js';
+                    if (isEnableV1) {
+                        file = 'dist/uni-push-v1.plus.es.js';
+                    }
+                    else if (isOffline) {
+                        file = 'dist/uni-push.plus.es.js';
+                    }
+                    return uniCliShared.resolveBuiltIn(path__default.default.join('@dcloudio/uni-push', file));
                 }
             },
             transform(code, id) {

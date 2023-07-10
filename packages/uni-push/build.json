@@ -17,5 +17,10 @@
     "input": {
       "src/plus.ts": ["dist/uni-push.plus.es.js"]
     }
+  },
+  {
+    "input": {
+      "src/plus-v1.ts": ["dist/uni-push-v1.plus.es.js"]
+    }
   }
 ]
