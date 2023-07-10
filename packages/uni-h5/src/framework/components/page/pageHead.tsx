@@ -1,4 +1,4 @@
-import { computed, onBeforeMount, ref, reactive } from 'vue'
+import { computed, onBeforeMount, ref } from 'vue'
 import { extend, isArray } from '@vue/shared'
 import { defineSystemComponent, Input } from '@dcloudio/uni-components'
 import { getRealPath } from '@dcloudio/uni-platform'
@@ -22,7 +22,7 @@ import {
   usePageHeadTransparent,
   usePageHeadTransparentBackgroundColor,
 } from './transparent'
-import { parseTheme, onThemeChange } from '../../../helpers/theme'
+import { useTheme, parseTheme } from '../../../helpers/theme'
 
 const ICON_PATHS = {
   none: '',
@@ -44,15 +44,13 @@ export default /*#__PURE__*/ defineSystemComponent({
   setup() {
     const headRef = ref(null)
     const pageMeta = usePageMeta()
-    const navigationBar = reactive(parseTheme(pageMeta.navigationBar))
-    // UniServiceJSBridge.emit('onNavigationBarChange', navigationBar.titleText)
-    const { clazz, style } = usePageHead(navigationBar)
-
-    onThemeChange(() => {
+    const navigationBar = useTheme(pageMeta.navigationBar, () => {
       const _navigationBar = parseTheme(pageMeta.navigationBar)
       navigationBar.backgroundColor = _navigationBar.backgroundColor
       navigationBar.titleColor = _navigationBar.titleColor
     })
+    // UniServiceJSBridge.emit('onNavigationBarChange', navigationBar.titleText)
+    const { clazz, style } = usePageHead(navigationBar)
 
     const buttons = (__UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ &&
       usePageHeadButtons(pageMeta)) as PageHeadButtons
