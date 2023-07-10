@@ -45,14 +45,13 @@ export default () => [
       },
       resolveId(id: string) {
         if (id === '@dcloudio/uni-push') {
-          return resolveBuiltIn(
-            path.join(
-              '@dcloudio/uni-push',
-              isOffline || isEnableV1
-                ? 'dist/uni-push.plus.es.js'
-                : 'dist/uni-push.es.js'
-            )
-          )
+          let file = 'dist/uni-push.es.js'
+          if (isEnableV1) {
+            file = 'dist/uni-push-v1.plus.es.js'
+          } else if (isOffline) {
+            file = 'dist/uni-push.plus.es.js'
+          }
+          return resolveBuiltIn(path.join('@dcloudio/uni-push', file))
         }
       },
       transform(code: string, id: string) {
