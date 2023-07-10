@@ -35,20 +35,20 @@ export function normalizeStyles<T extends Object>(
       if (isPlainObject(styleItem)) {
         return normalizeStyles(styleItem as T, themeConfig, mode)
       } else if (isArray(styleItem)) {
-        return styleItem.map((item) =>
+        return (styleItem as any[]).map((item) =>
           isPlainObject(item)
             ? normalizeStyles(item as T, themeConfig, mode)
             : item
         )
-      } else if (isString(styleItem) && styleItem.startsWith('@')) {
-        const _key = styleItem.replace('@', '')
+      } else if (isString(styleItem) && (styleItem as string).startsWith('@')) {
+        const _key = (styleItem as string).replace('@', '')
         let _styleItem = modeStyle[_key] || styleItem
         switch (key) {
           case 'titleColor':
             _styleItem = normalizeTitleColor(_styleItem)
             break
           case 'borderStyle':
-            _styleItem = normalizeTabBarStyles(_styleItem) as string
+            _styleItem = normalizeTabBarStyles(_styleItem)!
             break
 
           default:
