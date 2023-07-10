@@ -1,5 +1,12 @@
 import path from 'path'
 import fs from 'fs-extra'
+
+import type {
+  UTSBundleOptions,
+  UTSInputOptions,
+  UTSResult,
+} from '@dcloudio/uts'
+
 import {
   D8_DEFAULT_ARGS,
   KotlinCompilerServer,
@@ -13,11 +20,8 @@ import { parseUTSSyntaxError } from '../stacktrace'
 import {
   getCompilerServer,
   getUTSCompiler,
-  resolveSourceMapFile,
-  resolveUTSSourceMapPath,
+  resolveUniAppXSourceMapPath,
 } from '../utils'
-import { UTSBundleOptions, UTSInputOptions, UTSResult } from '@dcloudio/uts'
-import { resolveSourceMapPath } from '../shared'
 
 const DEFAULT_IMPORTS = [
   'kotlinx.coroutines.async',
@@ -84,7 +88,10 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
         ? kotlinSrcDir(path.resolve(outputDir, '.uniappx/android/'))
         : kotlinSrcDir(kotlinDir(outputDir)),
       package: pkg,
-      sourceMap: sourceMap !== false ? resolveUTSSourceMapPath() : false,
+      sourceMap:
+        sourceMap !== false
+          ? resolveUniAppXSourceMapPath(kotlinDir(outputDir))
+          : false,
       extname: 'kt',
       imports,
       logFilename: true,
@@ -134,13 +141,16 @@ async function runKotlinDev(
   result: RunKotlinDevResult
 ) {
   result.type = 'kotlin'
-  const kotlinRootOutDir = kotlinDir(options.outputDir)
+  const { inputDir, outputDir } = options
+  const kotlinDexOutDir = outputDir
+  const kotlinRootOutDir = kotlinDir(outputDir)
   const kotlinSrcOutDir = kotlinSrcDir(kotlinRootOutDir)
   const kotlinChangedFiles = result.changed.map((file) => {
+    // 如果kt文件变化，则删除对应的dex文件
+
     return path.resolve(kotlinSrcOutDir, file)
   })
 
-  const { inputDir, outputDir } = options
   const kotlinMainFile = path.resolve(kotlinSrcOutDir, result.filename!)
   // 开发模式下，需要生成 dex
   if (kotlinChangedFiles.length && fs.existsSync(kotlinMainFile)) {
@@ -174,13 +184,11 @@ async function runKotlinDev(
       ).concat(['-module-name', `main-${+Date.now()}`]),
       d8: D8_DEFAULT_ARGS,
       kotlinOutDir: kotlinClassOutDir,
-      dexOutDir: outputDir,
+      dexOutDir: kotlinDexOutDir,
       inputDir: kotlinSrcOutDir,
-      sourceRoot: inputDir,
-      sourceMapPath: resolveSourceMapFile(outputDir, kotlinMainFile),
       stderrListener: createStderrListener(
         kotlinSrcOutDir,
-        resolveSourceMapPath(),
+        resolveUniAppXSourceMapPath(kotlinRootOutDir),
         waiting
       ),
     }
@@ -194,6 +202,7 @@ async function runKotlinDev(
     if (!code && data) {
       result.changed = data.dexList
     } else {
+      // 编译失败，需要调整缓存的 manifest.json
       result.changed = []
       if (msg) {
         console.error(msg)

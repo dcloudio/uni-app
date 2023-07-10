@@ -434,3 +434,20 @@ export function resolveSourceMapFile(outputDir: string, kotlinFile: string) {
     '.map'
   )
 }
+
+export function resolveUniAppXSourceMapPath(tempRootDir: string) {
+  return path.resolve(tempRootDir, 'sourcemap')
+}
+
+export function resolveUniAppXSourceMapFile(
+  tempRootDir: string,
+  outputDir: string,
+  kotlinFile: string
+) {
+  return (
+    path.resolve(
+      resolveUniAppXSourceMapPath(tempRootDir),
+      path.relative(outputDir, kotlinFile)
+    ) + '.map'
+  )
+}
