@@ -12,7 +12,10 @@ import {
 import { NodeTransform } from '../transform'
 
 function isTextNode({ tag }: ElementNode) {
-  return tag === 'text' || tag === 'u-text' || tag === 'button'
+  // TODO 临时解决text节点嵌套的问题
+  return (
+    tag === 'text' || tag === 'button' || tag === 'radio' || tag === 'checkbox'
+  )
 }
 
 function isTextElement(node: TemplateChildNode) {
