@@ -151,7 +151,7 @@ export function processExpression(
     : `(${rawExp})${asParams ? `=>{}` : ``}`
   try {
     ast = parse(source, {
-      plugins: ['typescript'],
+      plugins: context.expressionPlugins,
     }).program
   } catch (e: any) {
     context.onError(

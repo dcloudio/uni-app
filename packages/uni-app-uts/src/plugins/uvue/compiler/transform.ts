@@ -34,6 +34,7 @@ import {
 import { defaultOnError, defaultOnWarn } from './errors'
 import { TransformOptions } from './options'
 import { FRAGMENT } from './runtimeHelpers'
+import { ParserPlugin } from '@babel/parser'
 
 // There are two types of transforms:
 //
@@ -97,6 +98,7 @@ export interface TransformContext
   childIndex: number
   currentNode: RootNode | TemplateChildNode | null
   inVOnce: boolean
+  expressionPlugins: ParserPlugin[]
   helper<T extends symbol>(name: T): T
   removeHelper<T extends symbol>(name: T): void
   helperString(name: symbol): string
@@ -161,6 +163,7 @@ export function createTransformContext(
     currentNode: root,
     childIndex: 0,
     inVOnce: false,
+    expressionPlugins: ['typescript'],
 
     // methods
     helper(name) {

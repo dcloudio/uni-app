@@ -88,7 +88,7 @@ return $event.detail.value;}]
       `<Foo v-model:title="model" />`,
       `createVNode(_component_Foo, new Map<string, any | null>([
   ["title", _ctx.model],
-  ["onUpdate:title", $event => ((_ctx.model) = $event)]
+  ["onUpdate:title", $event => {(_ctx.model) = $event}]
 ]), null, 8 /* PROPS */, ["title", "onUpdate:title"])`
     )
   })
@@ -98,7 +98,7 @@ return $event.detail.value;}]
       `<Foo v-model:[value]="model" />`,
       `createVNode(_component_Foo, normalizeProps(new Map<string, any | null>([
   [_ctx.value, _ctx.model],
-  [\"onUpdate:\" + _ctx.value, $event => ((_ctx.model) = $event)]
+  [\"onUpdate:\" + _ctx.value, $event => {(_ctx.model) = $event}]
 ])), null, 16 /* FULL_PROPS */)`
     )
   })
@@ -130,6 +130,15 @@ return _looseToNumber($event.detail.value);}]
   [\"onInput\", ($event: InputEvent): any => {_ctx.model = $event.detail.value.trim();
 return $event.detail.value.trim();}]
 ]), null, 40 /* PROPS, HYDRATE_EVENTS */, [\"modelValue\", \"onInput\"])`
+    )
+  })
+  test('expression width type', () => {
+    assert(
+      `<Foo v-model="model as string" />`,
+      `createVNode(_component_Foo, new Map<string, any | null>([
+  [\"modelValue\", _ctx.model],
+  [\"onUpdate:modelValue\", ($event: string) => {(_ctx.model) = $event}]
+]), null, 8 /* PROPS */, [\"modelValue\", \"onUpdate:modelValue\"])`
     )
   })
 
@@ -371,12 +380,12 @@ return $event.detail.value;}`,
       },
       value: {
         children: [
-          '$event => ((',
+          '$event => {(',
           {
             content: 'model',
             isStatic: false,
           },
-          `) = $event)`,
+          `) = $event}`,
         ],
       },
     })
@@ -419,12 +428,12 @@ return $event.detail.value;}`,
               },
               value: {
                 children: [
-                  '$event => ((',
+                  '$event => {(',
                   {
                     content: 'model',
                     isStatic: false,
                   },
-                  `) = $event)`,
+                  `) = $event}`,
                 ],
               },
             },
@@ -473,12 +482,12 @@ return $event.detail.value;}`,
               },
               value: {
                 children: [
-                  '$event => ((',
+                  '$event => {(',
                   {
                     content: '_ctx.model',
                     isStatic: false,
                   },
-                  `) = $event)`,
+                  `) = $event}`,
                 ],
               },
             },
