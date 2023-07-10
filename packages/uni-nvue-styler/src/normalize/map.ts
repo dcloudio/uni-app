@@ -14,6 +14,7 @@ import { normalizeInterval } from './interval'
 import { normalizeProperty } from './property'
 import { normalizeTimingFunction } from './timingFunction'
 import { createCombinedNormalize } from './combined'
+import { normalizeGradient, normalizeUrl } from './image'
 import { normalizePlatform } from './platform'
 import { normalizeShorthandProperty } from './shorthandProperty'
 
@@ -157,6 +158,8 @@ const restrictionMap: Partial<Record<Restriction, Normalize>> = {
   [Restriction.TIME]: normalizeInterval,
   [Restriction.PROPERTY]: normalizeProperty,
   [Restriction.TIMING_FUNCTION]: normalizeTimingFunction,
+  [Restriction.GRADIENT]: normalizeGradient,
+  [Restriction.URL]: normalizeUrl,
 }
 
 function getUVueNormalizeMap() {

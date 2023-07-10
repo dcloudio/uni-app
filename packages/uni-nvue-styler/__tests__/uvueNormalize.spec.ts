@@ -347,6 +347,30 @@ right: auto;
     expect(messages.length).toEqual(0)
   })
 
+  test('image', async () => {
+    const { json, messages } = await objectifierRule(`
+.foo {
+  backgroundImage: linear-gradient(to bottom, rgba(255,255,0,0.5), rgba(0,0,255,0.5));
+}
+.bar {
+  backgroundImage: url("test.png");
+}
+`)
+    expect(json).toEqual({
+      foo: {
+        '': {
+          backgroundImage:
+            'linear-gradient(to bottom, rgba(255,255,0,0.5), rgba(0,0,255,0.5))',
+        },
+      },
+    })
+    expect(messages[0]).toEqual(
+      expect.objectContaining({
+        text: 'ERROR: property value `url("test.png")` is not supported for `background-image` (supported values are: `gradient`)',
+      })
+    )
+  })
+
   test('shorthand', async () => {
     const { json, messages } = await objectifierRule(`
 .foo {

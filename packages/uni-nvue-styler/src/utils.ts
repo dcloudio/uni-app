@@ -48,6 +48,7 @@ export enum Restriction {
   TIMING_FUNCTION = 'timing-function', // "时间函数"
   UNICODE_RANGE = 'unicode-range', // "编码范围"
   URL = 'url', // "超链接"
+  GRADIENT = 'gradient', // "渐变"
 }
 
 export interface UniPlatform {

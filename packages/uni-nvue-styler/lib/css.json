@@ -1015,7 +1015,7 @@
     },
     {
       "name": "background-image",
-      "restrictions": ["image"],
+      "restrictions": ["gradient"],
       "uniPlatform": {
         "app": {
           "android": {
@@ -1702,7 +1702,7 @@
     },
     {
       "name": "font-size",
-      "restrictions": ["length", "percentage"],
+      "restrictions": ["length"],
       "uniPlatform": {
         "app": {
           "android": {
@@ -1892,7 +1892,7 @@
     },
     {
       "name": "text-decoration-thickness",
-      "restrictions": ["length", "percentage"],
+      "restrictions": ["length"],
       "uniPlatform": {
         "app": {
           "android": {
@@ -1983,7 +1983,7 @@
     },
     {
       "name": "line-height",
-      "restrictions": ["length", "percentage"],
+      "restrictions": ["length"],
       "uniPlatform": {
         "app": {
           "android": {
