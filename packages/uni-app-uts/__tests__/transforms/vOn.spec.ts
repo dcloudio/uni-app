@@ -12,10 +12,7 @@ import {
   ObjectExpression,
   VNodeCall,
 } from '@vue/compiler-core'
-import {
-  inlineStatementCannotUseEventMsg,
-  transformOn,
-} from '../../src/plugins/uvue/compiler/transforms/vOn'
+import { transformOn } from '../../src/plugins/uvue/compiler/transforms/vOn'
 import { transformExpression } from '../../src/plugins/uvue/compiler/transforms/transformExpression'
 import { assert } from '../testUtils'
 
@@ -75,7 +72,7 @@ describe('compiler: v-on', () => {
     assert(
       `<text @click="count++"/>`,
       `createElementVNode("text", new Map<string, any | null>([
-  ["onClick", () => {_ctx.count++}]
+  ["onClick", ($event: any) => {_ctx.count++}]
 ]), null, 8 /* PROPS */, ["onClick"])`
     )
   })
@@ -83,7 +80,7 @@ describe('compiler: v-on', () => {
     assert(
       `<text @click="\nfoo();\nbar()\n"/>`,
       `createElementVNode(\"text\", new Map<string, any | null>([
-  [\"onClick\", () => {
+  [\"onClick\", ($event: any) => {
 _ctx.foo();
 _ctx.bar()
 }]
@@ -92,63 +89,57 @@ _ctx.bar()
     assert(
       `<text @click="a.get('b' + c)()"/>`,
       `createElementVNode("text", new Map<string, any | null>([
-  [\"onClick\", () => {_ctx.a.get('b' + _ctx.c)()}]
+  [\"onClick\", ($event: any) => {_ctx.a.get('b' + _ctx.c)()}]
 ]), null, 8 /* PROPS */, [\"onClick\"])`
     )
   })
   test('inline statement with argument $event', () => {
-    expect(() => {
-      assert(`<text @click="foo($event)"/>`, ``)
-    }).toThrow(inlineStatementCannotUseEventMsg)
-    // assert(
-    //   `<text @click="foo($event)"/>`,
-    //   ``
-    // )
+    assert(
+      `<text @click="foo($event as MouseEvent)"/>`,
+      `createElementVNode(\"text\", new Map<string, any | null>([
+  [\"onClick\", ($event: any) => {_ctx.foo($event as MouseEvent)}]
+]), null, 8 /* PROPS */, [\"onClick\"])`
+    )
   })
   test('should NOT wrap as function if expression is already function expression', () => {
-    expect(() => {
-      assert(`<text @click="$event => foo($event)"/>`, ``)
-    }).toThrow(inlineStatementCannotUseEventMsg)
-    // assert(`<text @click="$event => foo($event)"/>`, ``)
+    assert(
+      `<text @click="($event: MouseEvent) => foo($event)"/>`,
+      `createElementVNode(\"text\", new Map<string, any | null>([
+  [\"onClick\", ($event: MouseEvent) => _ctx.foo($event)]
+]), null, 8 /* PROPS */, [\"onClick\"])`
+    )
   })
   test('should NOT wrap as function if expression is already function expression (with newlines)', () => {
-    expect(() => {
-      assert(
-        `<text @click="
-          $event => {
-            foo($event)
-          }
-        "/>`,
-        ``
-      )
-    }).toThrow(inlineStatementCannotUseEventMsg)
-    // assert(
-    //   `<text @click="
-    //   $event => {
-    //     foo($event)
-    //   }
-    // "/>`, ``
-    // )
+    assert(
+      `<text @click="
+      ($event: MouseEvent) => {
+        foo($event)
+      }
+    "/>`,
+      `createElementVNode(\"text\", new Map<string, any | null>([
+  [\"onClick\", 
+      ($event: MouseEvent) => {
+        _ctx.foo($event)
+      }
+    ]
+]), null, 8 /* PROPS */, [\"onClick\"])`
+    )
   })
   test('should NOT wrap as function if expression is already function expression (with newlines + function keyword)', () => {
-    expect(() => {
-      assert(
-        `<text @click="
-          function($event) {
-            foo($event)
-          }
-        "/>`,
-        ``
-      )
-    }).toThrow(inlineStatementCannotUseEventMsg)
-    // assert(
-    //   `<text @click="
-    //   function($event) {
-    //     foo($event)
-    //   }
-    // "/>`,
-    //   ``
-    // )
+    assert(
+      `<text @click="
+      function($event: MouseEvent) {
+        foo($event)
+      }
+    "/>`,
+      `createElementVNode(\"text\", new Map<string, any | null>([
+  [\"onClick\", 
+      function($event: MouseEvent) {
+        _ctx.foo($event)
+      }
+    ]
+]), null, 8 /* PROPS */, [\"onClick\"])`
+    )
   })
   test('should NOT wrap as function if expression is complex member expression', () => {
     assert(
@@ -324,7 +315,7 @@ _ctx.bar()
           key: { content: `onClick` },
           value: {
             type: NodeTypes.COMPOUND_EXPRESSION,
-            children: [`() => {`, { content: `i++` }, `}`],
+            children: [`($event: any) => {`, { content: `i++` }, `}`],
           },
         },
       ],
@@ -342,7 +333,7 @@ _ctx.bar()
             // should wrap with `{` for multiple statements
             // in this case the return value is discarded and the behavior is
             // consistent with 2.x
-            children: [`() => {`, { content: `foo();bar()` }, `}`],
+            children: [`($event: any) => {`, { content: `foo();bar()` }, `}`],
           },
         },
       ],
@@ -360,7 +351,11 @@ _ctx.bar()
             // should wrap with `{` for multiple statements
             // in this case the return value is discarded and the behavior is
             // consistent with 2.x
-            children: [`() => {`, { content: `\nfoo();\nbar()\n` }, `}`],
+            children: [
+              `($event: any) => {`,
+              { content: `\nfoo();\nbar()\n` },
+              `}`,
+            ],
           },
         },
       ],
@@ -368,88 +363,79 @@ _ctx.bar()
   })
 
   test('inline statement w/ prefixIdentifiers: true', () => {
-    expect(() => {
-      parseWithVOn(`<view @click="foo($event)"/>`)
-    }).toThrow(inlineStatementCannotUseEventMsg)
-    // const { node } = parseWithVOn(`<div @click="foo($event)"/>`, {
-    //   prefixIdentifiers: true
-    // })
-    // expect((node.codegenNode as VNodeCall).props).toMatchObject({
-    //   properties: [
-    //     {
-    //       key: { content: `onClick` },
-    //       value: {
-    //         type: NodeTypes.COMPOUND_EXPRESSION,
-    //         children: [
-    //           `$event => (`,
-    //           {
-    //             type: NodeTypes.COMPOUND_EXPRESSION,
-    //             children: [
-    //               { content: `_ctx.foo` },
-    //               `(`,
-    //               // should NOT prefix $event
-    //               { content: `$event` },
-    //               `)`
-    //             ]
-    //           },
-    //           `)`
-    //         ]
-    //       }
-    //     }
-    //   ]
-    // })
+    const { node } = parseWithVOn(`<div @click="foo($event)"/>`, {
+      prefixIdentifiers: true,
+    })
+    expect((node.codegenNode as VNodeCall).props).toMatchObject({
+      properties: [
+        {
+          key: { content: `onClick` },
+          value: {
+            type: NodeTypes.COMPOUND_EXPRESSION,
+            children: [
+              `($event: any) => {`,
+              {
+                type: NodeTypes.COMPOUND_EXPRESSION,
+                children: [
+                  { content: `_ctx.foo` },
+                  `(`,
+                  // should NOT prefix $event
+                  { content: `$event` },
+                  `)`,
+                ],
+              },
+              `}`,
+            ],
+          },
+        },
+      ],
+    })
   })
 
   test('multiple inline statements w/ prefixIdentifiers: true', () => {
-    expect(() => {
-      parseWithVOn(`<view @click="foo($event);bar()"/>`)
-    }).toThrow(inlineStatementCannotUseEventMsg)
-    // const { node } = parseWithVOn(`<view @click="foo($event);bar()"/>`, {
-    //   prefixIdentifiers: true
-    // })
-    // expect((node.codegenNode as VNodeCall).props).toMatchObject({
-    //   properties: [
-    //     {
-    //       key: { content: `onClick` },
-    //       value: {
-    //         type: NodeTypes.COMPOUND_EXPRESSION,
-    //         children: [
-    //           `$event => {`,
-    //           {
-    //             children: [
-    //               { content: `_ctx.foo` },
-    //               `(`,
-    //               // should NOT prefix $event
-    //               { content: `$event` },
-    //               `);`,
-    //               { content: `_ctx.bar` },
-    //               `()`
-    //             ]
-    //           },
-    //           `}`
-    //         ]
-    //       }
-    //     }
-    //   ]
-    // })
+    const { node } = parseWithVOn(`<view @click="foo($event);bar()"/>`, {
+      prefixIdentifiers: true,
+    })
+    expect((node.codegenNode as VNodeCall).props).toMatchObject({
+      properties: [
+        {
+          key: { content: `onClick` },
+          value: {
+            type: NodeTypes.COMPOUND_EXPRESSION,
+            children: [
+              `($event: any) => {`,
+              {
+                children: [
+                  { content: `_ctx.foo` },
+                  `(`,
+                  // should NOT prefix $event
+                  { content: `$event` },
+                  `);`,
+                  { content: `_ctx.bar` },
+                  `()`,
+                ],
+              },
+              `}`,
+            ],
+          },
+        },
+      ],
+    })
   })
 
   test('should NOT wrap as function if expression is already function expression', () => {
-    expect(() => {
-      parseWithVOn(`<view @click="$event => foo($event)"/>`)
-    }).toThrow(inlineStatementCannotUseEventMsg)
-    // const { node } = parseWithVOn(`<view @click="$event => foo($event)"/>`)
-    // expect((node.codegenNode as VNodeCall).props).toMatchObject({
-    //   properties: [
-    //     {
-    //       key: { content: `onClick` },
-    //       value: {
-    //         type: NodeTypes.SIMPLE_EXPRESSION,
-    //         content: `$event => foo($event)`
-    //       }
-    //     }
-    //   ]
-    // })
+    const { node } = parseWithVOn(`<view @click="$event => foo($event)"/>`)
+    expect((node.codegenNode as VNodeCall).props).toMatchObject({
+      properties: [
+        {
+          key: { content: `onClick` },
+          value: {
+            type: NodeTypes.SIMPLE_EXPRESSION,
+            content: `$event => foo($event)`,
+          },
+        },
+      ],
+    })
   })
 
   test('should NOT wrap as function if expression is already function expression (with Typescript)', () => {
@@ -468,71 +454,53 @@ _ctx.bar()
   })
 
   test('should NOT wrap as function if expression is already function expression (with newlines)', () => {
-    expect(() => {
-      parseWithVOn(
-        `<view @click="
-            $event => {
-              foo($event)
-            }
-          "/>`
-      )
-    }).toThrow(inlineStatementCannotUseEventMsg)
-    // const { node } = parseWithVOn(
-    //   `<view @click="
-    //   $event => {
-    //     foo($event)
-    //   }
-    // "/>`
-    // )
-    // expect((node.codegenNode as VNodeCall).props).toMatchObject({
-    //   properties: [
-    //     {
-    //       key: { content: `onClick` },
-    //       value: {
-    //         type: NodeTypes.SIMPLE_EXPRESSION,
-    //         content: `
-    //   $event => {
-    //     foo($event)
-    //   }
-    // `
-    //       }
-    //     }
-    //   ]
-    // })
+    const { node } = parseWithVOn(
+      `<view @click="
+      $event => {
+        foo($event)
+      }
+    "/>`
+    )
+    expect((node.codegenNode as VNodeCall).props).toMatchObject({
+      properties: [
+        {
+          key: { content: `onClick` },
+          value: {
+            type: NodeTypes.SIMPLE_EXPRESSION,
+            content: `
+      $event => {
+        foo($event)
+      }
+    `,
+          },
+        },
+      ],
+    })
   })
 
   test('should NOT wrap as function if expression is already function expression (with newlines + function keyword)', () => {
-    expect(() => {
-      parseWithVOn(
-        `<view @click="
-        function($event) {
-          foo($event)
-        }
-      "/>`
-      )
-    }).toThrow(inlineStatementCannotUseEventMsg)
-    // const { node } = parseWithVOn(
-    //   `<view @click="
-    //   function($event) {
-    //     foo($event)
-    //   }
-    // "/>`
-    // )
-    // expect((node.codegenNode as VNodeCall).props).toMatchObject({
-    //   properties: [
-    //     {
-    //       key: { content: `onClick` },
-    //       value: {
-    //         type: NodeTypes.SIMPLE_EXPRESSION,
-    //         content: `
-    //   function($event) {
-    //     foo($event)
-    //   }
-    // `
-    //       }
-    //     }
-    //   ]
-    // })
+    const { node } = parseWithVOn(
+      `<view @click="
+      function($event) {
+        foo($event)
+      }
+    "/>`
+    )
+    expect((node.codegenNode as VNodeCall).props).toMatchObject({
+      properties: [
+        {
+          key: { content: `onClick` },
+          value: {
+            type: NodeTypes.SIMPLE_EXPRESSION,
+            content: `
+      function($event) {
+        foo($event)
+      }
+    `,
+          },
+        },
+      ],
+    })
   })
 
   test('should NOT wrap as function if expression is complex member expression', () => {
@@ -874,7 +842,7 @@ _ctx.bar()
         value: {
           type: NodeTypes.COMPOUND_EXPRESSION,
           children: [
-            `() => {`,
+            `($event: any) => {`,
             { children: [{ content: `_ctx.foo` }, `++`] },
             `}`,
           ],
