@@ -135,7 +135,9 @@ export const transformOn: DirectiveTransform = (
       // wrap inline statement in a function expression
       exp = createCompoundExpression([
         `${
-          isInlineStatement ? `($event: any)` : `${``}(...args)`
+          isInlineStatement
+            ? `${loc.source.includes('$event') ? '($event: any)' : '()'}`
+            : `${``}(...args)`
           // } => ${hasMultipleStatements ? `{` : `(`}`,
         } => ${`{`}`,
         exp,

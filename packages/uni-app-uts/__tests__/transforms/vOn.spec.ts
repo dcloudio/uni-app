@@ -72,7 +72,7 @@ describe('compiler: v-on', () => {
     assert(
       `<text @click="count++"/>`,
       `createElementVNode("text", new Map<string, any | null>([
-  ["onClick", ($event: any) => {_ctx.count++}]
+  ["onClick", () => {_ctx.count++}]
 ]), null, 8 /* PROPS */, ["onClick"])`
     )
   })
@@ -80,7 +80,7 @@ describe('compiler: v-on', () => {
     assert(
       `<text @click="\nfoo();\nbar()\n"/>`,
       `createElementVNode(\"text\", new Map<string, any | null>([
-  [\"onClick\", ($event: any) => {
+  [\"onClick\", () => {
 _ctx.foo();
 _ctx.bar()
 }]
@@ -89,7 +89,7 @@ _ctx.bar()
     assert(
       `<text @click="a.get('b' + c)()"/>`,
       `createElementVNode("text", new Map<string, any | null>([
-  [\"onClick\", ($event: any) => {_ctx.a.get('b' + _ctx.c)()}]
+  [\"onClick\", () => {_ctx.a.get('b' + _ctx.c)()}]
 ]), null, 8 /* PROPS */, [\"onClick\"])`
     )
   })
@@ -315,7 +315,7 @@ _ctx.bar()
           key: { content: `onClick` },
           value: {
             type: NodeTypes.COMPOUND_EXPRESSION,
-            children: [`($event: any) => {`, { content: `i++` }, `}`],
+            children: [`() => {`, { content: `i++` }, `}`],
           },
         },
       ],
@@ -333,7 +333,7 @@ _ctx.bar()
             // should wrap with `{` for multiple statements
             // in this case the return value is discarded and the behavior is
             // consistent with 2.x
-            children: [`($event: any) => {`, { content: `foo();bar()` }, `}`],
+            children: [`() => {`, { content: `foo();bar()` }, `}`],
           },
         },
       ],
@@ -351,11 +351,7 @@ _ctx.bar()
             // should wrap with `{` for multiple statements
             // in this case the return value is discarded and the behavior is
             // consistent with 2.x
-            children: [
-              `($event: any) => {`,
-              { content: `\nfoo();\nbar()\n` },
-              `}`,
-            ],
+            children: [`() => {`, { content: `\nfoo();\nbar()\n` }, `}`],
           },
         },
       ],
@@ -842,7 +838,7 @@ _ctx.bar()
         value: {
           type: NodeTypes.COMPOUND_EXPRESSION,
           children: [
-            `($event: any) => {`,
+            `() => {`,
             { children: [{ content: `_ctx.foo` }, `++`] },
             `}`,
           ],
