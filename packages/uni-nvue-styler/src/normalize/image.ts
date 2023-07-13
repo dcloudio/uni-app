@@ -2,7 +2,7 @@ import { Normalize, supportedEnumReason } from '../utils'
 
 export const normalizeGradient: Normalize = (v) => {
   v = (v || '').toString()
-  if (/^linear-gradient(.+)$/.test(v)) {
+  if (/^linear-gradient(.+)$/s.test(v)) {
     return { value: v }
   }
 
@@ -16,7 +16,7 @@ export const normalizeGradient: Normalize = (v) => {
 
 export const normalizeUrl: Normalize = (v) => {
   v = (v || '').toString()
-  if (/^url(.+)$/.test(v)) {
+  if (/^url(.+)$/s.test(v)) {
     return { value: v }
   }
 

@@ -4,6 +4,7 @@
     {
       "name": "width",
       "restrictions": ["length", "percentage"],
+      "syntax": "<length> | <percentage>",
       "values": [
         {
           "name": "fit-content",
@@ -74,6 +75,7 @@
     {
       "name": "min-width",
       "restrictions": ["length"],
+      "syntax": "<length>",
       "values": [
         {
           "name": "fit-content",
@@ -144,6 +146,7 @@
     {
       "name": "max-width",
       "restrictions": ["length"],
+      "syntax": "<length>",
       "values": [
         {
           "name": "fit-content",
@@ -214,6 +217,7 @@
     {
       "name": "height",
       "restrictions": ["length", "percentage"],
+      "syntax": "<length> | <percentage>",
       "values": [
         {
           "name": "fit-content",
@@ -284,6 +288,7 @@
     {
       "name": "min-height",
       "restrictions": ["length"],
+      "syntax": "<length>",
       "values": [
         {
           "name": "fit-content",
@@ -354,6 +359,7 @@
     {
       "name": "max-height",
       "restrictions": ["length"],
+      "syntax": "<length>",
       "values": [
         {
           "name": "fit-content",
@@ -424,6 +430,7 @@
     {
       "name": "position",
       "restrictions": ["enum"],
+      "syntax": "relative | absolute | fixed | static | sticky",
       "values": [
         {
           "name": "relative"
@@ -486,6 +493,7 @@
     {
       "name": "top",
       "restrictions": ["length", "percentage"],
+      "syntax": "<length> | <percentage> | auto",
       "values": [
         {
           "name": "auto"
@@ -508,6 +516,7 @@
     {
       "name": "bottom",
       "restrictions": ["length", "percentage"],
+      "syntax": "<length> | <percentage> | auto",
       "values": [
         {
           "name": "auto"
@@ -530,6 +539,7 @@
     {
       "name": "left",
       "restrictions": ["length", "percentage"],
+      "syntax": "<length> | <percentage> | auto",
       "values": [
         {
           "name": "auto"
@@ -552,6 +562,7 @@
     {
       "name": "right",
       "restrictions": ["length", "percentage"],
+      "syntax": "<length> | <percentage> | auto",
       "values": [
         {
           "name": "auto"
@@ -574,6 +585,7 @@
     {
       "name": "flex-direction",
       "restrictions": ["enum"],
+      "syntax": "row | row-reverse | column | column-reverse",
       "values": [
         {
           "name": "row"
@@ -605,6 +617,7 @@
     {
       "name": "justify-content",
       "restrictions": ["enum"],
+      "syntax": "center | flex-start | flex-end | space-between | space-around",
       "values": [
         {
           "name": "center"
@@ -639,6 +652,7 @@
     {
       "name": "flex-wrap",
       "restrictions": ["enum"],
+      "syntax": "nowrap | wrap | wrap-reverse",
       "values": [
         {
           "name": "nowrap"
@@ -667,6 +681,7 @@
     {
       "name": "align-items",
       "restrictions": ["enum"],
+      "syntax": "center | flex-start | flex-end | stretch | baseline",
       "values": [
         {
           "name": "center"
@@ -715,6 +730,7 @@
     {
       "name": "align-content",
       "restrictions": ["enum"],
+      "syntax": "center | flex-start | flex-end | space-between | space-around | stretch",
       "values": [
         {
           "name": "center"
@@ -751,8 +767,13 @@
     },
     {
       "name": "flex",
-      "restrictions": ["number", "length"],
+      "shorthand": true,
+      "restrictions": ["number", "length", "enum"],
+      "syntax": "initial | auto | none | [ <'flex-grow'> <'flex-shrink'>? <'flex-basis'> ]",
       "values": [
+        {
+          "name": "initial"
+        },
         {
           "name": "auto"
         },
@@ -777,6 +798,7 @@
     {
       "name": "flex-grow",
       "restrictions": ["number"],
+      "syntax": "<number>",
       "uniPlatform": {
         "app": {
           "android": {
@@ -794,6 +816,7 @@
     {
       "name": "flex-shrink",
       "restrictions": ["number"],
+      "syntax": "<number>",
       "uniPlatform": {
         "app": {
           "android": {
@@ -811,6 +834,7 @@
     {
       "name": "flex-basis",
       "restrictions": ["number", "length", "percentage"],
+      "syntax": "<number> | <length> | <percentage> | auto",
       "values": [
         {
           "name": "auto"
@@ -850,6 +874,7 @@
     {
       "name": "flex-flow",
       "restrictions": ["enum"],
+      "syntax": "<'flex-direction'> || <'flex-wrap'>",
       "values": [
         {
           "name": "column"
@@ -890,6 +915,7 @@
     {
       "name": "display",
       "restrictions": ["enum"],
+      "syntax": "flex | none",
       "values": [
         {
           "name": "flex"
@@ -915,6 +941,7 @@
     {
       "name": "overflow",
       "restrictions": ["enum"],
+      "syntax": "visible | hidden",
       "values": [
         {
           "name": "visible"
@@ -940,6 +967,7 @@
     {
       "name": "opacity",
       "restrictions": ["number(0-1)"],
+      "syntax": "<alpha-value>",
       "uniPlatform": {
         "app": {
           "android": {
@@ -957,6 +985,7 @@
     {
       "name": "box-sizing",
       "restrictions": ["enum"],
+      "syntax": "content-box | border-box",
       "values": [
         {
           "name": "content-box"
@@ -981,7 +1010,8 @@
     },
     {
       "name": "background",
-      "restrictions": [],
+      "restrictions": ["color", "gradient"],
+      "syntax": "<color> | <gradient>",
       "uniPlatform": {
         "app": {
           "android": {
@@ -999,6 +1029,7 @@
     {
       "name": "background-color",
       "restrictions": ["color"],
+      "syntax": "<color>",
       "uniPlatform": {
         "app": {
           "android": {
@@ -1016,6 +1047,7 @@
     {
       "name": "background-image",
       "restrictions": ["gradient"],
+      "syntax": "<gradient>",
       "uniPlatform": {
         "app": {
           "android": {
@@ -1033,6 +1065,7 @@
     {
       "name": "background-clip",
       "restrictions": ["enum"],
+      "syntax": "border-box | padding-box | content-box",
       "values": [
         {
           "name": "border-box"
@@ -1088,7 +1121,9 @@
     },
     {
       "name": "padding",
+      "shorthand": true,
       "restrictions": ["length", "percentage"],
+      "syntax": "[ <length> | <percentage> ]{1,4}",
       "uniPlatform": {
         "app": {
           "android": {
@@ -1106,6 +1141,7 @@
     {
       "name": "padding-left",
       "restrictions": ["length", "percentage"],
+      "syntax": "<length> | <percentage>",
       "uniPlatform": {
         "app": {
           "android": {
@@ -1123,6 +1159,7 @@
     {
       "name": "padding-top",
       "restrictions": ["length", "percentage"],
+      "syntax": "<length> | <percentage>",
       "uniPlatform": {
         "app": {
           "android": {
@@ -1140,6 +1177,7 @@
     {
       "name": "padding-right",
       "restrictions": ["length", "percentage"],
+      "syntax": "<length> | <percentage>",
       "uniPlatform": {
         "app": {
           "android": {
@@ -1157,6 +1195,7 @@
     {
       "name": "padding-bottom",
       "restrictions": ["length", "percentage"],
+      "syntax": "<length> | <percentage>",
       "uniPlatform": {
         "app": {
           "android": {
@@ -1173,7 +1212,9 @@
     },
     {
       "name": "margin",
+      "shorthand": true,
       "restrictions": ["length", "percentage"],
+      "syntax": "[ <length> | <percentage> ]{1,4}",
       "values": [
         {
           "name": "auto"
@@ -1196,6 +1237,7 @@
     {
       "name": "margin-left",
       "restrictions": ["length", "percentage"],
+      "syntax": "<length> | <percentage>",
       "values": [
         {
           "name": "auto"
@@ -1218,6 +1260,7 @@
     {
       "name": "margin-top",
       "restrictions": ["length", "percentage"],
+      "syntax": "<length> | <percentage>",
       "values": [
         {
           "name": "auto"
@@ -1240,6 +1283,7 @@
     {
       "name": "margin-right",
       "restrictions": ["length", "percentage"],
+      "syntax": "<length> | <percentage>",
       "values": [
         {
           "name": "auto"
@@ -1262,6 +1306,7 @@
     {
       "name": "margin-bottom",
       "restrictions": ["length", "percentage"],
+      "syntax": "<length> | <percentage>",
       "values": [
         {
           "name": "auto"
@@ -1283,7 +1328,8 @@
     },
     {
       "name": "border",
-      "restrictions": [],
+      "restrictions": ["line-width", "line-style", "color"],
+      "syntax": "<line-width> || <line-style> || <color>",
       "uniPlatform": {
         "app": {
           "android": {
@@ -1300,7 +1346,8 @@
     },
     {
       "name": "border-style",
-      "restrictions": [],
+      "restrictions": ["line-style"],
+      "syntax": "<line-style>{1,4}",
       "uniPlatform": {
         "app": {
           "android": {
@@ -1317,7 +1364,8 @@
     },
     {
       "name": "border-left-style",
-      "restrictions": ["enum"],
+      "restrictions": ["line-style"],
+      "syntax": "<line-style>",
       "values": [
         {
           "name": "solid"
@@ -1345,7 +1393,8 @@
     },
     {
       "name": "border-top-style",
-      "restrictions": ["enum"],
+      "restrictions": ["line-style"],
+      "syntax": "<line-style>",
       "values": [
         {
           "name": "solid"
@@ -1373,7 +1422,8 @@
     },
     {
       "name": "border-right-style",
-      "restrictions": ["enum"],
+      "restrictions": ["line-style"],
+      "syntax": "<line-style>",
       "values": [
         {
           "name": "solid"
@@ -1401,7 +1451,8 @@
     },
     {
       "name": "border-bottom-style",
-      "restrictions": ["enum"],
+      "restrictions": ["line-style"],
+      "syntax": "<line-style>",
       "values": [
         {
           "name": "solid"
@@ -1429,7 +1480,8 @@
     },
     {
       "name": "border-width",
-      "restrictions": ["length"],
+      "restrictions": ["line-width"],
+      "syntax": "<line-width>{1,4}",
       "uniPlatform": {
         "app": {
           "android": {
@@ -1446,7 +1498,8 @@
     },
     {
       "name": "border-left-width",
-      "restrictions": ["length"],
+      "restrictions": ["line-width"],
+      "syntax": "<line-width>",
       "uniPlatform": {
         "app": {
           "android": {
@@ -1463,7 +1516,8 @@
     },
     {
       "name": "border-top-width",
-      "restrictions": ["length"],
+      "restrictions": ["line-width"],
+      "syntax": "<line-width>",
       "uniPlatform": {
         "app": {
           "android": {
@@ -1480,7 +1534,8 @@
     },
     {
       "name": "border-right-width",
-      "restrictions": ["length"],
+      "restrictions": ["line-width"],
+      "syntax": "<line-width>",
       "uniPlatform": {
         "app": {
           "android": {
@@ -1497,7 +1552,8 @@
     },
     {
       "name": "border-bottom-width",
-      "restrictions": ["length"],
+      "restrictions": ["line-width"],
+      "syntax": "<line-width>",
       "uniPlatform": {
         "app": {
           "android": {
@@ -1514,7 +1570,8 @@
     },
     {
       "name": "border-color",
-      "restrictions": [],
+      "restrictions": ["color"],
+      "syntax": "<color>{1,4}",
       "uniPlatform": {
         "app": {
           "android": {
@@ -1532,6 +1589,7 @@
     {
       "name": "border-left-color",
       "restrictions": ["color"],
+      "syntax": "<color>",
       "uniPlatform": {
         "app": {
           "android": {
@@ -1549,6 +1607,7 @@
     {
       "name": "border-top-color",
       "restrictions": ["color"],
+      "syntax": "<color>",
       "uniPlatform": {
         "app": {
           "android": {
@@ -1566,6 +1625,7 @@
     {
       "name": "border-right-color",
       "restrictions": ["color"],
+      "syntax": "<color>",
       "uniPlatform": {
         "app": {
           "android": {
@@ -1583,6 +1643,7 @@
     {
       "name": "border-bottom-color",
       "restrictions": ["color"],
+      "syntax": "<color>",
       "uniPlatform": {
         "app": {
           "android": {
@@ -1599,7 +1660,8 @@
     },
     {
       "name": "border-radius",
-      "restrictions": [],
+      "restrictions": ["length"],
+      "syntax": "<length>{1,4}",
       "uniPlatform": {
         "app": {
           "android": {
@@ -1617,6 +1679,7 @@
     {
       "name": "border-top-left-radius",
       "restrictions": ["length"],
+      "syntax": "<length>",
       "uniPlatform": {
         "app": {
           "android": {
@@ -1634,6 +1697,7 @@
     {
       "name": "border-top-right-radius",
       "restrictions": ["length"],
+      "syntax": "<length>",
       "uniPlatform": {
         "app": {
           "android": {
@@ -1651,6 +1715,7 @@
     {
       "name": "border-bottom-left-radius",
       "restrictions": ["length"],
+      "syntax": "<length>",
       "uniPlatform": {
         "app": {
           "android": {
@@ -1668,6 +1733,7 @@
     {
       "name": "border-bottom-right-radius",
       "restrictions": ["length"],
+      "syntax": "<length>",
       "uniPlatform": {
         "app": {
           "android": {
@@ -1685,6 +1751,7 @@
     {
       "name": "color",
       "restrictions": ["color"],
+      "syntax": "<color>",
       "uniPlatform": {
         "app": {
           "android": {
@@ -1703,6 +1770,7 @@
     {
       "name": "font-size",
       "restrictions": ["length"],
+      "syntax": "<length>",
       "uniPlatform": {
         "app": {
           "android": {
@@ -1721,6 +1789,7 @@
     {
       "name": "font-style",
       "restrictions": ["enum"],
+      "syntax": "italic | normal",
       "values": [
         {
           "name": "italic"
@@ -1747,6 +1816,7 @@
     {
       "name": "font-weight",
       "restrictions": ["enum"],
+      "syntax": "normal | bold | 400 | 700",
       "values": [
         {
           "name": "normal"
@@ -1778,7 +1848,8 @@
     },
     {
       "name": "text-decoration",
-      "restrictions": [],
+      "restrictions": ["enum", "color", "length"],
+      "syntax": "<'text-decoration-line'> || <'text-decoration-style'> || <'text-decoration-color'> || <'text-decoration-thickness'>",
       "uniPlatform": {
         "app": {
           "android": {
@@ -1797,10 +1868,8 @@
     {
       "name": "text-decoration-line",
       "restrictions": ["enum"],
+      "syntax": "underline | line-through | overline",
       "values": [
-        {
-          "name": "none"
-        },
         {
           "name": "underline"
         },
@@ -1843,6 +1912,7 @@
     {
       "name": "text-decoration-color",
       "restrictions": ["color"],
+      "syntax": "<color>",
       "uniPlatform": {
         "app": {
           "android": {
@@ -1861,6 +1931,7 @@
     {
       "name": "text-decoration-style",
       "restrictions": ["enum"],
+      "syntax": "solid | dashed | dotted | wavy",
       "values": [
         {
           "name": "solid"
@@ -1893,6 +1964,7 @@
     {
       "name": "text-decoration-thickness",
       "restrictions": ["length"],
+      "syntax": "<length>",
       "uniPlatform": {
         "app": {
           "android": {
@@ -1911,6 +1983,7 @@
     {
       "name": "text-align",
       "restrictions": ["enum"],
+      "syntax": "left | center | right",
       "values": [
         {
           "name": "left"
@@ -1939,7 +2012,8 @@
     },
     {
       "name": "font-family",
-      "restrictions": [],
+      "restrictions": ["font"],
+      "syntax": "<family-name>",
       "uniPlatform": {
         "app": {
           "android": {
@@ -1958,6 +2032,7 @@
     {
       "name": "text-overflow",
       "restrictions": ["enum"],
+      "syntax": "clip | ellipsis",
       "values": [
         {
           "name": "clip"
@@ -1984,6 +2059,7 @@
     {
       "name": "line-height",
       "restrictions": ["length"],
+      "syntax": "<length>",
       "uniPlatform": {
         "app": {
           "android": {
@@ -2002,6 +2078,7 @@
     {
       "name": "lines",
       "restrictions": ["integer"],
+      "syntax": "<integer>",
       "uniPlatform": {
         "app": {
           "android": {
@@ -2019,7 +2096,8 @@
     },
     {
       "name": "box-shadow",
-      "restrictions": [],
+      "restrictions": ["enum", "length", "color"],
+      "syntax": "<shadow>",
       "uniPlatform": {
         "app": {
           "android": {
@@ -2037,6 +2115,7 @@
     {
       "name": "transition",
       "restrictions": ["time", "property", "timing-function"],
+      "syntax": "<single-transition>#",
       "uniPlatform": {
         "app": {
           "android": {
@@ -2054,6 +2133,7 @@
     {
       "name": "transition-property",
       "restrictions": ["property"],
+      "syntax": "<single-transition-property>#",
       "uniPlatform": {
         "app": {
           "android": {
@@ -2071,6 +2151,7 @@
     {
       "name": "transition-duration",
       "restrictions": ["time"],
+      "syntax": "<time>",
       "uniPlatform": {
         "app": {
           "android": {
@@ -2088,6 +2169,7 @@
     {
       "name": "transition-timing-function",
       "restrictions": ["timing-function"],
+      "syntax": "<easing-function>#",
       "uniPlatform": {
         "app": {
           "android": {
@@ -2105,6 +2187,7 @@
     {
       "name": "transition-delay",
       "restrictions": ["time"],
+      "syntax": "<time>#",
       "uniPlatform": {
         "app": {
           "android": {
@@ -2122,6 +2205,7 @@
     {
       "name": "transform",
       "restrictions": ["enum"],
+      "syntax": "<transform-list>",
       "values": [
         {
           "name": "rotate(<angle>)"

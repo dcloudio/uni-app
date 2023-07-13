@@ -13,7 +13,10 @@ export interface NormalizeOptions {
 
 export type Normalize = (
   v: string | number,
-  options: NormalizeOptions
+  options: NormalizeOptions,
+  declInfo?: {
+    atRule: string
+  }
 ) => {
   value: string | number | null
   reason?: (
@@ -73,6 +76,7 @@ export interface PropertyValue {
 
 export interface Property {
   name: string
+  shorthand?: boolean
   restrictions: Restriction[]
   values?: PropertyValue[]
   uniPlatform?: UniPlatform

@@ -37,31 +37,42 @@ position: relative;
     const { json, messages } = await objectifierRule(`.foo{
 width: 200px;
 minWidth: 100px;
+maxWidth: max-content;
+height: 100%;
 paddingLeft: 300;
 borderWidth: 1pt;
 left: 0;
 right: 0px;
 top: auto;
+bottom: 100%;
 marginRight: asdf;
-height: 10rpx;
 paddingTop: 11upx;
+paddingBottom: 11rpx;
 }`)
     expect(json).toEqual({
       foo: {
         '': {
           width: 200,
           minWidth: 100,
+          height: '100%',
           paddingLeft: 300,
           borderWidth: '1pt',
           left: 0,
           right: 0,
           top: 'auto',
-          height: '10rpx',
+          bottom: '100%',
           paddingTop: '11upx',
+          paddingBottom: '11rpx',
         },
       },
     })
     expect(messages[0]).toEqual(
+      expect.objectContaining({
+        type: 'warning',
+        text: 'ERROR: property value `max-content` is not supported for `max-width` (supported values are: `number`|`pixel`)',
+      })
+    )
+    expect(messages[1]).toEqual(
       expect.objectContaining({
         type: 'warning',
         text: 'ERROR: property value `asdf` is not supported for `margin-right` (supported values are: `number`|`pixel`|`percent`|`auto`)',
@@ -75,8 +86,12 @@ position: absolute;
 display: flex;
 flexDirection: row;
 alignItems: baseline;
+alignContent: stretch;
 justifyContent: center;
 flexWrap: nowrap;
+overflow: auto;
+boxSizing: content-box;
+backgroundClip: padding-box;
 borderLeftStyle: solid;
 borderRightStyle: abc;
 }`)
@@ -86,8 +101,10 @@ borderRightStyle: abc;
           position: 'absolute',
           display: 'flex',
           flexDirection: 'row',
+          alignContent: 'stretch',
           justifyContent: 'center',
           flexWrap: 'nowrap',
+          boxSizing: 'content-box',
           borderLeftStyle: 'solid',
         },
       },
@@ -101,6 +118,18 @@ borderRightStyle: abc;
     expect(messages[1]).toEqual(
       expect.objectContaining({
         type: 'warning',
+        text: 'ERROR: property value `auto` is not supported for `overflow` (supported values are: `visible`|`hidden`)',
+      })
+    )
+    expect(messages[2]).toEqual(
+      expect.objectContaining({
+        type: 'warning',
+        text: 'ERROR: property value `padding-box` is not supported for `background-clip` (supported values are: `border-box`)',
+      })
+    )
+    expect(messages[3]).toEqual(
+      expect.objectContaining({
+        type: 'warning',
         text: 'ERROR: property value `abc` is not supported for `border-right-style` (supported values are: `solid`|`dashed`|`dotted`)',
       })
     )
@@ -111,20 +140,28 @@ borderRightStyle: abc;
 width: 200px;
 maxWidth: 500px;
 height: max-content;
+marginLeft: 10px;
+marginRight: 10rpx;
+marginTop: 10%;
+marginBottom: auto;
 top: 20%;
-bottom: 30%;
+bottom: 30xx;
 left: auto;
-right: auto;
+right: abc;
+flexBasis: fill;
 }`)
     expect(json).toEqual({
       foo: {
         '': {
           width: 200,
           maxWidth: 500,
+          marginLeft: 10,
+          marginRight: '10rpx',
+          marginTop: '10%',
+          marginBottom: 'auto',
           top: '20%',
-          bottom: '30%',
+          bottom: 30,
           left: 'auto',
-          right: 'auto',
         },
       },
     })
@@ -132,6 +169,24 @@ right: auto;
       expect.objectContaining({
         type: 'warning',
         text: 'ERROR: property value `max-content` is not supported for `height` (supported values are: `number`|`pixel`|`percent`)',
+      })
+    )
+    expect(messages[1]).toEqual(
+      expect.objectContaining({
+        type: 'warning',
+        text: 'NOTE: unit `xx` is not supported and property value `30xx` is autofixed to `30`',
+      })
+    )
+    expect(messages[2]).toEqual(
+      expect.objectContaining({
+        type: 'warning',
+        text: 'ERROR: property value `abc` is not supported for `right` (supported values are: `number`|`pixel`|`percent`|`auto`)',
+      })
+    )
+    expect(messages[3]).toEqual(
+      expect.objectContaining({
+        type: 'warning',
+        text: 'ERROR: property value `fill` is not supported for `flex-basis` (supported values are: `number`|`pixel`|`percent`|`auto`)',
       })
     )
   })
@@ -350,17 +405,28 @@ right: auto;
   test('image', async () => {
     const { json, messages } = await objectifierRule(`
 .foo {
-  backgroundImage: linear-gradient(to bottom, rgba(255,255,0,0.5), rgba(0,0,255,0.5));
+  backgroundImage: linear-gradient(
+    to bottom,
+    rgba(255,255,0,0.5),
+    rgba(0,0,255,0.5)
+  );
 }
 .bar {
   backgroundImage: url("test.png");
+}
+.baz {
+  backgroundImage: linear-gradient(to bottom,rgba(255,255,0,0.5),rgba(0,0,255,0.5));
 }
 `)
     expect(json).toEqual({
       foo: {
         '': {
-          backgroundImage:
-            'linear-gradient(to bottom, rgba(255,255,0,0.5), rgba(0,0,255,0.5))',
+          backgroundImage: `linear-gradient(\n    to bottom,\n    rgba(255,255,0,0.5),\n    rgba(0,0,255,0.5)\n  )`,
+        },
+      },
+      baz: {
+        '': {
+          backgroundImage: `linear-gradient(to bottom,rgba(255,255,0,0.5),rgba(0,0,255,0.5))`,
         },
       },
     })
@@ -378,16 +444,33 @@ right: auto;
   padding: 50px;
 }
 .bar {
-  margin: 10px auto;
+  margin: 
+    10px auto;
   padding: 10px auto;
 }
 .baz {
-  margin: 10rpx 20px 30px;
-  padding: 10px 20px 30px 40rpx;
+  margin: 
+    10rpx 
+    20px 
+    30px;
+  padding: 10px 
+    20px 30px 40rpx;
 }
 .boo {
   margin: abc;
   padding: abc;
+}
+.flex {
+  flex: 1;
+  flex: auto;
+  flex: 1 2;
+  flex: 1 2 auto;
+  flex: none;
+}
+.flex1 {
+  flex: min-content;
+  flex: 2 unset;
+  flex: 1 abc 100px;
 }
 `)
     expect(json).toEqual({
@@ -408,6 +491,11 @@ right: auto;
           padding: '10 20 30 40rpx',
         },
       },
+      flex: {
+        '': {
+          flex: 'none',
+        },
+      },
     })
     expect(messages[0]).toEqual(
       expect.objectContaining({
@@ -422,6 +510,66 @@ right: auto;
     expect(messages[2]).toEqual(
       expect.objectContaining({
         text: 'ERROR: property value `abc` is not supported for `padding` (supported values are: `number`|`pixel`|`percent`)',
+      })
+    )
+    expect(messages[3]).toEqual(
+      expect.objectContaining({
+        text: 'ERROR: property value `min-content` is not supported for `flex` (supported values are: `number`|`pixel`|`initial`|`auto`|`none`)',
+      })
+    )
+    expect(messages[4]).toEqual(
+      expect.objectContaining({
+        text: 'ERROR: property value `2 unset` is not supported for `flex` (supported values are: `number`|`pixel`|`initial`|`auto`|`none`)',
+      })
+    )
+    expect(messages[5]).toEqual(
+      expect.objectContaining({
+        text: 'ERROR: property value `1 abc 100px` is not supported for `flex` (supported values are: `number`|`pixel`|`initial`|`auto`|`none`)',
+      })
+    )
+  })
+
+  test('@font-face', async () => {
+    const { json, messages } = await objectifierRule(`
+@font-face {
+  fontFamily: "font-family";
+  src: url("font file url") format("woff");
+  fontWeight: bold;
+  fontStyle: normal;
+}
+.foo {
+  src: url("font file url") format("woff");
+  fontWeight: bold;
+  fontStyle: normal;
+}
+`)
+    expect(json).toEqual({
+      '@FONT-FACE': [
+        {
+          fontFamily: 'font-family',
+          src: 'url("font file url") format("woff")',
+        },
+      ],
+      foo: {
+        '': {
+          fontWeight: 'bold',
+          fontStyle: 'normal',
+        },
+      },
+    })
+    expect(messages[0]).toEqual(
+      expect.objectContaining({
+        text: 'ERROR: property `font-weight` is not supported for `@font-face` (supported properties are: `font-family`|`src`)',
+      })
+    )
+    expect(messages[1]).toEqual(
+      expect.objectContaining({
+        text: 'ERROR: property `font-style` is not supported for `@font-face` (supported properties are: `font-family`|`src`)',
+      })
+    )
+    expect(messages[2]).toEqual(
+      expect.objectContaining({
+        text: 'WARNING: `src` is not a standard property name (may not be supported)',
       })
     )
   })
@@ -559,6 +707,46 @@ right: auto;
     expect(messages[0]).toEqual(
       expect.objectContaining({
         text: 'ERROR: property value `abc` is not supported for `transition-timing-function` (supported values are: `linear`|`ease`|`ease-in`|`ease-out`|`ease-in-out`|`cubic-bezier(n,n,n,n)`)',
+      })
+    )
+  })
+  test('current platform unsupported', async () => {
+    const { json, messages } = await objectifierRule(`
+.foo {
+  textDecoration: underline dotted red;
+  textDecorationColor: #21ff21;
+  textDecorationStyle: dotted;
+  textOverflow: ellipsis;
+}
+`)
+    expect(json).toEqual({
+      foo: {
+        '': {
+          textDecoration: 'underline dotted red',
+          textDecorationColor: '#21ff21',
+          textDecorationStyle: 'dotted',
+          textOverflow: 'ellipsis',
+        },
+      },
+    })
+    expect(messages[0]).toEqual(
+      expect.objectContaining({
+        text: 'WARNING: `text-decoration` is not a standard property name (may not be supported)',
+      })
+    )
+    expect(messages[1]).toEqual(
+      expect.objectContaining({
+        text: 'WARNING: `text-decoration-color` is not a standard property name (may not be supported)',
+      })
+    )
+    expect(messages[2]).toEqual(
+      expect.objectContaining({
+        text: 'WARNING: `text-decoration-style` is not a standard property name (may not be supported)',
+      })
+    )
+    expect(messages[3]).toEqual(
+      expect.objectContaining({
+        text: 'WARNING: `text-overflow` is not a standard property name (may not be supported)',
       })
     )
   })

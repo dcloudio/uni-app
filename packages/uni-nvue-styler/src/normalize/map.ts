@@ -17,6 +17,7 @@ import { createCombinedNormalize } from './combined'
 import { normalizeGradient, normalizeUrl } from './image'
 import { normalizePlatform } from './platform'
 import { normalizeShorthandProperty } from './shorthandProperty'
+import { normalizeFontFace, normalizeSrc } from './fontFace'
 
 export const normalizeDefault: Normalize = (v) => {
   return { value: v }
@@ -144,9 +145,9 @@ const uvueNormalizeMap: Record<string, Normalize> = {
   transform: normalizeTransform,
   fontFamily: normalizeString,
   borderRadius: normalizeLength,
+  textDecoration: normalizeDefault,
+  boxShadow: normalizeDefault,
 }
-// 支持的简写属性
-const shorthandProperties = ['margin', 'padding']
 
 const restrictionMap: Partial<Record<Restriction, Normalize>> = {
   [Restriction.LENGTH]: normalizeLength,
@@ -161,9 +162,13 @@ const restrictionMap: Partial<Record<Restriction, Normalize>> = {
   [Restriction.GRADIENT]: normalizeGradient,
   [Restriction.URL]: normalizeUrl,
 }
+// @font-face下不支持的属性
+const invalidFontFaceProperties = ['fontWeight', 'fontStyle', 'fontVariant']
 
 function getUVueNormalizeMap() {
-  const result: Record<string, Normalize> = {}
+  const result: Record<string, Normalize> = {
+    src: normalizeSrc,
+  }
 
   let cssJson: CssJSON
   try {
@@ -192,8 +197,13 @@ function getUVueNormalizeMap() {
       } else {
         normalize = normalizeDefault
       }
-      if (shorthandProperties.includes(prop)) {
+      // 简写属性
+      if (property.shorthand) {
         normalize = normalizeShorthandProperty(normalize)
+      }
+      // 处理@font-face下不支持的属性
+      if (invalidFontFaceProperties.includes(prop)) {
+        normalize = normalizeFontFace(normalize)
       }
     }
     result[prop] = normalizePlatform(normalize, property.uniPlatform)
