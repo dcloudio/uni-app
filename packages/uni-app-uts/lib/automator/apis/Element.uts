@@ -247,7 +247,7 @@ export const handleTouchEvent = (params: HandleTouchEventParams): void => {
   if (dom !== null) {
     const touches = getTouches(params.touches)
     const changedTouches = getTouches(params.changedTouches)
-    dom.dispatchEvent(params.eventName, TouchEvent(params.eventName, touches, changedTouches))
+    dom.dispatchEvent(params.eventName, TouchEvent(null, params.eventName, touches, changedTouches))
     params.callback({ result: `Element.${params.eventName} success` }, null)
   }
 }
