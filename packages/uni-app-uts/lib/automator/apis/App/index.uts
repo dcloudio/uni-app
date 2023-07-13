@@ -3,6 +3,7 @@ import { JSONArray, JSONObject } from 'com.alibaba.fastjson'
 import { parsePage } from '../util.uts'
 import { send } from '../../index.uts'
 import { connectSocket, FirstSocketTaskEmitterParams, firstSocketTaskEmitter } from './Socket.uts'
+import { readFile, ReadFileOptions } from '../../plugins/uts-file-manager/utssdk/app-android/index.uts'
 
 export type GetPageStackParams = {
   callback: (result: any | null, error: any | null) => void
@@ -355,11 +356,17 @@ export const captureScreenshot = (params: CaptureScreenshotParams): void => {
       wholeContent: params.fullPage,
       path: params.path,
       success: (res) => {
-        callback({
-          errMsg: 'screenshot:ok',
-          tempFilePath: res.tempFilePath,
-          data: UTSAndroid.dcloud_private_getFileBase64(res.tempFilePath)
-        }, null)
+        readFile({
+          type: 'base64',
+          path: res.tempFilePath,
+          success: function (readFileRes) {
+            callback({
+              errMsg: 'screenshot:ok',
+              tempFilePath: res.tempFilePath,
+              data: readFileRes.content
+            }, null)
+          },
+        } as ReadFileOptions)
       },
       fail: (error) => {
         callback(null, error)
