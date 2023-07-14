@@ -12,6 +12,7 @@ var index = () => [
         let isEnableV1 = false;
         let isEnableV2 = false;
         let isOffline = false;
+        let configModulePush = false;
         return {
             name: 'uni:push',
             enforce: 'pre',
@@ -23,6 +24,7 @@ var index = () => [
                 const platform = process.env.UNI_PLATFORM;
                 isEnableV1 = uniCliShared.isEnableUniPushV1(inputDir, platform);
                 isEnableV2 = uniCliShared.isEnableUniPushV2(inputDir, platform);
+                configModulePush = uniCliShared.hasPushModule(inputDir);
                 // v1
                 if (isEnableV1) {
                     return;
@@ -55,6 +57,14 @@ var index = () => [
             },
             transform(code, id) {
                 if (!opts.filter(id)) {
+                    return;
+                }
+                // 如果启用了v1，但是没有配置module.push，不需要注入
+                if (isEnableV1 && !configModulePush) {
+                    return;
+                }
+                // 如果启用了v2+offline，但是没有配置module.push，不需要注入
+                if (isEnableV2 && isOffline && !configModulePush) {
                     return;
                 }
                 if (isEnableV1 || isEnableV2) {

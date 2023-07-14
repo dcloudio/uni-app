@@ -105,6 +105,11 @@ export function isEnableSecureNetwork(
   return manifest[platform]?.secureNetwork?.enable === true
 }
 
+export function hasPushModule(inputDir: string) {
+  const manifest = parseManifestJsonOnce(inputDir)
+  return !!manifest['app-plus']?.modules?.Push
+}
+
 export function isUniPushOffline(inputDir: string) {
   const manifest = parseManifestJsonOnce(inputDir)
   return (
