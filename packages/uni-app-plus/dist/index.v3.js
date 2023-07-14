@@ -10711,7 +10711,9 @@ var serviceContext = (function () {
       let constructorParams = [];
       let staticMethods = {};
       let staticProps = [];
+      let isProxyInterface = false;
       if (isProxyInterfaceOptions(options)) {
+          isProxyInterface = true;
           instanceId = options.instanceId;
       }
       else {
@@ -10732,8 +10734,8 @@ var serviceContext = (function () {
               }
               const target = {};
               // 初始化实例 ID
-              if (isUndefined(instanceId)) {
-                  // 未指定instanceId
+              if (!isProxyInterface) {
+                  // 初始化未指定时，每次都要创建instanceId
                   instanceId = initProxyFunction(false, extend({ name: 'constructor', params: constructorParams }, baseOptions), 0).apply(null, params);
               }
               if (!instanceId) {
