@@ -203,7 +203,17 @@ async function runKotlinDev(
       result.changed = data.dexList
     } else {
       // 编译失败，需要调整缓存的 manifest.json
-      result.changed = []
+      if (result.changed.length) {
+        const manifest = readKotlinManifestJson(kotlinSrcOutDir)
+        if (manifest) {
+          result.changed.forEach((file) => {
+            delete manifest[file]
+          })
+          writeKotlinManifestJson(kotlinSrcOutDir, manifest)
+        }
+        result.changed = []
+      }
+
       if (msg) {
         console.error(msg)
       }
@@ -214,4 +224,23 @@ async function runKotlinDev(
 
 async function runKotlinBuild(_options: CompileAppOptions, _result: UTSResult) {
   // TODO
+}
+
+function readKotlinManifestJson(
+  kotlinSrcOutDir: string
+): Record<string, string> | undefined {
+  const file = path.resolve(kotlinSrcOutDir, '.manifest.json')
+  if (fs.existsSync(file)) {
+    return JSON.parse(fs.readFileSync(file, 'utf8'))
+  }
+}
+
+function writeKotlinManifestJson(
+  kotlinSrcOutDir: string,
+  manifest: Record<string, string>
+) {
+  fs.writeFileSync(
+    path.resolve(kotlinSrcOutDir, '.manifest.json'),
+    JSON.stringify(manifest)
+  )
 }
