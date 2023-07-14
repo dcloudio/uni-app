@@ -25,6 +25,7 @@ const {
   isEnableUniPushV1,
   isEnableUniPushV2,
   isUniPushOffline,
+  hasPushModule,
   isEnableSecureNetwork
 } = require('@dcloudio/uni-cli-shared/lib/manifest')
 
@@ -52,6 +53,10 @@ if (isEnableUniPushV2(manifestJsonObj, process.env.UNI_PLATFORM)) {
   }
 } else if (isEnableUniPushV1(manifestJsonObj, process.env.UNI_PLATFORM)) {
   process.env.UNI_PUSH_V1 = true
+}
+
+if (hasPushModule(manifestJsonObj)) {
+  process.env.UNI_PUSH_MODULE = true
 }
 
 // 初始化全局插件对象
@@ -128,7 +133,7 @@ if (!process.env.UNI_CLOUD_PROVIDER && process.env.UNI_CLOUD_SPACES) {
         }
       }))
     }
-  } catch (e) { }
+  } catch (e) {}
 }
 
 // 安全网络
@@ -256,7 +261,7 @@ if (process.env.UNI_PLATFORM === 'h5') {
         try {
           const modules = require('@dcloudio/uni-h5/lib/modules.json')
           process.UNI_USER_APIS = parseUserApis(treeShaking.modules || [], modules)
-        } catch (e) { }
+        } catch (e) {}
       }
     }
     if (optimization.prefetch) {
@@ -485,7 +490,7 @@ if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
         console.log(warningMsg)
       }
     }
-  } catch (e) { }
+  } catch (e) {}
 }
 if (process.env.NODE_ENV !== 'production') { // 运行模式性能提示
   let perfMsg = uniI18n.__('pluginUni.runDebugMode')

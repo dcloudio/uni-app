@@ -169,9 +169,13 @@ module.exports = {
   },
   getPlatformPush () {
     if (process.env.UNI_PUSH_V1) {
-      return ';import \'@dcloudio/vue-cli-plugin-uni/packages/uni-push/dist/uni-push-v1.plus.es.js\';'
+      if (process.env.UNI_PUSH_MODULE) {
+        return ';import \'@dcloudio/vue-cli-plugin-uni/packages/uni-push/dist/uni-push-v1.plus.es.js\';'
+      }
     } else if (process.env.UNI_PUSH_V2_OFFLINE) {
-      return ';import \'@dcloudio/vue-cli-plugin-uni/packages/uni-push/dist/uni-push.plus.es.js\';'
+      if (process.env.UNI_PUSH_MODULE) {
+        return ';import \'@dcloudio/vue-cli-plugin-uni/packages/uni-push/dist/uni-push.plus.es.js\';'
+      }
     } else if (process.env.UNI_PUSH_V2) {
       return ';import \'@dcloudio/vue-cli-plugin-uni/packages/uni-push/dist/uni-push.es.js\';'
     }
