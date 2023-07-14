@@ -11158,6 +11158,20 @@ function parseTheme(pageStyle) {
   }
   return __uniConfig.darkmode ? parsedStyle : pageStyle;
 }
+function useTheme(pageStyle, onThemeChangeCallback) {
+  const isReactived = vue.isReactive(pageStyle);
+  const reactivePageStyle = isReactived ? vue.reactive(parseTheme(pageStyle)) : parseTheme(pageStyle);
+  if (__uniConfig.darkmode && isReactived) {
+    vue.watch(pageStyle, (value) => {
+      const _pageStyle = parseTheme(value);
+      for (const key in _pageStyle) {
+        reactivePageStyle[key] = _pageStyle[key];
+      }
+    });
+  }
+  onThemeChangeCallback && onThemeChange(onThemeChangeCallback);
+  return reactivePageStyle;
+}
 const _middleButton = {
   width: "50px",
   height: "50px",
@@ -11168,16 +11182,7 @@ const TabBar = /* @__PURE__ */ defineSystemComponent({
   setup() {
     const visibleList = vue.ref([]);
     const _tabBar = useTabBar();
-    const tabBar2 = vue.reactive(parseTheme(_tabBar));
-    useVisibleList(tabBar2, visibleList);
-    useTabBarCssVar(tabBar2);
-    const onSwitchTab = useSwitchTab(vueRouter.useRoute(), tabBar2, visibleList);
-    const {
-      style,
-      borderStyle,
-      placeholderStyle
-    } = useTabBarStyle(tabBar2);
-    onThemeChange(() => {
+    const tabBar2 = useTheme(_tabBar, () => {
       const tabBarStyle = parseTheme(_tabBar);
       tabBar2.backgroundColor = tabBarStyle.backgroundColor;
       tabBar2.borderStyle = tabBarStyle.borderStyle;
@@ -11191,6 +11196,14 @@ const TabBar = /* @__PURE__ */ defineSystemComponent({
         });
       }
     });
+    useVisibleList(tabBar2, visibleList);
+    useTabBarCssVar(tabBar2);
+    const onSwitchTab = useSwitchTab(vueRouter.useRoute(), tabBar2, visibleList);
+    const {
+      style,
+      borderStyle,
+      placeholderStyle
+    } = useTabBarStyle(tabBar2);
     return () => {
       const tabBarItemsTsx = createTabBarItemsTsx(tabBar2, onSwitchTab, visibleList);
       return vue.createVNode("uni-tabbar", {
@@ -11824,16 +11837,15 @@ const PageHead = /* @__PURE__ */ defineSystemComponent({
   setup() {
     const headRef = vue.ref(null);
     const pageMeta = usePageMeta();
-    const navigationBar = vue.reactive(parseTheme(pageMeta.navigationBar));
-    const {
-      clazz: clazz2,
-      style
-    } = usePageHead(navigationBar);
-    onThemeChange(() => {
+    const navigationBar = useTheme(pageMeta.navigationBar, () => {
       const _navigationBar = parseTheme(pageMeta.navigationBar);
       navigationBar.backgroundColor = _navigationBar.backgroundColor;
       navigationBar.titleColor = _navigationBar.titleColor;
     });
+    const {
+      clazz: clazz2,
+      style
+    } = usePageHead(navigationBar);
     const buttons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ && usePageHeadButtons(pageMeta);
     const searchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ && navigationBar.searchInput && usePageHeadSearchInput(pageMeta);
     __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" && usePageHeadTransparent(headRef, pageMeta);

@@ -1,4 +1,4 @@
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vModelDynamic, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, h, createTextVNode, createBlock, onBeforeActivate, onBeforeDeactivate, renderList, onDeactivated, createApp, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vModelDynamic, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, h, createTextVNode, createBlock, onBeforeActivate, onBeforeDeactivate, renderList, onDeactivated, createApp, isReactive, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
 import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, debounce, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, parseQuery, NAVBAR_HEIGHT, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, updateElementStyle, sortObject, OFF_THEME_CHANGE, ON_BACK_PRESS, parseUrl, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
@@ -20880,6 +20880,20 @@ function parseTheme(pageStyle) {
   }
   return __uniConfig.darkmode ? parsedStyle : pageStyle;
 }
+function useTheme(pageStyle, onThemeChangeCallback) {
+  const isReactived = isReactive(pageStyle);
+  const reactivePageStyle = isReactived ? reactive(parseTheme(pageStyle)) : parseTheme(pageStyle);
+  if (__uniConfig.darkmode && isReactived) {
+    watch(pageStyle, (value) => {
+      const _pageStyle = parseTheme(value);
+      for (const key in _pageStyle) {
+        reactivePageStyle[key] = _pageStyle[key];
+      }
+    });
+  }
+  onThemeChangeCallback && onThemeChange(onThemeChangeCallback);
+  return reactivePageStyle;
+}
 const ModalTheme = {
   light: {
     cancelColor: "#000000"
@@ -21910,16 +21924,7 @@ const TabBar = /* @__PURE__ */ defineSystemComponent({
   setup() {
     const visibleList = ref([]);
     const _tabBar = useTabBar();
-    const tabBar2 = reactive(parseTheme(_tabBar));
-    useVisibleList(tabBar2, visibleList);
-    useTabBarCssVar(tabBar2);
-    const onSwitchTab = useSwitchTab(useRoute(), tabBar2, visibleList);
-    const {
-      style,
-      borderStyle,
-      placeholderStyle
-    } = useTabBarStyle(tabBar2);
-    onThemeChange(() => {
+    const tabBar2 = useTheme(_tabBar, () => {
       const tabBarStyle = parseTheme(_tabBar);
       tabBar2.backgroundColor = tabBarStyle.backgroundColor;
       tabBar2.borderStyle = tabBarStyle.borderStyle;
@@ -21933,6 +21938,14 @@ const TabBar = /* @__PURE__ */ defineSystemComponent({
         });
       }
     });
+    useVisibleList(tabBar2, visibleList);
+    useTabBarCssVar(tabBar2);
+    const onSwitchTab = useSwitchTab(useRoute(), tabBar2, visibleList);
+    const {
+      style,
+      borderStyle,
+      placeholderStyle
+    } = useTabBarStyle(tabBar2);
     onMounted(() => {
       if (tabBar2.iconfontSrc) {
         loadFontFace({
@@ -24514,16 +24527,15 @@ const PageHead = /* @__PURE__ */ defineSystemComponent({
   setup() {
     const headRef = ref(null);
     const pageMeta = usePageMeta();
-    const navigationBar = reactive(parseTheme(pageMeta.navigationBar));
-    const {
-      clazz: clazz2,
-      style
-    } = usePageHead(navigationBar);
-    onThemeChange(() => {
+    const navigationBar = useTheme(pageMeta.navigationBar, () => {
       const _navigationBar = parseTheme(pageMeta.navigationBar);
       navigationBar.backgroundColor = _navigationBar.backgroundColor;
       navigationBar.titleColor = _navigationBar.titleColor;
     });
+    const {
+      clazz: clazz2,
+      style
+    } = usePageHead(navigationBar);
     const buttons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ && usePageHeadButtons(pageMeta);
     const searchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ && navigationBar.searchInput && usePageHeadSearchInput(pageMeta);
     __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" && usePageHeadTransparent(headRef, pageMeta);
