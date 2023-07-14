@@ -167,7 +167,8 @@ export function uniAppUTSPlugin(): UniVitePlugin {
         }
         if (res.changed) {
           if (!res.changed.length) {
-            throw new Error('编译失败')
+            // 可能改动文件，没有触发新的变化
+            // throw new Error('编译失败')
           }
           files.push(...res.changed)
         }
