@@ -52,16 +52,14 @@ paddingBottom: 11rpx;
     expect(json).toEqual({
       foo: {
         '': {
-          width: 200,
-          minWidth: 100,
+          width: '200px',
+          minWidth: '100px',
           height: '100%',
           paddingLeft: 300,
-          borderWidth: '1pt',
           left: 0,
-          right: 0,
+          right: '0px',
           top: 'auto',
           bottom: '100%',
-          paddingTop: '11upx',
           paddingBottom: '11rpx',
         },
       },
@@ -75,7 +73,19 @@ paddingBottom: 11rpx;
     expect(messages[1]).toEqual(
       expect.objectContaining({
         type: 'warning',
+        text: 'ERROR: property value `1pt` is not supported for `border-width` (supported values are: `number`|`pixel`)',
+      })
+    )
+    expect(messages[2]).toEqual(
+      expect.objectContaining({
+        type: 'warning',
         text: 'ERROR: property value `asdf` is not supported for `margin-right` (supported values are: `number`|`pixel`|`percent`|`auto`)',
+      })
+    )
+    expect(messages[3]).toEqual(
+      expect.objectContaining({
+        type: 'warning',
+        text: 'ERROR: property value `11upx` is not supported for `padding-top` (supported values are: `number`|`pixel`|`percent`)',
       })
     )
   })
@@ -153,14 +163,13 @@ flexBasis: fill;
     expect(json).toEqual({
       foo: {
         '': {
-          width: 200,
-          maxWidth: 500,
-          marginLeft: 10,
+          width: '200px',
+          maxWidth: '500px',
+          marginLeft: '10px',
           marginRight: '10rpx',
           marginTop: '10%',
           marginBottom: 'auto',
           top: '20%',
-          bottom: 30,
           left: 'auto',
         },
       },
@@ -174,7 +183,7 @@ flexBasis: fill;
     expect(messages[1]).toEqual(
       expect.objectContaining({
         type: 'warning',
-        text: 'NOTE: unit `xx` is not supported and property value `30xx` is autofixed to `30`',
+        text: 'ERROR: property value `30xx` is not supported for `bottom` (supported values are: `number`|`pixel`|`percent`|`auto`)',
       })
     )
     expect(messages[2]).toEqual(
@@ -476,19 +485,19 @@ flexBasis: fill;
     expect(json).toEqual({
       foo: {
         '': {
-          margin: '100',
-          padding: '50',
+          margin: '100px',
+          padding: '50px',
         },
       },
       bar: {
         '': {
-          margin: '10 auto',
+          margin: '10px auto',
         },
       },
       baz: {
         '': {
-          margin: '10rpx 20 30',
-          padding: '10 20 30 40rpx',
+          margin: '10rpx 20px 30px',
+          padding: '10px 20px 30px 40rpx',
         },
       },
       flex: {
@@ -812,7 +821,7 @@ flexBasis: fill;
         '': {
           color: '#FF0000',
           WebkitTransform: 'rotate(90deg)',
-          width: 200,
+          width: '200px',
         },
       },
     })

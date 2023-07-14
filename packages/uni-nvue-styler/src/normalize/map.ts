@@ -144,7 +144,6 @@ const NVUE_PROP_NAME_GROUPS: Record<string, Record<string, Normalize>> = {
 const uvueNormalizeMap: Record<string, Normalize> = {
   transform: normalizeTransform,
   fontFamily: normalizeString,
-  borderRadius: normalizeLength,
   textDecoration: normalizeDefault,
   boxShadow: normalizeDefault,
 }

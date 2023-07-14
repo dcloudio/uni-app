@@ -12,16 +12,28 @@ export const normalizeLength: Normalize = (v: string | number, options) => {
 
   if (match) {
     var unit = match[1]
-    if (!unit || unit === 'px') {
-      return { value: parseFloat(v) }
-    } else if (SUPPORT_CSS_UNIT.includes(unit)) {
-      return { value: v }
-    } else if (options.type === 'nvue' || unit !== '%') {
-      return {
-        value: parseFloat(v),
-        reason(k, v, result) {
-          return supportedUnitWithAutofixedReason(unit, v, result)
-        },
+    const uvue = options.type === 'uvue'
+    if (uvue) {
+      if (!unit) {
+        return { value: parseFloat(v) }
+      } else if (unit === 'px' || unit === 'rpx') {
+        // uvue 保留单位
+        return { value: v }
+      }
+    } else {
+      // nvue
+      if (!unit || unit === 'px') {
+        return { value: parseFloat(v) }
+      }
+      if (SUPPORT_CSS_UNIT.includes(unit)) {
+        return { value: v }
+      } else {
+        return {
+          value: parseFloat(v),
+          reason(k, v, result) {
+            return supportedUnitWithAutofixedReason(unit, v, result)
+          },
+        }
       }
     }
   }
