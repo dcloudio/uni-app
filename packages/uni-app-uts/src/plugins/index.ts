@@ -165,7 +165,10 @@ export function uniAppUTSPlugin(): UniVitePlugin {
             files.push(...JSON.parse(process.env.UNI_APP_UTS_CHANGED_FILES))
           } catch (e) {}
         }
-        if (res.changed && res.changed.length) {
+        if (res.changed) {
+          if (!res.changed.length) {
+            throw new Error('编译失败')
+          }
           files.push(...res.changed)
         }
         process.env.UNI_APP_UTS_CHANGED_FILES = JSON.stringify([

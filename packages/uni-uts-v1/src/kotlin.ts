@@ -588,7 +588,10 @@ export function createStderrListener(
               format: hbuilderFormatter,
             })
             if (msg) {
-              console.log(msg)
+              // 异步输出，保证插件编译失败的日志在他之前输出，不能使用process.nextTick
+              setTimeout(() => {
+                console.log(msg)
+              })
             }
           }
         } catch (e) {
@@ -600,7 +603,10 @@ export function createStderrListener(
               message.includes('desugaring of')
             )
           ) {
-            console.error(message)
+            // 异步输出，保证插件编译失败的日志在他之前输出
+            setTimeout(() => {
+              console.error(message)
+            })
           }
         }
       }

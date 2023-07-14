@@ -5,6 +5,7 @@ import {
   initEasycomsOnce,
   output,
   parseManifestJsonOnce,
+  resetOutput,
   resolveComponentsLibPath,
 } from '@dcloudio/uni-cli-shared'
 import { RollupWatcher } from 'rollup'
@@ -46,6 +47,8 @@ export async function runUVueDev(options: CliOptions & ServerOptions) {
         return
       }
       output('log', M['dev.watching.start'])
+      // 重置一下，uts编译报错会导致下一次开始差量编译紧接着上一次的差量编译，导致无法正常输出
+      resetOutput('log')
     } else if (event.code === 'BUNDLE_END') {
       event.result.close()
       const dex = process.env.UNI_APP_UTS_CHANGED_FILES
