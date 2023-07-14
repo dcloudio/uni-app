@@ -7,6 +7,9 @@ exports.parseInjects = exports.parseUniExtApis = void 0;
 const path_1 = __importDefault(require("path"));
 const fs_extra_1 = __importDefault(require("fs-extra"));
 function parseUniExtApis(vite = true, platform, language = 'javascript') {
+    if (!process.env.UNI_INPUT_DIR) {
+        return {};
+    }
     const uniModulesDir = path_1.default.resolve(process.env.UNI_INPUT_DIR, 'uni_modules');
     if (!fs_extra_1.default.existsSync(uniModulesDir)) {
         return {};
@@ -23,8 +26,11 @@ function parseUniExtApis(vite = true, platform, language = 'javascript') {
             return;
         }
         try {
-            const exports = JSON.parse(fs_extra_1.default.readFileSync(pkgPath, 'utf8'))
-                ?.uni_modules?.['uni-ext-api'];
+            let exports;
+            const pkg = JSON.parse(fs_extra_1.default.readFileSync(pkgPath, 'utf8'));
+            if (pkg && pkg.uni_modules && pkg.uni_modules['uni-ext-api']) {
+                exports = pkg.uni_modules['uni-ext-api'];
+            }
             if (exports) {
                 const curInjects = parseInjects(vite, platform, language, `@/uni_modules/${uniModuleDir}`, uniModuleRootDir, exports);
                 Object.assign(injects, curInjects);
@@ -98,7 +104,9 @@ function parseInject(vite = true, platform, language, source, globalObject, defi
         const keys = Object.keys(define);
         keys.forEach((d) => {
             if (typeof define[d] === 'string') {
-                injects[globalObject + '.' + d] = [source, define[d]];
+                if (hasPlatformFile) {
+                    injects[globalObject + '.' + d] = [source, define[d]];
+                }
             }
             else {
                 const defineOptions = define[d];

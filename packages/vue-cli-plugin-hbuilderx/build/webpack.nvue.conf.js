@@ -100,7 +100,8 @@ const plugins = [
       UNI_STAT_UNI_CLOUD: process.env.UNI_STAT_UNI_CLOUD || '""',
       UNI_STATISTICS_CONFIG: process.env.UNI_STATISTICS_CONFIG || '""',
       UNI_STAT_DEBUG: process.env.UNI_STAT_DEBUG || '""',
-      UNI_COMPILER_VERSION: JSON.stringify(process.env.UNI_COMPILER_VERSION)
+      UNI_COMPILER_VERSION: JSON.stringify(process.env.UNI_COMPILER_VERSION),
+      VUE_APP_DARK_MODE: JSON.stringify(process.env.VUE_APP_DARK_MODE || false)
     }
   }),
   new webpack.BannerPlugin({

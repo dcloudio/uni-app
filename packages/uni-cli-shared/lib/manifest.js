@@ -158,6 +158,14 @@ function isUniPushOffline (manifestJson) {
   return unipush && unipush.offline === true
 }
 
+function hasPushModule (manifestJson) {
+  if (!manifestJson) {
+    manifestJson = getManifestJson()
+  }
+  const platformOptions = manifestJson['app-plus']
+  return platformOptions && platformOptions.modules && platformOptions.modules.Push
+}
+
 module.exports = {
   getManifestJson,
   parseManifestJson,
@@ -166,5 +174,6 @@ module.exports = {
   isEnableUniPushV1,
   isEnableUniPushV2,
   isUniPushOffline,
+  hasPushModule,
   isEnableSecureNetwork
 }
