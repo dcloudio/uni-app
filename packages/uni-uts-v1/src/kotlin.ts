@@ -119,6 +119,7 @@ export async function runKotlinProd(
 export type RunKotlinDevResult = UTSResult & {
   type: 'kotlin'
   changed: string[]
+  kotlinc: boolean
 }
 
 interface RunKotlinDevOptions {

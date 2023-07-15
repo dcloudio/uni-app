@@ -32,7 +32,7 @@ export function uniAppCssPlugin(): Plugin {
         platform: process.env.UNI_PLATFORM,
         chunkCssFilename(id: string) {
           if (id === mainUTS) {
-            return 'App.vue.style.uts'
+            return 'App.style.uts'
           }
           const { filename } = parseVueRequest(id)
           if (isVue(filename)) {

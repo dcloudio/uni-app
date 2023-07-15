@@ -192,6 +192,7 @@ async function runKotlinDev(
         waiting
       ),
     }
+    result.kotlinc = true
     // console.log('DEX编译参数:', options)
     const { code, msg, data } = await compileDex(options, inputDir)
     // 等待 stderrListener 执行完毕

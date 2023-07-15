@@ -166,9 +166,9 @@ export function uniAppUTSPlugin(): UniVitePlugin {
           } catch (e) {}
         }
         if (res.changed) {
-          if (!res.changed.length) {
-            // 可能改动文件，没有触发新的变化
-            // throw new Error('编译失败')
+          // 触发了kotlinc编译，且没有编译成功
+          if (!res.changed.length && res.kotlinc) {
+            throw new Error('编译失败')
           }
           files.push(...res.changed)
         }

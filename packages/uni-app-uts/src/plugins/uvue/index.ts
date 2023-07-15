@@ -32,7 +32,7 @@ import { genTemplate } from './code/template'
 import { genJsStylesCode, genStyle, transformStyle } from './code/style'
 
 function resolveAppVue(inputDir: string) {
-  const appUVue = path.resolve(inputDir, 'app.uvue')
+  const appUVue = path.resolve(inputDir, 'App.uvue')
   if (fs.existsSync(appUVue)) {
     return normalizePath(appUVue)
   }
