@@ -14,7 +14,7 @@ function getPageById(id: number): BasePage | null {
   const pages = getCurrentPages()
   let result: BasePage | null = null
   pages.forEach((page: BasePage) => {
-    if (getPageId(page) === id) {
+    if (getPageId(page) == id) {
       result = page
     }
   })
@@ -31,7 +31,7 @@ export function pageGetData(
 ): Map<string, any | null> {
   let data = new Map<string, any | null>()
   // TODO: path
-  if (path !== null && path.length != 0) {
+  if (path != null && path.length != 0) {
     data.set("errMsg", `getData:fail, path:${path} is not supported.`)
   } else {
     data = vm.$data
@@ -56,12 +56,12 @@ export function parsePage(page: BasePage): UTSJSONObject {
 
 export function getComponentVmBySelector(pageId: number, selector: string, callback: (result: any | null, error: any | null) => void): ComponentPublicInstance | null {
   const page = getPageVm(pageId)
-  if (page === null) {
+  if (page == null) {
     callback(null, { errMsg: `Page[${pageId}] not exists` })
     return null
   }
   const component = page.$children.find((child: ComponentPublicInstance): boolean => child.$options.name == selector)
-  if (component === null) {
+  if (component == null) {
     callback(null, { errMsg: `component[${selector}] not exists` })
     return null
   }
@@ -70,7 +70,7 @@ export function getComponentVmBySelector(pageId: number, selector: string, callb
 
 export function getComponentVmByNodeId(pageId: number, nodeId: number, callback: (result: any | null, error: any | null) => void): ComponentPublicInstance | null {
   const page = getPageVm(pageId)
-  if (page === null) {
+  if (page == null) {
     callback(null, { errMsg: `Page[${pageId}] not exists` })
     return null
   }
@@ -85,7 +85,7 @@ export function getComponentVmByNodeId(pageId: number, nodeId: number, callback:
     })
   }
   getComponentChild(page)
-  if (component === null) {
+  if (component == null) {
     callback(null, { errMsg: `component[${nodeId}] not exists` })
     return null
   }
@@ -93,9 +93,9 @@ export function getComponentVmByNodeId(pageId: number, nodeId: number, callback:
 }
 
 export function getElementByIdOrNodeId(pageId: number, elementId: string | null, nodeId: number | null, callback: (result: any | null, error: any | null) => void): INode | null {
-  if (nodeId !== null) {
+  if (nodeId != null) {
     return getComponentDomByNodeId(pageId, nodeId, callback)
-  } else if (elementId !== null) {
+  } else if (elementId != null) {
     return getElementById(pageId, elementId, callback)
   }
   return null
@@ -103,7 +103,7 @@ export function getElementByIdOrNodeId(pageId: number, elementId: string | null,
 
 export function getComponentDomByNodeId(pageId: number, nodeId: number, callback: (result: any | null, error: any | null) => void): INode | null {
   const component = getComponentVmByNodeId(pageId, nodeId, callback)
-  if (component === null) {
+  if (component == null) {
     return null
   }
   return component.$el
@@ -111,13 +111,13 @@ export function getComponentDomByNodeId(pageId: number, nodeId: number, callback
 
 export function getElementByNodeIdOrElementId(pageId: number, nodeId: number | null, elementId: string | null, callback: (result: any | null, error: any | null) => void): INode | null {
   const page = getPageVm(pageId)
-  if (page === null) {
+  if (page == null) {
     callback(null, { errMsg: `Page[${pageId}] not exists` })
     return null
   }
-  if (nodeId !== null) {
+  if (nodeId != null) {
     return getComponentDomByNodeId(pageId, nodeId, callback)
-  } else if (elementId !== null) {
+  } else if (elementId != null) {
     return getElementById(pageId, elementId, callback)
   }
   return null
@@ -125,13 +125,13 @@ export function getElementByNodeIdOrElementId(pageId: number, nodeId: number | n
 
 export function getElementById(pageId: number, elementId: string, callback: (result: any | null, error: any | null) => void): INode | null {
   const page = getPageVm(pageId)
-  if (page === null) {
+  if (page == null) {
     callback(null, { errMsg: `Page[${pageId}] not exists` })
     return null
   }
   const document = page.$appPage!.document
   const element = document.getElementById(elementId)
-  if (element === null) {
+  if (element == null) {
     callback(null, { errMsg: `element[${elementId}] not exists` })
     return null
   }
@@ -148,7 +148,7 @@ export function getValidComponentsOrNodes(
     return
   }
   if (isValidComponentOrNode(vnode, selector)) {
-    if (vnode.component !== null) {
+    if (vnode.component != null) {
       list.push({
         nodeId: (vnode.component as ComponentInternalInstance).uid,
         tagName: (vnode.component as ComponentInternalInstance).options.name,
@@ -164,26 +164,26 @@ export function getValidComponentsOrNodes(
       return
     }
   }
-  if (vnode.children !== null && isArray(vnode.children)) {
+  if (vnode.children != null && isArray(vnode.children)) {
     (vnode.children as VNode[]).forEach(child => {
       getValidComponentsOrNodes(child, selector, list, getAll)
     })
   }
-  if (vnode.component !== null) {
+  if (vnode.component != null) {
     const component = vnode.component
     getValidComponentsOrNodes(component!.subTree, selector, list, getAll)
   }
 }
 
 function isValidComponentOrNode(vnode: VNode, selector: string): boolean {
-  if (vnode.component !== null && (vnode.component as ComponentInternalInstance).options.name == selector) {
+  if (vnode.component != null && (vnode.component as ComponentInternalInstance).options.name == selector) {
     return true
   }
-  if (vnode.el !== null) {
+  if (vnode.el != null) {
     const node = vnode.el
     if (selector.startsWith('.')) {
       return (
-        node!.ext['classList'] !== null &&
+        node!.ext['classList'] != null &&
         (node!.ext['classList'] as string[]).includes(selector.substring(1))
       )
     } else if (selector.startsWith('#')) {
@@ -220,7 +220,7 @@ export function getValidNodes(
 function isValidNode(node: INode, selector: string): boolean {
   if (selector.startsWith('.')) {
     return (
-      node.ext['classList'] !== null &&
+      node.ext['classList'] != null &&
       (node.ext['classList'] as string[]).includes(selector.substring(1))
     )
   } else if (selector.startsWith('#')) {
@@ -235,7 +235,7 @@ export function componentGetData(
 ): Map<string, any | null> {
   let data = new Map<string, any | null>()
   // TODO: path
-  if (path !== null && path.length != 0) {
+  if (path != null && path.length != 0) {
     data.set("errMsg", `getData:fail, path:${path} is not supported.`)
   } else {
     data = vm.$data

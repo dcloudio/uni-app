@@ -33,11 +33,11 @@ export const firstSocketTaskEmitter = (params: FirstSocketTaskEmitterParams): vo
   const callback = params.callback
   let socketInstanceData: SocketInstanceData | null = null;
   socketInstanceMap.forEach((value: SocketInstanceData) => {
-    if (socketInstanceData === null) {
+    if (socketInstanceData == null) {
       socketInstanceData = value
     }
   })
-  if (socketInstanceData === null) {
+  if (socketInstanceData == null) {
     callback(null, { errMsg: "socketTask not exists." });
   } else {
     const _socketInstanceData = socketInstanceData!

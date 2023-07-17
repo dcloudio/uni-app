@@ -8,7 +8,7 @@ export type GetDataParams = {
 export const getData = (params: GetDataParams): void => {
   const callback = params.callback
   const page = getPageVm(params.pageId)
-  if (page === null) {
+  if (page == null) {
     callback(null, { errMsg: 'Page.getData:fail, Page not found.' })
     return
   }
@@ -25,7 +25,7 @@ export const setData = (params: SetDataParams): void => {
   const pageId = params.pageId
   const callback = params.callback
   const page = getPageVm(pageId)
-  if (page !== null) {
+  if (page != null) {
     pageSetData(page, params.data)
     callback({ result: { errMsg: 'Page.setData: ok.' } }, null)
   } else {
@@ -41,9 +41,9 @@ export type CallMethodParams = {
 
 export const callMethod = (params: CallMethodParams): void => {
   const page = getPageVm(params.pageId)
-  if (page === null) {
+  if (page == null) {
     params.callback(null, { errMsg: `Page[${params.pageId}] not exists` })
-  } else if (findVueMethod(page.$.type, params.method, page) === null) {
+  } else if (findVueMethod(page.$.type, params.method, page) == null) {
     params.callback(null, { errMsg: `Page.${params.method} not exists` })
   } else {
 		const result = params.args.length > 0 ? page.$callMethod(params.method, params.args[0]) : page.$callMethod(params.method)
@@ -59,7 +59,7 @@ export type GetElementParams = {
 
 export const getElement = (params: GetElementParams): void => {
   const page = getPageVm(params.pageId)
-  if (page === null) {
+  if (page == null) {
     params.callback(null, { errMsg: `Page[${params.pageId}] not exists` })
   } else {
     let selector = params.selector
@@ -75,7 +75,7 @@ export const getElement = (params: GetElementParams): void => {
 
 export const getElements = (params: GetElementParams): void => {
   const page = getPageVm(params.pageId)
-  if (page === null) {
+  if (page == null) {
     params.callback(null, { errMsg: `Page[${params.pageId}] not exists` })
   } else {
     const elements = page.$querySelectorAll(params.selector)
@@ -98,7 +98,7 @@ export type GetWindowPropertiesParams = {
 export const getWindowProperties = (params: GetWindowPropertiesParams): void => {
   const callback = params.callback
   const page = getPageVm(params.pageId)
-  if (page === null) {
+  if (page == null) {
     callback(null, { errMsg: 'Page.getData:fail, Page not found.' })
     return
   }
@@ -108,8 +108,8 @@ export const getWindowProperties = (params: GetWindowPropertiesParams): void => 
         const document = page.$appPage!.document
         const scrollViews = document.getElementsByTagName('scroll-view')
         const scrollView = scrollViews.size > 0 ? scrollViews[0] : null
-        const scrollTop: any | null = scrollView !== null ? scrollView.getAttribute('scrollTop') : 0
-        return scrollTop === null ? 0 : scrollTop
+        const scrollTop: any | null = scrollView != null ? scrollView.getAttribute('scrollTop') : 0
+        return scrollTop == null ? 0 : scrollTop
     }
     return null
   })

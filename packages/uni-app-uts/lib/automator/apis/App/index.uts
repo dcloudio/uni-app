@@ -55,10 +55,10 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
   }
   switch (method) {
     case 'navigateTo':
-      if ((args[0] as JSONObject)['animationType'] !== null) {
+      if ((args[0] as JSONObject)['animationType'] != null) {
         animationType = (args[0] as JSONObject)['animationType'] as string
       }
-      if ((args[0] as JSONObject)['animationDuration'] !== null) {
+      if ((args[0] as JSONObject)['animationDuration'] != null) {
         animationDuration = (args[0] as JSONObject)['animationDuration'] as number
       }
       uni.navigateTo({
@@ -97,10 +97,10 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
 
     case 'navigateBack':
       animationType = 'pop-out'
-      if ((args[0] as JSONObject)['animationType'] !== null) {
+      if ((args[0] as JSONObject)['animationType'] != null) {
         animationType = (args[0] as JSONObject)['animationType'] as string
       }
-      if ((args[0] as JSONObject)['animationDuration'] !== null) {
+      if ((args[0] as JSONObject)['animationDuration'] != null) {
         animationDuration = (args[0] as JSONObject)['animationDuration'] as number
       }
       uni.navigateBack({
@@ -189,7 +189,7 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
       break
     case 'showToast':
       const icon = (args[0] as JSONObject)['icon'] != null ? (args[0] as JSONObject)['icon'] as string : 'success'
-      const image = (args[0] as JSONObject)['image'] != null && (args[0] as JSONObject)['image'] !== '' ? (args[0] as JSONObject)['image'] as string : null
+      const image = (args[0] as JSONObject)['image'] != null && (args[0] as JSONObject)['image'] != '' ? (args[0] as JSONObject)['image'] as string : null
       const toastMask = (args[0] as JSONObject)['mask'] != null ? (args[0] as JSONObject)['mask'] as boolean : false
       const duration: number = (args[0] as JSONObject)['duration'] != null ? (args[0] as JSONObject)['duration'] as number : 1500
       const position = (args[0] as JSONObject)['position'] != null ? (args[0] as JSONObject)['position'] as string : null
@@ -350,7 +350,7 @@ export type CaptureScreenshotParams = {
 export const captureScreenshot = (params: CaptureScreenshotParams): void => {
   const callback = params.callback
   const currentPage = _getCurrentPage()
-  if (currentPage !== null) {
+  if (currentPage != null) {
     currentPage.$viewToTempFilePath({
       id: params.fullPage ? null : params.id,
       wholeContent: params.fullPage,
