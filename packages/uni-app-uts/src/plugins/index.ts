@@ -29,7 +29,6 @@ const REMOVED_PLUGINS = [
   'vite:modulepreload-polyfill',
   'vite:css',
   'vite:esbuild',
-  'vite:json',
   'vite:wasm-helper',
   'vite:worker',
   // 'vite:asset', // replace
