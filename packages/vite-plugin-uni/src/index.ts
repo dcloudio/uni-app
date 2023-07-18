@@ -94,7 +94,8 @@ export default function uniPlugin(
   initPreContext(
     options.platform,
     process.env.UNI_CUSTOM_CONTEXT,
-    process.env.UNI_UTS_PLATFORM
+    process.env.UNI_UTS_PLATFORM,
+    process.env.UNI_APP_X === 'true'
   )
 
   return process.env.UNI_APP_X === 'true' && process.env.UNI_PLATFORM === 'app'
