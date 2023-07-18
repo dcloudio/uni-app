@@ -92,7 +92,8 @@ describe('compiler: slot', () => {
   test('component with slot', () => {
     assert(
       `<view><slot data="data"></slot></view>`,
-      `@Suppress("UNUSED_PARAMETER") function PagesIndexIndexRender(_ctx: PagesIndexIndex): VNode | null {
+      `@Suppress("UNUSED_PARAMETER") function PagesIndexIndexRender(): VNode | null {
+const _ctx = this
   return createElementVNode("view", null, [
     renderSlot(_ctx.$slots, "default", new Map<string, any | null>([["data", "data"]]))
   ])
@@ -107,7 +108,8 @@ describe('compiler: slot', () => {
   test('template component with slot', () => {
     assert(
       `<view><Foo @click="test">test</Foo></view>`,
-      `@Suppress("UNUSED_PARAMETER") function PagesIndexIndexRender(_ctx: PagesIndexIndex): VNode | null {
+      `@Suppress("UNUSED_PARAMETER") function PagesIndexIndexRender(): VNode | null {
+const _ctx = this
 const _component_Foo = resolveComponent("Foo")
 
   return createElementVNode("view", null, [
@@ -129,7 +131,8 @@ const _component_Foo = resolveComponent("Foo")
   test('slot in text', () => {
     assert(
       `<view><text><slot/></text></view>`,
-      `@Suppress("UNUSED_PARAMETER") function PagesIndexIndexRender(_ctx: PagesIndexIndex): VNode | null {
+      `@Suppress("UNUSED_PARAMETER") function PagesIndexIndexRender(): VNode | null {
+const _ctx = this
   return createElementVNode("view", null, [
     createElementVNode("text", null, [
       renderSlot(_ctx.$slots, "default")
@@ -146,7 +149,8 @@ const _component_Foo = resolveComponent("Foo")
   test('scoped slots', () => {
     assert(
       `<view><Foo><template v-slot="props"><text>msg: {{props.msg}}</text></template></Foo></view>`,
-      `@Suppress("UNUSED_PARAMETER") function PagesIndexIndexRender(_ctx: PagesIndexIndex): VNode | null {
+      `@Suppress("UNUSED_PARAMETER") function PagesIndexIndexRender(): VNode | null {
+const _ctx = this
 const _component_Foo = resolveComponent("Foo")
 
   return createElementVNode("view", null, [
@@ -168,7 +172,8 @@ const _component_Foo = resolveComponent("Foo")
   test('scoped slots shorthand', () => {
     assert(
       `<view><Foo><template #default="props"><text>msg: {{props.msg}}</text></template></Foo></view>`,
-      `@Suppress("UNUSED_PARAMETER") function PagesIndexIndexRender(_ctx: PagesIndexIndex): VNode | null {
+      `@Suppress("UNUSED_PARAMETER") function PagesIndexIndexRender(): VNode | null {
+const _ctx = this
 const _component_Foo = resolveComponent("Foo")
 
   return createElementVNode("view", null, [

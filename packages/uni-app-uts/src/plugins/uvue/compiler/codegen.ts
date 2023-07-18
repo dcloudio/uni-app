@@ -170,6 +170,8 @@ export function generate(
   if (mode === 'function') {
     genEasyComImports(ast.components, context)
     push(genRenderFunctionDecl(options) + ` {`)
+    newline()
+    push(`const _ctx = this`)
     // generate asset resolution statements
     if (ast.components.length) {
       newline()

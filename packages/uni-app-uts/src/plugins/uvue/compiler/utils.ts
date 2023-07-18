@@ -12,7 +12,7 @@ export function genRenderFunctionDecl({
 }: CompilerOptions): string {
   return `${
     targetLanguage === 'kotlin' ? '@Suppress("UNUSED_PARAMETER") ' : ''
-  }function ${filename}Render(_ctx: ${filename}): VNode | null`
+  }function ${filename}Render(): VNode | null`
 }
 
 export function expContentToMapString(exp: ExpressionNode): string {

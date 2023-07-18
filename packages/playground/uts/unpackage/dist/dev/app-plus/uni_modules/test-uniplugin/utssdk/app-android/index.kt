@@ -5,7 +5,6 @@ import kotlinx.coroutines.Deferred;
 import kotlinx.coroutines.Dispatchers;
 import io.dcloud.uts.Map;
 import io.dcloud.uts.*;
-import io.dcloud.uts.UTSAndroid;
 import android.util.Log;
 import android.widget.FrameLayout;
 import android.view.View;
