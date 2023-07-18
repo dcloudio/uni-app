@@ -329,7 +329,7 @@ export default {
     }
   },
   mounted () {
-    this._p = {}
+    this._pd = {}
     this._pl = []
     this._pi = 0
     this._checkTimer = null
@@ -356,7 +356,7 @@ export default {
       this._report(41)
     },
     _reset () {
-      this._p = {}
+      this._pd = {}
       this._pl = []
       this._pi = 0
       this._clearCheckTimer()
@@ -368,7 +368,7 @@ export default {
       const id = adpid || this.adpid
       const aid = (this._isWidescreen ? (this.adpidWidescreen || id) : id)
       AdConfig.instance.get(aid, (b, a) => {
-        this._b = b
+        this._ab = b
         this._pl = a
         this._renderAd()
       }, (err) => {
@@ -381,7 +381,7 @@ export default {
       }
 
       const data = this._pl[this._pi]
-      const providerConfig = this._b[data.a1][data.t]
+      const providerConfig = this._ab[data.a1][data.t]
       const script = providerConfig.script
       this._currentChannel = data.a1
 
