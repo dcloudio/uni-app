@@ -118,6 +118,7 @@ const UVUE_BUILT_IN_TAGS = [
     'swiper',
     'swiper-item',
     'rich-text',
+    'sticky-view',
 ];
 const NVUE_U_BUILT_IN_TAGS = [
     'u-text',

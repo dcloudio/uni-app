@@ -120,6 +120,7 @@ export const UVUE_BUILT_IN_TAGS = [
   'swiper',
   'swiper-item',
   'rich-text',
+  'sticky-view',
 ]
 
 export const NVUE_U_BUILT_IN_TAGS = [
