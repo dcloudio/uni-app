@@ -23,6 +23,7 @@ import {
   parseUTSRelativeFilename,
   uvueOutDir,
 } from './utils'
+import('./errorReporting')
 
 const REMOVED_PLUGINS = [
   'vite:build-metadata',
