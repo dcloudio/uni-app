@@ -23,7 +23,7 @@ module.exports = {
     project: 'mini.project.json'
   },
   copyWebpackOptions (platformOptions, vueOptions) {
-    const copyOptions = ['mycomponents', 'customize-tab-bar', 'ext.json']
+    const copyOptions = ['mycomponents', 'customize-tab-bar', 'ext.json', 'preload.json']
 
     global.uniModules.forEach(module => {
       copyOptions.push('uni_modules/' + module + '/mycomponents')
