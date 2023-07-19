@@ -43,7 +43,7 @@ export const callMethod = (params: CallMethodParams): void => {
   const page = getPageVm(params.pageId)
   if (page == null) {
     params.callback(null, { errMsg: `Page[${params.pageId}] not exists` })
-  } else if (findVueMethod(page.$.type, params.method, page) == null) {
+  } else if (findVueMethod(page.$.type.type, params.method, page) == null) {
     params.callback(null, { errMsg: `Page.${params.method} not exists` })
   } else {
 		const result = params.args.length > 0 ? page.$callMethod(params.method, params.args[0]) : page.$callMethod(params.method)
