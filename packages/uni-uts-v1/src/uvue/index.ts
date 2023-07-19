@@ -83,6 +83,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
     input,
     output: {
       isX: true,
+      isApp: true,
       isPlugin: false,
       outDir: isProd
         ? kotlinSrcDir(path.resolve(outputDir, '.uniappx/android/'))

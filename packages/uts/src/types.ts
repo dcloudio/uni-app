@@ -42,6 +42,7 @@ export type UTSOutputOptions = {
   logFilename?: boolean
   noColor?: boolean
   isX?: boolean
+  isApp?: boolean
   isPlugin?: boolean
   split?: boolean
   disableSplitManifest?: boolean
