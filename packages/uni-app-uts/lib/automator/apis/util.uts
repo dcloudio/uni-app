@@ -6,8 +6,8 @@ function getPagePath(page: BasePage): string {
   return page.route
 }
 
-function getPageQuery(page: BasePage): VueComponentOptions {
-  return page.$options
+function getPageQuery(page: BasePage): Map<string, string | null> {
+  return page.options
 }
 
 function getPageById(id: number): BasePage | null {
