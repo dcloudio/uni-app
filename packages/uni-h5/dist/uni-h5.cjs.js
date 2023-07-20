@@ -1008,13 +1008,6 @@ const index$A = /* @__PURE__ */ defineBuiltInComponent({
         }
         return;
       }
-      if (
-        // @ts-ignore
-        window.weibo && // @ts-ignore
-        typeof window.weibo.share === "function" && props2.openType === "share"
-      ) {
-        window.weibo.share();
-      }
     });
     const uniLabel = vue.inject(uniLabelKey, false);
     if (uniLabel) {
@@ -1405,11 +1398,6 @@ function handlePromise(promise) {
 }
 function promisify(name, fn) {
   return (args = {}, ...rest) => {
-    try {
-      if (false)
-        ;
-    } catch (e2) {
-    }
     if (hasCallback(args)) {
       return wrapperReturnValue(name, invokeApi(name, fn, args, rest));
     }
@@ -1502,14 +1490,6 @@ function wrapperTaskApi(name, fn, protocol, options) {
 }
 function wrapperSyncApi(name, fn, protocol, options) {
   return (...args) => {
-    try {
-      if (window.weibo && window.weibo[name]) {
-        window.currentWeiboApiName = name;
-        var value = window.weibo[name](args);
-        return value;
-      }
-    } catch (e2) {
-    }
     const errMsg = beforeInvokeApi(name, args, protocol, options);
     if (errMsg) {
       throw new Error(errMsg);
@@ -2879,19 +2859,11 @@ function useImageState(rootRef, props2) {
       opts[0] && (position = opts[0]);
       opts[1] && (size = opts[1]);
     }
-    if (window.weibo && props2.src.startsWith("Temp")) {
-      imgSrc.value = `../../${props2.src}`;
-    }
     return `background-image:${imgSrc.value ? 'url("' + imgSrc.value + '")' : "none"};background-position:${position};background-size:${size};`;
   });
   const state = vue.reactive({
     rootEl: rootRef,
-    src: vue.computed(function() {
-      if (window.weibo && props2.src.startsWith("Temp")) {
-        return `../../${props2.src}`;
-      }
-      return props2.src ? getRealPath(props2.src) : "";
-    }),
+    src: vue.computed(() => props2.src ? getRealPath(props2.src) : ""),
     origWidth: 0,
     origHeight: 0,
     origStyle: {
