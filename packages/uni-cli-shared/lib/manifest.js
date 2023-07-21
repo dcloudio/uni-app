@@ -98,6 +98,15 @@ function getH5Options (manifestJson) {
     configureH5(h5)
   })
 
+  // 处理微博小程序
+  if (process.env.UNI_PLATFORM === 'mp-weibo') {
+    h5.publicPath = './'
+    h5.router = {
+      base: './',
+      mode: 'hash'
+    }
+  }
+
   return h5
 }
 

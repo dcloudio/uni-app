@@ -143,6 +143,17 @@ module.exports = function (content, map) {
       map
     )
   }
+  if (process.env.UNI_PLATFORM === 'mp-weibo') {
+    return this.callback(
+      null,
+      require('./platforms/mp-weibo')(
+        pagesJson,
+        manifestJson,
+        this
+      ),
+      map
+    )
+  }
   if (process.env.UNI_PLATFORM === 'quickapp-native') {
     return this.callback(
       null,

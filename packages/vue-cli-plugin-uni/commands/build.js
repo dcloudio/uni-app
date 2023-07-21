@@ -199,19 +199,25 @@ async function build (args, api, options) {
 
       if (!args.silent && (process.env.UNI_PLATFORM !== 'app-plus' || process.env
         .UNI_AUTOMATOR_WS_ENDPOINT)) {
-        const targetDirShort = path.relative(
+        let targetDirShort = path.relative(
           api.service.context,
           process.env.UNI_OUTPUT_DIR
         )
+        if (process.env.UNI_PLATFORM === 'mp-weibo') {
+          targetDirShort = path.resolve(targetDirShort, '..', '..', '..')
+          // 处理html文件
+          // const htmlContent = fs.readFileSync(path.join(process.env.UNI_OUTPUT_DIR, 'index.html'), 'utf-8')
+          // const newHtmlContent = htmlContent.replace('</body>', '<script src="../iframe.js"></script></body>')
+          // fs.writeFileSync(path.join(process.env.UNI_OUTPUT_DIR, 'index.html'), newHtmlContent)
+        }
 
         if (!args.watch) {
           const dirMsg = runByHBuilderX ? ''
             : `The ${chalk.cyan(targetDirShort)} directory is ready to be deployed.`
           done(`Build complete. ${dirMsg}`)
-          if (process.env.UNI_PLATFORM !== 'h5') {
+          if (process.env.UNI_PLATFORM !== 'h5' && process.env.UNI_PLATFORM !== 'mp-weibo') {
             showRunPrompt()
           }
-
           if (process.env.UNI_PLATFORM === 'h5' && !isInHBuilderX) {
             console.log()
             console.log('欢迎将web站点部署到uniCloud前端网页托管平台，高速、免费、安全、省心，详见：https://uniapp.dcloud.io/uniCloud/hosting')

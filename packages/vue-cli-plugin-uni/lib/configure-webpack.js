@@ -258,7 +258,7 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
       } : patterns))
 
       const uniExtApis = require('@dcloudio/uni-cli-shared/lib/uni_modules/uni_modules')
-        .parseUniExtApis(false, process.env.UNI_UTS_PLATFORM, 'javascript')
+        .parseUniExtApis(false)      
       const keys = Object.keys(uniExtApis)
       if (keys.length) {
         plugins.push(new webpack.ProvidePlugin(uniExtApis))
@@ -294,6 +294,10 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
         envs['process.env.' + name] = JSON.stringify(process.UNI_SCRIPT_ENV[name])
       })
       plugins.push(new webpack.DefinePlugin(envs))
+    }
+
+    if (process.env.UNI_PLATFORM === 'mp-weibo') {
+      require('./mp-weibo/templateDeal').templateDeal(manifestPlatformOptions)
     }
 
     if (runByHBuilderX) { // 使用 HBuilderX 中运行时，调整错误日志输出

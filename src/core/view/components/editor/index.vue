@@ -19,7 +19,7 @@ import loadScript from './load-script'
 function isiOS () {
   if (__PLATFORM__ === 'app-plus') {
     return plus.os.name.toLowerCase() === 'ios'
-  } else if (__PLATFORM__ === 'h5') {
+  } else if (__PLATFORM__ === 'h5' || __PLATFORM__ === 'mp-weibo') {
     const ua = navigator.userAgent
     const isIOS = /iphone|ipad|ipod/i.test(ua)
     const isMac = /Macintosh|Mac/i.test(ua)

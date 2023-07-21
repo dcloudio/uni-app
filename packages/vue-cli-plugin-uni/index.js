@@ -40,7 +40,7 @@ module.exports = (api, options) => {
     return
   }
 
-  const type = ['app-plus', 'h5'].includes(process.env.UNI_PLATFORM)
+  const type = ['app-plus', 'h5', 'mp-weibo'].includes(process.env.UNI_PLATFORM)
     ? process.env.UNI_PLATFORM
     : 'mp'
 
@@ -54,7 +54,7 @@ module.exports = (api, options) => {
 
   if (options.pages) {
     // h5平台 允许 vue.config.js pages 覆盖，其他平台移除 pages 配置
-    if (process.env.UNI_PLATFORM === 'h5') {
+    if (process.env.UNI_PLATFORM === 'h5' || process.env.UNI_PLATFORM === 'mp-weibo') {
       delete vueConfig.pages
     } else {
       delete options.pages

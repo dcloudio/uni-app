@@ -18,6 +18,7 @@ const defaultInputDir = 'src'
 if (process.env.UNI_INPUT_DIR && process.env.UNI_INPUT_DIR.indexOf('./') === 0) {
   process.env.UNI_INPUT_DIR = path.resolve(process.cwd(), process.env.UNI_INPUT_DIR)
 }
+
 process.env.UNI_INPUT_DIR = process.env.UNI_INPUT_DIR || path.resolve(process.cwd(), defaultInputDir)
 
 const {
@@ -137,10 +138,12 @@ process.env.UNI_SECURE_NETWORK_ENABLE = isEnableSecureNetwork(manifestJsonObj, p
 // 初始化环境变量
 process.env.UNI_CLI_CONTEXT = require('@dcloudio/uni-cli-shared/lib/util').getCLIContext()
 
-const defaultOutputDir = './dist/' +
+let defaultOutputDir = './dist/' +
   (process.env.NODE_ENV === 'production' ? 'build' : 'dev') + '/' +
   (process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM)
-
+if (process.env.UNI_PLATFORM === 'mp-weibo') {
+  defaultOutputDir = path.join(defaultOutputDir, 'src', 'res', 'h5')
+}
 process.env.UNI_OUTPUT_DEFAULT_DIR = path.resolve(process.env.UNI_CLI_CONTEXT, defaultOutputDir)
 if (process.env.UNI_OUTPUT_DIR && process.env.UNI_OUTPUT_DIR.indexOf('./') === 0) {
   process.env.UNI_OUTPUT_DIR = path.resolve(process.cwd(), process.env.UNI_OUTPUT_DIR)
@@ -158,7 +161,7 @@ function initUtsPlatform () {
   if (process.env.UNI_APP_PLATFORM === 'ios') {
     process.env.UNI_UTS_PLATFORM = 'app-ios'
   }
-  if (process.env.UNI_PLATFORM === 'h5') {
+  if (process.env.UNI_PLATFORM === 'h5' || process.env.UNI_PLATFORM === 'mp-weibo') {
     process.env.UNI_UTS_PLATFORM = 'web'
   } else {
     if (!process.env.UNI_UTS_PLATFORM) {
@@ -276,6 +279,45 @@ if (process.env.UNI_PLATFORM === 'h5') {
     process.env.VUE_APP_INDEX_DARK_CSS_HASH = ''
   }
 }
+if (process.env.UNI_PLATFORM === 'mp-weibo') {
+  const optimization = platformOptions.optimization
+  if (optimization) {
+    // 发行模式且主动启用优化
+    const treeShaking = optimization.treeShaking
+    if (
+      treeShaking &&
+      treeShaking.enable &&
+      process.env.NODE_ENV === 'production'
+    ) {
+      process.env.UNI_OPT_TREESHAKINGNG = true
+      process.UNI_USER_APIS = new Set()
+      if (Array.isArray(treeShaking.modules) && treeShaking.modules.length) {
+        const {
+          parseUserApis
+        } = require('@dcloudio/uni-cli-shared/lib/api')
+        try {
+          const modules = require('@dcloudio/uni-mp-weibo/lib/modules.json')
+          process.UNI_USER_APIS = parseUserApis(treeShaking.modules || [], modules)
+        } catch (e) { }
+      }
+    }
+    if (optimization.prefetch) {
+      process.env.UNI_OPT_PREFETCH = true
+    }
+    if (optimization.preload) {
+      process.env.UNI_OPT_PRELOAD = true
+    }
+  }
+  const indexCssBuffer = fs.readFileSync(require.resolve('@dcloudio/uni-mp-weibo/dist/index.css'))
+  process.env.VUE_APP_INDEX_CSS_HASH = loaderUtils.getHashDigest(indexCssBuffer, 'md5', 'hex', 8)
+  let indexDarkCssBuffer = ''
+  try {
+    indexDarkCssBuffer = fs.readFileSync(require.resolve('@dcloudio/uni-mp-weibo/dist/index.dark.css'))
+    process.env.VUE_APP_INDEX_DARK_CSS_HASH = loaderUtils.getHashDigest(indexDarkCssBuffer, 'md5', 'hex', 8)
+  } catch (error) {
+    process.env.VUE_APP_INDEX_DARK_CSS_HASH = ''
+  }
+}
 
 if (process.env.UNI_PLATFORM === 'mp-qq') { // QQ小程序 强制自定义组件模式
   platformOptions.usingComponents = true
@@ -332,7 +374,7 @@ if (platformOptions.nvueStyleCompiler === 'uni-app') {
 }
 
 if (platformOptions.usingComponents === true) {
-  if (process.env.UNI_PLATFORM !== 'h5') {
+  if (process.env.UNI_PLATFORM !== 'h5' || process.env.UNI_PLATFORM === 'mp-weibo') {
     process.env.UNI_USING_COMPONENTS = true
   }
   if (process.env.UNI_PLATFORM === 'app-plus') {
@@ -364,7 +406,7 @@ process.env.UNI_STAT_UNI_CLOUD = '""'
 process.env.UNI_STAT_DEBUG = '""'
 if (
   process.env.UNI_USING_COMPONENTS ||
-  process.env.UNI_PLATFORM === 'h5'
+  process.env.UNI_PLATFORM === 'h5' || process.env.UNI_PLATFORM === 'mp-weibo'
 ) { // 自定义组件模式或 h5 平台
   const uniStatistics = Object.assign(
     manifestJsonObj.uniStatistics || {},
@@ -453,7 +495,7 @@ if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
     0: compileMode,
     1: compileModeUrl
   }))
-} else if (process.env.UNI_PLATFORM !== 'h5' && process.env.UNI_PLATFORM !== 'quickapp-native') {
+} else if (process.env.UNI_PLATFORM !== 'h5' && process.env.UNI_PLATFORM !== 'quickapp-native' && process.env.UNI_PLATFORM !== 'mp-weibo') {
   try {
     const info = process.env.UNI_COMPILER_VERSION
     if (process.env.UNI_PLATFORM === 'app-plus') {
@@ -512,7 +554,7 @@ if (process.env.UNI_USING_V3 && process.env.UNI_PLATFORM === 'app-plus') {
   moduleAlias.addAlias('vue-style-loader', '@dcloudio/vue-cli-plugin-uni/packages/app-vue-style-loader')
 }
 
-if (process.env.UNI_PLATFORM === 'h5') {
+if (process.env.UNI_PLATFORM === 'h5' || process.env.UNI_PLATFORM === 'mp-weibo') {
   moduleAlias.addAlias('vue-style-loader', '@dcloudio/vue-cli-plugin-uni/packages/h5-vue-style-loader')
 }
 
@@ -546,6 +588,7 @@ if (
   !process.env.UNI_USING_V3 &&
   !process.env.UNI_USING_NATIVE &&
   !process.env.UNI_USING_V3_NATIVE
+  && process.env.UNI_PLATFORM !== 'mp-weibo'
 ) { // 使用 cache, 拷贝 cache 的 json
   const cacheJsonDir = path.resolve(
     process.env.UNI_CLI_CONTEXT,
@@ -578,7 +621,7 @@ if (
   (
     process.env.UNI_PLATFORM === 'app-plus' &&
     process.env.UNI_USING_V3
-  )
+  ) || process.env.UNI_PLATFORM === 'mp-weibo'
 ) {
   const migrate = require('@dcloudio/uni-migration')
   const wxcomponentDirs = [path.resolve(process.env.UNI_INPUT_DIR, 'wxcomponents')]
