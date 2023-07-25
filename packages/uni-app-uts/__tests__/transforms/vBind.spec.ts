@@ -119,6 +119,33 @@ describe('compiler: v-bind', () => {
       `createElementVNode(\"rich-text\", new Map<string, any | null>([[\"nodes\", [new Map<string, any | null>([['name', 'div'], ['attrs', new Map<string, any | null>([['class', 'div-class'], ['style', 'line-height: 60px; color: red; text-align:center;']])], ['children', [new Map<string, any | null>([['type', 'text'], ['text', 'this is text']])]]])]]]))`
     )
   })
+  test('empty object syntax with \n', () => {
+    assert(
+      `<rich-text
+  :nodes="[
+    {
+      'name': 'div',
+      'attrs': {
+        'class': 'div-class',
+        'style': 'line-height: 60px; color: red; text-align:center;'
+      },
+      'children': [
+        { 'type': 'text', 'text': 'this is text' }
+      ]
+    }
+  ]"
+/>`,
+      "createElementVNode(\"rich-text\", new Map<string, any | null>([[\"nodes\", [    new Map<string, any | null>([['name', 'div'], ['attrs', new Map<string, any | null>([['class', 'div-class'], ['style', 'line-height: 60px; color: red; text-align:center;']])], ['children', [new Map<string, any | null>([['type', 'text'], ['text', 'this is text']])]]])  ]]]))"
+    )
+  })
+  test('style with empty {\n }', () => {
+    assert(
+      `<text :style="{
+    }" />`,
+      `createElementVNode(\"text\", new Map<string, any | null>([[\"style\", new Map<string, any | null>()]]))`
+    )
+  })
+
   test('basic', () => {
     const node = parseWithVBind(`<view v-bind:id="id"/>`)
     const props = (node.codegenNode as VNodeCall).props as ObjectExpression
