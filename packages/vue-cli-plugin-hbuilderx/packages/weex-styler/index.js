@@ -1,6 +1,6 @@
 'use strict'
 
-var css = require('css')
+var css = require('@adobe/css-ttols')
 var util = require('./lib/util')
 var validateItem = require('./lib/validator').validate
 var shorthandParser = require('./lib/shorthand-parser')

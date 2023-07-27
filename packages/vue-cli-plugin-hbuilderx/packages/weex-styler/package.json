@@ -36,7 +36,7 @@
     "url": "https://github.com/weexteam/weex-styler/issues"
   },
   "dependencies": {
-    "css": "~2.2.1"
+    "@adobe/css-ttols": "~4.3.0-rc.1"
   },
   "description": "Weex <style> transformer",
   "devDependencies": {
