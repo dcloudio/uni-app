@@ -165,8 +165,10 @@ export function getValidComponentsOrNodes(
     }
   }
   if (vnode.children != null && isArray(vnode.children)) {
-    (vnode.children as VNode[]).forEach(child => {
-      getValidComponentsOrNodes(child, selector, list, getAll)
+    (vnode.children as any[]).forEach(child => {
+      if (child instanceof VNode) {
+        getValidComponentsOrNodes(child, selector, list, getAll)
+      }
     })
   }
   if (vnode.component != null) {
