@@ -13,6 +13,7 @@ import {
   expContentToMapString,
   objectStringToMapString,
 } from '../utils'
+import { isString } from '@vue/shared'
 
 // v-bind without arg is handled directly in ./transformElements.ts due to it affecting
 // codegen for the entire props object. This transform here is only for v-bind
@@ -64,9 +65,29 @@ export const transformBind: DirectiveTransform = (dir, _node, context) => {
   if ((exp as any).content && objectExp.test((exp as any).content)) {
     ;(exp as any).content = expContentToMapString(exp)
   } else if ((exp as any).children) {
+    // { 'opcity': 1 - (scrollTop * 3 > 100 ? 100 : scrollTop * 3) / 100 } to map
+    // TODO: 考虑更多边缘情况
+    if (
+      isString((exp as any).children[0]) &&
+      (exp as any).children[0].startsWith('{') &&
+      isString((exp as any).children[(exp as any).children.length - 1]) &&
+      (exp as any).children[(exp as any).children.length - 1].endsWith('}')
+    ) {
+      let str = ''
+      ;(exp as any).children.forEach(
+        (child: ExpressionNode | string, index: number) => {
+          if (isString(child)) {
+            str += child
+          } else {
+            str += (child as any).content
+          }
+        }
+      )
+      ;(exp as any).children = [str]
+    }
     ;(exp as any).children.forEach(
       (child: ExpressionNode | string, index: number) => {
-        if (typeof child === 'string' && objectExp.test(child)) {
+        if (isString(child) && objectExp.test(child)) {
           ;(exp as any).children[index] = objectStringToMapString(child)
         }
       }

@@ -103,7 +103,7 @@ describe('compiler: v-bind', () => {
     assert(
       `<view v-bind:class="[classA, {classB: true, classC: false}]"></view>`,
       `createElementVNode("view", new Map<string, any | null>([
-  ["class", normalizeClass([_ctx.classA, new Map<string, any | null>([[classB, true],[ classC, false]])])]
+  ["class", normalizeClass([_ctx.classA, new Map<string, any | null>([[classB, true], [classC, false]])])]
 ]), null, 2 /* CLASS */)`
     )
   })
@@ -130,12 +130,13 @@ describe('compiler: v-bind', () => {
         'style': 'line-height: 60px; color: red; text-align:center;'
       },
       'children': [
-        { 'type': 'text', 'text': 'this is text' }
+        { 'type': 'text', 'text': 'this is text' },
+        { 'type': 'text', 'text': 'this is text' },
       ]
     }
   ]"
 />`,
-      "createElementVNode(\"rich-text\", new Map<string, any | null>([[\"nodes\", [    new Map<string, any | null>([['name', 'div'], ['attrs', new Map<string, any | null>([['class', 'div-class'], ['style', 'line-height: 60px; color: red; text-align:center;']])], ['children', [new Map<string, any | null>([['type', 'text'], ['text', 'this is text']])]]])  ]]]))"
+      "createElementVNode(\"rich-text\", new Map<string, any | null>([[\"nodes\", [    new Map<string, any | null>([['name', 'div'], ['attrs', new Map<string, any | null>([['class', 'div-class'], ['style', 'line-height: 60px; color: red; text-align:center;']])], ['children', [new Map<string, any | null>([['type', 'text'], ['text', 'this is text']]), new Map<string, any | null>([['type', 'text'], ['text', 'this is text']])]]])  ]]]))"
     )
   })
   test('style with empty {\n }', () => {
@@ -143,6 +144,25 @@ describe('compiler: v-bind', () => {
       `<text :style="{
     }" />`,
       `createElementVNode(\"text\", new Map<string, any | null>([[\"style\", new Map<string, any | null>()]]))`
+    )
+  })
+  test('object value width expression', () => {
+    assert(
+      `<view class="search" @click="toSearchPage" :style="{'width':700 +'rpx',
+      'top':0 +'px'}" />`,
+      `createElementVNode(\"view\", new Map<string, any | null>([
+  [\"class\", \"search\"],
+  [\"onClick\", _ctx.toSearchPage],
+  [\"style\", new Map<string, any | null>([['width', 700 +'rpx'], ['top', 0 +'px']])]
+]), null, 8 /* PROPS */, [\"onClick\"])`
+    )
+  })
+  test('style with object complex expression', () => {
+    assert(
+      `<view :style="{'opcity': 1 - (scrollTop*3>100?100:scrollTop*3)/100}"></view>`,
+      `createElementVNode(\"view\", new Map<string, any | null>([
+  [\"style\", new Map<string, any | null>([['opcity', '1 - (_ctx.scrollTop*3>100?100:_ctx.scrollTop*3)/100']])]
+]))`
     )
   })
 
