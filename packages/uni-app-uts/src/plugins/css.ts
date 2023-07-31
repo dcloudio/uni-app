@@ -30,6 +30,7 @@ export function uniAppCssPlugin(): Plugin {
       const uvueCssPostPlugin = cssPostPlugin(config, {
         isJsCode: true,
         platform: process.env.UNI_PLATFORM,
+        includeComponentCss: false,
         chunkCssFilename(id: string) {
           if (id === mainUTS) {
             return 'App.style.uts'
