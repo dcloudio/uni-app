@@ -35,7 +35,7 @@ open class User : IUser {
         , 1000);
         login(name, pwd);
         run {
-            var i = 0;
+            var i: Number = 0;
             while(i < 10){
                 console.log(i, " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:23");
                 i++;

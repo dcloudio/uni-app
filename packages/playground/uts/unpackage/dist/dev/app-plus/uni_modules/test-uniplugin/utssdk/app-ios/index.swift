@@ -47,7 +47,7 @@ public func test1(_ callback:@escaping () -> Void) -> String {
     console.log("ndef android", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:42");
     console.log("def android || def ios", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:48");
     console.log(CLLocationManager, CLAuthorizationStatus, " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:53");
-    var a = -3;
+    var a: NSNumber = -3;
     console.log(~a, " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:55");
     return "test1";
 }
@@ -88,7 +88,7 @@ public func testAsync() async -> UTSJSONObject {
     uni_showToast();
     uni_showModel();
     return UTSJSONObject([
-        "a": 1
+        "a": 1 as NSNumber
     ]);
 }
 public var showToast1: ShowToast = {

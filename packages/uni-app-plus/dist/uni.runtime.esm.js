@@ -9533,8 +9533,8 @@ class MapContext {
     openMapApp(options) {
         operateMapWrap(this.id, this.pageId, 'openMapApp', options);
     }
-    on(options) {
-        operateMapWrap(this.id, this.pageId, 'on', options);
+    on(name, callback) {
+        operateMapWrap(this.id, this.pageId, 'on', { name, callback });
     }
 }
 const createMapContext = defineSyncApi(API_CREATE_MAP_CONTEXT, (id, context) => {
