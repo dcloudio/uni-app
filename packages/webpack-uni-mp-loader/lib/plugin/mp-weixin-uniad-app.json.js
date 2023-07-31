@@ -1,6 +1,6 @@
 const UNI_PLUGINS = [{
   name: 'uni-ad',
-  version: '1.1.10',
+  version: '1.1.11',
   provider: 'wxf72d316417b6767f'
 },
 {
