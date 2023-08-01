@@ -147,7 +147,8 @@ export function rewriteExpression(
     }
   }
 
-  referencedScope = referencedScope || findReferencedScope(babelNode, scope)
+  // 钉钉小程序 a:for 绑定变量存在作用域问题
+  referencedScope = referencedScope || findReferencedScope(babelNode, scope, process.env.UNI_UTS_PLATFORM !== 'mp-dingtalk')
   const id = referencedScope!.id.next()
   if (property) {
     referencedScope!.properties.push(objectProperty(identifier(id), babelNode!))
