@@ -126,15 +126,74 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
 }
 
 function kotlinDir(outputDir: string) {
-  return path.resolve(outputDir, '../.kotlin')
+  return (
+    process.env.UNI_APP_X_CACHE_DIR || path.resolve(outputDir, '../.kotlin')
+  )
 }
 
 function kotlinSrcDir(kotlinDir: string) {
   return path.resolve(kotlinDir, 'src')
 }
 
+function kotlinDexDir(kotlinDir: string) {
+  return path.resolve(kotlinDir, 'dex')
+}
+
 function kotlinClassDir(kotlinDir: string) {
   return path.resolve(kotlinDir, 'class')
+}
+
+function resolveDexByKotlinFile(kotlinDexOutDir: string, kotlinFile: string) {
+  return path.join(
+    path.resolve(kotlinDexOutDir, kotlinFile).replace('.kt', ''),
+    'classes.dex'
+  )
+}
+
+function parseKotlinChangedFiles(
+  result: RunKotlinDevResult,
+  kotlinSrcOutDir: string,
+  kotlinDexOutDir: string,
+  outputDir: string
+) {
+  // 解析发生变化的
+  const kotlinChangedFiles = result.changed.map((file) => {
+    const dexFile = resolveDexByKotlinFile(kotlinDexOutDir, file)
+    // 如果kt文件变化，则删除对应的dex文件
+    if (fs.existsSync(dexFile)) {
+      fs.unlinkSync(dexFile)
+    }
+    return path.resolve(kotlinSrcOutDir, file)
+  })
+  // 解析未发生变化，但dex不存在的
+  ;['index.kt', ...(result.chunks || [])].forEach((chunk) => {
+    const chunkFile = path.resolve(kotlinSrcOutDir, chunk)
+    if (!kotlinChangedFiles.includes(chunkFile)) {
+      const dexFile = resolveDexByKotlinFile(kotlinDexOutDir, chunk)
+      if (fs.existsSync(dexFile)) {
+        // 如果缓存的dex文件存在，则不需要重新编译，但需要确定outputDir中存在dex文件
+        const targetDexFile = resolveDexByKotlinFile(outputDir, chunk)
+        if (!fs.existsSync(targetDexFile)) {
+          fs.copySync(dexFile, targetDexFile)
+        }
+      } else {
+        kotlinChangedFiles.push(chunkFile)
+      }
+    }
+  })
+  return kotlinChangedFiles
+}
+
+function syncDexList(
+  dexList: string[],
+  kotlinDexOutDir: string,
+  outputDir: string
+) {
+  dexList.forEach((dex) => {
+    const dexFile = path.resolve(kotlinDexOutDir, dex)
+    const targetDexFile = path.resolve(outputDir, dex)
+    fs.copySync(dexFile, targetDexFile)
+  })
 }
 
 async function runKotlinDev(
@@ -143,15 +202,15 @@ async function runKotlinDev(
 ) {
   result.type = 'kotlin'
   const { inputDir, outputDir } = options
-  const kotlinDexOutDir = outputDir
   const kotlinRootOutDir = kotlinDir(outputDir)
+  const kotlinDexOutDir = kotlinDexDir(kotlinRootOutDir)
   const kotlinSrcOutDir = kotlinSrcDir(kotlinRootOutDir)
-  const kotlinChangedFiles = result.changed.map((file) => {
-    // 如果kt文件变化，则删除对应的dex文件
-
-    return path.resolve(kotlinSrcOutDir, file)
-  })
-
+  const kotlinChangedFiles = parseKotlinChangedFiles(
+    result,
+    kotlinSrcOutDir,
+    kotlinDexOutDir,
+    outputDir
+  )
   const kotlinMainFile = path.resolve(kotlinSrcOutDir, result.filename!)
   // 开发模式下，需要生成 dex
   if (kotlinChangedFiles.length && fs.existsSync(kotlinMainFile)) {
@@ -203,6 +262,7 @@ async function runKotlinDev(
     // console.log('DEX编译结果:', code, data)
     if (!code && data) {
       result.changed = data.dexList
+      syncDexList(data.dexList, kotlinDexOutDir, outputDir)
     } else {
       // 编译失败，需要调整缓存的 manifest.json
       if (result.changed.length) {

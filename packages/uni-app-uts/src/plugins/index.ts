@@ -18,7 +18,6 @@ import { compileI18nJsonStr } from '@dcloudio/uni-i18n'
 import type { Plugin } from 'vite'
 import {
   DEFAULT_APPID,
-  kotlinOutDir,
   parseImports,
   parseUTSRelativeFilename,
   uvueOutDir,
@@ -57,7 +56,6 @@ export function uniAppUTSPlugin(): UniVitePlugin {
   const outputDir = process.env.UNI_OUTPUT_DIR
   const mainUTS = resolveMainPathOnce(inputDir)
   const tempOutputDir = uvueOutDir()
-  const tempKotlinOutputDir = kotlinOutDir()
   const manifestJson = parseManifestJsonOnce(inputDir)
   // 预留一个口子，方便切换测试
   const split = manifestJson['uni-app-x']?.split
@@ -65,9 +63,6 @@ export function uniAppUTSPlugin(): UniVitePlugin {
   function emptyOutDir() {
     if (fs.existsSync(outputDir)) {
       emptyDir(outputDir)
-    }
-    if (fs.existsSync(tempKotlinOutputDir)) {
-      emptyDir(tempKotlinOutputDir)
     }
   }
   emptyOutDir()
