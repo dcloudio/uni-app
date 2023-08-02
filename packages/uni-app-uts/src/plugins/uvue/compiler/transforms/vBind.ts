@@ -8,7 +8,7 @@ import {
 import { createCompilerError, ErrorCodes } from '../errors'
 import { camelize } from '@vue/shared'
 import { CAMELIZE } from '@vue/compiler-core'
-import { objectExp, objectStringToMapString } from '../utils'
+import { OBJECT_EXP, objectStringToMapString } from '../utils'
 import { isString } from '@vue/shared'
 
 // v-bind without arg is handled directly in ./transformElements.ts due to it affecting
@@ -58,10 +58,10 @@ export const transformBind: DirectiveTransform = (dir, _node, context) => {
     }
   }
 
-  if ((exp as any).content && objectExp.test((exp as any).content)) {
+  if ((exp as any).content && OBJECT_EXP.test((exp as any).content)) {
     ;(exp as any).content = objectStringToMapString((exp as any).content)
   } else if ((exp as any).children) {
-    // { 'opcity': 1 - (scrollTop * 3 > 100 ? 100 : scrollTop * 3) / 100 } to map
+    // {'opacity': count > 0.3 ? 1: count * 3, 'color': 'red'} to map
     // TODO: 考虑更多边缘情况
     if (
       isString((exp as any).children[0]) &&
@@ -83,7 +83,7 @@ export const transformBind: DirectiveTransform = (dir, _node, context) => {
     }
     ;(exp as any).children.forEach(
       (child: ExpressionNode | string, index: number) => {
-        if (isString(child) && objectExp.test(child)) {
+        if (isString(child) && OBJECT_EXP.test(child)) {
           ;(exp as any).children[index] = objectStringToMapString(child)
         }
       }

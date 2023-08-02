@@ -157,11 +157,21 @@ describe('compiler: v-bind', () => {
 ]), null, 8 /* PROPS */, [\"onClick\"])`
     )
   })
-  test('style with object complex expression', () => {
+  test('object value width all number expression', () => {
     assert(
-      `<view :style="{'opcity': 1 - (scrollTop*3>100?100:scrollTop*3)/100}"></view>`,
+      `<view class="search" @click="toSearchPage" :style="{'opacity': 1 + 1}" />`,
       `createElementVNode(\"view\", new Map<string, any | null>([
-  [\"style\", new Map<string, any | null>([['opcity', '1 - (_ctx.scrollTop*3>100?100:_ctx.scrollTop*3)/100']])]
+  [\"class\", \"search\"],
+  [\"onClick\", _ctx.toSearchPage],
+  [\"style\", new Map<string, any | null>([['opacity', 1 + 1]])]
+]), null, 8 /* PROPS */, [\"onClick\"])`
+    )
+  })
+  test('object value width expression (with data)', () => {
+    assert(
+      `<view :style="{'opacity': count > 0.3 ? 1 : count * 3, 'color': 'red'}" />`,
+      `createElementVNode(\"view\", new Map<string, any | null>([
+  [\"style\", new Map<string, any | null>([['opacity', _ctx.count > 0.3 ? 1 : _ctx.count * 3], ['color', 'red']])]
 ]))`
     )
   })

@@ -1,5 +1,5 @@
 import { CompilerOptions } from './options'
-import { isObject, isString } from '@vue/shared'
+import { isObject } from '@vue/shared'
 
 export function genRenderFunctionDecl({
   targetLanguage,
@@ -10,10 +10,10 @@ export function genRenderFunctionDecl({
   }function ${filename}Render(): VNode | null`
 }
 
-export const objectExp = /\{[\s\S]*\}/g
+export const OBJECT_EXP = /\{[\s\S]*\}/g
 export function objectStringToMapString(content: string, wrap = true): string {
   content = content.replace(/\n/g, '')
-  const matched = content.match(objectExp)![0]
+  const matched = content.match(OBJECT_EXP)![0]
   const matchedObj = stringToData(matched) as Record<any, any>
   const mapConstructor = convertObjectToMapString(matchedObj)
   return content.replace(
@@ -65,18 +65,14 @@ function findObjectValueInString(
       num--
     }
     if (char === ',' && num === 0) {
-      const value = removeExtraQuotationMarks(
-        str.substring(startIndex, i).trim()
-      )
+      const value = str.substring(startIndex, i).trim()
       return {
         value: isComplexExpressionString(value) ? stringToData(value) : value,
         endIndex: i,
       }
     }
     if (i === str.length - 1 && num === 0) {
-      const value = removeExtraQuotationMarks(
-        str.substring(startIndex, str.length).trim()
-      )
+      const value = str.substring(startIndex, str.length).trim()
       return {
         value: isComplexExpressionString(value) ? stringToData(value) : value,
         endIndex: i,
@@ -100,16 +96,12 @@ function stringToArray(str: string): any[] {
       num--
     }
     if (char === ',' && num === 0) {
-      const item = removeExtraQuotationMarks(
-        str.substring(preIndex + 1, i).trim()
-      )
+      const item = str.substring(preIndex + 1, i).trim()
       result.push(isComplexExpressionString(item) ? stringToData(item) : item)
       preIndex = i
     }
     if (i === str.length - 1 && num === 0) {
-      const item = removeExtraQuotationMarks(
-        str.substring(preIndex + 1, str.length).trim()
-      )
+      const item = str.substring(preIndex + 1, str.length).trim()
       item &&
         result.push(isComplexExpressionString(item) ? stringToData(item) : item)
     }
@@ -131,11 +123,6 @@ function getKeyValueString(key: string, value: any): string {
 }
 
 function getValueString(value: any): string {
-  if (isString(value)) {
-    return hasExtraQuotationMarks(value) || isBooleanString(value)
-      ? `${value}`
-      : `'${value}'`
-  }
   if (Array.isArray(value)) {
     return `[${value.map((item) => getValueString(item)).join(', ')}]`
   }
@@ -156,19 +143,8 @@ function hasExtraQuotationMarks(str: string): boolean {
   return str.startsWith("'") || str.endsWith("'")
 }
 
-function hasExtraStartQuotationMarks(str: string): boolean {
-  return /^['"].*['"]$/.test(str)
-}
-
 function removeStartAndEndChar(str: string): string {
   return str.substring(1, str.length - 1)
-}
-
-function removeExtraQuotationMarks(str: string): string {
-  if (hasExtraStartQuotationMarks(str)) {
-    return removeStartAndEndChar(str)
-  }
-  return str
 }
 
 function isComplexExpressionString(str: string): boolean {
