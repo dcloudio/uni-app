@@ -113,8 +113,8 @@ const NVUE_BUILT_IN_TAGS = [
 ];
 const UVUE_BUILT_IN_TAGS = [
     'loading-indicator',
-    'list',
-    'cell',
+    'list-view',
+    'list-item',
     'swiper',
     'swiper-item',
     'rich-text',
