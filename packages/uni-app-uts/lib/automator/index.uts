@@ -119,7 +119,7 @@ export function onMessage(msg: string) {
           break
         case 'Page.callMethod':
           const method = params['method'] as string
-          const args = ((params['args'] as UTSJSONObject).toJSONObject() as JSONArray).toUTSArray()
+          const args = UTSArray.fromNative(((params['args'] as UTSJSONObject).toJSONObject() as JSONArray))
           pageCallMethod({ pageId, method, args, callback } as CallMethodParams)
           break
         case 'Page.getElement':
@@ -131,7 +131,7 @@ export function onMessage(msg: string) {
           pageGetElements({ pageId, selector: getElementsSelector, callback } as PageGetElementParams)
           break
         case 'Page.getWindowProperties':
-          const getWindowPropertiesNames = ((params['names'] as UTSJSONObject).toJSONObject() as JSONArray).toUTSArray() as string[]
+          const getWindowPropertiesNames = UTSArray.fromNative(((params['names'] as UTSJSONObject).toJSONObject() as JSONArray)) as string[]
           getWindowProperties({ pageId, names: getWindowPropertiesNames, callback } as GetWindowPropertiesParams)
           break
       }
@@ -153,19 +153,19 @@ export function onMessage(msg: string) {
         case 'Element.getDOMProperties':
           const getDOMPropertiesElementId = params['elementId'] != null ? params['elementId'] as string : null
           const getDOMPropertiesNodeId = params['nodeId'] != null ? params['nodeId'] as number : null
-          const getDOMPropertiesNames = ((params['names'] as UTSJSONObject).toJSONObject() as JSONArray).toUTSArray() as string[]
+          const getDOMPropertiesNames = UTSArray.fromNative(((params['names'] as UTSJSONObject).toJSONObject() as JSONArray)) as string[]
           getDOMProperties({ pageId, elementId: getDOMPropertiesElementId, nodeId: getDOMPropertiesNodeId, names: getDOMPropertiesNames, callback } as GetDOMPropertiesParams)
           break
         case 'Element.getProperties':
           const getPropertiesElementId = params['elementId'] != null ? params['elementId'] as string : null
           const getPropertiesNodeId = params['nodeId'] != null ? params['nodeId'] as number : null
-          const getPropertiesNames = ((params['names'] as UTSJSONObject).toJSONObject() as JSONArray).toUTSArray() as string[]
+          const getPropertiesNames = UTSArray.fromNative(((params['names'] as UTSJSONObject).toJSONObject() as JSONArray)) as string[]
           getProperties({ pageId, elementId: getPropertiesElementId, nodeId: getPropertiesNodeId, names: getPropertiesNames, callback } as GetPropertiesParams)
           break
         case 'Element.callFunction':
           const callFunctionElementId = params['elementId'] as string
           const functionName = params['functionName'] as string
-          const callFunctionArgs = ((params['args'] as UTSJSONObject).toJSONObject() as JSONArray).toUTSArray()
+          const callFunctionArgs = UTSArray.fromNative(((params['args'] as UTSJSONObject).toJSONObject() as JSONArray))
           elementCallFunction({ pageId, elementId: callFunctionElementId, functionName, args: callFunctionArgs, callback } as ElementCallFunctionParams)
           break
         case 'Element.tap':
@@ -176,7 +176,7 @@ export function onMessage(msg: string) {
         case 'Element.callMethod':
           const callMethodNodeId = params['nodeId'] as number
           const callMethodMethod = params['method'] as string
-          const callMethodArgs = ((params['args'] as UTSJSONObject).toJSONObject() as JSONArray).toUTSArray()
+          const callMethodArgs = UTSArray.fromNative(((params['args'] as UTSJSONObject).toJSONObject() as JSONArray))
           elementCallMethod({ pageId, nodeId: callMethodNodeId, method: callMethodMethod, args: callMethodArgs, callback } as ElementCallMethodParams)
           break
         case 'Element.getData':
@@ -208,20 +208,20 @@ export function onMessage(msg: string) {
           const touchstartElementId = params['elementId'] != null ? params['elementId'] as string : null
           const touchstartNodeId = params['nodeId'] != null ? params['nodeId'] as number : null
           const eventName = method.split('.')[1]
-          const touchstartTouches = ((params['touches'] as UTSJSONObject).toJSONObject() as JSONArray).toUTSArray()
-          const touchstartChangedTouches = ((params['changedTouches'] as UTSJSONObject).toJSONObject() as JSONArray).toUTSArray()
+          const touchstartTouches = UTSArray.fromNative(((params['touches'] as UTSJSONObject).toJSONObject() as JSONArray))
+          const touchstartChangedTouches = UTSArray.fromNative(((params['changedTouches'] as UTSJSONObject).toJSONObject() as JSONArray))
           handleTouchEvent({ pageId, elementId: touchstartElementId, nodeId: touchstartNodeId, eventName, touches: touchstartTouches, changedTouches: touchstartChangedTouches, callback } as HandleTouchEventParams)
           break
         case 'Element.getAttributes':
           const getAttributesElementId = params['elementId'] != null ? params['elementId'] as string : null
           const getAttributesNodeId = params['nodeId'] != null ? params['nodeId'] as number : null
-          const getAttributesNames = ((params['names'] as UTSJSONObject).toJSONObject() as JSONArray).toUTSArray() as string[]
+          const getAttributesNames = UTSArray.fromNative(((params['names'] as UTSJSONObject).toJSONObject() as JSONArray)) as string[]
           getAttributes({ pageId, elementId: getAttributesElementId, nodeId: getAttributesNodeId, names: getAttributesNames, callback } as GetAttributesParams)
           break
         case 'Element.getStyles':
           const getStylesElementId = params['elementId'] != null ? params['elementId'] as string : null
           const getStylesNodeId = params['nodeId'] != null ? params['nodeId'] as number : null
-          const getStylesNames = ((params['names'] as UTSJSONObject).toJSONObject() as JSONArray).toUTSArray() as string[]
+          const getStylesNames = UTSArray.fromNative(((params['names'] as UTSJSONObject).toJSONObject() as JSONArray)) as string[]
           getStyles({ pageId, elementId: getStylesElementId, nodeId: getStylesNodeId, names: getStylesNames, callback } as GetStylesParams)
           break
       }

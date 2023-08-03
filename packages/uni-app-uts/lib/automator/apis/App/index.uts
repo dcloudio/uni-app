@@ -253,7 +253,7 @@ export const callUniMethod = (params: CallUniMethodParams): void => {
       break
     case 'showActionSheet':
       const showActionSheetTitle = (args[0] as JSONObject)['title'] != null ? (args[0] as JSONObject)['title'] as string : null
-      const itemList = ((args[0] as JSONObject)['itemList'] as JSONArray).toUTSArray() as string[]
+      const itemList = UTSArray.fromNative(((args[0] as JSONObject)['itemList'] as JSONArray)) as string[]
       const itemColor = (args[0] as JSONObject)['itemColor'] != null ? (args[0] as JSONObject)['itemColor'] as string : null
       uni.showActionSheet({
         title: showActionSheetTitle,
