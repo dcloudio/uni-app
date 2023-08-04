@@ -1,7 +1,7 @@
 import { pageGetData, pageSetData, getPageVm, getValidComponentsOrNodes } from './util.uts'
 
 export type GetDataParams = {
-  pageId: number
+  pageId: string
   path: string
   callback: (result: any | null, error: any | null) => void
 }
@@ -17,7 +17,7 @@ export const getData = (params: GetDataParams): void => {
 }
 
 export type SetDataParams = {
-  pageId: number
+  pageId: string
   data: UTSJSONObject
   callback: (result: any | null, error: any | null) => void
 }
@@ -33,7 +33,7 @@ export const setData = (params: SetDataParams): void => {
   }
 }
 export type CallMethodParams = {
-  pageId: number
+  pageId: string
   method: string
   args: any[]
   callback: (result: any | null, error: any | null) => void
@@ -52,7 +52,7 @@ export const callMethod = (params: CallMethodParams): void => {
 }
 
 export type GetElementParams = {
-  pageId: number
+  pageId: string
   selector: string
   callback: (result: any | null, error: any | null) => void
 }
@@ -91,7 +91,7 @@ export const getElements = (params: GetElementParams): void => {
 }
 
 export type GetWindowPropertiesParams = {
-  pageId: number,
+  pageId: string,
   names: string[],
   callback: (result: any | null, error: any | null) => void
 }

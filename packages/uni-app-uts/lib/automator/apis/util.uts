@@ -1,5 +1,5 @@
-function getPageId(page: BasePage): number {
-  return page.$.uid
+function getPageId(page: BasePage): string {
+  return page.$appPage!.pageId
 }
 
 function getPagePath(page: BasePage): string {
@@ -10,7 +10,7 @@ function getPageQuery(page: BasePage): Map<string, string | null> {
   return page.options
 }
 
-function getPageById(id: number): BasePage | null {
+function getPageById(id: string): BasePage | null {
   const pages = getCurrentPages()
   let result: BasePage | null = null
   pages.forEach((page: BasePage) => {
@@ -21,7 +21,7 @@ function getPageById(id: number): BasePage | null {
   return result
 }
 
-export function getPageVm(id: number): BasePage | null {
+export function getPageVm(id: string): BasePage | null {
   return getPageById(id)
 }
 
@@ -54,7 +54,7 @@ export function parsePage(page: BasePage): UTSJSONObject {
   } as UTSJSONObject
 }
 
-export function getComponentVmBySelector(pageId: number, selector: string, callback: (result: any | null, error: any | null) => void): ComponentPublicInstance | null {
+export function getComponentVmBySelector(pageId: string, selector: string, callback: (result: any | null, error: any | null) => void): ComponentPublicInstance | null {
   const page = getPageVm(pageId)
   if (page == null) {
     callback(null, { errMsg: `Page[${pageId}] not exists` })
@@ -68,7 +68,7 @@ export function getComponentVmBySelector(pageId: number, selector: string, callb
   return component
 }
 
-export function getComponentVmByNodeId(pageId: number, nodeId: number, callback: (result: any | null, error: any | null) => void): ComponentPublicInstance | null {
+export function getComponentVmByNodeId(pageId: string, nodeId: number, callback: (result: any | null, error: any | null) => void): ComponentPublicInstance | null {
   const page = getPageVm(pageId)
   if (page == null) {
     callback(null, { errMsg: `Page[${pageId}] not exists` })
@@ -76,7 +76,7 @@ export function getComponentVmByNodeId(pageId: number, nodeId: number, callback:
   }
   let component: ComponentPublicInstance | null = null
   function getComponentChild(parent: ComponentPublicInstance) {
-    if (parent.$.uid == nodeId) {
+    if (parent.$.uid.toInt() == nodeId) {
       component = parent
       return
     }
@@ -92,7 +92,7 @@ export function getComponentVmByNodeId(pageId: number, nodeId: number, callback:
   return component
 }
 
-export function getElementByIdOrNodeId(pageId: number, elementId: string | null, nodeId: number | null, callback: (result: any | null, error: any | null) => void): INode | null {
+export function getElementByIdOrNodeId(pageId: string, elementId: string | null, nodeId: number | null, callback: (result: any | null, error: any | null) => void): INode | null {
   if (nodeId != null) {
     return getComponentDomByNodeId(pageId, nodeId, callback)
   } else if (elementId != null) {
@@ -101,7 +101,7 @@ export function getElementByIdOrNodeId(pageId: number, elementId: string | null,
   return null
 }
 
-export function getComponentDomByNodeId(pageId: number, nodeId: number, callback: (result: any | null, error: any | null) => void): INode | null {
+export function getComponentDomByNodeId(pageId: string, nodeId: number, callback: (result: any | null, error: any | null) => void): INode | null {
   const component = getComponentVmByNodeId(pageId, nodeId, callback)
   if (component == null) {
     return null
@@ -109,7 +109,7 @@ export function getComponentDomByNodeId(pageId: number, nodeId: number, callback
   return component.$el
 }
 
-export function getElementByNodeIdOrElementId(pageId: number, nodeId: number | null, elementId: string | null, callback: (result: any | null, error: any | null) => void): INode | null {
+export function getElementByNodeIdOrElementId(pageId: string, nodeId: number | null, elementId: string | null, callback: (result: any | null, error: any | null) => void): INode | null {
   const page = getPageVm(pageId)
   if (page == null) {
     callback(null, { errMsg: `Page[${pageId}] not exists` })
@@ -123,7 +123,7 @@ export function getElementByNodeIdOrElementId(pageId: number, nodeId: number | n
   return null
 }
 
-export function getElementById(pageId: number, elementId: string, callback: (result: any | null, error: any | null) => void): INode | null {
+export function getElementById(pageId: string, elementId: string, callback: (result: any | null, error: any | null) => void): INode | null {
   const page = getPageVm(pageId)
   if (page == null) {
     callback(null, { errMsg: `Page[${pageId}] not exists` })

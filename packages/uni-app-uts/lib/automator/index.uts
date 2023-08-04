@@ -104,7 +104,7 @@ export function onMessage(msg: string) {
           break
       }
     } else if (method.startsWith('Page.')) {
-      const pageId = params['pageId'] as number
+      const pageId = params['pageId'] as string
       switch (method) {
         case 'Page.getData':
           const path = params['path'] != null ? (params['path'] as string) : ''
@@ -136,7 +136,7 @@ export function onMessage(msg: string) {
           break
       }
     } else if (method.startsWith('Element.')) {
-      const pageId = params['pageId'] as number
+      const pageId = params['pageId'] as string
       switch (method) {
         case 'Element.getElement':
           const getElementElementId = params['elementId'] != null ? params['elementId'] as string : null

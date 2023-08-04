@@ -3,7 +3,7 @@ import { JSONObject } from 'com.alibaba.fastjson'
 import { getChildrenText, toCamelCase } from './util.uts'
 
 export type GetElementParams = {
-  pageId: number
+  pageId: string
   nodeId?: number | null
   elementId?: string | null
   selector: string
@@ -43,7 +43,7 @@ export const getElements = (params: GetElementParams): void => {
 }
 
 export type GetDOMPropertiesParams = {
-  pageId: number
+  pageId: string
   elementId?: string | null
   nodeId?: number | null
   names: string[]
@@ -77,7 +77,7 @@ export const getDOMProperties = (params: GetDOMPropertiesParams): void => {
 }
 
 export type GetPropertiesParams = {
-  pageId: number
+  pageId: string
   elementId?: string | null
   nodeId?: number | null
   names: string[]
@@ -100,7 +100,7 @@ export const getProperties = (params: GetPropertiesParams): void => {
 }
 
 export type GetAttributesParams = {
-  pageId: number
+  pageId: string
   elementId?: string | null
   nodeId?: number | null
   names: string[]
@@ -121,7 +121,7 @@ export const getAttributes = (params: GetAttributesParams): void => {
 }
 
 export type CallFunctionParams = {
-  pageId: number
+  pageId: string
   elementId: string
   functionName: string
   args: any[]
@@ -141,7 +141,7 @@ export const callFunction = (params: CallFunctionParams): void => {
 }
 
 export type TapParams = {
-  pageId: number
+  pageId: string
   elementId?: string | null
   nodeId?: number | null
   callback: (result: any | null, error: any | null) => void
@@ -158,7 +158,7 @@ export const tap = (params: TapParams): void => {
 }
 
 export type CallMethodParams = {
-  pageId: number
+  pageId: string
   nodeId: number
   method: string
   args: any[]
@@ -174,7 +174,7 @@ export const callMethod = (params: CallMethodParams): void => {
 }
 
 export type GetDataParams = {
-  pageId: number
+  pageId: string
   nodeId: number
   path: string
   callback: (result: any | null, error: any | null) => void
@@ -188,7 +188,7 @@ export const getData = (params: GetDataParams): void => {
 }
 
 export type SetDataParams = {
-  pageId: number
+  pageId: string
   nodeId: number
   data: UTSJSONObject
   callback: (result: any | null, error: any | null) => void
@@ -202,7 +202,7 @@ export const setData = (params: SetDataParams): void => {
 }
 
 export type GetOffsetParams = {
-  pageId: number
+  pageId: string
   elementId?: string | null
   nodeId?: number | null
   callback: (result: any | null, error: any | null) => void
@@ -216,7 +216,7 @@ export const getOffset = (params: GetOffsetParams): void => {
 }
 
 export type LongpressParams = {
-  pageId: number
+  pageId: string
   elementId?: string | null
   nodeId?: number | null
   callback: (result: any | null, error: any | null) => void
@@ -233,7 +233,7 @@ export const longpress = (params: LongpressParams): void => {
 }
 
 export type HandleTouchEventParams = {
-  pageId: number
+  pageId: string
   elementId?: string | null
   nodeId?: number | null
   eventName: string
@@ -264,7 +264,7 @@ function getTouches(touches: any[]): Touch[] {
 }
 
 export type GetStylesParams = {
-  pageId: number
+  pageId: string
   elementId?: string | null
   nodeId?: number | null
   names: string[]
