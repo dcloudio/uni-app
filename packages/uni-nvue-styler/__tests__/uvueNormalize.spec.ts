@@ -249,10 +249,12 @@ flexBasis: fill;
   test('integer', async () => {
     const { json, messages } = await objectifierRule(`
 .foo{
-  lines: 1
+  lines: 1;
+  zIndex: 1;
 },
 .bar{
-  lines: 0.5
+  lines: 0.5;
+  zIndex: 0.5;
 },
 .baz{
   lines: a
@@ -268,6 +270,7 @@ flexBasis: fill;
       foo: {
         '': {
           lines: 1,
+          zIndex: 1,
         },
       },
       zero: {
@@ -283,10 +286,15 @@ flexBasis: fill;
     )
     expect(messages[1]).toEqual(
       expect.objectContaining({
-        text: 'ERROR: property value `a` is not supported for `lines` (supported values are: `integer`)',
+        text: 'ERROR: property value `0.5` is not supported for `z-index` (supported values are: `integer`)',
       })
     )
     expect(messages[2]).toEqual(
+      expect.objectContaining({
+        text: 'ERROR: property value `a` is not supported for `lines` (supported values are: `integer`)',
+      })
+    )
+    expect(messages[3]).toEqual(
       expect.objectContaining({
         text: 'ERROR: property value `0.5a` is not supported for `lines` (supported values are: `integer`)',
       })
