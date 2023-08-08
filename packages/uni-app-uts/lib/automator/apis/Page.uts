@@ -63,8 +63,11 @@ export const getElement = (params: GetElementParams, callback: Callback): void =
     }
     const list: UTSJSONObject[] = []
     getValidComponentsOrNodes(page.$.subTree, selector, list)
-    const result = list.length > 0 ? list[0] : null
-    callback(result, null)
+    if (list.length > 0) {
+      callback(list[0], null)
+    } else {
+      callback(null, { errMsg: `Element[${params.selector}] not exists` })
+    }
   }
 }
 
