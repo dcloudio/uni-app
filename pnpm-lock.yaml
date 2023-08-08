@@ -397,6 +397,9 @@ importers:
       es-module-lexer:
         specifier: ^1.2.1
         version: 1.2.1
+      estree-walker:
+        specifier: ^2.0.2
+        version: 2.0.2
       fs-extra:
         specifier: ^10.0.0
         version: 10.0.0

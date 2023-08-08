@@ -61,7 +61,7 @@ describe('compiler: v-for', () => {
     assert(
       `<text v-for="item in 10" :key="item" />`,
       `createElementVNode(Fragment, null, RenderHelpers.renderList(10, (item, _, _):VNode => {
-  return createElementVNode("text", new Map<string, any | null>([["key", item]]))
+  return createElementVNode("text", utsMapOf({ key: item }))
 }), 64 /* STABLE_FRAGMENT */)`
     )
   })
@@ -77,7 +77,7 @@ describe('compiler: v-for', () => {
     assert(
       `<text v-for="(item, index) in [1,2,3]" :key="index" />`,
       `createElementVNode(Fragment, null, RenderHelpers.renderList([1,2,3], (item, index, _):VNode => {
-  return createElementVNode("text", new Map<string, any | null>([["key", index]]))
+  return createElementVNode("text", utsMapOf({ key: index }))
 }), 64 /* STABLE_FRAGMENT */)`
     )
   })
@@ -85,7 +85,7 @@ describe('compiler: v-for', () => {
     assert(
       `<text v-for="(item, key, index) in {a:'a',b:'b'}" :key="index" />`,
       `createElementVNode(Fragment, null, RenderHelpers.renderList({a:'a',b:'b'}, (item, key, index):VNode => {
-  return createElementVNode("text", new Map<string, any | null>([["key", index]]))
+  return createElementVNode("text", utsMapOf({ key: index }))
 }), 64 /* STABLE_FRAGMENT */)`
     )
   })
@@ -241,9 +241,9 @@ describe('compiler: v-for', () => {
     assert(
       `<text v-for="item in items" :key="itemKey(item)">test</text>`,
       `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.items, (item, _, _):VNode => {
-  return createElementVNode(\"text\", new Map<string, any | null>([
-    [\"key\", _ctx.itemKey(item)]
-  ]), \"test\")
+  return createElementVNode(\"text\", utsMapOf({
+    key: _ctx.itemKey(item)
+  }), \"test\")
 }), 128 /* KEYED_FRAGMENT */)`
     )
   })
@@ -251,7 +251,7 @@ describe('compiler: v-for', () => {
     assert(
       `<template v-for="item in items" key="key">test</template>`,
       `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.items, (item, _, _):VNode => {
-  return createElementVNode(Fragment, new Map<string, any | null>([[\"key\", \"key\"]]), [\"test\"], 64 /* STABLE_FRAGMENT */)
+  return createElementVNode(Fragment, utsMapOf({ key: "key" }), [\"test\"], 64 /* STABLE_FRAGMENT */)
 }), 128 /* KEYED_FRAGMENT */)`
     )
   })
@@ -259,10 +259,10 @@ describe('compiler: v-for', () => {
     assert(
       `<template v-for="item in items" :key="item.id"><text :id="item.id" /></template>`,
       `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.items, (item, _, _):VNode => {
-  return createElementVNode(\"text\", new Map<string, any | null>([
-    [\"key\", item.id],
-    [\"id\", item.id]
-  ]), null, 8 /* PROPS */, [\"id\"])
+  return createElementVNode(\"text\", utsMapOf({
+    key: item.id,
+    id: item.id
+  }), null, 8 /* PROPS */, [\"id\"])
 }), 128 /* KEYED_FRAGMENT */)`
     )
   })
@@ -278,7 +278,7 @@ describe('compiler: v-for', () => {
     assert(
       `<text v-for="(item) in items" :key="item" />`,
       `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.items, (item, _, _):VNode => {
-  return createElementVNode(\"text\", new Map<string, any | null>([[\"key\", item]]))
+  return createElementVNode(\"text\", utsMapOf({ key: item }))
 }), 128 /* KEYED_FRAGMENT */)`
     )
   })
@@ -286,7 +286,7 @@ describe('compiler: v-for', () => {
     assert(
       `<template v-for="(item) in items" :key="item"><text/></template>`,
       `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.items, (item, _, _):VNode => {
-  return createElementVNode(\"text\", new Map<string, any | null>([[\"key\", item]]))
+  return createElementVNode(\"text\", utsMapOf({ key: item }))
 }), 128 /* KEYED_FRAGMENT */)`
     )
   })
@@ -294,7 +294,7 @@ describe('compiler: v-for', () => {
     assert(
       `<view v-if="ok" v-for="i in list"/>`,
       `isTrue(_ctx.ok)
-  ? createElementVNode(Fragment, new Map<string, any | null>([[\"key\", 0]]), RenderHelpers.renderList(_ctx.list, (i, _, _):VNode => {
+  ? createElementVNode(Fragment, utsMapOf({ key: 0 }), RenderHelpers.renderList(_ctx.list, (i, _, _):VNode => {
       return createElementVNode(\"view\")
     }), 256 /* UNKEYED_FRAGMENT */)
   : createCommentVNode(\"v-if\", true)`
@@ -304,7 +304,7 @@ describe('compiler: v-for', () => {
     assert(
       `<template v-if="ok" v-for="i in list"/>`,
       `isTrue(_ctx.ok)
-  ? createElementVNode(Fragment, new Map<string, any | null>([[\"key\", 0]]), RenderHelpers.renderList(_ctx.list, (i, _, _):VNode => {
+  ? createElementVNode(Fragment, utsMapOf({ key: 0 }), RenderHelpers.renderList(_ctx.list, (i, _, _):VNode => {
       return createElementVNode(Fragment, null, [], 64 /* STABLE_FRAGMENT */)
     }), 256 /* UNKEYED_FRAGMENT */)
   : createCommentVNode(\"v-if\", true)`

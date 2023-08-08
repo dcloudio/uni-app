@@ -80,7 +80,10 @@ function serialize(obj: unknown, ts: boolean = false): string {
     const entries = Object.entries(obj).map(
       ([key, value]) => `[${serialize(key, ts)},${serialize(value, ts)}]`
     )
-    return `new Map${ts ? '<string, any>' : ''}([${entries.join(',')}])`
+    if (entries.length) {
+      return `utsMapOf([${entries.join(',')}])`
+    }
+    return `utsMapOf()`
   } else if (isArray(obj)) {
     return `[${obj.map((item) => serialize(item, ts)).join(',')}]`
   } else {

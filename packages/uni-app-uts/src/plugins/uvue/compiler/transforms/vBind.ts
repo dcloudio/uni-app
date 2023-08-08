@@ -1,15 +1,19 @@
-import { DirectiveTransform } from '../transform'
+import { camelize } from '@vue/shared'
+import { parseExpression } from '@babel/parser'
+import type { Node } from '@babel/types'
+import { CAMELIZE } from '@vue/compiler-core'
 import {
   createObjectProperty,
   createSimpleExpression,
   ExpressionNode,
   NodeTypes,
 } from '@vue/compiler-core'
+
+import type { DirectiveTransform } from '../transform'
 import { createCompilerError, ErrorCodes } from '../errors'
-import { camelize } from '@vue/shared'
-import { CAMELIZE } from '@vue/compiler-core'
-import { OBJECT_EXP, objectStringToMapString } from '../utils'
-import { isString } from '@vue/shared'
+
+import { stringifyExpression } from './transformExpression'
+import { MagicString, walk } from '@vue/compiler-sfc'
 
 // v-bind without arg is handled directly in ./transformElements.ts due to it affecting
 // codegen for the entire props object. This transform here is only for v-bind
@@ -57,39 +61,30 @@ export const transformBind: DirectiveTransform = (dir, _node, context) => {
       props: [createObjectProperty(arg, createSimpleExpression('', true, loc))],
     }
   }
-
-  if ((exp as any).content && OBJECT_EXP.test((exp as any).content)) {
-    ;(exp as any).content = objectStringToMapString((exp as any).content)
-  } else if ((exp as any).children) {
-    // {'opacity': count > 0.3 ? 1: count * 3, 'color': 'red'} to map
-    // TODO: 考虑更多边缘情况
-    if (
-      isString((exp as any).children[0]) &&
-      (exp as any).children[0].startsWith('{') &&
-      isString((exp as any).children[(exp as any).children.length - 1]) &&
-      (exp as any).children[(exp as any).children.length - 1].endsWith('}')
-    ) {
-      let str = ''
-      ;(exp as any).children.forEach(
-        (child: ExpressionNode | string, index: number) => {
-          if (isString(child)) {
-            str += child
-          } else {
-            str += (child as any).content
-          }
+  // 简易处理,理论上rust中也可以处理，但为了单元测试一致性，还是在该阶段中处理
+  const source = stringifyExpression(exp)
+  if (source.includes('{')) {
+    const s = new MagicString(source)
+    const ast = parseExpression(source, {
+      plugins: context.expressionPlugins,
+    })
+    walk(ast, {
+      enter(node: Node) {
+        if (node.type === 'ObjectExpression') {
+          s.prependLeft(node.start!, 'utsMapOf(')
+          s.prependRight(node.end!, ')')
         }
-      )
-      ;(exp as any).children = [str]
+      },
+    })
+    return {
+      props: [
+        createObjectProperty(
+          arg,
+          createSimpleExpression(s.toString(), false, exp.loc)
+        ),
+      ],
     }
-    ;(exp as any).children.forEach(
-      (child: ExpressionNode | string, index: number) => {
-        if (isString(child) && OBJECT_EXP.test(child)) {
-          ;(exp as any).children[index] = objectStringToMapString(child)
-        }
-      }
-    )
   }
-
   return {
     props: [createObjectProperty(arg, exp)],
   }

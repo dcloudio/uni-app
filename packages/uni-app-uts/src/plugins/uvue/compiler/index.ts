@@ -24,6 +24,7 @@ import { transformText } from './transforms/transformText'
 import { transformOn } from './transforms/vOn'
 import { transformBind } from './transforms/vBind'
 import { transformSlotOutlet } from './transforms/transformSlotOutlet'
+// import { transformExpression } from './transforms/transformExpression'
 
 export type TransformPreset = [
   NodeTransform[],

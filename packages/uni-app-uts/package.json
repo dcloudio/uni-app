@@ -30,6 +30,7 @@
     "@vue/shared": "3.2.47",
     "debug": "^4.3.3",
     "es-module-lexer": "^1.2.1",
+    "estree-walker": "^2.0.2",
     "fs-extra": "^10.0.0",
     "picocolors": "^1.0.0",
     "source-map": "^0.6.1"

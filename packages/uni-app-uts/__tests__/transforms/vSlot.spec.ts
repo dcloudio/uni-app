@@ -95,7 +95,7 @@ describe('compiler: slot', () => {
       `@Suppress("UNUSED_PARAMETER") function PagesIndexIndexRender(): VNode | null {
 const _ctx = this
   return createElementVNode("view", null, [
-    renderSlot(_ctx.$slots, "default", new Map<string, any | null>([["data", "data"]]))
+    renderSlot(_ctx.$slots, "default", utsMapOf({ data: "data" }))
   ])
 }`,
       {
@@ -113,12 +113,12 @@ const _ctx = this
 const _component_Foo = resolveComponent("Foo")
 
   return createElementVNode("view", null, [
-    createVNode(_component_Foo, new Map<string, any | null>([["onClick", _ctx.test]]), new Map<string, any | null>([
-      ["default", ((): any[] => [
+    createVNode(_component_Foo, utsMapOf({ onClick: _ctx.test }), utsMapOf({
+      default: ((): any[] => [
         createElementVNode("text", null, "test")
-      ])],
-      ["_", 1 /* STABLE */]
-    ]), 8 /* PROPS */, ["onClick"])
+      ]),
+      _: 1 /* STABLE */
+    }), 8 /* PROPS */, ["onClick"])
   ])
 }`,
       {
@@ -154,12 +154,12 @@ const _ctx = this
 const _component_Foo = resolveComponent("Foo")
 
   return createElementVNode("view", null, [
-    createVNode(_component_Foo, null, new Map<string, any | null>([
-      ["default", ((props: Map<string, any | null>): any[] => [
+    createVNode(_component_Foo, null, utsMapOf({
+      default: ((props: Map<string, any | null>): any[] => [
         createElementVNode("text", null, "msg: " + toDisplayString(props.msg), 1 /* TEXT */)
-      ])],
-      ["_", 1 /* STABLE */]
-    ]))
+      ]),
+      _: 1 /* STABLE */
+    }))
   ])
 }`,
       {
@@ -177,12 +177,12 @@ const _ctx = this
 const _component_Foo = resolveComponent("Foo")
 
   return createElementVNode("view", null, [
-    createVNode(_component_Foo, null, new Map<string, any | null>([
-      ["default", ((props: Map<string, any | null>): any[] => [
+    createVNode(_component_Foo, null, utsMapOf({
+      default: ((props: Map<string, any | null>): any[] => [
         createElementVNode("text", null, "msg: " + toDisplayString(props.msg), 1 /* TEXT */)
-      ])],
-      ["_", 1 /* STABLE */]
-    ]))
+      ]),
+      _: 1 /* STABLE */
+    }))
   ])
 }`,
       {

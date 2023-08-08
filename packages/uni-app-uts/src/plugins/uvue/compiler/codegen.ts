@@ -44,7 +44,10 @@ import {
   RESOLVE_EASY_COMPONENT,
   TO_HANDLERS,
 } from './runtimeHelpers'
-import { objectStringToMapString } from './utils'
+import {
+  isCompoundExpressionNode,
+  isSimpleExpressionNode,
+} from '@dcloudio/uni-cli-shared'
 
 type CodegenNode = TemplateChildNode | JSChildNode | SSRCodegenNode
 
@@ -429,18 +432,17 @@ function genExpressionAsPropertyKey(
 ) {
   const { push } = context
   if (node.type === NodeTypes.COMPOUND_EXPRESSION) {
-    // dynamic arg genObjectExpression have added []
-    // push(`[`)
+    push(`[`)
     genCompoundExpression(node, context)
-    // push(`]`)
+    push(`]`)
   } else if (node.isStatic) {
     // only quote keys if necessary
-    const text = JSON.stringify(node.content)
+    const text = isSimpleIdentifier(node.content)
+      ? node.content
+      : JSON.stringify(node.content)
     push(text, node)
   } else {
-    // dynamic arg genObjectExpression have added []
-    // push(`[${node.content}]`, node)
-    push(`${node.content}`, node)
+    push(`[${node.content}]`, node)
   }
 }
 
@@ -538,10 +540,10 @@ function genCallExpression(node: CallExpression, context: CodegenContext) {
     genRenderList(node)
   }
   if (callee === helper(TO_HANDLERS)) {
-    genToHandlers(node, push)
+    genToHandlers(node, context)
   }
-
   genNodeList(node.arguments, context)
+
   push(`)`)
 }
 
@@ -553,45 +555,15 @@ function genRenderList(node: CallExpression) {
   })
 }
 
-function genToHandlers(
-  node: CallExpression,
-  push: (code: string, node?: CodegenNode) => void
-) {
-  push(`new Map<string, any | null>([`)
-  const argument = node.arguments[0]
-  if (
-    (argument as CompoundExpressionNode)?.type === NodeTypes.COMPOUND_EXPRESSION
-  ) {
-    ;(argument as CompoundExpressionNode).children.forEach(
-      (child: any, index: number) => {
-        if (isString(child)) {
-          if (
-            index ===
-            (argument as CompoundExpressionNode).children.length - 1
-          ) {
-            ;(argument as CompoundExpressionNode).children[index] =
-              child.replace('}', '])')
-          } else {
-            ;(argument as CompoundExpressionNode).children[index] = child
-              .replace('{', '["')
-              .replace(',', ',["')
-              .replace(':', '",')
-              .replaceAll(' ', '')
-          }
-        } else {
-          child.content = child.content += ']'
-        }
-      }
-    )
-  }
-  if (
-    (argument as SimpleExpressionNode)?.type === NodeTypes.SIMPLE_EXPRESSION
-  ) {
-    ;(argument as SimpleExpressionNode).content =
-      objectStringToMapString(
-        (argument as SimpleExpressionNode).content,
-        false
-      ) + '])'
+function genToHandlers(node: CallExpression, context: CodegenContext) {
+  const args = node.arguments[0]
+  if (isString(args) || isSymbol(args) || isArray(args)) {
+    // skip
+  } else if (isSimpleExpressionNode(args)) {
+    args.content = `utsMapOf(${args.content})`
+  } else if (isCompoundExpressionNode(args)) {
+    args.children.unshift(`utsMapOf(`)
+    args.children.push(')')
   }
 }
 
@@ -599,23 +571,22 @@ function genObjectExpression(node: ObjectExpression, context: CodegenContext) {
   const { push, indent, deindent, newline } = context
   const { properties } = node
   if (!properties.length) {
-    push(`new Map<string, any | null>()`, node)
+    push(`utsMapOf()`, node)
     return
   }
+  push(`utsMapOf(`)
   const multilines =
     properties.length > 1 ||
     properties.some((p) => p.value.type !== NodeTypes.SIMPLE_EXPRESSION)
-  push(`new Map<string, any | null>([`)
+  push(multilines ? `{` : `{ `)
   multilines && indent()
   for (let i = 0; i < properties.length; i++) {
     const { key, value } = properties[i]
-    push(`[`)
     // key
     genExpressionAsPropertyKey(key, context)
-    push(`, `)
+    push(`: `)
     // value
     genNode(value, context)
-    push(`]`)
     if (i < properties.length - 1) {
       // will only reach this if it's multilines
       push(`,`)
@@ -623,7 +594,8 @@ function genObjectExpression(node: ObjectExpression, context: CodegenContext) {
     }
   }
   multilines && deindent()
-  push(`])`)
+  push(multilines ? `}` : ` }`)
+  push(`)`)
 }
 
 function genArrayExpression(node: ArrayExpression, context: CodegenContext) {

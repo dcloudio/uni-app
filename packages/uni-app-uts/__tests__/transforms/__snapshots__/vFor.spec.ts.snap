@@ -8,7 +8,7 @@ exports[`compiler: v-for codegen basic v-for 1`] = `
 
 exports[`compiler: v-for codegen keyed template v-for 1`] = `
 "createElementVNode(Fragment, null, RenderHelpers.renderList(items, (item, _, _):VNode => {
-  return createElementVNode(Fragment, new Map<string, any | null>([["key", item]]), [
+  return createElementVNode(Fragment, utsMapOf({ key: item }), [
     "hello",
     createElementVNode("text")
   ], 64 /* STABLE_FRAGMENT */)
@@ -17,7 +17,7 @@ exports[`compiler: v-for codegen keyed template v-for 1`] = `
 
 exports[`compiler: v-for codegen keyed v-for 1`] = `
 "createElementVNode(Fragment, null, RenderHelpers.renderList(items, (item, _, _):VNode => {
-  return createElementVNode("text", new Map<string, any | null>([["key", item]]))
+  return createElementVNode("text", utsMapOf({ key: item }))
 }), 128 /* KEYED_FRAGMENT */)"
 `;
 
@@ -50,10 +50,10 @@ exports[`compiler: v-for codegen template v-for 1`] = `
 
 exports[`compiler: v-for codegen template v-for key injection with single child 1`] = `
 "createElementVNode(Fragment, null, RenderHelpers.renderList(items, (item, _, _):VNode => {
-  return createElementVNode("text", new Map<string, any | null>([
-    ["key", item.id],
-    ["id", item.id]
-  ]), null, 8 /* PROPS */, ["id"])
+  return createElementVNode("text", utsMapOf({
+    key: item.id,
+    id: item.id
+  }), null, 8 /* PROPS */, ["id"])
 }), 128 /* KEYED_FRAGMENT */)"
 `;
 
@@ -85,7 +85,7 @@ exports[`compiler: v-for codegen v-for with constant expression 1`] = `
 
 exports[`compiler: v-for codegen v-if + v-for 1`] = `
 "isTrue(ok)
-  ? createElementVNode(Fragment, new Map<string, any | null>([["key", 0]]), RenderHelpers.renderList(list, (i, _, _):VNode => {
+  ? createElementVNode(Fragment, utsMapOf({ key: 0 }), RenderHelpers.renderList(list, (i, _, _):VNode => {
       return createElementVNode("view")
     }), 256 /* UNKEYED_FRAGMENT */)
   : createCommentVNode("v-if", true)"
@@ -93,7 +93,7 @@ exports[`compiler: v-for codegen v-if + v-for 1`] = `
 
 exports[`compiler: v-for codegen v-if + v-for on <template> 1`] = `
 "isTrue(ok)
-  ? createElementVNode(Fragment, new Map<string, any | null>([["key", 0]]), RenderHelpers.renderList(list, (i, _, _):VNode => {
+  ? createElementVNode(Fragment, utsMapOf({ key: 0 }), RenderHelpers.renderList(list, (i, _, _):VNode => {
       return createElementVNode(Fragment, null, [], 64 /* STABLE_FRAGMENT */)
     }), 256 /* UNKEYED_FRAGMENT */)
   : createCommentVNode("v-if", true)"
