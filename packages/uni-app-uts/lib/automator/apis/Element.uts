@@ -133,7 +133,7 @@ export const callFunction = (params: CallFunctionParams): void => {
   if (element != null) {
     switch (params.functionName) {
       case 'input.input':
-        element.setAttribute('value', params.args[0])
+        element.dispatchEvent("input", InputEvent("input", InputEventDetail(params.args[0] as string, 0, 0)))
         break
     }
     params.callback({ result: `Element.callFunction success` }, null)
