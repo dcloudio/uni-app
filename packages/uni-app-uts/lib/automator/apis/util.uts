@@ -39,9 +39,8 @@ export function pageGetData(
   return data
 }
 
-export function pageSetData(vm: BasePage, data: UTSJSONObject): void {
-  const _data = data.toMap()
-  _data.forEach((value: any | null, key: string) => {
+export function pageSetData(vm: BasePage, data: Map<string, any | null>): void {
+  data.forEach((value: any | null, key: string) => {
     vm.$data.set(key, value)
   })
 }
@@ -76,7 +75,7 @@ export function getComponentVmByNodeId(pageId: string, nodeId: number, callback:
   }
   let component: ComponentPublicInstance | null = null
   function getComponentChild(parent: ComponentPublicInstance) {
-    if (parent.$.uid.toInt() == nodeId) {
+    if (parent.$.uid.toInt() == nodeId.toInt()) {
       component = parent
       return
     }
@@ -245,9 +244,8 @@ export function componentGetData(
   return data
 }
 
-export function componentSetData(vm: ComponentPublicInstance, data: UTSJSONObject): void {
-  const _data = data.toMap()
-  _data.forEach((value: any | null, key: string) => {
+export function componentSetData(vm: ComponentPublicInstance, data: Map<string, any | null>): void {
+  data.forEach((value: any | null, key: string) => {
     vm.$data.set(key, value)
   })
 }

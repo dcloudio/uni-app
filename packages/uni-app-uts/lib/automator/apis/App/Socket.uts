@@ -1,3 +1,5 @@
+import type { Callback } from '../../index.uts'
+
 type SocketInstanceData = {
   instance: SocketTask,
   isOpend: boolean,
@@ -5,7 +7,7 @@ type SocketInstanceData = {
 }
 const socketInstanceMap = new Map<string, SocketInstanceData>()
 
-export const connectSocket = (id: string, url: string, callback: (result: any | null, error: any | null) => void): void => {
+export const connectSocket = (id: string, url: string, callback: Callback): void => {
   const socketTask = uni.connectSocket({
     url,
     success() {
@@ -27,10 +29,8 @@ export type FirstSocketTaskEmitterParams = {
   data?: any | null,
   code?: number | null,
   reason?: string | null,
-  callback: (result: any | null, error: any | null) => void
 }
-export const firstSocketTaskEmitter = (params: FirstSocketTaskEmitterParams): void => {
-  const callback = params.callback
+export const firstSocketTaskEmitter = (params: FirstSocketTaskEmitterParams, callback: Callback): void => {
   let socketInstanceData: SocketInstanceData | null = null;
   socketInstanceMap.forEach((value: SocketInstanceData) => {
     if (socketInstanceData == null) {
@@ -40,7 +40,7 @@ export const firstSocketTaskEmitter = (params: FirstSocketTaskEmitterParams): vo
   if (socketInstanceData == null) {
     callback(null, { errMsg: "socketTask not exists." });
   } else {
-    const _socketInstanceData = socketInstanceData!
+    const _socketInstanceData = socketInstanceData as SocketInstanceData
     const socketTask = _socketInstanceData.instance
     if (params.method == 'onOpen') {
       const isOpend = _socketInstanceData.isOpend
@@ -102,24 +102,23 @@ export type SocketEmitterParams = {
   data?: any | null,
   code?: number | null,
   reason?: string | null,
-  callback: (result: any | null, error: any | null) => void
 }
-export const socketEmitter = (params: SocketEmitterParams): void => {
+export const socketEmitter = (params: SocketEmitterParams, callback: Callback): void => {
   if (!socketInstanceMap.has(params.id)) {
-    params.callback(null, { errMsg: 'socketTask not exists.' })
+    callback(null, { errMsg: 'socketTask not exists.' })
   } else {
     const socketInstanceData = socketInstanceMap.get(params.id)!
     const socketTask = socketInstanceData.instance
     if (params.method == 'onOpen') {
       const isOpend = socketInstanceData.isOpend
       if (isOpend) {
-        params.callback({ method: 'Socket.onOpen', id: params.id, data: socketInstanceData.openData }, null)
+        callback({ method: 'Socket.onOpen', id: params.id, data: socketInstanceData.openData }, null)
       } else {
         let timer: number | null = null
         timer = setInterval(() => {
           if (socketInstanceData.isOpend) {
             clearInterval(timer!)
-            params.callback({ method: 'Socket.onOpen', id: params.id, data: socketInstanceData.openData }, null)
+            callback({ method: 'Socket.onOpen', id: params.id, data: socketInstanceData.openData }, null)
           }
         }, 200)
         setTimeout(() => {
@@ -128,24 +127,24 @@ export const socketEmitter = (params: SocketEmitterParams): void => {
       }
     } else if (params.method == 'onMessage') {
       socketTask.onMessage((data: any) => {
-        params.callback({ method: 'Socket.onMessage', id: params.id, data }, null)
+        callback({ method: 'Socket.onMessage', id: params.id, data }, null)
       })
     } else if (params.method == 'onClose') {
       socketTask.onClose((data: any) => {
-        params.callback({ method: 'Socket.onClose', id: params.id, data }, null)
+        callback({ method: 'Socket.onClose', id: params.id, data }, null)
       })
     } else if (params.method == 'onError') {
       socketTask.onError((data: any) => {
-        params.callback({ method: 'Socket.onError', id: params.id, data }, null)
+        callback({ method: 'Socket.onError', id: params.id, data }, null)
       })
     } else if (params.method == 'send') {
       socketTask.send({
         data: params.data!,
         success(result: any) {
-          params.callback(result, null)
+          callback(result, null)
         },
         fail(error: any) {
-          params.callback(null, error)
+          callback(null, error)
         }
       } as SendSocketMessageOptions)
     } else if (params.method == 'close') {
@@ -153,11 +152,11 @@ export const socketEmitter = (params: SocketEmitterParams): void => {
         code: params.code,
         reason: params.reason,
         success(result: any) {
-          params.callback(result, null)
+          callback(result, null)
           socketInstanceMap.delete(params.id);
         },
         fail(error: any) {
-          params.callback(null, error)
+          callback(null, error)
         }
       } as CloseSocketOptions)
     }
