@@ -158,7 +158,7 @@ describe('compiler: v-bind', () => {
       `<text :style="{
     }" />`,
       `createElementVNode("text", utsMapOf({
-  style: normalizeStyle(utsMapOf({
+  style: normalizeStyle(utsMapOf<string, any | null>({
     }))
 }), null, 4 /* STYLE */)`
     )

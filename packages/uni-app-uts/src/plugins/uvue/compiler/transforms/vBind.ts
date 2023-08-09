@@ -71,7 +71,12 @@ export const transformBind: DirectiveTransform = (dir, _node, context) => {
     walk(ast, {
       enter(node: Node) {
         if (node.type === 'ObjectExpression') {
-          s.prependLeft(node.start!, 'utsMapOf(')
+          const type = s.original
+            .substring(1, s.original.length - 1)
+            .replaceAll(/\s+/g, '')
+            ? ''
+            : '<string, any | null>'
+          s.prependLeft(node.start!, `utsMapOf${type}(`)
           s.prependRight(node.end!, ')')
         }
       },
