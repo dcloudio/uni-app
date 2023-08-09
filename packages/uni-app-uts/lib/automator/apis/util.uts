@@ -164,7 +164,8 @@ export function getValidComponentsOrNodes(
     }
   }
   if (vnode.children != null && isArray(vnode.children)) {
-    (vnode.children as any[]).forEach(child => {
+    const children = JSON.parse<any[]>(JSON.stringify(vnode.children))
+    children.forEach(child => {
       if (child instanceof VNode) {
         getValidComponentsOrNodes(child, selector, list, getAll)
       }
@@ -181,16 +182,17 @@ function isValidComponentOrNode(vnode: VNode, selector: string): boolean {
     return true
   }
   if (vnode.el != null) {
-    const node = vnode.el
+    const node = vnode.el!
     if (selector.startsWith('.')) {
-      return (
-        node!.ext['classList'] != null &&
-        (node!.ext['classList'] as string[]).includes(selector.substring(1))
-      )
+      if (node.ext['classList'] != null) {
+        const classList = JSON.parse<string[]>(JSON.stringify(node.ext['classList']!))
+        return classList.includes(selector.substring(1))
+      }
+      return false
     } else if (selector.startsWith('#')) {
-      return node!.getAttribute('id') == selector.substring(1)
+      return node.getAttribute('id') == selector.substring(1)
     }
-    return node!.tagName?.toUpperCase() == selector.toUpperCase()
+    return node.tagName?.toUpperCase() == selector.toUpperCase()
   }
   return false
 }
@@ -220,10 +222,11 @@ export function getValidNodes(
 
 function isValidNode(node: INode, selector: string): boolean {
   if (selector.startsWith('.')) {
-    return (
-      node.ext['classList'] != null &&
-      (node.ext['classList'] as string[]).includes(selector.substring(1))
-    )
+    if (node.ext['classList'] != null) {
+      const classList = JSON.parse<string[]>(JSON.stringify(node.ext['classList']!))
+      return classList.includes(selector.substring(1))
+    }
+    return false
   } else if (selector.startsWith('#')) {
     return node.getAttribute('id') == selector.substring(1)
   }
@@ -266,7 +269,7 @@ export function toCamelCase(str: string): string {
   const wordList = str.split('-')
   for (let i = 1; i < wordList.length; i++) {
     const word = wordList[i]
-    wordList[i] = word[0].toUpperCase() + word.substring(1)
+    wordList[i] = word.at(0)!.toUpperCase() + word.substring(1)
   }
   return wordList.join('')
 }
