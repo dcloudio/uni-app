@@ -1041,6 +1041,34 @@
 			}
 		},
 		{
+			"name": "visibility",
+			"restrictions": [
+				"enum"
+			],
+			"syntax": "visible | hidden",
+			"values": [
+				{
+					"name": "visible"
+				},
+				{
+					"name": "hidden"
+				}
+			],
+			"uniPlatform": {
+				"app": {
+					"android": {
+						"osVer": "4.4",
+						"uniVer": "√",
+						"unixVer": "4.0.0"
+					},
+					"ios": {
+						"osVer": "9.0",
+						"uniVer": "√"
+					}
+				}
+			}
+		},
+		{
 			"name": "opacity",
 			"restrictions": [
 				"number(0-1)"
@@ -2268,7 +2296,7 @@
 					"android": {
 						"osVer": "4.4",
 						"uniVer": "√",
-						"unixVer": "x"
+						"unixVer": "4.0.0"
 					},
 					"ios": {
 						"osVer": "9.0",
