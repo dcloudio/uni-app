@@ -5,7 +5,7 @@ import {
   // copyMiniProgramPluginJson,
   // copyMiniProgramThemeJson,
   MiniProgramCompilerOptions,
-  // transformComponentLink,
+  transformComponentLink,
   transformMatchMedia,
   transformRef,
 } from '@dcloudio/uni-cli-shared'
@@ -23,7 +23,7 @@ const directiveTransforms = {
 export const compilerOptions: CompilerOptions = {
   nodeTransforms: [
     transformRef,
-    // transformComponentLink,
+    transformComponentLink,
     transformMatchMedia,
   ],
   directiveTransforms,

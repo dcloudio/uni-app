@@ -81,7 +81,7 @@ const directiveTransforms = {
 const compilerOptions = {
     nodeTransforms: [
         uniCliShared.transformRef,
-        // transformComponentLink,
+        uniCliShared.transformComponentLink,
         uniCliShared.transformMatchMedia,
     ],
     directiveTransforms,

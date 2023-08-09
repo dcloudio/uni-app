@@ -3,8 +3,8 @@ import {
   MPComponentOptions,
   handleEvent,
 } from '@dcloudio/uni-mp-core'
-
-// import { handleLink } from '@dcloudio/uni-mp-weixin'
+import { handleLink } from '@dcloudio/uni-mp-weixin'
+// import { handleRef } from './util'
 
 export { handleLink, initLifetimes } from '@dcloudio/uni-mp-weixin'
 
@@ -18,11 +18,10 @@ export function initRelation(
   mpInstance: MPComponentInstance,
   detail: Record<string, unknown>
 ) {
-  // 小红书自定义组件从customEventMap取事件名
-  mpInstance.customEventMap = {
-    // @ts-ignore
-    __l: '__l',
-  }
+  // 依赖 __l 来做 provide inject
+  mpInstance.customEventMap && Object.assign(mpInstance.customEventMap, {
+    __l: '__l'
+  })
   mpInstance.triggerEvent('__l', detail)
 }
 export function parse(componentOptions: MPComponentOptions) {
@@ -39,8 +38,9 @@ export function parse(componentOptions: MPComponentOptions) {
       ...dataset['eO'],
       tap: dataset['eO']?.tap || dataset['eO']?.click,
     }
-    // console.log('触发了component事件', event)
     // @ts-ignore
     return handleEvent.call(this, event)
   }
+
+  methods.__l = handleLink
 }
