@@ -761,11 +761,6 @@ flexBasis: fill;
         text: 'WARNING: `text-decoration-style` is not a standard property name (may not be supported)',
       })
     )
-    expect(messages[3]).toEqual(
-      expect.objectContaining({
-        text: 'WARNING: `text-overflow` is not a standard property name (may not be supported)',
-      })
-    )
   })
   test('unknown', async () => {
     const { json, messages } = await objectifierRule(`
