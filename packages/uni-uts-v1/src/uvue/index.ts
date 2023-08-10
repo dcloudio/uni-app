@@ -49,6 +49,7 @@ export interface CompileAppOptions {
   split?: boolean
   disableSplitManifest?: boolean
 }
+
 export async function compileApp(entry: string, options: CompileAppOptions) {
   const split = !!options.split
   const { bundle, UTSTarget } = getUTSCompiler()
@@ -106,8 +107,16 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
       },
     },
   }
+  let hasCache = false
+  if (!isProd) {
+    const kotlinRootOutDir = kotlinDir(outputDir)
+    const kotlinSrcOutDir = kotlinSrcDir(kotlinRootOutDir)
+    hasCache = hasKotlinManifestJson(kotlinSrcOutDir)
+  }
+
   // const time = Date.now()
   // console.log(bundleOptions)
+
   const result = await bundle(UTSTarget.KOTLIN, bundleOptions)
   // console.log('UTS编译耗时: ' + (Date.now() - time) + 'ms')
   if (!result) {
@@ -122,7 +131,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
     return runKotlinBuild(options, result)
   }
 
-  return runKotlinDev(options, result as RunKotlinDevResult)
+  return runKotlinDev(options, result as RunKotlinDevResult, hasCache)
 }
 
 function kotlinDir(outputDir: string) {
@@ -196,9 +205,11 @@ function syncDexList(
   })
 }
 
+let isFirst = true
 async function runKotlinDev(
   options: CompileAppOptions,
-  result: RunKotlinDevResult
+  result: RunKotlinDevResult,
+  hasCache: boolean
 ) {
   result.type = 'kotlin'
   const { inputDir, outputDir } = options
@@ -213,71 +224,88 @@ async function runKotlinDev(
   )
   const kotlinMainFile = path.resolve(kotlinSrcOutDir, result.filename!)
   // 开发模式下，需要生成 dex
-  if (kotlinChangedFiles.length && fs.existsSync(kotlinMainFile)) {
-    const compilerServer = getCompilerServer<KotlinCompilerServer>(
-      'uniapp-runextension'
-    )
-    if (!compilerServer) {
-      throw `项目使用了uts插件，正在安装 uts Android 运行扩展...`
-    }
-    const {
-      getDefaultJar,
-      getKotlincHome,
-      compile: compileDex,
-    } = compilerServer
-
-    const cacheDir = process.env.HX_DEPENDENCIES_DIR || ''
-
-    const kotlinClassOutDir = kotlinClassDir(kotlinRootOutDir)
-    const waiting = { done: undefined }
-    const options = {
-      version: 'v2',
-      kotlinc: resolveKotlincArgs(
-        kotlinChangedFiles,
-        kotlinClassOutDir,
-        getKotlincHome(),
-        [kotlinClassOutDir].concat(
-          getDefaultJar(2)
-            .concat(getUniModulesCacheJars(cacheDir))
-            .concat(getUniModulesJars(outputDir))
+  if (fs.existsSync(kotlinMainFile)) {
+    if (!kotlinChangedFiles.length) {
+      if (isFirst) {
+        isFirst = false
+        console.log(
+          `检测到编译缓存有效，跳过编译，详见：https://uniapp.dcloud.net.cn/uni-app-x/compiler.html#cache`
         )
-      ).concat(['-module-name', `main-${+Date.now()}`]),
-      d8: D8_DEFAULT_ARGS,
-      kotlinOutDir: kotlinClassOutDir,
-      dexOutDir: kotlinDexOutDir,
-      inputDir: kotlinSrcOutDir,
-      stderrListener: createStderrListener(
-        kotlinSrcOutDir,
-        resolveUniAppXSourceMapPath(kotlinRootOutDir),
-        waiting
-      ),
-    }
-    result.kotlinc = true
-    // console.log('DEX编译参数:', options)
-    const { code, msg, data } = await compileDex(options, inputDir)
-    // 等待 stderrListener 执行完毕
-    if (waiting.done) {
-      await waiting.done
-    }
-    // console.log('DEX编译结果:', code, data)
-    if (!code && data) {
-      result.changed = data.dexList
-      syncDexList(data.dexList, kotlinDexOutDir, outputDir)
-    } else {
-      // 编译失败，需要调整缓存的 manifest.json
-      if (result.changed.length) {
-        const manifest = readKotlinManifestJson(kotlinSrcOutDir)
-        if (manifest) {
-          result.changed.forEach((file) => {
-            delete manifest[file]
-          })
-          writeKotlinManifestJson(kotlinSrcOutDir, manifest)
-        }
-        result.changed = []
       }
+    } else {
+      const compilerServer = getCompilerServer<KotlinCompilerServer>(
+        'uniapp-runextension'
+      )
+      if (!compilerServer) {
+        throw `项目使用了uts插件，正在安装 uts Android 运行扩展...`
+      }
+      // 检查是否有缓存文件
+      if (isFirst) {
+        isFirst = false
+        if (hasCache) {
+          console.log(
+            `检测到编译缓存部分失效，开始差量编译，详见：https://uniapp.dcloud.net.cn/uni-app-x/compiler.html#cache`
+          )
+        }
+      }
+      const {
+        getDefaultJar,
+        getKotlincHome,
+        compile: compileDex,
+      } = compilerServer
 
-      if (msg) {
-        console.error(msg)
+      const cacheDir = process.env.HX_DEPENDENCIES_DIR || ''
+      const kotlinClassOutDir = kotlinClassDir(kotlinRootOutDir)
+      const waiting = { done: undefined }
+      const options = {
+        version: 'v2',
+        kotlinc: resolveKotlincArgs(
+          kotlinChangedFiles,
+          kotlinClassOutDir,
+          getKotlincHome(),
+          [kotlinClassOutDir].concat(
+            getDefaultJar(2)
+              .concat(getUniModulesCacheJars(cacheDir))
+              .concat(getUniModulesJars(outputDir))
+          )
+        ).concat(['-module-name', `main-${+Date.now()}`]),
+        d8: D8_DEFAULT_ARGS,
+        kotlinOutDir: kotlinClassOutDir,
+        dexOutDir: kotlinDexOutDir,
+        inputDir: kotlinSrcOutDir,
+        stderrListener: createStderrListener(
+          kotlinSrcOutDir,
+          resolveUniAppXSourceMapPath(kotlinRootOutDir),
+          waiting
+        ),
+      }
+      result.kotlinc = true
+      // console.log('DEX编译参数:', options)
+      const { code, msg, data } = await compileDex(options, inputDir)
+      // 等待 stderrListener 执行完毕
+      if (waiting.done) {
+        await waiting.done
+      }
+      // console.log('DEX编译结果:', code, data)
+      if (!code && data) {
+        result.changed = data.dexList
+        syncDexList(data.dexList, kotlinDexOutDir, outputDir)
+      } else {
+        // 编译失败，需要调整缓存的 manifest.json
+        if (result.changed.length) {
+          const manifest = readKotlinManifestJson(kotlinSrcOutDir)
+          if (manifest) {
+            result.changed.forEach((file) => {
+              delete manifest[file]
+            })
+            writeKotlinManifestJson(kotlinSrcOutDir, manifest)
+          }
+          result.changed = []
+        }
+
+        if (msg) {
+          console.error(msg)
+        }
       }
     }
   }
@@ -286,6 +314,10 @@ async function runKotlinDev(
 
 async function runKotlinBuild(_options: CompileAppOptions, _result: UTSResult) {
   // TODO
+}
+
+function hasKotlinManifestJson(kotlinSrcOutDir: string) {
+  return fs.existsSync(path.resolve(kotlinSrcOutDir, '.manifest.json'))
 }
 
 function readKotlinManifestJson(
