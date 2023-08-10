@@ -1,6 +1,4 @@
 import { camelize } from '@vue/shared'
-import { parseExpression } from '@babel/parser'
-import type { Node } from '@babel/types'
 import { CAMELIZE } from '@vue/compiler-core'
 import {
   createObjectProperty,
@@ -11,9 +9,6 @@ import {
 
 import type { DirectiveTransform } from '../transform'
 import { createCompilerError, ErrorCodes } from '../errors'
-
-import { stringifyExpression } from './transformExpression'
-import { MagicString, walk } from '@vue/compiler-sfc'
 
 // v-bind without arg is handled directly in ./transformElements.ts due to it affecting
 // codegen for the entire props object. This transform here is only for v-bind
@@ -59,35 +54,6 @@ export const transformBind: DirectiveTransform = (dir, _node, context) => {
     context.onError(createCompilerError(ErrorCodes.X_V_BIND_NO_EXPRESSION, loc))
     return {
       props: [createObjectProperty(arg, createSimpleExpression('', true, loc))],
-    }
-  }
-  // 简易处理,理论上rust中也可以处理，但为了单元测试一致性，还是在该阶段中处理
-  const source = stringifyExpression(exp)
-  if (source.includes('{')) {
-    const s = new MagicString(source)
-    const ast = parseExpression(source, {
-      plugins: context.expressionPlugins,
-    })
-    walk(ast, {
-      enter(node: Node) {
-        if (node.type === 'ObjectExpression') {
-          const type = s.original
-            .substring(1, s.original.length - 1)
-            .replaceAll(/\s+/g, '')
-            ? ''
-            : '<string, any | null>'
-          s.prependLeft(node.start!, `utsMapOf${type}(`)
-          s.prependRight(node.end!, ')')
-        }
-      },
-    })
-    return {
-      props: [
-        createObjectProperty(
-          arg,
-          createSimpleExpression(s.toString(), false, exp.loc)
-        ),
-      ],
     }
   }
   return {

@@ -1,5 +1,12 @@
-import { makeMap } from '@vue/shared'
+import type { Node } from '@babel/types'
+import { ExpressionNode, createSimpleExpression } from '@vue/compiler-core'
+import { MagicString, walk } from '@vue/compiler-sfc'
+import { parseExpression } from '@babel/parser'
 import { CompilerOptions } from './options'
+
+import { stringifyExpression } from './transforms/transformExpression'
+
+import { TransformContext } from './transform'
 
 export function genRenderFunctionDecl({
   targetLanguage,
@@ -10,10 +17,29 @@ export function genRenderFunctionDecl({
   }function ${filename}Render(): VNode | null`
 }
 
-const GLOBALS_WHITE_LISTED =
-  'Infinity,undefined,NaN,isFinite,isNaN,parseFloat,parseInt,decodeURI,' +
-  'decodeURIComponent,encodeURI,encodeURIComponent,Math,Number,Date,Array,' +
-  'Object,Boolean,String,RegExp,Map,Set,JSON,Intl,BigInt' +
-  'console'
-
-export const isGloballyWhitelisted = /*#__PURE__*/ makeMap(GLOBALS_WHITE_LISTED)
+export function rewriteObjectExpression(
+  exp: ExpressionNode,
+  context: TransformContext
+) {
+  const source = stringifyExpression(exp)
+  if (source.includes('{')) {
+    const s = new MagicString(source)
+    const ast = parseExpression(source, {
+      plugins: context.expressionPlugins,
+    })
+    walk(ast, {
+      enter(node: Node) {
+        if (node.type === 'ObjectExpression') {
+          s.prependLeft(
+            node.start!,
+            node.properties.length > 0
+              ? 'utsMapOf('
+              : 'utsMapOf<string, any | null>('
+          )
+          s.prependRight(node.end!, ')')
+        }
+      },
+    })
+    return createSimpleExpression(s.toString(), false, exp.loc)
+  }
+}

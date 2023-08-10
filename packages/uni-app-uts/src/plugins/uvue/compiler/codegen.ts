@@ -42,12 +42,7 @@ import {
   RESOLVE_COMPONENT,
   RESOLVE_DIRECTIVE,
   RESOLVE_EASY_COMPONENT,
-  TO_HANDLERS,
 } from './runtimeHelpers'
-import {
-  isCompoundExpressionNode,
-  isSimpleExpressionNode,
-} from '@dcloudio/uni-cli-shared'
 
 type CodegenNode = TemplateChildNode | JSChildNode | SSRCodegenNode
 
@@ -539,9 +534,6 @@ function genCallExpression(node: CallExpression, context: CodegenContext) {
   if (callee === helper(RENDER_LIST)) {
     genRenderList(node)
   }
-  if (callee === helper(TO_HANDLERS)) {
-    genToHandlers(node, context)
-  }
   genNodeList(node.arguments, context)
 
   push(`)`)
@@ -553,18 +545,6 @@ function genRenderList(node: CallExpression) {
       argument.returnType = 'VNode'
     }
   })
-}
-
-function genToHandlers(node: CallExpression, context: CodegenContext) {
-  const args = node.arguments[0]
-  if (isString(args) || isSymbol(args) || isArray(args)) {
-    // skip
-  } else if (isSimpleExpressionNode(args)) {
-    args.content = `utsMapOf(${args.content})`
-  } else if (isCompoundExpressionNode(args)) {
-    args.children.unshift(`utsMapOf(`)
-    args.children.push(')')
-  }
 }
 
 function genObjectExpression(node: ObjectExpression, context: CodegenContext) {

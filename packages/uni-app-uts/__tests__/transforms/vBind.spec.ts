@@ -49,6 +49,12 @@ describe('compiler: v-bind', () => {
       `createElementVNode("view", utsMapOf({ id: _ctx.id }), null, 8 /* PROPS */, ["id"])`
     )
   })
+  test('object expression', () => {
+    assert(
+      `<view v-bind="{id}"/>`,
+      `createElementVNode("view", normalizeProps(guardReactiveProps(utsMapOf({id: _ctx.id}))), null, 16 /* FULL_PROPS */)`
+    )
+  })
   test('dynamic arg', () => {
     assert(
       `<view v-bind:[id]="id"/>`,

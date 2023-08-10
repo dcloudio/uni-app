@@ -31,9 +31,11 @@ import {
 
 import { createCompilerError, ErrorCodes } from '../errors'
 
-const GLOBALS_WHITE_LISTED = `Infinity,undefined,NaN,isFinite,isNaN,parseFloat,parseInt,decodeURI,
-    decodeURIComponent,encodeURI,encodeURIComponent,Math,Number,Date,Array,
-    Object,Boolean,String,RegExp,Map,Set,JSON,Intl,BigInt,console`
+const GLOBALS_WHITE_LISTED =
+  `Infinity,undefined,NaN,isFinite,isNaN,parseFloat,parseInt,decodeURI` +
+  `,decodeURIComponent,encodeURI,encodeURIComponent,Math,Number,Date,Array` +
+  `,Object,Boolean,String,RegExp,Map,Set,JSON,Intl,BigInt` +
+  `,console`
 const isGloballyWhitelisted = /*#__PURE__*/ makeMap(GLOBALS_WHITE_LISTED)
 
 const isLiteralWhitelisted = /*#__PURE__*/ makeMap('true,false,null,this')

@@ -175,7 +175,7 @@ _ctx.bar()
   test('empty object syntax', () => {
     assert(
       `<text v-on="{ }"/>`,
-      `createElementVNode("text", toHandlers(utsMapOf({ }), true), null, 16 /* FULL_PROPS */)`
+      `createElementVNode("text", toHandlers(utsMapOf<string, any | null>({ }), true), null, 16 /* FULL_PROPS */)`
     )
   })
   test('simple object syntax', () => {
