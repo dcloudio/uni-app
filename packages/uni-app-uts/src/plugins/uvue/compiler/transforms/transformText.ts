@@ -13,9 +13,7 @@ import { NodeTransform } from '../transform'
 
 function isTextNode({ tag }: ElementNode) {
   // TODO 临时解决text节点嵌套的问题
-  return (
-    tag === 'text' || tag === 'button' || tag === 'radio' || tag === 'checkbox'
-  )
+  return tag === 'text' || tag === 'button'
 }
 
 function isTextElement(node: TemplateChildNode) {
