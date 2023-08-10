@@ -112,7 +112,7 @@ export const getAttributes = (params: GetAttributesParams, callback: Callback): 
   if (dom != null) {
     const attributes = params.names.map((name: string): any | null => {
       if (name == 'class') {
-        return JSON.parse<string[]>(JSON.stringify(dom.ext["classList"])).join(' ')
+        return (dom.ext["classList"] as string[]).join(' ')
       }
       return dom.getAttribute(name)
     })
