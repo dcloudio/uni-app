@@ -64,6 +64,7 @@ export function compile(
   options: CompilerOptions
 ): CodegenResult {
   const ast = baseParse(template, {
+    comments: false,
     isNativeTag(tag) {
       return (
         isAppUVueNativeTag(tag) ||

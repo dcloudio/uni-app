@@ -12,6 +12,24 @@ describe('compiler:codegen', () => {
       `createElementVNode("text", null, toDisplayString(_ctx.msg), 1 /* TEXT */)`
     )
   })
+  test('remove comments', () => {
+    assert(
+      `<view>
+  <!-- comment -->
+</view>`,
+      `createElementVNode("view")`
+    )
+    assert(
+      `<view>
+  <!-- comment1 -->
+  <text>test</text>
+  <!-- comment2 -->
+</view>`,
+      `createElementVNode("view", null, [
+  createElementVNode("text", null, "test")
+])`
+    )
+  })
   test(`function:kotlin`, () => {
     assert(
       `<view/>`,
