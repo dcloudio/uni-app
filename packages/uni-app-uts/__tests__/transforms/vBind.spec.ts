@@ -107,6 +107,14 @@ describe('compiler: v-bind', () => {
 }), null, 2 /* CLASS */)`
     )
   })
+  test('simple expression with array with variable', () => {
+    assert(
+      `<view v-bind:class="[classA, {[classB]: true, [classC]: false}]"></view>`,
+      `createElementVNode("view", utsMapOf({
+  class: normalizeClass([_ctx.classA, utsMapOf({[_ctx.classB]: true, [_ctx.classC]: false})])
+}), null, 2 /* CLASS */)`
+    )
+  })
   test('simple expression with object', () => {
     assert(
       `<view :style="{color: true ? 'blue' : 'red'}"></view>`,
