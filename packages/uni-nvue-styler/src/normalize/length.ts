@@ -14,10 +14,10 @@ export const normalizeLength: Normalize = (v: string | number, options) => {
     var unit = match[1]
     const uvue = options.type === 'uvue'
     if (uvue) {
-      if (!unit) {
+      if (!unit || unit === 'px') {
+        // 移除 px
         return { value: parseFloat(v) }
-      } else if (unit === 'px' || unit === 'rpx') {
-        // uvue 保留单位
+      } else if (unit === 'rpx') {
         return { value: v }
       }
     } else {

@@ -52,12 +52,12 @@ paddingBottom: 11rpx;
     expect(json).toEqual({
       foo: {
         '': {
-          width: '200px',
-          minWidth: '100px',
+          width: 200,
+          minWidth: 100,
           height: '100%',
           paddingLeft: 300,
           left: 0,
-          right: '0px',
+          right: 0,
           top: 'auto',
           bottom: '100%',
           paddingBottom: '11rpx',
@@ -163,9 +163,9 @@ flexBasis: fill;
     expect(json).toEqual({
       foo: {
         '': {
-          width: '200px',
-          maxWidth: '500px',
-          marginLeft: '10px',
+          width: 200,
+          maxWidth: 500,
+          marginLeft: 10,
           marginRight: '10rpx',
           marginTop: '10%',
           marginBottom: 'auto',
@@ -493,19 +493,19 @@ flexBasis: fill;
     expect(json).toEqual({
       foo: {
         '': {
-          margin: '100px',
-          padding: '50px',
+          margin: '100',
+          padding: '50',
         },
       },
       bar: {
         '': {
-          margin: '10px auto',
+          margin: '10 auto',
         },
       },
       baz: {
         '': {
-          margin: '10rpx 20px 30px',
-          padding: '10px 20px 30px 40rpx',
+          margin: '10rpx 20 30',
+          padding: '10 20 30 40rpx',
         },
       },
       flex: {
@@ -824,7 +824,7 @@ flexBasis: fill;
         '': {
           color: '#FF0000',
           WebkitTransform: 'rotate(90deg)',
-          width: '200px',
+          width: 200,
         },
       },
     })
