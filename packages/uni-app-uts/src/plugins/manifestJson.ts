@@ -57,6 +57,8 @@ export class UniAppConfig extends AppConfig {
     override appid: string = "${manifestJson.appid || ''}"
     override versionName: string = "${manifestJson.versionName || ''}"
     override versionCode: string = "${manifestJson.versionCode || ''}"
+    // override tabBar = __uniTabBar
+    // override launchPage = __uniLaunchPage
     ${singleThread}
     constructor() {}
 }

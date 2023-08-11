@@ -69,11 +69,11 @@ export function isVue(filename: string) {
   return filename.endsWith('.vue') || filename.endsWith('.uvue')
 }
 
-export function stringifyMap(obj: unknown) {
-  return serialize(obj, true)
+export function stringifyMap(obj: unknown, ts = false) {
+  return serialize(obj, ts)
 }
 
-function serialize(obj: unknown, ts: boolean = false): string {
+function serialize(obj: unknown, ts = false): string {
   if (isString(obj)) {
     return `"${obj}"`
   } else if (isPlainObject(obj)) {
@@ -82,6 +82,9 @@ function serialize(obj: unknown, ts: boolean = false): string {
     )
     if (entries.length) {
       return `utsMapOf([${entries.join(',')}])`
+    }
+    if (ts) {
+      return `utsMapOf<string, any | null>()`
     }
     return `utsMapOf()`
   } else if (isArray(obj)) {
