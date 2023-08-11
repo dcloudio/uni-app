@@ -2260,6 +2260,23 @@
 				"font"
 			],
 			"syntax": "<family-name>",
+			"values": [
+				{
+					"name": "cursive"
+				},
+				{
+					"name": "fantasy"
+				},
+				{
+					"name": "monospace"
+				},
+				{
+					"name": "sans-serif"
+				},
+				{
+					"name": "serif"
+				}
+			],
 			"uniPlatform": {
 				"app": {
 					"android": {
