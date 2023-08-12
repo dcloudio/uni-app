@@ -229,7 +229,7 @@ async function runKotlinDev(
       if (isFirst) {
         isFirst = false
         console.log(
-          `检测到编译缓存有效，跳过编译，详见：https://uniapp.dcloud.net.cn/uni-app-x/compiler/#cache`
+          `检测到编译缓存有效，跳过编译。详见：https://uniapp.dcloud.net.cn/uni-app-x/compiler/#cache`
         )
       }
     } else {
@@ -244,7 +244,7 @@ async function runKotlinDev(
         isFirst = false
         if (hasCache) {
           console.log(
-            `检测到编译缓存部分失效，开始差量编译，详见：https://uniapp.dcloud.net.cn/uni-app-x/compiler/#cache`
+            `检测到编译缓存部分失效，开始差量编译。详见：https://uniapp.dcloud.net.cn/uni-app-x/compiler/#cache`
           )
         }
       }
