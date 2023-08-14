@@ -1122,7 +1122,7 @@
 				"color",
 				"gradient"
 			],
-			"syntax": "<color> | <gradient>",
+			"syntax": "<'background-color'> | <'background-image'>",
 			"uniPlatform": {
 				"app": {
 					"android": {
@@ -1163,6 +1163,11 @@
 				"gradient"
 			],
 			"syntax": "<gradient>",
+			"values": [
+				{
+					"name": "linear-gradient"
+				}
+			],
 			"uniPlatform": {
 				"app": {
 					"android": {
@@ -2402,10 +2407,9 @@
 			"name": "transition",
 			"restrictions": [
 				"time",
-				"property",
-				"timing-function"
+				"enum"
 			],
-			"syntax": "<single-transition>#",
+			"syntax": "<'transition-property'> || <'transition-duration'> || <'transition-timing-function'> || <'transition-delay'>",
 			"uniPlatform": {
 				"app": {
 					"android": {
@@ -2423,9 +2427,83 @@
 		{
 			"name": "transition-property",
 			"restrictions": [
-				"property"
+				"enum"
 			],
 			"syntax": "<single-transition-property>#",
+			"values": [
+				{
+					"name": "width"
+				},
+				{
+					"name": "height"
+				},
+				{
+					"name": "margin"
+				},
+				{
+					"name": "margin-top"
+				},
+				{
+					"name": "margin-bottom"
+				},
+				{
+					"name": "margin-left"
+				},
+				{
+					"name": "margin-right"
+				},
+				{
+					"name": "left"
+				},
+				{
+					"name": "right"
+				},
+				{
+					"name": "top"
+				},
+				{
+					"name": "bottom"
+				},
+				{
+					"name": "padding"
+				},
+				{
+					"name": "padding-left"
+				},
+				{
+					"name": "padding-right"
+				},
+				{
+					"name": "padding-top"
+				},
+				{
+					"name": "padding-bottom"
+				},
+				{
+					"name": "opacity"
+				},
+				{
+					"name": "background-color"
+				},
+				{
+					"name": "border-color"
+				},
+				{
+					"name": "border-top-color"
+				},
+				{
+					"name": "border-bottom-color"
+				},
+				{
+					"name": "border-left-color"
+				},
+				{
+					"name": "border-right-color"
+				},
+				{
+					"name": "transform"
+				}
+			],
 			"uniPlatform": {
 				"app": {
 					"android": {
@@ -2463,9 +2541,29 @@
 		{
 			"name": "transition-timing-function",
 			"restrictions": [
-				"timing-function"
+				"enum"
 			],
-			"syntax": "<easing-function>#",
+			"syntax": "<easing-function>",
+			"values": [
+				{
+					"name": "ease"
+				},
+				{
+					"name": "ease-in"
+				},
+				{
+					"name": "ease-out"
+				},
+				{
+					"name": "ease-in-out"
+				},
+				{
+					"name": "linear"
+				},
+				{
+					"name": "cubic-bezier"
+				}
+			],
 			"uniPlatform": {
 				"app": {
 					"android": {
@@ -2485,7 +2583,7 @@
 			"restrictions": [
 				"time"
 			],
-			"syntax": "<time>#",
+			"syntax": "<time>",
 			"uniPlatform": {
 				"app": {
 					"android": {
