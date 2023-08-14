@@ -57,7 +57,7 @@ export const getDOMProperties = (params: GetDOMPropertiesParams, callback: Callb
   if (dom != null) {
     const properties = params.names.map((name: string): any | null => {
       if (name == 'innerText') {
-        if (dom.tagName == 'text') {
+        if (dom.tagName == 'TEXT') {
           return dom.getAttribute('value')
         } else {
           return getChildrenText(dom)

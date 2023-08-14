@@ -253,7 +253,7 @@ export function componentSetData(vm: ComponentPublicInstance, data: Map<string, 
 export function getChildrenText(node: INode): string {
   let result = ''
   node.childNodes.forEach(child => {
-    if (child.tagName == 'text') {
+    if (child.tagName == 'TEXT') {
       result += child.getAttribute('value')
     } else {
       result += getChildrenText(child)
