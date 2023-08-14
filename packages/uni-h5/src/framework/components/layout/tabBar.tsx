@@ -1,12 +1,4 @@
-import {
-  watch,
-  watchEffect,
-  computed,
-  ref,
-  Ref,
-  onMounted,
-  reactive,
-} from 'vue'
+import { watch, watchEffect, computed, ref, Ref, onMounted } from 'vue'
 import { extend } from '@vue/shared'
 import { RouteLocationNormalizedLoaded, useRoute } from 'vue-router'
 import { invokeHook, updatePageCssVar } from '@dcloudio/uni-core'
@@ -21,7 +13,7 @@ import { useTabBar } from '../../setup/state'
 import { cssBackdropFilter } from '../../../service/api/base/canIUse'
 import { loadFontFace } from '../../../service/api/ui/loadFontFace'
 import { normalizeWindowBottom } from '../../../helpers/cssVar'
-import { parseTheme, onThemeChange } from '../../../helpers/theme'
+import { useTheme, parseTheme } from '../../../helpers/theme'
 
 const UNI_TABBAR_ICON_FONT = 'UniTabbarIconFont'
 
@@ -36,13 +28,7 @@ export default /*#__PURE__*/ defineSystemComponent({
   setup() {
     const visibleList = ref<UniApp.TabBarItemOptions[]>([])
     const _tabBar = useTabBar()!
-    const tabBar = reactive(parseTheme(_tabBar))
-    useVisibleList(tabBar, visibleList)
-    useTabBarCssVar(tabBar)
-    const onSwitchTab = useSwitchTab(useRoute(), tabBar, visibleList)
-    const { style, borderStyle, placeholderStyle } = useTabBarStyle(tabBar)
-
-    onThemeChange(() => {
+    const tabBar = useTheme(_tabBar, () => {
       const tabBarStyle = parseTheme(_tabBar)
       tabBar.backgroundColor = tabBarStyle.backgroundColor
       tabBar.borderStyle = tabBarStyle.borderStyle
@@ -56,6 +42,10 @@ export default /*#__PURE__*/ defineSystemComponent({
         })
       }
     })
+    useVisibleList(tabBar, visibleList)
+    useTabBarCssVar(tabBar)
+    const onSwitchTab = useSwitchTab(useRoute(), tabBar, visibleList)
+    const { style, borderStyle, placeholderStyle } = useTabBarStyle(tabBar)
 
     onMounted(() => {
       if (tabBar.iconfontSrc) {
