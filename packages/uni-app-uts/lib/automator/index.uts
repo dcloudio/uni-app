@@ -67,7 +67,7 @@ type Msg = {
 }
 
 export function onMessage(msg: string) {
-  const json = JSON.parse<Msg>(msg)
+  const json = JSON.parse<Msg>(msg)!
   const method = json.method
   const params = JSON.stringify(json.params)
   const res = new Map<string, any | null>([['id', json.id]])
@@ -80,10 +80,10 @@ export function onMessage(msg: string) {
     if (method.startsWith('App.')) {
       switch (method) {
         case 'App.callUniMethod':
-          callUniMethod(JSON.parse<CallUniMethodParams>(params), callback)
+          callUniMethod(JSON.parse<CallUniMethodParams>(params)!, callback)
           break
         case 'App.captureScreenshot':
-          captureScreenshot(JSON.parse<CaptureScreenshotParams>(params), callback)
+          captureScreenshot(JSON.parse<CaptureScreenshotParams>(params)!, callback)
           break
         case 'App.getPageStack':
           getPageStack(callback)
@@ -92,77 +92,77 @@ export function onMessage(msg: string) {
           getCurrentPage({ callback } as GetCurrentPageParams)
           break
         case 'App.socketEmitter':
-          socketEmitter(JSON.parse<SocketEmitterParams>(params), callback)
+          socketEmitter(JSON.parse<SocketEmitterParams>(params)!, callback)
           break
       }
     } else if (method.startsWith('Page.')) {
       switch (method) {
         case 'Page.getData':
-          pageGetData(JSON.parse<PageGetDataParams>(params), callback)
+          pageGetData(JSON.parse<PageGetDataParams>(params)!, callback)
           break
         case 'Page.setData':
-          pageSetData(JSON.parse<PageSetDataParams>(params), callback)
+          pageSetData(JSON.parse<PageSetDataParams>(params)!, callback)
           break
         case 'Page.callMethod':
-          pageCallMethod(JSON.parse<CallMethodParams>(params), callback)
+          pageCallMethod(JSON.parse<CallMethodParams>(params)!, callback)
           break
         case 'Page.getElement':
-          pageGetElement(JSON.parse<PageGetElementParams>(params), callback)
+          pageGetElement(JSON.parse<PageGetElementParams>(params)!, callback)
           break
         case 'Page.getElements':
-          pageGetElements(JSON.parse<PageGetElementParams>(params), callback)
+          pageGetElements(JSON.parse<PageGetElementParams>(params)!, callback)
           break
         case 'Page.getWindowProperties':
-          getWindowProperties(JSON.parse<GetWindowPropertiesParams>(params), callback)
+          getWindowProperties(JSON.parse<GetWindowPropertiesParams>(params)!, callback)
           break
       }
     } else if (method.startsWith('Element.')) {
       switch (method) {
         case 'Element.getElement':
-          elementGetElement(JSON.parse<ElementGetElementParams>(params), callback)
+          elementGetElement(JSON.parse<ElementGetElementParams>(params)!, callback)
           break
         case 'Element.getElements':
-          elementGetElements(JSON.parse<ElementGetElementParams>(params), callback)
+          elementGetElements(JSON.parse<ElementGetElementParams>(params)!, callback)
           break
         case 'Element.getDOMProperties':
-          getDOMProperties(JSON.parse<GetDOMPropertiesParams>(params), callback)
+          getDOMProperties(JSON.parse<GetDOMPropertiesParams>(params)!, callback)
           break
         case 'Element.getProperties':
-          getProperties(JSON.parse<GetPropertiesParams>(params), callback)
+          getProperties(JSON.parse<GetPropertiesParams>(params)!, callback)
           break
         case 'Element.callFunction':
-          elementCallFunction(JSON.parse<ElementCallFunctionParams>(params), callback)
+          elementCallFunction(JSON.parse<ElementCallFunctionParams>(params)!, callback)
           break
         case 'Element.tap':
-          tap(JSON.parse<TapParams>(params), callback)
+          tap(JSON.parse<TapParams>(params)!, callback)
           break
         case 'Element.callMethod':
-          elementCallMethod(JSON.parse<ElementCallMethodParams>(params), callback)
+          elementCallMethod(JSON.parse<ElementCallMethodParams>(params)!, callback)
           break
         case 'Element.getData':
-          elementGetData(JSON.parse<ElementGetDataParams>(params), callback)
+          elementGetData(JSON.parse<ElementGetDataParams>(params)!, callback)
           break
         case 'Element.setData':
-          elementSetData(JSON.parse<ElementSetDataParams>(params), callback)
+          elementSetData(JSON.parse<ElementSetDataParams>(params)!, callback)
           break
         case 'Element.getOffset':
-          getOffset(JSON.parse<GetOffsetParams>(params), callback)
+          getOffset(JSON.parse<GetOffsetParams>(params)!, callback)
           break
         case 'Element.longpress':
-          longpress(JSON.parse<LongpressParams>(params), callback)
+          longpress(JSON.parse<LongpressParams>(params)!, callback)
           break
         case 'Element.touchstart':
         case 'Element.touchmove':
         case 'Element.touchend':
-          const _params = JSON.parse<HandleTouchEventParams>(params)
+          const _params = JSON.parse<HandleTouchEventParams>(params)!
           _params.eventName = method.split('.')[1]
           handleTouchEvent(_params, callback)
           break
         case 'Element.getAttributes':
-          getAttributes(JSON.parse<GetAttributesParams>(params), callback)
+          getAttributes(JSON.parse<GetAttributesParams>(params)!, callback)
           break
         case 'Element.getStyles':
-          getStyles(JSON.parse<GetStylesParams>(params), callback)
+          getStyles(JSON.parse<GetStylesParams>(params)!, callback)
           break
       }
     }

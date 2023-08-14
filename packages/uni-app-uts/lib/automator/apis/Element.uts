@@ -252,7 +252,7 @@ type TypeTouch = {
 
 function getTouches(touches: any[]): Touch[] {
   return touches.map((touch): Touch => {
-    const touchObj = JSON.parse<TypeTouch>(JSON.stringify(touch))
+    const touchObj = JSON.parse<TypeTouch>(JSON.stringify(touch))!
     const result = Touch()
     result.identifier = touchObj.identifier.toFloat()
     result.pageX = touchObj.pageX.toFloat()
