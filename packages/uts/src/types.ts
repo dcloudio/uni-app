@@ -55,6 +55,7 @@ export type UTSOutputOptions = {
     uvueClassNameOnlyBasename?: boolean
     disableReactiveObject?: boolean
     reactiveObjects?: string[]
+    reactiveAll?: boolean
   }
 }
 export interface UTSOptions {
