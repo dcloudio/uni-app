@@ -1,4 +1,4 @@
-import { Normalize, supportedEnumReason } from '../utils'
+import { Normalize } from '../utils'
 
 export const normalizeGradient: Normalize = (v) => {
   v = (v || '').toString()
@@ -7,10 +7,8 @@ export const normalizeGradient: Normalize = (v) => {
   }
 
   return {
+    // 枚举里会做reason提示
     value: null,
-    reason: function reason(k, v, result) {
-      return supportedEnumReason(k, v, ['gradient'])
-    },
   }
 }
 
@@ -22,8 +20,5 @@ export const normalizeUrl: Normalize = (v) => {
 
   return {
     value: null,
-    reason: function reason(k, v, result) {
-      return supportedEnumReason(k, v, ['url'])
-    },
   }
 }

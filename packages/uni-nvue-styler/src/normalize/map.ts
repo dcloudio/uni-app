@@ -146,6 +146,8 @@ const uvueNormalizeMap: Record<string, Normalize> = {
   fontFamily: normalizeString,
   textDecoration: normalizeDefault,
   boxShadow: normalizeDefault,
+  transitionProperty: normalizeProperty,
+  transitionTimingFunction: normalizeTimingFunction,
 }
 
 const restrictionMap: Partial<Record<Restriction, Normalize>> = {
