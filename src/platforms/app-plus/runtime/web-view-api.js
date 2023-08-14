@@ -7,6 +7,10 @@ function isNvue () {
   return (window.__dcloud_weex_postMessage || window.__dcloud_weex_)
 }
 
+function isUvue () {
+  return (window.__uniapp_x_postMessage || window.__uniapp_x_)
+}
+
 const publish = function (method, params) {
   const paramsObj = {
     options: {
@@ -14,6 +18,33 @@ const publish = function (method, params) {
     },
     name: method,
     arg: params
+  }
+
+  if (isUvue()) { // uvue web-view
+    if (method === 'postMessage') {
+      const message = {
+        data: [params]
+      }
+      if (window.__uniapp_x_postMessage) {
+        return window.__uniapp_x_postMessage(message)
+      } else {
+        return window.__uniapp_x_.postMessage(JSON.stringify(message))
+      }
+    }
+
+    const serviceMessage = {
+      type: WEB_INVOKE_APPSERVICE,
+      args: {
+        data: paramsObj,
+        webviewIds
+      }
+    }
+    if (window.__uniapp_x_postMessage) {
+      window.__uniapp_x_postMessageToService(serviceMessage)
+    } else {
+      window.__uniapp_x_.postMessageToService(JSON.stringify(serviceMessage))
+    }
+    return
   }
 
   if (isNvue()) { // nvue web-view
@@ -40,6 +71,7 @@ const publish = function (method, params) {
     } else {
       window.__dcloud_weex_.postMessageToService(JSON.stringify(serviceMessage))
     }
+    return
   }
 
   if (!window.plus) { // h5 web-view

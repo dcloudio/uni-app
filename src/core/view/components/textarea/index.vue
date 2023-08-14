@@ -294,6 +294,7 @@ uni-textarea[hidden] {
   width: 100%;
   height: 100%;
   min-height: inherit;
+  overflow-y: hidden;
 }
 .uni-textarea-placeholder,
 .uni-textarea-line,

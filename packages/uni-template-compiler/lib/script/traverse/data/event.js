@@ -232,15 +232,20 @@ function isValuePath (path) {
   return path.key !== 'key' && path.key !== 'id' && (path.key !== 'property' || path.parent.computed) && !(path.key === 'value' && path.parentPath.parentPath.isObjectPattern()) && !(path.key === 'left' && path.parentPath.parentPath.parentPath.isObjectPattern())
 }
 
-/**
- * 判断 v-for 中是否包含复杂表达式：数组、对象、方法
- */
 const isSafeScoped = (state) => {
   const scopedArray = state.scoped
+  let checkForIndex = false
   for (let index = 0; index < scopedArray.length; index++) {
     const scoped = scopedArray[index]
     const arrayExtra = scoped.forExtra[0].elements[0].value
-    // 简易判断
+    // 判断仅外层遍历对象是否包含了 index 参数
+    if (checkForIndex && scoped.forIndex && scoped.forKey) {
+      return false
+    }
+    if (index === 0 && !(scoped.forIndex && scoped.forKey)) {
+      checkForIndex = true
+    }
+    // 简易判断 v-for 中是否包含复杂表达式：数组、对象、方法
     if (typeof arrayExtra === 'string' && (arrayExtra.startsWith('[') || arrayExtra.startsWith('{') || /\(.*\)/.test(arrayExtra))) {
       return false
     }
@@ -320,9 +325,18 @@ function parseEvent (keyPath, valuePath, state, isComponent, isNativeOn = false,
         // "click":function($event) {click1(item);click2(item);}
         const body = funcPath.node.body && funcPath.node.body.body
         const funcParams = funcPath.node.params
-        if (body && body.length && funcParams && funcParams.length === 1 && !hasMemberExpression(funcPath)) {
+        if (body && body.length && funcParams && funcParams.length === 1 && !hasMemberExpression(funcPath) && isSafeScoped(state)) {
           const exprStatements = body.filter(node => {
-            return t.isExpressionStatement(node) && t.isCallExpression(node.expression)
+            return t.isExpressionStatement(node) && t.isCallExpression(node.expression) && !node.expression.arguments.find(element => {
+              // click1(item().a)
+              if (t.isMemberExpression(element)) {
+                try {
+                  getIdentifierName(element)
+                } catch {
+                  return true
+                }
+              }
+            })
           })
           if (exprStatements.length === body.length) {
             const paramPath = funcPath.get('params')[0]

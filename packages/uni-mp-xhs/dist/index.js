@@ -1938,15 +1938,10 @@ class EventChannel {
 
 const eventChannels = {};
 
-const eventChannelStack = [];
-
 function getEventChannel (id) {
-  if (id) {
-    const eventChannel = eventChannels[id];
-    delete eventChannels[id];
-    return eventChannel
-  }
-  return eventChannelStack.shift()
+  const eventChannel = eventChannels[id];
+  delete eventChannels[id];
+  return eventChannel
 }
 
 const hooks = [
@@ -2590,7 +2585,7 @@ if (typeof Proxy !== 'undefined' && "mp-xhs" !== 'app-plus') {
       uni[name] = promisify(name, todoApis[name]);
     });
     Object.keys(extraApi).forEach(name => {
-      uni[name] = promisify(name, todoApis[name]);
+      uni[name] = promisify(name, extraApi[name]);
     });
   }
 

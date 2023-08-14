@@ -41,5 +41,4 @@ uni.invokePushCallback({
 });
 Promise.resolve().then(() => {
     initPushNotification();
-    plus.push.setAutoNotification && plus.push.setAutoNotification(false);
 });

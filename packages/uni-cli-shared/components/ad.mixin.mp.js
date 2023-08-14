@@ -55,10 +55,6 @@ export default {
         return
       }
       this._startLoading()
-
-      setTimeout(() => {
-        this._onmpload()
-      }, 3000)
     },
 
     show () {

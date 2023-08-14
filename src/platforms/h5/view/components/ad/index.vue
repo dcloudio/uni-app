@@ -295,59 +295,6 @@ class AdScript {
   }
 }
 
-class AdTencent {
-  static get instance () {
-    if (this._instance == null) {
-      this._instance = new AdTencent()
-    }
-    return this._instance
-  }
-
-  constructor () {
-    this._instance = null
-    this._callback = {}
-    this._cache = {}
-    window.TencentGDT = window.TencentGDT || []
-  }
-
-  load (appid, placementid, success, fail) {
-    if (!this._callback[placementid]) {
-      this._callback[placementid] = []
-    }
-    this._callback[placementid].push({
-      success,
-      fail
-    })
-
-    if (!this._cache[placementid]) {
-      this._cache[placementid] = {
-        isReady: false
-      }
-      window.TencentGDT.push({
-        app_id: appid,
-        placement_id: placementid,
-        type: 'native',
-        count: 1,
-        onComplete: (res) => {
-          this._cache[placementid].isReady = true
-          this._callback[placementid].forEach(({ success, fail }) => {
-            if (res && Array.isArray(res) && res.length) {
-              success(res[0])
-            } else {
-              fail(res)
-            }
-            this._callback[placementid].length = 0
-          })
-        }
-      })
-    }
-
-    if (this._cache[placementid].isReady === true) {
-      window.TencentGDT.NATIVE.loadAd(placementid)
-    }
-  }
-}
-
 const CHECK_RENDER_DELAY = 1000
 const CHECK_RENDER_RETRY = 5
 const DEFAULT_WIDESCREEN_WIDTH = 750
@@ -382,7 +329,7 @@ export default {
     }
   },
   mounted () {
-    this._p = {}
+    this._pd = {}
     this._pl = []
     this._pi = 0
     this._checkTimer = null
@@ -409,7 +356,7 @@ export default {
       this._report(41)
     },
     _reset () {
-      this._p = {}
+      this._pd = {}
       this._pl = []
       this._pi = 0
       this._clearCheckTimer()
@@ -421,7 +368,7 @@ export default {
       const id = adpid || this.adpid
       const aid = (this._isWidescreen ? (this.adpidWidescreen || id) : id)
       AdConfig.instance.get(aid, (b, a) => {
-        this._b = b
+        this._ab = b
         this._pl = a
         this._renderAd()
       }, (err) => {
@@ -434,32 +381,27 @@ export default {
       }
 
       const data = this._pl[this._pi]
-      const providerConfig = this._b[data.a1][data.t]
+      const providerConfig = this._ab[data.a1][data.t]
       const script = providerConfig.script
       this._currentChannel = data.a1
 
       var id = this._randomId()
       var view = this._createView(id)
 
-      if (data.a1 === '10010') {
+      if (data.a1 === '10023') {
+        AdScript.instance.load(data.t, script, () => {
+          this._renderShanhu(id, data)
+        }, (err) => {
+          this.$trigger('error', {}, err)
+        })
+      } else if (data.a1 === '10010') {
         AdScript.instance.load(data.t, script, () => {
           this._renderBaidu(id, data.a2)
         }, (err) => {
           this.$trigger('error', {}, err)
         })
-      } else if (data.a1 === '10011') {
-        AdTencent.instance.load(data.a3, data.a2, (res) => {
-          window.TencentGDT.NATIVE.renderAd(res, id)
-        })
-        this._startCheckTimer()
       } else if (data.a1 === '10012') {
         this._renderScript(view, script)
-      } else if (data.a1 === '10014') {
-        AdScript.instance.load(data.t, script, () => {
-          this._renderShanhu(id, data.tt, data.tar)
-        }, (err) => {
-          this.$trigger('error', {}, err)
-        })
       } else {
         AdScript.instance.load(data.t, script, () => {
           this._renderAdView(id, script.s, data)
@@ -500,24 +442,23 @@ export default {
       }, window).bind(bindThis)(data.a2, id, 2)
       this._startCheckTimer()
     },
-    _renderShanhu (id, type, target) {
-      this._shanhuAd = new window.CoralTBSAdv(id, {
-        type: type,
-        target: target,
-        advShowCb: () => {
-          this._report(42)
+    _renderShanhu (id, data) {
+      const coral = new window.CoralAdv({
+        app_id: data.a2,
+        placement_id: data.a3,
+        type: data.a4,
+        display_type: data.a5,
+        container_id: id,
+        count: 1
+      })
+      coral.ready().then(async (res) => {
+        if (res.ret === 0) {
           this.$trigger('load', {}, {})
-        },
-        advClickCb: () => {
-          this._report(43)
-          this.$trigger('adclicked', {}, {})
-        },
-        advCloseCb: () => {
-          this.$trigger('close', {}, {})
-        },
-        advErrorCb: (errorno) => {
-          this.$trigger('error', {}, errorno)
+        } else {
+          this.$trigger('error', {}, res)
         }
+      }).catch((err) => {
+        this.$trigger('error', {}, err)
       })
       this._startCheckTimer()
     },

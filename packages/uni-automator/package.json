@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-automator",
-  "version": "2.0.2-3080420230530001",
+  "version": "2.0.2-alpha-3081220230802001",
   "description": "uni-app automator",
   "main": "dist/index.js",
   "repository": {
@@ -17,6 +17,7 @@
     "address": "^1.1.2",
     "debug": "^4.1.1",
     "default-gateway": "^6.0.0",
+    "jsonc-parser": "^3.2.0",
     "kill-port": "^1.6.0",
     "licia": "^1.21.0",
     "postcss-selector-parser": "^6.0.2",

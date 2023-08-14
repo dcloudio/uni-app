@@ -69,7 +69,7 @@ function onThemeChange () {
 
   if (mediaQueryList) {
     const callback = (e) => {
-      UniServiceJSBridge.emit(ON_THEME_CHANGE, {
+      UniServiceJSBridge.emit('api.' + ON_THEME_CHANGE, {
         theme: e.matches ? 'dark' : 'light'
       })
     }

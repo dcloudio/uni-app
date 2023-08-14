@@ -4,7 +4,7 @@ import previewImage from '../../../mp-weixin/helpers/normalize-preview-image'
 import getSystemInfo from '../../../mp-weixin/helpers/system-info'
 
 export const protocols = {
-  navigateTo,
+  navigateTo: navigateTo(),
   redirectTo,
   previewImage,
   getSystemInfo,
