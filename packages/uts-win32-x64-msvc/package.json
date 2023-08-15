@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uts-win32-x64-msvc",
-  "version": "3.0.0-3081220230814001",
+  "version": "3.0.0-3081220230815001",
   "os": [
     "win32"
   ],
