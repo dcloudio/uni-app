@@ -1,24 +1,32 @@
-
+// @ts-ignore
 import type { Callback } from '../../index.uts'
+// @ts-ignore
 import { JSONArray } from 'com.alibaba.fastjson'
+// @ts-ignore
 import { parsePage } from '../util.uts'
+// @ts-ignore
 import { send } from '../../index.uts'
+// @ts-ignore
 import { connectSocket, FirstSocketTaskEmitterParams, firstSocketTaskEmitter } from './Socket.uts'
 
+// @ts-ignore
 type MapFromJSONArrayObjectItem = io.dcloud.uts.gson.internal.LinkedTreeMap<string, any | null>
 
 export const getPageStack = (callback: Callback): void => {
   callback({
+    // @ts-ignore
     pageStack: getCurrentPages().map((page: BasePage): UTSJSONObject => {
       return parsePage(page)
     })
   }, null)
 }
 export type GetCurrentPageParams = {
+  // @ts-ignore
   callback: (result: UTSJSONObject | null, error: any | null) => void
 }
-
+// @ts-ignore
 function _getCurrentPage(): BasePage | null {
+  // @ts-ignore
   const pages = getCurrentPages()
   return pages.length > 0 ? pages[pages.length - 1] : null
 }
@@ -50,6 +58,7 @@ export const callUniMethod = (params: CallUniMethodParams, callback: Callback): 
   }
   switch (method) {
     case 'navigateTo':
+      // @ts-ignore
       uni.navigateTo({
         url: (args[0] as MapFromJSONArrayObjectItem).get('url') as string,
         animationType: (args[0] as MapFromJSONArrayObjectItem).get('animationType') != null ? (args[0] as MapFromJSONArrayObjectItem).get('animationType') as string : 'pop-in',
@@ -63,6 +72,7 @@ export const callUniMethod = (params: CallUniMethodParams, callback: Callback): 
       break
 
     case 'redirectTo':
+      // @ts-ignore
       uni.redirectTo({
         url: (args[0] as MapFromJSONArrayObjectItem).get('url') as string,
         success,
@@ -74,6 +84,7 @@ export const callUniMethod = (params: CallUniMethodParams, callback: Callback): 
       break
 
     case 'reLaunch':
+      // @ts-ignore
       uni.reLaunch({
         url: (args[0] as MapFromJSONArrayObjectItem).get('url') as string,
         success,
@@ -85,6 +96,7 @@ export const callUniMethod = (params: CallUniMethodParams, callback: Callback): 
       break
 
     case 'navigateBack':
+      // @ts-ignore
       uni.navigateBack({
         animationType: (args[0] as MapFromJSONArrayObjectItem).get('animationType') != null ? (args[0] as MapFromJSONArrayObjectItem).get('animationType') as string : 'pop-out',
         animationDuration: (args[0] as MapFromJSONArrayObjectItem).get('animationDuration') != null ? (args[0] as MapFromJSONArrayObjectItem).get('animationDuration') as number : 300,
@@ -96,6 +108,7 @@ export const callUniMethod = (params: CallUniMethodParams, callback: Callback): 
       })
       break
     case 'switchTab':
+      // @ts-ignore
       uni.switchTab({
         url: (args[0] as MapFromJSONArrayObjectItem).get('url') as string,
         success,
@@ -106,6 +119,7 @@ export const callUniMethod = (params: CallUniMethodParams, callback: Callback): 
       })
       break
     case 'getStorage':
+      // @ts-ignore
       uni.getStorage({
         key: (args[0] as MapFromJSONArrayObjectItem).get('key') as string,
         success,
@@ -116,6 +130,7 @@ export const callUniMethod = (params: CallUniMethodParams, callback: Callback): 
       })
       break
     case 'setStorage':
+      // @ts-ignore
       uni.setStorage({
         key: (args[0] as MapFromJSONArrayObjectItem).get('key') as string,
         data: (args[0] as MapFromJSONArrayObjectItem).get('data') as any,
@@ -127,12 +142,15 @@ export const callUniMethod = (params: CallUniMethodParams, callback: Callback): 
       })
       break
     case 'getStorageSync':
+      // @ts-ignore
       callback({ result: uni.getStorageSync((args[0] as string)) }, null)
       break
     case 'setStorageSync':
+      // @ts-ignore
       callback({ result: uni.setStorageSync(args[0] as string, args[1] as any) }, null)
       break
     case 'getStorageInfo':
+      // @ts-ignore
       uni.getStorageInfo({
         success,
         fail(error) {
@@ -142,9 +160,11 @@ export const callUniMethod = (params: CallUniMethodParams, callback: Callback): 
       })
       break
     case 'getStorageInfoSync':
+      // @ts-ignore
       callback({ result: uni.getStorageInfoSync() }, null)
       break
     case 'removeStorage':
+      // @ts-ignore
       uni.removeStorage({
         key: (args[0] as MapFromJSONArrayObjectItem).get('key') as string,
         success,
@@ -155,9 +175,11 @@ export const callUniMethod = (params: CallUniMethodParams, callback: Callback): 
       })
       break
     case 'removeStorageSync':
+      // @ts-ignore
       callback({ result: uni.removeStorageSync(args[0] as string) }, null)
       break
     case 'clearStorage':
+      // @ts-ignore
       uni.clearStorage({
         success,
         fail(error) {
@@ -167,9 +189,11 @@ export const callUniMethod = (params: CallUniMethodParams, callback: Callback): 
       })
       break
     case 'clearStorageSync':
+      // @ts-ignore
       callback({ result: uni.clearStorageSync() }, null)
       break
     case 'showToast':
+      // @ts-ignore
       uni.showToast({
         title: (args[0] as MapFromJSONArrayObjectItem).get('title') as string,
         icon: (args[0] as MapFromJSONArrayObjectItem).get('icon') != null ? (args[0] as MapFromJSONArrayObjectItem).get('icon') as string : 'success',
@@ -185,9 +209,11 @@ export const callUniMethod = (params: CallUniMethodParams, callback: Callback): 
       })
       break
     case 'hideToast':
+      // @ts-ignore
       uni.hideToast()
       break
     case 'showLoading':
+      // @ts-ignore
       uni.showLoading({
         title: (args[0] as MapFromJSONArrayObjectItem).get('title') as string,
         mask: (args[0] as MapFromJSONArrayObjectItem).get('mask') != null ? (args[0] as MapFromJSONArrayObjectItem).get('mask') as boolean : false,
@@ -199,9 +225,11 @@ export const callUniMethod = (params: CallUniMethodParams, callback: Callback): 
       })
       break
     case 'hideLoading':
+      // @ts-ignore
       uni.hideLoading()
       break
     case 'showModal':
+      // @ts-ignore
       uni.showModal({
         title: (args[0] as MapFromJSONArrayObjectItem).get('title') != null ? (args[0] as MapFromJSONArrayObjectItem).get('title') as string : null,
         content: (args[0] as MapFromJSONArrayObjectItem).get('content') != null ? (args[0] as MapFromJSONArrayObjectItem).get('content') as string : null,
@@ -220,8 +248,10 @@ export const callUniMethod = (params: CallUniMethodParams, callback: Callback): 
       })
       break
     case 'showActionSheet':
+      // @ts-ignore
       uni.showActionSheet({
         title: (args[0] as MapFromJSONArrayObjectItem).get('title') != null ? (args[0] as MapFromJSONArrayObjectItem).get('title') as string : null,
+        // @ts-ignore
         itemList: UTSArray.fromNative(((args[0] as MapFromJSONArrayObjectItem).get('itemList') as JSONArray)) as string[],
         itemColor: (args[0] as MapFromJSONArrayObjectItem).get('itemColor') != null ? (args[0] as MapFromJSONArrayObjectItem).get('itemColor') as string : null,
         success,
@@ -256,6 +286,7 @@ export const callUniMethod = (params: CallUniMethodParams, callback: Callback): 
       firstSocketTaskEmitter({ method: 'close', code: (args[0] as MapFromJSONArrayObjectItem).get('code') as number, reason: (args[0] as MapFromJSONArrayObjectItem).get('reason') as string } as FirstSocketTaskEmitterParams, callback)
       break
     case 'getSystemInfo':
+      // @ts-ignore
       uni.getSystemInfo({
         success,
         fail(error) {
@@ -265,21 +296,27 @@ export const callUniMethod = (params: CallUniMethodParams, callback: Callback): 
       })
       break
     case 'getSystemInfoSync':
+      // @ts-ignore
       callback({ result: uni.getSystemInfoSync() }, null)
       break
     case 'getDeviceInfo':
+      // @ts-ignore
       callback({ result: uni.getDeviceInfo() }, null)
       break
     case 'getSystemSetting':
+      // @ts-ignore
       callback({ result: uni.getSystemSetting() }, null)
       break
     case 'getAppBaseInfo':
+      // @ts-ignore
       callback({ result: uni.getAppBaseInfo() }, null)
       break
     case 'getAppAuthorizeSetting':
+      // @ts-ignore
       callback({ result: uni.getAppAuthorizeSetting() }, null)
       break
     case 'openAppAuthorizeSetting':
+      // @ts-ignore
       uni.openAppAuthorizeSetting({
         success,
         fail(error) {
@@ -289,6 +326,7 @@ export const callUniMethod = (params: CallUniMethodParams, callback: Callback): 
       })
       break
     case 'pageScrollTo':
+      // @ts-ignore
       uni.pageScrollTo({
         scrollTop: (args[0] as MapFromJSONArrayObjectItem).get('scrollTop') as number,
         duration: (args[0] as MapFromJSONArrayObjectItem).get('duration') as number,
@@ -318,6 +356,7 @@ export const captureScreenshot = (params: CaptureScreenshotParams, callback: Cal
       wholeContent: params.fullPage,
       path: params.path,
       success: (res) => {
+        // @ts-ignore
         const fileManager = uni.getFileSystemManager()
         fileManager.readFile({
           encoding: 'base64',
@@ -332,6 +371,7 @@ export const captureScreenshot = (params: CaptureScreenshotParams, callback: Cal
           fail(error) {
             callback(null, error)
           }
+          // @ts-ignore
         } as ReadFileOptions)
       },
       fail: (error) => {

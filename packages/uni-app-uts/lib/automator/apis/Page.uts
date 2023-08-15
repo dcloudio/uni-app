@@ -1,4 +1,6 @@
+// @ts-ignore
 import type { Callback } from '../index.uts'
+// @ts-ignore
 import { pageGetData, pageSetData, getPageVm, getValidComponentsOrNodes } from './util.uts'
 
 export type GetDataParams = {
@@ -39,6 +41,7 @@ export const callMethod = (params: CallMethodParams, callback: Callback): void =
   const page = getPageVm(params.pageId)
   if (page == null) {
     callback(null, { errMsg: `Page[${params.pageId}] not exists` })
+    // @ts-ignore
   } else if (findVueMethod(page.$.type.type, params.method, page) == null) {
     callback(null, { errMsg: `Page.${params.method} not exists` })
   } else {
@@ -61,6 +64,7 @@ export const getElement = (params: GetElementParams, callback: Callback): void =
     if (selector.startsWith('uni-')) {
       selector = selector.replace('uni-', '')
     }
+    // @ts-ignore
     const list: UTSJSONObject[] = []
     getValidComponentsOrNodes(page.$.subTree, selector, list)
     if (list.length > 0) {
@@ -77,6 +81,7 @@ export const getElements = (params: GetElementParams, callback: Callback): void 
     callback(null, { errMsg: `Page[${params.pageId}] not exists` })
   } else {
     const elements = page.$querySelectorAll(params.selector)
+    // @ts-ignore
     const result = [] as UTSJSONObject[]
     elements?.forEach(element => {
       result.push({

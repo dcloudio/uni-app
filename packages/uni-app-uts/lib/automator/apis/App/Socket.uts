@@ -1,13 +1,17 @@
+// @ts-ignore
 import type { Callback } from '../../index.uts'
 
 type SocketInstanceData = {
+  // @ts-ignore
   instance: SocketTask,
   isOpend: boolean,
+  // @ts-ignore
   openData?: OnSocketOpenCallbackResult | null
 }
 const socketInstanceMap = new Map<string, SocketInstanceData>()
 
 export const connectSocket = (id: string, url: string, callback: Callback): void => {
+  // @ts-ignore
   const socketTask = uni.connectSocket({
     url,
     success() {
@@ -18,6 +22,7 @@ export const connectSocket = (id: string, url: string, callback: Callback): void
     }
   })
   socketInstanceMap.set(id, { instance: socketTask, isOpend: false } as SocketInstanceData)
+  // @ts-ignore
   socketTask.onOpen((data: OnSocketOpenCallbackResult) => {
     socketInstanceMap.get(id)!.isOpend = true
     socketInstanceMap.get(id)!.openData = data
@@ -48,6 +53,7 @@ export const firstSocketTaskEmitter = (params: FirstSocketTaskEmitterParams, cal
         callback(_socketInstanceData.openData, null)
       } else {
         let timer: number | null = null
+        // @ts-ignore
         timer = setInterval(() => {
           if (_socketInstanceData.isOpend) {
             clearInterval(timer!)
@@ -55,6 +61,7 @@ export const firstSocketTaskEmitter = (params: FirstSocketTaskEmitterParams, cal
           }
         }, 200)
         setTimeout(() => {
+          // @ts-ignore
           clearInterval(timer)
         }, 2000)
       }
@@ -79,6 +86,7 @@ export const firstSocketTaskEmitter = (params: FirstSocketTaskEmitterParams, cal
         fail(error: any) {
           callback(null, error)
         }
+        // @ts-ignore
       } as SendSocketMessageOptions)
     } else if (params.method == 'close') {
       socketTask.close({
@@ -91,6 +99,7 @@ export const firstSocketTaskEmitter = (params: FirstSocketTaskEmitterParams, cal
         fail(error: any) {
           callback(null, error)
         }
+        // @ts-ignore
       } as CloseSocketOptions)
     }
   }
@@ -115,6 +124,7 @@ export const socketEmitter = (params: SocketEmitterParams, callback: Callback): 
         callback({ method: 'Socket.onOpen', id: params.id, data: socketInstanceData.openData }, null)
       } else {
         let timer: number | null = null
+        // @ts-ignore
         timer = setInterval(() => {
           if (socketInstanceData.isOpend) {
             clearInterval(timer!)
@@ -122,6 +132,7 @@ export const socketEmitter = (params: SocketEmitterParams, callback: Callback): 
           }
         }, 200)
         setTimeout(() => {
+          // @ts-ignore
           clearInterval(timer)
         }, 2000)
       }
@@ -146,6 +157,7 @@ export const socketEmitter = (params: SocketEmitterParams, callback: Callback): 
         fail(error: any) {
           callback(null, error)
         }
+        // @ts-ignore
       } as SendSocketMessageOptions)
     } else if (params.method == 'close') {
       socketTask.close({
@@ -158,6 +170,7 @@ export const socketEmitter = (params: SocketEmitterParams, callback: Callback): 
         fail(error: any) {
           callback(null, error)
         }
+        // @ts-ignore
       } as CloseSocketOptions)
     }
   }

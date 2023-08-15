@@ -1,6 +1,8 @@
+// @ts-ignore
 import type { Callback } from '../index.uts'
+// @ts-ignore
 import { getElementById, getElementByNodeIdOrElementId, getComponentVmBySelector, getValidNodes, getComponentVmByNodeId, componentGetData, componentSetData, getElementByIdOrNodeId } from './util.uts'
-import { JSONObject } from 'com.alibaba.fastjson'
+// @ts-ignore
 import { getChildrenText, toCamelCase } from './util.uts'
 
 export type GetElementParams = {
@@ -26,6 +28,7 @@ export const getElement = (params: GetElementParams, callback: Callback): void =
       callback(result, null)
       return
     }
+    // @ts-ignore
     const list: UTSJSONObject[] = []
     getValidNodes(element, selector, list)
     if (list.length > 0) {
@@ -39,6 +42,7 @@ export const getElement = (params: GetElementParams, callback: Callback): void =
 export const getElements = (params: GetElementParams, callback: Callback): void => {
   const element = getElementByNodeIdOrElementId(params.pageId, params.nodeId, params.elementId, callback)
   if (element != null) {
+    // @ts-ignore
     const list: UTSJSONObject[] = []
     getValidNodes(element, params.selector, list, true)
     callback({ elements: list }, null)
@@ -87,6 +91,7 @@ export type GetPropertiesParams = {
 
 export const getProperties = (params: GetPropertiesParams, callback: Callback): void => {
   const dom = getElementByIdOrNodeId(params.pageId, params.elementId, params.nodeId, callback)
+  // @ts-ignore
   let component: ComponentPublicInstance | null = null
   if (params.nodeId != null) {
     component = getComponentVmByNodeId(params.pageId, params.nodeId!, callback)
@@ -132,6 +137,7 @@ export const callFunction = (params: CallFunctionParams, callback: Callback): vo
   if (element != null) {
     switch (params.functionName) {
       case 'input.input':
+        // @ts-ignore
         element.dispatchEvent("input", InputEvent("input", InputEventDetail(params.args[0] as string, 0, 0)))
         break
     }
@@ -150,6 +156,7 @@ export const tap = (params: TapParams, callback: Callback): void => {
   if (dom != null) {
     const x: number = 0
     const y: number = 0
+    // @ts-ignore
     dom.dispatchEvent("click", MouseEvent("click", x.toFloat(), y.toFloat()))
     callback({ result: `Element.tap success` }, null)
   }
@@ -220,6 +227,7 @@ export const longpress = (params: LongpressParams, callback: Callback): void => 
   if (dom != null) {
     const x: number = 0
     const y: number = 0
+    // @ts-ignore
     dom.dispatchEvent("longpress", MouseEvent("longpress", x.toFloat(), y.toFloat()))
     callback({ result: `Element.longpress success` }, null)
   }
@@ -239,6 +247,7 @@ export const handleTouchEvent = (params: HandleTouchEventParams, callback: Callb
   if (dom != null) {
     const touches = getTouches(params.touches)
     const changedTouches = getTouches(params.changedTouches)
+    // @ts-ignore
     dom.dispatchEvent(params.eventName, TouchEvent(null, params.eventName, touches, changedTouches))
     callback({ result: `Element.${params.eventName} success` }, null)
   }
@@ -252,7 +261,9 @@ type TypeTouch = {
 
 function getTouches(touches: any[]): Touch[] {
   return touches.map((touch): Touch => {
+    // @ts-ignore
     const touchObj = JSON.parse<TypeTouch>(JSON.stringify(touch))!
+    // @ts-ignore
     const result = Touch()
     result.identifier = touchObj.identifier.toFloat()
     result.pageX = touchObj.pageX.toFloat()
