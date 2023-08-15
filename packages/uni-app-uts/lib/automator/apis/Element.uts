@@ -1,7 +1,16 @@
 // @ts-ignore
 import type { Callback } from '../index.uts'
-// @ts-ignore
-import { getElementById, getElementByNodeIdOrElementId, getComponentVmBySelector, getValidNodes, getComponentVmByNodeId, componentGetData, componentSetData, getElementByIdOrNodeId } from './util.uts'
+import {
+  getElementById,
+  getElementByNodeIdOrElementId,
+  getComponentVmBySelector,
+  getValidNodes,
+  getComponentVmByNodeId,
+  componentGetData,
+  componentSetData,
+  getElementByIdOrNodeId,
+  // @ts-ignore
+} from './util.uts'
 // @ts-ignore
 import { getChildrenText, toCamelCase } from './util.uts'
 
@@ -12,18 +21,30 @@ export type GetElementParams = {
   selector: string
 }
 
-export const getElement = (params: GetElementParams, callback: Callback): void => {
+export const getElement = (
+  params: GetElementParams,
+  callback: Callback
+): void => {
   // TODO: support get component by class or id selector
-  const element = getElementByNodeIdOrElementId(params.pageId, params.nodeId, params.elementId, callback)
+  const element = getElementByNodeIdOrElementId(
+    params.pageId,
+    params.nodeId,
+    params.elementId,
+    callback
+  )
   if (element != null) {
     let selector = params.selector
     if (selector.startsWith('uni-')) {
       selector = selector.replace('uni-', '')
-      const component = getComponentVmBySelector(params.pageId, selector, callback)
+      const component = getComponentVmBySelector(
+        params.pageId,
+        selector,
+        callback
+      )
       const result = {
         nodeId: component != null ? component.$.uid : null,
         tagName: component != null ? selector : null,
-        elementId: component != null ? `${Date.now()}` : null
+        elementId: component != null ? `${Date.now()}` : null,
       }
       callback(result, null)
       return
@@ -39,8 +60,16 @@ export const getElement = (params: GetElementParams, callback: Callback): void =
   }
 }
 
-export const getElements = (params: GetElementParams, callback: Callback): void => {
-  const element = getElementByNodeIdOrElementId(params.pageId, params.nodeId, params.elementId, callback)
+export const getElements = (
+  params: GetElementParams,
+  callback: Callback
+): void => {
+  const element = getElementByNodeIdOrElementId(
+    params.pageId,
+    params.nodeId,
+    params.elementId,
+    callback
+  )
   if (element != null) {
     // @ts-ignore
     const list: UTSJSONObject[] = []
@@ -56,8 +85,16 @@ export type GetDOMPropertiesParams = {
   names: string[]
 }
 
-export const getDOMProperties = (params: GetDOMPropertiesParams, callback: Callback): void => {
-  const dom = getElementByIdOrNodeId(params.pageId, params.elementId, params.nodeId, callback)
+export const getDOMProperties = (
+  params: GetDOMPropertiesParams,
+  callback: Callback
+): void => {
+  const dom = getElementByIdOrNodeId(
+    params.pageId,
+    params.elementId,
+    params.nodeId,
+    callback
+  )
   if (dom != null) {
     const properties = params.names.map((name: string): any | null => {
       if (name == 'innerText') {
@@ -89,8 +126,16 @@ export type GetPropertiesParams = {
   names: string[]
 }
 
-export const getProperties = (params: GetPropertiesParams, callback: Callback): void => {
-  const dom = getElementByIdOrNodeId(params.pageId, params.elementId, params.nodeId, callback)
+export const getProperties = (
+  params: GetPropertiesParams,
+  callback: Callback
+): void => {
+  const dom = getElementByIdOrNodeId(
+    params.pageId,
+    params.elementId,
+    params.nodeId,
+    callback
+  )
   // @ts-ignore
   let component: ComponentPublicInstance | null = null
   if (params.nodeId != null) {
@@ -98,7 +143,12 @@ export const getProperties = (params: GetPropertiesParams, callback: Callback): 
   }
   if (dom != null) {
     const properties = params.names.map((name: string): any | null => {
-      const attribute = dom.getAttribute(name) != null ? dom.getAttribute(name) : component != null ? component.$props[toCamelCase(name)] : null
+      const attribute =
+        dom.getAttribute(name) != null
+          ? dom.getAttribute(name)
+          : component != null
+          ? component.$props[toCamelCase(name)]
+          : null
       return attribute
     })
     callback({ properties }, null)
@@ -112,12 +162,24 @@ export type GetAttributesParams = {
   names: string[]
 }
 
-export const getAttributes = (params: GetAttributesParams, callback: Callback): void => {
-  const dom = getElementByIdOrNodeId(params.pageId, params.elementId, params.nodeId, callback)
+export const getAttributes = (
+  params: GetAttributesParams,
+  callback: Callback
+): void => {
+  const dom = getElementByIdOrNodeId(
+    params.pageId,
+    params.elementId,
+    params.nodeId,
+    callback
+  )
   if (dom != null) {
     const attributes = params.names.map((name: string): any | null => {
       if (name == 'class') {
-        return (dom.ext["classList"] as string[]).join(' ')
+        // @ts-ignore
+        const classList = JSON.parse<string[]>(
+          JSON.stringify(dom.ext['classList'])
+        )!
+        return classList.join(' ')
       }
       return dom.getAttribute(name)
     })
@@ -132,13 +194,19 @@ export type CallFunctionParams = {
   args: any[]
 }
 
-export const callFunction = (params: CallFunctionParams, callback: Callback): void => {
+export const callFunction = (
+  params: CallFunctionParams,
+  callback: Callback
+): void => {
   const element = getElementById(params.pageId, params.elementId, callback)
   if (element != null) {
     switch (params.functionName) {
       case 'input.input':
-        // @ts-ignore
-        element.dispatchEvent("input", InputEvent("input", InputEventDetail(params.args[0] as string, 0, 0)))
+        element.dispatchEvent(
+          'input',
+          // @ts-ignore
+          InputEvent('input', InputEventDetail(params.args[0] as string, 0, 0))
+        )
         break
     }
     callback({ result: `Element.callFunction success` }, null)
@@ -152,12 +220,17 @@ export type TapParams = {
 }
 
 export const tap = (params: TapParams, callback: Callback): void => {
-  const dom = getElementByIdOrNodeId(params.pageId, params.elementId, params.nodeId, callback)
+  const dom = getElementByIdOrNodeId(
+    params.pageId,
+    params.elementId,
+    params.nodeId,
+    callback
+  )
   if (dom != null) {
     const x: number = 0
     const y: number = 0
     // @ts-ignore
-    dom.dispatchEvent("click", MouseEvent("click", x.toFloat(), y.toFloat()))
+    dom.dispatchEvent('click', MouseEvent('click', x.toFloat(), y.toFloat()))
     callback({ result: `Element.tap success` }, null)
   }
 }
@@ -169,10 +242,20 @@ export type CallMethodParams = {
   args: any[]
 }
 
-export const callMethod = (params: CallMethodParams, callback: Callback): void => {
-  const component = getComponentVmByNodeId(params.pageId, params.nodeId, callback)
+export const callMethod = (
+  params: CallMethodParams,
+  callback: Callback
+): void => {
+  const component = getComponentVmByNodeId(
+    params.pageId,
+    params.nodeId,
+    callback
+  )
   if (component != null) {
-    const result = params.args.length > 0 ? component.$callMethod(params.method, params.args[0]) : component.$callMethod(params.method)
+    const result =
+      params.args.length > 0
+        ? component.$callMethod(params.method, params.args[0])
+        : component.$callMethod(params.method)
     callback({ result }, null)
   }
 }
@@ -183,9 +266,16 @@ export type GetDataParams = {
   path?: string | null
 }
 export const getData = (params: GetDataParams, callback: Callback): void => {
-  const component = getComponentVmByNodeId(params.pageId, params.nodeId, callback)
+  const component = getComponentVmByNodeId(
+    params.pageId,
+    params.nodeId,
+    callback
+  )
   if (component != null) {
-    const data = componentGetData(component, params.path != null ? params.path : '')
+    const data = componentGetData(
+      component,
+      params.path != null ? params.path : ''
+    )
     callback({ data }, null)
   }
 }
@@ -196,7 +286,11 @@ export type SetDataParams = {
   data: Map<string, any | null>
 }
 export const setData = (params: SetDataParams, callback: Callback): void => {
-  const component = getComponentVmByNodeId(params.pageId, params.nodeId, callback)
+  const component = getComponentVmByNodeId(
+    params.pageId,
+    params.nodeId,
+    callback
+  )
   if (component != null) {
     componentSetData(component, params.data)
     callback({ result: { errMsg: 'Page.setData: ok.' } }, null)
@@ -209,8 +303,16 @@ export type GetOffsetParams = {
   nodeId?: number | null
 }
 
-export const getOffset = (params: GetOffsetParams, callback: Callback): void => {
-  const dom = getElementByIdOrNodeId(params.pageId, params.elementId, params.nodeId, callback)
+export const getOffset = (
+  params: GetOffsetParams,
+  callback: Callback
+): void => {
+  const dom = getElementByIdOrNodeId(
+    params.pageId,
+    params.elementId,
+    params.nodeId,
+    callback
+  )
   if (dom != null) {
     callback({ left: dom.offsetLeft, top: dom.offsetTop }, null)
   }
@@ -222,13 +324,24 @@ export type LongpressParams = {
   nodeId?: number | null
 }
 
-export const longpress = (params: LongpressParams, callback: Callback): void => {
-  const dom = getElementByIdOrNodeId(params.pageId, params.elementId, params.nodeId, callback)
+export const longpress = (
+  params: LongpressParams,
+  callback: Callback
+): void => {
+  const dom = getElementByIdOrNodeId(
+    params.pageId,
+    params.elementId,
+    params.nodeId,
+    callback
+  )
   if (dom != null) {
     const x: number = 0
     const y: number = 0
-    // @ts-ignore
-    dom.dispatchEvent("longpress", MouseEvent("longpress", x.toFloat(), y.toFloat()))
+    dom.dispatchEvent(
+      'longpress',
+      // @ts-ignore
+      MouseEvent('longpress', x.toFloat(), y.toFloat())
+    )
     callback({ result: `Element.longpress success` }, null)
   }
 }
@@ -238,24 +351,35 @@ export type HandleTouchEventParams = {
   elementId?: string | null
   nodeId?: number | null
   eventName: string
-  touches: any[],
+  touches: any[]
   changedTouches: any[]
 }
 
-export const handleTouchEvent = (params: HandleTouchEventParams, callback: Callback): void => {
-  const dom = getElementByIdOrNodeId(params.pageId, params.elementId, params.nodeId, callback)
+export const handleTouchEvent = (
+  params: HandleTouchEventParams,
+  callback: Callback
+): void => {
+  const dom = getElementByIdOrNodeId(
+    params.pageId,
+    params.elementId,
+    params.nodeId,
+    callback
+  )
   if (dom != null) {
     const touches = getTouches(params.touches)
     const changedTouches = getTouches(params.changedTouches)
-    // @ts-ignore
-    dom.dispatchEvent(params.eventName, TouchEvent(null, params.eventName, touches, changedTouches))
+    dom.dispatchEvent(
+      params.eventName,
+      // @ts-ignore
+      TouchEvent(null, params.eventName, touches, changedTouches)
+    )
     callback({ result: `Element.${params.eventName} success` }, null)
   }
 }
 
 type TypeTouch = {
-  identifier: number,
-  pageX: number,
+  identifier: number
+  pageX: number
   pageY: number
 }
 
@@ -279,8 +403,16 @@ export type GetStylesParams = {
   names: string[]
 }
 
-export const getStyles = (params: GetStylesParams, callback: Callback): void => {
-  const dom = getElementByIdOrNodeId(params.pageId, params.elementId, params.nodeId, callback)
+export const getStyles = (
+  params: GetStylesParams,
+  callback: Callback
+): void => {
+  const dom = getElementByIdOrNodeId(
+    params.pageId,
+    params.elementId,
+    params.nodeId,
+    callback
+  )
   if (dom != null) {
     const styles = params.names.map((name: string): any | null => {
       return dom.style.getPropertyValue(name)

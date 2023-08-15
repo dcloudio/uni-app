@@ -37,7 +37,7 @@ export function pageGetData(
   let data = new Map<string, any | null>()
   // TODO: path
   if (path != null && path.length != 0) {
-    data.set("errMsg", `getData:fail, path:${path} is not supported.`)
+    data.set('errMsg', `getData:fail, path:${path} is not supported.`)
   } else {
     data = vm.$data
   }
@@ -58,23 +58,33 @@ export function parsePage(page: BasePage): UTSJSONObject {
     // @ts-ignore
   } as UTSJSONObject
 }
-// @ts-ignore
-export function getComponentVmBySelector(pageId: string, selector: string, callback: (result: any | null, error: any | null) => void): ComponentPublicInstance | null {
+export function getComponentVmBySelector(
+  pageId: string,
+  selector: string,
+  callback: (result: any | null, error: any | null) => void
+  // @ts-ignore
+): ComponentPublicInstance | null {
   const page = getPageVm(pageId)
   if (page == null) {
     callback(null, { errMsg: `Page[${pageId}] not exists` })
     return null
   }
-  // @ts-ignore
-  const component = page.$children.find((child: ComponentPublicInstance): boolean => child.$options.name == selector)
+  const component = page.$children.find(
+    // @ts-ignore
+    (child: ComponentPublicInstance): boolean => child.$options.name == selector
+  )
   if (component == null) {
     callback(null, { errMsg: `component[${selector}] not exists` })
     return null
   }
   return component
 }
-// @ts-ignore
-export function getComponentVmByNodeId(pageId: string, nodeId: number, callback: (result: any | null, error: any | null) => void): ComponentPublicInstance | null {
+export function getComponentVmByNodeId(
+  pageId: string,
+  nodeId: number,
+  callback: (result: any | null, error: any | null) => void
+  // @ts-ignore
+): ComponentPublicInstance | null {
   const page = getPageVm(pageId)
   if (page == null) {
     callback(null, { errMsg: `Page[${pageId}] not exists` })
@@ -101,8 +111,13 @@ export function getComponentVmByNodeId(pageId: string, nodeId: number, callback:
   }
   return component
 }
-// @ts-ignore
-export function getElementByIdOrNodeId(pageId: string, elementId: string | null, nodeId: number | null, callback: (result: any | null, error: any | null) => void): INode | null {
+export function getElementByIdOrNodeId(
+  pageId: string,
+  elementId: string | null,
+  nodeId: number | null,
+  callback: (result: any | null, error: any | null) => void
+  // @ts-ignore
+): INode | null {
   if (nodeId != null) {
     return getComponentDomByNodeId(pageId, nodeId, callback)
   } else if (elementId != null) {
@@ -110,16 +125,25 @@ export function getElementByIdOrNodeId(pageId: string, elementId: string | null,
   }
   return null
 }
-// @ts-ignore
-export function getComponentDomByNodeId(pageId: string, nodeId: number, callback: (result: any | null, error: any | null) => void): INode | null {
+export function getComponentDomByNodeId(
+  pageId: string,
+  nodeId: number,
+  callback: (result: any | null, error: any | null) => void
+  // @ts-ignore
+): INode | null {
   const component = getComponentVmByNodeId(pageId, nodeId, callback)
   if (component == null) {
     return null
   }
   return component.$el
 }
-// @ts-ignore
-export function getElementByNodeIdOrElementId(pageId: string, nodeId: number | null, elementId: string | null, callback: (result: any | null, error: any | null) => void): INode | null {
+export function getElementByNodeIdOrElementId(
+  pageId: string,
+  nodeId: number | null,
+  elementId: string | null,
+  callback: (result: any | null, error: any | null) => void
+  // @ts-ignore
+): INode | null {
   const page = getPageVm(pageId)
   if (page == null) {
     callback(null, { errMsg: `Page[${pageId}] not exists` })
@@ -132,8 +156,12 @@ export function getElementByNodeIdOrElementId(pageId: string, nodeId: number | n
   }
   return null
 }
-// @ts-ignore
-export function getElementById(pageId: string, elementId: string, callback: (result: any | null, error: any | null) => void): INode | null {
+export function getElementById(
+  pageId: string,
+  elementId: string,
+  callback: (result: any | null, error: any | null) => void
+  // @ts-ignore
+): INode | null {
   const page = getPageVm(pageId)
   if (page == null) {
     callback(null, { errMsg: `Page[${pageId}] not exists` })
@@ -166,12 +194,12 @@ export function getValidComponentsOrNodes(
         nodeId: (vnode.component as ComponentInternalInstance).uid,
         // @ts-ignore
         tagName: (vnode.component as ComponentInternalInstance).options.name,
-        elementId: `${Date.now()}`
+        elementId: `${Date.now()}`,
       })
     } else {
       list.push({
         elementId: vnode.el!.id,
-        tagName: vnode.el!.tagName
+        tagName: vnode.el!.tagName,
       })
     }
     if (!getAll) {
@@ -179,8 +207,8 @@ export function getValidComponentsOrNodes(
     }
   }
   // @ts-ignore
-  if (vnode.children != null && isArray(vnode.children)) {
-    (vnode.children as any[]).forEach(child => {
+  if (vnode.children !== null && isArray(vnode.children)) {
+    ;(vnode.children as any[]).forEach((child) => {
       // @ts-ignore
       if (child instanceof VNode) {
         getValidComponentsOrNodes(child, selector, list, getAll)
@@ -194,21 +222,28 @@ export function getValidComponentsOrNodes(
 }
 // @ts-ignore
 function isValidComponentOrNode(vnode: VNode, selector: string): boolean {
-  // @ts-ignore
-  if (vnode.component != null && (vnode.component as ComponentInternalInstance).options.name == selector) {
+  if (
+    vnode.component != null &&
+    // @ts-ignore
+    (vnode.component as ComponentInternalInstance).options.name == selector
+  ) {
     return true
   }
   if (vnode.el != null) {
-    const node = vnode.el
+    const node = vnode.el!
     if (selector.startsWith('.')) {
-      return (
-        node!.ext['classList'] != null &&
-        (node!.ext['classList'] as string[]).includes(selector.substring(1))
-      )
+      if (node.ext['classList'] !== null) {
+        // @ts-ignore
+        const classList = JSON.parse<string[]>(
+          JSON.stringify(node.ext['classList'])
+        )!
+        return classList.includes(selector.substring(1))
+      }
+      return false
     } else if (selector.startsWith('#')) {
-      return node!.getAttribute('id') == selector.substring(1)
+      return node.getAttribute('id') == selector.substring(1)
     }
-    return node!.tagName?.toUpperCase() == selector.toUpperCase()
+    return node.tagName?.toUpperCase() == selector.toUpperCase()
   }
   return false
 }
@@ -227,23 +262,27 @@ export function getValidNodes(
   if (isValidNode(node, selector)) {
     list.push({
       elementId: node.id,
-      tagName: node.tagName
+      tagName: node.tagName,
     })
     if (!getAll) {
       return
     }
   }
-  node.childNodes.forEach(child => {
+  node.childNodes.forEach((child) => {
     getValidNodes(child, selector, list, getAll)
   })
 }
 // @ts-ignore
 function isValidNode(node: INode, selector: string): boolean {
   if (selector.startsWith('.')) {
-    return (
-      node.ext['classList'] != null &&
-      (node.ext['classList'] as string[]).includes(selector.substring(1))
-    )
+    if (node.ext['classList'] !== null) {
+      // @ts-ignore
+      const classList = JSON.parse<string[]>(
+        JSON.stringify(node.ext['classList'])
+      )!
+      return classList.includes(selector.substring(1))
+    }
+    return false
   } else if (selector.startsWith('#')) {
     return node.getAttribute('id') == selector.substring(1)
   }
@@ -258,14 +297,17 @@ export function componentGetData(
   let data = new Map<string, any | null>()
   // TODO: path
   if (path != null && path.length != 0) {
-    data.set("errMsg", `getData:fail, path:${path} is not supported.`)
+    data.set('errMsg', `getData:fail, path:${path} is not supported.`)
   } else {
     data = vm.$data
   }
   return data
 }
-// @ts-ignore
-export function componentSetData(vm: ComponentPublicInstance, data: Map<string, any | null>): void {
+export function componentSetData(
+  // @ts-ignore
+  vm: ComponentPublicInstance,
+  data: Map<string, any | null>
+): void {
   data.forEach((value: any | null, key: string) => {
     vm.$data.set(key, value)
   })
@@ -273,7 +315,7 @@ export function componentSetData(vm: ComponentPublicInstance, data: Map<string, 
 // @ts-ignore
 export function getChildrenText(node: INode): string {
   let result = ''
-  node.childNodes.forEach(child => {
+  node.childNodes.forEach((child) => {
     if (child.tagName == 'TEXT') {
       result += child.getAttribute('value')
     } else {

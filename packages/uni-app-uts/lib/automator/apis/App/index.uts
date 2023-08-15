@@ -1,24 +1,26 @@
 // @ts-ignore
 import type { Callback } from '../../index.uts'
 // @ts-ignore
-import { JSONArray } from 'com.alibaba.fastjson'
-// @ts-ignore
 import { parsePage } from '../util.uts'
 // @ts-ignore
 import { send } from '../../index.uts'
-// @ts-ignore
-import { connectSocket, FirstSocketTaskEmitterParams, firstSocketTaskEmitter } from './Socket.uts'
-
-// @ts-ignore
-type MapFromJSONArrayObjectItem = io.dcloud.uts.gson.internal.LinkedTreeMap<string, any | null>
+import {
+  connectSocket,
+  FirstSocketTaskEmitterParams,
+  firstSocketTaskEmitter,
+  // @ts-ignore
+} from './Socket.uts'
 
 export const getPageStack = (callback: Callback): void => {
-  callback({
-    // @ts-ignore
-    pageStack: getCurrentPages().map((page: BasePage): UTSJSONObject => {
-      return parsePage(page)
-    })
-  }, null)
+  callback(
+    {
+      // @ts-ignore
+      pageStack: getCurrentPages().map((page: BasePage): UTSJSONObject => {
+        return parsePage(page)
+      }),
+    },
+    null
+  )
 }
 export type GetCurrentPageParams = {
   // @ts-ignore
@@ -39,11 +41,13 @@ export const getCurrentPage = (params: GetCurrentPageParams): void => {
 
 export type CallUniMethodParams = {
   method: string
-  args: JSONArray
+  args: any[]
 }
 
-
-export const callUniMethod = (params: CallUniMethodParams, callback: Callback): void => {
+export const callUniMethod = (
+  params: CallUniMethodParams,
+  callback: Callback
+): void => {
   const method = params.method
   const args = params.args
   const success = (result: any) => {
@@ -59,10 +63,18 @@ export const callUniMethod = (params: CallUniMethodParams, callback: Callback): 
   switch (method) {
     case 'navigateTo':
       // @ts-ignore
+      const _arg = new UTSJSONObject(args[0])
+      // @ts-ignore
       uni.navigateTo({
-        url: (args[0] as MapFromJSONArrayObjectItem).get('url') as string,
-        animationType: (args[0] as MapFromJSONArrayObjectItem).get('animationType') != null ? (args[0] as MapFromJSONArrayObjectItem).get('animationType') as string : 'pop-in',
-        animationDuration: (args[0] as MapFromJSONArrayObjectItem).get('animationDuration') != null ? (args[0] as MapFromJSONArrayObjectItem).get('animationDuration') as number : 300,
+        url: _arg['url'] as string,
+        animationType:
+          _arg['animationType'] != null
+            ? (_arg['animationType'] as string)
+            : 'pop-in',
+        animationDuration:
+          _arg['animationDuration'] != null
+            ? (_arg['animationDuration'] as number)
+            : 300,
         success,
         fail(error) {
           error.errMsg = error.errMsg.replace(`${method}: fail `, '')
@@ -74,7 +86,8 @@ export const callUniMethod = (params: CallUniMethodParams, callback: Callback): 
     case 'redirectTo':
       // @ts-ignore
       uni.redirectTo({
-        url: (args[0] as MapFromJSONArrayObjectItem).get('url') as string,
+        // @ts-ignore
+        url: new UTSJSONObject(args[0])['url'] as string,
         success,
         fail(error) {
           error.errMsg = error.errMsg.replace(`${method}: fail `, '')
@@ -86,7 +99,8 @@ export const callUniMethod = (params: CallUniMethodParams, callback: Callback): 
     case 'reLaunch':
       // @ts-ignore
       uni.reLaunch({
-        url: (args[0] as MapFromJSONArrayObjectItem).get('url') as string,
+        // @ts-ignore
+        url: new UTSJSONObject(args[0])['url'] as string,
         success,
         fail(error) {
           error.errMsg = error.errMsg.replace(`${method}: fail `, '')
@@ -97,9 +111,17 @@ export const callUniMethod = (params: CallUniMethodParams, callback: Callback): 
 
     case 'navigateBack':
       // @ts-ignore
+      const _arg = new UTSJSONObject(args[0])
+      // @ts-ignore
       uni.navigateBack({
-        animationType: (args[0] as MapFromJSONArrayObjectItem).get('animationType') != null ? (args[0] as MapFromJSONArrayObjectItem).get('animationType') as string : 'pop-out',
-        animationDuration: (args[0] as MapFromJSONArrayObjectItem).get('animationDuration') != null ? (args[0] as MapFromJSONArrayObjectItem).get('animationDuration') as number : 300,
+        animationType:
+          _arg['animationType'] != null
+            ? (_arg['animationType'] as string)
+            : 'pop-out',
+        animationDuration:
+          _arg['animationDuration'] != null
+            ? (_arg['animationDuration'] as number)
+            : 300,
         success,
         fail(error) {
           error.errMsg = error.errMsg.replace(`${method}: fail `, '')
@@ -110,7 +132,8 @@ export const callUniMethod = (params: CallUniMethodParams, callback: Callback): 
     case 'switchTab':
       // @ts-ignore
       uni.switchTab({
-        url: (args[0] as MapFromJSONArrayObjectItem).get('url') as string,
+        // @ts-ignore
+        url: new UTSJSONObject(args[0])['url'] as string,
         success,
         fail(error) {
           error.errMsg = error.errMsg.replace(`${method}: fail `, '')
@@ -121,7 +144,8 @@ export const callUniMethod = (params: CallUniMethodParams, callback: Callback): 
     case 'getStorage':
       // @ts-ignore
       uni.getStorage({
-        key: (args[0] as MapFromJSONArrayObjectItem).get('key') as string,
+        // @ts-ignore
+        key: new UTSJSONObject(args[0])['key'] as string,
         success,
         fail(error) {
           error.errMsg = error.errMsg.replace(`${method}: fail `, '')
@@ -131,9 +155,11 @@ export const callUniMethod = (params: CallUniMethodParams, callback: Callback): 
       break
     case 'setStorage':
       // @ts-ignore
+      const _arg = new UTSJSONObject(args[0])
+      // @ts-ignore
       uni.setStorage({
-        key: (args[0] as MapFromJSONArrayObjectItem).get('key') as string,
-        data: (args[0] as MapFromJSONArrayObjectItem).get('data') as any,
+        key: _arg['key'] as string,
+        data: _arg['data']!,
         success,
         fail(error) {
           error.errMsg = error.errMsg.replace(`${method}: fail `, '')
@@ -143,11 +169,11 @@ export const callUniMethod = (params: CallUniMethodParams, callback: Callback): 
       break
     case 'getStorageSync':
       // @ts-ignore
-      callback({ result: uni.getStorageSync((args[0] as string)) }, null)
+      callback({ result: uni.getStorageSync(args[0] as string) }, null)
       break
     case 'setStorageSync':
       // @ts-ignore
-      callback({ result: uni.setStorageSync(args[0] as string, args[1] as any) }, null)
+      callback({ result: uni.setStorageSync(args[0] as string, args[1]) }, null)
       break
     case 'getStorageInfo':
       // @ts-ignore
@@ -166,7 +192,8 @@ export const callUniMethod = (params: CallUniMethodParams, callback: Callback): 
     case 'removeStorage':
       // @ts-ignore
       uni.removeStorage({
-        key: (args[0] as MapFromJSONArrayObjectItem).get('key') as string,
+        // @ts-ignore
+        key: new UTSJSONObject(args[0])['key'] as string,
         success,
         fail(error) {
           error.errMsg = error.errMsg.replace(`${method}: fail `, '')
@@ -194,13 +221,20 @@ export const callUniMethod = (params: CallUniMethodParams, callback: Callback): 
       break
     case 'showToast':
       // @ts-ignore
+      const _arg = new UTSJSONObject(args[0])
+      // @ts-ignore
       uni.showToast({
-        title: (args[0] as MapFromJSONArrayObjectItem).get('title') as string,
-        icon: (args[0] as MapFromJSONArrayObjectItem).get('icon') != null ? (args[0] as MapFromJSONArrayObjectItem).get('icon') as string : 'success',
-        image: (args[0] as MapFromJSONArrayObjectItem).get('image') != null && (args[0] as MapFromJSONArrayObjectItem).get('image') != '' ? (args[0] as MapFromJSONArrayObjectItem).get('image') as string : null,
-        mask: (args[0] as MapFromJSONArrayObjectItem).get('mask') != null ? (args[0] as MapFromJSONArrayObjectItem).get('mask') as boolean : false,
-        duration: (args[0] as MapFromJSONArrayObjectItem).get('duration') != null ? (args[0] as MapFromJSONArrayObjectItem).get('duration') as number : 1500,
-        position: (args[0] as MapFromJSONArrayObjectItem).get('position') != null ? (args[0] as MapFromJSONArrayObjectItem).get('position') as string : null,
+        title: _arg['title'] as string,
+        icon: _arg['icon'] != null ? (_arg['icon'] as string) : 'success',
+        image:
+          _arg['image'] != null && _arg['image'] != ''
+            ? (_arg['image'] as string)
+            : null,
+        mask: _arg['mask'] != null ? (_arg['mask'] as boolean) : false,
+        duration:
+          _arg['duration'] != null ? (_arg['duration'] as number) : 1500,
+        position:
+          _arg['position'] != null ? (_arg['position'] as string) : null,
         success,
         fail(error) {
           error.errMsg = error.errMsg.replace(`${method}: fail `, '')
@@ -214,9 +248,11 @@ export const callUniMethod = (params: CallUniMethodParams, callback: Callback): 
       break
     case 'showLoading':
       // @ts-ignore
+      const _arg = new UTSJSONObject(args[0])
+      // @ts-ignore
       uni.showLoading({
-        title: (args[0] as MapFromJSONArrayObjectItem).get('title') as string,
-        mask: (args[0] as MapFromJSONArrayObjectItem).get('mask') != null ? (args[0] as MapFromJSONArrayObjectItem).get('mask') as boolean : false,
+        title: _arg['title'] as string,
+        mask: _arg['mask'] != null ? (_arg['mask'] as boolean) : false,
         success,
         fail(error) {
           error.errMsg = error.errMsg.replace(`${method}: fail `, '')
@@ -230,16 +266,29 @@ export const callUniMethod = (params: CallUniMethodParams, callback: Callback): 
       break
     case 'showModal':
       // @ts-ignore
+      const _arg = new UTSJSONObject(args[0])
+      // @ts-ignore
       uni.showModal({
-        title: (args[0] as MapFromJSONArrayObjectItem).get('title') != null ? (args[0] as MapFromJSONArrayObjectItem).get('title') as string : null,
-        content: (args[0] as MapFromJSONArrayObjectItem).get('content') != null ? (args[0] as MapFromJSONArrayObjectItem).get('content') as string : null,
-        showCancel: (args[0] as MapFromJSONArrayObjectItem).get('showCancel') != null ? (args[0] as MapFromJSONArrayObjectItem).get('showCancel') as boolean : true,
-        cancelText: (args[0] as MapFromJSONArrayObjectItem).get('cancelText') != null ? (args[0] as MapFromJSONArrayObjectItem).get('cancelText') as string : null,
-        cancelColor: (args[0] as MapFromJSONArrayObjectItem).get('cancelColor') != null ? (args[0] as MapFromJSONArrayObjectItem).get('cancelColor') as string : null,
-        confirmText: (args[0] as MapFromJSONArrayObjectItem).get('confirmText') != null ? (args[0] as MapFromJSONArrayObjectItem).get('confirmText') as string : null,
-        confirmColor: (args[0] as MapFromJSONArrayObjectItem).get('confirmColor') != null ? (args[0] as MapFromJSONArrayObjectItem).get('confirmColor') as string : null,
-        editable: (args[0] as MapFromJSONArrayObjectItem).get('editable') != null ? (args[0] as MapFromJSONArrayObjectItem).get('editable') as boolean : false,
-        placeholderText: (args[0] as MapFromJSONArrayObjectItem).get('placeholderText') != null ? (args[0] as MapFromJSONArrayObjectItem).get('placeholderText') as string : null,
+        title: _arg['title'] != null ? (_arg['title'] as string) : null,
+        content: _arg['content'] != null ? (_arg['content'] as string) : null,
+        showCancel:
+          _arg['showCancel'] != null ? (_arg['showCancel'] as boolean) : true,
+        cancelText:
+          _arg['cancelText'] != null ? (_arg['cancelText'] as string) : null,
+        cancelColor:
+          _arg['cancelColor'] != null ? (_arg['cancelColor'] as string) : null,
+        confirmText:
+          _arg['confirmText'] != null ? (_arg['confirmText'] as string) : null,
+        confirmColor:
+          _arg['confirmColor'] != null
+            ? (_arg['confirmColor'] as string)
+            : null,
+        editable:
+          _arg['editable'] != null ? (_arg['editable'] as boolean) : false,
+        placeholderText:
+          _arg['placeholderText'] != null
+            ? (_arg['placeholderText'] as string)
+            : null,
         success,
         fail(error) {
           error.errMsg = error.errMsg.replace(`${method}: fail `, '')
@@ -249,11 +298,14 @@ export const callUniMethod = (params: CallUniMethodParams, callback: Callback): 
       break
     case 'showActionSheet':
       // @ts-ignore
+      const _arg = new UTSJSONObject(args[0])
+      // @ts-ignore
       uni.showActionSheet({
-        title: (args[0] as MapFromJSONArrayObjectItem).get('title') != null ? (args[0] as MapFromJSONArrayObjectItem).get('title') as string : null,
+        title: _arg['title'] != null ? (_arg['title'] as string) : null,
         // @ts-ignore
-        itemList: UTSArray.fromNative(((args[0] as MapFromJSONArrayObjectItem).get('itemList') as JSONArray)) as string[],
-        itemColor: (args[0] as MapFromJSONArrayObjectItem).get('itemColor') != null ? (args[0] as MapFromJSONArrayObjectItem).get('itemColor') as string : null,
+        itemList: JSON.parse<string[]>(JSON.stringify(_arg['itemList']))!,
+        itemColor:
+          _arg['itemColor'] != null ? (_arg['itemColor'] as string) : null,
         success,
         fail(error) {
           error.errMsg = error.errMsg.replace(`${method}: fail `, '')
@@ -262,28 +314,55 @@ export const callUniMethod = (params: CallUniMethodParams, callback: Callback): 
       })
       break
     case 'connectSocket':
-      const id = (args[0] as MapFromJSONArrayObjectItem).get('id') as string
-      const url = (args[0] as MapFromJSONArrayObjectItem).get('url') as string
-      connectSocket(id, url, callback)
+      // @ts-ignore
+      const _arg = new UTSJSONObject(args[0])
+      connectSocket(_arg['id'] as string, _arg['url'] as string, callback)
       break
     case 'onSocketOpen':
-
-      firstSocketTaskEmitter({ method: 'onOpen' } as FirstSocketTaskEmitterParams, onApiCallback)
+      firstSocketTaskEmitter(
+        { method: 'onOpen' } as FirstSocketTaskEmitterParams,
+        onApiCallback
+      )
       break
     case 'onSocketMessage':
-      firstSocketTaskEmitter({ method: 'onMessage' } as FirstSocketTaskEmitterParams, onApiCallback)
+      firstSocketTaskEmitter(
+        { method: 'onMessage' } as FirstSocketTaskEmitterParams,
+        onApiCallback
+      )
       break
     case 'onSocketError':
-      firstSocketTaskEmitter({ method: 'onError' } as FirstSocketTaskEmitterParams, onApiCallback)
+      firstSocketTaskEmitter(
+        { method: 'onError' } as FirstSocketTaskEmitterParams,
+        onApiCallback
+      )
       break
     case 'onSocketClose':
-      firstSocketTaskEmitter({ method: 'onClose' } as FirstSocketTaskEmitterParams, onApiCallback)
+      firstSocketTaskEmitter(
+        { method: 'onClose' } as FirstSocketTaskEmitterParams,
+        onApiCallback
+      )
       break
     case 'sendSocketMessage':
-      firstSocketTaskEmitter({ method: 'send', data: (args[0] as MapFromJSONArrayObjectItem).get('data') } as FirstSocketTaskEmitterParams, callback)
+      firstSocketTaskEmitter(
+        {
+          method: 'send',
+          // @ts-ignore
+          data: new UTSJSONObject(args[0])['data'],
+        } as FirstSocketTaskEmitterParams,
+        callback
+      )
       break
     case 'closeSocket':
-      firstSocketTaskEmitter({ method: 'close', code: (args[0] as MapFromJSONArrayObjectItem).get('code') as number, reason: (args[0] as MapFromJSONArrayObjectItem).get('reason') as string } as FirstSocketTaskEmitterParams, callback)
+      // @ts-ignore
+      const _arg = new UTSJSONObject(args[0])
+      firstSocketTaskEmitter(
+        {
+          method: 'close',
+          code: _arg['code'] as number,
+          reason: _arg['reason'] as string,
+        } as FirstSocketTaskEmitterParams,
+        callback
+      )
       break
     case 'getSystemInfo':
       // @ts-ignore
@@ -327,9 +406,11 @@ export const callUniMethod = (params: CallUniMethodParams, callback: Callback): 
       break
     case 'pageScrollTo':
       // @ts-ignore
+      const _arg = new UTSJSONObject(args[0])
+      // @ts-ignore
       uni.pageScrollTo({
-        scrollTop: (args[0] as MapFromJSONArrayObjectItem).get('scrollTop') as number,
-        duration: (args[0] as MapFromJSONArrayObjectItem).get('duration') as number,
+        scrollTop: _arg['scrollTop'] as number,
+        duration: _arg['duration'] as number,
         success,
         fail(error) {
           error.errMsg = error.errMsg.replace(`${method}: fail `, '')
@@ -344,11 +425,14 @@ export const callUniMethod = (params: CallUniMethodParams, callback: Callback): 
 }
 
 export type CaptureScreenshotParams = {
-  id?: string | null,
-  fullPage: boolean,
+  id?: string | null
+  fullPage: boolean
   path: string
 }
-export const captureScreenshot = (params: CaptureScreenshotParams, callback: Callback): void => {
+export const captureScreenshot = (
+  params: CaptureScreenshotParams,
+  callback: Callback
+): void => {
   const currentPage = _getCurrentPage()
   if (currentPage != null) {
     currentPage.$viewToTempFilePath({
@@ -362,21 +446,24 @@ export const captureScreenshot = (params: CaptureScreenshotParams, callback: Cal
           encoding: 'base64',
           filePath: res.tempFilePath,
           success(readFileRes) {
-            callback({
-              errMsg: 'screenshot:ok',
-              tempFilePath: res.tempFilePath,
-              data: readFileRes.data
-            }, null)
+            callback(
+              {
+                errMsg: 'screenshot:ok',
+                tempFilePath: res.tempFilePath,
+                data: readFileRes.data,
+              },
+              null
+            )
           },
           fail(error) {
             callback(null, error)
-          }
+          },
           // @ts-ignore
         } as ReadFileOptions)
       },
       fail: (error) => {
         callback(null, error)
-      }
+      },
     })
   } else {
     callback(null, { errMsg: `currentPage is not found.` })
