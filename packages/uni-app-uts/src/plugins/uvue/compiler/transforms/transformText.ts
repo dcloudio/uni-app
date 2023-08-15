@@ -84,16 +84,13 @@ function parseText(node: ElementNode) {
     let firstTextChild
     for (let i = 0; i < node.children.length; i++) {
       const child = node.children[i]
-      if (isText(child) && typeof (child as TextNode).content === 'string') {
+      const content = (child as TextNode).content
+      if (isText(child) && typeof content === 'string') {
         if (!firstTextChild) {
           firstTextChild = child
-          ;(firstTextChild as TextNode).content = (
-            firstTextChild as TextNode
-          ).content.replace(/\\n/g, '\n')
+          ;(firstTextChild as TextNode).content = translateObliqueLine(content)
         } else {
-          ;(firstTextChild as TextNode).content += (
-            child as TextNode
-          ).content.replace(/\\n/g, '\n')
+          ;(firstTextChild as TextNode).content += translateObliqueLine(content)
           node.children.splice(i, 1)
           i--
         }
@@ -122,4 +119,18 @@ function createText(
     ns: parent.ns,
     loc: node.loc,
   }
+}
+
+function translateObliqueLine(content: string): string {
+  const strFragments = content.split('\\n')
+  return strFragments
+    .map((str, index) => {
+      if (index === strFragments.length - 1) return str
+      str += '\\n'
+      if (!(str.split('\\').length % 2)) {
+        str = str.replaceAll(/\\n/g, '\n')
+      }
+      return str.replaceAll(/\\\\/g, '\\')
+    })
+    .join('')
 }
