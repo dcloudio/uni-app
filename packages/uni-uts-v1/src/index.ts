@@ -45,6 +45,7 @@ import {
 } from './manifest'
 import { cacheTips } from './manifest/utils'
 import { compileEncrypt, isEncrypt } from './encrypt'
+import { UTSOutputOptions } from '@dcloudio/uts'
 
 export const sourcemap = {
   generateCodeFrameWithKotlinStacktrace,
@@ -98,11 +99,15 @@ interface CompilerOptions {
   isX: boolean
   isPlugin: boolean
   extApis?: Record<string, [string, string]>
+  transform?: UTSOutputOptions['transform']
 }
 
 export async function compile(
   pluginDir: string,
-  { isX, isPlugin, extApis }: CompilerOptions = { isX: false, isPlugin: true }
+  { isX, isPlugin, extApis, transform }: CompilerOptions = {
+    isX: false,
+    isPlugin: true,
+  }
 ): Promise<CompileResult | void> {
   const pkg = resolvePackage(pluginDir)
   if (!pkg) {
@@ -168,6 +173,7 @@ export async function compile(
           isX,
           isPlugin,
           extApis,
+          transform,
         })
         if (cacheDir) {
           // 存储 sourcemap
@@ -200,6 +206,7 @@ export async function compile(
           isX,
           isPlugin,
           extApis,
+          transform,
         })
         if (cacheDir) {
           storeSourceMap(
@@ -338,6 +345,7 @@ export async function compile(
           pluginRelativeDir,
           is_uni_modules: pkg.is_uni_modules,
           extApis,
+          transform,
         })
         if (res) {
           if (isArray(res.deps) && res.deps.length) {

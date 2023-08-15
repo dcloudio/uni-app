@@ -1,6 +1,6 @@
 import path, { basename, resolve } from 'path'
 import fs from 'fs-extra'
-import type { parse, bundle, UTSTarget } from '@dcloudio/uts'
+import type { parse, bundle, UTSTarget, UTSOutputOptions } from '@dcloudio/uts'
 import { camelize, capitalize, extend } from '@vue/shared'
 import glob from 'fast-glob'
 import { Module, ModuleItem } from '../types/types'
@@ -21,6 +21,7 @@ interface ToOptions {
   isX: boolean
   isPlugin: boolean
   extApis?: Record<string, [string, string]>
+  transform?: UTSOutputOptions['transform']
 }
 export type ToKotlinOptions = ToOptions
 export type ToSwiftOptions = ToOptions

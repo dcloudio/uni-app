@@ -15,7 +15,12 @@ import {
   ToSwiftOptions,
 } from './utils'
 import { parseJson } from './shared'
-import { UTSBundleOptions, UTSInputOptions, UTSResult } from '@dcloudio/uts'
+import {
+  UTSBundleOptions,
+  UTSInputOptions,
+  UTSOutputOptions,
+  UTSResult,
+} from '@dcloudio/uts'
 import { parseUTSSyntaxError } from './stacktrace'
 
 function parseSwiftPackage(filename: string) {
@@ -40,10 +45,12 @@ export async function runSwiftProd(
     isPlugin,
     isX,
     extApis,
+    transform,
   }: {
     isPlugin: boolean
     isX: boolean
     extApis?: Record<string, [string, string]>
+    transform?: UTSOutputOptions['transform']
   }
 ) {
   // 文件有可能是 app-android 里边的，因为编译到 ios 时，为了保证不报错，可能会去读取 android 下的 uts
@@ -60,6 +67,7 @@ export async function runSwiftProd(
     isX,
     isPlugin,
     extApis,
+    transform,
   })
   if (!result) {
     return
@@ -91,11 +99,12 @@ interface RunSwiftDevOptions {
   isX: boolean
   isPlugin: boolean
   extApis?: Record<string, [string, string]>
+  transform?: UTSOutputOptions['transform']
 }
 
 export async function runSwiftDev(
   filename: string,
-  { components, isX, isPlugin, extApis }: RunSwiftDevOptions
+  { components, isX, isPlugin, extApis, transform }: RunSwiftDevOptions
 ) {
   // 文件有可能是 app-android 里边的，因为编译到 ios 时，为了保证不报错，可能会去读取 android 下的 uts
   if (filename.includes('app-android')) {
@@ -129,6 +138,7 @@ export async function runSwiftDev(
     isX,
     isPlugin,
     extApis,
+    transform,
   })) as RunSwiftDevResult
 
   if (!result) {
@@ -196,6 +206,7 @@ export async function compile(
     isX,
     isPlugin,
     extApis,
+    transform,
   }: ToSwiftOptions
 ) {
   const { bundle, UTSTarget } = getUTSCompiler()
@@ -237,6 +248,7 @@ export async function compile(
       transform: {
         uniExtApiDefaultNamespace: 'DCloudUTSExtAPI',
         uniExtApiNamespaces: extApis,
+        ...transform,
       },
     },
   }

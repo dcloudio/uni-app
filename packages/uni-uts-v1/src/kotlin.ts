@@ -7,6 +7,7 @@ import { isArray } from '@vue/shared'
 import type {
   UTSBundleOptions,
   UTSInputOptions,
+  UTSOutputOptions,
   UTSResult,
 } from '@dcloudio/uts'
 import { get } from 'android-versions'
@@ -79,10 +80,12 @@ export async function runKotlinProd(
     isPlugin,
     isX,
     extApis,
+    transform,
   }: {
     isPlugin: boolean
     isX: boolean
     extApis?: Record<string, [string, string]>
+    transform?: UTSOutputOptions['transform']
   }
 ) {
   // 文件有可能是 app-ios 里边的，因为编译到 android 时，为了保证不报错，可能会去读取 ios 下的 uts
@@ -99,6 +102,7 @@ export async function runKotlinProd(
     isX,
     isPlugin,
     extApis,
+    transform,
   })
   if (!result) {
     return
@@ -130,6 +134,7 @@ interface RunKotlinDevOptions {
   pluginRelativeDir: string
   is_uni_modules: boolean
   extApis?: Record<string, [string, string]>
+  transform?: UTSOutputOptions['transform']
 }
 
 export async function runKotlinDev(
@@ -142,6 +147,7 @@ export async function runKotlinDev(
     pluginRelativeDir,
     is_uni_modules,
     extApis,
+    transform,
   }: RunKotlinDevOptions
 ): Promise<RunKotlinDevResult | undefined> {
   // 文件有可能是 app-ios 里边的，因为编译到 android 时，为了保证不报错，可能会去读取 ios 下的 uts
@@ -158,6 +164,7 @@ export async function runKotlinDev(
     isX,
     isPlugin,
     extApis,
+    transform,
   })) as RunKotlinDevResult
   if (!result) {
     return
@@ -383,6 +390,7 @@ export async function compile(
     isX,
     isPlugin,
     extApis,
+    transform,
   }: ToKotlinOptions
 ) {
   const { bundle, UTSTarget } = getUTSCompiler()
@@ -429,6 +437,7 @@ export async function compile(
       transform: {
         uniExtApiDefaultNamespace: 'io.dcloud.uniapp.extapi',
         uniExtApiNamespaces: extApis,
+        ...transform,
       },
     },
   }
