@@ -9,6 +9,7 @@ import { uniAppManifestPlugin } from './plugins/manifestJson'
 import { uniAppPagesPlugin } from './plugins/pagesJson'
 import { uniPrePlugin } from './plugins/pre'
 import { uniAppUVuePlugin } from './plugins/uvue'
+import { uniCloudPlugin } from './plugins/unicloud'
 export default () => {
   return [
     uniPrePlugin(),
@@ -25,6 +26,7 @@ export default () => {
     uniAppPagesPlugin(),
     uniAppCssPlugin(),
     uniAppUVuePlugin(),
+    uniCloudPlugin(),
   ]
 }
 
