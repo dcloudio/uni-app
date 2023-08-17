@@ -1,31 +1,19 @@
 import path from 'path'
 import type { CompilerOptions } from '@vue/compiler-core'
 import {
-  // COMPONENT_CUSTOM_HIDDEN,
-  // copyMiniProgramPluginJson,
-  // copyMiniProgramThemeJson,
   MiniProgramCompilerOptions,
-  // transformComponentLink,
+  transformComponentLink,
   transformMatchMedia,
   transformRef,
 } from '@dcloudio/uni-cli-shared'
 import { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
 
 import source from './project.config.json'
-import { transformOn } from './transforms/vOn'
-import { transformModel } from './transforms/vModel'
 
-const directiveTransforms = {
-  on: transformOn,
-  model: transformModel,
-}
+const directiveTransforms = {}
 
 export const compilerOptions: CompilerOptions = {
-  nodeTransforms: [
-    transformRef,
-    // transformComponentLink,
-    transformMatchMedia,
-  ],
+  nodeTransforms: [transformRef, transformComponentLink, transformMatchMedia],
   directiveTransforms,
 }
 
@@ -114,20 +102,13 @@ export const options: UniMiniProgramPluginOptions = {
   template: {
     /* eslint-disable no-restricted-syntax */
     ...miniProgram,
-    filter:
-      // undefined,
-      {
-        extname: '.sjs',
-        lang: 'sjs',
-        generate(filter, filename) {
-          if (filename) {
-            return `<import-sjs src="${filename}.sjs" module="${filter.name}"/>`
-          }
-          return `<import-sjs module="${filter.name}">
-    ${filter.code}
-    </import-sjs>`
-        },
+    filter: {
+      extname: '.sjs',
+      lang: 'sjs',
+      generate(filter, filename) {
+        return `<sjs src="${filename}.sjs" module="${filter.name}"/>`
       },
+    },
     extname: '.xhsml',
     compilerOptions,
   },
