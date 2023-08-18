@@ -25,5 +25,5 @@ export function parse(componentOptions: MPComponentOptions) {
     (...args: any[]) => any
   >
   methods.__e = handleEvent
-  methods.__l = handleLink
+  methods.__l = handleLink 
 }

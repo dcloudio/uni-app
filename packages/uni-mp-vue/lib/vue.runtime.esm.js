@@ -5185,7 +5185,13 @@ function renderComponentRoot(instance) {
         handleError(err, instance, 1 /* ErrorCodes.RENDER_FUNCTION */);
         result = false;
     }
-    setRef(instance);
+    if (ctx.$mpPlatform === 'mp-xhs'){
+        setTimeout(() => {
+            setRef(instance);
+        })
+    } else {
+        setRef(instance);
+    }
     setCurrentRenderingInstance(prev);
     return result;
 }
