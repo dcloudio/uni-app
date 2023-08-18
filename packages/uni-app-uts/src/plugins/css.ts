@@ -91,15 +91,19 @@ export function uniAppCssPlugin(): Plugin {
       })
       messages.forEach((message) => {
         if (message.type === 'warning') {
-          let msg = `[plugin:uni:app-uvue-css] ${message.text}`
+          // 拆分成多行，第一行输出信息（有颜色），后续输出错误代码+文件行号
+          resolvedConfig.logger.warn(
+            colors.yellow(`[plugin:uni:app-uvue-css] ${message.text}`)
+          )
+          let msg = ''
           if (message.line && message.column) {
             msg += `\n${generateCodeFrame(source, {
               line: message.line,
               column: message.column,
-            }).replace(/\t/g, ' ')}`
+            }).replace(/\t/g, ' ')}\n`
           }
-          msg += `\n${formatAtFilename(filename)}`
-          resolvedConfig.logger.warn(colors.yellow(msg))
+          msg += `${formatAtFilename(filename)}`
+          resolvedConfig.logger.warn(msg)
         }
       })
       return { code: source }

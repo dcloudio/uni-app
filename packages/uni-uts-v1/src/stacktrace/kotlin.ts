@@ -44,14 +44,14 @@ export function hbuilderFormatter(m: MessageSourceLocation) {
   } else {
     msgs.push(msg)
   }
+  if (m.code) {
+    msgs.push(m.code)
+  }
   if (m.file) {
     if (m.file.includes('?')) {
       ;[m.file] = m.file.split('?')
     }
     msgs.push(`at ${m.file}:${m.line}:${m.column}`)
-  }
-  if (m.code) {
-    msgs.push(m.code)
   }
   return msgs.join('\n')
 }
