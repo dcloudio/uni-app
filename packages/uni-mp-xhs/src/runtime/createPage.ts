@@ -41,21 +41,19 @@ export function initCreatePage() {
         }
         // 初始化 vue 实例
         this.props = query
+        this.$vm = createVueComponent('page', this, vueOptions)
+        this.$vm.$callHook(ON_LOAD, this.options)
       },
       onShow() {
         if (__VUE_PROD_DEVTOOLS__) {
           devtoolsComponentAdded(this.$vm.$)
         }
-        this.$vm = createVueComponent('page', this, vueOptions)
-        this.$vm.$callHook('mounted')
-        this.$vm.$callHook(ON_LOAD, this.options)
         initSpecialMethods(this)
-        if (this.$vm) {
-          this.$vm.$callHook(ON_SHOW)
-        }
+        this.$vm.$callHook(ON_SHOW)
       },
       onReady() {
         setTimeout(() => {
+          this.$vm.$callHook('mounted')
           this.$vm.$callHook(ON_READY)
         }, 50)
       },
