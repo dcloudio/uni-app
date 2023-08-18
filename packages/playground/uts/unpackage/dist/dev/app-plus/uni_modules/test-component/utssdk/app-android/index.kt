@@ -58,8 +58,11 @@ open class AnimationViewComponent : UTSComponent<LottieAnimationView> {
     override fun unmounted() {}
     @JSMethod(uiThread = false)
     open fun setRepeatMode(repeat: String) {
-        if ("RESTART" == repeat) this.`$el`.repeatMode = LottieDrawable.RESTART;
-        else if ("REVERSE" == repeat) this.`$el`.repeatMode = LottieDrawable.RESTART;
+        if ("RESTART" == repeat) {
+            this.`$el`.repeatMode = LottieDrawable.RESTART;
+        } else if ("REVERSE" == repeat) {
+            this.`$el`.repeatMode = LottieDrawable.RESTART;
+        }
     }
     @JSMethod(uiThread = false)
     open fun privateMethod() {}
@@ -67,27 +70,41 @@ open class AnimationViewComponent : UTSComponent<LottieAnimationView> {
         this.`$watch`<String>("path", fun(newPath, oldPath){
             var lottieAnimationView = this.`$el`;
             if (lottieAnimationView != null && !TextUtils.isEmpty(newPath)) {
-                if (newPath.startsWith("http://") || newPath.startsWith("https://")) lottieAnimationView.setAnimationFromUrl(newPath);
-                else lottieAnimationView.setAnimation(newPath);
+                if (newPath.startsWith("http://") || newPath.startsWith("https://")) {
+                    lottieAnimationView.setAnimationFromUrl(newPath);
+                } else {
+                    lottieAnimationView.setAnimation(newPath);
+                }
             }
-            if (this.autoplay) lottieAnimationView.playAnimation();
+            if (this.autoplay) {
+                lottieAnimationView.playAnimation();
+            }
         }
         );
         this.`$watch`<Boolean>("loop", fun(newLoop, oldLoop){
-            if (newLoop) this.`$el`.repeatCount = Int.MAX_VALUE;
-            else this.`$el`.repeatCount = 0;
-            if (this.autoplay) this.`$el`.playAnimation();
+            if (newLoop) {
+                this.`$el`.repeatCount = Int.MAX_VALUE;
+            } else {
+                this.`$el`.repeatCount = 0;
+            }
+            if (this.autoplay) {
+                this.`$el`.playAnimation();
+            }
         }
         );
         this.`$watch`<Boolean>("autoplay", fun(newValue, oldValue){
-            if (newValue) this.`$el`.playAnimation();
+            if (newValue) {
+                this.`$el`.playAnimation();
+            }
         }
         );
         this.`$watch`<String>("action", fun(newAction, oldAction){
             if (newAction == "play" || newAction == "pause" || newAction == "stop") {
-                if (this.action == "play") this.`$el`.playAnimation();
-                else if (this.action == "play") this.`$el`.pauseAnimation();
-                else if (this.action == "stop") {
+                if (this.action == "play") {
+                    this.`$el`.playAnimation();
+                } else if (this.action == "play") {
+                    this.`$el`.pauseAnimation();
+                } else if (this.action == "stop") {
                     this.`$el`.cancelAnimation();
                     this.`$el`.clearAnimation();
                 }
@@ -95,8 +112,11 @@ open class AnimationViewComponent : UTSComponent<LottieAnimationView> {
         }
         );
         this.`$watch`<Boolean>("hidden", fun(newValue, oldValue){
-            if (newValue) this.`$el`.visibility = View.GONE;
-            else this.`$el`.visibility = View.VISIBLE;
+            if (newValue) {
+                this.`$el`.visibility = View.GONE;
+            } else {
+                this.`$el`.visibility = View.VISIBLE;
+            }
         }
         );
     }

@@ -7,12 +7,33 @@ public var uni_showModel = DCloudUTSExtAPI.showModel;
 public typealias ShowToast = (_ msg: String) -> Void;
 @objc(UTSSDKModulesTestUniPluginGetBatteryInfoOptions)
 @objcMembers
-public class GetBatteryInfoOptions : NSObject {
+public class GetBatteryInfoOptions : NSObject, UTSObject {
     public var name: String!;
     public var pwd: NSNumber!;
     public var success: ((_ res: UTSJSONObject) -> Void)?;
     public var fail: ((_ res: UTSJSONObject) -> Void)?;
     public var complete: ((_ res: UTSJSONObject) -> Void)?;
+    public subscript(_ key: String) -> Any? {
+        get {
+            return utsSubscriptGetValue(key);
+        }
+        set {
+            switch(key){
+                case "name":
+                    name = try! utsSubscriptCheckValue(newValue);
+                case "pwd":
+                    pwd = try! utsSubscriptCheckValue(newValue);
+                case "success":
+                    success = try! utsSubscriptCheckValueIfPresent(newValue);
+                case "fail":
+                    fail = try! utsSubscriptCheckValueIfPresent(newValue);
+                case "complete":
+                    complete = try! utsSubscriptCheckValueIfPresent(newValue);
+                default:
+                    break;
+            }
+        }
+    }
     public override init() {
         super.init();
     }
