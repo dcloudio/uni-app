@@ -184,7 +184,7 @@ export function getValidComponentsOrNodes(
   list: UTSJSONObject[],
   getAll = false
 ): void {
-  if (vnode == null) {
+  if (vnode == null || (!getAll && list.length > 0)) {
     return
   }
   if (isValidComponentOrNode(vnode, selector)) {

@@ -5,7 +5,7 @@ import { pageGetData, pageSetData, getPageVm, getValidComponentsOrNodes } from '
 
 export type GetDataParams = {
   pageId: string
-  path: string
+  path?: string | null
 }
 export const getData = (params: GetDataParams, callback: Callback): void => {
   const page = getPageVm(params.pageId)

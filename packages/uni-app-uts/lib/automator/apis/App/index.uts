@@ -426,8 +426,8 @@ export const callUniMethod = (
 
 export type CaptureScreenshotParams = {
   id?: string | null
-  fullPage: boolean
-  path: string
+  fullPage?: boolean | null
+  path?: string | null
 }
 export const captureScreenshot = (
   params: CaptureScreenshotParams,
@@ -436,8 +436,8 @@ export const captureScreenshot = (
   const currentPage = _getCurrentPage()
   if (currentPage != null) {
     currentPage.$viewToTempFilePath({
-      id: params.fullPage ? null : params.id,
-      wholeContent: params.fullPage,
+      id: params.fullPage === true ? null : params.id,
+      wholeContent: params.fullPage === true,
       path: params.path,
       success: (res) => {
         // @ts-ignore
