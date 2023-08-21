@@ -1,3 +1,3 @@
 import { assert } from './testUtils'
 
-console.log(assert(`<Foo v-model="model as string" />`, ``))
+console.log(assert(`<view v-if="a==1"/>`, ``))

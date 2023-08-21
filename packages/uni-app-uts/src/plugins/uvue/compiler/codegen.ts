@@ -33,8 +33,13 @@ import {
   locStub,
   toValidAssetId,
 } from '@vue/compiler-core'
-import { CodegenOptions, CodegenResult } from './options'
 import { NOOP, isArray, isString, isSymbol } from '@vue/shared'
+import { ParserPlugin, parseExpression } from '@babel/parser'
+import {
+  isCompoundExpressionNode,
+  isSimpleExpressionNode,
+} from '@dcloudio/uni-cli-shared'
+import { CodegenOptions, CodegenResult } from './options'
 import { genRenderFunctionDecl } from './utils'
 import {
   IS_TRUE,
@@ -43,6 +48,8 @@ import {
   RESOLVE_DIRECTIVE,
   RESOLVE_EASY_COMPONENT,
 } from './runtimeHelpers'
+import { stringifyExpression } from './transforms/transformExpression'
+import { isBinaryExpression } from '@babel/types'
 
 type CodegenNode = TemplateChildNode | JSChildNode | SSRCodegenNode
 
@@ -56,6 +63,7 @@ export interface CodegenContext extends Required<CodegenOptions> {
   offset: number
   indentLevel: number
   map?: SourceMapGenerator
+  expressionPlugins: ParserPlugin[]
   helper(key: symbol): string
   push(code: string, node?: CodegenNode): void
   indent(): void
@@ -92,6 +100,7 @@ function createCodegenContext(
     offset: 0,
     indentLevel: 0,
     map: undefined,
+    expressionPlugins: ['typescript'],
     matchEasyCom,
     parseUTSComponent,
     helper(key) {
@@ -638,19 +647,49 @@ function genFunctionExpression(
   }
 }
 
+const booleanBinExprOperators = ['==', '===', '!=', '!==', '<', '>', '<=', '>=']
+
+function shouldWrapperConditionalTest(
+  test: JSChildNode,
+  context: CodegenContext
+) {
+  const isSimpleExpr = isSimpleExpressionNode(test)
+  if (isSimpleExpr) {
+    const { content } = test
+    if (content === 'true' || content === 'false') {
+      return false
+    }
+  }
+  if (isSimpleExpr || isCompoundExpressionNode(test)) {
+    const code = stringifyExpression(test)
+    const ast = parseExpression(code, {
+      plugins: context.expressionPlugins,
+    })
+    if (isBinaryExpression(ast)) {
+      // 先简易解析
+      if (booleanBinExprOperators.includes(ast.operator)) {
+        return false
+      }
+    }
+  }
+
+  return true
+}
+
 function genConditionalExpression(
   node: ConditionalExpression,
   context: CodegenContext
 ) {
   const { test, consequent, alternate, newline: needNewline } = node
   const { push, indent, deindent, newline } = context
-  push(`${context.helper(IS_TRUE)}(`)
+  const wrapper = shouldWrapperConditionalTest(test, context)
+  wrapper && push(`${context.helper(IS_TRUE)}(`)
   if (test.type === NodeTypes.SIMPLE_EXPRESSION) {
     genExpression(test, context)
   } else {
     genNode(test, context)
   }
-  push(`)`)
+  wrapper && push(`)`)
   needNewline && indent()
   context.indentLevel++
   needNewline || push(` `)
