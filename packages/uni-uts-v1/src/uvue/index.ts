@@ -32,6 +32,7 @@ const DEFAULT_IMPORTS = [
   'io.dcloud.uts.Set',
   'io.dcloud.uts.UTSAndroid',
   'io.dcloud.uts.*',
+  'io.dcloud.uniapp.*',
   'io.dcloud.uniapp.framework.*',
   'io.dcloud.uniapp.vue.*',
   'io.dcloud.uniapp.vue.shared.*',

@@ -20,15 +20,15 @@ public class GetBatteryInfoOptions : NSObject, UTSObject {
         set {
             switch(key){
                 case "name":
-                    name = try! utsSubscriptCheckValue(newValue);
+                    self.name = try! utsSubscriptCheckValue(newValue);
                 case "pwd":
-                    pwd = try! utsSubscriptCheckValue(newValue);
+                    self.pwd = try! utsSubscriptCheckValue(newValue);
                 case "success":
-                    success = try! utsSubscriptCheckValueIfPresent(newValue);
+                    self.success = try! utsSubscriptCheckValueIfPresent(newValue);
                 case "fail":
-                    fail = try! utsSubscriptCheckValueIfPresent(newValue);
+                    self.fail = try! utsSubscriptCheckValueIfPresent(newValue);
                 case "complete":
-                    complete = try! utsSubscriptCheckValueIfPresent(newValue);
+                    self.complete = try! utsSubscriptCheckValueIfPresent(newValue);
                 default:
                     break;
             }
@@ -38,11 +38,11 @@ public class GetBatteryInfoOptions : NSObject, UTSObject {
         super.init();
     }
     public init(_ obj: UTSJSONObject) {
-        name = obj["name"] as! String;
-        pwd = obj["pwd"] as! NSNumber;
-        success = obj["success"] as! ((_ res: UTSJSONObject) -> Void)?;
-        fail = obj["fail"] as! ((_ res: UTSJSONObject) -> Void)?;
-        complete = obj["complete"] as! ((_ res: UTSJSONObject) -> Void)?;
+        self.name = obj["name"] as! String;
+        self.pwd = obj["pwd"] as! NSNumber;
+        self.success = obj["success"] as! ((_ res: UTSJSONObject) -> Void)?;
+        self.fail = obj["fail"] as! ((_ res: UTSJSONObject) -> Void)?;
+        self.complete = obj["complete"] as! ((_ res: UTSJSONObject) -> Void)?;
     }
 }
 public func getBatteryInfo(_ options: GetBatteryInfoOptions) {

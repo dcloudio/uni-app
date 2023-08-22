@@ -7,6 +7,7 @@ import io.dcloud.uts.Map;
 import io.dcloud.uts.Set;
 import io.dcloud.uts.UTSAndroid;
 import io.dcloud.uts.*;
+import io.dcloud.uniapp.*;
 fun test() {}
 fun testByJs() {
     return test();
