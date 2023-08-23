@@ -23,7 +23,7 @@
   ```
   pnpm add @dcloudio/%包名%@%uni-app本地仓库路径%/packages/%包名%
   ```
-* 同时将本地依赖添加 resolutions 配置，强制测试工程统一使用。
+* 同时将本地依赖添加 [resolutions](https://pnpm.io/package_json#resolutions) 配置，强制测试工程统一使用。
 * 编写测试代码。
 * 编译到对应平台进行测试。
 
