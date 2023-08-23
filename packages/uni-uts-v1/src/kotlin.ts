@@ -469,6 +469,12 @@ export function resolveKotlincArgs(
     dest,
     '-kotlin-home',
     kotlinc,
+    `-Xplugin=${path.resolve(
+      __dirname,
+      '../lib/kotlin/uts-kotlin-compiler-plugin.jar'
+    )}`,
+    '-P',
+    'plugin:io.dcloud.uts.kotlin:tag=UTS',
   ]
 }
 

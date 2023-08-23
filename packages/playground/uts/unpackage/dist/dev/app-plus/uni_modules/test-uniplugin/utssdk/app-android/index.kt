@@ -45,7 +45,8 @@ open class User : IUser {
         console.log("def android", " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:27");
         console.log("ndef ios", " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:36");
         console.log("def android || def ios", " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:39");
-        console.log((-3).inv(), " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:45");
+        val a: Number = -3;
+        console.log(a.inv(), " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:45");
         XToast<XToast<*>>(getUniActivity()).setContentView(R.layout.toast_hint).setDuration(1000).setImageDrawable(android.R.id.icon, R.mipmap.ic_dialog_tip_finish).setText(android.R.id.message, "点我消失").show();
     }
     override fun register(name: String, callback: () -> Unit) {
