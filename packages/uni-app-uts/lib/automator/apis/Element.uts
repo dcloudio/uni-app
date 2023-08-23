@@ -350,13 +350,13 @@ export type HandleTouchEventParams = {
   pageId: string
   elementId?: string | null
   nodeId?: number | null
-  eventName: string
   touches: any[]
   changedTouches: any[]
 }
 
 export const handleTouchEvent = (
   params: HandleTouchEventParams,
+  eventName: string,
   callback: Callback
 ): void => {
   const dom = getElementByIdOrNodeId(
@@ -369,11 +369,11 @@ export const handleTouchEvent = (
     const touches = getTouches(params.touches)
     const changedTouches = getTouches(params.changedTouches)
     dom.dispatchEvent(
-      params.eventName,
+      eventName,
       // @ts-ignore
-      TouchEvent(null, params.eventName, touches, changedTouches)
+      TouchEvent(null, eventName, touches, changedTouches)
     )
-    callback({ result: `Element.${params.eventName} success` }, null)
+    callback({ result: `Element.${eventName} success` }, null)
   }
 }
 

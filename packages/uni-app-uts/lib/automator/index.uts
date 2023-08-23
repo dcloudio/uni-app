@@ -182,9 +182,7 @@ export function onMessage(msg: string) {
         case 'Element.touchmove':
         case 'Element.touchend':
           // @ts-ignore
-          const _params = JSON.parse<HandleTouchEventParams>(params)!
-          _params.eventName = method.split('.')[1]
-          handleTouchEvent(_params, callback)
+          handleTouchEvent(JSON.parse<HandleTouchEventParams>(params)!, method.split('.')[1], callback)
           break
         case 'Element.getAttributes':
           // @ts-ignore
