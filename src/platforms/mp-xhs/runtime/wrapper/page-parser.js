@@ -38,36 +38,38 @@ export default function parsePage (vuePageOptions) {
     onLoad (query) {
       const properties = this.props
 
-      const options = {
+      this.__query = query
+      this.__options = {
         mpType: 'page',
         mpInstance: this,
         propsData: properties
       }
-
+    },
+    onReady () {
+      // initChildVues(this)
       // 初始化 vue 实例
-      this.$vm = new VueComponent(options)
-
-      initSpecialMethods(this)
+      this.$vm = new VueComponent(this.__options)
 
       // 触发首次 setData
       this.$vm.$mount()
 
-      const copyQuery = Object.assign({}, query)
-      delete copyQuery.__id__
+      initSpecialMethods(this)
+      this.$vm._isMounted = true
+      this.$vm.__call_hook('mounted')
 
+      // mounted => onLoad
+      this.options = this.__query
+      this.$vm.$mp.query = this.__query // 兼容 mpvue
+      const copyQuery = Object.assign({}, this.__query)
+      delete copyQuery.__id__
       this.$page = {
         fullPath: '/' + this.route + stringifyQuery(copyQuery)
       }
 
-      this.options = query
-      this.$vm.$mp.query = query // 兼容 mpvue
-      this.$vm.__call_hook('onLoad', query)
-    },
-    onReady () {
-      // initChildVues(this)
-      this.$vm._isMounted = true
-      this.$vm.__call_hook('mounted')
-      this.$vm.__call_hook('onReady')
+      this.$vm.__call_hook('onLoad', this.__query)
+      setTimeout(() => {
+        this.$vm.__call_hook('onReady')
+    });
     },
     onUnload () {
       this.$vm.__call_hook('onUnload')
