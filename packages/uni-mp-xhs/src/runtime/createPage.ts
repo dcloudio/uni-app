@@ -24,12 +24,7 @@ import {
   stringifyQuery,
 } from '@dcloudio/uni-shared'
 
-import {
-  handleRef,
-  handleLink,
-  initSpecialMethods,
-  createVueComponent,
-} from './util'
+import { handleLink, initSpecialMethods, createVueComponent } from './util'
 
 import { extend, isPlainObject } from '@vue/shared'
 
@@ -46,19 +41,23 @@ export function initCreatePage() {
         }
         // 初始化 vue 实例
         this.props = query
-        this.$vm = createVueComponent('page', this, vueOptions)
-        initSpecialMethods(this)
-        this.$vm.$callHook(ON_LOAD, query)
       },
       onShow() {
         if (__VUE_PROD_DEVTOOLS__) {
           devtoolsComponentAdded(this.$vm.$)
         }
-        this.$vm.$callHook(ON_SHOW)
+        this.$vm = createVueComponent('page', this, vueOptions)
+        this.$vm.$callHook('mounted')
+        this.$vm.$callHook(ON_LOAD, this.options)
+        initSpecialMethods(this)
+        if (this.$vm) {
+          this.$vm.$callHook(ON_SHOW)
+        }
       },
       onReady() {
-        this.$vm.$callHook('mounted')
-        this.$vm.$callHook(ON_READY)
+        setTimeout(() => {
+          this.$vm.$callHook(ON_READY)
+        }, 50)
       },
       onUnload() {
         if (this.$vm) {
@@ -66,21 +65,8 @@ export function initCreatePage() {
           $destroyComponent(this.$vm)
         }
       },
-      __r: handleRef,
       __l: handleLink,
-      __e: function (event: any) {
-        const {
-          currentTarget: { dataset },
-        } = event
-        dataset['eO'] = {
-          // eslint-disable-next-line no-restricted-syntax
-          ...dataset['eO'],
-          tap: dataset['eO']?.tap || dataset['eO']?.click,
-        }
-        // console.log('触发了page事件', event)
-        // @ts-ignore
-        return handleEvent.call(this, event)
-      },
+      __e: handleEvent,
     }
     if (isPlainObject(vueOptions.events)) {
       extend(pageOptions.events!, vueOptions.events)
