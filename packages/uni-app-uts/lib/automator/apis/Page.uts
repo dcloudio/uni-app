@@ -100,18 +100,19 @@ export type GetWindowPropertiesParams = {
 export const getWindowProperties = (params: GetWindowPropertiesParams, callback: Callback): void => {
   const page = getPageVm(params.pageId)
   if (page == null) {
-    callback(null, { errMsg: 'Page.getData:fail, Page not found.' })
+    callback(null, { errMsg: 'Page.getWindowProperties:fail, Page not found.' })
     return
   }
+  // TODO: 待客户端支持
+  // const document = page.$appPage!.document
   const properties = params.names.map((name): any | null => {
     switch (name) {
-      case 'document.documentElement.scrollTop':
-        const document = page.$appPage!.document
-        // TODO: 确认根节点
-        const scrollViews = document.getElementsByTagName('SCROLL-VIEW')
-        const scrollView = scrollViews.size > 0 ? scrollViews[0] : null
-        const scrollTop: any | null = scrollView != null ? scrollView.getAttribute('scrollTop') : 0
-        return scrollTop == null ? 0 : scrollTop
+      case 'document.documentElement.scrollWidth':
+        // return document.scrollWidth
+        return 0
+      case 'document.documentElement.scrollHeight':
+        // return document.scrollHeight
+        return 0
     }
     return null
   })

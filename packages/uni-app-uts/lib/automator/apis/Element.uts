@@ -193,14 +193,18 @@ export type CallFunctionParams = {
   functionName: string
   args: any[]
 }
-
+type Coordinate = {
+  x: number
+  y: number
+}
 export const callFunction = (
   params: CallFunctionParams,
   callback: Callback
 ): void => {
   const element = getElementById(params.pageId, params.elementId, callback)
   if (element != null) {
-    switch (params.functionName) {
+    const functionName = params.functionName
+    switch (functionName) {
       case 'input.input':
         element.dispatchEvent(
           'input',
@@ -208,8 +212,31 @@ export const callFunction = (
           InputEvent('input', InputEventDetail(params.args[0] as string, 0, 0))
         )
         break
+      case 'scroll-view.scrollTo':
+        if (element.tagName == 'SCROLL-VIEW') {
+          // @ts-ignore
+          const arg = JSON.parse<Coordinate>(JSON.stringify(params.args[0]))!
+          element.setAttribute('scrollLeft', arg.x)
+          element.setAttribute('scrollTop', arg.y)
+          callback({ result: `${functionName} success` }, null)
+        } else {
+          callback({ result: `${functionName} fail, element is not scroll-view` }, null)
+        }
+        break
+      case 'swiper.swipeTo':
+        if (element.tagName == 'SWIPER') {
+          callback(null, { errMsg: `${functionName} not support` })
+        } else {
+          callback({ result: `${functionName} fail, element is not swiper` }, null)
+          return
+        }
+        break
+      default:
+        callback(null, { errMsg: `${functionName} not support` })
+        break
     }
-    callback({ result: `Element.callFunction success` }, null)
+  } else {
+    callback(null, { errMsg: `Element not exists` })
   }
 }
 
