@@ -52,7 +52,7 @@ export const sourcemap = {
   generateCodeFrameWithSwiftStacktrace,
 }
 
-export { compileApp } from './uvue/index'
+export { compileApp, UniCloudObjectInfo, CompileAppOptions } from './uvue/index'
 
 export * from './sourceMap'
 

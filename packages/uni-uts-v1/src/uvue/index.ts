@@ -40,6 +40,11 @@ const DEFAULT_IMPORTS = [
   'io.dcloud.uniapp.extapi.*',
 ]
 
+export type UniCloudObjectInfo = {
+  name: string
+  methodList: string[]
+}
+
 export interface CompileAppOptions {
   inputDir: string
   outputDir: string
@@ -49,6 +54,7 @@ export interface CompileAppOptions {
   extApis?: Record<string, [string, string]>
   split?: boolean
   disableSplitManifest?: boolean
+  uniCloudObjectInfo?: Array<UniCloudObjectInfo>
 }
 
 export async function compileApp(entry: string, options: CompileAppOptions) {

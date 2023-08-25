@@ -114,3 +114,59 @@ export function parseUTSImportFilename(filename: string) {
     )
   )
 }
+
+type UniCloudSpace = {
+  provider: string
+  spaceName: string
+  spaceId: string
+  clientSecret?: string
+  endpoint?: string
+  workspaceFolder?: string
+}
+
+let uniCloudSpaceList: Array<UniCloudSpace>
+export function getUniCloudSpaceList(): Array<UniCloudSpace> {
+  if (uniCloudSpaceList) {
+    return uniCloudSpaceList
+  }
+  if (!process.env.UNI_CLOUD_SPACES) {
+    uniCloudSpaceList = []
+    return uniCloudSpaceList
+  }
+  try {
+    const spaces = JSON.parse(process.env.UNI_CLOUD_SPACES)
+    if (!Array.isArray(spaces)) {
+      uniCloudSpaceList = []
+      return uniCloudSpaceList
+    }
+    uniCloudSpaceList = spaces.map((space) => {
+      if (space.provider === 'tcb') {
+        space.provider = 'tencent'
+      }
+      if (space.clientSecret) {
+        return {
+          provider: space.provider,
+          spaceName: space.name,
+          spaceId: space.id,
+          clientSecret: space.clientSecret,
+          endpoint: space.apiEndpoint,
+          workspaceFolder: space.workspaceFolder,
+        }
+      } else {
+        return {
+          provider: space.provider,
+          spaceName: space.name,
+          spaceId: space.id,
+          workspaceFolder: space.workspaceFolder,
+        }
+      }
+    })
+  } catch (e) {
+    console.error(e)
+  }
+  uniCloudSpaceList = uniCloudSpaceList || []
+  if (uniCloudSpaceList.length > 1) {
+    console.warn('Multi uniCloud space is not supported yet.')
+  }
+  return uniCloudSpaceList
+}
