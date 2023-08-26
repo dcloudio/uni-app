@@ -69,7 +69,7 @@ export default function parsePage (vuePageOptions) {
       this.$vm.__call_hook('onLoad', this.__query)
       setTimeout(() => {
         this.$vm.__call_hook('onReady')
-    });
+      })
     },
     onUnload () {
       this.$vm.__call_hook('onUnload')
