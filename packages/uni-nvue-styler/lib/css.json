@@ -2377,6 +2377,29 @@
 			]
 		},
 		{
+			"name": "letter-spacing",
+			"restrictions": [
+				"length"
+			],
+			"syntax": "<length>",
+			"uniPlatform": {
+				"app": {
+					"android": {
+						"osVer": "4.4",
+						"uniVer": "√",
+						"unixVer": "3.9.0"
+					},
+					"ios": {
+						"osVer": "9.0",
+						"uniVer": "√"
+					}
+				}
+			},
+			"unixTags": [
+				"text"
+			]
+		},
+		{
 			"name": "box-shadow",
 			"restrictions": [
 				"enum",
