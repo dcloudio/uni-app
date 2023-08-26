@@ -1,4 +1,5 @@
 const DEFAULT_KEYS = [
+  'UNI-APP-X',
   'VUE2',
   'VUE3',
   'MP',
