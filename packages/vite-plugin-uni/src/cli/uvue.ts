@@ -61,12 +61,14 @@ export async function runUVueDev(options: CliOptions & ServerOptions) {
         return
       }
       if (dex) {
+        const files = JSON.parse(dex)
+        if (!files.length) {
+          // 本次无变动
+          return output('log', M['uvue.dev.watching.end.empty'])
+        }
         return output(
           'log',
-          M['dev.watching.end.files'].replace(
-            '{files}',
-            JSON.stringify(JSON.parse(dex))
-          )
+          M['dev.watching.end.files'].replace('{files}', JSON.stringify(files))
         )
       }
       return output('log', M['dev.watching.end'])

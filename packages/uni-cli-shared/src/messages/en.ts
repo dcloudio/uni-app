@@ -51,4 +51,6 @@ export default {
   'prompt.run.devtools.quickapp-webview-huawei': 'Huawei Quick App Devtools',
   'prompt.run.devtools.quickapp-webview-union': 'Quick App Alliance Devtools',
   'uvue.unsupported': 'uvue does not support {platform} platform',
+  'uvue.dev.watching.end.empty':
+    'The compilation outcome remains unchanged; there is no need to synchronize.',
 } as const

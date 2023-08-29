@@ -51,4 +51,6 @@ export default {
   'prompt.run.devtools.quickapp-webview-huawei': '华为快应用开发者工具',
   'prompt.run.devtools.quickapp-webview-union': '快应用联盟开发者工具',
   'uvue.unsupported': 'uvue 暂不支持 {platform} 平台',
+  'uvue.dev.watching.end.empty':
+    '本次代码变更，编译结果未发生变化，跳过同步手机端程序文件。',
 } as const
