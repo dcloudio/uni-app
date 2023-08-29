@@ -21,6 +21,7 @@ import {
   getCompilerServer,
   getUTSCompiler,
   resolveUniAppXSourceMapPath,
+  isUniCloudSupported,
 } from '../utils'
 
 const DEFAULT_IMPORTS = [
@@ -70,6 +71,10 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
     uni_modules,
     extApis,
   } = options
+
+  if (isUniCloudSupported()) {
+    imports.push('io.dcloud.unicloud.*')
+  }
 
   const input: UTSInputOptions = {
     root: inputDir,

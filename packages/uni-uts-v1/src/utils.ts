@@ -452,3 +452,18 @@ export function resolveUniAppXSourceMapFile(
     ) + '.map'
   )
 }
+
+export function isUniCloudSupported() {
+  if (!process.env.UNI_CLOUD_SPACES) {
+    return false
+  }
+  try {
+    const spaces = JSON.parse(process.env.UNI_CLOUD_SPACES)
+    if (Array.isArray(spaces) && spaces.length > 0) {
+      return true
+    }
+    return false
+  } catch (e) {
+    return false
+  }
+}

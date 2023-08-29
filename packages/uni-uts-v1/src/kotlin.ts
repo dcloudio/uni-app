@@ -27,6 +27,7 @@ import {
   parseKotlinPackageWithPluginId,
   isColorSupported,
   resolveSourceMapFile,
+  isUniCloudSupported,
 } from './utils'
 import { Module } from '../types/types'
 import { parseUTSKotlinStacktrace, parseUTSSyntaxError } from './stacktrace'
@@ -400,6 +401,9 @@ export async function compile(
   const rClass = resolveAndroidResourceClass(filename)
   if (rClass) {
     imports.push(rClass)
+  }
+  if (isUniCloudSupported()) {
+    imports.push('io.dcloud.unicloud.*')
   }
   const componentsCode = genComponentsCode(filename, components, isX)
   const { package: pluginPackage, id: pluginId } = parseKotlinPackage(filename)
