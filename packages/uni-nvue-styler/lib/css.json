@@ -132,6 +132,40 @@
 							}
 						}
 					}
+				},
+				{
+					"name": "auto",
+					"uniPlatform": {
+						"app": {
+							"android": {
+								"osVer": "4.4",
+								"uniVer": "√",
+								"unixVer": "x"
+							},
+							"ios": {
+								"osVer": "9.0",
+								"uniVer": "√",
+								"unixVer": "x"
+							}
+						}
+					}
+				},
+				{
+					"name": "none",
+					"uniPlatform": {
+						"app": {
+							"android": {
+								"osVer": "4.4",
+								"uniVer": "√",
+								"unixVer": "x"
+							},
+							"ios": {
+								"osVer": "9.0",
+								"uniVer": "√",
+								"unixVer": "x"
+							}
+						}
+					}
 				}
 			],
 			"uniPlatform": {
@@ -191,6 +225,40 @@
 				},
 				{
 					"name": "min-content",
+					"uniPlatform": {
+						"app": {
+							"android": {
+								"osVer": "4.4",
+								"uniVer": "√",
+								"unixVer": "x"
+							},
+							"ios": {
+								"osVer": "9.0",
+								"uniVer": "√",
+								"unixVer": "x"
+							}
+						}
+					}
+				},
+				{
+					"name": "auto",
+					"uniPlatform": {
+						"app": {
+							"android": {
+								"osVer": "4.4",
+								"uniVer": "√",
+								"unixVer": "x"
+							},
+							"ios": {
+								"osVer": "9.0",
+								"uniVer": "√",
+								"unixVer": "x"
+							}
+						}
+					}
+				},
+				{
+					"name": "none",
 					"uniPlatform": {
 						"app": {
 							"android": {
@@ -352,6 +420,40 @@
 							}
 						}
 					}
+				},
+				{
+					"name": "auto",
+					"uniPlatform": {
+						"app": {
+							"android": {
+								"osVer": "4.4",
+								"uniVer": "√",
+								"unixVer": "x"
+							},
+							"ios": {
+								"osVer": "9.0",
+								"uniVer": "√",
+								"unixVer": "x"
+							}
+						}
+					}
+				},
+				{
+					"name": "none",
+					"uniPlatform": {
+						"app": {
+							"android": {
+								"osVer": "4.4",
+								"uniVer": "√",
+								"unixVer": "x"
+							},
+							"ios": {
+								"osVer": "9.0",
+								"uniVer": "√",
+								"unixVer": "x"
+							}
+						}
+					}
 				}
 			],
 			"uniPlatform": {
@@ -411,6 +513,40 @@
 				},
 				{
 					"name": "min-content",
+					"uniPlatform": {
+						"app": {
+							"android": {
+								"osVer": "4.4",
+								"uniVer": "√",
+								"unixVer": "x"
+							},
+							"ios": {
+								"osVer": "9.0",
+								"uniVer": "√",
+								"unixVer": "x"
+							}
+						}
+					}
+				},
+				{
+					"name": "auto",
+					"uniPlatform": {
+						"app": {
+							"android": {
+								"osVer": "4.4",
+								"uniVer": "√",
+								"unixVer": "x"
+							},
+							"ios": {
+								"osVer": "9.0",
+								"uniVer": "√",
+								"unixVer": "x"
+							}
+						}
+					}
+				},
+				{
+					"name": "none",
 					"uniPlatform": {
 						"app": {
 							"android": {
@@ -508,6 +644,7 @@
 		},
 		{
 			"name": "z-index",
+			"description": "z-index 属性设定了一个定位元素及其后代元素或 flex 项目的 z-order。当元素之间重叠的时候，z-index 较大的元素会覆盖较小的元素在上层进行显示。在App端 z-index 属性仅在同级元素中生效，同级元素中 z-index 较大的元素会覆盖较小的元素在上层进行显示，没有设置 z-index 值时，同级元素中写在后面的元素覆盖写在前面的元素。",
 			"restrictions": [
 				"integer"
 			],
@@ -734,6 +871,57 @@
 		},
 		{
 			"name": "align-items",
+			"restrictions": [
+				"enum"
+			],
+			"syntax": "center | flex-start | flex-end | stretch | baseline",
+			"values": [
+				{
+					"name": "center"
+				},
+				{
+					"name": "flex-start"
+				},
+				{
+					"name": "flex-end"
+				},
+				{
+					"name": "stretch"
+				},
+				{
+					"name": "baseline",
+					"uniPlatform": {
+						"app": {
+							"android": {
+								"osVer": "4.4",
+								"uniVer": "√",
+								"unixVer": "x"
+							},
+							"ios": {
+								"osVer": "9.0",
+								"uniVer": "√",
+								"unixVer": "x"
+							}
+						}
+					}
+				}
+			],
+			"uniPlatform": {
+				"app": {
+					"android": {
+						"osVer": "4.4",
+						"uniVer": "√",
+						"unixVer": "3.9.0"
+					},
+					"ios": {
+						"osVer": "9.0",
+						"uniVer": "√"
+					}
+				}
+			}
+		},
+		{
+			"name": "align-self",
 			"restrictions": [
 				"enum"
 			],
