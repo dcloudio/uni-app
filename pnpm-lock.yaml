@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 overrides:
   '@babel/plugin-transform-block-scoping': 7.19.4
 
@@ -375,9 +379,6 @@ importers:
       '@dcloudio/uni-shared':
         specifier: 3.0.0-alpha-3090020230826001
         version: link:../uni-shared
-      '@dcloudio/uni-uts-v1':
-        specifier: 3.0.0-alpha-3090020230826001
-        version: link:../uni-uts-v1
       '@rollup/pluginutils':
         specifier: ^4.2.0
         version: 4.2.0
@@ -10914,7 +10915,3 @@ packages:
     optionalDependencies:
       commander: 9.5.0
     dev: true
-
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false
