@@ -22,35 +22,11 @@ import {
   parseUTSRelativeFilename,
   uvueOutDir,
   getUniCloudSpaceList,
+  getUniCloudObjectInfo,
 } from './utils'
-import type { UniCloudObjectInfo } from '@dcloudio/uni-uts-v1'
 import('./errorReporting')
 
 const uniCloudSpaceList = getUniCloudSpaceList()
-
-function getUniCloudObjectInfo(): Array<UniCloudObjectInfo> {
-  if (!uniCloudSpaceList || uniCloudSpaceList.length === 0) {
-    return []
-  }
-  try {
-    const { getWorkspaceObjectInfo } = require('../../lib/unicloud-utils')
-    const space = uniCloudSpaceList[0]
-    let uniCloudWorkspaceFolder: string
-    if (space.workspaceFolder) {
-      uniCloudWorkspaceFolder = space.workspaceFolder
-    } else {
-      uniCloudWorkspaceFolder = process.env.UNI_INPUT_DIR.endsWith('src')
-        ? path.resolve(process.env.UNI_INPUT_DIR, '..')
-        : process.env.UNI_INPUT_DIR
-    }
-    const serviceProvider =
-      space.provider === 'tencent' ? 'tcb' : space.provider
-    return getWorkspaceObjectInfo(uniCloudWorkspaceFolder, serviceProvider)
-  } catch (e) {
-    console.error(e)
-    return []
-  }
-}
 
 const REMOVED_PLUGINS = [
   'vite:build-metadata',
@@ -167,7 +143,7 @@ export function uniAppUTSPlugin(): UniVitePlugin {
       const res = await resolveUTSCompiler().compileApp(
         path.join(tempOutputDir, 'index.uts'),
         {
-          uniCloudObjectInfo: getUniCloudObjectInfo(),
+          uniCloudObjectInfo: getUniCloudObjectInfo(uniCloudSpaceList),
           split: split !== false,
           disableSplitManifest: process.env.NODE_ENV !== 'development',
           inputDir: tempOutputDir,

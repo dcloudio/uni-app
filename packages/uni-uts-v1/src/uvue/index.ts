@@ -40,7 +40,7 @@ const DEFAULT_IMPORTS = [
   'io.dcloud.uniapp.extapi.*',
 ]
 
-export type UniCloudObjectInfo = {
+type UniCloudObjectInfo = {
   name: string
   methodList: string[]
 }

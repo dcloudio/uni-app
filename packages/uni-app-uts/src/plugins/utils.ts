@@ -170,3 +170,35 @@ export function getUniCloudSpaceList(): Array<UniCloudSpace> {
   }
   return uniCloudSpaceList
 }
+
+// TODO copy from uni-uts-v1 compiler, should be refactor
+type UniCloudObjectInfo = {
+  name: string
+  methodList: string[]
+}
+
+export function getUniCloudObjectInfo(
+  uniCloudSpaceList: Array<UniCloudSpace>
+): Array<UniCloudObjectInfo> {
+  if (!uniCloudSpaceList || uniCloudSpaceList.length === 0) {
+    return []
+  }
+  try {
+    const { getWorkspaceObjectInfo } = require('../../lib/unicloud-utils')
+    const space = uniCloudSpaceList[0]
+    let uniCloudWorkspaceFolder: string
+    if (space.workspaceFolder) {
+      uniCloudWorkspaceFolder = space.workspaceFolder
+    } else {
+      uniCloudWorkspaceFolder = process.env.UNI_INPUT_DIR.endsWith('src')
+        ? path.resolve(process.env.UNI_INPUT_DIR, '..')
+        : process.env.UNI_INPUT_DIR
+    }
+    const serviceProvider =
+      space.provider === 'tencent' ? 'tcb' : space.provider
+    return getWorkspaceObjectInfo(uniCloudWorkspaceFolder, serviceProvider)
+  } catch (e) {
+    console.error(e)
+    return []
+  }
+}
