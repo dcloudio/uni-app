@@ -1,4 +1,4 @@
-import { NormalizeOptions } from '../utils'
+import { NormalizeOptions, supportedEnumReason } from '../utils'
 import { camelize } from '@vue/shared'
 import { CssJSON, Normalize, Property, Restriction } from '../utils'
 import { normalizeColor } from './color'
@@ -11,13 +11,32 @@ import { normalizeString } from './string'
 import { normalizeShorthandLength } from './shorthandLength'
 import { normalizeTransform } from './transform'
 import { normalizeInterval } from './interval'
-import { normalizeProperty } from './property'
 import { normalizeTimingFunction } from './timingFunction'
 import { createCombinedNormalize } from './combined'
 import { normalizeGradient, normalizeUrl } from './image'
 import { normalizePlatform } from './platform'
 import { normalizeShorthandProperty } from './shorthandProperty'
 import { normalizeFontFace, normalizeSrc } from './fontFace'
+
+// 从 property.ts 中移动到 map 里，避免循环依赖
+const normalizeProperty: Normalize = (v, options) => {
+  v = (v || '').toString()
+  v = v
+    .split(/\s*,\s*/)
+    .map(camelize)
+    .join(',')
+
+  if (v.split(/\s*,\s*/).every((p) => !!getNormalizeMap(options)[p])) {
+    return { value: v }
+  }
+
+  return {
+    value: null,
+    reason: function reason(k, v, result) {
+      return supportedEnumReason(k, v, ['css property'])
+    },
+  }
+}
 
 export const normalizeDefault: Normalize = (v) => {
   return { value: v }

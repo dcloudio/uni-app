@@ -26,7 +26,7 @@ export type Normalize = (
   ) => string
 }
 
-export enum Restriction {
+export const enum Restriction {
   ANGLE = 'angle', // "角度"
   BOX = 'box', // "区域"
   COLOR = 'color', // "颜色"
