@@ -367,7 +367,7 @@ export const longpress = (
     dom.dispatchEvent(
       'longpress',
       // @ts-ignore
-      MouseEvent('longpress', x.toFloat(), y.toFloat())
+      TouchEvent(null, 'longpress', getTouches([]), getTouches([]))
     )
     callback({ result: `Element.longpress success` }, null)
   }
