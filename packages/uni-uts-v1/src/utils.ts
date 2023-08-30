@@ -467,3 +467,12 @@ export function isUniCloudSupported() {
     return false
   }
 }
+
+export function parseExtApiDefaultParameters() {
+  const json = require('../lib/ext-api/default-parameters.json')
+  const res: Record<string, string> = {}
+  Object.keys(json).forEach((key) => {
+    Object.assign(res, json[key])
+  })
+  return res
+}

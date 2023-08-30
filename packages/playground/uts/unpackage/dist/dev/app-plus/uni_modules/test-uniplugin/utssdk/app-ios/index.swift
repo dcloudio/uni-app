@@ -1,6 +1,6 @@
+import CoreLocation;
 import DCloudUTSFoundation;
 import UIKit;
-import CoreLocation;
 import DCloudUTSExtAPI;
 public var uni_showToast = DCloudUTSExtAPI.showToast;
 public var uni_showModel = DCloudUTSExtAPI.showModel;

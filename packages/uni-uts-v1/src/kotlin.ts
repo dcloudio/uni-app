@@ -28,6 +28,7 @@ import {
   isColorSupported,
   resolveSourceMapFile,
   isUniCloudSupported,
+  parseExtApiDefaultParameters,
 } from './utils'
 import { Module } from '../types/types'
 import { parseUTSKotlinStacktrace, parseUTSSyntaxError } from './stacktrace'
@@ -442,6 +443,7 @@ export async function compile(
       transform: {
         uniExtApiDefaultNamespace: 'io.dcloud.uniapp.extapi',
         uniExtApiNamespaces: extApis,
+        uniExtApiDefaultParameters: parseExtApiDefaultParameters(),
         ...transform,
       },
     },

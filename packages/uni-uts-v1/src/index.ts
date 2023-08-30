@@ -98,13 +98,14 @@ function createResult(
 interface CompilerOptions {
   isX: boolean
   isPlugin: boolean
+  isExtApi?: boolean
   extApis?: Record<string, [string, string]>
   transform?: UTSOutputOptions['transform']
 }
 
 export async function compile(
   pluginDir: string,
-  { isX, isPlugin, extApis, transform }: CompilerOptions = {
+  { isX, isPlugin, extApis, isExtApi, transform }: CompilerOptions = {
     isX: false,
     isPlugin: true,
   }
@@ -154,6 +155,7 @@ export async function compile(
         moduleType: process.env.UNI_UTS_MODULE_TYPE || '',
         meta,
         inputDir,
+        isExtApi,
       },
       pkg
     )

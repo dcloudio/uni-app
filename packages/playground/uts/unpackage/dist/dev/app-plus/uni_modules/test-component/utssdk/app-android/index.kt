@@ -1,22 +1,22 @@
 package uts.modules.modules.testComponent;
-import kotlinx.coroutines.async;
+import io.dcloud.uts.*;
+import io.dcloud.uts.Map;
 import kotlinx.coroutines.CoroutineScope;
 import kotlinx.coroutines.Deferred;
 import kotlinx.coroutines.Dispatchers;
-import io.dcloud.uts.Map;
-import io.dcloud.uts.*;
-import android.animation.Animator;
-import android.text.TextUtils;
-import android.view.View;
-import com.airbnb.lottie.LottieAnimationView;
-import com.airbnb.lottie.LottieDrawable;
-import io.dcloud.uts.component.UTSComponent;
-import io.dcloud.uts.component.UTSSize;
-import com.taobao.weex.annotation.JSMethod;
-import com.taobao.weex.ui.component.WXComponentProp;
-import io.dcloud.feature.uniapp.UniSDKInstance;
+import kotlinx.coroutines.async;
 import io.dcloud.feature.uniapp.ui.action.AbsComponentData;
 import io.dcloud.feature.uniapp.ui.component.AbsVContainer;
+import android.animation.Animator;
+import com.taobao.weex.annotation.JSMethod;
+import com.airbnb.lottie.LottieAnimationView;
+import com.airbnb.lottie.LottieDrawable;
+import android.text.TextUtils;
+import io.dcloud.uts.component.UTSComponent;
+import io.dcloud.uts.component.UTSSize;
+import io.dcloud.feature.uniapp.UniSDKInstance;
+import android.view.View;
+import com.taobao.weex.ui.component.WXComponentProp;
 open class CustomAnimListener : Animator.AnimatorListener {
     open var comp: UTSComponent<LottieAnimationView>;
     constructor(com: UTSComponent<LottieAnimationView>) : super() {

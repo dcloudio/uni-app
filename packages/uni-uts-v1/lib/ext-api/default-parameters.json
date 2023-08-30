@@ -1,0 +1,22 @@
+{
+  "uni-route": {
+    "navigateBack": "null"
+  },
+  "uni-ui": {
+    "startPullDownRefresh": "null",
+    "showTabBar": "null",
+    "hideTabBar": "null"
+  },
+  "uni-exit": {
+    "exit": "null"
+  },
+  "uni-getAppBaseInfo": {
+    "getAppBaseInfo": "null"
+  },
+  "uni-getDeviceInfo": {
+    "getDeviceInfo": "null"
+  },
+  "uni-storage": {
+    "clearStorage": "null"
+  }
+}

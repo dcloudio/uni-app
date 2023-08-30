@@ -22,6 +22,7 @@ import {
   getUTSCompiler,
   resolveUniAppXSourceMapPath,
   isUniCloudSupported,
+  parseExtApiDefaultParameters,
 } from '../utils'
 
 const DEFAULT_IMPORTS = [
@@ -115,6 +116,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
       transform: {
         uniExtApiDefaultNamespace: 'io.dcloud.uniapp.extapi',
         uniExtApiNamespaces: extApis,
+        uniExtApiDefaultParameters: parseExtApiDefaultParameters(),
         uvueClassNamePrefix: 'Gen',
       },
     },
