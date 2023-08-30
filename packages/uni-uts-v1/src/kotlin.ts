@@ -412,7 +412,9 @@ export async function compile(
     root: inputDir,
     filename,
     pluginId,
-    paths: {},
+    paths: {
+      vue: 'io.dcloud.uniapp.vue',
+    },
   }
   const isUTSFileExists = fs.existsSync(filename)
   if (componentsCode) {
