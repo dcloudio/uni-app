@@ -259,10 +259,10 @@ export const tap = (params: TapParams, callback: Callback): void => {
     const _float = num.toFloat()
     dom.dispatchEvent(
       'click',
-      // @ts-ignore
-      MouseEvent(
+      new MouseEvent(
         'click',
         _float,
+        // @ts-ignore
         _float,
         _float,
         _float,
