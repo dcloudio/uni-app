@@ -4,8 +4,8 @@
   },
   "uni-ui": {
     "startPullDownRefresh": "null",
-    "showTabBar": "null",
-    "hideTabBar": "null"
+    "hideTabBar": "null",
+    "showTabBar": "null"
   },
   "uni-exit": {
     "exit": "null"
