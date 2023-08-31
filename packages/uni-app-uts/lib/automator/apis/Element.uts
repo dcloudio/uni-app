@@ -209,7 +209,11 @@ export const callFunction = (
         element.dispatchEvent(
           'input',
           // @ts-ignore
-          InputEvent('input', InputEventDetail(params.args[0] as string, 0, 0))
+          new InputEvent(
+            'input',
+            // @ts-ignore
+            InputEventDetail(params.args[0] as string, 0, 0)
+          )
         )
         break
       case 'scroll-view.scrollTo':
@@ -220,14 +224,20 @@ export const callFunction = (
           element.setAttribute('scrollTop', arg.y)
           callback({ result: `${functionName} success` }, null)
         } else {
-          callback({ result: `${functionName} fail, element is not scroll-view` }, null)
+          callback(
+            { result: `${functionName} fail, element is not scroll-view` },
+            null
+          )
         }
         break
       case 'swiper.swipeTo':
         if (element.tagName == 'SWIPER') {
           callback(null, { errMsg: `${functionName} not support` })
         } else {
-          callback({ result: `${functionName} fail, element is not swiper` }, null)
+          callback(
+            { result: `${functionName} fail, element is not swiper` },
+            null
+          )
           return
         }
         break
@@ -381,7 +391,7 @@ export const longpress = (
     dom.dispatchEvent(
       'longpress',
       // @ts-ignore
-      TouchEvent(null, 'longpress', getTouches([]), getTouches([]))
+      new TouchEvent(null, 'longpress', getTouches([]), getTouches([]))
     )
     callback({ result: `Element.longpress success` }, null)
   }
@@ -412,7 +422,7 @@ export const handleTouchEvent = (
     dom.dispatchEvent(
       eventName,
       // @ts-ignore
-      TouchEvent(null, eventName, touches, changedTouches)
+      new TouchEvent(null, eventName, touches, changedTouches)
     )
     callback({ result: `Element.${eventName} success` }, null)
   }
