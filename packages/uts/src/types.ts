@@ -57,6 +57,7 @@ export type UTSOutputOptions = {
     disableReactiveObject?: boolean
     reactiveObjects?: string[]
     reactiveAll?: boolean
+    uniCloudObjectInfo?: { name: string; methodList: string[] }[]
   }
 }
 export interface UTSOptions {

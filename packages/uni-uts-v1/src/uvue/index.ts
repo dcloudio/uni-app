@@ -118,6 +118,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
         uniExtApiNamespaces: extApis,
         uniExtApiDefaultParameters: parseExtApiDefaultParameters(),
         uvueClassNamePrefix: 'Gen',
+        uniCloudObjectInfo: options.uniCloudObjectInfo,
       },
     },
   }
