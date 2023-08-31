@@ -403,7 +403,7 @@ export async function compile(
   if (rClass) {
     imports.push(rClass)
   }
-  if (isUniCloudSupported()) {
+  if (isUniCloudSupported() || process.env.NODE_ENV !== 'production') {
     imports.push('io.dcloud.unicloud.*')
   }
   const componentsCode = genComponentsCode(filename, components, isX)

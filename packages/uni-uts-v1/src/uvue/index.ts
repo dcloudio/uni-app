@@ -73,7 +73,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
     extApis,
   } = options
 
-  if (isUniCloudSupported()) {
+  if (isUniCloudSupported() || process.env.NODE_ENV !== 'production') {
     imports.push('io.dcloud.unicloud.*')
   }
 
