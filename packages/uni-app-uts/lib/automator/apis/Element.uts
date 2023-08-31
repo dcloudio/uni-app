@@ -254,10 +254,24 @@ export const tap = (params: TapParams, callback: Callback): void => {
     callback
   )
   if (dom != null) {
-    const x: number = 0
-    const y: number = 0
+    const num = 0
     // @ts-ignore
-    dom.dispatchEvent('click', MouseEvent('click', x.toFloat(), y.toFloat()))
+    const _float = num.toFloat()
+    dom.dispatchEvent(
+      'click',
+      // @ts-ignore
+      MouseEvent(
+        'click',
+        _float,
+        _float,
+        _float,
+        _float,
+        _float,
+        _float,
+        _float,
+        _float
+      )
+    )
     callback({ result: `Element.tap success` }, null)
   }
 }
