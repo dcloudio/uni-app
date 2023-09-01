@@ -727,6 +727,44 @@ flexBasis: fill;
       })
     )
   })
+  test('line-height', async () => {
+    const { json, messages } = await objectifierRule(`
+.foo {
+  line-height: 16px;
+}
+.bar {
+  line-height: 1.5;
+}
+.baz {
+  line-height: 2em;
+}
+.boo {
+  line-height: abc;
+}
+`)
+    expect(json).toEqual({
+      foo: {
+        '': {
+          lineHeight: '16px',
+        },
+      },
+      bar: {
+        '': {
+          lineHeight: 1.5,
+        },
+      },
+      baz: {
+        '': {
+          lineHeight: '2em',
+        },
+      },
+    })
+    expect(messages[0]).toEqual(
+      expect.objectContaining({
+        text: 'ERROR: property value `abc` is not supported for `line-height` (supported values are: `number`|`pixel`|`em`)',
+      })
+    )
+  })
   test('current platform unsupported', async () => {
     const { json, messages } = await objectifierRule(`
 .foo {

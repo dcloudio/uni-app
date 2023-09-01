@@ -64,3 +64,24 @@ export const normalizePercent: Normalize = (v: string | number) => {
     },
   }
 }
+
+export const normalizeLineHeight: Normalize = (v: string | number) => {
+  v = (v || '').toString()
+  const match = v.match(LENGTH_REGEXP)
+
+  if (match) {
+    var unit = match[1]
+    if (!unit) {
+      return { value: parseFloat(v) }
+    } else if (['px', 'rpx', 'em'].includes(unit)) {
+      return { value: v }
+    }
+  }
+
+  return {
+    value: null,
+    reason(k, v, result) {
+      return supportedEnumReason(k, v, ['number', 'pixel', 'em'])
+    },
+  }
+}

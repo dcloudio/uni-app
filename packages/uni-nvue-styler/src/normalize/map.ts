@@ -5,7 +5,11 @@ import { normalizeColor } from './color'
 import { createEnumNormalize, createEnumNormalizeWithPlatform } from './enum'
 import { normalizeFlexWrap } from './flexWrap'
 import { normalizeInteger } from './integer'
-import { normalizeLength, normalizePercent } from './length'
+import {
+  normalizeLength,
+  normalizeLineHeight,
+  normalizePercent,
+} from './length'
 import { normalizeNumber } from './number'
 import { normalizeString } from './string'
 import { normalizeShorthandLength } from './shorthandLength'
@@ -167,6 +171,7 @@ const uvueNormalizeMap: Record<string, Normalize> = {
   boxShadow: normalizeDefault,
   transitionProperty: normalizeProperty,
   transitionTimingFunction: normalizeTimingFunction,
+  lineHeight: normalizeLineHeight,
 }
 
 const restrictionMap: Partial<Record<Restriction, Normalize>> = {
