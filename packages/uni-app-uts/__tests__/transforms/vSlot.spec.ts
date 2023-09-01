@@ -128,20 +128,16 @@ const _component_Foo = resolveComponent("Foo")
     )
   })
 
-  test('slot in text', () => {
+  test('slot with fallback', () => {
     assert(
-      `<view><text><slot/></text></view>`,
-      `@Suppress("UNUSED_PARAMETER") function PagesIndexIndexRender(): VNode | null {
-const _ctx = this
-  return createElementVNode("view", null, [
-    createElementVNode("text", null, [
-      renderSlot(_ctx.$slots, "default")
-    ])
+      `<view><slot><view></view></slot></view>`,
+      `createElementVNode("view", null, [
+  renderSlot(_ctx.$slots, "default", {}, (): any[] => [
+    createElementVNode("view")
   ])
-}`,
+])`,
       {
         targetLanguage: 'kotlin',
-        mode: 'function',
       }
     )
   })

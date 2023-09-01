@@ -609,7 +609,7 @@ function genFunctionExpression(
     genNode(params, context)
   }
   if ((node as any).returnType) {
-    push(`):${(node as any).returnType} => `)
+    push(`): ${(node as any).returnType} => `)
   } else {
     if (isSlot) {
       // TODO: supplement types slots params type based on user-defined slots
