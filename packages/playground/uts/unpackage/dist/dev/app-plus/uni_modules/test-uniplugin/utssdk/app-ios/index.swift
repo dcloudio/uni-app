@@ -91,14 +91,10 @@ public class Test : NSObject {
         #endif
         if #available(iOS 14, macOS 11.0, *) {
             console.log("iOS 14, macOS 11.0, *", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:72");
-        } else {
-            if #available(iOS 13,*) {
-                console.log("iOS 13,*", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:74");
-            } else {
-                if #unavailable(tvOS 12) {
-                    console.log("tvOS 12", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:76");
-                }
-            }
+        } else if #available(iOS 13,*) {
+            console.log("iOS 13,*", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:74");
+        } else if #unavailable(tvOS 12) {
+            console.log("tvOS 12", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:76");
         }
         return nil;
     }

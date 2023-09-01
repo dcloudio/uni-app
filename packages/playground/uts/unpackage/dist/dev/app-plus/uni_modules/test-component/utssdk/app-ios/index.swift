@@ -44,13 +44,11 @@ public class AnimationViewComponent : UTSComponent<UIView> {
             } else {
                 self.animationView.loopMode = LottieLoopMode.playOnce;
             }
-        } else {
-            if (repeatMode == "REVERSE") {
-                if (self.loop) {
-                    self.animationView.loopMode = LottieLoopMode.autoReverse;
-                } else {
-                    self.animationView.loopMode = LottieLoopMode.repeatBackwards(1);
-                }
+        } else if (repeatMode == "REVERSE") {
+            if (self.loop) {
+                self.animationView.loopMode = LottieLoopMode.autoReverse;
+            } else {
+                self.animationView.loopMode = LottieLoopMode.repeatBackwards(1);
             }
         }
     }

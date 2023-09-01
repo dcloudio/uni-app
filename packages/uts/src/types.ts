@@ -61,6 +61,7 @@ export type UTSOutputOptions = {
   }
 }
 export interface UTSOptions {
+  mode?: string
   input: UTSInputOptions
   output: UTSOutputOptions
 }

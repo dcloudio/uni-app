@@ -431,6 +431,7 @@ export async function compile(
     }
   }
   const options: UTSBundleOptions = {
+    mode: process.env.NODE_ENV,
     input,
     output: {
       isX,

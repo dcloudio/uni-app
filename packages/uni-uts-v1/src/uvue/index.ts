@@ -94,6 +94,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
   }
 
   const bundleOptions: UTSBundleOptions = {
+    mode: process.env.NODE_ENV,
     input,
     output: {
       isX: true,
