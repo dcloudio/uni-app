@@ -644,7 +644,7 @@
 		},
 		{
 			"name": "z-index",
-			"description": "z-index 属性设定了一个定位元素及其后代元素或 flex 项目的 z-order。当元素之间重叠的时候，z-index 较大的元素会覆盖较小的元素在上层进行显示。在App端 z-index 属性仅在同级元素中生效，同级元素中 z-index 较大的元素会覆盖较小的元素在上层进行显示，没有设置 z-index 值时，同级元素中写在后面的元素覆盖写在前面的元素。",
+			"description": "z-index 属性设定了一个定位元素及其后代元素或 flex 项目的 z-order。当元素之间重叠的时候，z-index 较大的元素会覆盖较小的元素在上层进行显示。",
 			"restrictions": [
 				"integer"
 			],
@@ -1174,6 +1174,7 @@
 		},
 		{
 			"name": "display",
+			"description": "CSS display 属性设置元素的布局方式，默认值为flex（弹性布局）。",
 			"restrictions": [
 				"enum"
 			],
@@ -1212,6 +1213,57 @@
 				},
 				{
 					"name": "hidden"
+				},
+				{
+					"name": "scroll",
+					"uniPlatform": {
+						"app": {
+							"android": {
+								"osVer": "4.4",
+								"uniVer": "√",
+								"unixVer": "x"
+							},
+							"ios": {
+								"osVer": "9.0",
+								"uniVer": "√",
+								"unixVer": "x"
+							}
+						}
+					}
+				},
+				{
+					"name": "auto",
+					"uniPlatform": {
+						"app": {
+							"android": {
+								"osVer": "4.4",
+								"uniVer": "√",
+								"unixVer": "x"
+							},
+							"ios": {
+								"osVer": "9.0",
+								"uniVer": "√",
+								"unixVer": "x"
+							}
+						}
+					}
+				},
+				{
+					"name": "clip",
+					"uniPlatform": {
+						"app": {
+							"android": {
+								"osVer": "4.4",
+								"uniVer": "√",
+								"unixVer": "x"
+							},
+							"ios": {
+								"osVer": "9.0",
+								"uniVer": "√",
+								"unixVer": "x"
+							}
+						}
+					}
 				}
 			],
 			"uniPlatform": {
@@ -2168,6 +2220,7 @@
 		},
 		{
 			"name": "font-size",
+			"description": "font-size CSS 属性设置字体大小。更改字体大小还会更新字体大小相关的 &ltlength&gt 单位，如例如line-font的 em 等。",
 			"restrictions": [
 				"length"
 			],
@@ -2847,6 +2900,27 @@
 					"name": "translateY(<length/percentage>)"
 				}
 			],
+			"uniPlatform": {
+				"app": {
+					"android": {
+						"osVer": "4.4",
+						"uniVer": "√",
+						"unixVer": "3.9.0"
+					},
+					"ios": {
+						"osVer": "9.0",
+						"uniVer": "√"
+					}
+				}
+			}
+		},{
+			"name": "transform-origin",
+			"restrictions": [
+				"length",
+				"percentage",
+				"enum"
+			],
+			"syntax": "<length> | <percentage> | 关键字(top/left/right/bottom)",
 			"uniPlatform": {
 				"app": {
 					"android": {
