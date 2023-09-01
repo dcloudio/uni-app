@@ -2574,9 +2574,10 @@
 		{
 			"name": "line-height",
 			"restrictions": [
-				"length"
+				"length",
+				"number"
 			],
-			"syntax": "<length>",
+			"syntax": "<length> | <number>",
 			"uniPlatform": {
 				"app": {
 					"android": {
