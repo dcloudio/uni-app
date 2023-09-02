@@ -381,6 +381,7 @@ const DEFAULT_IMPORTS = [
   'io.dcloud.uts.UTSAndroid',
   'io.dcloud.uts.*',
   'io.dcloud.uniapp.*',
+  'io.dcloud.uniapp.extapi.*',
 ]
 
 export async function compile(
