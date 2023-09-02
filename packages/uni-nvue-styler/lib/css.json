@@ -180,6 +180,9 @@
 						"uniVer": "√"
 					}
 				}
+			},
+			"defaultValue": {
+				"app-uvue": "0px"
 			}
 		},
 		{
@@ -468,6 +471,9 @@
 						"uniVer": "√"
 					}
 				}
+			},
+			"defaultValue": {
+				"app-uvue": "0px"
 			}
 		},
 		{
@@ -640,6 +646,9 @@
 						"uniVer": "√"
 					}
 				}
+			},
+			"defaultValue": {
+				"app-uvue": "relative"
 			}
 		},
 		{
@@ -799,6 +808,9 @@
 						"uniVer": "√"
 					}
 				}
+			},
+			"defaultValue": {
+				"app-uvue": "column"
 			}
 		},
 		{
@@ -1354,6 +1366,9 @@
 						"uniVer": "√"
 					}
 				}
+			},
+			"defaultValue": {
+				"app-uvue": "border-box"
 			}
 		},
 		{
