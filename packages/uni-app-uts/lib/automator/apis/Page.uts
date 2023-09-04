@@ -45,7 +45,7 @@ export const callMethod = (params: CallMethodParams, callback: Callback): void =
   } else if (findVueMethod(page.$.type.type, params.method, page) == null) {
     callback(null, { errMsg: `Page.${params.method} not exists` })
   } else {
-		const result = params.args.length > 0 ? page.$callMethod(params.method, params.args[0]) : page.$callMethod(params.method)
+    const result = params.args.length > 0 ? page.$callMethod(params.method, params.args[0]) : page.$callMethod(params.method)
     callback({ result }, null)
   }
 }
@@ -103,16 +103,14 @@ export const getWindowProperties = (params: GetWindowPropertiesParams, callback:
     callback(null, { errMsg: 'Page.getWindowProperties:fail, Page not found.' })
     return
   }
-  // TODO: 待客户端支持
-  // const document = page.$appPage!.document
+  const document = page.$appPage!.document
+  const rootNode = document.childNodes[0]
   const properties = params.names.map((name): any | null => {
     switch (name) {
       case 'document.documentElement.scrollWidth':
-        // return document.scrollWidth
-        return 0
+        return rootNode.scrollWidth
       case 'document.documentElement.scrollHeight':
-        // return document.scrollHeight
-        return 0
+        return rootNode.scrollHeight
     }
     return null
   })
