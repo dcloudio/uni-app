@@ -1,0 +1,25 @@
+<template>
+    <button @click="click">测试</button>
+    <button @click="click1">测试1</button>
+</template>
+<script>
+    import { test } from './test'
+    export default {
+        data() {
+            return {}
+        },
+        onLoad() {
+            const arr = [1]
+            console.log(arr[1])
+        },
+        methods: {
+            click() {
+                const arr = [1]
+                console.log(arr[1])
+            },
+            click1() {
+                test()
+            }
+        }
+    }
+</script>

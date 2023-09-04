@@ -2,7 +2,10 @@ import { relative } from '../utils'
 
 export { parseUTSSwiftPluginStacktrace } from './swift'
 
-export { parseUTSKotlinStacktrace } from './kotlin'
+export {
+  parseUTSKotlinStacktrace,
+  parseUTSKotlinRuntimeStacktrace,
+} from './kotlin'
 
 export function parseUTSSyntaxError(error: any, inputDir: string): string {
   if (error instanceof Error) {

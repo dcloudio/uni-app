@@ -56,6 +56,8 @@ export { compileApp, CompileAppOptions } from './uvue/index'
 
 export * from './sourceMap'
 
+export { parseUTSKotlinRuntimeStacktrace } from './stacktrace'
+
 export { compile as toKotlin } from './kotlin'
 export { compile as toSwift } from './swift'
 

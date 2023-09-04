@@ -2,7 +2,7 @@ import path from 'path'
 import fs from 'fs-extra'
 import { relative } from '../utils'
 import { originalPositionFor } from '../sourceMap'
-import { generateCodeFrame } from './utils'
+import { generateCodeFrame, lineColumnToStartEnd, splitRE } from './utils'
 
 export interface MessageSourceLocation {
   type: 'exception' | 'error' | 'warning' | 'info' | 'logging' | 'output'
@@ -67,18 +67,13 @@ export async function parseUTSKotlinStacktrace(
   }
   const msgs: string[] = []
   if (Array.isArray(messages) && messages.length) {
-    function resolveSourceMapFile(file: string) {
-      const sourceMapFile = path.resolve(
-        options.sourceMapDir,
-        relative(file, options.inputDir) + '.map'
-      )
-      if (fs.existsSync(sourceMapFile)) {
-        return sourceMapFile
-      }
-    }
     for (const m of messages) {
       if (m.file) {
-        const sourceMapFile = resolveSourceMapFile(m.file)
+        const sourceMapFile = resolveSourceMapFile(
+          m.file,
+          options.sourceMapDir,
+          options.inputDir
+        )
         if (sourceMapFile) {
           const originalPosition = await originalPositionFor({
             sourceMapFile,
@@ -114,4 +109,154 @@ export async function parseUTSKotlinStacktrace(
     }
   }
   return msgs.join('\n')
+}
+
+function resolveSourceMapFile(
+  file: string,
+  sourceMapDir: string,
+  inputDir: string
+) {
+  const sourceMapFile = path.resolve(
+    sourceMapDir,
+    relative(file, inputDir) + '.map'
+  )
+  if (fs.existsSync(sourceMapFile)) {
+    return sourceMapFile
+  }
+}
+
+const DEFAULT_APPID = 'HBuilder'
+
+function normalizeAppid(appid: string) {
+  return appid.replace(/_/g, '')
+}
+function createRegExp(appid: string) {
+  return new RegExp('uni\\.' + appid + '\\.(.*)\\..*\\(*\\.kt:([0-9]+)\\)')
+}
+
+let kotlinManifest = {
+  mtimeMs: 0,
+  manifest: {} as Record<string, string>,
+}
+
+function updateUTSKotlinSourceMapManifestCache(cacheDir: string) {
+  const manifestFile = path.resolve(cacheDir, 'src/.manifest.json')
+  const stats = fs.statSync(manifestFile)
+  if (stats.isFile()) {
+    if (kotlinManifest.mtimeMs !== stats.mtimeMs) {
+      const manifest = fs.readJSONSync(manifestFile) as Record<
+        string,
+        Record<string, string>
+      >
+      const classManifest: Record<string, string> = {}
+      Object.keys(manifest).forEach((name) => {
+        const kotlinClass = manifest[name].class
+        if (kotlinClass) {
+          classManifest[kotlinClass] = name
+        }
+      })
+      kotlinManifest.mtimeMs = stats.mtimeMs
+      kotlinManifest.manifest = classManifest
+    }
+  }
+}
+
+function parseFilenameByClassName(className: string) {
+  return kotlinManifest.manifest[className.split('$')[0]] || 'index.kt'
+}
+
+function resolveSourceMapFileByKtFile(file: string, sourceMapDir: string) {
+  const sourceMapFile = path.resolve(sourceMapDir, file + '.map')
+  if (fs.existsSync(sourceMapFile)) {
+    return sourceMapFile
+  }
+}
+
+interface GenerateRuntimeCodeFrameOptions {
+  appid: string
+  cacheDir: string
+}
+
+function resolveSourceMapDirByCacheDir(cacheDir: string) {
+  return path.resolve(cacheDir, 'sourceMap')
+}
+
+export async function parseUTSKotlinRuntimeStacktrace(
+  stacktrace: string,
+  options: GenerateRuntimeCodeFrameOptions
+) {
+  const appid = normalizeAppid(options.appid || DEFAULT_APPID)
+  if (!stacktrace.includes('uni.' + appid + '.')) {
+    return stacktrace
+  }
+  updateUTSKotlinSourceMapManifestCache(options.cacheDir)
+  const re = createRegExp(appid)
+  const res: string[] = []
+  const lines = stacktrace.split(splitRE)
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i]
+    const codes = await parseUTSKotlinRuntimeStacktraceLine(
+      line,
+      re,
+      resolveSourceMapDirByCacheDir(options.cacheDir)
+    )
+    if (codes && codes.length) {
+      res.push(...codes)
+      break
+    } else {
+      res.push(line)
+    }
+  }
+  return res.join('\n')
+}
+
+async function parseUTSKotlinRuntimeStacktraceLine(
+  lineStr: string,
+  re: RegExp,
+  sourceMapDir: string
+) {
+  const matches = lineStr.match(re)
+  if (!matches) {
+    return
+  }
+  const lines: string[] = []
+  const [, className, line] = matches
+  const sourceMapFile = resolveSourceMapFileByKtFile(
+    parseFilenameByClassName(className),
+    sourceMapDir
+  )
+  if (!sourceMapFile) {
+    return
+  }
+
+  const originalPosition = await originalPositionFor({
+    sourceMapFile,
+    line: parseInt(line),
+    column: 0,
+    withSourceContent: true,
+  })
+
+  if (originalPosition.source && originalPosition.sourceContent) {
+    lines.push(
+      `at ${originalPosition.source.split('?')[0]}:${originalPosition.line}:${
+        originalPosition.column
+      }`
+    )
+    if (originalPosition.line !== null && originalPosition.column !== null) {
+      const { start, end } = lineColumnToStartEnd(
+        originalPosition.sourceContent,
+        originalPosition.line,
+        originalPosition.column
+      )
+      lines.push(
+        generateCodeFrame(originalPosition.sourceContent, start, end).replace(
+          /\t/g,
+          ' '
+        )
+      )
+    }
+  } else {
+    lines.push(lineStr)
+  }
+  return lines
 }

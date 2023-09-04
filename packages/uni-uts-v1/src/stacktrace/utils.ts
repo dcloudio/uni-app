@@ -16,6 +16,22 @@ function posToNumber(
   return start + column
 }
 
+export function lineColumnToStartEnd(
+  source: string,
+  line: number,
+  column: number
+) {
+  const lines = source.split(splitRE)
+  let start = 0
+  for (let i = 0; i < line - 1; i++) {
+    start += lines[i].length + 1
+  }
+  return {
+    start: start + column,
+    end: start + lines[line - 1].length,
+  }
+}
+
 export function generateCodeFrame(
   source: string,
   start: number | { line: number; column: number } = 0,
