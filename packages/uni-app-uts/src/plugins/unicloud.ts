@@ -35,7 +35,7 @@ export class UniCloudConfig extends InternalUniCloudConfig {
       )
     )}
     override debuggerInfo ?: string = ${JSON.stringify(
-      process.env.UNICLOUD_DEBUG || '{}'
+      process.env.UNICLOUD_DEBUG || null
     )}
     override secureNetworkEnable : boolean = false
     override secureNetworkConfig ?: string = ""
