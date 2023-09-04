@@ -22,7 +22,7 @@ const uniCloudSpaces: {
   clientSecret?: string
   apiEndpoint?: string
   spaceAppId?: string
-  secretId?: string
+  accessKey?: string
   secretKey?: string
 }[] = []
 
@@ -171,7 +171,7 @@ function initUniCloudEnv() {
               spaceName: space.name,
               spaceId: space.id,
               spaceAppId: space.spaceAppId,
-              secretId: space.secretId,
+              accessKey: space.accessKey,
               secretKey: space.secretKey,
             }
           }
