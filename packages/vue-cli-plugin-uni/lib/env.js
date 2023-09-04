@@ -134,7 +134,7 @@ if (!process.env.UNI_CLOUD_PROVIDER && process.env.UNI_CLOUD_SPACES) {
               spaceName: space.name,
               spaceId: space.id,
               spaceAppId: space.spaceAppId,
-              secretId: space.secretId,
+              accessKey: space.accessKey,
               secretKey: space.secretKey
             }
           }
