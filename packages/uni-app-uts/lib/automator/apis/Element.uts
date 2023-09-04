@@ -225,8 +225,8 @@ export const callFunction = (
           callback({ result: `${functionName} success` }, null)
         } else {
           callback(
-            { result: `${functionName} fail, element is not scroll-view` },
-            null
+            null,
+            { errMsg: `${functionName} fail, element is not scroll-view` }
           )
         }
         break
@@ -235,8 +235,30 @@ export const callFunction = (
           callback(null, { errMsg: `${functionName} not support` })
         } else {
           callback(
-            { result: `${functionName} fail, element is not swiper` },
-            null
+            null,
+            { errMsg: `${functionName} fail, element is not swiper` }
+          )
+          return
+        }
+        break
+      case 'scroll-view.scrollWidth':
+        if (element.tagName == 'SCROLL-VIEW') {
+          callback({ result: element.scrollWidth }, null)
+        } else {
+          callback(
+            null,
+            { errMsg: `${functionName} fail, element is not scroll-view` }
+          )
+          return
+        }
+        break
+      case 'scroll-view.scrollHeight':
+        if (element.tagName == 'SCROLL-VIEW') {
+          callback({ result: element.scrollHeight }, null)
+        } else {
+          callback(
+            null,
+            { errMsg: `${functionName} fail, element is not scroll-view` }
           )
           return
         }
