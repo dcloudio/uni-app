@@ -118,7 +118,7 @@ export function uniAppUTSPlugin(): UniVitePlugin {
       }
       // 强制不inline
       config.build.assetsInlineLimit = 0
-      injectAssetPlugin(config)
+      injectAssetPlugin(config, { isAppX: true })
     },
     async transform(code, id) {
       const { filename } = parseVueRequest(id)

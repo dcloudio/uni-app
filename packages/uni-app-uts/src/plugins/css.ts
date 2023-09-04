@@ -13,6 +13,7 @@ import {
   normalizePath,
   parseVueRequest,
   resolveMainPathOnce,
+  parseAssets,
 } from '@dcloudio/uni-cli-shared'
 import { parse } from '@dcloudio/uni-nvue-styler'
 
@@ -43,6 +44,7 @@ export function uniAppCssPlugin(): Plugin {
           }
         },
         async chunkCssCode(filename, cssCode) {
+          cssCode = parseAssets(resolvedConfig, cssCode)
           const { code, messages } = await parse(cssCode, {
             filename,
             logLevel: 'ERROR',
@@ -79,6 +81,7 @@ export function uniAppCssPlugin(): Plugin {
       if (!cssLangRE.test(filename) || commonjsProxyRE.test(filename)) {
         return
       }
+      source = parseAssets(resolvedConfig, source)
       // 仅做校验使用
       const { messages } = await parse(source, {
         filename,

@@ -1,10 +1,15 @@
 import path from 'path'
 import { parse as parseUrl } from 'url'
 import mime from 'mime/lite'
-import fs, { promises as fsp } from 'fs'
+import fs, { promises as fsp } from 'fs-extra'
 import MagicString from 'magic-string'
 import { createHash } from 'crypto'
-import type { OutputOptions, PluginContext, RenderedChunk } from 'rollup'
+import type {
+  EmittedAsset,
+  OutputOptions,
+  PluginContext,
+  RenderedChunk,
+} from 'rollup'
 import { Plugin } from '../plugin'
 import { ResolvedConfig } from '../config'
 import { cleanUrl, normalizePath } from '../utils'
@@ -13,10 +18,6 @@ import { isFunction, isString } from '@vue/shared'
 import { normalizeNodeModules } from '../../../../utils'
 
 export const assetUrlRE = /__VITE_ASSET__([a-z\d]{8})__(?:\$_(.*?)__)?/g
-
-// urls in JS must be quoted as strings, so when replacing them we need
-// a different regex
-const assetUrlQuotedRE = /"__VITE_ASSET__([a-z\d]{8})__(?:\$_(.*?)__)?"/g
 
 const rawRE = /(\?|&)raw(?:&|$)/
 const urlRE = /(\?|&)url(?:&|$)/
@@ -35,7 +36,10 @@ const emittedHashMap = new WeakMap<ResolvedConfig, Set<string>>()
 /**
  * Also supports loading plain strings with import text from './foo.txt?raw'
  */
-export function assetPlugin(config: ResolvedConfig): Plugin {
+export function assetPlugin(
+  config: ResolvedConfig,
+  options?: { isAppX: boolean }
+): Plugin {
   // assetHashToFilenameMap initialization in buildStart causes getAssetFilename to return undefined
   assetHashToFilenameMap.set(config, new Map())
   return {
@@ -79,14 +83,48 @@ export function assetPlugin(config: ResolvedConfig): Plugin {
       }
 
       id = id.replace(urlRE, '$1').replace(/[\?&]$/, '')
-      const url = await fileToUrl(id, config, this)
+      const url = await fileToUrl(
+        id,
+        config,
+        options?.isAppX
+          ? ({
+              emitFile(emittedFile: EmittedAsset) {
+                // 直接写入目标目录
+                fs.outputFileSync(
+                  path.resolve(
+                    process.env.UNI_OUTPUT_DIR,
+                    emittedFile.fileName!
+                  ),
+                  emittedFile.source!
+                )
+              },
+            } as PluginContext)
+          : this
+      )
+      if (options?.isAppX) {
+        this.emitFile({
+          type: 'asset',
+          fileName: normalizeNodeModules(
+            path.relative(process.env.UNI_INPUT_DIR, id) + '.uts'
+          ),
+          source: `export default ${JSON.stringify(parseAssets(config, url))}`,
+        })
+      }
       return `export default ${JSON.stringify(url)}`
     },
 
     renderChunk(code, chunk) {
       let match: RegExpExecArray | null
       let s: MagicString | undefined
-      while ((match = assetUrlQuotedRE.exec(code))) {
+      assetUrlRE.lastIndex = 0
+      // Urls added with JS using e.g.
+      // imgElement.src = "__VITE_ASSET__5aa0ddc0__" are using quotes
+
+      // Urls added in CSS that is imported in JS end up like
+      // var inlined = ".inlined{color:green;background:url(__VITE_ASSET__5aa0ddc0__)}\n";
+
+      // In both cases, the wrapping should already be fine
+      while ((match = assetUrlRE.exec(code))) {
         s = s || (s = new MagicString(code))
         const [full, hash, postfix = ''] = match
         // some internal plugins may still need to emit chunks (e.g. worker) so
@@ -94,11 +132,7 @@ export function assetPlugin(config: ResolvedConfig): Plugin {
         const file = getAssetFilename(hash, config) || this.getFileName(hash)
         registerAssetToChunk(chunk, file)
         const outputFilepath = config.base + file + postfix
-        s.overwrite(
-          match.index,
-          match.index + full.length,
-          JSON.stringify(outputFilepath)
-        )
+        s.overwrite(match.index, match.index + full.length, outputFilepath)
       }
       if (s) {
         return {
@@ -110,6 +144,25 @@ export function assetPlugin(config: ResolvedConfig): Plugin {
       }
     },
   }
+}
+
+export function parseAssets(config: ResolvedConfig, code: string) {
+  let match: RegExpExecArray | null
+  let s: MagicString | undefined
+  assetUrlRE.lastIndex = 0
+  while ((match = assetUrlRE.exec(code))) {
+    s = s || (s = new MagicString(code))
+    const [full, hash, postfix = ''] = match
+    // some internal plugins may still need to emit chunks (e.g. worker) so
+    // fallback to this.getFileName for that.
+    const file = getAssetFilename(hash, config)
+    const outputFilepath = config.base + file + postfix
+    s.overwrite(match.index, match.index + full.length, outputFilepath)
+  }
+  if (s) {
+    return s.toString()
+  }
+  return code
 }
 
 export function registerAssetToChunk(chunk: RenderedChunk, file: string): void {

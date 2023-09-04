@@ -11,8 +11,11 @@ export interface UniViteFilterPluginOptions {
   filter: (id: string) => boolean
 }
 
-export function injectAssetPlugin(config: ResolvedConfig) {
-  replacePlugins([assetPlugin(config)], config)
+export function injectAssetPlugin(
+  config: ResolvedConfig,
+  options?: { isAppX: boolean }
+) {
+  replacePlugins([assetPlugin(config, options)], config)
 }
 
 export function injectCssPlugin(config: ResolvedConfig) {
