@@ -165,13 +165,6 @@ function initUniCloudEnv() {
               clientSecret: space.clientSecret,
               endpoint: space.apiEndpoint,
             }
-          case 'tencent': {
-            return {
-              provider: space.provider,
-              spaceName: space.name,
-              spaceId: space.id,
-            }
-          }
           case 'alipay': {
             return {
               provider: space.provider,
@@ -182,8 +175,14 @@ function initUniCloudEnv() {
               secretKey: space.secretKey,
             }
           }
-          default:
-            throw new Error('不支持的云服务商：' + space.provider)
+          case 'tencent':
+          default: {
+            return {
+              provider: space.provider,
+              spaceName: space.name,
+              spaceId: space.id,
+            }
+          }
         }
       })
     )
