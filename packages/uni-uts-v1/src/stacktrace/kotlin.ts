@@ -214,7 +214,7 @@ export function parseUTSKotlinRuntimeStacktrace(
       if (color) {
         error = color + error + color
       }
-      return [error, ...codes].join('\n')
+      return [error, ...codes]
     } else {
       res.push(line)
     }
