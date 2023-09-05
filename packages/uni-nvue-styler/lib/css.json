@@ -2612,6 +2612,7 @@
 		},
 		{
 			"name": "lines",
+			"description": "text 组件专有样式，设置文本组件最大行数",
 			"restrictions": [
 				"integer"
 			],
@@ -2620,12 +2621,12 @@
 				"app": {
 					"android": {
 						"osVer": "5.0",
-						"uniVer": "√",
+						"uniVer": "x",
 						"unixVer": "3.9.0"
 					},
 					"ios": {
 						"osVer": "9.0",
-						"uniVer": "√"
+						"uniVer": "x"
 					}
 				}
 			},
@@ -2931,12 +2932,30 @@
 			}
 		},{
 			"name": "transform-origin",
+			"shorthand": true,
 			"restrictions": [
 				"length",
 				"percentage",
 				"enum"
 			],
-			"syntax": "<length> | <percentage> | 关键字(top/left/right/bottom)",
+			"syntax": "<length> | <percentage> | 关键字(top/left/right/bottom/center)",
+			"values": [
+				{
+					"name": "top"
+				},
+				{
+					"name": "left"
+				},
+				{
+					"name": "right"
+				},
+				{
+					"name": "bottom"
+				},
+				{
+					"name": "center"
+				}
+			],
 			"uniPlatform": {
 				"app": {
 					"android": {
