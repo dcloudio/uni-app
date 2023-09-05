@@ -51,5 +51,29 @@ at io.dcloud.uniapp.vue.shared.IndexKt.callFunction(index.kt:638)`,
         }
       )
     ).toMatchSnapshot()
+    expect(
+      await parseUTSKotlinRuntimeStacktrace(
+        `java.lang.IndexOutOfBoundsException: Index: 1, Size: 1
+at java.util.ArrayList.get(ArrayList.java:437)
+at uni.UNIXXXXXXX.IndexKt.test(index.kt:40)`,
+        {
+          appid: '__UNI__XXXXXXX',
+          cacheDir,
+          logType: 'warn',
+        }
+      )
+    ).toMatchSnapshot()
+    expect(
+      await parseUTSKotlinRuntimeStacktrace(
+        `java.lang.IndexOutOfBoundsException: Index: 1, Size: 1
+at java.util.ArrayList.get(ArrayList.java:437)
+at uni.UNIXXXXXXX.IndexKt.test(index.kt:40)`,
+        {
+          appid: '__UNI__XXXXXXX',
+          cacheDir,
+          logType: 'error',
+        }
+      )
+    ).toMatchSnapshot()
   })
 })

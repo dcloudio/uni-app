@@ -172,9 +172,15 @@ function resolveSourceMapFileByKtFile(file: string, sourceMapDir: string) {
   }
 }
 
+const COLORS: Record<string, string> = {
+  warn: '\u200B',
+  error: '\u200C',
+}
+
 interface GenerateRuntimeCodeFrameOptions {
   appid: string
   cacheDir: string
+  logType?: 'log' | 'info' | 'warn' | 'debug' | 'error'
 }
 
 function resolveSourceMapDirByCacheDir(cacheDir: string) {
@@ -200,9 +206,15 @@ export async function parseUTSKotlinRuntimeStacktrace(
       re,
       resolveSourceMapDirByCacheDir(options.cacheDir)
     )
-    if (codes && codes.length) {
-      res.push(...codes)
-      break
+    if (codes.length && res.length) {
+      const color = options.logType
+        ? COLORS[options.logType as string] || ''
+        : ''
+      let error = res[0]
+      if (color) {
+        error = color + error + color
+      }
+      return [error, ...codes].join('\n')
     } else {
       res.push(line)
     }
@@ -215,33 +227,27 @@ async function parseUTSKotlinRuntimeStacktraceLine(
   re: RegExp,
   sourceMapDir: string
 ) {
+  const lines: string[] = []
   const matches = lineStr.match(re)
   if (!matches) {
-    return
+    return lines
   }
-  const lines: string[] = []
+
   const [, className, line] = matches
   const sourceMapFile = resolveSourceMapFileByKtFile(
     parseFilenameByClassName(className),
     sourceMapDir
   )
   if (!sourceMapFile) {
-    return
+    return lines
   }
-
   const originalPosition = await originalPositionFor({
     sourceMapFile,
     line: parseInt(line),
     column: 0,
     withSourceContent: true,
   })
-
   if (originalPosition.source && originalPosition.sourceContent) {
-    lines.push(
-      `at ${originalPosition.source.split('?')[0]}:${originalPosition.line}:${
-        originalPosition.column
-      }`
-    )
     if (originalPosition.line !== null && originalPosition.column !== null) {
       const { start, end } = lineColumnToStartEnd(
         originalPosition.sourceContent,
@@ -255,8 +261,11 @@ async function parseUTSKotlinRuntimeStacktraceLine(
         )
       )
     }
-  } else {
-    lines.push(lineStr)
+    lines.push(
+      `at ${originalPosition.source.split('?')[0]}:${originalPosition.line}:${
+        originalPosition.column
+      }`
+    )
   }
   return lines
 }

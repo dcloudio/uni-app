@@ -116,21 +116,36 @@ function initUniCloudEnv() {
             if (space.provider === 'tcb') {
                 space.provider = 'tencent';
             }
-            if (space.clientSecret) {
-                return {
-                    provider: space.provider || 'aliyun',
-                    spaceName: space.name,
-                    spaceId: space.id,
-                    clientSecret: space.clientSecret,
-                    endpoint: space.apiEndpoint,
-                };
+            if (!space.provider && space.clientSecret) {
+                space.provider = 'aliyun';
             }
-            else {
-                return {
-                    provider: space.provider || 'tencent',
-                    spaceName: space.name,
-                    spaceId: space.id,
-                };
+            switch (space.provider) {
+                case 'aliyun':
+                    return {
+                        provider: space.provider || 'aliyun',
+                        spaceName: space.name,
+                        spaceId: space.id,
+                        clientSecret: space.clientSecret,
+                        endpoint: space.apiEndpoint,
+                    };
+                case 'alipay': {
+                    return {
+                        provider: space.provider,
+                        spaceName: space.name,
+                        spaceId: space.id,
+                        spaceAppId: space.spaceAppId,
+                        accessKey: space.accessKey,
+                        secretKey: space.secretKey,
+                    };
+                }
+                case 'tencent':
+                default: {
+                    return {
+                        provider: space.provider,
+                        spaceName: space.name,
+                        spaceId: space.id,
+                    };
+                }
             }
         }));
     }
