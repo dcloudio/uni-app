@@ -222,17 +222,15 @@ export async function transformVue(
       templateResult.importEasyComponents.join('\n')
     templateImportUTSComponentsCode =
       templateResult.importUTSComponents.join('\n')
-    console.log(JSON.stringify(templateResult.map))
   }
   // 生成 script 文件
-  let utsCode =
-    genScript(descriptor, { filename: className }) +
-    '\n' +
-    genStyle(descriptor, { filename: fileName, className }) +
-    '\n'
-  utsCode += templateCode
+  // console.log(descriptor.script?.loc)
+  const utsCode =
+    genScript(descriptor, { filename: className }) + templateCode + '\n'
+  genStyle(descriptor, { filename: fileName, className }) + '\n'
+
   let jsCode =
-    templateImportEasyComponentsCode + '\n' + templateImportUTSComponentsCode
+    templateImportEasyComponentsCode + templateImportUTSComponentsCode
   const content = descriptor.script?.content
   if (content) {
     jsCode += await parseImports(content)

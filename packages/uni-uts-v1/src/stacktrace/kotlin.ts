@@ -1,7 +1,7 @@
 import path from 'path'
 import fs from 'fs-extra'
 import { relative } from '../utils'
-import { originalPositionFor } from '../sourceMap'
+import { originalPositionFor, originalPositionForSync } from '../sourceMap'
 import { generateCodeFrame, lineColumnToStartEnd, splitRE } from './utils'
 
 export interface MessageSourceLocation {
@@ -187,7 +187,7 @@ function resolveSourceMapDirByCacheDir(cacheDir: string) {
   return path.resolve(cacheDir, 'sourceMap')
 }
 
-export async function parseUTSKotlinRuntimeStacktrace(
+export function parseUTSKotlinRuntimeStacktrace(
   stacktrace: string,
   options: GenerateRuntimeCodeFrameOptions
 ) {
@@ -201,7 +201,7 @@ export async function parseUTSKotlinRuntimeStacktrace(
   const lines = stacktrace.split(splitRE)
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
-    const codes = await parseUTSKotlinRuntimeStacktraceLine(
+    const codes = parseUTSKotlinRuntimeStacktraceLine(
       line,
       re,
       resolveSourceMapDirByCacheDir(options.cacheDir)
@@ -222,7 +222,7 @@ export async function parseUTSKotlinRuntimeStacktrace(
   return res.join('\n')
 }
 
-async function parseUTSKotlinRuntimeStacktraceLine(
+function parseUTSKotlinRuntimeStacktraceLine(
   lineStr: string,
   re: RegExp,
   sourceMapDir: string
@@ -241,7 +241,7 @@ async function parseUTSKotlinRuntimeStacktraceLine(
   if (!sourceMapFile) {
     return lines
   }
-  const originalPosition = await originalPositionFor({
+  const originalPosition = originalPositionForSync({
     sourceMapFile,
     line: parseInt(line),
     column: 0,

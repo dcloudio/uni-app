@@ -8,6 +8,11 @@ import {
   SourceMapConsumer,
 } from 'source-map'
 
+import {
+  MappedPosition,
+  SourceMapConsumer as SourceMapConsumerSync,
+} from 'source-map-js'
+
 const EXTNAME = {
   kotlin: '.kt',
   swift: '.swift',
@@ -101,7 +106,13 @@ interface PositionFor {
 
 const consumers: Record<
   string,
-  { time: number; consumer: BasicSourceMapConsumer | IndexedSourceMapConsumer }
+  {
+    time: number
+    consumer:
+      | BasicSourceMapConsumer
+      | IndexedSourceMapConsumer
+      | SourceMapConsumerSync
+  }
 > = {}
 
 /**
@@ -136,7 +147,10 @@ export function generatedPositionFor({
 > {
   return resolveSourceMapConsumer(sourceMapFile).then((consumer) => {
     const res = consumer.generatedPositionFor({
-      source: resolveSource(consumer, filename),
+      source: resolveSource(
+        consumer as BasicSourceMapConsumer | IndexedSourceMapConsumer,
+        filename
+      ),
       line,
       column,
       bias: column === 0 ? BIAS.LEAST_UPPER_BOUND : BIAS.GREATEST_LOWER_BOUND,
@@ -163,7 +177,9 @@ export function originalPositionFor(
 ): Promise<NullableMappedPosition & { sourceContent?: string }> {
   return resolveSourceMapConsumer(generatedPosition.sourceMapFile).then(
     (consumer) => {
-      const res = consumer.originalPositionFor({
+      const res = (
+        consumer as BasicSourceMapConsumer | IndexedSourceMapConsumer
+      ).originalPositionFor({
         line: generatedPosition.line,
         column: generatedPosition.column,
         bias:
@@ -189,6 +205,43 @@ export function originalPositionFor(
   )
 }
 
+/**
+ * 根据生成后的文件名、行号、列号，返回源码文件、行号、列号（根据 kt|swift 文件返回 uts 文件）
+ * 同步API
+ * @param generatedPosition
+ * @returns
+ */
+export function originalPositionForSync(
+  generatedPosition: Omit<PositionFor, 'filename'> & { inputDir?: string }
+): MappedPosition & { sourceContent?: string } {
+  const consumer = resolveSourceMapConsumerSync(
+    generatedPosition.sourceMapFile
+  ) as SourceMapConsumerSync
+
+  const res = consumer.originalPositionFor({
+    line: generatedPosition.line,
+    column: generatedPosition.column,
+    bias:
+      generatedPosition.column === 0
+        ? BIAS.LEAST_UPPER_BOUND
+        : BIAS.GREATEST_LOWER_BOUND,
+  })
+  if (
+    generatedPosition.withSourceContent &&
+    res.source &&
+    res.line &&
+    res.column
+  ) {
+    return Object.assign(res, {
+      sourceContent: consumer.sourceContentFor(res.source, true),
+    })
+  }
+  if (res.source && generatedPosition.inputDir) {
+    res.source = join(generatedPosition.inputDir, res.source)
+  }
+  return res
+}
+
 async function resolveSourceMapConsumer(sourceMapFile: string) {
   const stats = statSync(sourceMapFile)
   if (!stats.isFile()) {
@@ -204,6 +257,25 @@ async function resolveSourceMapConsumer(sourceMapFile: string) {
     }
   }
   return consumers[sourceMapFile].consumer
+}
+
+function resolveSourceMapConsumerSync(
+  sourceMapFile: string
+): SourceMapConsumerSync {
+  const stats = statSync(sourceMapFile)
+  if (!stats.isFile()) {
+    throw `${sourceMapFile} is not a file`
+  }
+  const cache = consumers[sourceMapFile]
+  if (!cache || cache.time !== stats.mtimeMs) {
+    consumers[sourceMapFile] = {
+      time: stats.mtimeMs,
+      consumer: new SourceMapConsumerSync(
+        JSON.parse(readFileSync(sourceMapFile, 'utf8'))
+      ),
+    }
+  }
+  return consumers[sourceMapFile].consumer as SourceMapConsumerSync
 }
 
 function normalizePath(path: string) {

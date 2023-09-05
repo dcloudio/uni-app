@@ -9,7 +9,7 @@ describe('uts:stacktrace:runtime', () => {
       'examples/uni-app-x/unpackage/cache/.kotlin'
     )
     expect(
-      await parseUTSKotlinRuntimeStacktrace(
+      parseUTSKotlinRuntimeStacktrace(
         `java.lang.IndexOutOfBoundsException: Index: 1, Size: 1
 at java.util.ArrayList.get(ArrayList.java:437)
 at uni.UNIXXXXXXX.GenPagesIndexIndex$1.invoke(index.kt:24)
@@ -23,7 +23,7 @@ at io.dcloud.uniapp.vue.shared.IndexKt.callFunction(index.kt:638)`,
       )
     ).toMatchSnapshot()
     expect(
-      await parseUTSKotlinRuntimeStacktrace(
+      parseUTSKotlinRuntimeStacktrace(
         `java.lang.IndexOutOfBoundsException: Index: 1, Size: 1
 at java.util.ArrayList.get(ArrayList.java:437)
 at uni.UNIXXXXXXX.GenPagesIndexIndex$click$1.invoke(index.kt:59)
@@ -37,7 +37,7 @@ at io.dcloud.uniapp.vue.shared.IndexKt.callFunction(index.kt:638)`,
       )
     ).toMatchSnapshot()
     expect(
-      await parseUTSKotlinRuntimeStacktrace(
+      parseUTSKotlinRuntimeStacktrace(
         `java.lang.IndexOutOfBoundsException: Index: 1, Size: 1
 at java.util.ArrayList.get(ArrayList.java:437)
 at uni.UNIXXXXXXX.IndexKt.test(index.kt:40)
@@ -52,7 +52,7 @@ at io.dcloud.uniapp.vue.shared.IndexKt.callFunction(index.kt:638)`,
       )
     ).toMatchSnapshot()
     expect(
-      await parseUTSKotlinRuntimeStacktrace(
+      parseUTSKotlinRuntimeStacktrace(
         `java.lang.IndexOutOfBoundsException: Index: 1, Size: 1
 at java.util.ArrayList.get(ArrayList.java:437)
 at uni.UNIXXXXXXX.IndexKt.test(index.kt:40)`,
@@ -64,7 +64,7 @@ at uni.UNIXXXXXXX.IndexKt.test(index.kt:40)`,
       )
     ).toMatchSnapshot()
     expect(
-      await parseUTSKotlinRuntimeStacktrace(
+      parseUTSKotlinRuntimeStacktrace(
         `java.lang.IndexOutOfBoundsException: Index: 1, Size: 1
 at java.util.ArrayList.get(ArrayList.java:437)
 at uni.UNIXXXXXXX.IndexKt.test(index.kt:40)`,
