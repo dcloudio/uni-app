@@ -18,7 +18,7 @@ import {
 import { Expression } from '@babel/types'
 import { default as babelGenerate, GeneratorOptions } from '@babel/generator'
 import { addImportDeclaration, matchEasycom } from '@dcloudio/uni-cli-shared'
-import { SourceMapGenerator } from 'source-map'
+import type { SourceMapGenerator } from 'source-map-js'
 import { CodegenOptions, CodegenRootNode } from './options'
 
 import {

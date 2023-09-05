@@ -406,9 +406,9 @@ importers:
       picocolors:
         specifier: ^1.0.0
         version: 1.0.0
-      source-map:
-        specifier: ^0.6.1
-        version: 0.6.1
+      source-map-js:
+        specifier: ^1.0.2
+        version: 1.0.2
     devDependencies:
       '@types/debug':
         specifier: ^4.1.7
@@ -986,9 +986,9 @@ importers:
       '@vue/compiler-sfc':
         specifier: 3.2.47
         version: 3.2.47
-      source-map:
-        specifier: ^0.6.1
-        version: 0.6.1
+      source-map-js:
+        specifier: ^1.0.2
+        version: 1.0.2
 
   packages/uni-mp-core: {}
 

@@ -1,4 +1,4 @@
-import { SourceMapGenerator } from 'source-map'
+import { SourceMapGenerator } from 'source-map-js'
 import {
   ArrayExpression,
   CREATE_COMMENT,

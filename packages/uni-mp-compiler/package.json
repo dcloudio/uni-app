@@ -31,6 +31,6 @@
   "devDependencies": {
     "@types/babel__generator": "^7.6.4",
     "@vue/compiler-sfc": "3.2.47",
-    "source-map": "^0.6.1"
+    "source-map-js": "^1.0.2"
   }
 }

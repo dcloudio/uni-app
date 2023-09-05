@@ -1,5 +1,5 @@
 import { BindingMetadata, CompilerError } from '@vue/compiler-core'
-import { RawSourceMap } from 'source-map'
+import type { RawSourceMap } from 'source-map-js'
 import { DirectiveTransform, NodeTransform } from './transform'
 
 interface SharedTransformCodegenOptions {
