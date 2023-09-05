@@ -69,12 +69,28 @@ export function posToNumber(
 ): number {
   if (typeof pos === 'number') return pos
   const lines = source.split(splitRE)
-  const { line, column } = pos
+  return posToNumberByLines(lines, pos.line, pos.column)
+}
+
+function posToNumberByLines(lines: string[], line: number, column: number) {
   let start = 0
   for (let i = 0; i < line - 1; i++) {
     start += lines[i].length + 1
   }
   return start + column
+}
+
+export function locToStartAndEnd(
+  source: string,
+  loc: {
+    start: { line: number; column: number }
+    end: { line: number; column: number }
+  }
+) {
+  const lines = source.split(splitRE)
+  const start = posToNumberByLines(lines, loc.start.line, loc.start.column)
+  const end = posToNumberByLines(lines, loc.end.line, loc.end.column)
+  return { start, end }
 }
 
 export function generateCodeFrame(

@@ -2,22 +2,22 @@
 
 exports[`uts:stacktrace parseUTSKotlinStacktrace 1`] = `
 "‌error: Unresolved reference: test‌
+at components/test/test.vue:14:28
 12 |          methods: {
 13 |              onClick() {
 14 |                  console.log(test)
    |                              ^
 15 |              }
-16 |          }
-at components/test/test.vue:14:28"
+16 |          }"
 `;
 
 exports[`uts:stacktrace parseUTSKotlinStacktrace 2`] = `
 "‌error: Unresolved reference: test‌
+at App.vue:4:38
 2  |      export default {
 3  |          onLaunch: function() {
 4  |              console.log('App Launch', test)
    |                                        ^
 5  |          },
-6  |          onShow: function() {
-at App.vue:4:38"
+6  |          onShow: function() {"
 `;

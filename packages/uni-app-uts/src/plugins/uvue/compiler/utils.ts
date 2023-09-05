@@ -7,6 +7,7 @@ import { CompilerOptions } from './options'
 import { stringifyExpression } from './transforms/transformExpression'
 
 import { TransformContext } from './transform'
+import { CompilerError } from './errors'
 
 export function genRenderFunctionDecl({
   targetLanguage,
@@ -43,3 +44,5 @@ export function rewriteObjectExpression(
     return createSimpleExpression(s.toString(), false, exp.loc)
   }
 }
+
+export function onCompilerError(error: CompilerError) {}

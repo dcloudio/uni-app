@@ -105,7 +105,7 @@ export function uniAppUVuePlugin(): Plugin {
         )
         if (errors.length) {
           errors.forEach((error) =>
-            this.error(createRollupError(filename, error))
+            this.error(createRollupError(filename, error, code))
           )
           return null
         }
@@ -222,6 +222,7 @@ export async function transformVue(
       templateResult.importEasyComponents.join('\n')
     templateImportUTSComponentsCode =
       templateResult.importUTSComponents.join('\n')
+    console.log(JSON.stringify(templateResult.map))
   }
   // 生成 script 文件
   let utsCode =

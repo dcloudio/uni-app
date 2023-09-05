@@ -44,14 +44,14 @@ export function hbuilderFormatter(m: MessageSourceLocation) {
   } else {
     msgs.push(msg)
   }
-  if (m.code) {
-    msgs.push(m.code)
-  }
   if (m.file) {
     if (m.file.includes('?')) {
       ;[m.file] = m.file.split('?')
     }
     msgs.push(`at ${m.file}:${m.line}:${m.column}`)
+  }
+  if (m.code) {
+    msgs.push(m.code)
   }
   return msgs.join('\n')
 }
@@ -210,7 +210,7 @@ export async function parseUTSKotlinRuntimeStacktrace(
       const color = options.logType
         ? COLORS[options.logType as string] || ''
         : ''
-      let error = res[0]
+      let error = 'error: ' + res[0]
       if (color) {
         error = color + error + color
       }
@@ -248,6 +248,11 @@ async function parseUTSKotlinRuntimeStacktraceLine(
     withSourceContent: true,
   })
   if (originalPosition.source && originalPosition.sourceContent) {
+    lines.push(
+      `at ${originalPosition.source.split('?')[0]}:${originalPosition.line}:${
+        originalPosition.column
+      }`
+    )
     if (originalPosition.line !== null && originalPosition.column !== null) {
       const { start, end } = lineColumnToStartEnd(
         originalPosition.sourceContent,
@@ -261,11 +266,6 @@ async function parseUTSKotlinRuntimeStacktraceLine(
         )
       )
     }
-    lines.push(
-      `at ${originalPosition.source.split('?')[0]}:${originalPosition.line}:${
-        originalPosition.column
-      }`
-    )
   }
   return lines
 }
