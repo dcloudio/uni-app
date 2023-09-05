@@ -33,6 +33,10 @@ export interface CodegenOptions extends SharedTransformCodegenOptions {
    */
   sourceMap?: boolean
   /**
+   *
+   */
+  sourceMapGeneratedLine?: number
+  /**
    * 匹配 easycom 组件
    * @param tag
    */

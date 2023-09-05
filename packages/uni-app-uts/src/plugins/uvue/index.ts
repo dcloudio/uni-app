@@ -11,7 +11,10 @@ import {
   normalizePath,
   parseUTSComponent,
   parseVueRequest,
+  removeExt,
 } from '@dcloudio/uni-cli-shared'
+
+import type { RawSourceMap } from 'source-map-js'
 
 import {
   ResolvedOptions,
@@ -95,7 +98,7 @@ export function uniAppUVuePlugin(): Plugin {
       }
       if (!query.vue) {
         // main request
-        const { errors, uts, js } = await transformVue(
+        const { errors, uts, js, templateSourceMap } = await transformVue(
           code,
           filename,
           options,
@@ -109,11 +112,19 @@ export function uniAppUVuePlugin(): Plugin {
           )
           return null
         }
+        const fileName = parseUTSRelativeFilename(filename)
         this.emitFile({
           type: 'asset',
-          fileName: parseUTSRelativeFilename(filename),
+          fileName,
           source: uts,
         })
+        if (templateSourceMap) {
+          this.emitFile({
+            type: 'asset',
+            fileName: removeExt(fileName) + '.template.map',
+            source: JSON.stringify(templateSourceMap),
+          })
+        }
         return {
           code: js,
         }
@@ -176,6 +187,7 @@ interface TransformVueResult {
   uts?: string
   js?: string
   descriptor: SFCDescriptor
+  templateSourceMap?: RawSourceMap
 }
 
 export async function transformVue(
@@ -201,13 +213,18 @@ export async function transformVue(
   let templateCode = ''
   let templateImportEasyComponentsCode = ''
   let templateImportUTSComponentsCode = ''
+  let templateSourceMap
   if (!isApp) {
     const templateResult = genTemplate(descriptor, {
       targetLanguage: options.targetLanguage as any,
       mode: 'function',
       filename: className,
       prefixIdentifiers: true,
-      sourceMap: true,
+      sourceMap: process.env.NODE_ENV !== 'production',
+      // TODO 将sourceMap的行数调整为script的最后一行，后续需要考虑setup
+      sourceMapGeneratedLine: descriptor.script
+        ? descriptor.script.loc.end.line + 1
+        : 1,
       matchEasyCom: (tag, uts) => {
         const source = matchEasycom(tag)
         if (uts && source) {
@@ -222,12 +239,16 @@ export async function transformVue(
       templateResult.importEasyComponents.join('\n')
     templateImportUTSComponentsCode =
       templateResult.importUTSComponents.join('\n')
+    templateSourceMap = templateResult.map
   }
   // 生成 script 文件
   // console.log(descriptor.script?.loc)
   const utsCode =
-    genScript(descriptor, { filename: className }) + templateCode + '\n'
-  genStyle(descriptor, { filename: fileName, className }) + '\n'
+    genScript(descriptor, { filename: className }) +
+    templateCode +
+    '\n' +
+    genStyle(descriptor, { filename: fileName, className }) +
+    '\n'
 
   let jsCode =
     templateImportEasyComponentsCode + templateImportUTSComponentsCode
@@ -244,5 +265,6 @@ export async function transformVue(
     uts: utsCode,
     js: jsCode,
     descriptor,
+    templateSourceMap,
   }
 }

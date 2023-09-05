@@ -71,9 +71,6 @@ export function compile(
         !!options.parseUTSComponent?.(tag, options.targetLanguage)
       )
     },
-    onError(error) {
-      console.log(error)
-    },
   })
   const [nodeTransforms, directiveTransforms] = getBaseTransformPreset(
     options.prefixIdentifiers
