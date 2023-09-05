@@ -9,10 +9,7 @@ export function uniCloudPlugin(): Plugin {
     name: 'uni:app-unicloud',
     apply: 'build',
     generateBundle(_, bundle) {
-      if (
-        uniCloudSpaceList.length === 0 &&
-        process.env.NODE_ENV === 'production'
-      ) {
+      if (uniCloudSpaceList.length === 0) {
         return
       }
       if (bundle[ENTRY_FILENAME]) {
