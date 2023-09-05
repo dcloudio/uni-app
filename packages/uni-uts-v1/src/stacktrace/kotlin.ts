@@ -193,7 +193,7 @@ export function parseUTSKotlinRuntimeStacktrace(
 ) {
   const appid = normalizeAppid(options.appid || DEFAULT_APPID)
   if (!stacktrace.includes('uni.' + appid + '.')) {
-    return stacktrace
+    return ''
   }
   updateUTSKotlinSourceMapManifestCache(options.cacheDir)
   const re = createRegExp(appid)
@@ -214,12 +214,12 @@ export function parseUTSKotlinRuntimeStacktrace(
       if (color) {
         error = color + error + color
       }
-      return [error, ...codes]
+      return [error, ...codes].join('\n')
     } else {
       res.push(line)
     }
   }
-  return res.join('\n')
+  return ''
 }
 
 function parseUTSKotlinRuntimeStacktraceLine(
