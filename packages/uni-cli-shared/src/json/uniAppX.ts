@@ -37,6 +37,10 @@ export function normalizeUniAppXAppPagesJson(jsonStr: string) {
   if (userPagesJson.tabBar) {
     pagesJson.tabBar = userPagesJson.tabBar
   }
+  // condition
+  if (userPagesJson.condition) {
+    pagesJson.condition = userPagesJson.condition
+  }
   return pagesJson
 }
 

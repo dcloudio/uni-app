@@ -3,6 +3,7 @@ import fs from 'fs-extra'
 import {
   PAGES_JSON_UTS,
   normalizeUniAppXAppPagesJson,
+  parseArguments,
 } from '@dcloudio/uni-cli-shared'
 import type { OutputAsset } from 'rollup'
 import type { Plugin } from 'vite'
@@ -24,6 +25,7 @@ export function uniAppPagesPlugin(): Plugin {
   let globalStyle = 'new Map()'
   let tabBar = 'null'
   let launchPage = 'null'
+  let conditionUrl = 'null'
   return {
     name: 'uni:app-pages',
     apply: 'build',
@@ -61,6 +63,13 @@ export function uniAppPagesPlugin(): Plugin {
         if (pagesJson.tabBar) {
           tabBar = stringifyMap(pagesJson.tabBar)
         }
+        if (pagesJson.condition) {
+          const conditionInfo = parseArguments(pagesJson)
+          if (conditionInfo) {
+            const { path, query } = JSON.parse(conditionInfo)
+            conditionUrl = `${path}${query ? '?' + query : ''}`
+          }
+        }
         launchPage = stringifyLaunchPage(pagesJson.pages[0])
         return `${imports.map((p) => `import './${p}.uvue'`).join('\n')}
 export default 'pages.json'`
@@ -88,6 +97,7 @@ function defineAppConfig(){
   __uniConfig.entryPagePath = '/${imports[0]}'
   __uniConfig.globalStyle = ${globalStyle}
   __uniConfig.tabBar = __uniTabBar as Map<string, any> | null
+  __uniConfig.conditionUrl = '${conditionUrl}'
 }
 `
       }
