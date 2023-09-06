@@ -281,7 +281,8 @@ export async function transformVue(
     descriptor,
     sourceMap: needSourceMap
       ? createSourceMap(
-          descriptor.script ? descriptor.script.loc.end.line + 1 : 1,
+          descriptor.script?.loc.end.line ?? 0,
+          descriptor.template?.loc.start.line ?? 0,
           new MagicString(code).generateMap({
             hires: true,
             source: fileName,
@@ -295,6 +296,7 @@ export async function transformVue(
 
 function createSourceMap(
   scriptCodeOffset: number,
+  templateCodeOffset: number,
   scriptMap: RawSourceMap,
   templateMap?: RawSourceMap
 ) {
@@ -315,9 +317,12 @@ function createSourceMap(
     if (m.source == null) return
     addMapping(gen, {
       source: m.source,
-      original: { line: m.originalLine, column: m.originalColumn },
+      original: {
+        line: m.originalLine + templateCodeOffset - 1,
+        column: m.originalColumn,
+      },
       generated: {
-        line: m.generatedLine + scriptCodeOffset - 1,
+        line: m.generatedLine + scriptCodeOffset,
         column: m.generatedColumn,
       },
     })
