@@ -46,6 +46,9 @@ export type UTSOutputOptions = {
   isPlugin?: boolean
   split?: boolean
   disableSplitManifest?: boolean
+  uniAppX?: {
+    uvueOutDir: string
+  }
   transform?: {
     paramDefaultValue?: boolean
     constructorInvocation?: boolean

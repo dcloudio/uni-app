@@ -114,6 +114,9 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
       noColor: true,
       split,
       disableSplitManifest: options.disableSplitManifest,
+      uniAppX: {
+        uvueOutDir: uvueOutDir(),
+      },
       transform: {
         uniExtApiDefaultNamespace: 'io.dcloud.uniapp.extapi',
         uniExtApiNamespaces: extApis,
@@ -148,6 +151,10 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
   }
 
   return runKotlinDev(options, result as RunKotlinDevResult, hasCache)
+}
+
+export function uvueOutDir() {
+  return path.join(process.env.UNI_OUTPUT_DIR, '../.uvue')
 }
 
 function kotlinDir(outputDir: string) {

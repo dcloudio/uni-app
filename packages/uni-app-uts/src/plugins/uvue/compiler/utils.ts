@@ -11,11 +11,11 @@ import { CompilerError } from './errors'
 
 export function genRenderFunctionDecl({
   targetLanguage,
-  filename,
+  className,
 }: CompilerOptions): string {
   return `${
     targetLanguage === 'kotlin' ? '@Suppress("UNUSED_PARAMETER") ' : ''
-  }function ${filename}Render(): VNode | null`
+  }function ${className}Render(): VNode | null`
 }
 
 export function rewriteObjectExpression(

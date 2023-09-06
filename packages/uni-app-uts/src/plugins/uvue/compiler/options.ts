@@ -20,6 +20,10 @@ interface SharedTransformCodegenOptions {
    * @default ''
    */
   filename?: string
+  /**
+   * 编译的模板类名
+   */
+  className?: string
 }
 export interface CodegenOptions extends SharedTransformCodegenOptions {
   /**
@@ -32,10 +36,6 @@ export interface CodegenOptions extends SharedTransformCodegenOptions {
    * @default false
    */
   sourceMap?: boolean
-  /**
-   *
-   */
-  sourceMapGeneratedLine?: number
   /**
    * 匹配 easycom 组件
    * @param tag

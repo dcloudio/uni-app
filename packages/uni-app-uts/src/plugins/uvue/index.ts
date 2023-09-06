@@ -2,7 +2,12 @@ import path from 'path'
 import fs from 'fs-extra'
 
 import type { Plugin } from 'vite'
-import type { SFCBlock, SFCDescriptor, SFCParseResult } from '@vue/compiler-sfc'
+import {
+  MagicString,
+  type SFCBlock,
+  type SFCDescriptor,
+  type SFCParseResult,
+} from '@vue/compiler-sfc'
 import type { TransformPluginContext } from 'rollup'
 
 import { isString } from '@vue/shared'
@@ -15,6 +20,13 @@ import {
 } from '@dcloudio/uni-cli-shared'
 
 import type { RawSourceMap } from 'source-map-js'
+
+import { addMapping, fromMap, toEncodedMap } from '@jridgewell/gen-mapping'
+import {
+  TraceMap,
+  eachMapping,
+  EncodedSourceMap,
+} from '@jridgewell/trace-mapping'
 
 import {
   ResolvedOptions,
@@ -98,7 +110,7 @@ export function uniAppUVuePlugin(): Plugin {
       }
       if (!query.vue) {
         // main request
-        const { errors, uts, js, templateSourceMap } = await transformVue(
+        const { errors, uts, js, sourceMap } = await transformVue(
           code,
           filename,
           options,
@@ -118,11 +130,11 @@ export function uniAppUVuePlugin(): Plugin {
           fileName,
           source: uts,
         })
-        if (templateSourceMap) {
+        if (sourceMap) {
           this.emitFile({
             type: 'asset',
             fileName: removeExt(fileName) + '.template.map',
-            source: JSON.stringify(templateSourceMap),
+            source: JSON.stringify(sourceMap),
           })
         }
         return {
@@ -187,7 +199,7 @@ interface TransformVueResult {
   uts?: string
   js?: string
   descriptor: SFCDescriptor
-  templateSourceMap?: RawSourceMap
+  sourceMap?: RawSourceMap
 }
 
 export async function transformVue(
@@ -208,23 +220,25 @@ export async function transformVue(
     return { errors, descriptor }
   }
   const isApp = isAppVue(filename)
-  const fileName = path.relative(options.root, filename)
+  const fileName = normalizePath(path.relative(options.root, filename))
   const className = genClassName(fileName, options.classNamePrefix)
   let templateCode = ''
   let templateImportEasyComponentsCode = ''
   let templateImportUTSComponentsCode = ''
-  let templateSourceMap
+  const needSourceMap = process.env.UNI_APP_X_TEMPLATE_SOURCEMAP
+    ? true
+    : process.env.NODE_ENV !== 'production'
+  let templateSourceMap: RawSourceMap | undefined
   if (!isApp) {
     const templateResult = genTemplate(descriptor, {
       targetLanguage: options.targetLanguage as any,
       mode: 'function',
-      filename: className,
+      filename: fileName,
+      className: className,
       prefixIdentifiers: true,
-      sourceMap: process.env.NODE_ENV !== 'production',
-      // TODO 将sourceMap的行数调整为script的最后一行，后续需要考虑setup
-      sourceMapGeneratedLine: descriptor.script
-        ? descriptor.script.loc.end.line + 1
-        : 1,
+      // 方便测试，build模式也提供sourceMap
+      // sourceMap: false,
+      sourceMap: needSourceMap,
       matchEasyCom: (tag, uts) => {
         const source = matchEasycom(tag)
         if (uts && source) {
@@ -265,6 +279,49 @@ export async function transformVue(
     uts: utsCode,
     js: jsCode,
     descriptor,
-    templateSourceMap,
+    sourceMap: needSourceMap
+      ? createSourceMap(
+          descriptor.script ? descriptor.script.loc.end.line + 1 : 1,
+          new MagicString(code).generateMap({
+            hires: true,
+            source: fileName,
+            includeContent: true,
+          }) as unknown as RawSourceMap,
+          templateSourceMap
+        )
+      : undefined,
   }
+}
+
+function createSourceMap(
+  scriptCodeOffset: number,
+  scriptMap: RawSourceMap,
+  templateMap?: RawSourceMap
+) {
+  if (!templateMap) {
+    return scriptMap
+  }
+  const gen = fromMap(
+    // version property of result.map is declared as string
+    // but actually it is `3`
+    scriptMap as Omit<RawSourceMap, 'version'> as EncodedSourceMap
+  )
+  const tracer = new TraceMap(
+    // same above
+    templateMap as Omit<RawSourceMap, 'version'> as EncodedSourceMap
+  )
+  // const offset = (scriptCode.match(/\r?\n/g)?.length ?? 0) + 1
+  eachMapping(tracer, (m) => {
+    if (m.source == null) return
+    addMapping(gen, {
+      source: m.source,
+      original: { line: m.originalLine, column: m.originalColumn - 1 },
+      generated: {
+        line: m.generatedLine + scriptCodeOffset - 1,
+        column: m.generatedColumn,
+      },
+    })
+  })
+
+  return toEncodedMap(gen) as unknown as RawSourceMap
 }

@@ -54,7 +54,9 @@ import { isBinaryExpression } from '@babel/types'
 type CodegenNode = TemplateChildNode | JSChildNode | SSRCodegenNode
 
 export interface CodegenContext
-  extends Required<Omit<CodegenOptions, 'sourceMapGeneratedLine'>> {
+  extends Required<
+    Omit<CodegenOptions, 'sourceMapGeneratedLine' | 'className'>
+  > {
   source: string
   code: string
   importEasyComponents: string[]
@@ -80,7 +82,6 @@ function createCodegenContext(
     prefixIdentifiers = false,
     bindingMetadata = {},
     sourceMap = false,
-    sourceMapGeneratedLine = 1,
     filename = '',
     matchEasyCom = NOOP,
     parseUTSComponent = NOOP,
@@ -98,7 +99,7 @@ function createCodegenContext(
     importEasyComponents: [],
     importUTSComponents: [],
     column: 1,
-    line: sourceMapGeneratedLine ?? 1,
+    line: 1,
     offset: 0,
     indentLevel: 0,
     map: undefined,

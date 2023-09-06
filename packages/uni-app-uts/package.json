@@ -24,6 +24,8 @@
     "@dcloudio/uni-i18n": "3.0.0-alpha-3090020230826001",
     "@dcloudio/uni-nvue-styler": "3.0.0-alpha-3090020230826001",
     "@dcloudio/uni-shared": "3.0.0-alpha-3090020230826001",
+    "@jridgewell/gen-mapping": "^0.3.3",
+    "@jridgewell/trace-mapping": "^0.3.19",
     "@rollup/pluginutils": "^4.2.0",
     "@vue/compiler-core": "3.2.47",
     "@vue/compiler-sfc": "3.2.47",
