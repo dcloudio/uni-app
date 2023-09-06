@@ -315,7 +315,7 @@ function createSourceMap(
     if (m.source == null) return
     addMapping(gen, {
       source: m.source,
-      original: { line: m.originalLine, column: m.originalColumn - 1 },
+      original: { line: m.originalLine, column: m.originalColumn },
       generated: {
         line: m.generatedLine + scriptCodeOffset - 1,
         column: m.generatedColumn,
