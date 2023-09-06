@@ -90,6 +90,17 @@ export async function genProxyCode(
   }
   options.types = await parseInterfaceTypes(module, options)
   options.meta!.types = parseMetaTypes(options.types)
+  // 自动补充 VideoNode 导出
+  if (options.androidComponents) {
+    Object.keys(options.androidComponents).forEach((name) => {
+      options.meta!.types[capitalize(camelize(name)) + 'Node'] = 'class'
+    })
+  }
+  if (options.iosComponents) {
+    Object.keys(options.iosComponents).forEach((name) => {
+      options.meta!.types[capitalize(camelize(name)) + 'Node'] = 'class'
+    })
+  }
   const decls = await parseModuleDecls(module, options)
   return `
 const { registerUTSInterface, initUTSProxyClass, initUTSProxyFunction, initUTSPackageName, initUTSIndexClassName, initUTSClassName } = uni
