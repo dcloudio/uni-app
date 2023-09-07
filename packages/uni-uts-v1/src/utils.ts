@@ -183,6 +183,11 @@ function resolveTypeAliasDeclNames(items: ModuleItem[]) {
   items.forEach((item) => {
     if (item.type === 'TsTypeAliasDeclaration') {
       names.push(item.id.value)
+    } else if (
+      item.type === 'ExportDeclaration' &&
+      item.declaration.type === 'TsTypeAliasDeclaration'
+    ) {
+      names.push(item.declaration.id.value)
     }
   })
   return names

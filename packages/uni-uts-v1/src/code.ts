@@ -61,7 +61,7 @@ interface Meta {
   >
   types: Record<string, 'function' | 'class' | 'interface'>
 }
-interface GenProxyCodeOptions {
+export interface GenProxyCodeOptions {
   is_uni_modules: boolean
   id: string
   name: string
@@ -449,6 +449,7 @@ function parseTypes(
     // export type ShowLoadingOptions = {}
     case 'TsTypeLiteral':
       classTypes.push(decl.id.value)
+      break
   }
 }
 
@@ -632,7 +633,7 @@ interface ProxyClass {
 
 function mergeAstTypes(to: Types, from: Types) {
   if (from.class.length) {
-    to.class = [...new Set(...[...to.class, ...from.class])]
+    to.class = [...new Set([...to.class, ...from.class])]
   }
   if (Object.keys(from.fn).length) {
     for (const name in from.fn) {
@@ -794,6 +795,18 @@ function resolveType(
     typeAnnotation.type === 'TsTypeReference' &&
     typeAnnotation.typeName.type === 'Identifier'
   ) {
+    // Array<string>
+    if (
+      typeAnnotation.typeName.value === 'Array' &&
+      typeAnnotation.typeParams &&
+      typeAnnotation.typeParams.params.length === 1
+    ) {
+      return resolveType(
+        types,
+        typeAnnotation.typeParams.params[0],
+        resolveTypeReferenceName
+      )
+    }
     if (hasOwn(types.fn, typeAnnotation.typeName.value)) {
       return 'UTSCallback'
     }
@@ -811,6 +824,8 @@ function resolveType(
       }
       return resolveType(types, type, resolveTypeReferenceName)
     }
+  } else if (typeAnnotation.type === 'TsArrayType') {
+    return resolveType(types, typeAnnotation.elemType, resolveTypeReferenceName)
   }
   return ''
 }

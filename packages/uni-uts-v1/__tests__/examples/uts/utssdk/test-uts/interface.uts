@@ -1,5 +1,5 @@
 export type ShowToast = (msg: string) => void
 export interface RequestTask {
-    start(): void
-    abort(): RequestTask
+  start(): void
+  abort(): RequestTask
 }
