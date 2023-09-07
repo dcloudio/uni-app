@@ -25,7 +25,7 @@ export function uniAppPagesPlugin(): Plugin {
   let globalStyle = 'new Map()'
   let tabBar = 'null'
   let launchPage = 'null'
-  let conditionUrl = 'null'
+  let conditionUrl = ''
   return {
     name: 'uni:app-pages',
     apply: 'build',
