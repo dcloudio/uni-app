@@ -3,11 +3,11 @@ export const EXTNAME_JS = ['.js', '.ts', '.jsx', '.tsx']
 export const EXTNAME_TS = ['.ts', '.tsx']
 export const EXTNAME_VUE = ['.vue', '.nvue', '.uvue']
 export const EXTNAME_VUE_TEMPLATE = ['.vue', '.nvue', '.jsx', '.tsx']
-export const EXTNAME_VUE_RE = /\.(vue|nvue)$/
+export const EXTNAME_VUE_RE = /\.(vue|nvue|uvue)$/
 export const EXTNAME_JS_RE = /\.(js|jsx|ts|tsx|mjs)$/
 export const EXTNAME_TS_RE = /\.tsx?$/
 
-export const extensions = [
+const COMMON_EXTENSIONS = [
   '.uts',
   '.mjs',
   '.js',
@@ -15,7 +15,16 @@ export const extensions = [
   '.jsx',
   '.tsx',
   '.json',
-].concat(EXTNAME_VUE)
+]
+export const extensions = COMMON_EXTENSIONS.concat(EXTNAME_VUE)
+
+export const uni_app_x_extensions = COMMON_EXTENSIONS.concat(
+  (() => {
+    const names = EXTNAME_VUE.slice()
+    names.reverse()
+    return names
+  })()
+)
 
 export const PAGES_JSON_JS = 'pages-json-js'
 export const PAGES_JSON_UTS = 'pages-json-uts'

@@ -14,6 +14,7 @@ export function createBuild(
   initEasycomsOnce(options.inputDir, {
     dirs: [resolveComponentsLibPath()],
     platform: process.env.UNI_PLATFORM,
+    isX: process.env.UNI_APP_X === 'true',
   })
   const rollupOutputOption = config.build?.rollupOptions?.output
   const sourcemap =

@@ -14,6 +14,7 @@ export const initEasycom = (watcher?: FSWatcher) => {
     {
       dirs: [resolveComponentsLibPath()],
       platform: process.env.UNI_PLATFORM,
+      isX: process.env.UNI_APP_X === 'true',
     }
   )
   if (!watcher) {

@@ -14,7 +14,7 @@ import { initUTSComponents } from './uts'
 interface EasycomOption {
   dirs?: string[]
   rootDir: string
-  extensions?: string[]
+  extensions: string[]
   autoscan?: boolean
   custom?: EasycomCustom
 }
@@ -45,7 +45,11 @@ function clearEasycom() {
 
 export function initEasycoms(
   inputDir: string,
-  { dirs, platform }: { dirs: string[]; platform: UniApp.PLATFORM }
+  {
+    dirs,
+    platform,
+    isX,
+  }: { dirs: string[]; platform: UniApp.PLATFORM; isX?: boolean }
 ) {
   const componentsDir = path.resolve(inputDir, 'components')
   const uniModulesDir = path.resolve(inputDir, 'uni_modules')
@@ -64,6 +68,7 @@ export function initEasycoms(
       rootDir: inputDir,
       autoscan: !!(easycom && easycom.autoscan),
       custom: (easycom && easycom.custom) || {},
+      extensions: [...(isX ? ['.uvue'] : []), ...['.vue', '.jsx', '.tsx']],
     }
     debugEasycom(easycomOptions)
     return easycomOptions
@@ -81,14 +86,15 @@ export function initEasycoms(
   }
   initEasycom(options)
   initUTSEasycom()
+  const componentExtNames = isX ? 'uvue|vue' : 'vue'
   const res = {
     options,
     filter: createFilter(
       [
-        'components/*/*.(vue|jsx|tsx)',
-        'uni_modules/*/components/*/*.(vue|jsx|tsx)',
-        'utssdk/*/**/*.vue',
-        'uni_modules/*/utssdk/*/*.vue',
+        'components/*/*.(' + componentExtNames + '|jsx|tsx)',
+        'uni_modules/*/components/*/*.(' + componentExtNames + '|jsx|tsx)',
+        'utssdk/*/**/*.(' + componentExtNames + ')',
+        'uni_modules/*/utssdk/*/*.(' + componentExtNames + ')',
       ],
       [],
       {
@@ -126,12 +132,7 @@ function initUniModulesEasycomDirs(uniModulesDir: string) {
     .filter<string>(Boolean as any)
 }
 
-function initEasycom({
-  dirs,
-  rootDir,
-  custom,
-  extensions = ['.vue', '.jsx', '.tsx'],
-}: EasycomOption) {
+function initEasycom({ dirs, rootDir, custom, extensions }: EasycomOption) {
   clearEasycom()
   const easycomsObj = Object.create(null)
   if (dirs && dirs.length && rootDir) {

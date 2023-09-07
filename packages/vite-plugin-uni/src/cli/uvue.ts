@@ -81,6 +81,7 @@ export async function runUVueBuild(options: CliOptions & BuildOptions) {
     initEasycomsOnce(process.env.UNI_INPUT_DIR, {
       dirs: [resolveComponentsLibPath()],
       platform: process.env.UNI_PLATFORM,
+      isX: true,
     })
     await buildUVue(options)
     console.log(M['build.done'])

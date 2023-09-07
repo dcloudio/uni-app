@@ -70,6 +70,7 @@ export function createHandleHotUpdate(): Plugin['handleHotUpdate'] {
       const { options, refresh } = initEasycomsOnce(inputDir, {
         dirs: [resolveComponentsLibPath()],
         platform,
+        isX: process.env.UNI_APP_X === 'true',
       })
       if (
         !equal(
