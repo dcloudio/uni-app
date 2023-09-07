@@ -1,7 +1,7 @@
 export const PUBLIC_DIR = 'static'
 export const EXTNAME_JS = ['.js', '.ts', '.jsx', '.tsx']
 export const EXTNAME_TS = ['.ts', '.tsx']
-export const EXTNAME_VUE = ['.vue', '.nvue', '.uvue']
+export const EXTNAME_VUE = ['.vue', '.nvue']
 export const EXTNAME_VUE_TEMPLATE = ['.vue', '.nvue', '.jsx', '.tsx']
 export const EXTNAME_VUE_RE = /\.(vue|nvue|uvue)$/
 export const EXTNAME_JS_RE = /\.(js|jsx|ts|tsx|mjs)$/
@@ -18,13 +18,7 @@ const COMMON_EXTENSIONS = [
 ]
 export const extensions = COMMON_EXTENSIONS.concat(EXTNAME_VUE)
 
-export const uni_app_x_extensions = COMMON_EXTENSIONS.concat(
-  (() => {
-    const names = EXTNAME_VUE.slice()
-    names.reverse()
-    return names
-  })()
-)
+export const uni_app_x_extensions = COMMON_EXTENSIONS.concat(['.uvue', '.vue'])
 
 export const PAGES_JSON_JS = 'pages-json-js'
 export const PAGES_JSON_UTS = 'pages-json-uts'

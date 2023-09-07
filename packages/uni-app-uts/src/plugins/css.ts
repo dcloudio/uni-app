@@ -14,6 +14,7 @@ import {
   parseVueRequest,
   resolveMainPathOnce,
   parseAssets,
+  preUVueCss,
 } from '@dcloudio/uni-cli-shared'
 import { parse } from '@dcloudio/uni-nvue-styler'
 
@@ -80,6 +81,9 @@ export function uniAppCssPlugin(): Plugin {
     async transform(source, filename) {
       if (!cssLangRE.test(filename) || commonjsProxyRE.test(filename)) {
         return
+      }
+      if (source.includes('#endif')) {
+        source = preUVueCss(source)
       }
       source = parseAssets(resolvedConfig, source)
       // 仅做校验使用
