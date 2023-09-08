@@ -13,7 +13,7 @@ export const getData = (params: GetDataParams, callback: Callback): void => {
     callback(null, { errMsg: 'Page.getData:fail, Page not found.' })
     return
   }
-  const data = pageGetData(page, params.path)
+  const data = pageGetData(page)
   callback({ data }, null)
 }
 

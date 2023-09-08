@@ -32,7 +32,6 @@ export function getPageVm(id: string): BasePage | null {
 export function pageGetData(
   // @ts-ignore
   vm: BasePage,
-  path?: string
 ): Map<string, any | null> {
   // TODO: path 目前无法处理类型问题，暂由服务端处理
   return vm.$data
@@ -286,16 +285,9 @@ function isValidNode(node: INode, selector: string): boolean {
 export function componentGetData(
   // @ts-ignore
   vm: ComponentPublicInstance,
-  path?: string
 ): Map<string, any | null> {
-  let data = new Map<string, any | null>()
-  // TODO: path
-  if (path != null && path.length != 0) {
-    data.set('errMsg', `getData:fail, path:${path} is not supported.`)
-  } else {
-    data = vm.$data
-  }
-  return data
+  // TODO: path 目前无法处理类型问题，暂由服务端处理
+  return vm.$data
 }
 export function componentSetData(
   // @ts-ignore

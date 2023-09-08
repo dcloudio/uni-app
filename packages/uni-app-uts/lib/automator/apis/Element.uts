@@ -347,7 +347,6 @@ export const getData = (params: GetDataParams, callback: Callback): void => {
   if (component != null) {
     const data = componentGetData(
       component,
-      params.path != null ? params.path : ''
     )
     callback({ data }, null)
   }
