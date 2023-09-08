@@ -31,24 +31,40 @@ function getAssetsCopyOption (from, options = {}) {
     )
   }
 }
+
+function addIgnore (ignore, platform) {
+  if (CopyWebpackPluginVersion > 5) {
+    if (platform === 'app-plus') {
+      ignore.push(`${process.env.UNI_INPUT_DIR.replace(/\\/g, '/')}/static/app/**/*`)
+    } else if (platform === 'h5') {
+      ignore.push(`${process.env.UNI_INPUT_DIR.replace(/\\/g, '/')}/static/web/**/*`)
+    }
+    ignore.push(`${process.env.UNI_INPUT_DIR.replace(/\\/g, '/')}/static/${platform}/**/*`)
+  } else {
+    if (platform === 'app-plus') {
+      ignore.push('app/**/*')
+    } else if (platform === 'h5') {
+      ignore.push('web/**/*')
+    }
+    ignore.push(platform + '/**/*')
+  }
+}
 // 暂未考虑动态添加static目录
 function getAssetsCopyOptions (assetsDir) {
   const ignore = []
 
   global.uniPlugin.platforms.forEach(platform => {
     if (global.uniPlugin.name !== platform) {
-      if (CopyWebpackPluginVersion > 5) {
-        ignore.push(`${process.env.UNI_INPUT_DIR.replace(/\\/g, '/')}/static/${platform}/**/*`)
-      } else {
-        ignore.push(platform + '/**/*')
-      }
+      addIgnore(ignore, platform)
     }
   })
 
   const copyOptions = []
   // 主包静态资源
   const mainAssetsCopyOption = getAssetsCopyOption(assetsDir, CopyWebpackPluginVersion > 5 ? {
-    globOptions: { ignore }
+    globOptions: {
+      ignore
+    }
   } : {
     ignore
   })
@@ -59,7 +75,9 @@ function getAssetsCopyOptions (assetsDir) {
   process.UNI_SUBPACKAGES &&
     Object.keys(process.UNI_SUBPACKAGES).forEach(root => {
       const subAssetsCopyOption = getAssetsCopyOption(path.join(root, assetsDir), CopyWebpackPluginVersion > 5 ? {
-        globOptions: { ignore }
+        globOptions: {
+          ignore
+        }
       } : {
         ignore
       })

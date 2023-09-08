@@ -68,7 +68,13 @@ function parseStyle (style = {}, root = '') {
   Object.keys(style).forEach(name => {
     if (PLATFORMS.includes(name)) {
       if (name === process.env.UNI_PLATFORM) {
-        platformStyle = style[name] || {}
+        if (name === 'app-plus') {
+          platformStyle = style.app || style[name] || {}
+        } else if (name === 'h5') {
+          platformStyle = style.web || style[name] || {}
+        } else {
+          platformStyle = style[name] || {}
+        }
       }
       delete style[name]
     }
