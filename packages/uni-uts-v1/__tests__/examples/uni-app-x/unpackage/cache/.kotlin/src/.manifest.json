@@ -1,10 +1,16 @@
 {
-  "index.kt": {
-    "class": "",
-    "md5": "5dc731db12417c1f560b7da9e215c1bf3f4edb4b"
+  "version": "1",
+  "env": {
+    "compiler_version": "3.9.0"
   },
-  "pages/index/index.kt": {
-    "class": "GenPagesIndexIndex",
-    "md5": "371ee361e05ed6b5d46a688bbaa74f36ca551252"
+  "files": {
+    "index.kt": {
+      "class": "",
+      "md5": "5dc731db12417c1f560b7da9e215c1bf3f4edb4b"
+    },
+    "pages/index/index.kt": {
+      "class": "GenPagesIndexIndex",
+      "md5": "371ee361e05ed6b5d46a688bbaa74f36ca551252"
+    }
   }
 }

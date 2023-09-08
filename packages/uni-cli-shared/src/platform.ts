@@ -2,6 +2,7 @@ const BUILT_IN_PLATFORMS = [
   'app',
   'app-plus',
   'h5',
+  'web',
   'mp-360',
   'mp-alipay',
   'mp-baidu',
