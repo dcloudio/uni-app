@@ -1,3 +1,4 @@
+import fs from 'fs'
 import path from 'path'
 import { init, parse } from 'es-module-lexer'
 import {
@@ -180,22 +181,24 @@ type UniCloudObjectInfo = {
 export function getUniCloudObjectInfo(
   uniCloudSpaceList: Array<UniCloudSpace>
 ): Array<UniCloudObjectInfo> {
-  if (!uniCloudSpaceList || uniCloudSpaceList.length === 0) {
-    return []
+  let uniCloudWorkspaceFolder = process.env.UNI_INPUT_DIR.endsWith('src')
+    ? path.resolve(process.env.UNI_INPUT_DIR, '..')
+    : process.env.UNI_INPUT_DIR
+  let serviceProvider = 'aliyun'
+  if (uniCloudSpaceList && uniCloudSpaceList.length > 0) {
+    const space = uniCloudSpaceList[0]
+    if (space.workspaceFolder) {
+      uniCloudWorkspaceFolder = space.workspaceFolder
+    }
+    serviceProvider = space.provider === 'tencent' ? 'tcb' : space.provider
+  } else {
+    serviceProvider =
+      ['aliyun', 'tcb', 'alipay'].find((item) =>
+        fs.existsSync(path.resolve(uniCloudWorkspaceFolder, 'uniCloud-' + item))
+      ) || 'aliyun'
   }
   try {
     const { getWorkspaceObjectInfo } = require('../../lib/unicloud-utils')
-    const space = uniCloudSpaceList[0]
-    let uniCloudWorkspaceFolder: string
-    if (space.workspaceFolder) {
-      uniCloudWorkspaceFolder = space.workspaceFolder
-    } else {
-      uniCloudWorkspaceFolder = process.env.UNI_INPUT_DIR.endsWith('src')
-        ? path.resolve(process.env.UNI_INPUT_DIR, '..')
-        : process.env.UNI_INPUT_DIR
-    }
-    const serviceProvider =
-      space.provider === 'tencent' ? 'tcb' : space.provider
     return getWorkspaceObjectInfo(uniCloudWorkspaceFolder, serviceProvider)
   } catch (e) {
     console.error(e)
