@@ -65,6 +65,7 @@ export type UTSOutputOptions = {
 }
 export interface UTSOptions {
   mode?: string
+  hbxVersion: string
   input: UTSInputOptions
   output: UTSOutputOptions
 }

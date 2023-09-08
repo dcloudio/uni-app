@@ -139,24 +139,28 @@ let kotlinManifest = {
   manifest: {} as Record<string, string>,
 }
 
+export interface KotlinManifestCache {
+  version: string
+  env: Record<string, string>
+  files: Record<string, Record<string, string>>
+}
 function updateUTSKotlinSourceMapManifestCache(cacheDir: string) {
   const manifestFile = path.resolve(cacheDir, 'src/.manifest.json')
   const stats = fs.statSync(manifestFile)
   if (stats.isFile()) {
     if (kotlinManifest.mtimeMs !== stats.mtimeMs) {
-      const manifest = fs.readJSONSync(manifestFile) as Record<
-        string,
-        Record<string, string>
-      >
-      const classManifest: Record<string, string> = {}
-      Object.keys(manifest).forEach((name) => {
-        const kotlinClass = manifest[name].class
-        if (kotlinClass) {
-          classManifest[kotlinClass] = name
-        }
-      })
-      kotlinManifest.mtimeMs = stats.mtimeMs
-      kotlinManifest.manifest = classManifest
+      const { files } = fs.readJSONSync(manifestFile) as KotlinManifestCache
+      if (files) {
+        const classManifest: Record<string, string> = {}
+        Object.keys(files).forEach((name) => {
+          const kotlinClass = files[name].class
+          if (kotlinClass) {
+            classManifest[kotlinClass] = name
+          }
+        })
+        kotlinManifest.mtimeMs = stats.mtimeMs
+        kotlinManifest.manifest = classManifest
+      }
     }
   }
 }

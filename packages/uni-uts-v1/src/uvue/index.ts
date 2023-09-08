@@ -24,6 +24,7 @@ import {
   isUniCloudSupported,
   parseExtApiDefaultParameters,
 } from '../utils'
+import { KotlinManifestCache } from '../stacktrace/kotlin'
 
 const DEFAULT_IMPORTS = [
   'kotlinx.coroutines.async',
@@ -95,6 +96,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
 
   const bundleOptions: UTSBundleOptions = {
     mode: process.env.NODE_ENV,
+    hbxVersion: process.env.HX_Version || process.env.UNI_COMPILER_VERSION,
     input,
     output: {
       isX: true,
@@ -317,9 +319,9 @@ async function runKotlinDev(
         // 编译失败，需要调整缓存的 manifest.json
         if (result.changed.length) {
           const manifest = readKotlinManifestJson(kotlinSrcOutDir)
-          if (manifest) {
+          if (manifest && manifest.files) {
             result.changed.forEach((file) => {
-              delete manifest[file]
+              delete manifest.files[file]
             })
             writeKotlinManifestJson(kotlinSrcOutDir, manifest)
           }
@@ -345,7 +347,7 @@ function hasKotlinManifestJson(kotlinSrcOutDir: string) {
 
 function readKotlinManifestJson(
   kotlinSrcOutDir: string
-): Record<string, string> | undefined {
+): KotlinManifestCache | undefined {
   const file = path.resolve(kotlinSrcOutDir, '.manifest.json')
   if (fs.existsSync(file)) {
     return JSON.parse(fs.readFileSync(file, 'utf8'))
@@ -354,7 +356,7 @@ function readKotlinManifestJson(
 
 function writeKotlinManifestJson(
   kotlinSrcOutDir: string,
-  manifest: Record<string, string>
+  manifest: KotlinManifestCache
 ) {
   fs.writeFileSync(
     path.resolve(kotlinSrcOutDir, '.manifest.json'),
