@@ -34,14 +34,8 @@ export function pageGetData(
   vm: BasePage,
   path?: string
 ): Map<string, any | null> {
-  let data = new Map<string, any | null>()
-  // TODO: path
-  if (path != null && path.length != 0) {
-    data.set('errMsg', `getData:fail, path:${path} is not supported.`)
-  } else {
-    data = vm.$data
-  }
-  return data
+  // TODO: path 目前无法处理类型问题，暂由服务端处理
+  return vm.$data
 }
 // @ts-ignore
 export function pageSetData(vm: BasePage, data: Map<string, any | null>): void {
