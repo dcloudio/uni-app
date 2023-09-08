@@ -28,6 +28,8 @@ const removePlatformStyle = function (style) {
       delete style[name]
     }
   })
+  delete style.app
+  delete style.web
 }
 
 const getPageComponents = function (inputDir, pagesJson) {

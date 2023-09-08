@@ -66,6 +66,11 @@ function parseStyle (style = {}, root = '') {
   let platformStyle = {}
 
   Object.keys(style).forEach(name => {
+    if (name === 'app') {
+      name = 'app-plus'
+    } else if (name === 'web') {
+      name = 'h5'
+    }
     if (PLATFORMS.includes(name)) {
       if (name === process.env.UNI_PLATFORM) {
         if (name === 'app-plus') {
@@ -79,6 +84,9 @@ function parseStyle (style = {}, root = '') {
       delete style[name]
     }
   })
+
+  delete style.app
+  delete style.web
 
   if (process.env.UNI_PLATFORM === 'app-plus') {
     if (root && Array.isArray(platformStyle.subNVues) && platformStyle.subNVues.length) { // 处理分包逻辑
