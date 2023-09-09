@@ -59,6 +59,8 @@ export function initPreContext(
     defaultContext[key] = false
   })
 
+  defaultContext.uniVersion = parseFloat(process.env.UNI_COMPILER_VERSION) || 0
+
   defaultContext[normalizeKey(platform)] = true
 
   vueContext.VUE3 = true
