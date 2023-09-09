@@ -2,6 +2,7 @@ import { extend, isString, isPlainObject } from '@vue/shared'
 const DEFAULT_KEYS = [
   'UNI_APP_X',
   'APP',
+  'APP_UVUE',
   'APP_NVUE',
   'APP_PLUS',
   'APP_PLUS_NVUE',
