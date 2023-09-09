@@ -14,6 +14,13 @@ function hasOwn (obj, key) {
   return hasOwnProperty.call(obj, key)
 }
 
+// 输出编译器版本等信息
+const pagesPkg = require('@dcloudio/webpack-uni-pages-loader/package.json')
+process.env.UNI_COMPILER_VERSION = ''
+if (pagesPkg) {
+  process.env.UNI_COMPILER_VERSION = pagesPkg['uni-app'].compilerVersion
+}
+
 const defaultInputDir = 'src'
 if (process.env.UNI_INPUT_DIR && process.env.UNI_INPUT_DIR.indexOf('./') === 0) {
   process.env.UNI_INPUT_DIR = path.resolve(process.cwd(), process.env.UNI_INPUT_DIR)
@@ -461,12 +468,6 @@ const warningMsg =
 
 const needWarning = !platformOptions.usingComponents || usingComponentsAbsent
 let hasNVue = false
-// 输出编译器版本等信息
-const pagesPkg = require('@dcloudio/webpack-uni-pages-loader/package.json')
-process.env.UNI_COMPILER_VERSION = ''
-if (pagesPkg) {
-  process.env.UNI_COMPILER_VERSION = pagesPkg['uni-app'].compilerVersion
-}
 const compileModeUrl = 'https://ask.dcloud.net.cn/article/36074'
 if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
   const compileMode = (process.env.UNI_USING_V3_NATIVE ? '（v3）' : '') + '：' + (isNVueCompiler ? 'uni-app' : 'weex')

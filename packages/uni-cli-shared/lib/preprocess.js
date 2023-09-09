@@ -22,6 +22,8 @@ module.exports = function initPreprocess (name, platforms, userDefines = {}) {
 
   const defaultContext = {}
 
+  defaultContext.uniVersion = parseFloat(process.env.UNI_COMPILER_VERSION) || 0
+
   const userDefineKeys = Object.keys(userDefines)
 
   platforms
