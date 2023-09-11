@@ -4,12 +4,18 @@
     <!-- #ifdef MP-WEIXIN -->
     <uniad-plugin class="uniad-plugin" :adpid="adpid" :unit-id="unitId" @load="_onmpload" @close="_onmpclose" @error="_onmperror"></uniad-plugin>
     <!-- #endif -->
+    <!-- #ifdef H5 -->
+    <div ref="container" />
+    <!-- #endif -->
   </view>
 </template>
 
 <script>
-  // #ifndef MP-WEIXIN
+  // #ifdef APP
   import adMixin from "./ad.mixin.js"
+  // #endif
+  // #ifdef H5
+  import adMixin from "./ad-interstitial.web.js"
   // #endif
   // #ifdef MP-WEIXIN
   import adMixin from "./ad.mixin.mp.js"
