@@ -45,6 +45,7 @@ import {
 import { genScript } from './code/script'
 import { genTemplate } from './code/template'
 import { genJsStylesCode, genStyle, transformStyle } from './code/style'
+import { generateCodeFrame } from '@dcloudio/uni-cli-shared'
 
 function resolveAppVue(inputDir: string) {
   const appUVue = path.resolve(inputDir, 'App.uvue')
@@ -229,6 +230,7 @@ export async function transformVue(
     ? true
     : process.env.NODE_ENV !== 'production'
   let templateSourceMap: RawSourceMap | undefined
+  const templateStartLine = descriptor.template?.loc.start.line ?? 0
   if (!isApp) {
     const templateResult = genTemplate(descriptor, {
       targetLanguage: options.targetLanguage as any,
@@ -245,6 +247,18 @@ export async function transformVue(
           return normalizeEasyComSource(source)
         }
         return source
+      },
+      onWarn(warning) {
+        console.warn('warning: ' + warning.message)
+        if (warning.loc) {
+          const start = warning.loc.start
+          console.log(
+            generateCodeFrame(code, {
+              line: start.line + templateStartLine - 1,
+              column: start.column,
+            })
+          )
+        }
       },
       parseUTSComponent: parseUTSComponent,
     })
@@ -282,7 +296,7 @@ export async function transformVue(
     sourceMap: needSourceMap
       ? createSourceMap(
           descriptor.script?.loc.end.line ?? 0,
-          descriptor.template?.loc.start.line ?? 0,
+          templateStartLine,
           new MagicString(code).generateMap({
             hires: true,
             source: fileName,
