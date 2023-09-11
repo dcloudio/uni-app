@@ -23,7 +23,7 @@ import {
   TemplateChildNode,
   TextNode,
   VNodeCall,
-  // WITH_CTX,
+  WITH_CTX,
   WITH_DIRECTIVES,
   advancePositionWithMutation,
   getVNodeBlockHelper,
@@ -602,8 +602,7 @@ function genFunctionExpression(
   const { params, returns, body, newline, isSlot } = node
   if (isSlot) {
     // wrap slot functions with owner context
-    // push(`_${helperNameMap[WITH_CTX]}(`)
-    push('(')
+    push(`${helperNameMap[WITH_CTX]}(`)
   }
   push(`(`, node)
   if (isArray(params)) {

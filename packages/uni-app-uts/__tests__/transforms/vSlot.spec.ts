@@ -114,7 +114,7 @@ const _component_Foo = resolveComponent("Foo")
 
   return createElementVNode("view", null, [
     createVNode(_component_Foo, utsMapOf({ onClick: _ctx.test }), utsMapOf({
-      default: ((): any[] => [
+      default: withCtx((): any[] => [
         createElementVNode("text", null, "test")
       ]),
       _: 1 /* STABLE */
@@ -151,7 +151,7 @@ const _component_Foo = resolveComponent("Foo")
 
   return createElementVNode("view", null, [
     createVNode(_component_Foo, null, utsMapOf({
-      default: ((props: Map<string, any | null>): any[] => [
+      default: withCtx((props: Map<string, any | null>): any[] => [
         createElementVNode("text", null, "msg: " + toDisplayString(props.msg), 1 /* TEXT */)
       ]),
       _: 1 /* STABLE */
@@ -174,7 +174,7 @@ const _component_Foo = resolveComponent("Foo")
 
   return createElementVNode("view", null, [
     createVNode(_component_Foo, null, utsMapOf({
-      default: ((props: Map<string, any | null>): any[] => [
+      default: withCtx((props: Map<string, any | null>): any[] => [
         createElementVNode("text", null, "msg: " + toDisplayString(props.msg), 1 /* TEXT */)
       ]),
       _: 1 /* STABLE */
