@@ -3,20 +3,20 @@
     "navigateBack": "null"
   },
   "uni-ui": {
-    "startPullDownRefresh": "null",
     "hideTabBar": "null",
-    "showTabBar": "null"
+    "showTabBar": "null",
+    "startPullDownRefresh": "null"
   },
-  "uni-exit": {
-    "exit": "null"
-  },
-  "uni-getAppBaseInfo": {
-    "getAppBaseInfo": "null"
+  "uni-storage": {
+    "clearStorage": "null"
   },
   "uni-getDeviceInfo": {
     "getDeviceInfo": "null"
   },
-  "uni-storage": {
-    "clearStorage": "null"
+  "uni-getAppBaseInfo": {
+    "getAppBaseInfo": "null"
+  },
+  "uni-exit": {
+    "exit": "null"
   }
 }
