@@ -1,7 +1,7 @@
 import path, { basename, resolve } from 'path'
 import fs from 'fs-extra'
 import type { parse, bundle, UTSTarget, UTSOutputOptions } from '@dcloudio/uts'
-import { camelize, capitalize, extend } from '@vue/shared'
+import { camelize, capitalize, extend, isArray } from '@vue/shared'
 import glob from 'fast-glob'
 import { Module, ModuleItem } from '../types/types'
 import {
@@ -475,9 +475,15 @@ export function isUniCloudSupported() {
 
 export function parseExtApiDefaultParameters() {
   const json = require('../lib/ext-api/default-parameters.json')
-  const res: Record<string, string> = {}
+  const res: Record<string, string[]> = {}
   Object.keys(json).forEach((key) => {
-    Object.assign(res, json[key])
+    const value = json[key]
+    if (isArray(value)) {
+      const newValue = value.map((v) => v ?? '')
+      Object.assign(res, newValue)
+    } else {
+      Object.assign(res, [value])
+    }
   })
   return res
 }
