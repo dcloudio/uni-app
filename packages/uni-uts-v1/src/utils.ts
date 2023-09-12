@@ -474,16 +474,24 @@ export function isUniCloudSupported() {
 }
 
 export function parseExtApiDefaultParameters() {
-  const json = require('../lib/ext-api/default-parameters.json')
+  return normalizeExtApiDefaultParameters(
+    require('../lib/ext-api/default-parameters.json')
+  )
+}
+
+export function normalizeExtApiDefaultParameters(json: Record<string, any>) {
   const res: Record<string, string[]> = {}
   Object.keys(json).forEach((key) => {
-    const value = json[key]
-    if (isArray(value)) {
-      const newValue = value.map((v) => v ?? '')
-      Object.assign(res, newValue)
-    } else {
-      Object.assign(res, [value])
-    }
+    const module = json[key]
+    Object.keys(module).forEach((api) => {
+      const value = module[api]
+      if (isArray(value)) {
+        const newValue = value.map((v) => v ?? '')
+        res[api] = newValue
+      } else {
+        res[api] = [value]
+      }
+    })
   })
   return res
 }
