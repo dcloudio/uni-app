@@ -384,6 +384,13 @@ const DEFAULT_IMPORTS = [
   'io.dcloud.uniapp.extapi.*',
 ]
 
+const DEFAULT_IMPORTS_X = [
+  'io.dcloud.uniapp.framework.*',
+  'io.dcloud.uniapp.vue.*',
+  'io.dcloud.uniapp.vue.shared.*',
+  'io.dcloud.uniapp.runtime.*',
+]
+
 export async function compile(
   filename: string,
   {
@@ -400,6 +407,9 @@ export async function compile(
   const { bundle, UTSTarget } = getUTSCompiler()
   // let time = Date.now()
   const imports = [...DEFAULT_IMPORTS]
+  if (isX) {
+    imports.push(...DEFAULT_IMPORTS_X)
+  }
   const rClass = resolveAndroidResourceClass(filename)
   if (rClass) {
     imports.push(rClass)
