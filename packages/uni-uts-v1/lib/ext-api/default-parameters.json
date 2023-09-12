@@ -1,22 +1,38 @@
 {
   "uni-route": {
-    "navigateBack": "null"
+    "navigateBack": [
+      "null"
+    ]
   },
   "uni-ui": {
-    "startPullDownRefresh": "null",
-    "hideTabBar": "null",
-    "showTabBar": "null"
-  },
-  "uni-exit": {
-    "exit": "null"
-  },
-  "uni-getAppBaseInfo": {
-    "getAppBaseInfo": "null"
-  },
-  "uni-getDeviceInfo": {
-    "getDeviceInfo": "null"
+    "hideTabBar": [
+      "null"
+    ],
+    "showTabBar": [
+      "null"
+    ],
+    "startPullDownRefresh": [
+      "null"
+    ]
   },
   "uni-storage": {
-    "clearStorage": "null"
+    "clearStorage": [
+      "null"
+    ]
+  },
+  "uni-getDeviceInfo": {
+    "getDeviceInfo": [
+      "null"
+    ]
+  },
+  "uni-getAppBaseInfo": {
+    "getAppBaseInfo": [
+      "null"
+    ]
+  },
+  "uni-exit": {
+    "exit": [
+      "null"
+    ]
   }
 }
