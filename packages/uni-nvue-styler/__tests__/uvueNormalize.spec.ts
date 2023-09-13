@@ -493,8 +493,8 @@ flexBasis: fill;
     expect(json).toEqual({
       foo: {
         '': {
-          margin: '100',
-          padding: '50',
+          margin: 100,
+          padding: 50,
         },
       },
       bar: {
@@ -727,41 +727,55 @@ flexBasis: fill;
       })
     )
   })
-  test('line-height', async () => {
+  test('remove px unit', async () => {
     const { json, messages } = await objectifierRule(`
 .foo {
+  width: 200px;
   line-height: 16px;
+  flex: 30px;
 }
 .bar {
   line-height: 1.5;
+  flex: 1;
 }
 .baz {
   line-height: 2em;
+  flex: 1 30px 2;
 }
 .boo {
   line-height: abc;
+  flex: 1 abc;
 }
 `)
     expect(json).toEqual({
       foo: {
         '': {
+          width: 200,
           lineHeight: '16px',
+          flex: '30px',
         },
       },
       bar: {
         '': {
           lineHeight: 1.5,
+          flex: 1,
         },
       },
       baz: {
         '': {
           lineHeight: '2em',
+          flex: '1 30px 2',
         },
       },
     })
     expect(messages[0]).toEqual(
       expect.objectContaining({
-        text: 'ERROR: property value `abc` is not supported for `line-height` (supported values are: `number`|`pixel`|`em`)',
+        text: 'ERROR: property value `abc` is not supported for `line-height` (supported values are: `number`|`pixel`)',
+      })
+    )
+    expect(messages[1]).toEqual(
+      expect.objectContaining({
+        text: 'ERROR: property value `1 abc` is not supported for `flex` (supported values are: `number`|`pixel`|`initial`|`auto`|`none`)',
       })
     )
   })

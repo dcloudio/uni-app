@@ -6,45 +6,64 @@ import {
   supportedEnumReason,
 } from '../utils'
 
-export const normalizeLength: Normalize = (v: string | number, options) => {
-  v = (v || '').toString()
-  const match = v.match(LENGTH_REGEXP)
+interface NormalizeLengthOptions {
+  removePx?: boolean
+  property?: string
+}
 
-  if (match) {
-    var unit = match[1]
-    const uvue = options.type === 'uvue'
-    if (uvue) {
-      if (!unit || unit === 'px') {
-        // 移除 px
-        return { value: parseFloat(v) }
-      } else if (unit === 'rpx') {
-        return { value: v }
-      }
-    } else {
-      // nvue
-      if (!unit || unit === 'px') {
-        return { value: parseFloat(v) }
-      }
-      if (SUPPORT_CSS_UNIT.includes(unit)) {
-        return { value: v }
+function createNormalizeLength({
+  removePx,
+  property,
+}: NormalizeLengthOptions = {}): Normalize {
+  return (v, options) => {
+    v = (v || '').toString()
+    const match = v.match(LENGTH_REGEXP)
+    if (match) {
+      var unit = match[1]
+      const uvue = options.type === 'uvue'
+      if (uvue) {
+        if (!unit || (unit === 'px' && removePx)) {
+          return { value: parseFloat(v) }
+        } else if (
+          unit === 'px' ||
+          unit === 'rpx' ||
+          // 只有line-height支持em单位
+          (unit === 'em' && property === 'line-height')
+        ) {
+          return { value: v }
+        }
       } else {
-        return {
-          value: parseFloat(v),
-          reason(k, v, result) {
-            return supportedUnitWithAutofixedReason(unit, v, result)
-          },
+        // nvue
+        if (!unit || unit === 'px') {
+          return { value: parseFloat(v) }
+        }
+        if (SUPPORT_CSS_UNIT.includes(unit)) {
+          return { value: v }
+        } else {
+          return {
+            value: parseFloat(v),
+            reason(k, v, result) {
+              return supportedUnitWithAutofixedReason(unit, v, result)
+            },
+          }
         }
       }
     }
-  }
 
-  return {
-    value: null,
-    reason(k, v, result) {
-      return supportedEnumReason(k, v, ['number', 'pixel'])
-    },
+    return {
+      value: null,
+      reason(k, v, result) {
+        return supportedEnumReason(k, v, ['number', 'pixel'])
+      },
+    }
   }
 }
+
+export const normalizeLength = createNormalizeLength({
+  removePx: true,
+})
+
+export const normalizeLengthWithOptions = createNormalizeLength
 
 export const normalizePercent: Normalize = (v: string | number) => {
   v = (v || '').toString()
@@ -61,27 +80,6 @@ export const normalizePercent: Normalize = (v: string | number) => {
     value: null,
     reason(k, v, result) {
       return supportedEnumReason(k, v, ['percent'])
-    },
-  }
-}
-
-export const normalizeLineHeight: Normalize = (v: string | number) => {
-  v = (v || '').toString()
-  const match = v.match(LENGTH_REGEXP)
-
-  if (match) {
-    var unit = match[1]
-    if (!unit) {
-      return { value: parseFloat(v) }
-    } else if (['px', 'rpx', 'em'].includes(unit)) {
-      return { value: v }
-    }
-  }
-
-  return {
-    value: null,
-    reason(k, v, result) {
-      return supportedEnumReason(k, v, ['number', 'pixel', 'em'])
     },
   }
 }

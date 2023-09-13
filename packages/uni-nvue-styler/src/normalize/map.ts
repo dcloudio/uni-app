@@ -7,7 +7,7 @@ import { normalizeFlexWrap } from './flexWrap'
 import { normalizeInteger } from './integer'
 import {
   normalizeLength,
-  normalizeLineHeight,
+  normalizeLengthWithOptions,
   normalizePercent,
 } from './length'
 import { normalizeNumber } from './number'
@@ -171,7 +171,6 @@ const uvueNormalizeMap: Record<string, Normalize> = {
   boxShadow: normalizeDefault,
   transitionProperty: normalizeProperty,
   transitionTimingFunction: normalizeTimingFunction,
-  lineHeight: normalizeLineHeight,
 }
 
 const restrictionMap: Partial<Record<Restriction, Normalize>> = {
@@ -238,9 +237,17 @@ function getUVueNormalizeMap() {
 
 function getNormalizes(property: Property) {
   const normalizes: Normalize[] = []
-  property.restrictions.forEach((restriction) => {
-    const normalize = restrictionMap[restriction]
+  const { restrictions } = property
+  restrictions.forEach((restriction) => {
+    let normalize = restrictionMap[restriction]
     if (normalize) {
+      if (restriction === Restriction.LENGTH) {
+        // 如果同时有number和length，例如line-height: 1.5, line-height: 16px，则不能移除px
+        normalize = normalizeLengthWithOptions({
+          removePx: !restrictions.includes(Restriction.NUMBER),
+          property: property.name,
+        })
+      }
       normalizes.push(normalize)
     }
   })
