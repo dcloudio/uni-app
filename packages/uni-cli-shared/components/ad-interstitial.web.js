@@ -26,29 +26,29 @@ export default {
     }
   },
   watch: {
-    adpid(val) {
+    adpid (val) {
       if (val) {
         this._loadData(val)
       }
     }
   },
-  data() {
+  data () {
     return {
       loading: false,
       errorMessage: null
     }
   },
-  created() {
+  created () {
     this._pc = {}
     this._pl = []
     this._loadData()
   },
   methods: {
-    load() {
+    load () {
       this._dispatchEvent(EventType.Load, {})
     },
 
-    show() {
+    show () {
       this.errorMessage = null
 
       const data = this._pl[0]
@@ -62,11 +62,11 @@ export default {
       })
     },
 
-    _onclick() {
+    _onclick () {
       this.show()
     },
 
-    _loadData(adpid) {
+    _loadData (adpid) {
       this.loading = true
       const id = adpid || this.adpid
       AdConfig.instance.get(id, (a, b) => {
@@ -80,8 +80,8 @@ export default {
       })
     },
 
-    _renderData(data) {
-      let id = this._createView()
+    _renderData (data) {
+      const id = this._createView()
 
       const coral = new window.CoralAdv({
         app_id: data.a2,
@@ -101,13 +101,13 @@ export default {
       })
     },
 
-    _dispatchEvent(type, data) {
+    _dispatchEvent (type, data) {
       this.$emit(type, {
         detail: data
       })
     },
 
-    _createView() {
+    _createView () {
       const id = this._randomId()
       const adView = document.createElement('div')
       adView.setAttribute('id', id)
@@ -116,7 +116,7 @@ export default {
       return id
     },
 
-    _randomId() {
+    _randomId () {
       let result = ''
       for (let i = 0; i < 4; i++) {
         result += (65536 * (1 + Math.random()) | 0).toString(16).substring(1)
@@ -126,11 +126,11 @@ export default {
   }
 }
 
-let IC = 0
-let IS = 0
+// let IC = 0
+// let IS = 0
 
 class AdConfig {
-  static get instance() {
+  static get instance () {
     if (this._instance == null) {
       this._instance = new AdConfig()
       this._instance._init()
@@ -138,7 +138,7 @@ class AdConfig {
     return this._instance
   }
 
-  constructor() {
+  constructor () {
     this._instance = null
     this._adConfig = null
     this._isLoading = false
@@ -146,18 +146,18 @@ class AdConfig {
     this._callbacks = []
   }
 
-  get adConfig() {
+  get adConfig () {
     return this._adConfig
   }
 
-  get isExpired() {
+  get isExpired () {
     if (this._adConfig == null) {
       return true
     }
     return (Math.abs(Date.now() - this._adConfig.last) > this.CACHE_TIME)
   }
 
-  _init() {
+  _init () {
     var config = this._getConfig()
     if (config === null || !config.last) {
       return
@@ -168,8 +168,8 @@ class AdConfig {
     }
   }
 
-  get(adpid, success, fail) {
-    IC++
+  get (adpid, success, fail) {
+    // IC++
     if (this._adConfig != null) {
       this._doCallback(adpid, success, fail)
       if (this.isExpired) {
@@ -187,8 +187,8 @@ class AdConfig {
     this._loadAdConfig(adpid)
   }
 
-  _doCallback(adpid, success, fail) {
-    IS++
+  _doCallback (adpid, success, fail) {
+    // IS++
     var { a, b } = this._adConfig
     if (a[adpid]) {
       success(b, a[adpid])
@@ -197,7 +197,7 @@ class AdConfig {
     }
   }
 
-  _loadAdConfig(adpid) {
+  _loadAdConfig (adpid) {
     if (this._isLoading === true) {
       return
     }
@@ -242,7 +242,7 @@ class AdConfig {
     })
   }
 
-  _getConfig() {
+  _getConfig () {
     if (!navigator.cookieEnabled || !window.localStorage) {
       return null
     }
@@ -250,7 +250,7 @@ class AdConfig {
     return data ? JSON.parse(data) : null
   }
 
-  _setConfig(data) {
+  _setConfig (data) {
     if (!navigator.cookieEnabled || !window.localStorage) {
       return null
     }
@@ -270,20 +270,20 @@ Object.assign(AdConfig.prototype, {
 })
 
 class AdScript {
-  static get instance() {
+  static get instance () {
     if (this._instance == null) {
       this._instance = new AdScript()
     }
     return this._instance
   }
 
-  constructor() {
+  constructor () {
     this._instance = null
     this._callback = {}
     this._cache = {}
   }
 
-  load(provider, script, success, fail) {
+  load (provider, script, success, fail) {
     if (this._cache[provider] === undefined) {
       this.loadScript(provider, script)
     }
@@ -301,7 +301,7 @@ class AdScript {
     }
   }
 
-  loadScript(provider, script) {
+  loadScript (provider, script) {
     this._cache[provider] = 0
     var ads = document.createElement('script')
     ads.setAttribute('id', 'uniad_provider' + provider)
