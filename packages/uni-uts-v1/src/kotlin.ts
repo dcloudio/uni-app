@@ -407,7 +407,7 @@ export async function compile(
   const { bundle, UTSTarget } = getUTSCompiler()
   // let time = Date.now()
   const imports = [...DEFAULT_IMPORTS]
-  if (isX) {
+  if (isX && !process.env.UNI_UTS_DISABLE_X_IMPORT) {
     imports.push(...DEFAULT_IMPORTS_X)
   }
   const rClass = resolveAndroidResourceClass(filename)
