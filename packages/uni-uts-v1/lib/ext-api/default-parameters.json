@@ -34,5 +34,11 @@
     "exit": [
       "null"
     ]
+  },
+  "uni-video": {
+    "createVideoContext": [
+      null,
+      "null"
+    ]
   }
 }
