@@ -73,6 +73,9 @@
 						"uniVer": "√"
 					}
 				}
+			},
+			"defaultValue": {
+				"app-uvue": "auto"
 			}
 		},
 		{
@@ -364,6 +367,9 @@
 						"uniVer": "√"
 					}
 				}
+			},
+			"defaultValue": {
+				"app-uvue": "auto"
 			}
 		},
 		{
@@ -696,6 +702,9 @@
 						"uniVer": "√"
 					}
 				}
+			},
+			"defaultValue": {
+				"app-uvue": "auto"
 			}
 		},
 		{
@@ -722,6 +731,9 @@
 						"uniVer": "√"
 					}
 				}
+			},
+			"defaultValue": {
+				"app-uvue": "auto"
 			}
 		},
 		{
@@ -748,6 +760,9 @@
 						"uniVer": "√"
 					}
 				}
+			},
+			"defaultValue": {
+				"app-uvue": "auto"
 			}
 		},
 		{
@@ -774,6 +789,9 @@
 						"uniVer": "√"
 					}
 				}
+			},
+			"defaultValue": {
+				"app-uvue": "auto"
 			}
 		},
 		{
@@ -848,6 +866,9 @@
 						"uniVer": "√"
 					}
 				}
+			},
+			"defaultValue": {
+				"app-uvue": "flex-start"
 			}
 		},
 		{
@@ -879,6 +900,9 @@
 						"uniVer": "√"
 					}
 				}
+			},
+			"defaultValue": {
+				"app-uvue": "nowrap"
 			}
 		},
 		{
@@ -930,6 +954,9 @@
 						"uniVer": "√"
 					}
 				}
+			},
+			"defaultValue": {
+				"app-uvue": "stretch"
 			}
 		},
 		{
@@ -937,8 +964,11 @@
 			"restrictions": [
 				"enum"
 			],
-			"syntax": "center | flex-start | flex-end | stretch | baseline",
+			"syntax": "auto | center | flex-start | flex-end | stretch | baseline",
 			"values": [
+				{
+					"name": "auto"
+				},
 				{
 					"name": "center"
 				},
@@ -981,6 +1011,9 @@
 						"uniVer": "√"
 					}
 				}
+			},
+			"defaultValue": {
+				"app-uvue": "auto"
 			}
 		},
 		{
@@ -1021,6 +1054,9 @@
 						"uniVer": "√"
 					}
 				}
+			},
+			"defaultValue": {
+				"app-uvue": "stretch"
 			}
 		},
 		{
@@ -1055,6 +1091,9 @@
 						"uniVer": "√"
 					}
 				}
+			},
+			"defaultValue": {
+				"app-uvue": "auto"
 			}
 		},
 		{
@@ -1075,6 +1114,9 @@
 						"uniVer": "√"
 					}
 				}
+			},
+			"defaultValue": {
+				"app-uvue": "0"
 			}
 		},
 		{
@@ -1095,6 +1137,9 @@
 						"uniVer": "√"
 					}
 				}
+			},
+			"defaultValue": {
+				"app-uvue": "0"
 			}
 		},
 		{
@@ -1211,6 +1256,9 @@
 						"uniVer": "√"
 					}
 				}
+			},
+			"defaultValue": {
+				"app-uvue": "flex"
 			}
 		},
 		{
@@ -1290,6 +1338,9 @@
 						"uniVer": "√"
 					}
 				}
+			},
+			"defaultValue": {
+				"app-uvue": "hidden"
 			}
 		},
 		{
@@ -1318,6 +1369,9 @@
 						"uniVer": "√"
 					}
 				}
+			},
+			"defaultValue": {
+				"app-uvue": "visible"
 			}
 		},
 		{
@@ -1537,6 +1591,9 @@
 						"uniVer": "√"
 					}
 				}
+			},
+			"defaultValue": {
+				"app-uvue": "0"
 			}
 		},
 		{
@@ -1558,6 +1615,9 @@
 						"uniVer": "√"
 					}
 				}
+			},
+			"defaultValue": {
+				"app-uvue": "0"
 			}
 		},
 		{
@@ -1579,6 +1639,9 @@
 						"uniVer": "√"
 					}
 				}
+			},
+			"defaultValue": {
+				"app-uvue": "0"
 			}
 		},
 		{
@@ -1600,6 +1663,9 @@
 						"uniVer": "√"
 					}
 				}
+			},
+			"defaultValue": {
+				"app-uvue": "0"
 			}
 		},
 		{
@@ -1627,6 +1693,9 @@
 						"uniVer": "√"
 					}
 				}
+			},
+			"defaultValue": {
+				"app-uvue": "0"
 			}
 		},
 		{
@@ -1679,6 +1748,9 @@
 						"uniVer": "√"
 					}
 				}
+			},
+			"defaultValue": {
+				"app-uvue": "0"
 			}
 		},
 		{
@@ -1731,6 +1803,9 @@
 						"uniVer": "√"
 					}
 				}
+			},
+			"defaultValue": {
+				"app-uvue": "0"
 			}
 		},
 		{
@@ -1753,6 +1828,9 @@
 						"uniVer": "√"
 					}
 				}
+			},
+			"defaultValue": {
+				"app-uvue": "0"
 			}
 		},
 		{
@@ -2212,6 +2290,7 @@
 		},
 		{
 			"name": "color",
+			"description": "color CSS 属性设置文本及文本装饰（text-decoration）的前景色颜色值。",
 			"restrictions": [
 				"color"
 			],
@@ -2231,11 +2310,14 @@
 			},
 			"unixTags": [
 				"text"
-			]
+			],
+			"defaultValue": {
+				"app-uvue": "#000000"
+			}
 		},
 		{
 			"name": "font-size",
-			"description": "font-size CSS 属性设置字体大小。更改字体大小还会更新字体大小相关的 &ltlength&gt 单位，如例如line-font的 em 等。",
+			"description": "font-size CSS 属性设置字体大小。更改字体大小还会更新字体大小相关的 &ltlength&gt 单位，例如 line-height CSS 属性的 em 单位值。",
 			"restrictions": [
 				"length"
 			],
