@@ -839,19 +839,24 @@
 			"syntax": "center | flex-start | flex-end | space-between | space-around",
 			"values": [
 				{
-					"name": "center"
+					"name": "center",
+					"description" : "元素紧密地排列在主轴方向居中对齐"
 				},
 				{
-					"name": "flex-start"
+					"name": "flex-start",
+					"description" : "元素紧密地排列在容器主轴起始侧"
 				},
 				{
-					"name": "flex-end"
+					"name": "flex-end",
+					"description" : "元素紧密地排列在容器主轴结束侧"
 				},
 				{
-					"name": "space-between"
+					"name": "space-between",
+					"description" : "在主轴上均匀分配元素。相邻元素间距离相同。第一个元素与主轴首对齐，最后一个元素与主轴尾对齐"
 				},
 				{
-					"name": "space-around"
+					"name": "space-around",
+					"description" : "元素沿着主轴均匀分布在容器中。相邻项之间的间距，主轴起始位置到第一个元素的间距，主轴结束位置到最后一个元素的间距，都完全一样"
 				}
 			],
 			"uniPlatform": {
@@ -1021,6 +1026,7 @@
 			"restrictions": [
 				"enum"
 			],
+			"description": "CSS 的 align-content 属性用于设置交叉轴方向多个行或列的分布方式",
 			"syntax": "center | flex-start | flex-end | space-between | space-around | stretch",
 			"values": [
 				{
@@ -1464,6 +1470,9 @@
 						"uniVer": "√"
 					}
 				}
+			},
+			"defaultValue": {
+				"app-uvue": "transparent"
 			}
 		},
 		{
@@ -1785,6 +1794,7 @@
 				"length",
 				"percentage"
 			],
+			"description":"margin-bottom 属性设置与元素相关联的盒子模型的下外边距。可以为负值",
 			"syntax": "<length> | <percentage>",
 			"values": [
 				{
@@ -1815,6 +1825,7 @@
 				"enum",
 				"color"
 			],
+			"description":"CSS 的 border 是设置元素边框属性的简写形式，用于设置一个或多个以下属性的值：border-width、border-style、border-color。",
 			"syntax": "<'border-width'> || <'border-style'> || <'border-color'>",
 			"uniPlatform": {
 				"app": {
@@ -2309,7 +2320,7 @@
 				}
 			},
 			"unixTags": [
-				"text"
+				"text", "button"
 			],
 			"defaultValue": {
 				"app-uvue": "#000000"
@@ -2317,7 +2328,7 @@
 		},
 		{
 			"name": "font-size",
-			"description": "font-size CSS 属性设置字体大小。更改字体大小还会更新字体大小相关的 &ltlength&gt 单位，例如 line-height CSS 属性的 em 单位值。",
+			"description": "font-size CSS 属性设置字体大小。更改字体大小还会更新字体大小相关的 `<length>` 单位，例如 line-height 属性的 em 单位值。",
 			"restrictions": [
 				"length"
 			],
@@ -2336,7 +2347,7 @@
 				}
 			},
 			"unixTags": [
-				"text"
+				"text", "button"
 			]
 		},
 		{
@@ -2367,7 +2378,7 @@
 				}
 			},
 			"unixTags": [
-				"text"
+				"text", "button"
 			]
 		},
 		{
@@ -2404,7 +2415,7 @@
 				}
 			},
 			"unixTags": [
-				"text"
+				"text", "button"
 			]
 		},
 		{
@@ -2429,7 +2440,7 @@
 				}
 			},
 			"unixTags": [
-				"text"
+				"text", "button"
 			]
 		},
 		{
@@ -2477,7 +2488,7 @@
 				}
 			},
 			"unixTags": [
-				"text"
+				"text", "button"
 			]
 		},
 		{
@@ -2500,7 +2511,7 @@
 				}
 			},
 			"unixTags": [
-				"text"
+				"text", "button"
 			]
 		},
 		{
@@ -2537,7 +2548,7 @@
 				}
 			},
 			"unixTags": [
-				"text"
+				"text", "button"
 			]
 		},
 		{
@@ -2560,7 +2571,7 @@
 				}
 			},
 			"unixTags": [
-				"text"
+				"text", "button"
 			]
 		},
 		{
@@ -2594,7 +2605,7 @@
 				}
 			},
 			"unixTags": [
-				"text"
+				"text", "button"
 			]
 		},
 		{
@@ -2634,7 +2645,7 @@
 				}
 			},
 			"unixTags": [
-				"text"
+				"text", "button"
 			]
 		},
 		{
@@ -2665,7 +2676,7 @@
 				}
 			},
 			"unixTags": [
-				"text"
+				"text", "button"
 			]
 		},
 		{
@@ -2689,7 +2700,7 @@
 				}
 			},
 			"unixTags": [
-				"text"
+				"text", "button"
 			]
 		},
 		{
@@ -2713,7 +2724,7 @@
 				}
 			},
 			"unixTags": [
-				"text"
+				"text", "button"
 			]
 		},
 		{
@@ -2736,7 +2747,7 @@
 				}
 			},
 			"unixTags": [
-				"text"
+				"text", "button"
 			]
 		},
 		{
