@@ -215,6 +215,7 @@ export const callFunction = (
             InputEventDetail(params.args[0] as string, 0, 0)
           )
         )
+        callback({ result: `${functionName} success` }, null)
         break
       case 'scroll-view.scrollTo':
         if (element.tagName == 'SCROLL-VIEW') {
