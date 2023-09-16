@@ -2300,6 +2300,106 @@
 			}
 		},
 		{
+			"name": "border-top",
+			"restrictions": [
+				"length",
+				"enum",
+				"color"
+			],
+			"syntax": "<'border-width'> || <'border-style'> || <'border-color'>",
+			"uniPlatform": {
+				"app": {
+					"android": {
+						"osVer": "5.0",
+						"uniVer": "√",
+						"unixVer": "3.9.0"
+					},
+					"ios": {
+						"osVer": "9.0",
+						"uniVer": "√"
+					}
+				}
+			},
+			"defaultValue": {
+				"app-uvue": "0"
+			}
+		},
+		{
+			"name": "border-bottom",
+			"restrictions": [
+				"length",
+				"enum",
+				"color"
+			],
+			"syntax": "<'border-width'> || <'border-style'> || <'border-color'>",
+			"uniPlatform": {
+				"app": {
+					"android": {
+						"osVer": "5.0",
+						"uniVer": "√",
+						"unixVer": "3.9.0"
+					},
+					"ios": {
+						"osVer": "9.0",
+						"uniVer": "√"
+					}
+				}
+			},
+			"defaultValue": {
+				"app-uvue": "0"
+			}
+		},
+		{
+			"name": "border-left",
+			"restrictions": [
+				"length",
+				"enum",
+				"color"
+			],
+			"syntax": "<'border-width'> || <'border-style'> || <'border-color'>",
+			"uniPlatform": {
+				"app": {
+					"android": {
+						"osVer": "5.0",
+						"uniVer": "√",
+						"unixVer": "3.9.0"
+					},
+					"ios": {
+						"osVer": "9.0",
+						"uniVer": "√"
+					}
+				}
+			},
+			"defaultValue": {
+				"app-uvue": "0"
+			}
+		},
+		{
+			"name": "border-right",
+			"restrictions": [
+				"length",
+				"enum",
+				"color"
+			],
+			"syntax": "<'border-width'> || <'border-style'> || <'border-color'>",
+			"uniPlatform": {
+				"app": {
+					"android": {
+						"osVer": "5.0",
+						"uniVer": "√",
+						"unixVer": "3.9.0"
+					},
+					"ios": {
+						"osVer": "9.0",
+						"uniVer": "√"
+					}
+				}
+			},
+			"defaultValue": {
+				"app-uvue": "0"
+			}
+		},
+		{
 			"name": "color",
 			"description": "color CSS 属性设置文本及文本装饰（text-decoration）的前景色颜色值。",
 			"restrictions": [
