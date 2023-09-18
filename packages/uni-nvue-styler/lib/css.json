@@ -75,7 +75,8 @@
 				}
 			},
 			"defaultValue": {
-				"app-uvue": "auto"
+				"app-uvue": "auto",
+				"web" : "auto"
 			}
 		},
 		{
@@ -185,7 +186,8 @@
 				}
 			},
 			"defaultValue": {
-				"app-uvue": "0px"
+				"app-uvue": "0px",
+				"web" : "auto"
 			}
 		},
 		{
@@ -293,6 +295,10 @@
 						"uniVer": "√"
 					}
 				}
+			},
+			"defaultValue": {
+				"app-uvue": "none",
+				"web" : "none"
 			}
 		},
 		{
@@ -369,7 +375,8 @@
 				}
 			},
 			"defaultValue": {
-				"app-uvue": "auto"
+				"app-uvue": "auto",
+				"web":"auto"
 			}
 		},
 		{
@@ -479,7 +486,8 @@
 				}
 			},
 			"defaultValue": {
-				"app-uvue": "0px"
+				"app-uvue": "0px",
+				"web" : "auto"
 			}
 		},
 		{
@@ -587,6 +595,10 @@
 						"uniVer": "√"
 					}
 				}
+			},
+			"defaultValue": {
+				"app-uvue": "none",
+				"web" : "none"
 			}
 		},
 		{
@@ -654,7 +666,8 @@
 				}
 			},
 			"defaultValue": {
-				"app-uvue": "relative"
+				"app-uvue": "relative",
+				"web" : "static"
 			}
 		},
 		{
@@ -676,6 +689,10 @@
 						"uniVer": "√"
 					}
 				}
+			},
+			"defaultValue": {
+				"app-uvue": "0",
+				"web" : "auto"
 			}
 		},
 		{
@@ -704,7 +721,8 @@
 				}
 			},
 			"defaultValue": {
-				"app-uvue": "auto"
+				"app-uvue": "auto",
+				"web" : "auto"
 			}
 		},
 		{
@@ -733,7 +751,8 @@
 				}
 			},
 			"defaultValue": {
-				"app-uvue": "auto"
+				"app-uvue": "auto",
+				"web" : "auto"
 			}
 		},
 		{
@@ -762,7 +781,8 @@
 				}
 			},
 			"defaultValue": {
-				"app-uvue": "auto"
+				"app-uvue": "auto",
+				"web" : "auto"
 			}
 		},
 		{
@@ -791,7 +811,8 @@
 				}
 			},
 			"defaultValue": {
-				"app-uvue": "auto"
+				"app-uvue": "auto",
+				"web" : "auto"
 			}
 		},
 		{
@@ -828,7 +849,8 @@
 				}
 			},
 			"defaultValue": {
-				"app-uvue": "column"
+				"app-uvue": "column",
+				"web" : "row"
 			}
 		},
 		{
@@ -873,7 +895,8 @@
 				}
 			},
 			"defaultValue": {
-				"app-uvue": "flex-start"
+				"app-uvue": "flex-start",
+				"web" : "normal"
 			}
 		},
 		{
@@ -907,7 +930,8 @@
 				}
 			},
 			"defaultValue": {
-				"app-uvue": "nowrap"
+				"app-uvue": "nowrap",
+				"web" : "nowrap"
 			}
 		},
 		{
@@ -961,7 +985,8 @@
 				}
 			},
 			"defaultValue": {
-				"app-uvue": "stretch"
+				"app-uvue": "stretch",
+				"web" : "normal"
 			}
 		},
 		{
@@ -1018,7 +1043,8 @@
 				}
 			},
 			"defaultValue": {
-				"app-uvue": "auto"
+				"app-uvue": "auto",
+				"web" : "auto"
 			}
 		},
 		{
@@ -1062,7 +1088,8 @@
 				}
 			},
 			"defaultValue": {
-				"app-uvue": "stretch"
+				"app-uvue": "stretch",
+				"web" : "normal"
 			}
 		},
 		{
@@ -1099,7 +1126,8 @@
 				}
 			},
 			"defaultValue": {
-				"app-uvue": "auto"
+				"app-uvue": "none",
+				"web" : "initial"
 			}
 		},
 		{
@@ -1122,7 +1150,8 @@
 				}
 			},
 			"defaultValue": {
-				"app-uvue": "0"
+				"app-uvue": "0",
+				"web" : "0"
 			}
 		},
 		{
@@ -1145,7 +1174,8 @@
 				}
 			},
 			"defaultValue": {
-				"app-uvue": "0"
+				"app-uvue": "0",
+				"web" : "1"
 			}
 		},
 		{
@@ -1190,6 +1220,10 @@
 						"uniVer": "√"
 					}
 				}
+			},
+			"defaultValue": {
+				"app-uvue": "auto",
+				"web" : "auto"
 			}
 		},
 		{
@@ -1264,7 +1298,8 @@
 				}
 			},
 			"defaultValue": {
-				"app-uvue": "flex"
+				"app-uvue": "flex",
+				"web" : "inline"
 			}
 		},
 		{
@@ -1346,7 +1381,8 @@
 				}
 			},
 			"defaultValue": {
-				"app-uvue": "hidden"
+				"app-uvue": "hidden",
+				"web" : "visible"
 			}
 		},
 		{
@@ -1377,7 +1413,8 @@
 				}
 			},
 			"defaultValue": {
-				"app-uvue": "visible"
+				"app-uvue": "visible",
+				"web" : "visible"
 			}
 		},
 		{
@@ -1398,6 +1435,10 @@
 						"uniVer": "√"
 					}
 				}
+			},
+			"defaultValue": {
+				"app-uvue": "1",
+				"web" : "1"
 			}
 		},
 		{
@@ -1428,7 +1469,8 @@
 				}
 			},
 			"defaultValue": {
-				"app-uvue": "border-box"
+				"app-uvue": "border-box",
+				"web" : "content-box"
 			}
 		},
 		{
@@ -1472,7 +1514,8 @@
 				}
 			},
 			"defaultValue": {
-				"app-uvue": "transparent"
+				"app-uvue": "transparent",
+				"web": "transparent"
 			}
 		},
 		{
@@ -1557,6 +1600,10 @@
 						"uniVer": "√"
 					}
 				}
+			},
+			"defaultValue": {
+				"app-uvue": "border-box",
+				"web": "border-box"
 			}
 		},
 		{
@@ -1602,7 +1649,8 @@
 				}
 			},
 			"defaultValue": {
-				"app-uvue": "0"
+				"app-uvue": "0",
+				"web" : "0"
 			}
 		},
 		{
@@ -1626,7 +1674,8 @@
 				}
 			},
 			"defaultValue": {
-				"app-uvue": "0"
+				"app-uvue": "0",
+				"web" : "0"
 			}
 		},
 		{
@@ -1650,7 +1699,8 @@
 				}
 			},
 			"defaultValue": {
-				"app-uvue": "0"
+				"app-uvue": "0",
+				"web" : "0"
 			}
 		},
 		{
@@ -1674,7 +1724,8 @@
 				}
 			},
 			"defaultValue": {
-				"app-uvue": "0"
+				"app-uvue": "0",
+				"web" : "0"
 			}
 		},
 		{
@@ -1704,7 +1755,8 @@
 				}
 			},
 			"defaultValue": {
-				"app-uvue": "0"
+				"app-uvue": "0",
+				"web" : "0"
 			}
 		},
 		{
@@ -1731,6 +1783,10 @@
 						"uniVer": "√"
 					}
 				}
+			},
+			"defaultValue": {
+				"app-uvue": "0",
+				"web" : "0"
 			}
 		},
 		{
@@ -1759,7 +1815,8 @@
 				}
 			},
 			"defaultValue": {
-				"app-uvue": "0"
+				"app-uvue": "0",
+				"web" : "0"
 			}
 		},
 		{
@@ -1786,6 +1843,10 @@
 						"uniVer": "√"
 					}
 				}
+			},
+			"defaultValue": {
+				"app-uvue": "0",
+				"web" : "0"
 			}
 		},
 		{
@@ -1815,7 +1876,8 @@
 				}
 			},
 			"defaultValue": {
-				"app-uvue": "0"
+				"app-uvue": "0",
+				"web" : "0"
 			}
 		},
 		{
@@ -2423,7 +2485,8 @@
 				"text", "button"
 			],
 			"defaultValue": {
-				"app-uvue": "#000000"
+				"app-uvue": "#000000",
+				"web": "canvastext"
 			}
 		},
 		{
@@ -2448,7 +2511,11 @@
 			},
 			"unixTags": [
 				"text", "button"
-			]
+			],
+			"defaultValue": {
+				"app-uvue": "16",
+				"web": "medium"
+			}
 		},
 		{
 			"name": "font-style",
@@ -2479,7 +2546,11 @@
 			},
 			"unixTags": [
 				"text", "button"
-			]
+			],
+			"defaultValue": {
+				"app-uvue": "normal",
+				"web": "normal"
+			}
 		},
 		{
 			"name": "font-weight",
@@ -2516,7 +2587,11 @@
 			},
 			"unixTags": [
 				"text", "button"
-			]
+			],
+			"defaultValue": {
+				"app-uvue": "normal",
+				"web": "normal"
+			}
 		},
 		{
 			"name": "text-decoration",
@@ -2589,7 +2664,11 @@
 			},
 			"unixTags": [
 				"text", "button"
-			]
+			],
+			"defaultValue": {
+				"app-uvue": "none",
+				"web": "none"
+			}
 		},
 		{
 			"name": "text-decoration-color",
@@ -2706,7 +2785,11 @@
 			},
 			"unixTags": [
 				"text", "button"
-			]
+			],
+			"defaultValue": {
+				"app-uvue": "left",
+				"web": "start"
+			}
 		},
 		{
 			"name": "font-family",
@@ -2777,7 +2860,11 @@
 			},
 			"unixTags": [
 				"text", "button"
-			]
+			],
+			"defaultValue": {
+				"app-uvue": "clip",
+				"web": "clip"
+			}
 		},
 		{
 			"name": "line-height",
@@ -2801,7 +2888,11 @@
 			},
 			"unixTags": [
 				"text", "button"
-			]
+			],
+			"defaultValue": {
+				"app-uvue": "1.2",
+				"web": "normal"
+			}
 		},
 		{
 			"name": "lines",
@@ -2825,7 +2916,10 @@
 			},
 			"unixTags": [
 				"text", "button"
-			]
+			],
+			"defaultValue": {
+				"app-uvue": "-1"
+			}
 		},
 		{
 			"name": "letter-spacing",
@@ -2848,7 +2942,11 @@
 			},
 			"unixTags": [
 				"text", "button"
-			]
+			],
+			"defaultValue": {
+				"app-uvue": "0",
+				"web": "normal"
+			}
 		},
 		{
 			"name": "box-shadow",
