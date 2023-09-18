@@ -31,14 +31,16 @@ module.exports = uni.requireUTSPlugin('${normalizePath(pluginRelativeDir)}')
 `
 }
 
-export async function compileEncrypt(pluginDir: string) {
+export async function compileEncrypt(pluginDir: string, isX = false) {
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
   const utsPlatform = process.env.UNI_UTS_PLATFORM as APP_PLATFORM
   const isRollup = !!process.env.UNI_UTS_USING_ROLLUP
   const pluginRelativeDir = relative(inputDir, pluginDir)
   const outputPluginDir = normalizePath(join(outputDir, pluginRelativeDir))
-  let code = isRollup
+  let code = isX
+    ? ''
+    : isRollup
     ? createRollupCommonjsCode(pluginDir, pluginRelativeDir)
     : createWebpackCommonjsCode(pluginRelativeDir)
   if (process.env.NODE_ENV !== 'development') {
@@ -52,19 +54,21 @@ export async function compileEncrypt(pluginDir: string) {
       meta: { commonjs: { isCommonJS: true } },
     }
   }
-  // 读取缓存目录的 js code
-  const cacheDir = process.env.HX_DEPENDENCIES_DIR!
-  const indexJsPath = resolveJsCodeCacheFilename(
-    utsPlatform,
-    cacheDir,
-    pluginRelativeDir
-  )
-  if (fs.existsSync(indexJsPath)) {
-    code = fs.readFileSync(indexJsPath, 'utf-8') + code
-  } else {
-    console.error(
-      `uts插件[${path.basename(pluginDir)}]不存在，请重新打包自定义基座`
+  if (!isX) {
+    // 读取缓存目录的 js code
+    const cacheDir = process.env.HX_DEPENDENCIES_DIR!
+    const indexJsPath = resolveJsCodeCacheFilename(
+      utsPlatform,
+      cacheDir,
+      pluginRelativeDir
     )
+    if (fs.existsSync(indexJsPath)) {
+      code = fs.readFileSync(indexJsPath, 'utf-8') + code
+    } else {
+      console.error(
+        `uts插件[${path.basename(pluginDir)}]不存在，请重新打包自定义基座`
+      )
+    }
   }
   return {
     dir: outputPluginDir,

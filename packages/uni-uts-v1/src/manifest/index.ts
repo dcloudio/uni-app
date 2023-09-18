@@ -121,7 +121,7 @@ async function checkWithPlayground(
 
 export function initCheckOptionsEnv(): CheckOptions['env'] {
   return {
-    compilerVersion: require('../../package.json').version,
+    compilerVersion: process.env.HX_Version || process.env.UNI_COMPILER_VERSION,
   }
 }
 
