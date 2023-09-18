@@ -1,3 +1,4 @@
+import { hasOwn } from '@vue/shared'
 import { existsSync, readFileSync, statSync } from 'fs'
 import { basename, dirname, join, relative } from 'path'
 import {
@@ -190,8 +191,8 @@ export function originalPositionFor(
       if (
         generatedPosition.withSourceContent &&
         res.source &&
-        res.line &&
-        res.column
+        hasOwn(res, 'line') &&
+        hasOwn(res, 'column')
       ) {
         return Object.assign(res, {
           sourceContent: consumer.sourceContentFor(res.source, true),
@@ -229,8 +230,8 @@ export function originalPositionForSync(
   if (
     generatedPosition.withSourceContent &&
     res.source &&
-    res.line &&
-    res.column
+    hasOwn(res, 'line') &&
+    hasOwn(res, 'column')
   ) {
     return Object.assign(res, {
       sourceContent: consumer.sourceContentFor(res.source, true),
