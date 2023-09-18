@@ -118,7 +118,7 @@ export async function compile(
   }
   // 加密插件
   if (isEncrypt(pluginDir)) {
-    return compileEncrypt(pluginDir)
+    return compileEncrypt(pluginDir, isX)
   }
   const cacheDir = process.env.HX_DEPENDENCIES_DIR || ''
   const inputDir = process.env.UNI_INPUT_DIR
