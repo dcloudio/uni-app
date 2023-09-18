@@ -91,6 +91,7 @@ const getScriptBaseUrl = (mapType: string): string => {
     qq: 'https://map.qq.com/api/js?v=2.exp&',
     google: 'https://maps.googleapis.com/maps/api/js?',
     AMap: 'https://webapi.amap.com/maps?v=2.0&',
+    BMapGL: 'https://api.map.baidu.com/api?type=webgl&v=1.0&',
   }
 
   return urlMap[mapType]
