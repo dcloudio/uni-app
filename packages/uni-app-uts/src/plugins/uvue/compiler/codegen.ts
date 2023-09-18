@@ -53,6 +53,8 @@ import { isBinaryExpression } from '@babel/types'
 
 type CodegenNode = TemplateChildNode | JSChildNode | SSRCodegenNode
 
+const SLOT_PROPS_NAME = 'slotProps'
+
 export interface CodegenContext
   extends Required<
     Omit<CodegenOptions, 'sourceMapGeneratedLine' | 'className'>
@@ -608,15 +610,32 @@ function genFunctionExpression(
   if (isArray(params)) {
     genNodeList(params, context)
   } else if (params) {
-    genNode(params, context)
+    if (
+      isDestructuringSlotParams(isSlot, params as CompoundExpressionNode) ||
+      (params as SimpleExpressionNode)?.content === '{}'
+    ) {
+      push(SLOT_PROPS_NAME)
+    } else {
+      genNode(params, context)
+    }
   }
   if ((node as any).returnType) {
     push(`): ${(node as any).returnType} => `)
   } else {
     if (isSlot) {
-      // TODO: supplement types slots params type based on user-defined slots
       if (params) {
         push(`: Map<string, any | null>): any[] => `)
+        if (
+          isDestructuringSlotParams(isSlot, params as CompoundExpressionNode)
+        ) {
+          push('{')
+          createDestructuringSlotParams(
+            params as CompoundExpressionNode,
+            context
+          )
+          context.newline()
+          push('return ')
+        }
       } else {
         push(`): any[] => `)
       }
@@ -645,6 +664,9 @@ function genFunctionExpression(
     push(`}`)
   }
   if (isSlot) {
+    if (isDestructuringSlotParams(isSlot, params as CompoundExpressionNode)) {
+      push('}')
+    }
     push(`)`)
   }
 }
@@ -731,4 +753,37 @@ function genCacheExpression(node: CacheExpression, context: CodegenContext) {
     deindent()
   }
   push(`)`)
+}
+
+function isDestructuringSlotParams(
+  isSlot: boolean,
+  params: CompoundExpressionNode
+): boolean {
+  if (isSlot && params?.children?.length > 2) {
+    const firstParam = params.children[0]
+    const lastParam = params.children[params.children.length - 1]
+    return (
+      typeof firstParam === 'string' &&
+      firstParam.trim() === '{' &&
+      typeof lastParam === 'string' &&
+      lastParam.trim() === '}'
+    )
+  }
+  return false
+}
+
+function createDestructuringSlotParams(
+  params: CompoundExpressionNode,
+  context: CodegenContext
+) {
+  ;(params as CompoundExpressionNode).children.forEach((child) => {
+    if ((child as SimpleExpressionNode).type === NodeTypes.SIMPLE_EXPRESSION) {
+      context.newline()
+      context.push(
+        `const ${
+          (child as SimpleExpressionNode).content
+        } = ${SLOT_PROPS_NAME}.${(child as SimpleExpressionNode).content}`
+      )
+    }
+  })
 }

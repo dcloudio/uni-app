@@ -187,6 +187,54 @@ const _component_Foo = resolveComponent("Foo")
       }
     )
   })
+
+  test('destructuring slot params', () => {
+    assert(
+      `<Foo>
+  <template v-slot:default="{msg, age}">
+    <text>msg: {{msg}}</text>
+    <text>age: {{age}}</text>
+  </template>
+  <template #header="{ msg, age }">
+    <text>msg: {{msg}}</text>
+    <text>age: {{age}}</text>
+  </template>
+</Foo>`,
+      `createVNode(_component_Foo, null, utsMapOf({
+  default: withCtx((slotProps: Map<string, any | null>): any[] => {
+  const msg = slotProps.msg
+  const age = slotProps.age
+  return [
+    createElementVNode(\"text\", null, \"msg: \" + toDisplayString(msg), 1 /* TEXT */),
+    createElementVNode(\"text\", null, \"age: \" + toDisplayString(age), 1 /* TEXT */)
+  ]}),
+  header: withCtx((slotProps: Map<string, any | null>): any[] => {
+  const msg = slotProps.msg
+  const age = slotProps.age
+  return [
+    createElementVNode(\"text\", null, \"msg: \" + toDisplayString(msg), 1 /* TEXT */),
+    createElementVNode(\"text\", null, \"age: \" + toDisplayString(age), 1 /* TEXT */)
+  ]}),
+  _: 1 /* STABLE */
+}))`
+    )
+  })
+
+  test('destructuring slot params with empty {}', () => {
+    assert(
+      `<Foo>
+  <template v-slot:default="{}">
+    <text>default slot</text>
+  </template>
+</Foo>`,
+      `createVNode(_component_Foo, null, utsMapOf({
+  default: withCtx((slotProps: Map<string, any | null>): any[] => [
+    createElementVNode(\"text\", null, \"default slot\")
+  ]),
+  _: 1 /* STABLE */
+}))`
+    )
+  })
 })
 
 describe('compiler: transform component slots', () => {
