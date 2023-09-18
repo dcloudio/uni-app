@@ -50,10 +50,13 @@ import {
 } from './runtimeHelpers'
 import { stringifyExpression } from './transforms/transformExpression'
 import { isBinaryExpression } from '@babel/types'
+import {
+  isDestructuringSlotProps,
+  SLOT_PROPS_NAME,
+  createDestructuringSlotProps,
+} from './transforms/transformSlotPropsDestructuring'
 
 type CodegenNode = TemplateChildNode | JSChildNode | SSRCodegenNode
-
-const SLOT_PROPS_NAME = 'slotProps'
 
 export interface CodegenContext
   extends Required<
@@ -611,7 +614,7 @@ function genFunctionExpression(
     genNodeList(params, context)
   } else if (params) {
     if (
-      isDestructuringSlotParams(isSlot, params as CompoundExpressionNode) ||
+      isDestructuringSlotProps(isSlot, params as CompoundExpressionNode) ||
       (params as SimpleExpressionNode)?.content === '{}'
     ) {
       push(SLOT_PROPS_NAME)
@@ -626,10 +629,10 @@ function genFunctionExpression(
       if (params) {
         push(`: Map<string, any | null>): any[] => `)
         if (
-          isDestructuringSlotParams(isSlot, params as CompoundExpressionNode)
+          isDestructuringSlotProps(isSlot, params as CompoundExpressionNode)
         ) {
           push('{')
-          createDestructuringSlotParams(
+          createDestructuringSlotProps(
             params as CompoundExpressionNode,
             context
           )
@@ -664,7 +667,7 @@ function genFunctionExpression(
     push(`}`)
   }
   if (isSlot) {
-    if (isDestructuringSlotParams(isSlot, params as CompoundExpressionNode)) {
+    if (isDestructuringSlotProps(isSlot, params as CompoundExpressionNode)) {
       push('}')
     }
     push(`)`)
@@ -753,37 +756,4 @@ function genCacheExpression(node: CacheExpression, context: CodegenContext) {
     deindent()
   }
   push(`)`)
-}
-
-function isDestructuringSlotParams(
-  isSlot: boolean,
-  params: CompoundExpressionNode
-): boolean {
-  if (isSlot && params?.children?.length > 2) {
-    const firstParam = params.children[0]
-    const lastParam = params.children[params.children.length - 1]
-    return (
-      typeof firstParam === 'string' &&
-      firstParam.trim() === '{' &&
-      typeof lastParam === 'string' &&
-      lastParam.trim() === '}'
-    )
-  }
-  return false
-}
-
-function createDestructuringSlotParams(
-  params: CompoundExpressionNode,
-  context: CodegenContext
-) {
-  ;(params as CompoundExpressionNode).children.forEach((child) => {
-    if ((child as SimpleExpressionNode).type === NodeTypes.SIMPLE_EXPRESSION) {
-      context.newline()
-      context.push(
-        `const ${
-          (child as SimpleExpressionNode).content
-        } = ${SLOT_PROPS_NAME}.${(child as SimpleExpressionNode).content}`
-      )
-    }
-  })
 }

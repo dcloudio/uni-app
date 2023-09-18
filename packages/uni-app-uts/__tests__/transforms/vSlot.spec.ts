@@ -235,6 +235,40 @@ const _component_Foo = resolveComponent("Foo")
 }))`
     )
   })
+  test('destructuring slot params with rename', () => {
+    assert(
+      `<Foo>
+  <template v-slot:default="{msg: myMsg}">
+    <text>msg: {{myMsg}}</text>
+  </template>
+</Foo>`,
+      `createVNode(_component_Foo, null, utsMapOf({
+  default: withCtx((slotProps: Map<string, any | null>): any[] => {
+  const myMsg = slotProps.msg
+  return [
+    createElementVNode(\"text\", null, \"msg: \" + toDisplayString(myMsg), 1 /* TEXT */)
+  ]}),
+  _: 1 /* STABLE */
+}))`
+    )
+  })
+  test('destructuring slot params with default value', () => {
+    assert(
+      `<Foo>
+  <template v-slot:default="{msg = 'default msg'}">
+    <text>msg: {{msg}}</text>
+  </template>
+</Foo>`,
+      `createVNode(_component_Foo, null, utsMapOf({
+  default: withCtx((slotProps: Map<string, any | null>): any[] => {
+  const msg = slotProps.msg !== null ? slotProps.msg : 'default msg'
+  return [
+    createElementVNode(\"text\", null, \"msg: \" + toDisplayString(msg), 1 /* TEXT */)
+  ]}),
+  _: 1 /* STABLE */
+}))`
+    )
+  })
 })
 
 describe('compiler: transform component slots', () => {
