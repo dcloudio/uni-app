@@ -35,16 +35,16 @@ export function createDestructuringSlotProps(
 
       if (isRename(params, index)) {
         const originKey = getOriginKey(params.children[index - 1] as string)
-        context.push(`const ${content} = ${SLOT_PROPS_NAME}.${originKey}`)
+        context.push(`const ${content} = ${SLOT_PROPS_NAME}["${originKey}"]`)
       } else if (hasDefaultValue(params, index)) {
         const defaultValue = getDefaultValue(
           params.children[index + 1] as string
         )
         context.push(
-          `const ${content} = ${SLOT_PROPS_NAME}.${content} !== null ? ${SLOT_PROPS_NAME}.${content} : ${defaultValue}`
+          `const ${content} = ${SLOT_PROPS_NAME}["${content}"] !== null ? ${SLOT_PROPS_NAME}["${content}"] : ${defaultValue}`
         )
       } else {
-        context.push(`const ${content} = ${SLOT_PROPS_NAME}.${content}`)
+        context.push(`const ${content} = ${SLOT_PROPS_NAME}["${content}"]`)
       }
     }
   })

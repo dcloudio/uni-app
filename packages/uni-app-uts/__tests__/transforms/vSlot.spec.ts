@@ -202,15 +202,15 @@ const _component_Foo = resolveComponent("Foo")
 </Foo>`,
       `createVNode(_component_Foo, null, utsMapOf({
   default: withCtx((slotProps: Map<string, any | null>): any[] => {
-  const msg = slotProps.msg
-  const age = slotProps.age
+  const msg = slotProps[\"msg\"]
+  const age = slotProps[\"age\"]
   return [
     createElementVNode(\"text\", null, \"msg: \" + toDisplayString(msg), 1 /* TEXT */),
     createElementVNode(\"text\", null, \"age: \" + toDisplayString(age), 1 /* TEXT */)
   ]}),
   header: withCtx((slotProps: Map<string, any | null>): any[] => {
-  const msg = slotProps.msg
-  const age = slotProps.age
+  const msg = slotProps[\"msg\"]
+  const age = slotProps[\"age\"]
   return [
     createElementVNode(\"text\", null, \"msg: \" + toDisplayString(msg), 1 /* TEXT */),
     createElementVNode(\"text\", null, \"age: \" + toDisplayString(age), 1 /* TEXT */)
@@ -244,7 +244,7 @@ const _component_Foo = resolveComponent("Foo")
 </Foo>`,
       `createVNode(_component_Foo, null, utsMapOf({
   default: withCtx((slotProps: Map<string, any | null>): any[] => {
-  const myMsg = slotProps.msg
+  const myMsg = slotProps[\"msg\"]
   return [
     createElementVNode(\"text\", null, \"msg: \" + toDisplayString(myMsg), 1 /* TEXT */)
   ]}),
@@ -261,7 +261,7 @@ const _component_Foo = resolveComponent("Foo")
 </Foo>`,
       `createVNode(_component_Foo, null, utsMapOf({
   default: withCtx((slotProps: Map<string, any | null>): any[] => {
-  const msg = slotProps.msg !== null ? slotProps.msg : 'default msg'
+  const msg = slotProps[\"msg\"] !== null ? slotProps[\"msg\"] : 'default msg'
   return [
     createElementVNode(\"text\", null, \"msg: \" + toDisplayString(msg), 1 /* TEXT */)
   ]}),
