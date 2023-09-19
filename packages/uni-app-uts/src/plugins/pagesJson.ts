@@ -55,9 +55,11 @@ export function uniAppPagesPlugin(): Plugin {
               page.path
             }", component: ${className}Class, meta: { isQuit: ${isQuit} } as PageMeta, style: ${stringifyPageStyle(
               page.style
-            )}, needLogin: ${
-              page.needLogin === undefined ? null : page.needLogin
-            }  } as PageRoute`
+            )}${
+              page.needLogin === undefined
+                ? ''
+                : ', needLogin: ' + page.needLogin
+            } } as PageRoute`
           )
         })
         if (pagesJson.globalStyle) {
