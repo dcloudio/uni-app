@@ -26,7 +26,6 @@ export function uniAppPagesPlugin(): Plugin {
   let tabBar = 'null'
   let launchPage = 'null'
   let conditionUrl = ''
-  let uniIdRouter = 'new Map()'
   return {
     name: 'uni:app-pages',
     apply: 'build',
@@ -55,11 +54,7 @@ export function uniAppPagesPlugin(): Plugin {
               page.path
             }", component: ${className}Class, meta: { isQuit: ${isQuit} } as PageMeta, style: ${stringifyPageStyle(
               page.style
-            )}${
-              page.needLogin === undefined
-                ? ''
-                : ', needLogin: ' + page.needLogin
-            } } as PageRoute`
+            )}  } as PageRoute`
           )
         })
         if (pagesJson.globalStyle) {
@@ -74,9 +69,6 @@ export function uniAppPagesPlugin(): Plugin {
             const { path, query } = JSON.parse(conditionInfo)
             conditionUrl = `${path}${query ? '?' + query : ''}`
           }
-        }
-        if (pagesJson.uniIdRouter) {
-          uniIdRouter = stringifyMap(pagesJson.uniIdRouter)
         }
         launchPage = stringifyLaunchPage(pagesJson.pages[0])
         return `${imports.map((p) => `import './${p}.uvue'`).join('\n')}
@@ -106,7 +98,6 @@ function defineAppConfig(){
   __uniConfig.globalStyle = ${globalStyle}
   __uniConfig.tabBar = __uniTabBar as Map<string, any> | null
   __uniConfig.conditionUrl = '${conditionUrl}'
-  __uniConfig.uniIdRouter = ${uniIdRouter}
 }
 `
       }
