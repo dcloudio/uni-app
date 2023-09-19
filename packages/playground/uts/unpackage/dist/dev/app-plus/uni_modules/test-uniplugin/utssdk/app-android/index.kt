@@ -33,7 +33,7 @@ open class User : IUser {
             console.log("timeout", " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:19");
         }
         , 1000);
-        login(name, pwd);
+        uts.modules.modules.testUniPlugin.login(name, pwd);
         run {
             var i: Number = 0;
             while(i < 10){

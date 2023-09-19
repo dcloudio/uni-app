@@ -103,11 +103,19 @@ interface CompilerOptions {
   isExtApi?: boolean
   extApis?: Record<string, [string, string]>
   transform?: UTSOutputOptions['transform']
+  sourceMap?: boolean
 }
 
 export async function compile(
   pluginDir: string,
-  { isX, isPlugin, extApis, isExtApi, transform }: CompilerOptions = {
+  {
+    isX,
+    isPlugin,
+    extApis,
+    isExtApi,
+    transform,
+    sourceMap,
+  }: CompilerOptions = {
     isX: false,
     isPlugin: true,
   }
@@ -178,6 +186,7 @@ export async function compile(
           isPlugin,
           extApis,
           transform,
+          sourceMap: !!sourceMap,
         })
         if (cacheDir) {
           // 存储 sourcemap
@@ -211,6 +220,7 @@ export async function compile(
           isPlugin,
           extApis,
           transform,
+          sourceMap: !!sourceMap,
         })
         if (cacheDir) {
           storeSourceMap(
@@ -350,6 +360,7 @@ export async function compile(
           is_uni_modules: pkg.is_uni_modules,
           extApis,
           transform,
+          sourceMap: !!sourceMap,
         })
         if (res) {
           if (isArray(res.deps) && res.deps.length) {

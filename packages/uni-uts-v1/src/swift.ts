@@ -46,11 +46,13 @@ export async function runSwiftProd(
     isX,
     extApis,
     transform,
+    sourceMap,
   }: {
     isPlugin: boolean
     isX: boolean
     extApis?: Record<string, [string, string]>
     transform?: UTSOutputOptions['transform']
+    sourceMap?: boolean
   }
 ) {
   // 文件有可能是 app-android 里边的，因为编译到 ios 时，为了保证不报错，可能会去读取 android 下的 uts
@@ -62,7 +64,7 @@ export async function runSwiftProd(
   const result = await compile(filename, {
     inputDir,
     outputDir,
-    sourceMap: true,
+    sourceMap: !!sourceMap,
     components,
     isX,
     isPlugin,
@@ -100,11 +102,19 @@ interface RunSwiftDevOptions {
   isPlugin: boolean
   extApis?: Record<string, [string, string]>
   transform?: UTSOutputOptions['transform']
+  sourceMap?: boolean
 }
 
 export async function runSwiftDev(
   filename: string,
-  { components, isX, isPlugin, extApis, transform }: RunSwiftDevOptions
+  {
+    components,
+    isX,
+    isPlugin,
+    extApis,
+    transform,
+    sourceMap,
+  }: RunSwiftDevOptions
 ) {
   // 文件有可能是 app-android 里边的，因为编译到 ios 时，为了保证不报错，可能会去读取 android 下的 uts
   if (filename.includes('app-android')) {
@@ -133,7 +143,7 @@ export async function runSwiftDev(
   const result = (await compile(filename, {
     inputDir,
     outputDir,
-    sourceMap: true,
+    sourceMap: !!sourceMap,
     components,
     isX,
     isPlugin,

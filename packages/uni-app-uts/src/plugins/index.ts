@@ -150,7 +150,7 @@ export function uniAppUTSPlugin(): UniVitePlugin {
           outputDir: outputDir,
           package:
             'uni.' + (manifestJson.appid || DEFAULT_APPID).replace(/_/g, ''),
-          sourceMap: true,
+          sourceMap: process.env.NODE_ENV === 'development',
           uni_modules: [...utsPlugins],
           extApis: parseUniExtApiNamespacesOnce(
             process.env.UNI_UTS_PLATFORM,
