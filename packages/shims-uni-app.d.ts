@@ -247,6 +247,7 @@ declare namespace UniNamespace {
   interface PagesJsonPageOptions {
     path: string
     style: PagesJsonPageStyle
+    needLogin?: boolean
   }
   interface PagesJsonSubpackagesOptions {
     root: string
@@ -292,6 +293,11 @@ declare namespace UniNamespace {
         pathName?: string
         query?: string
       }[]
+    }
+    uniIdRouter?: {
+      loginPage: string
+      needLogin?: string[]
+      resToLogin?: boolean
     }
   }
 
