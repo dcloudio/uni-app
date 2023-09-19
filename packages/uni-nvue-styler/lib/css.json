@@ -2482,7 +2482,7 @@
 				}
 			},
 			"unixTags": [
-				"text", "button"
+				"text", "button", "input", "textarea"
 			],
 			"defaultValue": {
 				"app-uvue": "#000000",
@@ -2510,7 +2510,7 @@
 				}
 			},
 			"unixTags": [
-				"text", "button"
+				"text", "button", "input", "textarea"
 			],
 			"defaultValue": {
 				"app-uvue": "16",
@@ -2784,7 +2784,7 @@
 				}
 			},
 			"unixTags": [
-				"text", "button"
+				"text", "button", "input", "textarea"
 			],
 			"defaultValue": {
 				"app-uvue": "left",
@@ -2828,7 +2828,7 @@
 				}
 			},
 			"unixTags": [
-				"text", "button"
+				"text", "button", "input", "textarea"
 			]
 		},
 		{
@@ -2887,7 +2887,7 @@
 				}
 			},
 			"unixTags": [
-				"text", "button"
+				"text", "button", "textarea"
 			],
 			"defaultValue": {
 				"app-uvue": "1.2",
@@ -2915,7 +2915,7 @@
 				}
 			},
 			"unixTags": [
-				"text", "button"
+				"text", "button", "input", "textarea"
 			],
 			"defaultValue": {
 				"app-uvue": "-1"
