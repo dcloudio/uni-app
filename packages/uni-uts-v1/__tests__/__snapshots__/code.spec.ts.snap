@@ -129,7 +129,7 @@ exports[`code genProxyCode 2`] = `
   "types": {
     "RequestTask": "interface",
     "ShowToast": "function",
-    "TestUTSNode": "class",
+    "TestUTSElement": "class",
   },
 }
 `;
