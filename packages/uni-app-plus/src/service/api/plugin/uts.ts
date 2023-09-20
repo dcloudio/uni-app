@@ -220,14 +220,16 @@ function resolveSyncResult(
   if (__DEV__) {
     console.log(
       'uts.invokeSync.result',
-      res,
-      returnOptions,
-      instanceId,
-      typeof proxy
+      JSON.stringify([res, returnOptions, instanceId, typeof proxy])
     )
   }
   if (!res) {
-    throw new Error(JSON.stringify(args))
+    throw new Error(
+      '返回值为：' +
+        JSON.stringify(res) +
+        '；请求参数为：' +
+        JSON.stringify(args)
+    )
   }
   // devtools 环境是字符串？
   if (isString(res)) {
