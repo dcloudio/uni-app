@@ -1,3 +1,5 @@
+import type { ComponentPublicInstance } from 'vue'
+
 // @ts-ignore
 function getPageId(page: BasePage): string {
   return page.$appPage!.pageId
