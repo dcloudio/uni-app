@@ -301,7 +301,7 @@ export function genComponentsCode(
     const className = capitalize(camelize(name))
     codes.push(
       `export { default as ${className}Component${
-        isX ? `, ${className}Node` : ''
+        isX ? `, ${className}Element` : ''
       } } from '${source.startsWith('.') ? source : './' + source}'`
     )
   })

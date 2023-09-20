@@ -90,15 +90,15 @@ export async function genProxyCode(
   }
   options.types = await parseInterfaceTypes(module, options)
   options.meta!.types = parseMetaTypes(options.types)
-  // 自动补充 VideoNode 导出
+  // 自动补充 VideoElement 导出
   if (options.androidComponents) {
     Object.keys(options.androidComponents).forEach((name) => {
-      options.meta!.types[capitalize(camelize(name)) + 'Node'] = 'class'
+      options.meta!.types[capitalize(camelize(name)) + 'Element'] = 'class'
     })
   }
   if (options.iosComponents) {
     Object.keys(options.iosComponents).forEach((name) => {
-      options.meta!.types[capitalize(camelize(name)) + 'Node'] = 'class'
+      options.meta!.types[capitalize(camelize(name)) + 'Element'] = 'class'
     })
   }
   const decls = await parseModuleDecls(module, options)
