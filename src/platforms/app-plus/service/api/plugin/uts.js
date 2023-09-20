@@ -29,7 +29,7 @@ function getProxy() {
 }
 function resolveSyncResult(args, res, returnOptions, instanceId, proxy) {
     if ((process.env.NODE_ENV !== 'production')) {
-        console.log('uts.invokeSync.result', res, returnOptions, instanceId, typeof proxy);
+        console.log('uts.invokeSync.result', JSON.stringify([res, returnOptions, instanceId, typeof proxy]));
     }
     if (!res) {
         throw new Error('返回值为：' +
