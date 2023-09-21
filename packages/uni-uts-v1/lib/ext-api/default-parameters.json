@@ -20,6 +20,16 @@
       "null"
     ]
   },
+  "uni-getDeviceInfo": {
+    "getDeviceInfo": [
+      "null"
+    ]
+  },
+  "uni-getAppBaseInfo": {
+    "getAppBaseInfo": [
+      "null"
+    ]
+  },
   "uni-exit": {
     "exit": [
       "null"
