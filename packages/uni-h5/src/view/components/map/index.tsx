@@ -18,7 +18,7 @@ import {
 } from '@dcloudio/uni-components'
 import '@amap/amap-jsapi-types'
 import { callOptions } from '@dcloudio/uni-shared'
-import { Point } from '../../../helpers/location'
+import { Point, getIsBMap } from '../../../helpers/location'
 import { Maps, Map, loadMaps, LatLng, QQMap, GoogleMap } from './maps'
 import { QQMaps } from './maps/qq/types'
 import { GoogleMaps } from './maps/google/types'
@@ -129,6 +129,9 @@ function getAMapPosition(
 ) {
   return new maps.LngLat(longitude, latitude)
 }
+function getBMapPosition(maps: any, latitude: number, longitude: number) {
+  return new maps.Point(longitude, latitude)
+}
 function getGoogleOrQQMapPosition(
   maps: QQMaps | GoogleMaps,
   latitude: number,
@@ -136,10 +139,22 @@ function getGoogleOrQQMapPosition(
 ) {
   return new maps.LatLng(latitude, longitude)
 }
+// 再增加bmap
 function getMapPosition(maps: Maps, latitude: number, longitude: number) {
-  return getIsAMap()
-    ? getAMapPosition(maps as AMap.NameSpace, latitude, longitude)
-    : getGoogleOrQQMapPosition(maps as QQMaps | GoogleMaps, latitude, longitude)
+  if (getIsBMap()) {
+    return getBMapPosition(maps as any, latitude, longitude)
+  } else if (getIsAMap()) {
+    return getAMapPosition(maps as AMap.NameSpace, latitude, longitude)
+  } else {
+    return getGoogleOrQQMapPosition(
+      maps as QQMaps | GoogleMaps,
+      latitude,
+      longitude
+    )
+  }
+  // return getIsAMap() || getIsBMap()
+  //   ? getAMapPosition(maps as AMap.NameSpace, latitude, longitude)
+  //   : getGoogleOrQQMapPosition(maps as QQMaps | GoogleMaps, latitude, longitude)
 }
 
 function getLat(latLng: LatLng) {
@@ -268,6 +283,7 @@ function useMap(
       })
       const bounds = new (maps as AMap.NameSpace).Bounds(...points)
       ;(map as AMap.Map).setBounds(bounds)
+    } else if (getIsBMap()) {
     } else {
       const bounds = new (maps as QQMaps | GoogleMaps).LatLngBounds()
       state.includePoints.forEach(({ latitude, longitude }) => {
@@ -301,6 +317,15 @@ function useMap(
       maxZoom: 18,
       draggable: true,
     })
+    if (getIsBMap()) {
+      // @ts-ignore
+      map.centerAndZoom(center, Number(props.scale))
+      // @ts-ignore
+      map.enableScrollWheelZoom()
+      // @ts-ignore
+      map._printLog && map._printLog('uniapp')
+    }
+    console.log('map::', map)
     watch(
       () => props.scale,
       (scale) => {
@@ -482,8 +507,8 @@ function useMap(
   onMounted(() => {
     loadMaps(props.libraries, (result) => {
       maps = result
-      map = initMap() as Map
-      emitMapReady()
+      map = initMap() as Map // 初始化地图
+      emitMapReady() // 等待的事件
       trigger('updated', {} as Event, {})
     })
   })

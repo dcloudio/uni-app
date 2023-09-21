@@ -8613,10 +8613,17 @@ var MapType = /* @__PURE__ */ ((MapType2) => {
   MapType2["QQ"] = "qq";
   MapType2["GOOGLE"] = "google";
   MapType2["AMAP"] = "AMap";
+  MapType2["BMAP"] = "BMapGL";
   MapType2["UNKNOWN"] = "";
   return MapType2;
 })(MapType || {});
 function getMapInfo() {
+  if (__uniConfig.bMapKey) {
+    return {
+      type: "BMapGL",
+      key: __uniConfig.bMapKey
+    };
+  }
   if (__uniConfig.qqMapKey) {
     return {
       type: "qq",
@@ -8651,6 +8658,9 @@ const getIsAMap = () => {
     hasGetIsAMap = true;
     return IS_AMAP = getMapInfo().type === "AMap";
   }
+};
+const getIsBMap = () => {
+  return getMapInfo().type === "BMapGL";
 };
 const props$7 = {
   id: {
@@ -9569,11 +9579,20 @@ function getPoints(points) {
 function getAMapPosition(maps, latitude, longitude) {
   return new maps.LngLat(longitude, latitude);
 }
+function getBMapPosition(maps, latitude, longitude) {
+  return new maps.Point(longitude, latitude);
+}
 function getGoogleOrQQMapPosition(maps, latitude, longitude) {
   return new maps.LatLng(latitude, longitude);
 }
 function getMapPosition(maps, latitude, longitude) {
-  return getIsAMap() ? getAMapPosition(maps, latitude, longitude) : getGoogleOrQQMapPosition(maps, latitude, longitude);
+  if (getIsBMap()) {
+    return getBMapPosition(maps, latitude, longitude);
+  } else if (getIsAMap()) {
+    return getAMapPosition(maps, latitude, longitude);
+  } else {
+    return getGoogleOrQQMapPosition(maps, latitude, longitude);
+  }
 }
 function getLat(latLng) {
   if ("getLat" in latLng) {
@@ -9632,7 +9651,9 @@ function useMap(props2, rootRef, emit2) {
       });
       const bounds = new maps.Bounds(...points);
       map.setBounds(bounds);
-    } else {
+    } else if (getIsBMap())
+      ;
+    else {
       const bounds = new maps.LatLngBounds();
       state.includePoints.forEach(({
         latitude,
