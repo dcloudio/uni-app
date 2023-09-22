@@ -848,6 +848,9 @@
 					}
 				}
 			},
+			"unixTags": [
+				"view", "scroll-view", "list-view", "navigator"
+			],
 			"defaultValue": {
 				"app-uvue": "column",
 				"web" : "row"
@@ -894,6 +897,9 @@
 					}
 				}
 			},
+			"unixTags": [
+				"view", "scroll-view", "list-view", "navigator"
+			],
 			"defaultValue": {
 				"app-uvue": "flex-start",
 				"web" : "normal"
@@ -929,6 +935,9 @@
 					}
 				}
 			},
+			"unixTags": [
+				"view", "scroll-view", "list-view", "navigator"
+			],
 			"defaultValue": {
 				"app-uvue": "nowrap",
 				"web" : "nowrap"
@@ -984,6 +993,9 @@
 					}
 				}
 			},
+			"unixTags": [
+				"view", "scroll-view", "list-view", "navigator"
+			],
 			"defaultValue": {
 				"app-uvue": "stretch",
 				"web" : "normal"
@@ -1087,6 +1099,9 @@
 					}
 				}
 			},
+			"unixTags": [
+				"view", "scroll-view", "list-view", "navigator"
+			],
 			"defaultValue": {
 				"app-uvue": "stretch",
 				"web" : "normal"
@@ -1267,7 +1282,10 @@
 						"uniVer": "√"
 					}
 				}
-			}
+			},
+			"unixTags": [
+				"view", "scroll-view", "list-view", "navigator"
+			]
 		},
 		{
 			"name": "display",
