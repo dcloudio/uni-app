@@ -594,6 +594,16 @@ export function checkAndroidVersionTips(
   }
 }
 
+export function getUniModulesEncryptCacheJars(cacheDir: string) {
+  if (cacheDir) {
+    return sync('uni_modules/*/*.jar', {
+      cwd: cacheDir,
+      absolute: true,
+    })
+  }
+  return []
+}
+
 export function getUniModulesCacheJars(cacheDir: string) {
   if (cacheDir) {
     return sync('app-android/uts/uni_modules/*/index.jar', {

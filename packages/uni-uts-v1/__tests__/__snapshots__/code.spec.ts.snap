@@ -181,6 +181,7 @@ exports[`code genProxyCode 3`] = `
           "body": [
             {
               "computed": false,
+              "isOverride": false,
               "key": {
                 "optional": false,
                 "span": {
@@ -221,6 +222,7 @@ exports[`code genProxyCode 3`] = `
             },
             {
               "computed": false,
+              "isOverride": false,
               "key": {
                 "optional": false,
                 "span": {

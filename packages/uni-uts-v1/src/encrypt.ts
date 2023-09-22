@@ -1,4 +1,4 @@
-import path, { join, relative } from 'path'
+import path, { basename, join, relative } from 'path'
 import fs from 'fs-extra'
 import { APP_PLATFORM } from './manifest/utils'
 import { normalizePath } from './shared'
@@ -54,9 +54,9 @@ export async function compileEncrypt(pluginDir: string, isX = false) {
       meta: { commonjs: { isCommonJS: true } },
     }
   }
+  const cacheDir = process.env.HX_DEPENDENCIES_DIR!
   if (!isX) {
     // 读取缓存目录的 js code
-    const cacheDir = process.env.HX_DEPENDENCIES_DIR!
     const indexJsPath = resolveJsCodeCacheFilename(
       utsPlatform,
       cacheDir,
@@ -65,6 +65,13 @@ export async function compileEncrypt(pluginDir: string, isX = false) {
     if (fs.existsSync(indexJsPath)) {
       code = fs.readFileSync(indexJsPath, 'utf-8') + code
     } else {
+      console.error(
+        `uts插件[${path.basename(pluginDir)}]不存在，请重新打包自定义基座`
+      )
+    }
+  } else {
+    const jarPath = resolveJarCacheFilename(cacheDir, pluginRelativeDir)
+    if (!fs.existsSync(jarPath)) {
       console.error(
         `uts插件[${path.basename(pluginDir)}]不存在，请重新打包自定义基座`
       )
@@ -85,4 +92,11 @@ export function resolveJsCodeCacheFilename(
   pluginRelativeDir: string
 ) {
   return join(cacheDir, platform, 'uts', pluginRelativeDir, 'index.js')
+}
+
+export function resolveJarCacheFilename(
+  cacheDir: string,
+  pluginRelativeDir: string
+) {
+  return join(cacheDir, pluginRelativeDir, basename(pluginRelativeDir) + '.jar')
 }

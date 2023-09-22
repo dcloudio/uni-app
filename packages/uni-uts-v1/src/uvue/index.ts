@@ -15,6 +15,7 @@ import {
   getUniModulesJars,
   resolveKotlincArgs,
   createStderrListener,
+  getUniModulesEncryptCacheJars,
 } from '../kotlin'
 import { parseUTSSyntaxError } from '../stacktrace'
 import {
@@ -290,6 +291,7 @@ async function runKotlinDev(
           getKotlincHome(),
           [kotlinClassOutDir].concat(
             getDefaultJar(2)
+              .concat(getUniModulesEncryptCacheJars(cacheDir))
               .concat(getUniModulesCacheJars(cacheDir))
               .concat(getUniModulesJars(outputDir))
           )
