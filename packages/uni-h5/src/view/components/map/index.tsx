@@ -18,7 +18,7 @@ import {
 } from '@dcloudio/uni-components'
 import '@amap/amap-jsapi-types'
 import { callOptions } from '@dcloudio/uni-shared'
-import { Point, getIsBMap } from '../../../helpers/location'
+import { Point, getIsBMap, getIsAMap } from '../../../helpers/location'
 import { Maps, Map, loadMaps, LatLng, QQMap, GoogleMap } from './maps'
 import { QQMaps } from './maps/qq/types'
 import { GoogleMaps } from './maps/google/types'
@@ -35,7 +35,6 @@ import MapLocation, {
 } from './MapLocation'
 import MapPolygon from './map-polygon/index'
 import { Polygon } from './map-polygon/interface'
-import { getIsAMap } from '../../../helpers/location'
 
 const props = {
   id: {
@@ -139,7 +138,7 @@ function getGoogleOrQQMapPosition(
 ) {
   return new maps.LatLng(latitude, longitude)
 }
-// 再增加bmap
+
 function getMapPosition(maps: Maps, latitude: number, longitude: number) {
   if (getIsBMap()) {
     return getBMapPosition(maps as any, latitude, longitude)
@@ -301,6 +300,7 @@ function useMap(
     const center = getMapPosition(maps, state.latitude, state.longitude)
     const event =
       (maps as QQMaps | GoogleMaps).event || (maps as AMap.NameSpace).Event
+    console.log('event:', event)
     const map = new maps.Map(mapEl, {
       center: center as any,
       zoom: Number(props.scale),
@@ -325,7 +325,6 @@ function useMap(
       // @ts-ignore
       map._printLog && map._printLog('uniapp')
     }
-    console.log('map::', map)
     watch(
       () => props.scale,
       (scale) => {
@@ -340,61 +339,69 @@ function useMap(
       }
     })
     // 需在 bounds_changed 后触发 BoundsReady
-    const boundsChangedEvent = event.addListener(map, 'bounds_changed', () => {
-      boundsChangedEvent.remove()
-      emitBoundsReady()
-    })
-    event.addListener(map, 'click', () => {
-      // TODO 编译器将 tap 转换为 click
-      trigger('tap', {} as Event, {})
-      trigger('click', {} as Event, {})
-    })
-    event.addListener(map, 'dragstart', () => {
-      trigger('regionchange', {} as Event, {
-        type: 'begin',
-        causedBy: 'gesture',
+    if (getIsBMap()) {
+      console.log('bmap的事件绑定是on？？')
+    } else {
+      const boundsChangedEvent = event.addListener(
+        map,
+        'bounds_changed',
+        () => {
+          boundsChangedEvent.remove()
+          emitBoundsReady()
+        }
+      )
+      event.addListener(map, 'click', () => {
+        // TODO 编译器将 tap 转换为 click
+        trigger('tap', {} as Event, {})
+        trigger('click', {} as Event, {})
       })
-    })
-    event.addListener(map, 'dragend', () => {
-      trigger(
-        'regionchange',
-        {} as Event,
-        extend(
-          {
-            type: 'end',
-            causedBy: 'drag',
-          },
-          getMapInfo()
+      event.addListener(map, 'dragstart', () => {
+        trigger('regionchange', {} as Event, {
+          type: 'begin',
+          causedBy: 'gesture',
+        })
+      })
+      event.addListener(map, 'dragend', () => {
+        trigger(
+          'regionchange',
+          {} as Event,
+          extend(
+            {
+              type: 'end',
+              causedBy: 'drag',
+            },
+            getMapInfo()
+          )
         )
-      )
-    })
+      })
 
-    const zoomChangedCallback = () => {
-      emit('update:scale', map.getZoom())
-      trigger(
-        'regionchange',
-        {} as Event,
-        extend(
-          {
-            type: 'end',
-            causedBy: 'scale',
-          },
-          getMapInfo()
+      const zoomChangedCallback = () => {
+        emit('update:scale', map.getZoom())
+        trigger(
+          'regionchange',
+          {} as Event,
+          extend(
+            {
+              type: 'end',
+              causedBy: 'scale',
+            },
+            getMapInfo()
+          )
         )
-      )
+      }
+      // QQ or Google
+      event.addListener(map, 'zoom_changed', zoomChangedCallback)
+      // AMAP
+      event.addListener(map, 'zoomend', zoomChangedCallback)
+
+      event.addListener(map, 'center_changed', () => {
+        const center = map.getCenter()!
+        const latitude = getLat(center as LatLng)
+        const longitude = getLng(center as LatLng)
+        emit('update:latitude', latitude)
+        emit('update:longitude', longitude)
+      })
     }
-    // QQ or Google
-    event.addListener(map, 'zoom_changed', zoomChangedCallback)
-    // AMAP
-    event.addListener(map, 'zoomend', zoomChangedCallback)
-
-    event.addListener(map, 'center_changed', () => {
-      const center = map.getCenter()!
-      const latitude = getLat(center as LatLng)
-      const longitude = getLng(center as LatLng)
-      emit('update:latitude', latitude)
-      emit('update:longitude', longitude)
-    })
     return map
   }
 

@@ -16772,7 +16772,14 @@ function createCallout(maps2) {
     });
     this.Text.setMap(option.map);
   }
+  function createBMapText() {
+  }
   function removeAMapText() {
+    if (this.Text) {
+      this.option.map.remove(this.Text);
+    }
+  }
+  function removeBMapText() {
     if (this.Text) {
       this.option.map.remove(this.Text);
     }
@@ -16781,6 +16788,8 @@ function createCallout(maps2) {
     constructor(option = {}, callback) {
       this.createAMapText = createAMapText;
       this.removeAMapText = removeAMapText;
+      this.createBMapText = createBMapText;
+      this.removeBMapText = removeBMapText;
       this.onAdd = onAdd;
       this.construct = onAdd;
       this.onRemove = onRemove;
@@ -16791,6 +16800,10 @@ function createCallout(maps2) {
         this.callback = callback;
         if (this.visible) {
           this.createAMapText();
+        }
+      } else if (getIsBMap()) {
+        if (this.visible) {
+          this.createBMapText();
         }
       } else {
         const map = option.map;
@@ -16833,6 +16846,10 @@ function createCallout(maps2) {
         if (this.visible) {
           this.createAMapText();
         }
+      } else if (getIsBMap()) {
+        if (this.visible) {
+          this.createBMapText();
+        }
       } else {
         this.setPosition(option.position);
         this.setStyle(option);
@@ -16872,7 +16889,7 @@ function createCallout(maps2) {
       divStyle.display = this.visible ? "block" : "none";
     }
   }
-  if (!getIsAMap()) {
+  if (!getIsAMap() && !getIsBMap()) {
     const overlay = new (maps2.OverlayView || maps2.Overlay)();
     Callout.prototype.setMap = overlay.setMap;
     Callout.prototype.getMap = overlay.getMap;
@@ -17191,7 +17208,14 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
     onMapReady((map, maps2, trigger) => {
       function updateMarker(option) {
         const title = option.title;
-        const position = getIsAMap() ? new maps2.LngLat(option.longitude, option.latitude) : new maps2.LatLng(option.latitude, option.longitude);
+        let position;
+        if (getIsAMap()) {
+          position = new maps2.LngLat(option.longitude, option.latitude);
+        } else if (getIsBMap()) {
+          position = new maps2.Point(option.longitude, option.latitude);
+        } else {
+          position = new maps2.LatLng(option.latitude, option.longitude);
+        }
         const img = new Image();
         let imgHeight = 0;
         img.onload = () => {
@@ -17227,8 +17251,13 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
               size: new maps2.Size(w, h2)
             };
           }
-          marker.setPosition(position);
-          marker.setIcon(icon);
+          if (getIsBMap()) {
+            marker = new maps2.Marker(new maps2.Point(position.lng, position.lat));
+            map.addOverlay(marker);
+          } else {
+            marker.setPosition(position);
+            marker.setIcon(icon);
+          }
           if ("setRotation" in marker) {
             marker.setRotation(option.rotate || 0);
           }
@@ -17372,41 +17401,47 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
         }
       }
       function addMarker(props3) {
-        marker = new maps2.Marker({
-          map,
-          flat: true,
-          autoRotation: false
-        });
+        if (!getIsBMap()) {
+          marker = new maps2.Marker({
+            map,
+            flat: true,
+            autoRotation: false
+          });
+        }
         updateMarker(props3);
         const MapsEvent = maps2.event || maps2.Event;
-        MapsEvent.addListener(marker, "click", () => {
-          const callout = marker.callout;
-          if (callout && !callout.alwaysVisible) {
-            if (getIsAMap()) {
-              callout.visible = !callout.visible;
-              if (callout.visible) {
-                marker.callout.createAMapText();
+        if (getIsBMap())
+          ;
+        else {
+          MapsEvent.addListener(marker, "click", () => {
+            const callout = marker.callout;
+            if (callout && !callout.alwaysVisible) {
+              if (getIsAMap()) {
+                callout.visible = !callout.visible;
+                if (callout.visible) {
+                  marker.callout.createAMapText();
+                } else {
+                  marker.callout.removeAMapText();
+                }
               } else {
-                marker.callout.removeAMapText();
-              }
-            } else {
-              callout.set("visible", !callout.visible);
-              if (callout.visible) {
-                const div = callout.div;
-                const parent = div.parentNode;
-                parent.removeChild(div);
-                parent.appendChild(div);
+                callout.set("visible", !callout.visible);
+                if (callout.visible) {
+                  const div = callout.div;
+                  const parent = div.parentNode;
+                  parent.removeChild(div);
+                  parent.appendChild(div);
+                }
               }
             }
-          }
-          if (id2) {
-            trigger("markertap", {}, {
-              markerId: Number(id2),
-              latitude: props3.latitude,
-              longitude: props3.longitude
-            });
-          }
-        });
+            if (id2) {
+              trigger("markertap", {}, {
+                markerId: Number(id2),
+                latitude: props3.latitude,
+                longitude: props3.longitude
+              });
+            }
+          });
+        }
       }
       addMarker(props2);
       watch(props2, updateMarker);
@@ -23390,6 +23425,7 @@ function useMap(props2, rootRef, emit2) {
     const mapEl = mapRef.value;
     const center = getMapPosition(maps2, state2.latitude, state2.longitude);
     const event = maps2.event || maps2.Event;
+    console.log("event:", event);
     const map2 = new maps2.Map(mapEl, {
       center,
       zoom: Number(props2.scale),
@@ -23411,7 +23447,6 @@ function useMap(props2, rootRef, emit2) {
       map2.enableScrollWheelZoom();
       map2._printLog && map2._printLog("uniapp");
     }
-    console.log("map::", map2);
     watch(() => props2.scale, (scale) => {
       map2.setZoom(Number(scale) || 16);
     });
@@ -23421,42 +23456,46 @@ function useMap(props2, rootRef, emit2) {
         updateCenter();
       }
     });
-    const boundsChangedEvent = event.addListener(map2, "bounds_changed", () => {
-      boundsChangedEvent.remove();
-      emitBoundsReady();
-    });
-    event.addListener(map2, "click", () => {
-      trigger("tap", {}, {});
-      trigger("click", {}, {});
-    });
-    event.addListener(map2, "dragstart", () => {
-      trigger("regionchange", {}, {
-        type: "begin",
-        causedBy: "gesture"
+    if (getIsBMap()) {
+      console.log("bmap的事件绑定是on？？");
+    } else {
+      const boundsChangedEvent = event.addListener(map2, "bounds_changed", () => {
+        boundsChangedEvent.remove();
+        emitBoundsReady();
       });
-    });
-    event.addListener(map2, "dragend", () => {
-      trigger("regionchange", {}, extend({
-        type: "end",
-        causedBy: "drag"
-      }, getMapInfo2()));
-    });
-    const zoomChangedCallback = () => {
-      emit2("update:scale", map2.getZoom());
-      trigger("regionchange", {}, extend({
-        type: "end",
-        causedBy: "scale"
-      }, getMapInfo2()));
-    };
-    event.addListener(map2, "zoom_changed", zoomChangedCallback);
-    event.addListener(map2, "zoomend", zoomChangedCallback);
-    event.addListener(map2, "center_changed", () => {
-      const center2 = map2.getCenter();
-      const latitude = getLat(center2);
-      const longitude = getLng(center2);
-      emit2("update:latitude", latitude);
-      emit2("update:longitude", longitude);
-    });
+      event.addListener(map2, "click", () => {
+        trigger("tap", {}, {});
+        trigger("click", {}, {});
+      });
+      event.addListener(map2, "dragstart", () => {
+        trigger("regionchange", {}, {
+          type: "begin",
+          causedBy: "gesture"
+        });
+      });
+      event.addListener(map2, "dragend", () => {
+        trigger("regionchange", {}, extend({
+          type: "end",
+          causedBy: "drag"
+        }, getMapInfo2()));
+      });
+      const zoomChangedCallback = () => {
+        emit2("update:scale", map2.getZoom());
+        trigger("regionchange", {}, extend({
+          type: "end",
+          causedBy: "scale"
+        }, getMapInfo2()));
+      };
+      event.addListener(map2, "zoom_changed", zoomChangedCallback);
+      event.addListener(map2, "zoomend", zoomChangedCallback);
+      event.addListener(map2, "center_changed", () => {
+        const center2 = map2.getCenter();
+        const latitude = getLat(center2);
+        const longitude = getLng(center2);
+        emit2("update:latitude", latitude);
+        emit2("update:longitude", longitude);
+      });
+    }
     return map2;
   }
   try {

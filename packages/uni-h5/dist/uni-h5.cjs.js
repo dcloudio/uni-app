@@ -8761,7 +8761,14 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
     onMapReady((map, maps, trigger) => {
       function updateMarker(option) {
         const title = option.title;
-        const position = getIsAMap() ? new maps.LngLat(option.longitude, option.latitude) : new maps.LatLng(option.latitude, option.longitude);
+        let position;
+        if (getIsAMap()) {
+          position = new maps.LngLat(option.longitude, option.latitude);
+        } else if (getIsBMap()) {
+          position = new maps.Point(option.longitude, option.latitude);
+        } else {
+          position = new maps.LatLng(option.latitude, option.longitude);
+        }
         const img = new Image();
         let imgHeight = 0;
         img.onload = () => {
@@ -8797,8 +8804,13 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
               size: new maps.Size(w, h)
             };
           }
-          marker.setPosition(position);
-          marker.setIcon(icon);
+          if (getIsBMap()) {
+            marker = new maps.Marker(new maps.Point(position.lng, position.lat));
+            map.addOverlay(marker);
+          } else {
+            marker.setPosition(position);
+            marker.setIcon(icon);
+          }
           if ("setRotation" in marker) {
             marker.setRotation(option.rotate || 0);
           }
@@ -8942,41 +8954,47 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
         }
       }
       function addMarker(props3) {
-        marker = new maps.Marker({
-          map,
-          flat: true,
-          autoRotation: false
-        });
+        if (!getIsBMap()) {
+          marker = new maps.Marker({
+            map,
+            flat: true,
+            autoRotation: false
+          });
+        }
         updateMarker(props3);
         const MapsEvent = maps.event || maps.Event;
-        MapsEvent.addListener(marker, "click", () => {
-          const callout = marker.callout;
-          if (callout && !callout.alwaysVisible) {
-            if (getIsAMap()) {
-              callout.visible = !callout.visible;
-              if (callout.visible) {
-                marker.callout.createAMapText();
+        if (getIsBMap())
+          ;
+        else {
+          MapsEvent.addListener(marker, "click", () => {
+            const callout = marker.callout;
+            if (callout && !callout.alwaysVisible) {
+              if (getIsAMap()) {
+                callout.visible = !callout.visible;
+                if (callout.visible) {
+                  marker.callout.createAMapText();
+                } else {
+                  marker.callout.removeAMapText();
+                }
               } else {
-                marker.callout.removeAMapText();
-              }
-            } else {
-              callout.set("visible", !callout.visible);
-              if (callout.visible) {
-                const div = callout.div;
-                const parent = div.parentNode;
-                parent.removeChild(div);
-                parent.appendChild(div);
+                callout.set("visible", !callout.visible);
+                if (callout.visible) {
+                  const div = callout.div;
+                  const parent = div.parentNode;
+                  parent.removeChild(div);
+                  parent.appendChild(div);
+                }
               }
             }
-          }
-          if (id) {
-            trigger("markertap", {}, {
-              markerId: Number(id),
-              latitude: props3.latitude,
-              longitude: props3.longitude
-            });
-          }
-        });
+            if (id) {
+              trigger("markertap", {}, {
+                markerId: Number(id),
+                latitude: props3.latitude,
+                longitude: props3.longitude
+              });
+            }
+          });
+        }
       }
       addMarker(props2);
       vue.watch(props2, updateMarker);
