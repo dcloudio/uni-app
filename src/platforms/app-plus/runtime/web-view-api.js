@@ -23,7 +23,7 @@ const publish = function (method, params) {
   if (isUvue()) { // uvue web-view
     if (method === 'postMessage') {
       const message = {
-        data: [params]
+        data: params
       }
       if (window.__uniapp_x_postMessage) {
         return window.__uniapp_x_postMessage(message)

@@ -28,6 +28,8 @@ const removePlatformStyle = function (style) {
       delete style[name]
     }
   })
+  delete style.app
+  delete style.web
 }
 
 const getPageComponents = function (inputDir, pagesJson) {
@@ -69,8 +71,8 @@ const getPageComponents = function (inputDir, pagesJson) {
 
   Object.assign(
     globalStyle,
-    globalStyle['app-plus'] || {},
-    globalStyle.h5 || {}
+    globalStyle.app || globalStyle['app-plus'] || {},
+    globalStyle.web || globalStyle.h5 || {}
   )
 
   if (process.env.UNI_SUB_PLATFORM) {
@@ -99,7 +101,7 @@ const getPageComponents = function (inputDir, pagesJson) {
       }
     }
     // 解析 titleNView，pullToRefresh
-    const h5Options = Object.assign({}, props['app-plus'] || {}, props.h5 || {})
+    const h5Options = Object.assign({}, props.app || props['app-plus'] || {}, props.web || props.h5 || {})
 
     if (process.env.UNI_SUB_PLATFORM) {
       Object.assign(h5Options, props[process.env.UNI_SUB_PLATFORM] || {})
@@ -123,33 +125,31 @@ const getPageComponents = function (inputDir, pagesJson) {
       always: 'float'
     }
     let titleNView = pageStyle.titleNView
-    titleNView = Object.assign(
-      {},
-      {
-        type: pageStyle.navigationStyle === 'custom' ? 'none' : 'default'
-      },
-      pageStyle.transparentTitle in titleNViewTypeList
-        ? {
-          type: titleNViewTypeList[pageStyle.transparentTitle],
-          backgroundColor: 'rgba(0,0,0,0)'
+    titleNView = Object.assign({}, {
+      type: pageStyle.navigationStyle === 'custom' ? 'none' : 'default'
+    },
+    pageStyle.transparentTitle in titleNViewTypeList ? {
+      type: titleNViewTypeList[pageStyle.transparentTitle],
+      backgroundColor: 'rgba(0,0,0,0)'
+    }
+      : null,
+    typeof titleNView === 'object'
+      ? titleNView
+      : (
+        typeof titleNView === 'boolean' ? {
+          type: titleNView ? 'default' : 'none'
         }
-        : null,
-      typeof titleNView === 'object'
-        ? titleNView
-        : (
-          typeof titleNView === 'boolean'
-            ? {
-              type: titleNView ? 'default' : 'none'
-            }
-            : null
-        )
+          : null
+      )
     )
     if (titleNView.type === 'none' || titleNView.type === 'transparent') {
       windowTop = 0
     }
 
     // 删除 app-plus 平台配置
+    delete props.app
     delete props['app-plus']
+    delete props.web
     delete props.h5
 
     if (process.env.UNI_SUB_PLATFORM) {

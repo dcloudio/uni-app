@@ -29,10 +29,13 @@ function getProxy() {
 }
 function resolveSyncResult(args, res, returnOptions, instanceId, proxy) {
     if ((process.env.NODE_ENV !== 'production')) {
-        console.log('uts.invokeSync.result', res, returnOptions, instanceId, typeof proxy);
+        console.log('uts.invokeSync.result', JSON.stringify([res, returnOptions, instanceId, typeof proxy]));
     }
     if (!res) {
-        throw new Error(JSON.stringify(args));
+        throw new Error('返回值为：' +
+            JSON.stringify(res) +
+            '；请求参数为：' +
+            JSON.stringify(args));
     }
     // devtools 环境是字符串？
     if (isString(res)) {

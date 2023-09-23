@@ -368,7 +368,8 @@ function getTestTemplate (test) {
   test = test.trim()
 
   // force single equals replacement
-  test = test.replace(/([^=!])=([^=])/g, '$1==$2')
+  // fixed by xxxxxx 不替换，会影响 >= 等判断
+  // test = test.replace(/([^=!])=([^=])/g, '$1==$2');
   //fixed by xxxxxx
   test = test.replace(/-/g,'_')
   /* eslint-disable no-new-func */
