@@ -15,7 +15,8 @@ export function assert(
   options: CompilerOptions = { targetLanguage: 'kotlin' }
 ) {
   const compilerOptions: CompilerOptions = {
-    filename: 'PagesIndexIndex',
+    filename: 'pages/index/index.uvue',
+    className: 'PagesIndexIndex',
     prefixIdentifiers: true,
     ...options,
   }

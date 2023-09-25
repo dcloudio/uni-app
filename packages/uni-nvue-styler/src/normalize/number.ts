@@ -1,8 +1,4 @@
-import {
-  Normalize,
-  LENGTH_REGEXP,
-  supportedValueWithTipsReason,
-} from '../utils'
+import { Normalize, LENGTH_REGEXP, supportedEnumReason } from '../utils'
 
 export const normalizeNumber: Normalize = (v) => {
   v = (v || '').toString()
@@ -15,7 +11,7 @@ export const normalizeNumber: Normalize = (v) => {
   return {
     value: null,
     reason: function reason(k, v, result) {
-      return supportedValueWithTipsReason(k, v, '(only number is supported)')
+      return supportedEnumReason(k, v, ['number'])
     },
   }
 }

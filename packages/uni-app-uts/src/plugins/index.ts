@@ -12,20 +12,30 @@ import {
   resolveMainPathOnce,
   resolveUTSCompiler,
   utsPlugins,
+  injectAssetPlugin,
 } from '@dcloudio/uni-cli-shared'
 import { compileI18nJsonStr } from '@dcloudio/uni-i18n'
 import type { Plugin } from 'vite'
-import { parseImports, parseUTSRelativeFilename, uvueOutDir } from './utils'
+import {
+  DEFAULT_APPID,
+  parseImports,
+  parseUTSRelativeFilename,
+  uvueOutDir,
+  getUniCloudSpaceList,
+  getUniCloudObjectInfo,
+} from './utils'
+import('./errorReporting')
+
+const uniCloudSpaceList = getUniCloudSpaceList()
 
 const REMOVED_PLUGINS = [
   'vite:build-metadata',
   'vite:modulepreload-polyfill',
   'vite:css',
   'vite:esbuild',
-  'vite:json',
   'vite:wasm-helper',
   'vite:worker',
-  'vite:asset',
+  // 'vite:asset', // replace
   'vite:wasm-fallback',
   'vite:define',
   'vite:css-post',
@@ -51,7 +61,8 @@ export function uniAppUTSPlugin(): UniVitePlugin {
   const mainUTS = resolveMainPathOnce(inputDir)
   const tempOutputDir = uvueOutDir()
   const manifestJson = parseManifestJsonOnce(inputDir)
-
+  // 预留一个口子，方便切换测试
+  const split = manifestJson['uni-app-x']?.split
   // 开始编译时，清空输出目录
   function emptyOutDir() {
     if (fs.existsSync(outputDir)) {
@@ -105,6 +116,9 @@ export function uniAppUTSPlugin(): UniVitePlugin {
           plugins.splice(i, 1)
         }
       }
+      // 强制不inline
+      config.build.assetsInlineLimit = 0
+      injectAssetPlugin(config, { isAppX: true })
     },
     async transform(code, id) {
       const { filename } = parseVueRequest(id)
@@ -129,10 +143,14 @@ export function uniAppUTSPlugin(): UniVitePlugin {
       const res = await resolveUTSCompiler().compileApp(
         path.join(tempOutputDir, 'index.uts'),
         {
+          uniCloudObjectInfo: getUniCloudObjectInfo(uniCloudSpaceList),
+          split: split !== false,
+          disableSplitManifest: process.env.NODE_ENV !== 'development',
           inputDir: tempOutputDir,
           outputDir: outputDir,
-          package: 'uni.' + (manifestJson.appid || '').replace(/_/g, ''),
-          sourceMap: true,
+          package:
+            'uni.' + (manifestJson.appid || DEFAULT_APPID).replace(/_/g, ''),
+          sourceMap: process.env.NODE_ENV === 'development',
           uni_modules: [...utsPlugins],
           extApis: parseUniExtApiNamespacesOnce(
             process.env.UNI_UTS_PLATFORM,
@@ -147,7 +165,11 @@ export function uniAppUTSPlugin(): UniVitePlugin {
             files.push(...JSON.parse(process.env.UNI_APP_UTS_CHANGED_FILES))
           } catch (e) {}
         }
-        if (res.changed && res.changed.length) {
+        if (res.changed) {
+          // 触发了kotlinc编译，且没有编译成功
+          if (!res.changed.length && res.kotlinc) {
+            throw new Error('编译失败')
+          }
           files.push(...res.changed)
         }
         process.env.UNI_APP_UTS_CHANGED_FILES = JSON.stringify([

@@ -1,27 +1,48 @@
+import CoreLocation;
 import DCloudUTSFoundation;
 import UIKit;
-import CoreLocation;
 import DCloudUTSExtAPI;
 public var uni_showToast = DCloudUTSExtAPI.showToast;
 public var uni_showModel = DCloudUTSExtAPI.showModel;
 public typealias ShowToast = (_ msg: String) -> Void;
 @objc(UTSSDKModulesTestUniPluginGetBatteryInfoOptions)
 @objcMembers
-public class GetBatteryInfoOptions : NSObject {
+public class GetBatteryInfoOptions : NSObject, UTSObject {
     public var name: String!;
     public var pwd: NSNumber!;
     public var success: ((_ res: UTSJSONObject) -> Void)?;
     public var fail: ((_ res: UTSJSONObject) -> Void)?;
     public var complete: ((_ res: UTSJSONObject) -> Void)?;
+    public subscript(_ key: String) -> Any? {
+        get {
+            return utsSubscriptGetValue(key);
+        }
+        set {
+            switch(key){
+                case "name":
+                    self.name = try! utsSubscriptCheckValue(newValue);
+                case "pwd":
+                    self.pwd = try! utsSubscriptCheckValue(newValue);
+                case "success":
+                    self.success = try! utsSubscriptCheckValueIfPresent(newValue);
+                case "fail":
+                    self.fail = try! utsSubscriptCheckValueIfPresent(newValue);
+                case "complete":
+                    self.complete = try! utsSubscriptCheckValueIfPresent(newValue);
+                default:
+                    break;
+            }
+        }
+    }
     public override init() {
         super.init();
     }
     public init(_ obj: UTSJSONObject) {
-        name = obj["name"] as! String;
-        pwd = obj["pwd"] as! NSNumber;
-        success = obj["success"] as! ((_ res: UTSJSONObject) -> Void)?;
-        fail = obj["fail"] as! ((_ res: UTSJSONObject) -> Void)?;
-        complete = obj["complete"] as! ((_ res: UTSJSONObject) -> Void)?;
+        self.name = obj["name"] as! String;
+        self.pwd = obj["pwd"] as! NSNumber;
+        self.success = obj["success"] as! ((_ res: UTSJSONObject) -> Void)?;
+        self.fail = obj["fail"] as! ((_ res: UTSJSONObject) -> Void)?;
+        self.complete = obj["complete"] as! ((_ res: UTSJSONObject) -> Void)?;
     }
 }
 public func getBatteryInfo(_ options: GetBatteryInfoOptions) {
@@ -47,7 +68,7 @@ public func test1(_ callback:@escaping () -> Void) -> String {
     console.log("ndef android", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:42");
     console.log("def android || def ios", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:48");
     console.log(CLLocationManager, CLAuthorizationStatus, " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:53");
-    var a = -3;
+    var a: NSNumber = -3;
     console.log(~a, " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:55");
     return "test1";
 }
@@ -70,14 +91,10 @@ public class Test : NSObject {
         #endif
         if #available(iOS 14, macOS 11.0, *) {
             console.log("iOS 14, macOS 11.0, *", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:72");
-        } else {
-            if #available(iOS 13,*) {
-                console.log("iOS 13,*", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:74");
-            } else {
-                if #unavailable(tvOS 12) {
-                    console.log("tvOS 12", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:76");
-                }
-            }
+        } else if #available(iOS 13,*) {
+            console.log("iOS 13,*", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:74");
+        } else if #unavailable(tvOS 12) {
+            console.log("tvOS 12", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:76");
         }
         return nil;
     }
@@ -88,7 +105,7 @@ public func testAsync() async -> UTSJSONObject {
     uni_showToast();
     uni_showModel();
     return UTSJSONObject([
-        "a": 1
+        "a": 1 as NSNumber
     ]);
 }
 public var showToast1: ShowToast = {

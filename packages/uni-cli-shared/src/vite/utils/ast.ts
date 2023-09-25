@@ -18,6 +18,7 @@ import {
   DirectiveNode,
   SimpleExpressionNode,
   AttributeNode,
+  CompoundExpressionNode,
 } from '@vue/compiler-core'
 import { parse } from '@vue/compiler-dom'
 
@@ -111,4 +112,10 @@ export function isSimpleExpressionNode(
   node: Node
 ): node is SimpleExpressionNode {
   return node.type === NodeTypes.SIMPLE_EXPRESSION
+}
+
+export function isCompoundExpressionNode(
+  node: Node
+): node is CompoundExpressionNode {
+  return node.type === NodeTypes.COMPOUND_EXPRESSION
 }

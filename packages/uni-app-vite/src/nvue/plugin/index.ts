@@ -131,15 +131,18 @@ export function uniAppNVuePlugin({
             })
             messages.forEach((message) => {
               if (message.type === 'warning') {
-                let msg = `[plugin:vite:nvue-css] ${message.text}`
+                config.logger.warn(
+                  colors.yellow(`[plugin:vite:nvue-css] ${message.text}`)
+                )
+                let msg = ''
                 if (message.line && message.column) {
                   msg += `\n${generateCodeFrame(source, {
                     line: message.line,
                     column: message.column,
-                  })}`
+                  })}\n`
                 }
-                msg += `\n${formatAtFilename(filename)}`
-                config.logger.warn(colors.yellow(msg))
+                msg += `${formatAtFilename(filename)}`
+                config.logger.warn(msg)
               }
             })
             return { code: `export default ${code}`, map: { mappings: '' } }

@@ -286,7 +286,7 @@ export function cssPostPlugin(
         if (filename) {
           if (
             platform === 'app' &&
-            (filename === 'app.css' || filename.startsWith('App.vue.style'))
+            (filename === 'app.css' || filename.startsWith('App.style'))
           ) {
             // 获取 unocss 的样式文件信息
             const ids = Object.keys(chunk.modules).filter(

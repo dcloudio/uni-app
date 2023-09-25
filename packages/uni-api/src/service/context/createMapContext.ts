@@ -94,8 +94,8 @@ export class MapContext implements UniApp.MapContext {
   openMapApp(options: any) {
     operateMapWrap(this.id, this.pageId, 'openMapApp', options)
   }
-  on(options: any) {
-    operateMapWrap(this.id, this.pageId, 'on', options)
+  on(name: string, callback: (...args: any[]) => void) {
+    operateMapWrap(this.id, this.pageId, 'on', { name, callback })
   }
 }
 

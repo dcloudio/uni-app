@@ -9,6 +9,7 @@ const manifestJson_1 = require("./plugins/manifestJson");
 const pagesJson_1 = require("./plugins/pagesJson");
 const pre_1 = require("./plugins/pre");
 const uvue_1 = require("./plugins/uvue");
+const unicloud_1 = require("./plugins/unicloud");
 exports.default = () => {
     return [
         (0, pre_1.uniPrePlugin)(),
@@ -22,6 +23,7 @@ exports.default = () => {
         (0, pagesJson_1.uniAppPagesPlugin)(),
         (0, css_1.uniAppCssPlugin)(),
         (0, uvue_1.uniAppUVuePlugin)(),
+        (0, unicloud_1.uniCloudPlugin)(),
     ];
 };
 var utils_1 = require("./plugins/utils");

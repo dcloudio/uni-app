@@ -1,5 +1,5 @@
 import { BindingMetadata, CompilerError } from '@vue/compiler-core'
-import { RawSourceMap } from 'source-map'
+import type { RawSourceMap } from 'source-map-js'
 import { DirectiveTransform, NodeTransform } from './transform'
 
 interface SharedTransformCodegenOptions {
@@ -20,6 +20,10 @@ interface SharedTransformCodegenOptions {
    * @default ''
    */
   filename?: string
+  /**
+   * 编译的模板类名
+   */
+  className?: string
 }
 export interface CodegenOptions extends SharedTransformCodegenOptions {
   /**

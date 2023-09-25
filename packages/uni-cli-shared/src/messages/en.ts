@@ -12,6 +12,7 @@ export default {
   'dev.watching.end': 'DONE  Build complete. Watching for changes...',
   'dev.watching.end.pages': 'DONE  Build complete. PAGES:{pages}',
   'dev.watching.end.files': 'DONE  Build complete. FILES:{files}',
+  'build.failed': 'DONE  Build failed.',
   'compiler.build.failed': 'Build failed with errors.',
   'stat.warn.appid':
     'The current application is not configured with Appid, and uni statistics cannot be used. For details, see https://ask.dcloud.net.cn/article/36303',
@@ -50,4 +51,6 @@ export default {
   'prompt.run.devtools.quickapp-webview-huawei': 'Huawei Quick App Devtools',
   'prompt.run.devtools.quickapp-webview-union': 'Quick App Alliance Devtools',
   'uvue.unsupported': 'uvue does not support {platform} platform',
+  'uvue.dev.watching.end.empty':
+    'The compilation outcome remains unchanged; there is no need to synchronize.',
 } as const

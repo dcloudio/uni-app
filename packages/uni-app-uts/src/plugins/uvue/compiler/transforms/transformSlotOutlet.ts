@@ -35,7 +35,10 @@ export const transformSlotOutlet: NodeTransform = (node, context) => {
     }
 
     if (children.length) {
-      slotArgs[3] = createFunctionExpression([], children, false, false, loc)
+      let fn = createFunctionExpression([], children, false, false, loc)
+      // @ts-expect-error 补充returnType
+      fn.returnType = `any[]`
+      slotArgs[3] = fn
       expectedLen = 4
     }
 

@@ -21,7 +21,288 @@ export const a = 1
 export const showToast1 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'showToast1ByJs', params: [{"name":"msg","type":"string"}], return: ""})
 export const showToast2 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'showToast2ByJs', params: [{"name":"msg","type":"string"}], return: ""})
 export const request = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'requestByJs', params: [], return: {"type":"interface","options":"RequestTaskOptions"}})
+export const addUsers1 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'addUsers1ByJs', params: [{"name":"users","type":"uts.sdk.testUTSUser1JSONObject"}], return: ""})
+export const addUsers2 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'addUsers2ByJs', params: [{"name":"users","type":"uts.sdk.testUTSUser1JSONObject"}], return: ""})
+export const addUsers3 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'addUsers3ByJs', params: [{"name":"user","type":"uts.sdk.testUTSUser1JSONObject"},{"name":"name","type":"string"}], return: ""})
+export const addUsers4 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'addUsers4ByJs', params: [{"name":"user","type":"uts.sdk.testUTSUser1JSONObject"},{"name":"name","type":"string"}], return: ""})
 "
+`;
+
+exports[`code genProxyCode 2`] = `
+{
+  "exports": {
+    "RequestTask": {
+      "type": "interface",
+    },
+    "User": {
+      "type": "class",
+    },
+    "a": {
+      "type": "var",
+    },
+    "addUsers1": {
+      "params": [
+        {
+          "name": "users",
+          "type": "uts.sdk.testUTSUser1JSONObject",
+        },
+      ],
+      "type": "function",
+    },
+    "addUsers2": {
+      "params": [
+        {
+          "name": "users",
+          "type": "uts.sdk.testUTSUser1JSONObject",
+        },
+      ],
+      "type": "function",
+    },
+    "addUsers3": {
+      "params": [
+        {
+          "name": "user",
+          "type": "uts.sdk.testUTSUser1JSONObject",
+        },
+        {
+          "name": "name",
+          "type": "string",
+        },
+      ],
+      "type": "function",
+    },
+    "addUsers4": {
+      "params": [
+        {
+          "name": "user",
+          "type": "uts.sdk.testUTSUser1JSONObject",
+        },
+        {
+          "name": "name",
+          "type": "string",
+        },
+      ],
+      "type": "function",
+    },
+    "offMemoryWarning": {
+      "params": [
+        {
+          "default": "UTSNull",
+          "name": "callback",
+          "type": "UTSCallback",
+        },
+      ],
+      "type": "function",
+    },
+    "onMemoryWarning": {
+      "params": [
+        {
+          "name": "callback",
+          "type": "UTSCallback",
+        },
+      ],
+      "type": "function",
+    },
+    "request": {
+      "params": [],
+      "type": "function",
+    },
+    "showToast1": {
+      "params": [
+        {
+          "name": "msg",
+          "type": "string",
+        },
+      ],
+      "type": "var",
+    },
+    "showToast2": {
+      "params": [
+        {
+          "name": "msg",
+          "type": "string",
+        },
+      ],
+      "type": "var",
+    },
+  },
+  "types": {
+    "RequestTask": "interface",
+    "ShowToast": "function",
+    "TestUTSElement": "class",
+  },
+}
+`;
+
+exports[`code genProxyCode 3`] = `
+{
+  "class": [
+    "User1",
+  ],
+  "fn": {
+    "ShowToast": [
+      {
+        "pat": {
+          "optional": false,
+          "span": {
+            "ctxt": 0,
+            "end": 37,
+            "start": 26,
+          },
+          "type": "Identifier",
+          "typeAnnotation": {
+            "span": {
+              "ctxt": 0,
+              "end": 37,
+              "start": 29,
+            },
+            "type": "TsTypeAnnotation",
+            "typeAnnotation": {
+              "kind": "string",
+              "span": {
+                "ctxt": 0,
+                "end": 37,
+                "start": 31,
+              },
+              "type": "TsKeywordType",
+            },
+          },
+          "value": "msg",
+        },
+        "span": {},
+        "type": "Parameter",
+      },
+    ],
+  },
+  "interface": {
+    "RequestTask": {
+      "decl": {
+        "body": {
+          "body": [
+            {
+              "computed": false,
+              "isOverride": false,
+              "key": {
+                "optional": false,
+                "span": {
+                  "ctxt": 0,
+                  "end": 85,
+                  "start": 80,
+                },
+                "type": "Identifier",
+                "value": "start",
+              },
+              "optional": false,
+              "params": [],
+              "readonly": false,
+              "span": {
+                "ctxt": 0,
+                "end": 93,
+                "start": 80,
+              },
+              "type": "TsMethodSignature",
+              "typeAnn": {
+                "span": {
+                  "ctxt": 0,
+                  "end": 93,
+                  "start": 87,
+                },
+                "type": "TsTypeAnnotation",
+                "typeAnnotation": {
+                  "kind": "void",
+                  "span": {
+                    "ctxt": 0,
+                    "end": 93,
+                    "start": 89,
+                  },
+                  "type": "TsKeywordType",
+                },
+              },
+              "typeParams": null,
+            },
+            {
+              "computed": false,
+              "isOverride": false,
+              "key": {
+                "optional": false,
+                "span": {
+                  "ctxt": 0,
+                  "end": 101,
+                  "start": 96,
+                },
+                "type": "Identifier",
+                "value": "abort",
+              },
+              "optional": false,
+              "params": [],
+              "readonly": false,
+              "span": {
+                "ctxt": 0,
+                "end": 116,
+                "start": 96,
+              },
+              "type": "TsMethodSignature",
+              "typeAnn": {
+                "span": {
+                  "ctxt": 0,
+                  "end": 116,
+                  "start": 103,
+                },
+                "type": "TsTypeAnnotation",
+                "typeAnnotation": {
+                  "span": {
+                    "ctxt": 0,
+                    "end": 116,
+                    "start": 105,
+                  },
+                  "type": "TsTypeReference",
+                  "typeName": {
+                    "optional": false,
+                    "span": {
+                      "ctxt": 0,
+                      "end": 116,
+                      "start": 105,
+                    },
+                    "type": "Identifier",
+                    "value": "RequestTask",
+                  },
+                  "typeParams": null,
+                },
+              },
+              "typeParams": null,
+            },
+          ],
+          "span": {
+            "ctxt": 0,
+            "end": 118,
+            "start": 76,
+          },
+          "type": "TsInterfaceBody",
+        },
+        "declare": false,
+        "extends": [],
+        "id": {
+          "optional": false,
+          "span": {
+            "ctxt": 0,
+            "end": 75,
+            "start": 64,
+          },
+          "type": "Identifier",
+          "value": "RequestTask",
+        },
+        "span": {
+          "ctxt": 0,
+          "end": 118,
+          "start": 54,
+        },
+        "type": "TsInterfaceDeclaration",
+        "typeParams": null,
+      },
+      "returned": true,
+    },
+  },
+}
 `;
 
 exports[`code genProxyCode cjs 1`] = `
@@ -48,6 +329,10 @@ exports.a = a
 exports.showToast1 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'showToast1ByJs', params: [{"name":"msg","type":"string"}], return: ""})
 exports.showToast2 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'showToast2ByJs', params: [{"name":"msg","type":"string"}], return: ""})
 exports.request = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'requestByJs', params: [], return: {"type":"interface","options":"RequestTaskOptions"}})
+exports.addUsers1 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'addUsers1ByJs', params: [{"name":"users","type":"uts.sdk.testUTSUser1JSONObject"}], return: ""})
+exports.addUsers2 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'addUsers2ByJs', params: [{"name":"users","type":"uts.sdk.testUTSUser1JSONObject"}], return: ""})
+exports.addUsers3 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'addUsers3ByJs', params: [{"name":"user","type":"uts.sdk.testUTSUser1JSONObject"},{"name":"name","type":"string"}], return: ""})
+exports.addUsers4 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'addUsers4ByJs', params: [{"name":"user","type":"uts.sdk.testUTSUser1JSONObject"},{"name":"name","type":"string"}], return: ""})
 uni.registerUTSPlugin('utssdk/test-uts', exports)
 "
 `;

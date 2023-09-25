@@ -52,10 +52,16 @@ type Types = {
 }
 
 interface Meta {
-  exports: Record<string, 'var' | 'function' | 'class' | 'interface'>
+  exports: Record<
+    string,
+    {
+      type: 'var' | 'function' | 'class' | 'interface'
+      params?: Parameter[]
+    }
+  >
   types: Record<string, 'function' | 'class' | 'interface'>
 }
-interface GenProxyCodeOptions {
+export interface GenProxyCodeOptions {
   is_uni_modules: boolean
   id: string
   name: string
@@ -70,6 +76,7 @@ interface GenProxyCodeOptions {
   moduleType?: string
   types?: Types
   meta?: Meta
+  isExtApi?: boolean
 }
 
 export async function genProxyCode(
@@ -83,6 +90,17 @@ export async function genProxyCode(
   }
   options.types = await parseInterfaceTypes(module, options)
   options.meta!.types = parseMetaTypes(options.types)
+  // 自动补充 VideoElement 导出
+  if (options.androidComponents) {
+    Object.keys(options.androidComponents).forEach((name) => {
+      options.meta!.types[capitalize(camelize(name)) + 'Element'] = 'class'
+    })
+  }
+  if (options.iosComponents) {
+    Object.keys(options.iosComponents).forEach((name) => {
+      options.meta!.types[capitalize(camelize(name)) + 'Element'] = 'class'
+    })
+  }
   const decls = await parseModuleDecls(module, options)
   return `
 const { registerUTSInterface, initUTSProxyClass, initUTSProxyFunction, initUTSPackageName, initUTSIndexClassName, initUTSClassName } = uni
@@ -228,7 +246,9 @@ function genModuleCode(
   const exportConst = exportVarCode(format, 'const')
   decls.forEach((decl) => {
     if (decl.type === 'InterfaceDeclaration') {
-      meta.exports[decl.cls] = 'interface'
+      meta.exports[decl.cls] = {
+        type: 'interface',
+      }
       codes.push(
         `registerUTSInterface('${
           decl.cls
@@ -237,7 +257,9 @@ function genModuleCode(
         }ByJsProxy', is_uni_modules) }, ${genClassOptionsCode(decl.options)} ))`
       )
     } else if (decl.type === 'Class') {
-      meta.exports[decl.cls] = decl.isVar ? 'var' : 'class'
+      meta.exports[decl.cls] = {
+        type: decl.isVar ? 'var' : 'class',
+      }
 
       if (decl.isDefault) {
         codes.push(
@@ -255,7 +277,10 @@ function genModuleCode(
         )
       }
     } else if (decl.type === 'FunctionDeclaration') {
-      meta.exports[decl.method] = decl.isVar ? 'var' : 'function'
+      meta.exports[decl.method] = {
+        type: decl.isVar ? 'var' : 'function',
+        params: decl.params,
+      }
       const returnOptions = decl.return
         ? { type: decl.return.type, options: decl.return.options + 'Options' }
         : ''
@@ -282,7 +307,9 @@ function genModuleCode(
       }
     } else if (decl.type === 'VariableDeclaration') {
       decl.declarations.forEach((d) => {
-        meta.exports[(d.id as Identifier).value] = 'var'
+        meta.exports[(d.id as Identifier).value] = {
+          type: 'var',
+        }
       })
 
       if (format === FORMATS.ES) {
@@ -422,6 +449,7 @@ function parseTypes(
     // export type ShowLoadingOptions = {}
     case 'TsTypeLiteral':
       classTypes.push(decl.id.value)
+      break
   }
 }
 
@@ -605,7 +633,7 @@ interface ProxyClass {
 
 function mergeAstTypes(to: Types, from: Types) {
   if (from.class.length) {
-    to.class = [...new Set(...[...to.class, ...from.class])]
+    to.class = [...new Set([...to.class, ...from.class])]
   }
   if (Object.keys(from.fn).length) {
     for (const name in from.fn) {
@@ -767,6 +795,18 @@ function resolveType(
     typeAnnotation.type === 'TsTypeReference' &&
     typeAnnotation.typeName.type === 'Identifier'
   ) {
+    // Array<string>
+    if (
+      typeAnnotation.typeName.value === 'Array' &&
+      typeAnnotation.typeParams &&
+      typeAnnotation.typeParams.params.length === 1
+    ) {
+      return resolveType(
+        types,
+        typeAnnotation.typeParams.params[0],
+        resolveTypeReferenceName
+      )
+    }
     if (hasOwn(types.fn, typeAnnotation.typeName.value)) {
       return 'UTSCallback'
     }
@@ -784,6 +824,8 @@ function resolveType(
       }
       return resolveType(types, type, resolveTypeReferenceName)
     }
+  } else if (typeAnnotation.type === 'TsArrayType') {
+    return resolveType(types, typeAnnotation.elemType, resolveTypeReferenceName)
   }
   return ''
 }
@@ -811,14 +853,22 @@ function resolveFunctionParams(
   const result: Parameter[] = []
   params.forEach(({ pat }) => {
     if (pat.type === 'Identifier') {
-      result.push({
+      const param: Parameter = {
         name: pat.value,
         type: resolveIdentifierType(
           types,
           pat as BindingIdentifier,
           resolveTypeReferenceName
         ),
-      })
+      }
+      // A | null
+      if (
+        (pat as BindingIdentifier).typeAnnotation?.typeAnnotation.type ===
+        'TsUnionType'
+      ) {
+        param.default = 'UTSNull'
+      }
+      result.push(param)
     } else if (pat.type === 'AssignmentPattern') {
       if (pat.left.type === 'Identifier') {
         const param: Parameter = {

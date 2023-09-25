@@ -1,6 +1,6 @@
 import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, customizeEvent, addLeadingSlash, stringifyQuery } from '@dcloudio/uni-shared';
-import { isArray, isFunction, hasOwn, extend, hyphenate, isPlainObject, isObject, isString } from '@vue/shared';
-import { ref, nextTick, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, devtoolsComponentAdded, getExposeProxy, pruneComponentPropsCache, EMPTY_OBJ, isRef, setTemplateRef } from 'vue';
+import { isArray, isFunction, hasOwn, extend, hyphenate, isPlainObject, isObject } from '@vue/shared';
+import { ref, nextTick, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, devtoolsComponentAdded, getExposeProxy, pruneComponentPropsCache } from 'vue';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 
 const MP_METHODS = [
@@ -830,53 +830,6 @@ function initSpecialMethods(mpInstance) {
         });
     }
 }
-function handleRef(ref) {
-    if (!ref) {
-        return;
-    }
-    const refName = ref.props.uR; // data-ref
-    const refInForName = ref.props.uRIF; // data-ref-in-for
-    if (!refName && !refInForName) {
-        return;
-    }
-    const instance = this.$vm.$;
-    const refs = instance.refs === EMPTY_OBJ ? (instance.refs = {}) : instance.refs;
-    const { setupState } = instance;
-    const refValue = ref.$vm;
-    if (refName) {
-        if (isString(refName)) {
-            refs[refName] = refValue;
-            if (hasOwn(setupState, refName)) {
-                setupState[refName] = refValue;
-            }
-        }
-        else {
-            setRef(refName, refValue, refs, setupState);
-        }
-    }
-    else if (refInForName) {
-        if (isString(refInForName)) {
-            (refs[refInForName] || (refs[refInForName] = [])).push(refValue);
-        }
-        else {
-            setRef(refInForName, refValue, refs, setupState);
-        }
-    }
-}
-function isTemplateRef(opts) {
-    return !!(opts && opts.r);
-}
-function setRef(ref, refValue, refs, setupState) {
-    if (isRef(ref)) {
-        ref.value = refValue;
-    }
-    else if (isFunction(ref)) {
-        const templateRef = ref(refValue, refs);
-        if (isTemplateRef(templateRef)) {
-            setTemplateRef(templateRef, refValue, setupState);
-        }
-    }
-}
 function createVueComponent(mpType, mpInstance, vueOptions, parent) {
     return $createComponent({
         type: vueOptions,
@@ -905,19 +858,23 @@ function initCreatePage() {
                 };
                 // 初始化 vue 实例
                 this.props = query;
-                this.$vm = createVueComponent('page', this, vueOptions);
-                initSpecialMethods(this);
-                this.$vm.$callHook(ON_LOAD, query);
             },
             onShow() {
                 if (__VUE_PROD_DEVTOOLS__) {
                     devtoolsComponentAdded(this.$vm.$);
                 }
-                this.$vm.$callHook(ON_SHOW);
+                this.$vm = createVueComponent('page', this, vueOptions);
+                this.$vm.$callHook('mounted');
+                this.$vm.$callHook(ON_LOAD, this.options);
+                initSpecialMethods(this);
+                if (this.$vm) {
+                    this.$vm.$callHook(ON_SHOW);
+                }
             },
             onReady() {
-                this.$vm.$callHook('mounted');
-                this.$vm.$callHook(ON_READY);
+                setTimeout(() => {
+                    this.$vm.$callHook(ON_READY);
+                }, 50);
             },
             onUnload() {
                 if (this.$vm) {
@@ -925,16 +882,8 @@ function initCreatePage() {
                     $destroyComponent(this.$vm);
                 }
             },
-            __r: handleRef,
             __l: handleLink,
-            __e: function (event) {
-                var _a, _b;
-                const { currentTarget: { dataset }, } = event;
-                dataset['eO'] = Object.assign(Object.assign({}, dataset['eO']), { tap: ((_a = dataset['eO']) === null || _a === void 0 ? void 0 : _a.tap) || ((_b = dataset['eO']) === null || _b === void 0 ? void 0 : _b.click) });
-                // console.log('触发了page事件', event)
-                // @ts-ignore
-                return handleEvent.call(this, event);
-            },
+            __e: handleEvent,
         };
         if (isPlainObject(vueOptions.events)) {
             extend(pageOptions.events, vueOptions.events);
@@ -955,23 +904,12 @@ function isPage(mpInstance) {
     return !!mpInstance.route;
 }
 function initRelation(mpInstance, detail) {
-    // 小红书自定义组件从customEventMap取事件名
-    mpInstance.customEventMap = {
-        // @ts-ignore
-        __l: '__l',
-    };
     mpInstance.triggerEvent('__l', detail);
 }
 function parse(componentOptions) {
     const methods = componentOptions.methods;
-    methods.__e = function (event) {
-        var _a, _b;
-        const { currentTarget: { dataset }, } = event;
-        dataset['eO'] = Object.assign(Object.assign({}, dataset['eO']), { tap: ((_a = dataset['eO']) === null || _a === void 0 ? void 0 : _a.tap) || ((_b = dataset['eO']) === null || _b === void 0 ? void 0 : _b.click) });
-        // console.log('触发了component事件', event)
-        // @ts-ignore
-        return handleEvent.call(this, event);
-    };
+    methods.__e = handleEvent;
+    methods.__l = handleLink;
 }
 
 var parseComponentOptions = /*#__PURE__*/Object.freeze({

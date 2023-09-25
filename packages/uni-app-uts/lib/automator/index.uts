@@ -1,95 +1,207 @@
-import { JSONArray, JSONObject } from 'com.alibaba.fastjson'
-import { SocketTask, SendSocketMessageOptions } from 'uts.sdk.modules.DCloudUniWebsocket'
 import {
   callUniMethod,
   CallUniMethodParams,
   captureScreenshot,
   CaptureScreenshotParams,
   getPageStack,
-  GetPageStackParams,
   getCurrentPage,
   GetCurrentPageParams
-} from './apis/App.uts'
+  // @ts-ignore
+} from './apis/App/index.uts'
 import {
-  pageGetData,
-  GetDataParams,
-  pageSetData,
-  SetDataParams,
-  CallMethodWithCallbackParams,
-  callMethodWithCallback
+  GetDataParams as PageGetDataParams,
+  getData as pageGetData,
+  SetDataParams as PageSetDataParams,
+  setData as pageSetData,
+  CallMethodParams,
+  callMethod as pageCallMethod,
+  GetElementParams as PageGetElementParams,
+  getElement as pageGetElement,
+  getElements as pageGetElements,
+  GetWindowPropertiesParams,
+  getWindowProperties,
+  // @ts-ignore
 } from './apis/Page.uts'
+// @ts-ignore
+import { socketEmitter, SocketEmitterParams } from './apis/App/Socket.uts'
+import {
+  GetElementParams as ElementGetElementParams,
+  getElement as elementGetElement,
+  getElements as elementGetElements,
+  GetDOMPropertiesParams,
+  getDOMProperties,
+  GetPropertiesParams,
+  getProperties,
+  CallFunctionParams as ElementCallFunctionParams,
+  callFunction as elementCallFunction,
+  TapParams,
+  tap,
+  CallMethodParams as ElementCallMethodParams,
+  callMethod as elementCallMethod,
+  GetDataParams as ElementGetDataParams,
+  getData as elementGetData,
+  SetDataParams as ElementSetDataParams,
+  setData as elementSetData,
+  GetOffsetParams,
+  getOffset,
+  LongpressParams,
+  longpress,
+  HandleTouchEventParams,
+  handleTouchEvent,
+  GetAttributesParams,
+  getAttributes,
+  GetStylesParams,
+  getStyles,
+  // @ts-ignore
+} from './apis/Element.uts'
 
+// @ts-ignore
 let socketTask: SocketTask | null = null
 const wsEndpoint = process.env.UNI_AUTOMATOR_WS_ENDPOINT
 
-function send(data: any) {
+export function send(data: any) {
+  // @ts-ignore
   socketTask?.send({ data: JSON.stringify(data) } as SendSocketMessageOptions)
 }
 
-function onMessage(msg: string) {
-  const json = JSON.parse(msg)!
-  const method = json['method'] as string
-  const params = json['params'] as UTSJSONObject
-  const path = params['path'] !== null ? (params['path'] as string) : ''
-  const res = new Map<string, any | null>([['id', json['id'] as string]])
+export type Callback = (result: any | null, error: any | null) => void
+
+type Msg = {
+  id: string,
+  method: string,
+  params: any
+}
+
+export function onMessage(msg: string) {
+  // @ts-ignore
+  const json = JSON.parse<Msg>(msg)!
+  const method = json.method
+  const params = JSON.stringify(json.params)
+  const res = new Map<string, any | null>([['id', json.id]])
   try {
-    const callback = (result?: any | null) => {
-      if (result !== null) {
-        res.set('result', result)
-      }
+    const callback = (result?: any | null, error?: any | null) => {
+      res.set('result', result)
+      res.set('error', error)
       send(res)
     }
     if (method.startsWith('App.')) {
       switch (method) {
         case 'App.callUniMethod':
-          const method = params['method'] as string
-          const args = (params['args'] as UTSJSONObject).toJSONObject() as JSONArray
-          callUniMethod({
-            method,
-            args,
-            callback
-          } as CallUniMethodParams)
+          // @ts-ignore
+          callUniMethod(JSON.parse<CallUniMethodParams>(params)!, callback)
           break
         case 'App.captureScreenshot':
-          const id = params['id'] !== null ? (params['id'] as string) : null
-          const fullPage = params['fullPage'] !== null ? (params['fullPage'] as boolean) : false
-          captureScreenshot({ id, fullPage, path, callback } as CaptureScreenshotParams)
+          // @ts-ignore
+          captureScreenshot(JSON.parse<CaptureScreenshotParams>(params)!, callback)
           break
         case 'App.getPageStack':
-          getPageStack({ callback } as GetPageStackParams)
+          getPageStack(callback)
           break
         case 'App.getCurrentPage':
           getCurrentPage({ callback } as GetCurrentPageParams)
           break
+        case 'App.socketEmitter':
+          // @ts-ignore
+          socketEmitter(JSON.parse<SocketEmitterParams>(params)!, callback)
+          break
       }
     } else if (method.startsWith('Page.')) {
-      const pageId = params['pageId'] as number
-      const data =
-        params['data'] !== null
-          ? (params['data'] as JSONObject)
-          : ({} as JSONObject)
       switch (method) {
         case 'Page.getData':
-          pageGetData({ pageId, path, callback } as GetDataParams)
+          // @ts-ignore
+          pageGetData(JSON.parse<PageGetDataParams>(params)!, callback)
           break
         case 'Page.setData':
-          pageSetData({ pageId, data, callback } as SetDataParams)
+          // @ts-ignore
+          pageSetData(JSON.parse<PageSetDataParams>(params)!, callback)
           break
-        case 'Page.callMethodWithCallback':
-          const methodName = params['method'] as string
-          const args = params['args'] !== null ? params['args'] as Array<any | null> : [] as Array<any | null>
-          args.push(callback)
-          callMethodWithCallback({ pageId, methodName, args } as CallMethodWithCallbackParams)
-          break;
+        case 'Page.callMethod':
+          // @ts-ignore
+          pageCallMethod(JSON.parse<CallMethodParams>(params)!, callback)
+          break
+        case 'Page.getElement':
+          // @ts-ignore
+          pageGetElement(JSON.parse<PageGetElementParams>(params)!, callback)
+          break
+        case 'Page.getElements':
+          // @ts-ignore
+          pageGetElements(JSON.parse<PageGetElementParams>(params)!, callback)
+          break
+        case 'Page.getWindowProperties':
+          // @ts-ignore
+          getWindowProperties(JSON.parse<GetWindowPropertiesParams>(params)!, callback)
+          break
+      }
+    } else if (method.startsWith('Element.')) {
+      switch (method) {
+        case 'Element.getElement':
+          // @ts-ignore
+          elementGetElement(JSON.parse<ElementGetElementParams>(params)!, callback)
+          break
+        case 'Element.getElements':
+          // @ts-ignore
+          elementGetElements(JSON.parse<ElementGetElementParams>(params)!, callback)
+          break
+        case 'Element.getDOMProperties':
+          // @ts-ignore
+          getDOMProperties(JSON.parse<GetDOMPropertiesParams>(params)!, callback)
+          break
+        case 'Element.getProperties':
+          // @ts-ignore
+          getProperties(JSON.parse<GetPropertiesParams>(params)!, callback)
+          break
+        case 'Element.callFunction':
+          // @ts-ignore
+          elementCallFunction(JSON.parse<ElementCallFunctionParams>(params)!, callback)
+          break
+        case 'Element.tap':
+          // @ts-ignore
+          tap(JSON.parse<TapParams>(params)!, callback)
+          break
+        case 'Element.callMethod':
+          // @ts-ignore
+          elementCallMethod(JSON.parse<ElementCallMethodParams>(params)!, callback)
+          break
+        case 'Element.getData':
+          // @ts-ignore
+          elementGetData(JSON.parse<ElementGetDataParams>(params)!, callback)
+          break
+        case 'Element.setData':
+          // @ts-ignore
+          elementSetData(JSON.parse<ElementSetDataParams>(params)!, callback)
+          break
+        case 'Element.getOffset':
+          // @ts-ignore
+          getOffset(JSON.parse<GetOffsetParams>(params)!, callback)
+          break
+        case 'Element.longpress':
+          // @ts-ignore
+          longpress(JSON.parse<LongpressParams>(params)!, callback)
+          break
+        case 'Element.touchstart':
+        case 'Element.touchmove':
+        case 'Element.touchend':
+          // @ts-ignore
+          handleTouchEvent(JSON.parse<HandleTouchEventParams>(params)!, method.split('.')[1], callback)
+          break
+        case 'Element.getAttributes':
+          // @ts-ignore
+          getAttributes(JSON.parse<GetAttributesParams>(params)!, callback)
+          break
+        case 'Element.getStyles':
+          // @ts-ignore
+          getStyles(JSON.parse<GetStylesParams>(params)!, callback)
+          break
       }
     }
   } catch (error) {
-    res.set('error', error)
+    res.set('error', { message: error.stackTraceToString() })
     send(res)
   }
 }
 
 export function initAutomator() {
+  // @ts-ignore
   socketTask = uni.connectSocket({
     url: wsEndpoint
   });

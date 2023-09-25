@@ -3,6 +3,7 @@ import { UserConfig, ResolverFunction } from 'vite'
 import {
   isWindows,
   extensions,
+  uni_app_x_extensions,
   normalizePath,
   requireResolve,
   resolveUTSModule,
@@ -53,6 +54,7 @@ export function createResolve(
         customResolver,
       },
     ],
-    extensions,
+    extensions:
+      process.env.UNI_APP_X === 'true' ? uni_app_x_extensions : extensions,
   }
 }

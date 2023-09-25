@@ -7,10 +7,11 @@ import { isArray } from '@vue/shared'
 import type {
   UTSBundleOptions,
   UTSInputOptions,
+  UTSOutputOptions,
   UTSResult,
 } from '@dcloudio/uts'
 import { get } from 'android-versions'
-import { normalizePath, parseJson } from './shared'
+import { normalizePath, parseJson, resolveSourceMapPath } from './shared'
 import {
   CompilerServer,
   genUTSPlatformResource,
@@ -26,19 +27,26 @@ import {
   parseKotlinPackageWithPluginId,
   isColorSupported,
   resolveSourceMapFile,
+  isUniCloudSupported,
+  parseExtApiDefaultParameters,
 } from './utils'
 import { Module } from '../types/types'
-import { parseUTSSyntaxError } from './stacktrace'
+import { parseUTSKotlinStacktrace, parseUTSSyntaxError } from './stacktrace'
 import { APP_PLATFORM } from './manifest/utils'
 import { restoreDex } from './manifest'
+import { MessageSourceLocation, hbuilderFormatter } from './stacktrace/kotlin'
 
 export interface KotlinCompilerServer extends CompilerServer {
   getKotlincHome(): string
   getDefaultJar(arg?: any): string[]
   compile(
-    options: { kotlinc: string[]; d8: string[] },
+    options: {
+      kotlinc: string[]
+      d8: string[]
+      stderrListener: (data: string) => void
+    },
     projectPath: string
-  ): Promise<boolean>
+  ): Promise<{ code: number; msg: string; data?: { dexList: string[] } }>
   checkDependencies?: (
     configJsonPath: string
   ) => Promise<{ code: number; msg: string; data: string[] }>
@@ -74,10 +82,14 @@ export async function runKotlinProd(
     isPlugin,
     isX,
     extApis,
+    transform,
+    sourceMap,
   }: {
     isPlugin: boolean
     isX: boolean
     extApis?: Record<string, [string, string]>
+    transform?: UTSOutputOptions['transform']
+    sourceMap?: boolean
   }
 ) {
   // 文件有可能是 app-ios 里边的，因为编译到 android 时，为了保证不报错，可能会去读取 ios 下的 uts
@@ -89,11 +101,12 @@ export async function runKotlinProd(
   const result = await compile(filename, {
     inputDir,
     outputDir,
-    sourceMap: true,
+    sourceMap: !!sourceMap,
     components,
     isX,
     isPlugin,
     extApis,
+    transform,
   })
   if (!result) {
     return
@@ -114,16 +127,19 @@ export async function runKotlinProd(
 export type RunKotlinDevResult = UTSResult & {
   type: 'kotlin'
   changed: string[]
+  kotlinc: boolean
 }
 
 interface RunKotlinDevOptions {
   components: Record<string, string>
   isX: boolean
   isPlugin: boolean
+  sourceMap: boolean
   cacheDir: string
   pluginRelativeDir: string
   is_uni_modules: boolean
   extApis?: Record<string, [string, string]>
+  transform?: UTSOutputOptions['transform']
 }
 
 export async function runKotlinDev(
@@ -136,6 +152,8 @@ export async function runKotlinDev(
     pluginRelativeDir,
     is_uni_modules,
     extApis,
+    transform,
+    sourceMap,
   }: RunKotlinDevOptions
 ): Promise<RunKotlinDevResult | undefined> {
   // 文件有可能是 app-ios 里边的，因为编译到 android 时，为了保证不报错，可能会去读取 ios 下的 uts
@@ -147,11 +165,12 @@ export async function runKotlinDev(
   const result = (await compile(filename, {
     inputDir,
     outputDir,
-    sourceMap: true,
+    sourceMap,
     components,
     isX,
     isPlugin,
     extApis,
+    transform,
   })) as RunKotlinDevResult
   if (!result) {
     return
@@ -200,9 +219,10 @@ export async function runKotlinDev(
       pluginRelativeDir,
       kotlinFile
     )
+    const waiting = { done: undefined }
     const options = {
       kotlinc: resolveKotlincArgs(
-        kotlinFile,
+        [kotlinFile],
         jarFile,
         getKotlincHome(),
         (isX ? getDefaultJar(2) : getDefaultJar())
@@ -215,10 +235,19 @@ export async function runKotlinDev(
       d8: resolveD8Args(jarFile),
       sourceRoot: inputDir,
       sourceMapPath: resolveSourceMapFile(outputDir, kotlinFile),
+      stderrListener: createStderrListener(
+        outputDir,
+        resolveSourceMapPath(),
+        waiting
+      ),
     }
-    const res = await compileDex(options, inputDir)
+    const { code, msg } = await compileDex(options, inputDir)
     // console.log('dex compile time: ' + (Date.now() - time) + 'ms')
-    if (res) {
+    // 等待 stderrListener 执行完毕
+    if (waiting.done) {
+      await waiting.done
+    }
+    if (!code) {
       try {
         // 其他插件或 x 需要该插件的 jar 做编译
         // fs.unlinkSync(jarFile)
@@ -237,6 +266,8 @@ export async function runKotlinDev(
           normalizePath(path.relative(outputDir, newDexFile || dexFile)),
         ]
       }
+    } else if (msg) {
+      console.error(msg)
     }
     // else {
     //   throw `${normalizePath(
@@ -350,8 +381,18 @@ const DEFAULT_IMPORTS = [
   'kotlinx.coroutines.Deferred',
   'kotlinx.coroutines.Dispatchers',
   'io.dcloud.uts.Map',
+  'io.dcloud.uts.Set',
   'io.dcloud.uts.UTSAndroid',
   'io.dcloud.uts.*',
+  'io.dcloud.uniapp.*',
+  'io.dcloud.uniapp.extapi.*',
+]
+
+const DEFAULT_IMPORTS_X = [
+  'io.dcloud.uniapp.framework.*',
+  'io.dcloud.uniapp.vue.*',
+  'io.dcloud.uniapp.vue.shared.*',
+  'io.dcloud.uniapp.runtime.*',
 ]
 
 export async function compile(
@@ -364,14 +405,21 @@ export async function compile(
     isX,
     isPlugin,
     extApis,
+    transform,
   }: ToKotlinOptions
 ) {
   const { bundle, UTSTarget } = getUTSCompiler()
   // let time = Date.now()
   const imports = [...DEFAULT_IMPORTS]
+  if (isX && !process.env.UNI_UTS_DISABLE_X_IMPORT) {
+    imports.push(...DEFAULT_IMPORTS_X)
+  }
   const rClass = resolveAndroidResourceClass(filename)
   if (rClass) {
     imports.push(rClass)
+  }
+  if (isUniCloudSupported() || process.env.NODE_ENV !== 'production') {
+    imports.push('io.dcloud.unicloud.*')
   }
   const componentsCode = genComponentsCode(filename, components, isX)
   const { package: pluginPackage, id: pluginId } = parseKotlinPackage(filename)
@@ -379,7 +427,9 @@ export async function compile(
     root: inputDir,
     filename,
     pluginId,
-    paths: {},
+    paths: {
+      vue: 'io.dcloud.uniapp.vue',
+    },
   }
   const isUTSFileExists = fs.existsSync(filename)
   if (componentsCode) {
@@ -396,6 +446,8 @@ export async function compile(
     }
   }
   const options: UTSBundleOptions = {
+    mode: process.env.NODE_ENV,
+    hbxVersion: process.env.HX_Version || process.env.UNI_COMPILER_VERSION,
     input,
     output: {
       isX,
@@ -408,8 +460,10 @@ export async function compile(
       logFilename: true,
       noColor: !isColorSupported(),
       transform: {
-        uniExtApiDefaultNamespace: 'io.dcloud.uts.extapi',
+        uniExtApiDefaultNamespace: 'io.dcloud.uniapp.extapi',
         uniExtApiNamespaces: extApis,
+        uniExtApiDefaultParameters: parseExtApiDefaultParameters(),
+        ...transform,
       },
     },
   }
@@ -427,31 +481,32 @@ export async function compile(
 }
 
 export function resolveKotlincArgs(
-  filename: string,
+  files: string[],
   dest: string,
   kotlinc: string,
   jars: string[]
 ) {
   return [
-    filename,
+    ...files,
     '-cp',
     resolveClassPath(jars),
     '-d',
     dest,
     '-kotlin-home',
     kotlinc,
+    `-Xplugin=${path.resolve(
+      __dirname,
+      '../lib/kotlin/uts-kotlin-compiler-plugin.jar'
+    )}`,
+    '-P',
+    'plugin:io.dcloud.uts.kotlin:tag=UTS',
   ]
 }
 
+export const D8_DEFAULT_ARGS = ['--min-api', '19']
+
 export function resolveD8Args(filename: string) {
-  return [
-    filename,
-    '--no-desugaring',
-    '--min-api',
-    '19',
-    '--output',
-    resolveDexPath(filename),
-  ]
+  return [filename, ...D8_DEFAULT_ARGS, '--output', resolveDexPath(filename)]
 }
 
 function resolveLibs(filename: string) {
@@ -539,6 +594,16 @@ export function checkAndroidVersionTips(
   }
 }
 
+export function getUniModulesEncryptCacheJars(cacheDir: string) {
+  if (cacheDir) {
+    return sync('uni_modules/*/*.jar', {
+      cwd: cacheDir,
+      absolute: true,
+    })
+  }
+  return []
+}
+
 export function getUniModulesCacheJars(cacheDir: string) {
   if (cacheDir) {
     return sync('app-android/uts/uni_modules/*/index.jar', {
@@ -554,4 +619,63 @@ export function getUniModulesJars(outputDir: string) {
     cwd: path.resolve(outputDir, 'uni_modules'),
     absolute: true,
   })
+}
+
+export function createStderrListener(
+  inputDir: string,
+  sourceMapDir: string,
+  waiting: { done: Promise<void> | undefined }
+) {
+  return async function stderrListener(data: any) {
+    waiting.done = new Promise(async (resolve) => {
+      let message = data.toString().trim()
+      if (message) {
+        try {
+          const messages = (
+            JSON.parse(message) as MessageSourceLocation[]
+          ).filter((msg) => {
+            if (
+              // 暂时屏蔽 Unchecked cast: Any? to UTSArray<String>​
+              // Unchecked cast: Any to UTSArray<String>
+              msg.type === 'warning' &&
+              msg.message.includes('Unchecked cast: Any') &&
+              msg.message.includes('to UTSArray<')
+            ) {
+              return false
+            }
+            return true
+          })
+          if (messages.length) {
+            const msg = await parseUTSKotlinStacktrace(messages, {
+              inputDir,
+              sourceMapDir,
+              replaceTabsWithSpace: true,
+              format: hbuilderFormatter,
+            })
+            if (msg) {
+              // 异步输出，保证插件编译失败的日志在他之前输出，不能使用process.nextTick
+              setTimeout(() => {
+                console.log(msg)
+              })
+            }
+          }
+        } catch (e) {
+          if (
+            // 屏蔽部分不需要的警告信息
+            !(
+              message === ':' ||
+              message.includes('Warning in') ||
+              message.includes('desugaring of')
+            )
+          ) {
+            // 异步输出，保证插件编译失败的日志在他之前输出
+            setTimeout(() => {
+              console.error(message)
+            })
+          }
+        }
+      }
+      resolve()
+    })
+  }
 }

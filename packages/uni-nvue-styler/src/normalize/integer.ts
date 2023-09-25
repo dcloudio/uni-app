@@ -1,4 +1,4 @@
-import { Normalize, supportedValueWithTipsReason } from '../utils'
+import { Normalize, supportedEnumReason } from '../utils'
 
 export const normalizeInteger: Normalize = (v) => {
   v = (v || '').toString()
@@ -8,7 +8,7 @@ export const normalizeInteger: Normalize = (v) => {
   return {
     value: null,
     reason: function reason(k, v, result) {
-      return supportedValueWithTipsReason(k, v, `(only integer is supported)`)
+      return supportedEnumReason(k, v, ['integer'])
     },
   }
 }

@@ -1,6 +1,6 @@
 import { NUM_REGEXP, Normalize, supportedEnumReason } from '../utils'
 
-export const normalizeTransitionTimingFunction: Normalize = (v) => {
+export const normalizeTimingFunction: Normalize = (v) => {
   v = (v || '').toString()
 
   if (v.match(/^linear|ease|ease-in|ease-out|ease-in-out$/)) {

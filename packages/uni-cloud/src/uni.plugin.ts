@@ -21,6 +21,9 @@ const uniCloudSpaces: {
   name: string
   clientSecret?: string
   apiEndpoint?: string
+  spaceAppId?: string
+  accessKey?: string
+  secretKey?: string
 }[] = []
 
 const initUniCloudEnvOnce = once(initUniCloudEnv)
@@ -150,19 +153,35 @@ function initUniCloudEnv() {
         if (space.provider === 'tcb') {
           space.provider = 'tencent'
         }
-        if (space.clientSecret) {
-          return {
-            provider: space.provider || 'aliyun',
-            spaceName: space.name,
-            spaceId: space.id,
-            clientSecret: space.clientSecret,
-            endpoint: space.apiEndpoint,
+        if (!space.provider && space.clientSecret) {
+          space.provider = 'aliyun'
+        }
+        switch (space.provider) {
+          case 'aliyun':
+            return {
+              provider: space.provider || 'aliyun',
+              spaceName: space.name,
+              spaceId: space.id,
+              clientSecret: space.clientSecret,
+              endpoint: space.apiEndpoint,
+            }
+          case 'alipay': {
+            return {
+              provider: space.provider,
+              spaceName: space.name,
+              spaceId: space.id,
+              spaceAppId: space.spaceAppId,
+              accessKey: space.accessKey,
+              secretKey: space.secretKey,
+            }
           }
-        } else {
-          return {
-            provider: space.provider || 'tencent',
-            spaceName: space.name,
-            spaceId: space.id,
+          case 'tencent':
+          default: {
+            return {
+              provider: space.provider,
+              spaceName: space.name,
+              spaceId: space.id,
+            }
           }
         }
       })
@@ -196,7 +215,7 @@ export default () => [
         }
         if (uniCloudSpaces.length) {
           return {
-            code: code + `;import '@dcloudio/uni-cloud';`,
+            code: code + `;\nimport '@dcloudio/uni-cloud';`,
             map: null,
           }
         }

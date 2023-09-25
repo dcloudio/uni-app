@@ -33,4 +33,24 @@ describe('compiler: transform text', () => {
 ])`
     )
   })
+  test('\n', () => {
+    assert(
+      `<view>
+  <text>\\\\\n 换行</text>
+  <text>\\\\n 换行</text>
+  <text>\\\n 换行</text>
+  <text>\\n 换行</text>
+  <text>\n 换行</text>
+  <text>\n 换行 \\n 换行 \\\n 换行 \\\\n 换行 \\\\\n 换行</text>
+</view>`,
+      `createElementVNode(\"view\", null, [
+  createElementVNode(\"text\", null, \"\\\\\\\\ 换行\"),
+  createElementVNode(\"text\", null, \"\\\\n 换行\"),
+  createElementVNode(\"text\", null, \"\\\\ 换行\"),
+  createElementVNode(\"text\", null, \"\\n 换行\"),
+  createElementVNode(\"text\", null, \" 换行\"),
+  createElementVNode(\"text\", null, \" 换行 \\n 换行 \\\\ 换行 \\\\\\n 换行 \\\\\\\\ 换行\")
+])`
+    )
+  })
 })

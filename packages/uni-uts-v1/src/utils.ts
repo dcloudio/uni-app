@@ -1,7 +1,7 @@
 import path, { basename, resolve } from 'path'
 import fs from 'fs-extra'
-import type { parse, bundle, UTSTarget } from '@dcloudio/uts'
-import { camelize, capitalize, extend } from '@vue/shared'
+import type { parse, bundle, UTSTarget, UTSOutputOptions } from '@dcloudio/uts'
+import { camelize, capitalize, extend, isArray } from '@vue/shared'
 import glob from 'fast-glob'
 import { Module, ModuleItem } from '../types/types'
 import {
@@ -21,6 +21,7 @@ interface ToOptions {
   isX: boolean
   isPlugin: boolean
   extApis?: Record<string, [string, string]>
+  transform?: UTSOutputOptions['transform']
 }
 export type ToKotlinOptions = ToOptions
 export type ToSwiftOptions = ToOptions
@@ -182,6 +183,11 @@ function resolveTypeAliasDeclNames(items: ModuleItem[]) {
   items.forEach((item) => {
     if (item.type === 'TsTypeAliasDeclaration') {
       names.push(item.id.value)
+    } else if (
+      item.type === 'ExportDeclaration' &&
+      item.declaration.type === 'TsTypeAliasDeclaration'
+    ) {
+      names.push(item.declaration.id.value)
     }
   })
   return names
@@ -220,7 +226,11 @@ export function getCompilerServer<T extends CompilerServer>(
     return require(compilerServerPath)
   } else {
     if (runByHBuilderX()) {
-      installHBuilderXPlugin(pluginName)
+      installHBuilderXPlugin(
+        pluginName === 'uniapp-runextension'
+          ? 'uts-development-android'
+          : pluginName
+      )
     } else {
       console.error(compilerServerPath + ' is not found')
     }
@@ -291,7 +301,7 @@ export function genComponentsCode(
     const className = capitalize(camelize(name))
     codes.push(
       `export { default as ${className}Component${
-        isX ? `, ${className}Node` : ''
+        isX ? `, ${className}Element` : ''
       } } from '${source.startsWith('.') ? source : './' + source}'`
     )
   })
@@ -429,4 +439,59 @@ export function resolveSourceMapFile(outputDir: string, kotlinFile: string) {
     path.resolve(resolveSourceMapPath(), path.relative(outputDir, kotlinFile)) +
     '.map'
   )
+}
+
+export function resolveUniAppXSourceMapPath(tempRootDir: string) {
+  return path.resolve(tempRootDir, 'sourcemap')
+}
+
+export function resolveUniAppXSourceMapFile(
+  tempRootDir: string,
+  outputDir: string,
+  kotlinFile: string
+) {
+  return (
+    path.resolve(
+      resolveUniAppXSourceMapPath(tempRootDir),
+      path.relative(outputDir, kotlinFile)
+    ) + '.map'
+  )
+}
+
+export function isUniCloudSupported() {
+  if (!process.env.UNI_CLOUD_SPACES) {
+    return false
+  }
+  try {
+    const spaces = JSON.parse(process.env.UNI_CLOUD_SPACES)
+    if (Array.isArray(spaces) && spaces.length > 0) {
+      return true
+    }
+    return false
+  } catch (e) {
+    return false
+  }
+}
+
+export function parseExtApiDefaultParameters() {
+  return normalizeExtApiDefaultParameters(
+    require('../lib/ext-api/default-parameters.json')
+  )
+}
+
+export function normalizeExtApiDefaultParameters(json: Record<string, any>) {
+  const res: Record<string, string[]> = {}
+  Object.keys(json).forEach((key) => {
+    const module = json[key]
+    Object.keys(module).forEach((api) => {
+      const value = module[api]
+      if (isArray(value)) {
+        const newValue = value.map((v) => v ?? '')
+        res[api] = newValue
+      } else {
+        res[api] = [value]
+      }
+    })
+  })
+  return res
 }

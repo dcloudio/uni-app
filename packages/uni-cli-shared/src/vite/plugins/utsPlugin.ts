@@ -86,6 +86,7 @@ export function uniUTSPlugin(options: UniUTSPluginOptions = {}): Plugin {
           isX: !!options.x,
           isPlugin: true,
           extApis: options.extApis,
+          sourceMap: process.env.NODE_ENV === 'development',
         })
       })
       utsModuleCaches.set(pluginDir, compile)

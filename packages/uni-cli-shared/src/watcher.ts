@@ -66,7 +66,7 @@ export class FileWatcher {
   copy(from: string) {
     const to = this.to(from)
     this.info('copy', from + '=>' + to)
-    let content: string | void
+    let content: string | void = ''
     if (this.transform) {
       const filename = this.from(from)
       content = this.transform(fs.readFileSync(filename), filename)

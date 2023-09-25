@@ -7,7 +7,7 @@ export * from './console'
 export * from './dynamicImportPolyfill'
 export * from './utsPlugin'
 
-export { assetPlugin, getAssetHash } from './vitejs/plugins/asset'
+export { assetPlugin, parseAssets, getAssetHash } from './vitejs/plugins/asset'
 export {
   isCSSRequest,
   cssPlugin,
@@ -17,4 +17,4 @@ export {
   commonjsProxyRE,
 } from './vitejs/plugins/css'
 
-export { generateCodeFrame } from './vitejs/utils'
+export { generateCodeFrame, locToStartAndEnd } from './vitejs/utils'

@@ -1,14 +1,13 @@
-import { ShowToast, RequestTask } from "./interface.uts"
+import { ShowToast, RequestTask } from './interface.uts'
 
-export function onMemoryWarning(callback: (level: number) => void) { }
+export function onMemoryWarning(callback: (level: number) => void) {}
 export function offMemoryWarning(
   callback: ((level: number) => void) | null = null
-) { }
-export default class User {
-
-}
+) {}
+export default class User {}
 export const a = 1
-export let b = 2, c = 3
+export let b = 2,
+  c = 3
 export const showToast1: ShowToast = (msg) => {
   console.log(msg)
 }
@@ -16,4 +15,12 @@ export const showToast2: ShowToast = function showToast(msg) {
   console.log(msg)
 }
 
-export function request(): RequestTask { }
+export function request(): RequestTask {}
+
+export type User1 = {
+  name: string
+}
+export function addUsers1(users: User1[]) {}
+export function addUsers2(users: Array<User1>) {}
+export function addUsers3(user: User1, name: string[]) {}
+export function addUsers4(user: User1, name: Array<string>) {}

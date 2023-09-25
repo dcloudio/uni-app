@@ -1,6 +1,8 @@
 import { extend, isString, isPlainObject } from '@vue/shared'
 const DEFAULT_KEYS = [
+  'UNI_APP_X',
   'APP',
+  'APP_UVUE',
   'APP_NVUE',
   'APP_PLUS',
   'APP_PLUS_NVUE',
@@ -46,7 +48,8 @@ export function getPreUVueContext() {
 export function initPreContext(
   platform: UniApp.PLATFORM,
   userPreContext?: Record<string, boolean> | string,
-  utsPlatform?: typeof process.env.UNI_UTS_PLATFORM
+  utsPlatform?: typeof process.env.UNI_UTS_PLATFORM,
+  isX?: boolean
 ) {
   const vueContext = Object.create(null)
   const nvueContext = Object.create(null)
@@ -57,11 +60,19 @@ export function initPreContext(
     defaultContext[key] = false
   })
 
+  defaultContext.uniVersion = parseFloat(process.env.UNI_COMPILER_VERSION) || 0
+
   defaultContext[normalizeKey(platform)] = true
 
   vueContext.VUE3 = true
   nvueContext.VUE3 = true
   uvueContext.VUE3 = true
+
+  if (isX) {
+    vueContext.UNI_APP_X = true
+    nvueContext.UNI_APP_X = true
+    uvueContext.UNI_APP_X = true
+  }
 
   if (platform === 'app' || platform === 'app-plus') {
     defaultContext.APP = true

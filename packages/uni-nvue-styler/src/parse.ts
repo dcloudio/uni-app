@@ -1,18 +1,23 @@
 import postcss, { Message } from 'postcss'
 import { objectifier } from './objectifier'
 import { expand } from './expand'
-import { NormalizeOptions, normalize } from './normalize'
+import { normalize } from './normalize'
+import { NormalizeOptions } from './utils'
 
 interface ParseOptions extends NormalizeOptions {
   filename?: string
   map?: boolean
+  mapOf?: boolean
   ts?: boolean
   chunk?: number
   noCode?: boolean
 }
 
 export async function parse(input: string, options: ParseOptions = {}) {
-  const { root, messages } = await postcss([expand, normalize(options)])
+  const { root, messages } = await postcss([
+    expand(options),
+    normalize(options),
+  ])
     .process(input, {
       from: options.filename || 'foo.css',
     })
@@ -31,12 +36,13 @@ export async function parse(input: string, options: ParseOptions = {}) {
     return { code: '', messages }
   }
   const obj = root ? objectifier(root) : {}
-  if (options.map) {
+  if (options.map || options.mapOf) {
     return {
       code: mapToInitStringChunk(
         objToMap(obj),
         options.ts,
         true,
+        options.mapOf,
         options.chunk
       ),
       messages,
@@ -49,17 +55,18 @@ function mapToInitStringChunk(
   map: Map<string, unknown>,
   ts: boolean = false,
   isRoot: boolean = false,
+  isMapOf: boolean = false,
   chunk: number = 0
 ): string {
   if (!chunk) {
-    return mapToInitString(map, ts, isRoot)
+    return mapToInitString(map, ts, isRoot, isMapOf)
   }
   const chunks: string[] = []
   let chunkMap: Map<string, unknown> = new Map()
   let chunkCount = 0
   for (const [key, value] of map) {
     if (chunkCount === chunk) {
-      chunks.push(mapToInitString(chunkMap, ts, isRoot))
+      chunks.push(mapToInitString(chunkMap, ts, isRoot, isMapOf))
       chunkMap = new Map()
       chunkCount = 0
     }
@@ -67,7 +74,7 @@ function mapToInitStringChunk(
     chunkCount++
   }
   if (chunkCount) {
-    chunks.push(mapToInitString(chunkMap, ts, isRoot))
+    chunks.push(mapToInitString(chunkMap, ts, isRoot, isMapOf))
   }
   return `[${chunks.join(',')}]`
 }
@@ -75,15 +82,19 @@ function mapToInitStringChunk(
 function mapToInitString(
   map: Map<string, unknown>,
   ts: boolean = false,
-  isRoot: boolean = false
+  isRoot: boolean = false,
+  isMapOf: boolean = false
 ): string {
   const entries = []
   for (let [key, value] of map) {
     if (value instanceof Map) {
-      entries.push(`["${key}", ${mapToInitString(value, ts)}]`)
+      entries.push(`["${key}", ${mapToInitString(value, ts, false, isMapOf)}]`)
     } else {
       entries.push(`["${key}", ${JSON.stringify(value)}]`)
     }
+  }
+  if (isMapOf) {
+    return `utsMapOf([${entries.join(', ')}])`
   }
   return `new Map${
     ts
