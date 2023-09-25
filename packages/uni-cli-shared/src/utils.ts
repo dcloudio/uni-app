@@ -4,7 +4,13 @@ import path from 'path'
 import colors from 'picocolors'
 import { camelize, capitalize } from '@vue/shared'
 export { default as hash } from 'hash-sum'
-import { EXTNAME_TS_RE, PAGE_EXTNAME, PAGE_EXTNAME_APP } from './constants'
+import {
+  EXTNAME_TS_RE,
+  PAGE_EXTNAME,
+  PAGE_EXTNAME_APP,
+  X_PAGE_EXTNAME,
+  X_PAGE_EXTNAME_APP,
+} from './constants'
 
 import {
   NodeTypes,
@@ -40,9 +46,10 @@ export function normalizeIdentifier(str: string) {
 
 export function normalizePagePath(pagePath: string, platform: UniApp.PLATFORM) {
   const absolutePagePath = path.resolve(process.env.UNI_INPUT_DIR, pagePath)
-  let extensions = PAGE_EXTNAME
+  const isX = process.env.UNI_APP_X === 'true'
+  let extensions = isX ? X_PAGE_EXTNAME : PAGE_EXTNAME
   if (platform === 'app') {
-    extensions = PAGE_EXTNAME_APP
+    extensions = isX ? X_PAGE_EXTNAME_APP : PAGE_EXTNAME_APP
   }
   for (let i = 0; i < extensions.length; i++) {
     const extname = extensions[i]

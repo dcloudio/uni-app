@@ -631,7 +631,20 @@ export function createStderrListener(
       let message = data.toString().trim()
       if (message) {
         try {
-          const messages = JSON.parse(message) as MessageSourceLocation[]
+          const messages = (
+            JSON.parse(message) as MessageSourceLocation[]
+          ).filter((msg) => {
+            if (
+              // 暂时屏蔽 Unchecked cast: Any? to UTSArray<String>​
+              // Unchecked cast: Any to UTSArray<String>
+              msg.type === 'warning' &&
+              msg.message.includes('Unchecked cast: Any') &&
+              msg.message.includes('to UTSArray<')
+            ) {
+              return false
+            }
+            return true
+          })
           if (messages.length) {
             const msg = await parseUTSKotlinStacktrace(messages, {
               inputDir,

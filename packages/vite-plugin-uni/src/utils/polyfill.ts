@@ -2,6 +2,7 @@ import fs, { PathLike } from 'fs'
 import path from 'path'
 import {
   EXTNAME_VUE,
+  X_EXTNAME_VUE,
   isInHBuilderX,
   normalizePath,
   resolveBuiltIn,
@@ -16,11 +17,13 @@ export function rewriteCompilerSfcParse() {
   // @ts-ignore
   const compilerSfc = require(resolveBuiltIn('@vue/compiler-sfc'))
   const { parse } = compilerSfc
+  let extname_vue =
+    process.env.UNI_APP_X === 'true' ? X_EXTNAME_VUE : EXTNAME_VUE
   compilerSfc.parse = (source: string, options: SFCParseOptions) => {
     if (options?.filename) {
       const extname = path.extname(options.filename)
       // wxs、filter、renderjs
-      if (extname && !EXTNAME_VUE.includes(extname)) {
+      if (extname && !extname_vue.includes(extname)) {
         const tag = extname.slice(1)
         source = `<${tag}>` + source + `</${tag}>`
       }

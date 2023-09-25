@@ -84,7 +84,10 @@ function buildManifestJson() {
   const outputDir = process.env.UNI_OUTPUT_DIR
 
   const pkg = require(path.resolve(__dirname, '../../package.json'))
-  process.env.UNI_COMPILER_VERSION = pkg['uni-app']?.['compilerVersion'] || ''
+  process.env.UNI_COMPILER_VERSION =
+    process.env.UNI_COMPILER_VERSION ||
+    pkg['uni-app']?.['compilerVersion'] ||
+    ''
   initPreContext(
     platform,
     process.env.UNI_CUSTOM_CONTEXT,
