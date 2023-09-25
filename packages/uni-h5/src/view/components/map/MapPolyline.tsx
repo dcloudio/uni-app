@@ -2,7 +2,7 @@ import { inject, PropType, onUnmounted, watch } from 'vue'
 import { defineSystemComponent, useCustomEvent } from '@dcloudio/uni-components'
 import { Maps, Map, LatLng, Polyline, PolylineOptions } from './maps'
 import { hexToRgba } from '../../../helpers/hexToRgba'
-import { getIsAMap } from '../../../helpers/location'
+import { getIsAMap, getIsBMap } from '../../../helpers/location'
 
 interface Point {
   latitude: number
@@ -59,12 +59,18 @@ export default /*#__PURE__*/ defineSystemComponent({
       function addPolyline(option: Props) {
         const path: LatLng | any[] = []
         option.points.forEach((point: Point) => {
-          const pointPosition = getIsAMap()
-            ? [point.longitude, point.latitude]
-            : new (maps as typeof google.maps).LatLng(
-                point.latitude,
-                point.longitude
-              )
+          let pointPosition: any
+          if (getIsAMap()) {
+            pointPosition = [point.longitude, point.latitude]
+          } else if (getIsBMap()) {
+            // @ts-ignore
+            pointPosition = new maps.Point(point.longitude, point.latitude)
+          } else {
+            pointPosition = new (maps as typeof google.maps).LatLng(
+              point.latitude,
+              point.longitude
+            )
+          }
           path.push(pointPosition)
         })
         const strokeWeight = Number(option.width) || 1
@@ -104,7 +110,14 @@ export default /*#__PURE__*/ defineSystemComponent({
         if (borderWidth) {
           polylineBorder = new maps.Polyline(polylineBorderOptions)
         }
-        polyline = new maps.Polyline(polylineOptions)
+        if (getIsBMap()) {
+          // @ts-ignore
+          polyline = new maps.Polyline(polylineOptions.path, polylineOptions)
+          // @ts-ignore
+          map.addOverlay(polyline)
+        } else {
+          polyline = new maps.Polyline(polylineOptions)
+        }
       }
       addPolyline(props as Props)
       watch(props, updatePolyline)
