@@ -1932,6 +1932,9 @@
 			"syntax": "<line-style>{1,4}",
 			"values": [
 				{
+					"name": "none"
+				},
+				{
 					"name": "solid"
 				},
 				{
@@ -1962,6 +1965,9 @@
 			],
 			"syntax": "<line-style>",
 			"values": [
+				{
+					"name": "none"
+				},
 				{
 					"name": "solid"
 				},
@@ -1994,6 +2000,9 @@
 			"syntax": "<line-style>",
 			"values": [
 				{
+					"name": "none"
+				},
+				{
 					"name": "solid"
 				},
 				{
@@ -2025,6 +2034,9 @@
 			"syntax": "<line-style>",
 			"values": [
 				{
+					"name": "none"
+				},
+				{
 					"name": "solid"
 				},
 				{
@@ -2055,6 +2067,9 @@
 			],
 			"syntax": "<line-style>",
 			"values": [
+				{
+					"name": "none"
+				},
 				{
 					"name": "solid"
 				},
