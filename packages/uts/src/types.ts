@@ -75,6 +75,7 @@ export interface UTSResult {
   deps?: string[]
   chunks?: string[]
   changed?: string[]
+  inject_apis?: string[]
   time?: number
   error?: Error
 }

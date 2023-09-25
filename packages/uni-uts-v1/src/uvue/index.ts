@@ -150,6 +150,13 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
   }
 
   if (isProd) {
+    if (
+      !isUniCloudSupported() &&
+      result.inject_apis &&
+      result.inject_apis.find((api) => api.startsWith('uniCloud.'))
+    ) {
+      throw `应用未关联服务空间，请在uniCloud目录右键关联服务空间`
+    }
     return runKotlinBuild(options, result)
   }
 
