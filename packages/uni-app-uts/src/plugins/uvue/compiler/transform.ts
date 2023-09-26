@@ -269,6 +269,7 @@ export function transform(root: RootNode, options: TransformOptions) {
   traverseNode(root, context)
   createRootCodegen(root, context)
   root.components = [...context.components]
+  // @ts-ignore
   root.elements = Array.from(context.elements)
 }
 
