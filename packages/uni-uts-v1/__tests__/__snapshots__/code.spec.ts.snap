@@ -126,6 +126,7 @@ exports[`code genProxyCode 2`] = `
       "type": "var",
     },
   },
+  "typeParams": [],
   "types": {
     "RequestTask": "interface",
     "ShowToast": "function",
@@ -136,9 +137,11 @@ exports[`code genProxyCode 2`] = `
 
 exports[`code genProxyCode 3`] = `
 {
-  "class": [
-    "User1",
-  ],
+  "class": {
+    "User1": {
+      "typeParams": false,
+    },
+  },
   "fn": {
     "ShowToast": [
       {

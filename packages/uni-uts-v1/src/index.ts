@@ -147,6 +147,7 @@ export async function compile(
   const meta = {
     exports: {},
     types: {},
+    typeParams: [],
   }
 
   const code = await genProxyCode(
