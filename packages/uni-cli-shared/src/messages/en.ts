@@ -3,6 +3,8 @@ export default {
   compiling: 'Compiling...',
   'dev.performance':
     'Please note that in running mode, due to log output, sourcemap, and uncompressed source code, the performance and package size are not as good as release mode.',
+  'dev.exclusion':
+    'Please configure the antivirus software to set up an exclusion list for scanning, reducing system resource consumption. [详情](https://uniapp.dcloud.net.cn/uni-app-x/compiler/#add-an-exclusion)',
   'dev.performance.nvue':
     'Especially the sourcemap of app-nvue has a greater impact',
   'dev.performance.mp':
