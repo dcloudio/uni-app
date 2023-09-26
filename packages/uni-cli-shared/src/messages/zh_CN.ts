@@ -4,7 +4,7 @@ export default {
   'dev.performance':
     '请注意运行模式下，因日志输出、sourcemap 以及未压缩源码等原因，性能和包体积，均不及发行模式。',
   'dev.exclusion':
-    '请在杀毒软件中设置扫描排除名单，减少系统资源消耗。[详情](https://uniapp.dcloud.net.cn/uni-app-x/compiler/#add-an-exclusion)',
+    '请在杀毒软件中设置扫描排除名单，减少系统资源消耗。[详情](https://uniapp.dcloud.net.cn/uni-app-x/compiler/#tips)',
   'dev.performance.nvue': '尤其是 app-nvue 的 sourcemap 影响较大',
   'dev.performance.mp':
     '若要正式发布，请点击发行菜单或使用 cli 发布命令进行发布',
