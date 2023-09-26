@@ -222,6 +222,7 @@ export function generate(
     importUTSComponents: context.importUTSComponents,
     // SourceMapGenerator does have toJSON() method but it's not in the types
     map: context.map ? (context.map as any).toJSON() : undefined,
+    // @ts-ignore
     elements: ast.elements,
   }
 }
