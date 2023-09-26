@@ -25,6 +25,7 @@ import { transformBind } from './transforms/vBind'
 import { transformSlotOutlet } from './transforms/transformSlotOutlet'
 import { transformObjectExpression } from './transforms/transformObjectExpression'
 import { transformExpression } from './transforms/transformExpression'
+import { transformElements } from './transforms/transformElements'
 
 export type TransformPreset = [
   NodeTransform[],
@@ -48,6 +49,7 @@ export function getBaseTransformPreset(
       transformTapToClick,
       transformInterpolation,
       transformObjectExpression,
+      transformElements,
     ] as any,
     {
       on: transformOn,

@@ -12,6 +12,7 @@ export function genTemplate(
       code: genRenderFunctionDecl(options) + ` { return null }`,
       importEasyComponents: [],
       importUTSComponents: [],
+      elements: [],
     }
   }
   return compile(template.content, options)

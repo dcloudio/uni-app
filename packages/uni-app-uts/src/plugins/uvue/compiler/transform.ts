@@ -109,6 +109,7 @@ export interface TransformContext
   removeIdentifiers(exp: ExpressionNode | string): void
   cache<T extends JSChildNode>(exp: T, isVNode?: boolean): CacheExpression | T
   constantCache: Map<TemplateChildNode, ConstantTypes>
+  elements: Set<string>
 }
 
 export function createTransformContext(
@@ -136,6 +137,7 @@ export function createTransformContext(
     bindingMetadata: {},
     nodeTransforms,
     directiveTransforms,
+    elements: new Set(),
     isBuiltInComponent,
     isCustomElement,
     scopeId,
@@ -267,6 +269,7 @@ export function transform(root: RootNode, options: TransformOptions) {
   traverseNode(root, context)
   createRootCodegen(root, context)
   root.components = [...context.components]
+  root.elements = Array.from(context.elements)
 }
 
 export function isSingleElementRoot(
