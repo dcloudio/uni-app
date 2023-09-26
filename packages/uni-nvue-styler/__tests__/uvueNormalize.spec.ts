@@ -140,7 +140,7 @@ borderRightStyle: abc;
     expect(messages[3]).toEqual(
       expect.objectContaining({
         type: 'warning',
-        text: 'ERROR: property value `abc` is not supported for `border-right-style` (supported values are: `solid`|`dashed`|`dotted`)',
+        text: 'ERROR: property value `abc` is not supported for `border-right-style` (supported values are: `none`|`solid`|`dashed`|`dotted`)',
       })
     )
   })

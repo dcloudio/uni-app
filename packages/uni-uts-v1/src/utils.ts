@@ -1,7 +1,7 @@
 import path, { basename, resolve } from 'path'
 import fs from 'fs-extra'
 import type { parse, bundle, UTSTarget, UTSOutputOptions } from '@dcloudio/uts'
-import { camelize, capitalize, extend, isArray } from '@vue/shared'
+import { camelize, capitalize, extend, hasOwn, isArray } from '@vue/shared'
 import glob from 'fast-glob'
 import { Module, ModuleItem } from '../types/types'
 import {
@@ -12,6 +12,7 @@ import {
   resolveSourceMapPath,
   runByHBuilderX,
 } from './shared'
+import type { ClassMeta } from './code'
 
 interface ToOptions {
   inputDir: string
@@ -196,11 +197,11 @@ function resolveTypeAliasDeclNames(items: ModuleItem[]) {
 export function createResolveTypeReferenceName(
   namespace: string,
   ast: Module,
-  interfaceTypes: string[]
+  interfaceTypes: Record<string, ClassMeta>
 ) {
   const names = resolveTypeAliasDeclNames(ast.body)
   return (name: string) => {
-    if (names.includes(name) || interfaceTypes.includes(name)) {
+    if (names.includes(name) || hasOwn(interfaceTypes, name)) {
       return namespace + capitalize(name) + 'JSONObject'
     }
     return name

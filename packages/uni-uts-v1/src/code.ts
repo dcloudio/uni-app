@@ -44,14 +44,19 @@ export const enum FORMATS {
   CJS = 'cjs',
 }
 
+export interface ClassMeta {
+  typeParams?: boolean
+}
+
 // 不应该用 class，应该用lit，调整起来影响较多，暂不调整
 type Types = {
   interface: Record<string, { returned: boolean; decl: TsInterfaceDeclaration }>
-  class: string[]
+  class: Record<string, ClassMeta>
   fn: Record<string, Param[]>
 }
 
 interface Meta {
+  typeParams: string[]
   exports: Record<
     string,
     {
@@ -86,10 +91,11 @@ export async function genProxyCode(
   const { name, is_uni_modules, format, moduleName, moduleType } = options
   options.inputDir = options.inputDir || process.env.UNI_INPUT_DIR
   if (!options.meta) {
-    options.meta = { exports: {}, types: {} }
+    options.meta = { exports: {}, types: {}, typeParams: [] }
   }
   options.types = await parseInterfaceTypes(module, options)
   options.meta!.types = parseMetaTypes(options.types)
+  options.meta!.typeParams = parseTypeParams(options.types)
   // 自动补充 VideoElement 导出
   if (options.androidComponents) {
     Object.keys(options.androidComponents).forEach((name) => {
@@ -130,7 +136,7 @@ ${genModuleCode(decls, format, options.pluginRelativeDir!, options.meta!)}
 
 function parseMetaTypes(types: Types) {
   let res: Meta['types'] = {}
-  types.class.forEach((n) => {
+  Object.keys(types.class).forEach((n) => {
     res[n] = 'class'
   })
   Object.keys(types.fn).forEach((n) => {
@@ -138,6 +144,16 @@ function parseMetaTypes(types: Types) {
   })
   Object.keys(types.interface).forEach((n) => {
     res[n] = 'interface'
+  })
+  return res
+}
+
+function parseTypeParams(types: Types) {
+  let res: Meta['typeParams'] = []
+  Object.keys(types.class).forEach((n) => {
+    if (types.class[n].typeParams) {
+      res.push(n)
+    }
   })
   return res
 }
@@ -358,7 +374,7 @@ async function parseInterfaceTypes(
   if (!interfaceFilename) {
     return {
       interface: {},
-      class: [],
+      class: {},
       fn: {},
     }
   }
@@ -379,7 +395,7 @@ async function parseInterfaceTypes(
 
 function parseAstTypes(ast: Module | null, isInterface: boolean) {
   const interfaceTypes: Types['interface'] = {}
-  const classTypes: Types['class'] = []
+  const classTypes: Types['class'] = {}
   const fnTypes: Types['fn'] = {}
 
   const exportNamed: string[] = []
@@ -433,7 +449,7 @@ function parseAstTypes(ast: Module | null, isInterface: boolean) {
 
 function parseTypes(
   decl: TsTypeAliasDeclaration,
-  classTypes: string[],
+  classTypes: Record<string, ClassMeta>,
   fnTypes: Record<string, Param[]>
 ) {
   switch (decl.typeAnnotation.type) {
@@ -447,8 +463,12 @@ function parseTypes(
       }
       break
     // export type ShowLoadingOptions = {}
+    // export type RequestMethod = 'GET' | 'POST'
     case 'TsTypeLiteral':
-      classTypes.push(decl.id.value)
+    case 'TsUnionType':
+      classTypes[decl.id.value] = {
+        typeParams: !!decl.typeParams,
+      }
       break
   }
 }
@@ -632,8 +652,12 @@ interface ProxyClass {
 }
 
 function mergeAstTypes(to: Types, from: Types) {
-  if (from.class.length) {
-    to.class = [...new Set([...to.class, ...from.class])]
+  if (Object.keys(from.class).length) {
+    for (const name in from.class) {
+      if (!hasOwn(to.class, name)) {
+        to.class[name] = from.class[name]
+      }
+    }
   }
   if (Object.keys(from.fn).length) {
     for (const name in from.fn) {
