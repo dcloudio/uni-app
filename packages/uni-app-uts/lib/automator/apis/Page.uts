@@ -111,6 +111,8 @@ export const getWindowProperties = (params: GetWindowPropertiesParams, callback:
         return rootNode.scrollWidth
       case 'document.documentElement.scrollHeight':
         return rootNode.scrollHeight
+      case 'document.documentElement.scrollTop':
+        return rootNode.scrollTop
     }
     return null
   })
