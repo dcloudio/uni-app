@@ -54,5 +54,7 @@ declare namespace NodeJS {
     UNI_APP_X_CACHE_DIR?: string
 
     HX_Version: string
+
+    UNI_APP_X_PAGE_COUNT: string
   }
 }

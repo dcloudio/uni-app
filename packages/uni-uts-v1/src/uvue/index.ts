@@ -59,6 +59,7 @@ export interface CompileAppOptions {
   split?: boolean
   disableSplitManifest?: boolean
   uniCloudObjectInfo?: Array<UniCloudObjectInfo>
+  pageCount: number
 }
 
 export async function compileApp(entry: string, options: CompileAppOptions) {
@@ -245,7 +246,7 @@ async function runKotlinDev(
   hasCache: boolean
 ) {
   result.type = 'kotlin'
-  const { inputDir, outputDir } = options
+  const { inputDir, outputDir, pageCount } = options
   const kotlinRootOutDir = kotlinDir(outputDir)
   const kotlinDexOutDir = kotlinDexDir(kotlinRootOutDir)
   const kotlinSrcOutDir = kotlinSrcDir(kotlinRootOutDir)
@@ -292,6 +293,7 @@ async function runKotlinDev(
       const waiting = { done: undefined }
       const options = {
         version: 'v2',
+        pageCount,
         kotlinc: resolveKotlincArgs(
           kotlinChangedFiles,
           kotlinClassOutDir,

@@ -143,6 +143,7 @@ export function uniAppUTSPlugin(): UniVitePlugin {
       const res = await resolveUTSCompiler().compileApp(
         path.join(tempOutputDir, 'index.uts'),
         {
+          pageCount: parseInt(process.env.UNI_APP_X_PAGE_COUNT) || 0,
           uniCloudObjectInfo: getUniCloudObjectInfo(uniCloudSpaceList),
           split: split !== false,
           disableSplitManifest: process.env.NODE_ENV !== 'development',
