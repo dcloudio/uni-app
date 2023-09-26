@@ -46,6 +46,9 @@ export function uniAppPagesPlugin(): Plugin {
         const pagesJson = normalizeUniAppXAppPagesJson(code)
         imports = []
         routes = []
+
+        process.env.UNI_APP_X_PAGE_COUNT = pagesJson.pages.length + ''
+
         pagesJson.pages.forEach((page, index) => {
           const className = genClassName(page.path)
           let isQuit = index === 0

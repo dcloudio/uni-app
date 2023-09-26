@@ -44,6 +44,7 @@ export interface KotlinCompilerServer extends CompilerServer {
       kotlinc: string[]
       d8: string[]
       stderrListener: (data: string) => void
+      pageCount: number
     },
     projectPath: string
   ): Promise<{ code: number; msg: string; data?: { dexList: string[] } }>
@@ -221,6 +222,7 @@ export async function runKotlinDev(
     )
     const waiting = { done: undefined }
     const options = {
+      pageCount: 0,
       kotlinc: resolveKotlincArgs(
         [kotlinFile],
         jarFile,
