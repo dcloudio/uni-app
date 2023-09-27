@@ -253,10 +253,18 @@ export async function transformVue(
         if (warning.loc) {
           const start = warning.loc.start
           console.log(
+            'at ' +
+              fileName +
+              ':' +
+              (start.line + templateStartLine - 1) +
+              ':' +
+              (start.column - 1)
+          )
+          console.log(
             generateCodeFrame(code, {
               line: start.line + templateStartLine - 1,
-              column: start.column,
-            })
+              column: start.column - 1,
+            }).replace(/\t/g, ' ')
           )
         }
       },
