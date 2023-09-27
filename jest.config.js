@@ -23,6 +23,7 @@ module.exports = {
     "@dcloudio/uts-darwin-x64": "<rootDir>/packages/uts-darwin-x64",
     "@dcloudio/uts-win32-ia32-msvc": "<rootDir>/packages/uts-win32-ia32-msvc",
     "@dcloudio/uts-win32-x64-msvc": "<rootDir>/packages/uts-win32-x64-msvc",
+    "@dcloudio/uts-linux-x64-gnu": "<rootDir>/packages/uts-linux-x64-gnu",
     '^@dcloudio/(.*?)$': '<rootDir>/packages/$1/src'
   },
   rootDir: __dirname,
