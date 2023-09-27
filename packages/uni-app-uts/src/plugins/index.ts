@@ -54,7 +54,7 @@ const REMOVED_PLUGINS = [
   'vite:terser',
   'vite:reporter',
 ]
-
+let isFirst = true
 export function uniAppUTSPlugin(): UniVitePlugin {
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
@@ -140,10 +140,15 @@ export function uniAppUTSPlugin(): UniVitePlugin {
       return code
     },
     async writeBundle() {
+      let pageCount = 0
+      if (isFirst) {
+        pageCount = parseInt(process.env.UNI_APP_X_PAGE_COUNT) || 0
+        isFirst = false
+      }
       const res = await resolveUTSCompiler().compileApp(
         path.join(tempOutputDir, 'index.uts'),
         {
-          pageCount: parseInt(process.env.UNI_APP_X_PAGE_COUNT) || 0,
+          pageCount,
           uniCloudObjectInfo: getUniCloudObjectInfo(uniCloudSpaceList),
           split: split !== false,
           disableSplitManifest: process.env.NODE_ENV !== 'development',
