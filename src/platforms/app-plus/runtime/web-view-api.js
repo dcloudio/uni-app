@@ -152,7 +152,11 @@ export default {
   },
   getEnv (callback) {
     /* eslint-disable standard/no-callback-literal */
-    if (isNvue()) {
+    if (isUvue()) {
+      callback({
+        uvue: true
+      })
+    } else if (isNvue()) {
       callback({
         nvue: true
       })
