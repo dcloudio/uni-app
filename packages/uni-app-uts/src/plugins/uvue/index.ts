@@ -17,6 +17,7 @@ import {
   parseUTSComponent,
   parseVueRequest,
   removeExt,
+  resolveAppVue,
 } from '@dcloudio/uni-cli-shared'
 
 import type { RawSourceMap } from 'source-map-js'
@@ -46,14 +47,6 @@ import { genScript } from './code/script'
 import { genTemplate } from './code/template'
 import { genJsStylesCode, genStyle, transformStyle } from './code/style'
 import { generateCodeFrame } from '@dcloudio/uni-cli-shared'
-
-function resolveAppVue(inputDir: string) {
-  const appUVue = path.resolve(inputDir, 'App.uvue')
-  if (fs.existsSync(appUVue)) {
-    return normalizePath(appUVue)
-  }
-  return normalizePath(path.resolve(inputDir, 'App.vue'))
-}
 
 export function uniAppUVuePlugin(): Plugin {
   const options: ResolvedOptions = {

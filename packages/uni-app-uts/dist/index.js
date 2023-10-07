@@ -13,7 +13,7 @@ const unicloud_1 = require("./plugins/unicloud");
 exports.default = () => {
     return [
         (0, pre_1.uniPrePlugin)(),
-        (0, uni_cli_shared_1.uniUTSPlugin)({
+        (0, uni_cli_shared_1.uniUTSAppPlugin)({
             x: true,
             extApis: (0, uni_cli_shared_1.parseUniExtApiNamespacesOnce)(process.env.UNI_UTS_PLATFORM, process.env.UNI_UTS_TARGET_LANGUAGE),
         }),

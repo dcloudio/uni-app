@@ -8,6 +8,7 @@ import {
   UNI_EASYCOM_EXCLUDE,
   isVueSfcFile,
   isUniPageFile,
+  isAppVue,
 } from '@dcloudio/uni-cli-shared'
 import { uniTemplatePlugin } from '../plugins/template'
 import { uniManifestJsonPlugin } from '../plugins/manifestJson'
@@ -29,11 +30,11 @@ function initUniCssScopedPluginFilter(
   }
   if (styleIsolation === 'isolated') {
     // isolated: 对所有非 App.vue 增加 scoped
-    return (id) => isVueSfcFile(id) && !id.endsWith('App.vue')
+    return (id) => isVueSfcFile(id) && !isAppVue(id)
   }
   // apply-shared: 仅对非页面组件增加 scoped
   return (id) =>
-    isVueSfcFile(id) && !id.endsWith('App.vue') && !isUniPageFile(id, inputDir)
+    isVueSfcFile(id) && !isAppVue(id) && !isUniPageFile(id, inputDir)
 }
 
 export function initVuePlugins() {

@@ -157,3 +157,15 @@ Please run \`${colors.cyan(
     }${type === 'devDependencies' ? ' -D' : ''}`
   )}\` and try again.`
 }
+
+export function isAppVue(filename: string) {
+  return filename.endsWith('App.vue') || filename.endsWith('App.uvue')
+}
+
+export function resolveAppVue(inputDir: string) {
+  const appUVue = path.resolve(inputDir, 'App.uvue')
+  if (fs.existsSync(appUVue)) {
+    return normalizePath(appUVue)
+  }
+  return normalizePath(path.resolve(inputDir, 'App.vue'))
+}

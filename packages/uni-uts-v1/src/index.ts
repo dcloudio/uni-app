@@ -47,6 +47,8 @@ import { cacheTips } from './manifest/utils'
 import { compileEncrypt, isEncrypt } from './encrypt'
 import { UTSOutputOptions } from '@dcloudio/uts'
 
+export { uts2js } from './javascript'
+
 export const sourcemap = {
   generateCodeFrameWithKotlinStacktrace,
   generateCodeFrameWithSwiftStacktrace,

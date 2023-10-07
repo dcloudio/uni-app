@@ -1,14 +1,13 @@
 import type { Plugin } from 'vite'
 import type { PluginContext, RollupError } from 'rollup'
-import path from 'path'
 import fs from 'fs-extra'
 import { CompilerError, SFCBlock, SFCDescriptor } from '@vue/compiler-sfc'
 import {
   hash,
-  normalizePath,
   parseVueRequest,
   preNVueHtml,
   preNVueJs,
+  resolveAppVue,
 } from '@dcloudio/uni-cli-shared'
 
 declare module '@vue/compiler-sfc' {
@@ -20,7 +19,7 @@ declare module '@vue/compiler-sfc' {
 export const APP_CSS_JS = './app.css.js'
 export function uniAppCssPlugin(): Plugin {
   const inputDir = process.env.UNI_INPUT_DIR
-  const appVueFilename = normalizePath(path.resolve(inputDir, 'App.vue'))
+  const appVueFilename = resolveAppVue(inputDir)
   return {
     name: 'uni:app-nvue-app-style',
     // 提前到 @vite/plugin-vue 之前执行，因为在 nvue 编译时，仅 import 了 App.vue 的 styles，这样导致 descriptor
