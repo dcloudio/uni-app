@@ -66,7 +66,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -177,7 +177,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -288,7 +288,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -366,7 +366,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -477,7 +477,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -588,7 +588,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -657,7 +657,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -682,7 +682,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -712,7 +712,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -742,7 +742,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -772,7 +772,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -802,7 +802,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -840,7 +840,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -889,7 +889,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -927,7 +927,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -985,7 +985,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -1046,7 +1046,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -1091,7 +1091,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -1132,7 +1132,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -1156,7 +1156,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -1180,7 +1180,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -1228,7 +1228,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -1275,7 +1275,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -1307,7 +1307,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -1390,7 +1390,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -1422,7 +1422,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -1446,7 +1446,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -1478,7 +1478,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -1503,7 +1503,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -1523,7 +1523,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -1552,7 +1552,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -1611,7 +1611,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -1637,7 +1637,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -1658,7 +1658,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -1683,7 +1683,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -1708,7 +1708,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -1733,7 +1733,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -1764,7 +1764,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -1794,7 +1794,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -1824,7 +1824,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -1854,7 +1854,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -1885,7 +1885,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -1912,7 +1912,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -1949,7 +1949,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -1983,7 +1983,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -2017,7 +2017,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -2051,7 +2051,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -2085,7 +2085,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -2105,7 +2105,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -2125,7 +2125,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -2145,7 +2145,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -2165,7 +2165,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -2185,7 +2185,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -2205,7 +2205,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -2225,7 +2225,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -2245,7 +2245,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -2265,7 +2265,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -2285,7 +2285,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -2305,7 +2305,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -2325,7 +2325,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -2345,7 +2345,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -2365,7 +2365,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -2385,7 +2385,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -2407,7 +2407,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -2432,7 +2432,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -2457,7 +2457,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -2482,7 +2482,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -2506,7 +2506,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -2534,7 +2534,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -2569,7 +2569,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -2610,7 +2610,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -2687,7 +2687,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -2808,7 +2808,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -2852,7 +2852,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -2883,7 +2883,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -2911,7 +2911,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -2939,7 +2939,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "x",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -2965,7 +2965,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -2999,7 +2999,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -3020,7 +3020,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -3114,7 +3114,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -3134,7 +3134,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -3174,7 +3174,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -3194,7 +3194,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -3246,7 +3246,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -3285,7 +3285,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "√",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
@@ -3313,7 +3313,7 @@
 					"android": {
 						"osVer": "5.0",
 						"uniVer": "x",
-						"unixVer": "3.9.0"
+						"unixVer": "3.9+"
 					},
 					"ios": {
 						"osVer": "9.0",
