@@ -150,6 +150,7 @@ export async function compile(
     exports: {},
     types: {},
     typeParams: [],
+    components: [],
   }
 
   const code = await genProxyCode(

@@ -37,6 +37,7 @@ import {
 } from './descriptorCache'
 import { createRollupError } from './error'
 import {
+  addExtApiComponents,
   genClassName,
   isVue,
   parseImports,
@@ -269,6 +270,9 @@ export async function transformVue(
     templateImportUTSComponentsCode =
       templateResult.importUTSComponents.join('\n')
     templateSourceMap = templateResult.map
+    if (process.env.NODE_ENV === 'production') {
+      addExtApiComponents(templateResult.elements)
+    }
   }
   // 生成 script 文件
   // console.log(descriptor.script?.loc)

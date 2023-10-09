@@ -1,7 +1,15 @@
 import path, { basename, resolve } from 'path'
 import fs from 'fs-extra'
 import type { parse, bundle, UTSTarget, UTSOutputOptions } from '@dcloudio/uts'
-import { camelize, capitalize, extend, hasOwn, isArray } from '@vue/shared'
+import {
+  camelize,
+  capitalize,
+  extend,
+  hasOwn,
+  isArray,
+  isPlainObject,
+  isString,
+} from '@vue/shared'
 import glob from 'fast-glob'
 import { Module, ModuleItem } from '../types/types'
 import {
@@ -493,6 +501,57 @@ export function normalizeExtApiDefaultParameters(json: Record<string, any>) {
         res[api] = [value]
       }
     })
+  })
+  return res
+}
+
+export function parseExtApiModules() {
+  return normalizeExtApiModules(require('../lib/ext-api/modules.json'))
+}
+
+export type DefineOptions = {
+  name?: string
+  app?:
+    | boolean
+    | {
+        js?: boolean
+        kotlin?: boolean
+        swift?: boolean
+      }
+  [key: string]: any
+}
+
+export type Define =
+  | string
+  | string[]
+  | Record<string, string | DefineOptions>
+  | false
+
+export function normalizeExtApiModules(json: Record<string, any>) {
+  const res: Record<string, string> = {}
+  Object.keys(json).forEach((module) => {
+    const options = json[module] as { uni?: Define; components?: string[] }
+    if (isPlainObject(options)) {
+      if (options.uni) {
+        const uniApis = options.uni
+        if (isString(uniApis)) {
+          res['uni.' + uniApis] = module
+        } else if (isArray(uniApis)) {
+          uniApis.forEach((api) => {
+            res['uni.' + api] = module
+          })
+        } else if (isPlainObject(uniApis)) {
+          Object.keys(uniApis).forEach((api) => {
+            res['uni.' + api] = module
+          })
+        }
+      }
+      if (isArray(options.components)) {
+        options.components.forEach((component) => {
+          res['component.' + component] = module
+        })
+      }
+    }
   })
   return res
 }

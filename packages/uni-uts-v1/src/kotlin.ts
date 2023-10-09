@@ -128,7 +128,14 @@ export async function runKotlinProd(
 export type RunKotlinDevResult = UTSResult & {
   type: 'kotlin'
   changed: string[]
+  inject_modules: string[]
   kotlinc: boolean
+}
+
+export type RunKotlinBuildResult = UTSResult & {
+  type: 'kotlin'
+  inject_modules: string[]
+  kotlinc: false
 }
 
 interface RunKotlinDevOptions {

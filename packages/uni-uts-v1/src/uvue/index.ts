@@ -16,6 +16,7 @@ import {
   resolveKotlincArgs,
   createStderrListener,
   getUniModulesEncryptCacheJars,
+  RunKotlinBuildResult,
 } from '../kotlin'
 import { parseUTSSyntaxError } from '../stacktrace'
 import {
@@ -24,6 +25,7 @@ import {
   resolveUniAppXSourceMapPath,
   isUniCloudSupported,
   parseExtApiDefaultParameters,
+  parseExtApiModules,
 } from '../utils'
 import { KotlinManifestCache } from '../stacktrace/kotlin'
 import { isWindows } from '../shared'
@@ -61,6 +63,7 @@ export interface CompileAppOptions {
   disableSplitManifest?: boolean
   uniCloudObjectInfo?: Array<UniCloudObjectInfo>
   pageCount: number
+  extApiComponents: string[]
 }
 
 export async function compileApp(entry: string, options: CompileAppOptions) {
@@ -355,8 +358,35 @@ async function runKotlinDev(
   return result
 }
 
-async function runKotlinBuild(_options: CompileAppOptions, _result: UTSResult) {
-  // TODO
+async function runKotlinBuild(options: CompileAppOptions, result: UTSResult) {
+  ;(result as RunKotlinBuildResult).type = 'kotlin'
+  ;(result as RunKotlinBuildResult).inject_modules = parseInjectModules(
+    result.inject_apis || [],
+    options.extApiComponents
+  )
+  ;(result as RunKotlinBuildResult).kotlinc = false
+  return result as RunKotlinBuildResult
+}
+
+function parseInjectModules(inject_apis: string[], extApiComponents: string[]) {
+  const modules = new Set<string>()
+  const extApiModules = parseExtApiModules()
+  inject_apis.forEach((api) => {
+    if (api.startsWith('uniCloud.')) {
+      modules.add('uni-cloud-client')
+    } else {
+      if (extApiModules[api]) {
+        modules.add(extApiModules[api])
+      }
+    }
+  })
+  extApiComponents.forEach((component) => {
+    const name = 'component.' + component
+    if (extApiModules[name]) {
+      modules.add(extApiModules[name])
+    }
+  })
+  return [...modules]
 }
 
 function hasKotlinManifestJson(kotlinSrcOutDir: string) {

@@ -1,0 +1,478 @@
+{
+  "uni-createWebviewContext": {
+    "uni": {
+      "createWebviewContext": {
+        "name": "createWebviewContext",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      }
+    }
+  },
+  "uni-exit": {
+    "uni": {
+      "exit": {
+        "name": "exit",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": true
+        }
+      }
+    }
+  },
+  "uni-file-manager": {
+    "uni": {
+      "getFileSystemManager": {
+        "name": "getFileSystemManager",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": true
+        }
+      }
+    }
+  },
+  "uni-getAccessibilityInfo": {
+    "uni": {
+      "getAccessibilityInfo": {
+        "name": "getAccessibilityInfo",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      }
+    }
+  },
+  "uni-getAppAuthorizeSetting": {
+    "uni": {
+      "getAppAuthorizeSetting": {
+        "name": "getAppAuthorizeSetting",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      }
+    }
+  },
+  "uni-getAppBaseInfo": {
+    "uni": {
+      "getAppBaseInfo": {
+        "name": "getAppBaseInfo",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      }
+    }
+  },
+  "uni-getDeviceInfo": {
+    "uni": {
+      "getDeviceInfo": {
+        "name": "getDeviceInfo",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      }
+    }
+  },
+  "uni-getLocation-system": {
+    "uni": [
+      "getLocation"
+    ]
+  },
+  "uni-getNetworkType": {
+    "uni": {
+      "getNetworkType": {
+        "name": "getNetworkType",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      }
+    }
+  },
+  "uni-getSystemInfo": {
+    "uni": {
+      "getSystemInfo": {
+        "name": "getSystemInfo",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      },
+      "getSystemInfoSync": {
+        "name": "getSystemInfoSync",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      },
+      "getWindowInfo": {
+        "name": "getWindowInfo",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      }
+    }
+  },
+  "uni-getSystemSetting": {
+    "uni": {
+      "getSystemSetting": {
+        "name": "getSystemSetting",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      }
+    }
+  },
+  "uni-media": {
+    "uni": {
+      "chooseImage": {
+        "name": "chooseImage",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      },
+      "previewImage": {
+        "name": "previewImage",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      },
+      "closePreviewImage": {
+        "name": "closePreviewImage",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      },
+      "getImageInfo": {
+        "name": "getImageInfo",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      },
+      "saveImageToPhotosAlbum": {
+        "name": "saveImageToPhotosAlbum",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      },
+      "compressImage": {
+        "name": "compressImage",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      },
+      "chooseVideo": {
+        "name": "chooseVideo",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      },
+      "saveVideoToPhotosAlbum": {
+        "name": "saveVideoToPhotosAlbum",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      },
+      "getVideoInfo": {
+        "name": "getVideoInfo",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      },
+      "compressVideo": {
+        "name": "compressVideo",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      }
+    }
+  },
+  "uni-network": {
+    "uni": {
+      "request": {
+        "name": "request",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "uploadFile": {
+        "name": "uploadFile",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      },
+      "downloadFile": {
+        "name": "downloadFile",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      }
+    }
+  },
+  "uni-openAppAuthorizeSetting": {
+    "uni": {
+      "openAppAuthorizeSetting": {
+        "name": "openAppAuthorizeSetting",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      }
+    }
+  },
+  "uni-prompt": {
+    "uni": {
+      "showToast": {
+        "name": "showToast",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "hideToast": {
+        "name": "hideToast",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "showLoading": {
+        "name": "showLoading",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "hideLoading": {
+        "name": "hideLoading",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "showModal": {
+        "name": "showModal",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "showActionSheet": {
+        "name": "showActionSheet",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      }
+    }
+  },
+  "uni-storage": {
+    "uni": {
+      "setStorage": {
+        "name": "setStorage",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "setStorageSync": {
+        "name": "setStorageSync",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "getStorage": {
+        "name": "getStorage",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "getStorageSync": {
+        "name": "getStorageSync",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "getStorageInfo": {
+        "name": "getStorageInfo",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "getStorageInfoSync": {
+        "name": "getStorageInfoSync",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "removeStorage": {
+        "name": "removeStorage",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "removeStorageSync": {
+        "name": "removeStorageSync",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "clearStorage": {
+        "name": "clearStorage",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "clearStorageSync": {
+        "name": "clearStorageSync",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      }
+    }
+  },
+  "uni-video": {
+    "uni": {
+      "createVideoContext": {
+        "name": "createVideoContext",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      }
+    },
+    "components": [
+      "video"
+    ]
+  },
+  "uni-websocket": {
+    "uni": {
+      "connectSocket": {
+        "name": "connectSocket",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      },
+      "sendSocketMessage": {
+        "name": "sendSocketMessage",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      },
+      "closeSocket": {
+        "name": "closeSocket",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      },
+      "onSocketOpen": {
+        "name": "onSocketOpen",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      },
+      "onSocketMessage": {
+        "name": "onSocketMessage",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      },
+      "onSocketClose": {
+        "name": "onSocketClose",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      },
+      "onSocketError": {
+        "name": "onSocketError",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      }
+    }
+  }
+}

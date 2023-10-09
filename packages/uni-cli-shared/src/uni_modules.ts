@@ -2,7 +2,7 @@ import path from 'path'
 import fs from 'fs-extra'
 import type { UTSTargetLanguage } from './uts'
 
-type DefineOptions = {
+export type DefineOptions = {
   name?: string
   app?:
     | boolean
@@ -14,8 +14,12 @@ type DefineOptions = {
   [key: string]: any
 }
 
-type Define = string | string[] | Record<string, string | DefineOptions> | false
-type Defines = {
+export type Define =
+  | string
+  | string[]
+  | Record<string, string | DefineOptions>
+  | false
+export type Defines = {
   [name: string]: Define
 }
 

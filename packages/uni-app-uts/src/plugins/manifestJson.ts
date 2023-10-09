@@ -9,6 +9,12 @@ function isManifest(id: string) {
   return id.endsWith(MANIFEST_JSON_UTS)
 }
 
+let outputManifestJson: Record<string, any> | undefined = undefined
+
+export function getOutputManifestJson() {
+  return outputManifestJson
+}
+
 export function uniAppManifestPlugin(): Plugin {
   const manifestJsonPath = path.resolve(
     process.env.UNI_INPUT_DIR,
@@ -67,24 +73,27 @@ export class UniAppConfig extends AppConfig {
 }
 `
       }
-      fs.outputFileSync(
-        path.resolve(process.env.UNI_OUTPUT_DIR, 'manifest.json'),
-        JSON.stringify(
-          {
-            id: manifestJson.appid || '',
-            name: manifestJson.name || '',
-            description: manifestJson.description || '',
-            version: {
-              name: manifestJson.versionName || '',
-              code: manifestJson.versionCode || '',
-            },
-            'uni-app-x': manifestJson['uni-app-x'] || {},
-            app: manifestJson.app || {},
-          },
-          null,
-          2
+    },
+    writeBundle() {
+      const app = manifestJson.app || {}
+      outputManifestJson = {
+        id: manifestJson.appid || '',
+        name: manifestJson.name || '',
+        description: manifestJson.description || '',
+        version: {
+          name: manifestJson.versionName || '',
+          code: manifestJson.versionCode || '',
+        },
+        'uni-app-x': manifestJson['uni-app-x'] || {},
+        app,
+      }
+      if (process.env.NODE_ENV !== 'production') {
+        // 发行模式下，需要等解析ext-api模块
+        fs.outputFileSync(
+          path.resolve(process.env.UNI_OUTPUT_DIR, 'manifest.json'),
+          JSON.stringify(outputManifestJson, null, 2)
         )
-      )
+      }
     },
   }
 }

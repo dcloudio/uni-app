@@ -65,6 +65,7 @@ interface Meta {
     }
   >
   types: Record<string, 'function' | 'class' | 'interface'>
+  components: string[]
 }
 export interface GenProxyCodeOptions {
   is_uni_modules: boolean
@@ -91,22 +92,26 @@ export async function genProxyCode(
   const { name, is_uni_modules, format, moduleName, moduleType } = options
   options.inputDir = options.inputDir || process.env.UNI_INPUT_DIR
   if (!options.meta) {
-    options.meta = { exports: {}, types: {}, typeParams: [] }
+    options.meta = { exports: {}, types: {}, typeParams: [], components: [] }
   }
   options.types = await parseInterfaceTypes(module, options)
   options.meta!.types = parseMetaTypes(options.types)
   options.meta!.typeParams = parseTypeParams(options.types)
+  const components = new Set<string>()
   // 自动补充 VideoElement 导出
   if (options.androidComponents) {
     Object.keys(options.androidComponents).forEach((name) => {
       options.meta!.types[capitalize(camelize(name)) + 'Element'] = 'class'
+      components.add(name)
     })
   }
   if (options.iosComponents) {
     Object.keys(options.iosComponents).forEach((name) => {
       options.meta!.types[capitalize(camelize(name)) + 'Element'] = 'class'
+      components.add(name)
     })
   }
+  options.meta!.components = [...components]
   const decls = await parseModuleDecls(module, options)
   return `
 const { registerUTSInterface, initUTSProxyClass, initUTSProxyFunction, initUTSPackageName, initUTSIndexClassName, initUTSClassName } = uni

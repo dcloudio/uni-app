@@ -23,7 +23,9 @@ import {
   uvueOutDir,
   getUniCloudSpaceList,
   getUniCloudObjectInfo,
+  getExtApiComponents,
 } from './utils'
+import { getOutputManifestJson } from './manifestJson'
 import('./errorReporting')
 
 const uniCloudSpaceList = getUniCloudSpaceList()
@@ -162,25 +164,50 @@ export function uniAppUTSPlugin(): UniVitePlugin {
             process.env.UNI_UTS_PLATFORM,
             process.env.UNI_UTS_TARGET_LANGUAGE
           ),
+          extApiComponents: [...getExtApiComponents()],
         }
       )
       if (res) {
-        const files: string[] = []
-        if (process.env.UNI_APP_UTS_CHANGED_FILES) {
-          try {
-            files.push(...JSON.parse(process.env.UNI_APP_UTS_CHANGED_FILES))
-          } catch (e) {}
-        }
-        if (res.changed) {
-          // 触发了kotlinc编译，且没有编译成功
-          if (!res.changed.length && res.kotlinc) {
-            throw new Error('编译失败')
+        if (process.env.NODE_ENV === 'development') {
+          const files: string[] = []
+          if (process.env.UNI_APP_UTS_CHANGED_FILES) {
+            try {
+              files.push(...JSON.parse(process.env.UNI_APP_UTS_CHANGED_FILES))
+            } catch (e) {}
           }
-          files.push(...res.changed)
+          if (res.changed) {
+            // 触发了kotlinc编译，且没有编译成功
+            if (!res.changed.length && res.kotlinc) {
+              throw new Error('编译失败')
+            }
+            files.push(...res.changed)
+          }
+          process.env.UNI_APP_UTS_CHANGED_FILES = JSON.stringify([
+            ...new Set(files),
+          ])
+        } else {
+          // 生产环境，记录使用到的modules
+          const modules = res.inject_modules
+          const manifest = getOutputManifestJson()!
+          if (manifest) {
+            if (modules) {
+              const app = manifest.app
+              if (!app.distribute) {
+                app.distribute = {}
+              }
+              if (!app.distribute.modules) {
+                app.distribute.modules = {}
+              }
+              modules.forEach((name) => {
+                app.distribute.modules[name] = {}
+              })
+            }
+            fs.outputFileSync(
+              path.resolve(process.env.UNI_OUTPUT_DIR, 'manifest.json'),
+              JSON.stringify(manifest, null, 2)
+            )
+          }
         }
-        process.env.UNI_APP_UTS_CHANGED_FILES = JSON.stringify([
-          ...new Set(files),
-        ])
       }
     },
   }

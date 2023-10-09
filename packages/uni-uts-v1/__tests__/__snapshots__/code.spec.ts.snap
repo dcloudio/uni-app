@@ -30,6 +30,9 @@ export const addUsers4 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName,
 
 exports[`code genProxyCode 2`] = `
 {
+  "components": [
+    "TestUTS",
+  ],
   "exports": {
     "RequestTask": {
       "type": "interface",
