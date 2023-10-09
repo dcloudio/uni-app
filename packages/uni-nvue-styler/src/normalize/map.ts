@@ -21,6 +21,7 @@ import { normalizeGradient, normalizeUrl } from './image'
 import { normalizePlatform } from './platform'
 import { normalizeShorthandProperty } from './shorthandProperty'
 import { normalizeFontFace, normalizeSrc } from './fontFace'
+import { normalizeFlexFlow } from './flexFlow'
 
 // 从 property.ts 中移动到 map 里，避免循环依赖
 const normalizeProperty: Normalize = (v, options) => {
@@ -228,6 +229,10 @@ function getUVueNormalizeMap() {
       // 处理@font-face下不支持的属性
       if (invalidFontFaceProperties.includes(prop)) {
         normalize = normalizeFontFace(normalize)
+      }
+      // 校验flexFlow属性值的个数，先临时写死，后续考虑根据css.json动态判断
+      if (prop === 'flexFlow') {
+        normalize = createCombinedNormalize([normalizeFlexFlow, normalize])
       }
     }
     result[prop] = normalizePlatform(normalize, property.uniPlatform)

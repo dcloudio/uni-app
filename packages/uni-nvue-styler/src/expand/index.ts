@@ -1,6 +1,9 @@
-import { extend } from '@vue/shared'
 import type { Plugin } from 'postcss'
-import { NormalizeOptions, TransformDecl } from '../utils'
+import {
+  NormalizeOptions,
+  TransformDecl,
+  hyphenateStyleProperty,
+} from '../utils'
 import { transformBackground } from './background'
 import { transformBorder } from './border'
 import { transformBorderColor } from './borderColor'
@@ -16,43 +19,36 @@ import { transformTransition } from './transition'
 function getDeclTransforms(
   options: NormalizeOptions
 ): Record<string, TransformDecl> {
-  const result: Record<string, TransformDecl> = {
+  const styleMap: Record<string, TransformDecl> = {
     transition: transformTransition,
     border: transformBorder,
     background: transformBackground,
+    borderTop: transformBorder,
+    borderRight: transformBorder,
+    borderBottom: transformBorder,
+    borderLeft: transformBorder,
+    borderStyle: transformBorderStyle,
+    borderWidth: transformBorderWidth,
+    borderColor: transformBorderColor,
+    borderRadius: transformBorderRadius,
+    // uvue已经支持这些简写属性，不需要展开
+    /* eslint-disable no-restricted-syntax */
+    ...(options.type !== 'uvue'
+      ? {
+          margin: transformMargin,
+          padding: transformPadding,
+          flexFlow: transformFlexFlow,
+        }
+      : {}),
   }
-  // TODO transtion 简写属性
-  if (options.type !== 'uvue') {
-    extend(result, {
-      margin: transformMargin,
-      padding: transformPadding,
-    })
-  }
+  let result: Record<string, TransformDecl> = {}
   if (__NODE_JS__) {
-    extend(result, {
-      'border-top': transformBorder,
-      'border-right': transformBorder,
-      'border-bottom': transformBorder,
-      'border-left': transformBorder,
-      'border-style': transformBorderStyle,
-      'border-width': transformBorderWidth,
-      'border-color': transformBorderColor,
-      'border-radius': transformBorderRadius,
-      'flex-flow': transformFlexFlow,
-      font: transformFont,
-    })
+    styleMap.font = transformFont
+    for (const property in styleMap) {
+      result[hyphenateStyleProperty(property)] = styleMap[property]
+    }
   } else {
-    extend(result, {
-      borderTop: transformBorder,
-      borderRight: transformBorder,
-      borderBottom: transformBorder,
-      borderLeft: transformBorder,
-      borderStyle: transformBorderStyle,
-      borderWidth: transformBorderWidth,
-      borderColor: transformBorderColor,
-      borderRadius: transformBorderRadius,
-      flexFlow: transformFlexFlow,
-    })
+    result = styleMap
   }
   return result
 }
