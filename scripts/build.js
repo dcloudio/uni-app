@@ -65,7 +65,11 @@ function getTargetGroup(targets) {
 async function buildAll(targets) {
   if (!multiProcess) {
     for (const target of targets) {
-      await build(target)
+      try {
+        await build(target)
+      } catch (e) {
+        console.error(e)
+      }
     }
     return
   }
