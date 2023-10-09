@@ -1307,6 +1307,7 @@
     },
     {
       "name": "flex-flow",
+      "shorthand": true,
       "restrictions": [
         "enum"
       ],
