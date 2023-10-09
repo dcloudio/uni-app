@@ -23,6 +23,12 @@
       }
     }
   },
+  "uni-facialRecognitionVerify": {
+    "uni": [
+      "startFacialRecognitionVerify",
+      "getFacialRecognitionMetaInfo"
+    ]
+  },
   "uni-file-manager": {
     "uni": {
       "getFileSystemManager": {
@@ -84,9 +90,16 @@
     }
   },
   "uni-getLocation-system": {
-    "uni": [
-      "getLocation"
-    ]
+    "uni": {
+      "getLocation": {
+        "name": "getLocation",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      }
+    }
   },
   "uni-getNetworkType": {
     "uni": {
