@@ -75,11 +75,7 @@
       "defaultValue": {
         "app-uvue": "auto",
         "web": "auto"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/width.html"
-      }]
+      }
     },
     {
       "name": "min-width",
@@ -189,11 +185,7 @@
       "defaultValue": {
         "app-uvue": "0px",
         "web": "auto"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/min-width.html"
-      }]
+      }
     },
     {
       "name": "max-width",
@@ -303,11 +295,7 @@
       "defaultValue": {
         "app-uvue": "none",
         "web": "none"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/max-width.html"
-      }]
+      }
     },
     {
       "name": "height",
@@ -384,11 +372,7 @@
       "defaultValue": {
         "app-uvue": "auto",
         "web": "auto"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/height.html"
-      }]
+      }
     },
     {
       "name": "min-height",
@@ -498,11 +482,7 @@
       "defaultValue": {
         "app-uvue": "0px",
         "web": "auto"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/min-height.html"
-      }]
+      }
     },
     {
       "name": "max-height",
@@ -612,11 +592,7 @@
       "defaultValue": {
         "app-uvue": "none",
         "web": "none"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/max-height.html"
-      }]
+      }
     },
     {
       "name": "position",
@@ -684,11 +660,7 @@
       "defaultValue": {
         "app-uvue": "relative",
         "web": "static"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/position.html"
-      }]
+      }
     },
     {
       "name": "z-index",
@@ -713,11 +685,7 @@
       "defaultValue": {
         "app-uvue": "0",
         "web": "auto"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/z-index.html"
-      }]
+      }
     },
     {
       "name": "top",
@@ -745,11 +713,7 @@
       "defaultValue": {
         "app-uvue": "auto",
         "web": "auto"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/top.html"
-      }]
+      }
     },
     {
       "name": "bottom",
@@ -777,11 +741,7 @@
       "defaultValue": {
         "app-uvue": "auto",
         "web": "auto"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/bottom.html"
-      }]
+      }
     },
     {
       "name": "left",
@@ -809,11 +769,7 @@
       "defaultValue": {
         "app-uvue": "auto",
         "web": "auto"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/left.html"
-      }]
+      }
     },
     {
       "name": "right",
@@ -841,11 +797,7 @@
       "defaultValue": {
         "app-uvue": "auto",
         "web": "auto"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/right.html"
-      }]
+      }
     },
     {
       "name": "flex-direction",
@@ -885,11 +837,7 @@
       "defaultValue": {
         "app-uvue": "column",
         "web": "row"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/flex-direction.html"
-      }]
+      }
     },
     {
       "name": "justify-content",
@@ -937,11 +885,7 @@
       "defaultValue": {
         "app-uvue": "flex-start",
         "web": "normal"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/justify-content.html"
-      }]
+      }
     },
     {
       "name": "flex-wrap",
@@ -978,11 +922,7 @@
       "defaultValue": {
         "app-uvue": "nowrap",
         "web": "nowrap"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/flex-wrap.html"
-      }]
+      }
     },
     {
       "name": "align-items",
@@ -1039,11 +979,7 @@
       "defaultValue": {
         "app-uvue": "stretch",
         "web": "normal"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/align-items.html"
-      }]
+      }
     },
     {
       "name": "align-self",
@@ -1100,11 +1036,7 @@
       "defaultValue": {
         "app-uvue": "auto",
         "web": "auto"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/align-self.html"
-      }]
+      }
     },
     {
       "name": "align-content",
@@ -1151,11 +1083,7 @@
       "defaultValue": {
         "app-uvue": "stretch",
         "web": "normal"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/align-content.html"
-      }]
+      }
     },
     {
       "name": "flex",
@@ -1192,11 +1120,7 @@
       "defaultValue": {
         "app-uvue": "none",
         "web": "initial"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/flex.html"
-      }]
+      }
     },
     {
       "name": "flex-grow",
@@ -1220,11 +1144,7 @@
       "defaultValue": {
         "app-uvue": "0",
         "web": "0"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/flex-grow.html"
-      }]
+      }
     },
     {
       "name": "flex-shrink",
@@ -1248,11 +1168,7 @@
       "defaultValue": {
         "app-uvue": "0",
         "web": "1"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/flex-shrink.html"
-      }]
+      }
     },
     {
       "name": "flex-basis",
@@ -1299,11 +1215,7 @@
       "defaultValue": {
         "app-uvue": "auto",
         "web": "auto"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/flex-basis.html"
-      }]
+      }
     },
     {
       "name": "flex-flow",
@@ -1349,11 +1261,7 @@
       },
       "unixTags": [
         "view", "scroll-view", "list-view", "list-item", "swiper-item", "navigator"
-      ],
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/flex-flow.html"
-      }]
+      ]
     },
     {
       "name": "display",
@@ -1385,11 +1293,7 @@
       "defaultValue": {
         "app-uvue": "flex",
         "web": "inline"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/display.html"
-      }]
+      }
     },
     {
       "name": "overflow",
@@ -1471,11 +1375,7 @@
       "defaultValue": {
         "app-uvue": "hidden",
         "web": "visible"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/overflow.html"
-      }]
+      }
     },
     {
       "name": "visibility",
@@ -1506,11 +1406,7 @@
       "defaultValue": {
         "app-uvue": "visible",
         "web": "visible"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/visibility.html"
-      }]
+      }
     },
     {
       "name": "opacity",
@@ -1534,11 +1430,7 @@
       "defaultValue": {
         "app-uvue": "1",
         "web": "1"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/opacity.html"
-      }]
+      }
     },
     {
       "name": "box-sizing",
@@ -1569,11 +1461,7 @@
       "defaultValue": {
         "app-uvue": "border-box",
         "web": "content-box"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/box-sizing.html"
-      }]
+      }
     },
     {
       "name": "background",
@@ -1594,11 +1482,7 @@
             "uniVer": "√"
           }
         }
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/background.html"
-      }]
+      }
     },
     {
       "name": "background-color",
@@ -1622,11 +1506,7 @@
       "defaultValue": {
         "app-uvue": "transparent",
         "web": "transparent"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/background-color.html"
-      }]
+      }
     },
     {
       "name": "background-image",
@@ -1649,11 +1529,7 @@
             "uniVer": "√"
           }
         }
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/background-image.html"
-      }]
+      }
     },
     {
       "name": "background-clip",
@@ -1715,11 +1591,7 @@
       "defaultValue": {
         "app-uvue": "border-box",
         "web": "border-box"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/background-clip.html"
-      }]
+      }
     },
     {
       "name": "padding",
@@ -1741,11 +1613,7 @@
             "uniVer": "√"
           }
         }
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/padding.html"
-      }]
+      }
     },
     {
       "name": "padding-left",
@@ -1770,11 +1638,7 @@
       "defaultValue": {
         "app-uvue": "0",
         "web": "0"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/padding-left.html"
-      }]
+      }
     },
     {
       "name": "padding-top",
@@ -1799,11 +1663,7 @@
       "defaultValue": {
         "app-uvue": "0",
         "web": "0"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/padding-top.html"
-      }]
+      }
     },
     {
       "name": "padding-right",
@@ -1828,11 +1688,7 @@
       "defaultValue": {
         "app-uvue": "0",
         "web": "0"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/padding-right.html"
-      }]
+      }
     },
     {
       "name": "padding-bottom",
@@ -1857,11 +1713,7 @@
       "defaultValue": {
         "app-uvue": "0",
         "web": "0"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/padding-bottom.html"
-      }]
+      }
     },
     {
       "name": "margin",
@@ -1890,11 +1742,7 @@
       "defaultValue": {
         "app-uvue": "0",
         "web": "0"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/margin.html"
-      }]
+      }
     },
     {
       "name": "margin-left",
@@ -1922,11 +1770,7 @@
       "defaultValue": {
         "app-uvue": "0",
         "web": "0"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/margin-left.html"
-      }]
+      }
     },
     {
       "name": "margin-top",
@@ -1954,11 +1798,7 @@
       "defaultValue": {
         "app-uvue": "0",
         "web": "0"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/margin-top.html"
-      }]
+      }
     },
     {
       "name": "margin-right",
@@ -1986,11 +1826,7 @@
       "defaultValue": {
         "app-uvue": "0",
         "web": "0"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/margin-right.html"
-      }]
+      }
     },
     {
       "name": "margin-bottom",
@@ -2019,11 +1855,7 @@
       "defaultValue": {
         "app-uvue": "0",
         "web": "0"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/margin-bottom.html"
-      }]
+      }
     },
     {
       "name": "border",
@@ -2049,11 +1881,7 @@
       },
       "defaultValue": {
         "app-uvue": "0"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/border.html"
-      }]
+      }
     },
     {
       "name": "border-style",
@@ -2086,11 +1914,7 @@
             "uniVer": "√"
           }
         }
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/border-style.html"
-      }]
+      }
     },
     {
       "name": "border-left-style",
@@ -2123,11 +1947,7 @@
             "uniVer": "√"
           }
         }
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/border-left-style.html"
-      }]
+      }
     },
     {
       "name": "border-top-style",
@@ -2160,11 +1980,7 @@
             "uniVer": "√"
           }
         }
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/border-top-style.html"
-      }]
+      }
     },
     {
       "name": "border-right-style",
@@ -2197,11 +2013,7 @@
             "uniVer": "√"
           }
         }
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/border-right-style.html"
-      }]
+      }
     },
     {
       "name": "border-bottom-style",
@@ -2234,11 +2046,7 @@
             "uniVer": "√"
           }
         }
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/border-bottom-style.html"
-      }]
+      }
     },
     {
       "name": "border-width",
@@ -2258,11 +2066,7 @@
             "uniVer": "√"
           }
         }
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/border-width.html"
-      }]
+      }
     },
     {
       "name": "border-left-width",
@@ -2282,11 +2086,7 @@
             "uniVer": "√"
           }
         }
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/border-left-width.html"
-      }]
+      }
     },
     {
       "name": "border-top-width",
@@ -2306,11 +2106,7 @@
             "uniVer": "√"
           }
         }
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/border-top-width.html"
-      }]
+      }
     },
     {
       "name": "border-right-width",
@@ -2330,11 +2126,7 @@
             "uniVer": "√"
           }
         }
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/border-right-width.html"
-      }]
+      }
     },
     {
       "name": "border-bottom-width",
@@ -2354,11 +2146,7 @@
             "uniVer": "√"
           }
         }
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/border-bottom-width.html"
-      }]
+      }
     },
     {
       "name": "border-color",
@@ -2378,11 +2166,7 @@
             "uniVer": "√"
           }
         }
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/border-color.html"
-      }]
+      }
     },
     {
       "name": "border-left-color",
@@ -2402,11 +2186,7 @@
             "uniVer": "√"
           }
         }
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/border-left-color.html"
-      }]
+      }
     },
     {
       "name": "border-top-color",
@@ -2426,11 +2206,7 @@
             "uniVer": "√"
           }
         }
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/border-top-color.html"
-      }]
+      }
     },
     {
       "name": "border-right-color",
@@ -2450,11 +2226,7 @@
             "uniVer": "√"
           }
         }
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/border-right-color.html"
-      }]
+      }
     },
     {
       "name": "border-bottom-color",
@@ -2474,11 +2246,7 @@
             "uniVer": "√"
           }
         }
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/border-bottom-color.html"
-      }]
+      }
     },
     {
       "name": "border-radius",
@@ -2498,11 +2266,7 @@
             "uniVer": "√"
           }
         }
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/border-radius.html"
-      }]
+      }
     },
     {
       "name": "border-top-left-radius",
@@ -2522,11 +2286,7 @@
             "uniVer": "√"
           }
         }
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/border-top-left-radius.html"
-      }]
+      }
     },
     {
       "name": "border-top-right-radius",
@@ -2546,11 +2306,7 @@
             "uniVer": "√"
           }
         }
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/border-top-right-radius.html"
-      }]
+      }
     },
     {
       "name": "border-bottom-left-radius",
@@ -2570,11 +2326,7 @@
             "uniVer": "√"
           }
         }
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/border-bottom-left-radius.html"
-      }]
+      }
     },
     {
       "name": "border-bottom-right-radius",
@@ -2594,11 +2346,7 @@
             "uniVer": "√"
           }
         }
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/border-bottom-right-radius.html"
-      }]
+      }
     },
     {
       "name": "border-top",
@@ -2623,11 +2371,7 @@
       },
       "defaultValue": {
         "app-uvue": "0"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/border-top.html"
-      }]
+      }
     },
     {
       "name": "border-bottom",
@@ -2652,11 +2396,7 @@
       },
       "defaultValue": {
         "app-uvue": "0"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/border-bottom.html"
-      }]
+      }
     },
     {
       "name": "border-left",
@@ -2681,11 +2421,7 @@
       },
       "defaultValue": {
         "app-uvue": "0"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/border-left.html"
-      }]
+      }
     },
     {
       "name": "border-right",
@@ -2710,11 +2446,7 @@
       },
       "defaultValue": {
         "app-uvue": "0"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/border-right.html"
-      }]
+      }
     },
     {
       "name": "color",
@@ -2742,11 +2474,7 @@
       "defaultValue": {
         "app-uvue": "#000000",
         "web": "canvastext"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/color.html"
-      }]
+      }
     },
     {
       "name": "font-size",
@@ -2774,11 +2502,7 @@
       "defaultValue": {
         "app-uvue": "16",
         "web": "medium"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/font-size.html"
-      }]
+      }
     },
     {
       "name": "font-style",
@@ -2812,11 +2536,7 @@
       "defaultValue": {
         "app-uvue": "normal",
         "web": "normal"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/font-style.html"
-      }]
+      }
     },
     {
       "name": "font-weight",
@@ -2856,11 +2576,7 @@
       "defaultValue": {
         "app-uvue": "normal",
         "web": "normal"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/font-weight.html"
-      }]
+      }
     },
     {
       "name": "text-decoration",
@@ -2885,11 +2601,7 @@
       },
       "unixTags": [
         "text", "button"
-      ],
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/text-decoration.html"
-      }]
+      ]
     },
     {
       "name": "text-decoration-line",
@@ -2940,11 +2652,7 @@
       "defaultValue": {
         "app-uvue": "none",
         "web": "none"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/text-decoration-line.html"
-      }]
+      }
     },
     {
       "name": "text-decoration-color",
@@ -2967,11 +2675,7 @@
       },
       "unixTags": [
         "text", "button"
-      ],
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/text-decoration-color.html"
-      }]
+      ]
     },
     {
       "name": "text-decoration-style",
@@ -3007,11 +2711,7 @@
       },
       "unixTags": [
         "text", "button"
-      ],
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/text-decoration-style.html"
-      }]
+      ]
     },
     {
       "name": "text-decoration-thickness",
@@ -3034,11 +2734,7 @@
       },
       "unixTags": [
         "text", "button"
-      ],
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/text-decoration-thickness.html"
-      }]
+      ]
     },
     {
       "name": "text-align",
@@ -3075,11 +2771,7 @@
       "defaultValue": {
         "app-uvue": "left",
         "web": "start"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/text-align.html"
-      }]
+      }
     },
     {
       "name": "font-family",
@@ -3118,11 +2810,7 @@
       },
       "unixTags": [
         "text", "button", "input", "textarea"
-      ],
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/font-family.html"
-      }]
+      ]
     },
     {
       "name": "text-overflow",
@@ -3156,11 +2844,7 @@
       "defaultValue": {
         "app-uvue": "clip",
         "web": "clip"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/text-overflow.html"
-      }]
+      }
     },
     {
       "name": "line-height",
@@ -3188,11 +2872,7 @@
       "defaultValue": {
         "app-uvue": "1.2",
         "web": "normal"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/line-height.html"
-      }]
+      }
     },
     {
       "name": "lines",
@@ -3219,11 +2899,7 @@
       ],
       "defaultValue": {
         "app-uvue": "-1"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/lines.html"
-      }]
+      }
     },
     {
       "name": "letter-spacing",
@@ -3250,11 +2926,7 @@
       "defaultValue": {
         "app-uvue": "0",
         "web": "normal"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/letter-spacing.html"
-      }]
+      }
     },
     {
       "name": "box-shadow",
@@ -3279,11 +2951,7 @@
             "uniVer": "√"
           }
         }
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/box-shadow.html"
-      }]
+      }
     },
     {
       "name": "transition",
@@ -3304,11 +2972,7 @@
             "uniVer": "√"
           }
         }
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/transition.html"
-      }]
+      }
     },
     {
       "name": "transition-property",
@@ -3405,11 +3069,7 @@
       "defaultValue": {
         "app-uvue": "none",
         "web": "all"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/transition-property.html"
-      }]
+      }
     },
     {
       "name": "transition-duration",
@@ -3433,11 +3093,7 @@
       "defaultValue": {
         "app-uvue": "0",
         "web": "0"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/transition-duration.html"
-      }]
+      }
     },
     {
       "name": "transition-timing-function",
@@ -3480,11 +3136,7 @@
       "defaultValue": {
         "app-uvue": "ease",
         "web": "ease"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/transition-timing-function.html"
-      }]
+      }
     },
     {
       "name": "transition-delay",
@@ -3508,11 +3160,7 @@
       "defaultValue": {
         "app-uvue": "0",
         "web": "0"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/transition-delay.html"
-      }]
+      }
     },
     {
       "name": "transform",
@@ -3563,11 +3211,7 @@
             "uniVer": "√"
           }
         }
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/transform.html"
-      }]
+      }
     },
     {
       "name": "transform-origin",
@@ -3610,11 +3254,7 @@
       "defaultValue": {
         "app-uvue": "50% 50%",
         "web": "50% 50% 0"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/transform-origin.html"
-      }]
+      }
     },
     {
       "name": "pointer-events",
@@ -3645,11 +3285,7 @@
       "defaultValue": {
         "app-uvue": "auto",
         "web": "auto"
-      },
-      "references": [{
-        "name": "uni-app x Reference",
-        "url": "https://uniapp.dcloud.net.cn/uni-app-x/css/pointer-events.html"
-      }]
+      }
     }
   ]
 }
