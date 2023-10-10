@@ -117,7 +117,8 @@ const tags = {
     'ix-native-list',
     'mkt',
     'page-container',
-    'page-meta'
+    'page-meta',
+    'lottie'
   ]
 }
 
