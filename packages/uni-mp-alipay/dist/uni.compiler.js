@@ -180,6 +180,7 @@ const customElements = [
     'mkt',
     'page-container',
     'page-meta',
+    'lottie'
 ];
 const options = {
     cdn: 2,
