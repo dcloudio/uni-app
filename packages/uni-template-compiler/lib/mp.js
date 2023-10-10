@@ -89,6 +89,7 @@ const tags = {
     'channel-video',
     'voip-room',
     'root-portal',
+    'subscribe',
     // 手势组件
     'tap-gesture-handler',
     'double-tap-gesture-handler',
