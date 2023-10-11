@@ -551,7 +551,11 @@ function updateComponentProps(up, instance) {
             invalidateJob(instance.update);
         }
         {
-            instance.update();
+            // 字节跳动小程序 https://github.com/dcloudio/uni-app/issues/3340
+            // 百度小程序 https://github.com/dcloudio/uni-app/issues/3612
+            if (!hasQueueJob(instance.update)) {
+                instance.update();
+            }
         }
     }
 }
