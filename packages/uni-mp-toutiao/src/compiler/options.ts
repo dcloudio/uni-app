@@ -18,6 +18,10 @@ export const customElements = [
   'pay-button',
   'rate-button',
   'member-button',
+  'confirm-receipt-button',
+  'live-preview',
+  'aweme-live-book',
+  'aweme-user-card',
 ]
 
 const projectConfigFilename = 'project.config.json'
