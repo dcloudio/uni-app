@@ -114,9 +114,7 @@ const _component_Foo = resolveComponent("Foo")
 
   return createElementVNode("view", null, [
     createVNode(_component_Foo, utsMapOf({ onClick: _ctx.test }), utsMapOf({
-      default: withCtx((): any[] => [
-        createElementVNode("text", null, "test")
-      ]),
+      default: withCtx((): any[] => ["test"]),
       _: 1 /* STABLE */
     }), 8 /* PROPS */, ["onClick"])
   ])

@@ -222,7 +222,7 @@ describe('compiler: v-for', () => {
     createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.list, (i, _, _): VNode => {
       return createElementVNode(\"text\", null, toDisplayString(i + _ctx.j), 1 /* TEXT */)
     }), 256 /* UNKEYED_FRAGMENT */),
-    createElementVNode("text", null, toDisplayString(i), 1 /* TEXT */)
+    toDisplayString(i)
   ])
 }), 256 /* UNKEYED_FRAGMENT */)`
     )
