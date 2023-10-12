@@ -73,7 +73,7 @@ paddingBottom: 11rpx;
     expect(messages[1]).toEqual(
       expect.objectContaining({
         type: 'warning',
-        text: 'ERROR: property value `1pt` is not supported for `border-width` (supported values are: `number`|`pixel`)',
+        text: 'ERROR: property value `1pt` is not supported for `border-width` (supported values are: `number`|`pixel`|`thin`|`medium`|`thick`)',
       })
     )
     expect(messages[2]).toEqual(
