@@ -2051,9 +2051,20 @@
     {
       "name": "border-width",
       "restrictions": [
-        "length"
+        "length",
+        "enum"
       ],
       "syntax": "<line-width>{1,4}",
+      "values": [{
+          "name": "thin"
+        },
+        {
+          "name": "medium"
+        },
+        {
+          "name": "thick"
+        }
+      ],
       "uniPlatform": {
         "app": {
           "android": {
@@ -2066,14 +2077,29 @@
             "uniVer": "√"
           }
         }
+      },
+      "defaultValue": {
+        "app-uvue": "thin",
+        "web": "medium"
       }
     },
     {
       "name": "border-left-width",
       "restrictions": [
-        "length"
+        "length",
+        "enum"
       ],
       "syntax": "<line-width>",
+      "values": [{
+          "name": "thin"
+        },
+        {
+          "name": "medium"
+        },
+        {
+          "name": "thick"
+        }
+      ],
       "uniPlatform": {
         "app": {
           "android": {
@@ -2086,14 +2112,29 @@
             "uniVer": "√"
           }
         }
+      },
+      "defaultValue": {
+        "app-uvue": "thin",
+        "web": "medium"
       }
     },
     {
       "name": "border-top-width",
       "restrictions": [
-        "length"
+        "length",
+        "enum"
       ],
       "syntax": "<line-width>",
+      "values": [{
+          "name": "thin"
+        },
+        {
+          "name": "medium"
+        },
+        {
+          "name": "thick"
+        }
+      ],
       "uniPlatform": {
         "app": {
           "android": {
@@ -2106,14 +2147,29 @@
             "uniVer": "√"
           }
         }
+      },
+      "defaultValue": {
+        "app-uvue": "thin",
+        "web": "medium"
       }
     },
     {
       "name": "border-right-width",
       "restrictions": [
-        "length"
+        "length",
+        "enum"
       ],
       "syntax": "<line-width>",
+      "values": [{
+          "name": "thin"
+        },
+        {
+          "name": "medium"
+        },
+        {
+          "name": "thick"
+        }
+      ],
       "uniPlatform": {
         "app": {
           "android": {
@@ -2126,14 +2182,29 @@
             "uniVer": "√"
           }
         }
+      },
+      "defaultValue": {
+        "app-uvue": "thin",
+        "web": "medium"
       }
     },
     {
       "name": "border-bottom-width",
       "restrictions": [
-        "length"
+        "length",
+        "enum"
       ],
       "syntax": "<line-width>",
+      "values": [{
+          "name": "thin"
+        },
+        {
+          "name": "medium"
+        },
+        {
+          "name": "thick"
+        }
+      ],
       "uniPlatform": {
         "app": {
           "android": {
@@ -2146,6 +2217,10 @@
             "uniVer": "√"
           }
         }
+      },
+      "defaultValue": {
+        "app-uvue": "thin",
+        "web": "medium"
       }
     },
     {
