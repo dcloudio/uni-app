@@ -609,9 +609,13 @@ if (
   })
   wxcomponentDirs.forEach(wxcomponentsDir => {
     if (fs.existsSync(wxcomponentsDir)) { // 转换 mp-weixin 小程序组件
-      migrate(wxcomponentsDir, false, {
-        silent: true // 不输出日志
-      })
+      try {
+        migrate(wxcomponentsDir, false, {
+          silent: true // 不输出日志
+        })
+      } catch (err) {
+        console.warn(err)
+      }
     }
   })
 }
