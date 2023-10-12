@@ -9176,7 +9176,14 @@ const MapPolyline = /* @__PURE__ */ defineSystemComponent({
       function addPolyline(option) {
         const path = [];
         option.points.forEach((point) => {
-          const pointPosition = getIsAMap() ? [point.longitude, point.latitude] : new maps.LatLng(point.latitude, point.longitude);
+          let pointPosition;
+          if (getIsAMap()) {
+            pointPosition = [point.longitude, point.latitude];
+          } else if (getIsBMap()) {
+            pointPosition = new maps.Point(point.longitude, point.latitude);
+          } else {
+            pointPosition = new maps.LatLng(point.latitude, point.longitude);
+          }
           path.push(pointPosition);
         });
         const strokeWeight = Number(option.width) || 1;
@@ -9221,7 +9228,12 @@ const MapPolyline = /* @__PURE__ */ defineSystemComponent({
         if (borderWidth) {
           polylineBorder = new maps.Polyline(polylineBorderOptions);
         }
-        polyline = new maps.Polyline(polylineOptions);
+        if (getIsBMap()) {
+          polyline = new maps.Polyline(polylineOptions.path, polylineOptions);
+          map.addOverlay(polyline);
+        } else {
+          polyline = new maps.Polyline(polylineOptions);
+        }
       }
       addPolyline(props2);
       vue.watch(props2, updatePolyline);
@@ -9278,7 +9290,7 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
         addCircle(option);
       }
       function addCircle(option) {
-        const center = getIsAMap() ? [option.longitude, option.latitude] : new maps.LatLng(option.latitude, option.longitude);
+        const center = getIsAMap() || getIsBMap() ? [option.longitude, option.latitude] : new maps.LatLng(option.latitude, option.longitude);
         const circleOptions = {
           map,
           center,
@@ -9287,7 +9299,7 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
           strokeWeight: Number(option.strokeWidth) || 1,
           strokeDashStyle: "solid"
         };
-        if (getIsAMap()) {
+        if (getIsAMap() || getIsBMap()) {
           circleOptions.strokeColor = option.color;
           circleOptions.fillColor = option.fillColor || "#000";
           circleOptions.fillOpacity = 1;
@@ -9314,9 +9326,20 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
             circleOptions.strokeOpacity = sa;
           }
         }
-        circle = new maps.Circle(circleOptions);
-        if (getIsAMap()) {
-          map.add(circle);
+        if (getIsBMap()) {
+          let pt = new maps.Point(
+            // @ts-ignore
+            circleOptions.center[0],
+            // @ts-ignore
+            circleOptions.center[1]
+          );
+          circle = new maps.Circle(pt, circleOptions.radius, circleOptions);
+          map.addOverlay(circle);
+        } else {
+          circle = new maps.Circle(circleOptions);
+          if (getIsAMap()) {
+            map.add(circle);
+          }
         }
       }
       addCircle(props2);
@@ -9458,7 +9481,13 @@ const MapPolygon = /* @__PURE__ */ defineSystemComponent({
             latitude,
             longitude
           } = item;
-          return getIsAMap() ? [longitude, latitude] : new maps.LatLng(latitude, longitude);
+          if (getIsAMap()) {
+            return [longitude, latitude];
+          } else if (getIsBMap()) {
+            return new maps.Point(longitude, latitude);
+          } else {
+            return new maps.LatLng(latitude, longitude);
+          }
         });
         const {
           r: fcR,
@@ -9510,7 +9539,12 @@ const MapPolygon = /* @__PURE__ */ defineSystemComponent({
           polygonIns.setOptions(polygonOptions);
           return;
         }
-        polygonIns = new maps.Polygon(polygonOptions);
+        if (getIsBMap()) {
+          polygonIns = new maps.Polygon(polygonOptions.path, polygonOptions);
+          map.addOverlay(polygonIns);
+        } else {
+          polygonIns = new maps.Polygon(polygonOptions);
+        }
       }
       drawPolygon();
       vue.watch(props2, drawPolygon);
@@ -9616,6 +9650,9 @@ function getLat(latLng) {
   if ("getLat" in latLng) {
     return latLng.getLat();
   } else {
+    if (getIsBMap()) {
+      return latLng.lat;
+    }
     return latLng.lat();
   }
 }
@@ -9623,6 +9660,9 @@ function getLng(latLng) {
   if ("getLng" in latLng) {
     return latLng.getLng();
   } else {
+    if (getIsBMap()) {
+      return latLng.lng;
+    }
     return latLng.lng();
   }
 }

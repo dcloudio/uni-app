@@ -127,7 +127,6 @@ export default /*#__PURE__*/ defineSystemComponent({
             return
           }
           if (getIsBMap()) {
-            console.log('polygon options:', polygonOptions)
             // @ts-ignore
             polygonIns = new maps.Polygon(polygonOptions.path, polygonOptions)
             // @ts-ignore

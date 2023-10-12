@@ -160,6 +160,9 @@ function getLat(latLng: LatLng) {
   if ('getLat' in latLng) {
     return latLng.getLat()
   } else {
+    if (getIsBMap()) {
+      return latLng.lat
+    }
     return latLng.lat()
   }
 }
@@ -168,6 +171,9 @@ function getLng(latLng: LatLng) {
   if ('getLng' in latLng) {
     return latLng.getLng()
   } else {
+    if (getIsBMap()) {
+      return latLng.lng
+    }
     return latLng.lng()
   }
 }
@@ -300,7 +306,7 @@ function useMap(
     const center = getMapPosition(maps, state.latitude, state.longitude)
     const event =
       (maps as QQMaps | GoogleMaps).event || (maps as AMap.NameSpace).Event
-    console.log('event:', event)
+    // console.log('event:', event)
     const map = new maps.Map(mapEl, {
       center: center as any,
       zoom: Number(props.scale),
@@ -340,7 +346,32 @@ function useMap(
     })
     // 需在 bounds_changed 后触发 BoundsReady
     if (getIsBMap()) {
-      console.log('bmap的事件绑定是on？？')
+      // @ts-ignore
+      map.addEventListener('click', () => {
+        trigger('tap', {} as Event, {})
+        trigger('click', {} as Event, {})
+      })
+      // @ts-ignore
+      map.addEventListener('dragstart', () => {
+        trigger('regionchange', {} as Event, {
+          type: 'begin',
+          causedBy: 'gesture',
+        })
+      })
+      // @ts-ignore
+      map.addEventListener('dragend', () => {
+        trigger(
+          'regionchange',
+          {} as Event,
+          extend(
+            {
+              type: 'end',
+              causedBy: 'drag',
+            },
+            getMapInfo()
+          )
+        )
+      })
     } else {
       const boundsChangedEvent = event.addListener(
         map,

@@ -17625,7 +17625,14 @@ const MapPolyline = /* @__PURE__ */ defineSystemComponent({
       function addPolyline(option) {
         const path = [];
         option.points.forEach((point) => {
-          const pointPosition = getIsAMap() ? [point.longitude, point.latitude] : new maps2.LatLng(point.latitude, point.longitude);
+          let pointPosition;
+          if (getIsAMap()) {
+            pointPosition = [point.longitude, point.latitude];
+          } else if (getIsBMap()) {
+            pointPosition = new maps2.Point(point.longitude, point.latitude);
+          } else {
+            pointPosition = new maps2.LatLng(point.latitude, point.longitude);
+          }
           path.push(pointPosition);
         });
         const strokeWeight = Number(option.width) || 1;
@@ -17670,7 +17677,12 @@ const MapPolyline = /* @__PURE__ */ defineSystemComponent({
         if (borderWidth) {
           polylineBorder = new maps2.Polyline(polylineBorderOptions);
         }
-        polyline = new maps2.Polyline(polylineOptions);
+        if (getIsBMap()) {
+          polyline = new maps2.Polyline(polylineOptions.path, polylineOptions);
+          map.addOverlay(polyline);
+        } else {
+          polyline = new maps2.Polyline(polylineOptions);
+        }
       }
       addPolyline(props2);
       watch(props2, updatePolyline);
@@ -17728,7 +17740,7 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
         addCircle(option);
       }
       function addCircle(option) {
-        const center = getIsAMap() ? [option.longitude, option.latitude] : new maps2.LatLng(option.latitude, option.longitude);
+        const center = getIsAMap() || getIsBMap() ? [option.longitude, option.latitude] : new maps2.LatLng(option.latitude, option.longitude);
         const circleOptions = {
           map,
           center,
@@ -17737,7 +17749,7 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
           strokeWeight: Number(option.strokeWidth) || 1,
           strokeDashStyle: "solid"
         };
-        if (getIsAMap()) {
+        if (getIsAMap() || getIsBMap()) {
           circleOptions.strokeColor = option.color;
           circleOptions.fillColor = option.fillColor || "#000";
           circleOptions.fillOpacity = 1;
@@ -17764,9 +17776,20 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
             circleOptions.strokeOpacity = sa;
           }
         }
-        circle = new maps2.Circle(circleOptions);
-        if (getIsAMap()) {
-          map.add(circle);
+        if (getIsBMap()) {
+          let pt = new maps2.Point(
+            // @ts-ignore
+            circleOptions.center[0],
+            // @ts-ignore
+            circleOptions.center[1]
+          );
+          circle = new maps2.Circle(pt, circleOptions.radius, circleOptions);
+          map.addOverlay(circle);
+        } else {
+          circle = new maps2.Circle(circleOptions);
+          if (getIsAMap()) {
+            map.add(circle);
+          }
         }
       }
       addCircle(props2);
@@ -23149,7 +23172,13 @@ const MapPolygon = /* @__PURE__ */ defineSystemComponent({
             latitude,
             longitude
           } = item;
-          return getIsAMap() ? [longitude, latitude] : new maps2.LatLng(latitude, longitude);
+          if (getIsAMap()) {
+            return [longitude, latitude];
+          } else if (getIsBMap()) {
+            return new maps2.Point(longitude, latitude);
+          } else {
+            return new maps2.LatLng(latitude, longitude);
+          }
         });
         const {
           r: fcR,
@@ -23201,7 +23230,12 @@ const MapPolygon = /* @__PURE__ */ defineSystemComponent({
           polygonIns.setOptions(polygonOptions);
           return;
         }
-        polygonIns = new maps2.Polygon(polygonOptions);
+        if (getIsBMap()) {
+          polygonIns = new maps2.Polygon(polygonOptions.path, polygonOptions);
+          map.addOverlay(polygonIns);
+        } else {
+          polygonIns = new maps2.Polygon(polygonOptions);
+        }
       }
       drawPolygon();
       watch(props2, drawPolygon);
@@ -23310,6 +23344,9 @@ function getLat(latLng) {
   if ("getLat" in latLng) {
     return latLng.getLat();
   } else {
+    if (getIsBMap()) {
+      return latLng.lat;
+    }
     return latLng.lat();
   }
 }
@@ -23317,6 +23354,9 @@ function getLng(latLng) {
   if ("getLng" in latLng) {
     return latLng.getLng();
   } else {
+    if (getIsBMap()) {
+      return latLng.lng;
+    }
     return latLng.lng();
   }
 }
@@ -23425,7 +23465,6 @@ function useMap(props2, rootRef, emit2) {
     const mapEl = mapRef.value;
     const center = getMapPosition(maps2, state2.latitude, state2.longitude);
     const event = maps2.event || maps2.Event;
-    console.log("event:", event);
     const map2 = new maps2.Map(mapEl, {
       center,
       zoom: Number(props2.scale),
@@ -23457,7 +23496,22 @@ function useMap(props2, rootRef, emit2) {
       }
     });
     if (getIsBMap()) {
-      console.log("bmap的事件绑定是on？？");
+      map2.addEventListener("click", () => {
+        trigger("tap", {}, {});
+        trigger("click", {}, {});
+      });
+      map2.addEventListener("dragstart", () => {
+        trigger("regionchange", {}, {
+          type: "begin",
+          causedBy: "gesture"
+        });
+      });
+      map2.addEventListener("dragend", () => {
+        trigger("regionchange", {}, extend({
+          type: "end",
+          causedBy: "drag"
+        }, getMapInfo2()));
+      });
     } else {
       const boundsChangedEvent = event.addListener(map2, "bounds_changed", () => {
         boundsChangedEvent.remove();
