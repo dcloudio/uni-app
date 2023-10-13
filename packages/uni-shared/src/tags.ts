@@ -121,6 +121,7 @@ export const UVUE_BUILT_IN_TAGS = [
   'swiper-item',
   'rich-text',
   'sticky-view',
+  'sticky-header',
   // 自定义
   'uni-slider',
 ]
