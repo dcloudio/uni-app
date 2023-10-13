@@ -1470,6 +1470,75 @@
         "gradient"
       ],
       "syntax": "[ <bg-layer> , ]* <final-bg-layer>",
+      "values": [{
+          "name": "fixed",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "4.4",
+                "uniVer": "√",
+                "unixVer": "x"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            }
+          }
+        },
+        {
+          "name": "local",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "4.4",
+                "uniVer": "√",
+                "unixVer": "x"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            }
+          }
+        },
+        {
+          "name": "none",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "4.4",
+                "uniVer": "√",
+                "unixVer": "x"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            }
+          }
+        },
+        {
+          "name": "scroll",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "4.4",
+                "uniVer": "√",
+                "unixVer": "x"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            }
+          }
+        }
+      ],
       "uniPlatform": {
         "app": {
           "android": {
