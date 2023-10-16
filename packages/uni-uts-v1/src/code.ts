@@ -101,13 +101,21 @@ export async function genProxyCode(
   // 自动补充 VideoElement 导出
   if (options.androidComponents) {
     Object.keys(options.androidComponents).forEach((name) => {
-      options.meta!.types[capitalize(camelize(name)) + 'Element'] = 'class'
+      options.meta!.types[
+        (process.env.UNI_UTS_MODULE_PREFIX ? 'Uni' : '') +
+          capitalize(camelize(name)) +
+          'Element'
+      ] = 'class'
       components.add(name)
     })
   }
   if (options.iosComponents) {
     Object.keys(options.iosComponents).forEach((name) => {
-      options.meta!.types[capitalize(camelize(name)) + 'Element'] = 'class'
+      options.meta!.types[
+        (process.env.UNI_UTS_MODULE_PREFIX ? 'Uni' : '') +
+          capitalize(camelize(name)) +
+          'Element'
+      ] = 'class'
       components.add(name)
     })
   }

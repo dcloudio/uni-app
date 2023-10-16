@@ -4,7 +4,6 @@ import io.dcloud.uts.Map;
 import kotlinx.coroutines.CoroutineScope;
 import kotlinx.coroutines.Deferred;
 import kotlinx.coroutines.Dispatchers;
-import kotlinx.coroutines.async;
 import io.dcloud.feature.uniapp.ui.action.AbsComponentData;
 import io.dcloud.feature.uniapp.ui.component.AbsVContainer;
 import android.animation.Animator;

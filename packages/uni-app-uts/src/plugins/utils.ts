@@ -62,7 +62,14 @@ export function uvueOutDir() {
 export function genClassName(fileName: string, prefix: string = 'Gen') {
   return (
     prefix +
-    capitalize(camelize(removeExt(normalizePath(fileName).replace(/\//g, '-'))))
+    capitalize(
+      camelize(
+        removeExt(normalizeNodeModules(fileName).replace(/\//g, '-')).replace(
+          /@/g, // node-modules/@dcloudio/....
+          ''
+        )
+      )
+    )
   )
 }
 

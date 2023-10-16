@@ -186,6 +186,10 @@ const NVUE_CUSTOM_COMPONENTS = [
 ]
 
 export function isAppUVueNativeTag(tag: string) {
+  // 前端实现的内置组件都会注册一个根组件
+  if (tag.startsWith('uni-') && tag.endsWith('-element')) {
+    return true
+  }
   if (UVUE_BUILT_IN_TAGS.includes(tag)) {
     return true
   }

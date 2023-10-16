@@ -10,11 +10,11 @@ import {
   formatAtFilename,
   generateCodeFrame,
   insertBeforePlugin,
-  normalizePath,
   parseVueRequest,
   resolveMainPathOnce,
   parseAssets,
   preUVueCss,
+  normalizeNodeModules,
 } from '@dcloudio/uni-cli-shared'
 import { parse } from '@dcloudio/uni-nvue-styler'
 
@@ -39,7 +39,7 @@ export function uniAppCssPlugin(): Plugin {
           }
           const { filename } = parseVueRequest(id)
           if (isVue(filename)) {
-            return normalizePath(
+            return normalizeNodeModules(
               path.relative(process.env.UNI_INPUT_DIR, filename) + '.style.uts'
             )
           }

@@ -28,26 +28,41 @@ val `default` = UTSAndroid.getResourcePath("uni_modules/test-uniplugin/static/lo
 typealias ShowToast = (msg: String) -> Unit;
 val test1 = arrayOf(1, 2, 3);
 open class User : IUser {
-    open fun login(name: String, pwd: String) {
-        setTimeout(fun(){
-            console.log("timeout", " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:19");
-        }
-        , 1000);
-        uts.modules.modules.testUniPlugin.login(name, pwd);
-        run {
-            var i: Number = 0;
-            while(i < 10){
-                console.log(i, " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:23");
-                i++;
+    open fun login(name: String, pwd: String): UTSPromise<Unit> {
+        suspend fun async(): Unit {
+            setTimeout(fun(){
+                console.log("timeout", " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:19");
             }
+            , 1000);
+            uts.modules.modules.testUniPlugin.login(name, pwd);
+            run {
+                var i: Number = 0;
+                while(i < 10){
+                    console.log(i, " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:23");
+                    i++;
+                }
+            }
+            Log.info(`default`);
+            console.log("def android", " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:27");
+            console.log("ndef ios", " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:36");
+            console.log("def android || def ios", " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:39");
+            val a: Number = -3;
+            console.log(a.inv(), " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:45");
+            XToast<XToast<*>>(getUniActivity()).setContentView(R.layout.toast_hint).setDuration(1000).setImageDrawable(android.R.id.icon, R.mipmap.ic_dialog_tip_finish).setText(android.R.id.message, "点我消失").show();
         }
-        Log.info(`default`);
-        console.log("def android", " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:27");
-        console.log("ndef ios", " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:36");
-        console.log("def android || def ios", " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:39");
-        val a: Number = -3;
-        console.log(a.inv(), " at uni_modules/test-uniplugin/utssdk/app-android/index.uts:45");
-        XToast<XToast<*>>(getUniActivity()).setContentView(R.layout.toast_hint).setDuration(1000).setImageDrawable(android.R.id.icon, R.mipmap.ic_dialog_tip_finish).setText(android.R.id.message, "点我消失").show();
+        return UTSPromise(fun(resolve, reject) {
+            kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Default).async {
+                try {
+                    val result = async();
+                    resolve(result);
+                }
+                 catch (e: Throwable) {
+                    reject(e);
+                }
+            }
+            ;
+        }
+        );
     }
     override fun register(name: String, callback: () -> Unit) {
         Log.info(`default` as FrameLayout);

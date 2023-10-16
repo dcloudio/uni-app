@@ -105,6 +105,21 @@ export function uniAppUTSPlugin(): UniVitePlugin {
               }
               return false
             },
+            output: {
+              chunkFileNames(chunk) {
+                // if (chunk.isDynamicEntry && chunk.facadeModuleId) {
+                //   const { filename } = parseVueRequest(chunk.facadeModuleId)
+                //   if (filename.endsWith('.nvue')) {
+                //     return (
+                //       removeExt(
+                //         normalizePath(path.relative(inputDir, filename))
+                //       ) + '.js'
+                //     )
+                //   }
+                // }
+                return '[name].js'
+              },
+            },
           },
         },
       }

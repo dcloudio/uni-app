@@ -4,7 +4,6 @@ import io.dcloud.uts.Map;
 import kotlinx.coroutines.CoroutineScope;
 import kotlinx.coroutines.Deferred;
 import kotlinx.coroutines.Dispatchers;
-import kotlinx.coroutines.async;
 fun test(): Number {
     return 1;
 }
