@@ -93,6 +93,7 @@
     complete ?: CompleteCallback,
   }
 
+  @Suppress("UNCHECKED_CAST")
   function cast_callback<T>(options : any | null) : T | null {
     return options as T | null
   }
@@ -156,11 +157,11 @@
       } as UniCloudDBComponentUpdateOptions)
     }
 
-    onLoadData = (_ : UniCloudDBComponentLoadDataOptions) => { }
-    onLoadMore = () => { }
-    onAdd = (value : UTSJSONObject, options : UniCloudDBComponentAddOptions) => { }
-    onUpdate = (id : string, value : UTSJSONObject, options : UniCloudDBComponentUpdateOptions) => { }
-    onRemove = (id : any, options : UniCloudDBComponentRemoveOptions) => { }
+    onLoadData! : (_ : UniCloudDBComponentLoadDataOptions) => void
+    onLoadMore! : () => void
+    onAdd! : (value : UTSJSONObject, options : UniCloudDBComponentAddOptions) => void
+    onUpdate!: (id : string, value : UTSJSONObject, options : UniCloudDBComponentUpdateOptions) => void
+    onRemove!: (id : any, options : UniCloudDBComponentRemoveOptions) => void
   }
 
   export default {
