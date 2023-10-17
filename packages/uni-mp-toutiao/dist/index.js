@@ -2454,8 +2454,8 @@ function isPage () {
 function initRefs$1 (vm) {
   const mpInstance = vm.$scope;
   /* eslint-disable no-undef */
-  const minorVersion = parseInt(tt.getSystemInfoSync().SDKVersion.split('.')[1]);
-  if (minorVersion > 16) {
+  const [majorVersion = '', minorVersion = ''] = tt.getSystemInfoSync().SDKVersion.split('.');
+  if (parseInt(majorVersion) > 1 || parseInt(minorVersion) > 16) {
     initRefs(vm);
   } else {
     mpInstance.selectAllComponents('.vue-ref', (components) => {
