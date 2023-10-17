@@ -64,6 +64,7 @@ export interface CompileAppOptions {
   uniCloudObjectInfo?: Array<UniCloudObjectInfo>
   pageCount: number
   extApiComponents: string[]
+  uvueClassNamePrefix?: string
 }
 
 export async function compileApp(entry: string, options: CompileAppOptions) {
@@ -129,7 +130,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
         uniExtApiDefaultNamespace: 'io.dcloud.uniapp.extapi',
         uniExtApiNamespaces: extApis,
         uniExtApiDefaultParameters: parseExtApiDefaultParameters(),
-        uvueClassNamePrefix: 'Gen',
+        uvueClassNamePrefix: options.uvueClassNamePrefix || 'Gen',
         uniCloudObjectInfo: options.uniCloudObjectInfo,
       },
     },

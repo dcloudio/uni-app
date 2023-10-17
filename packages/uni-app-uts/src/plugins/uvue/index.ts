@@ -48,6 +48,7 @@ import { genScript } from './code/script'
 import { genTemplate } from './code/template'
 import { genJsStylesCode, genStyle, transformStyle } from './code/style'
 import { generateCodeFrame } from '@dcloudio/uni-cli-shared'
+import { genComponentPublicInstanceImported } from './compiler/utils'
 
 export function uniAppUVuePlugin(): Plugin {
   const options: ResolvedOptions = {
@@ -226,7 +227,9 @@ export async function transformVue(
   let templateSourceMap: RawSourceMap | undefined
   const templateStartLine = descriptor.template?.loc.start.line ?? 0
   if (!isApp) {
+    const inputRoot = normalizePath(options.root)
     const templateResult = genTemplate(descriptor, {
+      rootDir: options.root,
       targetLanguage: options.targetLanguage as any,
       mode: 'function',
       filename: fileName,
@@ -238,6 +241,9 @@ export async function transformVue(
       matchEasyCom: (tag, uts) => {
         const source = matchEasycom(tag)
         if (uts && source) {
+          if (source.startsWith(inputRoot)) {
+            return '@/' + normalizePath(path.relative(inputRoot, source))
+          }
           return normalizeEasyComSource(source)
         }
         return source
@@ -292,7 +298,8 @@ export async function transformVue(
   if (descriptor.styles.length) {
     jsCode += '\n' + (await genJsStylesCode(descriptor, pluginContext!))
   }
-  jsCode += `\nexport default "${className}"`
+  jsCode += `\nexport default "${className}"
+export const ${genComponentPublicInstanceImported(options.root, filename)} = {}`
   return {
     errors: [],
     uts: utsCode,

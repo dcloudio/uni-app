@@ -24,6 +24,7 @@ import {
   getUniCloudSpaceList,
   getUniCloudObjectInfo,
   getExtApiComponents,
+  UVUE_CLASS_NAME_PREFIX,
 } from './utils'
 import { getOutputManifestJson } from './manifestJson'
 import('./errorReporting')
@@ -180,6 +181,7 @@ export function uniAppUTSPlugin(): UniVitePlugin {
             process.env.UNI_UTS_TARGET_LANGUAGE
           ),
           extApiComponents: [...getExtApiComponents()],
+          uvueClassNamePrefix: UVUE_CLASS_NAME_PREFIX,
         }
       )
       if (res) {

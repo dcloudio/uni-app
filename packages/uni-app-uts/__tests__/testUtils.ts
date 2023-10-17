@@ -12,9 +12,12 @@ import {
 export function assert(
   template: string,
   templateCode: string,
-  options: CompilerOptions = { targetLanguage: 'kotlin' }
+  options: Omit<CompilerOptions, 'rootDir'> = {
+    targetLanguage: 'kotlin',
+  }
 ) {
   const compilerOptions: CompilerOptions = {
+    rootDir: '',
     filename: 'pages/index/index.uvue',
     className: 'PagesIndexIndex',
     prefixIdentifiers: true,

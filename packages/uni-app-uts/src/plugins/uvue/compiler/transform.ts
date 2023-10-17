@@ -115,6 +115,7 @@ export interface TransformContext
 export function createTransformContext(
   root: RootNode,
   {
+    rootDir,
     targetLanguage,
     filename = '',
     prefixIdentifiers = false,
@@ -131,6 +132,7 @@ export function createTransformContext(
   const nameMatch = filename.replace(/\?.*$/, '').match(/([^/\\]+)\.\w+$/)
   const context: TransformContext = {
     // options
+    rootDir,
     targetLanguage,
     selfName: nameMatch && capitalize(camelize(nameMatch[1])),
     prefixIdentifiers,

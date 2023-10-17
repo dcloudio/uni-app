@@ -40,7 +40,10 @@ import {
   isSimpleExpressionNode,
 } from '@dcloudio/uni-cli-shared'
 import { CodegenOptions, CodegenResult } from './options'
-import { genRenderFunctionDecl } from './utils'
+import {
+  genImportComponentPublicInstance,
+  genRenderFunctionDecl,
+} from './utils'
 import {
   IS_TRUE,
   RENDER_LIST,
@@ -82,6 +85,7 @@ export interface CodegenContext
 function createCodegenContext(
   ast: RootNode,
   {
+    rootDir,
     targetLanguage,
     mode = 'default',
     prefixIdentifiers = false,
@@ -93,6 +97,7 @@ function createCodegenContext(
   }: CodegenOptions
 ): CodegenContext {
   const context: CodegenContext = {
+    rootDir,
     targetLanguage,
     mode,
     prefixIdentifiers,
@@ -229,7 +234,7 @@ export function generate(
 
 function genEasyComImports(
   components: string[],
-  { push, newline, matchEasyCom, targetLanguage }: CodegenContext
+  { push, newline, matchEasyCom, rootDir }: CodegenContext
 ) {
   for (let i = 0; i < components.length; i++) {
     let id = components[i]
@@ -240,7 +245,13 @@ function genEasyComImports(
     const source = matchEasyCom(id, true)
     if (source) {
       const componentId = toValidAssetId(id, 'easycom' as 'component')
-      push(`import ${componentId} from '${source}'`)
+      push(
+        `import ${componentId}${genImportComponentPublicInstance(
+          rootDir,
+          id,
+          source
+        )} from '${source}'`
+      )
       newline()
     }
   }
@@ -249,7 +260,14 @@ function genEasyComImports(
 function genAssets(
   assets: string[],
   type: 'component' | 'directive',
-  { helper, push, newline, importEasyComponents, matchEasyCom }: CodegenContext
+  {
+    helper,
+    push,
+    newline,
+    importEasyComponents,
+    matchEasyCom,
+    rootDir,
+  }: CodegenContext
 ) {
   const resolver = helper(
     type === 'component' ? RESOLVE_COMPONENT : RESOLVE_DIRECTIVE
@@ -272,7 +290,11 @@ function genAssets(
         )}(${JSON.stringify(id)},${easyComponentId}${
           maybeSelfReference ? `, true` : ``
         })`
-        const importCode = `import ${easyComponentId} from '${source}';`
+        const importCode = `import ${easyComponentId}${genImportComponentPublicInstance(
+          rootDir,
+          id,
+          source
+        )} from '${source}';`
         if (!importEasyComponents.includes(importCode)) {
           importEasyComponents.push(importCode)
         }
