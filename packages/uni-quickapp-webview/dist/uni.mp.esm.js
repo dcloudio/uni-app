@@ -1,6 +1,6 @@
 import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, addLeadingSlash, stringifyQuery, customizeEvent } from '@dcloudio/uni-shared';
 import { isArray, isFunction, hasOwn, extend, isPlainObject, isObject } from '@vue/shared';
-import { ref, nextTick, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, devtoolsComponentAdded, getExposeProxy, pruneComponentPropsCache } from 'vue';
+import { ref, nextTick, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, devtoolsComponentAdded, getExposeProxy, isRef, pruneComponentPropsCache } from 'vue';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 
 const MP_METHODS = [
@@ -849,11 +849,28 @@ function initInjections(instance) {
     else {
         for (const key in injectOptions) {
             const opt = injectOptions[key];
+            let injected;
             if (isObject(opt)) {
-                ctx[key] = inject(internalInstance, opt.from || key, opt.default, true /* treat default function as factory */);
+                if ('default' in opt) {
+                    injected = inject(internalInstance, opt.from || key, opt.default, true /* treat default function as factory */);
+                }
+                else {
+                    injected = inject(internalInstance, opt.from || key);
+                }
             }
             else {
-                ctx[key] = inject(internalInstance, opt);
+                injected = inject(internalInstance, opt);
+            }
+            if (isRef(injected)) {
+                Object.defineProperty(ctx, key, {
+                    enumerable: true,
+                    configurable: true,
+                    get: () => injected.value,
+                    set: (v) => (injected.value = v),
+                });
+            }
+            else {
+                ctx[key] = injected;
             }
         }
     }
