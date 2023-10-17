@@ -1,4 +1,8 @@
-import { normalizeExtApiDefaultParameters } from '../src/utils'
+import {
+  normalizeExtApiDefaultParameters,
+  normalizeExtApiModules,
+  parseExtApiModules,
+} from '../src/utils'
 
 describe('ext-api', () => {
   test('default parameters', () => {
@@ -104,6 +108,76 @@ describe('ext-api', () => {
       getDeviceInfo: ['null'],
       clearStorage: ['null'],
       createVideoContext: ['', 'null'],
+    })
+  })
+  test('modules', () => {
+    expect(
+      normalizeExtApiModules({
+        'uni-getLocation-system': {
+          uni: ['getLocation'],
+        },
+        'uni-video': {
+          uni: {
+            createVideoContext: {
+              name: 'createVideoContext',
+              app: {
+                js: false,
+                kotlin: true,
+                swift: false,
+              },
+            },
+          },
+          components: ['video'],
+        },
+        'uni-storage': {
+          uni: {
+            getStorage: {
+              name: 'getStorage',
+              app: {
+                js: false,
+                kotlin: true,
+                swift: true,
+              },
+            },
+            getStorageInfo: {
+              name: 'getStorageInfo',
+              app: {
+                js: false,
+                kotlin: true,
+                swift: true,
+              },
+            },
+            clearStorage: {
+              name: 'clearStorage',
+              app: {
+                js: false,
+                kotlin: true,
+                swift: true,
+              },
+            },
+            clearStorageSync: {
+              name: 'clearStorageSync',
+              app: {
+                js: false,
+                kotlin: true,
+                swift: true,
+              },
+            },
+          },
+        },
+      })
+    ).toEqual({
+      'component.video': 'uni-video',
+      'uni.clearStorage': 'uni-storage',
+      'uni.clearStorageSync': 'uni-storage',
+      'uni.createVideoContext': 'uni-video',
+      'uni.getLocation': 'uni-getLocation-system',
+      'uni.getStorage': 'uni-storage',
+      'uni.getStorageInfo': 'uni-storage',
+    })
+    expect(parseExtApiModules()).toMatchObject({
+      'uni.createVideoContext': 'uni-video',
+      'component.video': 'uni-video',
     })
   })
 })

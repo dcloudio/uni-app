@@ -12,9 +12,7 @@ describe('compiler: transform tap to click', () => {
     )
     assert(
       `<view @tap="click">hello</view>`,
-      `createElementVNode("view", utsMapOf({ onClick: _ctx.click }), [
-  createElementVNode("text", null, "hello")
-], 8 /* PROPS */, ["onClick"])`
+      `createElementVNode("view", utsMapOf({ onClick: _ctx.click }), "hello", 8 /* PROPS */, ["onClick"])`
     )
     assert(
       `<button @tap="click">hello</button>`,

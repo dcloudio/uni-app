@@ -119,6 +119,7 @@ const UVUE_BUILT_IN_TAGS = [
     'swiper-item',
     'rich-text',
     'sticky-view',
+    'sticky-header',
     // 自定义
     'uni-slider',
 ];
@@ -174,6 +175,10 @@ const NVUE_CUSTOM_COMPONENTS = [
     'picker-view-column',
 ];
 function isAppUVueNativeTag(tag) {
+    // 前端实现的内置组件都会注册一个根组件
+    if (tag.startsWith('uni-') && tag.endsWith('-element')) {
+        return true;
+    }
     if (UVUE_BUILT_IN_TAGS.includes(tag)) {
         return true;
     }

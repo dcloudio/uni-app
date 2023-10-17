@@ -26,6 +26,7 @@ import { transformSlotOutlet } from './transforms/transformSlotOutlet'
 import { transformObjectExpression } from './transforms/transformObjectExpression'
 import { transformExpression } from './transforms/transformExpression'
 import { transformElements } from './transforms/transformElements'
+import { transformStyle } from './transforms/transformStyle'
 
 export type TransformPreset = [
   NodeTransform[],
@@ -50,6 +51,7 @@ export function getBaseTransformPreset(
       transformInterpolation,
       transformObjectExpression,
       transformElements,
+      transformStyle,
     ] as any,
     {
       on: transformOn,

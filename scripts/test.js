@@ -23,7 +23,6 @@ parse(
 })
 
 const kotlinImports = [
-  'kotlinx.coroutines.async',
   'kotlinx.coroutines.CoroutineScope',
   'kotlinx.coroutines.Deferred',
   'kotlinx.coroutines.Dispatchers',

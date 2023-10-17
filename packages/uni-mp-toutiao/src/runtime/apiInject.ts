@@ -4,6 +4,8 @@ import {
   InjectionKey,
   ComponentPublicInstance,
   ComponentInternalInstance,
+  isRef,
+  Ref,
 } from 'vue'
 
 function provide<T>(
@@ -92,15 +94,30 @@ export function initInjections(instance: ComponentPublicInstance) {
   } else {
     for (const key in injectOptions) {
       const opt = (injectOptions as Record<string, any>)[key]
+      let injected: unknown
       if (isObject(opt)) {
-        ctx[key] = inject(
-          internalInstance,
-          opt.from || key,
-          opt.default,
-          true /* treat default function as factory */
-        )
+        if ('default' in opt) {
+          injected = inject(
+            internalInstance,
+            opt.from || key,
+            opt.default,
+            true /* treat default function as factory */
+          )
+        } else {
+          injected = inject(internalInstance, opt.from || key)
+        }
       } else {
-        ctx[key] = inject(internalInstance, opt)
+        injected = inject(internalInstance, opt)
+      }
+      if (isRef(injected)) {
+        Object.defineProperty(ctx, key, {
+          enumerable: true,
+          configurable: true,
+          get: () => (injected as Ref).value,
+          set: (v) => ((injected as Ref).value = v),
+        })
+      } else {
+        ctx[key] = injected
       }
     }
   }

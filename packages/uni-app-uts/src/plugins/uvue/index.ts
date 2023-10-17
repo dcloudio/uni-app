@@ -17,6 +17,7 @@ import {
   parseUTSComponent,
   parseVueRequest,
   removeExt,
+  resolveAppVue,
 } from '@dcloudio/uni-cli-shared'
 
 import type { RawSourceMap } from 'source-map-js'
@@ -36,6 +37,7 @@ import {
 } from './descriptorCache'
 import { createRollupError } from './error'
 import {
+  addExtApiComponents,
   genClassName,
   isVue,
   parseImports,
@@ -46,14 +48,7 @@ import { genScript } from './code/script'
 import { genTemplate } from './code/template'
 import { genJsStylesCode, genStyle, transformStyle } from './code/style'
 import { generateCodeFrame } from '@dcloudio/uni-cli-shared'
-
-function resolveAppVue(inputDir: string) {
-  const appUVue = path.resolve(inputDir, 'App.uvue')
-  if (fs.existsSync(appUVue)) {
-    return normalizePath(appUVue)
-  }
-  return normalizePath(path.resolve(inputDir, 'App.vue'))
-}
+import { genComponentPublicInstanceImported } from './compiler/utils'
 
 export function uniAppUVuePlugin(): Plugin {
   const options: ResolvedOptions = {
@@ -232,7 +227,9 @@ export async function transformVue(
   let templateSourceMap: RawSourceMap | undefined
   const templateStartLine = descriptor.template?.loc.start.line ?? 0
   if (!isApp) {
+    const inputRoot = normalizePath(options.root)
     const templateResult = genTemplate(descriptor, {
+      rootDir: options.root,
       targetLanguage: options.targetLanguage as any,
       mode: 'function',
       filename: fileName,
@@ -244,6 +241,9 @@ export async function transformVue(
       matchEasyCom: (tag, uts) => {
         const source = matchEasycom(tag)
         if (uts && source) {
+          if (source.startsWith(inputRoot)) {
+            return '@/' + normalizePath(path.relative(inputRoot, source))
+          }
           return normalizeEasyComSource(source)
         }
         return source
@@ -253,10 +253,18 @@ export async function transformVue(
         if (warning.loc) {
           const start = warning.loc.start
           console.log(
+            'at ' +
+              fileName +
+              ':' +
+              (start.line + templateStartLine - 1) +
+              ':' +
+              (start.column - 1)
+          )
+          console.log(
             generateCodeFrame(code, {
               line: start.line + templateStartLine - 1,
-              column: start.column,
-            })
+              column: start.column - 1,
+            }).replace(/\t/g, ' ')
           )
         }
       },
@@ -268,6 +276,9 @@ export async function transformVue(
     templateImportUTSComponentsCode =
       templateResult.importUTSComponents.join('\n')
     templateSourceMap = templateResult.map
+    if (process.env.NODE_ENV === 'production') {
+      addExtApiComponents(templateResult.elements)
+    }
   }
   // 生成 script 文件
   // console.log(descriptor.script?.loc)
@@ -287,7 +298,8 @@ export async function transformVue(
   if (descriptor.styles.length) {
     jsCode += '\n' + (await genJsStylesCode(descriptor, pluginContext!))
   }
-  jsCode += `\nexport default "${className}"`
+  jsCode += `\nexport default "${className}"
+export const ${genComponentPublicInstanceImported(options.root, filename)} = {}`
   return {
     errors: [],
     uts: utsCode,

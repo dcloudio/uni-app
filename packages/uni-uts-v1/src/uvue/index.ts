@@ -16,6 +16,7 @@ import {
   resolveKotlincArgs,
   createStderrListener,
   getUniModulesEncryptCacheJars,
+  RunKotlinBuildResult,
 } from '../kotlin'
 import { parseUTSSyntaxError } from '../stacktrace'
 import {
@@ -24,8 +25,10 @@ import {
   resolveUniAppXSourceMapPath,
   isUniCloudSupported,
   parseExtApiDefaultParameters,
+  parseExtApiModules,
 } from '../utils'
 import { KotlinManifestCache } from '../stacktrace/kotlin'
+import { isWindows } from '../shared'
 
 const DEFAULT_IMPORTS = [
   'kotlinx.coroutines.async',
@@ -60,6 +63,8 @@ export interface CompileAppOptions {
   disableSplitManifest?: boolean
   uniCloudObjectInfo?: Array<UniCloudObjectInfo>
   pageCount: number
+  extApiComponents: string[]
+  uvueClassNamePrefix?: string
 }
 
 export async function compileApp(entry: string, options: CompileAppOptions) {
@@ -125,7 +130,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
         uniExtApiDefaultNamespace: 'io.dcloud.uniapp.extapi',
         uniExtApiNamespaces: extApis,
         uniExtApiDefaultParameters: parseExtApiDefaultParameters(),
-        uvueClassNamePrefix: 'Gen',
+        uvueClassNamePrefix: options.uvueClassNamePrefix || 'Gen',
         uniCloudObjectInfo: options.uniCloudObjectInfo,
       },
     },
@@ -281,6 +286,12 @@ async function runKotlinDev(
             `检测到编译缓存部分失效，开始差量编译。详见：https://uniapp.dcloud.net.cn/uni-app-x/compiler/#cache`
           )
         }
+        // 仅windows
+        if (isWindows) {
+          console.log(
+            `请在杀毒软件中设置扫描排除名单，减少系统资源消耗。[详情](https://uniapp.dcloud.net.cn/uni-app-x/compiler/#tips)`
+          )
+        }
       }
       const {
         getDefaultJar,
@@ -348,8 +359,35 @@ async function runKotlinDev(
   return result
 }
 
-async function runKotlinBuild(_options: CompileAppOptions, _result: UTSResult) {
-  // TODO
+async function runKotlinBuild(options: CompileAppOptions, result: UTSResult) {
+  ;(result as RunKotlinBuildResult).type = 'kotlin'
+  ;(result as RunKotlinBuildResult).inject_modules = parseInjectModules(
+    result.inject_apis || [],
+    options.extApiComponents
+  )
+  ;(result as RunKotlinBuildResult).kotlinc = false
+  return result as RunKotlinBuildResult
+}
+
+function parseInjectModules(inject_apis: string[], extApiComponents: string[]) {
+  const modules = new Set<string>()
+  const extApiModules = parseExtApiModules()
+  inject_apis.forEach((api) => {
+    if (api.startsWith('uniCloud.')) {
+      modules.add('uni-cloud-client')
+    } else {
+      if (extApiModules[api]) {
+        modules.add(extApiModules[api])
+      }
+    }
+  })
+  extApiComponents.forEach((component) => {
+    const name = 'component.' + component
+    if (extApiModules[name]) {
+      modules.add(extApiModules[name])
+    }
+  })
+  return [...modules]
 }
 
 function hasKotlinManifestJson(kotlinSrcOutDir: string) {

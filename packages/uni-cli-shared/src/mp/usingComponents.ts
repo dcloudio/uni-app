@@ -25,7 +25,7 @@ import { camelize, capitalize, hyphenate } from '@vue/shared'
 import { addLeadingSlash } from '@dcloudio/uni-shared'
 import { M } from '../messages'
 import { BINDING_COMPONENTS, EXTNAME_VUE_RE } from '../constants'
-import { normalizeMiniProgramFilename, removeExt } from '../utils'
+import { isAppVue, normalizeMiniProgramFilename, removeExt } from '../utils'
 import { cleanUrl, parseVueRequest } from '../vite/utils'
 import { addMiniProgramUsingComponents } from '../json/mp/jsonFile'
 
@@ -363,7 +363,7 @@ async function parseGlobalDescriptor(
       ) as ImportDeclaration[],
       resolve
     )
-  ).filter((item) => !cleanUrl(item.source.value).endsWith('App.vue'))
+  ).filter((item) => !isAppVue(cleanUrl(item.source.value)))
   return {
     bindingComponents: parseGlobalComponents(ast),
     imports,

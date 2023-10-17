@@ -2,6 +2,9 @@ import {
   isVueSfcFile,
   uniCssScopedPlugin,
   UNI_EASYCOM_EXCLUDE,
+  resolveUTSCompiler,
+  uniUTSJsPlugin,
+  isAppVue,
 } from '@dcloudio/uni-cli-shared'
 import { uniH5Plugin } from './plugin'
 import { uniCssPlugin } from './plugins/css'
@@ -17,9 +20,12 @@ import { uniSetupPlugin } from './plugins/setup'
 import { uniSSRPlugin } from './plugins/ssr'
 
 export default [
+  ...(process.env.UNI_APP_X === 'true'
+    ? [uniUTSJsPlugin(), resolveUTSCompiler().uts2js({})]
+    : []),
   uniEasycomPlugin({ exclude: UNI_EASYCOM_EXCLUDE }),
   uniCssScopedPlugin({
-    filter: (id) => isVueSfcFile(id) && !id.endsWith('App.vue'),
+    filter: (id) => isVueSfcFile(id) && !isAppVue(id),
   }),
   uniResolveIdPlugin(),
   uniMainJsPlugin(),

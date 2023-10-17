@@ -4,6 +4,7 @@ import type { Plugin } from 'vite'
 import { EXTNAME_VUE } from '../../constants'
 import { preHtml, preJs } from '../../preprocess'
 import { parseVueCode } from '../../vue/parse'
+import { isAppVue } from '../../utils'
 
 const debugScoped = debug('uni:scoped')
 
@@ -65,7 +66,7 @@ export function uniCssScopedPlugin(
       if (!EXTNAME_VUE.includes(path.extname(ctx.file))) {
         return
       }
-      const scoped = !ctx.file.endsWith('App.vue')
+      const scoped = !isAppVue(ctx.file)
       debugScoped('hmr', ctx.file)
       const oldRead = ctx.read
       ctx.read = async () => {

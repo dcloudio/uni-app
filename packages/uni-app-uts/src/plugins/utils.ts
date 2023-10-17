@@ -15,6 +15,8 @@ import {
   isString,
 } from '@vue/shared'
 
+export const UVUE_CLASS_NAME_PREFIX = 'Gen'
+
 export const DEFAULT_APPID = 'HBuilder'
 
 export const ENTRY_FILENAME = 'index.uts'
@@ -62,7 +64,16 @@ export function uvueOutDir() {
 export function genClassName(fileName: string, prefix: string = 'Gen') {
   return (
     prefix +
-    capitalize(camelize(removeExt(normalizePath(fileName).replace(/\//g, '-'))))
+    capitalize(
+      camelize(
+        removeExt(normalizeNodeModules(fileName).replace(/\//g, '-'))
+          .replace(
+            /@/g, // node-modules/@dcloudio/....
+            ''
+          )
+          .replace(/\./g, '')
+      )
+    )
   )
 }
 
@@ -204,4 +215,15 @@ export function getUniCloudObjectInfo(
     console.error(e)
     return []
   }
+}
+
+const extApiComponents: Set<string> = new Set()
+export function addExtApiComponents(components: string[]) {
+  components.forEach((component) => {
+    extApiComponents.add(component)
+  })
+}
+
+export function getExtApiComponents() {
+  return extApiComponents
 }

@@ -72,6 +72,7 @@ export const customElements = [
   'mkt',
   'page-container',
   'page-meta',
+  'lottie',
 ]
 
 export const options: UniMiniProgramPluginOptions = {

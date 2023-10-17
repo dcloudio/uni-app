@@ -32,6 +32,7 @@
   "devDependencies": {
     "@types/adm-zip": "^0.5.0",
     "@types/android-versions": "^1.8.0",
-    "@types/fs-extra": "^9.0.13"
+    "@types/fs-extra": "^9.0.13",
+    "rollup": "^3.7.0"
   }
 }

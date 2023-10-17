@@ -2,7 +2,6 @@ import { isElementNode } from '@dcloudio/uni-cli-shared'
 import {
   CompoundExpressionNode,
   ElementNode,
-  ElementTypes,
   InterpolationNode,
   NodeTypes,
   TemplateChildNode,
@@ -53,25 +52,6 @@ export const transformText: NodeTransform = (node, _) => {
     if (isTextElement(child)) {
       parseText(child as ElementNode)
     }
-
-    let currentContainer: ElementNode | undefined = undefined
-    if (isText(child)) {
-      if (!currentContainer) {
-        currentContainer = children[i] = createText(node, child)
-      }
-      for (let j = i + 1; j < children.length; j++) {
-        const next = children[j]
-        if (isText(next)) {
-          // 合并相邻的文本节点
-          currentContainer.children.push(next)
-          children.splice(j, 1)
-          j--
-        } else {
-          currentContainer = undefined
-          break
-        }
-      }
-    }
   }
 }
 
@@ -101,23 +81,6 @@ function parseText(node: ElementNode) {
         firstTextChild = null
       }
     }
-  }
-}
-
-function createText(
-  parent: ElementNode,
-  node: TextNode | TextCallNode | InterpolationNode | CompoundExpressionNode
-): ElementNode {
-  return {
-    tag: 'text',
-    type: NodeTypes.ELEMENT,
-    tagType: ElementTypes.ELEMENT,
-    props: [],
-    isSelfClosing: false,
-    children: [node],
-    codegenNode: undefined,
-    ns: parent.ns,
-    loc: node.loc,
   }
 }
 

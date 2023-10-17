@@ -94,7 +94,7 @@ const initUniCloudWarningOnce = once(() => {
 })
 
 function checkProjectUniCloudDir() {
-  return !!sync(['uniCloud-aliyun', 'uniCloud-tcb'], {
+  return !!sync(['uniCloud-aliyun', 'uniCloud-tcb', 'uniCloud-alipay'], {
     cwd: isInHBuilderX()
       ? process.env.UNI_INPUT_DIR
       : process.env.UNI_CLI_CONTEXT,
@@ -120,7 +120,7 @@ function checkUniModules() {
       console.warn(
         `${uniCloudModules.join(
           ', '
-        )} 使用了uniCloud，而项目未启动uniCloud。需在项目点右键创建uniCloud环境`
+        )} 使用了uniCloud，而项目未启用uniCloud。需在项目点右键创建uniCloud环境`
       )
     }
   }
