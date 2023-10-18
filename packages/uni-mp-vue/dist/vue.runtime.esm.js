@@ -5176,7 +5176,13 @@ function renderComponentRoot(instance) {
         handleError(err, instance, 1 /* ErrorCodes.RENDER_FUNCTION */);
         result = false;
     }
-    setRef$1(instance);
+    if (ctx.$mpPlatform === 'mp-xhs'){
+        setTimeout(() => {
+            setRef$1(instance);
+        });
+    } else {
+        setRef$1(instance);
+    }
     setCurrentRenderingInstance(prev);
     return result;
 }
@@ -5672,7 +5678,7 @@ function vOn(value, key) {
     const ctx = instance.ctx;
     // 微信小程序，QQ小程序，当 setData diff 的时候，若事件不主动同步过去，会导致事件绑定不更新，（question/137217）
     const extraKey = typeof key !== 'undefined' &&
-        (ctx.$mpPlatform === 'mp-weixin' || ctx.$mpPlatform === 'mp-qq') &&
+        (ctx.$mpPlatform === 'mp-weixin' || ctx.$mpPlatform === 'mp-qq' || ctx.$mpPlatform === 'mp-xhs') &&
         (isString(key) || typeof key === 'number')
         ? '_' + key
         : '';

@@ -551,7 +551,11 @@ function updateComponentProps(up, instance) {
             invalidateJob(instance.update);
         }
         {
-            instance.update();
+            // 字节跳动小程序 https://github.com/dcloudio/uni-app/issues/3340
+            // 百度小程序 https://github.com/dcloudio/uni-app/issues/3612
+            if (!hasQueueJob(instance.update)) {
+                instance.update();
+            }
         }
     }
 }
@@ -858,23 +862,22 @@ function initCreatePage() {
                 };
                 // 初始化 vue 实例
                 this.props = query;
+                this.$vm = createVueComponent('page', this, vueOptions);
+                initSpecialMethods(this);
+                this.$vm.$callHook(ON_LOAD, this.options);
             },
             onShow() {
+                this.$vm.$callHook(ON_SHOW);
                 if (__VUE_PROD_DEVTOOLS__) {
                     devtoolsComponentAdded(this.$vm.$);
                 }
-                this.$vm = createVueComponent('page', this, vueOptions);
-                this.$vm.$callHook('mounted');
-                this.$vm.$callHook(ON_LOAD, this.options);
-                initSpecialMethods(this);
-                if (this.$vm) {
-                    this.$vm.$callHook(ON_SHOW);
-                }
             },
             onReady() {
+                // 确保页面自定义组件都被收集到
                 setTimeout(() => {
+                    this.$vm.$callHook('mounted');
                     this.$vm.$callHook(ON_READY);
-                }, 50);
+                }, 100);
             },
             onUnload() {
                 if (this.$vm) {
