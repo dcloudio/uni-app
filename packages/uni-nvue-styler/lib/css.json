@@ -2125,13 +2125,52 @@
       ],
       "syntax": "<line-width>{1,4}",
       "values": [{
-          "name": "thin"
+          "name": "thin",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.93"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√"
+              }
+            }
+          }
         },
         {
-          "name": "medium"
+          "name": "medium",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.93"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√"
+              }
+            }
+          }
         },
         {
-          "name": "thick"
+          "name": "thick",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.93"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√"
+              }
+            }
+          }
         }
       ],
       "uniPlatform": {
@@ -2160,13 +2199,52 @@
       ],
       "syntax": "<line-width>",
       "values": [{
-          "name": "thin"
+          "name": "thin",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.93"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√"
+              }
+            }
+          }
         },
         {
-          "name": "medium"
+          "name": "medium",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.93"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√"
+              }
+            }
+          }
         },
         {
-          "name": "thick"
+          "name": "thick",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.93"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√"
+              }
+            }
+          }
         }
       ],
       "uniPlatform": {
@@ -2195,13 +2273,52 @@
       ],
       "syntax": "<line-width>",
       "values": [{
-          "name": "thin"
+          "name": "thin",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.93"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√"
+              }
+            }
+          }
         },
         {
-          "name": "medium"
+          "name": "medium",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.93"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√"
+              }
+            }
+          }
         },
         {
-          "name": "thick"
+          "name": "thick",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.93"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√"
+              }
+            }
+          }
         }
       ],
       "uniPlatform": {
@@ -2230,13 +2347,52 @@
       ],
       "syntax": "<line-width>",
       "values": [{
-          "name": "thin"
+          "name": "thin",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.93"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√"
+              }
+            }
+          }
         },
         {
-          "name": "medium"
+          "name": "medium",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.93"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√"
+              }
+            }
+          }
         },
         {
-          "name": "thick"
+          "name": "thick",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.93"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√"
+              }
+            }
+          }
         }
       ],
       "uniPlatform": {
@@ -2265,13 +2421,52 @@
       ],
       "syntax": "<line-width>",
       "values": [{
-          "name": "thin"
+          "name": "thin",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.93"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√"
+              }
+            }
+          }
         },
         {
-          "name": "medium"
+          "name": "medium",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.93"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√"
+              }
+            }
+          }
         },
         {
-          "name": "thick"
+          "name": "thick",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.93"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√"
+              }
+            }
+          }
         }
       ],
       "uniPlatform": {
