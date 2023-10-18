@@ -61,22 +61,6 @@ export function uvueOutDir() {
   return path.join(process.env.UNI_OUTPUT_DIR, '../.uvue')
 }
 
-export function genClassName(fileName: string, prefix: string = 'Gen') {
-  return (
-    prefix +
-    capitalize(
-      camelize(
-        removeExt(normalizeNodeModules(fileName).replace(/\//g, '-'))
-          .replace(
-            /@/g, // node-modules/@dcloudio/....
-            ''
-          )
-          .replace(/\./g, '')
-      )
-    )
-  )
-}
-
 export function isVue(filename: string) {
   return filename.endsWith('.vue') || filename.endsWith('.uvue')
 }
@@ -226,4 +210,51 @@ export function addExtApiComponents(components: string[]) {
 
 export function getExtApiComponents() {
   return extApiComponents
+}
+
+export function genClassName(fileName: string, prefix: string = 'Gen') {
+  return (
+    prefix +
+    capitalize(
+      camelize(
+        verifySymbol(
+          removeExt(normalizeNodeModules(fileName).replace(/[\/|_]/g, '-'))
+        )
+      )
+    )
+  )
+}
+
+function isValidStart(c: string): boolean {
+  return !!c.match(/^[A-Za-z_-]$/)
+}
+
+function isValidContinue(c: string): boolean {
+  return !!c.match(/^[A-Za-z0-9_-]$/)
+}
+
+function verifySymbol(s: string) {
+  const chars = Array.from(s)
+
+  if (isValidStart(chars[0]) && chars.slice(1).every(isValidContinue)) {
+    return s
+  }
+
+  const buf: string[] = []
+  let hasStart = false
+
+  for (const c of chars) {
+    if (!hasStart && isValidStart(c)) {
+      hasStart = true
+      buf.push(c)
+    } else if (isValidContinue(c)) {
+      buf.push(c)
+    }
+  }
+
+  if (buf.length === 0) {
+    buf.push('_')
+  }
+
+  return buf.join('')
 }
