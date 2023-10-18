@@ -304,7 +304,7 @@ export function componentSetData(
 export function getChildrenText(node: INode): string {
   let result = ''
   node.childNodes.forEach((child) => {
-    if (child.tagName == 'TEXT') {
+    if (child.tagName == 'TEXT' || child.tagName == 'UNI-BUTTON-ELEMENT') {
       result += child.getAttribute('value')
     } else {
       result += getChildrenText(child)

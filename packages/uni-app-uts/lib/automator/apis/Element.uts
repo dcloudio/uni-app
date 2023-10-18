@@ -99,7 +99,7 @@ export const getDOMProperties = (
   if (dom != null) {
     const properties = params.names.map((name: string): any | null => {
       if (name == 'innerText') {
-        if (dom.tagName == 'TEXT') {
+        if (dom.tagName == 'TEXT' || dom.tagName == 'UNI-BUTTON-ELEMENT') {
           return dom.getAttribute('value')
         } else {
           return getChildrenText(dom)
