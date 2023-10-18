@@ -103,6 +103,8 @@
       super(data, pageNode)
     }
 
+    dataList : Array<UTSJSONObject> = []
+
     loadData(options : UTSJSONObject = {}) {
       this.onLoadData({
         clear: options.getBoolean('clear'),
@@ -321,6 +323,7 @@
     mounted() {
       const uniCloudDBElement = this.$refs.get('UniCloudDB') as UniCloudDBElement
       // TODO 暂不支持Web平台 ?.bind(this);
+      uniCloudDBElement.dataList = this.dataList;
       uniCloudDBElement.onLoadData = this.loadData;
       uniCloudDBElement.onLoadMore = this.loadMore;
       uniCloudDBElement.onAdd = this.add;
