@@ -11,7 +11,7 @@ import {
 } from './interface'
 import { GoogleMap, QQMap } from '../maps'
 import { hexToRgba } from '../../../../helpers/hexToRgba'
-import { getIsAMap } from '../../../../helpers/location'
+import { getIsAMap, getIsBMap } from '../../../../helpers/location'
 import { QQMaps } from '../maps/qq/types'
 import { GoogleMaps } from '../maps/google/types'
 
@@ -43,9 +43,17 @@ export default /*#__PURE__*/ defineSystemComponent({
 
           const path = points.map((item: Point) => {
             const { latitude, longitude } = item
-            return getIsAMap()
-              ? [longitude, latitude]
-              : new (maps as QQMaps | GoogleMaps).LatLng(latitude, longitude)
+            if (getIsAMap()) {
+              return [longitude, latitude]
+            } else if (getIsBMap()) {
+              // @ts-ignore
+              return new maps.Point(longitude, latitude)
+            } else {
+              return new (maps as QQMaps | GoogleMaps).LatLng(
+                latitude,
+                longitude
+              )
+            }
           })
 
           const { r: fcR, g: fcG, b: fcB, a: fcA } = hexToRgba(fillColor)
@@ -118,9 +126,15 @@ export default /*#__PURE__*/ defineSystemComponent({
             polygonIns.setOptions(polygonOptions)
             return
           }
-
-          // 说明是新增区域
-          polygonIns = new maps.Polygon(polygonOptions)
+          if (getIsBMap()) {
+            // @ts-ignore
+            polygonIns = new maps.Polygon(polygonOptions.path, polygonOptions)
+            // @ts-ignore
+            map.addOverlay(polygonIns)
+          } else {
+            // 说明是新增区域
+            polygonIns = new maps.Polygon(polygonOptions)
+          }
         }
 
         // 给地图添加区域

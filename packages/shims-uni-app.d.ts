@@ -68,6 +68,7 @@ declare namespace UniNamespace {
     tabBar?: TabBarOptions
     subPackages?: { root: string }[]
     qqMapKey?: string
+    bMapKey?: string
     googleMapKey?: string
     aMapKey?: string
     aMapServiceHost?: string

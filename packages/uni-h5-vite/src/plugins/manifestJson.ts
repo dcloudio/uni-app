@@ -62,6 +62,9 @@ export function uniManifestJsonPlugin(): Plugin {
         const qqMapKey =
           sdkConfigs.maps && sdkConfigs.maps.qqmap && sdkConfigs.maps.qqmap.key
 
+        const bMapKey =
+          sdkConfigs.maps && sdkConfigs.maps.bmap && sdkConfigs.maps.bmap.key
+
         const googleMapKey =
           sdkConfigs.maps &&
           sdkConfigs.maps.google &&
@@ -119,6 +122,7 @@ export function uniManifestJsonPlugin(): Plugin {
   export const router = ${JSON.stringify(router)}
   export const async = ${JSON.stringify(async)}
   export const qqMapKey = ${JSON.stringify(qqMapKey)}
+  export const bMapKey = ${JSON.stringify(bMapKey)}
   export const googleMapKey = ${JSON.stringify(googleMapKey)}
   export const aMapKey = ${JSON.stringify(aMapKey)}
   export const aMapSecurityJsCode = ${JSON.stringify(aMapSecurityJsCode)}

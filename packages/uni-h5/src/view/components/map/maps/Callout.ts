@@ -1,4 +1,4 @@
-import { getIsAMap } from '../../../../helpers/location'
+import { getIsAMap, getIsBMap } from '../../../../helpers/location'
 import { QQMaps, Overlay, LatLng as QLatLng } from './qq/types'
 import { GoogleMaps, OverlayView, LatLng as GLatLng } from './google/types'
 export interface CalloutOptions {
@@ -57,7 +57,15 @@ export function createCallout(maps: QQMaps | GoogleMaps | AMap.NameSpace) {
     this.Text.setMap(option.map)
   }
 
+  function createBMapText(this: Callout) {}
+
   function removeAMapText(this: Callout) {
+    if (this.Text) {
+      this.option.map.remove(this.Text)
+    }
+  }
+
+  function removeBMapText(this: Callout) {
     if (this.Text) {
       this.option.map.remove(this.Text)
     }
@@ -122,6 +130,10 @@ export function createCallout(maps: QQMaps | GoogleMaps | AMap.NameSpace) {
         if (this.visible) {
           this.createAMapText()
         }
+      } else if (getIsBMap()) {
+        if (this.visible) {
+          this.createBMapText()
+        }
       } else {
         const map = option.map
         this.position = option.position
@@ -150,6 +162,9 @@ export function createCallout(maps: QQMaps | GoogleMaps | AMap.NameSpace) {
     createAMapText = createAMapText
     removeAMapText = removeAMapText
 
+    createBMapText = createBMapText
+    removeBMapText = removeBMapText
+
     onAdd = onAdd
     construct = onAdd
     setOption(option: CalloutOptions) {
@@ -163,6 +178,10 @@ export function createCallout(maps: QQMaps | GoogleMaps | AMap.NameSpace) {
       if (getIsAMap()) {
         if (this.visible) {
           this.createAMapText()
+        }
+      } else if (getIsBMap()) {
+        if (this.visible) {
+          this.createBMapText()
         }
       } else {
         this.setPosition(option.position)
@@ -208,7 +227,7 @@ export function createCallout(maps: QQMaps | GoogleMaps | AMap.NameSpace) {
     destroy = onRemove
   }
 
-  if (!getIsAMap()) {
+  if (!getIsAMap() && !getIsBMap()) {
     const overlay: OverlayView | Overlay = new ((maps as GoogleMaps)
       .OverlayView || (maps as QQMaps).Overlay)()
     // @ts-ignore
