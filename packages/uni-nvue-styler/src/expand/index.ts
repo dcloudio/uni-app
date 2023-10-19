@@ -5,7 +5,7 @@ import {
   hyphenateStyleProperty,
 } from '../utils'
 import { transformBackground } from './background'
-import { transformBorder } from './border'
+import { createTransformBorder } from './border'
 import { transformBorderColor } from './borderColor'
 import { transformBorderRadius } from './borderRadius'
 import { transformBorderStyle } from './borderStyle'
@@ -19,6 +19,7 @@ import { transformTransition } from './transition'
 function getDeclTransforms(
   options: NormalizeOptions
 ): Record<string, TransformDecl> {
+  const transformBorder = createTransformBorder(options)
   const styleMap: Record<string, TransformDecl> = {
     transition: transformTransition,
     border: transformBorder,
