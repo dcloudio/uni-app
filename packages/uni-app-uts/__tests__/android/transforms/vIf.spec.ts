@@ -22,10 +22,10 @@ import {
   TO_HANDLERS,
   transformElement,
 } from '@vue/compiler-core'
-import { transformIf } from '../../src/plugins/uvue/compiler/transforms/vIf'
-import { transformSlotOutlet } from '../../src/plugins/uvue/compiler/transforms/transformSlotOutlet'
-import { generate } from '../../src/plugins/uvue/compiler/codegen'
-import { RENDER_SLOT } from '../../src/plugins/uvue/compiler/runtimeHelpers'
+import { transformIf } from '../../../src/plugins/android/uvue/compiler/transforms/vIf'
+import { transformSlotOutlet } from '../../../src/plugins/android/uvue/compiler/transforms/transformSlotOutlet'
+import { generate } from '../../../src/plugins/android/uvue/compiler/codegen'
+import { RENDER_SLOT } from '../../../src/plugins/android/uvue/compiler/runtimeHelpers'
 import { assert, createObjectMatcher } from '../testUtils'
 
 function parseWithIfTransform(

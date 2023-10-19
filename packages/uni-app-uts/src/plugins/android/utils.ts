@@ -193,7 +193,7 @@ export function getUniCloudObjectInfo(
       ) || 'aliyun'
   }
   try {
-    const { getWorkspaceObjectInfo } = require('../../lib/unicloud-utils')
+    const { getWorkspaceObjectInfo } = require('../../../lib/unicloud-utils')
     return getWorkspaceObjectInfo(uniCloudWorkspaceFolder, serviceProvider)
   } catch (e) {
     console.error(e)

@@ -1,5 +1,5 @@
-import { compile } from '../src/plugins/uvue/compiler/index'
-import { CompilerOptions } from '../src/plugins/uvue/compiler/options'
+import { compile } from '../../src/plugins/android/uvue/compiler/index'
+import { CompilerOptions } from '../../src/plugins/android/uvue/compiler/options'
 import { NodeTypes } from '@vue/compiler-core'
 import {
   isString,

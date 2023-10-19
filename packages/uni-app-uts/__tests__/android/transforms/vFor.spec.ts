@@ -13,18 +13,18 @@ import {
   ConstantTypes,
   transformElement,
 } from '@vue/compiler-core'
-import { transformIf } from '../../src/plugins/uvue/compiler/transforms/vIf'
-import { transformFor } from '../../src/plugins/uvue/compiler/transforms/vFor'
-import { transformSlotOutlet } from '../../src/plugins/uvue/compiler/transforms/transformSlotOutlet'
-import { transformExpression } from '../../src/plugins/uvue/compiler/transforms/transformExpression'
-import { transformBind } from '../../src/plugins/uvue/compiler/transforms/vBind'
+import { transformIf } from '../../../src/plugins/android/uvue/compiler/transforms/vIf'
+import { transformFor } from '../../../src/plugins/android/uvue/compiler/transforms/vFor'
+import { transformSlotOutlet } from '../../../src/plugins/android/uvue/compiler/transforms/transformSlotOutlet'
+import { transformExpression } from '../../../src/plugins/android/uvue/compiler/transforms/transformExpression'
+import { transformBind } from '../../../src/plugins/android/uvue/compiler/transforms/vBind'
 import { assert, createObjectMatcher, genFlagText } from '../testUtils'
-import { generate } from '../../src/plugins/uvue/compiler/codegen'
+import { generate } from '../../../src/plugins/android/uvue/compiler/codegen'
 import {
   FRAGMENT,
   RENDER_LIST,
   RENDER_SLOT,
-} from '../../src/plugins/uvue/compiler/runtimeHelpers'
+} from '../../../src/plugins/android/uvue/compiler/runtimeHelpers'
 
 function parseWithForTransform(
   template: string,

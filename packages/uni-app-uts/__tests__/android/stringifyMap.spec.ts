@@ -1,4 +1,4 @@
-import { stringifyMap } from '../src/plugins/utils'
+import { stringifyMap } from '../../src/plugins/android/utils'
 
 describe('stringifyMap', () => {
   test(`basic`, () => {

@@ -8,9 +8,9 @@ import {
   VNodeCall,
   transformElement,
 } from '@vue/compiler-core'
-import { transformOn } from '../../src/plugins/uvue/compiler/transforms/vOnWithModifier'
-import { V_ON_WITH_MODIFIERS } from '../../src/plugins/uvue/compiler/runtimeHelpers'
-import { transformExpression } from '../../src/plugins/uvue/compiler/transforms/transformExpression'
+import { transformOn } from '../../../src/plugins/android/uvue/compiler/transforms/vOnWithModifier'
+import { V_ON_WITH_MODIFIERS } from '../../../src/plugins/android/uvue/compiler/runtimeHelpers'
+import { transformExpression } from '../../../src/plugins/android/uvue/compiler/transforms/transformExpression'
 
 function parseWithVOn(template: string, options: CompilerOptions = {}) {
   const ast = parse(template)

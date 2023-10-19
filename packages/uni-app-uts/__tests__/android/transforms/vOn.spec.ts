@@ -12,8 +12,8 @@ import {
   ObjectExpression,
   VNodeCall,
 } from '@vue/compiler-core'
-import { transformOn } from '../../src/plugins/uvue/compiler/transforms/vOn'
-import { transformExpression } from '../../src/plugins/uvue/compiler/transforms/transformExpression'
+import { transformOn } from '../../../src/plugins/android/uvue/compiler/transforms/vOn'
+import { transformExpression } from '../../../src/plugins/android/uvue/compiler/transforms/transformExpression'
 import { assert } from '../testUtils'
 
 function parseWithVOn(template: string, options: CompilerOptions = {}) {

@@ -1,4 +1,4 @@
-import { genClassName } from '../src/plugins/utils'
+import { genClassName } from '../../src/plugins/android/utils'
 
 describe('uts:utils', () => {
   test(`genClassName`, () => {

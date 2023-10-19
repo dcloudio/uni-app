@@ -1,34 +1,9 @@
-import {
-  parseUniExtApiNamespacesOnce,
-  uniUTSAppPlugin,
-} from '@dcloudio/uni-cli-shared'
-import { uniAppUTSPlugin } from './plugins'
-import { uniAppCssPlugin } from './plugins/css'
-import { uniAppMainPlugin } from './plugins/mainUTS'
-import { uniAppManifestPlugin } from './plugins/manifestJson'
-import { uniAppPagesPlugin } from './plugins/pagesJson'
-import { uniPrePlugin } from './plugins/pre'
-import { uniAppUVuePlugin } from './plugins/uvue'
-import { uniCloudPlugin } from './plugins/unicloud'
-export default () => {
-  return [
-    uniPrePlugin(),
-    uniUTSAppPlugin({
-      x: true,
-      extApis: parseUniExtApiNamespacesOnce(
-        process.env.UNI_UTS_PLATFORM,
-        process.env.UNI_UTS_TARGET_LANGUAGE
-      ),
-    }),
-    uniAppUTSPlugin(),
-    uniAppMainPlugin(),
-    uniAppManifestPlugin(),
-    uniAppPagesPlugin(),
-    uniAppCssPlugin(),
-    uniAppUVuePlugin(),
-    uniCloudPlugin(),
-  ]
-}
+import { initAndroid, initIOS } from './plugins'
 
-export { genClassName } from './plugins/utils'
-export { transformVue } from './plugins/uvue/index'
+export default process.env.UNI_APP_X === 'true' &&
+process.env.UNI_UTS_PLATFORM === 'app-android'
+  ? initAndroid()
+  : initIOS()
+
+export { genClassName } from './plugins/android/utils'
+export { transformVue } from './plugins/android/uvue/index'

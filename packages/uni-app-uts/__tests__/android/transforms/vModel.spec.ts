@@ -16,10 +16,10 @@ import {
   transformElement,
   trackSlotScopes,
 } from '@vue/compiler-core'
-import { transformFor } from '../../src/plugins/uvue/compiler/transforms/vFor'
-import { transformExpression } from '../../src/plugins/uvue/compiler/transforms/transformExpression'
-import { transformModel } from '../../src/plugins/uvue/compiler/transforms/vModel'
-import { generate } from '../../src/plugins/uvue/compiler/codegen'
+import { transformFor } from '../../../src/plugins/android/uvue/compiler/transforms/vFor'
+import { transformExpression } from '../../../src/plugins/android/uvue/compiler/transforms/transformExpression'
+import { transformModel } from '../../../src/plugins/android/uvue/compiler/transforms/vModel'
+import { generate } from '../../../src/plugins/android/uvue/compiler/codegen'
 import { CallExpression } from '@babel/types'
 import { assert } from '../testUtils'
 

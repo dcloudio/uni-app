@@ -14,8 +14,8 @@ import {
   NORMALIZE_PROPS,
   transformElement,
 } from '@vue/compiler-core'
-import { transformBind } from '../../src/plugins/uvue/compiler/transforms/vBind'
-import { transformExpression } from '../../src/plugins/uvue/compiler/transforms/transformExpression'
+import { transformBind } from '../../../src/plugins/android/uvue/compiler/transforms/vBind'
+import { transformExpression } from '../../../src/plugins/android/uvue/compiler/transforms/transformExpression'
 import { assert } from '../testUtils'
 
 function parseWithVBind(

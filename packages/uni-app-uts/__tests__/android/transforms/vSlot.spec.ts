@@ -20,13 +20,13 @@ import {
   CREATE_SLOTS,
   RENDER_LIST,
 } from '@vue/compiler-core'
-import { transformOn } from '../../src/plugins/uvue/compiler/transforms/vOn'
-import { transformBind } from '../../src/plugins/uvue/compiler/transforms/vBind'
-import { transformExpression } from '../../src/plugins/uvue/compiler/transforms/transformExpression'
-import { transformSlotOutlet } from '../../src/plugins/uvue/compiler/transforms/transformSlotOutlet'
+import { transformOn } from '../../../src/plugins/android/uvue/compiler/transforms/vOn'
+import { transformBind } from '../../../src/plugins/android/uvue/compiler/transforms/vBind'
+import { transformExpression } from '../../../src/plugins/android/uvue/compiler/transforms/transformExpression'
+import { transformSlotOutlet } from '../../../src/plugins/android/uvue/compiler/transforms/transformSlotOutlet'
 import { assert, createObjectMatcher, genFlagText } from '../testUtils'
-import { transformFor } from '../../src/plugins/uvue/compiler/transforms/vFor'
-import { transformIf } from '../../src/plugins/uvue/compiler/transforms/vIf'
+import { transformFor } from '../../../src/plugins/android/uvue/compiler/transforms/vFor'
+import { transformIf } from '../../../src/plugins/android/uvue/compiler/transforms/vIf'
 
 function parseWithSlots(template: string, options: CompilerOptions = {}) {
   const ast = parse(template, {
