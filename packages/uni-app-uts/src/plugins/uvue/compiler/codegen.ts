@@ -287,9 +287,7 @@ function genAssets(
         const componentId = toValidAssetId(id, type)
         assetCode = `const ${componentId} = ${helper(
           RESOLVE_EASY_COMPONENT
-        )}(${JSON.stringify(id)},${easyComponentId}${
-          maybeSelfReference ? `, true` : ``
-        })`
+        )}(${JSON.stringify(id)},${easyComponentId})`
         const importCode = `import ${easyComponentId}${genImportComponentPublicInstance(
           rootDir,
           id,

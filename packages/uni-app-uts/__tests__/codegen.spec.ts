@@ -59,18 +59,31 @@ describe('compiler:codegen', () => {
       }
     )
   })
-  test(`UTSComponents:kotlin`, () => {
+  test(`easycom`, () => {
     assert(
-      `<view><custom/><custom/><custom1/></view>`,
-      `import _easycom_custom, { GenComponentsCustomCustomComponentPublicInstance as CustomComponentPublicInstance } from '@/components/custom/custom.vue'\nimport _easycom_custom1, { GenComponentsCustom1Custom1ComponentPublicInstance as Custom1ComponentPublicInstance } from '@/components/custom1/custom1.vue'\n@Suppress("UNUSED_PARAMETER") function PagesIndexIndexRender(): VNode | null {\nconst _ctx = this\nconst _component_custom = resolveEasyComponent("custom",_easycom_custom)\nconst _component_custom1 = resolveEasyComponent("custom1",_easycom_custom1)\n\n  return createElementVNode("view", null, [\n    createVNode(_component_custom),\n    createVNode(_component_custom),\n    createVNode(_component_custom1)\n  ])\n}`,
+      `<view><custom/><custom/><custom1/><index/><index1/></view>`,
+      `import _easycom_custom, { GenComponentsCustomCustomComponentPublicInstance as CustomComponentPublicInstance } from '@/components/custom/custom.vue'\nimport _easycom_custom1, { GenComponentsCustom1Custom1ComponentPublicInstance as Custom1ComponentPublicInstance } from '@/components/custom1/custom1.vue'\nimport _easycom_index, { GenComponentsIndexIndexComponentPublicInstance as IndexComponentPublicInstance } from '@/components/index/index.vue'\n@Suppress("UNUSED_PARAMETER") function PagesIndexIndexRender(): VNode | null {\nconst _ctx = this\nconst _component_custom = resolveEasyComponent("custom",_easycom_custom)\nconst _component_custom1 = resolveEasyComponent("custom1",_easycom_custom1)\nconst _component_index = resolveEasyComponent("index",_easycom_index)\nconst _component_index1 = resolveComponent("index1")\n\n  return createElementVNode("view", null, [\n    createVNode(_component_custom),\n    createVNode(_component_custom),\n    createVNode(_component_custom1),\n    createVNode(_component_index),\n    createVNode(_component_index1)\n  ])\n}`,
       {
         targetLanguage: 'kotlin',
         mode: 'function',
         matchEasyCom(tag) {
-          if (tag.startsWith('custom')) {
+          if (tag.startsWith('custom') || tag === 'index') {
             return `@/components/${tag}/${tag}.vue`
           }
         },
+      }
+    )
+    assert(
+      `<index/>`,
+      `@Suppress(\"UNUSED_PARAMETER\") function PagesIndexIndexRender(): VNode | null {
+const _ctx = this
+const _component_index = resolveComponent(\"index\", true)
+
+  return createVNode(_component_index)
+}`,
+      {
+        targetLanguage: 'kotlin',
+        mode: 'function',
       }
     )
   })
