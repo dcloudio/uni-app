@@ -9,10 +9,7 @@ import type { OutputAsset } from 'rollup'
 import type { Plugin } from 'vite'
 
 import { ENTRY_FILENAME, genClassName, stringifyMap } from './utils'
-
-function isPages(id: string) {
-  return id.endsWith(PAGES_JSON_UTS)
-}
+import { isPages } from '../utils'
 
 export function uniAppPagesPlugin(): Plugin {
   const pagesJsonPath = path.resolve(process.env.UNI_INPUT_DIR, 'pages.json')

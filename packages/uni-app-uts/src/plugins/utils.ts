@@ -1,4 +1,6 @@
 import {
+  MANIFEST_JSON_UTS,
+  PAGES_JSON_UTS,
   UniViteCopyPluginOptions,
   UniVitePlugin,
   initI18nOptions,
@@ -34,4 +36,12 @@ export function createUniOptions(): UniVitePlugin['uni'] {
       }
     },
   }
+}
+
+export function isManifest(id: string) {
+  return id.endsWith(MANIFEST_JSON_UTS)
+}
+
+export function isPages(id: string) {
+  return id.endsWith(PAGES_JSON_UTS)
 }

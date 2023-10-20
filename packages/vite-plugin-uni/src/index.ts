@@ -259,6 +259,15 @@ function createUVuePlugins(options: VitePluginUniResolvedOptions) {
     process.env.NODE_ENV = process.env.UNI_NODE_ENV
   }
 
+  // iOS 需要使用
+  if (process.env.UNI_UTS_PLATFORM === 'app-ios') {
+    plugins.unshift(
+      createPluginVueInstance(
+        initPluginVueOptions(options, uniPlugins, uniPluginOptions)
+      )
+    )
+  }
+
   plugins.push(
     uniCopyPlugin({
       outputDir: process.env.UNI_OUTPUT_DIR,

@@ -1,9 +1,7 @@
 import path from 'path'
 import fs from 'fs-extra'
-import type { OutputAsset } from 'rollup'
 import type { Plugin } from 'vite'
 import { MANIFEST_JSON_UTS, parseJson } from '@dcloudio/uni-cli-shared'
-import { ENTRY_FILENAME } from './utils'
 import { isManifest } from '../utils'
 
 let outputManifestJson: Record<string, any> | undefined = undefined
@@ -41,34 +39,7 @@ export function uniAppManifestPlugin(): Plugin {
           path.resolve(process.env.UNI_INPUT_DIR, 'manifest.json')
         )
         manifestJson = parseJson(code)
-        return `export default 'manifest.json'`
-      }
-    },
-    generateBundle(_, bundle) {
-      if (bundle[ENTRY_FILENAME]) {
-        const asset = bundle[ENTRY_FILENAME] as OutputAsset
-        const singleThread =
-          manifestJson?.['uni-app-x']?.['singleThread'] === true
-            ? `override singleThread: Boolean = true`
-            : ''
-        asset.source =
-          asset.source +
-          `
-import { AppConfig } from "io.dcloud.uniapp.appframe"
-export class UniAppConfig extends AppConfig {
-    override name: string = "${manifestJson.name || ''}"
-    override appid: string = "${manifestJson.appid || ''}"
-    override versionName: string = "${manifestJson.versionName || ''}"
-    override versionCode: string = "${manifestJson.versionCode || ''}"
-    override uniCompileVersion: string = "${
-      process.env.UNI_COMPILER_VERSION || ''
-    }"
-    // override tabBar = __uniTabBar
-    // override launchPage = __uniLaunchPage
-    ${singleThread}
-    constructor() {}
-}
-`
+        return `export default ${JSON.stringify(manifestJson)}`
       }
     },
     writeBundle() {
