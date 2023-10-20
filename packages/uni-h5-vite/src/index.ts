@@ -3,7 +3,7 @@ import {
   uniCssScopedPlugin,
   UNI_EASYCOM_EXCLUDE,
   resolveUTSCompiler,
-  uniUTSJsPlugin,
+  uniUTSUVueJavaScriptPlugin,
   isAppVue,
 } from '@dcloudio/uni-cli-shared'
 import { uniH5Plugin } from './plugin'
@@ -21,7 +21,7 @@ import { uniSSRPlugin } from './plugins/ssr'
 
 export default [
   ...(process.env.UNI_APP_X === 'true'
-    ? [uniUTSJsPlugin(), resolveUTSCompiler().uts2js({})]
+    ? [uniUTSUVueJavaScriptPlugin(), resolveUTSCompiler().uts2js({})]
     : []),
   uniEasycomPlugin({ exclude: UNI_EASYCOM_EXCLUDE }),
   uniCssScopedPlugin({

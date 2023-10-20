@@ -28,10 +28,12 @@ interface UniUTSPluginOptions {
 
 export const utsPlugins = new Set<string>()
 
-export function uniUTSAppPlugin(options: UniUTSPluginOptions = {}): Plugin {
+export function uniUTSUniModulesPlugin(
+  options: UniUTSPluginOptions = {}
+): Plugin {
   process.env.UNI_UTS_USING_ROLLUP = 'true'
   return {
-    name: 'uni:uts',
+    name: 'uni:uts-uni_modules',
     apply: 'build',
     enforce: 'pre',
     resolveId(id, importer) {

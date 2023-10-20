@@ -1,10 +1,10 @@
 import type { Plugin } from 'vite'
 import { isVueSfcFile } from '../../../vue'
 
-export function uniUTSJsPlugin(options = {}): Plugin {
+export function uniUTSUVueJavaScriptPlugin(options = {}): Plugin {
   process.env.UNI_UTS_USING_ROLLUP = 'true'
   return {
-    name: 'uni:uts',
+    name: 'uni:uts-uvue',
     enforce: 'pre',
     configResolved(config) {
       // 移除自带的 esbuild 处理 ts 文件

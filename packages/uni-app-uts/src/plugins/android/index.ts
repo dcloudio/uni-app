@@ -1,10 +1,8 @@
 import path from 'path'
 import fs from 'fs-extra'
 import {
-  UniViteCopyPluginOptions,
   UniVitePlugin,
   emptyDir,
-  initI18nOptions,
   normalizePath,
   parseManifestJsonOnce,
   parseUniExtApiNamespacesOnce,
@@ -14,7 +12,6 @@ import {
   utsPlugins,
   injectAssetPlugin,
 } from '@dcloudio/uni-cli-shared'
-import { compileI18nJsonStr } from '@dcloudio/uni-i18n'
 import type { Plugin } from 'vite'
 import {
   DEFAULT_APPID,
@@ -27,7 +24,7 @@ import {
   UVUE_CLASS_NAME_PREFIX,
 } from './utils'
 import { getOutputManifestJson } from './manifestJson'
-import('./errorReporting')
+import { createUniOptions } from '../utils'
 
 const uniCloudSpaceList = getUniCloudSpaceList()
 
@@ -58,7 +55,7 @@ const REMOVED_PLUGINS = [
   'vite:reporter',
 ]
 let isFirst = true
-export function uniAppUTSPlugin(): UniVitePlugin {
+export function uniAppAndroidUTSPlugin(): UniVitePlugin {
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
   const mainUTS = resolveMainPathOnce(inputDir)
@@ -254,40 +251,4 @@ export function main(app: IApp) {
     (createApp()['app'] as VueApp).mount(app);
 }
 `
-}
-
-function createUniOptions(): UniVitePlugin['uni'] {
-  return {
-    copyOptions() {
-      const platform = process.env.UNI_PLATFORM
-      const inputDir = process.env.UNI_INPUT_DIR
-      const outputDir = process.env.UNI_OUTPUT_DIR
-      const targets: UniViteCopyPluginOptions['targets'] = []
-      // 自动化测试时，不启用隐私政策
-      if (!process.env.UNI_AUTOMATOR_WS_ENDPOINT) {
-        targets.push({
-          src: 'androidPrivacy.json',
-          dest: outputDir,
-          transform(source) {
-            const options = initI18nOptions(platform, inputDir, false, true)
-            if (!options) {
-              return
-            }
-            return compileI18nJsonStr(source.toString(), options)
-          },
-        })
-        const debugFilename = '__nvue_debug__'
-        if (fs.existsSync(path.resolve(inputDir, debugFilename))) {
-          targets.push({
-            src: debugFilename,
-            dest: outputDir,
-          })
-        }
-      }
-      return {
-        assets: ['hybrid/html/**/*', 'uni_modules/*/hybrid/html/**/*'],
-        targets,
-      }
-    },
-  }
 }
