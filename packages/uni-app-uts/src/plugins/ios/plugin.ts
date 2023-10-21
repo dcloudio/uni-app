@@ -3,7 +3,6 @@ import {
   APP_SERVICE_FILENAME,
   UniVitePlugin,
   emptyDir,
-  polyfillCode,
   resolveMainPathOnce,
 } from '@dcloudio/uni-cli-shared'
 import { createUniOptions } from '../utils'
@@ -61,7 +60,7 @@ export function uniAppIOSPlugin(): UniVitePlugin {
             external: ['vue', '@vue/shared'],
             output: {
               name: 'AppService',
-              banner: polyfillCode,
+              banner: ``,
               format: 'iife',
               entryFileNames: APP_SERVICE_FILENAME,
               globals: {

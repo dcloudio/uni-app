@@ -2,6 +2,7 @@ import path from 'path'
 import fs from 'fs-extra'
 import {
   PAGES_JSON_UTS,
+  normalizeAppPagesJson,
   normalizeUniAppXAppPagesJson,
 } from '@dcloudio/uni-cli-shared'
 import type { Plugin } from 'vite'
@@ -31,8 +32,7 @@ export function uniAppPagesPlugin(): Plugin {
       if (isPages(id)) {
         this.addWatchFile(path.resolve(process.env.UNI_INPUT_DIR, 'pages.json'))
         const pagesJson = normalizeUniAppXAppPagesJson(code)
-        pagesJson.pages.forEach((page, index) => {})
-        return `export default 'pages.json'`
+        return normalizeAppPagesJson(pagesJson)
       }
     },
   }

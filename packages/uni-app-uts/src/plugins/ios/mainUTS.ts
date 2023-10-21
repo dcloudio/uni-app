@@ -18,7 +18,7 @@ export function uniAppIOSMainPlugin(): Plugin {
 import './${MANIFEST_JSON_UTS}'
 import './${PAGES_JSON_UTS}'
 ${code}
-export default 'main.uts'
+createApp().app.mount("#app");
 `
       }
     },
