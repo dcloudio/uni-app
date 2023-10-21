@@ -268,6 +268,26 @@ export async function transformVue(
           )
         }
       },
+      onError(error) {
+        console.error('error: ' + error.message)
+        if (error.loc) {
+          const start = error.loc.start
+          console.log(
+            'at ' +
+              fileName +
+              ':' +
+              (start.line + templateStartLine - 1) +
+              ':' +
+              (start.column - 1)
+          )
+          console.log(
+            generateCodeFrame(code, {
+              line: start.line + templateStartLine - 1,
+              column: start.column - 1,
+            }).replace(/\t/g, ' ')
+          )
+        }
+      },
       parseUTSComponent: parseUTSComponent,
     })
     templateCode = templateResult.code

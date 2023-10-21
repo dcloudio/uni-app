@@ -1,15 +1,30 @@
 import {
   transformModel as baseTransform,
+  CompoundExpressionNode,
   DirectiveNode,
   DirectiveTransform,
+  ElementTypes,
   isStaticExp,
   NodeTypes,
 } from '@vue/compiler-core'
 import { isString } from '@vue/shared'
+import { createCompilerError } from '../errors'
 
 const tags = ['input', 'textarea']
 
 export const transformModel: DirectiveTransform = (dir, node, context) => {
+  // 组件 v-model 绑定了复杂表达式，且没有手动 as 类型
+  if (
+    node.tagType === ElementTypes.COMPONENT &&
+    (dir.exp as CompoundExpressionNode)?.children?.length > 1 &&
+    !dir.loc.source.includes('as')
+  ) {
+    context.onError(
+      createCompilerError(100, dir.loc, {
+        100: `When custom components use "v-model" to bind complex expressions, you must specify the type using "as".`,
+      })
+    )
+  }
   const result = baseTransform(dir, node, context)
   // 将 input,textarea 的 onUpdate:modelValue 事件转换为 onInput
   if (tags.includes(node.tag) && result.props.length >= 2) {
