@@ -17,7 +17,7 @@ export const transformModel: DirectiveTransform = (dir, node, context) => {
   if (
     node.tagType === ElementTypes.COMPONENT &&
     (dir.exp as CompoundExpressionNode)?.children?.length > 1 &&
-    !dir.loc.source.includes('as')
+    !dir.loc.source.includes(' as ')
   ) {
     context.onError(
       createCompilerError(100, dir.loc, {
