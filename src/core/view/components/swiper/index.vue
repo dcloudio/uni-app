@@ -696,7 +696,7 @@ export default {
       this.hideNavigation = true
     },
     _navigationSwiperAddMouseEvent () {
-      if (__PLATFORM__ === 'h5') {
+      if (__PLATFORM__ === 'h5' || __PLATFORM__ === 'mp-weibo') {
         const rootRef = this.$refs.slidesWrapper
         if (rootRef) {
           rootRef.removeEventListener('mousemove', this._navigationMouseMove)
@@ -770,7 +770,7 @@ export default {
       }, slidesDots))
     }
 
-    if (__PLATFORM__ === 'h5') {
+    if (__PLATFORM__ === 'h5' || __PLATFORM__ === 'mp-weibo') {
       if (this.navigation) {
         const navigationClass = {
           'uni-swiper-navigation-hide': this.hideNavigation,

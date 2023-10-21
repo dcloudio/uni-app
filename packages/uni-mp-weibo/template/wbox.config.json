@@ -1,0 +1,16 @@
+{
+  "appId": "2567784587",
+  "name": "weibomini",
+  "version": "1.0.0",
+  "description": "weibomini",
+  "projectVersion": 17,
+  "settings": {
+    "renderType": "Web",
+    "compileType": "miniProgram",
+    "language": "JavaScript",
+    "framework": "Vue2"
+  },
+  "pluginPaths": [
+    "renderPlugin/web-view"
+  ]
+}

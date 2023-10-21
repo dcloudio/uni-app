@@ -16,7 +16,7 @@ module.exports = (api, options) => {
     return
   }
 
-  if (process.env.NODE_ENV !== 'production' || process.env.UNI_PLATFORM !== 'h5') {
+  if (process.env.NODE_ENV !== 'production' || (process.env.UNI_PLATFORM !== 'h5' && process.env.UNI_PLATFORM !== 'mp-weibo')) {
     return
   }
 

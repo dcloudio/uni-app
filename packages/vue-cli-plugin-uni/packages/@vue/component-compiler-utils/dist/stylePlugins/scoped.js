@@ -64,7 +64,7 @@ const once = (options) => (root) => {
           (
             process.env.UNI_PLATFORM === 'app-plus' &&
             process.env.UNI_USING_V3
-          )
+          ) || process.env.UNI_PLATFORM === 'mp-weibo'
         ) {
           selector.insertAfter(node, selectorParser.attribute({
             attribute: id

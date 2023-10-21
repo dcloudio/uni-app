@@ -80,7 +80,7 @@ export default function initOn (on, {
   on('onError', onError)
   on('onPageNotFound', onPageNotFound)
 
-  if (__PLATFORM__ !== 'h5') { // 后续有时间，h5 平台也要迁移到 onAppRoute
+  if (__PLATFORM__ !== 'h5' || __PLATFORM__ === 'mp-weibo') { // 后续有时间，h5 平台也要迁移到 onAppRoute
     on('onAppRoute', onAppRoute)
   }
 

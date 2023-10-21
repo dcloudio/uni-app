@@ -25,7 +25,7 @@ let name = 'index'
 let filename = ''
 let entry = './lib/' + process.env.UNI_PLATFORM + '/main.js'
 
-if (process.env.UNI_PLATFORM === 'h5' && process.env.UNI_UI === 'true') {
+if ((process.env.UNI_PLATFORM === 'h5' || process.env.UNI_PLATFORM === 'mp-weibo') && process.env.UNI_UI === 'true') {
   entry = './lib/' + process.env.UNI_PLATFORM + '/ui.js'
 }
 
@@ -63,7 +63,7 @@ service.run('build', {
   process.exit(1)
 })
 
-if (process.env.UNI_PLATFORM === 'h5' && process.env.UNI_WATCH === 'false') {
+if ((process.env.UNI_PLATFORM === 'h5' || process.env.UNI_PLATFORM === 'mp-weibo') && process.env.UNI_WATCH === 'false') {
   const packagePath = path.join(__dirname, `../packages/uni-${process.env.UNI_PLATFORM}`)
   const packageJsonPath = path.join(packagePath, 'package.json')
   del(path.join(packagePath, '{lib,src}'))

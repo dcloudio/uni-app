@@ -73,6 +73,9 @@ export function promisify (name, api) {
     return api
   }
   return function promiseApi (options = {}, ...params) {
+    if (window.weibo && window.weibo[name] && name === 'switchTab') {
+      window.weibo[name](options)
+    }
     if (isFn(options.success) || isFn(options.fail) || isFn(options.complete)) {
       return wrapperReturnValue(name, invokeApi(name, api, options, ...params))
     }

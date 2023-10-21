@@ -53,7 +53,8 @@ module.exports = function (content, map) {
   if (
     process.env.UNI_USING_COMPONENTS ||
     process.env.UNI_PLATFORM === 'h5' ||
-    process.env.UNI_PLATFORM === 'quickapp-native'
+    process.env.UNI_PLATFORM === 'quickapp-native' ||
+    process.env.UNI_PLATFORM === 'mp-weibo'
   ) {
     return require('./index-new').call(this, content, map)
   }
@@ -89,6 +90,9 @@ module.exports = function (content, map) {
   }
   if (process.env.UNI_PLATFORM === 'h5') {
     return require('./platforms/h5')(pagesJson, manifestJson)
+  }
+  if (process.env.UNI_PLATFORM === 'mp-weibo') {
+    return require('./platforms/mp-weibo')(pagesJson, manifestJson)
   }
 
   const changedEmitFiles = []

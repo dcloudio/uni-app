@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": false,
+    "strict": true,
+    "noImplicitAny": true,
+    "target": "ES2015",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    // "noLib": true,
+    "lib": ["ES2015"],
+    "typeRoots": ["./node_modules/@wbox-types", "./node_modules/@types"],
+    "baseUrl": "./src",
+    "paths": {
+        "@/*":[
+            "./*"
+        ]
+    },
+    "outDir": "dist/wboxapp"
+  },
+  "typeAcquisition": {
+    "enable": true
+  },
+  "include": [
+    "src/**/*"
+  ]
+}

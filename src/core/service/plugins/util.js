@@ -12,7 +12,7 @@ export function callAppHook (vm, hook, params) {
 }
 export function callPageHook (vm, hook, params) {
   // hack 一下，H5 平台通知 View 层onShow，方便 View 层来切换 scroll 事件监听
-  if (__PLATFORM__ === 'h5') {
+  if (__PLATFORM__ === 'h5' || __PLATFORM__ === 'mp-weibo') {
     if (hook === 'onLoad') {
       vm.$mp.query = params
       UniServiceJSBridge.publishHandler('onPageLoad', vm, vm.$page.id)

@@ -12,7 +12,7 @@ const postCssConfig = require('../postcss.config')
 
 let outputDir = resolve('./packages/uni-' + process.env.UNI_PLATFORM + '/dist')
 
-if (process.env.UNI_PLATFORM === 'h5' && process.env.UNI_UI === 'true') {
+if ((process.env.UNI_PLATFORM === 'h5' || process.env.UNI_PLATFORM === 'mp-weibo') && process.env.UNI_UI === 'true') {
   outputDir = resolve('./packages/uni-' + process.env.UNI_PLATFORM + '-ui/dist')
 }
 
@@ -20,7 +20,7 @@ if (process.env.UNI_PLATFORM === 'app-plus' && process.env.UNI_VIEW === 'true') 
   outputDir = resolve('./packages/uni-' + process.env.UNI_PLATFORM + '/dist')
 }
 
-if (process.env.UNI_PLATFORM === 'h5') { postCssConfig.plugins.push(splitMediaPlugin) }
+if (process.env.UNI_PLATFORM === 'h5' || process.env.UNI_PLATFORM === 'mp-weibo') { postCssConfig.plugins.push(splitMediaPlugin) }
 
 module.exports = {
   publicPath: '/',
@@ -30,7 +30,7 @@ module.exports = {
   transpileDependencies: ['@dcloudio/uni-i18n'],
   productionSourceMap: false,
   configureWebpack: webpackConfig,
-  parallel: process.env.UNI_PLATFORM !== 'h5' || process.env.UNI_WATCH !== 'false' || process.env.UNI_UI === 'true',
+  parallel: (process.env.UNI_PLATFORM !== 'h5' && process.env.UNI_PLATFORM !== 'mp-weibo') || process.env.UNI_WATCH !== 'false' || process.env.UNI_UI === 'true',
   chainWebpack: config => {
     config.devtool('source-map')
 
@@ -48,7 +48,7 @@ module.exports = {
       })
     config.plugins.delete('hmr') // remove hot module reload
 
-    if (process.env.UNI_PLATFORM === 'h5') {
+    if (process.env.UNI_PLATFORM === 'h5' || process.env.UNI_PLATFORM === 'mp-weibo') {
       config
         .plugin('webpack-build-done')
         .use(webpack.ProgressPlugin, [function (percentage, message, ...args) {

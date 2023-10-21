@@ -1,0 +1,1070 @@
+{
+    "base64ToArrayBuffer": [
+        "/core/service/api/base/base64.js",
+        [
+            [
+                "/core/helpers/protocol/base/base64.js",
+                "base64ToArrayBuffer"
+            ]
+        ]
+    ],
+    "arrayBufferToBase64": [
+        "/core/service/api/base/base64.js",
+        [
+            [
+                "/core/helpers/protocol/base/base64.js",
+                "arrayBufferToBase64"
+            ]
+        ]
+    ],
+    "addInterceptor": [
+        "/core/service/api/base/interceptor.js",
+        [
+            [
+                "/core/helpers/protocol/base/interceptor.js",
+                "addInterceptor"
+            ]
+        ]
+    ],
+    "removeInterceptor": [
+        "/core/service/api/base/interceptor.js",
+        [
+            [
+                "/core/helpers/protocol/base/interceptor.js",
+                "removeInterceptor"
+            ]
+        ]
+    ],
+    "interceptors": [
+        "/core/service/api/base/interceptor.js",
+        []
+    ],
+    "request": [
+        "/platforms/mp-weibo/service/api/network/request.js",
+        [
+            [
+                "/core/helpers/protocol/network/request.js",
+                "request"
+            ]
+        ]
+    ],
+    "uploadFile": [
+        "/platforms/mp-weibo/service/api/network/upload-file.js",
+        [
+            [
+                "/core/helpers/protocol/network/upload-file.js",
+                "uploadFile"
+            ]
+        ]
+    ],
+    "downloadFile": [
+        "/platforms/mp-weibo/service/api/network/download-file.js",
+        [
+            [
+                "/core/helpers/protocol/network/download-file.js",
+                "downloadFile"
+            ]
+        ]
+    ],
+    "connectSocket": [
+        "/platforms/mp-weibo/service/api/network/socket.js",
+        [
+            [
+                "/core/helpers/protocol/network/socket.js",
+                "connectSocket"
+            ]
+        ]
+    ],
+    "onSocketOpen": [
+        "/platforms/mp-weibo/service/api/network/socket.js",
+        []
+    ],
+    "onSocketError": [
+        "/platforms/mp-weibo/service/api/network/socket.js",
+        []
+    ],
+    "sendSocketMessage": [
+        "/platforms/mp-weibo/service/api/network/socket.js",
+        [
+            [
+                "/core/helpers/protocol/network/socket.js",
+                "sendSocketMessage"
+            ]
+        ]
+    ],
+    "onSocketMessage": [
+        "/platforms/mp-weibo/service/api/network/socket.js",
+        []
+    ],
+    "closeSocket": [
+        "/platforms/mp-weibo/service/api/network/socket.js",
+        [
+            [
+                "/core/helpers/protocol/network/socket.js",
+                "closeSocket"
+            ]
+        ]
+    ],
+    "onSocketClose": [
+        "/platforms/mp-weibo/service/api/network/socket.js",
+        []
+    ],
+    "getUpdateManager": [
+        "/core/service/api/network/update.js",
+        []
+    ],
+    "navigateTo": [
+        "/platforms/mp-weibo/service/api/route/route.js",
+        [
+            [
+                "/core/helpers/protocol/route/route.js",
+                "navigateTo"
+            ]
+        ],
+        true
+    ],
+    "redirectTo": [
+        "/platforms/mp-weibo/service/api/route/route.js",
+        [
+            [
+                "/core/helpers/protocol/route/route.js",
+                "redirectTo"
+            ]
+        ],
+        true
+    ],
+    "reLaunch": [
+        "/platforms/mp-weibo/service/api/route/route.js",
+        [
+            [
+                "/core/helpers/protocol/route/route.js",
+                "reLaunch"
+            ]
+        ],
+        true
+    ],
+    "switchTab": [
+        "/platforms/mp-weibo/service/api/route/route.js",
+        [
+            [
+                "/core/helpers/protocol/route/route.js",
+                "switchTab"
+            ]
+        ],
+        true
+    ],
+    "navigateBack": [
+        "/platforms/mp-weibo/service/api/route/route.js",
+        [
+            [
+                "/core/helpers/protocol/route/route.js",
+                "navigateBack"
+            ]
+        ],
+        true
+    ],
+    "setStorage": [
+        "/platforms/mp-weibo/service/api/storage/storage.js",
+        [
+            [
+                "/core/helpers/protocol/storage/storage.js",
+                "setStorage"
+            ]
+        ]
+    ],
+    "setStorageSync": [
+        "/platforms/mp-weibo/service/api/storage/storage.js",
+        [
+            [
+                "/core/helpers/protocol/storage/storage.js",
+                "setStorageSync"
+            ]
+        ]
+    ],
+    "getStorage": [
+        "/platforms/mp-weibo/service/api/storage/storage.js",
+        [
+            [
+                "/core/helpers/protocol/storage/storage.js",
+                "getStorage"
+            ]
+        ]
+    ],
+    "getStorageSync": [
+        "/platforms/mp-weibo/service/api/storage/storage.js",
+        [
+            [
+                "/core/helpers/protocol/storage/storage.js",
+                "getStorageSync"
+            ]
+        ]
+    ],
+    "getStorageInfo": [
+        "/platforms/mp-weibo/service/api/storage/storage.js",
+        []
+    ],
+    "getStorageInfoSync": [
+        "/platforms/mp-weibo/service/api/storage/storage.js",
+        []
+    ],
+    "removeStorage": [
+        "/platforms/mp-weibo/service/api/storage/storage.js",
+        [
+            [
+                "/core/helpers/protocol/storage/storage.js",
+                "removeStorage"
+            ]
+        ]
+    ],
+    "removeStorageSync": [
+        "/platforms/mp-weibo/service/api/storage/storage.js",
+        [
+            [
+                "/core/helpers/protocol/storage/storage.js",
+                "removeStorageSync"
+            ]
+        ]
+    ],
+    "clearStorage": [
+        "/platforms/mp-weibo/service/api/storage/storage.js",
+        []
+    ],
+    "clearStorageSync": [
+        "/platforms/mp-weibo/service/api/storage/storage.js",
+        []
+    ],
+    "getLocation": [
+        "/platforms/mp-weibo/service/api/location/get-location.js",
+        [
+            [
+                "/core/helpers/protocol/location/get-location.js",
+                "getLocation"
+            ],
+            [
+                "/platforms/h5/service/api/network/request.js",
+                "request"
+            ]
+        ]
+    ],
+    "chooseLocation": [
+        "/platforms/mp-weibo/service/api/location/choose-location.js",
+        [
+            [
+                "/core/helpers/protocol/location/choose-location.js",
+                "chooseLocation"
+            ],
+            [
+                "/platforms/h5/view/components/map/index.vue",
+                "Map"
+            ],
+            [
+                "/core/view/components/input/index.vue",
+                "Input"
+            ],
+            [
+                "/core/view/components/scroll-view/index.vue",
+                "ScrollView"
+            ],
+            [
+                "/platforms/h5/service/api/network/request.js",
+                "request"
+            ],
+            [
+                "/platforms/h5/service/api/location/get-location.js",
+                "getLocation"
+            ],
+            [
+                "/platforms/h5/components/system-routes/choose-location/index.vue",
+                "ChooseLocation"
+            ]
+        ]
+    ],
+    "openLocation": [
+        "/platforms/mp-weibo/service/api/location/open-location.js",
+        [
+            [
+                "/core/helpers/protocol/location/open-location.js",
+                "openLocation"
+            ],
+            [
+                "/platforms/h5/view/components/map/index.vue",
+                "Map"
+            ],
+            [
+                "/platforms/h5/service/api/network/request.js",
+                "request"
+            ],
+            [
+                "/platforms/h5/service/api/location/get-location.js",
+                "getLocation"
+            ],
+            [
+                "/platforms/h5/components/system-routes/open-location/index.vue",
+                "OpenLocation"
+            ]
+        ]
+    ],
+    "createMapContext": [
+        "/core/service/api/context/create-map-context.js",
+        [
+            [
+                "/platforms/mp-weibo/service/api/context/operate-map-player.js",
+                "operateMapPlayer"
+            ],
+            [
+                "/core/helpers/protocol/context/context.js",
+                "createMapContext"
+            ]
+        ]
+    ],
+    "onLocationChange": [
+        "/platforms/mp-weibo/service/api/location/location-change.js",
+        []
+    ],
+    "onLocationChangeError": [
+        "/platforms/mp-weibo/service/api/location/location-change.js",
+        []
+    ],
+    "startLocationUpdate": [
+        "/platforms/mp-weibo/service/api/location/location-change.js",
+        []
+    ],
+    "stopLocationUpdate": [
+        "/platforms/mp-weibo/service/api/location/location-change.js",
+        []
+    ],
+    "offLocationChange": [
+        "/platforms/mp-weibo/service/api/location/location-change.js",
+        []
+    ],
+    "offLocationChangeError": [
+        "/platforms/mp-weibo/service/api/location/location-change.js",
+        []
+    ],
+    "chooseImage": [
+        "/platforms/mp-weibo/service/api/media/choose-image.js",
+        [
+            [
+                "/core/helpers/protocol/media/choose-image.js",
+                "chooseImage"
+            ]
+        ]
+    ],
+    "chooseFile": [
+        "/platforms/mp-weibo/service/api/media/choose-file.js",
+        [
+            [
+                "/core/helpers/protocol/media/choose-file.js",
+                "chooseFile"
+            ]
+        ]
+    ],
+    "previewImage": [
+        "/platforms/mp-weibo/service/api/media/preview-image.js",
+        [
+            [
+                "/core/helpers/protocol/media/preview-image.js",
+                "previewImage"
+            ],
+            [
+                "/core/view/components/swiper/index.vue",
+                "Swiper"
+            ],
+            [
+                "/core/view/components/swiper-item/index.vue",
+                "SwiperItem"
+            ],
+            [
+                "/core/view/components/movable-area/index.vue",
+                "MovableArea"
+            ],
+            [
+                "/core/view/components/movable-view/index.vue",
+                "MovableView"
+            ],
+            [
+                "/platforms/h5/components/app/popup/preview-image/index.vue",
+                "PreviewImage"
+            ],
+            [
+                "/platforms/h5/components/app/popup/mixins/preview-image.js",
+                "PreviewImageMixin"
+            ]
+        ]
+    ],
+    "closePreviewImage": [
+        "/platforms/mp-weibo/service/api/media/preview-image.js",
+        []
+    ],
+    "getImageInfo": [
+        "/platforms/mp-weibo/service/api/media/get-image-info.js",
+        [
+            [
+                "/core/helpers/protocol/media/get-image-info.js",
+                "getImageInfo"
+            ]
+        ]
+    ],
+    "getVideoInfo": [
+        "/platforms/mp-weibo/service/api/media/get-video-info.js",
+        [
+            [
+                "/core/helpers/protocol/media/get-video-info.js",
+                "getVideoInfo"
+            ]
+        ]
+    ],
+    "createAudioContext": [
+        "/core/service/api/context/audio.js",
+        [
+            [
+                "/core/helpers/protocol/context/context.js",
+                "createAudioContext"
+            ]
+        ]
+    ],
+    "createInnerAudioContext": [
+        "/platforms/mp-weibo/service/api/context/inner-audio.js",
+        []
+    ],
+    "chooseVideo": [
+        "/platforms/mp-weibo/service/api/media/choose-video.js",
+        [
+            [
+                "/core/helpers/protocol/media/choose-video.js",
+                "chooseVideo"
+            ]
+        ]
+    ],
+    "createVideoContext": [
+        "/core/service/api/context/create-video-context.js",
+        [
+            [
+                "/platforms/mp-weibo/service/api/context/operate-video-player.js",
+                "operateVideoPlayer"
+            ],
+            [
+                "/core/helpers/protocol/context/context.js",
+                "createVideoContext"
+            ]
+        ]
+    ],
+    "getSystemInfo": [
+        "/platforms/mp-weibo/service/api/device/get-system-info.js",
+        [],
+        true
+    ],
+    "getSystemInfoSync": [
+        "/platforms/mp-weibo/service/api/device/get-system-info.js",
+        [],
+        true
+    ],
+    "getWindowInfo": [
+        "/platforms/mp-weibo/service/api/device/get-window-info.js",
+        []
+    ],
+    "getDeviceInfo": [
+        "/platforms/mp-weibo/service/api/device/get-system-info.js",
+        []
+    ],
+    "getAppBaseInfo": [
+        "/platforms/mp-weibo/service/api/device/get-system-info.js",
+        []
+    ],
+    "canIUse": [
+        "/core/service/api/base/can-i-use.js",
+        [
+            [
+                "/core/helpers/protocol/base/can-i-use.js",
+                "canIUse"
+            ]
+        ],
+        true
+    ],
+    "getNetworkType": [
+        "/platforms/mp-weibo/service/api/device/network-info.js",
+        []
+    ],
+    "onNetworkStatusChange": [
+        "/platforms/mp-weibo/service/api/device/network-info.js",
+        []
+    ],
+    "offNetworkStatusChange": [
+        "/platforms/mp-weibo/service/api/device/network-info.js",
+        []
+    ],
+    "onAccelerometerChange": [
+        "/platforms/mp-weibo/service/api/device/accelerometer.js",
+        []
+    ],
+    "offAccelerometerChange": [
+        "/platforms/mp-weibo/service/api/device/accelerometer.js",
+        []
+    ],
+    "startAccelerometer": [
+        "/platforms/mp-weibo/service/api/device/accelerometer.js",
+        []
+    ],
+    "stopAccelerometer": [
+        "/platforms/mp-weibo/service/api/device/accelerometer.js",
+        []
+    ],
+    "onCompassChange": [
+        "/platforms/mp-weibo/service/api/device/compass.js",
+        []
+    ],
+    "offCompassChange": [
+        "/platforms/mp-weibo/service/api/device/compass.js",
+        []
+    ],
+    "startCompass": [
+        "/platforms/mp-weibo/service/api/device/compass.js",
+        []
+    ],
+    "stopCompass": [
+        "/platforms/mp-weibo/service/api/device/compass.js",
+        []
+    ],
+    "makePhoneCall": [
+        "/platforms/mp-weibo/service/api/device/make-phone-call.js",
+        [
+            [
+                "/core/helpers/protocol/device/make-phone-call.js",
+                "makePhoneCall"
+            ]
+        ]
+    ],
+    "setClipboardData": [
+        "/platforms/mp-weibo/service/api/device/clipboard.js",
+        [
+            [
+                "/core/helpers/protocol/device/set-clipboard-data.js",
+                "setClipboardData"
+            ]
+        ]
+    ],
+    "getClipboardData": [
+        "/platforms/mp-weibo/service/api/device/clipboard.js",
+        []
+    ],
+    "vibrateLong": [
+        "/platforms/mp-weibo/service/api/device/vibrate.js",
+        []
+    ],
+    "vibrateShort": [
+        "/platforms/mp-weibo/service/api/device/vibrate.js",
+        []
+    ],
+    "onThemeChange": [
+        "/core/service/api/device/theme.js",
+        []
+    ],
+    "offThemeChange": [
+        "/core/service/api/device/theme.js",
+        []
+    ],
+    "onUIStyleChange": [
+        "/core/service/api/device/theme.js",
+        []
+    ],
+    "hideKeyboard": [
+        "/platforms/mp-weibo/service/api/keyboard/keyboard.js",
+        []
+    ],
+    "onKeyboardHeightChange": [
+        "/core/service/api/keyboard/keyboard.js",
+        []
+    ],
+    "offKeyboardHeightChange": [
+        "/core/service/api/keyboard/keyboard.js",
+        []
+    ],
+    "getSelectedTextRange": [
+        "/core/service/api/keyboard/get-selected-text-range.js",
+        []
+    ],
+    "showToast": [
+        "/platforms/mp-weibo/service/api/ui/popup.js",
+        [
+            [
+                "/core/helpers/protocol/ui/popup.js",
+                "showToast"
+            ],
+            [
+                "/platforms/h5/components/app/popup/toast.vue",
+                "Toast"
+            ],
+            [
+                "/platforms/h5/components/app/popup/mixins/toast.js",
+                "ToastMixin"
+            ]
+        ]
+    ],
+    "hideToast": [
+        "/platforms/mp-weibo/service/api/ui/popup.js",
+        [
+            [
+                "/platforms/h5/components/app/popup/toast.vue",
+                "Toast"
+            ],
+            [
+                "/platforms/h5/components/app/popup/mixins/toast.js",
+                "ToastMixin"
+            ]
+        ]
+    ],
+    "showLoading": [
+        "/platforms/mp-weibo/service/api/ui/popup.js",
+        [
+            [
+                "/core/helpers/protocol/ui/popup.js",
+                "showLoading"
+            ],
+            [
+                "/platforms/h5/components/app/popup/toast.vue",
+                "Toast"
+            ],
+            [
+                "/platforms/h5/components/app/popup/mixins/toast.js",
+                "ToastMixin"
+            ]
+        ]
+    ],
+    "hideLoading": [
+        "/platforms/mp-weibo/service/api/ui/popup.js",
+        [
+            [
+                "/platforms/h5/components/app/popup/toast.vue",
+                "Toast"
+            ],
+            [
+                "/platforms/h5/components/app/popup/mixins/toast.js",
+                "ToastMixin"
+            ]
+        ]
+    ],
+    "showModal": [
+        "/platforms/mp-weibo/service/api/ui/popup.js",
+        [
+            [
+                "/core/helpers/protocol/ui/popup.js",
+                "showModal"
+            ],
+            [
+                "/platforms/h5/components/app/popup/modal.vue",
+                "Modal"
+            ],
+            [
+                "/platforms/h5/components/app/popup/mixins/modal.js",
+                "ModalMixin"
+            ]
+        ]
+    ],
+    "showActionSheet": [
+        "/platforms/mp-weibo/service/api/ui/popup.js",
+        [
+            [
+                "/core/helpers/protocol/ui/popup.js",
+                "showActionSheet"
+            ],
+            [
+                "/platforms/h5/components/app/popup/actionSheet.vue",
+                "ActionSheet"
+            ],
+            [
+                "/platforms/h5/components/app/popup/mixins/action-sheet.js",
+                "ActionSheetMixin"
+            ]
+        ]
+    ],
+    "setNavigationBarTitle": [
+        "/platforms/mp-weibo/service/api/ui/navigation-bar.js",
+        [
+            [
+                "/core/helpers/protocol/ui/navigation-bar.js",
+                "setNavigationBarTitle"
+            ]
+        ]
+    ],
+    "setNavigationBarColor": [
+        "/platforms/mp-weibo/service/api/ui/navigation-bar.js",
+        [
+            [
+                "/core/helpers/protocol/ui/navigation-bar.js",
+                "setNavigationBarColor"
+            ]
+        ]
+    ],
+    "showNavigationBarLoading": [
+        "/platforms/mp-weibo/service/api/ui/navigation-bar.js",
+        []
+    ],
+    "hideNavigationBarLoading": [
+        "/platforms/mp-weibo/service/api/ui/navigation-bar.js",
+        []
+    ],
+    "setTabBarItem": [
+        "/platforms/mp-weibo/service/api/ui/tab-bar.js",
+        [
+            [
+                "/core/helpers/protocol/ui/tab-bar.js",
+                "setTabBarItem"
+            ]
+        ]
+    ],
+    "setTabBarStyle": [
+        "/platforms/mp-weibo/service/api/ui/tab-bar.js",
+        [
+            [
+                "/core/helpers/protocol/ui/tab-bar.js",
+                "setTabBarStyle"
+            ]
+        ]
+    ],
+    "hideTabBar": [
+        "/platforms/mp-weibo/service/api/ui/tab-bar.js",
+        [
+            [
+                "/core/helpers/protocol/ui/tab-bar.js",
+                "hideTabBar"
+            ]
+        ]
+    ],
+    "showTabBar": [
+        "/platforms/mp-weibo/service/api/ui/tab-bar.js",
+        [
+            [
+                "/core/helpers/protocol/ui/tab-bar.js",
+                "showTabBar"
+            ]
+        ]
+    ],
+    "setTabBarBadge": [
+        "/platforms/mp-weibo/service/api/ui/tab-bar.js",
+        [
+            [
+                "/core/helpers/protocol/ui/tab-bar.js",
+                "setTabBarBadge"
+            ]
+        ]
+    ],
+    "removeTabBarBadge": [
+        "/platforms/mp-weibo/service/api/ui/tab-bar.js",
+        [
+            [
+                "/core/helpers/protocol/ui/tab-bar.js",
+                "removeTabBarBadge"
+            ]
+        ]
+    ],
+    "showTabBarRedDot": [
+        "/platforms/mp-weibo/service/api/ui/tab-bar.js",
+        [
+            [
+                "/core/helpers/protocol/ui/tab-bar.js",
+                "showTabBarRedDot"
+            ]
+        ]
+    ],
+    "hideTabBarRedDot": [
+        "/platforms/mp-weibo/service/api/ui/tab-bar.js",
+        [
+            [
+                "/core/helpers/protocol/ui/tab-bar.js",
+                "hideTabBarRedDot"
+            ]
+        ]
+    ],
+    "onTabBarMidButtonTap": [
+        "/core/service/api/ui/tab-bar.js",
+        [
+            [
+                "/platforms/mp-weibo/service/api/ui/tab-bar.js",
+                "setTabBarBadge"
+            ]
+        ]
+    ],
+    "createAnimation": [
+        "/core/service/api/ui/create-animation.js",
+        []
+    ],
+    "pageScrollTo": [
+        "/core/service/api/ui/page-scroll-to.js",
+        [
+            [
+                "/core/helpers/protocol/ui/page-scroll-to.js",
+                "pageScrollTo"
+            ]
+        ]
+    ],
+    "onWindowResize": [
+        "/platforms/mp-weibo/service/api/ui/window.js",
+        []
+    ],
+    "offWindowResize": [
+        "/platforms/mp-weibo/service/api/ui/window.js",
+        []
+    ],
+    "loadFontFace": [
+        "/core/service/api/ui/load-font-face.js",
+        [
+            [
+                "/core/helpers/protocol/ui/load-font-face.js",
+                "loadFontFace"
+            ]
+        ]
+    ],
+    "startPullDownRefresh": [
+        "/platforms/mp-weibo/service/api/ui/pull-down-refresh.js",
+        []
+    ],
+    "stopPullDownRefresh": [
+        "/platforms/mp-weibo/service/api/ui/pull-down-refresh.js",
+        []
+    ],
+    "createSelectorQuery": [
+        "/core/service/api/ui/create-selector-query.js",
+        [
+            [
+                "/platforms/mp-weibo/service/api/ui/request-component-info.js",
+                "requestComponentInfo"
+            ],
+            [
+                "/core/view/bridge/subscribe/api/request-component-info.js",
+                "requestComponentInfo"
+            ]
+        ]
+    ],
+    "createIntersectionObserver": [
+        "/core/service/api/ui/create-intersection-observer.js",
+        [
+            [
+                "/core/view/bridge/subscribe/api/request-component-observer.js",
+                "requestComponentObserver"
+            ],
+            [
+                "/core/view/bridge/subscribe/api/request-component-observer.js",
+                "destroyComponentObserver"
+            ]
+        ]
+    ],
+    "createMediaQueryObserver": [
+        "/core/service/api/ui/create-media-query-observer.js",
+        [
+            [
+                "/core/view/bridge/subscribe/api/request-media-query-observer.js",
+                "requestMediaQueryObserver"
+            ],
+            [
+                "/core/view/bridge/subscribe/api/request-media-query-observer.js",
+                "destroyMediaQueryObserver"
+            ]
+        ]
+    ],
+    "showTopWindow": [
+        "/platforms/mp-weibo/service/api/ui/windows.js",
+        []
+    ],
+    "showLeftWindow": [
+        "/platforms/mp-weibo/service/api/ui/windows.js",
+        []
+    ],
+    "showRightWindow": [
+        "/platforms/mp-weibo/service/api/ui/windows.js",
+        []
+    ],
+    "hideTopWindow": [
+        "/platforms/mp-weibo/service/api/ui/windows.js",
+        []
+    ],
+    "hideLeftWindow": [
+        "/platforms/mp-weibo/service/api/ui/windows.js",
+        []
+    ],
+    "hideRightWindow": [
+        "/platforms/mp-weibo/service/api/ui/windows.js",
+        []
+    ],
+    "getTopWindowStyle": [
+        "/platforms/mp-weibo/service/api/ui/windows.js",
+        []
+    ],
+    "getLeftWindowStyle": [
+        "/platforms/mp-weibo/service/api/ui/windows.js",
+        []
+    ],
+    "getRightWindowStyle": [
+        "/platforms/mp-weibo/service/api/ui/windows.js",
+        []
+    ],
+    "setTopWindowStyle": [
+        "/platforms/mp-weibo/service/api/ui/windows.js",
+        []
+    ],
+    "setLeftWindowStyle": [
+        "/platforms/mp-weibo/service/api/ui/windows.js",
+        []
+    ],
+    "setRightWindowStyle": [
+        "/platforms/mp-weibo/service/api/ui/windows.js",
+        []
+    ],
+    "getLocale": [
+        "/core/service/api/ui/locale.js",
+        []
+    ],
+    "setLocale": [
+        "/core/service/api/ui/locale.js",
+        []
+    ],
+    "onLocaleChange": [
+        "/core/service/api/ui/locale.js",
+        []
+    ],
+    "$emit": [
+        "/platforms/mp-weibo/service/api/base/event-bus.js",
+        [
+            [
+                "/core/helpers/protocol/base/event-bus.js",
+                "$emit"
+            ]
+        ]
+    ],
+    "$on": [
+        "/platforms/mp-weibo/service/api/base/event-bus.js",
+        [
+            [
+                "/core/helpers/protocol/base/event-bus.js",
+                "$on"
+            ]
+        ]
+    ],
+    "$once": [
+        "/platforms/mp-weibo/service/api/base/event-bus.js",
+        [
+            [
+                "/core/helpers/protocol/base/event-bus.js",
+                "$once"
+            ]
+        ]
+    ],
+    "$off": [
+        "/platforms/mp-weibo/service/api/base/event-bus.js",
+        [
+            [
+                "/core/helpers/protocol/base/event-bus.js",
+                "$off"
+            ]
+        ]
+    ],
+    "getFileInfo": [
+        "/platforms/mp-weibo/service/api/file/file.js",
+        [
+            [
+                "/core/helpers/protocol/file/file.js",
+                "getFileInfo"
+            ]
+        ]
+    ],
+    "openDocument": [
+        "/platforms/mp-weibo/service/api/file/open-document.js",
+        [
+            [
+                "/core/helpers/protocol/file/open-document.js",
+                "openDocument"
+            ]
+        ]
+    ],
+    "createCanvasContext": [
+        "/core/service/api/context/canvas.js",
+        [
+            [
+                "/core/helpers/protocol/context/context.js",
+                "createCanvasContext"
+            ]
+        ]
+    ],
+    "canvasToTempFilePath": [
+        "/core/service/api/context/canvas.js",
+        [
+            [
+                "/core/helpers/protocol/context/canvas.js",
+                "canvasToTempFilePath"
+            ]
+        ]
+    ],
+    "canvasPutImageData": [
+        "/core/service/api/context/canvas.js",
+        [
+            [
+                "/core/helpers/protocol/context/canvas.js",
+                "canvasPutImageData"
+            ]
+        ]
+    ],
+    "canvasGetImageData": [
+        "/core/service/api/context/canvas.js",
+        [
+            [
+                "/core/helpers/protocol/context/canvas.js",
+                "canvasGetImageData"
+            ]
+        ]
+    ],
+    "getProvider": [
+        "/platforms/mp-weibo/service/api/plugin/get-provider.js",
+        [
+            [
+                "/core/helpers/protocol/plugin/get-provider.js",
+                "getProvider"
+            ]
+        ]
+    ],
+    "upx2px": [
+        "/core/service/api/base/upx2px.js",
+        [
+            [
+                "/core/helpers/protocol/base/upx2px.js",
+                "upx2px"
+            ]
+        ],
+        true
+    ],
+    "setPageMeta": [
+        "/core/service/api/ui/set-page-meta.js",
+        []
+    ],
+    "preloadPage": [
+        "/platforms/mp-weibo/service/api/route/route.js",
+        [
+            [
+                "/core/helpers/protocol/route/route.js",
+                "preloadPage"
+            ]
+        ]
+    ],
+    "getLaunchOptionsSync": [
+        "/platforms/mp-weibo/service/api/plugin/get-launch-options-sync.js",
+        []
+    ],
+    "getEnterOptionsSync": [
+        "/platforms/mp-weibo/service/api/plugin/get-launch-options-sync.js",
+        []
+    ],
+    "invokePushCallback": [
+        "/core/service/api/plugin/push.js",
+        []
+    ],
+    "getPushClientId": [
+        "/core/service/api/plugin/push.js",
+        []
+    ],
+    "onPushMessage": [
+        "/core/service/api/plugin/push.js",
+        []
+    ],
+    "offPushMessage": [
+        "/core/service/api/plugin/push.js",
+        []
+    ]
+}

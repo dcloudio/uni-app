@@ -34,7 +34,10 @@
     "release": "npm run lint:cli && lerna publish --force-publish=*",
     "release:alpha": "npm run lint:cli && lerna publish --force-publish=* --npm-tag=alpha",
     "release:next": "npm run lint:cli && lerna publish --force-publish=* --npm-tag=next",
-    "release:v3": "npm run lint:cli && lerna publish --no-git-tag-version --force-publish=* --npm-tag=v3"
+    "release:v3": "npm run lint:cli && lerna publish --no-git-tag-version --force-publish=* --npm-tag=v3",
+    "build:mp-weibo": "npm run lint && cross-env NODE_ENV=development UNI_WATCH=false UNI_PLATFORM=mp-weibo node build/build.js",
+    "dev:mp-weibo": "npm run lint && cross-env NODE_ENV=production UNI_WATCH=true UNI_PLATFORM=mp-weibo node build/build.js"
+
   },
   "dependencies": {
     "base64-arraybuffer": "^0.2.0",

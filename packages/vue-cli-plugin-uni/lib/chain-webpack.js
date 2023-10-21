@@ -91,7 +91,7 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
               }
               return options
             })
-          const platformExcludes = ['app-plus', 'h5', 'mp-360']
+          const platformExcludes = ['app-plus', 'h5', 'mp-360', 'mp-weibo']
           const platform = process.env.UNI_PLATFORM
           if (!platformExcludes.includes(platform)) {
             // remove warning https://github.com/vuejs/vue-loader/issues/1742
@@ -168,7 +168,7 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
         __VUE_PROD_DEVTOOLS__: JSON.stringify(false)
       })
     }
-    if (process.env.UNI_PLATFORM === 'h5') {
+    if (process.env.UNI_PLATFORM === 'h5' || process.env.UNI_PLATFORM === 'mp-weibo') {
       // TODO manifest.json
       defines.__UNI_ROUTER_MODE__ = JSON.stringify('hash')
     }

@@ -33,7 +33,7 @@ function b64DecodeUnicode (str) {
 }
 
 function getCurrentUserInfo () {
-  const token = (__PLATFORM__ === 'h5' || __PLATFORM__ === 'app-plus' ? uni : __GLOBAL__).getStorageSync('uni_id_token') || ''
+  const token = (__PLATFORM__ === 'h5' || __PLATFORM__ === 'app-plus' || __PLATFORM__ === 'mp-weibo' ? uni : __GLOBAL__).getStorageSync('uni_id_token') || ''
   const tokenArr = token.split('.')
   if (!token || tokenArr.length !== 3) {
     return {

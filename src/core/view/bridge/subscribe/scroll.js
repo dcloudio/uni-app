@@ -16,7 +16,7 @@ export function pageScrollTo ({
     if (el) {
       const { top, height } = el.getBoundingClientRect()
       scrollTop = top + window.pageYOffset
-      if (__PLATFORM__ === 'h5') {
+      if (__PLATFORM__ === 'h5' || __PLATFORM__ === 'mp-weibo') {
         scrollTop -= height
       }
     }

@@ -1,0 +1,34 @@
+{
+  "name": "@dcloudio/uni-mp-weibo",
+  "version": "2.0.0-32920211029001",
+  "description": "uni-app mp-weibo",
+  "main": "dist/index.umd.min.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uni-mp-weibo"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "files": [
+    "dist",
+    "lib",
+    "src",
+    "template"
+  ],
+  "author": "fxy060608",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "base64-arraybuffer": "^0.2.0",
+    "intersection-observer": "^0.7.0",
+    "pako": "^1.0.11",
+    "safe-area-insets": "^1.4.1"
+  },
+  "uni-app": {
+    "name": "mp-weibo",
+    "title": "weibo",
+    "main": "lib/mp-weibo/uni.config.js"
+  },
+  "gitHead": "9e2d0f8e244724fcd64880316c57d837d1778cf8"
+}

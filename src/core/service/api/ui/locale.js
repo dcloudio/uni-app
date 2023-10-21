@@ -34,7 +34,7 @@ export function setLocale (locale) {
       })
       weex.requireModule('plus').setLanguage(locale)
     }
-    if (__PLATFORM__ === 'h5') {
+    if (__PLATFORM__ === 'h5' || __PLATFORM__ === 'mp-weibo') {
       navigator.cookieEnabled && window.localStorage && (localStorage[UNI_STORAGE_LOCALE] = locale)
     }
     callbacks.forEach(callbackId => {

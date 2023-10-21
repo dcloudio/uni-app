@@ -330,7 +330,7 @@ export class CanvasContext {
   measureText (text) {
     const font = this.state.font
     let width = 0
-    if (__PLATFORM__ === 'h5') {
+    if (__PLATFORM__ === 'h5' || __PLATFORM__ === 'mp-weibo') {
       width = measureText(text, font)
     } else {
       const webview = plus.webview.all().find(webview => webview.getURL().endsWith('www/__uniappview.html'))

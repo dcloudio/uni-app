@@ -17,7 +17,7 @@ module.exports = function (source, map) {
     (
       process.env.UNI_PLATFORM === 'app-plus' &&
       process.env.UNI_USING_V3
-    )
+    ) || process.env.UNI_PLATFORM === 'mp-weibo'
   ) { // h5 or v3 app-plus
     this.callback(
       null,

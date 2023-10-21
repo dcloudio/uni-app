@@ -96,6 +96,9 @@ export default {
         )
         feedback.show('slide-in-right')
       }
+      if (__PLATFORM__ === 'mp-weibo' && this.openType === 'share') {
+        window.uni.share()
+      }
     },
     _bindObjectListeners (data, value) {
       if (value) {

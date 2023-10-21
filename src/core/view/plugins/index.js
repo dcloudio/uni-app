@@ -93,7 +93,7 @@ export default {
           initBehaviors(options, this)
         }
 
-        if (__PLATFORM__ === 'h5' && isPage(this)) {
+        if ((__PLATFORM__ === 'h5' || __PLATFORM__ === 'mp-weibo') && isPage(this)) {
           options.mounted = options.mounted ? [].concat(pageMounted, options.mounted) : [pageMounted]
         }
       }

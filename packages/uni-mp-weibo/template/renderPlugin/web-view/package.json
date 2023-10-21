@@ -1,0 +1,13 @@
+{
+  "name": "@wbox/web-view",
+  "version": "1.0.0",
+  "keywords": ["web-view"],
+  "description": "web-view",
+  "main": "dist/index.js",
+  "homepage": "http://wbox.client.weibo.cn/docs/web-view",
+  "author": "Weibo",
+  "license": "ISC",
+  "publishConfig": {
+    "registry": "http://nexus.client.weibo.cn/repository/npm_weibo/"
+  }
+}
