@@ -80,7 +80,11 @@ export const getElements = (params: GetElementParams, callback: Callback): void 
   if (page == null) {
     callback(null, { errMsg: `Page[${params.pageId}] not exists` })
   } else {
-    const elements = page.$querySelectorAll(params.selector)
+    let selector = params.selector
+    if (selector.startsWith('uni-')) {
+      selector = selector.replace('uni-', '')
+    }
+    const elements = page.$querySelectorAll(selector)
     // @ts-ignore
     const result = [] as UTSJSONObject[]
     elements?.forEach(element => {

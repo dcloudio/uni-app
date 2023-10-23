@@ -72,9 +72,13 @@ export const getElements = (
     callback
   )
   if (element != null) {
+    let selector = params.selector
+    if (selector.startsWith('uni-')) {
+      selector = selector.replace('uni-', '')
+    }
     // @ts-ignore
     const list: UTSJSONObject[] = []
-    getValidNodes(element, params.selector, list, true)
+    getValidNodes(element, selector, list, true)
     callback({ elements: list }, null)
   }
 }
