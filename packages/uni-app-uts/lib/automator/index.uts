@@ -76,10 +76,6 @@ export function onMessage(msg: string) {
   // @ts-ignore
   const json = JSON.parse<Msg>(msg)!
   const method = json.method
-  if ((method == 'ping')) {
-    send('pong')
-    return
-  }
   const params = JSON.stringify(json.params)
   const res = new Map<string, any | null>([['id', json.id]])
   try {
@@ -209,9 +205,7 @@ export function initAutomator() {
   socketTask = uni.connectSocket({
     url: wsEndpoint
   });
-  socketTask!.onMessage((res) => {
-    onMessage(res.data as string)
-  })
+  socketTask!.onMessage((res) => { onMessage(res.data as string) })
   socketTask!.onOpen((_) => {
     console.warn("automator.onOpen")
   })
