@@ -17,5 +17,5 @@ export const uts2kotlin: uts2kotlin = (options) => {
     // @ts-expect-error
     return globalThis.uts2kotlin(options)
   }
-  return require('../../lib/kotlin').uts2kotlin(options)
+  return require('../../lib/kotlin/compiler').uts2kotlin(options)
 }

@@ -1,3 +1,4 @@
+import path from 'path'
 import {
   parseUniExtApiNamespacesOnce,
   resolveUTSCompiler,
@@ -34,6 +35,11 @@ export function init() {
       ? [
           // 必须在 uvue 处理之后
           resolveUTSCompiler().uts2kotlin({
+            cacheRoot: path.resolve(
+              process.env.UNI_APP_X_CACHE_DIR ||
+                path.resolve(process.env.UNI_OUTPUT_DIR, '../.kotlin'),
+              '.uts/cache'
+            ),
             inputDir: process.env.UNI_INPUT_DIR,
             sourcemap: process.env.NODE_ENV === 'development',
             fileName(fileName) {

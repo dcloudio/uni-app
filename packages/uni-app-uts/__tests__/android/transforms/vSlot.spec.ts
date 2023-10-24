@@ -92,7 +92,7 @@ describe('compiler: slot', () => {
   test('component with slot', () => {
     assert(
       `<view><slot data="data"></slot></view>`,
-      `@Suppress("UNUSED_PARAMETER") function PagesIndexIndexRender(): VNode | null {
+      `function PagesIndexIndexRender(): VNode | null {
 const _ctx = this
   return createElementVNode("view", null, [
     renderSlot(_ctx.$slots, "default", utsMapOf({ data: "data" }))
@@ -108,7 +108,7 @@ const _ctx = this
   test('template component with slot', () => {
     assert(
       `<view><Foo @click="test">test</Foo></view>`,
-      `@Suppress("UNUSED_PARAMETER") function PagesIndexIndexRender(): VNode | null {
+      `function PagesIndexIndexRender(): VNode | null {
 const _ctx = this
 const _component_Foo = resolveComponent("Foo")
 
@@ -143,7 +143,7 @@ const _component_Foo = resolveComponent("Foo")
   test('scoped slots', () => {
     assert(
       `<view><Foo><template v-slot="props"><text>msg: {{props.msg}}</text></template></Foo></view>`,
-      `@Suppress("UNUSED_PARAMETER") function PagesIndexIndexRender(): VNode | null {
+      `function PagesIndexIndexRender(): VNode | null {
 const _ctx = this
 const _component_Foo = resolveComponent("Foo")
 
@@ -166,7 +166,7 @@ const _component_Foo = resolveComponent("Foo")
   test('scoped slots shorthand', () => {
     assert(
       `<view><Foo><template #default="props"><text>msg: {{props.msg}}</text></template></Foo></view>`,
-      `@Suppress("UNUSED_PARAMETER") function PagesIndexIndexRender(): VNode | null {
+      `function PagesIndexIndexRender(): VNode | null {
 const _ctx = this
 const _component_Foo = resolveComponent("Foo")
 

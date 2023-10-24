@@ -1,3 +1,4 @@
+import path from 'path'
 import {
   isVueSfcFile,
   uniCssScopedPlugin,
@@ -21,7 +22,16 @@ import { uniSSRPlugin } from './plugins/ssr'
 
 export default [
   ...(process.env.UNI_APP_X === 'true'
-    ? [uniUTSUVueJavaScriptPlugin(), resolveUTSCompiler().uts2js({})]
+    ? [
+        uniUTSUVueJavaScriptPlugin(),
+        resolveUTSCompiler().uts2js({
+          cacheRoot: path.resolve(
+            process.env.UNI_APP_X_CACHE_DIR ||
+              path.resolve(process.env.UNI_OUTPUT_DIR, '../.web'),
+            '.uts/cache'
+          ),
+        }),
+      ]
     : []),
   uniEasycomPlugin({ exclude: UNI_EASYCOM_EXCLUDE }),
   uniCssScopedPlugin({

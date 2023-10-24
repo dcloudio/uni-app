@@ -4,7 +4,7 @@ describe('compiler: component', () => {
   test('template component', () => {
     assert(
       `<view><Foo /></view>`,
-      `@Suppress("UNUSED_PARAMETER") function PagesIndexIndexRender(): VNode | null {
+      `function PagesIndexIndexRender(): VNode | null {
 const _ctx = this
 const _component_Foo = resolveComponent("Foo")
 

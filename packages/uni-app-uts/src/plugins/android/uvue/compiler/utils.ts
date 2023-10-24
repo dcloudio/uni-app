@@ -13,13 +13,8 @@ import { normalizeNodeModules, removeExt } from '@dcloudio/uni-cli-shared'
 import path from 'path'
 import { UVUE_CLASS_NAME_PREFIX } from '../../utils'
 
-export function genRenderFunctionDecl({
-  targetLanguage,
-  className,
-}: CompilerOptions): string {
-  return `${
-    targetLanguage === 'kotlin' ? '@Suppress("UNUSED_PARAMETER") ' : ''
-  }function ${className}Render(): VNode | null`
+export function genRenderFunctionDecl({ className }: CompilerOptions): string {
+  return `function ${className}Render(): VNode | null`
 }
 
 export function rewriteObjectExpression(
