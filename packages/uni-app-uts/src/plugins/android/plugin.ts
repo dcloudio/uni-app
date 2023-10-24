@@ -136,6 +136,9 @@ export function uniAppPlugin(): UniVitePlugin {
       injectAssetPlugin(config, { isAppX: true })
     },
     async transform(code, id) {
+      if (process.env.UNI_APP_X_TSC === 'true') {
+        return
+      }
       const { filename } = parseVueRequest(id)
       if (!filename.endsWith('.uts')) {
         return

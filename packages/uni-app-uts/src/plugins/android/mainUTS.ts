@@ -20,7 +20,6 @@ export function uniAppMainPlugin(): Plugin {
 import './${MANIFEST_JSON_UTS}'
 import './${PAGES_JSON_UTS}'
 ${code}
-export default 'main.uts'
 `
       }
     },

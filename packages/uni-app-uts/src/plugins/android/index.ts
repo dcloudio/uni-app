@@ -1,5 +1,6 @@
 import {
   parseUniExtApiNamespacesOnce,
+  resolveUTSCompiler,
   uniUTSUniModulesPlugin,
 } from '@dcloudio/uni-cli-shared'
 import { uniPrePlugin } from '../pre'
@@ -10,6 +11,7 @@ import { uniAppManifestPlugin } from './manifestJson'
 import { uniAppPagesPlugin } from './pagesJson'
 import { uniAppUVuePlugin } from './uvue'
 import { uniCloudPlugin } from './unicloud'
+import { parseImports, parseUTSRelativeFilename } from './utils'
 
 export function init() {
   return [
@@ -28,5 +30,21 @@ export function init() {
     uniAppCssPlugin(),
     uniAppUVuePlugin(),
     uniCloudPlugin(),
+    ...(process.env.UNI_APP_X_TSC === 'true'
+      ? [
+          // 必须在 uvue 处理之后
+          resolveUTSCompiler().uts2kotlin({
+            inputDir: process.env.UNI_INPUT_DIR,
+            sourcemap: process.env.NODE_ENV === 'development',
+            fileName(fileName) {
+              const name = parseUTSRelativeFilename(fileName)
+              return name === 'main.uts' ? 'index.uts' : name
+            },
+            jsCode(code) {
+              return parseImports(code)
+            },
+          }),
+        ]
+      : []),
   ]
 }

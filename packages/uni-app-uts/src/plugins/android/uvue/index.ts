@@ -8,7 +8,7 @@ import {
   type SFCDescriptor,
   type SFCParseResult,
 } from '@vue/compiler-sfc'
-import type { TransformPluginContext } from 'rollup'
+import type { SourceMapInput, TransformPluginContext } from 'rollup'
 
 import { isString } from '@vue/shared'
 import {
@@ -119,6 +119,12 @@ export function uniAppUVuePlugin(): Plugin {
             this.error(createRollupError(filename, error, code))
           )
           return null
+        }
+        if (process.env.UNI_APP_X_TSC === 'true') {
+          return {
+            code: uts,
+            map: sourceMap as SourceMapInput,
+          }
         }
         const fileName = parseUTSRelativeFilename(filename)
         this.emitFile({
