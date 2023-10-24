@@ -25,6 +25,7 @@ export function init() {
       ),
     }),
     uniAppPlugin(),
+    // 需要放到 uniAppPlugin 之后(TSC模式无需)，让 uniAppPlugin 先 emit 出真实的 main.uts，然后 MainPlugin 再返回仅包含 import 的 js code
     uniAppMainPlugin(),
     uniAppManifestPlugin(),
     uniAppPagesPlugin(),

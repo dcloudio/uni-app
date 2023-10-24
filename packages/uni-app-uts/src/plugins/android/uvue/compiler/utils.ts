@@ -9,9 +9,7 @@ import { stringifyExpression } from './transforms/transformExpression'
 import { TransformContext } from './transform'
 import { CompilerError } from './errors'
 import { camelize, capitalize } from '@vue/shared'
-import { normalizeNodeModules, removeExt } from '@dcloudio/uni-cli-shared'
-import path from 'path'
-import { UVUE_CLASS_NAME_PREFIX } from '../../utils'
+import { genClassName } from '../../utils'
 
 export function genRenderFunctionDecl({ className }: CompilerOptions): string {
   return `function ${className}Render(): VNode | null`
@@ -69,29 +67,7 @@ export function genComponentPublicInstanceImported(
   fileName: string
 ) {
   if (fileName.startsWith('@/')) {
-    return (
-      UVUE_CLASS_NAME_PREFIX +
-      capitalize(
-        camelize(
-          removeExt(fileName.replace('@/', ''))
-            .replace(/\//g, '-')
-            .replace(/@/g, '')
-            .replace(/\./g, '')
-        )
-      ) +
-      'ComponentPublicInstance'
-    )
+    return genClassName(fileName.replace('@/', '')) + 'ComponentPublicInstance'
   }
-  return (
-    UVUE_CLASS_NAME_PREFIX +
-    capitalize(
-      camelize(
-        removeExt(normalizeNodeModules(path.relative(root, fileName)))
-          .replace(/\//g, '-')
-          .replace(/@/g, '')
-          .replace(/\./g, '')
-      )
-    ) +
-    'ComponentPublicInstance'
-  )
+  return genClassName(fileName) + 'ComponentPublicInstance'
 }
