@@ -43,5 +43,5 @@ packages/uni-cli-shared/components/ad-fullscreen-video.vue
 packages/uni-cli-shared/components/ad-interactive.vue
 packages/uni-cli-shared/components/ad-interstitial.vue
 packages/uni-cli-shared/components/ad-rewarded-video.vue
-packages/uni-cli-shared/lib/uni_modules/uni_modules.js
+packages/uni-cli-shared/lib/uts/uni_modules.js
 packages/uni-cli-shared/lib/uts/uts.js

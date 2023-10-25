@@ -1,6 +1,6 @@
 const path = require('path')
 const {
-  resolveUtsModule
+  resolveUTSModule
 } = require('./uts')
 class UTSResolverPlugin {
   apply (resolver) {
@@ -12,7 +12,7 @@ class UTSResolverPlugin {
         utsModulePath = path.resolve(request.path, request.request)
       }
       if (utsModulePath) {
-        const utsModule = resolveUtsModule(utsModulePath)
+        const utsModule = resolveUTSModule(utsModulePath)
         if (utsModule) {
           if (process.env.UNI_PLATFORM === 'app-plus') {
             request.request = utsModule + '/package.json?uts-proxy'

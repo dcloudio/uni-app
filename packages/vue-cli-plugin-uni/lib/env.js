@@ -193,6 +193,12 @@ function initUtsPlatform () {
       process.env.UNI_UTS_PLATFORM = process.env.UNI_PLATFORM
     }
   }
+  process.env.UNI_UTS_TARGET_LANGUAGE = 'javascript'
+  if (process.env.UNI_UTS_PLATFORM === 'app-android') {
+    process.env.UNI_UTS_TARGET_LANGUAGE = 'kotlin'
+  } else if (process.env.UNI_UTS_PLATFORM === 'app-ios') {
+    process.env.UNI_UTS_TARGET_LANGUAGE = 'swift'
+  }
 }
 
 if (process.env.UNI_PLATFORM === 'app-plus') {

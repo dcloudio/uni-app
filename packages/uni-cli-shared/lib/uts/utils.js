@@ -1,7 +1,9 @@
 const fs = require('fs')
 const path = require('path')
 const {
-  normalizePath
+  normalizePath,
+  camelize,
+  capitalize
 } = require('../util')
 
 function hasProjectYarn (cwd) {
@@ -34,5 +36,8 @@ Please run \`${command}\` and try again.`
 module.exports = {
   version: require('../../package.json').version,
   normalizePath,
-  installDepTips
+  installDepTips,
+  camelize,
+  capitalize,
+  isArray: Array.isArray
 }
