@@ -16,6 +16,7 @@ import {
 
 import {
   FORMATS,
+  GenProxyCodeOptions,
   genProxyCode,
   resolvePlatformIndex,
   resolvePlatformIndexFilename,
@@ -152,28 +153,25 @@ export async function compile(
     typeParams: [],
     components: [],
   }
-
-  const code = await genProxyCode(
-    pluginDir,
-    extend(
-      {
-        androidComponents,
-        iosComponents,
-        format:
-          process.env.UNI_UTS_JS_CODE_FORMAT === 'cjs'
-            ? FORMATS.CJS
-            : FORMATS.ES,
-        pluginRelativeDir,
-        moduleName:
-          require(join(pluginDir, 'package.json')).displayName || pkg.id,
-        moduleType: process.env.UNI_UTS_MODULE_TYPE || '',
-        meta,
-        inputDir,
-        isExtApi,
-      },
-      pkg
-    )
+  const proxyCodeOptions: GenProxyCodeOptions = extend(
+    {
+      androidComponents,
+      iosComponents,
+      format:
+        process.env.UNI_UTS_JS_CODE_FORMAT === 'cjs' ? FORMATS.CJS : FORMATS.ES,
+      pluginRelativeDir,
+      moduleName:
+        require(join(pluginDir, 'package.json')).displayName || pkg.id,
+      moduleType: process.env.UNI_UTS_MODULE_TYPE || '',
+      meta,
+      inputDir,
+      isExtApi,
+    },
+    pkg
   )
+
+  const code = await genProxyCode(pluginDir, proxyCodeOptions)
+
   let errMsg = ''
   if (process.env.NODE_ENV !== 'development') {
     // 生产模式 支持同时生成 android 和 ios 的 uts 插件
@@ -191,6 +189,7 @@ export async function compile(
           extApis,
           transform,
           sourceMap: !!sourceMap,
+          hookClass: proxyCodeOptions.androidHookClass || '',
         })
         if (cacheDir) {
           // 存储 sourcemap
@@ -225,6 +224,7 @@ export async function compile(
           extApis,
           transform,
           sourceMap: !!sourceMap,
+          hookClass: proxyCodeOptions.iOSHookClass || '',
         })
         if (cacheDir) {
           storeSourceMap(
@@ -306,6 +306,9 @@ export async function compile(
           // 处理 config.json
           genConfigJson(
             utsPlatform,
+            (utsPlatform === 'app-android'
+              ? proxyCodeOptions.androidHookClass
+              : proxyCodeOptions.iOSHookClass) || '',
             components,
             pluginRelativeDir,
             pkg.is_uni_modules,
@@ -349,6 +352,9 @@ export async function compile(
         // 处理 config.json
         genConfigJson(
           utsPlatform,
+          (utsPlatform === 'app-android'
+            ? proxyCodeOptions.androidHookClass
+            : proxyCodeOptions.iOSHookClass) || '',
           components,
           pluginRelativeDir,
           pkg.is_uni_modules,

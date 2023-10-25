@@ -34,10 +34,18 @@ import {
   createResolveTypeReferenceName,
   ERR_MSG_PLACEHOLDER,
   isColorSupported,
+  parseKotlinPackageWithPluginId,
   relative,
 } from './utils'
 import { normalizePath } from './shared'
 import { parseUTSSyntaxError } from './stacktrace'
+
+const IOS_HOOK_CLASS = 'UTSiOSHookProxy'
+const ANDROID_HOOK_CLASS = 'UTSAndroidHookProxy'
+
+function isHookClass(name: string) {
+  return name === ANDROID_HOOK_CLASS || name === IOS_HOOK_CLASS
+}
 
 export const enum FORMATS {
   ES = 'es',
@@ -83,6 +91,8 @@ export interface GenProxyCodeOptions {
   types?: Types
   meta?: Meta
   isExtApi?: boolean
+  androidHookClass?: string
+  iOSHookClass?: string
 }
 
 export async function genProxyCode(
@@ -502,14 +512,34 @@ function createParams(tsParams: TsFnParameter[]) {
 
 async function parseModuleDecls(module: string, options: GenProxyCodeOptions) {
   // 优先合并 ios + android，如果没有，查找根目录 index.uts
-  const iosDecls = await parseFile(
-    resolvePlatformIndex('app-ios', module, options),
-    options
-  )
-  const androidDecls = await parseFile(
-    resolvePlatformIndex('app-android', module, options),
-    options
-  )
+  const iosDecls = (
+    await parseFile(resolvePlatformIndex('app-ios', module, options), options)
+  ).filter((decl) => {
+    if (decl.type === 'Class') {
+      if (decl.isHook) {
+        options.iOSHookClass = options.namespace + capitalize(decl.cls)
+        return false
+      }
+    }
+    return true
+  })
+  const androidDecls = (
+    await parseFile(
+      resolvePlatformIndex('app-android', module, options),
+      options
+    )
+  ).filter((decl) => {
+    if (decl.type === 'Class') {
+      if (decl.isHook) {
+        options.androidHookClass =
+          parseKotlinPackageWithPluginId(options.id, options.is_uni_modules) +
+          '.' +
+          decl.cls
+        return false
+      }
+    }
+    return true
+  })
   // 优先使用 app-ios，因为 app-ios 平台函数类型需要正确的参数列表
   const decls = mergeDecls(androidDecls, iosDecls)
   // 如果没有平台特有，查找 root index.uts
@@ -662,6 +692,7 @@ interface ProxyClass {
   }
   isDefault: boolean
   isVar: boolean
+  isHook: boolean
 }
 
 function mergeAstTypes(to: Types, from: Types) {
@@ -793,9 +824,10 @@ function genProxyClass(
     staticProps: string[]
   },
   isDefault = false,
-  isVar = false
+  isVar = false,
+  isHook = false
 ): ProxyClass {
-  return { type: 'Class', cls, options, isDefault, isVar }
+  return { type: 'Class', cls, options, isDefault, isVar, isHook }
 }
 
 interface Parameter {
@@ -1051,6 +1083,11 @@ function genClassDeclaration(
   const staticMethods: ProxyClass['options']['staticMethods'] = {}
   const props: string[] = []
   const staticProps: string[] = []
+  const isHook = decl.implements.some(
+    (implement) =>
+      implement.expression.type === 'Identifier' &&
+      isHookClass(implement.expression.value)
+  )
   decl.body.forEach((item) => {
     if (item.type === 'Constructor') {
       constructor.params = resolveFunctionParams(
@@ -1104,7 +1141,9 @@ function genClassDeclaration(
   return genProxyClass(
     cls,
     { constructor, methods, staticMethods, props, staticProps },
-    isDefault
+    isDefault,
+    false,
+    isHook
   )
 }
 

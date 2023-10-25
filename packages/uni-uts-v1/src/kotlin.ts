@@ -82,12 +82,14 @@ export async function runKotlinProd(
   {
     isPlugin,
     isX,
+    hookClass,
     extApis,
     transform,
     sourceMap,
   }: {
     isPlugin: boolean
     isX: boolean
+    hookClass: string
     extApis?: Record<string, [string, string]>
     transform?: UTSOutputOptions['transform']
     sourceMap?: boolean
@@ -122,6 +124,7 @@ export async function runKotlinProd(
     extname: '.kt',
     components,
     package: parseKotlinPackage(filename).package + '.',
+    hookClass,
   })
 }
 

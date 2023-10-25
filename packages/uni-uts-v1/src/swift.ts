@@ -47,9 +47,11 @@ export async function runSwiftProd(
     extApis,
     transform,
     sourceMap,
+    hookClass,
   }: {
     isPlugin: boolean
     isX: boolean
+    hookClass: string
     extApis?: Record<string, [string, string]>
     transform?: UTSOutputOptions['transform']
     sourceMap?: boolean
@@ -84,6 +86,7 @@ export async function runSwiftProd(
     extname: '.swift',
     components,
     package: parseSwiftPackage(filename).namespace,
+    hookClass,
   })
 }
 
