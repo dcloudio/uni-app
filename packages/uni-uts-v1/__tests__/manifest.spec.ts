@@ -41,11 +41,11 @@ const pluginOptions = {
 describe('manifest', () => {
   test('resolve android files', async () => {
     expect(await resolvePluginFiles('app-android', pluginDir, false)).toEqual([
-      'index.uts',
       'interface.uts',
       'package.json',
       'common/utils.uts',
       'common/test/test.uts',
+      'app-android/index.uts',
     ])
     expect(
       await resolvePluginFiles('app-android', pluginModuleDir, true)
@@ -60,11 +60,11 @@ describe('manifest', () => {
   })
   test('resolve ios files', async () => {
     expect(await resolvePluginFiles('app-ios', pluginDir, false)).toEqual([
-      'index.uts',
       'interface.uts',
       'package.json',
       'common/utils.uts',
       'common/test/test.uts',
+      'app-ios/index.uts',
     ])
     expect(await resolvePluginFiles('app-ios', pluginModuleDir, true)).toEqual([
       'package.json',

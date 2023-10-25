@@ -549,27 +549,48 @@ async function parseModuleDecls(module: string, options: GenProxyCodeOptions) {
   return decls
 }
 
+function mergeRecord(from: Record<string, any>, to: Record<string, any>) {
+  Object.keys(from).forEach((key) => {
+    if (!hasOwn(to, key)) {
+      to[key] = from[key]
+    }
+  })
+}
+function mergeArray(from: any[], to: any[]) {
+  from.forEach((item) => {
+    if (!to.includes(item)) {
+      to.push(item)
+    }
+  })
+}
+
 function mergeDecls(from: ProxyDecl[], to: ProxyDecl[]) {
   from.forEach((item) => {
     if (item.type === 'InterfaceDeclaration') {
-      if (
-        !to.find(
-          (toItem) =>
-            toItem.type === 'InterfaceDeclaration' && toItem.cls === item.cls
-        )
-      ) {
+      const decl = to.find(
+        (toItem) =>
+          toItem.type === 'InterfaceDeclaration' && toItem.cls === item.cls
+      ) as ProxyInterface | undefined
+      if (!decl) {
         to.push(item)
+      } else {
+        mergeRecord(item.options.methods, decl.options.methods)
+        mergeArray(item.options.props, decl.options.props)
       }
     } else if (item.type === 'Class') {
-      if (
-        !to.find(
-          (toItem) =>
-            toItem.type === 'Class' &&
-            toItem.cls === item.cls &&
-            toItem.isDefault === item.isDefault
-        )
-      ) {
+      const decl = to.find(
+        (toItem) =>
+          toItem.type === 'Class' &&
+          toItem.cls === item.cls &&
+          toItem.isDefault === item.isDefault
+      ) as ProxyClass | undefined
+      if (!decl) {
         to.push(item)
+      } else {
+        mergeRecord(item.options.methods, decl.options.methods)
+        mergeRecord(item.options.staticMethods, decl.options.staticMethods)
+        mergeArray(item.options.props, decl.options.props)
+        mergeArray(item.options.staticProps, decl.options.staticProps)
       }
     } else if (item.type === 'FunctionDeclaration') {
       if (

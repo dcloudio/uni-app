@@ -1,10 +1,12 @@
-import { ShowToast, RequestTask } from './interface.uts'
+import { ShowToast, RequestTask } from '../interface.uts'
 
 export function onMemoryWarning(callback: (level: number) => void) {}
 export function offMemoryWarning(
   callback: ((level: number) => void) | null = null
 ) {}
-export default class User {}
+export default class User {
+  register() {}
+}
 export const a = 1
 export let b = 2,
   c = 3
