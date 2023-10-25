@@ -1,0 +1,44 @@
+{
+  "uni-route": {
+    "navigateBack": [
+      "null"
+    ]
+  },
+  "uni-ui": {
+    "hideTabBar": [
+      "null"
+    ],
+    "showTabBar": [
+      "null"
+    ],
+    "startPullDownRefresh": [
+      "null"
+    ]
+  },
+  "uni-storage": {
+    "clearStorage": [
+      "null"
+    ]
+  },
+  "uni-getDeviceInfo": {
+    "getDeviceInfo": [
+      "null"
+    ]
+  },
+  "uni-getAppBaseInfo": {
+    "getAppBaseInfo": [
+      "null"
+    ]
+  },
+  "uni-exit": {
+    "exit": [
+      "null"
+    ]
+  },
+  "uni-video": {
+    "createVideoContext": [
+      null,
+      "null"
+    ]
+  }
+}

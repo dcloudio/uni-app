@@ -15,6 +15,7 @@ import {
   updateMiniProgramComponentsByTemplateFilename,
   withSourcemap,
   resolveUTSModule,
+  isAppVue,
 } from '@dcloudio/uni-cli-shared'
 import { virtualComponentPath, virtualPagePath } from './entry'
 import { CustomPluginOptions, ResolvedId } from 'rollup'
@@ -42,7 +43,7 @@ export function uniUsingComponentsPlugin(
     },
     async transform(source, id) {
       const { filename, query } = parseVueRequest(id)
-      if (filename.endsWith('App.vue')) {
+      if (isAppVue(filename)) {
         return null
       }
       const sourceMap = withSourcemap(resolvedConfig)

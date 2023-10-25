@@ -46,7 +46,8 @@ const pkg = require(path.resolve(__dirname, '../package.json'))
 
 initModuleAlias()
 
-process.env.UNI_COMPILER_VERSION = pkg['uni-app']?.['compilerVersion'] || ''
+process.env.UNI_COMPILER_VERSION =
+  process.env.UNI_COMPILER_VERSION || pkg['uni-app']?.['compilerVersion'] || ''
 process.env.UNI_COMPILER_VERSION_TYPE = pkg.version.includes('alpha')
   ? 'a'
   : 'r'
@@ -91,7 +92,12 @@ export default function uniPlugin(
   options.platform = (process.env.UNI_PLATFORM as UniApp.PLATFORM) || 'h5'
   options.inputDir = process.env.UNI_INPUT_DIR
 
-  initPreContext(options.platform, process.env.UNI_CUSTOM_CONTEXT)
+  initPreContext(
+    options.platform,
+    process.env.UNI_CUSTOM_CONTEXT,
+    process.env.UNI_UTS_PLATFORM,
+    process.env.UNI_APP_X === 'true'
+  )
 
   return process.env.UNI_APP_X === 'true' && process.env.UNI_PLATFORM === 'app'
     ? createUVuePlugins(options)

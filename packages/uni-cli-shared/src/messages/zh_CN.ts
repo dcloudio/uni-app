@@ -3,6 +3,8 @@ export default {
   compiling: '正在编译中...',
   'dev.performance':
     '请注意运行模式下，因日志输出、sourcemap 以及未压缩源码等原因，性能和包体积，均不及发行模式。',
+  'dev.exclusion':
+    '请在杀毒软件中设置扫描排除名单，减少系统资源消耗。[详情](https://uniapp.dcloud.net.cn/uni-app-x/compiler/#tips)',
   'dev.performance.nvue': '尤其是 app-nvue 的 sourcemap 影响较大',
   'dev.performance.mp':
     '若要正式发布，请点击发行菜单或使用 cli 发布命令进行发布',
@@ -11,6 +13,7 @@ export default {
   'dev.watching.end': 'DONE  Build complete. Watching for changes...',
   'dev.watching.end.pages': 'DONE  Build complete. PAGES:{pages}',
   'dev.watching.end.files': 'DONE  Build complete. FILES:{files}',
+  'build.failed': 'DONE  Build failed.',
   'compiler.build.failed': '编译失败',
   'stat.warn.appid':
     '当前应用未配置 appid，无法使用 uni 统计，详情参考：https://ask.dcloud.net.cn/article/36303',
@@ -50,4 +53,6 @@ export default {
   'prompt.run.devtools.quickapp-webview-huawei': '华为快应用开发者工具',
   'prompt.run.devtools.quickapp-webview-union': '快应用联盟开发者工具',
   'uvue.unsupported': 'uvue 暂不支持 {platform} 平台',
+  'uvue.dev.watching.end.empty':
+    '本次代码变更，编译结果未发生变化，跳过同步手机端程序文件。',
 } as const

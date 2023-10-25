@@ -65,7 +65,7 @@ const initUniCloudWarningOnce = (0, uni_shared_1.once)(() => {
         console.warn('当前项目使用了uniCloud，为避免云函数调用跨域问题，建议在HBuilderX内置浏览器里调试，如使用外部浏览器需处理跨域，详见：https://uniapp.dcloud.net.cn/uniCloud/publish.html#useinh5');
 });
 function checkProjectUniCloudDir() {
-    return !!(0, fast_glob_1.sync)(['uniCloud-aliyun', 'uniCloud-tcb'], {
+    return !!(0, fast_glob_1.sync)(['uniCloud-aliyun', 'uniCloud-tcb', 'uniCloud-alipay'], {
         cwd: (0, uni_cli_shared_1.isInHBuilderX)()
             ? process.env.UNI_INPUT_DIR
             : process.env.UNI_CLI_CONTEXT,
@@ -86,7 +86,7 @@ function checkUniModules() {
     if (!checkProjectUniCloudDir()) {
         const uniCloudModules = resolveUniCloudModules();
         if (uniCloudModules.length) {
-            console.warn(`${uniCloudModules.join(', ')} 使用了uniCloud，而项目未启动uniCloud。需在项目点右键创建uniCloud环境`);
+            console.warn(`${uniCloudModules.join(', ')} 使用了uniCloud，而项目未启用uniCloud。需在项目点右键创建uniCloud环境`);
         }
     }
 }
@@ -116,21 +116,36 @@ function initUniCloudEnv() {
             if (space.provider === 'tcb') {
                 space.provider = 'tencent';
             }
-            if (space.clientSecret) {
-                return {
-                    provider: space.provider || 'aliyun',
-                    spaceName: space.name,
-                    spaceId: space.id,
-                    clientSecret: space.clientSecret,
-                    endpoint: space.apiEndpoint,
-                };
+            if (!space.provider && space.clientSecret) {
+                space.provider = 'aliyun';
             }
-            else {
-                return {
-                    provider: space.provider || 'tencent',
-                    spaceName: space.name,
-                    spaceId: space.id,
-                };
+            switch (space.provider) {
+                case 'aliyun':
+                    return {
+                        provider: space.provider || 'aliyun',
+                        spaceName: space.name,
+                        spaceId: space.id,
+                        clientSecret: space.clientSecret,
+                        endpoint: space.apiEndpoint,
+                    };
+                case 'alipay': {
+                    return {
+                        provider: space.provider,
+                        spaceName: space.name,
+                        spaceId: space.id,
+                        spaceAppId: space.spaceAppId,
+                        accessKey: space.accessKey,
+                        secretKey: space.secretKey,
+                    };
+                }
+                case 'tencent':
+                default: {
+                    return {
+                        provider: space.provider,
+                        spaceName: space.name,
+                        spaceId: space.id,
+                    };
+                }
             }
         }));
     }
@@ -161,7 +176,7 @@ exports.default = () => [
                 }
                 if (uniCloudSpaces.length) {
                     return {
-                        code: code + `;import '@dcloudio/uni-cloud';`,
+                        code: code + `;\nimport '@dcloudio/uni-cloud';`,
                         map: null,
                     };
                 }

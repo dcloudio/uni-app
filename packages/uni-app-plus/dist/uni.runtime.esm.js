@@ -9533,8 +9533,8 @@ class MapContext {
     openMapApp(options) {
         operateMapWrap(this.id, this.pageId, 'openMapApp', options);
     }
-    on(options) {
-        operateMapWrap(this.id, this.pageId, 'on', options);
+    on(name, callback) {
+        operateMapWrap(this.id, this.pageId, 'on', { name, callback });
     }
 }
 const createMapContext = defineSyncApi(API_CREATE_MAP_CONTEXT, (id, context) => {
@@ -17320,10 +17320,13 @@ function getProxy() {
 }
 function resolveSyncResult(args, res, returnOptions, instanceId, proxy) {
     if ((process.env.NODE_ENV !== 'production')) {
-        console.log('uts.invokeSync.result', res, returnOptions, instanceId, typeof proxy);
+        console.log('uts.invokeSync.result', JSON.stringify([res, returnOptions, instanceId, typeof proxy]));
     }
     if (!res) {
-        throw new Error(JSON.stringify(args));
+        throw new Error('返回值为：' +
+            JSON.stringify(res) +
+            '；请求参数为：' +
+            JSON.stringify(args));
     }
     // devtools 环境是字符串？
     if (isString(res)) {
@@ -17464,7 +17467,9 @@ function initUTSProxyClass(options) {
     let constructorParams = [];
     let staticMethods = {};
     let staticProps = [];
+    let isProxyInterface = false;
     if (isProxyInterfaceOptions(options)) {
+        isProxyInterface = true;
         instanceId = options.instanceId;
     }
     else {
@@ -17485,8 +17490,8 @@ function initUTSProxyClass(options) {
             }
             const target = {};
             // 初始化实例 ID
-            if (isUndefined(instanceId)) {
-                // 未指定instanceId
+            if (!isProxyInterface) {
+                // 初始化未指定时，每次都要创建instanceId
                 instanceId = initProxyFunction(false, extend({ name: 'constructor', params: constructorParams }, baseOptions), 0).apply(null, params);
             }
             if (!instanceId) {

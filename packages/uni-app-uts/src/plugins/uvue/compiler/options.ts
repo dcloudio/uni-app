@@ -1,8 +1,9 @@
 import { BindingMetadata, CompilerError } from '@vue/compiler-core'
-import { RawSourceMap } from 'source-map'
+import type { RawSourceMap } from 'source-map-js'
 import { DirectiveTransform, NodeTransform } from './transform'
 
 interface SharedTransformCodegenOptions {
+  rootDir: string
   targetLanguage: 'kotlin' | 'swift'
   /**
    * Transform expressions like {{ foo }} to `_ctx.foo`.
@@ -20,6 +21,10 @@ interface SharedTransformCodegenOptions {
    * @default ''
    */
   filename?: string
+  /**
+   * 编译的模板类名
+   */
+  className?: string
 }
 export interface CodegenOptions extends SharedTransformCodegenOptions {
   /**
@@ -66,6 +71,7 @@ export interface ErrorHandlingOptions {
 export interface TransformOptions
   extends SharedTransformCodegenOptions,
     ErrorHandlingOptions {
+  rootDir: string
   /**
    * An array of node transforms to be applied to every AST node.
    */
@@ -103,5 +109,6 @@ export interface CodegenResult {
   code: string
   importEasyComponents: string[]
   importUTSComponents: string[]
+  elements: string[]
   map?: RawSourceMap
 }

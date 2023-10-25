@@ -72,6 +72,7 @@ export const customElements = [
   'mkt',
   'page-container',
   'page-meta',
+  'lottie',
 ]
 
 export const options: UniMiniProgramPluginOptions = {
@@ -88,7 +89,7 @@ export const options: UniMiniProgramPluginOptions = {
       targets: [
         ...(process.env.UNI_MP_PLUGIN ? [copyMiniProgramPluginJson] : []),
         {
-          src: ['customize-tab-bar', 'ext.json'],
+          src: ['customize-tab-bar', 'ext.json', 'preload.json'],
           get dest() {
             return process.env.UNI_OUTPUT_DIR
           },

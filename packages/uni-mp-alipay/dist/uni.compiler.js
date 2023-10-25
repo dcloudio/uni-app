@@ -180,6 +180,7 @@ const customElements = [
     'mkt',
     'page-container',
     'page-meta',
+    'lottie',
 ];
 const options = {
     cdn: 2,
@@ -195,7 +196,7 @@ const options = {
             targets: [
                 ...(process.env.UNI_MP_PLUGIN ? [uniCliShared.copyMiniProgramPluginJson] : []),
                 {
-                    src: ['customize-tab-bar', 'ext.json'],
+                    src: ['customize-tab-bar', 'ext.json', 'preload.json'],
                     get dest() {
                         return process.env.UNI_OUTPUT_DIR;
                     },

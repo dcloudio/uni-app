@@ -56,3 +56,4 @@ export {
   getNVueStyleCompiler,
   getNVueFlexDirection,
 } from './nvue'
+export { parseArguments } from './arguments'

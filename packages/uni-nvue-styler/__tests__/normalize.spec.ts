@@ -55,7 +55,7 @@ zIndex: 4;
     expect(messages[0]).toEqual(
       expect.objectContaining({
         type: 'warning',
-        text: 'ERROR: property value `asdf` is not supported for `margin-right` (only number and pixel values are supported)',
+        text: 'ERROR: property value `asdf` is not supported for `margin-right` (supported values are: `number`|`pixel`)',
       })
     )
   })
@@ -96,12 +96,12 @@ zIndex: 4;
     })
     expect(messages[0]).toEqual(
       expect.objectContaining({
-        text: 'ERROR: property value `a` is not supported for `opacity` (only number is supported)',
+        text: 'ERROR: property value `a` is not supported for `opacity` (supported values are: `number`)',
       })
     )
     expect(messages[1]).toEqual(
       expect.objectContaining({
-        text: 'ERROR: property value `0.5a` is not supported for `opacity` (only number is supported)',
+        text: 'ERROR: property value `0.5a` is not supported for `opacity` (supported values are: `number`)',
       })
     )
   })
@@ -137,17 +137,17 @@ zIndex: 4;
     })
     expect(messages[0]).toEqual(
       expect.objectContaining({
-        text: 'ERROR: property value `0.5` is not supported for `z-index` (only integer is supported)',
+        text: 'ERROR: property value `0.5` is not supported for `z-index` (supported values are: `integer`)',
       })
     )
     expect(messages[1]).toEqual(
       expect.objectContaining({
-        text: 'ERROR: property value `a` is not supported for `z-index` (only integer is supported)',
+        text: 'ERROR: property value `a` is not supported for `z-index` (supported values are: `integer`)',
       })
     )
     expect(messages[2]).toEqual(
       expect.objectContaining({
-        text: 'ERROR: property value `0.5a` is not supported for `z-index` (only integer is supported)',
+        text: 'ERROR: property value `0.5a` is not supported for `z-index` (supported values are: `integer`)',
       })
     )
   })
@@ -310,7 +310,7 @@ zIndex: 4;
     })
     expect(messages[0]).toEqual(
       expect.objectContaining({
-        text: 'ERROR: property value `abc` is not supported for `transition-property` (only css property is valid)',
+        text: 'ERROR: property value `abc` is not supported for `transition-property` (supported values are: `css property`)',
       })
     )
   })
@@ -359,7 +359,7 @@ zIndex: 4;
     )
     expect(messages[2]).toEqual(
       expect.objectContaining({
-        text: 'ERROR: property value `abc` is not supported for `transition-delay` (only number of seconds and milliseconds is valid)',
+        text: 'ERROR: property value `abc` is not supported for `transition-delay` (supported values are: `number of seconds`|`milliseconds`)',
       })
     )
   })

@@ -3,6 +3,8 @@ export default {
   compiling: 'Compiling...',
   'dev.performance':
     'Please note that in running mode, due to log output, sourcemap, and uncompressed source code, the performance and package size are not as good as release mode.',
+  'dev.exclusion':
+    'Please configure the antivirus software to set up an exclusion list for scanning, reducing system resource consumption. [详情](https://uniapp.dcloud.net.cn/uni-app-x/compiler/#tips)',
   'dev.performance.nvue':
     'Especially the sourcemap of app-nvue has a greater impact',
   'dev.performance.mp':
@@ -12,6 +14,7 @@ export default {
   'dev.watching.end': 'DONE  Build complete. Watching for changes...',
   'dev.watching.end.pages': 'DONE  Build complete. PAGES:{pages}',
   'dev.watching.end.files': 'DONE  Build complete. FILES:{files}',
+  'build.failed': 'DONE  Build failed.',
   'compiler.build.failed': 'Build failed with errors.',
   'stat.warn.appid':
     'The current application is not configured with Appid, and uni statistics cannot be used. For details, see https://ask.dcloud.net.cn/article/36303',
@@ -50,4 +53,6 @@ export default {
   'prompt.run.devtools.quickapp-webview-huawei': 'Huawei Quick App Devtools',
   'prompt.run.devtools.quickapp-webview-union': 'Quick App Alliance Devtools',
   'uvue.unsupported': 'uvue does not support {platform} platform',
+  'uvue.dev.watching.end.empty':
+    'The compilation outcome remains unchanged; there is no need to synchronize.',
 } as const

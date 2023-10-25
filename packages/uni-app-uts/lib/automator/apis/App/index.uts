@@ -1,0 +1,471 @@
+// @ts-ignore
+import type { Callback } from '../../index.uts'
+// @ts-ignore
+import { parsePage } from '../util.uts'
+// @ts-ignore
+import { send } from '../../index.uts'
+import {
+  connectSocket,
+  FirstSocketTaskEmitterParams,
+  firstSocketTaskEmitter,
+  // @ts-ignore
+} from './Socket.uts'
+
+export const getPageStack = (callback: Callback): void => {
+  callback(
+    {
+      // @ts-ignore
+      pageStack: getCurrentPages().map((page: BasePage): UTSJSONObject => {
+        return parsePage(page)
+      }),
+    },
+    null
+  )
+}
+export type GetCurrentPageParams = {
+  // @ts-ignore
+  callback: (result: UTSJSONObject | null, error: any | null) => void
+}
+// @ts-ignore
+function _getCurrentPage(): BasePage | null {
+  // @ts-ignore
+  const pages = getCurrentPages()
+  return pages.length > 0 ? pages[pages.length - 1] : null
+}
+
+export const getCurrentPage = (params: GetCurrentPageParams): void => {
+  const page = _getCurrentPage()
+  const result = page != null ? parsePage(page) : null
+  params.callback(result, null)
+}
+
+export type CallUniMethodParams = {
+  method: string
+  args: any[]
+}
+
+export const callUniMethod = (
+  params: CallUniMethodParams,
+  callback: Callback
+): void => {
+  const method = params.method
+  const args = params.args
+  const success = (result: any) => {
+    const timeout = method == 'pageScrollTo' ? 350 : 0
+    setTimeout(() => {
+      callback({ result }, null)
+    }, timeout)
+  }
+  const onApiCallback = (data: any | null, _: any | null) => {
+    const id = args[0] as string
+    send({ id, result: { method, data } })
+  }
+  switch (method) {
+    case 'navigateTo':
+      // @ts-ignore
+      const _arg = new UTSJSONObject(args[0])
+      // @ts-ignore
+      uni.navigateTo({
+        url: _arg['url'] as string,
+        animationType:
+          _arg['animationType'] != null
+            ? (_arg['animationType'] as string)
+            : 'pop-in',
+        animationDuration:
+          _arg['animationDuration'] != null
+            ? (_arg['animationDuration'] as number)
+            : 300,
+        success,
+        fail(error) {
+          error.errMsg = error.errMsg.replace(`${method}: fail `, '')
+          callback(null, error)
+        },
+      })
+      break
+
+    case 'redirectTo':
+      // @ts-ignore
+      uni.redirectTo({
+        // @ts-ignore
+        url: new UTSJSONObject(args[0])['url'] as string,
+        success,
+        fail(error) {
+          error.errMsg = error.errMsg.replace(`${method}: fail `, '')
+          callback(null, error)
+        },
+      })
+      break
+
+    case 'reLaunch':
+      // @ts-ignore
+      uni.reLaunch({
+        // @ts-ignore
+        url: new UTSJSONObject(args[0])['url'] as string,
+        success,
+        fail(error) {
+          error.errMsg = error.errMsg.replace(`${method}: fail `, '')
+          callback(null, error)
+        },
+      })
+      break
+
+    case 'navigateBack':
+      // @ts-ignore
+      const _arg = new UTSJSONObject(args[0])
+      // @ts-ignore
+      uni.navigateBack({
+        animationType:
+          _arg['animationType'] != null
+            ? (_arg['animationType'] as string)
+            : 'pop-out',
+        animationDuration:
+          _arg['animationDuration'] != null
+            ? (_arg['animationDuration'] as number)
+            : 300,
+        success,
+        fail(error) {
+          error.errMsg = error.errMsg.replace(`${method}: fail `, '')
+          callback(null, error)
+        },
+      })
+      break
+    case 'switchTab':
+      // @ts-ignore
+      uni.switchTab({
+        // @ts-ignore
+        url: new UTSJSONObject(args[0])['url'] as string,
+        success,
+        fail(error) {
+          error.errMsg = error.errMsg.replace(`${method}: fail `, '')
+          callback(null, error)
+        },
+      })
+      break
+    case 'getStorage':
+      // @ts-ignore
+      uni.getStorage({
+        // @ts-ignore
+        key: new UTSJSONObject(args[0])['key'] as string,
+        success,
+        fail(error) {
+          error.errMsg = error.errMsg.replace(`${method}: fail `, '')
+          callback(null, error)
+        },
+      })
+      break
+    case 'setStorage':
+      // @ts-ignore
+      const _arg = new UTSJSONObject(args[0])
+      // @ts-ignore
+      uni.setStorage({
+        key: _arg['key'] as string,
+        data: _arg['data']!,
+        success,
+        fail(error) {
+          error.errMsg = error.errMsg.replace(`${method}: fail `, '')
+          callback(null, error)
+        },
+      })
+      break
+    case 'getStorageSync':
+      // @ts-ignore
+      callback({ result: uni.getStorageSync(args[0] as string) }, null)
+      break
+    case 'setStorageSync':
+      // @ts-ignore
+      callback({ result: uni.setStorageSync(args[0] as string, args[1]) }, null)
+      break
+    case 'getStorageInfo':
+      // @ts-ignore
+      uni.getStorageInfo({
+        success,
+        fail(error) {
+          error.errMsg = error.errMsg.replace(`${method}: fail `, '')
+          callback(null, error)
+        },
+      })
+      break
+    case 'getStorageInfoSync':
+      // @ts-ignore
+      callback({ result: uni.getStorageInfoSync() }, null)
+      break
+    case 'removeStorage':
+      // @ts-ignore
+      uni.removeStorage({
+        // @ts-ignore
+        key: new UTSJSONObject(args[0])['key'] as string,
+        success,
+        fail(error) {
+          error.errMsg = error.errMsg.replace(`${method}: fail `, '')
+          callback(null, error)
+        },
+      })
+      break
+    case 'removeStorageSync':
+      // @ts-ignore
+      callback({ result: uni.removeStorageSync(args[0] as string) }, null)
+      break
+    case 'clearStorage':
+      // @ts-ignore
+      uni.clearStorage({
+        success,
+        fail(error) {
+          error.errMsg = error.errMsg.replace(`${method}: fail `, '')
+          callback(null, error)
+        },
+      })
+      break
+    case 'clearStorageSync':
+      // @ts-ignore
+      callback({ result: uni.clearStorageSync() }, null)
+      break
+    case 'showToast':
+      // @ts-ignore
+      const _arg = new UTSJSONObject(args[0])
+      // @ts-ignore
+      uni.showToast({
+        title: _arg['title'] as string,
+        icon: _arg['icon'] != null ? (_arg['icon'] as string) : 'success',
+        image:
+          _arg['image'] != null && _arg['image'] != ''
+            ? (_arg['image'] as string)
+            : null,
+        mask: _arg['mask'] != null ? (_arg['mask'] as boolean) : false,
+        duration:
+          _arg['duration'] != null ? (_arg['duration'] as number) : 1500,
+        position:
+          _arg['position'] != null ? (_arg['position'] as string) : null,
+        success,
+        fail(error) {
+          error.errMsg = error.errMsg.replace(`${method}: fail `, '')
+          callback(null, error)
+        },
+      })
+      break
+    case 'hideToast':
+      // @ts-ignore
+      uni.hideToast()
+      break
+    case 'showLoading':
+      // @ts-ignore
+      const _arg = new UTSJSONObject(args[0])
+      // @ts-ignore
+      uni.showLoading({
+        title: _arg['title'] as string,
+        mask: _arg['mask'] != null ? (_arg['mask'] as boolean) : false,
+        success,
+        fail(error) {
+          error.errMsg = error.errMsg.replace(`${method}: fail `, '')
+          callback(null, error)
+        },
+      })
+      break
+    case 'hideLoading':
+      // @ts-ignore
+      uni.hideLoading()
+      break
+    case 'showModal':
+      // @ts-ignore
+      const _arg = new UTSJSONObject(args[0])
+      // @ts-ignore
+      uni.showModal({
+        title: _arg['title'] != null ? (_arg['title'] as string) : null,
+        content: _arg['content'] != null ? (_arg['content'] as string) : null,
+        showCancel:
+          _arg['showCancel'] != null ? (_arg['showCancel'] as boolean) : true,
+        cancelText:
+          _arg['cancelText'] != null ? (_arg['cancelText'] as string) : null,
+        cancelColor:
+          _arg['cancelColor'] != null ? (_arg['cancelColor'] as string) : null,
+        confirmText:
+          _arg['confirmText'] != null ? (_arg['confirmText'] as string) : null,
+        confirmColor:
+          _arg['confirmColor'] != null
+            ? (_arg['confirmColor'] as string)
+            : null,
+        editable:
+          _arg['editable'] != null ? (_arg['editable'] as boolean) : false,
+        placeholderText:
+          _arg['placeholderText'] != null
+            ? (_arg['placeholderText'] as string)
+            : null,
+        success,
+        fail(error) {
+          error.errMsg = error.errMsg.replace(`${method}: fail `, '')
+          callback(null, error)
+        },
+      })
+      break
+    case 'showActionSheet':
+      // @ts-ignore
+      const _arg = new UTSJSONObject(args[0])
+      // @ts-ignore
+      uni.showActionSheet({
+        title: _arg['title'] != null ? (_arg['title'] as string) : null,
+        // @ts-ignore
+        itemList: JSON.parse<string[]>(JSON.stringify(_arg['itemList']))!,
+        itemColor:
+          _arg['itemColor'] != null ? (_arg['itemColor'] as string) : null,
+        success,
+        fail(error) {
+          error.errMsg = error.errMsg.replace(`${method}: fail `, '')
+          callback(null, error)
+        },
+      })
+      break
+    case 'connectSocket':
+      // @ts-ignore
+      const _arg = new UTSJSONObject(args[0])
+      connectSocket(_arg['id'] as string, _arg['url'] as string, callback)
+      break
+    case 'onSocketOpen':
+      firstSocketTaskEmitter(
+        { method: 'onOpen' } as FirstSocketTaskEmitterParams,
+        onApiCallback
+      )
+      break
+    case 'onSocketMessage':
+      firstSocketTaskEmitter(
+        { method: 'onMessage' } as FirstSocketTaskEmitterParams,
+        onApiCallback
+      )
+      break
+    case 'onSocketError':
+      firstSocketTaskEmitter(
+        { method: 'onError' } as FirstSocketTaskEmitterParams,
+        onApiCallback
+      )
+      break
+    case 'onSocketClose':
+      firstSocketTaskEmitter(
+        { method: 'onClose' } as FirstSocketTaskEmitterParams,
+        onApiCallback
+      )
+      break
+    case 'sendSocketMessage':
+      firstSocketTaskEmitter(
+        {
+          method: 'send',
+          // @ts-ignore
+          data: new UTSJSONObject(args[0])['data'],
+        } as FirstSocketTaskEmitterParams,
+        callback
+      )
+      break
+    case 'closeSocket':
+      // @ts-ignore
+      const _arg = new UTSJSONObject(args[0])
+      firstSocketTaskEmitter(
+        {
+          method: 'close',
+          code: _arg['code'] as number,
+          reason: _arg['reason'] as string,
+        } as FirstSocketTaskEmitterParams,
+        callback
+      )
+      break
+    case 'getSystemInfo':
+      // @ts-ignore
+      uni.getSystemInfo({
+        success,
+        fail(error) {
+          error.errMsg = error.errMsg.replace(`${method}: fail `, '')
+          callback(null, error)
+        },
+      })
+      break
+    case 'getSystemInfoSync':
+      // @ts-ignore
+      callback({ result: uni.getSystemInfoSync() }, null)
+      break
+    case 'getDeviceInfo':
+      // @ts-ignore
+      callback({ result: uni.getDeviceInfo() }, null)
+      break
+    case 'getSystemSetting':
+      // @ts-ignore
+      callback({ result: uni.getSystemSetting() }, null)
+      break
+    case 'getAppBaseInfo':
+      // @ts-ignore
+      callback({ result: uni.getAppBaseInfo() }, null)
+      break
+    case 'getAppAuthorizeSetting':
+      // @ts-ignore
+      callback({ result: uni.getAppAuthorizeSetting() }, null)
+      break
+    case 'openAppAuthorizeSetting':
+      // @ts-ignore
+      uni.openAppAuthorizeSetting({
+        success,
+        fail(error) {
+          error.errMsg = error.errMsg.replace(`${method}: fail `, '')
+          callback(null, error)
+        },
+      })
+      break
+    case 'pageScrollTo':
+      // @ts-ignore
+      const _arg = new UTSJSONObject(args[0])
+      // @ts-ignore
+      uni.pageScrollTo({
+        scrollTop: _arg['scrollTop'] as number,
+        duration: _arg['duration'] as number,
+        success,
+        fail(error) {
+          error.errMsg = error.errMsg.replace(`${method}: fail `, '')
+          callback(null, error)
+        },
+      })
+      break
+    default:
+      callback(null, { errMsg: 'uni.' + method + ' not exists.' })
+      break
+  }
+}
+
+export type CaptureScreenshotParams = {
+  id?: string | null
+  fullPage?: boolean | null
+  path?: string | null
+}
+export const captureScreenshot = (
+  params: CaptureScreenshotParams,
+  callback: Callback
+): void => {
+  const currentPage = _getCurrentPage()
+  if (currentPage != null) {
+    currentPage.$viewToTempFilePath({
+      id: params.fullPage == true ? null : params.id,
+      wholeContent: params.fullPage == true,
+      path: params.path,
+      success: (res) => {
+        // @ts-ignore
+        const fileManager = uni.getFileSystemManager()
+        fileManager.readFile({
+          encoding: 'base64',
+          filePath: res.tempFilePath,
+          success(readFileRes) {
+            callback(
+              {
+                errMsg: 'screenshot:ok',
+                tempFilePath: res.tempFilePath,
+                data: readFileRes.data,
+              },
+              null
+            )
+          },
+          fail(error) {
+            callback(null, error)
+          },
+          // @ts-ignore
+        } as ReadFileOptions)
+      },
+      fail: (error) => {
+        callback(null, error)
+      },
+    })
+  } else {
+    callback(null, { errMsg: `currentPage is not found.` })
+  }
+}

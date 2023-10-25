@@ -6,15 +6,11 @@ import {
   hyphenateStyleProperty,
   isNumber,
   COMBINATORS_RE,
+  NormalizeOptions,
 } from '../utils'
 import { getNormalizeMap } from './map'
 
 const normalized = Symbol('normalized')
-
-export interface NormalizeOptions {
-  logLevel?: 'NOTE' | 'WARNING' | 'ERROR'
-  type?: 'nvue' | 'uvue'
-}
 
 export function normalize(opts: NormalizeOptions = {}): Plugin {
   if (!hasOwn(opts, 'logLevel')) {
@@ -25,12 +21,12 @@ export function normalize(opts: NormalizeOptions = {}): Plugin {
     Declaration: createDeclarationProcessor(opts),
   }
   if (__NODE_JS__) {
-    plugin.Rule = createRuleProcessor()
+    plugin.Rule = createRuleProcessor(opts)
   }
   return plugin
 }
 
-function createRuleProcessor() {
+function createRuleProcessor(opts: NormalizeOptions = {}) {
   return (rule: Rule, helper: Helpers) => {
     if ((rule as any)[normalized]) {
       return
@@ -43,11 +39,14 @@ function createRuleProcessor() {
         if (COMBINATORS_RE.test(selector)) {
           return selector
         }
+        let type = opts.type || 'nvue'
         rule.warn(
           helper.result,
           'ERROR: Selector `' +
             selector +
-            '` is not supported. nvue only support classname selector'
+            '` is not supported. ' +
+            type +
+            ' only support classname selector'
         )
         return ''
       })
@@ -66,7 +65,7 @@ function createDeclarationProcessor(options: NormalizeOptions) {
       return
     }
     decl.prop = camelize(decl.prop)
-    const { value, log } = normalizeDecl(decl.prop, decl.value, options)
+    const { value, log } = normalizeDecl(decl, options)
     if (isString(value) || isNumber(value)) {
       decl.value = value
     }
@@ -93,17 +92,16 @@ function createDeclarationProcessor(options: NormalizeOptions) {
   }
 }
 
-export function normalizeDecl(
-  name: string,
-  value: string,
-  options: NormalizeOptions
-) {
+export function normalizeDecl(decl: Declaration, options: NormalizeOptions) {
+  let { prop: name, value } = decl
   let result, log
   const normalize = getNormalizeMap(options)[name]
 
   if (isFunction(normalize)) {
     if (!isFunction(value)) {
-      result = normalize(value, options)
+      result = normalize(value, options, {
+        atRule: decl.parent?.type === 'atrule' ? (decl.parent as any).name : '',
+      })
     } else {
       result = { value: value }
     }

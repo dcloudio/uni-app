@@ -220,14 +220,16 @@ function resolveSyncResult(
   if (__DEV__) {
     console.log(
       'uts.invokeSync.result',
-      res,
-      returnOptions,
-      instanceId,
-      typeof proxy
+      JSON.stringify([res, returnOptions, instanceId, typeof proxy])
     )
   }
   if (!res) {
-    throw new Error(JSON.stringify(args))
+    throw new Error(
+      '返回值为：' +
+        JSON.stringify(res) +
+        '；请求参数为：' +
+        JSON.stringify(args)
+    )
   }
   // devtools 环境是字符串？
   if (isString(res)) {
@@ -422,7 +424,9 @@ export function initUTSProxyClass(
   let staticMethods: ProxyClassOptions['staticMethods'] = {}
   let staticProps: ProxyClassOptions['staticProps'] = []
 
+  let isProxyInterface = false
   if (isProxyInterfaceOptions(options)) {
+    isProxyInterface = true
     instanceId = options.instanceId
   } else {
     constructorParams = options.constructor.params
@@ -447,8 +451,8 @@ export function initUTSProxyClass(
       }
       const target: Record<string, Function> = {}
       // 初始化实例 ID
-      if (isUndefined(instanceId)) {
-        // 未指定instanceId
+      if (!isProxyInterface) {
+        // 初始化未指定时，每次都要创建instanceId
         instanceId = initProxyFunction(
           false,
           extend(

@@ -1,0 +1,53 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`uts:stacktrace:runtime parseUTSKotlinRuntimeStacktrace 1`] = `
+"error: java.lang.IndexOutOfBoundsException: Index: 1, Size: 1
+at pages/index/index.uvue:13:12
+11 |          onLoad() {
+12 |              const arr = [1]
+13 |              console.log(arr[1])
+   |              ^^^^^^^^^^^^^^^^^^^
+14 |          },
+15 |          methods: {"
+`;
+
+exports[`uts:stacktrace:runtime parseUTSKotlinRuntimeStacktrace 2`] = `
+"error: java.lang.IndexOutOfBoundsException: Index: 1, Size: 1
+at pages/index/index.uvue:18:16
+16 |              click() {
+17 |                  const arr = [1]
+18 |                  console.log(arr[1])
+   |                  ^^^^^^^^^^^^^^^^^^^
+19 |              },
+20 |              click1() {"
+`;
+
+exports[`uts:stacktrace:runtime parseUTSKotlinRuntimeStacktrace 3`] = `
+"error: java.lang.IndexOutOfBoundsException: Index: 1, Size: 1
+at pages/index/test.uts:3:4
+1  |  export function test() {
+2  |      const arr = [1]
+3  |      console.log(arr[1])
+   |      ^^^^^^^^^^^^^^^^^^^
+4  |  }"
+`;
+
+exports[`uts:stacktrace:runtime parseUTSKotlinRuntimeStacktrace 4`] = `
+"​error: java.lang.IndexOutOfBoundsException: Index: 1, Size: 1​
+at pages/index/test.uts:3:4
+1  |  export function test() {
+2  |      const arr = [1]
+3  |      console.log(arr[1])
+   |      ^^^^^^^^^^^^^^^^^^^
+4  |  }"
+`;
+
+exports[`uts:stacktrace:runtime parseUTSKotlinRuntimeStacktrace 5`] = `
+"‌error: java.lang.IndexOutOfBoundsException: Index: 1, Size: 1‌
+at pages/index/test.uts:3:4
+1  |  export function test() {
+2  |      const arr = [1]
+3  |      console.log(arr[1])
+   |      ^^^^^^^^^^^^^^^^^^^
+4  |  }"
+`;

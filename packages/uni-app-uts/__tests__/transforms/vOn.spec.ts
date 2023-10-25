@@ -12,10 +12,7 @@ import {
   ObjectExpression,
   VNodeCall,
 } from '@vue/compiler-core'
-import {
-  inlineStatementCannotUseEventMsg,
-  transformOn,
-} from '../../src/plugins/uvue/compiler/transforms/vOn'
+import { transformOn } from '../../src/plugins/uvue/compiler/transforms/vOn'
 import { transformExpression } from '../../src/plugins/uvue/compiler/transforms/transformExpression'
 import { assert } from '../testUtils'
 
@@ -42,155 +39,157 @@ describe('compiler: v-on', () => {
   test('basic', () => {
     assert(
       `<text v-on:click="() => console.log('v-on:click')"/>`,
-      `createElementVNode("text", new Map<string, any | null>([
-  ["onClick", () => console.log('v-on:click')]
-]), null, 8 /* PROPS */, ["onClick"])`
+      `createElementVNode("text", utsMapOf({
+  onClick: () => console.log('v-on:click')
+}), null, 8 /* PROPS */, ["onClick"])`
     )
     assert(
       `<text v-on:click="onClick"/>`,
-      `createElementVNode("text", new Map<string, any | null>([["onClick", _ctx.onClick]]), null, 8 /* PROPS */, ["onClick"])`
+      `createElementVNode("text", utsMapOf({ onClick: _ctx.onClick }), null, 8 /* PROPS */, ["onClick"])`
     )
   })
   test('dynamic arg', () => {
     assert(
       `<text v-on:[event]="handler"/>`,
-      `createElementVNode("text", new Map<string, any | null>([[toHandlerKey(_ctx.event), _ctx.handler]]), null, 16 /* FULL_PROPS */)`
+      `createElementVNode("text", utsMapOf({ [toHandlerKey(_ctx.event)]: _ctx.handler }), null, 16 /* FULL_PROPS */)`
     )
   })
   test('dynamic arg with complex exp', () => {
     assert(
       `<text v-on:[event(foo)]="handler"/>`,
-      `createElementVNode("text", new Map<string, any | null>([[toHandlerKey(_ctx.event(_ctx.foo)), _ctx.handler]]), null, 16 /* FULL_PROPS */)`
+      `createElementVNode("text", utsMapOf({ [toHandlerKey(_ctx.event(_ctx.foo))]: _ctx.handler }), null, 16 /* FULL_PROPS */)`
     )
   })
   test('shorthand', () => {
     assert(
       `<text @click="() => console.warn('@click')"/>`,
-      `createElementVNode("text", new Map<string, any | null>([
-  ["onClick", () => console.warn('@click')]
-]), null, 8 /* PROPS */, ["onClick"])`
+      `createElementVNode("text", utsMapOf({
+  onClick: () => console.warn('@click')
+}), null, 8 /* PROPS */, ["onClick"])`
     )
   })
   test('inline statement handler', () => {
     assert(
       `<text @click="count++"/>`,
-      `createElementVNode("text", new Map<string, any | null>([
-  ["onClick", () => {_ctx.count++}]
-]), null, 8 /* PROPS */, ["onClick"])`
+      `createElementVNode("text", utsMapOf({
+  onClick: () => {_ctx.count++}
+}), null, 8 /* PROPS */, ["onClick"])`
     )
   })
   test('should handle multi-line statement', () => {
     assert(
       `<text @click="\nfoo();\nbar()\n"/>`,
-      `createElementVNode(\"text\", new Map<string, any | null>([
-  [\"onClick\", () => {
+      `createElementVNode(\"text\", utsMapOf({
+  onClick: () => {
 _ctx.foo();
 _ctx.bar()
-}]
-]), null, 8 /* PROPS */, [\"onClick\"])`
+}
+}), null, 8 /* PROPS */, [\"onClick\"])`
     )
     assert(
       `<text @click="a.get('b' + c)()"/>`,
-      `createElementVNode("text", new Map<string, any | null>([
-  [\"onClick\", () => {_ctx.a.get('b' + _ctx.c)()}]
-]), null, 8 /* PROPS */, [\"onClick\"])`
+      `createElementVNode("text", utsMapOf({
+  onClick: () => {_ctx.a.get('b' + _ctx.c)()}
+}), null, 8 /* PROPS */, [\"onClick\"])`
     )
   })
   test('inline statement with argument $event', () => {
-    expect(() => {
-      assert(`<text @click="foo($event)"/>`, ``)
-    }).toThrow(inlineStatementCannotUseEventMsg)
-    // assert(
-    //   `<text @click="foo($event)"/>`,
-    //   ``
-    // )
+    assert(
+      `<text @click="foo($event as MouseEvent)"/>`,
+      `createElementVNode(\"text\", utsMapOf({
+  onClick: ($event: any) => {_ctx.foo($event as MouseEvent)}
+}), null, 8 /* PROPS */, [\"onClick\"])`
+    )
   })
   test('should NOT wrap as function if expression is already function expression', () => {
-    expect(() => {
-      assert(`<text @click="$event => foo($event)"/>`, ``)
-    }).toThrow(inlineStatementCannotUseEventMsg)
-    // assert(`<text @click="$event => foo($event)"/>`, ``)
+    assert(
+      `<text @click="($event: MouseEvent) => foo($event)"/>`,
+      `createElementVNode(\"text\", utsMapOf({
+  onClick: ($event: MouseEvent) => _ctx.foo($event)
+}), null, 8 /* PROPS */, [\"onClick\"])`
+    )
   })
   test('should NOT wrap as function if expression is already function expression (with newlines)', () => {
-    expect(() => {
-      assert(
-        `<text @click="
-        $event => {
-          foo($event)
-        }
-      "/>`,
-        ``
-      )
-    }).toThrow(inlineStatementCannotUseEventMsg)
-    // assert(
-    //   `<text @click="
-    //   $event => {
-    //     foo($event)
-    //   }
-    // "/>`, ``
-    // )
+    assert(
+      `<text @click="
+      ($event: MouseEvent) => {
+        foo($event)
+      }
+    "/>`,
+      `createElementVNode(\"text\", utsMapOf({
+  onClick: 
+      ($event: MouseEvent) => {
+        _ctx.foo($event)
+      }
+    
+}), null, 8 /* PROPS */, [\"onClick\"])`
+    )
   })
   test('should NOT wrap as function if expression is already function expression (with newlines + function keyword)', () => {
-    expect(() => {
-      assert(
-        `<text @click="
-        function($event) {
-          foo($event)
-        }
-      "/>`,
-        ``
-      )
-    }).toThrow(inlineStatementCannotUseEventMsg)
-    // assert(
-    //   `<text @click="
-    //   function($event) {
-    //     foo($event)
-    //   }
-    // "/>`,
-    //   ``
-    // )
+    assert(
+      `<text @click="
+      function($event: MouseEvent) {
+        foo($event)
+      }
+    "/>`,
+      `createElementVNode(\"text\", utsMapOf({
+  onClick: 
+      function($event: MouseEvent) {
+        _ctx.foo($event)
+      }
+    
+}), null, 8 /* PROPS */, [\"onClick\"])`
+    )
   })
   test('should NOT wrap as function if expression is complex member expression', () => {
     assert(
       `<text @click="a['b' + c]"/>`,
-      `createElementVNode("text", new Map<string, any | null>([
-  [\"onClick\", _ctx.a['b' + _ctx.c]]
-]), null, 8 /* PROPS */, [\"onClick\"])`
+      `createElementVNode("text", utsMapOf({
+  onClick: _ctx.a['b' + _ctx.c]
+}), null, 8 /* PROPS */, [\"onClick\"])`
     )
   })
   test('case conversion for vnode hooks', () => {
     assert(
       `<text v-on:vue:mounted="onMount" @vue:before-update="onBeforeUpdate" />`,
-      `createElementVNode("text", new Map<string, any | null>([
-  ["onVnodeMounted", _ctx.onMount],
-  ["onVnodeBeforeUpdate", _ctx.onBeforeUpdate]
-]), null, 8 /* PROPS */, ["onVnodeMounted", "onVnodeBeforeUpdate"])`
+      `createElementVNode("text", utsMapOf({
+  onVnodeMounted: _ctx.onMount,
+  onVnodeBeforeUpdate: _ctx.onBeforeUpdate
+}), null, 8 /* PROPS */, ["onVnodeMounted", "onVnodeBeforeUpdate"])`
     )
   })
   test('inline function expression handler', () => {
     assert(
       `<text v-on:click="() => foo()" />`,
-      `createElementVNode("text", new Map<string, any | null>([
-  ["onClick", () => _ctx.foo()]
-]), null, 8 /* PROPS */, ["onClick"])`
+      `createElementVNode("text", utsMapOf({
+  onClick: () => _ctx.foo()
+}), null, 8 /* PROPS */, ["onClick"])`
     )
   })
   test('object syntax', () => {
     assert(
       `<text v-on="{mousedown: doThis, mouseup: doThat}"/>`,
-      `createElementVNode("text", toHandlers(new Map<string, any | null>([["mousedown",_ctx.doThis],["mouseup",_ctx.doThat]]), true), null, 16 /* FULL_PROPS */)`
+      `createElementVNode("text", toHandlers(utsMapOf({mousedown: _ctx.doThis, mouseup: _ctx.doThat}), true), null, 16 /* FULL_PROPS */)`
     )
   })
   test('empty object syntax', () => {
     assert(
       `<text v-on="{ }"/>`,
-      `createElementVNode("text", toHandlers(new Map<string, any | null>([]), true), null, 16 /* FULL_PROPS */)`
+      `createElementVNode("text", toHandlers(utsMapOf<string, any | null>({ }), true), null, 16 /* FULL_PROPS */)`
     )
   })
   test('simple object syntax', () => {
     assert(
       `<text v-on="{'a':'aaa'}"/>`,
-      `createElementVNode("text", toHandlers(new Map<string, any | null>([['a','aaa']]), true), null, 16 /* FULL_PROPS */)`
+      `createElementVNode("text", toHandlers(utsMapOf({'a':'aaa'}), true), null, 16 /* FULL_PROPS */)`
+    )
+  })
+  test('parameter with type', () => {
+    assert(
+      `<text @click="(e: any) => click(e)" />`,
+      `createElementVNode(\"text\", utsMapOf({
+  onClick: (e: any) => _ctx.click(e)
+}), null, 8 /* PROPS */, [\"onClick\"])`
     )
   })
 
@@ -360,88 +359,79 @@ _ctx.bar()
   })
 
   test('inline statement w/ prefixIdentifiers: true', () => {
-    expect(() => {
-      parseWithVOn(`<view @click="foo($event)"/>`)
-    }).toThrow(inlineStatementCannotUseEventMsg)
-    // const { node } = parseWithVOn(`<div @click="foo($event)"/>`, {
-    //   prefixIdentifiers: true
-    // })
-    // expect((node.codegenNode as VNodeCall).props).toMatchObject({
-    //   properties: [
-    //     {
-    //       key: { content: `onClick` },
-    //       value: {
-    //         type: NodeTypes.COMPOUND_EXPRESSION,
-    //         children: [
-    //           `$event => (`,
-    //           {
-    //             type: NodeTypes.COMPOUND_EXPRESSION,
-    //             children: [
-    //               { content: `_ctx.foo` },
-    //               `(`,
-    //               // should NOT prefix $event
-    //               { content: `$event` },
-    //               `)`
-    //             ]
-    //           },
-    //           `)`
-    //         ]
-    //       }
-    //     }
-    //   ]
-    // })
+    const { node } = parseWithVOn(`<div @click="foo($event)"/>`, {
+      prefixIdentifiers: true,
+    })
+    expect((node.codegenNode as VNodeCall).props).toMatchObject({
+      properties: [
+        {
+          key: { content: `onClick` },
+          value: {
+            type: NodeTypes.COMPOUND_EXPRESSION,
+            children: [
+              `($event: any) => {`,
+              {
+                type: NodeTypes.COMPOUND_EXPRESSION,
+                children: [
+                  { content: `_ctx.foo` },
+                  `(`,
+                  // should NOT prefix $event
+                  { content: `$event` },
+                  `)`,
+                ],
+              },
+              `}`,
+            ],
+          },
+        },
+      ],
+    })
   })
 
   test('multiple inline statements w/ prefixIdentifiers: true', () => {
-    expect(() => {
-      parseWithVOn(`<view @click="foo($event);bar()"/>`)
-    }).toThrow(inlineStatementCannotUseEventMsg)
-    // const { node } = parseWithVOn(`<view @click="foo($event);bar()"/>`, {
-    //   prefixIdentifiers: true
-    // })
-    // expect((node.codegenNode as VNodeCall).props).toMatchObject({
-    //   properties: [
-    //     {
-    //       key: { content: `onClick` },
-    //       value: {
-    //         type: NodeTypes.COMPOUND_EXPRESSION,
-    //         children: [
-    //           `$event => {`,
-    //           {
-    //             children: [
-    //               { content: `_ctx.foo` },
-    //               `(`,
-    //               // should NOT prefix $event
-    //               { content: `$event` },
-    //               `);`,
-    //               { content: `_ctx.bar` },
-    //               `()`
-    //             ]
-    //           },
-    //           `}`
-    //         ]
-    //       }
-    //     }
-    //   ]
-    // })
+    const { node } = parseWithVOn(`<view @click="foo($event);bar()"/>`, {
+      prefixIdentifiers: true,
+    })
+    expect((node.codegenNode as VNodeCall).props).toMatchObject({
+      properties: [
+        {
+          key: { content: `onClick` },
+          value: {
+            type: NodeTypes.COMPOUND_EXPRESSION,
+            children: [
+              `($event: any) => {`,
+              {
+                children: [
+                  { content: `_ctx.foo` },
+                  `(`,
+                  // should NOT prefix $event
+                  { content: `$event` },
+                  `);`,
+                  { content: `_ctx.bar` },
+                  `()`,
+                ],
+              },
+              `}`,
+            ],
+          },
+        },
+      ],
+    })
   })
 
   test('should NOT wrap as function if expression is already function expression', () => {
-    expect(() => {
-      parseWithVOn(`<view @click="$event => foo($event)"/>`)
-    }).toThrow(inlineStatementCannotUseEventMsg)
-    // const { node } = parseWithVOn(`<view @click="$event => foo($event)"/>`)
-    // expect((node.codegenNode as VNodeCall).props).toMatchObject({
-    //   properties: [
-    //     {
-    //       key: { content: `onClick` },
-    //       value: {
-    //         type: NodeTypes.SIMPLE_EXPRESSION,
-    //         content: `$event => foo($event)`
-    //       }
-    //     }
-    //   ]
-    // })
+    const { node } = parseWithVOn(`<view @click="$event => foo($event)"/>`)
+    expect((node.codegenNode as VNodeCall).props).toMatchObject({
+      properties: [
+        {
+          key: { content: `onClick` },
+          value: {
+            type: NodeTypes.SIMPLE_EXPRESSION,
+            content: `$event => foo($event)`,
+          },
+        },
+      ],
+    })
   })
 
   test('should NOT wrap as function if expression is already function expression (with Typescript)', () => {
@@ -460,71 +450,53 @@ _ctx.bar()
   })
 
   test('should NOT wrap as function if expression is already function expression (with newlines)', () => {
-    expect(() => {
-      parseWithVOn(
-        `<view @click="
-          $event => {
-            foo($event)
-          }
-        "/>`
-      )
-    }).toThrow(inlineStatementCannotUseEventMsg)
-    // const { node } = parseWithVOn(
-    //   `<view @click="
-    //   $event => {
-    //     foo($event)
-    //   }
-    // "/>`
-    // )
-    // expect((node.codegenNode as VNodeCall).props).toMatchObject({
-    //   properties: [
-    //     {
-    //       key: { content: `onClick` },
-    //       value: {
-    //         type: NodeTypes.SIMPLE_EXPRESSION,
-    //         content: `
-    //   $event => {
-    //     foo($event)
-    //   }
-    // `
-    //       }
-    //     }
-    //   ]
-    // })
+    const { node } = parseWithVOn(
+      `<view @click="
+      $event => {
+        foo($event)
+      }
+    "/>`
+    )
+    expect((node.codegenNode as VNodeCall).props).toMatchObject({
+      properties: [
+        {
+          key: { content: `onClick` },
+          value: {
+            type: NodeTypes.SIMPLE_EXPRESSION,
+            content: `
+      $event => {
+        foo($event)
+      }
+    `,
+          },
+        },
+      ],
+    })
   })
 
   test('should NOT wrap as function if expression is already function expression (with newlines + function keyword)', () => {
-    expect(() => {
-      parseWithVOn(
-        `<view @click="
+    const { node } = parseWithVOn(
+      `<view @click="
       function($event) {
         foo($event)
       }
     "/>`
-      )
-    }).toThrow(inlineStatementCannotUseEventMsg)
-    // const { node } = parseWithVOn(
-    //   `<view @click="
-    //   function($event) {
-    //     foo($event)
-    //   }
-    // "/>`
-    // )
-    // expect((node.codegenNode as VNodeCall).props).toMatchObject({
-    //   properties: [
-    //     {
-    //       key: { content: `onClick` },
-    //       value: {
-    //         type: NodeTypes.SIMPLE_EXPRESSION,
-    //         content: `
-    //   function($event) {
-    //     foo($event)
-    //   }
-    // `
-    //       }
-    //     }
-    //   ]
-    // })
+    )
+    expect((node.codegenNode as VNodeCall).props).toMatchObject({
+      properties: [
+        {
+          key: { content: `onClick` },
+          value: {
+            type: NodeTypes.SIMPLE_EXPRESSION,
+            content: `
+      function($event) {
+        foo($event)
+      }
+    `,
+          },
+        },
+      ],
+    })
   })
 
   test('should NOT wrap as function if expression is complex member expression', () => {

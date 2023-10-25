@@ -42,18 +42,30 @@ export type UTSOutputOptions = {
   logFilename?: boolean
   noColor?: boolean
   isX?: boolean
+  isApp?: boolean
   isPlugin?: boolean
+  split?: boolean
+  disableSplitManifest?: boolean
+  uniAppX?: {
+    uvueOutDir: string
+  }
   transform?: {
     paramDefaultValue?: boolean
     constructorInvocation?: boolean
     uniExtApiDefaultNamespace?: string
     uniExtApiNamespaces?: Record<string, [string, string]>
+    uniExtApiDefaultParameters?: Record<string, string[]>
     uvueClassNamePrefix?: string
     uvueClassNameOnlyBasename?: boolean
     disableReactiveObject?: boolean
+    reactiveObjects?: string[]
+    reactiveAll?: boolean
+    uniCloudObjectInfo?: { name: string; methodList: string[] }[]
   }
 }
 export interface UTSOptions {
+  mode?: string
+  hbxVersion: string
   input: UTSInputOptions
   output: UTSOutputOptions
 }
@@ -61,6 +73,9 @@ export interface UTSOptions {
 export interface UTSResult {
   filename?: string
   deps?: string[]
+  chunks?: string[]
+  changed?: string[]
+  inject_apis?: string[]
   time?: number
   error?: Error
 }

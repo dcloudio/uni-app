@@ -10,6 +10,8 @@ export const RESOLVE_EASY_COMPONENT = Symbol(`resolveEasyComponent`)
 export const RENDER_SLOT = Symbol(`renderSlot`)
 export const TO_HANDLERS = Symbol(`toHandlers`)
 
+export const V_ON_WITH_MODIFIERS = Symbol(`vOnModifiersGuard`)
+
 registerRuntimeHelpers({
   [IS_TRUE]: 'isTrue',
   [V_SHOW]: 'vShow',
@@ -20,4 +22,5 @@ registerRuntimeHelpers({
   [RESOLVE_DIRECTIVE]: 'resolveDirective',
   [RENDER_SLOT]: `renderSlot`,
   [TO_HANDLERS]: `toHandlers`,
+  [V_ON_WITH_MODIFIERS]: `withModifiers`,
 })

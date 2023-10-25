@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-cli-shared",
-  "version": "3.0.0-3081220230817001",
+  "version": "3.0.0-alpha-3090420231023001",
   "description": "@dcloudio/uni-cli-shared",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -25,8 +25,8 @@
     "@babel/core": "^7.21.3",
     "@babel/parser": "^7.16.4",
     "@babel/types": "^7.20.7",
-    "@dcloudio/uni-i18n": "3.0.0-3081220230817001",
-    "@dcloudio/uni-shared": "3.0.0-3081220230817001",
+    "@dcloudio/uni-i18n": "3.0.0-alpha-3090420231023001",
+    "@dcloudio/uni-shared": "3.0.0-alpha-3090420231023001",
     "@intlify/core-base": "9.1.9",
     "@intlify/shared": "9.1.9",
     "@intlify/vue-devtools": "9.1.9",
@@ -64,7 +64,7 @@
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "devDependencies": {
-    "@dcloudio/uni-uts-v1": "3.0.0-3081220230817001",
+    "@dcloudio/uni-uts-v1": "3.0.0-alpha-3090420231023001",
     "@types/babel__core": "^7.1.19",
     "@types/debug": "^4.1.7",
     "@types/estree": "^0.0.51",

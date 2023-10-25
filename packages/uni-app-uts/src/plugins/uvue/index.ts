@@ -2,7 +2,12 @@ import path from 'path'
 import fs from 'fs-extra'
 
 import type { Plugin } from 'vite'
-import type { SFCBlock, SFCDescriptor, SFCParseResult } from '@vue/compiler-sfc'
+import {
+  MagicString,
+  type SFCBlock,
+  type SFCDescriptor,
+  type SFCParseResult,
+} from '@vue/compiler-sfc'
 import type { TransformPluginContext } from 'rollup'
 
 import { isString } from '@vue/shared'
@@ -11,7 +16,18 @@ import {
   normalizePath,
   parseUTSComponent,
   parseVueRequest,
+  removeExt,
+  resolveAppVue,
 } from '@dcloudio/uni-cli-shared'
+
+import type { RawSourceMap } from 'source-map-js'
+
+import { addMapping, fromMap, toEncodedMap } from '@jridgewell/gen-mapping'
+import {
+  TraceMap,
+  eachMapping,
+  EncodedSourceMap,
+} from '@jridgewell/trace-mapping'
 
 import {
   ResolvedOptions,
@@ -21,6 +37,7 @@ import {
 } from './descriptorCache'
 import { createRollupError } from './error'
 import {
+  addExtApiComponents,
   genClassName,
   isVue,
   parseImports,
@@ -30,14 +47,8 @@ import {
 import { genScript } from './code/script'
 import { genTemplate } from './code/template'
 import { genJsStylesCode, genStyle, transformStyle } from './code/style'
-
-function resolveAppVue(inputDir: string) {
-  const appUVue = path.resolve(inputDir, 'app.uvue')
-  if (fs.existsSync(appUVue)) {
-    return normalizePath(appUVue)
-  }
-  return normalizePath(path.resolve(inputDir, 'App.vue'))
-}
+import { generateCodeFrame } from '@dcloudio/uni-cli-shared'
+import { genComponentPublicInstanceImported } from './compiler/utils'
 
 export function uniAppUVuePlugin(): Plugin {
   const options: ResolvedOptions = {
@@ -95,7 +106,7 @@ export function uniAppUVuePlugin(): Plugin {
       }
       if (!query.vue) {
         // main request
-        const { errors, uts, js } = await transformVue(
+        const { errors, uts, js, sourceMap } = await transformVue(
           code,
           filename,
           options,
@@ -105,15 +116,23 @@ export function uniAppUVuePlugin(): Plugin {
         )
         if (errors.length) {
           errors.forEach((error) =>
-            this.error(createRollupError(filename, error))
+            this.error(createRollupError(filename, error, code))
           )
           return null
         }
+        const fileName = parseUTSRelativeFilename(filename)
         this.emitFile({
           type: 'asset',
-          fileName: parseUTSRelativeFilename(filename),
+          fileName,
           source: uts,
         })
+        if (sourceMap) {
+          this.emitFile({
+            type: 'asset',
+            fileName: removeExt(fileName) + '.template.map',
+            source: JSON.stringify(sourceMap),
+          })
+        }
         return {
           code: js,
         }
@@ -176,6 +195,7 @@ interface TransformVueResult {
   uts?: string
   js?: string
   descriptor: SFCDescriptor
+  sourceMap?: RawSourceMap
 }
 
 export async function transformVue(
@@ -196,24 +216,57 @@ export async function transformVue(
     return { errors, descriptor }
   }
   const isApp = isAppVue(filename)
-  const fileName = path.relative(options.root, filename)
+  const fileName = normalizePath(path.relative(options.root, filename))
   const className = genClassName(fileName, options.classNamePrefix)
   let templateCode = ''
   let templateImportEasyComponentsCode = ''
   let templateImportUTSComponentsCode = ''
+  const needSourceMap = process.env.UNI_APP_X_TEMPLATE_SOURCEMAP
+    ? true
+    : process.env.NODE_ENV !== 'production'
+  let templateSourceMap: RawSourceMap | undefined
+  const templateStartLine = descriptor.template?.loc.start.line ?? 0
   if (!isApp) {
+    const inputRoot = normalizePath(options.root)
     const templateResult = genTemplate(descriptor, {
+      rootDir: options.root,
       targetLanguage: options.targetLanguage as any,
       mode: 'function',
-      filename: className,
+      filename: fileName,
+      className: className,
       prefixIdentifiers: true,
-      sourceMap: true,
+      // 方便测试，build模式也提供sourceMap
+      // sourceMap: false,
+      sourceMap: needSourceMap,
       matchEasyCom: (tag, uts) => {
         const source = matchEasycom(tag)
         if (uts && source) {
+          if (source.startsWith(inputRoot)) {
+            return '@/' + normalizePath(path.relative(inputRoot, source))
+          }
           return normalizeEasyComSource(source)
         }
         return source
+      },
+      onWarn(warning) {
+        console.warn('warning: ' + warning.message)
+        if (warning.loc) {
+          const start = warning.loc.start
+          console.log(
+            'at ' +
+              fileName +
+              ':' +
+              (start.line + templateStartLine - 1) +
+              ':' +
+              (start.column - 1)
+          )
+          console.log(
+            generateCodeFrame(code, {
+              line: start.line + templateStartLine - 1,
+              column: start.column - 1,
+            }).replace(/\t/g, ' ')
+          )
+        }
       },
       parseUTSComponent: parseUTSComponent,
     })
@@ -222,16 +275,22 @@ export async function transformVue(
       templateResult.importEasyComponents.join('\n')
     templateImportUTSComponentsCode =
       templateResult.importUTSComponents.join('\n')
+    templateSourceMap = templateResult.map
+    if (process.env.NODE_ENV === 'production') {
+      addExtApiComponents(templateResult.elements)
+    }
   }
   // 生成 script 文件
-  let utsCode =
+  // console.log(descriptor.script?.loc)
+  const utsCode =
     genScript(descriptor, { filename: className }) +
+    templateCode +
     '\n' +
     genStyle(descriptor, { filename: fileName, className }) +
     '\n'
-  utsCode += templateCode
+
   let jsCode =
-    templateImportEasyComponentsCode + '\n' + templateImportUTSComponentsCode
+    templateImportEasyComponentsCode + templateImportUTSComponentsCode
   const content = descriptor.script?.content
   if (content) {
     jsCode += await parseImports(content)
@@ -239,11 +298,61 @@ export async function transformVue(
   if (descriptor.styles.length) {
     jsCode += '\n' + (await genJsStylesCode(descriptor, pluginContext!))
   }
-  jsCode += `\nexport default "${className}"`
+  jsCode += `\nexport default "${className}"
+export const ${genComponentPublicInstanceImported(options.root, filename)} = {}`
   return {
     errors: [],
     uts: utsCode,
     js: jsCode,
     descriptor,
+    sourceMap: needSourceMap
+      ? createSourceMap(
+          descriptor.script?.loc.end.line ?? 0,
+          templateStartLine,
+          new MagicString(code).generateMap({
+            hires: true,
+            source: fileName,
+            includeContent: true,
+          }) as unknown as RawSourceMap,
+          templateSourceMap
+        )
+      : undefined,
   }
+}
+
+function createSourceMap(
+  scriptCodeOffset: number,
+  templateCodeOffset: number,
+  scriptMap: RawSourceMap,
+  templateMap?: RawSourceMap
+) {
+  if (!templateMap) {
+    return scriptMap
+  }
+  const gen = fromMap(
+    // version property of result.map is declared as string
+    // but actually it is `3`
+    scriptMap as Omit<RawSourceMap, 'version'> as EncodedSourceMap
+  )
+  const tracer = new TraceMap(
+    // same above
+    templateMap as Omit<RawSourceMap, 'version'> as EncodedSourceMap
+  )
+  // const offset = (scriptCode.match(/\r?\n/g)?.length ?? 0) + 1
+  eachMapping(tracer, (m) => {
+    if (m.source == null) return
+    addMapping(gen, {
+      source: m.source,
+      original: {
+        line: m.originalLine + templateCodeOffset - 1,
+        column: m.originalColumn,
+      },
+      generated: {
+        line: m.generatedLine + scriptCodeOffset,
+        column: m.generatedColumn,
+      },
+    })
+  })
+
+  return toEncodedMap(gen) as unknown as RawSourceMap
 }

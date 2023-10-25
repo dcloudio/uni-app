@@ -260,9 +260,12 @@ function normalizePageStyle(
 
   if (pageStyle) {
     if (platform === 'h5') {
-      extend(pageStyle, pageStyle['app'] || pageStyle['app-plus'])
-    }
-    if (platform === 'app') {
+      extend(
+        pageStyle,
+        pageStyle['app'] || pageStyle['app-plus'],
+        pageStyle['web'] || pageStyle['h5']
+      )
+    } else if (platform === 'app') {
       extend(pageStyle, pageStyle['app'] || pageStyle['app-plus'])
     } else {
       extend(pageStyle, pageStyle[platform])
@@ -469,7 +472,7 @@ function normalizeFilepath(filepath: string) {
   return filepath
 }
 
-const platforms = ['h5', 'app', 'mp-', 'quickapp']
+const platforms = ['h5', 'app', 'mp-', 'quickapp', 'web']
 
 export function removePlatformStyle(pageStyle: Record<string, any>) {
   Object.keys(pageStyle).forEach((name) => {

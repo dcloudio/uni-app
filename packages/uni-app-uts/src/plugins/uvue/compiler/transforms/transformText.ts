@@ -2,7 +2,6 @@ import { isElementNode } from '@dcloudio/uni-cli-shared'
 import {
   CompoundExpressionNode,
   ElementNode,
-  ElementTypes,
   InterpolationNode,
   NodeTypes,
   TemplateChildNode,
@@ -12,7 +11,8 @@ import {
 import { NodeTransform } from '../transform'
 
 function isTextNode({ tag }: ElementNode) {
-  return tag === 'text' || tag === 'u-text' || tag === 'button'
+  // TODO 临时解决text节点嵌套的问题
+  return tag === 'text' || tag === 'button'
 }
 
 function isTextElement(node: TemplateChildNode) {
@@ -52,25 +52,6 @@ export const transformText: NodeTransform = (node, _) => {
     if (isTextElement(child)) {
       parseText(child as ElementNode)
     }
-
-    let currentContainer: ElementNode | undefined = undefined
-    if (isText(child)) {
-      if (!currentContainer) {
-        currentContainer = children[i] = createText(node, child)
-      }
-      for (let j = i + 1; j < children.length; j++) {
-        const next = children[j]
-        if (isText(next)) {
-          // 合并相邻的文本节点
-          currentContainer.children.push(next)
-          children.splice(j, 1)
-          j--
-        } else {
-          currentContainer = undefined
-          break
-        }
-      }
-    }
   }
 }
 
@@ -83,16 +64,13 @@ function parseText(node: ElementNode) {
     let firstTextChild
     for (let i = 0; i < node.children.length; i++) {
       const child = node.children[i]
-      if (isText(child) && typeof (child as TextNode).content === 'string') {
+      const content = (child as TextNode).content
+      if (isText(child) && typeof content === 'string') {
         if (!firstTextChild) {
           firstTextChild = child
-          ;(firstTextChild as TextNode).content = (
-            firstTextChild as TextNode
-          ).content.replace(/\\n/g, '\n')
+          ;(firstTextChild as TextNode).content = translateObliqueLine(content)
         } else {
-          ;(firstTextChild as TextNode).content += (
-            child as TextNode
-          ).content.replace(/\\n/g, '\n')
+          ;(firstTextChild as TextNode).content += translateObliqueLine(content)
           node.children.splice(i, 1)
           i--
         }
@@ -106,19 +84,16 @@ function parseText(node: ElementNode) {
   }
 }
 
-function createText(
-  parent: ElementNode,
-  node: TextNode | TextCallNode | InterpolationNode | CompoundExpressionNode
-): ElementNode {
-  return {
-    tag: 'text',
-    type: NodeTypes.ELEMENT,
-    tagType: ElementTypes.ELEMENT,
-    props: [],
-    isSelfClosing: false,
-    children: [node],
-    codegenNode: undefined,
-    ns: parent.ns,
-    loc: node.loc,
-  }
+function translateObliqueLine(content: string): string {
+  const strFragments = content.split('\\n')
+  return strFragments
+    .map((str, index) => {
+      if (index === strFragments.length - 1) return str
+      str += '\\n'
+      if (!(str.split('\\').length % 2)) {
+        str = str.replaceAll(/\\n/g, '\n')
+      }
+      return str.replaceAll(/\\\\/g, '\\')
+    })
+    .join('')
 }

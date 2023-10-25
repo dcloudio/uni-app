@@ -1,9 +1,8 @@
-import path from 'path'
 import debug from 'debug'
 import type { Plugin, ResolvedConfig } from 'vite'
 import {
-  normalizePath,
   parseVueRequest,
+  resolveAppVue,
   withSourcemap,
 } from '@dcloudio/uni-cli-shared'
 
@@ -16,9 +15,7 @@ export function uniSetupPlugin(): Plugin {
     name: 'uni:setup',
     configResolved(config) {
       resolvedConfig = config
-      appVuePath = normalizePath(
-        path.resolve(process.env.UNI_INPUT_DIR, 'App.vue')
-      )
+      appVuePath = resolveAppVue(process.env.UNI_INPUT_DIR)
     },
     transform(code, id) {
       const { filename, query } = parseVueRequest(id)

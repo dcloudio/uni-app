@@ -7,7 +7,7 @@ import { once } from '@dcloudio/uni-shared'
 
 import { normalizePath } from './utils'
 import { isInHBuilderX } from './hbx/env'
-import { extensions } from './constants'
+import { extensions, uni_app_x_extensions } from './constants'
 
 export function requireResolve(filename: string, basedir: string) {
   return resolveWithSymlinks(filename, basedir)
@@ -16,7 +16,8 @@ export function requireResolve(filename: string, basedir: string) {
 function resolveWithSymlinks(id: string, basedir: string): string {
   return resolve.sync(id, {
     basedir,
-    extensions,
+    extensions:
+      process.env.UNI_APP_X === 'true' ? uni_app_x_extensions : extensions,
     // necessary to work with pnpm
     preserveSymlinks: true,
   })
@@ -110,10 +111,11 @@ export function resolveVueI18nRuntime() {
 let componentsLibPath: string = ''
 export function resolveComponentsLibPath() {
   if (!componentsLibPath) {
+    const dir = process.env.UNI_APP_X === 'true' ? '../lib-x' : '../lib'
     if (isInHBuilderX()) {
       componentsLibPath = path.join(
         resolveBuiltIn('@dcloudio/uni-components/package.json'),
-        '../lib'
+        dir
       )
     } else {
       componentsLibPath = path.join(
@@ -121,7 +123,7 @@ export function resolveComponentsLibPath() {
           '@dcloudio/uni-components/package.json',
           process.env.UNI_INPUT_DIR
         ),
-        '../lib'
+        dir
       )
     }
   }

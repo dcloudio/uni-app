@@ -1,6 +1,6 @@
 import {
   parseUniExtApiNamespacesOnce,
-  uniUTSPlugin,
+  uniUTSAppPlugin,
 } from '@dcloudio/uni-cli-shared'
 import { uniAppUTSPlugin } from './plugins'
 import { uniAppCssPlugin } from './plugins/css'
@@ -9,10 +9,11 @@ import { uniAppManifestPlugin } from './plugins/manifestJson'
 import { uniAppPagesPlugin } from './plugins/pagesJson'
 import { uniPrePlugin } from './plugins/pre'
 import { uniAppUVuePlugin } from './plugins/uvue'
+import { uniCloudPlugin } from './plugins/unicloud'
 export default () => {
   return [
     uniPrePlugin(),
-    uniUTSPlugin({
+    uniUTSAppPlugin({
       x: true,
       extApis: parseUniExtApiNamespacesOnce(
         process.env.UNI_UTS_PLATFORM,
@@ -25,6 +26,7 @@ export default () => {
     uniAppPagesPlugin(),
     uniAppCssPlugin(),
     uniAppUVuePlugin(),
+    uniCloudPlugin(),
   ]
 }
 

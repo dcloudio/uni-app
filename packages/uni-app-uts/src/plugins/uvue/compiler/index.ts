@@ -4,7 +4,6 @@ import {
   trackSlotScopes,
   trackVForSlotScopes,
   transformElement,
-  transformExpression,
 } from '@vue/compiler-core'
 
 import { isAppUVueNativeTag } from '@dcloudio/uni-shared'
@@ -21,9 +20,13 @@ import { transformShow } from './transforms/vShow'
 import { transformVText } from './transforms/vText'
 import { transformInterpolation } from './transforms/transformInterpolation'
 import { transformText } from './transforms/transformText'
-import { transformOn } from './transforms/vOn'
+import { transformOn } from './transforms/vOnWithModifier'
 import { transformBind } from './transforms/vBind'
 import { transformSlotOutlet } from './transforms/transformSlotOutlet'
+import { transformObjectExpression } from './transforms/transformObjectExpression'
+import { transformExpression } from './transforms/transformExpression'
+import { transformElements } from './transforms/transformElements'
+import { transformStyle } from './transforms/transformStyle'
 
 export type TransformPreset = [
   NodeTransform[],
@@ -46,6 +49,9 @@ export function getBaseTransformPreset(
       transformText,
       transformTapToClick,
       transformInterpolation,
+      transformObjectExpression,
+      transformElements,
+      transformStyle,
     ] as any,
     {
       on: transformOn,
@@ -62,6 +68,7 @@ export function compile(
   options: CompilerOptions
 ): CodegenResult {
   const ast = baseParse(template, {
+    comments: false,
     isNativeTag(tag) {
       return (
         isAppUVueNativeTag(tag) ||

@@ -44,18 +44,30 @@ export const enum FORMATS {
   CJS = 'cjs',
 }
 
+export interface ClassMeta {
+  typeParams?: boolean
+}
+
 // 不应该用 class，应该用lit，调整起来影响较多，暂不调整
 type Types = {
   interface: Record<string, { returned: boolean; decl: TsInterfaceDeclaration }>
-  class: string[]
+  class: Record<string, ClassMeta>
   fn: Record<string, Param[]>
 }
 
 interface Meta {
-  exports: Record<string, 'var' | 'function' | 'class' | 'interface'>
+  typeParams: string[]
+  exports: Record<
+    string,
+    {
+      type: 'var' | 'function' | 'class' | 'interface'
+      params?: Parameter[]
+    }
+  >
   types: Record<string, 'function' | 'class' | 'interface'>
+  components: string[]
 }
-interface GenProxyCodeOptions {
+export interface GenProxyCodeOptions {
   is_uni_modules: boolean
   id: string
   name: string
@@ -70,6 +82,7 @@ interface GenProxyCodeOptions {
   moduleType?: string
   types?: Types
   meta?: Meta
+  isExtApi?: boolean
 }
 
 export async function genProxyCode(
@@ -79,10 +92,34 @@ export async function genProxyCode(
   const { name, is_uni_modules, format, moduleName, moduleType } = options
   options.inputDir = options.inputDir || process.env.UNI_INPUT_DIR
   if (!options.meta) {
-    options.meta = { exports: {}, types: {} }
+    options.meta = { exports: {}, types: {}, typeParams: [], components: [] }
   }
   options.types = await parseInterfaceTypes(module, options)
   options.meta!.types = parseMetaTypes(options.types)
+  options.meta!.typeParams = parseTypeParams(options.types)
+  const components = new Set<string>()
+  // 自动补充 VideoElement 导出
+  if (options.androidComponents) {
+    Object.keys(options.androidComponents).forEach((name) => {
+      options.meta!.types[
+        (process.env.UNI_UTS_MODULE_PREFIX ? 'Uni' : '') +
+          capitalize(camelize(name)) +
+          'Element'
+      ] = 'class'
+      components.add(name)
+    })
+  }
+  if (options.iosComponents) {
+    Object.keys(options.iosComponents).forEach((name) => {
+      options.meta!.types[
+        (process.env.UNI_UTS_MODULE_PREFIX ? 'Uni' : '') +
+          capitalize(camelize(name)) +
+          'Element'
+      ] = 'class'
+      components.add(name)
+    })
+  }
+  options.meta!.components = [...components]
   const decls = await parseModuleDecls(module, options)
   return `
 const { registerUTSInterface, initUTSProxyClass, initUTSProxyFunction, initUTSPackageName, initUTSIndexClassName, initUTSClassName } = uni
@@ -112,7 +149,7 @@ ${genModuleCode(decls, format, options.pluginRelativeDir!, options.meta!)}
 
 function parseMetaTypes(types: Types) {
   let res: Meta['types'] = {}
-  types.class.forEach((n) => {
+  Object.keys(types.class).forEach((n) => {
     res[n] = 'class'
   })
   Object.keys(types.fn).forEach((n) => {
@@ -120,6 +157,16 @@ function parseMetaTypes(types: Types) {
   })
   Object.keys(types.interface).forEach((n) => {
     res[n] = 'interface'
+  })
+  return res
+}
+
+function parseTypeParams(types: Types) {
+  let res: Meta['typeParams'] = []
+  Object.keys(types.class).forEach((n) => {
+    if (types.class[n].typeParams) {
+      res.push(n)
+    }
   })
   return res
 }
@@ -228,7 +275,9 @@ function genModuleCode(
   const exportConst = exportVarCode(format, 'const')
   decls.forEach((decl) => {
     if (decl.type === 'InterfaceDeclaration') {
-      meta.exports[decl.cls] = 'interface'
+      meta.exports[decl.cls] = {
+        type: 'interface',
+      }
       codes.push(
         `registerUTSInterface('${
           decl.cls
@@ -237,7 +286,9 @@ function genModuleCode(
         }ByJsProxy', is_uni_modules) }, ${genClassOptionsCode(decl.options)} ))`
       )
     } else if (decl.type === 'Class') {
-      meta.exports[decl.cls] = decl.isVar ? 'var' : 'class'
+      meta.exports[decl.cls] = {
+        type: decl.isVar ? 'var' : 'class',
+      }
 
       if (decl.isDefault) {
         codes.push(
@@ -255,7 +306,10 @@ function genModuleCode(
         )
       }
     } else if (decl.type === 'FunctionDeclaration') {
-      meta.exports[decl.method] = decl.isVar ? 'var' : 'function'
+      meta.exports[decl.method] = {
+        type: decl.isVar ? 'var' : 'function',
+        params: decl.params,
+      }
       const returnOptions = decl.return
         ? { type: decl.return.type, options: decl.return.options + 'Options' }
         : ''
@@ -282,7 +336,9 @@ function genModuleCode(
       }
     } else if (decl.type === 'VariableDeclaration') {
       decl.declarations.forEach((d) => {
-        meta.exports[(d.id as Identifier).value] = 'var'
+        meta.exports[(d.id as Identifier).value] = {
+          type: 'var',
+        }
       })
 
       if (format === FORMATS.ES) {
@@ -331,7 +387,7 @@ async function parseInterfaceTypes(
   if (!interfaceFilename) {
     return {
       interface: {},
-      class: [],
+      class: {},
       fn: {},
     }
   }
@@ -352,7 +408,7 @@ async function parseInterfaceTypes(
 
 function parseAstTypes(ast: Module | null, isInterface: boolean) {
   const interfaceTypes: Types['interface'] = {}
-  const classTypes: Types['class'] = []
+  const classTypes: Types['class'] = {}
   const fnTypes: Types['fn'] = {}
 
   const exportNamed: string[] = []
@@ -406,7 +462,7 @@ function parseAstTypes(ast: Module | null, isInterface: boolean) {
 
 function parseTypes(
   decl: TsTypeAliasDeclaration,
-  classTypes: string[],
+  classTypes: Record<string, ClassMeta>,
   fnTypes: Record<string, Param[]>
 ) {
   switch (decl.typeAnnotation.type) {
@@ -420,8 +476,13 @@ function parseTypes(
       }
       break
     // export type ShowLoadingOptions = {}
+    // export type RequestMethod = 'GET' | 'POST'
     case 'TsTypeLiteral':
-      classTypes.push(decl.id.value)
+    case 'TsUnionType':
+      classTypes[decl.id.value] = {
+        typeParams: !!decl.typeParams,
+      }
+      break
   }
 }
 
@@ -604,8 +665,12 @@ interface ProxyClass {
 }
 
 function mergeAstTypes(to: Types, from: Types) {
-  if (from.class.length) {
-    to.class = [...new Set(...[...to.class, ...from.class])]
+  if (Object.keys(from.class).length) {
+    for (const name in from.class) {
+      if (!hasOwn(to.class, name)) {
+        to.class[name] = from.class[name]
+      }
+    }
   }
   if (Object.keys(from.fn).length) {
     for (const name in from.fn) {
@@ -767,6 +832,18 @@ function resolveType(
     typeAnnotation.type === 'TsTypeReference' &&
     typeAnnotation.typeName.type === 'Identifier'
   ) {
+    // Array<string>
+    if (
+      typeAnnotation.typeName.value === 'Array' &&
+      typeAnnotation.typeParams &&
+      typeAnnotation.typeParams.params.length === 1
+    ) {
+      return resolveType(
+        types,
+        typeAnnotation.typeParams.params[0],
+        resolveTypeReferenceName
+      )
+    }
     if (hasOwn(types.fn, typeAnnotation.typeName.value)) {
       return 'UTSCallback'
     }
@@ -784,6 +861,8 @@ function resolveType(
       }
       return resolveType(types, type, resolveTypeReferenceName)
     }
+  } else if (typeAnnotation.type === 'TsArrayType') {
+    return resolveType(types, typeAnnotation.elemType, resolveTypeReferenceName)
   }
   return ''
 }
@@ -811,14 +890,22 @@ function resolveFunctionParams(
   const result: Parameter[] = []
   params.forEach(({ pat }) => {
     if (pat.type === 'Identifier') {
-      result.push({
+      const param: Parameter = {
         name: pat.value,
         type: resolveIdentifierType(
           types,
           pat as BindingIdentifier,
           resolveTypeReferenceName
         ),
-      })
+      }
+      // A | null
+      if (
+        (pat as BindingIdentifier).typeAnnotation?.typeAnnotation.type ===
+        'TsUnionType'
+      ) {
+        param.default = 'UTSNull'
+      }
+      result.push(param)
     } else if (pat.type === 'AssignmentPattern') {
       if (pat.left.type === 'Identifier') {
         const param: Parameter = {

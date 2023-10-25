@@ -1,8 +1,8 @@
 import { camelize } from '@vue/shared'
-import { Normalize, supportedValueWithTipsReason } from '../utils'
+import { Normalize, supportedEnumReason } from '../utils'
 import { getNormalizeMap } from './map'
-
-export const normalizeTransitionProperty: Normalize = (v, options) => {
+// 暂时无用，已经移动到 map 中
+export const normalizeProperty: Normalize = (v, options) => {
   v = (v || '').toString()
   v = v
     .split(/\s*,\s*/)
@@ -16,7 +16,7 @@ export const normalizeTransitionProperty: Normalize = (v, options) => {
   return {
     value: null,
     reason: function reason(k, v, result) {
-      return supportedValueWithTipsReason(k, v, '(only css property is valid)')
+      return supportedEnumReason(k, v, ['css property'])
     },
   }
 }

@@ -34,6 +34,7 @@ import {
 import { defaultOnError, defaultOnWarn } from './errors'
 import { TransformOptions } from './options'
 import { FRAGMENT } from './runtimeHelpers'
+import { ParserPlugin } from '@babel/parser'
 
 // There are two types of transforms:
 //
@@ -77,7 +78,7 @@ export interface ImportItem {
 }
 
 export interface TransformContext
-  extends Required<Omit<TransformOptions, 'filename'>> {
+  extends Required<Omit<TransformOptions, 'filename' | 'className'>> {
   selfName: string | null
   root: RootNode
   helpers: Map<symbol, number>
@@ -97,6 +98,7 @@ export interface TransformContext
   childIndex: number
   currentNode: RootNode | TemplateChildNode | null
   inVOnce: boolean
+  expressionPlugins: ParserPlugin[]
   helper<T extends symbol>(name: T): T
   removeHelper<T extends symbol>(name: T): void
   helperString(name: symbol): string
@@ -107,11 +109,13 @@ export interface TransformContext
   removeIdentifiers(exp: ExpressionNode | string): void
   cache<T extends JSChildNode>(exp: T, isVNode?: boolean): CacheExpression | T
   constantCache: Map<TemplateChildNode, ConstantTypes>
+  elements: Set<string>
 }
 
 export function createTransformContext(
   root: RootNode,
   {
+    rootDir,
     targetLanguage,
     filename = '',
     prefixIdentifiers = false,
@@ -128,12 +132,14 @@ export function createTransformContext(
   const nameMatch = filename.replace(/\?.*$/, '').match(/([^/\\]+)\.\w+$/)
   const context: TransformContext = {
     // options
+    rootDir,
     targetLanguage,
     selfName: nameMatch && capitalize(camelize(nameMatch[1])),
     prefixIdentifiers,
     bindingMetadata: {},
     nodeTransforms,
     directiveTransforms,
+    elements: new Set(),
     isBuiltInComponent,
     isCustomElement,
     scopeId,
@@ -161,6 +167,7 @@ export function createTransformContext(
     currentNode: root,
     childIndex: 0,
     inVOnce: false,
+    expressionPlugins: ['typescript'],
 
     // methods
     helper(name) {
@@ -264,6 +271,8 @@ export function transform(root: RootNode, options: TransformOptions) {
   traverseNode(root, context)
   createRootCodegen(root, context)
   root.components = [...context.components]
+  // @ts-ignore
+  root.elements = Array.from(context.elements)
 }
 
 export function isSingleElementRoot(

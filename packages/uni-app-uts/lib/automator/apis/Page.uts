@@ -1,55 +1,125 @@
 // @ts-ignore
-import { JSONObject } from 'com.alibaba.fastjson'
-import { getData, setData, getPageVm } from './util.uts'
-import { hasVueMethod, callVueMethod } from 'io.dcloud.uts.vue.shared'
+import type { Callback } from '../index.uts'
+// @ts-ignore
+import { pageGetData, pageSetData, getPageVm, getValidComponentsOrNodes } from './util.uts'
 
 export type GetDataParams = {
-  pageId: number
-  path: string
-  callback: (res: any) => void
+  pageId: string
+  path?: string | null
 }
-export const pageGetData = (params: GetDataParams): void => {
-  const callback = params.callback
-  const result = getData(getPageVm(params.pageId)!, params.path)
-  callback(result)
+export const getData = (params: GetDataParams, callback: Callback): void => {
+  const page = getPageVm(params.pageId)
+  if (page == null) {
+    callback(null, { errMsg: 'Page.getData:fail, Page not found.' })
+    return
+  }
+  const data = pageGetData(page)
+  callback({ data }, null)
 }
 
 export type SetDataParams = {
-  pageId: number
-  data: JSONObject
-  callback: (res?: any | null) => void
+  pageId: string
+  data: Map<string, any | null>
 }
-export const pageSetData = (params: SetDataParams): void => {
+export const setData = (params: SetDataParams, callback: Callback): void => {
   const pageId = params.pageId
-  const callback = params.callback
   const page = getPageVm(pageId)
-  if (page !== null) {
-    setData(page, params.data)
-    callback(null)
+  if (page != null) {
+    pageSetData(page, params.data)
+    callback({ result: { errMsg: 'Page.setData: ok.' } }, null)
   } else {
-    callback({ errMsg: `setData:fail, Page:${pageId} is not found.` })
+    callback(null, { errMsg: `Page.setData:fail, Page:${pageId} is not found.` })
+  }
+}
+export type CallMethodParams = {
+  pageId: string
+  method: string
+  args: any[]
+}
+
+export const callMethod = (params: CallMethodParams, callback: Callback): void => {
+  const page = getPageVm(params.pageId)
+  if (page == null) {
+    callback(null, { errMsg: `Page[${params.pageId}] not exists` })
+    // @ts-ignore
+  } else if (findVueMethod(page.$.type.type, params.method, page) == null) {
+    callback(null, { errMsg: `Page.${params.method} not exists` })
+  } else {
+    const result = params.args.length > 0 ? page.$callMethod(params.method, params.args[0]) : page.$callMethod(params.method)
+    callback({ result }, null)
   }
 }
 
-export type CallMethodWithCallbackParams = {
-  pageId: number
-  methodName: string
-  args: Array<any | null>
+export type GetElementParams = {
+  pageId: string
+  selector: string
 }
-export const callMethodWithCallback = (params: CallMethodWithCallbackParams): void => {
+
+export const getElement = (params: GetElementParams, callback: Callback): void => {
   const page = getPageVm(params.pageId)
-  const callback = params.args[params.args.length - 1] as (data: any) => void
-  if (page === null) {
-    callback({ errMsg: `callMethodWithCallback:fail, Page[${params.pageId}] not exists` })
+  if (page == null) {
+    callback(null, { errMsg: `Page[${params.pageId}] not exists` })
+  } else {
+    let selector = params.selector
+    if (selector.startsWith('uni-')) {
+      selector = selector.replace('uni-', '')
+    }
+    // @ts-ignore
+    const list: UTSJSONObject[] = []
+    getValidComponentsOrNodes(page.$.subTree, selector, list)
+    if (list.length > 0) {
+      callback(list[0], null)
+    } else {
+      callback(null, { errMsg: `Element[${params.selector}] not exists` })
+    }
+  }
+}
+
+export const getElements = (params: GetElementParams, callback: Callback): void => {
+  const page = getPageVm(params.pageId)
+  if (page == null) {
+    callback(null, { errMsg: `Page[${params.pageId}] not exists` })
+  } else {
+    let selector = params.selector
+    if (selector.startsWith('uni-')) {
+      selector = selector.replace('uni-', '')
+    }
+    const elements = page.$querySelectorAll(selector)
+    // @ts-ignore
+    const result = [] as UTSJSONObject[]
+    elements?.forEach(element => {
+      result.push({
+        elementId: element.id,
+        tagName: element.tagName
+      })
+    })
+    callback({ elements: result }, null)
+  }
+}
+
+export type GetWindowPropertiesParams = {
+  pageId: string,
+  names: string[]
+}
+export const getWindowProperties = (params: GetWindowPropertiesParams, callback: Callback): void => {
+  const page = getPageVm(params.pageId)
+  if (page == null) {
+    callback(null, { errMsg: 'Page.getWindowProperties:fail, Page not found.' })
     return
   }
-  if (!hasVueMethod(page, params.methodName)) {
-    callback({ errMsg: `callMethodWithCallback:fail, Page.${params.methodName} not exists` })
-    return
-  }
-  callVueMethod(
-    page,
-    params.methodName,
-    params.args
-  )
+  const document = page.$appPage!.document
+  const rootNode = document.childNodes[0]
+  const properties = params.names.map((name): any | null => {
+    switch (name) {
+      case 'document.documentElement.scrollWidth':
+        return rootNode.scrollWidth
+      case 'document.documentElement.scrollHeight':
+        return rootNode.scrollHeight
+      case 'document.documentElement.scrollTop':
+        return rootNode.scrollTop
+    }
+    return null
+  })
+
+  callback({ properties }, null)
 }

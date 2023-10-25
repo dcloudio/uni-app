@@ -1,0 +1,177 @@
+// @ts-ignore
+import type { Callback } from '../../index.uts'
+
+type SocketInstanceData = {
+  // @ts-ignore
+  instance: SocketTask,
+  isOpend: boolean,
+  // @ts-ignore
+  openData?: OnSocketOpenCallbackResult | null
+}
+const socketInstanceMap = new Map<string, SocketInstanceData>()
+
+export const connectSocket = (id: string, url: string, callback: Callback): void => {
+  // @ts-ignore
+  const socketTask = uni.connectSocket({
+    url,
+    success() {
+      callback({ result: { errMsg: 'connectSocket:ok' } }, null)
+    },
+    fail() {
+      callback(null, { errMsg: 'connectSocket:fail' })
+    }
+  })
+  socketInstanceMap.set(id, { instance: socketTask, isOpend: false } as SocketInstanceData)
+  // @ts-ignore
+  socketTask.onOpen((data: OnSocketOpenCallbackResult) => {
+    socketInstanceMap.get(id)!.isOpend = true
+    socketInstanceMap.get(id)!.openData = data
+  })
+}
+
+export type FirstSocketTaskEmitterParams = {
+  method: string,
+  data?: any | null,
+  code?: number | null,
+  reason?: string | null,
+}
+export const firstSocketTaskEmitter = (params: FirstSocketTaskEmitterParams, callback: Callback): void => {
+  let socketInstanceData: SocketInstanceData | null = null;
+  socketInstanceMap.forEach((value: SocketInstanceData) => {
+    if (socketInstanceData == null) {
+      socketInstanceData = value
+    }
+  })
+  if (socketInstanceData == null) {
+    callback(null, { errMsg: "socketTask not exists." });
+  } else {
+    const _socketInstanceData = socketInstanceData as SocketInstanceData
+    const socketTask = _socketInstanceData.instance
+    if (params.method == 'onOpen') {
+      const isOpend = _socketInstanceData.isOpend
+      if (isOpend) {
+        callback(_socketInstanceData.openData, null)
+      } else {
+        let timer: number | null = null
+        // @ts-ignore
+        timer = setInterval(() => {
+          if (_socketInstanceData.isOpend) {
+            clearInterval(timer!)
+            callback(_socketInstanceData.openData, null)
+          }
+        }, 200)
+        setTimeout(() => {
+          // @ts-ignore
+          clearInterval(timer)
+        }, 2000)
+      }
+    } else if (params.method == 'onMessage') {
+      socketTask.onMessage((data: any) => {
+        callback(data, null)
+      })
+    } else if (params.method == 'onClose') {
+      socketTask.onClose((data: any) => {
+        callback(data, null)
+      })
+    } else if (params.method == 'onError') {
+      socketTask.onError((data: any) => {
+        callback(data, null)
+      })
+    } else if (params.method == 'send') {
+      socketTask.send({
+        data: params.data!,
+        success(result: any) {
+          callback({ result }, null)
+        },
+        fail(error: any) {
+          callback(null, error)
+        }
+        // @ts-ignore
+      } as SendSocketMessageOptions)
+    } else if (params.method == 'close') {
+      socketTask.close({
+        code: params.code,
+        reason: params.reason,
+        success(result: any) {
+          callback({ result }, null)
+          socketInstanceMap.clear();
+        },
+        fail(error: any) {
+          callback(null, error)
+        }
+        // @ts-ignore
+      } as CloseSocketOptions)
+    }
+  }
+}
+
+export type SocketEmitterParams = {
+  id: string,
+  method: string,
+  data?: any | null,
+  code?: number | null,
+  reason?: string | null,
+}
+export const socketEmitter = (params: SocketEmitterParams, callback: Callback): void => {
+  if (!socketInstanceMap.has(params.id)) {
+    callback(null, { errMsg: 'socketTask not exists.' })
+  } else {
+    const socketInstanceData = socketInstanceMap.get(params.id)!
+    const socketTask = socketInstanceData.instance
+    if (params.method == 'onOpen') {
+      const isOpend = socketInstanceData.isOpend
+      if (isOpend) {
+        callback({ method: 'Socket.onOpen', id: params.id, data: socketInstanceData.openData }, null)
+      } else {
+        let timer: number | null = null
+        // @ts-ignore
+        timer = setInterval(() => {
+          if (socketInstanceData.isOpend) {
+            clearInterval(timer!)
+            callback({ method: 'Socket.onOpen', id: params.id, data: socketInstanceData.openData }, null)
+          }
+        }, 200)
+        setTimeout(() => {
+          // @ts-ignore
+          clearInterval(timer)
+        }, 2000)
+      }
+    } else if (params.method == 'onMessage') {
+      socketTask.onMessage((data: any) => {
+        callback({ method: 'Socket.onMessage', id: params.id, data }, null)
+      })
+    } else if (params.method == 'onClose') {
+      socketTask.onClose((data: any) => {
+        callback({ method: 'Socket.onClose', id: params.id, data }, null)
+      })
+    } else if (params.method == 'onError') {
+      socketTask.onError((data: any) => {
+        callback({ method: 'Socket.onError', id: params.id, data }, null)
+      })
+    } else if (params.method == 'send') {
+      socketTask.send({
+        data: params.data!,
+        success(result: any) {
+          callback(result, null)
+        },
+        fail(error: any) {
+          callback(null, error)
+        }
+        // @ts-ignore
+      } as SendSocketMessageOptions)
+    } else if (params.method == 'close') {
+      socketTask.close({
+        code: params.code,
+        reason: params.reason,
+        success(result: any) {
+          callback(result, null)
+          socketInstanceMap.delete(params.id);
+        },
+        fail(error: any) {
+          callback(null, error)
+        }
+        // @ts-ignore
+      } as CloseSocketOptions)
+    }
+  }
+}

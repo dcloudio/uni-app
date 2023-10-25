@@ -1,14 +1,14 @@
-import { DirectiveTransform } from '../transform'
+import { camelize } from '@vue/shared'
+import { CAMELIZE } from '@vue/compiler-core'
 import {
   createObjectProperty,
   createSimpleExpression,
   ExpressionNode,
   NodeTypes,
 } from '@vue/compiler-core'
+
+import type { DirectiveTransform } from '../transform'
 import { createCompilerError, ErrorCodes } from '../errors'
-import { camelize } from '@vue/shared'
-import { CAMELIZE } from '@vue/compiler-core'
-import { objectExp, object2Map } from '../utils'
 
 // v-bind without arg is handled directly in ./transformElements.ts due to it affecting
 // codegen for the entire props object. This transform here is only for v-bind
@@ -56,19 +56,6 @@ export const transformBind: DirectiveTransform = (dir, _node, context) => {
       props: [createObjectProperty(arg, createSimpleExpression('', true, loc))],
     }
   }
-
-  if ((exp as any).content && objectExp.test((exp as any).content)) {
-    ;(exp as any).content = object2Map(exp)
-  } else if ((exp as any).children) {
-    ;(exp as any).children.forEach(
-      (child: ExpressionNode | string, index: number) => {
-        if (typeof child === 'string' && objectExp.test(child)) {
-          ;(exp as any).children[index] = object2Map(child)
-        }
-      }
-    )
-  }
-
   return {
     props: [createObjectProperty(arg, exp)],
   }

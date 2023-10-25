@@ -9,6 +9,12 @@ function isManifest(id: string) {
   return id.endsWith(MANIFEST_JSON_UTS)
 }
 
+let outputManifestJson: Record<string, any> | undefined = undefined
+
+export function getOutputManifestJson() {
+  return outputManifestJson
+}
+
 export function uniAppManifestPlugin(): Plugin {
   const manifestJsonPath = path.resolve(
     process.env.UNI_INPUT_DIR,
@@ -44,37 +50,50 @@ export function uniAppManifestPlugin(): Plugin {
     generateBundle(_, bundle) {
       if (bundle[ENTRY_FILENAME]) {
         const asset = bundle[ENTRY_FILENAME] as OutputAsset
+        const singleThread =
+          manifestJson?.['uni-app-x']?.['singleThread'] === true
+            ? `override singleThread: Boolean = true`
+            : ''
         asset.source =
           asset.source +
           `
-import "io.dcloud.uniapp.appframe.AppConfig"
+import { AppConfig } from "io.dcloud.uniapp.appframe"
 export class UniAppConfig extends AppConfig {
     override name: string = "${manifestJson.name || ''}"
     override appid: string = "${manifestJson.appid || ''}"
     override versionName: string = "${manifestJson.versionName || ''}"
     override versionCode: string = "${manifestJson.versionCode || ''}"
+    override uniCompileVersion: string = "${
+      process.env.UNI_COMPILER_VERSION || ''
+    }"
+    // override tabBar = __uniTabBar
+    // override launchPage = __uniLaunchPage
+    ${singleThread}
     constructor() {}
 }
 `
       }
-      fs.outputFileSync(
-        path.resolve(process.env.UNI_OUTPUT_DIR, 'manifest.json'),
-        JSON.stringify(
-          {
-            id: manifestJson.appid || '',
-            name: manifestJson.name || '',
-            description: manifestJson.description || '',
-            version: {
-              name: manifestJson.versionName || '',
-              code: manifestJson.versionCode || '',
-            },
-            'uni-app-x': manifestJson['uni-app-x'] || {},
-            app: manifestJson.app || {},
-          },
-          null,
-          2
+    },
+    writeBundle() {
+      const app = manifestJson.app || {}
+      outputManifestJson = {
+        id: manifestJson.appid || '',
+        name: manifestJson.name || '',
+        description: manifestJson.description || '',
+        version: {
+          name: manifestJson.versionName || '',
+          code: manifestJson.versionCode || '',
+        },
+        'uni-app-x': manifestJson['uni-app-x'] || {},
+        app,
+      }
+      if (process.env.NODE_ENV !== 'production') {
+        // 发行模式下，需要等解析ext-api模块
+        fs.outputFileSync(
+          path.resolve(process.env.UNI_OUTPUT_DIR, 'manifest.json'),
+          JSON.stringify(outputManifestJson, null, 2)
         )
-      )
+      }
     },
   }
 }

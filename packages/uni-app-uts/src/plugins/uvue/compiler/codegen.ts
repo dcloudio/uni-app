@@ -1,4 +1,4 @@
-import { SourceMapGenerator } from 'source-map'
+import { SourceMapGenerator } from 'source-map-js'
 import {
   ArrayExpression,
   CREATE_COMMENT,
@@ -23,7 +23,7 @@ import {
   TemplateChildNode,
   TextNode,
   VNodeCall,
-  // WITH_CTX,
+  WITH_CTX,
   WITH_DIRECTIVES,
   advancePositionWithMutation,
   getVNodeBlockHelper,
@@ -33,22 +33,38 @@ import {
   locStub,
   toValidAssetId,
 } from '@vue/compiler-core'
-import { CodegenOptions, CodegenResult } from './options'
 import { NOOP, isArray, isString, isSymbol } from '@vue/shared'
-import { genRenderFunctionDecl } from './utils'
+import { ParserPlugin, parseExpression } from '@babel/parser'
+import {
+  isCompoundExpressionNode,
+  isSimpleExpressionNode,
+} from '@dcloudio/uni-cli-shared'
+import { CodegenOptions, CodegenResult } from './options'
+import {
+  genImportComponentPublicInstance,
+  genRenderFunctionDecl,
+} from './utils'
 import {
   IS_TRUE,
   RENDER_LIST,
   RESOLVE_COMPONENT,
   RESOLVE_DIRECTIVE,
   RESOLVE_EASY_COMPONENT,
-  TO_HANDLERS,
 } from './runtimeHelpers'
-import { object2Map } from './utils'
+import { stringifyExpression } from './transforms/transformExpression'
+import { isBinaryExpression } from '@babel/types'
+import {
+  isDestructuringSlotProps,
+  SLOT_PROPS_NAME,
+  createDestructuringSlotProps,
+} from './transforms/transformSlotPropsDestructuring'
 
 type CodegenNode = TemplateChildNode | JSChildNode | SSRCodegenNode
 
-export interface CodegenContext extends Required<CodegenOptions> {
+export interface CodegenContext
+  extends Required<
+    Omit<CodegenOptions, 'sourceMapGeneratedLine' | 'className'>
+  > {
   source: string
   code: string
   importEasyComponents: string[]
@@ -58,6 +74,7 @@ export interface CodegenContext extends Required<CodegenOptions> {
   offset: number
   indentLevel: number
   map?: SourceMapGenerator
+  expressionPlugins: ParserPlugin[]
   helper(key: symbol): string
   push(code: string, node?: CodegenNode): void
   indent(): void
@@ -68,6 +85,7 @@ export interface CodegenContext extends Required<CodegenOptions> {
 function createCodegenContext(
   ast: RootNode,
   {
+    rootDir,
     targetLanguage,
     mode = 'default',
     prefixIdentifiers = false,
@@ -79,6 +97,7 @@ function createCodegenContext(
   }: CodegenOptions
 ): CodegenContext {
   const context: CodegenContext = {
+    rootDir,
     targetLanguage,
     mode,
     prefixIdentifiers,
@@ -94,6 +113,7 @@ function createCodegenContext(
     offset: 0,
     indentLevel: 0,
     map: undefined,
+    expressionPlugins: ['typescript'],
     matchEasyCom,
     parseUTSComponent,
     helper(key) {
@@ -170,6 +190,8 @@ export function generate(
   if (mode === 'function') {
     genEasyComImports(ast.components, context)
     push(genRenderFunctionDecl(options) + ` {`)
+    newline()
+    push(`const _ctx = this`)
     // generate asset resolution statements
     if (ast.components.length) {
       newline()
@@ -205,12 +227,14 @@ export function generate(
     importUTSComponents: context.importUTSComponents,
     // SourceMapGenerator does have toJSON() method but it's not in the types
     map: context.map ? (context.map as any).toJSON() : undefined,
+    // @ts-ignore
+    elements: ast.elements,
   }
 }
 
 function genEasyComImports(
   components: string[],
-  { push, newline, matchEasyCom, targetLanguage }: CodegenContext
+  { push, newline, matchEasyCom, rootDir }: CodegenContext
 ) {
   for (let i = 0; i < components.length; i++) {
     let id = components[i]
@@ -221,7 +245,13 @@ function genEasyComImports(
     const source = matchEasyCom(id, true)
     if (source) {
       const componentId = toValidAssetId(id, 'easycom' as 'component')
-      push(`import ${componentId} from '${source}'`)
+      push(
+        `import ${componentId}${genImportComponentPublicInstance(
+          rootDir,
+          id,
+          source
+        )} from '${source}'`
+      )
       newline()
     }
   }
@@ -230,7 +260,14 @@ function genEasyComImports(
 function genAssets(
   assets: string[],
   type: 'component' | 'directive',
-  { helper, push, newline, importEasyComponents, matchEasyCom }: CodegenContext
+  {
+    helper,
+    push,
+    newline,
+    importEasyComponents,
+    matchEasyCom,
+    rootDir,
+  }: CodegenContext
 ) {
   const resolver = helper(
     type === 'component' ? RESOLVE_COMPONENT : RESOLVE_DIRECTIVE
@@ -253,7 +290,11 @@ function genAssets(
         )}(${JSON.stringify(id)},${easyComponentId}${
           maybeSelfReference ? `, true` : ``
         })`
-        const importCode = `import ${easyComponentId} from '${source}';`
+        const importCode = `import ${easyComponentId}${genImportComponentPublicInstance(
+          rootDir,
+          id,
+          source
+        )} from '${source}';`
         if (!importEasyComponents.includes(importCode)) {
           importEasyComponents.push(importCode)
         }
@@ -427,18 +468,17 @@ function genExpressionAsPropertyKey(
 ) {
   const { push } = context
   if (node.type === NodeTypes.COMPOUND_EXPRESSION) {
-    // dynamic arg genObjectExpression have added []
-    // push(`[`)
+    push(`[`)
     genCompoundExpression(node, context)
-    // push(`]`)
+    push(`]`)
   } else if (node.isStatic) {
     // only quote keys if necessary
-    const text = JSON.stringify(node.content)
+    const text = isSimpleIdentifier(node.content)
+      ? node.content
+      : JSON.stringify(node.content)
     push(text, node)
   } else {
-    // dynamic arg genObjectExpression have added []
-    // push(`[${node.content}]`, node)
-    push(`${node.content}`, node)
+    push(`[${node.content}]`, node)
   }
 }
 
@@ -535,11 +575,8 @@ function genCallExpression(node: CallExpression, context: CodegenContext) {
   if (callee === helper(RENDER_LIST)) {
     genRenderList(node)
   }
-  if (callee === helper(TO_HANDLERS)) {
-    genToHandlers(node, push)
-  }
-
   genNodeList(node.arguments, context)
+
   push(`)`)
 }
 
@@ -551,66 +588,26 @@ function genRenderList(node: CallExpression) {
   })
 }
 
-function genToHandlers(
-  node: CallExpression,
-  push: (code: string, node?: CodegenNode) => void
-) {
-  push(`new Map<string, any | null>([`)
-  const argument = node.arguments[0]
-  if (
-    (argument as CompoundExpressionNode)?.type === NodeTypes.COMPOUND_EXPRESSION
-  ) {
-    ;(argument as CompoundExpressionNode).children.forEach(
-      (child: any, index: number) => {
-        if (isString(child)) {
-          if (
-            index ===
-            (argument as CompoundExpressionNode).children.length - 1
-          ) {
-            ;(argument as CompoundExpressionNode).children[index] =
-              child.replace('}', '])')
-          } else {
-            ;(argument as CompoundExpressionNode).children[index] = child
-              .replace('{', '["')
-              .replace(',', ',["')
-              .replace(':', '",')
-              .replaceAll(' ', '')
-          }
-        } else {
-          child.content = child.content += ']'
-        }
-      }
-    )
-  }
-  if (
-    (argument as SimpleExpressionNode)?.type === NodeTypes.SIMPLE_EXPRESSION
-  ) {
-    ;(argument as SimpleExpressionNode).content =
-      object2Map((argument as SimpleExpressionNode).content, false) + '])'
-  }
-}
-
 function genObjectExpression(node: ObjectExpression, context: CodegenContext) {
   const { push, indent, deindent, newline } = context
   const { properties } = node
   if (!properties.length) {
-    push(`new Map<string, any | null>()`, node)
+    push(`utsMapOf()`, node)
     return
   }
+  push(`utsMapOf(`)
   const multilines =
     properties.length > 1 ||
     properties.some((p) => p.value.type !== NodeTypes.SIMPLE_EXPRESSION)
-  push(`new Map<string, any | null>([`)
+  push(multilines ? `{` : `{ `)
   multilines && indent()
   for (let i = 0; i < properties.length; i++) {
     const { key, value } = properties[i]
-    push(`[`)
     // key
     genExpressionAsPropertyKey(key, context)
-    push(`, `)
+    push(`: `)
     // value
     genNode(value, context)
-    push(`]`)
     if (i < properties.length - 1) {
       // will only reach this if it's multilines
       push(`,`)
@@ -618,7 +615,8 @@ function genObjectExpression(node: ObjectExpression, context: CodegenContext) {
     }
   }
   multilines && deindent()
-  push(`])`)
+  push(multilines ? `}` : ` }`)
+  push(`)`)
 }
 
 function genArrayExpression(node: ArrayExpression, context: CodegenContext) {
@@ -633,22 +631,38 @@ function genFunctionExpression(
   const { params, returns, body, newline, isSlot } = node
   if (isSlot) {
     // wrap slot functions with owner context
-    // push(`_${helperNameMap[WITH_CTX]}(`)
-    push('(')
+    push(`${helperNameMap[WITH_CTX]}(`)
   }
   push(`(`, node)
   if (isArray(params)) {
     genNodeList(params, context)
   } else if (params) {
-    genNode(params, context)
+    if (
+      isDestructuringSlotProps(isSlot, params as CompoundExpressionNode) ||
+      (params as SimpleExpressionNode)?.content === '{}'
+    ) {
+      push(SLOT_PROPS_NAME)
+    } else {
+      genNode(params, context)
+    }
   }
   if ((node as any).returnType) {
-    push(`):${(node as any).returnType} => `)
+    push(`): ${(node as any).returnType} => `)
   } else {
     if (isSlot) {
-      // TODO: supplement types slots params type based on user-defined slots
       if (params) {
         push(`: Map<string, any | null>): any[] => `)
+        if (
+          isDestructuringSlotProps(isSlot, params as CompoundExpressionNode)
+        ) {
+          push('{')
+          createDestructuringSlotProps(
+            params as CompoundExpressionNode,
+            context
+          )
+          context.newline()
+          push('return ')
+        }
       } else {
         push(`): any[] => `)
       }
@@ -677,8 +691,40 @@ function genFunctionExpression(
     push(`}`)
   }
   if (isSlot) {
+    if (isDestructuringSlotProps(isSlot, params as CompoundExpressionNode)) {
+      push('}')
+    }
     push(`)`)
   }
+}
+
+const booleanBinExprOperators = ['==', '===', '!=', '!==', '<', '>', '<=', '>=']
+
+function shouldWrapperConditionalTest(
+  test: JSChildNode,
+  context: CodegenContext
+) {
+  const isSimpleExpr = isSimpleExpressionNode(test)
+  if (isSimpleExpr) {
+    const { content } = test
+    if (content === 'true' || content === 'false') {
+      return false
+    }
+  }
+  if (isSimpleExpr || isCompoundExpressionNode(test)) {
+    const code = stringifyExpression(test)
+    const ast = parseExpression(code, {
+      plugins: context.expressionPlugins,
+    })
+    if (isBinaryExpression(ast)) {
+      // 先简易解析
+      if (booleanBinExprOperators.includes(ast.operator)) {
+        return false
+      }
+    }
+  }
+
+  return true
 }
 
 function genConditionalExpression(
@@ -687,13 +733,14 @@ function genConditionalExpression(
 ) {
   const { test, consequent, alternate, newline: needNewline } = node
   const { push, indent, deindent, newline } = context
-  push(`${context.helper(IS_TRUE)}(`)
+  const wrapper = shouldWrapperConditionalTest(test, context)
+  wrapper && push(`${context.helper(IS_TRUE)}(`)
   if (test.type === NodeTypes.SIMPLE_EXPRESSION) {
     genExpression(test, context)
   } else {
     genNode(test, context)
   }
-  push(`)`)
+  wrapper && push(`)`)
   needNewline && indent()
   context.indentLevel++
   needNewline || push(` `)

@@ -3,7 +3,6 @@
 var uniCliShared = require('@dcloudio/uni-cli-shared');
 var initMiniProgramPlugin = require('@dcloudio/uni-mp-vite');
 var path = require('path');
-var uniMpCompiler = require('@dcloudio/uni-mp-compiler');
 
 function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
 
@@ -60,30 +59,9 @@ var source = {
 	condition: condition
 };
 
-/**
- * 小红书小程序的Page和自定义组件，不支持动态事件绑定，需要通过__e转发
- */
-const transformOn = uniCliShared.createTransformOn(uniMpCompiler.transformOn, {
-    match: (name, node, context) => {
-        return true;
-    },
-});
-
-/**
- * 小红书小程序的自定义组件，不支持动态事件绑定，故 v-model 也需要调整
- */
-const transformModel = uniCliShared.createTransformModel(uniMpCompiler.transformModel);
-
-const directiveTransforms = {
-    on: transformOn,
-    model: transformModel,
-};
+const directiveTransforms = {};
 const compilerOptions = {
-    nodeTransforms: [
-        uniCliShared.transformRef,
-        // transformComponentLink,
-        uniCliShared.transformMatchMedia,
-    ],
+    nodeTransforms: [uniCliShared.transformRef, uniCliShared.transformComponentLink, uniCliShared.transformMatchMedia],
     directiveTransforms,
 };
 const COMPONENTS_DIR = 'xhscomponents';
@@ -166,18 +144,11 @@ const options = {
         config: ['project.config.json'],
         source,
     },
-    template: Object.assign(Object.assign({}, miniProgram), { filter: 
-        // undefined,
-        {
+    template: Object.assign(Object.assign({}, miniProgram), { filter: {
             extname: '.sjs',
             lang: 'sjs',
             generate(filter, filename) {
-                if (filename) {
-                    return `<import-sjs src="${filename}.sjs" module="${filter.name}"/>`;
-                }
-                return `<import-sjs module="${filter.name}">
-    ${filter.code}
-    </import-sjs>`;
+                return `<sjs src="${filename}.sjs" module="${filter.name}"/>`;
             },
         }, extname: '.xhsml', compilerOptions }),
     style: {

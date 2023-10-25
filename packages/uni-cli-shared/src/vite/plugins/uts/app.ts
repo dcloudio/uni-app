@@ -3,8 +3,8 @@ import path from 'path'
 
 import { once } from '@dcloudio/uni-shared'
 
-import { resolveUTSAppModule, resolveUTSCompiler } from '../../uts'
-import { parseVueRequest } from '../utils'
+import { resolveUTSAppModule, resolveUTSCompiler } from '../../../uts'
+import { parseVueRequest } from '../../utils'
 
 const UTSProxyRE = /\?uts-proxy$/
 function isUTSProxy(id: string) {
@@ -28,7 +28,7 @@ interface UniUTSPluginOptions {
 
 export const utsPlugins = new Set<string>()
 
-export function uniUTSPlugin(options: UniUTSPluginOptions = {}): Plugin {
+export function uniUTSAppPlugin(options: UniUTSPluginOptions = {}): Plugin {
   process.env.UNI_UTS_USING_ROLLUP = 'true'
   return {
     name: 'uni:uts',
@@ -86,6 +86,7 @@ export function uniUTSPlugin(options: UniUTSPluginOptions = {}): Plugin {
           isX: !!options.x,
           isPlugin: true,
           extApis: options.extApis,
+          sourceMap: process.env.NODE_ENV === 'development',
         })
       })
       utsModuleCaches.set(pluginDir, compile)

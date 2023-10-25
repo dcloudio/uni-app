@@ -31,9 +31,11 @@ import {
 
 import { createCompilerError, ErrorCodes } from '../errors'
 
-const GLOBALS_WHITE_LISTED = `Infinity,undefined,NaN,isFinite,isNaN,parseFloat,parseInt,decodeURI,
-    decodeURIComponent,encodeURI,encodeURIComponent,Math,Number,Date,Array,
-    Object,Boolean,String,RegExp,Map,Set,JSON,Intl,BigInt,console`
+const GLOBALS_WHITE_LISTED =
+  `Infinity,undefined,NaN,isFinite,isNaN,parseFloat,parseInt,decodeURI` +
+  `,decodeURIComponent,encodeURI,encodeURIComponent,Math,Number,Date,Array` +
+  `,Object,Boolean,String,RegExp,Map,Set,JSON,Intl,BigInt` +
+  `,console`
 const isGloballyWhitelisted = /*#__PURE__*/ makeMap(GLOBALS_WHITE_LISTED)
 
 const isLiteralWhitelisted = /*#__PURE__*/ makeMap('true,false,null,this')
@@ -151,7 +153,7 @@ export function processExpression(
     : `(${rawExp})${asParams ? `=>{}` : ``}`
   try {
     ast = parse(source, {
-      // plugins: context.expressionPlugins
+      plugins: context.expressionPlugins,
     }).program
   } catch (e: any) {
     context.onError(
@@ -218,18 +220,20 @@ export function processExpression(
       children.push(leadingText + (id.prefix || ``))
     }
     const source = rawExp.slice(start, end)
-    children.push(
-      createSimpleExpression(
-        id.name,
-        false,
-        {
-          source,
-          start: advancePositionWithClone(node.loc.start, source, start),
-          end: advancePositionWithClone(node.loc.start, source, end),
-        },
-        id.isConstant ? ConstantTypes.CAN_STRINGIFY : ConstantTypes.NOT_CONSTANT
-      )
+    const child = createSimpleExpression(
+      id.name,
+      false,
+      {
+        source,
+        start: advancePositionWithClone(node.loc.start, source, start),
+        end: advancePositionWithClone(node.loc.start, source, end),
+      },
+      id.isConstant ? ConstantTypes.CAN_STRINGIFY : ConstantTypes.NOT_CONSTANT
     )
+    if (id.typeAnnotation?.type === 'TSTypeAnnotation') {
+      child.content = child.loc.source
+    }
+    children.push(child)
     if (i === ids.length - 1 && end < rawExp.length) {
       children.push(rawExp.slice(end))
     }

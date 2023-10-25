@@ -92,9 +92,10 @@ describe('compiler: slot', () => {
   test('component with slot', () => {
     assert(
       `<view><slot data="data"></slot></view>`,
-      `@Suppress("UNUSED_PARAMETER") function PagesIndexIndexRender(_ctx: PagesIndexIndex): VNode | null {
+      `@Suppress("UNUSED_PARAMETER") function PagesIndexIndexRender(): VNode | null {
+const _ctx = this
   return createElementVNode("view", null, [
-    renderSlot(_ctx.$slots, "default", new Map<string, any | null>([["data", "data"]]))
+    renderSlot(_ctx.$slots, "default", utsMapOf({ data: "data" }))
   ])
 }`,
       {
@@ -107,16 +108,15 @@ describe('compiler: slot', () => {
   test('template component with slot', () => {
     assert(
       `<view><Foo @click="test">test</Foo></view>`,
-      `@Suppress("UNUSED_PARAMETER") function PagesIndexIndexRender(_ctx: PagesIndexIndex): VNode | null {
+      `@Suppress("UNUSED_PARAMETER") function PagesIndexIndexRender(): VNode | null {
+const _ctx = this
 const _component_Foo = resolveComponent("Foo")
 
   return createElementVNode("view", null, [
-    createVNode(_component_Foo, new Map<string, any | null>([["onClick", _ctx.test]]), new Map<string, any | null>([
-      ["default", ((): any[] => [
-        createElementVNode("text", null, "test")
-      ])],
-      ["_", 1 /* STABLE */]
-    ]), 8 /* PROPS */, ["onClick"])
+    createVNode(_component_Foo, utsMapOf({ onClick: _ctx.test }), utsMapOf({
+      default: withCtx((): any[] => ["test"]),
+      _: 1 /* STABLE */
+    }), 8 /* PROPS */, ["onClick"])
   ])
 }`,
       {
@@ -126,19 +126,16 @@ const _component_Foo = resolveComponent("Foo")
     )
   })
 
-  test('slot in text', () => {
+  test('slot with fallback', () => {
     assert(
-      `<view><text><slot/></text></view>`,
-      `@Suppress("UNUSED_PARAMETER") function PagesIndexIndexRender(_ctx: PagesIndexIndex): VNode | null {
-  return createElementVNode("view", null, [
-    createElementVNode("text", null, [
-      renderSlot(_ctx.$slots, "default")
-    ])
+      `<view><slot><view></view></slot></view>`,
+      `createElementVNode("view", null, [
+  renderSlot(_ctx.$slots, "default", {}, (): any[] => [
+    createElementVNode("view")
   ])
-}`,
+])`,
       {
         targetLanguage: 'kotlin',
-        mode: 'function',
       }
     )
   })
@@ -146,16 +143,17 @@ const _component_Foo = resolveComponent("Foo")
   test('scoped slots', () => {
     assert(
       `<view><Foo><template v-slot="props"><text>msg: {{props.msg}}</text></template></Foo></view>`,
-      `@Suppress("UNUSED_PARAMETER") function PagesIndexIndexRender(_ctx: PagesIndexIndex): VNode | null {
+      `@Suppress("UNUSED_PARAMETER") function PagesIndexIndexRender(): VNode | null {
+const _ctx = this
 const _component_Foo = resolveComponent("Foo")
 
   return createElementVNode("view", null, [
-    createVNode(_component_Foo, null, new Map<string, any | null>([
-      ["default", ((props: Map<string, any | null>): any[] => [
+    createVNode(_component_Foo, null, utsMapOf({
+      default: withCtx((props: Map<string, any | null>): any[] => [
         createElementVNode("text", null, "msg: " + toDisplayString(props.msg), 1 /* TEXT */)
-      ])],
-      ["_", 1 /* STABLE */]
-    ]))
+      ]),
+      _: 1 /* STABLE */
+    }))
   ])
 }`,
       {
@@ -168,22 +166,105 @@ const _component_Foo = resolveComponent("Foo")
   test('scoped slots shorthand', () => {
     assert(
       `<view><Foo><template #default="props"><text>msg: {{props.msg}}</text></template></Foo></view>`,
-      `@Suppress("UNUSED_PARAMETER") function PagesIndexIndexRender(_ctx: PagesIndexIndex): VNode | null {
+      `@Suppress("UNUSED_PARAMETER") function PagesIndexIndexRender(): VNode | null {
+const _ctx = this
 const _component_Foo = resolveComponent("Foo")
 
   return createElementVNode("view", null, [
-    createVNode(_component_Foo, null, new Map<string, any | null>([
-      ["default", ((props: Map<string, any | null>): any[] => [
+    createVNode(_component_Foo, null, utsMapOf({
+      default: withCtx((props: Map<string, any | null>): any[] => [
         createElementVNode("text", null, "msg: " + toDisplayString(props.msg), 1 /* TEXT */)
-      ])],
-      ["_", 1 /* STABLE */]
-    ]))
+      ]),
+      _: 1 /* STABLE */
+    }))
   ])
 }`,
       {
         targetLanguage: 'kotlin',
         mode: 'function',
       }
+    )
+  })
+
+  test('destructuring slot params', () => {
+    assert(
+      `<Foo>
+  <template v-slot:default="{msg, age}">
+    <text>msg: {{msg}}</text>
+    <text>age: {{age}}</text>
+  </template>
+  <template #header="{ msg, age }">
+    <text>msg: {{msg}}</text>
+    <text>age: {{age}}</text>
+  </template>
+</Foo>`,
+      `createVNode(_component_Foo, null, utsMapOf({
+  default: withCtx((slotProps: Map<string, any | null>): any[] => {
+  const msg = slotProps[\"msg\"]
+  const age = slotProps[\"age\"]
+  return [
+    createElementVNode(\"text\", null, \"msg: \" + toDisplayString(msg), 1 /* TEXT */),
+    createElementVNode(\"text\", null, \"age: \" + toDisplayString(age), 1 /* TEXT */)
+  ]}),
+  header: withCtx((slotProps: Map<string, any | null>): any[] => {
+  const msg = slotProps[\"msg\"]
+  const age = slotProps[\"age\"]
+  return [
+    createElementVNode(\"text\", null, \"msg: \" + toDisplayString(msg), 1 /* TEXT */),
+    createElementVNode(\"text\", null, \"age: \" + toDisplayString(age), 1 /* TEXT */)
+  ]}),
+  _: 1 /* STABLE */
+}))`
+    )
+  })
+
+  test('destructuring slot params with empty {}', () => {
+    assert(
+      `<Foo>
+  <template v-slot:default="{}">
+    <text>default slot</text>
+  </template>
+</Foo>`,
+      `createVNode(_component_Foo, null, utsMapOf({
+  default: withCtx((slotProps: Map<string, any | null>): any[] => [
+    createElementVNode(\"text\", null, \"default slot\")
+  ]),
+  _: 1 /* STABLE */
+}))`
+    )
+  })
+  test('destructuring slot params with rename', () => {
+    assert(
+      `<Foo>
+  <template v-slot:default="{msg: myMsg}">
+    <text>msg: {{myMsg}}</text>
+  </template>
+</Foo>`,
+      `createVNode(_component_Foo, null, utsMapOf({
+  default: withCtx((slotProps: Map<string, any | null>): any[] => {
+  const myMsg = slotProps[\"msg\"]
+  return [
+    createElementVNode(\"text\", null, \"msg: \" + toDisplayString(myMsg), 1 /* TEXT */)
+  ]}),
+  _: 1 /* STABLE */
+}))`
+    )
+  })
+  test('destructuring slot params with default value', () => {
+    assert(
+      `<Foo>
+  <template v-slot:default="{msg = 'default msg'}">
+    <text>msg: {{msg}}</text>
+  </template>
+</Foo>`,
+      `createVNode(_component_Foo, null, utsMapOf({
+  default: withCtx((slotProps: Map<string, any | null>): any[] => {
+  const msg = slotProps[\"msg\"] !== null ? slotProps[\"msg\"] : 'default msg'
+  return [
+    createElementVNode(\"text\", null, \"msg: \" + toDisplayString(msg), 1 /* TEXT */)
+  ]}),
+  _: 1 /* STABLE */
+}))`
     )
   })
 })

@@ -39,6 +39,8 @@ export function uniCopyPlugin({
     .filter((p) => {
       if (platform === 'app') {
         return p !== 'app' && p !== 'app-plus'
+      } else if (platform === 'h5' || platform === 'web') {
+        return p !== 'h5' && p !== 'web'
       }
       return p !== platform
     })

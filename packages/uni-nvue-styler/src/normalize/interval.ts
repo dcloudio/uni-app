@@ -1,10 +1,6 @@
-import {
-  autofixedReason,
-  Normalize,
-  supportedValueWithTipsReason,
-} from '../utils'
+import { autofixedReason, Normalize, supportedEnumReason } from '../utils'
 
-export const normalizeTransitionInterval: Normalize = (v) => {
+export const normalizeInterval: Normalize = (v) => {
   v = (v || 0).toString()
   let match, num
 
@@ -27,11 +23,7 @@ export const normalizeTransitionInterval: Normalize = (v) => {
   return {
     value: null,
     reason(k, v, result) {
-      return supportedValueWithTipsReason(
-        k,
-        v,
-        '(only number of seconds and milliseconds is valid)'
-      )
+      return supportedEnumReason(k, v, ['number of seconds', 'milliseconds'])
     },
   }
 }

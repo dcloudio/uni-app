@@ -45,15 +45,20 @@ import {
 } from './manifest'
 import { cacheTips } from './manifest/utils'
 import { compileEncrypt, isEncrypt } from './encrypt'
+import { UTSOutputOptions } from '@dcloudio/uts'
+
+export { uts2js } from './javascript'
 
 export const sourcemap = {
   generateCodeFrameWithKotlinStacktrace,
   generateCodeFrameWithSwiftStacktrace,
 }
 
-export { compileApp } from './uvue/index'
+export { compileApp, CompileAppOptions } from './uvue/index'
 
 export * from './sourceMap'
+
+export { parseUTSKotlinRuntimeStacktrace } from './stacktrace'
 
 export { compile as toKotlin } from './kotlin'
 export { compile as toSwift } from './swift'
@@ -97,12 +102,25 @@ function createResult(
 interface CompilerOptions {
   isX: boolean
   isPlugin: boolean
+  isExtApi?: boolean
   extApis?: Record<string, [string, string]>
+  transform?: UTSOutputOptions['transform']
+  sourceMap?: boolean
 }
 
 export async function compile(
   pluginDir: string,
-  { isX, isPlugin, extApis }: CompilerOptions = { isX: false, isPlugin: true }
+  {
+    isX,
+    isPlugin,
+    extApis,
+    isExtApi,
+    transform,
+    sourceMap,
+  }: CompilerOptions = {
+    isX: false,
+    isPlugin: true,
+  }
 ): Promise<CompileResult | void> {
   const pkg = resolvePackage(pluginDir)
   if (!pkg) {
@@ -110,7 +128,7 @@ export async function compile(
   }
   // 加密插件
   if (isEncrypt(pluginDir)) {
-    return compileEncrypt(pluginDir)
+    return compileEncrypt(pluginDir, isX)
   }
   const cacheDir = process.env.HX_DEPENDENCIES_DIR || ''
   const inputDir = process.env.UNI_INPUT_DIR
@@ -131,6 +149,8 @@ export async function compile(
   const meta = {
     exports: {},
     types: {},
+    typeParams: [],
+    components: [],
   }
 
   const code = await genProxyCode(
@@ -149,6 +169,7 @@ export async function compile(
         moduleType: process.env.UNI_UTS_MODULE_TYPE || '',
         meta,
         inputDir,
+        isExtApi,
       },
       pkg
     )
@@ -168,6 +189,8 @@ export async function compile(
           isX,
           isPlugin,
           extApis,
+          transform,
+          sourceMap: !!sourceMap,
         })
         if (cacheDir) {
           // 存储 sourcemap
@@ -200,6 +223,8 @@ export async function compile(
           isX,
           isPlugin,
           extApis,
+          transform,
+          sourceMap: !!sourceMap,
         })
         if (cacheDir) {
           storeSourceMap(
@@ -338,6 +363,8 @@ export async function compile(
           pluginRelativeDir,
           is_uni_modules: pkg.is_uni_modules,
           extApis,
+          transform,
+          sourceMap: !!sourceMap,
         })
         if (res) {
           if (isArray(res.deps) && res.deps.length) {

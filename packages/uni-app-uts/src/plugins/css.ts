@@ -10,9 +10,11 @@ import {
   formatAtFilename,
   generateCodeFrame,
   insertBeforePlugin,
-  normalizePath,
   parseVueRequest,
   resolveMainPathOnce,
+  parseAssets,
+  preUVueCss,
+  normalizeNodeModules,
 } from '@dcloudio/uni-cli-shared'
 import { parse } from '@dcloudio/uni-nvue-styler'
 
@@ -30,25 +32,27 @@ export function uniAppCssPlugin(): Plugin {
       const uvueCssPostPlugin = cssPostPlugin(config, {
         isJsCode: true,
         platform: process.env.UNI_PLATFORM,
+        includeComponentCss: false,
         chunkCssFilename(id: string) {
           if (id === mainUTS) {
-            return 'App.vue.style.uts'
+            return 'App.style.uts'
           }
           const { filename } = parseVueRequest(id)
           if (isVue(filename)) {
-            return normalizePath(
+            return normalizeNodeModules(
               path.relative(process.env.UNI_INPUT_DIR, filename) + '.style.uts'
             )
           }
         },
         async chunkCssCode(filename, cssCode) {
+          cssCode = parseAssets(resolvedConfig, cssCode)
           const { code, messages } = await parse(cssCode, {
             filename,
             logLevel: 'ERROR',
-            map: true,
-            ts: true,
+            mapOf: true,
             chunk: 100,
             type: 'uvue',
+            platform: process.env.UNI_UTS_PLATFORM,
           })
           messages.forEach((message) => {
             if (message.type === 'error') {
@@ -78,6 +82,10 @@ export function uniAppCssPlugin(): Plugin {
       if (!cssLangRE.test(filename) || commonjsProxyRE.test(filename)) {
         return
       }
+      if (source.includes('#endif')) {
+        source = preUVueCss(source)
+      }
+      source = parseAssets(resolvedConfig, source)
       // 仅做校验使用
       const { messages } = await parse(source, {
         filename,
@@ -86,18 +94,23 @@ export function uniAppCssPlugin(): Plugin {
         ts: true,
         noCode: true,
         type: 'uvue',
+        platform: process.env.UNI_UTS_PLATFORM,
       })
       messages.forEach((message) => {
         if (message.type === 'warning') {
-          let msg = `[plugin:uni:app-uvue-css] ${message.text}`
+          // 拆分成多行，第一行输出信息（有颜色），后续输出错误代码+文件行号
+          resolvedConfig.logger.warn(
+            colors.yellow(`[plugin:uni:app-uvue-css] ${message.text}`)
+          )
+          let msg = ''
           if (message.line && message.column) {
             msg += `\n${generateCodeFrame(source, {
               line: message.line,
               column: message.column,
-            }).replace(/\t/g, ' ')}`
+            }).replace(/\t/g, ' ')}\n`
           }
-          msg += `\n${formatAtFilename(filename)}`
-          resolvedConfig.logger.warn(colors.yellow(msg))
+          msg += `${formatAtFilename(filename)}`
+          resolvedConfig.logger.warn(msg)
         }
       })
       return { code: source }

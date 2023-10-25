@@ -1,6 +1,9 @@
-import { extend } from '@vue/shared'
 import type { Plugin } from 'postcss'
-import { TransformDecl } from '../utils'
+import {
+  NormalizeOptions,
+  TransformDecl,
+  hyphenateStyleProperty,
+} from '../utils'
 import { transformBackground } from './background'
 import { transformBorder } from './border'
 import { transformBorderColor } from './borderColor'
@@ -13,30 +16,13 @@ import { transformMargin } from './margin'
 import { transformPadding } from './padding'
 import { transformTransition } from './transition'
 
-const DeclTransforms: Record<string, TransformDecl> = {
-  transition: transformTransition,
-  margin: transformMargin,
-  padding: transformPadding,
-  border: transformBorder,
-
-  background: transformBackground,
-}
-
-if (__NODE_JS__) {
-  extend(DeclTransforms, {
-    'border-top': transformBorder,
-    'border-right': transformBorder,
-    'border-bottom': transformBorder,
-    'border-left': transformBorder,
-    'border-style': transformBorderStyle,
-    'border-width': transformBorderWidth,
-    'border-color': transformBorderColor,
-    'border-radius': transformBorderRadius,
-    'flex-flow': transformFlexFlow,
-    font: transformFont,
-  })
-} else {
-  extend(DeclTransforms, {
+function getDeclTransforms(
+  options: NormalizeOptions
+): Record<string, TransformDecl> {
+  const styleMap: Record<string, TransformDecl> = {
+    transition: transformTransition,
+    border: transformBorder,
+    background: transformBackground,
     borderTop: transformBorder,
     borderRight: transformBorder,
     borderBottom: transformBorder,
@@ -45,25 +31,50 @@ if (__NODE_JS__) {
     borderWidth: transformBorderWidth,
     borderColor: transformBorderColor,
     borderRadius: transformBorderRadius,
-    flexFlow: transformFlexFlow,
-  })
+    // uvue已经支持这些简写属性，不需要展开
+    /* eslint-disable no-restricted-syntax */
+    ...(options.type !== 'uvue'
+      ? {
+          margin: transformMargin,
+          padding: transformPadding,
+          flexFlow: transformFlexFlow,
+        }
+      : {}),
+  }
+  let result: Record<string, TransformDecl> = {}
+  if (__NODE_JS__) {
+    styleMap.font = transformFont
+    for (const property in styleMap) {
+      result[hyphenateStyleProperty(property)] = styleMap[property]
+    }
+  } else {
+    result = styleMap
+  }
+  return result
 }
 
+let DeclTransforms: Record<string, TransformDecl>
 const expanded = Symbol('expanded')
-export const expand: Plugin = {
-  postcssPlugin: 'nvue:expand',
-  Declaration(decl) {
-    if ((decl as any)[expanded]) {
-      return
-    }
-    const transform = DeclTransforms[decl.prop]
-    if (transform) {
-      const res = transform(decl)
-      const isSame = res.length === 1 && res[0] === decl
-      if (!isSame) {
-        decl.replaceWith(res)
+export function expand(options: NormalizeOptions): Plugin {
+  const plugin: Plugin = {
+    postcssPlugin: 'nvue:expand',
+    Declaration(decl) {
+      if ((decl as any)[expanded]) {
+        return
       }
-    }
-    ;(decl as any)[expanded] = true
-  },
+      if (!DeclTransforms) {
+        DeclTransforms = getDeclTransforms(options)
+      }
+      const transform = DeclTransforms[decl.prop]
+      if (transform) {
+        const res = transform(decl)
+        const isSame = res.length === 1 && res[0] === decl
+        if (!isSame) {
+          decl.replaceWith(res)
+        }
+      }
+      ;(decl as any)[expanded] = true
+    },
+  }
+  return plugin
 }

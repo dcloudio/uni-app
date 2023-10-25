@@ -1,0 +1,10 @@
+{
+    "name" : "uni-app-x",
+    "appid" : "__UNI__XXXXXXX",
+    "description" : "",
+    "versionName" : "1.0.0",
+    "versionCode" : "100",
+    "uni-app-x" : {
+        "singleThread" : true
+    }
+}

@@ -3,6 +3,7 @@ import fs from 'fs-extra'
 import {
   PAGES_JSON_UTS,
   normalizeUniAppXAppPagesJson,
+  parseArguments,
 } from '@dcloudio/uni-cli-shared'
 import type { OutputAsset } from 'rollup'
 import type { Plugin } from 'vite'
@@ -21,8 +22,11 @@ export function uniAppPagesPlugin(): Plugin {
   )
   let imports: string[] = []
   let routes: string[] = []
-  let globalStyle: string = 'new Map()'
-  let tabBar: string = 'null'
+  let globalStyle = 'new Map()'
+  let tabBar = 'null'
+  let launchPage = 'null'
+  let conditionUrl = ''
+  let uniIdRouter = 'new Map()'
   return {
     name: 'uni:app-pages',
     apply: 'build',
@@ -42,6 +46,9 @@ export function uniAppPagesPlugin(): Plugin {
         const pagesJson = normalizeUniAppXAppPagesJson(code)
         imports = []
         routes = []
+
+        process.env.UNI_APP_X_PAGE_COUNT = pagesJson.pages.length + ''
+
         pagesJson.pages.forEach((page, index) => {
           const className = genClassName(page.path)
           let isQuit = index === 0
@@ -51,7 +58,11 @@ export function uniAppPagesPlugin(): Plugin {
               page.path
             }", component: ${className}Class, meta: { isQuit: ${isQuit} } as PageMeta, style: ${stringifyPageStyle(
               page.style
-            )}  } as PageRoute`
+            )}${
+              page.needLogin === undefined
+                ? ''
+                : ', needLogin: ' + page.needLogin
+            } } as PageRoute`
           )
         })
         if (pagesJson.globalStyle) {
@@ -60,6 +71,17 @@ export function uniAppPagesPlugin(): Plugin {
         if (pagesJson.tabBar) {
           tabBar = stringifyMap(pagesJson.tabBar)
         }
+        if (pagesJson.condition) {
+          const conditionInfo = parseArguments(pagesJson)
+          if (conditionInfo) {
+            const { path, query } = JSON.parse(conditionInfo)
+            conditionUrl = `${path}${query ? '?' + query : ''}`
+          }
+        }
+        if (pagesJson.uniIdRouter) {
+          uniIdRouter = stringifyMap(pagesJson.uniIdRouter)
+        }
+        launchPage = stringifyLaunchPage(pagesJson.pages[0])
         return `${imports.map((p) => `import './${p}.uvue'`).join('\n')}
 export default 'pages.json'`
       }
@@ -79,15 +101,30 @@ ${imports
 function definePageRoutes() {
 ${routes.map((route) => `__uniRoutes.push(${route})`).join('\n')}
 }
+const __uniTabBar: Map<string, any | null> | null = ${tabBar}
+const __uniLaunchPage: Map<string, any | null> = ${launchPage}
+@Suppress("UNCHECKED_CAST")
 function defineAppConfig(){
   __uniConfig.entryPagePath = '/${imports[0]}'
   __uniConfig.globalStyle = ${globalStyle}
-  __uniConfig.tabBar = ${tabBar}
+  __uniConfig.tabBar = __uniTabBar as Map<string, any> | null
+  __uniConfig.conditionUrl = '${conditionUrl}'
+  __uniConfig.uniIdRouter = ${uniIdRouter}
 }
 `
       }
     },
   }
+}
+
+function stringifyLaunchPage(launchPage: UniApp.PagesJsonPageOptions) {
+  return stringifyMap(
+    {
+      url: launchPage.path,
+      style: launchPage.style,
+    },
+    true
+  )
 }
 
 function stringifyPageStyle(pageStyle: UniApp.PagesJsonPageStyle) {

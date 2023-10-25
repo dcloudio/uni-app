@@ -1,63 +1,323 @@
-import { JSONObject } from 'com.alibaba.fastjson'
-import { getCurrentPages } from 'io.dcloud.uts.framework'
+import type { ComponentPublicInstance } from 'vue'
 
-function getPageId(page: BasePage): number {
-  return page.$.uid
+// @ts-ignore
+function getPageId(page: BasePage): string {
+  return page.$appPage!.pageId
 }
-
+// @ts-ignore
 function getPagePath(page: BasePage): string {
   return page.route
 }
-
-function getPageQuery(page: BasePage): VueComponentOptions {
-  return page.$options
+// @ts-ignore
+function getPageQuery(page: BasePage): Map<string, string | null> {
+  return page.options
 }
-
-function getPageById(id: number): BasePage | null {
+// @ts-ignore
+function getPageById(id: string): BasePage | null {
+  // @ts-ignore
   const pages = getCurrentPages()
+  // @ts-ignore
   let result: BasePage | null = null
+  // @ts-ignore
   pages.forEach((page: BasePage) => {
-    if (getPageId(page) === id) {
+    if (getPageId(page) == id) {
       result = page
     }
   })
   return result
 }
-
-export function getPageVm(id: number): BasePage | null {
+// @ts-ignore
+export function getPageVm(id: string): BasePage | null {
   return getPageById(id)
 }
 
-export function getData(
-  vm: BasePage | null,
-  path?: string
+export function pageGetData(
+  // @ts-ignore
+  vm: BasePage,
 ): Map<string, any | null> {
-  let data = new Map<string, any | null>()
-  if (vm !== null) {
-    // TODO: path
-    if(path !== null){
-      data.set("errMsg", `getData:fail, path:${path} is not supported.`)
-    }else{
-      data = vm.$data
-    }
-  }
-  return data
+  // TODO: path 目前无法处理类型问题，暂由服务端处理
+  return vm.$data
 }
-
-export function setData(vm: BasePage, data: JSONObject): void {
-  for (const key in data) {
-    // @ts-ignore
-    const _key = key.key
-    // @ts-ignore
-    const value = key.value
-    vm.$data.set(_key, value)
-  }
+// @ts-ignore
+export function pageSetData(vm: BasePage, data: Map<string, any | null>): void {
+  data.forEach((value: any | null, key: string) => {
+    vm.$data.set(key, value)
+  })
 }
-
+// @ts-ignore
 export function parsePage(page: BasePage): UTSJSONObject {
   return {
     id: getPageId(page),
     path: getPagePath(page),
     query: getPageQuery(page),
+    // @ts-ignore
   } as UTSJSONObject
+}
+export function getComponentVmBySelector(
+  pageId: string,
+  selector: string,
+  callback: (result: any | null, error: any | null) => void
+  // @ts-ignore
+): ComponentPublicInstance | null {
+  const page = getPageVm(pageId)
+  if (page == null) {
+    callback(null, { errMsg: `Page[${pageId}] not exists` })
+    return null
+  }
+  const component = page.$children.find(
+    // @ts-ignore
+    (child: ComponentPublicInstance): boolean => child.$options.name == selector
+  )
+  if (component == null) {
+    callback(null, { errMsg: `component[${selector}] not exists` })
+    return null
+  }
+  return component
+}
+export function getComponentVmByNodeId(
+  pageId: string,
+  nodeId: number,
+  callback: (result: any | null, error: any | null) => void
+  // @ts-ignore
+): ComponentPublicInstance | null {
+  const page = getPageVm(pageId)
+  if (page == null) {
+    callback(null, { errMsg: `Page[${pageId}] not exists` })
+    return null
+  }
+  // @ts-ignore
+  let component: ComponentPublicInstance | null = null
+  // @ts-ignore
+  function getComponentChild(parent: ComponentPublicInstance) {
+    // @ts-ignore
+    if (parent.$.uid.toInt() == nodeId.toInt()) {
+      component = parent
+      return
+    }
+    // @ts-ignore
+    parent.$children.forEach((child: ComponentPublicInstance) => {
+      getComponentChild(child)
+    })
+  }
+  getComponentChild(page)
+  if (component == null) {
+    callback(null, { errMsg: `component[${nodeId}] not exists` })
+    return null
+  }
+  return component
+}
+export function getElementByIdOrNodeId(
+  pageId: string,
+  elementId: string | null,
+  nodeId: number | null,
+  callback: (result: any | null, error: any | null) => void
+  // @ts-ignore
+): INode | null {
+  if (nodeId != null) {
+    return getComponentDomByNodeId(pageId, nodeId, callback)
+  } else if (elementId != null) {
+    return getElementById(pageId, elementId, callback)
+  }
+  return null
+}
+export function getComponentDomByNodeId(
+  pageId: string,
+  nodeId: number,
+  callback: (result: any | null, error: any | null) => void
+  // @ts-ignore
+): INode | null {
+  const component = getComponentVmByNodeId(pageId, nodeId, callback)
+  if (component == null) {
+    return null
+  }
+  return component.$el
+}
+export function getElementByNodeIdOrElementId(
+  pageId: string,
+  nodeId: number | null,
+  elementId: string | null,
+  callback: (result: any | null, error: any | null) => void
+  // @ts-ignore
+): INode | null {
+  const page = getPageVm(pageId)
+  if (page == null) {
+    callback(null, { errMsg: `Page[${pageId}] not exists` })
+    return null
+  }
+  if (nodeId != null) {
+    return getComponentDomByNodeId(pageId, nodeId, callback)
+  } else if (elementId != null) {
+    return getElementById(pageId, elementId, callback)
+  }
+  return null
+}
+export function getElementById(
+  pageId: string,
+  elementId: string,
+  callback: (result: any | null, error: any | null) => void
+  // @ts-ignore
+): INode | null {
+  const page = getPageVm(pageId)
+  if (page == null) {
+    callback(null, { errMsg: `Page[${pageId}] not exists` })
+    return null
+  }
+  const document = page.$appPage!.document
+  const element = document.getElementById(elementId)
+  if (element == null) {
+    callback(null, { errMsg: `element[${elementId}] not exists` })
+    return null
+  }
+  return element
+}
+
+export function getValidComponentsOrNodes(
+  // @ts-ignore
+  vnode: VNode | null,
+  selector: string,
+  // @ts-ignore
+  list: UTSJSONObject[],
+  getAll = false
+): void {
+  if (vnode == null || (!getAll && list.length > 0)) {
+    return
+  }
+  if (isValidComponentOrNode(vnode, selector)) {
+    if (vnode.component != null) {
+      list.push({
+        // @ts-ignore
+        nodeId: (vnode.component as ComponentInternalInstance).uid,
+        // @ts-ignore
+        tagName: (vnode.component as ComponentInternalInstance).options.name,
+        elementId: `${Date.now()}`,
+      })
+    } else {
+      list.push({
+        elementId: vnode.el!.id,
+        tagName: vnode.el!.tagName,
+      })
+    }
+    if (!getAll) {
+      return
+    }
+  }
+  // @ts-ignore
+  if (vnode.children !== null && isArray(vnode.children)) {
+    ;(vnode.children as any[]).forEach((child) => {
+      // @ts-ignore
+      if (child instanceof VNode) {
+        getValidComponentsOrNodes(child, selector, list, getAll)
+      }
+    })
+  }
+  if (vnode.component != null) {
+    const component = vnode.component
+    getValidComponentsOrNodes(component!.subTree, selector, list, getAll)
+  }
+}
+// @ts-ignore
+function isValidComponentOrNode(vnode: VNode, selector: string): boolean {
+  if (
+    vnode.component != null &&
+    // @ts-ignore
+    (vnode.component as ComponentInternalInstance).options.name == selector
+  ) {
+    return true
+  }
+  if (vnode.el != null) {
+    const node = vnode.el!
+    if (selector.startsWith('.')) {
+      if (node.ext['classList'] !== null) {
+        // @ts-ignore
+        const classList = JSON.parse<string[]>(
+          JSON.stringify(node.ext['classList'])
+        )!
+        return classList.includes(selector.substring(1))
+      }
+      return false
+    } else if (selector.startsWith('#')) {
+      return node.getAttribute('id') == selector.substring(1)
+    }
+    return node.tagName?.toUpperCase() == selector.toUpperCase()
+  }
+  return false
+}
+
+export function getValidNodes(
+  // @ts-ignore
+  node: INode | null,
+  selector: string,
+  // @ts-ignore
+  list: UTSJSONObject[],
+  getAll = false
+): void {
+  if (node == null) {
+    return
+  }
+  if (isValidNode(node, selector)) {
+    list.push({
+      elementId: node.id,
+      tagName: node.tagName,
+    })
+    if (!getAll) {
+      return
+    }
+  }
+  node.childNodes.forEach((child) => {
+    getValidNodes(child, selector, list, getAll)
+  })
+}
+// @ts-ignore
+function isValidNode(node: INode, selector: string): boolean {
+  if (selector.startsWith('.')) {
+    if (node.ext['classList'] !== null) {
+      // @ts-ignore
+      const classList = JSON.parse<string[]>(
+        JSON.stringify(node.ext['classList'])
+      )!
+      return classList.includes(selector.substring(1))
+    }
+    return false
+  } else if (selector.startsWith('#')) {
+    return node.getAttribute('id') == selector.substring(1)
+  }
+  return node.tagName?.toUpperCase() == selector.toUpperCase()
+}
+
+export function componentGetData(
+  // @ts-ignore
+  vm: ComponentPublicInstance,
+): Map<string, any | null> {
+  // TODO: path 目前无法处理类型问题，暂由服务端处理
+  return vm.$data
+}
+export function componentSetData(
+  // @ts-ignore
+  vm: ComponentPublicInstance,
+  data: Map<string, any | null>
+): void {
+  data.forEach((value: any | null, key: string) => {
+    vm.$data.set(key, value)
+  })
+}
+// @ts-ignore
+export function getChildrenText(node: INode): string {
+  let result = ''
+  node.childNodes.forEach((child) => {
+    if (child.tagName == 'TEXT' || child.tagName == 'UNI-BUTTON-ELEMENT') {
+      result += child.getAttribute('value')
+    } else {
+      result += getChildrenText(child)
+    }
+  })
+  return result
+}
+
+export function toCamelCase(str: string): string {
+  const wordList = str.split('-')
+  for (let i = 1; i < wordList.length; i++) {
+    const word = wordList[i]
+    wordList[i] = word.at(0)!.toUpperCase() + word.substring(1)
+  }
+  return wordList.join('')
 }

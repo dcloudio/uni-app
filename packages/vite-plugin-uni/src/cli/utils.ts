@@ -12,6 +12,7 @@ import {
   parseScripts,
   getPlatformDir,
   output,
+  isWindows,
 } from '@dcloudio/uni-cli-shared'
 
 import { CliOptions } from '.'
@@ -178,6 +179,16 @@ export function initEnv(
   initUVueEnv()
 
   if (process.env.UNI_PLATFORM === 'app') {
+    if (process.env.NODE_ENV === 'development') {
+      if (
+        // 仅windows
+        isWindows &&
+        process.env.UNI_APP_X === 'true' &&
+        process.env.UNI_UTS_PLATFORM === 'app-android'
+      ) {
+        console.log(M['dev.exclusion'])
+      }
+    }
     const pkg = require('../../package.json')
     console.log(
       M['app.compiler.version'].replace(
