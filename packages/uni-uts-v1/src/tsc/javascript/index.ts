@@ -11,5 +11,5 @@ export const uts2js: uts2js = (options) => {
     // @ts-expect-error
     return globalThis.uts2js(options)
   }
-  return require('../../lib/javascript/compiler').uts2js(options)
+  return require('../../../lib/javascript/compiler').uts2js(options)
 }

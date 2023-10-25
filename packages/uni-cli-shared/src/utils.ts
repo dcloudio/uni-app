@@ -23,6 +23,9 @@ import { getPlatformDir } from './platform'
 
 export const version = require('../package.json').version
 
+// 专为 uts.ts 服务
+export { camelize, capitalize, isArray } from '@vue/shared'
+
 export let isRunningWithYarnPnp: boolean
 try {
   isRunningWithYarnPnp = Boolean(require('pnpapi'))

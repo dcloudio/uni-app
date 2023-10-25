@@ -375,19 +375,23 @@ export async function compile(
           if (res.type === 'swift') {
             if (res.code) {
               errMsg = compileErrMsg(pkg.id)
-              console.error(
-                `error: ` +
-                  (await parseUTSSwiftPluginStacktrace({
-                    stacktrace: res.msg,
-                    sourceMapFile: resolveUTSPluginSourceMapFile(
-                      'swift',
-                      filename,
-                      inputDir,
-                      outputDir
-                    ),
-                    sourceRoot: inputDir,
-                  }))
-              )
+              try {
+                console.error(
+                  `error: ` +
+                    (await parseUTSSwiftPluginStacktrace({
+                      stacktrace: res.msg,
+                      sourceMapFile: resolveUTSPluginSourceMapFile(
+                        'swift',
+                        filename,
+                        inputDir,
+                        outputDir
+                      ),
+                      sourceRoot: inputDir,
+                    }))
+                )
+              } catch (e) {
+                console.error(`error: ` + res.msg)
+              }
             } else {
               isSuccess = true
             }
