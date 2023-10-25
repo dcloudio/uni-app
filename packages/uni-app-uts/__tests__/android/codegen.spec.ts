@@ -43,7 +43,7 @@ describe('compiler:codegen', () => {
   test(`UTSComponents:kotlin`, () => {
     assert(
       `<view><uts-hello/><uts-hello/></view>`,
-      `function PagesIndexIndexRender(): VNode | null {\nconst _ctx = this\n  return createElementVNode("view", null, [\n    createElementVNode(uts.sdk.modules.utsHello.UtsHelloComponent.name),\n    createElementVNode(uts.sdk.modules.utsHello.UtsHelloComponent.name)\n  ])\n}`,
+      `import { UtsHelloElement } from 'uts.sdk.modules.utsHello'\nfunction PagesIndexIndexRender(): VNode | null {\nconst _ctx = this\n  return createElementVNode("view", null, [\n    createElementVNode(uts.sdk.modules.utsHello.UtsHelloComponent.name),\n    createElementVNode(uts.sdk.modules.utsHello.UtsHelloComponent.name)\n  ])\n}`,
       {
         targetLanguage: 'kotlin',
         mode: 'function',
@@ -51,6 +51,29 @@ describe('compiler:codegen', () => {
           if (name === 'uts-hello') {
             return {
               className: 'UtsHelloComponent',
+              namespace: 'uts.sdk.modules.utsHello',
+              source: '@/uni_modules/uts-hello',
+            }
+          }
+        },
+      }
+    )
+    assert(
+      `<view><uts-hello/><uts-hello/><uts-hello1/></view>`,
+      `import { UtsHelloElement } from 'uts.sdk.modules.utsHello'\nimport { UtsHello1Element } from 'uts.sdk.modules.utsHello'\nfunction PagesIndexIndexRender(): VNode | null {\nconst _ctx = this\n  return createElementVNode("view", null, [\n    createElementVNode(uts.sdk.modules.utsHello.UtsHelloComponent.name),\n    createElementVNode(uts.sdk.modules.utsHello.UtsHelloComponent.name),\n    createElementVNode(uts.sdk.modules.utsHello.UtsHello1Component.name)\n  ])\n}`,
+      {
+        targetLanguage: 'kotlin',
+        mode: 'function',
+        parseUTSComponent(name) {
+          if (name === 'uts-hello') {
+            return {
+              className: 'UtsHelloComponent',
+              namespace: 'uts.sdk.modules.utsHello',
+              source: '@/uni_modules/uts-hello',
+            }
+          } else if (name === 'uts-hello1') {
+            return {
+              className: 'UtsHello1Component',
               namespace: 'uts.sdk.modules.utsHello',
               source: '@/uni_modules/uts-hello',
             }
@@ -84,6 +107,50 @@ const _component_index = resolveComponent("index", true)
       {
         targetLanguage: 'kotlin',
         mode: 'function',
+      }
+    )
+  })
+  test(`UTSComponents and easycom`, () => {
+    assert(
+      `<view><uts-hello/><uts-hello/><custom/><custom/><custom1/><index/><index1/></view>`,
+      `import { UtsHelloElement } from 'uts.sdk.modules.utsHello'
+import _easycom_custom, { GenComponentsCustomCustomComponentPublicInstance as CustomComponentPublicInstance } from '@/components/custom/custom.vue'
+import _easycom_custom1, { GenComponentsCustom1Custom1ComponentPublicInstance as Custom1ComponentPublicInstance } from '@/components/custom1/custom1.vue'
+import _easycom_index, { GenComponentsIndexIndexComponentPublicInstance as IndexComponentPublicInstance } from '@/components/index/index.vue'
+function PagesIndexIndexRender(): VNode | null {
+const _ctx = this
+const _component_custom = resolveEasyComponent("custom",_easycom_custom)
+const _component_custom1 = resolveEasyComponent("custom1",_easycom_custom1)
+const _component_index = resolveEasyComponent("index",_easycom_index)
+const _component_index1 = resolveComponent("index1")
+
+  return createElementVNode("view", null, [
+    createElementVNode(uts.sdk.modules.utsHello.UtsHelloComponent.name),
+    createElementVNode(uts.sdk.modules.utsHello.UtsHelloComponent.name),
+    createVNode(_component_custom),
+    createVNode(_component_custom),
+    createVNode(_component_custom1),
+    createVNode(_component_index),
+    createVNode(_component_index1)
+  ])
+}`,
+      {
+        targetLanguage: 'kotlin',
+        mode: 'function',
+        parseUTSComponent(name) {
+          if (name === 'uts-hello') {
+            return {
+              className: 'UtsHelloComponent',
+              namespace: 'uts.sdk.modules.utsHello',
+              source: '@/uni_modules/uts-hello',
+            }
+          }
+        },
+        matchEasyCom(tag) {
+          if (tag.startsWith('custom') || tag === 'index') {
+            return `@/components/${tag}/${tag}.vue`
+          }
+        },
       }
     )
   })

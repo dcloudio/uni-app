@@ -69,6 +69,7 @@ export interface CodegenContext
   code: string
   importEasyComponents: string[]
   importUTSComponents: string[]
+  importUTSElements: string[]
   line: number
   column: number
   offset: number
@@ -108,6 +109,7 @@ function createCodegenContext(
     code: ``,
     importEasyComponents: [],
     importUTSComponents: [],
+    importUTSElements: [],
     column: 1,
     line: 1,
     offset: 0,
@@ -181,6 +183,8 @@ function createCodegenContext(
   return context
 }
 
+const UTS_COMPONENT_ELEMENT_IMPORTS = `/*UTS-COMPONENTS-IMPORTS*/`
+
 export function generate(
   ast: RootNode,
   options: CodegenOptions
@@ -188,6 +192,7 @@ export function generate(
   const context = createCodegenContext(ast, options)
   const { mode, deindent, indent, push, newline } = context
   if (mode === 'function') {
+    push(UTS_COMPONENT_ELEMENT_IMPORTS)
     genEasyComImports(ast.components, context)
     push(genRenderFunctionDecl(options) + ` {`)
     newline()
@@ -221,6 +226,14 @@ export function generate(
     deindent()
     push(`}`)
   }
+
+  context.code = context.code.replace(
+    UTS_COMPONENT_ELEMENT_IMPORTS,
+    context.importUTSElements.length
+      ? context.importUTSElements.join('\n') + '\n'
+      : ''
+  )
+
   return {
     code: context.code,
     importEasyComponents: context.importEasyComponents,
@@ -487,7 +500,12 @@ function genComment(node: CommentNode, context: CodegenContext) {
 
 function parseTag(
   tag: string | symbol | CallExpression,
-  { parseUTSComponent, targetLanguage, importUTSComponents }: CodegenContext
+  {
+    parseUTSComponent,
+    targetLanguage,
+    importUTSComponents,
+    importUTSElements,
+  }: CodegenContext
 ) {
   if (isString(tag)) {
     // 原生UTS组件
@@ -499,6 +517,13 @@ function parseTag(
       const importCode = `import '${utsComponentOptions.source}';`
       if (!importUTSComponents.includes(importCode)) {
         importUTSComponents.push(importCode)
+      }
+      const importElementCode = `import { ${utsComponentOptions.className.replace(
+        /Component$/,
+        'Element'
+      )} } from '${utsComponentOptions.namespace}'`
+      if (!importUTSElements.includes(importElementCode)) {
+        importUTSElements.push(importElementCode)
       }
       return (
         utsComponentOptions.namespace +
