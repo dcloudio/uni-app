@@ -43,6 +43,7 @@ export type UTSOutputOptions = {
   noColor?: boolean
   isX?: boolean
   isApp?: boolean
+  isSingleThread?: boolean
   isPlugin?: boolean
   split?: boolean
   disableSplitManifest?: boolean

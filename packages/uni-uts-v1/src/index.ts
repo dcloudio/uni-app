@@ -103,6 +103,7 @@ function createResult(
 interface CompilerOptions {
   isX: boolean
   isPlugin: boolean
+  isSingleThread: boolean
   isExtApi?: boolean
   extApis?: Record<string, [string, string]>
   transform?: UTSOutputOptions['transform']
@@ -118,9 +119,11 @@ export async function compile(
     isExtApi,
     transform,
     sourceMap,
+    isSingleThread,
   }: CompilerOptions = {
     isX: false,
     isPlugin: true,
+    isSingleThread: true,
   }
 ): Promise<CompileResult | void> {
   const pkg = resolvePackage(pluginDir)
@@ -185,6 +188,7 @@ export async function compile(
       if (filename) {
         await getCompiler('kotlin').runProd(filename, androidComponents, {
           isX,
+          isSingleThread,
           isPlugin,
           extApis,
           transform,
@@ -220,6 +224,7 @@ export async function compile(
       if (filename) {
         await getCompiler('swift').runProd(filename, iosComponents, {
           isX,
+          isSingleThread,
           isPlugin,
           extApis,
           transform,
@@ -364,6 +369,7 @@ export async function compile(
         const res = await getCompiler(compilerType).runDev(filename, {
           components,
           isX,
+          isSingleThread,
           isPlugin,
           cacheDir,
           pluginRelativeDir,

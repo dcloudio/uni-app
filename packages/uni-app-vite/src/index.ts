@@ -13,6 +13,7 @@ export default () => {
     }),
     uniUTSUniModulesPlugin({
       x: false,
+      isSingleThread: false,
       extApis: parseUniExtApiNamespacesOnce(
         process.env.UNI_UTS_PLATFORM,
         process.env.UNI_UTS_TARGET_LANGUAGE

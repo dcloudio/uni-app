@@ -48,8 +48,8 @@ export function uniAppManifestPlugin(): Plugin {
       if (bundle[ENTRY_FILENAME]) {
         const asset = bundle[ENTRY_FILENAME] as OutputAsset
         const singleThread =
-          manifestJson?.['uni-app-x']?.['singleThread'] === true
-            ? `override singleThread: Boolean = true`
+          manifestJson?.['uni-app-x']?.['singleThread'] === false
+            ? `override singleThread: Boolean = false`
             : ''
         asset.source =
           asset.source +

@@ -24,6 +24,7 @@ const utsModuleCaches = new Map<
 interface UniUTSPluginOptions {
   x?: boolean
   extApis?: Record<string, [string, string]>
+  isSingleThread?: boolean
 }
 
 export const utsPlugins = new Set<string>()
@@ -86,6 +87,7 @@ export function uniUTSUniModulesPlugin(
         utsPlugins.add(path.basename(pluginDir))
         return resolveUTSCompiler().compile(pluginDir, {
           isX: !!options.x,
+          isSingleThread: !!options.isSingleThread,
           isPlugin: true,
           extApis: options.extApis,
           sourceMap: process.env.NODE_ENV === 'development',

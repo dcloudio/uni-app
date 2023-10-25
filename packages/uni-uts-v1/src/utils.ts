@@ -27,6 +27,7 @@ interface ToOptions {
   sourceMap: boolean
   components: Record<string, string>
   isX: boolean
+  isSingleThread: boolean
   isPlugin: boolean
   extApis?: Record<string, [string, string]>
   transform?: UTSOutputOptions['transform']

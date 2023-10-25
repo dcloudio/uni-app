@@ -57,5 +57,6 @@ declare namespace NodeJS {
 
     UNI_APP_X_PAGE_COUNT: string
     UNI_APP_X_TSC?: string
+    UNI_APP_X_SINGLE_THREAD?: string
   }
 }
