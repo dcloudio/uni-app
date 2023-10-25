@@ -89,6 +89,7 @@ const tags = {
     'channel-video',
     'voip-room',
     'root-portal',
+    'subscribe',
     // 手势组件
     'tap-gesture-handler',
     'double-tap-gesture-handler',
@@ -117,7 +118,8 @@ const tags = {
     'ix-native-list',
     'mkt',
     'page-container',
-    'page-meta'
+    'page-meta',
+    'lottie'
   ]
 }
 

@@ -1,4 +1,5 @@
 const DEFAULT_KEYS = [
+  'UNI-APP-X',
   'VUE2',
   'VUE3',
   'MP',
@@ -20,6 +21,8 @@ module.exports = function initPreprocess (name, platforms, userDefines = {}) {
   const nvueContext = {} // nvue 值为true的条件编译
 
   const defaultContext = {}
+
+  defaultContext.uniVersion = parseFloat(process.env.UNI_COMPILER_VERSION) || 0
 
   const userDefineKeys = Object.keys(userDefines)
 

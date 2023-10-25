@@ -9,7 +9,11 @@ module.exports = function (url, options) {
   url = url && url.__esModule ? url.default : url
 
   if (typeof url !== 'string') {
-    return url
+    if (url.protocol && url.protocol === 'file:' && url.pathname) {
+      url = url.pathname
+    } else {
+      return url
+    }
   } // If url is already wrapped in quotes, remove them
 
   if (/^['"].*['"]$/.test(url)) {

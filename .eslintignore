@@ -1,6 +1,8 @@
 src/core/helpers/html-parser.js
 src/platforms/app-plus-nvue/runtime
 src/platforms/app-plus/service/api/plugin/uts.js
+src/core/view/components/editor/quill/quill.min.js
+src/core/view/components/editor/quill/image-resize.min.js
 build/rollup-plugin-require-context
 packages/*/packages/uni-app-plus
 packages/*/packages/uni-app-plus-nvue

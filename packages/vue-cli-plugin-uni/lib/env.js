@@ -14,6 +14,13 @@ function hasOwn (obj, key) {
   return hasOwnProperty.call(obj, key)
 }
 
+// 输出编译器版本等信息
+const pagesPkg = require('@dcloudio/webpack-uni-pages-loader/package.json')
+process.env.UNI_COMPILER_VERSION = ''
+if (pagesPkg) {
+  process.env.UNI_COMPILER_VERSION = pagesPkg['uni-app'].compilerVersion
+}
+
 const defaultInputDir = 'src'
 if (process.env.UNI_INPUT_DIR && process.env.UNI_INPUT_DIR.indexOf('./') === 0) {
   process.env.UNI_INPUT_DIR = path.resolve(process.cwd(), process.env.UNI_INPUT_DIR)
@@ -116,19 +123,35 @@ if (!process.env.UNI_CLOUD_PROVIDER && process.env.UNI_CLOUD_SPACES) {
         if (space.provider === 'tcb') {
           space.provider = 'tencent'
         }
-        if (space.clientSecret) {
-          return {
-            provider: space.provider || 'aliyun',
-            spaceName: space.name,
-            spaceId: space.id,
-            clientSecret: space.clientSecret,
-            endpoint: space.apiEndpoint
+        if (!space.provider && space.clientSecret) {
+          space.provider = 'aliyun'
+        }
+        switch (space.provider) {
+          case 'aliyun':
+            return {
+              provider: space.provider || 'aliyun',
+              spaceName: space.name,
+              spaceId: space.id,
+              clientSecret: space.clientSecret,
+              endpoint: space.apiEndpoint
+            }
+          case 'alipay': {
+            return {
+              provider: space.provider,
+              spaceName: space.name,
+              spaceId: space.id,
+              spaceAppId: space.spaceAppId,
+              accessKey: space.accessKey,
+              secretKey: space.secretKey
+            }
           }
-        } else {
-          return {
-            provider: space.provider || 'tencent',
-            spaceName: space.name,
-            spaceId: space.id
+          case 'tencent':
+          default: {
+            return {
+              provider: space.provider,
+              spaceName: space.name,
+              spaceId: space.id
+            }
           }
         }
       }))
@@ -445,12 +468,6 @@ const warningMsg =
 
 const needWarning = !platformOptions.usingComponents || usingComponentsAbsent
 let hasNVue = false
-// 输出编译器版本等信息
-const pagesPkg = require('@dcloudio/webpack-uni-pages-loader/package.json')
-process.env.UNI_COMPILER_VERSION = ''
-if (pagesPkg) {
-  process.env.UNI_COMPILER_VERSION = pagesPkg['uni-app'].compilerVersion
-}
 const compileModeUrl = 'https://ask.dcloud.net.cn/article/36074'
 if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
   const compileMode = (process.env.UNI_USING_V3_NATIVE ? '（v3）' : '') + '：' + (isNVueCompiler ? 'uni-app' : 'weex')
@@ -592,9 +609,13 @@ if (
   })
   wxcomponentDirs.forEach(wxcomponentsDir => {
     if (fs.existsSync(wxcomponentsDir)) { // 转换 mp-weixin 小程序组件
-      migrate(wxcomponentsDir, false, {
-        silent: true // 不输出日志
-      })
+      try {
+        migrate(wxcomponentsDir, false, {
+          silent: true // 不输出日志
+        })
+      } catch (err) {
+        console.warn(err)
+      }
     }
   })
 }
