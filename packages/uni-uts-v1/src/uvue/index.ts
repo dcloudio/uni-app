@@ -29,6 +29,7 @@ import {
 } from '../utils'
 import { KotlinManifestCache } from '../stacktrace/kotlin'
 import { isWindows } from '../shared'
+import { hasOwn } from '@vue/shared'
 
 const DEFAULT_IMPORTS = [
   'kotlinx.coroutines.async',
@@ -364,20 +365,29 @@ async function runKotlinBuild(options: CompileAppOptions, result: UTSResult) {
   ;(result as RunKotlinBuildResult).type = 'kotlin'
   ;(result as RunKotlinBuildResult).inject_modules = parseInjectModules(
     result.inject_apis || [],
+    options.extApis || {},
     options.extApiComponents
   )
   ;(result as RunKotlinBuildResult).kotlinc = false
   return result as RunKotlinBuildResult
 }
 
-function parseInjectModules(inject_apis: string[], extApiComponents: string[]) {
+function parseInjectModules(
+  inject_apis: string[],
+  localExtApis: Record<string, [string, string]>,
+  extApiComponents: string[]
+) {
   const modules = new Set<string>()
   const extApiModules = parseExtApiModules()
   inject_apis.forEach((api) => {
     if (api.startsWith('uniCloud.')) {
       modules.add('uni-cloud-client')
     } else {
-      if (extApiModules[api]) {
+      if (
+        extApiModules[api] &&
+        // 非本地
+        !hasOwn(localExtApis, api.replace('uni.', ''))
+      ) {
         modules.add(extApiModules[api])
       }
     }

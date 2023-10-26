@@ -294,7 +294,7 @@ export async function transformVue(
           )
         }
       },
-      parseUTSComponent: parseUTSComponent,
+      parseUTSComponent,
     })
     templateCode = templateResult.code
     templateImportEasyComponentsCode =
@@ -303,7 +303,15 @@ export async function transformVue(
       templateResult.importUTSComponents.join('\n')
     templateSourceMap = templateResult.map
     if (process.env.NODE_ENV === 'production') {
-      addExtApiComponents(templateResult.elements)
+      addExtApiComponents(
+        templateResult.elements.filter((element) => {
+          // 如果是UTS原生组件，则无需记录摇树
+          if (parseUTSComponent(element, 'kotlin')) {
+            return false
+          }
+          return true
+        })
+      )
     }
   }
   // 生成 script 文件
