@@ -335,30 +335,45 @@ export const ${genComponentPublicInstanceImported(options.root, filename)} = {}`
       ? createSourceMap(
           descriptor.script?.loc.end.line ?? 0,
           templateStartLine,
-          new MagicString(code).generateMap({
-            hires: true,
-            source: fileName,
-            includeContent: true,
-          }) as unknown as RawSourceMap,
+          createVueSourceMap(fileName, code, descriptor),
           templateSourceMap
         )
       : undefined,
   }
 }
 
+function createVueSourceMap(
+  fileName: string,
+  code: string,
+  descriptor: SFCDescriptor
+) {
+  const str = new MagicString(code)
+  if (descriptor.script) {
+    const start = descriptor.script.loc.start
+    const end = descriptor.script.loc.end
+    str.overwrite(0, start.offset, '\n'.repeat(start.line - 1))
+    str.remove(end.offset, code.length)
+  }
+  return str.generateMap({
+    hires: true,
+    source: fileName,
+    includeContent: true,
+  }) as unknown as RawSourceMap
+}
+
 function createSourceMap(
   scriptCodeOffset: number,
   templateCodeOffset: number,
-  scriptMap: RawSourceMap,
+  vueMap: RawSourceMap,
   templateMap?: RawSourceMap
 ) {
   if (!templateMap) {
-    return scriptMap
+    return vueMap
   }
   const gen = fromMap(
     // version property of result.map is declared as string
     // but actually it is `3`
-    scriptMap as Omit<RawSourceMap, 'version'> as EncodedSourceMap
+    vueMap as Omit<RawSourceMap, 'version'> as EncodedSourceMap
   )
   const tracer = new TraceMap(
     // same above

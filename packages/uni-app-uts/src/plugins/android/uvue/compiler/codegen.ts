@@ -11,6 +11,7 @@ import {
   FunctionExpression,
   InterpolationNode,
   JSChildNode,
+  Node,
   NodeTypes,
   OPEN_BLOCK,
   ObjectExpression,
@@ -26,6 +27,7 @@ import {
   WITH_CTX,
   WITH_DIRECTIVES,
   advancePositionWithMutation,
+  createSimpleExpression,
   getVNodeBlockHelper,
   getVNodeHelper,
   helperNameMap,
@@ -63,7 +65,13 @@ type CodegenNode = TemplateChildNode | JSChildNode | SSRCodegenNode
 
 export interface CodegenContext
   extends Required<
-    Omit<CodegenOptions, 'sourceMapGeneratedLine' | 'className'>
+    Omit<
+      CodegenOptions,
+      | 'sourceMapGeneratedLine'
+      | 'className'
+      | 'originalLineOffset'
+      | 'generatedLineOffset'
+    >
   > {
   source: string
   code: string
@@ -95,6 +103,8 @@ function createCodegenContext(
     filename = '',
     matchEasyCom = NOOP,
     parseUTSComponent = NOOP,
+    originalLineOffset = 0,
+    generatedLineOffset = 0,
   }: CodegenOptions
 ): CodegenContext {
   const context: CodegenContext = {
@@ -164,11 +174,11 @@ function createCodegenContext(
       name,
       source: context.filename,
       original: {
-        line: loc.line,
+        line: loc.line + originalLineOffset,
         column: loc.column - 1, // source-map column is 0 based
       },
       generated: {
-        line: context.line,
+        line: context.line + generatedLineOffset,
         column: context.column - 1,
       },
     })
@@ -193,6 +203,7 @@ export function generate(
   const { mode, deindent, indent, push, newline } = context
   if (mode === 'function') {
     push(UTS_COMPONENT_ELEMENT_IMPORTS)
+    newline()
     genEasyComImports(ast.components, context)
     push(genRenderFunctionDecl(options) + ` {`)
     newline()
@@ -230,7 +241,7 @@ export function generate(
   context.code = context.code.replace(
     UTS_COMPONENT_ELEMENT_IMPORTS,
     context.importUTSElements.length
-      ? context.importUTSElements.join('\n') + '\n'
+      ? context.importUTSElements.join(';') + ';'
       : ''
   )
 
@@ -500,6 +511,7 @@ function genComment(node: CommentNode, context: CodegenContext) {
 
 function parseTag(
   tag: string | symbol | CallExpression,
+  curNode: Node,
   {
     parseUTSComponent,
     targetLanguage,
@@ -525,11 +537,13 @@ function parseTag(
       if (!importUTSElements.includes(importElementCode)) {
         importUTSElements.push(importElementCode)
       }
-      return (
+      return createSimpleExpression(
         utsComponentOptions.namespace +
-        '.' +
-        utsComponentOptions.className +
-        '.name'
+          '.' +
+          utsComponentOptions.className +
+          '.name',
+        false,
+        curNode.loc
       )
     }
   }
@@ -562,7 +576,7 @@ function genVNodeCall(node: VNodeCall, context: CodegenContext) {
   push(helper(callHelper) + `(`, node)
   genNodeList(
     genNullableArgs([
-      parseTag(tag, context),
+      parseTag(tag, node, context),
       props,
       children,
       patchFlag,

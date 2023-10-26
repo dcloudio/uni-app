@@ -33,17 +33,18 @@ describe('compiler:codegen', () => {
   test(`function:kotlin`, () => {
     assert(
       `<view/>`,
-      `function PagesIndexIndexRender(): VNode | null {\nconst _ctx = this\n  return createElementVNode("view")\n}`,
+      `
+function PagesIndexIndexRender(): VNode | null {\nconst _ctx = this\n  return createElementVNode("view")\n}`,
       {
         targetLanguage: 'kotlin',
         mode: 'function',
       }
     )
   })
-  test(`UTSComponents:kotlin`, () => {
+  test(`UTSComponents`, () => {
     assert(
       `<view><uts-hello/><uts-hello/></view>`,
-      `import { UtsHelloElement } from 'uts.sdk.modules.utsHello'\nfunction PagesIndexIndexRender(): VNode | null {\nconst _ctx = this\n  return createElementVNode("view", null, [\n    createElementVNode(uts.sdk.modules.utsHello.UtsHelloComponent.name),\n    createElementVNode(uts.sdk.modules.utsHello.UtsHelloComponent.name)\n  ])\n}`,
+      `import { UtsHelloElement } from 'uts.sdk.modules.utsHello';\nfunction PagesIndexIndexRender(): VNode | null {\nconst _ctx = this\n  return createElementVNode("view", null, [\n    createElementVNode(uts.sdk.modules.utsHello.UtsHelloComponent.name),\n    createElementVNode(uts.sdk.modules.utsHello.UtsHelloComponent.name)\n  ])\n}`,
       {
         targetLanguage: 'kotlin',
         mode: 'function',
@@ -60,7 +61,7 @@ describe('compiler:codegen', () => {
     )
     assert(
       `<view><uts-hello/><uts-hello/><uts-hello1/></view>`,
-      `import { UtsHelloElement } from 'uts.sdk.modules.utsHello'\nimport { UtsHello1Element } from 'uts.sdk.modules.utsHello'\nfunction PagesIndexIndexRender(): VNode | null {\nconst _ctx = this\n  return createElementVNode("view", null, [\n    createElementVNode(uts.sdk.modules.utsHello.UtsHelloComponent.name),\n    createElementVNode(uts.sdk.modules.utsHello.UtsHelloComponent.name),\n    createElementVNode(uts.sdk.modules.utsHello.UtsHello1Component.name)\n  ])\n}`,
+      `import { UtsHelloElement } from 'uts.sdk.modules.utsHello';import { UtsHello1Element } from 'uts.sdk.modules.utsHello';\nfunction PagesIndexIndexRender(): VNode | null {\nconst _ctx = this\n  return createElementVNode("view", null, [\n    createElementVNode(uts.sdk.modules.utsHello.UtsHelloComponent.name),\n    createElementVNode(uts.sdk.modules.utsHello.UtsHelloComponent.name),\n    createElementVNode(uts.sdk.modules.utsHello.UtsHello1Component.name)\n  ])\n}`,
       {
         targetLanguage: 'kotlin',
         mode: 'function',
@@ -85,7 +86,8 @@ describe('compiler:codegen', () => {
   test(`easycom`, () => {
     assert(
       `<view><custom/><custom/><custom1/><index/><index1/></view>`,
-      `import _easycom_custom, { GenComponentsCustomCustomComponentPublicInstance as CustomComponentPublicInstance } from '@/components/custom/custom.vue'\nimport _easycom_custom1, { GenComponentsCustom1Custom1ComponentPublicInstance as Custom1ComponentPublicInstance } from '@/components/custom1/custom1.vue'\nimport _easycom_index, { GenComponentsIndexIndexComponentPublicInstance as IndexComponentPublicInstance } from '@/components/index/index.vue'\nfunction PagesIndexIndexRender(): VNode | null {\nconst _ctx = this\nconst _component_custom = resolveEasyComponent("custom",_easycom_custom)\nconst _component_custom1 = resolveEasyComponent("custom1",_easycom_custom1)\nconst _component_index = resolveEasyComponent("index",_easycom_index)\nconst _component_index1 = resolveComponent("index1")\n\n  return createElementVNode("view", null, [\n    createVNode(_component_custom),\n    createVNode(_component_custom),\n    createVNode(_component_custom1),\n    createVNode(_component_index),\n    createVNode(_component_index1)\n  ])\n}`,
+      `
+import _easycom_custom, { GenComponentsCustomCustomComponentPublicInstance as CustomComponentPublicInstance } from '@/components/custom/custom.vue'\nimport _easycom_custom1, { GenComponentsCustom1Custom1ComponentPublicInstance as Custom1ComponentPublicInstance } from '@/components/custom1/custom1.vue'\nimport _easycom_index, { GenComponentsIndexIndexComponentPublicInstance as IndexComponentPublicInstance } from '@/components/index/index.vue'\nfunction PagesIndexIndexRender(): VNode | null {\nconst _ctx = this\nconst _component_custom = resolveEasyComponent("custom",_easycom_custom)\nconst _component_custom1 = resolveEasyComponent("custom1",_easycom_custom1)\nconst _component_index = resolveEasyComponent("index",_easycom_index)\nconst _component_index1 = resolveComponent("index1")\n\n  return createElementVNode("view", null, [\n    createVNode(_component_custom),\n    createVNode(_component_custom),\n    createVNode(_component_custom1),\n    createVNode(_component_index),\n    createVNode(_component_index1)\n  ])\n}`,
       {
         targetLanguage: 'kotlin',
         mode: 'function',
@@ -98,7 +100,8 @@ describe('compiler:codegen', () => {
     )
     assert(
       `<index/>`,
-      `function PagesIndexIndexRender(): VNode | null {
+      `
+function PagesIndexIndexRender(): VNode | null {
 const _ctx = this
 const _component_index = resolveComponent("index", true)
 
@@ -113,7 +116,7 @@ const _component_index = resolveComponent("index", true)
   test(`UTSComponents and easycom`, () => {
     assert(
       `<view><uts-hello/><uts-hello/><custom/><custom/><custom1/><index/><index1/></view>`,
-      `import { UtsHelloElement } from 'uts.sdk.modules.utsHello'
+      `import { UtsHelloElement } from 'uts.sdk.modules.utsHello';
 import _easycom_custom, { GenComponentsCustomCustomComponentPublicInstance as CustomComponentPublicInstance } from '@/components/custom/custom.vue'
 import _easycom_custom1, { GenComponentsCustom1Custom1ComponentPublicInstance as Custom1ComponentPublicInstance } from '@/components/custom1/custom1.vue'
 import _easycom_index, { GenComponentsIndexIndexComponentPublicInstance as IndexComponentPublicInstance } from '@/components/index/index.vue'

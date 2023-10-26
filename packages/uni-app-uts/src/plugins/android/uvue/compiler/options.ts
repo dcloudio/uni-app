@@ -61,6 +61,14 @@ export interface CodegenOptions extends SharedTransformCodegenOptions {
       }
     | undefined
     | void
+  /**
+   * template的offset
+   */
+  originalLineOffset?: number
+  /**
+   * script的offset
+   */
+  generatedLineOffset?: number
 }
 
 export interface ErrorHandlingOptions {

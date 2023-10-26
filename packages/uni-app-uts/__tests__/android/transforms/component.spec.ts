@@ -4,7 +4,8 @@ describe('compiler: component', () => {
   test('template component', () => {
     assert(
       `<view><Foo /></view>`,
-      `function PagesIndexIndexRender(): VNode | null {
+      `
+function PagesIndexIndexRender(): VNode | null {
 const _ctx = this
 const _component_Foo = resolveComponent("Foo")
 
