@@ -140,7 +140,7 @@ export function uniAppPlugin(): UniVitePlugin {
         return
       }
       const { filename } = parseVueRequest(id)
-      if (!filename.endsWith('.uts')) {
+      if (!filename.endsWith('.uts') && !filename.endsWith('.ts')) {
         return
       }
       // 仅处理 uts 文件
