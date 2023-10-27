@@ -218,7 +218,11 @@ export function genClassName(fileName: string, prefix: string = 'Gen') {
     capitalize(
       camelize(
         verifySymbol(
-          removeExt(normalizeNodeModules(fileName).replace(/[\/|_]/g, '-'))
+          removeExt(
+            normalizeNodeModules(fileName)
+              .replace(/[\/|_]/g, '-')
+              .replace(/-+/g, '-')
+          )
         )
       )
     )

@@ -222,8 +222,8 @@ export async function transformVue(
     return { errors, descriptor }
   }
   const isApp = isAppVue(filename)
-  const fileName = normalizePath(path.relative(options.root, filename))
-  const className = genClassName(fileName, options.classNamePrefix)
+  const relativeFileName = normalizePath(path.relative(options.root, filename))
+  const className = genClassName(relativeFileName, options.classNamePrefix)
   let templateCode = ''
   let templateImportEasyComponentsCode = ''
   let templateImportUTSComponentsCode = ''
@@ -238,7 +238,7 @@ export async function transformVue(
       rootDir: options.root,
       targetLanguage: options.targetLanguage as any,
       mode: 'function',
-      filename: fileName,
+      filename: relativeFileName,
       className: className,
       prefixIdentifiers: true,
       // 方便测试，build模式也提供sourceMap
@@ -260,7 +260,7 @@ export async function transformVue(
           const start = warning.loc.start
           console.log(
             'at ' +
-              fileName +
+              relativeFileName +
               ':' +
               (start.line + templateStartLine - 1) +
               ':' +
@@ -280,7 +280,7 @@ export async function transformVue(
           const start = error.loc.start
           console.log(
             'at ' +
-              fileName +
+              relativeFileName +
               ':' +
               (start.line + templateStartLine - 1) +
               ':' +
@@ -320,7 +320,7 @@ export async function transformVue(
     genScript(descriptor, { filename: className }) +
     templateCode +
     '\n' +
-    genStyle(descriptor, { filename: fileName, className }) +
+    genStyle(descriptor, { filename: relativeFileName, className }) +
     '\n'
 
   let jsCode =
@@ -333,7 +333,10 @@ export async function transformVue(
     jsCode += '\n' + (await genJsStylesCode(descriptor, pluginContext!))
   }
   jsCode += `\nexport default "${className}"
-export const ${genComponentPublicInstanceImported(options.root, filename)} = {}`
+export const ${genComponentPublicInstanceImported(
+    options.root,
+    relativeFileName
+  )} = {}`
   return {
     errors: [],
     uts: utsCode,
@@ -343,7 +346,7 @@ export const ${genComponentPublicInstanceImported(options.root, filename)} = {}`
       ? createSourceMap(
           descriptor.script?.loc.end.line ?? 0,
           templateStartLine,
-          createVueSourceMap(fileName, code, descriptor),
+          createVueSourceMap(relativeFileName, code, descriptor),
           templateSourceMap
         )
       : undefined,

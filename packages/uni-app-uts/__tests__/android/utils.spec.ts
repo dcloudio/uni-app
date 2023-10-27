@@ -11,5 +11,8 @@ describe('uts:utils', () => {
     expect(genClassName('components-test_b-test')).toBe(
       'GenComponentsTestBTest'
     )
+    expect(genClassName('components-test____---b--test')).toBe(
+      'GenComponentsTestBTest'
+    )
   })
 })

@@ -1,14 +1,14 @@
+import path from 'path'
 import { type Node } from '@babel/types'
+import { camelize, capitalize } from '@vue/shared'
 import { ExpressionNode, createSimpleExpression } from '@vue/compiler-core'
 import { MagicString, walk } from '@vue/compiler-sfc'
 import { parseExpression } from '@babel/parser'
+import { normalizePath } from '@dcloudio/uni-cli-shared'
 import { CompilerOptions } from './options'
-
 import { stringifyExpression } from './transforms/transformExpression'
-
 import { TransformContext } from './transform'
 import { CompilerError } from './errors'
-import { camelize, capitalize } from '@vue/shared'
 import { genClassName } from '../../utils'
 
 export function genRenderFunctionDecl({ className }: CompilerOptions): string {
@@ -66,6 +66,9 @@ export function genComponentPublicInstanceImported(
   root: string,
   fileName: string
 ) {
+  if (path.isAbsolute(fileName)) {
+    fileName = normalizePath(path.relative(root, fileName))
+  }
   if (fileName.startsWith('@/')) {
     return genClassName(fileName.replace('@/', '')) + 'ComponentPublicInstance'
   }
