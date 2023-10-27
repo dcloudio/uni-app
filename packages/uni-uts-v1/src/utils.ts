@@ -387,7 +387,7 @@ function copyConfigJson(
       configJson.components = genComponentsConfigJson(componentsObj, namespace)
     }
     if (hasHookClass) {
-      configJson.hookclass = hookClass
+      configJson.hooksClass = hookClass
     }
     fs.outputFileSync(
       outputConfigJsonFilename,
