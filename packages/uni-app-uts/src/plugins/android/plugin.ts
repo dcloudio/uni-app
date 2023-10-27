@@ -160,8 +160,11 @@ export function uniAppPlugin(): UniVitePlugin {
     async writeBundle() {
       let pageCount = 0
       if (isFirst) {
-        pageCount = parseInt(process.env.UNI_APP_X_PAGE_COUNT) || 0
         isFirst = false
+        // 自动化测试时，不显示页面数量进度条
+        if (!process.env.UNI_AUTOMATOR_WS_ENDPOINT) {
+          pageCount = parseInt(process.env.UNI_APP_X_PAGE_COUNT) || 0
+        }
       }
       const res = await resolveUTSCompiler().compileApp(
         path.join(tempOutputDir, 'index.uts'),
