@@ -209,6 +209,12 @@ function initUTSPlatform(options: CliOptions) {
     if (options.platform === 'app-plus') {
       options.platform = 'app'
     }
+    if (options.platform === 'app') {
+      // app 平台未指定 UTS_PLATFORM 时，设置未 app，一般是发行模式
+      if (!process.env.UNI_UTS_PLATFORM) {
+        process.env.UNI_UTS_PLATFORM = 'app'
+      }
+    }
   }
   if (options.platform === 'h5') {
     process.env.UNI_UTS_PLATFORM = 'web'

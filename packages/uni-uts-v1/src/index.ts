@@ -110,6 +110,7 @@ interface CompilerOptions {
   sourceMap?: boolean
 }
 
+// 重要：当调整参数时，需要同步调整 vue2 编译器 uni-cli-shared/lib/uts/uts-loader.js
 export async function compile(
   pluginDir: string,
   {
