@@ -21,7 +21,7 @@ export const transformModel: DirectiveTransform = (dir, node, context) => {
   ) {
     context.onError(
       createCompilerError(100, dir.loc, {
-        100: `When custom components use "v-model" to bind complex expressions, you must specify the type using "as".`,
+        100: `When custom components use "v-model" to bind complex expressions, you must specify the type using "as", 详见：https://uniapp.dcloud.net.cn/uni-app-x/component/#v-model-complex-expression`,
       })
     )
   }
