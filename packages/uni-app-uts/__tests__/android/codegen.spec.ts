@@ -157,4 +157,20 @@ const _component_index1 = resolveComponent("index1")
       }
     )
   })
+  test('Import non-static directory resources', () => {
+    assert(
+      `<image src="./logo.png"></image>`,
+      `
+import _imports_0 from './logo.png'
+
+function PagesIndexIndexRender(): VNode | null {
+const _ctx = this
+  return createElementVNode(\"image\", utsMapOf({ src: _imports_0 }))
+}`,
+      {
+        targetLanguage: 'kotlin',
+        mode: 'function',
+      }
+    )
+  })
 })
