@@ -63,6 +63,9 @@ exports.parseUniExtApis = parseUniExtApis;
  * @returns
  */
 function parseInjects(vite = true, platform, language, source, uniModuleRootDir, exports = {}) {
+    if (platform === 'app-plus') {
+        platform = 'app';
+    }
     let rootDefines = {};
     Object.keys(exports).forEach((name) => {
         if (name.startsWith('uni')) {
@@ -71,10 +74,17 @@ function parseInjects(vite = true, platform, language, source, uniModuleRootDir,
     });
     const injects = {};
     if (Object.keys(rootDefines).length) {
-        const hasPlatformFile = uniModuleRootDir
+        let hasPlatformFile = uniModuleRootDir
             ? fs_extra_1.default.existsSync(path_1.default.resolve(uniModuleRootDir, 'utssdk', 'index.uts')) ||
                 fs_extra_1.default.existsSync(path_1.default.resolve(uniModuleRootDir, 'utssdk', platform))
             : true;
+        if (!hasPlatformFile) {
+            if (platform === 'app') {
+                hasPlatformFile =
+                    fs_extra_1.default.existsSync(path_1.default.resolve(uniModuleRootDir, 'utssdk', 'app-android')) ||
+                        fs_extra_1.default.existsSync(path_1.default.resolve(uniModuleRootDir, 'utssdk', 'app-ios'));
+            }
+        }
         for (const key in rootDefines) {
             Object.assign(injects, parseInject(vite, platform, language, source, 'uni', rootDefines[key], hasPlatformFile));
         }
