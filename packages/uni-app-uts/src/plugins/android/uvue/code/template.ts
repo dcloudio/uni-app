@@ -13,6 +13,7 @@ export function genTemplate(
       importEasyComponents: [],
       importUTSComponents: [],
       elements: [],
+      imports: [],
     }
   }
   return compile(template.content, options)

@@ -89,7 +89,7 @@ export function compile(
       prefixIdentifiers: options.prefixIdentifiers,
       nodeTransforms: [
         ...nodeTransforms,
-        ...getBaseNodeTransforms(options.rootDir),
+        ...getBaseNodeTransforms('/'),
         ...(options.nodeTransforms || []), // user transforms
       ],
       directiveTransforms: extend(

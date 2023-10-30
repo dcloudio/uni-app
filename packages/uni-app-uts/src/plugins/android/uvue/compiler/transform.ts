@@ -273,6 +273,7 @@ export function transform(root: RootNode, options: TransformOptions) {
   root.components = [...context.components]
   // @ts-ignore
   root.elements = Array.from(context.elements)
+  root.imports = context.imports
 }
 
 export function isSingleElementRoot(

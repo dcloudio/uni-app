@@ -60,6 +60,7 @@ import {
   SLOT_PROPS_NAME,
   createDestructuringSlotProps,
 } from './transforms/transformSlotPropsDestructuring'
+import { ImportItem } from './transform'
 
 type CodegenNode = TemplateChildNode | JSChildNode | SSRCodegenNode
 
@@ -205,6 +206,10 @@ export function generate(
     push(UTS_COMPONENT_ELEMENT_IMPORTS)
     newline()
     genEasyComImports(ast.components, context)
+    if (ast.imports.length) {
+      genImports(ast.imports, context)
+      newline()
+    }
     push(genRenderFunctionDecl(options) + ` {`)
     newline()
     push(`const _ctx = this`)
@@ -249,11 +254,24 @@ export function generate(
     code: context.code,
     importEasyComponents: context.importEasyComponents,
     importUTSComponents: context.importUTSComponents,
+    imports: ast.imports.map((item) => `import '${item.path}'`),
     // SourceMapGenerator does have toJSON() method but it's not in the types
     map: context.map ? (context.map as any).toJSON() : undefined,
     // @ts-ignore
     elements: ast.elements,
   }
+}
+
+function genImports(importsOptions: ImportItem[], context: CodegenContext) {
+  if (!importsOptions.length) {
+    return
+  }
+  importsOptions.forEach((imports) => {
+    context.push(`import `)
+    genNode(imports.exp, context)
+    context.push(` from '${imports.path}'`)
+    context.newline()
+  })
 }
 
 function genEasyComImports(

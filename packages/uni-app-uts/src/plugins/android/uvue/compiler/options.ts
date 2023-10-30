@@ -117,6 +117,7 @@ export interface CodegenResult {
   code: string
   importEasyComponents: string[]
   importUTSComponents: string[]
+  imports: string[]
   elements: string[]
   map?: RawSourceMap
 }

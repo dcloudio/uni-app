@@ -225,6 +225,7 @@ export async function transformVue(
   const relativeFileName = normalizePath(path.relative(options.root, filename))
   const className = genClassName(relativeFileName, options.classNamePrefix)
   let templateCode = ''
+  let templateImportsCode = ''
   let templateImportEasyComponentsCode = ''
   let templateImportUTSComponentsCode = ''
   const needSourceMap = process.env.UNI_APP_X_TEMPLATE_SOURCEMAP
@@ -301,6 +302,7 @@ export async function transformVue(
       templateResult.importEasyComponents.join('\n')
     templateImportUTSComponentsCode =
       templateResult.importUTSComponents.join('\n')
+    templateImportsCode = templateResult.imports.join('\n')
     templateSourceMap = templateResult.map
     if (process.env.NODE_ENV === 'production') {
       addExtApiComponents(
@@ -323,20 +325,24 @@ export async function transformVue(
     genStyle(descriptor, { filename: relativeFileName, className }) +
     '\n'
 
-  let jsCode =
-    templateImportEasyComponentsCode + templateImportUTSComponentsCode
+  let jsCodes = [
+    templateImportEasyComponentsCode,
+    templateImportUTSComponentsCode,
+    templateImportsCode,
+  ]
   const content = descriptor.script?.content
   if (content) {
-    jsCode += await parseImports(content)
+    jsCodes.push(await parseImports(content))
   }
   if (descriptor.styles.length) {
-    jsCode += '\n' + (await genJsStylesCode(descriptor, pluginContext!))
+    jsCodes.push(await genJsStylesCode(descriptor, pluginContext!))
   }
-  jsCode += `\nexport default "${className}"
+  jsCodes.push(`export default "${className}"
 export const ${genComponentPublicInstanceImported(
     options.root,
     relativeFileName
-  )} = {}`
+  )} = {}`)
+  const jsCode = jsCodes.filter(Boolean).join('\n')
   return {
     errors: [],
     uts: utsCode,
