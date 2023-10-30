@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-mp-vue",
-  "version": "2.0.2-3090420231025001",
+  "version": "2.0.2-3090520231028001",
   "description": "@dcloudio/uni-mp-vue",
   "main": "dist/vue.runtime.esm.js",
   "module": "dist/vue.runtime.esm.js",
