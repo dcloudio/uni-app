@@ -7,7 +7,10 @@ import {
 } from '@vue/compiler-core'
 
 import { isAppUVueNativeTag } from '@dcloudio/uni-shared'
-import { transformTapToClick } from '@dcloudio/uni-cli-shared'
+import {
+  getBaseNodeTransforms,
+  transformTapToClick,
+} from '@dcloudio/uni-cli-shared'
 import './runtimeHelpers'
 
 import { CodegenResult, CompilerOptions } from './options'
@@ -86,6 +89,7 @@ export function compile(
       prefixIdentifiers: options.prefixIdentifiers,
       nodeTransforms: [
         ...nodeTransforms,
+        ...getBaseNodeTransforms(options.rootDir),
         ...(options.nodeTransforms || []), // user transforms
       ],
       directiveTransforms: extend(
