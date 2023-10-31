@@ -44,12 +44,16 @@ export async function runSwiftProd(
   {
     isPlugin,
     isX,
+    isSingleThread,
     extApis,
     transform,
     sourceMap,
+    hookClass,
   }: {
     isPlugin: boolean
     isX: boolean
+    isSingleThread: boolean
+    hookClass: string
     extApis?: Record<string, [string, string]>
     transform?: UTSOutputOptions['transform']
     sourceMap?: boolean
@@ -67,6 +71,7 @@ export async function runSwiftProd(
     sourceMap: !!sourceMap,
     components,
     isX,
+    isSingleThread,
     isPlugin,
     extApis,
     transform,
@@ -84,6 +89,7 @@ export async function runSwiftProd(
     extname: '.swift',
     components,
     package: parseSwiftPackage(filename).namespace,
+    hookClass,
   })
 }
 
@@ -99,6 +105,7 @@ let isEnvReady = true
 interface RunSwiftDevOptions {
   components: Record<string, string>
   isX: boolean
+  isSingleThread: boolean
   isPlugin: boolean
   extApis?: Record<string, [string, string]>
   transform?: UTSOutputOptions['transform']
@@ -110,6 +117,7 @@ export async function runSwiftDev(
   {
     components,
     isX,
+    isSingleThread,
     isPlugin,
     extApis,
     transform,
@@ -146,6 +154,7 @@ export async function runSwiftDev(
     sourceMap: !!sourceMap,
     components,
     isX,
+    isSingleThread,
     isPlugin,
     extApis,
     transform,
@@ -214,6 +223,7 @@ export async function compile(
     sourceMap,
     components,
     isX,
+    isSingleThread,
     isPlugin,
     extApis,
     transform,
@@ -249,6 +259,7 @@ export async function compile(
     input,
     output: {
       isX,
+      isSingleThread,
       isPlugin,
       outDir: outputDir,
       package: namespace,

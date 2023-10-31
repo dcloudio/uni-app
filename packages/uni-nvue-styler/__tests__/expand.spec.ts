@@ -1,6 +1,6 @@
 import { Declaration, parse, Rule } from 'postcss'
 import { transformBackground } from '../src/expand/background'
-import { transformBorder } from '../src/expand/border'
+import { createTransformBorder } from '../src/expand/border'
 import { transformBorderColor } from '../src/expand/borderColor'
 import { transformBorderRadius } from '../src/expand/borderRadius'
 import { transformBorderStyle } from '../src/expand/borderStyle'
@@ -177,7 +177,41 @@ describe('nvue-styler: expand', () => {
           {
             type: 'decl',
             prop: `${border}-style`,
-            value: 'solid',
+            value: 'none',
+          },
+          {
+            type: 'decl',
+            prop: `${border}-color`,
+            value: '#000000',
+          },
+        ],
+        '#ffffff': [
+          {
+            type: 'decl',
+            prop: `${border}-width`,
+            value: 'thin',
+          },
+          {
+            type: 'decl',
+            prop: `${border}-style`,
+            value: 'none',
+          },
+          {
+            type: 'decl',
+            prop: `${border}-color`,
+            value: '#ffffff',
+          },
+        ],
+        thick: [
+          {
+            type: 'decl',
+            prop: `${border}-width`,
+            value: 'thick',
+          },
+          {
+            type: 'decl',
+            prop: `${border}-style`,
+            value: 'none',
           },
           {
             type: 'decl',
@@ -227,6 +261,9 @@ describe('nvue-styler: expand', () => {
         const decl = parseDecl(`.test {
     ${type}: ${b}
   }`)
+        const transformBorder = createTransformBorder({
+          type: 'uvue',
+        })
         expect(transformBorder(decl)).toEqual(
           borders[b].map((node) => {
             return Object.assign({ raws: decl.raws, source: decl.source }, node)

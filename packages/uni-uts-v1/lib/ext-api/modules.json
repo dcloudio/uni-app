@@ -329,6 +329,50 @@
       }
     }
   },
+  "uni-push": {
+    "uni": {
+      "getPushClientId": {
+        "name": "getPushClientId",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      },
+      "onPushMessage": {
+        "name": "onPushMessage",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      },
+      "offPushMessage": {
+        "name": "offPushMessage",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      },
+      "getChannelManager": {
+        "name": "getChannelManager",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      },
+      "createPushMessage": {
+        "name": "createPushMessage",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      }
+    }
+  },
   "uni-storage": {
     "uni": {
       "setStorage": {

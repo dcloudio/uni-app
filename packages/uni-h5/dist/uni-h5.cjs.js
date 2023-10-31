@@ -8613,10 +8613,17 @@ var MapType = /* @__PURE__ */ ((MapType2) => {
   MapType2["QQ"] = "qq";
   MapType2["GOOGLE"] = "google";
   MapType2["AMAP"] = "AMap";
+  MapType2["BMAP"] = "BMapGL";
   MapType2["UNKNOWN"] = "";
   return MapType2;
 })(MapType || {});
 function getMapInfo() {
+  if (__uniConfig.bMapKey) {
+    return {
+      type: "BMapGL",
+      key: __uniConfig.bMapKey
+    };
+  }
   if (__uniConfig.qqMapKey) {
     return {
       type: "qq",
@@ -8651,6 +8658,9 @@ const getIsAMap = () => {
     hasGetIsAMap = true;
     return IS_AMAP = getMapInfo().type === "AMap";
   }
+};
+const getIsBMap = () => {
+  return getMapInfo().type === "BMapGL";
 };
 const props$7 = {
   id: {
@@ -8751,7 +8761,14 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
     onMapReady((map, maps, trigger) => {
       function updateMarker(option) {
         const title = option.title;
-        const position = getIsAMap() ? new maps.LngLat(option.longitude, option.latitude) : new maps.LatLng(option.latitude, option.longitude);
+        let position;
+        if (getIsAMap()) {
+          position = new maps.LngLat(option.longitude, option.latitude);
+        } else if (getIsBMap()) {
+          position = new maps.Point(option.longitude, option.latitude);
+        } else {
+          position = new maps.LatLng(option.latitude, option.longitude);
+        }
         const img = new Image();
         let imgHeight = 0;
         img.onload = () => {
@@ -8787,8 +8804,13 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
               size: new maps.Size(w, h)
             };
           }
-          marker.setPosition(position);
-          marker.setIcon(icon);
+          if (getIsBMap()) {
+            marker = new maps.Marker(new maps.Point(position.lng, position.lat));
+            map.addOverlay(marker);
+          } else {
+            marker.setPosition(position);
+            marker.setIcon(icon);
+          }
           if ("setRotation" in marker) {
             marker.setRotation(option.rotate || 0);
           }
@@ -8932,41 +8954,47 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
         }
       }
       function addMarker(props3) {
-        marker = new maps.Marker({
-          map,
-          flat: true,
-          autoRotation: false
-        });
+        if (!getIsBMap()) {
+          marker = new maps.Marker({
+            map,
+            flat: true,
+            autoRotation: false
+          });
+        }
         updateMarker(props3);
         const MapsEvent = maps.event || maps.Event;
-        MapsEvent.addListener(marker, "click", () => {
-          const callout = marker.callout;
-          if (callout && !callout.alwaysVisible) {
-            if (getIsAMap()) {
-              callout.visible = !callout.visible;
-              if (callout.visible) {
-                marker.callout.createAMapText();
+        if (getIsBMap())
+          ;
+        else {
+          MapsEvent.addListener(marker, "click", () => {
+            const callout = marker.callout;
+            if (callout && !callout.alwaysVisible) {
+              if (getIsAMap()) {
+                callout.visible = !callout.visible;
+                if (callout.visible) {
+                  marker.callout.createAMapText();
+                } else {
+                  marker.callout.removeAMapText();
+                }
               } else {
-                marker.callout.removeAMapText();
-              }
-            } else {
-              callout.set("visible", !callout.visible);
-              if (callout.visible) {
-                const div = callout.div;
-                const parent = div.parentNode;
-                parent.removeChild(div);
-                parent.appendChild(div);
+                callout.set("visible", !callout.visible);
+                if (callout.visible) {
+                  const div = callout.div;
+                  const parent = div.parentNode;
+                  parent.removeChild(div);
+                  parent.appendChild(div);
+                }
               }
             }
-          }
-          if (id) {
-            trigger("markertap", {}, {
-              markerId: Number(id),
-              latitude: props3.latitude,
-              longitude: props3.longitude
-            });
-          }
-        });
+            if (id) {
+              trigger("markertap", {}, {
+                markerId: Number(id),
+                latitude: props3.latitude,
+                longitude: props3.longitude
+              });
+            }
+          });
+        }
       }
       addMarker(props2);
       vue.watch(props2, updateMarker);
@@ -9148,7 +9176,14 @@ const MapPolyline = /* @__PURE__ */ defineSystemComponent({
       function addPolyline(option) {
         const path = [];
         option.points.forEach((point) => {
-          const pointPosition = getIsAMap() ? [point.longitude, point.latitude] : new maps.LatLng(point.latitude, point.longitude);
+          let pointPosition;
+          if (getIsAMap()) {
+            pointPosition = [point.longitude, point.latitude];
+          } else if (getIsBMap()) {
+            pointPosition = new maps.Point(point.longitude, point.latitude);
+          } else {
+            pointPosition = new maps.LatLng(point.latitude, point.longitude);
+          }
           path.push(pointPosition);
         });
         const strokeWeight = Number(option.width) || 1;
@@ -9193,7 +9228,12 @@ const MapPolyline = /* @__PURE__ */ defineSystemComponent({
         if (borderWidth) {
           polylineBorder = new maps.Polyline(polylineBorderOptions);
         }
-        polyline = new maps.Polyline(polylineOptions);
+        if (getIsBMap()) {
+          polyline = new maps.Polyline(polylineOptions.path, polylineOptions);
+          map.addOverlay(polyline);
+        } else {
+          polyline = new maps.Polyline(polylineOptions);
+        }
       }
       addPolyline(props2);
       vue.watch(props2, updatePolyline);
@@ -9250,7 +9290,7 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
         addCircle(option);
       }
       function addCircle(option) {
-        const center = getIsAMap() ? [option.longitude, option.latitude] : new maps.LatLng(option.latitude, option.longitude);
+        const center = getIsAMap() || getIsBMap() ? [option.longitude, option.latitude] : new maps.LatLng(option.latitude, option.longitude);
         const circleOptions = {
           map,
           center,
@@ -9259,7 +9299,7 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
           strokeWeight: Number(option.strokeWidth) || 1,
           strokeDashStyle: "solid"
         };
-        if (getIsAMap()) {
+        if (getIsAMap() || getIsBMap()) {
           circleOptions.strokeColor = option.color;
           circleOptions.fillColor = option.fillColor || "#000";
           circleOptions.fillOpacity = 1;
@@ -9286,9 +9326,20 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
             circleOptions.strokeOpacity = sa;
           }
         }
-        circle = new maps.Circle(circleOptions);
-        if (getIsAMap()) {
-          map.add(circle);
+        if (getIsBMap()) {
+          let pt = new maps.Point(
+            // @ts-ignore
+            circleOptions.center[0],
+            // @ts-ignore
+            circleOptions.center[1]
+          );
+          circle = new maps.Circle(pt, circleOptions.radius, circleOptions);
+          map.addOverlay(circle);
+        } else {
+          circle = new maps.Circle(circleOptions);
+          if (getIsAMap()) {
+            map.add(circle);
+          }
         }
       }
       addCircle(props2);
@@ -9430,7 +9481,13 @@ const MapPolygon = /* @__PURE__ */ defineSystemComponent({
             latitude,
             longitude
           } = item;
-          return getIsAMap() ? [longitude, latitude] : new maps.LatLng(latitude, longitude);
+          if (getIsAMap()) {
+            return [longitude, latitude];
+          } else if (getIsBMap()) {
+            return new maps.Point(longitude, latitude);
+          } else {
+            return new maps.LatLng(latitude, longitude);
+          }
         });
         const {
           r: fcR,
@@ -9482,7 +9539,12 @@ const MapPolygon = /* @__PURE__ */ defineSystemComponent({
           polygonIns.setOptions(polygonOptions);
           return;
         }
-        polygonIns = new maps.Polygon(polygonOptions);
+        if (getIsBMap()) {
+          polygonIns = new maps.Polygon(polygonOptions.path, polygonOptions);
+          map.addOverlay(polygonIns);
+        } else {
+          polygonIns = new maps.Polygon(polygonOptions);
+        }
       }
       drawPolygon();
       vue.watch(props2, drawPolygon);
@@ -9569,16 +9631,28 @@ function getPoints(points) {
 function getAMapPosition(maps, latitude, longitude) {
   return new maps.LngLat(longitude, latitude);
 }
+function getBMapPosition(maps, latitude, longitude) {
+  return new maps.Point(longitude, latitude);
+}
 function getGoogleOrQQMapPosition(maps, latitude, longitude) {
   return new maps.LatLng(latitude, longitude);
 }
 function getMapPosition(maps, latitude, longitude) {
-  return getIsAMap() ? getAMapPosition(maps, latitude, longitude) : getGoogleOrQQMapPosition(maps, latitude, longitude);
+  if (getIsBMap()) {
+    return getBMapPosition(maps, latitude, longitude);
+  } else if (getIsAMap()) {
+    return getAMapPosition(maps, latitude, longitude);
+  } else {
+    return getGoogleOrQQMapPosition(maps, latitude, longitude);
+  }
 }
 function getLat(latLng) {
   if ("getLat" in latLng) {
     return latLng.getLat();
   } else {
+    if (getIsBMap()) {
+      return latLng.lat;
+    }
     return latLng.lat();
   }
 }
@@ -9586,6 +9660,9 @@ function getLng(latLng) {
   if ("getLng" in latLng) {
     return latLng.getLng();
   } else {
+    if (getIsBMap()) {
+      return latLng.lng;
+    }
     return latLng.lng();
   }
 }
@@ -9632,7 +9709,9 @@ function useMap(props2, rootRef, emit2) {
       });
       const bounds = new maps.Bounds(...points);
       map.setBounds(bounds);
-    } else {
+    } else if (getIsBMap())
+      ;
+    else {
       const bounds = new maps.LatLngBounds();
       state.includePoints.forEach(({
         latitude,

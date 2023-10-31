@@ -24,6 +24,7 @@ describe('compiler', () => {
       outputDir,
       sourceMap: false,
       isX: false,
+      isSingleThread: false,
       isPlugin: true,
       components: {},
     })
@@ -40,6 +41,7 @@ describe('compiler', () => {
       outputDir,
       sourceMap: false,
       isX: false,
+      isSingleThread: false,
       isPlugin: true,
       components: {},
     })

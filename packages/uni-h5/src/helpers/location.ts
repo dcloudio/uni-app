@@ -18,6 +18,7 @@ export const enum MapType {
   QQ = 'qq',
   GOOGLE = 'google',
   AMAP = 'AMap',
+  BMAP = 'BMapGL',
   UNKNOWN = '',
 }
 
@@ -30,6 +31,12 @@ export type TranslateCoordinateSystemOptions = ({
 }) => void
 
 export function getMapInfo() {
+  if (__uniConfig.bMapKey) {
+    return {
+      type: MapType.BMAP,
+      key: __uniConfig.bMapKey,
+    }
+  }
   if (__uniConfig.qqMapKey) {
     return {
       type: MapType.QQ,
@@ -65,6 +72,10 @@ export const getIsAMap = () => {
     hasGetIsAMap = true
     return (IS_AMAP = getMapInfo().type === MapType.AMAP)
   }
+}
+
+export const getIsBMap = () => {
+  return getMapInfo().type === MapType.BMAP
 }
 
 export function translateCoordinateSystem(

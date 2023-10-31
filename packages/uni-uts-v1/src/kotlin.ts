@@ -82,12 +82,16 @@ export async function runKotlinProd(
   {
     isPlugin,
     isX,
+    isSingleThread,
+    hookClass,
     extApis,
     transform,
     sourceMap,
   }: {
     isPlugin: boolean
     isX: boolean
+    isSingleThread: boolean
+    hookClass: string
     extApis?: Record<string, [string, string]>
     transform?: UTSOutputOptions['transform']
     sourceMap?: boolean
@@ -105,6 +109,7 @@ export async function runKotlinProd(
     sourceMap: !!sourceMap,
     components,
     isX,
+    isSingleThread,
     isPlugin,
     extApis,
     transform,
@@ -122,6 +127,7 @@ export async function runKotlinProd(
     extname: '.kt',
     components,
     package: parseKotlinPackage(filename).package + '.',
+    hookClass,
   })
 }
 
@@ -141,6 +147,7 @@ export type RunKotlinBuildResult = UTSResult & {
 interface RunKotlinDevOptions {
   components: Record<string, string>
   isX: boolean
+  isSingleThread: boolean
   isPlugin: boolean
   sourceMap: boolean
   cacheDir: string
@@ -155,6 +162,7 @@ export async function runKotlinDev(
   {
     components,
     isX,
+    isSingleThread,
     isPlugin,
     cacheDir,
     pluginRelativeDir,
@@ -176,6 +184,7 @@ export async function runKotlinDev(
     sourceMap,
     components,
     isX,
+    isSingleThread,
     isPlugin,
     extApis,
     transform,
@@ -412,6 +421,7 @@ export async function compile(
     sourceMap,
     components,
     isX,
+    isSingleThread,
     isPlugin,
     extApis,
     transform,
@@ -460,6 +470,7 @@ export async function compile(
     input,
     output: {
       isX,
+      isSingleThread,
       isPlugin,
       outDir: outputDir,
       package: pluginPackage,

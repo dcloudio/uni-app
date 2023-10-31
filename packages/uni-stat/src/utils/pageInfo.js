@@ -475,13 +475,14 @@ export const uni_cloud_config = () => {
  */
 export const get_space = (config) => {
   const uniCloudConfig = uni_cloud_config()
-  const { spaceId, provider, clientSecret } = uniCloudConfig
-  const space_type = ['tcb', 'tencent', 'aliyun']
+  const { spaceId, provider, clientSecret ,secretKey,secretId} = uniCloudConfig
+  const space_type = ['tcb', 'tencent', 'aliyun','alipay']
   const is_provider = space_type.indexOf(provider) !== -1
   const is_aliyun = provider === 'aliyun' && spaceId && clientSecret
   const is_tcb = (provider === 'tcb' || provider === 'tencent') && spaceId
+  const is_alipay = provider === 'alipay' && spaceId && secretKey && secretId
 
-  if (is_provider && (is_aliyun || is_tcb)) {
+  if (is_provider && (is_aliyun || is_tcb || is_alipay)) {
     return uniCloudConfig
   } else {
     if (config && config.spaceId) {

@@ -16734,6 +16734,247 @@ function getJSONP(url, options, success, error) {
   js.src = url + (url.indexOf("?") >= 0 ? "&" : "?") + callbackKey + "=" + callbackName;
   document.body.appendChild(js);
 }
+function createCallout(maps2) {
+  function onAdd() {
+    const div = this.div;
+    const panes = this.getPanes();
+    panes.floatPane.appendChild(div);
+  }
+  function onRemove() {
+    const parentNode = this.div.parentNode;
+    if (parentNode) {
+      parentNode.removeChild(this.div);
+    }
+  }
+  function createAMapText() {
+    const option = this.option;
+    this.Text = new maps2.Text({
+      text: option.content,
+      anchor: "bottom-center",
+      // 设置文本标记锚点
+      offset: new maps2.Pixel(0, option.offsetY - 16),
+      style: {
+        padding: (option.padding || 8) + "px",
+        "line-height": (option.fontSize || 14) + "px",
+        "border-radius": (option.borderRadius || 0) + "px",
+        "border-color": `${option.bgColor || "#fff"} transparent transparent`,
+        "background-color": option.bgColor || "#fff",
+        "box-shadow": "0 2px 6px 0 rgba(114, 124, 245, .5)",
+        "text-align": "center",
+        "font-size": (option.fontSize || 14) + "px",
+        color: option.color || "#000"
+      },
+      position: option.position
+    });
+    const event = maps2.event || maps2.Event;
+    event.addListener(this.Text, "click", () => {
+      this.callback();
+    });
+    this.Text.setMap(option.map);
+  }
+  function createBMapText() {
+  }
+  function removeAMapText() {
+    if (this.Text) {
+      this.option.map.remove(this.Text);
+    }
+  }
+  function removeBMapText() {
+    if (this.Text) {
+      this.option.map.remove(this.Text);
+    }
+  }
+  class Callout {
+    constructor(option = {}, callback) {
+      this.createAMapText = createAMapText;
+      this.removeAMapText = removeAMapText;
+      this.createBMapText = createBMapText;
+      this.removeBMapText = removeBMapText;
+      this.onAdd = onAdd;
+      this.construct = onAdd;
+      this.onRemove = onRemove;
+      this.destroy = onRemove;
+      this.option = option || {};
+      const visible = this.visible = this.alwaysVisible = option.display === "ALWAYS";
+      if (getIsAMap()) {
+        this.callback = callback;
+        if (this.visible) {
+          this.createAMapText();
+        }
+      } else if (getIsBMap()) {
+        if (this.visible) {
+          this.createBMapText();
+        }
+      } else {
+        const map = option.map;
+        this.position = option.position;
+        this.index = 1;
+        const div = this.div = document.createElement("div");
+        const divStyle = div.style;
+        divStyle.position = "absolute";
+        divStyle.whiteSpace = "nowrap";
+        divStyle.transform = "translateX(-50%) translateY(-100%)";
+        divStyle.zIndex = "1";
+        divStyle.boxShadow = option.boxShadow || "none";
+        divStyle.display = visible ? "block" : "none";
+        const triangle = this.triangle = document.createElement("div");
+        triangle.setAttribute(
+          "style",
+          "position: absolute;white-space: nowrap;border-width: 4px;border-style: solid;border-color: #fff transparent transparent;border-image: initial;font-size: 12px;padding: 0px;background-color: transparent;width: 0px;height: 0px;transform: translate(-50%, 100%);left: 50%;bottom: 0;"
+        );
+        this.setStyle(option);
+        div.appendChild(triangle);
+        if (map) {
+          this.setMap(map);
+        }
+      }
+    }
+    set onclick(callback) {
+      this.div.onclick = callback;
+    }
+    get onclick() {
+      return this.div.onclick;
+    }
+    setOption(option) {
+      this.option = option;
+      if (option.display === "ALWAYS") {
+        this.alwaysVisible = this.visible = true;
+      } else {
+        this.alwaysVisible = false;
+      }
+      if (getIsAMap()) {
+        if (this.visible) {
+          this.createAMapText();
+        }
+      } else if (getIsBMap()) {
+        if (this.visible) {
+          this.createBMapText();
+        }
+      } else {
+        this.setPosition(option.position);
+        this.setStyle(option);
+      }
+    }
+    setStyle(option) {
+      const div = this.div;
+      const divStyle = div.style;
+      div.innerText = option.content || "";
+      divStyle.lineHeight = (option.fontSize || 14) + "px";
+      divStyle.fontSize = (option.fontSize || 14) + "px";
+      divStyle.padding = (option.padding || 8) + "px";
+      divStyle.color = option.color || "#000";
+      divStyle.borderRadius = (option.borderRadius || 0) + "px";
+      divStyle.backgroundColor = option.bgColor || "#fff";
+      divStyle.marginTop = "-" + ((option.top || 0) + 5) + "px";
+      this.triangle.style.borderColor = `${option.bgColor || "#fff"} transparent transparent`;
+    }
+    setPosition(position) {
+      this.position = position;
+      this.draw();
+    }
+    draw() {
+      const overlayProjection = this.getProjection();
+      if (!this.position || !this.div || !overlayProjection) {
+        return;
+      }
+      const pixel = overlayProjection.fromLatLngToDivPixel(
+        this.position
+      );
+      const divStyle = this.div.style;
+      divStyle.left = pixel.x + "px";
+      divStyle.top = pixel.y + "px";
+    }
+    changed() {
+      const divStyle = this.div.style;
+      divStyle.display = this.visible ? "block" : "none";
+    }
+  }
+  if (!getIsAMap() && !getIsBMap()) {
+    const overlay = new (maps2.OverlayView || maps2.Overlay)();
+    Callout.prototype.setMap = overlay.setMap;
+    Callout.prototype.getMap = overlay.getMap;
+    Callout.prototype.getPanes = overlay.getPanes;
+    Callout.prototype.getProjection = overlay.getProjection;
+    Callout.prototype.map_changed = overlay.map_changed;
+    Callout.prototype.set = overlay.set;
+    Callout.prototype.get = overlay.get;
+    Callout.prototype.setOptions = overlay.setValues;
+    Callout.prototype.bindTo = overlay.bindTo;
+    Callout.prototype.bindsTo = overlay.bindsTo;
+    Callout.prototype.notify = overlay.notify;
+    Callout.prototype.setValues = overlay.setValues;
+    Callout.prototype.unbind = overlay.unbind;
+    Callout.prototype.unbindAll = overlay.unbindAll;
+    Callout.prototype.addListener = overlay.addListener;
+  }
+  return Callout;
+}
+let maps;
+const callbacksMap = {};
+const GOOGLE_MAP_CALLBACKNAME = "__map_callback__";
+function loadMaps(libraries, callback) {
+  const mapInfo = getMapInfo();
+  if (!mapInfo.key) {
+    console.error("Map key not configured.");
+    return;
+  }
+  const callbacks2 = callbacksMap[mapInfo.type] = callbacksMap[mapInfo.type] || [];
+  if (maps) {
+    callback(maps);
+  } else if (window[mapInfo.type] && window[mapInfo.type].maps) {
+    maps = getIsAMap() || getIsBMap() ? window[mapInfo.type] : window[mapInfo.type].maps;
+    maps.Callout = maps.Callout || createCallout(maps);
+    callback(maps);
+  } else if (callbacks2.length) {
+    callbacks2.push(callback);
+  } else {
+    callbacks2.push(callback);
+    const globalExt = window;
+    const callbackName = GOOGLE_MAP_CALLBACKNAME + mapInfo.type;
+    globalExt[callbackName] = function() {
+      delete globalExt[callbackName];
+      maps = getIsAMap() || getIsBMap() ? window[mapInfo.type] : window[mapInfo.type].maps;
+      maps.Callout = createCallout(maps);
+      callbacks2.forEach((callback2) => callback2(maps));
+      callbacks2.length = 0;
+    };
+    if (getIsAMap()) {
+      handleAMapSecurityPolicy(mapInfo);
+    }
+    const script = document.createElement("script");
+    let src = getScriptBaseUrl(mapInfo.type);
+    if (mapInfo.type === MapType.QQ) {
+      libraries.push("geometry");
+    }
+    if (libraries.length) {
+      src += `libraries=${libraries.join("%2C")}&`;
+    }
+    if (mapInfo.type === MapType.BMAP) {
+      script.src = `${src}ak=${mapInfo.key}&callback=${callbackName}`;
+    } else {
+      script.src = `${src}key=${mapInfo.key}&callback=${callbackName}`;
+    }
+    script.onerror = function() {
+      console.error("Map load failed.");
+    };
+    document.body.appendChild(script);
+  }
+}
+const getScriptBaseUrl = (mapType) => {
+  const urlMap = {
+    qq: "https://map.qq.com/api/js?v=2.exp&",
+    google: "https://maps.googleapis.com/maps/api/js?",
+    AMap: "https://webapi.amap.com/maps?v=2.0&",
+    BMapGL: "https://api.map.baidu.com/api?type=webgl&v=1.0&"
+  };
+  return urlMap[mapType];
+};
+function handleAMapSecurityPolicy(mapInfo) {
+  window._AMapSecurityConfig = {
+    securityJsCode: mapInfo.securityJsCode || "",
+    serviceHost: mapInfo.serviceHost || ""
+  };
+}
 const ICON_PATH_LOCTAION = "M13.3334375 16 q0.033125 1.1334375 0.783125 1.8834375 q0.75 0.75 1.8834375 0.75 q1.1334375 0 1.8834375 -0.75 q0.75 -0.75 0.75 -1.8834375 q0 -1.1334375 -0.75 -1.8834375 q-0.75 -0.75 -1.8834375 -0.75 q-1.1334375 0 -1.8834375 0.75 q-0.75 0.75 -0.783125 1.8834375 ZM30.9334375 14.9334375 l-1.1334375 0 q-0.5 -5.2 -4.0165625 -8.716875 q-3.516875 -3.5165625 -8.716875 -4.0165625 l0 -1.1334375 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 l0 1.1334375 q-5.2 0.5 -8.716875 4.0165625 q-3.5165625 3.516875 -4.0165625 8.716875 l-1.1334375 0 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 l1.1334375 0 q0.5 5.2 4.0165625 8.716875 q3.516875 3.5165625 8.716875 4.0165625 l0 1.1334375 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 l0 -1.1334375 q5.2 -0.5 8.716875 -4.0165625 q3.5165625 -3.516875 4.0165625 -8.716875 l1.1334375 0 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 ZM17.0665625 27.6665625 l0 -2.0665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 l0 2.0665625 q-4.3 -0.4665625 -7.216875 -3.383125 q-2.916875 -2.916875 -3.3834375 -7.216875 l2.0665625 0 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 l-2.0665625 0 q0.4665625 -4.3 3.3834375 -7.216875 q2.9165625 -2.916875 7.216875 -3.3834375 l0 2.0665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 l0 -2.0665625 q4.3 0.4665625 7.216875 3.3834375 q2.9165625 2.9165625 3.383125 7.216875 l-2.0665625 0 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 l2.0665625 0 q-0.4665625 4.3 -3.383125 7.216875 q-2.916875 2.9165625 -7.216875 3.383125 Z";
 const ICON_PATH_ORIGIN = "data:image/png;base64,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";
 const ICON_PATH_TARGET = "data:image/png;base64,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";
@@ -16741,10 +16982,17 @@ var MapType = /* @__PURE__ */ ((MapType2) => {
   MapType2["QQ"] = "qq";
   MapType2["GOOGLE"] = "google";
   MapType2["AMAP"] = "AMap";
+  MapType2["BMAP"] = "BMapGL";
   MapType2["UNKNOWN"] = "";
   return MapType2;
 })(MapType || {});
 function getMapInfo() {
+  if (__uniConfig.bMapKey) {
+    return {
+      type: "BMapGL",
+      key: __uniConfig.bMapKey
+    };
+  }
   if (__uniConfig.qqMapKey) {
     return {
       type: "qq",
@@ -16779,6 +17027,9 @@ const getIsAMap = () => {
     hasGetIsAMap = true;
     return IS_AMAP = getMapInfo().type === "AMap";
   }
+};
+const getIsBMap = () => {
+  return getMapInfo().type === "BMapGL";
 };
 function translateCoordinateSystem(type, coords, skip) {
   const mapInfo = getMapInfo();
@@ -16843,225 +17094,6 @@ function translateCoordinateSystem(type, coords, skip) {
     });
   }
   return Promise.reject(new Error("translate coordinate system faild"));
-}
-function createCallout(maps2) {
-  function onAdd() {
-    const div = this.div;
-    const panes = this.getPanes();
-    panes.floatPane.appendChild(div);
-  }
-  function onRemove() {
-    const parentNode = this.div.parentNode;
-    if (parentNode) {
-      parentNode.removeChild(this.div);
-    }
-  }
-  function createAMapText() {
-    const option = this.option;
-    this.Text = new maps2.Text({
-      text: option.content,
-      anchor: "bottom-center",
-      // 设置文本标记锚点
-      offset: new maps2.Pixel(0, option.offsetY - 16),
-      style: {
-        padding: (option.padding || 8) + "px",
-        "line-height": (option.fontSize || 14) + "px",
-        "border-radius": (option.borderRadius || 0) + "px",
-        "border-color": `${option.bgColor || "#fff"} transparent transparent`,
-        "background-color": option.bgColor || "#fff",
-        "box-shadow": "0 2px 6px 0 rgba(114, 124, 245, .5)",
-        "text-align": "center",
-        "font-size": (option.fontSize || 14) + "px",
-        color: option.color || "#000"
-      },
-      position: option.position
-    });
-    const event = maps2.event || maps2.Event;
-    event.addListener(this.Text, "click", () => {
-      this.callback();
-    });
-    this.Text.setMap(option.map);
-  }
-  function removeAMapText() {
-    if (this.Text) {
-      this.option.map.remove(this.Text);
-    }
-  }
-  class Callout {
-    constructor(option = {}, callback) {
-      this.createAMapText = createAMapText;
-      this.removeAMapText = removeAMapText;
-      this.onAdd = onAdd;
-      this.construct = onAdd;
-      this.onRemove = onRemove;
-      this.destroy = onRemove;
-      this.option = option || {};
-      const visible = this.visible = this.alwaysVisible = option.display === "ALWAYS";
-      if (getIsAMap()) {
-        this.callback = callback;
-        if (this.visible) {
-          this.createAMapText();
-        }
-      } else {
-        const map = option.map;
-        this.position = option.position;
-        this.index = 1;
-        const div = this.div = document.createElement("div");
-        const divStyle = div.style;
-        divStyle.position = "absolute";
-        divStyle.whiteSpace = "nowrap";
-        divStyle.transform = "translateX(-50%) translateY(-100%)";
-        divStyle.zIndex = "1";
-        divStyle.boxShadow = option.boxShadow || "none";
-        divStyle.display = visible ? "block" : "none";
-        const triangle = this.triangle = document.createElement("div");
-        triangle.setAttribute(
-          "style",
-          "position: absolute;white-space: nowrap;border-width: 4px;border-style: solid;border-color: #fff transparent transparent;border-image: initial;font-size: 12px;padding: 0px;background-color: transparent;width: 0px;height: 0px;transform: translate(-50%, 100%);left: 50%;bottom: 0;"
-        );
-        this.setStyle(option);
-        div.appendChild(triangle);
-        if (map) {
-          this.setMap(map);
-        }
-      }
-    }
-    set onclick(callback) {
-      this.div.onclick = callback;
-    }
-    get onclick() {
-      return this.div.onclick;
-    }
-    setOption(option) {
-      this.option = option;
-      if (option.display === "ALWAYS") {
-        this.alwaysVisible = this.visible = true;
-      } else {
-        this.alwaysVisible = false;
-      }
-      if (getIsAMap()) {
-        if (this.visible) {
-          this.createAMapText();
-        }
-      } else {
-        this.setPosition(option.position);
-        this.setStyle(option);
-      }
-    }
-    setStyle(option) {
-      const div = this.div;
-      const divStyle = div.style;
-      div.innerText = option.content || "";
-      divStyle.lineHeight = (option.fontSize || 14) + "px";
-      divStyle.fontSize = (option.fontSize || 14) + "px";
-      divStyle.padding = (option.padding || 8) + "px";
-      divStyle.color = option.color || "#000";
-      divStyle.borderRadius = (option.borderRadius || 0) + "px";
-      divStyle.backgroundColor = option.bgColor || "#fff";
-      divStyle.marginTop = "-" + ((option.top || 0) + 5) + "px";
-      this.triangle.style.borderColor = `${option.bgColor || "#fff"} transparent transparent`;
-    }
-    setPosition(position) {
-      this.position = position;
-      this.draw();
-    }
-    draw() {
-      const overlayProjection = this.getProjection();
-      if (!this.position || !this.div || !overlayProjection) {
-        return;
-      }
-      const pixel = overlayProjection.fromLatLngToDivPixel(
-        this.position
-      );
-      const divStyle = this.div.style;
-      divStyle.left = pixel.x + "px";
-      divStyle.top = pixel.y + "px";
-    }
-    changed() {
-      const divStyle = this.div.style;
-      divStyle.display = this.visible ? "block" : "none";
-    }
-  }
-  if (!getIsAMap()) {
-    const overlay = new (maps2.OverlayView || maps2.Overlay)();
-    Callout.prototype.setMap = overlay.setMap;
-    Callout.prototype.getMap = overlay.getMap;
-    Callout.prototype.getPanes = overlay.getPanes;
-    Callout.prototype.getProjection = overlay.getProjection;
-    Callout.prototype.map_changed = overlay.map_changed;
-    Callout.prototype.set = overlay.set;
-    Callout.prototype.get = overlay.get;
-    Callout.prototype.setOptions = overlay.setValues;
-    Callout.prototype.bindTo = overlay.bindTo;
-    Callout.prototype.bindsTo = overlay.bindsTo;
-    Callout.prototype.notify = overlay.notify;
-    Callout.prototype.setValues = overlay.setValues;
-    Callout.prototype.unbind = overlay.unbind;
-    Callout.prototype.unbindAll = overlay.unbindAll;
-    Callout.prototype.addListener = overlay.addListener;
-  }
-  return Callout;
-}
-let maps;
-const callbacksMap = {};
-const GOOGLE_MAP_CALLBACKNAME = "__map_callback__";
-function loadMaps(libraries, callback) {
-  const mapInfo = getMapInfo();
-  if (!mapInfo.key) {
-    console.error("Map key not configured.");
-    return;
-  }
-  const callbacks2 = callbacksMap[mapInfo.type] = callbacksMap[mapInfo.type] || [];
-  if (maps) {
-    callback(maps);
-  } else if (window[mapInfo.type] && window[mapInfo.type].maps) {
-    maps = getIsAMap() ? window[mapInfo.type] : window[mapInfo.type].maps;
-    maps.Callout = maps.Callout || createCallout(maps);
-    callback(maps);
-  } else if (callbacks2.length) {
-    callbacks2.push(callback);
-  } else {
-    callbacks2.push(callback);
-    const globalExt = window;
-    const callbackName = GOOGLE_MAP_CALLBACKNAME + mapInfo.type;
-    globalExt[callbackName] = function() {
-      delete globalExt[callbackName];
-      maps = getIsAMap() ? window[mapInfo.type] : window[mapInfo.type].maps;
-      maps.Callout = createCallout(maps);
-      callbacks2.forEach((callback2) => callback2(maps));
-      callbacks2.length = 0;
-    };
-    if (getIsAMap()) {
-      handleAMapSecurityPolicy(mapInfo);
-    }
-    const script = document.createElement("script");
-    let src = getScriptBaseUrl(mapInfo.type);
-    if (mapInfo.type === MapType.QQ) {
-      libraries.push("geometry");
-    }
-    if (libraries.length) {
-      src += `libraries=${libraries.join("%2C")}&`;
-    }
-    script.src = `${src}key=${mapInfo.key}&callback=${callbackName}`;
-    script.onerror = function() {
-      console.error("Map load failed.");
-    };
-    document.body.appendChild(script);
-  }
-}
-const getScriptBaseUrl = (mapType) => {
-  const urlMap = {
-    qq: "https://map.qq.com/api/js?v=2.exp&",
-    google: "https://maps.googleapis.com/maps/api/js?",
-    AMap: "https://webapi.amap.com/maps?v=2.0&"
-  };
-  return urlMap[mapType];
-};
-function handleAMapSecurityPolicy(mapInfo) {
-  window._AMapSecurityConfig = {
-    securityJsCode: mapInfo.securityJsCode || "",
-    serviceHost: mapInfo.serviceHost || ""
-  };
 }
 const props$e = {
   id: {
@@ -17176,7 +17208,14 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
     onMapReady((map, maps2, trigger) => {
       function updateMarker(option) {
         const title = option.title;
-        const position = getIsAMap() ? new maps2.LngLat(option.longitude, option.latitude) : new maps2.LatLng(option.latitude, option.longitude);
+        let position;
+        if (getIsAMap()) {
+          position = new maps2.LngLat(option.longitude, option.latitude);
+        } else if (getIsBMap()) {
+          position = new maps2.Point(option.longitude, option.latitude);
+        } else {
+          position = new maps2.LatLng(option.latitude, option.longitude);
+        }
         const img = new Image();
         let imgHeight = 0;
         img.onload = () => {
@@ -17212,8 +17251,13 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
               size: new maps2.Size(w, h2)
             };
           }
-          marker.setPosition(position);
-          marker.setIcon(icon);
+          if (getIsBMap()) {
+            marker = new maps2.Marker(new maps2.Point(position.lng, position.lat));
+            map.addOverlay(marker);
+          } else {
+            marker.setPosition(position);
+            marker.setIcon(icon);
+          }
           if ("setRotation" in marker) {
             marker.setRotation(option.rotate || 0);
           }
@@ -17357,41 +17401,47 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
         }
       }
       function addMarker(props3) {
-        marker = new maps2.Marker({
-          map,
-          flat: true,
-          autoRotation: false
-        });
+        if (!getIsBMap()) {
+          marker = new maps2.Marker({
+            map,
+            flat: true,
+            autoRotation: false
+          });
+        }
         updateMarker(props3);
         const MapsEvent = maps2.event || maps2.Event;
-        MapsEvent.addListener(marker, "click", () => {
-          const callout = marker.callout;
-          if (callout && !callout.alwaysVisible) {
-            if (getIsAMap()) {
-              callout.visible = !callout.visible;
-              if (callout.visible) {
-                marker.callout.createAMapText();
+        if (getIsBMap())
+          ;
+        else {
+          MapsEvent.addListener(marker, "click", () => {
+            const callout = marker.callout;
+            if (callout && !callout.alwaysVisible) {
+              if (getIsAMap()) {
+                callout.visible = !callout.visible;
+                if (callout.visible) {
+                  marker.callout.createAMapText();
+                } else {
+                  marker.callout.removeAMapText();
+                }
               } else {
-                marker.callout.removeAMapText();
-              }
-            } else {
-              callout.set("visible", !callout.visible);
-              if (callout.visible) {
-                const div = callout.div;
-                const parent = div.parentNode;
-                parent.removeChild(div);
-                parent.appendChild(div);
+                callout.set("visible", !callout.visible);
+                if (callout.visible) {
+                  const div = callout.div;
+                  const parent = div.parentNode;
+                  parent.removeChild(div);
+                  parent.appendChild(div);
+                }
               }
             }
-          }
-          if (id2) {
-            trigger("markertap", {}, {
-              markerId: Number(id2),
-              latitude: props3.latitude,
-              longitude: props3.longitude
-            });
-          }
-        });
+            if (id2) {
+              trigger("markertap", {}, {
+                markerId: Number(id2),
+                latitude: props3.latitude,
+                longitude: props3.longitude
+              });
+            }
+          });
+        }
       }
       addMarker(props2);
       watch(props2, updateMarker);
@@ -17575,7 +17625,14 @@ const MapPolyline = /* @__PURE__ */ defineSystemComponent({
       function addPolyline(option) {
         const path = [];
         option.points.forEach((point) => {
-          const pointPosition = getIsAMap() ? [point.longitude, point.latitude] : new maps2.LatLng(point.latitude, point.longitude);
+          let pointPosition;
+          if (getIsAMap()) {
+            pointPosition = [point.longitude, point.latitude];
+          } else if (getIsBMap()) {
+            pointPosition = new maps2.Point(point.longitude, point.latitude);
+          } else {
+            pointPosition = new maps2.LatLng(point.latitude, point.longitude);
+          }
           path.push(pointPosition);
         });
         const strokeWeight = Number(option.width) || 1;
@@ -17620,7 +17677,12 @@ const MapPolyline = /* @__PURE__ */ defineSystemComponent({
         if (borderWidth) {
           polylineBorder = new maps2.Polyline(polylineBorderOptions);
         }
-        polyline = new maps2.Polyline(polylineOptions);
+        if (getIsBMap()) {
+          polyline = new maps2.Polyline(polylineOptions.path, polylineOptions);
+          map.addOverlay(polyline);
+        } else {
+          polyline = new maps2.Polyline(polylineOptions);
+        }
       }
       addPolyline(props2);
       watch(props2, updatePolyline);
@@ -17678,7 +17740,7 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
         addCircle(option);
       }
       function addCircle(option) {
-        const center = getIsAMap() ? [option.longitude, option.latitude] : new maps2.LatLng(option.latitude, option.longitude);
+        const center = getIsAMap() || getIsBMap() ? [option.longitude, option.latitude] : new maps2.LatLng(option.latitude, option.longitude);
         const circleOptions = {
           map,
           center,
@@ -17687,7 +17749,7 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
           strokeWeight: Number(option.strokeWidth) || 1,
           strokeDashStyle: "solid"
         };
-        if (getIsAMap()) {
+        if (getIsAMap() || getIsBMap()) {
           circleOptions.strokeColor = option.color;
           circleOptions.fillColor = option.fillColor || "#000";
           circleOptions.fillOpacity = 1;
@@ -17714,9 +17776,20 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
             circleOptions.strokeOpacity = sa;
           }
         }
-        circle = new maps2.Circle(circleOptions);
-        if (getIsAMap()) {
-          map.add(circle);
+        if (getIsBMap()) {
+          let pt = new maps2.Point(
+            // @ts-ignore
+            circleOptions.center[0],
+            // @ts-ignore
+            circleOptions.center[1]
+          );
+          circle = new maps2.Circle(pt, circleOptions.radius, circleOptions);
+          map.addOverlay(circle);
+        } else {
+          circle = new maps2.Circle(circleOptions);
+          if (getIsAMap()) {
+            map.add(circle);
+          }
         }
       }
       addCircle(props2);
@@ -23099,7 +23172,13 @@ const MapPolygon = /* @__PURE__ */ defineSystemComponent({
             latitude,
             longitude
           } = item;
-          return getIsAMap() ? [longitude, latitude] : new maps2.LatLng(latitude, longitude);
+          if (getIsAMap()) {
+            return [longitude, latitude];
+          } else if (getIsBMap()) {
+            return new maps2.Point(longitude, latitude);
+          } else {
+            return new maps2.LatLng(latitude, longitude);
+          }
         });
         const {
           r: fcR,
@@ -23151,7 +23230,12 @@ const MapPolygon = /* @__PURE__ */ defineSystemComponent({
           polygonIns.setOptions(polygonOptions);
           return;
         }
-        polygonIns = new maps2.Polygon(polygonOptions);
+        if (getIsBMap()) {
+          polygonIns = new maps2.Polygon(polygonOptions.path, polygonOptions);
+          map.addOverlay(polygonIns);
+        } else {
+          polygonIns = new maps2.Polygon(polygonOptions);
+        }
       }
       drawPolygon();
       watch(props2, drawPolygon);
@@ -23241,16 +23325,28 @@ function getPoints(points) {
 function getAMapPosition(maps2, latitude, longitude) {
   return new maps2.LngLat(longitude, latitude);
 }
+function getBMapPosition(maps2, latitude, longitude) {
+  return new maps2.Point(longitude, latitude);
+}
 function getGoogleOrQQMapPosition(maps2, latitude, longitude) {
   return new maps2.LatLng(latitude, longitude);
 }
 function getMapPosition(maps2, latitude, longitude) {
-  return getIsAMap() ? getAMapPosition(maps2, latitude, longitude) : getGoogleOrQQMapPosition(maps2, latitude, longitude);
+  if (getIsBMap()) {
+    return getBMapPosition(maps2, latitude, longitude);
+  } else if (getIsAMap()) {
+    return getAMapPosition(maps2, latitude, longitude);
+  } else {
+    return getGoogleOrQQMapPosition(maps2, latitude, longitude);
+  }
 }
 function getLat(latLng) {
   if ("getLat" in latLng) {
     return latLng.getLat();
   } else {
+    if (getIsBMap()) {
+      return latLng.lat;
+    }
     return latLng.lat();
   }
 }
@@ -23258,6 +23354,9 @@ function getLng(latLng) {
   if ("getLng" in latLng) {
     return latLng.getLng();
   } else {
+    if (getIsBMap()) {
+      return latLng.lng;
+    }
     return latLng.lng();
   }
 }
@@ -23348,7 +23447,9 @@ function useMap(props2, rootRef, emit2) {
       });
       const bounds = new maps2.Bounds(...points);
       map.setBounds(bounds);
-    } else {
+    } else if (getIsBMap())
+      ;
+    else {
       const bounds = new maps2.LatLngBounds();
       state2.includePoints.forEach(({
         latitude,
@@ -23380,6 +23481,11 @@ function useMap(props2, rootRef, emit2) {
       maxZoom: 18,
       draggable: true
     });
+    if (getIsBMap()) {
+      map2.centerAndZoom(center, Number(props2.scale));
+      map2.enableScrollWheelZoom();
+      map2._printLog && map2._printLog("uniapp");
+    }
     watch(() => props2.scale, (scale) => {
       map2.setZoom(Number(scale) || 16);
     });
@@ -23389,42 +23495,61 @@ function useMap(props2, rootRef, emit2) {
         updateCenter();
       }
     });
-    const boundsChangedEvent = event.addListener(map2, "bounds_changed", () => {
-      boundsChangedEvent.remove();
-      emitBoundsReady();
-    });
-    event.addListener(map2, "click", () => {
-      trigger("tap", {}, {});
-      trigger("click", {}, {});
-    });
-    event.addListener(map2, "dragstart", () => {
-      trigger("regionchange", {}, {
-        type: "begin",
-        causedBy: "gesture"
+    if (getIsBMap()) {
+      map2.addEventListener("click", () => {
+        trigger("tap", {}, {});
+        trigger("click", {}, {});
       });
-    });
-    event.addListener(map2, "dragend", () => {
-      trigger("regionchange", {}, extend({
-        type: "end",
-        causedBy: "drag"
-      }, getMapInfo2()));
-    });
-    const zoomChangedCallback = () => {
-      emit2("update:scale", map2.getZoom());
-      trigger("regionchange", {}, extend({
-        type: "end",
-        causedBy: "scale"
-      }, getMapInfo2()));
-    };
-    event.addListener(map2, "zoom_changed", zoomChangedCallback);
-    event.addListener(map2, "zoomend", zoomChangedCallback);
-    event.addListener(map2, "center_changed", () => {
-      const center2 = map2.getCenter();
-      const latitude = getLat(center2);
-      const longitude = getLng(center2);
-      emit2("update:latitude", latitude);
-      emit2("update:longitude", longitude);
-    });
+      map2.addEventListener("dragstart", () => {
+        trigger("regionchange", {}, {
+          type: "begin",
+          causedBy: "gesture"
+        });
+      });
+      map2.addEventListener("dragend", () => {
+        trigger("regionchange", {}, extend({
+          type: "end",
+          causedBy: "drag"
+        }, getMapInfo2()));
+      });
+    } else {
+      const boundsChangedEvent = event.addListener(map2, "bounds_changed", () => {
+        boundsChangedEvent.remove();
+        emitBoundsReady();
+      });
+      event.addListener(map2, "click", () => {
+        trigger("tap", {}, {});
+        trigger("click", {}, {});
+      });
+      event.addListener(map2, "dragstart", () => {
+        trigger("regionchange", {}, {
+          type: "begin",
+          causedBy: "gesture"
+        });
+      });
+      event.addListener(map2, "dragend", () => {
+        trigger("regionchange", {}, extend({
+          type: "end",
+          causedBy: "drag"
+        }, getMapInfo2()));
+      });
+      const zoomChangedCallback = () => {
+        emit2("update:scale", map2.getZoom());
+        trigger("regionchange", {}, extend({
+          type: "end",
+          causedBy: "scale"
+        }, getMapInfo2()));
+      };
+      event.addListener(map2, "zoom_changed", zoomChangedCallback);
+      event.addListener(map2, "zoomend", zoomChangedCallback);
+      event.addListener(map2, "center_changed", () => {
+        const center2 = map2.getCenter();
+        const latitude = getLat(center2);
+        const longitude = getLng(center2);
+        emit2("update:latitude", latitude);
+        emit2("update:longitude", longitude);
+      });
+    }
     return map2;
   }
   try {

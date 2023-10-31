@@ -1,3 +1,4 @@
+// 重要：此文件编译后的js，需同步至 vue2 编译器中 uni-cli-shared/lib/uts/uni_modules.js
 import path from 'path'
 import fs from 'fs-extra'
 import type { UTSTargetLanguage } from './uts'
@@ -110,6 +111,9 @@ export function parseInjects(
   uniModuleRootDir: string,
   exports: Exports = {}
 ) {
+  if (platform === 'app-plus') {
+    platform = 'app'
+  }
   let rootDefines: Defines = {}
   Object.keys(exports).forEach((name) => {
     if (name.startsWith('uni')) {
@@ -118,10 +122,19 @@ export function parseInjects(
   })
   const injects: Injects = {}
   if (Object.keys(rootDefines).length) {
-    const hasPlatformFile = uniModuleRootDir
+    let hasPlatformFile = uniModuleRootDir
       ? fs.existsSync(path.resolve(uniModuleRootDir, 'utssdk', 'index.uts')) ||
         fs.existsSync(path.resolve(uniModuleRootDir, 'utssdk', platform))
       : true
+    if (!hasPlatformFile) {
+      if (platform === 'app') {
+        hasPlatformFile =
+          fs.existsSync(
+            path.resolve(uniModuleRootDir, 'utssdk', 'app-android')
+          ) ||
+          fs.existsSync(path.resolve(uniModuleRootDir, 'utssdk', 'app-ios'))
+      }
+    }
 
     for (const key in rootDefines) {
       Object.assign(

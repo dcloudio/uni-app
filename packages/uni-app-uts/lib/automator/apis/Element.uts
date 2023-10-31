@@ -226,8 +226,8 @@ export const callFunction = (
         if (element.tagName == 'SCROLL-VIEW') {
           // @ts-ignore
           const arg = JSON.parse<Coordinate>(JSON.stringify(params.args[0]))!
-          element.setAttribute('scrollLeft', arg.x)
-          element.setAttribute('scrollTop', arg.y)
+          element.scrollLeft = arg.x
+          element.scrollTop = arg.y
           callback({ result: `${functionName} success` }, null)
         } else {
           callback(

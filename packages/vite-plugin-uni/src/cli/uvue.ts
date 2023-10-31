@@ -26,6 +26,9 @@ export function initUVueEnv() {
     return
   }
   process.env.UNI_APP_X = 'true'
+  if (manifestJson['uni-app-x']?.singleThread === false) {
+    process.env.UNI_APP_X_SINGLE_THREAD = 'false'
+  }
 }
 
 export async function runUVueDev(options: CliOptions & ServerOptions) {

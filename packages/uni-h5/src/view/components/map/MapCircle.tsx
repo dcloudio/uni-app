@@ -2,7 +2,7 @@ import { inject, onUnmounted, watch } from 'vue'
 import { defineSystemComponent, useCustomEvent } from '@dcloudio/uni-components'
 import { Maps, Map, Circle, CircleOptions } from './maps'
 import { hexToRgba } from '../../../helpers/hexToRgba'
-import { getIsAMap } from '../../../helpers/location'
+import { getIsAMap, getIsBMap } from '../../../helpers/location'
 import { QQMaps } from './maps/qq/types'
 import { GoogleMaps } from './maps/google/types'
 
@@ -42,12 +42,13 @@ export default /*#__PURE__*/ defineSystemComponent({
         addCircle(option)
       }
       function addCircle(option: Props) {
-        const center = getIsAMap()
-          ? [option.longitude, option.latitude]
-          : new (maps as QQMaps | GoogleMaps).LatLng(
-              option.latitude,
-              option.longitude
-            )
+        const center =
+          getIsAMap() || getIsBMap()
+            ? [option.longitude, option.latitude]
+            : new (maps as QQMaps | GoogleMaps).LatLng(
+                option.latitude,
+                option.longitude
+              )
         const circleOptions: CircleOptions = {
           map: map as any,
           center: center as any,
@@ -56,7 +57,7 @@ export default /*#__PURE__*/ defineSystemComponent({
           strokeWeight: Number(option.strokeWidth) || 1,
           strokeDashStyle: 'solid',
         }
-        if (getIsAMap()) {
+        if (getIsAMap() || getIsBMap()) {
           circleOptions.strokeColor = option.color
           circleOptions.fillColor = option.fillColor || '#000'
           circleOptions.fillOpacity = 1
@@ -73,9 +74,23 @@ export default /*#__PURE__*/ defineSystemComponent({
             circleOptions.strokeOpacity = sa
           }
         }
-        circle = new maps.Circle(circleOptions)
-        if (getIsAMap()) {
-          ;(map as AMap.Map).add(circle as any)
+        if (getIsBMap()) {
+          // @ts-ignore
+          let pt = new maps.Point(
+            // @ts-ignore
+            circleOptions.center[0],
+            // @ts-ignore
+            circleOptions.center[1]
+          )
+          // @ts-ignore
+          circle = new maps.Circle(pt, circleOptions.radius, circleOptions)
+          // @ts-ignore
+          map.addOverlay(circle)
+        } else {
+          circle = new maps.Circle(circleOptions)
+          if (getIsAMap()) {
+            ;(map as AMap.Map).add(circle as any)
+          }
         }
       }
       addCircle(props as Props)

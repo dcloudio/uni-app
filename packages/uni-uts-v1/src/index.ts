@@ -16,6 +16,7 @@ import {
 
 import {
   FORMATS,
+  GenProxyCodeOptions,
   genProxyCode,
   resolvePlatformIndex,
   resolvePlatformIndexFilename,
@@ -47,7 +48,7 @@ import { cacheTips } from './manifest/utils'
 import { compileEncrypt, isEncrypt } from './encrypt'
 import { UTSOutputOptions } from '@dcloudio/uts'
 
-export { uts2js } from './javascript'
+export * from './tsc'
 
 export const sourcemap = {
   generateCodeFrameWithKotlinStacktrace,
@@ -102,12 +103,14 @@ function createResult(
 interface CompilerOptions {
   isX: boolean
   isPlugin: boolean
+  isSingleThread: boolean
   isExtApi?: boolean
   extApis?: Record<string, [string, string]>
   transform?: UTSOutputOptions['transform']
   sourceMap?: boolean
 }
 
+// 重要：当调整参数时，需要同步调整 vue2 编译器 uni-cli-shared/lib/uts/uts-loader.js
 export async function compile(
   pluginDir: string,
   {
@@ -117,9 +120,11 @@ export async function compile(
     isExtApi,
     transform,
     sourceMap,
+    isSingleThread,
   }: CompilerOptions = {
     isX: false,
     isPlugin: true,
+    isSingleThread: true,
   }
 ): Promise<CompileResult | void> {
   const pkg = resolvePackage(pluginDir)
@@ -152,28 +157,25 @@ export async function compile(
     typeParams: [],
     components: [],
   }
-
-  const code = await genProxyCode(
-    pluginDir,
-    extend(
-      {
-        androidComponents,
-        iosComponents,
-        format:
-          process.env.UNI_UTS_JS_CODE_FORMAT === 'cjs'
-            ? FORMATS.CJS
-            : FORMATS.ES,
-        pluginRelativeDir,
-        moduleName:
-          require(join(pluginDir, 'package.json')).displayName || pkg.id,
-        moduleType: process.env.UNI_UTS_MODULE_TYPE || '',
-        meta,
-        inputDir,
-        isExtApi,
-      },
-      pkg
-    )
+  const proxyCodeOptions: GenProxyCodeOptions = extend(
+    {
+      androidComponents,
+      iosComponents,
+      format:
+        process.env.UNI_UTS_JS_CODE_FORMAT === 'cjs' ? FORMATS.CJS : FORMATS.ES,
+      pluginRelativeDir,
+      moduleName:
+        require(join(pluginDir, 'package.json')).displayName || pkg.id,
+      moduleType: process.env.UNI_UTS_MODULE_TYPE || '',
+      meta,
+      inputDir,
+      isExtApi,
+    },
+    pkg
   )
+
+  const code = await genProxyCode(pluginDir, proxyCodeOptions)
+
   let errMsg = ''
   if (process.env.NODE_ENV !== 'development') {
     // 生产模式 支持同时生成 android 和 ios 的 uts 插件
@@ -187,10 +189,12 @@ export async function compile(
       if (filename) {
         await getCompiler('kotlin').runProd(filename, androidComponents, {
           isX,
+          isSingleThread,
           isPlugin,
           extApis,
           transform,
           sourceMap: !!sourceMap,
+          hookClass: proxyCodeOptions.androidHookClass || '',
         })
         if (cacheDir) {
           // 存储 sourcemap
@@ -221,10 +225,12 @@ export async function compile(
       if (filename) {
         await getCompiler('swift').runProd(filename, iosComponents, {
           isX,
+          isSingleThread,
           isPlugin,
           extApis,
           transform,
           sourceMap: !!sourceMap,
+          hookClass: proxyCodeOptions.iOSHookClass || '',
         })
         if (cacheDir) {
           storeSourceMap(
@@ -306,6 +312,9 @@ export async function compile(
           // 处理 config.json
           genConfigJson(
             utsPlatform,
+            (utsPlatform === 'app-android'
+              ? proxyCodeOptions.androidHookClass
+              : proxyCodeOptions.iOSHookClass) || '',
             components,
             pluginRelativeDir,
             pkg.is_uni_modules,
@@ -349,6 +358,9 @@ export async function compile(
         // 处理 config.json
         genConfigJson(
           utsPlatform,
+          (utsPlatform === 'app-android'
+            ? proxyCodeOptions.androidHookClass
+            : proxyCodeOptions.iOSHookClass) || '',
           components,
           pluginRelativeDir,
           pkg.is_uni_modules,
@@ -358,6 +370,7 @@ export async function compile(
         const res = await getCompiler(compilerType).runDev(filename, {
           components,
           isX,
+          isSingleThread,
           isPlugin,
           cacheDir,
           pluginRelativeDir,
@@ -375,19 +388,23 @@ export async function compile(
           if (res.type === 'swift') {
             if (res.code) {
               errMsg = compileErrMsg(pkg.id)
-              console.error(
-                `error: ` +
-                  (await parseUTSSwiftPluginStacktrace({
-                    stacktrace: res.msg,
-                    sourceMapFile: resolveUTSPluginSourceMapFile(
-                      'swift',
-                      filename,
-                      inputDir,
-                      outputDir
-                    ),
-                    sourceRoot: inputDir,
-                  }))
-              )
+              try {
+                console.error(
+                  `error: ` +
+                    (await parseUTSSwiftPluginStacktrace({
+                      stacktrace: res.msg,
+                      sourceMapFile: resolveUTSPluginSourceMapFile(
+                        'swift',
+                        filename,
+                        inputDir,
+                        outputDir
+                      ),
+                      sourceRoot: inputDir,
+                    }))
+                )
+              } catch (e) {
+                console.error(`error: ` + res.msg)
+              }
             } else {
               isSuccess = true
             }
