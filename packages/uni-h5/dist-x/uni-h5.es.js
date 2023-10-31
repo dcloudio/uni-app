@@ -15331,20 +15331,15 @@ function pruneRouteCache(key) {
 }
 function updateCurPageAttrs(pageMeta) {
   {
-    const nvueDirKey = "nvue-dir-" + __uniConfig.nvue["flex-direction"];
-    if (pageMeta.isNVue) {
-      document.body.setAttribute("nvue", "");
-      document.body.setAttribute(nvueDirKey, "");
-    } else {
-      document.body.removeAttribute("nvue");
-      document.body.removeAttribute(nvueDirKey);
-    }
+    const uvueDirKey = "uvue-dir-" + __uniConfig.uvue["flex-direction"];
+    document.body.setAttribute("uvue", "");
+    document.body.setAttribute(uvueDirKey, "");
   }
 }
 function onPageShow(instance2, pageMeta) {
   updateBodyScopeId(instance2);
   updateCurPageCssVar(pageMeta);
-  updateCurPageAttrs(pageMeta);
+  updateCurPageAttrs();
   initPageScrollListener(instance2, pageMeta);
 }
 function onPageReady(instance2) {

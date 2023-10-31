@@ -19,7 +19,7 @@ function resolve(file: string) {
 }
 
 const FORMAT = process.env.FORMAT as 'es' | 'cjs'
-
+const isX = process.env.UNI_APP_X === 'true'
 const rollupPlugins = [
   replace({
     values: {
@@ -69,6 +69,7 @@ export default defineConfig({
     __PLATFORM__: JSON.stringify('h5'),
     __APP_VIEW__: false,
     __NODE_JS__: FORMAT === 'cjs' ? true : false,
+    __X__: isX,
   },
   resolve: {
     alias: [
@@ -120,6 +121,7 @@ export default defineConfig({
     assetsDir: '.',
     rollupOptions: {
       output: {
+        dir: isX ? 'dist-x' : 'dist',
         freeze: false, // uni 对象需要可被修改
         entryFileNames: 'uni-h5.' + FORMAT + '.js',
       },

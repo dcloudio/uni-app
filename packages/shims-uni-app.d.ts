@@ -51,6 +51,9 @@ declare namespace UniNamespace {
     nvue?: {
       'flex-direction': 'column' | 'row'
     }
+    uvue?: {
+      'flex-direction': 'column' | 'row'
+    }
     globalStyle: PagesJsonPageStyle & {
       rpxCalcMaxDeviceWidth?: number
       rpxCalcBaseDeviceWidth?: number

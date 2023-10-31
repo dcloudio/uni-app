@@ -1,4 +1,5 @@
 dist
+dist-x
 packages/uni-app-plus/lib
 packages/uni-app-vite/lib
 packages/uni-app-vue/lib

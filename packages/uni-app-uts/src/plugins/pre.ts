@@ -18,7 +18,7 @@ const debugPreHtml = debug('uni:pre-html')
 const debugPreJsTry = debug('uni:pre-js-try')
 
 const PRE_HTML_EXTNAME = ['.vue', '.uvue']
-const PRE_JS_EXTNAME = ['.json', '.css', '.uts'].concat(PRE_HTML_EXTNAME)
+const PRE_JS_EXTNAME = ['.json', '.css', '.uts', '.ts'].concat(PRE_HTML_EXTNAME)
 
 export function uniPrePlugin(options: UniPrePluginOptions = {}): Plugin {
   const filter = createFilter(options.include, options.exclude)

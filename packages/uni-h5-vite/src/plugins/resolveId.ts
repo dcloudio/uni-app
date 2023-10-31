@@ -14,7 +14,11 @@ export function uniResolveIdPlugin(): Plugin {
     enforce: 'pre',
     config() {
       resolveCache[ownerModuleName] = resolveBuiltIn(
-        path.join(ownerModuleName, 'dist/uni-h5.es.js')
+        path.join(
+          ownerModuleName,
+          (process.env.UNI_APP_X === 'true' ? 'dist-x' : 'dist') +
+            '/uni-h5.es.js'
+        )
       )
       resolveCache['@dcloudio/uni-h5-vue'] = resolveBuiltIn(
         path.join(
