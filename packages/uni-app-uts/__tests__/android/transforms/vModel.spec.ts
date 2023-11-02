@@ -141,6 +141,15 @@ return $event.detail.value.trim();}
 }), null, 8 /* PROPS */, [\"modelValue\", \"onUpdate:modelValue\"])`
     )
   })
+  test('complex expressions wrapped in ()', () => {
+    assert(
+      `<my-input v-model="(obj.str as string)" />`,
+      `createVNode(_component_my_input, utsMapOf({
+  modelValue: (_ctx.obj.str),
+  \"onUpdate:modelValue\": ($event: string) => {((_ctx.obj.str)) = $event}
+}), null, 8 /* PROPS */, [\"modelValue\", \"onUpdate:modelValue\"])`
+    )
+  })
 
   test('simple expression', () => {
     const root = parseWithVModel('<input v-model="model" />')
