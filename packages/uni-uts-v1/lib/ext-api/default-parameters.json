@@ -15,6 +15,12 @@
       "null"
     ]
   },
+  "uni-": {
+    "removeInterceptor": [
+      null,
+      "null"
+    ]
+  },
   "uni-storage": {
     "clearStorage": [
       "null"
