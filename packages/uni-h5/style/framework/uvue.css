@@ -26,13 +26,6 @@
 }
 
 [uvue] uni-text,
-[uvue] uni-button,
-[uvue] uni-input,
-[uvue] uni-textarea {
-  lines: -1;
-}
-
-[uvue] uni-text,
 [uvue] uni-button {
   letter-spacing: 0;
 }
