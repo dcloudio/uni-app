@@ -99,9 +99,16 @@ function handleUpdateExpression(props: any[]) {
       for (let i = 0; i < prop.value.children.length; i++) {
         const child = prop.value.children[i]
         if (isString(child)) {
-          if (child.includes('as')) {
-            variableType = child.split('as')[1].trim()
-            prop.value.children.splice(i, 1)
+          if (child.includes('as ')) {
+            debugger
+            variableType = child.split('as ')[1]
+            if (variableType.endsWith(')')) {
+              variableType = variableType.slice(0, -1)
+              prop.value.children[i] = ')'
+            } else {
+              prop.value.children.splice(i, 1)
+              i--
+            }
           }
           if (child.includes('$event =>') && variableType) {
             prop.value.children[i] = child.replace(
