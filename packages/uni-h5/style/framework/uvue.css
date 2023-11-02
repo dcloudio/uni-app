@@ -11,22 +11,19 @@
 }
 
 [uvue] uni-text,
-[uvue] uni-button,
 [uvue] uni-input,
 [uvue] uni-textarea {
   color: #000000;
-  font-size: 16;
+  font-size: 16px;
   text-align: left;
 }
 
 [uvue] uni-text,
-[uvue] uni-button,
 [uvue] uni-textarea {
   line-height: 1.2;
 }
 
-[uvue] uni-text,
-[uvue] uni-button {
+[uvue] uni-text {
   letter-spacing: 0;
 }
 
