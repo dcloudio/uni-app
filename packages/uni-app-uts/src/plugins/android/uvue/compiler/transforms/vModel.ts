@@ -100,7 +100,6 @@ function handleUpdateExpression(props: any[]) {
         const child = prop.value.children[i]
         if (isString(child)) {
           if (child.includes('as ')) {
-            debugger
             variableType = child.split('as ')[1]
             if (variableType.endsWith(')')) {
               variableType = variableType.slice(0, -1)
