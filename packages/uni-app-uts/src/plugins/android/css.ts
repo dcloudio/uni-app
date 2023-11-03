@@ -49,10 +49,11 @@ export function uniAppCssPlugin(): Plugin {
           const { code, messages } = await parse(cssCode, {
             filename,
             logLevel: 'ERROR',
-            mapOf: true,
+            mapOf: 'utsMapOf',
             chunk: 100,
             type: 'uvue',
             platform: process.env.UNI_UTS_PLATFORM,
+            trim: true,
           })
           messages.forEach((message) => {
             if (message.type === 'error') {
