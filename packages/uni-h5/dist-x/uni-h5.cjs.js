@@ -7300,6 +7300,14 @@ function applyOptions(options, instance, publicThis) {
 function set(target, key, val) {
   return target[key] = val;
 }
+function $callMethod(method, ...args) {
+  const fn = this[method];
+  if (fn) {
+    return fn(...args);
+  }
+  console.error(`method ${method} not found`);
+  return null;
+}
 function createErrorHandler(app) {
   return function errorHandler(err, instance, _info) {
     if (!instance) {
@@ -7408,6 +7416,7 @@ function initApp$1(app) {
   {
     globalProperties.$set = set;
     globalProperties.$applyOptions = applyOptions;
+    globalProperties.$callMethod = $callMethod;
   }
   {
     uniShared.invokeCreateVueAppHook(app);
