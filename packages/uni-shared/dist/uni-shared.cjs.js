@@ -261,6 +261,7 @@ const OFF_THEME_CHANGE = 'offThemeChange';
 const ON_KEYBOARD_HEIGHT_CHANGE = 'onKeyboardHeightChange';
 const ON_PAGE_NOT_FOUND = 'onPageNotFound';
 const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
+const ON_EXIT = 'onExit';
 //Page
 const ON_LOAD = 'onLoad';
 const ON_READY = 'onReady';
@@ -1313,6 +1314,7 @@ const UniLifecycleHooks = [
     ON_THEME_CHANGE,
     ON_PAGE_NOT_FOUND,
     ON_UNHANDLE_REJECTION,
+    ON_EXIT,
     ON_INIT,
     ON_LOAD,
     ON_READY,
@@ -1533,6 +1535,7 @@ exports.ON_APP_ENTER_BACKGROUND = ON_APP_ENTER_BACKGROUND;
 exports.ON_APP_ENTER_FOREGROUND = ON_APP_ENTER_FOREGROUND;
 exports.ON_BACK_PRESS = ON_BACK_PRESS;
 exports.ON_ERROR = ON_ERROR;
+exports.ON_EXIT = ON_EXIT;
 exports.ON_HIDE = ON_HIDE;
 exports.ON_INIT = ON_INIT;
 exports.ON_KEYBOARD_HEIGHT_CHANGE = ON_KEYBOARD_HEIGHT_CHANGE;
