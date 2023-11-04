@@ -23,7 +23,8 @@ export function uniResolveIdPlugin(): Plugin {
       resolveCache['@dcloudio/uni-h5-vue'] = resolveBuiltIn(
         path.join(
           '@dcloudio/uni-h5-vue',
-          `dist/vue.runtime.${process.env.VITEST ? 'cjs' : 'esm'}.js`
+          (process.env.UNI_APP_X === 'true' ? 'dist-x' : 'dist') +
+            `/vue.runtime.${process.env.VITEST ? 'cjs' : 'esm'}.js`
         )
       )
     },

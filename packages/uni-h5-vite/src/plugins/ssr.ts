@@ -39,7 +39,9 @@ export function uniSSRPlugin(): Plugin {
               {
                 find: 'vue',
                 replacement: resolveBuiltIn(
-                  '@dcloudio/uni-h5-vue/dist/vue.runtime.esm.js'
+                  '@dcloudio/uni-h5-vue/' +
+                    (process.env.UNI_APP_X === 'true' ? 'dist-x' : 'dist') +
+                    '/vue.runtime.esm.js'
                 ),
               },
               {
