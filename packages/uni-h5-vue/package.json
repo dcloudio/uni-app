@@ -6,6 +6,7 @@
   "module": "dist/vue.runtime.esm.js",
   "files": [
     "dist",
+    "dist-x",
     "server-renderer"
   ],
   "sideEffects": false,

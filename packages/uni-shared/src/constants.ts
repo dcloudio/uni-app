@@ -47,6 +47,7 @@ export const OFF_THEME_CHANGE = 'offThemeChange'
 export const ON_KEYBOARD_HEIGHT_CHANGE = 'onKeyboardHeightChange'
 export const ON_PAGE_NOT_FOUND = 'onPageNotFound'
 export const ON_UNHANDLE_REJECTION = 'onUnhandledRejection'
+export const ON_EXIT = 'onExit'
 //Page
 export const ON_LOAD = 'onLoad'
 export const ON_READY = 'onReady'
