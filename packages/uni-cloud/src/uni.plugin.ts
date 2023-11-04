@@ -223,9 +223,14 @@ export default () => [
     }
   }),
   uniCloudPlugin(),
-  uniViteInjectPlugin('uni:cloud-inject', {
-    exclude: [...COMMON_EXCLUDE],
-    uniCloud: ['@dcloudio/uni-cloud', 'default'],
-  }),
+  // x 里边统一处理
+  ...(process.env.UNI_APP_X === 'true'
+    ? []
+    : [
+        uniViteInjectPlugin('uni:cloud-inject', {
+          exclude: [...COMMON_EXCLUDE],
+          uniCloud: ['@dcloudio/uni-cloud', 'default'],
+        }),
+      ]),
   uniValidateFunctionPlugin(),
 ]
