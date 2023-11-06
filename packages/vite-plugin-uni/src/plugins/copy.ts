@@ -65,8 +65,34 @@ export function uniCopyPlugin({
   ]
   targets.push(...copyOptions!.targets)
   debugCopy(targets)
+  checkIgnoreStatic(
+    ignorePlatformStaticDirs.map((dir) => dir.substring(1).split('/'))
+  )
   return uniViteCopyPlugin({
     targets,
     verbose: process.env.DEBUG ? true : false,
   })
+}
+
+let isIgnoreChecked = false
+
+function checkIgnoreStatic(ignoreStatic: string[][]) {
+  if (isIgnoreChecked) {
+    return
+  }
+  isIgnoreChecked = true
+  const existIgnore = new Set()
+  ignoreStatic.forEach((ignore) => {
+    const dir = path.resolve.apply(path, [process.env.UNI_INPUT_DIR, ...ignore])
+    if (fs.existsSync(dir)) {
+      existIgnore.add(ignore.join('/'))
+    }
+  })
+  if (existIgnore.size) {
+    console.log(
+      '已忽略静态资源目录：' +
+        [...existIgnore].join('、') +
+        '。详见：https://uniapp.dcloud.net.cn/tutorial/platform.html#static'
+    )
+  }
 }
