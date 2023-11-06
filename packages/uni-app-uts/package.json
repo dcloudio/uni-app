@@ -35,7 +35,8 @@
     "estree-walker": "^2.0.2",
     "fs-extra": "^10.0.0",
     "picocolors": "^1.0.0",
-    "source-map-js": "^1.0.2"
+    "source-map-js": "^1.0.2",
+    "unplugin-auto-import": "^0.16.7"
   },
   "devDependencies": {
     "@types/debug": "^4.1.7",
