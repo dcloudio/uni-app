@@ -24,6 +24,7 @@ import {
   getExtApiComponents,
   UVUE_CLASS_NAME_PREFIX,
   initAutoImportOnce,
+  getAutoImports,
 } from './utils'
 import { getOutputManifestJson } from './manifestJson'
 import { createUniOptions } from '../utils'
@@ -197,6 +198,7 @@ export function uniAppPlugin(options: {
           ),
           extApiComponents: [...getExtApiComponents()],
           uvueClassNamePrefix: UVUE_CLASS_NAME_PREFIX,
+          autoImports: getAutoImports(),
         }
       )
       if (res) {

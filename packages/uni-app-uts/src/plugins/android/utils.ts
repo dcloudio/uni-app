@@ -299,3 +299,19 @@ function initAutoImport(autoImportOptions?: AutoImportOptions) {
   }
   return autoImport
 }
+
+const autoImports: Record<string, [[string, string]]> = {}
+
+export function getAutoImports() {
+  return autoImports
+}
+
+export function addAutoImports(source: string, imports: [string, string]) {
+  if (!autoImports[source]) {
+    autoImports[source] = [imports]
+  } else {
+    if (!autoImports[source].find((item) => item[0] === imports[0])) {
+      autoImports[source].push(imports)
+    }
+  }
+}

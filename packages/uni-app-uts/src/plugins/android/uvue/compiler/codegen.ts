@@ -42,10 +42,7 @@ import {
   isSimpleExpressionNode,
 } from '@dcloudio/uni-cli-shared'
 import { CodegenOptions, CodegenResult } from './options'
-import {
-  genImportComponentPublicInstance,
-  genRenderFunctionDecl,
-} from './utils'
+import { addEasyComponentAutoImports, genRenderFunctionDecl } from './utils'
 import {
   IS_TRUE,
   RENDER_LIST,
@@ -76,6 +73,7 @@ export interface CodegenContext
   > {
   source: string
   code: string
+  easyComponentAutoImports: Record<string, [string, string]>
   importEasyComponents: string[]
   importUTSComponents: string[]
   importUTSElements: string[]
@@ -118,6 +116,7 @@ function createCodegenContext(
     filename,
     source: ast.loc.source,
     code: ``,
+    easyComponentAutoImports: {},
     importEasyComponents: [],
     importUTSComponents: [],
     importUTSElements: [],
@@ -252,6 +251,7 @@ export function generate(
 
   return {
     code: context.code,
+    easyComponentAutoImports: context.easyComponentAutoImports,
     importEasyComponents: context.importEasyComponents,
     importUTSComponents: context.importUTSComponents,
     imports: ast.imports.map((item) => `import '${item.path}'`),
@@ -287,13 +287,7 @@ function genEasyComImports(
     const source = matchEasyCom(id, true)
     if (source) {
       const componentId = toValidAssetId(id, 'easycom' as 'component')
-      push(
-        `import ${componentId}${genImportComponentPublicInstance(
-          rootDir,
-          id,
-          source
-        )} from '${source}'`
-      )
+      push(`import ${componentId} from '${source}'`)
       newline()
     }
   }
@@ -307,6 +301,7 @@ function genAssets(
     push,
     newline,
     importEasyComponents,
+    easyComponentAutoImports,
     matchEasyCom,
     rootDir,
   }: CodegenContext
@@ -330,13 +325,15 @@ function genAssets(
         assetCode = `const ${componentId} = ${helper(
           RESOLVE_EASY_COMPONENT
         )}(${JSON.stringify(id)},${easyComponentId})`
-        const importCode = `import ${easyComponentId}${genImportComponentPublicInstance(
-          rootDir,
-          id,
-          source
-        )} from '${source}';`
+        const importCode = `import ${easyComponentId} from '${source}';`
         if (!importEasyComponents.includes(importCode)) {
           importEasyComponents.push(importCode)
+          addEasyComponentAutoImports(
+            easyComponentAutoImports,
+            rootDir,
+            id,
+            source
+          )
         }
       }
     }

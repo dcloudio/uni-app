@@ -38,6 +38,7 @@ import {
 } from './descriptorCache'
 import { createRollupError } from './error'
 import {
+  addAutoImports,
   addExtApiComponents,
   genClassName,
   initAutoImportOnce,
@@ -301,6 +302,9 @@ export async function transformVue(
         }
       },
       parseUTSComponent,
+    })
+    Object.keys(templateResult.easyComponentAutoImports).forEach((source) => {
+      addAutoImports(source, templateResult.easyComponentAutoImports[source])
     })
     templateCode = templateResult.code
     templateImportEasyComponentsCode =
