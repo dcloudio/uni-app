@@ -72,6 +72,13 @@ export function parseApp(
     },
   }
 
+  const { onError } = internalInstance
+  if (onError) {
+    internalInstance.appContext.config.errorHandler = (err) => {
+      instance.$callHook(ON_ERROR, err)
+    }
+  }
+
   initLocale(instance)
 
   const vueOptions = instance.$.type as ComponentOptions
