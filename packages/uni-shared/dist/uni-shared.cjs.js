@@ -120,6 +120,7 @@ const UVUE_BUILT_IN_TAGS = [
     'rich-text',
     'sticky-view',
     'sticky-header',
+    'sticky-section',
     // 自定义
     'uni-slider',
 ];
