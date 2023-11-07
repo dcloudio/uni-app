@@ -12,6 +12,7 @@ import type { SourceMapInput, TransformPluginContext } from 'rollup'
 
 import { isString } from '@vue/shared'
 import {
+  AutoImportOptions,
   matchEasycom,
   normalizePath,
   parseUTSComponent,
@@ -39,6 +40,7 @@ import { createRollupError } from './error'
 import {
   addExtApiComponents,
   genClassName,
+  initAutoImportOnce,
   isVue,
   parseImports,
   parseUTSImportFilename,
@@ -50,7 +52,9 @@ import { genJsStylesCode, genStyle, transformStyle } from './code/style'
 import { generateCodeFrame } from '@dcloudio/uni-cli-shared'
 import { genComponentPublicInstanceImported } from './compiler/utils'
 
-export function uniAppUVuePlugin(): Plugin {
+export function uniAppUVuePlugin(opts: {
+  autoImportOptions?: AutoImportOptions
+}): Plugin {
   const options: ResolvedOptions = {
     root: process.env.UNI_INPUT_DIR,
     sourceMap: false,
@@ -67,6 +71,7 @@ export function uniAppUVuePlugin(): Plugin {
     // 把源码source调整为.uvue目录
     return parseUTSImportFilename(source)
   }
+  const autoImport = initAutoImportOnce(opts.autoImportOptions)
   return {
     name: 'uni:app-uvue',
     apply: 'build',
@@ -130,7 +135,7 @@ export function uniAppUVuePlugin(): Plugin {
         this.emitFile({
           type: 'asset',
           fileName,
-          source: uts,
+          source: (await autoImport.transform!(uts!, id)).code,
         })
         if (sourceMap) {
           this.emitFile({

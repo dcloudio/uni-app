@@ -100,13 +100,16 @@ const vuePreset = {
 }
 
 export function initAutoImportOptions(
-  _platform: typeof process.env.UNI_UTS_PLATFORM,
+  platform: typeof process.env.UNI_UTS_PLATFORM,
   { imports = [], ...userOptions }: AutoImportOptions
 ): AutoImportOptions {
   return {
     ...userOptions,
     include: [/\.[u]?ts$/, /\.[u]?vue$/, /\.[u]?vue\?vue/],
-    imports: (imports as any[]).concat([uniPreset, cloudPreset, vuePreset]),
+    imports: (imports as any[]).concat(
+      // app-android 平台暂不注入其他
+      platform === 'app-android' ? [] : [uniPreset, cloudPreset, vuePreset]
+    ),
     dts: false,
   }
 }

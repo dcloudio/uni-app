@@ -2,6 +2,8 @@ import fs from 'fs'
 import path from 'path'
 import { init, parse } from 'es-module-lexer'
 import {
+  AutoImportOptions,
+  initAutoImportOptions,
   normalizeNodeModules,
   normalizePath,
   parseUniExtApiNamespacesJsOnce,
@@ -14,6 +16,10 @@ import {
   isPlainObject,
   isString,
 } from '@vue/shared'
+
+import AutoImport from 'unplugin-auto-import/vite'
+import { once } from '@dcloudio/uni-shared'
+import { SourceMapInput } from 'rollup'
 
 export const UVUE_CLASS_NAME_PREFIX = 'Gen'
 
@@ -261,4 +267,35 @@ function verifySymbol(s: string) {
   }
 
   return buf.join('')
+}
+
+export const initAutoImportOnce = once(initAutoImport)
+
+function initAutoImport(autoImportOptions?: AutoImportOptions) {
+  const options = initAutoImportOptions(
+    process.env.UNI_UTS_PLATFORM,
+    autoImportOptions || {}
+  )
+  if ((options.imports as any[]).length === 0) {
+    return {
+      transform(code: string, id: string) {
+        return { code }
+      },
+    }
+  }
+  const autoImport = AutoImport(options) as {
+    transform(
+      code: string,
+      id: string
+    ): Promise<{ code: string; map?: SourceMapInput }>
+  }
+  const { transform } = autoImport
+  autoImport.transform = async function (code, id) {
+    const result = await transform.call(this, code, id)
+    if (result) {
+      return result
+    }
+    return { code }
+  }
+  return autoImport
 }

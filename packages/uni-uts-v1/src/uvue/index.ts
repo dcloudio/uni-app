@@ -91,6 +91,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
     filename: entry,
     paths: {
       vue: 'io.dcloud.uniapp.vue',
+      '@dcloudio/uni-app': 'io.dcloud.uniapp.framework',
     },
     uniModules: uni_modules,
     globals: {
