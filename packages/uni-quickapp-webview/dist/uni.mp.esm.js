@@ -218,6 +218,12 @@ function parseApp(instance, parseAppOptions) {
             instance.$callHook(ON_LAUNCH, options);
         },
     };
+    const { onError } = internalInstance;
+    if (onError) {
+        internalInstance.appContext.config.errorHandler = (err) => {
+            instance.$callHook(ON_ERROR, err);
+        };
+    }
     initLocale(instance);
     const vueOptions = instance.$.type;
     initHooks(appOptions, HOOKS);
