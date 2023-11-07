@@ -32,7 +32,7 @@ function getAssetsCopyOption (from, options = {}) {
   }
 }
 
-function addIgnore (ignore, platform) {
+function addIgnore (ignore, platform, ignoreStatic) {
   if (CopyWebpackPluginVersion > 5) {
     if (platform === 'app-plus') {
       ignore.push(`${process.env.UNI_INPUT_DIR.replace(/\\/g, '/')}/static/app/**/*`)
@@ -48,17 +48,44 @@ function addIgnore (ignore, platform) {
     }
     ignore.push(platform + '/**/*')
   }
+  if (platform === 'app-plus') {
+    ignoreStatic.push(['static', 'app'])
+  } else if (platform === 'h5') {
+    ignoreStatic.push(['static', 'web'])
+  }
+  ignoreStatic.push(['static', platform])
 }
+
+let isIgnoreChecked = false
+
+function checkIgnoreStatic (ignoreStatic) {
+  if (isIgnoreChecked) {
+    return
+  }
+  isIgnoreChecked = true
+  const existIgnore = new Set()
+  ignoreStatic.forEach(ignore => {
+    const dir = path.resolve.apply(path, [process.env.UNI_INPUT_DIR, ...ignore])
+    if (fs.existsSync(dir)) {
+      existIgnore.add(ignore.join('/'))
+    }
+  })
+  if (existIgnore.size) {
+    console.log('已忽略静态资源目录：' + [...existIgnore].join('、') +
+      '。详见：https://uniapp.dcloud.net.cn/tutorial/platform.html#static')
+  }
+}
+
 // 暂未考虑动态添加static目录
 function getAssetsCopyOptions (assetsDir) {
   const ignore = []
-
+  const ignoreStatic = []
   global.uniPlugin.platforms.forEach(platform => {
     if (global.uniPlugin.name !== platform) {
-      addIgnore(ignore, platform)
+      addIgnore(ignore, platform, ignoreStatic)
     }
   })
-
+  checkIgnoreStatic(ignoreStatic)
   const copyOptions = []
   // 主包静态资源
   const mainAssetsCopyOption = getAssetsCopyOption(assetsDir, CopyWebpackPluginVersion > 5 ? {
