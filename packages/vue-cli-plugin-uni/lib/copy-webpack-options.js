@@ -65,7 +65,7 @@ function checkIgnoreStatic (ignoreStatic) {
   isIgnoreChecked = true
   const existIgnore = new Set()
   ignoreStatic.forEach(ignore => {
-    const dir = path.resolve.apply(path, [process.env.UNI_INPUT_DIR, ...ignore])
+    const dir = path.resolve(process.env.UNI_INPUT_DIR, ...ignore)
     if (fs.existsSync(dir)) {
       existIgnore.add(ignore.join('/'))
     }
