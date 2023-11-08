@@ -177,7 +177,10 @@ export function initEnv(
 
   initUVueEnv()
 
-  if (process.env.UNI_PLATFORM === 'app') {
+  if (
+    process.env.UNI_PLATFORM === 'app' ||
+    process.env.UNI_PLATFORM === 'web'
+  ) {
     const pkg = require('../../package.json')
     console.log(
       M['app.compiler.version'].replace(
