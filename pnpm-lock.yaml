@@ -525,6 +525,9 @@ importers:
       licia:
         specifier: ^1.29.0
         version: 1.29.0
+      merge:
+        specifier: ^2.1.1
+        version: 2.1.1
       qrcode-reader:
         specifier: ^1.0.4
         version: 1.0.4
