@@ -257,7 +257,10 @@ function initAutomator({ autoHost, autoPort }: CliOptions) {
     return
   }
   process.env.UNI_AUTOMATOR_WS_ENDPOINT =
-    'ws://' + (autoHost || resolveHostname()) + ':' + autoPort
+    'ws://' +
+    (autoHost || process.env.UNI_AUTOMATOR_HOST || resolveHostname()) +
+    ':' +
+    (autoPort || process.env.UNI_AUTOMATOR_PORT)
 }
 
 function resolveHostname() {
