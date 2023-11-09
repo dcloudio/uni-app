@@ -11394,7 +11394,7 @@ const PickerView = /* @__PURE__ */ defineBuiltInComponent({
     const resizeSensorRef = ref(null);
     const onMountedCallback = () => {
       const resizeSensor = resizeSensorRef.value;
-      resizeSensor && (state2.height = resizeSensor.$el.offsetHeight);
+      resizeSensor && (state2.height = resizeSensor.offsetHeight);
     };
     {
       onMounted(onMountedCallback);
@@ -12210,7 +12210,7 @@ const PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
     const resizeSensorRef = ref(null);
     const initIndicatorHeight = () => {
       const resizeSensor = resizeSensorRef.value;
-      indicatorHeight.value = resizeSensor.$el.offsetHeight;
+      indicatorHeight.value = resizeSensor.offsetHeight;
     };
     {
       onMounted(initIndicatorHeight);
