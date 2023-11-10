@@ -450,6 +450,8 @@ function parseAstTypes(ast: Module | null, isInterface: boolean) {
             returned: false,
             decl: node.declaration,
           }
+        } else if (node.declaration.type === 'ClassDeclaration') {
+          classTypes[node.declaration.identifier.value] = {}
         }
       } else if (node.type === 'TsTypeAliasDeclaration') {
         if (!isInterface || exportNamed.includes(node.id.value)) {
@@ -460,6 +462,8 @@ function parseAstTypes(ast: Module | null, isInterface: boolean) {
           returned: false,
           decl: node,
         }
+      } else if (node.type === 'ClassDeclaration') {
+        classTypes[node.identifier.value] = {}
       }
     })
   }

@@ -10,6 +10,7 @@ export function genTemplate(
   if (!template) {
     return {
       code: genRenderFunctionDecl(options) + ` { return null }`,
+      easyComponentAutoImports: {},
       importEasyComponents: [],
       importUTSComponents: [],
       elements: [],

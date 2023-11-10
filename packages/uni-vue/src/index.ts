@@ -6,7 +6,7 @@ import {
 } from '@dcloudio/uni-shared'
 
 import { applyOptions } from './componentOptions'
-import { set } from './componentInstance'
+import { $callMethod, set } from './componentInstance'
 import { createErrorHandler, initOptionMergeStrategies } from './appConfig'
 import { uniIdMixin } from './uni-id-mixin'
 
@@ -27,6 +27,7 @@ export function initApp(app: App) {
   if (__VUE_OPTIONS_API__) {
     globalProperties.$set = set
     globalProperties.$applyOptions = applyOptions
+    globalProperties.$callMethod = $callMethod
   }
   if (__PLATFORM__ === 'app' || __PLATFORM__ === 'h5') {
     invokeCreateVueAppHook(app)

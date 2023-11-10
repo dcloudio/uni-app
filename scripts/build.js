@@ -146,6 +146,26 @@ async function build(target) {
         {
           stdio: 'inherit',
           env: Object.assign({ FORMAT: 'cjs' }, process.env),
+          cwd: pkgDir,
+        }
+      )
+      // uni-h5(uni-app x)
+      await execa(
+        'vite',
+        ['build', '--config', path.resolve(pkgDir, 'vite.config.ts')],
+        {
+          stdio: 'inherit',
+          env: Object.assign({ FORMAT: 'es', UNI_APP_X: 'true' }, process.env, env),
+          cwd: pkgDir,
+        }
+      )
+      await execa(
+        'vite',
+        ['build', '--config', path.resolve(pkgDir, 'vite.config.ts')],
+        {
+          stdio: 'inherit',
+          env: Object.assign({ FORMAT: 'cjs', UNI_APP_X: 'true' }, process.env, env),
+          cwd: pkgDir,
         }
       )
     }

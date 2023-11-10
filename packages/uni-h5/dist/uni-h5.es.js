@@ -14933,6 +14933,14 @@ function applyOptions(options, instance2, publicThis) {
 function set(target, key, val) {
   return target[key] = val;
 }
+function $callMethod(method, ...args) {
+  const fn = this[method];
+  if (fn) {
+    return fn(...args);
+  }
+  console.error(`method ${method} not found`);
+  return null;
+}
 function createErrorHandler(app) {
   return function errorHandler(err, instance2, _info) {
     if (!instance2) {
@@ -15041,6 +15049,7 @@ function initApp$1(app) {
   {
     globalProperties.$set = set;
     globalProperties.$applyOptions = applyOptions;
+    globalProperties.$callMethod = $callMethod;
   }
   {
     invokeCreateVueAppHook(app);
@@ -15330,13 +15339,15 @@ function pruneRouteCache(key) {
   });
 }
 function updateCurPageAttrs(pageMeta) {
-  const nvueDirKey = "nvue-dir-" + __uniConfig.nvue["flex-direction"];
-  if (pageMeta.isNVue) {
-    document.body.setAttribute("nvue", "");
-    document.body.setAttribute(nvueDirKey, "");
-  } else {
-    document.body.removeAttribute("nvue");
-    document.body.removeAttribute(nvueDirKey);
+  {
+    const nvueDirKey = "nvue-dir-" + __uniConfig.nvue["flex-direction"];
+    if (pageMeta.isNVue) {
+      document.body.setAttribute("nvue", "");
+      document.body.setAttribute(nvueDirKey, "");
+    } else {
+      document.body.removeAttribute("nvue");
+      document.body.removeAttribute(nvueDirKey);
+    }
   }
 }
 function onPageShow(instance2, pageMeta) {

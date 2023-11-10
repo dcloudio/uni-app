@@ -116,6 +116,7 @@ const onThemeChange =
 const onPageNotFound = 
 /*#__PURE__*/ createHook(uniShared.ON_PAGE_NOT_FOUND);
 const onUnhandledRejection = /*#__PURE__*/ createHook(uniShared.ON_UNHANDLE_REJECTION);
+const onExit = /*#__PURE__*/ createHook(uniShared.ON_EXIT);
 const onInit = 
 /*#__PURE__*/ createHook(uniShared.ON_INIT);
 // 小程序如果想在 setup 的 props 传递页面参数，需要定义 props，故同时暴露 onLoad 吧
@@ -171,6 +172,7 @@ exports.getSsrGlobalData = getSsrGlobalData;
 exports.onAddToFavorites = onAddToFavorites;
 exports.onBackPress = onBackPress;
 exports.onError = onError;
+exports.onExit = onExit;
 exports.onHide = onHide;
 exports.onInit = onInit;
 exports.onLaunch = onLaunch;

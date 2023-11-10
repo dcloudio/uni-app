@@ -2840,7 +2840,7 @@
         "text", "button", "input", "textarea"
       ],
       "defaultValue": {
-        "app-uvue": "16",
+        "app-uvue": "16px",
         "web": "medium"
       }
     },
@@ -3431,8 +3431,8 @@
         }
       },
       "defaultValue": {
-        "app-uvue": "0",
-        "web": "0"
+        "app-uvue": "0s",
+        "web": "0s"
       }
     },
     {
@@ -3498,8 +3498,8 @@
         }
       },
       "defaultValue": {
-        "app-uvue": "0",
-        "web": "0"
+        "app-uvue": "0s",
+        "web": "0s"
       }
     },
     {

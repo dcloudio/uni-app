@@ -58,7 +58,7 @@ export function genImportComponentPublicInstance(
   )} as ${genComponentPublicInstanceIdent(tagName)} }`
 }
 
-function genComponentPublicInstanceIdent(tagName: string) {
+export function genComponentPublicInstanceIdent(tagName: string) {
   return capitalize(camelize(tagName)) + 'ComponentPublicInstance'
 }
 
@@ -73,4 +73,23 @@ export function genComponentPublicInstanceImported(
     return genClassName(fileName.replace('@/', '')) + 'ComponentPublicInstance'
   }
   return genClassName(fileName) + 'ComponentPublicInstance'
+}
+
+export function addEasyComponentAutoImports(
+  easyComponentAutoImports: Record<string, [string, string]>,
+  rootDir: string,
+  tagName: string,
+  fileName: string
+) {
+  // 内置easycom，如 unicloud-db
+  if (fileName.includes('@dcloudio')) {
+    return
+  }
+  if (path.isAbsolute(fileName)) {
+    fileName = '@/' + normalizePath(path.relative(rootDir, fileName))
+  }
+  easyComponentAutoImports[fileName] = [
+    genComponentPublicInstanceImported(rootDir, fileName),
+    genComponentPublicInstanceIdent(tagName),
+  ]
 }

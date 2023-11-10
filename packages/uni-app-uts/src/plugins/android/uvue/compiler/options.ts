@@ -115,6 +115,7 @@ export type CompilerOptions = TransformOptions & CodegenOptions
 
 export interface CodegenResult {
   code: string
+  easyComponentAutoImports: Record<string, [string, string]>
   importEasyComponents: string[]
   importUTSComponents: string[]
   imports: string[]

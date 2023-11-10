@@ -94,11 +94,14 @@ export function uniManifestJsonPlugin(): Plugin {
         )
         const fallbackLocale = (i18nOptions && i18nOptions.locale) || ''
 
+        const vueType = process.env.UNI_APP_X === 'true' ? 'uvue' : 'nvue'
+
         const flexDirection =
-          (manifest['app'] &&
-            manifest['app'].nvue &&
-            manifest['app'].nvue['flex-direction']) ||
-          'column'
+          (process.env.UNI_APP_X === 'true'
+            ? manifest['uni-app-x'] && manifest['uni-app-x']['flex-direction']
+            : manifest['app'] &&
+              manifest['app'].nvue &&
+              manifest['app'].nvue['flex-direction']) || 'column'
 
         const platformConfig =
           manifest[
@@ -114,9 +117,9 @@ export function uniManifestJsonPlugin(): Plugin {
   export const appVersionCode = ${JSON.stringify(manifest.versionCode || '')}
 
   export const debug = ${!!debug}
-  export const nvue = ${JSON.stringify({
-    'flex-direction': flexDirection,
-  })}
+  export const ${vueType} = ${JSON.stringify({
+            'flex-direction': flexDirection,
+          })}
   export const networkTimeout = ${JSON.stringify(networkTimeout)}
   // h5
   export const router = ${JSON.stringify(router)}

@@ -17,6 +17,9 @@ export function init() {
     uniAppManifestPlugin(),
     uniAppPagesPlugin(),
     uniUTSUVueJavaScriptPlugin(),
-    resolveUTSCompiler().uts2js({}),
+    resolveUTSCompiler().uts2js({
+      inputDir: process.env.UNI_INPUT_DIR,
+      version: process.env.UNI_COMPILER_VERSION,
+    }),
   ]
 }

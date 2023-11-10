@@ -6,6 +6,7 @@
   "module": "./dist/uni-h5.es.js",
   "files": [
     "dist",
+    "dist-x",
     "lib",
     "style"
   ],

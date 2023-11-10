@@ -1,8 +1,9 @@
+import { AutoImportOptions } from '@dcloudio/uni-cli-shared'
 import { initAndroid, initIOS } from './plugins'
 
-export default () => {
+export default (options: { autoImportOptions?: AutoImportOptions }) => {
   return process.env.UNI_UTS_PLATFORM === 'app-android'
-    ? initAndroid()
+    ? initAndroid(options)
     : initIOS()
 }
 

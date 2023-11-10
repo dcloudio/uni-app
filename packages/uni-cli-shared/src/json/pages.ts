@@ -235,26 +235,30 @@ function normalizePageStyle(
   pageStyle: UniApp.PagesJsonPageStyle | undefined,
   platform: UniApp.PLATFORM
 ) {
-  const hasNVue =
-    pagePath &&
-    process.env.UNI_INPUT_DIR &&
-    fs.existsSync(path.join(process.env.UNI_INPUT_DIR, pagePath + '.nvue'))
-      ? true
-      : undefined
+  let isNVue: boolean | undefined = false
+  if (process.env.UNI_APP_X === 'true') {
+    isNVue = undefined
+  } else {
+    const hasNVue =
+      pagePath &&
+      process.env.UNI_INPUT_DIR &&
+      fs.existsSync(path.join(process.env.UNI_INPUT_DIR, pagePath + '.nvue'))
+        ? true
+        : undefined
 
-  let isNVue = false
-  if (hasNVue) {
-    const hasVue = fs.existsSync(
-      path.join(process.env.UNI_INPUT_DIR, pagePath + '.vue')
-    )
-    if (hasVue) {
-      if (platform === 'app') {
-        if (process.env.UNI_NVUE_COMPILER !== 'vue') {
-          isNVue = true
+    if (hasNVue) {
+      const hasVue = fs.existsSync(
+        path.join(process.env.UNI_INPUT_DIR, pagePath + '.vue')
+      )
+      if (hasVue) {
+        if (platform === 'app') {
+          if (process.env.UNI_NVUE_COMPILER !== 'vue') {
+            isNVue = true
+          }
         }
+      } else {
+        isNVue = true
       }
-    } else {
-      isNVue = true
     }
   }
 

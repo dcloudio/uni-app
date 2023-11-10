@@ -34,7 +34,11 @@ export function createHandleHotUpdate(): Plugin['handleHotUpdate'] {
       invalidateFiles = [
         path.resolve(inputDir, PAGES_JSON_JS),
         path.resolve(inputDir, MANIFEST_JSON_JS),
-        resolveBuiltIn('@dcloudio/uni-h5/dist/uni-h5.es.js'),
+        resolveBuiltIn(
+          '@dcloudio/uni-h5/' +
+            (process.env.UNI_APP_X === 'true' ? 'dist-x' : 'dist') +
+            '/uni-h5.es.js'
+        ),
       ]
       try {
         invalidateFiles.push(resolveBuiltIn('vite/dist/client/env.mjs'))

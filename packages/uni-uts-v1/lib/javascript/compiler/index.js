@@ -1,1 +1,0 @@
-exports.uts2js = () => [];

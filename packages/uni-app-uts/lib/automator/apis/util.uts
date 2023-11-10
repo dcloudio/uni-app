@@ -111,8 +111,7 @@ export function getElementByIdOrNodeId(
   elementId: string | null,
   nodeId: number | null,
   callback: (result: any | null, error: any | null) => void
-  // @ts-ignore
-): INode | null {
+): Element | null {
   if (nodeId != null) {
     return getComponentDomByNodeId(pageId, nodeId, callback)
   } else if (elementId != null) {
@@ -124,8 +123,7 @@ export function getComponentDomByNodeId(
   pageId: string,
   nodeId: number,
   callback: (result: any | null, error: any | null) => void
-  // @ts-ignore
-): INode | null {
+): Element | null {
   const component = getComponentVmByNodeId(pageId, nodeId, callback)
   if (component == null) {
     return null
@@ -137,8 +135,7 @@ export function getElementByNodeIdOrElementId(
   nodeId: number | null,
   elementId: string | null,
   callback: (result: any | null, error: any | null) => void
-  // @ts-ignore
-): INode | null {
+): Element | null {
   const page = getPageVm(pageId)
   if (page == null) {
     callback(null, { errMsg: `Page[${pageId}] not exists` })
@@ -155,8 +152,7 @@ export function getElementById(
   pageId: string,
   elementId: string,
   callback: (result: any | null, error: any | null) => void
-  // @ts-ignore
-): INode | null {
+): Element | null {
   const page = getPageVm(pageId)
   if (page == null) {
     callback(null, { errMsg: `Page[${pageId}] not exists` })
@@ -227,14 +223,7 @@ function isValidComponentOrNode(vnode: VNode, selector: string): boolean {
   if (vnode.el != null) {
     const node = vnode.el!
     if (selector.startsWith('.')) {
-      if (node.ext['classList'] !== null) {
-        // @ts-ignore
-        const classList = JSON.parse<string[]>(
-          JSON.stringify(node.ext['classList'])
-        )!
-        return classList.includes(selector.substring(1))
-      }
-      return false
+      return node.classList.includes(selector.substring(1))
     } else if (selector.startsWith('#')) {
       return node.getAttribute('id') == selector.substring(1)
     }
@@ -244,8 +233,7 @@ function isValidComponentOrNode(vnode: VNode, selector: string): boolean {
 }
 
 export function getValidNodes(
-  // @ts-ignore
-  node: INode | null,
+  node: Element | null,
   selector: string,
   // @ts-ignore
   list: UTSJSONObject[],
@@ -263,21 +251,15 @@ export function getValidNodes(
       return
     }
   }
-  node.childNodes.forEach((child) => {
+  // @ts-ignore
+  node.childNodes.forEach((child: Element) => {
     getValidNodes(child, selector, list, getAll)
   })
 }
-// @ts-ignore
-function isValidNode(node: INode, selector: string): boolean {
+function isValidNode(node: Element, selector: string): boolean {
   if (selector.startsWith('.')) {
-    if (node.ext['classList'] !== null) {
-      // @ts-ignore
-      const classList = JSON.parse<string[]>(
-        JSON.stringify(node.ext['classList'])
-      )!
-      return classList.includes(selector.substring(1))
-    }
-    return false
+    // @ts-ignore
+    return node.classList.includes(selector.substring(1))
   } else if (selector.startsWith('#')) {
     return node.getAttribute('id') == selector.substring(1)
   }
@@ -289,6 +271,7 @@ export function componentGetData(
   vm: ComponentPublicInstance,
 ): Map<string, any | null> {
   // TODO: path 目前无法处理类型问题，暂由服务端处理
+  // @ts-ignore
   return vm.$data
 }
 export function componentSetData(
@@ -297,13 +280,14 @@ export function componentSetData(
   data: Map<string, any | null>
 ): void {
   data.forEach((value: any | null, key: string) => {
+    // @ts-ignore
     vm.$data.set(key, value)
   })
 }
-// @ts-ignore
-export function getChildrenText(node: INode): string {
+export function getChildrenText(node: Element): string {
   let result = ''
-  node.childNodes.forEach((child) => {
+  // @ts-ignore
+  node.childNodes.forEach((child: Element) => {
     if (child.tagName == 'TEXT' || child.tagName == 'UNI-BUTTON-ELEMENT') {
       result += child.getAttribute('value')
     } else {

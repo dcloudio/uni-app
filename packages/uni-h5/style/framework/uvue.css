@@ -1,0 +1,87 @@
+[uvue] uni-view,
+[uvue] uni-scroll-view,
+[uvue] uni-list-view,
+[uvue] uni-list-item,
+[uvue] uni-swiper-item,
+[uvue] uni-navigator {
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  align-content: stretch;
+}
+
+[uvue] uni-text,
+[uvue] uni-input,
+[uvue] uni-textarea {
+  color: #000000;
+  font-size: 16px;
+  text-align: left;
+}
+
+[uvue] uni-text,
+[uvue] uni-textarea {
+  line-height: 1.2;
+}
+
+[uvue] uni-text {
+  letter-spacing: 0;
+}
+
+[uvue] uni-view,
+[uvue] uni-label,
+[uvue] uni-swiper-item,
+[uvue] uni-scroll-view {
+  display: flex;
+  flex-shrink: 0;
+  flex-grow: 0;
+  flex-basis: auto;
+  align-items: stretch;
+  align-content: flex-start;
+}
+
+[uvue] uni-button {
+  margin: 0;
+}
+
+[uvue-dir-row] uni-view,
+[uvue-dir-row] uni-label,
+[uvue-dir-row] uni-swiper-item {
+  flex-direction: row;
+}
+
+[uvue-dir-column] uni-view,
+[uvue-dir-column] uni-label,
+[uvue-dir-column] uni-swiper-item {
+  flex-direction: column;
+}
+
+[uvue-dir-row-reverse] uni-view,
+[uvue-dir-row-reverse] uni-label,
+[uvue-dir-row-reverse] uni-swiper-item {
+  flex-direction: row-reverse;
+}
+
+[uvue-dir-column-reverse] uni-view,
+[uvue-dir-column-reverse] uni-label,
+[uvue-dir-column-reverse] uni-swiper-item {
+  flex-direction: column-reverse;
+}
+
+[uvue] uni-view,
+[uvue] uni-image,
+[uvue] uni-input,
+[uvue] uni-scroll-view,
+[uvue] uni-swiper,
+[uvue] uni-swiper-item,
+[uvue] uni-text,
+[uvue] uni-textarea,
+[uvue] uni-video {
+  position: relative;
+  border: 0px solid #000000;
+  box-sizing: border-box;
+}
+
+[uvue] uni-swiper-item {
+  position: absolute;
+}
+

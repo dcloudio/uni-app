@@ -11,6 +11,7 @@ import {
   resolveUTSCompiler,
   utsPlugins,
   injectAssetPlugin,
+  AutoImportOptions,
 } from '@dcloudio/uni-cli-shared'
 import type { Plugin } from 'vite'
 import {
@@ -22,6 +23,8 @@ import {
   getUniCloudObjectInfo,
   getExtApiComponents,
   UVUE_CLASS_NAME_PREFIX,
+  initAutoImportOnce,
+  getAutoImports,
 } from './utils'
 import { getOutputManifestJson } from './manifestJson'
 import { createUniOptions } from '../utils'
@@ -55,7 +58,9 @@ const REMOVED_PLUGINS = [
   'vite:reporter',
 ]
 let isFirst = true
-export function uniAppPlugin(): UniVitePlugin {
+export function uniAppPlugin(options: {
+  autoImportOptions?: AutoImportOptions
+}): UniVitePlugin {
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
   const mainUTS = resolveMainPathOnce(inputDir)
@@ -70,6 +75,9 @@ export function uniAppPlugin(): UniVitePlugin {
     }
   }
   emptyOutDir()
+
+  const autoImport = initAutoImportOnce(options.autoImportOptions)
+
   return {
     name: 'uni:app-uts',
     apply: 'build',
@@ -87,7 +95,9 @@ export function uniAppPlugin(): UniVitePlugin {
           },
           rollupOptions: {
             external(source) {
-              if (['vue', 'vuex', 'pinia'].includes(source)) {
+              if (
+                ['vue', 'vuex', 'pinia', '@dcloudio/uni-app'].includes(source)
+              ) {
                 return true
               }
               // 相对目录
@@ -151,7 +161,10 @@ export function uniAppPlugin(): UniVitePlugin {
         this.emitFile({
           type: 'asset',
           fileName: normalizeFilename(fileName, isMainUTS),
-          source: normalizeCode(code, isMainUTS),
+          source: normalizeCode(
+            (await autoImport.transform!(code, id)).code,
+            isMainUTS
+          ),
         })
       }
       code = await parseImports(code)
@@ -185,6 +198,7 @@ export function uniAppPlugin(): UniVitePlugin {
           ),
           extApiComponents: [...getExtApiComponents()],
           uvueClassNamePrefix: UVUE_CLASS_NAME_PREFIX,
+          autoImports: getAutoImports(),
         }
       )
       if (res) {

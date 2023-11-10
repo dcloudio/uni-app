@@ -8,6 +8,7 @@ import {
   ON_ADD_TO_FAVORITES,
   ON_BACK_PRESS,
   ON_ERROR,
+  ON_EXIT,
   ON_HIDE,
   ON_INIT,
   ON_LAUNCH,
@@ -80,6 +81,9 @@ export const onPageNotFound =
 export const onUnhandledRejection = /*#__PURE__*/ createHook<
   Required<App.AppInstance>['onUnhandledRejection']
 >(ON_UNHANDLE_REJECTION)
+
+export const onExit = /*#__PURE__*/ createHook<() => void>(ON_EXIT)
+
 export const onInit =
   /*#__PURE__*/ createHook<Required<Page.PageInstance>['onInit']>(ON_INIT)
 // 小程序如果想在 setup 的 props 传递页面参数，需要定义 props，故同时暴露 onLoad 吧

@@ -47,7 +47,8 @@
     "jsonc-parser": "^3.0.0",
     "magic-string": "^0.30.0",
     "picocolors": "^1.0.0",
-    "terser": "^5.4.0"
+    "terser": "^5.4.0",
+    "unplugin-auto-import": "^0.16.7"
   },
   "devDependencies": {
     "@types/debug": "^4.1.7",

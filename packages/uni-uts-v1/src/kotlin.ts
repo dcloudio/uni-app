@@ -448,6 +448,7 @@ export async function compile(
     pluginId,
     paths: {
       vue: 'io.dcloud.uniapp.vue',
+      '@dcloudio/uni-app': 'io.dcloud.uniapp.framework',
     },
   }
   const isUTSFileExists = fs.existsSync(filename)
@@ -516,7 +517,7 @@ export function resolveKotlincArgs(
     kotlinc,
     `-Xplugin=${path.resolve(
       __dirname,
-      '../lib/kotlin/uts-kotlin-compiler-plugin.jar'
+      '../lib/kotlin/lib/uts-kotlin-compiler-plugin.jar'
     )}`,
     '-P',
     'plugin:io.dcloud.uts.kotlin:tag=UTS',

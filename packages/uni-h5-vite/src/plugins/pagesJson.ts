@@ -49,11 +49,11 @@ function generatePagesJsonCode(
   const uniRoutesCode = generateRoutes(globalName, pagesJson, config)
   const uniConfigCode = generateConfig(globalName, pagesJson, config)
   const cssCode = generateCssCode(config)
-
+  const vueType = process.env.UNI_APP_X === 'true' ? 'uvue' : 'nvue'
   return `
 import { defineAsyncComponent, resolveComponent, createVNode, withCtx, openBlock, createBlock } from 'vue'
 import { PageComponent, useI18n, setupWindow, setupPage } from '@dcloudio/uni-h5'
-import { appId, appName, appVersion, appVersionCode, debug, networkTimeout, router, async, sdkConfigs, qqMapKey, googleMapKey, aMapKey, bMapKey, aMapSecurityJsCode, aMapServiceHost, nvue, locale, fallbackLocale, darkmode, themeConfig } from './${MANIFEST_JSON_JS}'
+import { appId, appName, appVersion, appVersionCode, debug, networkTimeout, router, async, sdkConfigs, qqMapKey, googleMapKey, aMapKey, bMapKey, aMapSecurityJsCode, aMapServiceHost, ${vueType}, locale, fallbackLocale, darkmode, themeConfig } from './${MANIFEST_JSON_JS}'
 const locales = import.meta.globEager('./locale/*.json')
 ${importLayoutComponentsCode}
 const extend = Object.assign
@@ -119,9 +119,15 @@ function generateCssCode(config: ResolvedConfig) {
   if (define.__UNI_FEATURE_TABBAR__) {
     cssFiles.push(H5_FRAMEWORK_STYLE_PATH + 'tabBar.css')
   }
-  if (define.__UNI_FEATURE_NVUE__) {
-    cssFiles.push(H5_FRAMEWORK_STYLE_PATH + 'nvue.css')
+  // x 项目直接集成 uvue.css
+  if (process.env.UNI_APP_X === 'true') {
+    cssFiles.push(H5_FRAMEWORK_STYLE_PATH + 'uvue.css')
+  } else {
+    if (define.__UNI_FEATURE_NVUE__) {
+      cssFiles.push(H5_FRAMEWORK_STYLE_PATH + 'nvue.css')
+    }
   }
+
   if (define.__UNI_FEATURE_PULL_DOWN_REFRESH__) {
     cssFiles.push(H5_FRAMEWORK_STYLE_PATH + 'pageRefresh.css')
   }
@@ -265,6 +271,7 @@ function generateConfig(
   delete pagesJson.subPackages
   delete pagesJson.subpackages
   pagesJson.compilerVersion = process.env.UNI_COMPILER_VERSION
+  const vueType = process.env.UNI_APP_X === 'true' ? 'uvue' : 'nvue'
   return `${globalName}.__uniConfig=extend(${JSON.stringify(pagesJson)},{
   appId,
   appName,
@@ -280,7 +287,7 @@ function generateConfig(
   aMapKey,
   aMapSecurityJsCode,
   aMapServiceHost,
-  nvue,
+  ${vueType},
   locale,
   fallbackLocale,
   locales:Object.keys(locales).reduce((res,name)=>{const locale=name.replace(/\\.\\/locale\\/(uni-app.)?(.*).json/,'$2');extend(res[locale]||(res[locale]={}),locales[name].default);return res},{}),
