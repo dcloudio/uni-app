@@ -1,3 +1,4 @@
+import fs from 'fs'
 import path from 'path'
 import {
   addMiniProgramComponentJson,
@@ -6,6 +7,7 @@ import {
   removeExt,
   encodeBase64Url,
   decodeBase64Url,
+  parseJson,
 } from '@dcloudio/uni-cli-shared'
 import { Plugin } from 'vite'
 
@@ -35,6 +37,15 @@ export function isUniPageUrl(id: string) {
 
 export function isUniComponentUrl(id: string) {
   return id.startsWith(uniComponentPrefix)
+}
+
+export function parseComponentJson(filepath: string) {
+  const jsonPath = filepath.replace(/\.[^.]+$/, '.json')
+  if (fs.existsSync(jsonPath)) {
+    const json = parseJson(fs.readFileSync(jsonPath, 'utf8'))
+
+    return json[process.env.UNI_PLATFORM]
+  }
 }
 
 export function uniEntryPlugin({
@@ -72,6 +83,7 @@ ${global}.createPage(MiniProgramPage)`,
               process.env.UNI_PLATFORM === 'mp-baidu'
                 ? 'apply-shared'
                 : undefined,
+            ...parseComponentJson(filepath),
           }
         )
         return {
