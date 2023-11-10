@@ -29,7 +29,7 @@ const runIfNotDry = isDryRun ? dryRun : run
 const getPkgRoot = (pkg) => path.resolve(__dirname, '../packages/' + pkg)
 const step = (msg) => console.log(colors.cyan(msg))
 
-async function main () {
+async function main() {
   const targetVersion = (
     await prompt({
       type: 'input',
@@ -123,14 +123,14 @@ async function main () {
   console.log()
 }
 
-function updateVersions (version) {
+function updateVersions(version) {
   // 1. update root package.json
   updatePackage(path.resolve(__dirname, '..'), version)
   // 2. update all packages
   packages.forEach((p) => updatePackage(getPkgRoot(p), version))
 }
 
-function updatePackage (pkgRoot, version) {
+function updatePackage(pkgRoot, version) {
   const pkgPath = path.resolve(pkgRoot, 'package.json')
   const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'))
   pkg.version = version
@@ -141,7 +141,7 @@ function updatePackage (pkgRoot, version) {
   fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n')
 }
 
-function updateDeps (pkg, depType, version) {
+function updateDeps(pkg, depType, version) {
   const deps = pkg[depType]
   if (!deps) return
   Object.keys(deps).forEach((dep) => {
@@ -157,7 +157,7 @@ function updateDeps (pkg, depType, version) {
   })
 }
 
-async function publishPackage (pkgName, version, runIfNotDry) {
+async function publishPackage(pkgName, version, runIfNotDry) {
   if (skippedPackages.includes(pkgName)) {
     return
   }
@@ -191,7 +191,7 @@ async function publishPackage (pkgName, version, runIfNotDry) {
     )
     console.log(colors.green(`Successfully published ${pkgName}@${version}`))
   } catch (e) {
-    if (e.stderr.match(/previously published/) || pkgName === 'uni-uts-v1') {
+    if (e.stderr.match(/previously published/)) {
       console.log(colors.red(`Skipping already published: ${pkgName}`))
     } else {
       throw e
