@@ -1,6 +1,12 @@
 import path, { basename, resolve } from 'path'
 import fs from 'fs-extra'
-import type { parse, bundle, UTSTarget, UTSOutputOptions } from '@dcloudio/uts'
+import type {
+  parse,
+  bundle,
+  UTSTarget,
+  UTSOutputOptions,
+  UTSResult,
+} from '@dcloudio/uts'
 import {
   camelize,
   capitalize,
@@ -78,6 +84,7 @@ export interface UTSPlatformResourceOptions {
   components: Record<string, string>
   package: string
   hookClass: string
+  result: UTSResult
 }
 export function genUTSPlatformResource(
   filename: string,
@@ -121,6 +128,16 @@ export function genUTSPlatformResource(
         overwrite: true,
       }
     )
+  }
+  if (options.result.chunks) {
+    options.result.chunks.forEach((chunk) => {
+      const chunkFile = path.resolve(utsOutputDir, chunk)
+      if (fs.existsSync(chunkFile)) {
+        fs.moveSync(chunkFile, path.resolve(utsOutputDir, 'src', chunk), {
+          overwrite: true,
+        })
+      }
+    })
   }
 }
 
