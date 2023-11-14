@@ -128,6 +128,7 @@ export async function runKotlinProd(
     components,
     package: parseKotlinPackage(filename).package + '.',
     hookClass,
+    result,
   })
 }
 
@@ -205,6 +206,7 @@ export async function runKotlinDev(
     extname: '.kt',
     components,
     package: '',
+    result,
   })
   // 开发模式下，需要生成 dex
   if (fs.existsSync(kotlinFile)) {
@@ -237,10 +239,15 @@ export async function runKotlinDev(
       kotlinFile
     )
     const waiting = { done: undefined }
+    const kotlinFiles = [kotlinFile].concat(
+      result.chunks?.map((chunk) =>
+        path.resolve(path.dirname(kotlinFile), chunk)
+      ) || []
+    )
     const options = {
       pageCount: 0,
       kotlinc: resolveKotlincArgs(
-        [kotlinFile],
+        kotlinFiles,
         jarFile,
         getKotlincHome(),
         (isX ? getDefaultJar(2) : getDefaultJar())
@@ -259,6 +266,7 @@ export async function runKotlinDev(
         waiting
       ),
     }
+    // console.log('dex compile options: ', options)
     const { code, msg } = await compileDex(options, inputDir)
     // console.log('dex compile time: ' + (Date.now() - time) + 'ms')
     // 等待 stderrListener 执行完毕
@@ -480,6 +488,8 @@ export async function compile(
       imports,
       logFilename: true,
       noColor: !isColorSupported(),
+      split: true,
+      disableSplitManifest: true,
       transform: {
         uniExtApiDefaultNamespace: 'io.dcloud.uniapp.extapi',
         uniExtApiNamespaces: extApis,
@@ -497,6 +507,7 @@ export async function compile(
       extname: '.kt',
       components,
       package: '',
+      result,
     })
   return result
 }

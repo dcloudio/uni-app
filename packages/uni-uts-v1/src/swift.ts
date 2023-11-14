@@ -90,6 +90,7 @@ export async function runSwiftProd(
     components,
     package: parseSwiftPackage(filename).namespace,
     hookClass,
+    result,
   })
 }
 
@@ -175,6 +176,7 @@ export async function runSwiftDev(
     extname: '.swift',
     components,
     package: '',
+    result,
   })
   result.changed = []
   // 开发模式下，需要生成 framework
@@ -284,6 +286,7 @@ export async function compile(
       extname: '.swift',
       components,
       package: '',
+      result,
     })
   return result
 }
