@@ -194,7 +194,7 @@ async function publishPackage(pkgName, version, runIfNotDry) {
     if (e.stderr.match(/previously published/)) {
       console.log(colors.red(`Skipping already published: ${pkgName}`))
     } else {
-      throw e
+      console.error(e)
     }
   }
 }
