@@ -56,10 +56,13 @@ function getTabBarPageId(url: string) {
 export const switchTab = defineAsyncApi<API_TYPE_SWITCH_TAB>(
   API_SWITCH_TAB,
   // @ts-ignore
-  ({ url, tabBarText }, { resolve, reject }) => {
+  ({ url, tabBarText, isAutomatedTesting }, { resolve, reject }) => {
     return (
       removeNonTabBarPages(),
-      navigate({ type: API_SWITCH_TAB, url, tabBarText }, getTabBarPageId(url))
+      navigate(
+        { type: API_SWITCH_TAB, url, tabBarText, isAutomatedTesting },
+        getTabBarPageId(url)
+      )
         .then(resolve)
         .catch(reject)
     )

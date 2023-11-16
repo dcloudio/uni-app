@@ -13,11 +13,12 @@ interface NavigateOptions {
   url: string
   tabBarText?: string
   events?: Record<string, any>
+  isAutomatedTesting?: boolean
 }
 export function navigate(
-  { type, url, tabBarText, events }: NavigateOptions,
+  { type, url, tabBarText, events, isAutomatedTesting }: NavigateOptions,
   __id__?: number
-): Promise<void | { eventChannel: EventChannel }> {
+): Promise<void | { eventChannel?: EventChannel; __id__?: number }> {
   const router = getApp().$router as Router
   const { path, query } = parseUrl(url)
   return new Promise((resolve, reject) => {
@@ -49,11 +50,15 @@ export function navigate(
           })
           ;(meta.eventChannel as EventChannel)._clearCache()
         }
-        return resolve({
-          eventChannel: meta.eventChannel as EventChannel,
-        })
+        return isAutomatedTesting
+          ? resolve({
+              __id__: state.__id__,
+            })
+          : resolve({
+              eventChannel: meta.eventChannel as EventChannel,
+            })
       }
-      return resolve()
+      return isAutomatedTesting ? resolve({ __id__: state.__id__ }) : resolve()
     })
   })
 }
