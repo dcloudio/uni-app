@@ -33,8 +33,9 @@ class Stat extends Report {
           }
 
           if(space.provider === 'alipay'){
-            spaceData.secretId = space.secretId
             spaceData.secretKey = space.secretKey
+            spaceData.accessKey = space.accessKey || space.secretId
+            spaceData.spaceAppId = space.spaceAppId || space.appId
           }
 
           uni.__stat_uniCloud_space = uniCloud.init(spaceData)
