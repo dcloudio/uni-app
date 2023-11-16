@@ -3042,6 +3042,7 @@ function formatApiArgs(args, options) {
   }
 }
 function invokeSuccess(id2, name, res) {
+  console.warn("invokeSuccess", id2, name, res);
   return invokeCallback(
     id2,
     extend(res || {}, { errMsg: name + ":ok" })
@@ -20800,7 +20801,7 @@ const navigateBack = /* @__PURE__ */ defineAsyncApi(
   NavigateBackProtocol,
   NavigateBackOptions
 );
-function navigate({ type, url, tabBarText, events }, __id__) {
+function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__) {
   const router = getApp().$router;
   const { path, query } = parseUrl(url);
   return new Promise((resolve, reject) => {
@@ -20831,17 +20832,20 @@ function navigate({ type, url, tabBarText, events }, __id__) {
           });
           meta.eventChannel._clearCache();
         }
-        return resolve({
+        return isAutomatedTesting ? resolve({
+          __id__: state2.__id__
+        }) : resolve({
           eventChannel: meta.eventChannel
         });
       }
-      return resolve();
+      return isAutomatedTesting ? resolve({ __id__: state2.__id__ }) : resolve();
     });
   });
 }
 const navigateTo = /* @__PURE__ */ defineAsyncApi(
   API_NAVIGATE_TO,
-  ({ url, events }, { resolve, reject }) => navigate({ type: API_NAVIGATE_TO, url, events }).then(resolve).catch(reject),
+  // @ts-ignore
+  ({ url, events, isAutomatedTesting }, { resolve, reject }) => navigate({ type: API_NAVIGATE_TO, url, events, isAutomatedTesting }).then(resolve).catch(reject),
   NavigateToProtocol,
   NavigateToOptions
 );
@@ -20855,10 +20859,11 @@ function removeLastPage() {
 }
 const redirectTo = /* @__PURE__ */ defineAsyncApi(
   API_REDIRECT_TO,
-  ({ url }, { resolve, reject }) => {
+  // @ts-ignore
+  ({ url, isAutomatedTesting }, { resolve, reject }) => {
     return (
       // TODO exists 属性未实现
-      removeLastPage(), navigate({ type: API_REDIRECT_TO, url }).then(resolve).catch(reject)
+      removeLastPage(), navigate({ type: API_REDIRECT_TO, url, isAutomatedTesting }).then(resolve).catch(reject)
     );
   },
   RedirectToProtocol,
@@ -20872,8 +20877,9 @@ function removeAllPages() {
 }
 const reLaunch = /* @__PURE__ */ defineAsyncApi(
   API_RE_LAUNCH,
-  ({ url }, { resolve, reject }) => {
-    return removeAllPages(), navigate({ type: API_RE_LAUNCH, url }).then(resolve).catch(reject);
+  // @ts-ignore
+  ({ url, isAutomatedTesting }, { resolve, reject }) => {
+    return removeAllPages(), navigate({ type: API_RE_LAUNCH, url, isAutomatedTesting }).then(resolve).catch(reject);
   },
   ReLaunchProtocol,
   ReLaunchOptions
@@ -20914,8 +20920,8 @@ function getTabBarPageId(url) {
 const switchTab = /* @__PURE__ */ defineAsyncApi(
   API_SWITCH_TAB,
   // @ts-ignore
-  ({ url, tabBarText }, { resolve, reject }) => {
-    return removeNonTabBarPages(), navigate({ type: API_SWITCH_TAB, url, tabBarText }, getTabBarPageId(url)).then(resolve).catch(reject);
+  ({ url, tabBarText, isAutomatedTesting }, { resolve, reject }) => {
+    return removeNonTabBarPages(), navigate({ type: API_SWITCH_TAB, url, tabBarText, isAutomatedTesting }, getTabBarPageId(url)).then(resolve).catch(reject);
   },
   SwitchTabProtocol,
   SwitchTabOptions

@@ -1439,6 +1439,7 @@ function formatApiArgs(args, options) {
   }
 }
 function invokeSuccess(id, name, res) {
+  console.warn("invokeSuccess", id, name, res);
   return invokeCallback(
     id,
     shared.extend(res || {}, { errMsg: name + ":ok" })
