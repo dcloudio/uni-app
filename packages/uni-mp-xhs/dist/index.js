@@ -2278,9 +2278,10 @@ function parsePage (vuePageOptions) {
       };
 
       this.$vm.__call_hook('onLoad', this.__query);
+      this.$vm.__call_hook('onShow');
       setTimeout(() => {
         this.$vm.__call_hook('onReady');
-    });
+      });
     },
     onUnload () {
       this.$vm.__call_hook('onUnload');
