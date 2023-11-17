@@ -3042,7 +3042,6 @@ function formatApiArgs(args, options) {
   }
 }
 function invokeSuccess(id2, name, res) {
-  console.warn("invokeSuccess", id2, name, res);
   return invokeCallback(
     id2,
     extend(res || {}, { errMsg: name + ":ok" })
@@ -20926,7 +20925,10 @@ const switchTab = /* @__PURE__ */ defineAsyncApi(
   API_SWITCH_TAB,
   // @ts-ignore
   ({ url, tabBarText, isAutomatedTesting }, { resolve, reject }) => {
-    return removeNonTabBarPages(), navigate({ type: API_SWITCH_TAB, url, tabBarText, isAutomatedTesting }, getTabBarPageId(url)).then(resolve).catch(reject);
+    return removeNonTabBarPages(), navigate(
+      { type: API_SWITCH_TAB, url, tabBarText, isAutomatedTesting },
+      getTabBarPageId(url)
+    ).then(resolve).catch(reject);
   },
   SwitchTabProtocol,
   SwitchTabOptions
