@@ -291,9 +291,9 @@ const formatters: Formatter[] = [
           api = findUniApi(codeFrames[index - 1])
         }
         if (api) {
-          api = `ext api ${api}`
+          api = `api ${api}`
         } else {
-          api = `您使用到的ext api`
+          api = `您使用到的api`
         }
         return `[EXCEPTION] 当前运行的基座未包含${api}，请重新打包自定义基座再运行。`
       }
