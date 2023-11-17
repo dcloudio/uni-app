@@ -1,10 +1,11 @@
-import fs from 'fs'
+import fs from 'fs-extra'
 import path from 'path'
 import glob from 'fast-glob'
 import colors from 'picocolors'
 import postcssrc from 'postcss-load-config'
 import { dataToEsm } from '@rollup/pluginutils'
 import {
+  EmittedAsset,
   ExistingRawSourceMap,
   PluginContext,
   RollupError,
@@ -117,7 +118,10 @@ const postcssConfigCache = new WeakMap<
 /**
  * Plugin applied before user plugins
  */
-export function cssPlugin(config: ResolvedConfig): Plugin {
+export function cssPlugin(
+  config: ResolvedConfig,
+  options?: { isAppX: boolean }
+): Plugin {
   let server: ViteDevServer
   let moduleCache: Map<string, Record<string, string>>
 
@@ -153,7 +157,25 @@ export function cssPlugin(config: ResolvedConfig): Plugin {
         }
         const resolved = await resolveUrl(url, importer)
         if (resolved) {
-          return fileToUrl(resolved, config, this, true)
+          return fileToUrl(
+            resolved,
+            config,
+            options?.isAppX
+              ? ({
+                  emitFile(emittedFile: EmittedAsset) {
+                    // 直接写入目标目录
+                    fs.outputFileSync(
+                      path.resolve(
+                        process.env.UNI_OUTPUT_DIR,
+                        emittedFile.fileName!
+                      ),
+                      emittedFile.source!
+                    )
+                  },
+                } as PluginContext)
+              : this,
+            true
+          )
         }
         return url
       }

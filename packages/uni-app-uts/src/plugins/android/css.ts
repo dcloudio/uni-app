@@ -74,7 +74,7 @@ export function uniAppCssPlugin(): Plugin {
         },
       })
       // 增加 css plugins
-      insertBeforePlugin(cssPlugin(config), name, config)
+      insertBeforePlugin(cssPlugin(config, { isAppX: true }), name, config)
       const plugins = config.plugins as Plugin[]
       const index = plugins.findIndex((p) => p.name === 'uni:app-uvue')
       plugins.splice(index, 0, uvueCssPostPlugin)
