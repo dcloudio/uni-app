@@ -283,12 +283,12 @@ const formatters: Formatter[] = [
     format(error, codes) {
       if (error.includes('Failed resolution of: Lio/dcloud/uniapp/extapi/')) {
         let api = ''
-        // 遍历查找
-        for (const msg of codes) {
-          api = findUniApi(msg)
-          if (api) {
-            break
-          }
+        // 第一步先遍历查找^^^^^的索引
+        const codeFrames = codes[codes.length - 1].split(splitRE)
+        const index = codeFrames.findIndex((frame) => frame.includes('^^^^^'))
+        if (index > 0) {
+          // 第二步，取前一条记录，查找uni.开头的api
+          api = findUniApi(codeFrames[index - 1])
         }
         if (api) {
           api = `ext api ${api}`
@@ -301,7 +301,7 @@ const formatters: Formatter[] = [
   },
 ]
 
-const UNI_API_RE = /(uni\.\w+)\([^)]*\)/
+const UNI_API_RE = /(uni\.\w+)/
 function findUniApi(msg: string) {
   const matches = msg.match(UNI_API_RE)
   if (matches) {
