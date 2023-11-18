@@ -216,8 +216,8 @@ export function getUniCloudObjectInfo(
     const { getWorkspaceObjectInfo } = require('../../../lib/unicloud-utils')
     return getWorkspaceObjectInfo(uniCloudWorkspaceFolder, serviceProvider)
   } catch (e) {
-    console.error(e)
-    return []
+    console.error((e as Error).message)
+    process.exit(1)
   }
 }
 
