@@ -210,6 +210,9 @@ function createPlugins(options: VitePluginUniResolvedOptions) {
         process.env.UNI_RENDERER_NATIVE === 'appService')
     ) {
       addCopyPlugin = true
+    } else if (process.env.UNI_APP_X === 'true') {
+      // app-ios
+      addCopyPlugin = true
     }
   }
   if (addCopyPlugin) {
