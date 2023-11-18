@@ -1771,30 +1771,6 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = EM
             callWithErrorHandling(fn, instance, 4 /* ErrorCodes.WATCH_CLEANUP */);
         };
     };
-    // in SSR there is no need to setup an actual effect, and it should be noop
-    // unless it's eager or sync flush
-    let ssrCleanup;
-    if (isInSSRComponentSetup) {
-        // we will also not call the invalidate callback (+ runner is not set up)
-        onCleanup = NOOP;
-        if (!cb) {
-            getter();
-        }
-        else if (immediate) {
-            callWithAsyncErrorHandling(cb, instance, 3 /* ErrorCodes.WATCH_CALLBACK */, [
-                getter(),
-                isMultiSource ? [] : undefined,
-                onCleanup
-            ]);
-        }
-        if (flush === 'sync') {
-            const ctx = useSSRContext();
-            ssrCleanup = ctx.__watcherHandles || (ctx.__watcherHandles = []);
-        }
-        else {
-            return NOOP;
-        }
-    }
     let oldValue = isMultiSource
         ? new Array(source.length).fill(INITIAL_WATCHER_VALUE)
         : INITIAL_WATCHER_VALUE;
@@ -1876,8 +1852,6 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = EM
             remove(instance.scope.effects, effect);
         }
     };
-    if (ssrCleanup)
-        ssrCleanup.push(unwatch);
     return unwatch;
 }
 // this.$watch
@@ -2365,7 +2339,7 @@ function defineAsyncComponent(source) {
             };
             // suspense-controlled or SSR.
             if ((suspensible && instance.suspense) ||
-                (isInSSRComponentSetup)) {
+                (false )) {
                 return load()
                     .then(comp => {
                     return () => createInnerComp(comp, instance);
@@ -2457,14 +2431,6 @@ const KeepAliveImpl = {
         // The whole point of this is to avoid importing KeepAlive directly in the
         // renderer to facilitate tree-shaking.
         const sharedContext = instance.ctx;
-        // if the internal renderer is not registered, it indicates that this is server-side rendering,
-        // for KeepAlive, we just need to render its children
-        if (!sharedContext.renderer) {
-            return () => {
-                const children = slots.default && slots.default();
-                return children && children.length === 1 ? children[0] : children;
-            };
-        }
         const cache = new Map();
         const keys = new Set();
         let current = null;
@@ -7355,12 +7321,7 @@ function setupStatefulComponent(instance, isSSR) {
 function handleSetupResult(instance, setupResult, isSSR) {
     if (isFunction(setupResult)) {
         // setup returned an inline render function
-        if (instance.type.__ssrInlineRender) {
-            // when the function's name is `ssrRender` (compiled by SFC inline mode),
-            // set it as ssrRender instead.
-            instance.ssrRender = setupResult;
-        }
-        else {
+        {
             instance.render = setupResult;
         }
     }
@@ -8006,6 +7967,11 @@ function isMemoSame(cached, memo) {
 // Core API ------------------------------------------------------------------
 const version = "3.2.47";
 /**
+ * SSR utils for \@vue/server-renderer. Only exposed in ssr-possible builds.
+ * @internal
+ */
+const ssrUtils = (null);
+/**
  * @internal only exposed in compat builds
  */
 const resolveFilter = null;
@@ -8533,4 +8499,4 @@ const createApp = ((...args) => {
     return app;
 });
 
-export { BaseTransition, BaseTransitionPropsValidators, Comment, Fragment, KeepAlive, Static, Suspense, Teleport, Text, assertNumber, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, devtools, getCurrentInstance, getTransitionRawChildren, guardReactiveProps, h, handleError, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isRuntimeOnly, isVNode, mergeDefaults, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onServerPrefetch, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, popScopeId, provide, pushScopeId, queuePostFlushCb, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, ssrContextKey, toHandlers, transformVNodeArgs, useAttrs, useCssModule, useCssStyles, useCssVars, useSSRContext, useSlots, useTransitionState, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId };
+export { BaseTransition, BaseTransitionPropsValidators, Comment, Fragment, KeepAlive, Static, Suspense, Teleport, Text, assertNumber, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, devtools, getCurrentInstance, getTransitionRawChildren, guardReactiveProps, h, handleError, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isRuntimeOnly, isVNode, mergeDefaults, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onServerPrefetch, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, popScopeId, provide, pushScopeId, queuePostFlushCb, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, ssrContextKey, ssrUtils, toHandlers, transformVNodeArgs, useAttrs, useCssModule, useCssStyles, useCssVars, useSSRContext, useSlots, useTransitionState, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId };
