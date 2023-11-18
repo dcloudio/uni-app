@@ -41,6 +41,10 @@ export function normalizeUniAppXAppPagesJson(jsonStr: string) {
   if (userPagesJson.condition) {
     pagesJson.condition = userPagesJson.condition
   }
+  // uniIdRouter
+  if (userPagesJson.uniIdRouter) {
+    pagesJson.uniIdRouter = userPagesJson.uniIdRouter
+  }
   return pagesJson
 }
 
