@@ -8297,24 +8297,9 @@ function createInvoker(initialValue, instance) {
                 modifiers.add(m);
             });
         }
-        initWxsEvent(invoker, instance);
     }
     invoker.modifiers = [...modifiers];
     return invoker;
-}
-function initWxsEvent(invoker, instance) {
-    if (!instance) {
-        return;
-    }
-    const { $wxsModules } = instance;
-    if (!$wxsModules) {
-        return;
-    }
-    const invokerSourceCode = invoker.value.toString();
-    if (!$wxsModules.find(module => invokerSourceCode.indexOf('.' + module + '.') > -1)) {
-        return;
-    }
-    invoker.wxsEvent = invoker.value();
 }
 
 function patchStyle(el, prev, next) {
