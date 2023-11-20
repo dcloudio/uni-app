@@ -1,0 +1,9 @@
+{
+  "name": "easycom",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@dcloudio/uni-ui": "^1.4.28"
+  }
+}

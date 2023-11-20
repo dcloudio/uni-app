@@ -78,6 +78,9 @@ export function initEnv(
     console.error(M['mp.360.unsupported'])
     process.exit(0)
   }
+  if (options.platform === 'web') {
+    options.platform = 'h5'
+  }
   if (options.plugin) {
     process.env.UNI_MP_PLUGIN = 'true'
   }
@@ -179,7 +182,8 @@ export function initEnv(
 
   if (
     process.env.UNI_PLATFORM === 'app' ||
-    process.env.UNI_PLATFORM === 'web'
+    process.env.UNI_PLATFORM === 'web' ||
+    process.env.UNI_PLATFORM === 'h5'
   ) {
     const pkg = require('../../package.json')
     console.log(

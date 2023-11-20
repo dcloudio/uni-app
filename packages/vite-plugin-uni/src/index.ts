@@ -104,8 +104,9 @@ export default function uniPlugin(
   )
 
   const plugins =
-    process.env.UNI_APP_X === 'true' && process.env.UNI_PLATFORM === 'app'
-      ? createUVuePlugins(options)
+    process.env.UNI_APP_X === 'true' &&
+    process.env.UNI_UTS_PLATFORM === 'app-android'
+      ? createUVueAndroidPlugins(options)
       : createPlugins(options)
 
   // x 提供 auto import（非android、android自行处理）
@@ -209,6 +210,9 @@ function createPlugins(options: VitePluginUniResolvedOptions) {
         process.env.UNI_RENDERER_NATIVE === 'appService')
     ) {
       addCopyPlugin = true
+    } else if (process.env.UNI_APP_X === 'true') {
+      // app-ios
+      addCopyPlugin = true
     }
   }
   if (addCopyPlugin) {
@@ -247,7 +251,7 @@ function createPlugins(options: VitePluginUniResolvedOptions) {
   return plugins
 }
 
-function createUVuePlugins(options: VitePluginUniResolvedOptions) {
+function createUVueAndroidPlugins(options: VitePluginUniResolvedOptions) {
   const plugins: Plugin[] = []
 
   options.uvue = true
@@ -278,15 +282,6 @@ function createUVuePlugins(options: VitePluginUniResolvedOptions) {
     process.env.UNI_NODE_ENV !== process.env.NODE_ENV
   ) {
     process.env.NODE_ENV = process.env.UNI_NODE_ENV
-  }
-
-  // iOS 需要使用
-  if (process.env.UNI_UTS_PLATFORM === 'app-ios') {
-    plugins.unshift(
-      createPluginVueInstance(
-        initPluginVueOptions(options, uniPlugins, uniPluginOptions)
-      )
-    )
   }
 
   plugins.push(

@@ -1,8 +1,10 @@
 import path from 'path'
 import { extend, isArray } from '@vue/shared'
-import { parseJson } from './json'
-import { removePlatformStyle, validatePages } from './pages'
-import { normalizePath } from '../utils'
+import { parseJson } from '../json'
+import { removePlatformStyle, validatePages } from '../pages'
+import { normalizePath } from '../../utils'
+import { normalizeAppUniRoutes } from '../app/pages/uniRoutes'
+import { normalizeAppXUniConfig } from './uniConfig'
 
 export function normalizeUniAppXAppPagesJson(jsonStr: string) {
   const pagesJson: UniApp.PagesJson = {
@@ -41,6 +43,10 @@ export function normalizeUniAppXAppPagesJson(jsonStr: string) {
   if (userPagesJson.condition) {
     pagesJson.condition = userPagesJson.condition
   }
+  // uniIdRouter
+  if (userPagesJson.uniIdRouter) {
+    pagesJson.uniIdRouter = userPagesJson.uniIdRouter
+  }
   return pagesJson
 }
 
@@ -77,4 +83,25 @@ function normalizePageStyle(
     return pageStyle
   }
   return {}
+}
+
+/**
+ * TODO 应该闭包，通过globalThis赋值？
+ * @param pagesJson
+ * @param manifestJson
+ * @returns
+ */
+export function normalizeUniAppXAppConfig(
+  pagesJson: UniApp.PagesJson,
+  manifestJson: Record<string, any>
+) {
+  return `const __uniConfig = ${normalizeAppXUniConfig(
+    pagesJson,
+    manifestJson
+  )};
+const __uniRoutes = ${normalizeAppUniRoutes(
+    pagesJson
+  )}.map(uniRoute=>(uniRoute.meta.route=uniRoute.path,__uniConfig.pages.push(uniRoute.path),uniRoute.path='/'+uniRoute.path,uniRoute));
+
+`
 }

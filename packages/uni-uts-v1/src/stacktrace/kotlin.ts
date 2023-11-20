@@ -214,7 +214,7 @@ export function parseUTSKotlinRuntimeStacktrace(
       const color = options.logType
         ? COLORS[options.logType as string] || ''
         : ''
-      let error = 'error: ' + res[0]
+      let error = 'error: ' + formatKotlinError(res[0], codes)
       if (color) {
         error = color + error + color
       }
@@ -272,4 +272,50 @@ function parseUTSKotlinRuntimeStacktraceLine(
     }
   }
   return lines
+}
+
+interface Formatter {
+  format(error: string, codes: string[]): string | undefined
+}
+
+const formatters: Formatter[] = [
+  {
+    format(error, codes) {
+      if (error.includes('Failed resolution of: Lio/dcloud/uniapp/extapi/')) {
+        let api = ''
+        // 第一步先遍历查找^^^^^的索引
+        const codeFrames = codes[codes.length - 1].split(splitRE)
+        const index = codeFrames.findIndex((frame) => frame.includes('^^^^^'))
+        if (index > 0) {
+          // 第二步，取前一条记录，查找uni.开头的api
+          api = findUniApi(codeFrames[index - 1])
+        }
+        if (api) {
+          api = `api ${api}`
+        } else {
+          api = `您使用到的api`
+        }
+        return `[EXCEPTION] 当前运行的基座未包含${api}，请重新打包自定义基座再运行。`
+      }
+    },
+  },
+]
+
+const UNI_API_RE = /(uni\.\w+)/
+function findUniApi(msg: string) {
+  const matches = msg.match(UNI_API_RE)
+  if (matches) {
+    return matches[1]
+  }
+  return ''
+}
+
+function formatKotlinError(error: string, codes: string[]): string {
+  for (const formatter of formatters) {
+    const err = formatter.format(error, codes)
+    if (err) {
+      return err
+    }
+  }
+  return error
 }

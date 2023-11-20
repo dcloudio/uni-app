@@ -145,21 +145,35 @@ export function getUniCloudSpaceList(): Array<UniCloudSpace> {
       if (space.provider === 'tcb') {
         space.provider = 'tencent'
       }
-      if (space.clientSecret) {
-        return {
-          provider: space.provider,
-          spaceName: space.name,
-          spaceId: space.id,
-          clientSecret: space.clientSecret,
-          endpoint: space.apiEndpoint,
-          workspaceFolder: space.workspaceFolder,
+      if (!space.provider && space.clientSecret) {
+        space.provider = 'aliyun'
+      }
+      switch (space.provider) {
+        case 'aliyun':
+          return {
+            provider: space.provider || 'aliyun',
+            spaceName: space.name,
+            spaceId: space.id,
+            clientSecret: space.clientSecret,
+            endpoint: space.apiEndpoint,
+          }
+        case 'alipay': {
+          return {
+            provider: space.provider,
+            spaceName: space.name,
+            spaceId: space.id,
+            spaceAppId: space.spaceAppId,
+            accessKey: space.accessKey,
+            secretKey: space.secretKey,
+          }
         }
-      } else {
-        return {
-          provider: space.provider,
-          spaceName: space.name,
-          spaceId: space.id,
-          workspaceFolder: space.workspaceFolder,
+        case 'tencent':
+        default: {
+          return {
+            provider: space.provider,
+            spaceName: space.name,
+            spaceId: space.id,
+          }
         }
       }
     })
@@ -202,8 +216,8 @@ export function getUniCloudObjectInfo(
     const { getWorkspaceObjectInfo } = require('../../../lib/unicloud-utils')
     return getWorkspaceObjectInfo(uniCloudWorkspaceFolder, serviceProvider)
   } catch (e) {
-    console.error(e)
-    return []
+    console.error((e as Error).message)
+    process.exit(1)
   }
 }
 

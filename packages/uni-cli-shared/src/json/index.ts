@@ -4,4 +4,7 @@ export * from './json'
 export * from './pages'
 export * from './manifest'
 export * from './theme'
-export { normalizeUniAppXAppPagesJson } from './uniAppX'
+export {
+  normalizeUniAppXAppPagesJson,
+  normalizeUniAppXAppConfig,
+} from './uni-x'

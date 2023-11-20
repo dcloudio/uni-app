@@ -152,8 +152,8 @@ export const getProperties = (
         dom.getAttribute(name) != null
           ? dom.getAttribute(name)
           : component != null
-          ? component.$props[toCamelCase(name)]
-          : null
+            ? component.$props[toCamelCase(name)]
+            : null
       return attribute
     })
     callback({ properties }, null)
@@ -331,7 +331,17 @@ export const callMethod = (
       params.args.length > 0
         ? component.$callMethod(params.method, params.args[0])
         : component.$callMethod(params.method)
-    callback({ result }, null)
+    // @ts-ignore
+    if (result instanceof Promise<unknown>) {
+      (result as Promise<any>).then((res: any) => {
+        callback({ result: res }, null)
+      }).catch((err) => {
+        const errMsg = err instanceof Error ? err.message : err
+        callback({ result: errMsg }, null)
+      })
+    } else {
+      callback({ result }, null)
+    }
   }
 }
 

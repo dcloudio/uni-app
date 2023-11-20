@@ -80,7 +80,7 @@ export function normalizeAppUniConfig(
   return JSON.stringify(config)
 }
 
-function parseEntryPagePath(pagesJson: UniApp.PagesJson) {
+export function parseEntryPagePath(pagesJson: UniApp.PagesJson) {
   const res = {
     entryPagePath: '',
     entryPageQuery: '',

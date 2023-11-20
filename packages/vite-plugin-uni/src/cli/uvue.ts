@@ -31,7 +31,7 @@ export function initUVueEnv() {
   }
 }
 
-export async function runUVueDev(options: CliOptions & ServerOptions) {
+export async function runUVueAndroidDev(options: CliOptions & ServerOptions) {
   if (options.platform !== 'app') {
     output(
       'error',
@@ -79,7 +79,7 @@ export async function runUVueDev(options: CliOptions & ServerOptions) {
   })
 }
 
-export async function runUVueBuild(options: CliOptions & BuildOptions) {
+export async function runUVueAndroidBuild(options: CliOptions & BuildOptions) {
   try {
     initEasycomsOnce(process.env.UNI_INPUT_DIR, {
       dirs: [resolveComponentsLibPath()],
@@ -97,7 +97,7 @@ export async function runUVueBuild(options: CliOptions & BuildOptions) {
 /**
  * 目前的简易实现逻辑
  * node层：
- *  1. 监听项目，生成资源到临时目录 .uts/android, .uts/ios
+ *  1. 监听项目，生成资源到临时目录 .uts/android
  *  2. uvue 文件，做解析，拆分生成 render.kt, css.kt, uts.uvue
  *  3. static 文件，copy 到最终目录
  *  4. uvue、vue、uts 文件发生变化，调用 uts 编译器
