@@ -265,8 +265,8 @@ function normalizeCode(code: string, isMain = false) {
   return `
 ${code}  
 export function main(app: IApp) {
-    defineAppConfig();
     definePageRoutes();
+    defineAppConfig();
     ${automatorCode}
     (createApp()['app'] as VueApp).mount(app);
 }

@@ -107,6 +107,7 @@ function defineAppConfig(){
   __uniConfig.tabBar = __uniTabBar as Map<string, any> | null
   __uniConfig.conditionUrl = '${conditionUrl}'
   __uniConfig.uniIdRouter = ${uniIdRouter}
+  __uniConfig.ready = true
 }
 `
       }
