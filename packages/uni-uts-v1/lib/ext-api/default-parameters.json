@@ -41,6 +41,12 @@
       "null"
     ]
   },
+  "uni-createWebviewContext": {
+    "createWebviewContext": [
+      null,
+      "null"
+    ]
+  },
   "uni-video": {
     "createVideoContext": [
       null,
