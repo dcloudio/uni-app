@@ -7,11 +7,11 @@ export function openAppAuthorizeSetting (options, callbackId) {
   openAppAuthorizeSetting(ret => {
     if (ret.type === 'success') {
       invoke(callbackId, {
-        errMsg: 'getClipboardData:ok'
+        errMsg: 'openAppAuthorizeSetting:ok'
       })
     } else {
       invoke(callbackId, {
-        errMsg: 'getClipboardData:fail'
+        errMsg: 'openAppAuthorizeSetting:fail'
       })
     }
   })
