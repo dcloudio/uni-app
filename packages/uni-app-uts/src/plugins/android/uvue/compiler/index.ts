@@ -30,6 +30,7 @@ import { transformObjectExpression } from './transforms/transformObjectExpressio
 import { transformExpression } from './transforms/transformExpression'
 import { transformElements } from './transforms/transformElements'
 import { transformStyle } from './transforms/transformStyle'
+import { transformVHtml } from './transforms/vHtml'
 
 export type TransformPreset = [
   NodeTransform[],
@@ -45,6 +46,7 @@ export function getBaseTransformPreset(
       transformFor,
       // order is important
       trackVForSlotScopes,
+      transformVHtml,
       transformExpression,
       transformSlotOutlet,
       transformElement,
