@@ -54,7 +54,7 @@ function generatePagesJsonCode(
 import { defineAsyncComponent, resolveComponent, createVNode, withCtx, openBlock, createBlock } from 'vue'
 import { PageComponent, useI18n, setupWindow, setupPage } from '@dcloudio/uni-h5'
 import { appId, appName, appVersion, appVersionCode, debug, networkTimeout, router, async, sdkConfigs, qqMapKey, googleMapKey, aMapKey, bMapKey, aMapSecurityJsCode, aMapServiceHost, ${vueType}, locale, fallbackLocale, darkmode, themeConfig } from './${MANIFEST_JSON_JS}'
-const locales = import.meta.globEager('./locale/*.json')
+const locales = import.meta.glob('./locale/*.json', { eager: true })
 ${importLayoutComponentsCode}
 const extend = Object.assign
 ${cssCode}
