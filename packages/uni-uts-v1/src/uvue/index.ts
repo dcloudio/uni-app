@@ -105,9 +105,11 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
     },
   }
 
+  const hbxVersion = process.env.HX_Version || process.env.UNI_COMPILER_VERSION
+
   const bundleOptions: UTSBundleOptions = {
     mode: process.env.NODE_ENV,
-    hbxVersion: process.env.HX_Version || process.env.UNI_COMPILER_VERSION,
+    hbxVersion,
     input,
     output: {
       isX: true,
@@ -145,7 +147,15 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
   if (!isProd) {
     const kotlinRootOutDir = kotlinDir(outputDir)
     const kotlinSrcOutDir = kotlinSrcDir(kotlinRootOutDir)
-    hasCache = hasKotlinManifestJson(kotlinSrcOutDir)
+    const manifest = readKotlinManifestJson(kotlinSrcOutDir)
+    if (manifest && manifest.env) {
+      if (manifest.env.compiler_version !== hbxVersion) {
+        // 优先判断版本是否有变更，有变更，清除所有缓存
+        fs.removeSync(kotlinRootOutDir)
+      } else {
+        hasCache = true
+      }
+    }
   }
 
   // const time = Date.now()
@@ -403,10 +413,6 @@ function parseInjectModules(
     }
   })
   return [...modules]
-}
-
-function hasKotlinManifestJson(kotlinSrcOutDir: string) {
-  return fs.existsSync(path.resolve(kotlinSrcOutDir, '.manifest.json'))
 }
 
 function readKotlinManifestJson(
