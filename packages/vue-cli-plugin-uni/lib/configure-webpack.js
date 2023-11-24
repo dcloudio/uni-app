@@ -257,7 +257,7 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
         patterns
       } : patterns))
 
-      const uniExtApis = require('@dcloudio/uni-cli-shared/lib/uni_modules/uni_modules')
+      const uniExtApis = require('@dcloudio/uni-cli-shared/lib/uts/uni_modules')
         .parseUniExtApis(false, process.env.UNI_UTS_PLATFORM, 'javascript')
       const keys = Object.keys(uniExtApis)
       if (keys.length) {
