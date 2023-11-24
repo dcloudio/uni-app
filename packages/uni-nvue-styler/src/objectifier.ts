@@ -7,7 +7,10 @@ interface ObjectifierContext {
   TRANSITION: Record<string, Record<string, unknown>>
 }
 
-export function objectifier(node: Root | Document | Container | null) {
+export function objectifier(
+  node: Root | Document | Container | null,
+  { trim }: { trim: boolean } = { trim: false }
+) {
   if (!node) {
     return {}
   }
@@ -16,6 +19,9 @@ export function objectifier(node: Root | Document | Container | null) {
     TRANSITION: {},
   }
   const result = transform(node, context)
+  if (trim) {
+    trimObj(result)
+  }
   if (context['FONT-FACE'].length) {
     result['@FONT-FACE'] = context['FONT-FACE']
   }
@@ -23,6 +29,15 @@ export function objectifier(node: Root | Document | Container | null) {
     result['@TRANSITION'] = context.TRANSITION
   }
   return result
+}
+
+function trimObj(obj: Record<string, any>) {
+  Object.keys(obj).forEach((name) => {
+    const value = obj[name]
+    if (Object.keys(value).length === 1 && hasOwn(value, '')) {
+      obj[name] = value['']
+    }
+  })
 }
 
 function transform(

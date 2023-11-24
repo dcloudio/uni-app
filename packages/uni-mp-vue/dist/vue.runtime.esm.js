@@ -5485,6 +5485,14 @@ function applyOptions(options, instance, publicThis) {
 function set(target, key, val) {
     return (target[key] = val);
 }
+function $callMethod(method, ...args) {
+    const fn = this[method];
+    if (fn) {
+        return fn(...args);
+    }
+    console.error(`method ${method} not found`);
+    return null;
+}
 
 function createErrorHandler(app) {
     return function errorHandler(err, instance, _info) {
@@ -5602,6 +5610,7 @@ function initApp(app) {
     if (__VUE_OPTIONS_API__) {
         globalProperties.$set = set;
         globalProperties.$applyOptions = applyOptions;
+        globalProperties.$callMethod = $callMethod;
     }
     {
         uni.invokeCreateVueAppHook(app);

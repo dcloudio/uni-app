@@ -3,7 +3,12 @@ import { isFunction } from '@vue/shared'
 import { getRealPath } from '@dcloudio/uni-platform'
 import { defineSystemComponent, useCustomEvent } from '@dcloudio/uni-components'
 import { Maps, Map, LatLng, Callout, CalloutOptions } from './maps'
-import { MapType, getMapInfo, getIsAMap } from '../../../helpers/location'
+import {
+  MapType,
+  getMapInfo,
+  getIsAMap,
+  getIsBMap,
+} from '../../../helpers/location'
 import {
   LatLng as GLatLng,
   Marker as GMarker,
@@ -190,15 +195,21 @@ export default /*#__PURE__*/ defineSystemComponent({
     onMapReady((map, maps, trigger) => {
       function updateMarker(option: Props) {
         const title = option.title
-        const position = getIsAMap()
-          ? new (maps as AMap.NameSpace).LngLat(
-              option.longitude,
-              option.latitude
-            )
-          : new (maps as QQMaps | GoogleMaps).LatLng(
-              option.latitude,
-              option.longitude
-            )
+        let position: any
+        if (getIsAMap()) {
+          position = new (maps as AMap.NameSpace).LngLat(
+            option.longitude,
+            option.latitude
+          )
+        } else if (getIsBMap()) {
+          // @ts-ignore
+          position = new maps.Point(option.longitude, option.latitude)
+        } else {
+          position = new (maps as QQMaps | GoogleMaps).LatLng(
+            option.latitude,
+            option.longitude
+          )
+        }
         const img = new Image()
         let imgHeight = 0
         img.onload = () => {
@@ -241,8 +252,15 @@ export default /*#__PURE__*/ defineSystemComponent({
               size: new (maps as GoogleMaps).Size(w, h),
             }
           }
-          marker.setPosition(position as any)
-          marker.setIcon(icon as any)
+          if (getIsBMap()) {
+            // @ts-ignore
+            marker = new maps.Marker(new maps.Point(position.lng, position.lat))
+            // @ts-ignore
+            map.addOverlay(marker)
+          } else {
+            marker.setPosition(position as any)
+            marker.setIcon(icon as any)
+          }
           if ('setRotation' in marker) {
             marker.setRotation(option.rotate || 0)
           }
@@ -393,43 +411,49 @@ export default /*#__PURE__*/ defineSystemComponent({
         }
       }
       function addMarker(props: Props) {
-        marker = new maps.Marker({
-          map: map as any,
-          flat: true,
-          autoRotation: false,
-        })
+        if (!getIsBMap()) {
+          marker = new maps.Marker({
+            map: map as any,
+            flat: true,
+            autoRotation: false,
+          })
+        }
         updateMarker(props)
         const MapsEvent =
           (maps as QQMaps | GoogleMaps).event || (maps as AMap.NameSpace).Event
-        MapsEvent.addListener(marker, 'click', () => {
-          const callout = marker.callout
-          if (callout && !callout.alwaysVisible) {
-            if (getIsAMap()) {
-              callout.visible = !callout.visible
-              if (callout.visible) {
-                marker.callout!.createAMapText()
+        if (getIsBMap()) {
+          // todo add bmap event
+        } else {
+          MapsEvent.addListener(marker, 'click', () => {
+            const callout = marker.callout
+            if (callout && !callout.alwaysVisible) {
+              if (getIsAMap()) {
+                callout.visible = !callout.visible
+                if (callout.visible) {
+                  marker.callout!.createAMapText()
+                } else {
+                  marker.callout!.removeAMapText()
+                }
               } else {
-                marker.callout!.removeAMapText()
-              }
-            } else {
-              callout.set('visible', !callout.visible)
-              if (callout.visible) {
-                const div = callout.div!
-                const parent = div.parentNode!
-                parent.removeChild(div)
-                parent.appendChild(div)
+                callout.set('visible', !callout.visible)
+                if (callout.visible) {
+                  const div = callout.div!
+                  const parent = div.parentNode!
+                  parent.removeChild(div)
+                  parent.appendChild(div)
+                }
               }
             }
-          }
 
-          if (id) {
-            trigger('markertap', {} as Event, {
-              markerId: Number(id),
-              latitude: props.latitude,
-              longitude: props.longitude,
-            })
-          }
-        })
+            if (id) {
+              trigger('markertap', {} as Event, {
+                markerId: Number(id),
+                latitude: props.latitude,
+                longitude: props.longitude,
+              })
+            }
+          })
+        }
       }
       addMarker(props as Props)
       watch(props, updateMarker)

@@ -180,11 +180,7 @@ export const getAttributes = (
   if (dom != null) {
     const attributes = params.names.map((name: string): any | null => {
       if (name == 'class') {
-        // @ts-ignore
-        const classList = JSON.parse<string[]>(
-          JSON.stringify(dom.ext['classList'])
-        )!
-        return classList.join(' ')
+        return dom.classList.join(' ')
       }
       return dom.getAttribute(name)
     })
@@ -226,8 +222,8 @@ export const callFunction = (
         if (element.tagName == 'SCROLL-VIEW') {
           // @ts-ignore
           const arg = JSON.parse<Coordinate>(JSON.stringify(params.args[0]))!
-          element.setAttribute('scrollLeft', arg.x)
-          element.setAttribute('scrollTop', arg.y)
+          element.scrollLeft = arg.x
+          element.scrollTop = arg.y
           callback({ result: `${functionName} success` }, null)
         } else {
           callback(

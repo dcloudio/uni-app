@@ -1,14 +1,36 @@
 import fs from 'fs'
 import path from 'path'
 import glob from 'fast-glob'
-import { camelize, capitalize, isArray } from '@vue/shared'
 import * as UTSCompiler from '@dcloudio/uni-uts-v1'
 
 import { isInHBuilderX } from './hbx'
-import { installDepTips, normalizePath, version } from './utils'
+import {
+  camelize,
+  capitalize,
+  installDepTips,
+  isArray,
+  normalizePath,
+  version,
+} from './utils'
 import type { EasycomMatcher } from './easycom'
-import { once } from '@dcloudio/uni-shared'
+
 import { parseUniExtApis } from './uni_modules'
+
+// 重要，该文件编译后的 js 需要同步到 vue2 编译器 uni-cli-shared/lib/uts
+
+function once<T extends (...args: any[]) => any>(
+  fn: T,
+  ctx: unknown = null
+): T {
+  let res: any
+  return ((...args: any[]) => {
+    if (fn) {
+      res = fn.apply(ctx, args)
+      fn = null as any
+    }
+    return res
+  }) as T
+}
 
 /**
  * 解析 app 平台的 uts 插件，任意平台（android|ios）存在即可

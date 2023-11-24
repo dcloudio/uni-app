@@ -41,3 +41,4 @@ export interface UniVitePlugin extends Plugin {
 export * from './utils'
 export * from './plugins'
 export * from './features'
+export * from './autoImport'

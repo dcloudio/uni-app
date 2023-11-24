@@ -1,5 +1,5 @@
 import path from 'path'
-import { UserConfig, ResolverFunction } from 'vite'
+import { UserConfig, ResolverFunction, Alias } from 'vite'
 import {
   isWindows,
   extensions,
@@ -41,6 +41,15 @@ export function createResolve(
   options: VitePluginUniResolvedOptions,
   _config: UserConfig
 ): UserConfig['resolve'] {
+  const alias: Alias[] =
+    process.env.UNI_APP_X === 'true'
+      ? [
+          {
+            find: 'tslib',
+            replacement: '\0tslib.js',
+          },
+        ]
+      : []
   return {
     // 必须使用alias解析，插件定制的resolveId，不会被应用到css等预处理器中
     alias: [
@@ -53,7 +62,8 @@ export function createResolve(
         },
         customResolver,
       },
-    ],
+      ...alias,
+    ] as Alias[],
     extensions:
       process.env.UNI_APP_X === 'true' ? uni_app_x_extensions : extensions,
   }

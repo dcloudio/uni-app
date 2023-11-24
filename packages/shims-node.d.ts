@@ -56,5 +56,7 @@ declare namespace NodeJS {
     HX_Version: string
 
     UNI_APP_X_PAGE_COUNT: string
+    UNI_APP_X_TSC?: string
+    UNI_APP_X_SINGLE_THREAD?: string
   }
 }

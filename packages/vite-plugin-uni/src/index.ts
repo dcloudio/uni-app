@@ -5,6 +5,7 @@ import type { Plugin, ResolvedConfig, ViteDevServer } from 'vite'
 import type { Options as VueOptions } from '@vitejs/plugin-vue'
 import type ViteLegacyPlugin from '@vitejs/plugin-legacy'
 import type { VueJSXPluginOptions } from '@vue/babel-plugin-jsx'
+import AutoImport from 'unplugin-auto-import/vite'
 import vueJsxPlugin from '@vitejs/plugin-vue-jsx'
 import legacyPlugin from '@vitejs/plugin-legacy'
 
@@ -12,6 +13,7 @@ import {
   CopyOptions,
   InjectOptions,
   emptyDir,
+  initAutoImportOptions,
   initModuleAlias,
   initPreContext,
   parseUniExtApis,
@@ -37,6 +39,7 @@ import {
 } from './vue'
 import { initEnv } from './cli/utils'
 import { uniUVuePlugin } from './uvue/plugins'
+import { AutoImportOptions } from '@dcloudio/uni-cli-shared'
 
 export type ViteLegacyOptions = Parameters<typeof ViteLegacyPlugin>[0]
 
@@ -57,6 +60,7 @@ export interface VitePluginUniOptions {
   vueOptions?: VueOptions
   vueJsxOptions?: (VueJSXPluginOptions & { babelPlugins?: any[] }) | boolean
   viteLegacyOptions?: ViteLegacyOptions | false
+  autoImportOptions?: AutoImportOptions
 }
 export interface VitePluginUniResolvedOptions extends VitePluginUniOptions {
   base: string
@@ -99,9 +103,26 @@ export default function uniPlugin(
     process.env.UNI_APP_X === 'true'
   )
 
-  return process.env.UNI_APP_X === 'true' && process.env.UNI_PLATFORM === 'app'
-    ? createUVuePlugins(options)
-    : createPlugins(options)
+  const plugins =
+    process.env.UNI_APP_X === 'true' && process.env.UNI_PLATFORM === 'app'
+      ? createUVuePlugins(options)
+      : createPlugins(options)
+
+  // x 提供 auto import（非android、android自行处理）
+  if (
+    process.env.UNI_APP_X === 'true' &&
+    process.env.UNI_UTS_PLATFORM !== 'app-android'
+  ) {
+    plugins.unshift(
+      AutoImport(
+        initAutoImportOptions(
+          process.env.UNI_UTS_PLATFORM,
+          options.autoImportOptions || {}
+        )
+      )
+    )
+  }
+  return plugins
 }
 
 function createPlugins(options: VitePluginUniResolvedOptions) {
@@ -257,6 +278,15 @@ function createUVuePlugins(options: VitePluginUniResolvedOptions) {
     process.env.UNI_NODE_ENV !== process.env.NODE_ENV
   ) {
     process.env.NODE_ENV = process.env.UNI_NODE_ENV
+  }
+
+  // iOS 需要使用
+  if (process.env.UNI_UTS_PLATFORM === 'app-ios') {
+    plugins.unshift(
+      createPluginVueInstance(
+        initPluginVueOptions(options, uniPlugins, uniPluginOptions)
+      )
+    )
   }
 
   plugins.push(

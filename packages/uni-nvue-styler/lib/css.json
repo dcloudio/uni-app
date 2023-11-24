@@ -6,7 +6,7 @@
         "length",
         "percentage"
       ],
-      "syntax": "<viewport-length>{1,2}",
+      "syntax": "auto | <length> | <percentage>",
       "values": [{
           "name": "fit-content",
           "uniPlatform": {
@@ -82,7 +82,7 @@
       "restrictions": [
         "length"
       ],
-      "syntax": "<viewport-length>",
+      "syntax": "<length>",
       "values": [{
           "name": "fit-content",
           "uniPlatform": {
@@ -192,7 +192,7 @@
       "restrictions": [
         "length"
       ],
-      "syntax": "<viewport-length>",
+      "syntax": "<length>",
       "values": [{
           "name": "fit-content",
           "uniPlatform": {
@@ -303,7 +303,7 @@
         "length",
         "percentage"
       ],
-      "syntax": "<viewport-length>{1,2}",
+      "syntax": "auto | <length> | <percentage>",
       "values": [{
           "name": "fit-content",
           "uniPlatform": {
@@ -379,7 +379,7 @@
       "restrictions": [
         "length"
       ],
-      "syntax": "<viewport-length>",
+      "syntax": "<length>",
       "values": [{
           "name": "fit-content",
           "uniPlatform": {
@@ -489,7 +489,7 @@
       "restrictions": [
         "length"
       ],
-      "syntax": "<viewport-length>",
+      "syntax": "<length>",
       "values": [{
           "name": "fit-content",
           "uniPlatform": {
@@ -599,7 +599,7 @@
       "restrictions": [
         "enum"
       ],
-      "syntax": "static | relative | absolute | sticky | fixed",
+      "syntax": " relative | absolute | fixed",
       "values": [{
           "name": "relative"
         },
@@ -844,7 +844,7 @@
       "restrictions": [
         "enum"
       ],
-      "syntax": "normal | <content-distribution> | <overflow-position>? [ <content-position> | left | right ]",
+      "syntax": "center | flex-star | flex-end | space-between | space-around",
       "values": [{
           "name": "center",
           "description": "元素紧密地排列在主轴方向居中对齐"
@@ -929,7 +929,7 @@
       "restrictions": [
         "enum"
       ],
-      "syntax": "normal | stretch | <baseline-position> | [ <overflow-position>? <self-position> ]",
+      "syntax": "center | flex-start | flex-end | stretch",
       "values": [{
           "name": "center"
         },
@@ -986,7 +986,7 @@
       "restrictions": [
         "enum"
       ],
-      "syntax": "auto | normal | stretch | <baseline-position> | <overflow-position>? <self-position>",
+      "syntax": "auto | center | flex-start | flex-end | stretch",
       "values": [{
           "name": "auto"
         },
@@ -1044,7 +1044,7 @@
         "enum"
       ],
       "description": "CSS 的 align-content 属性用于设置交叉轴方向多个行或列的分布方式",
-      "syntax": "normal | <baseline-position> | <content-distribution> | <overflow-position>? <content-position>",
+      "syntax": "center | flex-start | flex-end | space-between | space-around | stretch",
       "values": [{
           "name": "center"
         },
@@ -1177,7 +1177,7 @@
         "length",
         "percentage"
       ],
-      "syntax": "content | <'width'>",
+      "syntax": "auto | <length> | <percentage>",
       "values": [{
           "name": "auto"
         },
@@ -1269,7 +1269,7 @@
       "restrictions": [
         "enum"
       ],
-      "syntax": "[ <display-outside> || <display-inside> ] | <display-listitem> | <display-internal> | <display-box> | <display-legacy>",
+      "syntax": "flex | none",
       "values": [{
           "name": "flex"
         },
@@ -1300,9 +1300,10 @@
       "restrictions": [
         "enum"
       ],
-      "syntax": "[ visible | hidden | clip | scroll | auto ]{1,2}",
+      "syntax": " visible | hidden ",
       "values": [{
-          "name": "visible"
+          "name": "visible",
+          "description": "暂时仅view组件支持visible，其他组件支持不支持"
         },
         {
           "name": "hidden"
@@ -1382,7 +1383,7 @@
       "restrictions": [
         "enum"
       ],
-      "syntax": "visible | hidden | collapse",
+      "syntax": "visible | hidden",
       "values": [{
           "name": "visible"
         },
@@ -2089,7 +2090,7 @@
       "restrictions": [
         "enum"
       ],
-      "syntax": "<line-style>",
+      "syntax": "none | solid | dashed | dotted",
       "values": [{
           "name": "none"
         },
@@ -2197,7 +2198,7 @@
         "length",
         "enum"
       ],
-      "syntax": "<line-width>",
+      "syntax": "<length> | thin | medium | thick",
       "values": [{
           "name": "thin",
           "uniPlatform": {
@@ -2271,7 +2272,7 @@
         "length",
         "enum"
       ],
-      "syntax": "<line-width>",
+      "syntax": "<length> | thin | medium | thick",
       "values": [{
           "name": "thin",
           "uniPlatform": {
@@ -2345,7 +2346,7 @@
         "length",
         "enum"
       ],
-      "syntax": "<line-width>",
+      "syntax": "<length> | thin | medium | thick",
       "values": [{
           "name": "thin",
           "uniPlatform": {
@@ -2419,7 +2420,7 @@
         "length",
         "enum"
       ],
-      "syntax": "<line-width>",
+      "syntax": "<length> | thin | medium | thick",
       "values": [{
           "name": "thin",
           "uniPlatform": {
@@ -2839,7 +2840,7 @@
         "text", "button", "input", "textarea"
       ],
       "defaultValue": {
-        "app-uvue": "16",
+        "app-uvue": "16px",
         "web": "medium"
       }
     },
@@ -3430,8 +3431,8 @@
         }
       },
       "defaultValue": {
-        "app-uvue": "0",
-        "web": "0"
+        "app-uvue": "0s",
+        "web": "0s"
       }
     },
     {
@@ -3497,8 +3498,8 @@
         }
       },
       "defaultValue": {
-        "app-uvue": "0",
-        "web": "0"
+        "app-uvue": "0s",
+        "web": "0s"
       }
     },
     {

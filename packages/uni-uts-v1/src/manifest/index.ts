@@ -33,8 +33,8 @@ const ANDROID_CUSTOM_RES = [
 ]
 
 const IOS_CUSTOM_RES = [
-  'app-ios/Frameworks/',
-  'app-ios/Resources/',
+  // 'app-ios/Frameworks/',
+  // 'app-ios/Resources/',
   'app-ios/Info.plist',
 ]
 

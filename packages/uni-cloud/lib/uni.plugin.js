@@ -184,9 +184,14 @@ exports.default = () => [
         };
     }),
     uniCloudPlugin(),
-    (0, uni_cli_shared_1.uniViteInjectPlugin)('uni:cloud-inject', {
-        exclude: [...uni_cli_shared_1.COMMON_EXCLUDE],
-        uniCloud: ['@dcloudio/uni-cloud', 'default'],
-    }),
+    // x 里边统一处理
+    ...(process.env.UNI_APP_X === 'true'
+        ? []
+        : [
+            (0, uni_cli_shared_1.uniViteInjectPlugin)('uni:cloud-inject', {
+                exclude: [...uni_cli_shared_1.COMMON_EXCLUDE],
+                uniCloud: ['@dcloudio/uni-cloud', 'default'],
+            }),
+        ]),
     (0, validateFunction_1.uniValidateFunctionPlugin)(),
 ];

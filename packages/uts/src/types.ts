@@ -43,6 +43,7 @@ export type UTSOutputOptions = {
   noColor?: boolean
   isX?: boolean
   isApp?: boolean
+  isSingleThread?: boolean
   isPlugin?: boolean
   split?: boolean
   disableSplitManifest?: boolean
@@ -61,6 +62,7 @@ export type UTSOutputOptions = {
     reactiveObjects?: string[]
     reactiveAll?: boolean
     uniCloudObjectInfo?: { name: string; methodList: string[] }[]
+    autoImports?: Record<string, [[string, string]]>
   }
 }
 export interface UTSOptions {

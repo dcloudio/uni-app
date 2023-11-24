@@ -38,6 +38,8 @@ export declare const onBackPress: (hook: (options: Page.BackPressOption) => any,
 
 export declare const onError: (hook: (error: string) => void, target?: ComponentInternalInstance | null) => void;
 
+export declare const onExit: (hook: () => void, target?: ComponentInternalInstance | null) => void;
+
 export declare const onHide: (hook: () => any, target?: ComponentInternalInstance | null) => void;
 
 export declare const onInit: (hook: (query?: AnyObject | undefined) => void, target?: ComponentInternalInstance | null) => void;

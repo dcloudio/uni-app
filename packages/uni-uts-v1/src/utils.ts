@@ -1,10 +1,15 @@
 import path, { basename, resolve } from 'path'
 import fs from 'fs-extra'
-import type { parse, bundle, UTSTarget, UTSOutputOptions } from '@dcloudio/uts'
+import type {
+  parse,
+  bundle,
+  UTSTarget,
+  UTSOutputOptions,
+  UTSResult,
+} from '@dcloudio/uts'
 import {
   camelize,
   capitalize,
-  extend,
   hasOwn,
   isArray,
   isPlainObject,
@@ -28,6 +33,7 @@ interface ToOptions {
   sourceMap: boolean
   components: Record<string, string>
   isX: boolean
+  isSingleThread: boolean
   isPlugin: boolean
   extApis?: Record<string, [string, string]>
   transform?: UTSOutputOptions['transform']
@@ -77,6 +83,8 @@ export interface UTSPlatformResourceOptions {
   extname: '.kt' | '.swift'
   components: Record<string, string>
   package: string
+  hookClass: string
+  result: UTSResult
 }
 export function genUTSPlatformResource(
   filename: string,
@@ -99,7 +107,13 @@ export function genUTSPlatformResource(
     })
   }
 
-  copyConfigJson(utsInputDir, utsOutputDir, options.components, options.package)
+  copyConfigJson(
+    utsInputDir,
+    utsOutputDir,
+    options.hookClass,
+    options.components,
+    options.package
+  )
 
   // 生产模式下，需要将生成的平台文件转移到 src 下
   const srcDir = path.resolve(utsOutputDir, 'src')
@@ -115,11 +129,21 @@ export function genUTSPlatformResource(
       }
     )
   }
+  if (options.result.chunks) {
+    options.result.chunks.forEach((chunk) => {
+      const chunkFile = path.resolve(utsOutputDir, chunk)
+      if (fs.existsSync(chunkFile)) {
+        fs.moveSync(chunkFile, path.resolve(utsOutputDir, 'src', chunk), {
+          overwrite: true,
+        })
+      }
+    })
+  }
 }
 
 export function moveRootIndexSourceMap(
   filename: string,
-  { inputDir, platform, extname }: UTSPlatformResourceOptions
+  { inputDir, platform, extname }: Omit<UTSPlatformResourceOptions, 'hookClass'>
 ) {
   if (isRootIndex(filename, platform)) {
     const sourceMapFilename = path
@@ -166,7 +190,12 @@ function resolveUTSPlatformDir(
 
 export function resolveUTSPlatformFile(
   filename: string,
-  { inputDir, outputDir, platform, extname }: UTSPlatformResourceOptions
+  {
+    inputDir,
+    outputDir,
+    platform,
+    extname,
+  }: Omit<UTSPlatformResourceOptions, 'hookClass'>
 ) {
   let platformFile = path
     .resolve(outputDir, path.relative(inputDir, filename))
@@ -321,13 +350,14 @@ export function genComponentsCode(
 
 export function genConfigJson(
   platform: 'app-android' | 'app-ios',
+  hookClass: string,
   components: Record<string, string>,
   pluginRelativeDir: string,
   is_uni_modules: boolean,
   inputDir: string,
   outputDir: string
 ) {
-  if (!Object.keys(components).length) {
+  if (!Object.keys(components).length && !hookClass) {
     return
   }
   const pluginId = basename(pluginRelativeDir)
@@ -346,6 +376,7 @@ export function genConfigJson(
   copyConfigJson(
     utsInputDir,
     utsOutputDir,
+    hookClass,
     components,
     platform === 'app-android'
       ? parseKotlinPackageWithPluginId(pluginId, is_uni_modules) + '.'
@@ -356,32 +387,29 @@ export function genConfigJson(
 function copyConfigJson(
   inputDir: string,
   outputDir: string,
+  hookClass: string,
   componentsObj: Record<string, string>,
   namespace: string
 ) {
   const configJsonFilename = resolve(inputDir, 'config.json')
   const outputConfigJsonFilename = resolve(outputDir, 'config.json')
-  if (Object.keys(componentsObj).length) {
+  const hasComponents = !!Object.keys(componentsObj).length
+  const hasHookClass = !!hookClass
+  if (hasComponents || hasHookClass) {
+    const configJson: Record<string, any> = fs.existsSync(configJsonFilename)
+      ? parseJson(fs.readFileSync(configJsonFilename, 'utf8'))
+      : {}
     //存在组件
-    const components = genComponentsConfigJson(componentsObj, namespace)
-    if (fs.existsSync(configJsonFilename)) {
-      fs.outputFileSync(
-        outputConfigJsonFilename,
-        JSON.stringify(
-          extend(
-            { components },
-            parseJson(fs.readFileSync(configJsonFilename, 'utf8'))
-          ),
-          null,
-          2
-        )
-      )
-    } else {
-      fs.outputFileSync(
-        outputConfigJsonFilename,
-        JSON.stringify({ components }, null, 2)
-      )
+    if (hasComponents) {
+      configJson.components = genComponentsConfigJson(componentsObj, namespace)
     }
+    if (hasHookClass) {
+      configJson.hooksClass = hookClass
+    }
+    fs.outputFileSync(
+      outputConfigJsonFilename,
+      JSON.stringify(configJson, null, 2)
+    )
   } else {
     if (fs.existsSync(configJsonFilename)) {
       fs.copySync(configJsonFilename, outputConfigJsonFilename)

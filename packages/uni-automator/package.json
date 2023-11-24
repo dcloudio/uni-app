@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-automator",
-  "version": "3.0.0-3090620231104002",
+  "version": "3.0.0-alpha-3090820231120001",
   "description": "@dcloudio/uni-automator",
   "main": "dist/index.js",
   "files": [
@@ -28,7 +28,7 @@
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "dependencies": {
-    "@dcloudio/uni-cli-shared": "3.0.0-3090620231104002",
+    "@dcloudio/uni-cli-shared": "3.0.0-alpha-3090820231120001",
     "address": "^1.1.2",
     "cross-env": "^7.0.3",
     "debug": "^4.3.3",
@@ -36,6 +36,7 @@
     "fs-extra": "^10.0.0",
     "jsonc-parser": "^3.2.0",
     "licia": "^1.29.0",
+    "merge": "^2.1.1",
     "qrcode-reader": "^1.0.4",
     "qrcode-terminal": "^0.12.0",
     "ws": "^8.4.2"

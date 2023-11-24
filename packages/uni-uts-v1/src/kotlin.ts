@@ -82,12 +82,16 @@ export async function runKotlinProd(
   {
     isPlugin,
     isX,
+    isSingleThread,
+    hookClass,
     extApis,
     transform,
     sourceMap,
   }: {
     isPlugin: boolean
     isX: boolean
+    isSingleThread: boolean
+    hookClass: string
     extApis?: Record<string, [string, string]>
     transform?: UTSOutputOptions['transform']
     sourceMap?: boolean
@@ -105,6 +109,7 @@ export async function runKotlinProd(
     sourceMap: !!sourceMap,
     components,
     isX,
+    isSingleThread,
     isPlugin,
     extApis,
     transform,
@@ -122,6 +127,8 @@ export async function runKotlinProd(
     extname: '.kt',
     components,
     package: parseKotlinPackage(filename).package + '.',
+    hookClass,
+    result,
   })
 }
 
@@ -141,6 +148,7 @@ export type RunKotlinBuildResult = UTSResult & {
 interface RunKotlinDevOptions {
   components: Record<string, string>
   isX: boolean
+  isSingleThread: boolean
   isPlugin: boolean
   sourceMap: boolean
   cacheDir: string
@@ -155,6 +163,7 @@ export async function runKotlinDev(
   {
     components,
     isX,
+    isSingleThread,
     isPlugin,
     cacheDir,
     pluginRelativeDir,
@@ -176,6 +185,7 @@ export async function runKotlinDev(
     sourceMap,
     components,
     isX,
+    isSingleThread,
     isPlugin,
     extApis,
     transform,
@@ -196,6 +206,7 @@ export async function runKotlinDev(
     extname: '.kt',
     components,
     package: '',
+    result,
   })
   // 开发模式下，需要生成 dex
   if (fs.existsSync(kotlinFile)) {
@@ -228,10 +239,15 @@ export async function runKotlinDev(
       kotlinFile
     )
     const waiting = { done: undefined }
+    const kotlinFiles = [kotlinFile].concat(
+      result.chunks?.map((chunk) =>
+        path.resolve(path.dirname(kotlinFile), chunk)
+      ) || []
+    )
     const options = {
       pageCount: 0,
       kotlinc: resolveKotlincArgs(
-        [kotlinFile],
+        kotlinFiles,
         jarFile,
         getKotlincHome(),
         (isX ? getDefaultJar(2) : getDefaultJar())
@@ -250,6 +266,7 @@ export async function runKotlinDev(
         waiting
       ),
     }
+    // console.log('dex compile options: ', options)
     const { code, msg } = await compileDex(options, inputDir)
     // console.log('dex compile time: ' + (Date.now() - time) + 'ms')
     // 等待 stderrListener 执行完毕
@@ -412,6 +429,7 @@ export async function compile(
     sourceMap,
     components,
     isX,
+    isSingleThread,
     isPlugin,
     extApis,
     transform,
@@ -438,6 +456,7 @@ export async function compile(
     pluginId,
     paths: {
       vue: 'io.dcloud.uniapp.vue',
+      '@dcloudio/uni-app': 'io.dcloud.uniapp.framework',
     },
   }
   const isUTSFileExists = fs.existsSync(filename)
@@ -460,6 +479,7 @@ export async function compile(
     input,
     output: {
       isX,
+      isSingleThread,
       isPlugin,
       outDir: outputDir,
       package: pluginPackage,
@@ -468,6 +488,8 @@ export async function compile(
       imports,
       logFilename: true,
       noColor: !isColorSupported(),
+      split: true,
+      disableSplitManifest: true,
       transform: {
         uniExtApiDefaultNamespace: 'io.dcloud.uniapp.extapi',
         uniExtApiNamespaces: extApis,
@@ -485,6 +507,7 @@ export async function compile(
       extname: '.kt',
       components,
       package: '',
+      result,
     })
   return result
 }
@@ -505,7 +528,7 @@ export function resolveKotlincArgs(
     kotlinc,
     `-Xplugin=${path.resolve(
       __dirname,
-      '../lib/kotlin/uts-kotlin-compiler-plugin.jar'
+      '../lib/kotlin/lib/uts-kotlin-compiler-plugin.jar'
     )}`,
     '-P',
     'plugin:io.dcloud.uts.kotlin:tag=UTS',

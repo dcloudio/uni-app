@@ -25,7 +25,7 @@ open class GenPagesIndexIndex : BasePage {
         }
         , instance);
     }
-    @Suppress("UNUSED_PARAMETER")
+    
     override fun `$render`(): VNode? {
         val _ctx = this;
         val _component_button = resolveComponent("button");

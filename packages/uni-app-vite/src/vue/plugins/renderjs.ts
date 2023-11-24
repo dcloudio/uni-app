@@ -1,6 +1,6 @@
 import path from 'path'
 import debug from 'debug'
-import { Plugin, ResolvedConfig } from 'vite'
+import { Plugin, ResolvedConfig, UserConfig } from 'vite'
 
 import { RENDERJS_MODULES, WXS_MODULES } from '@dcloudio/uni-shared'
 
@@ -22,9 +22,13 @@ const wxsModulesCache = new WeakMap<ResolvedConfig, Map<string, string>>()
 const renderjsModulesCache = new WeakMap<ResolvedConfig, Map<string, string>>()
 export function uniRenderjsPlugin(): Plugin {
   let resolvedConfig: ResolvedConfig
+  let userConfig: UserConfig
   let changed: boolean = false
   return {
     name: 'uni:app-vue-renderjs',
+    config(config) {
+      userConfig = config
+    },
     configResolved(config) {
       resolvedConfig = config
       wxsModulesCache.set(resolvedConfig, new Map<string, string>())
@@ -55,13 +59,15 @@ export function uniRenderjsPlugin(): Plugin {
               code,
               filename,
               `__${globalName}['${moduleHashId}']`,
-              isProduction
+              isProduction,
+              userConfig
             )
           : await transformRenderjs(
               code,
               filename,
               `__${globalName}['${moduleHashId}']`,
-              isProduction
+              isProduction,
+              userConfig
             ),
         globalName,
         isProduction
@@ -126,12 +132,13 @@ function transformWxs(
   code: string,
   filename: string,
   globalName: string,
-  isProduction: boolean
+  isProduction: boolean,
+  config: UserConfig
 ) {
   return transformWithEsbuild(code, filename, {
     format: 'iife',
     globalName,
-    target: 'es6',
+    target: config.build?.target || 'es6',
     minify: isProduction ? true : false,
     bundle: true,
     write: false,
@@ -147,12 +154,13 @@ function transformRenderjs(
   code: string,
   filename: string,
   globalName: string,
-  isProduction: boolean
+  isProduction: boolean,
+  config: UserConfig
 ) {
   return transformWithEsbuild(code, filename, {
     format: 'iife',
     globalName,
-    target: 'es6',
+    target: config.build?.target || 'es6',
     minify: isProduction ? true : false,
     bundle: true,
     write: false,

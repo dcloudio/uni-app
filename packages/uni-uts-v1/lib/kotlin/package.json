@@ -1,0 +1,7 @@
+{
+  "private": true,
+  "name": "@uts/kotlin",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist/index.js"
+}

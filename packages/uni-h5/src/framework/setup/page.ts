@@ -178,13 +178,19 @@ function pruneRouteCache(key: string) {
 }
 
 function updateCurPageAttrs(pageMeta: UniApp.PageRouteMeta) {
-  const nvueDirKey = 'nvue-dir-' + __uniConfig.nvue!['flex-direction']
-  if (pageMeta.isNVue) {
-    document.body.setAttribute('nvue', '')
-    document.body.setAttribute(nvueDirKey, '')
+  if (__X__) {
+    const uvueDirKey = 'uvue-dir-' + __uniConfig.uvue!['flex-direction']
+    document.body.setAttribute('uvue', '')
+    document.body.setAttribute(uvueDirKey, '')
   } else {
-    document.body.removeAttribute('nvue')
-    document.body.removeAttribute(nvueDirKey)
+    const nvueDirKey = 'nvue-dir-' + __uniConfig.nvue!['flex-direction']
+    if (pageMeta.isNVue) {
+      document.body.setAttribute('nvue', '')
+      document.body.setAttribute(nvueDirKey, '')
+    } else {
+      document.body.removeAttribute('nvue')
+      document.body.removeAttribute(nvueDirKey)
+    }
   }
 }
 

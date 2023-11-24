@@ -1,5 +1,6 @@
 export const PUBLIC_DIR = 'static'
 export const EXTNAME_JS = ['.js', '.ts', '.jsx', '.tsx']
+export const X_EXTNAME_JS = ['.uts', ...EXTNAME_JS]
 export const EXTNAME_TS = ['.ts', '.tsx']
 export const EXTNAME_VUE = ['.vue', '.nvue', '.uvue']
 export const X_EXTNAME_VUE = ['.uvue', '.vue']
@@ -42,7 +43,7 @@ export const PAGE_EXTNAME_APP = ['.nvue', '.vue', '.tsx', '.jsx', '.js']
 // 其他平台解析页面后缀的优先级
 export const PAGE_EXTNAME = ['.vue', '.nvue', '.tsx', '.jsx', '.js']
 
-export const X_PAGE_EXTNAME = ['.vue', '.uvue', '.tsx', '.jsx', '.js']
+export const X_PAGE_EXTNAME = ['.uvue', '.vue', '.tsx', '.jsx', '.js']
 export const X_PAGE_EXTNAME_APP = ['.uvue', '.tsx', '.jsx', '.js']
 
 export const H5_API_STYLE_PATH = '@dcloudio/uni-h5/style/api/'

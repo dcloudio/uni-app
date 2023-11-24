@@ -20,11 +20,14 @@ function removeLastPage() {
 
 export const redirectTo = defineAsyncApi<API_TYPE_REDIRECT_TO>(
   API_REDIRECT_TO,
-  ({ url }, { resolve, reject }) => {
+  // @ts-ignore
+  ({ url, isAutomatedTesting }, { resolve, reject }) => {
     return (
       // TODO exists 属性未实现
       removeLastPage(),
-      navigate({ type: API_REDIRECT_TO, url }).then(resolve).catch(reject)
+      navigate({ type: API_REDIRECT_TO, url, isAutomatedTesting })
+        .then(resolve)
+        .catch(reject)
     )
   },
   RedirectToProtocol,

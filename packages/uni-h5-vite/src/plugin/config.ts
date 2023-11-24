@@ -43,6 +43,7 @@ export function createConfig(options: {
           '**/uniCloud-aliyun/**',
           '**/uniCloud-tcb/**',
           '**/uni_modules/uniCloud/**',
+          '**/__snapshots__/**',
           normalizePath(path.join(inputDir, 'unpackage/**')),
           normalizePath(path.join(inputDir, 'dist/**')),
         ],

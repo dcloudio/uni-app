@@ -7,10 +7,11 @@ import { NormalizeOptions } from './utils'
 interface ParseOptions extends NormalizeOptions {
   filename?: string
   map?: boolean
-  mapOf?: boolean
+  mapOf?: string
   ts?: boolean
   chunk?: number
   noCode?: boolean
+  trim?: boolean
 }
 
 export async function parse(input: string, options: ParseOptions = {}) {
@@ -35,7 +36,7 @@ export async function parse(input: string, options: ParseOptions = {}) {
   if (options.noCode === true) {
     return { code: '', messages }
   }
-  const obj = root ? objectifier(root) : {}
+  const obj = root ? objectifier(root, { trim: !!options.trim }) : {}
   if (options.map || options.mapOf) {
     return {
       code: mapToInitStringChunk(
@@ -55,18 +56,18 @@ function mapToInitStringChunk(
   map: Map<string, unknown>,
   ts: boolean = false,
   isRoot: boolean = false,
-  isMapOf: boolean = false,
+  mapOf = '',
   chunk: number = 0
 ): string {
   if (!chunk) {
-    return mapToInitString(map, ts, isRoot, isMapOf)
+    return mapToInitString(map, ts, isRoot, mapOf)
   }
   const chunks: string[] = []
   let chunkMap: Map<string, unknown> = new Map()
   let chunkCount = 0
   for (const [key, value] of map) {
     if (chunkCount === chunk) {
-      chunks.push(mapToInitString(chunkMap, ts, isRoot, isMapOf))
+      chunks.push(mapToInitString(chunkMap, ts, isRoot, mapOf))
       chunkMap = new Map()
       chunkCount = 0
     }
@@ -74,7 +75,7 @@ function mapToInitStringChunk(
     chunkCount++
   }
   if (chunkCount) {
-    chunks.push(mapToInitString(chunkMap, ts, isRoot, isMapOf))
+    chunks.push(mapToInitString(chunkMap, ts, isRoot, mapOf))
   }
   return `[${chunks.join(',')}]`
 }
@@ -83,18 +84,30 @@ function mapToInitString(
   map: Map<string, unknown>,
   ts: boolean = false,
   isRoot: boolean = false,
-  isMapOf: boolean = false
+  mapOf = ''
 ): string {
   const entries = []
   for (let [key, value] of map) {
     if (value instanceof Map) {
-      entries.push(`["${key}", ${mapToInitString(value, ts, false, isMapOf)}]`)
+      // trim
+      if (isRoot && !(value.values().next().value instanceof Map)) {
+        entries.push(
+          `["${key}", padStyleMapOf(${mapToInitString(
+            value,
+            ts,
+            false,
+            mapOf
+          )})]`
+        )
+      } else {
+        entries.push(`["${key}", ${mapToInitString(value, ts, false, mapOf)}]`)
+      }
     } else {
       entries.push(`["${key}", ${JSON.stringify(value)}]`)
     }
   }
-  if (isMapOf) {
-    return `utsMapOf([${entries.join(', ')}])`
+  if (mapOf) {
+    return `${mapOf}([${entries.join(', ')}])`
   }
   return `new Map${
     ts

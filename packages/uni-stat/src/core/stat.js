@@ -27,9 +27,17 @@ class Stat extends Report {
             spaceId: space.spaceId,
             clientSecret: space.clientSecret,
           }
+          
           if (space.endpoint) {
             spaceData.endpoint = space.endpoint
           }
+
+          if(space.provider === 'alipay'){
+            spaceData.secretKey = space.secretKey
+            spaceData.accessKey = space.accessKey || space.secretId
+            spaceData.spaceAppId = space.spaceAppId || space.appId
+          }
+
           uni.__stat_uniCloud_space = uniCloud.init(spaceData)
           // console.log(
           //   '=== 当前绑定的统计服务空间spaceId：' +

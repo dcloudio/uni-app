@@ -18,7 +18,7 @@ import {
 } from '@dcloudio/uni-components'
 import '@amap/amap-jsapi-types'
 import { callOptions } from '@dcloudio/uni-shared'
-import { Point } from '../../../helpers/location'
+import { Point, getIsBMap, getIsAMap } from '../../../helpers/location'
 import { Maps, Map, loadMaps, LatLng, QQMap, GoogleMap } from './maps'
 import { QQMaps } from './maps/qq/types'
 import { GoogleMaps } from './maps/google/types'
@@ -35,7 +35,6 @@ import MapLocation, {
 } from './MapLocation'
 import MapPolygon from './map-polygon/index'
 import { Polygon } from './map-polygon/interface'
-import { getIsAMap } from '../../../helpers/location'
 
 const props = {
   id: {
@@ -129,6 +128,9 @@ function getAMapPosition(
 ) {
   return new maps.LngLat(longitude, latitude)
 }
+function getBMapPosition(maps: any, latitude: number, longitude: number) {
+  return new maps.Point(longitude, latitude)
+}
 function getGoogleOrQQMapPosition(
   maps: QQMaps | GoogleMaps,
   latitude: number,
@@ -136,16 +138,31 @@ function getGoogleOrQQMapPosition(
 ) {
   return new maps.LatLng(latitude, longitude)
 }
+
 function getMapPosition(maps: Maps, latitude: number, longitude: number) {
-  return getIsAMap()
-    ? getAMapPosition(maps as AMap.NameSpace, latitude, longitude)
-    : getGoogleOrQQMapPosition(maps as QQMaps | GoogleMaps, latitude, longitude)
+  if (getIsBMap()) {
+    return getBMapPosition(maps as any, latitude, longitude)
+  } else if (getIsAMap()) {
+    return getAMapPosition(maps as AMap.NameSpace, latitude, longitude)
+  } else {
+    return getGoogleOrQQMapPosition(
+      maps as QQMaps | GoogleMaps,
+      latitude,
+      longitude
+    )
+  }
+  // return getIsAMap() || getIsBMap()
+  //   ? getAMapPosition(maps as AMap.NameSpace, latitude, longitude)
+  //   : getGoogleOrQQMapPosition(maps as QQMaps | GoogleMaps, latitude, longitude)
 }
 
 function getLat(latLng: LatLng) {
   if ('getLat' in latLng) {
     return latLng.getLat()
   } else {
+    if (getIsBMap()) {
+      return latLng.lat
+    }
     return latLng.lat()
   }
 }
@@ -154,6 +171,9 @@ function getLng(latLng: LatLng) {
   if ('getLng' in latLng) {
     return latLng.getLng()
   } else {
+    if (getIsBMap()) {
+      return latLng.lng
+    }
     return latLng.lng()
   }
 }
@@ -268,6 +288,7 @@ function useMap(
       })
       const bounds = new (maps as AMap.NameSpace).Bounds(...points)
       ;(map as AMap.Map).setBounds(bounds)
+    } else if (getIsBMap()) {
     } else {
       const bounds = new (maps as QQMaps | GoogleMaps).LatLngBounds()
       state.includePoints.forEach(({ latitude, longitude }) => {
@@ -285,6 +306,7 @@ function useMap(
     const center = getMapPosition(maps, state.latitude, state.longitude)
     const event =
       (maps as QQMaps | GoogleMaps).event || (maps as AMap.NameSpace).Event
+    // console.log('event:', event)
     const map = new maps.Map(mapEl, {
       center: center as any,
       zoom: Number(props.scale),
@@ -301,6 +323,14 @@ function useMap(
       maxZoom: 18,
       draggable: true,
     })
+    if (getIsBMap()) {
+      // @ts-ignore
+      map.centerAndZoom(center, Number(props.scale))
+      // @ts-ignore
+      map.enableScrollWheelZoom()
+      // @ts-ignore
+      map._printLog && map._printLog('uniapp')
+    }
     watch(
       () => props.scale,
       (scale) => {
@@ -315,61 +345,94 @@ function useMap(
       }
     })
     // 需在 bounds_changed 后触发 BoundsReady
-    const boundsChangedEvent = event.addListener(map, 'bounds_changed', () => {
-      boundsChangedEvent.remove()
-      emitBoundsReady()
-    })
-    event.addListener(map, 'click', () => {
-      // TODO 编译器将 tap 转换为 click
-      trigger('tap', {} as Event, {})
-      trigger('click', {} as Event, {})
-    })
-    event.addListener(map, 'dragstart', () => {
-      trigger('regionchange', {} as Event, {
-        type: 'begin',
-        causedBy: 'gesture',
+    if (getIsBMap()) {
+      // @ts-ignore
+      map.addEventListener('click', () => {
+        trigger('tap', {} as Event, {})
+        trigger('click', {} as Event, {})
       })
-    })
-    event.addListener(map, 'dragend', () => {
-      trigger(
-        'regionchange',
-        {} as Event,
-        extend(
-          {
-            type: 'end',
-            causedBy: 'drag',
-          },
-          getMapInfo()
+      // @ts-ignore
+      map.addEventListener('dragstart', () => {
+        trigger('regionchange', {} as Event, {
+          type: 'begin',
+          causedBy: 'gesture',
+        })
+      })
+      // @ts-ignore
+      map.addEventListener('dragend', () => {
+        trigger(
+          'regionchange',
+          {} as Event,
+          extend(
+            {
+              type: 'end',
+              causedBy: 'drag',
+            },
+            getMapInfo()
+          )
         )
+      })
+    } else {
+      const boundsChangedEvent = event.addListener(
+        map,
+        'bounds_changed',
+        () => {
+          boundsChangedEvent.remove()
+          emitBoundsReady()
+        }
       )
-    })
+      event.addListener(map, 'click', () => {
+        // TODO 编译器将 tap 转换为 click
+        trigger('tap', {} as Event, {})
+        trigger('click', {} as Event, {})
+      })
+      event.addListener(map, 'dragstart', () => {
+        trigger('regionchange', {} as Event, {
+          type: 'begin',
+          causedBy: 'gesture',
+        })
+      })
+      event.addListener(map, 'dragend', () => {
+        trigger(
+          'regionchange',
+          {} as Event,
+          extend(
+            {
+              type: 'end',
+              causedBy: 'drag',
+            },
+            getMapInfo()
+          )
+        )
+      })
 
-    const zoomChangedCallback = () => {
-      emit('update:scale', map.getZoom())
-      trigger(
-        'regionchange',
-        {} as Event,
-        extend(
-          {
-            type: 'end',
-            causedBy: 'scale',
-          },
-          getMapInfo()
+      const zoomChangedCallback = () => {
+        emit('update:scale', map.getZoom())
+        trigger(
+          'regionchange',
+          {} as Event,
+          extend(
+            {
+              type: 'end',
+              causedBy: 'scale',
+            },
+            getMapInfo()
+          )
         )
-      )
+      }
+      // QQ or Google
+      event.addListener(map, 'zoom_changed', zoomChangedCallback)
+      // AMAP
+      event.addListener(map, 'zoomend', zoomChangedCallback)
+
+      event.addListener(map, 'center_changed', () => {
+        const center = map.getCenter()!
+        const latitude = getLat(center as LatLng)
+        const longitude = getLng(center as LatLng)
+        emit('update:latitude', latitude)
+        emit('update:longitude', longitude)
+      })
     }
-    // QQ or Google
-    event.addListener(map, 'zoom_changed', zoomChangedCallback)
-    // AMAP
-    event.addListener(map, 'zoomend', zoomChangedCallback)
-
-    event.addListener(map, 'center_changed', () => {
-      const center = map.getCenter()!
-      const latitude = getLat(center as LatLng)
-      const longitude = getLng(center as LatLng)
-      emit('update:latitude', latitude)
-      emit('update:longitude', longitude)
-    })
     return map
   }
 
@@ -482,8 +545,8 @@ function useMap(
   onMounted(() => {
     loadMaps(props.libraries, (result) => {
       maps = result
-      map = initMap() as Map
-      emitMapReady()
+      map = initMap() as Map // 初始化地图
+      emitMapReady() // 等待的事件
       trigger('updated', {} as Event, {})
     })
   })

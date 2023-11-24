@@ -4,6 +4,7 @@ import { Plugin } from 'vite'
 import {
   clearMiniProgramTemplateFilter,
   EXTNAME_VUE,
+  X_EXTNAME_VUE,
   normalizeMiniProgramFilename,
   parseVueRequest,
   removeExt,
@@ -22,7 +23,11 @@ export function uniPreVuePlugin(): Plugin {
       if (query.vue) {
         return
       }
-      if (!EXTNAME_VUE.includes(path.extname(filename))) {
+      if (
+        !(
+          process.env.UNI_APP_X === 'true' ? X_EXTNAME_VUE : EXTNAME_VUE
+        ).includes(path.extname(filename))
+      ) {
         return
       }
       // 清空当前页面已缓存的 filter 信息

@@ -29,6 +29,7 @@ import {
 } from '../utils'
 import { KotlinManifestCache } from '../stacktrace/kotlin'
 import { isWindows } from '../shared'
+import { hasOwn } from '@vue/shared'
 
 const DEFAULT_IMPORTS = [
   'kotlinx.coroutines.async',
@@ -65,6 +66,7 @@ export interface CompileAppOptions {
   pageCount: number
   extApiComponents: string[]
   uvueClassNamePrefix?: string
+  autoImports?: Record<string, [[string, string]]>
 }
 
 export async function compileApp(entry: string, options: CompileAppOptions) {
@@ -79,6 +81,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
     sourceMap,
     uni_modules,
     extApis,
+    autoImports,
   } = options
 
   if (isUniCloudSupported() || process.env.NODE_ENV !== 'production') {
@@ -90,6 +93,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
     filename: entry,
     paths: {
       vue: 'io.dcloud.uniapp.vue',
+      '@dcloudio/uni-app': 'io.dcloud.uniapp.framework',
     },
     uniModules: uni_modules,
     globals: {
@@ -107,6 +111,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
     input,
     output: {
       isX: true,
+      isSingleThread: true,
       isApp: true,
       isPlugin: false,
       outDir: isProd
@@ -132,6 +137,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
         uniExtApiDefaultParameters: parseExtApiDefaultParameters(),
         uvueClassNamePrefix: options.uvueClassNamePrefix || 'Gen',
         uniCloudObjectInfo: options.uniCloudObjectInfo,
+        autoImports,
       },
     },
   }
@@ -363,20 +369,29 @@ async function runKotlinBuild(options: CompileAppOptions, result: UTSResult) {
   ;(result as RunKotlinBuildResult).type = 'kotlin'
   ;(result as RunKotlinBuildResult).inject_modules = parseInjectModules(
     result.inject_apis || [],
+    options.extApis || {},
     options.extApiComponents
   )
   ;(result as RunKotlinBuildResult).kotlinc = false
   return result as RunKotlinBuildResult
 }
 
-function parseInjectModules(inject_apis: string[], extApiComponents: string[]) {
+function parseInjectModules(
+  inject_apis: string[],
+  localExtApis: Record<string, [string, string]>,
+  extApiComponents: string[]
+) {
   const modules = new Set<string>()
   const extApiModules = parseExtApiModules()
   inject_apis.forEach((api) => {
     if (api.startsWith('uniCloud.')) {
       modules.add('uni-cloud-client')
     } else {
-      if (extApiModules[api]) {
+      if (
+        extApiModules[api] &&
+        // 非本地
+        !hasOwn(localExtApis, api.replace('uni.', ''))
+      ) {
         modules.add(extApiModules[api])
       }
     }

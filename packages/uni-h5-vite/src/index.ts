@@ -1,9 +1,10 @@
+import path from 'path'
 import {
   isVueSfcFile,
   uniCssScopedPlugin,
   UNI_EASYCOM_EXCLUDE,
   resolveUTSCompiler,
-  uniUTSJsPlugin,
+  uniUTSUVueJavaScriptPlugin,
   isAppVue,
 } from '@dcloudio/uni-cli-shared'
 import { uniH5Plugin } from './plugin'
@@ -21,7 +22,18 @@ import { uniSSRPlugin } from './plugins/ssr'
 
 export default [
   ...(process.env.UNI_APP_X === 'true'
-    ? [uniUTSJsPlugin(), resolveUTSCompiler().uts2js({})]
+    ? [
+        uniUTSUVueJavaScriptPlugin(),
+        resolveUTSCompiler().uts2js({
+          inputDir: process.env.UNI_INPUT_DIR,
+          version: process.env.UNI_COMPILER_VERSION,
+          cacheRoot: path.resolve(
+            process.env.UNI_APP_X_CACHE_DIR ||
+              path.resolve(process.env.UNI_OUTPUT_DIR, '../.web'),
+            '.uts/cache'
+          ),
+        }),
+      ]
     : []),
   uniEasycomPlugin({ exclude: UNI_EASYCOM_EXCLUDE }),
   uniCssScopedPlugin({

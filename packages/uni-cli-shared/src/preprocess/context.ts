@@ -1,4 +1,13 @@
-import { extend, isString, isPlainObject } from '@vue/shared'
+const extend = Object.assign
+
+const isString = (val: unknown): val is string => typeof val === 'string'
+
+const objectToString = Object.prototype.toString
+const toTypeString = (value: unknown): string => objectToString.call(value)
+
+const isPlainObject = (val: unknown): val is object =>
+  toTypeString(val) === '[object Object]'
+
 const DEFAULT_KEYS = [
   'UNI_APP_X',
   'APP',

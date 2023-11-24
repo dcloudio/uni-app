@@ -4,14 +4,14 @@
     "compilerVersion": "3.6.10"
   },
   "files": {
+    "app-android/index.uts": {
+      "md5": "6958ca9d5c365d041dd72dc46091b839"
+    },
     "common/test/test.uts": {
       "md5": "d41d8cd98f00b204e9800998ecf8427e"
     },
     "common/utils.uts": {
       "md5": "d41d8cd98f00b204e9800998ecf8427e"
-    },
-    "index.uts": {
-      "md5": "719035aae84f58b2028f63d102c49887"
     },
     "interface.uts": {
       "md5": "4821d45870be9af550787418f7a4c34c"

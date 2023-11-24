@@ -1,4 +1,5 @@
 dist
+dist-x
 packages/uni-app-plus/lib
 packages/uni-app-vite/lib
 packages/uni-app-vue/lib
@@ -20,3 +21,4 @@ packages/uni-mp-quickapp-webview/lib
 packages/vite-plugin-uni/lib
 packages/uni-uts-vite/lib
 packages/uni-cli-shared/src/checkUpdate.ts
+packages/uni-uts-v1/lib

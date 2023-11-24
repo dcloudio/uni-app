@@ -12,7 +12,6 @@ import {
   parseScripts,
   getPlatformDir,
   output,
-  isWindows,
 } from '@dcloudio/uni-cli-shared'
 
 import { CliOptions } from '.'
@@ -178,17 +177,10 @@ export function initEnv(
 
   initUVueEnv()
 
-  if (process.env.UNI_PLATFORM === 'app') {
-    if (process.env.NODE_ENV === 'development') {
-      if (
-        // 仅windows
-        isWindows &&
-        process.env.UNI_APP_X === 'true' &&
-        process.env.UNI_UTS_PLATFORM === 'app-android'
-      ) {
-        console.log(M['dev.exclusion'])
-      }
-    }
+  if (
+    process.env.UNI_PLATFORM === 'app' ||
+    process.env.UNI_PLATFORM === 'web'
+  ) {
     const pkg = require('../../package.json')
     console.log(
       M['app.compiler.version'].replace(
@@ -219,6 +211,12 @@ function initUTSPlatform(options: CliOptions) {
     }
     if (options.platform === 'app-plus') {
       options.platform = 'app'
+    }
+    if (options.platform === 'app') {
+      // app 平台未指定 UTS_PLATFORM 时，设置未 app，一般是发行模式
+      if (!process.env.UNI_UTS_PLATFORM) {
+        process.env.UNI_UTS_PLATFORM = 'app'
+      }
     }
   }
   if (options.platform === 'h5') {
@@ -259,7 +257,10 @@ function initAutomator({ autoHost, autoPort }: CliOptions) {
     return
   }
   process.env.UNI_AUTOMATOR_WS_ENDPOINT =
-    'ws://' + (autoHost || resolveHostname()) + ':' + autoPort
+    'ws://' +
+    (autoHost || process.env.UNI_AUTOMATOR_HOST || resolveHostname()) +
+    ':' +
+    (autoPort || process.env.UNI_AUTOMATOR_PORT)
 }
 
 function resolveHostname() {

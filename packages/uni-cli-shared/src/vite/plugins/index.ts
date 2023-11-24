@@ -5,8 +5,8 @@ export * from './mainJs'
 export * from './jsonJs'
 export * from './console'
 export * from './dynamicImportPolyfill'
-export * from './uts/app'
-export * from './uts/h5'
+export * from './uts/uni_modules'
+export * from './uts/uvue'
 
 export { assetPlugin, parseAssets, getAssetHash } from './vitejs/plugins/asset'
 export {

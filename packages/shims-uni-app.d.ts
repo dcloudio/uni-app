@@ -51,6 +51,9 @@ declare namespace UniNamespace {
     nvue?: {
       'flex-direction': 'column' | 'row'
     }
+    uvue?: {
+      'flex-direction': 'column' | 'row'
+    }
     globalStyle: PagesJsonPageStyle & {
       rpxCalcMaxDeviceWidth?: number
       rpxCalcBaseDeviceWidth?: number
@@ -68,6 +71,7 @@ declare namespace UniNamespace {
     tabBar?: TabBarOptions
     subPackages?: { root: string }[]
     qqMapKey?: string
+    bMapKey?: string
     googleMapKey?: string
     aMapKey?: string
     aMapServiceHost?: string
