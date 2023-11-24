@@ -43,7 +43,9 @@
     "safe-area-insets": "^1.4.1"
   },
   "private": true,
-  "workspaces":["packages/*"],
+  "workspaces": [
+    "packages/*"
+  ],
   "devDependencies": {
     "@rollup/plugin-alias": "^3.1.0",
     "@rollup/plugin-commonjs": "^11.1.0",
@@ -59,7 +61,6 @@
     "babel-eslint": "^10.1.0",
     "babylon": "^6.18.0",
     "browserslist": "^4.11.1",
-    "caniuse-lite": "^1.0.30001040",
     "chai": "^4.2.0",
     "copy": "^0.3.2",
     "cross-env": "^7.0.2",

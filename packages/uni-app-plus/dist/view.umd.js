@@ -91,7 +91,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 161);
+/******/ 	return __webpack_require__(__webpack_require__.s = 199);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -99,119 +99,23 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return normalizeComponent; });
-/* globals __VUE_SSR_CONTEXT__ */
-
-// IMPORTANT: Do NOT use ES2015 features in this file (except for modules).
-// This module is a runtime utility for cleaner component module output and will
-// be included in the final webpack user bundle.
-
-function normalizeComponent (
-  scriptExports,
-  render,
-  staticRenderFns,
-  functionalTemplate,
-  injectStyles,
-  scopeId,
-  moduleIdentifier, /* server only */
-  shadowMode /* vue-cli only */
-) {
-  // Vue.extend constructor export interop
-  var options = typeof scriptExports === 'function'
-    ? scriptExports.options
-    : scriptExports
-
-  // render functions
-  if (render) {
-    options.render = render
-    options.staticRenderFns = staticRenderFns
-    options._compiled = true
-  }
-
-  // functional template
-  if (functionalTemplate) {
-    options.functional = true
-  }
-
-  // scopedId
-  if (scopeId) {
-    options._scopeId = 'data-v-' + scopeId
-  }
-
-  var hook
-  if (moduleIdentifier) { // server build
-    hook = function (context) {
-      // 2.3 injection
-      context =
-        context || // cached call
-        (this.$vnode && this.$vnode.ssrContext) || // stateful
-        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
-      // 2.2 with runInNewContext: true
-      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
-        context = __VUE_SSR_CONTEXT__
-      }
-      // inject component styles
-      if (injectStyles) {
-        injectStyles.call(this, context)
-      }
-      // register component module identifier for async chunk inferrence
-      if (context && context._registeredComponents) {
-        context._registeredComponents.add(moduleIdentifier)
-      }
-    }
-    // used by ssr in case component is cached and beforeCreate
-    // never gets called
-    options._ssrRegister = hook
-  } else if (injectStyles) {
-    hook = shadowMode
-      ? function () { injectStyles.call(this, this.$root.$options.shadowRoot) }
-      : injectStyles
-  }
-
-  if (hook) {
-    if (options.functional) {
-      // for template-only hot-reload because in that case the render fn doesn't
-      // go through the normalizer
-      options._injectStyles = hook
-      // register for functional component in vue file
-      var originalRender = options.render
-      options.render = function renderWithStyleInjection (h, context) {
-        hook.call(context)
-        return originalRender(h, context)
-      }
-    } else {
-      // inject component registration as beforeCreate hook
-      var existing = options.beforeCreate
-      options.beforeCreate = existing
-        ? [].concat(existing, hook)
-        : [hook]
-    }
-  }
-
-  return {
-    exports: scriptExports,
-    options: options
-  }
-}
-
-
-/***/ }),
-/* 1 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
 
 // EXPORTS
-__webpack_require__.d(__webpack_exports__, "h", function() { return /* reexport */ supportsPassive; });
-__webpack_require__.d(__webpack_exports__, "d", function() { return /* reexport */ isFn; });
-__webpack_require__.d(__webpack_exports__, "e", function() { return /* reexport */ isPlainObject; });
-__webpack_require__.d(__webpack_exports__, "c", function() { return /* reexport */ hasOwn; });
+__webpack_require__.d(__webpack_exports__, "k", function() { return /* reexport */ supportsPassive; });
+__webpack_require__.d(__webpack_exports__, "f", function() { return /* reexport */ isFn; });
+__webpack_require__.d(__webpack_exports__, "h", function() { return /* reexport */ isStr; });
+__webpack_require__.d(__webpack_exports__, "g", function() { return /* reexport */ isPlainObject; });
+__webpack_require__.d(__webpack_exports__, "e", function() { return /* reexport */ hasOwn; });
+__webpack_require__.d(__webpack_exports__, "m", function() { return /* reexport */ toRawType; });
 __webpack_require__.d(__webpack_exports__, "a", function() { return /* reexport */ cached; });
-__webpack_require__.d(__webpack_exports__, "f", function() { return /* reexport */ kebabCase; });
-__webpack_require__.d(__webpack_exports__, "b", function() { return /* reexport */ disableScrollBounce; });
-__webpack_require__.d(__webpack_exports__, "g", function() { return /* reexport */ plusReady; });
+__webpack_require__.d(__webpack_exports__, "b", function() { return /* reexport */ camelize; });
+__webpack_require__.d(__webpack_exports__, "c", function() { return /* reexport */ debounce; });
+__webpack_require__.d(__webpack_exports__, "l", function() { return /* reexport */ throttle; });
+__webpack_require__.d(__webpack_exports__, "i", function() { return /* reexport */ kebabCase; });
+__webpack_require__.d(__webpack_exports__, "d", function() { return /* reexport */ deepClone; });
+__webpack_require__.d(__webpack_exports__, "j", function() { return /* reexport */ plusReady; });
 
-// UNUSED EXPORTS: isStr, isObject, noop, toRawType, camelize, setProperties, getLen, formatDateTime, updateElementStyle, guid, debounce, looseEqual, hexToRgba, parseQuery, stringifyQuery, callback
+// UNUSED EXPORTS: isObject, noop, capitalize, setProperties, getLen, formatDateTime, updateElementStyle, guid, looseEqual, uniIdMixin, hexToRgba, parseQuery, stringifyQuery, decodedQuery, callback
 
 // CONCATENATED MODULE: ./src/shared/env.js
 var supportsPassive = false;
@@ -227,6 +131,94 @@ try {
 
   window.addEventListener('test-passive', null, opts);
 } catch (e) {}
+// CONCATENATED MODULE: ./src/shared/uni-id-mixin.js
+var realAtob;
+var b64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+var b64re = /^(?:[A-Za-z\d+/]{4})*?(?:[A-Za-z\d+/]{2}(?:==)?|[A-Za-z\d+/]{3}=?)?$/;
+
+if (typeof atob !== 'function') {
+  realAtob = function realAtob(str) {
+    str = String(str).replace(/[\t\n\f\r ]+/g, '');
+
+    if (!b64re.test(str)) {
+      throw new Error("Failed to execute 'atob' on 'Window': The string to be decoded is not correctly encoded.");
+    } // Adding the padding if missing, for semplicity
+
+
+    str += '=='.slice(2 - (str.length & 3));
+    var bitmap;
+    var result = '';
+    var r1;
+    var r2;
+    var i = 0;
+
+    for (; i < str.length;) {
+      bitmap = b64.indexOf(str.charAt(i++)) << 18 | b64.indexOf(str.charAt(i++)) << 12 | (r1 = b64.indexOf(str.charAt(i++))) << 6 | (r2 = b64.indexOf(str.charAt(i++)));
+      result += r1 === 64 ? String.fromCharCode(bitmap >> 16 & 255) : r2 === 64 ? String.fromCharCode(bitmap >> 16 & 255, bitmap >> 8 & 255) : String.fromCharCode(bitmap >> 16 & 255, bitmap >> 8 & 255, bitmap & 255);
+    }
+
+    return result;
+  };
+} else {
+  // 注意atob只能在全局对象上调用，例如：`const Base64 = {atob};Base64.atob('xxxx')`是错误的用法
+  realAtob = atob;
+}
+
+function b64DecodeUnicode(str) {
+  return decodeURIComponent(realAtob(str).split('').map(function (c) {
+    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+  }).join(''));
+}
+
+function getCurrentUserInfo() {
+  var token = ( true ? uni : undefined).getStorageSync('uni_id_token') || '';
+  var tokenArr = token.split('.');
+
+  if (!token || tokenArr.length !== 3) {
+    return {
+      uid: null,
+      role: [],
+      permission: [],
+      tokenExpired: 0
+    };
+  }
+
+  var userInfo;
+
+  try {
+    userInfo = JSON.parse(b64DecodeUnicode(tokenArr[1]));
+  } catch (error) {
+    throw new Error('获取当前用户信息出错，详细错误信息为：' + error.message);
+  }
+
+  userInfo.tokenExpired = userInfo.exp * 1000;
+  delete userInfo.exp;
+  delete userInfo.iat;
+  return userInfo;
+}
+
+function uniIdMixin(Vue) {
+  Vue.prototype.uniIDHasRole = function (roleId) {
+    var _getCurrentUserInfo = getCurrentUserInfo(),
+        role = _getCurrentUserInfo.role;
+
+    return role.indexOf(roleId) > -1;
+  };
+
+  Vue.prototype.uniIDHasPermission = function (permissionId) {
+    var _getCurrentUserInfo2 = getCurrentUserInfo(),
+        permission = _getCurrentUserInfo2.permission;
+
+    return this.uniIDHasRole('admin') || permission.indexOf(permissionId) > -1;
+  };
+
+  Vue.prototype.uniIDTokenValid = function () {
+    var _getCurrentUserInfo3 = getCurrentUserInfo(),
+        tokenExpired = _getCurrentUserInfo3.tokenExpired;
+
+    return tokenExpired > Date.now();
+  };
+}
 // CONCATENATED MODULE: ./src/shared/util.js
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -277,6 +269,13 @@ var camelize = cached(function (str) {
     return c ? c.toUpperCase() : '';
   });
 });
+/**
+ * Capitalize a string.
+ */
+
+var capitalize = cached(function (str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+});
 function setProperties(item, props, propsData) {
   props.forEach(function (name) {
     if (hasOwn(propsData, name)) {
@@ -312,7 +311,8 @@ function guid() {
 }
 function debounce(fn, delay) {
   var timeout;
-  return function () {
+
+  var newFn = function newFn() {
     var _arguments = arguments,
         _this = this;
 
@@ -324,6 +324,54 @@ function debounce(fn, delay) {
 
     timeout = setTimeout(timerFn, delay);
   };
+
+  newFn.cancel = function () {
+    clearTimeout(timeout);
+  };
+
+  return newFn;
+}
+function throttle(fn, wait) {
+  var last = 0;
+  var timeout;
+
+  var _waitCallback;
+
+  var newFn = function newFn() {
+    var _this2 = this;
+
+    for (var _len = arguments.length, arg = new Array(_len), _key = 0; _key < _len; _key++) {
+      arg[_key] = arguments[_key];
+    }
+
+    var now = Date.now();
+    clearTimeout(timeout);
+
+    _waitCallback = function waitCallback() {
+      _waitCallback = null;
+      last = now;
+      fn.apply(_this2, arg);
+    };
+
+    if (now - last < wait) {
+      timeout = setTimeout(_waitCallback, wait - (now - last));
+      return;
+    }
+
+    _waitCallback();
+  };
+
+  newFn.cancel = function () {
+    clearTimeout(timeout);
+    _waitCallback = null;
+  };
+
+  newFn.flush = function () {
+    clearTimeout(timeout);
+    _waitCallback && _waitCallback();
+  };
+
+  return newFn;
 }
 function kebabCase(string) {
   return string.replace(/[A-Z]/g, function (str) {
@@ -371,6 +419,24 @@ function looseEqual(a, b) {
     return false;
   }
 }
+function deepClone(vnodes, createElement) {
+  function cloneVNode(vnode) {
+    var clonedChildren = vnode.children && vnode.children.map(cloneVNode);
+    var cloned = createElement(vnode.tag, vnode.data, clonedChildren);
+    cloned.text = vnode.text;
+    cloned.isComment = vnode.isComment;
+    cloned.componentOptions = vnode.componentOptions;
+    cloned.elm = vnode.elm;
+    cloned.context = vnode.context;
+    cloned.ns = vnode.ns;
+    cloned.isStatic = vnode.isStatic;
+    cloned.key = vnode.key;
+    return cloned;
+  }
+
+  return vnodes.map(cloneVNode);
+}
+
 // CONCATENATED MODULE: ./src/shared/color.js
 function hexToRgba(hex) {
   var r;
@@ -485,6 +551,18 @@ function stringifyQuery(obj) {
   }).join('&') : null;
   return res ? "?".concat(res) : '';
 }
+function decodedQuery() {
+  var query = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  var decodedQuery = {};
+  Object.keys(query).forEach(function (name) {
+    try {
+      decodedQuery[name] = decode(query[name]);
+    } catch (e) {
+      decodedQuery[name] = query[name];
+    }
+  });
+  return decodedQuery;
+}
 // CONCATENATED MODULE: ./src/shared/platform.js
 function plusReady(callback) {
   if (typeof callback !== 'function') {
@@ -496,50 +574,6 @@ function plusReady(callback) {
   }
 
   document.addEventListener('plusready', callback);
-}
-// CONCATENATED MODULE: ./src/shared/scroll.js
-
-var view;
-var pullToRefreshStyle;
-var disabled;
-var lastAction = {};
-function disableScrollBounce(_ref) {
-  var disable = _ref.disable;
-
-  function exec() {
-    if (!view) {
-      view = plus.webview.currentWebview();
-    }
-
-    if (!disabled) {
-      pullToRefreshStyle = (view.getStyle() || {}).pullToRefresh || {};
-    }
-
-    disabled = disable;
-
-    if (pullToRefreshStyle.support) {
-      view.setPullToRefresh(Object.assign({}, pullToRefreshStyle, {
-        support: !disable
-      }));
-    }
-  }
-
-  var time = Date.now();
-
-  if (disable === lastAction.disable && time - lastAction.time < 20) {
-    return;
-  }
-
-  lastAction.disable = disable;
-  lastAction.time = time;
-  plusReady(function () {
-    if (plus.os.name === 'iOS') {
-      // 延迟执行避免iOS13触摸卡死
-      setTimeout(exec, 20);
-    } else {
-      exec();
-    }
-  });
 }
 // CONCATENATED MODULE: ./src/shared/callback.js
 var id = 0;
@@ -593,169 +627,132 @@ var callback = {
 
 
 
+/***/ }),
+/* 1 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return normalizeComponent; });
+/* globals __VUE_SSR_CONTEXT__ */
+
+// IMPORTANT: Do NOT use ES2015 features in this file (except for modules).
+// This module is a runtime utility for cleaner component module output and will
+// be included in the final webpack user bundle.
+
+function normalizeComponent (
+  scriptExports,
+  render,
+  staticRenderFns,
+  functionalTemplate,
+  injectStyles,
+  scopeId,
+  moduleIdentifier, /* server only */
+  shadowMode /* vue-cli only */
+) {
+  // Vue.extend constructor export interop
+  var options = typeof scriptExports === 'function'
+    ? scriptExports.options
+    : scriptExports
+
+  // render functions
+  if (render) {
+    options.render = render
+    options.staticRenderFns = staticRenderFns
+    options._compiled = true
+  }
+
+  // functional template
+  if (functionalTemplate) {
+    options.functional = true
+  }
+
+  // scopedId
+  if (scopeId) {
+    options._scopeId = 'data-v-' + scopeId
+  }
+
+  var hook
+  if (moduleIdentifier) { // server build
+    hook = function (context) {
+      // 2.3 injection
+      context =
+        context || // cached call
+        (this.$vnode && this.$vnode.ssrContext) || // stateful
+        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
+      // 2.2 with runInNewContext: true
+      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
+        context = __VUE_SSR_CONTEXT__
+      }
+      // inject component styles
+      if (injectStyles) {
+        injectStyles.call(this, context)
+      }
+      // register component module identifier for async chunk inferrence
+      if (context && context._registeredComponents) {
+        context._registeredComponents.add(moduleIdentifier)
+      }
+    }
+    // used by ssr in case component is cached and beforeCreate
+    // never gets called
+    options._ssrRegister = hook
+  } else if (injectStyles) {
+    hook = shadowMode
+      ? function () { injectStyles.call(this, this.$root.$options.shadowRoot) }
+      : injectStyles
+  }
+
+  if (hook) {
+    if (options.functional) {
+      // for template-only hot-reload because in that case the render fn doesn't
+      // go through the normalizer
+      options._injectStyles = hook
+      // register for functional component in vue file
+      var originalRender = options.render
+      options.render = function renderWithStyleInjection (h, context) {
+        hook.call(context)
+        return originalRender(h, context)
+      }
+    } else {
+      // inject component registration as beforeCreate hook
+      var existing = options.beforeCreate
+      options.beforeCreate = existing
+        ? [].concat(existing, hook)
+        : [hook]
+    }
+  }
+
+  return {
+    exports: scriptExports,
+    options: options
+  }
+}
+
 
 /***/ }),
 /* 2 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony import */ var _emitter__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(16);
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "a", function() { return _emitter__WEBPACK_IMPORTED_MODULE_0__["a"]; });
 
-// EXPORTS
-__webpack_require__.d(__webpack_exports__, "a", function() { return /* reexport */ emitter; });
-__webpack_require__.d(__webpack_exports__, "d", function() { return /* reexport */ listeners["a" /* default */]; });
-__webpack_require__.d(__webpack_exports__, "b", function() { return /* reexport */ hover["a" /* default */]; });
-__webpack_require__.d(__webpack_exports__, "e", function() { return /* reexport */ subscriber["a" /* default */]; });
-__webpack_require__.d(__webpack_exports__, "c", function() { return /* reexport */ keyboard["a" /* default */]; });
+/* harmony import */ var _listeners__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(84);
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "e", function() { return _listeners__WEBPACK_IMPORTED_MODULE_1__["a"]; });
 
-// UNUSED EXPORTS: interact
+/* harmony import */ var _hover__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(24);
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "c", function() { return _hover__WEBPACK_IMPORTED_MODULE_2__["a"]; });
 
-// CONCATENATED MODULE: ./src/core/view/mixins/emitter.js
-// 暂不提供通知所有
-// function broadcast (componentName, eventName, ...params) {
-//   this.$children.forEach(child => {
-//     const name = child.$options.name && child.$options.name.substr(1)
-//     if (~componentName.indexOf(name)) {
-//       child.$emit.apply(child, [eventName].concat(params))
-//     } else {
-//       broadcast.apply(child, [componentName, eventName].concat([params]))
-//     }
-//   })
-// }
-function broadcast(componentName, eventName) {
-  var children = this.$children;
-  var len = children.length;
+/* harmony import */ var _subscriber__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(85);
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "f", function() { return _subscriber__WEBPACK_IMPORTED_MODULE_3__["a"]; });
 
-  for (var _len = arguments.length, params = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-    params[_key - 2] = arguments[_key];
-  }
+/* harmony import */ var _keyboard__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(25);
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "d", function() { return _keyboard__WEBPACK_IMPORTED_MODULE_4__["a"]; });
 
-  for (var i = 0; i < len; i++) {
-    var child = children[i];
-    var name = child.$options.name && child.$options.name.substr(4);
+/* harmony import */ var _field__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(86);
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "b", function() { return _field__WEBPACK_IMPORTED_MODULE_5__["a"]; });
 
-    if (~componentName.indexOf(name)) {
-      child.$emit.apply(child, [eventName].concat(params));
-      return false;
-    } else {
-      if (broadcast.apply(child, [componentName, eventName].concat([params])) === false) {
-        return false;
-      }
-    }
-  }
-}
+/* harmony import */ var _interact__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(26);
 
-/* harmony default export */ var emitter = ({
-  methods: {
-    $dispatch: function $dispatch(componentName, eventName) {
-      if (typeof componentName === 'string') {
-        componentName = [componentName];
-      }
-
-      var parent = this.$parent || this.$root;
-      var name = parent.$options.name && parent.$options.name.substr(4);
-
-      while (parent && (!name || !~componentName.indexOf(name))) {
-        parent = parent.$parent;
-
-        if (parent) {
-          name = parent.$options.name && parent.$options.name.substr(4);
-        }
-      }
-
-      if (parent) {
-        for (var _len2 = arguments.length, params = new Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
-          params[_key2 - 2] = arguments[_key2];
-        }
-
-        parent.$emit.apply(parent, [eventName].concat(params));
-      }
-    },
-    $broadcast: function $broadcast(componentName, eventName) {
-      if (typeof componentName === 'string') {
-        componentName = [componentName];
-      }
-
-      for (var _len3 = arguments.length, params = new Array(_len3 > 2 ? _len3 - 2 : 0), _key3 = 2; _key3 < _len3; _key3++) {
-        params[_key3 - 2] = arguments[_key3];
-      }
-
-      broadcast.apply(this, [componentName, eventName].concat(params));
-    }
-  }
-});
-// EXTERNAL MODULE: ./src/core/view/mixins/listeners.js
-var listeners = __webpack_require__(69);
-
-// EXTERNAL MODULE: ./src/core/view/mixins/hover.js
-var hover = __webpack_require__(17);
-
-// EXTERNAL MODULE: ./src/core/view/mixins/subscriber.js
-var subscriber = __webpack_require__(70);
-
-// EXTERNAL MODULE: ./src/core/view/mixins/keyboard.js
-var keyboard = __webpack_require__(71);
-
-// EXTERNAL MODULE: ./src/shared/index.js + 7 modules
-var shared = __webpack_require__(1);
-
-// CONCATENATED MODULE: ./src/core/view/mixins/interact.js
-
-var passiveOptions = shared["h" /* supportsPassive */] ? {
-  passive: true,
-  capture: true
-} : true;
-var vms = [];
-var userInteract = 0;
-var inited;
-
-function addInteractListener(vm) {
-  if (!inited) {
-    var eventNames = ['touchstart', 'touchmove', 'touchend', 'mousedown', 'mouseup'];
-    eventNames.forEach(function (eventName) {
-      document.addEventListener(eventName, function () {
-        vms.forEach(function (vm) {
-          vm.userInteract = true;
-          userInteract++;
-          setTimeout(function () {
-            userInteract--;
-
-            if (!userInteract) {
-              vm.userInteract = false;
-            }
-          }, 0);
-        });
-      }, passiveOptions);
-    });
-  }
-
-  vms.push(vm);
-}
-
-function removeInteractListener(vm) {
-  var index = vms.indexOf(vm);
-
-  if (index >= 0) {
-    vms.splice(index, 1);
-  }
-}
-
-/* harmony default export */ var interact = ({
-  data: function data() {
-    return {
-      /**
-       * 是否用户交互行为
-       */
-      userInteract: false
-    };
-  },
-  mounted: function mounted() {
-    addInteractListener(this);
-  },
-  beforeDestroy: function beforeDestroy() {
-    removeInteractListener(this);
-  }
-});
-// CONCATENATED MODULE: ./src/core/view/mixins/index.js
 
 
 
@@ -768,21 +765,25 @@ function removeInteractListener(vm) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* unused harmony export VD_SYNC_VERSION */
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return PAGE_CREATE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return MOUNTED_DATA; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return UPDATED_DATA; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return UPDATED_DATA; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return PAGE_CREATED; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return UI_EVENT; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return UI_EVENT; });
 /* unused harmony export LAYOUT_READY */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return VD_SYNC; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "i", function() { return VD_SYNC; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return APP_SERVICE_ID; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "k", function() { return WEBVIEW_READY; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "m", function() { return WEBVIEW_READY; });
 /* unused harmony export WEBVIEW_UI_EVENT */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "i", function() { return VD_SYNC_CALLBACK; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "j", function() { return VD_SYNC_CALLBACK; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return INVOKE_API; });
 /* unused harmony export WEB_INVOKE_APPSERVICE */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "j", function() { return WEBVIEW_INSERTED; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "l", function() { return WEBVIEW_REMOVED; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "l", function() { return WEBVIEW_INSERTED; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "n", function() { return WEBVIEW_REMOVED; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "k", function() { return WEBVIEW_ID_PREFIX; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return SET_LOCALE; });
+var VD_SYNC_VERSION = 2;
 var PAGE_CREATE = 2;
 var MOUNTED_DATA = 4;
 var UPDATED_DATA = 6;
@@ -798,6 +799,8 @@ var INVOKE_API = 'invokeApi';
 var WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE';
 var WEBVIEW_INSERTED = 'webviewInserted';
 var WEBVIEW_REMOVED = 'webviewRemoved';
+var WEBVIEW_ID_PREFIX = 'webviewId';
+var SET_LOCALE = 'setLocale';
 
 /***/ }),
 /* 4 */
@@ -818,7 +821,7 @@ __webpack_require__.d(__webpack_exports__, "subscribeHandler", function() { retu
 __webpack_require__.d(__webpack_exports__, "publishHandler", function() { return /* reexport */ bridge["a" /* publishHandler */]; });
 
 // EXTERNAL MODULE: ./packages/vue-cli-plugin-uni/packages/h5-vue/dist/vue.runtime.esm.js
-var vue_runtime_esm = __webpack_require__(8);
+var vue_runtime_esm = __webpack_require__(9);
 
 // CONCATENATED MODULE: ./src/core/view/bridge/subscribe/api/set-page-meta.js
 function setPageMeta(_ref) {
@@ -832,12 +835,16 @@ function setPageMeta(_ref) {
   }
 }
 // EXTERNAL MODULE: ./src/core/view/bridge/subscribe/api/request-component-info.js
-var request_component_info = __webpack_require__(75);
+var request_component_info = __webpack_require__(96);
 
 // EXTERNAL MODULE: ./src/core/view/bridge/subscribe/api/request-component-observer.js
-var request_component_observer = __webpack_require__(66);
+var request_component_observer = __webpack_require__(78);
+
+// EXTERNAL MODULE: ./src/core/view/bridge/subscribe/api/request-media-query-observer.js
+var request_media_query_observer = __webpack_require__(79);
 
 // CONCATENATED MODULE: ./src/core/view/bridge/subscribe/api/index.js
+
 
 
 
@@ -845,16 +852,18 @@ var request_component_observer = __webpack_require__(66);
   setPageMeta: setPageMeta,
   requestComponentInfo: request_component_info["a" /* requestComponentInfo */],
   requestComponentObserver: request_component_observer["b" /* requestComponentObserver */],
-  destroyComponentObserver: request_component_observer["a" /* destroyComponentObserver */]
+  destroyComponentObserver: request_component_observer["a" /* destroyComponentObserver */],
+  requestMediaQueryObserver: request_media_query_observer["b" /* requestMediaQueryObserver */],
+  destroyMediaQueryObserver: request_media_query_observer["a" /* destroyMediaQueryObserver */]
 });
 // EXTERNAL MODULE: ./src/core/view/bridge/subscribe/scroll.js
-var subscribe_scroll = __webpack_require__(13);
+var subscribe_scroll = __webpack_require__(22);
 
 // EXTERNAL MODULE: ./src/core/view/bridge/subscribe/font.js
-var font = __webpack_require__(76);
+var font = __webpack_require__(97);
 
 // EXTERNAL MODULE: ./src/platforms/app-plus/view/bridge/subscribe/index.js
-var bridge_subscribe = __webpack_require__(77);
+var bridge_subscribe = __webpack_require__(98);
 
 // CONCATENATED MODULE: ./src/core/view/bridge/subscribe/index.js
 
@@ -870,7 +879,7 @@ function initSubscribe(subscribe) {
   Object(bridge_subscribe["a" /* default */])(subscribe);
 }
 // EXTERNAL MODULE: ./src/platforms/app-plus/view/bridge.js
-var bridge = __webpack_require__(12);
+var bridge = __webpack_require__(20);
 
 // CONCATENATED MODULE: ./src/core/view/bridge/index.js
 
@@ -898,6 +907,38 @@ initSubscribe(view_bridge_subscribe);
 
 /***/ }),
 /* 5 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return initScrollBounce; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return disableScrollBounce; });
+/* harmony import */ var uni_shared__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
+
+var webview;
+var pullToRefreshStyle;
+function initScrollBounce() {
+  Object(uni_shared__WEBPACK_IMPORTED_MODULE_0__[/* plusReady */ "j"])(function () {
+    if (!webview) {
+      webview = plus.webview.currentWebview();
+    }
+
+    if (!pullToRefreshStyle) {
+      pullToRefreshStyle = (webview.getStyle() || {}).pullToRefresh || {};
+    }
+  });
+}
+function disableScrollBounce(_ref) {
+  var disable = _ref.disable;
+
+  if (pullToRefreshStyle && pullToRefreshStyle.support) {
+    webview.setPullToRefresh(Object.assign({}, pullToRefreshStyle, {
+      support: !disable
+    }));
+  }
+}
+
+/***/ }),
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1096,75 +1137,12 @@ module.exports = safeAreaInsets;
 //# sourceMappingURL=index.js.map
 
 /***/ }),
-/* 6 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return isPage; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return hasLifecycleHook; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return normalizeDataset; });
-/* unused harmony export upx2px */
-var components = ['SystemAsyncLoading', 'SystemAsyncError'];
-function isPage(vm) {
-  if (vm.$parent && vm.$parent.$options.name === 'PageBody') {
-    if (components.indexOf(vm.$options.name) !== -1) {
-      return false;
-    }
-
-    return true;
-  }
-
-  return false;
-}
-function hasLifecycleHook() {
-  var vueOptions = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-  var hook = arguments.length > 1 ? arguments[1] : undefined;
-  return Array.isArray(vueOptions[hook]) && vueOptions[hook].length;
-}
-function normalizeDataset() {
-  var dataset = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-  // ios8.x,9.x Object.assign({},dataset) 始终返回 {}
-  // http://ask.dcloud.net.cn/question/70246
-  var result = JSON.parse(JSON.stringify(dataset));
-
-  if (false) { var _len, key, i, len, keys; }
-
-  return result;
-}
-function upx2px(str) {
-  str = str + '';
-
-  if (str.indexOf('upx') !== -1) {
-    // upx转换
-    return uni.upx2px(parseInt(str) || 0);
-  }
-
-  return parseInt(str) || 0;
-}
-
-/***/ }),
 /* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var TITLEBAR_HEIGHT = 44;
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(75);
 
-function getStatusbarHeight() {
-  // 横屏时 iOS 获取的状态栏高度错误，进行纠正
-  return plus.navigator.isImmersedStatusbar() ? Math.round(plus.os.name === 'iOS' ? plus.navigator.getSafeAreaInsets().top : plus.navigator.getStatusbarHeight()) : 0;
-}
-
-function getNavigationBarHeight() {
-  var webview = plus.webview.currentWebview();
-  var style = webview.getStyle();
-  style = style && style.titleNView;
-
-  if (style && style.type === 'default') {
-    return TITLEBAR_HEIGHT + getStatusbarHeight();
-  }
-
-  return 0;
-}
 
 function getFixed($el) {
   var fixed;
@@ -1194,20 +1172,28 @@ function getFixed($el) {
       hidden: false
     };
   },
+  provide: function provide() {
+    return {
+      parentOnDraw: this._onDraw
+    };
+  },
+  inject: {
+    parentOnDraw: {
+      default: null
+    }
+  },
   created: function created() {
     this.isNative = true;
     this.onCanInsertCallbacks = [];
+    this.onDrawCallbacks = [];
   },
   mounted: function mounted() {
-    var _this = this;
-
     this._updatePosition();
 
-    this.$nextTick(function () {
-      _this.onCanInsertCallbacks.forEach(function (callback) {
-        return callback();
-      });
+    this.onCanInsertCallbacks.forEach(function (callback) {
+      return callback();
     });
+    this.onCanInsertCallbacks = null;
     this.$on('uni-view-update', this._requestPositionUpdate);
   },
   methods: {
@@ -1221,23 +1207,64 @@ function getFixed($el) {
         var keys = ['top', 'left', 'width', 'height'];
         keys.forEach(function (key) {
           var val = rect[key];
-          val = key === 'top' ? val + (position.position === 'static' ? document.documentElement.scrollTop || document.body.scrollTop || 0 : getNavigationBarHeight()) : val;
+          val = key === 'top' ? val + (position.position === 'static' ? document.documentElement.scrollTop || document.body.scrollTop || 0 : Object(_utils__WEBPACK_IMPORTED_MODULE_0__[/* getNavigationBarHeight */ "a"])()) : val;
           position[key] = val + 'px';
         });
       }
     },
     _requestPositionUpdate: function _requestPositionUpdate() {
-      var _this2 = this;
+      var _this = this;
 
       if (this._positionUpdateRequest) {
         cancelAnimationFrame(this._positionUpdateRequest);
       }
 
       this._positionUpdateRequest = requestAnimationFrame(function () {
-        delete _this2._positionUpdateRequest;
+        delete _this._positionUpdateRequest;
 
-        _this2._updatePosition();
+        _this._updatePosition();
       });
+    },
+    _onParentReady: function _onParentReady(parentReadyCallback) {
+      var _this2 = this;
+
+      var callback = function callback(parentPosition) {
+        parentReadyCallback(parentPosition);
+
+        _this2.onDrawCallbacks.forEach(function (callback) {
+          return callback(_this2.position);
+        });
+
+        _this2.onDrawCallbacks = null;
+      };
+
+      this._onSelfReady(function () {
+        if (_this2.parentOnDraw) {
+          _this2.parentOnDraw(callback);
+        } else {
+          callback({
+            top: '0px',
+            left: '0px',
+            width: Number.MAX_SAFE_INTEGER + 'px',
+            height: Number.MAX_SAFE_INTEGER + 'px',
+            position: 'static'
+          });
+        }
+      });
+    },
+    _onSelfReady: function _onSelfReady(callback) {
+      if (this.onCanInsertCallbacks) {
+        this.onCanInsertCallbacks.push(callback);
+      } else {
+        callback();
+      }
+    },
+    _onDraw: function _onDraw(callback) {
+      if (this.onDrawCallbacks) {
+        this.onDrawCallbacks.push(callback);
+      } else {
+        callback(this.position);
+      }
     }
   }
 });
@@ -1247,11 +1274,112 @@ function getFixed($el) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* unused harmony export isPage */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return hasLifecycleHook; });
+/* unused harmony export normalizeDataset */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return getTargetDataset; });
+/* unused harmony export upx2px */
+/* unused harmony export findExistsPageIndex */
+/* harmony import */ var uni_shared__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
+
+var components = ['SystemAsyncLoading', 'SystemAsyncError'];
+function isPage(vm) {
+  if (vm.$parent && vm.$parent.$options.name === 'PageBody') {
+    if (components.indexOf(vm.$options.name) !== -1) {
+      return false;
+    }
+
+    return true;
+  }
+
+  return false;
+}
+function hasLifecycleHook() {
+  var vueOptions = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  var hook = arguments.length > 1 ? arguments[1] : undefined;
+  return Array.isArray(vueOptions[hook]) && vueOptions[hook].length;
+}
+function normalizeDataset() {
+  var dataset = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  // ios8.x,9.x Object.assign({},dataset) 始终返回 {}
+  // http://ask.dcloud.net.cn/question/70246
+  var result = JSON.parse(JSON.stringify(dataset));
+
+  if (false) { var _len, key, i, len, keys; }
+
+  return result;
+}
+function getTargetDataset(target) {
+  var dataset = {};
+  var vm = target.__vue__;
+
+  function updateDataset(vm, force) {
+    var $attrs = vm.$attrs;
+
+    for (var key in $attrs) {
+      if (key.startsWith('data-')) {
+        var newKey = Object(uni_shared__WEBPACK_IMPORTED_MODULE_0__[/* camelize */ "b"])(key.substr(5).toLowerCase());
+        var value = $attrs[key];
+        dataset[newKey] = force ? value : dataset[newKey] || value;
+      }
+    }
+  }
+
+  if (vm) {
+    var $child = vm;
+
+    while ($child && $child.$el === target) {
+      updateDataset($child);
+      $child = $child.$children[0];
+    }
+
+    var $parent = vm.$parent;
+
+    while ($parent && $parent.$el === target) {
+      updateDataset($parent, true);
+      $parent = $parent.$parent;
+    }
+  } else {
+    dataset = target.dataset || {};
+  }
+
+  return normalizeDataset(dataset);
+}
+function upx2px(str) {
+  str = str + '';
+
+  if (str.indexOf('upx') !== -1) {
+    // upx转换
+    return uni.upx2px(parseInt(str) || 0);
+  }
+
+  return parseInt(str) || 0;
+}
+function findExistsPageIndex(url) {
+  var pages = getCurrentPages();
+  var len = pages.length;
+
+  while (len--) {
+    var page = pages[len];
+
+    if (page.$page && page.$page.fullPath === url) {
+      return len;
+    }
+  }
+
+  return -1;
+}
+
+/***/ }),
+/* 9 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 /* WEBPACK VAR INJECTION */(function(global) {function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 /*!
  * Vue.js v2.6.11
- * (c) 2014-2020 Evan You
+ * (c) 2014-2021 Evan You
  * Released under the MIT License.
  */
 
@@ -1896,6 +2024,11 @@ if (true) {
 
   formatComponentName = function formatComponentName(vm, includeFile) {
     if (vm.$root === vm) {
+      if (vm.$options && vm.$options.__file) {
+        // fixed by xxxxxx
+        return 'at ' + vm.$options.__file;
+      }
+
       return '<Root>';
     }
 
@@ -1934,7 +2067,7 @@ if (true) {
       var tree = [];
       var currentRecursiveSequence = 0;
 
-      while (vm) {
+      while (vm && vm.$options.name !== 'PageBody') {
         if (tree.length > 0) {
           var last = tree[tree.length - 1];
 
@@ -1948,7 +2081,7 @@ if (true) {
           }
         }
 
-        tree.push(vm);
+        !vm.$options.isReserved && tree.push(vm);
         vm = vm.$parent;
       }
 
@@ -1970,15 +2103,7 @@ var uid = 0;
  */
 
 var Dep = function Dep() {
-  // fixed by xxxxxx (nvue vuex)
-
-  /* eslint-disable no-undef */
-  if (typeof SharedObject !== 'undefined') {
-    this.id = SharedObject.uid++;
-  } else {
-    this.id = uid++;
-  }
-
+  this.id = uid++;
   this.subs = [];
 };
 
@@ -2020,18 +2145,20 @@ Dep.prototype.notify = function notify() {
 /* eslint-disable no-undef */
 
 
-Dep.SharedObject = typeof SharedObject !== 'undefined' ? SharedObject : {};
+Dep.SharedObject = {};
 Dep.SharedObject.target = null;
 Dep.SharedObject.targetStack = [];
 
 function pushTarget(target) {
   Dep.SharedObject.targetStack.push(target);
   Dep.SharedObject.target = target;
+  Dep.target = target;
 }
 
 function popTarget() {
   Dep.SharedObject.targetStack.pop();
   Dep.SharedObject.target = Dep.SharedObject.targetStack[Dep.SharedObject.targetStack.length - 1];
+  Dep.target = Dep.SharedObject.target;
 }
 /*  */
 
@@ -3962,7 +4089,7 @@ function renderList(val, render) {
       var result = iterator.next();
 
       while (!result.done) {
-        ret.push(render(result.value, ret.length, i++, i)); // fixed by xxxxxx
+        ret.push(render(result.value, ret.length, i, i++)); // fixed by xxxxxx
 
         result = iterator.next();
       }
@@ -6301,12 +6428,12 @@ function initMixin(Vue) {
     initEvents(vm);
     initRender(vm);
     callHook(vm, 'beforeCreate');
-    vm.mpHost !== 'mp-toutiao' && initInjections(vm); // resolve injections before data/props  
+    !vm._$fallback && initInjections(vm); // resolve injections before data/props  
 
     initState(vm);
-    vm.mpHost !== 'mp-toutiao' && initProvide(vm); // resolve provide after data/props
+    !vm._$fallback && initProvide(vm); // resolve provide after data/props
 
-    vm.mpHost !== 'mp-toutiao' && callHook(vm, 'created');
+    !vm._$fallback && callHook(vm, 'created');
     /* istanbul ignore if */
 
     if ( true && config.performance && mark) {
@@ -8555,7 +8682,7 @@ function getStyle(vnode, checkChild) {
 var cssVarRE = /^--/;
 var importantRE = /\s*!important$/; // upx,rpx 正则匹配
 
-var unitRE = /([+-]?\d+(\.\d+)?)[r|u]px/g;
+var unitRE = /\b([+-]?\d+(\.\d+)?)[r|u]px\b/g;
 
 var transformUnit = function transformUnit(val) {
   if (typeof val === 'string') {
@@ -8568,11 +8695,12 @@ var transformUnit = function transformUnit(val) {
   return val;
 };
 
-var urlRE = /url\(\s*'?"?([a-zA-Z0-9\.\-\_\/]+\.(jpg|gif|png))"?'?\s*\)/;
+var urlRE1 = /url\(\s*['"](.+?\.(jpg|gif|png))['"]\s*\)/;
+var urlRE2 = /url\(\s*([a-zA-Z0-9\.\-\_\/]+?\.(jpg|gif|png))\s*\)/;
 
 var transformUrl = function transformUrl(val, ctx) {
   if (typeof val === 'string' && val.indexOf('url(') !== -1) {
-    var matches = val.match(urlRE);
+    var matches = val.match(urlRE1) || val.match(urlRE2);
 
     if (matches && matches.length === 3) {
       val = val.replace(matches[1], ctx._$getRealPath(matches[1]));
@@ -9885,10 +10013,316 @@ if (inBrowser) {
 
 
 /* harmony default export */ __webpack_exports__["a"] = (Vue);
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(16)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(19)))
 
 /***/ }),
-/* 9 */
+/* 10 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export i18n */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return t; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return i18nMixin; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return setLocale; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return getLocale; });
+/* unused harmony export initAppLocale */
+/* unused harmony export I18N_JSON_DELIMITERS */
+/* unused harmony export formatI18n */
+/* unused harmony export defineI18nProperties */
+/* unused harmony export defineI18nProperty */
+/* unused harmony export initNavigationBarI18n */
+/* unused harmony export initPullToRefreshI18n */
+/* unused harmony export initTabBarI18n */
+/* unused harmony export initI18n */
+/* harmony import */ var _dcloudio_uni_i18n__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(76);
+/* harmony import */ var uni_shared__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(0);
+/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(17);
+/* harmony import */ var _en_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(99);
+var _en_json__WEBPACK_IMPORTED_MODULE_3___namespace = /*#__PURE__*/__webpack_require__.t(99, 1);
+/* harmony import */ var _es_json__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(100);
+var _es_json__WEBPACK_IMPORTED_MODULE_4___namespace = /*#__PURE__*/__webpack_require__.t(100, 1);
+/* harmony import */ var _fr_json__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(101);
+var _fr_json__WEBPACK_IMPORTED_MODULE_5___namespace = /*#__PURE__*/__webpack_require__.t(101, 1);
+/* harmony import */ var _zh_Hans_json__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(102);
+var _zh_Hans_json__WEBPACK_IMPORTED_MODULE_6___namespace = /*#__PURE__*/__webpack_require__.t(102, 1);
+/* harmony import */ var _zh_Hant_json__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(103);
+var _zh_Hant_json__WEBPACK_IMPORTED_MODULE_7___namespace = /*#__PURE__*/__webpack_require__.t(103, 1);
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+
+
+
+
+
+
+
+
+var messages = {
+  en: _en_json__WEBPACK_IMPORTED_MODULE_3__,
+  es: _es_json__WEBPACK_IMPORTED_MODULE_4__,
+  fr: _fr_json__WEBPACK_IMPORTED_MODULE_5__,
+  'zh-Hans': _zh_Hans_json__WEBPACK_IMPORTED_MODULE_6__,
+  'zh-Hant': _zh_Hant_json__WEBPACK_IMPORTED_MODULE_7__
+};
+var locale;
+
+if (false) {} else if (true) {
+  if ((typeof weex === "undefined" ? "undefined" : _typeof(weex)) === 'object') {
+    locale = weex.requireModule('plus').getLanguage();
+  } else {
+    locale = '';
+  }
+} else {}
+
+var i18n = Object(_dcloudio_uni_i18n__WEBPACK_IMPORTED_MODULE_0__[/* initVueI18n */ "a"])(locale,  true ? messages : undefined);
+var t = i18n.t;
+var i18nMixin = i18n.mixin = {
+  beforeCreate: function beforeCreate() {
+    var _this = this;
+
+    var unwatch = i18n.i18n.watchLocale(function () {
+      _this.$forceUpdate();
+    });
+    this.$once('hook:beforeDestroy', function () {
+      unwatch();
+    });
+  },
+  methods: {
+    $$t: function $$t(key, values) {
+      return t(key, values);
+    }
+  }
+};
+var setLocale = i18n.setLocale;
+var getLocale = i18n.getLocale;
+function initAppLocale(Vue, appVm, locale) {
+  var state = Vue.observable({
+    locale: locale || i18n.getLocale()
+  });
+  var localeWatchers = [];
+
+  appVm.$watchLocale = function (fn) {
+    localeWatchers.push(fn);
+  };
+
+  Object.defineProperty(appVm, '$locale', {
+    get: function get() {
+      return state.locale;
+    },
+    set: function set(v) {
+      state.locale = v;
+      localeWatchers.forEach(function (watch) {
+        return watch(v);
+      });
+    }
+  });
+}
+var I18N_JSON_DELIMITERS = ['%', '%'];
+
+function getLocaleMessage() {
+  var locale = uni.getLocale();
+  var locales = __uniConfig.locales;
+  return locales[locale] || locales[__uniConfig.fallbackLocale] || locales.en || {};
+}
+
+function formatI18n(message) {
+  if (Object(_dcloudio_uni_i18n__WEBPACK_IMPORTED_MODULE_0__[/* isI18nStr */ "b"])(message, I18N_JSON_DELIMITERS)) {
+    return i18n.f(message, getLocaleMessage(), I18N_JSON_DELIMITERS);
+  }
+
+  return message;
+}
+
+function resolveJsonObj(jsonObj, names) {
+  if (names.length === 1) {
+    if (jsonObj) {
+      var value = jsonObj[names[0]];
+
+      if (Object(uni_shared__WEBPACK_IMPORTED_MODULE_1__[/* isStr */ "h"])(value) && Object(_dcloudio_uni_i18n__WEBPACK_IMPORTED_MODULE_0__[/* isI18nStr */ "b"])(value, I18N_JSON_DELIMITERS)) {
+        return jsonObj;
+      }
+    }
+
+    return;
+  }
+
+  var name = names.shift();
+  return resolveJsonObj(jsonObj && jsonObj[name], names);
+}
+
+function defineI18nProperties(obj, names) {
+  return names.map(function (name) {
+    return defineI18nProperty(obj, name);
+  });
+}
+function defineI18nProperty(obj, names) {
+  var jsonObj = resolveJsonObj(obj, names);
+
+  if (!jsonObj) {
+    return false;
+  }
+
+  var prop = names[names.length - 1];
+  var value = jsonObj[prop];
+  Object.defineProperty(jsonObj, prop, {
+    get: function get() {
+      return formatI18n(value);
+    },
+    set: function set(v) {
+      value = v;
+    }
+  });
+  return true;
+}
+
+function isEnableLocale() {
+  return __uniConfig.locales && !!Object.keys(__uniConfig.locales).length;
+}
+
+function initNavigationBarI18n(navigationBar) {
+  if (isEnableLocale()) {
+    return defineI18nProperties(navigationBar, [['titleText'], ['searchInput', 'placeholder']]);
+  }
+}
+function initPullToRefreshI18n(pullToRefresh) {
+  if (isEnableLocale()) {
+    var CAPTION = 'caption';
+    return defineI18nProperties(pullToRefresh, [['contentdown', CAPTION], ['contentover', CAPTION], ['contentrefresh', CAPTION]]);
+  }
+}
+function initTabBarI18n(tabBar) {
+  if (isEnableLocale()) {
+    tabBar.list.forEach(function (item) {
+      defineI18nProperty(item, ['text']);
+    });
+  }
+
+  return tabBar;
+}
+function initI18n() {
+  var localeKeys = Object.keys(__uniConfig.locales || {});
+
+  if (localeKeys.length) {
+    localeKeys.forEach(function (locale) {
+      return i18n.add(locale, __uniConfig.locales[locale]);
+    });
+  }
+}
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+
+var TYPED_OK =  (typeof Uint8Array !== 'undefined') &&
+                (typeof Uint16Array !== 'undefined') &&
+                (typeof Int32Array !== 'undefined');
+
+function _has(obj, key) {
+  return Object.prototype.hasOwnProperty.call(obj, key);
+}
+
+exports.assign = function (obj /*from1, from2, from3, ...*/) {
+  var sources = Array.prototype.slice.call(arguments, 1);
+  while (sources.length) {
+    var source = sources.shift();
+    if (!source) { continue; }
+
+    if (typeof source !== 'object') {
+      throw new TypeError(source + 'must be non-object');
+    }
+
+    for (var p in source) {
+      if (_has(source, p)) {
+        obj[p] = source[p];
+      }
+    }
+  }
+
+  return obj;
+};
+
+
+// reduce buffer size, avoiding mem copy
+exports.shrinkBuf = function (buf, size) {
+  if (buf.length === size) { return buf; }
+  if (buf.subarray) { return buf.subarray(0, size); }
+  buf.length = size;
+  return buf;
+};
+
+
+var fnTyped = {
+  arraySet: function (dest, src, src_offs, len, dest_offs) {
+    if (src.subarray && dest.subarray) {
+      dest.set(src.subarray(src_offs, src_offs + len), dest_offs);
+      return;
+    }
+    // Fallback to ordinary array
+    for (var i = 0; i < len; i++) {
+      dest[dest_offs + i] = src[src_offs + i];
+    }
+  },
+  // Join array of chunks to single array.
+  flattenChunks: function (chunks) {
+    var i, l, len, pos, chunk, result;
+
+    // calculate data length
+    len = 0;
+    for (i = 0, l = chunks.length; i < l; i++) {
+      len += chunks[i].length;
+    }
+
+    // join chunks
+    result = new Uint8Array(len);
+    pos = 0;
+    for (i = 0, l = chunks.length; i < l; i++) {
+      chunk = chunks[i];
+      result.set(chunk, pos);
+      pos += chunk.length;
+    }
+
+    return result;
+  }
+};
+
+var fnUntyped = {
+  arraySet: function (dest, src, src_offs, len, dest_offs) {
+    for (var i = 0; i < len; i++) {
+      dest[dest_offs + i] = src[src_offs + i];
+    }
+  },
+  // Join array of chunks to single array.
+  flattenChunks: function (chunks) {
+    return [].concat.apply([], chunks);
+  }
+};
+
+
+// Enable/Disable typed arrays use, for testing
+//
+exports.setTyped = function (on) {
+  if (on) {
+    exports.Buf8  = Uint8Array;
+    exports.Buf16 = Uint16Array;
+    exports.Buf32 = Int32Array;
+    exports.assign(exports, fnTyped);
+  } else {
+    exports.Buf8  = Array;
+    exports.Buf16 = Array;
+    exports.Buf32 = Array;
+    exports.assign(exports, fnUntyped);
+  }
+};
+
+exports.setTyped(TYPED_OK);
+
+
+/***/ }),
+/* 12 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -9902,6 +10336,7 @@ var addListenerToElement = function addListenerToElement(element, type, callback
       }
     }
   }, {
+    capture: capture,
     passive: false
   });
 };
@@ -9913,6 +10348,8 @@ var addListenerToElement = function addListenerToElement(element, type, callback
   },
   methods: {
     touchtrack: function touchtrack(element, method, useCancel) {
+      var _this = this;
+
       var self = this;
       var x0 = 0;
       var y0 = 0;
@@ -9929,8 +10366,8 @@ var addListenerToElement = function addListenerToElement(element, type, callback
           changedTouches: $event.changedTouches,
           detail: {
             state: state,
-            x0: x,
-            y0: y,
+            x: x,
+            y: y,
             dx: x - x0,
             dy: y - y0,
             ddx: x - x1,
@@ -9943,6 +10380,7 @@ var addListenerToElement = function addListenerToElement(element, type, callback
       };
 
       var $eventOld = null;
+      var hasClickListenerOld;
       var hasTouchStart;
       var hasMouseDown;
       addListenerToElement(element, 'touchstart', function ($event) {
@@ -9973,11 +10411,22 @@ var addListenerToElement = function addListenerToElement(element, type, callback
           y1 = $event.touches[0].pageY;
           return res;
         }
-      });
+      }); // 阻止点击事件传播，处理拖拽和点击冲突，鼠标移动则添加监听，停止移动则移除监听
+
+      var clickEventListener = this.__clickEventListener = function ($event) {
+        $event.preventDefault();
+        $event.stopPropagation();
+      };
 
       var mouseMoveEventListener = this.__mouseMoveEventListener = function ($event) {
         if (!hasTouchStart && hasMouseDown && $eventOld) {
-          // TODO target currentTarget touches changedTouches
+          // 存在鼠标移动，则在 document 上添加点击监听（好处是不用管具体使用拖拽的是什么元素）
+          if (!hasClickListenerOld && (Math.abs(x1 - x0) > 2 || Math.abs(y1 - y0) > 2)) {
+            document.addEventListener('click', clickEventListener, true);
+            hasClickListenerOld = true;
+          } // TODO target currentTarget touches changedTouches
+
+
           var res = fn($event, 'move', $event.pageX, $event.pageY);
           x1 = $event.pageX;
           y1 = $event.pageY;
@@ -9998,7 +10447,15 @@ var addListenerToElement = function addListenerToElement(element, type, callback
         hasMouseDown = false;
 
         if (!hasTouchStart && $eventOld) {
-          // TODO target currentTarget touches changedTouches
+          // 鼠标抬起，存在监听，则 mouseup 结束后移除就监听事件
+          if (hasClickListenerOld) {
+            setTimeout(function () {
+              document.removeEventListener('click', _this.__clickEventListener, true);
+              hasClickListenerOld = false;
+            }, 0);
+          } // TODO target currentTarget touches changedTouches
+
+
           $eventOld = null;
           return fn($event, 'end', $event.pageX, $event.pageY);
         }
@@ -10018,7 +10475,108 @@ var addListenerToElement = function addListenerToElement(element, type, callback
 });
 
 /***/ }),
-/* 10 */
+/* 13 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, "a", function() { return /* binding */ getRealPath; });
+
+// CONCATENATED MODULE: ./src/core/helpers/get-real-route.js
+function getRealRoute(fromRoute, toRoute) {
+  if (!toRoute) {
+    toRoute = fromRoute;
+
+    if (toRoute.indexOf('/') === 0) {
+      return toRoute;
+    }
+
+    var pages = getCurrentPages();
+
+    if (pages.length) {
+      fromRoute = pages[pages.length - 1].$page.route;
+    } else {
+      fromRoute = '';
+    }
+  } else {
+    if (toRoute.indexOf('/') === 0) {
+      return toRoute;
+    }
+  }
+
+  if (toRoute.indexOf('./') === 0) {
+    return getRealRoute(fromRoute, toRoute.substr(2));
+  }
+
+  var toRouteArray = toRoute.split('/');
+  var toRouteLength = toRouteArray.length;
+  var i = 0;
+
+  for (; i < toRouteLength && toRouteArray[i] === '..'; i++) {// noop
+  }
+
+  toRouteArray.splice(0, i);
+  toRoute = toRouteArray.join('/');
+  var fromRouteArray = fromRoute.length > 0 ? fromRoute.split('/') : [];
+  fromRouteArray.splice(fromRouteArray.length - i - 1, i + 1);
+  return '/' + fromRouteArray.concat(toRouteArray).join('/');
+}
+// CONCATENATED MODULE: ./src/platforms/app-plus/helpers/get-real-path.js
+
+var SCHEME_RE = /^([a-z-]+:)?\/\//i;
+var DATA_RE = /^data:.*,.*/; // 处理 Android 平台解压与非解压模式下获取的路径不一致的情况
+
+function handleLocalPath(filePath) {
+  return plus.io.convertLocalFileSystemURL(filePath).replace(/^\/?apps\//, '/android_asset/apps/').replace(/\/$/, '');
+}
+
+var wwwPath;
+
+function addBase(filePath) {
+  if (!wwwPath) {
+    // 需要时，初始化一次，外部直接初始化，需要等 plusready
+    wwwPath = 'file://' + handleLocalPath('_www') + '/';
+  }
+
+  return wwwPath + filePath;
+}
+
+function getRealPath(filePath) {
+  if (filePath.indexOf('/') === 0) {
+    if (filePath.indexOf('//') === 0) {
+      return 'https:' + filePath;
+    } // 平台绝对路径 安卓、iOS
+
+
+    if (filePath.startsWith('/storage/') || filePath.startsWith('/sdcard/') || filePath.includes('/Containers/Data/Application/')) {
+      return 'file://' + filePath;
+    }
+
+    return addBase(filePath.substr(1));
+  } // 网络资源或base64
+
+
+  if (SCHEME_RE.test(filePath) || DATA_RE.test(filePath) || filePath.indexOf('blob:') === 0) {
+    return filePath;
+  } // _do=>_doc,_documents,_downloads
+
+
+  if (filePath.indexOf('_www') === 0 || filePath.indexOf('_do') === 0) {
+    return 'file://' + handleLocalPath(filePath);
+  }
+
+  var pages = getCurrentPages();
+
+  if (pages.length) {
+    return addBase(getRealRoute(pages[pages.length - 1].$page.route, filePath).substr(1));
+  }
+
+  return filePath;
+}
+
+/***/ }),
+/* 14 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10026,12 +10584,279 @@ var addListenerToElement = function addListenerToElement(element, type, callback
 function getWindowOffset() {
   return {
     top: 0,
-    bottom: 0
+    bottom: 0,
+    left: 0,
+    right: 0
   };
 }
 
 /***/ }),
-/* 11 */
+/* 15 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return pixelRatio; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return wrapper; });
+/* harmony import */ var uni_shared__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
+
+var pixelRatio = function () {
+  var canvas = document.createElement('canvas');
+  canvas.height = canvas.width = 0;
+  var context = canvas.getContext('2d');
+  var backingStore = context.backingStorePixelRatio || context.webkitBackingStorePixelRatio || context.mozBackingStorePixelRatio || context.msBackingStorePixelRatio || context.oBackingStorePixelRatio || context.backingStorePixelRatio || 1;
+  return (window.devicePixelRatio || 1) / backingStore;
+}();
+
+var forEach = function forEach(obj, func) {
+  for (var key in obj) {
+    if (Object(uni_shared__WEBPACK_IMPORTED_MODULE_0__[/* hasOwn */ "e"])(obj, key)) {
+      func(obj[key], key);
+    }
+  }
+};
+
+var ratioArgs = {
+  fillRect: 'all',
+  clearRect: 'all',
+  strokeRect: 'all',
+  moveTo: 'all',
+  lineTo: 'all',
+  arc: [0, 1, 2],
+  arcTo: 'all',
+  bezierCurveTo: 'all',
+  isPointinPath: 'all',
+  isPointinStroke: 'all',
+  quadraticCurveTo: 'all',
+  rect: 'all',
+  translate: 'all',
+  createRadialGradient: 'all',
+  createLinearGradient: 'all',
+  setTransform: [4, 5]
+};
+var proto = CanvasRenderingContext2D.prototype;
+
+proto.drawImageByCanvas = function (_super) {
+  return function (canvas, srcx, srcy, srcw, srch, desx, desy, desw, desh, isScale) {
+    if (!this.__hidpi__) {
+      return _super.apply(this, arguments);
+    }
+
+    srcx *= pixelRatio;
+    srcy *= pixelRatio;
+    srcw *= pixelRatio;
+    srch *= pixelRatio;
+    desx *= pixelRatio;
+    desy *= pixelRatio;
+    desw = isScale ? desw * pixelRatio : desw;
+    desh = isScale ? desh * pixelRatio : desh;
+
+    _super.call(this, canvas, srcx, srcy, srcw, srch, desx, desy, desw, desh);
+  };
+}(proto.drawImage);
+
+if (pixelRatio !== 1) {
+  forEach(ratioArgs, function (value, key) {
+    proto[key] = function (_super) {
+      return function () {
+        if (!this.__hidpi__) {
+          return _super.apply(this, arguments);
+        }
+
+        var args = Array.prototype.slice.call(arguments);
+
+        if (value === 'all') {
+          args = args.map(function (a) {
+            return a * pixelRatio;
+          });
+        } else if (Array.isArray(value)) {
+          for (var i = 0; i < value.length; i++) {
+            args[value[i]] *= pixelRatio;
+          }
+        }
+
+        return _super.apply(this, args);
+      };
+    }(proto[key]);
+  });
+
+  proto.stroke = function (_super) {
+    return function () {
+      if (!this.__hidpi__) {
+        return _super.apply(this, arguments);
+      }
+
+      this.lineWidth *= pixelRatio;
+
+      _super.apply(this, arguments);
+
+      this.lineWidth /= pixelRatio;
+    };
+  }(proto.stroke);
+
+  proto.fillText = function (_super) {
+    return function () {
+      if (!this.__hidpi__) {
+        return _super.apply(this, arguments);
+      }
+
+      var args = Array.prototype.slice.call(arguments);
+      args[1] *= pixelRatio;
+      args[2] *= pixelRatio; // Safari 重新设置部分属性会导致其他值恢复默认，需获取原始值
+
+      var font = this.__font__ || this.font;
+      this.font = font.replace(/(\d+\.?\d*)(px|em|rem|pt)/g, function (w, m, u) {
+        return m * pixelRatio + u;
+      });
+
+      _super.apply(this, args);
+
+      this.font = font;
+    };
+  }(proto.fillText);
+
+  proto.strokeText = function (_super) {
+    return function () {
+      if (!this.__hidpi__) {
+        return _super.apply(this, arguments);
+      }
+
+      var args = Array.prototype.slice.call(arguments);
+      args[1] *= pixelRatio; // x
+
+      args[2] *= pixelRatio; // y
+      // Safari 重新设置部分属性会导致其他值恢复默认，需获取原始值
+
+      var font = this.__font__ || this.font;
+      this.font = font.replace(/(\d+\.?\d*)(px|em|rem|pt)/g, function (w, m, u) {
+        return m * pixelRatio + u;
+      });
+
+      _super.apply(this, args);
+
+      this.font = font;
+    };
+  }(proto.strokeText);
+
+  proto.drawImage = function (_super) {
+    return function () {
+      if (!this.__hidpi__) {
+        return _super.apply(this, arguments);
+      }
+
+      this.scale(pixelRatio, pixelRatio);
+
+      _super.apply(this, arguments);
+
+      this.scale(1 / pixelRatio, 1 / pixelRatio);
+    };
+  }(proto.drawImage);
+}
+
+function wrapper(canvas) {
+  canvas.width = canvas.offsetWidth * pixelRatio;
+  canvas.height = canvas.offsetHeight * pixelRatio;
+  canvas.__hidpi__ = true; // 避免低版本安卓上 context 实例被回收
+
+  canvas.__context2d__ = canvas.getContext('2d');
+  canvas.__context2d__.__hidpi__ = true;
+}
+
+/***/ }),
+/* 16 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+// 暂不提供通知所有
+// function broadcast (componentName, eventName, ...params) {
+//   this.$children.forEach(child => {
+//     const name = child.$options.name && child.$options.name.substr(1)
+//     if (~componentName.indexOf(name)) {
+//       child.$emit.apply(child, [eventName].concat(params))
+//     } else {
+//       broadcast.apply(child, [componentName, eventName].concat([params]))
+//     }
+//   })
+// }
+function broadcast(componentName, eventName) {
+  var children = this.$children;
+  var len = children.length;
+
+  for (var _len = arguments.length, params = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+    params[_key - 2] = arguments[_key];
+  }
+
+  for (var i = 0; i < len; i++) {
+    var child = children[i];
+    var name = child.$options.name && child.$options.name.substr(4);
+
+    if (~componentName.indexOf(name)) {
+      child.$emit.apply(child, [eventName].concat(params));
+      return false;
+    } else {
+      if (broadcast.apply(child, [componentName, eventName].concat([params])) === false) {
+        return false;
+      }
+    }
+  }
+}
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+  methods: {
+    $dispatch: function $dispatch(componentName, eventName) {
+      if (typeof componentName === 'string') {
+        componentName = [componentName];
+      }
+
+      var parent = this.$parent || this.$root;
+      var name = parent.$options.name && parent.$options.name.substr(4);
+
+      while (parent && (!name || !~componentName.indexOf(name))) {
+        parent = parent.$parent;
+
+        if (parent) {
+          name = parent.$options.name && parent.$options.name.substr(4);
+        }
+      }
+
+      if (parent) {
+        for (var _len2 = arguments.length, params = new Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
+          params[_key2 - 2] = arguments[_key2];
+        }
+
+        parent.$emit.apply(parent, [eventName].concat(params));
+      }
+    },
+    $broadcast: function $broadcast(componentName, eventName) {
+      if (typeof componentName === 'string') {
+        componentName = [componentName];
+      }
+
+      for (var _len3 = arguments.length, params = new Array(_len3 > 2 ? _len3 - 2 : 0), _key3 = 2; _key3 < _len3; _key3++) {
+        params[_key3 - 2] = arguments[_key3];
+      }
+
+      broadcast.apply(this, [componentName, eventName].concat(params));
+    }
+  }
+});
+
+/***/ }),
+/* 17 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return NAVBAR_HEIGHT; });
+/* unused harmony export TABBAR_HEIGHT */
+/* unused harmony export RESPONSIVE_MIN_WIDTH */
+/* unused harmony export DC_LOCALE */
+var NAVBAR_HEIGHT = 44;
+var TABBAR_HEIGHT = 50; // 576:landscape phones,768:tablets,992:desktops,1200:large desktops
+
+var RESPONSIVE_MIN_WIDTH = 768;
+var DC_LOCALE = '__DC_LOCALE';
+
+/***/ }),
+/* 18 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10041,10 +10866,10 @@ __webpack_require__.d(__webpack_exports__, "b", function() { return /* binding *
 __webpack_require__.d(__webpack_exports__, "a", function() { return /* binding */ initEvents; });
 
 // EXTERNAL MODULE: ./src/shared/index.js + 7 modules
-var shared = __webpack_require__(1);
+var shared = __webpack_require__(0);
 
 // EXTERNAL MODULE: ./src/core/helpers/index.js
-var helpers = __webpack_require__(6);
+var helpers = __webpack_require__(8);
 
 // CONCATENATED MODULE: ./src/core/helpers/patch.js
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -10055,42 +10880,43 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
  */
 
 function wrapperMPEvent(event) {
-  return Object.assign({
-    mp: event,
-    _processed: true
+  event.mp = Object.assign({
+    '@warning': 'mp is deprecated'
   }, event);
+  event._processed = true;
+  return event;
 }
 /**
  * app-plus titleNView
  */
 
 function mergeTitleNView(navigationBar, titleNView) {
-  if (Object(shared["e" /* isPlainObject */])(titleNView)) {
-    if (Object(shared["c" /* hasOwn */])(titleNView, 'backgroundColor')) {
+  if (Object(shared["g" /* isPlainObject */])(titleNView)) {
+    if (Object(shared["e" /* hasOwn */])(titleNView, 'backgroundColor')) {
       navigationBar.backgroundColor = titleNView.backgroundColor;
     }
 
-    if (Object(shared["c" /* hasOwn */])(titleNView, 'buttons')) {
+    if (Object(shared["e" /* hasOwn */])(titleNView, 'buttons')) {
       navigationBar.buttons = titleNView.buttons;
     }
 
-    if (Object(shared["c" /* hasOwn */])(titleNView, 'titleColor')) {
+    if (Object(shared["e" /* hasOwn */])(titleNView, 'titleColor')) {
       navigationBar.textColor = titleNView.titleColor;
     }
 
-    if (Object(shared["c" /* hasOwn */])(titleNView, 'titleText')) {
+    if (Object(shared["e" /* hasOwn */])(titleNView, 'titleText')) {
       navigationBar.titleText = titleNView.titleText;
     }
 
-    if (Object(shared["c" /* hasOwn */])(titleNView, 'titleSize')) {
+    if (Object(shared["e" /* hasOwn */])(titleNView, 'titleSize')) {
       navigationBar.titleSize = titleNView.titleSize;
     }
 
-    if (Object(shared["c" /* hasOwn */])(titleNView, 'type')) {
+    if (Object(shared["e" /* hasOwn */])(titleNView, 'type')) {
       navigationBar.type = titleNView.type;
     }
 
-    if (Object(shared["c" /* hasOwn */])(titleNView, 'searchInput') && _typeof(titleNView.searchInput) === 'object') {
+    if (Object(shared["e" /* hasOwn */])(titleNView, 'searchInput') && _typeof(titleNView.searchInput) === 'object') {
       navigationBar.searchInput = Object.assign({
         autoFocus: false,
         align: 'center',
@@ -10107,7 +10933,7 @@ function mergeTitleNView(navigationBar, titleNView) {
   return navigationBar;
 }
 // EXTERNAL MODULE: ./src/platforms/app-plus/helpers/get-window-offset.js
-var get_window_offset = __webpack_require__(10);
+var get_window_offset = __webpack_require__(14);
 
 // CONCATENATED MODULE: ./src/core/view/plugins/events.js
 
@@ -10121,7 +10947,7 @@ function processTarget(target, detail) {
     id: target.id,
     offsetLeft: target.offsetLeft,
     offsetTop: target.offsetTop,
-    dataset: Object(helpers["c" /* normalizeDataset */])(target.dataset)
+    dataset: Object(helpers["a" /* getTargetDataset */])(target)
   };
 
   if (detail) {
@@ -10200,6 +11026,16 @@ function processEvent(name) {
     stopPropagation: function stopPropagation() {}
   });
 
+  if (name.startsWith('mouse')) {
+    var _getWindowOffset3 = Object(get_window_offset["a" /* default */])(),
+        _top = _getWindowOffset3.top;
+
+    ret.pageX = $event.pageX;
+    ret.pageY = $event.pageY - _top;
+    ret.clientX = $event.clientX;
+    ret.clientY = $event.clientY - _top;
+  }
+
   if (true) {
     var nid = currentTarget.getAttribute('_i');
     ret.options = {
@@ -10213,7 +11049,7 @@ function processEvent(name) {
 }
 var LONGPRESS_TIMEOUT = 350;
 var LONGPRESS_THRESHOLD = 10;
-var passiveOptions = shared["h" /* supportsPassive */] ? {
+var passiveOptions = shared["k" /* supportsPassive */] ? {
   passive: true
 } : false;
 var longPressTimer = false;
@@ -10279,18 +11115,44 @@ function initEvents() {
 }
 
 /***/ }),
-/* 12 */
+/* 19 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || new Function("return this")();
+} catch (e) {
+	// This works if the window reference is available
+	if (typeof window === "object") g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
+/* 20 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return publishHandler; });
 /* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
-/* harmony import */ var uni_shared__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
+/* harmony import */ var uni_shared__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(0);
 
 
 function publishHandler(event) {
   var args = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-  Object(uni_shared__WEBPACK_IMPORTED_MODULE_1__[/* plusReady */ "g"])(function () {
+  Object(uni_shared__WEBPACK_IMPORTED_MODULE_1__[/* plusReady */ "j"])(function () {
     var pageId = plus.webview.currentWebview().id;
 
     if (true) {
@@ -10309,14 +11171,76 @@ function publishHandler(event) {
 }
 
 /***/ }),
-/* 13 */
+/* 21 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return findElm; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return elementMatchesPolyfill; });
+function findVmById(id, vm) {
+  if (id === vm._$id) {
+    return vm;
+  }
+
+  var childVms = vm.$children;
+  var len = childVms.length;
+
+  for (var i = 0; i < len; i++) {
+    var childVm = findVmById(id, childVms[i]);
+
+    if (childVm) {
+      return childVm;
+    }
+  }
+}
+
+function findElm(component, pageVm) {
+  if (!pageVm) {
+    return console.error('page is not ready');
+  }
+
+  if (!component) {
+    return pageVm.$el;
+  }
+
+  if (true) {
+    if (typeof component === 'string') {
+      var componentVm = findVmById(component, pageVm);
+
+      if (!componentVm) {
+        throw new Error("Not Found\uFF1APage[".concat(pageVm.$page.id, "][").concat(component, "]"));
+      }
+
+      return componentVm.$el;
+    }
+  }
+
+  return component.$el;
+}
+function elementMatchesPolyfill(Element) {
+  if (!Element.matches) {
+    Element.matches = Element.matchesSelector || Element.mozMatchesSelector || Element.msMatchesSelector || Element.oMatchesSelector || Element.webkitMatchesSelector || function (s) {
+      var matches = (this.document || this.ownerDocument).querySelectorAll(s);
+      var i = matches.length;
+
+      while (--i >= 0 && matches.item(i) !== this) {}
+
+      return i > -1;
+    };
+  }
+
+  return Element;
+}
+
+/***/ }),
+/* 22 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(UniViewJSBridge) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return disableScroll; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return pageScrollTo; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return createScrollListener; });
-/* harmony import */ var uni_platform_view_bridge__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(12);
+/* harmony import */ var uni_platform_view_bridge__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(20);
 
 function disableScroll(evt) {
   evt.preventDefault();
@@ -10457,18 +11381,18 @@ function createScrollListener(pageId, _ref2) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(4)))
 
 /***/ }),
-/* 14 */
+/* 23 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(UniViewJSBridge) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return vd; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return initData; });
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(8);
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(9);
 /* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
-/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(57);
-/* harmony import */ var _vdom_sync__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(80);
-/* harmony import */ var _page__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(59);
-/* harmony import */ var _page_factory__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(58);
+/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(67);
+/* harmony import */ var _vdom_sync__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(106);
+/* harmony import */ var _page__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(69);
+/* harmony import */ var _page_factory__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(68);
 var _handleData;
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -10499,8 +11423,7 @@ var handleData = (_handleData = {}, _defineProperty(_handleData, _constants__WEB
       pagePath = _data[1],
       pageOptions = _data[2];
 
-  document.title = "".concat(pagePath, "[").concat(pageId, "]");
-  updateRootFontSize(); // 设置当前页面伪对象，方便其他地方使用 getCurrentPages 获取当前页面 id，route
+  document.title = "".concat(pagePath, "[").concat(pageId, "]"); // 设置当前页面伪对象，方便其他地方使用 getCurrentPages 获取当前页面 id，route
 
   Object(_page__WEBPACK_IMPORTED_MODULE_4__[/* setCurrentPage */ "b"])(pageId, pagePath); // 通知页面创建，根据当前页面配置信息，初始化部分事件
 
@@ -10508,21 +11431,26 @@ var handleData = (_handleData = {}, _defineProperty(_handleData, _constants__WEB
 
   PageVueComponent = Object(_page_factory__WEBPACK_IMPORTED_MODULE_5__[/* getPageVueComponent */ "b"])(pagePath); // 生成当前页面 vd
 
-  vd = new _vdom_sync__WEBPACK_IMPORTED_MODULE_3__[/* VDomSync */ "a"](pageId);
+  vd = new _vdom_sync__WEBPACK_IMPORTED_MODULE_3__[/* VDomSync */ "a"](pageId, {
+    version: pageOptions.version
+  });
 }), _defineProperty(_handleData, _constants__WEBPACK_IMPORTED_MODULE_1__[/* MOUNTED_DATA */ "c"], function onMounted(data) {
   vd.addVData.apply(vd, data);
-}), _defineProperty(_handleData, _constants__WEBPACK_IMPORTED_MODULE_1__[/* UPDATED_DATA */ "g"], function onUpdated(data) {
+}), _defineProperty(_handleData, _constants__WEBPACK_IMPORTED_MODULE_1__[/* UPDATED_DATA */ "h"], function onUpdated(data) {
   vd.updateVData.apply(vd, data);
 }), _defineProperty(_handleData, _constants__WEBPACK_IMPORTED_MODULE_1__[/* PAGE_CREATED */ "e"], function onPageCreated(data) {
-  var _data2 = _slicedToArray(data, 2),
+  var _data2 = _slicedToArray(data, 3),
       pageId = _data2[0],
-      pagePath = _data2[1];
+      pagePath = _data2[1],
+      pageQuery = _data2[2];
 
   var page = getCurrentPages()[0];
+  page.options = pageQuery || {};
   page.$vm = new PageVueComponent({
     mpType: 'page',
     pageId: pageId,
-    pagePath: pagePath
+    pagePath: pagePath,
+    pageQuery: pageQuery
   }).$mount('#app');
 }), _handleData);
 
@@ -10550,22 +11478,7 @@ function updateView() {
   pageVm && broadcast(pageVm, NATIVE_COMPONENTS, 'uni-view-update');
 }
 
-function updateRootFontSize() {
-  // 页面存在横竖屏切换时，预加载的 webview 的 fontSize 需要再次校正一下
-  var oldFontSize = document.documentElement.style.fontSize;
-  var newFontSize = document.documentElement.clientWidth / 20 + 'px';
-
-  if (oldFontSize !== newFontSize) {
-    document.documentElement.style.fontSize = newFontSize;
-  }
-}
-
 window.addEventListener('resize', function () {
-  // TODO 与之前逻辑保持一致，仅当前 webview 未被使用时，校准 fontSize，后续考虑动态旋转，调整rootfontSize
-  if (!getCurrentPages().length) {
-    updateRootFontSize();
-  }
-
   updateView();
 });
 window.addEventListener('updateview', updateView);
@@ -10587,15 +11500,14 @@ function vdSync(_ref) {
     // 清空本次 addBatchData
     vd.clearAddBatchVData();
     updateView();
-    isVdCallback && UniViewJSBridge.publishHandler(_constants__WEBPACK_IMPORTED_MODULE_1__[/* VD_SYNC_CALLBACK */ "i"]);
+    isVdCallback && UniViewJSBridge.publishHandler(_constants__WEBPACK_IMPORTED_MODULE_1__[/* VD_SYNC_CALLBACK */ "j"]);
   });
 }
 
 function getData(id, name) {
   try {
     return this.$r[id][name];
-  } catch (e) {
-    console.error(this.$options.__file + ":[".concat(this._$id, "]$r[").concat(id, "][").concat(name, "] is undefined"));
+  } catch (e) {// console.error(this.$options.__file + `:[${this._$id}]$r[${id}][${name}] is undefined`)
   }
 }
 /**
@@ -10612,15 +11524,14 @@ function getChangeData(id, name) {
     this[wxsPropName] = value;
     this.$set(this.wxsProps, wxsPropName, value);
     return value;
-  } catch (e) {
-    console.error(this.$options.__file + ":[".concat(this._$id, "]$r[").concat(id, "][").concat(name, "] is undefined"));
+  } catch (e) {// console.error(this.$options.__file + `:[${this._$id}]$r[${id}][${name}] is undefined`)
   }
 }
 
 function initData(Vue) {
   Vue.prototype._$g = getData;
   Vue.prototype._$gc = getChangeData;
-  UniViewJSBridge.subscribe(_constants__WEBPACK_IMPORTED_MODULE_1__[/* VD_SYNC */ "h"], vdSync);
+  UniViewJSBridge.subscribe(_constants__WEBPACK_IMPORTED_MODULE_1__[/* VD_SYNC */ "i"], vdSync);
   Object.defineProperty(Vue.prototype, '_$vd', {
     get: function get() {
       return !this.$options.isReserved && vd;
@@ -10641,201 +11552,7 @@ function initData(Vue) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(4)))
 
 /***/ }),
-/* 15 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return pixelRatio; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return wrapper; });
-/* harmony import */ var uni_shared__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
-
-var pixelRatio = function () {
-  var canvas = document.createElement('canvas');
-  canvas.height = canvas.width = 0;
-  var context = canvas.getContext('2d');
-  var backingStore = context.backingStorePixelRatio || context.webkitBackingStorePixelRatio || context.mozBackingStorePixelRatio || context.msBackingStorePixelRatio || context.oBackingStorePixelRatio || context.backingStorePixelRatio || 1;
-  return (window.devicePixelRatio || 1) / backingStore;
-}();
-
-var forEach = function forEach(obj, func) {
-  for (var key in obj) {
-    if (Object(uni_shared__WEBPACK_IMPORTED_MODULE_0__[/* hasOwn */ "c"])(obj, key)) {
-      func(obj[key], key);
-    }
-  }
-};
-
-var ratioArgs = {
-  fillRect: 'all',
-  clearRect: 'all',
-  strokeRect: 'all',
-  moveTo: 'all',
-  lineTo: 'all',
-  arc: [0, 1, 2],
-  arcTo: 'all',
-  bezierCurveTo: 'all',
-  isPointinPath: 'all',
-  isPointinStroke: 'all',
-  quadraticCurveTo: 'all',
-  rect: 'all',
-  translate: 'all',
-  createRadialGradient: 'all',
-  createLinearGradient: 'all',
-  setTransform: [4, 5]
-};
-var proto = CanvasRenderingContext2D.prototype;
-
-proto.drawImageByCanvas = function (_super) {
-  return function (canvas, srcx, srcy, srcw, srch, desx, desy, desw, desh, isScale) {
-    if (!this.__hidpi__) {
-      return _super.apply(this, arguments);
-    }
-
-    srcx *= pixelRatio;
-    srcy *= pixelRatio;
-    srcw *= pixelRatio;
-    srch *= pixelRatio;
-    desx *= pixelRatio;
-    desy *= pixelRatio;
-    desw = isScale ? desw * pixelRatio : desw;
-    desh = isScale ? desh * pixelRatio : desh;
-
-    _super.call(this, canvas, srcx, srcy, srcw, srch, desx, desy, desw, desh);
-  };
-}(proto.drawImage);
-
-if (pixelRatio !== 1) {
-  forEach(ratioArgs, function (value, key) {
-    proto[key] = function (_super) {
-      return function () {
-        if (!this.__hidpi__) {
-          return _super.apply(this, arguments);
-        }
-
-        var args = Array.prototype.slice.call(arguments);
-
-        if (value === 'all') {
-          args = args.map(function (a) {
-            return a * pixelRatio;
-          });
-        } else if (Array.isArray(value)) {
-          for (var i = 0; i < value.length; i++) {
-            args[value[i]] *= pixelRatio;
-          }
-        }
-
-        return _super.apply(this, args);
-      };
-    }(proto[key]);
-  });
-
-  proto.stroke = function (_super) {
-    return function () {
-      if (!this.__hidpi__) {
-        return _super.apply(this, arguments);
-      }
-
-      this.lineWidth *= pixelRatio;
-
-      _super.apply(this, arguments);
-
-      this.lineWidth /= pixelRatio;
-    };
-  }(proto.stroke);
-
-  proto.fillText = function (_super) {
-    return function () {
-      if (!this.__hidpi__) {
-        return _super.apply(this, arguments);
-      }
-
-      var args = Array.prototype.slice.call(arguments);
-      args[1] *= pixelRatio;
-      args[2] *= pixelRatio;
-      this.font = this.font.replace(/(\d+)(px|em|rem|pt)/g, function (w, m, u) {
-        return m * pixelRatio + u;
-      });
-
-      _super.apply(this, args);
-
-      this.font = this.font.replace(/(\d+)(px|em|rem|pt)/g, function (w, m, u) {
-        return m / pixelRatio + u;
-      });
-    };
-  }(proto.fillText);
-
-  proto.strokeText = function (_super) {
-    return function () {
-      if (!this.__hidpi__) {
-        return _super.apply(this, arguments);
-      }
-
-      var args = Array.prototype.slice.call(arguments);
-      args[1] *= pixelRatio; // x
-
-      args[2] *= pixelRatio; // y
-
-      this.font = this.font.replace(/(\d+)(px|em|rem|pt)/g, function (w, m, u) {
-        return m * pixelRatio + u;
-      });
-
-      _super.apply(this, args);
-
-      this.font = this.font.replace(/(\d+)(px|em|rem|pt)/g, function (w, m, u) {
-        return m / pixelRatio + u;
-      });
-    };
-  }(proto.strokeText);
-
-  proto.drawImage = function (_super) {
-    return function () {
-      if (!this.__hidpi__) {
-        return _super.apply(this, arguments);
-      }
-
-      this.scale(pixelRatio, pixelRatio);
-
-      _super.apply(this, arguments);
-
-      this.scale(1 / pixelRatio, 1 / pixelRatio);
-    };
-  }(proto.drawImage);
-}
-
-function wrapper(canvas) {
-  canvas.width = canvas.offsetWidth * pixelRatio;
-  canvas.height = canvas.offsetHeight * pixelRatio;
-  canvas.getContext('2d').__hidpi__ = true;
-}
-
-/***/ }),
-/* 16 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || new Function("return this")();
-} catch (e) {
-	// This works if the window reference is available
-	if (typeof window === "object") g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-/* 17 */
+/* 24 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10920,7 +11637,316 @@ module.exports = g;
 });
 
 /***/ }),
-/* 18 */
+/* 25 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var uni_shared__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
+/* harmony import */ var _emitter__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(16);
+
+
+var resetTimer;
+var isAndroid;
+var osVersion;
+var keyboardHeight;
+var keyboardChangeCallback;
+var webviewStyle;
+
+if (true) {
+  Object(uni_shared__WEBPACK_IMPORTED_MODULE_0__[/* plusReady */ "j"])(function () {
+    isAndroid = plus.os.name.toLowerCase() === 'android';
+    osVersion = plus.os.version;
+  });
+  document.addEventListener('keyboardchange', function (event) {
+    keyboardHeight = event.height;
+    keyboardChangeCallback && keyboardChangeCallback();
+  }, false);
+}
+/**
+ * 保证iOS点击输入框外隐藏键盘
+ */
+
+
+function iosHideKeyboard() {}
+
+function setSoftinputTemporary(vm, reset) {
+  Object(uni_shared__WEBPACK_IMPORTED_MODULE_0__[/* plusReady */ "j"])(function () {
+    var MODE_ADJUSTRESIZE = 'adjustResize';
+    var MODE_ADJUSTPAN = 'adjustPan';
+    var MODE_NOTHING = 'nothing';
+    var currentWebview = plus.webview.currentWebview(); // iOS 14.6 调用同步方法导致键盘弹卡顿
+
+    var style = webviewStyle || currentWebview.getStyle() || {};
+    var options = {
+      mode: reset || style.softinputMode === MODE_ADJUSTRESIZE ? MODE_ADJUSTRESIZE : vm.adjustPosition ? MODE_ADJUSTPAN : MODE_NOTHING,
+      position: {
+        top: 0,
+        height: 0
+      }
+    };
+
+    if (options.mode === MODE_ADJUSTPAN) {
+      var rect = vm.$el.getBoundingClientRect();
+      options.position.top = rect.top;
+      options.position.height = rect.height + (Number(vm.cursorSpacing) || 0);
+    }
+
+    currentWebview.setSoftinputTemporary(options);
+  });
+}
+
+function setSoftinputNavBar(vm) {
+  if (vm.showConfirmBar === 'auto') {
+    delete vm.__softinputNavBar;
+    return;
+  }
+
+  Object(uni_shared__WEBPACK_IMPORTED_MODULE_0__[/* plusReady */ "j"])(function () {
+    var currentWebview = plus.webview.currentWebview();
+
+    var _ref = currentWebview.getStyle() || {},
+        softinputNavBar = _ref.softinputNavBar;
+
+    var showConfirmBar = softinputNavBar !== 'none';
+
+    if (showConfirmBar !== vm.showConfirmBar) {
+      vm.__softinputNavBar = softinputNavBar || 'auto';
+      currentWebview.setStyle({
+        softinputNavBar: vm.showConfirmBar ? 'auto' : 'none'
+      });
+    } else {
+      delete vm.__softinputNavBar;
+    }
+  });
+}
+
+function resetSoftinputNavBar(vm) {
+  var softinputNavBar = vm.__softinputNavBar;
+
+  if (softinputNavBar) {
+    Object(uni_shared__WEBPACK_IMPORTED_MODULE_0__[/* plusReady */ "j"])(function () {
+      var currentWebview = plus.webview.currentWebview();
+      currentWebview.setStyle({
+        softinputNavBar: softinputNavBar
+      });
+    });
+  }
+}
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+  name: 'Keyboard',
+  mixins: [_emitter__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"]],
+  props: {
+    cursorSpacing: {
+      type: [Number, String],
+      default: 0
+    },
+    showConfirmBar: {
+      type: [Boolean, String],
+      default: 'auto'
+    },
+    adjustPosition: {
+      type: [Boolean, String],
+      default: true
+    },
+    autoBlur: {
+      type: [Boolean, String],
+      default: false
+    }
+  },
+  directives: {
+    keyboard: {
+      inserted: function inserted(el, binding, vnode) {
+        vnode.context.initKeyboard(el);
+      }
+    }
+  },
+  methods: {
+    initKeyboard: function initKeyboard(el) {
+      var _this = this;
+
+      var focus;
+
+      var keyboardChange = function keyboardChange() {
+        _this.$trigger('keyboardheightchange', {}, {
+          height: keyboardHeight,
+          duration: 0.25
+        }); // 安卓切换不同键盘类型时会导致键盘收回，需重新设置
+
+
+        if (focus && keyboardHeight === 0) {
+          setSoftinputTemporary(_this);
+        } // 安卓/iOS13收起键盘时主动失去焦点
+
+
+        if (_this.autoBlur && focus && keyboardHeight === 0 && (isAndroid || parseInt(osVersion) >= 13)) {
+          document.activeElement.blur();
+        }
+      };
+
+      el.addEventListener('focus', function () {
+        focus = true;
+        clearTimeout(resetTimer);
+        document.addEventListener('click', iosHideKeyboard, false);
+
+        if (true) {
+          keyboardChangeCallback = keyboardChange;
+
+          if (keyboardHeight) {
+            _this.$trigger('keyboardheightchange', {}, {
+              height: keyboardHeight,
+              duration: 0
+            });
+          }
+
+          setSoftinputNavBar(_this);
+          setSoftinputTemporary(_this);
+        }
+      });
+
+      if (true) {
+        // 安卓单独隐藏键盘后点击输入框不会触发 focus 事件
+        if (isAndroid) {
+          el.addEventListener('click', function () {
+            if (!_this.disabled && focus && keyboardHeight === 0) {
+              setSoftinputTemporary(_this);
+            }
+          });
+        }
+
+        if (!isAndroid) {
+          // iOS12 以下系统 focus 事件设置较迟，改在 touchstart 设置
+          if (parseInt(osVersion) < 12) {
+            el.addEventListener('touchstart', function () {
+              if (!_this.disabled && !focus) {
+                setSoftinputTemporary(_this);
+              }
+            });
+          } // iOS 14.6 调用同步方法导致键盘弹卡顿
+
+
+          if (parseFloat(osVersion) >= 14.6 && !webviewStyle) {
+            Object(uni_shared__WEBPACK_IMPORTED_MODULE_0__[/* plusReady */ "j"])(function () {
+              var currentWebview = plus.webview.currentWebview();
+              webviewStyle = currentWebview.getStyle() || {};
+            });
+          }
+        }
+      }
+
+      var onKeyboardHide = function onKeyboardHide() {
+        document.removeEventListener('click', iosHideKeyboard, false);
+
+        if (true) {
+          keyboardChangeCallback = null;
+
+          if (keyboardHeight) {
+            _this.$trigger('keyboardheightchange', {}, {
+              height: 0,
+              duration: 0
+            });
+          }
+
+          resetSoftinputNavBar(_this);
+
+          if (isAndroid) {
+            // 还原安卓软键盘配置，避免影响 web-view 组件
+            resetTimer = setTimeout(function () {
+              setSoftinputTemporary(_this, true);
+            }, 300);
+          }
+        } // 修复ios端显示与点击位置错位的Bug by:wyq
+
+
+        if (String(navigator.vendor).indexOf('Apple') === 0) {
+          document.documentElement.scrollTo(document.documentElement.scrollLeft, document.documentElement.scrollTop);
+        }
+      };
+
+      el.addEventListener('blur', function () {
+        // 在iOS设备上，手动调用uni.hideKeyboard()，键盘收起并且触发blur，但实际并没有blur。
+        // 此时如果再点击页面其他地方会重新聚焦，此处做处理
+        el.blur();
+        focus = false;
+        onKeyboardHide();
+      });
+    }
+  }
+});
+
+/***/ }),
+/* 26 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var uni_shared__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
+
+var passiveOptions = uni_shared__WEBPACK_IMPORTED_MODULE_0__[/* supportsPassive */ "k"] ? {
+  passive: true,
+  capture: true
+} : true;
+var vms = [];
+var userInteract = 0;
+var inited;
+
+function setInteract(interact) {
+  vms.forEach(function (vm) {
+    return vm.userInteract = interact;
+  });
+}
+
+function addInteractListener() {
+  var vm = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+  if (!inited) {
+    var eventNames = ['touchstart', 'touchmove', 'touchend', 'mousedown', 'mouseup'];
+    eventNames.forEach(function (eventName) {
+      document.addEventListener(eventName, function () {
+        !userInteract && setInteract(true);
+        userInteract++;
+        setTimeout(function () {
+          ! --userInteract && setInteract(false);
+        }, 0);
+      }, passiveOptions);
+    });
+    inited = true;
+  }
+
+  vms.push(vm);
+}
+
+function removeInteractListener(vm) {
+  var index = vms.indexOf(vm);
+
+  if (index >= 0) {
+    vms.splice(index, 1);
+  }
+}
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+  data: function data() {
+    return {
+      /**
+       * 是否用户交互行为
+       */
+      userInteract: false
+    };
+  },
+  mounted: function mounted() {
+    addInteractListener(this);
+  },
+  beforeDestroy: function beforeDestroy() {
+    removeInteractListener(this);
+  },
+  addInteractListener: addInteractListener,
+  // true -> interact
+  getStatus: function getStatus() {
+    return !!userInteract;
+  }
+});
+
+/***/ }),
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
@@ -10928,12 +11954,22 @@ module.exports = g;
   
 
 /***/ }),
-/* 19 */
+/* 28 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// extracted by mini-css-extract-plugin
+    if(false) { var cssReload; }
+  
+
+/***/ }),
+/* 29 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(UniViewJSBridge) {/* harmony import */ var uni_mixins__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 /* harmony import */ var uni_helpers_hidpi__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(15);
+/* harmony import */ var uni_platform_helpers_save_image__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(107);
+/* harmony import */ var uni_platform_helpers_file__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(108);
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -10966,6 +12002,17 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
 
 
 
@@ -11003,7 +12050,7 @@ function getTempCanvas() {
 
 /* harmony default export */ __webpack_exports__["a"] = ({
   name: 'Canvas',
-  mixins: [uni_mixins__WEBPACK_IMPORTED_MODULE_0__[/* subscriber */ "e"]],
+  mixins: [uni_mixins__WEBPACK_IMPORTED_MODULE_0__[/* subscriber */ "f"]],
   props: {
     canvasId: {
       type: String,
@@ -11055,10 +12102,7 @@ function getTempCanvas() {
     this._images = {};
   },
   mounted: function mounted() {
-    this._resize({
-      width: this.$refs.sensor.$el.offsetWidth,
-      height: this.$refs.sensor.$el.offsetHeight
-    });
+    this._resize();
   },
   beforeDestroy: function beforeDestroy() {
     var canvas = this.$refs.canvas;
@@ -11075,16 +12119,18 @@ function getTempCanvas() {
         method(data);
       }
     },
-    _resize: function _resize() {
+    _resize: function _resize(size) {
       var canvas = this.$refs.canvas;
+      var hasChanged = !size || canvas.width !== Math.floor(size.width * uni_helpers_hidpi__WEBPACK_IMPORTED_MODULE_1__[/* pixelRatio */ "a"]) || canvas.height !== Math.floor(size.height * uni_helpers_hidpi__WEBPACK_IMPORTED_MODULE_1__[/* pixelRatio */ "a"]);
+      if (!hasChanged) return;
 
       if (canvas.width > 0 && canvas.height > 0) {
         var context = canvas.getContext('2d');
         var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-        Object(uni_helpers_hidpi__WEBPACK_IMPORTED_MODULE_1__[/* wrapper */ "b"])(this.$refs.canvas);
+        Object(uni_helpers_hidpi__WEBPACK_IMPORTED_MODULE_1__[/* wrapper */ "b"])(canvas);
         context.putImageData(imageData, 0, 0);
       } else {
-        Object(uni_helpers_hidpi__WEBPACK_IMPORTED_MODULE_1__[/* wrapper */ "b"])(this.$refs.canvas);
+        Object(uni_helpers_hidpi__WEBPACK_IMPORTED_MODULE_1__[/* wrapper */ "b"])(canvas);
       }
     },
     _touchmove: function _touchmove(event) {
@@ -11180,25 +12226,22 @@ function getTempCanvas() {
             data.forEach(function (color_, method_) {
               c2d[_[method_]] = _[method_] === 'shadowColor' ? resolveColor(color_) : color_;
             });
-          } else {
-            if (method1 === 'fontSize') {
-              c2d.font = c2d.font.replace(/\d+\.?\d*px/, data[0] + 'px');
-            } else {
-              if (method1 === 'lineDash') {
-                c2d.setLineDash(data[0]);
-                c2d.lineDashOffset = data[1] || 0;
-              } else {
-                if (method1 === 'textBaseline') {
-                  if (data[0] === 'normal') {
-                    data[0] = 'alphabetic';
-                  }
-
-                  c2d[method1] = data[0];
-                } else {
-                  c2d[method1] = data[0];
-                }
-              }
+          } else if (method1 === 'fontSize') {
+            var font = c2d.__font__ || c2d.font;
+            c2d.__font__ = c2d.font = font.replace(/\d+\.?\d*px/, data[0] + 'px');
+          } else if (method1 === 'lineDash') {
+            c2d.setLineDash(data[0]);
+            c2d.lineDashOffset = data[1] || 0;
+          } else if (method1 === 'textBaseline') {
+            if (data[0] === 'normal') {
+              data[0] = 'alphabetic';
             }
+
+            c2d[method1] = data[0];
+          } else if (method1 === 'font') {
+            c2d.__font__ = c2d.font = data[0];
+          } else {
+            c2d[method1] = data[0];
           }
         } else if (method === 'fillPath' || method === 'strokePath') {
           method = method.replace(/Path/, '');
@@ -11255,7 +12298,7 @@ function getTempCanvas() {
       }
 
       if (!this.actionsWaiting && callbackId) {
-        UniViewJSBridge.publishHandler('onDrawCanvas', {
+        UniViewJSBridge.publishHandler('onCanvasMethodCallback', {
           callbackId: callbackId,
           data: {
             errMsg: 'drawCanvas:ok'
@@ -11264,7 +12307,7 @@ function getTempCanvas() {
       }
     },
     preloadImage: function preloadImage(actions) {
-      var sefl = this;
+      var self = this;
       actions.forEach(function (action) {
         var method = action.method;
         var data = action.data;
@@ -11272,15 +12315,15 @@ function getTempCanvas() {
 
         if (method === 'drawImage') {
           src = data[0];
-          src = sefl.$getRealPath(src);
+          src = self.$getRealPath(src);
           data[0] = src;
         } else if (method === 'setFillStyle' && data[0] === 'pattern') {
           src = data[1];
-          src = sefl.$getRealPath(src);
+          src = self.$getRealPath(src);
           data[1] = src;
         }
 
-        if (src && !sefl._images[src]) {
+        if (src && !self._images[src]) {
           loadImage();
         }
         /**
@@ -11289,83 +12332,27 @@ function getTempCanvas() {
 
 
         function loadImage() {
-          sefl._images[src] = new Image();
+          var image = self._images[src] = new Image();
 
-          sefl._images[src].onload = function () {
-            sefl._images[src].ready = true;
-          };
-          /**
-           * 从Blob加载
-           * @param {Blob} blob
-           */
+          image.onload = function () {
+            image.ready = true;
+          }; // 安卓 WebView 除本地路径无跨域问题
 
 
-          function loadBlob(blob) {
-            sefl._images[src].src = (window.URL || window.webkitURL).createObjectURL(blob);
-          }
-          /**
-           * 从本地文件加载
-           * @param {string} path 文件路径
-           */
-
-
-          function loadFile(path) {
-            var bitmap = new plus.nativeObj.Bitmap('bitmap' + Date.now());
-            bitmap.load(path, function () {
-              sefl._images[src].src = bitmap.toBase64Data();
-              bitmap.clear();
-            }, function () {
-              bitmap.clear();
-              console.error('preloadImage error');
-            });
-          }
-          /**
-           * 从网络加载
-           * @param {string} url 文件地址
-           */
-
-
-          function loadUrl(url) {
-            function plusDownload() {
-              plus.downloader.createDownload(url, {
-                filename: '_doc/uniapp_temp/download/'
-              }, function (d, status) {
-                if (status === 200) {
-                  loadFile(d.filename);
-                } else {
-                  sefl._images[src].src = src;
-                }
-              }).start();
+          if ( true && navigator.vendor === 'Google Inc.') {
+            if (src.indexOf('file://') === 0) {
+              image.crossOrigin = 'anonymous';
             }
 
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', url, true);
-            xhr.responseType = 'blob';
-
-            xhr.onload = function () {
-              if (this.status === 200) {
-                loadBlob(this.response);
-              }
-            };
-
-            xhr.onerror = window.plus ? plusDownload : function () {
-              sefl._images[src].src = src;
-            };
-            xhr.send();
+            image.src = src;
+            return;
           }
 
-          if (window.plus && (!window.webkit || !window.webkit.messageHandlers)) {
-            sefl._images[src].src = src;
-          } else {
-            // 解决 PLUS-APP（wkwebview）以及 H5 图像跨域问题（H5图像响应头需包含access-control-allow-origin）
-            if (window.plus && src.indexOf('http://') !== 0 && src.indexOf('https://') !== 0) {
-              loadFile(src);
-            } else if (/^data:.*,.*/.test(src)) {
-              sefl._images[src].src = src;
-            } else {
-              loadUrl(src);
-            }
-          }
+          Object(uni_platform_helpers_file__WEBPACK_IMPORTED_MODULE_3__[/* getSameOriginUrl */ "a"])(src).then(function (src) {
+            image.src = src;
+          }).catch(function () {
+            image.src = src;
+          });
         }
       });
     },
@@ -11414,70 +12401,86 @@ function getTempCanvas() {
           destHeight = _ref3.destHeight,
           _ref3$hidpi = _ref3.hidpi,
           hidpi = _ref3$hidpi === void 0 ? true : _ref3$hidpi,
+          dataType = _ref3.dataType,
+          _ref3$quality = _ref3.quality,
+          quality = _ref3$quality === void 0 ? 1 : _ref3$quality,
+          _ref3$type = _ref3.type,
+          type = _ref3$type === void 0 ? 'png' : _ref3$type,
           callbackId = _ref3.callbackId;
-      var imgData;
       var canvas = this.$refs.canvas;
+      var data;
+      var maxWidth = canvas.offsetWidth - x;
+      width = width ? Math.min(width, maxWidth) : maxWidth;
+      var maxHeight = canvas.offsetHeight - y;
+      height = height ? Math.min(height, maxHeight) : maxHeight;
 
-      if (!width) {
-        width = canvas.offsetWidth - x;
+      if (!hidpi) {
+        if (!destWidth && !destHeight) {
+          destWidth = Math.round(width * uni_helpers_hidpi__WEBPACK_IMPORTED_MODULE_1__[/* pixelRatio */ "a"]);
+          destHeight = Math.round(height * uni_helpers_hidpi__WEBPACK_IMPORTED_MODULE_1__[/* pixelRatio */ "a"]);
+        } else if (!destWidth) {
+          destWidth = Math.round(width / height * destHeight);
+        } else if (!destHeight) {
+          destHeight = Math.round(height / width * destWidth);
+        }
+      } else {
+        destWidth = width;
+        destHeight = height;
       }
 
-      if (!height) {
-        height = canvas.offsetHeight - y;
+      var newCanvas = getTempCanvas(destWidth, destHeight);
+      var context = newCanvas.getContext('2d');
+
+      if (type === 'jpeg' || type === 'jpg') {
+        type = 'jpeg';
+        context.fillStyle = '#fff';
+        context.fillRect(0, 0, destWidth, destHeight);
       }
+
+      context.__hidpi__ = true;
+      context.drawImageByCanvas(canvas, x, y, width, height, 0, 0, destWidth, destHeight, false);
+      var result;
 
       try {
-        if (!hidpi) {
-          if (!destWidth && !destHeight) {
-            destWidth = Math.round(width * uni_helpers_hidpi__WEBPACK_IMPORTED_MODULE_1__[/* pixelRatio */ "a"]);
-            destHeight = Math.round(height * uni_helpers_hidpi__WEBPACK_IMPORTED_MODULE_1__[/* pixelRatio */ "a"]);
-          } else if (!destWidth) {
-            destWidth = Math.round(width / height * destHeight);
-          } else if (!destHeight) {
-            destHeight = Math.round(height / width * destWidth);
-          }
+        var compressed;
+
+        if (dataType === 'base64') {
+          data = newCanvas.toDataURL("image/".concat(type), quality);
         } else {
-          destWidth = width;
-          destHeight = height;
+          var imgData = context.getImageData(0, 0, destWidth, destHeight);
+
+          if (true) {
+            var pako = __webpack_require__(87);
+
+            data = pako.deflateRaw(imgData.data, {
+              to: 'string'
+            });
+            compressed = true;
+          } else {}
         }
 
-        var newCanvas = getTempCanvas(destWidth, destHeight);
-        var context = newCanvas.getContext('2d');
-        context.__hidpi__ = true;
-        context.drawImageByCanvas(canvas, x, y, width, height, 0, 0, destWidth, destHeight, false);
-        imgData = context.getImageData(0, 0, destWidth, destHeight);
-        newCanvas.height = newCanvas.width = 0;
-        context.__hidpi__ = false;
-      } catch (error) {
-        if (!callbackId) {
-          return;
-        }
-
-        UniViewJSBridge.publishHandler('onCanvasMethodCallback', {
-          callbackId: callbackId,
-          data: {
-            errMsg: 'canvasGetImageData:fail'
-          }
-        }, this.$page.id);
-        return;
-      }
-
-      if (!callbackId) {
-        // fix [...]展开TypedArray在低版本手机报错的问题，使用Array.prototype.slice
-        return {
-          data: Array.prototype.slice.call(imgData.data),
+        result = {
+          errMsg: 'canvasGetImageData:ok',
+          data: data,
+          compressed: compressed,
           width: destWidth,
           height: destHeight
         };
+      } catch (error) {
+        result = {
+          errMsg: "canvasGetImageData:fail ".concat(error)
+        };
+      }
+
+      newCanvas.height = newCanvas.width = 0;
+      context.__hidpi__ = false;
+
+      if (!callbackId) {
+        return result;
       } else {
         UniViewJSBridge.publishHandler('onCanvasMethodCallback', {
           callbackId: callbackId,
-          data: {
-            errMsg: 'canvasGetImageData:ok',
-            data: _toConsumableArray(imgData.data),
-            width: destWidth,
-            height: destHeight
-          }
+          data: result
         }, this.$page.id);
       }
     },
@@ -11487,6 +12490,7 @@ function getTempCanvas() {
           y = _ref4.y,
           width = _ref4.width,
           height = _ref4.height,
+          compressed = _ref4.compressed,
           callbackId = _ref4.callbackId;
 
       try {
@@ -11496,6 +12500,13 @@ function getTempCanvas() {
 
         var canvas = getTempCanvas(width, height);
         var context = canvas.getContext('2d');
+
+        if ( true && compressed) {
+          var pako = __webpack_require__(87);
+
+          data = pako.inflateRaw(data);
+        }
+
         context.putImageData(new ImageData(new Uint8ClampedArray(data), width, height), 0, 0);
         this.$refs.canvas.getContext('2d').drawImage(canvas, x, y, width, height);
         canvas.height = canvas.width = 0;
@@ -11516,7 +12527,7 @@ function getTempCanvas() {
         }
       }, this.$page.id);
     },
-    getDataUrl: function getDataUrl(_ref5) {
+    toTempFilePath: function toTempFilePath(_ref5) {
       var _this3 = this;
 
       var _ref5$x = _ref5.x,
@@ -11527,10 +12538,9 @@ function getTempCanvas() {
           height = _ref5.height,
           destWidth = _ref5.destWidth,
           destHeight = _ref5.destHeight,
-          _ref5$hidpi = _ref5.hidpi,
-          hidpi = _ref5$hidpi === void 0 ? true : _ref5$hidpi,
           fileType = _ref5.fileType,
-          qualit = _ref5.qualit,
+          quality = _ref5.quality,
+          dirname = _ref5.dirname,
           callbackId = _ref5.callbackId;
       var res = this.getImageData({
         x: x,
@@ -11539,71 +12549,44 @@ function getTempCanvas() {
         height: height,
         destWidth: destWidth,
         destHeight: destHeight,
-        hidpi: hidpi
+        hidpi: false,
+        dataType: 'base64',
+        type: fileType,
+        quality: quality
       });
 
       if (!res.data || !res.data.length) {
         UniViewJSBridge.publishHandler('onCanvasMethodCallback', {
           callbackId: callbackId,
           data: {
-            errMsg: 'canvasGetDataUrl:fail'
+            errMsg: res.errMsg.replace('canvasPutImageData', 'toTempFilePath')
           }
         }, this.$page.id);
         return;
       }
 
-      var imgData;
+      Object(uni_platform_helpers_save_image__WEBPACK_IMPORTED_MODULE_2__[/* default */ "a"])(res.data, dirname, function (error, tempFilePath) {
+        var errMsg = "toTempFilePath:".concat(error ? 'fail' : 'ok');
 
-      try {
-        imgData = new ImageData(new Uint8ClampedArray(res.data), res.width, res.height);
-      } catch (error) {
-        UniViewJSBridge.publishHandler('onCanvasMethodCallback', {
-          callbackId: callbackId,
-          data: {
-            errMsg: 'canvasGetDataUrl:fail'
-          }
-        }, this.$page.id);
-        return;
-      }
-
-      destWidth = res.width;
-      destHeight = res.height;
-      var canvas = getTempCanvas(destWidth, destHeight);
-      var c2d = canvas.getContext('2d');
-      c2d.putImageData(imgData, 0, 0);
-      var base64 = canvas.toDataURL('image/png');
-      canvas.height = canvas.width = 0;
-      var img = new Image();
-
-      img.onload = function () {
-        var canvas = getTempCanvas(destWidth, destHeight);
-
-        if (fileType === 'jpeg' || fileType === 'jpg') {
-          fileType = 'jpeg';
-          c2d.fillStyle = '#fff';
-          c2d.fillRect(0, 0, destWidth, destHeight);
+        if (error) {
+          errMsg += " ".concat(error.message);
         }
 
-        c2d.drawImage(img, 0, 0);
-        base64 = canvas.toDataURL("image/".concat(fileType), qualit);
-        canvas.height = canvas.width = 0;
         UniViewJSBridge.publishHandler('onCanvasMethodCallback', {
           callbackId: callbackId,
           data: {
-            errMsg: 'canvasGetDataUrl:ok',
-            base64: base64
+            errMsg: errMsg,
+            tempFilePath: tempFilePath
           }
         }, _this3.$page.id);
-      };
-
-      img.src = base64;
+      });
     }
   }
 });
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(4)))
 
 /***/ }),
-/* 20 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
@@ -11611,7 +12594,7 @@ function getTempCanvas() {
   
 
 /***/ }),
-/* 21 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
@@ -11619,7 +12602,7 @@ function getTempCanvas() {
   
 
 /***/ }),
-/* 22 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
@@ -11627,13 +12610,14 @@ function getTempCanvas() {
   
 
 /***/ }),
-/* 23 */
+/* 33 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(UniViewJSBridge) {/* harmony import */ var uni_mixins__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
-/* harmony import */ var uni_helpers_html_parser__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(60);
-/* harmony import */ var _formats__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(83);
+/* harmony import */ var uni_helpers_html_parser__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(70);
+/* harmony import */ var _formats__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(110);
+/* harmony import */ var _load_script__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(82);
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 //
@@ -11647,9 +12631,20 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 
 
 
+
+
+function isiOS() {
+  if (true) {
+    return plus.os.name.toLowerCase() === 'ios';
+  } else { var isIPadOS, isMac, isIOS, ua; }
+
+  return false;
+}
+
+var textChanging = false;
 /* harmony default export */ __webpack_exports__["a"] = ({
   name: 'Editor',
-  mixins: [uni_mixins__WEBPACK_IMPORTED_MODULE_0__[/* subscriber */ "e"], uni_mixins__WEBPACK_IMPORTED_MODULE_0__[/* emitter */ "a"], uni_mixins__WEBPACK_IMPORTED_MODULE_0__[/* keyboard */ "c"]],
+  mixins: [uni_mixins__WEBPACK_IMPORTED_MODULE_0__[/* subscriber */ "f"], uni_mixins__WEBPACK_IMPORTED_MODULE_0__[/* emitter */ "a"], uni_mixins__WEBPACK_IMPORTED_MODULE_0__[/* keyboard */ "d"]],
   props: {
     id: {
       type: String,
@@ -11695,7 +12690,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
     },
     placeholder: function placeholder(value) {
       if (this.quillReady) {
-        this.quill.root.setAttribute('data-placeholder', value);
+        this.setPlaceHolder(value);
       }
     }
   },
@@ -11716,9 +12711,11 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
       imageResizeModules.push('Resize');
     }
 
-    this.loadQuill(function () {
+    var quillSrc =  true ? './__uniappquill.js' : undefined;
+    Object(_load_script__WEBPACK_IMPORTED_MODULE_3__[/* default */ "a"])(window.Quill, quillSrc, function () {
       if (imageResizeModules.length) {
-        _this.loadImageResizeModule(function () {
+        var imageResizeSrc =  true ? './__uniappquillimageresize.js' : undefined;
+        Object(_load_script__WEBPACK_IMPORTED_MODULE_3__[/* default */ "a"])(window.ImageResize, imageResizeSrc, function () {
           _this.initQuill(imageResizeModules);
         });
       } else {
@@ -11797,11 +12794,26 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
                   src = _options$src === void 0 ? '' : _options$src,
                   _options$alt = options.alt,
                   alt = _options$alt === void 0 ? '' : _options$alt,
+                  _options$width = options.width,
+                  width = _options$width === void 0 ? '' : _options$width,
+                  _options$height = options.height,
+                  height = _options$height === void 0 ? '' : _options$height,
+                  _options$extClass = options.extClass,
+                  extClass = _options$extClass === void 0 ? '' : _options$extClass,
                   _options$data = options.data,
                   _data = _options$data === void 0 ? {} : _options$data;
 
-              quill.insertEmbed(range.index, 'image', this.$getRealPath(src), Quill.sources.USER);
+              var path = this.$getRealPath(src);
+              quill.insertEmbed(range.index, 'image', path, Quill.sources.USER);
+              var local = /^(file|blob):/.test(path) ? path : false; // 防止 formatText 多次触发 Quill.events.TEXT_CHANGE 事件
+
+              textChanging = true;
+              quill.formatText(range.index, 1, 'data-local', local);
               quill.formatText(range.index, 1, 'alt', alt);
+              quill.formatText(range.index, 1, 'width', width);
+              quill.formatText(range.index, 1, 'height', height);
+              quill.formatText(range.index, 1, 'class', extClass);
+              textChanging = false;
               quill.formatText(range.index, 1, 'data-custom', Object.keys(_data).map(function (key) {
                 return "".concat(key, "=").concat(_data[key]);
               }).join('&'));
@@ -11867,6 +12879,26 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
             quill.history.redo();
             break;
 
+          case 'blur':
+            quill.blur();
+            break;
+
+          case 'getSelectionText':
+            range = quill.selection.savedRange;
+            res = {
+              text: ''
+            };
+
+            if (range && range.length !== 0) {
+              res.text = quill.getText(range.index, range.length);
+            }
+
+            break;
+
+          case 'scrollIntoView':
+            quill.scrollIntoView();
+            break;
+
           default:
             break;
         }
@@ -11885,33 +12917,10 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
         }, this.$page.id);
       }
     },
-    loadQuill: function loadQuill(callback) {
-      if (typeof window.Quill === 'function') {
-        if (typeof callback === 'function') {
-          callback();
-        }
-
-        return;
-      }
-
-      var script = document.createElement('script');
-      script.src = window.plus ? './__uniappquill.js' : 'https://unpkg.com/quill@1.3.7/dist/quill.min.js';
-      document.body.appendChild(script);
-      script.onload = callback;
-    },
-    loadImageResizeModule: function loadImageResizeModule(callback) {
-      if (typeof window.ImageResize === 'function') {
-        if (typeof callback === 'function') {
-          callback();
-        }
-
-        return;
-      }
-
-      var script = document.createElement('script');
-      script.src = window.plus ? './__uniappquillimageresize.js' : 'https://unpkg.com/quill-image-resize-mp@3.0.1/image-resize.min.js';
-      document.body.appendChild(script);
-      script.onload = callback;
+    setPlaceHolder: function setPlaceHolder(value) {
+      var placeHolderAttrName = 'data-placeholder';
+      var QuillRoot = this.quill.root;
+      QuillRoot.getAttribute(placeHolderAttrName) !== value && QuillRoot.setAttribute(placeHolderAttrName, value);
     },
     initQuill: function initQuill(imageResizeModules) {
       var _this2 = this;
@@ -11937,15 +12946,26 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
       var events = ['focus', 'blur', 'input'];
       events.forEach(function (name) {
         $el.addEventListener(name, function ($event) {
+          var contents = _this2.getContents();
+
           if (name === 'input') {
+            if (isiOS()) {
+              var regExpContent = (contents.html.match(/<span [\s\S]*>([\s\S]*)<\/span>/) || [])[1];
+              var placeholder = regExpContent && regExpContent.replace(/\s/g, '') ? '' : _this2.placeholder;
+
+              _this2.setPlaceHolder(placeholder);
+            }
+
             $event.stopPropagation();
           } else {
-            _this2.$trigger(name, $event, _this2.getContents());
+            _this2.$trigger(name, $event, contents);
           }
         });
       });
       quill.on(Quill.events.TEXT_CHANGE, function () {
-        _this2.$trigger('input', {}, _this2.getContents());
+        if (!textChanging) {
+          _this2.$trigger('input', {}, _this2.getContents());
+        }
       });
       quill.on(Quill.events.SELECTION_CHANGE, this.updateStatus.bind(this));
       quill.on(Quill.events.SCROLL_OPTIMIZE, function () {
@@ -11958,17 +12978,16 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
           return delta;
         }
 
-        return {
-          ops: delta.ops.filter(function (_ref2) {
-            var insert = _ref2.insert;
-            return typeof insert === 'string';
-          }).map(function (_ref3) {
-            var insert = _ref3.insert;
-            return {
-              insert: insert
-            };
-          })
-        };
+        delta.ops = delta.ops.filter(function (_ref2) {
+          var insert = _ref2.insert;
+          return typeof insert === 'string';
+        }).map(function (_ref3) {
+          var insert = _ref3.insert;
+          return {
+            insert: insert
+          };
+        });
+        return delta;
       });
       this.initKeyboard($el);
       this.quillReady = true;
@@ -11986,7 +13005,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
       };
     },
     html2delta: function html2delta(html) {
-      var tags = ['span', 'strong', 'b', 'ins', 'em', 'i', 'u', 'a', 'del', 's', 'sub', 'sup', 'img', 'div', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'ol', 'ul', 'li'];
+      var tags = ['span', 'strong', 'b', 'ins', 'em', 'i', 'u', 'a', 'del', 's', 'sub', 'sup', 'img', 'div', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'ol', 'ul', 'li', 'br'];
       var content = '';
       var disable;
       Object(uni_helpers_html_parser__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"])(html, {
@@ -12039,7 +13058,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(4)))
 
 /***/ }),
-/* 24 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
@@ -12047,7 +13066,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
   
 
 /***/ }),
-/* 25 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
@@ -12055,7 +13074,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
   
 
 /***/ }),
-/* 26 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
@@ -12063,7 +13082,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
   
 
 /***/ }),
-/* 27 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
@@ -12071,7 +13090,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
   
 
 /***/ }),
-/* 28 */
+/* 38 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -12121,86 +13140,6 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
   }
 });
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(4)))
-
-/***/ }),
-/* 29 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// extracted by mini-css-extract-plugin
-    if(false) { var cssReload; }
-  
-
-/***/ }),
-/* 30 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// extracted by mini-css-extract-plugin
-    if(false) { var cssReload; }
-  
-
-/***/ }),
-/* 31 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// extracted by mini-css-extract-plugin
-    if(false) { var cssReload; }
-  
-
-/***/ }),
-/* 32 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// extracted by mini-css-extract-plugin
-    if(false) { var cssReload; }
-  
-
-/***/ }),
-/* 33 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// extracted by mini-css-extract-plugin
-    if(false) { var cssReload; }
-  
-
-/***/ }),
-/* 34 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// extracted by mini-css-extract-plugin
-    if(false) { var cssReload; }
-  
-
-/***/ }),
-/* 35 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// extracted by mini-css-extract-plugin
-    if(false) { var cssReload; }
-  
-
-/***/ }),
-/* 36 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// extracted by mini-css-extract-plugin
-    if(false) { var cssReload; }
-  
-
-/***/ }),
-/* 37 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// extracted by mini-css-extract-plugin
-    if(false) { var cssReload; }
-  
-
-/***/ }),
-/* 38 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// extracted by mini-css-extract-plugin
-    if(false) { var cssReload; }
-  
 
 /***/ }),
 /* 39 */
@@ -12292,6 +13231,293 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 
 /***/ }),
 /* 50 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// extracted by mini-css-extract-plugin
+    if(false) { var cssReload; }
+  
+
+/***/ }),
+/* 51 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// extracted by mini-css-extract-plugin
+    if(false) { var cssReload; }
+  
+
+/***/ }),
+/* 52 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// extracted by mini-css-extract-plugin
+    if(false) { var cssReload; }
+  
+
+/***/ }),
+/* 53 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// extracted by mini-css-extract-plugin
+    if(false) { var cssReload; }
+  
+
+/***/ }),
+/* 54 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// extracted by mini-css-extract-plugin
+    if(false) { var cssReload; }
+  
+
+/***/ }),
+/* 55 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// extracted by mini-css-extract-plugin
+    if(false) { var cssReload; }
+  
+
+/***/ }),
+/* 56 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// extracted by mini-css-extract-plugin
+    if(false) { var cssReload; }
+  
+
+/***/ }),
+/* 57 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(UniViewJSBridge) {/* harmony import */ var uni_mixins__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
+/* harmony import */ var _mixins_native__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+var _attrs = ['adpid', 'data'];
+/* harmony default export */ __webpack_exports__["a"] = ({
+  name: 'Ad',
+  mixins: [uni_mixins__WEBPACK_IMPORTED_MODULE_0__[/* subscriber */ "f"], _mixins_native__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"]],
+  props: {
+    adpid: {
+      type: [Number, String],
+      default: ''
+    },
+    data: {
+      type: Object,
+      default: null
+    },
+    dataCount: {
+      type: Number,
+      default: 5
+    },
+    channel: {
+      type: String,
+      default: ''
+    }
+  },
+  data: function data() {
+    return {
+      hidden: false
+    };
+  },
+  computed: {
+    attrs: function attrs() {
+      var _this = this;
+
+      var obj = {};
+
+      _attrs.forEach(function (key) {
+        var val = _this.$props[key];
+        val = key === 'src' ? _this.$getRealPath(val) : val;
+        obj[key.replace(/[A-Z]/g, function (str) {
+          return '-' + str.toLowerCase();
+        })] = val;
+      });
+
+      return obj;
+    }
+  },
+  watch: {
+    hidden: function hidden(val) {
+      this.adView && this.adView[val ? 'hide' : 'show']();
+    },
+    adpid: function adpid(val) {
+      if (val) {
+        this._loadData(val);
+      }
+    },
+    data: function data(val) {
+      if (val) {
+        this._fillData(val);
+      }
+    }
+  },
+  mounted: function mounted() {
+    var _this2 = this;
+
+    this._onParentReady(function () {
+      _this2._adId = 'AdView-' + _this2._newGUID();
+      var adStyle = Object.assign({
+        id: _this2._adId
+      }, _this2.position);
+      var adView = _this2.adView = plus.ad.createAdView(adStyle);
+      adView.interceptTouchEvent(false);
+      plus.webview.currentWebview().append(adView);
+
+      if (_this2.hidden) {
+        adView.hide();
+      }
+
+      _this2.$watch('attrs', function () {
+        _this2._request();
+      }, {
+        deep: true
+      });
+
+      _this2.$watch('position', function () {
+        _this2.adView && _this2.adView.setStyle(_this2.position);
+      }, {
+        deep: true
+      }); // 模板渲染有效
+
+
+      adView.setDislikeListener && adView.setDislikeListener(function (data) {
+        _this2.adView && _this2.adView.close();
+        _this2.$refs.container.style.height = '0px';
+
+        _this2._updateView();
+
+        _this2.$trigger('close', {}, data);
+      });
+      adView.setRenderingListener && adView.setRenderingListener(function (data) {
+        if (data.result === 0) {
+          _this2.$refs.container.style.height = data.height + 'px';
+
+          _this2._updateView();
+        } else {
+          _this2.$trigger('error', {}, {
+            errCode: data.result
+          });
+        }
+      });
+      adView.setAdClickedListener(function (data) {
+        _this2.$trigger('adclicked', {}, data);
+      });
+      _this2._callbackId = _this2.$page.id + _this2._adId;
+      UniViewJSBridge.subscribe(_this2._callbackId, _this2._handleAdData.bind(_this2));
+
+      _this2._request();
+    });
+  },
+  beforeDestroy: function beforeDestroy() {
+    this.adView && this.adView.close();
+    delete this.adView;
+  },
+  methods: {
+    _handleAdData: function _handleAdData(_ref) {
+      var type = _ref.type,
+          _ref$data = _ref.data,
+          data = _ref$data === void 0 ? {} : _ref$data;
+
+      switch (type) {
+        case 'success':
+          this._fillData(data);
+
+          break;
+
+        case 'fail':
+          this.$trigger('error', {}, data);
+          break;
+      }
+    },
+    _request: function _request() {
+      if (!this.adView) {
+        return;
+      }
+
+      if (this.data) {
+        this._fillData(this.data);
+      } else if (this.adpid) {
+        this._loadData();
+      }
+    },
+    _loadData: function _loadData(adpid) {
+      var data = {
+        adpid: adpid || this.adpid,
+        width: this.position.width,
+        count: this.dataCount,
+        ext: {
+          channel: this.channel
+        }
+      };
+      UniViewJSBridge.publishHandler('onAdMethodCallback', {
+        callbackId: this._callbackId,
+        data: data
+      }, this.$page.id);
+    },
+    _fillData: function _fillData(data) {
+      this.adView.renderingBind(data);
+      this.$trigger('load', {}, {});
+    },
+    _updateView: function _updateView() {
+      window.dispatchEvent(new CustomEvent('updateview'));
+    },
+    _newGUID: function _newGUID() {
+      var guid = '';
+      var format = 'xxxxxxxx-xxxx';
+
+      for (var i = 0; i < format.length; i++) {
+        if (format[i] === 'x') {
+          guid += (Math.random() * 16 | 0).toString(16);
+        } else {
+          guid += format[i];
+        }
+      }
+
+      return guid.toUpperCase();
+    }
+  }
+});
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(4)))
+
+/***/ }),
+/* 58 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// extracted by mini-css-extract-plugin
+    if(false) { var cssReload; }
+  
+
+/***/ }),
+/* 59 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// extracted by mini-css-extract-plugin
+    if(false) { var cssReload; }
+  
+
+/***/ }),
+/* 60 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// extracted by mini-css-extract-plugin
+    if(false) { var cssReload; }
+  
+
+/***/ }),
+/* 61 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -12358,7 +13584,7 @@ function parseHex(color) {
 
 /* harmony default export */ __webpack_exports__["a"] = ({
   name: 'Map',
-  mixins: [uni_mixins__WEBPACK_IMPORTED_MODULE_0__[/* subscriber */ "e"], _mixins_native__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"]],
+  mixins: [uni_mixins__WEBPACK_IMPORTED_MODULE_0__[/* subscriber */ "f"], _mixins_native__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"]],
   props: {
     id: {
       type: String,
@@ -12455,7 +13681,7 @@ function parseHex(color) {
       this.map && this.map[val ? 'hide' : 'show']();
     },
     scale: function scale(val) {
-      this.map && this.map.setZoom(val);
+      this.map && this.map.setZoom(parseInt(val));
     },
     latitude: function latitude(val) {
       this.map && this.map.setStyles({
@@ -12480,42 +13706,45 @@ function parseHex(color) {
   mounted: function mounted() {
     var _this3 = this;
 
-    var mapStyle = Object.assign({}, this.attrs, this.position);
+    this._onParentReady(function () {
+      var mapStyle = Object.assign({}, _this3.attrs, _this3.position);
 
-    if (this.latitude && this.longitude) {
-      mapStyle.center = new plus.maps.Point(this.longitude, this.latitude);
-    }
+      if (_this3.latitude && _this3.longitude) {
+        mapStyle.center = new plus.maps.Point(_this3.longitude, _this3.latitude);
+      }
 
-    var map = this.map = plus.maps.create(this.$page.id + '-map-' + (this.id || Date.now()), mapStyle);
-    map.__markers__ = {};
-    map.__lines__ = [];
-    map.__circles__ = [];
-    map.setZoom(this.scale);
-    plus.webview.currentWebview().append(map);
+      var map = _this3.map = plus.maps.create(_this3.$page.id + '-map-' + (_this3.id || Date.now()), mapStyle);
+      map.__markers__ = [];
+      map.__markers_map__ = {};
+      map.__lines__ = [];
+      map.__circles__ = [];
+      map.setZoom(parseInt(_this3.scale));
+      plus.webview.currentWebview().append(map);
 
-    if (this.hidden) {
-      map.hide();
-    }
+      if (_this3.hidden) {
+        map.hide();
+      }
 
-    this.$watch('position', function () {
-      _this3.map && _this3.map.setStyles(_this3.position);
-    }, {
-      deep: true
+      _this3.$watch('position', function () {
+        _this3.map && _this3.map.setStyles(_this3.position);
+      }, {
+        deep: true
+      });
+
+      map.onclick = function (e) {
+        _this3.$trigger('click', {}, e);
+      };
+
+      map.onstatuschanged = function (e) {
+        _this3.$trigger('regionchange', {}, {});
+      };
+
+      _this3._addMarkers(_this3.markers);
+
+      _this3._addMapLines(_this3.polyline);
+
+      _this3._addMapCircles(_this3.circles);
     });
-
-    map.onclick = function (e) {
-      _this3.$trigger('click', {}, e);
-    };
-
-    map.onstatuschanged = function (e) {
-      _this3.$trigger('regionchange', {}, e);
-    };
-
-    this._addMarkers(this.markers);
-
-    this._addMapLines(this.polyline);
-
-    this._addMapCircles(this.circles);
   },
   beforeDestroy: function beforeDestroy() {
     this.map && this.map.close();
@@ -12544,13 +13773,15 @@ function parseHex(color) {
       });
     },
     getCenterLocation: function getCenterLocation(_ref3) {
-      var callbackId = _ref3.callbackId;
-      var center = this.map.getCenter();
+      var _this4 = this;
 
-      this._publishHandler(callbackId, {
-        longitude: center.longitude,
-        latitude: center.latitude,
-        errMsg: 'getCenterLocation:ok'
+      var callbackId = _ref3.callbackId;
+      this.map.getCurrentCenter(function (state, point) {
+        _this4._publishHandler(callbackId, {
+          longitude: point.longitude,
+          latitude: point.latitude,
+          errMsg: 'getCenterLocation:ok'
+        });
       });
     },
     getRegion: function getRegion(_ref4) {
@@ -12584,7 +13815,7 @@ function parseHex(color) {
       }, this.$page.id);
     },
     _addMarker: function _addMarker(nativeMap, marker) {
-      var _this4 = this;
+      var _this5 = this;
 
       var id = marker.id,
           latitude = marker.latitude,
@@ -12599,7 +13830,7 @@ function parseHex(color) {
         var nativeMarker = new plus.maps.Marker(new plus.maps.Point(longitude, latitude));
 
         if (iconPath) {
-          nativeMarker.setIcon(_this4.$getRealPath(iconPath));
+          nativeMarker.setIcon(_this5.$getRealPath(iconPath));
         }
 
         if (label && label.content) {
@@ -12618,14 +13849,14 @@ function parseHex(color) {
 
         if (id || id === 0) {
           nativeMarker.onclick = function (e) {
-            _this4.$trigger('markertap', {}, {
+            _this5.$trigger('markertap', {}, {
               markerId: id
             });
           };
 
           if (nativeBubble) {
             nativeBubble.onclick = function () {
-              _this4.$trigger('callouttap', {}, {
+              _this5.$trigger('callouttap', {}, {
                 markerId: id
               });
             };
@@ -12633,29 +13864,31 @@ function parseHex(color) {
         }
 
         nativeMap.addOverlay(nativeMarker);
-        nativeMap.__markers__[id + ''] = nativeMarker;
+
+        nativeMap.__markers__.push(nativeMarker);
+
+        nativeMap.__markers_map__[id + ''] = nativeMarker;
       });
     },
+    _clearMarkers: function _clearMarkers() {
+      var map = this.map;
+      var markers = map.__markers__;
+      markers.forEach(function (marker) {
+        map.removeOverlay(marker);
+      });
+      map.__markers__ = [];
+      map.__markers_map__ = {};
+    },
     _addMarkers: function _addMarkers(markers, clear) {
-      var _this5 = this;
+      var _this6 = this;
 
-      if (this.map) {
-        if (clear) {
-          this.map.clearOverlays();
-          this.map.__markers__ = {};
-        }
-
-        markers.forEach(function (marker) {
-          _this5._addMarker(_this5.map, marker);
-        });
-        return {
-          errMsg: 'addMapMarkers:ok'
-        };
+      if (clear) {
+        this._clearMarkers();
       }
 
-      return {
-        errMsg: 'addMapMarkers:fail:请先创建地图元素'
-      };
+      markers.forEach(function (marker) {
+        _this6._addMarker(_this6.map, marker);
+      });
     },
     _translateMapMarker: function _translateMapMarker(_ref6) {
       var autoRotate = _ref6.autoRotate,
@@ -12663,27 +13896,14 @@ function parseHex(color) {
           destination = _ref6.destination,
           duration = _ref6.duration,
           markerId = _ref6.markerId;
+      var nativeMarker = this.map.__markers_map__[markerId + ''];
 
-      if (this.map) {
-        var nativeMarker = this.map.__markers__[markerId + ''];
-
-        if (nativeMarker) {
-          nativeMarker.setPoint(new plus.maps.Point(destination.longitude, destination.latitude));
-        }
+      if (nativeMarker) {
+        nativeMarker.setPoint(new plus.maps.Point(destination.longitude, destination.latitude));
       }
-
-      return {
-        errMsg: 'translateMapMarker:ok'
-      };
     },
     _addMapLines: function _addMapLines(lines) {
       var nativeMap = this.map;
-
-      if (!nativeMap) {
-        return {
-          errMsg: 'addMapLines:fail:请先创建地图元素'
-        };
-      }
 
       if (nativeMap.__lines__.length > 0) {
         nativeMap.__lines__.forEach(function (circle) {
@@ -12715,18 +13935,9 @@ function parseHex(color) {
 
         nativeMap.__lines__.push(polyline);
       });
-      return {
-        errMsg: 'addMapLines:ok'
-      };
     },
     _addMapCircles: function _addMapCircles(circles) {
       var nativeMap = this.map;
-
-      if (!nativeMap) {
-        return {
-          errMsg: 'addMapCircles:fail:请先创建地图元素'
-        };
-      }
 
       if (nativeMap.__circles__.length > 0) {
         nativeMap.__circles__.forEach(function (circle) {
@@ -12765,16 +13976,13 @@ function parseHex(color) {
 
         nativeMap.__circles__.push(nativeCircle);
       });
-      return {
-        errMsg: 'addMapCircles:ok'
-      };
     }
   }
 });
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(4)))
 
 /***/ }),
-/* 51 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
@@ -12782,7 +13990,7 @@ function parseHex(color) {
   
 
 /***/ }),
-/* 52 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
@@ -12790,7 +13998,7 @@ function parseHex(color) {
   
 
 /***/ }),
-/* 53 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
@@ -12798,14 +14006,16 @@ function parseHex(color) {
   
 
 /***/ }),
-/* 54 */
+/* 65 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(UniViewJSBridge) {/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
+/* harmony import */ var uni_helpers_constants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(17);
 //
 //
 //
+
 
 var webview = false;
 
@@ -12814,15 +14024,16 @@ var insertHTMLWebView = function insertHTMLWebView(_ref) {
   var parentWebview = plus.webview.currentWebview(); // fixed by hxy web-view 组件所在的 webview 不注入 uni-app 框架
 
   var styles = {
-    'uni-app': 'none'
+    'uni-app': 'none',
+    isUniH5: true
   };
   var parentTitleNView = parentWebview.getTitleNView();
 
   if (parentTitleNView) {
     if (plus.navigator.isImmersedStatusbar()) {
-      styles.top = 44 + plus.navigator.getStatusbarHeight();
+      styles.top = uni_helpers_constants__WEBPACK_IMPORTED_MODULE_1__[/* NAVBAR_HEIGHT */ "a"] + plus.navigator.getStatusbarHeight();
     } else {
-      styles.top = 44;
+      styles.top = uni_helpers_constants__WEBPACK_IMPORTED_MODULE_1__[/* NAVBAR_HEIGHT */ "a"];
     }
 
     styles.bottom = 0;
@@ -12835,7 +14046,8 @@ var insertHTMLWebView = function insertHTMLWebView(_ref) {
       var title = webview.getTitle();
       parentWebview.setStyle({
         titleNView: {
-          titleText: !title || title === 'null' ? '' : title
+          // iOS titleText 为空字符串时 按钮会隐藏
+          titleText: !title || title === 'null' ? ' ' : title
         }
       });
     });
@@ -12895,25 +14107,29 @@ var removeHTMLWebView = function removeHTMLWebView() {
     }
   },
   mounted: function mounted() {
-    this.htmlId = 'webviewId' + this.$page.id;
-    insertHTMLWebView({
-      htmlId: this.htmlId
+    var _this = this;
+
+    this._onParentReady(function () {
+      _this.htmlId = _constants__WEBPACK_IMPORTED_MODULE_0__[/* WEBVIEW_ID_PREFIX */ "k"] + _this.$page.id;
+      insertHTMLWebView({
+        htmlId: _this.htmlId
+      });
+      updateHTMLWebView({
+        src: _this.$getRealPath(_this.src),
+        webviewStyles: _this.webviewStyles
+      });
+      UniViewJSBridge.publishHandler(_constants__WEBPACK_IMPORTED_MODULE_0__[/* WEBVIEW_INSERTED */ "l"], {}, _this.$page.id);
     });
-    updateHTMLWebView({
-      src: this.$getRealPath(this.src),
-      webviewStyles: this.webviewStyles
-    });
-    UniViewJSBridge.publishHandler(_constants__WEBPACK_IMPORTED_MODULE_0__[/* WEBVIEW_INSERTED */ "j"], {}, this.$page.id);
   },
   beforeDestroy: function beforeDestroy() {
     removeHTMLWebView();
-    UniViewJSBridge.publishHandler(_constants__WEBPACK_IMPORTED_MODULE_0__[/* WEBVIEW_REMOVED */ "l"], {}, this.$page.id);
+    UniViewJSBridge.publishHandler(_constants__WEBPACK_IMPORTED_MODULE_0__[/* WEBVIEW_REMOVED */ "n"], {}, this.$page.id);
   }
 });
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(4)))
 
 /***/ }),
-/* 55 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
@@ -12921,54 +14137,7 @@ var removeHTMLWebView = function removeHTMLWebView() {
   
 
 /***/ }),
-/* 56 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return findElm; });
-function findVmById(id, vm) {
-  if (id === vm._$id) {
-    return vm;
-  }
-
-  var childVms = vm.$children;
-  var len = childVms.length;
-
-  for (var i = 0; i < len; i++) {
-    var childVm = findVmById(id, childVms[i]);
-
-    if (childVm) {
-      return childVm;
-    }
-  }
-}
-
-function findElm(component, pageVm) {
-  if (!pageVm) {
-    return console.error('page is not ready');
-  }
-
-  if (!component) {
-    return pageVm.$el;
-  }
-
-  if (true) {
-    if (typeof component === 'string') {
-      var componentVm = findVmById(component, pageVm);
-
-      if (!componentVm) {
-        throw new Error("Not Found\uFF1APage[".concat(pageVm.$page.id, "][").concat(component, "]"));
-      }
-
-      return componentVm.$el;
-    }
-  }
-
-  return component.$el;
-}
-
-/***/ }),
-/* 57 */
+/* 67 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -12976,14 +14145,14 @@ function findElm(component, pageVm) {
 var ON_PAGE_CREATE = 'onPageCreate';
 
 /***/ }),
-/* 58 */
+/* 68 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return definePage; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return getPageVueComponent; });
 /* unused harmony export createPage */
-/* harmony import */ var uni_shared__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
+/* harmony import */ var uni_shared__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
 
 var pageFactory = Object.create(null);
 function definePage(name, createPageVueComponent) {
@@ -13007,14 +14176,14 @@ function createPage(pagePath, pageId, pageQuery, pageInstance) {
   });
 
   if (true) {
-    console.log("new ".concat(pagePath), Date.now() - startTime);
+    console.log("new ".concat(pagePath, "[").concat(pageId, "]:time(").concat(Date.now() - startTime, ")"));
   }
 
   return pageVm;
 }
 
 /***/ }),
-/* 59 */
+/* 69 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -13035,7 +14204,7 @@ function setCurrentPage(pageId, pagePath) {
 }
 
 /***/ }),
-/* 60 */
+/* 70 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -13294,7 +14463,7 @@ function makeMap(str) {
 }
 
 /***/ }),
-/* 61 */
+/* 71 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -13368,7 +14537,7 @@ Friction.prototype.configuration = function () {
 };
 
 /***/ }),
-/* 62 */
+/* 72 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -13601,7 +14770,7 @@ Spring.prototype.configuration = function () {
 };
 
 /***/ }),
-/* 63 */
+/* 73 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -13617,7 +14786,8 @@ var index = 0;
   name: 'Cover',
   data: function data() {
     return {
-      style: {}
+      style: {},
+      parentPosition: {}
     };
   },
   computed: {
@@ -13627,14 +14797,14 @@ var index = 0;
       for (var key in this.position) {
         var val = this.position[key];
         var valNumber = parseFloat(val);
-        var parentValNumber = parseFloat(this._nativeParent.position[key]);
+        var parentValNumber = parseFloat(this.parentPosition[key]);
 
         if (key === 'top' || key === 'left') {
           val = Math.max(valNumber, parentValNumber) + 'px';
         } else if (key === 'width' || key === 'height') {
-          var _base = key === 'width' ? 'left' : 'left';
+          var _base = key === 'width' ? 'left' : 'top';
 
-          var parentStart = parseFloat(this._nativeParent.position[_base]);
+          var parentStart = parseFloat(this.parentPosition[_base]);
           var viewStart = parseFloat(this.position[_base]);
           var diff1 = Math.max(parentStart - viewStart, 0);
           var diff2 = Math.max(viewStart + valNumber - (parentStart + parentValNumber), 0);
@@ -13712,28 +14882,24 @@ var index = 0;
   mounted: function mounted() {
     var _this = this;
 
-    this._updateStyle();
+    this._onParentReady(function (parentPosition) {
+      _this.parentPosition = _this._nativeParent.position || parentPosition;
 
-    var $nativeParent = this._nativeParent;
+      _this._updateStyle();
 
-    if ($nativeParent.isNative) {
-      if ($nativeParent._isMounted) {
-        this._onCanInsert();
-      } else {
-        $nativeParent.onCanInsertCallbacks.push(function () {
-          _this._onCanInsert();
-        });
-      }
+      _this._onCanInsert();
 
-      this.$watch('hidden', function (val) {
+      _this.$watch('hidden', function (val) {
         _this.cover && _this.cover[val ? 'hide' : 'show']();
       });
-      this.$watch('viewPosition', function (val) {
+
+      _this.$watch('viewPosition', function (val) {
         _this.cover && _this.cover.setStyle(val);
       }, {
         deep: true
       });
-      this.$watch('tags', function () {
+
+      _this.$watch('tags', function () {
         var cover = _this.cover;
 
         if (cover) {
@@ -13743,8 +14909,9 @@ var index = 0;
       }, {
         deep: true
       });
-      this.$on('uni-view-update', this._requestStyleUpdate);
-    }
+
+      _this.$on('uni-view-update', _this._requestStyleUpdate);
+    });
   },
   beforeDestroy: function beforeDestroy() {
     if (this._nativeParent.isNative) {
@@ -13774,7 +14941,7 @@ var index = 0;
         var val = this.position[key];
 
         if (key === 'top' || key === 'left') {
-          val = Math.min(parseFloat(val) - parseFloat(this._nativeParent.position[key]), 0) + 'px';
+          val = Math.min(parseFloat(val) - parseFloat(this.parentPosition[key]), 0) + 'px';
         }
 
         position[key] = val;
@@ -13787,7 +14954,7 @@ var index = 0;
 
       var style = getComputedStyle(this.$el);
       base.concat(text, image).forEach(function (key) {
-        _this3.style[key] = style[key];
+        _this3.$set(_this3.style, key, style[key]);
       });
     },
     _requestStyleUpdate: function _requestStyleUpdate() {
@@ -13807,16 +14974,16 @@ var index = 0;
 });
 
 /***/ }),
-/* 64 */
+/* 74 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 
 // EXTERNAL MODULE: ./src/core/view/mixins/scroller/Friction.js
-var Friction = __webpack_require__(61);
+var Friction = __webpack_require__(71);
 
 // EXTERNAL MODULE: ./src/core/view/mixins/scroller/Spring.js
-var Spring = __webpack_require__(62);
+var Spring = __webpack_require__(72);
 
 // CONCATENATED MODULE: ./src/core/view/mixins/scroller/Scroll.js
 
@@ -14289,7 +15456,7 @@ Scroller.prototype.isScrolling = function () {
           n.onTouchStart();
         }
 
-        event.preventDefault();
+        e.preventDefault();
       }
     },
     _handleTouchMove: function _handleTouchMove(event) {
@@ -14359,112 +15526,725 @@ Scroller.prototype.isScrolling = function () {
 });
 
 /***/ }),
-/* 65 */
+/* 75 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 
 // EXPORTS
-__webpack_require__.d(__webpack_exports__, "a", function() { return /* binding */ getRealPath; });
+__webpack_require__.d(__webpack_exports__, "a", function() { return /* binding */ getNavigationBarHeight; });
 
-// CONCATENATED MODULE: ./src/core/helpers/get-real-route.js
-function getRealRoute(fromRoute, toRoute) {
-  if (!toRoute) {
-    toRoute = fromRoute;
-
-    if (toRoute.indexOf('/') === 0) {
-      return toRoute;
-    }
-
-    var pages = getCurrentPages();
-
-    if (pages.length) {
-      fromRoute = pages[pages.length - 1].$page.route;
-    } else {
-      fromRoute = '';
-    }
-  } else {
-    if (toRoute.indexOf('/') === 0) {
-      return toRoute;
-    }
-  }
-
-  if (toRoute.indexOf('./') === 0) {
-    return getRealRoute(fromRoute, toRoute.substr(2));
-  }
-
-  var toRouteArray = toRoute.split('/');
-  var toRouteLength = toRouteArray.length;
-  var i = 0;
-
-  for (; i < toRouteLength && toRouteArray[i] === '..'; i++) {// noop
-  }
-
-  toRouteArray.splice(0, i);
-  toRoute = toRouteArray.join('/');
-  var fromRouteArray = fromRoute.length > 0 ? fromRoute.split('/') : [];
-  fromRouteArray.splice(fromRouteArray.length - i - 1, i + 1);
-  return '/' + fromRouteArray.concat(toRouteArray).join('/');
+// CONCATENATED MODULE: ./src/platforms/app-plus/helpers/status-bar.js
+function getStatusbarHeight() {
+  // 横屏时 iOS 获取的状态栏高度错误，进行纠正
+  return plus.navigator.isImmersedStatusbar() ? Math.round(plus.os.name === 'iOS' ? plus.navigator.getSafeAreaInsets().top : plus.navigator.getStatusbarHeight()) : 0;
 }
-// CONCATENATED MODULE: ./src/platforms/app-plus/helpers/get-real-path.js
+// EXTERNAL MODULE: ./src/core/helpers/constants.js
+var constants = __webpack_require__(17);
 
-var SCHEME_RE = /^([a-z-]+:)?\/\//i;
-var DATA_RE = /^data:.*,.*/; // 处理 Android 平台解压与非解压模式下获取的路径不一致的情况
+// CONCATENATED MODULE: ./src/platforms/app-plus/view/utils.js
 
-function handleLocalPath(filePath) {
-  return plus.io.convertLocalFileSystemURL(filePath).replace(/^\/?apps\//, '/android_asset/apps/').replace(/\/$/, '');
-}
 
-var wwwPath;
+function getNavigationBarHeight() {
+  var webview = plus.webview.currentWebview();
+  var style = webview.getStyle();
+  style = style && style.titleNView;
 
-function addBase(filePath) {
-  if (!wwwPath) {
-    // 需要时，初始化一次，外部直接初始化，需要等 plusready
-    wwwPath = 'file://' + handleLocalPath('_www') + '/';
+  if (style && style.type === 'default') {
+    return constants["a" /* NAVBAR_HEIGHT */] + getStatusbarHeight();
   }
 
-  return wwwPath + filePath;
-}
-
-function getRealPath(filePath) {
-  if (filePath.indexOf('/') === 0) {
-    if (filePath.indexOf('//') === 0) {
-      filePath = 'https:' + filePath;
-    } else {
-      return addBase(filePath.substr(1));
-    }
-  } // 网络资源或base64
-
-
-  if (SCHEME_RE.test(filePath) || DATA_RE.test(filePath) || filePath.indexOf('blob:') === 0) {
-    return filePath;
-  } // _do=>_doc,_documents,_downloads
-
-
-  if (filePath.indexOf('_www') === 0 || filePath.indexOf('_do') === 0) {
-    return 'file://' + handleLocalPath(filePath);
-  }
-
-  var pages = getCurrentPages();
-
-  if (pages.length) {
-    return addBase(getRealRoute(pages[pages.length - 1].$page.route, filePath).substr(1));
-  }
-
-  return filePath;
+  return 0;
 }
 
 /***/ }),
-/* 66 */
+/* 76 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(global) {/* unused harmony export Formatter */
+/* unused harmony export I18n */
+/* unused harmony export LOCALE_EN */
+/* unused harmony export LOCALE_ES */
+/* unused harmony export LOCALE_FR */
+/* unused harmony export LOCALE_ZH_HANS */
+/* unused harmony export LOCALE_ZH_HANT */
+/* unused harmony export compileI18nJsonStr */
+/* unused harmony export hasI18nJson */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return initVueI18n; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return isI18nStr; });
+/* unused harmony export isString */
+/* unused harmony export normalizeLocale */
+/* unused harmony export parseI18nJson */
+/* unused harmony export resolveLocale */
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(n); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+var isArray = Array.isArray;
+
+var isObject = function isObject(val) {
+  return val !== null && _typeof(val) === 'object';
+};
+
+var defaultDelimiters = ['{', '}'];
+
+var BaseFormatter = /*#__PURE__*/function () {
+  function BaseFormatter() {
+    _classCallCheck(this, BaseFormatter);
+
+    this._caches = Object.create(null);
+  }
+
+  _createClass(BaseFormatter, [{
+    key: "interpolate",
+    value: function interpolate(message, values) {
+      var delimiters = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : defaultDelimiters;
+
+      if (!values) {
+        return [message];
+      }
+
+      var tokens = this._caches[message];
+
+      if (!tokens) {
+        tokens = parse(message, delimiters);
+        this._caches[message] = tokens;
+      }
+
+      return compile(tokens, values);
+    }
+  }]);
+
+  return BaseFormatter;
+}();
+
+var RE_TOKEN_LIST_VALUE = /^(?:\d)+/;
+var RE_TOKEN_NAMED_VALUE = /^(?:\w)+/;
+
+function parse(format, _ref) {
+  var _ref2 = _slicedToArray(_ref, 2),
+      startDelimiter = _ref2[0],
+      endDelimiter = _ref2[1];
+
+  var tokens = [];
+  var position = 0;
+  var text = '';
+
+  while (position < format.length) {
+    var _char = format[position++];
+
+    if (_char === startDelimiter) {
+      if (text) {
+        tokens.push({
+          type: 'text',
+          value: text
+        });
+      }
+
+      text = '';
+      var sub = '';
+      _char = format[position++];
+
+      while (_char !== undefined && _char !== endDelimiter) {
+        sub += _char;
+        _char = format[position++];
+      }
+
+      var isClosed = _char === endDelimiter;
+      var type = RE_TOKEN_LIST_VALUE.test(sub) ? 'list' : isClosed && RE_TOKEN_NAMED_VALUE.test(sub) ? 'named' : 'unknown';
+      tokens.push({
+        value: sub,
+        type: type
+      });
+    } //  else if (char === '%') {
+    //   // when found rails i18n syntax, skip text capture
+    //   if (format[position] !== '{') {
+    //     text += char
+    //   }
+    // }
+    else {
+        text += _char;
+      }
+  }
+
+  text && tokens.push({
+    type: 'text',
+    value: text
+  });
+  return tokens;
+}
+
+function compile(tokens, values) {
+  var compiled = [];
+  var index = 0;
+  var mode = isArray(values) ? 'list' : isObject(values) ? 'named' : 'unknown';
+
+  if (mode === 'unknown') {
+    return compiled;
+  }
+
+  while (index < tokens.length) {
+    var token = tokens[index];
+
+    switch (token.type) {
+      case 'text':
+        compiled.push(token.value);
+        break;
+
+      case 'list':
+        compiled.push(values[parseInt(token.value, 10)]);
+        break;
+
+      case 'named':
+        if (mode === 'named') {
+          compiled.push(values[token.value]);
+        } else {
+          if (true) {
+            console.warn("Type of token '".concat(token.type, "' and format of value '").concat(mode, "' don't match!"));
+          }
+        }
+
+        break;
+
+      case 'unknown':
+        if (true) {
+          console.warn("Detect 'unknown' type of token!");
+        }
+
+        break;
+    }
+
+    index++;
+  }
+
+  return compiled;
+}
+
+var LOCALE_ZH_HANS = 'zh-Hans';
+var LOCALE_ZH_HANT = 'zh-Hant';
+var LOCALE_EN = 'en';
+var LOCALE_FR = 'fr';
+var LOCALE_ES = 'es';
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+
+var hasOwn = function hasOwn(val, key) {
+  return hasOwnProperty.call(val, key);
+};
+
+var defaultFormatter = new BaseFormatter();
+
+function include(str, parts) {
+  return !!parts.find(function (part) {
+    return str.indexOf(part) !== -1;
+  });
+}
+
+function startsWith(str, parts) {
+  return parts.find(function (part) {
+    return str.indexOf(part) === 0;
+  });
+}
+
+function normalizeLocale(locale, messages) {
+  if (!locale) {
+    return;
+  }
+
+  locale = locale.trim().replace(/_/g, '-');
+
+  if (messages && messages[locale]) {
+    return locale;
+  }
+
+  locale = locale.toLowerCase();
+
+  if (locale.indexOf('zh') === 0) {
+    if (locale.indexOf('-hans') > -1) {
+      return LOCALE_ZH_HANS;
+    }
+
+    if (locale.indexOf('-hant') > -1) {
+      return LOCALE_ZH_HANT;
+    }
+
+    if (include(locale, ['-tw', '-hk', '-mo', '-cht'])) {
+      return LOCALE_ZH_HANT;
+    }
+
+    return LOCALE_ZH_HANS;
+  }
+
+  var lang = startsWith(locale, [LOCALE_EN, LOCALE_FR, LOCALE_ES]);
+
+  if (lang) {
+    return lang;
+  }
+}
+
+var I18n = /*#__PURE__*/function () {
+  function I18n(_ref3) {
+    var locale = _ref3.locale,
+        fallbackLocale = _ref3.fallbackLocale,
+        messages = _ref3.messages,
+        watcher = _ref3.watcher,
+        formater = _ref3.formater;
+
+    _classCallCheck(this, I18n);
+
+    this.locale = LOCALE_EN;
+    this.fallbackLocale = LOCALE_EN;
+    this.message = {};
+    this.messages = {};
+    this.watchers = [];
+
+    if (fallbackLocale) {
+      this.fallbackLocale = fallbackLocale;
+    }
+
+    this.formater = formater || defaultFormatter;
+    this.messages = messages || {};
+    this.setLocale(locale || LOCALE_EN);
+
+    if (watcher) {
+      this.watchLocale(watcher);
+    }
+  }
+
+  _createClass(I18n, [{
+    key: "setLocale",
+    value: function setLocale(locale) {
+      var _this = this;
+
+      var oldLocale = this.locale;
+      this.locale = normalizeLocale(locale, this.messages) || this.fallbackLocale;
+
+      if (!this.messages[this.locale]) {
+        // 可能初始化时不存在
+        this.messages[this.locale] = {};
+      }
+
+      this.message = this.messages[this.locale]; // 仅发生变化时，通知
+
+      if (oldLocale !== this.locale) {
+        this.watchers.forEach(function (watcher) {
+          watcher(_this.locale, oldLocale);
+        });
+      }
+    }
+  }, {
+    key: "getLocale",
+    value: function getLocale() {
+      return this.locale;
+    }
+  }, {
+    key: "watchLocale",
+    value: function watchLocale(fn) {
+      var _this2 = this;
+
+      var index = this.watchers.push(fn) - 1;
+      return function () {
+        _this2.watchers.splice(index, 1);
+      };
+    }
+  }, {
+    key: "add",
+    value: function add(locale, message) {
+      var override = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+      var curMessages = this.messages[locale];
+
+      if (curMessages) {
+        if (override) {
+          Object.assign(curMessages, message);
+        } else {
+          Object.keys(message).forEach(function (key) {
+            if (!hasOwn(curMessages, key)) {
+              curMessages[key] = message[key];
+            }
+          });
+        }
+      } else {
+        this.messages[locale] = message;
+      }
+    }
+  }, {
+    key: "f",
+    value: function f(message, values, delimiters) {
+      return this.formater.interpolate(message, values, delimiters).join('');
+    }
+  }, {
+    key: "t",
+    value: function t(key, locale, values) {
+      var message = this.message;
+
+      if (typeof locale === 'string') {
+        locale = normalizeLocale(locale, this.messages);
+        locale && (message = this.messages[locale]);
+      } else {
+        values = locale;
+      }
+
+      if (!hasOwn(message, key)) {
+        console.warn("Cannot translate the value of keypath ".concat(key, ". Use the value of keypath as default."));
+        return key;
+      }
+
+      return this.formater.interpolate(message[key], values).join('');
+    }
+  }]);
+
+  return I18n;
+}();
+
+function watchAppLocale(appVm, i18n) {
+  // 需要保证 watch 的触发在组件渲染之前
+  if (appVm.$watchLocale) {
+    // vue2
+    appVm.$watchLocale(function (newLocale) {
+      i18n.setLocale(newLocale);
+    });
+  } else {
+    appVm.$watch(function () {
+      return appVm.$locale;
+    }, function (newLocale) {
+      i18n.setLocale(newLocale);
+    });
+  }
+}
+
+function getDefaultLocale() {
+  if (typeof uni !== 'undefined' && uni.getLocale) {
+    return uni.getLocale();
+  } // 小程序平台，uni 和 uni-i18n 互相引用，导致访问不到 uni，故在 global 上挂了 getLocale
+
+
+  if (typeof global !== 'undefined' && global.getLocale) {
+    return global.getLocale();
+  }
+
+  return LOCALE_EN;
+}
+
+function initVueI18n(locale) {
+  var messages = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  var fallbackLocale = arguments.length > 2 ? arguments[2] : undefined;
+  var watcher = arguments.length > 3 ? arguments[3] : undefined;
+
+  // 兼容旧版本入参
+  if (typeof locale !== 'string') {
+    var _ref4 = [messages, locale];
+    locale = _ref4[0];
+    messages = _ref4[1];
+  }
+
+  if (typeof locale !== 'string') {
+    // 因为小程序平台，uni-i18n 和 uni 互相引用，导致此时访问 uni 时，为 undefined
+    locale = getDefaultLocale();
+  }
+
+  if (typeof fallbackLocale !== 'string') {
+    fallbackLocale = typeof __uniConfig !== 'undefined' && __uniConfig.fallbackLocale || LOCALE_EN;
+  }
+
+  var i18n = new I18n({
+    locale: locale,
+    fallbackLocale: fallbackLocale,
+    messages: messages,
+    watcher: watcher
+  });
+
+  var _t = function t(key, values) {
+    if (typeof getApp !== 'function') {
+      // app view
+
+      /* eslint-disable no-func-assign */
+      _t = function t(key, values) {
+        return i18n.t(key, values);
+      };
+    } else {
+      var isWatchedAppLocale = false;
+
+      _t = function t(key, values) {
+        var appVm = getApp().$vm; // 可能$vm还不存在，比如在支付宝小程序中，组件定义较早，在props的default里使用了t()函数（如uni-goods-nav），此时app还未初始化
+        // options: {
+        // 	type: Array,
+        // 	default () {
+        // 		return [{
+        // 			icon: 'shop',
+        // 			text: t("uni-goods-nav.options.shop"),
+        // 		}, {
+        // 			icon: 'cart',
+        // 			text: t("uni-goods-nav.options.cart")
+        // 		}]
+        // 	}
+        // },
+
+        if (appVm) {
+          // 触发响应式
+          appVm.$locale;
+
+          if (!isWatchedAppLocale) {
+            isWatchedAppLocale = true;
+            watchAppLocale(appVm, i18n);
+          }
+        }
+
+        return i18n.t(key, values);
+      };
+    }
+
+    return _t(key, values);
+  };
+
+  return {
+    i18n: i18n,
+    f: function f(message, values, delimiters) {
+      return i18n.f(message, values, delimiters);
+    },
+    t: function t(key, values) {
+      return _t(key, values);
+    },
+    add: function add(locale, message) {
+      var override = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+      return i18n.add(locale, message, override);
+    },
+    watch: function watch(fn) {
+      return i18n.watchLocale(fn);
+    },
+    getLocale: function getLocale() {
+      return i18n.getLocale();
+    },
+    setLocale: function setLocale(newLocale) {
+      return i18n.setLocale(newLocale);
+    }
+  };
+}
+
+var isString = function isString(val) {
+  return typeof val === 'string';
+};
+
+var formater;
+
+function hasI18nJson(jsonObj, delimiters) {
+  if (!formater) {
+    formater = new BaseFormatter();
+  }
+
+  return walkJsonObj(jsonObj, function (jsonObj, key) {
+    var value = jsonObj[key];
+
+    if (isString(value)) {
+      if (isI18nStr(value, delimiters)) {
+        return true;
+      }
+    } else {
+      return hasI18nJson(value, delimiters);
+    }
+  });
+}
+
+function parseI18nJson(jsonObj, values, delimiters) {
+  if (!formater) {
+    formater = new BaseFormatter();
+  }
+
+  walkJsonObj(jsonObj, function (jsonObj, key) {
+    var value = jsonObj[key];
+
+    if (isString(value)) {
+      if (isI18nStr(value, delimiters)) {
+        jsonObj[key] = compileStr(value, values, delimiters);
+      }
+    } else {
+      parseI18nJson(value, values, delimiters);
+    }
+  });
+  return jsonObj;
+}
+
+function compileI18nJsonStr(jsonStr, _ref5) {
+  var locale = _ref5.locale,
+      locales = _ref5.locales,
+      delimiters = _ref5.delimiters;
+
+  if (!isI18nStr(jsonStr, delimiters)) {
+    return jsonStr;
+  }
+
+  if (!formater) {
+    formater = new BaseFormatter();
+  }
+
+  var localeValues = [];
+  Object.keys(locales).forEach(function (name) {
+    if (name !== locale) {
+      localeValues.push({
+        locale: name,
+        values: locales[name]
+      });
+    }
+  });
+  localeValues.unshift({
+    locale: locale,
+    values: locales[locale]
+  });
+
+  try {
+    return JSON.stringify(compileJsonObj(JSON.parse(jsonStr), localeValues, delimiters), null, 2);
+  } catch (e) {}
+
+  return jsonStr;
+}
+
+function isI18nStr(value, delimiters) {
+  return value.indexOf(delimiters[0]) > -1;
+}
+
+function compileStr(value, values, delimiters) {
+  return formater.interpolate(value, values, delimiters).join('');
+}
+
+function compileValue(jsonObj, key, localeValues, delimiters) {
+  var value = jsonObj[key];
+
+  if (isString(value)) {
+    // 存在国际化
+    if (isI18nStr(value, delimiters)) {
+      jsonObj[key] = compileStr(value, localeValues[0].values, delimiters);
+
+      if (localeValues.length > 1) {
+        // 格式化国际化语言
+        var valueLocales = jsonObj[key + 'Locales'] = {};
+        localeValues.forEach(function (localValue) {
+          valueLocales[localValue.locale] = compileStr(value, localValue.values, delimiters);
+        });
+      }
+    }
+  } else {
+    compileJsonObj(value, localeValues, delimiters);
+  }
+}
+
+function compileJsonObj(jsonObj, localeValues, delimiters) {
+  walkJsonObj(jsonObj, function (jsonObj, key) {
+    compileValue(jsonObj, key, localeValues, delimiters);
+  });
+  return jsonObj;
+}
+
+function walkJsonObj(jsonObj, walk) {
+  if (isArray(jsonObj)) {
+    for (var i = 0; i < jsonObj.length; i++) {
+      if (walk(jsonObj, i)) {
+        return true;
+      }
+    }
+  } else if (isObject(jsonObj)) {
+    for (var key in jsonObj) {
+      if (walk(jsonObj, key)) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+function resolveLocale(locales) {
+  return function (locale) {
+    if (!locale) {
+      return locale;
+    }
+
+    locale = normalizeLocale(locale) || locale;
+    return resolveLocaleChain(locale).find(function (locale) {
+      return locales.indexOf(locale) > -1;
+    });
+  };
+}
+
+function resolveLocaleChain(locale) {
+  var chain = [];
+  var tokens = locale.split('-');
+
+  while (tokens.length) {
+    chain.push(tokens.join('-'));
+    tokens.pop();
+  }
+
+  return chain;
+}
+
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(19)))
+
+/***/ }),
+/* 77 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// (C) 1995-2013 Jean-loup Gailly and Mark Adler
+// (C) 2014-2017 Vitaly Puzrin and Andrey Tupitsin
+//
+// This software is provided 'as-is', without any express or implied
+// warranty. In no event will the authors be held liable for any damages
+// arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it
+// freely, subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented; you must not
+//   claim that you wrote the original software. If you use this software
+//   in a product, an acknowledgment in the product documentation would be
+//   appreciated but is not required.
+// 2. Altered source versions must be plainly marked as such, and must not be
+//   misrepresented as being the original software.
+// 3. This notice may not be removed or altered from any source distribution.
+
+module.exports = {
+  2:      'need dictionary',     /* Z_NEED_DICT       2  */
+  1:      'stream end',          /* Z_STREAM_END      1  */
+  0:      '',                    /* Z_OK              0  */
+  '-1':   'file error',          /* Z_ERRNO         (-1) */
+  '-2':   'stream error',        /* Z_STREAM_ERROR  (-2) */
+  '-3':   'data error',          /* Z_DATA_ERROR    (-3) */
+  '-4':   'insufficient memory', /* Z_MEM_ERROR     (-4) */
+  '-5':   'buffer error',        /* Z_BUF_ERROR     (-5) */
+  '-6':   'incompatible version' /* Z_VERSION_ERROR (-6) */
+};
+
+
+/***/ }),
+/* 78 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(UniViewJSBridge) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return requestComponentObserver; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return destroyComponentObserver; });
-/* harmony import */ var intersection_observer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(87);
+/* harmony import */ var intersection_observer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(114);
 /* harmony import */ var intersection_observer__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(intersection_observer__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var uni_helpers_index__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6);
-/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(56);
+/* harmony import */ var uni_helpers_index__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(8);
+/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(21);
 
 
 
@@ -14478,6 +16258,19 @@ function getRect(rect) {
     top: rect.top,
     width: rect.width
   };
+} // 在相交比很小的情况下，Chrome会返回相交为0
+
+
+function rectifyIntersectionRatio(entrie) {
+  var intersectionRatio = entrie.intersectionRatio,
+      _entrie$boundingClien = entrie.boundingClientRect,
+      overAllHeight = _entrie$boundingClien.height,
+      overAllWidth = _entrie$boundingClien.width,
+      _entrie$intersectionR = entrie.intersectionRect,
+      intersectionHeight = _entrie$intersectionR.height,
+      intersectionWidth = _entrie$intersectionR.width;
+  if (intersectionRatio !== 0) return intersectionRatio;
+  return intersectionHeight === overAllHeight ? intersectionWidth / overAllWidth : intersectionHeight / overAllHeight;
 }
 
 var intersectionObservers = {};
@@ -14485,32 +16278,40 @@ function requestComponentObserver(_ref, pageId) {
   var reqId = _ref.reqId,
       component = _ref.component,
       options = _ref.options;
-  var pages = getCurrentPages();
-  var page = pages.find(function (page) {
-    return page.$page.id === pageId;
-  });
+  var pageVm;
 
-  if (!page) {
-    throw new Error("Not Found\uFF1APage[".concat(pageId, "]"));
+  if (pageId._isVue) {
+    pageVm = pageId;
+  } else {
+    var pages = getCurrentPages(); // 跨平台时，View 层也应该实现该方法，举例 App 上，View 层的 getCurrentPages 返回长度为1的当前页面数组
+
+    var page = pages.find(function (page) {
+      return page.$page.id === pageId;
+    });
+
+    if (!page) {
+      throw new Error("Not Found\uFF1APage[".concat(pageId, "]"));
+    }
+
+    pageVm = page.$vm;
   }
 
-  var pageVm = page.$vm;
-  var $el = Object(_util__WEBPACK_IMPORTED_MODULE_2__[/* findElm */ "a"])(component, pageVm);
+  var $el = Object(_util__WEBPACK_IMPORTED_MODULE_2__[/* findElm */ "b"])(component, pageVm);
   var root = options.relativeToSelector ? $el.querySelector(options.relativeToSelector) : null;
   var intersectionObserver = intersectionObservers[reqId] = new IntersectionObserver(function (entries, observer) {
     entries.forEach(function (entrie) {
       UniViewJSBridge.publishHandler('onRequestComponentObserver', {
         reqId: reqId,
         res: {
-          intersectionRatio: entrie.intersectionRatio,
+          intersectionRatio: rectifyIntersectionRatio(entrie),
           intersectionRect: getRect(entrie.intersectionRect),
           boundingClientRect: getRect(entrie.boundingClientRect),
           relativeRect: getRect(entrie.rootBounds),
           time: Date.now(),
-          dataset: Object(uni_helpers_index__WEBPACK_IMPORTED_MODULE_1__[/* normalizeDataset */ "c"])(entrie.target.dataset || {}),
+          dataset: Object(uni_helpers_index__WEBPACK_IMPORTED_MODULE_1__[/* getTargetDataset */ "a"])(entrie.target),
           id: entrie.target.id
         }
-      }, pageVm.$page.id);
+      });
     });
   }, {
     root: root,
@@ -14521,11 +16322,23 @@ function requestComponentObserver(_ref, pageId) {
   if (options.observeAll) {
     intersectionObserver.USE_MUTATION_OBSERVER = true;
     Array.prototype.map.call($el.querySelectorAll(options.selector), function (el) {
+      if (!el) {
+        console.warn("Node ".concat(options.selector, " is not found. Intersection observer will not trigger."));
+        return;
+      }
+
       intersectionObserver.observe(el);
     });
   } else {
     intersectionObserver.USE_MUTATION_OBSERVER = false;
-    intersectionObserver.observe($el.querySelector(options.selector));
+    var el = $el.querySelector(options.selector);
+
+    if (!el) {
+      console.warn("Node ".concat(options.selector, " is not found. Intersection observer will not trigger."));
+      return;
+    }
+
+    intersectionObserver.observe(el);
   }
 }
 function destroyComponentObserver(_ref2) {
@@ -14534,6 +16347,7 @@ function destroyComponentObserver(_ref2) {
 
   if (intersectionObserver) {
     intersectionObserver.disconnect();
+    delete intersectionObservers[reqId];
     UniViewJSBridge.publishHandler('onRequestComponentObserver', {
       reqId: reqId,
       reqEnd: true
@@ -14543,23 +16357,163 @@ function destroyComponentObserver(_ref2) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(4)))
 
 /***/ }),
-/* 67 */
-/***/ (function(module, exports) {
-
-module.exports = ['uni-app', 'uni-tabbar', 'uni-page', 'uni-page-head', 'uni-page-wrapper', 'uni-page-body', 'uni-page-refresh', 'uni-actionsheet', 'uni-modal', 'uni-toast', 'uni-resize-sensor', 'uni-shadow-root', 'uni-ad', 'uni-audio', 'uni-button', 'uni-camera', 'uni-canvas', 'uni-checkbox', 'uni-checkbox-group', 'uni-cover-image', 'uni-cover-view', 'uni-editor', 'uni-form', 'uni-functional-page-navigator', 'uni-icon', 'uni-image', 'uni-input', 'uni-label', 'uni-live-player', 'uni-live-pusher', 'uni-map', 'uni-movable-area', 'uni-movable-view', 'uni-navigator', 'uni-official-account', 'uni-open-data', 'uni-picker', 'uni-picker-view', 'uni-picker-view-column', 'uni-progress', 'uni-radio', 'uni-radio-group', 'uni-rich-text', 'uni-scroll-view', 'uni-slider', 'uni-swiper', 'uni-swiper-item', 'uni-switch', 'uni-text', 'uni-textarea', 'uni-video', 'uni-view', 'uni-web-view'];
-
-/***/ }),
-/* 68 */
+/* 79 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(UniViewJSBridge, global) {/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(8);
-/* harmony import */ var uni_platform_view_index_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(88);
+/* WEBPACK VAR INJECTION */(function(UniViewJSBridge) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return requestMediaQueryObserver; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return destroyMediaQueryObserver; });
+var mediaQueryObservers = {};
+var listeners = {}; // 用公用对象存储监听器
+// 拼接媒体查询条件
+
+function handleMediaQueryStr($props) {
+  var mediaQueryStr = [];
+  var propsMenu = ['width', 'minWidth', 'maxWidth', 'height', 'minHeight', 'maxHeight', 'orientation'];
+
+  for (var _i = 0, _propsMenu = propsMenu; _i < _propsMenu.length; _i++) {
+    var item = _propsMenu[_i];
+
+    if (item !== 'orientation' && $props[item] !== '' && Number($props[item]) >= 0) {
+      mediaQueryStr.push("(".concat(humpToLine(item), ": ").concat(Number($props[item]), "px)"));
+    }
+
+    if (item === 'orientation' && $props[item]) {
+      mediaQueryStr.push("(".concat(humpToLine(item), ": ").concat($props[item], ")"));
+    }
+  }
+
+  mediaQueryStr = mediaQueryStr.join(' and ');
+  return mediaQueryStr;
+}
+
+function humpToLine(name) {
+  return name.replace(/([A-Z])/g, '-$1').toLowerCase();
+} // 请求媒体查询对象
+
+
+function requestMediaQueryObserver(_ref) {
+  var reqId = _ref.reqId,
+      options = _ref.options;
+  // 创建一个媒体查询对象
+  var mediaQueryObserver = mediaQueryObservers[reqId] = window.matchMedia(handleMediaQueryStr(options)); // 创建一个监听器
+
+  var listener = listeners[reqId] = function (e) {
+    UniViewJSBridge.publishHandler('onRequestMediaQueryObserver', {
+      reqId: reqId,
+      res: e.matches
+    });
+  };
+
+  listener(mediaQueryObserver); // 监听前执行一次媒体查询
+
+  mediaQueryObserver.addListener(listener);
+} // 销毁媒体查询对象
+
+function destroyMediaQueryObserver(_ref2) {
+  var reqId = _ref2.reqId;
+  var listener = listeners[reqId]; // 需要移除的某个监听
+
+  var mediaQueryObserver = mediaQueryObservers[reqId];
+
+  if (mediaQueryObserver) {
+    mediaQueryObserver.removeListener(listener); // 移除监听
+
+    delete mediaQueryObservers[reqId];
+    UniViewJSBridge.publishHandler('onRequestMediaQueryObserver', {
+      reqId: reqId,
+      reqEnd: true
+    });
+  }
+}
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(4)))
+
+/***/ }),
+/* 80 */
+/***/ (function(module, exports) {
+
+module.exports = ['uni-app', 'uni-layout', 'uni-content', 'uni-main', 'uni-top-window', 'uni-left-window', 'uni-right-window', 'uni-tabbar', 'uni-page', 'uni-page-head', 'uni-page-wrapper', 'uni-page-body', 'uni-page-refresh', 'uni-actionsheet', 'uni-modal', 'uni-toast', 'uni-resize-sensor', 'uni-shadow-root', 'uni-ad', 'uni-audio', 'uni-button', 'uni-camera', 'uni-canvas', 'uni-checkbox', 'uni-checkbox-group', 'uni-cover-image', 'uni-cover-view', 'uni-editor', 'uni-form', 'uni-functional-page-navigator', 'uni-icon', 'uni-image', 'uni-input', 'uni-label', 'uni-live-player', 'uni-live-pusher', 'uni-map', 'uni-movable-area', 'uni-movable-view', 'uni-navigator', 'uni-official-account', 'uni-open-data', 'uni-picker', 'uni-picker-view', 'uni-picker-view-column', 'uni-progress', 'uni-radio', 'uni-radio-group', 'uni-rich-text', 'uni-scroll-view', 'uni-slider', 'uni-swiper', 'uni-swiper-item', 'uni-switch', 'uni-text', 'uni-textarea', 'uni-video', 'uni-view', 'uni-web-view'];
+
+/***/ }),
+/* 81 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return generateId; });
+/* harmony import */ var uni_shared__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
+
+function generateId(vm, parent, version) {
+  if (!vm.$parent) {
+    return '-1';
+  }
+
+  var vnode = vm.$vnode;
+  var context = vnode.context;
+  var id = vnode.data.attrs._i;
+
+  if (version && Object(uni_shared__WEBPACK_IMPORTED_MODULE_0__[/* hasOwn */ "e"])(vnode.data, 'key')) {
+    // 补充 key 值
+    id = id + ';' + vnode.data.key;
+  } // slot 内的组件，需要补充 context 的 id，否则可能与内部组件索引值一致，导致 id 冲突
+
+
+  if (context && context !== parent && context._$id) {
+    if (true) {
+      console.log('generateId:' + context._$id + ';' + parent._$id + ',' + id);
+    }
+
+    return context._$id + ';' + parent._$id + ',' + id;
+  }
+
+  return parent._$id + ',' + id;
+}
+
+/***/ }),
+/* 82 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return loadScript; });
+var scripts = {};
+function loadScript(globalName, src, callback) {
+  var globalObject = typeof globalName === 'string' ? window[globalName] : globalName;
+
+  if (globalObject) {
+    callback();
+    return;
+  }
+
+  var callbacks = scripts[src];
+
+  if (!callbacks) {
+    callbacks = scripts[src] = [];
+    var script = document.createElement('script');
+    script.src = src;
+    document.body.appendChild(script);
+
+    script.onload = function () {
+      callbacks.forEach(function (callback) {
+        return callback();
+      });
+      delete scripts[src];
+    };
+  }
+
+  callbacks.push(callback);
+}
+
+/***/ }),
+/* 83 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(UniViewJSBridge, global) {/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(9);
+/* harmony import */ var uni_platform_view_index_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(115);
 /* harmony import */ var uni_platform_view_index_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(uni_platform_view_index_css__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var uni_platform_page_factory__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(58);
-/* harmony import */ var uni_platform_view_framework_page__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(59);
-/* harmony import */ var uni_platform_view_framework_plugins_index__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(84);
-/* harmony import */ var _view_api_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(74);
+/* harmony import */ var uni_platform_page_factory__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(68);
+/* harmony import */ var uni_platform_view_framework_page__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(69);
+/* harmony import */ var uni_platform_view_framework_plugins_index__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(111);
+/* harmony import */ var _view_api_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(95);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "a", function() { return _view_api_js__WEBPACK_IMPORTED_MODULE_5__["a"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "b", function() { return _view_api_js__WEBPACK_IMPORTED_MODULE_5__["b"]; });
@@ -14582,6 +16536,7 @@ module.exports = ['uni-app', 'uni-tabbar', 'uni-page', 'uni-page-head', 'uni-pag
 
 
 global.UniViewJSBridge = {
+  subscribe: UniViewJSBridge.subscribe,
   publishHandler: UniViewJSBridge.publishHandler,
   subscribeHandler: UniViewJSBridge.subscribeHandler
 };
@@ -14590,17 +16545,17 @@ global.__definePage = uni_platform_page_factory__WEBPACK_IMPORTED_MODULE_2__[/* 
 global.Vue = vue__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"];
 vue__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].use(uni_platform_view_framework_plugins_index__WEBPACK_IMPORTED_MODULE_4__[/* default */ "a"]);
 
-__webpack_require__(152);
+__webpack_require__(191);
 
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(4), __webpack_require__(16)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(4), __webpack_require__(19)))
 
 /***/ }),
-/* 69 */
+/* 84 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(UniViewJSBridge) {/* harmony import */ var uni_shared__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
+/* WEBPACK VAR INJECTION */(function(UniViewJSBridge) {/* harmony import */ var uni_shared__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
 
 /* harmony default export */ __webpack_exports__["a"] = ({
   props: {
@@ -14637,7 +16592,7 @@ __webpack_require__(152);
 
       var listeners = this.$options.listeners;
 
-      if (!Object(uni_shared__WEBPACK_IMPORTED_MODULE_0__[/* isPlainObject */ "e"])(listeners)) {
+      if (!Object(uni_shared__WEBPACK_IMPORTED_MODULE_0__[/* isPlainObject */ "g"])(listeners)) {
         return;
       }
 
@@ -14676,7 +16631,7 @@ __webpack_require__(152);
 
       var listeners = this.$options.listeners;
 
-      if (!Object(uni_shared__WEBPACK_IMPORTED_MODULE_0__[/* isPlainObject */ "e"])(listeners)) {
+      if (!Object(uni_shared__WEBPACK_IMPORTED_MODULE_0__[/* isPlainObject */ "g"])(listeners)) {
         return;
       }
 
@@ -14710,11 +16665,11 @@ __webpack_require__(152);
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(4)))
 
 /***/ }),
-/* 70 */
+/* 85 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(UniViewJSBridge) {/* harmony import */ var uni_shared__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
+/* WEBPACK VAR INJECTION */(function(UniViewJSBridge) {/* harmony import */ var uni_shared__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
 
 /* harmony default export */ __webpack_exports__["a"] = ({
   // 取消id的定义，某些组件（canvas）内不在props内定义id
@@ -14752,7 +16707,7 @@ __webpack_require__(152);
         return;
       }
 
-      if (!Object(uni_shared__WEBPACK_IMPORTED_MODULE_0__[/* isFn */ "d"])(this._handleSubscribe)) {
+      if (!Object(uni_shared__WEBPACK_IMPORTED_MODULE_0__[/* isFn */ "f"])(this._handleSubscribe)) {
         return;
       } // 纠正VUniVideo等组件命名为Video
 
@@ -14779,144 +16734,734 @@ __webpack_require__(152);
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(4)))
 
 /***/ }),
-/* 71 */
+/* 86 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(UniViewJSBridge) {/* harmony import */ var uni_shared__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
+/* WEBPACK VAR INJECTION */(function(UniViewJSBridge) {/* harmony import */ var uni_shared__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
+/* harmony import */ var _emitter__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(16);
+/* harmony import */ var _keyboard__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(25);
+/* harmony import */ var _interact__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(26);
 
 
-function hideKeyboard() {
-  document.activeElement.blur();
-}
-/**
- * 保证iOS点击输入框外隐藏键盘
- */
 
 
-function iosHideKeyboard() {}
+UniViewJSBridge.subscribe('getSelectedTextRange', function (_ref) {
+  var pageId = _ref.pageId,
+      callbackId = _ref.callbackId;
+  var activeElement = document.activeElement;
+  var tagName = activeElement.tagName.toLowerCase();
+  var tagNames = ['input', 'textarea'];
+  var data = {};
 
+  if (tagNames.includes(tagName)) {
+    data.errMsg = 'getSelectedTextRange:ok';
+    data.start = activeElement.selectionStart;
+    data.end = activeElement.selectionEnd;
+  } else {
+    data.errMsg = 'getSelectedTextRange:fail no focused';
+  }
+
+  UniViewJSBridge.publishHandler('onGetSelectedTextRange', {
+    callbackId: callbackId,
+    data: data
+  }, pageId);
+}); // App 延迟获取焦点
+
+var FOCUS_DELAY = 200;
+var startTime;
 /* harmony default export */ __webpack_exports__["a"] = ({
-  name: 'Keyboard',
+  name: 'Field',
+  mixins: [_emitter__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"], _keyboard__WEBPACK_IMPORTED_MODULE_2__[/* default */ "a"], _interact__WEBPACK_IMPORTED_MODULE_3__[/* default */ "a"]],
+  model: {
+    prop: 'value',
+    event: 'update:value'
+  },
   props: {
-    cursorSpacing: {
-      type: [Number, String],
-      default: 0
+    value: {
+      type: [String, Number],
+      default: ''
     },
-    showConfirmBar: {
+
+    /**
+     * 已废弃属性，用于历史兼容
+     */
+    autoFocus: {
       type: [Boolean, String],
-      default: 'auto'
+      default: false
     },
-    adjustPosition: {
-      type: Boolean,
-      default: true
+    focus: {
+      type: [Boolean, String],
+      default: false
+    },
+    cursor: {
+      type: [Number, String],
+      default: -1
+    },
+    selectionStart: {
+      type: [Number, String],
+      default: -1
+    },
+    selectionEnd: {
+      type: [Number, String],
+      default: -1
     }
+  },
+  data: function data() {
+    return {
+      composing: false,
+      valueSync: this._getValueString(this.value),
+      focusSync: this.focus,
+      // Safari 14 以上修正禁用状态颜色
+      fixColor: String(navigator.vendor).indexOf('Apple') === 0 && CSS.supports('image-orientation:from-image')
+    };
   },
   watch: {
     focus: function focus(val) {
       if (val) {
-        this.showSoftKeybord();
+        this._focus();
+      } else {
+        this._blur();
+      }
+    },
+    focusSync: function focusSync(val) {
+      this.$emit('update:focus', val);
+    },
+    cursorNumber: function cursorNumber() {
+      this._checkCursor();
+    },
+    selectionStartNumber: function selectionStartNumber() {
+      this._checkSelection();
+    },
+    selectionEndNumber: function selectionEndNumber() {
+      this._checkSelection();
+    }
+  },
+  computed: {
+    needFocus: function needFocus() {
+      return this.autoFocus || this.focus;
+    },
+    cursorNumber: function cursorNumber() {
+      var cursor = Number(this.cursor);
+      return isNaN(cursor) ? -1 : cursor;
+    },
+    selectionStartNumber: function selectionStartNumber() {
+      var selectionStart = Number(this.selectionStart);
+      return isNaN(selectionStart) ? -1 : selectionStart;
+    },
+    selectionEndNumber: function selectionEndNumber() {
+      var selectionEnd = Number(this.selectionEnd);
+      return isNaN(selectionEnd) ? -1 : selectionEnd;
+    }
+  },
+  created: function created() {
+    var _this = this;
+
+    var valueChange = this.__valueChange = Object(uni_shared__WEBPACK_IMPORTED_MODULE_0__[/* debounce */ "c"])(function (val) {
+      _this.valueSync = _this._getValueString(val);
+    }, 100);
+    this.$watch('value', valueChange);
+    this.__triggerInput = Object(uni_shared__WEBPACK_IMPORTED_MODULE_0__[/* throttle */ "l"])(function ($event, detail) {
+      _this.__valueChange.cancel();
+
+      _this.$emit('update:value', detail.value);
+
+      _this.$trigger('input', $event, detail);
+    }, 100);
+
+    this.$triggerInput = function ($event, detail, force) {
+      _this.__valueChange.cancel();
+
+      _this.__triggerInput($event, detail);
+
+      if (force) {
+        _this.__triggerInput.flush();
+      }
+    };
+  },
+  beforeDestroy: function beforeDestroy() {
+    this.__valueChange.cancel();
+
+    this.__triggerInput.cancel();
+  },
+  directives: {
+    field: {
+      inserted: function inserted(el, binding, vnode) {
+        vnode.context._initField(el);
       }
     }
   },
-  mounted: function mounted() {
-    if (this.autoFocus || this.focus) {
-      this.showSoftKeybord();
-    }
-  },
-  beforeDestroy: function beforeDestroy() {
-    this.onKeyboardHide();
-  },
   methods: {
-    initKeyboard: function initKeyboard(el) {
-      var _this = this;
-
-      el.addEventListener('focus', function () {
-        _this.hideKeyboardTemp = function () {
-          hideKeyboard();
-        };
-
-        UniViewJSBridge.subscribe('hideKeyboard', _this.hideKeyboardTemp);
-        document.addEventListener('click', iosHideKeyboard, false);
-
-        _this.setSoftinputNavBar();
-
-        _this.setSoftinputTemporary();
-      });
-      el.addEventListener('blur', this.onKeyboardHide.bind(this));
+    _getValueString: function _getValueString(value) {
+      return value === null ? '' : String(value);
     },
-    showSoftKeybord: function showSoftKeybord() {
-      Object(uni_shared__WEBPACK_IMPORTED_MODULE_0__[/* plusReady */ "g"])(function () {
-        plus.key.showSoftKeybord();
-      });
-    },
-    setSoftinputTemporary: function setSoftinputTemporary() {
+    _initField: function _initField(el) {
       var _this2 = this;
 
-      Object(uni_shared__WEBPACK_IMPORTED_MODULE_0__[/* plusReady */ "g"])(function () {
-        var currentWebview = plus.webview.currentWebview();
-        var style = currentWebview.getStyle() || {};
+      this._field = el;
+      startTime = startTime || Date.now();
 
-        var rect = _this2.$el.getBoundingClientRect();
-
-        currentWebview.setSoftinputTemporary && currentWebview.setSoftinputTemporary({
-          mode: style.softinputMode === 'adjustResize' ? 'adjustResize' : _this2.adjustPosition ? 'adjustPan' : 'nothing',
-          position: {
-            top: rect.top,
-            height: rect.height + (Number(_this2.cursorSpacing) || 0)
-          }
+      if (this.needFocus) {
+        setTimeout(function () {
+          _this2._focus();
         });
-      });
+      }
     },
-    setSoftinputNavBar: function setSoftinputNavBar() {
-      var _this3 = this;
-
-      if (this.showConfirmBar === 'auto') {
-        delete this.__softinputNavBar;
+    _focus: function _focus() {
+      if (!this.needFocus) {
         return;
       }
 
-      Object(uni_shared__WEBPACK_IMPORTED_MODULE_0__[/* plusReady */ "g"])(function () {
-        var currentWebview = plus.webview.currentWebview();
+      var field = this._field;
 
-        var _ref = currentWebview.getStyle() || {},
-            softinputNavBar = _ref.softinputNavBar;
+      if (!field ||  true && !window.plus) {
+        setTimeout(this._focus.bind(this), 100);
+        return;
+      }
 
-        var showConfirmBar = softinputNavBar !== 'none';
+      if (false) {} else {
+        var timeout = FOCUS_DELAY - (Date.now() - startTime);
 
-        if (showConfirmBar !== _this3.showConfirmBar) {
-          _this3.__softinputNavBar = softinputNavBar || 'auto';
-          currentWebview.setStyle({
-            softinputNavBar: _this3.showConfirmBar ? 'auto' : 'none'
-          });
-        } else {
-          delete _this3.__softinputNavBar;
+        if (timeout > 0) {
+          setTimeout(this._focus.bind(this), timeout);
+          return;
         }
-      });
-    },
-    resetSoftinputNavBar: function resetSoftinputNavBar() {
-      var softinputNavBar = this.__softinputNavBar;
 
-      if (softinputNavBar) {
-        Object(uni_shared__WEBPACK_IMPORTED_MODULE_0__[/* plusReady */ "g"])(function () {
-          var currentWebview = plus.webview.currentWebview();
-          currentWebview.setStyle({
-            softinputNavBar: softinputNavBar
-          });
-        });
+        field.focus(); // 无用户交互的 webview 需主动显示键盘（安卓）
+
+        if (!this.userInteract) {
+          plus.key.showSoftKeybord();
+        }
       }
     },
-    onKeyboardHide: function onKeyboardHide() {
-      UniViewJSBridge.unsubscribe('hideKeyboard', this.hideKeyboardTemp);
-      document.removeEventListener('click', iosHideKeyboard, false);
-      this.resetSoftinputNavBar();
+    _blur: function _blur() {
+      var field = this._field;
+      field && field.blur();
+    },
+    _onFocus: function _onFocus($event) {
+      this.focusSync = true;
+      this.$trigger('focus', $event, {
+        value: this.valueSync
+      }); // 从 watch:focusSync 中移出到这里。在watcher中如果focus初始值为ture，则不会执行以下逻辑
+
+      this._checkSelection();
+
+      this._checkCursor();
+    },
+    _onBlur: function _onBlur($event) {
+      // iOS 输入法 compositionend 事件可能晚于 blur
+      if (this.composing) {
+        this.composing = false;
+
+        this._onInput($event, true);
+      }
+
+      this.focusSync = false;
+      var field = $event.target;
+      var cursor;
+
+      if (field.type === 'number') {
+        field.type = 'text';
+        cursor = field.selectionEnd;
+        field.type = 'number';
+      } else {
+        cursor = field.selectionEnd;
+      }
+
+      this.$trigger('blur', $event, {
+        value: this.valueSync,
+        cursor: cursor
+      });
+    },
+    _checkSelection: function _checkSelection() {
+      var field = this._field;
+
+      if (this.focusSync && this.selectionStartNumber > -1 && this.selectionEndNumber > -1 && field.type !== 'number') {
+        field.selectionStart = this.selectionStartNumber;
+        field.selectionEnd = this.selectionEndNumber;
+      }
+    },
+    _checkCursor: function _checkCursor() {
+      var field = this._field;
+
+      if (this.focusSync && this.selectionStartNumber < 0 && this.selectionEndNumber < 0 && this.cursorNumber > -1 && field.type !== 'number') {
+        field.selectionEnd = field.selectionStart = this.cursorNumber;
+      }
     }
   }
 });
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(4)))
 
 /***/ }),
-/* 72 */
+/* 87 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+// Top level file is just a mixin of submodules & constants
+
+
+var assign    = __webpack_require__(11).assign;
+
+var deflate   = __webpack_require__(120);
+var inflate   = __webpack_require__(123);
+var constants = __webpack_require__(92);
+
+var pako = {};
+
+assign(pako, deflate, inflate, constants);
+
+module.exports = pako;
+
+
+/***/ }),
+/* 88 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// Note: adler32 takes 12% for level 0 and 2% for level 6.
+// It isn't worth it to make additional optimizations as in original.
+// Small size is preferable.
+
+// (C) 1995-2013 Jean-loup Gailly and Mark Adler
+// (C) 2014-2017 Vitaly Puzrin and Andrey Tupitsin
+//
+// This software is provided 'as-is', without any express or implied
+// warranty. In no event will the authors be held liable for any damages
+// arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it
+// freely, subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented; you must not
+//   claim that you wrote the original software. If you use this software
+//   in a product, an acknowledgment in the product documentation would be
+//   appreciated but is not required.
+// 2. Altered source versions must be plainly marked as such, and must not be
+//   misrepresented as being the original software.
+// 3. This notice may not be removed or altered from any source distribution.
+
+function adler32(adler, buf, len, pos) {
+  var s1 = (adler & 0xffff) |0,
+      s2 = ((adler >>> 16) & 0xffff) |0,
+      n = 0;
+
+  while (len !== 0) {
+    // Set limit ~ twice less than 5552, to keep
+    // s2 in 31-bits, because we force signed ints.
+    // in other case %= will fail.
+    n = len > 2000 ? 2000 : len;
+    len -= n;
+
+    do {
+      s1 = (s1 + buf[pos++]) |0;
+      s2 = (s2 + s1) |0;
+    } while (--n);
+
+    s1 %= 65521;
+    s2 %= 65521;
+  }
+
+  return (s1 | (s2 << 16)) |0;
+}
+
+
+module.exports = adler32;
+
+
+/***/ }),
+/* 89 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// Note: we can't get significant speed boost here.
+// So write code to minimize size - no pregenerated tables
+// and array tools dependencies.
+
+// (C) 1995-2013 Jean-loup Gailly and Mark Adler
+// (C) 2014-2017 Vitaly Puzrin and Andrey Tupitsin
+//
+// This software is provided 'as-is', without any express or implied
+// warranty. In no event will the authors be held liable for any damages
+// arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it
+// freely, subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented; you must not
+//   claim that you wrote the original software. If you use this software
+//   in a product, an acknowledgment in the product documentation would be
+//   appreciated but is not required.
+// 2. Altered source versions must be plainly marked as such, and must not be
+//   misrepresented as being the original software.
+// 3. This notice may not be removed or altered from any source distribution.
+
+// Use ordinary array, since untyped makes no boost here
+function makeTable() {
+  var c, table = [];
+
+  for (var n = 0; n < 256; n++) {
+    c = n;
+    for (var k = 0; k < 8; k++) {
+      c = ((c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1));
+    }
+    table[n] = c;
+  }
+
+  return table;
+}
+
+// Create table on load. Just 255 signed longs. Not a problem.
+var crcTable = makeTable();
+
+
+function crc32(crc, buf, len, pos) {
+  var t = crcTable,
+      end = pos + len;
+
+  crc ^= -1;
+
+  for (var i = pos; i < end; i++) {
+    crc = (crc >>> 8) ^ t[(crc ^ buf[i]) & 0xFF];
+  }
+
+  return (crc ^ (-1)); // >>> 0;
+}
+
+
+module.exports = crc32;
+
+
+/***/ }),
+/* 90 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+// String encode/decode helpers
+
+
+
+var utils = __webpack_require__(11);
+
+
+// Quick check if we can use fast array to bin string conversion
+//
+// - apply(Array) can fail on Android 2.2
+// - apply(Uint8Array) can fail on iOS 5.1 Safari
+//
+var STR_APPLY_OK = true;
+var STR_APPLY_UIA_OK = true;
+
+try { String.fromCharCode.apply(null, [ 0 ]); } catch (__) { STR_APPLY_OK = false; }
+try { String.fromCharCode.apply(null, new Uint8Array(1)); } catch (__) { STR_APPLY_UIA_OK = false; }
+
+
+// Table with utf8 lengths (calculated by first byte of sequence)
+// Note, that 5 & 6-byte values and some 4-byte values can not be represented in JS,
+// because max possible codepoint is 0x10ffff
+var _utf8len = new utils.Buf8(256);
+for (var q = 0; q < 256; q++) {
+  _utf8len[q] = (q >= 252 ? 6 : q >= 248 ? 5 : q >= 240 ? 4 : q >= 224 ? 3 : q >= 192 ? 2 : 1);
+}
+_utf8len[254] = _utf8len[254] = 1; // Invalid sequence start
+
+
+// convert string to array (typed, when possible)
+exports.string2buf = function (str) {
+  var buf, c, c2, m_pos, i, str_len = str.length, buf_len = 0;
+
+  // count binary size
+  for (m_pos = 0; m_pos < str_len; m_pos++) {
+    c = str.charCodeAt(m_pos);
+    if ((c & 0xfc00) === 0xd800 && (m_pos + 1 < str_len)) {
+      c2 = str.charCodeAt(m_pos + 1);
+      if ((c2 & 0xfc00) === 0xdc00) {
+        c = 0x10000 + ((c - 0xd800) << 10) + (c2 - 0xdc00);
+        m_pos++;
+      }
+    }
+    buf_len += c < 0x80 ? 1 : c < 0x800 ? 2 : c < 0x10000 ? 3 : 4;
+  }
+
+  // allocate buffer
+  buf = new utils.Buf8(buf_len);
+
+  // convert
+  for (i = 0, m_pos = 0; i < buf_len; m_pos++) {
+    c = str.charCodeAt(m_pos);
+    if ((c & 0xfc00) === 0xd800 && (m_pos + 1 < str_len)) {
+      c2 = str.charCodeAt(m_pos + 1);
+      if ((c2 & 0xfc00) === 0xdc00) {
+        c = 0x10000 + ((c - 0xd800) << 10) + (c2 - 0xdc00);
+        m_pos++;
+      }
+    }
+    if (c < 0x80) {
+      /* one byte */
+      buf[i++] = c;
+    } else if (c < 0x800) {
+      /* two bytes */
+      buf[i++] = 0xC0 | (c >>> 6);
+      buf[i++] = 0x80 | (c & 0x3f);
+    } else if (c < 0x10000) {
+      /* three bytes */
+      buf[i++] = 0xE0 | (c >>> 12);
+      buf[i++] = 0x80 | (c >>> 6 & 0x3f);
+      buf[i++] = 0x80 | (c & 0x3f);
+    } else {
+      /* four bytes */
+      buf[i++] = 0xf0 | (c >>> 18);
+      buf[i++] = 0x80 | (c >>> 12 & 0x3f);
+      buf[i++] = 0x80 | (c >>> 6 & 0x3f);
+      buf[i++] = 0x80 | (c & 0x3f);
+    }
+  }
+
+  return buf;
+};
+
+// Helper (used in 2 places)
+function buf2binstring(buf, len) {
+  // On Chrome, the arguments in a function call that are allowed is `65534`.
+  // If the length of the buffer is smaller than that, we can use this optimization,
+  // otherwise we will take a slower path.
+  if (len < 65534) {
+    if ((buf.subarray && STR_APPLY_UIA_OK) || (!buf.subarray && STR_APPLY_OK)) {
+      return String.fromCharCode.apply(null, utils.shrinkBuf(buf, len));
+    }
+  }
+
+  var result = '';
+  for (var i = 0; i < len; i++) {
+    result += String.fromCharCode(buf[i]);
+  }
+  return result;
+}
+
+
+// Convert byte array to binary string
+exports.buf2binstring = function (buf) {
+  return buf2binstring(buf, buf.length);
+};
+
+
+// Convert binary string (typed, when possible)
+exports.binstring2buf = function (str) {
+  var buf = new utils.Buf8(str.length);
+  for (var i = 0, len = buf.length; i < len; i++) {
+    buf[i] = str.charCodeAt(i);
+  }
+  return buf;
+};
+
+
+// convert array to string
+exports.buf2string = function (buf, max) {
+  var i, out, c, c_len;
+  var len = max || buf.length;
+
+  // Reserve max possible length (2 words per char)
+  // NB: by unknown reasons, Array is significantly faster for
+  //     String.fromCharCode.apply than Uint16Array.
+  var utf16buf = new Array(len * 2);
+
+  for (out = 0, i = 0; i < len;) {
+    c = buf[i++];
+    // quick process ascii
+    if (c < 0x80) { utf16buf[out++] = c; continue; }
+
+    c_len = _utf8len[c];
+    // skip 5 & 6 byte codes
+    if (c_len > 4) { utf16buf[out++] = 0xfffd; i += c_len - 1; continue; }
+
+    // apply mask on first byte
+    c &= c_len === 2 ? 0x1f : c_len === 3 ? 0x0f : 0x07;
+    // join the rest
+    while (c_len > 1 && i < len) {
+      c = (c << 6) | (buf[i++] & 0x3f);
+      c_len--;
+    }
+
+    // terminated by end of string?
+    if (c_len > 1) { utf16buf[out++] = 0xfffd; continue; }
+
+    if (c < 0x10000) {
+      utf16buf[out++] = c;
+    } else {
+      c -= 0x10000;
+      utf16buf[out++] = 0xd800 | ((c >> 10) & 0x3ff);
+      utf16buf[out++] = 0xdc00 | (c & 0x3ff);
+    }
+  }
+
+  return buf2binstring(utf16buf, out);
+};
+
+
+// Calculate max possible position in utf8 buffer,
+// that will not break sequence. If that's not possible
+// - (very small limits) return max size as is.
+//
+// buf[] - utf8 bytes array
+// max   - length limit (mandatory);
+exports.utf8border = function (buf, max) {
+  var pos;
+
+  max = max || buf.length;
+  if (max > buf.length) { max = buf.length; }
+
+  // go back from last position, until start of sequence found
+  pos = max - 1;
+  while (pos >= 0 && (buf[pos] & 0xC0) === 0x80) { pos--; }
+
+  // Very small and broken sequence,
+  // return max, because we should return something anyway.
+  if (pos < 0) { return max; }
+
+  // If we came to start of buffer - that means buffer is too small,
+  // return max too.
+  if (pos === 0) { return max; }
+
+  return (pos + _utf8len[buf[pos]] > max) ? pos : max;
+};
+
+
+/***/ }),
+/* 91 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// (C) 1995-2013 Jean-loup Gailly and Mark Adler
+// (C) 2014-2017 Vitaly Puzrin and Andrey Tupitsin
+//
+// This software is provided 'as-is', without any express or implied
+// warranty. In no event will the authors be held liable for any damages
+// arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it
+// freely, subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented; you must not
+//   claim that you wrote the original software. If you use this software
+//   in a product, an acknowledgment in the product documentation would be
+//   appreciated but is not required.
+// 2. Altered source versions must be plainly marked as such, and must not be
+//   misrepresented as being the original software.
+// 3. This notice may not be removed or altered from any source distribution.
+
+function ZStream() {
+  /* next input byte */
+  this.input = null; // JS specific, because we have no pointers
+  this.next_in = 0;
+  /* number of bytes available at input */
+  this.avail_in = 0;
+  /* total number of input bytes read so far */
+  this.total_in = 0;
+  /* next output byte should be put there */
+  this.output = null; // JS specific, because we have no pointers
+  this.next_out = 0;
+  /* remaining free space at output */
+  this.avail_out = 0;
+  /* total number of bytes output so far */
+  this.total_out = 0;
+  /* last error message, NULL if no error */
+  this.msg = ''/*Z_NULL*/;
+  /* not visible by applications */
+  this.state = null;
+  /* best guess about the data type: binary or text */
+  this.data_type = 2/*Z_UNKNOWN*/;
+  /* adler32 value of the uncompressed data */
+  this.adler = 0;
+}
+
+module.exports = ZStream;
+
+
+/***/ }),
+/* 92 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// (C) 1995-2013 Jean-loup Gailly and Mark Adler
+// (C) 2014-2017 Vitaly Puzrin and Andrey Tupitsin
+//
+// This software is provided 'as-is', without any express or implied
+// warranty. In no event will the authors be held liable for any damages
+// arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it
+// freely, subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented; you must not
+//   claim that you wrote the original software. If you use this software
+//   in a product, an acknowledgment in the product documentation would be
+//   appreciated but is not required.
+// 2. Altered source versions must be plainly marked as such, and must not be
+//   misrepresented as being the original software.
+// 3. This notice may not be removed or altered from any source distribution.
+
+module.exports = {
+
+  /* Allowed flush values; see deflate() and inflate() below for details */
+  Z_NO_FLUSH:         0,
+  Z_PARTIAL_FLUSH:    1,
+  Z_SYNC_FLUSH:       2,
+  Z_FULL_FLUSH:       3,
+  Z_FINISH:           4,
+  Z_BLOCK:            5,
+  Z_TREES:            6,
+
+  /* Return codes for the compression/decompression functions. Negative values
+  * are errors, positive values are used for special but normal events.
+  */
+  Z_OK:               0,
+  Z_STREAM_END:       1,
+  Z_NEED_DICT:        2,
+  Z_ERRNO:           -1,
+  Z_STREAM_ERROR:    -2,
+  Z_DATA_ERROR:      -3,
+  //Z_MEM_ERROR:     -4,
+  Z_BUF_ERROR:       -5,
+  //Z_VERSION_ERROR: -6,
+
+  /* compression levels */
+  Z_NO_COMPRESSION:         0,
+  Z_BEST_SPEED:             1,
+  Z_BEST_COMPRESSION:       9,
+  Z_DEFAULT_COMPRESSION:   -1,
+
+
+  Z_FILTERED:               1,
+  Z_HUFFMAN_ONLY:           2,
+  Z_RLE:                    3,
+  Z_FIXED:                  4,
+  Z_DEFAULT_STRATEGY:       0,
+
+  /* Possible values of the data_type field (though see inflate()) */
+  Z_BINARY:                 0,
+  Z_TEXT:                   1,
+  //Z_ASCII:                1, // = Z_TEXT (deprecated)
+  Z_UNKNOWN:                2,
+
+  /* The deflate compression method */
+  Z_DEFLATED:               8
+  //Z_NULL:                 null // Use -1 or null inline, depending on var type
+};
+
+
+/***/ }),
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports.nextTick = function nextTick(fn) {
@@ -14943,7 +17488,7 @@ exports.binding = function (name) {
     var path;
     exports.cwd = function () { return cwd };
     exports.chdir = function (dir) {
-        if (!path) path = __webpack_require__(121);
+        if (!path) path = __webpack_require__(158);
         cwd = path.resolve(dir, cwd);
     };
 })();
@@ -14956,7 +17501,7 @@ exports.features = {};
 
 
 /***/ }),
-/* 73 */
+/* 94 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -14999,7 +17544,7 @@ function switchTab(args) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(4)))
 
 /***/ }),
-/* 74 */
+/* 95 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -15032,6 +17577,11 @@ function checkDeviceWidth() {
   isIOS = platform === 'ios';
 }
 
+function checkValue(value, defaultValue) {
+  value = Number(value);
+  return isNaN(value) ? defaultValue : value;
+}
+
 function upx2px(number, newDeviceWidth) {
   if (deviceWidth === 0) {
     checkDeviceWidth();
@@ -15043,7 +17593,13 @@ function upx2px(number, newDeviceWidth) {
     return 0;
   }
 
-  var result = number / BASE_DEVICE_WIDTH * (newDeviceWidth || deviceWidth);
+  var config = __uniConfig.globalStyle || __uniConfig.window || {};
+  var maxWidth = checkValue(config.rpxCalcMaxDeviceWidth, 960);
+  var baseWidth = checkValue(config.rpxCalcBaseDeviceWidth, 375);
+  var includeWidth = checkValue(config.rpxCalcIncludeWidth, 750);
+  var width = newDeviceWidth || deviceWidth;
+  width = number === includeWidth || width <= maxWidth ? width : baseWidth;
+  var result = number / BASE_DEVICE_WIDTH * width;
 
   if (result < 0) {
     result = -result;
@@ -15053,25 +17609,32 @@ function upx2px(number, newDeviceWidth) {
 
   if (result === 0) {
     if (deviceDPR === 1 || !isIOS) {
-      return 1;
+      result = 1;
     } else {
-      return 0.5;
+      result = 0.5;
     }
   }
 
   return number < 0 ? -result : result;
 }
 // EXTERNAL MODULE: ./src/platforms/app-plus/view/api/index.js
-var api = __webpack_require__(73);
+var api = __webpack_require__(94);
 
 // EXTERNAL MODULE: ./src/platforms/app-plus/helpers/get-window-offset.js
-var get_window_offset = __webpack_require__(10);
+var get_window_offset = __webpack_require__(14);
 
+// CONCATENATED MODULE: ./src/platforms/app-plus/helpers/uuid.js
+var deviceId;
+/* harmony default export */ var uuid = (function () {
+  deviceId = deviceId || plus.device.uuid;
+  return deviceId;
+});
 // EXTERNAL MODULE: ./node_modules/safe-area-insets/out/index.js
-var out = __webpack_require__(5);
+var out = __webpack_require__(6);
 var out_default = /*#__PURE__*/__webpack_require__.n(out);
 
 // CONCATENATED MODULE: ./src/platforms/h5/service/api/device/get-system-info.js
+
 
 
 var ua = navigator.userAgent;
@@ -15086,15 +17649,38 @@ var isAndroid = /android/i.test(ua);
 
 var get_system_info_isIOS = /iphone|ipad|ipod/i.test(ua);
 /**
+ * 是否是Windows设备
+ */
+
+var isWindows = ua.match(/Windows NT ([\d|\d.\d]*)/i);
+/**
+ * 是否是Mac设备
+ */
+
+var isMac = /Macintosh|Mac/i.test(ua);
+/**
+ * 是否是Linux设备
+ */
+
+var isLinux = /Linux|X11/i.test(ua);
+/**
+ * 是否是iPadOS
+ */
+
+var isIPadOS = isMac && navigator.maxTouchPoints > 0;
+/**
  * 获取系统信息-同步
  */
 
 function getSystemInfoSync() {
   var screen = window.screen;
-  var pixelRatio = window.devicePixelRatio;
-  var screenWidth = screen.width;
-  var screenHeight = screen.height;
-  var windowWidth = Math.min(window.innerWidth, document.documentElement.clientWidth, screenWidth);
+  var pixelRatio = window.devicePixelRatio; // 横屏时 iOS 获取的屏幕宽高颠倒，进行纠正
+
+  var screenFix = /^Apple/.test(navigator.vendor) && typeof window.orientation === 'number';
+  var landscape = screenFix && Math.abs(window.orientation) === 90;
+  var screenWidth = screenFix ? Math[landscape ? 'max' : 'min'](screen.width, screen.height) : screen.width;
+  var screenHeight = screenFix ? Math[landscape ? 'min' : 'max'](screen.height, screen.width) : screen.height;
+  var windowWidth = Math.min(window.innerWidth, document.documentElement.clientWidth, screenWidth) || screenWidth;
   var windowHeight = window.innerHeight;
   var language = navigator.language;
   var statusBarHeight = out_default.a.top;
@@ -15151,6 +17737,72 @@ function getSystemInfoSync() {
         break;
       }
     }
+  } else if (isIPadOS) {
+    model = 'iPad';
+    osname = 'iOS';
+    osversion = typeof window.BigInt === 'function' ? '14.0' : '13.0';
+  } else if (isWindows || isMac || isLinux) {
+    model = 'PC';
+    var _osversionFind2 = ua.match(/\((.+?)\)/)[1];
+
+    if (isWindows) {
+      osname = 'Windows';
+      osversion = '';
+
+      switch (isWindows[1]) {
+        case '5.1':
+          osversion = 'XP';
+          break;
+
+        case '6.0':
+          osversion = 'Vista';
+          break;
+
+        case '6.1':
+          osversion = '7';
+          break;
+
+        case '6.2':
+          osversion = '8';
+          break;
+
+        case '6.3':
+          osversion = '8.1';
+          break;
+
+        case '10.0':
+          osversion = '10';
+          break;
+      }
+
+      var framework = _osversionFind2.match(/[Win|WOW]([\d]+)/);
+
+      if (framework) {
+        osversion += " x".concat(framework[1]);
+      }
+    } else if (isMac) {
+      osname = 'Mac';
+      osversion = _osversionFind2.match(/Mac OS X (.+)/) || '';
+
+      if (osversion) {
+        osversion = osversion[1].replace(/_/g, '.'); // '10_15_7' or '10.16; rv:86.0'
+
+        if (osversion.indexOf(';') !== -1) {
+          osversion = osversion.split(';')[0];
+        }
+      }
+    } else if (isLinux) {
+      osname = 'Linux';
+      osversion = _osversionFind2.match(/Linux (.*)/) || '';
+
+      if (osversion) {
+        osversion = osversion[1]; // 'x86_64' or 'x86_64; rv:79.0'
+
+        if (osversion.indexOf(';') !== -1) {
+          osversion = osversion.split(';')[0];
+        }
+      }
+    }
   } else {
     osname = 'Other';
     osversion = '0';
@@ -15192,7 +17844,8 @@ function getSystemInfoSync() {
       right: out_default.a.right,
       bottom: out_default.a.bottom,
       left: out_default.a.left
-    }
+    },
+    deviceId: uuid()
   };
 }
 /**
@@ -15215,14 +17868,14 @@ function canIUse(schema) {
 }
 
 /***/ }),
-/* 75 */
+/* 96 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(UniViewJSBridge) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return requestComponentInfo; });
-/* harmony import */ var uni_helpers_index__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6);
-/* harmony import */ var uni_platform_helpers_get_window_offset__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(10);
-/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(56);
+/* harmony import */ var uni_helpers_index__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(8);
+/* harmony import */ var uni_platform_helpers_get_window_offset__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(14);
+/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(21);
 
 
 
@@ -15251,8 +17904,12 @@ function getRootInfo(fields) {
   }
 
   if (fields.scrollOffset) {
-    info.scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft || 0;
-    info.scrollTop = document.documentElement.scrollTop || document.body.scrollTop || 0;
+    var documentElement = document.documentElement;
+    var body = document.body;
+    info.scrollLeft = documentElement.scrollLeft || body.scrollLeft || 0;
+    info.scrollTop = documentElement.scrollTop || body.scrollTop || 0;
+    info.scrollHeight = documentElement.scrollHeight || body.scrollHeight || 0;
+    info.scrollWidth = documentElement.scrollWidth || body.scrollWidth || 0;
   }
 
   return info;
@@ -15269,7 +17926,7 @@ function getNodeInfo(el, fields) {
   }
 
   if (fields.dataset) {
-    info.dataset = Object(uni_helpers_index__WEBPACK_IMPORTED_MODULE_0__[/* normalizeDataset */ "c"])(el.dataset || {});
+    info.dataset = Object(uni_helpers_index__WEBPACK_IMPORTED_MODULE_0__[/* getTargetDataset */ "a"])(el);
   }
 
   if (fields.rect || fields.size) {
@@ -15289,7 +17946,7 @@ function getNodeInfo(el, fields) {
   } // TODO 组件 props
 
 
-  if (fields.properties) {
+  if (Array.isArray(fields.properties)) {
     fields.properties.forEach(function (prop) {
       prop = prop.replace(/-([a-z])/g, function (e, t) {
         return t.toUpperCase();
@@ -15303,7 +17960,16 @@ function getNodeInfo(el, fields) {
     } else {
       info.scrollLeft = 0;
       info.scrollTop = 0;
+      info.scrollHeight = 0;
+      info.scrollWidth = 0;
     }
+  }
+
+  if (Array.isArray(fields.computedStyle)) {
+    var sytle = getComputedStyle(el);
+    fields.computedStyle.forEach(function (name) {
+      info[name] = sytle[name];
+    });
   }
 
   if (fields.context) {
@@ -15316,7 +17982,7 @@ function getNodeInfo(el, fields) {
 }
 
 function getNodesInfo(pageVm, component, selector, single, fields) {
-  var $el = Object(_util__WEBPACK_IMPORTED_MODULE_2__[/* findElm */ "a"])(component, pageVm);
+  var $el = Object(_util__WEBPACK_IMPORTED_MODULE_2__[/* elementMatchesPolyfill */ "a"])(Object(_util__WEBPACK_IMPORTED_MODULE_2__[/* findElm */ "b"])(component, pageVm));
 
   if (!$el || $el && $el.nodeType === 8) {
     // Comment
@@ -15352,17 +18018,24 @@ function getNodesInfo(pageVm, component, selector, single, fields) {
 function requestComponentInfo(_ref, pageId) {
   var reqId = _ref.reqId,
       reqs = _ref.reqs;
-  var pages = getCurrentPages(); // 跨平台时，View 层也应该实现该方法，举例 App 上，View 层的 getCurrentPages 返回长度为1的当前页面数组
+  var pageVm;
 
-  var page = pages.find(function (page) {
-    return page.$page.id === pageId;
-  });
+  if (pageId._isVue) {
+    pageVm = pageId;
+  } else {
+    var pages = getCurrentPages(); // 跨平台时，View 层也应该实现该方法，举例 App 上，View 层的 getCurrentPages 返回长度为1的当前页面数组
 
-  if (!page) {
-    throw new Error("Not Found\uFF1APage[".concat(pageId, "]"));
+    var page = pages.find(function (page) {
+      return page.$page.id === pageId;
+    });
+
+    if (!page) {
+      throw new Error("Not Found\uFF1APage[".concat(pageId, "]"));
+    }
+
+    pageVm = page.$vm;
   }
 
-  var pageVm = page.$vm;
   var result = [];
   reqs.forEach(function (_ref2) {
     var component = _ref2.component,
@@ -15379,12 +18052,12 @@ function requestComponentInfo(_ref, pageId) {
   UniViewJSBridge.publishHandler('onRequestComponentInfo', {
     reqId: reqId,
     res: result
-  }, pageVm.$page.id);
+  });
 }
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(4)))
 
 /***/ }),
-/* 76 */
+/* 97 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -15431,20 +18104,22 @@ function loadFontFace(_ref) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(4)))
 
 /***/ }),
-/* 77 */
+/* 98 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(global, UniViewJSBridge) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return initSubscribe; });
-/* harmony import */ var uni_shared__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
-/* harmony import */ var uni_core_view_bridge_subscribe_scroll__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(13);
-/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(57);
-/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(3);
+/* harmony import */ var uni_shared__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
+/* harmony import */ var uni_core_helpers_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(10);
+/* harmony import */ var uni_core_view_bridge_subscribe_scroll__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(22);
+/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(67);
+/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(3);
 
 
 
 
-var passiveOptions = uni_shared__WEBPACK_IMPORTED_MODULE_0__[/* supportsPassive */ "h"] ? {
+
+var passiveOptions = uni_shared__WEBPACK_IMPORTED_MODULE_0__[/* supportsPassive */ "k"] ? {
   passive: false
 } : false;
 
@@ -15456,7 +18131,10 @@ function onCssVar(_ref) {
   global.__WINDOW_BOTTOM = windowBottom;
 
   if (uni.canIUse('css.var')) {
-    var style = document.documentElement.style;
+    var style = document.documentElement.style; // TODO
+
+    style.setProperty('--window-left', '0px');
+    style.setProperty('--window-right', '0px');
     style.setProperty('--window-top', windowTop + 'px');
     style.setProperty('--window-bottom', windowBottom + 'px');
     style.setProperty('--status-bar-height', statusbarHeight + 'px');
@@ -15470,13 +18148,15 @@ function onCssVar(_ref) {
 }
 
 function onPageCreate(_ref2, pageId) {
-  var statusbarHeight = _ref2.statusbarHeight,
+  var locale = _ref2.locale,
+      statusbarHeight = _ref2.statusbarHeight,
       windowTop = _ref2.windowTop,
       windowBottom = _ref2.windowBottom,
       disableScroll = _ref2.disableScroll,
       onPageScroll = _ref2.onPageScroll,
       onPageReachBottom = _ref2.onPageReachBottom,
       onReachBottomDistance = _ref2.onReachBottomDistance;
+  Object(uni_core_helpers_i18n__WEBPACK_IMPORTED_MODULE_1__[/* setLocale */ "c"])(locale);
   onCssVar({
     statusbarHeight: statusbarHeight,
     windowTop: windowTop,
@@ -15484,11 +18164,11 @@ function onPageCreate(_ref2, pageId) {
   });
 
   if (disableScroll) {
-    document.addEventListener('touchmove', uni_core_view_bridge_subscribe_scroll__WEBPACK_IMPORTED_MODULE_1__[/* disableScroll */ "b"], passiveOptions);
+    document.addEventListener('touchmove', uni_core_view_bridge_subscribe_scroll__WEBPACK_IMPORTED_MODULE_2__[/* disableScroll */ "b"], passiveOptions);
   } else if (onPageScroll || onPageReachBottom) {
     requestAnimationFrame(function () {
       // 避免监听太早，直接触发了 scroll
-      document.addEventListener('scroll', Object(uni_core_view_bridge_subscribe_scroll__WEBPACK_IMPORTED_MODULE_1__[/* createScrollListener */ "a"])(pageId, {
+      document.addEventListener('scroll', Object(uni_core_view_bridge_subscribe_scroll__WEBPACK_IMPORTED_MODULE_2__[/* createScrollListener */ "a"])(pageId, {
         enablePageScroll: onPageScroll,
         enablePageReachBottom: onPageReachBottom,
         onReachBottomDistance: onReachBottomDistance
@@ -15503,20 +18183,51 @@ function onWebviewReady() {
 }
 
 function initSubscribe(subscribe) {
-  subscribe(_constants__WEBPACK_IMPORTED_MODULE_3__[/* WEBVIEW_READY */ "k"], onWebviewReady);
-  subscribe(_constants__WEBPACK_IMPORTED_MODULE_2__[/* ON_PAGE_CREATE */ "a"], onPageCreate);
+  subscribe(_constants__WEBPACK_IMPORTED_MODULE_4__[/* WEBVIEW_READY */ "m"], onWebviewReady);
+  subscribe(_constants__WEBPACK_IMPORTED_MODULE_3__[/* ON_PAGE_CREATE */ "a"], onPageCreate);
+  subscribe(_constants__WEBPACK_IMPORTED_MODULE_4__[/* SET_LOCALE */ "f"], uni_core_helpers_i18n__WEBPACK_IMPORTED_MODULE_1__[/* setLocale */ "c"]);
 }
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(16), __webpack_require__(4)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(19), __webpack_require__(4)))
 
 /***/ }),
-/* 78 */
+/* 99 */
+/***/ (function(module) {
+
+module.exports = JSON.parse("{\"uni.app.quit\":\"Press back button again to exit\",\"uni.async.error\":\"The connection timed out, click the screen to try again.\",\"uni.showActionSheet.cancel\":\"Cancel\",\"uni.showToast.unpaired\":\"Please note showToast must be paired with hideToast\",\"uni.showLoading.unpaired\":\"Please note showLoading must be paired with hideLoading\",\"uni.showModal.cancel\":\"Cancel\",\"uni.showModal.confirm\":\"OK\",\"uni.chooseImage.cancel\":\"Cancel\",\"uni.chooseImage.sourceType.album\":\"Album\",\"uni.chooseImage.sourceType.camera\":\"Camera\",\"uni.chooseVideo.cancel\":\"Cancel\",\"uni.chooseVideo.sourceType.album\":\"Album\",\"uni.chooseVideo.sourceType.camera\":\"Camera\",\"uni.chooseFile.notUserActivation\":\"File chooser dialog can only be shown with a user activation\",\"uni.previewImage.button.save\":\"Save Image\",\"uni.previewImage.save.success\":\"Saved successfully\",\"uni.previewImage.save.fail\":\"Save failed\",\"uni.setClipboardData.success\":\"Content copied\",\"uni.scanCode.title\":\"Scan code\",\"uni.scanCode.album\":\"Album\",\"uni.scanCode.fail\":\"Recognition failure\",\"uni.scanCode.flash.on\":\"Tap to turn light on\",\"uni.scanCode.flash.off\":\"Tap to turn light off\",\"uni.startSoterAuthentication.authContent\":\"Fingerprint recognition\",\"uni.picker.done\":\"Done\",\"uni.picker.cancel\":\"Cancel\",\"uni.video.danmu\":\"Danmu\",\"uni.video.volume\":\"Volume\",\"uni.button.feedback.title\":\"feedback\",\"uni.button.feedback.send\":\"send\",\"uni.chooseLocation.search\":\"Find Place\",\"uni.chooseLocation.cancel\":\"Cancel\"}");
+
+/***/ }),
+/* 100 */
+/***/ (function(module) {
+
+module.exports = JSON.parse("{\"uni.app.quit\":\"Pulse otra vez para salir\",\"uni.async.error\":\"Se agotó el tiempo de conexión, haga clic en la pantalla para volver a intentarlo.\",\"uni.showActionSheet.cancel\":\"Cancelar\",\"uni.showToast.unpaired\":\"Tenga en cuenta que showToast debe estar emparejado con hideToast\",\"uni.showLoading.unpaired\":\"Tenga en cuenta que showLoading debe estar emparejado con hideLoading\",\"uni.showModal.cancel\":\"Cancelar\",\"uni.showModal.confirm\":\"OK\",\"uni.chooseImage.cancel\":\"Cancelar\",\"uni.chooseImage.sourceType.album\":\"Álbum\",\"uni.chooseImage.sourceType.camera\":\"Cámara\",\"uni.chooseVideo.cancel\":\"Cancelar\",\"uni.chooseVideo.sourceType.album\":\"Álbum\",\"uni.chooseVideo.sourceType.camera\":\"Cámara\",\"uni.chooseFile.notUserActivation\":\"El cuadro de diálogo del selector de archivos solo se puede mostrar con la activación del usuario\",\"uni.previewImage.cancel\":\"Cancelar\",\"uni.previewImage.button.save\":\"Guardar imagen\",\"uni.previewImage.save.success\":\"Guardado exitosamente\",\"uni.previewImage.save.fail\":\"Error al guardar\",\"uni.setClipboardData.success\":\"Contenido copiado\",\"uni.scanCode.title\":\"Código de escaneo\",\"uni.scanCode.album\":\"Álbum\",\"uni.scanCode.fail\":\"Échec de la reconnaissance\",\"uni.scanCode.flash.on\":\"Toque para encender la luz\",\"uni.scanCode.flash.off\":\"Toque para apagar la luz\",\"uni.startSoterAuthentication.authContent\":\"Reconocimiento de huellas dactilares\",\"uni.picker.done\":\"OK\",\"uni.picker.cancel\":\"Cancelar\",\"uni.video.danmu\":\"Danmu\",\"uni.video.volume\":\"Volumen\",\"uni.button.feedback.title\":\"realimentación\",\"uni.button.feedback.send\":\"enviar\",\"uni.chooseLocation.search\":\"Encontrar\",\"uni.chooseLocation.cancel\":\"Cancelar\"}");
+
+/***/ }),
+/* 101 */
+/***/ (function(module) {
+
+module.exports = JSON.parse("{\"uni.app.quit\":\"Appuyez à nouveau pour quitter l'application\",\"uni.async.error\":\"La connexion a expiré, cliquez sur l'écran pour réessayer.\",\"uni.showActionSheet.cancel\":\"Annuler\",\"uni.showToast.unpaired\":\"Veuillez noter que showToast doit être associé à hideToast\",\"uni.showLoading.unpaired\":\"Veuillez noter que showLoading doit être associé à hideLoading\",\"uni.showModal.cancel\":\"Annuler\",\"uni.showModal.confirm\":\"OK\",\"uni.chooseImage.cancel\":\"Annuler\",\"uni.chooseImage.sourceType.album\":\"Album\",\"uni.chooseImage.sourceType.camera\":\"Caméra\",\"uni.chooseVideo.cancel\":\"Annuler\",\"uni.chooseVideo.sourceType.album\":\"Album\",\"uni.chooseVideo.sourceType.camera\":\"Caméra\",\"uni.chooseFile.notUserActivation\":\"La boîte de dialogue du sélecteur de fichier ne peut être affichée qu'avec une activation par l'utilisateur\",\"uni.previewImage.cancel\":\"Annuler\",\"uni.previewImage.button.save\":\"Guardar imagen\",\"uni.previewImage.save.success\":\"Enregistré avec succès\",\"uni.previewImage.save.fail\":\"Échec de la sauvegarde\",\"uni.setClipboardData.success\":\"Contenu copié\",\"uni.scanCode.title\":\"Code d’analyse\",\"uni.scanCode.album\":\"Album\",\"uni.scanCode.fail\":\"Fallo de reconocimiento\",\"uni.scanCode.flash.on\":\"Appuyez pour activer l'éclairage\",\"uni.scanCode.flash.off\":\"Appuyez pour désactiver l'éclairage\",\"uni.startSoterAuthentication.authContent\":\"Reconnaissance de l'empreinte digitale\",\"uni.picker.done\":\"OK\",\"uni.picker.cancel\":\"Annuler\",\"uni.video.danmu\":\"Danmu\",\"uni.video.volume\":\"Le Volume\",\"uni.button.feedback.title\":\"retour d'information\",\"uni.button.feedback.send\":\"envoyer\",\"uni.chooseLocation.search\":\"Trouve\",\"uni.chooseLocation.cancel\":\"Annuler\"}");
+
+/***/ }),
+/* 102 */
+/***/ (function(module) {
+
+module.exports = JSON.parse("{\"uni.app.quit\":\"再按一次退出应用\",\"uni.async.error\":\"连接服务器超时，点击屏幕重试\",\"uni.showActionSheet.cancel\":\"取消\",\"uni.showToast.unpaired\":\"请注意 showToast 与 hideToast 必须配对使用\",\"uni.showLoading.unpaired\":\"请注意 showLoading 与 hideLoading 必须配对使用\",\"uni.showModal.cancel\":\"取消\",\"uni.showModal.confirm\":\"确定\",\"uni.chooseImage.cancel\":\"取消\",\"uni.chooseImage.sourceType.album\":\"从相册选择\",\"uni.chooseImage.sourceType.camera\":\"拍摄\",\"uni.chooseVideo.cancel\":\"取消\",\"uni.chooseVideo.sourceType.album\":\"从相册选择\",\"uni.chooseVideo.sourceType.camera\":\"拍摄\",\"uni.chooseFile.notUserActivation\":\"文件选择器对话框只能在用户激活时显示\",\"uni.previewImage.cancel\":\"取消\",\"uni.previewImage.button.save\":\"保存图像\",\"uni.previewImage.save.success\":\"保存图像到相册成功\",\"uni.previewImage.save.fail\":\"保存图像到相册失败\",\"uni.setClipboardData.success\":\"内容已复制\",\"uni.scanCode.title\":\"扫码\",\"uni.scanCode.album\":\"相册\",\"uni.scanCode.fail\":\"识别失败\",\"uni.scanCode.flash.on\":\"轻触照亮\",\"uni.scanCode.flash.off\":\"轻触关闭\",\"uni.startSoterAuthentication.authContent\":\"指纹识别中...\",\"uni.picker.done\":\"完成\",\"uni.picker.cancel\":\"取消\",\"uni.video.danmu\":\"弹幕\",\"uni.video.volume\":\"音量\",\"uni.button.feedback.title\":\"问题反馈\",\"uni.button.feedback.send\":\"发送\",\"uni.chooseLocation.search\":\"搜索地点\",\"uni.chooseLocation.cancel\":\"取消\"}");
+
+/***/ }),
+/* 103 */
+/***/ (function(module) {
+
+module.exports = JSON.parse("{\"uni.app.quit\":\"再按一次退出應用\",\"uni.async.error\":\"連接服務器超時，點擊屏幕重試\",\"uni.showActionSheet.cancel\":\"取消\",\"uni.showToast.unpaired\":\"請注意 showToast 與 hideToast 必須配對使用\",\"uni.showLoading.unpaired\":\"請注意 showLoading 與 hideLoading 必須配對使用\",\"uni.showModal.cancel\":\"取消\",\"uni.showModal.confirm\":\"確定\",\"uni.chooseImage.cancel\":\"取消\",\"uni.chooseImage.sourceType.album\":\"從相冊選擇\",\"uni.chooseImage.sourceType.camera\":\"拍攝\",\"uni.chooseVideo.cancel\":\"取消\",\"uni.chooseVideo.sourceType.album\":\"從相冊選擇\",\"uni.chooseVideo.sourceType.camera\":\"拍攝\",\"uni.chooseFile.notUserActivation\":\"文件選擇器對話框只能在用戶激活時顯示\",\"uni.previewImage.cancel\":\"取消\",\"uni.previewImage.button.save\":\"保存圖像\",\"uni.previewImage.save.success\":\"保存圖像到相冊成功\",\"uni.previewImage.save.fail\":\"保存圖像到相冊失敗\",\"uni.setClipboardData.success\":\"內容已復制\",\"uni.scanCode.title\":\"掃碼\",\"uni.scanCode.album\":\"相冊\",\"uni.scanCode.fail\":\"識別失敗\",\"uni.scanCode.flash.on\":\"輕觸照亮\",\"uni.scanCode.flash.off\":\"輕觸關閉\",\"uni.startSoterAuthentication.authContent\":\"指紋識別中...\",\"uni.picker.done\":\"完成\",\"uni.picker.cancel\":\"取消\",\"uni.video.danmu\":\"彈幕\",\"uni.video.volume\":\"音量\",\"uni.button.feedback.title\":\"問題反饋\",\"uni.button.feedback.send\":\"發送\",\"uni.chooseLocation.search\":\"搜索地點\",\"uni.chooseLocation.cancel\":\"取消\"}");
+
+/***/ }),
+/* 104 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(UniViewJSBridge) {/* harmony import */ var uni_helpers_index__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6);
-/* harmony import */ var _events__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(11);
-/* harmony import */ var _behaviors__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(85);
-/* harmony import */ var _wxs_component_descriptor__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(79);
+/* WEBPACK VAR INJECTION */(function(UniViewJSBridge) {/* harmony import */ var uni_helpers_index__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(8);
+/* harmony import */ var _events__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(18);
+/* harmony import */ var _behaviors__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(112);
+/* harmony import */ var _wxs_component_descriptor__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(105);
 
 
 
@@ -15568,6 +18279,12 @@ function pageMounted() {
       return Object(_wxs_component_descriptor__WEBPACK_IMPORTED_MODULE_3__[/* createComponentDescriptor */ "a"])(vm || this, isOwnerInstance);
     };
 
+    Object.defineProperty(Vue.prototype, '$ownerInstance', {
+      get: function get() {
+        return this.$getComponentDescriptor(this);
+      }
+    });
+
     Vue.prototype.$handleWxsEvent = function ($event) {
       if ($event instanceof Event) {
         // 未处理的 event 对象 需要对 target 校正及包装
@@ -15575,8 +18292,17 @@ function pageMounted() {
 
         var instance = currentTarget && currentTarget.__vue__ && currentTarget.__vue__.$getComponentDescriptor(currentTarget.__vue__, false);
 
-        $event = _events__WEBPACK_IMPORTED_MODULE_1__[/* processEvent */ "b"].call(this, $event.type, $event, {}, findUniTarget($event, this.$el) || $event.target, $event.currentTarget);
+        var $origEvent = $event;
+        $event = _events__WEBPACK_IMPORTED_MODULE_1__[/* processEvent */ "b"].call(this, $origEvent.type, $origEvent, {}, findUniTarget($origEvent, this.$el) || $origEvent.target, $origEvent.currentTarget);
         $event.instance = instance;
+
+        $event.preventDefault = function () {
+          return $origEvent.preventDefault();
+        };
+
+        $event.stopPropagation = function () {
+          return $origEvent.stopPropagation();
+        };
       }
 
       return $event;
@@ -15599,22 +18325,20 @@ function pageMounted() {
           Object(_behaviors__WEBPACK_IMPORTED_MODULE_2__[/* default */ "a"])(options, this);
         }
 
-        if (Object(uni_helpers_index__WEBPACK_IMPORTED_MODULE_0__[/* isPage */ "b"])(this)) {
-          options.mounted = options.mounted ? [].concat(pageMounted, options.mounted) : [pageMounted];
-        }
+        if (false) {}
       }
-    }); // TODO 跨平台时，View 层需要注入$page属性
+    });
   }
 });
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(4)))
 
 /***/ }),
-/* 79 */
+/* 105 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(UniViewJSBridge, global) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return createComponentDescriptor; });
-/* harmony import */ var uni_shared__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
+/* harmony import */ var uni_shared__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -15708,7 +18432,7 @@ var ComponentDescriptor = /*#__PURE__*/function () {
         style = parseStyleText(style);
       }
 
-      if (Object(uni_shared__WEBPACK_IMPORTED_MODULE_0__[/* isPlainObject */ "e"])(style)) {
+      if (Object(uni_shared__WEBPACK_IMPORTED_MODULE_0__[/* isPlainObject */ "g"])(style)) {
         this.$el.__wxsStyle = style;
         this.$vm.$forceUpdate();
       }
@@ -15778,6 +18502,15 @@ var ComponentDescriptor = /*#__PURE__*/function () {
       return this.$el && this.$el.classList.contains(cls);
     }
   }, {
+    key: "getComputedStyle",
+    value: function getComputedStyle() {
+      if (this.$el) {
+        return window.getComputedStyle(this.$el);
+      }
+
+      return {};
+    }
+  }, {
     key: "getDataset",
     value: function getDataset() {
       return this.$el && this.$el.dataset;
@@ -15787,7 +18520,7 @@ var ComponentDescriptor = /*#__PURE__*/function () {
     value: function callMethod(funcName) {
       var args = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-      if (this.$vm[funcName]) {
+      if (funcName in this.$vm) {
         this.$vm[funcName](JSON.parse(JSON.stringify(args)));
       } else if (this.$vm._$id) {
         UniViewJSBridge.publishHandler('onWxsInvokeCallMethod', {
@@ -15826,20 +18559,21 @@ function createComponentDescriptor(vm) {
   if (isOwnerInstance && vm && vm.$options.name && vm.$options.name.indexOf('VUni') === 0) {
     // ownerInstance 内置组件需要使用父 vm
     vm = vm.$parent;
-  }
+  } // 改为挂载到 vm 实例，不同 vm 实例的 $el 可能重复
 
-  if (vm && vm.$el) {
-    if (!vm.$el.__wxsComponentDescriptor) {
-      vm.$el.__wxsComponentDescriptor = new ComponentDescriptor(vm);
+
+  if (vm) {
+    if (!('__wxsComponentDescriptor' in vm)) {
+      vm.__wxsComponentDescriptor = new ComponentDescriptor(vm);
     }
 
-    return vm.$el.__wxsComponentDescriptor;
+    return vm.__wxsComponentDescriptor;
   }
 }
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(4), __webpack_require__(16)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(4), __webpack_require__(19)))
 
 /***/ }),
-/* 80 */
+/* 106 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -15881,12 +18615,15 @@ function findParent(vm) {
 
 var VDomSync = /*#__PURE__*/function () {
   function VDomSync(pageId) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
     _classCallCheck(this, VDomSync);
 
     this.pageId = pageId;
     this.addBatchVData = Object.create(null);
     this.updateBatchVData = [];
     this.vms = Object.create(null);
+    this.version = options.version;
   }
 
   _createClass(VDomSync, [{
@@ -15903,9 +18640,23 @@ var VDomSync = /*#__PURE__*/function () {
       this.updateBatchVData.push([cid, data]);
     }
   }, {
+    key: "addVm",
+    value: function addVm(vm) {
+      var id = vm._$id;
+      var oldVm = this.vms[id];
+
+      if (oldVm) {
+        var newId = Object(_helpers_util__WEBPACK_IMPORTED_MODULE_1__[/* generateId */ "a"])(oldVm, findParent(oldVm), this.version);
+        oldVm._$id = newId;
+        this.vms[newId] = oldVm;
+      }
+
+      this.vms[id] = vm;
+    }
+  }, {
     key: "initVm",
     value: function initVm(vm) {
-      vm._$id = Object(_helpers_util__WEBPACK_IMPORTED_MODULE_1__[/* generateId */ "a"])(vm, findParent(vm));
+      vm._$id = Object(_helpers_util__WEBPACK_IMPORTED_MODULE_1__[/* generateId */ "a"])(vm, findParent(vm), this.version);
       var vData = this.addBatchVData[vm._$id];
 
       if (!vData) {
@@ -15925,13 +18676,13 @@ var VDomSync = /*#__PURE__*/function () {
 
       Object.assign(vm.$options, options);
       vm.$r = data || Object.create(null);
-      this.vms[vm._$id] = vm;
+      this.addVm(vm);
     }
   }, {
     key: "sendUIEvent",
     value: function sendUIEvent(cid, nid, event) {
-      UniViewJSBridge.publishHandler(_constants__WEBPACK_IMPORTED_MODULE_0__[/* VD_SYNC */ "h"], {
-        data: [[_constants__WEBPACK_IMPORTED_MODULE_0__[/* UI_EVENT */ "f"], [[cid, nid, event]]]],
+      UniViewJSBridge.publishHandler(_constants__WEBPACK_IMPORTED_MODULE_0__[/* VD_SYNC */ "i"], {
+        data: [[_constants__WEBPACK_IMPORTED_MODULE_0__[/* UI_EVENT */ "g"], [[cid, nid, event]]]],
         options: {
           timestamp: Date.now()
         }
@@ -15978,32 +18729,106 @@ var VDomSync = /*#__PURE__*/function () {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(4)))
 
 /***/ }),
-/* 81 */
+/* 107 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return generateId; });
-function generateId(vm, parent) {
-  if (!vm.$parent) {
-    return '-1';
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return saveImage; });
+var index = 0;
+function saveImage(base64, dirname, callback) {
+  var id = "".concat(Date.now()).concat(index++);
+  var bitmap = new plus.nativeObj.Bitmap("bitmap".concat(id));
+  bitmap.loadBase64Data(base64, function () {
+    var format = (base64.match(/data:image\/(\S+?);/) || [null, 'png'])[1].replace('jpeg', 'jpg');
+    var tempFilePath = "".concat(dirname, "/").concat(id, ".").concat(format);
+    bitmap.save(tempFilePath, {
+      overwrite: true,
+      quality: 100,
+      format: format
+    }, function () {
+      clear();
+      callback(null, tempFilePath);
+    }, function (error) {
+      clear();
+      callback(error);
+    });
+  }, function (error) {
+    clear();
+    callback(error);
+  });
+
+  function clear() {
+    bitmap.clear();
   }
-
-  var vnode = vm.$vnode;
-  var context = vnode.context; // slot 内的组件，需要补充 context 的 id，否则可能与内部组件索引值一致，导致 id 冲突
-
-  if (context && context !== parent && context._$id) {
-    if (true) {
-      console.log('generateId:' + context._$id + ';' + parent._$id + ',' + vnode.data.attrs._i);
-    }
-
-    return context._$id + ';' + parent._$id + ',' + vnode.data.attrs._i;
-  }
-
-  return parent._$id + ',' + vnode.data.attrs._i;
 }
 
 /***/ }),
-/* 82 */
+/* 108 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return getSameOriginUrl; });
+function getBase64(path) {
+  return new Promise(function (resolve, reject) {
+    // H5+ 沙箱外路径在iOS无法使用 plus.io 读取
+    function onError() {
+      var bitmap = new plus.nativeObj.Bitmap("bitmap_".concat(Date.now(), "_").concat(Math.random(), "}"));
+      bitmap.load(path, function () {
+        resolve(bitmap.toBase64Data());
+        bitmap.clear();
+      }, function (err) {
+        bitmap.clear();
+        reject(err);
+      });
+    }
+
+    plus.io.resolveLocalFileSystemURL(path, function (entry) {
+      entry.file(function (file) {
+        var fileReader = new plus.io.FileReader();
+
+        fileReader.onload = function (data) {
+          resolve(data.target.result);
+        };
+
+        fileReader.onerror = onError;
+        fileReader.readAsDataURL(file);
+      }, onError);
+    }, onError);
+  });
+}
+
+function download(url) {
+  return new Promise(function (resolve, reject) {
+    if (url.indexOf('http://') !== 0 && url.indexOf('https://') !== 0) {
+      resolve(url);
+      return;
+    }
+
+    plus.downloader.createDownload(url, {
+      filename: '_doc/uniapp_temp/download/'
+    }, function (d, status) {
+      if (status === 200) {
+        resolve(d.filename);
+      } else {
+        reject(new Error('network fail'));
+      }
+    }).start();
+  });
+}
+
+function getSameOriginUrl(url) {
+  return download(url).then(function (url) {
+    // WKWebView
+    if (window.webkit && window.webkit.messageHandlers) {
+      return getBase64(url);
+    }
+
+    return plus.io.convertLocalFileSystemURL(url);
+  });
+}
+
+/***/ }),
+/* 109 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -16075,11 +18900,11 @@ var Page = /*#__PURE__*/function () {
   _createClass(Page, [{
     key: "sendMessage",
     value: function sendMessage(data) {
-      var message = {
+      var message = JSON.parse(JSON.stringify({
         __message: {
           data: data
         }
-      };
+      }));
       var id = this.webview.id;
 
       if (BroadcastChannel_) {
@@ -16163,10 +18988,10 @@ function showPage(_ref) {
   page.show(style.animationType, style.animationDuration);
   return new Page(page);
 }
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(72)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(93)))
 
 /***/ }),
-/* 83 */
+/* 110 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -16457,7 +19282,7 @@ function list_getPrototypeOf(o) { list_getPrototypeOf = Object.setPrototypeOf ? 
   };
 });
 // EXTERNAL MODULE: ./src/shared/index.js + 7 modules
-var shared = __webpack_require__(1);
+var shared = __webpack_require__(0);
 
 // CONCATENATED MODULE: ./src/core/view/components/editor/formats/box.js
 
@@ -16473,7 +19298,7 @@ var shared = __webpack_require__(1);
   var padding = ['padding', 'paddingTop', 'paddingBottom', 'paddingLeft', 'paddingRight'];
   var result = {};
   margin.concat(padding).forEach(function (name) {
-    result["formats/".concat(name)] = new Attributor.Style(name, Object(shared["f" /* kebabCase */])(name), config);
+    result["formats/".concat(name)] = new Attributor.Style(name, Object(shared["i" /* kebabCase */])(name), config);
   });
   return result;
 });
@@ -16490,7 +19315,7 @@ var shared = __webpack_require__(1);
   var font = ['font', 'fontSize', 'fontStyle', 'fontVariant', 'fontWeight', 'fontFamily'];
   var result = {};
   font.forEach(function (name) {
-    result["formats/".concat(name)] = new Attributor.Style(name, Object(shared["f" /* kebabCase */])(name), config);
+    result["formats/".concat(name)] = new Attributor.Style(name, Object(shared["i" /* kebabCase */])(name), config);
   });
   return result;
 });
@@ -16518,21 +19343,62 @@ var shared = __webpack_require__(1);
   text.forEach(function (_ref) {
     var name = _ref.name,
         scope = _ref.scope;
-    result["formats/".concat(name)] = new Attributor.Style(name, Object(shared["f" /* kebabCase */])(name), {
+    result["formats/".concat(name)] = new Attributor.Style(name, Object(shared["i" /* kebabCase */])(name), {
       scope: scope
     });
   });
   return result;
 });
+// EXTERNAL MODULE: ./src/platforms/app-plus/helpers/get-real-path.js + 1 modules
+var get_real_path = __webpack_require__(13);
+
 // CONCATENATED MODULE: ./src/core/view/components/editor/formats/image.js
+
 /* harmony default export */ var formats_image = (function (Quill) {
   var Image = Quill.import('formats/image');
+  var ATTRIBUTES = ['alt', 'height', 'width', 'data-custom', 'class', 'data-local'];
 
   Image.sanitize = function (url) {
-    return url;
+    return url ? Object(get_real_path["a" /* default */])(url) : url;
+  };
+
+  Image.formats = function formats(domNode) {
+    return ATTRIBUTES.reduce(function (formats, attribute) {
+      if (domNode.hasAttribute(attribute)) {
+        formats[attribute] = domNode.getAttribute(attribute);
+      }
+
+      return formats;
+    }, {});
+  };
+
+  var format = Image.prototype.format;
+
+  Image.prototype.format = function (name, value) {
+    if (ATTRIBUTES.indexOf(name) > -1) {
+      if (value) {
+        this.domNode.setAttribute(name, value);
+      } else {
+        this.domNode.removeAttribute(name);
+      }
+    } else {
+      format.call(this, name, value);
+    }
+  };
+});
+// CONCATENATED MODULE: ./src/core/view/components/editor/formats/link.js
+/* harmony default export */ var formats_link = (function (Quill) {
+  var Link = Quill.import('formats/link');
+
+  Link.sanitize = function (url) {
+    var anchor = document.createElement('a');
+    anchor.href = url;
+    var protocol = anchor.href.slice(0, anchor.href.indexOf(':'));
+    return Link.PROTOCOL_WHITELIST.concat('file').indexOf(protocol) > -1 ? url : Link.SANITIZED_URL;
   };
 });
 // CONCATENATED MODULE: ./src/core/view/components/editor/formats/index.js
+
 
 
 
@@ -16554,7 +19420,8 @@ function register(Quill) {
     box: box,
     font: formats_font,
     text: formats_text,
-    image: formats_image
+    image: formats_image,
+    link: formats_link
   };
   var options = {};
   Object.values(formats).forEach(function (value) {
@@ -16564,30 +19431,40 @@ function register(Quill) {
 }
 
 /***/ }),
-/* 84 */
+/* 111 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 
 // EXTERNAL MODULE: ./src/core/helpers/tags.js
-var tags = __webpack_require__(67);
+var tags = __webpack_require__(80);
 var tags_default = /*#__PURE__*/__webpack_require__.n(tags);
 
 // EXTERNAL MODULE: ./src/core/helpers/index.js
-var helpers = __webpack_require__(6);
+var helpers = __webpack_require__(8);
+
+// EXTERNAL MODULE: ./src/shared/index.js + 7 modules
+var shared = __webpack_require__(0);
 
 // CONCATENATED MODULE: ./src/core/vue.js
 // 使用白名单过滤（前期有一批自定义组件使用了 uni-）
 
 
+
 function initVue(Vue) {
-  Vue.config.errorHandler = function (err) {
+  Vue.config.errorHandler = function (err, vm, info) {
+    var errType = Object(shared["m" /* toRawType */])(err);
+    Vue.util.warn("Error in ".concat(info, ": \"").concat(errType === 'Error' ? err.toString() : err, "\""), vm);
     var app = typeof getApp === 'function' && getApp();
 
-    if (app && Object(helpers["a" /* hasLifecycleHook */])(app.$options, 'onError')) {
+    if (app && Object(helpers["b" /* hasLifecycleHook */])(app.$options, 'onError')) {
       app.__call_hook('onError', err);
     } else {
-      console.error(err);
+      if ( true && errType === 'Error') {
+        console.error("\n  ".concat(err.message, "\n  ").concat(err.stack, "\n  "));
+      } else {
+        console.error(err);
+      }
     }
   };
 
@@ -16607,17 +19484,17 @@ function initVue(Vue) {
       return false;
     }
 
-    return oldGetTagNamespace(tag) || false;
+    return oldGetTagNamespace(tag);
   };
 }
 // EXTERNAL MODULE: ./src/core/view/plugins/index.js
-var plugins = __webpack_require__(78);
+var plugins = __webpack_require__(104);
 
 // EXTERNAL MODULE: ./src/platforms/app-plus/helpers/get-real-path.js + 1 modules
-var get_real_path = __webpack_require__(65);
+var get_real_path = __webpack_require__(13);
 
 // EXTERNAL MODULE: ./src/platforms/app-plus/view/framework/plugins/data.js
-var data = __webpack_require__(14);
+var data = __webpack_require__(23);
 
 // CONCATENATED MODULE: ./src/platforms/app-plus/view/framework/plugins/event.js
 
@@ -16671,7 +19548,11 @@ function initEvent(Vue) {
     data["b" /* vd */].sendUIEvent(cid, nid, $event);
   };
 }
+// EXTERNAL MODULE: ./src/platforms/app-plus/view/framework/plugins/gesture.js
+var gesture = __webpack_require__(116);
+
 // CONCATENATED MODULE: ./src/platforms/app-plus/view/framework/plugins/index.js
+
 
 
 
@@ -16693,7 +19574,7 @@ function initEvent(Vue) {
 });
 
 /***/ }),
-/* 85 */
+/* 112 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -16702,9 +19583,9 @@ function initEvent(Vue) {
 __webpack_require__.d(__webpack_exports__, "a", function() { return /* binding */ initBehaviors; });
 
 // EXTERNAL MODULE: ./src/shared/index.js + 7 modules
-var shared = __webpack_require__(1);
+var shared = __webpack_require__(0);
 
-// EXTERNAL MODULE: ./src/core/view/mixins/index.js + 2 modules
+// EXTERNAL MODULE: ./src/core/view/mixins/index.js
 var mixins = __webpack_require__(2);
 
 // CONCATENATED MODULE: ./src/core/view/plugins/behaviors/form-field.js
@@ -16757,11 +19638,11 @@ function beforeDestroy() {
     var $vnode = vm.$vnode;
 
     if ($vnode && $vnode.data && $vnode.data.attrs) {
-      if (Object(shared["c" /* hasOwn */])($vnode.data.attrs, 'name')) {
+      if (Object(shared["e" /* hasOwn */])($vnode.data.attrs, 'name')) {
         options.propsData.name = $vnode.data.attrs.name;
       }
 
-      if (Object(shared["c" /* hasOwn */])($vnode.data.attrs, 'value')) {
+      if (Object(shared["e" /* hasOwn */])($vnode.data.attrs, 'value')) {
         options.propsData.value = $vnode.data.attrs.value;
       }
     }
@@ -16814,7 +19695,7 @@ function initBehaviors(options, vm) {
 }
 
 /***/ }),
-/* 86 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;// addapted from the document.currentScript polyfill by Adam Miller
@@ -16891,7 +19772,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
 /***/ }),
-/* 87 */
+/* 114 */
 /***/ (function(module, exports) {
 
 /**
@@ -17638,7 +20519,7 @@ window.IntersectionObserverEntry = IntersectionObserverEntry;
 
 
 /***/ }),
-/* 88 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
@@ -17646,38 +20527,63 @@ window.IntersectionObserverEntry = IntersectionObserverEntry;
   
 
 /***/ }),
-/* 89 */
+/* 116 */
+/***/ (function(module, exports) {
+
+if (String(navigator.vendor).indexOf('Apple') === 0) {
+  var firstEvent;
+  var timeout; // 用于全局禁用 iOS 双击包含手势
+
+  document.documentElement.addEventListener('click', function (event) {
+    var TIME_MAX = 450;
+    var PAGE_MAX = 44;
+    clearTimeout(timeout);
+
+    if (firstEvent && Math.abs(event.pageX - firstEvent.pageX) <= PAGE_MAX && Math.abs(event.pageY - firstEvent.pageY) <= PAGE_MAX && event.timeStamp - firstEvent.timeStamp <= TIME_MAX) {
+      event.preventDefault();
+    }
+
+    firstEvent = event;
+    timeout = setTimeout(function () {
+      firstEvent = null;
+    }, TIME_MAX);
+  });
+}
+
+/***/ }),
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
-	"./button/index.vue": 153,
-	"./canvas/index.vue": 147,
-	"./checkbox-group/index.vue": 128,
-	"./checkbox/index.vue": 129,
-	"./editor/index.vue": 148,
-	"./form/index.vue": 130,
-	"./icon/index.vue": 131,
-	"./image/index.vue": 132,
-	"./input/index.vue": 133,
-	"./label/index.vue": 149,
-	"./movable-area/index.vue": 154,
-	"./movable-view/index.vue": 126,
-	"./navigator/index.vue": 134,
-	"./picker-view-column/index.vue": 155,
-	"./picker-view/index.vue": 156,
-	"./progress/index.vue": 135,
-	"./radio-group/index.vue": 136,
-	"./radio/index.vue": 137,
-	"./resize-sensor/index.vue": 157,
-	"./rich-text/index.vue": 125,
-	"./scroll-view/index.vue": 138,
-	"./slider/index.vue": 139,
-	"./swiper-item/index.vue": 140,
-	"./swiper/index.vue": 158,
-	"./switch/index.vue": 141,
-	"./text/index.vue": 159,
-	"./textarea/index.vue": 142,
-	"./view/index.vue": 143
+	"./audio/index.vue": 166,
+	"./button/index.vue": 192,
+	"./canvas/index.vue": 185,
+	"./checkbox-group/index.vue": 167,
+	"./checkbox/index.vue": 168,
+	"./editor/index.vue": 186,
+	"./form/index.vue": 169,
+	"./icon/index.vue": 170,
+	"./image/index.vue": 171,
+	"./input/index.vue": 172,
+	"./label/index.vue": 187,
+	"./movable-area/index.vue": 193,
+	"./movable-view/index.vue": 163,
+	"./navigator/index.vue": 173,
+	"./picker-view-column/index.vue": 194,
+	"./picker-view/index.vue": 195,
+	"./progress/index.vue": 174,
+	"./radio-group/index.vue": 175,
+	"./radio/index.vue": 176,
+	"./resize-sensor/index.vue": 177,
+	"./rich-text/index.vue": 162,
+	"./scroll-view/index.vue": 178,
+	"./slider/index.vue": 179,
+	"./swiper-item/index.vue": 180,
+	"./swiper/index.vue": 196,
+	"./switch/index.vue": 181,
+	"./text/index.vue": 197,
+	"./textarea/index.vue": 182,
+	"./view/index.vue": 183
 };
 
 
@@ -17698,80 +20604,10 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 89;
+webpackContext.id = 117;
 
 /***/ }),
-/* 90 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(18);
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
-/* unused harmony reexport * */
- /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
-
-/***/ }),
-/* 91 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(20);
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
-/* unused harmony reexport * */
- /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
-
-/***/ }),
-/* 92 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(21);
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
-/* unused harmony reexport * */
- /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
-
-/***/ }),
-/* 93 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(22);
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
-/* unused harmony reexport * */
- /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
-
-/***/ }),
-/* 94 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_editor_css_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(24);
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_editor_css_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_editor_css_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
-/* unused harmony reexport * */
- /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_editor_css_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
-
-/***/ }),
-/* 95 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(25);
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
-/* unused harmony reexport * */
- /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
-
-/***/ }),
-/* 96 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(26);
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
-/* unused harmony reexport * */
- /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
-
-/***/ }),
-/* 97 */
+/* 118 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -17781,17 +20617,6294 @@ webpackContext.id = 89;
  /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
-/* 98 */
+/* 119 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(29);
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(28);
 /* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
 /* unused harmony reexport * */
  /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
-/* 99 */
+/* 120 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+
+var zlib_deflate = __webpack_require__(121);
+var utils        = __webpack_require__(11);
+var strings      = __webpack_require__(90);
+var msg          = __webpack_require__(77);
+var ZStream      = __webpack_require__(91);
+
+var toString = Object.prototype.toString;
+
+/* Public constants ==========================================================*/
+/* ===========================================================================*/
+
+var Z_NO_FLUSH      = 0;
+var Z_FINISH        = 4;
+
+var Z_OK            = 0;
+var Z_STREAM_END    = 1;
+var Z_SYNC_FLUSH    = 2;
+
+var Z_DEFAULT_COMPRESSION = -1;
+
+var Z_DEFAULT_STRATEGY    = 0;
+
+var Z_DEFLATED  = 8;
+
+/* ===========================================================================*/
+
+
+/**
+ * class Deflate
+ *
+ * Generic JS-style wrapper for zlib calls. If you don't need
+ * streaming behaviour - use more simple functions: [[deflate]],
+ * [[deflateRaw]] and [[gzip]].
+ **/
+
+/* internal
+ * Deflate.chunks -> Array
+ *
+ * Chunks of output data, if [[Deflate#onData]] not overridden.
+ **/
+
+/**
+ * Deflate.result -> Uint8Array|Array
+ *
+ * Compressed result, generated by default [[Deflate#onData]]
+ * and [[Deflate#onEnd]] handlers. Filled after you push last chunk
+ * (call [[Deflate#push]] with `Z_FINISH` / `true` param)  or if you
+ * push a chunk with explicit flush (call [[Deflate#push]] with
+ * `Z_SYNC_FLUSH` param).
+ **/
+
+/**
+ * Deflate.err -> Number
+ *
+ * Error code after deflate finished. 0 (Z_OK) on success.
+ * You will not need it in real life, because deflate errors
+ * are possible only on wrong options or bad `onData` / `onEnd`
+ * custom handlers.
+ **/
+
+/**
+ * Deflate.msg -> String
+ *
+ * Error message, if [[Deflate.err]] != 0
+ **/
+
+
+/**
+ * new Deflate(options)
+ * - options (Object): zlib deflate options.
+ *
+ * Creates new deflator instance with specified params. Throws exception
+ * on bad params. Supported options:
+ *
+ * - `level`
+ * - `windowBits`
+ * - `memLevel`
+ * - `strategy`
+ * - `dictionary`
+ *
+ * [http://zlib.net/manual.html#Advanced](http://zlib.net/manual.html#Advanced)
+ * for more information on these.
+ *
+ * Additional options, for internal needs:
+ *
+ * - `chunkSize` - size of generated data chunks (16K by default)
+ * - `raw` (Boolean) - do raw deflate
+ * - `gzip` (Boolean) - create gzip wrapper
+ * - `to` (String) - if equal to 'string', then result will be "binary string"
+ *    (each char code [0..255])
+ * - `header` (Object) - custom header for gzip
+ *   - `text` (Boolean) - true if compressed data believed to be text
+ *   - `time` (Number) - modification time, unix timestamp
+ *   - `os` (Number) - operation system code
+ *   - `extra` (Array) - array of bytes with extra data (max 65536)
+ *   - `name` (String) - file name (binary string)
+ *   - `comment` (String) - comment (binary string)
+ *   - `hcrc` (Boolean) - true if header crc should be added
+ *
+ * ##### Example:
+ *
+ * ```javascript
+ * var pako = require('pako')
+ *   , chunk1 = Uint8Array([1,2,3,4,5,6,7,8,9])
+ *   , chunk2 = Uint8Array([10,11,12,13,14,15,16,17,18,19]);
+ *
+ * var deflate = new pako.Deflate({ level: 3});
+ *
+ * deflate.push(chunk1, false);
+ * deflate.push(chunk2, true);  // true -> last chunk
+ *
+ * if (deflate.err) { throw new Error(deflate.err); }
+ *
+ * console.log(deflate.result);
+ * ```
+ **/
+function Deflate(options) {
+  if (!(this instanceof Deflate)) return new Deflate(options);
+
+  this.options = utils.assign({
+    level: Z_DEFAULT_COMPRESSION,
+    method: Z_DEFLATED,
+    chunkSize: 16384,
+    windowBits: 15,
+    memLevel: 8,
+    strategy: Z_DEFAULT_STRATEGY,
+    to: ''
+  }, options || {});
+
+  var opt = this.options;
+
+  if (opt.raw && (opt.windowBits > 0)) {
+    opt.windowBits = -opt.windowBits;
+  }
+
+  else if (opt.gzip && (opt.windowBits > 0) && (opt.windowBits < 16)) {
+    opt.windowBits += 16;
+  }
+
+  this.err    = 0;      // error code, if happens (0 = Z_OK)
+  this.msg    = '';     // error message
+  this.ended  = false;  // used to avoid multiple onEnd() calls
+  this.chunks = [];     // chunks of compressed data
+
+  this.strm = new ZStream();
+  this.strm.avail_out = 0;
+
+  var status = zlib_deflate.deflateInit2(
+    this.strm,
+    opt.level,
+    opt.method,
+    opt.windowBits,
+    opt.memLevel,
+    opt.strategy
+  );
+
+  if (status !== Z_OK) {
+    throw new Error(msg[status]);
+  }
+
+  if (opt.header) {
+    zlib_deflate.deflateSetHeader(this.strm, opt.header);
+  }
+
+  if (opt.dictionary) {
+    var dict;
+    // Convert data if needed
+    if (typeof opt.dictionary === 'string') {
+      // If we need to compress text, change encoding to utf8.
+      dict = strings.string2buf(opt.dictionary);
+    } else if (toString.call(opt.dictionary) === '[object ArrayBuffer]') {
+      dict = new Uint8Array(opt.dictionary);
+    } else {
+      dict = opt.dictionary;
+    }
+
+    status = zlib_deflate.deflateSetDictionary(this.strm, dict);
+
+    if (status !== Z_OK) {
+      throw new Error(msg[status]);
+    }
+
+    this._dict_set = true;
+  }
+}
+
+/**
+ * Deflate#push(data[, mode]) -> Boolean
+ * - data (Uint8Array|Array|ArrayBuffer|String): input data. Strings will be
+ *   converted to utf8 byte sequence.
+ * - mode (Number|Boolean): 0..6 for corresponding Z_NO_FLUSH..Z_TREE modes.
+ *   See constants. Skipped or `false` means Z_NO_FLUSH, `true` means Z_FINISH.
+ *
+ * Sends input data to deflate pipe, generating [[Deflate#onData]] calls with
+ * new compressed chunks. Returns `true` on success. The last data block must have
+ * mode Z_FINISH (or `true`). That will flush internal pending buffers and call
+ * [[Deflate#onEnd]]. For interim explicit flushes (without ending the stream) you
+ * can use mode Z_SYNC_FLUSH, keeping the compression context.
+ *
+ * On fail call [[Deflate#onEnd]] with error code and return false.
+ *
+ * We strongly recommend to use `Uint8Array` on input for best speed (output
+ * array format is detected automatically). Also, don't skip last param and always
+ * use the same type in your code (boolean or number). That will improve JS speed.
+ *
+ * For regular `Array`-s make sure all elements are [0..255].
+ *
+ * ##### Example
+ *
+ * ```javascript
+ * push(chunk, false); // push one of data chunks
+ * ...
+ * push(chunk, true);  // push last chunk
+ * ```
+ **/
+Deflate.prototype.push = function (data, mode) {
+  var strm = this.strm;
+  var chunkSize = this.options.chunkSize;
+  var status, _mode;
+
+  if (this.ended) { return false; }
+
+  _mode = (mode === ~~mode) ? mode : ((mode === true) ? Z_FINISH : Z_NO_FLUSH);
+
+  // Convert data if needed
+  if (typeof data === 'string') {
+    // If we need to compress text, change encoding to utf8.
+    strm.input = strings.string2buf(data);
+  } else if (toString.call(data) === '[object ArrayBuffer]') {
+    strm.input = new Uint8Array(data);
+  } else {
+    strm.input = data;
+  }
+
+  strm.next_in = 0;
+  strm.avail_in = strm.input.length;
+
+  do {
+    if (strm.avail_out === 0) {
+      strm.output = new utils.Buf8(chunkSize);
+      strm.next_out = 0;
+      strm.avail_out = chunkSize;
+    }
+    status = zlib_deflate.deflate(strm, _mode);    /* no bad return value */
+
+    if (status !== Z_STREAM_END && status !== Z_OK) {
+      this.onEnd(status);
+      this.ended = true;
+      return false;
+    }
+    if (strm.avail_out === 0 || (strm.avail_in === 0 && (_mode === Z_FINISH || _mode === Z_SYNC_FLUSH))) {
+      if (this.options.to === 'string') {
+        this.onData(strings.buf2binstring(utils.shrinkBuf(strm.output, strm.next_out)));
+      } else {
+        this.onData(utils.shrinkBuf(strm.output, strm.next_out));
+      }
+    }
+  } while ((strm.avail_in > 0 || strm.avail_out === 0) && status !== Z_STREAM_END);
+
+  // Finalize on the last chunk.
+  if (_mode === Z_FINISH) {
+    status = zlib_deflate.deflateEnd(this.strm);
+    this.onEnd(status);
+    this.ended = true;
+    return status === Z_OK;
+  }
+
+  // callback interim results if Z_SYNC_FLUSH.
+  if (_mode === Z_SYNC_FLUSH) {
+    this.onEnd(Z_OK);
+    strm.avail_out = 0;
+    return true;
+  }
+
+  return true;
+};
+
+
+/**
+ * Deflate#onData(chunk) -> Void
+ * - chunk (Uint8Array|Array|String): output data. Type of array depends
+ *   on js engine support. When string output requested, each chunk
+ *   will be string.
+ *
+ * By default, stores data blocks in `chunks[]` property and glue
+ * those in `onEnd`. Override this handler, if you need another behaviour.
+ **/
+Deflate.prototype.onData = function (chunk) {
+  this.chunks.push(chunk);
+};
+
+
+/**
+ * Deflate#onEnd(status) -> Void
+ * - status (Number): deflate status. 0 (Z_OK) on success,
+ *   other if not.
+ *
+ * Called once after you tell deflate that the input stream is
+ * complete (Z_FINISH) or should be flushed (Z_SYNC_FLUSH)
+ * or if an error happened. By default - join collected chunks,
+ * free memory and fill `results` / `err` properties.
+ **/
+Deflate.prototype.onEnd = function (status) {
+  // On success - join
+  if (status === Z_OK) {
+    if (this.options.to === 'string') {
+      this.result = this.chunks.join('');
+    } else {
+      this.result = utils.flattenChunks(this.chunks);
+    }
+  }
+  this.chunks = [];
+  this.err = status;
+  this.msg = this.strm.msg;
+};
+
+
+/**
+ * deflate(data[, options]) -> Uint8Array|Array|String
+ * - data (Uint8Array|Array|String): input data to compress.
+ * - options (Object): zlib deflate options.
+ *
+ * Compress `data` with deflate algorithm and `options`.
+ *
+ * Supported options are:
+ *
+ * - level
+ * - windowBits
+ * - memLevel
+ * - strategy
+ * - dictionary
+ *
+ * [http://zlib.net/manual.html#Advanced](http://zlib.net/manual.html#Advanced)
+ * for more information on these.
+ *
+ * Sugar (options):
+ *
+ * - `raw` (Boolean) - say that we work with raw stream, if you don't wish to specify
+ *   negative windowBits implicitly.
+ * - `to` (String) - if equal to 'string', then result will be "binary string"
+ *    (each char code [0..255])
+ *
+ * ##### Example:
+ *
+ * ```javascript
+ * var pako = require('pako')
+ *   , data = Uint8Array([1,2,3,4,5,6,7,8,9]);
+ *
+ * console.log(pako.deflate(data));
+ * ```
+ **/
+function deflate(input, options) {
+  var deflator = new Deflate(options);
+
+  deflator.push(input, true);
+
+  // That will never happens, if you don't cheat with options :)
+  if (deflator.err) { throw deflator.msg || msg[deflator.err]; }
+
+  return deflator.result;
+}
+
+
+/**
+ * deflateRaw(data[, options]) -> Uint8Array|Array|String
+ * - data (Uint8Array|Array|String): input data to compress.
+ * - options (Object): zlib deflate options.
+ *
+ * The same as [[deflate]], but creates raw data, without wrapper
+ * (header and adler32 crc).
+ **/
+function deflateRaw(input, options) {
+  options = options || {};
+  options.raw = true;
+  return deflate(input, options);
+}
+
+
+/**
+ * gzip(data[, options]) -> Uint8Array|Array|String
+ * - data (Uint8Array|Array|String): input data to compress.
+ * - options (Object): zlib deflate options.
+ *
+ * The same as [[deflate]], but create gzip wrapper instead of
+ * deflate one.
+ **/
+function gzip(input, options) {
+  options = options || {};
+  options.gzip = true;
+  return deflate(input, options);
+}
+
+
+exports.Deflate = Deflate;
+exports.deflate = deflate;
+exports.deflateRaw = deflateRaw;
+exports.gzip = gzip;
+
+
+/***/ }),
+/* 121 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// (C) 1995-2013 Jean-loup Gailly and Mark Adler
+// (C) 2014-2017 Vitaly Puzrin and Andrey Tupitsin
+//
+// This software is provided 'as-is', without any express or implied
+// warranty. In no event will the authors be held liable for any damages
+// arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it
+// freely, subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented; you must not
+//   claim that you wrote the original software. If you use this software
+//   in a product, an acknowledgment in the product documentation would be
+//   appreciated but is not required.
+// 2. Altered source versions must be plainly marked as such, and must not be
+//   misrepresented as being the original software.
+// 3. This notice may not be removed or altered from any source distribution.
+
+var utils   = __webpack_require__(11);
+var trees   = __webpack_require__(122);
+var adler32 = __webpack_require__(88);
+var crc32   = __webpack_require__(89);
+var msg     = __webpack_require__(77);
+
+/* Public constants ==========================================================*/
+/* ===========================================================================*/
+
+
+/* Allowed flush values; see deflate() and inflate() below for details */
+var Z_NO_FLUSH      = 0;
+var Z_PARTIAL_FLUSH = 1;
+//var Z_SYNC_FLUSH    = 2;
+var Z_FULL_FLUSH    = 3;
+var Z_FINISH        = 4;
+var Z_BLOCK         = 5;
+//var Z_TREES         = 6;
+
+
+/* Return codes for the compression/decompression functions. Negative values
+ * are errors, positive values are used for special but normal events.
+ */
+var Z_OK            = 0;
+var Z_STREAM_END    = 1;
+//var Z_NEED_DICT     = 2;
+//var Z_ERRNO         = -1;
+var Z_STREAM_ERROR  = -2;
+var Z_DATA_ERROR    = -3;
+//var Z_MEM_ERROR     = -4;
+var Z_BUF_ERROR     = -5;
+//var Z_VERSION_ERROR = -6;
+
+
+/* compression levels */
+//var Z_NO_COMPRESSION      = 0;
+//var Z_BEST_SPEED          = 1;
+//var Z_BEST_COMPRESSION    = 9;
+var Z_DEFAULT_COMPRESSION = -1;
+
+
+var Z_FILTERED            = 1;
+var Z_HUFFMAN_ONLY        = 2;
+var Z_RLE                 = 3;
+var Z_FIXED               = 4;
+var Z_DEFAULT_STRATEGY    = 0;
+
+/* Possible values of the data_type field (though see inflate()) */
+//var Z_BINARY              = 0;
+//var Z_TEXT                = 1;
+//var Z_ASCII               = 1; // = Z_TEXT
+var Z_UNKNOWN             = 2;
+
+
+/* The deflate compression method */
+var Z_DEFLATED  = 8;
+
+/*============================================================================*/
+
+
+var MAX_MEM_LEVEL = 9;
+/* Maximum value for memLevel in deflateInit2 */
+var MAX_WBITS = 15;
+/* 32K LZ77 window */
+var DEF_MEM_LEVEL = 8;
+
+
+var LENGTH_CODES  = 29;
+/* number of length codes, not counting the special END_BLOCK code */
+var LITERALS      = 256;
+/* number of literal bytes 0..255 */
+var L_CODES       = LITERALS + 1 + LENGTH_CODES;
+/* number of Literal or Length codes, including the END_BLOCK code */
+var D_CODES       = 30;
+/* number of distance codes */
+var BL_CODES      = 19;
+/* number of codes used to transfer the bit lengths */
+var HEAP_SIZE     = 2 * L_CODES + 1;
+/* maximum heap size */
+var MAX_BITS  = 15;
+/* All codes must not exceed MAX_BITS bits */
+
+var MIN_MATCH = 3;
+var MAX_MATCH = 258;
+var MIN_LOOKAHEAD = (MAX_MATCH + MIN_MATCH + 1);
+
+var PRESET_DICT = 0x20;
+
+var INIT_STATE = 42;
+var EXTRA_STATE = 69;
+var NAME_STATE = 73;
+var COMMENT_STATE = 91;
+var HCRC_STATE = 103;
+var BUSY_STATE = 113;
+var FINISH_STATE = 666;
+
+var BS_NEED_MORE      = 1; /* block not completed, need more input or more output */
+var BS_BLOCK_DONE     = 2; /* block flush performed */
+var BS_FINISH_STARTED = 3; /* finish started, need only more output at next deflate */
+var BS_FINISH_DONE    = 4; /* finish done, accept no more input or output */
+
+var OS_CODE = 0x03; // Unix :) . Don't detect, use this default.
+
+function err(strm, errorCode) {
+  strm.msg = msg[errorCode];
+  return errorCode;
+}
+
+function rank(f) {
+  return ((f) << 1) - ((f) > 4 ? 9 : 0);
+}
+
+function zero(buf) { var len = buf.length; while (--len >= 0) { buf[len] = 0; } }
+
+
+/* =========================================================================
+ * Flush as much pending output as possible. All deflate() output goes
+ * through this function so some applications may wish to modify it
+ * to avoid allocating a large strm->output buffer and copying into it.
+ * (See also read_buf()).
+ */
+function flush_pending(strm) {
+  var s = strm.state;
+
+  //_tr_flush_bits(s);
+  var len = s.pending;
+  if (len > strm.avail_out) {
+    len = strm.avail_out;
+  }
+  if (len === 0) { return; }
+
+  utils.arraySet(strm.output, s.pending_buf, s.pending_out, len, strm.next_out);
+  strm.next_out += len;
+  s.pending_out += len;
+  strm.total_out += len;
+  strm.avail_out -= len;
+  s.pending -= len;
+  if (s.pending === 0) {
+    s.pending_out = 0;
+  }
+}
+
+
+function flush_block_only(s, last) {
+  trees._tr_flush_block(s, (s.block_start >= 0 ? s.block_start : -1), s.strstart - s.block_start, last);
+  s.block_start = s.strstart;
+  flush_pending(s.strm);
+}
+
+
+function put_byte(s, b) {
+  s.pending_buf[s.pending++] = b;
+}
+
+
+/* =========================================================================
+ * Put a short in the pending buffer. The 16-bit value is put in MSB order.
+ * IN assertion: the stream state is correct and there is enough room in
+ * pending_buf.
+ */
+function putShortMSB(s, b) {
+//  put_byte(s, (Byte)(b >> 8));
+//  put_byte(s, (Byte)(b & 0xff));
+  s.pending_buf[s.pending++] = (b >>> 8) & 0xff;
+  s.pending_buf[s.pending++] = b & 0xff;
+}
+
+
+/* ===========================================================================
+ * Read a new buffer from the current input stream, update the adler32
+ * and total number of bytes read.  All deflate() input goes through
+ * this function so some applications may wish to modify it to avoid
+ * allocating a large strm->input buffer and copying from it.
+ * (See also flush_pending()).
+ */
+function read_buf(strm, buf, start, size) {
+  var len = strm.avail_in;
+
+  if (len > size) { len = size; }
+  if (len === 0) { return 0; }
+
+  strm.avail_in -= len;
+
+  // zmemcpy(buf, strm->next_in, len);
+  utils.arraySet(buf, strm.input, strm.next_in, len, start);
+  if (strm.state.wrap === 1) {
+    strm.adler = adler32(strm.adler, buf, len, start);
+  }
+
+  else if (strm.state.wrap === 2) {
+    strm.adler = crc32(strm.adler, buf, len, start);
+  }
+
+  strm.next_in += len;
+  strm.total_in += len;
+
+  return len;
+}
+
+
+/* ===========================================================================
+ * Set match_start to the longest match starting at the given string and
+ * return its length. Matches shorter or equal to prev_length are discarded,
+ * in which case the result is equal to prev_length and match_start is
+ * garbage.
+ * IN assertions: cur_match is the head of the hash chain for the current
+ *   string (strstart) and its distance is <= MAX_DIST, and prev_length >= 1
+ * OUT assertion: the match length is not greater than s->lookahead.
+ */
+function longest_match(s, cur_match) {
+  var chain_length = s.max_chain_length;      /* max hash chain length */
+  var scan = s.strstart; /* current string */
+  var match;                       /* matched string */
+  var len;                           /* length of current match */
+  var best_len = s.prev_length;              /* best match length so far */
+  var nice_match = s.nice_match;             /* stop if match long enough */
+  var limit = (s.strstart > (s.w_size - MIN_LOOKAHEAD)) ?
+      s.strstart - (s.w_size - MIN_LOOKAHEAD) : 0/*NIL*/;
+
+  var _win = s.window; // shortcut
+
+  var wmask = s.w_mask;
+  var prev  = s.prev;
+
+  /* Stop when cur_match becomes <= limit. To simplify the code,
+   * we prevent matches with the string of window index 0.
+   */
+
+  var strend = s.strstart + MAX_MATCH;
+  var scan_end1  = _win[scan + best_len - 1];
+  var scan_end   = _win[scan + best_len];
+
+  /* The code is optimized for HASH_BITS >= 8 and MAX_MATCH-2 multiple of 16.
+   * It is easy to get rid of this optimization if necessary.
+   */
+  // Assert(s->hash_bits >= 8 && MAX_MATCH == 258, "Code too clever");
+
+  /* Do not waste too much time if we already have a good match: */
+  if (s.prev_length >= s.good_match) {
+    chain_length >>= 2;
+  }
+  /* Do not look for matches beyond the end of the input. This is necessary
+   * to make deflate deterministic.
+   */
+  if (nice_match > s.lookahead) { nice_match = s.lookahead; }
+
+  // Assert((ulg)s->strstart <= s->window_size-MIN_LOOKAHEAD, "need lookahead");
+
+  do {
+    // Assert(cur_match < s->strstart, "no future");
+    match = cur_match;
+
+    /* Skip to next match if the match length cannot increase
+     * or if the match length is less than 2.  Note that the checks below
+     * for insufficient lookahead only occur occasionally for performance
+     * reasons.  Therefore uninitialized memory will be accessed, and
+     * conditional jumps will be made that depend on those values.
+     * However the length of the match is limited to the lookahead, so
+     * the output of deflate is not affected by the uninitialized values.
+     */
+
+    if (_win[match + best_len]     !== scan_end  ||
+        _win[match + best_len - 1] !== scan_end1 ||
+        _win[match]                !== _win[scan] ||
+        _win[++match]              !== _win[scan + 1]) {
+      continue;
+    }
+
+    /* The check at best_len-1 can be removed because it will be made
+     * again later. (This heuristic is not always a win.)
+     * It is not necessary to compare scan[2] and match[2] since they
+     * are always equal when the other bytes match, given that
+     * the hash keys are equal and that HASH_BITS >= 8.
+     */
+    scan += 2;
+    match++;
+    // Assert(*scan == *match, "match[2]?");
+
+    /* We check for insufficient lookahead only every 8th comparison;
+     * the 256th check will be made at strstart+258.
+     */
+    do {
+      /*jshint noempty:false*/
+    } while (_win[++scan] === _win[++match] && _win[++scan] === _win[++match] &&
+             _win[++scan] === _win[++match] && _win[++scan] === _win[++match] &&
+             _win[++scan] === _win[++match] && _win[++scan] === _win[++match] &&
+             _win[++scan] === _win[++match] && _win[++scan] === _win[++match] &&
+             scan < strend);
+
+    // Assert(scan <= s->window+(unsigned)(s->window_size-1), "wild scan");
+
+    len = MAX_MATCH - (strend - scan);
+    scan = strend - MAX_MATCH;
+
+    if (len > best_len) {
+      s.match_start = cur_match;
+      best_len = len;
+      if (len >= nice_match) {
+        break;
+      }
+      scan_end1  = _win[scan + best_len - 1];
+      scan_end   = _win[scan + best_len];
+    }
+  } while ((cur_match = prev[cur_match & wmask]) > limit && --chain_length !== 0);
+
+  if (best_len <= s.lookahead) {
+    return best_len;
+  }
+  return s.lookahead;
+}
+
+
+/* ===========================================================================
+ * Fill the window when the lookahead becomes insufficient.
+ * Updates strstart and lookahead.
+ *
+ * IN assertion: lookahead < MIN_LOOKAHEAD
+ * OUT assertions: strstart <= window_size-MIN_LOOKAHEAD
+ *    At least one byte has been read, or avail_in == 0; reads are
+ *    performed for at least two bytes (required for the zip translate_eol
+ *    option -- not supported here).
+ */
+function fill_window(s) {
+  var _w_size = s.w_size;
+  var p, n, m, more, str;
+
+  //Assert(s->lookahead < MIN_LOOKAHEAD, "already enough lookahead");
+
+  do {
+    more = s.window_size - s.lookahead - s.strstart;
+
+    // JS ints have 32 bit, block below not needed
+    /* Deal with !@#$% 64K limit: */
+    //if (sizeof(int) <= 2) {
+    //    if (more == 0 && s->strstart == 0 && s->lookahead == 0) {
+    //        more = wsize;
+    //
+    //  } else if (more == (unsigned)(-1)) {
+    //        /* Very unlikely, but possible on 16 bit machine if
+    //         * strstart == 0 && lookahead == 1 (input done a byte at time)
+    //         */
+    //        more--;
+    //    }
+    //}
+
+
+    /* If the window is almost full and there is insufficient lookahead,
+     * move the upper half to the lower one to make room in the upper half.
+     */
+    if (s.strstart >= _w_size + (_w_size - MIN_LOOKAHEAD)) {
+
+      utils.arraySet(s.window, s.window, _w_size, _w_size, 0);
+      s.match_start -= _w_size;
+      s.strstart -= _w_size;
+      /* we now have strstart >= MAX_DIST */
+      s.block_start -= _w_size;
+
+      /* Slide the hash table (could be avoided with 32 bit values
+       at the expense of memory usage). We slide even when level == 0
+       to keep the hash table consistent if we switch back to level > 0
+       later. (Using level 0 permanently is not an optimal usage of
+       zlib, so we don't care about this pathological case.)
+       */
+
+      n = s.hash_size;
+      p = n;
+      do {
+        m = s.head[--p];
+        s.head[p] = (m >= _w_size ? m - _w_size : 0);
+      } while (--n);
+
+      n = _w_size;
+      p = n;
+      do {
+        m = s.prev[--p];
+        s.prev[p] = (m >= _w_size ? m - _w_size : 0);
+        /* If n is not on any hash chain, prev[n] is garbage but
+         * its value will never be used.
+         */
+      } while (--n);
+
+      more += _w_size;
+    }
+    if (s.strm.avail_in === 0) {
+      break;
+    }
+
+    /* If there was no sliding:
+     *    strstart <= WSIZE+MAX_DIST-1 && lookahead <= MIN_LOOKAHEAD - 1 &&
+     *    more == window_size - lookahead - strstart
+     * => more >= window_size - (MIN_LOOKAHEAD-1 + WSIZE + MAX_DIST-1)
+     * => more >= window_size - 2*WSIZE + 2
+     * In the BIG_MEM or MMAP case (not yet supported),
+     *   window_size == input_size + MIN_LOOKAHEAD  &&
+     *   strstart + s->lookahead <= input_size => more >= MIN_LOOKAHEAD.
+     * Otherwise, window_size == 2*WSIZE so more >= 2.
+     * If there was sliding, more >= WSIZE. So in all cases, more >= 2.
+     */
+    //Assert(more >= 2, "more < 2");
+    n = read_buf(s.strm, s.window, s.strstart + s.lookahead, more);
+    s.lookahead += n;
+
+    /* Initialize the hash value now that we have some input: */
+    if (s.lookahead + s.insert >= MIN_MATCH) {
+      str = s.strstart - s.insert;
+      s.ins_h = s.window[str];
+
+      /* UPDATE_HASH(s, s->ins_h, s->window[str + 1]); */
+      s.ins_h = ((s.ins_h << s.hash_shift) ^ s.window[str + 1]) & s.hash_mask;
+//#if MIN_MATCH != 3
+//        Call update_hash() MIN_MATCH-3 more times
+//#endif
+      while (s.insert) {
+        /* UPDATE_HASH(s, s->ins_h, s->window[str + MIN_MATCH-1]); */
+        s.ins_h = ((s.ins_h << s.hash_shift) ^ s.window[str + MIN_MATCH - 1]) & s.hash_mask;
+
+        s.prev[str & s.w_mask] = s.head[s.ins_h];
+        s.head[s.ins_h] = str;
+        str++;
+        s.insert--;
+        if (s.lookahead + s.insert < MIN_MATCH) {
+          break;
+        }
+      }
+    }
+    /* If the whole input has less than MIN_MATCH bytes, ins_h is garbage,
+     * but this is not important since only literal bytes will be emitted.
+     */
+
+  } while (s.lookahead < MIN_LOOKAHEAD && s.strm.avail_in !== 0);
+
+  /* If the WIN_INIT bytes after the end of the current data have never been
+   * written, then zero those bytes in order to avoid memory check reports of
+   * the use of uninitialized (or uninitialised as Julian writes) bytes by
+   * the longest match routines.  Update the high water mark for the next
+   * time through here.  WIN_INIT is set to MAX_MATCH since the longest match
+   * routines allow scanning to strstart + MAX_MATCH, ignoring lookahead.
+   */
+//  if (s.high_water < s.window_size) {
+//    var curr = s.strstart + s.lookahead;
+//    var init = 0;
+//
+//    if (s.high_water < curr) {
+//      /* Previous high water mark below current data -- zero WIN_INIT
+//       * bytes or up to end of window, whichever is less.
+//       */
+//      init = s.window_size - curr;
+//      if (init > WIN_INIT)
+//        init = WIN_INIT;
+//      zmemzero(s->window + curr, (unsigned)init);
+//      s->high_water = curr + init;
+//    }
+//    else if (s->high_water < (ulg)curr + WIN_INIT) {
+//      /* High water mark at or above current data, but below current data
+//       * plus WIN_INIT -- zero out to current data plus WIN_INIT, or up
+//       * to end of window, whichever is less.
+//       */
+//      init = (ulg)curr + WIN_INIT - s->high_water;
+//      if (init > s->window_size - s->high_water)
+//        init = s->window_size - s->high_water;
+//      zmemzero(s->window + s->high_water, (unsigned)init);
+//      s->high_water += init;
+//    }
+//  }
+//
+//  Assert((ulg)s->strstart <= s->window_size - MIN_LOOKAHEAD,
+//    "not enough room for search");
+}
+
+/* ===========================================================================
+ * Copy without compression as much as possible from the input stream, return
+ * the current block state.
+ * This function does not insert new strings in the dictionary since
+ * uncompressible data is probably not useful. This function is used
+ * only for the level=0 compression option.
+ * NOTE: this function should be optimized to avoid extra copying from
+ * window to pending_buf.
+ */
+function deflate_stored(s, flush) {
+  /* Stored blocks are limited to 0xffff bytes, pending_buf is limited
+   * to pending_buf_size, and each stored block has a 5 byte header:
+   */
+  var max_block_size = 0xffff;
+
+  if (max_block_size > s.pending_buf_size - 5) {
+    max_block_size = s.pending_buf_size - 5;
+  }
+
+  /* Copy as much as possible from input to output: */
+  for (;;) {
+    /* Fill the window as much as possible: */
+    if (s.lookahead <= 1) {
+
+      //Assert(s->strstart < s->w_size+MAX_DIST(s) ||
+      //  s->block_start >= (long)s->w_size, "slide too late");
+//      if (!(s.strstart < s.w_size + (s.w_size - MIN_LOOKAHEAD) ||
+//        s.block_start >= s.w_size)) {
+//        throw  new Error("slide too late");
+//      }
+
+      fill_window(s);
+      if (s.lookahead === 0 && flush === Z_NO_FLUSH) {
+        return BS_NEED_MORE;
+      }
+
+      if (s.lookahead === 0) {
+        break;
+      }
+      /* flush the current block */
+    }
+    //Assert(s->block_start >= 0L, "block gone");
+//    if (s.block_start < 0) throw new Error("block gone");
+
+    s.strstart += s.lookahead;
+    s.lookahead = 0;
+
+    /* Emit a stored block if pending_buf will be full: */
+    var max_start = s.block_start + max_block_size;
+
+    if (s.strstart === 0 || s.strstart >= max_start) {
+      /* strstart == 0 is possible when wraparound on 16-bit machine */
+      s.lookahead = s.strstart - max_start;
+      s.strstart = max_start;
+      /*** FLUSH_BLOCK(s, 0); ***/
+      flush_block_only(s, false);
+      if (s.strm.avail_out === 0) {
+        return BS_NEED_MORE;
+      }
+      /***/
+
+
+    }
+    /* Flush if we may have to slide, otherwise block_start may become
+     * negative and the data will be gone:
+     */
+    if (s.strstart - s.block_start >= (s.w_size - MIN_LOOKAHEAD)) {
+      /*** FLUSH_BLOCK(s, 0); ***/
+      flush_block_only(s, false);
+      if (s.strm.avail_out === 0) {
+        return BS_NEED_MORE;
+      }
+      /***/
+    }
+  }
+
+  s.insert = 0;
+
+  if (flush === Z_FINISH) {
+    /*** FLUSH_BLOCK(s, 1); ***/
+    flush_block_only(s, true);
+    if (s.strm.avail_out === 0) {
+      return BS_FINISH_STARTED;
+    }
+    /***/
+    return BS_FINISH_DONE;
+  }
+
+  if (s.strstart > s.block_start) {
+    /*** FLUSH_BLOCK(s, 0); ***/
+    flush_block_only(s, false);
+    if (s.strm.avail_out === 0) {
+      return BS_NEED_MORE;
+    }
+    /***/
+  }
+
+  return BS_NEED_MORE;
+}
+
+/* ===========================================================================
+ * Compress as much as possible from the input stream, return the current
+ * block state.
+ * This function does not perform lazy evaluation of matches and inserts
+ * new strings in the dictionary only for unmatched strings or for short
+ * matches. It is used only for the fast compression options.
+ */
+function deflate_fast(s, flush) {
+  var hash_head;        /* head of the hash chain */
+  var bflush;           /* set if current block must be flushed */
+
+  for (;;) {
+    /* Make sure that we always have enough lookahead, except
+     * at the end of the input file. We need MAX_MATCH bytes
+     * for the next match, plus MIN_MATCH bytes to insert the
+     * string following the next match.
+     */
+    if (s.lookahead < MIN_LOOKAHEAD) {
+      fill_window(s);
+      if (s.lookahead < MIN_LOOKAHEAD && flush === Z_NO_FLUSH) {
+        return BS_NEED_MORE;
+      }
+      if (s.lookahead === 0) {
+        break; /* flush the current block */
+      }
+    }
+
+    /* Insert the string window[strstart .. strstart+2] in the
+     * dictionary, and set hash_head to the head of the hash chain:
+     */
+    hash_head = 0/*NIL*/;
+    if (s.lookahead >= MIN_MATCH) {
+      /*** INSERT_STRING(s, s.strstart, hash_head); ***/
+      s.ins_h = ((s.ins_h << s.hash_shift) ^ s.window[s.strstart + MIN_MATCH - 1]) & s.hash_mask;
+      hash_head = s.prev[s.strstart & s.w_mask] = s.head[s.ins_h];
+      s.head[s.ins_h] = s.strstart;
+      /***/
+    }
+
+    /* Find the longest match, discarding those <= prev_length.
+     * At this point we have always match_length < MIN_MATCH
+     */
+    if (hash_head !== 0/*NIL*/ && ((s.strstart - hash_head) <= (s.w_size - MIN_LOOKAHEAD))) {
+      /* To simplify the code, we prevent matches with the string
+       * of window index 0 (in particular we have to avoid a match
+       * of the string with itself at the start of the input file).
+       */
+      s.match_length = longest_match(s, hash_head);
+      /* longest_match() sets match_start */
+    }
+    if (s.match_length >= MIN_MATCH) {
+      // check_match(s, s.strstart, s.match_start, s.match_length); // for debug only
+
+      /*** _tr_tally_dist(s, s.strstart - s.match_start,
+                     s.match_length - MIN_MATCH, bflush); ***/
+      bflush = trees._tr_tally(s, s.strstart - s.match_start, s.match_length - MIN_MATCH);
+
+      s.lookahead -= s.match_length;
+
+      /* Insert new strings in the hash table only if the match length
+       * is not too large. This saves time but degrades compression.
+       */
+      if (s.match_length <= s.max_lazy_match/*max_insert_length*/ && s.lookahead >= MIN_MATCH) {
+        s.match_length--; /* string at strstart already in table */
+        do {
+          s.strstart++;
+          /*** INSERT_STRING(s, s.strstart, hash_head); ***/
+          s.ins_h = ((s.ins_h << s.hash_shift) ^ s.window[s.strstart + MIN_MATCH - 1]) & s.hash_mask;
+          hash_head = s.prev[s.strstart & s.w_mask] = s.head[s.ins_h];
+          s.head[s.ins_h] = s.strstart;
+          /***/
+          /* strstart never exceeds WSIZE-MAX_MATCH, so there are
+           * always MIN_MATCH bytes ahead.
+           */
+        } while (--s.match_length !== 0);
+        s.strstart++;
+      } else
+      {
+        s.strstart += s.match_length;
+        s.match_length = 0;
+        s.ins_h = s.window[s.strstart];
+        /* UPDATE_HASH(s, s.ins_h, s.window[s.strstart+1]); */
+        s.ins_h = ((s.ins_h << s.hash_shift) ^ s.window[s.strstart + 1]) & s.hash_mask;
+
+//#if MIN_MATCH != 3
+//                Call UPDATE_HASH() MIN_MATCH-3 more times
+//#endif
+        /* If lookahead < MIN_MATCH, ins_h is garbage, but it does not
+         * matter since it will be recomputed at next deflate call.
+         */
+      }
+    } else {
+      /* No match, output a literal byte */
+      //Tracevv((stderr,"%c", s.window[s.strstart]));
+      /*** _tr_tally_lit(s, s.window[s.strstart], bflush); ***/
+      bflush = trees._tr_tally(s, 0, s.window[s.strstart]);
+
+      s.lookahead--;
+      s.strstart++;
+    }
+    if (bflush) {
+      /*** FLUSH_BLOCK(s, 0); ***/
+      flush_block_only(s, false);
+      if (s.strm.avail_out === 0) {
+        return BS_NEED_MORE;
+      }
+      /***/
+    }
+  }
+  s.insert = ((s.strstart < (MIN_MATCH - 1)) ? s.strstart : MIN_MATCH - 1);
+  if (flush === Z_FINISH) {
+    /*** FLUSH_BLOCK(s, 1); ***/
+    flush_block_only(s, true);
+    if (s.strm.avail_out === 0) {
+      return BS_FINISH_STARTED;
+    }
+    /***/
+    return BS_FINISH_DONE;
+  }
+  if (s.last_lit) {
+    /*** FLUSH_BLOCK(s, 0); ***/
+    flush_block_only(s, false);
+    if (s.strm.avail_out === 0) {
+      return BS_NEED_MORE;
+    }
+    /***/
+  }
+  return BS_BLOCK_DONE;
+}
+
+/* ===========================================================================
+ * Same as above, but achieves better compression. We use a lazy
+ * evaluation for matches: a match is finally adopted only if there is
+ * no better match at the next window position.
+ */
+function deflate_slow(s, flush) {
+  var hash_head;          /* head of hash chain */
+  var bflush;              /* set if current block must be flushed */
+
+  var max_insert;
+
+  /* Process the input block. */
+  for (;;) {
+    /* Make sure that we always have enough lookahead, except
+     * at the end of the input file. We need MAX_MATCH bytes
+     * for the next match, plus MIN_MATCH bytes to insert the
+     * string following the next match.
+     */
+    if (s.lookahead < MIN_LOOKAHEAD) {
+      fill_window(s);
+      if (s.lookahead < MIN_LOOKAHEAD && flush === Z_NO_FLUSH) {
+        return BS_NEED_MORE;
+      }
+      if (s.lookahead === 0) { break; } /* flush the current block */
+    }
+
+    /* Insert the string window[strstart .. strstart+2] in the
+     * dictionary, and set hash_head to the head of the hash chain:
+     */
+    hash_head = 0/*NIL*/;
+    if (s.lookahead >= MIN_MATCH) {
+      /*** INSERT_STRING(s, s.strstart, hash_head); ***/
+      s.ins_h = ((s.ins_h << s.hash_shift) ^ s.window[s.strstart + MIN_MATCH - 1]) & s.hash_mask;
+      hash_head = s.prev[s.strstart & s.w_mask] = s.head[s.ins_h];
+      s.head[s.ins_h] = s.strstart;
+      /***/
+    }
+
+    /* Find the longest match, discarding those <= prev_length.
+     */
+    s.prev_length = s.match_length;
+    s.prev_match = s.match_start;
+    s.match_length = MIN_MATCH - 1;
+
+    if (hash_head !== 0/*NIL*/ && s.prev_length < s.max_lazy_match &&
+        s.strstart - hash_head <= (s.w_size - MIN_LOOKAHEAD)/*MAX_DIST(s)*/) {
+      /* To simplify the code, we prevent matches with the string
+       * of window index 0 (in particular we have to avoid a match
+       * of the string with itself at the start of the input file).
+       */
+      s.match_length = longest_match(s, hash_head);
+      /* longest_match() sets match_start */
+
+      if (s.match_length <= 5 &&
+         (s.strategy === Z_FILTERED || (s.match_length === MIN_MATCH && s.strstart - s.match_start > 4096/*TOO_FAR*/))) {
+
+        /* If prev_match is also MIN_MATCH, match_start is garbage
+         * but we will ignore the current match anyway.
+         */
+        s.match_length = MIN_MATCH - 1;
+      }
+    }
+    /* If there was a match at the previous step and the current
+     * match is not better, output the previous match:
+     */
+    if (s.prev_length >= MIN_MATCH && s.match_length <= s.prev_length) {
+      max_insert = s.strstart + s.lookahead - MIN_MATCH;
+      /* Do not insert strings in hash table beyond this. */
+
+      //check_match(s, s.strstart-1, s.prev_match, s.prev_length);
+
+      /***_tr_tally_dist(s, s.strstart - 1 - s.prev_match,
+                     s.prev_length - MIN_MATCH, bflush);***/
+      bflush = trees._tr_tally(s, s.strstart - 1 - s.prev_match, s.prev_length - MIN_MATCH);
+      /* Insert in hash table all strings up to the end of the match.
+       * strstart-1 and strstart are already inserted. If there is not
+       * enough lookahead, the last two strings are not inserted in
+       * the hash table.
+       */
+      s.lookahead -= s.prev_length - 1;
+      s.prev_length -= 2;
+      do {
+        if (++s.strstart <= max_insert) {
+          /*** INSERT_STRING(s, s.strstart, hash_head); ***/
+          s.ins_h = ((s.ins_h << s.hash_shift) ^ s.window[s.strstart + MIN_MATCH - 1]) & s.hash_mask;
+          hash_head = s.prev[s.strstart & s.w_mask] = s.head[s.ins_h];
+          s.head[s.ins_h] = s.strstart;
+          /***/
+        }
+      } while (--s.prev_length !== 0);
+      s.match_available = 0;
+      s.match_length = MIN_MATCH - 1;
+      s.strstart++;
+
+      if (bflush) {
+        /*** FLUSH_BLOCK(s, 0); ***/
+        flush_block_only(s, false);
+        if (s.strm.avail_out === 0) {
+          return BS_NEED_MORE;
+        }
+        /***/
+      }
+
+    } else if (s.match_available) {
+      /* If there was no match at the previous position, output a
+       * single literal. If there was a match but the current match
+       * is longer, truncate the previous match to a single literal.
+       */
+      //Tracevv((stderr,"%c", s->window[s->strstart-1]));
+      /*** _tr_tally_lit(s, s.window[s.strstart-1], bflush); ***/
+      bflush = trees._tr_tally(s, 0, s.window[s.strstart - 1]);
+
+      if (bflush) {
+        /*** FLUSH_BLOCK_ONLY(s, 0) ***/
+        flush_block_only(s, false);
+        /***/
+      }
+      s.strstart++;
+      s.lookahead--;
+      if (s.strm.avail_out === 0) {
+        return BS_NEED_MORE;
+      }
+    } else {
+      /* There is no previous match to compare with, wait for
+       * the next step to decide.
+       */
+      s.match_available = 1;
+      s.strstart++;
+      s.lookahead--;
+    }
+  }
+  //Assert (flush != Z_NO_FLUSH, "no flush?");
+  if (s.match_available) {
+    //Tracevv((stderr,"%c", s->window[s->strstart-1]));
+    /*** _tr_tally_lit(s, s.window[s.strstart-1], bflush); ***/
+    bflush = trees._tr_tally(s, 0, s.window[s.strstart - 1]);
+
+    s.match_available = 0;
+  }
+  s.insert = s.strstart < MIN_MATCH - 1 ? s.strstart : MIN_MATCH - 1;
+  if (flush === Z_FINISH) {
+    /*** FLUSH_BLOCK(s, 1); ***/
+    flush_block_only(s, true);
+    if (s.strm.avail_out === 0) {
+      return BS_FINISH_STARTED;
+    }
+    /***/
+    return BS_FINISH_DONE;
+  }
+  if (s.last_lit) {
+    /*** FLUSH_BLOCK(s, 0); ***/
+    flush_block_only(s, false);
+    if (s.strm.avail_out === 0) {
+      return BS_NEED_MORE;
+    }
+    /***/
+  }
+
+  return BS_BLOCK_DONE;
+}
+
+
+/* ===========================================================================
+ * For Z_RLE, simply look for runs of bytes, generate matches only of distance
+ * one.  Do not maintain a hash table.  (It will be regenerated if this run of
+ * deflate switches away from Z_RLE.)
+ */
+function deflate_rle(s, flush) {
+  var bflush;            /* set if current block must be flushed */
+  var prev;              /* byte at distance one to match */
+  var scan, strend;      /* scan goes up to strend for length of run */
+
+  var _win = s.window;
+
+  for (;;) {
+    /* Make sure that we always have enough lookahead, except
+     * at the end of the input file. We need MAX_MATCH bytes
+     * for the longest run, plus one for the unrolled loop.
+     */
+    if (s.lookahead <= MAX_MATCH) {
+      fill_window(s);
+      if (s.lookahead <= MAX_MATCH && flush === Z_NO_FLUSH) {
+        return BS_NEED_MORE;
+      }
+      if (s.lookahead === 0) { break; } /* flush the current block */
+    }
+
+    /* See how many times the previous byte repeats */
+    s.match_length = 0;
+    if (s.lookahead >= MIN_MATCH && s.strstart > 0) {
+      scan = s.strstart - 1;
+      prev = _win[scan];
+      if (prev === _win[++scan] && prev === _win[++scan] && prev === _win[++scan]) {
+        strend = s.strstart + MAX_MATCH;
+        do {
+          /*jshint noempty:false*/
+        } while (prev === _win[++scan] && prev === _win[++scan] &&
+                 prev === _win[++scan] && prev === _win[++scan] &&
+                 prev === _win[++scan] && prev === _win[++scan] &&
+                 prev === _win[++scan] && prev === _win[++scan] &&
+                 scan < strend);
+        s.match_length = MAX_MATCH - (strend - scan);
+        if (s.match_length > s.lookahead) {
+          s.match_length = s.lookahead;
+        }
+      }
+      //Assert(scan <= s->window+(uInt)(s->window_size-1), "wild scan");
+    }
+
+    /* Emit match if have run of MIN_MATCH or longer, else emit literal */
+    if (s.match_length >= MIN_MATCH) {
+      //check_match(s, s.strstart, s.strstart - 1, s.match_length);
+
+      /*** _tr_tally_dist(s, 1, s.match_length - MIN_MATCH, bflush); ***/
+      bflush = trees._tr_tally(s, 1, s.match_length - MIN_MATCH);
+
+      s.lookahead -= s.match_length;
+      s.strstart += s.match_length;
+      s.match_length = 0;
+    } else {
+      /* No match, output a literal byte */
+      //Tracevv((stderr,"%c", s->window[s->strstart]));
+      /*** _tr_tally_lit(s, s.window[s.strstart], bflush); ***/
+      bflush = trees._tr_tally(s, 0, s.window[s.strstart]);
+
+      s.lookahead--;
+      s.strstart++;
+    }
+    if (bflush) {
+      /*** FLUSH_BLOCK(s, 0); ***/
+      flush_block_only(s, false);
+      if (s.strm.avail_out === 0) {
+        return BS_NEED_MORE;
+      }
+      /***/
+    }
+  }
+  s.insert = 0;
+  if (flush === Z_FINISH) {
+    /*** FLUSH_BLOCK(s, 1); ***/
+    flush_block_only(s, true);
+    if (s.strm.avail_out === 0) {
+      return BS_FINISH_STARTED;
+    }
+    /***/
+    return BS_FINISH_DONE;
+  }
+  if (s.last_lit) {
+    /*** FLUSH_BLOCK(s, 0); ***/
+    flush_block_only(s, false);
+    if (s.strm.avail_out === 0) {
+      return BS_NEED_MORE;
+    }
+    /***/
+  }
+  return BS_BLOCK_DONE;
+}
+
+/* ===========================================================================
+ * For Z_HUFFMAN_ONLY, do not look for matches.  Do not maintain a hash table.
+ * (It will be regenerated if this run of deflate switches away from Huffman.)
+ */
+function deflate_huff(s, flush) {
+  var bflush;             /* set if current block must be flushed */
+
+  for (;;) {
+    /* Make sure that we have a literal to write. */
+    if (s.lookahead === 0) {
+      fill_window(s);
+      if (s.lookahead === 0) {
+        if (flush === Z_NO_FLUSH) {
+          return BS_NEED_MORE;
+        }
+        break;      /* flush the current block */
+      }
+    }
+
+    /* Output a literal byte */
+    s.match_length = 0;
+    //Tracevv((stderr,"%c", s->window[s->strstart]));
+    /*** _tr_tally_lit(s, s.window[s.strstart], bflush); ***/
+    bflush = trees._tr_tally(s, 0, s.window[s.strstart]);
+    s.lookahead--;
+    s.strstart++;
+    if (bflush) {
+      /*** FLUSH_BLOCK(s, 0); ***/
+      flush_block_only(s, false);
+      if (s.strm.avail_out === 0) {
+        return BS_NEED_MORE;
+      }
+      /***/
+    }
+  }
+  s.insert = 0;
+  if (flush === Z_FINISH) {
+    /*** FLUSH_BLOCK(s, 1); ***/
+    flush_block_only(s, true);
+    if (s.strm.avail_out === 0) {
+      return BS_FINISH_STARTED;
+    }
+    /***/
+    return BS_FINISH_DONE;
+  }
+  if (s.last_lit) {
+    /*** FLUSH_BLOCK(s, 0); ***/
+    flush_block_only(s, false);
+    if (s.strm.avail_out === 0) {
+      return BS_NEED_MORE;
+    }
+    /***/
+  }
+  return BS_BLOCK_DONE;
+}
+
+/* Values for max_lazy_match, good_match and max_chain_length, depending on
+ * the desired pack level (0..9). The values given below have been tuned to
+ * exclude worst case performance for pathological files. Better values may be
+ * found for specific files.
+ */
+function Config(good_length, max_lazy, nice_length, max_chain, func) {
+  this.good_length = good_length;
+  this.max_lazy = max_lazy;
+  this.nice_length = nice_length;
+  this.max_chain = max_chain;
+  this.func = func;
+}
+
+var configuration_table;
+
+configuration_table = [
+  /*      good lazy nice chain */
+  new Config(0, 0, 0, 0, deflate_stored),          /* 0 store only */
+  new Config(4, 4, 8, 4, deflate_fast),            /* 1 max speed, no lazy matches */
+  new Config(4, 5, 16, 8, deflate_fast),           /* 2 */
+  new Config(4, 6, 32, 32, deflate_fast),          /* 3 */
+
+  new Config(4, 4, 16, 16, deflate_slow),          /* 4 lazy matches */
+  new Config(8, 16, 32, 32, deflate_slow),         /* 5 */
+  new Config(8, 16, 128, 128, deflate_slow),       /* 6 */
+  new Config(8, 32, 128, 256, deflate_slow),       /* 7 */
+  new Config(32, 128, 258, 1024, deflate_slow),    /* 8 */
+  new Config(32, 258, 258, 4096, deflate_slow)     /* 9 max compression */
+];
+
+
+/* ===========================================================================
+ * Initialize the "longest match" routines for a new zlib stream
+ */
+function lm_init(s) {
+  s.window_size = 2 * s.w_size;
+
+  /*** CLEAR_HASH(s); ***/
+  zero(s.head); // Fill with NIL (= 0);
+
+  /* Set the default configuration parameters:
+   */
+  s.max_lazy_match = configuration_table[s.level].max_lazy;
+  s.good_match = configuration_table[s.level].good_length;
+  s.nice_match = configuration_table[s.level].nice_length;
+  s.max_chain_length = configuration_table[s.level].max_chain;
+
+  s.strstart = 0;
+  s.block_start = 0;
+  s.lookahead = 0;
+  s.insert = 0;
+  s.match_length = s.prev_length = MIN_MATCH - 1;
+  s.match_available = 0;
+  s.ins_h = 0;
+}
+
+
+function DeflateState() {
+  this.strm = null;            /* pointer back to this zlib stream */
+  this.status = 0;            /* as the name implies */
+  this.pending_buf = null;      /* output still pending */
+  this.pending_buf_size = 0;  /* size of pending_buf */
+  this.pending_out = 0;       /* next pending byte to output to the stream */
+  this.pending = 0;           /* nb of bytes in the pending buffer */
+  this.wrap = 0;              /* bit 0 true for zlib, bit 1 true for gzip */
+  this.gzhead = null;         /* gzip header information to write */
+  this.gzindex = 0;           /* where in extra, name, or comment */
+  this.method = Z_DEFLATED; /* can only be DEFLATED */
+  this.last_flush = -1;   /* value of flush param for previous deflate call */
+
+  this.w_size = 0;  /* LZ77 window size (32K by default) */
+  this.w_bits = 0;  /* log2(w_size)  (8..16) */
+  this.w_mask = 0;  /* w_size - 1 */
+
+  this.window = null;
+  /* Sliding window. Input bytes are read into the second half of the window,
+   * and move to the first half later to keep a dictionary of at least wSize
+   * bytes. With this organization, matches are limited to a distance of
+   * wSize-MAX_MATCH bytes, but this ensures that IO is always
+   * performed with a length multiple of the block size.
+   */
+
+  this.window_size = 0;
+  /* Actual size of window: 2*wSize, except when the user input buffer
+   * is directly used as sliding window.
+   */
+
+  this.prev = null;
+  /* Link to older string with same hash index. To limit the size of this
+   * array to 64K, this link is maintained only for the last 32K strings.
+   * An index in this array is thus a window index modulo 32K.
+   */
+
+  this.head = null;   /* Heads of the hash chains or NIL. */
+
+  this.ins_h = 0;       /* hash index of string to be inserted */
+  this.hash_size = 0;   /* number of elements in hash table */
+  this.hash_bits = 0;   /* log2(hash_size) */
+  this.hash_mask = 0;   /* hash_size-1 */
+
+  this.hash_shift = 0;
+  /* Number of bits by which ins_h must be shifted at each input
+   * step. It must be such that after MIN_MATCH steps, the oldest
+   * byte no longer takes part in the hash key, that is:
+   *   hash_shift * MIN_MATCH >= hash_bits
+   */
+
+  this.block_start = 0;
+  /* Window position at the beginning of the current output block. Gets
+   * negative when the window is moved backwards.
+   */
+
+  this.match_length = 0;      /* length of best match */
+  this.prev_match = 0;        /* previous match */
+  this.match_available = 0;   /* set if previous match exists */
+  this.strstart = 0;          /* start of string to insert */
+  this.match_start = 0;       /* start of matching string */
+  this.lookahead = 0;         /* number of valid bytes ahead in window */
+
+  this.prev_length = 0;
+  /* Length of the best match at previous step. Matches not greater than this
+   * are discarded. This is used in the lazy match evaluation.
+   */
+
+  this.max_chain_length = 0;
+  /* To speed up deflation, hash chains are never searched beyond this
+   * length.  A higher limit improves compression ratio but degrades the
+   * speed.
+   */
+
+  this.max_lazy_match = 0;
+  /* Attempt to find a better match only when the current match is strictly
+   * smaller than this value. This mechanism is used only for compression
+   * levels >= 4.
+   */
+  // That's alias to max_lazy_match, don't use directly
+  //this.max_insert_length = 0;
+  /* Insert new strings in the hash table only if the match length is not
+   * greater than this length. This saves time but degrades compression.
+   * max_insert_length is used only for compression levels <= 3.
+   */
+
+  this.level = 0;     /* compression level (1..9) */
+  this.strategy = 0;  /* favor or force Huffman coding*/
+
+  this.good_match = 0;
+  /* Use a faster search when the previous match is longer than this */
+
+  this.nice_match = 0; /* Stop searching when current match exceeds this */
+
+              /* used by trees.c: */
+
+  /* Didn't use ct_data typedef below to suppress compiler warning */
+
+  // struct ct_data_s dyn_ltree[HEAP_SIZE];   /* literal and length tree */
+  // struct ct_data_s dyn_dtree[2*D_CODES+1]; /* distance tree */
+  // struct ct_data_s bl_tree[2*BL_CODES+1];  /* Huffman tree for bit lengths */
+
+  // Use flat array of DOUBLE size, with interleaved fata,
+  // because JS does not support effective
+  this.dyn_ltree  = new utils.Buf16(HEAP_SIZE * 2);
+  this.dyn_dtree  = new utils.Buf16((2 * D_CODES + 1) * 2);
+  this.bl_tree    = new utils.Buf16((2 * BL_CODES + 1) * 2);
+  zero(this.dyn_ltree);
+  zero(this.dyn_dtree);
+  zero(this.bl_tree);
+
+  this.l_desc   = null;         /* desc. for literal tree */
+  this.d_desc   = null;         /* desc. for distance tree */
+  this.bl_desc  = null;         /* desc. for bit length tree */
+
+  //ush bl_count[MAX_BITS+1];
+  this.bl_count = new utils.Buf16(MAX_BITS + 1);
+  /* number of codes at each bit length for an optimal tree */
+
+  //int heap[2*L_CODES+1];      /* heap used to build the Huffman trees */
+  this.heap = new utils.Buf16(2 * L_CODES + 1);  /* heap used to build the Huffman trees */
+  zero(this.heap);
+
+  this.heap_len = 0;               /* number of elements in the heap */
+  this.heap_max = 0;               /* element of largest frequency */
+  /* The sons of heap[n] are heap[2*n] and heap[2*n+1]. heap[0] is not used.
+   * The same heap array is used to build all trees.
+   */
+
+  this.depth = new utils.Buf16(2 * L_CODES + 1); //uch depth[2*L_CODES+1];
+  zero(this.depth);
+  /* Depth of each subtree used as tie breaker for trees of equal frequency
+   */
+
+  this.l_buf = 0;          /* buffer index for literals or lengths */
+
+  this.lit_bufsize = 0;
+  /* Size of match buffer for literals/lengths.  There are 4 reasons for
+   * limiting lit_bufsize to 64K:
+   *   - frequencies can be kept in 16 bit counters
+   *   - if compression is not successful for the first block, all input
+   *     data is still in the window so we can still emit a stored block even
+   *     when input comes from standard input.  (This can also be done for
+   *     all blocks if lit_bufsize is not greater than 32K.)
+   *   - if compression is not successful for a file smaller than 64K, we can
+   *     even emit a stored file instead of a stored block (saving 5 bytes).
+   *     This is applicable only for zip (not gzip or zlib).
+   *   - creating new Huffman trees less frequently may not provide fast
+   *     adaptation to changes in the input data statistics. (Take for
+   *     example a binary file with poorly compressible code followed by
+   *     a highly compressible string table.) Smaller buffer sizes give
+   *     fast adaptation but have of course the overhead of transmitting
+   *     trees more frequently.
+   *   - I can't count above 4
+   */
+
+  this.last_lit = 0;      /* running index in l_buf */
+
+  this.d_buf = 0;
+  /* Buffer index for distances. To simplify the code, d_buf and l_buf have
+   * the same number of elements. To use different lengths, an extra flag
+   * array would be necessary.
+   */
+
+  this.opt_len = 0;       /* bit length of current block with optimal trees */
+  this.static_len = 0;    /* bit length of current block with static trees */
+  this.matches = 0;       /* number of string matches in current block */
+  this.insert = 0;        /* bytes at end of window left to insert */
+
+
+  this.bi_buf = 0;
+  /* Output buffer. bits are inserted starting at the bottom (least
+   * significant bits).
+   */
+  this.bi_valid = 0;
+  /* Number of valid bits in bi_buf.  All bits above the last valid bit
+   * are always zero.
+   */
+
+  // Used for window memory init. We safely ignore it for JS. That makes
+  // sense only for pointers and memory check tools.
+  //this.high_water = 0;
+  /* High water mark offset in window for initialized bytes -- bytes above
+   * this are set to zero in order to avoid memory check warnings when
+   * longest match routines access bytes past the input.  This is then
+   * updated to the new high water mark.
+   */
+}
+
+
+function deflateResetKeep(strm) {
+  var s;
+
+  if (!strm || !strm.state) {
+    return err(strm, Z_STREAM_ERROR);
+  }
+
+  strm.total_in = strm.total_out = 0;
+  strm.data_type = Z_UNKNOWN;
+
+  s = strm.state;
+  s.pending = 0;
+  s.pending_out = 0;
+
+  if (s.wrap < 0) {
+    s.wrap = -s.wrap;
+    /* was made negative by deflate(..., Z_FINISH); */
+  }
+  s.status = (s.wrap ? INIT_STATE : BUSY_STATE);
+  strm.adler = (s.wrap === 2) ?
+    0  // crc32(0, Z_NULL, 0)
+  :
+    1; // adler32(0, Z_NULL, 0)
+  s.last_flush = Z_NO_FLUSH;
+  trees._tr_init(s);
+  return Z_OK;
+}
+
+
+function deflateReset(strm) {
+  var ret = deflateResetKeep(strm);
+  if (ret === Z_OK) {
+    lm_init(strm.state);
+  }
+  return ret;
+}
+
+
+function deflateSetHeader(strm, head) {
+  if (!strm || !strm.state) { return Z_STREAM_ERROR; }
+  if (strm.state.wrap !== 2) { return Z_STREAM_ERROR; }
+  strm.state.gzhead = head;
+  return Z_OK;
+}
+
+
+function deflateInit2(strm, level, method, windowBits, memLevel, strategy) {
+  if (!strm) { // === Z_NULL
+    return Z_STREAM_ERROR;
+  }
+  var wrap = 1;
+
+  if (level === Z_DEFAULT_COMPRESSION) {
+    level = 6;
+  }
+
+  if (windowBits < 0) { /* suppress zlib wrapper */
+    wrap = 0;
+    windowBits = -windowBits;
+  }
+
+  else if (windowBits > 15) {
+    wrap = 2;           /* write gzip wrapper instead */
+    windowBits -= 16;
+  }
+
+
+  if (memLevel < 1 || memLevel > MAX_MEM_LEVEL || method !== Z_DEFLATED ||
+    windowBits < 8 || windowBits > 15 || level < 0 || level > 9 ||
+    strategy < 0 || strategy > Z_FIXED) {
+    return err(strm, Z_STREAM_ERROR);
+  }
+
+
+  if (windowBits === 8) {
+    windowBits = 9;
+  }
+  /* until 256-byte window bug fixed */
+
+  var s = new DeflateState();
+
+  strm.state = s;
+  s.strm = strm;
+
+  s.wrap = wrap;
+  s.gzhead = null;
+  s.w_bits = windowBits;
+  s.w_size = 1 << s.w_bits;
+  s.w_mask = s.w_size - 1;
+
+  s.hash_bits = memLevel + 7;
+  s.hash_size = 1 << s.hash_bits;
+  s.hash_mask = s.hash_size - 1;
+  s.hash_shift = ~~((s.hash_bits + MIN_MATCH - 1) / MIN_MATCH);
+
+  s.window = new utils.Buf8(s.w_size * 2);
+  s.head = new utils.Buf16(s.hash_size);
+  s.prev = new utils.Buf16(s.w_size);
+
+  // Don't need mem init magic for JS.
+  //s.high_water = 0;  /* nothing written to s->window yet */
+
+  s.lit_bufsize = 1 << (memLevel + 6); /* 16K elements by default */
+
+  s.pending_buf_size = s.lit_bufsize * 4;
+
+  //overlay = (ushf *) ZALLOC(strm, s->lit_bufsize, sizeof(ush)+2);
+  //s->pending_buf = (uchf *) overlay;
+  s.pending_buf = new utils.Buf8(s.pending_buf_size);
+
+  // It is offset from `s.pending_buf` (size is `s.lit_bufsize * 2`)
+  //s->d_buf = overlay + s->lit_bufsize/sizeof(ush);
+  s.d_buf = 1 * s.lit_bufsize;
+
+  //s->l_buf = s->pending_buf + (1+sizeof(ush))*s->lit_bufsize;
+  s.l_buf = (1 + 2) * s.lit_bufsize;
+
+  s.level = level;
+  s.strategy = strategy;
+  s.method = method;
+
+  return deflateReset(strm);
+}
+
+function deflateInit(strm, level) {
+  return deflateInit2(strm, level, Z_DEFLATED, MAX_WBITS, DEF_MEM_LEVEL, Z_DEFAULT_STRATEGY);
+}
+
+
+function deflate(strm, flush) {
+  var old_flush, s;
+  var beg, val; // for gzip header write only
+
+  if (!strm || !strm.state ||
+    flush > Z_BLOCK || flush < 0) {
+    return strm ? err(strm, Z_STREAM_ERROR) : Z_STREAM_ERROR;
+  }
+
+  s = strm.state;
+
+  if (!strm.output ||
+      (!strm.input && strm.avail_in !== 0) ||
+      (s.status === FINISH_STATE && flush !== Z_FINISH)) {
+    return err(strm, (strm.avail_out === 0) ? Z_BUF_ERROR : Z_STREAM_ERROR);
+  }
+
+  s.strm = strm; /* just in case */
+  old_flush = s.last_flush;
+  s.last_flush = flush;
+
+  /* Write the header */
+  if (s.status === INIT_STATE) {
+
+    if (s.wrap === 2) { // GZIP header
+      strm.adler = 0;  //crc32(0L, Z_NULL, 0);
+      put_byte(s, 31);
+      put_byte(s, 139);
+      put_byte(s, 8);
+      if (!s.gzhead) { // s->gzhead == Z_NULL
+        put_byte(s, 0);
+        put_byte(s, 0);
+        put_byte(s, 0);
+        put_byte(s, 0);
+        put_byte(s, 0);
+        put_byte(s, s.level === 9 ? 2 :
+                    (s.strategy >= Z_HUFFMAN_ONLY || s.level < 2 ?
+                     4 : 0));
+        put_byte(s, OS_CODE);
+        s.status = BUSY_STATE;
+      }
+      else {
+        put_byte(s, (s.gzhead.text ? 1 : 0) +
+                    (s.gzhead.hcrc ? 2 : 0) +
+                    (!s.gzhead.extra ? 0 : 4) +
+                    (!s.gzhead.name ? 0 : 8) +
+                    (!s.gzhead.comment ? 0 : 16)
+        );
+        put_byte(s, s.gzhead.time & 0xff);
+        put_byte(s, (s.gzhead.time >> 8) & 0xff);
+        put_byte(s, (s.gzhead.time >> 16) & 0xff);
+        put_byte(s, (s.gzhead.time >> 24) & 0xff);
+        put_byte(s, s.level === 9 ? 2 :
+                    (s.strategy >= Z_HUFFMAN_ONLY || s.level < 2 ?
+                     4 : 0));
+        put_byte(s, s.gzhead.os & 0xff);
+        if (s.gzhead.extra && s.gzhead.extra.length) {
+          put_byte(s, s.gzhead.extra.length & 0xff);
+          put_byte(s, (s.gzhead.extra.length >> 8) & 0xff);
+        }
+        if (s.gzhead.hcrc) {
+          strm.adler = crc32(strm.adler, s.pending_buf, s.pending, 0);
+        }
+        s.gzindex = 0;
+        s.status = EXTRA_STATE;
+      }
+    }
+    else // DEFLATE header
+    {
+      var header = (Z_DEFLATED + ((s.w_bits - 8) << 4)) << 8;
+      var level_flags = -1;
+
+      if (s.strategy >= Z_HUFFMAN_ONLY || s.level < 2) {
+        level_flags = 0;
+      } else if (s.level < 6) {
+        level_flags = 1;
+      } else if (s.level === 6) {
+        level_flags = 2;
+      } else {
+        level_flags = 3;
+      }
+      header |= (level_flags << 6);
+      if (s.strstart !== 0) { header |= PRESET_DICT; }
+      header += 31 - (header % 31);
+
+      s.status = BUSY_STATE;
+      putShortMSB(s, header);
+
+      /* Save the adler32 of the preset dictionary: */
+      if (s.strstart !== 0) {
+        putShortMSB(s, strm.adler >>> 16);
+        putShortMSB(s, strm.adler & 0xffff);
+      }
+      strm.adler = 1; // adler32(0L, Z_NULL, 0);
+    }
+  }
+
+//#ifdef GZIP
+  if (s.status === EXTRA_STATE) {
+    if (s.gzhead.extra/* != Z_NULL*/) {
+      beg = s.pending;  /* start of bytes to update crc */
+
+      while (s.gzindex < (s.gzhead.extra.length & 0xffff)) {
+        if (s.pending === s.pending_buf_size) {
+          if (s.gzhead.hcrc && s.pending > beg) {
+            strm.adler = crc32(strm.adler, s.pending_buf, s.pending - beg, beg);
+          }
+          flush_pending(strm);
+          beg = s.pending;
+          if (s.pending === s.pending_buf_size) {
+            break;
+          }
+        }
+        put_byte(s, s.gzhead.extra[s.gzindex] & 0xff);
+        s.gzindex++;
+      }
+      if (s.gzhead.hcrc && s.pending > beg) {
+        strm.adler = crc32(strm.adler, s.pending_buf, s.pending - beg, beg);
+      }
+      if (s.gzindex === s.gzhead.extra.length) {
+        s.gzindex = 0;
+        s.status = NAME_STATE;
+      }
+    }
+    else {
+      s.status = NAME_STATE;
+    }
+  }
+  if (s.status === NAME_STATE) {
+    if (s.gzhead.name/* != Z_NULL*/) {
+      beg = s.pending;  /* start of bytes to update crc */
+      //int val;
+
+      do {
+        if (s.pending === s.pending_buf_size) {
+          if (s.gzhead.hcrc && s.pending > beg) {
+            strm.adler = crc32(strm.adler, s.pending_buf, s.pending - beg, beg);
+          }
+          flush_pending(strm);
+          beg = s.pending;
+          if (s.pending === s.pending_buf_size) {
+            val = 1;
+            break;
+          }
+        }
+        // JS specific: little magic to add zero terminator to end of string
+        if (s.gzindex < s.gzhead.name.length) {
+          val = s.gzhead.name.charCodeAt(s.gzindex++) & 0xff;
+        } else {
+          val = 0;
+        }
+        put_byte(s, val);
+      } while (val !== 0);
+
+      if (s.gzhead.hcrc && s.pending > beg) {
+        strm.adler = crc32(strm.adler, s.pending_buf, s.pending - beg, beg);
+      }
+      if (val === 0) {
+        s.gzindex = 0;
+        s.status = COMMENT_STATE;
+      }
+    }
+    else {
+      s.status = COMMENT_STATE;
+    }
+  }
+  if (s.status === COMMENT_STATE) {
+    if (s.gzhead.comment/* != Z_NULL*/) {
+      beg = s.pending;  /* start of bytes to update crc */
+      //int val;
+
+      do {
+        if (s.pending === s.pending_buf_size) {
+          if (s.gzhead.hcrc && s.pending > beg) {
+            strm.adler = crc32(strm.adler, s.pending_buf, s.pending - beg, beg);
+          }
+          flush_pending(strm);
+          beg = s.pending;
+          if (s.pending === s.pending_buf_size) {
+            val = 1;
+            break;
+          }
+        }
+        // JS specific: little magic to add zero terminator to end of string
+        if (s.gzindex < s.gzhead.comment.length) {
+          val = s.gzhead.comment.charCodeAt(s.gzindex++) & 0xff;
+        } else {
+          val = 0;
+        }
+        put_byte(s, val);
+      } while (val !== 0);
+
+      if (s.gzhead.hcrc && s.pending > beg) {
+        strm.adler = crc32(strm.adler, s.pending_buf, s.pending - beg, beg);
+      }
+      if (val === 0) {
+        s.status = HCRC_STATE;
+      }
+    }
+    else {
+      s.status = HCRC_STATE;
+    }
+  }
+  if (s.status === HCRC_STATE) {
+    if (s.gzhead.hcrc) {
+      if (s.pending + 2 > s.pending_buf_size) {
+        flush_pending(strm);
+      }
+      if (s.pending + 2 <= s.pending_buf_size) {
+        put_byte(s, strm.adler & 0xff);
+        put_byte(s, (strm.adler >> 8) & 0xff);
+        strm.adler = 0; //crc32(0L, Z_NULL, 0);
+        s.status = BUSY_STATE;
+      }
+    }
+    else {
+      s.status = BUSY_STATE;
+    }
+  }
+//#endif
+
+  /* Flush as much pending output as possible */
+  if (s.pending !== 0) {
+    flush_pending(strm);
+    if (strm.avail_out === 0) {
+      /* Since avail_out is 0, deflate will be called again with
+       * more output space, but possibly with both pending and
+       * avail_in equal to zero. There won't be anything to do,
+       * but this is not an error situation so make sure we
+       * return OK instead of BUF_ERROR at next call of deflate:
+       */
+      s.last_flush = -1;
+      return Z_OK;
+    }
+
+    /* Make sure there is something to do and avoid duplicate consecutive
+     * flushes. For repeated and useless calls with Z_FINISH, we keep
+     * returning Z_STREAM_END instead of Z_BUF_ERROR.
+     */
+  } else if (strm.avail_in === 0 && rank(flush) <= rank(old_flush) &&
+    flush !== Z_FINISH) {
+    return err(strm, Z_BUF_ERROR);
+  }
+
+  /* User must not provide more input after the first FINISH: */
+  if (s.status === FINISH_STATE && strm.avail_in !== 0) {
+    return err(strm, Z_BUF_ERROR);
+  }
+
+  /* Start a new block or continue the current one.
+   */
+  if (strm.avail_in !== 0 || s.lookahead !== 0 ||
+    (flush !== Z_NO_FLUSH && s.status !== FINISH_STATE)) {
+    var bstate = (s.strategy === Z_HUFFMAN_ONLY) ? deflate_huff(s, flush) :
+      (s.strategy === Z_RLE ? deflate_rle(s, flush) :
+        configuration_table[s.level].func(s, flush));
+
+    if (bstate === BS_FINISH_STARTED || bstate === BS_FINISH_DONE) {
+      s.status = FINISH_STATE;
+    }
+    if (bstate === BS_NEED_MORE || bstate === BS_FINISH_STARTED) {
+      if (strm.avail_out === 0) {
+        s.last_flush = -1;
+        /* avoid BUF_ERROR next call, see above */
+      }
+      return Z_OK;
+      /* If flush != Z_NO_FLUSH && avail_out == 0, the next call
+       * of deflate should use the same flush parameter to make sure
+       * that the flush is complete. So we don't have to output an
+       * empty block here, this will be done at next call. This also
+       * ensures that for a very small output buffer, we emit at most
+       * one empty block.
+       */
+    }
+    if (bstate === BS_BLOCK_DONE) {
+      if (flush === Z_PARTIAL_FLUSH) {
+        trees._tr_align(s);
+      }
+      else if (flush !== Z_BLOCK) { /* FULL_FLUSH or SYNC_FLUSH */
+
+        trees._tr_stored_block(s, 0, 0, false);
+        /* For a full flush, this empty block will be recognized
+         * as a special marker by inflate_sync().
+         */
+        if (flush === Z_FULL_FLUSH) {
+          /*** CLEAR_HASH(s); ***/             /* forget history */
+          zero(s.head); // Fill with NIL (= 0);
+
+          if (s.lookahead === 0) {
+            s.strstart = 0;
+            s.block_start = 0;
+            s.insert = 0;
+          }
+        }
+      }
+      flush_pending(strm);
+      if (strm.avail_out === 0) {
+        s.last_flush = -1; /* avoid BUF_ERROR at next call, see above */
+        return Z_OK;
+      }
+    }
+  }
+  //Assert(strm->avail_out > 0, "bug2");
+  //if (strm.avail_out <= 0) { throw new Error("bug2");}
+
+  if (flush !== Z_FINISH) { return Z_OK; }
+  if (s.wrap <= 0) { return Z_STREAM_END; }
+
+  /* Write the trailer */
+  if (s.wrap === 2) {
+    put_byte(s, strm.adler & 0xff);
+    put_byte(s, (strm.adler >> 8) & 0xff);
+    put_byte(s, (strm.adler >> 16) & 0xff);
+    put_byte(s, (strm.adler >> 24) & 0xff);
+    put_byte(s, strm.total_in & 0xff);
+    put_byte(s, (strm.total_in >> 8) & 0xff);
+    put_byte(s, (strm.total_in >> 16) & 0xff);
+    put_byte(s, (strm.total_in >> 24) & 0xff);
+  }
+  else
+  {
+    putShortMSB(s, strm.adler >>> 16);
+    putShortMSB(s, strm.adler & 0xffff);
+  }
+
+  flush_pending(strm);
+  /* If avail_out is zero, the application will call deflate again
+   * to flush the rest.
+   */
+  if (s.wrap > 0) { s.wrap = -s.wrap; }
+  /* write the trailer only once! */
+  return s.pending !== 0 ? Z_OK : Z_STREAM_END;
+}
+
+function deflateEnd(strm) {
+  var status;
+
+  if (!strm/*== Z_NULL*/ || !strm.state/*== Z_NULL*/) {
+    return Z_STREAM_ERROR;
+  }
+
+  status = strm.state.status;
+  if (status !== INIT_STATE &&
+    status !== EXTRA_STATE &&
+    status !== NAME_STATE &&
+    status !== COMMENT_STATE &&
+    status !== HCRC_STATE &&
+    status !== BUSY_STATE &&
+    status !== FINISH_STATE
+  ) {
+    return err(strm, Z_STREAM_ERROR);
+  }
+
+  strm.state = null;
+
+  return status === BUSY_STATE ? err(strm, Z_DATA_ERROR) : Z_OK;
+}
+
+
+/* =========================================================================
+ * Initializes the compression dictionary from the given byte
+ * sequence without producing any compressed output.
+ */
+function deflateSetDictionary(strm, dictionary) {
+  var dictLength = dictionary.length;
+
+  var s;
+  var str, n;
+  var wrap;
+  var avail;
+  var next;
+  var input;
+  var tmpDict;
+
+  if (!strm/*== Z_NULL*/ || !strm.state/*== Z_NULL*/) {
+    return Z_STREAM_ERROR;
+  }
+
+  s = strm.state;
+  wrap = s.wrap;
+
+  if (wrap === 2 || (wrap === 1 && s.status !== INIT_STATE) || s.lookahead) {
+    return Z_STREAM_ERROR;
+  }
+
+  /* when using zlib wrappers, compute Adler-32 for provided dictionary */
+  if (wrap === 1) {
+    /* adler32(strm->adler, dictionary, dictLength); */
+    strm.adler = adler32(strm.adler, dictionary, dictLength, 0);
+  }
+
+  s.wrap = 0;   /* avoid computing Adler-32 in read_buf */
+
+  /* if dictionary would fill window, just replace the history */
+  if (dictLength >= s.w_size) {
+    if (wrap === 0) {            /* already empty otherwise */
+      /*** CLEAR_HASH(s); ***/
+      zero(s.head); // Fill with NIL (= 0);
+      s.strstart = 0;
+      s.block_start = 0;
+      s.insert = 0;
+    }
+    /* use the tail */
+    // dictionary = dictionary.slice(dictLength - s.w_size);
+    tmpDict = new utils.Buf8(s.w_size);
+    utils.arraySet(tmpDict, dictionary, dictLength - s.w_size, s.w_size, 0);
+    dictionary = tmpDict;
+    dictLength = s.w_size;
+  }
+  /* insert dictionary into window and hash */
+  avail = strm.avail_in;
+  next = strm.next_in;
+  input = strm.input;
+  strm.avail_in = dictLength;
+  strm.next_in = 0;
+  strm.input = dictionary;
+  fill_window(s);
+  while (s.lookahead >= MIN_MATCH) {
+    str = s.strstart;
+    n = s.lookahead - (MIN_MATCH - 1);
+    do {
+      /* UPDATE_HASH(s, s->ins_h, s->window[str + MIN_MATCH-1]); */
+      s.ins_h = ((s.ins_h << s.hash_shift) ^ s.window[str + MIN_MATCH - 1]) & s.hash_mask;
+
+      s.prev[str & s.w_mask] = s.head[s.ins_h];
+
+      s.head[s.ins_h] = str;
+      str++;
+    } while (--n);
+    s.strstart = str;
+    s.lookahead = MIN_MATCH - 1;
+    fill_window(s);
+  }
+  s.strstart += s.lookahead;
+  s.block_start = s.strstart;
+  s.insert = s.lookahead;
+  s.lookahead = 0;
+  s.match_length = s.prev_length = MIN_MATCH - 1;
+  s.match_available = 0;
+  strm.next_in = next;
+  strm.input = input;
+  strm.avail_in = avail;
+  s.wrap = wrap;
+  return Z_OK;
+}
+
+
+exports.deflateInit = deflateInit;
+exports.deflateInit2 = deflateInit2;
+exports.deflateReset = deflateReset;
+exports.deflateResetKeep = deflateResetKeep;
+exports.deflateSetHeader = deflateSetHeader;
+exports.deflate = deflate;
+exports.deflateEnd = deflateEnd;
+exports.deflateSetDictionary = deflateSetDictionary;
+exports.deflateInfo = 'pako deflate (from Nodeca project)';
+
+/* Not implemented
+exports.deflateBound = deflateBound;
+exports.deflateCopy = deflateCopy;
+exports.deflateParams = deflateParams;
+exports.deflatePending = deflatePending;
+exports.deflatePrime = deflatePrime;
+exports.deflateTune = deflateTune;
+*/
+
+
+/***/ }),
+/* 122 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// (C) 1995-2013 Jean-loup Gailly and Mark Adler
+// (C) 2014-2017 Vitaly Puzrin and Andrey Tupitsin
+//
+// This software is provided 'as-is', without any express or implied
+// warranty. In no event will the authors be held liable for any damages
+// arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it
+// freely, subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented; you must not
+//   claim that you wrote the original software. If you use this software
+//   in a product, an acknowledgment in the product documentation would be
+//   appreciated but is not required.
+// 2. Altered source versions must be plainly marked as such, and must not be
+//   misrepresented as being the original software.
+// 3. This notice may not be removed or altered from any source distribution.
+
+/* eslint-disable space-unary-ops */
+
+var utils = __webpack_require__(11);
+
+/* Public constants ==========================================================*/
+/* ===========================================================================*/
+
+
+//var Z_FILTERED          = 1;
+//var Z_HUFFMAN_ONLY      = 2;
+//var Z_RLE               = 3;
+var Z_FIXED               = 4;
+//var Z_DEFAULT_STRATEGY  = 0;
+
+/* Possible values of the data_type field (though see inflate()) */
+var Z_BINARY              = 0;
+var Z_TEXT                = 1;
+//var Z_ASCII             = 1; // = Z_TEXT
+var Z_UNKNOWN             = 2;
+
+/*============================================================================*/
+
+
+function zero(buf) { var len = buf.length; while (--len >= 0) { buf[len] = 0; } }
+
+// From zutil.h
+
+var STORED_BLOCK = 0;
+var STATIC_TREES = 1;
+var DYN_TREES    = 2;
+/* The three kinds of block type */
+
+var MIN_MATCH    = 3;
+var MAX_MATCH    = 258;
+/* The minimum and maximum match lengths */
+
+// From deflate.h
+/* ===========================================================================
+ * Internal compression state.
+ */
+
+var LENGTH_CODES  = 29;
+/* number of length codes, not counting the special END_BLOCK code */
+
+var LITERALS      = 256;
+/* number of literal bytes 0..255 */
+
+var L_CODES       = LITERALS + 1 + LENGTH_CODES;
+/* number of Literal or Length codes, including the END_BLOCK code */
+
+var D_CODES       = 30;
+/* number of distance codes */
+
+var BL_CODES      = 19;
+/* number of codes used to transfer the bit lengths */
+
+var HEAP_SIZE     = 2 * L_CODES + 1;
+/* maximum heap size */
+
+var MAX_BITS      = 15;
+/* All codes must not exceed MAX_BITS bits */
+
+var Buf_size      = 16;
+/* size of bit buffer in bi_buf */
+
+
+/* ===========================================================================
+ * Constants
+ */
+
+var MAX_BL_BITS = 7;
+/* Bit length codes must not exceed MAX_BL_BITS bits */
+
+var END_BLOCK   = 256;
+/* end of block literal code */
+
+var REP_3_6     = 16;
+/* repeat previous bit length 3-6 times (2 bits of repeat count) */
+
+var REPZ_3_10   = 17;
+/* repeat a zero length 3-10 times  (3 bits of repeat count) */
+
+var REPZ_11_138 = 18;
+/* repeat a zero length 11-138 times  (7 bits of repeat count) */
+
+/* eslint-disable comma-spacing,array-bracket-spacing */
+var extra_lbits =   /* extra bits for each length code */
+  [0,0,0,0,0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,0];
+
+var extra_dbits =   /* extra bits for each distance code */
+  [0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,13,13];
+
+var extra_blbits =  /* extra bits for each bit length code */
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,7];
+
+var bl_order =
+  [16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15];
+/* eslint-enable comma-spacing,array-bracket-spacing */
+
+/* The lengths of the bit length codes are sent in order of decreasing
+ * probability, to avoid transmitting the lengths for unused bit length codes.
+ */
+
+/* ===========================================================================
+ * Local data. These are initialized only once.
+ */
+
+// We pre-fill arrays with 0 to avoid uninitialized gaps
+
+var DIST_CODE_LEN = 512; /* see definition of array dist_code below */
+
+// !!!! Use flat array instead of structure, Freq = i*2, Len = i*2+1
+var static_ltree  = new Array((L_CODES + 2) * 2);
+zero(static_ltree);
+/* The static literal tree. Since the bit lengths are imposed, there is no
+ * need for the L_CODES extra codes used during heap construction. However
+ * The codes 286 and 287 are needed to build a canonical tree (see _tr_init
+ * below).
+ */
+
+var static_dtree  = new Array(D_CODES * 2);
+zero(static_dtree);
+/* The static distance tree. (Actually a trivial tree since all codes use
+ * 5 bits.)
+ */
+
+var _dist_code    = new Array(DIST_CODE_LEN);
+zero(_dist_code);
+/* Distance codes. The first 256 values correspond to the distances
+ * 3 .. 258, the last 256 values correspond to the top 8 bits of
+ * the 15 bit distances.
+ */
+
+var _length_code  = new Array(MAX_MATCH - MIN_MATCH + 1);
+zero(_length_code);
+/* length code for each normalized match length (0 == MIN_MATCH) */
+
+var base_length   = new Array(LENGTH_CODES);
+zero(base_length);
+/* First normalized length for each code (0 = MIN_MATCH) */
+
+var base_dist     = new Array(D_CODES);
+zero(base_dist);
+/* First normalized distance for each code (0 = distance of 1) */
+
+
+function StaticTreeDesc(static_tree, extra_bits, extra_base, elems, max_length) {
+
+  this.static_tree  = static_tree;  /* static tree or NULL */
+  this.extra_bits   = extra_bits;   /* extra bits for each code or NULL */
+  this.extra_base   = extra_base;   /* base index for extra_bits */
+  this.elems        = elems;        /* max number of elements in the tree */
+  this.max_length   = max_length;   /* max bit length for the codes */
+
+  // show if `static_tree` has data or dummy - needed for monomorphic objects
+  this.has_stree    = static_tree && static_tree.length;
+}
+
+
+var static_l_desc;
+var static_d_desc;
+var static_bl_desc;
+
+
+function TreeDesc(dyn_tree, stat_desc) {
+  this.dyn_tree = dyn_tree;     /* the dynamic tree */
+  this.max_code = 0;            /* largest code with non zero frequency */
+  this.stat_desc = stat_desc;   /* the corresponding static tree */
+}
+
+
+
+function d_code(dist) {
+  return dist < 256 ? _dist_code[dist] : _dist_code[256 + (dist >>> 7)];
+}
+
+
+/* ===========================================================================
+ * Output a short LSB first on the stream.
+ * IN assertion: there is enough room in pendingBuf.
+ */
+function put_short(s, w) {
+//    put_byte(s, (uch)((w) & 0xff));
+//    put_byte(s, (uch)((ush)(w) >> 8));
+  s.pending_buf[s.pending++] = (w) & 0xff;
+  s.pending_buf[s.pending++] = (w >>> 8) & 0xff;
+}
+
+
+/* ===========================================================================
+ * Send a value on a given number of bits.
+ * IN assertion: length <= 16 and value fits in length bits.
+ */
+function send_bits(s, value, length) {
+  if (s.bi_valid > (Buf_size - length)) {
+    s.bi_buf |= (value << s.bi_valid) & 0xffff;
+    put_short(s, s.bi_buf);
+    s.bi_buf = value >> (Buf_size - s.bi_valid);
+    s.bi_valid += length - Buf_size;
+  } else {
+    s.bi_buf |= (value << s.bi_valid) & 0xffff;
+    s.bi_valid += length;
+  }
+}
+
+
+function send_code(s, c, tree) {
+  send_bits(s, tree[c * 2]/*.Code*/, tree[c * 2 + 1]/*.Len*/);
+}
+
+
+/* ===========================================================================
+ * Reverse the first len bits of a code, using straightforward code (a faster
+ * method would use a table)
+ * IN assertion: 1 <= len <= 15
+ */
+function bi_reverse(code, len) {
+  var res = 0;
+  do {
+    res |= code & 1;
+    code >>>= 1;
+    res <<= 1;
+  } while (--len > 0);
+  return res >>> 1;
+}
+
+
+/* ===========================================================================
+ * Flush the bit buffer, keeping at most 7 bits in it.
+ */
+function bi_flush(s) {
+  if (s.bi_valid === 16) {
+    put_short(s, s.bi_buf);
+    s.bi_buf = 0;
+    s.bi_valid = 0;
+
+  } else if (s.bi_valid >= 8) {
+    s.pending_buf[s.pending++] = s.bi_buf & 0xff;
+    s.bi_buf >>= 8;
+    s.bi_valid -= 8;
+  }
+}
+
+
+/* ===========================================================================
+ * Compute the optimal bit lengths for a tree and update the total bit length
+ * for the current block.
+ * IN assertion: the fields freq and dad are set, heap[heap_max] and
+ *    above are the tree nodes sorted by increasing frequency.
+ * OUT assertions: the field len is set to the optimal bit length, the
+ *     array bl_count contains the frequencies for each bit length.
+ *     The length opt_len is updated; static_len is also updated if stree is
+ *     not null.
+ */
+function gen_bitlen(s, desc)
+//    deflate_state *s;
+//    tree_desc *desc;    /* the tree descriptor */
+{
+  var tree            = desc.dyn_tree;
+  var max_code        = desc.max_code;
+  var stree           = desc.stat_desc.static_tree;
+  var has_stree       = desc.stat_desc.has_stree;
+  var extra           = desc.stat_desc.extra_bits;
+  var base            = desc.stat_desc.extra_base;
+  var max_length      = desc.stat_desc.max_length;
+  var h;              /* heap index */
+  var n, m;           /* iterate over the tree elements */
+  var bits;           /* bit length */
+  var xbits;          /* extra bits */
+  var f;              /* frequency */
+  var overflow = 0;   /* number of elements with bit length too large */
+
+  for (bits = 0; bits <= MAX_BITS; bits++) {
+    s.bl_count[bits] = 0;
+  }
+
+  /* In a first pass, compute the optimal bit lengths (which may
+   * overflow in the case of the bit length tree).
+   */
+  tree[s.heap[s.heap_max] * 2 + 1]/*.Len*/ = 0; /* root of the heap */
+
+  for (h = s.heap_max + 1; h < HEAP_SIZE; h++) {
+    n = s.heap[h];
+    bits = tree[tree[n * 2 + 1]/*.Dad*/ * 2 + 1]/*.Len*/ + 1;
+    if (bits > max_length) {
+      bits = max_length;
+      overflow++;
+    }
+    tree[n * 2 + 1]/*.Len*/ = bits;
+    /* We overwrite tree[n].Dad which is no longer needed */
+
+    if (n > max_code) { continue; } /* not a leaf node */
+
+    s.bl_count[bits]++;
+    xbits = 0;
+    if (n >= base) {
+      xbits = extra[n - base];
+    }
+    f = tree[n * 2]/*.Freq*/;
+    s.opt_len += f * (bits + xbits);
+    if (has_stree) {
+      s.static_len += f * (stree[n * 2 + 1]/*.Len*/ + xbits);
+    }
+  }
+  if (overflow === 0) { return; }
+
+  // Trace((stderr,"\nbit length overflow\n"));
+  /* This happens for example on obj2 and pic of the Calgary corpus */
+
+  /* Find the first bit length which could increase: */
+  do {
+    bits = max_length - 1;
+    while (s.bl_count[bits] === 0) { bits--; }
+    s.bl_count[bits]--;      /* move one leaf down the tree */
+    s.bl_count[bits + 1] += 2; /* move one overflow item as its brother */
+    s.bl_count[max_length]--;
+    /* The brother of the overflow item also moves one step up,
+     * but this does not affect bl_count[max_length]
+     */
+    overflow -= 2;
+  } while (overflow > 0);
+
+  /* Now recompute all bit lengths, scanning in increasing frequency.
+   * h is still equal to HEAP_SIZE. (It is simpler to reconstruct all
+   * lengths instead of fixing only the wrong ones. This idea is taken
+   * from 'ar' written by Haruhiko Okumura.)
+   */
+  for (bits = max_length; bits !== 0; bits--) {
+    n = s.bl_count[bits];
+    while (n !== 0) {
+      m = s.heap[--h];
+      if (m > max_code) { continue; }
+      if (tree[m * 2 + 1]/*.Len*/ !== bits) {
+        // Trace((stderr,"code %d bits %d->%d\n", m, tree[m].Len, bits));
+        s.opt_len += (bits - tree[m * 2 + 1]/*.Len*/) * tree[m * 2]/*.Freq*/;
+        tree[m * 2 + 1]/*.Len*/ = bits;
+      }
+      n--;
+    }
+  }
+}
+
+
+/* ===========================================================================
+ * Generate the codes for a given tree and bit counts (which need not be
+ * optimal).
+ * IN assertion: the array bl_count contains the bit length statistics for
+ * the given tree and the field len is set for all tree elements.
+ * OUT assertion: the field code is set for all tree elements of non
+ *     zero code length.
+ */
+function gen_codes(tree, max_code, bl_count)
+//    ct_data *tree;             /* the tree to decorate */
+//    int max_code;              /* largest code with non zero frequency */
+//    ushf *bl_count;            /* number of codes at each bit length */
+{
+  var next_code = new Array(MAX_BITS + 1); /* next code value for each bit length */
+  var code = 0;              /* running code value */
+  var bits;                  /* bit index */
+  var n;                     /* code index */
+
+  /* The distribution counts are first used to generate the code values
+   * without bit reversal.
+   */
+  for (bits = 1; bits <= MAX_BITS; bits++) {
+    next_code[bits] = code = (code + bl_count[bits - 1]) << 1;
+  }
+  /* Check that the bit counts in bl_count are consistent. The last code
+   * must be all ones.
+   */
+  //Assert (code + bl_count[MAX_BITS]-1 == (1<<MAX_BITS)-1,
+  //        "inconsistent bit counts");
+  //Tracev((stderr,"\ngen_codes: max_code %d ", max_code));
+
+  for (n = 0;  n <= max_code; n++) {
+    var len = tree[n * 2 + 1]/*.Len*/;
+    if (len === 0) { continue; }
+    /* Now reverse the bits */
+    tree[n * 2]/*.Code*/ = bi_reverse(next_code[len]++, len);
+
+    //Tracecv(tree != static_ltree, (stderr,"\nn %3d %c l %2d c %4x (%x) ",
+    //     n, (isgraph(n) ? n : ' '), len, tree[n].Code, next_code[len]-1));
+  }
+}
+
+
+/* ===========================================================================
+ * Initialize the various 'constant' tables.
+ */
+function tr_static_init() {
+  var n;        /* iterates over tree elements */
+  var bits;     /* bit counter */
+  var length;   /* length value */
+  var code;     /* code value */
+  var dist;     /* distance index */
+  var bl_count = new Array(MAX_BITS + 1);
+  /* number of codes at each bit length for an optimal tree */
+
+  // do check in _tr_init()
+  //if (static_init_done) return;
+
+  /* For some embedded targets, global variables are not initialized: */
+/*#ifdef NO_INIT_GLOBAL_POINTERS
+  static_l_desc.static_tree = static_ltree;
+  static_l_desc.extra_bits = extra_lbits;
+  static_d_desc.static_tree = static_dtree;
+  static_d_desc.extra_bits = extra_dbits;
+  static_bl_desc.extra_bits = extra_blbits;
+#endif*/
+
+  /* Initialize the mapping length (0..255) -> length code (0..28) */
+  length = 0;
+  for (code = 0; code < LENGTH_CODES - 1; code++) {
+    base_length[code] = length;
+    for (n = 0; n < (1 << extra_lbits[code]); n++) {
+      _length_code[length++] = code;
+    }
+  }
+  //Assert (length == 256, "tr_static_init: length != 256");
+  /* Note that the length 255 (match length 258) can be represented
+   * in two different ways: code 284 + 5 bits or code 285, so we
+   * overwrite length_code[255] to use the best encoding:
+   */
+  _length_code[length - 1] = code;
+
+  /* Initialize the mapping dist (0..32K) -> dist code (0..29) */
+  dist = 0;
+  for (code = 0; code < 16; code++) {
+    base_dist[code] = dist;
+    for (n = 0; n < (1 << extra_dbits[code]); n++) {
+      _dist_code[dist++] = code;
+    }
+  }
+  //Assert (dist == 256, "tr_static_init: dist != 256");
+  dist >>= 7; /* from now on, all distances are divided by 128 */
+  for (; code < D_CODES; code++) {
+    base_dist[code] = dist << 7;
+    for (n = 0; n < (1 << (extra_dbits[code] - 7)); n++) {
+      _dist_code[256 + dist++] = code;
+    }
+  }
+  //Assert (dist == 256, "tr_static_init: 256+dist != 512");
+
+  /* Construct the codes of the static literal tree */
+  for (bits = 0; bits <= MAX_BITS; bits++) {
+    bl_count[bits] = 0;
+  }
+
+  n = 0;
+  while (n <= 143) {
+    static_ltree[n * 2 + 1]/*.Len*/ = 8;
+    n++;
+    bl_count[8]++;
+  }
+  while (n <= 255) {
+    static_ltree[n * 2 + 1]/*.Len*/ = 9;
+    n++;
+    bl_count[9]++;
+  }
+  while (n <= 279) {
+    static_ltree[n * 2 + 1]/*.Len*/ = 7;
+    n++;
+    bl_count[7]++;
+  }
+  while (n <= 287) {
+    static_ltree[n * 2 + 1]/*.Len*/ = 8;
+    n++;
+    bl_count[8]++;
+  }
+  /* Codes 286 and 287 do not exist, but we must include them in the
+   * tree construction to get a canonical Huffman tree (longest code
+   * all ones)
+   */
+  gen_codes(static_ltree, L_CODES + 1, bl_count);
+
+  /* The static distance tree is trivial: */
+  for (n = 0; n < D_CODES; n++) {
+    static_dtree[n * 2 + 1]/*.Len*/ = 5;
+    static_dtree[n * 2]/*.Code*/ = bi_reverse(n, 5);
+  }
+
+  // Now data ready and we can init static trees
+  static_l_desc = new StaticTreeDesc(static_ltree, extra_lbits, LITERALS + 1, L_CODES, MAX_BITS);
+  static_d_desc = new StaticTreeDesc(static_dtree, extra_dbits, 0,          D_CODES, MAX_BITS);
+  static_bl_desc = new StaticTreeDesc(new Array(0), extra_blbits, 0,         BL_CODES, MAX_BL_BITS);
+
+  //static_init_done = true;
+}
+
+
+/* ===========================================================================
+ * Initialize a new block.
+ */
+function init_block(s) {
+  var n; /* iterates over tree elements */
+
+  /* Initialize the trees. */
+  for (n = 0; n < L_CODES;  n++) { s.dyn_ltree[n * 2]/*.Freq*/ = 0; }
+  for (n = 0; n < D_CODES;  n++) { s.dyn_dtree[n * 2]/*.Freq*/ = 0; }
+  for (n = 0; n < BL_CODES; n++) { s.bl_tree[n * 2]/*.Freq*/ = 0; }
+
+  s.dyn_ltree[END_BLOCK * 2]/*.Freq*/ = 1;
+  s.opt_len = s.static_len = 0;
+  s.last_lit = s.matches = 0;
+}
+
+
+/* ===========================================================================
+ * Flush the bit buffer and align the output on a byte boundary
+ */
+function bi_windup(s)
+{
+  if (s.bi_valid > 8) {
+    put_short(s, s.bi_buf);
+  } else if (s.bi_valid > 0) {
+    //put_byte(s, (Byte)s->bi_buf);
+    s.pending_buf[s.pending++] = s.bi_buf;
+  }
+  s.bi_buf = 0;
+  s.bi_valid = 0;
+}
+
+/* ===========================================================================
+ * Copy a stored block, storing first the length and its
+ * one's complement if requested.
+ */
+function copy_block(s, buf, len, header)
+//DeflateState *s;
+//charf    *buf;    /* the input data */
+//unsigned len;     /* its length */
+//int      header;  /* true if block header must be written */
+{
+  bi_windup(s);        /* align on byte boundary */
+
+  if (header) {
+    put_short(s, len);
+    put_short(s, ~len);
+  }
+//  while (len--) {
+//    put_byte(s, *buf++);
+//  }
+  utils.arraySet(s.pending_buf, s.window, buf, len, s.pending);
+  s.pending += len;
+}
+
+/* ===========================================================================
+ * Compares to subtrees, using the tree depth as tie breaker when
+ * the subtrees have equal frequency. This minimizes the worst case length.
+ */
+function smaller(tree, n, m, depth) {
+  var _n2 = n * 2;
+  var _m2 = m * 2;
+  return (tree[_n2]/*.Freq*/ < tree[_m2]/*.Freq*/ ||
+         (tree[_n2]/*.Freq*/ === tree[_m2]/*.Freq*/ && depth[n] <= depth[m]));
+}
+
+/* ===========================================================================
+ * Restore the heap property by moving down the tree starting at node k,
+ * exchanging a node with the smallest of its two sons if necessary, stopping
+ * when the heap property is re-established (each father smaller than its
+ * two sons).
+ */
+function pqdownheap(s, tree, k)
+//    deflate_state *s;
+//    ct_data *tree;  /* the tree to restore */
+//    int k;               /* node to move down */
+{
+  var v = s.heap[k];
+  var j = k << 1;  /* left son of k */
+  while (j <= s.heap_len) {
+    /* Set j to the smallest of the two sons: */
+    if (j < s.heap_len &&
+      smaller(tree, s.heap[j + 1], s.heap[j], s.depth)) {
+      j++;
+    }
+    /* Exit if v is smaller than both sons */
+    if (smaller(tree, v, s.heap[j], s.depth)) { break; }
+
+    /* Exchange v with the smallest son */
+    s.heap[k] = s.heap[j];
+    k = j;
+
+    /* And continue down the tree, setting j to the left son of k */
+    j <<= 1;
+  }
+  s.heap[k] = v;
+}
+
+
+// inlined manually
+// var SMALLEST = 1;
+
+/* ===========================================================================
+ * Send the block data compressed using the given Huffman trees
+ */
+function compress_block(s, ltree, dtree)
+//    deflate_state *s;
+//    const ct_data *ltree; /* literal tree */
+//    const ct_data *dtree; /* distance tree */
+{
+  var dist;           /* distance of matched string */
+  var lc;             /* match length or unmatched char (if dist == 0) */
+  var lx = 0;         /* running index in l_buf */
+  var code;           /* the code to send */
+  var extra;          /* number of extra bits to send */
+
+  if (s.last_lit !== 0) {
+    do {
+      dist = (s.pending_buf[s.d_buf + lx * 2] << 8) | (s.pending_buf[s.d_buf + lx * 2 + 1]);
+      lc = s.pending_buf[s.l_buf + lx];
+      lx++;
+
+      if (dist === 0) {
+        send_code(s, lc, ltree); /* send a literal byte */
+        //Tracecv(isgraph(lc), (stderr," '%c' ", lc));
+      } else {
+        /* Here, lc is the match length - MIN_MATCH */
+        code = _length_code[lc];
+        send_code(s, code + LITERALS + 1, ltree); /* send the length code */
+        extra = extra_lbits[code];
+        if (extra !== 0) {
+          lc -= base_length[code];
+          send_bits(s, lc, extra);       /* send the extra length bits */
+        }
+        dist--; /* dist is now the match distance - 1 */
+        code = d_code(dist);
+        //Assert (code < D_CODES, "bad d_code");
+
+        send_code(s, code, dtree);       /* send the distance code */
+        extra = extra_dbits[code];
+        if (extra !== 0) {
+          dist -= base_dist[code];
+          send_bits(s, dist, extra);   /* send the extra distance bits */
+        }
+      } /* literal or match pair ? */
+
+      /* Check that the overlay between pending_buf and d_buf+l_buf is ok: */
+      //Assert((uInt)(s->pending) < s->lit_bufsize + 2*lx,
+      //       "pendingBuf overflow");
+
+    } while (lx < s.last_lit);
+  }
+
+  send_code(s, END_BLOCK, ltree);
+}
+
+
+/* ===========================================================================
+ * Construct one Huffman tree and assigns the code bit strings and lengths.
+ * Update the total bit length for the current block.
+ * IN assertion: the field freq is set for all tree elements.
+ * OUT assertions: the fields len and code are set to the optimal bit length
+ *     and corresponding code. The length opt_len is updated; static_len is
+ *     also updated if stree is not null. The field max_code is set.
+ */
+function build_tree(s, desc)
+//    deflate_state *s;
+//    tree_desc *desc; /* the tree descriptor */
+{
+  var tree     = desc.dyn_tree;
+  var stree    = desc.stat_desc.static_tree;
+  var has_stree = desc.stat_desc.has_stree;
+  var elems    = desc.stat_desc.elems;
+  var n, m;          /* iterate over heap elements */
+  var max_code = -1; /* largest code with non zero frequency */
+  var node;          /* new node being created */
+
+  /* Construct the initial heap, with least frequent element in
+   * heap[SMALLEST]. The sons of heap[n] are heap[2*n] and heap[2*n+1].
+   * heap[0] is not used.
+   */
+  s.heap_len = 0;
+  s.heap_max = HEAP_SIZE;
+
+  for (n = 0; n < elems; n++) {
+    if (tree[n * 2]/*.Freq*/ !== 0) {
+      s.heap[++s.heap_len] = max_code = n;
+      s.depth[n] = 0;
+
+    } else {
+      tree[n * 2 + 1]/*.Len*/ = 0;
+    }
+  }
+
+  /* The pkzip format requires that at least one distance code exists,
+   * and that at least one bit should be sent even if there is only one
+   * possible code. So to avoid special checks later on we force at least
+   * two codes of non zero frequency.
+   */
+  while (s.heap_len < 2) {
+    node = s.heap[++s.heap_len] = (max_code < 2 ? ++max_code : 0);
+    tree[node * 2]/*.Freq*/ = 1;
+    s.depth[node] = 0;
+    s.opt_len--;
+
+    if (has_stree) {
+      s.static_len -= stree[node * 2 + 1]/*.Len*/;
+    }
+    /* node is 0 or 1 so it does not have extra bits */
+  }
+  desc.max_code = max_code;
+
+  /* The elements heap[heap_len/2+1 .. heap_len] are leaves of the tree,
+   * establish sub-heaps of increasing lengths:
+   */
+  for (n = (s.heap_len >> 1/*int /2*/); n >= 1; n--) { pqdownheap(s, tree, n); }
+
+  /* Construct the Huffman tree by repeatedly combining the least two
+   * frequent nodes.
+   */
+  node = elems;              /* next internal node of the tree */
+  do {
+    //pqremove(s, tree, n);  /* n = node of least frequency */
+    /*** pqremove ***/
+    n = s.heap[1/*SMALLEST*/];
+    s.heap[1/*SMALLEST*/] = s.heap[s.heap_len--];
+    pqdownheap(s, tree, 1/*SMALLEST*/);
+    /***/
+
+    m = s.heap[1/*SMALLEST*/]; /* m = node of next least frequency */
+
+    s.heap[--s.heap_max] = n; /* keep the nodes sorted by frequency */
+    s.heap[--s.heap_max] = m;
+
+    /* Create a new node father of n and m */
+    tree[node * 2]/*.Freq*/ = tree[n * 2]/*.Freq*/ + tree[m * 2]/*.Freq*/;
+    s.depth[node] = (s.depth[n] >= s.depth[m] ? s.depth[n] : s.depth[m]) + 1;
+    tree[n * 2 + 1]/*.Dad*/ = tree[m * 2 + 1]/*.Dad*/ = node;
+
+    /* and insert the new node in the heap */
+    s.heap[1/*SMALLEST*/] = node++;
+    pqdownheap(s, tree, 1/*SMALLEST*/);
+
+  } while (s.heap_len >= 2);
+
+  s.heap[--s.heap_max] = s.heap[1/*SMALLEST*/];
+
+  /* At this point, the fields freq and dad are set. We can now
+   * generate the bit lengths.
+   */
+  gen_bitlen(s, desc);
+
+  /* The field len is now set, we can generate the bit codes */
+  gen_codes(tree, max_code, s.bl_count);
+}
+
+
+/* ===========================================================================
+ * Scan a literal or distance tree to determine the frequencies of the codes
+ * in the bit length tree.
+ */
+function scan_tree(s, tree, max_code)
+//    deflate_state *s;
+//    ct_data *tree;   /* the tree to be scanned */
+//    int max_code;    /* and its largest code of non zero frequency */
+{
+  var n;                     /* iterates over all tree elements */
+  var prevlen = -1;          /* last emitted length */
+  var curlen;                /* length of current code */
+
+  var nextlen = tree[0 * 2 + 1]/*.Len*/; /* length of next code */
+
+  var count = 0;             /* repeat count of the current code */
+  var max_count = 7;         /* max repeat count */
+  var min_count = 4;         /* min repeat count */
+
+  if (nextlen === 0) {
+    max_count = 138;
+    min_count = 3;
+  }
+  tree[(max_code + 1) * 2 + 1]/*.Len*/ = 0xffff; /* guard */
+
+  for (n = 0; n <= max_code; n++) {
+    curlen = nextlen;
+    nextlen = tree[(n + 1) * 2 + 1]/*.Len*/;
+
+    if (++count < max_count && curlen === nextlen) {
+      continue;
+
+    } else if (count < min_count) {
+      s.bl_tree[curlen * 2]/*.Freq*/ += count;
+
+    } else if (curlen !== 0) {
+
+      if (curlen !== prevlen) { s.bl_tree[curlen * 2]/*.Freq*/++; }
+      s.bl_tree[REP_3_6 * 2]/*.Freq*/++;
+
+    } else if (count <= 10) {
+      s.bl_tree[REPZ_3_10 * 2]/*.Freq*/++;
+
+    } else {
+      s.bl_tree[REPZ_11_138 * 2]/*.Freq*/++;
+    }
+
+    count = 0;
+    prevlen = curlen;
+
+    if (nextlen === 0) {
+      max_count = 138;
+      min_count = 3;
+
+    } else if (curlen === nextlen) {
+      max_count = 6;
+      min_count = 3;
+
+    } else {
+      max_count = 7;
+      min_count = 4;
+    }
+  }
+}
+
+
+/* ===========================================================================
+ * Send a literal or distance tree in compressed form, using the codes in
+ * bl_tree.
+ */
+function send_tree(s, tree, max_code)
+//    deflate_state *s;
+//    ct_data *tree; /* the tree to be scanned */
+//    int max_code;       /* and its largest code of non zero frequency */
+{
+  var n;                     /* iterates over all tree elements */
+  var prevlen = -1;          /* last emitted length */
+  var curlen;                /* length of current code */
+
+  var nextlen = tree[0 * 2 + 1]/*.Len*/; /* length of next code */
+
+  var count = 0;             /* repeat count of the current code */
+  var max_count = 7;         /* max repeat count */
+  var min_count = 4;         /* min repeat count */
+
+  /* tree[max_code+1].Len = -1; */  /* guard already set */
+  if (nextlen === 0) {
+    max_count = 138;
+    min_count = 3;
+  }
+
+  for (n = 0; n <= max_code; n++) {
+    curlen = nextlen;
+    nextlen = tree[(n + 1) * 2 + 1]/*.Len*/;
+
+    if (++count < max_count && curlen === nextlen) {
+      continue;
+
+    } else if (count < min_count) {
+      do { send_code(s, curlen, s.bl_tree); } while (--count !== 0);
+
+    } else if (curlen !== 0) {
+      if (curlen !== prevlen) {
+        send_code(s, curlen, s.bl_tree);
+        count--;
+      }
+      //Assert(count >= 3 && count <= 6, " 3_6?");
+      send_code(s, REP_3_6, s.bl_tree);
+      send_bits(s, count - 3, 2);
+
+    } else if (count <= 10) {
+      send_code(s, REPZ_3_10, s.bl_tree);
+      send_bits(s, count - 3, 3);
+
+    } else {
+      send_code(s, REPZ_11_138, s.bl_tree);
+      send_bits(s, count - 11, 7);
+    }
+
+    count = 0;
+    prevlen = curlen;
+    if (nextlen === 0) {
+      max_count = 138;
+      min_count = 3;
+
+    } else if (curlen === nextlen) {
+      max_count = 6;
+      min_count = 3;
+
+    } else {
+      max_count = 7;
+      min_count = 4;
+    }
+  }
+}
+
+
+/* ===========================================================================
+ * Construct the Huffman tree for the bit lengths and return the index in
+ * bl_order of the last bit length code to send.
+ */
+function build_bl_tree(s) {
+  var max_blindex;  /* index of last bit length code of non zero freq */
+
+  /* Determine the bit length frequencies for literal and distance trees */
+  scan_tree(s, s.dyn_ltree, s.l_desc.max_code);
+  scan_tree(s, s.dyn_dtree, s.d_desc.max_code);
+
+  /* Build the bit length tree: */
+  build_tree(s, s.bl_desc);
+  /* opt_len now includes the length of the tree representations, except
+   * the lengths of the bit lengths codes and the 5+5+4 bits for the counts.
+   */
+
+  /* Determine the number of bit length codes to send. The pkzip format
+   * requires that at least 4 bit length codes be sent. (appnote.txt says
+   * 3 but the actual value used is 4.)
+   */
+  for (max_blindex = BL_CODES - 1; max_blindex >= 3; max_blindex--) {
+    if (s.bl_tree[bl_order[max_blindex] * 2 + 1]/*.Len*/ !== 0) {
+      break;
+    }
+  }
+  /* Update opt_len to include the bit length tree and counts */
+  s.opt_len += 3 * (max_blindex + 1) + 5 + 5 + 4;
+  //Tracev((stderr, "\ndyn trees: dyn %ld, stat %ld",
+  //        s->opt_len, s->static_len));
+
+  return max_blindex;
+}
+
+
+/* ===========================================================================
+ * Send the header for a block using dynamic Huffman trees: the counts, the
+ * lengths of the bit length codes, the literal tree and the distance tree.
+ * IN assertion: lcodes >= 257, dcodes >= 1, blcodes >= 4.
+ */
+function send_all_trees(s, lcodes, dcodes, blcodes)
+//    deflate_state *s;
+//    int lcodes, dcodes, blcodes; /* number of codes for each tree */
+{
+  var rank;                    /* index in bl_order */
+
+  //Assert (lcodes >= 257 && dcodes >= 1 && blcodes >= 4, "not enough codes");
+  //Assert (lcodes <= L_CODES && dcodes <= D_CODES && blcodes <= BL_CODES,
+  //        "too many codes");
+  //Tracev((stderr, "\nbl counts: "));
+  send_bits(s, lcodes - 257, 5); /* not +255 as stated in appnote.txt */
+  send_bits(s, dcodes - 1,   5);
+  send_bits(s, blcodes - 4,  4); /* not -3 as stated in appnote.txt */
+  for (rank = 0; rank < blcodes; rank++) {
+    //Tracev((stderr, "\nbl code %2d ", bl_order[rank]));
+    send_bits(s, s.bl_tree[bl_order[rank] * 2 + 1]/*.Len*/, 3);
+  }
+  //Tracev((stderr, "\nbl tree: sent %ld", s->bits_sent));
+
+  send_tree(s, s.dyn_ltree, lcodes - 1); /* literal tree */
+  //Tracev((stderr, "\nlit tree: sent %ld", s->bits_sent));
+
+  send_tree(s, s.dyn_dtree, dcodes - 1); /* distance tree */
+  //Tracev((stderr, "\ndist tree: sent %ld", s->bits_sent));
+}
+
+
+/* ===========================================================================
+ * Check if the data type is TEXT or BINARY, using the following algorithm:
+ * - TEXT if the two conditions below are satisfied:
+ *    a) There are no non-portable control characters belonging to the
+ *       "black list" (0..6, 14..25, 28..31).
+ *    b) There is at least one printable character belonging to the
+ *       "white list" (9 {TAB}, 10 {LF}, 13 {CR}, 32..255).
+ * - BINARY otherwise.
+ * - The following partially-portable control characters form a
+ *   "gray list" that is ignored in this detection algorithm:
+ *   (7 {BEL}, 8 {BS}, 11 {VT}, 12 {FF}, 26 {SUB}, 27 {ESC}).
+ * IN assertion: the fields Freq of dyn_ltree are set.
+ */
+function detect_data_type(s) {
+  /* black_mask is the bit mask of black-listed bytes
+   * set bits 0..6, 14..25, and 28..31
+   * 0xf3ffc07f = binary 11110011111111111100000001111111
+   */
+  var black_mask = 0xf3ffc07f;
+  var n;
+
+  /* Check for non-textual ("black-listed") bytes. */
+  for (n = 0; n <= 31; n++, black_mask >>>= 1) {
+    if ((black_mask & 1) && (s.dyn_ltree[n * 2]/*.Freq*/ !== 0)) {
+      return Z_BINARY;
+    }
+  }
+
+  /* Check for textual ("white-listed") bytes. */
+  if (s.dyn_ltree[9 * 2]/*.Freq*/ !== 0 || s.dyn_ltree[10 * 2]/*.Freq*/ !== 0 ||
+      s.dyn_ltree[13 * 2]/*.Freq*/ !== 0) {
+    return Z_TEXT;
+  }
+  for (n = 32; n < LITERALS; n++) {
+    if (s.dyn_ltree[n * 2]/*.Freq*/ !== 0) {
+      return Z_TEXT;
+    }
+  }
+
+  /* There are no "black-listed" or "white-listed" bytes:
+   * this stream either is empty or has tolerated ("gray-listed") bytes only.
+   */
+  return Z_BINARY;
+}
+
+
+var static_init_done = false;
+
+/* ===========================================================================
+ * Initialize the tree data structures for a new zlib stream.
+ */
+function _tr_init(s)
+{
+
+  if (!static_init_done) {
+    tr_static_init();
+    static_init_done = true;
+  }
+
+  s.l_desc  = new TreeDesc(s.dyn_ltree, static_l_desc);
+  s.d_desc  = new TreeDesc(s.dyn_dtree, static_d_desc);
+  s.bl_desc = new TreeDesc(s.bl_tree, static_bl_desc);
+
+  s.bi_buf = 0;
+  s.bi_valid = 0;
+
+  /* Initialize the first block of the first file: */
+  init_block(s);
+}
+
+
+/* ===========================================================================
+ * Send a stored block
+ */
+function _tr_stored_block(s, buf, stored_len, last)
+//DeflateState *s;
+//charf *buf;       /* input block */
+//ulg stored_len;   /* length of input block */
+//int last;         /* one if this is the last block for a file */
+{
+  send_bits(s, (STORED_BLOCK << 1) + (last ? 1 : 0), 3);    /* send block type */
+  copy_block(s, buf, stored_len, true); /* with header */
+}
+
+
+/* ===========================================================================
+ * Send one empty static block to give enough lookahead for inflate.
+ * This takes 10 bits, of which 7 may remain in the bit buffer.
+ */
+function _tr_align(s) {
+  send_bits(s, STATIC_TREES << 1, 3);
+  send_code(s, END_BLOCK, static_ltree);
+  bi_flush(s);
+}
+
+
+/* ===========================================================================
+ * Determine the best encoding for the current block: dynamic trees, static
+ * trees or store, and output the encoded block to the zip file.
+ */
+function _tr_flush_block(s, buf, stored_len, last)
+//DeflateState *s;
+//charf *buf;       /* input block, or NULL if too old */
+//ulg stored_len;   /* length of input block */
+//int last;         /* one if this is the last block for a file */
+{
+  var opt_lenb, static_lenb;  /* opt_len and static_len in bytes */
+  var max_blindex = 0;        /* index of last bit length code of non zero freq */
+
+  /* Build the Huffman trees unless a stored block is forced */
+  if (s.level > 0) {
+
+    /* Check if the file is binary or text */
+    if (s.strm.data_type === Z_UNKNOWN) {
+      s.strm.data_type = detect_data_type(s);
+    }
+
+    /* Construct the literal and distance trees */
+    build_tree(s, s.l_desc);
+    // Tracev((stderr, "\nlit data: dyn %ld, stat %ld", s->opt_len,
+    //        s->static_len));
+
+    build_tree(s, s.d_desc);
+    // Tracev((stderr, "\ndist data: dyn %ld, stat %ld", s->opt_len,
+    //        s->static_len));
+    /* At this point, opt_len and static_len are the total bit lengths of
+     * the compressed block data, excluding the tree representations.
+     */
+
+    /* Build the bit length tree for the above two trees, and get the index
+     * in bl_order of the last bit length code to send.
+     */
+    max_blindex = build_bl_tree(s);
+
+    /* Determine the best encoding. Compute the block lengths in bytes. */
+    opt_lenb = (s.opt_len + 3 + 7) >>> 3;
+    static_lenb = (s.static_len + 3 + 7) >>> 3;
+
+    // Tracev((stderr, "\nopt %lu(%lu) stat %lu(%lu) stored %lu lit %u ",
+    //        opt_lenb, s->opt_len, static_lenb, s->static_len, stored_len,
+    //        s->last_lit));
+
+    if (static_lenb <= opt_lenb) { opt_lenb = static_lenb; }
+
+  } else {
+    // Assert(buf != (char*)0, "lost buf");
+    opt_lenb = static_lenb = stored_len + 5; /* force a stored block */
+  }
+
+  if ((stored_len + 4 <= opt_lenb) && (buf !== -1)) {
+    /* 4: two words for the lengths */
+
+    /* The test buf != NULL is only necessary if LIT_BUFSIZE > WSIZE.
+     * Otherwise we can't have processed more than WSIZE input bytes since
+     * the last block flush, because compression would have been
+     * successful. If LIT_BUFSIZE <= WSIZE, it is never too late to
+     * transform a block into a stored block.
+     */
+    _tr_stored_block(s, buf, stored_len, last);
+
+  } else if (s.strategy === Z_FIXED || static_lenb === opt_lenb) {
+
+    send_bits(s, (STATIC_TREES << 1) + (last ? 1 : 0), 3);
+    compress_block(s, static_ltree, static_dtree);
+
+  } else {
+    send_bits(s, (DYN_TREES << 1) + (last ? 1 : 0), 3);
+    send_all_trees(s, s.l_desc.max_code + 1, s.d_desc.max_code + 1, max_blindex + 1);
+    compress_block(s, s.dyn_ltree, s.dyn_dtree);
+  }
+  // Assert (s->compressed_len == s->bits_sent, "bad compressed size");
+  /* The above check is made mod 2^32, for files larger than 512 MB
+   * and uLong implemented on 32 bits.
+   */
+  init_block(s);
+
+  if (last) {
+    bi_windup(s);
+  }
+  // Tracev((stderr,"\ncomprlen %lu(%lu) ", s->compressed_len>>3,
+  //       s->compressed_len-7*last));
+}
+
+/* ===========================================================================
+ * Save the match info and tally the frequency counts. Return true if
+ * the current block must be flushed.
+ */
+function _tr_tally(s, dist, lc)
+//    deflate_state *s;
+//    unsigned dist;  /* distance of matched string */
+//    unsigned lc;    /* match length-MIN_MATCH or unmatched char (if dist==0) */
+{
+  //var out_length, in_length, dcode;
+
+  s.pending_buf[s.d_buf + s.last_lit * 2]     = (dist >>> 8) & 0xff;
+  s.pending_buf[s.d_buf + s.last_lit * 2 + 1] = dist & 0xff;
+
+  s.pending_buf[s.l_buf + s.last_lit] = lc & 0xff;
+  s.last_lit++;
+
+  if (dist === 0) {
+    /* lc is the unmatched char */
+    s.dyn_ltree[lc * 2]/*.Freq*/++;
+  } else {
+    s.matches++;
+    /* Here, lc is the match length - MIN_MATCH */
+    dist--;             /* dist = match distance - 1 */
+    //Assert((ush)dist < (ush)MAX_DIST(s) &&
+    //       (ush)lc <= (ush)(MAX_MATCH-MIN_MATCH) &&
+    //       (ush)d_code(dist) < (ush)D_CODES,  "_tr_tally: bad match");
+
+    s.dyn_ltree[(_length_code[lc] + LITERALS + 1) * 2]/*.Freq*/++;
+    s.dyn_dtree[d_code(dist) * 2]/*.Freq*/++;
+  }
+
+// (!) This block is disabled in zlib defaults,
+// don't enable it for binary compatibility
+
+//#ifdef TRUNCATE_BLOCK
+//  /* Try to guess if it is profitable to stop the current block here */
+//  if ((s.last_lit & 0x1fff) === 0 && s.level > 2) {
+//    /* Compute an upper bound for the compressed length */
+//    out_length = s.last_lit*8;
+//    in_length = s.strstart - s.block_start;
+//
+//    for (dcode = 0; dcode < D_CODES; dcode++) {
+//      out_length += s.dyn_dtree[dcode*2]/*.Freq*/ * (5 + extra_dbits[dcode]);
+//    }
+//    out_length >>>= 3;
+//    //Tracev((stderr,"\nlast_lit %u, in %ld, out ~%ld(%ld%%) ",
+//    //       s->last_lit, in_length, out_length,
+//    //       100L - out_length*100L/in_length));
+//    if (s.matches < (s.last_lit>>1)/*int /2*/ && out_length < (in_length>>1)/*int /2*/) {
+//      return true;
+//    }
+//  }
+//#endif
+
+  return (s.last_lit === s.lit_bufsize - 1);
+  /* We avoid equality with lit_bufsize because of wraparound at 64K
+   * on 16 bit machines and because stored blocks are restricted to
+   * 64K-1 bytes.
+   */
+}
+
+exports._tr_init  = _tr_init;
+exports._tr_stored_block = _tr_stored_block;
+exports._tr_flush_block  = _tr_flush_block;
+exports._tr_tally = _tr_tally;
+exports._tr_align = _tr_align;
+
+
+/***/ }),
+/* 123 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+
+var zlib_inflate = __webpack_require__(124);
+var utils        = __webpack_require__(11);
+var strings      = __webpack_require__(90);
+var c            = __webpack_require__(92);
+var msg          = __webpack_require__(77);
+var ZStream      = __webpack_require__(91);
+var GZheader     = __webpack_require__(127);
+
+var toString = Object.prototype.toString;
+
+/**
+ * class Inflate
+ *
+ * Generic JS-style wrapper for zlib calls. If you don't need
+ * streaming behaviour - use more simple functions: [[inflate]]
+ * and [[inflateRaw]].
+ **/
+
+/* internal
+ * inflate.chunks -> Array
+ *
+ * Chunks of output data, if [[Inflate#onData]] not overridden.
+ **/
+
+/**
+ * Inflate.result -> Uint8Array|Array|String
+ *
+ * Uncompressed result, generated by default [[Inflate#onData]]
+ * and [[Inflate#onEnd]] handlers. Filled after you push last chunk
+ * (call [[Inflate#push]] with `Z_FINISH` / `true` param) or if you
+ * push a chunk with explicit flush (call [[Inflate#push]] with
+ * `Z_SYNC_FLUSH` param).
+ **/
+
+/**
+ * Inflate.err -> Number
+ *
+ * Error code after inflate finished. 0 (Z_OK) on success.
+ * Should be checked if broken data possible.
+ **/
+
+/**
+ * Inflate.msg -> String
+ *
+ * Error message, if [[Inflate.err]] != 0
+ **/
+
+
+/**
+ * new Inflate(options)
+ * - options (Object): zlib inflate options.
+ *
+ * Creates new inflator instance with specified params. Throws exception
+ * on bad params. Supported options:
+ *
+ * - `windowBits`
+ * - `dictionary`
+ *
+ * [http://zlib.net/manual.html#Advanced](http://zlib.net/manual.html#Advanced)
+ * for more information on these.
+ *
+ * Additional options, for internal needs:
+ *
+ * - `chunkSize` - size of generated data chunks (16K by default)
+ * - `raw` (Boolean) - do raw inflate
+ * - `to` (String) - if equal to 'string', then result will be converted
+ *   from utf8 to utf16 (javascript) string. When string output requested,
+ *   chunk length can differ from `chunkSize`, depending on content.
+ *
+ * By default, when no options set, autodetect deflate/gzip data format via
+ * wrapper header.
+ *
+ * ##### Example:
+ *
+ * ```javascript
+ * var pako = require('pako')
+ *   , chunk1 = Uint8Array([1,2,3,4,5,6,7,8,9])
+ *   , chunk2 = Uint8Array([10,11,12,13,14,15,16,17,18,19]);
+ *
+ * var inflate = new pako.Inflate({ level: 3});
+ *
+ * inflate.push(chunk1, false);
+ * inflate.push(chunk2, true);  // true -> last chunk
+ *
+ * if (inflate.err) { throw new Error(inflate.err); }
+ *
+ * console.log(inflate.result);
+ * ```
+ **/
+function Inflate(options) {
+  if (!(this instanceof Inflate)) return new Inflate(options);
+
+  this.options = utils.assign({
+    chunkSize: 16384,
+    windowBits: 0,
+    to: ''
+  }, options || {});
+
+  var opt = this.options;
+
+  // Force window size for `raw` data, if not set directly,
+  // because we have no header for autodetect.
+  if (opt.raw && (opt.windowBits >= 0) && (opt.windowBits < 16)) {
+    opt.windowBits = -opt.windowBits;
+    if (opt.windowBits === 0) { opt.windowBits = -15; }
+  }
+
+  // If `windowBits` not defined (and mode not raw) - set autodetect flag for gzip/deflate
+  if ((opt.windowBits >= 0) && (opt.windowBits < 16) &&
+      !(options && options.windowBits)) {
+    opt.windowBits += 32;
+  }
+
+  // Gzip header has no info about windows size, we can do autodetect only
+  // for deflate. So, if window size not set, force it to max when gzip possible
+  if ((opt.windowBits > 15) && (opt.windowBits < 48)) {
+    // bit 3 (16) -> gzipped data
+    // bit 4 (32) -> autodetect gzip/deflate
+    if ((opt.windowBits & 15) === 0) {
+      opt.windowBits |= 15;
+    }
+  }
+
+  this.err    = 0;      // error code, if happens (0 = Z_OK)
+  this.msg    = '';     // error message
+  this.ended  = false;  // used to avoid multiple onEnd() calls
+  this.chunks = [];     // chunks of compressed data
+
+  this.strm   = new ZStream();
+  this.strm.avail_out = 0;
+
+  var status  = zlib_inflate.inflateInit2(
+    this.strm,
+    opt.windowBits
+  );
+
+  if (status !== c.Z_OK) {
+    throw new Error(msg[status]);
+  }
+
+  this.header = new GZheader();
+
+  zlib_inflate.inflateGetHeader(this.strm, this.header);
+
+  // Setup dictionary
+  if (opt.dictionary) {
+    // Convert data if needed
+    if (typeof opt.dictionary === 'string') {
+      opt.dictionary = strings.string2buf(opt.dictionary);
+    } else if (toString.call(opt.dictionary) === '[object ArrayBuffer]') {
+      opt.dictionary = new Uint8Array(opt.dictionary);
+    }
+    if (opt.raw) { //In raw mode we need to set the dictionary early
+      status = zlib_inflate.inflateSetDictionary(this.strm, opt.dictionary);
+      if (status !== c.Z_OK) {
+        throw new Error(msg[status]);
+      }
+    }
+  }
+}
+
+/**
+ * Inflate#push(data[, mode]) -> Boolean
+ * - data (Uint8Array|Array|ArrayBuffer|String): input data
+ * - mode (Number|Boolean): 0..6 for corresponding Z_NO_FLUSH..Z_TREE modes.
+ *   See constants. Skipped or `false` means Z_NO_FLUSH, `true` means Z_FINISH.
+ *
+ * Sends input data to inflate pipe, generating [[Inflate#onData]] calls with
+ * new output chunks. Returns `true` on success. The last data block must have
+ * mode Z_FINISH (or `true`). That will flush internal pending buffers and call
+ * [[Inflate#onEnd]]. For interim explicit flushes (without ending the stream) you
+ * can use mode Z_SYNC_FLUSH, keeping the decompression context.
+ *
+ * On fail call [[Inflate#onEnd]] with error code and return false.
+ *
+ * We strongly recommend to use `Uint8Array` on input for best speed (output
+ * format is detected automatically). Also, don't skip last param and always
+ * use the same type in your code (boolean or number). That will improve JS speed.
+ *
+ * For regular `Array`-s make sure all elements are [0..255].
+ *
+ * ##### Example
+ *
+ * ```javascript
+ * push(chunk, false); // push one of data chunks
+ * ...
+ * push(chunk, true);  // push last chunk
+ * ```
+ **/
+Inflate.prototype.push = function (data, mode) {
+  var strm = this.strm;
+  var chunkSize = this.options.chunkSize;
+  var dictionary = this.options.dictionary;
+  var status, _mode;
+  var next_out_utf8, tail, utf8str;
+
+  // Flag to properly process Z_BUF_ERROR on testing inflate call
+  // when we check that all output data was flushed.
+  var allowBufError = false;
+
+  if (this.ended) { return false; }
+  _mode = (mode === ~~mode) ? mode : ((mode === true) ? c.Z_FINISH : c.Z_NO_FLUSH);
+
+  // Convert data if needed
+  if (typeof data === 'string') {
+    // Only binary strings can be decompressed on practice
+    strm.input = strings.binstring2buf(data);
+  } else if (toString.call(data) === '[object ArrayBuffer]') {
+    strm.input = new Uint8Array(data);
+  } else {
+    strm.input = data;
+  }
+
+  strm.next_in = 0;
+  strm.avail_in = strm.input.length;
+
+  do {
+    if (strm.avail_out === 0) {
+      strm.output = new utils.Buf8(chunkSize);
+      strm.next_out = 0;
+      strm.avail_out = chunkSize;
+    }
+
+    status = zlib_inflate.inflate(strm, c.Z_NO_FLUSH);    /* no bad return value */
+
+    if (status === c.Z_NEED_DICT && dictionary) {
+      status = zlib_inflate.inflateSetDictionary(this.strm, dictionary);
+    }
+
+    if (status === c.Z_BUF_ERROR && allowBufError === true) {
+      status = c.Z_OK;
+      allowBufError = false;
+    }
+
+    if (status !== c.Z_STREAM_END && status !== c.Z_OK) {
+      this.onEnd(status);
+      this.ended = true;
+      return false;
+    }
+
+    if (strm.next_out) {
+      if (strm.avail_out === 0 || status === c.Z_STREAM_END || (strm.avail_in === 0 && (_mode === c.Z_FINISH || _mode === c.Z_SYNC_FLUSH))) {
+
+        if (this.options.to === 'string') {
+
+          next_out_utf8 = strings.utf8border(strm.output, strm.next_out);
+
+          tail = strm.next_out - next_out_utf8;
+          utf8str = strings.buf2string(strm.output, next_out_utf8);
+
+          // move tail
+          strm.next_out = tail;
+          strm.avail_out = chunkSize - tail;
+          if (tail) { utils.arraySet(strm.output, strm.output, next_out_utf8, tail, 0); }
+
+          this.onData(utf8str);
+
+        } else {
+          this.onData(utils.shrinkBuf(strm.output, strm.next_out));
+        }
+      }
+    }
+
+    // When no more input data, we should check that internal inflate buffers
+    // are flushed. The only way to do it when avail_out = 0 - run one more
+    // inflate pass. But if output data not exists, inflate return Z_BUF_ERROR.
+    // Here we set flag to process this error properly.
+    //
+    // NOTE. Deflate does not return error in this case and does not needs such
+    // logic.
+    if (strm.avail_in === 0 && strm.avail_out === 0) {
+      allowBufError = true;
+    }
+
+  } while ((strm.avail_in > 0 || strm.avail_out === 0) && status !== c.Z_STREAM_END);
+
+  if (status === c.Z_STREAM_END) {
+    _mode = c.Z_FINISH;
+  }
+
+  // Finalize on the last chunk.
+  if (_mode === c.Z_FINISH) {
+    status = zlib_inflate.inflateEnd(this.strm);
+    this.onEnd(status);
+    this.ended = true;
+    return status === c.Z_OK;
+  }
+
+  // callback interim results if Z_SYNC_FLUSH.
+  if (_mode === c.Z_SYNC_FLUSH) {
+    this.onEnd(c.Z_OK);
+    strm.avail_out = 0;
+    return true;
+  }
+
+  return true;
+};
+
+
+/**
+ * Inflate#onData(chunk) -> Void
+ * - chunk (Uint8Array|Array|String): output data. Type of array depends
+ *   on js engine support. When string output requested, each chunk
+ *   will be string.
+ *
+ * By default, stores data blocks in `chunks[]` property and glue
+ * those in `onEnd`. Override this handler, if you need another behaviour.
+ **/
+Inflate.prototype.onData = function (chunk) {
+  this.chunks.push(chunk);
+};
+
+
+/**
+ * Inflate#onEnd(status) -> Void
+ * - status (Number): inflate status. 0 (Z_OK) on success,
+ *   other if not.
+ *
+ * Called either after you tell inflate that the input stream is
+ * complete (Z_FINISH) or should be flushed (Z_SYNC_FLUSH)
+ * or if an error happened. By default - join collected chunks,
+ * free memory and fill `results` / `err` properties.
+ **/
+Inflate.prototype.onEnd = function (status) {
+  // On success - join
+  if (status === c.Z_OK) {
+    if (this.options.to === 'string') {
+      // Glue & convert here, until we teach pako to send
+      // utf8 aligned strings to onData
+      this.result = this.chunks.join('');
+    } else {
+      this.result = utils.flattenChunks(this.chunks);
+    }
+  }
+  this.chunks = [];
+  this.err = status;
+  this.msg = this.strm.msg;
+};
+
+
+/**
+ * inflate(data[, options]) -> Uint8Array|Array|String
+ * - data (Uint8Array|Array|String): input data to decompress.
+ * - options (Object): zlib inflate options.
+ *
+ * Decompress `data` with inflate/ungzip and `options`. Autodetect
+ * format via wrapper header by default. That's why we don't provide
+ * separate `ungzip` method.
+ *
+ * Supported options are:
+ *
+ * - windowBits
+ *
+ * [http://zlib.net/manual.html#Advanced](http://zlib.net/manual.html#Advanced)
+ * for more information.
+ *
+ * Sugar (options):
+ *
+ * - `raw` (Boolean) - say that we work with raw stream, if you don't wish to specify
+ *   negative windowBits implicitly.
+ * - `to` (String) - if equal to 'string', then result will be converted
+ *   from utf8 to utf16 (javascript) string. When string output requested,
+ *   chunk length can differ from `chunkSize`, depending on content.
+ *
+ *
+ * ##### Example:
+ *
+ * ```javascript
+ * var pako = require('pako')
+ *   , input = pako.deflate([1,2,3,4,5,6,7,8,9])
+ *   , output;
+ *
+ * try {
+ *   output = pako.inflate(input);
+ * } catch (err)
+ *   console.log(err);
+ * }
+ * ```
+ **/
+function inflate(input, options) {
+  var inflator = new Inflate(options);
+
+  inflator.push(input, true);
+
+  // That will never happens, if you don't cheat with options :)
+  if (inflator.err) { throw inflator.msg || msg[inflator.err]; }
+
+  return inflator.result;
+}
+
+
+/**
+ * inflateRaw(data[, options]) -> Uint8Array|Array|String
+ * - data (Uint8Array|Array|String): input data to decompress.
+ * - options (Object): zlib inflate options.
+ *
+ * The same as [[inflate]], but creates raw data, without wrapper
+ * (header and adler32 crc).
+ **/
+function inflateRaw(input, options) {
+  options = options || {};
+  options.raw = true;
+  return inflate(input, options);
+}
+
+
+/**
+ * ungzip(data[, options]) -> Uint8Array|Array|String
+ * - data (Uint8Array|Array|String): input data to decompress.
+ * - options (Object): zlib inflate options.
+ *
+ * Just shortcut to [[inflate]], because it autodetects format
+ * by header.content. Done for convenience.
+ **/
+
+
+exports.Inflate = Inflate;
+exports.inflate = inflate;
+exports.inflateRaw = inflateRaw;
+exports.ungzip  = inflate;
+
+
+/***/ }),
+/* 124 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// (C) 1995-2013 Jean-loup Gailly and Mark Adler
+// (C) 2014-2017 Vitaly Puzrin and Andrey Tupitsin
+//
+// This software is provided 'as-is', without any express or implied
+// warranty. In no event will the authors be held liable for any damages
+// arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it
+// freely, subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented; you must not
+//   claim that you wrote the original software. If you use this software
+//   in a product, an acknowledgment in the product documentation would be
+//   appreciated but is not required.
+// 2. Altered source versions must be plainly marked as such, and must not be
+//   misrepresented as being the original software.
+// 3. This notice may not be removed or altered from any source distribution.
+
+var utils         = __webpack_require__(11);
+var adler32       = __webpack_require__(88);
+var crc32         = __webpack_require__(89);
+var inflate_fast  = __webpack_require__(125);
+var inflate_table = __webpack_require__(126);
+
+var CODES = 0;
+var LENS = 1;
+var DISTS = 2;
+
+/* Public constants ==========================================================*/
+/* ===========================================================================*/
+
+
+/* Allowed flush values; see deflate() and inflate() below for details */
+//var Z_NO_FLUSH      = 0;
+//var Z_PARTIAL_FLUSH = 1;
+//var Z_SYNC_FLUSH    = 2;
+//var Z_FULL_FLUSH    = 3;
+var Z_FINISH        = 4;
+var Z_BLOCK         = 5;
+var Z_TREES         = 6;
+
+
+/* Return codes for the compression/decompression functions. Negative values
+ * are errors, positive values are used for special but normal events.
+ */
+var Z_OK            = 0;
+var Z_STREAM_END    = 1;
+var Z_NEED_DICT     = 2;
+//var Z_ERRNO         = -1;
+var Z_STREAM_ERROR  = -2;
+var Z_DATA_ERROR    = -3;
+var Z_MEM_ERROR     = -4;
+var Z_BUF_ERROR     = -5;
+//var Z_VERSION_ERROR = -6;
+
+/* The deflate compression method */
+var Z_DEFLATED  = 8;
+
+
+/* STATES ====================================================================*/
+/* ===========================================================================*/
+
+
+var    HEAD = 1;       /* i: waiting for magic header */
+var    FLAGS = 2;      /* i: waiting for method and flags (gzip) */
+var    TIME = 3;       /* i: waiting for modification time (gzip) */
+var    OS = 4;         /* i: waiting for extra flags and operating system (gzip) */
+var    EXLEN = 5;      /* i: waiting for extra length (gzip) */
+var    EXTRA = 6;      /* i: waiting for extra bytes (gzip) */
+var    NAME = 7;       /* i: waiting for end of file name (gzip) */
+var    COMMENT = 8;    /* i: waiting for end of comment (gzip) */
+var    HCRC = 9;       /* i: waiting for header crc (gzip) */
+var    DICTID = 10;    /* i: waiting for dictionary check value */
+var    DICT = 11;      /* waiting for inflateSetDictionary() call */
+var        TYPE = 12;      /* i: waiting for type bits, including last-flag bit */
+var        TYPEDO = 13;    /* i: same, but skip check to exit inflate on new block */
+var        STORED = 14;    /* i: waiting for stored size (length and complement) */
+var        COPY_ = 15;     /* i/o: same as COPY below, but only first time in */
+var        COPY = 16;      /* i/o: waiting for input or output to copy stored block */
+var        TABLE = 17;     /* i: waiting for dynamic block table lengths */
+var        LENLENS = 18;   /* i: waiting for code length code lengths */
+var        CODELENS = 19;  /* i: waiting for length/lit and distance code lengths */
+var            LEN_ = 20;      /* i: same as LEN below, but only first time in */
+var            LEN = 21;       /* i: waiting for length/lit/eob code */
+var            LENEXT = 22;    /* i: waiting for length extra bits */
+var            DIST = 23;      /* i: waiting for distance code */
+var            DISTEXT = 24;   /* i: waiting for distance extra bits */
+var            MATCH = 25;     /* o: waiting for output space to copy string */
+var            LIT = 26;       /* o: waiting for output space to write literal */
+var    CHECK = 27;     /* i: waiting for 32-bit check value */
+var    LENGTH = 28;    /* i: waiting for 32-bit length (gzip) */
+var    DONE = 29;      /* finished check, done -- remain here until reset */
+var    BAD = 30;       /* got a data error -- remain here until reset */
+var    MEM = 31;       /* got an inflate() memory error -- remain here until reset */
+var    SYNC = 32;      /* looking for synchronization bytes to restart inflate() */
+
+/* ===========================================================================*/
+
+
+
+var ENOUGH_LENS = 852;
+var ENOUGH_DISTS = 592;
+//var ENOUGH =  (ENOUGH_LENS+ENOUGH_DISTS);
+
+var MAX_WBITS = 15;
+/* 32K LZ77 window */
+var DEF_WBITS = MAX_WBITS;
+
+
+function zswap32(q) {
+  return  (((q >>> 24) & 0xff) +
+          ((q >>> 8) & 0xff00) +
+          ((q & 0xff00) << 8) +
+          ((q & 0xff) << 24));
+}
+
+
+function InflateState() {
+  this.mode = 0;             /* current inflate mode */
+  this.last = false;          /* true if processing last block */
+  this.wrap = 0;              /* bit 0 true for zlib, bit 1 true for gzip */
+  this.havedict = false;      /* true if dictionary provided */
+  this.flags = 0;             /* gzip header method and flags (0 if zlib) */
+  this.dmax = 0;              /* zlib header max distance (INFLATE_STRICT) */
+  this.check = 0;             /* protected copy of check value */
+  this.total = 0;             /* protected copy of output count */
+  // TODO: may be {}
+  this.head = null;           /* where to save gzip header information */
+
+  /* sliding window */
+  this.wbits = 0;             /* log base 2 of requested window size */
+  this.wsize = 0;             /* window size or zero if not using window */
+  this.whave = 0;             /* valid bytes in the window */
+  this.wnext = 0;             /* window write index */
+  this.window = null;         /* allocated sliding window, if needed */
+
+  /* bit accumulator */
+  this.hold = 0;              /* input bit accumulator */
+  this.bits = 0;              /* number of bits in "in" */
+
+  /* for string and stored block copying */
+  this.length = 0;            /* literal or length of data to copy */
+  this.offset = 0;            /* distance back to copy string from */
+
+  /* for table and code decoding */
+  this.extra = 0;             /* extra bits needed */
+
+  /* fixed and dynamic code tables */
+  this.lencode = null;          /* starting table for length/literal codes */
+  this.distcode = null;         /* starting table for distance codes */
+  this.lenbits = 0;           /* index bits for lencode */
+  this.distbits = 0;          /* index bits for distcode */
+
+  /* dynamic table building */
+  this.ncode = 0;             /* number of code length code lengths */
+  this.nlen = 0;              /* number of length code lengths */
+  this.ndist = 0;             /* number of distance code lengths */
+  this.have = 0;              /* number of code lengths in lens[] */
+  this.next = null;              /* next available space in codes[] */
+
+  this.lens = new utils.Buf16(320); /* temporary storage for code lengths */
+  this.work = new utils.Buf16(288); /* work area for code table building */
+
+  /*
+   because we don't have pointers in js, we use lencode and distcode directly
+   as buffers so we don't need codes
+  */
+  //this.codes = new utils.Buf32(ENOUGH);       /* space for code tables */
+  this.lendyn = null;              /* dynamic table for length/literal codes (JS specific) */
+  this.distdyn = null;             /* dynamic table for distance codes (JS specific) */
+  this.sane = 0;                   /* if false, allow invalid distance too far */
+  this.back = 0;                   /* bits back of last unprocessed length/lit */
+  this.was = 0;                    /* initial length of match */
+}
+
+function inflateResetKeep(strm) {
+  var state;
+
+  if (!strm || !strm.state) { return Z_STREAM_ERROR; }
+  state = strm.state;
+  strm.total_in = strm.total_out = state.total = 0;
+  strm.msg = ''; /*Z_NULL*/
+  if (state.wrap) {       /* to support ill-conceived Java test suite */
+    strm.adler = state.wrap & 1;
+  }
+  state.mode = HEAD;
+  state.last = 0;
+  state.havedict = 0;
+  state.dmax = 32768;
+  state.head = null/*Z_NULL*/;
+  state.hold = 0;
+  state.bits = 0;
+  //state.lencode = state.distcode = state.next = state.codes;
+  state.lencode = state.lendyn = new utils.Buf32(ENOUGH_LENS);
+  state.distcode = state.distdyn = new utils.Buf32(ENOUGH_DISTS);
+
+  state.sane = 1;
+  state.back = -1;
+  //Tracev((stderr, "inflate: reset\n"));
+  return Z_OK;
+}
+
+function inflateReset(strm) {
+  var state;
+
+  if (!strm || !strm.state) { return Z_STREAM_ERROR; }
+  state = strm.state;
+  state.wsize = 0;
+  state.whave = 0;
+  state.wnext = 0;
+  return inflateResetKeep(strm);
+
+}
+
+function inflateReset2(strm, windowBits) {
+  var wrap;
+  var state;
+
+  /* get the state */
+  if (!strm || !strm.state) { return Z_STREAM_ERROR; }
+  state = strm.state;
+
+  /* extract wrap request from windowBits parameter */
+  if (windowBits < 0) {
+    wrap = 0;
+    windowBits = -windowBits;
+  }
+  else {
+    wrap = (windowBits >> 4) + 1;
+    if (windowBits < 48) {
+      windowBits &= 15;
+    }
+  }
+
+  /* set number of window bits, free window if different */
+  if (windowBits && (windowBits < 8 || windowBits > 15)) {
+    return Z_STREAM_ERROR;
+  }
+  if (state.window !== null && state.wbits !== windowBits) {
+    state.window = null;
+  }
+
+  /* update state and reset the rest of it */
+  state.wrap = wrap;
+  state.wbits = windowBits;
+  return inflateReset(strm);
+}
+
+function inflateInit2(strm, windowBits) {
+  var ret;
+  var state;
+
+  if (!strm) { return Z_STREAM_ERROR; }
+  //strm.msg = Z_NULL;                 /* in case we return an error */
+
+  state = new InflateState();
+
+  //if (state === Z_NULL) return Z_MEM_ERROR;
+  //Tracev((stderr, "inflate: allocated\n"));
+  strm.state = state;
+  state.window = null/*Z_NULL*/;
+  ret = inflateReset2(strm, windowBits);
+  if (ret !== Z_OK) {
+    strm.state = null/*Z_NULL*/;
+  }
+  return ret;
+}
+
+function inflateInit(strm) {
+  return inflateInit2(strm, DEF_WBITS);
+}
+
+
+/*
+ Return state with length and distance decoding tables and index sizes set to
+ fixed code decoding.  Normally this returns fixed tables from inffixed.h.
+ If BUILDFIXED is defined, then instead this routine builds the tables the
+ first time it's called, and returns those tables the first time and
+ thereafter.  This reduces the size of the code by about 2K bytes, in
+ exchange for a little execution time.  However, BUILDFIXED should not be
+ used for threaded applications, since the rewriting of the tables and virgin
+ may not be thread-safe.
+ */
+var virgin = true;
+
+var lenfix, distfix; // We have no pointers in JS, so keep tables separate
+
+function fixedtables(state) {
+  /* build fixed huffman tables if first call (may not be thread safe) */
+  if (virgin) {
+    var sym;
+
+    lenfix = new utils.Buf32(512);
+    distfix = new utils.Buf32(32);
+
+    /* literal/length table */
+    sym = 0;
+    while (sym < 144) { state.lens[sym++] = 8; }
+    while (sym < 256) { state.lens[sym++] = 9; }
+    while (sym < 280) { state.lens[sym++] = 7; }
+    while (sym < 288) { state.lens[sym++] = 8; }
+
+    inflate_table(LENS,  state.lens, 0, 288, lenfix,   0, state.work, { bits: 9 });
+
+    /* distance table */
+    sym = 0;
+    while (sym < 32) { state.lens[sym++] = 5; }
+
+    inflate_table(DISTS, state.lens, 0, 32,   distfix, 0, state.work, { bits: 5 });
+
+    /* do this just once */
+    virgin = false;
+  }
+
+  state.lencode = lenfix;
+  state.lenbits = 9;
+  state.distcode = distfix;
+  state.distbits = 5;
+}
+
+
+/*
+ Update the window with the last wsize (normally 32K) bytes written before
+ returning.  If window does not exist yet, create it.  This is only called
+ when a window is already in use, or when output has been written during this
+ inflate call, but the end of the deflate stream has not been reached yet.
+ It is also called to create a window for dictionary data when a dictionary
+ is loaded.
+
+ Providing output buffers larger than 32K to inflate() should provide a speed
+ advantage, since only the last 32K of output is copied to the sliding window
+ upon return from inflate(), and since all distances after the first 32K of
+ output will fall in the output data, making match copies simpler and faster.
+ The advantage may be dependent on the size of the processor's data caches.
+ */
+function updatewindow(strm, src, end, copy) {
+  var dist;
+  var state = strm.state;
+
+  /* if it hasn't been done already, allocate space for the window */
+  if (state.window === null) {
+    state.wsize = 1 << state.wbits;
+    state.wnext = 0;
+    state.whave = 0;
+
+    state.window = new utils.Buf8(state.wsize);
+  }
+
+  /* copy state->wsize or less output bytes into the circular window */
+  if (copy >= state.wsize) {
+    utils.arraySet(state.window, src, end - state.wsize, state.wsize, 0);
+    state.wnext = 0;
+    state.whave = state.wsize;
+  }
+  else {
+    dist = state.wsize - state.wnext;
+    if (dist > copy) {
+      dist = copy;
+    }
+    //zmemcpy(state->window + state->wnext, end - copy, dist);
+    utils.arraySet(state.window, src, end - copy, dist, state.wnext);
+    copy -= dist;
+    if (copy) {
+      //zmemcpy(state->window, end - copy, copy);
+      utils.arraySet(state.window, src, end - copy, copy, 0);
+      state.wnext = copy;
+      state.whave = state.wsize;
+    }
+    else {
+      state.wnext += dist;
+      if (state.wnext === state.wsize) { state.wnext = 0; }
+      if (state.whave < state.wsize) { state.whave += dist; }
+    }
+  }
+  return 0;
+}
+
+function inflate(strm, flush) {
+  var state;
+  var input, output;          // input/output buffers
+  var next;                   /* next input INDEX */
+  var put;                    /* next output INDEX */
+  var have, left;             /* available input and output */
+  var hold;                   /* bit buffer */
+  var bits;                   /* bits in bit buffer */
+  var _in, _out;              /* save starting available input and output */
+  var copy;                   /* number of stored or match bytes to copy */
+  var from;                   /* where to copy match bytes from */
+  var from_source;
+  var here = 0;               /* current decoding table entry */
+  var here_bits, here_op, here_val; // paked "here" denormalized (JS specific)
+  //var last;                   /* parent table entry */
+  var last_bits, last_op, last_val; // paked "last" denormalized (JS specific)
+  var len;                    /* length to copy for repeats, bits to drop */
+  var ret;                    /* return code */
+  var hbuf = new utils.Buf8(4);    /* buffer for gzip header crc calculation */
+  var opts;
+
+  var n; // temporary var for NEED_BITS
+
+  var order = /* permutation of code lengths */
+    [ 16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15 ];
+
+
+  if (!strm || !strm.state || !strm.output ||
+      (!strm.input && strm.avail_in !== 0)) {
+    return Z_STREAM_ERROR;
+  }
+
+  state = strm.state;
+  if (state.mode === TYPE) { state.mode = TYPEDO; }    /* skip check */
+
+
+  //--- LOAD() ---
+  put = strm.next_out;
+  output = strm.output;
+  left = strm.avail_out;
+  next = strm.next_in;
+  input = strm.input;
+  have = strm.avail_in;
+  hold = state.hold;
+  bits = state.bits;
+  //---
+
+  _in = have;
+  _out = left;
+  ret = Z_OK;
+
+  inf_leave: // goto emulation
+  for (;;) {
+    switch (state.mode) {
+      case HEAD:
+        if (state.wrap === 0) {
+          state.mode = TYPEDO;
+          break;
+        }
+        //=== NEEDBITS(16);
+        while (bits < 16) {
+          if (have === 0) { break inf_leave; }
+          have--;
+          hold += input[next++] << bits;
+          bits += 8;
+        }
+        //===//
+        if ((state.wrap & 2) && hold === 0x8b1f) {  /* gzip header */
+          state.check = 0/*crc32(0L, Z_NULL, 0)*/;
+          //=== CRC2(state.check, hold);
+          hbuf[0] = hold & 0xff;
+          hbuf[1] = (hold >>> 8) & 0xff;
+          state.check = crc32(state.check, hbuf, 2, 0);
+          //===//
+
+          //=== INITBITS();
+          hold = 0;
+          bits = 0;
+          //===//
+          state.mode = FLAGS;
+          break;
+        }
+        state.flags = 0;           /* expect zlib header */
+        if (state.head) {
+          state.head.done = false;
+        }
+        if (!(state.wrap & 1) ||   /* check if zlib header allowed */
+          (((hold & 0xff)/*BITS(8)*/ << 8) + (hold >> 8)) % 31) {
+          strm.msg = 'incorrect header check';
+          state.mode = BAD;
+          break;
+        }
+        if ((hold & 0x0f)/*BITS(4)*/ !== Z_DEFLATED) {
+          strm.msg = 'unknown compression method';
+          state.mode = BAD;
+          break;
+        }
+        //--- DROPBITS(4) ---//
+        hold >>>= 4;
+        bits -= 4;
+        //---//
+        len = (hold & 0x0f)/*BITS(4)*/ + 8;
+        if (state.wbits === 0) {
+          state.wbits = len;
+        }
+        else if (len > state.wbits) {
+          strm.msg = 'invalid window size';
+          state.mode = BAD;
+          break;
+        }
+        state.dmax = 1 << len;
+        //Tracev((stderr, "inflate:   zlib header ok\n"));
+        strm.adler = state.check = 1/*adler32(0L, Z_NULL, 0)*/;
+        state.mode = hold & 0x200 ? DICTID : TYPE;
+        //=== INITBITS();
+        hold = 0;
+        bits = 0;
+        //===//
+        break;
+      case FLAGS:
+        //=== NEEDBITS(16); */
+        while (bits < 16) {
+          if (have === 0) { break inf_leave; }
+          have--;
+          hold += input[next++] << bits;
+          bits += 8;
+        }
+        //===//
+        state.flags = hold;
+        if ((state.flags & 0xff) !== Z_DEFLATED) {
+          strm.msg = 'unknown compression method';
+          state.mode = BAD;
+          break;
+        }
+        if (state.flags & 0xe000) {
+          strm.msg = 'unknown header flags set';
+          state.mode = BAD;
+          break;
+        }
+        if (state.head) {
+          state.head.text = ((hold >> 8) & 1);
+        }
+        if (state.flags & 0x0200) {
+          //=== CRC2(state.check, hold);
+          hbuf[0] = hold & 0xff;
+          hbuf[1] = (hold >>> 8) & 0xff;
+          state.check = crc32(state.check, hbuf, 2, 0);
+          //===//
+        }
+        //=== INITBITS();
+        hold = 0;
+        bits = 0;
+        //===//
+        state.mode = TIME;
+        /* falls through */
+      case TIME:
+        //=== NEEDBITS(32); */
+        while (bits < 32) {
+          if (have === 0) { break inf_leave; }
+          have--;
+          hold += input[next++] << bits;
+          bits += 8;
+        }
+        //===//
+        if (state.head) {
+          state.head.time = hold;
+        }
+        if (state.flags & 0x0200) {
+          //=== CRC4(state.check, hold)
+          hbuf[0] = hold & 0xff;
+          hbuf[1] = (hold >>> 8) & 0xff;
+          hbuf[2] = (hold >>> 16) & 0xff;
+          hbuf[3] = (hold >>> 24) & 0xff;
+          state.check = crc32(state.check, hbuf, 4, 0);
+          //===
+        }
+        //=== INITBITS();
+        hold = 0;
+        bits = 0;
+        //===//
+        state.mode = OS;
+        /* falls through */
+      case OS:
+        //=== NEEDBITS(16); */
+        while (bits < 16) {
+          if (have === 0) { break inf_leave; }
+          have--;
+          hold += input[next++] << bits;
+          bits += 8;
+        }
+        //===//
+        if (state.head) {
+          state.head.xflags = (hold & 0xff);
+          state.head.os = (hold >> 8);
+        }
+        if (state.flags & 0x0200) {
+          //=== CRC2(state.check, hold);
+          hbuf[0] = hold & 0xff;
+          hbuf[1] = (hold >>> 8) & 0xff;
+          state.check = crc32(state.check, hbuf, 2, 0);
+          //===//
+        }
+        //=== INITBITS();
+        hold = 0;
+        bits = 0;
+        //===//
+        state.mode = EXLEN;
+        /* falls through */
+      case EXLEN:
+        if (state.flags & 0x0400) {
+          //=== NEEDBITS(16); */
+          while (bits < 16) {
+            if (have === 0) { break inf_leave; }
+            have--;
+            hold += input[next++] << bits;
+            bits += 8;
+          }
+          //===//
+          state.length = hold;
+          if (state.head) {
+            state.head.extra_len = hold;
+          }
+          if (state.flags & 0x0200) {
+            //=== CRC2(state.check, hold);
+            hbuf[0] = hold & 0xff;
+            hbuf[1] = (hold >>> 8) & 0xff;
+            state.check = crc32(state.check, hbuf, 2, 0);
+            //===//
+          }
+          //=== INITBITS();
+          hold = 0;
+          bits = 0;
+          //===//
+        }
+        else if (state.head) {
+          state.head.extra = null/*Z_NULL*/;
+        }
+        state.mode = EXTRA;
+        /* falls through */
+      case EXTRA:
+        if (state.flags & 0x0400) {
+          copy = state.length;
+          if (copy > have) { copy = have; }
+          if (copy) {
+            if (state.head) {
+              len = state.head.extra_len - state.length;
+              if (!state.head.extra) {
+                // Use untyped array for more convenient processing later
+                state.head.extra = new Array(state.head.extra_len);
+              }
+              utils.arraySet(
+                state.head.extra,
+                input,
+                next,
+                // extra field is limited to 65536 bytes
+                // - no need for additional size check
+                copy,
+                /*len + copy > state.head.extra_max - len ? state.head.extra_max : copy,*/
+                len
+              );
+              //zmemcpy(state.head.extra + len, next,
+              //        len + copy > state.head.extra_max ?
+              //        state.head.extra_max - len : copy);
+            }
+            if (state.flags & 0x0200) {
+              state.check = crc32(state.check, input, copy, next);
+            }
+            have -= copy;
+            next += copy;
+            state.length -= copy;
+          }
+          if (state.length) { break inf_leave; }
+        }
+        state.length = 0;
+        state.mode = NAME;
+        /* falls through */
+      case NAME:
+        if (state.flags & 0x0800) {
+          if (have === 0) { break inf_leave; }
+          copy = 0;
+          do {
+            // TODO: 2 or 1 bytes?
+            len = input[next + copy++];
+            /* use constant limit because in js we should not preallocate memory */
+            if (state.head && len &&
+                (state.length < 65536 /*state.head.name_max*/)) {
+              state.head.name += String.fromCharCode(len);
+            }
+          } while (len && copy < have);
+
+          if (state.flags & 0x0200) {
+            state.check = crc32(state.check, input, copy, next);
+          }
+          have -= copy;
+          next += copy;
+          if (len) { break inf_leave; }
+        }
+        else if (state.head) {
+          state.head.name = null;
+        }
+        state.length = 0;
+        state.mode = COMMENT;
+        /* falls through */
+      case COMMENT:
+        if (state.flags & 0x1000) {
+          if (have === 0) { break inf_leave; }
+          copy = 0;
+          do {
+            len = input[next + copy++];
+            /* use constant limit because in js we should not preallocate memory */
+            if (state.head && len &&
+                (state.length < 65536 /*state.head.comm_max*/)) {
+              state.head.comment += String.fromCharCode(len);
+            }
+          } while (len && copy < have);
+          if (state.flags & 0x0200) {
+            state.check = crc32(state.check, input, copy, next);
+          }
+          have -= copy;
+          next += copy;
+          if (len) { break inf_leave; }
+        }
+        else if (state.head) {
+          state.head.comment = null;
+        }
+        state.mode = HCRC;
+        /* falls through */
+      case HCRC:
+        if (state.flags & 0x0200) {
+          //=== NEEDBITS(16); */
+          while (bits < 16) {
+            if (have === 0) { break inf_leave; }
+            have--;
+            hold += input[next++] << bits;
+            bits += 8;
+          }
+          //===//
+          if (hold !== (state.check & 0xffff)) {
+            strm.msg = 'header crc mismatch';
+            state.mode = BAD;
+            break;
+          }
+          //=== INITBITS();
+          hold = 0;
+          bits = 0;
+          //===//
+        }
+        if (state.head) {
+          state.head.hcrc = ((state.flags >> 9) & 1);
+          state.head.done = true;
+        }
+        strm.adler = state.check = 0;
+        state.mode = TYPE;
+        break;
+      case DICTID:
+        //=== NEEDBITS(32); */
+        while (bits < 32) {
+          if (have === 0) { break inf_leave; }
+          have--;
+          hold += input[next++] << bits;
+          bits += 8;
+        }
+        //===//
+        strm.adler = state.check = zswap32(hold);
+        //=== INITBITS();
+        hold = 0;
+        bits = 0;
+        //===//
+        state.mode = DICT;
+        /* falls through */
+      case DICT:
+        if (state.havedict === 0) {
+          //--- RESTORE() ---
+          strm.next_out = put;
+          strm.avail_out = left;
+          strm.next_in = next;
+          strm.avail_in = have;
+          state.hold = hold;
+          state.bits = bits;
+          //---
+          return Z_NEED_DICT;
+        }
+        strm.adler = state.check = 1/*adler32(0L, Z_NULL, 0)*/;
+        state.mode = TYPE;
+        /* falls through */
+      case TYPE:
+        if (flush === Z_BLOCK || flush === Z_TREES) { break inf_leave; }
+        /* falls through */
+      case TYPEDO:
+        if (state.last) {
+          //--- BYTEBITS() ---//
+          hold >>>= bits & 7;
+          bits -= bits & 7;
+          //---//
+          state.mode = CHECK;
+          break;
+        }
+        //=== NEEDBITS(3); */
+        while (bits < 3) {
+          if (have === 0) { break inf_leave; }
+          have--;
+          hold += input[next++] << bits;
+          bits += 8;
+        }
+        //===//
+        state.last = (hold & 0x01)/*BITS(1)*/;
+        //--- DROPBITS(1) ---//
+        hold >>>= 1;
+        bits -= 1;
+        //---//
+
+        switch ((hold & 0x03)/*BITS(2)*/) {
+          case 0:                             /* stored block */
+            //Tracev((stderr, "inflate:     stored block%s\n",
+            //        state.last ? " (last)" : ""));
+            state.mode = STORED;
+            break;
+          case 1:                             /* fixed block */
+            fixedtables(state);
+            //Tracev((stderr, "inflate:     fixed codes block%s\n",
+            //        state.last ? " (last)" : ""));
+            state.mode = LEN_;             /* decode codes */
+            if (flush === Z_TREES) {
+              //--- DROPBITS(2) ---//
+              hold >>>= 2;
+              bits -= 2;
+              //---//
+              break inf_leave;
+            }
+            break;
+          case 2:                             /* dynamic block */
+            //Tracev((stderr, "inflate:     dynamic codes block%s\n",
+            //        state.last ? " (last)" : ""));
+            state.mode = TABLE;
+            break;
+          case 3:
+            strm.msg = 'invalid block type';
+            state.mode = BAD;
+        }
+        //--- DROPBITS(2) ---//
+        hold >>>= 2;
+        bits -= 2;
+        //---//
+        break;
+      case STORED:
+        //--- BYTEBITS() ---// /* go to byte boundary */
+        hold >>>= bits & 7;
+        bits -= bits & 7;
+        //---//
+        //=== NEEDBITS(32); */
+        while (bits < 32) {
+          if (have === 0) { break inf_leave; }
+          have--;
+          hold += input[next++] << bits;
+          bits += 8;
+        }
+        //===//
+        if ((hold & 0xffff) !== ((hold >>> 16) ^ 0xffff)) {
+          strm.msg = 'invalid stored block lengths';
+          state.mode = BAD;
+          break;
+        }
+        state.length = hold & 0xffff;
+        //Tracev((stderr, "inflate:       stored length %u\n",
+        //        state.length));
+        //=== INITBITS();
+        hold = 0;
+        bits = 0;
+        //===//
+        state.mode = COPY_;
+        if (flush === Z_TREES) { break inf_leave; }
+        /* falls through */
+      case COPY_:
+        state.mode = COPY;
+        /* falls through */
+      case COPY:
+        copy = state.length;
+        if (copy) {
+          if (copy > have) { copy = have; }
+          if (copy > left) { copy = left; }
+          if (copy === 0) { break inf_leave; }
+          //--- zmemcpy(put, next, copy); ---
+          utils.arraySet(output, input, next, copy, put);
+          //---//
+          have -= copy;
+          next += copy;
+          left -= copy;
+          put += copy;
+          state.length -= copy;
+          break;
+        }
+        //Tracev((stderr, "inflate:       stored end\n"));
+        state.mode = TYPE;
+        break;
+      case TABLE:
+        //=== NEEDBITS(14); */
+        while (bits < 14) {
+          if (have === 0) { break inf_leave; }
+          have--;
+          hold += input[next++] << bits;
+          bits += 8;
+        }
+        //===//
+        state.nlen = (hold & 0x1f)/*BITS(5)*/ + 257;
+        //--- DROPBITS(5) ---//
+        hold >>>= 5;
+        bits -= 5;
+        //---//
+        state.ndist = (hold & 0x1f)/*BITS(5)*/ + 1;
+        //--- DROPBITS(5) ---//
+        hold >>>= 5;
+        bits -= 5;
+        //---//
+        state.ncode = (hold & 0x0f)/*BITS(4)*/ + 4;
+        //--- DROPBITS(4) ---//
+        hold >>>= 4;
+        bits -= 4;
+        //---//
+//#ifndef PKZIP_BUG_WORKAROUND
+        if (state.nlen > 286 || state.ndist > 30) {
+          strm.msg = 'too many length or distance symbols';
+          state.mode = BAD;
+          break;
+        }
+//#endif
+        //Tracev((stderr, "inflate:       table sizes ok\n"));
+        state.have = 0;
+        state.mode = LENLENS;
+        /* falls through */
+      case LENLENS:
+        while (state.have < state.ncode) {
+          //=== NEEDBITS(3);
+          while (bits < 3) {
+            if (have === 0) { break inf_leave; }
+            have--;
+            hold += input[next++] << bits;
+            bits += 8;
+          }
+          //===//
+          state.lens[order[state.have++]] = (hold & 0x07);//BITS(3);
+          //--- DROPBITS(3) ---//
+          hold >>>= 3;
+          bits -= 3;
+          //---//
+        }
+        while (state.have < 19) {
+          state.lens[order[state.have++]] = 0;
+        }
+        // We have separate tables & no pointers. 2 commented lines below not needed.
+        //state.next = state.codes;
+        //state.lencode = state.next;
+        // Switch to use dynamic table
+        state.lencode = state.lendyn;
+        state.lenbits = 7;
+
+        opts = { bits: state.lenbits };
+        ret = inflate_table(CODES, state.lens, 0, 19, state.lencode, 0, state.work, opts);
+        state.lenbits = opts.bits;
+
+        if (ret) {
+          strm.msg = 'invalid code lengths set';
+          state.mode = BAD;
+          break;
+        }
+        //Tracev((stderr, "inflate:       code lengths ok\n"));
+        state.have = 0;
+        state.mode = CODELENS;
+        /* falls through */
+      case CODELENS:
+        while (state.have < state.nlen + state.ndist) {
+          for (;;) {
+            here = state.lencode[hold & ((1 << state.lenbits) - 1)];/*BITS(state.lenbits)*/
+            here_bits = here >>> 24;
+            here_op = (here >>> 16) & 0xff;
+            here_val = here & 0xffff;
+
+            if ((here_bits) <= bits) { break; }
+            //--- PULLBYTE() ---//
+            if (have === 0) { break inf_leave; }
+            have--;
+            hold += input[next++] << bits;
+            bits += 8;
+            //---//
+          }
+          if (here_val < 16) {
+            //--- DROPBITS(here.bits) ---//
+            hold >>>= here_bits;
+            bits -= here_bits;
+            //---//
+            state.lens[state.have++] = here_val;
+          }
+          else {
+            if (here_val === 16) {
+              //=== NEEDBITS(here.bits + 2);
+              n = here_bits + 2;
+              while (bits < n) {
+                if (have === 0) { break inf_leave; }
+                have--;
+                hold += input[next++] << bits;
+                bits += 8;
+              }
+              //===//
+              //--- DROPBITS(here.bits) ---//
+              hold >>>= here_bits;
+              bits -= here_bits;
+              //---//
+              if (state.have === 0) {
+                strm.msg = 'invalid bit length repeat';
+                state.mode = BAD;
+                break;
+              }
+              len = state.lens[state.have - 1];
+              copy = 3 + (hold & 0x03);//BITS(2);
+              //--- DROPBITS(2) ---//
+              hold >>>= 2;
+              bits -= 2;
+              //---//
+            }
+            else if (here_val === 17) {
+              //=== NEEDBITS(here.bits + 3);
+              n = here_bits + 3;
+              while (bits < n) {
+                if (have === 0) { break inf_leave; }
+                have--;
+                hold += input[next++] << bits;
+                bits += 8;
+              }
+              //===//
+              //--- DROPBITS(here.bits) ---//
+              hold >>>= here_bits;
+              bits -= here_bits;
+              //---//
+              len = 0;
+              copy = 3 + (hold & 0x07);//BITS(3);
+              //--- DROPBITS(3) ---//
+              hold >>>= 3;
+              bits -= 3;
+              //---//
+            }
+            else {
+              //=== NEEDBITS(here.bits + 7);
+              n = here_bits + 7;
+              while (bits < n) {
+                if (have === 0) { break inf_leave; }
+                have--;
+                hold += input[next++] << bits;
+                bits += 8;
+              }
+              //===//
+              //--- DROPBITS(here.bits) ---//
+              hold >>>= here_bits;
+              bits -= here_bits;
+              //---//
+              len = 0;
+              copy = 11 + (hold & 0x7f);//BITS(7);
+              //--- DROPBITS(7) ---//
+              hold >>>= 7;
+              bits -= 7;
+              //---//
+            }
+            if (state.have + copy > state.nlen + state.ndist) {
+              strm.msg = 'invalid bit length repeat';
+              state.mode = BAD;
+              break;
+            }
+            while (copy--) {
+              state.lens[state.have++] = len;
+            }
+          }
+        }
+
+        /* handle error breaks in while */
+        if (state.mode === BAD) { break; }
+
+        /* check for end-of-block code (better have one) */
+        if (state.lens[256] === 0) {
+          strm.msg = 'invalid code -- missing end-of-block';
+          state.mode = BAD;
+          break;
+        }
+
+        /* build code tables -- note: do not change the lenbits or distbits
+           values here (9 and 6) without reading the comments in inftrees.h
+           concerning the ENOUGH constants, which depend on those values */
+        state.lenbits = 9;
+
+        opts = { bits: state.lenbits };
+        ret = inflate_table(LENS, state.lens, 0, state.nlen, state.lencode, 0, state.work, opts);
+        // We have separate tables & no pointers. 2 commented lines below not needed.
+        // state.next_index = opts.table_index;
+        state.lenbits = opts.bits;
+        // state.lencode = state.next;
+
+        if (ret) {
+          strm.msg = 'invalid literal/lengths set';
+          state.mode = BAD;
+          break;
+        }
+
+        state.distbits = 6;
+        //state.distcode.copy(state.codes);
+        // Switch to use dynamic table
+        state.distcode = state.distdyn;
+        opts = { bits: state.distbits };
+        ret = inflate_table(DISTS, state.lens, state.nlen, state.ndist, state.distcode, 0, state.work, opts);
+        // We have separate tables & no pointers. 2 commented lines below not needed.
+        // state.next_index = opts.table_index;
+        state.distbits = opts.bits;
+        // state.distcode = state.next;
+
+        if (ret) {
+          strm.msg = 'invalid distances set';
+          state.mode = BAD;
+          break;
+        }
+        //Tracev((stderr, 'inflate:       codes ok\n'));
+        state.mode = LEN_;
+        if (flush === Z_TREES) { break inf_leave; }
+        /* falls through */
+      case LEN_:
+        state.mode = LEN;
+        /* falls through */
+      case LEN:
+        if (have >= 6 && left >= 258) {
+          //--- RESTORE() ---
+          strm.next_out = put;
+          strm.avail_out = left;
+          strm.next_in = next;
+          strm.avail_in = have;
+          state.hold = hold;
+          state.bits = bits;
+          //---
+          inflate_fast(strm, _out);
+          //--- LOAD() ---
+          put = strm.next_out;
+          output = strm.output;
+          left = strm.avail_out;
+          next = strm.next_in;
+          input = strm.input;
+          have = strm.avail_in;
+          hold = state.hold;
+          bits = state.bits;
+          //---
+
+          if (state.mode === TYPE) {
+            state.back = -1;
+          }
+          break;
+        }
+        state.back = 0;
+        for (;;) {
+          here = state.lencode[hold & ((1 << state.lenbits) - 1)];  /*BITS(state.lenbits)*/
+          here_bits = here >>> 24;
+          here_op = (here >>> 16) & 0xff;
+          here_val = here & 0xffff;
+
+          if (here_bits <= bits) { break; }
+          //--- PULLBYTE() ---//
+          if (have === 0) { break inf_leave; }
+          have--;
+          hold += input[next++] << bits;
+          bits += 8;
+          //---//
+        }
+        if (here_op && (here_op & 0xf0) === 0) {
+          last_bits = here_bits;
+          last_op = here_op;
+          last_val = here_val;
+          for (;;) {
+            here = state.lencode[last_val +
+                    ((hold & ((1 << (last_bits + last_op)) - 1))/*BITS(last.bits + last.op)*/ >> last_bits)];
+            here_bits = here >>> 24;
+            here_op = (here >>> 16) & 0xff;
+            here_val = here & 0xffff;
+
+            if ((last_bits + here_bits) <= bits) { break; }
+            //--- PULLBYTE() ---//
+            if (have === 0) { break inf_leave; }
+            have--;
+            hold += input[next++] << bits;
+            bits += 8;
+            //---//
+          }
+          //--- DROPBITS(last.bits) ---//
+          hold >>>= last_bits;
+          bits -= last_bits;
+          //---//
+          state.back += last_bits;
+        }
+        //--- DROPBITS(here.bits) ---//
+        hold >>>= here_bits;
+        bits -= here_bits;
+        //---//
+        state.back += here_bits;
+        state.length = here_val;
+        if (here_op === 0) {
+          //Tracevv((stderr, here.val >= 0x20 && here.val < 0x7f ?
+          //        "inflate:         literal '%c'\n" :
+          //        "inflate:         literal 0x%02x\n", here.val));
+          state.mode = LIT;
+          break;
+        }
+        if (here_op & 32) {
+          //Tracevv((stderr, "inflate:         end of block\n"));
+          state.back = -1;
+          state.mode = TYPE;
+          break;
+        }
+        if (here_op & 64) {
+          strm.msg = 'invalid literal/length code';
+          state.mode = BAD;
+          break;
+        }
+        state.extra = here_op & 15;
+        state.mode = LENEXT;
+        /* falls through */
+      case LENEXT:
+        if (state.extra) {
+          //=== NEEDBITS(state.extra);
+          n = state.extra;
+          while (bits < n) {
+            if (have === 0) { break inf_leave; }
+            have--;
+            hold += input[next++] << bits;
+            bits += 8;
+          }
+          //===//
+          state.length += hold & ((1 << state.extra) - 1)/*BITS(state.extra)*/;
+          //--- DROPBITS(state.extra) ---//
+          hold >>>= state.extra;
+          bits -= state.extra;
+          //---//
+          state.back += state.extra;
+        }
+        //Tracevv((stderr, "inflate:         length %u\n", state.length));
+        state.was = state.length;
+        state.mode = DIST;
+        /* falls through */
+      case DIST:
+        for (;;) {
+          here = state.distcode[hold & ((1 << state.distbits) - 1)];/*BITS(state.distbits)*/
+          here_bits = here >>> 24;
+          here_op = (here >>> 16) & 0xff;
+          here_val = here & 0xffff;
+
+          if ((here_bits) <= bits) { break; }
+          //--- PULLBYTE() ---//
+          if (have === 0) { break inf_leave; }
+          have--;
+          hold += input[next++] << bits;
+          bits += 8;
+          //---//
+        }
+        if ((here_op & 0xf0) === 0) {
+          last_bits = here_bits;
+          last_op = here_op;
+          last_val = here_val;
+          for (;;) {
+            here = state.distcode[last_val +
+                    ((hold & ((1 << (last_bits + last_op)) - 1))/*BITS(last.bits + last.op)*/ >> last_bits)];
+            here_bits = here >>> 24;
+            here_op = (here >>> 16) & 0xff;
+            here_val = here & 0xffff;
+
+            if ((last_bits + here_bits) <= bits) { break; }
+            //--- PULLBYTE() ---//
+            if (have === 0) { break inf_leave; }
+            have--;
+            hold += input[next++] << bits;
+            bits += 8;
+            //---//
+          }
+          //--- DROPBITS(last.bits) ---//
+          hold >>>= last_bits;
+          bits -= last_bits;
+          //---//
+          state.back += last_bits;
+        }
+        //--- DROPBITS(here.bits) ---//
+        hold >>>= here_bits;
+        bits -= here_bits;
+        //---//
+        state.back += here_bits;
+        if (here_op & 64) {
+          strm.msg = 'invalid distance code';
+          state.mode = BAD;
+          break;
+        }
+        state.offset = here_val;
+        state.extra = (here_op) & 15;
+        state.mode = DISTEXT;
+        /* falls through */
+      case DISTEXT:
+        if (state.extra) {
+          //=== NEEDBITS(state.extra);
+          n = state.extra;
+          while (bits < n) {
+            if (have === 0) { break inf_leave; }
+            have--;
+            hold += input[next++] << bits;
+            bits += 8;
+          }
+          //===//
+          state.offset += hold & ((1 << state.extra) - 1)/*BITS(state.extra)*/;
+          //--- DROPBITS(state.extra) ---//
+          hold >>>= state.extra;
+          bits -= state.extra;
+          //---//
+          state.back += state.extra;
+        }
+//#ifdef INFLATE_STRICT
+        if (state.offset > state.dmax) {
+          strm.msg = 'invalid distance too far back';
+          state.mode = BAD;
+          break;
+        }
+//#endif
+        //Tracevv((stderr, "inflate:         distance %u\n", state.offset));
+        state.mode = MATCH;
+        /* falls through */
+      case MATCH:
+        if (left === 0) { break inf_leave; }
+        copy = _out - left;
+        if (state.offset > copy) {         /* copy from window */
+          copy = state.offset - copy;
+          if (copy > state.whave) {
+            if (state.sane) {
+              strm.msg = 'invalid distance too far back';
+              state.mode = BAD;
+              break;
+            }
+// (!) This block is disabled in zlib defaults,
+// don't enable it for binary compatibility
+//#ifdef INFLATE_ALLOW_INVALID_DISTANCE_TOOFAR_ARRR
+//          Trace((stderr, "inflate.c too far\n"));
+//          copy -= state.whave;
+//          if (copy > state.length) { copy = state.length; }
+//          if (copy > left) { copy = left; }
+//          left -= copy;
+//          state.length -= copy;
+//          do {
+//            output[put++] = 0;
+//          } while (--copy);
+//          if (state.length === 0) { state.mode = LEN; }
+//          break;
+//#endif
+          }
+          if (copy > state.wnext) {
+            copy -= state.wnext;
+            from = state.wsize - copy;
+          }
+          else {
+            from = state.wnext - copy;
+          }
+          if (copy > state.length) { copy = state.length; }
+          from_source = state.window;
+        }
+        else {                              /* copy from output */
+          from_source = output;
+          from = put - state.offset;
+          copy = state.length;
+        }
+        if (copy > left) { copy = left; }
+        left -= copy;
+        state.length -= copy;
+        do {
+          output[put++] = from_source[from++];
+        } while (--copy);
+        if (state.length === 0) { state.mode = LEN; }
+        break;
+      case LIT:
+        if (left === 0) { break inf_leave; }
+        output[put++] = state.length;
+        left--;
+        state.mode = LEN;
+        break;
+      case CHECK:
+        if (state.wrap) {
+          //=== NEEDBITS(32);
+          while (bits < 32) {
+            if (have === 0) { break inf_leave; }
+            have--;
+            // Use '|' instead of '+' to make sure that result is signed
+            hold |= input[next++] << bits;
+            bits += 8;
+          }
+          //===//
+          _out -= left;
+          strm.total_out += _out;
+          state.total += _out;
+          if (_out) {
+            strm.adler = state.check =
+                /*UPDATE(state.check, put - _out, _out);*/
+                (state.flags ? crc32(state.check, output, _out, put - _out) : adler32(state.check, output, _out, put - _out));
+
+          }
+          _out = left;
+          // NB: crc32 stored as signed 32-bit int, zswap32 returns signed too
+          if ((state.flags ? hold : zswap32(hold)) !== state.check) {
+            strm.msg = 'incorrect data check';
+            state.mode = BAD;
+            break;
+          }
+          //=== INITBITS();
+          hold = 0;
+          bits = 0;
+          //===//
+          //Tracev((stderr, "inflate:   check matches trailer\n"));
+        }
+        state.mode = LENGTH;
+        /* falls through */
+      case LENGTH:
+        if (state.wrap && state.flags) {
+          //=== NEEDBITS(32);
+          while (bits < 32) {
+            if (have === 0) { break inf_leave; }
+            have--;
+            hold += input[next++] << bits;
+            bits += 8;
+          }
+          //===//
+          if (hold !== (state.total & 0xffffffff)) {
+            strm.msg = 'incorrect length check';
+            state.mode = BAD;
+            break;
+          }
+          //=== INITBITS();
+          hold = 0;
+          bits = 0;
+          //===//
+          //Tracev((stderr, "inflate:   length matches trailer\n"));
+        }
+        state.mode = DONE;
+        /* falls through */
+      case DONE:
+        ret = Z_STREAM_END;
+        break inf_leave;
+      case BAD:
+        ret = Z_DATA_ERROR;
+        break inf_leave;
+      case MEM:
+        return Z_MEM_ERROR;
+      case SYNC:
+        /* falls through */
+      default:
+        return Z_STREAM_ERROR;
+    }
+  }
+
+  // inf_leave <- here is real place for "goto inf_leave", emulated via "break inf_leave"
+
+  /*
+     Return from inflate(), updating the total counts and the check value.
+     If there was no progress during the inflate() call, return a buffer
+     error.  Call updatewindow() to create and/or update the window state.
+     Note: a memory error from inflate() is non-recoverable.
+   */
+
+  //--- RESTORE() ---
+  strm.next_out = put;
+  strm.avail_out = left;
+  strm.next_in = next;
+  strm.avail_in = have;
+  state.hold = hold;
+  state.bits = bits;
+  //---
+
+  if (state.wsize || (_out !== strm.avail_out && state.mode < BAD &&
+                      (state.mode < CHECK || flush !== Z_FINISH))) {
+    if (updatewindow(strm, strm.output, strm.next_out, _out - strm.avail_out)) {
+      state.mode = MEM;
+      return Z_MEM_ERROR;
+    }
+  }
+  _in -= strm.avail_in;
+  _out -= strm.avail_out;
+  strm.total_in += _in;
+  strm.total_out += _out;
+  state.total += _out;
+  if (state.wrap && _out) {
+    strm.adler = state.check = /*UPDATE(state.check, strm.next_out - _out, _out);*/
+      (state.flags ? crc32(state.check, output, _out, strm.next_out - _out) : adler32(state.check, output, _out, strm.next_out - _out));
+  }
+  strm.data_type = state.bits + (state.last ? 64 : 0) +
+                    (state.mode === TYPE ? 128 : 0) +
+                    (state.mode === LEN_ || state.mode === COPY_ ? 256 : 0);
+  if (((_in === 0 && _out === 0) || flush === Z_FINISH) && ret === Z_OK) {
+    ret = Z_BUF_ERROR;
+  }
+  return ret;
+}
+
+function inflateEnd(strm) {
+
+  if (!strm || !strm.state /*|| strm->zfree == (free_func)0*/) {
+    return Z_STREAM_ERROR;
+  }
+
+  var state = strm.state;
+  if (state.window) {
+    state.window = null;
+  }
+  strm.state = null;
+  return Z_OK;
+}
+
+function inflateGetHeader(strm, head) {
+  var state;
+
+  /* check state */
+  if (!strm || !strm.state) { return Z_STREAM_ERROR; }
+  state = strm.state;
+  if ((state.wrap & 2) === 0) { return Z_STREAM_ERROR; }
+
+  /* save header structure */
+  state.head = head;
+  head.done = false;
+  return Z_OK;
+}
+
+function inflateSetDictionary(strm, dictionary) {
+  var dictLength = dictionary.length;
+
+  var state;
+  var dictid;
+  var ret;
+
+  /* check state */
+  if (!strm /* == Z_NULL */ || !strm.state /* == Z_NULL */) { return Z_STREAM_ERROR; }
+  state = strm.state;
+
+  if (state.wrap !== 0 && state.mode !== DICT) {
+    return Z_STREAM_ERROR;
+  }
+
+  /* check for correct dictionary identifier */
+  if (state.mode === DICT) {
+    dictid = 1; /* adler32(0, null, 0)*/
+    /* dictid = adler32(dictid, dictionary, dictLength); */
+    dictid = adler32(dictid, dictionary, dictLength, 0);
+    if (dictid !== state.check) {
+      return Z_DATA_ERROR;
+    }
+  }
+  /* copy dictionary to window using updatewindow(), which will amend the
+   existing dictionary if appropriate */
+  ret = updatewindow(strm, dictionary, dictLength, dictLength);
+  if (ret) {
+    state.mode = MEM;
+    return Z_MEM_ERROR;
+  }
+  state.havedict = 1;
+  // Tracev((stderr, "inflate:   dictionary set\n"));
+  return Z_OK;
+}
+
+exports.inflateReset = inflateReset;
+exports.inflateReset2 = inflateReset2;
+exports.inflateResetKeep = inflateResetKeep;
+exports.inflateInit = inflateInit;
+exports.inflateInit2 = inflateInit2;
+exports.inflate = inflate;
+exports.inflateEnd = inflateEnd;
+exports.inflateGetHeader = inflateGetHeader;
+exports.inflateSetDictionary = inflateSetDictionary;
+exports.inflateInfo = 'pako inflate (from Nodeca project)';
+
+/* Not implemented
+exports.inflateCopy = inflateCopy;
+exports.inflateGetDictionary = inflateGetDictionary;
+exports.inflateMark = inflateMark;
+exports.inflatePrime = inflatePrime;
+exports.inflateSync = inflateSync;
+exports.inflateSyncPoint = inflateSyncPoint;
+exports.inflateUndermine = inflateUndermine;
+*/
+
+
+/***/ }),
+/* 125 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// (C) 1995-2013 Jean-loup Gailly and Mark Adler
+// (C) 2014-2017 Vitaly Puzrin and Andrey Tupitsin
+//
+// This software is provided 'as-is', without any express or implied
+// warranty. In no event will the authors be held liable for any damages
+// arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it
+// freely, subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented; you must not
+//   claim that you wrote the original software. If you use this software
+//   in a product, an acknowledgment in the product documentation would be
+//   appreciated but is not required.
+// 2. Altered source versions must be plainly marked as such, and must not be
+//   misrepresented as being the original software.
+// 3. This notice may not be removed or altered from any source distribution.
+
+// See state defs from inflate.js
+var BAD = 30;       /* got a data error -- remain here until reset */
+var TYPE = 12;      /* i: waiting for type bits, including last-flag bit */
+
+/*
+   Decode literal, length, and distance codes and write out the resulting
+   literal and match bytes until either not enough input or output is
+   available, an end-of-block is encountered, or a data error is encountered.
+   When large enough input and output buffers are supplied to inflate(), for
+   example, a 16K input buffer and a 64K output buffer, more than 95% of the
+   inflate execution time is spent in this routine.
+
+   Entry assumptions:
+
+        state.mode === LEN
+        strm.avail_in >= 6
+        strm.avail_out >= 258
+        start >= strm.avail_out
+        state.bits < 8
+
+   On return, state.mode is one of:
+
+        LEN -- ran out of enough output space or enough available input
+        TYPE -- reached end of block code, inflate() to interpret next block
+        BAD -- error in block data
+
+   Notes:
+
+    - The maximum input bits used by a length/distance pair is 15 bits for the
+      length code, 5 bits for the length extra, 15 bits for the distance code,
+      and 13 bits for the distance extra.  This totals 48 bits, or six bytes.
+      Therefore if strm.avail_in >= 6, then there is enough input to avoid
+      checking for available input while decoding.
+
+    - The maximum bytes that a single length/distance pair can output is 258
+      bytes, which is the maximum length that can be coded.  inflate_fast()
+      requires strm.avail_out >= 258 for each loop to avoid checking for
+      output space.
+ */
+module.exports = function inflate_fast(strm, start) {
+  var state;
+  var _in;                    /* local strm.input */
+  var last;                   /* have enough input while in < last */
+  var _out;                   /* local strm.output */
+  var beg;                    /* inflate()'s initial strm.output */
+  var end;                    /* while out < end, enough space available */
+//#ifdef INFLATE_STRICT
+  var dmax;                   /* maximum distance from zlib header */
+//#endif
+  var wsize;                  /* window size or zero if not using window */
+  var whave;                  /* valid bytes in the window */
+  var wnext;                  /* window write index */
+  // Use `s_window` instead `window`, avoid conflict with instrumentation tools
+  var s_window;               /* allocated sliding window, if wsize != 0 */
+  var hold;                   /* local strm.hold */
+  var bits;                   /* local strm.bits */
+  var lcode;                  /* local strm.lencode */
+  var dcode;                  /* local strm.distcode */
+  var lmask;                  /* mask for first level of length codes */
+  var dmask;                  /* mask for first level of distance codes */
+  var here;                   /* retrieved table entry */
+  var op;                     /* code bits, operation, extra bits, or */
+                              /*  window position, window bytes to copy */
+  var len;                    /* match length, unused bytes */
+  var dist;                   /* match distance */
+  var from;                   /* where to copy match from */
+  var from_source;
+
+
+  var input, output; // JS specific, because we have no pointers
+
+  /* copy state to local variables */
+  state = strm.state;
+  //here = state.here;
+  _in = strm.next_in;
+  input = strm.input;
+  last = _in + (strm.avail_in - 5);
+  _out = strm.next_out;
+  output = strm.output;
+  beg = _out - (start - strm.avail_out);
+  end = _out + (strm.avail_out - 257);
+//#ifdef INFLATE_STRICT
+  dmax = state.dmax;
+//#endif
+  wsize = state.wsize;
+  whave = state.whave;
+  wnext = state.wnext;
+  s_window = state.window;
+  hold = state.hold;
+  bits = state.bits;
+  lcode = state.lencode;
+  dcode = state.distcode;
+  lmask = (1 << state.lenbits) - 1;
+  dmask = (1 << state.distbits) - 1;
+
+
+  /* decode literals and length/distances until end-of-block or not enough
+     input data or output space */
+
+  top:
+  do {
+    if (bits < 15) {
+      hold += input[_in++] << bits;
+      bits += 8;
+      hold += input[_in++] << bits;
+      bits += 8;
+    }
+
+    here = lcode[hold & lmask];
+
+    dolen:
+    for (;;) { // Goto emulation
+      op = here >>> 24/*here.bits*/;
+      hold >>>= op;
+      bits -= op;
+      op = (here >>> 16) & 0xff/*here.op*/;
+      if (op === 0) {                          /* literal */
+        //Tracevv((stderr, here.val >= 0x20 && here.val < 0x7f ?
+        //        "inflate:         literal '%c'\n" :
+        //        "inflate:         literal 0x%02x\n", here.val));
+        output[_out++] = here & 0xffff/*here.val*/;
+      }
+      else if (op & 16) {                     /* length base */
+        len = here & 0xffff/*here.val*/;
+        op &= 15;                           /* number of extra bits */
+        if (op) {
+          if (bits < op) {
+            hold += input[_in++] << bits;
+            bits += 8;
+          }
+          len += hold & ((1 << op) - 1);
+          hold >>>= op;
+          bits -= op;
+        }
+        //Tracevv((stderr, "inflate:         length %u\n", len));
+        if (bits < 15) {
+          hold += input[_in++] << bits;
+          bits += 8;
+          hold += input[_in++] << bits;
+          bits += 8;
+        }
+        here = dcode[hold & dmask];
+
+        dodist:
+        for (;;) { // goto emulation
+          op = here >>> 24/*here.bits*/;
+          hold >>>= op;
+          bits -= op;
+          op = (here >>> 16) & 0xff/*here.op*/;
+
+          if (op & 16) {                      /* distance base */
+            dist = here & 0xffff/*here.val*/;
+            op &= 15;                       /* number of extra bits */
+            if (bits < op) {
+              hold += input[_in++] << bits;
+              bits += 8;
+              if (bits < op) {
+                hold += input[_in++] << bits;
+                bits += 8;
+              }
+            }
+            dist += hold & ((1 << op) - 1);
+//#ifdef INFLATE_STRICT
+            if (dist > dmax) {
+              strm.msg = 'invalid distance too far back';
+              state.mode = BAD;
+              break top;
+            }
+//#endif
+            hold >>>= op;
+            bits -= op;
+            //Tracevv((stderr, "inflate:         distance %u\n", dist));
+            op = _out - beg;                /* max distance in output */
+            if (dist > op) {                /* see if copy from window */
+              op = dist - op;               /* distance back in window */
+              if (op > whave) {
+                if (state.sane) {
+                  strm.msg = 'invalid distance too far back';
+                  state.mode = BAD;
+                  break top;
+                }
+
+// (!) This block is disabled in zlib defaults,
+// don't enable it for binary compatibility
+//#ifdef INFLATE_ALLOW_INVALID_DISTANCE_TOOFAR_ARRR
+//                if (len <= op - whave) {
+//                  do {
+//                    output[_out++] = 0;
+//                  } while (--len);
+//                  continue top;
+//                }
+//                len -= op - whave;
+//                do {
+//                  output[_out++] = 0;
+//                } while (--op > whave);
+//                if (op === 0) {
+//                  from = _out - dist;
+//                  do {
+//                    output[_out++] = output[from++];
+//                  } while (--len);
+//                  continue top;
+//                }
+//#endif
+              }
+              from = 0; // window index
+              from_source = s_window;
+              if (wnext === 0) {           /* very common case */
+                from += wsize - op;
+                if (op < len) {         /* some from window */
+                  len -= op;
+                  do {
+                    output[_out++] = s_window[from++];
+                  } while (--op);
+                  from = _out - dist;  /* rest from output */
+                  from_source = output;
+                }
+              }
+              else if (wnext < op) {      /* wrap around window */
+                from += wsize + wnext - op;
+                op -= wnext;
+                if (op < len) {         /* some from end of window */
+                  len -= op;
+                  do {
+                    output[_out++] = s_window[from++];
+                  } while (--op);
+                  from = 0;
+                  if (wnext < len) {  /* some from start of window */
+                    op = wnext;
+                    len -= op;
+                    do {
+                      output[_out++] = s_window[from++];
+                    } while (--op);
+                    from = _out - dist;      /* rest from output */
+                    from_source = output;
+                  }
+                }
+              }
+              else {                      /* contiguous in window */
+                from += wnext - op;
+                if (op < len) {         /* some from window */
+                  len -= op;
+                  do {
+                    output[_out++] = s_window[from++];
+                  } while (--op);
+                  from = _out - dist;  /* rest from output */
+                  from_source = output;
+                }
+              }
+              while (len > 2) {
+                output[_out++] = from_source[from++];
+                output[_out++] = from_source[from++];
+                output[_out++] = from_source[from++];
+                len -= 3;
+              }
+              if (len) {
+                output[_out++] = from_source[from++];
+                if (len > 1) {
+                  output[_out++] = from_source[from++];
+                }
+              }
+            }
+            else {
+              from = _out - dist;          /* copy direct from output */
+              do {                        /* minimum length is three */
+                output[_out++] = output[from++];
+                output[_out++] = output[from++];
+                output[_out++] = output[from++];
+                len -= 3;
+              } while (len > 2);
+              if (len) {
+                output[_out++] = output[from++];
+                if (len > 1) {
+                  output[_out++] = output[from++];
+                }
+              }
+            }
+          }
+          else if ((op & 64) === 0) {          /* 2nd level distance code */
+            here = dcode[(here & 0xffff)/*here.val*/ + (hold & ((1 << op) - 1))];
+            continue dodist;
+          }
+          else {
+            strm.msg = 'invalid distance code';
+            state.mode = BAD;
+            break top;
+          }
+
+          break; // need to emulate goto via "continue"
+        }
+      }
+      else if ((op & 64) === 0) {              /* 2nd level length code */
+        here = lcode[(here & 0xffff)/*here.val*/ + (hold & ((1 << op) - 1))];
+        continue dolen;
+      }
+      else if (op & 32) {                     /* end-of-block */
+        //Tracevv((stderr, "inflate:         end of block\n"));
+        state.mode = TYPE;
+        break top;
+      }
+      else {
+        strm.msg = 'invalid literal/length code';
+        state.mode = BAD;
+        break top;
+      }
+
+      break; // need to emulate goto via "continue"
+    }
+  } while (_in < last && _out < end);
+
+  /* return unused bytes (on entry, bits < 8, so in won't go too far back) */
+  len = bits >> 3;
+  _in -= len;
+  bits -= len << 3;
+  hold &= (1 << bits) - 1;
+
+  /* update state and return */
+  strm.next_in = _in;
+  strm.next_out = _out;
+  strm.avail_in = (_in < last ? 5 + (last - _in) : 5 - (_in - last));
+  strm.avail_out = (_out < end ? 257 + (end - _out) : 257 - (_out - end));
+  state.hold = hold;
+  state.bits = bits;
+  return;
+};
+
+
+/***/ }),
+/* 126 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// (C) 1995-2013 Jean-loup Gailly and Mark Adler
+// (C) 2014-2017 Vitaly Puzrin and Andrey Tupitsin
+//
+// This software is provided 'as-is', without any express or implied
+// warranty. In no event will the authors be held liable for any damages
+// arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it
+// freely, subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented; you must not
+//   claim that you wrote the original software. If you use this software
+//   in a product, an acknowledgment in the product documentation would be
+//   appreciated but is not required.
+// 2. Altered source versions must be plainly marked as such, and must not be
+//   misrepresented as being the original software.
+// 3. This notice may not be removed or altered from any source distribution.
+
+var utils = __webpack_require__(11);
+
+var MAXBITS = 15;
+var ENOUGH_LENS = 852;
+var ENOUGH_DISTS = 592;
+//var ENOUGH = (ENOUGH_LENS+ENOUGH_DISTS);
+
+var CODES = 0;
+var LENS = 1;
+var DISTS = 2;
+
+var lbase = [ /* Length codes 257..285 base */
+  3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31,
+  35, 43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227, 258, 0, 0
+];
+
+var lext = [ /* Length codes 257..285 extra */
+  16, 16, 16, 16, 16, 16, 16, 16, 17, 17, 17, 17, 18, 18, 18, 18,
+  19, 19, 19, 19, 20, 20, 20, 20, 21, 21, 21, 21, 16, 72, 78
+];
+
+var dbase = [ /* Distance codes 0..29 base */
+  1, 2, 3, 4, 5, 7, 9, 13, 17, 25, 33, 49, 65, 97, 129, 193,
+  257, 385, 513, 769, 1025, 1537, 2049, 3073, 4097, 6145,
+  8193, 12289, 16385, 24577, 0, 0
+];
+
+var dext = [ /* Distance codes 0..29 extra */
+  16, 16, 16, 16, 17, 17, 18, 18, 19, 19, 20, 20, 21, 21, 22, 22,
+  23, 23, 24, 24, 25, 25, 26, 26, 27, 27,
+  28, 28, 29, 29, 64, 64
+];
+
+module.exports = function inflate_table(type, lens, lens_index, codes, table, table_index, work, opts)
+{
+  var bits = opts.bits;
+      //here = opts.here; /* table entry for duplication */
+
+  var len = 0;               /* a code's length in bits */
+  var sym = 0;               /* index of code symbols */
+  var min = 0, max = 0;          /* minimum and maximum code lengths */
+  var root = 0;              /* number of index bits for root table */
+  var curr = 0;              /* number of index bits for current table */
+  var drop = 0;              /* code bits to drop for sub-table */
+  var left = 0;                   /* number of prefix codes available */
+  var used = 0;              /* code entries in table used */
+  var huff = 0;              /* Huffman code */
+  var incr;              /* for incrementing code, index */
+  var fill;              /* index for replicating entries */
+  var low;               /* low bits for current root entry */
+  var mask;              /* mask for low root bits */
+  var next;             /* next available space in table */
+  var base = null;     /* base value table to use */
+  var base_index = 0;
+//  var shoextra;    /* extra bits table to use */
+  var end;                    /* use base and extra for symbol > end */
+  var count = new utils.Buf16(MAXBITS + 1); //[MAXBITS+1];    /* number of codes of each length */
+  var offs = new utils.Buf16(MAXBITS + 1); //[MAXBITS+1];     /* offsets in table for each length */
+  var extra = null;
+  var extra_index = 0;
+
+  var here_bits, here_op, here_val;
+
+  /*
+   Process a set of code lengths to create a canonical Huffman code.  The
+   code lengths are lens[0..codes-1].  Each length corresponds to the
+   symbols 0..codes-1.  The Huffman code is generated by first sorting the
+   symbols by length from short to long, and retaining the symbol order
+   for codes with equal lengths.  Then the code starts with all zero bits
+   for the first code of the shortest length, and the codes are integer
+   increments for the same length, and zeros are appended as the length
+   increases.  For the deflate format, these bits are stored backwards
+   from their more natural integer increment ordering, and so when the
+   decoding tables are built in the large loop below, the integer codes
+   are incremented backwards.
+
+   This routine assumes, but does not check, that all of the entries in
+   lens[] are in the range 0..MAXBITS.  The caller must assure this.
+   1..MAXBITS is interpreted as that code length.  zero means that that
+   symbol does not occur in this code.
+
+   The codes are sorted by computing a count of codes for each length,
+   creating from that a table of starting indices for each length in the
+   sorted table, and then entering the symbols in order in the sorted
+   table.  The sorted table is work[], with that space being provided by
+   the caller.
+
+   The length counts are used for other purposes as well, i.e. finding
+   the minimum and maximum length codes, determining if there are any
+   codes at all, checking for a valid set of lengths, and looking ahead
+   at length counts to determine sub-table sizes when building the
+   decoding tables.
+   */
+
+  /* accumulate lengths for codes (assumes lens[] all in 0..MAXBITS) */
+  for (len = 0; len <= MAXBITS; len++) {
+    count[len] = 0;
+  }
+  for (sym = 0; sym < codes; sym++) {
+    count[lens[lens_index + sym]]++;
+  }
+
+  /* bound code lengths, force root to be within code lengths */
+  root = bits;
+  for (max = MAXBITS; max >= 1; max--) {
+    if (count[max] !== 0) { break; }
+  }
+  if (root > max) {
+    root = max;
+  }
+  if (max === 0) {                     /* no symbols to code at all */
+    //table.op[opts.table_index] = 64;  //here.op = (var char)64;    /* invalid code marker */
+    //table.bits[opts.table_index] = 1;   //here.bits = (var char)1;
+    //table.val[opts.table_index++] = 0;   //here.val = (var short)0;
+    table[table_index++] = (1 << 24) | (64 << 16) | 0;
+
+
+    //table.op[opts.table_index] = 64;
+    //table.bits[opts.table_index] = 1;
+    //table.val[opts.table_index++] = 0;
+    table[table_index++] = (1 << 24) | (64 << 16) | 0;
+
+    opts.bits = 1;
+    return 0;     /* no symbols, but wait for decoding to report error */
+  }
+  for (min = 1; min < max; min++) {
+    if (count[min] !== 0) { break; }
+  }
+  if (root < min) {
+    root = min;
+  }
+
+  /* check for an over-subscribed or incomplete set of lengths */
+  left = 1;
+  for (len = 1; len <= MAXBITS; len++) {
+    left <<= 1;
+    left -= count[len];
+    if (left < 0) {
+      return -1;
+    }        /* over-subscribed */
+  }
+  if (left > 0 && (type === CODES || max !== 1)) {
+    return -1;                      /* incomplete set */
+  }
+
+  /* generate offsets into symbol table for each length for sorting */
+  offs[1] = 0;
+  for (len = 1; len < MAXBITS; len++) {
+    offs[len + 1] = offs[len] + count[len];
+  }
+
+  /* sort symbols by length, by symbol order within each length */
+  for (sym = 0; sym < codes; sym++) {
+    if (lens[lens_index + sym] !== 0) {
+      work[offs[lens[lens_index + sym]]++] = sym;
+    }
+  }
+
+  /*
+   Create and fill in decoding tables.  In this loop, the table being
+   filled is at next and has curr index bits.  The code being used is huff
+   with length len.  That code is converted to an index by dropping drop
+   bits off of the bottom.  For codes where len is less than drop + curr,
+   those top drop + curr - len bits are incremented through all values to
+   fill the table with replicated entries.
+
+   root is the number of index bits for the root table.  When len exceeds
+   root, sub-tables are created pointed to by the root entry with an index
+   of the low root bits of huff.  This is saved in low to check for when a
+   new sub-table should be started.  drop is zero when the root table is
+   being filled, and drop is root when sub-tables are being filled.
+
+   When a new sub-table is needed, it is necessary to look ahead in the
+   code lengths to determine what size sub-table is needed.  The length
+   counts are used for this, and so count[] is decremented as codes are
+   entered in the tables.
+
+   used keeps track of how many table entries have been allocated from the
+   provided *table space.  It is checked for LENS and DIST tables against
+   the constants ENOUGH_LENS and ENOUGH_DISTS to guard against changes in
+   the initial root table size constants.  See the comments in inftrees.h
+   for more information.
+
+   sym increments through all symbols, and the loop terminates when
+   all codes of length max, i.e. all codes, have been processed.  This
+   routine permits incomplete codes, so another loop after this one fills
+   in the rest of the decoding tables with invalid code markers.
+   */
+
+  /* set up for code type */
+  // poor man optimization - use if-else instead of switch,
+  // to avoid deopts in old v8
+  if (type === CODES) {
+    base = extra = work;    /* dummy value--not used */
+    end = 19;
+
+  } else if (type === LENS) {
+    base = lbase;
+    base_index -= 257;
+    extra = lext;
+    extra_index -= 257;
+    end = 256;
+
+  } else {                    /* DISTS */
+    base = dbase;
+    extra = dext;
+    end = -1;
+  }
+
+  /* initialize opts for loop */
+  huff = 0;                   /* starting code */
+  sym = 0;                    /* starting code symbol */
+  len = min;                  /* starting code length */
+  next = table_index;              /* current table to fill in */
+  curr = root;                /* current table index bits */
+  drop = 0;                   /* current bits to drop from code for index */
+  low = -1;                   /* trigger new sub-table when len > root */
+  used = 1 << root;          /* use root table entries */
+  mask = used - 1;            /* mask for comparing low */
+
+  /* check available table space */
+  if ((type === LENS && used > ENOUGH_LENS) ||
+    (type === DISTS && used > ENOUGH_DISTS)) {
+    return 1;
+  }
+
+  /* process all codes and make table entries */
+  for (;;) {
+    /* create table entry */
+    here_bits = len - drop;
+    if (work[sym] < end) {
+      here_op = 0;
+      here_val = work[sym];
+    }
+    else if (work[sym] > end) {
+      here_op = extra[extra_index + work[sym]];
+      here_val = base[base_index + work[sym]];
+    }
+    else {
+      here_op = 32 + 64;         /* end of block */
+      here_val = 0;
+    }
+
+    /* replicate for those indices with low len bits equal to huff */
+    incr = 1 << (len - drop);
+    fill = 1 << curr;
+    min = fill;                 /* save offset to next table */
+    do {
+      fill -= incr;
+      table[next + (huff >> drop) + fill] = (here_bits << 24) | (here_op << 16) | here_val |0;
+    } while (fill !== 0);
+
+    /* backwards increment the len-bit code huff */
+    incr = 1 << (len - 1);
+    while (huff & incr) {
+      incr >>= 1;
+    }
+    if (incr !== 0) {
+      huff &= incr - 1;
+      huff += incr;
+    } else {
+      huff = 0;
+    }
+
+    /* go to next symbol, update count, len */
+    sym++;
+    if (--count[len] === 0) {
+      if (len === max) { break; }
+      len = lens[lens_index + work[sym]];
+    }
+
+    /* create new sub-table if needed */
+    if (len > root && (huff & mask) !== low) {
+      /* if first time, transition to sub-tables */
+      if (drop === 0) {
+        drop = root;
+      }
+
+      /* increment past last table */
+      next += min;            /* here min is 1 << curr */
+
+      /* determine length of next table */
+      curr = len - drop;
+      left = 1 << curr;
+      while (curr + drop < max) {
+        left -= count[curr + drop];
+        if (left <= 0) { break; }
+        curr++;
+        left <<= 1;
+      }
+
+      /* check for enough space */
+      used += 1 << curr;
+      if ((type === LENS && used > ENOUGH_LENS) ||
+        (type === DISTS && used > ENOUGH_DISTS)) {
+        return 1;
+      }
+
+      /* point entry in root table to sub-table */
+      low = huff & mask;
+      /*table.op[low] = curr;
+      table.bits[low] = root;
+      table.val[low] = next - opts.table_index;*/
+      table[low] = (root << 24) | (curr << 16) | (next - table_index) |0;
+    }
+  }
+
+  /* fill in remaining table entry if code is incomplete (guaranteed to have
+   at most one remaining entry, since if the code is incomplete, the
+   maximum code length that was allowed to get this far is one bit) */
+  if (huff !== 0) {
+    //table.op[next + huff] = 64;            /* invalid code marker */
+    //table.bits[next + huff] = len - drop;
+    //table.val[next + huff] = 0;
+    table[next + huff] = ((len - drop) << 24) | (64 << 16) |0;
+  }
+
+  /* set return parameters */
+  //opts.table_index += used;
+  opts.bits = root;
+  return 0;
+};
+
+
+/***/ }),
+/* 127 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// (C) 1995-2013 Jean-loup Gailly and Mark Adler
+// (C) 2014-2017 Vitaly Puzrin and Andrey Tupitsin
+//
+// This software is provided 'as-is', without any express or implied
+// warranty. In no event will the authors be held liable for any damages
+// arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it
+// freely, subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented; you must not
+//   claim that you wrote the original software. If you use this software
+//   in a product, an acknowledgment in the product documentation would be
+//   appreciated but is not required.
+// 2. Altered source versions must be plainly marked as such, and must not be
+//   misrepresented as being the original software.
+// 3. This notice may not be removed or altered from any source distribution.
+
+function GZheader() {
+  /* true if compressed data believed to be text */
+  this.text       = 0;
+  /* modification time */
+  this.time       = 0;
+  /* extra flags (not used when writing a gzip file) */
+  this.xflags     = 0;
+  /* operating system */
+  this.os         = 0;
+  /* pointer to extra field or Z_NULL if none */
+  this.extra      = null;
+  /* extra field length (valid if extra != Z_NULL) */
+  this.extra_len  = 0; // Actually, we don't need it in JS,
+                       // but leave for few code modifications
+
+  //
+  // Setup limits is not necessary because in js we should not preallocate memory
+  // for inflate use constant limit in 65536 bytes
+  //
+
+  /* space at extra (only when reading header) */
+  // this.extra_max  = 0;
+  /* pointer to zero-terminated file name or Z_NULL */
+  this.name       = '';
+  /* space at name (only when reading header) */
+  // this.name_max   = 0;
+  /* pointer to zero-terminated comment or Z_NULL */
+  this.comment    = '';
+  /* space at comment (only when reading header) */
+  // this.comm_max   = 0;
+  /* true if there was or will be a header crc */
+  this.hcrc       = 0;
+  /* true when done reading gzip header (not used when writing a gzip file) */
+  this.done       = false;
+}
+
+module.exports = GZheader;
+
+
+/***/ }),
+/* 128 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -17801,7 +26914,7 @@ webpackContext.id = 89;
  /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
-/* 100 */
+/* 129 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -17811,7 +26924,7 @@ webpackContext.id = 89;
  /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
-/* 101 */
+/* 130 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -17821,27 +26934,17 @@ webpackContext.id = 89;
  /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
-/* 102 */
+/* 131 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(33);
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_editor_css_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(34);
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_editor_css_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_editor_css_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
 /* unused harmony reexport * */
- /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
+ /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_editor_css_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
-/* 103 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(34);
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
-/* unused harmony reexport * */
- /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
-
-/***/ }),
-/* 104 */
+/* 132 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -17851,7 +26954,7 @@ webpackContext.id = 89;
  /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
-/* 105 */
+/* 133 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -17861,7 +26964,7 @@ webpackContext.id = 89;
  /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
-/* 106 */
+/* 134 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -17871,17 +26974,7 @@ webpackContext.id = 89;
  /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
-/* 107 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(38);
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
-/* unused harmony reexport * */
- /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
-
-/***/ }),
-/* 108 */
+/* 135 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -17891,7 +26984,7 @@ webpackContext.id = 89;
  /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
-/* 109 */
+/* 136 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -17901,7 +26994,7 @@ webpackContext.id = 89;
  /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
-/* 110 */
+/* 137 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -17911,7 +27004,7 @@ webpackContext.id = 89;
  /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
-/* 111 */
+/* 138 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -17921,7 +27014,7 @@ webpackContext.id = 89;
  /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
-/* 112 */
+/* 139 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -17931,7 +27024,7 @@ webpackContext.id = 89;
  /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
-/* 113 */
+/* 140 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -17941,7 +27034,7 @@ webpackContext.id = 89;
  /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
-/* 114 */
+/* 141 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -17951,7 +27044,7 @@ webpackContext.id = 89;
  /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
-/* 115 */
+/* 142 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -17961,17 +27054,117 @@ webpackContext.id = 89;
  /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
-/* 116 */
+/* 143 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(47);
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* unused harmony reexport * */
+ /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+/* 144 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(48);
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* unused harmony reexport * */
+ /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+/* 145 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(49);
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* unused harmony reexport * */
+ /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+/* 146 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(50);
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* unused harmony reexport * */
+ /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+/* 147 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(51);
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* unused harmony reexport * */
+ /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+/* 148 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(52);
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* unused harmony reexport * */
+ /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+/* 149 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(53);
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* unused harmony reexport * */
+ /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+/* 150 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(54);
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* unused harmony reexport * */
+ /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+/* 151 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(55);
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* unused harmony reexport * */
+ /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+/* 152 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(56);
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* unused harmony reexport * */
+ /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+/* 153 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
-	"./ad/index.vue": 144,
-	"./cover-image/index.vue": 127,
-	"./cover-view/index.vue": 160,
-	"./map/index.vue": 150,
-	"./picker/index.vue": 145,
-	"./video/index.vue": 146,
-	"./web-view/index.vue": 151
+	"./ad/index.vue": 188,
+	"./cover-image/index.vue": 164,
+	"./cover-view/index.vue": 198,
+	"./map/index.vue": 189,
+	"./picker/index.vue": 165,
+	"./video/index.vue": 184,
+	"./web-view/index.vue": 190
 };
 
 
@@ -17992,50 +27185,50 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 116;
+webpackContext.id = 153;
 
 /***/ }),
-/* 117 */
+/* 154 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(47);
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(58);
 /* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
 /* unused harmony reexport * */
  /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
-/* 118 */
+/* 155 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(48);
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(59);
 /* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
 /* unused harmony reexport * */
  /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
-/* 119 */
+/* 156 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(49);
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(60);
 /* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
 /* unused harmony reexport * */
  /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
-/* 120 */
+/* 157 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(51);
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(62);
 /* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
 /* unused harmony reexport * */
  /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
-/* 121 */
+/* 158 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {// .dirname, .basename, and .extname methods are extracted from Node.js v8.11.1,
@@ -18341,52 +27534,68 @@ var substr = 'ab'.substr(-1) === 'b'
     }
 ;
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(72)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(93)))
 
 /***/ }),
-/* 122 */
+/* 159 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(52);
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(63);
 /* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
 /* unused harmony reexport * */
  /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
-/* 123 */
+/* 160 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(53);
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(64);
 /* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
 /* unused harmony reexport * */
  /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
-/* 124 */
+/* 161 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(55);
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(66);
 /* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
 /* unused harmony reexport * */
  /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_6_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_6_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_oneOf_1_2_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
-/* 125 */
+/* 162 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 // ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"4130fe76-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/rich-text/index.vue?vue&type=template&id=1447b4ca&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e3b674d4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/rich-text/index.vue?vue&type=template&id=1447b4ca&
 var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("uni-rich-text", _vm._g({}, _vm.$listeners), [_c("div")])
+  return _c("uni-rich-text", _vm._g({}, _vm.$listeners), [
+    _c(
+      "div",
+      { ref: "content" },
+      [
+        _c("v-uni-resize-sensor", {
+          ref: "sensor",
+          on: {
+            resize: function($event) {
+              return _vm._updateView()
+            }
+          }
+        })
+      ],
+      1
+    )
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -18395,7 +27604,7 @@ render._withStripped = true
 // CONCATENATED MODULE: ./src/core/view/components/rich-text/index.vue?vue&type=template&id=1447b4ca&
 
 // EXTERNAL MODULE: ./src/core/helpers/html-parser.js
-var html_parser = __webpack_require__(60);
+var html_parser = __webpack_require__(70);
 
 // CONCATENATED MODULE: ./src/core/view/components/rich-text/html-parser.js
 
@@ -18507,16 +27716,29 @@ function parseHtml(html) {
   return results.children;
 }
 // EXTERNAL MODULE: ./src/shared/index.js + 7 modules
-var shared = __webpack_require__(1);
+var shared = __webpack_require__(0);
+
+// EXTERNAL MODULE: ./src/platforms/app-plus/helpers/get-real-path.js + 1 modules
+var get_real_path = __webpack_require__(13);
 
 // CONCATENATED MODULE: ./src/core/view/components/rich-text/nodes-parser.js
+
 
 var TAGS = {
   a: '',
   abbr: '',
+  address: '',
+  article: '',
+  aside: '',
   b: '',
+  bdi: '',
+  bdo: ['dir'],
+  big: '',
   blockquote: '',
   br: '',
+  caption: '',
+  center: '',
+  cite: '',
   code: '',
   col: ['span', 'width'],
   colgroup: ['span', 'width'],
@@ -18527,12 +27749,15 @@ var TAGS = {
   dt: '',
   em: '',
   fieldset: '',
+  font: '',
+  footer: '',
   h1: '',
   h2: '',
   h3: '',
   h4: '',
   h5: '',
   h6: '',
+  header: '',
   hr: '',
   i: '',
   img: ['alt', 'src', 'height', 'width'],
@@ -18540,20 +27765,30 @@ var TAGS = {
   label: '',
   legend: '',
   li: '',
+  mark: '',
+  nav: '',
   ol: ['start', 'type'],
   p: '',
+  pre: '',
   q: '',
+  rt: '',
+  ruby: '',
+  s: '',
+  section: '',
+  small: '',
   span: '',
   strong: '',
   sub: '',
   sup: '',
   table: ['width'],
   tbody: '',
-  td: ['colspan', 'rowspan', 'height', 'width'],
+  td: ['colspan', 'height', 'rowspan', 'width'],
   tfoot: '',
-  th: ['colspan', 'rowspan', 'height', 'width'],
+  th: ['colspan', 'height', 'rowspan', 'width'],
   thead: '',
-  tr: '',
+  tr: ['colspan', 'height', 'rowspan', 'width'],
+  tt: '',
+  u: '',
   ul: ''
 };
 var CHARS = {
@@ -18567,7 +27802,7 @@ var CHARS = {
 
 function decodeEntities(htmlString) {
   return htmlString.replace(/&(([a-zA-Z]+)|(#x{0,1}[\da-zA-Z]+));/gi, function (match, stage) {
-    if (Object(shared["c" /* hasOwn */])(CHARS, stage) && CHARS[stage]) {
+    if (Object(shared["e" /* hasOwn */])(CHARS, stage) && CHARS[stage]) {
       return CHARS[stage];
     }
 
@@ -18585,20 +27820,25 @@ function decodeEntities(htmlString) {
   });
 }
 
-function parseNodes(nodes, parentNode) {
+function normlizeValue(tagName, name, value) {
+  if (tagName === 'img' && name === 'src') return Object(get_real_path["a" /* default */])(value);
+  return value;
+}
+
+function parseNodes(nodes, parentNode, scopeId, triggerItemClick) {
   nodes.forEach(function (node) {
-    if (!Object(shared["e" /* isPlainObject */])(node)) {
+    if (!Object(shared["g" /* isPlainObject */])(node)) {
       return;
     }
 
-    if (!Object(shared["c" /* hasOwn */])(node, 'type') || node.type === 'node') {
+    if (!Object(shared["e" /* hasOwn */])(node, 'type') || node.type === 'node') {
       if (!(typeof node.name === 'string' && node.name)) {
         return;
       }
 
       var tagName = node.name.toLowerCase();
 
-      if (!Object(shared["c" /* hasOwn */])(TAGS, tagName)) {
+      if (!Object(shared["e" /* hasOwn */])(TAGS, tagName)) {
         return;
       }
 
@@ -18610,7 +27850,7 @@ function parseNodes(nodes, parentNode) {
 
       var attrs = node.attrs;
 
-      if (Object(shared["e" /* isPlainObject */])(attrs)) {
+      if (Object(shared["g" /* isPlainObject */])(attrs)) {
         var tagAttrs = TAGS[tagName] || [];
         Object.keys(attrs).forEach(function (name) {
           var value = attrs[name];
@@ -18622,21 +27862,23 @@ function parseNodes(nodes, parentNode) {
 
             case 'style':
               elem.setAttribute(name, value);
+              scopeId && elem.setAttribute(scopeId, '');
               break;
 
             default:
               if (tagAttrs.indexOf(name) !== -1) {
-                elem.setAttribute(name, value);
+                elem.setAttribute(name, normlizeValue(tagName, name, value));
               }
 
           }
         });
       }
 
+      processClickEvent(node, elem, triggerItemClick);
       var children = node.children;
 
       if (Array.isArray(children) && children.length) {
-        parseNodes(node.children, elem);
+        parseNodes(node.children, elem, scopeId, triggerItemClick);
       }
 
       parentNode.appendChild(elem);
@@ -18648,7 +27890,24 @@ function parseNodes(nodes, parentNode) {
   });
   return parentNode;
 }
+
+function processClickEvent(node, elem, triggerItemClick) {
+  if (['a', 'img'].includes(node.name) && triggerItemClick) {
+    elem.setAttribute('onClick', 'return false;');
+    elem.addEventListener('click', function (e) {
+      triggerItemClick(e, {
+        node: node
+      });
+      e.stopPropagation();
+    }, true);
+  }
+}
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/rich-text/index.vue?vue&type=script&lang=js&
+//
+//
+//
+//
+//
 //
 //
 //
@@ -18676,20 +27935,43 @@ function parseNodes(nodes, parentNode) {
   },
   methods: {
     _renderNodes: function _renderNodes(nodes) {
+      var scopeId = '';
+      var $vm = this;
+
+      while ($vm) {
+        !scopeId && (scopeId = $vm.$options._scopeId);
+        $vm = $vm.$parent;
+      }
+
+      var hasItemClick = !!this.$listeners.itemclick;
+
+      if (!this._isMounted) {
+        return;
+      }
+
       if (typeof nodes === 'string') {
         nodes = parseHtml(nodes);
       }
 
-      var nodeList = parseNodes(nodes, document.createDocumentFragment());
-      this.$el.firstChild.innerHTML = '';
-      this.$el.firstChild.appendChild(nodeList);
+      var nodeList = parseNodes(nodes, document.createDocumentFragment(), scopeId, hasItemClick && this.triggerItemClick);
+      nodeList.appendChild(this.$refs.sensor.$el);
+      var content = this.$refs.content;
+      content.innerHTML = '';
+      content.appendChild(nodeList);
+    },
+    _updateView: function _updateView() {
+      window.dispatchEvent(new CustomEvent('updateview'));
+    },
+    triggerItemClick: function triggerItemClick(e) {
+      var detail = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+      this.$trigger('itemclick', e, detail);
     }
   }
 });
 // CONCATENATED MODULE: ./src/core/view/components/rich-text/index.vue?vue&type=script&lang=js&
  /* harmony default export */ var components_rich_textvue_type_script_lang_js_ = (rich_textvue_type_script_lang_js_); 
 // EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
-var componentNormalizer = __webpack_require__(0);
+var componentNormalizer = __webpack_require__(1);
 
 // CONCATENATED MODULE: ./src/core/view/components/rich-text/index.vue
 
@@ -18716,14 +27998,14 @@ component.options.__file = "src/core/view/components/rich-text/index.vue"
 /* harmony default export */ var rich_text = __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
-/* 126 */
+/* 163 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 // ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"4130fe76-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/movable-view/index.vue?vue&type=template&id=8de47606&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e3b674d4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/movable-view/index.vue?vue&type=template&id=8de47606&
 var render = function() {
   var _vm = this
   var _h = _vm.$createElement
@@ -18745,7 +28027,7 @@ render._withStripped = true
 // CONCATENATED MODULE: ./src/core/view/components/movable-view/index.vue?vue&type=template&id=8de47606&
 
 // EXTERNAL MODULE: ./src/core/view/mixins/touchtrack.js
-var touchtrack = __webpack_require__(9);
+var touchtrack = __webpack_require__(12);
 
 // CONCATENATED MODULE: ./src/core/view/components/movable-view/utils.js
 function e(e, t, n) {
@@ -19109,8 +28391,8 @@ STD.prototype.reconfigure = function (e, t, n) {
 
   this._springScale.reconfigure(e, t, n);
 };
-// EXTERNAL MODULE: ./src/shared/index.js + 7 modules
-var shared = __webpack_require__(1);
+// EXTERNAL MODULE: ./src/platforms/app-plus/helpers/scroll.js
+var helpers_scroll = __webpack_require__(5);
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/movable-view/index.vue?vue&type=script&lang=js&
 //
@@ -19348,6 +28630,7 @@ function g(e, t, n) {
     this._STD.reconfigure(1, 9 * Math.pow(this.dampingNumber, 2) / 40, this.dampingNumber);
 
     this.$el.style.transformOrigin = 'center';
+    Object(helpers_scroll["b" /* initScrollBounce */])();
   },
   methods: {
     _getPx: function _getPx(val) {
@@ -19412,7 +28695,7 @@ function g(e, t, n) {
     __handleTouchStart: function __handleTouchStart() {
       if (!this._isScaling) {
         if (!this.disabled) {
-          Object(shared["b" /* disableScrollBounce */])({
+          Object(helpers_scroll["a" /* disableScrollBounce */])({
             disable: true
           });
 
@@ -19530,7 +28813,7 @@ function g(e, t, n) {
       var self = this;
 
       if (!this._isScaling && !this.disabled && this._isTouching) {
-        Object(shared["b" /* disableScrollBounce */])({
+        Object(helpers_scroll["a" /* disableScrollBounce */])({
           disable: false
         });
         this.$el.style.willChange = 'auto';
@@ -19700,7 +28983,6 @@ function g(e, t, n) {
     },
     _setScale: function _setScale(scale) {
       if (this.scale) {
-        scale = this._adjustScale(scale);
         scale = this._oldScale * scale;
 
         this._beginScale();
@@ -19862,10 +29144,10 @@ function g(e, t, n) {
 // CONCATENATED MODULE: ./src/core/view/components/movable-view/index.vue?vue&type=script&lang=js&
  /* harmony default export */ var components_movable_viewvue_type_script_lang_js_ = (movable_viewvue_type_script_lang_js_); 
 // EXTERNAL MODULE: ./src/core/view/components/movable-view/index.vue?vue&type=style&index=0&lang=css&
-var movable_viewvue_type_style_index_0_lang_css_ = __webpack_require__(100);
+var movable_viewvue_type_style_index_0_lang_css_ = __webpack_require__(137);
 
 // EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
-var componentNormalizer = __webpack_require__(0);
+var componentNormalizer = __webpack_require__(1);
 
 // CONCATENATED MODULE: ./src/core/view/components/movable-view/index.vue
 
@@ -19893,14 +29175,14 @@ component.options.__file = "src/core/view/components/movable-view/index.vue"
 /* harmony default export */ var movable_view = __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
-/* 127 */
+/* 164 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 // ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"4130fe76-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/platforms/app-plus/view/components/cover-image/index.vue?vue&type=template&id=221fdf58&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e3b674d4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/platforms/app-plus/view/components/cover-image/index.vue?vue&type=template&id=221fdf58&
 var render = function() {
   var _vm = this
   var _h = _vm.$createElement
@@ -19921,14 +29203,14 @@ render._withStripped = true
 var mixins_native = __webpack_require__(7);
 
 // EXTERNAL MODULE: ./src/platforms/app-plus/view/mixins/cover.js
-var cover = __webpack_require__(63);
+var cover = __webpack_require__(73);
 
 // EXTERNAL MODULE: ./src/shared/index.js + 7 modules
-var shared = __webpack_require__(1);
+var shared = __webpack_require__(0);
 
 // CONCATENATED MODULE: ./src/platforms/app-plus/service/api/constants.js
 var DEVICE_FREQUENCY = 200;
-var NETWORK_TYPES = ['unknown', 'none', 'ethernet', 'wifi', '2g', '3g', '4g'];
+var NETWORK_TYPES = ['unknown', 'none', 'ethernet', 'wifi', '2g', '3g', '4g', '5g'];
 var MAP_ID = '__UNIAPP_MAP';
 var TEMP_PATH_BASE = '_doc/uniapp_temp';
 var TEMP_PATH = "".concat(TEMP_PATH_BASE, "_").concat(Date.now());
@@ -19996,7 +29278,7 @@ var TEMP_PATH = "".concat(TEMP_PATH_BASE, "_").concat(Date.now());
       var realPath = this.src ? this.$getRealPath(this.src) : '';
 
       if (realPath.indexOf('http://') === 0 || realPath.indexOf('https://') === 0) {
-        Object(shared["g" /* plusReady */])(function () {
+        Object(shared["j" /* plusReady */])(function () {
           _this.downloaTask = plus.downloader.createDownload(realPath, {
             filename: TEMP_PATH + '/download/'
           }, function (task, status) {
@@ -20017,7 +29299,7 @@ var TEMP_PATH = "".concat(TEMP_PATH_BASE, "_").concat(Date.now());
       var _this2 = this;
 
       this.coverContent = src;
-      Object(shared["g" /* plusReady */])(function () {
+      Object(shared["j" /* plusReady */])(function () {
         plus.io.getImageInfo({
           src: src,
           success: function success(_ref) {
@@ -20053,10 +29335,10 @@ var TEMP_PATH = "".concat(TEMP_PATH_BASE, "_").concat(Date.now());
 // CONCATENATED MODULE: ./src/platforms/app-plus/view/components/cover-image/index.vue?vue&type=script&lang=js&
  /* harmony default export */ var components_cover_imagevue_type_script_lang_js_ = (cover_imagevue_type_script_lang_js_); 
 // EXTERNAL MODULE: ./src/platforms/app-plus/view/components/cover-image/index.vue?vue&type=style&index=0&lang=css&
-var cover_imagevue_type_style_index_0_lang_css_ = __webpack_require__(118);
+var cover_imagevue_type_style_index_0_lang_css_ = __webpack_require__(155);
 
 // EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
-var componentNormalizer = __webpack_require__(0);
+var componentNormalizer = __webpack_require__(1);
 
 // CONCATENATED MODULE: ./src/platforms/app-plus/view/components/cover-image/index.vue
 
@@ -20084,14 +29366,854 @@ component.options.__file = "src/platforms/app-plus/view/components/cover-image/i
 /* harmony default export */ var cover_image = __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
-/* 128 */
+/* 165 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 // ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"4130fe76-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/checkbox-group/index.vue?vue&type=template&id=37cde58e&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e3b674d4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/platforms/app-plus/view/components/picker/index.vue?vue&type=template&id=0268771e&
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "uni-picker",
+    _vm._g({ on: { click: _vm._show } }, _vm.$listeners),
+    [_vm._t("default")],
+    2
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+// CONCATENATED MODULE: ./src/platforms/app-plus/view/components/picker/index.vue?vue&type=template&id=0268771e&
+
+// EXTERNAL MODULE: ./src/core/view/mixins/index.js
+var mixins = __webpack_require__(2);
+
+// EXTERNAL MODULE: ./src/platforms/app-plus/view/components/picker/page.js
+var page = __webpack_require__(109);
+
+// CONCATENATED MODULE: ./src/platforms/app-plus/view/components/picker/webview.js
+var PICKER_ID = '__UNIAPP_PICKER';
+var PICKER_PATH = '_www/__uniapppicker.html';
+var pickerWebview = null;
+var pickerWebviewCreated = false;
+var _exists = null;
+var callbacks = null;
+function webview_exists(callback) {
+  if (_exists !== null) {
+    callback(_exists);
+    return;
+  }
+
+  if (callbacks) {
+    callbacks.push(callback);
+    return;
+  }
+
+  callbacks = [callback];
+
+  function success(exists) {
+    _exists = exists;
+    callbacks.forEach(function (callback) {
+      return callback(exists);
+    });
+    callbacks = null;
+  }
+
+  plus.io.resolveLocalFileSystemURL(PICKER_PATH, function () {
+    success(true);
+  }, function () {
+    success(false);
+  });
+}
+
+var _pickerHideCallback;
+
+function initPicker() {
+  if (pickerWebview) {
+    return;
+  }
+
+  pickerWebview = plus.webview.getWebviewById(PICKER_ID);
+
+  if (pickerWebview) {
+    pickerWebviewCreated = true;
+  } else {
+    pickerWebview = plus.webview.create(PICKER_PATH, PICKER_ID, {
+      popGesture: 'none',
+      background: 'transparent',
+      backButtonAutoControl: 'hide',
+      render: 'always',
+      kernel: 'WKWebview',
+      bounce: 'none',
+      cachemode: 'noCache'
+    });
+
+    window.__pickerCallback = function () {
+      delete window.__pickerCallback;
+      pickerWebviewCreated = true;
+    };
+  }
+
+  pickerWebview.addEventListener('hide', function () {
+    _pickerHideCallback && _pickerHideCallback();
+    _pickerHideCallback = null;
+  });
+}
+function showPicker() {
+  var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  var callback = arguments.length > 1 ? arguments[1] : undefined;
+  data.id = plus.webview.currentWebview().id;
+  pickerWebview.show('fade-in');
+  var res;
+
+  _pickerHideCallback = function _pickerHideCallback() {
+    callback(res || {
+      event: 'cancel'
+    });
+  };
+
+  window.__pickerCallback = function (_ref) {
+    var _ref$event = _ref.event,
+        event = _ref$event === void 0 ? 'cancel' : _ref$event,
+        column = _ref.column,
+        _ref$value = _ref.value,
+        value = _ref$value === void 0 ? -1 : _ref$value;
+
+    if (event === 'created' && pickerWebview) {
+      pickerWebviewCreated = true;
+      pickerWebview.evalJS("showPicker(".concat(JSON.stringify(data), ")"));
+      return;
+    }
+
+    if (event === 'columnchange' && pickerWebview) {
+      callback({
+        event: event,
+        column: column,
+        value: value
+      });
+    }
+
+    if (event === 'change' || event === 'cancel') {
+      // 赋值为空函数避免 picker-webview 产生多余通讯报错
+      window.__pickerCallback = function () {};
+
+      res = {
+        event: event,
+        value: value
+      };
+      pickerWebview.hide('fade-out', 100);
+    }
+  };
+
+  if (pickerWebviewCreated) {
+    pickerWebview.evalJS("showPicker(".concat(JSON.stringify(data), ")"));
+  }
+}
+function updatePicker(data) {
+  if (pickerWebviewCreated) {
+    pickerWebview.evalJS("showPicker(".concat(JSON.stringify(data), ")"));
+  }
+}
+// EXTERNAL MODULE: ./src/platforms/app-plus/view/utils.js + 1 modules
+var utils = __webpack_require__(75);
+
+// EXTERNAL MODULE: ./src/core/helpers/i18n/index.js
+var i18n = __webpack_require__(10);
+
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/platforms/app-plus/view/components/picker/index.vue?vue&type=script&lang=js&
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+
+var mode = {
+  SELECTOR: 'selector',
+  MULTISELECTOR: 'multiSelector',
+  TIME: 'time',
+  DATE: 'date' // 暂不支持城市选择
+  // REGION: 'region'
+
+};
+var fields = {
+  YEAR: 'year',
+  MONTH: 'month',
+  DAY: 'day'
+};
+
+function padLeft(num) {
+  return num > 9 ? num : "0".concat(num);
+}
+
+function getDate(str, mode_) {
+  str = String(str || '');
+  var date = new Date();
+
+  if (mode_ === mode.TIME) {
+    str = str.split(':');
+
+    if (str.length === 2) {
+      date.setHours(parseInt(str[0]), parseInt(str[1]));
+    }
+  } else {
+    str = str.split('-');
+
+    if (str.length === 3) {
+      date.setFullYear(parseInt(str[0]), parseInt(str[1] - 1), parseInt(str[2]));
+    }
+  }
+
+  return date;
+}
+
+function getDefaultStartValue() {
+  if (this.mode === mode.TIME) {
+    return '00:00';
+  }
+
+  if (this.mode === mode.DATE) {
+    var year = new Date().getFullYear() - 100;
+
+    switch (this.fields) {
+      case fields.YEAR:
+        return year;
+
+      case fields.MONTH:
+        return year + '-01';
+
+      default:
+        return year + '-01-01';
+    }
+  }
+
+  return '';
+}
+
+function getDefaultEndValue() {
+  if (this.mode === mode.TIME) {
+    return '23:59';
+  }
+
+  if (this.mode === mode.DATE) {
+    var year = new Date().getFullYear() + 100;
+
+    switch (this.fields) {
+      case fields.YEAR:
+        return year;
+
+      case fields.MONTH:
+        return year + '-12';
+
+      default:
+        return year + '-12-31';
+    }
+  }
+
+  return '';
+}
+
+/* harmony default export */ var pickervue_type_script_lang_js_ = ({
+  name: 'Picker',
+  mixins: [i18n["b" /* i18nMixin */], mixins["a" /* emitter */]],
+  props: {
+    name: {
+      type: String,
+      default: ''
+    },
+    range: {
+      type: Array,
+      default: function _default() {
+        return [];
+      }
+    },
+    rangeKey: {
+      type: String,
+      default: ''
+    },
+    value: {
+      type: [Number, String, Array],
+      default: 0
+    },
+    mode: {
+      type: String,
+      default: mode.SELECTOR,
+      validator: function validator(val) {
+        return Object.values(mode).indexOf(val) >= 0;
+      }
+    },
+    fields: {
+      type: String,
+      default: ''
+    },
+    start: {
+      type: String,
+      default: getDefaultStartValue
+    },
+    end: {
+      type: String,
+      default: getDefaultEndValue
+    },
+    disabled: {
+      type: [Boolean, String],
+      default: false
+    }
+  },
+  data: function data() {
+    return {
+      valueSync: null
+    };
+  },
+  watch: {
+    value: function value() {
+      this._setValueSync();
+    }
+  },
+  created: function created() {
+    var _this = this;
+
+    this.$dispatch('Form', 'uni-form-group-update', {
+      type: 'add',
+      vm: this
+    });
+    Object.keys(this.$props).forEach(function (key) {
+      if (key !== 'name') {
+        _this.$watch(key, function (val) {
+          var data = {};
+          data[key] = val;
+
+          _this._updatePicker(data);
+        });
+      }
+    });
+
+    this._setValueSync();
+  },
+  mounted: function mounted() {
+    webview_exists(function (exists) {
+      if (exists) {
+        initPicker();
+      }
+    });
+  },
+  beforeDestroy: function beforeDestroy() {
+    this.$dispatch('Form', 'uni-form-group-update', {
+      type: 'remove',
+      vm: this
+    });
+  },
+  methods: {
+    _setValueSync: function _setValueSync() {
+      var val = this.value;
+
+      switch (this.mode) {
+        case mode.MULTISELECTOR:
+          {
+            if (!Array.isArray(val)) {
+              val = [];
+            }
+
+            if (!Array.isArray(this.valueSync)) {
+              this.valueSync = [];
+            }
+
+            var length = this.valueSync.length = Math.max(val.length, this.range.length);
+
+            for (var index = 0; index < length; index++) {
+              var val0 = Number(val[index]);
+              var val1 = Number(this.valueSync[index]);
+              var val2 = isNaN(val0) ? isNaN(val1) ? 0 : val1 : val0;
+              this.valueSync.splice(index, 1, val2 < 0 ? 0 : val2);
+            }
+          }
+          break;
+
+        case mode.TIME:
+        case mode.DATE:
+          this.valueSync = String(val);
+          break;
+
+        default:
+          {
+            var valueSync = Number(val);
+            this.valueSync = valueSync < 0 ? 0 : valueSync;
+            break;
+          }
+      }
+    },
+    _show: function _show(event) {
+      if (this.disabled) {
+        return;
+      }
+
+      var rect = event.currentTarget.getBoundingClientRect();
+
+      this._showPicker(Object.assign({}, this.$props, {
+        value: this.valueSync,
+        locale: Object(i18n["a" /* getLocale */])(),
+        messages: {
+          done: this.$$t('uni.picker.done'),
+          cancel: this.$$t('uni.picker.cancel')
+        }
+      }), {
+        top: rect.top + Object(utils["a" /* getNavigationBarHeight */])(),
+        left: rect.left,
+        width: rect.width,
+        height: rect.height
+      });
+    },
+    _showPicker: function _showPicker(data, popover) {
+      var _this2 = this;
+
+      if ((data.mode === mode.TIME || data.mode === mode.DATE) && !data.fields) {
+        this._showNativePicker(data, popover);
+      } else {
+        data.fields = Object.values(fields).includes(data.fields) ? data.fields : fields.DAY;
+        webview_exists(function (exists) {
+          _this2[exists ? '_showWebviewPicker' : '_showWeexPicker'](data);
+        });
+      }
+    },
+    _showNativePicker: function _showNativePicker(data, popover) {
+      var _this3 = this;
+
+      plus.nativeUI[this.mode === mode.TIME ? 'pickTime' : 'pickDate'](function (res) {
+        var date = res.date;
+
+        _this3.$trigger('change', {}, {
+          value: _this3.mode === mode.TIME ? "".concat(padLeft(date.getHours()), ":").concat(padLeft(date.getMinutes())) : "".concat(date.getFullYear(), "-").concat(padLeft(date.getMonth() + 1), "-").concat(padLeft(date.getDate()))
+        });
+      }, function () {
+        _this3.$trigger('cancel', {}, {});
+      }, this.mode === mode.TIME ? {
+        time: getDate(this.value, mode.TIME),
+        popover: popover
+      } : {
+        date: getDate(this.value, mode.DATE),
+        minDate: getDate(this.start, mode.DATE),
+        maxDate: getDate(this.end, mode.DATE),
+        popover: popover
+      });
+    },
+    _showWeexPicker: function _showWeexPicker(data) {
+      var _this4 = this;
+
+      var res = {
+        event: 'cancel'
+      };
+      this.page = Object(page["a" /* showPage */])({
+        url: '__uniapppicker',
+        data: data,
+        style: {
+          titleNView: false,
+          animationType: 'none',
+          animationDuration: 0,
+          background: 'rgba(0,0,0,0)',
+          popGesture: 'none'
+        },
+        onMessage: function onMessage(message) {
+          var event = message.event;
+
+          if (event === 'created') {
+            _this4._updatePicker(data);
+
+            return;
+          }
+
+          if (event === 'columnchange') {
+            delete message.event;
+
+            _this4.$trigger(event, {}, message);
+
+            return;
+          }
+
+          res = message;
+        },
+        onClose: function onClose() {
+          _this4.page = null;
+          var event = res.event;
+          delete res.event;
+
+          _this4.$trigger(event, {}, res);
+        }
+      });
+    },
+    _showWebviewPicker: function _showWebviewPicker(data) {
+      var _this5 = this;
+
+      showPicker(data, function (res) {
+        var event = res.event;
+        delete res.event;
+
+        _this5.$trigger(event, {}, res);
+      });
+    },
+    _getFormData: function _getFormData() {
+      return {
+        value: this.valueSync,
+        key: this.name
+      };
+    },
+    _resetFormData: function _resetFormData() {
+      switch (this.mode) {
+        case mode.SELECTOR:
+          this.valueSync = 0;
+          break;
+
+        case mode.MULTISELECTOR:
+          this.valueSync = this.value.map(function (val) {
+            return 0;
+          });
+          break;
+
+        case mode.DATE:
+        case mode.TIME:
+          this.valueSync = '';
+          break;
+
+        default:
+          break;
+      }
+    },
+    _updatePicker: function _updatePicker(data) {
+      var _this6 = this;
+
+      webview_exists(function (exists) {
+        if (exists) {
+          updatePicker(data);
+        } else {
+          _this6.page && _this6.page.sendMessage(data);
+        }
+      });
+    }
+  }
+});
+// CONCATENATED MODULE: ./src/platforms/app-plus/view/components/picker/index.vue?vue&type=script&lang=js&
+ /* harmony default export */ var components_pickervue_type_script_lang_js_ = (pickervue_type_script_lang_js_); 
+// EXTERNAL MODULE: ./src/platforms/app-plus/view/components/picker/index.vue?vue&type=style&index=0&lang=css&
+var pickervue_type_style_index_0_lang_css_ = __webpack_require__(159);
+
+// EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
+var componentNormalizer = __webpack_require__(1);
+
+// CONCATENATED MODULE: ./src/platforms/app-plus/view/components/picker/index.vue
+
+
+
+
+
+
+/* normalize component */
+
+var component = Object(componentNormalizer["a" /* default */])(
+  components_pickervue_type_script_lang_js_,
+  render,
+  staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "src/platforms/app-plus/view/components/picker/index.vue"
+/* harmony default export */ var picker = __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+/* 166 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+// ESM COMPAT FLAG
+__webpack_require__.r(__webpack_exports__);
+
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e3b674d4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/audio/index.vue?vue&type=template&id=efd2c61a&
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "uni-audio",
+    _vm._g({ attrs: { id: _vm.id, controls: !!_vm.controls } }, _vm.$listeners),
+    [
+      _c("audio", {
+        ref: "audio",
+        staticStyle: { display: "none" },
+        attrs: { loop: _vm.loop }
+      }),
+      _c("div", { staticClass: "uni-audio-default" }, [
+        _c(
+          "div",
+          {
+            staticClass: "uni-audio-left",
+            style:
+              "background-image: url(" + _vm.$getRealPath(_vm.poster) + ");"
+          },
+          [
+            _c("div", {
+              staticClass: "uni-audio-button",
+              class: { play: !_vm.playing, pause: _vm.playing },
+              on: { click: _vm.trigger }
+            })
+          ]
+        ),
+        _c("div", { staticClass: "uni-audio-right" }, [
+          _c("div", { staticClass: "uni-audio-time" }, [
+            _vm._v(" " + _vm._s(_vm.currentTime) + " ")
+          ]),
+          _c("div", { staticClass: "uni-audio-info" }, [
+            _c("div", { staticClass: "uni-audio-name" }, [
+              _vm._v(" " + _vm._s(_vm.name) + " ")
+            ]),
+            _c("div", { staticClass: "uni-audio-author" }, [
+              _vm._v(" " + _vm._s(_vm.author) + " ")
+            ])
+          ])
+        ])
+      ])
+    ]
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+// CONCATENATED MODULE: ./src/core/view/components/audio/index.vue?vue&type=template&id=efd2c61a&
+
+// EXTERNAL MODULE: ./src/core/view/mixins/index.js
+var mixins = __webpack_require__(2);
+
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/audio/index.vue?vue&type=script&lang=js&
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ var audiovue_type_script_lang_js_ = ({
+  name: 'Audio',
+  mixins: [mixins["f" /* subscriber */]],
+  props: {
+    id: {
+      type: String,
+      default: ''
+    },
+    src: {
+      type: String,
+      default: ''
+    },
+    loop: {
+      type: [Boolean, String],
+      default: false
+    },
+    controls: {
+      type: [Boolean, String],
+      default: false
+    },
+    poster: {
+      type: String,
+      default: ''
+    },
+    name: {
+      type: String,
+      default: ''
+    },
+    author: {
+      type: String,
+      default: ''
+    }
+  },
+  data: function data() {
+    return {
+      playing: false,
+      currentTime: this.getTime(0)
+    };
+  },
+  watch: {
+    src: function src(val) {
+      if (this.$refs.audio) {
+        this.$refs.audio.src = this.$getRealPath(val);
+      }
+    }
+  },
+  mounted: function mounted() {
+    var _this = this;
+
+    var audio = this.$refs.audio;
+    audio.addEventListener('error', function ($event) {
+      _this.playing = false;
+
+      _this.$trigger('error', $event, {});
+    });
+    audio.addEventListener('play', function ($event) {
+      _this.playing = true;
+
+      _this.$trigger('play', $event, {});
+    });
+    audio.addEventListener('pause', function ($event) {
+      _this.playing = false;
+
+      _this.$trigger('pause', $event, {});
+    });
+    audio.addEventListener('ended', function ($event) {
+      _this.playing = false;
+
+      _this.$trigger('ended', $event, {});
+    });
+    audio.addEventListener('timeupdate', function ($event) {
+      var currentTime = audio.currentTime;
+      _this.currentTime = _this.getTime(currentTime);
+      var duration = audio.duration;
+
+      _this.$trigger('timeupdate', $event, {
+        currentTime: currentTime,
+        duration: duration
+      });
+    });
+    audio.src = this.$getRealPath(this.src);
+  },
+  methods: {
+    _handleSubscribe: function _handleSubscribe(_ref) {
+      var type = _ref.type,
+          _ref$data = _ref.data,
+          data = _ref$data === void 0 ? {} : _ref$data;
+      var audio = this.$refs.audio;
+
+      switch (type) {
+        case 'setSrc':
+          audio.src = this.$getRealPath(data.src);
+          this.$emit('update:src', data.src);
+          break;
+
+        case 'play':
+          audio.play();
+          break;
+
+        case 'pause':
+          audio.pause();
+          break;
+
+        case 'seek':
+          audio.currentTime = data.position;
+          break;
+      }
+    },
+    trigger: function trigger() {
+      if (this.playing) {
+        this.$refs.audio.pause();
+      } else {
+        this.$refs.audio.play();
+      }
+    },
+    getTime: function getTime(time) {
+      var h = Math.floor(time / 3600);
+      var m = Math.floor(time % 3600 / 60);
+      var s = Math.floor(time % 3600 % 60);
+      h = (h < 10 ? '0' : '') + h;
+      m = (m < 10 ? '0' : '') + m;
+      s = (s < 10 ? '0' : '') + s;
+      var str = m + ':' + s;
+
+      if (h !== '00') {
+        str = h + ':' + str;
+      }
+
+      return str;
+    }
+  }
+});
+// CONCATENATED MODULE: ./src/core/view/components/audio/index.vue?vue&type=script&lang=js&
+ /* harmony default export */ var components_audiovue_type_script_lang_js_ = (audiovue_type_script_lang_js_); 
+// EXTERNAL MODULE: ./src/core/view/components/audio/index.vue?vue&type=style&index=0&lang=css&
+var audiovue_type_style_index_0_lang_css_ = __webpack_require__(118);
+
+// EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
+var componentNormalizer = __webpack_require__(1);
+
+// CONCATENATED MODULE: ./src/core/view/components/audio/index.vue
+
+
+
+
+
+
+/* normalize component */
+
+var component = Object(componentNormalizer["a" /* default */])(
+  components_audiovue_type_script_lang_js_,
+  render,
+  staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "src/core/view/components/audio/index.vue"
+/* harmony default export */ var audio = __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+/* 167 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+// ESM COMPAT FLAG
+__webpack_require__.r(__webpack_exports__);
+
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e3b674d4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/checkbox-group/index.vue?vue&type=template&id=37cde58e&
 var render = function() {
   var _vm = this
   var _h = _vm.$createElement
@@ -20109,7 +30231,7 @@ render._withStripped = true
 
 // CONCATENATED MODULE: ./src/core/view/components/checkbox-group/index.vue?vue&type=template&id=37cde58e&
 
-// EXTERNAL MODULE: ./src/core/view/mixins/index.js + 2 modules
+// EXTERNAL MODULE: ./src/core/view/mixins/index.js
 var mixins = __webpack_require__(2);
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/checkbox-group/index.vue?vue&type=script&lang=js&
@@ -20122,7 +30244,7 @@ var mixins = __webpack_require__(2);
 
 /* harmony default export */ var checkbox_groupvue_type_script_lang_js_ = ({
   name: 'CheckboxGroup',
-  mixins: [mixins["a" /* emitter */], mixins["d" /* listeners */]],
+  mixins: [mixins["a" /* emitter */], mixins["e" /* listeners */]],
   props: {
     name: {
       type: String,
@@ -20191,10 +30313,10 @@ var mixins = __webpack_require__(2);
 // CONCATENATED MODULE: ./src/core/view/components/checkbox-group/index.vue?vue&type=script&lang=js&
  /* harmony default export */ var components_checkbox_groupvue_type_script_lang_js_ = (checkbox_groupvue_type_script_lang_js_); 
 // EXTERNAL MODULE: ./src/core/view/components/checkbox-group/index.vue?vue&type=style&index=0&lang=css&
-var checkbox_groupvue_type_style_index_0_lang_css_ = __webpack_require__(92);
+var checkbox_groupvue_type_style_index_0_lang_css_ = __webpack_require__(129);
 
 // EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
-var componentNormalizer = __webpack_require__(0);
+var componentNormalizer = __webpack_require__(1);
 
 // CONCATENATED MODULE: ./src/core/view/components/checkbox-group/index.vue
 
@@ -20222,14 +30344,14 @@ component.options.__file = "src/core/view/components/checkbox-group/index.vue"
 /* harmony default export */ var checkbox_group = __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
-/* 129 */
+/* 168 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 // ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"4130fe76-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/checkbox/index.vue?vue&type=template&id=a63c1348&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e3b674d4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/checkbox/index.vue?vue&type=template&id=a63c1348&
 var render = function() {
   var _vm = this
   var _h = _vm.$createElement
@@ -20247,7 +30369,10 @@ var render = function() {
         [
           _c("div", {
             staticClass: "uni-checkbox-input",
-            class: [_vm.checkboxChecked ? "uni-checkbox-input-checked" : ""],
+            class: {
+              "uni-checkbox-input-checked": _vm.checkboxChecked,
+              "uni-checkbox-input-disabled": _vm.disabled
+            },
             style: { color: _vm.color }
           }),
           _vm._t("default")
@@ -20263,7 +30388,7 @@ render._withStripped = true
 
 // CONCATENATED MODULE: ./src/core/view/components/checkbox/index.vue?vue&type=template&id=a63c1348&
 
-// EXTERNAL MODULE: ./src/core/view/mixins/index.js + 2 modules
+// EXTERNAL MODULE: ./src/core/view/mixins/index.js
 var mixins = __webpack_require__(2);
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/checkbox/index.vue?vue&type=script&lang=js&
@@ -20286,7 +30411,7 @@ var mixins = __webpack_require__(2);
 
 /* harmony default export */ var checkboxvue_type_script_lang_js_ = ({
   name: 'Checkbox',
-  mixins: [mixins["a" /* emitter */], mixins["d" /* listeners */]],
+  mixins: [mixins["a" /* emitter */], mixins["e" /* listeners */]],
   props: {
     checked: {
       type: [Boolean, String],
@@ -20364,10 +30489,10 @@ var mixins = __webpack_require__(2);
 // CONCATENATED MODULE: ./src/core/view/components/checkbox/index.vue?vue&type=script&lang=js&
  /* harmony default export */ var components_checkboxvue_type_script_lang_js_ = (checkboxvue_type_script_lang_js_); 
 // EXTERNAL MODULE: ./src/core/view/components/checkbox/index.vue?vue&type=style&index=0&lang=css&
-var checkboxvue_type_style_index_0_lang_css_ = __webpack_require__(93);
+var checkboxvue_type_style_index_0_lang_css_ = __webpack_require__(130);
 
 // EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
-var componentNormalizer = __webpack_require__(0);
+var componentNormalizer = __webpack_require__(1);
 
 // CONCATENATED MODULE: ./src/core/view/components/checkbox/index.vue
 
@@ -20395,14 +30520,14 @@ component.options.__file = "src/core/view/components/checkbox/index.vue"
 /* harmony default export */ var components_checkbox = __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
-/* 130 */
+/* 169 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 // ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"4130fe76-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/form/index.vue?vue&type=template&id=7735a91d&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e3b674d4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/form/index.vue?vue&type=template&id=7735a91d&
 var render = function() {
   var _vm = this
   var _h = _vm.$createElement
@@ -20417,7 +30542,7 @@ render._withStripped = true
 
 // CONCATENATED MODULE: ./src/core/view/components/form/index.vue?vue&type=template&id=7735a91d&
 
-// EXTERNAL MODULE: ./src/core/view/mixins/index.js + 2 modules
+// EXTERNAL MODULE: ./src/core/view/mixins/index.js
 var mixins = __webpack_require__(2);
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/form/index.vue?vue&type=script&lang=js&
@@ -20431,7 +30556,7 @@ var mixins = __webpack_require__(2);
 
 /* harmony default export */ var formvue_type_script_lang_js_ = ({
   name: 'Form',
-  mixins: [mixins["d" /* listeners */]],
+  mixins: [mixins["e" /* listeners */]],
   data: function data() {
     return {
       childrenList: []
@@ -20473,7 +30598,7 @@ var mixins = __webpack_require__(2);
 // CONCATENATED MODULE: ./src/core/view/components/form/index.vue?vue&type=script&lang=js&
  /* harmony default export */ var components_formvue_type_script_lang_js_ = (formvue_type_script_lang_js_); 
 // EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
-var componentNormalizer = __webpack_require__(0);
+var componentNormalizer = __webpack_require__(1);
 
 // CONCATENATED MODULE: ./src/core/view/components/form/index.vue
 
@@ -20500,14 +30625,14 @@ component.options.__file = "src/core/view/components/form/index.vue"
 /* harmony default export */ var components_form = __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
-/* 131 */
+/* 170 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 // ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"4130fe76-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/icon/index.vue?vue&type=template&id=6c7a7a92&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e3b674d4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/icon/index.vue?vue&type=template&id=6c7a7a92&
 var render = function() {
   var _vm = this
   var _h = _vm.$createElement
@@ -20556,9 +30681,9 @@ render._withStripped = true
   },
   methods: {
     _converPx: function _converPx(value) {
-      if (/\d+[ur]px$/i.test(value)) {
-        value.replace(/\d+[ur]px$/i, function (text) {
-          return "".concat(uni.upx2px(parseFloat(text)), "px");
+      if (/^-?\d+[ur]px$/i.test(value)) {
+        return value.replace(/(^-?\d+)[ur]px$/i, function (text, num) {
+          return "".concat(uni.upx2px(parseFloat(num)), "px");
         }); // eslint-disable-next-line no-useless-escape
       } else if (/^-?[\d\.]+$/.test(value)) {
         return "".concat(value, "px");
@@ -20571,10 +30696,10 @@ render._withStripped = true
 // CONCATENATED MODULE: ./src/core/view/components/icon/index.vue?vue&type=script&lang=js&
  /* harmony default export */ var components_iconvue_type_script_lang_js_ = (iconvue_type_script_lang_js_); 
 // EXTERNAL MODULE: ./src/core/view/components/icon/index.vue?vue&type=style&index=0&lang=css&
-var iconvue_type_style_index_0_lang_css_ = __webpack_require__(95);
+var iconvue_type_style_index_0_lang_css_ = __webpack_require__(132);
 
 // EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
-var componentNormalizer = __webpack_require__(0);
+var componentNormalizer = __webpack_require__(1);
 
 // CONCATENATED MODULE: ./src/core/view/components/icon/index.vue
 
@@ -20602,14 +30727,14 @@ component.options.__file = "src/core/view/components/icon/index.vue"
 /* harmony default export */ var icon = __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
-/* 132 */
+/* 171 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 // ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"4130fe76-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/image/index.vue?vue&type=template&id=c7af6f90&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e3b674d4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/image/index.vue?vue&type=template&id=c7af6f90&
 var render = function() {
   var _vm = this
   var _h = _vm.$createElement
@@ -20618,12 +30743,20 @@ var render = function() {
     "uni-image",
     _vm._g({}, _vm.$listeners),
     [
-      _c("div", { ref: "content", style: _vm.modeStyle }),
-      _c("img", { attrs: { src: _vm.realImagePath } }),
-      _vm.mode === "widthFix"
+      _c("div", { ref: "content", style: _vm.style }),
+      _vm.contentPath
+        ? _c("img", {
+            attrs: { src: _vm.contentPath, draggable: _vm.draggable }
+          })
+        : _vm._e(),
+      _vm.mode === "widthFix" || _vm.mode === "heightFix"
         ? _c("v-uni-resize-sensor", {
             ref: "sensor",
-            on: { resize: _vm._resize }
+            on: {
+              resize: function($event) {
+                return _vm._fixSize()
+              }
+            }
           })
         : _vm._e()
     ],
@@ -20653,6 +30786,19 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 //
 //
 //
+//
+//
+//
+//
+function fixNumber(number) {
+  // fix: 解决 Chrome 浏览器上某些情况下导致 1px 缝隙的问题
+  if ((typeof navigator === "undefined" ? "undefined" : _typeof(navigator)) && navigator.vendor === 'Google Inc.' && number > 10) {
+    number = Math.round(number / 2) * 2;
+  }
+
+  return number;
+}
+
 /* harmony default export */ var imagevue_type_script_lang_js_ = ({
   name: 'Image',
   props: {
@@ -20668,24 +30814,28 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
     lazyLoad: {
       type: [Boolean, String],
       default: false
+    },
+    draggable: {
+      type: Boolean,
+      default: true
     }
   },
   data: function data() {
     return {
       originalWidth: 0,
       originalHeight: 0,
-      availHeight: '',
-      sizeFixed: false
+      originalStyle: {
+        width: '',
+        height: ''
+      },
+      contentPath: ''
     };
   },
   computed: {
     ratio: function ratio() {
       return this.originalWidth && this.originalHeight ? this.originalWidth / this.originalHeight : 0;
     },
-    realImagePath: function realImagePath() {
-      return this.src && this.$getRealPath(this.src);
-    },
-    modeStyle: function modeStyle() {
+    style: function style() {
       var size = 'auto';
       var position = '';
       var repeat = 'no-repeat';
@@ -20702,6 +30852,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
           break;
 
         case 'widthFix':
+        case 'heightFix':
           size = '100% 100%';
           break;
 
@@ -20747,102 +30898,130 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
           break;
       }
 
-      return "background-position:".concat(position, ";background-size:").concat(size, ";background-repeat:").concat(repeat, ";");
+      return {
+        'background-image': this.contentPath ? "url(\"".concat(this.contentPath, "\")") : 'none',
+        'background-position': position,
+        'background-size': size,
+        'background-repeat': repeat
+      };
     }
   },
   watch: {
     src: function src(newValue, oldValue) {
-      this._setContentImage();
-
       this._loadImage();
     },
     mode: function mode(newValue, oldValue) {
-      if (oldValue === 'widthFix') {
-        this.$el.style.height = this.availHeight;
-        this.sizeFixed = false;
+      if (oldValue === 'widthFix' || oldValue === 'heightFix') {
+        this._resetSize();
       }
 
-      if (newValue === 'widthFix' && this.ratio) {
+      if (newValue === 'widthFix' || newValue === 'heightFix') {
         this._fixSize();
       }
     }
   },
   mounted: function mounted() {
-    this.availHeight = this.$el.style.height || '';
-
-    this._setContentImage();
-
-    if (!this.realImagePath) {
-      return;
-    }
+    this.originalStyle.width = this.$el.style.width || '';
+    this.originalStyle.height = this.$el.style.height || '';
 
     this._loadImage();
   },
+  beforeDestroy: function beforeDestroy() {
+    this._clearImage();
+  },
   methods: {
-    _resize: function _resize() {
-      if (this.mode === 'widthFix' && !this.sizeFixed) {
-        this._fixSize();
-      }
-    },
     _fixSize: function _fixSize() {
-      var elWidth = this._getWidth();
+      if (this.ratio) {
+        var $el = this.$el;
 
-      if (elWidth) {
-        var height = elWidth / this.ratio; // fix: 解决 Chrome 浏览器上某些情况下导致 1px 缝隙的问题
+        if (this.mode === 'widthFix') {
+          var width = $el.offsetWidth;
 
-        if ((typeof navigator === "undefined" ? "undefined" : _typeof(navigator)) && navigator.vendor === 'Google Inc.' && height > 10) {
-          height = Math.round(height / 2) * 2;
+          if (width) {
+            $el.style.height = fixNumber(width / this.ratio) + 'px';
+          }
+        } else if (this.mode === 'heightFix') {
+          var height = $el.offsetHeight;
+
+          if (height) {
+            $el.style.width = fixNumber(height * this.ratio) + 'px';
+          }
         }
-
-        this.$el.style.height = height + 'px';
-        this.sizeFixed = true;
       }
+
+      window.dispatchEvent(new CustomEvent('updateview'));
     },
-    _setContentImage: function _setContentImage() {
-      this.$refs.content.style.backgroundImage = this.src ? "url(\"".concat(this.realImagePath, "\")") : 'none';
+    _resetSize: function _resetSize() {
+      this.$el.style.width = this.originalStyle.width;
+      this.$el.style.height = this.originalStyle.height;
+    },
+    _resetData: function _resetData() {
+      this.originalWidth = 0;
+      this.originalHeight = 0;
+      this.contentPath = '';
     },
     _loadImage: function _loadImage() {
-      var _self = this;
+      var _this = this;
 
-      var img = new Image();
+      var realImagePath = this.$getRealPath(this.src);
 
-      img.onload = function ($event) {
-        _self.originalWidth = this.width;
-        _self.originalHeight = this.height;
+      if (realImagePath) {
+        var img = this._img = this._img || new Image();
 
-        if (_self.mode === 'widthFix') {
-          _self._fixSize();
-        }
+        img.onload = function ($event) {
+          _this._img = null;
+          _this.originalWidth = img.width;
+          _this.originalHeight = img.height;
 
-        _self.$trigger('load', $event, {
-          width: this.width,
-          height: this.height
-        });
-      };
+          _this._fixSize();
 
-      img.onerror = function ($event) {
-        _self.$trigger('error', $event, {
-          errMsg: "GET ".concat(_self.src, " 404 (Not Found)")
-        });
-      };
+          _this.contentPath = realImagePath;
 
-      img.src = this.realImagePath;
+          _this.$trigger('load', $event, {
+            width: img.width,
+            height: img.height
+          });
+        };
+
+        img.onerror = function ($event) {
+          _this._img = null;
+
+          _this._resetData(); // 与微信小程序保持一致，保留之前样式
+          // this._resetSize()
+
+
+          _this.$trigger('error', $event, {
+            errMsg: "GET ".concat(_this.src, " 404 (Not Found)")
+          });
+        };
+
+        img.src = realImagePath;
+      } else {
+        this._clearImage();
+
+        this._resetData(); // 与微信小程序保持一致，保留之前样式
+        // this._resetSize()
+
+      }
     },
-    _getWidth: function _getWidth() {
-      var computedStyle = window.getComputedStyle(this.$el);
-      var borderWidth = (parseFloat(computedStyle.borderLeftWidth, 10) || 0) + (parseFloat(computedStyle.borderRightWidth, 10) || 0);
-      var paddingWidth = (parseFloat(computedStyle.paddingLeft, 10) || 0) + (parseFloat(computedStyle.paddingRight, 10) || 0);
-      return this.$el.offsetWidth - borderWidth - paddingWidth;
+    _clearImage: function _clearImage() {
+      var img = this._img;
+
+      if (img) {
+        img.onload = null;
+        img.onerror = null;
+        this._img = null;
+      }
     }
   }
 });
 // CONCATENATED MODULE: ./src/core/view/components/image/index.vue?vue&type=script&lang=js&
  /* harmony default export */ var components_imagevue_type_script_lang_js_ = (imagevue_type_script_lang_js_); 
 // EXTERNAL MODULE: ./src/core/view/components/image/index.vue?vue&type=style&index=0&lang=css&
-var imagevue_type_style_index_0_lang_css_ = __webpack_require__(96);
+var imagevue_type_style_index_0_lang_css_ = __webpack_require__(133);
 
 // EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
-var componentNormalizer = __webpack_require__(0);
+var componentNormalizer = __webpack_require__(1);
 
 // CONCATENATED MODULE: ./src/core/view/components/image/index.vue
 
@@ -20870,191 +31049,262 @@ component.options.__file = "src/core/view/components/image/index.vue"
 /* harmony default export */ var components_image = __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
-/* 133 */
+/* 172 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 // ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"4130fe76-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/input/index.vue?vue&type=template&id=c65e1032&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e3b674d4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/input/index.vue?vue&type=template&id=c65e1032&
 var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "uni-input",
-    _vm._g(
-      {
-        on: {
-          change: function($event) {
-            $event.stopPropagation()
-          }
-        }
-      },
-      _vm.$listeners
-    ),
-    [
-      _c("div", { ref: "wrapper", staticClass: "uni-input-wrapper" }, [
-        _c(
-          "div",
+  return _c("uni-input", _vm._g({}, _vm.$listeners), [
+    _c("div", { ref: "wrapper", staticClass: "uni-input-wrapper" }, [
+      _c("div", {
+        directives: [
           {
+            name: "show",
+            rawName: "v-show",
+            value: !(
+              _vm.composing ||
+              _vm.valueSync.length ||
+              _vm.cachedValue === "-"
+            ),
+            expression:
+              "!(composing || valueSync.length || cachedValue === '-')"
+          }
+        ],
+        ref: "placeholder",
+        staticClass: "uni-input-placeholder",
+        class: _vm.placeholderClass,
+        style: _vm.placeholderStyle,
+        domProps: { textContent: _vm._s(_vm.placeholder) }
+      }),
+      _vm.inputType === "checkbox" && (!_vm.disabled || !_vm.fixColor)
+        ? _c("input", {
             directives: [
               {
-                name: "show",
-                rawName: "v-show",
-                value: !(_vm.composing || _vm.inputValue.length),
-                expression: "!(composing || inputValue.length)"
-              }
+                name: "model",
+                rawName: "v-model",
+                value: _vm.valueSync,
+                expression: "valueSync"
+              },
+              { name: "keyboard", rawName: "v-keyboard" },
+              { name: "field", rawName: "v-field" }
             ],
-            ref: "placeholder",
-            staticClass: "uni-input-placeholder",
-            class: _vm.placeholderClass,
-            style: _vm.placeholderStyle
-          },
-          [_vm._v(" " + _vm._s(_vm.placeholder) + " ")]
-        ),
-        _vm.inputType === "checkbox"
-          ? _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.inputValue,
-                  expression: "inputValue"
-                }
-              ],
-              ref: "input",
-              staticClass: "uni-input-input",
-              attrs: {
-                disabled: _vm.disabled,
-                maxlength: _vm.maxlength,
-                step: _vm.step,
-                autocomplete: "off",
-                type: "checkbox"
-              },
-              domProps: {
-                checked: Array.isArray(_vm.inputValue)
-                  ? _vm._i(_vm.inputValue, null) > -1
-                  : _vm.inputValue
-              },
-              on: {
-                focus: _vm._onFocus,
-                blur: _vm._onBlur,
-                input: function($event) {
-                  $event.stopPropagation()
-                  return _vm._onInput($event)
-                },
-                compositionstart: _vm._onComposition,
-                compositionend: _vm._onComposition,
-                keyup: function($event) {
-                  $event.stopPropagation()
-                  return _vm._onKeyup($event)
-                },
-                change: function($event) {
-                  var $$a = _vm.inputValue,
+            ref: "input",
+            staticClass: "uni-input-input",
+            attrs: {
+              disabled: _vm.disabled,
+              maxlength: _vm.maxlength,
+              step: _vm.step,
+              enterkeyhint: _vm.confirmType,
+              pattern: _vm.type === "number" ? "[0-9]*" : null,
+              autocomplete: _vm.autocomplete,
+              type: "checkbox"
+            },
+            domProps: {
+              checked: Array.isArray(_vm.valueSync)
+                ? _vm._i(_vm.valueSync, null) > -1
+                : _vm.valueSync
+            },
+            on: {
+              change: [
+                function($event) {
+                  var $$a = _vm.valueSync,
                     $$el = $event.target,
                     $$c = $$el.checked ? true : false
                   if (Array.isArray($$a)) {
                     var $$v = null,
                       $$i = _vm._i($$a, $$v)
                     if ($$el.checked) {
-                      $$i < 0 && (_vm.inputValue = $$a.concat([$$v]))
+                      $$i < 0 && (_vm.valueSync = $$a.concat([$$v]))
                     } else {
                       $$i > -1 &&
-                        (_vm.inputValue = $$a
+                        (_vm.valueSync = $$a
                           .slice(0, $$i)
                           .concat($$a.slice($$i + 1)))
                     }
                   } else {
-                    _vm.inputValue = $$c
+                    _vm.valueSync = $$c
                   }
-                }
-              }
-            })
-          : _vm.inputType === "radio"
-          ? _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.inputValue,
-                  expression: "inputValue"
+                },
+                function($event) {
+                  $event.stopPropagation()
                 }
               ],
-              ref: "input",
-              staticClass: "uni-input-input",
-              attrs: {
-                disabled: _vm.disabled,
-                maxlength: _vm.maxlength,
-                step: _vm.step,
-                autocomplete: "off",
-                type: "radio"
+              focus: _vm._onFocus,
+              blur: _vm._onBlur,
+              input: function($event) {
+                $event.stopPropagation()
+                return _vm._onInput($event)
               },
-              domProps: { checked: _vm._q(_vm.inputValue, null) },
-              on: {
-                focus: _vm._onFocus,
-                blur: _vm._onBlur,
-                input: function($event) {
+              compositionstart: function($event) {
+                $event.stopPropagation()
+                return _vm._onComposition($event)
+              },
+              compositionend: function($event) {
+                $event.stopPropagation()
+                return _vm._onComposition($event)
+              },
+              keyup: function($event) {
+                if (
+                  !$event.type.indexOf("key") &&
+                  _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+                ) {
+                  return null
+                }
+                $event.stopPropagation()
+                return _vm._onKeyup($event)
+              }
+            }
+          })
+        : _vm.inputType === "radio" && (!_vm.disabled || !_vm.fixColor)
+        ? _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.valueSync,
+                expression: "valueSync"
+              },
+              { name: "keyboard", rawName: "v-keyboard" },
+              { name: "field", rawName: "v-field" }
+            ],
+            ref: "input",
+            staticClass: "uni-input-input",
+            attrs: {
+              disabled: _vm.disabled,
+              maxlength: _vm.maxlength,
+              step: _vm.step,
+              enterkeyhint: _vm.confirmType,
+              pattern: _vm.type === "number" ? "[0-9]*" : null,
+              autocomplete: _vm.autocomplete,
+              type: "radio"
+            },
+            domProps: { checked: _vm._q(_vm.valueSync, null) },
+            on: {
+              change: [
+                function($event) {
+                  _vm.valueSync = null
+                },
+                function($event) {
+                  $event.stopPropagation()
+                }
+              ],
+              focus: _vm._onFocus,
+              blur: _vm._onBlur,
+              input: function($event) {
+                $event.stopPropagation()
+                return _vm._onInput($event)
+              },
+              compositionstart: function($event) {
+                $event.stopPropagation()
+                return _vm._onComposition($event)
+              },
+              compositionend: function($event) {
+                $event.stopPropagation()
+                return _vm._onComposition($event)
+              },
+              keyup: function($event) {
+                if (
+                  !$event.type.indexOf("key") &&
+                  _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+                ) {
+                  return null
+                }
+                $event.stopPropagation()
+                return _vm._onKeyup($event)
+              }
+            }
+          })
+        : !_vm.disabled || !_vm.fixColor
+        ? _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.valueSync,
+                expression: "valueSync"
+              },
+              { name: "keyboard", rawName: "v-keyboard" },
+              { name: "field", rawName: "v-field" }
+            ],
+            ref: "input",
+            staticClass: "uni-input-input",
+            attrs: {
+              disabled: _vm.disabled,
+              maxlength: _vm.maxlength,
+              step: _vm.step,
+              enterkeyhint: _vm.confirmType,
+              pattern: _vm.type === "number" ? "[0-9]*" : null,
+              autocomplete: _vm.autocomplete,
+              type: _vm.inputType
+            },
+            domProps: { value: _vm.valueSync },
+            on: {
+              change: function($event) {
+                $event.stopPropagation()
+              },
+              focus: _vm._onFocus,
+              blur: _vm._onBlur,
+              input: [
+                function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.valueSync = $event.target.value
+                },
+                function($event) {
                   $event.stopPropagation()
                   return _vm._onInput($event)
-                },
-                compositionstart: _vm._onComposition,
-                compositionend: _vm._onComposition,
-                keyup: function($event) {
-                  $event.stopPropagation()
-                  return _vm._onKeyup($event)
-                },
-                change: function($event) {
-                  _vm.inputValue = null
-                }
-              }
-            })
-          : _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.inputValue,
-                  expression: "inputValue"
                 }
               ],
-              ref: "input",
-              staticClass: "uni-input-input",
-              attrs: {
-                disabled: _vm.disabled,
-                maxlength: _vm.maxlength,
-                step: _vm.step,
-                autocomplete: "off",
-                type: _vm.inputType
+              compositionstart: function($event) {
+                $event.stopPropagation()
+                return _vm._onComposition($event)
               },
-              domProps: { value: _vm.inputValue },
-              on: {
-                focus: _vm._onFocus,
-                blur: _vm._onBlur,
-                input: [
-                  function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.inputValue = $event.target.value
-                  },
-                  function($event) {
-                    $event.stopPropagation()
-                    return _vm._onInput($event)
-                  }
-                ],
-                compositionstart: _vm._onComposition,
-                compositionend: _vm._onComposition,
-                keyup: function($event) {
-                  $event.stopPropagation()
-                  return _vm._onKeyup($event)
+              compositionend: function($event) {
+                $event.stopPropagation()
+                return _vm._onComposition($event)
+              },
+              keyup: function($event) {
+                if (
+                  !$event.type.indexOf("key") &&
+                  _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+                ) {
+                  return null
                 }
+                $event.stopPropagation()
+                return _vm._onKeyup($event)
               }
-            })
-      ])
-    ]
-  )
+            }
+          })
+        : _vm._e(),
+      _vm.disabled && _vm.fixColor
+        ? _c("input", {
+            ref: "input",
+            staticClass: "uni-input-input",
+            attrs: {
+              tabindex: "-1",
+              readonly: _vm.disabled,
+              type: _vm.inputType,
+              maxlength: _vm.maxlength,
+              step: _vm.step
+            },
+            domProps: { value: _vm.valueSync },
+            on: {
+              focus: function($event) {
+                return $event.target.blur()
+              }
+            }
+          })
+        : _vm._e()
+    ])
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -21062,8 +31312,11 @@ render._withStripped = true
 
 // CONCATENATED MODULE: ./src/core/view/components/input/index.vue?vue&type=template&id=c65e1032&
 
-// EXTERNAL MODULE: ./src/core/view/mixins/index.js + 2 modules
+// EXTERNAL MODULE: ./src/core/view/mixins/index.js
 var mixins = __webpack_require__(2);
+
+// EXTERNAL MODULE: ./src/shared/index.js + 7 modules
+var shared = __webpack_require__(0);
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/input/index.vue?vue&type=script&lang=js&
 //
@@ -21103,23 +31356,32 @@ var mixins = __webpack_require__(2);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
-var INPUT_TYPES = ['text', 'number', 'idcard', 'digit', 'password'];
+
+var INPUT_TYPES = ['text', 'number', 'idcard', 'digit', 'password', 'tel'];
 var NUMBER_TYPES = ['number', 'digit'];
+var AUTOCOMPLETES = ['off', 'one-time-code'];
 /* harmony default export */ var inputvue_type_script_lang_js_ = ({
   name: 'Input',
-  mixins: [mixins["a" /* emitter */], mixins["c" /* keyboard */]],
-  model: {
-    prop: 'value',
-    event: 'update:value'
-  },
+  mixins: [mixins["b" /* field */]],
   props: {
     name: {
       type: String,
-      default: ''
-    },
-    value: {
-      type: [String, Number],
       default: ''
     },
     type: {
@@ -21150,19 +31412,17 @@ var NUMBER_TYPES = ['number', 'digit'];
       type: [Number, String],
       default: 140
     },
-    focus: {
-      type: [Boolean, String],
-      default: false
-    },
     confirmType: {
       type: String,
       default: 'done'
+    },
+    textContentType: {
+      type: String,
+      default: ''
     }
   },
   data: function data() {
     return {
-      inputValue: this.value + '',
-      composing: false,
       wrapperHeight: 0,
       cachedValue: ''
     };
@@ -21195,21 +31455,18 @@ var NUMBER_TYPES = ['number', 'digit'];
     step: function step() {
       // 处理部分设备中无法输入小数点的问题
       return ~NUMBER_TYPES.indexOf(this.type) ? '0.000000000000000001' : '';
+    },
+    autocomplete: function autocomplete() {
+      var camelizeIndex = AUTOCOMPLETES.indexOf(this.textContentType);
+      var kebabCaseIndex = AUTOCOMPLETES.indexOf(Object(shared["i" /* kebabCase */])(this.textContentType));
+      var index = camelizeIndex !== -1 ? camelizeIndex : kebabCaseIndex !== -1 ? kebabCaseIndex : 0;
+      return AUTOCOMPLETES[index];
     }
   },
   watch: {
-    focus: function focus(value) {
-      value && this._focusInput();
-    },
-    value: function value(_value) {
-      this.inputValue = _value + '';
-    },
-    inputValue: function inputValue(value) {
-      this.$emit('update:value', value);
-    },
     maxlength: function maxlength(value) {
-      var realValue = this.inputValue.slice(0, parseInt(value, 10));
-      realValue !== this.inputValue && (this.inputValue = realValue);
+      var realValue = this.valueSync.slice(0, parseInt(value, 10));
+      realValue !== this.valueSync && (this.valueSync = realValue);
     }
   },
   created: function created() {
@@ -21243,9 +31500,6 @@ var NUMBER_TYPES = ['number', 'digit'];
 
       $vm = $vm.$parent;
     }
-
-    this.initKeyboard(this.$refs.input);
-    this.focus && this._focusInput();
   },
   beforeDestroy: function beforeDestroy() {
     this.$dispatch('Form', 'uni-form-group-update', {
@@ -21255,82 +31509,78 @@ var NUMBER_TYPES = ['number', 'digit'];
   },
   methods: {
     _onKeyup: function _onKeyup($event) {
-      if ($event.keyCode === 13) {
-        this.$trigger('confirm', $event, {
-          value: $event.target.value
-        });
-      }
+      this.$trigger('confirm', $event, {
+        value: $event.target.value
+      });
     },
-    _onInput: function _onInput($event) {
+    _onInput: function _onInput($event, force) {
+      var _this = this;
+
+      var outOfMaxlength = false;
+
       if (this.composing) {
         return;
-      } // 处理部分输入法可以输入其它字符的情况
-
-
-      if (~NUMBER_TYPES.indexOf(this.type)) {
-        if (this.$refs.input.validity && !this.$refs.input.validity.valid) {
-          $event.target.value = this.cachedValue;
-          this.inputValue = $event.target.value; // 输入非法字符不触发 input 事件
-
-          return;
-        } else {
-          this.cachedValue = this.inputValue;
-        }
-      } // type="number" 不支持 maxlength 属性，因此需要主动限制长度。
-
+      }
 
       if (this.inputType === 'number') {
+        // type="number" 不支持 maxlength 属性，因此需要主动限制长度。
         var maxlength = parseInt(this.maxlength, 10);
 
         if (maxlength > 0 && $event.target.value.length > maxlength) {
-          $event.target.value = $event.target.value.slice(0, maxlength);
-          this.inputValue = $event.target.value; // 字符长度超出范围不触发 input 事件
+          // 输入前字符长度超出范围，则不触发input，且将值还原
+          // 否则截取一定长度且触发input
+          if (this.cachedValue.length === maxlength) {
+            this.valueSync = this.cachedValue;
+            outOfMaxlength = true;
+          } else {
+            $event.target.value = $event.target.value.slice(0, maxlength);
+            this.valueSync = $event.target.value;
+          }
+        } // 数字类型输入错误时无法获取具体的值，自定义校验和纠正。
+
+
+        this.__clearCachedValue && $event.target.removeEventListener('blur', this.__clearCachedValue);
+
+        if ($event.target.validity && !$event.target.validity.valid) {
+          if (!this.cachedValue && $event.data === '-' || this.cachedValue[0] === '-' && $event.inputType === 'deleteContentBackward') {
+            this.cachedValue = '-';
+
+            var clearCachedValue = this.__clearCachedValue = function () {
+              _this.cachedValue = '';
+            };
+
+            $event.target.addEventListener('blur', clearCachedValue);
+            return;
+          }
+
+          this.cachedValue = this.valueSync = $event.target.value = this.cachedValue === '-' ? '' : this.cachedValue; // 输入非法字符不触发 input 事件
 
           return;
+        } else {
+          this.cachedValue = this.valueSync;
         }
       }
 
-      this.$trigger('input', $event, {
-        value: this.inputValue
-      });
-    },
-    _onFocus: function _onFocus($event) {
-      this.$trigger('focus', $event, {
-        value: $event.target.value
-      });
-    },
-    _onBlur: function _onBlur($event) {
-      this.$trigger('blur', $event, {
-        value: $event.target.value
-      });
-    },
-    _focusInput: function _focusInput() {
-      var _this = this;
-
-      setTimeout(function () {
-        _this.$refs.input.focus();
-      }, 350);
-    },
-    _blurInput: function _blurInput() {
-      var _this2 = this;
-
-      setTimeout(function () {
-        _this2.$refs.input.blur();
-      }, 350);
+      if (outOfMaxlength) return;
+      this.$triggerInput($event, {
+        value: this.valueSync
+      }, force);
     },
     _onComposition: function _onComposition($event) {
       if ($event.type === 'compositionstart') {
         this.composing = true;
-      } else {
-        this.composing = false;
+      } else if (this.composing) {
+        this.composing = false; // 部分输入法 compositionend 事件可能晚于 input
+
+        this._onInput($event);
       }
     },
     _resetFormData: function _resetFormData() {
-      this.inputValue = '';
+      this.valueSync = '';
     },
     _getFormData: function _getFormData() {
       return this.name ? {
-        value: this.inputValue,
+        value: this.valueSync,
         key: this.name
       } : {};
     }
@@ -21339,10 +31589,10 @@ var NUMBER_TYPES = ['number', 'digit'];
 // CONCATENATED MODULE: ./src/core/view/components/input/index.vue?vue&type=script&lang=js&
  /* harmony default export */ var components_inputvue_type_script_lang_js_ = (inputvue_type_script_lang_js_); 
 // EXTERNAL MODULE: ./src/core/view/components/input/index.vue?vue&type=style&index=0&lang=css&
-var inputvue_type_style_index_0_lang_css_ = __webpack_require__(97);
+var inputvue_type_style_index_0_lang_css_ = __webpack_require__(134);
 
 // EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
-var componentNormalizer = __webpack_require__(0);
+var componentNormalizer = __webpack_require__(1);
 
 // CONCATENATED MODULE: ./src/core/view/components/input/index.vue
 
@@ -21370,14 +31620,14 @@ component.options.__file = "src/core/view/components/input/index.vue"
 /* harmony default export */ var input = __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
-/* 134 */
+/* 173 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 // ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"4130fe76-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/navigator/index.vue?vue&type=template&id=c893a598&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e3b674d4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/navigator/index.vue?vue&type=template&id=c893a598&
 var render = function() {
   var _vm = this
   var _h = _vm.$createElement
@@ -21413,7 +31663,7 @@ render._withStripped = true
 
 // CONCATENATED MODULE: ./src/core/view/components/navigator/index.vue?vue&type=template&id=c893a598&
 
-// EXTERNAL MODULE: ./src/core/view/mixins/index.js + 2 modules
+// EXTERNAL MODULE: ./src/core/view/mixins/index.js
 var mixins = __webpack_require__(2);
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/navigator/index.vue?vue&type=script&lang=js&
@@ -21441,7 +31691,7 @@ var mixins = __webpack_require__(2);
 var OPEN_TYPES = ['navigate', 'redirect', 'switchTab', 'reLaunch', 'navigateBack'];
 /* harmony default export */ var navigatorvue_type_script_lang_js_ = ({
   name: 'Navigator',
-  mixins: [mixins["b" /* hover */]],
+  mixins: [mixins["c" /* hover */]],
   props: {
     hoverClass: {
       type: String,
@@ -21469,6 +31719,10 @@ var OPEN_TYPES = ['navigate', 'redirect', 'switchTab', 'reLaunch', 'navigateBack
     hoverStayTime: {
       type: [Number, String],
       default: 600
+    },
+    exists: {
+      type: String,
+      default: ''
     }
   },
   methods: {
@@ -21487,7 +31741,8 @@ var OPEN_TYPES = ['navigate', 'redirect', 'switchTab', 'reLaunch', 'navigateBack
 
         case 'redirect':
           uni.redirectTo({
-            url: this.url
+            url: this.url,
+            exists: this.exists
           });
           break;
 
@@ -21518,10 +31773,10 @@ var OPEN_TYPES = ['navigate', 'redirect', 'switchTab', 'reLaunch', 'navigateBack
 // CONCATENATED MODULE: ./src/core/view/components/navigator/index.vue?vue&type=script&lang=js&
  /* harmony default export */ var components_navigatorvue_type_script_lang_js_ = (navigatorvue_type_script_lang_js_); 
 // EXTERNAL MODULE: ./src/core/view/components/navigator/index.vue?vue&type=style&index=0&lang=css&
-var navigatorvue_type_style_index_0_lang_css_ = __webpack_require__(101);
+var navigatorvue_type_style_index_0_lang_css_ = __webpack_require__(138);
 
 // EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
-var componentNormalizer = __webpack_require__(0);
+var componentNormalizer = __webpack_require__(1);
 
 // CONCATENATED MODULE: ./src/core/view/components/navigator/index.vue
 
@@ -21549,14 +31804,14 @@ component.options.__file = "src/core/view/components/navigator/index.vue"
 /* harmony default export */ var components_navigator = __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
-/* 135 */
+/* 174 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 // ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"4130fe76-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/progress/index.vue?vue&type=template&id=34f62046&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e3b674d4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/progress/index.vue?vue&type=template&id=34f62046&
 var render = function() {
   var _vm = this
   var _h = _vm.$createElement
@@ -21655,6 +31910,13 @@ var VALUES = {
     activeMode: {
       type: String,
       default: VALUES.activeMode
+    },
+    duration: {
+      type: [Number, String],
+      default: 30,
+      validator: function validator(value) {
+        return !isNaN(parseFloat(value, 10));
+      }
     }
   },
   data: function data() {
@@ -21712,7 +31974,7 @@ var VALUES = {
           } else {
             _this.currentPercent += 1;
           }
-        }, 30);
+        }, parseFloat(this.duration));
       } else {
         this.currentPercent = this.realPercent;
       }
@@ -21722,10 +31984,10 @@ var VALUES = {
 // CONCATENATED MODULE: ./src/core/view/components/progress/index.vue?vue&type=script&lang=js&
  /* harmony default export */ var components_progressvue_type_script_lang_js_ = (progressvue_type_script_lang_js_); 
 // EXTERNAL MODULE: ./src/core/view/components/progress/index.vue?vue&type=style&index=0&lang=css&
-var progressvue_type_style_index_0_lang_css_ = __webpack_require__(104);
+var progressvue_type_style_index_0_lang_css_ = __webpack_require__(141);
 
 // EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
-var componentNormalizer = __webpack_require__(0);
+var componentNormalizer = __webpack_require__(1);
 
 // CONCATENATED MODULE: ./src/core/view/components/progress/index.vue
 
@@ -21753,14 +32015,14 @@ component.options.__file = "src/core/view/components/progress/index.vue"
 /* harmony default export */ var progress = __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
-/* 136 */
+/* 175 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 // ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"4130fe76-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/radio-group/index.vue?vue&type=template&id=17be8d0a&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e3b674d4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/radio-group/index.vue?vue&type=template&id=17be8d0a&
 var render = function() {
   var _vm = this
   var _h = _vm.$createElement
@@ -21778,7 +32040,7 @@ render._withStripped = true
 
 // CONCATENATED MODULE: ./src/core/view/components/radio-group/index.vue?vue&type=template&id=17be8d0a&
 
-// EXTERNAL MODULE: ./src/core/view/mixins/index.js + 2 modules
+// EXTERNAL MODULE: ./src/core/view/mixins/index.js
 var mixins = __webpack_require__(2);
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/radio-group/index.vue?vue&type=script&lang=js&
@@ -21791,7 +32053,7 @@ var mixins = __webpack_require__(2);
 
 /* harmony default export */ var radio_groupvue_type_script_lang_js_ = ({
   name: 'RadioGroup',
-  mixins: [mixins["a" /* emitter */], mixins["d" /* listeners */]],
+  mixins: [mixins["a" /* emitter */], mixins["e" /* listeners */]],
   props: {
     name: {
       type: String,
@@ -21884,10 +32146,10 @@ var mixins = __webpack_require__(2);
 // CONCATENATED MODULE: ./src/core/view/components/radio-group/index.vue?vue&type=script&lang=js&
  /* harmony default export */ var components_radio_groupvue_type_script_lang_js_ = (radio_groupvue_type_script_lang_js_); 
 // EXTERNAL MODULE: ./src/core/view/components/radio-group/index.vue?vue&type=style&index=0&lang=css&
-var radio_groupvue_type_style_index_0_lang_css_ = __webpack_require__(105);
+var radio_groupvue_type_style_index_0_lang_css_ = __webpack_require__(142);
 
 // EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
-var componentNormalizer = __webpack_require__(0);
+var componentNormalizer = __webpack_require__(1);
 
 // CONCATENATED MODULE: ./src/core/view/components/radio-group/index.vue
 
@@ -21915,14 +32177,14 @@ component.options.__file = "src/core/view/components/radio-group/index.vue"
 /* harmony default export */ var radio_group = __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
-/* 137 */
+/* 176 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 // ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"4130fe76-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/radio/index.vue?vue&type=template&id=4b562a50&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e3b674d4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/radio/index.vue?vue&type=template&id=4b562a50&
 var render = function() {
   var _vm = this
   var _h = _vm.$createElement
@@ -21956,7 +32218,7 @@ render._withStripped = true
 
 // CONCATENATED MODULE: ./src/core/view/components/radio/index.vue?vue&type=template&id=4b562a50&
 
-// EXTERNAL MODULE: ./src/core/view/mixins/index.js + 2 modules
+// EXTERNAL MODULE: ./src/core/view/mixins/index.js
 var mixins = __webpack_require__(2);
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/radio/index.vue?vue&type=script&lang=js&
@@ -21979,7 +32241,7 @@ var mixins = __webpack_require__(2);
 
 /* harmony default export */ var radiovue_type_script_lang_js_ = ({
   name: 'Radio',
-  mixins: [mixins["a" /* emitter */], mixins["d" /* listeners */]],
+  mixins: [mixins["a" /* emitter */], mixins["e" /* listeners */]],
   props: {
     checked: {
       type: [Boolean, String],
@@ -22062,10 +32324,10 @@ var mixins = __webpack_require__(2);
 // CONCATENATED MODULE: ./src/core/view/components/radio/index.vue?vue&type=script&lang=js&
  /* harmony default export */ var components_radiovue_type_script_lang_js_ = (radiovue_type_script_lang_js_); 
 // EXTERNAL MODULE: ./src/core/view/components/radio/index.vue?vue&type=style&index=0&lang=css&
-var radiovue_type_style_index_0_lang_css_ = __webpack_require__(106);
+var radiovue_type_style_index_0_lang_css_ = __webpack_require__(143);
 
 // EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
-var componentNormalizer = __webpack_require__(0);
+var componentNormalizer = __webpack_require__(1);
 
 // CONCATENATED MODULE: ./src/core/view/components/radio/index.vue
 
@@ -22093,14 +32355,149 @@ component.options.__file = "src/core/view/components/radio/index.vue"
 /* harmony default export */ var components_radio = __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
-/* 138 */
+/* 177 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 // ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"4130fe76-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/scroll-view/index.vue?vue&type=template&id=e9d562fc&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e3b674d4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/resize-sensor/index.vue?vue&type=template&id=59100dd0&
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "uni-resize-sensor",
+    {
+      on: {
+        "~animationstart": function($event) {
+          return _vm.update($event)
+        }
+      }
+    },
+    [
+      _c("div", { on: { scroll: _vm.update } }, [_c("div")]),
+      _c("div", { on: { scroll: _vm.update } }, [_c("div")])
+    ]
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+// CONCATENATED MODULE: ./src/core/view/components/resize-sensor/index.vue?vue&type=template&id=59100dd0&
+
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/resize-sensor/index.vue?vue&type=script&lang=js&
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+var MAX = 100000;
+/* harmony default export */ var resize_sensorvue_type_script_lang_js_ = ({
+  name: 'ResizeSensor',
+  props: {
+    initial: {
+      type: [Boolean, String],
+      default: false
+    }
+  },
+  data: function data() {
+    return {
+      size: {
+        width: -1,
+        height: -1
+      }
+    };
+  },
+  watch: {
+    size: {
+      deep: true,
+      handler: function handler(size) {
+        this.$emit('resize', Object.assign({}, size));
+      }
+    }
+  },
+  mounted: function mounted() {
+    if (this.initial === true) {
+      this.$nextTick(this.update);
+    }
+
+    if (this.$el.offsetParent !== this.$el.parentNode) {
+      this.$el.parentNode.style.position = 'relative';
+    }
+
+    if (!('AnimationEvent' in window)) {
+      this.reset();
+    }
+  },
+  activated: function activated() {
+    this.reset();
+  },
+  methods: {
+    reset: function reset() {
+      var expand = this.$el.firstChild;
+      expand.scrollLeft = MAX;
+      expand.scrollTop = MAX;
+      var shrink = this.$el.lastChild;
+      shrink.scrollLeft = MAX;
+      shrink.scrollTop = MAX;
+    },
+    update: function update() {
+      this.size.width = this.$el.offsetWidth;
+      this.size.height = this.$el.offsetHeight;
+      this.reset();
+    }
+  }
+});
+// CONCATENATED MODULE: ./src/core/view/components/resize-sensor/index.vue?vue&type=script&lang=js&
+ /* harmony default export */ var components_resize_sensorvue_type_script_lang_js_ = (resize_sensorvue_type_script_lang_js_); 
+// EXTERNAL MODULE: ./src/core/view/components/resize-sensor/index.vue?vue&type=style&index=0&lang=css&
+var resize_sensorvue_type_style_index_0_lang_css_ = __webpack_require__(144);
+
+// EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
+var componentNormalizer = __webpack_require__(1);
+
+// CONCATENATED MODULE: ./src/core/view/components/resize-sensor/index.vue
+
+
+
+
+
+
+/* normalize component */
+
+var component = Object(componentNormalizer["a" /* default */])(
+  components_resize_sensorvue_type_script_lang_js_,
+  render,
+  staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "src/core/view/components/resize-sensor/index.vue"
+/* harmony default export */ var resize_sensor = __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+/* 178 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+// ESM COMPAT FLAG
+__webpack_require__.r(__webpack_exports__);
+
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e3b674d4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/scroll-view/index.vue?vue&type=template&id=e9d562fc&
 var render = function() {
   var _vm = this
   var _h = _vm.$createElement
@@ -22120,7 +32517,7 @@ var render = function() {
         [
           _c(
             "div",
-            { ref: "content" },
+            { ref: "content", staticClass: "uni-scroll-view-content" },
             [
               _vm.refresherEnabled
                 ? _c(
@@ -22149,6 +32546,7 @@ var render = function() {
                                     ? _c(
                                         "svg",
                                         {
+                                          key: "refresh__icon",
                                           staticClass:
                                             "uni-scroll-view-refresh__icon",
                                           style: {
@@ -22184,6 +32582,7 @@ var render = function() {
                                     ? _c(
                                         "svg",
                                         {
+                                          key: "refresh__spinner",
                                           staticClass:
                                             "uni-scroll-view-refresh__spinner",
                                           attrs: {
@@ -22194,7 +32593,7 @@ var render = function() {
                                         },
                                         [
                                           _c("circle", {
-                                            staticStyle: { color: "#2BD009" },
+                                            staticStyle: { color: "#2bd009" },
                                             attrs: {
                                               cx: "50",
                                               cy: "50",
@@ -22234,10 +32633,13 @@ render._withStripped = true
 // CONCATENATED MODULE: ./src/core/view/components/scroll-view/index.vue?vue&type=template&id=e9d562fc&
 
 // EXTERNAL MODULE: ./src/core/view/mixins/scroller/index.js + 2 modules
-var scroller = __webpack_require__(64);
+var scroller = __webpack_require__(74);
 
 // EXTERNAL MODULE: ./src/shared/index.js + 7 modules
-var shared = __webpack_require__(1);
+var shared = __webpack_require__(0);
+
+// EXTERNAL MODULE: ./src/platforms/app-plus/helpers/scroll.js
+var helpers_scroll = __webpack_require__(5);
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/scroll-view/index.vue?vue&type=script&lang=js&
 //
@@ -22307,9 +32709,23 @@ var shared = __webpack_require__(1);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
-var passiveOptions = shared["h" /* supportsPassive */] ? {
+
+var passiveOptions = shared["k" /* supportsPassive */] ? {
   passive: true
 } : false; // const PULLING = 'pulling'
 // const REFRESHING = 'refreshing'
@@ -22423,7 +32839,13 @@ var passiveOptions = shared["h" /* supportsPassive */] ? {
   },
   mounted: function mounted() {
     var self = this;
+    var touchStart = null;
+    var needStop = null;
     this._attached = true;
+    this.toUpperNumber = 0; // 容器触顶时，此时鼠标Y轴位置
+
+    this.triggerAbort = false;
+    this.beforeRefreshing = false;
 
     this._scrollTopChanged(this.scrollTopNumber);
 
@@ -22431,52 +32853,50 @@ var passiveOptions = shared["h" /* supportsPassive */] ? {
 
     this._scrollIntoViewChanged(this.scrollIntoView);
 
-    this.__handleScroll = function (e) {
+    this.__handleScroll = function (event) {
       event.preventDefault();
       event.stopPropagation();
 
       self._handleScroll.bind(self, event)();
     };
 
-    var touchStart = null;
-    var needStop = null;
-
     this.__handleTouchMove = function (event) {
       var x = event.touches[0].pageX;
       var y = event.touches[0].pageY;
       var main = self.$refs.main;
 
-      if (needStop === null) {
-        if (Math.abs(x - touchStart.x) > Math.abs(y - touchStart.y)) {
-          // 横向滑动
-          if (self.scrollX) {
-            if (main.scrollLeft === 0 && x > touchStart.x) {
-              needStop = false;
-              return;
-            } else if (main.scrollWidth === main.offsetWidth + main.scrollLeft && x < touchStart.x) {
-              needStop = false;
-              return;
-            }
-
-            needStop = true;
-          } else {
+      if (Math.abs(x - touchStart.x) > Math.abs(y - touchStart.y)) {
+        // 横向滑动
+        if (self.scrollX) {
+          if (main.scrollLeft === 0 && x > touchStart.x) {
             needStop = false;
+            return;
+          } else if (main.scrollWidth === main.offsetWidth + main.scrollLeft && x < touchStart.x) {
+            needStop = false;
+            return;
+          }
+
+          needStop = true;
+        } else {
+          needStop = false;
+        }
+      } else {
+        // 纵向滑动
+        if (self.scrollY) {
+          if (main.scrollTop === 0 && y > touchStart.y) {
+            needStop = false; // 刷新时，阻止页面滚动
+
+            if (self.refresherEnabled && event.cancelable !== false) {
+              event.preventDefault();
+            }
+          } else if (main.scrollHeight === main.offsetHeight + main.scrollTop && y < touchStart.y) {
+            needStop = false;
+            return;
+          } else {
+            needStop = true;
           }
         } else {
-          // 纵向滑动
-          if (self.scrollY) {
-            if (main.scrollTop === 0 && y > touchStart.y) {
-              needStop = false;
-              return;
-            } else if (main.scrollHeight === main.offsetHeight + main.scrollTop && y < touchStart.y) {
-              needStop = false;
-              return;
-            }
-
-            needStop = true;
-          } else {
-            needStop = false;
-          }
+          needStop = false;
         }
       }
 
@@ -22484,61 +32904,70 @@ var passiveOptions = shared["h" /* supportsPassive */] ? {
         event.stopPropagation();
       }
 
+      if (main.scrollTop === 0 && event.touches.length === 1) {
+        // 如果容器滑动到达顶端，则进入下拉状态
+        self.refreshState = 'pulling';
+      }
+
       if (self.refresherEnabled && self.refreshState === 'pulling') {
         var dy = y - touchStart.y;
-        self.refresherHeight = dy;
-        var rotate = dy / self.refresherThreshold;
 
-        if (rotate > 1) {
-          rotate = 1;
-        } else {
-          rotate = rotate * 360;
+        if (self.toUpperNumber === 0) {
+          self.toUpperNumber = y;
         }
 
-        self.refreshRotate = rotate;
-        self.$trigger('refresherpulling', event, {
-          deltaY: dy
-        });
+        if (!self.beforeRefreshing) {
+          self.refresherHeight = y - self.toUpperNumber; // 之前为刷新状态则不再触发pulling
+
+          if (self.refresherHeight > 0) {
+            self.triggerAbort = true;
+            self.$trigger('refresherpulling', event, {
+              deltaY: dy
+            });
+          }
+        } else {
+          self.refresherHeight = dy + self.refresherThreshold; // 如果之前在刷新状态，则不触发刷新中断
+
+          self.triggerAbort = false;
+        }
+
+        var route = self.refresherHeight / self.refresherThreshold;
+        self.refreshRotate = (route > 1 ? 1 : route) * 360;
       }
     };
 
     this.__handleTouchStart = function (event) {
       if (event.touches.length === 1) {
-        Object(shared["b" /* disableScrollBounce */])({
+        Object(helpers_scroll["a" /* disableScrollBounce */])({
           disable: true
         });
-        needStop = null;
         touchStart = {
           x: event.touches[0].pageX,
           y: event.touches[0].pageY
         };
-
-        if (self.refresherEnabled && self.refreshState !== 'refreshing' && self.$refs.main.scrollTop === 0) {
-          self.refreshState = 'pulling';
-        }
       }
     };
 
     this.__handleTouchEnd = function (event) {
       touchStart = null;
-      Object(shared["b" /* disableScrollBounce */])({
+      Object(helpers_scroll["a" /* disableScrollBounce */])({
         disable: false
       });
 
       if (self.refresherHeight >= self.refresherThreshold) {
         self._setRefreshState('refreshing');
       } else {
-        self.refresherHeight = 0;
-        self.$trigger('refresherabort', event, {});
+        self._setRefreshState('refresherabort');
       }
     };
 
     this.$refs.main.addEventListener('touchstart', this.__handleTouchStart, passiveOptions);
-    this.$refs.main.addEventListener('touchmove', this.__handleTouchMove, passiveOptions);
-    this.$refs.main.addEventListener('scroll', this.__handleScroll, shared["h" /* supportsPassive */] ? {
+    this.$refs.main.addEventListener('touchmove', this.__handleTouchMove);
+    this.$refs.main.addEventListener('scroll', this.__handleScroll, shared["k" /* supportsPassive */] ? {
       passive: false
     } : false);
     this.$refs.main.addEventListener('touchend', this.__handleTouchEnd, passiveOptions);
+    Object(helpers_scroll["b" /* initScrollBounce */])();
   },
   activated: function activated() {
     // 还原 scroll-view 滚动位置
@@ -22548,7 +32977,7 @@ var passiveOptions = shared["h" /* supportsPassive */] ? {
   beforeDestroy: function beforeDestroy() {
     this.$refs.main.removeEventListener('touchstart', this.__handleTouchStart, passiveOptions);
     this.$refs.main.removeEventListener('touchmove', this.__handleTouchMove, passiveOptions);
-    this.$refs.main.removeEventListener('scroll', this.__handleScroll, shared["h" /* supportsPassive */] ? {
+    this.$refs.main.removeEventListener('scroll', this.__handleScroll, shared["k" /* supportsPassive */] ? {
       passive: false
     } : false);
     this.$refs.main.removeEventListener('touchend', this.__handleTouchEnd, passiveOptions);
@@ -22624,53 +33053,50 @@ var passiveOptions = shared["h" /* supportsPassive */] ? {
       }
     },
     _handleScroll: function _handleScroll($event) {
-      if (!($event.timeStamp - this._lastScrollTime < 20)) {
-        this._lastScrollTime = $event.timeStamp;
-        var target = $event.target;
-        this.$trigger('scroll', $event, {
-          scrollLeft: target.scrollLeft,
-          scrollTop: target.scrollTop,
-          scrollHeight: target.scrollHeight,
-          scrollWidth: target.scrollWidth,
-          deltaX: this.lastScrollLeft - target.scrollLeft,
-          deltaY: this.lastScrollTop - target.scrollTop
-        });
+      var target = $event.target;
+      this.$trigger('scroll', $event, {
+        scrollLeft: target.scrollLeft,
+        scrollTop: target.scrollTop,
+        scrollHeight: target.scrollHeight,
+        scrollWidth: target.scrollWidth,
+        deltaX: this.lastScrollLeft - target.scrollLeft,
+        deltaY: this.lastScrollTop - target.scrollTop
+      });
 
-        if (this.scrollY) {
-          if (target.scrollTop <= this.upperThresholdNumber && this.lastScrollTop - target.scrollTop > 0 && $event.timeStamp - this.lastScrollToUpperTime > 200) {
-            this.$trigger('scrolltoupper', $event, {
-              direction: 'top'
-            });
-            this.lastScrollToUpperTime = $event.timeStamp;
-          }
-
-          if (target.scrollTop + target.offsetHeight + this.lowerThresholdNumber >= target.scrollHeight && this.lastScrollTop - target.scrollTop < 0 && $event.timeStamp - this.lastScrollToLowerTime > 200) {
-            this.$trigger('scrolltolower', $event, {
-              direction: 'bottom'
-            });
-            this.lastScrollToLowerTime = $event.timeStamp;
-          }
+      if (this.scrollY) {
+        if (target.scrollTop <= this.upperThresholdNumber && this.lastScrollTop - target.scrollTop > 0 && $event.timeStamp - this.lastScrollToUpperTime > 200) {
+          this.$trigger('scrolltoupper', $event, {
+            direction: 'top'
+          });
+          this.lastScrollToUpperTime = $event.timeStamp;
         }
 
-        if (this.scrollX) {
-          if (target.scrollLeft <= this.upperThresholdNumber && this.lastScrollLeft - target.scrollLeft > 0 && $event.timeStamp - this.lastScrollToUpperTime > 200) {
-            this.$trigger('scrolltoupper', $event, {
-              direction: 'left'
-            });
-            this.lastScrollToUpperTime = $event.timeStamp;
-          }
-
-          if (target.scrollLeft + target.offsetWidth + this.lowerThresholdNumber >= target.scrollWidth && this.lastScrollLeft - target.scrollLeft < 0 && $event.timeStamp - this.lastScrollToLowerTime > 200) {
-            this.$trigger('scrolltolower', $event, {
-              direction: 'right'
-            });
-            this.lastScrollToLowerTime = $event.timeStamp;
-          }
+        if (target.scrollTop + target.offsetHeight + this.lowerThresholdNumber >= target.scrollHeight && this.lastScrollTop - target.scrollTop < 0 && $event.timeStamp - this.lastScrollToLowerTime > 200) {
+          this.$trigger('scrolltolower', $event, {
+            direction: 'bottom'
+          });
+          this.lastScrollToLowerTime = $event.timeStamp;
         }
-
-        this.lastScrollTop = target.scrollTop;
-        this.lastScrollLeft = target.scrollLeft;
       }
+
+      if (this.scrollX) {
+        if (target.scrollLeft <= this.upperThresholdNumber && this.lastScrollLeft - target.scrollLeft > 0 && $event.timeStamp - this.lastScrollToUpperTime > 200) {
+          this.$trigger('scrolltoupper', $event, {
+            direction: 'left'
+          });
+          this.lastScrollToUpperTime = $event.timeStamp;
+        }
+
+        if (target.scrollLeft + target.offsetWidth + this.lowerThresholdNumber >= target.scrollWidth && this.lastScrollLeft - target.scrollLeft < 0 && $event.timeStamp - this.lastScrollToLowerTime > 200) {
+          this.$trigger('scrolltolower', $event, {
+            direction: 'right'
+          });
+          this.lastScrollToLowerTime = $event.timeStamp;
+        }
+      }
+
+      this.lastScrollTop = target.scrollTop;
+      this.lastScrollLeft = target.scrollLeft;
     },
     _scrollTopChanged: function _scrollTopChanged(val) {
       if (this.scrollY) {
@@ -22701,9 +33127,7 @@ var passiveOptions = shared["h" /* supportsPassive */] ? {
     _scrollIntoViewChanged: function _scrollIntoViewChanged(val) {
       if (val) {
         if (!/^[_a-zA-Z][-_a-zA-Z0-9:]*$/.test(val)) {
-          console.group('scroll-into-view="' + val + '" 有误');
-          console.error('id 属性值格式错误。如不能以数字开头。');
-          console.groupEnd();
+          console.error("id error: scroll-into-view=".concat(val));
           return;
         }
 
@@ -22760,13 +33184,30 @@ var passiveOptions = shared["h" /* supportsPassive */] ? {
     _setRefreshState: function _setRefreshState(state) {
       switch (state) {
         case 'refreshing':
-          this.refresherHeight = this.refresherThreshold;
-          this.$trigger('refresherrefresh', event, {});
+          this.refresherHeight = this.refresherThreshold; // 之前是刷新状态则不再触发刷新
+
+          if (!this.beforeRefreshing) {
+            this.beforeRefreshing = true;
+            this.$trigger('refresherrefresh', {}, {}); // this.$emit('update:refresherTriggered', true)
+          }
+
           break;
 
         case 'restore':
-          this.refresherHeight = 0;
-          this.$trigger('refresherrestore', {}, {});
+        case 'refresherabort':
+          this.beforeRefreshing = false;
+          this.refresherHeight = this.toUpperNumber = 0;
+
+          if (state === 'restore') {
+            this.triggerAbort = false;
+            this.$trigger('refresherrestore', {}, {});
+          }
+
+          if (state === 'refresherabort' && this.triggerAbort) {
+            this.triggerAbort = false;
+            this.$trigger('refresherabort', {}, {});
+          }
+
           break;
       }
 
@@ -22776,7 +33217,9 @@ var passiveOptions = shared["h" /* supportsPassive */] ? {
       var main = this.$refs.main;
       return {
         scrollLeft: main.scrollLeft,
-        scrollTop: main.scrollTop
+        scrollTop: main.scrollTop,
+        scrollHeight: main.scrollHeight,
+        scrollWidth: main.scrollWidth
       };
     }
   }
@@ -22784,10 +33227,10 @@ var passiveOptions = shared["h" /* supportsPassive */] ? {
 // CONCATENATED MODULE: ./src/core/view/components/scroll-view/index.vue?vue&type=script&lang=js&
  /* harmony default export */ var components_scroll_viewvue_type_script_lang_js_ = (scroll_viewvue_type_script_lang_js_); 
 // EXTERNAL MODULE: ./src/core/view/components/scroll-view/index.vue?vue&type=style&index=0&lang=css&
-var scroll_viewvue_type_style_index_0_lang_css_ = __webpack_require__(108);
+var scroll_viewvue_type_style_index_0_lang_css_ = __webpack_require__(145);
 
 // EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
-var componentNormalizer = __webpack_require__(0);
+var componentNormalizer = __webpack_require__(1);
 
 // CONCATENATED MODULE: ./src/core/view/components/scroll-view/index.vue
 
@@ -22815,14 +33258,14 @@ component.options.__file = "src/core/view/components/scroll-view/index.vue"
 /* harmony default export */ var scroll_view = __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
-/* 139 */
+/* 179 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 // ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"4130fe76-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/slider/index.vue?vue&type=template&id=1969bd7a&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e3b674d4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/slider/index.vue?vue&type=template&id=1969bd7a&
 var render = function() {
   var _vm = this
   var _h = _vm.$createElement
@@ -22864,6 +33307,7 @@ var render = function() {
                 expression: "showValue"
               }
             ],
+            ref: "uni-slider-value",
             staticClass: "uni-slider-value"
           },
           [_vm._v(_vm._s(_vm.sliderValue))]
@@ -22880,11 +33324,11 @@ render._withStripped = true
 
 // CONCATENATED MODULE: ./src/core/view/components/slider/index.vue?vue&type=template&id=1969bd7a&
 
-// EXTERNAL MODULE: ./src/core/view/mixins/index.js + 2 modules
+// EXTERNAL MODULE: ./src/core/view/mixins/index.js
 var mixins = __webpack_require__(2);
 
 // EXTERNAL MODULE: ./src/core/view/mixins/touchtrack.js
-var touchtrack = __webpack_require__(9);
+var touchtrack = __webpack_require__(12);
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/slider/index.vue?vue&type=script&lang=js&
 //
@@ -22922,11 +33366,105 @@ var touchtrack = __webpack_require__(9);
 //
 //
 //
+//
+
+ // 处理js计算小数时的精度问题
+
+var computeController = {
+  add: function add(arg) {
+    var r1, r2, m;
+
+    try {
+      // 获得小数位数
+      r1 = this.toString().split('.')[1].length;
+    } catch (e) {
+      r1 = 0;
+    }
+
+    try {
+      // 获得小数位数
+      r2 = arg.toString().split('.')[1].length;
+    } catch (e) {
+      r2 = 0;
+    }
+
+    m = Math.pow(10, Math.max(r1, r2));
+    return (this * m + arg * m) / m;
+  },
+  sub: function sub(arg) {
+    return this.add(-arg);
+  },
+  mul: function mul(arg) {
+    var m = 0;
+    var s1 = this.toString();
+    var s2 = arg.toString();
+
+    try {
+      // 获得小数位数
+      m += s1.split('.')[1].length;
+    } catch (e) {}
+
+    try {
+      // 获得小数位数
+      m += s2.split('.')[1].length;
+    } catch (e) {} // 转为十进制计算后，要除以两个数的共同小数位数
 
 
+    return Number(s1.replace('.', '')) * Number(s2.replace('.', '')) / Math.pow(10, m);
+  },
+  div: function div(arg) {
+    var t1 = 0;
+    var t2 = 0;
+    var r1;
+    var r2;
+
+    try {
+      // 获得小数位数
+      t1 = this.toString().split('.')[1].length;
+    } catch (e) {}
+
+    try {
+      // 获得小数位数
+      t2 = arg.toString().split('.')[1].length;
+    } catch (e) {}
+
+    r1 = Number(this.toString().replace('.', ''));
+    r2 = Number(arg.toString().replace('.', '')); // 转为十进制计算后，要乘以除数与被除数小数位数的差
+
+    return r1 / r2 * Math.pow(10, t2 - t1);
+  },
+  mod: function mod(arg) {
+    var t1 = 0;
+    var t2 = 0;
+    var r1;
+    var r2;
+
+    try {
+      t1 = this.toString().split('.')[1].length;
+    } catch (e) {}
+
+    try {
+      t2 = arg.toString().split('.')[1].length;
+    } catch (e) {} // 小数位数
+
+
+    var digit = Math.pow(10, Math.abs(t1 - t2)); // eslint-disable-next-line eqeqeq
+
+    if (digit == 1) {
+      digit = Math.pow(10, t1);
+    } // 计算余数
+
+
+    r1 = (this * digit).toString().split('.')[0];
+    r2 = arg * digit; // 小数点后数字，直接拼接上即可
+
+    var decimals = (this * digit).toString().split('.')[1] ? (this * digit).toString().split('.')[1] : '';
+    return (r1 % r2 + decimals) / digit;
+  }
+};
 /* harmony default export */ var slidervue_type_script_lang_js_ = ({
   name: 'Slider',
-  mixins: [mixins["a" /* emitter */], mixins["d" /* listeners */], touchtrack["a" /* default */]],
+  mixins: [mixins["a" /* emitter */], mixins["e" /* listeners */], touchtrack["a" /* default */]],
   props: {
     name: {
       type: String,
@@ -23037,14 +33575,20 @@ var touchtrack = __webpack_require__(9);
   },
   methods: {
     _onUserChangedValue: function _onUserChangedValue(e) {
+      var sliderRightBox = this.$refs['uni-slider-value'];
+      var sliderRightBoxLeft = getComputedStyle(sliderRightBox, null).marginLeft;
+      var sliderRightBoxWidth = sliderRightBox.offsetWidth;
+      sliderRightBoxWidth = sliderRightBoxWidth + parseInt(sliderRightBoxLeft);
       var slider = this.$refs['uni-slider'];
-      var offsetWidth = slider.offsetWidth;
+      var offsetWidth = slider.offsetWidth - (this.showValue ? sliderRightBoxWidth : 0);
       var boxLeft = slider.getBoundingClientRect().left;
       var value = (e.x - boxLeft) * (this.max - this.min) / offsetWidth + Number(this.min);
       this.sliderValue = this._filterValue(value);
     },
     _filterValue: function _filterValue(e) {
-      return e < this.min ? this.min : e > this.max ? this.max : Math.round((e - this.min) / this.step) * this.step + Number(this.min);
+      var max = Number(this.max);
+      var min = Number(this.min);
+      return e < min ? min : e > max ? max : computeController.mul.call(Math.round((e - min) / this.step), this.step) + min;
     },
     _getValueWidth: function _getValueWidth() {
       return 100 * (this.sliderValue - this.min) / (this.max - this.min) + '%';
@@ -23058,7 +33602,7 @@ var touchtrack = __webpack_require__(9);
     _onTrack: function _onTrack(e) {
       if (!this.disabled) {
         return e.detail.state === 'move' ? (this._onUserChangedValue({
-          x: e.detail.x0
+          x: e.detail.x
         }), this.$trigger('changing', e, {
           value: this.sliderValue
         }), !1) : e.detail.state === 'end' && this.$trigger('change', e, {
@@ -23095,10 +33639,10 @@ var touchtrack = __webpack_require__(9);
 // CONCATENATED MODULE: ./src/core/view/components/slider/index.vue?vue&type=script&lang=js&
  /* harmony default export */ var components_slidervue_type_script_lang_js_ = (slidervue_type_script_lang_js_); 
 // EXTERNAL MODULE: ./src/core/view/components/slider/index.vue?vue&type=style&index=0&lang=css&
-var slidervue_type_style_index_0_lang_css_ = __webpack_require__(109);
+var slidervue_type_style_index_0_lang_css_ = __webpack_require__(146);
 
 // EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
-var componentNormalizer = __webpack_require__(0);
+var componentNormalizer = __webpack_require__(1);
 
 // CONCATENATED MODULE: ./src/core/view/components/slider/index.vue
 
@@ -23126,14 +33670,14 @@ component.options.__file = "src/core/view/components/slider/index.vue"
 /* harmony default export */ var slider = __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
-/* 140 */
+/* 180 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 // ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"4130fe76-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/swiper-item/index.vue?vue&type=template&id=3883b065&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e3b674d4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/swiper-item/index.vue?vue&type=template&id=3883b065&
 var render = function() {
   var _vm = this
   var _h = _vm.$createElement
@@ -23182,10 +33726,10 @@ render._withStripped = true
 // CONCATENATED MODULE: ./src/core/view/components/swiper-item/index.vue?vue&type=script&lang=js&
  /* harmony default export */ var components_swiper_itemvue_type_script_lang_js_ = (swiper_itemvue_type_script_lang_js_); 
 // EXTERNAL MODULE: ./src/core/view/components/swiper-item/index.vue?vue&type=style&index=0&lang=css&
-var swiper_itemvue_type_style_index_0_lang_css_ = __webpack_require__(110);
+var swiper_itemvue_type_style_index_0_lang_css_ = __webpack_require__(147);
 
 // EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
-var componentNormalizer = __webpack_require__(0);
+var componentNormalizer = __webpack_require__(1);
 
 // CONCATENATED MODULE: ./src/core/view/components/swiper-item/index.vue
 
@@ -23213,14 +33757,14 @@ component.options.__file = "src/core/view/components/swiper-item/index.vue"
 /* harmony default export */ var swiper_item = __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
-/* 141 */
+/* 181 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 // ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"4130fe76-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/switch/index.vue?vue&type=template&id=04951fe6&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e3b674d4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/switch/index.vue?vue&type=template&id=04951fe6&
 var render = function() {
   var _vm = this
   var _h = _vm.$createElement
@@ -23272,7 +33816,7 @@ render._withStripped = true
 
 // CONCATENATED MODULE: ./src/core/view/components/switch/index.vue?vue&type=template&id=04951fe6&
 
-// EXTERNAL MODULE: ./src/core/view/mixins/index.js + 2 modules
+// EXTERNAL MODULE: ./src/core/view/mixins/index.js
 var mixins = __webpack_require__(2);
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/switch/index.vue?vue&type=script&lang=js&
@@ -23301,7 +33845,7 @@ var mixins = __webpack_require__(2);
 
 /* harmony default export */ var switchvue_type_script_lang_js_ = ({
   name: 'Switch',
-  mixins: [mixins["a" /* emitter */], mixins["d" /* listeners */]],
+  mixins: [mixins["a" /* emitter */], mixins["e" /* listeners */]],
   props: {
     name: {
       type: String,
@@ -23383,10 +33927,10 @@ var mixins = __webpack_require__(2);
 // CONCATENATED MODULE: ./src/core/view/components/switch/index.vue?vue&type=script&lang=js&
  /* harmony default export */ var components_switchvue_type_script_lang_js_ = (switchvue_type_script_lang_js_); 
 // EXTERNAL MODULE: ./src/core/view/components/switch/index.vue?vue&type=style&index=0&lang=css&
-var switchvue_type_style_index_0_lang_css_ = __webpack_require__(112);
+var switchvue_type_style_index_0_lang_css_ = __webpack_require__(149);
 
 // EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
-var componentNormalizer = __webpack_require__(0);
+var componentNormalizer = __webpack_require__(1);
 
 // CONCATENATED MODULE: ./src/core/view/components/switch/index.vue
 
@@ -23414,111 +33958,151 @@ component.options.__file = "src/core/view/components/switch/index.vue"
 /* harmony default export */ var components_switch = __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
-/* 142 */
+/* 182 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 // ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"4130fe76-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/textarea/index.vue?vue&type=template&id=33f82dda&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e3b674d4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/textarea/index.vue?vue&type=template&id=33f82dda&
 var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "uni-textarea",
-    _vm._g(
-      {
-        on: {
-          change: function($event) {
-            $event.stopPropagation()
-          }
-        }
-      },
-      _vm.$listeners
-    ),
-    [
-      _c("div", { staticClass: "uni-textarea-wrapper" }, [
-        _c(
-          "div",
+  return _c("uni-textarea", _vm._g({}, _vm.$listeners), [
+    _c("div", { ref: "wrapper", staticClass: "uni-textarea-wrapper" }, [
+      _c("div", {
+        directives: [
           {
+            name: "show",
+            rawName: "v-show",
+            value: !(_vm.composing || _vm.valueSync.length),
+            expression: "!(composing || valueSync.length)"
+          }
+        ],
+        ref: "placeholder",
+        staticClass: "uni-textarea-placeholder",
+        class: _vm.placeholderClass,
+        style: _vm.placeholderStyle,
+        domProps: { textContent: _vm._s(_vm.placeholder) }
+      }),
+      _c("div", {
+        ref: "line",
+        staticClass: "uni-textarea-line",
+        domProps: { textContent: _vm._s(" ") }
+      }),
+      _c(
+        "div",
+        { staticClass: "uni-textarea-compute" },
+        [
+          _vm._l(_vm.valueCompute, function(item, index) {
+            return _c("div", {
+              key: index,
+              domProps: { textContent: _vm._s(item.trim() ? item : ".") }
+            })
+          }),
+          _c("v-uni-resize-sensor", {
+            ref: "sensor",
+            on: { resize: _vm._resize }
+          })
+        ],
+        2
+      ),
+      !_vm.disabled || !_vm.fixColor
+        ? _c("textarea", {
             directives: [
               {
-                name: "show",
-                rawName: "v-show",
-                value: !(_vm.composition || _vm.valueSync.length),
-                expression: "!(composition||valueSync.length)"
-              }
-            ],
-            ref: "placeholder",
-            staticClass: "uni-textarea-placeholder",
-            class: _vm.placeholderClass,
-            style: _vm.placeholderStyle
-          },
-          [_vm._v(" " + _vm._s(_vm.placeholder) + " ")]
-        ),
-        _c("div", { ref: "line", staticClass: "uni-textarea-line" }),
-        _c(
-          "div",
-          { staticClass: "uni-textarea-compute" },
-          [
-            _vm._l(_vm.valueCompute, function(item, index) {
-              return _c("div", { key: index }, [
-                _vm._v(" " + _vm._s(item.trim() ? item : ".") + " ")
-              ])
-            }),
-            _c("v-uni-resize-sensor", {
-              ref: "sensor",
-              on: { resize: _vm._resize }
-            })
-          ],
-          2
-        ),
-        _c("textarea", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.valueSync,
-              expression: "valueSync"
-            }
-          ],
-          ref: "textarea",
-          staticClass: "uni-textarea-textarea",
-          class: { "uni-textarea-textarea-fix-margin": _vm.fixMargin },
-          style: { "overflow-y": _vm.autoHeight ? "hidden" : "auto" },
-          attrs: {
-            disabled: _vm.disabled,
-            maxlength: _vm.maxlengthNumber,
-            autofocus: _vm.autoFocus
-          },
-          domProps: { value: _vm.valueSync },
-          on: {
-            compositionstart: _vm._compositionstart,
-            compositionend: _vm._compositionend,
-            input: [
-              function($event) {
-                if ($event.target.composing) {
-                  return
-                }
-                _vm.valueSync = $event.target.value
+                name: "model",
+                rawName: "v-model",
+                value: _vm.valueSync,
+                expression: "valueSync"
               },
-              function($event) {
-                $event.stopPropagation()
-                return _vm._input($event)
-              }
+              { name: "keyboard", rawName: "v-keyboard" },
+              { name: "field", rawName: "v-field" }
             ],
-            focus: _vm._focus,
-            blur: _vm._blur,
-            "&touchstart": function($event) {
-              return _vm._touchstart($event)
+            ref: "textarea",
+            staticClass: "uni-textarea-textarea",
+            class: { "uni-textarea-textarea-fix-margin": _vm.fixMargin },
+            style: { "overflow-y": _vm.autoHeight ? "hidden" : "auto" },
+            attrs: {
+              disabled: _vm.disabled,
+              maxlength: _vm.maxlengthNumber,
+              enterkeyhint: _vm.confirmType
+            },
+            domProps: { value: _vm.valueSync },
+            on: {
+              change: function($event) {
+                $event.stopPropagation()
+              },
+              compositionstart: function($event) {
+                $event.stopPropagation()
+                return _vm._onCompositionstart($event)
+              },
+              compositionend: function($event) {
+                $event.stopPropagation()
+                return _vm._onCompositionend($event)
+              },
+              input: [
+                function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.valueSync = $event.target.value
+                },
+                function($event) {
+                  $event.stopPropagation()
+                  return _vm._onInput($event)
+                }
+              ],
+              focus: _vm._onFocus,
+              blur: _vm._onBlur,
+              "&touchstart": function($event) {
+                return _vm._onTouchstart($event)
+              },
+              keyup: function($event) {
+                if (
+                  !$event.type.indexOf("key") &&
+                  _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+                ) {
+                  return null
+                }
+                return _vm._onKeyUpEnter($event)
+              },
+              keydown: function($event) {
+                if (
+                  !$event.type.indexOf("key") &&
+                  _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+                ) {
+                  return null
+                }
+                return _vm._onKeyDownEnter($event)
+              }
             }
-          }
-        })
-      ])
-    ]
-  )
+          })
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.disabled && _vm.fixColor
+        ? _c("textarea", {
+            ref: "textarea",
+            staticClass: "uni-textarea-textarea",
+            class: { "uni-textarea-textarea-fix-margin": _vm.fixMargin },
+            style: { "overflow-y": _vm.autoHeight ? "hidden" : "auto" },
+            attrs: {
+              tabindex: "-1",
+              readonly: _vm.disabled,
+              maxlength: _vm.maxlengthNumber
+            },
+            domProps: { value: _vm.valueSync },
+            on: {
+              focus: function($event) {
+                return $event.target.blur()
+              }
+            }
+          })
+        : _vm._e()
+    ])
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -23526,10 +34110,26 @@ render._withStripped = true
 
 // CONCATENATED MODULE: ./src/core/view/components/textarea/index.vue?vue&type=template&id=33f82dda&
 
-// EXTERNAL MODULE: ./src/core/view/mixins/index.js + 2 modules
+// EXTERNAL MODULE: ./src/core/view/mixins/index.js
 var mixins = __webpack_require__(2);
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/textarea/index.vue?vue&type=script&lang=js&
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -23586,18 +34186,10 @@ var mixins = __webpack_require__(2);
 var DARK_TEST_STRING = '(prefers-color-scheme: dark)';
 /* harmony default export */ var textareavue_type_script_lang_js_ = ({
   name: 'Textarea',
-  mixins: [mixins["a" /* emitter */], mixins["c" /* keyboard */]],
-  model: {
-    prop: 'value',
-    event: 'update:value'
-  },
+  mixins: [mixins["b" /* field */]],
   props: {
     name: {
       type: String,
-      default: ''
-    },
-    value: {
-      type: [String, Number],
       default: ''
     },
     maxlength: {
@@ -23609,14 +34201,6 @@ var DARK_TEST_STRING = '(prefers-color-scheme: dark)';
       default: ''
     },
     disabled: {
-      type: [Boolean, String],
-      default: false
-    },
-    focus: {
-      type: [Boolean, String],
-      default: false
-    },
-    autoFocus: {
       type: [Boolean, String],
       default: false
     },
@@ -23632,25 +34216,14 @@ var DARK_TEST_STRING = '(prefers-color-scheme: dark)';
       type: [Boolean, String],
       default: false
     },
-    cursor: {
-      type: [Number, String],
-      default: -1
-    },
-    selectionStart: {
-      type: [Number, String],
-      default: -1
-    },
-    selectionEnd: {
-      type: [Number, String],
-      default: -1
+    confirmType: {
+      type: String,
+      default: ''
     }
   },
   data: function data() {
     return {
-      valueSync: String(this.value),
       valueComposition: '',
-      composition: false,
-      focusSync: this.focus,
       height: 0,
       focusChangeSource: '',
       // iOS 13 以下版本需要修正边距
@@ -23662,64 +34235,18 @@ var DARK_TEST_STRING = '(prefers-color-scheme: dark)';
       var maxlength = Number(this.maxlength);
       return isNaN(maxlength) ? 140 : maxlength;
     },
-    cursorNumber: function cursorNumber() {
-      var cursor = Number(this.cursor);
-      return isNaN(cursor) ? -1 : cursor;
-    },
-    selectionStartNumber: function selectionStartNumber() {
-      var selectionStart = Number(this.selectionStart);
-      return isNaN(selectionStart) ? -1 : selectionStart;
-    },
-    selectionEndNumber: function selectionEndNumber() {
-      var selectionEnd = Number(this.selectionEnd);
-      return isNaN(selectionEnd) ? -1 : selectionEnd;
-    },
     valueCompute: function valueCompute() {
-      return (this.composition ? this.valueComposition : this.valueSync).split('\n');
+      return (this.composing ? this.valueComposition : this.valueSync).split('\n');
+    },
+    isDone: function isDone() {
+      return ['done', 'go', 'next', 'search', 'send'].includes(this.confirmType);
     }
   },
   watch: {
-    value: function value(val) {
-      this.valueSync = String(val);
-    },
-    valueSync: function valueSync(val) {
-      if (val !== this._oldValue) {
-        this._oldValue = val;
-        this.$trigger('input', {}, {
-          value: val,
-          cursor: this.$refs.textarea.selectionEnd
-        });
-        this.$emit('update:value', val);
-      }
-    },
     focus: function focus(val) {
       if (val) {
         this.focusChangeSource = 'focus';
-
-        if (this.$refs.textarea) {
-          this.$refs.textarea.focus();
-        }
-      } else {
-        if (this.$refs.textarea) {
-          this.$refs.textarea.blur();
-        }
       }
-    },
-    focusSync: function focusSync(val) {
-      this.$emit('update:focus', val);
-
-      this._checkSelection();
-
-      this._checkCursor();
-    },
-    cursorNumber: function cursorNumber() {
-      this._checkCursor();
-    },
-    selectionStartNumber: function selectionStartNumber() {
-      this._checkSelection();
-    },
-    selectionEndNumber: function selectionEndNumber() {
-      this._checkSelection();
     },
     height: function height(_height) {
       var lineHeight = parseFloat(getComputedStyle(this.$el).lineHeight);
@@ -23736,7 +34263,8 @@ var DARK_TEST_STRING = '(prefers-color-scheme: dark)';
       });
 
       if (this.autoHeight) {
-        this.$el.style.height = this.height + 'px';
+        this.$el.style.height = 'auto';
+        this.$refs.wrapper.style.height = this.height + 'px';
       }
     }
   },
@@ -23747,8 +34275,6 @@ var DARK_TEST_STRING = '(prefers-color-scheme: dark)';
     });
   },
   mounted: function mounted() {
-    this._oldValue = this.$refs.textarea.value = this.valueSync;
-
     this._resize({
       height: this.$refs.sensor.$el.offsetHeight
     });
@@ -23764,8 +34290,6 @@ var DARK_TEST_STRING = '(prefers-color-scheme: dark)';
 
       $vm = $vm.$parent;
     }
-
-    this.initKeyboard(this.$refs.textarea);
   },
   beforeDestroy: function beforeDestroy() {
     this.$dispatch('Form', 'uni-form-group-update', {
@@ -23774,35 +34298,27 @@ var DARK_TEST_STRING = '(prefers-color-scheme: dark)';
     });
   },
   methods: {
-    _focus: function _focus($event) {
-      this.focusSync = true;
-      this.$trigger('focus', $event, {
-        value: this.valueSync
-      });
-    },
-    _checkSelection: function _checkSelection() {
-      if (this.focusSync && !this.focusChangeSource && this.selectionStartNumber > -1 && this.selectionEndNumber > -1) {
-        this.$refs.textarea.selectionStart = this.selectionStartNumber;
-        this.$refs.textarea.selectionEnd = this.selectionEndNumber;
+    _onKeyDownEnter: function _onKeyDownEnter($event) {
+      if (this.isDone) {
+        $event.preventDefault();
       }
     },
-    _checkCursor: function _checkCursor() {
-      if (this.focusSync && (this.focusChangeSource === 'focus' || !this.focusChangeSource && this.selectionStartNumber < 0 && this.selectionEndNumber < 0) && this.cursorNumber > -1) {
-        this.$refs.textarea.selectionEnd = this.$refs.textarea.selectionStart = this.cursorNumber;
+    _onKeyUpEnter: function _onKeyUpEnter($event) {
+      if (this.isDone) {
+        this._confirm($event);
+
+        this.$refs.textarea.blur();
       }
     },
-    _blur: function _blur($event) {
-      this.focusSync = false;
-      this.$trigger('blur', $event, {
-        value: this.valueSync,
-        cursor: this.$refs.textarea.selectionEnd
-      });
+    _onCompositionstart: function _onCompositionstart($event) {
+      this.composing = true;
     },
-    _compositionstart: function _compositionstart($event) {
-      this.composition = true;
-    },
-    _compositionend: function _compositionend($event) {
-      this.composition = false;
+    _onCompositionend: function _onCompositionend($event) {
+      if (this.composing) {
+        this.composing = false; // 部分输入法 compositionend 事件可能晚于 input
+
+        this._onInput($event);
+      }
     },
     // 暂无完成按钮，此功能未实现
     _confirm: function _confirm($event) {
@@ -23815,17 +34331,23 @@ var DARK_TEST_STRING = '(prefers-color-scheme: dark)';
         value: this.valueSync
       });
     },
-    _touchstart: function _touchstart() {
+    _onTouchstart: function _onTouchstart() {
       this.focusChangeSource = 'touch';
     },
     _resize: function _resize(_ref) {
       var height = _ref.height;
       this.height = height;
     },
-    _input: function _input($event) {
-      if (this.composition) {
+    _onInput: function _onInput($event, force) {
+      if (this.composing) {
         this.valueComposition = $event.target.value;
+        return;
       }
+
+      this.$triggerInput($event, {
+        value: this.valueSync,
+        cursor: this.$refs.textarea.selectionEnd
+      }, force);
     },
     _getFormData: function _getFormData() {
       return {
@@ -23841,10 +34363,10 @@ var DARK_TEST_STRING = '(prefers-color-scheme: dark)';
 // CONCATENATED MODULE: ./src/core/view/components/textarea/index.vue?vue&type=script&lang=js&
  /* harmony default export */ var components_textareavue_type_script_lang_js_ = (textareavue_type_script_lang_js_); 
 // EXTERNAL MODULE: ./src/core/view/components/textarea/index.vue?vue&type=style&index=0&lang=css&
-var textareavue_type_style_index_0_lang_css_ = __webpack_require__(114);
+var textareavue_type_style_index_0_lang_css_ = __webpack_require__(151);
 
 // EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
-var componentNormalizer = __webpack_require__(0);
+var componentNormalizer = __webpack_require__(1);
 
 // CONCATENATED MODULE: ./src/core/view/components/textarea/index.vue
 
@@ -23872,14 +34394,14 @@ component.options.__file = "src/core/view/components/textarea/index.vue"
 /* harmony default export */ var components_textarea = __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
-/* 143 */
+/* 183 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 // ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"4130fe76-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/view/index.vue?vue&type=template&id=6ae9b1be&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e3b674d4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/view/index.vue?vue&type=template&id=6ae9b1be&
 var render = function() {
   var _vm = this
   var _h = _vm.$createElement
@@ -23910,7 +34432,7 @@ render._withStripped = true
 // CONCATENATED MODULE: ./src/core/view/components/view/index.vue?vue&type=template&id=6ae9b1be&
 
 // EXTERNAL MODULE: ./src/core/view/mixins/hover.js
-var hover = __webpack_require__(17);
+var hover = __webpack_require__(24);
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/view/index.vue?vue&type=script&lang=js&
 //
@@ -23952,10 +34474,10 @@ var hover = __webpack_require__(17);
 // CONCATENATED MODULE: ./src/core/view/components/view/index.vue?vue&type=script&lang=js&
  /* harmony default export */ var components_viewvue_type_script_lang_js_ = (viewvue_type_script_lang_js_); 
 // EXTERNAL MODULE: ./src/core/view/components/view/index.vue?vue&type=style&index=0&lang=css&
-var viewvue_type_style_index_0_lang_css_ = __webpack_require__(115);
+var viewvue_type_style_index_0_lang_css_ = __webpack_require__(152);
 
 // EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
-var componentNormalizer = __webpack_require__(0);
+var componentNormalizer = __webpack_require__(1);
 
 // CONCATENATED MODULE: ./src/core/view/components/view/index.vue
 
@@ -23983,658 +34505,14 @@ component.options.__file = "src/core/view/components/view/index.vue"
 /* harmony default export */ var view = __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
-/* 144 */
+/* 184 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 // ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"4130fe76-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/platforms/app-plus/view/components/ad/index.vue?vue&type=template&id=4d0d75c6&
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "uni-ad",
-    _vm._g(_vm._b({}, "uni-ad", _vm.attrs, false), _vm.$listeners),
-    [_c("div", { ref: "container", staticClass: "uni-ad-container" })]
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-
-
-// CONCATENATED MODULE: ./src/platforms/app-plus/view/components/ad/index.vue?vue&type=template&id=4d0d75c6&
-
-// EXTERNAL MODULE: ./src/core/view/mixins/index.js + 2 modules
-var mixins = __webpack_require__(2);
-
-// EXTERNAL MODULE: ./src/platforms/app-plus/view/mixins/native.js
-var mixins_native = __webpack_require__(7);
-
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/platforms/app-plus/view/components/ad/index.vue?vue&type=script&lang=js&
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-var _adDataCache = {};
-
-function getAdData(adpid, adWidth, onsuccess, onerror) {
-  var key = adpid + '-' + adWidth;
-  var adDataList = _adDataCache[key];
-
-  if (adDataList && adDataList.length > 0) {
-    onsuccess(adDataList.splice(0, 1)[0]);
-    return;
-  }
-
-  plus.ad.getAds({
-    adpid: adpid,
-    count: 10,
-    width: adWidth
-  }, function (res) {
-    var list = res.ads;
-    onsuccess(list.splice(0, 1)[0]);
-    _adDataCache[key] = adDataList ? adDataList.concat(list) : list;
-  }, function (err) {
-    onerror({
-      errCode: err.code,
-      errMsg: err.message
-    });
-  });
-}
-
-var methods = ['draw'];
-var _attrs = ['adpid', 'data'];
-/* harmony default export */ var advue_type_script_lang_js_ = ({
-  name: 'Ad',
-  mixins: [mixins["e" /* subscriber */], mixins_native["a" /* default */]],
-  props: {
-    adpid: {
-      type: [Number, String],
-      default: ''
-    },
-    data: {
-      type: Object,
-      default: null
-    }
-  },
-  data: function data() {
-    return {
-      hidden: false
-    };
-  },
-  computed: {
-    attrs: function attrs() {
-      var _this = this;
-
-      var obj = {};
-
-      _attrs.forEach(function (key) {
-        var val = _this.$props[key];
-        val = key === 'src' ? _this.$getRealPath(val) : val;
-        obj[key.replace(/[A-Z]/g, function (str) {
-          return '-' + str.toLowerCase();
-        })] = val;
-      });
-
-      return obj;
-    }
-  },
-  watch: {
-    hidden: function hidden(val) {
-      this.adView && this.adView[val ? 'hide' : 'show']();
-    },
-    adpid: function adpid(val) {
-      if (val) {
-        this._loadData(val);
-      }
-    },
-    data: function data(val) {
-      if (val) {
-        this._fillData(val);
-      }
-    }
-  },
-  mounted: function mounted() {
-    var _this2 = this;
-
-    var adStyle = Object.assign({
-      id: 'AdView' + Date.now()
-    }, this.position);
-    var adView = this.adView = plus.ad.createAdView(adStyle);
-    adView.interceptTouchEvent(false);
-    plus.webview.currentWebview().append(adView);
-
-    if (this.hidden) {
-      adView.hide();
-    }
-
-    this.$watch('attrs', function () {
-      _this2._request();
-    }, {
-      deep: true
-    });
-    this.$watch('position', function () {
-      _this2.adView && _this2.adView.setStyle(_this2.position);
-    }, {
-      deep: true
-    }); // 模板渲染有效
-
-    adView.setDislikeListener && adView.setDislikeListener(function (data) {
-      _this2.adView && _this2.adView.close();
-      _this2.$refs.container.style.height = '0px';
-
-      _this2._updateView();
-
-      _this2.$trigger('close', {}, data);
-    });
-    adView.setRenderingListener && adView.setRenderingListener(function (data) {
-      if (data.result === 0) {
-        _this2.$refs.container.style.height = data.height + 'px';
-
-        _this2._updateView();
-      } else {
-        _this2.$trigger('error', {}, {
-          errCode: data.result
-        });
-      }
-    }); // 仅 Android 下载类广告
-
-    adView.setDownloadListener && adView.setDownloadListener(function (data) {
-      _this2.$trigger('downloadchange', {}, data);
-    });
-
-    this._request();
-  },
-  beforeDestroy: function beforeDestroy() {
-    this.adView && this.adView.close();
-    delete this.adView;
-  },
-  methods: {
-    _handleSubscribe: function _handleSubscribe(_ref) {
-      var type = _ref.type,
-          _ref$data = _ref.data,
-          data = _ref$data === void 0 ? {} : _ref$data;
-
-      if (methods.includes(type)) {
-        this.adView && this.adView[type](data);
-      }
-    },
-    _request: function _request() {
-      if (!this.adView) {
-        return;
-      }
-
-      if (this.data) {
-        this._fillData(this.data);
-      } else if (this.adpid) {
-        this._loadData();
-      }
-    },
-    _loadData: function _loadData(adpid) {
-      var _this3 = this;
-
-      getAdData(adpid || this.adpid, this.position.width, function (data) {
-        _this3._fillData(data);
-      }, function (err) {
-        _this3.$trigger('error', {}, err);
-      });
-    },
-    _fillData: function _fillData(data) {
-      this.adView.renderingBind(data); // const height = plus.ad.measureAdHeight(this.position.width.replace('px', ''), data)
-      // this.$refs.container.style.height = height + 'px'
-
-      this.$trigger('load', {}, {});
-    },
-    _updateView: function _updateView() {
-      window.dispatchEvent(new CustomEvent('updateview'));
-    }
-  }
-});
-// CONCATENATED MODULE: ./src/platforms/app-plus/view/components/ad/index.vue?vue&type=script&lang=js&
- /* harmony default export */ var components_advue_type_script_lang_js_ = (advue_type_script_lang_js_); 
-// EXTERNAL MODULE: ./src/platforms/app-plus/view/components/ad/index.vue?vue&type=style&index=0&lang=css&
-var advue_type_style_index_0_lang_css_ = __webpack_require__(117);
-
-// EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
-var componentNormalizer = __webpack_require__(0);
-
-// CONCATENATED MODULE: ./src/platforms/app-plus/view/components/ad/index.vue
-
-
-
-
-
-
-/* normalize component */
-
-var component = Object(componentNormalizer["a" /* default */])(
-  components_advue_type_script_lang_js_,
-  render,
-  staticRenderFns,
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "src/platforms/app-plus/view/components/ad/index.vue"
-/* harmony default export */ var ad = __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-/* 145 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-// ESM COMPAT FLAG
-__webpack_require__.r(__webpack_exports__);
-
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"4130fe76-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/platforms/app-plus/view/components/picker/index.vue?vue&type=template&id=0268771e&
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "uni-picker",
-    _vm._g(
-      {
-        on: {
-          click: function($event) {
-            $event.stopPropagation()
-            return _vm._show($event)
-          }
-        }
-      },
-      _vm.$listeners
-    ),
-    [_vm._t("default")],
-    2
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-
-
-// CONCATENATED MODULE: ./src/platforms/app-plus/view/components/picker/index.vue?vue&type=template&id=0268771e&
-
-// EXTERNAL MODULE: ./src/core/view/mixins/index.js + 2 modules
-var mixins = __webpack_require__(2);
-
-// EXTERNAL MODULE: ./src/platforms/app-plus/view/components/picker/page.js
-var page = __webpack_require__(82);
-
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/platforms/app-plus/view/components/picker/index.vue?vue&type=script&lang=js&
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-var mode = {
-  SELECTOR: 'selector',
-  MULTISELECTOR: 'multiSelector',
-  TIME: 'time',
-  DATE: 'date' // 暂不支持城市选择
-  // REGION: 'region'
-
-};
-var fields = {
-  YEAR: 'year',
-  MONTH: 'month',
-  DAY: 'day'
-};
-
-function padLeft(num) {
-  return num > 9 ? num : "0".concat(num);
-}
-
-function getDate(str, mode_) {
-  str = String(str || '');
-  var date = new Date();
-
-  if (mode_ === mode.TIME) {
-    str = str.split(':');
-
-    if (str.length === 2) {
-      date.setHours(parseInt(str[0]), parseInt(str[1]));
-    }
-  } else {
-    str = str.split('-');
-
-    if (str.length === 3) {
-      date.setFullYear(parseInt(str[0]), parseInt(str[1] - 1), parseInt(str[2]));
-    }
-  }
-
-  return date;
-}
-
-function getDefaultStartValue() {
-  if (this.mode === mode.TIME) {
-    return '00:00';
-  }
-
-  if (this.mode === mode.DATE) {
-    var year = new Date().getFullYear() - 100;
-
-    switch (this.fields) {
-      case fields.YEAR:
-        return year;
-
-      case fields.MONTH:
-        return year + '-01';
-
-      case fields.DAY:
-        return year + '-01-01';
-    }
-  }
-
-  return '';
-}
-
-function getDefaultEndValue() {
-  if (this.mode === mode.TIME) {
-    return '23:59';
-  }
-
-  if (this.mode === mode.DATE) {
-    var year = new Date().getFullYear() + 100;
-
-    switch (this.fields) {
-      case fields.YEAR:
-        return year;
-
-      case fields.MONTH:
-        return year + '-12';
-
-      case fields.DAY:
-        return year + '-12-31';
-    }
-  }
-
-  return '';
-}
-
-/* harmony default export */ var pickervue_type_script_lang_js_ = ({
-  name: 'Picker',
-  mixins: [mixins["a" /* emitter */]],
-  props: {
-    name: {
-      type: String,
-      default: ''
-    },
-    range: {
-      type: Array,
-      default: function _default() {
-        return [];
-      }
-    },
-    rangeKey: {
-      type: String,
-      default: ''
-    },
-    value: {
-      type: [Number, String, Array],
-      default: 0
-    },
-    mode: {
-      type: String,
-      default: mode.SELECTOR,
-      validator: function validator(val) {
-        return Object.values(mode).indexOf(val) >= 0;
-      }
-    },
-    fields: {
-      type: String,
-      default: ''
-    },
-    start: {
-      type: String,
-      default: getDefaultStartValue
-    },
-    end: {
-      type: String,
-      default: getDefaultEndValue
-    },
-    disabled: {
-      type: [Boolean, String],
-      default: false
-    }
-  },
-  data: function data() {
-    return {
-      valueSync: null
-    };
-  },
-  watch: {
-    value: function value() {
-      this._setValueSync();
-    }
-  },
-  created: function created() {
-    var _this = this;
-
-    this.$dispatch('Form', 'uni-form-group-update', {
-      type: 'add',
-      vm: this
-    });
-    Object.keys(this.$props).forEach(function (key) {
-      if (key !== 'name') {
-        _this.$watch(key, function (val) {
-          var data = {};
-          data[key] = val;
-
-          _this._updatePicker(data);
-        });
-      }
-    });
-
-    this._setValueSync();
-  },
-  beforeDestroy: function beforeDestroy() {
-    this.$dispatch('Form', 'uni-form-group-update', {
-      type: 'remove',
-      vm: this
-    });
-  },
-  methods: {
-    _setValueSync: function _setValueSync() {
-      var val = this.value;
-
-      switch (this.mode) {
-        case mode.MULTISELECTOR:
-          {
-            if (!Array.isArray(val)) {
-              val = [];
-            }
-
-            if (!Array.isArray(this.valueSync)) {
-              this.valueSync = [];
-            }
-
-            var length = this.valueSync.length = Math.max(val.length, this.range.length);
-
-            for (var index = 0; index < length; index++) {
-              var val0 = Number(val[index]);
-              var val1 = Number(this.valueSync[index]);
-              this.valueSync.splice(index, 1, isNaN(val0) ? isNaN(val1) ? 0 : val1 : val0);
-            }
-          }
-          break;
-
-        case mode.TIME:
-        case mode.DATE:
-          this.valueSync = String(val);
-          break;
-
-        default:
-          this.valueSync = Number(val) || 0;
-          break;
-      }
-    },
-    _show: function _show() {
-      if (this.disabled) {
-        return;
-      }
-
-      this._showPicker(Object.assign({}, this.$props));
-    },
-    _showPicker: function _showPicker(data) {
-      var _this2 = this;
-
-      if ((data.mode === mode.TIME || data.mode === mode.DATE) && !data.fields) {
-        plus.nativeUI[this.mode === mode.TIME ? 'pickTime' : 'pickDate'](function (res) {
-          var date = res.date;
-
-          _this2.$trigger('change', {}, {
-            value: _this2.mode === mode.TIME ? "".concat(padLeft(date.getHours()), ":").concat(padLeft(date.getMinutes())) : "".concat(date.getFullYear(), "-").concat(padLeft(date.getMonth() + 1), "-").concat(padLeft(date.getDate()))
-          });
-        }, function () {
-          _this2.$trigger('cancel', {}, {});
-        }, this.mode === mode.TIME ? {
-          time: getDate(this.value, mode.TIME)
-        } : {
-          date: getDate(this.value, mode.DATE),
-          minDate: getDate(this.start, mode.DATE),
-          maxDate: getDate(this.end, mode.DATE)
-        });
-      } else {
-        data.fields = Object.values(fields).includes(data.fields) ? data.fields : fields.DAY;
-        var res = {
-          event: 'cancel'
-        };
-        this.page = Object(page["a" /* showPage */])({
-          url: '__uniapppicker',
-          data: data,
-          style: {
-            titleNView: false,
-            animationType: 'none',
-            animationDuration: 0,
-            background: 'rgba(0,0,0,0)',
-            popGesture: 'none'
-          },
-          onMessage: function onMessage(message) {
-            var event = message.event;
-
-            if (event === 'created') {
-              _this2._updatePicker(data);
-
-              return;
-            }
-
-            if (event === 'columnchange') {
-              delete message.event;
-
-              _this2.$trigger(event, {}, message);
-
-              return;
-            }
-
-            res = message;
-          },
-          onClose: function onClose() {
-            _this2.page = null;
-            var event = res.event;
-            delete res.event;
-
-            _this2.$trigger(event, {}, res);
-          }
-        });
-      }
-    },
-    _getFormData: function _getFormData() {
-      return {
-        value: this.valueSync,
-        key: this.name
-      };
-    },
-    _resetFormData: function _resetFormData() {
-      switch (this.mode) {
-        case mode.SELECTOR:
-          this.valueSync = -1;
-          break;
-
-        case mode.MULTISELECTOR:
-          this.valueSync = this.value.map(function (val) {
-            return 0;
-          });
-          break;
-
-        case mode.DATE:
-        case mode.TIME:
-          this.valueSync = '';
-          break;
-
-        default:
-          break;
-      }
-    },
-    _updatePicker: function _updatePicker(data) {
-      this.page && this.page.sendMessage(data);
-    }
-  }
-});
-// CONCATENATED MODULE: ./src/platforms/app-plus/view/components/picker/index.vue?vue&type=script&lang=js&
- /* harmony default export */ var components_pickervue_type_script_lang_js_ = (pickervue_type_script_lang_js_); 
-// EXTERNAL MODULE: ./src/platforms/app-plus/view/components/picker/index.vue?vue&type=style&index=0&lang=css&
-var pickervue_type_style_index_0_lang_css_ = __webpack_require__(122);
-
-// EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
-var componentNormalizer = __webpack_require__(0);
-
-// CONCATENATED MODULE: ./src/platforms/app-plus/view/components/picker/index.vue
-
-
-
-
-
-
-/* normalize component */
-
-var component = Object(componentNormalizer["a" /* default */])(
-  components_pickervue_type_script_lang_js_,
-  render,
-  staticRenderFns,
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "src/platforms/app-plus/view/components/picker/index.vue"
-/* harmony default export */ var picker = __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-/* 146 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-// ESM COMPAT FLAG
-__webpack_require__.r(__webpack_exports__);
-
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"4130fe76-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/platforms/app-plus/view/components/video/index.vue?vue&type=template&id=0ba2468e&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e3b674d4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/platforms/app-plus/view/components/video/index.vue?vue&type=template&id=0ba2468e&
 var render = function() {
   var _vm = this
   var _h = _vm.$createElement
@@ -24650,7 +34528,7 @@ render._withStripped = true
 
 // CONCATENATED MODULE: ./src/platforms/app-plus/view/components/video/index.vue?vue&type=template&id=0ba2468e&
 
-// EXTERNAL MODULE: ./src/core/view/mixins/index.js + 2 modules
+// EXTERNAL MODULE: ./src/core/view/mixins/index.js
 var mixins = __webpack_require__(2);
 
 // EXTERNAL MODULE: ./src/platforms/app-plus/view/mixins/native.js
@@ -24678,12 +34556,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 
 
-var methods = ['play', 'pause', 'seek', 'sendDanmu', 'playbackRate', 'requestFullScreen', 'exitFullScreen'];
+var methods = ['play', 'pause', 'stop', 'seek', 'sendDanmu', 'playbackRate', 'requestFullScreen', 'exitFullScreen'];
 var events = ['play', 'pause', 'ended', 'timeupdate', 'fullscreenchange', 'fullscreenclick', 'waiting', 'error'];
-var _attrs = ['src', 'duration', 'controls', 'danmuList', 'danmuBtn', 'enableDanmu', 'autoplay', 'loop', 'muted', 'objectFit', 'poster', 'direction', 'showProgress', 'initialTime', 'showFullscreenBtn', 'pageGesture', 'enableProgressGesture', 'showPlayBtn', 'showCenterPlayBtn'];
+var _attrs = ['src', 'duration', 'controls', 'danmuList', 'danmuBtn', 'enableDanmu', 'autoplay', 'loop', 'muted', 'objectFit', 'poster', 'direction', 'showProgress', 'initialTime', 'showFullscreenBtn', 'pageGesture', 'enableProgressGesture', 'showPlayBtn', 'enablePlayGesture', 'showCenterPlayBtn', 'showLoading', 'codec', 'httpCache', 'playStrategy', 'header', 'advanced'];
 /* harmony default export */ var videovue_type_script_lang_js_ = ({
   name: 'Video',
-  mixins: [mixins["e" /* subscriber */], mixins_native["a" /* default */]],
+  mixins: [mixins["f" /* subscriber */], mixins_native["a" /* default */]],
   props: {
     id: {
       type: String,
@@ -24763,9 +34641,41 @@ var _attrs = ['src', 'duration', 'controls', 'danmuList', 'danmuBtn', 'enableDan
       type: [Boolean, String],
       default: true
     },
+    enablePlayGesture: {
+      type: [Boolean, String],
+      default: true
+    },
     showCenterPlayBtn: {
       type: [Boolean, String],
       default: true
+    },
+    showLoading: {
+      type: [Boolean, String],
+      default: true
+    },
+    codec: {
+      type: String,
+      default: 'hardware'
+    },
+    httpCache: {
+      type: [Boolean, String],
+      default: false
+    },
+    playStrategy: {
+      type: [Number, String],
+      default: 0
+    },
+    header: {
+      type: Object,
+      default: function _default() {
+        return {};
+      }
+    },
+    advanced: {
+      type: Array,
+      default: function _default() {
+        return [];
+      }
     }
   },
   computed: {
@@ -24788,37 +34698,42 @@ var _attrs = ['src', 'duration', 'controls', 'danmuList', 'danmuBtn', 'enableDan
   mounted: function mounted() {
     var _this2 = this;
 
-    var video = this.video = plus.video.createVideoPlayer('video' + Date.now(), Object.assign({}, this.attrs, this.position));
-    plus.webview.currentWebview().append(video);
+    this._onParentReady(function () {
+      var video = _this2.video = plus.video.createVideoPlayer('video' + Date.now(), Object.assign({}, _this2.attrs, _this2.position));
+      plus.webview.currentWebview().append(video);
 
-    if (this.hidden) {
-      video.hide();
-    }
-
-    this.$watch('attrs', function () {
-      _this2.video && _this2.video.setStyles(_this2.attrs);
-    }, {
-      deep: true
-    });
-    this.$watch('position', function () {
-      _this2.video && _this2.video.setStyles(_this2.position);
-    }, {
-      deep: true
-    });
-    this.$watch('hidden', function (val) {
-      var video = _this2.video;
-
-      if (video) {
-        video[val ? 'hide' : 'show'](); // iOS 隐藏状态设置 setStyles 不生效
-
-        if (!val) {
-          video.setStyles(_this2.position);
-        }
+      if (_this2.hidden) {
+        video.hide();
       }
-    });
-    events.forEach(function (key) {
-      video.addEventListener(key, function (e) {
-        _this2.$trigger(key, {}, _objectSpread({}, e.detail));
+
+      _this2.$watch('attrs', function () {
+        _this2.video && _this2.video.setStyles(_this2.attrs);
+      }, {
+        deep: true
+      });
+
+      _this2.$watch('position', function () {
+        _this2.video && _this2.video.setStyles(_this2.position);
+      }, {
+        deep: true
+      });
+
+      _this2.$watch('hidden', function (val) {
+        var video = _this2.video;
+
+        if (video) {
+          video[val ? 'hide' : 'show'](); // iOS 隐藏状态设置 setStyles 不生效
+
+          if (!val) {
+            video.setStyles(_this2.position);
+          }
+        }
+      });
+
+      events.forEach(function (key) {
+        video.addEventListener(key, function (e) {
+          _this2.$trigger(key, {}, _objectSpread({}, e.detail));
+        });
       });
     });
   },
@@ -24857,10 +34772,10 @@ var _attrs = ['src', 'duration', 'controls', 'danmuList', 'danmuBtn', 'enableDan
 // CONCATENATED MODULE: ./src/platforms/app-plus/view/components/video/index.vue?vue&type=script&lang=js&
  /* harmony default export */ var components_videovue_type_script_lang_js_ = (videovue_type_script_lang_js_); 
 // EXTERNAL MODULE: ./src/platforms/app-plus/view/components/video/index.vue?vue&type=style&index=0&lang=css&
-var videovue_type_style_index_0_lang_css_ = __webpack_require__(123);
+var videovue_type_style_index_0_lang_css_ = __webpack_require__(160);
 
 // EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
-var componentNormalizer = __webpack_require__(0);
+var componentNormalizer = __webpack_require__(1);
 
 // CONCATENATED MODULE: ./src/platforms/app-plus/view/components/video/index.vue
 
@@ -24888,14 +34803,14 @@ component.options.__file = "src/platforms/app-plus/view/components/video/index.v
 /* harmony default export */ var video = __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
-/* 147 */
+/* 185 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 // ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"4130fe76-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/canvas/index.vue?vue&type=template&id=6ef05d9e&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e3b674d4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/canvas/index.vue?vue&type=template&id=6ef05d9e&
 var render = function() {
   var _vm = this
   var _h = _vm.$createElement
@@ -24940,15 +34855,15 @@ render._withStripped = true
 // CONCATENATED MODULE: ./src/core/view/components/canvas/index.vue?vue&type=template&id=6ef05d9e&
 
 // EXTERNAL MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/canvas/index.vue?vue&type=script&lang=js&
-var canvasvue_type_script_lang_js_ = __webpack_require__(19);
+var canvasvue_type_script_lang_js_ = __webpack_require__(29);
 
 // CONCATENATED MODULE: ./src/core/view/components/canvas/index.vue?vue&type=script&lang=js&
  /* harmony default export */ var components_canvasvue_type_script_lang_js_ = (canvasvue_type_script_lang_js_["a" /* default */]); 
 // EXTERNAL MODULE: ./src/core/view/components/canvas/index.vue?vue&type=style&index=0&lang=css&
-var canvasvue_type_style_index_0_lang_css_ = __webpack_require__(91);
+var canvasvue_type_style_index_0_lang_css_ = __webpack_require__(128);
 
 // EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
-var componentNormalizer = __webpack_require__(0);
+var componentNormalizer = __webpack_require__(1);
 
 // CONCATENATED MODULE: ./src/core/view/components/canvas/index.vue
 
@@ -24976,14 +34891,14 @@ component.options.__file = "src/core/view/components/canvas/index.vue"
 /* harmony default export */ var canvas = __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
-/* 148 */
+/* 186 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 // ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"4130fe76-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/editor/index.vue?vue&type=template&id=29b52706&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e3b674d4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/editor/index.vue?vue&type=template&id=29b52706&
 var render = function() {
   var _vm = this
   var _h = _vm.$createElement
@@ -25003,15 +34918,15 @@ render._withStripped = true
 // CONCATENATED MODULE: ./src/core/view/components/editor/index.vue?vue&type=template&id=29b52706&
 
 // EXTERNAL MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/editor/index.vue?vue&type=script&lang=js&
-var editorvue_type_script_lang_js_ = __webpack_require__(23);
+var editorvue_type_script_lang_js_ = __webpack_require__(33);
 
 // CONCATENATED MODULE: ./src/core/view/components/editor/index.vue?vue&type=script&lang=js&
  /* harmony default export */ var components_editorvue_type_script_lang_js_ = (editorvue_type_script_lang_js_["a" /* default */]); 
 // EXTERNAL MODULE: ./src/core/view/components/editor/editor.css?vue&type=style&index=0&lang=css&
-var editorvue_type_style_index_0_lang_css_ = __webpack_require__(94);
+var editorvue_type_style_index_0_lang_css_ = __webpack_require__(131);
 
 // EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
-var componentNormalizer = __webpack_require__(0);
+var componentNormalizer = __webpack_require__(1);
 
 // CONCATENATED MODULE: ./src/core/view/components/editor/index.vue
 
@@ -25039,14 +34954,14 @@ component.options.__file = "src/core/view/components/editor/index.vue"
 /* harmony default export */ var editor = __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
-/* 149 */
+/* 187 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 // ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"4130fe76-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/label/index.vue?vue&type=template&id=04b5b291&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e3b674d4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/label/index.vue?vue&type=template&id=04b5b291&
 var render = function() {
   var _vm = this
   var _h = _vm.$createElement
@@ -25071,15 +34986,15 @@ render._withStripped = true
 // CONCATENATED MODULE: ./src/core/view/components/label/index.vue?vue&type=template&id=04b5b291&
 
 // EXTERNAL MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/label/index.vue?vue&type=script&lang=js&
-var labelvue_type_script_lang_js_ = __webpack_require__(28);
+var labelvue_type_script_lang_js_ = __webpack_require__(38);
 
 // CONCATENATED MODULE: ./src/core/view/components/label/index.vue?vue&type=script&lang=js&
  /* harmony default export */ var components_labelvue_type_script_lang_js_ = (labelvue_type_script_lang_js_["a" /* default */]); 
 // EXTERNAL MODULE: ./src/core/view/components/label/index.vue?vue&type=style&index=0&lang=css&
-var labelvue_type_style_index_0_lang_css_ = __webpack_require__(98);
+var labelvue_type_style_index_0_lang_css_ = __webpack_require__(135);
 
 // EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
-var componentNormalizer = __webpack_require__(0);
+var componentNormalizer = __webpack_require__(1);
 
 // CONCATENATED MODULE: ./src/core/view/components/label/index.vue
 
@@ -25107,14 +35022,75 @@ component.options.__file = "src/core/view/components/label/index.vue"
 /* harmony default export */ var label = __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
-/* 150 */
+/* 188 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 // ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"4130fe76-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/platforms/app-plus/view/components/map/index.vue?vue&type=template&id=8d987fa2&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e3b674d4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/platforms/app-plus/view/components/ad/index.vue?vue&type=template&id=4d0d75c6&
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "uni-ad",
+    _vm._g(_vm._b({}, "uni-ad", _vm.attrs, false), _vm.$listeners),
+    [_c("div", { ref: "container", staticClass: "uni-ad-container" })]
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+// CONCATENATED MODULE: ./src/platforms/app-plus/view/components/ad/index.vue?vue&type=template&id=4d0d75c6&
+
+// EXTERNAL MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/platforms/app-plus/view/components/ad/index.vue?vue&type=script&lang=js&
+var advue_type_script_lang_js_ = __webpack_require__(57);
+
+// CONCATENATED MODULE: ./src/platforms/app-plus/view/components/ad/index.vue?vue&type=script&lang=js&
+ /* harmony default export */ var components_advue_type_script_lang_js_ = (advue_type_script_lang_js_["a" /* default */]); 
+// EXTERNAL MODULE: ./src/platforms/app-plus/view/components/ad/index.vue?vue&type=style&index=0&lang=css&
+var advue_type_style_index_0_lang_css_ = __webpack_require__(154);
+
+// EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
+var componentNormalizer = __webpack_require__(1);
+
+// CONCATENATED MODULE: ./src/platforms/app-plus/view/components/ad/index.vue
+
+
+
+
+
+
+/* normalize component */
+
+var component = Object(componentNormalizer["a" /* default */])(
+  components_advue_type_script_lang_js_,
+  render,
+  staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "src/platforms/app-plus/view/components/ad/index.vue"
+/* harmony default export */ var ad = __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+/* 189 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+// ESM COMPAT FLAG
+__webpack_require__.r(__webpack_exports__);
+
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e3b674d4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/platforms/app-plus/view/components/map/index.vue?vue&type=template&id=8d987fa2&
 var render = function() {
   var _vm = this
   var _h = _vm.$createElement
@@ -25148,15 +35124,15 @@ render._withStripped = true
 // CONCATENATED MODULE: ./src/platforms/app-plus/view/components/map/index.vue?vue&type=template&id=8d987fa2&
 
 // EXTERNAL MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/platforms/app-plus/view/components/map/index.vue?vue&type=script&lang=js&
-var mapvue_type_script_lang_js_ = __webpack_require__(50);
+var mapvue_type_script_lang_js_ = __webpack_require__(61);
 
 // CONCATENATED MODULE: ./src/platforms/app-plus/view/components/map/index.vue?vue&type=script&lang=js&
  /* harmony default export */ var components_mapvue_type_script_lang_js_ = (mapvue_type_script_lang_js_["a" /* default */]); 
 // EXTERNAL MODULE: ./src/platforms/app-plus/view/components/map/index.vue?vue&type=style&index=0&lang=css&
-var mapvue_type_style_index_0_lang_css_ = __webpack_require__(120);
+var mapvue_type_style_index_0_lang_css_ = __webpack_require__(157);
 
 // EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
-var componentNormalizer = __webpack_require__(0);
+var componentNormalizer = __webpack_require__(1);
 
 // CONCATENATED MODULE: ./src/platforms/app-plus/view/components/map/index.vue
 
@@ -25184,14 +35160,14 @@ component.options.__file = "src/platforms/app-plus/view/components/map/index.vue
 /* harmony default export */ var map = __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
-/* 151 */
+/* 190 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 // ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"4130fe76-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/platforms/app-plus/view/components/web-view/index.vue?vue&type=template&id=02a3393e&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"e3b674d4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/platforms/app-plus/view/components/web-view/index.vue?vue&type=template&id=02a3393e&
 var render = function() {
   var _vm = this
   var _h = _vm.$createElement
@@ -25205,15 +35181,15 @@ render._withStripped = true
 // CONCATENATED MODULE: ./src/platforms/app-plus/view/components/web-view/index.vue?vue&type=template&id=02a3393e&
 
 // EXTERNAL MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/platforms/app-plus/view/components/web-view/index.vue?vue&type=script&lang=js&
-var web_viewvue_type_script_lang_js_ = __webpack_require__(54);
+var web_viewvue_type_script_lang_js_ = __webpack_require__(65);
 
 // CONCATENATED MODULE: ./src/platforms/app-plus/view/components/web-view/index.vue?vue&type=script&lang=js&
  /* harmony default export */ var components_web_viewvue_type_script_lang_js_ = (web_viewvue_type_script_lang_js_["a" /* default */]); 
 // EXTERNAL MODULE: ./src/platforms/app-plus/view/components/web-view/index.vue?vue&type=style&index=0&lang=css&
-var web_viewvue_type_style_index_0_lang_css_ = __webpack_require__(124);
+var web_viewvue_type_style_index_0_lang_css_ = __webpack_require__(161);
 
 // EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
-var componentNormalizer = __webpack_require__(0);
+var componentNormalizer = __webpack_require__(1);
 
 // CONCATENATED MODULE: ./src/platforms/app-plus/view/components/web-view/index.vue
 
@@ -25241,7 +35217,7 @@ component.options.__file = "src/platforms/app-plus/view/components/web-view/inde
 /* harmony default export */ var web_view = __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
-/* 152 */
+/* 191 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -25249,13 +35225,13 @@ component.options.__file = "src/platforms/app-plus/view/components/web-view/inde
 __webpack_require__.r(__webpack_exports__);
 
 // EXTERNAL MODULE: ./packages/vue-cli-plugin-uni/packages/h5-vue/dist/vue.runtime.esm.js
-var vue_runtime_esm = __webpack_require__(8);
+var vue_runtime_esm = __webpack_require__(9);
 
 // EXTERNAL MODULE: ./src/platforms/app-plus/helpers/get-real-path.js + 1 modules
-var get_real_path = __webpack_require__(65);
+var get_real_path = __webpack_require__(13);
 
 // EXTERNAL MODULE: ./src/core/view/plugins/events.js + 1 modules
-var events = __webpack_require__(11);
+var events = __webpack_require__(18);
 
 // CONCATENATED MODULE: ./src/core/view/mixins/base.js
 
@@ -25263,7 +35239,7 @@ var events = __webpack_require__(11);
 /* harmony default export */ var base = ({
   methods: {
     $getRealPath: function $getRealPath(src) {
-      return Object(get_real_path["a" /* default */])(src);
+      return src ? Object(get_real_path["a" /* default */])(src) : src;
     },
     $trigger: function $trigger(name, $event, detail) {
       this.$emit(name, events["b" /* processEvent */].call(this, name, $event, detail, this.$el, this.$el));
@@ -25284,9 +35260,9 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToAr
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 function converPx(value) {
-  if (/\d+[ur]px$/i.test(value)) {
-    value.replace(/\d+[ur]px$/i, function (text) {
-      return "".concat(uni.upx2px(parseFloat(text)), "px");
+  if (/^-?\d+[ur]px$/i.test(value)) {
+    return value.replace(/(^-?\d+)[ur]px$/i, function (text, num) {
+      return "".concat(uni.upx2px(parseFloat(num)), "px");
     }); // eslint-disable-next-line no-useless-escape
   } else if (/^-?[\d\.]+$/.test(value)) {
     return "".concat(value, "px");
@@ -25369,7 +35345,9 @@ function startAnimation(context) {
     }
   }
 
-  animate();
+  setTimeout(function () {
+    animate();
+  }, 0);
 }
 
 /* harmony default export */ var animation = ({
@@ -25388,7 +35366,7 @@ function startAnimation(context) {
 
 
 var requireComponents = [// baseComponents
-__webpack_require__(89), __webpack_require__(116)];
+__webpack_require__(117), __webpack_require__(153)];
 requireComponents.forEach(function (components, index) {
   components.keys().forEach(function (fileName) {
     // 获取组件配置
@@ -25404,21 +35382,25 @@ requireComponents.forEach(function (components, index) {
 });
 
 /***/ }),
-/* 153 */
+/* 192 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 // ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
 
-// EXTERNAL MODULE: ./src/core/view/mixins/index.js + 2 modules
+// EXTERNAL MODULE: ./src/core/helpers/i18n/index.js
+var i18n = __webpack_require__(10);
+
+// EXTERNAL MODULE: ./src/core/view/mixins/index.js
 var mixins = __webpack_require__(2);
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/button/index.vue?vue&type=script&lang=js&
 
+
 /* harmony default export */ var buttonvue_type_script_lang_js_ = ({
   name: 'Button',
-  mixins: [mixins["b" /* hover */], mixins["a" /* emitter */], mixins["d" /* listeners */]],
+  mixins: [mixins["c" /* hover */], mixins["a" /* emitter */], mixins["e" /* listeners */]],
   props: {
     hoverClass: {
       type: String,
@@ -25451,6 +35433,10 @@ var mixins = __webpack_require__(2);
         // 只有这几个可取值，其它都是非法的。
         return ~['', 'submit', 'reset'].indexOf(value);
       }
+    },
+    openType: {
+      type: String,
+      default: ''
     }
   },
   data: function data() {
@@ -25473,6 +35459,28 @@ var mixins = __webpack_require__(2);
         this.$dispatch('Form', this.formType === 'submit' ? 'uni-form-submit' : 'uni-form-reset', {
           type: this.formType
         });
+        return;
+      }
+
+      if (this.openType === 'feedback' && "app-plus" === 'app-plus') {
+        var feedback = plus.webview.create('https://service.dcloud.net.cn/uniapp/feedback.html', 'feedback', {
+          titleNView: {
+            titleText: Object(i18n["d" /* t */])('uni.button.feedback.title'),
+            autoBackButton: true,
+            backgroundColor: '#F7F7F7',
+            titleColor: '#007aff',
+            buttons: [{
+              text: Object(i18n["d" /* t */])('uni.button.feedback.send'),
+              color: '#007aff',
+              fontSize: '16px',
+              fontWeight: 'bold',
+              onclick: function onclick(e) {
+                feedback.evalJS('mui&&mui.trigger(document.getElementById("submit"),"tap")');
+              }
+            }]
+          }
+        });
+        feedback.show('slide-in-right');
       }
     },
     _bindObjectListeners: function _bindObjectListeners(data, value) {
@@ -25535,10 +35543,10 @@ var mixins = __webpack_require__(2);
 // CONCATENATED MODULE: ./src/core/view/components/button/index.vue?vue&type=script&lang=js&
  /* harmony default export */ var components_buttonvue_type_script_lang_js_ = (buttonvue_type_script_lang_js_); 
 // EXTERNAL MODULE: ./src/core/view/components/button/index.vue?vue&type=style&index=0&lang=css&
-var buttonvue_type_style_index_0_lang_css_ = __webpack_require__(90);
+var buttonvue_type_style_index_0_lang_css_ = __webpack_require__(119);
 
 // EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
-var componentNormalizer = __webpack_require__(0);
+var componentNormalizer = __webpack_require__(1);
 
 // CONCATENATED MODULE: ./src/core/view/components/button/index.vue
 var render, staticRenderFns
@@ -25566,7 +35574,7 @@ component.options.__file = "src/core/view/components/button/index.vue"
 /* harmony default export */ var components_button = __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
-/* 154 */
+/* 193 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -25574,9 +35582,13 @@ component.options.__file = "src/core/view/components/button/index.vue"
 __webpack_require__.r(__webpack_exports__);
 
 // EXTERNAL MODULE: ./src/shared/index.js + 7 modules
-var shared = __webpack_require__(1);
+var shared = __webpack_require__(0);
+
+// EXTERNAL MODULE: ./src/platforms/app-plus/helpers/scroll.js
+var helpers_scroll = __webpack_require__(5);
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/movable-area/index.vue?vue&type=script&lang=js&
+
 
 
 function calc(e) {
@@ -25607,6 +35619,8 @@ function calc(e) {
   },
   mounted: function mounted() {
     this._resize();
+
+    Object(helpers_scroll["b" /* initScrollBounce */])();
   },
   methods: {
     _resize: function _resize() {
@@ -25639,7 +35653,7 @@ function calc(e) {
       return get(target);
     },
     _touchstart: function _touchstart(t) {
-      Object(shared["b" /* disableScrollBounce */])({
+      Object(helpers_scroll["a" /* disableScrollBounce */])({
         disable: true
       });
       var i = t.touches;
@@ -25685,7 +35699,7 @@ function calc(e) {
       }
     },
     _touchend: function _touchend(e) {
-      Object(shared["b" /* disableScrollBounce */])({
+      Object(helpers_scroll["a" /* disableScrollBounce */])({
         disable: false
       });
       var t = e.touches;
@@ -25736,9 +35750,10 @@ function calc(e) {
     var _this = this;
 
     var items = [];
+    var $slots = this.$slots.default && Object(shared["d" /* deepClone */])(this.$slots.default, createElement);
 
-    if (this.$slots.default) {
-      this.$slots.default.forEach(function (vnode) {
+    if ($slots) {
+      $slots.forEach(function (vnode) {
         if (vnode.componentOptions && vnode.componentOptions.tag === 'v-uni-movable-view') {
           items.push(vnode);
         }
@@ -25761,19 +35776,19 @@ function calc(e) {
       on: {
         resize: this._resize
       }
-    }), this.$slots.default]);
+    }), $slots]);
   }
 });
 // CONCATENATED MODULE: ./src/core/view/components/movable-area/index.vue?vue&type=script&lang=js&
  /* harmony default export */ var components_movable_areavue_type_script_lang_js_ = (movable_areavue_type_script_lang_js_); 
 // EXTERNAL MODULE: ./src/core/view/components/movable-area/index.vue?vue&type=style&index=0&lang=css&
-var movable_areavue_type_style_index_0_lang_css_ = __webpack_require__(99);
+var movable_areavue_type_style_index_0_lang_css_ = __webpack_require__(136);
 
 // EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
-var componentNormalizer = __webpack_require__(0);
+var componentNormalizer = __webpack_require__(1);
 
 // CONCATENATED MODULE: ./src/core/view/components/movable-area/index.vue
-var render, staticRenderFns
+var movable_area_render, staticRenderFns
 
 
 
@@ -25783,7 +35798,7 @@ var render, staticRenderFns
 
 var component = Object(componentNormalizer["a" /* default */])(
   components_movable_areavue_type_script_lang_js_,
-  render,
+  movable_area_render,
   staticRenderFns,
   false,
   null,
@@ -25798,7 +35813,7 @@ component.options.__file = "src/core/view/components/movable-area/index.vue"
 /* harmony default export */ var movable_area = __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
-/* 155 */
+/* 194 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -25806,19 +35821,19 @@ component.options.__file = "src/core/view/components/movable-area/index.vue"
 __webpack_require__.r(__webpack_exports__);
 
 // EXTERNAL MODULE: ./src/core/view/mixins/touchtrack.js
-var touchtrack = __webpack_require__(9);
+var touchtrack = __webpack_require__(12);
 
 // EXTERNAL MODULE: ./src/core/view/mixins/scroller/index.js + 2 modules
-var scroller = __webpack_require__(64);
+var scroller = __webpack_require__(74);
 
 // EXTERNAL MODULE: ./src/core/view/mixins/scroller/Friction.js
-var Friction = __webpack_require__(61);
+var Friction = __webpack_require__(71);
 
 // EXTERNAL MODULE: ./src/core/view/mixins/scroller/Spring.js
-var Spring = __webpack_require__(62);
+var Spring = __webpack_require__(72);
 
-// EXTERNAL MODULE: ./src/shared/index.js + 7 modules
-var shared = __webpack_require__(1);
+// EXTERNAL MODULE: ./src/platforms/app-plus/helpers/scroll.js
+var helpers_scroll = __webpack_require__(5);
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/picker-view-column/index.vue?vue&type=script&lang=js&
 
@@ -25914,6 +35929,18 @@ function initClick(dom) {
       _this.update();
     });
     initClick(this.$el);
+    Object(helpers_scroll["b" /* initScrollBounce */])();
+    var $vm = this;
+
+    while ($vm) {
+      var scopeId = $vm.$options._scopeId;
+
+      if (scopeId) {
+        this.$refs.indicator.setAttribute(scopeId, '');
+      }
+
+      $vm = $vm.$parent;
+    }
   },
   methods: {
     _setItemHeight: function _setItemHeight(height) {
@@ -25927,7 +35954,7 @@ function initClick(dom) {
           case 'start':
             this._handleTouchStart(e);
 
-            Object(shared["b" /* disableScrollBounce */])({
+            Object(helpers_scroll["a" /* disableScrollBounce */])({
               disable: true
             });
             break;
@@ -25935,13 +35962,14 @@ function initClick(dom) {
           case 'move':
             this._handleTouchMove(e);
 
+            e.stopPropagation();
             break;
 
           case 'end':
           case 'cancel':
             this._handleTouchEnd(e);
 
-            Object(shared["b" /* disableScrollBounce */])({
+            Object(helpers_scroll["a" /* disableScrollBounce */])({
               disable: false
             });
         }
@@ -26063,10 +36091,10 @@ function initClick(dom) {
 // CONCATENATED MODULE: ./src/core/view/components/picker-view-column/index.vue?vue&type=script&lang=js&
  /* harmony default export */ var components_picker_view_columnvue_type_script_lang_js_ = (picker_view_columnvue_type_script_lang_js_); 
 // EXTERNAL MODULE: ./src/core/view/components/picker-view-column/index.vue?vue&type=style&index=0&lang=css&
-var picker_view_columnvue_type_style_index_0_lang_css_ = __webpack_require__(102);
+var picker_view_columnvue_type_style_index_0_lang_css_ = __webpack_require__(139);
 
 // EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
-var componentNormalizer = __webpack_require__(0);
+var componentNormalizer = __webpack_require__(1);
 
 // CONCATENATED MODULE: ./src/core/view/components/picker-view-column/index.vue
 var render, staticRenderFns
@@ -26094,12 +36122,15 @@ component.options.__file = "src/core/view/components/picker-view-column/index.vu
 /* harmony default export */ var picker_view_column = __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
-/* 156 */
+/* 195 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 // ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
+
+// EXTERNAL MODULE: ./src/shared/index.js + 7 modules
+var shared = __webpack_require__(0);
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/picker-view/index.vue?vue&type=script&lang=js&
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
@@ -26113,6 +36144,7 @@ function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.it
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
 
 /* harmony default export */ var picker_viewvue_type_script_lang_js_ = ({
   name: 'PickerView',
@@ -26157,7 +36189,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     value: function value(val, oldVal) {
       var _this = this;
 
-      if (val === oldVal || val.length !== oldVal.length || val.findIndex(function (item, index) {
+      if ( false || val === oldVal || val.length !== oldVal.length || val.findIndex(function (item, index) {
         return item !== oldVal[index];
       }) >= 0) {
         this.valueSync.length = val.length;
@@ -26217,7 +36249,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     var items = [];
 
     if (this.$slots.default) {
-      this.$slots.default.forEach(function (vnode) {
+      Object(shared["d" /* deepClone */])(this.$slots.default, createElement).forEach(function (vnode) {
         if (vnode.componentOptions && vnode.componentOptions.tag === 'v-uni-picker-view-column') {
           items.push(vnode);
         }
@@ -26243,13 +36275,13 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 // CONCATENATED MODULE: ./src/core/view/components/picker-view/index.vue?vue&type=script&lang=js&
  /* harmony default export */ var components_picker_viewvue_type_script_lang_js_ = (picker_viewvue_type_script_lang_js_); 
 // EXTERNAL MODULE: ./src/core/view/components/picker-view/index.vue?vue&type=style&index=0&lang=css&
-var picker_viewvue_type_style_index_0_lang_css_ = __webpack_require__(103);
+var picker_viewvue_type_style_index_0_lang_css_ = __webpack_require__(140);
 
 // EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
-var componentNormalizer = __webpack_require__(0);
+var componentNormalizer = __webpack_require__(1);
 
 // CONCATENATED MODULE: ./src/core/view/components/picker-view/index.vue
-var render, staticRenderFns
+var picker_view_render, staticRenderFns
 
 
 
@@ -26259,7 +36291,7 @@ var render, staticRenderFns
 
 var component = Object(componentNormalizer["a" /* default */])(
   components_picker_viewvue_type_script_lang_js_,
-  render,
+  picker_view_render,
   staticRenderFns,
   false,
   null,
@@ -26274,117 +36306,7 @@ component.options.__file = "src/core/view/components/picker-view/index.vue"
 /* harmony default export */ var picker_view = __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
-/* 157 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-// ESM COMPAT FLAG
-__webpack_require__.r(__webpack_exports__);
-
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/resize-sensor/index.vue?vue&type=script&lang=js&
-/* harmony default export */ var resize_sensorvue_type_script_lang_js_ = ({
-  name: 'ResizeSensor',
-  props: {
-    initial: {
-      type: [Boolean, String],
-      default: false
-    }
-  },
-  data: function data() {
-    return {
-      size: {
-        width: -1,
-        height: -1
-      }
-    };
-  },
-  watch: {
-    size: {
-      deep: true,
-      handler: function handler(size) {
-        this.$emit('resize', Object.assign({}, size));
-      }
-    }
-  },
-  mounted: function mounted() {
-    if (this.initial === true) {
-      this.$nextTick(this.update);
-    }
-
-    if (this.$el.offsetParent !== this.$el.parentNode) {
-      this.$el.parentNode.style.position = 'relative';
-    }
-
-    if (!('AnimationEvent' in window)) {
-      this.reset();
-    }
-  },
-  methods: {
-    reset: function reset() {
-      var expand = this.$el.firstChild;
-      var shrink = this.$el.lastChild;
-      expand.scrollLeft = 100000;
-      expand.scrollTop = 100000;
-      shrink.scrollLeft = 100000;
-      shrink.scrollTop = 100000;
-    },
-    update: function update() {
-      this.size.width = this.$el.offsetWidth;
-      this.size.height = this.$el.offsetHeight;
-      this.reset();
-    }
-  },
-  render: function render(create) {
-    return create('uni-resize-sensor', {
-      on: {
-        '~animationstart': this.update
-      }
-    }, [create('div', {
-      on: {
-        scroll: this.update
-      }
-    }, [create('div')]), create('div', {
-      on: {
-        scroll: this.update
-      }
-    }, [create('div')])]);
-  }
-});
-// CONCATENATED MODULE: ./src/core/view/components/resize-sensor/index.vue?vue&type=script&lang=js&
- /* harmony default export */ var components_resize_sensorvue_type_script_lang_js_ = (resize_sensorvue_type_script_lang_js_); 
-// EXTERNAL MODULE: ./src/core/view/components/resize-sensor/index.vue?vue&type=style&index=0&lang=css&
-var resize_sensorvue_type_style_index_0_lang_css_ = __webpack_require__(107);
-
-// EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
-var componentNormalizer = __webpack_require__(0);
-
-// CONCATENATED MODULE: ./src/core/view/components/resize-sensor/index.vue
-var render, staticRenderFns
-
-
-
-
-
-/* normalize component */
-
-var component = Object(componentNormalizer["a" /* default */])(
-  components_resize_sensorvue_type_script_lang_js_,
-  render,
-  staticRenderFns,
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "src/core/view/components/resize-sensor/index.vue"
-/* harmony default export */ var resize_sensor = __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-/* 158 */
+/* 196 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -26392,29 +36314,14 @@ component.options.__file = "src/core/view/components/resize-sensor/index.vue"
 __webpack_require__.r(__webpack_exports__);
 
 // EXTERNAL MODULE: ./src/core/view/mixins/touchtrack.js
-var touchtrack = __webpack_require__(9);
+var touchtrack = __webpack_require__(12);
+
+// EXTERNAL MODULE: ./src/shared/index.js + 7 modules
+var shared = __webpack_require__(0);
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/core/view/components/swiper/index.vue?vue&type=script&lang=js&
 //
 
-
-function deepClone(vnodes, createElement) {
-  function cloneVNode(vnode) {
-    var clonedChildren = vnode.children && vnode.children.map(cloneVNode);
-    var cloned = createElement(vnode.tag, vnode.data, clonedChildren);
-    cloned.text = vnode.text;
-    cloned.isComment = vnode.isComment;
-    cloned.componentOptions = vnode.componentOptions;
-    cloned.elm = vnode.elm;
-    cloned.context = vnode.context;
-    cloned.ns = vnode.ns;
-    cloned.isStatic = vnode.isStatic;
-    cloned.key = vnode.key;
-    return cloned;
-  }
-
-  return vnodes.map(cloneVNode);
-}
 
 /* harmony default export */ var swipervue_type_script_lang_js_ = ({
   name: 'Swiper',
@@ -26550,8 +36457,8 @@ function deepClone(vnodes, createElement) {
     current: function current(val) {
       this._currentCheck();
     },
-    currentSync: function currentSync(val) {
-      this._currentChanged(val);
+    currentSync: function currentSync(val, oldVal) {
+      this._currentChanged(val, oldVal);
 
       this.$emit('update:current', val);
     },
@@ -26582,9 +36489,6 @@ function deepClone(vnodes, createElement) {
     this._currentCheck();
 
     this.touchtrack(this.$refs.slidesWrapper, '_handleContentTrack', true);
-
-    this._resetLayout();
-
     this.$watch(function () {
       return _this.autoplay && !_this.userTracking;
     }, this._inintAutoplay);
@@ -26648,14 +36552,16 @@ function deepClone(vnodes, createElement) {
     /**
      * 当前页面变更
      */
-    _currentChanged: function _currentChanged(current) {
+    _currentChanged: function _currentChanged(current, history) {
       var _this2 = this;
 
       var source = this.currentChangeSource;
       this.currentChangeSource = '';
 
       if (!source) {
-        this._animateViewport(current, '', 0);
+        var length = this.items.length;
+
+        this._animateViewport(current, '', this.circularEnabled && history + (length - current) % length > length / 2 ? 1 : 0);
       }
 
       var item = this.items[current];
@@ -27106,7 +37012,7 @@ function deepClone(vnodes, createElement) {
     var swiperItems = [];
 
     if (this.$slots.default) {
-      deepClone(this.$slots.default, createElement).forEach(function (vnode) {
+      Object(shared["d" /* deepClone */])(this.$slots.default, createElement).forEach(function (vnode) {
         if (vnode.componentOptions && vnode.componentOptions.tag === 'v-uni-swiper-item') {
           swiperItems.push(vnode);
         }
@@ -27164,13 +37070,13 @@ function deepClone(vnodes, createElement) {
 // CONCATENATED MODULE: ./src/core/view/components/swiper/index.vue?vue&type=script&lang=js&
  /* harmony default export */ var components_swipervue_type_script_lang_js_ = (swipervue_type_script_lang_js_); 
 // EXTERNAL MODULE: ./src/core/view/components/swiper/index.vue?vue&type=style&index=0&lang=css&
-var swipervue_type_style_index_0_lang_css_ = __webpack_require__(111);
+var swipervue_type_style_index_0_lang_css_ = __webpack_require__(148);
 
 // EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
-var componentNormalizer = __webpack_require__(0);
+var componentNormalizer = __webpack_require__(1);
 
 // CONCATENATED MODULE: ./src/core/view/components/swiper/index.vue
-var render, staticRenderFns
+var swiper_render, staticRenderFns
 
 
 
@@ -27180,7 +37086,7 @@ var render, staticRenderFns
 
 var component = Object(componentNormalizer["a" /* default */])(
   components_swipervue_type_script_lang_js_,
-  render,
+  swiper_render,
   staticRenderFns,
   false,
   null,
@@ -27195,7 +37101,7 @@ component.options.__file = "src/core/view/components/swiper/index.vue"
 /* harmony default export */ var swiper = __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
-/* 159 */
+/* 197 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -27245,11 +37151,9 @@ var SPACE_UNICODE = {
       if (vnode.text) {
         // 处理可能出现的多余的转义字符
         var nodeText = vnode.text.replace(/\\n/g, '\n');
-
-        var texts = _this._decodeHtml(nodeText).trim().split('\n');
-
+        var texts = nodeText.split('\n');
         texts.forEach(function (text, index) {
-          nodeList.push(text);
+          nodeList.push(_this._decodeHtml(text));
 
           if (index !== texts.length - 1) {
             nodeList.push(createElement('br'));
@@ -27257,7 +37161,7 @@ var SPACE_UNICODE = {
         });
       } else {
         if (vnode.componentOptions && vnode.componentOptions.tag !== 'v-uni-text') {
-          console.warn('<text> 组件内只支持嵌套 <text>，不支持其它组件或自定义组件，否则会引发在不同平台的渲染差异。');
+          console.warn('Do not nest other components in the text component, as there may be display differences on different platforms.');
         }
 
         nodeList.push(vnode);
@@ -27274,10 +37178,10 @@ var SPACE_UNICODE = {
 // CONCATENATED MODULE: ./src/core/view/components/text/index.vue?vue&type=script&lang=js&
  /* harmony default export */ var components_textvue_type_script_lang_js_ = (textvue_type_script_lang_js_); 
 // EXTERNAL MODULE: ./src/core/view/components/text/index.vue?vue&type=style&index=0&lang=css&
-var textvue_type_style_index_0_lang_css_ = __webpack_require__(113);
+var textvue_type_style_index_0_lang_css_ = __webpack_require__(150);
 
 // EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
-var componentNormalizer = __webpack_require__(0);
+var componentNormalizer = __webpack_require__(1);
 
 // CONCATENATED MODULE: ./src/core/view/components/text/index.vue
 var render, staticRenderFns
@@ -27305,7 +37209,7 @@ component.options.__file = "src/core/view/components/text/index.vue"
 /* harmony default export */ var components_text = __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
-/* 160 */
+/* 198 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -27316,7 +37220,7 @@ __webpack_require__.r(__webpack_exports__);
 var mixins_native = __webpack_require__(7);
 
 // EXTERNAL MODULE: ./src/platforms/app-plus/view/mixins/cover.js
-var cover = __webpack_require__(63);
+var cover = __webpack_require__(73);
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/platforms/app-plus/view/components/cover-view/index.vue?vue&type=script&lang=js&
 
@@ -27334,12 +37238,22 @@ var cover = __webpack_require__(63);
   render: function render(createElement) {
     var coverContent = '';
     var $slots = this.$slots.default || [];
-    $slots.forEach(function (node) {
-      if (!node.tag) {
-        coverContent += node.text || '';
-      }
+
+    var _slots = $slots.filter(function (node) {
+      return node.tag;
     });
-    this.coverContent = coverContent;
+
+    if (!_slots.length) {
+      $slots.forEach(function (node) {
+        if (!node.tag) {
+          coverContent += node.text || '';
+        }
+      });
+      this.coverContent = coverContent;
+    } else {
+      coverContent = _slots;
+    }
+
     return createElement('uni-cover-view', {
       on: {
         on: this.$listeners
@@ -27347,16 +37261,16 @@ var cover = __webpack_require__(63);
     }, [createElement('div', {
       ref: 'container',
       staticClass: 'uni-cover-view'
-    }, [coverContent])]);
+    }, [].concat(coverContent))]);
   }
 });
 // CONCATENATED MODULE: ./src/platforms/app-plus/view/components/cover-view/index.vue?vue&type=script&lang=js&
  /* harmony default export */ var components_cover_viewvue_type_script_lang_js_ = (cover_viewvue_type_script_lang_js_); 
 // EXTERNAL MODULE: ./src/platforms/app-plus/view/components/cover-view/index.vue?vue&type=style&index=0&lang=css&
-var cover_viewvue_type_style_index_0_lang_css_ = __webpack_require__(119);
+var cover_viewvue_type_style_index_0_lang_css_ = __webpack_require__(156);
 
 // EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
-var componentNormalizer = __webpack_require__(0);
+var componentNormalizer = __webpack_require__(1);
 
 // CONCATENATED MODULE: ./src/platforms/app-plus/view/components/cover-view/index.vue
 var render, staticRenderFns
@@ -27384,7 +37298,7 @@ component.options.__file = "src/platforms/app-plus/view/components/cover-view/in
 /* harmony default export */ var cover_view = __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
-/* 161 */
+/* 199 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -27407,7 +37321,7 @@ __webpack_require__.d(__webpack_exports__, "canIUse", function() { return /* ree
 if (typeof window !== 'undefined') {
   var currentScript = window.document.currentScript
   if (true) {
-    var getCurrentScript = __webpack_require__(86)
+    var getCurrentScript = __webpack_require__(113)
     currentScript = getCurrentScript()
 
     // for backward compatibility, because previously we directly included the polyfill
@@ -27426,7 +37340,7 @@ if (typeof window !== 'undefined') {
 /* harmony default export */ var setPublicPath = (null);
 
 // EXTERNAL MODULE: ./lib/app-plus/view.js
-var view = __webpack_require__(68);
+var view = __webpack_require__(83);
 
 // CONCATENATED MODULE: ./node_modules/@vue/cli-service/lib/commands/build/entry-lib-no-default.js
 
