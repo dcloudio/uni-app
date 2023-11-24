@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-uts-v1",
-  "version": "3.0.0-alpha-3090820231120001",
+  "version": "3.0.0-3090820231124001",
   "description": "uni-uts-v1",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -18,7 +18,7 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@dcloudio/uts": "3.0.0-alpha-3090820231120001",
+    "@dcloudio/uts": "3.0.0-3090820231124001",
     "@rollup/pluginutils": "^5.0.5",
     "@vue/shared": "3.2.47",
     "android-versions": "^1.8.1",
