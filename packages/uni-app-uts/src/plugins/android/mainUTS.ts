@@ -16,8 +16,7 @@ export function uniAppMainPlugin(): Plugin {
     async transform(code, id) {
       if (normalizePath(id) === mainUTS) {
         code = await parseImports(code)
-        return `
-import './${MANIFEST_JSON_UTS}'
+        return `import './${MANIFEST_JSON_UTS}'
 import './${PAGES_JSON_UTS}'
 ${code}
 `

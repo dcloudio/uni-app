@@ -25,7 +25,7 @@ export const UVUE_CLASS_NAME_PREFIX = 'Gen'
 
 export const DEFAULT_APPID = 'HBuilder'
 
-export const ENTRY_FILENAME = 'index.uts'
+export const ENTRY_FILENAME = 'main.uts'
 
 export async function parseImports(code: string) {
   await init

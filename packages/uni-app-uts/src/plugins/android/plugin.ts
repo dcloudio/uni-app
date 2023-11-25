@@ -180,7 +180,7 @@ export function uniAppPlugin(options: {
         }
       }
       const res = await resolveUTSCompiler().compileApp(
-        path.join(tempOutputDir, 'index.uts'),
+        path.join(tempOutputDir, 'main.uts'),
         {
           pageCount,
           uniCloudObjectInfo: getUniCloudObjectInfo(uniCloudSpaceList),
@@ -250,7 +250,7 @@ export function uniAppPlugin(options: {
 
 function normalizeFilename(filename: string, isMain = false) {
   if (isMain) {
-    return 'index.uts'
+    return 'main.uts'
   }
   return parseUTSRelativeFilename(filename)
 }
@@ -262,8 +262,7 @@ function normalizeCode(code: string, isMain = false) {
   const automatorCode = process.env.UNI_AUTOMATOR_WS_ENDPOINT
     ? 'initAutomator();'
     : ''
-  return `
-${code}  
+  return `${code}
 export function main(app: IApp) {
     definePageRoutes();
     defineAppConfig();

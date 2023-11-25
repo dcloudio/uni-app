@@ -119,6 +119,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
       outDir: isProd
         ? kotlinSrcDir(path.resolve(outputDir, '.uniappx/android/'))
         : kotlinSrcDir(kotlinDir(outputDir)),
+      outFilename: 'index.kt', // 强制 main.kt => index.kt 因为云端，真机运行识别的都是 index.kt
       package: pkg,
       sourceMap:
         sourceMap !== false
