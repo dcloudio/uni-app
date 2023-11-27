@@ -457,6 +457,18 @@
       }
     }
   },
+  "uni-verify": {
+    "uni": {
+      "getUniverifyManager": {
+        "name": "getUniverifyManager",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      }
+    }
+  },
   "uni-video": {
     "uni": {
       "createVideoContext": {
