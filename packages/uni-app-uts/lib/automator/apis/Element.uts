@@ -464,7 +464,11 @@ export const handleTouchEvent = (
 type TypeTouch = {
   identifier: number
   pageX: number
-  pageY: number
+  pageY: number,
+  screenX?: number | null,
+  screenY?: number | null,
+  clientX?: number | null,
+  clientY?: number | null,
 }
 
 function getTouches(touches: any[]): Touch[] {
@@ -476,6 +480,18 @@ function getTouches(touches: any[]): Touch[] {
     result.identifier = touchObj.identifier.toFloat()
     result.pageX = touchObj.pageX.toFloat()
     result.pageY = touchObj.pageY.toFloat()
+    if (touchObj.screenX !== null) {
+      result.screenX = touchObj.screenX!.toFloat()
+    }
+    if (touchObj.screenY !== null) {
+      result.screenY = touchObj.screenY!.toFloat()
+    }
+    if (touchObj.clientX !== null) {
+      result.clientX = touchObj.clientX!.toFloat()
+    }
+    if (touchObj.clientY !== null) {
+      result.clientY = touchObj.clientY!.toFloat()
+    }
     return result
   })
 }
