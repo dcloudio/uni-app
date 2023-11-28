@@ -1,4 +1,3 @@
-import type { ComponentPublicInstance } from 'vue'
 // @ts-ignore
 import type { Callback } from '../index.uts'
 import {
