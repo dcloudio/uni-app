@@ -1,10 +1,21 @@
 import type { OutputAsset } from 'rollup'
 import type { Plugin } from 'vite'
-import { ENTRY_FILENAME, getUniCloudSpaceList } from './utils'
+import path from 'path'
+import {
+  normalizePath,
+  resolveComponentsLibPath,
+} from '@dcloudio/uni-cli-shared'
+import { ENTRY_FILENAME, addAutoImports, getUniCloudSpaceList } from './utils'
 
 const uniCloudSpaceList = getUniCloudSpaceList()
 
 export function uniCloudPlugin(): Plugin {
+  addAutoImports(
+    normalizePath(
+      path.resolve(resolveComponentsLibPath(), 'unicloud-db', 'index.uts')
+    ),
+    ['mixinDatacom', 'uniCloudMixinDatacom']
+  )
   return {
     name: 'uni:app-unicloud',
     apply: 'build',
