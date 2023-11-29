@@ -12,6 +12,8 @@ import {
   isEnableTreeShaking,
   parseManifestJsonOnce,
   MANIFEST_JSON_JS,
+  checkPagesJson,
+  createRollupError,
 } from '@dcloudio/uni-cli-shared'
 import { isSSR } from '../utils'
 
@@ -24,6 +26,25 @@ export function uniPagesJsonPlugin(): Plugin {
         if (opts.filter(id)) {
           const { resolvedConfig } = opts
           const ssr = isSSR(opt)
+          if (process.env.UNI_APP_X === 'true') {
+            // 调整换行符，确保 parseTree 的loc正确
+            code = code.replace(/\r\n/g, '\n')
+            try {
+              checkPagesJson(code, process.env.UNI_INPUT_DIR)
+            } catch (err: any) {
+              if (err.loc) {
+                const error = createRollupError(
+                  'uni:app-pages',
+                  'pages.json',
+                  err,
+                  code
+                )
+                this.error(error)
+              } else {
+                throw err
+              }
+            }
+          }
           return {
             code:
               registerGlobalCode(resolvedConfig, ssr) +

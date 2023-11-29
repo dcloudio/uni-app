@@ -1,8 +1,9 @@
 import type { Plugin } from 'vite'
-import type { PluginContext, RollupError } from 'rollup'
+import type { PluginContext } from 'rollup'
 import fs from 'fs-extra'
-import { CompilerError, SFCBlock, SFCDescriptor } from '@vue/compiler-sfc'
+import { SFCBlock, SFCDescriptor } from '@vue/compiler-sfc'
 import {
+  createRollupError,
   hash,
   parseVueRequest,
   preNVueHtml,
@@ -104,36 +105,14 @@ function createAppDescriptor(
     descriptor.id = id
     if (errors.length) {
       errors.forEach((error: any) =>
-        pluginContext.error(createRollupError(filename, error))
+        pluginContext.error(
+          createRollupError('uni:app-nvue-app-style', filename, error)
+        )
       )
     }
     appDescriptor = descriptor
   }
   return appDescriptor
-}
-
-export function createRollupError(
-  id: string,
-  error: CompilerError | SyntaxError
-): RollupError {
-  const { message, name, stack } = error
-  const rollupError: RollupError = {
-    id,
-    plugin: 'vue',
-    message,
-    name,
-    stack,
-  }
-
-  if ('code' in error && error.loc) {
-    rollupError.loc = {
-      file: id,
-      line: error.loc.start.line,
-      column: error.loc.start.column,
-    }
-  }
-
-  return rollupError
 }
 
 // these are built-in query parameters so should be ignored

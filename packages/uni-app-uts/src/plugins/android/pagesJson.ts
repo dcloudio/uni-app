@@ -2,6 +2,7 @@ import path from 'path'
 import fs from 'fs-extra'
 import {
   PAGES_JSON_UTS,
+  createRollupError,
   normalizeUniAppXAppPagesJson,
   parseArguments,
 } from '@dcloudio/uni-cli-shared'
@@ -10,7 +11,6 @@ import type { Plugin } from 'vite'
 
 import { ENTRY_FILENAME, genClassName, stringifyMap } from './utils'
 import { isPages } from '../utils'
-import { createRollupError } from './uvue/error'
 
 export function uniAppPagesPlugin(): Plugin {
   const pagesJsonPath = path.resolve(process.env.UNI_INPUT_DIR, 'pages.json')

@@ -7,4 +7,5 @@ export * from './theme'
 export {
   normalizeUniAppXAppPagesJson,
   normalizeUniAppXAppConfig,
+  checkPagesJson,
 } from './uni-x'

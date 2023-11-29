@@ -13,6 +13,7 @@ import type { SourceMapInput, TransformPluginContext } from 'rollup'
 import { isString } from '@vue/shared'
 import {
   AutoImportOptions,
+  createRollupError,
   matchEasycom,
   normalizePath,
   parseUTSComponent,
@@ -36,7 +37,6 @@ import {
   getDescriptor,
   getSrcDescriptor,
 } from './descriptorCache'
-import { createRollupError } from './error'
 import {
   addAutoImports,
   addExtApiComponents,
