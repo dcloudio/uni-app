@@ -71,7 +71,7 @@
   },
   {
     "input": {
-      "src/nvue/index.ts": ["dist/uvue.runtime.esm.dev.js"]
+      "src/uvue/index.ts": ["dist/uvue.runtime.esm.dev.js"]
     },
     "output": {
       "freeze": false
@@ -86,7 +86,7 @@
   },
   {
     "input": {
-      "src/nvue/index.ts": ["dist/uvue.runtime.esm.prod.js"]
+      "src/uvue/index.ts": ["dist/uvue.runtime.esm.prod.js"]
     },
     "output": {
       "freeze": false
