@@ -37,6 +37,7 @@ const rollupPlugins = [
     values: {
       // 该插件限制了不能以__开头
       _NODE_JS_: FORMAT === 'cjs' ? 1 : 0,
+      _X_: isX ? 1 : 0,
     },
   }),
 ]

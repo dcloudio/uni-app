@@ -1,6 +1,16 @@
 import { EventChannel, UniLifecycleHooks } from '@dcloudio/uni-shared'
 import { ComponentCustomProperties, ComponentInternalInstance } from 'vue'
 declare module '@vue/runtime-core' {
+  interface ComponentCustomOptions {
+    rootElement?:
+      | {
+          name: string
+          class: CustomElementConstructor
+          options?: ElementDefinitionOptions
+        }
+      | 0
+  }
+
   interface ComponentCustomProperties {
     route: string
     $scope: {
