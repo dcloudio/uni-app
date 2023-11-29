@@ -3,6 +3,7 @@ import type { CompilerError } from './compiler/errors'
 import { generateCodeFrame, locToStartAndEnd } from '@dcloudio/uni-cli-shared'
 
 export function createRollupError(
+  plugin: string,
   id: string,
   error: CompilerError | SyntaxError,
   source?: string
@@ -10,7 +11,7 @@ export function createRollupError(
   const { message, name, stack } = error
   const rollupError: RollupError = {
     id,
-    plugin: 'vue',
+    plugin,
     message,
     name,
     stack,
@@ -23,8 +24,19 @@ export function createRollupError(
       column: error.loc.start.column,
     }
     if (source && source.length > 0) {
-      const { start, end } = locToStartAndEnd(source, error.loc)
-      rollupError.frame = generateCodeFrame(source, start, end)
+      if ('offsetStart' in error && 'offsetEnd' in error) {
+        rollupError.frame = generateCodeFrame(
+          source,
+          error.offsetStart as number,
+          error.offsetEnd as number
+        ).replace(/\t/g, ' ')
+      } else {
+        const { start, end } = locToStartAndEnd(source, error.loc)
+        rollupError.frame = generateCodeFrame(source, start, end).replace(
+          /\t/g,
+          ' '
+        )
+      }
     }
   }
 

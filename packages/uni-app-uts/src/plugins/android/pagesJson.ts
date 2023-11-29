@@ -10,6 +10,7 @@ import type { Plugin } from 'vite'
 
 import { ENTRY_FILENAME, genClassName, stringifyMap } from './utils'
 import { isPages } from '../utils'
+import { createRollupError } from './uvue/error'
 
 export function uniAppPagesPlugin(): Plugin {
   const pagesJsonPath = path.resolve(process.env.UNI_INPUT_DIR, 'pages.json')
@@ -40,7 +41,30 @@ export function uniAppPagesPlugin(): Plugin {
     transform(code, id) {
       if (isPages(id)) {
         this.addWatchFile(path.resolve(process.env.UNI_INPUT_DIR, 'pages.json'))
-        const pagesJson = normalizeUniAppXAppPagesJson(code)
+        let pagesJson: UniApp.PagesJson = {
+          pages: [],
+          globalStyle: {
+            navigationBar: {},
+          },
+        }
+        // 调整换行符，确保 parseTree 的loc正确
+        code = code.replace(/\r\n/g, '\n')
+        try {
+          pagesJson = normalizeUniAppXAppPagesJson(code)
+        } catch (err: any) {
+          if (err.loc) {
+            const error = createRollupError(
+              'uni:app-pages',
+              'pages.json',
+              err,
+              code
+            )
+            this.error(error)
+          } else {
+            throw err
+          }
+        }
+
         imports = []
         routes = []
 

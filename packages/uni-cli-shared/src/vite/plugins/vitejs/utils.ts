@@ -63,6 +63,26 @@ export function pad(source: string, n = 2): string {
   return lines.map((l) => ` `.repeat(n) + l).join(`\n`)
 }
 
+export function offsetToLineColumn(
+  source: string,
+  offset: number
+): { line: number; column: number } {
+  const lines = source.split(splitRE)
+  let line = 1
+  let column = 0
+  for (let i = 0; i < lines.length; i++) {
+    const lineLength = lines[i].length + 1
+    if (offset <= lineLength) {
+      column = offset
+      break
+    } else {
+      offset -= lineLength
+      line++
+    }
+  }
+  return { line, column }
+}
+
 export function posToNumber(
   source: string,
   pos: number | { line: number; column: number }

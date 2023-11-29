@@ -122,7 +122,7 @@ export function uniAppUVuePlugin(opts: {
         )
         if (errors.length) {
           errors.forEach((error) =>
-            this.error(createRollupError(filename, error, code))
+            this.error(createRollupError('vue', filename, error, code))
           )
           return null
         }
