@@ -3,6 +3,7 @@ import path from 'path'
 import { init, parse } from 'es-module-lexer'
 import {
   AutoImportOptions,
+  createRollupError,
   initAutoImportOptions,
   normalizeNodeModules,
   normalizePath,
@@ -20,6 +21,8 @@ import {
 import AutoImport from 'unplugin-auto-import/vite'
 import { once } from '@dcloudio/uni-shared'
 import { SourceMapInput } from 'rollup'
+import { createCompilerError } from './uvue/compiler/errors'
+import { SourceLocation } from '@vue/compiler-core'
 
 export const UVUE_CLASS_NAME_PREFIX = 'Gen'
 
@@ -29,8 +32,36 @@ export const ENTRY_FILENAME = 'main.uts'
 
 export async function parseImports(code: string) {
   await init
-  const [imports] = parse(code)
-  return imports
+  let res: ReturnType<typeof parse> = [[], [], false]
+  try {
+    res = parse(code)
+  } catch (err: any) {
+    const message = err.message
+    if (message) {
+      const matches = message.match(/@:(\d+):(\d+)/)
+      if (matches) {
+        throw createRollupError(
+          '',
+          '',
+          createCompilerError(
+            0,
+            {
+              start: {
+                offset: 0,
+                line: parseInt(matches[1]),
+                column: parseInt(matches[2]),
+              },
+            } as SourceLocation,
+            { 0: 'Parse error' },
+            ''
+          ),
+          code
+        )
+      }
+    }
+    throw err
+  }
+  return res[0]
     .map(({ s, e }) => {
       return `import "${code.slice(s, e)}"`
     })

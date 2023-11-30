@@ -109,7 +109,9 @@ export function locToStartAndEnd(
 ) {
   const lines = source.split(splitRE)
   const start = posToNumberByLines(lines, loc.start.line, loc.start.column)
-  const end = posToNumberByLines(lines, loc.end.line, loc.end.column)
+  const end = loc.end
+    ? posToNumberByLines(lines, loc.end.line, loc.end.column)
+    : undefined
   return { start, end }
 }
 
