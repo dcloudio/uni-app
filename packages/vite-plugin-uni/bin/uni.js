@@ -19,4 +19,11 @@ if (debugIndex > 0) {
     }
   }
 }
+// uni-cli-shared 引入了 @vue/compiler-core，需要提前设置NODE_ENV，才能保证 @vue/compiler-core 加载的是对应环境的代码
+if (
+  process.argv[2] === 'build' &&
+  !['-w', '--watch'].includes(process.argv[3])
+) {
+  process.env.NODE_ENV = 'production'
+}
 require('../dist/cli/index.js')
