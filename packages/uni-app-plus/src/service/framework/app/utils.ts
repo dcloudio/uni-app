@@ -43,8 +43,9 @@ export function initLaunchOptions({
     path,
     query: query ? parseQuery(query) : {},
     referrerInfo: referrerInfo || {},
-    channel: plus.runtime.channel,
-    launcher: plus.runtime.launcher,
+    // TODO uni-app x
+    channel: __X__ ? undefined : plus.runtime.channel,
+    launcher: __X__ ? undefined : plus.runtime.launcher,
   })
   extend(enterOptions, launchOptions)
   return extend({}, launchOptions)

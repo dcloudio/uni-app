@@ -1,6 +1,6 @@
 import { stringifyQuery } from '@dcloudio/uni-shared'
 
-let id = 2
+let id = __X__ ? 1 : 2
 
 export function getWebviewId() {
   return id

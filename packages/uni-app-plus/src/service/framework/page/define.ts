@@ -15,7 +15,7 @@ function isVuePageAsyncComponent(
   return isFunction(component)
 }
 
-const pagesMap = new Map<string, ReturnType<typeof createFactory>>()
+export const pagesMap = new Map<string, ReturnType<typeof createFactory>>()
 
 export function definePage(
   pagePath: string,
