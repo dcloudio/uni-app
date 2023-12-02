@@ -7998,6 +7998,17 @@ const resolveFilter = null;
  */
 const compatUtils = (null);
 
+let rootPage = null;
+let rootDocument = null;
+function getDocument() {
+    if (!rootPage) {
+        rootPage = __pageManager.createPage('', '', new Map());
+    }
+    if (!rootDocument) {
+        rootDocument = rootPage.document;
+    }
+    return rootDocument;
+}
 const nodeOps = {
     insert: (child, parent, anchor) => {
         if (!anchor) {
@@ -8011,27 +8022,41 @@ const nodeOps = {
             parent.removeChild(child);
         }
     },
-    // @ts-expect-error
     createElement: (tag, container) => {
-        // TODO
+        return getDocument().createElement(tag);
     },
-    // @ts-expect-error
     createText: (text, container) => {
-        // TODO
+        const textNode = getDocument().createElement(text);
+        textNode.setAttribute('value', text);
+        return textNode;
     },
-    // @ts-expect-error
     createComment: (text, container) => {
-        // TODO
+        return getDocument().createComment(text);
     },
     setText: (node, text) => {
-        // TODO
+        node.setAttribute('value', text);
     },
     setElementText: (el, text) => {
-        // TODO
+        el.setAttribute('value', text);
     },
     parentNode: node => node.parentNode,
     nextSibling: node => node.nextSibling
 };
+
+// 样式相关
+const NODE_EXT_STYLES = 'styles'; // node 中存储的可用样式表
+function setNodeExtraData(el, name, value) {
+    el.ext.set(name, value);
+}
+function getNodeExtraData(el, name) {
+    return el.ext.get(name);
+}
+function getExtraStyles(el) {
+    return getNodeExtraData(el, NODE_EXT_STYLES);
+}
+function setExtraStyles(el, styles) {
+    setNodeExtraData(el, NODE_EXT_STYLES, styles);
+}
 
 function each(obj) {
     return Object.keys(obj);
@@ -8137,7 +8162,7 @@ function parseClassListWithStyleSheet(classList, stylesheet, el = null) {
         weights: {}
     };
     classList.forEach(className => {
-        const parentStyles = stylesheet[className];
+        const parentStyles = stylesheet && stylesheet[className];
         if (parentStyles) {
             parseClassName(context, parentStyles, el);
         }
@@ -8145,7 +8170,8 @@ function parseClassListWithStyleSheet(classList, stylesheet, el = null) {
     return context.styles;
 }
 function parseClassStyles(el) {
-    return parseClassListWithStyleSheet(el.classList, el.styleSheet, el);
+    const styles = getExtraStyles(el);
+    return parseClassListWithStyleSheet(el.classList, styles, el);
 }
 function parseClassList(classList, instance, el = null) {
     return parseClassListWithStyleSheet(classList, parseStyleSheet(instance), el);
@@ -8153,19 +8179,20 @@ function parseClassList(classList, instance, el = null) {
 function parseStyleSheet({ type, appContext }) {
     const component = type;
     if (!component.__styles) {
+        const __globalStyles = appContext.provides.__globalStyles;
         // nvue 和 vue 混合开发时，__globalStyles注入的是未处理过的
-        if (appContext && isArray(appContext.provides.__globalStyles)) {
-            appContext.provides.__globalStyles = useCssStyles(appContext.provides.__globalStyles);
+        if (appContext && isArray(__globalStyles)) {
+            appContext.provides.__globalStyles = useCssStyles(__globalStyles);
         }
         if (component.mpType === 'page' && appContext) {
             // 如果是页面组件，则直接使用全局样式
-            component.__styles = appContext.provides.__globalStyles;
+            component.__styles = __globalStyles;
         }
         else {
             const styles = [];
-            if (appContext) {
+            if (appContext && __globalStyles) {
                 // 全局样式，包括 app.css 以及 page.css
-                styles.push(appContext.provides.__globalStyles);
+                styles.push(__globalStyles);
             }
             if (isArray(component.styles)) {
                 component.styles.forEach(style => styles.push(style));
@@ -8176,11 +8203,22 @@ function parseStyleSheet({ type, appContext }) {
     return component.__styles;
 }
 
+function toMap(value) {
+    if (value instanceof Map) {
+        return value;
+    }
+    const map = new Map();
+    for (const key in value) {
+        map.set(key, value[key]);
+    }
+    return map;
+}
+
 function patchAttr(el, key, value, instance = null) {
     if (instance) {
         [key, value] = transformAttr(el, key, value, instance);
     }
-    el.setAttr(key, value);
+    el.setAnyAttribute(key, value);
 }
 const ATTR_HOVER_CLASS = 'hoverClass';
 const ATTR_PLACEHOLDER_CLASS = 'placeholderClass';
@@ -8219,7 +8257,7 @@ function transformAttr(el, key, value, instance) {
     if (!value) {
         return [key, value];
     }
-    const opts = CLASS_AND_STYLES[el.type];
+    const opts = CLASS_AND_STYLES[el.tagName.toLowerCase()];
     if (opts) {
         const camelized = camelize(key);
         if (opts['class'].indexOf(camelized) > -1) {
@@ -8248,15 +8286,15 @@ function patchClass(el, pre, next, instance = null) {
         return;
     }
     const classList = next ? next.split(' ') : [];
-    el.setClassList(classList);
-    el.setStyleSheet(parseStyleSheet(instance));
+    el.classList = classList;
+    setExtraStyles(el, parseStyleSheet(instance));
 }
 
 function addEventListener(el, event, handler, options) {
-    el.addEvent(event, handler);
+    el.addEventListener(event, handler);
 }
 function removeEventListener(el, event) {
-    el.removeEvent(event);
+    el.removeEventListener(event);
 }
 function patchEvent(el, rawName, prevValue, nextValue, instance = null) {
     // vei = vue event invokers
@@ -8356,7 +8394,7 @@ function patchStyle(el, prev, next) {
             batchedStyles[camelize(key)] = next[key];
         }
     }
-    el.setStyles(batchedStyles);
+    el.updateStyle(toMap(batchedStyles));
 }
 
 const vModelTags = ['u-input', 'u-textarea'];
@@ -8373,9 +8411,11 @@ const patchProp = (el, key, prevValue, nextValue, isSVG = false, prevChildren, p
             patchEvent(el, key, prevValue, nextValue, parentComponent);
         }
     }
-    else if (key === 'modelValue' && vModelTags.includes(el.type)) {
+    else if (key === 'modelValue' &&
+        vModelTags.includes(el.tagName.toLocaleLowerCase())) {
         // v-model 时，原生 input 和 textarea 接收的是 value
-        el.setAttrs({ modelValue: nextValue, value: nextValue });
+        el.setAnyAttribute('modelValue', nextValue);
+        el.setAnyAttribute('value', nextValue);
     }
     else {
         patchAttr(el, key, nextValue, parentComponent);
@@ -8494,7 +8534,6 @@ const rendererOptions = extend({ patchProp }, nodeOps);
 let renderer;
 function ensureRenderer() {
     return (renderer ||
-        // @ts-expect-error
         (renderer = createRenderer(rendererOptions)));
 }
 // use explicit type casts here to avoid import() calls in rolled-up d.ts
@@ -8505,6 +8544,9 @@ const createApp = ((...args) => {
     const app = ensureRenderer().createApp(...args);
     const { mount } = app;
     app.mount = (container) => {
+        if (container === '#app') {
+            container = getDocument().body;
+        }
         return mount(container);
     };
     return app;
