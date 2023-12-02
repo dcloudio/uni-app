@@ -2025,6 +2025,7 @@ function mountSuspense(vnode, container, anchor, parentComponent, parentSuspense
       createElement
     }
   } = rendererInternals;
+  // @ts-expect-error  fixed by xxxxxx
   var hiddenContainer = createElement('div');
   var suspense = vnode.suspense = createSuspenseBoundary(vnode, parentSuspense, parentComponent, container, hiddenContainer, anchor, isSVG, slotScopeIds, optimized, rendererInternals);
   // start mounting the content subtree in an off-dom container
@@ -2095,6 +2096,7 @@ function patchSuspense(n1, n2, container, anchor, parentComponent, isSVG, slotSc
       // discard effects from pending branch
       suspense.effects.length = 0;
       // discard previous container
+      // @ts-expect-error  fixed by xxxxxx
       suspense.hiddenContainer = createElement('div');
       if (isInFallback) {
         // already in fallback state
@@ -3173,6 +3175,7 @@ var KeepAliveImpl = {
         }
       }
     } = sharedContext;
+    // @ts-expect-error  fixed by xxxxxx
     var storageContainer = createElement('div');
     sharedContext.activate = (vnode, container, anchor, isSVG, optimized) => {
       var instance = vnode.component;
@@ -4870,6 +4873,7 @@ function createHydrationFunctions(rendererInternals) {
           // #5728 empty text node inside a slot can cause hydration failure
           // because the server rendered HTML won't contain a text node
           if (vnode.children === '') {
+            // @ts-expect-error  fixed by xxxxxx
             insert(vnode.el = createText(''), parentNode(node), node);
             nextNode = node;
           } else {
@@ -5074,6 +5078,7 @@ function createHydrationFunctions(rendererInternals) {
       // back. This should have led to node/children mismatch warnings.
       hasMismatch = true;
       // since the anchor is missing, we need to create one and insert it
+      // @ts-expect-error  fixed by xxxxxx
       insert(vnode.anchor = createComment("]"), container, next);
       return next;
     }
@@ -5223,7 +5228,9 @@ function baseCreateRenderer(options, createHydrationFns) {
   };
   var processText = (n1, n2, container, anchor) => {
     if (n1 == null) {
-      hostInsert(n2.el = hostCreateText(n2.children), container, anchor);
+      hostInsert(n2.el = hostCreateText(n2.children, container),
+      // fixed by xxxxxx
+      container, anchor);
     } else {
       var el = n2.el = n1.el;
       if (n2.children !== n1.children) {
@@ -5233,7 +5240,9 @@ function baseCreateRenderer(options, createHydrationFns) {
   };
   var processCommentNode = (n1, n2, container, anchor) => {
     if (n1 == null) {
-      hostInsert(n2.el = hostCreateComment(n2.children || ''), container, anchor);
+      hostInsert(n2.el = hostCreateComment(n2.children || '', container),
+      // fixed by xxxxxx
+      container, anchor);
     } else {
       // there's no support for dynamic comments
       n2.el = n1.el;
@@ -5286,7 +5295,9 @@ function baseCreateRenderer(options, createHydrationFns) {
       transition,
       dirs
     } = vnode;
-    el = vnode.el = hostCreateElement(vnode.type, isSVG, props && props.is, props);
+    el = vnode.el = hostCreateElement(vnode.type,
+    // fixed by xxxxxx
+    container);
     // mount children first, since some props may rely on child content
     // being already rendered, e.g. `<select value>`
     if (shapeFlag & 8 /* ShapeFlags.TEXT_CHILDREN */) {
@@ -5523,8 +5534,8 @@ function baseCreateRenderer(options, createHydrationFns) {
     }
   };
   var processFragment = (n1, n2, container, anchor, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized) => {
-    var fragmentStartAnchor = n2.el = n1 ? n1.el : hostCreateText('');
-    var fragmentEndAnchor = n2.anchor = n1 ? n1.anchor : hostCreateText('');
+    var fragmentStartAnchor = n2.el = n1 ? n1.el : hostCreateText('', container); // fixed by xxxxxx
+    var fragmentEndAnchor = n2.anchor = n1 ? n1.anchor : hostCreateText('', container); // fixed by xxxxxx
     var {
       patchFlag,
       dynamicChildren,
@@ -6371,11 +6382,16 @@ var TeleportImpl = {
     } = n2;
     if (n1 == null) {
       // insert anchors in the main view
-      var placeholder = n2.el = createText('');
-      var mainAnchor = n2.anchor = createText('');
+      var placeholder = n2.el =
+      // @ts-expect-error  fixed by xxxxxx
+      createText('');
+      var mainAnchor = n2.anchor =
+      // @ts-expect-error  fixed by xxxxxx
+      createText('');
       insert(placeholder, container, anchor);
       insert(mainAnchor, container, anchor);
       var target = n2.target = resolveTarget(n2.props, querySelector);
+      // @ts-expect-error  fixed by xxxxxx
       var targetAnchor = n2.targetAnchor = createText('');
       if (target) {
         insert(targetAnchor, target);
@@ -7481,6 +7497,17 @@ var resolveFilter = null;
  * @internal only exposed in compat builds.
  */
 var compatUtils = null;
+var rootPage = null;
+var rootDocument = null;
+function getDocument() {
+  if (!rootPage) {
+    rootPage = __pageManager.createPage('', '', new Map());
+  }
+  if (!rootDocument) {
+    rootDocument = rootPage.document;
+  }
+  return rootDocument;
+}
 var nodeOps = {
   insert: (child, parent, anchor) => {
     if (!anchor) {
@@ -7494,20 +7521,41 @@ var nodeOps = {
       parent.removeChild(child);
     }
   },
-  createElement: tag => {
-    return document.createElement(tag);
+  createElement: (tag, container) => {
+    return getDocument().createElement(tag);
   },
-  createText: text => document.createText(text),
-  createComment: text => document.createComment(text),
+  createText: (text, container) => {
+    var textNode = getDocument().createElement(text);
+    textNode.setAttribute('value', text);
+    return textNode;
+  },
+  createComment: (text, container) => {
+    return getDocument().createComment(text);
+  },
   setText: (node, text) => {
-    node.setAttr('value', text);
+    node.setAttribute('value', text);
   },
   setElementText: (el, text) => {
-    el.setAttr('value', text);
+    el.setAttribute('value', text);
   },
   parentNode: node => node.parentNode,
   nextSibling: node => node.nextSibling
 };
+
+// 样式相关
+var NODE_EXT_STYLES = 'styles'; // node 中存储的可用样式表
+function setNodeExtraData(el, name, value) {
+  el.ext.set(name, value);
+}
+function getNodeExtraData(el, name) {
+  return el.ext.get(name);
+}
+function getExtraStyles(el) {
+  return getNodeExtraData(el, NODE_EXT_STYLES);
+}
+function setExtraStyles(el, styles) {
+  setNodeExtraData(el, NODE_EXT_STYLES, styles);
+}
 function each(obj) {
   return Object.keys(obj);
 }
@@ -7613,7 +7661,7 @@ function parseClassListWithStyleSheet(classList, stylesheet) {
     weights: {}
   };
   classList.forEach(className => {
-    var parentStyles = stylesheet[className];
+    var parentStyles = stylesheet && stylesheet[className];
     if (parentStyles) {
       parseClassName(context, parentStyles, el);
     }
@@ -7621,7 +7669,8 @@ function parseClassListWithStyleSheet(classList, stylesheet) {
   return context.styles;
 }
 function parseClassStyles(el) {
-  return parseClassListWithStyleSheet(el.classList, el.styleSheet, el);
+  var styles = getExtraStyles(el);
+  return parseClassListWithStyleSheet(el.classList, styles, el);
 }
 function parseClassList(classList, instance) {
   var el = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
@@ -7634,18 +7683,19 @@ function parseStyleSheet(_ref21) {
   } = _ref21;
   var component = type;
   if (!component.__styles) {
+    var __globalStyles = appContext.provides.__globalStyles;
     // nvue 和 vue 混合开发时，__globalStyles注入的是未处理过的
-    if (appContext && isArray(appContext.provides.__globalStyles)) {
-      appContext.provides.__globalStyles = useCssStyles(appContext.provides.__globalStyles);
+    if (appContext && isArray(__globalStyles)) {
+      appContext.provides.__globalStyles = useCssStyles(__globalStyles);
     }
     if (component.mpType === 'page' && appContext) {
       // 如果是页面组件，则直接使用全局样式
-      component.__styles = appContext.provides.__globalStyles;
+      component.__styles = __globalStyles;
     } else {
       var styles = [];
-      if (appContext) {
+      if (appContext && __globalStyles) {
         // 全局样式，包括 app.css 以及 page.css
-        styles.push(appContext.provides.__globalStyles);
+        styles.push(__globalStyles);
       }
       if (isArray(component.styles)) {
         component.styles.forEach(style => styles.push(style));
@@ -7655,12 +7705,22 @@ function parseStyleSheet(_ref21) {
   }
   return component.__styles;
 }
+function toMap(value) {
+  if (value instanceof Map) {
+    return value;
+  }
+  var map = new Map();
+  for (var key in value) {
+    map.set(key, value[key]);
+  }
+  return map;
+}
 function patchAttr(el, key, value) {
   var instance = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
   if (instance) {
     [key, value] = transformAttr(el, key, value, instance);
   }
-  el.setAttr(key, value);
+  el.setAnyAttribute(key, value);
 }
 var ATTR_HOVER_CLASS = 'hoverClass';
 var ATTR_PLACEHOLDER_CLASS = 'placeholderClass';
@@ -7699,7 +7759,7 @@ function transformAttr(el, key, value, instance) {
   if (!value) {
     return [key, value];
   }
-  var opts = CLASS_AND_STYLES[el.type];
+  var opts = CLASS_AND_STYLES[el.tagName.toLowerCase()];
   if (opts) {
     var camelized = camelize(key);
     if (opts['class'].indexOf(camelized) > -1) {
@@ -7729,14 +7789,14 @@ function patchClass(el, pre, next) {
     return;
   }
   var classList = next ? next.split(' ') : [];
-  el.setClassList(classList);
-  el.setStyleSheet(parseStyleSheet(instance));
+  el.classList = classList;
+  setExtraStyles(el, parseStyleSheet(instance));
 }
 function addEventListener(el, event, handler, options) {
-  el.addEvent(event, handler);
+  el.addEventListener(event, handler);
 }
 function removeEventListener(el, event) {
-  el.removeEvent(event);
+  el.removeEventListener(event);
 }
 function patchEvent(el, rawName, prevValue, nextValue) {
   var instance = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : null;
@@ -7832,7 +7892,7 @@ function patchStyle(el, prev, next) {
       batchedStyles[camelize(_key14)] = next[_key14];
     }
   }
-  el.setStyles(batchedStyles);
+  el.updateStyle(toMap(batchedStyles));
 }
 var vModelTags = ['u-input', 'u-textarea'];
 var patchProp = function (el, key, prevValue, nextValue) {
@@ -7851,12 +7911,10 @@ var patchProp = function (el, key, prevValue, nextValue) {
     if (!isModelListener(key)) {
       patchEvent(el, key, prevValue, nextValue, parentComponent);
     }
-  } else if (key === 'modelValue' && vModelTags.includes(el.type)) {
+  } else if (key === 'modelValue' && vModelTags.includes(el.tagName.toLocaleLowerCase())) {
     // v-model 时，原生 input 和 textarea 接收的是 value
-    el.setAttrs({
-      modelValue: nextValue,
-      value: nextValue
-    });
+    el.setAnyAttribute('modelValue', nextValue);
+    el.setAnyAttribute('value', nextValue);
   } else {
     patchAttr(el, key, nextValue, parentComponent);
   }
@@ -7982,6 +8040,9 @@ var createApp = function () {
     mount
   } = app;
   app.mount = container => {
+    if (container === '#app') {
+      container = getDocument().body;
+    }
     return mount(container);
   };
   return app;
