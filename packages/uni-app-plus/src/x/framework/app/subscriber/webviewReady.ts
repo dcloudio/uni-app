@@ -1,6 +1,6 @@
-import { getRouteOptions } from '@dcloudio/uni-core'
+// import { getRouteOptions } from '@dcloudio/uni-core'
 import { addLeadingSlash } from '@dcloudio/uni-shared'
-import { ON_WEBVIEW_READY } from '../../../../constants'
+// import { ON_WEBVIEW_READY } from '../../../../constants'
 import { $navigateTo } from '../../../api/route/navigateTo'
 // import { $switchTab } from '../../../api/route/switchTab'
 
@@ -29,7 +29,7 @@ function onLaunchWebviewReady() {
   //   plus.navigator.closeSplashscreen()
   // }
   const entryPagePath = addLeadingSlash(__uniConfig.entryPagePath!)
-  const routeOptions = getRouteOptions(entryPagePath)!
+  // const routeOptions = getRouteOptions(entryPagePath)!
 
   const args = {
     url: entryPagePath + (__uniConfig.entryPageQuery || ''),

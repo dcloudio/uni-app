@@ -4,8 +4,8 @@ import { IPage } from '@dcloudio/uni-app-x/types/native'
 import { EventChannel, formatLog } from '@dcloudio/uni-shared'
 import {
   initPageInternalInstance,
-  initPageVm,
-  invokeHook,
+  // initPageVm,
+  // invokeHook,
 } from '@dcloudio/uni-core'
 import { genWebviewId } from '../../../service/framework/webview/utils'
 import { initRouteOptions } from '../../../service/framework/page/routeOptions'

@@ -1,15 +1,15 @@
-import { getRouteOptions, subscribeServiceMethod } from '@dcloudio/uni-core'
-import {
-  addLeadingSlash,
-  ON_WXS_INVOKE_CALL_METHOD,
-  WEB_INVOKE_APPSERVICE,
-} from '@dcloudio/uni-shared'
-import {
-  ON_WEBVIEW_READY,
-  VD_SYNC,
-  WEBVIEW_INSERTED,
-  WEBVIEW_REMOVED,
-} from '../../../../constants'
+// import { getRouteOptions, subscribeServiceMethod } from '@dcloudio/uni-core'
+// import {
+//   addLeadingSlash,
+//   ON_WXS_INVOKE_CALL_METHOD,
+//   WEB_INVOKE_APPSERVICE,
+// } from '@dcloudio/uni-shared'
+// import {
+//   ON_WEBVIEW_READY,
+//   VD_SYNC,
+//   WEBVIEW_INSERTED,
+//   WEBVIEW_REMOVED,
+// } from '../../../../constants'
 import { subscribeWebviewReady } from './webviewReady'
 
 export function initSubscribeHandlers() {
