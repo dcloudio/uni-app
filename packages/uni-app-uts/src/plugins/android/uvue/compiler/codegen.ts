@@ -24,7 +24,6 @@ import {
   TemplateChildNode,
   TextNode,
   VNodeCall,
-  WITH_CTX,
   WITH_DIRECTIVES,
   advancePositionWithMutation,
   createSimpleExpression,
@@ -49,6 +48,8 @@ import {
   RESOLVE_COMPONENT,
   RESOLVE_DIRECTIVE,
   RESOLVE_EASY_COMPONENT,
+  WITH_SCOPED_SLOT_CTX,
+  WITH_SLOT_CTX,
 } from './runtimeHelpers'
 import { stringifyExpression } from './transforms/transformExpression'
 import { isBinaryExpression } from '@babel/types'
@@ -683,7 +684,7 @@ function genFunctionExpression(
   const { params, returns, body, newline, isSlot } = node
   if (isSlot) {
     // wrap slot functions with owner context
-    push(`${helperNameMap[WITH_CTX]}(`)
+    push(`${helperNameMap[params ? WITH_SCOPED_SLOT_CTX : WITH_SLOT_CTX]}(`)
   }
   push(`(`, node)
   if (isArray(params)) {
