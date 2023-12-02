@@ -17,7 +17,7 @@ describe('compiler: transform tap to click', () => {
     assert(
       `<button @tap="click">hello</button>`,
       `createVNode(_component_button, utsMapOf({ onClick: _ctx.click }), utsMapOf({
-  default: withCtx((): any[] => ["hello"]),
+  default: withSlotCtx((): any[] => ["hello"]),
   _: 1 /* STABLE */
 }), 8 /* PROPS */, ["onClick"])`
     )
