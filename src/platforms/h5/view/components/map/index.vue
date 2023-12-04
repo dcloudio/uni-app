@@ -560,23 +560,18 @@ export default {
           strokeDashStyle: 'solid'
         }
 
-        if (IS_AMAP) {
-          circleOptions.strokeColor = option.color
-          circleOptions.fillColor = option.fillColor || '#000'
+        const { r: fr, g: fg, b: fb, a: fa } = hexToRgba(option.fillColor || '#00000000')
+        const { r: sr, g: sg, b: sb, a: sa } = hexToRgba(option.color || '#000000')
+        if ('Color' in maps) {
+          // 腾讯
+          circleOptions.fillColor = new maps.Color(fr, fg, fb, fa)
+          circleOptions.strokeColor = new maps.Color(sr, sg, sb, sa)
         } else {
-          const { r: fr, g: fg, b: fb, a: fa } = hexToRgba(option.fillColor || '#00000000')
-          const { r: sr, g: sg, b: sb, a: sa } = hexToRgba(option.color || '#000000')
-          if ('Color' in maps) {
-            // 腾讯
-            circleOptions.fillColor = new maps.Color(fr, fg, fb, fa)
-            circleOptions.strokeColor = new maps.Color(sr, sg, sb, sa)
-          } else {
-            // Google
-            circleOptions.fillColor = `rgb(${fr}, ${fg}, ${fb})`
-            circleOptions.fillOpacity = fa
-            circleOptions.strokeColor = `rgb(${sr}, ${sg}, ${sb})`
-            circleOptions.strokeOpacity = sa
-          }
+          // Google & 高德
+          circleOptions.fillColor = `rgb(${fr}, ${fg}, ${fb})`
+          circleOptions.fillOpacity = fa
+          circleOptions.strokeColor = `rgb(${sr}, ${sg}, ${sb})`
+          circleOptions.strokeOpacity = sa
         }
 
         const circle = new maps.Circle(circleOptions)
