@@ -40,6 +40,7 @@ import {
 import {
   addAutoImports,
   addExtApiComponents,
+  createTryResolve,
   genClassName,
   initAutoImportOnce,
   isVue,
@@ -341,7 +342,19 @@ export async function transformVue(
   ]
   const content = descriptor.script?.content
   if (content) {
-    jsCodes.push(await parseImports(content))
+    jsCodes.push(
+      await parseImports(
+        content,
+        pluginContext
+          ? createTryResolve(
+              filename,
+              pluginContext.resolve.bind(pluginContext),
+              (descriptor.script?.loc.start.line ?? 1) - 1,
+              descriptor.source
+            )
+          : undefined
+      )
+    )
   }
   if (descriptor.styles.length) {
     jsCodes.push(await genJsStylesCode(descriptor, pluginContext!))

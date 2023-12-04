@@ -25,6 +25,7 @@ import {
   UVUE_CLASS_NAME_PREFIX,
   initAutoImportOnce,
   getAutoImports,
+  createTryResolve,
 } from './utils'
 import { getOutputManifestJson } from './manifestJson'
 import { createUniOptions } from '../utils'
@@ -167,7 +168,10 @@ export function uniAppPlugin(options: {
           ),
         })
       }
-      code = await parseImports(code)
+      code = await parseImports(
+        code,
+        createTryResolve(id, this.resolve.bind(this))
+      )
       return code
     },
     async writeBundle() {

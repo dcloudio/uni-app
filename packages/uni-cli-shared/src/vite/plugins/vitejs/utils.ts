@@ -5,6 +5,7 @@ import os from 'os'
 import path from 'path'
 import remapping from '@ampproject/remapping'
 import type { DecodedSourceMap, RawSourceMap } from '@ampproject/remapping'
+import { SourceLocation } from '@vue/compiler-core'
 
 export function slash(p: string): string {
   return p.replace(/\\/g, '/')
@@ -63,24 +64,38 @@ export function pad(source: string, n = 2): string {
   return lines.map((l) => ` `.repeat(n) + l).join(`\n`)
 }
 
+export function offsetToStartAndEnd(
+  source: string,
+  startOffset: number,
+  endOffset: number
+): SourceLocation {
+  const lines = source.split(splitRE)
+  return {
+    start: offsetToLineColumnByLines(lines, startOffset),
+    end: offsetToLineColumnByLines(lines, endOffset),
+    source: '',
+  }
+}
+
+function offsetToLineColumnByLines(lines: string[], offset: number) {
+  let currentOffset = 0
+  for (let i = 0; i < lines.length; i++) {
+    const lineLength = lines[i].length + 1 // Adding 1 for the newline character
+    if (currentOffset + lineLength > offset) {
+      const line = i + 1 // Line numbers start from 1
+      const column = offset - currentOffset // Column numbers start from 0
+      return { line, column, offset }
+    }
+    currentOffset += lineLength
+  }
+  return { line: lines.length, column: lines[lines.length - 1].length, offset }
+}
+
 export function offsetToLineColumn(
   source: string,
   offset: number
 ): { line: number; column: number } {
-  const lines = source.split(splitRE)
-  let line = 1
-  let column = 0
-  for (let i = 0; i < lines.length; i++) {
-    const lineLength = lines[i].length + 1
-    if (offset <= lineLength) {
-      column = offset
-      break
-    } else {
-      offset -= lineLength
-      line++
-    }
-  }
-  return { line, column }
+  return offsetToLineColumnByLines(source.split(splitRE), offset)
 }
 
 export function posToNumber(

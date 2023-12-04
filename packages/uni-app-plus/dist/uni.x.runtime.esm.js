@@ -1035,6 +1035,7 @@ function initAnimation(path, animationType, animationDuration) {
     ];
 }
 
+// import { getRouteOptions } from '@dcloudio/uni-core'
 // import { $switchTab } from '../../../api/route/switchTab'
 let isLaunchWebviewReady = false; // 目前首页双向确定 ready，可能会导致触发两次 onWebviewReady(主要是 Android)
 function subscribeWebviewReady(_data, pageId) {
@@ -1059,7 +1060,7 @@ function onLaunchWebviewReady() {
     //   plus.navigator.closeSplashscreen()
     // }
     const entryPagePath = addLeadingSlash(__uniConfig.entryPagePath);
-    getRouteOptions(entryPagePath);
+    // const routeOptions = getRouteOptions(entryPagePath)!
     const args = {
         url: entryPagePath + (__uniConfig.entryPageQuery || ''),
         openType: 'appLaunch',
@@ -1072,6 +1073,7 @@ function onLaunchWebviewReady() {
     return $navigateTo(args, handler);
 }
 
+// import { getRouteOptions, subscribeServiceMethod } from '@dcloudio/uni-core'
 function initSubscribeHandlers() {
     // const { subscribe, subscribeHandler, publishHandler } = UniServiceJSBridge
     // onPlusMessage<{ type: string; data: Record<string, any>; pageId: number }>(
