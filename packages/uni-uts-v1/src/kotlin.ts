@@ -549,11 +549,9 @@ function resolveLibs(filename: string) {
     const zips = sync('*.aar', { cwd: libsPath })
     zips.forEach((name) => {
       const outputPath = resolveAndroidArchiveOutputPath(name)
-      if (!fs.existsSync(outputPath)) {
-        // 解压
-        const zip = new AdmZip(path.resolve(libsPath, name))
-        zip.extractAllTo(outputPath, true)
-      }
+      // 每次都解压，避免aar或jar更新后，未解压
+      const zip = new AdmZip(path.resolve(libsPath, name))
+      zip.extractAllTo(outputPath, true)
       libs.push(
         ...sync('**/*.jar', {
           cwd: outputPath,
