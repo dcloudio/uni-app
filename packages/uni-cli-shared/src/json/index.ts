@@ -8,4 +8,6 @@ export {
   normalizeUniAppXAppPagesJson,
   normalizeUniAppXAppConfig,
   checkPagesJson,
+  parseUniXFlexDirection,
+  parseUniXSplashScreen,
 } from './uni-x'

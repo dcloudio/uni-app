@@ -10,6 +10,7 @@ import { normalizeAppUniRoutes } from '../app/pages/uniRoutes'
 import { normalizeAppXUniConfig } from './uniConfig'
 import { offsetToLineColumn } from '../../vite/plugins/vitejs/utils'
 
+export { parseUniXFlexDirection, parseUniXSplashScreen } from './manifest'
 interface CheckPagesJsonError extends CompilerError {
   offsetStart: number
   offsetEnd: number
