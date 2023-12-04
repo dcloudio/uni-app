@@ -17786,7 +17786,7 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
           strokeWeight: Number(option.strokeWidth) || 1,
           strokeDashStyle: "solid"
         };
-        if (getIsAMap() || getIsBMap()) {
+        if (getIsBMap()) {
           circleOptions.strokeColor = option.color;
           circleOptions.fillColor = option.fillColor || "#000";
           circleOptions.fillOpacity = 1;
