@@ -32,28 +32,50 @@ export const DEFAULT_APPID = 'HBuilder'
 
 export const ENTRY_FILENAME = 'main.uts'
 
+export function parseImporter(importer: string) {
+  if (path.isAbsolute(importer)) {
+    return normalizePath(path.relative(process.env.UNI_INPUT_DIR, importer))
+  }
+  return importer
+}
+
+export function wrapResolve(
+  resolve: PluginContext['resolve']
+): PluginContext['resolve'] {
+  return async (source, importer, options) => {
+    try {
+      return await resolve(source, importer, options)
+    } catch (e) {
+      // import "@/pages/logo.png" 可能会报 Cannot find module 错误
+    }
+    return null
+  }
+}
+
 export function createTryResolve(
   importer: string,
   resolve: PluginContext['resolve'],
-  offsetLine = 0,
+  offsetStart?: Position,
   origCode: string = ''
 ) {
   return async (source: string, code: string, { ss, se }: ImportSpecifier) => {
-    const resolved = await resolve(source, importer)
+    const resolved = await wrapResolve(resolve)(source, importer)
     if (!resolved) {
       const { start, end } = offsetToStartAndEnd(code, ss, se)
-      if (offsetLine) {
+      if (offsetStart) {
+        if (start.line === 1) {
+          start.column = start.column + offsetStart.column
+          if (end.line === 1) {
+            end.column = end.column + offsetStart.column
+          }
+        }
+        const offsetLine = offsetStart.line - 1
         start.line = start.line + offsetLine
         end.line = end.line + offsetLine
       }
-      if (path.isAbsolute(importer)) {
-        importer = normalizePath(
-          path.relative(process.env.UNI_INPUT_DIR, importer)
-        )
-      }
       throw createResolveError(
-        (origCode || code).replace(/\r\n/g, '\n'),
-        `Could not resolve "${source}" from "${importer}"`,
+        origCode || code,
+        `Could not resolve "${source}" from "${parseImporter(importer)}"`,
         start,
         end
       )
@@ -65,7 +87,6 @@ export async function parseImports(
   code: string,
   tryResolve?: ReturnType<typeof createTryResolve>
 ) {
-  code = code.replace(/\r\n/g, '\n')
   await init
   let res: ReturnType<typeof parse> = [[], [], false]
   try {
@@ -97,21 +118,19 @@ export async function parseImports(
     throw err
   }
   const imports = res[0]
-  if (!imports.length) {
-    return ''
-  }
   const importsCode: string[] = []
-  for (const specifier of res[0]) {
+  for (const specifier of imports) {
     const source = code.slice(specifier.s, specifier.e)
     if (tryResolve) {
       await tryResolve(source, code, specifier)
     }
     importsCode.push(`import "${source}"`)
   }
+
   return importsCode.concat(parseUniExtApiImports(code)).join('\n')
 }
 
-function createResolveError(
+export function createResolveError(
   code: string,
   msg: string,
   start: Position,

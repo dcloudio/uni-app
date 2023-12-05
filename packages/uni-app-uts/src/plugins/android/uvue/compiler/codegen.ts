@@ -251,6 +251,7 @@ export function generate(
   )
 
   return {
+    ast,
     code: context.code,
     easyComponentAutoImports: context.easyComponentAutoImports,
     importEasyComponents: context.importEasyComponents,

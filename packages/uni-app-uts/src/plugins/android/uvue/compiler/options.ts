@@ -1,4 +1,4 @@
-import { BindingMetadata, CompilerError } from '@vue/compiler-core'
+import { BindingMetadata, CompilerError, RootNode } from '@vue/compiler-core'
 import type { RawSourceMap } from 'source-map-js'
 import { DirectiveTransform, NodeTransform } from './transform'
 
@@ -114,6 +114,7 @@ export interface TransformOptions
 export type CompilerOptions = TransformOptions & CodegenOptions
 
 export interface CodegenResult {
+  ast?: RootNode
   code: string
   easyComponentAutoImports: Record<string, [string, string]>
   importEasyComponents: string[]

@@ -20,6 +20,7 @@ import {
   parseVueRequest,
   removeExt,
   resolveAppVue,
+  generateCodeFrame,
 } from '@dcloudio/uni-cli-shared'
 
 import type { RawSourceMap } from 'source-map-js'
@@ -30,6 +31,7 @@ import {
   eachMapping,
   EncodedSourceMap,
 } from '@jridgewell/trace-mapping'
+import { RootNode } from '@vue/compiler-core'
 
 import {
   ResolvedOptions,
@@ -40,19 +42,22 @@ import {
 import {
   addAutoImports,
   addExtApiComponents,
+  createResolveError,
   createTryResolve,
   genClassName,
   initAutoImportOnce,
   isVue,
+  parseImporter,
   parseImports,
   parseUTSImportFilename,
   parseUTSRelativeFilename,
+  wrapResolve,
 } from '../utils'
 import { genScript } from './code/script'
 import { genTemplate } from './code/template'
 import { genJsStylesCode, genStyle, transformStyle } from './code/style'
-import { generateCodeFrame } from '@dcloudio/uni-cli-shared'
 import { genComponentPublicInstanceImported } from './compiler/utils'
+import { ImportItem } from './compiler/transform'
 
 export function uniAppUVuePlugin(opts: {
   autoImportOptions?: AutoImportOptions
@@ -222,6 +227,7 @@ export async function transformVue(
   if (!options.compiler) {
     options.compiler = require('@vue/compiler-sfc')
   }
+  code = code.replace(/\r\n/g, '\n')
   // prev descriptor is only set and used for hmr
   const { descriptor, errors } = createDescriptor(filename, code, options)
 
@@ -304,6 +310,34 @@ export async function transformVue(
       },
       parseUTSComponent,
     })
+    if (pluginContext && templateResult.ast) {
+      await checkTemplateImports(
+        templateResult.ast,
+        async (importItem: ImportItem) => {
+          if (isString(importItem.exp)) {
+            return
+          }
+          const resolved = await wrapResolve(pluginContext.resolve)(
+            importItem.path,
+            filename
+          )
+          if (!resolved) {
+            const { start, end } = importItem.exp.loc
+            start.line = start.line + templateStartLine - 1
+            end.line = end.line + templateStartLine - 1
+            throw createResolveError(
+              descriptor.source,
+              `Could not resolve "${importItem.path}" from "${parseImporter(
+                filename
+              )}"`,
+              start,
+              end
+            )
+          }
+        }
+      )
+    }
+
     Object.keys(templateResult.easyComponentAutoImports).forEach((source) => {
       addAutoImports(source, templateResult.easyComponentAutoImports[source])
     })
@@ -349,7 +383,7 @@ export async function transformVue(
           ? createTryResolve(
               filename,
               pluginContext.resolve.bind(pluginContext),
-              (descriptor.script?.loc.start.line ?? 1) - 1,
+              descriptor.script?.loc.start,
               descriptor.source
             )
           : undefined
@@ -435,4 +469,15 @@ function createSourceMap(
   })
 
   return toEncodedMap(gen) as unknown as RawSourceMap
+}
+
+async function checkTemplateImports(
+  ast: RootNode,
+  tryResolve: (importItem: ImportItem) => Promise<void>
+) {
+  for (let importItem of ast.imports) {
+    if (!isString(importItem.exp)) {
+      await tryResolve(importItem)
+    }
+  }
 }
