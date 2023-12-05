@@ -2,6 +2,7 @@ import type { ConfigEnv, ResolvedConfig, UserConfig } from 'vite'
 import { generateCodeFrame, locToStartAndEnd } from '../plugins/vitejs/utils'
 import { RollupError } from 'rollup'
 import { CompilerError } from '@vue/compiler-sfc'
+import { extend } from '@vue/shared'
 
 export function withSourcemap(config: ResolvedConfig) {
   if (config.command === 'serve') {
@@ -34,13 +35,12 @@ export function createRollupError(
   source?: string
 ): RollupError {
   const { message, name, stack } = error
-  const rollupError: RollupError = {
+  const rollupError: RollupError = extend(new Error(message), {
     id,
     plugin,
-    message,
     name,
     stack,
-  }
+  })
 
   if ('code' in error && error.loc) {
     rollupError.loc = {
@@ -63,6 +63,15 @@ export function createRollupError(
         )
       }
     }
+  }
+  if (id) {
+    // 指定了id后，不让后续的rollup重写
+    Object.defineProperty(rollupError, 'id', {
+      get() {
+        return id
+      },
+      set(_v) {},
+    })
   }
   return rollupError
 }

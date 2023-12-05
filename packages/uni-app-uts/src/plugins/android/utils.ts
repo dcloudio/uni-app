@@ -3,6 +3,7 @@ import path from 'path'
 import { ImportSpecifier, init, parse } from 'es-module-lexer'
 import {
   AutoImportOptions,
+  createResolveErrorMsg,
   createRollupError,
   initAutoImportOptions,
   normalizeNodeModules,
@@ -31,13 +32,6 @@ export const UVUE_CLASS_NAME_PREFIX = 'Gen'
 export const DEFAULT_APPID = 'HBuilder'
 
 export const ENTRY_FILENAME = 'main.uts'
-
-export function parseImporter(importer: string) {
-  if (path.isAbsolute(importer)) {
-    return normalizePath(path.relative(process.env.UNI_INPUT_DIR, importer))
-  }
-  return importer
-}
 
 export function wrapResolve(
   resolve: PluginContext['resolve']
@@ -75,7 +69,7 @@ export function createTryResolve(
       }
       throw createResolveError(
         origCode || code,
-        `Could not resolve "${source}" from "${parseImporter(importer)}"`,
+        createResolveErrorMsg(source, importer),
         start,
         end
       )

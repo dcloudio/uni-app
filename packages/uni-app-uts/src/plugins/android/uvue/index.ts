@@ -21,6 +21,7 @@ import {
   removeExt,
   resolveAppVue,
   generateCodeFrame,
+  createResolveErrorMsg,
 } from '@dcloudio/uni-cli-shared'
 
 import type { RawSourceMap } from 'source-map-js'
@@ -47,7 +48,6 @@ import {
   genClassName,
   initAutoImportOnce,
   isVue,
-  parseImporter,
   parseImports,
   parseUTSImportFilename,
   parseUTSRelativeFilename,
@@ -327,9 +327,7 @@ export async function transformVue(
             end.line = end.line + templateStartLine - 1
             throw createResolveError(
               descriptor.source,
-              `Could not resolve "${importItem.path}" from "${parseImporter(
-                filename
-              )}"`,
+              createResolveErrorMsg(importItem.path, filename),
               start,
               end
             )
