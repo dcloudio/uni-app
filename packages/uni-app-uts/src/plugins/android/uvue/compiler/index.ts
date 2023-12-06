@@ -32,6 +32,7 @@ import { transformElements } from './transforms/transformElements'
 import { transformStyle } from './transforms/transformStyle'
 import { transformVHtml } from './transforms/vHtml'
 import { transformMemo } from './transforms/vMemo'
+import { transformOnce } from './transforms/vOnce'
 
 export type TransformPreset = [
   NodeTransform[],
@@ -43,6 +44,7 @@ export function getBaseTransformPreset(
 ): TransformPreset {
   return [
     [
+      transformOnce,
       transformIf,
       transformMemo,
       transformFor,

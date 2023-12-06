@@ -198,7 +198,7 @@ const UTS_COMPONENT_ELEMENT_IMPORTS = `/*UTS-COMPONENTS-IMPORTS*/`
 
 export function generate(
   ast: RootNode,
-  options: CodegenOptions
+  options: CodegenOptions = {}
 ): CodegenResult {
   const context = createCodegenContext(ast, options)
   const { mode, deindent, indent, push, newline } = context
@@ -822,21 +822,20 @@ function genConditionalExpression(
 
 function genCacheExpression(node: CacheExpression, context: CodegenContext) {
   const { push, helper, indent, deindent, newline } = context
-  push(`_cache[${node.index}] || (`)
+  push(`_cache[${node.index}] ?? run((): VNode | null => {`)
   if (node.isVNode) {
     indent()
-    push(`${helper(SET_BLOCK_TRACKING)}(-1),`)
+    push(`${helper(SET_BLOCK_TRACKING)}(-1)`)
     newline()
   }
   push(`_cache[${node.index}] = `)
   genNode(node.value, context)
   if (node.isVNode) {
-    push(`,`)
     newline()
-    push(`${helper(SET_BLOCK_TRACKING)}(1),`)
+    push(`${helper(SET_BLOCK_TRACKING)}(1)`)
     newline()
-    push(`_cache[${node.index}]`)
+    push(`return _cache[${node.index}] as VNode | null`)
     deindent()
   }
-  push(`)`)
+  push(`})`)
 }
