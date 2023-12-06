@@ -115,8 +115,8 @@ export interface TransformContext
 export function createTransformContext(
   root: RootNode,
   {
-    rootDir,
-    targetLanguage,
+    rootDir = '',
+    targetLanguage = 'kotlin',
     filename = '',
     prefixIdentifiers = false,
     nodeTransforms = [],

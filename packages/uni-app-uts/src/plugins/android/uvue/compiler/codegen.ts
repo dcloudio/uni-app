@@ -94,8 +94,8 @@ export interface CodegenContext
 function createCodegenContext(
   ast: RootNode,
   {
-    rootDir,
-    targetLanguage,
+    rootDir = '',
+    targetLanguage = 'kotlin',
     mode = 'default',
     prefixIdentifiers = false,
     bindingMetadata = {},
@@ -213,6 +213,8 @@ export function generate(
     push(genRenderFunctionDecl(options) + ` {`)
     newline()
     push(`const _ctx = this`)
+    newline()
+    push(`const _cache = this.$!.renderCache`)
     // generate asset resolution statements
     if (ast.components.length) {
       newline()
@@ -458,6 +460,9 @@ function genNode(node: CodegenNode | symbol | string, context: CodegenContext) {
       break
     case NodeTypes.JS_CACHE_EXPRESSION:
       genCacheExpression(node, context)
+      break
+    case NodeTypes.JS_BLOCK_STATEMENT:
+      genNodeList(node.body, context, true, false)
       break
 
     /* istanbul ignore next */

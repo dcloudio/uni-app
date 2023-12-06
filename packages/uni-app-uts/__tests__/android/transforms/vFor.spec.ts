@@ -60,7 +60,7 @@ describe('compiler: v-for', () => {
   test('number expression', () => {
     assert(
       `<text v-for="item in 10" :key="item" />`,
-      `createElementVNode(Fragment, null, RenderHelpers.renderList(10, (item, _, _): VNode => {
+      `createElementVNode(Fragment, null, RenderHelpers.renderList(10, (item, _, _, _): VNode => {
   return createElementVNode("text", utsMapOf({ key: item }))
 }), 64 /* STABLE_FRAGMENT */)`
     )
@@ -68,7 +68,7 @@ describe('compiler: v-for', () => {
   test('value', () => {
     assert(
       `<text v-for="(item) in items" />`,
-      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.items, (item, _, _): VNode => {
+      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.items, (item, _, _, _): VNode => {
   return createElementVNode("text")
 }), 256 /* UNKEYED_FRAGMENT */)`
     )
@@ -76,7 +76,7 @@ describe('compiler: v-for', () => {
   test('value and key', () => {
     assert(
       `<text v-for="(item, index) in [1,2,3]" :key="index" />`,
-      `createElementVNode(Fragment, null, RenderHelpers.renderList([1,2,3], (item, index, _): VNode => {
+      `createElementVNode(Fragment, null, RenderHelpers.renderList([1,2,3], (item, index, _, _): VNode => {
   return createElementVNode("text", utsMapOf({ key: index }))
 }), 64 /* STABLE_FRAGMENT */)`
     )
@@ -84,7 +84,7 @@ describe('compiler: v-for', () => {
   test('value, key and index', () => {
     assert(
       `<text v-for="(item, key, index) in {a:'a',b:'b'}" :key="index" />`,
-      `createElementVNode(Fragment, null, RenderHelpers.renderList({a:'a',b:'b'}, (item, key, index): VNode => {
+      `createElementVNode(Fragment, null, RenderHelpers.renderList({a:'a',b:'b'}, (item, key, index, _): VNode => {
   return createElementVNode("text", utsMapOf({ key: index }))
 }), 64 /* STABLE_FRAGMENT */)`
     )
@@ -92,7 +92,7 @@ describe('compiler: v-for', () => {
   test('array de-structured value', () => {
     assert(
       '<text v-for="([ id, value ]) in items" />',
-      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.items, ([ id, value ], _, _): VNode => {
+      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.items, ([ id, value ], _, _, _): VNode => {
   return createElementVNode(\"text\")
 }), 256 /* UNKEYED_FRAGMENT */)`
     )
@@ -100,7 +100,7 @@ describe('compiler: v-for', () => {
   test('object de-structured value', () => {
     assert(
       '<text v-for="({ id, value }) in items" />',
-      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.items, ({ id, value }, _, _): VNode => {
+      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.items, ({ id, value }, _, _, _): VNode => {
   return createElementVNode("text")
 }), 256 /* UNKEYED_FRAGMENT */)`
     )
@@ -108,7 +108,7 @@ describe('compiler: v-for', () => {
   test('skipped value', () => {
     assert(
       '<text v-for="(,key,index) in items" />',
-      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.items, (_, key, index): VNode => {
+      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.items, (_, key, index, _): VNode => {
   return createElementVNode("text")
 }), 256 /* UNKEYED_FRAGMENT */)`
     )
@@ -116,7 +116,7 @@ describe('compiler: v-for', () => {
   test('skipped key', () => {
     assert(
       '<text v-for="(value,,index) in items" />',
-      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.items, (value, _, index): VNode => {
+      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.items, (value, _, index, _): VNode => {
   return createElementVNode("text")
 }), 256 /* UNKEYED_FRAGMENT */)`
     )
@@ -124,7 +124,7 @@ describe('compiler: v-for', () => {
   test('skipped value & key', () => {
     assert(
       '<text v-for="(,,index) in items" />',
-      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.items, (_, _, index): VNode => {
+      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.items, (_, _, index, _): VNode => {
   return createElementVNode("text")
 }), 256 /* UNKEYED_FRAGMENT */)`
     )
@@ -132,7 +132,7 @@ describe('compiler: v-for', () => {
   test('skipped value and key', () => {
     assert(
       '<text v-for="(,,index) in items" />',
-      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.items, (_, _, index): VNode => {
+      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.items, (_, _, index, _): VNode => {
   return createElementVNode("text")
 }), 256 /* UNKEYED_FRAGMENT */)`
     )
@@ -140,7 +140,7 @@ describe('compiler: v-for', () => {
   test('unbracketed value', () => {
     assert(
       '<text v-for="item in items" />',
-      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.items, (item, _, _): VNode => {
+      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.items, (item, _, _, _): VNode => {
   return createElementVNode(\"text\")
 }), 256 /* UNKEYED_FRAGMENT */)`
     )
@@ -148,7 +148,7 @@ describe('compiler: v-for', () => {
   test('unbracketed value and key', () => {
     assert(
       '<text v-for="item, key in items" />',
-      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.items, (item, key, _): VNode => {
+      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.items, (item, key, _, _): VNode => {
   return createElementVNode(\"text\")
 }), 256 /* UNKEYED_FRAGMENT */)`
     )
@@ -156,7 +156,7 @@ describe('compiler: v-for', () => {
   test('unbracketed value and key', () => {
     assert(
       '<text v-for="value, key, index in items" />',
-      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.items, (value, key, index): VNode => {
+      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.items, (value, key, index, _): VNode => {
   return createElementVNode(\"text\")
 }), 256 /* UNKEYED_FRAGMENT */)`
     )
@@ -164,7 +164,7 @@ describe('compiler: v-for', () => {
   test('unbracketed skipped key', () => {
     assert(
       '<text v-for="value, , index in items" />',
-      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.items, (value, _, index): VNode => {
+      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.items, (value, _, index, _): VNode => {
   return createElementVNode(\"text\")
 }), 256 /* UNKEYED_FRAGMENT */)`
     )
@@ -172,7 +172,7 @@ describe('compiler: v-for', () => {
   test('unbracketed skipped value and key', () => {
     assert(
       '<text v-for=", , index in items" />',
-      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.items, (_, _, index): VNode => {
+      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.items, (_, _, index, _): VNode => {
   return createElementVNode(\"text\")
 }), 256 /* UNKEYED_FRAGMENT */)`
     )
@@ -180,7 +180,7 @@ describe('compiler: v-for', () => {
   test('source complex expression', () => {
     assert(
       '<text v-for="i in list.concat([foo])" />',
-      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.list.concat([_ctx.foo]), (i, _, _): VNode => {
+      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.list.concat([_ctx.foo]), (i, _, _, _): VNode => {
   return createElementVNode(\"text\")
 }), 256 /* UNKEYED_FRAGMENT */)`
     )
@@ -188,7 +188,7 @@ describe('compiler: v-for', () => {
   test('should not prefix v-for alias', () => {
     assert(
       '<text v-for="i in list">{{ i }}{{ j }}</text>',
-      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.list, (i, _, _): VNode => {
+      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.list, (i, _, _, _): VNode => {
   return createElementVNode("text", null, toDisplayString(i) + toDisplayString(_ctx.j), 1 /* TEXT */)
 }), 256 /* UNKEYED_FRAGMENT */)`
     )
@@ -196,7 +196,7 @@ describe('compiler: v-for', () => {
   test('should not prefix v-for aliases (multiple)', () => {
     assert(
       '<text v-for="(i, j, k) in list">{{ i + j + k }}{{ l }}</text>',
-      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.list, (i, j, k): VNode => {
+      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.list, (i, j, k, _): VNode => {
   return createElementVNode("text", null, toDisplayString(i + j + k) + toDisplayString(_ctx.l), 1 /* TEXT */)
 }), 256 /* UNKEYED_FRAGMENT */)`
     )
@@ -205,7 +205,7 @@ describe('compiler: v-for', () => {
     assert(
       '<text><text v-for="i in list" />{{ i }}</text>',
       `createElementVNode("text", null, [
-  createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.list, (i, _, _): VNode => {
+  createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.list, (i, _, _, _): VNode => {
     return createElementVNode("text")
   }), 256 /* UNKEYED_FRAGMENT */),
   toDisplayString(_ctx.i)
@@ -217,9 +217,9 @@ describe('compiler: v-for', () => {
       `<view v-for="i in list">
   <text v-for="i in list">{{ i + j }}</text>{{ i }}
 </view>`,
-      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.list, (i, _, _): VNode => {
+      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.list, (i, _, _, _): VNode => {
   return createElementVNode(\"view\", null, [
-    createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.list, (i, _, _): VNode => {
+    createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.list, (i, _, _, _): VNode => {
       return createElementVNode(\"text\", null, toDisplayString(i + _ctx.j), 1 /* TEXT */)
     }), 256 /* UNKEYED_FRAGMENT */),
     toDisplayString(i)
@@ -232,7 +232,7 @@ describe('compiler: v-for', () => {
       `<text v-for="({ foo = bar, baz: [qux = quux] }) in list">
   {{ foo + bar + baz + qux + quux }}
 </text>`,
-      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.list, ({ foo = _ctx.bar, baz: [qux = _ctx.quux] }, _, _): VNode => {
+      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.list, ({ foo = _ctx.bar, baz: [qux = _ctx.quux] }, _, _, _): VNode => {
   return createElementVNode(\"text\", null, toDisplayString(foo + _ctx.bar + _ctx.baz + qux + _ctx.quux), 1 /* TEXT */)
 }), 256 /* UNKEYED_FRAGMENT */)`
     )
@@ -240,7 +240,7 @@ describe('compiler: v-for', () => {
   test('element v-for key expression prefixing', () => {
     assert(
       `<text v-for="item in items" :key="itemKey(item)">test</text>`,
-      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.items, (item, _, _): VNode => {
+      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.items, (item, _, _, _): VNode => {
   return createElementVNode(\"text\", utsMapOf({
     key: _ctx.itemKey(item)
   }), \"test\")
@@ -250,7 +250,7 @@ describe('compiler: v-for', () => {
   test('template v-for key no prefixing on attribute key', () => {
     assert(
       `<template v-for="item in items" key="key">test</template>`,
-      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.items, (item, _, _): VNode => {
+      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.items, (item, _, _, _): VNode => {
   return createElementVNode(Fragment, utsMapOf({ key: "key" }), [\"test\"], 64 /* STABLE_FRAGMENT */)
 }), 128 /* KEYED_FRAGMENT */)`
     )
@@ -258,7 +258,7 @@ describe('compiler: v-for', () => {
   test('template v-for key injection with single child', () => {
     assert(
       `<template v-for="item in items" :key="item.id"><text :id="item.id" /></template>`,
-      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.items, (item, _, _): VNode => {
+      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.items, (item, _, _, _): VNode => {
   return createElementVNode(\"text\", utsMapOf({
     key: item.id,
     id: item.id
@@ -269,7 +269,7 @@ describe('compiler: v-for', () => {
   test('v-for on <slot/>', () => {
     assert(
       `<slot v-for="item in items"></slot>`,
-      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.items, (item, _, _): VNode => {
+      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.items, (item, _, _, _): VNode => {
   return renderSlot(_ctx.$slots, \"default\")
 }), 256 /* UNKEYED_FRAGMENT */)`
     )
@@ -277,7 +277,7 @@ describe('compiler: v-for', () => {
   test('keyed v-for', () => {
     assert(
       `<text v-for="(item) in items" :key="item" />`,
-      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.items, (item, _, _): VNode => {
+      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.items, (item, _, _, _): VNode => {
   return createElementVNode(\"text\", utsMapOf({ key: item }))
 }), 128 /* KEYED_FRAGMENT */)`
     )
@@ -285,7 +285,7 @@ describe('compiler: v-for', () => {
   test('keyed template v-for', () => {
     assert(
       `<template v-for="(item) in items" :key="item"><text/></template>`,
-      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.items, (item, _, _): VNode => {
+      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.items, (item, _, _, _): VNode => {
   return createElementVNode(\"text\", utsMapOf({ key: item }))
 }), 128 /* KEYED_FRAGMENT */)`
     )
@@ -294,7 +294,7 @@ describe('compiler: v-for', () => {
     assert(
       `<view v-if="ok" v-for="i in list"/>`,
       `isTrue(_ctx.ok)
-  ? createElementVNode(Fragment, utsMapOf({ key: 0 }), RenderHelpers.renderList(_ctx.list, (i, _, _): VNode => {
+  ? createElementVNode(Fragment, utsMapOf({ key: 0 }), RenderHelpers.renderList(_ctx.list, (i, _, _, _): VNode => {
       return createElementVNode(\"view\")
     }), 256 /* UNKEYED_FRAGMENT */)
   : createCommentVNode(\"v-if\", true)`
@@ -304,7 +304,7 @@ describe('compiler: v-for', () => {
     assert(
       `<template v-if="ok" v-for="i in list"/>`,
       `isTrue(_ctx.ok)
-  ? createElementVNode(Fragment, utsMapOf({ key: 0 }), RenderHelpers.renderList(_ctx.list, (i, _, _): VNode => {
+  ? createElementVNode(Fragment, utsMapOf({ key: 0 }), RenderHelpers.renderList(_ctx.list, (i, _, _, _): VNode => {
       return createElementVNode(Fragment, null, [], 64 /* STABLE_FRAGMENT */)
     }), 256 /* UNKEYED_FRAGMENT */)
   : createCommentVNode(\"v-if\", true)`
@@ -313,7 +313,7 @@ describe('compiler: v-for', () => {
   test('v-for on element with custom directive', () => {
     assert(
       `<view v-for="i in list" v-foo/>`,
-      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.list, (i, _, _): VNode => {
+      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.list, (i, _, _, _): VNode => {
   return withDirectives(createElementVNode(\"view\", null, null, 512 /* NEED_PATCH */), [
     [_directive_foo]
   ])
@@ -985,7 +985,12 @@ describe('compiler: v-for', () => {
       } = parseWithForTransform('<text v-for="(item) in items" />')
       expect(assertSharedCodegen(codegenNode)).toMatchObject({
         source: { content: `items` },
-        params: [{ content: `item` }, { content: `_` }, { content: `_` }],
+        params: [
+          { content: `item` },
+          { content: `_` },
+          { content: `_` },
+          { content: `_` },
+        ],
         innerVNodeCall: {
           tag: `"text"`,
         },
@@ -1000,7 +1005,12 @@ describe('compiler: v-for', () => {
       } = parseWithForTransform('<text v-for="(item, key, index) in items" />')
       expect(assertSharedCodegen(codegenNode)).toMatchObject({
         source: { content: `items` },
-        params: [{ content: `item` }, { content: `key` }, { content: `index` }],
+        params: [
+          { content: `item` },
+          { content: `key` },
+          { content: `index` },
+          { content: `_` },
+        ],
       })
       expect(generate(root, {} as any).code).toMatchSnapshot()
     })
@@ -1012,7 +1022,12 @@ describe('compiler: v-for', () => {
       } = parseWithForTransform('<text v-for="(, key, index) in items" />')
       expect(assertSharedCodegen(codegenNode)).toMatchObject({
         source: { content: `items` },
-        params: [{ content: `_` }, { content: `key` }, { content: `index` }],
+        params: [
+          { content: `_` },
+          { content: `key` },
+          { content: `index` },
+          { content: `_` },
+        ],
       })
       expect(generate(root, {} as any).code).toMatchSnapshot()
     })
@@ -1024,7 +1039,12 @@ describe('compiler: v-for', () => {
       } = parseWithForTransform('<text v-for="(item,,index) in items" />')
       expect(assertSharedCodegen(codegenNode)).toMatchObject({
         source: { content: `items` },
-        params: [{ content: `item` }, { content: `_` }, { content: `index` }],
+        params: [
+          { content: `item` },
+          { content: `_` },
+          { content: `index` },
+          { content: `_` },
+        ],
       })
       expect(generate(root, {} as any).code).toMatchSnapshot()
     })
@@ -1036,7 +1056,12 @@ describe('compiler: v-for', () => {
       } = parseWithForTransform('<text v-for="(,,index) in items" />')
       expect(assertSharedCodegen(codegenNode)).toMatchObject({
         source: { content: `items` },
-        params: [{ content: `_` }, { content: `_` }, { content: `index` }],
+        params: [
+          { content: `_` },
+          { content: `_` },
+          { content: `index` },
+          { content: `_` },
+        ],
       })
       expect(generate(root, {} as any).code).toMatchSnapshot()
     })
@@ -1058,7 +1083,12 @@ describe('compiler: v-for', () => {
         )
       ).toMatchObject({
         source: { content: `10`, constType: ConstantTypes.CAN_STRINGIFY },
-        params: [{ content: `item` }, { content: `_` }, { content: `_` }],
+        params: [
+          { content: `item` },
+          { content: `_` },
+          { content: `_` },
+          { content: `_` },
+        ],
         innerVNodeCall: {
           tag: `"p"`,
           props: undefined,
@@ -1087,7 +1117,12 @@ describe('compiler: v-for', () => {
       )
       expect(assertSharedCodegen(codegenNode)).toMatchObject({
         source: { content: `items` },
-        params: [{ content: `item` }, { content: `_` }, { content: `_` }],
+        params: [
+          { content: `item` },
+          { content: `_` },
+          { content: `_` },
+          { content: `_` },
+        ],
         innerVNodeCall: {
           tag: FRAGMENT,
           props: undefined,
@@ -1113,7 +1148,12 @@ describe('compiler: v-for', () => {
         assertSharedCodegen(codegenNode, false, true /* custom return */)
       ).toMatchObject({
         source: { content: `items` },
-        params: [{ content: `item` }, { content: `_` }, { content: `_` }],
+        params: [
+          { content: `item` },
+          { content: `_` },
+          { content: `_` },
+          { content: `_` },
+        ],
         returns: {
           type: NodeTypes.JS_CALL_EXPRESSION,
           callee: RENDER_SLOT,
@@ -1132,7 +1172,12 @@ describe('compiler: v-for', () => {
       )
       expect(assertSharedCodegen(codegenNode, true)).toMatchObject({
         source: { content: `items` },
-        params: [{ content: `item` }, { content: `_` }, { content: `_` }],
+        params: [
+          { content: `item` },
+          { content: `_` },
+          { content: `_` },
+          { content: `_` },
+        ],
         innerVNodeCall: {
           type: NodeTypes.VNODE_CALL,
           tag: `"text"`,
@@ -1154,7 +1199,12 @@ describe('compiler: v-for', () => {
         assertSharedCodegen(codegenNode, false, true /* custom return */)
       ).toMatchObject({
         source: { content: `items` },
-        params: [{ content: `item` }, { content: `_` }, { content: `_` }],
+        params: [
+          { content: `item` },
+          { content: `_` },
+          { content: `_` },
+          { content: `_` },
+        ],
         returns: {
           type: NodeTypes.JS_CALL_EXPRESSION,
           callee: RENDER_SLOT,
@@ -1170,7 +1220,12 @@ describe('compiler: v-for', () => {
       } = parseWithForTransform('<text v-for="(item) in items" :key="item" />')
       expect(assertSharedCodegen(codegenNode, true)).toMatchObject({
         source: { content: `items` },
-        params: [{ content: `item` }, { content: `_` }, { content: `_` }],
+        params: [
+          { content: `item` },
+          { content: `_` },
+          { content: `_` },
+          { content: `_` },
+        ],
         innerVNodeCall: {
           tag: `"text"`,
           props: createObjectMatcher({
@@ -1190,7 +1245,12 @@ describe('compiler: v-for', () => {
       )
       expect(assertSharedCodegen(codegenNode, true)).toMatchObject({
         source: { content: `items` },
-        params: [{ content: `item` }, { content: `_` }, { content: `_` }],
+        params: [
+          { content: `item` },
+          { content: `_` },
+          { content: `_` },
+          { content: `_` },
+        ],
         innerVNodeCall: {
           tag: FRAGMENT,
           props: createObjectMatcher({
@@ -1229,7 +1289,12 @@ describe('compiler: v-for', () => {
               { content: `list` },
               {
                 type: NodeTypes.JS_FUNCTION_EXPRESSION,
-                params: [{ content: `i` }, { content: `_` }, { content: `_` }],
+                params: [
+                  { content: `i` },
+                  { content: `_` },
+                  { content: `_` },
+                  { content: `_` },
+                ],
                 returns: {
                   type: NodeTypes.VNODE_CALL,
                   tag: `"view"`,
@@ -1267,7 +1332,12 @@ describe('compiler: v-for', () => {
               { content: `list` },
               {
                 type: NodeTypes.JS_FUNCTION_EXPRESSION,
-                params: [{ content: `i` }, { content: `_` }, { content: `_` }],
+                params: [
+                  { content: `i` },
+                  { content: `_` },
+                  { content: `_` },
+                  { content: `_` },
+                ],
                 returns: {
                   type: NodeTypes.VNODE_CALL,
                   tag: FRAGMENT,

@@ -11,7 +11,9 @@ import { TransformContext } from './transform'
 import { CompilerError } from './errors'
 import { genClassName } from '../../utils'
 
-export function genRenderFunctionDecl({ className }: CompilerOptions): string {
+export function genRenderFunctionDecl({
+  className = '',
+}: CompilerOptions): string {
   return `function ${className}Render(): VNode | null`
 }
 

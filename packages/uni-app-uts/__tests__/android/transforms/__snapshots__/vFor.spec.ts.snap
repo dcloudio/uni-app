@@ -1,13 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`compiler: v-for codegen basic v-for 1`] = `
-"createElementVNode(Fragment, null, RenderHelpers.renderList(items, (item, _, _): VNode => {
+"createElementVNode(Fragment, null, RenderHelpers.renderList(items, (item, _, _, _): VNode => {
   return createElementVNode("text")
 }), 256 /* UNKEYED_FRAGMENT */)"
 `;
 
 exports[`compiler: v-for codegen keyed template v-for 1`] = `
-"createElementVNode(Fragment, null, RenderHelpers.renderList(items, (item, _, _): VNode => {
+"createElementVNode(Fragment, null, RenderHelpers.renderList(items, (item, _, _, _): VNode => {
   return createElementVNode(Fragment, utsMapOf({ key: item }), [
     "hello",
     createElementVNode("text")
@@ -16,31 +16,31 @@ exports[`compiler: v-for codegen keyed template v-for 1`] = `
 `;
 
 exports[`compiler: v-for codegen keyed v-for 1`] = `
-"createElementVNode(Fragment, null, RenderHelpers.renderList(items, (item, _, _): VNode => {
+"createElementVNode(Fragment, null, RenderHelpers.renderList(items, (item, _, _, _): VNode => {
   return createElementVNode("text", utsMapOf({ key: item }))
 }), 128 /* KEYED_FRAGMENT */)"
 `;
 
 exports[`compiler: v-for codegen skipped key 1`] = `
-"createElementVNode(Fragment, null, RenderHelpers.renderList(items, (item, _, index): VNode => {
+"createElementVNode(Fragment, null, RenderHelpers.renderList(items, (item, _, index, _): VNode => {
   return createElementVNode("text")
 }), 256 /* UNKEYED_FRAGMENT */)"
 `;
 
 exports[`compiler: v-for codegen skipped value & key 1`] = `
-"createElementVNode(Fragment, null, RenderHelpers.renderList(items, (_, _, index): VNode => {
+"createElementVNode(Fragment, null, RenderHelpers.renderList(items, (_, _, index, _): VNode => {
   return createElementVNode("text")
 }), 256 /* UNKEYED_FRAGMENT */)"
 `;
 
 exports[`compiler: v-for codegen skipped value 1`] = `
-"createElementVNode(Fragment, null, RenderHelpers.renderList(items, (_, key, index): VNode => {
+"createElementVNode(Fragment, null, RenderHelpers.renderList(items, (_, key, index, _): VNode => {
   return createElementVNode("text")
 }), 256 /* UNKEYED_FRAGMENT */)"
 `;
 
 exports[`compiler: v-for codegen template v-for 1`] = `
-"createElementVNode(Fragment, null, RenderHelpers.renderList(items, (item, _, _): VNode => {
+"createElementVNode(Fragment, null, RenderHelpers.renderList(items, (item, _, _, _): VNode => {
   return createElementVNode(Fragment, null, [
     "hello",
     createElementVNode("text")
@@ -49,7 +49,7 @@ exports[`compiler: v-for codegen template v-for 1`] = `
 `;
 
 exports[`compiler: v-for codegen template v-for key injection with single child 1`] = `
-"createElementVNode(Fragment, null, RenderHelpers.renderList(items, (item, _, _): VNode => {
+"createElementVNode(Fragment, null, RenderHelpers.renderList(items, (item, _, _, _): VNode => {
   return createElementVNode("text", utsMapOf({
     key: item.id,
     id: item.id
@@ -58,19 +58,19 @@ exports[`compiler: v-for codegen template v-for key injection with single child 
 `;
 
 exports[`compiler: v-for codegen template v-for w/ <slot/> 1`] = `
-"createElementVNode(Fragment, null, RenderHelpers.renderList(items, (item, _, _): VNode => {
+"createElementVNode(Fragment, null, RenderHelpers.renderList(items, (item, _, _, _): VNode => {
   return renderSlot($slots, "default")
 }), 256 /* UNKEYED_FRAGMENT */)"
 `;
 
 exports[`compiler: v-for codegen v-for on <slot/> 1`] = `
-"createElementVNode(Fragment, null, RenderHelpers.renderList(items, (item, _, _): VNode => {
+"createElementVNode(Fragment, null, RenderHelpers.renderList(items, (item, _, _, _): VNode => {
   return renderSlot($slots, "default")
 }), 256 /* UNKEYED_FRAGMENT */)"
 `;
 
 exports[`compiler: v-for codegen v-for on element with custom directive 1`] = `
-"createElementVNode(Fragment, null, RenderHelpers.renderList(list, (i, _, _): VNode => {
+"createElementVNode(Fragment, null, RenderHelpers.renderList(list, (i, _, _, _): VNode => {
   return withDirectives(createElementVNode("view", null, null, 512 /* NEED_PATCH */), [
     [_directive_foo]
   ])
@@ -78,14 +78,14 @@ exports[`compiler: v-for codegen v-for on element with custom directive 1`] = `
 `;
 
 exports[`compiler: v-for codegen v-for with constant expression 1`] = `
-"createElementVNode(Fragment, null, RenderHelpers.renderList(10, (item, _, _): VNode => {
+"createElementVNode(Fragment, null, RenderHelpers.renderList(10, (item, _, _, _): VNode => {
   return createElementVNode("p", null, toDisplayString(item), 1 /* TEXT */)
 }), 64 /* STABLE_FRAGMENT */)"
 `;
 
 exports[`compiler: v-for codegen v-if + v-for 1`] = `
 "isTrue(ok)
-  ? createElementVNode(Fragment, utsMapOf({ key: 0 }), RenderHelpers.renderList(list, (i, _, _): VNode => {
+  ? createElementVNode(Fragment, utsMapOf({ key: 0 }), RenderHelpers.renderList(list, (i, _, _, _): VNode => {
       return createElementVNode("view")
     }), 256 /* UNKEYED_FRAGMENT */)
   : createCommentVNode("v-if", true)"
@@ -93,14 +93,14 @@ exports[`compiler: v-for codegen v-if + v-for 1`] = `
 
 exports[`compiler: v-for codegen v-if + v-for on <template> 1`] = `
 "isTrue(ok)
-  ? createElementVNode(Fragment, utsMapOf({ key: 0 }), RenderHelpers.renderList(list, (i, _, _): VNode => {
+  ? createElementVNode(Fragment, utsMapOf({ key: 0 }), RenderHelpers.renderList(list, (i, _, _, _): VNode => {
       return createElementVNode(Fragment, null, [], 64 /* STABLE_FRAGMENT */)
     }), 256 /* UNKEYED_FRAGMENT */)
   : createCommentVNode("v-if", true)"
 `;
 
 exports[`compiler: v-for codegen value + key + index 1`] = `
-"createElementVNode(Fragment, null, RenderHelpers.renderList(items, (item, key, index): VNode => {
+"createElementVNode(Fragment, null, RenderHelpers.renderList(items, (item, key, index, _): VNode => {
   return createElementVNode("text")
 }), 256 /* UNKEYED_FRAGMENT */)"
 `;

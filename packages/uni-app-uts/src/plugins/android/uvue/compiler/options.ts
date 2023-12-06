@@ -3,8 +3,8 @@ import type { RawSourceMap } from 'source-map-js'
 import { DirectiveTransform, NodeTransform } from './transform'
 
 interface SharedTransformCodegenOptions {
-  rootDir: string
-  targetLanguage: 'kotlin' | 'swift'
+  rootDir?: string
+  targetLanguage?: 'kotlin' | 'swift'
   /**
    * Transform expressions like {{ foo }} to `_ctx.foo`.
    * @default false
@@ -79,7 +79,7 @@ export interface ErrorHandlingOptions {
 export interface TransformOptions
   extends SharedTransformCodegenOptions,
     ErrorHandlingOptions {
-  rootDir: string
+  rootDir?: string
   /**
    * An array of node transforms to be applied to every AST node.
    */
