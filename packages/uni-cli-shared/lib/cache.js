@@ -79,7 +79,9 @@ function updateComponentJson (name, jsonObj, usingComponents = true, type = 'Com
   if (type === 'Component') {
     jsonObj.component = true
     if (process.env.UNI_PLATFORM === 'mp-alipay') {
-      jsonObj.styleIsolation = 'apply-shared'
+      const manifestConfig = process.UNI_MANIFEST
+      const alipayConfig = manifestConfig['mp-alipay'] || {}
+      jsonObj.styleIsolation = alipayConfig.styleIsolation || 'apply-shared'
     }
   } else if (type === 'Page') {
     if (process.env.UNI_PLATFORM === 'mp-baidu') {
@@ -160,39 +162,28 @@ function updateUsingComponents (name, usingComponents, type) {
   }
 
   const oldJsonStr = getJsonFile(name)
-  if (oldJsonStr) { // update
-    const jsonObj = JSON.parse(oldJsonStr)
-    if (type === 'Component') {
-      jsonObj.component = true
-      if (process.env.UNI_PLATFORM === 'mp-alipay') {
-        jsonObj.styleIsolation = 'apply-shared'
-      }
-    } else if (type === 'Page') {
-      if (process.env.UNI_PLATFORM === 'mp-baidu') {
-        jsonObj.component = true
-      }
+  const jsonObj = oldJsonStr ? JSON.parse(oldJsonStr) : {
+    usingComponents
+  }
+  if (type === 'Component') {
+    jsonObj.component = true
+    if (process.env.UNI_PLATFORM === 'mp-alipay') {
+      const manifestConfig = process.UNI_MANIFEST
+      const alipayConfig = manifestConfig['mp-alipay'] || {}
+      jsonObj.styleIsolation = alipayConfig.styleIsolation || 'apply-shared'
     }
-
+  } else if (type === 'Page') {
+    if (process.env.UNI_PLATFORM === 'mp-baidu') {
+      jsonObj.component = true
+    }
+  }
+  if (oldJsonStr) { // update
     jsonObj.usingComponents = usingComponents
     const newJsonStr = JSON.stringify(jsonObj, null, 2)
     if (newJsonStr !== oldJsonStr) {
       updateJsonFile(name, newJsonStr)
     }
   } else { // add
-    const jsonObj = {
-      usingComponents
-    }
-    if (type === 'Component') {
-      jsonObj.component = true
-      if (process.env.UNI_PLATFORM === 'mp-alipay') {
-        jsonObj.styleIsolation = 'apply-shared'
-      }
-    } else if (type === 'Page') {
-      if (process.env.UNI_PLATFORM === 'mp-baidu') {
-        jsonObj.component = true
-      }
-    }
-
     updateJsonFile(name, jsonObj)
   }
 }
