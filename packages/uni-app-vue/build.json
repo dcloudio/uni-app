@@ -7,6 +7,7 @@
       "freeze": false
     },
     "replacements": {
+      "__X__": "false",
       "__VUE_OPTIONS_API__": "true",
       "__VUE_PROD_DEVTOOLS__": "true",
       "process.env.NODE_ENV": "\"development\""
@@ -22,6 +23,7 @@
       "freeze": false
     },
     "replacements": {
+      "__X__": "false",
       "__VUE_OPTIONS_API__": "true",
       "__VUE_PROD_DEVTOOLS__": "false",
       "process.env.NODE_ENV": "\"production\""
@@ -34,6 +36,7 @@
       "src/view/index.ts": ["dist/view.runtime.esm.js"]
     },
     "replacements": {
+      "__X__": "false",
       "__VUE_OPTIONS_API__": "true",
       "__VUE_PROD_DEVTOOLS__": "false"
     },
@@ -47,6 +50,7 @@
       "freeze": false
     },
     "replacements": {
+      "__X__": "false",
       "__VUE_OPTIONS_API__": "true",
       "__VUE_PROD_DEVTOOLS__": "false",
       "process.env.NODE_ENV": "\"development\""
@@ -62,6 +66,7 @@
       "freeze": false
     },
     "replacements": {
+      "__X__": "false",
       "__VUE_OPTIONS_API__": "true",
       "__VUE_PROD_DEVTOOLS__": "false",
       "process.env.NODE_ENV": "\"production\""
@@ -77,6 +82,7 @@
       "freeze": false
     },
     "replacements": {
+      "__X__": "true",
       "__VUE_OPTIONS_API__": "true",
       "__VUE_PROD_DEVTOOLS__": "false",
       "process.env.NODE_ENV": "\"development\""
@@ -92,6 +98,7 @@
       "freeze": false
     },
     "replacements": {
+      "__X__": "true",
       "__VUE_OPTIONS_API__": "true",
       "__VUE_PROD_DEVTOOLS__": "false",
       "process.env.NODE_ENV": "\"production\""

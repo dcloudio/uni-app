@@ -2398,8 +2398,8 @@ function initLaunchOptions({ path, query, referrerInfo, }) {
         query: query ? parseQuery(query) : {},
         referrerInfo: referrerInfo || {},
         // TODO uni-app x
-        channel: __X__ ? undefined : plus.runtime.channel,
-        launcher: __X__ ? undefined : plus.runtime.launcher,
+        channel: plus.runtime.channel,
+        launcher: plus.runtime.launcher,
     });
     extend(enterOptions, launchOptions);
     return extend({}, launchOptions);
@@ -17985,7 +17985,7 @@ const createInteractiveAd = defineSyncApi(API_CREATE_INTERACTIVE_AD, (options) =
     return new InteractiveAd(options);
 }, CreateInteractiveAdProtocol, CreateInteractiveAdOptions);
 
-const downgrade = !__X__ && plus.os.name === 'Android' && parseInt(plus.os.version) < 6;
+const downgrade = plus.os.name === 'Android' && parseInt(plus.os.version) < 6;
 const ANI_SHOW = downgrade ? 'slide-in-right' : 'pop-in';
 const ANI_DURATION = 300;
 const ANI_CLOSE = downgrade ? 'slide-out-right' : 'pop-out';
@@ -18238,7 +18238,7 @@ const WEBVIEW_STYLE_BLACKLIST = [
     'backgroundColor',
 ];
 
-let id = __X__ ? 1 : 2;
+let id = 2;
 function getWebviewId() {
     return id;
 }
@@ -19109,7 +19109,7 @@ function setupPage(component) {
     return component;
 }
 function initScope(pageId, vm, pageInstance) {
-    if (!__X__) {
+    {
         const $getAppWebview = () => {
             return plus.webview.getWebviewById(pageId + '');
         };
