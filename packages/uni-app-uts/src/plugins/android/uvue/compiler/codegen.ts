@@ -24,7 +24,6 @@ import {
   TemplateChildNode,
   TextNode,
   VNodeCall,
-  WITH_CTX,
   WITH_DIRECTIVES,
   advancePositionWithMutation,
   createSimpleExpression,
@@ -49,6 +48,8 @@ import {
   RESOLVE_COMPONENT,
   RESOLVE_DIRECTIVE,
   RESOLVE_EASY_COMPONENT,
+  WITH_SCOPED_SLOT_CTX,
+  WITH_SLOT_CTX,
 } from './runtimeHelpers'
 import { stringifyExpression } from './transforms/transformExpression'
 import { isBinaryExpression } from '@babel/types'
@@ -93,8 +94,8 @@ export interface CodegenContext
 function createCodegenContext(
   ast: RootNode,
   {
-    rootDir,
-    targetLanguage,
+    rootDir = '',
+    targetLanguage = 'kotlin',
     mode = 'default',
     prefixIdentifiers = false,
     bindingMetadata = {},
@@ -197,7 +198,7 @@ const UTS_COMPONENT_ELEMENT_IMPORTS = `/*UTS-COMPONENTS-IMPORTS*/`
 
 export function generate(
   ast: RootNode,
-  options: CodegenOptions
+  options: CodegenOptions = {}
 ): CodegenResult {
   const context = createCodegenContext(ast, options)
   const { mode, deindent, indent, push, newline } = context
@@ -212,6 +213,8 @@ export function generate(
     push(genRenderFunctionDecl(options) + ` {`)
     newline()
     push(`const _ctx = this`)
+    newline()
+    push(`const _cache = this.$!.renderCache`)
     // generate asset resolution statements
     if (ast.components.length) {
       newline()
@@ -250,6 +253,7 @@ export function generate(
   )
 
   return {
+    ast,
     code: context.code,
     easyComponentAutoImports: context.easyComponentAutoImports,
     importEasyComponents: context.importEasyComponents,
@@ -456,6 +460,9 @@ function genNode(node: CodegenNode | symbol | string, context: CodegenContext) {
       break
     case NodeTypes.JS_CACHE_EXPRESSION:
       genCacheExpression(node, context)
+      break
+    case NodeTypes.JS_BLOCK_STATEMENT:
+      genNodeList(node.body, context, true, false)
       break
 
     /* istanbul ignore next */
@@ -683,7 +690,7 @@ function genFunctionExpression(
   const { params, returns, body, newline, isSlot } = node
   if (isSlot) {
     // wrap slot functions with owner context
-    push(`${helperNameMap[WITH_CTX]}(`)
+    push(`${helperNameMap[params ? WITH_SCOPED_SLOT_CTX : WITH_SLOT_CTX]}(`)
   }
   push(`(`, node)
   if (isArray(params)) {
@@ -815,21 +822,20 @@ function genConditionalExpression(
 
 function genCacheExpression(node: CacheExpression, context: CodegenContext) {
   const { push, helper, indent, deindent, newline } = context
-  push(`_cache[${node.index}] || (`)
+  push(`_cache[${node.index}] ?? run((): VNode | null => {`)
   if (node.isVNode) {
     indent()
-    push(`${helper(SET_BLOCK_TRACKING)}(-1),`)
+    push(`${helper(SET_BLOCK_TRACKING)}(-1)`)
     newline()
   }
   push(`_cache[${node.index}] = `)
   genNode(node.value, context)
   if (node.isVNode) {
-    push(`,`)
     newline()
-    push(`${helper(SET_BLOCK_TRACKING)}(1),`)
+    push(`${helper(SET_BLOCK_TRACKING)}(1)`)
     newline()
-    push(`_cache[${node.index}]`)
+    push(`return _cache[${node.index}] as VNode | null`)
     deindent()
   }
-  push(`)`)
+  push(`})`)
 }

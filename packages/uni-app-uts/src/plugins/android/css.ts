@@ -19,11 +19,19 @@ import {
 import { parse } from '@dcloudio/uni-nvue-styler'
 
 import { genClassName, isVue } from './utils'
+import { ResolvedOptions, getDescriptor } from './uvue/descriptorCache'
 
 export function uniAppCssPlugin(): Plugin {
   const mainUTS = resolveMainPathOnce(process.env.UNI_INPUT_DIR)
   let resolvedConfig: ResolvedConfig
   const name = 'uni:app-uvue-css'
+  const descriptorOptions: ResolvedOptions = {
+    root: process.env.UNI_INPUT_DIR,
+    sourceMap: false,
+    // eslint-disable-next-line no-restricted-globals
+    compiler: require('@vue/compiler-sfc'),
+    targetLanguage: process.env.UNI_UTS_TARGET_LANGUAGE,
+  }
   return {
     name,
     apply: 'build',
@@ -74,7 +82,16 @@ export function uniAppCssPlugin(): Plugin {
         },
       })
       // 增加 css plugins
-      insertBeforePlugin(cssPlugin(config, { isAppX: true }), name, config)
+      insertBeforePlugin(
+        cssPlugin(config, {
+          isAppX: true,
+          getDescriptor: (filename) => {
+            return getDescriptor(filename, descriptorOptions, false)
+          },
+        }),
+        name,
+        config
+      )
       const plugins = config.plugins as Plugin[]
       const index = plugins.findIndex((p) => p.name === 'uni:app-uvue')
       plugins.splice(index, 0, uvueCssPostPlugin)

@@ -1937,6 +1937,16 @@ const defineBuiltInComponent = (options) => {
   if (!props2 || !props2.animation) {
     (mixins || (options.mixins = [])).push(animation);
   }
+  {
+    const rootElement = options.rootElement;
+    if (rootElement) {
+      customElements.define(
+        rootElement.name,
+        rootElement.class,
+        rootElement.options
+      );
+    }
+  }
   return defineSystemComponent(options);
 };
 const defineSystemComponent = (options) => {
@@ -13516,10 +13526,26 @@ const props$l = {
     default: false
   }
 };
+class UniSliderElement extends HTMLElement {
+  get value() {
+    return Number(this.getAttribute("value"));
+  }
+  set value(value) {
+    this.dispatchEvent(new CustomEvent("change", {
+      detail: {
+        value
+      }
+    }));
+  }
+}
 const index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
   props: props$l,
   emits: ["changing", "change"],
+  rootElement: {
+    name: "uni-slider",
+    class: UniSliderElement
+  },
   setup(props2, {
     emit: emit2
   }) {
@@ -13539,6 +13565,9 @@ const index$k = /* @__PURE__ */ defineBuiltInComponent({
     onMounted(() => {
       useTouchtrack(sliderHandleRef.value, _onTrack);
     });
+    function onUniSliderChange(e2) {
+      sliderValue.value = Number(e2.detail.value);
+    }
     return () => {
       const {
         setBgColor,
@@ -13548,7 +13577,9 @@ const index$k = /* @__PURE__ */ defineBuiltInComponent({
       } = state2;
       return createVNode("uni-slider", {
         "ref": sliderRef,
-        "onClick": withWebEvent(_onClick)
+        "onClick": withWebEvent(_onClick),
+        "value": sliderValue.value,
+        "onChange": withWebEvent(onUniSliderChange)
       }, [createVNode("div", {
         "class": "uni-slider-wrapper"
       }, [createVNode("div", {
@@ -13569,7 +13600,7 @@ const index$k = /* @__PURE__ */ defineBuiltInComponent({
       }, null, 4)], 4)]), withDirectives(createVNode("span", {
         "ref": sliderValueRef,
         "class": "uni-slider-value"
-      }, [sliderValue.value], 512), [[vShow, props2.showValue]])]), createVNode("slot", null, null)], 8, ["onClick"]);
+      }, [sliderValue.value], 512), [[vShow, props2.showValue]])]), createVNode("slot", null, null)], 40, ["onClick", "value", "onChange"]);
     };
   }
 });
@@ -17755,7 +17786,7 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
           strokeWeight: Number(option.strokeWidth) || 1,
           strokeDashStyle: "solid"
         };
-        if (getIsAMap() || getIsBMap()) {
+        if (getIsBMap()) {
           circleOptions.strokeColor = option.color;
           circleOptions.fillColor = option.fillColor || "#000";
           circleOptions.fillOpacity = 1;

@@ -1,6 +1,12 @@
-import { createElementBlock, defineComponent, openBlock } from 'vue'
+import {
+  ComponentCustomOptions,
+  createElementBlock,
+  defineComponent,
+  openBlock,
+} from 'vue'
 import { camelize, capitalize } from '@vue/shared'
 import animation from './animation'
+
 /**
  * 内置组件（对外，比如view）
  * @param options
@@ -14,6 +20,19 @@ export const defineBuiltInComponent = ((options: any) => {
   // 补充内置组件animation
   if (!props || !props.animation) {
     ;(mixins || (options.mixins = [])).push(animation)
+  }
+  if (__X__ && !__NODE_JS__) {
+    // 目前仅对x开放，注册自定义元素，如uni-slider
+    // SSR的cjs环境下不支持customElements
+    const rootElement: ComponentCustomOptions['rootElement'] | undefined =
+      options.rootElement
+    if (rootElement) {
+      customElements.define(
+        rootElement.name,
+        rootElement.class,
+        rootElement.options
+      )
+    }
   }
   return defineSystemComponent(options)
 }) as typeof defineComponent

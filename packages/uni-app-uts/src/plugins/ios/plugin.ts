@@ -54,6 +54,7 @@ export function uniAppIOSPlugin(): UniVitePlugin {
       return {
         base: '/', // 强制 base
         build: {
+          emptyOutDir: false,
           assetsInlineLimit: 0,
           rollupOptions: {
             input: resolveMainPathOnce(inputDir),

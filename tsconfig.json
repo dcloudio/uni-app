@@ -30,6 +30,7 @@
     "packages/shims-uni-app.d.ts",
     "packages/shims-vue-runtime.d.ts",
     "packages/shims-vue.d.ts",
+    "packages/uni-app-x.d.ts",
     "packages/*/src",
     "packages/*/__tests__",
     "test-dts",

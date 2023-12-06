@@ -19,7 +19,7 @@ export async function buildByVite(inlineConfig: InlineConfig) {
 export async function build(
   options: CliOptions
 ): Promise<RollupWatcher | void> {
-  if (options.platform === 'app') {
+  if (process.env.UNI_APP_X !== 'true' && options.platform === 'app') {
     return buildApp(options)
   }
   return buildByVite(

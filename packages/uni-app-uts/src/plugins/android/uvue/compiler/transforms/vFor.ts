@@ -21,6 +21,10 @@ import {
   BlockCodegenNode,
   ForIteratorExpression,
   ConstantTypes,
+  findDir,
+  createBlockStatement,
+  createCompoundExpression,
+  IS_MEMO_SAME,
   // createBlockStatement,
   // createCompoundExpression
 } from '@vue/compiler-core'
@@ -60,7 +64,7 @@ export const transformFor = createStructuralDirectiveTransform(
         forNode.source,
       ]) as ForRenderListExpression
       const isTemplate = isTemplateNode(node)
-      // const memo = findDir(node, 'memo')
+      const memo = findDir(node, 'memo')
       const keyProp = findProp(node, `key`)
       const keyExp =
         keyProp &&
@@ -75,12 +79,12 @@ export const transformFor = createStructuralDirectiveTransform(
         // processed on `<template v-for>`. In this case the node is discarded
         // and never traversed so its binding expressions won't be processed
         // by the normal transforms.
-        // if (memo) {
-        //   memo.exp = processExpression(
-        //     memo.exp! as SimpleExpressionNode,
-        //     context
-        //   )
-        // }
+        if (memo) {
+          memo.exp = processExpression(
+            memo.exp! as SimpleExpressionNode,
+            context
+          )
+        }
         if (keyProperty && keyProp!.type !== NodeTypes.ATTRIBUTE) {
           keyProperty.value = processExpression(
             keyProperty.value as SimpleExpressionNode,
@@ -203,39 +207,45 @@ export const transformFor = createStructuralDirectiveTransform(
           }
         }
 
-        // if (memo) {
-        //   const loop = createFunctionExpression(
-        //     createForLoopParams(forNode.parseResult, [
-        //       createSimpleExpression(`_cached`)
-        //     ])
-        //   )
-        //   loop.body = createBlockStatement([
-        //     createCompoundExpression([`const _memo = (`, memo.exp!, `)`]),
-        //     createCompoundExpression([
-        //       `if (_cached`,
-        //       ...(keyExp ? [` && _cached.key === `, keyExp] : []),
-        //       ` && ${context.helperString(
-        //         IS_MEMO_SAME
-        //       )}(_cached, _memo)) return _cached`
-        //     ]),
-        //     createCompoundExpression([`const _item = `, childBlock as any]),
-        //     createSimpleExpression(`_item.memo = _memo`),
-        //     createSimpleExpression(`return _item`)
-        //   ])
-        //   renderExp.arguments.push(
-        //     loop as ForIteratorExpression,
-        //     createSimpleExpression(`_cache`),
-        //     createSimpleExpression(String(context.cached++))
-        //   )
-        // } else {
-        renderExp.arguments.push(
-          createFunctionExpression(
-            createForLoopParams(forNode.parseResult),
-            childBlock,
-            true /* force newline */
-          ) as ForIteratorExpression
-        )
-        // }
+        if (memo) {
+          const loop = createFunctionExpression(
+            createForLoopParams(forNode.parseResult, [
+              createSimpleExpression(`_cached`),
+            ])
+          )
+          loop.body = createBlockStatement([
+            createCompoundExpression([
+              `const _memo: Array<any | null> = (`,
+              memo.exp!,
+              `)`,
+            ]),
+            createCompoundExpression([
+              `if (_cached != null`,
+              ...(keyExp ? [` && _cached.key === `, keyExp] : []),
+              ` && ${context.helperString(
+                IS_MEMO_SAME
+              )}(_cached, _memo)) return _cached`,
+            ]),
+            createCompoundExpression([`const _item = `, childBlock as any]),
+            createSimpleExpression(`_item.memo = _memo`),
+            createSimpleExpression(`return _item`),
+          ])
+          renderExp.arguments.push(
+            loop as ForIteratorExpression,
+            createSimpleExpression(`_cache`),
+            createSimpleExpression(String(context.cached++))
+          )
+        } else {
+          renderExp.arguments.push(
+            createFunctionExpression(
+              createForLoopParams(forNode.parseResult, [
+                createSimpleExpression(`_`),
+              ]),
+              childBlock,
+              true /* force newline */
+            ) as ForIteratorExpression
+          )
+        }
       }
     })
   }

@@ -172,3 +172,15 @@ export function resolveAppVue(inputDir: string) {
   }
   return normalizePath(path.resolve(inputDir, 'App.vue'))
 }
+
+export function parseImporter(importer: string) {
+  importer = importer.split('?')[0]
+  if (path.isAbsolute(importer)) {
+    return normalizePath(path.relative(process.env.UNI_INPUT_DIR, importer))
+  }
+  return importer
+}
+
+export function createResolveErrorMsg(source: string, importer: string) {
+  return `Could not resolve "${source}" from "${parseImporter(importer)}"`
+}

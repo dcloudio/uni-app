@@ -1936,6 +1936,20 @@
       ],
       "description": "CSS 的 border 是设置元素边框属性的简写形式，用于设置一个或多个以下属性的值：border-width、border-style、border-color。",
       "syntax": "<line-width> || <line-style> || <color>",
+      "values": [
+        {
+          "name" : "none"
+        },
+        {
+          "name" : "solid"
+        },
+        {
+          "name" : "dashed"
+        },
+        {
+          "name" : "dotted"
+        }
+      ],
       "uniPlatform": {
         "app": {
           "android": {

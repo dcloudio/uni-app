@@ -30,6 +30,9 @@ import { transformObjectExpression } from './transforms/transformObjectExpressio
 import { transformExpression } from './transforms/transformExpression'
 import { transformElements } from './transforms/transformElements'
 import { transformStyle } from './transforms/transformStyle'
+import { transformVHtml } from './transforms/vHtml'
+import { transformMemo } from './transforms/vMemo'
+import { transformOnce } from './transforms/vOnce'
 
 export type TransformPreset = [
   NodeTransform[],
@@ -41,10 +44,13 @@ export function getBaseTransformPreset(
 ): TransformPreset {
   return [
     [
+      transformOnce,
       transformIf,
+      transformMemo,
       transformFor,
       // order is important
       trackVForSlotScopes,
+      transformVHtml,
       transformExpression,
       transformSlotOutlet,
       transformElement,
@@ -70,12 +76,14 @@ export function compile(
   template: string,
   options: CompilerOptions
 ): CodegenResult {
+  options.rootDir = options.rootDir || ''
+  options.targetLanguage = options.targetLanguage || 'kotlin'
   const ast = baseParse(template, {
     comments: false,
     isNativeTag(tag) {
       return (
         isAppUVueNativeTag(tag) ||
-        !!options.parseUTSComponent?.(tag, options.targetLanguage)
+        !!options.parseUTSComponent?.(tag, options.targetLanguage!)
       )
     },
   })

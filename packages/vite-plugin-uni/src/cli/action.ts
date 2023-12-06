@@ -17,7 +17,7 @@ import {
   showRunPrompt,
 } from './utils'
 import { initEasycom } from '../utils/easycom'
-import { runUVueBuild, runUVueDev } from './uvue'
+import { runUVueAndroidBuild, runUVueAndroidDev } from './uvue'
 
 export async function runDev(options: CliOptions & ServerOptions) {
   extend(options, {
@@ -27,8 +27,11 @@ export async function runDev(options: CliOptions & ServerOptions) {
     ;(options as BuildOptions).minify = true
   }
   initEnv('dev', options)
-  if (process.env.UNI_APP_X === 'true' && options.platform === 'app') {
-    return runUVueDev(options)
+  if (
+    process.env.UNI_APP_X === 'true' &&
+    process.env.UNI_UTS_PLATFORM === 'app-android'
+  ) {
+    return runUVueAndroidDev(options)
   }
   const createLogger = await import('vite').then(
     ({ createLogger }) => createLogger
@@ -126,8 +129,11 @@ export async function runDev(options: CliOptions & ServerOptions) {
 
 export async function runBuild(options: CliOptions & BuildOptions) {
   initEnv('build', options)
-  if (process.env.UNI_APP_X === 'true') {
-    return runUVueBuild(options)
+  if (
+    process.env.UNI_APP_X === 'true' &&
+    process.env.UNI_UTS_PLATFORM === 'app-android'
+  ) {
+    return runUVueAndroidBuild(options)
   }
   try {
     await (options.ssr && options.platform === 'h5'

@@ -1859,7 +1859,7 @@ var prereleasePartRegExp = /^(?:0|[1-9]\d*|[a-z-][a-z0-9-]*)$/i;
 var buildRegExp = /^[a-z0-9-]+(?:\.[a-z0-9-]+)*$/i;
 var buildPartRegExp = /^[a-z0-9-]+$/i;
 var numericIdentifierRegExp = /^(0|[1-9]\d*)$/;
-var _Version = class _Version {
+var _Version = class {
   constructor(major, minor = 0, patch = 0, prerelease = "", build = "") {
     if (typeof major === "string") {
       const result = Debug.checkDefined(tryParseComponents(major), "Invalid version");
@@ -1923,8 +1923,8 @@ var _Version = class _Version {
     return result;
   }
 };
-_Version.zero = new _Version(0, 0, 0, ["0"]);
 var Version = _Version;
+Version.zero = new _Version(0, 0, 0, ["0"]);
 function tryParseComponents(text) {
   const match = versionRegExp.exec(text);
   if (!match)
@@ -1971,14 +1971,14 @@ function comparePrereleaseIdentifiers(left, right) {
   }
   return compareValues(left.length, right.length);
 }
-var VersionRange = class _VersionRange {
+var VersionRange = class {
   constructor(spec) {
     this._alternatives = spec ? Debug.checkDefined(parseRange(spec), "Invalid range spec.") : emptyArray;
   }
   static tryParse(text) {
     const sets = parseRange(text);
     if (sets) {
-      const range = new _VersionRange("");
+      const range = new VersionRange("");
       range._alternatives = sets;
       return range;
     }
@@ -9333,10 +9333,10 @@ function textSpanIsEmpty(span) {
 }
 function createTextSpan(start, length2) {
   if (start < 0) {
-    throw new Error("start < 0");
+    start = 0;
   }
   if (length2 < 0) {
-    throw new Error("length < 0");
+    length2 = 1;
   }
   return { start, length: length2 };
 }

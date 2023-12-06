@@ -1,4 +1,5 @@
-const downgrade = plus.os.name === 'Android' && parseInt(plus.os.version!) < 6
+const downgrade =
+  !__X__ && plus.os.name === 'Android' && parseInt(plus.os.version!) < 6
 
 export const ANI_SHOW = downgrade ? 'slide-in-right' : 'pop-in'
 export const ANI_DURATION = 300

@@ -25,6 +25,7 @@ import {
   UVUE_CLASS_NAME_PREFIX,
   initAutoImportOnce,
   getAutoImports,
+  createTryResolve,
 } from './utils'
 import { getOutputManifestJson } from './manifestJson'
 import { createUniOptions } from '../utils'
@@ -167,7 +168,10 @@ export function uniAppPlugin(options: {
           ),
         })
       }
-      code = await parseImports(code)
+      code = await parseImports(
+        code,
+        createTryResolve(id, this.resolve.bind(this))
+      )
       return code
     },
     async writeBundle() {
@@ -180,7 +184,7 @@ export function uniAppPlugin(options: {
         }
       }
       const res = await resolveUTSCompiler().compileApp(
-        path.join(tempOutputDir, 'index.uts'),
+        path.join(tempOutputDir, 'main.uts'),
         {
           pageCount,
           uniCloudObjectInfo: getUniCloudObjectInfo(uniCloudSpaceList),
@@ -250,7 +254,7 @@ export function uniAppPlugin(options: {
 
 function normalizeFilename(filename: string, isMain = false) {
   if (isMain) {
-    return 'index.uts'
+    return 'main.uts'
   }
   return parseUTSRelativeFilename(filename)
 }
@@ -262,11 +266,10 @@ function normalizeCode(code: string, isMain = false) {
   const automatorCode = process.env.UNI_AUTOMATOR_WS_ENDPOINT
     ? 'initAutomator();'
     : ''
-  return `
-${code}  
+  return `${code}
 export function main(app: IApp) {
-    defineAppConfig();
     definePageRoutes();
+    defineAppConfig();
     ${automatorCode}
     (createApp()['app'] as VueApp).mount(app);
 }

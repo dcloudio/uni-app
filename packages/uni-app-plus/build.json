@@ -3,9 +3,7 @@
     "input": {
       "src/service/api/plugin/uts.ts": "src/service/api/plugin/uts.js"
     },
-    "external": [
-      "@vue/shared"
-    ],
+    "external": ["@vue/shared"],
     "replaceAfterBundled": {
       "@vue/shared": "uni-shared"
     }
@@ -17,10 +15,7 @@
     "output": {
       "format": "cjs"
     },
-    "external": [
-      "@dcloudio/uni-app-uts",
-      "@dcloudio/uni-app-vite"
-    ]
+    "external": ["@dcloudio/uni-app-uts", "@dcloudio/uni-app-vite"]
   },
   {
     "input": {
@@ -30,6 +25,7 @@
       "freeze": false
     },
     "replacements": {
+      "__X__": "false",
       "__PLATFORM__": "'app'",
       "__APP_VIEW__": "false",
       "__VUE_OPTIONS_API__": "true",
@@ -42,11 +38,7 @@
       "__UNI_FEATURE_I18N_ZH_HANS__": "true",
       "__UNI_FEATURE_I18N_ZH_HANT__": "true"
     },
-    "external": [
-      "vue",
-      "@vue/shared",
-      "@dcloudio/uni-shared"
-    ]
+    "external": ["vue", "@vue/shared", "@dcloudio/uni-shared"]
   },
   {
     "input": {
@@ -76,10 +68,29 @@
       "__UNI_FEATURE_I18N_ZH_HANS__": "true",
       "__UNI_FEATURE_I18N_ZH_HANT__": "true"
     },
-    "external": [
-      "@dcloudio/uni-shared",
-      "@vue/shared",
-      "vue"
-    ]
+    "external": ["@dcloudio/uni-shared", "@vue/shared", "vue"]
+  },
+  {
+    "input": {
+      "src/x/index.ts": "dist/uni.x.runtime.esm.js"
+    },
+    "output": {
+      "freeze": false
+    },
+    "replacements": {
+      "__PLATFORM__": "'app'",
+      "__APP_VIEW__": "false",
+      "__X__": "true",
+      "__VUE_OPTIONS_API__": "true",
+      "__VUE_PROD_DEVTOOLS__": "false",
+      "__UNI_FEATURE_WX__": "true",
+      "__UNI_FEATURE_PROMISE__": "false",
+      "__UNI_FEATURE_I18N_EN__": "true",
+      "__UNI_FEATURE_I18N_ES__": "true",
+      "__UNI_FEATURE_I18N_FR__": "true",
+      "__UNI_FEATURE_I18N_ZH_HANS__": "true",
+      "__UNI_FEATURE_I18N_ZH_HANT__": "true"
+    },
+    "external": ["vue", "@vue/shared", "@dcloudio/uni-shared"]
   }
 ]

@@ -2397,6 +2397,7 @@ function initLaunchOptions({ path, query, referrerInfo, }) {
         path,
         query: query ? parseQuery(query) : {},
         referrerInfo: referrerInfo || {},
+        // TODO uni-app x
         channel: plus.runtime.channel,
         launcher: plus.runtime.launcher,
     });
@@ -19108,13 +19109,15 @@ function setupPage(component) {
     return component;
 }
 function initScope(pageId, vm, pageInstance) {
-    const $getAppWebview = () => {
-        return plus.webview.getWebviewById(pageId + '');
-    };
-    vm.$getAppWebview = $getAppWebview;
-    vm.$.ctx.$scope = {
-        $getAppWebview,
-    };
+    {
+        const $getAppWebview = () => {
+            return plus.webview.getWebviewById(pageId + '');
+        };
+        vm.$getAppWebview = $getAppWebview;
+        vm.$.ctx.$scope = {
+            $getAppWebview,
+        };
+    }
     vm.getOpenerEventChannel = () => {
         if (!pageInstance.eventChannel) {
             pageInstance.eventChannel = new EventChannel(pageId);
