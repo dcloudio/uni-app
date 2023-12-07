@@ -349,6 +349,24 @@ try {
   }
 } catch (e) {}
 
+rules.push({
+  test: /\.ts$/,
+  use: [{
+    loader: require.resolve('babel-loader', {
+      paths: [require.resolve('@vue/cli-plugin-babel')]
+    })
+  }, {
+    loader: require.resolve('ts-loader', {
+      paths: [require.resolve('@vue/cli-plugin-babel')]
+    }),
+    options: Object.assign({
+      transpileOnly: false,
+      appendTsSuffixTo: ['\\.nvue$'],
+      happyPackMode: false
+    }, require('@dcloudio/vue-cli-plugin-uni/lib/util').getTsLoadOptions())
+  }, jsPreprocessorLoader]
+})
+
 module.exports = function () {
   return {
     target: 'node', // 激活 vue-loader 的 isServer 逻辑
