@@ -4,7 +4,7 @@ exports[`compiler: v-memo transform on component 1`] = `
 "
 function Render(): VNode | null {
 const _ctx = this
-const _cache = this.$!.renderCache
+const _cache = this.$.renderCache
 const _component_Comp = resolveComponent("Comp")
 
   return createElementVNode("view", null, [
@@ -17,7 +17,7 @@ exports[`compiler: v-memo transform on normal element 1`] = `
 "
 function Render(): VNode | null {
 const _ctx = this
-const _cache = this.$!.renderCache
+const _cache = this.$.renderCache
   return createElementVNode("view", null, [
     withMemo([_ctx.x], (): VNode => createElementVNode("view"), _cache, 0)
   ])
@@ -28,7 +28,7 @@ exports[`compiler: v-memo transform on root element 1`] = `
 "
 function Render(): VNode | null {
 const _ctx = this
-const _cache = this.$!.renderCache
+const _cache = this.$.renderCache
   return withMemo([_ctx.x], (): VNode => createElementVNode("view"), _cache, 0)
 }"
 `;
@@ -37,7 +37,7 @@ exports[`compiler: v-memo transform on template v-for 1`] = `
 "
 function Render(): VNode | null {
 const _ctx = this
-const _cache = this.$!.renderCache
+const _cache = this.$.renderCache
   return createElementVNode("view", null, [
     createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.list, ({ x, y }, _, _, _cached): VNode => {
       const _memo: Array<any | null> = ([x, y === _ctx.z])
@@ -54,7 +54,7 @@ exports[`compiler: v-memo transform on v-for 1`] = `
 "
 function Render(): VNode | null {
 const _ctx = this
-const _cache = this.$!.renderCache
+const _cache = this.$.renderCache
   return createElementVNode("view", null, [
     createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.list, ({ x, y }, _, _, _cached): VNode => {
       const _memo: Array<any | null> = ([x, y === _ctx.z])
@@ -73,7 +73,7 @@ exports[`compiler: v-memo transform on v-if 1`] = `
 "
 function Render(): VNode | null {
 const _ctx = this
-const _cache = this.$!.renderCache
+const _cache = this.$.renderCache
 const _component_Comp = resolveComponent("Comp")
 
   return createElementVNode("view", null, [

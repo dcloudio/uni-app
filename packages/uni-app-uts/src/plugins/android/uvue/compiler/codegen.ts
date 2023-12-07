@@ -45,6 +45,7 @@ import { addEasyComponentAutoImports, genRenderFunctionDecl } from './utils'
 import {
   IS_TRUE,
   RENDER_LIST,
+  RESOLVE_CACHE,
   RESOLVE_COMPONENT,
   RESOLVE_DIRECTIVE,
   RESOLVE_EASY_COMPONENT,
@@ -214,7 +215,7 @@ export function generate(
     newline()
     push(`const _ctx = this`)
     newline()
-    push(`const _cache = this.$!.renderCache`)
+    push(`const _cache = this.$.renderCache`)
     // generate asset resolution statements
     if (ast.components.length) {
       newline()
@@ -822,7 +823,7 @@ function genConditionalExpression(
 
 function genCacheExpression(node: CacheExpression, context: CodegenContext) {
   const { push, helper, indent, deindent, newline } = context
-  push(`_cache[${node.index}] ?? run((): VNode | null => {`)
+  push(`${helperNameMap[RESOLVE_CACHE]}(_cache, ${node.index}, (): VNode => {`)
   if (node.isVNode) {
     indent()
     push(`${helper(SET_BLOCK_TRACKING)}(-1)`)
@@ -834,7 +835,7 @@ function genCacheExpression(node: CacheExpression, context: CodegenContext) {
     newline()
     push(`${helper(SET_BLOCK_TRACKING)}(1)`)
     newline()
-    push(`return _cache[${node.index}] as VNode | null`)
+    push(`return _cache[${node.index}] as VNode`)
     deindent()
   }
   push(`})`)

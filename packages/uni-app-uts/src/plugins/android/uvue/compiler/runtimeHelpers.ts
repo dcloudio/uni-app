@@ -15,6 +15,8 @@ export const V_ON_WITH_MODIFIERS = Symbol(`vOnModifiersGuard`)
 export const WITH_SLOT_CTX = Symbol(`withSlotCtx`)
 export const WITH_SCOPED_SLOT_CTX = Symbol(`withScopedSlotCtx`)
 
+export const RESOLVE_CACHE = Symbol(`resolveCache`)
+
 registerRuntimeHelpers({
   [IS_TRUE]: 'isTrue',
   [V_SHOW]: 'vShow',
@@ -28,4 +30,5 @@ registerRuntimeHelpers({
   [V_ON_WITH_MODIFIERS]: `withModifiers`,
   [WITH_SLOT_CTX]: `withSlotCtx`,
   [WITH_SCOPED_SLOT_CTX]: `withScopedSlotCtx`,
+  [RESOLVE_CACHE]: `resolveCache`,
 })

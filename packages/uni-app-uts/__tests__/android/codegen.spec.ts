@@ -34,7 +34,7 @@ describe('compiler:codegen', () => {
     assert(
       `<view/>`,
       `
-function PagesIndexIndexRender(): VNode | null {\nconst _ctx = this\nconst _cache = this.$!.renderCache\n  return createElementVNode("view")\n}`,
+function PagesIndexIndexRender(): VNode | null {\nconst _ctx = this\nconst _cache = this.$.renderCache\n  return createElementVNode("view")\n}`,
       {
         targetLanguage: 'kotlin',
         mode: 'function',
@@ -44,7 +44,7 @@ function PagesIndexIndexRender(): VNode | null {\nconst _ctx = this\nconst _cach
   test(`UTSComponents`, () => {
     assert(
       `<view><uts-hello/><uts-hello/></view>`,
-      `import { UtsHelloElement } from 'uts.sdk.modules.utsHello';\nfunction PagesIndexIndexRender(): VNode | null {\nconst _ctx = this\nconst _cache = this.$!.renderCache\n  return createElementVNode("view", null, [\n    createElementVNode(uts.sdk.modules.utsHello.UtsHelloComponent.name),\n    createElementVNode(uts.sdk.modules.utsHello.UtsHelloComponent.name)\n  ])\n}`,
+      `import { UtsHelloElement } from 'uts.sdk.modules.utsHello';\nfunction PagesIndexIndexRender(): VNode | null {\nconst _ctx = this\nconst _cache = this.$.renderCache\n  return createElementVNode("view", null, [\n    createElementVNode(uts.sdk.modules.utsHello.UtsHelloComponent.name),\n    createElementVNode(uts.sdk.modules.utsHello.UtsHelloComponent.name)\n  ])\n}`,
       {
         targetLanguage: 'kotlin',
         mode: 'function',
@@ -61,7 +61,7 @@ function PagesIndexIndexRender(): VNode | null {\nconst _ctx = this\nconst _cach
     )
     assert(
       `<view><uts-hello/><uts-hello/><uts-hello1/></view>`,
-      `import { UtsHelloElement } from 'uts.sdk.modules.utsHello';import { UtsHello1Element } from 'uts.sdk.modules.utsHello';\nfunction PagesIndexIndexRender(): VNode | null {\nconst _ctx = this\nconst _cache = this.$!.renderCache\n  return createElementVNode("view", null, [\n    createElementVNode(uts.sdk.modules.utsHello.UtsHelloComponent.name),\n    createElementVNode(uts.sdk.modules.utsHello.UtsHelloComponent.name),\n    createElementVNode(uts.sdk.modules.utsHello.UtsHello1Component.name)\n  ])\n}`,
+      `import { UtsHelloElement } from 'uts.sdk.modules.utsHello';import { UtsHello1Element } from 'uts.sdk.modules.utsHello';\nfunction PagesIndexIndexRender(): VNode | null {\nconst _ctx = this\nconst _cache = this.$.renderCache\n  return createElementVNode("view", null, [\n    createElementVNode(uts.sdk.modules.utsHello.UtsHelloComponent.name),\n    createElementVNode(uts.sdk.modules.utsHello.UtsHelloComponent.name),\n    createElementVNode(uts.sdk.modules.utsHello.UtsHello1Component.name)\n  ])\n}`,
       {
         targetLanguage: 'kotlin',
         mode: 'function',
@@ -92,7 +92,7 @@ import _easycom_custom1 from '@/components/custom1/custom1.vue'
 import _easycom_index from '@/components/index/index.vue'
 function PagesIndexIndexRender(): VNode | null {
 const _ctx = this
-const _cache = this.$!.renderCache
+const _cache = this.$.renderCache
 const _component_custom = resolveEasyComponent("custom",_easycom_custom)
 const _component_custom1 = resolveEasyComponent("custom1",_easycom_custom1)
 const _component_index = resolveEasyComponent("index",_easycom_index)
@@ -121,7 +121,7 @@ const _component_index1 = resolveComponent("index1")
       `
 function PagesIndexIndexRender(): VNode | null {
 const _ctx = this
-const _cache = this.$!.renderCache
+const _cache = this.$.renderCache
 const _component_index = resolveComponent("index", true)
 
   return createVNode(_component_index)
@@ -141,7 +141,7 @@ import _easycom_custom1 from '@/components/custom1/custom1.vue'
 import _easycom_index from '@/components/index/index.vue'
 function PagesIndexIndexRender(): VNode | null {
 const _ctx = this
-const _cache = this.$!.renderCache
+const _cache = this.$.renderCache
 const _component_custom = resolveEasyComponent("custom",_easycom_custom)
 const _component_custom1 = resolveEasyComponent("custom1",_easycom_custom1)
 const _component_index = resolveEasyComponent("index",_easycom_index)
@@ -185,7 +185,7 @@ import _imports_0 from './logo.png'
 
 function PagesIndexIndexRender(): VNode | null {
 const _ctx = this
-const _cache = this.$!.renderCache
+const _cache = this.$.renderCache
   return createElementVNode(\"image\", utsMapOf({ src: _imports_0 }))
 }`,
       {
