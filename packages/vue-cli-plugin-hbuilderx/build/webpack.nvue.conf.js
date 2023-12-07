@@ -361,7 +361,7 @@ rules.push({
     }),
     options: Object.assign({
       transpileOnly: false,
-      appendTsSuffixTo: ['\\.vue$'],
+      appendTsSuffixTo: ['\\.nvue$', '\\.vue$'],
       happyPackMode: false
     }, require('@dcloudio/vue-cli-plugin-uni/lib/util').getTsLoadOptions())
   }, jsPreprocessorLoader]
