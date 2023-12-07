@@ -361,7 +361,7 @@ rules.push({
     }),
     options: Object.assign({
       transpileOnly: false,
-      appendTsSuffixTo: ['\\.nvue$'],
+      appendTsSuffixTo: ['\\.vue$'],
       happyPackMode: false
     }, require('@dcloudio/vue-cli-plugin-uni/lib/util').getTsLoadOptions())
   }, jsPreprocessorLoader]
@@ -400,7 +400,7 @@ module.exports = function () {
       filename: '[name].js'
     },
     resolve: {
-      extensions: ['.js', '.nvue', '.vue', '.json'],
+      extensions: ['.ts', '.js', '.nvue', '.vue', '.json'],
       alias: {
         '@/pages.json': path.resolve(process.env.UNI_INPUT_DIR, 'pages.json') + '?' + JSON.stringify({
           type: 'origin-pages-json'
