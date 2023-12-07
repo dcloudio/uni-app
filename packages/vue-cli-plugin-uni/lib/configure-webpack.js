@@ -261,7 +261,15 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
         .parseUniExtApis(false, process.env.UNI_UTS_PLATFORM, 'javascript')
       const keys = Object.keys(uniExtApis)
       if (keys.length) {
-        plugins.push(new webpack.ProvidePlugin(uniExtApis))
+        const provides = {}
+        keys.forEach(name => {
+          const provide = uniExtApis[name]
+          if (Array.isArray(provide) && provide.length === 3) {
+            provide.pop()
+          }
+          provides[name] = provide
+        })
+        plugins.push(new webpack.ProvidePlugin(provides))
       }
     }
     if (!process.env.UNI_SUBPACKGE || !process.env.UNI_MP_PLUGIN) {
