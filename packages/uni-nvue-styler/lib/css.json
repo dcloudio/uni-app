@@ -1,15 +1,13 @@
 {
   "version": 1.0,
-  "properties": [
-    {
+  "properties": [{
       "name": "width",
       "restrictions": [
         "length",
         "percentage"
       ],
       "syntax": "auto | <length> | <percentage>",
-      "values": [
-        {
+      "values": [{
           "name": "fit-content",
           "uniPlatform": {
             "app": {
@@ -85,8 +83,7 @@
         "length"
       ],
       "syntax": "<length>",
-      "values": [
-        {
+      "values": [{
           "name": "fit-content",
           "uniPlatform": {
             "app": {
@@ -196,8 +193,7 @@
         "length"
       ],
       "syntax": "<length>",
-      "values": [
-        {
+      "values": [{
           "name": "fit-content",
           "uniPlatform": {
             "app": {
@@ -308,8 +304,7 @@
         "percentage"
       ],
       "syntax": "auto | <length> | <percentage>",
-      "values": [
-        {
+      "values": [{
           "name": "fit-content",
           "uniPlatform": {
             "app": {
@@ -385,8 +380,7 @@
         "length"
       ],
       "syntax": "<length>",
-      "values": [
-        {
+      "values": [{
           "name": "fit-content",
           "uniPlatform": {
             "app": {
@@ -496,8 +490,7 @@
         "length"
       ],
       "syntax": "<length>",
-      "values": [
-        {
+      "values": [{
           "name": "fit-content",
           "uniPlatform": {
             "app": {
@@ -607,54 +600,14 @@
         "enum"
       ],
       "syntax": " relative | absolute | fixed",
-      "values": [
-        {
-          "name": "relative",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+      "values": [{
+          "name": "relative"
         },
         {
-          "name": "absolute",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "absolute"
         },
         {
-          "name": "fixed",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "fixed"
         },
         {
           "name": "static",
@@ -741,24 +694,9 @@
         "percentage"
       ],
       "syntax": "<length> | <percentage> | auto",
-      "values": [
-        {
-          "name": "auto",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
-        }
-      ],
+      "values": [{
+        "name": "auto"
+      }],
       "uniPlatform": {
         "app": {
           "android": {
@@ -784,24 +722,9 @@
         "percentage"
       ],
       "syntax": "<length> | <percentage> | auto",
-      "values": [
-        {
-          "name": "auto",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
-        }
-      ],
+      "values": [{
+        "name": "auto"
+      }],
       "uniPlatform": {
         "app": {
           "android": {
@@ -827,24 +750,9 @@
         "percentage"
       ],
       "syntax": "<length> | <percentage> | auto",
-      "values": [
-        {
-          "name": "auto",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
-        }
-      ],
+      "values": [{
+        "name": "auto"
+      }],
       "uniPlatform": {
         "app": {
           "android": {
@@ -870,24 +778,9 @@
         "percentage"
       ],
       "syntax": "<length> | <percentage> | auto",
-      "values": [
-        {
-          "name": "auto",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
-        }
-      ],
+      "values": [{
+        "name": "auto"
+      }],
       "uniPlatform": {
         "app": {
           "android": {
@@ -912,70 +805,17 @@
         "enum"
       ],
       "syntax": "row | row-reverse | column | column-reverse",
-      "values": [
-        {
-          "name": "row",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+      "values": [{
+          "name": "row"
         },
         {
-          "name": "row-reverse",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "row-reverse"
         },
         {
-          "name": "column",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "column"
         },
         {
-          "name": "column-reverse",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "column-reverse"
         }
       ],
       "uniPlatform": {
@@ -992,12 +832,7 @@
         }
       },
       "unixTags": [
-        "view",
-        "scroll-view",
-        "list-view",
-        "list-item",
-        "swiper-item",
-        "navigator"
+        "view", "scroll-view", "list-view", "list-item", "swiper-item", "navigator"
       ],
       "defaultValue": {
         "app-uvue": "column",
@@ -1010,91 +845,25 @@
         "enum"
       ],
       "syntax": "center | flex-star | flex-end | space-between | space-around",
-      "values": [
-        {
+      "values": [{
           "name": "center",
-          "description": "元素紧密地排列在主轴方向居中对齐",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "description": "元素紧密地排列在主轴方向居中对齐"
         },
         {
           "name": "flex-start",
-          "description": "元素紧密地排列在容器主轴起始侧",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "description": "元素紧密地排列在容器主轴起始侧"
         },
         {
           "name": "flex-end",
-          "description": "元素紧密地排列在容器主轴结束侧",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "description": "元素紧密地排列在容器主轴结束侧"
         },
         {
           "name": "space-between",
-          "description": "在主轴上均匀分配元素。相邻元素间距离相同。第一个元素与主轴首对齐，最后一个元素与主轴尾对齐",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "description": "在主轴上均匀分配元素。相邻元素间距离相同。第一个元素与主轴首对齐，最后一个元素与主轴尾对齐"
         },
         {
           "name": "space-around",
-          "description": "元素沿着主轴均匀分布在容器中。相邻项之间的间距，主轴起始位置到第一个元素的间距，主轴结束位置到最后一个元素的间距，都完全一样",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "description": "元素沿着主轴均匀分布在容器中。相邻项之间的间距，主轴起始位置到第一个元素的间距，主轴结束位置到最后一个元素的间距，都完全一样"
         }
       ],
       "uniPlatform": {
@@ -1111,12 +880,7 @@
         }
       },
       "unixTags": [
-        "view",
-        "scroll-view",
-        "list-view",
-        "list-item",
-        "swiper-item",
-        "navigator"
+        "view", "scroll-view", "list-view", "list-item", "swiper-item", "navigator"
       ],
       "defaultValue": {
         "app-uvue": "flex-start",
@@ -1129,54 +893,14 @@
         "enum"
       ],
       "syntax": "nowrap | wrap | wrap-reverse",
-      "values": [
-        {
-          "name": "nowrap",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+      "values": [{
+          "name": "nowrap"
         },
         {
-          "name": "wrap",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "wrap"
         },
         {
-          "name": "wrap-reverse",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "wrap-reverse"
         }
       ],
       "uniPlatform": {
@@ -1193,12 +917,7 @@
         }
       },
       "unixTags": [
-        "view",
-        "scroll-view",
-        "list-view",
-        "list-item",
-        "swiper-item",
-        "navigator"
+        "view", "scroll-view", "list-view", "list-item", "swiper-item", "navigator"
       ],
       "defaultValue": {
         "app-uvue": "nowrap",
@@ -1211,70 +930,17 @@
         "enum"
       ],
       "syntax": "center | flex-start | flex-end | stretch",
-      "values": [
-        {
-          "name": "center",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+      "values": [{
+          "name": "center"
         },
         {
-          "name": "flex-start",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "flex-start"
         },
         {
-          "name": "flex-end",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "flex-end"
         },
         {
-          "name": "stretch",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "stretch"
         },
         {
           "name": "baseline",
@@ -1308,12 +974,7 @@
         }
       },
       "unixTags": [
-        "view",
-        "scroll-view",
-        "list-view",
-        "list-item",
-        "swiper-item",
-        "navigator"
+        "view", "scroll-view", "list-view", "list-item", "swiper-item", "navigator"
       ],
       "defaultValue": {
         "app-uvue": "stretch",
@@ -1326,86 +987,20 @@
         "enum"
       ],
       "syntax": "auto | center | flex-start | flex-end | stretch",
-      "values": [
-        {
-          "name": "auto",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+      "values": [{
+          "name": "auto"
         },
         {
-          "name": "center",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "center"
         },
         {
-          "name": "flex-start",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "flex-start"
         },
         {
-          "name": "flex-end",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "flex-end"
         },
         {
-          "name": "stretch",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "stretch"
         },
         {
           "name": "baseline",
@@ -1450,102 +1045,23 @@
       ],
       "description": "CSS 的 align-content 属性用于设置交叉轴方向多个行或列的分布方式",
       "syntax": "center | flex-start | flex-end | space-between | space-around | stretch",
-      "values": [
-        {
-          "name": "center",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+      "values": [{
+          "name": "center"
         },
         {
-          "name": "flex-start",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "flex-start"
         },
         {
-          "name": "flex-end",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "flex-end"
         },
         {
-          "name": "space-between",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "space-between"
         },
         {
-          "name": "space-around",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "space-around"
         },
         {
-          "name": "stretch",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "stretch"
         }
       ],
       "uniPlatform": {
@@ -1562,12 +1078,7 @@
         }
       },
       "unixTags": [
-        "view",
-        "scroll-view",
-        "list-view",
-        "list-item",
-        "swiper-item",
-        "navigator"
+        "view", "scroll-view", "list-view", "list-item", "swiper-item", "navigator"
       ],
       "defaultValue": {
         "app-uvue": "stretch",
@@ -1583,54 +1094,14 @@
         "enum"
       ],
       "syntax": "none | [ <'flex-grow'> <'flex-shrink'>? || <'flex-basis'> ]",
-      "values": [
-        {
-          "name": "initial",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+      "values": [{
+          "name": "initial"
         },
         {
-          "name": "auto",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "auto"
         },
         {
-          "name": "none",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "none"
         }
       ],
       "uniPlatform": {
@@ -1707,22 +1178,8 @@
         "percentage"
       ],
       "syntax": "auto | <length> | <percentage>",
-      "values": [
-        {
-          "name": "auto",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+      "values": [{
+          "name": "auto"
         },
         {
           "name": "content",
@@ -1767,118 +1224,26 @@
         "enum"
       ],
       "syntax": "<'flex-direction'> || <'flex-wrap'>",
-      "values": [
-        {
-          "name": "column",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+      "values": [{
+          "name": "column"
         },
         {
-          "name": "column-reverse",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "column-reverse"
         },
         {
-          "name": "row",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "row"
         },
         {
-          "name": "row-reverse",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "row-reverse"
         },
         {
-          "name": "nowrap",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "nowrap"
         },
         {
-          "name": "wrap",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "wrap"
         },
         {
-          "name": "wrap-reverse",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "wrap-reverse"
         }
       ],
       "uniPlatform": {
@@ -1895,12 +1260,7 @@
         }
       },
       "unixTags": [
-        "view",
-        "scroll-view",
-        "list-view",
-        "list-item",
-        "swiper-item",
-        "navigator"
+        "view", "scroll-view", "list-view", "list-item", "swiper-item", "navigator"
       ]
     },
     {
@@ -1910,38 +1270,11 @@
         "enum"
       ],
       "syntax": "flex | none",
-      "values": [
-        {
-          "name": "flex",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+      "values": [{
+          "name": "flex"
         },
         {
-          "name": "none",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "none"
         }
       ],
       "uniPlatform": {
@@ -1968,39 +1301,12 @@
         "enum"
       ],
       "syntax": " visible | hidden ",
-      "values": [
-        {
+      "values": [{
           "name": "visible",
-          "description": "暂时仅view组件支持visible，其他组件支持不支持",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "description": "暂时仅view组件支持visible，其他组件支持不支持"
         },
         {
-          "name": "hidden",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "hidden"
         },
         {
           "name": "scroll",
@@ -2078,38 +1384,11 @@
         "enum"
       ],
       "syntax": "visible | hidden",
-      "values": [
-        {
-          "name": "visible",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+      "values": [{
+          "name": "visible"
         },
         {
-          "name": "hidden",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "hidden"
         }
       ],
       "uniPlatform": {
@@ -2160,38 +1439,11 @@
         "enum"
       ],
       "syntax": "content-box | border-box",
-      "values": [
-        {
-          "name": "content-box",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+      "values": [{
+          "name": "content-box"
         },
         {
-          "name": "border-box",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "border-box"
         }
       ],
       "uniPlatform": {
@@ -2219,8 +1471,7 @@
         "gradient"
       ],
       "syntax": "[ <bg-layer> , ]* <final-bg-layer>",
-      "values": [
-        {
+      "values": [{
           "name": "fixed",
           "uniPlatform": {
             "app": {
@@ -2333,24 +1584,9 @@
         "gradient"
       ],
       "syntax": "<bg-image>#",
-      "values": [
-        {
-          "name": "linear-gradient",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
-        }
-      ],
+      "values": [{
+        "name": "linear-gradient"
+      }],
       "uniPlatform": {
         "app": {
           "android": {
@@ -2371,22 +1607,8 @@
         "enum"
       ],
       "syntax": "<box>#",
-      "values": [
-        {
-          "name": "border-box",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+      "values": [{
+          "name": "border-box"
         },
         {
           "name": "padding-box",
@@ -2571,24 +1793,9 @@
         "percentage"
       ],
       "syntax": "[ <length> | <percentage> | auto ]{1,4}",
-      "values": [
-        {
-          "name": "auto",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
-        }
-      ],
+      "values": [{
+        "name": "auto"
+      }],
       "uniPlatform": {
         "app": {
           "android": {
@@ -2614,24 +1821,9 @@
         "percentage"
       ],
       "syntax": "<length> | <percentage> | auto",
-      "values": [
-        {
-          "name": "auto",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
-        }
-      ],
+      "values": [{
+        "name": "auto"
+      }],
       "uniPlatform": {
         "app": {
           "android": {
@@ -2657,24 +1849,9 @@
         "percentage"
       ],
       "syntax": "<length> | <percentage> | auto",
-      "values": [
-        {
-          "name": "auto",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
-        }
-      ],
+      "values": [{
+        "name": "auto"
+      }],
       "uniPlatform": {
         "app": {
           "android": {
@@ -2700,24 +1877,9 @@
         "percentage"
       ],
       "syntax": "<length> | <percentage> | auto",
-      "values": [
-        {
-          "name": "auto",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
-        }
-      ],
+      "values": [{
+        "name": "auto"
+      }],
       "uniPlatform": {
         "app": {
           "android": {
@@ -2744,24 +1906,9 @@
       ],
       "description": "margin-bottom 属性设置与元素相关联的盒子模型的下外边距。可以为负值",
       "syntax": "<length> | <percentage> | auto",
-      "values": [
-        {
-          "name": "auto",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
-        }
-      ],
+      "values": [{
+        "name": "auto"
+      }],
       "uniPlatform": {
         "app": {
           "android": {
@@ -2791,68 +1938,16 @@
       "syntax": "<line-width> || <line-style> || <color>",
       "values": [
         {
-          "name": "none",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name" : "none"
         },
         {
-          "name": "solid",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name" : "solid"
         },
         {
-          "name": "dashed",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name" : "dashed"
         },
         {
-          "name": "dotted",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name" : "dotted"
         }
       ],
       "uniPlatform": {
@@ -2878,70 +1973,17 @@
         "enum"
       ],
       "syntax": "<line-style>{1,4}",
-      "values": [
-        {
-          "name": "none",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+      "values": [{
+          "name": "none"
         },
         {
-          "name": "solid",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "solid"
         },
         {
-          "name": "dashed",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "dashed"
         },
         {
-          "name": "dotted",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "dotted"
         }
       ],
       "uniPlatform": {
@@ -2964,70 +2006,17 @@
         "enum"
       ],
       "syntax": "<line-style>",
-      "values": [
-        {
-          "name": "none",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+      "values": [{
+          "name": "none"
         },
         {
-          "name": "solid",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "solid"
         },
         {
-          "name": "dashed",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "dashed"
         },
         {
-          "name": "dotted",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "dotted"
         }
       ],
       "uniPlatform": {
@@ -3050,70 +2039,17 @@
         "enum"
       ],
       "syntax": "<line-style>",
-      "values": [
-        {
-          "name": "none",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+      "values": [{
+          "name": "none"
         },
         {
-          "name": "solid",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "solid"
         },
         {
-          "name": "dashed",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "dashed"
         },
         {
-          "name": "dotted",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "dotted"
         }
       ],
       "uniPlatform": {
@@ -3136,70 +2072,17 @@
         "enum"
       ],
       "syntax": "<line-style>",
-      "values": [
-        {
-          "name": "none",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+      "values": [{
+          "name": "none"
         },
         {
-          "name": "solid",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "solid"
         },
         {
-          "name": "dashed",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "dashed"
         },
         {
-          "name": "dotted",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "dotted"
         }
       ],
       "uniPlatform": {
@@ -3222,70 +2105,17 @@
         "enum"
       ],
       "syntax": "none | solid | dashed | dotted",
-      "values": [
-        {
-          "name": "none",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+      "values": [{
+          "name": "none"
         },
         {
-          "name": "solid",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "solid"
         },
         {
-          "name": "dashed",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "dashed"
         },
         {
-          "name": "dotted",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "dotted"
         }
       ],
       "uniPlatform": {
@@ -3309,8 +2139,7 @@
         "enum"
       ],
       "syntax": "<line-width>{1,4}",
-      "values": [
-        {
+      "values": [{
           "name": "thin",
           "uniPlatform": {
             "app": {
@@ -3384,8 +2213,7 @@
         "enum"
       ],
       "syntax": "<length> | thin | medium | thick",
-      "values": [
-        {
+      "values": [{
           "name": "thin",
           "uniPlatform": {
             "app": {
@@ -3459,8 +2287,7 @@
         "enum"
       ],
       "syntax": "<length> | thin | medium | thick",
-      "values": [
-        {
+      "values": [{
           "name": "thin",
           "uniPlatform": {
             "app": {
@@ -3534,8 +2361,7 @@
         "enum"
       ],
       "syntax": "<length> | thin | medium | thick",
-      "values": [
-        {
+      "values": [{
           "name": "thin",
           "uniPlatform": {
             "app": {
@@ -3609,8 +2435,7 @@
         "enum"
       ],
       "syntax": "<length> | thin | medium | thick",
-      "values": [
-        {
+      "values": [{
           "name": "thin",
           "uniPlatform": {
             "app": {
@@ -3998,10 +2823,7 @@
         }
       },
       "unixTags": [
-        "text",
-        "button",
-        "input",
-        "textarea"
+        "text", "button", "input", "textarea"
       ],
       "defaultValue": {
         "app-uvue": "#000000",
@@ -4029,10 +2851,7 @@
         }
       },
       "unixTags": [
-        "text",
-        "button",
-        "input",
-        "textarea"
+        "text", "button", "input", "textarea"
       ],
       "defaultValue": {
         "app-uvue": "16px",
@@ -4045,38 +2864,11 @@
         "enum"
       ],
       "syntax": "normal | italic | oblique <angle>{0,2}",
-      "values": [
-        {
-          "name": "italic",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+      "values": [{
+          "name": "italic"
         },
         {
-          "name": "normal",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "normal"
         }
       ],
       "uniPlatform": {
@@ -4093,8 +2885,7 @@
         }
       },
       "unixTags": [
-        "text",
-        "button"
+        "text", "button"
       ],
       "defaultValue": {
         "app-uvue": "normal",
@@ -4107,70 +2898,17 @@
         "enum"
       ],
       "syntax": "<font-weight-absolute>{1,2}",
-      "values": [
-        {
-          "name": "normal",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+      "values": [{
+          "name": "normal"
         },
         {
-          "name": "bold",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "bold"
         },
         {
-          "name": "400",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "400"
         },
         {
-          "name": "700",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "700"
         }
       ],
       "uniPlatform": {
@@ -4187,8 +2925,7 @@
         }
       },
       "unixTags": [
-        "text",
-        "button"
+        "text", "button"
       ],
       "defaultValue": {
         "app-uvue": "normal",
@@ -4217,8 +2954,7 @@
         }
       },
       "unixTags": [
-        "text",
-        "button"
+        "text", "button"
       ]
     },
     {
@@ -4227,38 +2963,11 @@
         "enum"
       ],
       "syntax": "none | [ underline || overline || line-through || blink ] | spelling-error | grammar-error",
-      "values": [
-        {
-          "name": "underline",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+      "values": [{
+          "name": "underline"
         },
         {
-          "name": "line-through",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "line-through"
         },
         {
           "name": "overline",
@@ -4292,8 +3001,7 @@
         }
       },
       "unixTags": [
-        "text",
-        "button"
+        "text", "button"
       ],
       "defaultValue": {
         "app-uvue": "none",
@@ -4320,8 +3028,7 @@
         }
       },
       "unixTags": [
-        "text",
-        "button"
+        "text", "button"
       ]
     },
     {
@@ -4330,70 +3037,17 @@
         "enum"
       ],
       "syntax": "solid | double | dotted | dashed | wavy",
-      "values": [
-        {
-          "name": "solid",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "x"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+      "values": [{
+          "name": "solid"
         },
         {
-          "name": "dashed",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "x"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "dashed"
         },
         {
-          "name": "dotted",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "x"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "dotted"
         },
         {
-          "name": "wavy",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "x"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "wavy"
         }
       ],
       "uniPlatform": {
@@ -4410,8 +3064,7 @@
         }
       },
       "unixTags": [
-        "text",
-        "button"
+        "text", "button"
       ]
     },
     {
@@ -4434,8 +3087,7 @@
         }
       },
       "unixTags": [
-        "text",
-        "button"
+        "text", "button"
       ]
     },
     {
@@ -4444,54 +3096,14 @@
         "enum"
       ],
       "syntax": "start | end | left | right | center | justify | match-parent",
-      "values": [
-        {
-          "name": "left",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+      "values": [{
+          "name": "left"
         },
         {
-          "name": "center",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "center"
         },
         {
-          "name": "right",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "right"
         }
       ],
       "uniPlatform": {
@@ -4508,10 +3120,7 @@
         }
       },
       "unixTags": [
-        "text",
-        "button",
-        "input",
-        "textarea"
+        "text", "button", "input", "textarea"
       ],
       "defaultValue": {
         "app-uvue": "left",
@@ -4524,86 +3133,20 @@
         "font"
       ],
       "syntax": "<family-name>",
-      "values": [
-        {
-          "name": "cursive",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+      "values": [{
+          "name": "cursive"
         },
         {
-          "name": "fantasy",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "fantasy"
         },
         {
-          "name": "monospace",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "monospace"
         },
         {
-          "name": "sans-serif",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "sans-serif"
         },
         {
-          "name": "serif",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "serif"
         }
       ],
       "uniPlatform": {
@@ -4620,10 +3163,7 @@
         }
       },
       "unixTags": [
-        "text",
-        "button",
-        "input",
-        "textarea"
+        "text", "button", "input", "textarea"
       ]
     },
     {
@@ -4632,38 +3172,11 @@
         "enum"
       ],
       "syntax": "[ clip | ellipsis | <string> ]{1,2}",
-      "values": [
-        {
-          "name": "clip",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+      "values": [{
+          "name": "clip"
         },
         {
-          "name": "ellipsis",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "ellipsis"
         }
       ],
       "uniPlatform": {
@@ -4680,8 +3193,7 @@
         }
       },
       "unixTags": [
-        "text",
-        "button"
+        "text", "button"
       ],
       "defaultValue": {
         "app-uvue": "clip",
@@ -4709,9 +3221,7 @@
         }
       },
       "unixTags": [
-        "text",
-        "button",
-        "textarea"
+        "text", "button", "textarea"
       ],
       "defaultValue": {
         "app-uvue": "1.2",
@@ -4739,10 +3249,7 @@
         }
       },
       "unixTags": [
-        "text",
-        "button",
-        "input",
-        "textarea"
+        "text", "button", "input", "textarea"
       ],
       "defaultValue": {
         "app-uvue": "-1"
@@ -4768,8 +3275,7 @@
         }
       },
       "unixTags": [
-        "text",
-        "button"
+        "text", "button"
       ],
       "defaultValue": {
         "app-uvue": "0",
@@ -4784,24 +3290,9 @@
         "color"
       ],
       "syntax": "none | <shadow>#",
-      "values": [
-        {
-          "name": "inset",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
-        }
-      ],
+      "values": [{
+        "name": "inset"
+      }],
       "uniPlatform": {
         "app": {
           "android": {
@@ -4843,390 +3334,77 @@
         "enum"
       ],
       "syntax": "none | <single-transition-property>#",
-      "values": [
-        {
-          "name": "width",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+      "values": [{
+          "name": "width"
         },
         {
-          "name": "height",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "height"
         },
         {
-          "name": "margin",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "margin"
         },
         {
-          "name": "margin-top",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "margin-top"
         },
         {
-          "name": "margin-bottom",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "margin-bottom"
         },
         {
-          "name": "margin-left",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "margin-left"
         },
         {
-          "name": "margin-right",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "margin-right"
         },
         {
-          "name": "left",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "left"
         },
         {
-          "name": "right",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "right"
         },
         {
-          "name": "top",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "top"
         },
         {
-          "name": "bottom",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "bottom"
         },
         {
-          "name": "padding",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "padding"
         },
         {
-          "name": "padding-left",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "padding-left"
         },
         {
-          "name": "padding-right",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "padding-right"
         },
         {
-          "name": "padding-top",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "padding-top"
         },
         {
-          "name": "padding-bottom",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "padding-bottom"
         },
         {
-          "name": "opacity",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "opacity"
         },
         {
-          "name": "background-color",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "background-color"
         },
         {
-          "name": "border-color",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "border-color"
         },
         {
-          "name": "border-top-color",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "border-top-color"
         },
         {
-          "name": "border-bottom-color",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "border-bottom-color"
         },
         {
-          "name": "border-left-color",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "border-left-color"
         },
         {
-          "name": "border-right-color",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "border-right-color"
         },
         {
-          "name": "transform",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "transform"
         }
       ],
       "uniPlatform": {
@@ -5277,102 +3455,23 @@
         "enum"
       ],
       "syntax": "<easing-function>#",
-      "values": [
-        {
-          "name": "ease",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+      "values": [{
+          "name": "ease"
         },
         {
-          "name": "ease-in",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "ease-in"
         },
         {
-          "name": "ease-out",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "ease-out"
         },
         {
-          "name": "ease-in-out",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "ease-in-out"
         },
         {
-          "name": "linear",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "linear"
         },
         {
-          "name": "cubic-bezier",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "cubic-bezier"
         }
       ],
       "uniPlatform": {
@@ -5423,166 +3522,35 @@
         "enum"
       ],
       "syntax": "none | <transform-list>",
-      "values": [
-        {
-          "name": "rotate(<angle>)",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+      "values": [{
+          "name": "rotate(<angle>)"
         },
         {
-          "name": "rotateX(<angle>)",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "rotateX(<angle>)"
         },
         {
-          "name": "rotateY(<angle>)",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "rotateY(<angle>)"
         },
         {
-          "name": "rotateZ(<angle>)",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "rotateZ(<angle>)"
         },
         {
-          "name": "scale(<number> <number>)",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "scale(<number> <number>)"
         },
         {
-          "name": "scaleX(<number>)",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "scaleX(<number>)"
         },
         {
-          "name": "scaleY(<number>)",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "scaleY(<number>)"
         },
         {
-          "name": "translate(<length/percentage> <length/percentage>)",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "translate(<length/percentage> <length/percentage>)"
         },
         {
-          "name": "translateX(<length/percentage>)",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "translateX(<length/percentage>)"
         },
         {
-          "name": "translateY(<length/percentage>)",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "translateY(<length/percentage>)"
         }
       ],
       "uniPlatform": {
@@ -5608,86 +3576,20 @@
         "enum"
       ],
       "syntax": "[ <length-percentage> | left | center | right | top | bottom ] | [ [ <length-percentage> | left | center | right ] && [ <length-percentage> | top | center | bottom ] ] <length>?",
-      "values": [
-        {
-          "name": "top",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+      "values": [{
+          "name": "top"
         },
         {
-          "name": "left",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "left"
         },
         {
-          "name": "right",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "right"
         },
         {
-          "name": "bottom",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "bottom"
         },
         {
-          "name": "center",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "center"
         }
       ],
       "uniPlatform": {
@@ -5714,38 +3616,11 @@
         "enum"
       ],
       "syntax": "auto | none",
-      "values": [
-        {
-          "name": "auto",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+      "values": [{
+          "name": "auto"
         },
         {
-          "name": "none",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "9.0",
-                "uniVer": "√"
-              }
-            }
-          }
+          "name": "none"
         }
       ],
       "uniPlatform": {
@@ -5764,40 +3639,6 @@
       "defaultValue": {
         "app-uvue": "auto",
         "web": "auto"
-      }
-    }
-  ],
-  "atDirectives": [
-    {
-      "name": "@import",
-      "uniPlatform": {
-        "app": {
-          "android": {
-            "osVer": "5.0",
-            "uniVer": "√",
-            "unixVer": "3.9+"
-          },
-          "ios": {
-            "osVer": "9.0",
-            "uniVer": "√"
-          }
-        }
-      }
-    },
-    {
-      "name": "@font-face",
-      "uniPlatform": {
-        "app": {
-          "android": {
-            "osVer": "5.0",
-            "uniVer": "√",
-            "unixVer": "3.9+"
-          },
-          "ios": {
-            "osVer": "9.0",
-            "uniVer": "√"
-          }
-        }
       }
     }
   ]
