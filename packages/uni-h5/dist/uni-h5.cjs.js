@@ -5470,7 +5470,7 @@ const index$o = /* @__PURE__ */ defineBuiltInComponent({
       }), [vue.createVNode("div", {
         "class": "uni-radio-wrapper",
         "style": {
-          "--HOVER-BD-COLOR": props2.activeBorderColor
+          "--HOVER-BD-COLOR": !radioChecked.value ? props2.activeBorderColor : radioStyle.value.borderColor
         }
       }, [vue.createVNode("div", {
         "class": ["uni-radio-input", {

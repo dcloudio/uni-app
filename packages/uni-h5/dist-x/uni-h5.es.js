@@ -12739,7 +12739,7 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
       }), [createVNode("div", {
         "class": "uni-radio-wrapper",
         "style": {
-          "--HOVER-BD-COLOR": props2.activeBorderColor
+          "--HOVER-BD-COLOR": !radioChecked.value ? props2.activeBorderColor : radioStyle.value.borderColor
         }
       }, [createVNode("div", {
         "class": ["uni-radio-input", {
