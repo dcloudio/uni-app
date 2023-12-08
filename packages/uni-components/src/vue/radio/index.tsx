@@ -122,7 +122,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         <uni-radio {...booleanAttrs} onClick={_onClick}>
           <div
             class="uni-radio-wrapper"
-            style={{ '--HOVER-BD-COLOR': props.activeBorderColor }}
+            style={{
+              '--HOVER-BD-COLOR': !radioChecked.value
+                ? props.activeBorderColor
+                : radioStyle.value.borderColor,
+            }}
           >
             <div
               class="uni-radio-input"
