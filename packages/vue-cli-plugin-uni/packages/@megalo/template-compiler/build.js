@@ -4444,8 +4444,7 @@ var TAG_MAP = {
   'live-pusher': 'live-pusher',
   'web-view': 'web-view',
   'open-data': 'open-data',
-  'official-account': 'official-account',
-  'rtc-room': 'rtc-room'
+  'official-account': 'official-account'
 }
 
 function createFindEventTypeFn (eventTypeMap) {
