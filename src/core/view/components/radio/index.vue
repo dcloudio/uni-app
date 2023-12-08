@@ -7,7 +7,9 @@
     <div
       class="uni-radio-wrapper"
       :style="{
-        '--HOVER-BD-COLOR': activeBorderColor
+        '--HOVER-BD-COLOR': !radioChecked
+          ? activeBorderColor
+          : radioStyle.borderColor
       }"
     >
       <div
