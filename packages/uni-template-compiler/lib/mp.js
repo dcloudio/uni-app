@@ -120,6 +120,10 @@ const tags = {
     'page-container',
     'page-meta',
     'lottie'
+  ],
+  // 抖音小程序平台独有组件
+  'mp-toutiao': [
+    'rtc-room',
   ]
 }
 

@@ -58,5 +58,6 @@ module.exports = [
   'uni-textarea',
   'uni-video',
   'uni-view',
-  'uni-web-view'
+  'uni-web-view',
+  'uni-rtc-room'
 ]
