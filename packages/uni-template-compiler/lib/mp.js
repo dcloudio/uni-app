@@ -123,7 +123,16 @@ const tags = {
   ],
   // 抖音小程序平台独有组件
   'mp-toutiao': [
-    'rtc-room',
+    'aweme-data',
+    'consume-card',
+    'pay-button',
+    'rate-button',
+    'member-button',
+    'confirm-receipt-button',
+    'live-preview',
+    'aweme-live-book',
+    'aweme-user-card',
+    'rtc-room'
   ]
 }
 
