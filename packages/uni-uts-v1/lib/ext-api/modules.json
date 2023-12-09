@@ -29,7 +29,7 @@
       "getFacialRecognitionMetaInfo"
     ]
   },
-  "uni-file-manager": {
+  "uni-fileSystemManager": {
     "uni": {
       "getFileSystemManager": {
         "name": "getFileSystemManager",
