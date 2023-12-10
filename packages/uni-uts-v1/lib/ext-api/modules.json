@@ -29,7 +29,7 @@
       "getFacialRecognitionMetaInfo"
     ]
   },
-  "uni-file-manager": {
+  "uni-fileSystemManager": {
     "uni": {
       "getFileSystemManager": {
         "name": "getFileSystemManager",
@@ -453,18 +453,6 @@
           "js": false,
           "kotlin": true,
           "swift": true
-        }
-      }
-    }
-  },
-  "uni-verify": {
-    "uni": {
-      "getUniverifyManager": {
-        "name": "getUniverifyManager",
-        "app": {
-          "js": false,
-          "kotlin": true,
-          "swift": false
         }
       }
     }
