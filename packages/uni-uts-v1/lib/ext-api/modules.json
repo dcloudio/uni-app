@@ -153,6 +153,18 @@
       }
     }
   },
+  "uni-installApk": {
+    "uni": {
+      "installApk": {
+        "name": "installApk",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": false
+        }
+      }
+    }
+  },
   "uni-media": {
     "uni": {
       "chooseImage": {
