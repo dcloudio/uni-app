@@ -30,6 +30,7 @@ import {
   isString,
   PatchFlags,
   PatchFlagNames,
+  EMPTY_OBJ,
 } from '@vue/shared'
 import { defaultOnError, defaultOnWarn } from './errors'
 import { TransformOptions } from './options'
@@ -123,6 +124,7 @@ export function createTransformContext(
     directiveTransforms = {},
     scopeId = null,
     slotted = true,
+    bindingMetadata = EMPTY_OBJ,
     isBuiltInComponent = NOOP,
     isCustomElement = NOOP,
     onError = defaultOnError,
@@ -136,7 +138,7 @@ export function createTransformContext(
     targetLanguage,
     selfName: nameMatch && capitalize(camelize(nameMatch[1])),
     prefixIdentifiers,
-    bindingMetadata: {},
+    bindingMetadata,
     nodeTransforms,
     directiveTransforms,
     elements: new Set(),

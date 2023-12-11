@@ -111,7 +111,13 @@ export interface TransformOptions
   slotted?: boolean
 }
 
-export type CompilerOptions = TransformOptions & CodegenOptions
+export type CompilerOptions = {
+  /**
+   * e.g. platform native elements, e.g. `<div>` for browsers
+   */
+  isNativeTag?: (tag: string) => boolean
+} & TransformOptions &
+  CodegenOptions
 
 export interface CodegenResult {
   ast?: RootNode

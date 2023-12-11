@@ -1,6 +1,7 @@
-import { NodeTransform, NodeTypes } from '@vue/compiler-core'
+import { NodeTypes } from '@vue/compiler-core'
 import { parse } from '@dcloudio/uni-nvue-styler'
 import { createCompilerError } from '../errors'
+import { NodeTransform } from '../transform'
 
 // Verify that the template style is in compliance with specifications
 export const transformStyle: NodeTransform = (node, context) => {

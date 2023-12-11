@@ -78,14 +78,17 @@ export function compile(
 ): CodegenResult {
   options.rootDir = options.rootDir || ''
   options.targetLanguage = options.targetLanguage || 'kotlin'
-  const ast = baseParse(template, {
-    comments: false,
-    isNativeTag(tag) {
+  const isNativeTag =
+    options?.isNativeTag ||
+    function (tag: string) {
       return (
         isAppUVueNativeTag(tag) ||
         !!options.parseUTSComponent?.(tag, options.targetLanguage!)
       )
-    },
+    }
+  const ast = baseParse(template, {
+    comments: false,
+    isNativeTag,
   })
   const [nodeTransforms, directiveTransforms] = getBaseTransformPreset(
     options.prefixIdentifiers
