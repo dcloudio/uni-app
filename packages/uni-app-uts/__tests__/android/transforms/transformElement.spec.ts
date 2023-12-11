@@ -793,11 +793,8 @@ describe('compiler: element transform', () => {
                 elements: [
                   {
                     type: NodeTypes.SIMPLE_EXPRESSION,
-                    content: `color: green`,
-                    isStatic: true,
-                    // TODO 待处理
-                    // content: `{"color":"green"}`,
-                    // isStatic: false,
+                    content: `{color: 'green'}`,
+                    isStatic: false,
                   },
                   {
                     type: NodeTypes.SIMPLE_EXPRESSION,

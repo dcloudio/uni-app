@@ -5,7 +5,9 @@ describe('compiler:codegen', () => {
     assert(`<view/>`, `createElementVNode("view")`)
     assert(
       `<view style="width:100px;height:100px;"/>`,
-      `createElementVNode("view", utsMapOf({ style: "width:100px;height:100px;" }))`
+      `createElementVNode("view", utsMapOf({
+  style: normalizeStyle(utsMapOf({width: '100px',height: '100px'}))
+}), null, 4 /* STYLE */)`
     )
     assert(
       `<text>{{msg}}</text>`,
