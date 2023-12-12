@@ -21,6 +21,12 @@ const defaultApp = {
   globalData: {},
 }
 
+function initAppVm(appVm: ComponentPublicInstance) {
+  appVm.$vm = appVm
+  appVm.$mpType = 'app'
+  // TODO uni-app x useI18n
+}
+
 export function getApp({ allowDefault = false } = {}) {
   if (appCtx) {
     // 真实的 App 已初始化
@@ -54,7 +60,7 @@ export function registerApp(appVm: ComponentPublicInstance) {
   initVueApp(appVm)
 
   appCtx = appVm
-  // initAppVm(appCtx)
+  initAppVm(appCtx)
 
   extend(appCtx, defaultApp) // 拷贝默认实现
 

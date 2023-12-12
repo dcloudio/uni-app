@@ -1105,6 +1105,11 @@ let appCtx;
 const defaultApp = {
     globalData: {},
 };
+function initAppVm(appVm) {
+    appVm.$vm = appVm;
+    appVm.$mpType = 'app';
+    // TODO uni-app x useI18n
+}
 function getApp({ allowDefault = false } = {}) {
     if (appCtx) {
         // 真实的 App 已初始化
@@ -1132,7 +1137,7 @@ function registerApp(appVm) {
     // }
     initVueApp(appVm);
     appCtx = appVm;
-    // initAppVm(appCtx)
+    initAppVm(appCtx);
     extend(appCtx, defaultApp); // 拷贝默认实现
     defineGlobalData(appCtx, defaultApp.globalData);
     // initService()
