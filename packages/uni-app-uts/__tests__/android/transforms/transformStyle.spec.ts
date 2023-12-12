@@ -3,9 +3,9 @@ import { assert } from '../testUtils'
 describe('compiler:static style', () => {
   test('template static style', () => {
     assert(
-      `<view style="width:100px;height:60px;opacity:.5;"></view>`,
+      `<view style="width:100px;height:60px;background-color:red;opacity:.5;"></view>`,
       `createElementVNode(\"view\", utsMapOf({
-  style: normalizeStyle(utsMapOf({"width":"100px","height":"60px","opacity":".5"}))
+  style: normalizeStyle(utsMapOf({"width":"100px","height":"60px","background-color":"red","opacity":".5"}))
 }), null, 4 /* STYLE */)`
     )
   })
