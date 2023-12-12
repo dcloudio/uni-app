@@ -121,7 +121,10 @@ function buildAppCss() {
   const appCssJsCode = fs.readFileSync(appCssJsFilename, 'utf8')
   const appCssJsFn = new Function(
     'module',
-    appCssJsCode.replace(`export default`, `module.exports=`)
+    // vite build.target为esnext时, 生成的代码没有export default
+    appCssJsCode.includes('export default')
+      ? appCssJsCode.replace(`export default`, `module.exports=`)
+      : appCssJsCode.replace(`exports`, `module.exports`)
   )
   const module = { exports: { styles: [] } }
   appCssJsFn(module)
