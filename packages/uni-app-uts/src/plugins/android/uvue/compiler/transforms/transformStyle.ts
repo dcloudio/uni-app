@@ -36,11 +36,7 @@ export const transformStyle: NodeTransform = (node, context) => {
 
 function parseStyleString2ObjectString(styleString: string) {
   const styleObject = parseStringStyle(styleString)
-  let result = '{'
-  Object.entries(styleObject).forEach(([key, value]) => {
-    result += `${key}: '${value}',`
-  })
-  return result.slice(0, -1) + '}'
+  return JSON.stringify(styleObject)
 }
 
 function createVBindStyleExp(

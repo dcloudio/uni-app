@@ -5,7 +5,7 @@ describe('compiler:static style', () => {
     assert(
       `<view style="width:100px;height:60px;opacity:.5;"></view>`,
       `createElementVNode(\"view\", utsMapOf({
-  style: normalizeStyle(utsMapOf({width: '100px',height: '60px',opacity: '.5'}))
+  style: normalizeStyle(utsMapOf({"width":"100px","height":"60px","opacity":".5"}))
 }), null, 4 /* STYLE */)`
     )
   })
@@ -21,7 +21,7 @@ describe('compiler:static style', () => {
     assert(
       `<view style="width:100px;opacity:.5;" :style="{height: '60px'}"></view>`,
       `createElementVNode(\"view\", utsMapOf({
-  style: normalizeStyle([utsMapOf({width: '100px',opacity: '.5'}), utsMapOf({height: '60px'})])
+  style: normalizeStyle([utsMapOf({"width":"100px","opacity":".5"}), utsMapOf({height: '60px'})])
 }), null, 4 /* STYLE */)`
     )
   })

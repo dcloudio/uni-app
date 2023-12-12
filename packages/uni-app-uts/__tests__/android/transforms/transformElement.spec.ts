@@ -793,7 +793,7 @@ describe('compiler: element transform', () => {
                 elements: [
                   {
                     type: NodeTypes.SIMPLE_EXPRESSION,
-                    content: `{color: 'green'}`,
+                    content: `{"color":"green"}`,
                     isStatic: false,
                   },
                   {
