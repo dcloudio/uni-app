@@ -133,10 +133,10 @@ export function locToStartAndEnd(
 export function generateCodeFrame(
   source: string,
   start: number | { line: number; column: number } = 0,
-  end = source.length
+  end?: number
 ): string {
   start = posToNumber(source, start)
-
+  end = end || start
   // Split the content into individual lines but capture the newline sequence
   // that separated each line. This is important because the actual sequence is
   // needed to properly take into account the full line length for offset
