@@ -10,10 +10,8 @@ import {
   resolveMainPathOnce,
   resolveUTSCompiler,
   utsPlugins,
-  injectAssetPlugin,
   AutoImportOptions,
 } from '@dcloudio/uni-cli-shared'
-import type { Plugin } from 'vite'
 import {
   DEFAULT_APPID,
   parseImports,
@@ -28,36 +26,10 @@ import {
   createTryResolve,
 } from './utils'
 import { getOutputManifestJson } from './manifestJson'
-import { createUniOptions } from '../utils'
+import { configResolved, createUniOptions } from '../utils'
 
 const uniCloudSpaceList = getUniCloudSpaceList()
 
-const REMOVED_PLUGINS = [
-  'vite:build-metadata',
-  'vite:modulepreload-polyfill',
-  'vite:css',
-  'vite:esbuild',
-  'vite:wasm-helper',
-  'vite:worker',
-  // 'vite:asset', // replace
-  'vite:wasm-fallback',
-  'vite:define',
-  'vite:css-post',
-  'vite:build-html',
-  'vite:html-inline-proxy',
-  'vite:worker-import-meta-url',
-  'vite:asset-import-meta-url',
-  'vite:force-systemjs-wrap-complete',
-  'vite:watch-package-data',
-  'commonjs',
-  'vite:data-uri',
-  'vite:dynamic-import-vars',
-  'vite:import-glob',
-  'vite:build-import-analysis',
-  'vite:esbuild-transpile',
-  'vite:terser',
-  'vite:reporter',
-]
 let isFirst = true
 export function uniAppPlugin(options: {
   autoImportOptions?: AutoImportOptions
@@ -134,17 +106,7 @@ export function uniAppPlugin(options: {
       }
     },
     configResolved(config) {
-      const plugins = config.plugins as Plugin[]
-      const len = plugins.length
-      for (let i = len - 1; i >= 0; i--) {
-        const plugin = plugins[i]
-        if (REMOVED_PLUGINS.includes(plugin.name)) {
-          plugins.splice(i, 1)
-        }
-      }
-      // 强制不inline
-      config.build.assetsInlineLimit = 0
-      injectAssetPlugin(config, { isAppX: true })
+      configResolved(config, true)
     },
     async transform(code, id) {
       if (process.env.UNI_APP_X_TSC === 'true') {

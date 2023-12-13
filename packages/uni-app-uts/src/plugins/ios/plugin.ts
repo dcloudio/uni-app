@@ -3,37 +3,12 @@ import {
   APP_SERVICE_FILENAME,
   UniVitePlugin,
   emptyDir,
+  injectCssPlugin,
+  injectCssPostPlugin,
   resolveMainPathOnce,
 } from '@dcloudio/uni-cli-shared'
-import { createUniOptions } from '../utils'
-import type { Plugin } from 'vite'
-
-const REMOVED_PLUGINS = [
-  'vite:build-metadata',
-  'vite:modulepreload-polyfill',
-  'vite:css',
-  'vite:esbuild',
-  'vite:wasm-helper',
-  'vite:worker',
-  // 'vite:asset', // replace
-  'vite:wasm-fallback',
-  'vite:define',
-  'vite:css-post',
-  'vite:build-html',
-  'vite:html-inline-proxy',
-  'vite:worker-import-meta-url',
-  'vite:asset-import-meta-url',
-  'vite:force-systemjs-wrap-complete',
-  'vite:watch-package-data',
-  'commonjs',
-  'vite:data-uri',
-  'vite:dynamic-import-vars',
-  'vite:import-glob',
-  'vite:build-import-analysis',
-  'vite:esbuild-transpile',
-  'vite:terser',
-  'vite:reporter',
-]
+import { configResolved, createUniOptions } from '../utils'
+import { uniAppCssPlugin } from './css'
 
 export function uniAppIOSPlugin(): UniVitePlugin {
   const inputDir = process.env.UNI_INPUT_DIR
@@ -74,14 +49,9 @@ export function uniAppIOSPlugin(): UniVitePlugin {
       }
     },
     configResolved(config) {
-      const plugins = config.plugins as Plugin[]
-      const len = plugins.length
-      for (let i = len - 1; i >= 0; i--) {
-        const plugin = plugins[i]
-        if (REMOVED_PLUGINS.includes(plugin.name)) {
-          plugins.splice(i, 1)
-        }
-      }
+      configResolved(config)
+      injectCssPlugin(config)
+      injectCssPostPlugin(config, uniAppCssPlugin())
     },
   }
 }

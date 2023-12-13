@@ -84,7 +84,7 @@ export function uniAppCssPlugin(): Plugin {
       // 增加 css plugins
       insertBeforePlugin(
         cssPlugin(config, {
-          isAppX: true,
+          isAndroidX: true,
           getDescriptor: (filename) => {
             return getDescriptor(filename, descriptorOptions, false)
           },

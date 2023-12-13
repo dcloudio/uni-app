@@ -4,8 +4,10 @@ import {
   UniViteCopyPluginOptions,
   UniVitePlugin,
   initI18nOptions,
+  injectAssetPlugin,
 } from '@dcloudio/uni-cli-shared'
 import { compileI18nJsonStr } from '@dcloudio/uni-i18n'
+import { Plugin, ResolvedConfig } from 'vite'
 
 export function createUniOptions(): UniVitePlugin['uni'] {
   return {
@@ -44,4 +46,53 @@ export function isManifest(id: string) {
 
 export function isPages(id: string) {
   return id.endsWith(PAGES_JSON_UTS)
+}
+
+// TODO vite 升级需要考虑调整以下列表
+const REMOVED_PLUGINS = [
+  'vite:build-metadata',
+  'vite:modulepreload-polyfill',
+  // 'vite:css', // iOS replace
+  'vite:esbuild',
+  'vite:wasm-helper',
+  'vite:worker',
+  'vite:json',
+  // 'vite:asset', // replace
+  'vite:wasm-fallback',
+  'vite:define',
+  // 'vite:css-post', // iOS replace
+  'vite:build-html',
+  'vite:html-inline-proxy',
+  'vite:worker-import-meta-url',
+  'vite:asset-import-meta-url',
+  'vite:force-systemjs-wrap-complete',
+  'vite:watch-package-data',
+  'commonjs',
+  'vite:data-uri',
+  'vite:dynamic-import-vars',
+  'vite:import-glob',
+  'vite:build-import-analysis',
+  'vite:esbuild-transpile',
+  'vite:terser',
+  'vite:reporter',
+]
+
+export function configResolved(config: ResolvedConfig, isAndroidX = false) {
+  const plugins = config.plugins as Plugin[]
+  const len = plugins.length
+  const removedPlugins = REMOVED_PLUGINS.slice(0)
+  if (isAndroidX) {
+    removedPlugins.push('vite:css')
+    removedPlugins.push('vite:css-post')
+  }
+  for (let i = len - 1; i >= 0; i--) {
+    const plugin = plugins[i]
+    if (removedPlugins.includes(plugin.name)) {
+      plugins.splice(i, 1)
+    }
+  }
+  // console.log(plugins.map((p) => p.name))
+  // 强制不inline
+  config.build.assetsInlineLimit = 0
+  injectAssetPlugin(config, { isAndroidX })
 }

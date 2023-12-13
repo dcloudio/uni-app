@@ -38,7 +38,7 @@ const emittedHashMap = new WeakMap<ResolvedConfig, Set<string>>()
  */
 export function assetPlugin(
   config: ResolvedConfig,
-  options?: { isAppX: boolean }
+  options?: { isAndroidX: boolean }
 ): Plugin {
   // assetHashToFilenameMap initialization in buildStart causes getAssetFilename to return undefined
   assetHashToFilenameMap.set(config, new Map())
@@ -86,7 +86,7 @@ export function assetPlugin(
       const url = await fileToUrl(
         id,
         config,
-        options?.isAppX
+        options?.isAndroidX
           ? ({
               emitFile(emittedFile: EmittedAsset) {
                 // 直接写入目标目录
@@ -101,7 +101,7 @@ export function assetPlugin(
             } as PluginContext)
           : this
       )
-      if (options?.isAppX) {
+      if (options?.isAndroidX) {
         this.emitFile({
           type: 'asset',
           fileName: normalizeNodeModules(

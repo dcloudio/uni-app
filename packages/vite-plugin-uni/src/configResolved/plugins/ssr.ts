@@ -25,7 +25,7 @@ export function uniSSRPlugin(
 ): Plugin {
   const filter = createFilter(options.include, options.exclude)
   return {
-    name: 'uni:ssr',
+    name: 'uni:ssr:ref',
     transform(code, id) {
       if (!filter(id)) return null
       if (!KEYED_FUNC_RE.test(code)) {
