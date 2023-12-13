@@ -103,8 +103,11 @@ export function uniAppPagesPlugin(): Plugin {
           uniIdRouter = stringifyMap(pagesJson.uniIdRouter)
         }
         launchPage = stringifyLaunchPage(pagesJson.pages[0])
-        return `${imports.map((p) => `import './${p}.uvue'`).join('\n')}
-export default 'pages.json'`
+        return {
+          code: `${imports.map((p) => `import './${p}.uvue'`).join('\n')}
+          export default 'pages.json'`,
+          map: null,
+        }
       }
     },
     generateBundle(_, bundle) {
