@@ -51,7 +51,7 @@ describe('compiler: transform v-model', () => {
   modelValue: _ctx.model,
   onInput: ($event: InputEvent): any => {_ctx.model = $event.detail.value;
 return $event.detail.value;}
-}), null, 40 /* PROPS, HYDRATE_EVENTS */, ["modelValue", "onInput"])`
+}), null, 40 /* PROPS, NEED_HYDRATION */, ["modelValue", "onInput"])`
     )
   })
 
@@ -68,7 +68,7 @@ _ctx.model.
 foo
  = $event.detail.value;
 return $event.detail.value;}
-}), null, 40 /* PROPS, HYDRATE_EVENTS */, ["modelValue", "onInput"])`
+}), null, 40 /* PROPS, NEED_HYDRATION */, ["modelValue", "onInput"])`
     )
   })
 
@@ -79,7 +79,7 @@ return $event.detail.value;}
   modelValue: _ctx.model[_ctx.index],
   onInput: ($event: InputEvent): any => {_ctx.model[_ctx.index] = $event.detail.value;
 return $event.detail.value;}
-}), null, 40 /* PROPS, HYDRATE_EVENTS */, [\"modelValue\", \"onInput\"])`
+}), null, 40 /* PROPS, NEED_HYDRATION */, [\"modelValue\", \"onInput\"])`
     )
   })
 
@@ -109,7 +109,7 @@ return $event.detail.value;}
   modelValue: _ctx.model,
   onBlur: ($event: InputBlurEvent): any => {_ctx.model = $event.detail.value;
 return $event.detail.value;}
-}), null, 40 /* PROPS, HYDRATE_EVENTS */, [\"modelValue\", \"onBlur\"])`
+}), null, 40 /* PROPS, NEED_HYDRATION */, [\"modelValue\", \"onBlur\"])`
     )
   })
   test('with modifier number', () => {
@@ -119,7 +119,7 @@ return $event.detail.value;}
   modelValue: _ctx.model,
   onInput: ($event: InputEvent): any => {_ctx.model = _looseToNumber($event.detail.value);
 return _looseToNumber($event.detail.value);}
-}), null, 40 /* PROPS, HYDRATE_EVENTS */, [\"modelValue\", \"onInput\"])`
+}), null, 40 /* PROPS, NEED_HYDRATION */, [\"modelValue\", \"onInput\"])`
     )
   })
   test('with modifier trim', () => {
@@ -129,7 +129,7 @@ return _looseToNumber($event.detail.value);}
   modelValue: _ctx.model,
   onInput: ($event: InputEvent): any => {_ctx.model = $event.detail.value.trim();
 return $event.detail.value.trim();}
-}), null, 40 /* PROPS, HYDRATE_EVENTS */, [\"modelValue\", \"onInput\"])`
+}), null, 40 /* PROPS, NEED_HYDRATION */, [\"modelValue\", \"onInput\"])`
     )
   })
   test('expression width type', () => {

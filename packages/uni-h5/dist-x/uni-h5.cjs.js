@@ -283,8 +283,11 @@ const ViewJSBridge = /* @__PURE__ */ shared.extend(
 );
 const onEventPrevent = /* @__PURE__ */ vue.withModifiers(() => {
 }, ["prevent"]);
-const onEventStop = /* @__PURE__ */ vue.withModifiers(() => {
-}, ["stop"]);
+const onEventStop = /* @__PURE__ */ vue.withModifiers(
+  (_event) => {
+  },
+  ["stop"]
+);
 function updateCssVar(cssVars) {
   const style = document.documentElement.style;
   Object.keys(cssVars).forEach((name) => {

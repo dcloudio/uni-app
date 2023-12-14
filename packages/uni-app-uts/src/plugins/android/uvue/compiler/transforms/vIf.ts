@@ -27,7 +27,7 @@ import {
   getMemoedVNodeCall,
   injectProp,
   locStub,
-  makeBlock,
+  convertToBlock,
 } from '@vue/compiler-core'
 
 import {
@@ -272,7 +272,7 @@ function createChildrenCodegenNode(
     const vnodeCall = getMemoedVNodeCall(ret)
     // Change createVNode to createBlock.
     if (vnodeCall.type === NodeTypes.VNODE_CALL) {
-      makeBlock(vnodeCall, context as any)
+      convertToBlock(vnodeCall, context as any)
     }
     // inject branch key
     injectProp(vnodeCall, keyProperty, context as any)

@@ -2,7 +2,10 @@ import { withModifiers } from 'vue'
 import safeAreaInsets from 'safe-area-insets'
 
 export const onEventPrevent = /*#__PURE__*/ withModifiers(() => {}, ['prevent'])
-export const onEventStop = /*#__PURE__*/ withModifiers(() => {}, ['stop'])
+export const onEventStop = /*#__PURE__*/ withModifiers(
+  (_event: Event) => {},
+  ['stop']
+)
 
 function getWindowOffsetCssVar(style: CSSStyleDeclaration, name: string) {
   return parseInt((style.getPropertyValue(name).match(/\d+/) || ['0'])[0])

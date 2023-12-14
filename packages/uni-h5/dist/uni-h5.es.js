@@ -930,8 +930,11 @@ var out = safeAreaInsets;
 const safeAreaInsets$1 = /* @__PURE__ */ getDefaultExportFromCjs(out);
 const onEventPrevent = /* @__PURE__ */ withModifiers(() => {
 }, ["prevent"]);
-const onEventStop = /* @__PURE__ */ withModifiers(() => {
-}, ["stop"]);
+const onEventStop = /* @__PURE__ */ withModifiers(
+  (_event) => {
+  },
+  ["stop"]
+);
 function getWindowOffsetCssVar(style, name) {
   return parseInt((style.getPropertyValue(name).match(/\d+/) || ["0"])[0]);
 }

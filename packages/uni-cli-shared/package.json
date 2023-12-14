@@ -23,7 +23,7 @@
   "dependencies": {
     "@ampproject/remapping": "^2.1.2",
     "@babel/core": "^7.21.3",
-    "@babel/parser": "^7.16.4",
+    "@babel/parser": "^7.23.5",
     "@babel/types": "^7.20.7",
     "@dcloudio/uni-i18n": "3.0.0-alpha-3090920231203001",
     "@dcloudio/uni-shared": "3.0.0-alpha-3090920231203001",
@@ -31,11 +31,11 @@
     "@intlify/shared": "9.1.9",
     "@intlify/vue-devtools": "9.1.9",
     "@rollup/pluginutils": "^4.2.0",
-    "@vue/compiler-core": "3.2.47",
-    "@vue/compiler-dom": "3.2.47",
-    "@vue/compiler-sfc": "3.2.47",
-    "@vue/server-renderer": "3.2.47",
-    "@vue/shared": "3.2.47",
+    "@vue/compiler-core": "3.3.11",
+    "@vue/compiler-dom": "3.3.11",
+    "@vue/compiler-sfc": "3.3.11",
+    "@vue/server-renderer": "3.3.11",
+    "@vue/shared": "3.3.11",
     "autoprefixer": "^10.4.14",
     "base64url": "^3.0.1",
     "chokidar": "^3.5.3",
@@ -47,7 +47,7 @@
     "fast-glob": "^3.2.11",
     "fs-extra": "^10.0.0",
     "hash-sum": "^2.0.0",
-    "jsonc-parser": "^3.0.0",
+    "jsonc-parser": "^3.2.0",
     "magic-string": "^0.30.0",
     "merge": "^2.1.1",
     "mime": "^3.0.0",
@@ -78,6 +78,6 @@
     "@types/stylus": "^0.48.36",
     "postcss": "^8.4.21",
     "unplugin-auto-import": "^0.16.7",
-    "vue": "3.2.47"
+    "vue": "3.3.11"
   }
 }

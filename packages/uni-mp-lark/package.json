@@ -31,7 +31,7 @@
     "@dcloudio/uni-mp-vite": "3.0.0-alpha-3090920231203001",
     "@dcloudio/uni-mp-vue": "3.0.0-alpha-3090920231203001",
     "@dcloudio/uni-shared": "3.0.0-alpha-3090920231203001",
-    "@vue/compiler-core": "3.2.47",
-    "@vue/shared": "3.2.47"
+    "@vue/compiler-core": "3.3.11",
+    "@vue/shared": "3.3.11"
   }
 }

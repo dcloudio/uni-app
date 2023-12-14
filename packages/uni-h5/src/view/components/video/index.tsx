@@ -445,10 +445,10 @@ function useControls(
     controlsShow,
     controlsVisible,
   })
-  function clickProgress(event: MouseEvent) {
+  function clickProgress(event: Event) {
     const $progress = progressRef.value as HTMLElement
     let element = event.target as HTMLElement
-    let x = event.offsetX
+    let x = (event as MouseEvent).offsetX
     while (element && element !== $progress) {
       x += element.offsetLeft
       element = element.parentNode as HTMLElement

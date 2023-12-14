@@ -1111,7 +1111,7 @@ describe('compiler: element transform', () => {
         }
       )
       expect(node2.patchFlag).toBe(
-        genFlagText([PatchFlags.PROPS, PatchFlags.HYDRATE_EVENTS])
+        genFlagText([PatchFlags.PROPS, PatchFlags.NEED_HYDRATION])
       )
     })
 
@@ -1126,7 +1126,7 @@ describe('compiler: element transform', () => {
         }
       )
       expect(node.patchFlag).toBe(
-        genFlagText([PatchFlags.PROPS, PatchFlags.HYDRATE_EVENTS])
+        genFlagText([PatchFlags.PROPS, PatchFlags.NEED_HYDRATION])
       )
     })
   })

@@ -20,7 +20,7 @@
   "dependencies": {
     "@dcloudio/uts": "3.0.0-alpha-3090920231203001",
     "@rollup/pluginutils": "^5.0.5",
-    "@vue/shared": "3.2.47",
+    "@vue/shared": "3.3.11",
     "android-versions": "^1.8.1",
     "adm-zip": "^0.5.9",
     "colors": "^1.4.0",
@@ -28,7 +28,7 @@
     "find-cache-dir": "^3.3.2",
     "fs-extra": "^10.0.0",
     "graphlib": "^2.1.8",
-    "jsonc-parser": "^3.0.0",
+    "jsonc-parser": "^3.2.0",
     "lodash": "^4.17.21",
     "md5-file": "^5.0.0",
     "object-hash": "^3.0.0",

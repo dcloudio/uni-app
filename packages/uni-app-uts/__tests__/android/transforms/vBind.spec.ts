@@ -76,19 +76,19 @@ describe('compiler: v-bind', () => {
   test('.prop modifier', () => {
     assert(
       `<view v-bind:className.prop="className"/>`,
-      `createElementVNode("view", utsMapOf({ ".className": _ctx.className }), null, 8 /* PROPS */, [".className"])`
+      `createElementVNode("view", utsMapOf({ ".className": _ctx.className }), null, 40 /* PROPS, NEED_HYDRATION */, [".className"])`
     )
   })
   test('.prop modifier w/ dynamic arg', () => {
     assert(
       `<view v-bind:[fooBar].prop="className"/>`,
-      'createElementVNode("view", normalizeProps(utsMapOf({ [`.${_ctx.fooBar !== null ? _ctx.fooBar : ""}`]: _ctx.className })), null, 16 /* FULL_PROPS */)'
+      'createElementVNode("view", normalizeProps(utsMapOf({ [`.${_ctx.fooBar !== null ? _ctx.fooBar : ""}`]: _ctx.className })), null, 48 /* FULL_PROPS, NEED_HYDRATION */)'
     )
   })
   test('.prop modifier (shorthand)', () => {
     assert(
       `<view .className="className"/>`,
-      'createElementVNode("view", utsMapOf({ ".className": _ctx.className }), null, 8 /* PROPS */, [".className"])'
+      'createElementVNode("view", utsMapOf({ ".className": _ctx.className }), null, 40 /* PROPS, NEED_HYDRATION */, [".className"])'
     )
   })
   test('.attr modifier', () => {

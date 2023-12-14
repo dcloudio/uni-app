@@ -6,10 +6,10 @@ import {
   PlainElementNode,
   SourceLocation,
   WITH_MEMO,
+  convertToBlock,
   createCallExpression,
   findDir,
   locStub,
-  makeBlock,
 } from '@vue/compiler-core'
 import { NodeTransform } from '../transform'
 
@@ -29,7 +29,7 @@ export const transformMemo: NodeTransform = (node, context) => {
       if (codegenNode && codegenNode.type === NodeTypes.VNODE_CALL) {
         // non-component sub tree should be turned into a block
         if (node.tagType !== ElementTypes.COMPONENT) {
-          makeBlock(codegenNode, context as any)
+          convertToBlock(codegenNode, context as any)
         }
         const fn = createFunctionExpression(undefined, codegenNode)
         ;(fn as any).returnType = 'VNode'

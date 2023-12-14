@@ -23,7 +23,7 @@
     "@dcloudio/uni-cli-shared": "3.0.0-alpha-3090920231203001",
     "@dcloudio/uni-i18n": "3.0.0-alpha-3090920231203001",
     "@dcloudio/uni-shared": "3.0.0-alpha-3090920231203001",
-    "@vue/shared": "3.2.47",
+    "@vue/shared": "3.3.11",
     "fast-glob": "^3.2.11"
   }
 }

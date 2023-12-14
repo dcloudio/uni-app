@@ -19,7 +19,7 @@ import {
   helperNameMap,
   isSlotOutlet,
   isVSlot,
-  makeBlock,
+  convertToBlock,
   createVNodeCall,
 } from '@vue/compiler-core'
 import {
@@ -309,7 +309,7 @@ function createRootCodegen(root: RootNode, context: TransformContext) {
       // SimpleExpressionNode
       const codegenNode = child.codegenNode
       if (codegenNode.type === NodeTypes.VNODE_CALL) {
-        makeBlock(codegenNode, context as any)
+        convertToBlock(codegenNode, context as any)
       }
       root.codegenNode = codegenNode
     } else {
