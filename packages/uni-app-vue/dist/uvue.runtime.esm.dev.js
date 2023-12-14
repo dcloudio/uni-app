@@ -120,7 +120,7 @@ var NO = () => false;
 var onRE = /^on[^a-z]/;
 var isOn = key => onRE.test(key);
 var isModelListener = key => key.startsWith('onUpdate:');
-var extend = Object.assign;
+var extend$1 = Object.assign;
 var remove = (arr, el) => {
   var i = arr.indexOf(el);
   if (i > -1) {
@@ -447,7 +447,7 @@ function effect(fn, options) {
   }
   var _effect = new ReactiveEffect(fn);
   if (options) {
-    extend(_effect, options);
+    extend$1(_effect, options);
     if (options.scope) recordEffectScope(_effect, options.scope);
   }
   if (!options || !options.lazy) {
@@ -604,7 +604,7 @@ function triggerEffects(dep, debuggerEventExtraInfo) {
 function triggerEffect(effect, debuggerEventExtraInfo) {
   if (effect !== activeEffect || effect.allowRecurse) {
     if (effect.onTrigger) {
-      effect.onTrigger(extend({
+      effect.onTrigger(extend$1({
         effect
       }, debuggerEventExtraInfo));
     }
@@ -789,14 +789,14 @@ var readonlyHandlers = {
     return true;
   }
 };
-var shallowReactiveHandlers = /*#__PURE__*/extend({}, mutableHandlers, {
+var shallowReactiveHandlers = /*#__PURE__*/extend$1({}, mutableHandlers, {
   get: shallowGet,
   set: shallowSet
 });
 // Props handlers are special in the sense that it should not unwrap top-level
 // refs (in order to allow refs to be explicitly passed down), but should
 // retain the reactivity of the normal readonly object.
-var shallowReadonlyHandlers = /*#__PURE__*/extend({}, readonlyHandlers, {
+var shallowReadonlyHandlers = /*#__PURE__*/extend$1({}, readonlyHandlers, {
   get: shallowReadonlyGet
 });
 var toShallow = value => value;
@@ -1923,7 +1923,7 @@ function reload(id, newComp) {
   });
 }
 function updateComponentDef(oldComp, newComp) {
-  extend(oldComp, newComp);
+  extend$1(oldComp, newComp);
   for (var key in oldComp) {
     if (key !== '__file' && !(key in newComp)) {
       delete oldComp[key];
@@ -2125,7 +2125,7 @@ function normalizeEmitsOptions(comp, appContext) {
       var normalizedFromExtend = normalizeEmitsOptions(raw, appContext, true);
       if (normalizedFromExtend) {
         hasExtends = true;
-        extend(normalized, normalizedFromExtend);
+        extend$1(normalized, normalizedFromExtend);
       }
     };
     if (!asMixin && appContext.mixins.length) {
@@ -2147,7 +2147,7 @@ function normalizeEmitsOptions(comp, appContext) {
   if (isArray(raw)) {
     raw.forEach(key => normalized[key] = null);
   } else {
-    extend(normalized, raw);
+    extend$1(normalized, raw);
   }
   if (isObject(comp)) {
     cache.set(comp, normalized);
@@ -4416,7 +4416,7 @@ var publicPropertiesMap =
 // Move PURE marker to new line to workaround compiler discarding it
 // due to type annotation
 /*#__PURE__*/
-extend(Object.create(null), {
+extend$1(Object.create(null), {
   $: i => i,
   $el: i => i.vnode.el,
   $data: i => i.data,
@@ -4595,7 +4595,7 @@ var PublicInstanceProxyHandlers = {
     return Reflect.ownKeys(target);
   };
 }
-var RuntimeCompiledPublicInstanceProxyHandlers = /*#__PURE__*/extend({}, PublicInstanceProxyHandlers, {
+var RuntimeCompiledPublicInstanceProxyHandlers = /*#__PURE__*/extend$1({}, PublicInstanceProxyHandlers, {
   get(target, key) {
     // fast path for unscopables when using `with` block
     if (key === Symbol.unscopables) {
@@ -5071,7 +5071,7 @@ function mergeDataFn(to, from) {
     return from;
   }
   return function mergedDataFn() {
-    return extend(isFunction(to) ? to.call(this, this) : to, isFunction(from) ? from.call(this, this) : from);
+    return extend$1(isFunction(to) ? to.call(this, this) : to, isFunction(from) ? from.call(this, this) : from);
   };
 }
 function mergeInject(to, from) {
@@ -5091,12 +5091,12 @@ function mergeAsArray(to, from) {
   return to ? [...new Set([].concat(to, from))] : from;
 }
 function mergeObjectOptions(to, from) {
-  return to ? extend(extend(Object.create(null), to), from) : from;
+  return to ? extend$1(extend$1(Object.create(null), to), from) : from;
 }
 function mergeWatchOptions(to, from) {
   if (!to) return from;
   if (!from) return to;
-  var merged = extend(Object.create(null), to);
+  var merged = extend$1(Object.create(null), to);
   for (var key in from) {
     merged[key] = mergeAsArray(to[key], from[key]);
   }
@@ -5321,7 +5321,7 @@ function normalizePropsOptions(comp, appContext) {
     var extendProps = raw => {
       hasExtends = true;
       var [props, keys] = normalizePropsOptions(raw, appContext, true);
-      extend(normalized, props);
+      extend$1(normalized, props);
       if (keys) needCastKeys.push(...keys);
     };
     if (!asMixin && appContext.mixins.length) {
@@ -5610,7 +5610,7 @@ var updateSlots = (instance, children, optimized) => {
       if (isHmrUpdating) {
         // Parent was HMR updated so slot content may have changed.
         // force update slots and mark instance for hmr as well
-        extend(slots, children);
+        extend$1(slots, children);
       } else if (optimized && type === 1 /* SlotFlags.STABLE */) {
         // compiled AND stable.
         // no need to update, and skip stale slots removal.
@@ -5618,7 +5618,7 @@ var updateSlots = (instance, children, optimized) => {
       } else {
         // compiled but dynamic (v-if/v-for on slots) - update slots, but skip
         // normalization.
-        extend(slots, children);
+        extend$1(slots, children);
         // #2893
         // when rendering the optimized slots by manually written render function,
         // we need to delete the `slots._` flag if necessary to make subsequent updates reliable,
@@ -8166,7 +8166,7 @@ function _createVNode(type) {
       // reactive state objects need to be cloned since they are likely to be
       // mutated
       if (isProxy(style) && !isArray(style)) {
-        style = extend({}, style);
+        style = extend$1({}, style);
       }
       props.style = normalizeStyle(style);
     }
@@ -8181,7 +8181,7 @@ function _createVNode(type) {
 }
 function guardReactiveProps(props) {
   if (!props) return null;
-  return isProxy(props) || InternalObjectKey in props ? extend({}, props) : props;
+  return isProxy(props) || InternalObjectKey in props ? extend$1({}, props) : props;
 }
 function cloneVNode(vnode, extraProps) {
   var mergeRef = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
@@ -8631,7 +8631,7 @@ function finishComponentSetup(instance, isSSR, skipOptions) {
           delimiters,
           compilerOptions: componentCompilerOptions
         } = Component;
-        var finalCompilerOptions = extend(extend({
+        var finalCompilerOptions = extend$1(extend$1({
           isCustomElement,
           delimiters
         }, compilerOptions), componentCompilerOptions);
@@ -9045,7 +9045,7 @@ function initCustomFormatter() {
     return blocks;
   }
   function createInstanceBlock(type, target) {
-    target = extend({}, target);
+    target = extend$1({}, target);
     if (!Object.keys(target).length) {
       return ['span', {}];
     }
@@ -9157,53 +9157,11 @@ var resolveFilter = null;
  * @internal only exposed in compat builds.
  */
 var compatUtils = null;
-var rootPage = null;
-var rootDocument = null;
-function getDocument() {
-  if (!rootPage) {
-    rootPage = __pageManager.createPage('', '', new Map());
-  }
-  if (!rootDocument) {
-    rootDocument = rootPage.document;
-  }
-  return rootDocument;
-}
-var nodeOps = {
-  insert: (child, parent, anchor) => {
-    if (!anchor) {
-      return parent.appendChild(child);
-    }
-    return parent.insertBefore(child, anchor);
-  },
-  remove: child => {
-    var parent = child.parentNode;
-    if (parent) {
-      parent.removeChild(child);
-    }
-  },
-  createElement: (tag, container) => {
-    return getDocument().createElement(tag);
-  },
-  createText: (text, container) => {
-    var textNode = getDocument().createElement(text);
-    textNode.setAttribute('value', text);
-    return textNode;
-  },
-  createComment: (text, container) => {
-    return getDocument().createComment(text);
-  },
-  setText: (node, text) => {
-    node.setAttribute('value', text);
-  },
-  setElementText: (el, text) => {
-    el.setAttribute('value', text);
-  },
-  parentNode: node => node.parentNode,
-  nextSibling: node => node.nextSibling
-};
 
 // 样式相关
 var NODE_EXT_STYLES = 'styles'; // node 中存储的可用样式表
+var NODE_EXT_CLASS_STYLE = 'classStyle'; // node 中存储的 classStyle
+var NODE_EXT_STYLE = 'style'; // node 中存储的 style
 function setNodeExtraData(el, name, value) {
   el.ext.set(name, value);
 }
@@ -9215,6 +9173,18 @@ function getExtraStyles(el) {
 }
 function setExtraStyles(el, styles) {
   setNodeExtraData(el, NODE_EXT_STYLES, styles);
+}
+function getExtraClassStyle(el) {
+  return getNodeExtraData(el, NODE_EXT_CLASS_STYLE);
+}
+function setExtraClassStyle(el, classStyle) {
+  setNodeExtraData(el, NODE_EXT_CLASS_STYLE, classStyle);
+}
+function getExtraStyle(el) {
+  return getNodeExtraData(el, NODE_EXT_STYLE);
+}
+function isCommentNode(node) {
+  return node.nodeName == '#comment';
 }
 function each(obj) {
   return Object.keys(obj);
@@ -9309,7 +9279,7 @@ function parseClassName(_ref22, parentStyles, el) {
       var weight = classWeight + (isImportant ? WEIGHT_IMPORTANT : 0);
       if (weight >= oldWeight) {
         weights[name] = weight;
-        styles[name] = value;
+        styles.set(name, value);
       }
     });
   });
@@ -9317,7 +9287,7 @@ function parseClassName(_ref22, parentStyles, el) {
 function parseClassListWithStyleSheet(classList, stylesheet) {
   var el = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
   var context = {
-    styles: {},
+    styles: new Map(),
     weights: {}
   };
   classList.forEach(className => {
@@ -9326,7 +9296,7 @@ function parseClassListWithStyleSheet(classList, stylesheet) {
       parseClassName(context, parentStyles, el);
     }
   });
-  return context.styles;
+  return context;
 }
 function parseClassStyles(el) {
   var styles = getExtraStyles(el);
@@ -9364,6 +9334,129 @@ function parseStyleSheet(_ref23) {
     }
   }
   return component.__styles;
+}
+function extend(a, b) {
+  b.forEach((value, key) => {
+    a.set(key, value);
+  });
+  return a;
+}
+function toStyle(el, classStyle, classStyleWeights) {
+  var res = extend(new Map(), classStyle);
+  var style = getExtraStyle(el);
+  if (style != null) {
+    style.forEach((value, key) => {
+      var weight = classStyleWeights[key];
+      // TODO: 目前只计算了 class 中 important 的权重，会存在 style class 同时设置 important 时，class 优先级更高的问题
+      if (weight == null || weight < 1000) {
+        res.set(key, value);
+      }
+    });
+  }
+  return res;
+}
+function patchClass(el, pre, next) {
+  var instance = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+  if (!instance) {
+    return;
+  }
+  var classList = next ? next.split(' ') : [];
+  el.classList = classList;
+  setExtraStyles(el, parseStyleSheet(instance));
+  // TODO 如果当前元素是组件根节点(非页面)
+  updateClassStyles(el);
+}
+function updateClassStyles(el) {
+  if (el.parentNode == null || isCommentNode(el)) {
+    return;
+  }
+  if (getExtraClassStyle(el) == null) {
+    setExtraClassStyle(el, new Map());
+  }
+  var oldClassStyle = getExtraClassStyle(el);
+  // reset previous class style to empty string
+  oldClassStyle.forEach((_value, key) => {
+    oldClassStyle.set(key, '');
+  });
+  var parseClassStylesResult = parseClassStyles(el);
+  parseClassStylesResult.styles.forEach((value, key) => {
+    oldClassStyle.set(key, value);
+  });
+  var styles = toStyle(el, oldClassStyle, parseClassStylesResult.weights);
+  if (styles.size == 0) {
+    return;
+  }
+  // TODO validateStyles
+  // validateStyles(el, oldClassStyle)
+  el.updateStyle(styles);
+}
+var rootPage = null;
+var rootDocument = null;
+function getDocument() {
+  if (!rootPage) {
+    rootPage = __pageManager.createPage('', '', new Map());
+  }
+  if (!rootDocument) {
+    rootDocument = rootPage.document;
+  }
+  return rootDocument;
+}
+/**
+ * 判断是否在document中
+ * @param el
+ * @returns
+ */
+function isInDocument(parent) {
+  return !!parent.pageId;
+}
+var nodeOps = {
+  insert: (el, parent, anchor) => {
+    if (!anchor) {
+      parent.appendChild(el);
+    } else {
+      parent.insertBefore(el, anchor);
+    }
+    // 判断是不是首次被完整插入DOM树中
+    // vue 插入节点的顺序是，先子后父，所以等待父真正被完整插入document时，再遍历一遍子节点校正父子选择器样式
+    if (isInDocument(parent)) {
+      updateClassStyles(el);
+      updateChildrenClassStyle(el);
+    }
+  },
+  remove: child => {
+    var parent = child.parentNode;
+    if (parent) {
+      parent.removeChild(child);
+    }
+  },
+  createElement: (tag, container) => {
+    return getDocument().createElement(tag);
+  },
+  createText: (text, container) => {
+    var textNode = getDocument().createElement(text);
+    textNode.setAttribute('value', text);
+    return textNode;
+  },
+  createComment: (text, container) => {
+    return getDocument().createComment(text);
+  },
+  setText: (node, text) => {
+    node.setAttribute('value', text);
+  },
+  setElementText: (el, text) => {
+    el.setAttribute('value', text);
+  },
+  parentNode: node => node.parentNode,
+  nextSibling: node => node.nextSibling
+};
+// patchClass 先子后父，所以插入父的时候 updateChildrenClassStyle
+function updateChildrenClassStyle(el) {
+  if (el !== null) {
+    el.childNodes.forEach(child => {
+      updateClassStyles(child);
+      updateChildrenClassStyle(child);
+    });
+  }
 }
 function toMap(value) {
   if (value instanceof Map) {
@@ -9433,24 +9526,6 @@ function transformAttr(el, key, value, instance) {
     }
   }
   return [key, value];
-}
-
-/**
- * 当前仅 patch 到 el 中，真正更新则是在 el 中
- * @param el
- * @param pre
- * @param next
- * @param instance
- * @returns
- */
-function patchClass(el, pre, next) {
-  var instance = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
-  if (!instance) {
-    return;
-  }
-  var classList = next ? next.split(' ') : [];
-  el.classList = classList;
-  setExtraStyles(el, parseStyleSheet(instance));
 }
 function addEventListener(el, event, handler, options) {
   el.addEventListener(event, handler);
@@ -9685,7 +9760,7 @@ var withKeys = (fn, modifiers) => {
     }
   };
 };
-var rendererOptions = extend({
+var rendererOptions = extend$1({
   patchProp
 }, nodeOps);
 // lazy create the renderer - this makes core renderer logic tree-shakable
