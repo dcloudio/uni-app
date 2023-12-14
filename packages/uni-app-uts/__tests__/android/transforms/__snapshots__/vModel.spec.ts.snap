@@ -5,7 +5,7 @@ exports[`compiler: transform v-model compound expression (with prefixIdentifiers
   modelValue: _ctx.model[_ctx.index],
   onInput: ($event: InputEvent): any => {_ctx.model[_ctx.index] = $event.detail.value;
 return $event.detail.value;}
-}), null, 40 /* PROPS, HYDRATE_EVENTS */, ["modelValue", "onInput"])"
+}), null, 40 /* PROPS, NEED_HYDRATION */, ["modelValue", "onInput"])"
 `;
 
 exports[`compiler: transform v-model compound expression 1`] = `
@@ -13,7 +13,7 @@ exports[`compiler: transform v-model compound expression 1`] = `
   modelValue: model[index],
   onInput: ($event: InputEvent): any => {model[index] = $event.detail.value;
 return $event.detail.value;}
-}), null, 40 /* PROPS, HYDRATE_EVENTS */, ["modelValue", "onInput"])"
+}), null, 40 /* PROPS, NEED_HYDRATION */, ["modelValue", "onInput"])"
 `;
 
 exports[`compiler: transform v-model simple expression (with multilines) 1`] = `
@@ -29,7 +29,7 @@ foo
 foo 
  = $event.detail.value;
 return $event.detail.value;}
-}), null, 40 /* PROPS, HYDRATE_EVENTS */, ["modelValue", "onInput"])"
+}), null, 40 /* PROPS, NEED_HYDRATION */, ["modelValue", "onInput"])"
 `;
 
 exports[`compiler: transform v-model simple expression (with prefixIdentifiers) 1`] = `
@@ -37,7 +37,7 @@ exports[`compiler: transform v-model simple expression (with prefixIdentifiers) 
   modelValue: _ctx.model,
   onInput: ($event: InputEvent): any => {_ctx.model = $event.detail.value;
 return $event.detail.value;}
-}), null, 40 /* PROPS, HYDRATE_EVENTS */, ["modelValue", "onInput"])"
+}), null, 40 /* PROPS, NEED_HYDRATION */, ["modelValue", "onInput"])"
 `;
 
 exports[`compiler: transform v-model simple expression 1`] = `
@@ -45,14 +45,14 @@ exports[`compiler: transform v-model simple expression 1`] = `
   modelValue: model,
   onInput: ($event: InputEvent): any => {model = $event.detail.value;
 return $event.detail.value;}
-}), null, 40 /* PROPS, HYDRATE_EVENTS */, ["modelValue", "onInput"])"
+}), null, 40 /* PROPS, NEED_HYDRATION */, ["modelValue", "onInput"])"
 `;
 
 exports[`compiler: transform v-model with argument 1`] = `
 "createElementVNode("input", utsMapOf({
   "foo-value": model,
   "onUpdate:fooValue": $event => {(model) = $event}
-}), null, 40 /* PROPS, HYDRATE_EVENTS */, ["foo-value", "onUpdate:fooValue"])"
+}), null, 40 /* PROPS, NEED_HYDRATION */, ["foo-value", "onUpdate:fooValue"])"
 `;
 
 exports[`compiler: transform v-model with dynamic argument (with prefixIdentifiers) 1`] = `
