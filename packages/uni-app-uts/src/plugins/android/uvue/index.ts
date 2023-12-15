@@ -58,13 +58,14 @@ import { genTemplate } from './code/template'
 import { genJsStylesCode, genStyle, transformStyle } from './code/style'
 import { genComponentPublicInstanceImported } from './compiler/utils'
 import { ImportItem } from './compiler/transform'
+import { transformMain } from './sfc/main'
 
 export function uniAppUVuePlugin(opts: {
   autoImportOptions?: AutoImportOptions
 }): Plugin {
   const options: ResolvedOptions = {
     root: process.env.UNI_INPUT_DIR,
-    sourceMap: false,
+    sourceMap: process.env.NODE_ENV === 'development',
     // eslint-disable-next-line no-restricted-globals
     compiler: require('@vue/compiler-sfc'),
     targetLanguage: process.env.UNI_UTS_TARGET_LANGUAGE,
@@ -118,6 +119,9 @@ export function uniAppUVuePlugin(opts: {
       }
       if (!query.vue) {
         // main request
+        if (process.env.UNI_APP_X_SETUP === 'true') {
+          return transformMain(code, filename, options, this)
+        }
         const { errors, uts, js, sourceMap } = await transformVue(
           code,
           filename,
@@ -147,7 +151,7 @@ export function uniAppUVuePlugin(opts: {
         if (sourceMap) {
           this.emitFile({
             type: 'asset',
-            fileName: removeExt(fileName) + '.template.map',
+            fileName: removeExt(fileName) + '.map',
             source: JSON.stringify(sourceMap),
           })
         }
@@ -364,7 +368,7 @@ export async function transformVue(
     genScript(descriptor, { filename: className }) +
     templateCode +
     '\n' +
-    genStyle(descriptor, { filename: relativeFileName, className }) +
+    genStyle(descriptor, { className }) +
     '\n'
 
   let jsCodes = [

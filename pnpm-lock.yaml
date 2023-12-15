@@ -390,6 +390,9 @@ importers:
       '@vue/compiler-core':
         specifier: 3.3.11
         version: 3.3.11
+      '@vue/compiler-dom':
+        specifier: 3.3.11
+        version: 3.3.11
       '@vue/compiler-sfc':
         specifier: 3.3.11
         version: 3.3.11
@@ -408,6 +411,9 @@ importers:
       fs-extra:
         specifier: ^10.0.0
         version: 10.0.0
+      magic-string:
+        specifier: ^0.30.0
+        version: 0.30.5
       picocolors:
         specifier: ^1.0.0
         version: 1.0.0
@@ -4781,7 +4787,7 @@ packages:
       '@babel/preset-env': 7.20.2(@babel/core@7.21.3)
       browserslist: 4.21.5
       core-js: 3.30.2
-      magic-string: 0.30.0
+      magic-string: 0.30.5
       regenerator-runtime: 0.13.11
       systemjs: 6.14.1
       terser: 5.4.0

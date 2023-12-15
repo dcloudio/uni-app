@@ -201,7 +201,7 @@ export function uniViteInjectPlugin(
             return
           }
 
-          if (isReference(node, parent)) {
+          if (isReference(node, parent!)) {
             const { name, keypath } = flatten(node)
             const handled = handleReference(node, name, keypath, parent)
             if (handled) {

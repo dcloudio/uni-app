@@ -19,8 +19,7 @@ export interface SFCParseResult {
   errors: Array<CompilerError | SyntaxError>
 }
 
-const cache = new Map<string, SFCDescriptor>()
-const prevCache = new Map<string, SFCDescriptor | undefined>()
+export const cache = new Map<string, SFCDescriptor>()
 
 declare module '@vue/compiler-sfc' {
   interface SFCDescriptor {
@@ -33,31 +32,23 @@ export function createDescriptor(
   source: string,
   { root, sourceMap, compiler }: ResolvedOptions
 ): SFCParseResult {
-  const { descriptor, errors } = compiler.parse(source, {
-    filename,
-    sourceMap,
-  })
-
   // ensure the path is normalized in a way that is consistent inside
   // project (relative to root) and on different systems.
   const normalizedPath = normalizePath(
     path.normalize(path.relative(root, filename))
   )
+  // 传入normalizedPath是为了让sourcemap记录的是相对路径
+  const { descriptor, errors } = compiler.parse(source, {
+    filename: normalizedPath,
+    sourceMap,
+  })
+  // 重置为绝对路径
+  descriptor.filename = filename
+
   descriptor.id = getHash(normalizedPath)
 
   cache.set(filename, descriptor)
   return { descriptor, errors }
-}
-
-export function getPrevDescriptor(filename: string): SFCDescriptor | undefined {
-  return prevCache.get(filename)
-}
-
-export function setPrevDescriptor(
-  filename: string,
-  entry: SFCDescriptor
-): void {
-  prevCache.set(filename, entry)
 }
 
 export function getDescriptor(

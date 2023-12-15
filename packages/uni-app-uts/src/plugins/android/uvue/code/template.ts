@@ -19,3 +19,5 @@ export function genTemplate(
   }
   return compile(template.content, options)
 }
+
+export const genTemplateCode = genTemplate
