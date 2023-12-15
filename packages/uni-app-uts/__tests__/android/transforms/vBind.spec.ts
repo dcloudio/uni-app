@@ -207,6 +207,24 @@ describe('compiler: v-bind', () => {
 }), null, 4 /* STYLE */)`
     )
   })
+  test('prop with type object', () => {
+    assert(
+      `<Foo :obj="{name: 'name'}" />`,
+      `createVNode(_component_Foo, utsMapOf({ obj: {name: 'name'} }))`
+    )
+  })
+  test('v-bind all props', () => {
+    assert(
+      `<Foo v-bind="{name: 'name', age: 18, obj: {key: 'value'}}" />`,
+      `createVNode(_component_Foo, normalizeProps(guardReactiveProps(utsMapOf({name: 'name', age: 18, obj: {key: 'value'}}))), null, 16 /* FULL_PROPS */)`
+    )
+  })
+  test('v-bind all props with variable', () => {
+    assert(
+      `<Foo v-bind="allProps" />`,
+      `createVNode(_component_Foo, normalizeProps(guardReactiveProps(_ctx.allProps)), null, 16 /* FULL_PROPS */)`
+    )
+  })
 
   test('basic', () => {
     const node = parseWithVBind(`<view v-bind:id="id"/>`)
