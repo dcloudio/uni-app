@@ -44,7 +44,7 @@ module.exports = {
     copyOptions.push(copyMiniProgramThemeJson(platformOptions, vueOptions))
 
     const workers = platformOptions.workers
-    workers && copyOptions.push(workers)
+    workers && copyOptions.push(typeof workers === 'object' ? workers.path : workers)
 
     const manifestConfig = process.UNI_MANIFEST
     const weixinConfig = manifestConfig['mp-weixin'] || {}
