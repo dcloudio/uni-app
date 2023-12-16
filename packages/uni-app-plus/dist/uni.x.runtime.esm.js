@@ -1,5 +1,5 @@
+import { normalizeStyles, addLeadingSlash, invokeArrayFns, LINEFEED, formatLog, parseQuery, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, EventChannel, ON_READY, ON_UNLOAD, once, parseUrl, ON_BACK_PRESS, ON_LAUNCH } from '@dcloudio/uni-shared';
 import { extend, isString, isArray, hasOwn, isPlainObject, isObject, toRawType, capitalize, makeMap, isFunction, isPromise } from '@vue/shared';
-import { normalizeStyles, addLeadingSlash, invokeArrayFns, LINEFEED, parseQuery, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, ON_LAUNCH, formatLog, EventChannel, ON_READY, ON_UNLOAD, once, parseUrl } from '@dcloudio/uni-shared';
 import { createVNode, render, injectHook, getCurrentInstance, onMounted, nextTick, onBeforeUnmount } from 'vue';
 
 function getCurrentPage() {
@@ -654,6 +654,19 @@ function getCurrentPages$1() {
     });
     return curPages;
 }
+function removePage(curPage) {
+    const index = pages.findIndex((page) => page === curPage);
+    if (index === -1) {
+        return;
+    }
+    if (!curPage.$page.meta.isNVue) {
+        getVueApp().unmountPage(curPage);
+    }
+    pages.splice(index, 1);
+    if ((process.env.NODE_ENV !== 'production')) {
+        console.log(formatLog('removePage', curPage.$page));
+    }
+}
 
 const enterOptions = /*#__PURE__*/ createLaunchOptions();
 const launchOptions = /*#__PURE__*/ createLaunchOptions();
@@ -736,6 +749,17 @@ const ANIMATION_IN = [
     'pop-in',
     'none',
 ];
+const ANIMATION_OUT = [
+    'slide-out-right',
+    'slide-out-left',
+    'slide-out-top',
+    'slide-out-bottom',
+    'fade-out',
+    'zoom-in',
+    'zoom-fade-in',
+    'pop-out',
+    'none',
+];
 const BaseRouteProtocol = {
     url: {
         type: String,
@@ -745,12 +769,27 @@ const BaseRouteProtocol = {
 const API_NAVIGATE_TO = 'navigateTo';
 const API_REDIRECT_TO = 'redirectTo';
 const API_SWITCH_TAB = 'switchTab';
+const API_NAVIGATE_BACK = 'navigateBack';
 const API_PRELOAD_PAGE = 'preloadPage';
 const API_UN_PRELOAD_PAGE = 'unPreloadPage';
 const NavigateToProtocol = 
 /*#__PURE__*/ extend({}, BaseRouteProtocol, createAnimationProtocol(ANIMATION_IN));
+const NavigateBackProtocol = 
+/*#__PURE__*/ extend({
+    delta: {
+        type: Number,
+    },
+}, createAnimationProtocol(ANIMATION_OUT));
 const NavigateToOptions = 
 /*#__PURE__*/ createRouteOptions(API_NAVIGATE_TO);
+const NavigateBackOptions = {
+    formatArgs: {
+        delta(value, params) {
+            value = parseInt(value + '') || 1;
+            params.delta = Math.min(getCurrentPages().length - 1, value);
+        },
+    },
+};
 function createAnimationProtocol(animationTypes) {
     return {
         animationType: {
@@ -848,32 +887,17 @@ function createNormalizeUrl(type) {
     };
 }
 
-function initAppLaunch(appVm) {
-    injectAppHooks(appVm.$);
-    const { entryPagePath, entryPageQuery, referrerInfo } = __uniConfig;
-    const args = initLaunchOptions({
-        path: entryPagePath,
-        query: entryPageQuery,
-        referrerInfo: referrerInfo,
-    });
-    invokeHook(appVm, ON_LAUNCH, args);
-    invokeHook(appVm, ON_SHOW, args);
-    // TODO uni-app x
-    // // https://tower.im/teams/226535/todos/16905/
-    // const getAppState = weex.requireModule('plus').getAppState
-    // const appState = getAppState && Number(getAppState())
-    // if (appState === 2) {
-    //   invokeHook(appVm, ON_HIDE, args)
-    // }
-}
-
 const ANI_SHOW = 'pop-in';
 const ANI_DURATION = 300;
 
-function showWebview(webview, animationType, animationDuration, showCallback, delay) {
+function showWebview(nPage, animationType, animationDuration, showCallback, delay) {
     // TODO options
-    webview.startRender();
-    webview.show();
+    nPage.startRender();
+    nPage.show();
+}
+function closeWebview(nPage, animationType, animationDuration) {
+    // options
+    nPage.close();
 }
 
 let id = 1 ;
@@ -962,6 +986,7 @@ function registerPage({ url, path, query, openType, webview, nvuePageVm, eventCh
     const id = genWebviewId();
     const routeOptions = initRouteOptions(path, openType);
     const nativePage = __pageManager.createPage(url, id.toString(), new Map());
+    routeOptions.meta.id = parseInt(nativePage.pageId);
     if ((process.env.NODE_ENV !== 'production')) {
         console.log(formatLog('registerPage', path, nativePage.pageId));
     }
@@ -1009,7 +1034,7 @@ const $navigateTo = (args, { resolve, reject }) => {
         .then(resolve)
         .catch(reject);
 };
-defineAsyncApi(API_NAVIGATE_TO, $navigateTo, NavigateToProtocol, NavigateToOptions);
+const navigateTo = defineAsyncApi(API_NAVIGATE_TO, $navigateTo, NavigateToProtocol, NavigateToOptions);
 function _navigateTo({ url, path, query, events, aniType, aniDuration, }) {
     // 当前页面触发 onHide
     invokeHook(ON_HIDE);
@@ -1033,6 +1058,93 @@ function initAnimation(path, animationType, animationDuration) {
             globalStyle.animationDuration ||
             ANI_DURATION,
     ];
+}
+
+const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, (args, { resolve, reject }) => {
+    const page = getCurrentPage();
+    if (!page) {
+        return reject(`getCurrentPages is empty`);
+    }
+    if (invokeHook(page, ON_BACK_PRESS, {
+        from: args.from || 'navigateBack',
+    })) {
+        return resolve();
+    }
+    if (uni.hideToast) {
+        uni.hideToast();
+    }
+    if (uni.hideLoading) {
+        uni.hideLoading();
+    }
+    if (page.$page.meta.isQuit) ;
+    // TODO isDirectPage
+    else {
+        const { delta, animationType, animationDuration } = args;
+        back(delta, animationType);
+    }
+    return resolve();
+}, NavigateBackProtocol, NavigateBackOptions);
+function back(delta, animationType, animationDuration) {
+    const pages = getCurrentPages();
+    const len = pages.length;
+    const currentPage = pages[len - 1];
+    if (delta > 1) {
+        // 中间页隐藏
+        pages
+            .slice(len - delta, len - 1)
+            .reverse()
+            .forEach((deltaPage) => {
+            closeWebview(__pageManager.findPageById(deltaPage.$page.id + ''));
+        });
+    }
+    const backPage = function (webview) {
+        if (animationType) {
+            closeWebview(webview);
+        }
+        else {
+            if (currentPage.$page.openType === 'redirectTo') {
+                // 如果是 redirectTo 跳转的，需要指定 back 动画
+                closeWebview(webview);
+            }
+            else {
+                closeWebview(webview);
+            }
+        }
+        pages
+            .slice(len - delta, len)
+            .forEach((page) => removePage(page));
+        // TODO setStatusBarStyle()
+        // 前一个页面触发 onShow
+        invokeHook(ON_SHOW);
+    };
+    const webview = __pageManager.findPageById(currentPage.$page.id + '');
+    // TODO 处理子 view
+    backPage(webview);
+}
+
+var uni$1 = {
+  __proto__: null,
+  navigateBack: navigateBack,
+  navigateTo: navigateTo
+};
+
+function initAppLaunch(appVm) {
+    injectAppHooks(appVm.$);
+    const { entryPagePath, entryPageQuery, referrerInfo } = __uniConfig;
+    const args = initLaunchOptions({
+        path: entryPagePath,
+        query: entryPageQuery,
+        referrerInfo: referrerInfo,
+    });
+    invokeHook(appVm, ON_LAUNCH, args);
+    invokeHook(appVm, ON_SHOW, args);
+    // TODO uni-app x
+    // // https://tower.im/teams/226535/todos/16905/
+    // const getAppState = weex.requireModule('plus').getAppState
+    // const appState = getAppState && Number(getAppState())
+    // if (appState === 2) {
+    //   invokeHook(appVm, ON_HIDE, args)
+    // }
 }
 
 // import { getRouteOptions } from '@dcloudio/uni-core'
@@ -1154,6 +1266,7 @@ function registerApp(appVm) {
 }
 
 var index = {
+    uni: uni$1,
     getApp,
     getCurrentPages: getCurrentPages$1,
     __definePage: definePage,
