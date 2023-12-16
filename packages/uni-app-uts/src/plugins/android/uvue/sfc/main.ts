@@ -5,12 +5,18 @@ import type {
   SourceMapInput,
   TransformPluginContext,
 } from 'rollup'
-import type { RawSourceMap } from 'source-map-js'
+import { SourceMapConsumer, type RawSourceMap } from 'source-map-js'
 import type { EncodedSourceMap as TraceEncodedSourceMap } from '@jridgewell/trace-mapping'
 import { TraceMap, eachMapping } from '@jridgewell/trace-mapping'
 import type { EncodedSourceMap as GenEncodedSourceMap } from '@jridgewell/gen-mapping'
 import { addMapping, fromMap, toEncodedMap } from '@jridgewell/gen-mapping'
-import { createRollupError, removeExt } from '@dcloudio/uni-cli-shared'
+import {
+  createResolveErrorMsg,
+  createRollupError,
+  offsetToStartAndEnd,
+  removeExt,
+} from '@dcloudio/uni-cli-shared'
+import type { ImportSpecifier } from 'es-module-lexer'
 import {
   createDescriptor,
   getDescriptor,
@@ -19,11 +25,14 @@ import {
 import { resolveScript, scriptIdentifier } from './script'
 import type { ResolvedOptions } from './index'
 import {
+  createResolveError,
   genClassName,
   parseImports,
   parseUTSRelativeFilename,
+  wrapResolve,
 } from '../../utils'
 import { genTemplateCode } from '../code/template'
+import { Position } from '@vue/compiler-core'
 
 export async function transformMain(
   code: string,
@@ -127,13 +136,10 @@ export async function transformMain(
   if (resolvedCode) {
     jsCodes.push(
       await parseImports(
-        resolvedCode
-        // createTryResolve(
-        //   filename,
-        //   pluginContext.resolve.bind(pluginContext),
-        //   descriptor.script?.loc.start,
-        //   descriptor.source
-        // )
+        resolvedCode,
+        resolvedMap
+          ? createTryResolve(filename, pluginContext.resolve, resolvedMap)
+          : undefined
       )
     )
     pluginContext.emitFile({
@@ -262,4 +268,36 @@ function attrsToQuery(
         : `&lang.${langFallback}`
   }
   return query
+}
+
+function createTryResolve(
+  importer: string,
+  resolve: PluginContext['resolve'],
+  resolvedMap: RawSourceMap
+) {
+  return async (source: string, code: string, { ss, se }: ImportSpecifier) => {
+    const resolved = await wrapResolve(resolve)(source, importer)
+    if (!resolved) {
+      const { start, end } = offsetToStartAndEnd(code, ss, se)
+      const consumer = new SourceMapConsumer(resolvedMap)
+      const startPos = consumer.originalPositionFor({
+        line: start.line,
+        column: start.column,
+      })
+      if (startPos) {
+        const endPos = consumer.originalPositionFor({
+          line: end.line,
+          column: end.column,
+        })
+        if (endPos) {
+          throw createResolveError(
+            consumer.sourceContentFor(endPos.source),
+            createResolveErrorMsg(source, importer),
+            startPos as unknown as Position,
+            endPos as unknown as Position
+          )
+        }
+      }
+    }
+  }
 }
