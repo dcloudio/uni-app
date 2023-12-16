@@ -1,4 +1,5 @@
 import fs from 'node:fs'
+import path from 'node:path'
 import type { SFCBlock, SFCDescriptor } from '@vue/compiler-sfc'
 import type {
   PluginContext,
@@ -13,9 +14,13 @@ import { addMapping, fromMap, toEncodedMap } from '@jridgewell/gen-mapping'
 import {
   createResolveErrorMsg,
   createRollupError,
+  matchEasycom,
+  normalizePath,
   offsetToStartAndEnd,
+  parseUTSComponent,
   removeExt,
 } from '@dcloudio/uni-cli-shared'
+import type { CompilerError, Position } from '@vue/compiler-core'
 import type { ImportSpecifier } from 'es-module-lexer'
 import {
   createDescriptor,
@@ -28,11 +33,12 @@ import {
   createResolveError,
   genClassName,
   parseImports,
+  parseUTSImportFilename,
   parseUTSRelativeFilename,
   wrapResolve,
 } from '../../utils'
 import { genTemplateCode } from '../code/template'
-import { Position } from '@vue/compiler-core'
+import { generateCodeFrameColumns } from '@dcloudio/uni-cli-shared'
 
 export async function transformMain(
   code: string,
@@ -51,7 +57,7 @@ export async function transformMain(
 
   if (errors.length) {
     errors.forEach((error) =>
-      pluginContext.error(createRollupError('', filename, error))
+      pluginContext.error(createRollupError('', filename, error, code))
     )
     return null
   }
@@ -63,6 +69,8 @@ export async function transformMain(
   )
 
   const className = genClassName(relativeFileName)
+  const inputRoot = normalizePath(options.root)
+  const templateStartLine = descriptor.template?.loc.start.line ?? 0
   // template
   const { code: templateCode, map: templateMap } = await genTemplateCode(
     descriptor,
@@ -71,6 +79,31 @@ export async function transformMain(
       mode: 'function',
       filename: relativeFileName,
       className,
+      prefixIdentifiers: true,
+      inMap: descriptor.template?.map,
+      matchEasyCom: (tag, uts) => {
+        const source = matchEasycom(tag)
+        if (uts && source) {
+          if (source.startsWith(inputRoot)) {
+            return '@/' + normalizePath(path.relative(inputRoot, source))
+          }
+          return parseUTSImportFilename(source)
+        }
+        return source
+      },
+      onWarn(warning) {
+        onTemplateLog(
+          'warn',
+          warning,
+          code,
+          relativeFileName,
+          templateStartLine
+        )
+      },
+      onError(error) {
+        onTemplateLog('error', error, code, relativeFileName, templateStartLine)
+      },
+      parseUTSComponent,
     }
   )
 
@@ -305,5 +338,27 @@ function createTryResolve(
         }
       }
     }
+  }
+}
+
+function onTemplateLog(
+  type: 'warn' | 'error',
+  error: CompilerError,
+  code: string,
+  relativeFileName: string,
+  templateStartLine: number
+) {
+  console.error(type + ': ' + error.message)
+  if (error.loc) {
+    const start = error.loc.start
+    console.log(
+      'at ' +
+        relativeFileName +
+        ':' +
+        (start.line + templateStartLine - 1) +
+        ':' +
+        (start.column - 1)
+    )
+    console.log(generateCodeFrameColumns(code, error.loc))
   }
 }

@@ -71,6 +71,7 @@ export interface CodegenContext
       | 'className'
       | 'originalLineOffset'
       | 'generatedLineOffset'
+      | 'inMap'
     >
   > {
   source: string

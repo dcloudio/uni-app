@@ -75,3 +75,5 @@ export function createRollupError(
   }
   return rollupError
 }
+
+export const generateCodeFrameColumns = codeFrameColumns

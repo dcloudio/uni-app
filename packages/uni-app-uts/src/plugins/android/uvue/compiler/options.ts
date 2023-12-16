@@ -32,6 +32,8 @@ export interface CodegenOptions extends SharedTransformCodegenOptions {
    * @default 'default'
    */
   mode?: 'default' | 'function'
+
+  inMap?: RawSourceMap
   /**
    * Generate source map?
    * @default false
