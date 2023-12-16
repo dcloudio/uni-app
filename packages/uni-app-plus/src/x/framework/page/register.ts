@@ -37,6 +37,7 @@ export function registerPage({
   const id = genWebviewId()
   const routeOptions = initRouteOptions(path, openType)
   const nativePage = __pageManager.createPage(url, id.toString(), new Map())
+  routeOptions.meta.id = parseInt(nativePage.pageId)
   if (__DEV__) {
     console.log(formatLog('registerPage', path, nativePage.pageId))
   }

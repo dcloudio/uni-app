@@ -1,3 +1,4 @@
+import * as uni from './api/index'
 import { getApp, registerApp as __registerApp } from './framework/app'
 import {
   getCurrentPages,
@@ -5,6 +6,7 @@ import {
 } from '../service/framework/page'
 
 export default {
+  uni,
   getApp,
   getCurrentPages,
   __definePage,
