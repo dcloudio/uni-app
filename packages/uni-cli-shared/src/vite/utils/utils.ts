@@ -1,8 +1,9 @@
 import type { ConfigEnv, ResolvedConfig, UserConfig } from 'vite'
-import { generateCodeFrame, locToStartAndEnd } from '../plugins/vitejs/utils'
 import { RollupError } from 'rollup'
 import { CompilerError } from '@vue/compiler-sfc'
 import { extend } from '@vue/shared'
+import { codeFrameColumns } from '@babel/code-frame'
+import { offsetToStartAndEnd } from '../plugins/vitejs/utils'
 
 export function withSourcemap(config: ResolvedConfig) {
   if (config.command === 'serve') {
@@ -50,14 +51,16 @@ export function createRollupError(
     }
     if (source && source.length > 0) {
       if ('offsetStart' in error && 'offsetEnd' in error) {
-        rollupError.frame = generateCodeFrame(
+        rollupError.frame = codeFrameColumns(
           source,
-          error.offsetStart as number,
-          error.offsetEnd as number
+          offsetToStartAndEnd(
+            source,
+            error.offsetStart as number,
+            error.offsetEnd as number
+          )
         ).replace(/\t/g, ' ')
       } else {
-        const { start, end } = locToStartAndEnd(source, error.loc)
-        rollupError.frame = generateCodeFrame(source, start, end).replace(
+        rollupError.frame = codeFrameColumns(source, error.loc).replace(
           /\t/g,
           ' '
         )
