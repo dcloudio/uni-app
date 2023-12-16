@@ -58,12 +58,9 @@ export function createRollupError(
             error.offsetStart as number,
             error.offsetEnd as number
           )
-        ).replace(/\t/g, ' ')
-      } else {
-        rollupError.frame = codeFrameColumns(source, error.loc).replace(
-          /\t/g,
-          ' '
         )
+      } else {
+        rollupError.frame = codeFrameColumns(source, error.loc)
       }
     }
   }

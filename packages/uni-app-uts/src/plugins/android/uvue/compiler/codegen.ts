@@ -272,9 +272,20 @@ function genImports(importsOptions: ImportItem[], context: CodegenContext) {
     return
   }
   importsOptions.forEach((imports) => {
-    context.push(`import `)
-    genNode(imports.exp, context)
-    context.push(` from '${imports.path}'`)
+    if (isString(imports.exp)) {
+      context.push(`import ${imports.exp} from '${imports.path}'`)
+    } else if (isSimpleExpressionNode(imports.exp)) {
+      // 解决静态资源导入 sourcemap 映射问题
+      context.push(
+        `import ${imports.exp.content} from '${imports.path}'`,
+        imports.exp
+      )
+    } else {
+      context.push(`import `)
+      genNode(imports.exp, context)
+      context.push(` from '${imports.path}'`)
+    }
+
     context.newline()
   })
 }

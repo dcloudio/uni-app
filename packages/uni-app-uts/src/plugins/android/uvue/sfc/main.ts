@@ -278,7 +278,7 @@ function createTryResolve(
   return async (source: string, code: string, { ss, se }: ImportSpecifier) => {
     const resolved = await wrapResolve(resolve)(source, importer)
     if (!resolved) {
-      const { start, end } = offsetToStartAndEnd(code, ss, se - 1)
+      const { start, end } = offsetToStartAndEnd(code, ss, se)
       const consumer = new SourceMapConsumer(resolvedMap)
       const startPos = consumer.originalPositionFor({
         line: start.line,
@@ -294,6 +294,8 @@ function createTryResolve(
           column: end.column,
         })
         if (endPos.line != null && endPos.column != null) {
+          startPos.column = startPos.column + 1
+          endPos.column = endPos.column + 1
           throw createResolveError(
             consumer.sourceContentFor(startPos.source),
             createResolveErrorMsg(source, importer),
