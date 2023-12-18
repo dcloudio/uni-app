@@ -22913,6 +22913,13 @@ const setRightWindowStyle = /* @__PURE__ */ defineSyncApi("setRightWindowStyle",
     state2.rightWindowStyle = style;
   }
 });
+const getElementById = /* @__PURE__ */ defineSyncApi(
+  "getElementById",
+  (id2) => {
+    const uniPageBody = document.querySelector("uni-page-body");
+    return uniPageBody ? uniPageBody.querySelector(`#${id2}`) : null;
+  }
+);
 const saveImageToPhotosAlbum = /* @__PURE__ */ defineAsyncApi(
   API_SAVE_IMAGE_TO_PHOTOS_ALBUM,
   createUnsupportedAsyncApi(API_SAVE_IMAGE_TO_PHOTOS_ALBUM)
@@ -23057,6 +23064,7 @@ const api = /* @__PURE__ */ Object.defineProperty({
   getAppBaseInfo,
   getClipboardData,
   getDeviceInfo,
+  getElementById,
   getEnterOptionsSync,
   getFileInfo,
   getImageInfo,
@@ -25542,6 +25550,7 @@ export {
   getClipboardData,
   getCurrentPages$1 as getCurrentPages,
   getDeviceInfo,
+  getElementById,
   getEnterOptionsSync,
   getFileInfo,
   getImageInfo,
