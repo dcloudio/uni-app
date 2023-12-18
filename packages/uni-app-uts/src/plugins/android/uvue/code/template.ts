@@ -7,7 +7,7 @@ export function genTemplate(
   { template }: SFCDescriptor,
   options: CompilerOptions
 ) {
-  if (!template) {
+  if (!template || !template.content) {
     return {
       code: genRenderFunctionDecl(options) + ` { return null }`,
       easyComponentAutoImports: {},

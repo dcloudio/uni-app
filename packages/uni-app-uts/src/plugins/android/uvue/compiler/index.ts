@@ -193,7 +193,7 @@ function mapLines(oldMap: RawSourceMap, newMap: RawSourceMap): RawSourceMap {
 
 function wrapOptionsLog(source: string, options: CompilerOptions) {
   const { onWarn, onError, inMap } = options
-  if (inMap) {
+  if (inMap && inMap.sourcesContent?.length) {
     if (onWarn || onError) {
       const originalSource = inMap.sourcesContent![0]
       const offset = originalSource.indexOf(source)
