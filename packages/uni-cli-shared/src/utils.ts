@@ -20,6 +20,7 @@ import {
 } from '@vue/compiler-core'
 import { ParserPlugin } from '@babel/parser'
 import { getPlatformDir } from './platform'
+import { isInHBuilderX } from './hbx'
 
 export const version = require('../package.json').version
 
@@ -76,6 +77,16 @@ export function normalizeNodeModules(str: string) {
     /.*\/plugins\/uniapp-cli-vite\/node[-_]modules/,
     'node-modules'
   )
+  if (!isInHBuilderX()) {
+    // 内部测试
+    if (str.includes('uni-app-next/packages/')) {
+      str = str.replace(
+        /.*\/uni-app-next\/packages\//,
+        'node-modules/@dcloudio/'
+      )
+    }
+  }
+
   if (process.env.UNI_PLATFORM === 'mp-alipay') {
     str = str.replace('node-modules/@', 'node-modules/npm-scope-')
   }

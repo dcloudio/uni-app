@@ -173,9 +173,9 @@ export function initPluginVueOptions(
     if (!vueOptions.script.babelParserPlugins.includes('typescript')) {
       vueOptions.script.babelParserPlugins.push('typescript')
     }
-    // TODO 是不是应该 decorators
-    if (!vueOptions.script.babelParserPlugins.includes('decorators-legacy')) {
-      vueOptions.script.babelParserPlugins.push('decorators-legacy')
+    // decorators or decorators-legacy
+    if (!vueOptions.script.babelParserPlugins.includes('decorators')) {
+      vueOptions.script.babelParserPlugins.push('decorators')
     }
   }
 

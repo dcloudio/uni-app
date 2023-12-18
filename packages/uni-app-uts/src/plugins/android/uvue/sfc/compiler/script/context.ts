@@ -142,7 +142,7 @@ export function resolveParserPlugins(
   }
   plugins.push(['typescript', { dts }])
   if (!userPlugins || !userPlugins.includes('decorators')) {
-    plugins.push('decorators-legacy')
+    plugins.push('decorators')
   }
   if (userPlugins) {
     plugins.push(...userPlugins)

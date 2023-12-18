@@ -1,4 +1,3 @@
-import fs from 'node:fs'
 import path from 'node:path'
 import type { SFCBlock, SFCDescriptor } from '@vue/compiler-sfc'
 import type {
@@ -22,14 +21,12 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import type { CompilerError, Position } from '@vue/compiler-core'
 import type { ImportSpecifier } from 'es-module-lexer'
-import {
-  createDescriptor,
-  getDescriptor,
-  setSrcDescriptor,
-} from '../descriptorCache'
+import { createDescriptor, setSrcDescriptor } from '../descriptorCache'
 import { resolveScript, scriptIdentifier } from './script'
 import type { ResolvedOptions } from './index'
 import {
+  addAutoImports,
+  addExtApiComponents,
   createResolveError,
   genClassName,
   parseImports,
@@ -39,21 +36,21 @@ import {
 } from '../../utils'
 import { genTemplateCode } from '../code/template'
 import { generateCodeFrameColumns } from '@dcloudio/uni-cli-shared'
+import { genComponentPublicInstanceImported } from '../compiler/utils'
 
 export async function transformMain(
   code: string,
   filename: string,
   options: ResolvedOptions,
-  pluginContext: TransformPluginContext
+  pluginContext: TransformPluginContext,
+  isAppVue: boolean = false
 ) {
+  if (!options.compiler) {
+    options.compiler = require('@vue/compiler-sfc')
+  }
   const relativeFileName = parseUTSRelativeFilename(filename)
 
   const { descriptor, errors } = createDescriptor(filename, code, options)
-
-  if (fs.existsSync(filename)) {
-    // populate descriptor cache for HMR if it's not set yet
-    getDescriptor(filename, options, true)
-  }
 
   if (errors.length) {
     errors.forEach((error) =>
@@ -69,14 +66,20 @@ export async function transformMain(
   )
 
   const className = genClassName(relativeFileName)
-  const inputRoot = normalizePath(options.root)
-  const templateStartLine = descriptor.template?.loc.start.line ?? 0
-  // template
-  const { code: templateCode, map: templateMap } = await genTemplateCode(
-    descriptor,
-    {
+  let templateCode = ''
+  let templateMap = undefined
+  let templateImportsCode = ''
+  let templateImportEasyComponentsCode = ''
+  let templateImportUTSComponentsCode = ''
+
+  if (!isAppVue) {
+    // template
+    const inputRoot = normalizePath(options.root)
+    const templateStartLine = descriptor.template?.loc.start.line ?? 0
+    const templateResult = await genTemplateCode(descriptor, {
       ...options,
       mode: 'function',
+      rootDir: options.root,
       filename: relativeFileName,
       className,
       prefixIdentifiers: true,
@@ -104,13 +107,50 @@ export async function transformMain(
         onTemplateLog('error', error, code, relativeFileName, templateStartLine)
       },
       parseUTSComponent,
+    })
+
+    templateCode = templateResult.code
+    templateMap = templateResult.map
+    const {
+      easyComponentAutoImports,
+      elements,
+      importEasyComponents,
+      importUTSComponents,
+      imports,
+    } = templateResult
+
+    templateImportEasyComponentsCode = importEasyComponents.join('\n')
+    templateImportUTSComponentsCode = importUTSComponents.join('\n')
+    templateImportsCode = imports.join('\n')
+
+    Object.keys(easyComponentAutoImports).forEach((source) => {
+      addAutoImports(source, easyComponentAutoImports[source])
+    })
+
+    if (process.env.NODE_ENV === 'production') {
+      addExtApiComponents(
+        elements.filter((element) => {
+          // 如果是UTS原生组件，则无需记录摇树
+          if (parseUTSComponent(element, 'kotlin')) {
+            return false
+          }
+          return true
+        })
+      )
     }
-  )
+  }
 
   // styles
   const stylesCode = await genStyleCode(descriptor, pluginContext)
 
-  const output: string[] = [scriptCode, templateCode, `/*${className}Styles*/`]
+  const utsOutput: string[] = [
+    scriptCode ||
+      `
+export default {}
+`,
+    templateCode,
+    `/*${className}Styles*/`,
+  ]
 
   let resolvedMap: RawSourceMap | undefined = undefined
   if (options.sourceMap) {
@@ -155,7 +195,7 @@ export async function transformMain(
   }
 
   // handle TS transpilation
-  let resolvedCode = output.join('\n')
+  const utsCode = utsOutput.join('\n')
 
   if (resolvedMap) {
     pluginContext.emitFile({
@@ -165,11 +205,16 @@ export async function transformMain(
     })
   }
 
-  const jsCodes = []
-  if (resolvedCode) {
+  const jsCodes = [
+    templateImportEasyComponentsCode,
+    templateImportUTSComponentsCode,
+    templateImportsCode,
+  ]
+  // 仅需要再解析script中的import，template上边已经加入了
+  if (scriptCode) {
     jsCodes.push(
       await parseImports(
-        resolvedCode,
+        scriptCode,
         resolvedMap
           ? createTryResolve(filename, pluginContext.resolve, resolvedMap)
           : undefined
@@ -178,15 +223,21 @@ export async function transformMain(
     pluginContext.emitFile({
       type: 'asset',
       fileName: relativeFileName,
-      source: resolvedCode,
+      source: utsCode,
     })
   }
   if (stylesCode) {
     jsCodes.push(stylesCode)
   }
+  jsCodes.push(`export default "${className}"
+export const ${genComponentPublicInstanceImported(
+    options.root,
+    relativeFileName
+  )} = {}`)
+  const jsCode = jsCodes.filter(Boolean).join('\n')
 
   return {
-    code: jsCodes.join('\n'),
+    code: jsCode,
     map: {
       mappings: '',
     } as SourceMapInput,

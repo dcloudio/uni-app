@@ -1,3 +1,4 @@
+import path from 'node:path'
 import {
   MANIFEST_JSON_UTS,
   PAGES_JSON_UTS,
@@ -5,6 +6,8 @@ import {
   UniVitePlugin,
   initI18nOptions,
   injectAssetPlugin,
+  normalizeNodeModules,
+  normalizePath,
 } from '@dcloudio/uni-cli-shared'
 import { compileI18nJsonStr } from '@dcloudio/uni-i18n'
 import { Plugin, ResolvedConfig } from 'vite'
@@ -95,4 +98,13 @@ export function configResolved(config: ResolvedConfig, isAndroidX = false) {
   // 强制不inline
   config.build.assetsInlineLimit = 0
   injectAssetPlugin(config, { isAndroidX })
+}
+
+export function relativeInputDir(filename: string) {
+  const inputDir = process.env.UNI_INPUT_DIR
+  filename = normalizeNodeModules(filename)
+  if (filename.startsWith(inputDir)) {
+    return normalizePath(path.relative(inputDir, filename))
+  }
+  return filename
 }

@@ -93,7 +93,6 @@
     complete ?: CompleteCallback,
   }
 
-  @Suppress("UNCHECKED_CAST")
   function cast_callback<T>(options : any | null) : T | null {
     return options as T | null
   }
