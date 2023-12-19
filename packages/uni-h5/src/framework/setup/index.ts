@@ -101,6 +101,7 @@ export function setupPage(comp: any) {
       const query = decodedQuery(route.query)
       instance.attrs.__pageQuery = query
       instance.proxy!.$page.options = query
+      instance.proxy!.options = query
       if (__NODE_JS__) {
         return query
       }

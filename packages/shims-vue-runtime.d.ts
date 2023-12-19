@@ -13,6 +13,7 @@ declare module '@vue/runtime-core' {
 
   interface ComponentCustomProperties {
     route: string
+    options?: Page.PageInstance['$page']['options']
     $scope: {
       $getAppWebview?: () => PlusWebviewWebviewObject
       setData(data: Record<string, unknown>, callback?: () => void): void

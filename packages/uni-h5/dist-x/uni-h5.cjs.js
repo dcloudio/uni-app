@@ -7861,6 +7861,7 @@ function setupPage(comp) {
       const query = uniShared.decodedQuery(route.query);
       instance.attrs.__pageQuery = query;
       instance.proxy.$page.options = query;
+      instance.proxy.options = query;
       {
         return query;
       }

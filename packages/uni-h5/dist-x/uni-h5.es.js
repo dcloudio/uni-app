@@ -15706,6 +15706,7 @@ function setupPage(comp) {
       const query = decodedQuery(route.query);
       instance2.attrs.__pageQuery = query;
       instance2.proxy.$page.options = query;
+      instance2.proxy.options = query;
       const pageMeta = usePageMeta();
       onBeforeMount(() => {
         onPageShow(instance2, pageMeta);
