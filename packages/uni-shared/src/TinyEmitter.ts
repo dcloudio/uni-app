@@ -56,10 +56,13 @@ E.prototype = {
     var liveEvents = []
 
     if (evts && callback) {
-      for (var i = 0, len = evts.length; i < len; i++) {
-        if (evts[i].fn !== callback && evts[i].fn._ !== callback)
-          liveEvents.push(evts[i])
+      for (var i = evts.length - 1; i >= 0; i--) {
+        if (evts[i].fn === callback || evts[i].fn._ === callback) {
+          evts.splice(i, 1)
+          break
+        }
       }
+      liveEvents = evts
     }
 
     // Remove event from queue to prevent memory leak
