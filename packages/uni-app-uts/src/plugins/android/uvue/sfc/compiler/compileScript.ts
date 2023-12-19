@@ -11,16 +11,12 @@ import {
   ObjectPattern,
   ArrayPattern,
   Identifier,
-  ExportSpecifier,
   Statement,
   CallExpression,
 } from '@babel/types'
 import { walk } from 'estree-walker'
 import type { RawSourceMap } from 'source-map-js'
-import {
-  processNormalScript,
-  normalScriptDefaultVar,
-} from './script/normalScript'
+import { processNormalScript } from './script/normalScript'
 import { SFCTemplateCompileOptions } from '@vue/compiler-sfc'
 import { warnOnce } from './warn'
 import { ScriptCompileContext } from './script/context'
@@ -192,7 +188,7 @@ export function compileScript(
   const scriptBindings: Record<string, BindingTypes> = Object.create(null)
   const setupBindings: Record<string, BindingTypes> = Object.create(null)
 
-  let defaultExport: Node | undefined
+  // let defaultExport: Node | undefined
   let hasAwait = false
   // let hasInlinedSsrRenderFn = false
 
@@ -360,92 +356,15 @@ export function compileScript(
   if (script && scriptAst) {
     for (const node of scriptAst.body) {
       if (node.type === 'ExportDefaultDeclaration') {
-        // export default
-        defaultExport = node
-
-        // check if user has manually specified `name` or 'render` option in
-        // export default
-        // if has name, skip name inference
-        // if has render and no template, generate return object instead of
-        // empty render function (#4980)
-        let optionProperties
-        if (defaultExport.declaration.type === 'ObjectExpression') {
-          optionProperties = defaultExport.declaration.properties
-        } else if (
-          defaultExport.declaration.type === 'CallExpression' &&
-          defaultExport.declaration.arguments[0] &&
-          defaultExport.declaration.arguments[0].type === 'ObjectExpression'
-        ) {
-          optionProperties = defaultExport.declaration.arguments[0].properties
-        }
-        if (optionProperties) {
-          for (const p of optionProperties) {
-            if (
-              p.type === 'ObjectProperty' &&
-              p.key.type === 'Identifier' &&
-              p.key.name === 'name'
-            ) {
-              ctx.hasDefaultExportName = true
-            }
-            if (
-              (p.type === 'ObjectMethod' || p.type === 'ObjectProperty') &&
-              p.key.type === 'Identifier' &&
-              p.key.name === 'render'
-            ) {
-              // TODO warn when we provide a better way to do it?
-              ctx.hasDefaultExportRender = true
-            }
-          }
-        }
-
-        // export default { ... } --> const __default__ = { ... }
-        const start = node.start! + scriptStartOffset!
-        const end = node.declaration.start! + scriptStartOffset!
-        ctx.s.overwrite(start, end, `const ${normalScriptDefaultVar} = `)
+        ctx.error(
+          `When <script> and <script setup> are used together, export default is not supported within <script>.`,
+          node
+        )
       } else if (node.type === 'ExportNamedDeclaration') {
-        const defaultSpecifier = node.specifiers.find(
-          (s) =>
-            s.exported.type === 'Identifier' && s.exported.name === 'default'
-        ) as ExportSpecifier
-        if (defaultSpecifier) {
-          defaultExport = node
-          // 1. remove specifier
-          if (node.specifiers.length > 1) {
-            ctx.s.remove(
-              defaultSpecifier.start! + scriptStartOffset!,
-              defaultSpecifier.end! + scriptStartOffset!
-            )
-          } else {
-            ctx.s.remove(
-              node.start! + scriptStartOffset!,
-              node.end! + scriptStartOffset!
-            )
-          }
-          if (node.source) {
-            // export { x as default } from './x'
-            // rewrite to `import { x as __default__ } from './x'` and
-            // add to top
-            ctx.s.prepend(
-              `import { ${defaultSpecifier.local.name} as ${normalScriptDefaultVar} } from '${node.source.value}'\n`
-            )
-          } else {
-            // export { x as default }
-            // rewrite to `const __default__ = x` and move to end
-            ctx.s.appendLeft(
-              scriptEndOffset!,
-              `\nconst ${normalScriptDefaultVar} = ${defaultSpecifier.local.name}\n`
-            )
-          }
-        }
-        if (node.declaration) {
-          walkDeclaration(
-            'script',
-            node.declaration,
-            scriptBindings,
-            vueImportAliases,
-            hoistStatic
-          )
-        }
+        ctx.error(
+          `When <script> and <script setup> are used together, export is not supported within <script>.`,
+          node
+        )
       } else if (
         (node.type === 'VariableDeclaration' ||
           node.type === 'FunctionDeclaration' ||
