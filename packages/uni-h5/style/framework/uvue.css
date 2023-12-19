@@ -1,36 +1,36 @@
-[uvue] uni-view,
-[uvue] uni-scroll-view,
-[uvue] uni-list-view,
-[uvue] uni-list-item,
-[uvue] uni-swiper-item,
-[uvue] uni-navigator {
+uni-app uni-view,
+uni-app uni-scroll-view,
+uni-app uni-list-view,
+uni-app uni-list-item,
+uni-app uni-swiper-item,
+uni-app uni-navigator {
   flex-direction: column;
   justify-content: flex-start;
   align-items: stretch;
   align-content: stretch;
 }
 
-[uvue] uni-text,
-[uvue] uni-input,
-[uvue] uni-textarea {
+uni-app uni-text,
+uni-app uni-input,
+uni-app uni-textarea {
   color: #000000;
   font-size: 16px;
   text-align: left;
 }
 
-[uvue] uni-text,
-[uvue] uni-textarea {
+uni-app uni-text,
+uni-app uni-textarea {
   line-height: 1.2;
 }
 
-[uvue] uni-text {
+uni-app uni-text {
   letter-spacing: 0;
 }
 
-[uvue] uni-view,
-[uvue] uni-label,
-[uvue] uni-swiper-item,
-[uvue] uni-scroll-view {
+uni-app uni-view,
+uni-app uni-label,
+uni-app uni-swiper-item,
+uni-app uni-scroll-view {
   display: flex;
   flex-shrink: 0;
   flex-grow: 0;
@@ -39,7 +39,7 @@
   align-content: flex-start;
 }
 
-[uvue] uni-button {
+uni-app uni-button {
   margin: 0;
 }
 
@@ -67,21 +67,21 @@
   flex-direction: column-reverse;
 }
 
-[uvue] uni-view,
-[uvue] uni-image,
-[uvue] uni-input,
-[uvue] uni-scroll-view,
-[uvue] uni-swiper,
-[uvue] uni-swiper-item,
-[uvue] uni-text,
-[uvue] uni-textarea,
-[uvue] uni-video {
+uni-app uni-view,
+uni-app uni-image,
+uni-app uni-input,
+uni-app uni-scroll-view,
+uni-app uni-swiper,
+uni-app uni-swiper-item,
+uni-app uni-text,
+uni-app uni-textarea,
+uni-app uni-video {
   position: relative;
   border: 0px solid #000000;
   box-sizing: border-box;
 }
 
-[uvue] uni-swiper-item {
+uni-app uni-swiper-item {
   position: absolute;
 }
 
