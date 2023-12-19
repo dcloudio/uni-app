@@ -33,7 +33,7 @@ import { transformBind } from '../../../src/plugins/android/uvue/compiler/transf
 
 import { createObjectMatcher, genFlagText } from '../testUtils'
 import { transformText } from '../../../src/plugins/android/uvue/compiler/transforms/transformText'
-import { CompilerOptions } from '../../../src/plugins/android/uvue/compiler/options'
+import { TemplateCompilerOptions } from '../../../src/plugins/android/uvue/compiler/options'
 import {
   NodeTransform,
   transform,
@@ -44,7 +44,7 @@ const transformElement = baseTransformElement as unknown as NodeTransform
 
 function parseWithElementTransform(
   template: string,
-  options: CompilerOptions = {}
+  options: TemplateCompilerOptions = {}
 ): {
   root: RootNode
   node: VNodeCall
@@ -65,7 +65,7 @@ function parseWithElementTransform(
   }
 }
 
-function parseWithBind(template: string, options?: CompilerOptions) {
+function parseWithBind(template: string, options?: TemplateCompilerOptions) {
   return parseWithElementTransform(template, {
     ...options,
     directiveTransforms: {

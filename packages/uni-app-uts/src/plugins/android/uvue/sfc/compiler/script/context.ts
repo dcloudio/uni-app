@@ -60,7 +60,7 @@ export class ScriptCompileContext {
   helperImports: Set<string> = new Set()
   helper(key: string): string {
     this.helperImports.add(key)
-    return `_${key}`
+    return `${key}`
   }
 
   /**

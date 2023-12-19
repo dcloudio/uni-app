@@ -1,4 +1,3 @@
-import path from 'node:path'
 import type { SFCBlock, SFCDescriptor } from '@vue/compiler-sfc'
 import type {
   PluginContext,
@@ -13,16 +12,14 @@ import { addMapping, fromMap, toEncodedMap } from '@jridgewell/gen-mapping'
 import {
   createResolveErrorMsg,
   createRollupError,
-  matchEasycom,
-  normalizePath,
   offsetToStartAndEnd,
   parseUTSComponent,
   removeExt,
 } from '@dcloudio/uni-cli-shared'
-import type { CompilerError, Position } from '@vue/compiler-core'
+import type { Position } from '@vue/compiler-core'
 import type { ImportSpecifier } from 'es-module-lexer'
 import { createDescriptor, setSrcDescriptor } from '../descriptorCache'
-import { resolveScript, scriptIdentifier } from './script'
+import { isUseInlineTemplate, resolveScript, scriptIdentifier } from './script'
 import type { ResolvedOptions } from './index'
 import {
   addAutoImports,
@@ -30,13 +27,12 @@ import {
   createResolveError,
   genClassName,
   parseImports,
-  parseUTSImportFilename,
   parseUTSRelativeFilename,
   wrapResolve,
 } from '../../utils'
 import { genTemplateCode } from '../code/template'
-import { generateCodeFrameColumns } from '@dcloudio/uni-cli-shared'
 import { genComponentPublicInstanceImported } from '../compiler/utils'
+import { resolveGenTemplateCodeOptions } from './template'
 
 export async function transformMain(
   code: string,
@@ -74,69 +70,48 @@ export async function transformMain(
 
   if (!isAppVue) {
     // template
-    const inputRoot = normalizePath(options.root)
-    const templateStartLine = descriptor.template?.loc.start.line ?? 0
-    const templateResult = await genTemplateCode(descriptor, {
-      ...options,
-      mode: 'function',
-      rootDir: options.root,
-      filename: relativeFileName,
-      className,
-      prefixIdentifiers: true,
-      inMap: descriptor.template?.map,
-      matchEasyCom: (tag, uts) => {
-        const source = matchEasycom(tag)
-        if (uts && source) {
-          if (source.startsWith(inputRoot)) {
-            return '@/' + normalizePath(path.relative(inputRoot, source))
-          }
-          return parseUTSImportFilename(source)
-        }
-        return source
-      },
-      onWarn(warning) {
-        onTemplateLog(
-          'warn',
-          warning,
-          code,
+    const hasTemplateImport =
+      descriptor.template && !isUseInlineTemplate(descriptor, true)
+    if (hasTemplateImport) {
+      const templateResult = genTemplateCode(
+        descriptor,
+        resolveGenTemplateCodeOptions(
           relativeFileName,
-          templateStartLine
+          code,
+          descriptor,
+          options
         )
-      },
-      onError(error) {
-        onTemplateLog('error', error, code, relativeFileName, templateStartLine)
-      },
-      parseUTSComponent,
-    })
-
-    templateCode = templateResult.code
-    templateMap = templateResult.map
-    const {
-      easyComponentAutoImports,
-      elements,
-      importEasyComponents,
-      importUTSComponents,
-      imports,
-    } = templateResult
-
-    templateImportEasyComponentsCode = importEasyComponents.join('\n')
-    templateImportUTSComponentsCode = importUTSComponents.join('\n')
-    templateImportsCode = imports.join('\n')
-
-    Object.keys(easyComponentAutoImports).forEach((source) => {
-      addAutoImports(source, easyComponentAutoImports[source])
-    })
-
-    if (process.env.NODE_ENV === 'production') {
-      addExtApiComponents(
-        elements.filter((element) => {
-          // 如果是UTS原生组件，则无需记录摇树
-          if (parseUTSComponent(element, 'kotlin')) {
-            return false
-          }
-          return true
-        })
       )
+
+      templateCode = templateResult.code
+      templateMap = templateResult.map
+      const {
+        easyComponentAutoImports,
+        elements,
+        importEasyComponents,
+        importUTSComponents,
+        imports,
+      } = templateResult
+
+      templateImportEasyComponentsCode = importEasyComponents.join('\n')
+      templateImportUTSComponentsCode = importUTSComponents.join('\n')
+      templateImportsCode = imports.join('\n')
+
+      Object.keys(easyComponentAutoImports).forEach((source) => {
+        addAutoImports(source, easyComponentAutoImports[source])
+      })
+
+      if (process.env.NODE_ENV === 'production') {
+        addExtApiComponents(
+          elements.filter((element) => {
+            // 如果是UTS原生组件，则无需记录摇树
+            if (parseUTSComponent(element, 'kotlin')) {
+              return false
+            }
+            return true
+          })
+        )
+      }
     }
   }
 
@@ -389,27 +364,5 @@ function createTryResolve(
         }
       }
     }
-  }
-}
-
-function onTemplateLog(
-  type: 'warn' | 'error',
-  error: CompilerError,
-  code: string,
-  relativeFileName: string,
-  templateStartLine: number
-) {
-  console.error(type + ': ' + error.message)
-  if (error.loc) {
-    const start = error.loc.start
-    console.log(
-      'at ' +
-        relativeFileName +
-        ':' +
-        (start.line + templateStartLine - 1) +
-        ':' +
-        (start.column - 1)
-    )
-    console.log(generateCodeFrameColumns(code, error.loc))
   }
 }

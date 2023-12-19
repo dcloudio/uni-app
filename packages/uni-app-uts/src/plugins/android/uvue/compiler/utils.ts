@@ -5,7 +5,7 @@ import { ExpressionNode, createSimpleExpression } from '@vue/compiler-core'
 import { MagicString, walk } from '@vue/compiler-sfc'
 import { parseExpression } from '@babel/parser'
 import { normalizePath } from '@dcloudio/uni-cli-shared'
-import { CompilerOptions } from './options'
+import { TemplateCompilerOptions } from './options'
 import { stringifyExpression } from './transforms/transformExpression'
 import { TransformContext } from './transform'
 import { CompilerError } from './errors'
@@ -13,7 +13,7 @@ import { genClassName } from '../../utils'
 
 export function genRenderFunctionDecl({
   className = '',
-}: CompilerOptions): string {
+}: TemplateCompilerOptions): string {
   return `function ${className}Render(): VNode | null`
 }
 

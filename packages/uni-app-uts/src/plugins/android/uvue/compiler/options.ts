@@ -16,6 +16,11 @@ interface SharedTransformCodegenOptions {
    */
   bindingMetadata?: BindingMetadata
   /**
+   * Compile the function for inlining inside setup().
+   * This allows the function to directly access setup() local bindings.
+   */
+  inline?: boolean
+  /**
    * Filename for source map generation.
    * Also used for self-recursive reference in templates
    * @default ''
@@ -113,7 +118,7 @@ export interface TransformOptions
   slotted?: boolean
 }
 
-export type CompilerOptions = {
+export type TemplateCompilerOptions = {
   /**
    * e.g. platform native elements, e.g. `<div>` for browsers
    */
@@ -124,6 +129,7 @@ export type CompilerOptions = {
 export interface CodegenResult {
   ast?: RootNode
   code: string
+  preamble?: string
   easyComponentAutoImports: Record<string, [string, string]>
   importEasyComponents: string[]
   importUTSComponents: string[]

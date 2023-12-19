@@ -26,6 +26,16 @@ export function setResolvedScript(
   scriptCache.set(descriptor, script)
 }
 
+// Check if we can use compile template as inlined render function
+// inside <script setup>. This can only be done for build because
+// inlined template cannot be individually hot updated.
+export function isUseInlineTemplate(
+  descriptor: SFCDescriptor,
+  isProd: boolean
+): boolean {
+  return isProd && !!descriptor.scriptSetup && !descriptor.template?.src
+}
+
 export const scriptIdentifier = `_sfc_main`
 
 export function resolveScript(
@@ -48,6 +58,7 @@ export function resolveScript(
     id: descriptor.id,
     isProd: options.isProduction,
     inlineTemplate: true,
+    hoistStatic: false,
     templateOptions: resolveTemplateCompilerOptions(descriptor, options),
     sourceMap: options.sourceMap,
     // genDefaultAs: scriptIdentifier,

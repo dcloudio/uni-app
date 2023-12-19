@@ -1,11 +1,11 @@
 import { SFCDescriptor } from '@vue/compiler-sfc'
 import { compile } from '../compiler'
-import { CompilerOptions } from '../compiler/options'
+import { TemplateCompilerOptions } from '../compiler/options'
 import { genRenderFunctionDecl } from '../compiler/utils'
 
 export function genTemplate(
   { template }: SFCDescriptor,
-  options: CompilerOptions
+  options: TemplateCompilerOptions
 ) {
   if (!template || !template.content) {
     return {

@@ -3,9 +3,78 @@ import type {
   SFCDescriptor,
   SFCTemplateCompileOptions,
 } from 'vue/compiler-sfc'
+import path from 'path'
+import {
+  generateCodeFrameColumns,
+  matchEasycom,
+  normalizePath,
+  parseUTSComponent,
+} from '@dcloudio/uni-cli-shared'
 
 import { getResolvedScript } from './script'
 import type { ResolvedOptions } from '.'
+import { TemplateCompilerOptions } from '../compiler/options'
+import { genClassName, parseUTSImportFilename } from '../../utils'
+import { CompilerError } from '../compiler/errors'
+
+export function resolveGenTemplateCodeOptions(
+  relativeFileName: string,
+  code: string,
+  descriptor: SFCDescriptor,
+  options: ResolvedOptions
+): TemplateCompilerOptions {
+  const inputRoot = normalizePath(options.root)
+  const className = genClassName(relativeFileName)
+  const templateStartLine = descriptor.template?.loc.start.line ?? 0
+  return {
+    ...options,
+    mode: 'function',
+    rootDir: options.root,
+    filename: relativeFileName,
+    className,
+    prefixIdentifiers: true,
+    inMap: descriptor.template?.map,
+    matchEasyCom: (tag, uts) => {
+      const source = matchEasycom(tag)
+      if (uts && source) {
+        if (source.startsWith(inputRoot)) {
+          return '@/' + normalizePath(path.relative(inputRoot, source))
+        }
+        return parseUTSImportFilename(source)
+      }
+      return source
+    },
+    onWarn(warning) {
+      onTemplateLog('warn', warning, code, relativeFileName, templateStartLine)
+    },
+    onError(error) {
+      onTemplateLog('error', error, code, relativeFileName, templateStartLine)
+    },
+    parseUTSComponent,
+  }
+}
+
+function onTemplateLog(
+  type: 'warn' | 'error',
+  error: CompilerError,
+  code: string,
+  relativeFileName: string,
+  templateStartLine: number
+) {
+  console.error(type + ': ' + error.message)
+  if (error.loc) {
+    const start = error.loc.start
+    console.log(
+      'at ' +
+        relativeFileName +
+        ':' +
+        (start.line + templateStartLine - 1) +
+        ':' +
+        (start.column - 1)
+    )
+    console.log(generateCodeFrameColumns(code, error.loc))
+  }
+}
 
 export function resolveTemplateCompilerOptions(
   descriptor: SFCDescriptor,

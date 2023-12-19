@@ -133,11 +133,11 @@ describe('uts:sourceMap', () => {
       sourceMapFile,
       filename,
       line: 3,
-      column: 17,
+      column: 18,
       outputDir,
     })
     expect(res).toEqual({
-      line: 17,
+      line: 18,
       column: 16,
       lastColumn: null,
       source: resolve(
@@ -161,7 +161,7 @@ describe('uts:sourceMap', () => {
     )
     const { line, column, source } = await originalPositionFor({
       sourceMapFile,
-      line: 17,
+      line: 18,
       column: 16,
     })
 
@@ -171,7 +171,7 @@ describe('uts:sourceMap', () => {
 
     const originalPosition = await originalPositionFor({
       sourceMapFile,
-      line: 83,
+      line: 84,
       column: 0,
       withSourceContent: true,
     })

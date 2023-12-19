@@ -1,5 +1,5 @@
 import { compile } from '../../src/plugins/android/uvue/compiler/index'
-import { CompilerOptions } from '../../src/plugins/android/uvue/compiler/options'
+import { TemplateCompilerOptions } from '../../src/plugins/android/uvue/compiler/options'
 import { NodeTypes } from '@vue/compiler-core'
 import {
   isString,
@@ -12,11 +12,11 @@ import {
 export function assert(
   template: string,
   templateCode: string,
-  options: Omit<CompilerOptions, 'rootDir'> = {
+  options: Omit<TemplateCompilerOptions, 'rootDir'> = {
     targetLanguage: 'kotlin',
   }
 ) {
-  const compilerOptions: CompilerOptions = {
+  const compilerOptions: TemplateCompilerOptions = {
     rootDir: '',
     filename: 'pages/index/index.uvue',
     className: 'PagesIndexIndex',

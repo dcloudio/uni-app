@@ -1,3 +1,4 @@
+@file:Suppress("UNCHECKED_CAST")
 package uts.modules.modules.testUniPlugin;
 import io.dcloud.uts.*;
 import io.dcloud.uts.Map;

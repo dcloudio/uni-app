@@ -9,8 +9,18 @@ export interface ResolvedOptions {
   compiler: typeof _compiler
   root: string
   sourceMap: boolean
-  targetLanguage?: 'kotlin' | 'swift' | 'javascript'
+  targetLanguage?: 'kotlin'
   classNamePrefix?: string
+}
+
+export function getResolvedOptions(): ResolvedOptions {
+  return {
+    root: process.env.UNI_INPUT_DIR,
+    sourceMap: process.env.NODE_ENV === 'development',
+    // eslint-disable-next-line no-restricted-globals
+    compiler: require('@vue/compiler-sfc'),
+    targetLanguage: process.env.UNI_UTS_TARGET_LANGUAGE as 'kotlin',
+  }
 }
 
 // compiler-sfc should be exported so it can be re-used

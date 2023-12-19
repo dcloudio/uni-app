@@ -1,1 +1,1 @@
-{"version":3,"sources":["utssdk/test-uts/app-android/index.uts"],"sourcesContent":["export function test(): number {\n  return 1\n}\n"],"names":[],"mappings":";;;;;;AAAO,IAAS,QAAQ,MAAM,CAAC;IAC7B,OAAO,CAAC;AACV;gBAFwB,MAAM"}
+{"version":3,"sources":["utssdk/test-uts/app-android/index.uts"],"sourcesContent":["export function test(): number {\n  return 1\n}\n"],"names":[],"mappings":";;;;;;;AAAO,IAAS,QAAQ,MAAM,CAAC;IAC7B,OAAO,CAAC;AACV;gBAFwB,MAAM"}

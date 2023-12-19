@@ -1,12 +1,10 @@
 import {
   BindingTypes,
-  UNREF,
   isFunctionType,
   walkIdentifiers,
 } from '@vue/compiler-dom'
 import type { SFCDescriptor, SFCScriptBlock } from '@vue/compiler-sfc'
 import type { ParserPlugin } from '@babel/parser'
-import { generateCodeFrame } from '@vue/shared'
 import {
   Node,
   Declaration,
@@ -23,7 +21,7 @@ import {
   processNormalScript,
   normalScriptDefaultVar,
 } from './script/normalScript'
-import { compileTemplate, SFCTemplateCompileOptions } from '@vue/compiler-sfc'
+import { SFCTemplateCompileOptions } from '@vue/compiler-sfc'
 import { warnOnce } from './warn'
 import { ScriptCompileContext } from './script/context'
 import {
@@ -49,6 +47,9 @@ import {
 } from './script/utils'
 import { analyzeScriptBindings } from './script/analyzeScriptBindings'
 import { processAwait } from './script/topLevelAwait'
+import { genTemplateCode } from '../../code/template'
+import { resolveGenTemplateCodeOptions } from '../template'
+import { parseUTSRelativeFilename } from '../../../utils'
 
 export const DEFAULT_FILENAME = 'anonymous.vue'
 
@@ -865,54 +866,69 @@ export function compileScript(
       }
       // inline render function mode - we are going to compile the template and
       // inline it right here
-      const { code, ast, preamble, tips, errors } = compileTemplate({
-        filename,
-        source: sfc.template.content,
-        inMap: sfc.template.map,
-        ...options.templateOptions,
-        id: scopeId,
-        scoped: sfc.styles.some((s) => s.scoped),
-        isProd: options.isProd,
-        ssrCssVars: sfc.cssVars,
-        compilerOptions: {
-          ...(options.templateOptions &&
-            options.templateOptions.compilerOptions),
-          inline: true,
-          isTS: true,
-          bindingMetadata: ctx.bindingMetadata,
-        },
-      })
-      if (tips.length) {
-        tips.forEach(warnOnce)
-      }
-      const err = errors[0]
-      if (typeof err === 'string') {
-        throw new Error(err)
-      } else if (err) {
-        if (err.loc) {
-          err.message +=
-            `\n\n` +
-            sfc.filename +
-            '\n' +
-            generateCodeFrame(
-              source,
-              err.loc.start.offset,
-              err.loc.end.offset
-            ) +
-            `\n`
-        }
-        throw err
-      }
-      if (preamble) {
-        ctx.s.prepend(preamble)
-      }
+      const templateResult = genTemplateCode(
+        sfc,
+        resolveGenTemplateCodeOptions(
+          parseUTSRelativeFilename(sfc.filename),
+          sfc.source,
+          sfc,
+          {
+            root: process.env.UNI_INPUT_DIR,
+            sourceMap: process.env.NODE_ENV === 'development',
+            // eslint-disable-next-line no-restricted-globals
+            compiler: require('@vue/compiler-sfc'),
+            targetLanguage: process.env.UNI_UTS_TARGET_LANGUAGE as 'kotlin',
+          }
+        )
+      )
+      // const { code, ast, preamble, tips, errors } = compileTemplate({
+      //   filename,
+      //   source: sfc.template.content,
+      //   inMap: sfc.template.map,
+      //   ...options.templateOptions,
+      //   id: scopeId,
+      //   scoped: sfc.styles.some((s) => s.scoped),
+      //   isProd: options.isProd,
+      //   ssrCssVars: sfc.cssVars,
+      //   compilerOptions: {
+      //     ...(options.templateOptions &&
+      //       options.templateOptions.compilerOptions),
+      //     inline: true,
+      //     isTS: true,
+      //     bindingMetadata: ctx.bindingMetadata,
+      //   },
+      // })
+      // if (tips.length) {
+      //   tips.forEach(warnOnce)
+      // }
+      // const err = errors[0]
+      // if (typeof err === 'string') {
+      //   throw new Error(err)
+      // } else if (err) {
+      //   if (err.loc) {
+      //     err.message +=
+      //       `\n\n` +
+      //       sfc.filename +
+      //       '\n' +
+      //       generateCodeFrame(
+      //         source,
+      //         err.loc.start.offset,
+      //         err.loc.end.offset
+      //       ) +
+      //       `\n`
+      //   }
+      //   throw err
+      // }
+      // if (preamble) {
+      //   ctx.s.prepend(preamble)
+      // }
       // avoid duplicated unref import
       // as this may get injected by the render function preamble OR the
       // css vars codegen
-      if (ast && ast.helpers.has(UNREF)) {
-        ctx.helperImports.delete('unref')
-      }
-      returned = code
+      // if (ast && ast.helpers.has(UNREF)) {
+      //   ctx.helperImports.delete('unref')
+      // }
+      returned = templateResult.code
     } else {
       returned = `() => {}`
     }
@@ -986,13 +1002,13 @@ export function compileScript(
   ctx.s.appendRight(endOffset, `})`)
 
   // 12. finalize Vue helper imports
-  if (ctx.helperImports.size > 0) {
-    ctx.s.prepend(
-      `import { ${[...ctx.helperImports]
-        .map((h) => `${h} as _${h}`)
-        .join(', ')} } from 'vue'\n`
-    )
-  }
+  // if (ctx.helperImports.size > 0) {
+  //   ctx.s.prepend(
+  //     `import { ${[...ctx.helperImports]
+  //       .map((h) => `${h} as _${h}`)
+  //       .join(', ')} } from 'vue'\n`
+  //   )
+  // }
 
   ctx.s.trim()
 

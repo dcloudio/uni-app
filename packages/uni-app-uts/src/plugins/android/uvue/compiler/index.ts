@@ -14,7 +14,7 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import './runtimeHelpers'
 
-import { CodegenResult, CompilerOptions } from './options'
+import { CodegenResult, TemplateCompilerOptions } from './options'
 import { generate } from './codegen'
 import { DirectiveTransform, NodeTransform, transform } from './transform'
 import { transformIf } from './transforms/vIf'
@@ -80,7 +80,7 @@ export function getBaseTransformPreset(
 
 export function compile(
   template: string,
-  options: CompilerOptions
+  options: TemplateCompilerOptions
 ): CodegenResult {
   options.rootDir = options.rootDir || ''
   options.targetLanguage = options.targetLanguage || 'kotlin'
@@ -191,7 +191,7 @@ function mapLines(oldMap: RawSourceMap, newMap: RawSourceMap): RawSourceMap {
   return generator.toJSON()
 }
 
-function wrapOptionsLog(source: string, options: CompilerOptions) {
+function wrapOptionsLog(source: string, options: TemplateCompilerOptions) {
   const { onWarn, onError, inMap } = options
   if (inMap && inMap.sourcesContent?.length) {
     if (onWarn || onError) {

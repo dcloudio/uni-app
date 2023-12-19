@@ -101,6 +101,7 @@ function createCodegenContext(
     mode = 'default',
     prefixIdentifiers = false,
     bindingMetadata = {},
+    inline = false,
     sourceMap = false,
     filename = '',
     matchEasyCom = NOOP,
@@ -115,6 +116,7 @@ function createCodegenContext(
     mode,
     prefixIdentifiers,
     bindingMetadata,
+    inline,
     sourceMap,
     filename,
     source: ast.loc.source,
@@ -204,12 +206,20 @@ export function generate(
 ): CodegenResult {
   const context = createCodegenContext(ast, options)
   const { mode, deindent, indent, push, newline } = context
+  const isSetupInlined = !!options.inline
+  // preambles
+  // in setup() inline mode, the preamble is generated in a sub context
+  // and returned separately.
+  const preambleContext = isSetupInlined
+    ? createCodegenContext(ast, options)
+    : context
+
   if (mode === 'function') {
-    push(UTS_COMPONENT_ELEMENT_IMPORTS)
+    preambleContext.push(UTS_COMPONENT_ELEMENT_IMPORTS)
     newline()
-    genEasyComImports(ast.components, context)
+    genEasyComImports(ast.components, preambleContext)
     if (ast.imports.length) {
-      genImports(ast.imports, context)
+      genImports(ast.imports, preambleContext)
       newline()
     }
     push(genRenderFunctionDecl(options) + ` {`)
@@ -247,7 +257,7 @@ export function generate(
     push(`}`)
   }
 
-  context.code = context.code.replace(
+  preambleContext.code = preambleContext.code.replace(
     UTS_COMPONENT_ELEMENT_IMPORTS,
     context.importUTSElements.length
       ? context.importUTSElements.join(';') + ';'
@@ -257,6 +267,7 @@ export function generate(
   return {
     ast,
     code: context.code,
+    preamble: isSetupInlined ? preambleContext.code : ``,
     easyComponentAutoImports: context.easyComponentAutoImports,
     importEasyComponents: context.importEasyComponents,
     importUTSComponents: context.importUTSComponents,

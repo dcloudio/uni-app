@@ -38,6 +38,7 @@ import {
   ResolvedOptions,
   createDescriptor,
   getDescriptor,
+  getResolvedOptions,
   getSrcDescriptor,
 } from './descriptorCache'
 import {
@@ -63,14 +64,7 @@ import { transformMain } from './sfc/main'
 export function uniAppUVuePlugin(opts: {
   autoImportOptions?: AutoImportOptions
 }): Plugin {
-  const options: ResolvedOptions = {
-    root: process.env.UNI_INPUT_DIR,
-    sourceMap: process.env.NODE_ENV === 'development',
-    // eslint-disable-next-line no-restricted-globals
-    compiler: require('@vue/compiler-sfc'),
-    targetLanguage: process.env.UNI_UTS_TARGET_LANGUAGE,
-  }
-
+  const options = getResolvedOptions()
   const appVue = resolveAppVue(process.env.UNI_INPUT_DIR)
   function isAppVue(id: string) {
     return normalizePath(id) === appVue
