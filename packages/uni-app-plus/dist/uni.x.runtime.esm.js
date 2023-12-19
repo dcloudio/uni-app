@@ -780,8 +780,11 @@ const NavigateBackProtocol =
         type: Number,
     },
 }, createAnimationProtocol(ANIMATION_OUT));
+const RedirectToProtocol = BaseRouteProtocol;
 const NavigateToOptions = 
 /*#__PURE__*/ createRouteOptions(API_NAVIGATE_TO);
+const RedirectToOptions = 
+/*#__PURE__*/ createRouteOptions(API_REDIRECT_TO);
 const NavigateBackOptions = {
     formatArgs: {
         delta(value, params) {
@@ -887,17 +890,24 @@ function createNormalizeUrl(type) {
     };
 }
 
+const downgrade = !true  ;
 const ANI_SHOW = 'pop-in';
 const ANI_DURATION = 300;
+const ANI_CLOSE = downgrade ? 'slide-out-right' : 'pop-out';
 
 function showWebview(nPage, animationType, animationDuration, showCallback, delay) {
-    // TODO options
     nPage.startRender();
-    nPage.show();
+    nPage.show(new Map([
+        ['animationType', animationType],
+        ['animationDuration', animationDuration],
+    ]), showCallback);
 }
-function closeWebview(nPage, animationType, animationDuration) {
-    // options
-    nPage.close();
+function closeWebview(nPage, animationType, animationDuration, callback) {
+    const options = new Map([['animationType', animationType]]);
+    if (typeof animationDuration === 'number') {
+        options.set('animationDuration', animationDuration);
+    }
+    nPage.close(options, callback);
 }
 
 let id = 1 ;
@@ -1040,12 +1050,18 @@ function _navigateTo({ url, path, query, events, aniType, aniDuration, }) {
     invokeHook(ON_HIDE);
     const eventChannel = new EventChannel(getWebviewId() + 1, events);
     return new Promise((resolve) => {
-        showWebview(registerPage({ url, path, query, openType: 'navigateTo', eventChannel }));
+        showWebview(registerPage({ url, path, query, openType: 'navigateTo', eventChannel }), aniType, aniDuration, () => {
+            resolve({ eventChannel });
+        });
         // TODO uni-app x
         // setStatusBarStyle()
     });
 }
 function initAnimation(path, animationType, animationDuration) {
+    // 首页去除动画
+    if (!getCurrentPage()) {
+        return ['none', 0];
+    }
     const { globalStyle } = __uniConfig;
     const meta = getRouteMeta(path);
     return [
@@ -1080,7 +1096,7 @@ const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, (args, { resolve, reject 
     // TODO isDirectPage
     else {
         const { delta, animationType, animationDuration } = args;
-        back(delta, animationType);
+        back(delta, animationType, animationDuration);
     }
     return resolve();
 }, NavigateBackProtocol, NavigateBackOptions);
@@ -1094,38 +1110,73 @@ function back(delta, animationType, animationDuration) {
             .slice(len - delta, len - 1)
             .reverse()
             .forEach((deltaPage) => {
-            closeWebview(__pageManager.findPageById(deltaPage.$page.id + ''));
+            closeWebview(__pageManager.findPageById(deltaPage.$page.id + ''), 'none', 0);
         });
     }
     const backPage = function (webview) {
         if (animationType) {
-            closeWebview(webview);
+            animationDuration = animationDuration || ANI_DURATION;
         }
         else {
             if (currentPage.$page.openType === 'redirectTo') {
                 // 如果是 redirectTo 跳转的，需要指定 back 动画
-                closeWebview(webview);
+                animationType = ANI_CLOSE;
+                animationDuration = ANI_DURATION;
             }
             else {
-                closeWebview(webview);
+                animationType = 'auto';
             }
         }
-        pages
-            .slice(len - delta, len)
-            .forEach((page) => removePage(page));
+        closeWebview(webview, animationType, animationDuration, () => {
+            pages
+                .slice(len - delta, len)
+                .forEach((page) => removePage(page));
+            // 前一个页面触发 onShow
+            invokeHook(ON_SHOW);
+        });
         // TODO setStatusBarStyle()
-        // 前一个页面触发 onShow
-        invokeHook(ON_SHOW);
     };
     const webview = __pageManager.findPageById(currentPage.$page.id + '');
     // TODO 处理子 view
     backPage(webview);
 }
 
+const redirectTo = defineAsyncApi(API_REDIRECT_TO, ({ url }, { resolve, reject }) => {
+    const { path, query } = parseUrl(url);
+    _redirectTo({
+        url,
+        path,
+        query,
+    })
+        .then(resolve)
+        .catch(reject);
+}, RedirectToProtocol, RedirectToOptions);
+function _redirectTo({ url, path, query, }) {
+    const lastPage = getCurrentPage();
+    lastPage && removePage(lastPage);
+    return new Promise((resolve) => {
+        showWebview(registerPage({
+            url,
+            path,
+            query,
+            openType: 'redirectTo',
+        }), 'none', 0, () => {
+            if (lastPage) {
+                const nPage = __pageManager.findPageById(lastPage.$page.id + '');
+                // TODO preload removePreloadWebview
+                nPage.close(new Map([['animationType', 'none']]));
+            }
+            resolve(undefined);
+        });
+        // TODO setStatusBarStyle()
+    });
+}
+
 var uni$1 = {
   __proto__: null,
   navigateBack: navigateBack,
-  navigateTo: navigateTo
+  navigateTo: navigateTo,
+  redirectTo: redirectTo
 };
 
 function initAppLaunch(appVm) {
