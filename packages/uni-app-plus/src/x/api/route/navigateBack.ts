@@ -72,21 +72,24 @@ function back(
 
   const backPage = function (webview: IPage) {
     if (animationType) {
-      closeWebview(webview, animationType, animationDuration || ANI_DURATION)
+      animationDuration = animationDuration || ANI_DURATION
     } else {
       if (currentPage.$page.openType === 'redirectTo') {
         // 如果是 redirectTo 跳转的，需要指定 back 动画
-        closeWebview(webview, ANI_CLOSE, ANI_DURATION)
+        animationType = ANI_CLOSE
+        animationDuration = ANI_DURATION
       } else {
-        closeWebview(webview, 'auto')
+        animationType = 'auto'
       }
     }
-    pages
-      .slice(len - delta, len)
-      .forEach((page) => removePage(page as ComponentPublicInstance))
+    closeWebview(webview, animationType, animationDuration, () => {
+      pages
+        .slice(len - delta, len)
+        .forEach((page) => removePage(page as ComponentPublicInstance))
+      // 前一个页面触发 onShow
+      invokeHook(ON_SHOW)
+    })
     // TODO setStatusBarStyle()
-    // 前一个页面触发 onShow
-    invokeHook(ON_SHOW)
   }
 
   const webview = __pageManager.findPageById(currentPage.$page.id + '')!

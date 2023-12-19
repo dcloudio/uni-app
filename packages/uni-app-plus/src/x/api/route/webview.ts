@@ -4,19 +4,28 @@ export function showWebview(
   nPage: IPage,
   animationType: string,
   animationDuration: number,
-  showCallback: Function,
+  showCallback: () => void,
   delay?: number
 ) {
-  // TODO options
   nPage.startRender()
-  nPage.show()
+  nPage.show(
+    new Map<string, any>([
+      ['animationType', animationType],
+      ['animationDuration', animationDuration],
+    ]),
+    showCallback
+  )
 }
 
 export function closeWebview(
   nPage: IPage,
   animationType: string,
-  animationDuration?: number
+  animationDuration?: number,
+  callback?: () => void
 ) {
-  // options
-  nPage.close()
+  const options = new Map<string, any>([['animationType', animationType]])
+  if (typeof animationDuration === 'number') {
+    options.set('animationDuration', animationDuration)
+  }
+  nPage.close(options, callback)
 }
