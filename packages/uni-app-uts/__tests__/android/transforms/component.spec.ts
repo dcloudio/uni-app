@@ -15,8 +15,7 @@ const _component_Foo = resolveComponent("Foo")
   ])
 }`,
       {
-        targetLanguage: 'kotlin',
-        mode: 'function',
+        mode: 'module',
       }
     )
   })

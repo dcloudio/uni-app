@@ -101,8 +101,7 @@ const _cache = this.$.renderCache
   ])
 }`,
       {
-        targetLanguage: 'kotlin',
-        mode: 'function',
+        mode: 'module',
       }
     )
   })
@@ -124,8 +123,7 @@ const _component_Foo = resolveComponent("Foo")
   ])
 }`,
       {
-        targetLanguage: 'kotlin',
-        mode: 'function',
+        mode: 'module',
       }
     )
   })
@@ -138,9 +136,7 @@ const _component_Foo = resolveComponent("Foo")
     createElementVNode("view")
   ])
 ])`,
-      {
-        targetLanguage: 'kotlin',
-      }
+      {}
     )
   })
 
@@ -163,8 +159,7 @@ const _component_Foo = resolveComponent("Foo")
   ])
 }`,
       {
-        targetLanguage: 'kotlin',
-        mode: 'function',
+        mode: 'module',
       }
     )
   })
@@ -188,8 +183,7 @@ const _component_Foo = resolveComponent("Foo")
   ])
 }`,
       {
-        targetLanguage: 'kotlin',
-        mode: 'function',
+        mode: 'module',
       }
     )
   })

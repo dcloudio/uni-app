@@ -249,7 +249,7 @@ export async function transformVue(
     const templateResult = genTemplate(descriptor, {
       rootDir: options.root,
       targetLanguage: options.targetLanguage as any,
-      mode: 'function',
+      mode: 'module',
       filename: relativeFileName,
       className: className,
       prefixIdentifiers: true,

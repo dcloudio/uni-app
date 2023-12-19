@@ -52,7 +52,11 @@ export function createTryResolve(
   offsetStart?: Position,
   origCode: string = ''
 ) {
-  return async (source: string, code: string, { ss, se }: ImportSpecifier) => {
+  return async (
+    source: string,
+    code: string,
+    { ss, se }: ImportSpecifier
+  ): Promise<boolean | void> => {
     const resolved = await wrapResolve(resolve)(source, importer)
     if (!resolved) {
       const { start, end } = offsetToStartAndEnd(code, ss, se)
@@ -116,7 +120,11 @@ export async function parseImports(
   for (const specifier of imports) {
     const source = code.slice(specifier.s, specifier.e)
     if (tryResolve) {
-      await tryResolve(source, code, specifier)
+      const res = await tryResolve(source, code, specifier)
+      if (res === false) {
+        // 忽略该import
+        continue
+      }
     }
     importsCode.push(`import "${source}"`)
   }

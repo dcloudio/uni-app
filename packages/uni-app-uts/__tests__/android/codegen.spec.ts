@@ -38,8 +38,7 @@ describe('compiler:codegen', () => {
       `
 function PagesIndexIndexRender(): VNode | null {\nconst _ctx = this\nconst _cache = this.$.renderCache\n  return createElementVNode("view")\n}`,
       {
-        targetLanguage: 'kotlin',
-        mode: 'function',
+        mode: 'module',
       }
     )
   })
@@ -48,8 +47,7 @@ function PagesIndexIndexRender(): VNode | null {\nconst _ctx = this\nconst _cach
       `<view><uts-hello/><uts-hello/></view>`,
       `import { UtsHelloElement } from 'uts.sdk.modules.utsHello';\nfunction PagesIndexIndexRender(): VNode | null {\nconst _ctx = this\nconst _cache = this.$.renderCache\n  return createElementVNode("view", null, [\n    createElementVNode(uts.sdk.modules.utsHello.UtsHelloComponent.name),\n    createElementVNode(uts.sdk.modules.utsHello.UtsHelloComponent.name)\n  ])\n}`,
       {
-        targetLanguage: 'kotlin',
-        mode: 'function',
+        mode: 'module',
         parseUTSComponent(name) {
           if (name === 'uts-hello') {
             return {
@@ -65,8 +63,7 @@ function PagesIndexIndexRender(): VNode | null {\nconst _ctx = this\nconst _cach
       `<view><uts-hello/><uts-hello/><uts-hello1/></view>`,
       `import { UtsHelloElement } from 'uts.sdk.modules.utsHello';import { UtsHello1Element } from 'uts.sdk.modules.utsHello';\nfunction PagesIndexIndexRender(): VNode | null {\nconst _ctx = this\nconst _cache = this.$.renderCache\n  return createElementVNode("view", null, [\n    createElementVNode(uts.sdk.modules.utsHello.UtsHelloComponent.name),\n    createElementVNode(uts.sdk.modules.utsHello.UtsHelloComponent.name),\n    createElementVNode(uts.sdk.modules.utsHello.UtsHello1Component.name)\n  ])\n}`,
       {
-        targetLanguage: 'kotlin',
-        mode: 'function',
+        mode: 'module',
         parseUTSComponent(name) {
           if (name === 'uts-hello') {
             return {
@@ -109,8 +106,7 @@ const _component_index1 = resolveComponent("index1")
   ])
 }`,
       {
-        targetLanguage: 'kotlin',
-        mode: 'function',
+        mode: 'module',
         matchEasyCom(tag) {
           if (tag.startsWith('custom') || tag === 'index') {
             return `@/components/${tag}/${tag}.vue`
@@ -129,8 +125,7 @@ const _component_index = resolveComponent("index", true)
   return createVNode(_component_index)
 }`,
       {
-        targetLanguage: 'kotlin',
-        mode: 'function',
+        mode: 'module',
       }
     )
   })
@@ -160,8 +155,7 @@ const _component_index1 = resolveComponent("index1")
   ])
 }`,
       {
-        targetLanguage: 'kotlin',
-        mode: 'function',
+        mode: 'module',
         parseUTSComponent(name) {
           if (name === 'uts-hello') {
             return {
@@ -191,8 +185,7 @@ const _cache = this.$.renderCache
   return createElementVNode(\"image\", utsMapOf({ src: _imports_0 }))
 }`,
       {
-        targetLanguage: 'kotlin',
-        mode: 'function',
+        mode: 'module',
       }
     )
   })

@@ -9,7 +9,10 @@ export function genTemplate(
 ) {
   if (!template || !template.content) {
     return {
-      code: genRenderFunctionDecl(options) + ` { return null }`,
+      code:
+        options.mode === 'module'
+          ? genRenderFunctionDecl(options) + ` { return null }`
+          : `null`,
       easyComponentAutoImports: {},
       importEasyComponents: [],
       importUTSComponents: [],

@@ -46,14 +46,11 @@ import {
   getImportedName,
 } from './script/utils'
 import { analyzeScriptBindings } from './script/analyzeScriptBindings'
-import { processAwait } from './script/topLevelAwait'
-import { genTemplateCode } from '../../code/template'
-import { resolveGenTemplateCodeOptions } from '../template'
-import { parseUTSRelativeFilename } from '../../../utils'
 
 export const DEFAULT_FILENAME = 'anonymous.vue'
 
 export interface SFCScriptCompileOptions {
+  className: string
   /**
    * Scope ID for prefixing injected CSS variables.
    * This must be consistent with the `id` passed to `compileStyle`.
@@ -197,7 +194,7 @@ export function compileScript(
 
   let defaultExport: Node | undefined
   let hasAwait = false
-  let hasInlinedSsrRenderFn = false
+  // let hasInlinedSsrRenderFn = false
 
   // string offsets
   const startOffset = ctx.startOffset!
@@ -615,25 +612,26 @@ export function compileScript(
             scope.push(child.body)
           }
           if (child.type === 'AwaitExpression') {
-            hasAwait = true
-            // if the await expression is an expression statement and
-            // - is in the root scope
-            // - or is not the first statement in a nested block scope
-            // then it needs a semicolon before the generated code.
-            const currentScope = scope[scope.length - 1]
-            const needsSemi = currentScope.some((n, i) => {
-              return (
-                (scope.length === 1 || i > 0) &&
-                n.type === 'ExpressionStatement' &&
-                n.start === child.start
-              )
-            })
-            processAwait(
-              ctx,
-              child,
-              needsSemi,
-              parent!.type === 'ExpressionStatement'
-            )
+            ctx.error(`<script setup> cannot contain Top-level await.`, node)
+            // hasAwait = true
+            // // if the await expression is an expression statement and
+            // // - is in the root scope
+            // // - or is not the first statement in a nested block scope
+            // // then it needs a semicolon before the generated code.
+            // const currentScope = scope[scope.length - 1]
+            // const needsSemi = currentScope.some((n, i) => {
+            //   return (
+            //     (scope.length === 1 || i > 0) &&
+            //     n.type === 'ExpressionStatement' &&
+            //     n.start === child.start
+            //   )
+            // })
+            // processAwait(
+            //   ctx,
+            //   child,
+            //   needsSemi,
+            //   parent!.type === 'ExpressionStatement'
+            // )
           }
         },
         exit(node: Node) {
@@ -767,13 +765,13 @@ export function compileScript(
   // }
 
   // 9. finalize setup() argument signature
-  let args = `__props`
-  if (ctx.propsTypeDecl) {
-    // mark as any and only cast on assignment
-    // since the user defined complex types may be incompatible with the
-    // inferred type from generated runtime declarations
-    args += `: any`
-  }
+  let args = `` //`__props`
+  // if (ctx.propsTypeDecl) {
+  //   // mark as any and only cast on assignment
+  //   // since the user defined complex types may be incompatible with the
+  //   // inferred type from generated runtime declarations
+  //   args += `: any`
+  // }
   // inject user assignment of props
   // we use a default __props so that template expressions referencing props
   // can use it directly
@@ -795,16 +793,16 @@ export function compileScript(
       ctx.s.overwrite(
         startOffset + ctx.propsCall!.start!,
         startOffset + ctx.propsCall!.end!,
-        '__props'
+        '_ctx'
       )
     }
   }
 
   // inject temp variables for async context preservation
-  if (hasAwait) {
-    const any = `: any`
-    ctx.s.prependLeft(startOffset, `\nlet __temp${any}, __restore${any}\n`)
-  }
+  // if (hasAwait) {
+  //   const any = `: any`
+  //   ctx.s.prependLeft(startOffset, `\nlet __temp${any}, __restore${any}\n`)
+  // }
 
   const destructureElements =
     ctx.hasDefineExposeCall || !options.inlineTemplate
@@ -818,121 +816,8 @@ export function compileScript(
   }
 
   // 10. generate return statement
-  let returned
-  if (
-    !options.inlineTemplate ||
-    (!sfc.template && ctx.hasDefaultExportRender)
-  ) {
-    // non-inline mode, or has manual render in normal <script>
-    // return bindings from script and script setup
-    const allBindings: Record<string, any> = {
-      ...scriptBindings,
-      ...setupBindings,
-    }
-    for (const key in ctx.userImports) {
-      if (
-        !ctx.userImports[key].isType &&
-        ctx.userImports[key].isUsedInTemplate
-      ) {
-        allBindings[key] = true
-      }
-    }
-    returned = `{ `
-    for (const key in allBindings) {
-      if (
-        allBindings[key] === true &&
-        ctx.userImports[key].source !== 'vue' &&
-        !ctx.userImports[key].source.endsWith('.vue')
-      ) {
-        // generate getter for import bindings
-        // skip vue imports since we know they will never change
-        returned += `get ${key}() { return ${key} }, `
-      } else if (ctx.bindingMetadata[key] === BindingTypes.SETUP_LET) {
-        // local let binding, also add setter
-        const setArg = key === 'v' ? `_v` : `v`
-        returned +=
-          `get ${key}() { return ${key} }, ` +
-          `set ${key}(${setArg}) { ${key} = ${setArg} }, `
-      } else {
-        returned += `${key}, `
-      }
-    }
-    returned = returned.replace(/, $/, '') + ` }`
-  } else {
-    // inline mode
-    if (sfc.template && !sfc.template.src) {
-      if (options.templateOptions && options.templateOptions.ssr) {
-        hasInlinedSsrRenderFn = true
-      }
-      // inline render function mode - we are going to compile the template and
-      // inline it right here
-      const templateResult = genTemplateCode(
-        sfc,
-        resolveGenTemplateCodeOptions(
-          parseUTSRelativeFilename(sfc.filename),
-          sfc.source,
-          sfc,
-          {
-            root: process.env.UNI_INPUT_DIR,
-            sourceMap: process.env.NODE_ENV === 'development',
-            // eslint-disable-next-line no-restricted-globals
-            compiler: require('@vue/compiler-sfc'),
-            targetLanguage: process.env.UNI_UTS_TARGET_LANGUAGE as 'kotlin',
-          }
-        )
-      )
-      // const { code, ast, preamble, tips, errors } = compileTemplate({
-      //   filename,
-      //   source: sfc.template.content,
-      //   inMap: sfc.template.map,
-      //   ...options.templateOptions,
-      //   id: scopeId,
-      //   scoped: sfc.styles.some((s) => s.scoped),
-      //   isProd: options.isProd,
-      //   ssrCssVars: sfc.cssVars,
-      //   compilerOptions: {
-      //     ...(options.templateOptions &&
-      //       options.templateOptions.compilerOptions),
-      //     inline: true,
-      //     isTS: true,
-      //     bindingMetadata: ctx.bindingMetadata,
-      //   },
-      // })
-      // if (tips.length) {
-      //   tips.forEach(warnOnce)
-      // }
-      // const err = errors[0]
-      // if (typeof err === 'string') {
-      //   throw new Error(err)
-      // } else if (err) {
-      //   if (err.loc) {
-      //     err.message +=
-      //       `\n\n` +
-      //       sfc.filename +
-      //       '\n' +
-      //       generateCodeFrame(
-      //         source,
-      //         err.loc.start.offset,
-      //         err.loc.end.offset
-      //       ) +
-      //       `\n`
-      //   }
-      //   throw err
-      // }
-      // if (preamble) {
-      //   ctx.s.prepend(preamble)
-      // }
-      // avoid duplicated unref import
-      // as this may get injected by the render function preamble OR the
-      // css vars codegen
-      // if (ast && ast.helpers.has(UNREF)) {
-      //   ctx.helperImports.delete('unref')
-      // }
-      returned = templateResult.code
-    } else {
-      returned = `() => {}`
-    }
-  }
+  // 剩余由 rust 编译器处理
+  const returned = `"INLINE_RENDER"`
 
   // if (!options.inlineTemplate && !__TEST__) {
   //   // in non-inline mode, the `__isScriptSetup: true` flag is used by
@@ -960,9 +845,9 @@ export function compileScript(
       runtimeOptions += `\n  __name: '${match[1]}',`
     }
   }
-  if (hasInlinedSsrRenderFn) {
-    runtimeOptions += `\n  __ssrInlineRender: true,`
-  }
+  // if (hasInlinedSsrRenderFn) {
+  //   runtimeOptions += `\n  __ssrInlineRender: true,`
+  // }
 
   const propsDecl = genRuntimeProps(ctx)
   if (propsDecl) runtimeOptions += `\n  props: ${propsDecl},`
@@ -970,17 +855,17 @@ export function compileScript(
   const emitsDecl = genRuntimeEmits(ctx)
   if (emitsDecl) runtimeOptions += `\n  emits: ${emitsDecl},`
 
-  let definedOptions = ''
-  if (ctx.optionsRuntimeDecl) {
-    definedOptions = scriptSetup.content
-      .slice(ctx.optionsRuntimeDecl.start!, ctx.optionsRuntimeDecl.end!)
-      .trim()
-  }
+  // let definedOptions = ''
+  // if (ctx.optionsRuntimeDecl) {
+  //   definedOptions = scriptSetup.content
+  //     .slice(ctx.optionsRuntimeDecl.start!, ctx.optionsRuntimeDecl.end!)
+  //     .trim()
+  // }
 
   // <script setup> components are closed by default. If the user did not
   // explicitly call `defineExpose`, call expose() with no args.
-  const exposeCall =
-    ctx.hasDefineExposeCall || options.inlineTemplate ? `` : `  __expose();\n`
+  const exposeCall = ``
+  // ctx.hasDefineExposeCall || options.inlineTemplate ? `` : `  __expose();\n`
   // wrap setup code with function.
 
   // for TS, make sure the exported type is still valid type with
@@ -988,18 +873,16 @@ export function compileScript(
   // we have to use object spread for types to be merged properly
   // user's TS setting should compile it down to proper targets
   // export default defineComponent({ ...__default__, ... })
-  const def =
-    (defaultExport ? `\n  ...${normalScriptDefaultVar},` : ``) +
-    (definedOptions ? `\n  ...${definedOptions},` : '')
   ctx.s.prependLeft(
     startOffset,
-    `\n${genDefaultAs} /*#__PURE__*/${ctx.helper(
-      `defineComponent`
-    )}({${def}${runtimeOptions}\n  ${
-      hasAwait ? `async ` : ``
-    }setup(${args}) {\n${exposeCall}`
+    `\n${genDefaultAs} {${runtimeOptions}\n  ` +
+      `${hasAwait ? `async ` : ``}setup(${args}) {
+const __ins = getCurrentInstance()!
+const _ctx = __ins.proxy as ${options.className}
+const _cache = __ins.renderCache
+${exposeCall}`
   )
-  ctx.s.appendRight(endOffset, `})`)
+  ctx.s.appendRight(endOffset, `}`)
 
   // 12. finalize Vue helper imports
   // if (ctx.helperImports.size > 0) {

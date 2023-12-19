@@ -13,7 +13,11 @@ import { genClassName } from '../../utils'
 
 export function genRenderFunctionDecl({
   className = '',
-}: TemplateCompilerOptions): string {
+}: // inline = false,
+TemplateCompilerOptions): string {
+  // if(inline){
+  //   return `(): VNode | null =>`
+  // }
   return `function ${className}Render(): VNode | null`
 }
 

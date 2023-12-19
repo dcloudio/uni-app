@@ -19,7 +19,7 @@ import {
 import type { Position } from '@vue/compiler-core'
 import type { ImportSpecifier } from 'es-module-lexer'
 import { createDescriptor, setSrcDescriptor } from '../descriptorCache'
-import { isUseInlineTemplate, resolveScript, scriptIdentifier } from './script'
+import { resolveScript, scriptIdentifier } from './script'
 import type { ResolvedOptions } from './index'
 import {
   addAutoImports,
@@ -55,13 +55,14 @@ export async function transformMain(
     return null
   }
 
-  // script
-  const { code: scriptCode, map: scriptMap } = await genScriptCode(
-    descriptor,
-    options
-  )
-
   const className = genClassName(relativeFileName)
+
+  // script
+  const { code: scriptCode, map: scriptMap } = await genScriptCode(descriptor, {
+    ...options,
+    className,
+  })
+
   let templateCode = ''
   let templateMap = undefined
   let templateImportsCode = ''
@@ -70,48 +71,45 @@ export async function transformMain(
 
   if (!isAppVue) {
     // template
-    const hasTemplateImport =
-      descriptor.template && !isUseInlineTemplate(descriptor, true)
-    if (hasTemplateImport) {
-      const templateResult = genTemplateCode(
-        descriptor,
-        resolveGenTemplateCodeOptions(
-          relativeFileName,
-          code,
-          descriptor,
-          options
-        )
-      )
-
-      templateCode = templateResult.code
-      templateMap = templateResult.map
-      const {
-        easyComponentAutoImports,
-        elements,
-        importEasyComponents,
-        importUTSComponents,
-        imports,
-      } = templateResult
-
-      templateImportEasyComponentsCode = importEasyComponents.join('\n')
-      templateImportUTSComponentsCode = importUTSComponents.join('\n')
-      templateImportsCode = imports.join('\n')
-
-      Object.keys(easyComponentAutoImports).forEach((source) => {
-        addAutoImports(source, easyComponentAutoImports[source])
+    const isInline = !!descriptor.scriptSetup
+    const templateResult = genTemplateCode(
+      descriptor,
+      resolveGenTemplateCodeOptions(relativeFileName, code, descriptor, {
+        mode: 'module',
+        inline: isInline,
+        rootDir: process.env.UNI_INPUT_DIR,
+        sourceMap: process.env.NODE_ENV === 'development',
       })
+    )
 
-      if (process.env.NODE_ENV === 'production') {
-        addExtApiComponents(
-          elements.filter((element) => {
-            // 如果是UTS原生组件，则无需记录摇树
-            if (parseUTSComponent(element, 'kotlin')) {
-              return false
-            }
-            return true
-          })
-        )
-      }
+    templateCode = templateResult.code
+    templateMap = templateResult.map
+    const {
+      easyComponentAutoImports,
+      elements,
+      importEasyComponents,
+      importUTSComponents,
+      imports,
+    } = templateResult
+
+    templateImportEasyComponentsCode = importEasyComponents.join('\n')
+    templateImportUTSComponentsCode = importUTSComponents.join('\n')
+    templateImportsCode = imports.join('\n')
+
+    Object.keys(easyComponentAutoImports).forEach((source) => {
+      addAutoImports(source, easyComponentAutoImports[source])
+    })
+
+    if (process.env.NODE_ENV === 'production') {
+      addExtApiComponents(
+        elements.filter((element) => {
+          // 如果是UTS原生组件，则无需记录摇树
+          if (parseUTSComponent(element, 'kotlin')) {
+            return false
+          }
+          return true
+        })
+      )
     }
   }
 
@@ -185,13 +183,18 @@ export default {}
     templateImportUTSComponentsCode,
     templateImportsCode,
   ]
-  // 仅需要再解析script中的import，template上边已经加入了
   if (scriptCode) {
     jsCodes.push(
       await parseImports(
         scriptCode,
         resolvedMap
-          ? createTryResolve(filename, pluginContext.resolve, resolvedMap)
+          ? createTryResolve(
+              filename,
+              pluginContext.resolve,
+              resolvedMap,
+              // 仅需要再解析script中的import，template上边已经加入了
+              (source) => source.includes('/.uvue/')
+            )
           : undefined
       )
     )
@@ -332,9 +335,13 @@ function attrsToQuery(
 function createTryResolve(
   importer: string,
   resolve: PluginContext['resolve'],
-  resolvedMap: RawSourceMap
+  resolvedMap: RawSourceMap,
+  ignore?: (source: string) => boolean
 ) {
   return async (source: string, code: string, { ss, se }: ImportSpecifier) => {
+    if (ignore && ignore(source)) {
+      return false
+    }
     const resolved = await wrapResolve(resolve)(source, importer)
     if (!resolved) {
       const { start, end } = offsetToStartAndEnd(code, ss, se)

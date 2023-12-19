@@ -210,11 +210,13 @@ export function generate(
   // preambles
   // in setup() inline mode, the preamble is generated in a sub context
   // and returned separately.
-  const preambleContext = isSetupInlined
-    ? createCodegenContext(ast, options)
-    : context
+  // const preambleContext = isSetupInlined
+  //   ? createCodegenContext(ast, options)
+  //   : context
+  // 目前不分割
+  const preambleContext = context
 
-  if (mode === 'function') {
+  if (mode === 'module') {
     preambleContext.push(UTS_COMPONENT_ELEMENT_IMPORTS)
     newline()
     genEasyComImports(ast.components, preambleContext)
@@ -224,9 +226,11 @@ export function generate(
     }
     push(genRenderFunctionDecl(options) + ` {`)
     newline()
-    push(`const _ctx = this`)
-    newline()
-    push(`const _cache = this.$.renderCache`)
+    if (!isSetupInlined) {
+      push(`const _ctx = this`)
+      newline()
+      push(`const _cache = this.$.renderCache`)
+    }
     // generate asset resolution statements
     if (ast.components.length) {
       newline()
@@ -252,7 +256,7 @@ export function generate(
   } else {
     push(`null`)
   }
-  if (mode === 'function') {
+  if (mode === 'module') {
     deindent()
     push(`}`)
   }
@@ -267,7 +271,7 @@ export function generate(
   return {
     ast,
     code: context.code,
-    preamble: isSetupInlined ? preambleContext.code : ``,
+    // preamble: isSetupInlined ? preambleContext.code : ``,
     easyComponentAutoImports: context.easyComponentAutoImports,
     importEasyComponents: context.importEasyComponents,
     importUTSComponents: context.importUTSComponents,

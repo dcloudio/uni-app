@@ -21,18 +21,21 @@ export function resolveGenTemplateCodeOptions(
   relativeFileName: string,
   code: string,
   descriptor: SFCDescriptor,
-  options: ResolvedOptions
+  options: {
+    mode: 'module' | 'default'
+    inline: boolean
+    rootDir: string
+    sourceMap: boolean
+  }
 ): TemplateCompilerOptions {
-  const inputRoot = normalizePath(options.root)
+  const inputRoot = normalizePath(options.rootDir)
   const className = genClassName(relativeFileName)
   const templateStartLine = descriptor.template?.loc.start.line ?? 0
   return {
     ...options,
-    mode: 'function',
-    rootDir: options.root,
     filename: relativeFileName,
     className,
-    prefixIdentifiers: true,
+    prefixIdentifiers: !options.inline,
     inMap: descriptor.template?.map,
     matchEasyCom: (tag, uts) => {
       const source = matchEasycom(tag)
