@@ -561,11 +561,20 @@ export function compileScript(
               left--
             }
           } else if (isDefineEmits) {
-            ctx.s.overwrite(
-              startOffset + init.start!,
-              startOffset + init.end!,
-              '__emit'
-            )
+            if (decl.id.type === 'Identifier') {
+              ctx.s.overwrite(
+                startOffset + node.start!,
+                startOffset + node.end!,
+                `function ${decl.id.name}(event: string, ...do_not_transform_spread: Array<any | null>) {
+__ins.emit(event, ...do_not_transform_spread)
+}`
+              )
+            }
+            // ctx.s.overwrite(
+            //   startOffset + init.start!,
+            //   startOffset + init.end!,
+            //   '__emit'
+            // )
           } else {
             lastNonRemoved = i
           }
@@ -804,16 +813,16 @@ export function compileScript(
   //   ctx.s.prependLeft(startOffset, `\nlet __temp${any}, __restore${any}\n`)
   // }
 
-  const destructureElements =
-    ctx.hasDefineExposeCall || !options.inlineTemplate
-      ? [`expose: __expose`]
-      : []
-  if (ctx.emitDecl) {
-    destructureElements.push(`emit: __emit`)
-  }
-  if (destructureElements.length) {
-    args += `, { ${destructureElements.join(', ')} }`
-  }
+  // const destructureElements =
+  //   ctx.hasDefineExposeCall || !options.inlineTemplate
+  //     ? [`expose: __expose`]
+  //     : []
+  // if (ctx.emitDecl) {
+  //   destructureElements.push(`emit: __emit`)
+  // }
+  // if (destructureElements.length) {
+  //   args += `, { ${destructureElements.join(', ')} }`
+  // }
 
   // 10. generate return statement
   // 剩余由 rust 编译器处理
