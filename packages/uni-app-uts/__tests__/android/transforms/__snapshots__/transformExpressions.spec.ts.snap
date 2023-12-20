@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`compiler: expression transform bindingMetadata inline mode 1`] = `"createElementVNode("view", null, toDisplayString(__props.props) + " " + toDisplayString(unref(setup)) + " " + toDisplayString(setupConst) + " " + toDisplayString(_ctx.data) + " " + toDisplayString(_ctx.options) + " " + toDisplayString(isNaN), 1 /* TEXT */)"`;
+
+exports[`compiler: expression transform bindingMetadata non-inline mode 1`] = `"createElementVNode("view", null, toDisplayString($props.props) + " " + toDisplayString($setup.setup) + " " + toDisplayString($data.data) + " " + toDisplayString($options.options) + " " + toDisplayString(isNaN), 1 /* TEXT */)"`;
+
+exports[`compiler: expression transform bindingMetadata should not prefix temp variable of for loop 1`] = `
+"createVNode(_component_div, utsMapOf({
+  onClick: () => {
+          for (let i = 0; i < _ctx.list.length; i++) {
+            _ctx.log(i)
+          }         
+        }
+}), null, 8 /* PROPS */, ["onClick"])"
+`;
+
+exports[`compiler: expression transform bindingMetadata should not prefix temp variable of for...in 1`] = `
+"createVNode(_component_div, utsMapOf({
+  onClick: () => {
+          for (const x in _ctx.list) {
+            _ctx.log(x)
+          }         
+        }
+}), null, 8 /* PROPS */, ["onClick"])"
+`;
+
+exports[`compiler: expression transform bindingMetadata should not prefix temp variable of for...of 1`] = `
+"createVNode(_component_div, utsMapOf({
+  onClick: () => {
+          for (const x of _ctx.list) {
+            _ctx.log(x)
+          }         
+        }
+}), null, 8 /* PROPS */, ["onClick"])"
+`;
