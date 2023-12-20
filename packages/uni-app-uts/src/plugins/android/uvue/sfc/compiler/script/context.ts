@@ -8,7 +8,6 @@ import { ModelDecl } from './defineModel'
 import type { BindingMetadata } from '@vue/compiler-core'
 import MagicString from 'magic-string'
 import { TypeScope } from './resolveType'
-
 export class ScriptCompileContext {
   scriptAst: Program | null
   scriptSetupAst: Program | null
@@ -135,11 +134,11 @@ export function resolveParserPlugins(
   dts = false
 ) {
   const plugins: ParserPlugin[] = []
-  if (userPlugins) {
-    // If don't match the case of adding jsx
-    // should remove the jsx from user options
-    userPlugins = userPlugins.filter((p) => p !== 'jsx')
-  }
+  // if (userPlugins) {
+  //   // If don't match the case of adding jsx
+  //   // should remove the jsx from user options
+  //   userPlugins = userPlugins.filter((p) => p !== 'jsx')
+  // }
   plugins.push(['typescript', { dts }])
   if (!userPlugins || !userPlugins.includes('decorators')) {
     plugins.push('decorators')

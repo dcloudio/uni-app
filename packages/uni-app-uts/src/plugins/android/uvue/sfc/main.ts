@@ -19,7 +19,7 @@ import {
 import type { Position } from '@vue/compiler-core'
 import type { ImportSpecifier } from 'es-module-lexer'
 import { createDescriptor, setSrcDescriptor } from '../descriptorCache'
-import { resolveScript, scriptIdentifier } from './script'
+import { resolveScript } from './script'
 import type { ResolvedOptions } from './index'
 import {
   addAutoImports,
@@ -122,7 +122,7 @@ export async function transformMain(
 export default {}
 `,
     templateCode,
-    `/*${className}Styles*/`,
+    `/*${className}Styles*/\n`,
   ]
 
   let resolvedMap: RawSourceMap | undefined = undefined
@@ -229,7 +229,7 @@ async function genScriptCode(
   code: string
   map: RawSourceMap | undefined
 }> {
-  let scriptCode = `const ${scriptIdentifier} = {}`
+  let scriptCode = `export default {}`
   let map: RawSourceMap | undefined
 
   const script = resolveScript(descriptor, options)

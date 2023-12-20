@@ -1,9 +1,9 @@
+import MagicString from 'magic-string'
+import { parseUTSRelativeFilename } from '../../../../utils'
 import { analyzeScriptBindings } from './analyzeScriptBindings'
 import { ScriptCompileContext } from './context'
-import MagicString from 'magic-string'
-import { rewriteDefaultAST } from '../rewriteDefault'
-
-export const normalScriptDefaultVar = `__default__`
+import { hasConsole, rewriteConsole } from './rewriteConsole'
+import { hasDebugError, rewriteDebugError } from './rewriteDebugError'
 
 export function processNormalScript(
   ctx: ScriptCompileContext,
@@ -19,18 +19,31 @@ export function processNormalScript(
     let map = script.map
     const scriptAst = ctx.scriptAst!
     const bindings = analyzeScriptBindings(scriptAst.body)
-    const { cssVars } = ctx.descriptor
-    const { genDefaultAs } = ctx.options
-
-    if (cssVars.length || genDefaultAs) {
-      const defaultVar = genDefaultAs || normalScriptDefaultVar
-      const s = new MagicString(content)
-      rewriteDefaultAST(scriptAst.body, s, defaultVar)
-      content = s.toString()
-
-      if (!genDefaultAs) {
-        content += `\nexport default ${defaultVar}`
+    const s = new MagicString(content)
+    const fileName = parseUTSRelativeFilename(ctx.descriptor.filename)
+    const startLine = (ctx.descriptor.script!.loc.start.line || 1) - 1
+    const startOffset = 0
+    if (
+      process.env.NODE_ENV === 'development' ||
+      process.env.UNI_RUST_TEST === 'true'
+    ) {
+      if (hasDebugError(content)) {
+        rewriteDebugError(scriptAst, s, {
+          fileName,
+          startLine,
+          startOffset,
+        })
       }
+    }
+    if (hasConsole(content)) {
+      rewriteConsole(scriptAst, s, {
+        fileName,
+        startLine,
+        startOffset,
+      })
+    }
+    if (s.hasChanged()) {
+      content = s.toString()
     }
     return {
       ...script,

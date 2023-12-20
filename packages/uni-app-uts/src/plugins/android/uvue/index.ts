@@ -114,7 +114,13 @@ export function uniAppUVuePlugin(opts: {
       if (!query.vue) {
         // main request
         if (process.env.UNI_APP_X_SETUP === 'true') {
-          return transformMain(code, filename, options, this)
+          return transformMain(
+            code,
+            filename,
+            options,
+            this,
+            isAppVue(filename)
+          )
         }
         const { errors, uts, js, sourceMap } = await transformVue(
           code,
