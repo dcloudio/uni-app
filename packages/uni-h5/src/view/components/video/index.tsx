@@ -25,6 +25,7 @@ import {
 } from '@dcloudio/uni-components'
 
 type UserActionState = ReturnType<typeof useUserAction>['state']
+type HTMLRef = Ref<HTMLElement | null>
 
 function formatTime(val: number): string {
   val = val > 0 && val < Infinity ? val : 0
@@ -572,6 +573,12 @@ function useControls(
   }
 }
 
+interface Danmu {
+  text: string
+  color?: string
+  time?: number
+}
+
 function useDanmu(
   props: { enableDanmu: any; danmuList: any[] },
   videoState: VideoState
@@ -583,11 +590,6 @@ function useDanmu(
   let danmuIndex = {
     time: 0,
     index: -1,
-  }
-  interface Danmu {
-    text: string
-    color?: string
-    time?: number
   }
   const danmuList: Danmu[] = isArray(props.danmuList)
     ? JSON.parse(JSON.stringify(props.danmuList))
@@ -793,6 +795,10 @@ const props = {
     default: true,
   },
 }
+
+// 仅作实现，X项目中不会依据此类生成d.ts
+class UniVideoElement extends HTMLElement {}
+
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Video',
   props,
@@ -807,8 +813,14 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     'ended',
     'timeupdate',
   ],
+  //#if _X_ && !_NODE_JS_
+  rootElement: {
+    name: 'uni-video',
+    class: UniVideoElement,
+  },
+  //#endif
   setup(props, { emit, attrs, slots }) {
-    const rootRef = ref(null)
+    const rootRef: HTMLRef = ref(null)
     const containerRef = ref(null)
     const trigger = useCustomEvent<EmitEvent<typeof emit>>(rootRef, emit)
     const { state: userActionState } = useUserAction()
@@ -872,6 +884,22 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       requestFullScreen,
       exitFullScreen
     )
+
+    //#if _X_ && !_NODE_JS_
+    onMounted(() => {
+      const rootElement = rootRef.value as UniVideoElement
+      Object.assign(rootElement, {
+        play,
+        pause,
+        stop: pause,
+        seek,
+        sendDanmu,
+        playbackRate,
+        requestFullScreen,
+        exitFullScreen,
+      })
+    })
+    //#endif
 
     return () => {
       return (
