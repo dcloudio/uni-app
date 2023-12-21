@@ -253,22 +253,26 @@ export function getCompilerServer<T extends CompilerServer>(
     console.error(`HBuilderX is not found`)
     return
   }
+  const isAndroid = pluginName === 'uniapp-runextension'
   const compilerServerPath = path.resolve(
     process.env.UNI_HBUILDERX_PLUGINS,
-    `${pluginName}/out/${
-      pluginName === 'uniapp-runextension' ? 'main.js' : 'external.js'
-    }`
+    `${pluginName}/out/${isAndroid ? 'main.js' : 'external.js'}`
   )
-  if (fs.existsSync(compilerServerPath)) {
+  const installed = isAndroid
+    ? fs.existsSync(compilerServerPath) &&
+      fs.existsSync(
+        path.resolve(
+          process.env.UNI_HBUILDERX_PLUGINS,
+          `uts-development-android/out/external.js`
+        )
+      )
+    : fs.existsSync(compilerServerPath)
+  if (installed) {
     // eslint-disable-next-line no-restricted-globals
     return require(compilerServerPath)
   } else {
     if (runByHBuilderX()) {
-      installHBuilderXPlugin(
-        pluginName === 'uniapp-runextension'
-          ? 'uts-development-android'
-          : pluginName
-      )
+      installHBuilderXPlugin(isAndroid ? 'uts-development-android' : pluginName)
     } else {
       console.error(compilerServerPath + ' is not found')
     }
