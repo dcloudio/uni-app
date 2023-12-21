@@ -194,6 +194,7 @@ function initUTSProxyClass(options) {
     }
     const ProxyClass = class UTSClass {
         constructor(...params) {
+            this.__instanceId = 0;
             if (errMsg) {
                 throw new Error(errMsg);
             }
@@ -201,12 +202,16 @@ function initUTSProxyClass(options) {
             // 初始化实例 ID
             if (!isProxyInterface) {
                 // 初始化未指定时，每次都要创建instanceId
-                instanceId = initProxyFunction(false, extend({ name: 'constructor', params: constructorParams }, baseOptions), 0).apply(null, params);
+                this.__instanceId = initProxyFunction(false, extend({ name: 'constructor', params: constructorParams }, baseOptions), 0).apply(null, params);
             }
-            if (!instanceId) {
+            else if (typeof instanceId === 'number') {
+                this.__instanceId = instanceId;
+            }
+            if (!this.__instanceId) {
                 throw new Error(`new ${cls} is failed`);
             }
-            const proxy = new Proxy(this, {
+            const instance = this;
+            const proxy = new Proxy(instance, {
                 get(_, name) {
                     if (!target[name]) {
                         //实例方法
@@ -217,14 +222,14 @@ function initUTSProxyClass(options) {
                                 name,
                                 params,
                                 return: returnOptions,
-                            }, baseOptions), instanceId, proxy);
+                            }, baseOptions), instance.__instanceId, proxy);
                         }
                         else if (props.includes(name)) {
                             // 实例属性
                             return invokePropGetter({
                                 moduleName,
                                 moduleType,
-                                id: instanceId,
+                                id: instance.__instanceId,
                                 name: name,
                                 errMsg,
                             });
