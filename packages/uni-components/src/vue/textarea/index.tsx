@@ -126,7 +126,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
               'uni-textarea-textarea': true,
               'uni-textarea-textarea-fix-margin': fixMargin,
             }}
-            style={{ overflowY: props.autoHeight ? 'hidden' : 'auto' }}
+            style={{
+              overflowY: props.autoHeight ? 'hidden' : 'auto',
+              /* eslint-disable no-restricted-syntax */
+              ...(props.cursorColor && { caretColor: props.cursorColor }),
+            }}
             // fix: 禁止 readonly 状态获取焦点
             onFocus={(event: Event) =>
               (event.target as HTMLInputElement).blur()
@@ -146,7 +150,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
               'uni-textarea-textarea': true,
               'uni-textarea-textarea-fix-margin': fixMargin,
             }}
-            style={{ overflowY: props.autoHeight ? 'hidden' : 'auto' }}
+            style={{
+              overflowY: props.autoHeight ? 'hidden' : 'auto',
+              /* eslint-disable no-restricted-syntax */
+              ...(props.cursorColor && { caretColor: props.cursorColor }),
+            }}
             onKeydown={onKeyDownEnter}
             onKeyup={onKeyUpEnter}
           />

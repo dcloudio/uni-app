@@ -3229,6 +3229,10 @@ const props$k = /* @__PURE__ */ shared.extend(
       type: String,
       default: void 0,
       validator: (value) => !!~INPUT_MODES.indexOf(value)
+    },
+    cursorColor: {
+      type: String,
+      default: ""
     }
   },
   props$n
@@ -3588,8 +3592,11 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "maxlength": state.maxlength,
         "step": step.value,
         "class": "uni-input-input",
+        "style": props2.cursorColor ? {
+          caretColor: props2.cursorColor
+        } : {},
         "onFocus": (event) => event.target.blur()
-      }, null, 40, ["value", "readonly", "type", "maxlength", "step", "onFocus"]) : vue.withDirectives(vue.createVNode("input", {
+      }, null, 44, ["value", "readonly", "type", "maxlength", "step", "onFocus"]) : vue.withDirectives(vue.createVNode("input", {
         "key": "input",
         "ref": fieldRef,
         "onUpdate:modelValue": ($event) => state.value = $event,
@@ -3600,10 +3607,13 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "enterkeyhint": props2.confirmType,
         "pattern": props2.type === "number" ? "[0-9]*" : void 0,
         "class": "uni-input-input",
+        "style": props2.cursorColor ? {
+          caretColor: props2.cursorColor
+        } : {},
         "autocomplete": autocomplete.value,
         "onKeyup": onKeyUpEnter,
         "inputmode": props2.inputmode
-      }, null, 40, ["onUpdate:modelValue", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup", "inputmode"]), [[vue.vModelDynamic, state.value]]);
+      }, null, 44, ["onUpdate:modelValue", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup", "inputmode"]), [[vue.vModelDynamic, state.value]]);
       return vue.createVNode("uni-input", {
         "ref": rootRef
       }, [vue.createVNode("div", {
@@ -7264,7 +7274,11 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
           "uni-textarea-textarea-fix-margin": fixMargin
         },
         "style": {
-          overflowY: props2.autoHeight ? "hidden" : "auto"
+          overflowY: props2.autoHeight ? "hidden" : "auto",
+          /* eslint-disable no-restricted-syntax */
+          ...props2.cursorColor && {
+            caretColor: props2.cursorColor
+          }
         },
         "onFocus": (event) => event.target.blur()
       }, null, 46, ["value", "readonly", "maxlength", "onFocus"]) : vue.createVNode("textarea", {
@@ -7280,7 +7294,11 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
           "uni-textarea-textarea-fix-margin": fixMargin
         },
         "style": {
-          overflowY: props2.autoHeight ? "hidden" : "auto"
+          overflowY: props2.autoHeight ? "hidden" : "auto",
+          /* eslint-disable no-restricted-syntax */
+          ...props2.cursorColor && {
+            caretColor: props2.cursorColor
+          }
         },
         "onKeydown": onKeyDownEnter,
         "onKeyup": onKeyUpEnter

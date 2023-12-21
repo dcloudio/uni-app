@@ -170,6 +170,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             maxlength={state.maxlength}
             step={step.value}
             class="uni-input-input"
+            style={props.cursorColor ? { caretColor: props.cursorColor } : {}}
             // fix: 禁止 readonly 状态获取焦点
             onFocus={(event: Event) =>
               (event.target as HTMLInputElement).blur()
@@ -188,6 +189,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             enterkeyhint={props.confirmType}
             pattern={props.type === 'number' ? '[0-9]*' : undefined}
             class="uni-input-input"
+            style={props.cursorColor ? { caretColor: props.cursorColor } : {}}
             autocomplete={autocomplete.value}
             onKeyup={onKeyUpEnter}
             inputmode={props.inputmode as HTMLAttributes['inputmode']}

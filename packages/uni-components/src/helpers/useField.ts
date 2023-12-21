@@ -166,6 +166,10 @@ export const props = /*#__PURE__*/ extend(
       default: undefined,
       validator: (value: INPUT_MODE) => !!~INPUT_MODES.indexOf(value),
     },
+    cursorColor: {
+      type: String,
+      default: '',
+    },
   },
   keyboardProps
 )

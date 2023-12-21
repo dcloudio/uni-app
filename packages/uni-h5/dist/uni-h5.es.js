@@ -9375,6 +9375,10 @@ const props$r = /* @__PURE__ */ extend(
       type: String,
       default: void 0,
       validator: (value) => !!~INPUT_MODES.indexOf(value)
+    },
+    cursorColor: {
+      type: String,
+      default: ""
     }
   },
   props$u
@@ -9743,8 +9747,11 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "maxlength": state2.maxlength,
         "step": step.value,
         "class": "uni-input-input",
+        "style": props2.cursorColor ? {
+          caretColor: props2.cursorColor
+        } : {},
         "onFocus": (event) => event.target.blur()
-      }, null, 40, ["value", "readonly", "type", "maxlength", "step", "onFocus"]) : withDirectives(createVNode("input", {
+      }, null, 44, ["value", "readonly", "type", "maxlength", "step", "onFocus"]) : withDirectives(createVNode("input", {
         "key": "input",
         "ref": fieldRef,
         "onUpdate:modelValue": ($event) => state2.value = $event,
@@ -9755,10 +9762,13 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "enterkeyhint": props2.confirmType,
         "pattern": props2.type === "number" ? "[0-9]*" : void 0,
         "class": "uni-input-input",
+        "style": props2.cursorColor ? {
+          caretColor: props2.cursorColor
+        } : {},
         "autocomplete": autocomplete.value,
         "onKeyup": onKeyUpEnter,
         "inputmode": props2.inputmode
-      }, null, 40, ["onUpdate:modelValue", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup", "inputmode"]), [[vModelDynamic, state2.value]]);
+      }, null, 44, ["onUpdate:modelValue", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup", "inputmode"]), [[vModelDynamic, state2.value]]);
       return createVNode("uni-input", {
         "ref": rootRef
       }, [createVNode("div", {
@@ -14840,7 +14850,11 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
           "uni-textarea-textarea-fix-margin": fixMargin
         },
         "style": {
-          overflowY: props2.autoHeight ? "hidden" : "auto"
+          overflowY: props2.autoHeight ? "hidden" : "auto",
+          /* eslint-disable no-restricted-syntax */
+          ...props2.cursorColor && {
+            caretColor: props2.cursorColor
+          }
         },
         "onFocus": (event) => event.target.blur()
       }, null, 46, ["value", "readonly", "maxlength", "onFocus"]) : createVNode("textarea", {
@@ -14856,7 +14870,11 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
           "uni-textarea-textarea-fix-margin": fixMargin
         },
         "style": {
-          overflowY: props2.autoHeight ? "hidden" : "auto"
+          overflowY: props2.autoHeight ? "hidden" : "auto",
+          /* eslint-disable no-restricted-syntax */
+          ...props2.cursorColor && {
+            caretColor: props2.cursorColor
+          }
         },
         "onKeydown": onKeyDownEnter,
         "onKeyup": onKeyUpEnter
