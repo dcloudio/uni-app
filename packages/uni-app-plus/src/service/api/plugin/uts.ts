@@ -445,6 +445,7 @@ export function initUTSProxyClass(
     }
   }
   const ProxyClass = class UTSClass {
+    __instanceId: number = 0
     constructor(...params: unknown[]) {
       if (errMsg) {
         throw new Error(errMsg)
@@ -453,7 +454,7 @@ export function initUTSProxyClass(
       // 初始化实例 ID
       if (!isProxyInterface) {
         // 初始化未指定时，每次都要创建instanceId
-        instanceId = initProxyFunction(
+        this.__instanceId = initProxyFunction(
           false,
           extend(
             { name: 'constructor', params: constructorParams },
@@ -461,11 +462,14 @@ export function initUTSProxyClass(
           ),
           0
         ).apply(null, params) as number
+      } else if (typeof instanceId === 'number') {
+        this.__instanceId = instanceId
       }
-      if (!instanceId) {
+      if (!this.__instanceId) {
         throw new Error(`new ${cls} is failed`)
       }
-      const proxy = new Proxy(this, {
+      const instance = this
+      const proxy = new Proxy(instance, {
         get(_, name) {
           if (!target[name as string]) {
             //实例方法
@@ -482,7 +486,7 @@ export function initUTSProxyClass(
                   },
                   baseOptions
                 ),
-                instanceId!,
+                instance.__instanceId,
                 proxy
               )
             } else if (props.includes(name as string)) {
@@ -490,7 +494,7 @@ export function initUTSProxyClass(
               return invokePropGetter({
                 moduleName,
                 moduleType,
-                id: instanceId!,
+                id: instance.__instanceId,
                 name: name as string,
                 errMsg,
               })
