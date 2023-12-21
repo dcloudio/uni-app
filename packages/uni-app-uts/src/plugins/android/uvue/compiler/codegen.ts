@@ -99,7 +99,7 @@ function createCodegenContext(
     rootDir = '',
     targetLanguage = 'kotlin',
     mode = 'default',
-    prefixIdentifiers = false,
+    prefixIdentifiers = mode === 'module',
     bindingMetadata = {},
     inline = false,
     sourceMap = false,

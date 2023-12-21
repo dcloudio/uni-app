@@ -532,7 +532,7 @@ describe('compiler: expression transform', () => {
       )
       expect(code).toMatch(`$props.props`)
       expect(code).toMatch(`$setup.setup`)
-      // expect(code).toMatch(`$setup.isNaN`)
+      expect(code).toMatch(`$setup.isNaN`)
       expect(code).toMatch(`$data.data`)
       expect(code).toMatch(`$options.options`)
       // expect(code).toMatch(`_ctx, _cache, $props, $setup, $data, $options`)
@@ -585,8 +585,7 @@ describe('compiler: expression transform', () => {
       expect(code).toMatch(`toDisplayString(setupConst)`)
       expect(code).toMatch(`_ctx.data`)
       expect(code).toMatch(`_ctx.options`)
-      // isNaN 设置了全局方法
-      // expect(code).toMatch(`isNaN.value`)
+      expect(code).toMatch(`isNaN.value`)
       expect(code).toMatchSnapshot()
     })
 

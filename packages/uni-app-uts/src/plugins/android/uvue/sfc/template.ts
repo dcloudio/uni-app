@@ -1,4 +1,5 @@
 import type {
+  BindingMetadata,
   CompilerOptions,
   SFCDescriptor,
   SFCTemplateCompileOptions,
@@ -26,6 +27,7 @@ export function resolveGenTemplateCodeOptions(
     inline: boolean
     rootDir: string
     sourceMap: boolean
+    bindingMetadata?: BindingMetadata
   }
 ): TemplateCompilerOptions {
   const inputRoot = normalizePath(options.rootDir)
@@ -35,7 +37,6 @@ export function resolveGenTemplateCodeOptions(
     ...options,
     filename: relativeFileName,
     className,
-    prefixIdentifiers: !options.inline,
     inMap: descriptor.template?.map,
     matchEasyCom: (tag, uts) => {
       const source = matchEasycom(tag)

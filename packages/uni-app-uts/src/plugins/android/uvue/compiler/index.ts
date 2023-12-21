@@ -107,7 +107,6 @@ export function compile(
   transform(
     ast,
     extend({}, options, {
-      prefixIdentifiers: options.prefixIdentifiers,
       nodeTransforms: [
         ...nodeTransforms,
         ...getBaseNodeTransforms('/'),

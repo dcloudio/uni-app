@@ -116,11 +116,12 @@ export interface TransformContext
 export function createTransformContext(
   root: RootNode,
   {
+    mode = 'default',
     rootDir = '',
     targetLanguage = 'kotlin',
     filename = '',
     cacheHandlers = false,
-    prefixIdentifiers = false,
+    prefixIdentifiers = mode === 'module',
     nodeTransforms = [],
     directiveTransforms = {},
     scopeId = null,
@@ -136,6 +137,7 @@ export function createTransformContext(
   const nameMatch = filename.replace(/\?.*$/, '').match(/([^/\\]+)\.\w+$/)
   const context: TransformContext = {
     // options
+    mode,
     rootDir,
     targetLanguage,
     selfName: nameMatch && capitalize(camelize(nameMatch[1])),

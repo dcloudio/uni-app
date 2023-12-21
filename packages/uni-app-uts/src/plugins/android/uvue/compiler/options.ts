@@ -3,6 +3,10 @@ import type { RawSourceMap } from 'source-map-js'
 import { DirectiveTransform, NodeTransform } from './transform'
 
 interface SharedTransformCodegenOptions {
+  /**
+   * @default 'default'
+   */
+  mode?: 'default' | 'module'
   rootDir?: string
   targetLanguage?: 'kotlin' | 'swift'
   /**
@@ -32,11 +36,6 @@ interface SharedTransformCodegenOptions {
   className?: string
 }
 export interface CodegenOptions extends SharedTransformCodegenOptions {
-  /**
-   * @default 'default'
-   */
-  mode?: 'default' | 'module'
-
   inMap?: RawSourceMap
   /**
    * Generate source map?

@@ -258,7 +258,6 @@ export async function transformVue(
       mode: 'module',
       filename: relativeFileName,
       className: className,
-      prefixIdentifiers: true,
       // 方便测试，build模式也提供sourceMap
       // sourceMap: false,
       sourceMap: needSourceMap,

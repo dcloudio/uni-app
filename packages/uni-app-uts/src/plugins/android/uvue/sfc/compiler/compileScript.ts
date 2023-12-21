@@ -13,6 +13,7 @@ import {
   Identifier,
   Statement,
   CallExpression,
+  ExportSpecifier,
 } from '@babel/types'
 import { walk } from 'estree-walker'
 import type { RawSourceMap } from 'source-map-js'
@@ -43,12 +44,22 @@ import {
 } from './script/utils'
 import { analyzeScriptBindings } from './script/analyzeScriptBindings'
 import { parseUTSRelativeFilename } from '../../../utils'
-import { rewriteConsole } from './script/rewriteConsole'
+import { hasConsole, rewriteConsole } from './script/rewriteConsole'
 import { hasDebugError, rewriteDebugError } from './script/rewriteDebugError'
+import { TypeScope } from './script/resolveType'
+
+export const normalScriptDefaultVar = `__default__`
 
 export const DEFAULT_FILENAME = 'anonymous.vue'
 
 export interface SFCScriptCompileOptions {
+  /**
+   * 是否同时支持使用 <script> 和 <script setup>
+   */
+  scriptAndScriptSetup?: boolean
+  /**
+   * Class name
+   */
   className: string
   /**
    * Scope ID for prefixing injected CSS variables.
@@ -162,6 +173,13 @@ export function compileScript(
   const hoistStatic = options.hoistStatic !== false && !script
   const scopeId = options.id ? options.id.replace(/^data-v-/, '') : ''
 
+  // 目前暂不提供<script setup>和<script>同时使用
+  // 目前给了个开关，用于单元测试
+  if (!options.scriptAndScriptSetup) {
+    if (script && scriptSetup) {
+      throw new Error(`<script setup> and <script> cannot be used together.`)
+    }
+  }
   // TODO remove in 3.4
   // const enableReactivityTransform = !!options.reactivityTransform
   let refBindings: string[] | undefined
@@ -191,7 +209,7 @@ export function compileScript(
   const scriptBindings: Record<string, BindingTypes> = Object.create(null)
   const setupBindings: Record<string, BindingTypes> = Object.create(null)
 
-  // let defaultExport: Node | undefined
+  let defaultExport: Node | undefined
   let hasAwait = false
   // let hasInlinedSsrRenderFn = false
 
@@ -296,7 +314,7 @@ export function compileScript(
         startOffset,
       })
     }
-    if (scriptSetupContent.includes('console')) {
+    if (hasConsole(scriptSetupContent)) {
       rewriteConsole(scriptSetupAst, ctx.s, {
         fileName,
         startLine,
@@ -404,17 +422,115 @@ export function compileScript(
 
   // 2.1 process normal <script> body
   if (script && scriptAst) {
+    const scriptScope = {
+      offset: script.loc.start.offset,
+      filename: ctx.filename,
+      source: ctx.descriptor.source,
+    } as TypeScope
     for (const node of scriptAst.body) {
       if (node.type === 'ExportDefaultDeclaration') {
-        ctx.error(
-          `When <script> and <script setup> are used together, export default is not supported within <script>.`,
-          node
-        )
+        if (!options.scriptAndScriptSetup) {
+          ctx.error(
+            `When <script> and <script setup> are used together, export default is not supported within <script>.`,
+            node,
+            scriptScope
+          )
+        } else {
+          // export default
+          defaultExport = node
+
+          // check if user has manually specified `name` or 'render` option in
+          // export default
+          // if has name, skip name inference
+          // if has render and no template, generate return object instead of
+          // empty render function (#4980)
+          let optionProperties
+          if (defaultExport.declaration.type === 'ObjectExpression') {
+            optionProperties = defaultExport.declaration.properties
+          } else if (
+            defaultExport.declaration.type === 'CallExpression' &&
+            defaultExport.declaration.arguments[0] &&
+            defaultExport.declaration.arguments[0].type === 'ObjectExpression'
+          ) {
+            optionProperties = defaultExport.declaration.arguments[0].properties
+          }
+          if (optionProperties) {
+            for (const p of optionProperties) {
+              if (
+                p.type === 'ObjectProperty' &&
+                p.key.type === 'Identifier' &&
+                p.key.name === 'name'
+              ) {
+                ctx.hasDefaultExportName = true
+              }
+              if (
+                (p.type === 'ObjectMethod' || p.type === 'ObjectProperty') &&
+                p.key.type === 'Identifier' &&
+                p.key.name === 'render'
+              ) {
+                // TODO warn when we provide a better way to do it?
+                ctx.hasDefaultExportRender = true
+              }
+            }
+          }
+
+          // export default { ... } --> const __default__ = { ... }
+          const start = node.start! + scriptStartOffset!
+          const end = node.declaration.start! + scriptStartOffset!
+          ctx.s.overwrite(start, end, `const ${normalScriptDefaultVar} = `)
+        }
       } else if (node.type === 'ExportNamedDeclaration') {
-        ctx.error(
-          `When <script> and <script setup> are used together, export is not supported within <script>.`,
-          node
-        )
+        if (!options.scriptAndScriptSetup) {
+          ctx.error(
+            `When <script> and <script setup> are used together, export is not supported within <script>.`,
+            node,
+            scriptScope
+          )
+        } else {
+          const defaultSpecifier = node.specifiers.find(
+            (s) =>
+              s.exported.type === 'Identifier' && s.exported.name === 'default'
+          ) as ExportSpecifier
+          if (defaultSpecifier) {
+            defaultExport = node
+            // 1. remove specifier
+            if (node.specifiers.length > 1) {
+              ctx.s.remove(
+                defaultSpecifier.start! + scriptStartOffset!,
+                defaultSpecifier.end! + scriptStartOffset!
+              )
+            } else {
+              ctx.s.remove(
+                node.start! + scriptStartOffset!,
+                node.end! + scriptStartOffset!
+              )
+            }
+            if (node.source) {
+              // export { x as default } from './x'
+              // rewrite to `import { x as __default__ } from './x'` and
+              // add to top
+              ctx.s.prepend(
+                `import { ${defaultSpecifier.local.name} as ${normalScriptDefaultVar} } from '${node.source.value}'\n`
+              )
+            } else {
+              // export { x as default }
+              // rewrite to `const __default__ = x` and move to end
+              ctx.s.appendLeft(
+                scriptEndOffset!,
+                `\nconst ${normalScriptDefaultVar} = ${defaultSpecifier.local.name}\n`
+              )
+            }
+          }
+          if (node.declaration) {
+            walkDeclaration(
+              'script',
+              node.declaration,
+              scriptBindings,
+              vueImportAliases,
+              hoistStatic
+            )
+          }
+        }
       } else if (
         (node.type === 'VariableDeclaration' ||
           node.type === 'FunctionDeclaration' ||
@@ -855,9 +971,9 @@ __ins.emit(event, ...do_not_transform_spread)
     startOffset,
     `\n${genDefaultAs} {${runtimeOptions}\n  ` +
       `${hasAwait ? `async ` : ``}setup(${args}) {
-const __ins = getCurrentInstance()!
-const _ctx = __ins.proxy as ${options.className}
-const _cache = __ins.renderCache
+const __ins = getCurrentInstance()!;
+const _ctx = __ins.proxy${options.className ? ` as ${options.className}` : ''};
+const _cache = __ins.renderCache;
 ${exposeCall}`
   )
   ctx.s.appendRight(endOffset, `}`)

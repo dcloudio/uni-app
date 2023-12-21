@@ -16,7 +16,7 @@ import {
   parseUTSComponent,
   removeExt,
 } from '@dcloudio/uni-cli-shared'
-import type { Position } from '@vue/compiler-core'
+import type { BindingMetadata, Position } from '@vue/compiler-core'
 import type { ImportSpecifier } from 'es-module-lexer'
 import { createDescriptor, setSrcDescriptor } from '../descriptorCache'
 import { resolveScript } from './script'
@@ -58,7 +58,11 @@ export async function transformMain(
   const className = genClassName(relativeFileName)
 
   // script
-  const { code: scriptCode, map: scriptMap } = await genScriptCode(descriptor, {
+  const {
+    code: scriptCode,
+    map: scriptMap,
+    bindingMetadata,
+  } = await genScriptCode(descriptor, {
     ...options,
     className,
   })
@@ -79,6 +83,7 @@ export async function transformMain(
         inline: isInline,
         rootDir: process.env.UNI_INPUT_DIR,
         sourceMap: process.env.NODE_ENV === 'development',
+        bindingMetadata,
       })
     )
 
@@ -228,6 +233,7 @@ async function genScriptCode(
 ): Promise<{
   code: string
   map: RawSourceMap | undefined
+  bindingMetadata?: BindingMetadata
 }> {
   let scriptCode = `export default {}`
   let map: RawSourceMap | undefined
@@ -240,6 +246,7 @@ async function genScriptCode(
   return {
     code: scriptCode,
     map,
+    bindingMetadata: script?.bindings,
   }
 }
 
