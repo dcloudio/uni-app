@@ -207,7 +207,7 @@ export function onMessage(msg: string) {
 export function initAutomator() {
   // @ts-ignore
   socketTask = uni.connectSocket({
-    url: wsEndpoint!
+    url: wsEndpoint
   });
   socketTask!.onMessage((res) => {
     onMessage(res.data as string)

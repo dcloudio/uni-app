@@ -32,9 +32,10 @@ export function getPageVm(id: string): BasePage | null {
 export function pageGetData(
   // @ts-ignore
   vm: BasePage,
-): Map<string, any | null> {
+  // @ts-ignore
+): UTSJSONObject {
   // TODO: path 目前无法处理类型问题，暂由服务端处理
-  return vm.$data
+  return map2Object(vm.$data)
 }
 // @ts-ignore
 export function pageSetData(vm: BasePage, data: Map<string, any | null>): void {
@@ -197,7 +198,7 @@ export function getValidComponentsOrNodes(
   }
   // @ts-ignore
   if (vnode.children !== null && isArray(vnode.children)) {
-    ;(vnode.children as any[]).forEach((child) => {
+    ; (vnode.children as any[]).forEach((child) => {
       // @ts-ignore
       if (child instanceof VNode) {
         getValidComponentsOrNodes(child, selector, list, getAll)
@@ -267,10 +268,10 @@ function isValidNode(node: Element, selector: string): boolean {
 export function componentGetData(
   // @ts-ignore
   vm: ComponentPublicInstance,
-): Map<string, any | null> {
-  // TODO: path 目前无法处理类型问题，暂由服务端处理
   // @ts-ignore
-  return vm.$data
+): UTSJSONObject {
+  // TODO: path 目前无法处理类型问题，暂由服务端处理
+  return map2Object(vm.$data)
 }
 export function componentSetData(
   // @ts-ignore
@@ -302,4 +303,14 @@ export function toCamelCase(str: string): string {
     wordList[i] = word.at(0)!.toUpperCase() + word.substring(1)
   }
   return wordList.join('')
+}
+
+// 不处理用户自定义数据的类型，因为可能存在指定类型，无法处理
+// @ts-ignore
+function map2Object(data: Map<string, any | null>): UTSJSONObject {
+  const result = {}
+  data.forEach((value: any | null, key: string) => {
+    result[key] = value
+  })
+  return result
 }
