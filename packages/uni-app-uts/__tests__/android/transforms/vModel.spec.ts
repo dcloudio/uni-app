@@ -49,8 +49,7 @@ describe('compiler: transform v-model', () => {
       `<input v-model="model" />`,
       `createElementVNode("input", utsMapOf({
   modelValue: _ctx.model,
-  onInput: ($event: InputEvent): any => {_ctx.model = $event.detail.value;
-return $event.detail.value;}
+  onInput: ($event: InputEvent) => {(_ctx.model) = $event.detail.value}
 }), null, 40 /* PROPS, NEED_HYDRATION */, ["modelValue", "onInput"])`
     )
   })
@@ -63,11 +62,10 @@ return $event.detail.value;}
   modelValue: \n_ctx.model.
 foo
 ,
-  onInput: ($event: InputEvent): any => {
+  onInput: ($event: InputEvent) => {(
 _ctx.model.
 foo
- = $event.detail.value;
-return $event.detail.value;}
+) = $event.detail.value}
 }), null, 40 /* PROPS, NEED_HYDRATION */, ["modelValue", "onInput"])`
     )
   })
@@ -77,8 +75,7 @@ return $event.detail.value;}
       `<input v-model="model[index]" />`,
       `createElementVNode(\"input\", utsMapOf({
   modelValue: _ctx.model[_ctx.index],
-  onInput: ($event: InputEvent): any => {_ctx.model[_ctx.index] = $event.detail.value;
-return $event.detail.value;}
+  onInput: ($event: InputEvent) => {(_ctx.model[_ctx.index]) = $event.detail.value}
 }), null, 40 /* PROPS, NEED_HYDRATION */, [\"modelValue\", \"onInput\"])`
     )
   })
@@ -107,8 +104,7 @@ return $event.detail.value;}
       `<input v-model.lazy="model" />`,
       `createElementVNode(\"input\", utsMapOf({
   modelValue: _ctx.model,
-  onBlur: ($event: InputBlurEvent): any => {_ctx.model = $event.detail.value;
-return $event.detail.value;}
+  onBlur: ($event: InputBlurEvent) => {(_ctx.model) = $event.detail.value}
 }), null, 40 /* PROPS, NEED_HYDRATION */, [\"modelValue\", \"onBlur\"])`
     )
   })
@@ -117,8 +113,7 @@ return $event.detail.value;}
       `<input v-model.number="model" />`,
       `createElementVNode(\"input\", utsMapOf({
   modelValue: _ctx.model,
-  onInput: ($event: InputEvent): any => {_ctx.model = _looseToNumber($event.detail.value);
-return _looseToNumber($event.detail.value);}
+  onInput: ($event: InputEvent) => {(_ctx.model) = looseToNumber($event.detail.value)}
 }), null, 40 /* PROPS, NEED_HYDRATION */, [\"modelValue\", \"onInput\"])`
     )
   })
@@ -127,8 +122,7 @@ return _looseToNumber($event.detail.value);}
       `<input v-model.trim="model" />`,
       `createElementVNode(\"input\", utsMapOf({
   modelValue: _ctx.model,
-  onInput: ($event: InputEvent): any => {_ctx.model = $event.detail.value.trim();
-return $event.detail.value.trim();}
+  onInput: ($event: InputEvent) => {(_ctx.model) = $event.detail.value.trim()}
 }), null, 40 /* PROPS, NEED_HYDRATION */, [\"modelValue\", \"onInput\"])`
     )
   })
@@ -145,8 +139,8 @@ return $event.detail.value.trim();}
     assert(
       `<my-input v-model="(obj.str as string)" />`,
       `createVNode(_component_my_input, utsMapOf({
-  modelValue: (_ctx.obj.str),
-  \"onUpdate:modelValue\": ($event: string) => {((_ctx.obj.str)) = $event}
+  modelValue: _ctx.obj.str,
+  \"onUpdate:modelValue\": ($event: string) => {(_ctx.obj.str) = $event}
 }), null, 8 /* PROPS */, [\"modelValue\", \"onUpdate:modelValue\"])`
     )
   })
@@ -175,13 +169,12 @@ return $event.detail.value.trim();}
       },
       value: {
         children: [
-          '($event: InputEvent): any => {',
+          '($event: InputEvent) => {(',
           {
             content: 'model',
             isStatic: false,
           },
-          ` = $event.detail.value;
-return $event.detail.value;}`,
+          `) = $event.detail.value}`,
         ],
       },
     })
@@ -215,13 +208,12 @@ return $event.detail.value;}`,
       },
       value: {
         children: [
-          '($event: InputEvent): any => {',
+          '($event: InputEvent) => {(',
           {
             content: '_ctx.model',
             isStatic: false,
           },
-          ` = $event.detail.value;
-return $event.detail.value;}`,
+          `) = $event.detail.value}`,
         ],
       },
     })
@@ -254,13 +246,12 @@ return $event.detail.value;}`,
       },
       value: {
         children: [
-          '($event: InputEvent): any => {',
+          '($event: InputEvent) => {(',
           {
             content: '\n model\n.\nfoo \n',
             isStatic: false,
           },
-          ` = $event.detail.value;
-return $event.detail.value;}`,
+          `) = $event.detail.value}`,
         ],
       },
     })
@@ -292,13 +283,12 @@ return $event.detail.value;}`,
       },
       value: {
         children: [
-          '($event: InputEvent): any => {',
+          '($event: InputEvent) => {(',
           {
             content: 'model[index]',
             isStatic: false,
           },
-          ` = $event.detail.value;
-return $event.detail.value;}`,
+          `) = $event.detail.value}`,
         ],
       },
     })
@@ -342,7 +332,7 @@ return $event.detail.value;}`,
       },
       value: {
         children: [
-          '($event: InputEvent): any => {',
+          '($event: InputEvent) => {(',
           {
             children: [
               {
@@ -357,8 +347,7 @@ return $event.detail.value;}`,
               ']',
             ],
           },
-          ` = $event.detail.value;
-return $event.detail.value;}`,
+          `) = $event.detail.value}`,
         ],
       },
     })
@@ -389,12 +378,12 @@ return $event.detail.value;}`,
       },
       value: {
         children: [
-          '$event => {(',
+          '($event: InputEvent) => {(',
           {
             content: 'model',
             isStatic: false,
           },
-          `) = $event}`,
+          `) = $event.detail.value}`,
         ],
       },
     })
@@ -491,12 +480,12 @@ return $event.detail.value;}`,
               },
               value: {
                 children: [
-                  '$event => {(',
+                  '($event: InputEvent) => {(',
                   {
                     content: '_ctx.model',
                     isStatic: false,
                   },
-                  `) = $event}`,
+                  `) = $event.detail.value}`,
                 ],
               },
             },
