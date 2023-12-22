@@ -999,7 +999,7 @@ ${exposeCall}`
     map:
       options.sourceMap !== false
         ? (ctx.s.generateMap({
-            source: filename,
+            source: fileName,
             hires: true,
             includeContent: true,
           }) as unknown as RawSourceMap)
