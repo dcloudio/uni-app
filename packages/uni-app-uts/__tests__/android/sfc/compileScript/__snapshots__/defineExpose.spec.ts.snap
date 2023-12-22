@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<script> after <script setup> the script content not end with \`\\n\` 1`] = `
+"import { x } from './x'
+  const n = 1
+
+export default {
+  setup() {
+const __ins = getCurrentInstance()!;
+const _ctx = __ins.proxy;
+const _cache = __ins.renderCache;
+
+  
+return "INLINE_RENDER"
+}
+
+}"
+`;
+
+exports[`defineExpose() 1`] = `
+"export default {
+  setup() {
+const __ins = getCurrentInstance()!;
+const _ctx = __ins.proxy;
+const _cache = __ins.renderCache;
+
+__expose({ foo: 123 })
+
+return "INLINE_RENDER"
+}
+
+}"
+`;

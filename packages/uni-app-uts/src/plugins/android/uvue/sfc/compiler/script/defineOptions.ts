@@ -42,6 +42,20 @@ export function processDefineOptions(
         if (prop.key.name === 'slots') slotsOption = prop
       }
     }
+  } else {
+    ctx.error(
+      `${DEFINE_OPTIONS}() options must be an object expression`,
+      ctx.optionsRuntimeDecl
+    )
+  }
+
+  if (
+    ctx.optionsRuntimeDecl.properties.find((p) => p.type === 'SpreadElement')
+  ) {
+    ctx.error(
+      `options does not support spread properties.`,
+      ctx.optionsRuntimeDecl
+    )
   }
 
   if (propsOption) {

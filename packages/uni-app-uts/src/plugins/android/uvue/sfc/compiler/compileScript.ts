@@ -942,19 +942,21 @@ __ins.emit(event, ...do_not_transform_spread)
   // if (hasInlinedSsrRenderFn) {
   //   runtimeOptions += `\n  __ssrInlineRender: true,`
   // }
+  if (ctx.optionsRuntimeDecl) {
+    runtimeOptions +=
+      `\n` +
+      scriptSetup.content
+        .slice(ctx.optionsRuntimeDecl.start!, ctx.optionsRuntimeDecl.end!)
+        .trim()
+        .slice(1, -1) +
+      `,`
+  }
 
   const propsDecl = genRuntimeProps(ctx)
   if (propsDecl) runtimeOptions += `\n  props: ${propsDecl},`
 
   const emitsDecl = genRuntimeEmits(ctx)
   if (emitsDecl) runtimeOptions += `\n  emits: ${emitsDecl},`
-
-  // let definedOptions = ''
-  // if (ctx.optionsRuntimeDecl) {
-  //   definedOptions = scriptSetup.content
-  //     .slice(ctx.optionsRuntimeDecl.start!, ctx.optionsRuntimeDecl.end!)
-  //     .trim()
-  // }
 
   // <script setup> components are closed by default. If the user did not
   // explicitly call `defineExpose`, call expose() with no args.

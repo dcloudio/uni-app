@@ -49,6 +49,18 @@ export function processDefineProps(
   if (!isCallOf(node, DEFINE_PROPS)) {
     return processWithDefaults(ctx, node, declId)
   }
+  if (node.arguments.length > 1) {
+    ctx.error(`${DEFINE_PROPS}() can only accept one argument.`, node)
+  }
+  if (node.arguments.length > 0) {
+    const arg = node.arguments[0]
+    if (arg.type !== 'ArrayExpression' && arg.type !== 'ObjectExpression') {
+      ctx.error(
+        `${DEFINE_PROPS}() argument must be an object or array literal.`,
+        arg
+      )
+    }
+  }
 
   if (ctx.hasDefinePropsCall) {
     ctx.error(`duplicate ${DEFINE_PROPS}() call`, node)
@@ -100,6 +112,25 @@ function processWithDefaults(
     ctx.error(
       `${WITH_DEFAULTS}' first argument must be a ${DEFINE_PROPS} call.`,
       node.arguments[0] || node
+    )
+  }
+  if (node.arguments.length < 2) {
+    ctx.error(
+      `${WITH_DEFAULTS}' second argument is required.`,
+      node.arguments[1] || node
+    )
+  }
+  if (node.arguments[1].type !== 'ObjectExpression') {
+    ctx.error(
+      `${WITH_DEFAULTS}' second argument must be an object literal.`,
+      node.arguments[1] || node
+    )
+  }
+
+  if (node.arguments[1].properties.find((p) => p.type === 'SpreadElement')) {
+    ctx.error(
+      `${WITH_DEFAULTS} does not support spread properties in the second argument.`,
+      node.arguments[1]
     )
   }
 
@@ -254,31 +285,37 @@ function genRuntimePropFromType(
   }
 
   const finalKey = getEscapedPropName(key)
-  if (!ctx.options.isProd) {
-    return `${finalKey}: { ${concatStrings([
-      `type: ${toRuntimeTypeString(type)}`,
-      `required: ${required}`,
-      skipCheck && 'skipCheck: true',
-      defaultString,
-    ])} }`
-  } else if (
-    type.some(
-      (el) =>
-        el === 'Boolean' ||
-        ((!hasStaticDefaults || defaultString) && el === 'Function')
-    )
-  ) {
-    // #4783 for boolean, should keep the type
-    // #7111 for function, if default value exists or it's not static, should keep it
-    // in production
-    return `${finalKey}: { ${concatStrings([
-      `type: ${toRuntimeTypeString(type)}`,
-      defaultString,
-    ])} }`
-  } else {
-    // production: checks are useless
-    return `${finalKey}: ${defaultString ? `{ ${defaultString} }` : `{}`}`
-  }
+  return `${finalKey}: { ${concatStrings([
+    `type: ${toRuntimeTypeString(type)}`,
+    `required: ${required}`,
+    skipCheck && 'skipCheck: true',
+    defaultString,
+  ])} }`
+  // if (!ctx.options.isProd) {
+  //   return `${finalKey}: { ${concatStrings([
+  //     `type: ${toRuntimeTypeString(type)}`,
+  //     `required: ${required}`,
+  //     skipCheck && 'skipCheck: true',
+  //     defaultString,
+  //   ])} }`
+  // } else if (
+  //   type.some(
+  //     (el) =>
+  //       el === 'Boolean' ||
+  //       ((!hasStaticDefaults || defaultString) && el === 'Function')
+  //   )
+  // ) {
+  //   // #4783 for boolean, should keep the type
+  //   // #7111 for function, if default value exists or it's not static, should keep it
+  //   // in production
+  //   return `${finalKey}: { ${concatStrings([
+  //     `type: ${toRuntimeTypeString(type)}`,
+  //     defaultString,
+  //   ])} }`
+  // } else {
+  //   // production: checks are useless
+  //   return `${finalKey}: ${defaultString ? `{ ${defaultString} }` : `{}`}`
+  // }
 }
 
 /**

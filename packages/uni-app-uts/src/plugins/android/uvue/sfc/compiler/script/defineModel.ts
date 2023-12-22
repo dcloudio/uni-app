@@ -62,6 +62,16 @@ export function processDefineModel(
     ctx.error(`duplicate model name ${JSON.stringify(modelName)}`, node)
   }
 
+  if (options) {
+    if (options.type !== 'ObjectExpression') {
+      ctx.error(`options must be an object expression`, options)
+    }
+
+    if (options.properties.find((p) => p.type === 'SpreadElement')) {
+      ctx.error(`options does not support spread properties.`, options)
+    }
+  }
+
   const optionsString = options && ctx.getString(options)
 
   ctx.modelDecls[modelName] = {
