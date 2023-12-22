@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`compiler: expression transform bindingMetadata inline mode 1`] = `"createElementVNode("view", null, toDisplayString(__props.props) + " " + toDisplayString(unref(setup)) + " " + toDisplayString(setupConst) + " " + toDisplayString(_ctx.data) + " " + toDisplayString(_ctx.options) + " " + toDisplayString(isNaN.value), 1 /* TEXT */)"`;
+exports[`compiler: expression transform bindingMetadata inline mode 1`] = `"createElementVNode("view", null, toDisplayString(_ctx.props) + " " + toDisplayString(unref(setup)) + " " + toDisplayString(setupConst) + " " + toDisplayString(_ctx.data) + " " + toDisplayString(_ctx.options) + " " + toDisplayString(isNaN.value), 1 /* TEXT */)"`;
 
-exports[`compiler: expression transform bindingMetadata non-inline mode 1`] = `"createElementVNode("view", null, toDisplayString($props.props) + " " + toDisplayString($setup.setup) + " " + toDisplayString($data.data) + " " + toDisplayString($options.options) + " " + toDisplayString($setup.isNaN), 1 /* TEXT */)"`;
+exports[`compiler: expression transform bindingMetadata non-inline mode 1`] = `"createElementVNode("view", null, toDisplayString(_ctx.props) + " " + toDisplayString(_ctx.setup) + " " + toDisplayString(_ctx.data) + " " + toDisplayString(_ctx.options) + " " + toDisplayString(_ctx.isNaN), 1 /* TEXT */)"`;
 
 exports[`compiler: expression transform bindingMetadata should not prefix temp variable of for loop 1`] = `
 "createVNode(_component_div, utsMapOf({

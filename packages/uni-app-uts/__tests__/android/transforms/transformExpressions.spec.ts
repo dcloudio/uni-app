@@ -530,11 +530,11 @@ describe('compiler: expression transform', () => {
       const { code } = compileWithBindingMetadata(
         `<view>{{ props }} {{ setup }} {{ data }} {{ options }} {{ isNaN }}</view>`
       )
-      expect(code).toMatch(`$props.props`)
-      expect(code).toMatch(`$setup.setup`)
-      expect(code).toMatch(`$setup.isNaN`)
-      expect(code).toMatch(`$data.data`)
-      expect(code).toMatch(`$options.options`)
+      expect(code).toMatch(`_ctx.props`)
+      expect(code).toMatch(`_ctx.setup`)
+      expect(code).toMatch(`_ctx.isNaN`)
+      expect(code).toMatch(`_ctx.data`)
+      expect(code).toMatch(`_ctx.options`)
       // expect(code).toMatch(`_ctx, _cache, $props, $setup, $data, $options`)
       expect(code).toMatchSnapshot()
     })
@@ -580,7 +580,7 @@ describe('compiler: expression transform', () => {
         `<view>{{ props }} {{ setup }} {{ setupConst }} {{ data }} {{ options }} {{ isNaN }}</view>`,
         { inline: true }
       )
-      expect(code).toMatch(`__props.props`)
+      expect(code).toMatch(`_ctx.props`)
       expect(code).toMatch(`unref(setup)`)
       expect(code).toMatch(`toDisplayString(setupConst)`)
       expect(code).toMatch(`_ctx.data`)
@@ -606,7 +606,7 @@ describe('compiler: expression transform', () => {
 
     test('literal const handling， non-inline mode', () => {
       const { code } = compileWithBindingMetadata(`<view>{{ literal }}</view>`)
-      expect(code).toMatch(`toDisplayString($setup.literal)`)
+      expect(code).toMatch(`toDisplayString(_ctx.literal)`)
       // #7973 should skip patch for literal const
       // TODO
       // expect(code).not.toMatch(

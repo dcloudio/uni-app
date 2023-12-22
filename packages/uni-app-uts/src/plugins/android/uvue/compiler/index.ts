@@ -84,6 +84,10 @@ export function compile(
 ): CodegenResult {
   options.rootDir = options.rootDir || ''
   options.targetLanguage = options.targetLanguage || 'kotlin'
+  options.prefixIdentifiers =
+    'prefixIdentifiers' in options
+      ? options.prefixIdentifiers
+      : options.mode === 'module'
 
   wrapOptionsLog(template, options)
 

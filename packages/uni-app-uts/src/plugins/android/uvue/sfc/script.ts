@@ -62,6 +62,7 @@ export function resolveScript(
     hoistStatic: false,
     templateOptions: resolveTemplateCompilerOptions(descriptor, options),
     sourceMap: options.sourceMap,
+    defineModel: true,
     // genDefaultAs: scriptIdentifier,
   })
 

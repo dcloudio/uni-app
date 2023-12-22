@@ -9,7 +9,7 @@ import {
   unwrapTSNode,
 } from './utils'
 import { BindingTypes } from '@vue/compiler-dom'
-import { warnOnce } from '../warn'
+// import { warnOnce } from '../warn'
 
 export const DEFINE_MODEL = 'defineModel'
 
@@ -28,20 +28,20 @@ export function processDefineModel(
     return false
   }
 
-  if (!ctx.options.defineModel) {
-    warnOnce(
-      `defineModel() is an experimental feature and disabled by default.\n` +
-        `To enable it, follow the RFC at https://github.com/vuejs/rfcs/discussions/503.`
-    )
-    return false
-  }
+  // if (!ctx.options.defineModel) {
+  //   warnOnce(
+  //     `defineModel() is an experimental feature and disabled by default.\n` +
+  //       `To enable it, follow the RFC at https://github.com/vuejs/rfcs/discussions/503.`
+  //   )
+  //   return false
+  // }
 
-  warnOnce(
-    `This project is using defineModel(), which is an experimental ` +
-      `feature. It may receive breaking changes or be removed in the future, so ` +
-      `use at your own risk.\n` +
-      `To stay updated, follow the RFC at https://github.com/vuejs/rfcs/discussions/503.`
-  )
+  // warnOnce(
+  //   `This project is using defineModel(), which is an experimental ` +
+  //     `feature. It may receive breaking changes or be removed in the future, so ` +
+  //     `use at your own risk.\n` +
+  //     `To stay updated, follow the RFC at https://github.com/vuejs/rfcs/discussions/503.`
+  // )
 
   ctx.hasDefineModelCall = true
 
@@ -83,9 +83,26 @@ export function processDefineModel(
   // register binding type
   ctx.bindingMetadata[modelName] = BindingTypes.PROPS
 
+  const runtimeTypes = type && inferRuntimeType(ctx, type)
+  let runtimeType =
+    runtimeTypes && runtimeTypes.length === 1 ? runtimeTypes[0] : undefined
+
   let runtimeOptions = ''
   if (options) {
     if (options.type === 'ObjectExpression') {
+      if (!runtimeType) {
+        // 未指定泛型，但指定了 options 中的 type
+        const type = options.properties.find(
+          (p) =>
+            p.type === 'ObjectProperty' &&
+            ((p.key.type === 'Identifier' && p.key.name === 'type') ||
+              (p.key.type === 'StringLiteral' && p.key.value === 'type'))
+        ) as ObjectProperty
+        if (type) {
+          runtimeType = ctx.getString(type.value)
+        }
+      }
+
       const local = options.properties.find(
         (p) =>
           p.type === 'ObjectProperty' &&
@@ -111,7 +128,9 @@ export function processDefineModel(
   ctx.s.overwrite(
     ctx.startOffset! + node.start!,
     ctx.startOffset! + node.end!,
-    `${ctx.helper('useModel')}(__props, ${JSON.stringify(modelName)}${
+    `${ctx.helper('useModel')}<${
+      runtimeType || 'any'
+    }>(__ins.props, ${JSON.stringify(modelName)}${
       runtimeOptions ? `, ${runtimeOptions}` : ``
     })`
   )

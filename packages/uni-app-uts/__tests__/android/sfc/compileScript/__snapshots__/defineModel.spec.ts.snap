@@ -13,9 +13,9 @@ const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
-      const modelValue = useModel(__props, "modelValue")
-      const c = useModel(__props, "count")
-      const toString = useModel(__props, "toString")
+      const modelValue = useModel<any>(__ins.props, "modelValue")
+      const c = useModel<any>(__ins.props, "count")
+      const toString = useModel<Function>(__ins.props, "toString")
       
 return "INLINE_RENDER"
 }
@@ -35,7 +35,7 @@ const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
       
-      const count = useModel(__props, "count")
+      const count = useModel<any>(__ins.props, "count")
       
 return "INLINE_RENDER"
 }
@@ -56,7 +56,7 @@ const _cache = __ins.renderCache;
 
       
       
-      const count = useModel(__props, "modelValue")
+      const count = useModel<any>(__ins.props, "modelValue")
       
 return "INLINE_RENDER"
 }
@@ -79,14 +79,14 @@ const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
-      const foo = useModel(__props, "modelValue", { local: true })
-      const bar = useModel(__props, "bar", { [key]: true })
+      const foo = useModel<any>(__ins.props, "modelValue", { local: true })
+      const bar = useModel<any>(__ins.props, "bar", { [key]: true })
       // const baz = defineModel('baz', { ...x })
       // const qux = defineModel('qux', x)
 
       // const foo2 = defineModel('foo2', { local: true, ...x })
 
-      const hoist = useModel(__props, "hoist", { local })
+      const hoist = useModel<any>(__ins.props, "hoist", { local })
       
 return "INLINE_RENDER"
 }
@@ -108,10 +108,10 @@ const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
-      const modelValue = useModel(__props, "modelValue")
-      const count = useModel(__props, "count")
-      const disabled = useModel(__props, "disabled")
-      const any = useModel(__props, "any")
+      const modelValue = useModel<any>(__ins.props, "modelValue")
+      const count = useModel<Number>(__ins.props, "count")
+      const disabled = useModel<Number>(__ins.props, "disabled")
+      const any = useModel<any>(__ins.props, "any")
       
 return "INLINE_RENDER"
 }
@@ -134,11 +134,11 @@ const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
-      const modelValue = useModel(__props, "modelValue")
-      const fn = useModel(__props, "fn")
-      const fnWithDefault = useModel(__props, "fnWithDefault")
-      const str = useModel(__props, "str")
-      const optional = useModel(__props, "optional")
+      const modelValue = useModel<Boolean>(__ins.props, "modelValue")
+      const fn = useModel<Function>(__ins.props, "fn")
+      const fnWithDefault = useModel<Function>(__ins.props, "fnWithDefault")
+      const str = useModel<String>(__ins.props, "str")
+      const optional = useModel<String>(__ins.props, "optional")
       
 return "INLINE_RENDER"
 }

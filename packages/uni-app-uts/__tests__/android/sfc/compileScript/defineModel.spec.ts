@@ -22,9 +22,9 @@ describe('defineModel()', () => {
       'emits: ["update:modelValue", "update:count", "update:toString"],'
     )
     expect(content).toMatch(
-      `const modelValue = useModel(__props, "modelValue")`
+      `const modelValue = useModel<any>(__ins.props, "modelValue")`
     )
-    expect(content).toMatch(`const c = useModel(__props, "count")`)
+    expect(content).toMatch(`const c = useModel<any>(__ins.props, "count")`)
     // expect(content).toMatch(`return { modelValue, c, toString }`)
     expect(content).not.toMatch('defineModel')
 
@@ -50,7 +50,9 @@ describe('defineModel()', () => {
     assertCode(content)
     expect(content).toMatch(`props: /*#__PURE__*/mergeModels({ foo: String }`)
     expect(content).toMatch(`"modelValue": { default: 0 }`)
-    expect(content).toMatch(`const count = useModel(__props, "modelValue")`)
+    expect(content).toMatch(
+      `const count = useModel<any>(__ins.props, "modelValue")`
+    )
     expect(content).not.toMatch('defineModel')
     expect(bindings).toStrictEqual({
       count: BindingTypes.SETUP_REF,
@@ -73,7 +75,7 @@ describe('defineModel()', () => {
     expect(content).toMatch(`props: /*#__PURE__*/mergeModels(['foo', 'bar'], {
     "count": {},
   })`)
-    expect(content).toMatch(`const count = useModel(__props, "count")`)
+    expect(content).toMatch(`const count = useModel<any>(__ins.props, "count")`)
     expect(content).not.toMatch('defineModel')
     expect(bindings).toStrictEqual({
       foo: BindingTypes.PROPS,
@@ -98,12 +100,16 @@ describe('defineModel()', () => {
       { defineModel: true }
     )
     assertCode(content)
-    expect(content).toMatch(`useModel(__props, "modelValue", { local: true })`)
-    expect(content).toMatch(`useModel(__props, "bar", { [key]: true })`)
-    // expect(content).toMatch(`useModel(__props, "baz", { ...x })`)
-    // expect(content).toMatch(`useModel(__props, "qux", x)`)
-    // expect(content).toMatch(`useModel(__props, "foo2", { local: true })`)
-    expect(content).toMatch(`useModel(__props, "hoist", { local })`)
+    expect(content).toMatch(
+      `useModel<any>(__ins.props, "modelValue", { local: true })`
+    )
+    expect(content).toMatch(
+      `useModel<any>(__ins.props, "bar", { [key]: true })`
+    )
+    // expect(content).toMatch(`useModel(__ins.props, "baz", { ...x })`)
+    // expect(content).toMatch(`useModel(__ins.props, "qux", x)`)
+    // expect(content).toMatch(`useModel(__ins.props, "foo2", { local: true })`)
+    expect(content).toMatch(`useModel<any>(__ins.props, "hoist", { local })`)
   })
 
   test('w/ types, basic usage', () => {
@@ -130,11 +136,15 @@ describe('defineModel()', () => {
     )
 
     expect(content).toMatch(
-      `const modelValue = useModel(__props, "modelValue")`
+      `const modelValue = useModel<any>(__ins.props, "modelValue")`
     )
-    expect(content).toMatch(`const count = useModel(__props, "count")`)
-    expect(content).toMatch(`const disabled = useModel(__props, "disabled")`)
-    expect(content).toMatch(`const any = useModel(__props, "any")`)
+    expect(content).toMatch(
+      `const count = useModel<Number>(__ins.props, "count")`
+    )
+    expect(content).toMatch(
+      `const disabled = useModel<Number>(__ins.props, "disabled")`
+    )
+    expect(content).toMatch(`const any = useModel<any>(__ins.props, "any")`)
 
     expect(bindings).toStrictEqual({
       modelValue: BindingTypes.SETUP_REF,
@@ -169,10 +179,10 @@ describe('defineModel()', () => {
       'emits: ["update:modelValue", "update:fn", "update:fnWithDefault", "update:str", "update:optional"]'
     )
     expect(content).toMatch(
-      `const modelValue = useModel(__props, "modelValue")`
+      `const modelValue = useModel<Boolean>(__ins.props, "modelValue")`
     )
-    expect(content).toMatch(`const fn = useModel(__props, "fn")`)
-    expect(content).toMatch(`const str = useModel(__props, "str")`)
+    expect(content).toMatch(`const fn = useModel<Function>(__ins.props, "fn")`)
+    expect(content).toMatch(`const str = useModel<String>(__ins.props, "str")`)
     expect(bindings).toStrictEqual({
       modelValue: BindingTypes.SETUP_REF,
       fn: BindingTypes.SETUP_REF,
