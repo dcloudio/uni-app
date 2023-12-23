@@ -30,6 +30,7 @@ export function compileSFCScript(
         mode: 'module',
         inline: isInline,
         rootDir: '',
+        className: 'GenAnonymous',
         sourceMap: false,
         bindingMetadata: result.bindings,
       })
