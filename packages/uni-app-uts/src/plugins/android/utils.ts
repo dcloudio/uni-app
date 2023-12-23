@@ -235,12 +235,12 @@ function serialize(obj: unknown, ts = false): string {
   }
 }
 
-export function parseUTSRelativeFilename(filename: string) {
+export function parseUTSRelativeFilename(filename: string, root?: string) {
   if (!path.isAbsolute(filename)) {
     return filename
   }
   return normalizeNodeModules(
-    path.relative(process.env.UNI_INPUT_DIR, filename)
+    path.relative(root ?? process.env.UNI_INPUT_DIR, filename)
   )
 }
 

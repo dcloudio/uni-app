@@ -1,9 +1,8 @@
 import fs from 'fs'
-import path from 'path'
 import { createHash } from 'crypto'
 import type * as _compiler from '@vue/compiler-sfc'
 import type { CompilerError, SFCDescriptor } from '@vue/compiler-sfc'
-import { normalizePath } from '@dcloudio/uni-cli-shared'
+import { parseUTSRelativeFilename } from '../utils'
 
 export interface ResolvedOptions {
   compiler: typeof _compiler
@@ -36,6 +35,7 @@ export const cache = new Map<string, SFCDescriptor>()
 declare module '@vue/compiler-sfc' {
   interface SFCDescriptor {
     id: string
+    relativeFilename: string
   }
 }
 
@@ -46,18 +46,17 @@ export function createDescriptor(
 ): SFCParseResult {
   // ensure the path is normalized in a way that is consistent inside
   // project (relative to root) and on different systems.
-  const normalizedPath = normalizePath(
-    path.normalize(path.relative(root, filename))
-  )
+  const relativeFilename = parseUTSRelativeFilename(filename, root)
   // 传入normalizedPath是为了让sourcemap记录的是相对路径
   const { descriptor, errors } = compiler.parse(source, {
-    filename: normalizedPath,
+    filename: relativeFilename,
     sourceMap,
   })
+  descriptor.relativeFilename = relativeFilename
   // 重置为绝对路径
   descriptor.filename = filename
 
-  descriptor.id = getHash(normalizedPath)
+  descriptor.id = getHash(relativeFilename)
 
   cache.set(filename, descriptor)
   return { descriptor, errors }

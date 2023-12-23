@@ -43,7 +43,6 @@ import {
   getImportedName,
 } from './script/utils'
 import { analyzeScriptBindings } from './script/analyzeScriptBindings'
-import { parseUTSRelativeFilename } from '../../../utils'
 import { hasConsole, rewriteConsole } from './script/rewriteConsole'
 import { hasDebugError, rewriteDebugError } from './script/rewriteDebugError'
 import { TypeScope } from './script/resolveType'
@@ -276,50 +275,50 @@ export function compileScript(
   const scriptAst = ctx.scriptAst
   const scriptSetupAst = ctx.scriptSetupAst!
 
+  const relativeFilename = ctx.descriptor.relativeFilename
   // 处理 console 的日志输出源码位置，不然就需要rust端读取 sourcemap 做映射
-  const fileName = parseUTSRelativeFilename(ctx.descriptor.filename)
-  if (scriptAst) {
-    const scriptContent = ctx.descriptor.script!.content
-    const startLine = (ctx.descriptor.script!.loc.start.line || 1) - 1
-    const startOffset = ctx.descriptor.script!.loc.start.offset || 0
-    // 仅 dev 处理
-    if (
-      process.env.NODE_ENV === 'development' ||
-      process.env.UNI_RUST_TEST === 'true'
-    ) {
+  if (
+    process.env.NODE_ENV === 'development' ||
+    process.env.UNI_RUST_TEST === 'true'
+  ) {
+    if (scriptAst) {
+      // 仅 dev 处理
+      const scriptContent = ctx.descriptor.script!.content
+      const startLine = (ctx.descriptor.script!.loc.start.line || 1) - 1
+      const startOffset = ctx.descriptor.script!.loc.start.offset || 0
       if (hasDebugError(scriptContent)) {
         rewriteDebugError(scriptAst, ctx.s, {
-          fileName,
+          fileName: relativeFilename,
+          startLine,
+          startOffset,
+        })
+      }
+      if (scriptContent.includes('console.')) {
+        rewriteConsole(scriptAst, ctx.s, {
+          fileName: relativeFilename,
           startLine,
           startOffset,
         })
       }
     }
-    if (scriptContent.includes('console.')) {
-      rewriteConsole(scriptAst, ctx.s, {
-        fileName,
-        startLine,
-        startOffset,
-      })
-    }
-  }
-  if (scriptSetupAst) {
-    const scriptSetupContent = ctx.descriptor.scriptSetup!.content
-    const startLine = (ctx.descriptor.scriptSetup!.loc.start.line || 1) - 1
-    const startOffset = ctx.descriptor.scriptSetup!.loc.start.offset || 0
-    if (hasDebugError(scriptSetupContent)) {
-      rewriteDebugError(scriptSetupAst, ctx.s, {
-        fileName,
-        startLine,
-        startOffset,
-      })
-    }
-    if (hasConsole(scriptSetupContent)) {
-      rewriteConsole(scriptSetupAst, ctx.s, {
-        fileName,
-        startLine,
-        startOffset,
-      })
+    if (scriptSetupAst) {
+      const scriptSetupContent = ctx.descriptor.scriptSetup!.content
+      const startLine = (ctx.descriptor.scriptSetup!.loc.start.line || 1) - 1
+      const startOffset = ctx.descriptor.scriptSetup!.loc.start.offset || 0
+      if (hasDebugError(scriptSetupContent)) {
+        rewriteDebugError(scriptSetupAst, ctx.s, {
+          fileName: relativeFilename,
+          startLine,
+          startOffset,
+        })
+      }
+      if (hasConsole(scriptSetupContent)) {
+        rewriteConsole(scriptSetupAst, ctx.s, {
+          fileName: relativeFilename,
+          startLine,
+          startOffset,
+        })
+      }
     }
   }
 
@@ -999,7 +998,7 @@ ${exposeCall}`
     map:
       options.sourceMap !== false
         ? (ctx.s.generateMap({
-            source: fileName,
+            source: relativeFilename,
             hires: true,
             includeContent: true,
           }) as unknown as RawSourceMap)

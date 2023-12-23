@@ -27,7 +27,6 @@ import {
   createResolveError,
   genClassName,
   parseImports,
-  parseUTSRelativeFilename,
   wrapResolve,
 } from '../../utils'
 import { genTemplateCode } from '../code/template'
@@ -38,24 +37,27 @@ export async function transformMain(
   code: string,
   filename: string,
   options: ResolvedOptions,
-  pluginContext: TransformPluginContext,
+  pluginContext?: TransformPluginContext, // 该 transformMain 方法被vuejs-core使用，编译框架内置组件了，此时不会传入pluginContext
   isAppVue: boolean = false
 ) {
   if (!options.compiler) {
     options.compiler = require('@vue/compiler-sfc')
   }
-  const relativeFileName = parseUTSRelativeFilename(filename)
 
   const { descriptor, errors } = createDescriptor(filename, code, options)
 
+  const relativeFilename = descriptor.relativeFilename
+
   if (errors.length) {
-    errors.forEach((error) =>
-      pluginContext.error(createRollupError('', filename, error, code))
-    )
+    if (pluginContext) {
+      errors.forEach((error) =>
+        pluginContext.error(createRollupError('', filename, error, code))
+      )
+    }
     return null
   }
 
-  const className = genClassName(relativeFileName)
+  const className = genClassName(relativeFilename, options.classNamePrefix)
 
   // script
   const {
@@ -78,9 +80,10 @@ export async function transformMain(
     const isInline = !!descriptor.scriptSetup
     const templateResult = genTemplateCode(
       descriptor,
-      resolveGenTemplateCodeOptions(relativeFileName, code, descriptor, {
+      resolveGenTemplateCodeOptions(relativeFilename, code, descriptor, {
         mode: 'module',
         inline: isInline,
+        className,
         rootDir: process.env.UNI_INPUT_DIR,
         sourceMap: process.env.NODE_ENV === 'development',
         bindingMetadata,
@@ -175,10 +178,10 @@ export default {}
   // handle TS transpilation
   const utsCode = utsOutput.join('\n')
 
-  if (resolvedMap) {
+  if (resolvedMap && pluginContext) {
     pluginContext.emitFile({
       type: 'asset',
-      fileName: removeExt(relativeFileName) + '.map',
+      fileName: removeExt(relativeFilename) + '.map',
       source: JSON.stringify(resolvedMap),
     })
   }
@@ -192,7 +195,7 @@ export default {}
     jsCodes.push(
       await parseImports(
         scriptCode,
-        resolvedMap
+        resolvedMap && pluginContext
           ? createTryResolve(
               filename,
               pluginContext.resolve,
@@ -203,9 +206,9 @@ export default {}
           : undefined
       )
     )
-    pluginContext.emitFile({
+    pluginContext?.emitFile({
       type: 'asset',
-      fileName: relativeFileName,
+      fileName: relativeFilename,
       source: utsCode,
     })
   }
@@ -215,7 +218,7 @@ export default {}
   jsCodes.push(`export default "${className}"
 export const ${genComponentPublicInstanceImported(
     options.root,
-    relativeFileName
+    relativeFilename
   )} = {}`)
   const jsCode = jsCodes.filter(Boolean).join('\n')
 
@@ -224,6 +227,10 @@ export const ${genComponentPublicInstanceImported(
     map: {
       mappings: '',
     } as SourceMapInput,
+    // 这些都是 vuejs-core 需要的
+    errors,
+    uts: utsCode,
+    descriptor,
   }
 }
 
@@ -252,13 +259,13 @@ async function genScriptCode(
 
 async function genStyleCode(
   descriptor: SFCDescriptor,
-  pluginContext: PluginContext
+  pluginContext?: PluginContext
 ) {
   let stylesCode = ``
   if (descriptor.styles.length) {
     for (let i = 0; i < descriptor.styles.length; i++) {
       const style = descriptor.styles[i]
-      if (style.src) {
+      if (style.src && pluginContext) {
         await linkSrcToDescriptor(style.src, descriptor, pluginContext)
       }
       const src = style.src || descriptor.filename

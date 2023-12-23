@@ -15,7 +15,7 @@ import {
 import { getResolvedScript } from './script'
 import type { ResolvedOptions } from '.'
 import { TemplateCompilerOptions } from '../compiler/options'
-import { genClassName, parseUTSImportFilename } from '../../utils'
+import { parseUTSImportFilename } from '../../utils'
 import { CompilerError } from '../compiler/errors'
 
 export function resolveGenTemplateCodeOptions(
@@ -26,17 +26,16 @@ export function resolveGenTemplateCodeOptions(
     mode: 'module' | 'default'
     inline: boolean
     rootDir: string
+    className: string
     sourceMap: boolean
     bindingMetadata?: BindingMetadata
   }
 ): TemplateCompilerOptions {
   const inputRoot = normalizePath(options.rootDir)
-  const className = genClassName(relativeFileName)
   const templateStartLine = descriptor.template?.loc.start.line ?? 0
   return {
     ...options,
     filename: relativeFileName,
-    className,
     inMap: descriptor.template?.map,
     matchEasyCom: (tag, uts) => {
       const source = matchEasycom(tag)

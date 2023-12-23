@@ -1,5 +1,4 @@
 import MagicString from 'magic-string'
-import { parseUTSRelativeFilename } from '../../../../utils'
 import { analyzeScriptBindings } from './analyzeScriptBindings'
 import { ScriptCompileContext } from './context'
 import { hasConsole, rewriteConsole } from './rewriteConsole'
@@ -20,7 +19,7 @@ export function processNormalScript(
     const scriptAst = ctx.scriptAst!
     const bindings = analyzeScriptBindings(scriptAst.body)
     const s = new MagicString(content)
-    const fileName = parseUTSRelativeFilename(ctx.descriptor.filename)
+    const relativeFilename = ctx.descriptor.relativeFilename
     const startLine = (ctx.descriptor.script!.loc.start.line || 1) - 1
     const startOffset = 0
     if (
@@ -29,19 +28,20 @@ export function processNormalScript(
     ) {
       if (hasDebugError(content)) {
         rewriteDebugError(scriptAst, s, {
-          fileName,
+          fileName: relativeFilename,
+          startLine,
+          startOffset,
+        })
+      }
+      if (hasConsole(content)) {
+        rewriteConsole(scriptAst, s, {
+          fileName: relativeFilename,
           startLine,
           startOffset,
         })
       }
     }
-    if (hasConsole(content)) {
-      rewriteConsole(scriptAst, s, {
-        fileName,
-        startLine,
-        startOffset,
-      })
-    }
+
     if (s.hasChanged()) {
       content = s.toString()
     }

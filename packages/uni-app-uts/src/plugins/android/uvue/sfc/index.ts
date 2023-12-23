@@ -63,4 +63,5 @@ export interface ResolvedOptions extends Options {
   cssDevSourcemap?: boolean
   targetLanguage?: 'kotlin'
   className?: string
+  classNamePrefix?: string
 }

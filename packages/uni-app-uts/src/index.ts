@@ -8,3 +8,5 @@ export default (options: { autoImportOptions?: AutoImportOptions }) => {
 }
 
 export { genClassName } from './plugins/android/utils'
+
+export { transformMain as transformVue } from './plugins/android/uvue/sfc/main'
