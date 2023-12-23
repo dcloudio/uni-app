@@ -18,7 +18,8 @@ TemplateCompilerOptions): string {
   // if(inline){
   //   return `(): VNode | null =>`
   // }
-  return `function ${className}Render(): VNode | null`
+  // 调整返回值类型为 any | null, 支持 <template>some text</template>
+  return `function ${className}Render(): any | null`
 }
 
 export function rewriteObjectExpression(
