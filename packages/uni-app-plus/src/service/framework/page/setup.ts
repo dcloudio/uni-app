@@ -37,6 +37,13 @@ export function setupPage(component: VuePageComponent) {
     )
     onMounted(() => {
       nextTick(() => {
+        if (__X__) {
+          // TODO page.addPageEventListener ON_READY
+          setTimeout(() => {
+            invokeHook(pageVm, ON_READY)
+          }, 150)
+          return
+        }
         // onShow被延迟，故onReady也同时延迟
         invokeHook(pageVm, ON_READY)
       })
