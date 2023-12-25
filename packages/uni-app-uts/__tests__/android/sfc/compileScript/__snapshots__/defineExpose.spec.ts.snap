@@ -5,9 +5,9 @@ exports[`<script> after <script setup> the script content not end with \`\\n\` 1
   const n = 1
 
 export default {
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
   
@@ -19,9 +19,9 @@ return "INLINE_RENDER"
 
 exports[`defineExpose() 1`] = `
 "export default {
-  setup() {
+  setup(__props: GenAnonymous, { expose: __expose }: SetupContext) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
 __expose({ foo: 123 })

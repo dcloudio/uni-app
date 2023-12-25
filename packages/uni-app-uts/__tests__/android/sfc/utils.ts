@@ -14,11 +14,12 @@ export function compileSFCScript(
   options?: Partial<SFCScriptCompileOptions>,
   parseOptions?: SFCParseOptions
 ) {
+  const className = 'GenAnonymous'
   const { descriptor } = parse(src, parseOptions)
   const result = compileScript(descriptor, {
     ...options,
     id: mockId,
-    className: '',
+    className,
     inlineTemplate: true,
     scriptAndScriptSetup: true,
   })
@@ -30,7 +31,7 @@ export function compileSFCScript(
         mode: 'module',
         inline: isInline,
         rootDir: '',
-        className: 'GenAnonymous',
+        className,
         sourceMap: false,
         bindingMetadata: result.bindings,
       })

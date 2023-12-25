@@ -7,9 +7,9 @@ export default {
   props: {
   foo: String
 },
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
 const props = _ctx
@@ -30,9 +30,9 @@ export default {
   props: {
     foo: { type: Number, required: false, default: 5.5 }
   },
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
       const props = _ctx;
@@ -49,9 +49,9 @@ exports[`defineProps custom element retains the props type & production mode 1`]
   props: {
     foo: { type: Number, required: true }
   },
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
       const props = _ctx
@@ -65,9 +65,9 @@ return "INLINE_RENDER"
 exports[`defineProps defineProps w/ runtime options 1`] = `
 "export default {
   props: { foo: String },
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
 const props = _ctx
@@ -83,9 +83,9 @@ exports[`defineProps destructure without enabling reactive destructure 1`] = `
   props: {
     foo: { type: null, required: true }
   },
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
       const { foo } = _ctx
@@ -128,9 +128,9 @@ exports[`defineProps should escape names w/ special symbols 1`] = `
     "til~de": { type: null, required: true },
     "da-sh": { type: null, required: true }
   },
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
     
@@ -144,9 +144,9 @@ return "INLINE_RENDER"
 exports[`defineProps w/ TS assertion 1`] = `
 "export default {
   props: ['foo'],
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
       
@@ -164,9 +164,9 @@ export default {
   props: {
     x: { type: Number, required: false }
   },
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
     
@@ -184,9 +184,9 @@ export default {
   props: {
     x: { type: Number, required: false }
   },
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
       
@@ -204,9 +204,9 @@ export default {
   props: {
     x: { type: Number, required: false }
   },
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
     
@@ -232,9 +232,9 @@ export default {
     y: { type: String, required: true },
     x: { type: Number, required: false }
   },
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
       
@@ -252,9 +252,9 @@ export default {
   props: {
     x: { type: Number, required: false }
   },
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
     
@@ -270,9 +270,9 @@ exports[`defineProps w/ leading code 1`] = `
     
 export default {
   props: {},
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 const props = _ctx
     
@@ -330,9 +330,9 @@ export default {
     unknownUnionWithBoolean: { type: Boolean, required: true, skipCheck: true },
     unknownUnionWithFunction: { type: Function, required: true, skipCheck: true }
   },
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
     
@@ -350,9 +350,9 @@ export default {
   props: {
     x: { type: Number, required: false }
   },
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
     
@@ -372,9 +372,9 @@ export default {
   props: {
     a: { type: String, required: false, default: "a" }
   },
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
       const props = _ctx;
@@ -396,9 +396,9 @@ exports[`defineProps withDefaults (static) 1`] = `
     quuxx: { type: Promise, required: false, async default() { return await Promise.resolve('hi') } },
     fred: { type: String, required: false, get default() { return 'fred' } }
   },
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
     const props = _ctx
@@ -417,9 +417,9 @@ exports[`defineProps withDefaults (static) w/ production mode 1`] = `
     baz: { type: [Boolean, Function], required: true, default: true },
     qux: { type: [String, Number], required: true, default: 'hi' }
   },
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
     const props = _ctx

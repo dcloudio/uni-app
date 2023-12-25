@@ -5,7 +5,7 @@ describe('compiler: component', () => {
     assert(
       `<view><Foo /></view>`,
       `
-function PagesIndexIndexRender(): VNode | null {
+function PagesIndexIndexRender(): any | null {
 const _ctx = this
 const _cache = this.$.renderCache
 const _component_Foo = resolveComponent("Foo")

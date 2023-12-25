@@ -858,13 +858,7 @@ __ins.emit(event, ...do_not_transform_spread)
   // }
 
   // 9. finalize setup() argument signature
-  let args = `` //`__props`
-  // if (ctx.propsTypeDecl) {
-  //   // mark as any and only cast on assignment
-  //   // since the user defined complex types may be incompatible with the
-  //   // inferred type from generated runtime declarations
-  //   args += `: any`
-  // }
+  let args = `__props: ${options.className}`
   // inject user assignment of props
   // we use a default __props so that template expressions referencing props
   // can use it directly
@@ -897,16 +891,17 @@ __ins.emit(event, ...do_not_transform_spread)
   //   ctx.s.prependLeft(startOffset, `\nlet __temp${any}, __restore${any}\n`)
   // }
 
-  // const destructureElements =
-  //   ctx.hasDefineExposeCall || !options.inlineTemplate
-  //     ? [`expose: __expose`]
-  //     : []
+  const destructureElements =
+    ctx.hasDefineExposeCall || !options.inlineTemplate
+      ? [`expose: __expose`]
+      : []
+  // emit 是个函数且不定参数，不通过解构处理
   // if (ctx.emitDecl) {
-  //   destructureElements.push(`emit: __emit`)
+  // destructureElements.push(`emit: __emit`)
   // }
-  // if (destructureElements.length) {
-  //   args += `, { ${destructureElements.join(', ')} }`
-  // }
+  if (destructureElements.length) {
+    args += `, { ${destructureElements.join(', ')} }: SetupContext`
+  }
 
   // 10. generate return statement
   // 剩余由 rust 编译器处理

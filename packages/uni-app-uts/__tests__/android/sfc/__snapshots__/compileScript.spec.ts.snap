@@ -4,9 +4,9 @@ exports[`SFC analyze <script> bindings auto name inference basic 1`] = `
 "const a = 1
 export default {
   __name: 'FooBar',
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
 return "INLINE_RENDER"
@@ -22,9 +22,9 @@ exports[`SFC analyze <script> bindings auto name inference do not overwrite manu
         })
         
 export default {
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 const a = 1
 return "INLINE_RENDER"
@@ -39,9 +39,9 @@ exports[`SFC analyze <script> bindings auto name inference do not overwrite manu
         }
         
 export default {
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 const a = 1
 return "INLINE_RENDER"
@@ -52,9 +52,9 @@ return "INLINE_RENDER"
 
 exports[`SFC compile <script setup> binding analysis for destructure 1`] = `
 "export default {
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
       const { foo, b: bar, ['x' + 'y']: baz, x: { y, zz: { z }}} = {}
@@ -70,9 +70,9 @@ exports[`SFC compile <script setup> dev mode import usage check TS annotations 1
         const a = 1
         
 export default {
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
         function b() {}
@@ -88,9 +88,9 @@ exports[`SFC compile <script setup> dev mode import usage check attribute expres
         const cond = true
         
 export default {
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
         
@@ -105,9 +105,9 @@ exports[`SFC compile <script setup> dev mode import usage check components 1`] =
         const fooBar: FooBar = 1
         
 export default {
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
         
@@ -121,9 +121,9 @@ exports[`SFC compile <script setup> dev mode import usage check directive 1`] = 
 "import { vMyDir } from './x'
         
 export default {
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
         
@@ -137,9 +137,9 @@ exports[`SFC compile <script setup> dev mode import usage check dynamic argument
 "import { FooBar, foo, bar, unused, baz } from './x'
         
 export default {
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
         
@@ -153,9 +153,9 @@ exports[`SFC compile <script setup> dev mode import usage check js template stri
 "import { VAR, VAR2, VAR3 } from './x'
         
 export default {
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
         
@@ -169,9 +169,9 @@ exports[`SFC compile <script setup> dev mode import usage check last tag 1`] = `
 "import { FooBaz, Last } from './x'
         
 export default {
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
         
@@ -185,9 +185,9 @@ exports[`SFC compile <script setup> dev mode import usage check template ref 1`]
 "import { foo, bar, Baz } from './foo'
         
 export default {
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
           
@@ -201,9 +201,9 @@ exports[`SFC compile <script setup> dev mode import usage check vue interpolatio
 "import { x, y, z, x$y } from './x'
       
 export default {
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
       
@@ -225,9 +225,9 @@ export default {
   emits: {
           foo: () => bar > 1
         },
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
         
@@ -251,9 +251,9 @@ export default {
   emits: {
             foo: bar => bar > 1
           },
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
           
@@ -269,9 +269,9 @@ exports[`SFC compile <script setup> imports dedupe between user & helper 1`] = `
 "import { ref } from 'vue'
       
 export default {
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
       let foo = $ref(1)
@@ -286,9 +286,9 @@ exports[`SFC compile <script setup> imports import dedupe between <script> and <
 "import { x } from './x'
         
 export default {
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
         x()
@@ -305,9 +305,9 @@ exports[`SFC compile <script setup> imports should allow defineProps/Emit at the
 export default {
   props: ['foo'],
   emits: ['bar'],
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
       
@@ -325,9 +325,9 @@ exports[`SFC compile <script setup> imports should extract comment for import or
         import b from 'b'
         
 export default {
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
         
@@ -342,9 +342,9 @@ exports[`SFC compile <script setup> imports should hoist and expose imports 1`] 
           import 'foo/css'
         
 export default {
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
           
@@ -358,9 +358,9 @@ exports[`SFC compile <script setup> imports should support module string names s
 "import { "😏" as foo } from './foo'
       
 export default {
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
         
@@ -377,9 +377,9 @@ exports[`SFC compile <script setup> inlineTemplate mode avoid unref() when neces
         import * as tree from './tree'
         
 export default {
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
         const count = ref(0)
@@ -389,7 +389,7 @@ const _cache = __ins.renderCache;
         function fn() {}
         
 return 
-function GenAnonymousRender(): VNode | null {
+function GenAnonymousRender(): any | null {
 
 const _component_div = resolveComponent("div")
 
@@ -416,14 +416,14 @@ exports[`SFC compile <script setup> inlineTemplate mode referencing scope compon
         import vMyDir from './my-dir'
         
 export default {
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
         
 return 
-function GenAnonymousRender(): VNode | null {
+function GenAnonymousRender(): any | null {
 
 const _component_div = resolveComponent("div")
 
@@ -444,15 +444,15 @@ exports[`SFC compile <script setup> inlineTemplate mode should work 1`] = `
 "import { ref } from 'vue'
         
 export default {
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
         const count = ref(0)
         
 return 
-function GenAnonymousRender(): VNode | null {
+function GenAnonymousRender(): any | null {
 
 const _component_div = resolveComponent("div")
 
@@ -476,9 +476,9 @@ exports[`SFC compile <script setup> inlineTemplate mode template assignment expr
 "import { ref } from 'vue'
         
 export default {
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
         const count = ref(0)
@@ -487,7 +487,7 @@ const _cache = __ins.renderCache;
         let v = ref(1)
         
 return 
-function GenAnonymousRender(): VNode | null {
+function GenAnonymousRender(): any | null {
 
 const _component_div = resolveComponent("div")
 
@@ -538,9 +538,9 @@ exports[`SFC compile <script setup> inlineTemplate mode template destructure ass
 "import { ref } from 'vue'
         
 export default {
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
         const val = {}
@@ -549,7 +549,7 @@ const _cache = __ins.renderCache;
         let lett = 1
         
 return 
-function GenAnonymousRender(): VNode | null {
+function GenAnonymousRender(): any | null {
 
 const _component_div = resolveComponent("div")
 
@@ -574,9 +574,9 @@ exports[`SFC compile <script setup> inlineTemplate mode template update expressi
 "import { ref } from 'vue'
         
 export default {
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
         const count = ref(0)
@@ -584,7 +584,7 @@ const _cache = __ins.renderCache;
         let lett = 1
         
 return 
-function GenAnonymousRender(): VNode | null {
+function GenAnonymousRender(): any | null {
 
 const _component_div = resolveComponent("div")
 
@@ -618,9 +618,9 @@ exports[`SFC compile <script setup> inlineTemplate mode v-model codegen 1`] = `
 "import { ref } from 'vue'
         
 export default {
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
         const count = ref(0)
@@ -628,7 +628,7 @@ const _cache = __ins.renderCache;
         let lett = 1
         
 return 
-function GenAnonymousRender(): VNode | null {
+function GenAnonymousRender(): any | null {
 
   return createElementVNode(Fragment, null, [
     createElementVNode("input", utsMapOf({
@@ -637,11 +637,11 @@ function GenAnonymousRender(): VNode | null {
     }), null, 40 /* PROPS, NEED_HYDRATION */, ["modelValue", "onInput"]),
     createElementVNode("input", utsMapOf({
       modelValue: unref(maybe),
-      onInput: ($event: InputEvent) => {isRef(maybe) ? (maybe).value = $event.detail.value : null}
+      onInput: ($event: InputEvent) => {if(isRef(maybe)) { (maybe).value = $event.detail.value }}
     }), null, 40 /* PROPS, NEED_HYDRATION */, ["modelValue", "onInput"]),
     createElementVNode("input", utsMapOf({
       modelValue: unref(lett),
-      onInput: ($event: InputEvent) => {isRef(lett) ? (lett).value = $event.detail.value : lett = $event.detail.value}
+      onInput: ($event: InputEvent) => {if(isRef(lett)) { (lett).value = $event.detail.value } else { lett = $event.detail.value }}
     }), null, 40 /* PROPS, NEED_HYDRATION */, ["modelValue", "onInput"])
   ], 64 /* STABLE_FRAGMENT */)
 }
@@ -652,15 +652,15 @@ function GenAnonymousRender(): VNode | null {
 
 exports[`SFC compile <script setup> inlineTemplate mode with defineExpose() 1`] = `
 "export default {
-  setup() {
+  setup(__props: GenAnonymous, { expose: __expose }: SetupContext) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
         const count = ref(0)
         __expose({ count })
         
-return function GenAnonymousRender(): VNode | null { return null }
+return function GenAnonymousRender(): any | null { return null }
 }
 
 }"
@@ -671,9 +671,9 @@ exports[`SFC compile <script setup> should compile JS syntax 1`] = `
       const b = 2
       
 export default {
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
       
@@ -694,9 +694,9 @@ exports[`SFC compile <script setup> should expose top level declarations 1`] = `
       
 
 export default {
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
       let a = 1
@@ -714,9 +714,9 @@ exports[`SFC compile <script setup> with TypeScript const Enum 1`] = `
 "const enum Foo { A = 123 }
         
 export default {
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
         
@@ -731,9 +731,9 @@ exports[`SFC compile <script setup> with TypeScript hoist type declarations 1`] 
         type Bar = {}
       
 export default {
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
         
@@ -747,9 +747,9 @@ exports[`SFC compile <script setup> with TypeScript runtime Enum 1`] = `
 "enum Foo { A = 123 }
         
 export default {
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
         
@@ -765,9 +765,9 @@ exports[`SFC compile <script setup> with TypeScript runtime Enum in normal scrip
           enum B { B = "B" }
         
 export default {
-  setup() {
+  setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
         enum Foo { A = 123 }

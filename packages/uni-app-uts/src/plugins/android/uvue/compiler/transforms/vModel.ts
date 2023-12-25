@@ -157,11 +157,13 @@ export const transformModel: DirectiveTransform = (dir, node, context) => {
       const altAssignment =
         bindingType === BindingTypes.SETUP_LET
           ? `${rawExp} = ${eventValue}`
-          : `null`
+          : ``
       assignmentExp = createCompoundExpression([
-        `${eventArg} => {${context.helperString(IS_REF)}(${rawExp}) ? (`,
+        `${eventArg} => {if(${context.helperString(IS_REF)}(${rawExp})) { (`,
         createSimpleExpression(rawExp, false, exp.loc),
-        `).value = ${eventValue} : ${altAssignment}}`,
+        `).value = ${eventValue} }${
+          altAssignment ? ` else { ${altAssignment} }` : ``
+        }}`,
       ])
     }
   } else {

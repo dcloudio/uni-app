@@ -69,6 +69,7 @@ export async function transformMain(
     className,
   })
 
+  let templatePreambleCode: string | undefined = undefined
   let templateCode = ''
   let templateMap = undefined
   let templateImportsCode = ''
@@ -90,6 +91,7 @@ export async function transformMain(
       })
     )
 
+    templatePreambleCode = templateResult.preamble
     templateCode = templateResult.code
     templateMap = templateResult.map
     const {
@@ -132,6 +134,10 @@ export default {}
     templateCode,
     `/*${className}Styles*/\n`,
   ]
+
+  if (templatePreambleCode) {
+    utsOutput.push(templatePreambleCode)
+  }
 
   let resolvedMap: RawSourceMap | undefined = undefined
   if (options.sourceMap) {

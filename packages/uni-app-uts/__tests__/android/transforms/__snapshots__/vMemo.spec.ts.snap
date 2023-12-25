@@ -2,7 +2,7 @@
 
 exports[`compiler: v-memo transform on component 1`] = `
 "
-function Render(): VNode | null {
+function Render(): any | null {
 const _ctx = this
 const _cache = this.$.renderCache
 const _component_Comp = resolveComponent("Comp")
@@ -15,7 +15,7 @@ const _component_Comp = resolveComponent("Comp")
 
 exports[`compiler: v-memo transform on normal element 1`] = `
 "
-function Render(): VNode | null {
+function Render(): any | null {
 const _ctx = this
 const _cache = this.$.renderCache
   return createElementVNode("view", null, [
@@ -26,7 +26,7 @@ const _cache = this.$.renderCache
 
 exports[`compiler: v-memo transform on root element 1`] = `
 "
-function Render(): VNode | null {
+function Render(): any | null {
 const _ctx = this
 const _cache = this.$.renderCache
   return withMemo([_ctx.x], (): VNode => createElementVNode("view"), _cache, 0)
@@ -35,7 +35,7 @@ const _cache = this.$.renderCache
 
 exports[`compiler: v-memo transform on template v-for 1`] = `
 "
-function Render(): VNode | null {
+function Render(): any | null {
 const _ctx = this
 const _cache = this.$.renderCache
   return createElementVNode("view", null, [
@@ -52,7 +52,7 @@ const _cache = this.$.renderCache
 
 exports[`compiler: v-memo transform on v-for 1`] = `
 "
-function Render(): VNode | null {
+function Render(): any | null {
 const _ctx = this
 const _cache = this.$.renderCache
   return createElementVNode("view", null, [
@@ -71,7 +71,7 @@ const _cache = this.$.renderCache
 
 exports[`compiler: v-memo transform on v-if 1`] = `
 "
-function Render(): VNode | null {
+function Render(): any | null {
 const _ctx = this
 const _cache = this.$.renderCache
 const _component_Comp = resolveComponent("Comp")

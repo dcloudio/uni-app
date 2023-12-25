@@ -11,6 +11,10 @@ import { TransformContext } from './transform'
 import { CompilerError } from './errors'
 import { genClassName } from '../../utils'
 
+export const __DEV__ = true
+export const __BROWSER__ = false
+export const __COMPAT__ = false
+
 export function genRenderFunctionDecl({
   className = '',
 }: // inline = false,

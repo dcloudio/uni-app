@@ -638,11 +638,11 @@ describe('SFC compile <script setup>', () => {
       expect(content).toMatch(`(count).value = $event.detail.value`)
       // const but maybe ref: assign if ref, otherwise do nothing
       expect(content).toMatch(
-        `isRef(maybe) ? (maybe).value = $event.detail.value : null`
+        `if(isRef(maybe)) { (maybe).value = $event.detail.value }`
       )
       // let: handle both cases
       expect(content).toMatch(
-        `isRef(lett) ? (lett).value = $event.detail.value : lett = $event.detail.value`
+        `if(isRef(lett)) { (lett).value = $event.detail.value } else { lett = $event.detail.value }`
       )
       assertCode(content)
     })

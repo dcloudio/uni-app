@@ -93,7 +93,7 @@ describe('compiler: slot', () => {
     assert(
       `<view><slot data="data"></slot></view>`,
       `
-function PagesIndexIndexRender(): VNode | null {
+function PagesIndexIndexRender(): any | null {
 const _ctx = this
 const _cache = this.$.renderCache
   return createElementVNode("view", null, [
@@ -110,7 +110,7 @@ const _cache = this.$.renderCache
     assert(
       `<view><Foo @click="test">test</Foo></view>`,
       `
-function PagesIndexIndexRender(): VNode | null {
+function PagesIndexIndexRender(): any | null {
 const _ctx = this
 const _cache = this.$.renderCache
 const _component_Foo = resolveComponent("Foo")
@@ -144,7 +144,7 @@ const _component_Foo = resolveComponent("Foo")
     assert(
       `<view><Foo><template v-slot="props"><text>msg: {{props.msg}}</text></template></Foo></view>`,
       `
-function PagesIndexIndexRender(): VNode | null {
+function PagesIndexIndexRender(): any | null {
 const _ctx = this
 const _cache = this.$.renderCache
 const _component_Foo = resolveComponent("Foo")
@@ -168,7 +168,7 @@ const _component_Foo = resolveComponent("Foo")
     assert(
       `<view><Foo><template #default="props"><text>msg: {{props.msg}}</text></template></Foo></view>`,
       `
-function PagesIndexIndexRender(): VNode | null {
+function PagesIndexIndexRender(): any | null {
 const _ctx = this
 const _cache = this.$.renderCache
 const _component_Foo = resolveComponent("Foo")
