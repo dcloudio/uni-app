@@ -6,7 +6,7 @@ import {
 } from '@dcloudio/uni-cli-shared'
 
 import type { Plugin } from 'vite'
-import { parseImports } from './utils'
+import { createTryResolve, parseImports } from './utils'
 
 export function uniAppMainPlugin(): Plugin {
   const mainUTS = resolveMainPathOnce(process.env.UNI_INPUT_DIR)
@@ -15,9 +15,11 @@ export function uniAppMainPlugin(): Plugin {
     apply: 'build',
     async transform(code, id) {
       if (normalizePath(id) === mainUTS) {
-        code = await parseImports(code)
-        return `
-import './${MANIFEST_JSON_UTS}'
+        code = await parseImports(
+          code,
+          createTryResolve(id, this.resolve.bind(this))
+        )
+        return `import './${MANIFEST_JSON_UTS}'
 import './${PAGES_JSON_UTS}'
 ${code}
 `

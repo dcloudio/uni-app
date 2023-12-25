@@ -7,6 +7,7 @@ describe('compiler: component', () => {
       `
 function PagesIndexIndexRender(): VNode | null {
 const _ctx = this
+const _cache = this.$.renderCache
 const _component_Foo = resolveComponent("Foo")
 
   return createElementVNode("view", null, [

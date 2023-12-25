@@ -68,10 +68,26 @@ const props = {
 type SliderProps = ExtractPropTypes<typeof props>
 type HTMLRef = Ref<HTMLElement | null>
 
+class UniSliderElement extends HTMLElement {
+  get value() {
+    return Number(this.getAttribute('value'))
+  }
+
+  set value(value: number) {
+    this.dispatchEvent(new CustomEvent('change', { detail: { value } }))
+  }
+}
+
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Slider',
   props,
   emits: ['changing', 'change'],
+  //#if _X_ && !_NODE_JS_ /* 仅限X项目以及非SSR环境，使用条件编译，可以尽量减少其他平台生成多余的代码 */
+  rootElement: {
+    name: 'uni-slider',
+    class: UniSliderElement,
+  },
+  //#endif
   setup(props, { emit }) {
     const sliderRef: HTMLRef = ref(null)
     const sliderValueRef: HTMLRef = ref(null)
@@ -99,11 +115,22 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       useTouchtrack(sliderHandleRef.value!, _onTrack)
     })
 
+    function onUniSliderChange(e: CustomEvent) {
+      sliderValue.value = Number(e.detail.value)
+    }
+
     return () => {
       const { setBgColor, setBlockBg, setActiveColor, setBlockStyle } = state
 
       return (
-        <uni-slider ref={sliderRef} onClick={withWebEvent(_onClick)}>
+        <uni-slider
+          ref={sliderRef}
+          onClick={withWebEvent(_onClick)}
+          //#if _X_ && !_NODE_JS_
+          value={sliderValue.value}
+          onChange={withWebEvent(onUniSliderChange)}
+          //#endif
+        >
           <div class="uni-slider-wrapper">
             <div class="uni-slider-tap-area">
               <div style={setBgColor.value} class="uni-slider-handle-wrapper">

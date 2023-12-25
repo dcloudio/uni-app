@@ -1,4 +1,3 @@
-import type { ComponentPublicInstance } from 'vue'
 // @ts-ignore
 import type { Callback } from '../index.uts'
 import {
@@ -152,8 +151,8 @@ export const getProperties = (
         dom.getAttribute(name) != null
           ? dom.getAttribute(name)
           : component != null
-          ? component.$props[toCamelCase(name)]
-          : null
+            ? component.$props[toCamelCase(name)]
+            : null
       return attribute
     })
     callback({ properties }, null)
@@ -331,7 +330,17 @@ export const callMethod = (
       params.args.length > 0
         ? component.$callMethod(params.method, params.args[0])
         : component.$callMethod(params.method)
-    callback({ result }, null)
+    // @ts-ignore
+    if (result instanceof Promise<unknown>) {
+      (result as Promise<any>).then((res: any) => {
+        callback({ result: res }, null)
+      }).catch((err) => {
+        const errMsg = err instanceof Error ? err.message : err
+        callback({ result: errMsg }, null)
+      })
+    } else {
+      callback({ result }, null)
+    }
   }
 }
 
@@ -454,7 +463,11 @@ export const handleTouchEvent = (
 type TypeTouch = {
   identifier: number
   pageX: number
-  pageY: number
+  pageY: number,
+  screenX?: number | null,
+  screenY?: number | null,
+  clientX?: number | null,
+  clientY?: number | null,
 }
 
 function getTouches(touches: any[]): Touch[] {
@@ -466,6 +479,18 @@ function getTouches(touches: any[]): Touch[] {
     result.identifier = touchObj.identifier.toFloat()
     result.pageX = touchObj.pageX.toFloat()
     result.pageY = touchObj.pageY.toFloat()
+    if (touchObj.screenX !== null) {
+      result.screenX = touchObj.screenX!.toFloat()
+    }
+    if (touchObj.screenY !== null) {
+      result.screenY = touchObj.screenY!.toFloat()
+    }
+    if (touchObj.clientX !== null) {
+      result.clientX = touchObj.clientX!.toFloat()
+    }
+    if (touchObj.clientY !== null) {
+      result.clientY = touchObj.clientY!.toFloat()
+    }
     return result
   })
 }

@@ -24,13 +24,33 @@ const props = {
     type: [Boolean, String],
     default: false,
   },
+  value: {
+    type: String,
+    default: '',
+  },
   color: {
     type: String,
     default: '#007aff',
   },
-  value: {
+  backgroundColor: {
     type: String,
     default: '',
+  },
+  borderColor: {
+    type: String,
+    default: '',
+  },
+  activeBackgroundColor: {
+    type: String,
+    default: '',
+  },
+  activeBorderColor: {
+    type: String,
+    default: '',
+  },
+  iconColor: {
+    type: String,
+    default: '#ffffff',
   },
 }
 
@@ -41,10 +61,23 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     const radioChecked = ref(props.checked)
     const radioValue = ref(props.value)
 
-    const checkedStyle = computed(() => {
-      if (props.disabled)
-        return 'background-color: #E1E1E1;border-color: ##D1D1D1;'
-      return `background-color: ${props.color};border-color: ${props.color};`
+    const radioStyle = computed(() => {
+      if (props.disabled) {
+        return {
+          backgroundColor: '#E1E1E1',
+          borderColor: '#D1D1D1',
+        }
+      }
+      const style: { borderColor?: string; backgroundColor?: string } = {}
+      // 兼容旧版本样式
+      if (radioChecked.value) {
+        style.backgroundColor = props.activeBackgroundColor || props.color
+        style.borderColor = props.activeBorderColor || style.backgroundColor
+      } else {
+        if (props.borderColor) style.borderColor = props.borderColor
+        if (props.backgroundColor) style.backgroundColor = props.backgroundColor
+      }
+      return style
     })
 
     watch(
@@ -87,17 +120,24 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
       return (
         <uni-radio {...booleanAttrs} onClick={_onClick}>
-          <div class="uni-radio-wrapper">
+          <div
+            class="uni-radio-wrapper"
+            style={{
+              '--HOVER-BD-COLOR': !radioChecked.value
+                ? props.activeBorderColor
+                : radioStyle.value.borderColor,
+            }}
+          >
             <div
               class="uni-radio-input"
               // @ts-ignore
               class={{ 'uni-radio-input-disabled': props.disabled }}
-              style={radioChecked.value ? checkedStyle.value : ''}
+              style={radioStyle.value}
             >
               {radioChecked.value
                 ? createSvgIconVNode(
                     ICON_PATH_SUCCESS_NO_CIRCLE,
-                    props.disabled ? '#ADADAD' : '#fff',
+                    props.disabled ? '#ADADAD' : props.iconColor,
                     18
                   )
                 : ''}

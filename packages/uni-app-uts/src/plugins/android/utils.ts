@@ -1,11 +1,14 @@
 import fs from 'fs'
 import path from 'path'
-import { init, parse } from 'es-module-lexer'
+import { ImportSpecifier, init, parse } from 'es-module-lexer'
 import {
   AutoImportOptions,
+  createResolveErrorMsg,
+  createRollupError,
   initAutoImportOptions,
   normalizeNodeModules,
   normalizePath,
+  offsetToStartAndEnd,
   parseUniExtApiNamespacesJsOnce,
   removeExt,
 } from '@dcloudio/uni-cli-shared'
@@ -19,26 +22,154 @@ import {
 
 import AutoImport from 'unplugin-auto-import/vite'
 import { once } from '@dcloudio/uni-shared'
-import { SourceMapInput } from 'rollup'
+import type { SourceMapInput, PluginContext } from 'rollup'
+import { Position, SourceLocation } from '@vue/compiler-core'
+
+import { createCompilerError } from './uvue/compiler/errors'
 
 export const UVUE_CLASS_NAME_PREFIX = 'Gen'
 
 export const DEFAULT_APPID = 'HBuilder'
 
-export const ENTRY_FILENAME = 'index.uts'
+export const ENTRY_FILENAME = 'main.uts'
 
-export async function parseImports(code: string) {
+export function wrapResolve(
+  resolve: PluginContext['resolve']
+): PluginContext['resolve'] {
+  return async (source, importer, options) => {
+    try {
+      return await resolve(source, importer, options)
+    } catch (e) {
+      // import "@/pages/logo.png" 可能会报 Cannot find module 错误
+    }
+    return null
+  }
+}
+
+export function createTryResolve(
+  importer: string,
+  resolve: PluginContext['resolve'],
+  offsetStart?: Position,
+  origCode: string = ''
+) {
+  return async (source: string, code: string, { ss, se }: ImportSpecifier) => {
+    const resolved = await wrapResolve(resolve)(source, importer)
+    if (!resolved) {
+      const { start, end } = offsetToStartAndEnd(code, ss, se)
+      if (offsetStart) {
+        if (start.line === 1) {
+          start.column = start.column + offsetStart.column
+          if (end.line === 1) {
+            end.column = end.column + offsetStart.column
+          }
+        }
+        const offsetLine = offsetStart.line - 1
+        start.line = start.line + offsetLine
+        end.line = end.line + offsetLine
+      }
+      throw createResolveError(
+        origCode || code,
+        createResolveErrorMsg(source, importer),
+        start,
+        end
+      )
+    }
+  }
+}
+
+export async function parseImports(
+  code: string,
+  tryResolve?: ReturnType<typeof createTryResolve>
+) {
   await init
-  const [imports] = parse(code)
-  return imports
-    .map(({ s, e }) => {
-      return `import "${code.slice(s, e)}"`
-    })
-    .concat(parseUniExtApiImports(code))
-    .join('\n')
+  let res: ReturnType<typeof parse> = [[], [], false]
+  try {
+    res = parse(code)
+  } catch (err: any) {
+    const message = err.message
+    if (message) {
+      const matches = message.match(/@:(\d+):(\d+)/)
+      if (matches) {
+        throw createRollupError(
+          '',
+          '',
+          createCompilerError(
+            0,
+            {
+              start: {
+                offset: 0,
+                line: parseInt(matches[1]),
+                column: parseInt(matches[2]),
+              },
+            } as SourceLocation,
+            { 0: `Parse error` },
+            ''
+          ),
+          code
+        )
+      }
+    }
+    throw err
+  }
+  const imports = res[0]
+  const importsCode: string[] = []
+  for (const specifier of imports) {
+    const source = code.slice(specifier.s, specifier.e)
+    if (tryResolve) {
+      await tryResolve(source, code, specifier)
+    }
+    importsCode.push(`import "${source}"`)
+  }
+
+  return importsCode.concat(parseUniExtApiImports(code)).join('\n')
+}
+
+export function createResolveError(
+  code: string,
+  msg: string,
+  start: Position,
+  end: Position
+) {
+  return createRollupError(
+    '',
+    '',
+    createCompilerError(
+      0,
+      {
+        start,
+        end,
+      } as SourceLocation,
+      { 0: msg },
+      ''
+    ),
+    code
+  )
+}
+
+// @ts-expect-error 暂时不用
+function genImportsCode(code: string, imports: readonly ImportSpecifier[]) {
+  const chars = code.split('')
+  const keepChars: number[] = []
+  imports.forEach(({ ss, se }) => {
+    for (let i = ss; i <= se; i++) {
+      keepChars.push(i)
+    }
+  })
+  for (let i = 0; i < chars.length; i++) {
+    if (!keepChars.includes(i)) {
+      const char = chars[i]
+      if (char !== '\r' && char !== '\n') {
+        chars[i] = ' '
+      }
+    }
+  }
+  return chars.join('')
 }
 
 function parseUniExtApiImports(code: string): string[] {
+  if (!process.env.UNI_UTS_PLATFORM) {
+    return []
+  }
   const extApis = parseUniExtApiNamespacesJsOnce(
     process.env.UNI_UTS_PLATFORM,
     process.env.UNI_UTS_TARGET_LANGUAGE
@@ -216,8 +347,8 @@ export function getUniCloudObjectInfo(
     const { getWorkspaceObjectInfo } = require('../../../lib/unicloud-utils')
     return getWorkspaceObjectInfo(uniCloudWorkspaceFolder, serviceProvider)
   } catch (e) {
-    console.error(e)
-    return []
+    console.error((e as Error).message)
+    process.exit(1)
   }
 }
 

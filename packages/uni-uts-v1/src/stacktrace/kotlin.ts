@@ -281,29 +281,40 @@ interface Formatter {
 const formatters: Formatter[] = [
   {
     format(error, codes) {
-      if (error.includes('Failed resolution of: Lio/dcloud/uniapp/extapi/')) {
-        let api = ''
-        // 第一步先遍历查找^^^^^的索引
-        const codeFrames = codes[codes.length - 1].split(splitRE)
-        const index = codeFrames.findIndex((frame) => frame.includes('^^^^^'))
-        if (index > 0) {
-          // 第二步，取前一条记录，查找uni.开头的api
-          api = findUniApi(codeFrames[index - 1])
+      if (error.includes('Failed resolution of: L')) {
+        let isUniExtApi =
+          error.includes('uts/sdk/modules/DCloudUni') ||
+          error.includes('io/dcloud/uniapp/extapi/')
+        let isUniCloudApi =
+          !isUniExtApi && error.includes('io/dcloud/unicloud/UniCloud')
+        if (isUniExtApi || isUniCloudApi) {
+          let api = ''
+          // 第一步先遍历查找^^^^^的索引
+          const codeFrames = codes[codes.length - 1].split(splitRE)
+          const index = codeFrames.findIndex((frame) => frame.includes('^^^^^'))
+          if (index > 0) {
+            // 第二步，取前一条记录，查找uni.开头的api
+            api = findApi(
+              codeFrames[index - 1],
+              isUniCloudApi ? UNI_CLOUD_API_RE : UNI_API_RE
+            )
+          }
+          if (api) {
+            api = `api ${api}`
+          } else {
+            api = `您使用到的api`
+          }
+          return `[EXCEPTION] 当前运行的基座未包含${api}，请重新打包自定义基座再运行。`
         }
-        if (api) {
-          api = `api ${api}`
-        } else {
-          api = `您使用到的api`
-        }
-        return `[EXCEPTION] 当前运行的基座未包含${api}，请重新打包自定义基座再运行。`
       }
     },
   },
 ]
 
 const UNI_API_RE = /(uni\.\w+)/
-function findUniApi(msg: string) {
-  const matches = msg.match(UNI_API_RE)
+const UNI_CLOUD_API_RE = /(uniCloud\.\w+)/
+function findApi(msg: string, re: RegExp) {
+  const matches = msg.match(re)
   if (matches) {
     return matches[1]
   }

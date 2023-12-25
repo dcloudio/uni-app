@@ -1937,6 +1937,16 @@ const defineBuiltInComponent = (options) => {
   if (!props2 || !props2.animation) {
     (mixins || (options.mixins = [])).push(animation);
   }
+  {
+    const rootElement = options.rootElement;
+    if (rootElement) {
+      customElements.define(
+        rootElement.name,
+        rootElement.class,
+        rootElement.options
+      );
+    }
+  }
   return defineSystemComponent(options);
 };
 const defineSystemComponent = (options) => {
@@ -7814,11 +7824,31 @@ const props$v = {
     type: [Boolean, String],
     default: false
   },
+  value: {
+    type: String,
+    default: ""
+  },
   color: {
     type: String,
     default: "#007aff"
   },
-  value: {
+  backgroundColor: {
+    type: String,
+    default: ""
+  },
+  borderColor: {
+    type: String,
+    default: ""
+  },
+  activeBackgroundColor: {
+    type: String,
+    default: ""
+  },
+  activeBorderColor: {
+    type: String,
+    default: ""
+  },
+  iconColor: {
     type: String,
     default: ""
   }
@@ -7831,6 +7861,27 @@ const index$t = /* @__PURE__ */ defineBuiltInComponent({
   }) {
     const checkboxChecked = ref(props2.checked);
     const checkboxValue = ref(props2.value);
+    const checkboxStyle = computed(() => {
+      if (props2.disabled) {
+        return {
+          backgroundColor: "#E1E1E1",
+          borderColor: "#D1D1D1"
+        };
+      }
+      const style = {};
+      if (checkboxChecked.value) {
+        if (props2.activeBorderColor)
+          style.borderColor = props2.activeBorderColor;
+        if (props2.activeBackgroundColor)
+          style.backgroundColor = props2.activeBackgroundColor;
+      } else {
+        if (props2.borderColor)
+          style.borderColor = props2.borderColor;
+        if (props2.backgroundColor)
+          style.backgroundColor = props2.backgroundColor;
+      }
+      return style;
+    });
     watch([() => props2.checked, () => props2.value], ([newChecked, newModelValue]) => {
       checkboxChecked.value = newChecked;
       checkboxValue.value = newModelValue;
@@ -7864,12 +7915,16 @@ const index$t = /* @__PURE__ */ defineBuiltInComponent({
       return createVNode("uni-checkbox", mergeProps(booleanAttrs, {
         "onClick": _onClick
       }), [createVNode("div", {
-        "class": "uni-checkbox-wrapper"
+        "class": "uni-checkbox-wrapper",
+        "style": {
+          "--HOVER-BD-COLOR": props2.activeBorderColor
+        }
       }, [createVNode("div", {
         "class": ["uni-checkbox-input", {
           "uni-checkbox-input-disabled": props2.disabled
-        }]
-      }, [checkboxChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.color, 22) : ""], 2), slots.default && slots.default()])], 16, ["onClick"]);
+        }],
+        "style": checkboxStyle.value
+      }, [checkboxChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["onClick"]);
     };
   }
 });
@@ -12592,13 +12647,33 @@ const props$o = {
     type: [Boolean, String],
     default: false
   },
+  value: {
+    type: String,
+    default: ""
+  },
   color: {
     type: String,
     default: "#007aff"
   },
-  value: {
+  backgroundColor: {
     type: String,
     default: ""
+  },
+  borderColor: {
+    type: String,
+    default: ""
+  },
+  activeBackgroundColor: {
+    type: String,
+    default: ""
+  },
+  activeBorderColor: {
+    type: String,
+    default: ""
+  },
+  iconColor: {
+    type: String,
+    default: "#ffffff"
   }
 };
 const index$m = /* @__PURE__ */ defineBuiltInComponent({
@@ -12609,10 +12684,24 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
   }) {
     const radioChecked = ref(props2.checked);
     const radioValue = ref(props2.value);
-    const checkedStyle = computed(() => {
-      if (props2.disabled)
-        return "background-color: #E1E1E1;border-color: ##D1D1D1;";
-      return `background-color: ${props2.color};border-color: ${props2.color};`;
+    const radioStyle = computed(() => {
+      if (props2.disabled) {
+        return {
+          backgroundColor: "#E1E1E1",
+          borderColor: "#D1D1D1"
+        };
+      }
+      const style = {};
+      if (radioChecked.value) {
+        style.backgroundColor = props2.activeBackgroundColor || props2.color;
+        style.borderColor = props2.activeBorderColor || style.backgroundColor;
+      } else {
+        if (props2.borderColor)
+          style.borderColor = props2.borderColor;
+        if (props2.backgroundColor)
+          style.backgroundColor = props2.backgroundColor;
+      }
+      return style;
     });
     watch([() => props2.checked, () => props2.value], ([newChecked, newModelValue]) => {
       radioChecked.value = newChecked;
@@ -12648,13 +12737,16 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
       return createVNode("uni-radio", mergeProps(booleanAttrs, {
         "onClick": _onClick
       }), [createVNode("div", {
-        "class": "uni-radio-wrapper"
+        "class": "uni-radio-wrapper",
+        "style": {
+          "--HOVER-BD-COLOR": !radioChecked.value ? props2.activeBorderColor : radioStyle.value.borderColor
+        }
       }, [createVNode("div", {
         "class": ["uni-radio-input", {
           "uni-radio-input-disabled": props2.disabled
         }],
-        "style": radioChecked.value ? checkedStyle.value : ""
-      }, [radioChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : "#fff", 18) : ""], 6), slots.default && slots.default()])], 16, ["onClick"]);
+        "style": radioStyle.value
+      }, [radioChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.iconColor, 18) : ""], 6), slots.default && slots.default()], 4)], 16, ["onClick"]);
     };
   }
 });
@@ -13516,10 +13608,26 @@ const props$l = {
     default: false
   }
 };
+class UniSliderElement extends HTMLElement {
+  get value() {
+    return Number(this.getAttribute("value"));
+  }
+  set value(value) {
+    this.dispatchEvent(new CustomEvent("change", {
+      detail: {
+        value
+      }
+    }));
+  }
+}
 const index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
   props: props$l,
   emits: ["changing", "change"],
+  rootElement: {
+    name: "uni-slider",
+    class: UniSliderElement
+  },
   setup(props2, {
     emit: emit2
   }) {
@@ -13539,6 +13647,9 @@ const index$k = /* @__PURE__ */ defineBuiltInComponent({
     onMounted(() => {
       useTouchtrack(sliderHandleRef.value, _onTrack);
     });
+    function onUniSliderChange(e2) {
+      sliderValue.value = Number(e2.detail.value);
+    }
     return () => {
       const {
         setBgColor,
@@ -13548,7 +13659,9 @@ const index$k = /* @__PURE__ */ defineBuiltInComponent({
       } = state2;
       return createVNode("uni-slider", {
         "ref": sliderRef,
-        "onClick": withWebEvent(_onClick)
+        "onClick": withWebEvent(_onClick),
+        "value": sliderValue.value,
+        "onChange": withWebEvent(onUniSliderChange)
       }, [createVNode("div", {
         "class": "uni-slider-wrapper"
       }, [createVNode("div", {
@@ -13569,7 +13682,7 @@ const index$k = /* @__PURE__ */ defineBuiltInComponent({
       }, null, 4)], 4)]), withDirectives(createVNode("span", {
         "ref": sliderValueRef,
         "class": "uni-slider-value"
-      }, [sliderValue.value], 512), [[vShow, props2.showValue]])]), createVNode("slot", null, null)], 8, ["onClick"]);
+      }, [sliderValue.value], 512), [[vShow, props2.showValue]])]), createVNode("slot", null, null)], 40, ["onClick", "value", "onChange"]);
     };
   }
 });
@@ -17755,7 +17868,7 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
           strokeWeight: Number(option.strokeWidth) || 1,
           strokeDashStyle: "solid"
         };
-        if (getIsAMap() || getIsBMap()) {
+        if (getIsBMap()) {
           circleOptions.strokeColor = option.color;
           circleOptions.fillColor = option.fillColor || "#000";
           circleOptions.fillOpacity = 1;

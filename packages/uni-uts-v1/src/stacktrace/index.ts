@@ -9,7 +9,7 @@ export {
 
 export function parseUTSSyntaxError(error: any, inputDir: string): string {
   if (error instanceof Error) {
-    error = error.message + (error.stack ? `\n` + error.stack : ``)
+    error = error.message
   }
   let msg = String(error).replace(/\t/g, ' ')
   let res: RegExpExecArray | null = null
@@ -19,7 +19,7 @@ export function parseUTSSyntaxError(error: any, inputDir: string): string {
     msg = msg.replace(
       row,
       `at ${relative(filename.split('?')[0], inputDir)}:${
-        parseInt(line) + 1
+        parseInt(line) + 3
       }:${column}`
     )
   }

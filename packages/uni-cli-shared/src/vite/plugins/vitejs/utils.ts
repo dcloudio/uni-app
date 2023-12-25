@@ -5,6 +5,7 @@ import os from 'os'
 import path from 'path'
 import remapping from '@ampproject/remapping'
 import type { DecodedSourceMap, RawSourceMap } from '@ampproject/remapping'
+import { SourceLocation } from '@vue/compiler-core'
 
 export function slash(p: string): string {
   return p.replace(/\\/g, '/')
@@ -63,6 +64,40 @@ export function pad(source: string, n = 2): string {
   return lines.map((l) => ` `.repeat(n) + l).join(`\n`)
 }
 
+export function offsetToStartAndEnd(
+  source: string,
+  startOffset: number,
+  endOffset: number
+): SourceLocation {
+  const lines = source.split(splitRE)
+  return {
+    start: offsetToLineColumnByLines(lines, startOffset),
+    end: offsetToLineColumnByLines(lines, endOffset),
+    source: '',
+  }
+}
+
+function offsetToLineColumnByLines(lines: string[], offset: number) {
+  let currentOffset = 0
+  for (let i = 0; i < lines.length; i++) {
+    const lineLength = lines[i].length + 1 // Adding 1 for the newline character
+    if (currentOffset + lineLength > offset) {
+      const line = i + 1 // Line numbers start from 1
+      const column = offset - currentOffset // Column numbers start from 0
+      return { line, column, offset }
+    }
+    currentOffset += lineLength
+  }
+  return { line: lines.length, column: lines[lines.length - 1].length, offset }
+}
+
+export function offsetToLineColumn(
+  source: string,
+  offset: number
+): { line: number; column: number } {
+  return offsetToLineColumnByLines(source.split(splitRE), offset)
+}
+
 export function posToNumber(
   source: string,
   pos: number | { line: number; column: number }
@@ -89,7 +124,9 @@ export function locToStartAndEnd(
 ) {
   const lines = source.split(splitRE)
   const start = posToNumberByLines(lines, loc.start.line, loc.start.column)
-  const end = posToNumberByLines(lines, loc.end.line, loc.end.column)
+  const end = loc.end
+    ? posToNumberByLines(lines, loc.end.line, loc.end.column)
+    : undefined
   return { start, end }
 }
 
@@ -100,11 +137,22 @@ export function generateCodeFrame(
 ): string {
   start = posToNumber(source, start)
   end = end || start
-  const lines = source.split(splitRE)
+  // Split the content into individual lines but capture the newline sequence
+  // that separated each line. This is important because the actual sequence is
+  // needed to properly take into account the full line length for offset
+  // comparison
+  let lines = source.split(/(\r?\n)/)
+
+  // Separate the lines and newline sequences into separate arrays for easier referencing
+  const newlineSequences = lines.filter((_, idx) => idx % 2 === 1)
+  lines = lines.filter((_, idx) => idx % 2 === 0)
+
   let count = 0
   const res: string[] = []
   for (let i = 0; i < lines.length; i++) {
-    count += lines[i].length + 1
+    count +=
+      lines[i].length +
+      ((newlineSequences[i] && newlineSequences[i].length) || 0)
     if (count >= start) {
       for (let j = i - range; j <= i + range || end > count; j++) {
         if (j < 0 || j >= lines.length) continue
@@ -115,9 +163,12 @@ export function generateCodeFrame(
           }`
         )
         const lineLength = lines[j].length
+        const newLineSeqLength =
+          (newlineSequences[j] && newlineSequences[j].length) || 0
+
         if (j === i) {
           // push underline
-          const pad = start - (count - lineLength) + 1
+          const pad = start - (count - (lineLength + newLineSeqLength))
           const length = Math.max(
             1,
             end > count ? lineLength - pad : end - start
@@ -128,7 +179,8 @@ export function generateCodeFrame(
             const length = Math.max(Math.min(end - count, lineLength), 1)
             res.push(`   |  ` + '^'.repeat(length))
           }
-          count += lineLength + 1
+
+          count += lineLength + newLineSeqLength
         }
       }
       break
@@ -136,6 +188,50 @@ export function generateCodeFrame(
   }
   return res.join('\n')
 }
+
+// export function generateCodeFrame(
+//   source: string,
+//   start: number | { line: number; column: number } = 0,
+//   end?: number
+// ): string {
+//   start = posToNumber(source, start)
+//   end = end || start
+//   const lines = source.split(splitRE)
+//   let count = 0
+//   const res: string[] = []
+//   for (let i = 0; i < lines.length; i++) {
+//     count += lines[i].length + 1
+//     if (count >= start) {
+//       for (let j = i - range; j <= i + range || end > count; j++) {
+//         if (j < 0 || j >= lines.length) continue
+//         const line = j + 1
+//         res.push(
+//           `${line}${' '.repeat(Math.max(3 - String(line).length, 0))}|  ${
+//             lines[j]
+//           }`
+//         )
+//         const lineLength = lines[j].length
+//         if (j === i) {
+//           // push underline
+//           const pad = start - (count - lineLength) + 1
+//           const length = Math.max(
+//             1,
+//             end > count ? lineLength - pad : end - start
+//           )
+//           res.push(`   |  ` + ' '.repeat(pad) + '^'.repeat(length))
+//         } else if (j > i) {
+//           if (end > count) {
+//             const length = Math.max(Math.min(end - count, lineLength), 1)
+//             res.push(`   |  ` + '^'.repeat(length))
+//           }
+//           count += lineLength + 1
+//         }
+//       }
+//       break
+//     }
+//   }
+//   return res.join('\n')
+// }
 
 interface ImageCandidate {
   url: string

@@ -61,13 +61,12 @@ export function formatAtFilename(
   line?: number,
   column?: number
 ) {
+  const file = path.relative(
+    process.env.UNI_INPUT_DIR,
+    filename.replace('\x00', '').split('?')[0]
+  )
   return `at ${colors.cyan(
-    normalizePath(
-      path.relative(
-        process.env.UNI_INPUT_DIR,
-        filename.replace('\x00', '').split('?')[0]
-      )
-    ) +
+    normalizePath(file === 'pages-json-uts' ? 'pages.json' : file) +
       ':' +
       (line || 1) +
       ':' +

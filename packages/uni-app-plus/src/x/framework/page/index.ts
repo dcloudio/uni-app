@@ -1,0 +1,1 @@
+export { registerPage } from './register'

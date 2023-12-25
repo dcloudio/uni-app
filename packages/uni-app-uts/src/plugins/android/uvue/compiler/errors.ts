@@ -17,6 +17,10 @@ export function defaultOnWarn(msg: CompilerError) {
   console.warn(`[Vue warn] ${msg.message}`)
 }
 
+export function createDOMCompilerError(code: ErrorCodes, loc?: SourceLocation) {
+  return createCompilerError(code, loc) as CoreCompilerError
+}
+
 type InferCompilerError<T> = T extends ErrorCodes
   ? CoreCompilerError
   : CompilerError
@@ -87,6 +91,8 @@ export const enum ErrorCodes {
   X_V_MODEL_ON_PROPS,
   X_INVALID_EXPRESSION,
   X_KEEP_ALIVE_INVALID_CHILDREN,
+  X_V_HTML_NO_EXPRESSION = 53 /* ErrorCodes.__EXTEND_POINT__ */,
+  X_V_HTML_WITH_CHILDREN,
 
   // generic errors
   X_PREFIX_ID_NOT_SUPPORTED,
@@ -169,6 +175,8 @@ export const errorMessages: Record<ErrorCodes, string> = {
   [ErrorCodes.X_V_MODEL_ON_PROPS]: `v-model cannot be used on a prop, because local prop bindings are not writable.\nUse a v-bind binding combined with a v-on listener that emits update:x event instead.`,
   [ErrorCodes.X_INVALID_EXPRESSION]: `Error parsing JavaScript expression: `,
   [ErrorCodes.X_KEEP_ALIVE_INVALID_CHILDREN]: `<KeepAlive> expects exactly one child component.`,
+  [ErrorCodes.X_V_HTML_NO_EXPRESSION]: `v-html is missing expression.`,
+  [ErrorCodes.X_V_HTML_WITH_CHILDREN]: `v-html will override element children.`,
 
   // generic errors
   [ErrorCodes.X_PREFIX_ID_NOT_SUPPORTED]: `"prefixIdentifiers" option is not supported in this build of compiler.`,

@@ -95,6 +95,7 @@ describe('compiler: slot', () => {
       `
 function PagesIndexIndexRender(): VNode | null {
 const _ctx = this
+const _cache = this.$.renderCache
   return createElementVNode("view", null, [
     renderSlot(_ctx.$slots, "default", utsMapOf({ data: "data" }))
   ])
@@ -112,11 +113,12 @@ const _ctx = this
       `
 function PagesIndexIndexRender(): VNode | null {
 const _ctx = this
+const _cache = this.$.renderCache
 const _component_Foo = resolveComponent("Foo")
 
   return createElementVNode("view", null, [
     createVNode(_component_Foo, utsMapOf({ onClick: _ctx.test }), utsMapOf({
-      default: withCtx((): any[] => ["test"]),
+      default: withSlotCtx((): any[] => ["test"]),
       _: 1 /* STABLE */
     }), 8 /* PROPS */, ["onClick"])
   ])
@@ -148,11 +150,12 @@ const _component_Foo = resolveComponent("Foo")
       `
 function PagesIndexIndexRender(): VNode | null {
 const _ctx = this
+const _cache = this.$.renderCache
 const _component_Foo = resolveComponent("Foo")
 
   return createElementVNode("view", null, [
     createVNode(_component_Foo, null, utsMapOf({
-      default: withCtx((props: Map<string, any | null>): any[] => [
+      default: withScopedSlotCtx((props: Map<string, any | null>): any[] => [
         createElementVNode("text", null, "msg: " + toDisplayString(props.msg), 1 /* TEXT */)
       ]),
       _: 1 /* STABLE */
@@ -172,11 +175,12 @@ const _component_Foo = resolveComponent("Foo")
       `
 function PagesIndexIndexRender(): VNode | null {
 const _ctx = this
+const _cache = this.$.renderCache
 const _component_Foo = resolveComponent("Foo")
 
   return createElementVNode("view", null, [
     createVNode(_component_Foo, null, utsMapOf({
-      default: withCtx((props: Map<string, any | null>): any[] => [
+      default: withScopedSlotCtx((props: Map<string, any | null>): any[] => [
         createElementVNode("text", null, "msg: " + toDisplayString(props.msg), 1 /* TEXT */)
       ]),
       _: 1 /* STABLE */
@@ -203,14 +207,14 @@ const _component_Foo = resolveComponent("Foo")
   </template>
 </Foo>`,
       `createVNode(_component_Foo, null, utsMapOf({
-  default: withCtx((slotProps: Map<string, any | null>): any[] => {
+  default: withScopedSlotCtx((slotProps: Map<string, any | null>): any[] => {
   const msg = slotProps[\"msg\"]
   const age = slotProps[\"age\"]
   return [
     createElementVNode(\"text\", null, \"msg: \" + toDisplayString(msg), 1 /* TEXT */),
     createElementVNode(\"text\", null, \"age: \" + toDisplayString(age), 1 /* TEXT */)
   ]}),
-  header: withCtx((slotProps: Map<string, any | null>): any[] => {
+  header: withScopedSlotCtx((slotProps: Map<string, any | null>): any[] => {
   const msg = slotProps[\"msg\"]
   const age = slotProps[\"age\"]
   return [
@@ -230,7 +234,7 @@ const _component_Foo = resolveComponent("Foo")
   </template>
 </Foo>`,
       `createVNode(_component_Foo, null, utsMapOf({
-  default: withCtx((slotProps: Map<string, any | null>): any[] => [
+  default: withScopedSlotCtx((slotProps: Map<string, any | null>): any[] => [
     createElementVNode(\"text\", null, \"default slot\")
   ]),
   _: 1 /* STABLE */
@@ -245,7 +249,7 @@ const _component_Foo = resolveComponent("Foo")
   </template>
 </Foo>`,
       `createVNode(_component_Foo, null, utsMapOf({
-  default: withCtx((slotProps: Map<string, any | null>): any[] => {
+  default: withScopedSlotCtx((slotProps: Map<string, any | null>): any[] => {
   const myMsg = slotProps[\"msg\"]
   return [
     createElementVNode(\"text\", null, \"msg: \" + toDisplayString(myMsg), 1 /* TEXT */)
@@ -262,7 +266,7 @@ const _component_Foo = resolveComponent("Foo")
   </template>
 </Foo>`,
       `createVNode(_component_Foo, null, utsMapOf({
-  default: withCtx((slotProps: Map<string, any | null>): any[] => {
+  default: withScopedSlotCtx((slotProps: Map<string, any | null>): any[] => {
   const msg = slotProps[\"msg\"] !== null ? slotProps[\"msg\"] : 'default msg'
   return [
     createElementVNode(\"text\", null, \"msg: \" + toDisplayString(msg), 1 /* TEXT */)

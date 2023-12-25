@@ -57,12 +57,14 @@ export function initScope(
   vm: ComponentPublicInstance,
   pageInstance: Page.PageInstance['$page']
 ) {
-  const $getAppWebview = () => {
-    return plus.webview.getWebviewById(pageId + '')
-  }
-  vm.$getAppWebview = $getAppWebview
-  ;(vm.$ as any).ctx!.$scope = {
-    $getAppWebview,
+  if (!__X__) {
+    const $getAppWebview = () => {
+      return plus.webview.getWebviewById(pageId + '')
+    }
+    vm.$getAppWebview = $getAppWebview
+    ;(vm.$ as any).ctx!.$scope = {
+      $getAppWebview,
+    }
   }
   vm.getOpenerEventChannel = () => {
     if (!pageInstance.eventChannel) {

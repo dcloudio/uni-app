@@ -115,8 +115,8 @@ export interface TransformContext
 export function createTransformContext(
   root: RootNode,
   {
-    rootDir,
-    targetLanguage,
+    rootDir = '',
+    targetLanguage = 'kotlin',
     filename = '',
     prefixIdentifiers = false,
     nodeTransforms = [],
@@ -270,10 +270,18 @@ export function transform(root: RootNode, options: TransformOptions) {
   const context = createTransformContext(root, options)
   traverseNode(root, context)
   createRootCodegen(root, context)
+
+  // finalize meta information
+  root.helpers = new Set([...context.helpers.keys()])
   root.components = [...context.components]
-  // @ts-ignore
-  root.elements = Array.from(context.elements)
+  root.directives = [...context.directives]
   root.imports = context.imports
+  // root.hoists = context.hoists
+  root.temps = context.temps
+  root.cached = context.cached
+
+  // @ts-expect-error
+  root.elements = Array.from(context.elements)
 }
 
 export function isSingleElementRoot(

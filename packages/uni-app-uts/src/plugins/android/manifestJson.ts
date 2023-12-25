@@ -2,8 +2,13 @@ import path from 'path'
 import fs from 'fs-extra'
 import type { OutputAsset } from 'rollup'
 import type { Plugin } from 'vite'
-import { MANIFEST_JSON_UTS, parseJson } from '@dcloudio/uni-cli-shared'
-import { ENTRY_FILENAME } from './utils'
+import {
+  MANIFEST_JSON_UTS,
+  parseJson,
+  parseUniXFlexDirection,
+  parseUniXSplashScreen,
+} from '@dcloudio/uni-cli-shared'
+import { ENTRY_FILENAME, stringifyMap } from './utils'
 import { isManifest } from '../utils'
 
 let outputManifestJson: Record<string, any> | undefined = undefined
@@ -47,10 +52,24 @@ export function uniAppManifestPlugin(): Plugin {
     generateBundle(_, bundle) {
       if (bundle[ENTRY_FILENAME]) {
         const asset = bundle[ENTRY_FILENAME] as OutputAsset
-        const singleThread =
+        const singleThreadCode =
           manifestJson?.['uni-app-x']?.['singleThread'] === false
-            ? `override singleThread: Boolean = false`
+            ? `override singleThread = false`
             : ''
+        const flexDir = parseUniXFlexDirection(manifestJson)
+        const flexDirCode =
+          flexDir !== 'column' ? `override flexDirection = "${flexDir}"` : ''
+        const splashScreen = parseUniXSplashScreen(manifestJson)
+        const splashScreenCode =
+          splashScreen && Object.keys(splashScreen).length > 0
+            ? `override splashScreen: Map<string, any> | null = ${stringifyMap(
+                splashScreen
+              )}`
+            : ''
+
+        const codes = [singleThreadCode, flexDirCode, splashScreenCode]
+          .filter(Boolean)
+          .join('\n')
         asset.source =
           asset.source +
           `
@@ -63,9 +82,7 @@ export class UniAppConfig extends AppConfig {
     override uniCompileVersion: string = "${
       process.env.UNI_COMPILER_VERSION || ''
     }"
-    // override tabBar = __uniTabBar
-    // override launchPage = __uniLaunchPage
-    ${singleThread}
+    ${codes}
     constructor() {}
 }
 `

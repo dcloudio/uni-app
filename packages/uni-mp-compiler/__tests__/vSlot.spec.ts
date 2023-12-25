@@ -56,6 +56,13 @@ describe('compiler: transform v-slot', () => {
   return {}
 }`
     )
+    assert(
+      `<uni-list-item class="item"><template v-slot:body v-if="ok"><view class="item"></view></template></uni-list-item>`,
+      `<uni-list-item u-s="{{['body']}}" class="item" u-i="2a9ec0b0-0"><view wx:if="{{a}}" class="item" slot="body"></view></uni-list-item>`,
+      `(_ctx, _cache) => {
+  return _e({ a: _ctx.ok }, _ctx.ok ? {} : {})
+}`
+    )
   })
 
   test('scoped slots', () => {

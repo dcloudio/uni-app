@@ -6,6 +6,7 @@ import {
   removeExt,
   encodeBase64Url,
   decodeBase64Url,
+  parseManifestJsonOnce,
 } from '@dcloudio/uni-cli-shared'
 import { Plugin } from 'vite'
 
@@ -41,6 +42,8 @@ export function uniEntryPlugin({
   global,
 }: UniMiniProgramPluginOptions): Plugin {
   const inputDir = process.env.UNI_INPUT_DIR
+  const manifestJson = parseManifestJsonOnce(inputDir)
+  const platformOptions = manifestJson[process.env.UNI_PLATFORM] || {}
   return {
     name: 'uni:virtual',
     enforce: 'pre',
@@ -64,13 +67,14 @@ ${global}.createPage(MiniProgramPage)`,
           path.resolve(inputDir, parseVirtualComponentPath(id))
         )
         this.addWatchFile(filepath)
+        // 微信小程序json文件中的styleIsolation优先级比options中的高,不能在此配置
         addMiniProgramComponentJson(
           removeExt(normalizeMiniProgramFilename(filepath, inputDir)),
           {
             component: true,
             styleIsolation:
-              process.env.UNI_PLATFORM === 'mp-baidu'
-                ? 'apply-shared'
+              process.env.UNI_PLATFORM === 'mp-alipay'
+                ? platformOptions.styleIsolation || 'apply-shared'
                 : undefined,
           }
         )

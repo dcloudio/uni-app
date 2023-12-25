@@ -242,6 +242,9 @@ function genTemplate(node: TemplateNode, context: TemplateCodegenContext) {
       !isSlotOutlet(child)
     ) {
       child.props.push(slotProp)
+      if (isIfElementNode(node)) {
+        ;(child as IfElementNode).vIf = (node as IfElementNode).vIf
+      }
       return genElement(child, context)
     }
   }

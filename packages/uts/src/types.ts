@@ -34,6 +34,7 @@ export type UTSInputOptions = UTSParseOptions & {
 
 export type UTSOutputOptions = {
   outDir: string
+  outFilename?: string
   package: string
   imports?: string[]
   sourceMap?: boolean | string

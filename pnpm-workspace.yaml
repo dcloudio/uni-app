@@ -1,3 +1,4 @@
 packages:
   - 'packages/*'
   - 'packages/playground/*'
+  - 'packages/uni-cli-utils/__tests__/examples/easycom'

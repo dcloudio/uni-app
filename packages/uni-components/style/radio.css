@@ -30,8 +30,10 @@ uni-radio[disabled] {
   position: relative;
 }
 
-uni-radio:not([disabled]) .uni-radio-input:hover {
-  border-color: #007aff;
+@media (hover: hover) {
+  uni-radio:not([disabled]) .uni-radio-input:hover {
+    border-color: var(--HOVER-BD-COLOR, #007aff) !important;
+  }
 }
 
 .uni-radio-input svg {

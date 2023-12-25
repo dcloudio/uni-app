@@ -39,8 +39,10 @@ uni-checkbox[disabled] {
   transform: translate(-50%, -48%) scale(0.73);
 }
 
-uni-checkbox:not([disabled]) .uni-checkbox-input:hover {
-  border-color: #007aff;
+@media (hover: hover) {
+  uni-checkbox:not([disabled]) .uni-checkbox-input:hover {
+    border-color: var(--HOVER-BD-COLOR, #007aff) !important;
+  }
 }
 
 .uni-checkbox-input.uni-checkbox-input-disabled {

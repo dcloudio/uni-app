@@ -18,4 +18,8 @@ export {
   commonjsProxyRE,
 } from './vitejs/plugins/css'
 
-export { generateCodeFrame, locToStartAndEnd } from './vitejs/utils'
+export {
+  generateCodeFrame,
+  locToStartAndEnd,
+  offsetToStartAndEnd,
+} from './vitejs/utils'

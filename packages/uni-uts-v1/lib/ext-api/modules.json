@@ -29,7 +29,7 @@
       "getFacialRecognitionMetaInfo"
     ]
   },
-  "uni-file-manager": {
+  "uni-fileSystemManager": {
     "uni": {
       "getFileSystemManager": {
         "name": "getFileSystemManager",
@@ -149,6 +149,18 @@
           "js": false,
           "kotlin": true,
           "swift": true
+        }
+      }
+    }
+  },
+  "uni-installApk": {
+    "uni": {
+      "installApk": {
+        "name": "installApk",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": false
         }
       }
     }
@@ -453,6 +465,18 @@
           "js": false,
           "kotlin": true,
           "swift": true
+        }
+      }
+    }
+  },
+  "uni-verify": {
+    "uni": {
+      "getUniverifyManager": {
+        "name": "getUniverifyManager",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
         }
       }
     }

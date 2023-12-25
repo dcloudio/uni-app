@@ -1,11 +1,9 @@
 function initUTSJSONObjectProperties(obj) {
     const propertyDescriptor = {
         enumerable: false,
-        configurable: false,
-        writable: false,
     };
     const propertyList = [
-        '_content',
+        '_resolveKeyPath',
         '_getValue',
         'toJSON',
         'get',
@@ -28,36 +26,83 @@ function initUTSJSONObjectProperties(obj) {
 }
 class UTSJSONObject {
     constructor(content = {}) {
-        this._content = content;
         Object.assign(this, content);
         initUTSJSONObjectProperties(this);
     }
-    toJSON() {
-        return this._content;
-    }
-    _getValue(keyPathOrKey) {
-        if (keyPathOrKey.includes('.')) {
-            let keys = keyPathOrKey.split('.');
-            let value = this._content;
-            for (let key of keys) {
-                if (value instanceof Object) {
-                    value = value[key];
+    _resolveKeyPath(keyPath) {
+        // 非法keyPath不抛出错误，直接返回空数组
+        let token = '';
+        const keyPathArr = [];
+        let inOpenParentheses = false;
+        for (let i = 0; i < keyPath.length; i++) {
+            const word = keyPath[i];
+            switch (word) {
+                case '.':
+                    if (token.length > 0) {
+                        keyPathArr.push(token);
+                        token = '';
+                    }
+                    break;
+                case '[': {
+                    inOpenParentheses = true;
+                    if (token.length > 0) {
+                        keyPathArr.push(token);
+                        token = '';
+                    }
+                    else {
+                        return [];
+                    }
+                    break;
                 }
-                else {
-                    return null;
+                case ']':
+                    if (inOpenParentheses) {
+                        if (token.length > 0) {
+                            keyPathArr.push(token);
+                            token = '';
+                        }
+                        else {
+                            return [];
+                        }
+                        inOpenParentheses = false;
+                    }
+                    else {
+                        return [];
+                    }
+                    break;
+                default:
+                    token += word;
+                    break;
+            }
+            if (i === keyPath.length - 1) {
+                if (token.length > 0) {
+                    keyPathArr.push(token);
+                    token = '';
                 }
             }
-            return value;
         }
-        else {
-            return this._content[keyPathOrKey];
+        return keyPathArr;
+    }
+    _getValue(keyPath) {
+        const keyPathArr = this._resolveKeyPath(keyPath);
+        if (keyPathArr.length === 0) {
+            return null;
         }
+        let value = this;
+        for (let key of keyPathArr) {
+            if (value instanceof Object) {
+                value = value[key];
+            }
+            else {
+                return null;
+            }
+        }
+        return value;
     }
     get(key) {
         return this._getValue(key);
     }
     set(key, value) {
-        this._content[key] = value;
+        this[key] = value;
     }
     getAny(key) {
         return this._getValue(key);
@@ -109,63 +154,53 @@ class UTSJSONObject {
     }
     toMap() {
         let map = new Map();
-        for (let key in this._content) {
-            map.set(key, this._content[key]);
+        for (let key in this) {
+            map.set(key, this[key]);
         }
         return map;
     }
     forEach(callback) {
-        for (let key in this._content) {
-            callback(this._content[key], key);
+        for (let key in this) {
+            callback(this[key], key);
         }
     }
 }
 
-const OriginalJSON = JSON;
-const UTSJSON = {
-    parse: (text, reviver) => {
-        try {
-            const parseResult = OriginalJSON.parse(text, reviver);
-            if (Array.isArray(parseResult)) {
-                return parseResult;
-            }
-            return new UTSJSONObject(parseResult);
-        }
-        catch (error) {
-            console.error(error);
-            return null;
-        }
-    },
-    parseArray(text) {
-        try {
-            const parseResult = OriginalJSON.parse(text);
-            if (Array.isArray(parseResult)) {
-                return parseResult;
-            }
-            return null;
-        }
-        catch (error) {
-            console.error(error);
-            return null;
-        }
-    },
-    parseObject(text) {
-        try {
-            const parseResult = OriginalJSON.parse(text);
-            if (Array.isArray(parseResult)) {
-                return null;
-            }
-            return new UTSJSONObject(parseResult);
-        }
-        catch (error) {
-            console.error(error);
-            return null;
-        }
-    },
-    stringify: (value) => {
-        return OriginalJSON.stringify(value);
-    },
-};
+// @ts-ignore
+globalThis.UTSJSONObject = UTSJSONObject;
+
+function arrayPop(array) {
+    if (array.length === 0) {
+        return null;
+    }
+    return array.pop();
+}
+function arrayShift(array) {
+    if (array.length === 0) {
+        return null;
+    }
+    return array.shift();
+}
+function arrayFind(array, predicate) {
+    const index = array.findIndex(predicate);
+    if (index < 0) {
+        return null;
+    }
+    return array[index];
+}
+function arrayFindLast(array, predicate) {
+    const index = array.findLastIndex(predicate);
+    if (index < 0) {
+        return null;
+    }
+    return array[index];
+}
+function arrayAt(array, index) {
+    if (index < 0 || index >= array.length) {
+        return null;
+    }
+    return array[index];
+}
 
 var IDENTIFIER;
 (function (IDENTIFIER) {
@@ -262,8 +297,84 @@ function isInstanceOf(value, type) {
     return isImplementationOf(proto, type);
 }
 
+const OriginalJSON = JSON;
+const UTSJSON = {
+    parse: (text, reviver) => {
+        try {
+            const parseResult = OriginalJSON.parse(text, reviver);
+            if (Array.isArray(parseResult)) {
+                return parseResult;
+            }
+            return new UTSJSONObject(parseResult);
+        }
+        catch (error) {
+            console.error(error);
+            return null;
+        }
+    },
+    parseArray(text) {
+        try {
+            const parseResult = OriginalJSON.parse(text);
+            if (Array.isArray(parseResult)) {
+                return parseResult;
+            }
+            return null;
+        }
+        catch (error) {
+            console.error(error);
+            return null;
+        }
+    },
+    parseObject(text) {
+        try {
+            const parseResult = OriginalJSON.parse(text);
+            if (Array.isArray(parseResult)) {
+                return null;
+            }
+            return new UTSJSONObject(parseResult);
+        }
+        catch (error) {
+            console.error(error);
+            return null;
+        }
+    },
+    stringify: (value) => {
+        return OriginalJSON.stringify(value);
+    },
+};
+
+function mapGet(map, key) {
+    if (!map.has(key)) {
+        return null;
+    }
+    return map.get(key);
+}
+
+function stringCodePointAt(str, pos) {
+    if (pos < 0 || pos >= str.length) {
+        return null;
+    }
+    return str.codePointAt(pos);
+}
+
+function weakMapGet(map, key) {
+    if (!map.has(key)) {
+        return null;
+    }
+    return map.get(key);
+}
+
 const UTS = {
+    arrayAt,
+    arrayFind,
+    arrayFindLast,
+    arrayPop,
+    arrayShift,
     isInstanceOf,
+    mapGet,
+    stringCodePointAt,
+    weakMapGet,
+    JSON: UTSJSON,
 };
 
 /******************************************************************************
@@ -602,9 +713,4 @@ function __disposeResources(env) {
     return next();
 }
 
-// @ts-ignore
-globalThis.JSON = UTSJSON;
-// @ts-ignore
-globalThis.UTSJSONObject = UTSJSONObject;
-
-export { UTSJSON as JSON, UTS, UTSJSONObject, __addDisposableResource, __assign, __asyncDelegator, __asyncGenerator, __asyncValues, __await, __awaiter, __classPrivateFieldGet, __classPrivateFieldIn, __classPrivateFieldSet, __createBinding, __decorate, __disposeResources, __esDecorate, __exportStar, __extends, __generator, __importDefault, __importStar, __makeTemplateObject, __metadata, __param, __propKey, __read, __rest, __runInitializers, __setFunctionName, __spread, __spreadArray, __spreadArrays, __values };
+export { UTS, __addDisposableResource, __assign, __asyncDelegator, __asyncGenerator, __asyncValues, __await, __awaiter, __classPrivateFieldGet, __classPrivateFieldIn, __classPrivateFieldSet, __createBinding, __decorate, __disposeResources, __esDecorate, __exportStar, __extends, __generator, __importDefault, __importStar, __makeTemplateObject, __metadata, __param, __propKey, __read, __rest, __runInitializers, __setFunctionName, __spread, __spreadArray, __spreadArrays, __values };

@@ -37,11 +37,17 @@ import type Sass from 'sass'
 import type Stylus from 'stylus'
 import type Less from 'less'
 import type { Alias } from 'types/alias'
+import { isArray, isFunction, isString } from '@vue/shared'
 import { preCss, preNVueCss } from '../../../../preprocess'
 import { filterPrefersColorScheme } from '../../../../postcss/plugins/uniapp'
 import { emptyCssComments } from '../cleanString'
-import { isArray, isFunction, isString } from '@vue/shared'
+
 import { PAGES_JSON_JS, PAGES_JSON_UTS } from '../../../../constants'
+import { createRollupError } from '../../../utils/utils'
+import { createCompilerError } from '@vue/compiler-core'
+import { createResolveErrorMsg } from '../../../../utils'
+import { SFCDescriptor } from '@vue/compiler-sfc'
+import { parseVueRequest } from '../../../utils'
 // const debug = createDebugger('vite:css')
 
 export interface CSSOptions {
@@ -115,12 +121,72 @@ const postcssConfigCache = new WeakMap<
   PostCSSConfigResult | null
 >()
 
+function wrapResolve(
+  resolve: ResolveFn,
+  code: string,
+  source?: PostCSS.Source,
+  getDescriptor?: (filename: string) => SFCDescriptor | undefined
+): ResolveFn {
+  if (!source) {
+    return resolve
+  }
+  return async (
+    id: string,
+    importer?: string,
+    aliasOnly?: boolean,
+    ssr?: boolean
+  ) => {
+    try {
+      return await resolve(id, importer, aliasOnly, ssr)
+    } catch (e) {
+      if (importer && getDescriptor) {
+        const { filename, query } = parseVueRequest(importer)
+        // 仅处理 vue | uvue
+        if (
+          query.vue &&
+          query.type === 'style' &&
+          'index' in query &&
+          /\.[u]vue/.test(filename)
+        ) {
+          const descriptor = getDescriptor(importer.split('?')[0])
+          if (descriptor) {
+            const styleBlock = descriptor.styles[query.index!]
+            if (styleBlock) {
+              code = descriptor.source
+              const offsetLine = styleBlock.loc.start.line - 1
+              source.start!.line = source.start!.line + offsetLine
+              source.end!.line = source.end!.line + offsetLine
+            }
+          }
+        }
+      }
+      const error = createRollupError(
+        '',
+        importer || '',
+        createCompilerError(
+          0,
+          { start: source.start!, end: source.end!, source: '' },
+          { 0: createResolveErrorMsg(id, importer!) }
+        ),
+        code
+      )
+      ;(error as any).line = source.start!.line
+      ;(error as any).column = source.start!.column
+      throw error
+    }
+
+    return
+  }
+}
 /**
  * Plugin applied before user plugins
  */
 export function cssPlugin(
   config: ResolvedConfig,
-  options?: { isAppX: boolean }
+  options: {
+    isAppX: boolean
+    getDescriptor?(filename: string): SFCDescriptor | undefined
+  } = { isAppX: false }
 ): Plugin {
   let server: ViteDevServer
   let moduleCache: Map<string, Record<string, string>>
@@ -150,12 +216,17 @@ export function cssPlugin(
         return
       }
 
-      const urlReplacer: CssUrlReplacer = async (url, importer) => {
+      const urlReplacer: CssUrlReplacer = async (url, importer, source) => {
         if (url.startsWith('/') && !url.startsWith('//')) {
           // /static/logo.png => @/static/logo.png
           url = '@' + url
         }
-        const resolved = await resolveUrl(url, importer)
+        const resolved = await wrapResolve(
+          resolveUrl,
+          source?.input.css || raw,
+          source,
+          options.getDescriptor
+        )(url, importer)
         if (resolved) {
           return fileToUrl(
             resolved,
@@ -827,7 +898,8 @@ async function resolvePostcssConfig(
 
 type CssUrlReplacer = (
   url: string,
-  importer?: string
+  importer?: string,
+  source?: PostCSS.Source
 ) => string | Promise<string>
 // https://drafts.csswg.org/css-syntax-3/#identifier-code-point
 export const cssUrlRE =
@@ -854,7 +926,7 @@ const UrlRewritePostcssPlugin: Postcss.PluginCreator<{
         if (isCssUrl || isCssImageSet) {
           const replacerForDeclaration = (rawUrl: string) => {
             const importer = declaration.source?.input.file
-            return opts.replacer(rawUrl, importer)
+            return opts.replacer(rawUrl, importer, declaration.source)
           }
           const rewriterToUse = isCssImageSet
             ? rewriteCssImageSet
