@@ -880,7 +880,7 @@ __ins.emit(event, ...do_not_transform_spread)
       ctx.s.overwrite(
         startOffset + ctx.propsCall!.start!,
         startOffset + ctx.propsCall!.end!,
-        '_ctx'
+        '__props'
       )
     }
   }

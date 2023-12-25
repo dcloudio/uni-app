@@ -25,7 +25,7 @@ const bar = 1
     // should generate correct setup signature
     // expect(content).toMatch(`setup(_ctx, { expose: __expose }) {`)
     // should assign user identifier to it
-    // expect(content).toMatch(`const props = _ctx`)
+    // expect(content).toMatch(`const props = __props`)
     // should include context options in default export
     expect(content).toMatch(`export default {
   props: {
@@ -61,7 +61,7 @@ const bar = 1
     </script>
     `)
     // props declaration should be inside setup, not moved along with the import
-    expect(content).not.toMatch(`const props = _ctx\nimport`)
+    expect(content).not.toMatch(`const props = __props\nimport`)
     assertCode(content)
   })
 
@@ -379,7 +379,7 @@ const props = defineProps({ foo: String })
     expect(content).toMatch(
       `fred: { type: String, required: false, get default() { return 'fred' } }`
     )
-    expect(content).toMatch(`const props = _ctx`)
+    expect(content).toMatch(`const props = __props`)
     expect(bindings).toStrictEqual({
       foo: BindingTypes.PROPS,
       bar: BindingTypes.PROPS,
@@ -427,7 +427,7 @@ const props = defineProps({ foo: String })
       { isProd: true }
     )
     assertCode(content)
-    expect(content).toMatch(`const props = _ctx`)
+    expect(content).toMatch(`const props = __props`)
 
     // foo has no default value, the Function can be dropped
     expect(content).toMatch(`foo: { type: Function, required: true }`)
@@ -655,7 +655,7 @@ const props = defineProps({ foo: String })
       }>()
       </script>`
     )
-    expect(content).toMatch(`const { foo } = _ctx`)
+    expect(content).toMatch(`const { foo } = __props`)
     assertCode(content)
   })
 

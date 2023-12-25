@@ -12,7 +12,7 @@ const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
-const props = _ctx
+const props = __props
 
 return "INLINE_RENDER"
 }
@@ -35,7 +35,7 @@ const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
-      const props = _ctx;
+      const props = __props;
       
 return "INLINE_RENDER"
 }
@@ -54,7 +54,7 @@ const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
-      const props = _ctx
+      const props = __props
       
 return "INLINE_RENDER"
 }
@@ -70,7 +70,7 @@ const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
-const props = _ctx
+const props = __props
 
 return "INLINE_RENDER"
 }
@@ -88,7 +88,7 @@ const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
-      const { foo } = _ctx
+      const { foo } = __props
       
 return "INLINE_RENDER"
 }
@@ -274,7 +274,7 @@ export default {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
-const props = _ctx
+const props = __props
     
 return "INLINE_RENDER"
 }
@@ -377,7 +377,7 @@ const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
-      const props = _ctx;
+      const props = __props;
     
 return "INLINE_RENDER"
 }
@@ -401,7 +401,7 @@ const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
-    const props = _ctx
+    const props = __props
     
 return "INLINE_RENDER"
 }
@@ -422,7 +422,7 @@ const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
-    const props = _ctx
+    const props = __props
     
 return "INLINE_RENDER"
 }
