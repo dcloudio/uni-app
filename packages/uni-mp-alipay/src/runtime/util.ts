@@ -18,6 +18,7 @@ import {
   CreateComponentOptions,
   updateComponentProps,
   findPropsData,
+  updateMiniProgramComponentProperties,
 } from '@dcloudio/uni-mp-core'
 
 import { handleLink as handleBaseLink } from '@dcloudio/uni-mp-weixin'
@@ -202,15 +203,28 @@ export function triggerEvent(
 
 // const IGNORES = ['$slots', '$scopedSlots']
 
-export function createObserver(isDidUpdate: boolean = false) {
-  return function observe(
+export function initPropsObserver(componentOptions: tinyapp.ComponentOptions) {
+  const observe = function observe(
     this: MPComponentInstance,
     props: Record<string, any>
   ) {
-    const nextProps = isDidUpdate ? this.props : props
-    if (nextProps.uP) {
-      updateComponentProps(nextProps.uP, this.$vm.$)
+    const nextProps = isComponent2 ? props : this.props
+    const up = nextProps.uP
+    if (!up) {
+      return
     }
+    if (this.$vm) {
+      updateComponentProps(up, this.$vm.$)
+    } else if (this.props.uT === 'm') {
+      // 小程序组件
+      updateMiniProgramComponentProperties(up, this as any)
+    }
+  }
+
+  if (isComponent2) {
+    componentOptions.deriveDataFromProps = observe
+  } else {
+    componentOptions.didUpdate = observe
   }
 }
 
