@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-mp-kuaishou",
-  "version": "2.0.2-3090820231124001",
+  "version": "2.0.2-alpha-3090920231215002",
   "description": "uni-app mp-kuaishou",
   "main": "dist/index.js",
   "repository": {

@@ -4,13 +4,20 @@
     v-on="$listeners"
     @click="_onClick"
   >
-    <div class="uni-radio-wrapper">
+    <div
+      class="uni-radio-wrapper"
+      :style="{
+        '--HOVER-BD-COLOR': !radioChecked
+          ? activeBorderColor
+          : radioStyle.borderColor
+      }"
+    >
       <div
         :class="{
           'uni-radio-input-checked': radioChecked,
           'uni-radio-input-disabled': disabled,
         }"
-        :style="radioChecked ? checkedStyle : ''"
+        :style="radioStyle"
         class="uni-radio-input"
       />
       <slot />
@@ -38,13 +45,33 @@ export default {
       type: [Boolean, String],
       default: false
     },
+    value: {
+      type: String,
+      default: ''
+    },
     color: {
       type: String,
       default: '#007AFF'
     },
-    value: {
+    backgroundColor: {
       type: String,
       default: ''
+    },
+    borderColor: {
+      type: String,
+      default: ''
+    },
+    activeBackgroundColor: {
+      type: String,
+      default: ''
+    },
+    activeBorderColor: {
+      type: String,
+      default: ''
+    },
+    iconColor: {
+      type: String,
+      default: '#ffffff'
     }
   },
   data () {
@@ -54,9 +81,24 @@ export default {
     }
   },
   computed: {
-    checkedStyle () {
-      if (this.disabled) return 'background-color: #E1E1E1;border-color: ##D1D1D1;'
-      return `background-color: ${this.color};border-color: ${this.color};`
+    radioStyle () {
+      if (this.disabled) {
+        return {
+          backgroundColor: '#E1E1E1',
+          borderColor: '#D1D1D1'
+        }
+      }
+      const style = {}
+      // 兼容旧版本样式
+      if (this.radioChecked) {
+        style.color = this.iconColor
+        style.backgroundColor = this.activeBackgroundColor || this.color
+        style.borderColor = this.activeBorderColor || style.backgroundColor
+      } else {
+        if (this.borderColor) style.borderColor = this.borderColor
+        if (this.backgroundColor) style.backgroundColor = this.backgroundColor
+      }
+      return style
     }
   },
   watch: {
@@ -141,14 +183,15 @@ export default {
 		position: relative;
 	}
 
-	uni-radio:not([disabled]) .uni-radio-input:hover {
-		border-color: #007aff;
-	}
+  @media (any-hover: hover) {
+    uni-radio:not([disabled]) .uni-radio-input:hover {
+      border-color: var(--HOVER-BD-COLOR, #007aff) !important;
+    }
+  }
 
 	uni-radio .uni-radio-input.uni-radio-input-checked:before {
 		font: normal normal normal 14px/1 "uni";
 		content: "\EA08";
-		color: #ffffff;
 		font-size: 18px;
 		position: absolute;
 		top: 50%;
