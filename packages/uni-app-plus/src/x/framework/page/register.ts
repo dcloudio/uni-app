@@ -25,6 +25,30 @@ export interface RegisterPageOptions {
   eventChannel?: EventChannel
 }
 
+function parsePageStyle(route: UniApp.UniRoute): Map<string, any | null> {
+  const keys = [
+    'navigationBarTitleText',
+    'navigationBarBackgroundColor',
+    'navigationBarTextStyle',
+    'navigationStyle',
+  ]
+  const style = new Map<string, any | null>()
+  const routeMeta = route.meta
+  keys.forEach((key) => {
+    if (key in routeMeta) {
+      style.set(key, (routeMeta as Record<string, any>)[key])
+    }
+  })
+  if (
+    style.size &&
+    style.get('navigationBarTextStyle') !== 'custom' &&
+    !routeMeta.isQuit
+  ) {
+    style.set('navigationBarAutoBackButton', true)
+  }
+  return style
+}
+
 export function registerPage({
   url,
   path,
@@ -36,7 +60,8 @@ export function registerPage({
 }: RegisterPageOptions) {
   const id = genWebviewId()
   const routeOptions = initRouteOptions(path, openType)
-  const nativePage = __pageManager.createPage(url, id.toString(), new Map())
+  const pageStyle = parsePageStyle(routeOptions)
+  const nativePage = __pageManager.createPage(url, id.toString(), pageStyle)
   routeOptions.meta.id = parseInt(nativePage.pageId)
   if (__DEV__) {
     console.log(formatLog('registerPage', path, nativePage.pageId))
