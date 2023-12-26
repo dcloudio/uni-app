@@ -177,7 +177,7 @@ flexBasis: fill;
     expect(messages[0]).toEqual(
       expect.objectContaining({
         type: 'warning',
-        text: 'ERROR: property value `max-content` is not supported for `height` (supported values are: `number`|`pixel`|`percent`)',
+        text: 'ERROR: property value `max-content` is not supported for `height` (supported values are: `number`|`pixel`|`percent`|`auto`)',
       })
     )
     expect(messages[1]).toEqual(

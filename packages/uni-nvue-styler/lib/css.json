@@ -10,6 +10,22 @@
       "syntax": "auto | <length> | <percentage>",
       "values": [
         {
+          "name": "auto",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√"
+              }
+            }
+          }
+        },
+        {
           "name": "fit-content",
           "uniPlatform": {
             "app": {
@@ -309,6 +325,22 @@
       ],
       "syntax": "auto | <length> | <percentage>",
       "values": [
+        {
+          "name": "auto",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√"
+              }
+            }
+          }
+        },
         {
           "name": "fit-content",
           "uniPlatform": {
