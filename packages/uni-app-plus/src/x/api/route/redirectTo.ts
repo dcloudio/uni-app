@@ -11,6 +11,7 @@ import { removePage } from '../../../service/framework/page/getCurrentPages'
 import { registerPage } from '../../framework/page'
 import { RouteOptions } from '../../../service/api/route/utils'
 import { showWebview } from './webview'
+import { getNativeApp } from '../../framework/app'
 
 export const redirectTo = defineAsyncApi<API_TYPE_REDIRECT_TO>(
   API_REDIRECT_TO,
@@ -50,7 +51,9 @@ function _redirectTo({
       0,
       () => {
         if (lastPage) {
-          const nPage = __pageManager.findPageById(lastPage.$page.id + '')!
+          const nPage = getNativeApp().pageManager.findPageById(
+            lastPage.$page.id + ''
+          )!
           // TODO preload removePreloadWebview
           nPage.close(new Map<string, any>([['animationType', 'none']]))
         }

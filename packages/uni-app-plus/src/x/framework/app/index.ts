@@ -9,11 +9,12 @@ import {
 
 // import { initEntry } from './initEntry'
 // import { initTabBar } from './initTabBar'
-// import { initGlobalEvent } from './initGlobalEvent'
+import { initGlobalEvent } from './initGlobalEvent'
 import { initAppLaunch } from './initAppLaunch'
 // import { clearTempFile } from './clearTempFile'
 import { initSubscribeHandlers } from './subscriber'
 import { initVueApp } from '../../../service/framework/app/vueApp'
+import { IApp } from '@dcloudio/uni-app-x/types/native'
 // import { initKeyboardEvent } from '../dom/keyboard'
 
 let appCtx: ComponentPublicInstance
@@ -41,10 +42,18 @@ export function getApp({ allowDefault = false } = {}) {
   )
 }
 
-export function registerApp(appVm: ComponentPublicInstance) {
+let nativeApp: IApp
+
+export function getNativeApp() {
+  return nativeApp
+}
+
+export function registerApp(appVm: ComponentPublicInstance, app: IApp) {
   if (__DEV__) {
     console.log(formatLog('registerApp'))
   }
+
+  nativeApp = app
 
   // // 定制 useStore （主要是为了 nvue 共享）
   // if ((uni as any).Vuex && (appVm as any).$store) {
@@ -70,7 +79,7 @@ export function registerApp(appVm: ComponentPublicInstance) {
 
   // initEntry()
   // initTabBar()
-  // initGlobalEvent()
+  initGlobalEvent(app)
   // initKeyboardEvent()
   initSubscribeHandlers()
 

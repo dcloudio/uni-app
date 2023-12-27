@@ -12,6 +12,7 @@ import { ANI_CLOSE, ANI_DURATION } from '../../../service/constants'
 import { removePage } from '../../../service/framework/page/getCurrentPages'
 import { closeWebview } from './webview'
 import { IPage } from '@dcloudio/uni-app-x/types/native'
+import { getNativeApp } from '../../framework/app'
 
 export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
   API_NAVIGATE_BACK,
@@ -25,14 +26,10 @@ export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
         from: (args as any).from || 'navigateBack',
       })
     ) {
-      return resolve()
+      return reject('cancel')
     }
-    if (uni.hideToast) {
-      uni.hideToast()
-    }
-    if (uni.hideLoading) {
-      uni.hideLoading()
-    }
+    uni.hideToast?.()
+    uni.hideLoading?.()
     if (page.$page.meta.isQuit) {
       // TODO quit()
     }
@@ -63,7 +60,7 @@ function back(
       .reverse()
       .forEach((deltaPage) => {
         closeWebview(
-          __pageManager.findPageById(deltaPage.$page.id + '')!,
+          getNativeApp().pageManager.findPageById(deltaPage.$page.id + '')!,
           'none',
           0
         )
@@ -92,7 +89,9 @@ function back(
     // TODO setStatusBarStyle()
   }
 
-  const webview = __pageManager.findPageById(currentPage.$page.id + '')!
+  const webview = getNativeApp().pageManager.findPageById(
+    currentPage.$page.id + ''
+  )!
   // TODO 处理子 view
   backPage(webview)
 }

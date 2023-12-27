@@ -12,6 +12,8 @@ import { initRouteOptions } from '../../../service/framework/page/routeOptions'
 import { pagesMap } from '../../../service/framework/page/define'
 import { getVueApp } from '../../../service/framework/app/vueApp'
 import { VuePageComponent } from '../../../service/framework/page/define'
+import { getNativeApp } from '../app'
+import { ON_POP_GESTURE } from '../../constants'
 
 type PageNodeOptions = {}
 
@@ -61,7 +63,11 @@ export function registerPage({
   const id = genWebviewId()
   const routeOptions = initRouteOptions(path, openType)
   const pageStyle = parsePageStyle(routeOptions)
-  const nativePage = __pageManager.createPage(url, id.toString(), pageStyle)
+  const nativePage = getNativeApp().pageManager.createPage(
+    url,
+    id.toString(),
+    pageStyle
+  )
   routeOptions.meta.id = parseInt(nativePage.pageId)
   if (__DEV__) {
     console.log(formatLog('registerPage', path, nativePage.pageId))
@@ -80,6 +86,16 @@ export function registerPage({
     'light'
   )
   createVuePage(id, route, query, pageInstance, {}, nativePage)
+  nativePage.addPageEventListener(ON_POP_GESTURE, function (e) {
+    uni.navigateBack({
+      from: 'popGesture',
+      fail(e) {
+        if (e.errMsg.endsWith('cancel')) {
+          nativePage.show()
+        }
+      },
+    } as UniApp.NavigateBackOptions)
+  })
   return nativePage
 }
 
