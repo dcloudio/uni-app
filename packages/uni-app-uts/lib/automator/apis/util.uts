@@ -7,8 +7,8 @@ function getPagePath(page: BasePage): string {
   return page.route
 }
 // @ts-ignore
-function getPageQuery(page: BasePage): Map<string, string | null> {
-  return page.options
+function getPageQuery(page: BasePage): UTSJSONObject {
+  return map2Object(page.options as Map<string, any | null>)
 }
 // @ts-ignore
 function getPageById(id: string): BasePage | null {
