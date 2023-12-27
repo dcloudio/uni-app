@@ -1,23 +1,23 @@
 // @ts-ignore
-function getPageId(page: BasePage): string {
+function getPageId(page: Page): string {
   return page.$appPage!.pageId
 }
 // @ts-ignore
-function getPagePath(page: BasePage): string {
+function getPagePath(page: Page): string {
   return page.route
 }
 // @ts-ignore
-function getPageQuery(page: BasePage): UTSJSONObject {
+function getPageQuery(page: Page): UTSJSONObject {
   return map2Object(page.options as Map<string, any | null>)
 }
 // @ts-ignore
-function getPageById(id: string): BasePage | null {
+function getPageById(id: string): Page | null {
   // @ts-ignore
   const pages = getCurrentPages()
   // @ts-ignore
-  let result: BasePage | null = null
+  let result: Page | null = null
   // @ts-ignore
-  pages.forEach((page: BasePage) => {
+  pages.forEach((page: Page) => {
     if (getPageId(page) == id) {
       result = page
     }
@@ -25,26 +25,26 @@ function getPageById(id: string): BasePage | null {
   return result
 }
 // @ts-ignore
-export function getPageVm(id: string): BasePage | null {
+export function getPageVm(id: string): Page | null {
   return getPageById(id)
 }
 
 export function pageGetData(
   // @ts-ignore
-  vm: BasePage,
+  vm: Page,
   // @ts-ignore
 ): UTSJSONObject {
   // TODO: path 目前无法处理类型问题，暂由服务端处理
   return map2Object(vm.$data)
 }
 // @ts-ignore
-export function pageSetData(vm: BasePage, data: Map<string, any | null>): void {
+export function pageSetData(vm: Page, data: Map<string, any | null>): void {
   data.forEach((value: any | null, key: string) => {
     vm.$data.set(key, value)
   })
 }
 // @ts-ignore
-export function parsePage(page: BasePage): UTSJSONObject {
+export function parsePage(page: Page): UTSJSONObject {
   return {
     id: getPageId(page),
     path: getPagePath(page),
