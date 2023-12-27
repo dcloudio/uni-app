@@ -478,6 +478,14 @@ describe('mp:compiler-extra', () => {
       '<p :class="classStr1 || classStr2" class="bg">9</p>',
       '<view class="{{[\'bg\',\'_p\',classStr1||classStr2]}}">9</view>'
     )
+    assertCodegen(
+      '<view class="\n\t staticClass \t\n">10</view>',
+      '<view class="staticClass">10</view>'
+    )
+    assertCodegen(
+      '<view class=" \n\t a \t\n b \n c  ">11</view>',
+      '<view class="a b c">11</view>'
+    )
   })
 
   it('generate style binding', () => {

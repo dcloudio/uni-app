@@ -210,6 +210,10 @@ function traverseDataNode (dataNode, state, node) {
         break
       case 'class':
       case 'staticClass':
+        // vue@2.7.0 https://github.com/vuejs/vue/pull/12195 已经修复这个问题(question/184192)，后续升级vue版本后可以删除
+        if (property.key.name === 'staticClass' && property.value.value) {
+          property.value.value = property.value.value.replace(/\s+/g, ' ').trim()
+        }
         ret.class = genCode(property.value)
         break
       case 'style':
