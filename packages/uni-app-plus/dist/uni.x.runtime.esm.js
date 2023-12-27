@@ -1,4 +1,4 @@
-import { normalizeStyles, addLeadingSlash, invokeArrayFns, LINEFEED, formatLog, parseQuery, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, EventChannel, ON_READY, ON_UNLOAD, once, parseUrl, ON_BACK_PRESS, ON_LAUNCH } from '@dcloudio/uni-shared';
+import { normalizeStyles, addLeadingSlash, invokeArrayFns, LINEFEED, formatLog, parseQuery, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, EventChannel, ON_READY, ON_UNLOAD, once, ON_LAUNCH, parseUrl, ON_BACK_PRESS } from '@dcloudio/uni-shared';
 import { extend, isString, isArray, hasOwn, isPlainObject, isObject, toRawType, capitalize, makeMap, isFunction, isPromise } from '@vue/shared';
 import { createVNode, render, injectHook, getCurrentInstance, onMounted, nextTick, onBeforeUnmount } from 'vue';
 
@@ -668,6 +668,12 @@ function removePage(curPage) {
     }
 }
 
+function backbuttonListener() {
+    uni.navigateBack({
+        from: 'backbutton',
+        success() { }, // 传入空方法，避免返回Promise，因为onBackPress可能导致fail
+    });
+}
 const enterOptions = /*#__PURE__*/ createLaunchOptions();
 const launchOptions = /*#__PURE__*/ createLaunchOptions();
 function getLaunchOptions() {
@@ -952,8 +958,13 @@ function setupPage(component) {
         addCurrentPage(initScope(__pageId, pageVm, __pageInstance));
         onMounted(() => {
             nextTick(() => {
-                // onShow被延迟，故onReady也同时延迟
-                invokeHook(pageVm, ON_READY);
+                {
+                    // TODO page.addPageEventListener ON_READY
+                    setTimeout(() => {
+                        invokeHook(pageVm, ON_READY);
+                    }, 150);
+                    return;
+                }
             });
             // TODO preloadSubPackages
         });
@@ -992,192 +1003,12 @@ function createFactory(component) {
     };
 }
 
-function registerPage({ url, path, query, openType, webview, nvuePageVm, eventChannel, }) {
-    const id = genWebviewId();
-    const routeOptions = initRouteOptions(path, openType);
-    const nativePage = __pageManager.createPage(url, id.toString(), new Map());
-    routeOptions.meta.id = parseInt(nativePage.pageId);
-    if ((process.env.NODE_ENV !== 'production')) {
-        console.log(formatLog('registerPage', path, nativePage.pageId));
-    }
-    // TODO initWebview
-    // initWebview(webview, path, query, routeOptions.meta)
-    const route = path.slice(1);
-    // ;(webview as any).__uniapp_route = route
-    const pageInstance = initPageInternalInstance(openType, url, query, routeOptions.meta, eventChannel, 
-    // TODO ThemeMode
-    'light');
-    createVuePage(id, route, query, pageInstance, {}, nativePage);
-    return nativePage;
-}
-function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOptions, nativePage) {
-    const pageNode = nativePage.document.body;
-    const app = getVueApp();
-    const component = pagesMap.get(__pagePath)();
-    const mountPage = (component) => app.mountPage(component, {
-        __pageId,
-        __pagePath,
-        __pageQuery,
-        __pageInstance,
-    }, 
-    // @ts-ignore
-    pageNode);
-    if (isPromise(component)) {
-        return component.then((component) => mountPage(component));
-    }
-    return mountPage(component);
-}
-
-// import { setStatusBarStyle } from '../../statusBar'
-const $navigateTo = (args, { resolve, reject }) => {
-    const { url, events, animationType, animationDuration } = args;
-    const { path, query } = parseUrl(url);
-    const [aniType, aniDuration] = initAnimation(path, animationType, animationDuration);
-    _navigateTo({
-        url,
-        path,
-        query,
-        events,
-        aniType,
-        aniDuration,
-    })
-        .then(resolve)
-        .catch(reject);
-};
-const navigateTo = defineAsyncApi(API_NAVIGATE_TO, $navigateTo, NavigateToProtocol, NavigateToOptions);
-function _navigateTo({ url, path, query, events, aniType, aniDuration, }) {
-    // 当前页面触发 onHide
-    invokeHook(ON_HIDE);
-    const eventChannel = new EventChannel(getWebviewId() + 1, events);
-    return new Promise((resolve) => {
-        showWebview(registerPage({ url, path, query, openType: 'navigateTo', eventChannel }), aniType, aniDuration, () => {
-            resolve({ eventChannel });
-        });
-        // TODO uni-app x
-        // setStatusBarStyle()
+function initGlobalEvent(app) {
+    app.addKeyEventListener('onBackButton', () => {
+        backbuttonListener();
+        return true;
     });
 }
-function initAnimation(path, animationType, animationDuration) {
-    // 首页去除动画
-    if (!getCurrentPage()) {
-        return ['none', 0];
-    }
-    const { globalStyle } = __uniConfig;
-    const meta = getRouteMeta(path);
-    return [
-        animationType ||
-            meta.animationType ||
-            globalStyle.animationType ||
-            ANI_SHOW,
-        animationDuration ||
-            meta.animationDuration ||
-            globalStyle.animationDuration ||
-            ANI_DURATION,
-    ];
-}
-
-const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, (args, { resolve, reject }) => {
-    const page = getCurrentPage();
-    if (!page) {
-        return reject(`getCurrentPages is empty`);
-    }
-    if (invokeHook(page, ON_BACK_PRESS, {
-        from: args.from || 'navigateBack',
-    })) {
-        return resolve();
-    }
-    if (uni.hideToast) {
-        uni.hideToast();
-    }
-    if (uni.hideLoading) {
-        uni.hideLoading();
-    }
-    if (page.$page.meta.isQuit) ;
-    // TODO isDirectPage
-    else {
-        const { delta, animationType, animationDuration } = args;
-        back(delta, animationType, animationDuration);
-    }
-    return resolve();
-}, NavigateBackProtocol, NavigateBackOptions);
-function back(delta, animationType, animationDuration) {
-    const pages = getCurrentPages();
-    const len = pages.length;
-    const currentPage = pages[len - 1];
-    if (delta > 1) {
-        // 中间页隐藏
-        pages
-            .slice(len - delta, len - 1)
-            .reverse()
-            .forEach((deltaPage) => {
-            closeWebview(__pageManager.findPageById(deltaPage.$page.id + ''), 'none', 0);
-        });
-    }
-    const backPage = function (webview) {
-        if (animationType) {
-            animationDuration = animationDuration || ANI_DURATION;
-        }
-        else {
-            if (currentPage.$page.openType === 'redirectTo') {
-                // 如果是 redirectTo 跳转的，需要指定 back 动画
-                animationType = ANI_CLOSE;
-                animationDuration = ANI_DURATION;
-            }
-            else {
-                animationType = 'auto';
-            }
-        }
-        closeWebview(webview, animationType, animationDuration, () => {
-            pages
-                .slice(len - delta, len)
-                .forEach((page) => removePage(page));
-            // 前一个页面触发 onShow
-            invokeHook(ON_SHOW);
-        });
-        // TODO setStatusBarStyle()
-    };
-    const webview = __pageManager.findPageById(currentPage.$page.id + '');
-    // TODO 处理子 view
-    backPage(webview);
-}
-
-const redirectTo = defineAsyncApi(API_REDIRECT_TO, ({ url }, { resolve, reject }) => {
-    const { path, query } = parseUrl(url);
-    _redirectTo({
-        url,
-        path,
-        query,
-    })
-        .then(resolve)
-        .catch(reject);
-}, RedirectToProtocol, RedirectToOptions);
-function _redirectTo({ url, path, query, }) {
-    const lastPage = getCurrentPage();
-    lastPage && removePage(lastPage);
-    return new Promise((resolve) => {
-        showWebview(registerPage({
-            url,
-            path,
-            query,
-            openType: 'redirectTo',
-        }), 'none', 0, () => {
-            if (lastPage) {
-                const nPage = __pageManager.findPageById(lastPage.$page.id + '');
-                // TODO preload removePreloadWebview
-                nPage.close(new Map([['animationType', 'none']]));
-            }
-            resolve(undefined);
-        });
-        // TODO setStatusBarStyle()
-    });
-}
-
-var uni$1 = {
-  __proto__: null,
-  navigateBack: navigateBack,
-  navigateTo: navigateTo,
-  redirectTo: redirectTo
-};
 
 function initAppLaunch(appVm) {
     injectAppHooks(appVm.$);
@@ -1284,10 +1115,15 @@ function getApp({ allowDefault = false } = {}) {
     }
     console.error('[warn]: getApp() failed. Learn more: https://uniapp.dcloud.io/collocation/frame/window?id=getapp.');
 }
-function registerApp(appVm) {
+let nativeApp;
+function getNativeApp() {
+    return nativeApp;
+}
+function registerApp(appVm, app) {
     if ((process.env.NODE_ENV !== 'production')) {
         console.log(formatLog('registerApp'));
     }
+    nativeApp = app;
     // // 定制 useStore （主要是为了 nvue 共享）
     // if ((uni as any).Vuex && (appVm as any).$store) {
     //   const { useStore } = (uni as any).Vuex
@@ -1306,7 +1142,7 @@ function registerApp(appVm) {
     // initService()
     // initEntry()
     // initTabBar()
-    // initGlobalEvent()
+    initGlobalEvent(app);
     // initKeyboardEvent()
     initSubscribeHandlers();
     initAppLaunch(appVm);
@@ -1315,6 +1151,224 @@ function registerApp(appVm) {
     __uniConfig.ready = true;
     // nav
 }
+
+const ON_POP_GESTURE = 'onPopGesture';
+
+function parsePageStyle(route) {
+    const keys = [
+        'navigationBarTitleText',
+        'navigationBarBackgroundColor',
+        'navigationBarTextStyle',
+        'navigationStyle',
+    ];
+    const style = new Map();
+    const routeMeta = route.meta;
+    keys.forEach((key) => {
+        if (key in routeMeta) {
+            style.set(key, routeMeta[key]);
+        }
+    });
+    if (style.size &&
+        style.get('navigationBarTextStyle') !== 'custom' &&
+        !routeMeta.isQuit) {
+        style.set('navigationBarAutoBackButton', true);
+    }
+    return style;
+}
+function registerPage({ url, path, query, openType, webview, nvuePageVm, eventChannel, }) {
+    const id = genWebviewId();
+    const routeOptions = initRouteOptions(path, openType);
+    const pageStyle = parsePageStyle(routeOptions);
+    const nativePage = getNativeApp().pageManager.createPage(url, id.toString(), pageStyle);
+    routeOptions.meta.id = parseInt(nativePage.pageId);
+    if ((process.env.NODE_ENV !== 'production')) {
+        console.log(formatLog('registerPage', path, nativePage.pageId));
+    }
+    // TODO initWebview
+    // initWebview(webview, path, query, routeOptions.meta)
+    const route = path.slice(1);
+    // ;(webview as any).__uniapp_route = route
+    const pageInstance = initPageInternalInstance(openType, url, query, routeOptions.meta, eventChannel, 
+    // TODO ThemeMode
+    'light');
+    createVuePage(id, route, query, pageInstance, {}, nativePage);
+    nativePage.addPageEventListener(ON_POP_GESTURE, function (e) {
+        uni.navigateBack({
+            from: 'popGesture',
+            fail(e) {
+                if (e.errMsg.endsWith('cancel')) {
+                    nativePage.show();
+                }
+            },
+        });
+    });
+    return nativePage;
+}
+function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOptions, nativePage) {
+    const pageNode = nativePage.document.body;
+    const app = getVueApp();
+    const component = pagesMap.get(__pagePath)();
+    const mountPage = (component) => app.mountPage(component, {
+        __pageId,
+        __pagePath,
+        __pageQuery,
+        __pageInstance,
+    }, 
+    // @ts-ignore
+    pageNode);
+    if (isPromise(component)) {
+        return component.then((component) => mountPage(component));
+    }
+    return mountPage(component);
+}
+
+// import { setStatusBarStyle } from '../../statusBar'
+const $navigateTo = (args, { resolve, reject }) => {
+    const { url, events, animationType, animationDuration } = args;
+    const { path, query } = parseUrl(url);
+    const [aniType, aniDuration] = initAnimation(path, animationType, animationDuration);
+    _navigateTo({
+        url,
+        path,
+        query,
+        events,
+        aniType,
+        aniDuration,
+    })
+        .then(resolve)
+        .catch(reject);
+};
+const navigateTo = defineAsyncApi(API_NAVIGATE_TO, $navigateTo, NavigateToProtocol, NavigateToOptions);
+function _navigateTo({ url, path, query, events, aniType, aniDuration, }) {
+    // 当前页面触发 onHide
+    invokeHook(ON_HIDE);
+    const eventChannel = new EventChannel(getWebviewId() + 1, events);
+    return new Promise((resolve) => {
+        showWebview(registerPage({ url, path, query, openType: 'navigateTo', eventChannel }), aniType, aniDuration, () => {
+            resolve({ eventChannel });
+        });
+        // TODO uni-app x
+        // setStatusBarStyle()
+    });
+}
+function initAnimation(path, animationType, animationDuration) {
+    // 首页去除动画
+    if (!getCurrentPage()) {
+        return ['none', 0];
+    }
+    const { globalStyle } = __uniConfig;
+    const meta = getRouteMeta(path);
+    return [
+        animationType ||
+            meta.animationType ||
+            globalStyle.animationType ||
+            ANI_SHOW,
+        animationDuration ||
+            meta.animationDuration ||
+            globalStyle.animationDuration ||
+            ANI_DURATION,
+    ];
+}
+
+const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, (args, { resolve, reject }) => {
+    var _a, _b;
+    const page = getCurrentPage();
+    if (!page) {
+        return reject(`getCurrentPages is empty`);
+    }
+    if (invokeHook(page, ON_BACK_PRESS, {
+        from: args.from || 'navigateBack',
+    })) {
+        return reject('cancel');
+    }
+    (_a = uni.hideToast) === null || _a === void 0 ? void 0 : _a.call(uni);
+    (_b = uni.hideLoading) === null || _b === void 0 ? void 0 : _b.call(uni);
+    if (page.$page.meta.isQuit) ;
+    // TODO isDirectPage
+    else {
+        const { delta, animationType, animationDuration } = args;
+        back(delta, animationType, animationDuration);
+    }
+    return resolve();
+}, NavigateBackProtocol, NavigateBackOptions);
+function back(delta, animationType, animationDuration) {
+    const pages = getCurrentPages();
+    const len = pages.length;
+    const currentPage = pages[len - 1];
+    if (delta > 1) {
+        // 中间页隐藏
+        pages
+            .slice(len - delta, len - 1)
+            .reverse()
+            .forEach((deltaPage) => {
+            closeWebview(getNativeApp().pageManager.findPageById(deltaPage.$page.id + ''), 'none', 0);
+        });
+    }
+    const backPage = function (webview) {
+        if (animationType) {
+            animationDuration = animationDuration || ANI_DURATION;
+        }
+        else {
+            if (currentPage.$page.openType === 'redirectTo') {
+                // 如果是 redirectTo 跳转的，需要指定 back 动画
+                animationType = ANI_CLOSE;
+                animationDuration = ANI_DURATION;
+            }
+            else {
+                animationType = 'auto';
+            }
+        }
+        closeWebview(webview, animationType, animationDuration, () => {
+            pages
+                .slice(len - delta, len)
+                .forEach((page) => removePage(page));
+            // 前一个页面触发 onShow
+            invokeHook(ON_SHOW);
+        });
+        // TODO setStatusBarStyle()
+    };
+    const webview = getNativeApp().pageManager.findPageById(currentPage.$page.id + '');
+    // TODO 处理子 view
+    backPage(webview);
+}
+
+const redirectTo = defineAsyncApi(API_REDIRECT_TO, ({ url }, { resolve, reject }) => {
+    const { path, query } = parseUrl(url);
+    _redirectTo({
+        url,
+        path,
+        query,
+    })
+        .then(resolve)
+        .catch(reject);
+}, RedirectToProtocol, RedirectToOptions);
+function _redirectTo({ url, path, query, }) {
+    const lastPage = getCurrentPage();
+    lastPage && removePage(lastPage);
+    return new Promise((resolve) => {
+        showWebview(registerPage({
+            url,
+            path,
+            query,
+            openType: 'redirectTo',
+        }), 'none', 0, () => {
+            if (lastPage) {
+                const nPage = getNativeApp().pageManager.findPageById(lastPage.$page.id + '');
+                // TODO preload removePreloadWebview
+                nPage.close(new Map([['animationType', 'none']]));
+            }
+            resolve(undefined);
+        });
+        // TODO setStatusBarStyle()
+    });
+}
+
+var uni$1 = {
+  __proto__: null,
+  navigateBack: navigateBack,
+  navigateTo: navigateTo,
+  redirectTo: redirectTo
+};
 
 var index = {
     uni: uni$1,
