@@ -1,4 +1,4 @@
-import { ref, watch, getCurrentInstance, h, VNode } from 'vue'
+import { ref, watch, onMounted, getCurrentInstance, h, VNode } from 'vue'
 import { isString } from '@vue/shared'
 import {
   defineBuiltInComponent,
@@ -7,7 +7,9 @@ import {
 } from '@dcloudio/uni-components'
 import { nodeList2VNode } from './nodes-parser'
 import { props, parseHtml } from '../../components/rich-text'
+import { UniElement } from '../../helpers/UniElement'
 
+class UniRichTextElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'RichText',
   compatConfig: {
@@ -23,6 +25,12 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     'longpress',
     'itemclick',
   ],
+  //#if _X_ && !_NODE_JS_
+  rootElement: {
+    name: 'uni-rich-text',
+    class: UniRichTextElement,
+  },
+  //#endif
   setup(props, { emit }) {
     const vm = getCurrentInstance()
     const scopeId = (vm && vm.vnode.scopeId) || ''
@@ -43,6 +51,13 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     }
 
     watch(() => props.nodes, renderVNode, { immediate: true })
+
+    //#if _X_ && !_NODE_JS_
+    onMounted(() => {
+      const rootElement = rootRef.value as UniRichTextElement
+      rootElement.attachVmProps(props)
+    })
+    //#endif
 
     return () =>
       h(

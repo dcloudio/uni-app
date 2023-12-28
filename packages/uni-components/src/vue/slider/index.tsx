@@ -2,6 +2,7 @@ import { computed, inject, onMounted, onBeforeUnmount, ref, watch } from 'vue'
 import type { ExtractPropTypes, Ref } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { useTouchtrack, TouchtrackEvent } from '../../helpers/useTouchtrack'
+import { UniElement } from '../../helpers/UniElement'
 import {
   CustomEventTrigger,
   useCustomEvent,
@@ -68,16 +69,7 @@ const props = {
 type SliderProps = ExtractPropTypes<typeof props>
 type HTMLRef = Ref<HTMLElement | null>
 
-class UniSliderElement extends HTMLElement {
-  get value() {
-    return Number(this.getAttribute('value'))
-  }
-
-  set value(value: number) {
-    this.dispatchEvent(new CustomEvent('change', { detail: { value } }))
-  }
-}
-
+class UniSliderElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Slider',
   props,
@@ -115,22 +107,44 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       useTouchtrack(sliderHandleRef.value!, _onTrack)
     })
 
-    function onUniSliderChange(e: CustomEvent) {
-      sliderValue.value = Number(e.detail.value)
-    }
-
+    //#if _X_ && !_NODE_JS_
+    let sliderValueCache = ref(sliderValue.value)
+    watch(
+      () => sliderValue.value,
+      (val) => {
+        sliderValueCache.value = val
+      }
+    )
+    onMounted(() => {
+      const rootElement = sliderRef.value as UniSliderElement
+      Object.assign(rootElement, {
+        get value() {
+          return sliderValueCache.value
+        },
+        set value(val: number) {
+          sliderValueCache.value = val
+          const width = getValueWidth(val, props.min, props.max)
+          ;(
+            rootElement.querySelector(
+              '.uni-slider-handle-wrapper'
+            ) as HTMLElement
+          ).style.left = width
+          ;(
+            rootElement.querySelector('.uni-slider-track') as HTMLElement
+          ).style.width = width
+          ;(
+            rootElement.querySelector('.uni-slider-thumb') as HTMLElement
+          ).style.left = width
+        },
+      })
+      rootElement.attachVmProps(props)
+    })
+    //#endif
     return () => {
       const { setBgColor, setBlockBg, setActiveColor, setBlockStyle } = state
 
       return (
-        <uni-slider
-          ref={sliderRef}
-          onClick={withWebEvent(_onClick)}
-          //#if _X_ && !_NODE_JS_
-          value={sliderValue.value}
-          onChange={withWebEvent(onUniSliderChange)}
-          //#endif
-        >
+        <uni-slider ref={sliderRef} onClick={withWebEvent(_onClick)}>
           <div class="uni-slider-wrapper">
             <div class="uni-slider-tap-area">
               <div style={setBgColor.value} class="uni-slider-handle-wrapper">
@@ -158,11 +172,19 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   },
 })
 
+const getValueWidth = (
+  value: number,
+  min: string | number,
+  max: string | number
+) => {
+  max = Number(max)
+  min = Number(min)
+  return (100 * (value - min)) / (max - min) + '%'
+}
+
 function useSliderState(props: SliderProps, sliderValue: Ref<number>) {
   const _getValueWidth = () => {
-    const max = Number(props.max)
-    const min = Number(props.min)
-    return (100 * (sliderValue.value - min)) / (max - min) + '%'
+    return getValueWidth(sliderValue.value, props.min, props.max)
   }
   const _getBgColor = () => {
     return props.backgroundColor !== '#e9e9e9'

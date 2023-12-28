@@ -18,6 +18,7 @@ import { flatVNode } from '../../helpers/flatVNode'
 import { useRebuild } from '../../helpers/useRebuild'
 import ResizeSensor from '../resize-sensor/index'
 import { useCustomEvent } from '../../helpers/useEvent'
+import { UniElement } from '../../helpers/UniElement'
 import { pickerViewProps } from '../../components/pickerView'
 import type { Props, GetPickerViewColumn } from '../../components/pickerView'
 export { Props, GetPickerViewColumn }
@@ -52,10 +53,17 @@ function useState(props: Props): State {
   return state
 }
 
+class UniPickerViewElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'PickerView',
   props: pickerViewProps,
   emits: ['change', 'pickstart', 'pickend', 'update:value'],
+  //#if _X_ && !_NODE_JS_
+  rootElement: {
+    name: 'uni-picker-view',
+    class: UniPickerViewElement,
+  },
+  //#endif
   setup(props, { slots, emit }) {
     const rootRef: Ref<HTMLElement | null> = ref(null)
     const wrapperRef: Ref<HTMLElement | null> = ref(null)
@@ -122,6 +130,28 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           (columnsRef.value = (wrapperRef.value as HTMLElement).children)
       })
     }
+
+    //#if _X_ && !_NODE_JS_
+    onMounted(() => {
+      const rootElement = rootRef.value as UniPickerViewElement
+      Object.assign(rootElement, {
+        get value() {
+          const columns = rootElement.querySelectorAll('uni-picker-view-column')
+          return Array.from(columns).map(
+            (item) => (item as unknown as { current: number }).current
+          )
+        },
+        set value(value: number[]) {
+          const columns = rootElement.querySelectorAll('uni-picker-view-column')
+          Array.from(columns).forEach((item, index) => {
+            ;(item as unknown as { current: number }).current =
+              value[index] || 0
+          })
+        },
+      })
+      rootElement.attachVmProps(props)
+    })
+    //#endif
 
     return () => {
       const defaultSlots = slots.default && slots.default()

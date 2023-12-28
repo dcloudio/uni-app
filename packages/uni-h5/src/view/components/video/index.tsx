@@ -22,6 +22,7 @@ import {
   CustomEventTrigger,
   useUserAction,
   useAttrs,
+  UniElement,
 } from '@dcloudio/uni-components'
 
 type UserActionState = ReturnType<typeof useUserAction>['state']
@@ -286,14 +287,16 @@ interface VideoState {
   duration: number
   progress: number
   buffered: number
+  muted: boolean
 }
 function useVideo(
-  props: { src: string; initialTime: number | string },
+  props: { src: string; initialTime: number | string; muted: boolean | string },
   attrs: Data,
   trigger: CustomEventTrigger
 ) {
   const videoRef: Ref<HTMLVideoElement | null> = ref(null)
   const src = computed(() => getRealPath(props.src))
+  const muted = computed(() => props.muted === 'true' || props.muted === true)
   const state: VideoState = reactive({
     start: false,
     src,
@@ -302,6 +305,7 @@ function useVideo(
     duration: 0,
     progress: 0,
     buffered: 0,
+    muted,
   })
   watch(
     () => src.value,
@@ -316,6 +320,13 @@ function useVideo(
       trigger('progress', {} as Event, {
         buffered,
       })
+    }
+  )
+  watch(
+    () => muted.value,
+    (muted) => {
+      const video = videoRef.value as HTMLVideoElement
+      video.muted = muted
     }
   )
   function onDurationChange({ target }: Event) {
@@ -797,7 +808,7 @@ const props = {
 }
 
 // 仅作实现，X项目中不会依据此类生成d.ts
-class UniVideoElement extends HTMLElement {}
+class UniVideoElement extends UniElement {}
 
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Video',
@@ -898,6 +909,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         requestFullScreen,
         exitFullScreen,
       })
+      rootElement.attachVmProps(props)
     })
     //#endif
 

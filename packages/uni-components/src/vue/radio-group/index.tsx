@@ -3,6 +3,7 @@ import type { Ref, ExtractPropTypes, WritableComputedRef } from 'vue'
 import { PolySymbol } from '@dcloudio/uni-core'
 import { UniFormCtx, uniFormKey } from '../form'
 import { defineBuiltInComponent } from '../../helpers/component'
+import { UniElement } from '../../helpers/UniElement'
 import { CustomEventTrigger, useCustomEvent } from '../../helpers/useEvent'
 
 export const uniRadioGroupKey = PolySymbol(__DEV__ ? 'uniCheckGroup' : 'ucg')
@@ -27,16 +28,29 @@ const props = {
 
 type RadioGroupProps = ExtractPropTypes<typeof props>
 
+class UniRadioGroupElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'RadioGroup',
   props,
   // emits: ['change'],
+  //#if _X_ && !_NODE_JS_
+  rootElement: {
+    name: 'uni-radio-group',
+    class: UniRadioGroupElement,
+  },
+  //#endif
   setup(props, { emit, slots }) {
     const rootRef: Ref<HTMLElement | null> = ref(null)
     const trigger = useCustomEvent(rootRef, emit)
 
     useProvideRadioGroup(props, trigger)
 
+    //#if _X_ && !_NODE_JS_
+    onMounted(() => {
+      const rootElement = rootRef.value as UniRadioGroupElement
+      rootElement.attachVmProps(props)
+    })
+    //#endif
     return () => {
       return (
         <uni-radio-group ref={rootRef}>

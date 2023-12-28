@@ -1,6 +1,7 @@
 import { ref, Ref, onMounted, inject, computed, watch, onUnmounted } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { initScrollBounce, disableScrollBounce } from '../../helpers/scroll'
+import { UniElement } from '../../helpers/UniElement'
 import { useTouchtrack, TouchtrackEvent } from '../../helpers/useTouchtrack'
 import ResizeSensor from '../resize-sensor/index'
 import {
@@ -26,14 +27,28 @@ import {
 
 type RootRef = Ref<HTMLElement | null>
 
+class UniMovableViewElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'MovableView',
   props: movableViewProps,
   emits: ['change', 'scale'],
+  //#if _X_ && !_NODE_JS_
+  rootElement: {
+    name: 'uni-movable-view',
+    class: UniMovableViewElement,
+  },
+  //#endif
   setup(props, { slots, emit }) {
     const rootRef: RootRef = ref(null)
     const trigger = useCustomEvent<EmitEvent<typeof emit>>(rootRef, emit)
     const { setParent } = useMovableViewState(props, trigger, rootRef)
+
+    //#if _X_ && !_NODE_JS_
+    onMounted(() => {
+      const rootElement = rootRef.value as UniMovableViewElement
+      rootElement.attachVmProps(props)
+    })
+    //#endif
 
     return () => {
       return (

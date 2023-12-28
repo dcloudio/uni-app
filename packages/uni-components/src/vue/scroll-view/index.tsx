@@ -13,6 +13,7 @@ import {
 } from 'vue'
 import { passive } from '@dcloudio/uni-shared'
 import { initScrollBounce, disableScrollBounce } from '../../helpers/scroll'
+import { UniElement } from '../../helpers/UniElement'
 import {
   useCustomEvent,
   CustomEventTrigger,
@@ -95,6 +96,7 @@ const props = {
   },
 }
 
+class UniScrollViewElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'ScrollView',
   compatConfig: {
@@ -111,6 +113,12 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     'refresherabort',
     'update:refresherTriggered',
   ],
+  //#if _X_ && !_NODE_JS_
+  rootElement: {
+    name: 'uni-scroll-view',
+    class: UniScrollViewElement,
+  },
+  //#endif
   setup(props, { emit, slots }) {
     const rootRef: HTMLRef = ref(null)
     const main: HTMLRef = ref(null)
@@ -144,6 +152,13 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         : (style += 'overflow-y:hidden;')
       return style
     })
+
+    //#if _X_ && !_NODE_JS_
+    onMounted(() => {
+      const rootElement = rootRef.value as UniScrollViewElement
+      rootElement.attachVmProps(props)
+    })
+    //#endif
 
     return () => {
       const { refresherEnabled, refresherBackground, refresherDefaultStyle } =

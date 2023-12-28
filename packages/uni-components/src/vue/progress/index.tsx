@@ -1,16 +1,32 @@
-import { ref, reactive, watch, computed, ExtractPropTypes } from 'vue'
+import {
+  ref,
+  reactive,
+  watch,
+  computed,
+  onMounted,
+  ExtractPropTypes,
+} from 'vue'
 
 import { defineBuiltInComponent } from '../../helpers/component'
+import { UniElement } from '../../helpers/UniElement'
 
 import { PROGRESS_VALUES, progressProps } from '../../components/progress'
 
 type ProgressProps = ExtractPropTypes<typeof progressProps>
 type ProgerssState = ReturnType<typeof useProgressState>
 
+class UniProgressElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Progress',
   props: progressProps,
+  //#if _X_ && !_NODE_JS_
+  rootElement: {
+    name: 'uni-progress',
+    class: UniProgressElement,
+  },
+  //#endif
   setup(props) {
+    const rootRef = ref<HTMLElement | null>(null)
     const state = useProgressState(props)
 
     _activeAnimation(state, props)
@@ -23,6 +39,36 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         _activeAnimation(state, props)
       }
     )
+
+    //#if _X_ && !_NODE_JS_
+    let percentCache = state.currentPercent
+    watch(
+      () => state.currentPercent,
+      (newPercent) => {
+        percentCache = newPercent
+      }
+    )
+    onMounted(() => {
+      const rootElement = rootRef.value as UniProgressElement
+      Object.assign(rootElement, {
+        get percent() {
+          return percentCache
+        },
+        set percent(value) {
+          percentCache = value
+          ;(
+            rootElement.querySelector('.uni-progress-inner-bar') as HTMLElement
+          ).style.width = `${value}%`
+          if (props.showInfo) {
+            ;(
+              rootElement.querySelector('.uni-progress-info') as HTMLElement
+            ).innerText = `${value}%`
+          }
+        },
+      })
+      rootElement.attachVmProps(props)
+    })
+    //#endif
 
     return () => {
       const { showInfo } = props

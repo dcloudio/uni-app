@@ -12,6 +12,7 @@ import {
   ComponentPublicInstance,
 } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
+import { UniElement } from '../../helpers/UniElement'
 import { useScroller } from '../../helpers/scroller'
 import { Friction } from '../../helpers/scroller/Friction'
 import { Spring } from '../../helpers/scroller/Spring'
@@ -88,8 +89,15 @@ function useCustomClick(dom: HTMLElement) {
   })
 }
 
+class UniPickerViewColumnElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'PickerViewColumn',
+  //#if _X_ && !_NODE_JS_
+  rootElement: {
+    name: 'uni-picker-view-column',
+    class: UniPickerViewColumnElement,
+  },
+  //#endif
   setup(props, { slots, emit }) {
     const rootRef: Ref<HTMLElement | null> = ref(null)
     const contentRef: Ref<HTMLElement | null> = ref(null)
@@ -266,6 +274,28 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       })
     }
 
+    //#if _X_ && !_NODE_JS_
+    let currentCache: number = state.current
+    watch(
+      () => state.current,
+      (newCurrent) => {
+        currentCache = newCurrent
+      }
+    )
+    onMounted(() => {
+      const rootElement = rootRef.value as UniPickerViewColumnElement
+      Object.assign(rootElement, {
+        get current() {
+          return currentCache
+        },
+        set current(current: number) {
+          currentCache = current
+          scroller.scrollTo(current * indicatorHeight.value)
+        },
+      })
+      rootElement.attachVmProps(props)
+    })
+    //#endif
     return () => {
       const defaultSlots = slots.default && slots.default()
       if (__PLATFORM__ !== 'app') {

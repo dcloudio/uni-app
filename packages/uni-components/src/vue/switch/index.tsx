@@ -3,6 +3,7 @@ import {
   onBeforeUnmount,
   watch,
   inject,
+  onMounted,
   onUnmounted,
   ExtractPropTypes,
   Ref,
@@ -14,6 +15,7 @@ import { UniFormCtx, uniFormKey } from '../form'
 import { UniLabelCtx, uniLabelKey } from '../label'
 import { useListeners } from '../../helpers/useListeners'
 import { useBooleanAttr } from '../../helpers/useBooleanAttr'
+import { UniElement } from '../../helpers/UniElement'
 import {
   createSvgIconVNode,
   ICON_PATH_SUCCESS_NO_CIRCLE,
@@ -48,10 +50,17 @@ const props = {
 
 type SwitchProps = ExtractPropTypes<typeof props>
 
+class UniSwitchElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Switch',
   props,
   emits: ['change'],
+  //#if _X_ && !_NODE_JS_
+  rootElement: {
+    name: 'uni-switch',
+    class: UniSwitchElement,
+  },
+  //#endif
   setup(props, { emit }) {
     const rootRef = ref<HTMLElement | null>(null)
     const switchChecked = ref(props.checked)
@@ -85,6 +94,27 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
     useListeners(props, { 'label-click': _onClick })
 
+    //#if _X_ && !_NODE_JS_
+    let checkedCache = ref(switchChecked.value)
+    watch(
+      () => switchChecked.value,
+      (val) => {
+        checkedCache.value = val
+      }
+    )
+    onMounted(() => {
+      const rootElement = rootRef.value as UniSwitchElement
+      Object.assign(rootElement, {
+        get checked() {
+          return checkedCache.value
+        },
+        set checked(val) {
+          checkedCache.value = val
+        },
+      })
+      rootElement.attachVmProps(props)
+    })
+    //#endif
     return () => {
       const { color, type } = props
       const booleanAttrs = useBooleanAttr(props, 'disabled')
@@ -96,6 +126,14 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         switchInputStyle['backgroundColor'] = color
         switchInputStyle['borderColor'] = color
       }
+
+      let realCheckValue: boolean | string
+
+      //#if _X_ && !_NODE_JS_
+      realCheckValue = checkedCache.value
+      //#else
+      realCheckValue = switchChecked.value
+      //#endif
 
       return (
         <uni-switch ref={rootRef} {...booleanAttrs} onClick={_onClick}>
@@ -109,7 +147,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             />
 
             <div v-show={type === 'checkbox'} class="uni-checkbox-input">
-              {switchChecked.value
+              {realCheckValue
                 ? createSvgIconVNode(
                     ICON_PATH_SUCCESS_NO_CIRCLE,
                     props.color,

@@ -1,6 +1,7 @@
 import { extend, hyphenate } from '@vue/shared'
-import { Ref, ref, computed, watch, HTMLAttributes } from 'vue'
+import { Ref, ref, computed, watch, onMounted, HTMLAttributes } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
+import { UniElement } from '../../helpers/UniElement'
 import {
   props as fieldProps,
   emit as fieldEmit,
@@ -18,10 +19,18 @@ const props = /*#__PURE__*/ extend({}, fieldProps, {
   },
 })
 
+class UniInputElement extends UniElement {}
+
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Input',
   props,
   emits: ['confirm', ...fieldEmit],
+  //#if _X_ && !_NODE_JS_
+  rootElement: {
+    name: 'uni-input',
+    class: UniInputElement,
+  },
+  //#endif
   setup(props, { emit }) {
     const INPUT_TYPES = ['text', 'number', 'idcard', 'digit', 'password', 'tel']
     const AUTOCOMPLETES = ['off', 'one-time-code']
@@ -157,6 +166,21 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       })
       !props.confirmHold && input.blur()
     }
+
+    //#if _X_ && !_NODE_JS_
+    onMounted(() => {
+      const rootElement = rootRef.value as UniInputElement
+      Object.assign(rootElement, {
+        get value() {
+          return rootElement.querySelector('input')!.value
+        },
+        set value(value: string) {
+          rootElement.querySelector('input')!.value = value
+        },
+      })
+      rootElement.attachVmProps(props)
+    })
+    //#endif
     return () => {
       let inputNode =
         props.disabled && fixDisabledColor ? (

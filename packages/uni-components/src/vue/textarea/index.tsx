@@ -2,6 +2,7 @@ import { Ref, ref, computed, watch, onMounted, HTMLAttributes } from 'vue'
 import { extend } from '@vue/shared'
 import { LINEFEED } from '@dcloudio/uni-shared'
 import { defineBuiltInComponent } from '../../helpers/component'
+import { UniElement } from '../../helpers/UniElement'
 import {
   props as fieldProps,
   emit as fieldEmit,
@@ -40,10 +41,17 @@ function setFixMargin() {
       window.matchMedia(DARK_TEST_STRING).media !== DARK_TEST_STRING
 }
 
+class UniTextareaElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Textarea',
   props,
   emits: ['confirm', 'linechange', ...fieldEmit],
+  //#if _X_ && !_NODE_JS_
+  rootElement: {
+    name: 'uni-textarea',
+    class: UniTextareaElement,
+  },
+  //#endif
   setup(props, { emit }) {
     const rootRef: Ref<HTMLElement | null> = ref(null)
     const wrapperRef: Ref<HTMLElement | null> = ref(null)
@@ -111,6 +119,22 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     } else {
       setFixMargin()
     }
+
+    //#if _X_ && !_NODE_JS_
+    onMounted(() => {
+      const rootElement = rootRef.value as UniTextareaElement
+      Object.assign(rootElement, {
+        get value() {
+          return state.value
+        },
+        set value(value: string) {
+          const event = new CustomEvent('input', { detail: { value } })
+          trigger('input', event, event.detail)
+        },
+      })
+      rootElement.attachVmProps(props)
+    })
+    //#endif
 
     return () => {
       let textareaNode =
