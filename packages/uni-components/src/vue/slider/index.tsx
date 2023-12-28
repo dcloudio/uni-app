@@ -130,6 +130,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           ;(
             rootElement.querySelector('.uni-slider-thumb') as HTMLElement
           ).style.left = width
+          ;(
+            rootElement.querySelector('.uni-slider-value') as HTMLElement
+          ).innerText = val.toString()
         },
       })
       rootElement.attachVmProps(props)
