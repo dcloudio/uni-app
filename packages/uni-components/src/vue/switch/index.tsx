@@ -104,11 +104,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     )
     onMounted(() => {
       const rootElement = rootRef.value as UniSwitchElement
-      Object.assign(rootElement, {
-        get checked() {
+      Object.defineProperty(rootElement, 'checked', {
+        get() {
           return checkedCache.value
         },
-        set checked(val) {
+        set(val) {
           checkedCache.value = val
         },
       })

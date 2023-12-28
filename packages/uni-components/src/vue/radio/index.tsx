@@ -138,11 +138,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     )
     onMounted(() => {
       const rootElement = rootRef.value as UniRadioElement
-      Object.assign(rootElement, {
-        get checked() {
+      Object.defineProperty(rootElement, 'checked', {
+        get() {
           return checkedCache.value
         },
-        set checked(value: boolean | string) {
+        set(value: boolean | string) {
           checkedCache.value = value
           const style = getRadioStyle(value)
           const checkboxInputElement = rootElement.querySelector(

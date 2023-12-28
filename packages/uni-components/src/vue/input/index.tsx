@@ -170,11 +170,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     //#if _X_ && !_NODE_JS_
     onMounted(() => {
       const rootElement = rootRef.value as UniInputElement
-      Object.assign(rootElement, {
-        get value() {
+      Object.defineProperty(rootElement, 'value', {
+        get() {
           return rootElement.querySelector('input')!.value
         },
-        set value(value: string) {
+        set(value: string) {
           rootElement.querySelector('input')!.value = value
         },
       })

@@ -284,11 +284,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     )
     onMounted(() => {
       const rootElement = rootRef.value as UniPickerViewColumnElement
-      Object.assign(rootElement, {
-        get current() {
+      Object.defineProperty(rootElement, 'current', {
+        get() {
           return currentCache
         },
-        set current(current: number) {
+        set(current: number) {
           currentCache = current
           scroller.scrollTo(current * indicatorHeight.value)
         },

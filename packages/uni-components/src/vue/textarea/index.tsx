@@ -123,13 +123,12 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     //#if _X_ && !_NODE_JS_
     onMounted(() => {
       const rootElement = rootRef.value as UniTextareaElement
-      Object.assign(rootElement, {
-        get value() {
+      Object.defineProperty(rootElement, 'value', {
+        get() {
           return state.value
         },
-        set value(value: string) {
-          const event = new CustomEvent('input', { detail: { value } })
-          trigger('input', event, event.detail)
+        set(value: string) {
+          rootElement.querySelector('textarea')!.value = value
         },
       })
       rootElement.attachVmProps(props)

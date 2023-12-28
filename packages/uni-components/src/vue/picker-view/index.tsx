@@ -134,14 +134,14 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     //#if _X_ && !_NODE_JS_
     onMounted(() => {
       const rootElement = rootRef.value as UniPickerViewElement
-      Object.assign(rootElement, {
-        get value() {
+      Object.defineProperty(rootElement, 'value', {
+        get() {
           const columns = rootElement.querySelectorAll('uni-picker-view-column')
           return Array.from(columns).map(
             (item) => (item as unknown as { current: number }).current
           )
         },
-        set value(value: number[]) {
+        set(value: number[]) {
           const columns = rootElement.querySelectorAll('uni-picker-view-column')
           Array.from(columns).forEach((item, index) => {
             ;(item as unknown as { current: number }).current =

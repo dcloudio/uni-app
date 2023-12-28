@@ -284,11 +284,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     onMounted(() => {
       const rootElement = rootRef.value as UniPickerElement
       // TODO
-      // Object.assign(rootElement, {
-      //   get value() {
+      // Object.defineProperty(rootElement, 'value', {
+      //   get() {
 
       //   },
-      //   set value(val) {
+      //   set(val) {
       //   },
       // })
       rootElement.attachVmProps(props)

@@ -143,11 +143,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     )
     onMounted(() => {
       const rootElement = rootRef.value as UniCheckboxElement
-      Object.assign(rootElement, {
-        get checked() {
+      Object.defineProperty(rootElement, 'checked', {
+        get() {
           return checkedCache.value
         },
-        set checked(val: boolean) {
+        set(val) {
           checkedCache.value = val
           const style = getCheckBoxStyle(val)
           const checkboxInputElement = rootElement.querySelector(

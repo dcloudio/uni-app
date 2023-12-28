@@ -50,11 +50,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     )
     onMounted(() => {
       const rootElement = rootRef.value as UniProgressElement
-      Object.assign(rootElement, {
-        get percent() {
+      Object.defineProperty(rootElement, 'percent', {
+        get() {
           return percentCache
         },
-        set percent(value) {
+        set(value) {
           percentCache = value
           ;(
             rootElement.querySelector('.uni-progress-inner-bar') as HTMLElement

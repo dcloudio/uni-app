@@ -117,18 +117,13 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     )
     onMounted(() => {
       const rootElement = sliderRef.value as UniSliderElement
-      Object.assign(rootElement, {
-        get value() {
+      Object.defineProperty(rootElement, 'value', {
+        get() {
           return sliderValueCache.value
         },
-        set value(val: number) {
+        set(val: number) {
           sliderValueCache.value = val
           const width = getValueWidth(val, props.min, props.max)
-          ;(
-            rootElement.querySelector(
-              '.uni-slider-handle-wrapper'
-            ) as HTMLElement
-          ).style.left = width
           ;(
             rootElement.querySelector('.uni-slider-track') as HTMLElement
           ).style.width = width

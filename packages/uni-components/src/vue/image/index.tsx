@@ -81,11 +81,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     //#if _X_ && !_NODE_JS_
     onMounted(() => {
       const rootElement = rootRef.value as UniImageElement
-      Object.assign(rootElement, {
-        get src() {
-          return state.src
+      Object.defineProperty(rootElement, 'src', {
+        get() {
+          return (rootElement.querySelector('img') as HTMLImageElement).src
         },
-        set src(value) {
+        set(value) {
           rootElement.querySelector(
             'div'
           )!.style.backgroundImage = `url("${value}")`
