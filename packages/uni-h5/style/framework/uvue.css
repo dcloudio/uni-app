@@ -1,15 +1,7 @@
-uni-app uni-view,
-uni-app uni-scroll-view,
-uni-app uni-list-view,
-uni-app uni-list-item,
-uni-app uni-swiper-item,
-uni-app uni-navigator,
-uni-app uni-radio-group,
-uni-app uni-checkbox-group {
+uni-app uni-page-body {
+  display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  align-items: stretch;
-  align-content: stretch;
+  min-height: 100%;
 }
 
 uni-app uni-text,
@@ -18,12 +10,6 @@ uni-app uni-textarea {
   color: #000000;
   font-size: 16px;
   text-align: left;
-}
-
-uni-app uni-page-body {
-  min-height: 100%;
-  display: flex;
-  flex-direction: column;
 }
 
 uni-app uni-text,
@@ -37,8 +23,11 @@ uni-app uni-text {
 
 uni-app uni-view,
 uni-app uni-label,
-uni-app uni-swiper-item,
 uni-app uni-scroll-view,
+uni-app uni-list-view,
+uni-app uni-list-item,
+uni-app uni-swiper-item,
+uni-app uni-navigator,
 uni-app uni-radio-group,
 uni-app uni-checkbox-group {
   display: flex;
@@ -47,6 +36,21 @@ uni-app uni-checkbox-group {
   flex-basis: auto;
   align-items: stretch;
   align-content: flex-start;
+  justify-content: flex-start;
+}
+
+/* 此样式可被manifest.json内配置的flex-direction重置 */
+uni-app uni-view,
+uni-app uni-label,
+uni-app uni-scroll-view,
+uni-app uni-list-view,
+uni-app uni-list-item,
+uni-app uni-swiper-item,
+uni-app uni-navigator,
+uni-app uni-radio-group,
+uni-app uni-checkbox-group {
+  flex-direction: column;
+  min-height: 0px; /* 默认情况下，元素不会缩短至小于内容框尺寸，若想改变这一状况，请设置元素的min-width 与 min-height属性。https://developer.mozilla.org/zh-CN/docs/Web/CSS/flex */
 }
 
 uni-app uni-button {
@@ -64,31 +68,8 @@ uni-app .uni-scroll-view {
 uni-app .uni-scroll-view-content {
   display: flex;
   flex-direction: inherit;
+  min-height: 0px;
 }
-
-/* [uvue-dir-row] uni-view,
-[uvue-dir-row] uni-label,
-[uvue-dir-row] uni-swiper-item {
-  flex-direction: row;
-}
-
-[uvue-dir-column] uni-view,
-[uvue-dir-column] uni-label,
-[uvue-dir-column] uni-swiper-item {
-  flex-direction: column;
-}
-
-[uvue-dir-row-reverse] uni-view,
-[uvue-dir-row-reverse] uni-label,
-[uvue-dir-row-reverse] uni-swiper-item {
-  flex-direction: row-reverse;
-}
-
-[uvue-dir-column-reverse] uni-view,
-[uvue-dir-column-reverse] uni-label,
-[uvue-dir-column-reverse] uni-swiper-item {
-  flex-direction: column-reverse;
-} */
 
 uni-app uni-view,
 uni-app uni-image,
