@@ -1,0 +1,294 @@
+import { computed, inject, onMounted, onBeforeUnmount, ref, watch } from 'vue'
+import type { ExtractPropTypes, Ref } from 'vue'
+import { defineBuiltInComponent } from '../../helpers/component'
+import { UniElement } from '../../helpers/UniElement'
+import {
+  CustomEventTrigger,
+  useCustomEvent,
+  EmitEvent,
+  withWebEvent,
+} from '../../helpers/useEvent'
+import { UniFormCtx, uniFormKey } from '../form'
+
+const props = {
+  name: {
+    type: String,
+    default: '',
+  },
+  min: {
+    type: [Number, String],
+    default: 0,
+  },
+  max: {
+    type: [Number, String],
+    default: 100,
+  },
+  value: {
+    type: [Number, String],
+    default: 0,
+  },
+  step: {
+    type: [Number, String],
+    default: 1,
+  },
+  disabled: {
+    type: [Boolean, String],
+    default: false,
+  },
+  color: {
+    type: String,
+    default: '#e9e9e9',
+  },
+  backgroundColor: {
+    type: String,
+    default: '#e9e9e9',
+  },
+  activeColor: {
+    type: String,
+    default: '#007aff',
+  },
+  selectedColor: {
+    type: String,
+    default: '#007aff',
+  },
+  blockColor: {
+    type: String,
+    default: '#ffffff',
+  },
+  blockSize: {
+    type: [Number, String],
+    default: 28,
+  },
+  showValue: {
+    type: [Boolean, String],
+    default: false,
+  },
+}
+
+type SliderProps = ExtractPropTypes<typeof props>
+type HTMLRef = Ref<HTMLElement | null>
+
+const getValuePercentage = (value: number, min: number, max: number) => {
+  return (100 * (value - min)) / (max - min) + '%'
+}
+
+class UniSliderElement extends UniElement {
+  htmlSlider: HTMLInputElement | undefined
+  trackValue: HTMLElement | undefined
+  thumbValue: HTMLElement | undefined
+  inputValue: HTMLElement | undefined
+
+  init() {
+    this.htmlSlider = this.querySelector(
+      '.uni-slider-brower-input-range'
+    ) as HTMLInputElement
+    this.trackValue = this.querySelector(
+      '.uni-slider-track-value'
+    ) as HTMLElement
+    this.thumbValue = this.querySelector(
+      '.uni-slider-thumb-value'
+    ) as HTMLElement
+    this.inputValue = this.querySelector('.uni-slider-value') as HTMLElement
+    this.updateValue(this.value)
+  }
+
+  get value(): string {
+    return this.htmlSlider!.value
+  }
+  set value(value: string) {
+    this.htmlSlider!.value = value
+    this.updateValue(value)
+  }
+
+  updateValue(value: string) {
+    const min = Number(this.htmlSlider!.getAttribute('min'))
+    const max = Number(this.htmlSlider!.getAttribute('max'))
+    const valueNumber = Number(value)
+    const percentage = getValuePercentage(valueNumber, min, max)
+    this.trackValue!.style.width = percentage
+    this.thumbValue!.style.left = percentage
+    this.inputValue!.innerText = value.toString()
+  }
+}
+// class UniSliderElement extends UniElement {}
+export default /*#__PURE__*/ defineBuiltInComponent({
+  name: 'Slider',
+  props,
+  emits: ['changing', 'change'],
+  rootElement: {
+    name: 'uni-slider',
+    class: UniSliderElement,
+  },
+  setup(props, { emit }) {
+    const sliderRef: HTMLRef = ref(null)
+    const sliderValueRef: HTMLRef = ref(null)
+    const sliderValue = ref(Number(props.value))
+    let uniSliderElement: UniSliderElement | undefined
+
+    watch(
+      () => props.value,
+      (val) => {
+        sliderValue.value = Number(val)
+        uniSliderElement!.value = val.toString()
+      }
+    )
+
+    const trigger = useCustomEvent<EmitEvent<typeof emit>>(sliderRef, emit)
+
+    const state = useSliderState(props, sliderValue)
+    const { _onInput, _onChange } = useSliderLoader(
+      props,
+      sliderValue,
+      sliderRef,
+      trigger
+    )
+
+    onMounted(() => {
+      uniSliderElement = sliderRef.value as UniSliderElement
+      uniSliderElement.init()
+    })
+
+    return () => {
+      const {
+        setTrackBgColor,
+        setActiveColor,
+        setThumbStyle,
+        thumbTrackStyle,
+      } = state
+
+      return (
+        <uni-slider ref={sliderRef}>
+          <div class="uni-slider-wrapper">
+            <div class="uni-slider-input">
+              <div style={setTrackBgColor.value} class="uni-slider-track">
+                <div
+                  style={setActiveColor.value}
+                  class="uni-slider-track-value"
+                />
+              </div>
+              <div style={thumbTrackStyle.value} class="uni-slider-thumb-track">
+                <div
+                  style={setThumbStyle.value}
+                  class="uni-slider-thumb-value"
+                />
+              </div>
+              <input
+                class="uni-slider-brower-input-range"
+                type="range"
+                min={props.min}
+                max={props.max}
+                step={props.step}
+                value={props.value}
+                onInput={withWebEvent(_onInput)}
+                onChange={withWebEvent(_onChange)}
+              ></input>
+            </div>
+            <span
+              v-show={props.showValue}
+              ref={sliderValueRef}
+              class="uni-slider-value"
+            ></span>
+          </div>
+          <slot />
+        </uni-slider>
+      )
+    }
+  },
+})
+
+function useSliderState(props: SliderProps, sliderValue: Ref<number>) {
+  const _getValueWidth = () => {
+    return getValuePercentage(
+      sliderValue.value,
+      Number(props.min),
+      Number(props.max)
+    )
+  }
+  const _getBgColor = () => {
+    return props.backgroundColor !== '#e9e9e9'
+      ? props.backgroundColor
+      : props.color !== '#007aff'
+      ? props.color
+      : '#007aff'
+  }
+  const _getActiveColor = () => {
+    return props.activeColor !== '#007aff'
+      ? props.activeColor
+      : props.selectedColor !== '#e9e9e9'
+      ? props.selectedColor
+      : '#e9e9e9'
+  }
+
+  const state = {
+    setTrackBgColor: computed(() => ({
+      backgroundColor: _getBgColor(),
+    })),
+    setActiveColor: computed(() => ({
+      backgroundColor: _getActiveColor(),
+      width: _getValueWidth(),
+    })),
+    thumbTrackStyle: computed(() => ({
+      marginRight: props.blockSize + 'px',
+    })),
+    setThumbStyle: computed(() => ({
+      width: props.blockSize + 'px',
+      height: props.blockSize + 'px',
+      left: _getValueWidth(),
+      backgroundColor: props.blockColor,
+    })),
+  }
+
+  return state
+}
+
+function useSliderLoader(
+  props: SliderProps,
+  sliderValue: Ref<number>,
+  sliderRef: HTMLRef,
+  trigger: CustomEventTrigger
+) {
+  const _onInput = (event: Event) => {
+    if (props.disabled) {
+      return
+    }
+    const valueString = (event.target as HTMLInputElement).value
+    ;(sliderRef.value as UniSliderElement).value = valueString
+    sliderValue.value = Number(valueString)
+    trigger('changing', event, {
+      value: sliderValue.value,
+    })
+  }
+
+  const _onChange = (event: Event) => {
+    if (props.disabled) {
+      return
+    }
+    const valueString = (event.target as HTMLInputElement).value
+    ;(sliderRef.value as UniSliderElement).value = valueString
+    sliderValue.value = Number(valueString!)
+    trigger('change', event, {
+      value: sliderValue.value,
+    })
+  }
+
+  const uniForm = inject<UniFormCtx>(uniFormKey, false as unknown as UniFormCtx)
+  if (!!uniForm) {
+    const field = {
+      reset: () => (sliderValue.value = Number(props.min)),
+      submit: () => {
+        const data: [string, any] = ['', null]
+        if (props.name !== '') {
+          data[0] = props.name
+          data[1] = sliderValue.value
+        }
+        return data
+      },
+    }
+    uniForm.addField(field)
+    onBeforeUnmount(() => {
+      uniForm.removeField(field)
+    })
+  }
+
+  return { _onInput, _onChange }
+}
