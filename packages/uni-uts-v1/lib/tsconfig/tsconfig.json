@@ -2,9 +2,11 @@
   "extends": "./tsconfig.vue.json",
   "compilerOptions": {
     "baseUrl": ".",
-    "verbatimModuleSyntax": false,
-    "lib": ["esnext", "dom"],
-    "types": ["@dcloudio/types"]
+    "verbatimModuleSyntax": true,
+    "lib": ["ESNext"],
+    "paths": {
+      "@/*": ["./*"]
+    }
   },
   "include": [
     "auto-imports.d.ts",
