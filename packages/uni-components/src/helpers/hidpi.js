@@ -21,9 +21,13 @@ export const pixelRatio = __NODE_JS__
     })()
 
 export function wrapper(canvas, hidpi = true) {
-  canvas.width = canvas.offsetWidth * (hidpi ? pixelRatio : 1)
-  canvas.height = canvas.offsetHeight * (hidpi ? pixelRatio : 1)
+  const pixelRatio = hidpi ? pixelRatio : 1
+  canvas.width = canvas.offsetWidth * pixelRatio
+  canvas.height = canvas.offsetHeight * pixelRatio
   canvas.getContext('2d').__hidpi__ = hidpi
+  //#if _X_ && !_NODE_JS_
+  canvas.getContext('2d').scale(pixelRatio, pixelRatio)
+  //#endif
 }
 
 let isHidpi = false
@@ -32,6 +36,9 @@ export function initHidpi() {
     return
   }
   isHidpi = true
+  //#if _X_ && !_NODE_JS_
+  return
+  //#endif
   const forEach = function (obj, func) {
     for (const key in obj) {
       if (hasOwn(obj, key)) {
