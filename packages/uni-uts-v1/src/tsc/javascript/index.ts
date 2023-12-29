@@ -10,7 +10,7 @@ type uts2js = (options: UTS2JavaScriptOptions) => import('rollup').Plugin[]
 
 export const uts2js: uts2js = (options) => {
   // TODO 目前开发阶段禁用缓存，禁用check
-  extend(options, { clean: true, check: false })
+  extend(options, { clean: true, check: true })
   // @ts-expect-error
   if (isFunction(globalThis.uts2js)) {
     // @ts-expect-error
@@ -26,15 +26,26 @@ export const uts2js: uts2js = (options) => {
     options.typescript = require('../../../lib/typescript')
   }
   if (isInHBuilderX()) {
+    const hxPluginPath = process.env.UNI_HBUILDERX_PLUGINS
     options.tsconfigOverride = {
       compilerOptions: {
+        paths: {
+          '@vue/runtime-core': [
+            path.resolve(
+              hxPluginPath,
+              'uniapp-cli-vite/node_modules/@vue/runtime-core/'
+            ),
+          ],
+          vue: [
+            path.resolve(
+              hxPluginPath,
+              'uniapp-cli-vite/node_modules/@vue/runtime-core/'
+            ),
+          ],
+        },
         typeRoots: [
           options.inputDir,
-          path.resolve(
-            process.env.UNI_HBUILDERX_PLUGINS,
-            'uniapp-cli-vite',
-            'node_modules'
-          ),
+          path.resolve(hxPluginPath, 'uniapp-cli-vite', 'node_modules'),
         ],
       },
     }
