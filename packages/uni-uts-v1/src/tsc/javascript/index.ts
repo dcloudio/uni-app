@@ -33,24 +33,26 @@ export const uts2js: uts2js = (options) => {
     options.tsconfigOverride = {
       compilerOptions: {
         paths: {
+          '@dcloudio/*': [
+            path.resolve(
+              hxPluginPath,
+              'uniapp-cli-vite/node_modules/@dcloudio/*'
+            ),
+          ],
           '@vue/runtime-core': [
             path.resolve(
               hxPluginPath,
-              'uniapp-cli-vite/node_modules/@vue/runtime-core/'
+              'uniapp-cli-vite/node_modules/@vue/runtime-core'
             ),
           ],
           vue: [
             path.resolve(
               hxPluginPath,
-              'uniapp-cli-vite/node_modules/@vue/runtime-core/'
+              'uniapp-cli-vite/node_modules/@vue/runtime-core'
             ),
           ],
         },
-        typeRoots: [
-          options.inputDir,
-          path.resolve(hxPluginPath, 'uniapp-cli-vite', 'node_modules'),
-          path.resolve(__dirname, '../../../lib/tsconfig/types'),
-        ],
+        typeRoots: [path.resolve(__dirname, '../../../lib/tsconfig/types')],
       },
     }
   }
