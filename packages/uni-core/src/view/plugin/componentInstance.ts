@@ -189,7 +189,7 @@ function normalizeTouchEvent(touches: TouchList, top: number) {
       clientY: clientY - top,
       //#if _X_ && !_NODE_JS_
       screenX,
-      screenY: screenY - top,
+      screenY,
       //#endif
       force: force || 0,
     })
