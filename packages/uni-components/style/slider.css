@@ -128,8 +128,7 @@ uni-slider .uni-slider-track {
   bottom: 0;
   margin-top: auto;
   margin-bottom: auto;
-  height: 1px;
-  transform: scale(1,2);
+  height: 2px;
   border-radius: 5px;
   background-color: #e9e9e9;
   cursor: pointer;
