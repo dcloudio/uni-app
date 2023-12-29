@@ -1,4 +1,4 @@
-@file:Suppress("UNCHECKED_CAST")
+@file:Suppress("UNCHECKED_CAST", "USELESS_CAST")
 package uts.sdk.modules.testUts;
 import io.dcloud.uniapp.*;
 import io.dcloud.uniapp.extapi.*;

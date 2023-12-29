@@ -1,4 +1,4 @@
-@file:Suppress("UNCHECKED_CAST")
+@file:Suppress("UNCHECKED_CAST", "USELESS_CAST")
 package uts.sdk.testUts;
 import io.dcloud.uts.*;
 import io.dcloud.uts.Map;

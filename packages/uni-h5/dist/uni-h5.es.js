@@ -1569,14 +1569,17 @@ function findUniTarget(target) {
 }
 function createNativeEvent(evt, htmlElement = false) {
   const { type, timeStamp, target, currentTarget } = evt;
+  let realTarget, realCurrentTarget;
+  realTarget = normalizeTarget(
+    htmlElement ? target : findUniTarget(target)
+  );
+  realCurrentTarget = normalizeTarget(currentTarget);
   const event = {
     type,
     timeStamp,
-    target: normalizeTarget(
-      htmlElement ? target : findUniTarget(target)
-    ),
+    target: realTarget,
     detail: {},
-    currentTarget: normalizeTarget(currentTarget)
+    currentTarget: realCurrentTarget
   };
   if (evt._stopped) {
     event._stopped = true;
@@ -1627,7 +1630,16 @@ function createTouchEvent(evt, top) {
 function normalizeTouchEvent(touches, top) {
   const res = [];
   for (let i = 0; i < touches.length; i++) {
-    const { identifier, pageX, pageY, clientX, clientY, force } = touches[i];
+    const {
+      identifier,
+      pageX,
+      pageY,
+      clientX,
+      clientY,
+      force,
+      screenX,
+      screenY
+    } = touches[i];
     res.push({
       identifier,
       pageX,
@@ -2082,7 +2094,8 @@ function useNativeEvent(emit2) {
   };
 }
 function normalizeCustomEvent(name, domEvt, el, detail) {
-  const target = normalizeTarget(el);
+  let target;
+  target = normalizeTarget(el);
   return {
     type: detail.type || name,
     timeStamp: domEvt.timeStamp || 0,
@@ -2158,6 +2171,7 @@ const index$y = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2, {
     slots
   }) {
+    ref(null);
     const pageId = useCurrentPageId();
     const handlers = useProvideLabel();
     const pointer = computed(() => props2.for || slots.default && slots.default.length);
@@ -7095,8 +7109,9 @@ const pixelRatio = /* @__PURE__ */ function() {
   return (window.devicePixelRatio || 1) / backingStore;
 }();
 function wrapper(canvas, hidpi = true) {
-  canvas.width = canvas.offsetWidth * (hidpi ? pixelRatio : 1);
-  canvas.height = canvas.offsetHeight * (hidpi ? pixelRatio : 1);
+  const pixelRatio2 = hidpi ? pixelRatio2 : 1;
+  canvas.width = canvas.offsetWidth * pixelRatio2;
+  canvas.height = canvas.offsetHeight * pixelRatio2;
   canvas.getContext("2d").__hidpi__ = hidpi;
 }
 let isHidpi = false;
@@ -7292,6 +7307,7 @@ const index$v = /* @__PURE__ */ defineBuiltInComponent({
     slots
   }) {
     initHidpiOnce();
+    const rootRef = ref(null);
     const canvas = ref(null);
     const sensor = ref(null);
     const actionsWaiting = ref(false);
@@ -7320,6 +7336,7 @@ const index$v = /* @__PURE__ */ defineBuiltInComponent({
         disableScroll
       } = props2;
       return createVNode("uni-canvas", mergeProps({
+        "ref": rootRef,
         "canvas-id": canvasId,
         "disable-scroll": disableScroll
       }, $attrs.value, $excludeAttrs.value, _listeners.value), [createVNode("canvas", {
@@ -7852,9 +7869,13 @@ const index$t = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2, {
     slots
   }) {
+    const rootRef = ref(null);
     const checkboxChecked = ref(props2.checked);
+    const checkboxCheckedBool = computed(() => {
+      return checkboxChecked.value === "true" || checkboxChecked.value === true;
+    });
     const checkboxValue = ref(props2.value);
-    const checkboxStyle = computed(() => {
+    function getCheckBoxStyle(checked) {
       if (props2.disabled) {
         return {
           backgroundColor: "#E1E1E1",
@@ -7862,7 +7883,7 @@ const index$t = /* @__PURE__ */ defineBuiltInComponent({
         };
       }
       const style = {};
-      if (checkboxChecked.value) {
+      if (checked) {
         if (props2.activeBorderColor)
           style.borderColor = props2.activeBorderColor;
         if (props2.activeBackgroundColor)
@@ -7874,6 +7895,9 @@ const index$t = /* @__PURE__ */ defineBuiltInComponent({
           style.backgroundColor = props2.backgroundColor;
       }
       return style;
+    }
+    const checkboxStyle = computed(() => {
+      return getCheckBoxStyle(checkboxCheckedBool.value);
     });
     watch([() => props2.checked, () => props2.value], ([newChecked, newModelValue]) => {
       checkboxChecked.value = newChecked;
@@ -7905,8 +7929,11 @@ const index$t = /* @__PURE__ */ defineBuiltInComponent({
     });
     return () => {
       const booleanAttrs = useBooleanAttr(props2, "disabled");
+      let realCheckValue;
+      realCheckValue = checkboxChecked.value;
       return createVNode("uni-checkbox", mergeProps(booleanAttrs, {
-        "onClick": _onClick
+        "onClick": _onClick,
+        "ref": rootRef
       }), [createVNode("div", {
         "class": "uni-checkbox-wrapper",
         "style": {
@@ -7917,7 +7944,7 @@ const index$t = /* @__PURE__ */ defineBuiltInComponent({
           "uni-checkbox-input-disabled": props2.disabled
         }],
         "style": checkboxStyle.value
-      }, [checkboxChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["onClick"]);
+      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["onClick"]);
     };
   }
 });
@@ -8898,12 +8925,15 @@ const index$r = /* @__PURE__ */ defineBuiltInComponent({
     }
   },
   setup(props2) {
+    const rootRef = ref(null);
     const path = computed(() => ICONS[props2.type]);
     return () => {
       const {
         value
       } = path;
-      return createVNode("uni-icon", null, [value && value.d && createSvgIconVNode(value.d, props2.color || value.c, rpx2px(props2.size))]);
+      return createVNode("uni-icon", {
+        "ref": rootRef
+      }, [value && value.d && createSvgIconVNode(value.d, props2.color || value.c, rpx2px(props2.size))], 512);
     };
   }
 });
@@ -11363,6 +11393,7 @@ const index$p = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2, {
     slots
   }) {
+    const rootRef = ref(null);
     const vm = getCurrentInstance();
     const __scopeId = vm && vm.vnode.scopeId || "";
     const {
@@ -11377,7 +11408,8 @@ const index$p = /* @__PURE__ */ defineBuiltInComponent({
       } = props2;
       const hasHoverClass = props2.hoverClass && props2.hoverClass !== "none";
       const navigatorTsx = createVNode("uni-navigator", mergeProps({
-        "class": hasHoverClass && hovering.value ? hoverClass : ""
+        "class": hasHoverClass && hovering.value ? hoverClass : "",
+        "ref": rootRef
       }, hasHoverClass && binding, vm ? vm.attrs : {}, {
         [__scopeId]: ""
       }, {
@@ -12473,6 +12505,7 @@ const index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: progressProps,
   setup(props2) {
+    ref(null);
     const state2 = useProgressState(props2);
     _activeAnimation(state2, props2);
     watch(() => state2.realPercent, (newValue, oldValue) => {
@@ -12685,9 +12718,10 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2, {
     slots
   }) {
+    const rootRef = ref(null);
     const radioChecked = ref(props2.checked);
     const radioValue = ref(props2.value);
-    const radioStyle = computed(() => {
+    function getRadioStyle(checked) {
       if (props2.disabled) {
         return {
           backgroundColor: "#E1E1E1",
@@ -12705,6 +12739,9 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
           style.backgroundColor = props2.backgroundColor;
       }
       return style;
+    }
+    const radioStyle = computed(() => {
+      return getRadioStyle(radioChecked.value);
     });
     watch([() => props2.checked, () => props2.value], ([newChecked, newModelValue]) => {
       radioChecked.value = newChecked;
@@ -12737,8 +12774,11 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
     });
     return () => {
       const booleanAttrs = useBooleanAttr(props2, "disabled");
+      let realCheckValue;
+      realCheckValue = radioChecked.value;
       return createVNode("uni-radio", mergeProps(booleanAttrs, {
-        "onClick": _onClick
+        "onClick": _onClick,
+        "ref": rootRef
       }), [createVNode("div", {
         "class": "uni-radio-wrapper",
         "style": {
@@ -12749,7 +12789,7 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
           "uni-radio-input-disabled": props2.disabled
         }],
         "style": radioStyle.value
-      }, [radioChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.iconColor, 18) : ""], 6), slots.default && slots.default()], 4)], 16, ["onClick"]);
+      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.iconColor, 18) : ""], 6), slots.default && slots.default()], 4)], 16, ["onClick"]);
     };
   }
 });
@@ -13668,11 +13708,14 @@ const index$k = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
+const getValueWidth = (value, min, max) => {
+  max = Number(max);
+  min = Number(min);
+  return 100 * (value - min) / (max - min) + "%";
+};
 function useSliderState(props2, sliderValue) {
   const _getValueWidth = () => {
-    const max = Number(props2.max);
-    const min = Number(props2.min);
-    return 100 * (sliderValue.value - min) / (max - min) + "%";
+    return getValueWidth(sliderValue.value, props2.min, props2.max);
   };
   const _getBgColor = () => {
     return props2.backgroundColor !== "#e9e9e9" ? props2.backgroundColor : props2.color !== "#007aff" ? props2.color : "#007aff";
@@ -14630,6 +14673,8 @@ const index$j = /* @__PURE__ */ defineBuiltInComponent({
         switchInputStyle["backgroundColor"] = color;
         switchInputStyle["borderColor"] = color;
       }
+      let realCheckValue;
+      realCheckValue = switchChecked.value;
       return createVNode("uni-switch", mergeProps({
         "ref": rootRef
       }, booleanAttrs, {
@@ -14641,7 +14686,7 @@ const index$j = /* @__PURE__ */ defineBuiltInComponent({
         "style": switchInputStyle
       }, null, 6), [[vShow, type === "switch"]]), withDirectives(createVNode("div", {
         "class": "uni-checkbox-input"
-      }, [switchChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.color, 22) : ""], 512), [[vShow, type === "checkbox"]])])], 16, ["onClick"]);
+      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.color, 22) : ""], 512), [[vShow, type === "checkbox"]])])], 16, ["onClick"]);
     };
   }
 });
@@ -14909,6 +14954,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2, {
     slots
   }) {
+    const rootRef = ref(null);
     const {
       hovering,
       binding
@@ -14917,10 +14963,13 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
       const hoverClass = props2.hoverClass;
       if (hoverClass && hoverClass !== "none") {
         return createVNode("uni-view", mergeProps({
-          "class": hovering.value ? hoverClass : ""
+          "class": hovering.value ? hoverClass : "",
+          "ref": rootRef
         }, binding), [slots.default && slots.default()], 16);
       }
-      return createVNode("uni-view", null, [slots.default && slots.default()]);
+      return createVNode("uni-view", {
+        "ref": rootRef
+      }, [slots.default && slots.default()], 512);
     };
   }
 });
@@ -16059,6 +16108,7 @@ function useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef
 function useVideo(props2, attrs2, trigger) {
   const videoRef = ref(null);
   const src = computed(() => getRealPath(props2.src));
+  const muted = computed(() => props2.muted === "true" || props2.muted === true);
   const state2 = reactive({
     start: false,
     src,
@@ -16066,7 +16116,8 @@ function useVideo(props2, attrs2, trigger) {
     currentTime: 0,
     duration: 0,
     progress: 0,
-    buffered: 0
+    buffered: 0,
+    muted
   });
   watch(() => src.value, () => {
     state2.playing = false;
@@ -16076,6 +16127,10 @@ function useVideo(props2, attrs2, trigger) {
     trigger("progress", {}, {
       buffered
     });
+  });
+  watch(() => muted.value, (muted2) => {
+    const video = videoRef.value;
+    video.muted = muted2;
   });
   function onDurationChange({
     target
@@ -23839,6 +23894,7 @@ const index$9 = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2, {
     slots
   }) {
+    const root = ref(null);
     const content = ref(null);
     watch(() => props2.scrollTop, (val) => {
       setScrollTop(val);
@@ -23863,7 +23919,8 @@ const index$9 = /* @__PURE__ */ defineBuiltInComponent({
     });
     return () => {
       return createVNode("uni-cover-view", {
-        "scroll-top": props2.scrollTop
+        "scroll-top": props2.scrollTop,
+        "ref": root
       }, [createVNode("div", {
         "ref": content,
         "class": "uni-cover-view"

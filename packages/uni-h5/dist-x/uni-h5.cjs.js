@@ -478,14 +478,17 @@ function findUniTarget(target) {
 }
 function createNativeEvent(evt, htmlElement = false) {
   const { type, timeStamp, target, currentTarget } = evt;
+  let realTarget, realCurrentTarget;
+  realTarget = uniShared.normalizeTarget(
+    htmlElement ? target : findUniTarget(target)
+  );
+  realCurrentTarget = uniShared.normalizeTarget(currentTarget);
   const event = {
     type,
     timeStamp,
-    target: uniShared.normalizeTarget(
-      htmlElement ? target : findUniTarget(target)
-    ),
+    target: realTarget,
     detail: {},
-    currentTarget: uniShared.normalizeTarget(currentTarget)
+    currentTarget: realCurrentTarget
   };
   if (evt._stopped) {
     event._stopped = true;
@@ -835,7 +838,8 @@ function useNativeEvent(emit2) {
   };
 }
 function normalizeCustomEvent(name, domEvt, el, detail) {
-  const target = uniShared.normalizeTarget(el);
+  let target;
+  target = uniShared.normalizeTarget(el);
   return {
     type: detail.type || name,
     timeStamp: domEvt.timeStamp || 0,
@@ -911,6 +915,7 @@ const index$B = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2, {
     slots
   }) {
+    vue.ref(null);
     const pageId = useCurrentPageId();
     const handlers = useProvideLabel();
     const pointer = vue.computed(() => props2.for || slots.default && slots.default.length);
@@ -1803,8 +1808,9 @@ function useResizeSensorReset(rootRef) {
 }
 const pixelRatio = 1;
 function wrapper(canvas, hidpi = true) {
-  canvas.width = canvas.offsetWidth * (hidpi ? pixelRatio : 1);
-  canvas.height = canvas.offsetHeight * (hidpi ? pixelRatio : 1);
+  const pixelRatio2 = hidpi ? pixelRatio2 : 1;
+  canvas.width = canvas.offsetWidth * pixelRatio2;
+  canvas.height = canvas.offsetHeight * pixelRatio2;
   canvas.getContext("2d").__hidpi__ = hidpi;
 }
 const initHidpiOnce = /* @__PURE__ */ uniShared.once(() => {
@@ -1864,6 +1870,7 @@ const index$z = /* @__PURE__ */ defineBuiltInComponent({
     slots
   }) {
     initHidpiOnce();
+    const rootRef = vue.ref(null);
     const canvas = vue.ref(null);
     const sensor = vue.ref(null);
     const actionsWaiting = vue.ref(false);
@@ -1889,6 +1896,7 @@ const index$z = /* @__PURE__ */ defineBuiltInComponent({
         disableScroll
       } = props2;
       return vue.createVNode("uni-canvas", vue.mergeProps({
+        "ref": rootRef,
         "canvas-id": canvasId,
         "disable-scroll": disableScroll
       }, $attrs.value, $excludeAttrs.value, _listeners.value), [vue.createVNode("canvas", {
@@ -2421,9 +2429,13 @@ const index$x = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2, {
     slots
   }) {
+    const rootRef = vue.ref(null);
     const checkboxChecked = vue.ref(props2.checked);
+    const checkboxCheckedBool = vue.computed(() => {
+      return checkboxChecked.value === "true" || checkboxChecked.value === true;
+    });
     const checkboxValue = vue.ref(props2.value);
-    const checkboxStyle = vue.computed(() => {
+    function getCheckBoxStyle(checked) {
       if (props2.disabled) {
         return {
           backgroundColor: "#E1E1E1",
@@ -2431,7 +2443,7 @@ const index$x = /* @__PURE__ */ defineBuiltInComponent({
         };
       }
       const style = {};
-      if (checkboxChecked.value) {
+      if (checked) {
         if (props2.activeBorderColor)
           style.borderColor = props2.activeBorderColor;
         if (props2.activeBackgroundColor)
@@ -2443,6 +2455,9 @@ const index$x = /* @__PURE__ */ defineBuiltInComponent({
           style.backgroundColor = props2.backgroundColor;
       }
       return style;
+    }
+    const checkboxStyle = vue.computed(() => {
+      return getCheckBoxStyle(checkboxCheckedBool.value);
     });
     vue.watch([() => props2.checked, () => props2.value], ([newChecked, newModelValue]) => {
       checkboxChecked.value = newChecked;
@@ -2468,8 +2483,11 @@ const index$x = /* @__PURE__ */ defineBuiltInComponent({
     }
     return () => {
       const booleanAttrs = useBooleanAttr(props2, "disabled");
+      let realCheckValue;
+      realCheckValue = checkboxChecked.value;
       return vue.createVNode("uni-checkbox", vue.mergeProps(booleanAttrs, {
-        "onClick": _onClick
+        "onClick": _onClick,
+        "ref": rootRef
       }), [vue.createVNode("div", {
         "class": "uni-checkbox-wrapper",
         "style": {
@@ -2480,7 +2498,7 @@ const index$x = /* @__PURE__ */ defineBuiltInComponent({
           "uni-checkbox-input-disabled": props2.disabled
         }],
         "style": checkboxStyle.value
-      }, [checkboxChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["onClick"]);
+      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["onClick"]);
     };
   }
 });
@@ -2821,12 +2839,15 @@ const index$v = /* @__PURE__ */ defineBuiltInComponent({
     }
   },
   setup(props2) {
+    const rootRef = vue.ref(null);
     const path = vue.computed(() => ICONS[props2.type]);
     return () => {
       const {
         value
       } = path;
-      return vue.createVNode("uni-icon", null, [value && value.d && createSvgIconVNode(value.d, props2.color || value.c, rpx2px(props2.size))]);
+      return vue.createVNode("uni-icon", {
+        "ref": rootRef
+      }, [value && value.d && createSvgIconVNode(value.d, props2.color || value.c, rpx2px(props2.size))], 512);
     };
   }
 });
@@ -4906,6 +4927,7 @@ const index$r = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2, {
     slots
   }) {
+    const rootRef = vue.ref(null);
     const vm = vue.getCurrentInstance();
     const __scopeId = vm && vm.vnode.scopeId || "";
     const {
@@ -4920,7 +4942,8 @@ const index$r = /* @__PURE__ */ defineBuiltInComponent({
       } = props2;
       const hasHoverClass = props2.hoverClass && props2.hoverClass !== "none";
       const navigatorTsx = vue.createVNode("uni-navigator", vue.mergeProps({
-        "class": hasHoverClass && hovering.value ? hoverClass : ""
+        "class": hasHoverClass && hovering.value ? hoverClass : "",
+        "ref": rootRef
       }, hasHoverClass && binding, vm ? vm.attrs : {}, {
         [__scopeId]: ""
       }, {
@@ -5226,6 +5249,7 @@ const index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: progressProps,
   setup(props2) {
+    vue.ref(null);
     const state = useProgressState(props2);
     _activeAnimation(state, props2);
     vue.watch(() => state.realPercent, (newValue, oldValue) => {
@@ -5432,9 +5456,10 @@ const index$o = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2, {
     slots
   }) {
+    const rootRef = vue.ref(null);
     const radioChecked = vue.ref(props2.checked);
     const radioValue = vue.ref(props2.value);
-    const radioStyle = vue.computed(() => {
+    function getRadioStyle(checked) {
       if (props2.disabled) {
         return {
           backgroundColor: "#E1E1E1",
@@ -5452,6 +5477,9 @@ const index$o = /* @__PURE__ */ defineBuiltInComponent({
           style.backgroundColor = props2.backgroundColor;
       }
       return style;
+    }
+    const radioStyle = vue.computed(() => {
+      return getRadioStyle(radioChecked.value);
     });
     vue.watch([() => props2.checked, () => props2.value], ([newChecked, newModelValue]) => {
       radioChecked.value = newChecked;
@@ -5478,8 +5506,11 @@ const index$o = /* @__PURE__ */ defineBuiltInComponent({
     }
     return () => {
       const booleanAttrs = useBooleanAttr(props2, "disabled");
+      let realCheckValue;
+      realCheckValue = radioChecked.value;
       return vue.createVNode("uni-radio", vue.mergeProps(booleanAttrs, {
-        "onClick": _onClick
+        "onClick": _onClick,
+        "ref": rootRef
       }), [vue.createVNode("div", {
         "class": "uni-radio-wrapper",
         "style": {
@@ -5490,7 +5521,7 @@ const index$o = /* @__PURE__ */ defineBuiltInComponent({
           "uni-radio-input-disabled": props2.disabled
         }],
         "style": radioStyle.value
-      }, [radioChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.iconColor, 18) : ""], 6), slots.default && slots.default()], 4)], 16, ["onClick"]);
+      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.iconColor, 18) : ""], 6), slots.default && slots.default()], 4)], 16, ["onClick"]);
     };
   }
 });
@@ -6250,11 +6281,14 @@ const index$l = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
+const getValueWidth = (value, min, max) => {
+  max = Number(max);
+  min = Number(min);
+  return 100 * (value - min) / (max - min) + "%";
+};
 function useSliderState(props2, sliderValue) {
   const _getValueWidth = () => {
-    const max = Number(props2.max);
-    const min = Number(props2.min);
-    return 100 * (sliderValue.value - min) / (max - min) + "%";
+    return getValueWidth(sliderValue.value, props2.min, props2.max);
   };
   const _getBgColor = () => {
     return props2.backgroundColor !== "#e9e9e9" ? props2.backgroundColor : props2.color !== "#007aff" ? props2.color : "#007aff";
@@ -7064,6 +7098,8 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
         switchInputStyle["backgroundColor"] = color;
         switchInputStyle["borderColor"] = color;
       }
+      let realCheckValue;
+      realCheckValue = switchChecked.value;
       return vue.createVNode("uni-switch", vue.mergeProps({
         "ref": rootRef
       }, booleanAttrs, {
@@ -7075,7 +7111,7 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
         "style": switchInputStyle
       }, null, 6), [[vue.vShow, type === "switch"]]), vue.withDirectives(vue.createVNode("div", {
         "class": "uni-checkbox-input"
-      }, [switchChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.color, 22) : ""], 512), [[vue.vShow, type === "checkbox"]])])], 16, ["onClick"]);
+      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.color, 22) : ""], 512), [[vue.vShow, type === "checkbox"]])])], 16, ["onClick"]);
     };
   }
 });
@@ -7333,6 +7369,7 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2, {
     slots
   }) {
+    const rootRef = vue.ref(null);
     const {
       hovering,
       binding
@@ -7341,10 +7378,13 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
       const hoverClass = props2.hoverClass;
       if (hoverClass && hoverClass !== "none") {
         return vue.createVNode("uni-view", vue.mergeProps({
-          "class": hovering.value ? hoverClass : ""
+          "class": hovering.value ? hoverClass : "",
+          "ref": rootRef
         }, binding), [slots.default && slots.default()], 16);
       }
-      return vue.createVNode("uni-view", null, [slots.default && slots.default()]);
+      return vue.createVNode("uni-view", {
+        "ref": rootRef
+      }, [slots.default && slots.default()], 512);
     };
   }
 });
@@ -8109,6 +8149,7 @@ function useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef
 function useVideo(props2, attrs, trigger) {
   const videoRef = vue.ref(null);
   const src = vue.computed(() => getRealPath(props2.src));
+  const muted = vue.computed(() => props2.muted === "true" || props2.muted === true);
   const state = vue.reactive({
     start: false,
     src,
@@ -8116,7 +8157,8 @@ function useVideo(props2, attrs, trigger) {
     currentTime: 0,
     duration: 0,
     progress: 0,
-    buffered: 0
+    buffered: 0,
+    muted
   });
   vue.watch(() => src.value, () => {
     state.playing = false;
@@ -8126,6 +8168,10 @@ function useVideo(props2, attrs, trigger) {
     trigger("progress", {}, {
       buffered
     });
+  });
+  vue.watch(() => muted.value, (muted2) => {
+    const video = videoRef.value;
+    video.muted = muted2;
   });
   function onDurationChange({
     target
@@ -9982,6 +10028,7 @@ const index$9 = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2, {
     slots
   }) {
+    const root = vue.ref(null);
     const content = vue.ref(null);
     vue.watch(() => props2.scrollTop, (val) => {
       setScrollTop(val);
@@ -10003,7 +10050,8 @@ const index$9 = /* @__PURE__ */ defineBuiltInComponent({
     }
     return () => {
       return vue.createVNode("uni-cover-view", {
-        "scroll-top": props2.scrollTop
+        "scroll-top": props2.scrollTop,
+        "ref": root
       }, [vue.createVNode("div", {
         "ref": content,
         "class": "uni-cover-view"

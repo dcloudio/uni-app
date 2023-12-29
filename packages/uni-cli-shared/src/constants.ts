@@ -61,8 +61,6 @@ export const COMMON_EXCLUDE = [
   /\/vue-i18n\//,
   /\/@dcloudio\/uni-h5-vue/,
   /\/@dcloudio\/uni-shared/,
-  /\/@dcloudio\/uni-h5\/style/,
-  /\/@dcloudio\/uni-components\/style/,
 ]
 
 export const KNOWN_ASSET_TYPES = [
