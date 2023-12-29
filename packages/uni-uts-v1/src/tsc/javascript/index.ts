@@ -46,6 +46,7 @@ export const uts2js: uts2js = (options) => {
         typeRoots: [
           options.inputDir,
           path.resolve(hxPluginPath, 'uniapp-cli-vite', 'node_modules'),
+          path.resolve(__dirname, '../../../lib/tsconfig/types'),
         ],
       },
     }
