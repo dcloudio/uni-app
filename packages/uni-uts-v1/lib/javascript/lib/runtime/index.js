@@ -1,3 +1,34 @@
+/**
+ * copy from @uts/shared
+ */
+var IDENTIFIER;
+(function (IDENTIFIER) {
+    IDENTIFIER["UTSJSONObject"] = "UTSJSONObject";
+    IDENTIFIER["JSON"] = "JSON";
+    IDENTIFIER["UTS"] = "UTS";
+    IDENTIFIER["DEFINE_COMPONENT"] = "defineComponent";
+    IDENTIFIER["VUE"] = "vue";
+    IDENTIFIER["GLOBAL_THIS"] = "globalThis";
+    IDENTIFIER["UTS_TYPE"] = "UTSType";
+    IDENTIFIER["UTS_METADATA"] = "$UTSMetadata$";
+    IDENTIFIER["TEMP_UTS_METADATA"] = "$TempUTSMetadata$";
+    IDENTIFIER["JSON_FIELD"] = "JSON_FIELD";
+})(IDENTIFIER || (IDENTIFIER = {}));
+var UTS_CLASS_METADATA_KIND;
+(function (UTS_CLASS_METADATA_KIND) {
+    UTS_CLASS_METADATA_KIND[UTS_CLASS_METADATA_KIND["CLASS"] = 0] = "CLASS";
+    UTS_CLASS_METADATA_KIND[UTS_CLASS_METADATA_KIND["INTERFACE"] = 1] = "INTERFACE";
+    UTS_CLASS_METADATA_KIND[UTS_CLASS_METADATA_KIND["TYPE"] = 2] = "TYPE";
+})(UTS_CLASS_METADATA_KIND || (UTS_CLASS_METADATA_KIND = {}));
+
+function getType(val) {
+    return Object.prototype.toString.call(val).slice(8, -1).toLowerCase();
+}
+function isPlainObject(val) {
+    const proto = Object.getPrototypeOf(val);
+    return proto === Object.prototype || proto === null;
+}
+
 function initUTSJSONObjectProperties(obj) {
     const propertyDescriptor = {
         enumerable: false,
@@ -24,20 +55,17 @@ function initUTSJSONObjectProperties(obj) {
     }
     Object.defineProperties(obj, propertyDescriptorMap);
 }
-function getType$1(val) {
-    return Object.prototype.toString.call(val).slice(8, -1).toLowerCase();
-}
 class UTSJSONObject {
     constructor(content = {}) {
         for (const key in content) {
             if (Object.prototype.hasOwnProperty.call(content, key)) {
                 const value = content[key];
-                if (getType$1(value) === 'object') {
+                if (isPlainObject(value)) {
                     this[key] = new UTSJSONObject(value);
                 }
-                else if (getType$1(value) === 'array') {
+                else if (getType(value) === 'array') {
                     this[key] = value.map((item) => {
-                        if (getType$1(item) === 'object') {
+                        if (isPlainObject(item)) {
                             return new UTSJSONObject(item);
                         }
                         else {
@@ -235,33 +263,6 @@ function arrayAt(array, index) {
         return null;
     }
     return array.at(index);
-}
-
-/**
- * copy from @uts/shared
- */
-var IDENTIFIER;
-(function (IDENTIFIER) {
-    IDENTIFIER["UTSJSONObject"] = "UTSJSONObject";
-    IDENTIFIER["JSON"] = "JSON";
-    IDENTIFIER["UTS"] = "UTS";
-    IDENTIFIER["DEFINE_COMPONENT"] = "defineComponent";
-    IDENTIFIER["VUE"] = "vue";
-    IDENTIFIER["GLOBAL_THIS"] = "globalThis";
-    IDENTIFIER["UTS_TYPE"] = "UTSType";
-    IDENTIFIER["UTS_METADATA"] = "$UTSMetadata$";
-    IDENTIFIER["TEMP_UTS_METADATA"] = "$TempUTSMetadata$";
-    IDENTIFIER["JSON_FIELD"] = "JSON_FIELD";
-})(IDENTIFIER || (IDENTIFIER = {}));
-var UTS_CLASS_METADATA_KIND;
-(function (UTS_CLASS_METADATA_KIND) {
-    UTS_CLASS_METADATA_KIND[UTS_CLASS_METADATA_KIND["CLASS"] = 0] = "CLASS";
-    UTS_CLASS_METADATA_KIND[UTS_CLASS_METADATA_KIND["INTERFACE"] = 1] = "INTERFACE";
-    UTS_CLASS_METADATA_KIND[UTS_CLASS_METADATA_KIND["TYPE"] = 2] = "TYPE";
-})(UTS_CLASS_METADATA_KIND || (UTS_CLASS_METADATA_KIND = {}));
-
-function getType(val) {
-    return Object.prototype.toString.call(val).slice(8, -1).toLowerCase();
 }
 
 // TODO 实现UTSError
