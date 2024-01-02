@@ -85,7 +85,7 @@ export async function transformMain(
         mode: 'module',
         inline: isInline,
         className,
-        rootDir: process.env.UNI_INPUT_DIR,
+        rootDir: options.root,
         sourceMap: process.env.NODE_ENV === 'development',
         bindingMetadata,
       })
