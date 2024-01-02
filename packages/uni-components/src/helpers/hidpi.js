@@ -21,12 +21,12 @@ export const pixelRatio = __NODE_JS__
     })()
 
 export function wrapper(canvas, hidpi = true) {
-  const pixelRatio = hidpi ? pixelRatio : 1
-  canvas.width = canvas.offsetWidth * pixelRatio
-  canvas.height = canvas.offsetHeight * pixelRatio
+  const pixel_ratio = hidpi ? pixelRatio : 1
+  canvas.width = canvas.offsetWidth * pixel_ratio
+  canvas.height = canvas.offsetHeight * pixel_ratio
   canvas.getContext('2d').__hidpi__ = hidpi
   //#if _X_ && !_NODE_JS_
-  canvas.getContext('2d').scale(pixelRatio, pixelRatio)
+  canvas.getContext('2d').scale(pixel_ratio, pixel_ratio)
   //#endif
 }
 
