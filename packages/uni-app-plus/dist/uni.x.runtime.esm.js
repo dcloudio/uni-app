@@ -1,6 +1,6 @@
-import { normalizeStyles, addLeadingSlash, invokeArrayFns, LINEFEED, formatLog, parseQuery, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, EventChannel, ON_READY, ON_UNLOAD, once, ON_LAUNCH, parseUrl, ON_BACK_PRESS } from '@dcloudio/uni-shared';
+import { normalizeStyles, addLeadingSlash, invokeArrayFns, LINEFEED, formatLog, parseQuery, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, EventChannel, once, ON_LAUNCH, ON_UNLOAD, ON_READY, parseUrl, ON_BACK_PRESS } from '@dcloudio/uni-shared';
 import { extend, isString, isArray, hasOwn, isPlainObject, isObject, toRawType, capitalize, makeMap, isFunction, isPromise } from '@vue/shared';
-import { createVNode, render, injectHook, getCurrentInstance, onMounted, nextTick, onBeforeUnmount } from 'vue';
+import { createVNode, render, injectHook, getCurrentInstance } from 'vue';
 
 function getCurrentPage() {
     const pages = getCurrentPages();
@@ -956,21 +956,6 @@ function setupPage(component) {
         const pageVm = instance.proxy;
         initPageVm(pageVm, __pageInstance);
         addCurrentPage(initScope(__pageId, pageVm, __pageInstance));
-        onMounted(() => {
-            nextTick(() => {
-                {
-                    // TODO page.addPageEventListener ON_READY
-                    setTimeout(() => {
-                        invokeHook(pageVm, ON_READY);
-                    }, 150);
-                    return;
-                }
-            });
-            // TODO preloadSubPackages
-        });
-        onBeforeUnmount(() => {
-            invokeHook(pageVm, ON_UNLOAD);
-        });
         if (oldSetup) {
             return oldSetup(__pageQuery, ctx);
         }
@@ -1191,7 +1176,7 @@ function registerPage({ url, path, query, openType, webview, nvuePageVm, eventCh
     const pageInstance = initPageInternalInstance(openType, url, query, routeOptions.meta, eventChannel, 
     // TODO ThemeMode
     'light');
-    createVuePage(id, route, query, pageInstance, {}, nativePage);
+    const page = createVuePage(id, route, query, pageInstance, {}, nativePage);
     nativePage.addPageEventListener(ON_POP_GESTURE, function (e) {
         uni.navigateBack({
             from: 'popGesture',
@@ -1201,6 +1186,12 @@ function registerPage({ url, path, query, openType, webview, nvuePageVm, eventCh
                 }
             },
         });
+    });
+    nativePage.addPageEventListener(ON_UNLOAD, (_) => {
+        invokeHook(page, ON_UNLOAD);
+    });
+    nativePage.addPageEventListener(ON_READY, (_) => {
+        invokeHook(page, ON_READY);
     });
     return nativePage;
 }

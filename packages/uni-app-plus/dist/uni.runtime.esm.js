@@ -19097,16 +19097,18 @@ function setupPage(component) {
         const pageVm = instance.proxy;
         initPageVm(pageVm, __pageInstance);
         addCurrentPage(initScope(__pageId, pageVm, __pageInstance));
-        onMounted(() => {
-            nextTick(() => {
-                // onShow被延迟，故onReady也同时延迟
-                invokeHook(pageVm, ON_READY);
+        {
+            onMounted(() => {
+                nextTick(() => {
+                    // onShow被延迟，故onReady也同时延迟
+                    invokeHook(pageVm, ON_READY);
+                });
+                // TODO preloadSubPackages
             });
-            // TODO preloadSubPackages
-        });
-        onBeforeUnmount(() => {
-            invokeHook(pageVm, ON_UNLOAD);
-        });
+            onBeforeUnmount(() => {
+                invokeHook(pageVm, ON_UNLOAD);
+            });
+        }
         if (oldSetup) {
             return oldSetup(__pageQuery, ctx);
         }
