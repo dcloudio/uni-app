@@ -848,8 +848,20 @@ function normalizeCustomEvent(name, domEvt, el, detail) {
     detail
   };
 }
+class UniElement extends HTMLElement {
+  constructor() {
+    super();
+    this._props = {};
+  }
+  attachVmProps(props2) {
+    this._props = props2;
+  }
+  getAttribute(qualifiedName) {
+    return qualifiedName in this._props ? this._props[qualifiedName] + "" : super.getAttribute(qualifiedName);
+  }
+}
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-const index$C = /* @__PURE__ */ defineBuiltInComponent({
+const index$B = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   emits: ["submit", "reset"],
   setup(_props, {
@@ -909,7 +921,7 @@ function useProvideLabel() {
   });
   return handlers;
 }
-const index$B = /* @__PURE__ */ defineBuiltInComponent({
+const index$A = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: labelProps,
   setup(props2, {
@@ -984,7 +996,7 @@ const buttonProps = {
     default: false
   }
 };
-const index$A = /* @__PURE__ */ defineBuiltInComponent({
+const index$z = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   setup(props2, {
@@ -1853,7 +1865,7 @@ const props$q = {
     default: true
   }
 };
-const index$z = /* @__PURE__ */ defineBuiltInComponent({
+const index$y = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "Canvas",
   compatConfig: {
@@ -2327,7 +2339,7 @@ const props$p = {
     default: ""
   }
 };
-const index$y = /* @__PURE__ */ defineBuiltInComponent({
+const index$x = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
   props: props$p,
   emits: ["change"],
@@ -2423,7 +2435,7 @@ const props$o = {
     default: ""
   }
 };
-const index$x = /* @__PURE__ */ defineBuiltInComponent({
+const index$w = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
   props: props$o,
   setup(props2, {
@@ -2760,7 +2772,7 @@ const props$m = /* @__PURE__ */ shared.extend({}, props$n, {
     default: false
   }
 });
-const index$w = /* @__PURE__ */ defineBuiltInComponent({
+const index$v = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: props$m,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
@@ -2821,7 +2833,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-const index$v = /* @__PURE__ */ defineBuiltInComponent({
+const index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -2888,7 +2900,7 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-const index$u = /* @__PURE__ */ defineBuiltInComponent({
+const index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
   props: props$l,
   setup(props2, {
@@ -3713,7 +3725,7 @@ const movableAreaProps = {
     default: false
   }
 };
-const index$t = /* @__PURE__ */ defineBuiltInComponent({
+const index$s = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
   props: movableAreaProps,
@@ -4261,7 +4273,7 @@ const movableViewProps = {
 function v(a, b) {
   return +((1e3 * a - 1e3 * b) / 1e3).toFixed(1);
 }
-const index$s = /* @__PURE__ */ defineBuiltInComponent({
+const index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
   props: movableViewProps,
   emits: ["change", "scale"],
@@ -4912,7 +4924,7 @@ function createNavigatorOnClick(props2) {
     }
   };
 }
-const index$r = /* @__PURE__ */ defineBuiltInComponent({
+const index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   inheritAttrs: false,
   compatConfig: {
@@ -5245,7 +5257,7 @@ const progressProps = {
     default: 0
   }
 };
-const index$q = /* @__PURE__ */ defineBuiltInComponent({
+const index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: progressProps,
   setup(props2) {
@@ -5328,7 +5340,7 @@ const props$i = {
     default: ""
   }
 };
-const index$p = /* @__PURE__ */ defineBuiltInComponent({
+const index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
   props: props$i,
   // emits: ['change'],
@@ -5450,7 +5462,7 @@ const props$h = {
     default: "#ffffff"
   }
 };
-const index$o = /* @__PURE__ */ defineBuiltInComponent({
+const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
   props: props$h,
   setup(props2, {
@@ -5807,7 +5819,7 @@ const props$g = {
     }
   }
 };
-const index$n = /* @__PURE__ */ defineBuiltInComponent({
+const index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
     MODE: 3
@@ -5898,7 +5910,7 @@ const props$f = {
     default: false
   }
 };
-const index$m = /* @__PURE__ */ defineBuiltInComponent({
+const index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
   compatConfig: {
     MODE: 3
@@ -6227,69 +6239,99 @@ const props$e = {
     default: false
   }
 };
-const index$l = /* @__PURE__ */ defineBuiltInComponent({
+const getValuePercentage = (value, min, max) => {
+  return 100 * (value - min) / (max - min) + "%";
+};
+class UniSliderElement extends UniElement {
+  init() {
+    this.htmlSlider = this.querySelector(".uni-slider-brower-input-range");
+    this.trackValue = this.querySelector(".uni-slider-track-value");
+    this.thumbValue = this.querySelector(".uni-slider-thumb-value");
+    this.inputValue = this.querySelector(".uni-slider-value");
+    this.updateValue(this.value);
+  }
+  get value() {
+    return this.htmlSlider.value;
+  }
+  set value(value) {
+    this.htmlSlider.value = value;
+    this.updateValue(value);
+  }
+  updateValue(value) {
+    const min = Number(this.htmlSlider.getAttribute("min"));
+    const max = Number(this.htmlSlider.getAttribute("max"));
+    const valueNumber = Number(value);
+    const percentage = getValuePercentage(valueNumber, min, max);
+    this.trackValue.style.width = percentage;
+    this.thumbValue.style.left = percentage;
+    this.inputValue.innerText = value.toString();
+  }
+}
+const indexX = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
   props: props$e,
   emits: ["changing", "change"],
+  rootElement: {
+    name: "uni-slider",
+    class: UniSliderElement
+  },
   setup(props2, {
     emit: emit2
   }) {
     const sliderRef = vue.ref(null);
     const sliderValueRef = vue.ref(null);
-    const sliderHandleRef = vue.ref(null);
-    const sliderValue = vue.ref(Number(props2.value));
+    let uniSliderElement;
     vue.watch(() => props2.value, (val) => {
-      sliderValue.value = Number(val);
+      uniSliderElement.value = val.toString();
     });
     const trigger = useCustomEvent(sliderRef, emit2);
-    const state = useSliderState(props2, sliderValue);
+    const state = useSliderState(props2);
     const {
-      _onClick,
-      _onTrack
-    } = useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger);
+      _onInput,
+      _onChange
+    } = useSliderLoader(props2, sliderRef, trigger);
     return () => {
       const {
-        setBgColor,
-        setBlockBg,
+        setTrackBgColor,
         setActiveColor,
-        setBlockStyle
+        setThumbStyle,
+        thumbTrackStyle
       } = state;
       return vue.createVNode("uni-slider", {
-        "ref": sliderRef,
-        "onClick": withWebEvent(_onClick)
+        "ref": sliderRef
       }, [vue.createVNode("div", {
         "class": "uni-slider-wrapper"
       }, [vue.createVNode("div", {
-        "class": "uni-slider-tap-area"
+        "class": "uni-slider-input"
       }, [vue.createVNode("div", {
-        "style": setBgColor.value,
-        "class": "uni-slider-handle-wrapper"
-      }, [vue.createVNode("div", {
-        "ref": sliderHandleRef,
-        "style": setBlockBg.value,
-        "class": "uni-slider-handle"
-      }, null, 4), vue.createVNode("div", {
-        "style": setBlockStyle.value,
-        "class": "uni-slider-thumb"
-      }, null, 4), vue.createVNode("div", {
-        "style": setActiveColor.value,
+        "style": setTrackBgColor.value,
         "class": "uni-slider-track"
-      }, null, 4)], 4)]), vue.withDirectives(vue.createVNode("span", {
+      }, [vue.createVNode("div", {
+        "style": setActiveColor.value,
+        "class": "uni-slider-track-value"
+      }, null, 4)], 4), vue.createVNode("div", {
+        "style": thumbTrackStyle.value,
+        "class": "uni-slider-thumb-track"
+      }, [vue.createVNode("div", {
+        "style": setThumbStyle.value,
+        "class": "uni-slider-thumb-value"
+      }, null, 4)], 4), vue.createVNode("input", {
+        "class": "uni-slider-brower-input-range",
+        "type": "range",
+        "min": props2.min,
+        "max": props2.max,
+        "step": props2.step,
+        "value": props2.value,
+        "onInput": withWebEvent(_onInput),
+        "onChange": withWebEvent(_onChange)
+      }, null, 40, ["min", "max", "step", "value", "onInput", "onChange"])]), vue.withDirectives(vue.createVNode("span", {
         "ref": sliderValueRef,
         "class": "uni-slider-value"
-      }, [sliderValue.value], 512), [[vue.vShow, props2.showValue]])]), vue.createVNode("slot", null, null)], 8, ["onClick"]);
+      }, null, 512), [[vue.vShow, props2.showValue]])]), vue.createVNode("slot", null, null)], 512);
     };
   }
 });
-const getValueWidth = (value, min, max) => {
-  max = Number(max);
-  min = Number(min);
-  return 100 * (value - min) / (max - min) + "%";
-};
-function useSliderState(props2, sliderValue) {
-  const _getValueWidth = () => {
-    return getValueWidth(sliderValue.value, props2.min, props2.max);
-  };
+function useSliderState(props2) {
   const _getBgColor = () => {
     return props2.backgroundColor !== "#e9e9e9" ? props2.backgroundColor : props2.color !== "#007aff" ? props2.color : "#007aff";
   };
@@ -6297,76 +6339,56 @@ function useSliderState(props2, sliderValue) {
     return props2.activeColor !== "#007aff" ? props2.activeColor : props2.selectedColor !== "#e9e9e9" ? props2.selectedColor : "#e9e9e9";
   };
   const state = {
-    setBgColor: vue.computed(() => ({
+    setTrackBgColor: vue.computed(() => ({
       backgroundColor: _getBgColor()
     })),
-    setBlockBg: vue.computed(() => ({
-      left: _getValueWidth()
-    })),
     setActiveColor: vue.computed(() => ({
-      backgroundColor: _getActiveColor(),
-      width: _getValueWidth()
+      backgroundColor: _getActiveColor()
     })),
-    setBlockStyle: vue.computed(() => ({
+    thumbTrackStyle: vue.computed(() => ({
+      marginRight: props2.blockSize + "px"
+    })),
+    setThumbStyle: vue.computed(() => ({
       width: props2.blockSize + "px",
       height: props2.blockSize + "px",
-      marginLeft: -props2.blockSize / 2 + "px",
-      marginTop: -props2.blockSize / 2 + "px",
-      left: _getValueWidth(),
       backgroundColor: props2.blockColor
     }))
   };
   return state;
 }
-function useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger) {
-  const _onClick = ($event) => {
+function useSliderLoader(props2, sliderRef, trigger) {
+  const _onInput = (event) => {
     if (props2.disabled) {
       return;
     }
-    _onUserChangedValue($event);
-    trigger("change", $event, {
-      value: sliderValue.value
+    const valueString = event.target.value;
+    sliderRef.value.updateValue(valueString);
+    trigger("changing", event, {
+      value: Number(valueString)
     });
   };
-  const _filterValue = (e2) => {
-    const max = Number(props2.max);
-    const min = Number(props2.min);
-    const step = Number(props2.step);
-    return e2 < min ? min : e2 > max ? max : computeController.mul.call(Math.round((e2 - min) / step), step) + min;
-  };
-  const _onUserChangedValue = (e2) => {
-    const max = Number(props2.max);
-    const min = Number(props2.min);
-    const sliderRightBox = sliderValueRef.value;
-    const sliderRightBoxLeft = getComputedStyle(sliderRightBox, null).marginLeft;
-    let sliderRightBoxWidth = sliderRightBox.offsetWidth;
-    sliderRightBoxWidth = sliderRightBoxWidth + parseInt(sliderRightBoxLeft);
-    const slider = sliderRef.value;
-    const offsetWidth = slider.offsetWidth - (props2.showValue ? sliderRightBoxWidth : 0);
-    const boxLeft = slider.getBoundingClientRect().left;
-    const value = (e2.x - boxLeft) * (max - min) / offsetWidth + min;
-    sliderValue.value = _filterValue(value);
-  };
-  const _onTrack = (e2) => {
-    if (!props2.disabled) {
-      return e2.detail.state === "move" ? (_onUserChangedValue({
-        x: e2.detail.x
-      }), trigger("changing", e2, {
-        value: sliderValue.value
-      }), false) : e2.detail.state === "end" && trigger("change", e2, {
-        value: sliderValue.value
-      });
+  const _onChange = (event) => {
+    if (props2.disabled) {
+      return;
     }
+    const valueString = event.target.value;
+    sliderRef.value.updateValue(valueString);
+    trigger("change", event, {
+      value: Number(valueString)
+    });
   };
   const uniForm = vue.inject(uniFormKey, false);
   if (!!uniForm) {
     const field = {
-      reset: () => sliderValue.value = Number(props2.min),
+      reset: () => {
+        sliderRef.value.value = props2.min.toString();
+      },
       submit: () => {
         const data = ["", null];
+        const value = sliderRef.value.value;
         if (props2.name !== "") {
           data[0] = props2.name;
-          data[1] = sliderValue.value;
+          data[1] = value;
         }
         return data;
       }
@@ -6374,26 +6396,10 @@ function useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger
     uniForm.addField(field);
   }
   return {
-    _onClick,
-    _onTrack
+    _onInput,
+    _onChange
   };
 }
-var computeController = {
-  mul: function(arg) {
-    let m = 0;
-    let s1 = this.toString();
-    let s2 = arg.toString();
-    try {
-      m += s1.split(".")[1].length;
-    } catch (e2) {
-    }
-    try {
-      m += s2.split(".")[1].length;
-    } catch (e2) {
-    }
-    return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
-  }
-};
 const props$d = {
   indicatorDots: {
     type: [Boolean, String],
@@ -12531,37 +12537,37 @@ exports.AdContentPage = index$5;
 exports.AdDraw = index$4;
 exports.AsyncErrorComponent = AsyncErrorComponent;
 exports.AsyncLoadingComponent = AsyncLoadingComponent;
-exports.Button = index$A;
+exports.Button = index$z;
 exports.Camera = index$3;
-exports.Canvas = index$z;
-exports.Checkbox = index$x;
-exports.CheckboxGroup = index$y;
+exports.Canvas = index$y;
+exports.Checkbox = index$w;
+exports.CheckboxGroup = index$x;
 exports.CoverImage = index$8;
 exports.CoverView = index$9;
-exports.Editor = index$w;
-exports.Form = index$C;
-exports.Icon = index$v;
-exports.Image = index$u;
+exports.Editor = index$v;
+exports.Form = index$B;
+exports.Icon = index$u;
+exports.Image = index$t;
 exports.Input = Input;
-exports.Label = index$B;
+exports.Label = index$A;
 exports.LayoutComponent = LayoutComponent;
 exports.LivePlayer = index$2;
 exports.LivePusher = index$1;
 exports.Map = index$a;
-exports.MovableArea = index$t;
-exports.MovableView = index$s;
-exports.Navigator = index$r;
+exports.MovableArea = index$s;
+exports.MovableView = index$r;
+exports.Navigator = index$q;
 exports.PageComponent = index;
 exports.Picker = index$7;
 exports.PickerView = PickerView;
 exports.PickerViewColumn = PickerViewColumn;
-exports.Progress = index$q;
-exports.Radio = index$o;
-exports.RadioGroup = index$p;
+exports.Progress = index$p;
+exports.Radio = index$n;
+exports.RadioGroup = index$o;
 exports.ResizeSensor = ResizeSensor;
-exports.RichText = index$n;
-exports.ScrollView = index$m;
-exports.Slider = index$l;
+exports.RichText = index$m;
+exports.ScrollView = index$l;
+exports.Slider = indexX;
 exports.Swiper = index$k;
 exports.SwiperItem = index$j;
 exports.Switch = index$i;

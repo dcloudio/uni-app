@@ -2131,7 +2131,7 @@ class UniElement extends HTMLElement {
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
 class UniFormElement extends UniElement {
 }
-const index$z = /* @__PURE__ */ defineBuiltInComponent({
+const index$y = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   emits: ["submit", "reset"],
   rootElement: {
@@ -2201,7 +2201,7 @@ function useProvideLabel() {
 }
 class UniLabelElement extends UniElement {
 }
-const index$y = /* @__PURE__ */ defineBuiltInComponent({
+const index$x = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: labelProps,
   rootElement: {
@@ -2343,7 +2343,7 @@ const buttonProps = {
 };
 class UniButtonElement extends UniElement {
 }
-const index$x = /* @__PURE__ */ defineBuiltInComponent({
+const index$w = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   rootElement: {
@@ -4768,13 +4768,13 @@ const createMediaQueryObserver = /* @__PURE__ */ defineSyncApi("createMediaQuery
   }
   return new ServiceMediaQueryObserver(getCurrentPageVm());
 });
-let index$w = 0;
+let index$v = 0;
 let optionsCache = {};
 function operateEditor(componentId, pageId, type, options) {
   const data = { options };
   const needCallOptions = options && ("success" in options || "fail" in options || "complete" in options);
   if (needCallOptions) {
-    const callbackId = String(index$w++);
+    const callbackId = String(index$v++);
     data.callbackId = callbackId;
     optionsCache[callbackId] = options;
   }
@@ -7219,7 +7219,7 @@ const props$x = {
 };
 class UniCanvasElement extends UniElement {
 }
-const index$v = /* @__PURE__ */ defineBuiltInComponent({
+const index$u = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "Canvas",
   compatConfig: {
@@ -7706,7 +7706,7 @@ const props$w = {
 };
 class UniCheckboxGroupElement extends UniElement {
 }
-const index$u = /* @__PURE__ */ defineBuiltInComponent({
+const index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
   props: props$w,
   emits: ["change"],
@@ -7812,7 +7812,7 @@ const props$v = {
 };
 class UniCheckboxElement extends UniElement {
 }
-const index$t = /* @__PURE__ */ defineBuiltInComponent({
+const index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
   props: props$v,
   rootElement: {
@@ -8822,7 +8822,7 @@ const props$t = /* @__PURE__ */ extend({}, props$u, {
 });
 class UniEditorElement extends UniElement {
 }
-const index$s = /* @__PURE__ */ defineBuiltInComponent({
+const index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: props$t,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
@@ -8894,7 +8894,7 @@ const ICONS = {
 };
 class UniIconElement extends UniElement {
 }
-const index$r = /* @__PURE__ */ defineBuiltInComponent({
+const index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -8971,7 +8971,7 @@ const IMAGE_MODES = {
 };
 class UniImageElement extends UniElement {
 }
-const index$q = /* @__PURE__ */ defineBuiltInComponent({
+const index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
   props: props$s,
   rootElement: {
@@ -11432,7 +11432,7 @@ function createNavigatorOnClick(props2) {
 }
 class UniNavigatorElement extends UniElement {
 }
-const index$p = /* @__PURE__ */ defineBuiltInComponent({
+const index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   inheritAttrs: false,
   compatConfig: {
@@ -12610,7 +12610,7 @@ const progressProps = {
 };
 class UniProgressElement extends UniElement {
 }
-const index$o = /* @__PURE__ */ defineBuiltInComponent({
+const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: progressProps,
   rootElement: {
@@ -12719,7 +12719,7 @@ const props$p = {
 };
 class UniRadioGroupElement extends UniElement {
 }
-const index$n = /* @__PURE__ */ defineBuiltInComponent({
+const index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
   props: props$p,
   // emits: ['change'],
@@ -12857,7 +12857,7 @@ const props$o = {
 };
 class UniRadioElement extends UniElement {
 }
-const index$m = /* @__PURE__ */ defineBuiltInComponent({
+const index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
   props: props$o,
   rootElement: {
@@ -13252,7 +13252,7 @@ const props$n = {
 };
 class UniRichTextElement extends UniElement {
 }
-const index$l = /* @__PURE__ */ defineBuiltInComponent({
+const index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
     MODE: 3
@@ -13842,9 +13842,35 @@ const props$l = {
     default: false
   }
 };
+const getValuePercentage = (value, min, max) => {
+  return 100 * (value - min) / (max - min) + "%";
+};
 class UniSliderElement extends UniElement {
+  init() {
+    this.htmlSlider = this.querySelector(".uni-slider-brower-input-range");
+    this.trackValue = this.querySelector(".uni-slider-track-value");
+    this.thumbValue = this.querySelector(".uni-slider-thumb-value");
+    this.inputValue = this.querySelector(".uni-slider-value");
+    this.updateValue(this.value);
+  }
+  get value() {
+    return this.htmlSlider.value;
+  }
+  set value(value) {
+    this.htmlSlider.value = value;
+    this.updateValue(value);
+  }
+  updateValue(value) {
+    const min = Number(this.htmlSlider.getAttribute("min"));
+    const max = Number(this.htmlSlider.getAttribute("max"));
+    const valueNumber = Number(value);
+    const percentage = getValuePercentage(valueNumber, min, max);
+    this.trackValue.style.width = percentage;
+    this.thumbValue.style.left = percentage;
+    this.inputValue.innerText = value.toString();
+  }
 }
-const index$k = /* @__PURE__ */ defineBuiltInComponent({
+const indexX = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
   props: props$l,
   emits: ["changing", "change"],
@@ -13857,83 +13883,62 @@ const index$k = /* @__PURE__ */ defineBuiltInComponent({
   }) {
     const sliderRef = ref(null);
     const sliderValueRef = ref(null);
-    const sliderHandleRef = ref(null);
-    const sliderValue = ref(Number(props2.value));
+    let uniSliderElement;
     watch(() => props2.value, (val) => {
-      sliderValue.value = Number(val);
+      uniSliderElement.value = val.toString();
     });
     const trigger = useCustomEvent(sliderRef, emit2);
-    const state2 = useSliderState(props2, sliderValue);
+    const state2 = useSliderState(props2);
     const {
-      _onClick,
-      _onTrack
-    } = useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger);
+      _onInput,
+      _onChange
+    } = useSliderLoader(props2, sliderRef, trigger);
     onMounted(() => {
-      useTouchtrack(sliderHandleRef.value, _onTrack);
-    });
-    let sliderValueCache = ref(sliderValue.value);
-    watch(() => sliderValue.value, (val) => {
-      sliderValueCache.value = val;
-    });
-    onMounted(() => {
-      const rootElement = sliderRef.value;
-      Object.defineProperty(rootElement, "value", {
-        get() {
-          return sliderValueCache.value;
-        },
-        set(val) {
-          sliderValueCache.value = val;
-          const width = getValueWidth(val, props2.min, props2.max);
-          rootElement.querySelector(".uni-slider-track").style.width = width;
-          rootElement.querySelector(".uni-slider-thumb").style.left = width;
-          rootElement.querySelector(".uni-slider-value").innerText = val.toString();
-        }
-      });
-      rootElement.attachVmProps(props2);
+      uniSliderElement = sliderRef.value;
+      uniSliderElement.init();
     });
     return () => {
       const {
-        setBgColor,
-        setBlockBg,
+        setTrackBgColor,
         setActiveColor,
-        setBlockStyle
+        setThumbStyle,
+        thumbTrackStyle
       } = state2;
       return createVNode("uni-slider", {
-        "ref": sliderRef,
-        "onClick": withWebEvent(_onClick)
+        "ref": sliderRef
       }, [createVNode("div", {
         "class": "uni-slider-wrapper"
       }, [createVNode("div", {
-        "class": "uni-slider-tap-area"
+        "class": "uni-slider-input"
       }, [createVNode("div", {
-        "style": setBgColor.value,
-        "class": "uni-slider-handle-wrapper"
-      }, [createVNode("div", {
-        "ref": sliderHandleRef,
-        "style": setBlockBg.value,
-        "class": "uni-slider-handle"
-      }, null, 4), createVNode("div", {
-        "style": setBlockStyle.value,
-        "class": "uni-slider-thumb"
-      }, null, 4), createVNode("div", {
-        "style": setActiveColor.value,
+        "style": setTrackBgColor.value,
         "class": "uni-slider-track"
-      }, null, 4)], 4)]), withDirectives(createVNode("span", {
+      }, [createVNode("div", {
+        "style": setActiveColor.value,
+        "class": "uni-slider-track-value"
+      }, null, 4)], 4), createVNode("div", {
+        "style": thumbTrackStyle.value,
+        "class": "uni-slider-thumb-track"
+      }, [createVNode("div", {
+        "style": setThumbStyle.value,
+        "class": "uni-slider-thumb-value"
+      }, null, 4)], 4), createVNode("input", {
+        "class": "uni-slider-brower-input-range",
+        "type": "range",
+        "min": props2.min,
+        "max": props2.max,
+        "step": props2.step,
+        "value": props2.value,
+        "onInput": withWebEvent(_onInput),
+        "onChange": withWebEvent(_onChange)
+      }, null, 40, ["min", "max", "step", "value", "onInput", "onChange"])]), withDirectives(createVNode("span", {
         "ref": sliderValueRef,
         "class": "uni-slider-value"
-      }, [sliderValue.value], 512), [[vShow, props2.showValue]])]), createVNode("slot", null, null)], 8, ["onClick"]);
+      }, null, 512), [[vShow, props2.showValue]])]), createVNode("slot", null, null)], 512);
     };
   }
 });
-const getValueWidth = (value, min, max) => {
-  max = Number(max);
-  min = Number(min);
-  return 100 * (value - min) / (max - min) + "%";
-};
-function useSliderState(props2, sliderValue) {
-  const _getValueWidth = () => {
-    return getValueWidth(sliderValue.value, props2.min, props2.max);
-  };
+function useSliderState(props2) {
   const _getBgColor = () => {
     return props2.backgroundColor !== "#e9e9e9" ? props2.backgroundColor : props2.color !== "#007aff" ? props2.color : "#007aff";
   };
@@ -13941,76 +13946,56 @@ function useSliderState(props2, sliderValue) {
     return props2.activeColor !== "#007aff" ? props2.activeColor : props2.selectedColor !== "#e9e9e9" ? props2.selectedColor : "#e9e9e9";
   };
   const state2 = {
-    setBgColor: computed(() => ({
+    setTrackBgColor: computed(() => ({
       backgroundColor: _getBgColor()
     })),
-    setBlockBg: computed(() => ({
-      left: _getValueWidth()
-    })),
     setActiveColor: computed(() => ({
-      backgroundColor: _getActiveColor(),
-      width: _getValueWidth()
+      backgroundColor: _getActiveColor()
     })),
-    setBlockStyle: computed(() => ({
+    thumbTrackStyle: computed(() => ({
+      marginRight: props2.blockSize + "px"
+    })),
+    setThumbStyle: computed(() => ({
       width: props2.blockSize + "px",
       height: props2.blockSize + "px",
-      marginLeft: -props2.blockSize / 2 + "px",
-      marginTop: -props2.blockSize / 2 + "px",
-      left: _getValueWidth(),
       backgroundColor: props2.blockColor
     }))
   };
   return state2;
 }
-function useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger) {
-  const _onClick = ($event) => {
+function useSliderLoader(props2, sliderRef, trigger) {
+  const _onInput = (event) => {
     if (props2.disabled) {
       return;
     }
-    _onUserChangedValue($event);
-    trigger("change", $event, {
-      value: sliderValue.value
+    const valueString = event.target.value;
+    sliderRef.value.updateValue(valueString);
+    trigger("changing", event, {
+      value: Number(valueString)
     });
   };
-  const _filterValue = (e2) => {
-    const max = Number(props2.max);
-    const min = Number(props2.min);
-    const step = Number(props2.step);
-    return e2 < min ? min : e2 > max ? max : computeController.mul.call(Math.round((e2 - min) / step), step) + min;
-  };
-  const _onUserChangedValue = (e2) => {
-    const max = Number(props2.max);
-    const min = Number(props2.min);
-    const sliderRightBox = sliderValueRef.value;
-    const sliderRightBoxLeft = getComputedStyle(sliderRightBox, null).marginLeft;
-    let sliderRightBoxWidth = sliderRightBox.offsetWidth;
-    sliderRightBoxWidth = sliderRightBoxWidth + parseInt(sliderRightBoxLeft);
-    const slider = sliderRef.value;
-    const offsetWidth = slider.offsetWidth - (props2.showValue ? sliderRightBoxWidth : 0);
-    const boxLeft = slider.getBoundingClientRect().left;
-    const value = (e2.x - boxLeft) * (max - min) / offsetWidth + min;
-    sliderValue.value = _filterValue(value);
-  };
-  const _onTrack = (e2) => {
-    if (!props2.disabled) {
-      return e2.detail.state === "move" ? (_onUserChangedValue({
-        x: e2.detail.x
-      }), trigger("changing", e2, {
-        value: sliderValue.value
-      }), false) : e2.detail.state === "end" && trigger("change", e2, {
-        value: sliderValue.value
-      });
+  const _onChange = (event) => {
+    if (props2.disabled) {
+      return;
     }
+    const valueString = event.target.value;
+    sliderRef.value.updateValue(valueString);
+    trigger("change", event, {
+      value: Number(valueString)
+    });
   };
   const uniForm = inject(uniFormKey, false);
   if (!!uniForm) {
     const field = {
-      reset: () => sliderValue.value = Number(props2.min),
+      reset: () => {
+        sliderRef.value.value = props2.min.toString();
+      },
       submit: () => {
         const data = ["", null];
+        const value = sliderRef.value.value;
         if (props2.name !== "") {
           data[0] = props2.name;
-          data[1] = sliderValue.value;
+          data[1] = value;
         }
         return data;
       }
@@ -14021,26 +14006,10 @@ function useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger
     });
   }
   return {
-    _onClick,
-    _onTrack
+    _onInput,
+    _onChange
   };
 }
-var computeController = {
-  mul: function(arg) {
-    let m = 0;
-    let s1 = this.toString();
-    let s2 = arg.toString();
-    try {
-      m += s1.split(".")[1].length;
-    } catch (e2) {
-    }
-    try {
-      m += s2.split(".")[1].length;
-    } catch (e2) {
-    }
-    return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
-  }
-};
 const props$k = {
   indicatorDots: {
     type: [Boolean, String],
@@ -25874,37 +25843,37 @@ export {
   index$4 as AdDraw,
   AsyncErrorComponent,
   AsyncLoadingComponent,
-  index$x as Button,
+  index$w as Button,
   index$3 as Camera,
-  index$v as Canvas,
-  index$t as Checkbox,
-  index$u as CheckboxGroup,
+  index$u as Canvas,
+  index$s as Checkbox,
+  index$t as CheckboxGroup,
   index$8 as CoverImage,
   index$9 as CoverView,
-  index$s as Editor,
-  index$z as Form,
-  index$r as Icon,
-  index$q as Image,
+  index$r as Editor,
+  index$y as Form,
+  index$q as Icon,
+  index$p as Image,
   Input,
-  index$y as Label,
+  index$x as Label,
   LayoutComponent,
   index$2 as LivePlayer,
   index$1 as LivePusher,
   Map$1 as Map,
   MovableArea,
   MovableView,
-  index$p as Navigator,
+  index$o as Navigator,
   index as PageComponent,
   index$7 as Picker,
   PickerView,
   PickerViewColumn,
-  index$o as Progress,
-  index$m as Radio,
-  index$n as RadioGroup,
+  index$n as Progress,
+  index$l as Radio,
+  index$m as RadioGroup,
   ResizeSensor,
-  index$l as RichText,
+  index$k as RichText,
   ScrollView,
-  index$k as Slider,
+  indexX as Slider,
   Swiper,
   SwiperItem,
   index$j as Switch,
