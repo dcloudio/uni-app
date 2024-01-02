@@ -1,6 +1,8 @@
 import {
+  parseUniExtApiNamespacesOnce,
   resolveUTSCompiler,
   uniUTSUVueJavaScriptPlugin,
+  uniUTSUniModulesPlugin,
 } from '@dcloudio/uni-cli-shared'
 
 import { uniAppIOSPlugin } from './plugin'
@@ -12,6 +14,14 @@ import { uniAppPagesPlugin } from './pagesJson'
 export function init() {
   return [
     uniPrePlugin(),
+    uniUTSUniModulesPlugin({
+      x: true,
+      isSingleThread: process.env.UNI_APP_X_SINGLE_THREAD !== 'false',
+      extApis: parseUniExtApiNamespacesOnce(
+        process.env.UNI_UTS_PLATFORM,
+        process.env.UNI_UTS_TARGET_LANGUAGE
+      ),
+    }),
     uniAppIOSPlugin(),
     uniAppIOSMainPlugin(),
     uniAppManifestPlugin(),
