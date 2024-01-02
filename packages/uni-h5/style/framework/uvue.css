@@ -12,6 +12,10 @@ uni-app uni-textarea {
   text-align: left;
 }
 
+uni-app uni-input {
+  height: auto;
+}
+
 uni-app uni-text,
 uni-app uni-textarea {
   line-height: 1.2;
