@@ -77,6 +77,7 @@ export function uniUTSUniModulesPlugin(
             })
             return {
               code: result.code,
+              map: null,
               syntheticNamedExports: result.encrypt,
               meta: result.meta,
             }
@@ -101,6 +102,7 @@ export function uniUTSUniModulesPlugin(
         })
         return {
           code: result.code,
+          map: null,
           syntheticNamedExports: result.encrypt,
           meta: result.meta,
         }
