@@ -35,23 +35,18 @@ export function setupPage(component: VuePageComponent) {
         __pageInstance as Page.PageInstance['$page']
       )
     )
-    onMounted(() => {
-      nextTick(() => {
-        if (__X__) {
-          // TODO page.addPageEventListener ON_READY
-          setTimeout(() => {
-            invokeHook(pageVm, ON_READY)
-          }, 150)
-          return
-        }
-        // onShow被延迟，故onReady也同时延迟
-        invokeHook(pageVm, ON_READY)
+    if (!__X__) {
+      onMounted(() => {
+        nextTick(() => {
+          // onShow被延迟，故onReady也同时延迟
+          invokeHook(pageVm, ON_READY)
+        })
+        // TODO preloadSubPackages
       })
-      // TODO preloadSubPackages
-    })
-    onBeforeUnmount(() => {
-      invokeHook(pageVm, ON_UNLOAD)
-    })
+      onBeforeUnmount(() => {
+        invokeHook(pageVm, ON_UNLOAD)
+      })
+    }
     if (oldSetup) {
       return oldSetup(__pageQuery as any, ctx)
     }

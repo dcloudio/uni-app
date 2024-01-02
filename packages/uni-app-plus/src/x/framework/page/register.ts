@@ -1,9 +1,15 @@
 import { isPromise } from '@vue/shared'
 import { ComponentPublicInstance } from 'vue'
 import { IPage } from '@dcloudio/uni-app-x/types/native'
-import { EventChannel, formatLog } from '@dcloudio/uni-shared'
+import {
+  EventChannel,
+  ON_READY,
+  ON_UNLOAD,
+  formatLog,
+} from '@dcloudio/uni-shared'
 import {
   initPageInternalInstance,
+  invokeHook,
   // initPageVm,
   // invokeHook,
 } from '@dcloudio/uni-core'
@@ -85,7 +91,14 @@ export function registerPage({
     // TODO ThemeMode
     'light'
   )
-  createVuePage(id, route, query, pageInstance, {}, nativePage)
+  const page = createVuePage(
+    id,
+    route,
+    query,
+    pageInstance,
+    {},
+    nativePage
+  ) as ComponentPublicInstance
   nativePage.addPageEventListener(ON_POP_GESTURE, function (e) {
     uni.navigateBack({
       from: 'popGesture',
@@ -95,6 +108,12 @@ export function registerPage({
         }
       },
     } as UniApp.NavigateBackOptions)
+  })
+  nativePage.addPageEventListener(ON_UNLOAD, (_) => {
+    invokeHook(page, ON_UNLOAD)
+  })
+  nativePage.addPageEventListener(ON_READY, (_) => {
+    invokeHook(page, ON_READY)
   })
   return nativePage
 }
