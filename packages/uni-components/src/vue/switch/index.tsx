@@ -166,6 +166,10 @@ function useSwitchInject(
   props: SwitchProps,
   switchChecked: Ref<string | boolean>
 ) {
+  //#if _X_ && !_NODE_JS_
+  const initialCheckedValue: boolean = props.checked as boolean
+  //#endif
+
   const uniForm = inject<UniFormCtx>(uniFormKey, false as unknown as UniFormCtx)
   const uniLabel = inject<UniLabelCtx>(
     uniLabelKey,
@@ -182,7 +186,11 @@ function useSwitchInject(
       return data
     },
     reset: () => {
+      //#if _X_ && !_NODE_JS_
+      switchChecked.value = initialCheckedValue
+      //#else
       switchChecked.value = false
+      //#endif
     },
   }
 
