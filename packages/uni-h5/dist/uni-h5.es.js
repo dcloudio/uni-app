@@ -12505,7 +12505,7 @@ const index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: progressProps,
   setup(props2) {
-    ref(null);
+    const rootRef = ref(null);
     const state2 = useProgressState(props2);
     _activeAnimation(state2, props2);
     watch(() => state2.realPercent, (newValue, oldValue) => {
@@ -12523,7 +12523,8 @@ const index$o = /* @__PURE__ */ defineBuiltInComponent({
         currentPercent
       } = state2;
       return createVNode("uni-progress", {
-        "class": "uni-progress"
+        "class": "uni-progress",
+        "ref": rootRef
       }, [createVNode("div", {
         "style": outerBarStyle,
         "class": "uni-progress-bar"
@@ -12535,7 +12536,7 @@ const index$o = /* @__PURE__ */ defineBuiltInComponent({
         createVNode("p", {
           "class": "uni-progress-info"
         }, [currentPercent + "%"])
-      ) : ""]);
+      ) : ""], 512);
     };
   }
 });

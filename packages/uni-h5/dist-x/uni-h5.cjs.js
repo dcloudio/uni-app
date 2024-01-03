@@ -5261,7 +5261,7 @@ const index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: progressProps,
   setup(props2) {
-    vue.ref(null);
+    const rootRef = vue.ref(null);
     const state = useProgressState(props2);
     _activeAnimation(state, props2);
     vue.watch(() => state.realPercent, (newValue, oldValue) => {
@@ -5279,7 +5279,8 @@ const index$p = /* @__PURE__ */ defineBuiltInComponent({
         currentPercent
       } = state;
       return vue.createVNode("uni-progress", {
-        "class": "uni-progress"
+        "class": "uni-progress",
+        "ref": rootRef
       }, [vue.createVNode("div", {
         "style": outerBarStyle,
         "class": "uni-progress-bar"
@@ -5291,7 +5292,7 @@ const index$p = /* @__PURE__ */ defineBuiltInComponent({
         vue.createVNode("p", {
           "class": "uni-progress-info"
         }, [currentPercent + "%"])
-      ) : ""]);
+      ) : ""], 512);
     };
   }
 });

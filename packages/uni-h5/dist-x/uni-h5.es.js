@@ -12656,7 +12656,8 @@ const index$n = /* @__PURE__ */ defineBuiltInComponent({
         currentPercent
       } = state2;
       return createVNode("uni-progress", {
-        "class": "uni-progress"
+        "class": "uni-progress",
+        "ref": rootRef
       }, [createVNode("div", {
         "style": outerBarStyle,
         "class": "uni-progress-bar"
@@ -12668,7 +12669,7 @@ const index$n = /* @__PURE__ */ defineBuiltInComponent({
         createVNode("p", {
           "class": "uni-progress-info"
         }, [currentPercent + "%"])
-      ) : ""]);
+      ) : ""], 512);
     };
   }
 });
