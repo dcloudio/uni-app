@@ -1079,6 +1079,28 @@ function initSubscribeHandlers() {
     subscribeWebviewReady({}, '1');
 }
 
+function initOn(app) {
+    app.addEventListener(ON_SHOW, function (event) {
+        const page = getCurrentPage();
+        invokeHook(getApp(), ON_SHOW, {
+            path: __uniConfig.entryPagePath,
+        });
+        if (page) {
+            invokeHook(page, ON_SHOW);
+        }
+    });
+    app.addEventListener(ON_HIDE, function () {
+        const page = getCurrentPage();
+        invokeHook(getApp(), ON_HIDE);
+        if (page) {
+            invokeHook(page, ON_HIDE);
+        }
+    });
+}
+function initService(app) {
+    initOn(app);
+}
+
 // import { initKeyboardEvent } from '../dom/keyboard'
 let appCtx;
 const defaultApp = {
@@ -1089,7 +1111,7 @@ function initAppVm(appVm) {
     appVm.$mpType = 'app';
     // TODO uni-app x useI18n
 }
-function getApp({ allowDefault = false } = {}) {
+function getApp$1({ allowDefault = false } = {}) {
     if (appCtx) {
         // 真实的 App 已初始化
         return appCtx;
@@ -1124,7 +1146,7 @@ function registerApp(appVm, app) {
     initAppVm(appCtx);
     extend(appCtx, defaultApp); // 拷贝默认实现
     defineGlobalData(appCtx, defaultApp.globalData);
-    // initService()
+    initService(app);
     // initEntry()
     // initTabBar()
     initGlobalEvent(app);
@@ -1363,7 +1385,7 @@ var uni$1 = {
 
 var index = {
     uni: uni$1,
-    getApp,
+    getApp: getApp$1,
     getCurrentPages: getCurrentPages$1,
     __definePage: definePage,
     __registerApp: registerApp,

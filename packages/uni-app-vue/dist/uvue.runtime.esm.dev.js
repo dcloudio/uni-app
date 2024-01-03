@@ -9108,6 +9108,9 @@ function setExtraClassStyle(el, classStyle) {
 function getExtraStyle(el) {
   return getNodeExtraData(el, NODE_EXT_STYLE);
 }
+function setExtraStyle(el, style) {
+  setNodeExtraData(el, NODE_EXT_STYLE, style);
+}
 function isCommentNode(node) {
   return node.nodeName == '#comment';
 }
@@ -9273,7 +9276,7 @@ function toStyle(el, classStyle, classStyleWeights) {
     style.forEach((value, key) => {
       var weight = classStyleWeights[key];
       // TODO: 目前只计算了 class 中 important 的权重，会存在 style class 同时设置 important 时，class 优先级更高的问题
-      if (weight == null || weight < 1000) {
+      if (weight == null || weight < WEIGHT_IMPORTANT) {
         res.set(key, value);
       }
     });
@@ -9382,16 +9385,6 @@ function updateChildrenClassStyle(el) {
       updateChildrenClassStyle(child);
     });
   }
-}
-function toMap(value) {
-  if (value instanceof Map) {
-    return value;
-  }
-  var map = new Map();
-  for (var key in value) {
-    map.set(key, value[key]);
-  }
-  return map;
 }
 function patchAttr(el, key, value) {
   var instance = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
@@ -9533,26 +9526,28 @@ function patchStyle(el, prev, next) {
   if (isString(next)) {
     next = parseStringStyle(next);
   }
-  var batchedStyles = {};
+  var batchedStyles = new Map();
   var isPrevObj = prev && !isString(prev);
   if (isPrevObj) {
     for (var key in prev) {
       if (next[key] == null) {
-        batchedStyles[camelize(key)] = '';
+        batchedStyles.set(camelize(key), '');
       }
     }
     for (var _key21 in next) {
       var value = next[_key21];
       if (value !== prev[_key21]) {
-        batchedStyles[camelize(_key21)] = value;
+        batchedStyles.set(camelize(_key21), value);
       }
     }
   } else {
     for (var _key22 in next) {
-      batchedStyles[camelize(_key22)] = next[_key22];
+      batchedStyles.set(camelize(_key22), next[_key22]);
     }
+    setExtraStyle(el, batchedStyles);
   }
-  el.updateStyle(toMap(batchedStyles));
+  // TODO validateStyles(el, batchedStyles)
+  el.updateStyle(batchedStyles);
 }
 var vModelTags = ['u-input', 'u-textarea'];
 var patchProp = function (el, key, prevValue, nextValue) {
