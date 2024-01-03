@@ -156,6 +156,34 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     //#if _X_ && !_NODE_JS_
     onMounted(() => {
       const rootElement = rootRef.value as UniScrollViewElement
+      Object.defineProperties(rootElement, {
+        scrollHeight: {
+          get() {
+            return main.value!.scrollHeight
+          },
+        },
+        scrollWidth: {
+          get() {
+            return main.value!.scrollWidth
+          },
+        },
+        scrollLeft: {
+          get() {
+            return main.value!.scrollLeft
+          },
+          set(val) {
+            main.value!.scrollLeft = val
+          },
+        },
+        scrollTop: {
+          get() {
+            return main.value!.scrollTop
+          },
+          set(val) {
+            main.value!.scrollTop = val
+          },
+        },
+      })
       rootElement.attachVmProps(props)
     })
     //#endif
