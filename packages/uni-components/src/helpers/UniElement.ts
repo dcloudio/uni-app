@@ -9,8 +9,12 @@ export class UniElement extends HTMLElement {
   }
 
   getAttribute(qualifiedName: string): string | null {
-    return qualifiedName in this._props
-      ? this._props[qualifiedName] + ''
-      : super.getAttribute(qualifiedName)
+    const name =
+      qualifiedName.indexOf('-') > -1
+        ? qualifiedName.replace(/-(\w)/g, (_, c) => c.toUpperCase())
+        : qualifiedName
+    return name in this._props
+      ? this._props[name] + ''
+      : super.getAttribute(name) || null
   }
 }
