@@ -75,7 +75,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       const { outerBarStyle, innerBarStyle, currentPercent } = state
 
       return (
-        <uni-progress class="uni-progress">
+        <uni-progress class="uni-progress" ref={rootRef}>
           <div style={outerBarStyle} class="uni-progress-bar">
             <div style={innerBarStyle} class="uni-progress-inner-bar" />
           </div>
