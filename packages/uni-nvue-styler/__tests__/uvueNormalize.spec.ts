@@ -653,48 +653,41 @@ flexBasis: fill;
     const { json, messages } = await objectifierRule(`
 .foo{
   transition-duration: 200ms;
-  transition-delay: 0.5s
+  transition-delay: abc
 },
 .bar{
   transition-duration: 200;
-  transition-delay: abc
+  transition-delay: 0.5s
 }
 `)
     expect(json).toEqual({
       '@TRANSITION': {
         bar: {
-          duration: 200,
+          delay: '0.5s',
         },
         foo: {
-          delay: 500,
-          duration: 200,
+          duration: '200ms',
         },
       },
       foo: {
         '': {
-          transitionDuration: 200,
-          transitionDelay: 500,
+          transitionDuration: '200ms',
         },
       },
       bar: {
         '': {
-          transitionDuration: 200,
+          transitionDelay: '0.5s',
         },
       },
     })
     expect(messages[0]).toEqual(
       expect.objectContaining({
-        text: 'NOTE: property value `200ms` is autofixed to `200`',
+        text: 'ERROR: property value `abc` is not supported for `transition-delay` (supported values are: `number of seconds`|`milliseconds`)',
       })
     )
     expect(messages[1]).toEqual(
       expect.objectContaining({
-        text: 'NOTE: property value `0.5s` is autofixed to `500`',
-      })
-    )
-    expect(messages[2]).toEqual(
-      expect.objectContaining({
-        text: 'ERROR: property value `abc` is not supported for `transition-delay` (supported values are: `number of seconds`|`milliseconds`)',
+        text: 'ERROR: property value `200` is not supported for `transition-duration` (supported values are: `number of seconds`|`milliseconds`)',
       })
     )
   })
