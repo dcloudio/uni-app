@@ -78,6 +78,8 @@ class UniSliderElement extends UniElement {
   thumbValue: HTMLElement | undefined
   inputValue: HTMLElement | undefined
 
+  _initialValue: number = 0
+
   init() {
     this.htmlSlider = this.querySelector(
       '.uni-slider-brower-input-range'
@@ -98,6 +100,10 @@ class UniSliderElement extends UniElement {
   set value(value: string) {
     this.htmlSlider!.value = value
     this.updateValue(value)
+  }
+
+  reset() {
+    this.value = this._initialValue.toString()
   }
 
   updateValue(value: string) {
@@ -138,6 +144,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
     onMounted(() => {
       uniSliderElement = sliderRef.value as UniSliderElement
+      uniSliderElement._initialValue = props.value as number
       uniSliderElement.init()
     })
 
@@ -256,7 +263,7 @@ function useSliderLoader(
   if (!!uniForm) {
     const field = {
       reset: () => {
-        ;(sliderRef.value as UniSliderElement).value = props.min.toString()
+        ;(sliderRef.value as UniSliderElement).reset()
       },
       submit: () => {
         const data: [string, any] = ['', null]
