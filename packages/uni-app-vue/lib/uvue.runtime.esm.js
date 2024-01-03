@@ -8023,6 +8023,9 @@ function setExtraClassStyle(el, classStyle) {
 function getExtraStyle(el) {
     return getNodeExtraData(el, NODE_EXT_STYLE);
 }
+function setExtraStyle(el, style) {
+    setNodeExtraData(el, NODE_EXT_STYLE, style);
+}
 function isCommentNode(node) {
     return node.nodeName == '#comment';
 }
@@ -8184,7 +8187,7 @@ function toStyle(el, classStyle, classStyleWeights) {
         style.forEach((value, key) => {
             const weight = classStyleWeights[key];
             // TODO: 目前只计算了 class 中 important 的权重，会存在 style class 同时设置 important 时，class 优先级更高的问题
-            if (weight == null || weight < 1000) {
+            if (weight == null || weight < WEIGHT_IMPORTANT) {
                 res.set(key, value);
             }
         });
@@ -8295,17 +8298,6 @@ function updateChildrenClassStyle(el) {
             updateChildrenClassStyle(child);
         });
     }
-}
-
-function toMap(value) {
-    if (value instanceof Map) {
-        return value;
-    }
-    const map = new Map();
-    for (const key in value) {
-        map.set(key, value[key]);
-    }
-    return map;
 }
 
 function patchAttr(el, key, value, instance = null) {
@@ -8451,27 +8443,29 @@ function patchStyle(el, prev, next) {
     if (isString(next)) {
         next = parseStringStyle(next);
     }
-    const batchedStyles = {};
+    const batchedStyles = new Map();
     const isPrevObj = prev && !isString(prev);
     if (isPrevObj) {
         for (const key in prev) {
             if (next[key] == null) {
-                batchedStyles[camelize(key)] = '';
+                batchedStyles.set(camelize(key), '');
             }
         }
         for (const key in next) {
             const value = next[key];
             if (value !== prev[key]) {
-                batchedStyles[camelize(key)] = value;
+                batchedStyles.set(camelize(key), value);
             }
         }
     }
     else {
         for (const key in next) {
-            batchedStyles[camelize(key)] = next[key];
+            batchedStyles.set(camelize(key), next[key]);
         }
+        setExtraStyle(el, batchedStyles);
     }
-    el.updateStyle(toMap(batchedStyles));
+    // TODO validateStyles(el, batchedStyles)
+    el.updateStyle(batchedStyles);
 }
 
 const vModelTags = ['u-input', 'u-textarea'];
