@@ -193,5 +193,16 @@ module.exports = {
     if (process.env.NODE_ENV === 'production') {
       require('./cssnano-options')(webpackConfig)
     }
+
+    const fileLoader = require('@dcloudio/uni-cli-shared/lib/file-loader');
+    ['images', 'media', 'fonts'].forEach(type => {
+      const rule = webpackConfig.module.rule(type)
+      rule.use('url-loader').tap(options => {
+        if (options.fallback) {
+          options.fallback.options.name = fileLoader.options.name
+        }
+        return options
+      })
+    })
   }
 }
