@@ -146,6 +146,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       uniSliderElement = sliderRef.value as UniSliderElement
       uniSliderElement._initialValue = props.value as number
       uniSliderElement.init()
+      uniSliderElement.attachVmProps(props)
     })
 
     return () => {
