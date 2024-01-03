@@ -1,11 +1,7 @@
 import { ComponentPublicInstance } from 'vue'
 import { extend } from '@vue/shared'
 import { formatLog } from '@dcloudio/uni-shared'
-import {
-  // initAppVm,
-  // initService,
-  defineGlobalData,
-} from '@dcloudio/uni-core'
+import { defineGlobalData } from '@dcloudio/uni-core'
 
 // import { initEntry } from './initEntry'
 // import { initTabBar } from './initTabBar'
@@ -15,6 +11,7 @@ import { initAppLaunch } from './initAppLaunch'
 import { initSubscribeHandlers } from './subscriber'
 import { initVueApp } from '../../../service/framework/app/vueApp'
 import { IApp } from '@dcloudio/uni-app-x/types/native'
+import { initService } from './initService'
 // import { initKeyboardEvent } from '../dom/keyboard'
 
 let appCtx: ComponentPublicInstance
@@ -75,7 +72,7 @@ export function registerApp(appVm: ComponentPublicInstance, app: IApp) {
 
   defineGlobalData(appCtx, defaultApp.globalData)
 
-  // initService()
+  initService(app)
 
   // initEntry()
   // initTabBar()
