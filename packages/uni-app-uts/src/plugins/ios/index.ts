@@ -1,6 +1,8 @@
 import {
+  UNI_EASYCOM_EXCLUDE,
   parseUniExtApiNamespacesOnce,
   resolveUTSCompiler,
+  uniEasycomPlugin,
   uniUTSUVueJavaScriptPlugin,
   uniUTSUniModulesPlugin,
 } from '@dcloudio/uni-cli-shared'
@@ -22,6 +24,7 @@ export function init() {
         process.env.UNI_UTS_TARGET_LANGUAGE
       ),
     }),
+    uniEasycomPlugin({ exclude: UNI_EASYCOM_EXCLUDE }),
     uniAppIOSPlugin(),
     uniAppIOSMainPlugin(),
     uniAppManifestPlugin(),

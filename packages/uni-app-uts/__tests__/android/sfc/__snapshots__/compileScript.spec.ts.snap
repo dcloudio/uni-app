@@ -391,17 +391,12 @@ const _cache = __ins.renderCache;
 return 
 function GenAnonymousRender(): any | null {
 
-const _component_div = resolveComponent("div")
-
   return createElementVNode(Fragment, null, [
     createVNode(Foo, null, utsMapOf({
       default: withSlotCtx((): any[] => [toDisplayString(unref(bar))]),
       _: 1 /* STABLE */
     })),
-    createVNode(_component_div, utsMapOf({ onClick: fn }), utsMapOf({
-      default: withSlotCtx((): any[] => [toDisplayString(count.value) + " " + toDisplayString(constant) + " " + toDisplayString(unref(maybe)) + " " + toDisplayString(unref(lett)) + " " + toDisplayString(unref(other))]),
-      _: 1 /* STABLE */
-    })),
+    createElementVNode("view", utsMapOf({ onClick: fn }), toDisplayString(count.value) + " " + toDisplayString(constant) + " " + toDisplayString(unref(maybe)) + " " + toDisplayString(unref(lett)) + " " + toDisplayString(unref(other)), 1 /* TEXT */),
     " " + toDisplayString(tree.foo())
   ], 64 /* STABLE_FRAGMENT */)
 }
@@ -425,10 +420,8 @@ const _cache = __ins.renderCache;
 return 
 function GenAnonymousRender(): any | null {
 
-const _component_div = resolveComponent("div")
-
   return createElementVNode(Fragment, null, [
-    withDirectives(createVNode(_component_div, null, null, 512 /* NEED_PATCH */), [
+    withDirectives(createElementVNode("view", null, null, 512 /* NEED_PATCH */), [
       [unref(vMyDir)]
     ]),
     createVNode(ChildComp),
@@ -454,17 +447,9 @@ const _cache = __ins.renderCache;
 return 
 function GenAnonymousRender(): any | null {
 
-const _component_div = resolveComponent("div")
-
   return createElementVNode(Fragment, null, [
-    createVNode(_component_div, null, utsMapOf({
-      default: withSlotCtx((): any[] => [toDisplayString(count.value)]),
-      _: 1 /* STABLE */
-    })),
-    createVNode(_component_div, null, utsMapOf({
-      default: withSlotCtx((): any[] => ["static"]),
-      _: 1 /* STABLE */
-    }))
+    createElementVNode("view", null, toDisplayString(count.value), 1 /* TEXT */),
+    createElementVNode("view", null, "static")
   ], 64 /* STABLE_FRAGMENT */)
 }
 }
@@ -489,31 +474,29 @@ const _cache = __ins.renderCache;
 return 
 function GenAnonymousRender(): any | null {
 
-const _component_div = resolveComponent("div")
-
   return createElementVNode(Fragment, null, [
-    createVNode(_component_div, utsMapOf({
+    createElementVNode("view", utsMapOf({
       onClick: () => {count.value = 1}
     }), null, 8 /* PROPS */, ["onClick"]),
-    createVNode(_component_div, utsMapOf({
+    createElementVNode("view", utsMapOf({
       onClick: () => {maybe.value = count.value}
     }), null, 8 /* PROPS */, ["onClick"]),
-    createVNode(_component_div, utsMapOf({
+    createElementVNode("view", utsMapOf({
       onClick: () => {isRef(lett) ? lett.value = count.value : lett = count.value}
     }), null, 8 /* PROPS */, ["onClick"]),
-    createVNode(_component_div, utsMapOf({
+    createElementVNode("view", utsMapOf({
       onClick: () => {isRef(v) ? v.value += 1 : v += 1}
     }), null, 8 /* PROPS */, ["onClick"]),
-    createVNode(_component_div, utsMapOf({
+    createElementVNode("view", utsMapOf({
       onClick: () => {isRef(v) ? v.value -= 1 : v -= 1}
     }), null, 8 /* PROPS */, ["onClick"]),
-    createVNode(_component_div, utsMapOf({
+    createElementVNode("view", utsMapOf({
       onClick: () => {
               let a = '' + unref(lett)
               isRef(v) ? v.value = a : v = a
            }
     }), null, 8 /* PROPS */, ["onClick"]),
-    createVNode(_component_div, utsMapOf({
+    createElementVNode("view", utsMapOf({
       onClick: () => {
               // nested scopes
               (()=>{
@@ -551,16 +534,14 @@ const _cache = __ins.renderCache;
 return 
 function GenAnonymousRender(): any | null {
 
-const _component_div = resolveComponent("div")
-
   return createElementVNode(Fragment, null, [
-    createVNode(_component_div, utsMapOf({
+    createElementVNode("view", utsMapOf({
       onClick: () => {({ count: count.value } = val)}
     }), null, 8 /* PROPS */, ["onClick"]),
-    createVNode(_component_div, utsMapOf({
+    createElementVNode("view", utsMapOf({
       onClick: () => {[maybe.value] = val}
     }), null, 8 /* PROPS */, ["onClick"]),
-    createVNode(_component_div, utsMapOf({
+    createElementVNode("view", utsMapOf({
       onClick: () => {({ lett: lett } = val)}
     }), null, 8 /* PROPS */, ["onClick"])
   ], 64 /* STABLE_FRAGMENT */)
@@ -586,25 +567,23 @@ const _cache = __ins.renderCache;
 return 
 function GenAnonymousRender(): any | null {
 
-const _component_div = resolveComponent("div")
-
   return createElementVNode(Fragment, null, [
-    createVNode(_component_div, utsMapOf({
+    createElementVNode("view", utsMapOf({
       onClick: () => {count.value++}
     }), null, 8 /* PROPS */, ["onClick"]),
-    createVNode(_component_div, utsMapOf({
+    createElementVNode("view", utsMapOf({
       onClick: () => {--count.value}
     }), null, 8 /* PROPS */, ["onClick"]),
-    createVNode(_component_div, utsMapOf({
+    createElementVNode("view", utsMapOf({
       onClick: () => {maybe.value++}
     }), null, 8 /* PROPS */, ["onClick"]),
-    createVNode(_component_div, utsMapOf({
+    createElementVNode("view", utsMapOf({
       onClick: () => {--maybe.value}
     }), null, 8 /* PROPS */, ["onClick"]),
-    createVNode(_component_div, utsMapOf({
+    createElementVNode("view", utsMapOf({
       onClick: () => {isRef(lett) ? lett.value++ : lett++}
     }), null, 8 /* PROPS */, ["onClick"]),
-    createVNode(_component_div, utsMapOf({
+    createElementVNode("view", utsMapOf({
       onClick: () => {isRef(lett) ? --lett.value : --lett}
     }), null, 8 /* PROPS */, ["onClick"])
   ], 64 /* STABLE_FRAGMENT */)

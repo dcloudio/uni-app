@@ -312,6 +312,7 @@ export async function compile(
           // 处理 config.json
           genConfigJson(
             utsPlatform,
+            isX,
             (utsPlatform === 'app-android'
               ? proxyCodeOptions.androidHookClass
               : proxyCodeOptions.iOSHookClass) || '',
@@ -358,6 +359,7 @@ export async function compile(
         // 处理 config.json
         genConfigJson(
           utsPlatform,
+          isX,
           (utsPlatform === 'app-android'
             ? proxyCodeOptions.androidHookClass
             : proxyCodeOptions.iOSHookClass) || '',

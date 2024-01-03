@@ -531,10 +531,13 @@ foo
   })
 
   test('should not cache update handler if it inside v-once', () => {
-    const root = parseWithVModel('<div v-once><input v-model="foo" /></div>', {
-      prefixIdentifiers: true,
-      cacheHandlers: true,
-    })
+    const root = parseWithVModel(
+      '<view v-once><input v-model="foo" /></view>',
+      {
+        prefixIdentifiers: true,
+        cacheHandlers: true,
+      }
+    )
     expect(root.cached).not.toBe(2)
     expect(root.cached).toBe(1)
   })
@@ -671,7 +674,7 @@ foo
 
     test('used on props', () => {
       const onError = jest.fn()
-      parseWithVModel('<div v-model="p" />', {
+      parseWithVModel('<view v-model="p" />', {
         onError,
         bindingMetadata: {
           p: BindingTypes.PROPS,

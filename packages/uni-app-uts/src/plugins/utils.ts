@@ -1,4 +1,5 @@
 import path from 'node:path'
+import { isAppNVueNativeTag } from '@dcloudio/uni-shared'
 import {
   MANIFEST_JSON_UTS,
   PAGES_JSON_UTS,
@@ -6,13 +7,18 @@ import {
   UniVitePlugin,
   initI18nOptions,
   injectAssetPlugin,
+  matchUTSComponent,
   normalizeNodeModules,
   normalizePath,
+  transformTapToClick,
+  transformUTSComponent,
 } from '@dcloudio/uni-cli-shared'
 import { compileI18nJsonStr } from '@dcloudio/uni-i18n'
 import { Plugin, ResolvedConfig } from 'vite'
 
-export function createUniOptions(): UniVitePlugin['uni'] {
+export function createUniOptions(
+  platform: 'android' | 'ios'
+): UniVitePlugin['uni'] {
   return {
     copyOptions() {
       const platform = process.env.UNI_PLATFORM
@@ -40,6 +46,15 @@ export function createUniOptions(): UniVitePlugin['uni'] {
         targets,
       }
     },
+    compilerOptions:
+      platform === 'ios'
+        ? {
+            isNativeTag(tag) {
+              return matchUTSComponent(tag) || isAppNVueNativeTag(tag)
+            },
+            nodeTransforms: [transformTapToClick, transformUTSComponent],
+          }
+        : {},
   }
 }
 

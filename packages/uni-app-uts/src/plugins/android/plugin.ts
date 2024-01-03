@@ -54,7 +54,7 @@ export function uniAppPlugin(options: {
   return {
     name: 'uni:app-uts',
     apply: 'build',
-    uni: createUniOptions(),
+    uni: createUniOptions('android'),
     config() {
       return {
         base: '/', // 强制 base

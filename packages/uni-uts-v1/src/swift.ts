@@ -83,6 +83,7 @@ export async function runSwiftProd(
     throw parseUTSSyntaxError(result.error, inputDir)
   }
   genUTSPlatformResource(filename, {
+    isX,
     inputDir,
     outputDir,
     platform: 'app-ios',
@@ -170,6 +171,7 @@ export async function runSwiftDev(
   result.type = 'swift'
 
   const swiftFile = resolveUTSPlatformFile(filename, {
+    isX,
     inputDir,
     outputDir,
     platform: 'app-ios',
@@ -280,6 +282,7 @@ export async function compile(
   const result = await bundle(UTSTarget.SWIFT, options)
   sourceMap &&
     moveRootIndexSourceMap(filename, {
+      isX,
       inputDir,
       outputDir,
       platform: 'app-ios',

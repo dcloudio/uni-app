@@ -1,3 +1,4 @@
+import { isAppUVueNativeTag } from '@dcloudio/uni-shared'
 import { compile } from '../../src/plugins/android/uvue/compiler/index'
 import { TemplateCompilerOptions } from '../../src/plugins/android/uvue/compiler/options'
 import { NodeTypes } from '@vue/compiler-core'
@@ -22,6 +23,11 @@ export function assert(
     className: 'PagesIndexIndex',
     prefixIdentifiers: true,
     ...options,
+    isNativeTag(tag: string) {
+      return (
+        isAppUVueNativeTag(tag) || !!options?.parseUTSComponent?.(tag, 'kotlin')
+      )
+    },
   }
   const res = compile(template, compilerOptions)
   if (typeof expect !== 'undefined') {

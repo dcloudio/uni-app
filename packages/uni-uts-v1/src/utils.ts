@@ -77,6 +77,7 @@ export function resolvePackage(filename: string) {
 }
 
 export interface UTSPlatformResourceOptions {
+  isX: boolean
   inputDir: string
   outputDir: string
   platform: typeof process.env.UNI_UTS_PLATFORM
@@ -108,6 +109,8 @@ export function genUTSPlatformResource(
   }
 
   copyConfigJson(
+    platform,
+    options.isX,
     utsInputDir,
     utsOutputDir,
     options.hookClass,
@@ -354,6 +357,7 @@ export function genComponentsCode(
 
 export function genConfigJson(
   platform: 'app-android' | 'app-ios',
+  isX: boolean,
   hookClass: string,
   components: Record<string, string>,
   pluginRelativeDir: string,
@@ -378,6 +382,8 @@ export function genConfigJson(
     platform
   )
   copyConfigJson(
+    platform,
+    isX,
     utsInputDir,
     utsOutputDir,
     hookClass,
@@ -389,6 +395,8 @@ export function genConfigJson(
 }
 
 function copyConfigJson(
+  platform: typeof process.env.UNI_UTS_PLATFORM,
+  isX: boolean,
   inputDir: string,
   outputDir: string,
   hookClass: string,
@@ -405,7 +413,12 @@ function copyConfigJson(
       : {}
     //存在组件
     if (hasComponents) {
-      configJson.components = genComponentsConfigJson(componentsObj, namespace)
+      configJson.components = genComponentsConfigJson(
+        platform,
+        isX,
+        componentsObj,
+        namespace
+      )
     }
     if (hasHookClass) {
       configJson.hooksClass = hookClass
@@ -422,15 +435,22 @@ function copyConfigJson(
 }
 
 function genComponentsConfigJson(
+  platform: typeof process.env.UNI_UTS_PLATFORM,
+  isX: boolean,
   components: Record<string, string>,
   namespace: string
 ) {
-  const res: { name: string; class: string }[] = []
+  const res: { name: string; class: string; delegateClass?: string }[] = []
   Object.keys(components).forEach((name) => {
-    res.push({
+    const normalized = capitalize(camelize(name))
+    const options: typeof res[0] = {
       name,
-      class: namespace + capitalize(camelize(name)) + 'Component',
-    })
+      class: namespace + normalized + 'Component',
+    }
+    if (isX && platform === 'app-ios') {
+      options['delegateClass'] = normalized + 'ComponentDelegate'
+    }
+    res.push(options)
   })
   return res
 }

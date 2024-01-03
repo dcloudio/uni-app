@@ -359,7 +359,7 @@ _ctx.bar()
   })
 
   test('inline statement w/ prefixIdentifiers: true', () => {
-    const { node } = parseWithVOn(`<div @click="foo($event)"/>`, {
+    const { node } = parseWithVOn(`<view @click="foo($event)"/>`, {
       prefixIdentifiers: true,
     })
     expect((node.codegenNode as VNodeCall).props).toMatchObject({

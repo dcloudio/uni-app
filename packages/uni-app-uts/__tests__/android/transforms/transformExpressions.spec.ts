@@ -88,7 +88,7 @@ describe('compiler: expression transform', () => {
 
   test('directive value', () => {
     const node = parseWithExpressionTransform(
-      `<div v-foo:arg="baz"/>`
+      `<view v-foo:arg="baz"/>`
     ) as ElementNode
     const arg = (node.props[0] as DirectiveNode).arg!
     expect(arg).toMatchObject({
@@ -104,7 +104,7 @@ describe('compiler: expression transform', () => {
 
   test('dynamic directive arg', () => {
     const node = parseWithExpressionTransform(
-      `<div v-foo:[arg]="baz"/>`
+      `<view v-foo:[arg]="baz"/>`
     ) as ElementNode
     const arg = (node.props[0] as DirectiveNode).arg!
     expect(arg).toMatchObject({
@@ -541,7 +541,7 @@ describe('compiler: expression transform', () => {
 
     test('should not prefix temp variable of for...in', () => {
       const { code } = compileWithBindingMetadata(
-        `<div @click="() => {
+        `<view @click="() => {
           for (const x in list) {
             log(x)
           }         
@@ -553,7 +553,7 @@ describe('compiler: expression transform', () => {
 
     test('should not prefix temp variable of for...of', () => {
       const { code } = compileWithBindingMetadata(
-        `<div @click="() => {
+        `<view @click="() => {
           for (const x of list) {
             log(x)
           }         
@@ -565,7 +565,7 @@ describe('compiler: expression transform', () => {
 
     test('should not prefix temp variable of for loop', () => {
       const { code } = compileWithBindingMetadata(
-        `<div @click="() => {
+        `<view @click="() => {
           for (let i = 0; i < list.length; i++) {
             log(i)
           }         

@@ -366,7 +366,7 @@ describe('SFC compile <script setup>', () => {
         import { vMyDir } from './x'
         </script>
         <template>
-          <div v-my-dir></div>
+          <view v-my-dir></view>
         </template>
         `)
       // expect(content).toMatch(`return { get vMyDir() { return vMyDir } }`)
@@ -381,9 +381,9 @@ describe('SFC compile <script setup>', () => {
         <template>
           <FooBar #[foo.slotName] />
           <FooBar #unused />
-          <div :[bar.attrName]="15"></div>
-          <div unused="unused"></div>
-          <div #[\`item:\${baz.key}\`]="{ value }"></div>
+          <view :[bar.attrName]="15"></view>
+          <view unused="unused"></view>
+          <view #[\`item:\${baz.key}\`]="{ value }"></view>
         </template>
         `)
       // expect(content).toMatch(
@@ -401,7 +401,7 @@ describe('SFC compile <script setup>', () => {
         const cond = true
         </script>
         <template>
-          <div :class="[cond ? '' : bar(), 'default']" :style="baz"></div>
+          <view :class="[cond ? '' : bar(), 'default']" :style="baz"></view>
         </template>
         `)
       // expect(content).toMatch(
@@ -416,7 +416,7 @@ describe('SFC compile <script setup>', () => {
       import { x, y, z, x$y } from './x'
       </script>
       <template>
-        <div :id="z + 'y'">{{ x }} {{ yy }} {{ x$y }}</div>
+        <view :id="z + 'y'">{{ x }} {{ yy }} {{ x$y }}</view>
       </template>
       `)
       // x: used in interpolation
@@ -474,7 +474,7 @@ describe('SFC compile <script setup>', () => {
           {{ b<Bar>() }}
           {{ Baz }}
           <Comp v-slot="{ data }: Qux">{{ data }}</Comp>
-          <div v-for="{ z = x as Qux } in list as Fred"/>
+          <view v-for="{ z = x as Qux } in list as Fred"/>
         </template>
         `)
       // expect(content).toMatch(`return { a, b, get Baz() { return Baz } }`)
@@ -489,7 +489,7 @@ describe('SFC compile <script setup>', () => {
         import { foo } from './foo'
       </script>
       <template>
-        <div @click="$emit('update:a');"></div>
+        <view @click="$emit('update:a');"></view>
       </template>
       `)
     })
@@ -500,8 +500,8 @@ describe('SFC compile <script setup>', () => {
           import { foo, bar, Baz } from './foo'
         </script>
         <template>
-          <div ref="foo"></div>
-          <div ref=""></div>
+          <view ref="foo"></view>
+          <view ref=""></view>
           <Baz ref="bar" />
         </template>
         `)
@@ -521,8 +521,8 @@ describe('SFC compile <script setup>', () => {
         const count = ref(0)
         </script>
         <template>
-          <div>{{ count }}</div>
-          <div>static</div>
+          <view>{{ count }}</view>
+          <view>static</view>
         </template>
         `,
         { inlineTemplate: true }
@@ -559,7 +559,7 @@ describe('SFC compile <script setup>', () => {
         import vMyDir from './my-dir'
         </script>
         <template>
-          <div v-my-dir></div>
+          <view v-my-dir></view>
           <ChildComp/>
           <some-other-comp/>
         </template>
@@ -589,7 +589,7 @@ describe('SFC compile <script setup>', () => {
         </script>
         <template>
           <Foo>{{ bar }}</Foo>
-          <div @click="fn">{{ count }} {{ constant }} {{ maybe }} {{ lett }} {{ other }}</div>
+          <view @click="fn">{{ count }} {{ constant }} {{ maybe }} {{ lett }} {{ other }}</view>
           {{ tree.foo() }}
         </template>
         `,
@@ -677,16 +677,16 @@ describe('SFC compile <script setup>', () => {
         let v = ref(1)
         </script>
         <template>
-          <div @click="count = 1"/>
-          <div @click="maybe = count"/>
-          <div @click="lett = count"/>
-          <div @click="v += 1"/>
-          <div @click="v -= 1"/>
-          <div @click="() => {
+          <view @click="count = 1"/>
+          <view @click="maybe = count"/>
+          <view @click="lett = count"/>
+          <view @click="v += 1"/>
+          <view @click="v -= 1"/>
+          <view @click="() => {
               let a = '' + lett
               v = a
            }"/>
-           <div @click="() => {
+           <view @click="() => {
               // nested scopes
               (()=>{
                 let x = a
@@ -726,12 +726,12 @@ describe('SFC compile <script setup>', () => {
         let lett = 1
         </script>
         <template>
-          <div @click="count++"/>
-          <div @click="--count"/>
-          <div @click="maybe++"/>
-          <div @click="--maybe"/>
-          <div @click="lett++"/>
-          <div @click="--lett"/>
+          <view @click="count++"/>
+          <view @click="--count"/>
+          <view @click="maybe++"/>
+          <view @click="--maybe"/>
+          <view @click="lett++"/>
+          <view @click="--lett"/>
         </template>
         `,
         { inlineTemplate: true }
@@ -758,9 +758,9 @@ describe('SFC compile <script setup>', () => {
         let lett = 1
         </script>
         <template>
-          <div @click="({ count } = val)"/>
-          <div @click="[maybe] = val"/>
-          <div @click="({ lett } = val)"/>
+          <view @click="({ count } = val)"/>
+          <view @click="[maybe] = val"/>
+          <view @click="({ lett } = val)"/>
         </template>
         `,
         { inlineTemplate: true }
@@ -783,8 +783,8 @@ describe('SFC compile <script setup>', () => {
     //     const style = { color: 'red' }
     //     </script>
     //     <template>
-    //       <div>{{ count }}</div>
-    //       <div>static</div>
+    //       <view>{{ count }}</view>
+    //       <view>static</view>
     //     </template>
     //     <style>
     //     div { color: v-bind(count) }
@@ -816,7 +816,7 @@ describe('SFC compile <script setup>', () => {
         const stacks = ref([])
         </script>
         <template>
-            <div v-for="({ file: efile }) of stacks"></div>
+            <view v-for="({ file: efile }) of stacks"></view>
         </template>
         `,
           {

@@ -35,7 +35,7 @@ describe('compiler-dom: transform v-on', () => {
     const warnings: string[] = []
     const {
       props: [prop],
-    } = parseWithVOn(`<div @click.stop.prevent="test"/>`, {
+    } = parseWithVOn(`<view @click.stop.prevent="test"/>`, {
       prefixIdentifiers: true,
       onWarn(warning) {
         warnings.push(warning.message)
@@ -54,7 +54,7 @@ describe('compiler-dom: transform v-on', () => {
   it('should support multiple events and modifiers options w/ prefixIdentifiers: true', () => {
     const warnings: string[] = []
     const { props } = parseWithVOn(
-      `<div @click.stop="test" @keyup.enter="test" />`,
+      `<view @click.stop="test" @keyup.enter="test" />`,
       {
         prefixIdentifiers: true,
         onWarn(warning) {
@@ -79,7 +79,7 @@ describe('compiler-dom: transform v-on', () => {
     const warnings: string[] = []
     const {
       props: [prop],
-    } = parseWithVOn(`<div @click.stop.capture.once="test"/>`, {
+    } = parseWithVOn(`<view @click.stop.capture.once="test"/>`, {
       prefixIdentifiers: true,
       onWarn(warning) {
         warnings.push(warning.message)
@@ -100,7 +100,7 @@ describe('compiler-dom: transform v-on', () => {
 
   it('should wrap keys guard for keyboard events or dynamic events', () => {
     const warnings: string[] = []
-    parseWithVOn(`<div @keydown.stop.capture.ctrl.a="test"/>`, {
+    parseWithVOn(`<view @keydown.stop.capture.ctrl.a="test"/>`, {
       prefixIdentifiers: true,
       onWarn(warning) {
         warnings.push(warning.message)
@@ -115,7 +115,7 @@ describe('compiler-dom: transform v-on', () => {
 
   it('should not wrap keys guard if no key modifier is present', () => {
     const warnings: string[] = []
-    parseWithVOn(`<div @keyup.exact="test"/>`, {
+    parseWithVOn(`<view @keyup.exact="test"/>`, {
       prefixIdentifiers: true,
       onWarn(warning) {
         warnings.push(warning.message)
@@ -126,7 +126,7 @@ describe('compiler-dom: transform v-on', () => {
 
   it('should wrap keys guard for static key event w/ left/right modifiers', () => {
     const warnings: string[] = []
-    parseWithVOn(`<div @keyup.left="test"/>`, {
+    parseWithVOn(`<view @keyup.left="test"/>`, {
       prefixIdentifiers: true,
       onWarn(warning) {
         warnings.push(warning.message)
@@ -137,7 +137,7 @@ describe('compiler-dom: transform v-on', () => {
 
   it('should wrap both for dynamic key event w/ left/right modifiers', () => {
     const warnings: string[] = []
-    parseWithVOn(`<div @[e].left="test"/>`, {
+    parseWithVOn(`<view @[e].left="test"/>`, {
       prefixIdentifiers: true,
       onWarn(warning) {
         warnings.push(warning.message)
@@ -148,7 +148,7 @@ describe('compiler-dom: transform v-on', () => {
 
   it('should not wrap normal guard if there is only keys guard', () => {
     const warnings: string[] = []
-    parseWithVOn(`<div @keyup.enter="test"/>`, {
+    parseWithVOn(`<view @keyup.enter="test"/>`, {
       prefixIdentifiers: true,
       onWarn(warning) {
         warnings.push(warning.message)
@@ -159,7 +159,7 @@ describe('compiler-dom: transform v-on', () => {
 
   test('should transform click.right', () => {
     const warnings: string[] = []
-    parseWithVOn(`<div @click.right="test"/>`, {
+    parseWithVOn(`<view @click.right="test"/>`, {
       onWarn(warning) {
         warnings.push(warning.message)
       },
@@ -167,7 +167,7 @@ describe('compiler-dom: transform v-on', () => {
     expect(warnings).toEqual(['.right is not supported'])
     const warnings1: string[] = []
     // dynamic
-    parseWithVOn(`<div @[event].right="test"/>`, {
+    parseWithVOn(`<view @[event].right="test"/>`, {
       onWarn(warning) {
         warnings1.push(warning.message)
       },
@@ -178,7 +178,7 @@ describe('compiler-dom: transform v-on', () => {
 
   test('should transform click.middle', () => {
     const warnings: string[] = []
-    parseWithVOn(`<div @click.middle="test"/>`, {
+    parseWithVOn(`<view @click.middle="test"/>`, {
       onWarn(warning) {
         warnings.push(warning.message)
       },
@@ -186,7 +186,7 @@ describe('compiler-dom: transform v-on', () => {
     expect(warnings).toEqual(['.middle is not supported'])
     // dynamic
     const warnings1: string[] = []
-    parseWithVOn(`<div @[event].middle="test"/>`, {
+    parseWithVOn(`<view @[event].middle="test"/>`, {
       onWarn(warning) {
         warnings1.push(warning.message)
       },
@@ -200,7 +200,7 @@ describe('compiler-dom: transform v-on', () => {
     const {
       root,
       // props: [prop],
-    } = parseWithVOn(`<div @keyup.enter.capture="foo" />`, {
+    } = parseWithVOn(`<view @keyup.enter.capture="foo" />`, {
       prefixIdentifiers: true,
       cacheHandlers: true,
       onWarn(warning) {

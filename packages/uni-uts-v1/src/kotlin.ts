@@ -121,6 +121,7 @@ export async function runKotlinProd(
     throw parseUTSSyntaxError(result.error, inputDir)
   }
   genUTSPlatformResource(filename, {
+    isX,
     inputDir,
     outputDir,
     platform: 'app-android',
@@ -200,6 +201,7 @@ export async function runKotlinDev(
   result.changed = []
 
   const kotlinFile = resolveUTSPlatformFile(filename, {
+    isX,
     inputDir,
     outputDir,
     platform: 'app-android',
@@ -501,6 +503,7 @@ export async function compile(
   const result = await bundle(UTSTarget.KOTLIN, options)
   sourceMap &&
     moveRootIndexSourceMap(filename, {
+      isX,
       inputDir,
       outputDir,
       platform: 'app-android',

@@ -24,7 +24,7 @@ export function uniAppIOSPlugin(): UniVitePlugin {
   return {
     name: 'uni:app-uts',
     apply: 'build',
-    uni: createUniOptions(),
+    uni: createUniOptions('ios'),
     config() {
       return {
         base: '/', // 强制 base

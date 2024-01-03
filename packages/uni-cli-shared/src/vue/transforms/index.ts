@@ -9,6 +9,7 @@ export * from './transformPageHead'
 export * from './transformComponent'
 export * from './transformEvent'
 export * from './transformTag'
+export * from './transformUTSComponent'
 export { createAssetUrlTransformWithOptions } from './templateTransformAssetUrl'
 export { createSrcsetTransformWithOptions } from './templateTransformSrcset'
 export {

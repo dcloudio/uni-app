@@ -7109,9 +7109,9 @@ const pixelRatio = /* @__PURE__ */ function() {
   return (window.devicePixelRatio || 1) / backingStore;
 }();
 function wrapper(canvas, hidpi = true) {
-  const pixelRatio2 = hidpi ? pixelRatio2 : 1;
-  canvas.width = canvas.offsetWidth * pixelRatio2;
-  canvas.height = canvas.offsetHeight * pixelRatio2;
+  const pixel_ratio = hidpi ? pixelRatio : 1;
+  canvas.width = canvas.offsetWidth * pixel_ratio;
+  canvas.height = canvas.offsetHeight * pixel_ratio;
   canvas.getContext("2d").__hidpi__ = hidpi;
 }
 let isHidpi = false;

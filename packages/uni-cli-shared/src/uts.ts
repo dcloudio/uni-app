@@ -12,7 +12,7 @@ import {
   normalizePath,
   version,
 } from './utils'
-import type { EasycomMatcher } from './easycom'
+import { matchEasycom, type EasycomMatcher } from './easycom'
 
 import { parseUniExtApis } from './uni_modules'
 
@@ -346,3 +346,8 @@ export const parseUniExtApiNamespacesJsOnce = once(
     return namespaces
   }
 )
+
+export function matchUTSComponent(tag: string) {
+  const source = matchEasycom(tag)
+  return !!(source && source.includes('uts-proxy'))
+}
