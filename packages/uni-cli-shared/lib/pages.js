@@ -122,7 +122,15 @@ function isValidPage (page, root = '') {
   let pagePath = page.path
 
   if (pagePath.indexOf('platforms') === 0) { // 平台相关
-    if (pagePath.indexOf('platforms/' + process.env.UNI_PLATFORM) === -1) { // 非本平台
+    if (process.env.UNI_PLATFORM === 'h5' || process.env.UNI_PLATFORM === 'web') {
+      if (!(pagePath.indexOf('platforms/h5/') === 0 || pagePath.indexOf('platforms/web/') === 0)) {
+        return false
+      }
+    } else if (process.env.UNI_PLATFORM === 'app-plus' || process.env.UNI_PLATFORM === 'app') {
+      if (!(pagePath.indexOf('platforms/app-plus/') === 0 || pagePath.indexOf('platforms/app/') === 0)) {
+        return false
+      }
+    } else if (pagePath.indexOf('platforms/' + process.env.UNI_PLATFORM) === -1) { // 非本平台
       return false
     }
   }
