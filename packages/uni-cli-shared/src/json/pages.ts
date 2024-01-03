@@ -547,30 +547,57 @@ function parseSubpackagesRoot(inputDir: string, platform: UniApp.PLATFORM) {
 
 export const parseSubpackagesRootOnce = once(parseSubpackagesRoot)
 
+let isInvalidPagesWarned = false
 export function filterPlatformPages(
   platform: UniApp.PLATFORM,
   pagesJson: UniApp.PagesJson
 ) {
-  pagesJson.pages = pagesJson.pages.filter(({ path }) =>
-    isPlatformPage(platform, path)
-  )
+  const invalidPages: string[] = []
+  pagesJson.pages = pagesJson.pages.filter(({ path }) => {
+    if (isPlatformPage(platform, path)) {
+      return true
+    }
+    invalidPages.push(path)
+    return false
+  })
   if (pagesJson.subPackages) {
     pagesJson.subPackages.forEach((subPackage) => {
       if (subPackage.pages) {
-        subPackage.pages = subPackage.pages.filter(({ path }) =>
-          isPlatformPage(platform, path)
-        )
+        subPackage.pages = subPackage.pages.filter(({ path }) => {
+          const pagePath = subPackage.root + '/' + path
+          if (isPlatformPage(platform, pagePath)) {
+            return true
+          }
+          invalidPages.push(pagePath)
+          return false
+        })
       }
     })
   }
   if (pagesJson.subpackages) {
     pagesJson.subpackages.forEach((subPackage) => {
       if (subPackage.pages) {
-        subPackage.pages = subPackage.pages.filter(({ path }) =>
-          isPlatformPage(platform, path)
-        )
+        subPackage.pages = subPackage.pages.filter(({ path }) => {
+          const pagePath = subPackage.root + '/' + path
+          if (isPlatformPage(platform, pagePath)) {
+            return true
+          }
+          invalidPages.push(pagePath)
+          return false
+        })
       }
     })
+  }
+  // 目前仅启动的时候警告一次，该方法可能会被调用很多次
+  if (invalidPages.length) {
+    if (!isInvalidPagesWarned) {
+      isInvalidPagesWarned = true
+      console.log(
+        `已忽略页面：${invalidPages.join(
+          '、'
+        )}。详见：https://uniapp.dcloud.net.cn/tutorial/platform.html#platforms`
+      )
+    }
   }
 }
 
