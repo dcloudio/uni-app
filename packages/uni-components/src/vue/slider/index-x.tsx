@@ -94,29 +94,28 @@ class UniSliderElement extends UniElement {
     this.updateValue(this.value)
   }
 
-  get value(): string {
-    return this.htmlSlider!.value
+  get value(): number {
+    return Number(this.htmlSlider!.value)
   }
-  set value(value: string) {
-    this.htmlSlider!.value = value
+  set value(value: number) {
+    this.htmlSlider!.value = value.toString()
     this.updateValue(value)
   }
 
   reset() {
-    this.value = this._initialValue.toString()
+    this.value = this._initialValue
   }
 
-  updateValue(value: string) {
+  updateValue(value: number) {
     const min = Number(this.htmlSlider!.getAttribute('min'))
     const max = Number(this.htmlSlider!.getAttribute('max'))
-    const valueNumber = Number(value)
-    const percentage = getValuePercentage(valueNumber, min, max)
+    const percentage = getValuePercentage(value, min, max)
     this.trackValue!.style.width = percentage
     this.thumbValue!.style.left = percentage
     this.inputValue!.innerText = value.toString()
   }
 }
-// class UniSliderElement extends UniElement {}
+
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Slider',
   props,
@@ -133,7 +132,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     watch(
       () => props.value,
       (val) => {
-        uniSliderElement!.value = val.toString()
+        uniSliderElement!.value = Number(val)
       }
     )
 
@@ -242,10 +241,10 @@ function useSliderLoader(
     if (props.disabled) {
       return
     }
-    const valueString = (event.target as HTMLInputElement).value
-    ;(sliderRef.value as UniSliderElement).updateValue(valueString)
+    const valueNumber = Number((event.target as HTMLInputElement).value)
+    ;(sliderRef.value as UniSliderElement).updateValue(valueNumber)
     trigger('changing', event, {
-      value: Number(valueString!),
+      value: valueNumber,
     })
   }
 
@@ -253,10 +252,10 @@ function useSliderLoader(
     if (props.disabled) {
       return
     }
-    const valueString = (event.target as HTMLInputElement).value
-    ;(sliderRef.value as UniSliderElement).updateValue(valueString)
+    const valueNumber = Number((event.target as HTMLInputElement).value)
+    ;(sliderRef.value as UniSliderElement).updateValue(valueNumber)
     trigger('change', event, {
-      value: Number(valueString!),
+      value: valueNumber,
     })
   }
 
