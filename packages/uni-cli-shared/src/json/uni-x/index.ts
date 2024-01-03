@@ -4,7 +4,11 @@ import { extend, isArray, isString } from '@vue/shared'
 import { CompilerError } from '@vue/compiler-core'
 import { ParseError, parseTree, printParseErrorCode, Node } from 'jsonc-parser'
 import { parseJson } from '../json'
-import { removePlatformStyle, validatePages } from '../pages'
+import {
+  filterPlatformPages,
+  removePlatformStyle,
+  validatePages,
+} from '../pages'
 import { normalizePath } from '../../utils'
 import { normalizeAppUniRoutes } from '../app/pages/uniRoutes'
 import { normalizeAppXUniConfig } from './uniConfig'
@@ -181,6 +185,8 @@ export function normalizeUniAppXAppPagesJson(jsonStr: string) {
   if (userPagesJson.uniIdRouter) {
     pagesJson.uniIdRouter = userPagesJson.uniIdRouter
   }
+  // 是否应该用 process.env.UNI_UTS_PLATFORM
+  filterPlatformPages(process.env.UNI_PLATFORM, pagesJson)
   return pagesJson
 }
 

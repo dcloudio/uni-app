@@ -127,6 +127,10 @@ export function normalizePagesJson(
       delete pagesJson.tabBar
     }
   }
+
+  // 过滤平台page
+  filterPlatformPages(platform, pagesJson)
+
   // 缓存页面列表
   pagesCacheSet.clear()
   pagesJson.pages.forEach((page) => pagesCacheSet.add(page.path))
@@ -542,3 +546,48 @@ function parseSubpackagesRoot(inputDir: string, platform: UniApp.PLATFORM) {
 }
 
 export const parseSubpackagesRootOnce = once(parseSubpackagesRoot)
+
+export function filterPlatformPages(
+  platform: UniApp.PLATFORM,
+  pagesJson: UniApp.PagesJson
+) {
+  pagesJson.pages = pagesJson.pages.filter(({ path }) =>
+    isPlatformPage(platform, path)
+  )
+  if (pagesJson.subPackages) {
+    pagesJson.subPackages.forEach((subPackage) => {
+      if (subPackage.pages) {
+        subPackage.pages = subPackage.pages.filter(({ path }) =>
+          isPlatformPage(platform, path)
+        )
+      }
+    })
+  }
+  if (pagesJson.subpackages) {
+    pagesJson.subpackages.forEach((subPackage) => {
+      if (subPackage.pages) {
+        subPackage.pages = subPackage.pages.filter(({ path }) =>
+          isPlatformPage(platform, path)
+        )
+      }
+    })
+  }
+}
+
+function isPlatformPage(platform: UniApp.PLATFORM, pagePath: string) {
+  if (pagePath.startsWith('platforms/')) {
+    if (platform === 'app' || platform === 'app-plus') {
+      return (
+        pagePath.startsWith('platforms/app/') ||
+        pagePath.startsWith('platforms/app-plus/')
+      )
+    } else if (platform === 'h5' || platform === 'web') {
+      return (
+        pagePath.startsWith('platforms/h5/') ||
+        pagePath.startsWith('platforms/web/')
+      )
+    }
+    return pagePath.startsWith('platforms/' + platform + '/')
+  }
+  return true
+}
