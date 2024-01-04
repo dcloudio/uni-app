@@ -56,7 +56,7 @@ export interface ToOptions {
   }
 }
 
-export { parse, bundleKotlin, bundleSwift } from './api'
+export { parse, toKotlin, toSwift, bundleKotlin, bundleSwift } from './api'
 
 export function bundle(
   target: UTSTarget,
