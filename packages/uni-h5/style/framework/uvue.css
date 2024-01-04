@@ -12,28 +12,37 @@ uni-app uni-textarea {
   text-align: left;
 }
 
+/* 修正box-sizing: border-box;负面效果 */
 uni-app uni-input {
   height: auto;
 }
 
+/* 文字容器 */
 uni-app uni-text,
-uni-app uni-textarea {
+uni-app uni-textarea,
+uni-app uni-label {
   line-height: 1.2;
+  overflow: hidden;
 }
 
-uni-app uni-text {
+uni-app uni-text,
+uni-app uni-label {
   letter-spacing: 0;
 }
 
 uni-app uni-view,
 uni-app uni-label,
-uni-app uni-scroll-view,
-uni-app uni-list-view,
-uni-app uni-list-item,
+uni-app uni-swiper,
 uni-app uni-swiper-item,
+uni-app uni-movable-area,
+uni-app uni-movable-view,
+uni-app uni-cover-view,
+uni-app uni-list-item,
 uni-app uni-navigator,
 uni-app uni-radio-group,
-uni-app uni-checkbox-group {
+uni-app uni-checkbox-group,
+uni-app uni-scroll-view, 
+uni-app uni-list-view {
   display: flex;
   flex-shrink: 0;
   flex-grow: 0;
@@ -43,35 +52,58 @@ uni-app uni-checkbox-group {
   justify-content: flex-start;
 }
 
-/* 此样式可被manifest.json内配置的flex-direction重置 */
+/* 与开发者元素接触的容器，此样式可被manifest.json内配置的flex-direction重置 */
 uni-app uni-view,
 uni-app uni-label,
-uni-app uni-scroll-view,
-uni-app uni-list-view,
-uni-app uni-list-item,
+uni-app uni-swiper,
 uni-app uni-swiper-item,
+uni-app uni-movable-area,
+uni-app uni-movable-view,
+uni-app uni-cover-view,
+uni-app uni-list-item,
+uni-app uni-navigator,
+uni-app uni-radio-group,
+uni-app uni-checkbox-group,
+uni-app uni-scroll-view, 
+uni-app uni-list-view {
+  display: flex;
+  flex-direction: column;
+  min-height: 0px; /* 默认情况下，元素不会缩短至小于内容框尺寸，若想改变这一状况，请设置元素的min-width 与 min-height属性。https://developer.mozilla.org/zh-CN/docs/Web/CSS/flex */
+}
+
+/* 与开发者元素接触的非滚动容器 */
+uni-app uni-view,
+uni-app uni-swiper,
+uni-app uni-swiper-item,
+uni-app uni-movable-area,
+uni-app uni-movable-view,
+uni-app uni-cover-view,
+uni-app uni-list-item,
 uni-app uni-navigator,
 uni-app uni-radio-group,
 uni-app uni-checkbox-group {
-  flex-direction: column;
-  min-height: 0px; /* 默认情况下，元素不会缩短至小于内容框尺寸，若想改变这一状况，请设置元素的min-width 与 min-height属性。https://developer.mozilla.org/zh-CN/docs/Web/CSS/flex */
+  overflow: hidden;
 }
 
 uni-app uni-button {
   margin: 0;
 }
 
+/* 透传scroll-view的flex-direction样式 */
 uni-app uni-scroll-view {
   width: auto;
 }
 
-uni-app .uni-scroll-view {
+uni-app .uni-scroll-view,
+uni-app .uni-scroll-view-content {
   flex-direction: inherit;
+  align-items: inherit;
+  align-content: inherit;
+  justify-content: inherit;
 }
 
 uni-app .uni-scroll-view-content {
   display: flex;
-  flex-direction: inherit;
   min-height: 0px;
 }
 
