@@ -35,7 +35,8 @@ async function run() {
     const options = {
         input: {
             root: inputDir,
-            filename
+            filename,
+            comments: true
         },
         output: {
             outDir,
