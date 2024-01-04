@@ -6,6 +6,9 @@
     "external": ["@vue/shared"],
     "replaceAfterBundled": {
       "@vue/shared": "uni-shared"
+    },
+    "replacements": {
+      "__X__": "false"
     }
   },
   {
