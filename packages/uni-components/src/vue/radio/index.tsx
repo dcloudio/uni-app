@@ -69,6 +69,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     const rootRef = ref<HTMLElement | null>(null)
     const radioChecked = ref(props.checked)
     const radioValue = ref(props.value)
+    //#if _X_ && !_NODE_JS_
+    const initialCheckedValue = props.checked
+    //#endif
 
     function getRadioStyle(checked: boolean | string) {
       if (props.disabled) {
@@ -102,7 +105,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     )
 
     const reset = () => {
+      //#if _X_ && !_NODE_JS_
+      radioChecked.value = initialCheckedValue
+      //#else
       radioChecked.value = false
+      //#endif
     }
 
     const { uniCheckGroup, uniLabel, field } = useRadioInject(

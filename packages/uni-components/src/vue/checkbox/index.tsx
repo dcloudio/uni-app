@@ -72,6 +72,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       return checkboxChecked.value === 'true' || checkboxChecked.value === true
     })
     const checkboxValue = ref(props.value)
+    //#if _X_ && !_NODE_JS_
+    const initialCheckedValue = props.checked
+    //#endif
 
     function getCheckBoxStyle(checked: boolean) {
       if (props.disabled) {
@@ -106,7 +109,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     )
 
     const reset = () => {
+      //#if _X_ && !_NODE_JS_
+      checkboxChecked.value = initialCheckedValue
+      //#else
       checkboxChecked.value = false
+      //#endif
     }
 
     const { uniCheckGroup, uniLabel } = useCheckboxInject(
