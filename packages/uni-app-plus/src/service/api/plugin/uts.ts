@@ -205,7 +205,21 @@ function getProxy(): {
   invokeAsync: (args: InvokeArgs, callback: InvokeAsyncCallback) => void
 } {
   if (!proxy) {
-    proxy = uni.requireNativePlugin('UTS-Proxy') as any
+    if (__X__) {
+      // iOS
+      proxy = {
+        invokeSync(args: InvokeArgs, callback: InvokeSyncCallback) {
+          // @ts-expect-error
+          return nativeChannel.invokeSync('APP-SERVICE', args, callback)
+        },
+        invokeAsync(args: InvokeArgs, callback: InvokeAsyncCallback) {
+          // @ts-expect-error
+          return nativeChannel.invokeAsync('APP-SERVICE', args, callback)
+        },
+      }
+    } else {
+      proxy = uni.requireNativePlugin('UTS-Proxy') as any
+    }
   }
   return proxy
 }

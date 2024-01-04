@@ -23,7 +23,22 @@ function initUTSInstanceMethod(async, opts, instanceId, proxy) {
 }
 function getProxy() {
     if (!proxy) {
-        proxy = uni.requireNativePlugin('UTS-Proxy');
+        if (__X__) {
+            // iOS
+            proxy = {
+                invokeSync(args, callback) {
+                    // @ts-expect-error
+                    return nativeChannel.invokeSync('APP-SERVICE', args, callback);
+                },
+                invokeAsync(args, callback) {
+                    // @ts-expect-error
+                    return nativeChannel.invokeAsync('APP-SERVICE', args, callback);
+                },
+            };
+        }
+        else {
+            proxy = uni.requireNativePlugin('UTS-Proxy');
+        }
     }
     return proxy;
 }

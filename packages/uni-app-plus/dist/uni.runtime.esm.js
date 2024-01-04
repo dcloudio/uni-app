@@ -17315,7 +17315,9 @@ function initUTSInstanceMethod(async, opts, instanceId, proxy) {
 }
 function getProxy() {
     if (!proxy) {
-        proxy = uni.requireNativePlugin('UTS-Proxy');
+        {
+            proxy = uni.requireNativePlugin('UTS-Proxy');
+        }
     }
     return proxy;
 }
