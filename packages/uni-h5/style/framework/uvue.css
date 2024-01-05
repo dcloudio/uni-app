@@ -1,3 +1,8 @@
+html,
+body {
+  line-height: 1.2;
+}
+
 uni-app uni-page-body {
   display: flex;
   flex-direction: column;
