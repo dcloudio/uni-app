@@ -1,5 +1,7 @@
 # uni-app 贡献指南
 
+当前贡献指南针对基于 Vue2 的 uni-app，如需阅读基于 Vue3 版本的贡献指南请移步 [next](../../next/.github/CONTRIBUTING.md) 分支。
+
 ## 环境搭建
 
 * 需要安装 [Node.js](http://nodejs.org/) 12+，以及 [yarn](https://yarnpkg.com/en/docs/install)。
