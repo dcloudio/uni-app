@@ -157,7 +157,7 @@ uni-slider .uni-slider-value {
   width: 3ch;
   color: #888;
   font-size: 14px;
-  margin-left: 1em;
+  margin-left: 3px;
 }
 
 uni-slider .uni-slider-disabled .uni-slider-track {
