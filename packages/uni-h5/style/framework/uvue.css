@@ -122,7 +122,6 @@ uni-app uni-text,
 uni-app uni-textarea,
 uni-app uni-video {
   position: relative;
-  border: 0px solid #000000;
   box-sizing: border-box;
 }
 
