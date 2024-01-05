@@ -1,3 +1,9 @@
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
 import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, nextTick, onBeforeMount, withDirectives, vModelDynamic, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, h, createTextVNode, createBlock, onBeforeActivate, onBeforeDeactivate, renderList, onDeactivated, createApp, isReactive, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
 import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, debounce, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, parseQuery, NAVBAR_HEIGHT, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, updateElementStyle, sortObject, OFF_THEME_CHANGE, ON_BACK_PRESS, parseUrl, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
@@ -2125,7 +2131,8 @@ class UniElement extends HTMLElement {
     this._props = props2;
   }
   getAttribute(qualifiedName) {
-    return qualifiedName in this._props ? this._props[qualifiedName] + "" : super.getAttribute(qualifiedName);
+    const name = qualifiedName.indexOf("-") > -1 ? qualifiedName.replace(/-(\w)/g, (_, c) => c.toUpperCase()) : qualifiedName;
+    return name in this._props ? this._props[name] + "" : super.getAttribute(name) || null;
   }
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
@@ -7828,6 +7835,7 @@ const index$s = /* @__PURE__ */ defineBuiltInComponent({
       return checkboxChecked.value === "true" || checkboxChecked.value === true;
     });
     const checkboxValue = ref(props2.value);
+    const initialCheckedValue = props2.checked;
     function getCheckBoxStyle(checked) {
       if (props2.disabled) {
         return {
@@ -7857,7 +7865,7 @@ const index$s = /* @__PURE__ */ defineBuiltInComponent({
       checkboxValue.value = newModelValue;
     });
     const reset = () => {
-      checkboxChecked.value = false;
+      checkboxChecked.value = initialCheckedValue;
     };
     const {
       uniCheckGroup,
@@ -9277,6 +9285,7 @@ function useFormField(nameKey, value) {
     return;
   }
   const instance2 = getCurrentInstance();
+  const initialValue = isString(value) ? instance2.proxy[value] : value.value;
   const ctx = {
     submit() {
       const proxy = instance2.proxy;
@@ -9287,9 +9296,9 @@ function useFormField(nameKey, value) {
     },
     reset() {
       if (isString(value)) {
-        instance2.proxy[value] = "";
+        instance2.proxy[value] = initialValue;
       } else {
-        value.value = "";
+        value.value = initialValue;
       }
     }
   };
@@ -12871,6 +12880,7 @@ const index$l = /* @__PURE__ */ defineBuiltInComponent({
     const rootRef = ref(null);
     const radioChecked = ref(props2.checked);
     const radioValue = ref(props2.value);
+    const initialCheckedValue = props2.checked;
     function getRadioStyle(checked) {
       if (props2.disabled) {
         return {
@@ -12898,7 +12908,7 @@ const index$l = /* @__PURE__ */ defineBuiltInComponent({
       radioValue.value = newModelValue;
     });
     const reset = () => {
-      radioChecked.value = false;
+      radioChecked.value = initialCheckedValue;
     };
     const {
       uniCheckGroup,
@@ -13390,6 +13400,34 @@ const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
     });
     onMounted(() => {
       const rootElement = rootRef.value;
+      Object.defineProperties(rootElement, {
+        scrollHeight: {
+          get() {
+            return main.value.scrollHeight;
+          }
+        },
+        scrollWidth: {
+          get() {
+            return main.value.scrollWidth;
+          }
+        },
+        scrollLeft: {
+          get() {
+            return main.value.scrollLeft;
+          },
+          set(val) {
+            main.value.scrollLeft = val;
+          }
+        },
+        scrollTop: {
+          get() {
+            return main.value.scrollTop;
+          },
+          set(val) {
+            main.value.scrollTop = val;
+          }
+        }
+      });
       rootElement.attachVmProps(props2);
     });
     return () => {
@@ -13847,6 +13885,10 @@ const getValuePercentage = (value, min, max) => {
   return 100 * (value - min) / (max - min) + "%";
 };
 class UniSliderElement extends UniElement {
+  constructor() {
+    super(...arguments);
+    __publicField(this, "_initialValue", 0);
+  }
   init() {
     this.htmlSlider = this.querySelector(".uni-slider-brower-input-range");
     this.trackValue = this.querySelector(".uni-slider-track-value");
@@ -13855,17 +13897,19 @@ class UniSliderElement extends UniElement {
     this.updateValue(this.value);
   }
   get value() {
-    return this.htmlSlider.value;
+    return Number(this.htmlSlider.value);
   }
   set value(value) {
-    this.htmlSlider.value = value;
+    this.htmlSlider.value = value.toString();
     this.updateValue(value);
+  }
+  reset() {
+    this.value = this._initialValue;
   }
   updateValue(value) {
     const min = Number(this.htmlSlider.getAttribute("min"));
     const max = Number(this.htmlSlider.getAttribute("max"));
-    const valueNumber = Number(value);
-    const percentage = getValuePercentage(valueNumber, min, max);
+    const percentage = getValuePercentage(value, min, max);
     this.trackValue.style.width = percentage;
     this.thumbValue.style.left = percentage;
     this.inputValue.innerText = value.toString();
@@ -13886,7 +13930,7 @@ const indexX = /* @__PURE__ */ defineBuiltInComponent({
     const sliderValueRef = ref(null);
     let uniSliderElement;
     watch(() => props2.value, (val) => {
-      uniSliderElement.value = val.toString();
+      uniSliderElement.value = Number(val);
     });
     const trigger = useCustomEvent(sliderRef, emit2);
     const state2 = useSliderState(props2);
@@ -13896,7 +13940,9 @@ const indexX = /* @__PURE__ */ defineBuiltInComponent({
     } = useSliderLoader(props2, sliderRef, trigger);
     onMounted(() => {
       uniSliderElement = sliderRef.value;
+      uniSliderElement._initialValue = props2.value;
       uniSliderElement.init();
+      uniSliderElement.attachVmProps(props2);
     });
     return () => {
       const {
@@ -13969,27 +14015,27 @@ function useSliderLoader(props2, sliderRef, trigger) {
     if (props2.disabled) {
       return;
     }
-    const valueString = event.target.value;
-    sliderRef.value.updateValue(valueString);
+    const valueNumber = Number(event.target.value);
+    sliderRef.value.updateValue(valueNumber);
     trigger("changing", event, {
-      value: Number(valueString)
+      value: valueNumber
     });
   };
   const _onChange = (event) => {
     if (props2.disabled) {
       return;
     }
-    const valueString = event.target.value;
-    sliderRef.value.updateValue(valueString);
+    const valueNumber = Number(event.target.value);
+    sliderRef.value.updateValue(valueNumber);
     trigger("change", event, {
-      value: Number(valueString)
+      value: valueNumber
     });
   };
   const uniForm = inject(uniFormKey, false);
   if (!!uniForm) {
     const field = {
       reset: () => {
-        sliderRef.value.value = props2.min.toString();
+        sliderRef.value.reset();
       },
       submit: () => {
         const data = ["", null];
@@ -14920,6 +14966,7 @@ const index$j = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 function useSwitchInject(props2, switchChecked) {
+  const initialCheckedValue = props2.checked;
   const uniForm = inject(uniFormKey, false);
   const uniLabel = inject(uniLabelKey, false);
   const formField = {
@@ -14932,7 +14979,7 @@ function useSwitchInject(props2, switchChecked) {
       return data;
     },
     reset: () => {
-      switchChecked.value = false;
+      switchChecked.value = initialCheckedValue;
     }
   };
   if (!!uniForm) {

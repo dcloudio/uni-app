@@ -23,7 +23,7 @@ fun login(name: String, pwd: String): UTSJSONObject {
     };
 }
 interface IUser {
-    fun register(name: String): Unit;
+    fun register(name: String)
 }
 val `default` = UTSAndroid.getResourcePath("uni_modules/test-uniplugin/static/logo.png");
 typealias ShowToast = (msg: String) -> Unit;

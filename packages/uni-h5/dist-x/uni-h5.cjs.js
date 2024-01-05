@@ -1,4 +1,10 @@
 "use strict";
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
 Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 const vue = require("vue");
 const shared = require("@vue/shared");
@@ -857,7 +863,8 @@ class UniElement extends HTMLElement {
     this._props = props2;
   }
   getAttribute(qualifiedName) {
-    return qualifiedName in this._props ? this._props[qualifiedName] + "" : super.getAttribute(qualifiedName);
+    const name = qualifiedName.indexOf("-") > -1 ? qualifiedName.replace(/-(\w)/g, (_, c) => c.toUpperCase()) : qualifiedName;
+    return name in this._props ? this._props[name] + "" : super.getAttribute(name) || null;
   }
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
@@ -6244,6 +6251,10 @@ const getValuePercentage = (value, min, max) => {
   return 100 * (value - min) / (max - min) + "%";
 };
 class UniSliderElement extends UniElement {
+  constructor() {
+    super(...arguments);
+    __publicField(this, "_initialValue", 0);
+  }
   init() {
     this.htmlSlider = this.querySelector(".uni-slider-brower-input-range");
     this.trackValue = this.querySelector(".uni-slider-track-value");
@@ -6252,17 +6263,19 @@ class UniSliderElement extends UniElement {
     this.updateValue(this.value);
   }
   get value() {
-    return this.htmlSlider.value;
+    return Number(this.htmlSlider.value);
   }
   set value(value) {
-    this.htmlSlider.value = value;
+    this.htmlSlider.value = value.toString();
     this.updateValue(value);
+  }
+  reset() {
+    this.value = this._initialValue;
   }
   updateValue(value) {
     const min = Number(this.htmlSlider.getAttribute("min"));
     const max = Number(this.htmlSlider.getAttribute("max"));
-    const valueNumber = Number(value);
-    const percentage = getValuePercentage(valueNumber, min, max);
+    const percentage = getValuePercentage(value, min, max);
     this.trackValue.style.width = percentage;
     this.thumbValue.style.left = percentage;
     this.inputValue.innerText = value.toString();
@@ -6283,7 +6296,7 @@ const indexX = /* @__PURE__ */ defineBuiltInComponent({
     const sliderValueRef = vue.ref(null);
     let uniSliderElement;
     vue.watch(() => props2.value, (val) => {
-      uniSliderElement.value = val.toString();
+      uniSliderElement.value = Number(val);
     });
     const trigger = useCustomEvent(sliderRef, emit2);
     const state = useSliderState(props2);
@@ -6362,27 +6375,27 @@ function useSliderLoader(props2, sliderRef, trigger) {
     if (props2.disabled) {
       return;
     }
-    const valueString = event.target.value;
-    sliderRef.value.updateValue(valueString);
+    const valueNumber = Number(event.target.value);
+    sliderRef.value.updateValue(valueNumber);
     trigger("changing", event, {
-      value: Number(valueString)
+      value: valueNumber
     });
   };
   const _onChange = (event) => {
     if (props2.disabled) {
       return;
     }
-    const valueString = event.target.value;
-    sliderRef.value.updateValue(valueString);
+    const valueNumber = Number(event.target.value);
+    sliderRef.value.updateValue(valueNumber);
     trigger("change", event, {
-      value: Number(valueString)
+      value: valueNumber
     });
   };
   const uniForm = vue.inject(uniFormKey, false);
   if (!!uniForm) {
     const field = {
       reset: () => {
-        sliderRef.value.value = props2.min.toString();
+        sliderRef.value.reset();
       },
       submit: () => {
         const data = ["", null];
