@@ -18,6 +18,7 @@ export interface SelectorQueryNodeInfo
       'top' | 'bottom' | 'left' | 'right' | 'height' | 'width'
     > {
   contextInfo?: ReturnType<typeof getContextInfo>
+  node?: any
 }
 
 export interface SelectorQueryRequest {
@@ -117,8 +118,16 @@ class NodesRef implements UniApp.NodesRef {
     return this._selectorQuery
   }
 
-  node(_callback: (result: any) => void) {
-    // TODO
+  node(callback: (result: any) => void) {
+    this._selectorQuery._push(
+      this._selector,
+      this._component,
+      this._single,
+      {
+        node: true,
+      },
+      callback
+    )
     return this._selectorQuery
   }
 }
