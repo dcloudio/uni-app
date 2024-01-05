@@ -1,5 +1,7 @@
 # uni-app 贡献指南
 
+当前贡献指南针对基于 Vue3 的 uni-app，如需阅读基于 Vue2 版本的贡献指南请移步 [dev](../../dev/.github/CONTRIBUTING.md) 分支。
+
 ## 环境搭建
 
 * 需要安装 [Node.js](http://nodejs.org/) 16+，以及 [pnpm](https://pnpm.io/)。
