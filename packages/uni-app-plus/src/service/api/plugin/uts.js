@@ -146,7 +146,7 @@ function initProxyFunction(async, { moduleName, moduleType, package: pkg, class:
 }
 function initUTSStaticMethod(async, opts) {
     if (opts.main && !opts.method) {
-        if (typeof plus !== 'undefined' && plus.os.name === 'iOS') {
+        if (isUTSiOS()) {
             opts.method = 's_' + opts.name;
         }
     }
@@ -189,7 +189,7 @@ function initUTSProxyClass(options) {
         staticProps = options.staticProps;
     }
     // iOS 需要为 ByJs 的 class 构造函数（如果包含JSONObject或UTSCallback类型）补充最后一个参数
-    if (typeof plus !== 'undefined' && plus.os.name === 'iOS') {
+    if (isUTSiOS()) {
         if (constructorParams.find((p) => p.type === 'UTSCallback' || p.type.indexOf('JSONObject') > 0)) {
             constructorParams.push({ name: '_byJs', type: 'boolean' });
         }
@@ -263,32 +263,29 @@ function initUTSProxyClass(options) {
         },
     });
 }
+function isUTSAndroid() {
+    return typeof plus !== 'undefined' && plus.os.name === 'Android';
+}
+function isUTSiOS() {
+    return !isUTSAndroid();
+}
 function initUTSPackageName(name, is_uni_modules) {
-    if (typeof plus !== 'undefined' && plus.os.name === 'Android') {
+    if (isUTSAndroid()) {
         return 'uts.sdk.' + (is_uni_modules ? 'modules.' : '') + name;
     }
     return '';
 }
 function initUTSIndexClassName(moduleName, is_uni_modules) {
-    if (typeof plus === 'undefined') {
-        return '';
-    }
-    return initUTSClassName(moduleName, plus.os.name === 'iOS' ? 'IndexSwift' : 'IndexKt', is_uni_modules);
+    return initUTSClassName(moduleName, isUTSAndroid() ? 'IndexKt' : 'IndexSwift', is_uni_modules);
 }
 function initUTSClassName(moduleName, className, is_uni_modules) {
-    if (typeof plus === 'undefined') {
-        return '';
-    }
-    if (plus.os.name === 'Android') {
+    if (isUTSAndroid()) {
         return className;
     }
-    if (plus.os.name === 'iOS') {
-        return ('UTSSDK' +
-            (is_uni_modules ? 'Modules' : '') +
-            capitalize(moduleName) +
-            capitalize(className));
-    }
-    return '';
+    return ('UTSSDK' +
+        (is_uni_modules ? 'Modules' : '') +
+        capitalize(moduleName) +
+        capitalize(className));
 }
 const interfaceDefines = {};
 function registerUTSInterface(name, define) {
