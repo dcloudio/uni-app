@@ -15,6 +15,6 @@ export class UniElement extends HTMLElement {
         : qualifiedName
     return name in this._props
       ? this._props[name] + ''
-      : super.getAttribute(name) || null
+      : super.getAttribute(qualifiedName) || null
   }
 }
