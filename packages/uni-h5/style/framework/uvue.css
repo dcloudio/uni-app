@@ -4,9 +4,24 @@ body {
 }
 
 uni-app uni-page-body {
-  display: flex;
-  flex-direction: column;
-  min-height: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+uni-app.uni-app--showtabbar uni-page-body::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: var(--tab-bar-height);
+  height: calc(var(--tab-bar-height) + constant(safe-area-inset-bottom));
+  height: calc(var(--tab-bar-height) + env(safe-area-inset-bottom));
+  min-height: var(--tab-bar-height);
+  min-height: calc(var(--tab-bar-height) + constant(safe-area-inset-bottom));
+  min-height: calc(var(--tab-bar-height) + env(safe-area-inset-bottom));
+}
+
+uni-app.uni-app--showtabbar uni-page-wrapper::after {
+  display: none;
 }
 
 uni-app uni-text,
@@ -46,7 +61,7 @@ uni-app uni-list-item,
 uni-app uni-navigator,
 uni-app uni-radio-group,
 uni-app uni-checkbox-group,
-uni-app uni-scroll-view, 
+uni-app uni-scroll-view,
 uni-app uni-list-view {
   display: flex;
   flex-shrink: 0;
@@ -58,6 +73,7 @@ uni-app uni-list-view {
 }
 
 /* 与开发者元素接触的容器，此样式可被manifest.json内配置的flex-direction重置 */
+uni-app uni-page-body,
 uni-app uni-view,
 uni-app uni-label,
 uni-app uni-swiper,
@@ -69,11 +85,12 @@ uni-app uni-list-item,
 uni-app uni-navigator,
 uni-app uni-radio-group,
 uni-app uni-checkbox-group,
-uni-app uni-scroll-view, 
+uni-app uni-scroll-view,
 uni-app uni-list-view {
   display: flex;
   flex-direction: column;
-  min-height: 0px; /* 默认情况下，元素不会缩短至小于内容框尺寸，若想改变这一状况，请设置元素的min-width 与 min-height属性。https://developer.mozilla.org/zh-CN/docs/Web/CSS/flex */
+  min-height: 0px;
+  /* 默认情况下，元素不会缩短至小于内容框尺寸，若想改变这一状况，请设置元素的min-width 与 min-height属性。https://developer.mozilla.org/zh-CN/docs/Web/CSS/flex */
 }
 
 /* 与开发者元素接触的非滚动容器 */
