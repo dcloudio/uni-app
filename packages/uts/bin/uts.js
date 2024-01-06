@@ -16,9 +16,7 @@ if (!fileName) {
 const filename = normalizePath(path.resolve(fileName))
 const inputDir = normalizePath(path.dirname(filename))
 
-const index = args.findIndex((arg) => arg === '--out' || arg === '-o')
-
-const out = normalizePath(path.resolve((index > -1 ? args[index + 1] : '') || inputDir))
+const out = normalizePath(path.resolve(resolveArg('--out', '-o') || inputDir))
 const outSwiftFile = out.endsWith('.swift')
 const outKotlinFile = out.endsWith('.kt')
 const isOutFile = outSwiftFile || outKotlinFile
@@ -26,9 +24,28 @@ const isSwift = args.some((arg) => arg === '--swift') || outSwiftFile
 const outDir = isOutFile ? path.dirname(out) : out
 const outFilename = path.basename(isOutFile ? out : filename)
 
+const package = resolveArg('--package', '-p')
+const imports = resolveArgs('--import', '-i')
+
 function normalizePath(id) {
     return isWindows ? id.replace(/\\/g, '/') : id
 }
+
+function resolveArg(name, alias = '') {
+    const index = args.findIndex((arg) => arg === name || (alias && arg === alias))
+    return index > -1 ? args[index + 1] : ''
+}
+
+function resolveArgs(name, alias = '') {
+    const values = []
+    args.forEach((arg, index) => {
+        if (arg === name || (alias && arg === alias)) {
+            values.push(args[index + 1])
+        }
+    })
+    return values
+}
+
 
 async function run() {
 
@@ -43,6 +60,8 @@ async function run() {
             outFilename,
             extname: isSwift ? 'swift' : 'kt',
             removeImports: true,
+            package,
+            imports,
         }
     }
     console.log(options)
