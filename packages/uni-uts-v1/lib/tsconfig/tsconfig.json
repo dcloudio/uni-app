@@ -12,6 +12,7 @@
     "auto-imports.d.ts",
     "env.d.ts",
     "shim-uni.d.ts",
+    "global.d.ts",
     "**/*.uts",
     "**/*.ts",
     "**/*.d.ts",
