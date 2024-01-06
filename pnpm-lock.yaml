@@ -18,8 +18,8 @@ importers:
         specifier: ^7.20.2
         version: 7.20.2(@babel/core@7.21.3)
       '@dcloudio/types':
-        specifier: 3.3.2
-        version: 3.3.2
+        specifier: 3.4.6
+        version: 3.4.6
       '@dcloudio/uni-api':
         specifier: 3.0.0-alpha-4000020231227002
         version: link:packages/uni-api
@@ -280,8 +280,8 @@ importers:
   packages/uni-app:
     dependencies:
       '@dcloudio/types':
-        specifier: ^3.3.2
-        version: 3.3.2
+        specifier: ^3.4.6
+        version: 3.4.6
       '@dcloudio/uni-cloud':
         specifier: 3.0.0-alpha-4000020231227002
         version: link:../uni-cloud
@@ -1325,6 +1325,15 @@ importers:
       postcss:
         specifier: ^8.4.23
         version: 8.4.23
+
+  packages/uni-preprocess:
+    dependencies:
+      magic-string:
+        specifier: ^0.30.0
+        version: 0.30.5
+      xregexp:
+        specifier: ^5.1.1
+        version: 5.1.1
 
   packages/uni-push:
     dependencies:
@@ -2723,6 +2732,14 @@ packages:
   /@babel/regjsgen@0.8.0:
     resolution: {integrity: sha512-x/rqGMdzj+fWZvCOYForTghzbtqPDZ5gPwaoNGHdgDfF2QA/XZbCBp4Moo5scrkAMPhB7z26XM/AaHuIJdgauA==}
 
+  /@babel/runtime-corejs3@7.23.7:
+    resolution: {integrity: sha512-ER55qzLREVA5YxeyQ3Qu48tgsF2ZrFjFjUS6V6wF0cikSw+goBJgB9PBRM1T6+Ah4iiM+sxmfS/Sy/jdzFfhiQ==}
+    engines: {node: '>=6.9.0'}
+    dependencies:
+      core-js-pure: 3.35.0
+      regenerator-runtime: 0.14.1
+    dev: false
+
   /@babel/runtime@7.21.5:
     resolution: {integrity: sha512-8jI69toZqqcsnqGGqwGS4Qb1VwLOEp4hz+CXPywcvjs60u3B4Pom/U/7rm4W8tMOYEB+E9wgD0mW1l3r8qlI9Q==}
     engines: {node: '>=6.9.0'}
@@ -2817,8 +2834,8 @@ packages:
     resolution: {integrity: sha512-mrCMwcINy1IFjU9VUqLeWBkj404yWs5paLDttBcA+eqUjanuUQbBcTVPqlrGgkyzLXDcV2oDDZRSNxNpXi4kMQ==}
     dev: true
 
-  /@dcloudio/types@3.3.2:
-    resolution: {integrity: sha512-O+7M55RXqYJMCTh3MC86IGJvDPTR+v214yUeaoz1YUIHa2gJdgObs4RRwfAwZoLMtdoZ9J5BElZZqRy5oi+UTg==}
+  /@dcloudio/types@3.4.6:
+    resolution: {integrity: sha512-6w7oR4QPPa0uPezCO9P/ljLimqIGvteJU9QKNHVksdtnQfQl84ZYMpOWj2SdMtC8+Mn8Fckz81PD5XBa9z506Q==}
 
   /@dcloudio/uni-app-x@0.6.5:
     resolution: {integrity: sha512-B66i9CzGgJux1JoaPj2QWLNWAF4kAoXOw1rOuCovjll7vH3bUcOEI3dPFU5udp56cdq2lrRzdsdJ57XVujaVUw==}
@@ -5844,6 +5861,11 @@ packages:
     resolution: {integrity: sha512-nriW1nuJjUgvkEjIot1Spwakz52V9YkYHZAQG6A1eCgC8AA1p0zngrQEP9R0+V6hji5XilWKG1Bd0YRppmGimA==}
     dependencies:
       browserslist: 4.21.5
+
+  /core-js-pure@3.35.0:
+    resolution: {integrity: sha512-f+eRYmkou59uh7BPcyJ8MC76DiGhspj1KMxVIcF24tzP8NA9HVa1uC7BTW2tgx7E1QVCzDzsgp7kArrzhlz8Ew==}
+    requiresBuild: true
+    dev: false
 
   /core-js@2.6.12:
     resolution: {integrity: sha512-Kb2wC0fvsWfQrgk8HU5lW6U/Lcs8+9aaYcy4ZFc6DDlo4nZ7n70dEgE5rtR0oG6ufKDUnrwfWL1mXR5ljDatrQ==}
@@ -9742,6 +9764,10 @@ packages:
   /regenerator-runtime@0.13.11:
     resolution: {integrity: sha512-kY1AZVr2Ra+t+piVaJ4gxaFaReZVH40AKNo7UCX6W+dEwBo/2oZJzqfuN1qLq1oL45o56cPaTXELwrTh8Fpggg==}
 
+  /regenerator-runtime@0.14.1:
+    resolution: {integrity: sha512-dYnhHh0nJoMfnkZs6GmmhFknAGRrLznOu5nc9ML+EJxGvrx6H7teuevqVqCuPcPK//3eDrrjQhehXVx9cnkGdw==}
+    dev: false
+
   /regenerator-transform@0.15.1:
     resolution: {integrity: sha512-knzmNAcuyxV+gQCufkYcvOqX/qIIfHLv0u5x79kRxuGojfYVky1f15TzZEu2Avte8QGepvUNTnLskf8E6X6Vyg==}
     dependencies:
@@ -11126,6 +11152,12 @@ packages:
 
   /xregexp@3.1.0:
     resolution: {integrity: sha1-FNhGHgvdOCJL/uUDmgiY/EL80zY=}
+    dev: false
+
+  /xregexp@5.1.1:
+    resolution: {integrity: sha512-fKXeVorD+CzWvFs7VBuKTYIW63YD1e1osxwQ8caZ6o1jg6pDAbABDG54LCIq0j5cy7PjRvGIq6sef9DYPXpncg==}
+    dependencies:
+      '@babel/runtime-corejs3': 7.23.7
     dev: false
 
   /xtend@2.0.6:
