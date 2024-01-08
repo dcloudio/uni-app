@@ -3405,7 +3405,7 @@
         }
       },
       "defaultValue": {
-        "app-uvue": "thin",
+        "app-uvue": "medium",
         "web": "medium"
       }
     },
@@ -3480,7 +3480,7 @@
         }
       },
       "defaultValue": {
-        "app-uvue": "thin",
+        "app-uvue": "medium",
         "web": "medium"
       }
     },
@@ -3555,7 +3555,7 @@
         }
       },
       "defaultValue": {
-        "app-uvue": "thin",
+        "app-uvue": "medium",
         "web": "medium"
       }
     },
@@ -3630,7 +3630,7 @@
         }
       },
       "defaultValue": {
-        "app-uvue": "thin",
+        "app-uvue": "medium",
         "web": "medium"
       }
     },
@@ -3705,7 +3705,7 @@
         }
       },
       "defaultValue": {
-        "app-uvue": "thin",
+        "app-uvue": "medium",
         "web": "medium"
       }
     },
