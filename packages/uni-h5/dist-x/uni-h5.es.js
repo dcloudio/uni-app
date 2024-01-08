@@ -15115,6 +15115,10 @@ function setFixMargin() {
   fixMargin = String(navigator.platform).indexOf("iP") === 0 && String(navigator.vendor).indexOf("Apple") === 0 && window.matchMedia(DARK_TEST_STRING).media !== DARK_TEST_STRING;
 }
 class UniTextareaElement extends UniElement {
+  focus(options) {
+    var _a;
+    (_a = this.querySelector("textarea")) == null ? void 0 : _a.focus(options);
+  }
 }
 const index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",

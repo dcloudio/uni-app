@@ -41,7 +41,11 @@ function setFixMargin() {
       window.matchMedia(DARK_TEST_STRING).media !== DARK_TEST_STRING
 }
 
-class UniTextareaElement extends UniElement {}
+class UniTextareaElement extends UniElement {
+  focus(options?: FocusOptions | undefined): void {
+    this.querySelector('textarea')?.focus(options)
+  }
+}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Textarea',
   props,
