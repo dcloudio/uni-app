@@ -24,7 +24,7 @@ export function createTransformBorder(
     return [
       createDecl(
         prop + borderWidth,
-        (result[0] || (options.type === 'uvue' ? 'thin' : '0')).trim(),
+        (result[0] || (options.type === 'uvue' ? 'medium' : '0')).trim(),
         important,
         raws,
         source
