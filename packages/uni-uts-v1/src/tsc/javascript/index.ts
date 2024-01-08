@@ -13,7 +13,20 @@ export const uts2js: uts2js = (options) => {
   extend(options, {
     clean: true,
     check: process.env.UNI_UTS_PLATFORM === 'web',
+    tsconfigOverride: {
+      compilerOptions: {
+        sourceMap: process.env.UNI_UTS_PLATFORM === 'web',
+      },
+    },
   })
+  if (!options.tsconfigOverride) {
+    options.tsconfigOverride = {}
+  }
+  if (!options.tsconfigOverride.compilerOptions) {
+    options.tsconfigOverride.compilerOptions = {}
+  }
+  options.tsconfigOverride.compilerOptions.sourceMap =
+    process.env.UNI_UTS_PLATFORM === 'web'
   // @ts-expect-error
   if (isFunction(globalThis.uts2js)) {
     // @ts-expect-error
@@ -30,31 +43,29 @@ export const uts2js: uts2js = (options) => {
   }
   if (isInHBuilderX()) {
     const hxPluginPath = process.env.UNI_HBUILDERX_PLUGINS
-    options.tsconfigOverride = {
-      compilerOptions: {
-        paths: {
-          '@dcloudio/*': [
-            path.resolve(
-              hxPluginPath,
-              'uniapp-cli-vite/node_modules/@dcloudio/*'
-            ),
-          ],
-          '@vue/runtime-core': [
-            path.resolve(
-              hxPluginPath,
-              'uniapp-cli-vite/node_modules/@vue/runtime-core'
-            ),
-          ],
-          vue: [
-            path.resolve(
-              hxPluginPath,
-              'uniapp-cli-vite/node_modules/@vue/runtime-core'
-            ),
-          ],
-        },
-        typeRoots: [path.resolve(__dirname, '../../../lib/tsconfig/types')],
+    extend(options.tsconfigOverride.compilerOptions, {
+      paths: {
+        '@dcloudio/*': [
+          path.resolve(
+            hxPluginPath,
+            'uniapp-cli-vite/node_modules/@dcloudio/*'
+          ),
+        ],
+        '@vue/runtime-core': [
+          path.resolve(
+            hxPluginPath,
+            'uniapp-cli-vite/node_modules/@vue/runtime-core'
+          ),
+        ],
+        vue: [
+          path.resolve(
+            hxPluginPath,
+            'uniapp-cli-vite/node_modules/@vue/runtime-core'
+          ),
+        ],
       },
-    }
+      typeRoots: [path.resolve(__dirname, '../../../lib/tsconfig/types')],
+    })
   }
   return require('../../../lib/javascript').uts2js(options)
 }
