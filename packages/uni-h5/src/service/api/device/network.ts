@@ -55,7 +55,9 @@ export const getNetworkType = defineAsyncApi<typeof uni.getNetworkType>(
     const connection = getConnection()
     let networkType = 'unknown'
     if (connection) {
+      // 现代浏览器拿不到这部分逻辑，主要走 effectiveType
       networkType = connection.type
+      // 数据网络
       if (networkType === 'cellular' && connection.effectiveType) {
         networkType = connection.effectiveType.replace('slow-', '')
       } else if (!['none', 'wifi'].includes(networkType)) {
@@ -63,6 +65,9 @@ export const getNetworkType = defineAsyncApi<typeof uni.getNetworkType>(
       }
     } else if (navigator.onLine === false) {
       networkType = 'none'
+    } else if (!networkType && connection.effectiveType) {
+      // mac/ios 不支持，h5 模式下可能会因为用户隐私的原因，无法获取到具体网络状态
+      networkType = connection.effectiveType
     }
     return resolve({ networkType })
   }
