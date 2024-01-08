@@ -864,7 +864,7 @@ class UniElement extends HTMLElement {
   }
   getAttribute(qualifiedName) {
     const name = qualifiedName.indexOf("-") > -1 ? qualifiedName.replace(/-(\w)/g, (_, c) => c.toUpperCase()) : qualifiedName;
-    return name in this._props ? this._props[name] + "" : super.getAttribute(name) || null;
+    return name in this._props ? this._props[name] + "" : super.getAttribute(qualifiedName) || null;
   }
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
@@ -1077,6 +1077,13 @@ function getRealPath(filePath) {
   }
   if (uniShared.SCHEME_RE.test(filePath) || uniShared.DATA_RE.test(filePath) || filePath.indexOf("blob:") === 0) {
     return filePath;
+  }
+  {
+    if (process.env.NODE_ENV !== "production") {
+      if (!filePath.includes("/static/")) {
+        return filePath;
+      }
+    }
   }
   const pages = getCurrentPages();
   if (pages.length) {

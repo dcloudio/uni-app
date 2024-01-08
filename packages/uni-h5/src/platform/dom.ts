@@ -53,7 +53,15 @@ export function getRealPath(filePath: string) {
   ) {
     return filePath
   }
-
+  if (__X__) {
+    // 开发模式下 vite 会读取原始文件路径，此时用正确的字符串相对路径可以正常访问到，但发行后是不能被访问到的，因为此类资源不会被拷贝
+    // 开发模式下非static的静态资源路径不解析，确保加载不到，与发行模式保持一致
+    if (__DEV__) {
+      if (!filePath.includes('/static/')) {
+        return filePath
+      }
+    }
+  }
   const pages = getCurrentPages()
   if (pages.length) {
     return addBase(

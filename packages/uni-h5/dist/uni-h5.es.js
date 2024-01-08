@@ -2479,6 +2479,12 @@ function getRootInfo(fields2) {
 function getNodeInfo(el, fields2) {
   const info = {};
   const { top, topWindowHeight } = getWindowOffset();
+  if (fields2.node) {
+    const tagName = el.tagName.split("-")[1];
+    if (tagName) {
+      info.node = el.querySelector(tagName);
+    }
+  }
   if (fields2.id) {
     info.id = el.id;
   }
@@ -4862,7 +4868,16 @@ class NodesRef {
     );
     return this._selectorQuery;
   }
-  node(_callback) {
+  node(callback) {
+    this._selectorQuery._push(
+      this._selector,
+      this._component,
+      this._single,
+      {
+        node: true
+      },
+      callback
+    );
     return this._selectorQuery;
   }
 }

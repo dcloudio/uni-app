@@ -2132,7 +2132,7 @@ class UniElement extends HTMLElement {
   }
   getAttribute(qualifiedName) {
     const name = qualifiedName.indexOf("-") > -1 ? qualifiedName.replace(/-(\w)/g, (_, c) => c.toUpperCase()) : qualifiedName;
-    return name in this._props ? this._props[name] + "" : super.getAttribute(name) || null;
+    return name in this._props ? this._props[name] + "" : super.getAttribute(qualifiedName) || null;
   }
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
@@ -2442,6 +2442,13 @@ function getRealPath(filePath) {
   if (SCHEME_RE.test(filePath) || DATA_RE.test(filePath) || filePath.indexOf("blob:") === 0) {
     return filePath;
   }
+  {
+    if (process.env.NODE_ENV !== "production") {
+      if (!filePath.includes("/static/")) {
+        return filePath;
+      }
+    }
+  }
   const pages = getCurrentPages();
   if (pages.length) {
     return addBase(
@@ -2540,6 +2547,12 @@ function getRootInfo(fields2) {
 function getNodeInfo(el, fields2) {
   const info = {};
   const { top, topWindowHeight } = getWindowOffset();
+  if (fields2.node) {
+    const tagName = el.tagName.split("-")[1];
+    if (tagName) {
+      info.node = el.querySelector(tagName);
+    }
+  }
   if (fields2.id) {
     info.id = el.id;
   }
@@ -4923,7 +4936,16 @@ class NodesRef {
     );
     return this._selectorQuery;
   }
-  node(_callback) {
+  node(callback) {
+    this._selectorQuery._push(
+      this._selector,
+      this._component,
+      this._single,
+      {
+        node: true
+      },
+      callback
+    );
     return this._selectorQuery;
   }
 }
