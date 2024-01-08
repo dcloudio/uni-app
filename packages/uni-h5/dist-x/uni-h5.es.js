@@ -9704,6 +9704,10 @@ const props$q = /* @__PURE__ */ extend({}, props$r, {
   }
 });
 class UniInputElement extends UniElement {
+  focus(options) {
+    var _a;
+    (_a = this.querySelector("input")) == null ? void 0 : _a.focus(options);
+  }
 }
 const Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
