@@ -9,7 +9,7 @@ uni-app uni-page-body {
 }
 
 uni-app.uni-app--showtabbar uni-page-body::after {
-  content: "";
+  content: '';
   display: block;
   width: 100%;
   height: var(--tab-bar-height);
@@ -144,4 +144,10 @@ uni-app uni-video {
 
 uni-app uni-swiper-item {
   position: absolute;
+}
+
+/* 设置默认的光标颜色 */
+.uni-input-input,
+.uni-textarea-textarea {
+  caret-color: #3393e2;
 }
