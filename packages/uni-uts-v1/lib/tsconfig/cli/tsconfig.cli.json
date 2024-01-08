@@ -1,0 +1,10 @@
+{
+  "extends": "../tsconfig.vue.json",
+  "compilerOptions": {
+    "verbatimModuleSyntax": true,
+    "lib": ["ESNext"],
+    "paths": {
+      "@/*": ["./*"]
+    }
+  }
+}

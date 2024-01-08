@@ -27,16 +27,18 @@ export const uts2js: uts2js = (options) => {
   }
   options.tsconfigOverride.compilerOptions.sourceMap =
     process.env.UNI_UTS_PLATFORM === 'web'
-  // @ts-expect-error
-  if (isFunction(globalThis.uts2js)) {
-    // @ts-expect-error
-    return globalThis.uts2js(options)
-  }
   if (!options.tsconfig) {
-    options.tsconfig = path.resolve(
-      __dirname,
-      '../../../lib/tsconfig/tsconfig.json'
-    )
+    if (isInHBuilderX()) {
+      options.tsconfig = path.resolve(
+        __dirname,
+        '../../../lib/tsconfig/hbuilderx/tsconfig.json'
+      )
+    } else {
+      options.tsconfig = path.resolve(
+        process.env.UNI_INPUT_DIR,
+        '../tsconfig.json'
+      )
+    }
   }
   if (!options.typescript) {
     options.typescript = require('../../../lib/typescript')
@@ -66,6 +68,23 @@ export const uts2js: uts2js = (options) => {
       },
       typeRoots: [path.resolve(__dirname, '../../../lib/tsconfig/types')],
     })
+  } else {
+    extend(options.tsconfigOverride.compilerOptions, {
+      paths: {
+        vue: [
+          path.resolve(
+            process.env.UNI_INPUT_DIR,
+            '../node_modules/@vue/runtime-core'
+          ),
+        ],
+      },
+      typeRoots: [path.resolve(__dirname, '../../../lib/tsconfig/types')],
+    })
+  }
+  // @ts-expect-error
+  if (isFunction(globalThis.uts2js)) {
+    // @ts-expect-error
+    return globalThis.uts2js(options)
   }
   return require('../../../lib/javascript').uts2js(options)
 }

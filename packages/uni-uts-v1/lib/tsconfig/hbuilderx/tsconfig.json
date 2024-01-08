@@ -1,5 +1,5 @@
 {
-  "extends": "./tsconfig.vue.json",
+  "extends": "../tsconfig.vue.json",
   "compilerOptions": {
     "baseUrl": ".",
     "verbatimModuleSyntax": true,
@@ -9,7 +9,6 @@
     }
   },
   "include": [
-    "auto-imports.d.ts",
     "env.d.ts",
     "shim-uni.d.ts",
     "global.d.ts",
