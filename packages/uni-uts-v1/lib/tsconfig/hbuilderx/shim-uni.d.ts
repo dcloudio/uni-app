@@ -4,8 +4,8 @@ import {
 } from 'vue'
 declare module 'vue' {
   export interface ComponentCustomProperties {
-    $data: Record<string, any>
-    $callMethod: (methodName: string, ...args: any[]) => any
+    $data: Record<string, any | null>
+    $callMethod: (methodName: string, ...args: (any | null)[]) => any | null
   }
   // TODO defineApp单独实现类型
   export {
