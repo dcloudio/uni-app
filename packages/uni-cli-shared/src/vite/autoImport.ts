@@ -33,7 +33,7 @@ const uniPreset = {
 }
 const uniH5Preset = {
   from: '@dcloudio/uni-h5',
-  imports: ['UniElement'],
+  imports: ['UniElement', 'UniElementImpl'],
 }
 const cloudPreset = {
   '@dcloudio/uni-cloud': [['default', 'uniCloud']],
