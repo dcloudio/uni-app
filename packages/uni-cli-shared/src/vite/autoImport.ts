@@ -31,6 +31,10 @@ const uniPreset = {
     'onPullDownRefresh',
   ],
 }
+const uniH5Preset = {
+  from: '@dcloudio/uni-h5',
+  imports: ['UniElement'],
+}
 const cloudPreset = {
   '@dcloudio/uni-cloud': [['default', 'uniCloud']],
 }
@@ -103,12 +107,16 @@ export function initAutoImportOptions(
   platform: typeof process.env.UNI_UTS_PLATFORM,
   { imports = [], ...userOptions }: AutoImportOptions
 ): AutoImportOptions {
+  const autoImport = [uniPreset, cloudPreset, vuePreset]
+  if (platform === 'web') {
+    autoImport.push(uniH5Preset)
+  }
   return {
     ...userOptions,
     include: [/\.[u]?ts$/, /\.[u]?vue$/, /\.[u]?vue\?vue/],
     imports: (imports as any[]).concat(
       // app-android 平台暂不注入其他
-      platform === 'app-android' ? [] : [uniPreset, cloudPreset, vuePreset]
+      platform === 'app-android' ? [] : autoImport
     ),
     dts: false,
   }

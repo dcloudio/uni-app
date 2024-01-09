@@ -27,6 +27,9 @@ export {
   Text,
   Textarea,
   View,
+  //#if _X_
+  UniElement,
+  //#endif
 } from '@dcloudio/uni-components'
 
 export { useI18n } from '@dcloudio/uni-core'
