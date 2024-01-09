@@ -88,7 +88,7 @@ export function filterPrefersColorScheme(root: Root, force: boolean = false) {
     const filePath = root.source?.input.file
     if (force || (filePath && filePath.includes('@dcloudio'))) {
       root.walkAtRules((rule) => {
-        if (rule.params.includes('prefers-color-scheme')) {
+        if (/prefers-color-scheme\s*:\s*dark/.test(rule.params)) {
           rule.remove()
         }
       })
