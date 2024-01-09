@@ -122,9 +122,18 @@ export function parseInjects(
   })
   const injects: Injects = {}
   if (Object.keys(rootDefines).length) {
+    const platformIndexFileName = path.resolve(
+      uniModuleRootDir,
+      'utssdk',
+      platform
+    )
+    const rootIndexFileName = path.resolve(
+      uniModuleRootDir,
+      'utssdk',
+      'index.uts'
+    )
     let hasPlatformFile = uniModuleRootDir
-      ? fs.existsSync(path.resolve(uniModuleRootDir, 'utssdk', 'index.uts')) ||
-        fs.existsSync(path.resolve(uniModuleRootDir, 'utssdk', platform))
+      ? fs.existsSync(rootIndexFileName) || fs.existsSync(platformIndexFileName)
       : true
     if (!hasPlatformFile) {
       if (platform === 'app') {
@@ -133,6 +142,14 @@ export function parseInjects(
             path.resolve(uniModuleRootDir, 'utssdk', 'app-android')
           ) ||
           fs.existsSync(path.resolve(uniModuleRootDir, 'utssdk', 'app-ios'))
+      }
+    }
+    // 其他平台修改source，直接指向目标文件，否则 uts2js 找不到类型信息
+    if (platform !== 'app') {
+      if (fs.existsSync(platformIndexFileName)) {
+        source = `${source}/utssdk/${platform}/index.uts`
+      } else if (fs.existsSync(rootIndexFileName)) {
+        source = `${source}/utssdk/index.uts`
       }
     }
 

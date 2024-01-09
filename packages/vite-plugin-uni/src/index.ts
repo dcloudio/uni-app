@@ -18,6 +18,7 @@ import {
   initPreContext,
   parseUniExtApis,
   resolveSourceMapPath,
+  uniUTSExtApi,
   uniViteInjectPlugin,
 } from '@dcloudio/uni-cli-shared'
 
@@ -129,15 +130,20 @@ export default function uniPlugin(
 function createPlugins(options: VitePluginUniResolvedOptions) {
   const plugins: Plugin[] = []
 
-  const injects = parseUniExtApis(
-    true,
-    process.env.UNI_UTS_PLATFORM,
-    'javascript'
-  )
-  if (Object.keys(injects).length) {
-    plugins.push(
-      uniViteInjectPlugin('uni:ext-api-inject', injects as InjectOptions)
+  // uni x 需要插入到指定位置，此插件执行太早，又会引发 vue 文件的不支持，该插件是解析ast的，所以必须是合法的js或ts代码
+  if (process.env.UNI_APP_X === 'true') {
+    plugins.push(uniUTSExtApi())
+  } else {
+    const injects = parseUniExtApis(
+      true,
+      process.env.UNI_UTS_PLATFORM,
+      'javascript'
     )
+    if (Object.keys(injects).length) {
+      plugins.push(
+        uniViteInjectPlugin('uni:ext-api-inject', injects as InjectOptions)
+      )
+    }
   }
 
   // 仅限 h5
