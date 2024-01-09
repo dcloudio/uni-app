@@ -163,7 +163,7 @@ export function getElementById(
     return null
   }
   const document = page.$appPage!.document
-  const element = (document as IUniNativeDocument).getElementById(elementId)
+  const element = (document as IUniNativeDocument).getNativeElementById(elementId)
   if (element == null) {
     callback(null, { errMsg: `element[${elementId}] not exists` })
     return null
