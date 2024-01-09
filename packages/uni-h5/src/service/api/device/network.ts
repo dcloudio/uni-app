@@ -60,14 +60,14 @@ export const getNetworkType = defineAsyncApi<typeof uni.getNetworkType>(
       // 数据网络
       if (networkType === 'cellular' && connection.effectiveType) {
         networkType = connection.effectiveType.replace('slow-', '')
+      } else if (!networkType && connection.effectiveType) {
+        // mac/ios 不支持，h5 模式下可能会因为用户隐私的原因，无法获取到具体网络状态
+        networkType = connection.effectiveType
       } else if (!['none', 'wifi'].includes(networkType)) {
         networkType = 'unknown'
       }
     } else if (navigator.onLine === false) {
       networkType = 'none'
-    } else if (!networkType && connection.effectiveType) {
-      // mac/ios 不支持，h5 模式下可能会因为用户隐私的原因，无法获取到具体网络状态
-      networkType = connection.effectiveType
     }
     return resolve({ networkType })
   }
