@@ -18589,6 +18589,8 @@ const getNetworkType = /* @__PURE__ */ defineAsyncApi(
       networkType = connection.type;
       if (networkType === "cellular" && connection.effectiveType) {
         networkType = connection.effectiveType.replace("slow-", "");
+      } else if (!networkType && connection.effectiveType) {
+        networkType = connection.effectiveType;
       } else if (!["none", "wifi"].includes(networkType)) {
         networkType = "unknown";
       }
