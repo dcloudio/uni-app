@@ -3,7 +3,7 @@ import path from 'path'
 import { parse } from 'acorn-loose'
 import { simple } from 'acorn-walk'
 import { hyphenate } from '@vue/shared'
-import { isBuiltInComponent } from '@dcloudio/uni-shared'
+import { isBuiltInComponent, isUniXElement } from '@dcloudio/uni-shared'
 import type { ExportNamedDeclaration } from 'estree'
 
 const BLACKLIST = [
@@ -27,7 +27,6 @@ const BLACKLIST = [
   'cssEnv',
   'cssVar',
   'useI18n',
-  'UniElement',
 ]
 
 export function genApiJson(code: string) {
@@ -70,6 +69,9 @@ function isApi(name) {
     return false
   }
   if (isBuiltInComponent(hyphenate(name))) {
+    return false
+  }
+  if (isUniXElement(name)) {
     return false
   }
   return true

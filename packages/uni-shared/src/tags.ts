@@ -149,6 +149,10 @@ export function isH5CustomElement(tag: string) {
   return TAGS.indexOf(tag) !== -1 || BUILT_IN_TAGS.indexOf(tag) !== -1
 }
 
+export function isUniXElement(name: string) {
+  return /^I?Uni.*Element(?:Impl)?$/.test(name)
+}
+
 export function isH5NativeTag(tag: string) {
   return (
     tag !== 'head' &&

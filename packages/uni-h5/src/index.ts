@@ -29,6 +29,7 @@ export {
   View,
   //#if _X_
   UniElement,
+  UniElement as UniElementImpl,
   //#endif
 } from '@dcloudio/uni-components'
 
