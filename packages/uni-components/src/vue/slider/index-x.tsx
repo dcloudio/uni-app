@@ -109,6 +109,11 @@ class UniSliderElement extends UniElement {
   updateValue(value: number) {
     const min = Number(this.htmlSlider!.getAttribute('min'))
     const max = Number(this.htmlSlider!.getAttribute('max'))
+    if (value < min) {
+      value = min
+    } else if (value > max) {
+      value = max
+    }
     const percentage = getValuePercentage(value, min, max)
     this.trackValue!.style.width = percentage
     this.thumbValue!.style.left = percentage
