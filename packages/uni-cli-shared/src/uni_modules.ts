@@ -145,7 +145,11 @@ export function parseInjects(
       }
     }
     // 其他平台修改source，直接指向目标文件，否则 uts2js 找不到类型信息
-    if (platform !== 'app') {
+    if (
+      platform !== 'app' &&
+      platform !== 'app-android' &&
+      platform !== 'app-ios'
+    ) {
       if (fs.existsSync(platformIndexFileName)) {
         source = `${source}/utssdk/${platform}/index.uts`
       } else if (fs.existsSync(rootIndexFileName)) {
