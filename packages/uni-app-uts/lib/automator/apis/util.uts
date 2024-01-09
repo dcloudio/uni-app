@@ -1,3 +1,8 @@
+/// <reference types="@dcloudio/uni-app-x/types/native-global" />
+// @ts-expect-error
+import { IUniNativeDocument } from 'io.dcloud.uniapp.dom'
+
+
 // @ts-ignore
 function getPageId(page: Page): string {
   return page.$appPage!.pageId
@@ -110,7 +115,7 @@ export function getElementByIdOrNodeId(
   elementId: string | null,
   nodeId: number | null,
   callback: (result: any | null, error: any | null) => void
-): Element | null {
+): UniElement | null {
   if (nodeId != null) {
     return getComponentDomByNodeId(pageId, nodeId, callback)
   } else if (elementId != null) {
@@ -122,7 +127,7 @@ export function getComponentDomByNodeId(
   pageId: string,
   nodeId: number,
   callback: (result: any | null, error: any | null) => void
-): Element | null {
+): UniElement | null {
   const component = getComponentVmByNodeId(pageId, nodeId, callback)
   if (component == null) {
     return null
@@ -134,7 +139,7 @@ export function getElementByNodeIdOrElementId(
   nodeId: number | null,
   elementId: string | null,
   callback: (result: any | null, error: any | null) => void
-): Element | null {
+): UniElement | null {
   const page = getPageVm(pageId)
   if (page == null) {
     callback(null, { errMsg: `Page[${pageId}] not exists` })
@@ -151,14 +156,14 @@ export function getElementById(
   pageId: string,
   elementId: string,
   callback: (result: any | null, error: any | null) => void
-): Element | null {
+): UniElement | null {
   const page = getPageVm(pageId)
   if (page == null) {
     callback(null, { errMsg: `Page[${pageId}] not exists` })
     return null
   }
   const document = page.$appPage!.document
-  const element = document.getElementById(elementId)
+  const element = (document as IUniNativeDocument).getElementById(elementId)
   if (element == null) {
     callback(null, { errMsg: `element[${elementId}] not exists` })
     return null
@@ -188,7 +193,7 @@ export function getValidComponentsOrNodes(
       })
     } else {
       list.push({
-        elementId: vnode.el!.id,
+        elementId: (vnode.el as UniElementImpl).id,
         tagName: vnode.el!.tagName,
       })
     }
@@ -226,13 +231,13 @@ function isValidComponentOrNode(vnode: VNode, selector: string): boolean {
     } else if (selector.startsWith('#')) {
       return node.getAttribute('id') == selector.substring(1)
     }
-    return node.tagName?.toUpperCase() == selector.toUpperCase()
+    return node.tagName.toUpperCase() == selector.toUpperCase()
   }
   return false
 }
 
 export function getValidNodes(
-  node: Element | null,
+  node: UniElement | null,
   selector: string,
   // @ts-ignore
   list: UTSJSONObject[],
@@ -243,7 +248,7 @@ export function getValidNodes(
   }
   if (isValidNode(node, selector)) {
     list.push({
-      elementId: node.id,
+      elementId: node.getNodeId(),
       tagName: node.tagName,
     })
     if (!getAll) {
@@ -251,18 +256,18 @@ export function getValidNodes(
     }
   }
   // @ts-ignore
-  node.childNodes.forEach((child: Element) => {
+  node.childNodes.forEach((child: UniElement) => {
     getValidNodes(child, selector, list, getAll)
   })
 }
-function isValidNode(node: Element, selector: string): boolean {
+function isValidNode(node: UniElement, selector: string): boolean {
   if (selector.startsWith('.')) {
     // @ts-ignore
     return node.classList.includes(selector.substring(1))
   } else if (selector.startsWith('#')) {
     return node.getAttribute('id') == selector.substring(1)
   }
-  return node.tagName?.toUpperCase() == selector.toUpperCase()
+  return node.tagName.toUpperCase() == selector.toUpperCase()
 }
 
 export function componentGetData(
@@ -283,10 +288,10 @@ export function componentSetData(
     vm.$data.set(key, value)
   })
 }
-export function getChildrenText(node: Element): string {
+export function getChildrenText(node: UniElement): string {
   let result = ''
   // @ts-ignore
-  node.childNodes.forEach((child: Element) => {
+  node.childNodes.forEach((child: UniElement) => {
     if (child.tagName == 'TEXT' || child.tagName == 'UNI-BUTTON-ELEMENT') {
       result += child.getAttribute('value')
     } else {
