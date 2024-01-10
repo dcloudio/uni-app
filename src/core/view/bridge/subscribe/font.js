@@ -1,8 +1,13 @@
-export function loadFontFace ({
-  options,
-  callbackId
-}) {
-  const { family, source, desc = {} } = options
+import getRealPath from 'uni-platform/helpers/get-real-path'
+
+export function loadFontFace ({ options, callbackId }) {
+  let { family, source, desc = {} } = options
+  if (source.startsWith('url(')) {
+    source = `url('${getRealPath(source.substring(5, source.length - 2))}')`
+  } else {
+    source = getRealPath(source)
+  }
+
   const fonts = document.fonts
   if (fonts) {
     const fontFace = new FontFace(family, source, desc)
