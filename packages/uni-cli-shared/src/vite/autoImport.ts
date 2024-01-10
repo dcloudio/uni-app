@@ -114,6 +114,7 @@ export function initAutoImportOptions(
   return {
     ...userOptions,
     include: [/\.[u]?ts$/, /\.[u]?vue$/, /\.[u]?vue\?vue/],
+    exclude: [/[\\/]\.git[\\/]/],
     imports: (imports as any[]).concat(
       // app-android 平台暂不注入其他
       platform === 'app-android' ? [] : autoImport
