@@ -187,7 +187,11 @@ function genSlot(node: SlotOutletNode, context: TemplateCodegenContext) {
       }
     }
   }
-  genVIf(`$slots.${name}`, context)
+  if (name.includes('-')) {
+    genVIf(`$slots['${name}']`, context)
+  } else {
+    genVIf(`$slots.${name}`, context)
+  }
   push(`>`)
   genElement(node, context)
   push(`</block>`)
