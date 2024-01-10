@@ -147,7 +147,12 @@ uni-app uni-swiper-item {
 }
 
 /* 设置默认的光标颜色 */
-.uni-input-input,
-.uni-textarea-textarea {
+uni-app .uni-input-input,
+uni-app .uni-textarea-textarea {
   caret-color: #3393e2;
+}
+
+/* 覆盖 video 的 poster 背景 */
+uni-app .uni-video-cover {
+  background-color: unset;
 }
