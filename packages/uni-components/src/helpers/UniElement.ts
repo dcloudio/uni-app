@@ -1,5 +1,3 @@
-import { converPx } from './utils'
-
 export class UniElement extends HTMLElement {
   private _props: Record<string, any> = {}
   constructor() {
@@ -18,28 +16,5 @@ export class UniElement extends HTMLElement {
     return name in this._props
       ? this._props[name] + ''
       : super.getAttribute(qualifiedName) || null
-  }
-
-  get style() {
-    const originalStyle = super.style
-    // @ts-ignore
-    if (originalStyle.__patchRpx__) {
-      return originalStyle
-    }
-    // @ts-ignore
-    originalStyle.__patchRpx__ = true
-    const originalSetProperty = originalStyle.setProperty.bind(originalStyle)
-    super.style.setProperty = function (
-      property: string,
-      value: string | null,
-      priority?: string
-    ) {
-      return originalSetProperty(
-        property,
-        value ? converPx(value + '') : value,
-        priority || undefined
-      )
-    }
-    return super.style
   }
 }
