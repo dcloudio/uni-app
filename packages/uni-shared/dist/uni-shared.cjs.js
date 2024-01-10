@@ -143,6 +143,9 @@ function isBuiltInComponent(tag) {
 function isH5CustomElement(tag) {
     return TAGS.indexOf(tag) !== -1 || BUILT_IN_TAGS.indexOf(tag) !== -1;
 }
+function isUniXElement(name) {
+    return /^I?Uni.*Element(?:Impl)?$/.test(name);
+}
 function isH5NativeTag(tag) {
     return (tag !== 'head' &&
         (shared.isHTMLTag(tag) || shared.isSVGTag(tag)) &&
@@ -1636,6 +1639,7 @@ exports.isMiniProgramNativeTag = isMiniProgramNativeTag;
 exports.isRootHook = isRootHook;
 exports.isRootImmediateHook = isRootImmediateHook;
 exports.isUniLifecycleHook = isUniLifecycleHook;
+exports.isUniXElement = isUniXElement;
 exports.normalizeDataset = normalizeDataset;
 exports.normalizeEventType = normalizeEventType;
 exports.normalizeStyles = normalizeStyles;

@@ -13935,6 +13935,11 @@ class UniSliderElement extends UniElement {
   updateValue(value) {
     const min = Number(this.htmlSlider.getAttribute("min"));
     const max = Number(this.htmlSlider.getAttribute("max"));
+    if (value < min) {
+      value = min;
+    } else if (value > max) {
+      value = max;
+    }
     const percentage = getValuePercentage(value, min, max);
     this.trackValue.style.width = percentage;
     this.thumbValue.style.left = percentage;
@@ -16972,7 +16977,8 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
     return () => {
       return createVNode("uni-video", {
         "ref": rootRef,
-        "id": props2.id
+        "id": props2.id,
+        "onClick": toggleControls
       }, [createVNode("div", {
         "ref": containerRef,
         "class": "uni-video-container",
@@ -16995,7 +17001,6 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-video",
         "webkit-playsinline": true,
         "playsinline": true,
-        "onClick": toggleControls,
         "onDurationchange": onDurationChange,
         "onLoadedmetadata": onLoadedMetadata,
         "onProgress": onProgress,
@@ -17012,7 +17017,7 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
         "onX5videoenterfullscreen": () => emitFullscreenChange(true),
         "onWebkitendfullscreen": () => emitFullscreenChange(false),
         "onX5videoexitfullscreen": () => emitFullscreenChange(false)
-      }), null, 16, ["muted", "loop", "src", "poster", "autoplay", "webkit-playsinline", "playsinline", "onClick", "onDurationchange", "onLoadedmetadata", "onProgress", "onWaiting", "onError", "onPlay", "onPause", "onEnded", "onTimeupdate", "onWebkitbeginfullscreen", "onX5videoenterfullscreen", "onWebkitendfullscreen", "onX5videoexitfullscreen"]), withDirectives(createVNode("div", {
+      }), null, 16, ["muted", "loop", "src", "poster", "autoplay", "webkit-playsinline", "playsinline", "onDurationchange", "onLoadedmetadata", "onProgress", "onWaiting", "onError", "onPlay", "onPause", "onEnded", "onTimeupdate", "onWebkitbeginfullscreen", "onX5videoenterfullscreen", "onWebkitendfullscreen", "onX5videoexitfullscreen"]), withDirectives(createVNode("div", {
         "class": "uni-video-bar uni-video-bar-full",
         "onClick": withModifiers(() => {
         }, ["stop"])
@@ -17109,7 +17114,7 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-toast-title"
       }, [formatTime(gestureState.currentTimeNew), " / ", formatTime(videoState.duration)])], 2), createVNode("div", {
         "class": "uni-video-slots"
-      }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])], 8, ["id"]);
+      }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])], 8, ["id", "onClick"]);
     };
   }
 });
@@ -25959,6 +25964,8 @@ export {
   index$j as Switch,
   index$i as Text,
   index$h as Textarea,
+  UniElement,
+  UniElement as UniElementImpl,
   UniServiceJSBridge$1 as UniServiceJSBridge,
   UniViewJSBridge$1 as UniViewJSBridge,
   index$d as Video,
