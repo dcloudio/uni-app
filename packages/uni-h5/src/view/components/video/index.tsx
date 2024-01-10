@@ -915,7 +915,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
     return () => {
       return (
-        <uni-video ref={rootRef} id={props.id}>
+        <uni-video ref={rootRef} id={props.id} onClick={toggleControls}>
           <div
             ref={containerRef}
             class="uni-video-container"
@@ -942,7 +942,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
               class="uni-video-video"
               webkit-playsinline
               playsinline
-              onClick={toggleControls}
               onDurationchange={onDurationChange}
               onLoadedmetadata={onLoadedMetadata}
               onProgress={onProgress}
