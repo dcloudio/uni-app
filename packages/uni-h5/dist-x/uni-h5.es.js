@@ -7789,7 +7789,7 @@ function useProvideCheckGroup(props2, trigger) {
   const fields2 = [];
   const getFieldsValue = () => fields2.reduce((res, field) => {
     if (field.value.checkboxChecked) {
-      res.push(field.value.value);
+      res.push(field.value.value + "");
     }
     return res;
   }, new Array());
@@ -12812,7 +12812,7 @@ function useProvideRadioGroup(props2, trigger) {
   });
   const getFieldsValue = () => {
     var _a;
-    return (_a = fields2.find((field) => field.value.radioChecked)) == null ? void 0 : _a.value.value;
+    return ((_a = fields2.find((field) => field.value.radioChecked)) == null ? void 0 : _a.value.value) + "";
   };
   provide(uniRadioGroupKey, {
     addField(field) {
@@ -21336,6 +21336,593 @@ const offLocationChangeError = /* @__PURE__ */ defineOffApi(
   () => {
   }
 );
+function usePopupStyle(props2) {
+  const popupWidth = ref(0);
+  const popupHeight = ref(0);
+  const isDesktop = computed(
+    () => popupWidth.value >= 500 && popupHeight.value >= 500
+  );
+  const popupStyle = computed(() => {
+    const style = {
+      content: {
+        transform: "",
+        left: "",
+        top: "",
+        bottom: ""
+      },
+      triangle: {
+        left: "",
+        top: "",
+        bottom: "",
+        "border-width": "",
+        "border-color": ""
+      }
+    };
+    const contentStyle = style.content;
+    const triangleStyle = style.triangle;
+    const popover = props2.popover;
+    function getNumber(value) {
+      return Number(value) || 0;
+    }
+    if (isDesktop.value && popover) {
+      extend(triangleStyle, {
+        position: "absolute",
+        width: "0",
+        height: "0",
+        "margin-left": "-6px",
+        "border-style": "solid"
+      });
+      const popoverLeft = getNumber(popover.left);
+      const popoverWidth = getNumber(popover.width);
+      const popoverTop = getNumber(popover.top);
+      const popoverHeight = getNumber(popover.height);
+      const center = popoverLeft + popoverWidth / 2;
+      contentStyle.transform = "none !important";
+      const contentLeft = Math.max(0, center - 300 / 2);
+      contentStyle.left = `${contentLeft}px`;
+      let triangleLeft = Math.max(12, center - contentLeft);
+      triangleLeft = Math.min(300 - 12, triangleLeft);
+      triangleStyle.left = `${triangleLeft}px`;
+      const vcl = popupHeight.value / 2;
+      if (popoverTop + popoverHeight - vcl > vcl - popoverTop) {
+        contentStyle.top = "auto";
+        contentStyle.bottom = `${popupHeight.value - popoverTop + 6}px`;
+        triangleStyle.bottom = "-6px";
+        triangleStyle["border-width"] = "6px 6px 0 6px";
+        triangleStyle["border-color"] = "#fcfcfd transparent transparent transparent";
+      } else {
+        contentStyle.top = `${popoverTop + popoverHeight + 6}px`;
+        triangleStyle.top = "-6px";
+        triangleStyle["border-width"] = "0 6px 6px 6px";
+        triangleStyle["border-color"] = "transparent transparent #fcfcfd transparent";
+      }
+    }
+    return style;
+  });
+  onMounted(() => {
+    const fixSize = () => {
+      const { windowWidth, windowHeight, windowTop } = uni.getSystemInfoSync();
+      popupWidth.value = windowWidth;
+      popupHeight.value = windowHeight + (windowTop || 0);
+    };
+    window.addEventListener("resize", fixSize);
+    fixSize();
+    onUnmounted(() => {
+      window.removeEventListener("resize", fixSize);
+    });
+  });
+  return {
+    isDesktop,
+    popupStyle
+  };
+}
+function onThemeChange(callback) {
+  if (__uniConfig.darkmode) {
+    UniServiceJSBridge.on(ON_THEME_CHANGE, callback);
+  }
+}
+function offThemeChange(callback) {
+  UniServiceJSBridge.off(ON_THEME_CHANGE, callback);
+}
+function parseTheme(pageStyle) {
+  let parsedStyle = {};
+  if (__uniConfig.darkmode) {
+    parsedStyle = normalizeStyles(
+      pageStyle,
+      __uniConfig.themeConfig,
+      getTheme()
+    );
+  }
+  return __uniConfig.darkmode ? parsedStyle : pageStyle;
+}
+function useTheme(pageStyle, onThemeChangeCallback) {
+  const isReactived = isReactive(pageStyle);
+  const reactivePageStyle = isReactived ? reactive(parseTheme(pageStyle)) : parseTheme(pageStyle);
+  if (__uniConfig.darkmode && isReactived) {
+    watch(pageStyle, (value) => {
+      const _pageStyle = parseTheme(value);
+      for (const key in _pageStyle) {
+        reactivePageStyle[key] = _pageStyle[key];
+      }
+    });
+  }
+  onThemeChangeCallback && onThemeChange(onThemeChangeCallback);
+  return reactivePageStyle;
+}
+const ACTION_SHEET_THEME = {
+  light: {
+    listItemColor: "#000000",
+    cancelItemColor: "#000000"
+  },
+  dark: {
+    listItemColor: "rgba(255, 255, 255, 0.8)",
+    cancelItemColor: "rgba(255, 255, 255)"
+  }
+};
+function setActionSheetTheme(theme, actionSheetTheme) {
+  const ActionSheetThemeKey = ["listItemColor", "cancelItemColor"];
+  ActionSheetThemeKey.forEach((key) => {
+    actionSheetTheme[key] = ACTION_SHEET_THEME[theme][key];
+  });
+}
+const props$6 = {
+  title: {
+    type: String,
+    default: ""
+  },
+  itemList: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  itemColor: {
+    type: String,
+    default: "#000000"
+  },
+  popover: {
+    type: Object,
+    default: null
+  },
+  visible: {
+    type: Boolean,
+    default: false
+  }
+};
+const actionSheet = /* @__PURE__ */ defineComponent({
+  name: "ActionSheet",
+  props: props$6,
+  emits: ["close"],
+  setup(props2, {
+    emit: emit2
+  }) {
+    initI18nShowActionSheetMsgsOnce();
+    const HEIGHT = ref(260);
+    const contentHeight = ref(0);
+    const titleHeight = ref(0);
+    const deltaY = ref(0);
+    const scrollTop = ref(0);
+    const content = ref(null);
+    const main = ref(null);
+    const {
+      t: t2
+    } = useI18n();
+    const {
+      _close
+    } = useActionSheetLoader(props2, emit2);
+    const {
+      popupStyle
+    } = usePopupStyle(props2);
+    let scroller;
+    onMounted(() => {
+      const {
+        scroller: _scroller,
+        handleTouchStart,
+        handleTouchMove,
+        handleTouchEnd
+      } = useScroller(content.value, {
+        enableY: true,
+        friction: new Friction(1e-4),
+        spring: new Spring(2, 90, 20),
+        onScroll: (e2) => {
+          scrollTop.value = e2.target.scrollTop;
+        }
+      });
+      scroller = _scroller;
+      useTouchtrack(content.value, (e2) => {
+        if (_scroller) {
+          switch (e2.detail.state) {
+            case "start":
+              handleTouchStart(e2);
+              break;
+            case "move":
+              handleTouchMove(e2);
+              break;
+            case "end":
+            case "cancel":
+              handleTouchEnd(e2);
+          }
+        }
+      }, true);
+    });
+    function _handleWheel($event) {
+      const _deltaY = deltaY.value + $event.deltaY;
+      if (Math.abs(_deltaY) > 10) {
+        scrollTop.value += _deltaY / 3;
+        scrollTop.value = scrollTop.value >= contentHeight.value ? contentHeight.value : scrollTop.value <= 0 ? 0 : scrollTop.value;
+        scroller.scrollTo(scrollTop.value);
+      } else {
+        deltaY.value = _deltaY;
+      }
+      $event.preventDefault();
+    }
+    watch(() => props2.visible, () => {
+      nextTick(() => {
+        if (props2.title) {
+          titleHeight.value = document.querySelector(".uni-actionsheet__title").offsetHeight;
+        }
+        scroller.update();
+        if (content.value)
+          contentHeight.value = content.value.clientHeight - HEIGHT.value;
+        document.querySelectorAll(".uni-actionsheet__cell").forEach((item) => {
+          initClick(item);
+        });
+      });
+    });
+    const actionSheetTheme = useOnThemeChange$1(props2);
+    return () => {
+      return createVNode("uni-actionsheet", {
+        "onTouchmove": onEventPrevent
+      }, [createVNode(Transition, {
+        "name": "uni-fade"
+      }, {
+        default: () => [withDirectives(createVNode("div", {
+          "class": "uni-mask uni-actionsheet__mask",
+          "onClick": () => _close(-1)
+        }, null, 8, ["onClick"]), [[vShow, props2.visible]])]
+      }), createVNode("div", {
+        "class": ["uni-actionsheet", {
+          "uni-actionsheet_toggle": props2.visible
+        }],
+        "style": popupStyle.value.content
+      }, [createVNode("div", {
+        "ref": main,
+        "class": "uni-actionsheet__menu",
+        "onWheel": _handleWheel
+      }, [props2.title ? createVNode(Fragment, null, [createVNode("div", {
+        "class": "uni-actionsheet__cell",
+        "style": {
+          height: `${titleHeight.value}px`
+        }
+      }, null), createVNode("div", {
+        "class": "uni-actionsheet__title"
+      }, [props2.title])]) : "", createVNode("div", {
+        "style": {
+          maxHeight: `${HEIGHT.value}px`,
+          overflow: "hidden"
+        }
+      }, [createVNode("div", {
+        "ref": content
+      }, [props2.itemList.map((itemTitle, index2) => createVNode("div", {
+        "key": index2,
+        "style": {
+          color: actionSheetTheme.listItemColor
+        },
+        "class": "uni-actionsheet__cell",
+        "onClick": () => _close(index2)
+      }, [itemTitle], 12, ["onClick"]))], 512)])], 40, ["onWheel"]), createVNode("div", {
+        "class": "uni-actionsheet__action"
+      }, [createVNode("div", {
+        "style": {
+          color: actionSheetTheme.cancelItemColor
+        },
+        "class": "uni-actionsheet__cell",
+        "onClick": () => _close(-1)
+      }, [t2("uni.showActionSheet.cancel")], 12, ["onClick"])]), createVNode("div", {
+        "style": popupStyle.value.triangle
+      }, null, 4)], 6)], 40, ["onTouchmove"]);
+    };
+  }
+});
+function useActionSheetLoader(props2, emit2) {
+  function _close(tapIndex) {
+    emit2("close", tapIndex);
+  }
+  const {
+    key,
+    disable
+  } = useKeyboard();
+  watch(() => props2.visible, (value) => disable.value = !value);
+  watchEffect(() => {
+    const {
+      value
+    } = key;
+    if (value === "esc") {
+      _close && _close(-1);
+    }
+  });
+  return {
+    _close
+  };
+}
+function initClick(dom) {
+  const MAX_MOVE = 20;
+  let x = 0;
+  let y = 0;
+  dom.addEventListener("touchstart", (event) => {
+    const info = event.changedTouches[0];
+    x = info.clientX;
+    y = info.clientY;
+  });
+  dom.addEventListener("touchend", (event) => {
+    const info = event.changedTouches[0];
+    if (Math.abs(info.clientX - x) < MAX_MOVE && Math.abs(info.clientY - y) < MAX_MOVE) {
+      const target = event.target;
+      const currentTarget = event.currentTarget;
+      const customEvent = new CustomEvent("click", {
+        bubbles: true,
+        cancelable: true,
+        target,
+        currentTarget
+      });
+      ["screenX", "screenY", "clientX", "clientY", "pageX", "pageY"].forEach((key) => {
+        customEvent[key] = info[key];
+      });
+      event.target.dispatchEvent(customEvent);
+    }
+  });
+}
+function useOnThemeChange$1(props2) {
+  const actionSheetTheme = reactive({
+    listItemColor: "#000",
+    cancelItemColor: "#000"
+  });
+  const _onThemeChange = ({
+    theme
+  }) => {
+    setActionSheetTheme(theme, actionSheetTheme);
+  };
+  watchEffect(() => {
+    if (props2.visible) {
+      actionSheetTheme.listItemColor = actionSheetTheme.cancelItemColor = props2.itemColor;
+      if (props2.itemColor === "#000") {
+        _onThemeChange({
+          theme: getTheme()
+        });
+        onThemeChange(_onThemeChange);
+      }
+    } else {
+      offThemeChange(_onThemeChange);
+    }
+  });
+  return actionSheetTheme;
+}
+let resolveAction;
+let rejectAction;
+let showActionSheetState;
+const onHidePopupOnce$1 = /* @__PURE__ */ once(() => {
+  UniServiceJSBridge.on(
+    "onHidePopup",
+    () => showActionSheetState.visible = false
+  );
+});
+function onActionSheetClose(tapIndex) {
+  if (tapIndex === -1) {
+    rejectAction && rejectAction("cancel");
+  } else {
+    resolveAction && resolveAction({ tapIndex });
+  }
+}
+const hideActionSheet = () => {
+  if (showActionSheetState) {
+    showActionSheetState.visible = false;
+  }
+};
+const showActionSheet = /* @__PURE__ */ defineAsyncApi(
+  API_SHOW_ACTION_SHEET,
+  (args, { resolve, reject }) => {
+    onHidePopupOnce$1();
+    resolveAction = resolve;
+    rejectAction = reject;
+    if (!showActionSheetState) {
+      showActionSheetState = reactive(args);
+      nextTick(
+        () => (createRootApp(
+          actionSheet,
+          showActionSheetState,
+          onActionSheetClose
+        ).mount(ensureRoot("u-s-a-s")), //下一帧执行，确保首次显示时有动画效果
+        nextTick(() => showActionSheetState.visible = true))
+      );
+    } else {
+      extend(showActionSheetState, args);
+      showActionSheetState.visible = true;
+    }
+  },
+  ShowActionSheetProtocol,
+  ShowActionSheetOptions
+);
+const ModalTheme = {
+  light: {
+    cancelColor: "#000000"
+  },
+  dark: {
+    cancelColor: "rgb(170, 170, 170)"
+  }
+};
+const setCancelColor = (theme, cancelColor) => cancelColor.value = ModalTheme[theme].cancelColor;
+const props$5 = {
+  title: {
+    type: String,
+    default: ""
+  },
+  content: {
+    type: String,
+    default: ""
+  },
+  showCancel: {
+    type: Boolean,
+    default: true
+  },
+  cancelText: {
+    type: String,
+    default: "Cancel"
+  },
+  cancelColor: {
+    type: String,
+    default: "#000000"
+  },
+  confirmText: {
+    type: String,
+    default: "OK"
+  },
+  confirmColor: {
+    type: String,
+    default: "#007aff"
+  },
+  visible: {
+    type: Boolean
+  },
+  editable: {
+    type: Boolean,
+    default: false
+  },
+  placeholderText: {
+    type: String,
+    default: ""
+  }
+};
+const modal = /* @__PURE__ */ defineComponent({
+  props: props$5,
+  setup(props2, {
+    emit: emit2
+  }) {
+    const editContent = ref("");
+    const close = () => visible.value = false;
+    const cancel = () => (close(), emit2("close", "cancel"));
+    const confirm = () => (close(), emit2("close", "confirm", editContent.value));
+    const visible = usePopup(props2, {
+      onEsc: cancel,
+      onEnter: () => {
+        !props2.editable && confirm();
+      }
+    });
+    const cancelColor = useOnThemeChange(props2);
+    return () => {
+      const {
+        title,
+        content,
+        showCancel,
+        confirmText,
+        confirmColor,
+        editable,
+        placeholderText
+      } = props2;
+      editContent.value = content;
+      return createVNode(Transition, {
+        "name": "uni-fade"
+      }, {
+        default: () => [withDirectives(createVNode("uni-modal", {
+          "onTouchmove": onEventPrevent
+        }, [VNODE_MASK, createVNode("div", {
+          "class": "uni-modal"
+        }, [title && createVNode("div", {
+          "class": "uni-modal__hd"
+        }, [createVNode("strong", {
+          "class": "uni-modal__title",
+          "textContent": title
+        }, null, 8, ["textContent"])]), editable ? createVNode("textarea", {
+          "class": "uni-modal__textarea",
+          "rows": "1",
+          "placeholder": placeholderText,
+          "value": content,
+          "onInput": (e2) => editContent.value = e2.target.value
+        }, null, 40, ["placeholder", "value", "onInput"]) : createVNode("div", {
+          "class": "uni-modal__bd",
+          "onTouchmovePassive": onEventStop,
+          "textContent": content
+        }, null, 40, ["onTouchmovePassive", "textContent"]), createVNode("div", {
+          "class": "uni-modal__ft"
+        }, [showCancel && createVNode("div", {
+          "style": {
+            color: cancelColor.value
+          },
+          "class": "uni-modal__btn uni-modal__btn_default",
+          "onClick": cancel
+        }, [props2.cancelText], 12, ["onClick"]), createVNode("div", {
+          "style": {
+            color: confirmColor
+          },
+          "class": "uni-modal__btn uni-modal__btn_primary",
+          "onClick": confirm
+        }, [confirmText], 12, ["onClick"])])])], 40, ["onTouchmove"]), [[vShow, visible.value]])]
+      });
+    };
+  }
+});
+function useOnThemeChange(props2) {
+  const cancelColor = ref(props2.cancelColor);
+  const _onThemeChange = ({
+    theme
+  }) => {
+    setCancelColor(theme, cancelColor);
+  };
+  watchEffect(() => {
+    if (props2.visible) {
+      cancelColor.value = props2.cancelColor;
+      if (props2.cancelColor === "#000") {
+        if (getTheme() === "dark")
+          _onThemeChange({
+            theme: "dark"
+          });
+        onThemeChange(_onThemeChange);
+      }
+    } else {
+      offThemeChange(_onThemeChange);
+    }
+  });
+  return cancelColor;
+}
+let showModalState;
+const onHidePopupOnce = /* @__PURE__ */ once(() => {
+  UniServiceJSBridge.on("onHidePopup", () => showModalState.visible = false);
+});
+let currentShowModalResolve;
+function onModalClose(type, content) {
+  const isConfirm = type === "confirm";
+  const res = {
+    confirm: isConfirm,
+    cancel: type === "cancel"
+  };
+  isConfirm && showModalState.editable && (res.content = content);
+  currentShowModalResolve && currentShowModalResolve(res);
+}
+const hideModal = () => {
+  if (showModalState) {
+    showModalState.visible = false;
+  }
+};
+const showModal = /* @__PURE__ */ defineAsyncApi(
+  API_SHOW_MODAL,
+  (args, { resolve }) => {
+    onHidePopupOnce();
+    currentShowModalResolve = resolve;
+    if (!showModalState) {
+      showModalState = reactive(args);
+      nextTick(
+        () => (createRootApp(modal, showModalState, onModalClose).mount(
+          ensureRoot("u-a-m")
+        ), //下一帧执行，确保首次显示时有动画效果
+        nextTick(() => showModalState.visible = true))
+      );
+    } else {
+      extend(showModalState, args);
+      showModalState.visible = true;
+    }
+  },
+  ShowModalProtocol,
+  ShowModalOptions
+);
 const navigateBack = /* @__PURE__ */ defineAsyncApi(
   API_NAVIGATE_BACK,
   (args, { resolve, reject }) => {
@@ -21348,6 +21935,10 @@ const navigateBack = /* @__PURE__ */ defineAsyncApi(
     if (!canBack) {
       return reject(ON_BACK_PRESS);
     }
+    hideActionSheet();
+    hideModal();
+    uni.hideToast();
+    uni.hideLoading();
     getApp().$router.go(-args.delta);
     return resolve();
   },
@@ -21355,6 +21946,10 @@ const navigateBack = /* @__PURE__ */ defineAsyncApi(
   NavigateBackOptions
 );
 function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__) {
+  hideActionSheet();
+  hideModal();
+  uni.hideToast();
+  uni.hideLoading();
   const router = getApp().$router;
   const { path, query } = parseUrl(url);
   return new Promise((resolve, reject) => {
@@ -21502,216 +22097,7 @@ const preloadPage = /* @__PURE__ */ defineAsyncApi(
   },
   PreloadPageProtocol
 );
-function onThemeChange(callback) {
-  if (__uniConfig.darkmode) {
-    UniServiceJSBridge.on(ON_THEME_CHANGE, callback);
-  }
-}
-function offThemeChange(callback) {
-  UniServiceJSBridge.off(ON_THEME_CHANGE, callback);
-}
-function parseTheme(pageStyle) {
-  let parsedStyle = {};
-  if (__uniConfig.darkmode) {
-    parsedStyle = normalizeStyles(
-      pageStyle,
-      __uniConfig.themeConfig,
-      getTheme()
-    );
-  }
-  return __uniConfig.darkmode ? parsedStyle : pageStyle;
-}
-function useTheme(pageStyle, onThemeChangeCallback) {
-  const isReactived = isReactive(pageStyle);
-  const reactivePageStyle = isReactived ? reactive(parseTheme(pageStyle)) : parseTheme(pageStyle);
-  if (__uniConfig.darkmode && isReactived) {
-    watch(pageStyle, (value) => {
-      const _pageStyle = parseTheme(value);
-      for (const key in _pageStyle) {
-        reactivePageStyle[key] = _pageStyle[key];
-      }
-    });
-  }
-  onThemeChangeCallback && onThemeChange(onThemeChangeCallback);
-  return reactivePageStyle;
-}
-const ModalTheme = {
-  light: {
-    cancelColor: "#000000"
-  },
-  dark: {
-    cancelColor: "rgb(170, 170, 170)"
-  }
-};
-const setCancelColor = (theme, cancelColor) => cancelColor.value = ModalTheme[theme].cancelColor;
-const props$6 = {
-  title: {
-    type: String,
-    default: ""
-  },
-  content: {
-    type: String,
-    default: ""
-  },
-  showCancel: {
-    type: Boolean,
-    default: true
-  },
-  cancelText: {
-    type: String,
-    default: "Cancel"
-  },
-  cancelColor: {
-    type: String,
-    default: "#000000"
-  },
-  confirmText: {
-    type: String,
-    default: "OK"
-  },
-  confirmColor: {
-    type: String,
-    default: "#007aff"
-  },
-  visible: {
-    type: Boolean
-  },
-  editable: {
-    type: Boolean,
-    default: false
-  },
-  placeholderText: {
-    type: String,
-    default: ""
-  }
-};
-const modal = /* @__PURE__ */ defineComponent({
-  props: props$6,
-  setup(props2, {
-    emit: emit2
-  }) {
-    const editContent = ref("");
-    const close = () => visible.value = false;
-    const cancel = () => (close(), emit2("close", "cancel"));
-    const confirm = () => (close(), emit2("close", "confirm", editContent.value));
-    const visible = usePopup(props2, {
-      onEsc: cancel,
-      onEnter: () => {
-        !props2.editable && confirm();
-      }
-    });
-    const cancelColor = useOnThemeChange$1(props2);
-    return () => {
-      const {
-        title,
-        content,
-        showCancel,
-        confirmText,
-        confirmColor,
-        editable,
-        placeholderText
-      } = props2;
-      editContent.value = content;
-      return createVNode(Transition, {
-        "name": "uni-fade"
-      }, {
-        default: () => [withDirectives(createVNode("uni-modal", {
-          "onTouchmove": onEventPrevent
-        }, [VNODE_MASK, createVNode("div", {
-          "class": "uni-modal"
-        }, [title && createVNode("div", {
-          "class": "uni-modal__hd"
-        }, [createVNode("strong", {
-          "class": "uni-modal__title",
-          "textContent": title
-        }, null, 8, ["textContent"])]), editable ? createVNode("textarea", {
-          "class": "uni-modal__textarea",
-          "rows": "1",
-          "placeholder": placeholderText,
-          "value": content,
-          "onInput": (e2) => editContent.value = e2.target.value
-        }, null, 40, ["placeholder", "value", "onInput"]) : createVNode("div", {
-          "class": "uni-modal__bd",
-          "onTouchmovePassive": onEventStop,
-          "textContent": content
-        }, null, 40, ["onTouchmovePassive", "textContent"]), createVNode("div", {
-          "class": "uni-modal__ft"
-        }, [showCancel && createVNode("div", {
-          "style": {
-            color: cancelColor.value
-          },
-          "class": "uni-modal__btn uni-modal__btn_default",
-          "onClick": cancel
-        }, [props2.cancelText], 12, ["onClick"]), createVNode("div", {
-          "style": {
-            color: confirmColor
-          },
-          "class": "uni-modal__btn uni-modal__btn_primary",
-          "onClick": confirm
-        }, [confirmText], 12, ["onClick"])])])], 40, ["onTouchmove"]), [[vShow, visible.value]])]
-      });
-    };
-  }
-});
-function useOnThemeChange$1(props2) {
-  const cancelColor = ref(props2.cancelColor);
-  const _onThemeChange = ({
-    theme
-  }) => {
-    setCancelColor(theme, cancelColor);
-  };
-  watchEffect(() => {
-    if (props2.visible) {
-      cancelColor.value = props2.cancelColor;
-      if (props2.cancelColor === "#000") {
-        if (getTheme() === "dark")
-          _onThemeChange({
-            theme: "dark"
-          });
-        onThemeChange(_onThemeChange);
-      }
-    } else {
-      offThemeChange(_onThemeChange);
-    }
-  });
-  return cancelColor;
-}
-let showModalState;
-const onHidePopupOnce$1 = /* @__PURE__ */ once(() => {
-  UniServiceJSBridge.on("onHidePopup", () => showModalState.visible = false);
-});
-let currentShowModalResolve;
-function onModalClose(type, content) {
-  const isConfirm = type === "confirm";
-  const res = {
-    confirm: isConfirm,
-    cancel: type === "cancel"
-  };
-  isConfirm && showModalState.editable && (res.content = content);
-  currentShowModalResolve && currentShowModalResolve(res);
-}
-const showModal = /* @__PURE__ */ defineAsyncApi(
-  API_SHOW_MODAL,
-  (args, { resolve }) => {
-    onHidePopupOnce$1();
-    currentShowModalResolve = resolve;
-    if (!showModalState) {
-      showModalState = reactive(args);
-      nextTick(
-        () => (createRootApp(modal, showModalState, onModalClose).mount(
-          ensureRoot("u-a-m")
-        ), //下一帧执行，确保首次显示时有动画效果
-        nextTick(() => showModalState.visible = true))
-      );
-    } else {
-      extend(showModalState, args);
-      showModalState.visible = true;
-    }
-  },
-  ShowModalProtocol,
-  ShowModalOptions
-);
-const props$5 = {
+const props$4 = {
   title: {
     type: String,
     default: ""
@@ -21746,7 +22132,7 @@ const ICONCOLOR = {
 const getIconColor = (theme) => ICONCOLOR[theme];
 const Toast = /* @__PURE__ */ defineComponent({
   name: "Toast",
-  props: props$5,
+  props: props$4,
   setup(props2) {
     initI18nShowToastMsgsOnce();
     initI18nShowLoadingMsgsOnce();
@@ -21918,374 +22304,6 @@ function hidePopup(type) {
     showToastState.visible = false;
   }, 10);
 }
-function usePopupStyle(props2) {
-  const popupWidth = ref(0);
-  const popupHeight = ref(0);
-  const isDesktop = computed(
-    () => popupWidth.value >= 500 && popupHeight.value >= 500
-  );
-  const popupStyle = computed(() => {
-    const style = {
-      content: {
-        transform: "",
-        left: "",
-        top: "",
-        bottom: ""
-      },
-      triangle: {
-        left: "",
-        top: "",
-        bottom: "",
-        "border-width": "",
-        "border-color": ""
-      }
-    };
-    const contentStyle = style.content;
-    const triangleStyle = style.triangle;
-    const popover = props2.popover;
-    function getNumber(value) {
-      return Number(value) || 0;
-    }
-    if (isDesktop.value && popover) {
-      extend(triangleStyle, {
-        position: "absolute",
-        width: "0",
-        height: "0",
-        "margin-left": "-6px",
-        "border-style": "solid"
-      });
-      const popoverLeft = getNumber(popover.left);
-      const popoverWidth = getNumber(popover.width);
-      const popoverTop = getNumber(popover.top);
-      const popoverHeight = getNumber(popover.height);
-      const center = popoverLeft + popoverWidth / 2;
-      contentStyle.transform = "none !important";
-      const contentLeft = Math.max(0, center - 300 / 2);
-      contentStyle.left = `${contentLeft}px`;
-      let triangleLeft = Math.max(12, center - contentLeft);
-      triangleLeft = Math.min(300 - 12, triangleLeft);
-      triangleStyle.left = `${triangleLeft}px`;
-      const vcl = popupHeight.value / 2;
-      if (popoverTop + popoverHeight - vcl > vcl - popoverTop) {
-        contentStyle.top = "auto";
-        contentStyle.bottom = `${popupHeight.value - popoverTop + 6}px`;
-        triangleStyle.bottom = "-6px";
-        triangleStyle["border-width"] = "6px 6px 0 6px";
-        triangleStyle["border-color"] = "#fcfcfd transparent transparent transparent";
-      } else {
-        contentStyle.top = `${popoverTop + popoverHeight + 6}px`;
-        triangleStyle.top = "-6px";
-        triangleStyle["border-width"] = "0 6px 6px 6px";
-        triangleStyle["border-color"] = "transparent transparent #fcfcfd transparent";
-      }
-    }
-    return style;
-  });
-  onMounted(() => {
-    const fixSize = () => {
-      const { windowWidth, windowHeight, windowTop } = uni.getSystemInfoSync();
-      popupWidth.value = windowWidth;
-      popupHeight.value = windowHeight + (windowTop || 0);
-    };
-    window.addEventListener("resize", fixSize);
-    fixSize();
-    onUnmounted(() => {
-      window.removeEventListener("resize", fixSize);
-    });
-  });
-  return {
-    isDesktop,
-    popupStyle
-  };
-}
-const ACTION_SHEET_THEME = {
-  light: {
-    listItemColor: "#000000",
-    cancelItemColor: "#000000"
-  },
-  dark: {
-    listItemColor: "rgba(255, 255, 255, 0.8)",
-    cancelItemColor: "rgba(255, 255, 255)"
-  }
-};
-function setActionSheetTheme(theme, actionSheetTheme) {
-  const ActionSheetThemeKey = ["listItemColor", "cancelItemColor"];
-  ActionSheetThemeKey.forEach((key) => {
-    actionSheetTheme[key] = ACTION_SHEET_THEME[theme][key];
-  });
-}
-const props$4 = {
-  title: {
-    type: String,
-    default: ""
-  },
-  itemList: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  itemColor: {
-    type: String,
-    default: "#000000"
-  },
-  popover: {
-    type: Object,
-    default: null
-  },
-  visible: {
-    type: Boolean,
-    default: false
-  }
-};
-const actionSheet = /* @__PURE__ */ defineComponent({
-  name: "ActionSheet",
-  props: props$4,
-  emits: ["close"],
-  setup(props2, {
-    emit: emit2
-  }) {
-    initI18nShowActionSheetMsgsOnce();
-    const HEIGHT = ref(260);
-    const contentHeight = ref(0);
-    const titleHeight = ref(0);
-    const deltaY = ref(0);
-    const scrollTop = ref(0);
-    const content = ref(null);
-    const main = ref(null);
-    const {
-      t: t2
-    } = useI18n();
-    const {
-      _close
-    } = useActionSheetLoader(props2, emit2);
-    const {
-      popupStyle
-    } = usePopupStyle(props2);
-    let scroller;
-    onMounted(() => {
-      const {
-        scroller: _scroller,
-        handleTouchStart,
-        handleTouchMove,
-        handleTouchEnd
-      } = useScroller(content.value, {
-        enableY: true,
-        friction: new Friction(1e-4),
-        spring: new Spring(2, 90, 20),
-        onScroll: (e2) => {
-          scrollTop.value = e2.target.scrollTop;
-        }
-      });
-      scroller = _scroller;
-      useTouchtrack(content.value, (e2) => {
-        if (_scroller) {
-          switch (e2.detail.state) {
-            case "start":
-              handleTouchStart(e2);
-              break;
-            case "move":
-              handleTouchMove(e2);
-              break;
-            case "end":
-            case "cancel":
-              handleTouchEnd(e2);
-          }
-        }
-      }, true);
-    });
-    function _handleWheel($event) {
-      const _deltaY = deltaY.value + $event.deltaY;
-      if (Math.abs(_deltaY) > 10) {
-        scrollTop.value += _deltaY / 3;
-        scrollTop.value = scrollTop.value >= contentHeight.value ? contentHeight.value : scrollTop.value <= 0 ? 0 : scrollTop.value;
-        scroller.scrollTo(scrollTop.value);
-      } else {
-        deltaY.value = _deltaY;
-      }
-      $event.preventDefault();
-    }
-    watch(() => props2.visible, () => {
-      nextTick(() => {
-        if (props2.title) {
-          titleHeight.value = document.querySelector(".uni-actionsheet__title").offsetHeight;
-        }
-        scroller.update();
-        if (content.value)
-          contentHeight.value = content.value.clientHeight - HEIGHT.value;
-        document.querySelectorAll(".uni-actionsheet__cell").forEach((item) => {
-          initClick(item);
-        });
-      });
-    });
-    const actionSheetTheme = useOnThemeChange(props2);
-    return () => {
-      return createVNode("uni-actionsheet", {
-        "onTouchmove": onEventPrevent
-      }, [createVNode(Transition, {
-        "name": "uni-fade"
-      }, {
-        default: () => [withDirectives(createVNode("div", {
-          "class": "uni-mask uni-actionsheet__mask",
-          "onClick": () => _close(-1)
-        }, null, 8, ["onClick"]), [[vShow, props2.visible]])]
-      }), createVNode("div", {
-        "class": ["uni-actionsheet", {
-          "uni-actionsheet_toggle": props2.visible
-        }],
-        "style": popupStyle.value.content
-      }, [createVNode("div", {
-        "ref": main,
-        "class": "uni-actionsheet__menu",
-        "onWheel": _handleWheel
-      }, [props2.title ? createVNode(Fragment, null, [createVNode("div", {
-        "class": "uni-actionsheet__cell",
-        "style": {
-          height: `${titleHeight.value}px`
-        }
-      }, null), createVNode("div", {
-        "class": "uni-actionsheet__title"
-      }, [props2.title])]) : "", createVNode("div", {
-        "style": {
-          maxHeight: `${HEIGHT.value}px`,
-          overflow: "hidden"
-        }
-      }, [createVNode("div", {
-        "ref": content
-      }, [props2.itemList.map((itemTitle, index2) => createVNode("div", {
-        "key": index2,
-        "style": {
-          color: actionSheetTheme.listItemColor
-        },
-        "class": "uni-actionsheet__cell",
-        "onClick": () => _close(index2)
-      }, [itemTitle], 12, ["onClick"]))], 512)])], 40, ["onWheel"]), createVNode("div", {
-        "class": "uni-actionsheet__action"
-      }, [createVNode("div", {
-        "style": {
-          color: actionSheetTheme.cancelItemColor
-        },
-        "class": "uni-actionsheet__cell",
-        "onClick": () => _close(-1)
-      }, [t2("uni.showActionSheet.cancel")], 12, ["onClick"])]), createVNode("div", {
-        "style": popupStyle.value.triangle
-      }, null, 4)], 6)], 40, ["onTouchmove"]);
-    };
-  }
-});
-function useActionSheetLoader(props2, emit2) {
-  function _close(tapIndex) {
-    emit2("close", tapIndex);
-  }
-  const {
-    key,
-    disable
-  } = useKeyboard();
-  watch(() => props2.visible, (value) => disable.value = !value);
-  watchEffect(() => {
-    const {
-      value
-    } = key;
-    if (value === "esc") {
-      _close && _close(-1);
-    }
-  });
-  return {
-    _close
-  };
-}
-function initClick(dom) {
-  const MAX_MOVE = 20;
-  let x = 0;
-  let y = 0;
-  dom.addEventListener("touchstart", (event) => {
-    const info = event.changedTouches[0];
-    x = info.clientX;
-    y = info.clientY;
-  });
-  dom.addEventListener("touchend", (event) => {
-    const info = event.changedTouches[0];
-    if (Math.abs(info.clientX - x) < MAX_MOVE && Math.abs(info.clientY - y) < MAX_MOVE) {
-      const target = event.target;
-      const currentTarget = event.currentTarget;
-      const customEvent = new CustomEvent("click", {
-        bubbles: true,
-        cancelable: true,
-        target,
-        currentTarget
-      });
-      ["screenX", "screenY", "clientX", "clientY", "pageX", "pageY"].forEach((key) => {
-        customEvent[key] = info[key];
-      });
-      event.target.dispatchEvent(customEvent);
-    }
-  });
-}
-function useOnThemeChange(props2) {
-  const actionSheetTheme = reactive({
-    listItemColor: "#000",
-    cancelItemColor: "#000"
-  });
-  const _onThemeChange = ({
-    theme
-  }) => {
-    setActionSheetTheme(theme, actionSheetTheme);
-  };
-  watchEffect(() => {
-    if (props2.visible) {
-      actionSheetTheme.listItemColor = actionSheetTheme.cancelItemColor = props2.itemColor;
-      if (props2.itemColor === "#000") {
-        _onThemeChange({
-          theme: getTheme()
-        });
-        onThemeChange(_onThemeChange);
-      }
-    } else {
-      offThemeChange(_onThemeChange);
-    }
-  });
-  return actionSheetTheme;
-}
-let resolveAction;
-let rejectAction;
-let showActionSheetState;
-const onHidePopupOnce = /* @__PURE__ */ once(() => {
-  UniServiceJSBridge.on(
-    "onHidePopup",
-    () => showActionSheetState.visible = false
-  );
-});
-function onActionSheetClose(tapIndex) {
-  if (tapIndex === -1) {
-    rejectAction && rejectAction("cancel");
-  } else {
-    resolveAction && resolveAction({ tapIndex });
-  }
-}
-const showActionSheet = /* @__PURE__ */ defineAsyncApi(
-  API_SHOW_ACTION_SHEET,
-  (args, { resolve, reject }) => {
-    onHidePopupOnce();
-    resolveAction = resolve;
-    rejectAction = reject;
-    if (!showActionSheetState) {
-      showActionSheetState = reactive(args);
-      nextTick(
-        () => (createRootApp(
-          actionSheet,
-          showActionSheetState,
-          onActionSheetClose
-        ).mount(ensureRoot("u-s-a-s")), //下一帧执行，确保首次显示时有动画效果
-        nextTick(() => showActionSheetState.visible = true))
-      );
-    } else {
-      extend(showActionSheetState, args);
-      showActionSheetState.visible = true;
-    }
-  },
-  ShowActionSheetProtocol,
-  ShowActionSheetOptions
-);
 const loadFontFace = /* @__PURE__ */ defineAsyncApi(
   API_LOAD_FONT_FACE,
   ({ family, source, desc }, { resolve, reject }) => {
@@ -23533,9 +23551,11 @@ const api = /* @__PURE__ */ Object.defineProperty({
   getTopWindowStyle,
   getVideoInfo,
   getWindowInfo,
+  hideActionSheet,
   hideKeyboard,
   hideLeftWindow,
   hideLoading,
+  hideModal,
   hideNavigationBarLoading,
   hideRightWindow,
   hideTabBar,
@@ -26064,9 +26084,11 @@ export {
   getTopWindowStyle,
   getVideoInfo,
   getWindowInfo,
+  hideActionSheet,
   hideKeyboard,
   hideLeftWindow,
   hideLoading,
+  hideModal,
   hideNavigationBarLoading,
   hideRightWindow,
   hideTabBar,

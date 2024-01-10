@@ -21318,6 +21318,11 @@ function onModalClose(type, content) {
   isConfirm && showModalState.editable && (res.content = content);
   currentShowModalResolve && currentShowModalResolve(res);
 }
+const hideModal = () => {
+  if (showModalState) {
+    showModalState.visible = false;
+  }
+};
 const showModal = /* @__PURE__ */ defineAsyncApi(
   API_SHOW_MODAL,
   (args, { resolve }) => {
@@ -21890,6 +21895,11 @@ function onActionSheetClose(tapIndex) {
     resolveAction && resolveAction({ tapIndex });
   }
 }
+const hideActionSheet = () => {
+  if (showActionSheetState) {
+    showActionSheetState.visible = false;
+  }
+};
 const showActionSheet = /* @__PURE__ */ defineAsyncApi(
   API_SHOW_ACTION_SHEET,
   (args, { resolve, reject }) => {
@@ -23161,9 +23171,11 @@ const api = /* @__PURE__ */ Object.defineProperty({
   getTopWindowStyle,
   getVideoInfo,
   getWindowInfo,
+  hideActionSheet,
   hideKeyboard,
   hideLeftWindow,
   hideLoading,
+  hideModal,
   hideNavigationBarLoading,
   hideRightWindow,
   hideTabBar,
@@ -25650,9 +25662,11 @@ export {
   getTopWindowStyle,
   getVideoInfo,
   getWindowInfo,
+  hideActionSheet,
   hideKeyboard,
   hideLeftWindow,
   hideLoading,
+  hideModal,
   hideNavigationBarLoading,
   hideRightWindow,
   hideTabBar,
