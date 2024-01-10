@@ -5851,7 +5851,7 @@ function setRef(rawRef, oldRawRef, parentSuspense, vnode, isUnmount = false) {
         return;
     }
     const refValue = vnode.shapeFlag & 4 /* ShapeFlags.STATEFUL_COMPONENT */ &&
-        (!vnode.component.type.__reserved) // fixed by xxxxxx 非 x 项目或者非内置组件
+        !(vnode.component.type.rootElement) // fixed by xxxxxx 非 x 项目或者非内置组件
         ? getExposeProxy(vnode.component) || vnode.component.proxy
         : vnode.el;
     const value = isUnmount ? null : refValue;
