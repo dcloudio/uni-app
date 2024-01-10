@@ -71,8 +71,15 @@ function useProvideRadioGroup(
     _resetRadioGroupValue(fields.length - 1)
   })
 
+  //#if _X_ && !_NODE_JS_
+  // @ts-ignore
+  const getFieldsValue = () =>
+    fields.find((field) => field.value.radioChecked)?.value.value + ''
+  //#else
+  // @ts-ignore
   const getFieldsValue = () =>
     fields.find((field) => field.value.radioChecked)?.value.value
+  //#endif
 
   provide<UniRadioGroupCtx>(uniRadioGroupKey, {
     addField(field: UniRadioGroupFieldCtx) {

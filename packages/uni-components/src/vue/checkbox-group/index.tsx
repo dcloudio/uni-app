@@ -74,7 +74,13 @@ function useProvideCheckGroup(
   const getFieldsValue = () =>
     fields.reduce((res, field) => {
       if (field.value.checkboxChecked) {
+        //#if _X_ && !_NODE_JS_
+        // @ts-ignore
+        res.push(field.value.value + '')
+        //#else
+        // @ts-ignore
         res.push(field.value.value)
+        //#endif
       }
       return res
     }, new Array())
