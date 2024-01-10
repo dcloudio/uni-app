@@ -207,6 +207,7 @@ async function build(target) {
     }
   }
   if (hasTscBundler) {
+    const enableSourceMap = process.env.ENABLE_SOURCEMAP === 'true'
     const args = [
       '--listEmittedFiles',
       '-p',
@@ -215,6 +216,11 @@ async function build(target) {
     if (types) {
       args.push('--declaration')
     }
+
+    if (enableSourceMap) {
+      args.push('--sourceMap')
+    }
+
     await execa('tsc', args, {
       stdio: 'inherit',
     })

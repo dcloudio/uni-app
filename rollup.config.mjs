@@ -37,7 +37,8 @@ function normalizeOutput(file, output = {}) {
       file,
       format: file.includes('.cjs.') ? 'cjs' : 'es',
       exports: 'auto',
-      interop: 'auto'
+      interop: 'auto',
+      sourcemap: process.env.ENABLE_SOURCEMAP === 'true',
     },
     output
   )
@@ -208,14 +209,14 @@ function createConfig(entryFile, output, buildOption) {
       buildOption.treeshake === false
         ? false
         : {
-          moduleSideEffects(id) {
-            if (id.endsWith('polyfill.ts')) {
-              console.log('[WARN]:sideEffects[' + id + ']')
-              return true
-            }
-            return false
+            moduleSideEffects(id) {
+              if (id.endsWith('polyfill.ts')) {
+                console.log('[WARN]:sideEffects[' + id + ']')
+                return true
+              }
+              return false
+            },
           },
-        },
   }
 }
 
