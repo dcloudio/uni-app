@@ -21917,6 +21917,11 @@ const showActionSheet = /* @__PURE__ */ defineAsyncApi(
 const loadFontFace = /* @__PURE__ */ defineAsyncApi(
   API_LOAD_FONT_FACE,
   ({ family, source, desc }, { resolve, reject }) => {
+    if (source.startsWith("url(")) {
+      source = `url('${getRealPath(source.substring(5, source.length - 2))}')`;
+    } else {
+      source = getRealPath(source);
+    }
     addFont(family, source, desc).then(() => {
       resolve();
     }).catch((err) => {

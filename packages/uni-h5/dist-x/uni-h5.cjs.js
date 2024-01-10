@@ -854,6 +854,14 @@ function normalizeCustomEvent(name, domEvt, el, detail) {
     detail
   };
 }
+function transformRpx(value) {
+  if (/-?\d+[ur]px/gi.test(value)) {
+    return value.replace(/(-?\d+)[ur]px/gi, (text, num) => {
+      return `${uni.upx2px(parseFloat(num))}px`;
+    });
+  }
+  return value;
+}
 class UniElement extends HTMLElement {
   constructor() {
     super();
@@ -865,6 +873,22 @@ class UniElement extends HTMLElement {
   getAttribute(qualifiedName) {
     const name = qualifiedName.indexOf("-") > -1 ? qualifiedName.replace(/-(\w)/g, (_, c) => c.toUpperCase()) : qualifiedName;
     return name in this._props ? this._props[name] + "" : super.getAttribute(qualifiedName) || null;
+  }
+  get style() {
+    const originalStyle = super.style;
+    if (originalStyle.__patchRpx__) {
+      return originalStyle;
+    }
+    originalStyle.__patchRpx__ = true;
+    const originalSetProperty = originalStyle.setProperty.bind(originalStyle);
+    super.style.setProperty = function(property, value, priority) {
+      return originalSetProperty(
+        property,
+        value ? transformRpx(value + "") : value,
+        priority || void 0
+      );
+    };
+    return super.style;
   }
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
