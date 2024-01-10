@@ -5,7 +5,13 @@
 </template>
 
 <script lang="uts">
+  //#ifdef APP
   import { SlotsType } from 'vue'
+  //#endif
+
+  //#ifdef WEB
+  let registerFlag = false
+  //#endif
 
   const EVENT_LOAD = 'load'
   const EVENT_ERROR = 'error'
@@ -97,10 +103,15 @@
     return options as T | null
   }
 
+  //#ifdef APP
   export class UniCloudDBElement extends UniViewElementImpl {
     constructor(data : INodeData, pageNode : PageNode) {
       super(data, pageNode)
     }
+  //#endif
+  //#ifdef WEB
+  export class UniCloudDBElement extends UniElementImpl {
+  //#endif
 
     dataList : Array<UTSJSONObject> = []
 
@@ -129,8 +140,16 @@
         complete: cast_callback<CompleteCallback>(options['complete'])
       } as UniCloudDBComponentAddOptions)
     }
-
+    // @ts-ignore
     remove(id : any, options : UTSJSONObject) {
+      //#ifdef WEB
+      // @ts-ignore
+      if (arguments.length == 0) {
+        super.remove()
+        return
+      }
+      //#endif
+
       this.onRemove(id, {
         confirmTitle: options.getString('confirmTitle'),
         confirmContent: options.getString('confirmContent'),
@@ -272,6 +291,18 @@
         error: null as UniCloudError | null
       }
     },
+    //#ifdef WEB
+    beforeCreate() {
+      if (!registerFlag) {
+        registerFlag = true
+        // @ts-ignore
+        window.customElements.define(
+          'uni-cloud-db-element',
+          UniCloudDBElement,
+        )
+      }
+    },
+    //#endif
     created() {
       this.pagination.current = this.pageCurrent
       this.pagination.size = this.pageSize
@@ -331,14 +362,23 @@
       }
     },
     mounted() {
-      const uniCloudDBElement = this.$refs.get('UniCloudDB') as UniCloudDBElement
-      // TODO 暂不支持Web平台 ?.bind(this);
+      const uniCloudDBElement = this.$refs['UniCloudDB'] as UniCloudDBElement
       uniCloudDBElement.dataList = this.dataList;
+
+      //#ifdef APP
       uniCloudDBElement.onLoadData = this.loadData;
       uniCloudDBElement.onLoadMore = this.loadMore;
       uniCloudDBElement.onAdd = this.add;
       uniCloudDBElement.onUpdate = this.update;
       uniCloudDBElement.onRemove = this.remove;
+      //#endif
+      //#ifdef WEB
+      uniCloudDBElement.onLoadData = this.loadData.bind(this);
+      uniCloudDBElement.onLoadMore = this.loadMore.bind(this);
+      uniCloudDBElement.onAdd = this.add.bind(this);
+      uniCloudDBElement.onUpdate = this.update.bind(this);
+      uniCloudDBElement.onRemove = this.remove.bind(this);
+      //#endif
     },
     methods: {
       loadData(options : UniCloudDBComponentLoadDataOptions) {
@@ -390,7 +430,7 @@
           const data = res.data
           const count = res.count
 
-          this.isEnded = (count !== null) ? (this.pagination.current * this.pagination.size >= count) : (data.length < this.pageSize)
+          this.isEnded = (count != null) ? (this.pagination.current * this.pagination.size >= count) : (data.length < this.pageSize)
           this.hasMore = !this.isEnded
 
           if (this.getcount && count != null) {
@@ -419,7 +459,7 @@
         const db = uniCloud.databaseForJQL()
         db.collection(this._getMainCollection()).add(value).then<void>((res : UniCloudDBAddResult) => {
           options.success?.(res)
-          this._isShowToast(options.showToast, options.toastTitle, 'add success')
+          this._isShowToast(options.showToast ?? false, options.toastTitle ?? 'add success')
         }).catch((err) => {
           this._requestFail(err, options.fail)
         }).finally(() => {
@@ -464,7 +504,7 @@
         const db = uniCloud.databaseForJQL()
         db.collection(this._getMainCollection()).doc(id).update(value).then((res) => {
           options.success?.(res)
-          this._isShowToast(options.showToast, options.toastTitle, 'update success')
+          this._isShowToast(options.showToast ?? false, options.toastTitle ?? 'update success')
         }).catch((err : any | null) => {
           this._requestFail(err, options.fail)
         }).finally(() => {
@@ -501,10 +541,10 @@
           }
         }
       },
-      _isShowToast(showToast ?: boolean | null, title ?: string | null, defaultTitle : string) {
+      _isShowToast(showToast : boolean, title : string) {
         if (showToast == true) {
           uni.showToast({
-            title: title ?? defaultTitle
+            title: title
           })
         }
       },
@@ -595,27 +635,28 @@
           query = collection.skip(skipSize).limit(size)
         }
 
-        const getOptions = {}
-        const treeOptions = {
-          limitLevel: this.limitlevel,
-          startWith: this.startwith
-        }
-        if (this.getcount == true) {
-          getOptions['getCount'] = this.getcount
-        }
-        if (typeof this.gettree == 'string') {
-          const getTreeString = this.gettree as string
-          if (getTreeString.length > 0) {
-            getOptions['getTree'] = treeOptions
-          }
-        } else if (typeof this.gettree == 'object') {
-          getOptions['getTree'] = treeOptions
-        }
-        if (this.gettreepath == true) {
-          getOptions['getTreePath'] = treeOptions
-        }
+        // TODO
+        // const getOptions = {}
+        // const treeOptions = {
+        //   limitLevel: this.limitlevel,
+        //   startWith: this.startwith
+        // }
+        // if (this.getcount == true) {
+        //   getOptions['getCount'] = this.getcount
+        // }
+        // if (typeof this.gettree == 'string') {
+        //   const getTreeString = this.gettree as string
+        //   if (getTreeString.length > 0) {
+        //     getOptions['getTree'] = treeOptions
+        //   }
+        // } else if (typeof this.gettree == 'object') {
+        //   getOptions['getTree'] = treeOptions
+        // }
+        // if (this.gettreepath == true) {
+        //   getOptions['getTreePath'] = treeOptions
+        // }
 
-        return query.get(getOptions)
+        return query.get()
       },
       _getMainCollection() : string {
         if (typeof this.collection === 'string') {
