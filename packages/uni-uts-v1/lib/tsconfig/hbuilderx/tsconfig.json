@@ -3,6 +3,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "lib": ["ESNext"],
+    "noImplicitAny": false,
     "paths": {
       "@/*": ["./*"]
     }
