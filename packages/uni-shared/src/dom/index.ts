@@ -64,10 +64,12 @@ export function scrollTo(
   if (isString(scrollTop)) {
     const el = document.querySelector(scrollTop)
     if (el) {
-      const { height, top } = el.getBoundingClientRect()
+      const { top } = el.getBoundingClientRect()
       scrollTop = top + window.pageYOffset
-      if (isH5) {
-        scrollTop -= height
+      // 如果存在，减去 <uni-page-head> 高度
+      const pageHeader = document.querySelector('uni-page-head')
+      if (pageHeader) {
+        scrollTop -= (pageHeader as HTMLElement).offsetHeight
       }
     }
   }
