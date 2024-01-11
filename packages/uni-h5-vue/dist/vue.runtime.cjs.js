@@ -1421,10 +1421,10 @@ function logError(err, type, contextVNode, throwInDev = true) {
             popWarningContext();
         }
         // crash in dev by default so it's more noticeable
-        if (throwInDev) {
-            throw err;
-        }
-        else {
+        // 不要 crash，经常会导致整个App运行失败，比如路由跳转失败，不能返回了
+        /* if (throwInDev) {
+          throw err
+        } else */ {
             console.error(err);
         }
     }
