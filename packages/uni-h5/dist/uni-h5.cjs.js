@@ -5842,6 +5842,10 @@ const index$n = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const props$f = {
+  direction: {
+    type: [String],
+    default: "vertical"
+  },
   scrollX: {
     type: [Boolean, String],
     default: false
@@ -5921,11 +5925,14 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
       scrollTopNumber,
       scrollLeftNumber
     } = useScrollViewState(props2);
-    useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content, emit2);
+    const {
+      realScrollX,
+      realScrollY
+    } = useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content, emit2);
     const mainStyle = vue.computed(() => {
       let style = "";
-      props2.scrollX ? style += "overflow-x:auto;" : style += "overflow-x:hidden;";
-      props2.scrollY ? style += "overflow-y:auto;" : style += "overflow-y:hidden;";
+      realScrollX.value ? style += "overflow-x:auto;" : style += "overflow-x:hidden;";
+      realScrollY.value ? style += "overflow-y:auto;" : style += "overflow-y:hidden;";
       return style;
     });
     return () => {
@@ -6021,6 +6028,12 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
   let triggerAbort = false;
   let __transitionEnd = () => {
   };
+  const realScrollX = vue.computed(() => {
+    return props2.scrollX;
+  });
+  const realScrollY = vue.computed(() => {
+    return props2.scrollY;
+  });
   vue.computed(() => {
     let val = Number(props2.upperThreshold);
     return isNaN(val) ? 50 : val;
@@ -6059,7 +6072,7 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
     _content.style.webkitTransform = transform;
   }
   function _scrollTopChanged(val) {
-    if (props2.scrollY) {
+    if (realScrollY.value) {
       {
         if (props2.scrollWithAnimation) {
           scrollTo(val, "y");
@@ -6070,7 +6083,7 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
     }
   }
   function _scrollLeftChanged(val) {
-    if (props2.scrollX) {
+    if (realScrollX.value) {
       {
         if (props2.scrollWithAnimation) {
           scrollTo(val, "x");
@@ -6090,7 +6103,7 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
       if (element) {
         let mainRect = main.value.getBoundingClientRect();
         let elRect = element.getBoundingClientRect();
-        if (props2.scrollX) {
+        if (realScrollX.value) {
           let left = elRect.left - mainRect.left;
           let scrollLeft = main.value.scrollLeft;
           let x = scrollLeft + left;
@@ -6100,7 +6113,7 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
             main.value.scrollLeft = x;
           }
         }
-        if (props2.scrollY) {
+        if (realScrollY.value) {
           let top = elRect.top - mainRect.top;
           let scrollTop = main.value.scrollTop;
           let y = scrollTop + top;
@@ -6120,10 +6133,10 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
     content.value.style.webkitTransform = "";
     let _main = main.value;
     if (direction === "x") {
-      _main.style.overflowX = props2.scrollX ? "auto" : "hidden";
+      _main.style.overflowX = realScrollX.value ? "auto" : "hidden";
       _main.scrollLeft = val;
     } else if (direction === "y") {
-      _main.style.overflowY = props2.scrollY ? "auto" : "hidden";
+      _main.style.overflowY = realScrollY.value ? "auto" : "hidden";
       _main.scrollTop = val;
     }
     content.value.removeEventListener("transitionend", __transitionEnd);
@@ -6173,6 +6186,10 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
       _setRefreshState("restore");
     }
   });
+  return {
+    realScrollX,
+    realScrollY
+  };
 }
 const props$e = {
   name: {

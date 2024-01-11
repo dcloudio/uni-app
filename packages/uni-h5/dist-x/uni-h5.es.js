@@ -2139,7 +2139,7 @@ class UniElement extends HTMLElement {
     this._props = props2;
   }
   getAttribute(qualifiedName) {
-    const name = qualifiedName.indexOf("-") > -1 ? qualifiedName.replace(/-(\w)/g, (_, c) => c.toUpperCase()) : qualifiedName;
+    const name = camelize(qualifiedName);
     return name in this._props ? this._props[name] + "" : super.getAttribute(qualifiedName) || null;
   }
   get style() {
@@ -13356,6 +13356,10 @@ const index$k = /* @__PURE__ */ defineBuiltInComponent({
 });
 const passiveOptions = /* @__PURE__ */ passive(true);
 const props$m = {
+  direction: {
+    type: [String],
+    default: "vertical"
+  },
   scrollX: {
     type: [Boolean, String],
     default: false
@@ -13441,11 +13445,14 @@ const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
       scrollTopNumber,
       scrollLeftNumber
     } = useScrollViewState(props2);
-    useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content, emit2);
+    const {
+      realScrollX,
+      realScrollY
+    } = useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content, emit2);
     const mainStyle = computed(() => {
       let style = "";
-      props2.scrollX ? style += "overflow-x:auto;" : style += "overflow-x:hidden;";
-      props2.scrollY ? style += "overflow-y:auto;" : style += "overflow-y:hidden;";
+      realScrollX.value ? style += "overflow-x:auto;" : style += "overflow-x:hidden;";
+      realScrollY.value ? style += "overflow-y:auto;" : style += "overflow-y:hidden;";
       return style;
     });
     onMounted(() => {
@@ -13574,6 +13581,18 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
   let triggerAbort = false;
   let __transitionEnd = () => {
   };
+  const realScrollX = computed(() => {
+    if (props2.direction === "horizontal" || props2.direction === "all") {
+      return true;
+    }
+    return false;
+  });
+  const realScrollY = computed(() => {
+    if (props2.direction === "vertical" || props2.direction === "all") {
+      return true;
+    }
+    return false;
+  });
   const upperThresholdNumber = computed(() => {
     let val = Number(props2.upperThreshold);
     return isNaN(val) ? 50 : val;
@@ -13621,7 +13640,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
       deltaX: state2.lastScrollLeft - target.scrollLeft,
       deltaY: state2.lastScrollTop - target.scrollTop
     });
-    if (props2.scrollY) {
+    if (realScrollY.value) {
       if (target.scrollTop <= upperThresholdNumber.value && state2.lastScrollTop - target.scrollTop > 0 && $event.timeStamp - state2.lastScrollToUpperTime > 200) {
         trigger("scrolltoupper", $event, {
           direction: "top"
@@ -13635,7 +13654,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
         state2.lastScrollToLowerTime = $event.timeStamp;
       }
     }
-    if (props2.scrollX) {
+    if (realScrollX.value) {
       if (target.scrollLeft <= upperThresholdNumber.value && state2.lastScrollLeft - target.scrollLeft > 0 && $event.timeStamp - state2.lastScrollToUpperTime > 200) {
         trigger("scrolltoupper", $event, {
           direction: "left"
@@ -13653,7 +13672,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
     state2.lastScrollLeft = target.scrollLeft;
   }
   function _scrollTopChanged(val) {
-    if (props2.scrollY) {
+    if (realScrollY.value) {
       {
         if (props2.scrollWithAnimation) {
           scrollTo2(val, "y");
@@ -13664,7 +13683,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
     }
   }
   function _scrollLeftChanged(val) {
-    if (props2.scrollX) {
+    if (realScrollX.value) {
       {
         if (props2.scrollWithAnimation) {
           scrollTo2(val, "x");
@@ -13684,7 +13703,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
       if (element) {
         let mainRect = main.value.getBoundingClientRect();
         let elRect = element.getBoundingClientRect();
-        if (props2.scrollX) {
+        if (realScrollX.value) {
           let left = elRect.left - mainRect.left;
           let scrollLeft = main.value.scrollLeft;
           let x = scrollLeft + left;
@@ -13694,7 +13713,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
             main.value.scrollLeft = x;
           }
         }
-        if (props2.scrollY) {
+        if (realScrollY.value) {
           let top = elRect.top - mainRect.top;
           let scrollTop = main.value.scrollTop;
           let y = scrollTop + top;
@@ -13714,10 +13733,10 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
     content.value.style.webkitTransform = "";
     let _main = main.value;
     if (direction2 === "x") {
-      _main.style.overflowX = props2.scrollX ? "auto" : "hidden";
+      _main.style.overflowX = realScrollX.value ? "auto" : "hidden";
       _main.scrollLeft = val;
     } else if (direction2 === "y") {
-      _main.style.overflowY = props2.scrollY ? "auto" : "hidden";
+      _main.style.overflowY = realScrollY.value ? "auto" : "hidden";
       _main.scrollTop = val;
     }
     content.value.removeEventListener("transitionend", __transitionEnd);
@@ -13774,7 +13793,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
       let y = event.touches[0].pageY;
       let _main = main.value;
       if (Math.abs(x - touchStart.x) > Math.abs(y - touchStart.y)) {
-        if (props2.scrollX) {
+        if (realScrollX.value) {
           if (_main.scrollLeft === 0 && x > touchStart.x) {
             needStop = false;
             return;
@@ -13787,7 +13806,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
           needStop = false;
         }
       } else {
-        if (props2.scrollY) {
+        if (realScrollY.value) {
           if (_main.scrollTop === 0 && y > touchStart.y) {
             needStop = false;
             if (props2.refresherEnabled && event.cancelable !== false)
@@ -13857,8 +13876,8 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
     });
   });
   onActivated(() => {
-    props2.scrollY && (main.value.scrollTop = state2.lastScrollTop);
-    props2.scrollX && (main.value.scrollLeft = state2.lastScrollLeft);
+    realScrollY.value && (main.value.scrollTop = state2.lastScrollTop);
+    realScrollX.value && (main.value.scrollLeft = state2.lastScrollLeft);
   });
   watch(scrollTopNumber, (val) => {
     _scrollTopChanged(val);
@@ -13876,6 +13895,10 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
       _setRefreshState("restore");
     }
   });
+  return {
+    realScrollX,
+    realScrollY
+  };
 }
 const props$l = {
   name: {
