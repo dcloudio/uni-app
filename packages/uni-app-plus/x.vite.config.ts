@@ -1,7 +1,10 @@
 import path from 'path'
 import { defineConfig } from 'vite'
+import jscc from 'rollup-plugin-jscc'
+import replace from '@rollup/plugin-replace'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
+import babel from '@rollup/plugin-babel'
 import { cssTarget } from '@dcloudio/uni-cli-shared'
 import { isBuiltInComponent } from '@dcloudio/uni-shared'
 import autoprefixer from 'autoprefixer'
@@ -9,6 +12,44 @@ import autoprefixer from 'autoprefixer'
 function resolve(file: string) {
   return path.resolve(__dirname, file)
 }
+
+const rollupPlugins = [
+  replace({
+    values: {
+      defineOnApi: `/*#__PURE__*/ defineOnApi`,
+      defineOffApi: `/*#__PURE__*/ defineOffApi`,
+      defineTaskApi: `/*#__PURE__*/ defineTaskApi`,
+      defineSyncApi: `/*#__PURE__*/ defineSyncApi`,
+      defineAsyncApi: `/*#__PURE__*/ defineAsyncApi`,
+      __IMPORT_META_ENV_BASE_URL__: 'import.meta.env.BASE_URL', //直接使用import.meta.env.BASE_URL会被vite替换成'/'
+      __UNI_FEATURE_LONGPRESS__: JSON.stringify(true),
+    },
+    preventAssignment: true,
+  }),
+  jscc({
+    values: {
+      // 该插件限制了不能以__开头
+      _NODE_JS_: 0,
+      _X_: 0,
+    },
+    // 忽略 pako 内部条件编译
+    exclude: [/pako/ as unknown as string],
+  }),
+  babel({
+    babelHelpers: 'bundled',
+    extensions: ['.js', '.jsx', '.ts', '.tsx', '.vue'],
+    presets: [
+      [
+        '@babel/preset-env',
+        {
+          corejs: 2,
+          useBuiltIns: 'usage',
+          targets: ['ios >= 10'],
+        },
+      ],
+    ],
+  }),
+]
 
 export default defineConfig({
   root: __dirname,
@@ -99,6 +140,7 @@ export default defineConfig({
         entryFileNames: 'uni.x.runtime.esm.js',
       },
       preserveEntrySignatures: 'strict',
+      plugins: rollupPlugins,
       onwarn: (msg, warn) => {
         if (!String(msg).includes('external module "vue" but never used')) {
           warn(msg)
