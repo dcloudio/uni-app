@@ -257,9 +257,23 @@ let postFlushIndex = 0;
 const resolvedPromise = /*#__PURE__*/ Promise.resolve();
 let currentFlushPromise = null;
 const RECURSION_LIMIT = 100;
-function nextTick(fn) {
-    const p = currentFlushPromise || resolvedPromise;
-    return fn ? p.then(this ? fn.bind(this) : fn) : p;
+function nextTick(fn, instance = getCurrentInstance()) {
+    const promise = currentFlushPromise || resolvedPromise;
+    const current = currentFlushPromise === null || instance === null
+        ? promise
+        : promise.then(() => {
+            return new Promise(resolve => {
+                if (instance === null) {
+                    resolve();
+                }
+                else {
+                    instance.$waitNativeRender(() => {
+                        resolve();
+                    });
+                }
+            });
+        });
+    return fn ? current.then(this ? fn.bind(this) : fn) : current;
 }
 // #2768
 // Use binary-search to find a suitable position in the queue,
@@ -4521,7 +4535,8 @@ function setRef(rawRef, oldRawRef, parentSuspense, vnode, isUnmount = false) {
         // because the template ref is forwarded to inner component
         return;
     }
-    const refValue = vnode.shapeFlag & 4 /* ShapeFlags.STATEFUL_COMPONENT */
+    const refValue = vnode.shapeFlag & 4 /* ShapeFlags.STATEFUL_COMPONENT */ &&
+        !vnode.component.type.rootElement // fixed by xxxxxx 非 x 项目或者非内置组件
         ? getExposeProxy(vnode.component) || vnode.component.proxy
         : vnode.el;
     const value = isUnmount ? null : refValue;
@@ -7211,7 +7226,11 @@ function createComponentInstance(vnode, parent, suspense) {
         rtg: null,
         rtc: null,
         ec: null,
-        sp: null
+        sp: null,
+        $waitNativeRender(fn) {
+            // TODO use native
+            setTimeout(fn, 150);
+        }
     };
     if ((process.env.NODE_ENV !== 'production')) {
         instance.ctx = createDevRenderContext(instance);
