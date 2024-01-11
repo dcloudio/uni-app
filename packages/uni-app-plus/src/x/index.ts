@@ -4,6 +4,7 @@ import {
   getCurrentPages,
   definePage as __definePage,
 } from '../service/framework/page'
+import * as components from './components'
 
 export default {
   uni,
@@ -11,4 +12,5 @@ export default {
   getCurrentPages,
   __definePage,
   __registerApp,
+  components,
 }

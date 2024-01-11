@@ -44,6 +44,8 @@ declare module '@vue/runtime-core' {
     $wxsModules?: string[]
     // 暂定 h5
     $pageInstance: ComponentInternalInstance
+    // x
+    $waitNativeRender: (fn: () => void) => void
   }
 
   export const onBeforeActivate: (fn: () => void) => void
