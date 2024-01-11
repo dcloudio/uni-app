@@ -19,6 +19,7 @@ import { uniRenderjsPlugin } from './plugins/renderjs'
 import { uniResolveIdPlugin } from './plugins/resolveId'
 import { uniSetupPlugin } from './plugins/setup'
 import { uniSSRPlugin } from './plugins/ssr'
+import { uniPostSourceMapPlugin } from './plugins/sourcemap'
 
 export default [
   ...(process.env.UNI_APP_X === 'true'
@@ -50,4 +51,5 @@ export default [
   uniRenderjsPlugin(),
   uniH5Plugin(),
   uniPostVuePlugin(),
+  uniPostSourceMapPlugin(),
 ]
