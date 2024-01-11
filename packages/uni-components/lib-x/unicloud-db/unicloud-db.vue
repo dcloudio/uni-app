@@ -635,28 +635,27 @@
           query = collection.skip(skipSize).limit(size)
         }
 
-        // TODO
-        // const getOptions = {}
-        // const treeOptions = {
-        //   limitLevel: this.limitlevel,
-        //   startWith: this.startwith
-        // }
-        // if (this.getcount == true) {
-        //   getOptions['getCount'] = this.getcount
-        // }
-        // if (typeof this.gettree == 'string') {
-        //   const getTreeString = this.gettree as string
-        //   if (getTreeString.length > 0) {
-        //     getOptions['getTree'] = treeOptions
-        //   }
-        // } else if (typeof this.gettree == 'object') {
-        //   getOptions['getTree'] = treeOptions
-        // }
-        // if (this.gettreepath == true) {
-        //   getOptions['getTreePath'] = treeOptions
-        // }
+        const getOptions = {}
+        const treeOptions = {
+          limitLevel: this.limitlevel,
+          startWith: this.startwith
+        }
+        if (this.getcount == true) {
+          getOptions['getCount'] = this.getcount
+        }
+        if (typeof this.gettree == 'string') {
+          const getTreeString = this.gettree as string
+          if (getTreeString.length > 0) {
+            getOptions['getTree'] = treeOptions
+          }
+        } else if (typeof this.gettree == 'object') {
+          getOptions['getTree'] = treeOptions
+        }
+        if (this.gettreepath == true) {
+          getOptions['getTreePath'] = treeOptions
+        }
 
-        return query.get()
+        return query.get(getOptions)
       },
       _getMainCollection() : string {
         if (typeof this.collection === 'string') {
