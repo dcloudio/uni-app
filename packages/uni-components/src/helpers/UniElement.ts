@@ -1,9 +1,10 @@
+import { camelize } from "@vue/shared";
+
 function transformRpx(value: string) {
   if (/-?\d+[ur]px/gi.test(value)) {
     return value.replace(/(-?\d+)[ur]px/gi, (text, num) => {
       return `${uni.upx2px(parseFloat(num))}px`
     })
-    // eslint-disable-next-line no-useless-escape
   }
   return value
 }
@@ -19,10 +20,7 @@ export class UniElement extends HTMLElement {
   }
 
   getAttribute(qualifiedName: string): string | null {
-    const name =
-      qualifiedName.indexOf('-') > -1
-        ? qualifiedName.replace(/-(\w)/g, (_, c) => c.toUpperCase())
-        : qualifiedName
+    const name = camelize(qualifiedName)
     return name in this._props
       ? this._props[name] + ''
       : super.getAttribute(qualifiedName) || null
