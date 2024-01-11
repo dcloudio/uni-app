@@ -25,6 +25,9 @@ function getType(val) {
     return Object.prototype.toString.call(val).slice(8, -1).toLowerCase();
 }
 function isPlainObject(val) {
+    if (val == null || typeof val !== 'object') {
+        return false;
+    }
     const proto = Object.getPrototypeOf(val);
     return proto === Object.prototype || proto === null;
 }
