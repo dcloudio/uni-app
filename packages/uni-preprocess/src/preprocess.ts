@@ -14,7 +14,9 @@ export function preprocess(source: string, options: PreprocessOptions) {
   if (!source.includes('#endif')) {
     return {
       code: source,
-      map: null,
+      map: options.sourceMap
+        ? new MagicString(source).generateMap(options.sourceMap)
+        : null,
     }
   }
 
