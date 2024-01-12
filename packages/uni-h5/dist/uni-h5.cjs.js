@@ -7195,6 +7195,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2, {
     slots
   }) {
+    const rootRef = vue.ref(null);
     return () => {
       const children = [];
       if (slots.default) {
@@ -7224,6 +7225,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
         });
       }
       return vue.createVNode("uni-text", {
+        "ref": rootRef,
         "selectable": props2.selectable ? true : null
       }, [vue.createVNode("span", null, children)], 8, ["selectable"]);
     };

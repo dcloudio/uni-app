@@ -15090,8 +15090,14 @@ function normalizeText(text2, { space, decode: decode2 }) {
   }
   return text2.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
 }
+class UniTextElement extends UniElement {
+}
 const index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
+  rootElement: {
+    name: "uni-text",
+    class: UniTextElement
+  },
   props: {
     selectable: {
       type: [Boolean, String],
@@ -15109,6 +15115,11 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2, {
     slots
   }) {
+    const rootRef = ref(null);
+    onMounted(() => {
+      const rootElement = rootRef.value;
+      rootElement.attachVmProps(props2);
+    });
     return () => {
       const children = [];
       if (slots.default) {
@@ -15138,6 +15149,7 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
         });
       }
       return createVNode("uni-text", {
+        "ref": rootRef,
         "selectable": props2.selectable ? true : null
       }, [createVNode("span", null, children)], 8, ["selectable"]);
     };
@@ -22330,8 +22342,10 @@ function hidePopup(type) {
 const loadFontFace = /* @__PURE__ */ defineAsyncApi(
   API_LOAD_FONT_FACE,
   ({ family, source, desc }, { resolve, reject }) => {
-    if (source.startsWith("url(")) {
+    if (source.startsWith(`url("`) || source.startsWith(`url('`)) {
       source = `url('${getRealPath(source.substring(5, source.length - 2))}')`;
+    } else if (source.startsWith("url(")) {
+      source = `url('${getRealPath(source.substring(4, source.length - 1))}')`;
     } else {
       source = getRealPath(source);
     }
