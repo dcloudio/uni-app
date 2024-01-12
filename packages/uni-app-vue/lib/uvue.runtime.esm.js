@@ -5492,10 +5492,10 @@ function baseCreateRenderer(options, createHydrationFns) {
     const processFragment = (n1, n2, container, anchor, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized) => {
         const fragmentStartAnchor = (n2.el = n1
             ? n1.el
-            : hostCreateText('', container)); // fixed by xxxxxx
+            : hostCreateComment('', container)); // fixed by xxxxxx
         const fragmentEndAnchor = (n2.anchor = n1
             ? n1.anchor
-            : hostCreateText('', container)); // fixed by xxxxxx
+            : hostCreateComment('', container)); // fixed by xxxxxx
         let { patchFlag, dynamicChildren, slotScopeIds: fragmentSlotScopeIds } = n2;
         if ((process.env.NODE_ENV !== 'production') &&
             // #5523 dev root fragment may inherit directives
@@ -8293,7 +8293,7 @@ const nodeOps = {
         return getDocument().createElement(tag);
     },
     createText: (text, container) => {
-        const textNode = getDocument().createElement(text);
+        const textNode = getDocument().createElement('text');
         textNode.setAttribute('value', text);
         return textNode;
     },

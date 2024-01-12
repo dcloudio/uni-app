@@ -5472,8 +5472,8 @@ function baseCreateRenderer(options, createHydrationFns) {
     }
   };
   var processFragment = (n1, n2, container, anchor, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized) => {
-    var fragmentStartAnchor = n2.el = n1 ? n1.el : hostCreateText('', container); // fixed by xxxxxx
-    var fragmentEndAnchor = n2.anchor = n1 ? n1.anchor : hostCreateText('', container); // fixed by xxxxxx
+    var fragmentStartAnchor = n2.el = n1 ? n1.el : hostCreateComment('', container); // fixed by xxxxxx
+    var fragmentEndAnchor = n2.anchor = n1 ? n1.anchor : hostCreateComment('', container); // fixed by xxxxxx
     var {
       patchFlag,
       dynamicChildren,
@@ -7718,7 +7718,7 @@ var nodeOps = {
     return getDocument().createElement(tag);
   },
   createText: (text, container) => {
-    var textNode = getDocument().createElement(text);
+    var textNode = getDocument().createElement('text');
     textNode.setAttribute('value', text);
     return textNode;
   },
