@@ -9,12 +9,15 @@ interface UTS2JavaScriptOptions extends Omit<RPT2Options, 'transformers'> {
 type uts2js = (options: UTS2JavaScriptOptions) => import('rollup').Plugin[]
 
 export const uts2js: uts2js = (options) => {
+  const inputDir = options.inputDir
   // TODO 目前开发阶段禁用缓存，禁用check
   extend(options, {
+    cwd: inputDir,
     clean: true,
     check: process.env.UNI_UTS_PLATFORM === 'web',
     tsconfigOverride: {
       compilerOptions: {
+        rootDir: inputDir,
         sourceMap: process.env.UNI_UTS_PLATFORM === 'web',
         ignoreDeprecations: '5.0',
         preserveValueImports: true,
@@ -37,10 +40,7 @@ export const uts2js: uts2js = (options) => {
         '../../../lib/tsconfig/hbuilderx/tsconfig.json'
       )
     } else {
-      options.tsconfig = path.resolve(
-        process.env.UNI_INPUT_DIR,
-        '../tsconfig.json'
-      )
+      options.tsconfig = path.resolve(inputDir, '../tsconfig.json')
     }
   }
   if (!options.typescript) {
@@ -74,12 +74,7 @@ export const uts2js: uts2js = (options) => {
   } else {
     extend(options.tsconfigOverride.compilerOptions, {
       paths: {
-        vue: [
-          path.resolve(
-            process.env.UNI_INPUT_DIR,
-            '../node_modules/@vue/runtime-core'
-          ),
-        ],
+        vue: [path.resolve(inputDir, '../node_modules/@vue/runtime-core')],
       },
       typeRoots: [path.resolve(__dirname, '../../../lib/tsconfig/types')],
     })
