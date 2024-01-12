@@ -232,7 +232,30 @@ class UTSJSONObject {
     }
 }
 
-// @ts-ignore
+// @ts-nocheck
+function getGlobal() {
+    // cross-platform
+    if (typeof globalThis !== 'undefined') {
+        return globalThis;
+    }
+    // worker
+    if (typeof self !== 'undefined') {
+        return self;
+    }
+    // browser
+    if (typeof window !== 'undefined') {
+        return window;
+    }
+    // nodejs
+    if (typeof global !== 'undefined') {
+        return global;
+    }
+    throw new Error('unable to locate global object');
+}
+const realGlobal = getGlobal();
+if (!realGlobal.globalThis) {
+    realGlobal.globalThis = realGlobal;
+}
 globalThis.UTSJSONObject = UTSJSONObject;
 
 function arrayPop(array) {
