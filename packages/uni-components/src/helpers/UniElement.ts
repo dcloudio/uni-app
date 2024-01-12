@@ -1,8 +1,8 @@
-import { camelize } from "@vue/shared";
+import { camelize } from '@vue/shared'
 
 function transformRpx(value: string) {
-  if (/-?\d+[ur]px/gi.test(value)) {
-    return value.replace(/(-?\d+)[ur]px/gi, (text, num) => {
+  if (/(-?(?:\d+\.)?\d+)[ur]px/gi.test(value)) {
+    return value.replace(/(-?(?:\d+\.)?\d+)[ur]px/gi, (text, num) => {
       return `${uni.upx2px(parseFloat(num))}px`
     })
   }
