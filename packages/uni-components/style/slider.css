@@ -93,8 +93,6 @@ uni-slider .uni-slider-disabled .uni-slider-thumb {
 /* #ifdef UNI-APP-X */
 uni-slider {
   display: block;
-  padding-top: 4px;
-  padding-bottom: 4px;
 }
 
 uni-slider[hidden] {
@@ -115,6 +113,8 @@ uni-slider .uni-slider-wrapper {
   display: flex;
   align-items: center;
   min-height: 8px;
+  margin-top: 4px;
+  margin-bottom: 4px;
 }
 
 uni-slider .uni-slider-input {
