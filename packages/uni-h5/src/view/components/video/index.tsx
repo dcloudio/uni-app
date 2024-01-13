@@ -405,6 +405,10 @@ function useVideo(
       video.currentTime = position
     }
   }
+  function stop() {
+    seek(0)
+    pause()
+  }
   function playbackRate(rate: number) {
     const video = videoRef.value as HTMLVideoElement
     video.playbackRate = rate
@@ -414,6 +418,7 @@ function useVideo(
     state,
     play,
     pause,
+    stop,
     seek,
     playbackRate,
     toggle,
@@ -683,6 +688,7 @@ function useDanmu(
 function useContext(
   play: Function,
   pause: Function,
+  stop: Function,
   seek: Function,
   sendDanmu: Function,
   playbackRate: Function,
@@ -691,6 +697,7 @@ function useContext(
 ) {
   const methods = {
     play,
+    stop,
     pause,
     seek,
     sendDanmu,
@@ -845,6 +852,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       state: videoState,
       play,
       pause,
+      stop,
       seek,
       playbackRate,
       toggle,
@@ -889,6 +897,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     useContext(
       play,
       pause,
+      stop,
       seek,
       sendDanmu,
       playbackRate,
@@ -902,7 +911,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       Object.assign(rootElement, {
         play,
         pause,
-        stop: pause,
+        stop,
         seek,
         sendDanmu,
         playbackRate,
