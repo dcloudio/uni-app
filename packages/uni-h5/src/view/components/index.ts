@@ -1,5 +1,11 @@
 import Video from './video/index'
+//#if _X_
+// @ts-ignore
+import WebView from './web-view/index-x'
+//#else
+// @ts-ignore
 import WebView from './web-view/index'
+//#endif
 import Map from './map/index'
 import CoverView from './cover-view'
 import CoverImage from './cover-image'
