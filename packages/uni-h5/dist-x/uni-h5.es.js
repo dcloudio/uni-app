@@ -2123,8 +2123,8 @@ function normalizeCustomEvent(name, domEvt, el, detail) {
   };
 }
 function transformRpx(value) {
-  if (/-?\d+[ur]px/gi.test(value)) {
-    return value.replace(/(-?\d+)[ur]px/gi, (text2, num) => {
+  if (/(-?(?:\d+\.)?\d+)[ur]px/gi.test(value)) {
+    return value.replace(/(-?(?:\d+\.)?\d+)[ur]px/gi, (text2, num) => {
       return `${uni.upx2px(parseFloat(num))}px`;
     });
   }

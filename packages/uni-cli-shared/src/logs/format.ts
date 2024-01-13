@@ -45,6 +45,9 @@ const initWarnFormattersOnce = once(() => {
 })
 
 export function formatErrMsg(msg: string, options?: LogErrorOptions) {
+  if (options && isInHBuilderX()) {
+    options.timestamp = false
+  }
   initErrFormattersOnce()
   const formatter = errFormatters.find(({ test }) => test(msg, options))
   if (formatter) {
@@ -98,6 +101,9 @@ export function formatInfoMsg(
 }
 
 export function formatWarnMsg(msg: string, options?: LogOptions) {
+  if (options && isInHBuilderX()) {
+    options.timestamp = false
+  }
   initWarnFormattersOnce()
   const formatter = warnFormatters.find(({ test }) => test(msg, options))
   if (formatter) {

@@ -855,8 +855,8 @@ function normalizeCustomEvent(name, domEvt, el, detail) {
   };
 }
 function transformRpx(value) {
-  if (/-?\d+[ur]px/gi.test(value)) {
-    return value.replace(/(-?\d+)[ur]px/gi, (text, num) => {
+  if (/(-?(?:\d+\.)?\d+)[ur]px/gi.test(value)) {
+    return value.replace(/(-?(?:\d+\.)?\d+)[ur]px/gi, (text, num) => {
       return `${uni.upx2px(parseFloat(num))}px`;
     });
   }
