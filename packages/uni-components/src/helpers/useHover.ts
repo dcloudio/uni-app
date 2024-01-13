@@ -1,4 +1,5 @@
 import { ref } from 'vue'
+import { withWebEvent } from './useEvent'
 
 interface UseHoverOptions {
   disabled?: string | boolean
@@ -110,11 +111,11 @@ export function useHover(props: UseHoverOptions) {
   return {
     hovering,
     binding: {
-      onTouchstartPassive,
-      onMousedown,
-      onTouchend,
-      onMouseup,
-      onTouchcancel,
+      onTouchstartPassive: withWebEvent(onTouchstartPassive),
+      onMousedown: withWebEvent(onMousedown),
+      onTouchend: withWebEvent(onTouchend),
+      onMouseup: withWebEvent(onMouseup),
+      onTouchcancel: withWebEvent(onTouchcancel),
     },
   }
 }
