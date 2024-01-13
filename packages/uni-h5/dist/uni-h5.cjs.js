@@ -714,6 +714,32 @@ const defineUnsupportedComponent = (name) => {
     }
   });
 };
+function withWebEvent(fn) {
+  return fn.__wwe = true, fn;
+}
+function useCustomEvent(ref, emit2) {
+  return (name, evt, detail) => {
+    if (ref.value) {
+      emit2(name, normalizeCustomEvent(name, evt, ref.value, detail || {}));
+    }
+  };
+}
+function useNativeEvent(emit2) {
+  return (name, evt) => {
+    emit2(name, createNativeEvent(evt));
+  };
+}
+function normalizeCustomEvent(name, domEvt, el, detail) {
+  let target;
+  target = uniShared.normalizeTarget(el);
+  return {
+    type: detail.type || name,
+    timeStamp: domEvt.timeStamp || 0,
+    target,
+    currentTarget: target,
+    detail
+  };
+}
 const hoverProps = {
   hoverClass: {
     type: String,
@@ -803,11 +829,11 @@ function useHover(props2) {
   return {
     hovering,
     binding: {
-      onTouchstartPassive,
-      onMousedown,
-      onTouchend,
-      onMouseup,
-      onTouchcancel
+      onTouchstartPassive: withWebEvent(onTouchstartPassive),
+      onMousedown: withWebEvent(onMousedown),
+      onTouchend: withWebEvent(onTouchend),
+      onMouseup: withWebEvent(onMouseup),
+      onTouchcancel: withWebEvent(onTouchcancel)
     }
   };
 }
@@ -821,32 +847,6 @@ function useBooleanAttr(props2, keys) {
     }
     return res;
   }, /* @__PURE__ */ Object.create(null));
-}
-function withWebEvent(fn) {
-  return fn.__wwe = true, fn;
-}
-function useCustomEvent(ref, emit2) {
-  return (name, evt, detail) => {
-    if (ref.value) {
-      emit2(name, normalizeCustomEvent(name, evt, ref.value, detail || {}));
-    }
-  };
-}
-function useNativeEvent(emit2) {
-  return (name, evt) => {
-    emit2(name, createNativeEvent(evt));
-  };
-}
-function normalizeCustomEvent(name, domEvt, el, detail) {
-  let target;
-  target = uniShared.normalizeTarget(el);
-  return {
-    type: detail.type || name,
-    timeStamp: domEvt.timeStamp || 0,
-    target,
-    currentTarget: target,
-    detail
-  };
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
 const index$C = /* @__PURE__ */ defineBuiltInComponent({
@@ -7159,22 +7159,37 @@ const SPACE_UNICODE = {
   emsp: " ",
   nbsp: " "
 };
-function parseText(text, options) {
-  return text.replace(/\\n/g, uniShared.LINEFEED).split(uniShared.LINEFEED).map((text2) => {
-    return normalizeText(text2, options);
-  });
-}
 function normalizeText(text, { space, decode }) {
-  if (!text) {
-    return text;
-  }
-  if (space && SPACE_UNICODE[space]) {
-    text = text.replace(/ /g, SPACE_UNICODE[space]);
+  let result = "";
+  let isEscape = false;
+  for (let char of text) {
+    if (space && SPACE_UNICODE[space] && char === " ") {
+      char = SPACE_UNICODE[space];
+    }
+    if (isEscape) {
+      if (char === "n") {
+        result += uniShared.LINEFEED;
+      } else if (char === "\\") {
+        result += "\\";
+      } else {
+        result += "\\" + char;
+      }
+      isEscape = false;
+    } else {
+      if (char === "\\") {
+        isEscape = true;
+      } else {
+        result += char;
+      }
+    }
   }
   if (!decode) {
-    return text;
+    return result;
   }
-  return text.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
+  return result.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
+}
+function parseText(text, options) {
+  return normalizeText(text, options).split(uniShared.LINEFEED);
 }
 const index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
@@ -8270,6 +8285,10 @@ function useVideo(props2, attrs, trigger) {
       video.currentTime = position;
     }
   }
+  function stop() {
+    seek(0);
+    pause();
+  }
   function playbackRate(rate) {
     const video = videoRef.value;
     video.playbackRate = rate;
@@ -8279,6 +8298,7 @@ function useVideo(props2, attrs, trigger) {
     state,
     play,
     pause,
+    stop,
     seek,
     playbackRate,
     toggle,
@@ -8439,7 +8459,7 @@ function useDanmu(props2, videoState) {
     sendDanmu
   };
 }
-function useContext(play, pause, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen) {
+function useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen) {
   useContextInfo();
   useSubscribe();
 }
@@ -8556,6 +8576,7 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
       state: videoState,
       play,
       pause,
+      stop,
       seek,
       playbackRate,
       toggle,

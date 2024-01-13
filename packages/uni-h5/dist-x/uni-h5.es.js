@@ -4,9 +4,9 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, nextTick, onBeforeMount, withDirectives, vModelDynamic, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, h, createTextVNode, createBlock, onBeforeActivate, onBeforeDeactivate, renderList, onDeactivated, createApp, isReactive, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, nextTick, onBeforeMount, withDirectives, vModelDynamic, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, h, createTextVNode, createBlock, onBeforeActivate, onBeforeDeactivate, renderList, createApp, isReactive, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
-import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, debounce, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, parseQuery, NAVBAR_HEIGHT, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, updateElementStyle, sortObject, OFF_THEME_CHANGE, ON_BACK_PRESS, parseUrl, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
+import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, debounce, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, parseQuery, NAVBAR_HEIGHT, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, sortObject, OFF_THEME_CHANGE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
@@ -1988,6 +1988,32 @@ const defineUnsupportedComponent = (name) => {
     }
   });
 };
+function withWebEvent(fn) {
+  return fn.__wwe = true, fn;
+}
+function useCustomEvent(ref2, emit2) {
+  return (name, evt, detail) => {
+    if (ref2.value) {
+      emit2(name, normalizeCustomEvent(name, evt, ref2.value, detail || {}));
+    }
+  };
+}
+function useNativeEvent(emit2) {
+  return (name, evt) => {
+    emit2(name, createNativeEvent(evt));
+  };
+}
+function normalizeCustomEvent(name, domEvt, el, detail) {
+  let target;
+  target = el;
+  return {
+    type: detail.type || name,
+    timeStamp: domEvt.timeStamp || 0,
+    target,
+    currentTarget: target,
+    detail
+  };
+}
 const hoverProps = {
   hoverClass: {
     type: String,
@@ -2077,11 +2103,11 @@ function useHover(props2) {
   return {
     hovering,
     binding: {
-      onTouchstartPassive,
-      onMousedown,
-      onTouchend,
-      onMouseup,
-      onTouchcancel
+      onTouchstartPassive: withWebEvent(onTouchstartPassive),
+      onMousedown: withWebEvent(onMousedown),
+      onTouchend: withWebEvent(onTouchend),
+      onMouseup: withWebEvent(onMouseup),
+      onTouchcancel: withWebEvent(onTouchcancel)
     }
   };
 }
@@ -2095,32 +2121,6 @@ function useBooleanAttr(props2, keys) {
     }
     return res;
   }, /* @__PURE__ */ Object.create(null));
-}
-function withWebEvent(fn) {
-  return fn.__wwe = true, fn;
-}
-function useCustomEvent(ref2, emit2) {
-  return (name, evt, detail) => {
-    if (ref2.value) {
-      emit2(name, normalizeCustomEvent(name, evt, ref2.value, detail || {}));
-    }
-  };
-}
-function useNativeEvent(emit2) {
-  return (name, evt) => {
-    emit2(name, createNativeEvent(evt));
-  };
-}
-function normalizeCustomEvent(name, domEvt, el, detail) {
-  let target;
-  target = el;
-  return {
-    type: detail.type || name,
-    timeStamp: domEvt.timeStamp || 0,
-    target,
-    currentTarget: target,
-    detail
-  };
 }
 function transformRpx(value) {
   if (/(-?(?:\d+\.)?\d+)[ur]px/gi.test(value)) {
@@ -2162,7 +2162,7 @@ class UniElement extends HTMLElement {
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
 class UniFormElement extends UniElement {
 }
-const index$y = /* @__PURE__ */ defineBuiltInComponent({
+const index$x = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   emits: ["submit", "reset"],
   rootElement: {
@@ -2232,7 +2232,7 @@ function useProvideLabel() {
 }
 class UniLabelElement extends UniElement {
 }
-const index$x = /* @__PURE__ */ defineBuiltInComponent({
+const index$w = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: labelProps,
   rootElement: {
@@ -2374,7 +2374,7 @@ const buttonProps = {
 };
 class UniButtonElement extends UniElement {
 }
-const index$w = /* @__PURE__ */ defineBuiltInComponent({
+const index$v = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   rootElement: {
@@ -4812,13 +4812,13 @@ const createMediaQueryObserver = /* @__PURE__ */ defineSyncApi("createMediaQuery
   }
   return new ServiceMediaQueryObserver(getCurrentPageVm());
 });
-let index$v = 0;
+let index$u = 0;
 let optionsCache = {};
 function operateEditor(componentId, pageId, type, options) {
   const data = { options };
   const needCallOptions = options && ("success" in options || "fail" in options || "complete" in options);
   if (needCallOptions) {
-    const callbackId = String(index$v++);
+    const callbackId = String(index$u++);
     data.callbackId = callbackId;
     optionsCache[callbackId] = options;
   }
@@ -7272,7 +7272,7 @@ const props$x = {
 };
 class UniCanvasElement extends UniElement {
 }
-const index$u = /* @__PURE__ */ defineBuiltInComponent({
+const index$t = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "Canvas",
   compatConfig: {
@@ -7759,7 +7759,7 @@ const props$w = {
 };
 class UniCheckboxGroupElement extends UniElement {
 }
-const index$t = /* @__PURE__ */ defineBuiltInComponent({
+const index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
   props: props$w,
   emits: ["change"],
@@ -7865,7 +7865,7 @@ const props$v = {
 };
 class UniCheckboxElement extends UniElement {
 }
-const index$s = /* @__PURE__ */ defineBuiltInComponent({
+const index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
   props: props$v,
   rootElement: {
@@ -8876,7 +8876,7 @@ const props$t = /* @__PURE__ */ extend({}, props$u, {
 });
 class UniEditorElement extends UniElement {
 }
-const index$r = /* @__PURE__ */ defineBuiltInComponent({
+const index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: props$t,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
@@ -8948,7 +8948,7 @@ const ICONS = {
 };
 class UniIconElement extends UniElement {
 }
-const index$q = /* @__PURE__ */ defineBuiltInComponent({
+const index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -9025,7 +9025,7 @@ const IMAGE_MODES = {
 };
 class UniImageElement extends UniElement {
 }
-const index$p = /* @__PURE__ */ defineBuiltInComponent({
+const index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
   props: props$s,
   rootElement: {
@@ -11491,7 +11491,7 @@ function createNavigatorOnClick(props2) {
 }
 class UniNavigatorElement extends UniElement {
 }
-const index$o = /* @__PURE__ */ defineBuiltInComponent({
+const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   inheritAttrs: false,
   compatConfig: {
@@ -12669,7 +12669,7 @@ const progressProps = {
 };
 class UniProgressElement extends UniElement {
 }
-const index$n = /* @__PURE__ */ defineBuiltInComponent({
+const index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: progressProps,
   rootElement: {
@@ -12779,7 +12779,7 @@ const props$p = {
 };
 class UniRadioGroupElement extends UniElement {
 }
-const index$m = /* @__PURE__ */ defineBuiltInComponent({
+const index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
   props: props$p,
   // emits: ['change'],
@@ -12917,7 +12917,7 @@ const props$o = {
 };
 class UniRadioElement extends UniElement {
 }
-const index$l = /* @__PURE__ */ defineBuiltInComponent({
+const index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
   props: props$o,
   rootElement: {
@@ -13313,7 +13313,7 @@ const props$n = {
 };
 class UniRichTextElement extends UniElement {
 }
-const index$k = /* @__PURE__ */ defineBuiltInComponent({
+const index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
     MODE: 3
@@ -13993,7 +13993,7 @@ class UniSliderElement extends UniElement {
     this.inputValue.innerText = value.toString();
   }
 }
-const indexX = /* @__PURE__ */ defineBuiltInComponent({
+const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
   props: props$l,
   emits: ["changing", "change"],
@@ -14963,7 +14963,7 @@ const props$i = {
 };
 class UniSwitchElement extends UniElement {
 }
-const index$j = /* @__PURE__ */ defineBuiltInComponent({
+const index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
   props: props$i,
   emits: ["change"],
@@ -15073,26 +15073,41 @@ const SPACE_UNICODE = {
   emsp: " ",
   nbsp: " "
 };
-function parseText(text2, options) {
-  return text2.replace(/\\n/g, LINEFEED).split(LINEFEED).map((text22) => {
-    return normalizeText(text22, options);
-  });
-}
 function normalizeText(text2, { space, decode: decode2 }) {
-  if (!text2) {
-    return text2;
-  }
-  if (space && SPACE_UNICODE[space]) {
-    text2 = text2.replace(/ /g, SPACE_UNICODE[space]);
+  let result = "";
+  let isEscape = false;
+  for (let char of text2) {
+    if (space && SPACE_UNICODE[space] && char === " ") {
+      char = SPACE_UNICODE[space];
+    }
+    if (isEscape) {
+      if (char === "n") {
+        result += LINEFEED;
+      } else if (char === "\\") {
+        result += "\\";
+      } else {
+        result += "\\" + char;
+      }
+      isEscape = false;
+    } else {
+      if (char === "\\") {
+        isEscape = true;
+      } else {
+        result += char;
+      }
+    }
   }
   if (!decode2) {
-    return text2;
+    return result;
   }
-  return text2.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
+  return result.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
+}
+function parseText(text2, options) {
+  return normalizeText(text2, options).split(LINEFEED);
 }
 class UniTextElement extends UniElement {
 }
-const index$i = /* @__PURE__ */ defineBuiltInComponent({
+const index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
   rootElement: {
     name: "uni-text",
@@ -15184,7 +15199,7 @@ class UniTextareaElement extends UniElement {
     (_a = this.querySelector("textarea")) == null ? void 0 : _a.focus(options);
   }
 }
-const index$h = /* @__PURE__ */ defineBuiltInComponent({
+const index$g = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$h,
   emits: ["confirm", "linechange", ...emit],
@@ -15338,7 +15353,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
 });
 class UniViewElement extends UniElement {
 }
-const index$g = /* @__PURE__ */ defineBuiltInComponent({
+const index$f = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
   props: extend({}, hoverProps),
   rootElement: {
@@ -15421,13 +15436,13 @@ function useOn(name, callback) {
   onMounted(() => UniViewJSBridge.on(name, callback));
   onBeforeUnmount(() => UniViewJSBridge.off(name));
 }
-let index$f = 0;
+let index$e = 0;
 function useContextInfo(_id) {
   const page = useCurrentPageId();
   const instance2 = getCurrentInstance();
   const vm = instance2.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id2 = _id || vm.id || `context${index$f++}`;
+  const id2 = _id || vm.id || `context${index$e++}`;
   onMounted(() => {
     const el = vm.$el;
     el.__uniContextInfo = {
@@ -16008,7 +16023,7 @@ function initHistory() {
   });
   return history2;
 }
-const index$e = {
+const index$d = {
   install(app) {
     initApp$1(app);
     initViewPlugin(app);
@@ -16602,6 +16617,10 @@ function useVideo(props2, attrs2, trigger) {
       video.currentTime = position;
     }
   }
+  function stop() {
+    seek(0);
+    pause();
+  }
   function playbackRate(rate) {
     const video = videoRef.value;
     video.playbackRate = rate;
@@ -16611,6 +16630,7 @@ function useVideo(props2, attrs2, trigger) {
     state: state2,
     play,
     pause,
+    stop,
     seek,
     playbackRate,
     toggle,
@@ -16829,9 +16849,10 @@ function useDanmu(props2, videoState) {
     sendDanmu
   };
 }
-function useContext(play, pause, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen) {
+function useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen) {
   const methods = {
     play,
+    stop,
     pause,
     seek,
     sendDanmu,
@@ -16944,7 +16965,7 @@ const props$g = {
 };
 class UniVideoElement extends UniElement {
 }
-const index$d = /* @__PURE__ */ defineBuiltInComponent({
+const index$c = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
   props: props$g,
   emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
@@ -16977,6 +16998,7 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
       state: videoState,
       play,
       pause,
+      stop,
       seek,
       playbackRate,
       toggle,
@@ -17018,13 +17040,13 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
       clickProgress,
       toggleControls
     } = useControls(props2, videoState, seek);
-    useContext(play, pause, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen);
+    useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen);
     onMounted(() => {
       const rootElement = rootRef.value;
       Object.assign(rootElement, {
         play,
         pause,
-        stop: pause,
+        stop,
         seek,
         sendDanmu,
         playbackRate,
@@ -17189,15 +17211,11 @@ const props$f = {
   src: {
     type: String,
     default: ""
-  },
-  fullscreen: {
-    type: Boolean,
-    default: true
   }
 };
 class UniWebViewElement extends UniElement {
 }
-const index$c = /* @__PURE__ */ defineBuiltInComponent({
+const indexX = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
   props: props$f,
@@ -17216,7 +17234,6 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
     } = useAttrs({
       excludeListeners: true
     });
-    let _resize;
     const renderIframe = () => {
       const iframe = document.createElement("iframe");
       watchEffect(() => {
@@ -17231,69 +17248,25 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
         iframe.src = getRealPath(props2.src);
       });
       iframeRef.value = iframe;
-      _resize = useWebViewSize(rootRef, iframeRef, props2.fullscreen);
-      if (props2.fullscreen) {
-        document.body.appendChild(iframe);
-      }
     };
     renderIframe();
     onMounted(() => {
       var _a;
-      _resize();
-      !props2.fullscreen && ((_a = rootRef.value) == null ? void 0 : _a.appendChild(iframeRef.value));
-    });
-    onActivated(() => {
-      props2.fullscreen && (iframeRef.value.style.display = "block");
-    });
-    onDeactivated(() => {
-      props2.fullscreen && (iframeRef.value.style.display = "none");
-    });
-    onBeforeUnmount(() => {
-      props2.fullscreen && document.body.removeChild(iframeRef.value);
+      (_a = rootRef.value) == null ? void 0 : _a.appendChild(iframeRef.value);
     });
     onMounted(() => {
       const rootElement = rootRef.value;
       rootElement.attachVmProps(props2);
     });
     return () => {
-      return createVNode(Fragment, null, [createVNode("uni-web-view", mergeProps({
-        "class": props2.fullscreen ? "uni-webview--fullscreen" : ""
+      return createVNode("uni-web-view", mergeProps({
+        "class": "uni-webview"
       }, $listeners.value, $excludeAttrs.value, {
         "ref": rootRef
-      }), [createVNode(ResizeSensor, {
-        "onResize": _resize
-      }, null, 8, ["onResize"])], 16)]);
+      }), null, 16);
     };
   }
 });
-function useWebViewSize(rootRef, iframeRef, fullscreen) {
-  const _resize = () => {
-    var _a, _b;
-    if (fullscreen) {
-      const {
-        top,
-        left,
-        width,
-        height
-      } = rootRef.value.getBoundingClientRect();
-      updateElementStyle(iframeRef.value, {
-        position: "absolute",
-        display: "block",
-        border: "0",
-        top: top + "px",
-        left: left + "px",
-        width: width + "px",
-        height: height + "px"
-      });
-    } else {
-      updateElementStyle(iframeRef.value, {
-        width: ((_a = rootRef.value) == null ? void 0 : _a.style.width) || "300px",
-        height: ((_b = rootRef.value) == null ? void 0 : _b.style.height) || "150px"
-      });
-    }
-  };
-  return _resize;
-}
 let index$b = 0;
 function getJSONP(url, options, success, error) {
   var js = document.createElement("script");
@@ -26014,49 +25987,49 @@ export {
   index$4 as AdDraw,
   AsyncErrorComponent,
   AsyncLoadingComponent,
-  index$w as Button,
+  index$v as Button,
   index$3 as Camera,
-  index$u as Canvas,
-  index$s as Checkbox,
-  index$t as CheckboxGroup,
+  index$t as Canvas,
+  index$r as Checkbox,
+  index$s as CheckboxGroup,
   index$8 as CoverImage,
   index$9 as CoverView,
-  index$r as Editor,
-  index$y as Form,
-  index$q as Icon,
-  index$p as Image,
+  index$q as Editor,
+  index$x as Form,
+  index$p as Icon,
+  index$o as Image,
   Input,
-  index$x as Label,
+  index$w as Label,
   LayoutComponent,
   index$2 as LivePlayer,
   index$1 as LivePusher,
   Map$1 as Map,
   MovableArea,
   MovableView,
-  index$o as Navigator,
+  index$n as Navigator,
   index as PageComponent,
   index$7 as Picker,
   PickerView,
   PickerViewColumn,
-  index$n as Progress,
-  index$l as Radio,
-  index$m as RadioGroup,
+  index$m as Progress,
+  index$k as Radio,
+  index$l as RadioGroup,
   ResizeSensor,
-  index$k as RichText,
+  index$j as RichText,
   ScrollView,
-  indexX as Slider,
+  indexX$1 as Slider,
   Swiper,
   SwiperItem,
-  index$j as Switch,
-  index$i as Text,
-  index$h as Textarea,
+  index$i as Switch,
+  index$h as Text,
+  index$g as Textarea,
   UniElement,
   UniElement as UniElementImpl,
   UniServiceJSBridge$1 as UniServiceJSBridge,
   UniViewJSBridge$1 as UniViewJSBridge,
-  index$d as Video,
-  index$g as View,
-  index$c as WebView,
+  index$c as Video,
+  index$f as View,
+  indexX as WebView,
   addInterceptor,
   addPhoneContact,
   arrayBufferToBase64,
@@ -26178,7 +26151,7 @@ export {
   openDocument,
   openLocation,
   pageScrollTo,
-  index$e as plugin,
+  index$d as plugin,
   preloadPage,
   previewImage,
   reLaunch,

@@ -1970,6 +1970,32 @@ const defineUnsupportedComponent = (name) => {
     }
   });
 };
+function withWebEvent(fn) {
+  return fn.__wwe = true, fn;
+}
+function useCustomEvent(ref2, emit2) {
+  return (name, evt, detail) => {
+    if (ref2.value) {
+      emit2(name, normalizeCustomEvent(name, evt, ref2.value, detail || {}));
+    }
+  };
+}
+function useNativeEvent(emit2) {
+  return (name, evt) => {
+    emit2(name, createNativeEvent(evt));
+  };
+}
+function normalizeCustomEvent(name, domEvt, el, detail) {
+  let target;
+  target = normalizeTarget(el);
+  return {
+    type: detail.type || name,
+    timeStamp: domEvt.timeStamp || 0,
+    target,
+    currentTarget: target,
+    detail
+  };
+}
 const hoverProps = {
   hoverClass: {
     type: String,
@@ -2059,11 +2085,11 @@ function useHover(props2) {
   return {
     hovering,
     binding: {
-      onTouchstartPassive,
-      onMousedown,
-      onTouchend,
-      onMouseup,
-      onTouchcancel
+      onTouchstartPassive: withWebEvent(onTouchstartPassive),
+      onMousedown: withWebEvent(onMousedown),
+      onTouchend: withWebEvent(onTouchend),
+      onMouseup: withWebEvent(onMouseup),
+      onTouchcancel: withWebEvent(onTouchcancel)
     }
   };
 }
@@ -2077,32 +2103,6 @@ function useBooleanAttr(props2, keys) {
     }
     return res;
   }, /* @__PURE__ */ Object.create(null));
-}
-function withWebEvent(fn) {
-  return fn.__wwe = true, fn;
-}
-function useCustomEvent(ref2, emit2) {
-  return (name, evt, detail) => {
-    if (ref2.value) {
-      emit2(name, normalizeCustomEvent(name, evt, ref2.value, detail || {}));
-    }
-  };
-}
-function useNativeEvent(emit2) {
-  return (name, evt) => {
-    emit2(name, createNativeEvent(evt));
-  };
-}
-function normalizeCustomEvent(name, domEvt, el, detail) {
-  let target;
-  target = normalizeTarget(el);
-  return {
-    type: detail.type || name,
-    timeStamp: domEvt.timeStamp || 0,
-    target,
-    currentTarget: target,
-    detail
-  };
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
 const index$z = /* @__PURE__ */ defineBuiltInComponent({
@@ -14752,22 +14752,37 @@ const SPACE_UNICODE = {
   emsp: " ",
   nbsp: " "
 };
-function parseText(text2, options) {
-  return text2.replace(/\\n/g, LINEFEED).split(LINEFEED).map((text22) => {
-    return normalizeText(text22, options);
-  });
-}
 function normalizeText(text2, { space, decode: decode2 }) {
-  if (!text2) {
-    return text2;
-  }
-  if (space && SPACE_UNICODE[space]) {
-    text2 = text2.replace(/ /g, SPACE_UNICODE[space]);
+  let result = "";
+  let isEscape = false;
+  for (let char of text2) {
+    if (space && SPACE_UNICODE[space] && char === " ") {
+      char = SPACE_UNICODE[space];
+    }
+    if (isEscape) {
+      if (char === "n") {
+        result += LINEFEED;
+      } else if (char === "\\") {
+        result += "\\";
+      } else {
+        result += "\\" + char;
+      }
+      isEscape = false;
+    } else {
+      if (char === "\\") {
+        isEscape = true;
+      } else {
+        result += char;
+      }
+    }
   }
   if (!decode2) {
-    return text2;
+    return result;
   }
-  return text2.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
+  return result.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
+}
+function parseText(text2, options) {
+  return normalizeText(text2, options).split(LINEFEED);
 }
 const index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
@@ -16244,6 +16259,10 @@ function useVideo(props2, attrs2, trigger) {
       video.currentTime = position;
     }
   }
+  function stop() {
+    seek(0);
+    pause();
+  }
   function playbackRate(rate) {
     const video = videoRef.value;
     video.playbackRate = rate;
@@ -16253,6 +16272,7 @@ function useVideo(props2, attrs2, trigger) {
     state: state2,
     play,
     pause,
+    stop,
     seek,
     playbackRate,
     toggle,
@@ -16471,9 +16491,10 @@ function useDanmu(props2, videoState) {
     sendDanmu
   };
 }
-function useContext(play, pause, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen) {
+function useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen) {
   const methods = {
     play,
+    stop,
     pause,
     seek,
     sendDanmu,
@@ -16613,6 +16634,7 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
       state: videoState,
       play,
       pause,
+      stop,
       seek,
       playbackRate,
       toggle,
@@ -16654,7 +16676,7 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
       clickProgress,
       toggleControls
     } = useControls(props2, videoState, seek);
-    useContext(play, pause, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen);
+    useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen);
     return () => {
       return createVNode("uni-video", {
         "ref": rootRef,
