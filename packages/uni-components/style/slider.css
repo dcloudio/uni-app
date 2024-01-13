@@ -93,6 +93,8 @@ uni-slider .uni-slider-disabled .uni-slider-thumb {
 /* #ifdef UNI-APP-X */
 uni-slider {
   display: block;
+  margin-top: 1px;
+  margin-bottom: 1px;
 }
 
 uni-slider[hidden] {
