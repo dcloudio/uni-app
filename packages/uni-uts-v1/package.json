@@ -18,11 +18,12 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
+    "@babel/code-frame": "^7.23.5",
     "@dcloudio/uts": "3.0.0-alpha-4000020240111001",
     "@rollup/pluginutils": "^5.0.5",
     "@vue/shared": "3.3.11",
-    "android-versions": "^1.8.1",
     "adm-zip": "^0.5.9",
+    "android-versions": "^1.8.1",
     "colors": "^1.4.0",
     "fast-glob": "^3.2.11",
     "find-cache-dir": "^3.3.2",

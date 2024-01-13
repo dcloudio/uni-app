@@ -31,33 +31,37 @@ class PendingRequests extends Map<string, PendingRequest> {
   _inputDir!: string
   _server!: ViteDevServer
   set(key: string, value: PendingRequest) {
-    value.request = Promise.resolve(value.request).then(async (request) => {
-      const map = request?.map
-      if (map) {
-        const mod = await this._server.moduleGraph.ensureEntryFromUrl(key)
-        if (mod.file && isAbsolute(mod.file)) {
-          const dir = normalizePath(dirname(mod.file))
-          if (dir.startsWith(this._inputDir)) {
-            for (
-              let sourcesIndex = 0;
-              sourcesIndex < map.sources.length;
-              ++sourcesIndex
-            ) {
-              const sourcePath = map.sources[sourcesIndex]
-              if (sourcePath) {
-                // 将相对路径转换为绝对路径
-                if (!isAbsolute(sourcePath)) {
-                  map.sources[sourcesIndex] = normalizePath(
-                    join(dir, sourcePath)
-                  )
+    value.request = value.request
+      .then(async (request) => {
+        const map = request?.map
+        if (map) {
+          const mod = await this._server.moduleGraph.ensureEntryFromUrl(key)
+          if (mod.file && isAbsolute(mod.file)) {
+            const dir = normalizePath(dirname(mod.file))
+            if (dir.startsWith(this._inputDir)) {
+              for (
+                let sourcesIndex = 0;
+                sourcesIndex < map.sources.length;
+                ++sourcesIndex
+              ) {
+                const sourcePath = map.sources[sourcesIndex]
+                if (sourcePath) {
+                  // 将相对路径转换为绝对路径
+                  if (!isAbsolute(sourcePath)) {
+                    map.sources[sourcesIndex] = normalizePath(
+                      join(dir, sourcePath)
+                    )
+                  }
                 }
               }
             }
           }
         }
-      }
-      return request
-    })
+        return request
+      })
+      .catch(() => {
+        return null
+      })
     return super.set(key, value)
   }
 }
