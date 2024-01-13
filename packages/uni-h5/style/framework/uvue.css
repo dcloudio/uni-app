@@ -43,6 +43,11 @@ uni-app uni-textarea,
 uni-app uni-label {
   line-height: 1.2;
   overflow: hidden;
+  flex-shrink: 0;
+  flex-grow: 0;
+  flex-basis: auto;
+  min-height: 0px;
+  min-width: 0px;
 }
 
 uni-app uni-text,
@@ -70,6 +75,9 @@ uni-app uni-list-view {
   align-items: stretch;
   align-content: flex-start;
   justify-content: flex-start;
+  /* 默认情况下，元素不会缩短至小于内容框尺寸，若想改变这一状况，请设置元素的min-width 与 min-height属性。https://developer.mozilla.org/zh-CN/docs/Web/CSS/flex */
+  min-height: 0px;
+  min-width: 0px;
 }
 
 /* 与开发者元素接触的容器，此样式可被manifest.json内配置的flex-direction重置 */
@@ -89,8 +97,6 @@ uni-app uni-scroll-view,
 uni-app uni-list-view {
   display: flex;
   flex-direction: column;
-  min-height: 0px;
-  /* 默认情况下，元素不会缩短至小于内容框尺寸，若想改变这一状况，请设置元素的min-width 与 min-height属性。https://developer.mozilla.org/zh-CN/docs/Web/CSS/flex */
 }
 
 /* 与开发者元素接触的非滚动容器 */
