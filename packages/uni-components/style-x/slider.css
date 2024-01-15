@@ -8,7 +8,7 @@ uni-slider[hidden] {
   display: none;
 }
 
-uni-slider .uni-slider-brower-input-range {
+uni-slider .uni-slider-browser-input-range {
   position: absolute;
   left: 0;
   top: 0;

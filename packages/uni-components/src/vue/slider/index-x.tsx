@@ -178,7 +178,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
                 />
               </div>
               <input
-                class="uni-slider-brower-input-range"
+                class="uni-slider-browser-input-range"
                 type="range"
                 min={props.min}
                 max={props.max}
