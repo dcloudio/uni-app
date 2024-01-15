@@ -184,8 +184,12 @@ export function initUTSComponents(
 ): EasycomMatcher[] {
   utsComponents.clear()
   const components: EasycomMatcher[] = []
-  if (platform !== 'app' && platform !== 'app-plus') {
-    return components
+  const isApp = platform === 'app' || platform === 'app-plus'
+  // 目前仅 x 的非App平台支持
+  if (process.env.UNI_APP_X !== 'true') {
+    if (!isApp) {
+      return components
+    }
   }
   const easycomsObj: Record<
     string,
@@ -220,7 +224,7 @@ export function initUTSComponents(
               is_uni_modules_utssdk ? path.dirname(dir) : dir
             )
             easycomsObj[`^${name}$`] = {
-              source: `${importDir}?uts-proxy`,
+              source: isApp ? `${importDir}?uts-proxy` : normalizePath(file),
               kotlinPackage: parseKotlinPackageWithPluginId(
                 pluginId,
                 is_uni_modules_utssdk
