@@ -1,10 +1,6 @@
 import { EventChannel, parseUrl } from '@dcloudio/uni-shared'
 import { isNavigationFailure, Router } from 'vue-router'
 import { createPageState } from '../../../framework/setup/page'
-//#if _X_
-import { hideActionSheet } from '../ui/popup/showActionSheet'
-import { hideModal } from '../ui/popup/showModal'
-//#endif
 
 export type NavigateType =
   | 'navigateTo'
@@ -23,12 +19,6 @@ export function navigate(
   { type, url, tabBarText, events, isAutomatedTesting }: NavigateOptions,
   __id__?: number
 ): Promise<void | { eventChannel?: EventChannel; __id__?: number }> {
-  //#if _X_
-  hideActionSheet()
-  hideModal()
-  uni.hideToast()
-  uni.hideLoading()
-  //#endif
   const router = getApp().$router as Router
   const { path, query } = parseUrl(url)
   return new Promise((resolve, reject) => {
