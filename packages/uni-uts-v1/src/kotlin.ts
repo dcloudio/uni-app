@@ -3,7 +3,7 @@ import fs from 'fs-extra'
 import path, { join } from 'path'
 import AdmZip from 'adm-zip'
 import { sync } from 'fast-glob'
-import { isArray } from '@vue/shared'
+import { hasOwn, isArray } from '@vue/shared'
 import type {
   UTSBundleOptions,
   UTSInputOptions,
@@ -29,6 +29,7 @@ import {
   resolveSourceMapFile,
   isUniCloudSupported,
   parseExtApiDefaultParameters,
+  parseInjectModules,
 } from './utils'
 import { Module } from '../types/types'
 import { parseUTSKotlinStacktrace, parseUTSSyntaxError } from './stacktrace'
@@ -76,6 +77,18 @@ function parseKotlinPackage(filename: string) {
   }
 }
 
+const pluginInjectApis = new Set<string>()
+
+function addInjectApis(apis: string[]) {
+  apis.forEach((api) => {
+    pluginInjectApis.add(api)
+  })
+}
+
+export function getInjectApis() {
+  return [...pluginInjectApis]
+}
+
 export async function runKotlinProd(
   filename: string,
   components: Record<string, string>,
@@ -120,6 +133,15 @@ export async function runKotlinProd(
   if (result.error) {
     throw parseUTSSyntaxError(result.error, inputDir)
   }
+
+  if (result.inject_apis && result.inject_apis.length) {
+    if (process.env.UNI_UTS_COMPILER_TYPE === 'cloud') {
+      updateManifestModules(inputDir, result.inject_apis)
+    } else {
+      addInjectApis(result.inject_apis)
+    }
+  }
+
   genUTSPlatformResource(filename, {
     isX,
     inputDir,
@@ -131,6 +153,38 @@ export async function runKotlinProd(
     hookClass,
     result,
   })
+
+  return result
+}
+
+function updateManifestModules(inputDir: string, inject_apis: string[]) {
+  const filename = path.resolve(inputDir, 'manifest.json')
+  if (fs.existsSync(filename)) {
+    const content = fs.readFileSync(filename, 'utf8')
+    try {
+      const json = JSON.parse(content)
+      if (!json.app) {
+        json.app = {}
+      }
+      if (!json.app.distribute) {
+        json.app.distribute = {}
+      }
+      if (!json.app.distribute.modules) {
+        json.app.distribute.modules = {}
+      }
+      const modules = json.app.distribute.modules
+      let updated = false
+      parseInjectModules(inject_apis, {}, []).forEach((name) => {
+        if (!hasOwn(modules, name)) {
+          modules[name] = {}
+          updated = true
+        }
+      })
+      if (updated) {
+        fs.outputFileSync(filename, JSON.stringify(json, null, 2))
+      }
+    } catch (e) {}
+  }
 }
 
 export type RunKotlinDevResult = UTSResult & {

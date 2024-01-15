@@ -559,6 +559,35 @@ export function normalizeExtApiDefaultParameters(json: Record<string, any>) {
   return res
 }
 
+export function parseInjectModules(
+  inject_apis: string[],
+  localExtApis: Record<string, [string, string]>,
+  extApiComponents: string[]
+) {
+  const modules = new Set<string>()
+  const extApiModules = parseExtApiModules()
+  inject_apis.forEach((api) => {
+    if (api.startsWith('uniCloud.')) {
+      modules.add('uni-cloud-client')
+    } else {
+      if (
+        extApiModules[api] &&
+        // 非本地
+        !hasOwn(localExtApis, api.replace('uni.', ''))
+      ) {
+        modules.add(extApiModules[api])
+      }
+    }
+  })
+  extApiComponents.forEach((component) => {
+    const name = 'component.' + component
+    if (extApiModules[name]) {
+      modules.add(extApiModules[name])
+    }
+  })
+  return [...modules]
+}
+
 export function parseExtApiModules() {
   return normalizeExtApiModules(require('../lib/ext-api/modules.json'))
 }

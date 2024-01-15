@@ -57,6 +57,8 @@ export const sourcemap = {
 
 export { compileApp, CompileAppOptions } from './uvue/index'
 
+export { parseInjectModules } from './utils'
+
 export * from './sourceMap'
 
 export { parseUTSKotlinRuntimeStacktrace } from './stacktrace'
