@@ -4809,6 +4809,68 @@
       }
     },
     {
+      "name": "white-space",
+      "restrictions": [
+        "enum"
+      ],
+      "syntax": "normal | pre | nowrap | pre-wrap | pre-line | break-spaces | [ <'white-space-collapse'> || <'text-wrap'> || <'white-space-trim'> ]",
+      "values": [
+        {
+          "name": "normal",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "4.0+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√"
+              }
+            }
+          }
+        },
+        {
+          "name": "nowrap",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "4.0+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√"
+              }
+            }
+          }
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "√",
+            "unixVer": "4.0+"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√"
+          }
+        }
+      },
+      "unixTags": [
+        "text",
+        "button"
+      ],
+      "defaultValue": {
+        "app-uvue": "normal",
+        "web": "normal"
+      }
+    },
+    {
       "name": "box-shadow",
       "restrictions": [
         "enum",
