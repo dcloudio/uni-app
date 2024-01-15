@@ -6389,7 +6389,7 @@ const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
         "style": setThumbStyle.value,
         "class": "uni-slider-thumb-value"
       }, null, 4)], 4), vue.createVNode("input", {
-        "class": "uni-slider-brower-input-range",
+        "class": "uni-slider-browser-input-range",
         "type": "range",
         "min": props2.min,
         "max": props2.max,
@@ -7860,8 +7860,141 @@ function pruneRouteCache(key) {
     }
   });
 }
+function usePopupStyle(props2) {
+  const popupWidth = vue.ref(0);
+  const popupHeight = vue.ref(0);
+  const isDesktop = vue.computed(
+    () => popupWidth.value >= 500 && popupHeight.value >= 500
+  );
+  const popupStyle = vue.computed(() => {
+    const style = {
+      content: {
+        transform: "",
+        left: "",
+        top: "",
+        bottom: ""
+      },
+      triangle: {
+        left: "",
+        top: "",
+        bottom: "",
+        "border-width": "",
+        "border-color": ""
+      }
+    };
+    const contentStyle = style.content;
+    const triangleStyle = style.triangle;
+    const popover = props2.popover;
+    function getNumber(value) {
+      return Number(value) || 0;
+    }
+    if (isDesktop.value && popover) {
+      shared.extend(triangleStyle, {
+        position: "absolute",
+        width: "0",
+        height: "0",
+        "margin-left": "-6px",
+        "border-style": "solid"
+      });
+      const popoverLeft = getNumber(popover.left);
+      const popoverWidth = getNumber(popover.width);
+      const popoverTop = getNumber(popover.top);
+      const popoverHeight = getNumber(popover.height);
+      const center = popoverLeft + popoverWidth / 2;
+      contentStyle.transform = "none !important";
+      const contentLeft = Math.max(0, center - 300 / 2);
+      contentStyle.left = `${contentLeft}px`;
+      let triangleLeft = Math.max(12, center - contentLeft);
+      triangleLeft = Math.min(300 - 12, triangleLeft);
+      triangleStyle.left = `${triangleLeft}px`;
+      const vcl = popupHeight.value / 2;
+      if (popoverTop + popoverHeight - vcl > vcl - popoverTop) {
+        contentStyle.top = "auto";
+        contentStyle.bottom = `${popupHeight.value - popoverTop + 6}px`;
+        triangleStyle.bottom = "-6px";
+        triangleStyle["border-width"] = "6px 6px 0 6px";
+        triangleStyle["border-color"] = "#fcfcfd transparent transparent transparent";
+      } else {
+        contentStyle.top = `${popoverTop + popoverHeight + 6}px`;
+        triangleStyle.top = "-6px";
+        triangleStyle["border-width"] = "0 6px 6px 6px";
+        triangleStyle["border-color"] = "transparent transparent #fcfcfd transparent";
+      }
+    }
+    return style;
+  });
+  return {
+    isDesktop,
+    popupStyle
+  };
+}
+function useKeyboard() {
+  const key = vue.ref("");
+  const disable = vue.ref(false);
+  return {
+    key,
+    disable
+  };
+}
+function getTheme() {
+  if (__uniConfig.darkmode !== true)
+    return shared.isString(__uniConfig.darkmode) ? __uniConfig.darkmode : "light";
+  try {
+    return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+  } catch (error) {
+    return "light";
+  }
+}
+function onThemeChange(callback) {
+  if (__uniConfig.darkmode) {
+    UniServiceJSBridge.on(uniShared.ON_THEME_CHANGE, callback);
+  }
+}
+function parseTheme(pageStyle) {
+  let parsedStyle = {};
+  if (__uniConfig.darkmode) {
+    parsedStyle = uniShared.normalizeStyles(
+      pageStyle,
+      __uniConfig.themeConfig,
+      getTheme()
+    );
+  }
+  return __uniConfig.darkmode ? parsedStyle : pageStyle;
+}
+function useTheme(pageStyle, onThemeChangeCallback) {
+  const isReactived = vue.isReactive(pageStyle);
+  const reactivePageStyle = isReactived ? vue.reactive(parseTheme(pageStyle)) : parseTheme(pageStyle);
+  if (__uniConfig.darkmode && isReactived) {
+    vue.watch(pageStyle, (value) => {
+      const _pageStyle = parseTheme(value);
+      for (const key in _pageStyle) {
+        reactivePageStyle[key] = _pageStyle[key];
+      }
+    });
+  }
+  onThemeChangeCallback && onThemeChange(onThemeChangeCallback);
+  return reactivePageStyle;
+}
+let showActionSheetState;
+const hideActionSheet = () => {
+  if (showActionSheetState) {
+    showActionSheetState.visible = false;
+  }
+};
+let showModalState;
+const hideModal = () => {
+  if (showModalState) {
+    showModalState.visible = false;
+  }
+};
 function initRouter(app) {
   const router = vueRouter.createRouter(createRouterOptions());
+  router.beforeEach((to, from) => {
+    hideActionSheet();
+    hideModal();
+    uni.hideToast();
+    uni.hideLoading();
+  });
   app.router = router;
   app.use(router);
 }
@@ -10194,82 +10327,6 @@ const index$8 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-function usePopupStyle(props2) {
-  const popupWidth = vue.ref(0);
-  const popupHeight = vue.ref(0);
-  const isDesktop = vue.computed(
-    () => popupWidth.value >= 500 && popupHeight.value >= 500
-  );
-  const popupStyle = vue.computed(() => {
-    const style = {
-      content: {
-        transform: "",
-        left: "",
-        top: "",
-        bottom: ""
-      },
-      triangle: {
-        left: "",
-        top: "",
-        bottom: "",
-        "border-width": "",
-        "border-color": ""
-      }
-    };
-    const contentStyle = style.content;
-    const triangleStyle = style.triangle;
-    const popover = props2.popover;
-    function getNumber(value) {
-      return Number(value) || 0;
-    }
-    if (isDesktop.value && popover) {
-      shared.extend(triangleStyle, {
-        position: "absolute",
-        width: "0",
-        height: "0",
-        "margin-left": "-6px",
-        "border-style": "solid"
-      });
-      const popoverLeft = getNumber(popover.left);
-      const popoverWidth = getNumber(popover.width);
-      const popoverTop = getNumber(popover.top);
-      const popoverHeight = getNumber(popover.height);
-      const center = popoverLeft + popoverWidth / 2;
-      contentStyle.transform = "none !important";
-      const contentLeft = Math.max(0, center - 300 / 2);
-      contentStyle.left = `${contentLeft}px`;
-      let triangleLeft = Math.max(12, center - contentLeft);
-      triangleLeft = Math.min(300 - 12, triangleLeft);
-      triangleStyle.left = `${triangleLeft}px`;
-      const vcl = popupHeight.value / 2;
-      if (popoverTop + popoverHeight - vcl > vcl - popoverTop) {
-        contentStyle.top = "auto";
-        contentStyle.bottom = `${popupHeight.value - popoverTop + 6}px`;
-        triangleStyle.bottom = "-6px";
-        triangleStyle["border-width"] = "6px 6px 0 6px";
-        triangleStyle["border-color"] = "#fcfcfd transparent transparent transparent";
-      } else {
-        contentStyle.top = `${popoverTop + popoverHeight + 6}px`;
-        triangleStyle.top = "-6px";
-        triangleStyle["border-width"] = "0 6px 6px 6px";
-        triangleStyle["border-color"] = "transparent transparent #fcfcfd transparent";
-      }
-    }
-    return style;
-  });
-  return {
-    isDesktop,
-    popupStyle
-  };
-}
-function useKeyboard() {
-  const key = vue.ref("");
-  const disable = vue.ref(false);
-  return {
-    key,
-    disable
-  };
-}
 function _isSlot(s) {
   return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !vue.isVNode(s);
 }
@@ -11309,15 +11366,6 @@ const getStorageInfo = /* @__PURE__ */ defineAsyncApi(
     resolve(getStorageInfoSync());
   }
 );
-function getTheme() {
-  if (__uniConfig.darkmode !== true)
-    return shared.isString(__uniConfig.darkmode) ? __uniConfig.darkmode : "light";
-  try {
-    return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
-  } catch (error) {
-    return "light";
-  }
-}
 let browserInfo;
 function initBrowserInfo() {
   {
@@ -11477,36 +11525,6 @@ const UniServiceJSBridge$1 = /* @__PURE__ */ shared.extend(ServiceJSBridge, {
     UniViewJSBridge.subscribeHandler(event, args, pageId);
   }
 });
-function onThemeChange(callback) {
-  if (__uniConfig.darkmode) {
-    UniServiceJSBridge.on(uniShared.ON_THEME_CHANGE, callback);
-  }
-}
-function parseTheme(pageStyle) {
-  let parsedStyle = {};
-  if (__uniConfig.darkmode) {
-    parsedStyle = uniShared.normalizeStyles(
-      pageStyle,
-      __uniConfig.themeConfig,
-      getTheme()
-    );
-  }
-  return __uniConfig.darkmode ? parsedStyle : pageStyle;
-}
-function useTheme(pageStyle, onThemeChangeCallback) {
-  const isReactived = vue.isReactive(pageStyle);
-  const reactivePageStyle = isReactived ? vue.reactive(parseTheme(pageStyle)) : parseTheme(pageStyle);
-  if (__uniConfig.darkmode && isReactived) {
-    vue.watch(pageStyle, (value) => {
-      const _pageStyle = parseTheme(value);
-      for (const key in _pageStyle) {
-        reactivePageStyle[key] = _pageStyle[key];
-      }
-    });
-  }
-  onThemeChangeCallback && onThemeChange(onThemeChangeCallback);
-  return reactivePageStyle;
-}
 const _middleButton = {
   width: "50px",
   height: "50px",
