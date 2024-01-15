@@ -185,12 +185,6 @@ export function initUTSComponents(
   utsComponents.clear()
   const components: EasycomMatcher[] = []
   const isApp = platform === 'app' || platform === 'app-plus'
-  // 目前仅 x 的非App平台支持
-  if (process.env.UNI_APP_X !== 'true') {
-    if (!isApp) {
-      return components
-    }
-  }
   const easycomsObj: Record<
     string,
     { source: string; kotlinPackage: string; swiftModule: string }
