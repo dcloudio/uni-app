@@ -135,7 +135,7 @@ export async function runKotlinProd(
   }
 
   if (result.inject_apis && result.inject_apis.length) {
-    if (process.env.UNI_UTS_COMPILER_TYPE === 'cloud') {
+    if (isX && process.env.UNI_UTS_COMPILER_TYPE === 'cloud') {
       updateManifestModules(inputDir, result.inject_apis)
     } else {
       addInjectApis(result.inject_apis)
