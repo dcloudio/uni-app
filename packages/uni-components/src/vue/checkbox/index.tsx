@@ -117,6 +117,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     }
 
     const { uniCheckGroup, uniLabel } = useCheckboxInject(
+      //#if _X_ && !_NODE_JS_
+      rootRef,
+      //#endif
       checkboxChecked,
       checkboxValue,
       reset
@@ -209,12 +212,20 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 })
 
 function useCheckboxInject(
+  //#if _X_ && !_NODE_JS_
+  rootRef: Ref<HTMLElement | null>,
+  //#endif
   checkboxChecked: Ref<string | boolean>,
   checkboxValue: Ref<string>,
   reset: () => void
 ) {
   const field = computed(() => ({
+    //#if _X_ && !_NODE_JS_
+    checkboxChecked: (rootRef.value as UniCheckboxElement as any).checked,
+    //#else
+    // @ts-ignore
     checkboxChecked: Boolean(checkboxChecked.value),
+    //#endif
     value: checkboxValue.value,
   }))
   const formField = { reset }

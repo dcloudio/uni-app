@@ -82,7 +82,7 @@ class UniSliderElement extends UniElement {
 
   init() {
     this.htmlSlider = this.querySelector(
-      '.uni-slider-brower-input-range'
+      '.uni-slider-browser-input-range'
     ) as HTMLInputElement
     this.trackValue = this.querySelector(
       '.uni-slider-track-value'
