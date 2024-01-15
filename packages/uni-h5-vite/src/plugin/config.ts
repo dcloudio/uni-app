@@ -89,6 +89,9 @@ export function createConfig(options: {
         external,
       },
       build: {
+        target: process.env.UNI_APP_X
+          ? ['es2015', 'edge79', 'firefox62', 'chrome64', 'safari11.1']
+          : undefined,
         rollupOptions: {
           // resolveSSRExternal 会判定package.json，hbx 工程可能没有，通过 rollup 来配置
           external: isSsr(env.command, config) ? external : [],
