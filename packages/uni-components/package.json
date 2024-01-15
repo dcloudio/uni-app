@@ -5,6 +5,7 @@
   "main": "index.js",
   "files": [
     "style",
+    "style-x",
     "lib",
     "lib-x"
   ],
