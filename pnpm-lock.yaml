@@ -1316,9 +1316,6 @@ importers:
 
   packages/uni-nvue-styler:
     dependencies:
-      '@vue/shared':
-        specifier: 3.3.11
-        version: 3.3.11
       parse-css-font:
         specifier: ^4.0.0
         version: 4.0.0

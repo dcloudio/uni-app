@@ -17,6 +17,10 @@ function createNormalizeLength({
 }: NormalizeLengthOptions = {}): Normalize {
   return (v, options) => {
     v = (v || '').toString()
+    // css 变量
+    if (v.includes('CSS_VAR_')) {
+      return { value: v }
+    }
     const match = v.match(LENGTH_REGEXP)
     if (match) {
       var unit = match[1]

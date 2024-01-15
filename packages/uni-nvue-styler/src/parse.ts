@@ -1,3 +1,4 @@
+import { isString } from '@vue/shared'
 import postcss, { Message } from 'postcss'
 import { objectifier } from './objectifier'
 import { expand } from './expand'
@@ -103,7 +104,11 @@ function mapToInitString(
         entries.push(`["${key}", ${mapToInitString(value, ts, false, mapOf)}]`)
       }
     } else {
-      entries.push(`["${key}", ${JSON.stringify(value)}]`)
+      entries.push(
+        `["${key}", ${
+          isString(value) && isExpr(value) ? value : JSON.stringify(value)
+        }]`
+      )
     }
   }
   if (mapOf) {
@@ -129,4 +134,9 @@ function objToMap(obj: Record<string, unknown>) {
     }
   }
   return map
+}
+
+function isExpr(value: string) {
+  const v = value.slice(0, 5)
+  return /* CSS_VAR_ */ v === 'CSS_V' || v === 'calc('
 }
