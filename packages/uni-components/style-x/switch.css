@@ -28,24 +28,12 @@ uni-switch[disabled] .uni-switch-input {
   width: 52px;
   height: 32px;
   margin-right: 5px;
-  border: 1px solid #dfdfdf;
+  border: 2px solid transparent;
   outline: 0;
   border-radius: 16px;
   box-sizing: border-box;
-  background-color: #dfdfdf;
+  background-color: rgba(0,0,0,.1);
   transition: background-color 0.1s, border 0.1s;
-}
-
-.uni-switch-input:before {
-  content: ' ';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 50px;
-  height: 30px;
-  border-radius: 15px;
-  background-color: #fdfdfd;
-  transition: transform 0.3s;
 }
 
 .uni-switch-input:after {
@@ -53,14 +41,12 @@ uni-switch[disabled] .uni-switch-input {
   position: absolute;
   top: 0;
   left: 0;
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   border-radius: 15px;
   background-color: #ffffff;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
-  transition: -webkit-transform 0.3s;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.06);
   transition: transform 0.3s;
-  transition: transform 0.3s, -webkit-transform 0.3s;
 }
 
 .uni-switch-input.uni-switch-input-checked {

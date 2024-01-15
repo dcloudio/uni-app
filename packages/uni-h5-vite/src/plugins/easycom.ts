@@ -20,7 +20,7 @@ import {
 
 const H5_COMPONENTS_PATH = '@dcloudio/uni-h5'
 
-const xBaseComponents = ['slider']
+const xBaseComponents = ['slider', 'switch']
 const baseComponents = [
   'audio',
   'button',
