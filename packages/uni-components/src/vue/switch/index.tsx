@@ -65,7 +65,13 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     const rootRef = ref<HTMLElement | null>(null)
     const switchChecked = ref(props.checked)
 
-    const uniLabel = useSwitchInject(props, switchChecked)
+    const uniLabel = useSwitchInject(
+      //#if _X_ && !_NODE_JS_
+      rootRef,
+      //#endif
+      props,
+      switchChecked
+    )
     const trigger = useCustomEvent<EmitEvent<typeof emit>>(rootRef, emit)
 
     watch(
@@ -163,6 +169,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 })
 
 function useSwitchInject(
+  //#if _X_ && !_NODE_JS_
+  rootRef: Ref<HTMLElement | null>,
+  //#endif
   props: SwitchProps,
   switchChecked: Ref<string | boolean>
 ) {
@@ -181,7 +190,12 @@ function useSwitchInject(
       const data: [string, any] = ['', null]
       if (props.name) {
         data[0] = props.name
+        //#if _X_ && !_NODE_JS_
+        data[1] = (rootRef.value as UniSwitchElement as any).checked
+        //#else
+        // @ts-ignore
         data[1] = switchChecked.value
+        //#endif
       }
       return data
     },
