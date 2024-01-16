@@ -6,6 +6,7 @@ import { createHandleHotUpdate } from './handleHotUpdate'
 import { createTransformIndexHtml } from './transformIndexHtml'
 import { createConfigureServer } from './configureServer'
 import { createUni } from './uni'
+import { rewriteCompileScriptOnce } from './polyfill'
 
 import { createConfig } from './config'
 import { isString } from '@vue/shared'
@@ -17,6 +18,9 @@ export function uniH5Plugin(): UniVitePlugin {
     resolvedConfig: null,
   }
   rewriteReadFileSync()
+  if (process.env.UNI_APP_X === 'true') {
+    rewriteCompileScriptOnce()
+  }
   return {
     name: 'uni:h5',
     uni: createUni(),
