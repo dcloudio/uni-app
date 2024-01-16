@@ -5,6 +5,7 @@ import { isInHBuilderX } from '../../shared'
 interface UTS2JavaScriptOptions extends Omit<RPT2Options, 'transformers'> {
   inputDir: string
   version: string
+  modules: Record<string, any>
 }
 type uts2js = (options: UTS2JavaScriptOptions) => import('rollup').Plugin[]
 

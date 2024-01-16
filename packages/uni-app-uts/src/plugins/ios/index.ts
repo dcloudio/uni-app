@@ -12,6 +12,8 @@ import { uniAppIOSMainPlugin } from './mainUTS'
 import { uniPrePlugin } from '../pre'
 import { uniAppManifestPlugin } from './manifestJson'
 import { uniAppPagesPlugin } from './pagesJson'
+import * as vueCompilerDom from '@vue/compiler-dom'
+import * as uniCliShared from '@dcloudio/uni-cli-shared'
 
 export function init() {
   return [
@@ -33,6 +35,10 @@ export function init() {
     resolveUTSCompiler().uts2js({
       inputDir: process.env.UNI_INPUT_DIR,
       version: process.env.UNI_COMPILER_VERSION,
+      modules: {
+        vueCompilerDom,
+        uniCliShared,
+      },
     }),
   ]
 }

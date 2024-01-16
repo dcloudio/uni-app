@@ -20,6 +20,8 @@ import { uniResolveIdPlugin } from './plugins/resolveId'
 import { uniSetupPlugin } from './plugins/setup'
 import { uniSSRPlugin } from './plugins/ssr'
 import { uniPostSourceMapPlugin } from './plugins/sourcemap'
+import * as vueCompilerDom from '@vue/compiler-dom'
+import * as uniCliShared from '@dcloudio/uni-cli-shared'
 
 export default [
   ...(process.env.UNI_APP_X === 'true'
@@ -33,6 +35,10 @@ export default [
               path.resolve(process.env.UNI_OUTPUT_DIR, '../.web'),
             '.uts/cache'
           ),
+          modules: {
+            vueCompilerDom,
+            uniCliShared,
+          },
         }),
       ]
     : []),
