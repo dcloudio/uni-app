@@ -11,6 +11,7 @@
   "include": [
     "env.d.ts",
     "shim-uni.d.ts",
+    "shim-dom.d.ts",
     "global.d.ts",
     "**/*.uts",
     "**/*.ts",
