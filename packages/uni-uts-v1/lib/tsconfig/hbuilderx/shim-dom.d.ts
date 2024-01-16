@@ -1,87 +1,856 @@
 // 为dom顶层类型添加声明，保证用户使用时不报错，但是并不保证类型正确推断
+type AnyFunction = (...args: (any | null)[]) => any | null
+export { }
 declare global {
-  type document = any
-  type window = any
-  type navigator = any
-  type localStorage = any
-  type location = any
-  type history = any
-  type XMLHttpRequest = any
-  type FormData = any
-  type FileReader = any
-  type WebSocket = any
-  type Image = any
-  type HTMLElement = any
-  type HTMLCanvasElement = any
-  type HTMLImageElement = any
-  type HTMLVideoElement = any
-  type HTMLAudioElement = any
-  type HTMLMediaElement = any
-  type HTMLInputElement = any
-  type HTMLTextAreaElement = any
-  type HTMLSelectElement = any
-  type HTMLButtonElement = any
-  type HTMLAnchorElement = any
-  type HTMLFormElement = any
-  type HTMLDocument = any
-  type HTMLScriptElement = any
-  type HTMLStyleElement = any
-  type HTMLLinkElement = any
-  type HTMLIFrameElement = any
-  type HTMLFrameElement = any
-  type HTMLFrameSetElement = any
-  type HTMLBodyElement = any
-  type HTMLHeadElement = any
-  type HTMLMetaElement = any
-  type HTMLTitleElement = any
-  type HTMLBaseElement = any
-  type HTMLHtmlElement = any
-  type HTMLTableElement = any
-  type HTMLTableRowElement = any
-  type HTMLTableCellElement = any
-  type HTMLTableColElement = any
-  type HTMLTableSectionElement = any
-  type HTMLUListElement = any
-  type HTMLOListElement = any
-  type HTMLLIElement = any
-  type HTMLDListElement = any
-  type HTMLDivElement = any
-  type HTMLSpanElement = any
-  type HTMLHeadingElement = any
-  type HTMLQuoteElement = any
-  type HTMLPreElement = any
-  type HTMLBRElement = any
-  type HTMLParagraphElement = any
-  type HTMLHRElement = any
-  type HTMLModElement = any
-  type HTMLAnchorElement = any
-  type HTMLAreaElement = any
-  type HTMLLabelElement = any
-  type HTMLButtonElement = any
-  type HTMLSelectElement = any
-  type HTMLInputElement = any
-  type HTMLTextAreaElement = any
-  type HTMLFormElement = any
-  type HTMLFieldSetElement = any
-  type HTMLLegendElement = any
-  type HTMLTableCaptionElement = any
-  type HTMLDivElement = any
-  type HTMLTableColElement = any
-  type HTMLTableSectionElement = any
-  type HTMLTableRowElement = any
-  type HTMLTableCellElement = any
-  type HTMLFrameElement = any
-  type HTMLFrameSetElement = any
-  type HTMLIFrameElement = any
-  type HTMLBodyElement = any
-  type HTMLHtmlElement = any
-  type HTMLHeadElement = any
-  type HTMLTitleElement = any
-  type HTMLBaseElement = any
-  type HTMLMetaElement = any
-  type HTMLStyleElement = any
-  type HTMLLinkElement = any
-  type HTMLScriptElement = any
-  type HTMLDocument = any
-  type HTMLCollection = any
+  const AbortController: any
+  const AbortSignal: any
+  const AbstractRange: any
+  const ActiveXObject: any
+  const addEventListener: AnyFunction
+  const alert: AnyFunction
+  const AnalyserNode: any
+  const Animation: any
+  const AnimationEffect: any
+  const AnimationEvent: any
+  const AnimationPlaybackEvent: any
+  const AnimationTimeline: any
+  const Array: any
+  const ArrayBuffer: any
+  const atob: AnyFunction
+  const Atomics: any
+  const Attr: any
+  const Audio: any
+  const AudioBuffer: any
+  const AudioBufferSourceNode: any
+  const AudioContext: any
+  const AudioDestinationNode: any
+  const AudioListener: any
+  const AudioNode: any
+  const AudioParam: any
+  const AudioParamMap: any
+  const AudioScheduledSourceNode: any
+  const AudioWorklet: any
+  const AudioWorkletNode: any
+  const AuthenticatorAssertionResponse: any
+  const AuthenticatorAttestationResponse: any
+  const AuthenticatorResponse: any
+  const BarProp: any
+  const BaseAudioContext: any
+  const BeforeUnloadEvent: any
+  const BiquadFilterNode: any
+  const Blob: any
+  const BlobEvent: any
+  const blur: AnyFunction
+  const Boolean: any
+  const BroadcastChannel: any
+  const btoa: AnyFunction
+  const ByteLengthQueuingStrategy: any
+  const Cache: any
+  const caches: any
+  const CacheStorage: any
+  const cancelAnimationFrame: AnyFunction
+  const cancelIdleCallback: AnyFunction
+  const CanvasCaptureMediaStreamTrack: any
+  const CanvasGradient: any
+  const CanvasPattern: any
+  const CanvasRenderingContext2D: any
+  const CDATASection: any
+  const ChannelMergerNode: any
+  const ChannelSplitterNode: any
+  const CharacterData: any
+  const clearInterval: AnyFunction
+  const clearTimeout: AnyFunction
+  const Clipboard: any
+  const ClipboardEvent: any
+  const ClipboardItem: any
+  const close: AnyFunction
+  const closed: any
+  const CloseEvent: any
+  const Comment: any
+  const CompositionEvent: any
+  const CompressionStream: any
+  const confirm: AnyFunction
+  const console: any
+  const ConstantSourceNode: any
+  const ConvolverNode: any
+  const CountQueuingStrategy: any
+  const createImageBitmap: AnyFunction
+  const Credential: any
+  const CredentialsContainer: any
+  const crossOriginIsolated: any
+  const crypto: any
+  const Crypto: any
+  const CryptoKey: any
+
+  const CSSAnimation: any
+  const CSSConditionRule: any
+  const CSSContainerRule: any
+  const CSSCounterStyleRule: any
+  const CSSFontFaceRule: any
+  const CSSFontFeatureValuesRule: any
+  const CSSFontPaletteValuesRule: any
+  const CSSGroupingRule: any
+  const CSSImageValue: any
+  const CSSImportRule: any
+  const CSSKeyframeRule: any
+  const CSSKeyframesRule: any
+  const CSSKeywordValue: any
+  const CSSLayerBlockRule: any
+  const CSSLayerStatementRule: any
+  const CSSMathClamp: any
+  const CSSMathInvert: any
+  const CSSMathMax: any
+  const CSSMathMin: any
+  const CSSMathNegate: any
+  const CSSMathProduct: any
+  const CSSMathSum: any
+  const CSSMathValue: any
+  const CSSMatrixComponent: any
+  const CSSMediaRule: any
+  const CSSNamespaceRule: any
+  const CSSNumericArray: any
+  const CSSNumericValue: any
+  const CSSPageRule: any
+  const CSSPerspective: any
+  const CSSPropertyRule: any
+  const CSSRotate: any
+  const CSSRule: any
+  const CSSRuleList: any
+  const CSSScale: any
+  const CSSSkew: any
+  const CSSSkewX: any
+  const CSSSkewY: any
+  const CSSStyleDeclaration: any
+  const CSSStyleRule: any
+  const CSSStyleSheet: any
+  const CSSStyleValue: any
+  const CSSSupportsRule: any
+  const CSSTransformComponent: any
+  const CSSTransformValue: any
+  const CSSTransition: any
+  const CSSTranslate: any
+  const CSSUnitValue: any
+  const CSSUnparsedValue: any
+  const CSSVariableReferenceValue: any
+  const CustomElementRegistry: any
+  const customElements: any
+  const CustomEvent: any
+  const DataTransfer: any
+  const DataTransferItem: any
+  const DataTransferItemList: any
+  const DataView: any
+  const Date: any
+  const decodeURI: AnyFunction
+  const decodeURIComponent: AnyFunction
+  const DecompressionStream: any
+  const DelayNode: any
+  const DeviceMotionEvent: any
+  const DeviceOrientationEvent: any
+  const devicePixelRatio: any
+  const dispatchEvent: AnyFunction
+  const document: any
+  const Document: any
+  const DocumentFragment: any
+  const DocumentTimeline: any
+  const DocumentType: any
+  const DOMException: any
+  const DOMImplementation: any
+  const DOMMatrix: any
+  const DOMMatrixReadOnly: any
+  const DOMParser: any
+  const DOMPoint: any
+  const DOMPointReadOnly: any
+  const DOMQuad: any
+  const DOMRect: any
+  const DOMRectList: any
+  const DOMRectReadOnly: any
+  const DOMStringList: any
+  const DOMStringMap: any
+  const DOMTokenList: any
+  const DragEvent: any
+  const DynamicsCompressorNode: any
+  const Element: any
+  const ElementInternals: any
+  const EncodedVideoChunk: any
+  const encodeURI: AnyFunction
+  const encodeURIComponent: AnyFunction
+  const Enumerator: any
+  const Error: any
+  const ErrorEvent: any
+  const eval: AnyFunction
+  const EvalError: any
+  const Event: any
+  const EventCounts: any
+  const EventSource: any
+  const EventTarget: any
+  const fetch: AnyFunction
+  const File: any
+  const FileList: any
+  const FileReader: any
+  const FileSystem: any
+  const FileSystemDirectoryEntry: any
+  const FileSystemDirectoryHandle: any
+  const FileSystemDirectoryReader: any
+  const FileSystemEntry: any
+  const FileSystemFileEntry: any
+  const FileSystemFileHandle: any
+  const FileSystemHandle: any
+  const FileSystemWritableFileStream: any
+  const Float32Array: any
+  const Float64Array: any
+  const focus: AnyFunction
+  const FocusEvent: any
+  const FontFace: any
+  const FontFaceSet: any
+  const FontFaceSetLoadEvent: any
+  const FormData: any
+  const FormDataEvent: any
+  const frameElement: any
+  const frames: any
+  const Function: any
+  const GainNode: any
+  const Gamepad: any
+  const GamepadButton: any
+  const GamepadEvent: any
+  const GamepadHapticActuator: any
+  const Geolocation: any
+  const GeolocationCoordinates: any
+  const GeolocationPosition: any
+  const GeolocationPositionError: any
+  const getComputedStyle: AnyFunction
+  const getSelection: AnyFunction
+
+  const HashChangeEvent: any
+  const Headers: any
+  const history: any
+  const History: any
+  const HTMLAllCollection: any
+  const HTMLAnchorElement: any
+  const HTMLAreaElement: any
+  const HTMLAudioElement: any
+  const HTMLBaseElement: any
+  const HTMLBodyElement: any
+  const HTMLBRElement: any
+  const HTMLButtonElement: any
+  const HTMLCanvasElement: any
+  const HTMLCollection: any
+  const HTMLDataElement: any
+  const HTMLDataListElement: any
+  const HTMLDetailsElement: any
+  const HTMLDialogElement: any
+  const HTMLDivElement: any
+  const HTMLDListElement: any
+  const HTMLElement: any
+  const HTMLEmbedElement: any
+  const HTMLFieldSetElement: any
+  const HTMLFormControlsCollection: any
+  const HTMLFormElement: any
+  const HTMLHeadElement: any
+  const HTMLHeadingElement: any
+  const HTMLHRElement: any
+  const HTMLHtmlElement: any
+  const HTMLIFrameElement: any
+  const HTMLImageElement: any
+  const HTMLInputElement: any
+  const HTMLLabelElement: any
+  const HTMLLegendElement: any
+  const HTMLLIElement: any
+  const HTMLLinkElement: any
+  const HTMLMapElement: any
+  const HTMLMediaElement: any
+  const HTMLMenuElement: any
+  const HTMLMetaElement: any
+  const HTMLMeterElement: any
+  const HTMLModElement: any
+  const HTMLObjectElement: any
+  const HTMLOListElement: any
+  const HTMLOptGroupElement: any
+  const HTMLOptionElement: any
+  const HTMLOptionsCollection: any
+  const HTMLOutputElement: any
+  const HTMLParagraphElement: any
+  const HTMLPictureElement: any
+  const HTMLPreElement: any
+  const HTMLProgressElement: any
+  const HTMLQuoteElement: any
+  const HTMLScriptElement: any
+  const HTMLSelectElement: any
+  const HTMLSlotElement: any
+  const HTMLSourceElement: any
+  const HTMLSpanElement: any
+  const HTMLStyleElement: any
+  const HTMLTableCaptionElement: any
+  const HTMLTableCellElement: any
+  const HTMLTableColElement: any
+  const HTMLTableElement: any
+  const HTMLTableRowElement: any
+  const HTMLTableSectionElement: any
+  const HTMLTemplateElement: any
+  const HTMLTextAreaElement: any
+  const HTMLTimeElement: any
+  const HTMLTitleElement: any
+  const HTMLTrackElement: any
+  const HTMLUListElement: any
+  const HTMLUnknownElement: any
+  const HTMLVideoElement: any
+  const IDBCursor: any
+  const IDBCursorWithValue: any
+  const IDBDatabase: any
+  const IDBFactory: any
+  const IDBIndex: any
+  const IDBKeyRange: any
+  const IDBObjectStore: any
+  const IDBOpenDBRequest: any
+  const IDBRequest: any
+  const IDBTransaction: any
+  const IDBVersionChangeEvent: any
+  const IdleDeadline: any
+  const IIRFilterNode: any
+  const Image: any
+  const ImageBitmap: any
+  const ImageBitmapRenderingContext: any
+  const ImageData: any
+  const importScripts: AnyFunction
+  const indexedDB: any
+  const Infinity: any
+  const innerHeight: any
+  const innerWidth: any
+  const InputDeviceInfo: any
+  const InputEvent: any
+  const Int16Array: any
+  const Int32Array: any
+  const Int8Array: any
+  const IntersectionObserver: any
+  const IntersectionObserverEntry: any
+
+  const isFinite: AnyFunction
+  const isNaN: AnyFunction
+  const isSecureContext: any
+  const JSON: any
+  const KeyboardEvent: any
+  const KeyframeEffect: any
+  const length: any
+  const localStorage: any
+  const location: any
+  const Location: any
+  const locationbar: any
+  const Lock: any
+  const LockManager: any
+  const Map: any
+  const matchMedia: AnyFunction
+  const Math: any
+  const MathMLElement: any
+  const MediaCapabilities: any
+  const MediaDeviceInfo: any
+  const MediaDevices: any
+  const MediaElementAudioSourceNode: any
+  const MediaEncryptedEvent: any
+  const MediaError: any
+  const MediaKeyMessageEvent: any
+  const MediaKeys: any
+  const MediaKeySession: any
+  const MediaKeyStatusMap: any
+  const MediaKeySystemAccess: any
+  const MediaList: any
+  const MediaMetadata: any
+  const MediaQueryList: any
+  const MediaQueryListEvent: any
+  const MediaRecorder: any
+  const MediaSession: any
+  const MediaSource: any
+  const MediaStream: any
+  const MediaStreamAudioDestinationNode: any
+  const MediaStreamAudioSourceNode: any
+  const MediaStreamTrack: any
+  const MediaStreamTrackEvent: any
+  const menubar: any
+  const MessageChannel: any
+  const MessageEvent: any
+  const MessagePort: any
+  const MIDIAccess: any
+  const MIDIConnectionEvent: any
+  const MIDIInput: any
+  const MIDIInputMap: any
+  const MIDIMessageEvent: any
+  const MIDIOutput: any
+  const MIDIOutputMap: any
+  const MIDIPort: any
+  const MimeTypeArray: any
+  const MouseEvent: any
+  const moveBy: AnyFunction
+  const moveTo: AnyFunction
+  const MutationObserver: any
+  const MutationRecord: any
+  const NamedNodeMap: any
+  const NaN: any
+  const NavigationPreloadManager: any
+  const navigator: any
+  const Navigator: any
+  const Node: any
+  const NodeFilter: any
+  const NodeIterator: any
+  const NodeList: any
+  const Notification: any
+  const Number: any
+  const Object: any
+  const OfflineAudioCompletionEvent: any
+  const OfflineAudioContext: any
+  const OffscreenCanvas: any
+  const OffscreenCanvasRenderingContext2D: any
+  const onabort: any
+  const onafterprint: any
+  const onanimationcancel: any
+  const onanimationend: any
+  const onanimationiteration: any
+  const onanimationstart: any
+  const onauxclick: any
+  const onbeforeinput: any
+  const onbeforeprint: any
+  const onbeforeunload: any
+  const onblur: any
+  const oncancel: any
+  const oncanplay: any
+  const oncanplaythrough: any
+  const onchange: any
+  const onclick: any
+  const onclose: any
+  const oncontextmenu: any
+  const oncopy: any
+  const oncuechange: any
+  const oncut: any
+  const ondblclick: any
+  const ondevicemotion: any
+  const ondeviceorientation: any
+  const ondrag: any
+  const ondragend: any
+  const ondragenter: any
+  const ondragleave: any
+  const ondragover: any
+  const ondragstart: any
+  const ondrop: any
+  const ondurationchange: any
+  const onemptied: any
+  const onended: any
+  const onerror: any
+  const onfocus: any
+  const onformdata: any
+  const ongamepadconnected: any
+  const ongamepaddisconnected: any
+  const ongotpointercapture: any
+  const onhashchange: any
+  const oninput: any
+  const oninvalid: any
+  const onkeydown: any
+  const onkeyup: any
+  const onlanguagechange: any
+  const onload: any
+  const onloadeddata: any
+  const onloadedmetadata: any
+  const onloadstart: any
+  const onlostpointercapture: any
+  const onmessage: any
+  const onmessageerror: any
+  const onmousedown: any
+  const onmouseenter: any
+  const onmouseleave: any
+  const onmousemove: any
+  const onmouseout: any
+  const onmouseover: any
+  const onmouseup: any
+  const onoffline: any
+  const ononline: any
+  const onpagehide: any
+  const onpageshow: any
+  const onpaste: any
+  const onpause: any
+  const onplay: any
+  const onplaying: any
+  const onpointercancel: any
+  const onpointerdown: any
+  const onpointerenter: any
+  const onpointerleave: any
+  const onpointermove: any
+  const onpointerout: any
+  const onpointerover: any
+  const onpointerup: any
+  const onpopstate: any
+  const onprogress: any
+  const onratechange: any
+  const onrejectionhandled: any
+  const onreset: any
+  const onresize: any
+  const onscroll: any
+  const onscrollend: any
+  const onsecuritypolicyviolation: any
+  const onseeked: any
+  const onseeking: any
+  const onselect: any
+  const onselectionchange: any
+  const onselectstart: any
+  const onslotchange: any
+  const onstalled: any
+  const onstorage: any
+  const onsubmit: any
+  const onsuspend: any
+  const ontimeupdate: any
+  const ontoggle: any
+  const ontouchcancel: any
+  const ontouchend: any
+  const ontouchmove: any
+  const ontouchstart: any
+  const ontransitioncancel: any
+  const ontransitionend: any
+  const ontransitionrun: any
+  const ontransitionstart: any
+  const onunhandledrejection: any
+  const onunload: any
+  const onvolumechange: any
+  const onwaiting: any
+  const onwheel: any
+  const open: AnyFunction
+  const opener: any
+  const Option: any
+  const origin: any
+  const OscillatorNode: any
+  const outerHeight: any
+  const outerWidth: any
+  const OverconstrainedError: any
+  const PageTransitionEvent: any
+  const PannerNode: any
+  const parent: any
+  const parseFloat: AnyFunction
+  const parseInt: AnyFunction
+  const Path2D: any
+  const PaymentMethodChangeEvent: any
+  const PaymentRequest: any
+  const PaymentRequestUpdateEvent: any
+  const PaymentResponse: any
+  const performance: any
+  const Performance: any
+  const PerformanceEntry: any
+  const PerformanceEventTiming: any
+  const PerformanceMark: any
+  const PerformanceMeasure: any
+  const PerformanceNavigationTiming: any
+  const PerformanceObserver: any
+  const PerformanceObserverEntryList: any
+  const PerformancePaintTiming: any
+  const PerformanceResourceTiming: any
+  const PerformanceServerTiming: any
+  const PeriodicWave: any
+  const Permissions: any
+  const PermissionStatus: any
+  const personalbar: any
+  const PictureInPictureEvent: any
+  const PictureInPictureWindow: any
+  const Plugin: any
+  const PluginArray: any
+  const PointerEvent: any
+  const PopStateEvent: any
+  const postMessage: AnyFunction
+  const print: AnyFunction
+  const ProcessingInstruction: any
+  const ProgressEvent: any
+  const Promise: any
+  const PromiseRejectionEvent: any
+  const prompt: AnyFunction
+  const Proxy: any
+  const PublicKeyCredential: any
+  const PushManager: any
+  const PushSubscription: any
+  const PushSubscriptionOptions: any
+  const queueMicrotask: AnyFunction
+  const RadioNodeList: any
+  const Range: any
+  const RangeError: any
+  const ReadableByteStreamController: any
+  const ReadableStream: any
+  const ReadableStreamBYOBReader: any
+  const ReadableStreamBYOBRequest: any
+  const ReadableStreamDefaultController: any
+  const ReadableStreamDefaultReader: any
+  const ReferenceError: any
+
+  const RegExp: any
+  const RemotePlayback: any
+  const removeEventListener: AnyFunction
+  const Report: any
+  const ReportBody: any
+  const reportError: AnyFunction
+  const ReportingObserver: any
+  const Request: any
+  const requestAnimationFrame: AnyFunction
+  const requestIdleCallback: AnyFunction
+  const resizeBy: AnyFunction
+  const ResizeObserver: any
+  const ResizeObserverEntry: any
+  const ResizeObserverSize: any
+  const resizeTo: AnyFunction
+  const Response: any
+  const RTCCertificate: any
+  const RTCDataChannel: any
+  const RTCDataChannelEvent: any
+  const RTCDtlsTransport: any
+  const RTCDTMFSender: any
+  const RTCDTMFToneChangeEvent: any
+  const RTCEncodedAudioFrame: any
+  const RTCEncodedVideoFrame: any
+  const RTCError: any
+  const RTCErrorEvent: any
+  const RTCIceCandidate: any
+  const RTCIceTransport: any
+  const RTCPeerConnection: any
+  const RTCPeerConnectionIceErrorEvent: any
+  const RTCPeerConnectionIceEvent: any
+  const RTCRtpReceiver: any
+  const RTCRtpSender: any
+  const RTCRtpTransceiver: any
+  const RTCSctpTransport: any
+  const RTCSessionDescription: any
+  const RTCStatsReport: any
+  const RTCTrackEvent: any
+  const screen: any
+  const Screen: any
+  const screenLeft: any
+  const ScreenOrientation: any
+  const screenTop: any
+  const screenX: any
+  const screenY: any
+  const scroll: AnyFunction
+  const scrollbars: any
+  const scrollBy: AnyFunction
+  const scrollTo: AnyFunction
+  const scrollX: any
+  const scrollY: any
+  const SecurityPolicyViolationEvent: any
+  const Selection: any
+  const self: any
+  const ServiceWorker: any
+  const ServiceWorkerContainer: any
+  const ServiceWorkerRegistration: any
+  const sessionStorage: any
+  const Set: any
+  const setInterval: AnyFunction
+  const setTimeout: AnyFunction
+  const ShadowRoot: any
+  const SharedArrayBuffer: any
+  const SharedWorker: any
+  const SourceBuffer: any
+  const SourceBufferList: any
+  const SpeechRecognitionAlternative: any
+  const SpeechRecognitionResult: any
+  const SpeechRecognitionResultList: any
+  const speechSynthesis: any
+  const SpeechSynthesis: any
+  const SpeechSynthesisErrorEvent: any
+  const SpeechSynthesisEvent: any
+  const SpeechSynthesisUtterance: any
+  const SpeechSynthesisVoice: any
+  const StaticRange: any
+  const statusbar: any
+  const StereoPannerNode: any
+  const stop: AnyFunction
+  const Storage: any
+  const StorageEvent: any
+  const StorageManager: any
+  const String: any
+  const structuredClone: AnyFunction
+  const StylePropertyMap: any
+  const StylePropertyMapReadOnly: any
+  const StyleSheet: any
+  const StyleSheetList: any
+  const SubmitEvent: any
+  const SubtleCrypto: any
+  const SVGAElement: any
+  const SVGAngle: any
+  const SVGAnimatedAngle: any
+  const SVGAnimatedBoolean: any
+  const SVGAnimatedEnumeration: any
+  const SVGAnimatedInteger: any
+  const SVGAnimatedLength: any
+  const SVGAnimatedLengthList: any
+  const SVGAnimatedNumber: any
+  const SVGAnimatedNumberList: any
+  const SVGAnimatedPreserveAspectRatio: any
+  const SVGAnimatedRect: any
+  const SVGAnimatedString: any
+  const SVGAnimatedTransformList: any
+  const SVGAnimateElement: any
+  const SVGAnimateMotionElement: any
+  const SVGAnimateTransformElement: any
+  const SVGAnimationElement: any
+  const SVGCircleElement: any
+  const SVGClipPathElement: any
+  const SVGComponentTransferFunctionElement: any
+  const SVGDefsElement: any
+  const SVGDescElement: any
+  const SVGElement: any
+  const SVGEllipseElement: any
+  const SVGFEBlendElement: any
+  const SVGFEColorMatrixElement: any
+  const SVGFEComponentTransferElement: any
+  const SVGFECompositeElement: any
+  const SVGFEConvolveMatrixElement: any
+  const SVGFEDiffuseLightingElement: any
+  const SVGFEDisplacementMapElement: any
+  const SVGFEDistantLightElement: any
+  const SVGFEDropShadowElement: any
+  const SVGFEFloodElement: any
+  const SVGFEFuncAElement: any
+  const SVGFEFuncBElement: any
+  const SVGFEFuncGElement: any
+  const SVGFEFuncRElement: any
+  const SVGFEGaussianBlurElement: any
+  const SVGFEImageElement: any
+  const SVGFEMergeElement: any
+  const SVGFEMergeNodeElement: any
+  const SVGFEMorphologyElement: any
+  const SVGFEOffsetElement: any
+  const SVGFEPointLightElement: any
+  const SVGFESpecularLightingElement: any
+  const SVGFESpotLightElement: any
+  const SVGFETileElement: any
+  const SVGFETurbulenceElement: any
+  const SVGFilterElement: any
+  const SVGForeignObjectElement: any
+  const SVGGElement: any
+  const SVGGeometryElement: any
+  const SVGGradientElement: any
+  const SVGGraphicsElement: any
+  const SVGImageElement: any
+  const SVGLength: any
+  const SVGLengthList: any
+  const SVGLinearGradientElement: any
+  const SVGLineElement: any
+  const SVGMarkerElement: any
+  const SVGMaskElement: any
+  const SVGMatrix: any
+  const SVGMetadataElement: any
+  const SVGMPathElement: any
+  const SVGNumber: any
+  const SVGNumberList: any
+  const SVGPathElement: any
+  const SVGPatternElement: any
+  const SVGPoint: any
+  const SVGPointList: any
+  const SVGPolygonElement: any
+  const SVGPolylineElement: any
+  const SVGPreserveAspectRatio: any
+  const SVGRadialGradientElement: any
+  const SVGRect: any
+  const SVGRectElement: any
+  const SVGScriptElement: any
+  const SVGSetElement: any
+  const SVGStopElement: any
+  const SVGStringList: any
+  const SVGStyleElement: any
+  const SVGSVGElement: any
+  const SVGSwitchElement: any
+  const SVGSymbolElement: any
+  const SVGTextContentElement: any
+  const SVGTextElement: any
+  const SVGTextPathElement: any
+  const SVGTextPositioningElement: any
+  const SVGTitleElement: any
+  const SVGTransform: any
+  const SVGTransformList: any
+  const SVGTSpanElement: any
+  const SVGUnitTypes: any
+  const SVGUseElement: any
+  const SVGViewElement: any
+  const Symbol: any
+  const SyntaxError: any
+  const Text: any
+  const TextDecoder: any
+  const TextDecoderStream: any
+  const TextEncoder: any
+  const TextEncoderStream: any
+  const TextMetrics: any
+  const TextTrack: any
+  const TextTrackCue: any
+  const TextTrackCueList: any
+  const TextTrackList: any
+  const TimeRanges: any
+  const ToggleEvent: any
+  const toolbar: any
+  const top: any
+  const toString: AnyFunction
+  const Touch: any
+  const TouchEvent: any
+  const TouchList: any
+  const TrackEvent: any
+  const TransformStream: any
+  const TransformStreamDefaultController: any
+  const TransitionEvent: any
+  const TreeWalker: any
+  const TypeError: any
+  const UIEvent: any
+  const Uint16Array: any
+  const Uint32Array: any
+  const Uint8Array: any
+  const Uint8ClampedArray: any
+  const URIError: any
+  const URL: any
+  const URLSearchParams: any
+  const UserActivation: any
+  const ValidityState: any
+  const VBArray: any
+  const VideoColorSpace: any
+  const VideoDecoder: any
+  const VideoEncoder: any
+  const VideoFrame: any
+  const VideoPlaybackQuality: any
+  const visualViewport: any
+  const VisualViewport: any
+  const VTTCue: any
+  const VTTRegion: any
+  const WakeLock: any
+  const WakeLockSentinel: any
+  const WaveShaperNode: any
+  const WeakMap: any
+  const WeakSet: any
+
+  const WebGL2RenderingContext: any
+  const WebGLActiveInfo: any
+  const WebGLBuffer: any
+  const WebGLContextEvent: any
+  const WebGLFramebuffer: any
+  const WebGLProgram: any
+  const WebGLQuery: any
+  const WebGLRenderbuffer: any
+  const WebGLRenderingContext: any
+  const WebGLSampler: any
+  const WebGLShader: any
+  const WebGLShaderPrecisionFormat: any
+  const WebGLSync: any
+  const WebGLTexture: any
+  const WebGLTransformFeedback: any
+  const WebGLUniformLocation: any
+  const WebGLVertexArrayObject: any
+  const WebKitCSSMatrix: any
+  const webkitURL: any
+  const WebSocket: any
+  const WebTransport: any
+  const WebTransportBidirectionalStream: any
+  const WebTransportDatagramDuplexStream: any
+  const WebTransportError: any
+  const WheelEvent: any
+  const window: any
+  const Window: any
+  const Worker: any
+  const Worklet: any
+  const WritableStream: any
+  const WritableStreamDefaultController: any
+  const WritableStreamDefaultWriter: any
+  const WScript: any
+  const WSH: any
+  const XMLDocument: any
+  const XMLHttpRequest: any
+  const XMLHttpRequestEventTarget: any
+  const XMLHttpRequestUpload: any
+  const XMLSerializer: any
+  const XPathEvaluator: any
+  const XPathExpression: any
+  const XPathResult: any
+  const XSLTProcessor: any
 }
