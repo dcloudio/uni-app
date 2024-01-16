@@ -83,6 +83,9 @@ export function initEasycoms(
         easycoms.push(item)
       }
     })
+    if (isX && (globalThis as any).uts2jsSourceCodeMap) {
+      ;(globalThis as any).uts2jsSourceCodeMap.initUts2jsEasycom(easycoms)
+    }
   }
   initEasycom(options)
   initUTSEasycom()
