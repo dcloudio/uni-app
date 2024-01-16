@@ -5,6 +5,8 @@ import {
   ObjectMethod,
   ObjectExpression,
   Expression,
+  TSPropertySignature,
+  TSMethodSignature,
 } from '@babel/types'
 import { BindingTypes, isFunctionType } from '@vue/compiler-dom'
 import { ScriptCompileContext } from './context'
@@ -225,6 +227,32 @@ function genRuntimePropsFromTypes(ctx: ScriptCompileContext) {
   return propsDecls
 }
 
+function parsePropType(
+  ctx: ScriptCompileContext,
+  node: TSMethodSignature | TSPropertySignature
+) {
+  if (node.type === 'TSPropertySignature') {
+    const typeAnn = node.typeAnnotation
+    if (typeAnn) {
+      const tsType = typeAnn?.typeAnnotation
+      if (tsType?.type === 'TSTypeReference') {
+        if (
+          tsType.typeName.type === 'Identifier' &&
+          tsType.typeName.name === 'PropType'
+        ) {
+          return [
+            `Object as ${ctx.source.slice(
+              tsType.start! + ctx.startOffset!,
+              tsType.end! + ctx.startOffset!
+            )}`,
+          ]
+        }
+      }
+    }
+  }
+  return []
+}
+
 function resolveRuntimePropsFromType(
   ctx: ScriptCompileContext,
   node: Node
@@ -233,15 +261,20 @@ function resolveRuntimePropsFromType(
   const elements = resolveTypeElements(ctx, node)
   for (const key in elements.props) {
     const e = elements.props[key]
-    let type = inferRuntimeType(ctx, e)
+    let type = parsePropType(ctx, e)
     let skipCheck = false
-    // skip check for result containing unknown types
-    if (type.includes(UNKNOWN_TYPE)) {
-      if (type.includes('Boolean') || type.includes('Function')) {
-        type = type.filter((t) => t !== UNKNOWN_TYPE)
-        skipCheck = true
-      } else {
-        type = ['null']
+    if (type.length) {
+      skipCheck = true
+    } else {
+      type = inferRuntimeType(ctx, e)
+      // skip check for result containing unknown types
+      if (type.includes(UNKNOWN_TYPE)) {
+        if (type.includes('Boolean') || type.includes('Function')) {
+          type = type.filter((t) => t !== UNKNOWN_TYPE)
+          skipCheck = true
+        } else {
+          type = ['null']
+        }
       }
     }
     props.push({

@@ -130,6 +130,9 @@ const props = defineProps({ foo: String })
       unknownIntersection: UnknownType & Object
       unknownUnionWithBoolean: UnknownType | boolean
       unknownUnionWithFunction: UnknownType | (() => any)
+
+      propType: PropType<()=>string>
+
     }>()
     </script>`)
     assertCode(content)
@@ -188,6 +191,9 @@ const props = defineProps({ foo: String })
     expect(content).toMatch(
       `unknownUnionWithFunction: { type: Function, required: true, skipCheck: true }`
     )
+    expect(content).toMatch(
+      `propType: { type: Object as PropType<()=>string>, required: true, skipCheck: true }`
+    )
     expect(bindings).toStrictEqual({
       string: BindingTypes.PROPS,
       number: BindingTypes.PROPS,
@@ -228,6 +234,7 @@ const props = defineProps({ foo: String })
       unknownIntersection: BindingTypes.PROPS,
       unknownUnionWithBoolean: BindingTypes.PROPS,
       unknownUnionWithFunction: BindingTypes.PROPS,
+      propType: BindingTypes.PROPS,
     })
   })
 
