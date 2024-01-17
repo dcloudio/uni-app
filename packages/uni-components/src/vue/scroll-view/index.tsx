@@ -50,6 +50,10 @@ const props = {
     type: [Boolean, String],
     default: false,
   },
+  showScrollbar: {
+    type: [Boolean, String],
+    default: true,
+  },
   upperThreshold: {
     type: [Number, String],
     default: 50,
@@ -157,6 +161,14 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       return style
     })
 
+    const scrollBarClassName = computed(() => {
+      let className = 'uni-scroll-view'
+      if (props.showScrollbar === false) {
+        className += ' uni-scroll-view-scrollbar-hidden'
+      }
+      return className
+    })
+
     //#if _X_ && !_NODE_JS_
     onMounted(() => {
       const rootElement = rootRef.value as UniScrollViewElement
@@ -200,7 +212,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       return (
         <uni-scroll-view ref={rootRef}>
           <div ref={wrap} class="uni-scroll-view">
-            <div ref={main} style={mainStyle.value} class="uni-scroll-view">
+            <div
+              ref={main}
+              style={mainStyle.value}
+              class={scrollBarClassName.value}
+            >
               <div ref={content} class="uni-scroll-view-content">
                 {refresherEnabled ? (
                   <div
