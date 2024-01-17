@@ -67,7 +67,6 @@ export const callUniMethod = (
       // @ts-ignore
       uni.navigateTo({
         url: _arg['url'] as string,
-        // @ts-expect-error
         animationType:
           _arg['animationType'] != null
             ? (_arg['animationType'] as string)
@@ -115,7 +114,6 @@ export const callUniMethod = (
       const _arg = new UTSJSONObject(args[0])
       // @ts-ignore
       uni.navigateBack({
-        // @ts-expect-error
         animationType:
           _arg['animationType'] != null
             ? (_arg['animationType'] as string)
@@ -227,9 +225,7 @@ export const callUniMethod = (
       // @ts-ignore
       uni.showToast({
         title: _arg['title'] as string,
-        // @ts-expect-error
         icon: _arg['icon'] != null ? (_arg['icon'] as string) : 'success',
-        // @ts-expect-error
         image:
           _arg['image'] != null && _arg['image'] != ''
             ? (_arg['image'] as string)
@@ -237,7 +233,6 @@ export const callUniMethod = (
         mask: _arg['mask'] != null ? (_arg['mask'] as boolean) : false,
         duration:
           _arg['duration'] != null ? (_arg['duration'] as number) : 1500,
-        // @ts-expect-error
         position:
           _arg['position'] != null ? (_arg['position'] as string) : null,
         success,
@@ -274,29 +269,22 @@ export const callUniMethod = (
       const _arg = new UTSJSONObject(args[0])
       // @ts-ignore
       uni.showModal({
-        // @ts-expect-error
         title: _arg['title'] != null ? (_arg['title'] as string) : null,
-        // @ts-expect-error
         content: _arg['content'] != null ? (_arg['content'] as string) : null,
         showCancel:
           _arg['showCancel'] != null ? (_arg['showCancel'] as boolean) : true,
-        // @ts-expect-error
         cancelText:
           _arg['cancelText'] != null ? (_arg['cancelText'] as string) : null,
-        // @ts-expect-error
         cancelColor:
           _arg['cancelColor'] != null ? (_arg['cancelColor'] as string) : null,
-        // @ts-expect-error
         confirmText:
           _arg['confirmText'] != null ? (_arg['confirmText'] as string) : null,
-        // @ts-expect-error
         confirmColor:
           _arg['confirmColor'] != null
             ? (_arg['confirmColor'] as string)
             : null,
         editable:
           _arg['editable'] != null ? (_arg['editable'] as boolean) : false,
-        // @ts-expect-error
         placeholderText:
           _arg['placeholderText'] != null
             ? (_arg['placeholderText'] as string)
@@ -313,11 +301,9 @@ export const callUniMethod = (
       const _arg = new UTSJSONObject(args[0])
       // @ts-ignore
       uni.showActionSheet({
-        // @ts-expect-error
         title: _arg['title'] != null ? (_arg['title'] as string) : null,
         // @ts-expect-error
         itemList: JSON.parse<string[]>(JSON.stringify(_arg['itemList']))!,
-        // @ts-expect-error
         itemColor:
           _arg['itemColor'] != null ? (_arg['itemColor'] as string) : null,
         success,
@@ -442,6 +428,8 @@ export type CaptureScreenshotParams = {
   id?: string | null
   fullPage?: boolean | null
   path?: string | null
+  offsetX?: string | null
+  offsetY?: string | null
 }
 export const captureScreenshot = (
   params: CaptureScreenshotParams,
@@ -451,6 +439,8 @@ export const captureScreenshot = (
   if (currentPage != null) {
     currentPage.$viewToTempFilePath({
       id: params.fullPage == true ? null : params.id,
+      offsetX: params.offsetX !== null ? params.offsetX : '0',
+      offsetY: params.offsetY !== null ? params.offsetY : '0',
       wholeContent: params.fullPage == true,
       path: params.path,
       success: (res) => {
