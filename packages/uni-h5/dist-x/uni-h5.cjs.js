@@ -2554,6 +2554,7 @@ const index$v = /* @__PURE__ */ defineBuiltInComponent({
 });
 function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
   const field = vue.computed(() => ({
+    // @ts-ignore
     checkboxChecked: Boolean(checkboxChecked.value),
     value: checkboxValue.value
   }));
@@ -5579,6 +5580,7 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
 function useRadioInject(radioChecked, radioValue, reset) {
   const field = vue.computed({
     get: () => ({
+      // @ts-ignore
       radioChecked: Boolean(radioChecked.value),
       value: radioValue.value
     }),
@@ -6310,7 +6312,7 @@ class UniSliderElement extends UniElement {
     __publicField(this, "_initialValue", 0);
   }
   init() {
-    this.htmlSlider = this.querySelector(".uni-slider-brower-input-range");
+    this.htmlSlider = this.querySelector(".uni-slider-browser-input-range");
     this.trackValue = this.querySelector(".uni-slider-track-value");
     this.thumbValue = this.querySelector(".uni-slider-thumb-value");
     this.inputValue = this.querySelector(".uni-slider-value");

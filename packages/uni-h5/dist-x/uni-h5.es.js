@@ -7916,7 +7916,7 @@ const index$r = /* @__PURE__ */ defineBuiltInComponent({
     const {
       uniCheckGroup,
       uniLabel
-    } = useCheckboxInject(checkboxChecked, checkboxValue, reset);
+    } = useCheckboxInject(rootRef, checkboxChecked, checkboxValue, reset);
     const _onClick = ($event) => {
       if (props2.disabled) {
         return;
@@ -7977,9 +7977,9 @@ const index$r = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
+function useCheckboxInject(rootRef, checkboxChecked, checkboxValue, reset) {
   const field = computed(() => ({
-    checkboxChecked: Boolean(checkboxChecked.value),
+    checkboxChecked: rootRef.value.checked,
     value: checkboxValue.value
   }));
   const formField = {
@@ -12964,7 +12964,7 @@ const index$k = /* @__PURE__ */ defineBuiltInComponent({
       uniCheckGroup,
       uniLabel,
       field
-    } = useRadioInject(radioChecked, radioValue, reset);
+    } = useRadioInject(rootRef, radioChecked, radioValue, reset);
     const _onClick = ($event) => {
       if (props2.disabled || radioChecked.value) {
         return;
@@ -13025,10 +13025,10 @@ const index$k = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-function useRadioInject(radioChecked, radioValue, reset) {
+function useRadioInject(rootRef, radioChecked, radioValue, reset) {
   const field = computed({
     get: () => ({
-      radioChecked: Boolean(radioChecked.value),
+      radioChecked: rootRef.value.checked,
       value: radioValue.value
     }),
     set: ({
@@ -13963,7 +13963,7 @@ class UniSliderElement extends UniElement {
     __publicField(this, "_initialValue", 0);
   }
   init() {
-    this.htmlSlider = this.querySelector(".uni-slider-brower-input-range");
+    this.htmlSlider = this.querySelector(".uni-slider-browser-input-range");
     this.trackValue = this.querySelector(".uni-slider-track-value");
     this.thumbValue = this.querySelector(".uni-slider-thumb-value");
     this.inputValue = this.querySelector(".uni-slider-value");
@@ -14976,7 +14976,7 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
   }) {
     const rootRef = ref(null);
     const switchChecked = ref(props2.checked);
-    const uniLabel = useSwitchInject(props2, switchChecked);
+    const uniLabel = useSwitchInject(rootRef, props2, switchChecked);
     const trigger = useCustomEvent(rootRef, emit2);
     watch(() => props2.checked, (val) => {
       switchChecked.value = val;
@@ -15043,7 +15043,7 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-function useSwitchInject(props2, switchChecked) {
+function useSwitchInject(rootRef, props2, switchChecked) {
   const initialCheckedValue = props2.checked;
   const uniForm = inject(uniFormKey, false);
   const uniLabel = inject(uniLabelKey, false);
@@ -15052,7 +15052,7 @@ function useSwitchInject(props2, switchChecked) {
       const data = ["", null];
       if (props2.name) {
         data[0] = props2.name;
-        data[1] = switchChecked.value;
+        data[1] = rootRef.value.checked;
       }
       return data;
     },
