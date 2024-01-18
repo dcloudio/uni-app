@@ -1,263 +1,3 @@
-/**
- * copy from @uts/shared
- */
-var IDENTIFIER;
-(function (IDENTIFIER) {
-    IDENTIFIER["UTSJSONObject"] = "UTSJSONObject";
-    IDENTIFIER["JSON"] = "JSON";
-    IDENTIFIER["UTS"] = "UTS";
-    IDENTIFIER["DEFINE_COMPONENT"] = "defineComponent";
-    IDENTIFIER["VUE"] = "vue";
-    IDENTIFIER["GLOBAL_THIS"] = "globalThis";
-    IDENTIFIER["UTS_TYPE"] = "UTSType";
-    IDENTIFIER["UTS_METADATA"] = "$UTSMetadata$";
-    IDENTIFIER["TEMP_UTS_METADATA"] = "$TempUTSMetadata$";
-    IDENTIFIER["JSON_FIELD"] = "JSON_FIELD";
-})(IDENTIFIER || (IDENTIFIER = {}));
-var UTS_CLASS_METADATA_KIND;
-(function (UTS_CLASS_METADATA_KIND) {
-    UTS_CLASS_METADATA_KIND[UTS_CLASS_METADATA_KIND["CLASS"] = 0] = "CLASS";
-    UTS_CLASS_METADATA_KIND[UTS_CLASS_METADATA_KIND["INTERFACE"] = 1] = "INTERFACE";
-    UTS_CLASS_METADATA_KIND[UTS_CLASS_METADATA_KIND["TYPE"] = 2] = "TYPE";
-})(UTS_CLASS_METADATA_KIND || (UTS_CLASS_METADATA_KIND = {}));
-
-function getType(val) {
-    return Object.prototype.toString.call(val).slice(8, -1).toLowerCase();
-}
-function isPlainObject(val) {
-    if (val == null || typeof val !== 'object') {
-        return false;
-    }
-    const proto = Object.getPrototypeOf(val);
-    return proto === Object.prototype || proto === null;
-}
-
-function initUTSJSONObjectProperties(obj) {
-    const propertyDescriptor = {
-        enumerable: false,
-    };
-    const propertyList = [
-        '_resolveKeyPath',
-        '_getValue',
-        'toJSON',
-        'get',
-        'set',
-        'getAny',
-        'getString',
-        'getNumber',
-        'getBoolean',
-        'getJSON',
-        'getArray',
-        'toMap',
-        'forEach',
-    ];
-    const propertyDescriptorMap = {};
-    for (let i = 0; i < propertyList.length; i++) {
-        const property = propertyList[i];
-        propertyDescriptorMap[property] = Object.assign(Object.assign({}, propertyDescriptor), { value: obj[property] });
-    }
-    Object.defineProperties(obj, propertyDescriptorMap);
-}
-class UTSJSONObject {
-    constructor(content = {}) {
-        for (const key in content) {
-            if (Object.prototype.hasOwnProperty.call(content, key)) {
-                const value = content[key];
-                if (isPlainObject(value)) {
-                    this[key] = new UTSJSONObject(value);
-                }
-                else if (getType(value) === 'array') {
-                    this[key] = value.map((item) => {
-                        if (isPlainObject(item)) {
-                            return new UTSJSONObject(item);
-                        }
-                        else {
-                            return item;
-                        }
-                    });
-                }
-                else {
-                    this[key] = value;
-                }
-            }
-        }
-        initUTSJSONObjectProperties(this);
-    }
-    _resolveKeyPath(keyPath) {
-        // 非法keyPath不抛出错误，直接返回空数组
-        let token = '';
-        const keyPathArr = [];
-        let inOpenParentheses = false;
-        for (let i = 0; i < keyPath.length; i++) {
-            const word = keyPath[i];
-            switch (word) {
-                case '.':
-                    if (token.length > 0) {
-                        keyPathArr.push(token);
-                        token = '';
-                    }
-                    break;
-                case '[': {
-                    inOpenParentheses = true;
-                    if (token.length > 0) {
-                        keyPathArr.push(token);
-                        token = '';
-                    }
-                    break;
-                }
-                case ']':
-                    if (inOpenParentheses) {
-                        if (token.length > 0) {
-                            const tokenFirstChar = token[0];
-                            const tokenLastChar = token[token.length - 1];
-                            if ((tokenFirstChar === '"' && tokenLastChar === '"') ||
-                                (tokenFirstChar === "'" && tokenLastChar === "'") ||
-                                (tokenFirstChar === '`' && tokenLastChar === '`')) {
-                                if (token.length > 2) {
-                                    token = token.slice(1, -1);
-                                }
-                                else {
-                                    return [];
-                                }
-                            }
-                            else if (!/^\d+$/.test(token)) {
-                                return [];
-                            }
-                            keyPathArr.push(token);
-                            token = '';
-                        }
-                        else {
-                            return [];
-                        }
-                        inOpenParentheses = false;
-                    }
-                    else {
-                        return [];
-                    }
-                    break;
-                default:
-                    token += word;
-                    break;
-            }
-            if (i === keyPath.length - 1) {
-                if (token.length > 0) {
-                    keyPathArr.push(token);
-                    token = '';
-                }
-            }
-        }
-        return keyPathArr;
-    }
-    _getValue(keyPath) {
-        const keyPathArr = this._resolveKeyPath(keyPath);
-        if (keyPathArr.length === 0) {
-            return null;
-        }
-        let value = this;
-        for (let key of keyPathArr) {
-            if (value instanceof Object) {
-                value = value[key];
-            }
-            else {
-                return null;
-            }
-        }
-        return value;
-    }
-    get(key) {
-        return this._getValue(key);
-    }
-    set(key, value) {
-        this[key] = value;
-    }
-    getAny(key) {
-        return this._getValue(key);
-    }
-    getString(key) {
-        const value = this._getValue(key);
-        if (typeof value === 'string') {
-            return value;
-        }
-        else {
-            return null;
-        }
-    }
-    getNumber(key) {
-        const value = this._getValue(key);
-        if (typeof value === 'number') {
-            return value;
-        }
-        else {
-            return null;
-        }
-    }
-    getBoolean(key) {
-        const boolean = this._getValue(key);
-        if (typeof boolean === 'boolean') {
-            return boolean;
-        }
-        else {
-            return null;
-        }
-    }
-    getJSON(key) {
-        let value = this._getValue(key);
-        if (value instanceof Object) {
-            return new UTSJSONObject(value);
-        }
-        else {
-            return null;
-        }
-    }
-    getArray(key) {
-        let value = this._getValue(key);
-        if (value instanceof Array) {
-            return value;
-        }
-        else {
-            return null;
-        }
-    }
-    toMap() {
-        let map = new Map();
-        for (let key in this) {
-            map.set(key, this[key]);
-        }
-        return map;
-    }
-    forEach(callback) {
-        for (let key in this) {
-            callback(this[key], key);
-        }
-    }
-}
-
-// @ts-nocheck
-function getGlobal() {
-    // cross-platform
-    if (typeof globalThis !== 'undefined') {
-        return globalThis;
-    }
-    // worker
-    if (typeof self !== 'undefined') {
-        return self;
-    }
-    // browser
-    if (typeof window !== 'undefined') {
-        return window;
-    }
-    // nodejs
-    if (typeof global !== 'undefined') {
-        return global;
-    }
-    throw new Error('unable to locate global object');
-}
-const realGlobal = getGlobal();
-if (!realGlobal.globalThis) {
-    realGlobal.globalThis = realGlobal;
-}
-globalThis.UTSJSONObject = UTSJSONObject;
-
 function arrayPop(array) {
     if (array.length === 0) {
         return null;
@@ -289,6 +29,33 @@ function arrayAt(array, index) {
         return null;
     }
     return array.at(index);
+}
+
+/**
+ * copy from @uts/shared
+ */
+var IDENTIFIER;
+(function (IDENTIFIER) {
+    IDENTIFIER["UTSJSONObject"] = "UTSJSONObject";
+    IDENTIFIER["JSON"] = "JSON";
+    IDENTIFIER["UTS"] = "UTS";
+    IDENTIFIER["DEFINE_COMPONENT"] = "defineComponent";
+    IDENTIFIER["VUE"] = "vue";
+    IDENTIFIER["GLOBAL_THIS"] = "globalThis";
+    IDENTIFIER["UTS_TYPE"] = "UTSType";
+    IDENTIFIER["UTS_METADATA"] = "$UTSMetadata$";
+    IDENTIFIER["TEMP_UTS_METADATA"] = "$TempUTSMetadata$";
+    IDENTIFIER["JSON_FIELD"] = "JSON_FIELD";
+})(IDENTIFIER || (IDENTIFIER = {}));
+var UTS_CLASS_METADATA_KIND;
+(function (UTS_CLASS_METADATA_KIND) {
+    UTS_CLASS_METADATA_KIND[UTS_CLASS_METADATA_KIND["CLASS"] = 0] = "CLASS";
+    UTS_CLASS_METADATA_KIND[UTS_CLASS_METADATA_KIND["INTERFACE"] = 1] = "INTERFACE";
+    UTS_CLASS_METADATA_KIND[UTS_CLASS_METADATA_KIND["TYPE"] = 2] = "TYPE";
+})(UTS_CLASS_METADATA_KIND || (UTS_CLASS_METADATA_KIND = {}));
+
+function getType(val) {
+    return Object.prototype.toString.call(val).slice(8, -1).toLowerCase();
 }
 
 // TODO 实现UTSError
