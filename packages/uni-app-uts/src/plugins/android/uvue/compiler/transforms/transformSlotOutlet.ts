@@ -21,7 +21,7 @@ export const transformSlotOutlet: NodeTransform = (node, context) => {
     const { slotName, slotProps } = processSlotOutlet(node, context)
 
     const slotArgs: CallExpression['arguments'] = [
-      context.prefixIdentifiers ? `_ctx.$slots` : `$slots`,
+      context.prefixIdentifiers ? `_ctx.$internalSlots` : `$internalSlots`,
       slotName,
       '{}',
       'undefined',

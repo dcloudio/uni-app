@@ -13144,6 +13144,10 @@ const props$m = {
     type: [Boolean, String],
     default: false
   },
+  showScrollbar: {
+    type: [Boolean, String],
+    default: true
+  },
   upperThreshold: {
     type: [Number, String],
     default: 50
@@ -13225,6 +13229,13 @@ const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
       realScrollY.value ? style += "overflow-y:auto;" : style += "overflow-y:hidden;";
       return style;
     });
+    const scrollBarClassName = computed(() => {
+      let className = "uni-scroll-view";
+      if (props2.showScrollbar === false) {
+        className += " uni-scroll-view-scrollbar-hidden";
+      }
+      return className;
+    });
     return () => {
       const {
         refresherEnabled,
@@ -13244,7 +13255,7 @@ const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
       }, [createVNode("div", {
         "ref": main,
         "style": mainStyle.value,
-        "class": "uni-scroll-view"
+        "class": scrollBarClassName.value
       }, [createVNode("div", {
         "ref": content,
         "class": "uni-scroll-view-content"
@@ -13287,7 +13298,7 @@ const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
         "fill": "none",
         "style": "color: #2bd009",
         "stroke-width": "3"
-      }, null)]) : null])]) : null, refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null], 4) : null, slots.default && slots.default()], 512)], 4)], 512)], 512);
+      }, null)]) : null])]) : null, refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null], 4) : null, slots.default && slots.default()], 512)], 6)], 512)], 512);
     };
   }
 });

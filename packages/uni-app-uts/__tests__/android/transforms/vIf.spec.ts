@@ -159,7 +159,7 @@ describe('compiler: v-if', () => {
     assert(
       `<template v-if="ok"><slot/></template>`,
       `isTrue(_ctx.ok)
-  ? renderSlot(_ctx.$slots, "default", utsMapOf({ key: 0 }))
+  ? renderSlot(_ctx.$internalSlots, "default", utsMapOf({ key: 0 }))
   : createCommentVNode("v-if", true)`
     )
   })
@@ -167,7 +167,7 @@ describe('compiler: v-if', () => {
     assert(
       `<slot v-if="ok"></slot>`,
       `isTrue(_ctx.ok)
-  ? renderSlot(_ctx.$slots, "default", utsMapOf({ key: 0 }))
+  ? renderSlot(_ctx.$internalSlots, "default", utsMapOf({ key: 0 }))
   : createCommentVNode("v-if", true)`
     )
   })
@@ -712,7 +712,11 @@ describe('compiler: v-if', () => {
       expect(codegenNode.consequent).toMatchObject({
         type: NodeTypes.JS_CALL_EXPRESSION,
         callee: RENDER_SLOT,
-        arguments: ['$slots', '"default"', createObjectMatcher({ key: `[0]` })],
+        arguments: [
+          '$internalSlots',
+          '"default"',
+          createObjectMatcher({ key: `[0]` }),
+        ],
       })
       // expect(generate(root, {} as any).code).toMatchSnapshot()
     })
@@ -725,7 +729,11 @@ describe('compiler: v-if', () => {
       expect(codegenNode.consequent).toMatchObject({
         type: NodeTypes.JS_CALL_EXPRESSION,
         callee: RENDER_SLOT,
-        arguments: ['$slots', '"default"', createObjectMatcher({ key: `[0]` })],
+        arguments: [
+          '$internalSlots',
+          '"default"',
+          createObjectMatcher({ key: `[0]` }),
+        ],
       })
       expect(generate(root, {} as any).code).toMatchSnapshot()
     })
