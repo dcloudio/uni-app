@@ -448,7 +448,7 @@ function genComponentsConfigJson(
       class: namespace + normalized + 'Component',
     }
     if (isX && platform === 'app-ios') {
-      options['delegateClass'] = normalized + 'ComponentDelegate'
+      options['delegateClass'] = normalized + 'ElementImpl'
     }
     res.push(options)
   })
