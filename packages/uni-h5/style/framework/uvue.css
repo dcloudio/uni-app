@@ -73,7 +73,7 @@ uni-app uni-list-view {
   flex-grow: 0;
   flex-basis: auto;
   align-items: stretch;
-  align-content: flex-start;
+  align-content: stretch;
   justify-content: flex-start;
   /* 默认情况下，元素不会缩短至小于内容框尺寸，若想改变这一状况，请设置元素的min-width 与 min-height属性。https://developer.mozilla.org/zh-CN/docs/Web/CSS/flex */
   min-height: 0px;
