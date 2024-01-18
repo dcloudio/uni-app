@@ -64,19 +64,34 @@ import {
   WritableComputedOptions as WritableComputedOptionsOrigin,
   computed as computedOrigin,
   effect as effectOrigin,
+  effectScope as effectScopeOrigin,
+  getCurrentScope as getCurrentScopeOrigin,
+  onScopeDispose as onScopeDisposeOrigin,
+  WatchEffect as WatchEffectOrigin,
+  Ref as RefOrigin,
   isReactive as isReactiveOrigin,
   isReadonly as isReadonlyOrigin,
   isRef as isRefOrigin,
   reactive as reactiveOrigin,
   ref as refOrigin,
+  toRef as toRefOrigin,
+  toRefs as toRefsOrigin,
+  toValue as toValueOrigin,
+  triggerRef as triggerRefOrigin,
+  readonly as readonlyOrigin,
   shallowReactive as shallowReactiveOrigin,
   shallowRef as shallowRefOrigin,
+  shallowReadonly as shallowReadonlyOrigin,
   stop as stopOrigin,
   toRaw as toRawOrigin,
   unref as unrefOrigin,
+  customRef as customRefOrigin,
+  isProxy as isProxyOrigin,
   PropType as PropTypeOrigin,
-  SlotsType as SlotsTypeOrigin
-} from '@vue/runtime-core'
+  SlotsType as SlotsTypeOrigin,
+  DebuggerEvent as DebuggerEventOrigin,
+  OnCleanup as OnCleanupOrigin
+} from 'vue'
 
 declare global {
   const VueAppContext: typeof VueAppContextOrigin
@@ -149,21 +164,37 @@ declare global {
   type WatchOptions = WatchOptionsOrigin
   type VueComponentOptions = VueComponentOptionsOrigin
   type ComponentPublicInstance = ComponentPublicInstanceOrigin
+  type EffectScope = EffectScopeOrigin
   const EffectScope: typeof EffectScopeOrigin
   const ReactiveEffect: typeof ReactiveEffectOrigin
   type WritableComputedOptions<T> = WritableComputedOptionsOrigin<T>
   const computed: typeof computedOrigin
   const effect: typeof effectOrigin
+  const effectScope = effectScopeOrigin
+  const getCurrentScope = getCurrentScopeOrigin
+  const onScopeDispose = onScopeDisposeOrigin
+  type WatchEffect = WatchEffectOrigin
+  type Ref<T> = RefOrigin<T>
   const isReactive: typeof isReactiveOrigin
   const isReadonly: typeof isReadonlyOrigin
   const isRef: typeof isRefOrigin
   const reactive: typeof reactiveOrigin
   const ref: typeof refOrigin
+  const toRef: typeof toRefOrigin
+  const toRefs: typeof toRefsOrigin
+  const toValue: typeof toValueOrigin
+  const triggerRef: typeof triggerRefOrigin
+  const readonly: typeof readonlyOrigin
   const shallowReactive: typeof shallowReactiveOrigin
   const shallowRef: typeof shallowRefOrigin
+  const shallowReadonly: typeof shallowReadonlyOrigin
   const stop: typeof stopOrigin
   const toRaw: typeof toRawOrigin
   const unref: typeof unrefOrigin
+  const customRef: typeof customRefOrigin
+  const isProxy: typeof isProxyOrigin
   type PropType<T> = PropTypeOrigin<T>
   type SlotsType<T> = SlotsTypeOrigin<T>
+  type DebuggerEvent = DebuggerEventOrigin
+  type OnCleanup = OnCleanupOrigin
 }
