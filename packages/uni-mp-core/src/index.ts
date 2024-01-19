@@ -23,6 +23,7 @@ export {
   initBehaviors,
   initPropsObserver,
   updateComponentProps,
+  updateMiniProgramComponentProperties,
 } from './runtime/componentOptions'
 export {
   initProps,

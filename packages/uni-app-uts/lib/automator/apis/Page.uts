@@ -99,7 +99,7 @@ export const getElements = (params: GetElementParams, callback: Callback): void 
     const result = [] as UTSJSONObject[]
     elements?.forEach(element => {
       result.push({
-        elementId: element.id,
+        elementId: element.getNodeId(),
         tagName: element.tagName
       })
     })

@@ -1,23 +1,28 @@
+/// <reference types="@dcloudio/uni-app-x/types/native-global" />
+// @ts-expect-error
+import { IUniNativeDocument } from 'io.dcloud.uniapp.dom'
+
+
 // @ts-ignore
-function getPageId(page: BasePage): string {
+function getPageId(page: Page): string {
   return page.$appPage!.pageId
 }
 // @ts-ignore
-function getPagePath(page: BasePage): string {
+function getPagePath(page: Page): string {
   return page.route
 }
 // @ts-ignore
-function getPageQuery(page: BasePage): Map<string, string | null> {
-  return page.options
+function getPageQuery(page: Page): UTSJSONObject {
+  return map2Object(page.options as Map<string, any | null>)
 }
 // @ts-ignore
-function getPageById(id: string): BasePage | null {
+function getPageById(id: string): Page | null {
   // @ts-ignore
   const pages = getCurrentPages()
   // @ts-ignore
-  let result: BasePage | null = null
+  let result: Page | null = null
   // @ts-ignore
-  pages.forEach((page: BasePage) => {
+  pages.forEach((page: Page) => {
     if (getPageId(page) == id) {
       result = page
     }
@@ -25,25 +30,26 @@ function getPageById(id: string): BasePage | null {
   return result
 }
 // @ts-ignore
-export function getPageVm(id: string): BasePage | null {
+export function getPageVm(id: string): Page | null {
   return getPageById(id)
 }
 
 export function pageGetData(
   // @ts-ignore
-  vm: BasePage,
-): Map<string, any | null> {
+  vm: Page,
+  // @ts-ignore
+): UTSJSONObject {
   // TODO: path 目前无法处理类型问题，暂由服务端处理
-  return vm.$data
+  return map2Object(vm.$data)
 }
 // @ts-ignore
-export function pageSetData(vm: BasePage, data: Map<string, any | null>): void {
+export function pageSetData(vm: Page, data: Map<string, any | null>): void {
   data.forEach((value: any | null, key: string) => {
     vm.$data.set(key, value)
   })
 }
 // @ts-ignore
-export function parsePage(page: BasePage): UTSJSONObject {
+export function parsePage(page: Page): UTSJSONObject {
   return {
     id: getPageId(page),
     path: getPagePath(page),
@@ -109,7 +115,7 @@ export function getElementByIdOrNodeId(
   elementId: string | null,
   nodeId: number | null,
   callback: (result: any | null, error: any | null) => void
-): Element | null {
+): UniElement | null {
   if (nodeId != null) {
     return getComponentDomByNodeId(pageId, nodeId, callback)
   } else if (elementId != null) {
@@ -121,7 +127,7 @@ export function getComponentDomByNodeId(
   pageId: string,
   nodeId: number,
   callback: (result: any | null, error: any | null) => void
-): Element | null {
+): UniElement | null {
   const component = getComponentVmByNodeId(pageId, nodeId, callback)
   if (component == null) {
     return null
@@ -133,7 +139,7 @@ export function getElementByNodeIdOrElementId(
   nodeId: number | null,
   elementId: string | null,
   callback: (result: any | null, error: any | null) => void
-): Element | null {
+): UniElement | null {
   const page = getPageVm(pageId)
   if (page == null) {
     callback(null, { errMsg: `Page[${pageId}] not exists` })
@@ -150,14 +156,14 @@ export function getElementById(
   pageId: string,
   elementId: string,
   callback: (result: any | null, error: any | null) => void
-): Element | null {
+): UniElement | null {
   const page = getPageVm(pageId)
   if (page == null) {
     callback(null, { errMsg: `Page[${pageId}] not exists` })
     return null
   }
   const document = page.$appPage!.document
-  const element = document.getElementById(elementId)
+  const element = (document as IUniNativeDocument).getNativeElementById(elementId)
   if (element == null) {
     callback(null, { errMsg: `element[${elementId}] not exists` })
     return null
@@ -187,7 +193,7 @@ export function getValidComponentsOrNodes(
       })
     } else {
       list.push({
-        elementId: vnode.el!.id,
+        elementId: (vnode.el as UniElementImpl).id,
         tagName: vnode.el!.tagName,
       })
     }
@@ -197,7 +203,7 @@ export function getValidComponentsOrNodes(
   }
   // @ts-ignore
   if (vnode.children !== null && isArray(vnode.children)) {
-    ;(vnode.children as any[]).forEach((child) => {
+    ; (vnode.children as any[]).forEach((child) => {
       // @ts-ignore
       if (child instanceof VNode) {
         getValidComponentsOrNodes(child, selector, list, getAll)
@@ -225,13 +231,13 @@ function isValidComponentOrNode(vnode: VNode, selector: string): boolean {
     } else if (selector.startsWith('#')) {
       return node.getAttribute('id') == selector.substring(1)
     }
-    return node.tagName?.toUpperCase() == selector.toUpperCase()
+    return node.tagName.toUpperCase() == selector.toUpperCase()
   }
   return false
 }
 
 export function getValidNodes(
-  node: Element | null,
+  node: UniElement | null,
   selector: string,
   // @ts-ignore
   list: UTSJSONObject[],
@@ -242,7 +248,7 @@ export function getValidNodes(
   }
   if (isValidNode(node, selector)) {
     list.push({
-      elementId: node.id,
+      elementId: node.getNodeId(),
       tagName: node.tagName,
     })
     if (!getAll) {
@@ -250,27 +256,27 @@ export function getValidNodes(
     }
   }
   // @ts-ignore
-  node.childNodes.forEach((child: Element) => {
+  node.childNodes.forEach((child: UniElement) => {
     getValidNodes(child, selector, list, getAll)
   })
 }
-function isValidNode(node: Element, selector: string): boolean {
+function isValidNode(node: UniElement, selector: string): boolean {
   if (selector.startsWith('.')) {
     // @ts-ignore
     return node.classList.includes(selector.substring(1))
   } else if (selector.startsWith('#')) {
     return node.getAttribute('id') == selector.substring(1)
   }
-  return node.tagName?.toUpperCase() == selector.toUpperCase()
+  return node.tagName.toUpperCase() == selector.toUpperCase()
 }
 
 export function componentGetData(
   // @ts-ignore
   vm: ComponentPublicInstance,
-): Map<string, any | null> {
-  // TODO: path 目前无法处理类型问题，暂由服务端处理
   // @ts-ignore
-  return vm.$data
+): UTSJSONObject {
+  // TODO: path 目前无法处理类型问题，暂由服务端处理
+  return map2Object(vm.$data)
 }
 export function componentSetData(
   // @ts-ignore
@@ -282,10 +288,10 @@ export function componentSetData(
     vm.$data.set(key, value)
   })
 }
-export function getChildrenText(node: Element): string {
+export function getChildrenText(node: UniElement): string {
   let result = ''
   // @ts-ignore
-  node.childNodes.forEach((child: Element) => {
+  node.childNodes.forEach((child: UniElement) => {
     if (child.tagName == 'TEXT' || child.tagName == 'UNI-BUTTON-ELEMENT') {
       result += child.getAttribute('value')
     } else {
@@ -302,4 +308,14 @@ export function toCamelCase(str: string): string {
     wordList[i] = word.at(0)!.toUpperCase() + word.substring(1)
   }
   return wordList.join('')
+}
+
+// 不处理用户自定义数据的类型，因为可能存在指定类型，无法处理
+// @ts-ignore
+function map2Object(data: Map<string, any | null>): UTSJSONObject {
+  const result = {}
+  data.forEach((value: any | null, key: string) => {
+    result[key] = value
+  })
+  return result
 }

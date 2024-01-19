@@ -184,9 +184,9 @@ function wrapResolve(
 export function cssPlugin(
   config: ResolvedConfig,
   options: {
-    isAppX: boolean
+    isAndroidX: boolean
     getDescriptor?(filename: string): SFCDescriptor | undefined
-  } = { isAppX: false }
+  } = { isAndroidX: false }
 ): Plugin {
   let server: ViteDevServer
   let moduleCache: Map<string, Record<string, string>>
@@ -231,7 +231,7 @@ export function cssPlugin(
           return fileToUrl(
             resolved,
             config,
-            options?.isAppX
+            options?.isAndroidX
               ? ({
                   emitFile(emittedFile: EmittedAsset) {
                     // 直接写入目标目录

@@ -7,9 +7,21 @@ import {
   createMemoryHistory,
 } from 'vue-router'
 import { getCurrentPages, normalizeRouteKey, removePage } from '../setup/page'
+//#if _X_
+import { hideActionSheet } from '../../service/api/ui/popup/showActionSheet'
+import { hideModal } from '../../service/api/ui/popup/showModal'
+//#endif
 
 export function initRouter(app: App) {
   const router = createRouter(createRouterOptions())
+  //#if _X_
+  router.beforeEach((to, from) => {
+    hideActionSheet()
+    hideModal()
+    uni.hideToast()
+    uni.hideLoading()
+  })
+  //#endif
   ;(app as any).router = router // 挂在app上，方便ssr获取
   app.use(router)
 }

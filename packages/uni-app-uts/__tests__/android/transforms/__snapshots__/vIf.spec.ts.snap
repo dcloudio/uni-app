@@ -64,6 +64,6 @@ exports[`compiler: v-if codegen v-if + v-else-if 1`] = `
 
 exports[`compiler: v-if codegen v-if on <slot/> 1`] = `
 "isTrue(ok)
-  ? renderSlot($slots, "default", utsMapOf({ key: 0 }))
+  ? renderSlot($internalSlots, "default", utsMapOf({ key: 0 }))
   : createCommentVNode("v-if", true)"
 `;

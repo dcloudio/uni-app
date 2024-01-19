@@ -127,6 +127,10 @@ export function normalizePagesJson(
       delete pagesJson.tabBar
     }
   }
+
+  // 过滤平台page
+  filterPlatformPages(platform, pagesJson)
+
   // 缓存页面列表
   pagesCacheSet.clear()
   pagesJson.pages.forEach((page) => pagesCacheSet.add(page.path))
@@ -542,3 +546,75 @@ function parseSubpackagesRoot(inputDir: string, platform: UniApp.PLATFORM) {
 }
 
 export const parseSubpackagesRootOnce = once(parseSubpackagesRoot)
+
+let isInvalidPagesWarned = false
+export function filterPlatformPages(
+  platform: UniApp.PLATFORM,
+  pagesJson: UniApp.PagesJson
+) {
+  const invalidPages: string[] = []
+  pagesJson.pages = pagesJson.pages.filter(({ path }) => {
+    if (isPlatformPage(platform, path)) {
+      return true
+    }
+    invalidPages.push(path)
+    return false
+  })
+  if (pagesJson.subPackages) {
+    pagesJson.subPackages.forEach((subPackage) => {
+      if (subPackage.pages) {
+        subPackage.pages = subPackage.pages.filter(({ path }) => {
+          const pagePath = subPackage.root + '/' + path
+          if (isPlatformPage(platform, pagePath)) {
+            return true
+          }
+          invalidPages.push(pagePath)
+          return false
+        })
+      }
+    })
+  }
+  if (pagesJson.subpackages) {
+    pagesJson.subpackages.forEach((subPackage) => {
+      if (subPackage.pages) {
+        subPackage.pages = subPackage.pages.filter(({ path }) => {
+          const pagePath = subPackage.root + '/' + path
+          if (isPlatformPage(platform, pagePath)) {
+            return true
+          }
+          invalidPages.push(pagePath)
+          return false
+        })
+      }
+    })
+  }
+  // 目前仅启动的时候警告一次，该方法可能会被调用很多次
+  if (invalidPages.length) {
+    if (!isInvalidPagesWarned) {
+      isInvalidPagesWarned = true
+      console.log(
+        `已忽略页面：${invalidPages.join(
+          '、'
+        )}。详见：https://uniapp.dcloud.net.cn/tutorial/platform.html#platforms`
+      )
+    }
+  }
+}
+
+function isPlatformPage(platform: UniApp.PLATFORM, pagePath: string) {
+  if (pagePath.startsWith('platforms/')) {
+    if (platform === 'app' || platform === 'app-plus') {
+      return (
+        pagePath.startsWith('platforms/app/') ||
+        pagePath.startsWith('platforms/app-plus/')
+      )
+    } else if (platform === 'h5' || platform === 'web') {
+      return (
+        pagePath.startsWith('platforms/h5/') ||
+        pagePath.startsWith('platforms/web/')
+      )
+    }
+    return pagePath.startsWith('platforms/' + platform + '/')
+  }
+  return true
+}

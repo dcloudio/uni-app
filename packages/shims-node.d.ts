@@ -58,5 +58,17 @@ declare namespace NodeJS {
     UNI_APP_X_PAGE_COUNT: string
     UNI_APP_X_TSC?: string
     UNI_APP_X_SINGLE_THREAD?: string
+    UNI_APP_X_SETUP?: string
   }
+}
+
+declare module 'estree-walker' {
+  export function walk<T>(
+    root: T,
+    options: {
+      enter?: (node: T, parent: T | undefined) => any
+      leave?: (node: T, parent: T | undefined) => any
+      exit?: (node: T) => any
+    } & ThisType<{ skip: () => void }>
+  )
 }

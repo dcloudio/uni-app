@@ -62,7 +62,7 @@ function uniCloudPlugin() {
 }
 const initUniCloudWarningOnce = (0, uni_shared_1.once)(() => {
     uniCloudSpaces.length &&
-        console.warn('当前项目使用了uniCloud，为避免云函数调用跨域问题，建议在HBuilderX内置浏览器里调试，如使用外部浏览器需处理跨域，详见：https://uniapp.dcloud.net.cn/uniCloud/publish.html#useinh5');
+        console.warn('当前项目使用了uniCloud，为避免云函数调用跨域问题，建议在HBuilderX内置浏览器里调试。如使用外部浏览器需处理跨域，请将访问页面对应的IP或域名配置在要访问的云函数所在的服务空间的跨域配置内，详见：https://uniapp.dcloud.net.cn/uniCloud/publish.html#useinh5');
 });
 function checkProjectUniCloudDir() {
     return !!(0, fast_glob_1.sync)(['uniCloud-aliyun', 'uniCloud-tcb', 'uniCloud-alipay'], {

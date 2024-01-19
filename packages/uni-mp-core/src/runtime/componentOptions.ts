@@ -43,11 +43,14 @@ export function initPropsObserver(componentOptions: MPComponentOptions) {
   }
 }
 
-function updateMiniProgramComponentProperties(
+export function updateMiniProgramComponentProperties(
   up: string,
   mpInstance: MPComponentInstance
 ) {
-  const prevProps = mpInstance.properties
+  const prevProps =
+    __PLATFORM__ === 'mp-alipay'
+      ? (mpInstance.props as unknown as Data)
+      : mpInstance.properties
   const nextProps = findComponentPropsData(up) || {}
   if (hasPropsChanged(prevProps, nextProps, false)) {
     mpInstance.setData(nextProps)

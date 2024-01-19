@@ -26,3 +26,11 @@ export const camelize = cacheStringFunction((str: string): string => {
 export const capitalize = cacheStringFunction(
   (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
 )
+
+const hyphenateRE = /\B([A-Z])/g
+/**
+ * @private
+ */
+export const hyphenate = cacheStringFunction((str: string) =>
+  str.replace(hyphenateRE, '-$1').toLowerCase()
+)

@@ -12,6 +12,7 @@ import {
   defineBuiltInComponent,
   ResizeSensor,
   useAttrs,
+  UniElement,
 } from '@dcloudio/uni-components'
 import { getRealPath } from '@dcloudio/uni-platform'
 import {
@@ -38,10 +39,17 @@ const props = {
 
 type RootRef = Ref<HTMLElement | null>
 
+class UniWebViewElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   inheritAttrs: false,
   name: 'WebView',
   props,
+  //#if _X_ && !_NODE_JS_
+  rootElement: {
+    name: 'uni-web-view',
+    class: UniWebViewElement,
+  },
+  //#endif
   setup(props) {
     Invoke()
     const rootRef: RootRef = ref(null)
@@ -88,6 +96,13 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     onBeforeUnmount(() => {
       props.fullscreen && document.body.removeChild(iframeRef.value!)
     })
+
+    //#if _X_ && !_NODE_JS_
+    onMounted(() => {
+      const rootElement = rootRef.value as UniWebViewElement
+      rootElement.attachVmProps(props)
+    })
+    //#endif
 
     return () => {
       return (

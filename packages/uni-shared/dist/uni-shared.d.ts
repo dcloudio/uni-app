@@ -257,7 +257,7 @@ Partial<UniNodeJSON | UniNodeJSONMinify>?
 
 export declare const invokeArrayFns: (fns: Function[], arg?: any) => any;
 
-export declare const invokeCreateErrorHandler: (app: App, createErrorHandler: (app: App) => App['config']['errorHandler']) => ((err: unknown, instance: ComponentPublicInstance_2<    {}, {}, {}, {}, {}, {}, {}, {}, false, ComponentOptionsBase_2<any, any, any, any, any, any, any, any, any, {}, {}, string>, {}> | null, info: string) => void) | undefined;
+export declare const invokeCreateErrorHandler: (app: App, createErrorHandler: (app: App) => App['config']['errorHandler']) => ((err: unknown, instance: ComponentPublicInstance_2<    {}, {}, {}, {}, {}, {}, {}, {}, false, ComponentOptionsBase_2<any, any, any, any, any, any, any, any, any, {}, {}, string, {}>, {}, {}> | null, info: string) => void) | undefined;
 
 export declare function invokeCreateVueAppHook(app: App): void;
 
@@ -284,6 +284,8 @@ export declare function isRootHook(name: string): boolean;
 export declare function isRootImmediateHook(name: string): boolean;
 
 export declare function isUniLifecycleHook(name: string, value: unknown, checkType?: boolean): boolean;
+
+export declare function isUniXElement(name: string): boolean;
 
 export declare interface IUniPageNode {
     pageId: number;
@@ -625,7 +627,7 @@ export declare function resolveOwnerEl(instance: ComponentInternalInstance, mult
 
 export declare function resolveOwnerEl(instance: ComponentInternalInstance): RendererNode | null;
 
-export declare function resolveOwnerVm(vm: ComponentInternalInstance): ComponentPublicInstance<{}, {}, {}, {}, {}, {}, {}, {}, false, ComponentOptionsBase<any, any, any, any, any, any, any, any, any, {}, {}, string>, {}> | undefined;
+export declare function resolveOwnerVm(vm: ComponentInternalInstance): ComponentPublicInstance<{}, {}, {}, {}, {}, {}, {}, {}, false, ComponentOptionsBase<any, any, any, any, any, any, any, any, any, {}, {}, string, {}>, {}, {}> | undefined;
 
 export declare const RESPONSIVE_MIN_WIDTH = 768;
 

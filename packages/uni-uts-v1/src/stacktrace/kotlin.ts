@@ -22,6 +22,9 @@ interface GenerateCodeFrameOptions {
 
 export function hbuilderFormatter(m: MessageSourceLocation) {
   const msgs: string[] = []
+  if (m.type === 'error' || m.type === 'exception') {
+    m.message = formatKotlinError(m.message, [], compileFormatters)
+  }
   let msg = m.type + ': ' + m.message
   if (m.type === 'warning') {
     // 忽略部分警告
@@ -214,7 +217,8 @@ export function parseUTSKotlinRuntimeStacktrace(
       const color = options.logType
         ? COLORS[options.logType as string] || ''
         : ''
-      let error = 'error: ' + formatKotlinError(res[0], codes)
+      let error =
+        'error: ' + formatKotlinError(res[0], codes, runtimeFormatters)
       if (color) {
         error = color + error + color
       }
@@ -278,38 +282,65 @@ interface Formatter {
   format(error: string, codes: string[]): string | undefined
 }
 
-const formatters: Formatter[] = [
-  {
-    format(error, codes) {
-      if (error.includes('Failed resolution of: L')) {
-        let isUniExtApi =
-          error.includes('uts/sdk/modules/DCloudUni') ||
-          error.includes('io/dcloud/uniapp/extapi/')
-        let isUniCloudApi =
-          !isUniExtApi && error.includes('io/dcloud/unicloud/UniCloud')
-        if (isUniExtApi || isUniCloudApi) {
-          let api = ''
-          // 第一步先遍历查找^^^^^的索引
-          const codeFrames = codes[codes.length - 1].split(splitRE)
-          const index = codeFrames.findIndex((frame) => frame.includes('^^^^^'))
-          if (index > 0) {
-            // 第二步，取前一条记录，查找uni.开头的api
-            api = findApi(
-              codeFrames[index - 1],
-              isUniCloudApi ? UNI_CLOUD_API_RE : UNI_API_RE
-            )
-          }
-          if (api) {
-            api = `api ${api}`
-          } else {
-            api = `您使用到的api`
-          }
-          return `[EXCEPTION] 当前运行的基座未包含${api}，请重新打包自定义基座再运行。`
+const TYPE_MISMATCH_RE =
+  /Type mismatch: inferred type is (.*) but (.*) was expected/
+
+function normalizeType(type: string) {
+  if (type.endsWith('?')) {
+    let nonOptional = type.slice(0, -1)
+    if (nonOptional.startsWith('(') && nonOptional.endsWith(')')) {
+      nonOptional = nonOptional.slice(1, -1)
+    }
+    return `${type}（可为空的${nonOptional}）`
+  }
+  return type
+}
+
+const extApiErrorFormatter: Formatter = {
+  format(error, codes) {
+    if (error.includes('Failed resolution of: L')) {
+      let isUniExtApi =
+        error.includes('uts/sdk/modules/DCloudUni') ||
+        error.includes('io/dcloud/uniapp/extapi/')
+      let isUniCloudApi =
+        !isUniExtApi && error.includes('io/dcloud/unicloud/UniCloud')
+      if (isUniExtApi || isUniCloudApi) {
+        let api = ''
+        // 第一步先遍历查找^^^^^的索引
+        const codeFrames = codes[codes.length - 1].split(splitRE)
+        const index = codeFrames.findIndex((frame) => frame.includes('^^^^^'))
+        if (index > 0) {
+          // 第二步，取前一条记录，查找uni.开头的api
+          api = findApi(
+            codeFrames[index - 1],
+            isUniCloudApi ? UNI_CLOUD_API_RE : UNI_API_RE
+          )
         }
+        if (api) {
+          api = `api ${api}`
+        } else {
+          api = `您使用到的api`
+        }
+        return `[EXCEPTION] 当前运行的基座未包含${api}，请重新打包自定义基座再运行。`
       }
-    },
+    }
   },
-]
+}
+const typeMismatchErrorFormatter: Formatter = {
+  format(error, _) {
+    const matches = error.match(TYPE_MISMATCH_RE)
+    if (matches) {
+      const [, inferredType, expectedType] = matches
+      return `类型不匹配: 推断类型是${normalizeType(
+        inferredType
+      )}，但预期的是${normalizeType(expectedType)}。`
+    }
+  },
+}
+
+const compileFormatters: Formatter[] = [typeMismatchErrorFormatter]
+
+const runtimeFormatters: Formatter[] = [extApiErrorFormatter]
 
 const UNI_API_RE = /(uni\.\w+)/
 const UNI_CLOUD_API_RE = /(uniCloud\.\w+)/
@@ -321,7 +352,11 @@ function findApi(msg: string, re: RegExp) {
   return ''
 }
 
-function formatKotlinError(error: string, codes: string[]): string {
+function formatKotlinError(
+  error: string,
+  codes: string[],
+  formatters: Formatter[]
+): string {
   for (const formatter of formatters) {
     const err = formatter.format(error, codes)
     if (err) {

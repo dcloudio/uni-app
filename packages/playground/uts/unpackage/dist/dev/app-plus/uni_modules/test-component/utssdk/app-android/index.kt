@@ -1,3 +1,4 @@
+@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
 package uts.modules.modules.testComponent;
 import io.dcloud.uts.*;
 import io.dcloud.uts.Map;

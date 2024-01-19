@@ -5,7 +5,9 @@ describe('compiler:codegen', () => {
     assert(`<view/>`, `createElementVNode("view")`)
     assert(
       `<view style="width:100px;height:100px;"/>`,
-      `createElementVNode("view", utsMapOf({ style: "width:100px;height:100px;" }))`
+      `createElementVNode("view", utsMapOf({
+  style: normalizeStyle(utsMapOf({"width":"100px","height":"100px"}))
+}), null, 4 /* STYLE */)`
     )
     assert(
       `<text>{{msg}}</text>`,
@@ -34,20 +36,18 @@ describe('compiler:codegen', () => {
     assert(
       `<view/>`,
       `
-function PagesIndexIndexRender(): VNode | null {\nconst _ctx = this\nconst _cache = this.$.renderCache\n  return createElementVNode("view")\n}`,
+function PagesIndexIndexRender(): any | null {\nconst _ctx = this\nconst _cache = this.$.renderCache\n  return createElementVNode("view")\n}`,
       {
-        targetLanguage: 'kotlin',
-        mode: 'function',
+        mode: 'module',
       }
     )
   })
   test(`UTSComponents`, () => {
     assert(
       `<view><uts-hello/><uts-hello/></view>`,
-      `import { UtsHelloElement } from 'uts.sdk.modules.utsHello';\nfunction PagesIndexIndexRender(): VNode | null {\nconst _ctx = this\nconst _cache = this.$.renderCache\n  return createElementVNode("view", null, [\n    createElementVNode(uts.sdk.modules.utsHello.UtsHelloComponent.name),\n    createElementVNode(uts.sdk.modules.utsHello.UtsHelloComponent.name)\n  ])\n}`,
+      `import { UtsHelloElement } from 'uts.sdk.modules.utsHello';\nfunction PagesIndexIndexRender(): any | null {\nconst _ctx = this\nconst _cache = this.$.renderCache\n  return createElementVNode("view", null, [\n    createElementVNode(uts.sdk.modules.utsHello.UtsHelloComponent.name),\n    createElementVNode(uts.sdk.modules.utsHello.UtsHelloComponent.name)\n  ])\n}`,
       {
-        targetLanguage: 'kotlin',
-        mode: 'function',
+        mode: 'module',
         parseUTSComponent(name) {
           if (name === 'uts-hello') {
             return {
@@ -61,10 +61,9 @@ function PagesIndexIndexRender(): VNode | null {\nconst _ctx = this\nconst _cach
     )
     assert(
       `<view><uts-hello/><uts-hello/><uts-hello1/></view>`,
-      `import { UtsHelloElement } from 'uts.sdk.modules.utsHello';import { UtsHello1Element } from 'uts.sdk.modules.utsHello';\nfunction PagesIndexIndexRender(): VNode | null {\nconst _ctx = this\nconst _cache = this.$.renderCache\n  return createElementVNode("view", null, [\n    createElementVNode(uts.sdk.modules.utsHello.UtsHelloComponent.name),\n    createElementVNode(uts.sdk.modules.utsHello.UtsHelloComponent.name),\n    createElementVNode(uts.sdk.modules.utsHello.UtsHello1Component.name)\n  ])\n}`,
+      `import { UtsHelloElement } from 'uts.sdk.modules.utsHello';import { UtsHello1Element } from 'uts.sdk.modules.utsHello';\nfunction PagesIndexIndexRender(): any | null {\nconst _ctx = this\nconst _cache = this.$.renderCache\n  return createElementVNode("view", null, [\n    createElementVNode(uts.sdk.modules.utsHello.UtsHelloComponent.name),\n    createElementVNode(uts.sdk.modules.utsHello.UtsHelloComponent.name),\n    createElementVNode(uts.sdk.modules.utsHello.UtsHello1Component.name)\n  ])\n}`,
       {
-        targetLanguage: 'kotlin',
-        mode: 'function',
+        mode: 'module',
         parseUTSComponent(name) {
           if (name === 'uts-hello') {
             return {
@@ -90,7 +89,7 @@ function PagesIndexIndexRender(): VNode | null {\nconst _ctx = this\nconst _cach
 import _easycom_custom from '@/components/custom/custom.vue'
 import _easycom_custom1 from '@/components/custom1/custom1.vue'
 import _easycom_index from '@/components/index/index.vue'
-function PagesIndexIndexRender(): VNode | null {
+function PagesIndexIndexRender(): any | null {
 const _ctx = this
 const _cache = this.$.renderCache
 const _component_custom = resolveEasyComponent("custom",_easycom_custom)
@@ -107,8 +106,7 @@ const _component_index1 = resolveComponent("index1")
   ])
 }`,
       {
-        targetLanguage: 'kotlin',
-        mode: 'function',
+        mode: 'module',
         matchEasyCom(tag) {
           if (tag.startsWith('custom') || tag === 'index') {
             return `@/components/${tag}/${tag}.vue`
@@ -119,7 +117,7 @@ const _component_index1 = resolveComponent("index1")
     assert(
       `<index/>`,
       `
-function PagesIndexIndexRender(): VNode | null {
+function PagesIndexIndexRender(): any | null {
 const _ctx = this
 const _cache = this.$.renderCache
 const _component_index = resolveComponent("index", true)
@@ -127,8 +125,7 @@ const _component_index = resolveComponent("index", true)
   return createVNode(_component_index)
 }`,
       {
-        targetLanguage: 'kotlin',
-        mode: 'function',
+        mode: 'module',
       }
     )
   })
@@ -139,7 +136,7 @@ const _component_index = resolveComponent("index", true)
 import _easycom_custom from '@/components/custom/custom.vue'
 import _easycom_custom1 from '@/components/custom1/custom1.vue'
 import _easycom_index from '@/components/index/index.vue'
-function PagesIndexIndexRender(): VNode | null {
+function PagesIndexIndexRender(): any | null {
 const _ctx = this
 const _cache = this.$.renderCache
 const _component_custom = resolveEasyComponent("custom",_easycom_custom)
@@ -158,8 +155,7 @@ const _component_index1 = resolveComponent("index1")
   ])
 }`,
       {
-        targetLanguage: 'kotlin',
-        mode: 'function',
+        mode: 'module',
         parseUTSComponent(name) {
           if (name === 'uts-hello') {
             return {
@@ -183,14 +179,13 @@ const _component_index1 = resolveComponent("index1")
       `
 import _imports_0 from './logo.png'
 
-function PagesIndexIndexRender(): VNode | null {
+function PagesIndexIndexRender(): any | null {
 const _ctx = this
 const _cache = this.$.renderCache
   return createElementVNode(\"image\", utsMapOf({ src: _imports_0 }))
 }`,
       {
-        targetLanguage: 'kotlin',
-        mode: 'function',
+        mode: 'module',
       }
     )
   })

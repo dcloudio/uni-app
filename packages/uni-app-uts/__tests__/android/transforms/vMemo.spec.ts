@@ -2,7 +2,7 @@ import { compile as baseCompile } from '../../../src/plugins/android/uvue/compil
 describe('compiler: v-memo transform', () => {
   function compile(content: string) {
     return baseCompile(`<view>${content}</view>`, {
-      mode: 'function',
+      mode: 'module',
       prefixIdentifiers: true,
     }).code
   }
@@ -10,7 +10,7 @@ describe('compiler: v-memo transform', () => {
   test('on root element', () => {
     expect(
       baseCompile(`<view v-memo="[x]"></view>`, {
-        mode: 'function',
+        mode: 'module',
         prefixIdentifiers: true,
       }).code
     ).toMatchSnapshot()

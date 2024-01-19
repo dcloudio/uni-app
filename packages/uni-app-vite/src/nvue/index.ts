@@ -3,9 +3,9 @@ import {
   uniHBuilderXConsolePlugin,
   uniViteInjectPlugin,
   UNI_EASYCOM_EXCLUDE,
+  uniEasycomPlugin,
 } from '@dcloudio/uni-cli-shared'
 
-import { uniEasycomPlugin } from '../plugins/easycom'
 import { uniManifestJsonPlugin } from '../plugins/manifestJson'
 import { uniStatsPlugin } from '../plugins/stats'
 import { uniTemplatePlugin } from '../plugins/template'

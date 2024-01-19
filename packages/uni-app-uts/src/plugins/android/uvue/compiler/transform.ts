@@ -19,7 +19,7 @@ import {
   helperNameMap,
   isSlotOutlet,
   isVSlot,
-  makeBlock,
+  convertToBlock,
   createVNodeCall,
 } from '@vue/compiler-core'
 import {
@@ -30,6 +30,7 @@ import {
   isString,
   PatchFlags,
   PatchFlagNames,
+  EMPTY_OBJ,
 } from '@vue/shared'
 import { defaultOnError, defaultOnWarn } from './errors'
 import { TransformOptions } from './options'
@@ -115,14 +116,18 @@ export interface TransformContext
 export function createTransformContext(
   root: RootNode,
   {
+    mode = 'default',
     rootDir = '',
     targetLanguage = 'kotlin',
     filename = '',
-    prefixIdentifiers = false,
+    cacheHandlers = false,
+    prefixIdentifiers = mode === 'module',
     nodeTransforms = [],
     directiveTransforms = {},
     scopeId = null,
     slotted = true,
+    bindingMetadata = EMPTY_OBJ,
+    inline = false,
     isBuiltInComponent = NOOP,
     isCustomElement = NOOP,
     onError = defaultOnError,
@@ -132,11 +137,14 @@ export function createTransformContext(
   const nameMatch = filename.replace(/\?.*$/, '').match(/([^/\\]+)\.\w+$/)
   const context: TransformContext = {
     // options
+    mode,
     rootDir,
     targetLanguage,
     selfName: nameMatch && capitalize(camelize(nameMatch[1])),
+    cacheHandlers,
     prefixIdentifiers,
-    bindingMetadata: {},
+    bindingMetadata,
+    inline,
     nodeTransforms,
     directiveTransforms,
     elements: new Set(),
@@ -307,7 +315,7 @@ function createRootCodegen(root: RootNode, context: TransformContext) {
       // SimpleExpressionNode
       const codegenNode = child.codegenNode
       if (codegenNode.type === NodeTypes.VNODE_CALL) {
-        makeBlock(codegenNode, context as any)
+        convertToBlock(codegenNode, context as any)
       }
       root.codegenNode = codegenNode
     } else {

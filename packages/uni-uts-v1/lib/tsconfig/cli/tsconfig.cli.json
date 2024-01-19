@@ -1,0 +1,7 @@
+{
+  "extends": "../tsconfig.vue.json",
+  "compilerOptions": {
+    "noImplicitAny": false,
+    "lib": ["ESNext"]
+  }
+}

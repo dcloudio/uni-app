@@ -97,7 +97,7 @@ function formatH5Log(type, filename, ...args) {
 }
 
 function resolveEasycom(component, easycom) {
-    return shared.isString(component) ? easycom : component;
+    return typeof component === 'string' ? easycom : component;
 }
 
 /// <reference types="@dcloudio/types" />

@@ -7,6 +7,7 @@ import { COMPONENT_PREFIX, isBuiltInComponent } from '@dcloudio/uni-shared'
 import {
   H5_COMPONENTS_STYLE_PATH,
   BASE_COMPONENTS_STYLE_PATH,
+  X_BASE_COMPONENTS_STYLE_PATH,
   COMPONENT_DEPS_CSS,
   parseVueRequest,
   buildInCssSet,
@@ -19,6 +20,7 @@ import {
 
 const H5_COMPONENTS_PATH = '@dcloudio/uni-h5'
 
+const xBaseComponents = ['slider', 'switch']
 const baseComponents = [
   'audio',
   'button',
@@ -133,7 +135,12 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
 function resolveBuiltInCssImport(name: string) {
   const cssImports: string[] = []
   if (baseComponents.includes(name)) {
-    cssImports.push(BASE_COMPONENTS_STYLE_PATH + name + '.css')
+    const isX = process.env.UNI_APP_X === 'true'
+    if (isX && xBaseComponents.includes(name)) {
+      cssImports.push(X_BASE_COMPONENTS_STYLE_PATH + name + '.css')
+    } else {
+      cssImports.push(BASE_COMPONENTS_STYLE_PATH + name + '.css')
+    }
   } else {
     cssImports.push(H5_COMPONENTS_STYLE_PATH + name + '.css')
   }

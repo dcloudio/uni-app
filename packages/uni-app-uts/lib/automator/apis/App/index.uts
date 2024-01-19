@@ -15,7 +15,7 @@ export const getPageStack = (callback: Callback): void => {
   callback(
     {
       // @ts-ignore
-      pageStack: getCurrentPages().map((page: BasePage): UTSJSONObject => {
+      pageStack: getCurrentPages().map((page: Page): UTSJSONObject => {
         return parsePage(page)
       }),
     },
@@ -27,7 +27,7 @@ export type GetCurrentPageParams = {
   callback: (result: UTSJSONObject | null, error: any | null) => void
 }
 // @ts-ignore
-function _getCurrentPage(): BasePage | null {
+function _getCurrentPage(): Page | null {
   // @ts-ignore
   const pages = getCurrentPages()
   return pages.length > 0 ? pages[pages.length - 1] : null
@@ -302,7 +302,7 @@ export const callUniMethod = (
       // @ts-ignore
       uni.showActionSheet({
         title: _arg['title'] != null ? (_arg['title'] as string) : null,
-        // @ts-ignore
+        // @ts-expect-error
         itemList: JSON.parse<string[]>(JSON.stringify(_arg['itemList']))!,
         itemColor:
           _arg['itemColor'] != null ? (_arg['itemColor'] as string) : null,
@@ -428,6 +428,8 @@ export type CaptureScreenshotParams = {
   id?: string | null
   fullPage?: boolean | null
   path?: string | null
+  offsetX?: string | null
+  offsetY?: string | null
 }
 export const captureScreenshot = (
   params: CaptureScreenshotParams,
@@ -437,6 +439,8 @@ export const captureScreenshot = (
   if (currentPage != null) {
     currentPage.$viewToTempFilePath({
       id: params.fullPage == true ? null : params.id,
+      offsetX: params.offsetX !== null ? params.offsetX : '0',
+      offsetY: params.offsetY !== null ? params.offsetY : '0',
       wholeContent: params.fullPage == true,
       path: params.path,
       success: (res) => {

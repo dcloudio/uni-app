@@ -143,6 +143,9 @@ function isBuiltInComponent(tag) {
 function isH5CustomElement(tag) {
     return TAGS.indexOf(tag) !== -1 || BUILT_IN_TAGS.indexOf(tag) !== -1;
 }
+function isUniXElement(name) {
+    return /^I?Uni.*Element(?:Impl)?$/.test(name);
+}
 function isH5NativeTag(tag) {
     return (tag !== 'head' &&
         (shared.isHTMLTag(tag) || shared.isSVGTag(tag)) &&
@@ -564,10 +567,12 @@ function scrollTo(scrollTop, duration, isH5) {
     if (shared.isString(scrollTop)) {
         const el = document.querySelector(scrollTop);
         if (el) {
-            const { height, top } = el.getBoundingClientRect();
+            const { top } = el.getBoundingClientRect();
             scrollTop = top + window.pageYOffset;
-            if (isH5) {
-                scrollTop -= height;
+            // 如果存在，减去 <uni-page-head> 高度
+            const pageHeader = document.querySelector('uni-page-head');
+            if (pageHeader) {
+                scrollTop -= pageHeader.offsetHeight;
             }
         }
     }
@@ -1418,10 +1423,13 @@ E.prototype = {
         var evts = e[name];
         var liveEvents = [];
         if (evts && callback) {
-            for (var i = 0, len = evts.length; i < len; i++) {
-                if (evts[i].fn !== callback && evts[i].fn._ !== callback)
-                    liveEvents.push(evts[i]);
+            for (var i = evts.length - 1; i >= 0; i--) {
+                if (evts[i].fn === callback || evts[i].fn._ === callback) {
+                    evts.splice(i, 1);
+                    break;
+                }
             }
+            liveEvents = evts;
         }
         // Remove event from queue to prevent memory leak
         // Suggested by https://github.com/lazd
@@ -1633,6 +1641,7 @@ exports.isMiniProgramNativeTag = isMiniProgramNativeTag;
 exports.isRootHook = isRootHook;
 exports.isRootImmediateHook = isRootImmediateHook;
 exports.isUniLifecycleHook = isUniLifecycleHook;
+exports.isUniXElement = isUniXElement;
 exports.normalizeDataset = normalizeDataset;
 exports.normalizeEventType = normalizeEventType;
 exports.normalizeStyles = normalizeStyles;

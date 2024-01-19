@@ -13,7 +13,7 @@ import type {
   ViteDevServer,
 } from 'vite'
 import express from 'express'
-import { M, parseManifestJson } from '@dcloudio/uni-cli-shared'
+import { parseManifestJson } from '@dcloudio/uni-cli-shared'
 import { CliOptions } from '.'
 import { addConfigFile, cleanOptions, printStartupDuration } from './utils'
 import { AddressInfo, Server } from 'net'
@@ -41,15 +41,6 @@ export async function createServer(options: CliOptions & ServerOptions) {
   await server.listen()
 
   const logger = server.config.logger
-
-  const pkg = require('../../package.json')
-  console.log(
-    M['app.compiler.version'].replace(
-      '{version}',
-      pkg['uni-app']['compilerVersion'] +
-        `（${process.env.UNI_APP_X === 'true' ? 'uni-app x' : 'vue3'}）`
-    )
-  )
 
   logger.info(
     colors.cyan(`\n  vite v${require('vite/package.json').version}`) +

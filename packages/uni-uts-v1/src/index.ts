@@ -57,6 +57,8 @@ export const sourcemap = {
 
 export { compileApp, CompileAppOptions } from './uvue/index'
 
+export { parseInjectModules } from './utils'
+
 export * from './sourceMap'
 
 export { parseUTSKotlinRuntimeStacktrace } from './stacktrace'
@@ -312,6 +314,7 @@ export async function compile(
           // 处理 config.json
           genConfigJson(
             utsPlatform,
+            isX,
             (utsPlatform === 'app-android'
               ? proxyCodeOptions.androidHookClass
               : proxyCodeOptions.iOSHookClass) || '',
@@ -358,6 +361,7 @@ export async function compile(
         // 处理 config.json
         genConfigJson(
           utsPlatform,
+          isX,
           (utsPlatform === 'app-android'
             ? proxyCodeOptions.androidHookClass
             : proxyCodeOptions.iOSHookClass) || '',

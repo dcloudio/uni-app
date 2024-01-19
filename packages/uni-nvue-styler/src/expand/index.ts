@@ -33,11 +33,12 @@ function getDeclTransforms(
     borderColor: transformBorderColor,
     borderRadius: transformBorderRadius,
     // uvue已经支持这些简写属性，不需要展开
+    // margin,padding继续展开，确保样式的优先级
+    margin: transformMargin,
+    padding: transformPadding,
     /* eslint-disable no-restricted-syntax */
     ...(options.type !== 'uvue'
       ? {
-          margin: transformMargin,
-          padding: transformPadding,
           flexFlow: transformFlexFlow,
         }
       : {}),

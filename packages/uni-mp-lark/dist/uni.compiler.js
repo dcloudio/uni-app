@@ -72,6 +72,7 @@ const customElements = [
     'live-preview',
     'aweme-live-book',
     'aweme-user-card',
+    'rtc-room',
 ];
 const projectConfigFilename = 'project.config.json';
 const nodeTransforms = [

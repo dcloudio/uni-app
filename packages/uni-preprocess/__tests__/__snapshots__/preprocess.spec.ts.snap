@@ -1,0 +1,296 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`preprocess html #ifdef match 1`] = `
+{
+  "code": "<template>
+<view>a</view>
+<view>b</view>
+<view>c</view>
+<template>
+  ",
+  "map": SourceMap {
+    "file": "test",
+    "mappings": "AAAA,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACV,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAEd,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAEd,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACd,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACV,CAAC",
+    "names": [],
+    "sources": [
+      "test",
+    ],
+    "sourcesContent": [
+      "<template>
+<view>a</view>
+<!-- #ifdef B -->
+<view>b</view>
+<!-- #endif -->
+<view>c</view>
+<template>
+  ",
+    ],
+    "version": 3,
+  },
+}
+`;
+
+exports[`preprocess html #ifdef not match 1`] = `
+{
+  "code": "<template>
+<view>a</view>
+<view>c</view>
+<template>
+",
+  "map": SourceMap {
+    "file": "test",
+    "mappings": "AAAA,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACV,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAId,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACd,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;",
+    "names": [],
+    "sources": [
+      "test",
+    ],
+    "sourcesContent": [
+      "<template>
+<view>a</view>
+<!-- #ifdef B -->
+<view>b</view>
+<!-- #endif -->
+<view>c</view>
+<template>
+",
+    ],
+    "version": 3,
+  },
+}
+`;
+
+exports[`preprocess html and js 1`] = `
+{
+  "code": "<template>
+<view>a</view>
+<view>b</view>
+<view>b1</view>
+<view>b11</view>
+<view>b3</view>
+<view>c</view>
+<template>
+<script>
+a
+b
+b1
+b11
+b3
+c
+</script>
+<style>
+a
+b
+b1
+b11
+b3
+c
+</style>
+",
+  "map": SourceMap {
+    "file": "test",
+    "mappings": "AAAA,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACV,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAEd,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAEd,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAEf,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAMhB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAEf,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACd,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACV,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACR,CAAC;AAED,CAAC;AAED,CAAC,CAAC;AAEF,CAAC,CAAC,CAAC;AAMH,CAAC,CAAC;AAEF,CAAC;AACD,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACT,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACP,CAAC;AAED,CAAC;AAED,CAAC,CAAC;AAEF,CAAC,CAAC,CAAC;AAMH,CAAC,CAAC;AAEF,CAAC;AACD,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;",
+    "names": [],
+    "sources": [
+      "test",
+    ],
+    "sourcesContent": [
+      "<template>
+<view>a</view>
+<!-- #ifdef B -->
+<view>b</view>
+  <!-- #ifdef B1 -->
+<view>b1</view>
+    <!-- #ifdef B11 -->
+<view>b11</view>
+    <!-- #endif -->
+  <!-- #endif -->
+  <!-- #ifdef B2 -->
+<view>b2</view>
+  <!-- #endif -->
+<view>b3</view>
+<!-- #endif -->
+<view>c</view>
+<template>
+<script>
+a
+// #ifdef B
+b
+    // #ifdef B1
+b1
+        // #ifdef B11
+b11
+        // #endif
+    // #endif
+    // #ifdef B2
+b2
+    // #endif
+b3
+// #endif
+c
+</script>
+<style>
+a
+/* #ifdef B */
+b
+    /* #ifdef B1 */
+b1
+        /* #ifdef B11 */
+b11
+        /* #endif */
+    /* #endif */
+    /* #ifdef B2 */
+b2
+    /* #endif */
+b3
+/* #endif */
+c
+</style>
+",
+    ],
+    "version": 3,
+  },
+}
+`;
+
+exports[`preprocess js #ifdef match 1`] = `
+{
+  "code": "a
+b
+c
+",
+  "map": SourceMap {
+    "file": "test",
+    "mappings": "AAAA,CAAC;AAED,CAAC;AAED,CAAC;",
+    "names": [],
+    "sources": [
+      "test",
+    ],
+    "sourcesContent": [
+      "a
+// #ifdef B
+b
+// #endif
+c
+",
+    ],
+    "version": 3,
+  },
+}
+`;
+
+exports[`preprocess js #ifdef nesting match 1`] = `
+{
+  "code": "a
+b
+b1
+b11
+b3
+c
+",
+  "map": SourceMap {
+    "file": "test",
+    "mappings": "AAAA,CAAC;AAED,CAAC;AAED,CAAC,CAAC;AAEF,CAAC,CAAC,CAAC;AAMH,CAAC,CAAC;AAEF,CAAC;",
+    "names": [],
+    "sources": [
+      "test",
+    ],
+    "sourcesContent": [
+      "a
+// #ifdef B
+b
+    // #ifdef B1
+b1
+        // #ifdef B11
+b11
+        // #endif
+    // #endif
+    // #ifdef B2
+b2
+    // #endif
+b3
+// #endif
+c
+",
+    ],
+    "version": 3,
+  },
+}
+`;
+
+exports[`preprocess js #ifdef not match 1`] = `
+{
+  "code": "a
+c
+",
+  "map": SourceMap {
+    "file": "test",
+    "mappings": "AAAA,CAAC;AAID,CAAC;",
+    "names": [],
+    "sources": [
+      "test",
+    ],
+    "sourcesContent": [
+      "a
+// #ifdef B
+b
+// #endif
+c
+",
+    ],
+    "version": 3,
+  },
+}
+`;
+
+exports[`preprocess js #ifndef match 1`] = `
+{
+  "code": "a
+b
+c
+",
+  "map": SourceMap {
+    "file": "test",
+    "mappings": "AAAA,CAAC;AAED,CAAC;AAED,CAAC;",
+    "names": [],
+    "sources": [
+      "test",
+    ],
+    "sourcesContent": [
+      "a
+// #ifndef B
+b
+// #endif
+c
+",
+    ],
+    "version": 3,
+  },
+}
+`;
+
+exports[`preprocess js #ifndef not match 1`] = `
+{
+  "code": "a
+c
+",
+  "map": SourceMap {
+    "file": "test",
+    "mappings": "AAAA,CAAC;AAID,CAAC;",
+    "names": [],
+    "sources": [
+      "test",
+    ],
+    "sourcesContent": [
+      "a
+// #ifndef B
+b
+// #endif
+c
+",
+    ],
+    "version": 3,
+  },
+}
+`;
+
+exports[`preprocess js Unmatched use of #ifdef/#endif. 1`] = `"Unbalanced right delimiter found in string at position 32"`;

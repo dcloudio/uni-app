@@ -1,20 +1,98 @@
-/**
- * Make a map and return a function for checking if a key
- * is in that map.
- * IMPORTANT: all calls of this function must be prefixed with
- * \/\*#\_\_PURE\_\_\*\/
- * So that rollup can tree-shake them if necessary.
- */
 function makeMap(str, expectsLowerCase) {
-  var map = Object.create(null);
-  var list = str.split(',');
+  var map = /* @__PURE__ */Object.create(null);
+  var list = str.split(",");
   for (var i = 0; i < list.length; i++) {
     map[list[i]] = true;
   }
   return expectsLowerCase ? val => !!map[val.toLowerCase()] : val => !!map[val];
 }
-var GLOBALS_WHITE_LISTED = 'Infinity,undefined,NaN,isFinite,isNaN,parseFloat,parseInt,decodeURI,' + 'decodeURIComponent,encodeURI,encodeURIComponent,Math,Number,Date,Array,' + 'Object,Boolean,String,RegExp,Map,Set,JSON,Intl,BigInt';
-var isGloballyWhitelisted = /*#__PURE__*/makeMap(GLOBALS_WHITE_LISTED);
+var EMPTY_OBJ = Object.freeze({});
+var EMPTY_ARR = Object.freeze([]);
+var NOOP = () => {};
+var NO = () => false;
+var isOn = key => key.charCodeAt(0) === 111 && key.charCodeAt(1) === 110 && (
+// uppercase letter
+key.charCodeAt(2) > 122 || key.charCodeAt(2) < 97);
+var isModelListener = key => key.startsWith("onUpdate:");
+var extend$1 = Object.assign;
+var remove = (arr, el) => {
+  var i = arr.indexOf(el);
+  if (i > -1) {
+    arr.splice(i, 1);
+  }
+};
+var hasOwnProperty$1 = Object.prototype.hasOwnProperty;
+var hasOwn = (val, key) => hasOwnProperty$1.call(val, key);
+var isArray = Array.isArray;
+var isMap = val => toTypeString(val) === "[object Map]";
+var isSet = val => toTypeString(val) === "[object Set]";
+var isRegExp = val => toTypeString(val) === "[object RegExp]";
+var isFunction = val => typeof val === "function";
+var isString = val => typeof val === "string";
+var isSymbol = val => typeof val === "symbol";
+var isObject = val => val !== null && typeof val === "object";
+var isPromise = val => {
+  return (isObject(val) || isFunction(val)) && isFunction(val.then) && isFunction(val.catch);
+};
+var objectToString = Object.prototype.toString;
+var toTypeString = value => objectToString.call(value);
+var toRawType = value => {
+  return toTypeString(value).slice(8, -1);
+};
+var isPlainObject = val => toTypeString(val) === "[object Object]";
+var isIntegerKey = key => isString(key) && key !== "NaN" && key[0] !== "-" && "" + parseInt(key, 10) === key;
+var isReservedProp = /* @__PURE__ */makeMap(
+// the leading comma is intentional so empty string "" is also included
+",key,ref,ref_for,ref_key,onVnodeBeforeMount,onVnodeMounted,onVnodeBeforeUpdate,onVnodeUpdated,onVnodeBeforeUnmount,onVnodeUnmounted");
+var isBuiltInDirective = /* @__PURE__ */makeMap("bind,cloak,else-if,else,for,html,if,model,on,once,pre,show,slot,text,memo");
+var cacheStringFunction = fn => {
+  var cache = /* @__PURE__ */Object.create(null);
+  return str => {
+    var hit = cache[str];
+    return hit || (cache[str] = fn(str));
+  };
+};
+var camelizeRE = /-(\w)/g;
+var camelize = cacheStringFunction(str => {
+  return str.replace(camelizeRE, (_, c) => c ? c.toUpperCase() : "");
+});
+var hyphenateRE = /\B([A-Z])/g;
+var hyphenate = cacheStringFunction(str => str.replace(hyphenateRE, "-$1").toLowerCase());
+var capitalize = cacheStringFunction(str => {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+});
+var toHandlerKey = cacheStringFunction(str => {
+  var s = str ? "on".concat(capitalize(str)) : "";
+  return s;
+});
+var hasChanged = (value, oldValue) => !Object.is(value, oldValue);
+var invokeArrayFns = (fns, arg) => {
+  for (var i = 0; i < fns.length; i++) {
+    fns[i](arg);
+  }
+};
+var def = (obj, key, value) => {
+  Object.defineProperty(obj, key, {
+    configurable: true,
+    enumerable: false,
+    value
+  });
+};
+var looseToNumber = val => {
+  var n = parseFloat(val);
+  return isNaN(n) ? val : n;
+};
+var toNumber = val => {
+  var n = isString(val) ? Number(val) : NaN;
+  return isNaN(n) ? val : n;
+};
+var _globalThis;
+var getGlobalThis = () => {
+  return _globalThis || (_globalThis = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : {});
+};
+var GLOBALS_ALLOWED = "Infinity,undefined,NaN,isFinite,isNaN,parseFloat,parseInt,decodeURI,decodeURIComponent,encodeURI,encodeURIComponent,Math,Number,Date,Array,Object,Boolean,String,RegExp,Map,Set,JSON,Intl,BigInt,console";
+var isGloballyAllowed = /* @__PURE__ */makeMap(GLOBALS_ALLOWED);
+var isGloballyWhitelisted = isGloballyAllowed;
 function normalizeStyle(value) {
   if (isArray(value)) {
     var res = {};
@@ -28,18 +106,16 @@ function normalizeStyle(value) {
       }
     }
     return res;
-  } else if (isString(value)) {
-    return value;
-  } else if (isObject(value)) {
+  } else if (isString(value) || isObject(value)) {
     return value;
   }
 }
 var listDelimiterRE = /;(?![^(]*\))/g;
 var propertyDelimiterRE = /:([^]+)/;
-var styleCommentRE = /\/\*[\s\S]*?\*\//g;
+var styleCommentRE = /\/\*[^]*?\*\//g;
 function parseStringStyle(cssText) {
   var ret = {};
-  cssText.replace(styleCommentRE, '').split(listDelimiterRE).forEach(item => {
+  cssText.replace(styleCommentRE, "").split(listDelimiterRE).forEach(item => {
     if (item) {
       var tmp = item.split(propertyDelimiterRE);
       tmp.length > 1 && (ret[tmp[0].trim()] = tmp[1].trim());
@@ -48,20 +124,20 @@ function parseStringStyle(cssText) {
   return ret;
 }
 function normalizeClass(value) {
-  var res = '';
+  var res = "";
   if (isString(value)) {
     res = value;
   } else if (isArray(value)) {
     for (var i = 0; i < value.length; i++) {
       var normalized = normalizeClass(value[i]);
       if (normalized) {
-        res += normalized + ' ';
+        res += normalized + " ";
       }
     }
   } else if (isObject(value)) {
     for (var name in value) {
       if (value[name]) {
-        res += name + ' ';
+        res += name + " ";
       }
     }
   }
@@ -81,137 +157,35 @@ function normalizeProps(props) {
   }
   return props;
 }
-
-/**
- * For converting {{ interpolation }} values to displayed strings.
- * @private
- */
 var toDisplayString = val => {
-  return isString(val) ? val : val == null ? '' : isArray(val) || isObject(val) && (val.toString === objectToString || !isFunction(val.toString)) ? JSON.stringify(val, replacer, 2) : String(val);
+  return isString(val) ? val : val == null ? "" : isArray(val) || isObject(val) && (val.toString === objectToString || !isFunction(val.toString)) ? JSON.stringify(val, replacer, 2) : String(val);
 };
 var replacer = (_key, val) => {
-  // can't use isRef here since @vue/shared has no deps
   if (val && val.__v_isRef) {
     return replacer(_key, val.value);
   } else if (isMap(val)) {
     return {
-      ["Map(".concat(val.size, ")")]: [...val.entries()].reduce((entries, _ref) => {
-        var [key, val] = _ref;
-        entries["".concat(key, " =>")] = val;
+      ["Map(".concat(val.size, ")")]: [...val.entries()].reduce((entries, _ref, i) => {
+        var [key, val2] = _ref;
+        entries[stringifySymbol(key, i) + " =>"] = val2;
         return entries;
       }, {})
     };
   } else if (isSet(val)) {
     return {
-      ["Set(".concat(val.size, ")")]: [...val.values()]
+      ["Set(".concat(val.size, ")")]: [...val.values()].map(v => stringifySymbol(v))
     };
+  } else if (isSymbol(val)) {
+    return stringifySymbol(val);
   } else if (isObject(val) && !isArray(val) && !isPlainObject(val)) {
     return String(val);
   }
   return val;
 };
-var EMPTY_OBJ = Object.freeze({});
-var EMPTY_ARR = Object.freeze([]);
-var NOOP = () => {};
-/**
- * Always return false.
- */
-var NO = () => false;
-var onRE = /^on[^a-z]/;
-var isOn = key => onRE.test(key);
-var isModelListener = key => key.startsWith('onUpdate:');
-var extend = Object.assign;
-var remove = (arr, el) => {
-  var i = arr.indexOf(el);
-  if (i > -1) {
-    arr.splice(i, 1);
-  }
-};
-var hasOwnProperty$1 = Object.prototype.hasOwnProperty;
-var hasOwn = (val, key) => hasOwnProperty$1.call(val, key);
-var isArray = Array.isArray;
-var isMap = val => toTypeString(val) === '[object Map]';
-var isSet = val => toTypeString(val) === '[object Set]';
-var isRegExp = val => toTypeString(val) === '[object RegExp]';
-var isFunction = val => typeof val === 'function';
-var isString = val => typeof val === 'string';
-var isSymbol = val => typeof val === 'symbol';
-var isObject = val => val !== null && typeof val === 'object';
-var isPromise = val => {
-  return isObject(val) && isFunction(val.then) && isFunction(val.catch);
-};
-var objectToString = Object.prototype.toString;
-var toTypeString = value => objectToString.call(value);
-var toRawType = value => {
-  // extract "RawType" from strings like "[object RawType]"
-  return toTypeString(value).slice(8, -1);
-};
-var isPlainObject = val => toTypeString(val) === '[object Object]';
-var isIntegerKey = key => isString(key) && key !== 'NaN' && key[0] !== '-' && '' + parseInt(key, 10) === key;
-var isReservedProp = /*#__PURE__*/makeMap(
-// the leading comma is intentional so empty string "" is also included
-',key,ref,ref_for,ref_key,' + 'onVnodeBeforeMount,onVnodeMounted,' + 'onVnodeBeforeUpdate,onVnodeUpdated,' + 'onVnodeBeforeUnmount,onVnodeUnmounted');
-var isBuiltInDirective = /*#__PURE__*/makeMap('bind,cloak,else-if,else,for,html,if,model,on,once,pre,show,slot,text,memo');
-var cacheStringFunction = fn => {
-  var cache = Object.create(null);
-  return str => {
-    var hit = cache[str];
-    return hit || (cache[str] = fn(str));
-  };
-};
-var camelizeRE = /-(\w)/g;
-/**
- * @private
- */
-var camelize = cacheStringFunction(str => {
-  return str.replace(camelizeRE, (_, c) => c ? c.toUpperCase() : '');
-});
-var hyphenateRE = /\B([A-Z])/g;
-/**
- * @private
- */
-var hyphenate = cacheStringFunction(str => str.replace(hyphenateRE, '-$1').toLowerCase());
-/**
- * @private
- */
-var capitalize = cacheStringFunction(str => str.charAt(0).toUpperCase() + str.slice(1));
-/**
- * @private
- */
-var toHandlerKey = cacheStringFunction(str => str ? "on".concat(capitalize(str)) : "");
-// compare whether a value has changed, accounting for NaN.
-var hasChanged = (value, oldValue) => !Object.is(value, oldValue);
-var invokeArrayFns = (fns, arg) => {
-  for (var i = 0; i < fns.length; i++) {
-    fns[i](arg);
-  }
-};
-var def = (obj, key, value) => {
-  Object.defineProperty(obj, key, {
-    configurable: true,
-    enumerable: false,
-    value
-  });
-};
-/**
- * "123-foo" will be parsed to 123
- * This is used for the .number modifier in v-model
- */
-var looseToNumber = val => {
-  var n = parseFloat(val);
-  return isNaN(n) ? val : n;
-};
-/**
- * Only conerces number-like strings
- * "123-foo" will be returned as-is
- */
-var toNumber = val => {
-  var n = isString(val) ? Number(val) : NaN;
-  return isNaN(n) ? val : n;
-};
-var _globalThis;
-var getGlobalThis = () => {
-  return _globalThis || (_globalThis = typeof globalThis !== 'undefined' ? globalThis : typeof self !== 'undefined' ? self : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : {});
+var stringifySymbol = function (v) {
+  var i = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "";
+  var _a;
+  return isSymbol(v) ? "Symbol(".concat((_a = v.description) != null ? _a : i, ")") : v;
 };
 function warn$1(msg) {
   for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key2 = 1; _key2 < _len; _key2++) {
@@ -285,16 +259,14 @@ class EffectScope {
           this.scopes[i].stop(true);
         }
       }
-      // nested scope, dereference from parent to avoid memory leaks
       if (!this.detached && this.parent && !fromParent) {
-        // optimized O(1) removal
         var last = this.parent.scopes.pop();
         if (last && last !== this) {
           this.parent.scopes[this.index] = last;
           last.index = this.index;
         }
       }
-      this.parent = undefined;
+      this.parent = void 0;
       this._active = false;
     }
   }
@@ -315,7 +287,7 @@ function onScopeDispose(fn) {
   if (activeEffectScope) {
     activeEffectScope.cleanups.push(fn);
   } else {
-    warn$1("onScopeDispose() is called when there is no active effect scope" + " to be associated with.");
+    warn$1("onScopeDispose() is called when there is no active effect scope to be associated with.");
   }
 }
 var createDep = effects => {
@@ -332,11 +304,10 @@ var initDepMarkers = _ref2 => {
   } = _ref2;
   if (deps.length) {
     for (var i = 0; i < deps.length; i++) {
-      deps[i].w |= trackOpBit; // set was tracked
+      deps[i].w |= trackOpBit;
     }
   }
 };
-
 var finalizeDepMarkers = effect => {
   var {
     deps
@@ -350,26 +321,19 @@ var finalizeDepMarkers = effect => {
       } else {
         deps[ptr++] = dep;
       }
-      // clear bits
       dep.w &= ~trackOpBit;
       dep.n &= ~trackOpBit;
     }
     deps.length = ptr;
   }
 };
-var targetMap = new WeakMap();
-// The number of effects currently being tracked recursively.
+var targetMap = /* @__PURE__ */new WeakMap();
 var effectTrackDepth = 0;
 var trackOpBit = 1;
-/**
- * The bitwise track markers support at most 30 levels of recursion.
- * This value is chosen to enable modern JS engines to use a SMI on all platforms.
- * When recursion depth is greater, fall back to using a full cleanup.
- */
 var maxMarkerBits = 30;
 var activeEffect;
-var ITERATE_KEY = Symbol('iterate');
-var MAP_KEY_ITERATE_KEY = Symbol('Map key iterate');
+var ITERATE_KEY = Symbol("iterate");
+var MAP_KEY_ITERATE_KEY = Symbol("Map key iterate");
 class ReactiveEffect {
   constructor(fn) {
     var scheduler = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -378,7 +342,7 @@ class ReactiveEffect {
     this.scheduler = scheduler;
     this.active = true;
     this.deps = [];
-    this.parent = undefined;
+    this.parent = void 0;
     recordEffectScope(this, scope);
   }
   run() {
@@ -411,14 +375,13 @@ class ReactiveEffect {
       trackOpBit = 1 << --effectTrackDepth;
       activeEffect = this.parent;
       shouldTrack = lastShouldTrack;
-      this.parent = undefined;
+      this.parent = void 0;
       if (this.deferStop) {
         this.stop();
       }
     }
   }
   stop() {
-    // stopped while running itself - defer the cleanup
     if (activeEffect === this) {
       this.deferStop = true;
     } else if (this.active) {
@@ -430,24 +393,24 @@ class ReactiveEffect {
     }
   }
 }
-function cleanupEffect(effect) {
+function cleanupEffect(effect2) {
   var {
     deps
-  } = effect;
+  } = effect2;
   if (deps.length) {
     for (var i = 0; i < deps.length; i++) {
-      deps[i].delete(effect);
+      deps[i].delete(effect2);
     }
     deps.length = 0;
   }
 }
 function effect(fn, options) {
-  if (fn.effect) {
+  if (fn.effect instanceof ReactiveEffect) {
     fn = fn.effect.fn;
   }
   var _effect = new ReactiveEffect(fn);
   if (options) {
-    extend(_effect, options);
+    extend$1(_effect, options);
     if (options.scope) recordEffectScope(_effect, options.scope);
   }
   if (!options || !options.lazy) {
@@ -468,13 +431,13 @@ function pauseTracking() {
 }
 function resetTracking() {
   var last = trackStack.pop();
-  shouldTrack = last === undefined ? true : last;
+  shouldTrack = last === void 0 ? true : last;
 }
 function track(target, type, key) {
   if (shouldTrack && activeEffect) {
     var depsMap = targetMap.get(target);
     if (!depsMap) {
-      targetMap.set(target, depsMap = new Map());
+      targetMap.set(target, depsMap = /* @__PURE__ */new Map());
     }
     var dep = depsMap.get(key);
     if (!dep) {
@@ -490,21 +453,20 @@ function track(target, type, key) {
   }
 }
 function trackEffects(dep, debuggerEventExtraInfo) {
-  var shouldTrack = false;
+  var shouldTrack2 = false;
   if (effectTrackDepth <= maxMarkerBits) {
     if (!newTracked(dep)) {
-      dep.n |= trackOpBit; // set newly tracked
-      shouldTrack = !wasTracked(dep);
+      dep.n |= trackOpBit;
+      shouldTrack2 = !wasTracked(dep);
     }
   } else {
-    // Full cleanup mode.
-    shouldTrack = !dep.has(activeEffect);
+    shouldTrack2 = !dep.has(activeEffect);
   }
-  if (shouldTrack) {
+  if (shouldTrack2) {
     dep.add(activeEffect);
     activeEffect.deps.push(dep);
     if (activeEffect.onTrack) {
-      activeEffect.onTrack(Object.assign({
+      activeEffect.onTrack(extend$1({
         effect: activeEffect
       }, debuggerEventExtraInfo));
     }
@@ -513,40 +475,34 @@ function trackEffects(dep, debuggerEventExtraInfo) {
 function trigger(target, type, key, newValue, oldValue, oldTarget) {
   var depsMap = targetMap.get(target);
   if (!depsMap) {
-    // never been tracked
     return;
   }
   var deps = [];
-  if (type === "clear" /* TriggerOpTypes.CLEAR */) {
-    // collection being cleared
-    // trigger all effects for target
+  if (type === "clear") {
     deps = [...depsMap.values()];
-  } else if (key === 'length' && isArray(target)) {
+  } else if (key === "length" && isArray(target)) {
     var newLength = Number(newValue);
-    depsMap.forEach((dep, key) => {
-      if (key === 'length' || key >= newLength) {
+    depsMap.forEach((dep, key2) => {
+      if (key2 === "length" || !isSymbol(key2) && key2 >= newLength) {
         deps.push(dep);
       }
     });
   } else {
-    // schedule runs for SET | ADD | DELETE
     if (key !== void 0) {
       deps.push(depsMap.get(key));
     }
-    // also run for iteration key on ADD | DELETE | Map.SET
     switch (type) {
-      case "add" /* TriggerOpTypes.ADD */:
+      case "add":
         if (!isArray(target)) {
           deps.push(depsMap.get(ITERATE_KEY));
           if (isMap(target)) {
             deps.push(depsMap.get(MAP_KEY_ITERATE_KEY));
           }
         } else if (isIntegerKey(key)) {
-          // new index added to array -> length changes
-          deps.push(depsMap.get('length'));
+          deps.push(depsMap.get("length"));
         }
         break;
-      case "delete" /* TriggerOpTypes.DELETE */:
+      case "delete":
         if (!isArray(target)) {
           deps.push(depsMap.get(ITERATE_KEY));
           if (isMap(target)) {
@@ -554,7 +510,7 @@ function trigger(target, type, key, newValue, oldValue, oldTarget) {
           }
         }
         break;
-      case "set" /* TriggerOpTypes.SET */:
+      case "set":
         if (isMap(target)) {
           deps.push(depsMap.get(ITERATE_KEY));
         }
@@ -588,71 +544,59 @@ function trigger(target, type, key, newValue, oldValue, oldTarget) {
   }
 }
 function triggerEffects(dep, debuggerEventExtraInfo) {
-  // spread into array for stabilization
   var effects = isArray(dep) ? dep : [...dep];
+  for (var effect2 of effects) {
+    if (effect2.computed) {
+      triggerEffect(effect2, debuggerEventExtraInfo);
+    }
+  }
   for (var _effect2 of effects) {
-    if (_effect2.computed) {
+    if (!_effect2.computed) {
       triggerEffect(_effect2, debuggerEventExtraInfo);
     }
   }
-  for (var _effect3 of effects) {
-    if (!_effect3.computed) {
-      triggerEffect(_effect3, debuggerEventExtraInfo);
-    }
-  }
 }
-function triggerEffect(effect, debuggerEventExtraInfo) {
-  if (effect !== activeEffect || effect.allowRecurse) {
-    if (effect.onTrigger) {
-      effect.onTrigger(extend({
-        effect
+function triggerEffect(effect2, debuggerEventExtraInfo) {
+  if (effect2 !== activeEffect || effect2.allowRecurse) {
+    if (effect2.onTrigger) {
+      effect2.onTrigger(extend$1({
+        effect: effect2
       }, debuggerEventExtraInfo));
     }
-    if (effect.scheduler) {
-      effect.scheduler();
+    if (effect2.scheduler) {
+      effect2.scheduler();
     } else {
-      effect.run();
+      effect2.run();
     }
   }
 }
 function getDepFromReactive(object, key) {
   var _a;
-  return (_a = targetMap.get(object)) === null || _a === void 0 ? void 0 : _a.get(key);
+  return (_a = targetMap.get(object)) == null ? void 0 : _a.get(key);
 }
-var isNonTrackableKeys = /*#__PURE__*/makeMap("__proto__,__v_isRef,__isVue");
-var builtInSymbols = new Set( /*#__PURE__*/
-Object.getOwnPropertyNames(Symbol)
-// ios10.x Object.getOwnPropertyNames(Symbol) can enumerate 'arguments' and 'caller'
-// but accessing them on Symbol leads to TypeError because Symbol is a strict mode
-// function
-.filter(key => key !== 'arguments' && key !== 'caller').map(key => Symbol[key]).filter(isSymbol));
-var get$1 = /*#__PURE__*/createGetter();
-var shallowGet = /*#__PURE__*/createGetter(false, true);
-var readonlyGet = /*#__PURE__*/createGetter(true);
-var shallowReadonlyGet = /*#__PURE__*/createGetter(true, true);
-var arrayInstrumentations = /*#__PURE__*/createArrayInstrumentations();
+var isNonTrackableKeys = /* @__PURE__ */makeMap("__proto__,__v_isRef,__isVue");
+var builtInSymbols = new Set( /* @__PURE__ */Object.getOwnPropertyNames(Symbol).filter(key => key !== "arguments" && key !== "caller").map(key => Symbol[key]).filter(isSymbol));
+var arrayInstrumentations = /* @__PURE__ */createArrayInstrumentations();
 function createArrayInstrumentations() {
   var instrumentations = {};
-  ['includes', 'indexOf', 'lastIndexOf'].forEach(key => {
+  ["includes", "indexOf", "lastIndexOf"].forEach(key => {
     instrumentations[key] = function () {
       var arr = toRaw(this);
       for (var i = 0, l = this.length; i < l; i++) {
-        track(arr, "get" /* TrackOpTypes.GET */, i + '');
+        track(arr, "get", i + "");
       }
-      // we run the method using the original args first (which may be reactive)
       for (var _len2 = arguments.length, args = new Array(_len2), _key3 = 0; _key3 < _len2; _key3++) {
         args[_key3] = arguments[_key3];
       }
       var res = arr[key](...args);
       if (res === -1 || res === false) {
-        // if that didn't work, run it again using raw values.
         return arr[key](...args.map(toRaw));
       } else {
         return res;
       }
     };
   });
-  ['push', 'pop', 'shift', 'unshift', 'splice'].forEach(key => {
+  ["push", "pop", "shift", "unshift", "splice"].forEach(key => {
     instrumentations[key] = function () {
       pauseTracking();
       for (var _len3 = arguments.length, args = new Array(_len3), _key4 = 0; _key4 < _len3; _key4++) {
@@ -667,28 +611,40 @@ function createArrayInstrumentations() {
 }
 function hasOwnProperty(key) {
   var obj = toRaw(this);
-  track(obj, "has" /* TrackOpTypes.HAS */, key);
+  track(obj, "has", key);
   return obj.hasOwnProperty(key);
 }
-function createGetter() {
-  var isReadonly = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-  var shallow = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-  return function get(target, key, receiver) {
-    if (key === "__v_isReactive" /* ReactiveFlags.IS_REACTIVE */) {
-      return !isReadonly;
-    } else if (key === "__v_isReadonly" /* ReactiveFlags.IS_READONLY */) {
-      return isReadonly;
-    } else if (key === "__v_isShallow" /* ReactiveFlags.IS_SHALLOW */) {
+class BaseReactiveHandler {
+  constructor() {
+    var _isReadonly = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+    var _shallow = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+    this._isReadonly = _isReadonly;
+    this._shallow = _shallow;
+  }
+  get(target, key, receiver) {
+    var isReadonly2 = this._isReadonly,
+      shallow = this._shallow;
+    if (key === "__v_isReactive") {
+      return !isReadonly2;
+    } else if (key === "__v_isReadonly") {
+      return isReadonly2;
+    } else if (key === "__v_isShallow") {
       return shallow;
-    } else if (key === "__v_raw" /* ReactiveFlags.RAW */ && receiver === (isReadonly ? shallow ? shallowReadonlyMap : readonlyMap : shallow ? shallowReactiveMap : reactiveMap).get(target)) {
-      return target;
+    } else if (key === "__v_raw") {
+      if (receiver === (isReadonly2 ? shallow ? shallowReadonlyMap : readonlyMap : shallow ? shallowReactiveMap : reactiveMap).get(target) ||
+      // receiver is not the reactive proxy, but has the same prototype
+      // this means the reciever is a user proxy of the reactive proxy
+      Object.getPrototypeOf(target) === Object.getPrototypeOf(receiver)) {
+        return target;
+      }
+      return;
     }
     var targetIsArray = isArray(target);
-    if (!isReadonly) {
+    if (!isReadonly2) {
       if (targetIsArray && hasOwn(arrayInstrumentations, key)) {
         return Reflect.get(arrayInstrumentations, key, receiver);
       }
-      if (key === 'hasOwnProperty') {
+      if (key === "hasOwnProperty") {
         return hasOwnProperty;
       }
     }
@@ -696,35 +652,32 @@ function createGetter() {
     if (isSymbol(key) ? builtInSymbols.has(key) : isNonTrackableKeys(key)) {
       return res;
     }
-    if (!isReadonly) {
-      track(target, "get" /* TrackOpTypes.GET */, key);
+    if (!isReadonly2) {
+      track(target, "get", key);
     }
     if (shallow) {
       return res;
     }
     if (isRef(res)) {
-      // ref unwrapping - skip unwrap for Array + integer key.
       return targetIsArray && isIntegerKey(key) ? res : res.value;
     }
     if (isObject(res)) {
-      // Convert returned value into a proxy as well. we do the isObject check
-      // here to avoid invalid value warning. Also need to lazy access readonly
-      // and reactive here to avoid circular dependency.
-      return isReadonly ? readonly(res) : reactive(res);
+      return isReadonly2 ? readonly(res) : reactive(res);
     }
     return res;
-  };
+  }
 }
-var set$1 = /*#__PURE__*/createSetter();
-var shallowSet = /*#__PURE__*/createSetter(true);
-function createSetter() {
-  var shallow = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-  return function set(target, key, value, receiver) {
+class MutableReactiveHandler extends BaseReactiveHandler {
+  constructor() {
+    var shallow = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+    super(false, shallow);
+  }
+  set(target, key, value, receiver) {
     var oldValue = target[key];
     if (isReadonly(oldValue) && isRef(oldValue) && !isRef(value)) {
       return false;
     }
-    if (!shallow) {
+    if (!this._shallow) {
       if (!isShallow$1(value) && !isReadonly(value)) {
         oldValue = toRaw(oldValue);
         value = toRaw(value);
@@ -736,117 +689,102 @@ function createSetter() {
     }
     var hadKey = isArray(target) && isIntegerKey(key) ? Number(key) < target.length : hasOwn(target, key);
     var result = Reflect.set(target, key, value, receiver);
-    // don't trigger if target is something up in the prototype chain of original
     if (target === toRaw(receiver)) {
       if (!hadKey) {
-        trigger(target, "add" /* TriggerOpTypes.ADD */, key, value);
+        trigger(target, "add", key, value);
       } else if (hasChanged(value, oldValue)) {
-        trigger(target, "set" /* TriggerOpTypes.SET */, key, value, oldValue);
+        trigger(target, "set", key, value, oldValue);
       }
     }
     return result;
-  };
-}
-function deleteProperty(target, key) {
-  var hadKey = hasOwn(target, key);
-  var oldValue = target[key];
-  var result = Reflect.deleteProperty(target, key);
-  if (result && hadKey) {
-    trigger(target, "delete" /* TriggerOpTypes.DELETE */, key, undefined, oldValue);
   }
-  return result;
-}
-function has$1(target, key) {
-  var result = Reflect.has(target, key);
-  if (!isSymbol(key) || !builtInSymbols.has(key)) {
-    track(target, "has" /* TrackOpTypes.HAS */, key);
+  deleteProperty(target, key) {
+    var hadKey = hasOwn(target, key);
+    var oldValue = target[key];
+    var result = Reflect.deleteProperty(target, key);
+    if (result && hadKey) {
+      trigger(target, "delete", key, void 0, oldValue);
+    }
+    return result;
   }
-  return result;
+  has(target, key) {
+    var result = Reflect.has(target, key);
+    if (!isSymbol(key) || !builtInSymbols.has(key)) {
+      track(target, "has", key);
+    }
+    return result;
+  }
+  ownKeys(target) {
+    track(target, "iterate", isArray(target) ? "length" : ITERATE_KEY);
+    return Reflect.ownKeys(target);
+  }
 }
-function ownKeys(target) {
-  track(target, "iterate" /* TrackOpTypes.ITERATE */, isArray(target) ? 'length' : ITERATE_KEY);
-  return Reflect.ownKeys(target);
-}
-var mutableHandlers = {
-  get: get$1,
-  set: set$1,
-  deleteProperty,
-  has: has$1,
-  ownKeys
-};
-var readonlyHandlers = {
-  get: readonlyGet,
+class ReadonlyReactiveHandler extends BaseReactiveHandler {
+  constructor() {
+    var shallow = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+    super(true, shallow);
+  }
   set(target, key) {
     {
       warn$1("Set operation on key \"".concat(String(key), "\" failed: target is readonly."), target);
     }
     return true;
-  },
+  }
   deleteProperty(target, key) {
     {
       warn$1("Delete operation on key \"".concat(String(key), "\" failed: target is readonly."), target);
     }
     return true;
   }
-};
-var shallowReactiveHandlers = /*#__PURE__*/extend({}, mutableHandlers, {
-  get: shallowGet,
-  set: shallowSet
-});
-// Props handlers are special in the sense that it should not unwrap top-level
-// refs (in order to allow refs to be explicitly passed down), but should
-// retain the reactivity of the normal readonly object.
-var shallowReadonlyHandlers = /*#__PURE__*/extend({}, readonlyHandlers, {
-  get: shallowReadonlyGet
-});
+}
+var mutableHandlers = /* @__PURE__ */new MutableReactiveHandler();
+var readonlyHandlers = /* @__PURE__ */new ReadonlyReactiveHandler();
+var shallowReactiveHandlers = /* @__PURE__ */new MutableReactiveHandler(true);
+var shallowReadonlyHandlers = /* @__PURE__ */new ReadonlyReactiveHandler(true);
 var toShallow = value => value;
 var getProto = v => Reflect.getPrototypeOf(v);
 function get(target, key) {
   var isReadonly = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
   var isShallow = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-  // #1772: readonly(reactive(Map)) should return readonly + reactive version
-  // of the value
-  target = target["__v_raw" /* ReactiveFlags.RAW */];
+  target = target["__v_raw"];
   var rawTarget = toRaw(target);
   var rawKey = toRaw(key);
   if (!isReadonly) {
-    if (key !== rawKey) {
-      track(rawTarget, "get" /* TrackOpTypes.GET */, key);
+    if (hasChanged(key, rawKey)) {
+      track(rawTarget, "get", key);
     }
-    track(rawTarget, "get" /* TrackOpTypes.GET */, rawKey);
+    track(rawTarget, "get", rawKey);
   }
   var {
-    has
+    has: has2
   } = getProto(rawTarget);
   var wrap = isShallow ? toShallow : isReadonly ? toReadonly : toReactive;
-  if (has.call(rawTarget, key)) {
+  if (has2.call(rawTarget, key)) {
     return wrap(target.get(key));
-  } else if (has.call(rawTarget, rawKey)) {
+  } else if (has2.call(rawTarget, rawKey)) {
     return wrap(target.get(rawKey));
   } else if (target !== rawTarget) {
-    // #3602 readonly(reactive(Map))
-    // ensure that the nested reactive `Map` can do tracking for itself
     target.get(key);
   }
 }
 function has(key) {
   var isReadonly = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-  var target = this["__v_raw" /* ReactiveFlags.RAW */];
+  var target = this["__v_raw"];
   var rawTarget = toRaw(target);
   var rawKey = toRaw(key);
   if (!isReadonly) {
-    if (key !== rawKey) {
-      track(rawTarget, "has" /* TrackOpTypes.HAS */, key);
+    if (hasChanged(key, rawKey)) {
+      track(rawTarget, "has", key);
     }
-    track(rawTarget, "has" /* TrackOpTypes.HAS */, rawKey);
+    track(rawTarget, "has", rawKey);
   }
   return key === rawKey ? target.has(key) : target.has(key) || target.has(rawKey);
 }
 function size(target) {
   var isReadonly = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-  target = target["__v_raw" /* ReactiveFlags.RAW */];
-  !isReadonly && track(toRaw(target), "iterate" /* TrackOpTypes.ITERATE */, ITERATE_KEY);
-  return Reflect.get(target, 'size', target);
+  target = target["__v_raw"];
+  !isReadonly && track(toRaw(target), "iterate", ITERATE_KEY);
+  return Reflect.get(target, "size", target);
 }
 function add(value) {
   value = toRaw(value);
@@ -855,7 +793,7 @@ function add(value) {
   var hadKey = proto.has.call(target, value);
   if (!hadKey) {
     target.add(value);
-    trigger(target, "add" /* TriggerOpTypes.ADD */, value, value);
+    trigger(target, "add", value, value);
   }
   return this;
 }
@@ -863,43 +801,42 @@ function set(key, value) {
   value = toRaw(value);
   var target = toRaw(this);
   var {
-    has,
-    get
+    has: has2,
+    get: get2
   } = getProto(target);
-  var hadKey = has.call(target, key);
+  var hadKey = has2.call(target, key);
   if (!hadKey) {
     key = toRaw(key);
-    hadKey = has.call(target, key);
+    hadKey = has2.call(target, key);
   } else {
-    checkIdentityKeys(target, has, key);
+    checkIdentityKeys(target, has2, key);
   }
-  var oldValue = get.call(target, key);
+  var oldValue = get2.call(target, key);
   target.set(key, value);
   if (!hadKey) {
-    trigger(target, "add" /* TriggerOpTypes.ADD */, key, value);
+    trigger(target, "add", key, value);
   } else if (hasChanged(value, oldValue)) {
-    trigger(target, "set" /* TriggerOpTypes.SET */, key, value, oldValue);
+    trigger(target, "set", key, value, oldValue);
   }
   return this;
 }
 function deleteEntry(key) {
   var target = toRaw(this);
   var {
-    has,
-    get
+    has: has2,
+    get: get2
   } = getProto(target);
-  var hadKey = has.call(target, key);
+  var hadKey = has2.call(target, key);
   if (!hadKey) {
     key = toRaw(key);
-    hadKey = has.call(target, key);
+    hadKey = has2.call(target, key);
   } else {
-    checkIdentityKeys(target, has, key);
+    checkIdentityKeys(target, has2, key);
   }
-  var oldValue = get ? get.call(target, key) : undefined;
-  // forward the operation before queueing reactions
+  var oldValue = get2 ? get2.call(target, key) : void 0;
   var result = target.delete(key);
   if (hadKey) {
-    trigger(target, "delete" /* TriggerOpTypes.DELETE */, key, undefined, oldValue);
+    trigger(target, "delete", key, void 0, oldValue);
   }
   return result;
 }
@@ -907,40 +844,34 @@ function clear() {
   var target = toRaw(this);
   var hadItems = target.size !== 0;
   var oldTarget = isMap(target) ? new Map(target) : new Set(target);
-  // forward the operation before queueing reactions
   var result = target.clear();
   if (hadItems) {
-    trigger(target, "clear" /* TriggerOpTypes.CLEAR */, undefined, undefined, oldTarget);
+    trigger(target, "clear", void 0, void 0, oldTarget);
   }
   return result;
 }
 function createForEach(isReadonly, isShallow) {
   return function forEach(callback, thisArg) {
     var observed = this;
-    var target = observed["__v_raw" /* ReactiveFlags.RAW */];
+    var target = observed["__v_raw"];
     var rawTarget = toRaw(target);
     var wrap = isShallow ? toShallow : isReadonly ? toReadonly : toReactive;
-    !isReadonly && track(rawTarget, "iterate" /* TrackOpTypes.ITERATE */, ITERATE_KEY);
+    !isReadonly && track(rawTarget, "iterate", ITERATE_KEY);
     return target.forEach((value, key) => {
-      // important: make sure the callback is
-      // 1. invoked with the reactive map as `this` and 3rd arg
-      // 2. the value received should be a corresponding reactive/readonly.
       return callback.call(thisArg, wrap(value), wrap(key), observed);
     });
   };
 }
 function createIterableMethod(method, isReadonly, isShallow) {
   return function () {
-    var target = this["__v_raw" /* ReactiveFlags.RAW */];
+    var target = this["__v_raw"];
     var rawTarget = toRaw(target);
     var targetIsMap = isMap(rawTarget);
-    var isPair = method === 'entries' || method === Symbol.iterator && targetIsMap;
-    var isKeyOnly = method === 'keys' && targetIsMap;
+    var isPair = method === "entries" || method === Symbol.iterator && targetIsMap;
+    var isKeyOnly = method === "keys" && targetIsMap;
     var innerIterator = target[method](...arguments);
     var wrap = isShallow ? toShallow : isReadonly ? toReadonly : toReactive;
-    !isReadonly && track(rawTarget, "iterate" /* TrackOpTypes.ITERATE */, isKeyOnly ? MAP_KEY_ITERATE_KEY : ITERATE_KEY);
-    // return a wrapped iterator which returns observed versions of the
-    // values emitted from the real iterator
+    !isReadonly && track(rawTarget, "iterate", isKeyOnly ? MAP_KEY_ITERATE_KEY : ITERATE_KEY);
     return {
       // iterator protocol
       next() {
@@ -969,11 +900,11 @@ function createReadonlyMethod(type) {
       var key = (arguments.length <= 0 ? undefined : arguments[0]) ? "on key \"".concat(arguments.length <= 0 ? undefined : arguments[0], "\" ") : "";
       console.warn("".concat(capitalize(type), " operation ").concat(key, "failed: target is readonly."), toRaw(this));
     }
-    return type === "delete" /* TriggerOpTypes.DELETE */ ? false : this;
+    return type === "delete" ? false : type === "clear" ? void 0 : this;
   };
 }
 function createInstrumentations() {
-  var mutableInstrumentations = {
+  var mutableInstrumentations2 = {
     get(key) {
       return get(this, key);
     },
@@ -987,7 +918,7 @@ function createInstrumentations() {
     clear,
     forEach: createForEach(false, false)
   };
-  var shallowInstrumentations = {
+  var shallowInstrumentations2 = {
     get(key) {
       return get(this, key, false, true);
     },
@@ -1001,7 +932,7 @@ function createInstrumentations() {
     clear,
     forEach: createForEach(false, true)
   };
-  var readonlyInstrumentations = {
+  var readonlyInstrumentations2 = {
     get(key) {
       return get(this, key, true);
     },
@@ -1011,13 +942,13 @@ function createInstrumentations() {
     has(key) {
       return has.call(this, key, true);
     },
-    add: createReadonlyMethod("add" /* TriggerOpTypes.ADD */),
-    set: createReadonlyMethod("set" /* TriggerOpTypes.SET */),
-    delete: createReadonlyMethod("delete" /* TriggerOpTypes.DELETE */),
-    clear: createReadonlyMethod("clear" /* TriggerOpTypes.CLEAR */),
+    add: createReadonlyMethod("add"),
+    set: createReadonlyMethod("set"),
+    delete: createReadonlyMethod("delete"),
+    clear: createReadonlyMethod("clear"),
     forEach: createForEach(true, false)
   };
-  var shallowReadonlyInstrumentations = {
+  var shallowReadonlyInstrumentations2 = {
     get(key) {
       return get(this, key, true, true);
     },
@@ -1027,183 +958,159 @@ function createInstrumentations() {
     has(key) {
       return has.call(this, key, true);
     },
-    add: createReadonlyMethod("add" /* TriggerOpTypes.ADD */),
-    set: createReadonlyMethod("set" /* TriggerOpTypes.SET */),
-    delete: createReadonlyMethod("delete" /* TriggerOpTypes.DELETE */),
-    clear: createReadonlyMethod("clear" /* TriggerOpTypes.CLEAR */),
+    add: createReadonlyMethod("add"),
+    set: createReadonlyMethod("set"),
+    delete: createReadonlyMethod("delete"),
+    clear: createReadonlyMethod("clear"),
     forEach: createForEach(true, true)
   };
-  var iteratorMethods = ['keys', 'values', 'entries', Symbol.iterator];
+  var iteratorMethods = ["keys", "values", "entries", Symbol.iterator];
   iteratorMethods.forEach(method => {
-    mutableInstrumentations[method] = createIterableMethod(method, false, false);
-    readonlyInstrumentations[method] = createIterableMethod(method, true, false);
-    shallowInstrumentations[method] = createIterableMethod(method, false, true);
-    shallowReadonlyInstrumentations[method] = createIterableMethod(method, true, true);
+    mutableInstrumentations2[method] = createIterableMethod(method, false, false);
+    readonlyInstrumentations2[method] = createIterableMethod(method, true, false);
+    shallowInstrumentations2[method] = createIterableMethod(method, false, true);
+    shallowReadonlyInstrumentations2[method] = createIterableMethod(method, true, true);
   });
-  return [mutableInstrumentations, readonlyInstrumentations, shallowInstrumentations, shallowReadonlyInstrumentations];
+  return [mutableInstrumentations2, readonlyInstrumentations2, shallowInstrumentations2, shallowReadonlyInstrumentations2];
 }
-var [mutableInstrumentations, readonlyInstrumentations, shallowInstrumentations, shallowReadonlyInstrumentations] = /* #__PURE__*/createInstrumentations();
+var [mutableInstrumentations, readonlyInstrumentations, shallowInstrumentations, shallowReadonlyInstrumentations] = /* @__PURE__ */createInstrumentations();
 function createInstrumentationGetter(isReadonly, shallow) {
   var instrumentations = shallow ? isReadonly ? shallowReadonlyInstrumentations : shallowInstrumentations : isReadonly ? readonlyInstrumentations : mutableInstrumentations;
   return (target, key, receiver) => {
-    if (key === "__v_isReactive" /* ReactiveFlags.IS_REACTIVE */) {
+    if (key === "__v_isReactive") {
       return !isReadonly;
-    } else if (key === "__v_isReadonly" /* ReactiveFlags.IS_READONLY */) {
+    } else if (key === "__v_isReadonly") {
       return isReadonly;
-    } else if (key === "__v_raw" /* ReactiveFlags.RAW */) {
+    } else if (key === "__v_raw") {
       return target;
     }
     return Reflect.get(hasOwn(instrumentations, key) && key in target ? instrumentations : target, key, receiver);
   };
 }
 var mutableCollectionHandlers = {
-  get: /*#__PURE__*/createInstrumentationGetter(false, false)
+  get: /* @__PURE__ */createInstrumentationGetter(false, false)
 };
 var shallowCollectionHandlers = {
-  get: /*#__PURE__*/createInstrumentationGetter(false, true)
+  get: /* @__PURE__ */createInstrumentationGetter(false, true)
 };
 var readonlyCollectionHandlers = {
-  get: /*#__PURE__*/createInstrumentationGetter(true, false)
+  get: /* @__PURE__ */createInstrumentationGetter(true, false)
 };
 var shallowReadonlyCollectionHandlers = {
-  get: /*#__PURE__*/createInstrumentationGetter(true, true)
+  get: /* @__PURE__ */createInstrumentationGetter(true, true)
 };
-function checkIdentityKeys(target, has, key) {
+function checkIdentityKeys(target, has2, key) {
   var rawKey = toRaw(key);
-  if (rawKey !== key && has.call(target, rawKey)) {
+  if (rawKey !== key && has2.call(target, rawKey)) {
     var type = toRawType(target);
-    console.warn("Reactive ".concat(type, " contains both the raw and reactive ") + "versions of the same object".concat(type === "Map" ? " as keys" : "", ", ") + "which can lead to inconsistencies. " + "Avoid differentiating between the raw and reactive versions " + "of an object and only use the reactive version if possible.");
+    console.warn("Reactive ".concat(type, " contains both the raw and reactive versions of the same object").concat(type === "Map" ? " as keys" : "", ", which can lead to inconsistencies. Avoid differentiating between the raw and reactive versions of an object and only use the reactive version if possible."));
   }
 }
-var reactiveMap = new WeakMap();
-var shallowReactiveMap = new WeakMap();
-var readonlyMap = new WeakMap();
-var shallowReadonlyMap = new WeakMap();
+var reactiveMap = /* @__PURE__ */new WeakMap();
+var shallowReactiveMap = /* @__PURE__ */new WeakMap();
+var readonlyMap = /* @__PURE__ */new WeakMap();
+var shallowReadonlyMap = /* @__PURE__ */new WeakMap();
 function targetTypeMap(rawType) {
   switch (rawType) {
-    case 'Object':
-    case 'Array':
-      return 1 /* TargetType.COMMON */;
-    case 'Map':
-    case 'Set':
-    case 'WeakMap':
-    case 'WeakSet':
-      return 2 /* TargetType.COLLECTION */;
+    case "Object":
+    case "Array":
+      return 1 /* COMMON */;
+    case "Map":
+    case "Set":
+    case "WeakMap":
+    case "WeakSet":
+      return 2 /* COLLECTION */;
     default:
-      return 0 /* TargetType.INVALID */;
+      return 0 /* INVALID */;
   }
 }
 
 function getTargetType(value) {
-  return value["__v_skip" /* ReactiveFlags.SKIP */] || !Object.isExtensible(value) ? 0 /* TargetType.INVALID */ : targetTypeMap(toRawType(value));
+  return value["__v_skip"] || !Object.isExtensible(value) ? 0 /* INVALID */ : targetTypeMap(toRawType(value));
 }
 function reactive(target) {
-  // if trying to observe a readonly proxy, return the readonly version.
   if (isReadonly(target)) {
     return target;
   }
   return createReactiveObject(target, false, mutableHandlers, mutableCollectionHandlers, reactiveMap);
 }
-/**
- * Return a shallowly-reactive copy of the original object, where only the root
- * level properties are reactive. It also does not auto-unwrap refs (even at the
- * root level).
- */
 function shallowReactive(target) {
   return createReactiveObject(target, false, shallowReactiveHandlers, shallowCollectionHandlers, shallowReactiveMap);
 }
-/**
- * Creates a readonly copy of the original object. Note the returned copy is not
- * made reactive, but `readonly` can be called on an already reactive object.
- */
 function readonly(target) {
   return createReactiveObject(target, true, readonlyHandlers, readonlyCollectionHandlers, readonlyMap);
 }
-/**
- * Returns a reactive-copy of the original object, where only the root level
- * properties are readonly, and does NOT unwrap refs nor recursively convert
- * returned properties.
- * This is used for creating the props proxy object for stateful components.
- */
 function shallowReadonly(target) {
   return createReactiveObject(target, true, shallowReadonlyHandlers, shallowReadonlyCollectionHandlers, shallowReadonlyMap);
 }
-function createReactiveObject(target, isReadonly, baseHandlers, collectionHandlers, proxyMap) {
+function createReactiveObject(target, isReadonly2, baseHandlers, collectionHandlers, proxyMap) {
   if (!isObject(target)) {
     {
       console.warn("value cannot be made reactive: ".concat(String(target)));
     }
     return target;
   }
-  // target is already a Proxy, return it.
-  // exception: calling readonly() on a reactive object
-  if (target["__v_raw" /* ReactiveFlags.RAW */] && !(isReadonly && target["__v_isReactive" /* ReactiveFlags.IS_REACTIVE */])) {
+  if (target["__v_raw"] && !(isReadonly2 && target["__v_isReactive"])) {
     return target;
   }
-  // target already has corresponding Proxy
   var existingProxy = proxyMap.get(target);
   if (existingProxy) {
     return existingProxy;
   }
-  // only specific value types can be observed.
   var targetType = getTargetType(target);
-  if (targetType === 0 /* TargetType.INVALID */) {
+  if (targetType === 0 /* INVALID */) {
     return target;
   }
-  var proxy = new Proxy(target, targetType === 2 /* TargetType.COLLECTION */ ? collectionHandlers : baseHandlers);
+  var proxy = new Proxy(target, targetType === 2 /* COLLECTION */ ? collectionHandlers : baseHandlers);
   proxyMap.set(target, proxy);
   return proxy;
 }
 function isReactive(value) {
   if (isReadonly(value)) {
-    return isReactive(value["__v_raw" /* ReactiveFlags.RAW */]);
+    return isReactive(value["__v_raw"]);
   }
-
-  return !!(value && value["__v_isReactive" /* ReactiveFlags.IS_REACTIVE */]);
+  return !!(value && value["__v_isReactive"]);
 }
-
 function isReadonly(value) {
-  return !!(value && value["__v_isReadonly" /* ReactiveFlags.IS_READONLY */]);
+  return !!(value && value["__v_isReadonly"]);
 }
-
 function isShallow$1(value) {
-  return !!(value && value["__v_isShallow" /* ReactiveFlags.IS_SHALLOW */]);
+  return !!(value && value["__v_isShallow"]);
 }
-
 function isProxy(value) {
   return isReactive(value) || isReadonly(value);
 }
 function toRaw(observed) {
-  var raw = observed && observed["__v_raw" /* ReactiveFlags.RAW */];
+  var raw = observed && observed["__v_raw"];
   return raw ? toRaw(raw) : observed;
 }
 function markRaw(value) {
-  def(value, "__v_skip" /* ReactiveFlags.SKIP */, true);
+  def(value, "__v_skip", true);
   return value;
 }
 var toReactive = value => isObject(value) ? reactive(value) : value;
 var toReadonly = value => isObject(value) ? readonly(value) : value;
-function trackRefValue(ref) {
+function trackRefValue(ref2) {
   if (shouldTrack && activeEffect) {
-    ref = toRaw(ref);
+    ref2 = toRaw(ref2);
     {
-      trackEffects(ref.dep || (ref.dep = createDep()), {
-        target: ref,
-        type: "get" /* TrackOpTypes.GET */,
-        key: 'value'
+      trackEffects(ref2.dep || (ref2.dep = createDep()), {
+        target: ref2,
+        type: "get",
+        key: "value"
       });
     }
   }
 }
-function triggerRefValue(ref, newVal) {
-  ref = toRaw(ref);
-  var dep = ref.dep;
+function triggerRefValue(ref2, newVal) {
+  ref2 = toRaw(ref2);
+  var dep = ref2.dep;
   if (dep) {
     {
       triggerEffects(dep, {
-        target: ref,
-        type: "set" /* TriggerOpTypes.SET */,
-        key: 'value',
+        target: ref2,
+        type: "set",
+        key: "value",
         newValue: newVal
       });
     }
@@ -1227,7 +1134,7 @@ function createRef(rawValue, shallow) {
 class RefImpl {
   constructor(value, __v_isShallow) {
     this.__v_isShallow = __v_isShallow;
-    this.dep = undefined;
+    this.dep = void 0;
     this.__v_isRef = true;
     this._rawValue = __v_isShallow ? value : toRaw(value);
     this._value = __v_isShallow ? value : toReactive(value);
@@ -1246,11 +1153,11 @@ class RefImpl {
     }
   }
 }
-function triggerRef(ref) {
-  triggerRefValue(ref, ref.value);
+function triggerRef(ref2) {
+  triggerRefValue(ref2, ref2.value);
 }
-function unref(ref) {
-  return isRef(ref) ? ref.value : ref;
+function unref(ref2) {
+  return isRef(ref2) ? ref2.value : ref2;
 }
 var shallowUnwrapHandlers = {
   get: (target, key, receiver) => unref(Reflect.get(target, key, receiver)),
@@ -1269,7 +1176,7 @@ function proxyRefs(objectWithRefs) {
 }
 class CustomRefImpl {
   constructor(factory) {
-    this.dep = undefined;
+    this.dep = void 0;
     this.__v_isRef = true;
     var {
       get,
@@ -1294,7 +1201,7 @@ function toRefs(object) {
   }
   var ret = isArray(object) ? new Array(object.length) : {};
   for (var key in object) {
-    ret[key] = toRef(object, key);
+    ret[key] = propertyToRef(object, key);
   }
   return ret;
 }
@@ -1307,7 +1214,7 @@ class ObjectRefImpl {
   }
   get value() {
     var val = this._object[this._key];
-    return val === undefined ? this._defaultValue : val;
+    return val === void 0 ? this._defaultValue : val;
   }
   set value(newVal) {
     this._object[this._key] = newVal;
@@ -1316,17 +1223,37 @@ class ObjectRefImpl {
     return getDepFromReactive(toRaw(this._object), this._key);
   }
 }
-function toRef(object, key, defaultValue) {
-  var val = object[key];
-  return isRef(val) ? val : new ObjectRefImpl(object, key, defaultValue);
+class GetterRefImpl {
+  constructor(_getter) {
+    this._getter = _getter;
+    this.__v_isRef = true;
+    this.__v_isReadonly = true;
+  }
+  get value() {
+    return this._getter();
+  }
 }
-var _a$1;
+function toRef(source, key, defaultValue) {
+  if (isRef(source)) {
+    return source;
+  } else if (isFunction(source)) {
+    return new GetterRefImpl(source);
+  } else if (isObject(source) && arguments.length > 1) {
+    return propertyToRef(source, key, defaultValue);
+  } else {
+    return ref(source);
+  }
+}
+function propertyToRef(source, key, defaultValue) {
+  var val = source[key];
+  return isRef(val) ? val : new ObjectRefImpl(source, key, defaultValue);
+}
 class ComputedRefImpl {
   constructor(getter, _setter, isReadonly, isSSR) {
     this._setter = _setter;
-    this.dep = undefined;
+    this.dep = void 0;
     this.__v_isRef = true;
-    this[_a$1] = false;
+    this["__v_isReadonly"] = false;
     this._dirty = true;
     this.effect = new ReactiveEffect(getter, () => {
       if (!this._dirty) {
@@ -1336,10 +1263,9 @@ class ComputedRefImpl {
     });
     this.effect.computed = this;
     this.effect.active = this._cacheable = !isSSR;
-    this["__v_isReadonly" /* ReactiveFlags.IS_READONLY */] = isReadonly;
+    this["__v_isReadonly"] = isReadonly;
   }
   get value() {
-    // the computed ref may get wrapped by other proxies e.g. readonly() #3376
     var self = toRaw(this);
     trackRefValue(self);
     if (self._dirty || !self._cacheable) {
@@ -1352,7 +1278,6 @@ class ComputedRefImpl {
     this._setter(newValue);
   }
 }
-_a$1 = "__v_isReadonly" /* ReactiveFlags.IS_READONLY */;
 function computed$1(getterOrOptions, debugOptions) {
   var isSSR = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
   var getter;
@@ -1361,7 +1286,7 @@ function computed$1(getterOrOptions, debugOptions) {
   if (onlyGetter) {
     getter = getterOrOptions;
     setter = () => {
-      console.warn('Write operation failed: computed value is readonly');
+      console.warn("Write operation failed: computed value is readonly");
     };
   } else {
     getter = getterOrOptions.get;
@@ -1644,8 +1569,20 @@ var resolvedPromise = /*#__PURE__*/Promise.resolve();
 var currentFlushPromise = null;
 var RECURSION_LIMIT = 100;
 function nextTick(fn) {
-  var p = currentFlushPromise || resolvedPromise;
-  return fn ? p.then(this ? fn.bind(this) : fn) : p;
+  var instance = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : getCurrentInstance();
+  var promise = currentFlushPromise || resolvedPromise;
+  var current = currentFlushPromise === null || instance === null ? promise : promise.then(() => {
+    return new Promise(resolve => {
+      if (instance === null) {
+        resolve();
+      } else {
+        instance.$waitNativeRender(() => {
+          resolve();
+        });
+      }
+    });
+  });
+  return fn ? current.then(this ? fn.bind(this) : fn) : current;
 }
 // #2768
 // Use binary-search to find a suitable position in the queue,
@@ -1923,7 +1860,7 @@ function reload(id, newComp) {
   });
 }
 function updateComponentDef(oldComp, newComp) {
-  extend(oldComp, newComp);
+  extend$1(oldComp, newComp);
   for (var key in oldComp) {
     if (key !== '__file' && !(key in newComp)) {
       delete oldComp[key];
@@ -2125,7 +2062,7 @@ function normalizeEmitsOptions(comp, appContext) {
       var normalizedFromExtend = normalizeEmitsOptions(raw, appContext, true);
       if (normalizedFromExtend) {
         hasExtends = true;
-        extend(normalized, normalizedFromExtend);
+        extend$1(normalized, normalizedFromExtend);
       }
     };
     if (!asMixin && appContext.mixins.length) {
@@ -2147,7 +2084,7 @@ function normalizeEmitsOptions(comp, appContext) {
   if (isArray(raw)) {
     raw.forEach(key => normalized[key] = null);
   } else {
-    extend(normalized, raw);
+    extend$1(normalized, raw);
   }
   if (isObject(comp)) {
     cache.set(comp, normalized);
@@ -4416,7 +4353,7 @@ var publicPropertiesMap =
 // Move PURE marker to new line to workaround compiler discarding it
 // due to type annotation
 /*#__PURE__*/
-extend(Object.create(null), {
+extend$1(Object.create(null), {
   $: i => i,
   $el: i => i.vnode.el,
   $data: i => i.data,
@@ -4595,7 +4532,7 @@ var PublicInstanceProxyHandlers = {
     return Reflect.ownKeys(target);
   };
 }
-var RuntimeCompiledPublicInstanceProxyHandlers = /*#__PURE__*/extend({}, PublicInstanceProxyHandlers, {
+var RuntimeCompiledPublicInstanceProxyHandlers = /*#__PURE__*/extend$1({}, PublicInstanceProxyHandlers, {
   get(target, key) {
     // fast path for unscopables when using `with` block
     if (key === Symbol.unscopables) {
@@ -5071,7 +5008,7 @@ function mergeDataFn(to, from) {
     return from;
   }
   return function mergedDataFn() {
-    return extend(isFunction(to) ? to.call(this, this) : to, isFunction(from) ? from.call(this, this) : from);
+    return extend$1(isFunction(to) ? to.call(this, this) : to, isFunction(from) ? from.call(this, this) : from);
   };
 }
 function mergeInject(to, from) {
@@ -5091,12 +5028,12 @@ function mergeAsArray(to, from) {
   return to ? [...new Set([].concat(to, from))] : from;
 }
 function mergeObjectOptions(to, from) {
-  return to ? extend(extend(Object.create(null), to), from) : from;
+  return to ? extend$1(extend$1(Object.create(null), to), from) : from;
 }
 function mergeWatchOptions(to, from) {
   if (!to) return from;
   if (!from) return to;
-  var merged = extend(Object.create(null), to);
+  var merged = extend$1(Object.create(null), to);
   for (var key in from) {
     merged[key] = mergeAsArray(to[key], from[key]);
   }
@@ -5321,7 +5258,7 @@ function normalizePropsOptions(comp, appContext) {
     var extendProps = raw => {
       hasExtends = true;
       var [props, keys] = normalizePropsOptions(raw, appContext, true);
-      extend(normalized, props);
+      extend$1(normalized, props);
       if (keys) needCastKeys.push(...keys);
     };
     if (!asMixin && appContext.mixins.length) {
@@ -5610,7 +5547,7 @@ var updateSlots = (instance, children, optimized) => {
       if (isHmrUpdating) {
         // Parent was HMR updated so slot content may have changed.
         // force update slots and mark instance for hmr as well
-        extend(slots, children);
+        extend$1(slots, children);
       } else if (optimized && type === 1 /* SlotFlags.STABLE */) {
         // compiled AND stable.
         // no need to update, and skip stale slots removal.
@@ -5618,7 +5555,7 @@ var updateSlots = (instance, children, optimized) => {
       } else {
         // compiled but dynamic (v-if/v-for on slots) - update slots, but skip
         // normalization.
-        extend(slots, children);
+        extend$1(slots, children);
         // #2893
         // when rendering the optimized slots by manually written render function,
         // we need to delete the `slots._` flag if necessary to make subsequent updates reliable,
@@ -5824,7 +5761,8 @@ function setRef(rawRef, oldRawRef, parentSuspense, vnode) {
     // because the template ref is forwarded to inner component
     return;
   }
-  var refValue = vnode.shapeFlag & 4 /* ShapeFlags.STATEFUL_COMPONENT */ ? getExposeProxy(vnode.component) || vnode.component.proxy : vnode.el;
+  var refValue = vnode.shapeFlag & 4 /* ShapeFlags.STATEFUL_COMPONENT */ && !vnode.component.type.rootElement // fixed by xxxxxx 非 x 项目或者非内置组件
+  ? getExposeProxy(vnode.component) || vnode.component.proxy : vnode.el;
   var value = isUnmount ? null : refValue;
   var {
     i: owner,
@@ -6735,8 +6673,8 @@ function baseCreateRenderer(options, createHydrationFns) {
     }
   };
   var processFragment = (n1, n2, container, anchor, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized) => {
-    var fragmentStartAnchor = n2.el = n1 ? n1.el : hostCreateText('', container); // fixed by xxxxxx
-    var fragmentEndAnchor = n2.anchor = n1 ? n1.anchor : hostCreateText('', container); // fixed by xxxxxx
+    var fragmentStartAnchor = n2.el = n1 ? n1.el : hostCreateComment('', container); // fixed by xxxxxx
+    var fragmentEndAnchor = n2.anchor = n1 ? n1.anchor : hostCreateComment('', container); // fixed by xxxxxx
     var {
       patchFlag,
       dynamicChildren,
@@ -8166,7 +8104,7 @@ function _createVNode(type) {
       // reactive state objects need to be cloned since they are likely to be
       // mutated
       if (isProxy(style) && !isArray(style)) {
-        style = extend({}, style);
+        style = extend$1({}, style);
       }
       props.style = normalizeStyle(style);
     }
@@ -8181,7 +8119,7 @@ function _createVNode(type) {
 }
 function guardReactiveProps(props) {
   if (!props) return null;
-  return isProxy(props) || InternalObjectKey in props ? extend({}, props) : props;
+  return isProxy(props) || InternalObjectKey in props ? extend$1({}, props) : props;
 }
 function cloneVNode(vnode, extraProps) {
   var mergeRef = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
@@ -8454,7 +8392,11 @@ function createComponentInstance(vnode, parent, suspense) {
     rtg: null,
     rtc: null,
     ec: null,
-    sp: null
+    sp: null,
+    $waitNativeRender(fn) {
+      // TODO use native
+      setTimeout(fn, 150);
+    }
   };
   {
     instance.ctx = createDevRenderContext(instance);
@@ -8631,7 +8573,7 @@ function finishComponentSetup(instance, isSSR, skipOptions) {
           delimiters,
           compilerOptions: componentCompilerOptions
         } = Component;
-        var finalCompilerOptions = extend(extend({
+        var finalCompilerOptions = extend$1(extend$1({
           isCustomElement,
           delimiters
         }, compilerOptions), componentCompilerOptions);
@@ -9045,7 +8987,7 @@ function initCustomFormatter() {
     return blocks;
   }
   function createInstanceBlock(type, target) {
-    target = extend({}, target);
+    target = extend$1({}, target);
     if (!Object.keys(target).length) {
       return ['span', {}];
     }
@@ -9157,53 +9099,11 @@ var resolveFilter = null;
  * @internal only exposed in compat builds.
  */
 var compatUtils = null;
-var rootPage = null;
-var rootDocument = null;
-function getDocument() {
-  if (!rootPage) {
-    rootPage = __pageManager.createPage('', '', new Map());
-  }
-  if (!rootDocument) {
-    rootDocument = rootPage.document;
-  }
-  return rootDocument;
-}
-var nodeOps = {
-  insert: (child, parent, anchor) => {
-    if (!anchor) {
-      return parent.appendChild(child);
-    }
-    return parent.insertBefore(child, anchor);
-  },
-  remove: child => {
-    var parent = child.parentNode;
-    if (parent) {
-      parent.removeChild(child);
-    }
-  },
-  createElement: (tag, container) => {
-    return getDocument().createElement(tag);
-  },
-  createText: (text, container) => {
-    var textNode = getDocument().createElement(text);
-    textNode.setAttribute('value', text);
-    return textNode;
-  },
-  createComment: (text, container) => {
-    return getDocument().createComment(text);
-  },
-  setText: (node, text) => {
-    node.setAttribute('value', text);
-  },
-  setElementText: (el, text) => {
-    el.setAttribute('value', text);
-  },
-  parentNode: node => node.parentNode,
-  nextSibling: node => node.nextSibling
-};
 
 // 样式相关
 var NODE_EXT_STYLES = 'styles'; // node 中存储的可用样式表
+var NODE_EXT_CLASS_STYLE = 'classStyle'; // node 中存储的 classStyle
+var NODE_EXT_STYLE = 'style'; // node 中存储的 style
 function setNodeExtraData(el, name, value) {
   el.ext.set(name, value);
 }
@@ -9215,6 +9115,21 @@ function getExtraStyles(el) {
 }
 function setExtraStyles(el, styles) {
   setNodeExtraData(el, NODE_EXT_STYLES, styles);
+}
+function getExtraClassStyle(el) {
+  return getNodeExtraData(el, NODE_EXT_CLASS_STYLE);
+}
+function setExtraClassStyle(el, classStyle) {
+  setNodeExtraData(el, NODE_EXT_CLASS_STYLE, classStyle);
+}
+function getExtraStyle(el) {
+  return getNodeExtraData(el, NODE_EXT_STYLE);
+}
+function setExtraStyle(el, style) {
+  setNodeExtraData(el, NODE_EXT_STYLE, style);
+}
+function isCommentNode(node) {
+  return node.nodeName == '#comment';
 }
 function each(obj) {
   return Object.keys(obj);
@@ -9309,7 +9224,7 @@ function parseClassName(_ref22, parentStyles, el) {
       var weight = classWeight + (isImportant ? WEIGHT_IMPORTANT : 0);
       if (weight >= oldWeight) {
         weights[name] = weight;
-        styles[name] = value;
+        styles.set(name, value);
       }
     });
   });
@@ -9317,7 +9232,7 @@ function parseClassName(_ref22, parentStyles, el) {
 function parseClassListWithStyleSheet(classList, stylesheet) {
   var el = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
   var context = {
-    styles: {},
+    styles: new Map(),
     weights: {}
   };
   classList.forEach(className => {
@@ -9326,7 +9241,7 @@ function parseClassListWithStyleSheet(classList, stylesheet) {
       parseClassName(context, parentStyles, el);
     }
   });
-  return context.styles;
+  return context;
 }
 function parseClassStyles(el) {
   var styles = getExtraStyles(el);
@@ -9365,15 +9280,128 @@ function parseStyleSheet(_ref23) {
   }
   return component.__styles;
 }
-function toMap(value) {
-  if (value instanceof Map) {
-    return value;
+function extend(a, b) {
+  b.forEach((value, key) => {
+    a.set(key, value);
+  });
+  return a;
+}
+function toStyle(el, classStyle, classStyleWeights) {
+  var res = extend(new Map(), classStyle);
+  var style = getExtraStyle(el);
+  if (style != null) {
+    style.forEach((value, key) => {
+      var weight = classStyleWeights[key];
+      // TODO: 目前只计算了 class 中 important 的权重，会存在 style class 同时设置 important 时，class 优先级更高的问题
+      if (weight == null || weight < WEIGHT_IMPORTANT) {
+        res.set(key, value);
+      }
+    });
   }
-  var map = new Map();
-  for (var key in value) {
-    map.set(key, value[key]);
+  return res;
+}
+function patchClass(el, pre, next) {
+  var instance = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+  if (!instance) {
+    return;
   }
-  return map;
+  var classList = next ? next.split(' ') : [];
+  el.classList = classList;
+  setExtraStyles(el, parseStyleSheet(instance));
+  // TODO 如果当前元素是组件根节点(非页面)
+  updateClassStyles(el);
+}
+function updateClassStyles(el) {
+  if (el.parentNode == null || isCommentNode(el)) {
+    return;
+  }
+  if (getExtraClassStyle(el) == null) {
+    setExtraClassStyle(el, new Map());
+  }
+  var oldClassStyle = getExtraClassStyle(el);
+  // reset previous class style to empty string
+  oldClassStyle.forEach((_value, key) => {
+    oldClassStyle.set(key, '');
+  });
+  var parseClassStylesResult = parseClassStyles(el);
+  parseClassStylesResult.styles.forEach((value, key) => {
+    oldClassStyle.set(key, value);
+  });
+  var styles = toStyle(el, oldClassStyle, parseClassStylesResult.weights);
+  if (styles.size == 0) {
+    return;
+  }
+  // TODO validateStyles
+  // validateStyles(el, oldClassStyle)
+  el.updateStyle(styles);
+}
+var rootPage = null;
+var rootDocument = null;
+function getDocument() {
+  if (!rootPage) {
+    rootPage = __pageManager.createPage('', '', new Map());
+  }
+  if (!rootDocument) {
+    rootDocument = rootPage.document;
+  }
+  return rootDocument;
+}
+/**
+ * 判断是否在document中
+ * @param el
+ * @returns
+ */
+function isInDocument(parent) {
+  return !!parent.pageId;
+}
+var nodeOps = {
+  insert: (el, parent, anchor) => {
+    if (!anchor) {
+      parent.appendChild(el);
+    } else {
+      parent.insertBefore(el, anchor);
+    }
+    // 判断是不是首次被完整插入DOM树中
+    // vue 插入节点的顺序是，先子后父，所以等待父真正被完整插入document时，再遍历一遍子节点校正父子选择器样式
+    if (isInDocument(parent)) {
+      updateClassStyles(el);
+      updateChildrenClassStyle(el);
+    }
+  },
+  remove: child => {
+    var parent = child.parentNode;
+    if (parent) {
+      parent.removeChild(child);
+    }
+  },
+  createElement: (tag, container) => {
+    return getDocument().createElement(tag);
+  },
+  createText: (text, container) => {
+    var textNode = getDocument().createElement('text');
+    textNode.setAttribute('value', text);
+    return textNode;
+  },
+  createComment: (text, container) => {
+    return getDocument().createComment(text);
+  },
+  setText: (node, text) => {
+    node.setAttribute('value', text);
+  },
+  setElementText: (el, text) => {
+    el.setAttribute('value', text);
+  },
+  parentNode: node => node.parentNode,
+  nextSibling: node => node.nextSibling
+};
+// patchClass 先子后父，所以插入父的时候 updateChildrenClassStyle
+function updateChildrenClassStyle(el) {
+  if (el !== null) {
+    el.childNodes.forEach(child => {
+      updateClassStyles(child);
+      updateChildrenClassStyle(child);
+    });
+  }
 }
 function patchAttr(el, key, value) {
   var instance = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
@@ -9433,24 +9461,6 @@ function transformAttr(el, key, value, instance) {
     }
   }
   return [key, value];
-}
-
-/**
- * 当前仅 patch 到 el 中，真正更新则是在 el 中
- * @param el
- * @param pre
- * @param next
- * @param instance
- * @returns
- */
-function patchClass(el, pre, next) {
-  var instance = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
-  if (!instance) {
-    return;
-  }
-  var classList = next ? next.split(' ') : [];
-  el.classList = classList;
-  setExtraStyles(el, parseStyleSheet(instance));
 }
 function addEventListener(el, event, handler, options) {
   el.addEventListener(event, handler);
@@ -9533,26 +9543,28 @@ function patchStyle(el, prev, next) {
   if (isString(next)) {
     next = parseStringStyle(next);
   }
-  var batchedStyles = {};
+  var batchedStyles = new Map();
   var isPrevObj = prev && !isString(prev);
   if (isPrevObj) {
     for (var key in prev) {
       if (next[key] == null) {
-        batchedStyles[camelize(key)] = '';
+        batchedStyles.set(camelize(key), '');
       }
     }
     for (var _key21 in next) {
       var value = next[_key21];
       if (value !== prev[_key21]) {
-        batchedStyles[camelize(_key21)] = value;
+        batchedStyles.set(camelize(_key21), value);
       }
     }
   } else {
     for (var _key22 in next) {
-      batchedStyles[camelize(_key22)] = next[_key22];
+      batchedStyles.set(camelize(_key22), next[_key22]);
     }
+    setExtraStyle(el, batchedStyles);
   }
-  el.updateStyle(toMap(batchedStyles));
+  // TODO validateStyles(el, batchedStyles)
+  el.updateStyle(batchedStyles);
 }
 var vModelTags = ['u-input', 'u-textarea'];
 var patchProp = function (el, key, prevValue, nextValue) {
@@ -9685,7 +9697,7 @@ var withKeys = (fn, modifiers) => {
     }
   };
 };
-var rendererOptions = extend({
+var rendererOptions = extend$1({
   patchProp
 }, nodeOps);
 // lazy create the renderer - this makes core renderer logic tree-shakable

@@ -50,6 +50,7 @@ export const H5_API_STYLE_PATH = '@dcloudio/uni-h5/style/api/'
 export const H5_FRAMEWORK_STYLE_PATH = '@dcloudio/uni-h5/style/framework/'
 export const H5_COMPONENTS_STYLE_PATH = '@dcloudio/uni-h5/style/'
 export const BASE_COMPONENTS_STYLE_PATH = '@dcloudio/uni-components/style/'
+export const X_BASE_COMPONENTS_STYLE_PATH = '@dcloudio/uni-components/style-x/'
 
 export const COMMON_EXCLUDE = [
   /\/pages\.json\.js$/,
@@ -61,8 +62,6 @@ export const COMMON_EXCLUDE = [
   /\/vue-i18n\//,
   /\/@dcloudio\/uni-h5-vue/,
   /\/@dcloudio\/uni-shared/,
-  /\/@dcloudio\/uni-h5\/style/,
-  /\/@dcloudio\/uni-components\/style/,
 ]
 
 export const KNOWN_ASSET_TYPES = [

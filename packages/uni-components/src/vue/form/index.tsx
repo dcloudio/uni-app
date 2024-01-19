@@ -1,4 +1,4 @@
-import { provide, ref } from 'vue'
+import { provide, ref, onMounted } from 'vue'
 import {
   CustomEventTrigger,
   EmitEvent,
@@ -6,6 +6,7 @@ import {
 } from '@dcloudio/uni-components'
 import { PolySymbol } from '@dcloudio/uni-core'
 import { defineBuiltInComponent } from '../../helpers/component'
+import { UniElement } from '../../helpers/UniElement'
 
 export const uniFormKey = PolySymbol(__DEV__ ? 'uniForm' : 'uf')
 
@@ -21,12 +22,25 @@ interface UniFormFieldCtx {
   reset?: () => void
 }
 
+class UniFormElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Form',
   emits: ['submit', 'reset'],
+  //#if _X_ && !_NODE_JS_
+  rootElement: {
+    name: 'uni-form',
+    class: UniFormElement,
+  },
+  //#endif
   setup(_props, { slots, emit }) {
     const rootRef = ref<HTMLElement | null>(null)
     provideForm(useCustomEvent<EmitEvent<typeof emit>>(rootRef, emit))
+    //#if _X_ && !_NODE_JS_
+    onMounted(() => {
+      const rootElement = rootRef.value as UniFormElement
+      rootElement.attachVmProps(_props)
+    })
+    //#endif
     return () => (
       <uni-form ref={rootRef}>
         <span>{slots.default && slots.default()}</span>

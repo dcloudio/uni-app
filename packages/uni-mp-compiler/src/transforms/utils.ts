@@ -23,7 +23,7 @@ import {
   SourceLocation,
   TransformContext as VueTransformContext,
 } from '@vue/compiler-core'
-import { walk, BaseNode } from 'estree-walker'
+import { walk } from 'estree-walker'
 import { isUndefined, parseExpr } from '../ast'
 import { genBabelExpr, genExpr } from '../codegen'
 import { CodegenScope } from '../options'
@@ -188,8 +188,8 @@ export function findReferencedScope(
 
 export function isReferencedByIds(node: Expression, knownIds: string[]) {
   let referenced = false
-  walk(node as unknown as BaseNode, {
-    enter(node: BaseNode, parent: BaseNode) {
+  walk(node, {
+    enter(node, parent) {
       if (referenced) {
         return this.skip()
       }

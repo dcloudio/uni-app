@@ -1,8 +1,9 @@
-import { ref } from 'vue'
+import { ref, Ref, onMounted } from 'vue'
 import { getRealPath } from '@dcloudio/uni-platform'
-import { useCustomEvent, EmitEvent } from '@dcloudio/uni-components'
+import { useCustomEvent, EmitEvent, UniElement } from '@dcloudio/uni-components'
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
 
+class UniCoverImageElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'CoverImage',
   compatConfig: {
@@ -14,9 +15,15 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       default: '',
     },
   },
+  //#if _X_ && !_NODE_JS_
+  rootElement: {
+    name: 'uni-cover-image',
+    class: UniCoverImageElement,
+  },
+  //#endif
   emits: ['load', 'error'],
   setup(props, { emit }) {
-    const root = ref(null)
+    const root: Ref<HTMLElement | null> = ref(null)
     const trigger = useCustomEvent<EmitEvent<typeof emit>>(root, emit)
 
     function load($event: Event) {
@@ -26,6 +33,12 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       trigger('error', $event)
     }
 
+    //#if _X_ && !_NODE_JS_
+    onMounted(() => {
+      const rootElement = root.value as UniCoverImageElement
+      rootElement.attachVmProps(props)
+    })
+    //#endif
     return () => {
       const { src } = props
 

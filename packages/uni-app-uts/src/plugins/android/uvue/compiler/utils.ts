@@ -5,16 +5,25 @@ import { ExpressionNode, createSimpleExpression } from '@vue/compiler-core'
 import { MagicString, walk } from '@vue/compiler-sfc'
 import { parseExpression } from '@babel/parser'
 import { normalizePath } from '@dcloudio/uni-cli-shared'
-import { CompilerOptions } from './options'
+import { TemplateCompilerOptions } from './options'
 import { stringifyExpression } from './transforms/transformExpression'
 import { TransformContext } from './transform'
 import { CompilerError } from './errors'
 import { genClassName } from '../../utils'
 
+export const __DEV__ = true
+export const __BROWSER__ = false
+export const __COMPAT__ = false
+
 export function genRenderFunctionDecl({
   className = '',
-}: CompilerOptions): string {
-  return `function ${className}Render(): VNode | null`
+}: // inline = false,
+TemplateCompilerOptions): string {
+  // if(inline){
+  //   return `(): VNode | null =>`
+  // }
+  // 调整返回值类型为 any | null, 支持 <template>some text</template>
+  return `function ${className}Render(): any | null`
 }
 
 export function rewriteObjectExpression(

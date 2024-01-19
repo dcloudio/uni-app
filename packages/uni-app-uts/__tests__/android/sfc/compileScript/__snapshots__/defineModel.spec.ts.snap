@@ -1,0 +1,147 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`defineModel() basic usage 1`] = `
+"export default {
+  props: {
+    "modelValue": { required: true },
+    "count": {},
+    "toString": { type: Function },
+  },
+  emits: ["update:modelValue", "update:count", "update:toString"],
+  setup(__props: GenAnonymous) {
+const __ins = getCurrentInstance()!;
+const _ctx = __ins.proxy as GenAnonymous;
+const _cache = __ins.renderCache;
+
+      const modelValue = useModel<any>(__ins.props, "modelValue")
+      const c = useModel<any>(__ins.props, "count")
+      const toString = useModel<Function>(__ins.props, "toString")
+      
+return "INLINE_RENDER"
+}
+
+}"
+`;
+
+exports[`defineModel() w/ array props 1`] = `
+"export default {
+  props: /*#__PURE__*/mergeModels(['foo', 'bar'], {
+    "count": {},
+  }),
+  emits: ["update:count"],
+  setup(__props: GenAnonymous) {
+const __ins = getCurrentInstance()!;
+const _ctx = __ins.proxy as GenAnonymous;
+const _cache = __ins.renderCache;
+
+      
+      const count = useModel<any>(__ins.props, "count")
+      
+return "INLINE_RENDER"
+}
+
+}"
+`;
+
+exports[`defineModel() w/ defineProps and defineEmits 1`] = `
+"export default {
+  props: /*#__PURE__*/mergeModels({ foo: String }, {
+    "modelValue": { default: 0 },
+  }),
+  emits: /*#__PURE__*/mergeModels(['change'], ["update:modelValue"]),
+  setup(__props: GenAnonymous) {
+const __ins = getCurrentInstance()!;
+const _ctx = __ins.proxy as GenAnonymous;
+const _cache = __ins.renderCache;
+
+      
+      
+      const count = useModel<any>(__ins.props, "modelValue")
+      
+return "INLINE_RENDER"
+}
+
+}"
+`;
+
+exports[`defineModel() w/ local flag 1`] = `
+"const local = true
+      
+export default {
+  props: {
+    "modelValue": { local: true, default: 1 },
+    "bar": { [key]: true },
+    "hoist": { local },
+  },
+  emits: ["update:modelValue", "update:bar", "update:hoist"],
+  setup(__props: GenAnonymous) {
+const __ins = getCurrentInstance()!;
+const _ctx = __ins.proxy as GenAnonymous;
+const _cache = __ins.renderCache;
+
+      const foo = useModel<any>(__ins.props, "modelValue", { local: true })
+      const bar = useModel<any>(__ins.props, "bar", { [key]: true })
+      // const baz = defineModel('baz', { ...x })
+      // const qux = defineModel('qux', x)
+
+      // const foo2 = defineModel('foo2', { local: true, ...x })
+
+      const hoist = useModel<any>(__ins.props, "hoist", { local })
+      
+return "INLINE_RENDER"
+}
+
+}"
+`;
+
+exports[`defineModel() w/ types, basic usage 1`] = `
+"export default {
+  props: {
+    "modelValue": { type: [Boolean, String] },
+    "count": { type: Number },
+    "disabled": { type: Number, ...{ required: false } },
+    "any": { type: Boolean, skipCheck: true },
+  },
+  emits: ["update:modelValue", "update:count", "update:disabled", "update:any"],
+  setup(__props: GenAnonymous) {
+const __ins = getCurrentInstance()!;
+const _ctx = __ins.proxy as GenAnonymous;
+const _cache = __ins.renderCache;
+
+      const modelValue = useModel<any>(__ins.props, "modelValue")
+      const count = useModel<Number>(__ins.props, "count")
+      const disabled = useModel<Number>(__ins.props, "disabled")
+      const any = useModel<any>(__ins.props, "any")
+      
+return "INLINE_RENDER"
+}
+
+}"
+`;
+
+exports[`defineModel() w/ types, production mode 1`] = `
+"export default {
+  props: {
+    "modelValue": { type: Boolean },
+    "fn": {},
+    "fnWithDefault": { type: Function, ...{ default: () => null } },
+    "str": {},
+    "optional": { required: false },
+  },
+  emits: ["update:modelValue", "update:fn", "update:fnWithDefault", "update:str", "update:optional"],
+  setup(__props: GenAnonymous) {
+const __ins = getCurrentInstance()!;
+const _ctx = __ins.proxy as GenAnonymous;
+const _cache = __ins.renderCache;
+
+      const modelValue = useModel<Boolean>(__ins.props, "modelValue")
+      const fn = useModel<Function>(__ins.props, "fn")
+      const fnWithDefault = useModel<Function>(__ins.props, "fnWithDefault")
+      const str = useModel<String>(__ins.props, "str")
+      const optional = useModel<String>(__ins.props, "optional")
+      
+return "INLINE_RENDER"
+}
+
+}"
+`;

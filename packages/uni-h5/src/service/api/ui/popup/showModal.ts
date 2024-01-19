@@ -31,6 +31,12 @@ function onModalClose(type: 'cancel' | 'confirm', content: string) {
   currentShowModalResolve && currentShowModalResolve!(res)
 }
 
+export const hideModal = () => {
+  if (showModalState) {
+    showModalState.visible = false
+  }
+}
+
 export const showModal = defineAsyncApi<API_TYPE_SHOW_MODAL>(
   API_SHOW_MODAL,
   (args, { resolve }) => {

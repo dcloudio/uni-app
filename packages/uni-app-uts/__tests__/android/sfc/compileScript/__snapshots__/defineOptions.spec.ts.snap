@@ -1,0 +1,32 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`defineOptions() basic usage 1`] = `
+"export default {
+ name: 'FooApp' ,
+  setup(__props: GenAnonymous) {
+const __ins = getCurrentInstance()!;
+const _ctx = __ins.proxy as GenAnonymous;
+const _cache = __ins.renderCache;
+
+      
+      
+return "INLINE_RENDER"
+}
+
+}"
+`;
+
+exports[`defineOptions() empty argument 1`] = `
+"export default {
+  setup(__props: GenAnonymous) {
+const __ins = getCurrentInstance()!;
+const _ctx = __ins.proxy as GenAnonymous;
+const _cache = __ins.renderCache;
+
+      
+      
+return "INLINE_RENDER"
+}
+
+}"
+`;

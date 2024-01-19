@@ -1435,10 +1435,10 @@ function logError(err, type, contextVNode, throwInDev = true) {
             popWarningContext();
         }
         // crash in dev by default so it's more noticeable
-        if (throwInDev) {
-            throw err;
-        }
-        else {
+        // 不要 crash，经常会导致整个App运行失败，比如路由跳转失败，不能返回了
+        /* if (throwInDev) {
+          throw err
+        } else */ {
             console.error(err);
         }
     }
@@ -5888,7 +5888,7 @@ function setRef(rawRef, oldRawRef, parentSuspense, vnode, isUnmount = false) {
         return;
     }
     const refValue = vnode.shapeFlag & 4 /* ShapeFlags.STATEFUL_COMPONENT */ &&
-        (!vnode.component.type.__reserved) // fixed by xxxxxx 非 x 项目或者非内置组件
+        !(vnode.component.type.rootElement) // fixed by xxxxxx 非 x 项目或者非内置组件
         ? getExposeProxy(vnode.component) || vnode.component.proxy
         : vnode.el;
     const value = isUnmount ? null : refValue;
@@ -9358,9 +9358,16 @@ const nodeOps = {
         }
     },
     createElement: (tag, isSVG, is, props) => {
+        /**
+         * fix chrome version 64
+         * document.createElement('uni-text', undefined) instanceof customElements.get('uni-text') // false
+         * document.createElement('uni-text') instanceof customElements.get('uni-text') // true
+         */
         const el = isSVG
             ? doc.createElementNS(svgNS, tag)
-            : doc.createElement(tag, is ? { is } : undefined);
+            : is
+                ? doc.createElement(tag, { is })
+                : doc.createElement(tag);
         if (tag === 'select' && props && props.multiple != null) {
             el.setAttribute('multiple', props.multiple);
         }

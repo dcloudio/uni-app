@@ -2,14 +2,13 @@ import path from 'path'
 import { Plugin } from 'vite'
 import { capitalize, camelize } from '@vue/shared'
 import { createFilter, FilterPattern } from '@rollup/pluginutils'
-
+import { parseVueRequest } from '../utils/url'
+import { EXTNAME_VUE_TEMPLATE } from '../../constants'
 import {
-  parseVueRequest,
-  matchEasycom,
   addImportDeclaration,
   genResolveEasycomCode,
-  EXTNAME_VUE_TEMPLATE,
-} from '@dcloudio/uni-cli-shared'
+  matchEasycom,
+} from '../../easycom'
 
 interface UniEasycomPluginOptions {
   include?: FilterPattern

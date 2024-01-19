@@ -11,6 +11,7 @@ packages/uts/dist
 packages/uni-uts-v1/dist
 packages/uni-app-uts/dist
 packages/uni-cli-utils/dist
+packages/uni-preprocess/dist
 
 
 .DS_Store

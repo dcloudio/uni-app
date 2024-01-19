@@ -19,7 +19,13 @@ import RadioGroup from './radio-group/index'
 import ResizeSensor from './resize-sensor/index'
 import RichText from './rich-text'
 import ScrollView from './scroll-view/index'
+//#if _X_
+// @ts-ignore
+import Slider from './slider/index-x'
+//#else
+// @ts-ignore
 import Slider from './slider/index'
+//#endif
 import Swiper from './swiper/index'
 import SwiperItem from './swiper-item/index'
 import Switch from './switch/index'

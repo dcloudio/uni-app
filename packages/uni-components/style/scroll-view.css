@@ -16,6 +16,14 @@ uni-scroll-view[hidden] {
   max-height: inherit;
 }
 
+.uni-scroll-view-scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
+
+.uni-scroll-view-scrollbar-hidden {
+  -moz-scrollbars: none;
+}
+
 .uni-scroll-view-content {
   width: 100%;
   height: 100%;

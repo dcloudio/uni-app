@@ -32,6 +32,7 @@ interface Scope {
 type Injectment = string | [string, string]
 
 export interface InjectOptions {
+  enforce?: 'pre' | 'post'
   sourceMap?: boolean
   callback?: (imports: Map<any, any>, mod: [string, string]) => void
   include?: FilterPattern
@@ -81,7 +82,7 @@ export function uniViteInjectPlugin(
   return {
     name,
     // 确保在 commonjs 之后，否则会混合 es6 module 与 cjs 的代码，导致 commonjs 失效
-    enforce: 'post',
+    enforce: options.enforce ?? 'post',
     transform(code, id) {
       if (!filter(id)) return null
       if (!isJsFile(id)) return null
@@ -201,7 +202,7 @@ export function uniViteInjectPlugin(
             return
           }
 
-          if (isReference(node, parent)) {
+          if (isReference(node, parent!)) {
             const { name, keypath } = flatten(node)
             const handled = handleReference(node, name, keypath, parent)
             if (handled) {

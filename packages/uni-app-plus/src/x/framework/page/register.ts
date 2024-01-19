@@ -1,9 +1,15 @@
 import { isPromise } from '@vue/shared'
 import { ComponentPublicInstance } from 'vue'
 import { IPage } from '@dcloudio/uni-app-x/types/native'
-import { EventChannel, formatLog } from '@dcloudio/uni-shared'
+import {
+  EventChannel,
+  ON_READY,
+  ON_UNLOAD,
+  formatLog,
+} from '@dcloudio/uni-shared'
 import {
   initPageInternalInstance,
+  invokeHook,
   // initPageVm,
   // invokeHook,
 } from '@dcloudio/uni-core'
@@ -12,6 +18,8 @@ import { initRouteOptions } from '../../../service/framework/page/routeOptions'
 import { pagesMap } from '../../../service/framework/page/define'
 import { getVueApp } from '../../../service/framework/app/vueApp'
 import { VuePageComponent } from '../../../service/framework/page/define'
+import { getNativeApp } from '../app'
+import { ON_POP_GESTURE } from '../../constants'
 
 type PageNodeOptions = {}
 
@@ -25,6 +33,30 @@ export interface RegisterPageOptions {
   eventChannel?: EventChannel
 }
 
+function parsePageStyle(route: UniApp.UniRoute): Map<string, any | null> {
+  const keys = [
+    'navigationBarTitleText',
+    'navigationBarBackgroundColor',
+    'navigationBarTextStyle',
+    'navigationStyle',
+  ]
+  const style = new Map<string, any | null>()
+  const routeMeta = route.meta
+  keys.forEach((key) => {
+    if (key in routeMeta) {
+      style.set(key, (routeMeta as Record<string, any>)[key])
+    }
+  })
+  if (
+    style.size &&
+    style.get('navigationBarTextStyle') !== 'custom' &&
+    !routeMeta.isQuit
+  ) {
+    style.set('navigationBarAutoBackButton', true)
+  }
+  return style
+}
+
 export function registerPage({
   url,
   path,
@@ -36,7 +68,13 @@ export function registerPage({
 }: RegisterPageOptions) {
   const id = genWebviewId()
   const routeOptions = initRouteOptions(path, openType)
-  const nativePage = __pageManager.createPage(url, id.toString(), new Map())
+  const pageStyle = parsePageStyle(routeOptions)
+  const nativePage = getNativeApp().pageManager.createPage(
+    url,
+    id.toString(),
+    pageStyle
+  )
+  routeOptions.meta.id = parseInt(nativePage.pageId)
   if (__DEV__) {
     console.log(formatLog('registerPage', path, nativePage.pageId))
   }
@@ -53,7 +91,30 @@ export function registerPage({
     // TODO ThemeMode
     'light'
   )
-  createVuePage(id, route, query, pageInstance, {}, nativePage)
+  const page = createVuePage(
+    id,
+    route,
+    query,
+    pageInstance,
+    {},
+    nativePage
+  ) as ComponentPublicInstance
+  nativePage.addPageEventListener(ON_POP_GESTURE, function (e) {
+    uni.navigateBack({
+      from: 'popGesture',
+      fail(e) {
+        if (e.errMsg.endsWith('cancel')) {
+          nativePage.show()
+        }
+      },
+    } as UniApp.NavigateBackOptions)
+  })
+  nativePage.addPageEventListener(ON_UNLOAD, (_) => {
+    invokeHook(page, ON_UNLOAD)
+  })
+  nativePage.addPageEventListener(ON_READY, (_) => {
+    invokeHook(page, ON_READY)
+  })
   return nativePage
 }
 

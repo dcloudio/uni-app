@@ -283,8 +283,11 @@ const ViewJSBridge = /* @__PURE__ */ shared.extend(
 );
 const onEventPrevent = /* @__PURE__ */ vue.withModifiers(() => {
 }, ["prevent"]);
-const onEventStop = /* @__PURE__ */ vue.withModifiers(() => {
-}, ["stop"]);
+const onEventStop = /* @__PURE__ */ vue.withModifiers(
+  (_event) => {
+  },
+  ["stop"]
+);
 function updateCssVar(cssVars) {
   const style = document.documentElement.style;
   Object.keys(cssVars).forEach((name) => {
@@ -475,14 +478,17 @@ function findUniTarget(target) {
 }
 function createNativeEvent(evt, htmlElement = false) {
   const { type, timeStamp, target, currentTarget } = evt;
+  let realTarget, realCurrentTarget;
+  realTarget = uniShared.normalizeTarget(
+    htmlElement ? target : findUniTarget(target)
+  );
+  realCurrentTarget = uniShared.normalizeTarget(currentTarget);
   const event = {
     type,
     timeStamp,
-    target: uniShared.normalizeTarget(
-      htmlElement ? target : findUniTarget(target)
-    ),
+    target: realTarget,
     detail: {},
-    currentTarget: uniShared.normalizeTarget(currentTarget)
+    currentTarget: realCurrentTarget
   };
   if (evt._stopped) {
     event._stopped = true;
@@ -708,6 +714,32 @@ const defineUnsupportedComponent = (name) => {
     }
   });
 };
+function withWebEvent(fn) {
+  return fn.__wwe = true, fn;
+}
+function useCustomEvent(ref, emit2) {
+  return (name, evt, detail) => {
+    if (ref.value) {
+      emit2(name, normalizeCustomEvent(name, evt, ref.value, detail || {}));
+    }
+  };
+}
+function useNativeEvent(emit2) {
+  return (name, evt) => {
+    emit2(name, createNativeEvent(evt));
+  };
+}
+function normalizeCustomEvent(name, domEvt, el, detail) {
+  let target;
+  target = uniShared.normalizeTarget(el);
+  return {
+    type: detail.type || name,
+    timeStamp: domEvt.timeStamp || 0,
+    target,
+    currentTarget: target,
+    detail
+  };
+}
 const hoverProps = {
   hoverClass: {
     type: String,
@@ -797,11 +829,11 @@ function useHover(props2) {
   return {
     hovering,
     binding: {
-      onTouchstartPassive,
-      onMousedown,
-      onTouchend,
-      onMouseup,
-      onTouchcancel
+      onTouchstartPassive: withWebEvent(onTouchstartPassive),
+      onMousedown: withWebEvent(onMousedown),
+      onTouchend: withWebEvent(onTouchend),
+      onMouseup: withWebEvent(onMouseup),
+      onTouchcancel: withWebEvent(onTouchcancel)
     }
   };
 }
@@ -815,31 +847,6 @@ function useBooleanAttr(props2, keys) {
     }
     return res;
   }, /* @__PURE__ */ Object.create(null));
-}
-function withWebEvent(fn) {
-  return fn.__wwe = true, fn;
-}
-function useCustomEvent(ref, emit2) {
-  return (name, evt, detail) => {
-    if (ref.value) {
-      emit2(name, normalizeCustomEvent(name, evt, ref.value, detail || {}));
-    }
-  };
-}
-function useNativeEvent(emit2) {
-  return (name, evt) => {
-    emit2(name, createNativeEvent(evt));
-  };
-}
-function normalizeCustomEvent(name, domEvt, el, detail) {
-  const target = uniShared.normalizeTarget(el);
-  return {
-    type: detail.type || name,
-    timeStamp: domEvt.timeStamp || 0,
-    target,
-    currentTarget: target,
-    detail
-  };
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
 const index$C = /* @__PURE__ */ defineBuiltInComponent({
@@ -908,6 +915,7 @@ const index$B = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2, {
     slots
   }) {
+    vue.ref(null);
     const pageId = useCurrentPageId();
     const handlers = useProvideLabel();
     const pointer = vue.computed(() => props2.for || slots.default && slots.default.length);
@@ -1800,8 +1808,9 @@ function useResizeSensorReset(rootRef) {
 }
 const pixelRatio = 1;
 function wrapper(canvas, hidpi = true) {
-  canvas.width = canvas.offsetWidth * (hidpi ? pixelRatio : 1);
-  canvas.height = canvas.offsetHeight * (hidpi ? pixelRatio : 1);
+  const pixel_ratio = hidpi ? pixelRatio : 1;
+  canvas.width = canvas.offsetWidth * pixel_ratio;
+  canvas.height = canvas.offsetHeight * pixel_ratio;
   canvas.getContext("2d").__hidpi__ = hidpi;
 }
 const initHidpiOnce = /* @__PURE__ */ uniShared.once(() => {
@@ -1861,6 +1870,7 @@ const index$z = /* @__PURE__ */ defineBuiltInComponent({
     slots
   }) {
     initHidpiOnce();
+    const rootRef = vue.ref(null);
     const canvas = vue.ref(null);
     const sensor = vue.ref(null);
     const actionsWaiting = vue.ref(false);
@@ -1886,6 +1896,7 @@ const index$z = /* @__PURE__ */ defineBuiltInComponent({
         disableScroll
       } = props2;
       return vue.createVNode("uni-canvas", vue.mergeProps({
+        "ref": rootRef,
         "canvas-id": canvasId,
         "disable-scroll": disableScroll
       }, $attrs.value, $excludeAttrs.value, _listeners.value), [vue.createVNode("canvas", {
@@ -2418,9 +2429,13 @@ const index$x = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2, {
     slots
   }) {
+    const rootRef = vue.ref(null);
     const checkboxChecked = vue.ref(props2.checked);
+    const checkboxCheckedBool = vue.computed(() => {
+      return checkboxChecked.value === "true" || checkboxChecked.value === true;
+    });
     const checkboxValue = vue.ref(props2.value);
-    const checkboxStyle = vue.computed(() => {
+    function getCheckBoxStyle(checked) {
       if (props2.disabled) {
         return {
           backgroundColor: "#E1E1E1",
@@ -2428,7 +2443,7 @@ const index$x = /* @__PURE__ */ defineBuiltInComponent({
         };
       }
       const style = {};
-      if (checkboxChecked.value) {
+      if (checked) {
         if (props2.activeBorderColor)
           style.borderColor = props2.activeBorderColor;
         if (props2.activeBackgroundColor)
@@ -2440,6 +2455,9 @@ const index$x = /* @__PURE__ */ defineBuiltInComponent({
           style.backgroundColor = props2.backgroundColor;
       }
       return style;
+    }
+    const checkboxStyle = vue.computed(() => {
+      return getCheckBoxStyle(checkboxCheckedBool.value);
     });
     vue.watch([() => props2.checked, () => props2.value], ([newChecked, newModelValue]) => {
       checkboxChecked.value = newChecked;
@@ -2465,8 +2483,11 @@ const index$x = /* @__PURE__ */ defineBuiltInComponent({
     }
     return () => {
       const booleanAttrs = useBooleanAttr(props2, "disabled");
+      let realCheckValue;
+      realCheckValue = checkboxChecked.value;
       return vue.createVNode("uni-checkbox", vue.mergeProps(booleanAttrs, {
-        "onClick": _onClick
+        "onClick": _onClick,
+        "ref": rootRef
       }), [vue.createVNode("div", {
         "class": "uni-checkbox-wrapper",
         "style": {
@@ -2477,12 +2498,13 @@ const index$x = /* @__PURE__ */ defineBuiltInComponent({
           "uni-checkbox-input-disabled": props2.disabled
         }],
         "style": checkboxStyle.value
-      }, [checkboxChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["onClick"]);
+      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["onClick"]);
     };
   }
 });
 function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
   const field = vue.computed(() => ({
+    // @ts-ignore
     checkboxChecked: Boolean(checkboxChecked.value),
     value: checkboxValue.value
   }));
@@ -2818,12 +2840,15 @@ const index$v = /* @__PURE__ */ defineBuiltInComponent({
     }
   },
   setup(props2) {
+    const rootRef = vue.ref(null);
     const path = vue.computed(() => ICONS[props2.type]);
     return () => {
       const {
         value
       } = path;
-      return vue.createVNode("uni-icon", null, [value && value.d && createSvgIconVNode(value.d, props2.color || value.c, rpx2px(props2.size))]);
+      return vue.createVNode("uni-icon", {
+        "ref": rootRef
+      }, [value && value.d && createSvgIconVNode(value.d, props2.color || value.c, rpx2px(props2.size))], 512);
     };
   }
 });
@@ -3226,6 +3251,10 @@ const props$k = /* @__PURE__ */ shared.extend(
       type: String,
       default: void 0,
       validator: (value) => !!~INPUT_MODES.indexOf(value)
+    },
+    cursorColor: {
+      type: String,
+      default: ""
     }
   },
   props$n
@@ -3585,8 +3614,11 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "maxlength": state.maxlength,
         "step": step.value,
         "class": "uni-input-input",
+        "style": props2.cursorColor ? {
+          caretColor: props2.cursorColor
+        } : {},
         "onFocus": (event) => event.target.blur()
-      }, null, 40, ["value", "readonly", "type", "maxlength", "step", "onFocus"]) : vue.withDirectives(vue.createVNode("input", {
+      }, null, 44, ["value", "readonly", "type", "maxlength", "step", "onFocus"]) : vue.withDirectives(vue.createVNode("input", {
         "key": "input",
         "ref": fieldRef,
         "onUpdate:modelValue": ($event) => state.value = $event,
@@ -3597,10 +3629,13 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "enterkeyhint": props2.confirmType,
         "pattern": props2.type === "number" ? "[0-9]*" : void 0,
         "class": "uni-input-input",
+        "style": props2.cursorColor ? {
+          caretColor: props2.cursorColor
+        } : {},
         "autocomplete": autocomplete.value,
         "onKeyup": onKeyUpEnter,
         "inputmode": props2.inputmode
-      }, null, 40, ["onUpdate:modelValue", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup", "inputmode"]), [[vue.vModelDynamic, state.value]]);
+      }, null, 44, ["onUpdate:modelValue", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup", "inputmode"]), [[vue.vModelDynamic, state.value]]);
       return vue.createVNode("uni-input", {
         "ref": rootRef
       }, [vue.createVNode("div", {
@@ -4893,6 +4928,7 @@ const index$r = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2, {
     slots
   }) {
+    const rootRef = vue.ref(null);
     const vm = vue.getCurrentInstance();
     const __scopeId = vm && vm.vnode.scopeId || "";
     const {
@@ -4907,7 +4943,8 @@ const index$r = /* @__PURE__ */ defineBuiltInComponent({
       } = props2;
       const hasHoverClass = props2.hoverClass && props2.hoverClass !== "none";
       const navigatorTsx = vue.createVNode("uni-navigator", vue.mergeProps({
-        "class": hasHoverClass && hovering.value ? hoverClass : ""
+        "class": hasHoverClass && hovering.value ? hoverClass : "",
+        "ref": rootRef
       }, hasHoverClass && binding, vm ? vm.attrs : {}, {
         [__scopeId]: ""
       }, {
@@ -5213,6 +5250,7 @@ const index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: progressProps,
   setup(props2) {
+    const rootRef = vue.ref(null);
     const state = useProgressState(props2);
     _activeAnimation(state, props2);
     vue.watch(() => state.realPercent, (newValue, oldValue) => {
@@ -5230,7 +5268,8 @@ const index$q = /* @__PURE__ */ defineBuiltInComponent({
         currentPercent
       } = state;
       return vue.createVNode("uni-progress", {
-        "class": "uni-progress"
+        "class": "uni-progress",
+        "ref": rootRef
       }, [vue.createVNode("div", {
         "style": outerBarStyle,
         "class": "uni-progress-bar"
@@ -5242,7 +5281,7 @@ const index$q = /* @__PURE__ */ defineBuiltInComponent({
         vue.createVNode("p", {
           "class": "uni-progress-info"
         }, [currentPercent + "%"])
-      ) : ""]);
+      ) : ""], 512);
     };
   }
 });
@@ -5419,9 +5458,10 @@ const index$o = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2, {
     slots
   }) {
+    const rootRef = vue.ref(null);
     const radioChecked = vue.ref(props2.checked);
     const radioValue = vue.ref(props2.value);
-    const radioStyle = vue.computed(() => {
+    function getRadioStyle(checked) {
       if (props2.disabled) {
         return {
           backgroundColor: "#E1E1E1",
@@ -5439,6 +5479,9 @@ const index$o = /* @__PURE__ */ defineBuiltInComponent({
           style.backgroundColor = props2.backgroundColor;
       }
       return style;
+    }
+    const radioStyle = vue.computed(() => {
+      return getRadioStyle(radioChecked.value);
     });
     vue.watch([() => props2.checked, () => props2.value], ([newChecked, newModelValue]) => {
       radioChecked.value = newChecked;
@@ -5465,8 +5508,11 @@ const index$o = /* @__PURE__ */ defineBuiltInComponent({
     }
     return () => {
       const booleanAttrs = useBooleanAttr(props2, "disabled");
+      let realCheckValue;
+      realCheckValue = radioChecked.value;
       return vue.createVNode("uni-radio", vue.mergeProps(booleanAttrs, {
-        "onClick": _onClick
+        "onClick": _onClick,
+        "ref": rootRef
       }), [vue.createVNode("div", {
         "class": "uni-radio-wrapper",
         "style": {
@@ -5477,13 +5523,14 @@ const index$o = /* @__PURE__ */ defineBuiltInComponent({
           "uni-radio-input-disabled": props2.disabled
         }],
         "style": radioStyle.value
-      }, [radioChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.iconColor, 18) : ""], 6), slots.default && slots.default()], 4)], 16, ["onClick"]);
+      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.iconColor, 18) : ""], 6), slots.default && slots.default()], 4)], 16, ["onClick"]);
     };
   }
 });
 function useRadioInject(radioChecked, radioValue, reset) {
   const field = vue.computed({
     get: () => ({
+      // @ts-ignore
       radioChecked: Boolean(radioChecked.value),
       value: radioValue.value
     }),
@@ -5797,6 +5844,10 @@ const index$n = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const props$f = {
+  direction: {
+    type: [String],
+    default: "vertical"
+  },
   scrollX: {
     type: [Boolean, String],
     default: false
@@ -5804,6 +5855,10 @@ const props$f = {
   scrollY: {
     type: [Boolean, String],
     default: false
+  },
+  showScrollbar: {
+    type: [Boolean, String],
+    default: true
   },
   upperThreshold: {
     type: [Number, String],
@@ -5876,12 +5931,22 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
       scrollTopNumber,
       scrollLeftNumber
     } = useScrollViewState(props2);
-    useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content, emit2);
+    const {
+      realScrollX,
+      realScrollY
+    } = useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content, emit2);
     const mainStyle = vue.computed(() => {
       let style = "";
-      props2.scrollX ? style += "overflow-x:auto;" : style += "overflow-x:hidden;";
-      props2.scrollY ? style += "overflow-y:auto;" : style += "overflow-y:hidden;";
+      realScrollX.value ? style += "overflow-x:auto;" : style += "overflow-x:hidden;";
+      realScrollY.value ? style += "overflow-y:auto;" : style += "overflow-y:hidden;";
       return style;
+    });
+    const scrollBarClassName = vue.computed(() => {
+      let className = "uni-scroll-view";
+      if (props2.showScrollbar === false) {
+        className += " uni-scroll-view-scrollbar-hidden";
+      }
+      return className;
     });
     return () => {
       const {
@@ -5902,7 +5967,7 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
       }, [vue.createVNode("div", {
         "ref": main,
         "style": mainStyle.value,
-        "class": "uni-scroll-view"
+        "class": scrollBarClassName.value
       }, [vue.createVNode("div", {
         "ref": content,
         "class": "uni-scroll-view-content"
@@ -5945,7 +6010,7 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
         "fill": "none",
         "style": "color: #2bd009",
         "stroke-width": "3"
-      }, null)]) : null])]) : null, refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null], 4) : null, slots.default && slots.default()], 512)], 4)], 512)], 512);
+      }, null)]) : null])]) : null, refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null], 4) : null, slots.default && slots.default()], 512)], 6)], 512)], 512);
     };
   }
 });
@@ -5976,6 +6041,12 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
   let triggerAbort = false;
   let __transitionEnd = () => {
   };
+  const realScrollX = vue.computed(() => {
+    return props2.scrollX;
+  });
+  const realScrollY = vue.computed(() => {
+    return props2.scrollY;
+  });
   vue.computed(() => {
     let val = Number(props2.upperThreshold);
     return isNaN(val) ? 50 : val;
@@ -6014,7 +6085,7 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
     _content.style.webkitTransform = transform;
   }
   function _scrollTopChanged(val) {
-    if (props2.scrollY) {
+    if (realScrollY.value) {
       {
         if (props2.scrollWithAnimation) {
           scrollTo(val, "y");
@@ -6025,7 +6096,7 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
     }
   }
   function _scrollLeftChanged(val) {
-    if (props2.scrollX) {
+    if (realScrollX.value) {
       {
         if (props2.scrollWithAnimation) {
           scrollTo(val, "x");
@@ -6045,7 +6116,7 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
       if (element) {
         let mainRect = main.value.getBoundingClientRect();
         let elRect = element.getBoundingClientRect();
-        if (props2.scrollX) {
+        if (realScrollX.value) {
           let left = elRect.left - mainRect.left;
           let scrollLeft = main.value.scrollLeft;
           let x = scrollLeft + left;
@@ -6055,7 +6126,7 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
             main.value.scrollLeft = x;
           }
         }
-        if (props2.scrollY) {
+        if (realScrollY.value) {
           let top = elRect.top - mainRect.top;
           let scrollTop = main.value.scrollTop;
           let y = scrollTop + top;
@@ -6075,10 +6146,10 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
     content.value.style.webkitTransform = "";
     let _main = main.value;
     if (direction === "x") {
-      _main.style.overflowX = props2.scrollX ? "auto" : "hidden";
+      _main.style.overflowX = realScrollX.value ? "auto" : "hidden";
       _main.scrollLeft = val;
     } else if (direction === "y") {
-      _main.style.overflowY = props2.scrollY ? "auto" : "hidden";
+      _main.style.overflowY = realScrollY.value ? "auto" : "hidden";
       _main.scrollTop = val;
     }
     content.value.removeEventListener("transitionend", __transitionEnd);
@@ -6128,6 +6199,10 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
       _setRefreshState("restore");
     }
   });
+  return {
+    realScrollX,
+    realScrollY
+  };
 }
 const props$e = {
   name: {
@@ -6237,11 +6312,14 @@ const index$l = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
+const getValueWidth = (value, min, max) => {
+  max = Number(max);
+  min = Number(min);
+  return 100 * (value - min) / (max - min) + "%";
+};
 function useSliderState(props2, sliderValue) {
   const _getValueWidth = () => {
-    const max = Number(props2.max);
-    const min = Number(props2.min);
-    return 100 * (sliderValue.value - min) / (max - min) + "%";
+    return getValueWidth(sliderValue.value, props2.min, props2.max);
   };
   const _getBgColor = () => {
     return props2.backgroundColor !== "#e9e9e9" ? props2.backgroundColor : props2.color !== "#007aff" ? props2.color : "#007aff";
@@ -7051,6 +7129,8 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
         switchInputStyle["backgroundColor"] = color;
         switchInputStyle["borderColor"] = color;
       }
+      let realCheckValue;
+      realCheckValue = switchChecked.value;
       return vue.createVNode("uni-switch", vue.mergeProps({
         "ref": rootRef
       }, booleanAttrs, {
@@ -7062,7 +7142,7 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
         "style": switchInputStyle
       }, null, 6), [[vue.vShow, type === "switch"]]), vue.withDirectives(vue.createVNode("div", {
         "class": "uni-checkbox-input"
-      }, [switchChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.color, 22) : ""], 512), [[vue.vShow, type === "checkbox"]])])], 16, ["onClick"]);
+      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.color, 22) : ""], 512), [[vue.vShow, type === "checkbox"]])])], 16, ["onClick"]);
     };
   }
 });
@@ -7092,22 +7172,37 @@ const SPACE_UNICODE = {
   emsp: " ",
   nbsp: " "
 };
-function parseText(text, options) {
-  return text.replace(/\\n/g, uniShared.LINEFEED).split(uniShared.LINEFEED).map((text2) => {
-    return normalizeText(text2, options);
-  });
-}
 function normalizeText(text, { space, decode }) {
-  if (!text) {
-    return text;
-  }
-  if (space && SPACE_UNICODE[space]) {
-    text = text.replace(/ /g, SPACE_UNICODE[space]);
+  let result = "";
+  let isEscape = false;
+  for (let char of text) {
+    if (space && SPACE_UNICODE[space] && char === " ") {
+      char = SPACE_UNICODE[space];
+    }
+    if (isEscape) {
+      if (char === "n") {
+        result += uniShared.LINEFEED;
+      } else if (char === "\\") {
+        result += "\\";
+      } else {
+        result += "\\" + char;
+      }
+      isEscape = false;
+    } else {
+      if (char === "\\") {
+        isEscape = true;
+      } else {
+        result += char;
+      }
+    }
   }
   if (!decode) {
-    return text;
+    return result;
   }
-  return text.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
+  return result.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
+}
+function parseText(text, options) {
+  return normalizeText(text, options).split(uniShared.LINEFEED);
 }
 const index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
@@ -7128,6 +7223,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2, {
     slots
   }) {
+    const rootRef = vue.ref(null);
     return () => {
       const children = [];
       if (slots.default) {
@@ -7157,6 +7253,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
         });
       }
       return vue.createVNode("uni-text", {
+        "ref": rootRef,
         "selectable": props2.selectable ? true : null
       }, [vue.createVNode("span", null, children)], 8, ["selectable"]);
     };
@@ -7261,7 +7358,11 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
           "uni-textarea-textarea-fix-margin": fixMargin
         },
         "style": {
-          overflowY: props2.autoHeight ? "hidden" : "auto"
+          overflowY: props2.autoHeight ? "hidden" : "auto",
+          /* eslint-disable no-restricted-syntax */
+          ...props2.cursorColor && {
+            caretColor: props2.cursorColor
+          }
         },
         "onFocus": (event) => event.target.blur()
       }, null, 46, ["value", "readonly", "maxlength", "onFocus"]) : vue.createVNode("textarea", {
@@ -7277,7 +7378,11 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
           "uni-textarea-textarea-fix-margin": fixMargin
         },
         "style": {
-          overflowY: props2.autoHeight ? "hidden" : "auto"
+          overflowY: props2.autoHeight ? "hidden" : "auto",
+          /* eslint-disable no-restricted-syntax */
+          ...props2.cursorColor && {
+            caretColor: props2.cursorColor
+          }
         },
         "onKeydown": onKeyDownEnter,
         "onKeyup": onKeyUpEnter
@@ -7312,6 +7417,7 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2, {
     slots
   }) {
+    const rootRef = vue.ref(null);
     const {
       hovering,
       binding
@@ -7320,10 +7426,13 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
       const hoverClass = props2.hoverClass;
       if (hoverClass && hoverClass !== "none") {
         return vue.createVNode("uni-view", vue.mergeProps({
-          "class": hovering.value ? hoverClass : ""
+          "class": hovering.value ? hoverClass : "",
+          "ref": rootRef
         }, binding), [slots.default && slots.default()], 16);
       }
-      return vue.createVNode("uni-view", null, [slots.default && slots.default()]);
+      return vue.createVNode("uni-view", {
+        "ref": rootRef
+      }, [slots.default && slots.default()], 512);
     };
   }
 });
@@ -7858,6 +7967,7 @@ function setupPage(comp) {
       const query = uniShared.decodedQuery(route.query);
       instance.attrs.__pageQuery = query;
       instance.proxy.$page.options = query;
+      instance.proxy.options = query;
       {
         return query;
       }
@@ -8087,6 +8197,7 @@ function useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef
 function useVideo(props2, attrs, trigger) {
   const videoRef = vue.ref(null);
   const src = vue.computed(() => getRealPath(props2.src));
+  const muted = vue.computed(() => props2.muted === "true" || props2.muted === true);
   const state = vue.reactive({
     start: false,
     src,
@@ -8094,7 +8205,8 @@ function useVideo(props2, attrs, trigger) {
     currentTime: 0,
     duration: 0,
     progress: 0,
-    buffered: 0
+    buffered: 0,
+    muted
   });
   vue.watch(() => src.value, () => {
     state.playing = false;
@@ -8104,6 +8216,10 @@ function useVideo(props2, attrs, trigger) {
     trigger("progress", {}, {
       buffered
     });
+  });
+  vue.watch(() => muted.value, (muted2) => {
+    const video = videoRef.value;
+    video.muted = muted2;
   });
   function onDurationChange({
     target
@@ -8182,6 +8298,10 @@ function useVideo(props2, attrs, trigger) {
       video.currentTime = position;
     }
   }
+  function stop() {
+    seek(0);
+    pause();
+  }
   function playbackRate(rate) {
     const video = videoRef.value;
     video.playbackRate = rate;
@@ -8191,6 +8311,7 @@ function useVideo(props2, attrs, trigger) {
     state,
     play,
     pause,
+    stop,
     seek,
     playbackRate,
     toggle,
@@ -8351,7 +8472,7 @@ function useDanmu(props2, videoState) {
     sendDanmu
   };
 }
-function useContext(play, pause, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen) {
+function useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen) {
   useContextInfo();
   useSubscribe();
 }
@@ -8468,6 +8589,7 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
       state: videoState,
       play,
       pause,
+      stop,
       seek,
       playbackRate,
       toggle,
@@ -8513,7 +8635,8 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
     return () => {
       return vue.createVNode("uni-video", {
         "ref": rootRef,
-        "id": props2.id
+        "id": props2.id,
+        "onClick": toggleControls
       }, [vue.createVNode("div", {
         "ref": containerRef,
         "class": "uni-video-container",
@@ -8536,7 +8659,6 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-video",
         "webkit-playsinline": true,
         "playsinline": true,
-        "onClick": toggleControls,
         "onDurationchange": onDurationChange,
         "onLoadedmetadata": onLoadedMetadata,
         "onProgress": onProgress,
@@ -8553,7 +8675,7 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
         "onX5videoenterfullscreen": () => emitFullscreenChange(true),
         "onWebkitendfullscreen": () => emitFullscreenChange(false),
         "onX5videoexitfullscreen": () => emitFullscreenChange(false)
-      }), null, 16, ["muted", "loop", "src", "poster", "autoplay", "webkit-playsinline", "playsinline", "onClick", "onDurationchange", "onLoadedmetadata", "onProgress", "onWaiting", "onError", "onPlay", "onPause", "onEnded", "onTimeupdate", "onWebkitbeginfullscreen", "onX5videoenterfullscreen", "onWebkitendfullscreen", "onX5videoexitfullscreen"]), vue.withDirectives(vue.createVNode("div", {
+      }), null, 16, ["muted", "loop", "src", "poster", "autoplay", "webkit-playsinline", "playsinline", "onDurationchange", "onLoadedmetadata", "onProgress", "onWaiting", "onError", "onPlay", "onPause", "onEnded", "onTimeupdate", "onWebkitbeginfullscreen", "onX5videoenterfullscreen", "onWebkitendfullscreen", "onX5videoexitfullscreen"]), vue.withDirectives(vue.createVNode("div", {
         "class": "uni-video-bar uni-video-bar-full",
         "onClick": vue.withModifiers(() => {
         }, ["stop"])
@@ -8650,7 +8772,7 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-toast-title"
       }, [formatTime(gestureState.currentTimeNew), " / ", formatTime(videoState.duration)])], 2), vue.createVNode("div", {
         "class": "uni-video-slots"
-      }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])], 8, ["id"]);
+      }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])], 8, ["id", "onClick"]);
     };
   }
 });
@@ -9960,6 +10082,7 @@ const index$9 = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2, {
     slots
   }) {
+    const root = vue.ref(null);
     const content = vue.ref(null);
     vue.watch(() => props2.scrollTop, (val) => {
       setScrollTop(val);
@@ -9981,7 +10104,8 @@ const index$9 = /* @__PURE__ */ defineBuiltInComponent({
     }
     return () => {
       return vue.createVNode("uni-cover-view", {
-        "scroll-top": props2.scrollTop
+        "scroll-top": props2.scrollTop,
+        "ref": root
       }, [vue.createVNode("div", {
         "ref": content,
         "class": "uni-cover-view"

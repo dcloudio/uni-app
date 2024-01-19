@@ -19,6 +19,7 @@ import {
 import ResizeSensor from '../resize-sensor'
 import { useNativeEvent, NativeEventTrigger } from '../../helpers/useEvent'
 import { pixelRatio, wrapper, initHidpi } from '../../helpers/hidpi'
+import { UniElement } from '../../helpers/UniElement'
 import { once } from '@dcloudio/uni-shared'
 
 const initHidpiOnce = /*#__PURE__*/ once(() => {
@@ -71,6 +72,7 @@ type Props = ExtractPropTypes<typeof props>
 type MultipleArray = Array<Array<number | string | number[]>>
 type LinearGradient = Parameters<CanvasFillStrokeStyles['createLinearGradient']>
 
+class UniCanvasElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   inheritAttrs: false,
   name: 'Canvas',
@@ -83,8 +85,15 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       return this.canvasId
     },
   },
+  //#if _X_ && !_NODE_JS_
+  rootElement: {
+    name: 'uni-canvas',
+    class: UniCanvasElement,
+  },
+  //#endif
   setup(props, { emit, slots }) {
     initHidpiOnce()
+    const rootRef = ref<HTMLElement | null>(null)
     const canvas = ref<HTMLCanvasElement | null>(null)
     const sensor = ref<HTMLElement | null>(null)
     const actionsWaiting = ref(false)
@@ -114,10 +123,18 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       _resize()
     })
 
+    //#if _X_ && !_NODE_JS_
+    onMounted(() => {
+      const rootElement = rootRef.value as UniCanvasElement
+      rootElement.attachVmProps(props)
+    })
+    //#endif
+
     return () => {
       const { canvasId, disableScroll } = props
       return (
         <uni-canvas
+          ref={rootRef}
           canvas-id={canvasId}
           disable-scroll={disableScroll}
           {...$attrs.value}

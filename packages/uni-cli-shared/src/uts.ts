@@ -12,7 +12,7 @@ import {
   normalizePath,
   version,
 } from './utils'
-import type { EasycomMatcher } from './easycom'
+import { matchEasycom, type EasycomMatcher } from './easycom'
 
 import { parseUniExtApis } from './uni_modules'
 
@@ -184,9 +184,7 @@ export function initUTSComponents(
 ): EasycomMatcher[] {
   utsComponents.clear()
   const components: EasycomMatcher[] = []
-  if (platform !== 'app' && platform !== 'app-plus') {
-    return components
-  }
+  const isApp = platform === 'app' || platform === 'app-plus'
   const easycomsObj: Record<
     string,
     { source: string; kotlinPackage: string; swiftModule: string }
@@ -220,7 +218,7 @@ export function initUTSComponents(
               is_uni_modules_utssdk ? path.dirname(dir) : dir
             )
             easycomsObj[`^${name}$`] = {
-              source: `${importDir}?uts-proxy`,
+              source: isApp ? `${importDir}?uts-proxy` : normalizePath(file),
               kotlinPackage: parseKotlinPackageWithPluginId(
                 pluginId,
                 is_uni_modules_utssdk
@@ -346,3 +344,8 @@ export const parseUniExtApiNamespacesJsOnce = once(
     return namespaces
   }
 )
+
+export function matchUTSComponent(tag: string) {
+  const source = matchEasycom(tag)
+  return !!(source && source.includes('uts-proxy'))
+}

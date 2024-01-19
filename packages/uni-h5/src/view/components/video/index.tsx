@@ -22,9 +22,11 @@ import {
   CustomEventTrigger,
   useUserAction,
   useAttrs,
+  UniElement,
 } from '@dcloudio/uni-components'
 
 type UserActionState = ReturnType<typeof useUserAction>['state']
+type HTMLRef = Ref<HTMLElement | null>
 
 function formatTime(val: number): string {
   val = val > 0 && val < Infinity ? val : 0
@@ -285,14 +287,16 @@ interface VideoState {
   duration: number
   progress: number
   buffered: number
+  muted: boolean
 }
 function useVideo(
-  props: { src: string; initialTime: number | string },
+  props: { src: string; initialTime: number | string; muted: boolean | string },
   attrs: Data,
   trigger: CustomEventTrigger
 ) {
   const videoRef: Ref<HTMLVideoElement | null> = ref(null)
   const src = computed(() => getRealPath(props.src))
+  const muted = computed(() => props.muted === 'true' || props.muted === true)
   const state: VideoState = reactive({
     start: false,
     src,
@@ -301,6 +305,7 @@ function useVideo(
     duration: 0,
     progress: 0,
     buffered: 0,
+    muted,
   })
   watch(
     () => src.value,
@@ -315,6 +320,13 @@ function useVideo(
       trigger('progress', {} as Event, {
         buffered,
       })
+    }
+  )
+  watch(
+    () => muted.value,
+    (muted) => {
+      const video = videoRef.value as HTMLVideoElement
+      video.muted = muted
     }
   )
   function onDurationChange({ target }: Event) {
@@ -393,6 +405,10 @@ function useVideo(
       video.currentTime = position
     }
   }
+  function stop() {
+    seek(0)
+    pause()
+  }
   function playbackRate(rate: number) {
     const video = videoRef.value as HTMLVideoElement
     video.playbackRate = rate
@@ -402,6 +418,7 @@ function useVideo(
     state,
     play,
     pause,
+    stop,
     seek,
     playbackRate,
     toggle,
@@ -445,10 +462,10 @@ function useControls(
     controlsShow,
     controlsVisible,
   })
-  function clickProgress(event: MouseEvent) {
+  function clickProgress(event: Event) {
     const $progress = progressRef.value as HTMLElement
     let element = event.target as HTMLElement
-    let x = event.offsetX
+    let x = (event as MouseEvent).offsetX
     while (element && element !== $progress) {
       x += element.offsetLeft
       element = element.parentNode as HTMLElement
@@ -572,6 +589,12 @@ function useControls(
   }
 }
 
+interface Danmu {
+  text: string
+  color?: string
+  time?: number
+}
+
 function useDanmu(
   props: { enableDanmu: any; danmuList: any[] },
   videoState: VideoState
@@ -583,11 +606,6 @@ function useDanmu(
   let danmuIndex = {
     time: 0,
     index: -1,
-  }
-  interface Danmu {
-    text: string
-    color?: string
-    time?: number
   }
   const danmuList: Danmu[] = isArray(props.danmuList)
     ? JSON.parse(JSON.stringify(props.danmuList))
@@ -670,6 +688,7 @@ function useDanmu(
 function useContext(
   play: Function,
   pause: Function,
+  stop: Function,
   seek: Function,
   sendDanmu: Function,
   playbackRate: Function,
@@ -678,6 +697,7 @@ function useContext(
 ) {
   const methods = {
     play,
+    stop,
     pause,
     seek,
     sendDanmu,
@@ -793,6 +813,10 @@ const props = {
     default: true,
   },
 }
+
+// 仅作实现，X项目中不会依据此类生成d.ts
+class UniVideoElement extends UniElement {}
+
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Video',
   props,
@@ -807,8 +831,14 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     'ended',
     'timeupdate',
   ],
+  //#if _X_ && !_NODE_JS_
+  rootElement: {
+    name: 'uni-video',
+    class: UniVideoElement,
+  },
+  //#endif
   setup(props, { emit, attrs, slots }) {
-    const rootRef = ref(null)
+    const rootRef: HTMLRef = ref(null)
     const containerRef = ref(null)
     const trigger = useCustomEvent<EmitEvent<typeof emit>>(rootRef, emit)
     const { state: userActionState } = useUserAction()
@@ -822,6 +852,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       state: videoState,
       play,
       pause,
+      stop,
       seek,
       playbackRate,
       toggle,
@@ -866,6 +897,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     useContext(
       play,
       pause,
+      stop,
       seek,
       sendDanmu,
       playbackRate,
@@ -873,9 +905,26 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       exitFullScreen
     )
 
+    //#if _X_ && !_NODE_JS_
+    onMounted(() => {
+      const rootElement = rootRef.value as UniVideoElement
+      Object.assign(rootElement, {
+        play,
+        pause,
+        stop,
+        seek,
+        sendDanmu,
+        playbackRate,
+        requestFullScreen,
+        exitFullScreen,
+      })
+      rootElement.attachVmProps(props)
+    })
+    //#endif
+
     return () => {
       return (
-        <uni-video ref={rootRef} id={props.id}>
+        <uni-video ref={rootRef} id={props.id} onClick={toggleControls}>
           <div
             ref={containerRef}
             class="uni-video-container"
@@ -902,7 +951,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
               class="uni-video-video"
               webkit-playsinline
               playsinline
-              onClick={toggleControls}
               onDurationchange={onDurationChange}
               onLoadedmetadata={onLoadedMetadata}
               onProgress={onProgress}

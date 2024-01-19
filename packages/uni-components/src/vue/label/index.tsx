@@ -1,15 +1,24 @@
-import { computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useCurrentPageId } from '@dcloudio/uni-core'
 import { withWebEvent } from '../../helpers/useEvent'
 import { defineBuiltInComponent } from '../../helpers/component'
+import { UniElement } from '../../helpers/UniElement'
 import { labelProps, useProvideLabel } from '../../components/label'
 
 export { UniLabelCtx, uniLabelKey } from '../../components/label'
 
+class UniLabelElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Label',
   props: labelProps,
+  //#if _X_ && !_NODE_JS_
+  rootElement: {
+    name: 'uni-label',
+    class: UniLabelElement,
+  },
+  //#endif
   setup(props, { slots }) {
+    const rootRef = ref<HTMLElement | null>(null)
     const pageId = useCurrentPageId()
     const handlers = useProvideLabel()
 
@@ -43,6 +52,13 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         handlers.length && handlers[0]($event, true)
       }
     })
+
+    //#if _X_ && !_NODE_JS_
+    onMounted(() => {
+      const rootElement = rootRef.value as UniLabelElement
+      rootElement.attachVmProps(props)
+    })
+    //#endif
 
     return () => (
       <uni-label class={{ 'uni-label-pointer': pointer }} onClick={_onClick}>

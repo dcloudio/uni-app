@@ -1,0 +1,118 @@
+uni-switch {
+  -webkit-tap-highlight-color: transparent;
+  display: inline-block;
+  cursor: pointer;
+}
+
+uni-switch[hidden] {
+  display: none;
+}
+
+uni-switch[disabled] {
+  cursor: not-allowed;
+}
+
+uni-switch[disabled] .uni-switch-input {
+  opacity: 0.7;
+}
+
+.uni-switch-wrapper {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+}
+
+.uni-switch-input {
+  appearance: none;
+  position: relative;
+  width: 52px;
+  height: 32px;
+  margin-right: 5px;
+  border: 2px solid transparent;
+  outline: 0;
+  border-radius: 16px;
+  box-sizing: border-box;
+  background-color: rgba(0,0,0,.1);
+  transition: background-color 0.1s, border 0.1s;
+}
+
+.uni-switch-input:after {
+  content: ' ';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 15px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.06);
+  transition: transform 0.3s;
+}
+
+.uni-switch-input.uni-switch-input-checked {
+  border-color: #007aff;
+  background-color: #007aff;
+}
+
+.uni-switch-input.uni-switch-input-checked:before {
+  transform: scale(0);
+}
+
+.uni-switch-input.uni-switch-input-checked:after {
+  transform: translateX(20px);
+}
+
+uni-switch .uni-checkbox-input {
+  margin-right: 5px;
+  appearance: none;
+  outline: 0;
+  border: 1px solid #d1d1d1;
+  background-color: #ffffff;
+  border-radius: 3px;
+  width: 22px;
+  height: 22px;
+  position: relative;
+  color: #007aff;
+}
+
+uni-switch:not([disabled]) .uni-checkbox-input:hover {
+  border-color: #007aff;
+}
+
+uni-switch .uni-checkbox-input svg {
+  fill: #007aff;
+  font-size: 22px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -48%) scale(0.73);
+}
+
+.uni-checkbox-input.uni-checkbox-input-disabled {
+  background-color: #e1e1e1;
+}
+
+.uni-checkbox-input.uni-checkbox-input-disabled:before {
+  color: #adadad;
+}
+
+@media (prefers-color-scheme: dark) {
+  uni-switch .uni-switch-input {
+    border-color: #3b3b3f;
+  }
+
+  uni-switch .uni-switch-input,
+  uni-switch .uni-switch-input:before {
+    background-color: #3b3b3f;
+  }
+
+  uni-switch .uni-switch-input:after {
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  }
+
+  uni-switch .uni-checkbox-input {
+    background-color: #2c2c2c;
+    border: 1px solid #656565;
+  }
+}

@@ -14,12 +14,15 @@ export function uniAppIOSMainPlugin(): Plugin {
     apply: 'build',
     async transform(code, id) {
       if (normalizePath(id) === mainUTS) {
-        return `
-import './${MANIFEST_JSON_UTS}'
-import './${PAGES_JSON_UTS}'
-${code}
-createApp().app.mount("#app");
-`
+        return {
+          code: `
+          import './${MANIFEST_JSON_UTS}'
+          import './${PAGES_JSON_UTS}'
+          ${code}
+          createApp().app.mount("#app");
+          `,
+          map: null,
+        }
       }
     },
   }

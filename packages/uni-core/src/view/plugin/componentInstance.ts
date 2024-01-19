@@ -84,16 +84,25 @@ export function createNativeEvent(
   htmlElement: boolean = false
 ) {
   const { type, timeStamp, target, currentTarget } = evt
+  let realTarget, realCurrentTarget
+  //#if _X_ && !_NODE_JS_
+  realTarget = htmlElement
+    ? (target as HTMLElement)
+    : findUniTarget(target as HTMLElement)
+  realCurrentTarget = currentTarget
+  //#endif
+  //#if !_X_ || _NODE_JS_
+  realTarget = normalizeTarget(
+    htmlElement ? (target as HTMLElement) : findUniTarget(target as HTMLElement)
+  )
+  realCurrentTarget = normalizeTarget(currentTarget as HTMLElement)
+  //#endif
   const event = {
     type,
     timeStamp,
-    target: normalizeTarget(
-      htmlElement
-        ? (target as HTMLElement)
-        : findUniTarget(target as HTMLElement)
-    ),
+    target: realTarget,
     detail: {},
-    currentTarget: normalizeTarget(currentTarget as HTMLElement),
+    currentTarget: realCurrentTarget,
   }
   // merge stopImmediatePropagation
   if ((evt as any)._stopped) {
@@ -129,6 +138,13 @@ function normalizeClickEvent(
   const { x, y } = mouseEvt
   const top = getWindowTop()
   evt.detail = { x, y: y - top }
+  //#if _X_ && !_NODE_JS_
+  // TODO 类型调整
+  // @ts-ignore
+  evt.x = x
+  // @ts-ignore
+  evt.y = y - top
+  //#endif
   evt.touches = evt.changedTouches = [createTouchEvent(mouseEvt, top)]
 }
 
@@ -155,13 +171,26 @@ function createTouchEvent(evt: MouseEvent, top: number) {
 function normalizeTouchEvent(touches: TouchList, top: number) {
   const res = []
   for (let i = 0; i < touches.length; i++) {
-    const { identifier, pageX, pageY, clientX, clientY, force } = touches[i]
+    const {
+      identifier,
+      pageX,
+      pageY,
+      clientX,
+      clientY,
+      force,
+      screenX,
+      screenY,
+    } = touches[i]
     res.push({
       identifier,
       pageX,
       pageY: pageY - top,
       clientX: clientX,
       clientY: clientY - top,
+      //#if _X_ && !_NODE_JS_
+      screenX,
+      screenY,
+      //#endif
       force: force || 0,
     })
   }

@@ -916,7 +916,11 @@ var Debug;
     return true;
   }
   function fail(message, stackCrawlMark) {
+    var _a;
     debugger;
+    if ((_a = globalThis.__utsHacker__) == null ? void 0 : _a.ignoreAllDebugFail) {
+      return;
+    }
     const e = new Error(message ? `Debug Failure. ${message}` : "Debug Failure.");
     if (Error.captureStackTrace) {
       Error.captureStackTrace(e, stackCrawlMark || fail);

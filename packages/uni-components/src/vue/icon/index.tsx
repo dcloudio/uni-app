@@ -1,4 +1,4 @@
-import { computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 
 import { PRIMARY_COLOR } from '@dcloudio/uni-shared'
 import {
@@ -16,6 +16,7 @@ import {
 } from '@dcloudio/uni-core'
 
 import { defineBuiltInComponent } from '../../helpers/component'
+import { UniElement } from '../../helpers/UniElement'
 
 const INFO_COLOR = '#10aeff'
 const WARN_COLOR = '#f76260'
@@ -61,6 +62,7 @@ const ICONS = {
   },
 }
 
+class UniIconElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Icon',
   props: {
@@ -78,12 +80,25 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       default: '',
     },
   },
+  //#if _X_ && !_NODE_JS_
+  rootElement: {
+    name: 'uni-icon',
+    class: UniIconElement,
+  },
+  //#endif
   setup(props) {
+    const rootRef = ref<HTMLElement | null>(null)
     const path = computed(() => ICONS[props.type as keyof typeof ICONS])
     return () => {
       const { value } = path
+      //#if _X_ && !_NODE_JS_
+      onMounted(() => {
+        const rootElement = rootRef.value as UniIconElement
+        rootElement.attachVmProps(props)
+      })
+      //#endif
       return (
-        <uni-icon>
+        <uni-icon ref={rootRef}>
           {value &&
             value.d &&
             createSvgIconVNode(

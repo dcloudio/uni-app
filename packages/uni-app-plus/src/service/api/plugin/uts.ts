@@ -205,7 +205,21 @@ function getProxy(): {
   invokeAsync: (args: InvokeArgs, callback: InvokeAsyncCallback) => void
 } {
   if (!proxy) {
-    proxy = uni.requireNativePlugin('UTS-Proxy') as any
+    if (__X__) {
+      // iOS
+      proxy = {
+        invokeSync(args: InvokeArgs, callback: InvokeSyncCallback) {
+          // @ts-expect-error
+          return nativeChannel.invokeSync('APP-SERVICE', args, callback)
+        },
+        invokeAsync(args: InvokeArgs, callback: InvokeAsyncCallback) {
+          // @ts-expect-error
+          return nativeChannel.invokeAsync('APP-SERVICE', args, callback)
+        },
+      }
+    } else {
+      proxy = uni.requireNativePlugin('UTS-Proxy') as any
+    }
   }
   return proxy
 }
@@ -372,7 +386,7 @@ function initProxyFunction(
 
 function initUTSStaticMethod(async: boolean, opts: ProxyFunctionOptions) {
   if (opts.main && !opts.method) {
-    if (typeof plus !== 'undefined' && plus.os.name === 'iOS') {
+    if (isUTSiOS()) {
       opts.method = 's_' + opts.name
     }
   }
@@ -435,7 +449,7 @@ export function initUTSProxyClass(
   }
 
   // iOS 需要为 ByJs 的 class 构造函数（如果包含JSONObject或UTSCallback类型）补充最后一个参数
-  if (typeof plus !== 'undefined' && plus.os.name === 'iOS') {
+  if (isUTSiOS()) {
     if (
       constructorParams.find(
         (p) => p.type === 'UTSCallback' || p.type.indexOf('JSONObject') > 0
@@ -535,8 +549,19 @@ export function initUTSProxyClass(
   })
 }
 
+function isUTSAndroid() {
+  if (__X__) {
+    return false
+  }
+  return typeof plus !== 'undefined' && plus.os.name === 'Android'
+}
+
+function isUTSiOS() {
+  return !isUTSAndroid()
+}
+
 export function initUTSPackageName(name: string, is_uni_modules: boolean) {
-  if (typeof plus !== 'undefined' && plus.os.name === 'Android') {
+  if (isUTSAndroid()) {
     return 'uts.sdk.' + (is_uni_modules ? 'modules.' : '') + name
   }
   return ''
@@ -546,12 +571,9 @@ export function initUTSIndexClassName(
   moduleName: string,
   is_uni_modules: boolean
 ) {
-  if (typeof plus === 'undefined') {
-    return ''
-  }
   return initUTSClassName(
     moduleName,
-    plus.os.name === 'iOS' ? 'IndexSwift' : 'IndexKt',
+    isUTSAndroid() ? 'IndexKt' : 'IndexSwift',
     is_uni_modules
   )
 }
@@ -561,21 +583,15 @@ export function initUTSClassName(
   className: string,
   is_uni_modules: boolean
 ) {
-  if (typeof plus === 'undefined') {
-    return ''
-  }
-  if (plus.os.name === 'Android') {
+  if (isUTSAndroid()) {
     return className
   }
-  if (plus.os.name === 'iOS') {
-    return (
-      'UTSSDK' +
-      (is_uni_modules ? 'Modules' : '') +
-      capitalize(moduleName) +
-      capitalize(className)
-    )
-  }
-  return ''
+  return (
+    'UTSSDK' +
+    (is_uni_modules ? 'Modules' : '') +
+    capitalize(moduleName) +
+    capitalize(className)
+  )
 }
 
 const interfaceDefines: Record<string, ProxyClassOptions> = {}

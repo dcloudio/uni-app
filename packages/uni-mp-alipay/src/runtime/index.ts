@@ -6,6 +6,8 @@ import {
   initCreateSubpackageApp,
 } from '@dcloudio/uni-mp-core'
 
+import './polyfill'
+
 import * as parseAppOptions from './parseAppOptions'
 
 import { initCreatePage } from './createPage'

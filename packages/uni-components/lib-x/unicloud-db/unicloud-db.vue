@@ -5,7 +5,13 @@
 </template>
 
 <script lang="uts">
+  //#ifdef APP
   import { SlotsType } from 'vue'
+  //#endif
+
+  //#ifdef WEB
+  let registerFlag = false
+  //#endif
 
   const EVENT_LOAD = 'load'
   const EVENT_ERROR = 'error'
@@ -93,15 +99,19 @@
     complete ?: CompleteCallback,
   }
 
-  @Suppress("UNCHECKED_CAST")
   function cast_callback<T>(options : any | null) : T | null {
     return options as T | null
   }
 
-  export class UniCloudDBElement extends UniViewElement {
+  //#ifdef APP
+  export class UniCloudDBElement extends UniViewElementImpl {
     constructor(data : INodeData, pageNode : PageNode) {
       super(data, pageNode)
     }
+  //#endif
+  //#ifdef WEB
+  export class UniCloudDBElement extends UniElementImpl {
+  //#endif
 
     dataList : Array<UTSJSONObject> = []
 
@@ -130,8 +140,16 @@
         complete: cast_callback<CompleteCallback>(options['complete'])
       } as UniCloudDBComponentAddOptions)
     }
-
+    // @ts-ignore
     remove(id : any, options : UTSJSONObject) {
+      //#ifdef WEB
+      // @ts-ignore
+      if (arguments.length == 0) {
+        super.remove()
+        return
+      }
+      //#endif
+
       this.onRemove(id, {
         confirmTitle: options.getString('confirmTitle'),
         confirmContent: options.getString('confirmContent'),
@@ -183,7 +201,7 @@
     }>,
     props: {
       collection: {
-        type: Object,
+        type: [String, Object],
         default: ''
       },
       field: {
@@ -195,7 +213,7 @@
         default: ''
       },
       where: {
-        type: Object,
+        type: [String, Object],
         default: ''
       },
       pageData: {
@@ -215,7 +233,7 @@
         default: false
       },
       gettree: {
-        type: Object,
+        type: [String, Object],
         default: ''
       },
       gettreepath: {
@@ -273,6 +291,18 @@
         error: null as UniCloudError | null
       }
     },
+    //#ifdef WEB
+    beforeCreate() {
+      if (!registerFlag) {
+        registerFlag = true
+        // @ts-ignore
+        window.customElements.define(
+          'uni-cloud-db-element',
+          UniCloudDBElement,
+        )
+      }
+    },
+    //#endif
     created() {
       this.pagination.current = this.pageCurrent
       this.pagination.size = this.pageSize
@@ -312,33 +342,46 @@
             this.reset()
           }
 
-          this.get(false)
+          this.get(null)
         }
       )
 
       if (!this.manual && this.loadtime == LOAD_MODE_AUTO) {
-        this.get(false)
+        if (typeof this.collection == 'string') {
+          const collectionString = this.collection as string
+          if (collectionString.length == 0) {
+            return
+          }
+        } else if (Array.isArray(this.collection)) {
+          const collectionArray = this.collection as Array<any>
+          if (collectionArray.length == 0) {
+            return
+          }
+        }
+        this.get(null)
       }
     },
     mounted() {
-      const uniCloudDBElement = this.$refs.get('UniCloudDB') as UniCloudDBElement
-      // TODO 暂不支持Web平台 ?.bind(this);
+      const uniCloudDBElement = this.$refs['UniCloudDB'] as UniCloudDBElement
       uniCloudDBElement.dataList = this.dataList;
+
+      //#ifdef APP
       uniCloudDBElement.onLoadData = this.loadData;
       uniCloudDBElement.onLoadMore = this.loadMore;
       uniCloudDBElement.onAdd = this.add;
       uniCloudDBElement.onUpdate = this.update;
       uniCloudDBElement.onRemove = this.remove;
+      //#endif
+      //#ifdef WEB
+      uniCloudDBElement.onLoadData = this.loadData.bind(this);
+      uniCloudDBElement.onLoadMore = this.loadMore.bind(this);
+      uniCloudDBElement.onAdd = this.add.bind(this);
+      uniCloudDBElement.onUpdate = this.update.bind(this);
+      uniCloudDBElement.onRemove = this.remove.bind(this);
+      //#endif
     },
     methods: {
       loadData(options : UniCloudDBComponentLoadDataOptions) {
-        if (this.loading) {
-          return
-        }
-        this.loading = true
-
-        this.error = null
-
         let clear = (options.clear != null && options.clear == true)
         if (clear == true) {
           if (this.pageData == PAGE_MODE_REPLACE) {
@@ -346,28 +389,8 @@
           }
           this.reset()
         }
-        if (options.current != null) {
-          this.pagination.current = options.current!
-        }
 
-        this.getExec().then((res : UniCloudDBGetResult) => {
-          this._getSuccess(res, clear)
-          options.success?.(res)
-        }).catch((err : any | null) => {
-          this._requestFail(err, options.fail)
-        }).finally(() => {
-          this.loading = false
-          options.complete?.()
-        })
-
-        // this.get(clear).then((res) => {
-        //   options.success?.(res)
-        // }).catch((err : any | null) => {
-        //   options.fail?.(err)
-        // }).finally(() => {
-        //   this.loading = false
-        //   options.complete?.()
-        // })
+        this.get(options)
       },
       loadMore() {
         if (this.isEnded || this.loading) {
@@ -378,11 +401,11 @@
           this.pagination.current++
         }
 
-        this.get(false)
+        this.get(null)
       },
       refresh() {
         this.clear()
-        this.get(false)
+        this.get(null)
       },
       clear() {
         this.isEnded = false
@@ -391,38 +414,52 @@
       reset() {
         this.pagination.current = 1
       },
-      get(clear : boolean) {
+      get(options? : UniCloudDBComponentLoadDataOptions) {
+        let loadAfterClear = false
+        if (options != null && options.clear != null && options.clear == true) {
+          loadAfterClear = true
+        }
+        if (options != null && options.current != null) {
+          this.pagination.current = options.current!
+        }
+
+        this.error = null
+
+        this.loading = true
         this.getExec().then((res : UniCloudDBGetResult) => {
-          this._getSuccess(res, clear)
+          const data = res.data
+          const count = res.count
+
+          this.isEnded = (count != null) ? (this.pagination.current * this.pagination.size >= count) : (data.length < this.pageSize)
+          this.hasMore = !this.isEnded
+
+          if (this.getcount && count != null) {
+            this.pagination.count = count
+          }
+
+          this._dispatchEvent(EVENT_LOAD, data)
+
+          if (loadAfterClear || this.pageData == PAGE_MODE_REPLACE) {
+            this.dataList = data
+          } else {
+            this.dataList.push(...data)
+          }
+
+          options?.success?.(res)
         }).catch((err : any | null) => {
           this._requestFail(err, null)
+          options?.fail?.(err)
+        }).finally(() => {
+          this.loading = false
+          options?.complete?.()
         })
-      },
-      _getSuccess(res : UniCloudDBGetResult, clear : boolean) {
-        const data = res.data
-        const count = res.count
-
-        this.isEnded = (count !== null) ? (this.pagination.current * this.pagination.size >= count) : (data.length < this.pageSize)
-        this.hasMore = !this.isEnded
-
-        if (this.getcount && count != null) {
-          this.pagination.count = count
-        }
-
-        this._dispatchEvent(EVENT_LOAD, data)
-
-        if (clear || this.pageData == PAGE_MODE_REPLACE) {
-          this.dataList = data
-        } else {
-          this.dataList.push(...data)
-        }
       },
       add(value : UTSJSONObject, options : UniCloudDBComponentAddOptions) {
         this._needLoading(options.needLoading, options.loadingTitle)
         const db = uniCloud.databaseForJQL()
         db.collection(this._getMainCollection()).add(value).then<void>((res : UniCloudDBAddResult) => {
           options.success?.(res)
-          this._isShowToast(options.showToast, options.toastTitle, 'add success')
+          this._isShowToast(options.showToast ?? false, options.toastTitle ?? 'add success')
         }).catch((err) => {
           this._requestFail(err, options.fail)
         }).finally(() => {
@@ -467,8 +504,8 @@
         const db = uniCloud.databaseForJQL()
         db.collection(this._getMainCollection()).doc(id).update(value).then((res) => {
           options.success?.(res)
-          this._isShowToast(options.showToast, options.toastTitle, 'update success')
-        }).catch((err) => {
+          this._isShowToast(options.showToast ?? false, options.toastTitle ?? 'update success')
+        }).catch((err : any | null) => {
           this._requestFail(err, options.fail)
         }).finally(() => {
           this._requestComplete(options.complete, options.needLoading)
@@ -487,7 +524,7 @@
           } else {
             this._removeData(ids)
           }
-        }).catch((err) => {
+        }).catch((err : any | null) => {
           this._requestFail(err, options.fail)
         }).finally(() => {
           this._requestComplete(options.complete, options.needLoading)
@@ -504,10 +541,10 @@
           }
         }
       },
-      _isShowToast(showToast ?: boolean | null, title ?: string | null, defaultTitle : string) {
+      _isShowToast(showToast : boolean, title : string) {
         if (showToast == true) {
           uni.showToast({
-            title: title ?? defaultTitle
+            title: title
           })
         }
       },
@@ -582,17 +619,20 @@
             query = query.orderBy(this.orderby)
           } else if (filter != null) {
             query = filter.orderBy(this.orderby)
+          } else {
+            query = collection.orderBy(this.orderby)
           }
         }
 
         const size = this.pagination.size
         const current = this.pagination.current
+        const skipSize = size * (current - 1)
         if (query != null) {
-          query = query.skip(size * (current - 1)).limit(size)
+          query = query.skip(skipSize).limit(size)
         } else if (filter != null) {
-          query = filter.skip(size * (current - 1)).limit(size)
+          query = filter.skip(skipSize).limit(size)
         } else {
-          query = collection.skip(size * (current - 1)).limit(size)
+          query = collection.skip(skipSize).limit(size)
         }
 
         const getOptions = {}

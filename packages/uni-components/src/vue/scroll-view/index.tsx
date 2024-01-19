@@ -13,6 +13,7 @@ import {
 } from 'vue'
 import { passive } from '@dcloudio/uni-shared'
 import { initScrollBounce, disableScrollBounce } from '../../helpers/scroll'
+import { UniElement } from '../../helpers/UniElement'
 import {
   useCustomEvent,
   CustomEventTrigger,
@@ -37,6 +38,10 @@ interface State {
 const passiveOptions = /*#__PURE__*/ passive(true)
 
 const props = {
+  direction: {
+    type: [String],
+    default: 'vertical',
+  },
   scrollX: {
     type: [Boolean, String],
     default: false,
@@ -44,6 +49,10 @@ const props = {
   scrollY: {
     type: [Boolean, String],
     default: false,
+  },
+  showScrollbar: {
+    type: [Boolean, String],
+    default: true,
   },
   upperThreshold: {
     type: [Number, String],
@@ -95,6 +104,7 @@ const props = {
   },
 }
 
+class UniScrollViewElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'ScrollView',
   compatConfig: {
@@ -111,6 +121,12 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     'refresherabort',
     'update:refresherTriggered',
   ],
+  //#if _X_ && !_NODE_JS_
+  rootElement: {
+    name: 'uni-scroll-view',
+    class: UniScrollViewElement,
+  },
+  //#endif
   setup(props, { emit, slots }) {
     const rootRef: HTMLRef = ref(null)
     const main: HTMLRef = ref(null)
@@ -122,7 +138,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
     const { state, scrollTopNumber, scrollLeftNumber } =
       useScrollViewState(props)
-    useScrollViewLoader(
+    const { realScrollX, realScrollY } = useScrollViewLoader(
       props,
       state,
       scrollTopNumber,
@@ -136,14 +152,57 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
     const mainStyle = computed(() => {
       let style = ''
-      props.scrollX
+      realScrollX.value
         ? (style += 'overflow-x:auto;')
         : (style += 'overflow-x:hidden;')
-      props.scrollY
+      realScrollY.value
         ? (style += 'overflow-y:auto;')
         : (style += 'overflow-y:hidden;')
       return style
     })
+
+    const scrollBarClassName = computed(() => {
+      let className = 'uni-scroll-view'
+      if (props.showScrollbar === false) {
+        className += ' uni-scroll-view-scrollbar-hidden'
+      }
+      return className
+    })
+
+    //#if _X_ && !_NODE_JS_
+    onMounted(() => {
+      const rootElement = rootRef.value as UniScrollViewElement
+      Object.defineProperties(rootElement, {
+        scrollHeight: {
+          get() {
+            return main.value!.scrollHeight
+          },
+        },
+        scrollWidth: {
+          get() {
+            return main.value!.scrollWidth
+          },
+        },
+        scrollLeft: {
+          get() {
+            return main.value!.scrollLeft
+          },
+          set(val) {
+            main.value!.scrollLeft = val
+          },
+        },
+        scrollTop: {
+          get() {
+            return main.value!.scrollTop
+          },
+          set(val) {
+            main.value!.scrollTop = val
+          },
+        },
+      })
+      rootElement.attachVmProps(props)
+    })
+    //#endif
 
     return () => {
       const { refresherEnabled, refresherBackground, refresherDefaultStyle } =
@@ -153,7 +212,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       return (
         <uni-scroll-view ref={rootRef}>
           <div ref={wrap} class="uni-scroll-view">
-            <div ref={main} style={mainStyle.value} class="uni-scroll-view">
+            <div
+              ref={main}
+              style={mainStyle.value}
+              class={scrollBarClassName.value}
+            >
               <div ref={content} class="uni-scroll-view-content">
                 {refresherEnabled ? (
                   <div
@@ -263,6 +326,27 @@ function useScrollViewLoader(
 
   let __transitionEnd = () => {}
 
+  const realScrollX = computed(() => {
+    //#if _X_
+    if (props.direction === 'horizontal' || props.direction === 'all') {
+      return true
+    }
+    return false
+    //#else
+    return props.scrollX
+    //#endif
+  })
+  const realScrollY = computed(() => {
+    //#if _X_
+    if (props.direction === 'vertical' || props.direction === 'all') {
+      return true
+    }
+    return false
+    //#else
+    return props.scrollY
+    //#endif
+  })
+
   const upperThresholdNumber = computed(() => {
     let val = Number(props.upperThreshold)
     return isNaN(val) ? 50 : val
@@ -329,7 +413,7 @@ function useScrollViewLoader(
       deltaX: state.lastScrollLeft - target.scrollLeft,
       deltaY: state.lastScrollTop - target.scrollTop,
     })
-    if (props.scrollY) {
+    if (realScrollY.value) {
       if (
         target.scrollTop <= upperThresholdNumber.value &&
         state.lastScrollTop - target.scrollTop > 0 &&
@@ -352,7 +436,7 @@ function useScrollViewLoader(
         state.lastScrollToLowerTime = $event.timeStamp
       }
     }
-    if (props.scrollX) {
+    if (realScrollX.value) {
       if (
         target.scrollLeft <= upperThresholdNumber.value &&
         state.lastScrollLeft - target.scrollLeft > 0 &&
@@ -379,7 +463,7 @@ function useScrollViewLoader(
     state.lastScrollLeft = target.scrollLeft
   }
   function _scrollTopChanged(val: number) {
-    if (props.scrollY) {
+    if (realScrollY.value) {
       if (_innerSetScrollTop) {
         _innerSetScrollTop = false
       } else {
@@ -392,7 +476,7 @@ function useScrollViewLoader(
     }
   }
   function _scrollLeftChanged(val: number) {
-    if (props.scrollX) {
+    if (realScrollX.value) {
       if (_innerSetScrollLeft) {
         _innerSetScrollLeft = false
       } else {
@@ -414,7 +498,7 @@ function useScrollViewLoader(
       if (element) {
         let mainRect = main.value!.getBoundingClientRect()
         let elRect = element.getBoundingClientRect()
-        if (props.scrollX) {
+        if (realScrollX.value) {
           let left = elRect.left - mainRect.left
           let scrollLeft = main.value!.scrollLeft
           let x = scrollLeft + left
@@ -424,7 +508,7 @@ function useScrollViewLoader(
             main.value!.scrollLeft = x
           }
         }
-        if (props.scrollY) {
+        if (realScrollY.value) {
           let top = elRect.top - mainRect.top
           let scrollTop = main.value!.scrollTop
           let y = scrollTop + top
@@ -444,10 +528,10 @@ function useScrollViewLoader(
     content.value!.style.webkitTransform = ''
     let _main = main.value!
     if (direction === 'x') {
-      _main.style.overflowX = props.scrollX ? 'auto' : 'hidden'
+      _main.style.overflowX = realScrollX.value ? 'auto' : 'hidden'
       _main.scrollLeft = val
     } else if (direction === 'y') {
-      _main.style.overflowY = props.scrollY ? 'auto' : 'hidden'
+      _main.style.overflowY = realScrollY.value ? 'auto' : 'hidden'
       _main.scrollTop = val
     }
     content.value!.removeEventListener('transitionend', __transitionEnd)
@@ -511,7 +595,7 @@ function useScrollViewLoader(
 
       if (Math.abs(x - touchStart.x) > Math.abs(y - touchStart.y)) {
         // 横向滑动
-        if (props.scrollX) {
+        if (realScrollX.value) {
           if (_main.scrollLeft === 0 && x > touchStart.x) {
             needStop = false
             return
@@ -528,7 +612,7 @@ function useScrollViewLoader(
         }
       } else {
         // 纵向滑动
-        if (props.scrollY) {
+        if (realScrollY.value) {
           if (_main.scrollTop === 0 && y > touchStart.y) {
             needStop = false
             // 刷新时，阻止页面滚动
@@ -625,8 +709,8 @@ function useScrollViewLoader(
 
   onActivated(() => {
     // 还原 scroll-view 滚动位置
-    props.scrollY && (main.value!.scrollTop = state.lastScrollTop)
-    props.scrollX && (main.value!.scrollLeft = state.lastScrollLeft)
+    realScrollY.value && (main.value!.scrollTop = state.lastScrollTop)
+    realScrollX.value && (main.value!.scrollLeft = state.lastScrollLeft)
   })
 
   watch(scrollTopNumber, (val) => {
@@ -652,4 +736,9 @@ function useScrollViewLoader(
       }
     }
   )
+
+  return {
+    realScrollX,
+    realScrollY,
+  }
 }

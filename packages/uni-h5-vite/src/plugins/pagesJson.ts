@@ -292,8 +292,11 @@ function generateConfig(
   delete pagesJson.subPackages
   delete pagesJson.subpackages
   pagesJson.compilerVersion = process.env.UNI_COMPILER_VERSION
-  const vueType = process.env.UNI_APP_X === 'true' ? 'uvue' : 'nvue'
-  return `${globalName}.__uniConfig=extend(${JSON.stringify(pagesJson)},{
+  const isX = process.env.UNI_APP_X === 'true'
+  const vueType = isX ? 'uvue' : 'nvue'
+
+  return `${isX ? `${globalName}.__uniX = true` : ''}
+  ${globalName}.__uniConfig=extend(${JSON.stringify(pagesJson)},{
   appId,
   appName,
   appVersion,

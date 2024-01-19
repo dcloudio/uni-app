@@ -1,6 +1,7 @@
 import { Ref, ref, onMounted, onUnmounted, inject } from 'vue'
 import { AddSwiperContext, SwiperContext, RemoveSwiperContext } from '../swiper'
 import { defineBuiltInComponent } from '../../helpers/component'
+import { UniElement } from '../../helpers/UniElement'
 
 const props = {
   itemId: {
@@ -9,9 +10,16 @@ const props = {
   },
 }
 
+class UniSwiperItemElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'SwiperItem',
   props,
+  //#if _X_ && !_NODE_JS_
+  rootElement: {
+    name: 'uni-swiper-item',
+    class: UniSwiperItemElement,
+  },
+  //#endif
   setup(props, { slots }) {
     const rootRef: Ref<HTMLElement | null> = ref(null)
     const context: SwiperContext = {
@@ -49,6 +57,13 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         removeSwiperContext(context)
       }
     })
+
+    //#if _X_ && !_NODE_JS_
+    onMounted(() => {
+      const rootElement = rootRef.value as UniSwiperItemElement
+      rootElement.attachVmProps(props)
+    })
+    //#endif
     return () => {
       return (
         <uni-swiper-item

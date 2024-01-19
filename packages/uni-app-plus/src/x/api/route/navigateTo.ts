@@ -1,5 +1,5 @@
 import { EventChannel, ON_HIDE, parseUrl } from '@dcloudio/uni-shared'
-import { getRouteMeta, invokeHook } from '@dcloudio/uni-core'
+import { getCurrentPage, getRouteMeta, invokeHook } from '@dcloudio/uni-core'
 import {
   API_NAVIGATE_TO,
   API_TYPE_NAVIGATE_TO,
@@ -85,6 +85,10 @@ function initAnimation(
   animationType?: string,
   animationDuration?: number
 ) {
+  // 首页去除动画
+  if (!getCurrentPage()) {
+    return ['none', 0] as const
+  }
   const { globalStyle } = __uniConfig
   const meta = getRouteMeta(path)!
   return [

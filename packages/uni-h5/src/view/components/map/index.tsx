@@ -15,6 +15,7 @@ import {
   useSubscribe,
   useCustomEvent,
   CustomEventTrigger,
+  UniElement,
 } from '@dcloudio/uni-components'
 import '@amap/amap-jsapi-types'
 import { callOptions } from '@dcloudio/uni-shared'
@@ -560,6 +561,7 @@ function useMap(
   }
 }
 
+class UniMapElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Map',
   props,
@@ -576,6 +578,12 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     'update:latitude',
     'update:longitude',
   ],
+  //#if _X_ && !_NODE_JS_
+  rootElement: {
+    name: 'uni-map',
+    class: UniMapElement,
+  },
+  //#endif
   setup(props, { emit, slots }) {
     const rootRef: Ref<HTMLElement | null> = ref(null)
     const { mapRef, trigger } = useMap(
@@ -583,6 +591,12 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       rootRef,
       emit as SetupContext['emit']
     )
+    //#if _X_ && !_NODE_JS_
+    onMounted(() => {
+      const rootElement = rootRef.value as UniMapElement
+      rootElement.attachVmProps(props)
+    })
+    //#endif
     return () => {
       return (
         <uni-map ref={rootRef} id={props.id}>

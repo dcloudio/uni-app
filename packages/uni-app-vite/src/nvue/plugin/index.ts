@@ -16,6 +16,7 @@ import {
   removeExt,
   resolveMainPathOnce,
   formatAtFilename,
+  transformUTSComponent,
 } from '@dcloudio/uni-cli-shared'
 import { parse } from '@dcloudio/uni-nvue-styler'
 import { nvueOutDir } from '../../utils'
@@ -30,7 +31,6 @@ import { transformModel } from './transforms/vModel'
 import { transformShow } from './transforms/vShow'
 import { transformAttrs } from './transforms/transformAttrs'
 import { nvuePagesCache } from '../plugins/pagesJson'
-import { transformUTSComponent } from './transforms/transformUTSComponent'
 
 const uTags = {
   text: 'u-text',

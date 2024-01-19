@@ -1,6 +1,6 @@
 import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, customizeEvent, addLeadingSlash, stringifyQuery, ON_BACK_PRESS } from '@dcloudio/uni-shared';
-import { ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, getExposeProxy, EMPTY_OBJ, isRef, setTemplateRef, devtoolsComponentAdded, pruneComponentPropsCache } from 'vue';
 import { isArray, isFunction, capitalize, hasOwn, extend, isPlainObject, isString } from '@vue/shared';
+import { ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, getExposeProxy, EMPTY_OBJ, isRef, setTemplateRef, devtoolsComponentAdded, pruneComponentPropsCache } from 'vue';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 
 const MP_METHODS = [
@@ -446,6 +446,14 @@ function findPagePropsData(properties) {
 function initData(_) {
     return {};
 }
+function updateMiniProgramComponentProperties(up, mpInstance) {
+    const prevProps = mpInstance.props
+        ;
+    const nextProps = findComponentPropsData(up) || {};
+    if (hasPropsChanged(prevProps, nextProps, false)) {
+        mpInstance.setData(nextProps);
+    }
+}
 function updateComponentProps(up, instance) {
     const prevProps = toRaw(instance.props);
     const nextProps = findComponentPropsData(up) || {};
@@ -536,49 +544,6 @@ function initCreatePluginApp(parseAppOptions) {
         }
     };
 }
-
-function onAliAuthError(method, $event) {
-    $event.type = 'getphonenumber';
-    $event.detail.errMsg =
-        'getPhoneNumber:fail Error: ' + $event.detail.errorMessage;
-    method($event);
-}
-function onAliGetAuthorize(method, $event) {
-    my.getPhoneNumber({
-        success: (res) => {
-            $event.type = 'getphonenumber';
-            const response = JSON.parse(res.response);
-            $event.detail.errMsg = 'getPhoneNumber:ok';
-            $event.detail.encryptedData = response.response;
-            $event.detail.sign = response.sign;
-            method($event);
-        },
-        fail: (res) => {
-            $event.type = 'getphonenumber';
-            $event.detail.errMsg = 'getPhoneNumber:fail Error: ' + JSON.stringify(res);
-            method($event);
-        },
-    });
-}
-function parse(appOptions) {
-    const oldOnLaunch = appOptions.onLaunch;
-    appOptions.onLaunch = function onLaunch(options) {
-        oldOnLaunch.call(this, options);
-        if (!this.$vm) {
-            return;
-        }
-        const globalProperties = this.$vm.$app.config.globalProperties;
-        if (!globalProperties.$onAliAuthError) {
-            globalProperties.$onAliAuthError = onAliAuthError;
-            globalProperties.$onAliGetAuthorize = onAliGetAuthorize;
-        }
-    };
-}
-
-var parseAppOptions = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  parse: parse
-});
 
 function handleLink$1(event) {
     // detail 是微信,value 是百度(dipatch)
@@ -716,13 +681,27 @@ function triggerEvent(type, detail) {
     });
 }
 // const IGNORES = ['$slots', '$scopedSlots']
-function createObserver(isDidUpdate = false) {
-    return function observe(props) {
-        const nextProps = isDidUpdate ? this.props : props;
-        if (nextProps.uP) {
-            updateComponentProps(nextProps.uP, this.$vm.$);
+function initPropsObserver(componentOptions) {
+    const observe = function observe(props) {
+        const nextProps = isComponent2 ? props : this.props;
+        const up = nextProps.uP;
+        if (!up) {
+            return;
+        }
+        if (this.$vm) {
+            updateComponentProps(up, this.$vm.$);
+        }
+        else if (this.props.uT === 'm') {
+            // 小程序组件
+            updateMiniProgramComponentProperties(up, this);
         }
     };
+    if (isComponent2) {
+        componentOptions.deriveDataFromProps = observe;
+    }
+    else {
+        componentOptions.didUpdate = observe;
+    }
 }
 const handleLink = (function () {
     if (isComponent2) {
@@ -757,6 +736,59 @@ function createVueComponent(mpType, mpInstance, vueOptions, parent) {
         },
     });
 }
+
+const MPComponent = Component;
+Component = function (options) {
+    // 小程序组件
+    const isVueComponent = options.props && typeof options.props.uP !== 'undefined';
+    if (!isVueComponent) {
+        initPropsObserver(options);
+    }
+    return MPComponent(options);
+};
+
+function onAliAuthError(method, $event) {
+    $event.type = 'getphonenumber';
+    $event.detail.errMsg =
+        'getPhoneNumber:fail Error: ' + $event.detail.errorMessage;
+    method($event);
+}
+function onAliGetAuthorize(method, $event) {
+    my.getPhoneNumber({
+        success: (res) => {
+            $event.type = 'getphonenumber';
+            const response = JSON.parse(res.response);
+            $event.detail.errMsg = 'getPhoneNumber:ok';
+            $event.detail.encryptedData = response.response;
+            $event.detail.sign = response.sign;
+            method($event);
+        },
+        fail: (res) => {
+            $event.type = 'getphonenumber';
+            $event.detail.errMsg = 'getPhoneNumber:fail Error: ' + JSON.stringify(res);
+            method($event);
+        },
+    });
+}
+function parse(appOptions) {
+    const oldOnLaunch = appOptions.onLaunch;
+    appOptions.onLaunch = function onLaunch(options) {
+        oldOnLaunch.call(this, options);
+        if (!this.$vm) {
+            return;
+        }
+        const globalProperties = this.$vm.$app.config.globalProperties;
+        if (!globalProperties.$onAliAuthError) {
+            globalProperties.$onAliAuthError = onAliAuthError;
+            globalProperties.$onAliGetAuthorize = onAliGetAuthorize;
+        }
+    };
+}
+
+var parseAppOptions = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  parse: parse
+});
 
 function initCreatePage() {
     return function createPage(vueOptions) {
@@ -910,11 +942,8 @@ function initCreateComponent() {
                     return createVueComponent('component', this, vueOptions, parent);
                 });
             };
-            mpComponentOptions.deriveDataFromProps = createObserver();
         }
-        else {
-            mpComponentOptions.didUpdate = createObserver(true);
-        }
+        initPropsObserver(mpComponentOptions);
         initWxsCallMethods(mpComponentOptions.methods, vueOptions.wxsCallMethods);
         return Component(mpComponentOptions);
     };

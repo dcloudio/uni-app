@@ -14,7 +14,7 @@ describe('uvue-style', () => {
             font-size: 36rpx;
         }
         `,
-      { map: true }
+      { type: 'uvue', map: true }
     )
     expect(code).toMatchSnapshot()
   })
@@ -32,7 +32,7 @@ describe('uvue-style', () => {
             font-size: 36rpx;
         }
         `,
-      { map: true, ts: true }
+      { type: 'uvue', map: true, ts: true }
     )
     expect(code).toMatchSnapshot()
   })
@@ -50,7 +50,7 @@ describe('uvue-style', () => {
             font-size: 36rpx;
         }
         `,
-      { map: true, ts: true, chunk: 2 }
+      { type: 'uvue', map: true, ts: true, chunk: 2 }
     )
     expect(code).toMatchSnapshot()
   })
@@ -68,7 +68,7 @@ describe('uvue-style', () => {
             font-size: 36rpx;
         }
         `,
-      { mapOf: 'utsMapOf', chunk: 2 }
+      { type: 'uvue', mapOf: 'utsMapOf', chunk: 2 }
     )
     expect(code).toMatchSnapshot()
   })
@@ -92,7 +92,7 @@ describe('uvue-style', () => {
             transition-duration: 300ms;
         }
         `,
-      { map: true, ts: true, chunk: 2 }
+      { type: 'uvue', map: true, ts: true, chunk: 2 }
     )
     expect(code).toMatchSnapshot()
   })
@@ -116,7 +116,7 @@ describe('uvue-style', () => {
             transition-duration: 300ms;
         }
         `,
-      { mapOf: 'utsMapOf', chunk: 2 }
+      { type: 'uvue', mapOf: 'utsMapOf', chunk: 2 }
     )
     expect(code).toMatchSnapshot()
   })
@@ -140,8 +140,35 @@ describe('uvue-style', () => {
             transition-duration: 300ms;
         }
         `,
-      { mapOf: 'utsMapOf', chunk: 2, trim: true }
+      { type: 'uvue', mapOf: 'utsMapOf', chunk: 2, trim: true }
     )
+    expect(code).toMatchSnapshot()
+  })
+  test('css var', async () => {
+    const { code } = await parse(
+      `
+        .content {
+            top: var(--window-top);
+            bottom: var(--window-bottom);
+            height: var(--status-bar-height);
+        }
+        `,
+      { type: 'uvue', map: true, ts: true }
+    )
+    expect(code).toMatchSnapshot()
+  })
+  test('css calc', async () => {
+    const { code, messages } = await parse(
+      `
+        .content {
+            top: calc(var(--window-top) + 10px);
+            bottom: calc(10px - var(--window-bottom));
+            height: calc(var(--status-bar-height) * 2);
+        }
+        `,
+      { type: 'uvue', map: true, ts: true }
+    )
+    console.log(messages)
     expect(code).toMatchSnapshot()
   })
 })

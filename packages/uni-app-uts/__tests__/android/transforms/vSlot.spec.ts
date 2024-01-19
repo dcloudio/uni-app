@@ -93,16 +93,15 @@ describe('compiler: slot', () => {
     assert(
       `<view><slot data="data"></slot></view>`,
       `
-function PagesIndexIndexRender(): VNode | null {
+function PagesIndexIndexRender(): any | null {
 const _ctx = this
 const _cache = this.$.renderCache
   return createElementVNode("view", null, [
-    renderSlot(_ctx.$slots, "default", utsMapOf({ data: "data" }))
+    renderSlot(_ctx.$internalSlots, "default", utsMapOf({ data: "data" }))
   ])
 }`,
       {
-        targetLanguage: 'kotlin',
-        mode: 'function',
+        mode: 'module',
       }
     )
   })
@@ -111,7 +110,7 @@ const _cache = this.$.renderCache
     assert(
       `<view><Foo @click="test">test</Foo></view>`,
       `
-function PagesIndexIndexRender(): VNode | null {
+function PagesIndexIndexRender(): any | null {
 const _ctx = this
 const _cache = this.$.renderCache
 const _component_Foo = resolveComponent("Foo")
@@ -124,8 +123,7 @@ const _component_Foo = resolveComponent("Foo")
   ])
 }`,
       {
-        targetLanguage: 'kotlin',
-        mode: 'function',
+        mode: 'module',
       }
     )
   })
@@ -134,13 +132,11 @@ const _component_Foo = resolveComponent("Foo")
     assert(
       `<view><slot><view></view></slot></view>`,
       `createElementVNode("view", null, [
-  renderSlot(_ctx.$slots, "default", {}, (): any[] => [
+  renderSlot(_ctx.$internalSlots, "default", {}, (): any[] => [
     createElementVNode("view")
   ])
 ])`,
-      {
-        targetLanguage: 'kotlin',
-      }
+      {}
     )
   })
 
@@ -148,7 +144,7 @@ const _component_Foo = resolveComponent("Foo")
     assert(
       `<view><Foo><template v-slot="props"><text>msg: {{props.msg}}</text></template></Foo></view>`,
       `
-function PagesIndexIndexRender(): VNode | null {
+function PagesIndexIndexRender(): any | null {
 const _ctx = this
 const _cache = this.$.renderCache
 const _component_Foo = resolveComponent("Foo")
@@ -163,8 +159,7 @@ const _component_Foo = resolveComponent("Foo")
   ])
 }`,
       {
-        targetLanguage: 'kotlin',
-        mode: 'function',
+        mode: 'module',
       }
     )
   })
@@ -173,7 +168,7 @@ const _component_Foo = resolveComponent("Foo")
     assert(
       `<view><Foo><template #default="props"><text>msg: {{props.msg}}</text></template></Foo></view>`,
       `
-function PagesIndexIndexRender(): VNode | null {
+function PagesIndexIndexRender(): any | null {
 const _ctx = this
 const _cache = this.$.renderCache
 const _component_Foo = resolveComponent("Foo")
@@ -188,8 +183,7 @@ const _component_Foo = resolveComponent("Foo")
   ])
 }`,
       {
-        targetLanguage: 'kotlin',
-        mode: 'function',
+        mode: 'module',
       }
     )
   })
@@ -279,7 +273,7 @@ const _component_Foo = resolveComponent("Foo")
 
 describe('compiler: transform component slots', () => {
   test('implicit default slot', () => {
-    const { root, slots } = parseWithSlots(`<Comp><div/></Comp>`, {
+    const { root, slots } = parseWithSlots(`<Comp><view/></Comp>`, {
       prefixIdentifiers: true,
     })
     expect(slots).toMatchObject(
@@ -290,7 +284,7 @@ describe('compiler: transform component slots', () => {
           returns: [
             {
               type: NodeTypes.ELEMENT,
-              tag: `div`,
+              tag: `view`,
             },
           ],
         },
@@ -659,9 +653,9 @@ describe('compiler: transform component slots', () => {
 
   test('should force dynamic when inside v-for', () => {
     const { root } = parseWithSlots(
-      `<div v-for="i in list">
+      `<view v-for="i in list">
         <Comp v-slot="bar">foo</Comp>
-      </div>`
+      </view>`
     )
     const div = ((root.children[0] as ForNode).children[0] as ElementNode)
       .codegenNode as any
@@ -693,16 +687,16 @@ describe('compiler: transform component slots', () => {
     }
 
     assertDynamicSlots(
-      `<div v-for="i in list">
+      `<view v-for="i in list">
         <Comp v-slot="bar">foo</Comp>
-      </div>`,
+      </view>`,
       false
     )
 
     assertDynamicSlots(
-      `<div v-for="i in list">
+      `<view v-for="i in list">
         <Comp v-slot="bar">{{ i }}</Comp>
-      </div>`,
+      </view>`,
       true
     )
 
@@ -723,16 +717,16 @@ describe('compiler: transform component slots', () => {
 
     // #2564
     assertDynamicSlots(
-      `<div v-for="i in list">
+      `<view v-for="i in list">
         <Comp v-slot="bar"><button @click="fn(i)" /></Comp>
-      </div>`,
+      </view>`,
       true
     )
 
     assertDynamicSlots(
-      `<div v-for="i in list">
+      `<view v-for="i in list">
         <Comp v-slot="bar"><button @click="fn()" /></Comp>
-      </div>`,
+      </view>`,
       false
     )
   })
@@ -985,7 +979,7 @@ describe('compiler: transform component slots', () => {
     // # fix: #6900
     test('consistent behavior of @xxx:modelValue and @xxx:model-value', () => {
       const { root: rootUpper } = parseWithSlots(
-        `<div><slot @foo:modelValue="handler" /></div>`
+        `<view><slot @foo:modelValue="handler" /></view>`
       )
       const slotNodeUpper = (rootUpper.codegenNode! as VNodeCall)
         .children as ElementNode[]
@@ -1009,7 +1003,7 @@ describe('compiler: transform component slots', () => {
       })
 
       const { root } = parseWithSlots(
-        `<div><slot @foo:model-Value="handler" /></div>`
+        `<view><slot @foo:model-Value="handler" /></view>`
       )
       const slotNode = (root.codegenNode! as VNodeCall)
         .children as ElementNode[]
@@ -1105,7 +1099,7 @@ describe('compiler: transform component slots', () => {
 
     test('error on v-slot usage on plain elements', () => {
       const onError = jest.fn()
-      const source = `<div v-slot/>`
+      const source = `<view v-slot/>`
       parseWithSlots(source, { onError })
       const index = source.indexOf('v-slot')
       expect(onError.mock.calls[0][0]).toMatchObject({

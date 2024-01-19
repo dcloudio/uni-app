@@ -1,0 +1,25 @@
+{
+  "name": "@dcloudio/uni-preprocess",
+  "version": "3.0.0-alpha-4000020240117001",
+  "description": "@dcloudio/uni-preprocess",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.es.js",
+  "types": "dist/uni-preprocess.d.ts",
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uni-preprocess"
+  },
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/dcloudio/uni-app/issues"
+  },
+  "dependencies": {
+    "magic-string": "^0.30.0",
+    "xregexp": "^5.1.1"
+  }
+}

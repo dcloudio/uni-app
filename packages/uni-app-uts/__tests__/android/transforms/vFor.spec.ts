@@ -270,7 +270,7 @@ describe('compiler: v-for', () => {
     assert(
       `<slot v-for="item in items"></slot>`,
       `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.items, (item, _, _, _): VNode => {
-  return renderSlot(_ctx.$slots, \"default\")
+  return renderSlot(_ctx.$internalSlots, \"default\")
 }), 256 /* UNKEYED_FRAGMENT */)`
     )
   })

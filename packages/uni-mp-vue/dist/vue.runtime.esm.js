@@ -5667,11 +5667,12 @@ function getCreateApp() {
         : process.env.UNI_SUBPACKAGE
             ? 'createSubpackageApp'
             : 'createApp';
-    if (typeof global !== 'undefined') {
+    if (typeof global !== 'undefined' &&
+        typeof global[method] !== 'undefined') {
         return global[method];
     }
     else if (typeof my !== 'undefined') {
-        // 支付宝小程序没有global
+        // 支付宝小程序开启globalObjectMode配置后才会有global
         return my[method];
     }
 }

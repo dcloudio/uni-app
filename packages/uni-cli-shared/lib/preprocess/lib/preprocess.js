@@ -94,71 +94,72 @@ function preprocessor(src, context, opts, noRestoreEol) {
 
   var rv = src;
 
-  rv = replace(rv, opts.type.include, processIncludeDirective.bind(null, false, context, opts));
+  // 不支持该语法，无需执行，大字符串时，该正则性能极低（比如包含较大base64时）（https://github.com/dcloudio/uni-app/issues/4661）
+  // rv = replace(rv, opts.type.include, processIncludeDirective.bind(null, false, context, opts));
 
-  if (opts.type.extend) {
-    rv = replaceRecursive(rv, opts.type.extend, function(startMatches, endMatches, include, recurse) {
-      var file = (startMatches[1] || '').trim();
-      var extendedContext = copy(context);
-      var extendedOpts = copy(opts);
-      extendedContext.src = path.join(opts.srcDir, file);
-      extendedOpts.srcDir = path.dirname(extendedContext.src);
+  // if (opts.type.extend) {
+  //   rv = replaceRecursive(rv, opts.type.extend, function(startMatches, endMatches, include, recurse) {
+  //     var file = (startMatches[1] || '').trim();
+  //     var extendedContext = copy(context);
+  //     var extendedOpts = copy(opts);
+  //     extendedContext.src = path.join(opts.srcDir, file);
+  //     extendedOpts.srcDir = path.dirname(extendedContext.src);
 
-      var fileContents = getFileContents(extendedContext.src, opts.fileNotFoundSilentFail, context.src);
-      if (fileContents.error) {
-        return fileContents.contents;
-      }
+  //     var fileContents = getFileContents(extendedContext.src, opts.fileNotFoundSilentFail, context.src);
+  //     if (fileContents.error) {
+  //       return fileContents.contents;
+  //     }
 
-      var extendedSource = preprocessor(fileContents.contents, extendedContext, extendedOpts, true).trim();
+  //     var extendedSource = preprocessor(fileContents.contents, extendedContext, extendedOpts, true).trim();
 
-      if (extendedSource) {
-        include = include.replace(/^\n?|\n?$/g, '');
-        return replace(extendedSource, opts.type.extendable, recurse(include));
-      } else {
-        return '';
-      }
-    });
-  }
+  //     if (extendedSource) {
+  //       include = include.replace(/^\n?|\n?$/g, '');
+  //       return replace(extendedSource, opts.type.extendable, recurse(include));
+  //     } else {
+  //       return '';
+  //     }
+  //   });
+  // }
 
-  if (opts.type.foreach) {
-    rv = replaceRecursive(rv, opts.type.foreach, function(startMatches, endMatches, include, recurse) {
-      var variable = (startMatches[1] || '').trim();
-      var forParams = variable.split(' ');
-      if (forParams.length === 3) {
-        var contextVar = forParams[2];
-        var arrString = getDeepPropFromObj(context, contextVar);
-        var eachArr;
-        if (arrString.match(/\{(.*)\}/)) {
-          eachArr = JSON.parse(arrString);
-        } else if (arrString.match(/\[(.*)\]/)) {
-          eachArr = arrString.slice(1, -1);
-          eachArr = eachArr.split(',');
-          eachArr = eachArr.map(function(arrEntry){
-            return arrEntry.replace(/\s*(['"])(.*)\1\s*/, '$2');
-          });
-        } else {
-          eachArr = arrString.split(',');
-        }
+  // if (opts.type.foreach) {
+  //   rv = replaceRecursive(rv, opts.type.foreach, function(startMatches, endMatches, include, recurse) {
+  //     var variable = (startMatches[1] || '').trim();
+  //     var forParams = variable.split(' ');
+  //     if (forParams.length === 3) {
+  //       var contextVar = forParams[2];
+  //       var arrString = getDeepPropFromObj(context, contextVar);
+  //       var eachArr;
+  //       if (arrString.match(/\{(.*)\}/)) {
+  //         eachArr = JSON.parse(arrString);
+  //       } else if (arrString.match(/\[(.*)\]/)) {
+  //         eachArr = arrString.slice(1, -1);
+  //         eachArr = eachArr.split(',');
+  //         eachArr = eachArr.map(function(arrEntry){
+  //           return arrEntry.replace(/\s*(['"])(.*)\1\s*/, '$2');
+  //         });
+  //       } else {
+  //         eachArr = arrString.split(',');
+  //       }
 
-        var replaceToken = new RegExp(XRegExp.escape(forParams[0]), 'g');
-        var recursedInclude = recurse(include);
+  //       var replaceToken = new RegExp(XRegExp.escape(forParams[0]), 'g');
+  //       var recursedInclude = recurse(include);
 
-        return Object.keys(eachArr).reduce(function(stringBuilder, arrKey){
-          var arrEntry = eachArr[arrKey];
-          return stringBuilder + recursedInclude.replace(replaceToken, arrEntry);
-        }, '');
-      } else {
-        return '';
-      }
-    });
-  }
+  //       return Object.keys(eachArr).reduce(function(stringBuilder, arrKey){
+  //         var arrEntry = eachArr[arrKey];
+  //         return stringBuilder + recursedInclude.replace(replaceToken, arrEntry);
+  //       }, '');
+  //     } else {
+  //       return '';
+  //     }
+  //   });
+  // }
 
-  if (opts.type.exclude) {
-    rv = replaceRecursive(rv, opts.type.exclude, function(startMatches, endMatches, include, recurse){
-      var test = (startMatches[1] || '').trim();
-      return testPasses(test,context) ? '' : recurse(include);
-    });
-  }
+  // if (opts.type.exclude) {
+  //   rv = replaceRecursive(rv, opts.type.exclude, function(startMatches, endMatches, include, recurse){
+  //     var test = (startMatches[1] || '').trim();
+  //     return testPasses(test,context) ? '' : recurse(include);
+  //   });
+  // }
 
   if (opts.type.if) {
     rv = replaceRecursive(rv, opts.type.if, function (startMatches, endMatches, include, recurse) {
@@ -194,39 +195,39 @@ function preprocessor(src, context, opts, noRestoreEol) {
     });
   }
 
-  rv = replace(rv, opts.type.echo, function (match, variable) {
-    variable = (variable || '').trim();
-    // if we are surrounded by quotes, echo as a string
-    var stringMatch = variable.match(/^(['"])(.*)\1$/);
-    if (stringMatch) return stringMatch[2];
+  // rv = replace(rv, opts.type.echo, function (match, variable) {
+  //   variable = (variable || '').trim();
+  //   // if we are surrounded by quotes, echo as a string
+  //   var stringMatch = variable.match(/^(['"])(.*)\1$/);
+  //   if (stringMatch) return stringMatch[2];
 
-    var arrString = getDeepPropFromObj(context, variable);
-    return typeof arrString !== 'undefined' ? arrString : '';
-  });
+  //   var arrString = getDeepPropFromObj(context, variable);
+  //   return typeof arrString !== 'undefined' ? arrString : '';
+  // });
 
-  rv = replace(rv, opts.type.exec, function (match, name, value) {
-    name = (name || '').trim();
-    value = value || '';
+  // rv = replace(rv, opts.type.exec, function (match, name, value) {
+  //   name = (name || '').trim();
+  //   value = value || '';
 
-    var params = value.split(',');
-    var stringRegex = /^['"](.*)['"]$/;
+  //   var params = value.split(',');
+  //   var stringRegex = /^['"](.*)['"]$/;
 
-    params = params.map(function(param){
-      param = param.trim();
-      if (stringRegex.test(param)) { // handle string parameter
-        return param.replace(stringRegex, '$1');
-      } else { // handle variable parameter
-        return getDeepPropFromObj(context, param);
-      }
-    });
+  //   params = params.map(function(param){
+  //     param = param.trim();
+  //     if (stringRegex.test(param)) { // handle string parameter
+  //       return param.replace(stringRegex, '$1');
+  //     } else { // handle variable parameter
+  //       return getDeepPropFromObj(context, param);
+  //     }
+  //   });
 
-    var fn = getDeepPropFromObj(context, name);
-    if (!fn || typeof fn !== 'function') return '';
+  //   var fn = getDeepPropFromObj(context, name);
+  //   if (!fn || typeof fn !== 'function') return '';
 
-    return fn.apply(context, params);
-  });
+  //   return fn.apply(context, params);
+  // });
 
-  rv = replace(rv, opts.type['include-static'], processIncludeDirective.bind(null, true, context, opts));
+  // rv = replace(rv, opts.type['include-static'], processIncludeDirective.bind(null, true, context, opts));
 
   if (!noRestoreEol) {
     rv = restoreEol(rv, opts.srcEol);

@@ -1,15 +1,18 @@
 {
-  "extends": "./tsconfig.vue.json",
+  "extends": "../tsconfig.vue.json",
   "compilerOptions": {
     "baseUrl": ".",
-    "verbatimModuleSyntax": false,
-    "lib": ["esnext", "dom"],
-    "types": ["@dcloudio/types"]
+    "lib": ["ESNext"],
+    "noImplicitAny": false,
+    "paths": {
+      "@/*": ["./*"]
+    }
   },
   "include": [
-    "auto-imports.d.ts",
     "env.d.ts",
     "shim-uni.d.ts",
+    "shim-dom.d.ts",
+    "global.d.ts",
     "**/*.uts",
     "**/*.ts",
     "**/*.d.ts",
