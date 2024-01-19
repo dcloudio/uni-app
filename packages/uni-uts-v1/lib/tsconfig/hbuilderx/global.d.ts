@@ -4,7 +4,6 @@ import {
   VueAppConfig as VueAppConfigOrigin,
   VueApp as VueAppOrigin,
   definePlugin as definePluginOrigin,
-  defineMixin as defineMixinOrigin,
   createApp as createAppOrigin,
   createSSRApp as createSSRAppOrigin,
   withDirectives as withDirectivesOrigin,
@@ -103,7 +102,6 @@ declare global {
   const VueApp: typeof VueAppOrigin
   type VueApp = VueAppOrigin
   const definePlugin: typeof definePluginOrigin
-  const defineMixin: typeof defineMixinOrigin
   const createApp: typeof createAppOrigin
   const createSSRApp: typeof createSSRAppOrigin
   const withDirectives: typeof withDirectivesOrigin
