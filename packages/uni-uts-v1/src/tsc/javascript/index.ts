@@ -1,5 +1,5 @@
 import path from 'path'
-import { extend, isFunction } from '@vue/shared'
+import { extend, isArray, isFunction } from '@vue/shared'
 import type { RPT2Options } from 'rollup-plugin-typescript2'
 import { isInHBuilderX } from '../../shared'
 interface UTS2JavaScriptOptions extends Omit<RPT2Options, 'transformers'> {
@@ -85,5 +85,14 @@ export const uts2js: uts2js = (options) => {
     // @ts-expect-error
     return globalThis.uts2js(options)
   }
-  return require('../../../lib/javascript').uts2js(options)
+  const plugins = require('../../../lib/javascript').uts2js(options)
+  if (isArray(plugins)) {
+    plugins.forEach((p) => {
+      if (p.name === 'uts') {
+        // 强制放到 auto import 之后执行
+        p.enforce = 'post'
+      }
+    })
+  }
+  return plugins
 }

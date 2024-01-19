@@ -18,7 +18,7 @@ import {
   initPreContext,
   parseUniExtApis,
   resolveSourceMapPath,
-  uniUTSExtApi,
+  uniUTSExtApiReplace,
   uniViteInjectPlugin,
 } from '@dcloudio/uni-cli-shared'
 
@@ -130,9 +130,9 @@ export default function uniPlugin(
 function createPlugins(options: VitePluginUniResolvedOptions) {
   const plugins: Plugin[] = []
 
-  // uni x 需要插入到指定位置，此插件执行太早，又会引发 vue 文件的不支持，该插件是解析ast的，所以必须是合法的js或ts代码
+  // uni x 调整了，由 uniUTSExtApiReplace 实现 uni.getBatteryInfo => uni_getBatterInfo，然后交由 auto import 处理
   if (process.env.UNI_APP_X === 'true') {
-    plugins.push(uniUTSExtApi())
+    plugins.push(uniUTSExtApiReplace())
   } else {
     const injects = parseUniExtApis(
       true,
