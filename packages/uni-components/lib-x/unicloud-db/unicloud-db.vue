@@ -201,7 +201,7 @@
     }>,
     props: {
       collection: {
-        type: Object,
+        type: [String, Object],
         default: ''
       },
       field: {
@@ -213,7 +213,7 @@
         default: ''
       },
       where: {
-        type: Object,
+        type: [String, Object],
         default: ''
       },
       pageData: {
@@ -233,7 +233,7 @@
         default: false
       },
       gettree: {
-        type: Object,
+        type: [String, Object],
         default: ''
       },
       gettreepath: {
