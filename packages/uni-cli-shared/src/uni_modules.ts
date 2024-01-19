@@ -2,7 +2,6 @@
 import path from 'path'
 import fs from 'fs-extra'
 import type { UTSTargetLanguage } from './uts'
-import { once } from '@dcloudio/uni-shared'
 
 export type DefineOptions = {
   name?: string
@@ -29,13 +28,11 @@ export interface Exports {
   [name: string]: Define | Defines | false
 }
 
-export const parseUniExtApisOnce = once(parseUniExtApis)
-
 export function parseUniExtApis(
   vite = true,
   platform: typeof process.env.UNI_UTS_PLATFORM,
   language: UTSTargetLanguage = 'javascript'
-): Injects {
+) {
   if (!process.env.UNI_INPUT_DIR) {
     return {}
   }
@@ -78,7 +75,7 @@ export function parseUniExtApis(
 }
 
 type Inject = string | string[]
-export type Injects = {
+type Injects = {
   [name: string]:
     | string
     | [string, string]

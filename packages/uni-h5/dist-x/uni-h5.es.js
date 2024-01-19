@@ -5,225 +5,11 @@ var __publicField = (obj, key, value) => {
   return value;
 };
 import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, nextTick, onBeforeMount, withDirectives, vModelDynamic, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, h, createTextVNode, isReactive, Transition, createApp, createBlock, onBeforeActivate, onBeforeDeactivate, renderList, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
-import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject as isPlainObject$1, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
+import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
 import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, debounce, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, parseQuery, NAVBAR_HEIGHT, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, ON_THEME_CHANGE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, sortObject, OFF_THEME_CHANGE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
-class UniError extends Error {
-  constructor(errSubject, errCode, errMsg) {
-    super(errMsg);
-    this.name = "UniError";
-    this.errSubject = errSubject;
-    this.errCode = errCode;
-    this.errMsg = errMsg;
-  }
-  toString() {
-    return this.errMsg;
-  }
-  toJSON() {
-    return {
-      errSubject: this.errSubject,
-      errCode: this.errCode,
-      errMsg: this.errMsg,
-      data: this.data,
-      cause: this.cause && typeof this.cause.toJSON === "function" ? this.cause.toJSON() : this.cause
-    };
-  }
-}
-function getType$1(val) {
-  return Object.prototype.toString.call(val).slice(8, -1).toLowerCase();
-}
-function isPlainObject(val) {
-  if (val == null || typeof val !== "object") {
-    return false;
-  }
-  const proto = Object.getPrototypeOf(val);
-  return proto === Object.prototype || proto === null;
-}
-function initUTSJSONObjectProperties(obj) {
-  const propertyList = [
-    "_resolveKeyPath",
-    "_getValue",
-    "toJSON",
-    "get",
-    "set",
-    "getAny",
-    "getString",
-    "getNumber",
-    "getBoolean",
-    "getJSON",
-    "getArray",
-    "toMap",
-    "forEach"
-  ];
-  const propertyDescriptorMap = {};
-  for (let i = 0; i < propertyList.length; i++) {
-    const property = propertyList[i];
-    propertyDescriptorMap[property] = {
-      enumerable: false,
-      value: obj[property]
-    };
-  }
-  Object.defineProperties(obj, propertyDescriptorMap);
-}
-class UTSJSONObject {
-  constructor(content = {}) {
-    for (const key in content) {
-      if (Object.prototype.hasOwnProperty.call(content, key)) {
-        const value = content[key];
-        if (isPlainObject(value)) {
-          this[key] = new UTSJSONObject(value);
-        } else if (getType$1(value) === "array") {
-          this[key] = value.map((item) => {
-            if (isPlainObject(item)) {
-              return new UTSJSONObject(item);
-            } else {
-              return item;
-            }
-          });
-        } else {
-          this[key] = value;
-        }
-      }
-    }
-    initUTSJSONObjectProperties(this);
-  }
-  _resolveKeyPath(keyPath) {
-    let token = "";
-    const keyPathArr = [];
-    let inOpenParentheses = false;
-    for (let i = 0; i < keyPath.length; i++) {
-      const word = keyPath[i];
-      switch (word) {
-        case ".":
-          if (token.length > 0) {
-            keyPathArr.push(token);
-            token = "";
-          }
-          break;
-        case "[": {
-          inOpenParentheses = true;
-          if (token.length > 0) {
-            keyPathArr.push(token);
-            token = "";
-          }
-          break;
-        }
-        case "]":
-          if (inOpenParentheses) {
-            if (token.length > 0) {
-              const tokenFirstChar = token[0];
-              const tokenLastChar = token[token.length - 1];
-              if (tokenFirstChar === '"' && tokenLastChar === '"' || tokenFirstChar === "'" && tokenLastChar === "'" || tokenFirstChar === "`" && tokenLastChar === "`") {
-                if (token.length > 2) {
-                  token = token.slice(1, -1);
-                } else {
-                  return [];
-                }
-              } else if (!/^\d+$/.test(token)) {
-                return [];
-              }
-              keyPathArr.push(token);
-              token = "";
-            } else {
-              return [];
-            }
-            inOpenParentheses = false;
-          } else {
-            return [];
-          }
-          break;
-        default:
-          token += word;
-          break;
-      }
-      if (i === keyPath.length - 1) {
-        if (token.length > 0) {
-          keyPathArr.push(token);
-          token = "";
-        }
-      }
-    }
-    return keyPathArr;
-  }
-  _getValue(keyPath) {
-    const keyPathArr = this._resolveKeyPath(keyPath);
-    if (keyPathArr.length === 0) {
-      return null;
-    }
-    let value = this;
-    for (let key of keyPathArr) {
-      if (value instanceof Object) {
-        value = value[key];
-      } else {
-        return null;
-      }
-    }
-    return value;
-  }
-  get(key) {
-    return this._getValue(key);
-  }
-  set(key, value) {
-    this[key] = value;
-  }
-  getAny(key) {
-    return this._getValue(key);
-  }
-  getString(key) {
-    const value = this._getValue(key);
-    if (typeof value === "string") {
-      return value;
-    } else {
-      return null;
-    }
-  }
-  getNumber(key) {
-    const value = this._getValue(key);
-    if (typeof value === "number") {
-      return value;
-    } else {
-      return null;
-    }
-  }
-  getBoolean(key) {
-    const boolean = this._getValue(key);
-    if (typeof boolean === "boolean") {
-      return boolean;
-    } else {
-      return null;
-    }
-  }
-  getJSON(key) {
-    let value = this._getValue(key);
-    if (value instanceof Object) {
-      return new UTSJSONObject(value);
-    } else {
-      return null;
-    }
-  }
-  getArray(key) {
-    let value = this._getValue(key);
-    if (value instanceof Array) {
-      return value;
-    } else {
-      return null;
-    }
-  }
-  toMap() {
-    let map = /* @__PURE__ */ new Map();
-    for (let key in this) {
-      map.set(key, this[key]);
-    }
-    return map;
-  }
-  forEach(callback) {
-    for (let key in this) {
-      callback(this[key], key);
-    }
-  }
-}
 const isEnableLocale = /* @__PURE__ */ once(
   () => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
 );
@@ -1586,7 +1372,7 @@ class ComponentDescriptor {
     if (isString(style)) {
       style = parseStringStyle(style);
     }
-    if (isPlainObject$1(style)) {
+    if (isPlainObject(style)) {
       this.$el.__wxsStyle = style;
       this.forceUpdate("style");
     }
@@ -2505,7 +2291,7 @@ function _addListeners(id2, listeners2, watch2) {
   if (watch2 && !id2) {
     return;
   }
-  if (!isPlainObject$1(listeners2)) {
+  if (!isPlainObject(listeners2)) {
     return;
   }
   Object.keys(listeners2).forEach((name) => {
@@ -2527,7 +2313,7 @@ function _removeListeners(id2, listeners2, watch2) {
   if (watch2 && !id2) {
     return;
   }
-  if (!isPlainObject$1(listeners2)) {
+  if (!isPlainObject(listeners2)) {
     return;
   }
   Object.keys(listeners2).forEach((name) => {
@@ -3019,7 +2805,7 @@ function validateProtocols(name, args, protocol, onFail) {
   }
 }
 function validateProp(name, value, prop, isAbsent) {
-  if (!isPlainObject$1(prop)) {
+  if (!isPlainObject(prop)) {
     prop = { type: prop };
   }
   const { type, required, validator: validator2 } = prop;
@@ -3191,7 +2977,7 @@ function normalizeErrMsg$1(errMsg, name) {
   return name + errMsg.substring(errMsg.indexOf(":fail"));
 }
 function createAsyncApiCallback(name, args = {}, { beforeAll, beforeSuccess } = {}) {
-  if (!isPlainObject$1(args)) {
+  if (!isPlainObject(args)) {
     args = {};
   }
   const { success, fail, complete } = getApiCallbacks(args);
@@ -3318,7 +3104,7 @@ function invokeApi(method, api2, options, params) {
   return api2(options, ...params);
 }
 function hasCallback(args) {
-  if (isPlainObject$1(args) && [API_SUCCESS, API_FAIL, API_COMPLETE].find(
+  if (isPlainObject(args) && [API_SUCCESS, API_FAIL, API_COMPLETE].find(
     (cb) => isFunction(args[cb])
   )) {
     return true;
@@ -3350,7 +3136,7 @@ function promisify(name, fn) {
 }
 function formatApiArgs(args, options) {
   const params = args[0];
-  if (!options || !isPlainObject$1(options.formatArgs) && isPlainObject$1(params)) {
+  if (!options || !isPlainObject(options.formatArgs) && isPlainObject(params)) {
     return;
   }
   const formatArgs = options.formatArgs;
@@ -3653,12 +3439,12 @@ function dedupeHooks(hooks) {
 const addInterceptor = /* @__PURE__ */ defineSyncApi(
   API_ADD_INTERCEPTOR,
   (method, interceptor) => {
-    if (isString(method) && isPlainObject$1(interceptor)) {
+    if (isString(method) && isPlainObject(interceptor)) {
       mergeInterceptorHook(
         scopedInterceptors[method] || (scopedInterceptors[method] = {}),
         interceptor
       );
-    } else if (isPlainObject$1(method)) {
+    } else if (isPlainObject(method)) {
       mergeInterceptorHook(globalInterceptors, method);
     }
   },
@@ -3668,12 +3454,12 @@ const removeInterceptor = /* @__PURE__ */ defineSyncApi(
   API_REMOVE_INTERCEPTOR,
   (method, interceptor) => {
     if (isString(method)) {
-      if (isPlainObject$1(interceptor)) {
+      if (isPlainObject(interceptor)) {
         removeInterceptorHook(scopedInterceptors[method], interceptor);
       } else {
         delete scopedInterceptors[method];
       }
-    } else if (isPlainObject$1(method)) {
+    } else if (isPlainObject(method)) {
       removeInterceptorHook(globalInterceptors, method);
     }
   },
@@ -4489,7 +4275,7 @@ class CanvasContext {
     });
   }
   set font(value) {
-    var self2 = this;
+    var self = this;
     this.state.font = value;
     var fontFormat = value.match(
       /^(([\w\-]+\s)*)(\d+r?px)(\/(\d+\.?\d*(r?px)?))?\s+(.*)/
@@ -4505,19 +4291,19 @@ class CanvasContext {
             method: "setFontStyle",
             data: [value2]
           });
-          self2.state.fontStyle = value2;
+          self.state.fontStyle = value2;
         } else if (["bold", "normal"].indexOf(value2) > -1) {
           actions.push({
             method: "setFontWeight",
             data: [value2]
           });
-          self2.state.fontWeight = value2;
+          self.state.fontWeight = value2;
         } else if (index2 === 0) {
           actions.push({
             method: "setFontStyle",
             data: ["normal"]
           });
-          self2.state.fontStyle = "normal";
+          self.state.fontStyle = "normal";
         } else if (index2 === 1) {
           pushAction();
         }
@@ -4542,7 +4328,7 @@ class CanvasContext {
         method: "setFontWeight",
         data: ["normal"]
       });
-      self2.state.fontWeight = "normal";
+      self.state.fontWeight = "normal";
     }
   }
   get font() {
@@ -5978,7 +5764,7 @@ function stringifyQuery(url, data) {
       let v2 = data[key];
       if (typeof v2 === "undefined" || v2 === null) {
         v2 = "";
-      } else if (isPlainObject$1(v2)) {
+      } else if (isPlainObject(v2)) {
         v2 = JSON.stringify(v2);
       }
       params[encode(key)] = encode(v2);
@@ -6011,7 +5797,7 @@ const RequestOptions = {
       params.data = value || "";
     },
     url(value, params) {
-      if (params.method === HTTP_METHODS[0] && isPlainObject$1(params.data) && Object.keys(params.data).length) {
+      if (params.method === HTTP_METHODS[0] && isPlainObject(params.data) && Object.keys(params.data).length) {
         params.url = stringifyQuery(value, params.data);
       }
     },
@@ -13388,7 +13174,7 @@ function processClickEvent(node, triggerItemClick) {
   }
 }
 function normalizeAttrs(tagName, attrs2) {
-  if (!isPlainObject$1(attrs2))
+  if (!isPlainObject(attrs2))
     return;
   for (const key in attrs2) {
     if (hasOwn(attrs2, key)) {
@@ -13402,7 +13188,7 @@ const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
   if (!nodeList || isArray(nodeList) && !nodeList.length)
     return [];
   return nodeList.map((node) => {
-    if (!isPlainObject$1(node)) {
+    if (!isPlainObject(node)) {
       return;
     }
     if (!hasOwn(node, "type") || node.type === "node") {
@@ -17370,7 +17156,7 @@ function onResize() {
   });
 }
 function onMessage(evt) {
-  if (isPlainObject$1(evt.data) && evt.data.type === WEB_INVOKE_APPSERVICE) {
+  if (isPlainObject(evt.data) && evt.data.type === WEB_INVOKE_APPSERVICE) {
     UniServiceJSBridge.emit(
       ON_WEB_INVOKE_APP_SERVICE,
       evt.data.data,
@@ -26200,27 +25986,6 @@ function createPageBodyVNode(ctx) {
     }
   );
 }
-function getGlobal() {
-  if (typeof globalThis !== "undefined") {
-    return globalThis;
-  }
-  if (typeof self !== "undefined") {
-    return self;
-  }
-  if (typeof window !== "undefined") {
-    return window;
-  }
-  if (typeof window !== "undefined") {
-    return window;
-  }
-  throw new Error("unable to locate window object");
-}
-const realGlobal = getGlobal();
-if (!realGlobal.globalThis) {
-  realGlobal.globalThis = realGlobal;
-}
-globalThis.UTSJSONObject = UTSJSONObject;
-globalThis.UniError = UniError;
 export {
   $emit,
   $off,

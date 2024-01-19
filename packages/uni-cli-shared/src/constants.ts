@@ -6,7 +6,7 @@ export const EXTNAME_VUE = ['.vue', '.nvue', '.uvue']
 export const X_EXTNAME_VUE = ['.uvue', '.vue']
 export const EXTNAME_VUE_TEMPLATE = ['.vue', '.nvue', '.uvue', '.jsx', '.tsx']
 export const EXTNAME_VUE_RE = /\.(vue|nvue|uvue)$/
-export const EXTNAME_JS_RE = /\.(js|jsx|ts|uts|tsx|mjs)$/
+export const EXTNAME_JS_RE = /\.(js|jsx|ts|tsx|mjs)$/
 export const EXTNAME_TS_RE = /\.tsx?$/
 
 const COMMON_EXTENSIONS = [

@@ -1,5 +1,4 @@
 import { parseInjects } from '../src/uni_modules'
-import { injectsToAutoImports } from '../src/vite'
 
 describe('uni_modules:uni-ext-api', () => {
   test('parseInjects', () => {
@@ -215,29 +214,5 @@ describe('uni_modules:uni-ext-api', () => {
         { js: false, kotlin: false, swift: true },
       ],
     })
-  })
-  test(`injectsToAutoImports`, () => {
-    expect(
-      injectsToAutoImports(
-        parseInjects(
-          true,
-          'app-android',
-          'kotlin',
-          `@/uni_modules/uni-getbatteryinfo`,
-          '',
-          {
-            uni: ['getBatteryInfo', 'getBatteryInfoSync'],
-          }
-        )
-      )
-    ).toEqual([
-      {
-        from: '@/uni_modules/uni-getbatteryinfo',
-        imports: [
-          ['getBatteryInfo', 'uni_getBatteryInfo'],
-          ['getBatteryInfoSync', 'uni_getBatteryInfoSync'],
-        ],
-      },
-    ])
   })
 })
