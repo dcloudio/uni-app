@@ -48,7 +48,7 @@ export function injectsToAutoImports(
   const autoImports: Record<string, [string, string][]> = {}
   Object.keys(injects).forEach((api) => {
     const options = injects[api]
-    if (isArray(options) && options.length === 2) {
+    if (isArray(options) && options.length >= 2) {
       const source = options[0]
       const name = options[1]
       if (!autoImports[source]) {
