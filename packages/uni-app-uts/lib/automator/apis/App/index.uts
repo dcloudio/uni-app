@@ -438,7 +438,7 @@ export const captureScreenshot = (
   const currentPage = _getCurrentPage()
   if (currentPage != null) {
     currentPage.$viewToTempFilePath({
-      id: params.fullPage == true ? null : params.id,
+      id: params.id,
       offsetX: params.offsetX !== null ? params.offsetX : '0',
       offsetY: params.offsetY !== null ? params.offsetY : '0',
       wholeContent: params.fullPage == true,
