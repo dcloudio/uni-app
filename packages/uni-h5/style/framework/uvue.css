@@ -43,11 +43,8 @@ uni-app uni-textarea,
 uni-app uni-label {
   line-height: 1.2;
   overflow: hidden;
-  flex-shrink: 0;
-  flex-grow: 0;
   flex-basis: auto;
-  min-height: 0px;
-  min-width: 0px;
+  letter-spacing: 0;
 }
 
 uni-app uni-text,
@@ -55,19 +52,65 @@ uni-app uni-label {
   letter-spacing: 0;
 }
 
-uni-app uni-view,
+/* uni-app uni-* */
+uni-app uni-ad-draw,
+uni-app uni-ad-fullscreen-video,
+uni-app uni-ad-interactive,
+uni-app uni-ad-interstitial,
+uni-app uni-ad-rewarded-video,
+uni-app uni-ad,
+uni-app uni-animation-view,
+uni-app uni-audio,
+uni-app uni-block,
+uni-app uni-button,
+uni-app uni-camera,
+uni-app uni-canvas,
+uni-app uni-checkbox-group,
+uni-app uni-checkbox,
+uni-app uni-cover-image,
+uni-app uni-cover-view,
+uni-app uni-custom-tab-bar,
+uni-app uni-editor,
+uni-app uni-form,
+uni-app uni-icon,
+uni-app uni-image,
+uni-app uni-input,
 uni-app uni-label,
-uni-app uni-swiper,
-uni-app uni-swiper-item,
+uni-app uni-list-item,
+uni-app uni-list-view,
+uni-app uni-live-player,
+uni-app uni-live-pusher,
+uni-app uni-map,
+uni-app uni-match-media,
 uni-app uni-movable-area,
 uni-app uni-movable-view,
-uni-app uni-cover-view,
-uni-app uni-list-item,
+uni-app uni-navigation-bar,
 uni-app uni-navigator,
+uni-app uni-open-data,
+uni-app uni-page-meta,
+uni-app uni-picker-view-column,
+uni-app uni-picker-view,
+uni-app uni-picker,
+uni-app uni-progress,
 uni-app uni-radio-group,
-uni-app uni-checkbox-group,
+uni-app uni-radio,
+uni-app uni-rich-text,
 uni-app uni-scroll-view,
-uni-app uni-list-view {
+uni-app uni-slider,
+uni-app uni-sticky-header,
+uni-app uni-sticky-section,
+uni-app uni-swiper-item,
+uni-app uni-swiper,
+uni-app uni-switch,
+uni-app uni-template,
+uni-app uni-text,
+uni-app uni-textarea,
+uni-app uni-unicloud-db,
+uni-app uni-video,
+uni-app uni-view,
+uni-app uni-web-view {
+	position: relative;
+	box-sizing: border-box;
   display: flex;
   flex-shrink: 0;
   flex-grow: 0;
@@ -78,6 +121,17 @@ uni-app uni-list-view {
   /* 默认情况下，元素不会缩短至小于内容框尺寸，若想改变这一状况，请设置元素的min-width 与 min-height属性。https://developer.mozilla.org/zh-CN/docs/Web/CSS/flex */
   min-height: 0px;
   min-width: 0px;
+}
+
+uni-app uni-page-body {
+  display: flex;
+  align-items: stretch;
+  align-content: stretch;
+  justify-content: flex-start;
+}
+
+uni-app uni-text {
+	display: inline;
 }
 
 /* 与开发者元素接触的容器，此样式可被manifest.json内配置的flex-direction重置 */
@@ -95,12 +149,12 @@ uni-app uni-radio-group,
 uni-app uni-checkbox-group,
 uni-app uni-scroll-view,
 uni-app uni-list-view {
-  display: flex;
   flex-direction: column;
 }
 
 /* 与开发者元素接触的非滚动容器 */
 uni-app uni-view,
+uni-app uni-label,
 uni-app uni-swiper,
 uni-app uni-swiper-item,
 uni-app uni-movable-area,
@@ -133,19 +187,6 @@ uni-app .uni-scroll-view-content {
 uni-app .uni-scroll-view-content {
   display: flex;
   min-height: 0px;
-}
-
-uni-app uni-view,
-uni-app uni-image,
-uni-app uni-input,
-uni-app uni-scroll-view,
-uni-app uni-swiper,
-uni-app uni-swiper-item,
-uni-app uni-text,
-uni-app uni-textarea,
-uni-app uni-video {
-  position: relative;
-  box-sizing: border-box;
 }
 
 uni-app uni-swiper-item {
