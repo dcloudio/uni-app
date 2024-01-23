@@ -101,8 +101,13 @@ import {
   PropType as PropTypeOrigin,
   SlotsType as SlotsTypeOrigin,
   DebuggerEvent as DebuggerEventOrigin,
-  OnCleanup as OnCleanupOrigin
-} from 'vue'
+  OnCleanup as OnCleanupOrigin,
+  withDefaults as withDefaultsOrigin,
+  useSlots as useSlotsOrigin,
+  useAttrs as useAttrsOrigin,
+  useModel as useModelOrigin,
+  hasInjectionContext as hasInjectionContextOrigin
+} from '@vue/runtime-core'
 
 declare global {
   const VueAppContext: typeof VueAppContextOrigin
@@ -219,4 +224,9 @@ declare global {
   type SlotsType<T> = SlotsTypeOrigin<T>
   type DebuggerEvent = DebuggerEventOrigin
   type OnCleanup = OnCleanupOrigin
+  const withDefaults: typeof withDefaultsOrigin
+  const useSlots: typeof useSlotsOrigin
+  const useAttrs: typeof useAttrsOrigin
+  const useModel: typeof useModelOrigin
+  const hasInjectionContext: typeof hasInjectionContextOrigin
 }
