@@ -892,7 +892,7 @@ class UniElement extends HTMLElement {
   }
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-const index$A = /* @__PURE__ */ defineBuiltInComponent({
+const index$z = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   emits: ["submit", "reset"],
   setup(_props, {
@@ -952,7 +952,7 @@ function useProvideLabel() {
   });
   return handlers;
 }
-const index$z = /* @__PURE__ */ defineBuiltInComponent({
+const index$y = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: labelProps,
   setup(props2, {
@@ -1027,7 +1027,7 @@ const buttonProps = {
     default: false
   }
 };
-const index$y = /* @__PURE__ */ defineBuiltInComponent({
+const index$x = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   setup(props2, {
@@ -1903,7 +1903,7 @@ const props$q = {
     default: true
   }
 };
-const index$x = /* @__PURE__ */ defineBuiltInComponent({
+const index$w = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "Canvas",
   compatConfig: {
@@ -2377,7 +2377,7 @@ const props$p = {
     default: ""
   }
 };
-const index$w = /* @__PURE__ */ defineBuiltInComponent({
+const index$v = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
   props: props$p,
   emits: ["change"],
@@ -2473,7 +2473,7 @@ const props$o = {
     default: ""
   }
 };
-const index$v = /* @__PURE__ */ defineBuiltInComponent({
+const index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
   props: props$o,
   setup(props2, {
@@ -2554,7 +2554,6 @@ const index$v = /* @__PURE__ */ defineBuiltInComponent({
 });
 function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
   const field = vue.computed(() => ({
-    // @ts-ignore
     checkboxChecked: Boolean(checkboxChecked.value),
     value: checkboxValue.value
   }));
@@ -2811,7 +2810,7 @@ const props$m = /* @__PURE__ */ shared.extend({}, props$n, {
     default: false
   }
 });
-const index$u = /* @__PURE__ */ defineBuiltInComponent({
+const index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: props$m,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
@@ -2872,7 +2871,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-const index$t = /* @__PURE__ */ defineBuiltInComponent({
+const index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -2939,7 +2938,7 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-const index$s = /* @__PURE__ */ defineBuiltInComponent({
+const index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
   props: props$l,
   setup(props2, {
@@ -3764,7 +3763,7 @@ const movableAreaProps = {
     default: false
   }
 };
-const index$r = /* @__PURE__ */ defineBuiltInComponent({
+const index$q = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
   props: movableAreaProps,
@@ -4312,7 +4311,7 @@ const movableViewProps = {
 function v(a, b) {
   return +((1e3 * a - 1e3 * b) / 1e3).toFixed(1);
 }
-const index$q = /* @__PURE__ */ defineBuiltInComponent({
+const index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
   props: movableViewProps,
   emits: ["change", "scale"],
@@ -4963,7 +4962,7 @@ function createNavigatorOnClick(props2) {
     }
   };
 }
-const index$p = /* @__PURE__ */ defineBuiltInComponent({
+const index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   inheritAttrs: false,
   compatConfig: {
@@ -5296,7 +5295,7 @@ const progressProps = {
     default: 0
   }
 };
-const index$o = /* @__PURE__ */ defineBuiltInComponent({
+const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: progressProps,
   setup(props2) {
@@ -5380,7 +5379,7 @@ const props$i = {
     default: ""
   }
 };
-const index$n = /* @__PURE__ */ defineBuiltInComponent({
+const index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
   props: props$i,
   // emits: ['change'],
@@ -5502,7 +5501,7 @@ const props$h = {
     default: "#ffffff"
   }
 };
-const index$m = /* @__PURE__ */ defineBuiltInComponent({
+const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
   props: props$h,
   setup(props2, {
@@ -5562,25 +5561,23 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
       realCheckValue = radioChecked.value;
       return vue.createVNode("uni-radio", vue.mergeProps(booleanAttrs, {
         "onClick": _onClick,
-        "ref": rootRef
-      }), [vue.createVNode("div", {
+        "ref": rootRef,
         "class": "uni-radio-wrapper",
         "style": {
           "--HOVER-BD-COLOR": !radioChecked.value ? props2.activeBorderColor : radioStyle.value.borderColor
         }
-      }, [vue.createVNode("div", {
+      }), [vue.createVNode("div", {
         "class": ["uni-radio-input", {
           "uni-radio-input-disabled": props2.disabled
         }],
         "style": radioStyle.value
-      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.iconColor, 18) : ""], 6), slots.default && slots.default()], 4)], 16, ["onClick"]);
+      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.iconColor, 18) : ""], 6), slots.default && slots.default()], 16, ["onClick"]);
     };
   }
 });
 function useRadioInject(radioChecked, radioValue, reset) {
   const field = vue.computed({
     get: () => ({
-      // @ts-ignore
       radioChecked: Boolean(radioChecked.value),
       value: radioValue.value
     }),
@@ -12657,33 +12654,33 @@ exports.AdContentPage = index$5;
 exports.AdDraw = index$4;
 exports.AsyncErrorComponent = AsyncErrorComponent;
 exports.AsyncLoadingComponent = AsyncLoadingComponent;
-exports.Button = index$y;
+exports.Button = index$x;
 exports.Camera = index$3;
-exports.Canvas = index$x;
-exports.Checkbox = index$v;
-exports.CheckboxGroup = index$w;
+exports.Canvas = index$w;
+exports.Checkbox = index$u;
+exports.CheckboxGroup = index$v;
 exports.CoverImage = index$8;
 exports.CoverView = index$9;
-exports.Editor = index$u;
-exports.Form = index$A;
-exports.Icon = index$t;
-exports.Image = index$s;
+exports.Editor = index$t;
+exports.Form = index$z;
+exports.Icon = index$s;
+exports.Image = index$r;
 exports.Input = Input;
-exports.Label = index$z;
+exports.Label = index$y;
 exports.LayoutComponent = LayoutComponent;
 exports.LivePlayer = index$2;
 exports.LivePusher = index$1;
 exports.Map = index$a;
-exports.MovableArea = index$r;
-exports.MovableView = index$q;
-exports.Navigator = index$p;
+exports.MovableArea = index$q;
+exports.MovableView = index$p;
+exports.Navigator = index$o;
 exports.PageComponent = index;
 exports.Picker = index$7;
 exports.PickerView = PickerView;
 exports.PickerViewColumn = PickerViewColumn;
-exports.Progress = index$o;
-exports.Radio = index$m;
-exports.RadioGroup = index$n;
+exports.Progress = index$n;
+exports.Radio = indexX$2;
+exports.RadioGroup = index$m;
 exports.ResizeSensor = ResizeSensor;
 exports.RichText = index$l;
 exports.ScrollView = index$k;

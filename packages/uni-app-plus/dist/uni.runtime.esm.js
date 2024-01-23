@@ -17509,6 +17509,10 @@ function initUTSProxyClass(options) {
             const instance = this;
             const proxy = new Proxy(instance, {
                 get(_, name) {
+                    // 重要：禁止响应式
+                    if (name === '__v_skip') {
+                        return true;
+                    }
                     if (!target[name]) {
                         //实例方法
                         name = parseClassMethodName(name, methods);

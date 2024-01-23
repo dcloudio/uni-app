@@ -14,7 +14,13 @@ import Navigator from './navigator'
 import PickerView from './picker-view/index'
 import PickerViewColumn from './picker-view-column/index'
 import Progress from './progress/index'
+//#if _X_
+// @ts-ignore
+import Radio from './radio/index-x'
+//#else
+// @ts-ignore
 import Radio from './radio/index'
+//#endif
 import RadioGroup from './radio-group/index'
 import ResizeSensor from './resize-sensor/index'
 import RichText from './rich-text'

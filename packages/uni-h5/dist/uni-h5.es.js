@@ -7965,7 +7965,6 @@ const index$t = /* @__PURE__ */ defineBuiltInComponent({
 });
 function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
   const field = computed(() => ({
-    // @ts-ignore
     checkboxChecked: Boolean(checkboxChecked.value),
     value: checkboxValue.value
   }));
@@ -12813,7 +12812,6 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
 function useRadioInject(radioChecked, radioValue, reset) {
   const field = computed({
     get: () => ({
-      // @ts-ignore
       radioChecked: Boolean(radioChecked.value),
       value: radioValue.value
     }),
