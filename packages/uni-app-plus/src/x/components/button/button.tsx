@@ -4,147 +4,12 @@ import { onMounted, getCurrentInstance, computed } from 'vue'
 import {
   BUTTON_COMPONENT_NAME,
   buttonProps,
+  hoverStyles,
+  styleList,
   UNI_BUTTON_ELEMENT_NAME,
   UniButtonElement,
 } from './model'
 const FORM_TYPES = ['submit', 'reset']
-
-const styleList = {
-  ub: {
-    position: 'relative',
-    'text-align': 'center',
-    'padding-left': '14px',
-    'padding-right': '14px',
-    'overflow-x': 'hidden',
-    'overflow-y': 'hidden',
-    color: 'rgb(0, 0, 0)',
-    'background-color': 'rgb(248, 248, 248)',
-    'border-top-left-radius': '5px',
-    'border-top-right-radius': '5px',
-    'border-bottom-right-radius': '5px',
-    'border-bottom-left-radius': '5px',
-    'border-top-style': 'solid',
-    'border-right-style': 'solid',
-    'border-bottom-style': 'solid',
-    'border-left-style': 'solid',
-    'border-top-width': '0.5px',
-    'border-right-width': '0.5px',
-    'border-bottom-width': '0.5px',
-    'border-left-width': '0.5px',
-    'border-top-color': 'rgba(0, 0, 0, 0.2)',
-    'border-right-color': 'rgba(0, 0, 0, 0.2)',
-    'border-bottom-color': 'rgba(0, 0, 0, 0.2)',
-    'border-left-color': 'rgba(0, 0, 0, 0.2)',
-    'font-size': '18px',
-    'line-height': '3',
-    // 'line-height': 2.55556,
-  },
-  ['ub-default']: {
-    color: 'rgb(0, 0, 0)',
-    'background-color': 'rgb(248, 248, 248)',
-  },
-  ['ub-primary']: {
-    color: 'rgb(255, 255, 255)',
-    'background-color': 'rgb(0, 122, 255)',
-  },
-  ['ub-warn']: {
-    color: 'rgb(255, 255, 255)',
-    'background-color': 'rgb(230, 67, 64)',
-  },
-  ['ub-default-plain']: {
-    color: 'rgb(53, 53, 53)',
-    'border-top-color': 'rgb(53, 53, 53)',
-    'border-right-color': 'rgb(53, 53, 53)',
-    'border-bottom-color': 'rgb(53, 53, 53)',
-    'border-left-color': 'rgb(53, 53, 53)',
-    'background-color': 'rgba(0, 0, 0, 0)',
-    'border-top-width': '1px',
-    'border-right-width': '1px',
-    'border-bottom-width': '1px',
-    'border-left-width': '1px',
-  },
-  ['ub-primary-plain']: {
-    color: 'rgb(0, 122, 255)',
-    'border-top-color': 'rgb(0, 122, 255)',
-    'border-right-color': 'rgb(0, 122, 255)',
-    'border-bottom-color': 'rgb(0, 122, 255)',
-    'border-left-color': 'rgb(0, 122, 255)',
-    'background-color': 'rgba(0, 0, 0, 0)',
-    'border-top-width': '1px',
-    'border-right-width': '1px',
-    'border-bottom-width': '1px',
-    'border-left-width': '1px',
-  },
-  ['ub-warn-plain']: {
-    color: 'rgb(230, 67, 64)',
-    'border-top-color': 'rgb(230, 67, 64)',
-    'border-right-color': 'rgb(230, 67, 64)',
-    'border-bottom-color': 'rgb(230, 67, 64)',
-    'border-left-color': 'rgb(230, 67, 64)',
-    'background-color': 'rgba(0, 0, 0, 0)',
-    'border-top-width': '1px',
-    'border-right-width': '1px',
-    'border-bottom-width': '1px',
-    'border-left-width': '1px',
-  },
-  ['ub-default-disabled']: {
-    color: 'rgba(0, 0, 0, 0.3)',
-    'background-color': 'rgb(247, 247, 247)',
-  },
-  ['ub-primary-disabled']: {
-    color: 'rgba(255, 255, 255, 0.6)',
-    'background-color': 'rgba(0, 122, 255, 0.6)',
-  },
-  ['ub-warn-disabled']: {
-    color: 'rgba(255, 255, 255, 0.6)',
-    'background-color': 'rgb(236, 139, 137)',
-  },
-  ['ub-default-disabled-plain']: {
-    color: 'rgba(0, 0, 0, 0.2)',
-    'border-top-color': 'rgba(0, 0, 0, 0.2)',
-    'border-right-color': 'rgba(0, 0, 0, 0.2)',
-    'border-bottom-color': 'rgba(0, 0, 0, 0.2)',
-    'border-left-color': 'rgba(0, 0, 0, 0.2)',
-    'background-color': 'rgba(0, 0, 0, 0)',
-    'border-top-width': '1px',
-    'border-right-width': '1px',
-    'border-bottom-width': '1px',
-    'border-left-width': '1px',
-  },
-  ['ub-primary-disabled-plain']: {
-    color: 'rgba(0, 0, 0, 0.2)',
-    'border-top-color': 'rgba(0, 0, 0, 0.2)',
-    'border-right-color': 'rgba(0, 0, 0, 0.2)',
-    'border-bottom-color': 'rgba(0, 0, 0, 0.2)',
-    'border-left-color': 'rgba(0, 0, 0, 0.2)',
-    'background-color': 'rgba(0, 0, 0, 0)',
-    'border-top-width': '1px',
-    'border-right-width': '1px',
-    'border-bottom-width': '1px',
-    'border-left-width': '1px',
-  },
-  ['ub-warn-disabled-plain']: {
-    color: 'rgba(0, 0, 0, 0.2)',
-    'border-top-color': 'rgba(0, 0, 0, 0.2)',
-    'border-right-color': 'rgba(0, 0, 0, 0.2)',
-    'border-bottom-color': 'rgba(0, 0, 0, 0.2)',
-    'border-left-color': 'rgba(0, 0, 0, 0.2)',
-    'background-color': 'rgba(0, 0, 0, 0)',
-    'border-top-width': '1px',
-    'border-right-width': '1px',
-    'border-bottom-width': '1px',
-    'border-left-width': '1px',
-  },
-  ['ub-mini']: {
-    'padding-top': '0px',
-    'padding-bottom': '0px',
-    'padding-right': '17.5px',
-    'padding-left': '17.5px',
-    // 'line-height': '2.3',
-    'line-height': '2',
-    'font-size': '13px',
-  },
-}
 
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: BUTTON_COMPONENT_NAME,
@@ -169,55 +34,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
     console.log($hoverStartTimer, $hoverStayTimer)
 
-    const hoverStyles = new Map<string, Map<string, any | null>>([
-      [
-        'default',
-        new Map<string, any | null>([
-          ['color', 'rgba(0, 0, 0, 0.6)'],
-          ['backgroundColor', '#dedede'],
-        ]),
-      ],
-      [
-        'primary',
-        new Map<string, any | null>([
-          ['color', 'rgba(255, 255, 255, 0.6)'],
-          ['backgroundColor', '#0062cc'],
-        ]),
-      ],
-      [
-        'warn',
-        new Map<string, any | null>([
-          ['color', 'rgba(255, 255, 255, 0.6)'],
-          ['backgroundColor', '#ce3c39'],
-        ]),
-      ],
-      [
-        'default-plain',
-        new Map<string, any | null>([
-          ['color', 'rgba(53, 53, 53, 0.6)'],
-          ['borderColor', 'rgba(53, 53, 53, 0.6)'],
-          ['backgroundColor', 'rgba(0, 0, 0, 0)'],
-        ]),
-      ],
-      [
-        'primary-plain',
-        new Map<string, any | null>([
-          ['color', 'rgba(0, 122, 255, 0.6)'],
-          ['borderColor', 'rgba(0, 122, 255, 0.6)'],
-          ['backgroundColor', 'rgba(0, 0, 0, 0)'],
-        ]),
-      ],
-      [
-        'warn-plain',
-        new Map<string, any | null>([
-          ['color', 'rgba(230, 67, 64, 0.6)'],
-          ['borderColor', 'rgba(230, 67, 64, 0.6)'],
-          ['backgroundColor', 'rgba(0, 0, 0, 0)'],
-        ]),
-      ],
-    ])
-
-    // style={styleText.value}
     const btnCls = computed((): string => {
       let cl = 'ub-' + props.type
       if (props.disabled) {
@@ -253,10 +69,10 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     }
 
     onMounted(() => {
-      var instance = getCurrentInstance()
+      const instance = getCurrentInstance()
       if (instance) {
-        instance!.$waitNativeRender(() => {
-          $buttonEl = instance!.vnode.el as UniElement
+        instance.$waitNativeRender(() => {
+          $buttonEl = instance.proxy?.$el as UniElement
           parseHoverClass()
         })
       }
@@ -337,24 +153,27 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     function touchcancel() {
       $hoverTouch = false
       $hovering = false
-      // clearHoverStyle()
-      // updateStyle()
+      clearHoverStyle()
+      updateStyle()
       // clearTimeout($hoverStartTimer as NodeJS.Timeout)
     }
     function touchmove(event: TouchEvent) {
       if (props.disabled || props.hoverClass == 'none') {
         return
       }
-      const { clientX, clientY } = event.touches[0]
-      const { height, width, left, top } = $buttonEl!.getBoundingClientRect()
-      const isMovedOutside =
-        clientX < left ||
-        clientX > left + width ||
-        clientY < top ||
-        clientY > top + height
-      if (isMovedOutside) {
-        touchcancel()
-      }
+      // const { clientX, clientY } = event.changedTouches[0]
+      // 这里有问题
+      // const { clientX, clientY } = event.touches[0]
+      // changedTouches
+      // const { height, width, left, top } = $buttonEl!.getBoundingClientRect()
+      // const isMovedOutside =
+      //   clientX < left ||
+      //   clientX > left + width ||
+      //   clientY < top ||
+      //   clientY > top + height
+      // if (isMovedOutside) {
+      //   touchcancel()
+      // }
     }
 
     function _onClick($event: PointerEvent) {
@@ -367,9 +186,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       }
     }
 
+    // ios 先使用 style 来完成样式
     const styleText = computed(() => {
       const classList = btnCls.value.split(' ')
-      // const classList = ['ub-default', 'ub-primary']
 
       // .ub basic class style
       const basicStyle = Object.assign({}, styleList.ub)
@@ -380,15 +199,14 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           Object.assign(basicStyle, style)
         }
       })
-
-      console.log(btnCls.value, basicStyle)
-
+      // console.log(btnCls.value, basicStyle)
       return basicStyle
     })
 
     return () => {
       return (
         <uni-button-element
+          class="ub"
           style={styleText.value}
           onTouchstart={touchstart}
           onTouchend={touchend}
