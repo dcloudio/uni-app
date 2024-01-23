@@ -11,6 +11,18 @@
       }
     }
   },
+  "uni-createRequestPermissionListener": {
+    "uni": {
+      "createRequestPermissionListener": {
+        "name": "createRequestPermissionListener",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      }
+    }
+  },
   "uni-createWebviewContext": {
     "uni": {
       "createWebviewContext": {
