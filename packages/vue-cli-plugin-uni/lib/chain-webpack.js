@@ -31,17 +31,17 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
         }
         if (newOptions.fallback && newOptions.fallback.options) {
           const generator = {}
-          const oldOptions = newOptions.fallback.options
-          const keys = ['publicPath', 'outputPath']
-          keys.forEach(key => {
-            generator[key] = pathData => {
-              const outputPath = oldOptions[key](null, pathData.module.request)
-              const basename = path.basename(outputPath)
-              return outputPath.substring(0, outputPath.length - basename.length)
-            }
-          })
+          const options = newOptions.fallback.options
+          // const keys = ['publicPath', 'outputPath']
+          // keys.forEach(key => {
+          //   generator[key] = pathData => {
+          //     const outputPath = oldOptions[key](null, pathData.module.request)
+          //     const basename = path.basename(outputPath)
+          //     return outputPath.substring(0, outputPath.length - basename.length)
+          //   }
+          // })
           generator.filename = pathData => {
-            return path.basename(pathData.module.request)
+            return options.name(pathData.module.request)
           }
           webpackConfig.module.rule(staticType).set('generator', generator)
         }
