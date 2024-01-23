@@ -111,7 +111,6 @@ uni-app uni-view,
 uni-app uni-web-view {
   position: relative;
   box-sizing: border-box;
-  display: flex;
   flex-shrink: 0;
   flex-grow: 0;
   flex-basis: auto;
@@ -119,13 +118,6 @@ uni-app uni-web-view {
   min-height: 0px;
   min-width: 0px;
   border-width: medium;
-}
-
-uni-app uni-page-body {
-  display: flex;
-  align-items: stretch;
-  align-content: stretch;
-  justify-content: flex-start;
 }
 
 uni-app uni-text {
@@ -151,6 +143,7 @@ uni-app uni-scroll-view,
 uni-app uni-list-view,
 uni-app uni-unicloud-db,
 uni-app uni-custom-tab-bar {
+  display: flex;
   align-items: stretch;
   align-content: stretch;
   justify-content: flex-start;
