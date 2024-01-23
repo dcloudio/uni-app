@@ -2504,7 +2504,6 @@ const index$x = /* @__PURE__ */ defineBuiltInComponent({
 });
 function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
   const field = vue.computed(() => ({
-    // @ts-ignore
     checkboxChecked: Boolean(checkboxChecked.value),
     value: checkboxValue.value
   }));
@@ -5530,7 +5529,6 @@ const index$o = /* @__PURE__ */ defineBuiltInComponent({
 function useRadioInject(radioChecked, radioValue, reset) {
   const field = vue.computed({
     get: () => ({
-      // @ts-ignore
       radioChecked: Boolean(radioChecked.value),
       value: radioValue.value
     }),

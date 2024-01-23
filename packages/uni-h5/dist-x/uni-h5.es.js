@@ -2162,7 +2162,7 @@ class UniElement extends HTMLElement {
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
 class UniFormElement extends UniElement {
 }
-const index$x = /* @__PURE__ */ defineBuiltInComponent({
+const index$w = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   emits: ["submit", "reset"],
   rootElement: {
@@ -2232,7 +2232,7 @@ function useProvideLabel() {
 }
 class UniLabelElement extends UniElement {
 }
-const index$w = /* @__PURE__ */ defineBuiltInComponent({
+const index$v = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: labelProps,
   rootElement: {
@@ -2374,7 +2374,7 @@ const buttonProps = {
 };
 class UniButtonElement extends UniElement {
 }
-const index$v = /* @__PURE__ */ defineBuiltInComponent({
+const index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   rootElement: {
@@ -4812,13 +4812,13 @@ const createMediaQueryObserver = /* @__PURE__ */ defineSyncApi("createMediaQuery
   }
   return new ServiceMediaQueryObserver(getCurrentPageVm());
 });
-let index$u = 0;
+let index$t = 0;
 let optionsCache = {};
 function operateEditor(componentId, pageId, type, options) {
   const data = { options };
   const needCallOptions = options && ("success" in options || "fail" in options || "complete" in options);
   if (needCallOptions) {
-    const callbackId = String(index$u++);
+    const callbackId = String(index$t++);
     data.callbackId = callbackId;
     optionsCache[callbackId] = options;
   }
@@ -7272,7 +7272,7 @@ const props$x = {
 };
 class UniCanvasElement extends UniElement {
 }
-const index$t = /* @__PURE__ */ defineBuiltInComponent({
+const index$s = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "Canvas",
   compatConfig: {
@@ -7759,7 +7759,7 @@ const props$w = {
 };
 class UniCheckboxGroupElement extends UniElement {
 }
-const index$s = /* @__PURE__ */ defineBuiltInComponent({
+const index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
   props: props$w,
   emits: ["change"],
@@ -7865,7 +7865,7 @@ const props$v = {
 };
 class UniCheckboxElement extends UniElement {
 }
-const index$r = /* @__PURE__ */ defineBuiltInComponent({
+const index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
   props: props$v,
   rootElement: {
@@ -7916,7 +7916,7 @@ const index$r = /* @__PURE__ */ defineBuiltInComponent({
     const {
       uniCheckGroup,
       uniLabel
-    } = useCheckboxInject(rootRef, checkboxChecked, checkboxValue, reset);
+    } = useCheckboxInject(checkboxChecked, checkboxValue, reset);
     const _onClick = ($event) => {
       if (props2.disabled) {
         return;
@@ -7977,9 +7977,9 @@ const index$r = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-function useCheckboxInject(rootRef, checkboxChecked, checkboxValue, reset) {
+function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
   const field = computed(() => ({
-    checkboxChecked: rootRef.value.checked,
+    checkboxChecked: Boolean(checkboxChecked.value),
     value: checkboxValue.value
   }));
   const formField = {
@@ -8876,7 +8876,7 @@ const props$t = /* @__PURE__ */ extend({}, props$u, {
 });
 class UniEditorElement extends UniElement {
 }
-const index$q = /* @__PURE__ */ defineBuiltInComponent({
+const index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: props$t,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
@@ -8948,7 +8948,7 @@ const ICONS = {
 };
 class UniIconElement extends UniElement {
 }
-const index$p = /* @__PURE__ */ defineBuiltInComponent({
+const index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -9025,7 +9025,7 @@ const IMAGE_MODES = {
 };
 class UniImageElement extends UniElement {
 }
-const index$o = /* @__PURE__ */ defineBuiltInComponent({
+const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
   props: props$s,
   rootElement: {
@@ -11491,7 +11491,7 @@ function createNavigatorOnClick(props2) {
 }
 class UniNavigatorElement extends UniElement {
 }
-const index$n = /* @__PURE__ */ defineBuiltInComponent({
+const index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   inheritAttrs: false,
   compatConfig: {
@@ -12669,7 +12669,7 @@ const progressProps = {
 };
 class UniProgressElement extends UniElement {
 }
-const index$m = /* @__PURE__ */ defineBuiltInComponent({
+const index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: progressProps,
   rootElement: {
@@ -12779,7 +12779,7 @@ const props$p = {
 };
 class UniRadioGroupElement extends UniElement {
 }
-const index$l = /* @__PURE__ */ defineBuiltInComponent({
+const index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
   props: props$p,
   // emits: ['change'],
@@ -12917,7 +12917,7 @@ const props$o = {
 };
 class UniRadioElement extends UniElement {
 }
-const index$k = /* @__PURE__ */ defineBuiltInComponent({
+const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
   props: props$o,
   rootElement: {
@@ -12964,7 +12964,7 @@ const index$k = /* @__PURE__ */ defineBuiltInComponent({
       uniCheckGroup,
       uniLabel,
       field
-    } = useRadioInject(rootRef, radioChecked, radioValue, reset);
+    } = useRadioInject(radioChecked, radioValue, reset);
     const _onClick = ($event) => {
       if (props2.disabled || radioChecked.value) {
         return;
@@ -13010,25 +13010,24 @@ const index$k = /* @__PURE__ */ defineBuiltInComponent({
       realCheckValue = checkedCache.value;
       return createVNode("uni-radio", mergeProps(booleanAttrs, {
         "onClick": _onClick,
-        "ref": rootRef
-      }), [createVNode("div", {
+        "ref": rootRef,
         "class": "uni-radio-wrapper",
         "style": {
           "--HOVER-BD-COLOR": !radioChecked.value ? props2.activeBorderColor : radioStyle.value.borderColor
         }
-      }, [createVNode("div", {
+      }), [createVNode("div", {
         "class": ["uni-radio-input", {
           "uni-radio-input-disabled": props2.disabled
         }],
         "style": radioStyle.value
-      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.iconColor, 18) : ""], 6), slots.default && slots.default()], 4)], 16, ["onClick"]);
+      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.iconColor, 18) : ""], 6), slots.default && slots.default()], 16, ["onClick"]);
     };
   }
 });
-function useRadioInject(rootRef, radioChecked, radioValue, reset) {
+function useRadioInject(radioChecked, radioValue, reset) {
   const field = computed({
     get: () => ({
-      radioChecked: rootRef.value.checked,
+      radioChecked: Boolean(radioChecked.value),
       value: radioValue.value
     }),
     set: ({
@@ -25996,33 +25995,33 @@ export {
   index$4 as AdDraw,
   AsyncErrorComponent,
   AsyncLoadingComponent,
-  index$v as Button,
+  index$u as Button,
   index$3 as Camera,
-  index$t as Canvas,
-  index$r as Checkbox,
-  index$s as CheckboxGroup,
+  index$s as Canvas,
+  index$q as Checkbox,
+  index$r as CheckboxGroup,
   index$8 as CoverImage,
   index$9 as CoverView,
-  index$q as Editor,
-  index$x as Form,
-  index$p as Icon,
-  index$o as Image,
+  index$p as Editor,
+  index$w as Form,
+  index$o as Icon,
+  index$n as Image,
   Input,
-  index$w as Label,
+  index$v as Label,
   LayoutComponent,
   index$2 as LivePlayer,
   index$1 as LivePusher,
   Map$1 as Map,
   MovableArea,
   MovableView,
-  index$n as Navigator,
+  index$m as Navigator,
   index as PageComponent,
   index$7 as Picker,
   PickerView,
   PickerViewColumn,
-  index$m as Progress,
-  index$k as Radio,
-  index$l as RadioGroup,
+  index$l as Progress,
+  indexX$2 as Radio,
+  index$k as RadioGroup,
   ResizeSensor,
   index$j as RichText,
   ScrollView,
