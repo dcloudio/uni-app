@@ -114,7 +114,7 @@
       },
       "defaultValue": {
         "app-uvue": "auto",
-        "web": "auto"
+        "w3c": "auto"
       }
     },
     {
@@ -250,7 +250,7 @@
       },
       "defaultValue": {
         "app-uvue": "0px",
-        "web": "auto"
+        "w3c": "auto"
       }
     },
     {
@@ -386,7 +386,7 @@
       },
       "defaultValue": {
         "app-uvue": "none",
-        "web": "none"
+        "w3c": "none"
       }
     },
     {
@@ -502,7 +502,7 @@
       },
       "defaultValue": {
         "app-uvue": "auto",
-        "web": "auto"
+        "w3c": "auto"
       }
     },
     {
@@ -638,7 +638,7 @@
       },
       "defaultValue": {
         "app-uvue": "0px",
-        "web": "auto"
+        "w3c": "auto"
       }
     },
     {
@@ -774,7 +774,7 @@
       },
       "defaultValue": {
         "app-uvue": "none",
-        "web": "none"
+        "w3c": "none"
       }
     },
     {
@@ -910,7 +910,7 @@
       },
       "defaultValue": {
         "app-uvue": "relative",
-        "web": "static"
+        "w3c": "static"
       }
     },
     {
@@ -940,7 +940,7 @@
       },
       "defaultValue": {
         "app-uvue": "0",
-        "web": "auto"
+        "w3c": "auto"
       }
     },
     {
@@ -993,7 +993,7 @@
       },
       "defaultValue": {
         "app-uvue": "auto",
-        "web": "auto"
+        "w3c": "auto"
       }
     },
     {
@@ -1046,7 +1046,7 @@
       },
       "defaultValue": {
         "app-uvue": "auto",
-        "web": "auto"
+        "w3c": "auto"
       }
     },
     {
@@ -1099,7 +1099,7 @@
       },
       "defaultValue": {
         "app-uvue": "auto",
-        "web": "auto"
+        "w3c": "auto"
       }
     },
     {
@@ -1152,7 +1152,7 @@
       },
       "defaultValue": {
         "app-uvue": "auto",
-        "web": "auto"
+        "w3c": "auto"
       }
     },
     {
@@ -1275,7 +1275,7 @@
       ],
       "defaultValue": {
         "app-uvue": "column",
-        "web": "row"
+        "w3c": "row"
       }
     },
     {
@@ -1424,7 +1424,7 @@
       ],
       "defaultValue": {
         "app-uvue": "flex-start",
-        "web": "normal"
+        "w3c": "normal"
       }
     },
     {
@@ -1526,7 +1526,7 @@
       ],
       "defaultValue": {
         "app-uvue": "nowrap",
-        "web": "nowrap"
+        "w3c": "nowrap"
       }
     },
     {
@@ -1670,7 +1670,7 @@
       ],
       "defaultValue": {
         "app-uvue": "stretch",
-        "web": "normal"
+        "w3c": "normal"
       }
     },
     {
@@ -1827,7 +1827,7 @@
       },
       "defaultValue": {
         "app-uvue": "auto",
-        "web": "auto"
+        "w3c": "auto"
       }
     },
     {
@@ -1993,7 +1993,7 @@
       ],
       "defaultValue": {
         "app-uvue": "stretch",
-        "web": "normal"
+        "w3c": "normal"
       }
     },
     {
@@ -2090,7 +2090,7 @@
       },
       "defaultValue": {
         "app-uvue": "none",
-        "web": "initial"
+        "w3c": "initial"
       }
     },
     {
@@ -2119,7 +2119,7 @@
       },
       "defaultValue": {
         "app-uvue": "0",
-        "web": "0"
+        "w3c": "0"
       }
     },
     {
@@ -2148,7 +2148,7 @@
       },
       "defaultValue": {
         "app-uvue": "0",
-        "web": "1"
+        "w3c": "1"
       }
     },
     {
@@ -2223,7 +2223,7 @@
       },
       "defaultValue": {
         "app-uvue": "auto",
-        "web": "auto"
+        "w3c": "auto"
       }
     },
     {
@@ -2480,7 +2480,7 @@
       },
       "defaultValue": {
         "app-uvue": "flex",
-        "web": "inline"
+        "w3c": "inline"
       }
     },
     {
@@ -2617,7 +2617,7 @@
       },
       "defaultValue": {
         "app-uvue": "hidden",
-        "web": "visible"
+        "w3c": "visible"
       }
     },
     {
@@ -2690,7 +2690,7 @@
       },
       "defaultValue": {
         "app-uvue": "visible",
-        "web": "visible"
+        "w3c": "visible"
       }
     },
     {
@@ -2719,7 +2719,7 @@
       },
       "defaultValue": {
         "app-uvue": "1",
-        "web": "1"
+        "w3c": "1"
       }
     },
     {
@@ -2792,7 +2792,7 @@
       },
       "defaultValue": {
         "app-uvue": "border-box",
-        "web": "content-box"
+        "w3c": "content-box"
       }
     },
     {
@@ -2933,7 +2933,7 @@
       },
       "defaultValue": {
         "app-uvue": "transparent",
-        "web": "transparent"
+        "w3c": "transparent"
       }
     },
     {
@@ -3075,7 +3075,7 @@
       },
       "defaultValue": {
         "app-uvue": "border-box",
-        "web": "border-box"
+        "w3c": "border-box"
       }
     },
     {
@@ -3132,7 +3132,7 @@
       },
       "defaultValue": {
         "app-uvue": "0",
-        "web": "0"
+        "w3c": "0"
       }
     },
     {
@@ -3162,7 +3162,7 @@
       },
       "defaultValue": {
         "app-uvue": "0",
-        "web": "0"
+        "w3c": "0"
       }
     },
     {
@@ -3192,7 +3192,7 @@
       },
       "defaultValue": {
         "app-uvue": "0",
-        "web": "0"
+        "w3c": "0"
       }
     },
     {
@@ -3222,7 +3222,7 @@
       },
       "defaultValue": {
         "app-uvue": "0",
-        "web": "0"
+        "w3c": "0"
       }
     },
     {
@@ -3276,7 +3276,7 @@
       },
       "defaultValue": {
         "app-uvue": "0",
-        "web": "0"
+        "w3c": "0"
       }
     },
     {
@@ -3329,7 +3329,7 @@
       },
       "defaultValue": {
         "app-uvue": "0",
-        "web": "0"
+        "w3c": "0"
       }
     },
     {
@@ -3382,7 +3382,7 @@
       },
       "defaultValue": {
         "app-uvue": "0",
-        "web": "0"
+        "w3c": "0"
       }
     },
     {
@@ -3435,7 +3435,7 @@
       },
       "defaultValue": {
         "app-uvue": "0",
-        "web": "0"
+        "w3c": "0"
       }
     },
     {
@@ -3489,7 +3489,7 @@
       },
       "defaultValue": {
         "app-uvue": "0",
-        "web": "0"
+        "w3c": "0"
       }
     },
     {
@@ -4256,7 +4256,7 @@
       },
       "defaultValue": {
         "app-uvue": "medium",
-        "web": "medium"
+        "w3c": "medium"
       }
     },
     {
@@ -4351,7 +4351,7 @@
       },
       "defaultValue": {
         "app-uvue": "medium",
-        "web": "medium"
+        "w3c": "medium"
       }
     },
     {
@@ -4446,7 +4446,7 @@
       },
       "defaultValue": {
         "app-uvue": "medium",
-        "web": "medium"
+        "w3c": "medium"
       }
     },
     {
@@ -4541,7 +4541,7 @@
       },
       "defaultValue": {
         "app-uvue": "medium",
-        "web": "medium"
+        "w3c": "medium"
       }
     },
     {
@@ -4636,7 +4636,7 @@
       },
       "defaultValue": {
         "app-uvue": "medium",
-        "web": "medium"
+        "w3c": "medium"
       }
     },
     {
@@ -5042,7 +5042,7 @@
       ],
       "defaultValue": {
         "app-uvue": "#000000",
-        "web": "canvastext"
+        "w3c": "canvastext"
       }
     },
     {
@@ -5078,7 +5078,7 @@
       ],
       "defaultValue": {
         "app-uvue": "16px",
-        "web": "medium"
+        "w3c": "medium"
       }
     },
     {
@@ -5155,7 +5155,7 @@
       ],
       "defaultValue": {
         "app-uvue": "normal",
-        "web": "normal"
+        "w3c": "normal"
       }
     },
     {
@@ -5274,7 +5274,7 @@
       ],
       "defaultValue": {
         "app-uvue": "normal",
-        "web": "normal"
+        "w3c": "normal"
       }
     },
     {
@@ -5403,7 +5403,7 @@
       ],
       "defaultValue": {
         "app-uvue": "none",
-        "web": "none"
+        "w3c": "none"
       }
     },
     {
@@ -5676,7 +5676,7 @@
       ],
       "defaultValue": {
         "app-uvue": "left",
-        "web": "start"
+        "w3c": "start"
       }
     },
     {
@@ -5891,7 +5891,7 @@
       ],
       "defaultValue": {
         "app-uvue": "clip",
-        "web": "clip"
+        "w3c": "clip"
       }
     },
     {
@@ -5926,7 +5926,7 @@
       ],
       "defaultValue": {
         "app-uvue": "1.2",
-        "web": "normal"
+        "w3c": "normal"
       }
     },
     {
@@ -5994,7 +5994,7 @@
       ],
       "defaultValue": {
         "app-uvue": "0",
-        "web": "normal"
+        "w3c": "normal"
       }
     },
     {
@@ -6071,7 +6071,7 @@
       ],
       "defaultValue": {
         "app-uvue": "normal",
-        "web": "normal"
+        "w3c": "normal"
       }
     },
     {
@@ -6682,7 +6682,7 @@
       },
       "defaultValue": {
         "app-uvue": "none",
-        "web": "all"
+        "w3c": "all"
       }
     },
     {
@@ -6711,7 +6711,7 @@
       },
       "defaultValue": {
         "app-uvue": "0s",
-        "web": "0s"
+        "w3c": "0s"
       }
     },
     {
@@ -6868,7 +6868,7 @@
       },
       "defaultValue": {
         "app-uvue": "ease",
-        "web": "ease"
+        "w3c": "ease"
       }
     },
     {
@@ -6897,7 +6897,7 @@
       },
       "defaultValue": {
         "app-uvue": "0s",
-        "web": "0s"
+        "w3c": "0s"
       }
     },
     {
@@ -7273,7 +7273,7 @@
       },
       "defaultValue": {
         "app-uvue": "50% 50%",
-        "web": "50% 50% 0"
+        "w3c": "50% 50% 0"
       }
     },
     {
@@ -7346,7 +7346,7 @@
       },
       "defaultValue": {
         "app-uvue": "auto",
-        "web": "auto"
+        "w3c": "auto"
       }
     }
   ],
