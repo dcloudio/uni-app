@@ -125,6 +125,7 @@ export const request = defineTaskApi<API_TYPE_REQUEST>(
 
     if (
       method !== 'GET' &&
+      contentType &&
       contentType.indexOf('application/json') === 0 &&
       isPlainObject(data)
     ) {

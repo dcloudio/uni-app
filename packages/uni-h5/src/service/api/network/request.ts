@@ -7,6 +7,7 @@ import {
   RequestProtocol,
 } from '@dcloudio/uni-api'
 import { LINEFEED } from '@dcloudio/uni-shared'
+import { type RequestFail } from '@dcloudio/uni-app-x/types/uni'
 
 export const request = defineTaskApi<API_TYPE_REQUEST>(
   API_REQUEST,
@@ -14,7 +15,7 @@ export const request = defineTaskApi<API_TYPE_REQUEST>(
     {
       url,
       data,
-      header,
+      header = {},
       method,
       dataType,
       responseType,
@@ -63,7 +64,7 @@ export const request = defineTaskApi<API_TYPE_REQUEST>(
     const timer = setTimeout(function () {
       xhr.onload = xhr.onabort = xhr.onerror = null
       requestTask.abort()
-      reject('timeout')
+      reject<Partial<RequestFail>>('timeout', { errCode: 5 })
     }, timeout)
     xhr.responseType = responseType as 'arraybuffer' | 'text'
     xhr.onload = function () {
@@ -90,11 +91,11 @@ export const request = defineTaskApi<API_TYPE_REQUEST>(
     }
     xhr.onabort = function () {
       clearTimeout(timer)
-      reject('abort')
+      reject<Partial<RequestFail>>('abort', { errCode: 600003 })
     }
     xhr.onerror = function () {
       clearTimeout(timer)
-      reject()
+      reject<Partial<RequestFail>>(undefined, { errCode: 5 })
     }
     xhr.withCredentials = withCredentials!
     xhr.send(body)
