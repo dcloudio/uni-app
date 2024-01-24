@@ -181,7 +181,12 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       //#endif
 
       return (
-        <uni-checkbox {...booleanAttrs} onClick={_onClick} ref={rootRef}>
+        <uni-checkbox
+          {...booleanAttrs}
+          id={props.id}
+          onClick={_onClick}
+          ref={rootRef}
+        >
           <div
             class="uni-checkbox-wrapper"
             style={{ '--HOVER-BD-COLOR': props.activeBorderColor }}

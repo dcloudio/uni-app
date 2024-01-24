@@ -176,7 +176,12 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       //#endif
 
       return (
-        <uni-radio {...booleanAttrs} onClick={_onClick} ref={rootRef}>
+        <uni-radio
+          {...booleanAttrs}
+          id={props.id}
+          onClick={_onClick}
+          ref={rootRef}
+        >
           <div
             class="uni-radio-wrapper"
             style={{
