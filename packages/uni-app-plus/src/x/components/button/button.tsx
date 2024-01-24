@@ -2,6 +2,7 @@
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
 import { onMounted, getCurrentInstance, computed } from 'vue'
 import {
+  $dispatch,
   BUTTON_COMPONENT_NAME,
   buttonProps,
   hoverStyles,
@@ -10,6 +11,12 @@ import {
   UniButtonElement,
 } from './model'
 const FORM_TYPES = ['submit', 'reset']
+
+// todo
+// 1 clearTimeout 不存在
+// 2  动态设置 updataStyle 不生效，hover-class 能读取，赋值不生效
+// 3 touchmove 的 event 没有 touches 属性
+// 4 后续表格设定 reset/submit 时候验证是否生效
 
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: BUTTON_COMPONENT_NAME,
@@ -54,15 +61,15 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       if (cl == 'button-hover' || cl.length == 0) {
         return
       }
-      const styles = ($buttonEl as any)!.ext['styles'] as Map<
-        string,
-        Map<string, Map<string, any | null>>
-      > | null
+      const styles = ($buttonEl as any)!.ext.get('styles') as {
+        [key: string]: any
+      }
       if (styles != null) {
-        let style = styles.get(cl)
+        // 和 android 不同，这里是一个普通对象
+        let style = styles[cl]
         if (style != null) {
-          style.forEach((val: Map<string, any | null>) => {
-            $hoverClassStyle = val
+          Object.keys(style).forEach((key) => {
+            $hoverClassStyle.set(key, style[key])
           })
         }
       }
@@ -161,7 +168,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       if (props.disabled || props.hoverClass == 'none') {
         return
       }
-      // const { clientX, clientY } = event.changedTouches[0]
       // 这里有问题
       // const { clientX, clientY } = event.touches[0]
       // changedTouches
@@ -181,8 +187,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         return
       }
       emit('click', $event)
+
       if (FORM_TYPES.indexOf(props.formType) > -1) {
-        // $dispatch(this, 'Form', props.formType)
+        const instance = getCurrentInstance()
+        const ctx = instance?.parent?.proxy
+        $dispatch(ctx, 'Form', props.formType)
       }
     }
 
@@ -199,7 +208,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           Object.assign(basicStyle, style)
         }
       })
-      // console.log(btnCls.value, basicStyle)
       return basicStyle
     })
 
