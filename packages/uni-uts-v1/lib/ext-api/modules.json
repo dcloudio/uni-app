@@ -16,7 +16,7 @@
       "createRequestPermissionListener": {
         "name": "createRequestPermissionListener",
         "app": {
-          "js": false,
+          "js": true,
           "kotlin": true,
           "swift": false
         }
