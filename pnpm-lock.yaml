@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 overrides:
   '@babel/plugin-transform-block-scoping': 7.19.4
 
@@ -14,8 +18,8 @@ importers:
         specifier: ^7.20.2
         version: 7.20.2(@babel/core@7.21.3)
       '@dcloudio/types':
-        specifier: 3.4.6
-        version: 3.4.6
+        specifier: 3.4.7
+        version: 3.4.7
       '@dcloudio/uni-api':
         specifier: 3.0.0-alpha-4000020240123001
         version: link:packages/uni-api
@@ -23,8 +27,8 @@ importers:
         specifier: 3.0.0-alpha-4000020240123001
         version: link:packages/uni-app
       '@dcloudio/uni-app-x':
-        specifier: ^0.7.1
-        version: 0.7.1
+        specifier: ^0.7.4
+        version: 0.7.4
       '@jest/types':
         specifier: ^29.0.3
         version: 29.0.3
@@ -2818,9 +2822,14 @@ packages:
 
   /@dcloudio/types@3.4.6:
     resolution: {integrity: sha512-6w7oR4QPPa0uPezCO9P/ljLimqIGvteJU9QKNHVksdtnQfQl84ZYMpOWj2SdMtC8+Mn8Fckz81PD5XBa9z506Q==}
+    dev: false
 
-  /@dcloudio/uni-app-x@0.7.1:
-    resolution: {integrity: sha512-8megN064EGUUYqA7tjeahWBpnkqomU6fTQPStoymWieVyDfW3vTGCJPEEsN2VVNHCFhe2KcS0Z1t64UbByHh+g==}
+  /@dcloudio/types@3.4.7:
+    resolution: {integrity: sha512-RuErDYDAWY3KMlACT5NhJAKPxwjFjdzt7I/n50xCBvCSnH/84CzDPDJHRmmP6c0VOfMDHmV88V+sRBvBQRSp+w==}
+    dev: true
+
+  /@dcloudio/uni-app-x@0.7.4:
+    resolution: {integrity: sha512-0yc4wIyja0omLPf8LvtLPWV19K4n8AW0ELB/PY03GSkYx4NXkvvXE3K8oZ1RAqoIi/hFYxjpk8dPqDb6Jw02aA==}
     dev: true
 
   /@dcloudio/uni-ui@1.4.28:
@@ -11260,7 +11269,3 @@ packages:
     optionalDependencies:
       commander: 9.5.0
     dev: true
-
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false

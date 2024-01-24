@@ -86,6 +86,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         <uni-button
           ref={rootRef}
           onClick={onClick}
+          id={props.id}
           class={hasHoverClass && hovering.value ? hoverClass : ''}
           {...(hasHoverClass && binding)}
           {...booleanAttrs}

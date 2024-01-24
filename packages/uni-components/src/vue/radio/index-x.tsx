@@ -180,6 +180,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           {...booleanAttrs}
           onClick={_onClick}
           ref={rootRef}
+          id={props.id}
           class="uni-radio-wrapper"
           style={{
             '--HOVER-BD-COLOR': !radioChecked.value

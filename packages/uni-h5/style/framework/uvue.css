@@ -109,32 +109,47 @@ uni-app uni-unicloud-db,
 uni-app uni-video,
 uni-app uni-view,
 uni-app uni-web-view {
-	position: relative;
-	box-sizing: border-box;
-  display: flex;
+  position: relative;
+  box-sizing: border-box;
   flex-shrink: 0;
   flex-grow: 0;
   flex-basis: auto;
-  align-items: stretch;
-  align-content: stretch;
-  justify-content: flex-start;
   /* 默认情况下，元素不会缩短至小于内容框尺寸，若想改变这一状况，请设置元素的min-width 与 min-height属性。https://developer.mozilla.org/zh-CN/docs/Web/CSS/flex */
   min-height: 0px;
   min-width: 0px;
+  border-width: medium;
 }
 
-uni-app uni-page-body {
+uni-app uni-text {
+  display: inline;
+}
+
+/* 与开发者元素接触的容器 */
+uni-app uni-page-body,
+uni-app uni-animation-view,
+uni-app uni-block,
+uni-app uni-view,
+uni-app uni-label,
+uni-app uni-swiper,
+uni-app uni-swiper-item,
+uni-app uni-movable-area,
+uni-app uni-movable-view,
+uni-app uni-cover-view,
+uni-app uni-list-item,
+uni-app uni-navigator,
+uni-app uni-radio-group,
+uni-app uni-checkbox-group,
+uni-app uni-scroll-view,
+uni-app uni-list-view,
+uni-app uni-unicloud-db,
+uni-app uni-custom-tab-bar {
   display: flex;
   align-items: stretch;
   align-content: stretch;
   justify-content: flex-start;
 }
 
-uni-app uni-text {
-	display: inline;
-}
-
-/* 与开发者元素接触的容器，此样式可被manifest.json内配置的flex-direction重置 */
+/* 此样式可被manifest.json内配置的flex-direction重置 */
 uni-app uni-page-body,
 uni-app uni-view,
 uni-app uni-label,
@@ -148,7 +163,8 @@ uni-app uni-navigator,
 uni-app uni-radio-group,
 uni-app uni-checkbox-group,
 uni-app uni-scroll-view,
-uni-app uni-list-view {
+uni-app uni-list-view,
+uni-app uni-unicloud-db {
   flex-direction: column;
 }
 

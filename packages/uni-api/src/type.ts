@@ -56,7 +56,7 @@ type AsyncApiOptions<T extends ApiLike> = Required<Parameters<T>>[0]
 
 type AsyncApiRes<T extends AsyncMethodOptionLike> = Omit<
   Parameters<Exclude<T['success'], undefined>>[0],
-  'errMsg'
+  'errMsg' | 'errSubject'
 >
 
 type AsyncApiRequired<T extends AsyncMethodOptionLike> = <P extends T>(

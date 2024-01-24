@@ -51,7 +51,7 @@ export function uniAppIOSPlugin(): UniVitePlugin {
     configResolved(config) {
       configResolved(config)
       injectCssPlugin(config)
-      injectCssPostPlugin(config, uniAppCssPlugin())
+      injectCssPostPlugin(config, uniAppCssPlugin(config))
     },
   }
 }
