@@ -7594,7 +7594,8 @@ function parseClassList(classList, instance) {
 function parseStyleSheet(_ref21) {
   var {
     type,
-    appContext
+    appContext,
+    root
   } = _ref21;
   var component = type;
   if (!component.__styles) {
@@ -7612,8 +7613,14 @@ function parseStyleSheet(_ref21) {
         // 全局样式，包括 app.css 以及 page.css
         styles.push(__globalStyles);
       }
+      // 合并页面样式
+      // TODO 添加额外缓存
+      var page = root.type;
+      if (isArray(page.styles)) {
+        styles.push(...page.styles);
+      }
       if (isArray(component.styles)) {
-        component.styles.forEach(style => styles.push(style));
+        styles.push(...component.styles);
       }
       component.__styles = useCssStyles(styles);
     }
