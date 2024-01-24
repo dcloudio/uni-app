@@ -36,7 +36,7 @@ function handleSystemInfo(
 ) {
   addSafeAreaInsets(fromRes, toRes)
   useDeviceId({
-    getStorageSync,
+    getStorageSync: getStorageSync as Uni['getStorageSync'],
   })(fromRes, toRes)
   populateParameters(fromRes, toRes)
 

@@ -225,20 +225,18 @@ export const callFunction = (
           element.scrollTop = arg.y
           callback({ result: `${functionName} success` }, null)
         } else {
-          callback(
-            null,
-            { errMsg: `${functionName} fail, element is not scroll-view` }
-          )
+          callback(null, {
+            errMsg: `${functionName} fail, element is not scroll-view`,
+          })
         }
         break
       case 'swiper.swipeTo':
         if (element.tagName == 'SWIPER') {
           callback(null, { errMsg: `${functionName} not support` })
         } else {
-          callback(
-            null,
-            { errMsg: `${functionName} fail, element is not swiper` }
-          )
+          callback(null, {
+            errMsg: `${functionName} fail, element is not swiper`,
+          })
           return
         }
         break
@@ -246,10 +244,9 @@ export const callFunction = (
         if (element.tagName == 'SCROLL-VIEW') {
           callback({ result: element.scrollWidth }, null)
         } else {
-          callback(
-            null,
-            { errMsg: `${functionName} fail, element is not scroll-view` }
-          )
+          callback(null, {
+            errMsg: `${functionName} fail, element is not scroll-view`,
+          })
           return
         }
         break
@@ -257,10 +254,29 @@ export const callFunction = (
         if (element.tagName == 'SCROLL-VIEW') {
           callback({ result: element.scrollHeight }, null)
         } else {
-          callback(
-            null,
-            { errMsg: `${functionName} fail, element is not scroll-view` }
-          )
+          callback(null, {
+            errMsg: `${functionName} fail, element is not scroll-view`,
+          })
+          return
+        }
+        break
+      case 'scroll-view.scrollTop':
+        if (element.tagName == 'SCROLL-VIEW') {
+          callback({ result: element.scrollTop }, null)
+        } else {
+          callback(null, {
+            errMsg: `${functionName} fail, element is not scroll-view`,
+          })
+          return
+        }
+        break
+      case 'scroll-view.scrollLeft':
+        if (element.tagName == 'SCROLL-VIEW') {
+          callback({ result: element.scrollLeft }, null)
+        } else {
+          callback(null, {
+            errMsg: `${functionName} fail, element is not scroll-view`,
+          })
           return
         }
         break

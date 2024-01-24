@@ -142,7 +142,12 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       //#endif
 
       return (
-        <uni-switch ref={rootRef} {...booleanAttrs} onClick={_onClick}>
+        <uni-switch
+          id={props.id}
+          ref={rootRef}
+          {...booleanAttrs}
+          onClick={_onClick}
+        >
           <div class="uni-switch-wrapper">
             <div
               v-show={type === 'switch'}

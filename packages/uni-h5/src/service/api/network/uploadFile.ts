@@ -8,6 +8,8 @@ import {
   UploadFileOptions,
 } from '@dcloudio/uni-api'
 import { urlToFile, blobToFile } from '../../../helpers/file'
+import { type UploadFileFail } from '@dcloudio/uni-app-x/types/uni'
+
 /**
  * 上传任务
  */
@@ -64,8 +66,8 @@ export const uploadFile = defineTaskApi<API_TYPE_UPLOAD_FILE>(
       filePath,
       name,
       files,
-      header,
-      formData,
+      header = {},
+      formData = {},
       timeout = __uniConfig.networkTimeout.uploadFile,
     },
     { resolve, reject }
@@ -111,11 +113,11 @@ export const uploadFile = defineTaskApi<API_TYPE_UPLOAD_FILE>(
       }
       xhr.onerror = function () {
         clearTimeout(timer)
-        reject()
+        reject<Partial<UploadFileFail>>('', { errCode: 602001 })
       }
       xhr.onabort = function () {
         clearTimeout(timer)
-        reject('abort')
+        reject<Partial<UploadFileFail>>('abort', { errCode: 600003 })
       }
       xhr.onload = function () {
         clearTimeout(timer)
@@ -129,12 +131,12 @@ export const uploadFile = defineTaskApi<API_TYPE_UPLOAD_FILE>(
         timer = setTimeout(function () {
           xhr.upload.onprogress = xhr.onload = xhr.onabort = xhr.onerror = null
           uploadTask.abort()
-          reject('timeout')
+          reject<Partial<UploadFileFail>>('timeout', { errCode: 5 })
         }, timeout)
         xhr.send(form)
         uploadTask._xhr = xhr
       } else {
-        reject('abort')
+        reject<Partial<UploadFileFail>>('abort', { errCode: 600003 })
       }
     }
 
@@ -148,7 +150,7 @@ export const uploadFile = defineTaskApi<API_TYPE_UPLOAD_FILE>(
       .then(upload)
       .catch(() => {
         setTimeout(() => {
-          reject('file error')
+          reject<Partial<UploadFileFail>>('file error')
         }, 0)
       })
 

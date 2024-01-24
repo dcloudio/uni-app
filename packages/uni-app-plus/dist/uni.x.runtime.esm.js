@@ -1943,6 +1943,9 @@ function initUTSProxyClass(options) {
       var instance = this;
       var proxy2 = new Proxy(instance, {
         get(_, name) {
+          if (name === "__v_skip") {
+            return true;
+          }
           if (!target[name]) {
             name = parseClassMethodName(name, methods);
             if (hasOwn(methods, name)) {

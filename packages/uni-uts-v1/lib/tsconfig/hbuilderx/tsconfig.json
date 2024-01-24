@@ -4,6 +4,7 @@
     "baseUrl": ".",
     "lib": ["ESNext"],
     "noImplicitAny": false,
+    "useDefineForClassFields": false,
     "paths": {
       "@/*": ["./*"]
     }

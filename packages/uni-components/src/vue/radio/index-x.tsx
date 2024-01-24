@@ -4,7 +4,7 @@ import { defineBuiltInComponent } from '../../helpers/component'
 import { useListeners } from '../../helpers/useListeners'
 import { useBooleanAttr } from '../../helpers/useBooleanAttr'
 import { UniElement } from '../../helpers/UniElement'
-import { UniCheckGroupCtx, uniCheckGroupKey } from '../checkbox-group'
+import { UniRadioGroupCtx, uniRadioGroupKey } from '../radio-group'
 import { UniFormCtx, uniFormKey } from '../form'
 import { uniLabelKey, UniLabelCtx } from '../label'
 import {
@@ -51,32 +51,29 @@ const props = {
   },
   iconColor: {
     type: String,
-    default: '',
+    default: '#ffffff',
   },
 }
 
-class UniCheckboxElement extends UniElement {}
+class UniRadioElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
-  name: 'Checkbox',
+  name: 'Radio',
   props,
   //#if _X_ && !_NODE_JS_
   rootElement: {
-    name: 'uni-checkbox',
-    class: UniCheckboxElement,
+    name: 'uni-radio',
+    class: UniRadioElement,
   },
   //#endif
   setup(props, { slots }) {
     const rootRef = ref<HTMLElement | null>(null)
-    const checkboxChecked = ref(props.checked)
-    const checkboxCheckedBool = computed(() => {
-      return checkboxChecked.value === 'true' || checkboxChecked.value === true
-    })
-    const checkboxValue = ref(props.value)
+    const radioChecked = ref(props.checked)
+    const radioValue = ref(props.value)
     //#if _X_ && !_NODE_JS_
     const initialCheckedValue = props.checked
     //#endif
 
-    function getCheckBoxStyle(checked: boolean) {
+    function getRadioStyle(checked: boolean | string) {
       if (props.disabled) {
         return {
           backgroundColor: '#E1E1E1',
@@ -85,10 +82,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       }
       const style: { borderColor?: string; backgroundColor?: string } = {}
       // 兼容旧版本样式
-      if (checked) {
-        if (props.activeBorderColor) style.borderColor = props.activeBorderColor
-        if (props.activeBackgroundColor)
-          style.backgroundColor = props.activeBackgroundColor
+      if (radioChecked.value) {
+        style.backgroundColor = props.activeBackgroundColor || props.color
+        style.borderColor = props.activeBorderColor || style.backgroundColor
       } else {
         if (props.borderColor) style.borderColor = props.borderColor
         if (props.backgroundColor) style.backgroundColor = props.backgroundColor
@@ -96,38 +92,38 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       return style
     }
 
-    const checkboxStyle = computed(() => {
-      return getCheckBoxStyle(checkboxCheckedBool.value)
+    const radioStyle = computed(() => {
+      return getRadioStyle(radioChecked.value)
     })
 
     watch(
       [() => props.checked, () => props.value],
       ([newChecked, newModelValue]) => {
-        checkboxChecked.value = newChecked
-        checkboxValue.value = newModelValue
+        radioChecked.value = newChecked
+        radioValue.value = newModelValue
       }
     )
 
     const reset = () => {
       //#if _X_ && !_NODE_JS_
-      checkboxChecked.value = initialCheckedValue
+      radioChecked.value = initialCheckedValue
       //#else
-      checkboxChecked.value = false
+      radioChecked.value = false
       //#endif
     }
 
-    const { uniCheckGroup, uniLabel } = useCheckboxInject(
-      checkboxChecked,
-      checkboxValue,
+    const { uniCheckGroup, uniLabel, field } = useRadioInject(
+      radioChecked,
+      radioValue,
       reset
     )
 
     const _onClick = ($event: Event) => {
-      if (props.disabled) {
+      if (props.disabled || radioChecked.value) {
         return
       }
-      checkboxChecked.value = !checkboxChecked.value
-      uniCheckGroup && uniCheckGroup.checkboxChange($event)
+      radioChecked.value = true
+      uniCheckGroup && uniCheckGroup.radioChange($event, field)
       $event.stopPropagation()
     }
 
@@ -140,23 +136,22 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     useListeners(props, { 'label-click': _onClick })
 
     //#if _X_ && !_NODE_JS_
-    // disable之后也要能获取已设置的value
-    let checkedCache = ref(checkboxCheckedBool.value)
+    const checkedCache = ref(radioChecked.value)
     watch(
-      () => checkboxCheckedBool.value,
-      (newChecked) => {
-        checkedCache.value = newChecked
+      () => radioChecked.value,
+      (value) => {
+        checkedCache.value = value
       }
     )
     onMounted(() => {
-      const rootElement = rootRef.value as UniCheckboxElement
+      const rootElement = rootRef.value as UniRadioElement
       Object.defineProperty(rootElement, 'checked', {
         get() {
           return checkedCache.value
         },
-        set(val) {
-          checkedCache.value = val
-          const style = getCheckBoxStyle(val)
+        set(value: boolean | string) {
+          checkedCache.value = value
+          const style = getRadioStyle(value)
           const checkboxInputElement = rootElement.querySelector(
             '.uni-checkbox-input'
           ) as HTMLElement
@@ -177,56 +172,62 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       //#if _X_ && !_NODE_JS_
       realCheckValue = checkedCache.value
       //#else
-      realCheckValue = checkboxChecked.value
+      realCheckValue = radioChecked.value
       //#endif
 
       return (
-        <uni-checkbox
+        <uni-radio
           {...booleanAttrs}
-          id={props.id}
           onClick={_onClick}
           ref={rootRef}
+          id={props.id}
+          class="uni-radio-wrapper"
+          style={{
+            '--HOVER-BD-COLOR': !radioChecked.value
+              ? props.activeBorderColor
+              : radioStyle.value.borderColor,
+          }}
         >
           <div
-            class="uni-checkbox-wrapper"
-            style={{ '--HOVER-BD-COLOR': props.activeBorderColor }}
+            class="uni-radio-input"
+            // @ts-ignore
+            class={{ 'uni-radio-input-disabled': props.disabled }}
+            style={radioStyle.value}
           >
-            <div
-              class="uni-checkbox-input"
-              // @ts-ignore
-              class={{ 'uni-checkbox-input-disabled': props.disabled }}
-              style={checkboxStyle.value}
-            >
-              {realCheckValue
-                ? createSvgIconVNode(
-                    ICON_PATH_SUCCESS_NO_CIRCLE,
-                    props.disabled ? '#ADADAD' : props.iconColor || props.color,
-                    22
-                  )
-                : ''}
-            </div>
-            {slots.default && slots.default()}
+            {realCheckValue
+              ? createSvgIconVNode(
+                  ICON_PATH_SUCCESS_NO_CIRCLE,
+                  props.disabled ? '#ADADAD' : props.iconColor,
+                  18
+                )
+              : ''}
           </div>
-        </uni-checkbox>
+          {slots.default && slots.default()}
+        </uni-radio>
       )
     }
   },
 })
 
-function useCheckboxInject(
-  checkboxChecked: Ref<string | boolean>,
-  checkboxValue: Ref<string>,
+function useRadioInject(
+  radioChecked: Ref<string | boolean>,
+  radioValue: Ref<string>,
   reset: () => void
 ) {
-  const field = computed(() => ({
-    checkboxChecked: Boolean(checkboxChecked.value),
-    value: checkboxValue.value,
-  }))
+  const field = computed({
+    get: () => ({
+      radioChecked: Boolean(radioChecked.value),
+      value: radioValue.value,
+    }),
+    set: ({ radioChecked: checked }) => {
+      radioChecked.value = checked
+    },
+  })
   const formField = { reset }
 
-  const uniCheckGroup = inject<UniCheckGroupCtx>(
-    uniCheckGroupKey,
-    false as unknown as UniCheckGroupCtx
+  const uniCheckGroup = inject<UniRadioGroupCtx>(
+    uniRadioGroupKey,
+    false as unknown as UniRadioGroupCtx
   )
   if (!!uniCheckGroup) {
     uniCheckGroup.addField(field)
@@ -251,5 +252,6 @@ function useCheckboxInject(
     uniCheckGroup,
     uniForm,
     uniLabel,
+    field,
   }
 }

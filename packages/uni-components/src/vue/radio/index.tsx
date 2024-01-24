@@ -113,9 +113,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     }
 
     const { uniCheckGroup, uniLabel, field } = useRadioInject(
-      //#if _X_ && !_NODE_JS_
-      rootRef,
-      //#endif
       radioChecked,
       radioValue,
       reset
@@ -179,7 +176,12 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       //#endif
 
       return (
-        <uni-radio {...booleanAttrs} onClick={_onClick} ref={rootRef}>
+        <uni-radio
+          {...booleanAttrs}
+          id={props.id}
+          onClick={_onClick}
+          ref={rootRef}
+        >
           <div
             class="uni-radio-wrapper"
             style={{
@@ -211,21 +213,13 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 })
 
 function useRadioInject(
-  //#if _X_ && !_NODE_JS_
-  rootRef: Ref<HTMLElement | null>,
-  //#endif
   radioChecked: Ref<string | boolean>,
   radioValue: Ref<string>,
   reset: () => void
 ) {
   const field = computed({
     get: () => ({
-      //#if _X_ && !_NODE_JS_
-      radioChecked: (rootRef.value as UniRadioElement as any).checked,
-      //#else
-      // @ts-ignore
       radioChecked: Boolean(radioChecked.value),
-      //#endif
       value: radioValue.value,
     }),
     set: ({ radioChecked: checked }) => {

@@ -11,14 +11,9 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import { parse } from '@dcloudio/uni-nvue-styler'
 
-export function uniAppCssPlugin(): Plugin {
-  let resolvedConfig: ResolvedConfig
-
+export function uniAppCssPlugin(resolvedConfig: ResolvedConfig): Plugin {
   return {
     name: 'vite:css-post',
-    configResolved(config) {
-      resolvedConfig = config
-    },
     buildStart() {
       // 用于覆盖原始插件方法
       // noop

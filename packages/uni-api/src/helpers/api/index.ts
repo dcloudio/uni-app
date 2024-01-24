@@ -50,16 +50,31 @@ function formatApiArgs<T extends ApiLike>(
 }
 
 function invokeSuccess(id: number, name: string, res: unknown) {
-  return invokeCallback(
-    id,
-    extend((res || {}) as Object, { errMsg: name + ':ok' })
-  )
+  const result: { errSubject?: string; errMsg: string } = {
+    errMsg: name + ':ok',
+  }
+
+  //#if _X_
+  result.errSubject = name
+  //#endif
+
+  return invokeCallback(id, extend((res || {}) as Object, result))
 }
 
 function invokeFail(id: number, name: string, errMsg?: string, errRes?: any) {
+  const apiErrMsg = name + ':fail' + (errMsg ? ' ' + errMsg : '')
+
+  //#if !_X_
+  delete errRes.errCode
+  //#endif
+
   return invokeCallback(
     id,
-    extend({ errMsg: name + ':fail' + (errMsg ? ' ' + errMsg : '') }, errRes)
+    typeof UniError !== 'undefined'
+      ? typeof errRes.errCode !== 'undefined'
+        ? new UniError(name, errRes.errCode, apiErrMsg)
+        : new UniError(apiErrMsg, errRes)
+      : extend({ errMsg: apiErrMsg }, errRes)
   )
 }
 
@@ -214,7 +229,7 @@ export function defineTaskApi<
     args: Omit<P, CALLBACK_TYPES>,
     res: {
       resolve: (res?: AsyncApiRes<P> | void) => void
-      reject: (err?: string) => void
+      reject: <R extends object>(err?: string, errRes?: R & object) => void
     }
   ) => ReturnType<T>,
   protocol?: ApiProtocols<T>,

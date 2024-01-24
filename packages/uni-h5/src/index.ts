@@ -1,39 +1,3 @@
-//#if _X_
-import { UniError } from './platform/uts/UniError'
-import { UTSJSONObject } from './platform/uts/UTSJSONObject'
-
-function getGlobal() {
-  // cross-platform
-  if (typeof globalThis !== 'undefined') {
-    return globalThis
-  }
-  // worker
-  if (typeof self !== 'undefined') {
-    return self
-  }
-  // browser
-  if (typeof window !== 'undefined') {
-    return window
-  }
-  // nodejs
-  if (typeof global !== 'undefined') {
-    return global
-  }
-  throw new Error('unable to locate global object')
-}
-
-const realGlobal = getGlobal()
-if (!realGlobal.globalThis) {
-  // @ts-ignore
-  realGlobal.globalThis = realGlobal
-}
-
-// @ts-ignore
-globalThis.UTSJSONObject = UTSJSONObject
-// @ts-ignore
-globalThis.UniError = UniError
-//#endif
-
 export {
   Button,
   Canvas,

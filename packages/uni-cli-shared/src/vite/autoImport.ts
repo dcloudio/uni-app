@@ -1,6 +1,4 @@
 import { Options } from 'unplugin-auto-import/types'
-import { injectsToAutoImports } from './plugins/uts/ext-api'
-import { parseUniExtApisOnce } from '../uni_modules'
 
 export type AutoImportOptions = Options
 
@@ -113,18 +111,9 @@ export function initAutoImportOptions(
   if (platform === 'web') {
     autoImport.push(uniH5Preset)
   }
-  if (platform !== 'app-android') {
-    // 非 android 平台，注入 uts ext-api
-    injectsToAutoImports(
-      parseUniExtApisOnce(true, platform, 'javascript')
-    ).forEach(
-      // @ts-expect-error
-      (item) => autoImport.push(item)
-    )
-  }
   return {
     ...userOptions,
-    include: [/\.[u]?ts$/, /\.[u]?vue/],
+    include: [/\.[u]?ts$/, /\.[u]?vue$/, /\.[u]?vue\?vue/],
     exclude: [/[\\/]\.git[\\/]/],
     imports: (imports as any[]).concat(
       // app-android 平台暂不注入其他

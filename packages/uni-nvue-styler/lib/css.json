@@ -20,8 +20,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -39,6 +44,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -56,6 +65,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -73,6 +86,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -86,13 +103,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "auto",
-        "web": "auto"
+        "w3c": "auto"
       }
     },
     {
@@ -116,6 +138,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -133,6 +159,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -150,6 +180,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -167,6 +201,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -184,6 +222,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -197,13 +239,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "0px",
-        "web": "auto"
+        "w3c": "auto"
       }
     },
     {
@@ -227,6 +274,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -244,6 +295,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -261,6 +316,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -278,6 +337,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -295,6 +358,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -308,13 +375,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "none",
-        "web": "none"
+        "w3c": "none"
       }
     },
     {
@@ -336,8 +408,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -355,6 +432,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -372,6 +453,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -389,6 +474,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -402,13 +491,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "auto",
-        "web": "auto"
+        "w3c": "auto"
       }
     },
     {
@@ -432,6 +526,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -449,6 +547,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -466,6 +568,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -483,6 +589,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -500,6 +610,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -513,13 +627,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "0px",
-        "web": "auto"
+        "w3c": "auto"
       }
     },
     {
@@ -543,6 +662,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -560,6 +683,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -577,6 +704,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -594,6 +725,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -611,6 +746,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -624,13 +763,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "none",
-        "web": "none"
+        "w3c": "none"
       }
     },
     {
@@ -651,8 +795,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -667,8 +816,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -683,8 +837,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -702,6 +861,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -719,6 +882,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -732,13 +899,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "relative",
-        "web": "static"
+        "w3c": "static"
       }
     },
     {
@@ -757,13 +929,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "0",
-        "web": "auto"
+        "w3c": "auto"
       }
     },
     {
@@ -785,8 +962,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -800,13 +982,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "auto",
-        "web": "auto"
+        "w3c": "auto"
       }
     },
     {
@@ -828,8 +1015,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -843,13 +1035,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "auto",
-        "web": "auto"
+        "w3c": "auto"
       }
     },
     {
@@ -871,8 +1068,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -886,13 +1088,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "auto",
-        "web": "auto"
+        "w3c": "auto"
       }
     },
     {
@@ -914,8 +1121,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -929,13 +1141,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "auto",
-        "web": "auto"
+        "w3c": "auto"
       }
     },
     {
@@ -956,8 +1173,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -972,8 +1194,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -988,8 +1215,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -1004,8 +1236,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -1019,8 +1256,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "unixTags": [
@@ -1033,7 +1275,7 @@
       ],
       "defaultValue": {
         "app-uvue": "column",
-        "web": "row"
+        "w3c": "row"
       }
     },
     {
@@ -1055,8 +1297,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -1072,8 +1319,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -1089,8 +1341,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -1106,8 +1363,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -1123,8 +1385,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -1138,8 +1405,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "unixTags": [
@@ -1152,7 +1424,7 @@
       ],
       "defaultValue": {
         "app-uvue": "flex-start",
-        "web": "normal"
+        "w3c": "normal"
       }
     },
     {
@@ -1173,8 +1445,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -1189,8 +1466,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -1205,8 +1487,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -1220,8 +1507,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "unixTags": [
@@ -1234,7 +1526,7 @@
       ],
       "defaultValue": {
         "app-uvue": "nowrap",
-        "web": "nowrap"
+        "w3c": "nowrap"
       }
     },
     {
@@ -1255,8 +1547,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -1271,8 +1568,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -1287,8 +1589,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -1303,8 +1610,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -1322,6 +1634,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -1335,8 +1651,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "unixTags": [
@@ -1349,7 +1670,7 @@
       ],
       "defaultValue": {
         "app-uvue": "stretch",
-        "web": "normal"
+        "w3c": "normal"
       }
     },
     {
@@ -1370,8 +1691,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -1386,8 +1712,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -1402,8 +1733,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -1418,8 +1754,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -1434,8 +1775,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -1453,6 +1799,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -1466,13 +1816,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "auto",
-        "web": "auto"
+        "w3c": "auto"
       }
     },
     {
@@ -1494,8 +1849,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -1510,8 +1870,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -1526,8 +1891,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -1542,8 +1912,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -1558,8 +1933,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -1574,8 +1954,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -1589,8 +1974,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "unixTags": [
@@ -1603,7 +1993,7 @@
       ],
       "defaultValue": {
         "app-uvue": "stretch",
-        "web": "normal"
+        "w3c": "normal"
       }
     },
     {
@@ -1627,8 +2017,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -1643,8 +2038,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -1659,8 +2059,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -1674,13 +2079,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "none",
-        "web": "initial"
+        "w3c": "initial"
       }
     },
     {
@@ -1698,13 +2108,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "0",
-        "web": "0"
+        "w3c": "0"
       }
     },
     {
@@ -1722,13 +2137,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "0",
-        "web": "1"
+        "w3c": "1"
       }
     },
     {
@@ -1751,8 +2171,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -1770,6 +2195,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -1783,13 +2212,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "auto",
-        "web": "auto"
+        "w3c": "auto"
       }
     },
     {
@@ -1811,8 +2245,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -1827,8 +2266,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -1843,8 +2287,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -1859,8 +2308,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -1875,8 +2329,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -1891,8 +2350,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -1907,8 +2371,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -1922,8 +2391,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "unixTags": [
@@ -1954,8 +2428,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -1970,8 +2449,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -1985,13 +2469,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "flex",
-        "web": "inline"
+        "w3c": "inline"
       }
     },
     {
@@ -2013,8 +2502,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -2029,8 +2523,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -2048,6 +2547,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -2065,6 +2568,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -2082,6 +2589,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -2095,13 +2606,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "hidden",
-        "web": "visible"
+        "w3c": "visible"
       }
     },
     {
@@ -2122,8 +2638,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -2138,8 +2659,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -2153,13 +2679,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "visible",
-        "web": "visible"
+        "w3c": "visible"
       }
     },
     {
@@ -2177,13 +2708,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "1",
-        "web": "1"
+        "w3c": "1"
       }
     },
     {
@@ -2204,8 +2740,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -2220,8 +2761,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -2235,13 +2781,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "border-box",
-        "web": "content-box"
+        "w3c": "content-box"
       }
     },
     {
@@ -2266,6 +2817,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -2283,6 +2838,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -2300,6 +2859,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -2317,6 +2880,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -2330,8 +2897,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       }
     },
@@ -2350,13 +2922,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "transparent",
-        "web": "transparent"
+        "w3c": "transparent"
       }
     },
     {
@@ -2377,8 +2954,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -2392,8 +2974,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       }
     },
@@ -2415,8 +3002,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -2434,6 +3026,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -2451,6 +3047,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -2464,13 +3064,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "border-box",
-        "web": "border-box"
+        "w3c": "border-box"
       }
     },
     {
@@ -2490,8 +3095,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       }
     },
@@ -2511,13 +3121,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "0",
-        "web": "0"
+        "w3c": "0"
       }
     },
     {
@@ -2536,13 +3151,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "0",
-        "web": "0"
+        "w3c": "0"
       }
     },
     {
@@ -2561,13 +3181,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "0",
-        "web": "0"
+        "w3c": "0"
       }
     },
     {
@@ -2586,13 +3211,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "0",
-        "web": "0"
+        "w3c": "0"
       }
     },
     {
@@ -2615,8 +3245,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -2630,13 +3265,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "0",
-        "web": "0"
+        "w3c": "0"
       }
     },
     {
@@ -2658,8 +3298,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -2673,13 +3318,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "0",
-        "web": "0"
+        "w3c": "0"
       }
     },
     {
@@ -2701,8 +3351,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -2716,13 +3371,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "0",
-        "web": "0"
+        "w3c": "0"
       }
     },
     {
@@ -2744,8 +3404,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -2759,13 +3424,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "0",
-        "web": "0"
+        "w3c": "0"
       }
     },
     {
@@ -2788,8 +3458,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -2803,13 +3478,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "0",
-        "web": "0"
+        "w3c": "0"
       }
     },
     {
@@ -2833,8 +3513,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -2849,8 +3534,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -2865,8 +3555,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -2881,8 +3576,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -2896,8 +3596,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
@@ -2922,8 +3627,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -2938,8 +3648,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -2954,8 +3669,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -2970,8 +3690,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -2985,8 +3710,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       }
     },
@@ -3008,8 +3738,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -3024,8 +3759,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -3040,8 +3780,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -3056,8 +3801,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -3071,8 +3821,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       }
     },
@@ -3094,8 +3849,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -3110,8 +3870,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -3126,8 +3891,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -3142,8 +3912,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -3157,8 +3932,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       }
     },
@@ -3180,8 +3960,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -3196,8 +3981,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -3212,8 +4002,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -3228,8 +4023,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -3243,8 +4043,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       }
     },
@@ -3266,8 +4071,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -3282,8 +4092,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -3298,8 +4113,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -3314,8 +4134,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -3329,8 +4154,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       }
     },
@@ -3353,8 +4183,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -3369,8 +4204,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -3385,8 +4225,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -3400,13 +4245,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "medium",
-        "web": "medium"
+        "w3c": "medium"
       }
     },
     {
@@ -3428,8 +4278,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -3444,8 +4299,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -3460,8 +4320,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -3475,13 +4340,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "medium",
-        "web": "medium"
+        "w3c": "medium"
       }
     },
     {
@@ -3503,8 +4373,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -3519,8 +4394,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -3535,8 +4415,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -3550,13 +4435,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "medium",
-        "web": "medium"
+        "w3c": "medium"
       }
     },
     {
@@ -3578,8 +4468,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -3594,8 +4489,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -3610,8 +4510,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -3625,13 +4530,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "medium",
-        "web": "medium"
+        "w3c": "medium"
       }
     },
     {
@@ -3653,8 +4563,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -3669,8 +4584,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -3685,8 +4605,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -3700,13 +4625,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "medium",
-        "web": "medium"
+        "w3c": "medium"
       }
     },
     {
@@ -3724,8 +4654,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       }
     },
@@ -3744,8 +4679,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       }
     },
@@ -3764,8 +4704,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       }
     },
@@ -3784,8 +4729,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       }
     },
@@ -3804,8 +4754,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       }
     },
@@ -3824,8 +4779,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       }
     },
@@ -3844,8 +4804,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       }
     },
@@ -3864,8 +4829,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       }
     },
@@ -3884,8 +4854,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       }
     },
@@ -3904,8 +4879,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       }
     },
@@ -3926,8 +4906,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
@@ -3951,8 +4936,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
@@ -3976,8 +4966,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
@@ -4001,8 +4996,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
@@ -4025,8 +5025,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "unixTags": [
@@ -4037,7 +5042,7 @@
       ],
       "defaultValue": {
         "app-uvue": "#000000",
-        "web": "canvastext"
+        "w3c": "canvastext"
       }
     },
     {
@@ -4056,8 +5061,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "unixTags": [
@@ -4068,7 +5078,7 @@
       ],
       "defaultValue": {
         "app-uvue": "16px",
-        "web": "medium"
+        "w3c": "medium"
       }
     },
     {
@@ -4089,8 +5099,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -4105,8 +5120,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -4120,8 +5140,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "unixTags": [
@@ -4130,7 +5155,7 @@
       ],
       "defaultValue": {
         "app-uvue": "normal",
-        "web": "normal"
+        "w3c": "normal"
       }
     },
     {
@@ -4151,8 +5176,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -4167,8 +5197,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -4183,8 +5218,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -4199,8 +5239,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -4214,8 +5259,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "unixTags": [
@@ -4224,7 +5274,7 @@
       ],
       "defaultValue": {
         "app-uvue": "normal",
-        "web": "normal"
+        "w3c": "normal"
       }
     },
     {
@@ -4244,8 +5294,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "unixTags": [
@@ -4271,8 +5326,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -4287,8 +5347,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -4306,6 +5371,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -4319,8 +5388,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "unixTags": [
@@ -4329,7 +5403,7 @@
       ],
       "defaultValue": {
         "app-uvue": "none",
-        "web": "none"
+        "w3c": "none"
       }
     },
     {
@@ -4347,8 +5421,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "unixTags": [
@@ -4374,8 +5453,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -4390,8 +5474,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -4406,8 +5495,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -4422,8 +5516,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -4437,8 +5536,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "unixTags": [
@@ -4461,8 +5565,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "unixTags": [
@@ -4488,8 +5597,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -4504,8 +5618,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -4520,8 +5639,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -4535,8 +5659,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "unixTags": [
@@ -4547,7 +5676,7 @@
       ],
       "defaultValue": {
         "app-uvue": "left",
-        "web": "start"
+        "w3c": "start"
       }
     },
     {
@@ -4568,8 +5697,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -4584,8 +5718,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -4600,8 +5739,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -4616,8 +5760,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -4632,8 +5781,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -4647,8 +5801,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "unixTags": [
@@ -4676,8 +5835,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -4692,8 +5856,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -4707,8 +5876,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "unixTags": [
@@ -4717,7 +5891,7 @@
       ],
       "defaultValue": {
         "app-uvue": "clip",
-        "web": "clip"
+        "w3c": "clip"
       }
     },
     {
@@ -4736,8 +5910,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "unixTags": [
@@ -4747,7 +5926,7 @@
       ],
       "defaultValue": {
         "app-uvue": "1.2",
-        "web": "normal"
+        "w3c": "normal"
       }
     },
     {
@@ -4766,8 +5945,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "x"
+            "uniVer": "x",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "x",
+          "unixVer": "x"
         }
       },
       "unixTags": [
@@ -4795,8 +5979,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "unixTags": [
@@ -4805,7 +5994,7 @@
       ],
       "defaultValue": {
         "app-uvue": "0",
-        "web": "normal"
+        "w3c": "normal"
       }
     },
     {
@@ -4826,8 +6015,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -4842,8 +6036,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -4857,8 +6056,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "unixTags": [
@@ -4867,7 +6071,7 @@
       ],
       "defaultValue": {
         "app-uvue": "normal",
-        "web": "normal"
+        "w3c": "normal"
       }
     },
     {
@@ -4890,8 +6094,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -4905,8 +6114,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       }
     },
@@ -4926,8 +6140,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       }
     },
@@ -4949,8 +6168,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -4965,8 +6189,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -4981,8 +6210,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -4997,8 +6231,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -5013,8 +6252,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -5029,8 +6273,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -5045,8 +6294,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -5061,8 +6315,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -5077,8 +6336,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -5093,8 +6357,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -5109,8 +6378,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -5125,8 +6399,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -5141,8 +6420,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -5157,8 +6441,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -5173,8 +6462,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -5189,8 +6483,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -5205,8 +6504,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -5221,8 +6525,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -5237,8 +6546,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -5253,8 +6567,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -5269,8 +6588,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -5285,8 +6609,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -5301,8 +6630,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -5317,8 +6651,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -5332,13 +6671,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "none",
-        "web": "all"
+        "w3c": "all"
       }
     },
     {
@@ -5356,13 +6700,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "0s",
-        "web": "0s"
+        "w3c": "0s"
       }
     },
     {
@@ -5383,8 +6732,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -5399,8 +6753,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -5415,8 +6774,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -5431,8 +6795,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -5447,8 +6816,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -5463,8 +6837,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -5478,13 +6857,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "ease",
-        "web": "ease"
+        "w3c": "ease"
       }
     },
     {
@@ -5502,13 +6886,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "0s",
-        "web": "0s"
+        "w3c": "0s"
       }
     },
     {
@@ -5529,8 +6918,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -5545,8 +6939,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -5561,8 +6960,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -5577,8 +6981,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -5593,8 +7002,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -5609,8 +7023,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -5625,8 +7044,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -5641,8 +7065,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -5657,8 +7086,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -5673,8 +7107,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -5688,8 +7127,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       }
     },
@@ -5714,8 +7158,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -5730,8 +7179,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -5746,8 +7200,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -5762,8 +7221,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -5778,8 +7242,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -5793,13 +7262,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "50% 50%",
-        "web": "50% 50% 0"
+        "w3c": "50% 50% 0"
       }
     },
     {
@@ -5820,8 +7294,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         },
@@ -5836,8 +7315,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0+"
             }
           }
         }
@@ -5851,13 +7335,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "x"
+            "uniVer": "x",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       },
       "defaultValue": {
         "app-uvue": "auto",
-        "web": "auto"
+        "w3c": "auto"
       }
     }
   ],
@@ -5873,8 +7362,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       }
     },
@@ -5889,8 +7383,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0+"
         }
       }
     }

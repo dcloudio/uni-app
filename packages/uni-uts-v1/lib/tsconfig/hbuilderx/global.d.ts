@@ -4,6 +4,7 @@ import {
   VueAppConfig as VueAppConfigOrigin,
   VueApp as VueAppOrigin,
   definePlugin as definePluginOrigin,
+  defineComponent as defineComponentOrigin,
   defineMixin as defineMixinOrigin,
   createApp as createAppOrigin,
   createSSRApp as createSSRAppOrigin,
@@ -16,6 +17,8 @@ import {
   isVNode as isVNodeOrigin,
   queuePostFlushCb as queuePostFlushCbOrigin,
   watchEffect as watchEffectOrigin,
+  watchPostEffect as watchPostEffectOrigin,
+  watchSyncEffect as watchSyncEffectOrigin,
   watch as watchOrigin,
   provide as provideOrigin,
   inject as injectOrigin,
@@ -42,6 +45,12 @@ import {
   onUpdated as onUpdatedOrigin,
   onBeforeUnmount as onBeforeUnmountOrigin,
   onUnmounted as onUnmountedOrigin,
+  onErrorCaptured as onErrorCapturedOrigin,
+  onRenderTracked as onRenderTrackedOrigin,
+  onRenderTriggered as onRenderTriggeredOrigin,
+  onActivated as onActivatedOrigin,
+  onDeactivated as onDeactivatedOrigin,
+  onServerPrefetch as onServerPrefetchOrigin,
   vShow as vShowOrigin,
   vModelDynamic as vModelDynamicOrigin,
   withModifiers as withModifiersOrigin,
@@ -85,14 +94,20 @@ import {
   shallowReadonly as shallowReadonlyOrigin,
   stop as stopOrigin,
   toRaw as toRawOrigin,
+  markRaw as markRawOrigin,
   unref as unrefOrigin,
   customRef as customRefOrigin,
   isProxy as isProxyOrigin,
   PropType as PropTypeOrigin,
   SlotsType as SlotsTypeOrigin,
   DebuggerEvent as DebuggerEventOrigin,
-  OnCleanup as OnCleanupOrigin
-} from 'vue'
+  OnCleanup as OnCleanupOrigin,
+  withDefaults as withDefaultsOrigin,
+  useSlots as useSlotsOrigin,
+  useAttrs as useAttrsOrigin,
+  useModel as useModelOrigin,
+  hasInjectionContext as hasInjectionContextOrigin
+} from '@vue/runtime-core'
 
 declare global {
   const VueAppContext: typeof VueAppContextOrigin
@@ -104,6 +119,7 @@ declare global {
   type VueApp = VueAppOrigin
   const definePlugin: typeof definePluginOrigin
   const defineMixin: typeof defineMixinOrigin
+  const defineComponent: typeof defineComponentOrigin
   const createApp: typeof createAppOrigin
   const createSSRApp: typeof createSSRAppOrigin
   const withDirectives: typeof withDirectivesOrigin
@@ -116,6 +132,8 @@ declare global {
   const isVNode: typeof isVNodeOrigin
   const queuePostFlushCb: typeof queuePostFlushCbOrigin
   const watchEffect: typeof watchEffectOrigin
+  const watchPostEffect: typeof watchPostEffectOrigin
+  const watchSyncEffect: typeof watchSyncEffectOrigin
   const watch: typeof watchOrigin
   const provide: typeof provideOrigin
   const inject: typeof injectOrigin
@@ -147,6 +165,12 @@ declare global {
   const onUpdated: typeof onUpdatedOrigin
   const onBeforeUnmount: typeof onBeforeUnmountOrigin
   const onUnmounted: typeof onUnmountedOrigin
+  const onErrorCaptured: typeof onErrorCapturedOrigin
+  const onRenderTracked: typeof onRenderTrackedOrigin
+  const onRenderTriggered: typeof onRenderTriggeredOrigin
+  const onActivated: typeof onActivatedOrigin
+  const onDeactivated: typeof onDeactivatedOrigin
+  const onServerPrefetch: typeof onServerPrefetchOrigin
   const vShow: typeof vShowOrigin
   const vModelDynamic: typeof vModelDynamicOrigin
   const withModifiers: typeof withModifiersOrigin
@@ -192,6 +216,7 @@ declare global {
   const shallowReadonly: typeof shallowReadonlyOrigin
   const stop: typeof stopOrigin
   const toRaw: typeof toRawOrigin
+  const markRaw: typeof markRawOrigin
   const unref: typeof unrefOrigin
   const customRef: typeof customRefOrigin
   const isProxy: typeof isProxyOrigin
@@ -199,4 +224,9 @@ declare global {
   type SlotsType<T> = SlotsTypeOrigin<T>
   type DebuggerEvent = DebuggerEventOrigin
   type OnCleanup = OnCleanupOrigin
+  const withDefaults: typeof withDefaultsOrigin
+  const useSlots: typeof useSlotsOrigin
+  const useAttrs: typeof useAttrsOrigin
+  const useModel: typeof useModelOrigin
+  const hasInjectionContext: typeof hasInjectionContextOrigin
 }
