@@ -3,6 +3,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "lib": ["ESNext"],
+    "target": "ES5",
     "noImplicitAny": false,
     "useDefineForClassFields": false,
     "paths": {
