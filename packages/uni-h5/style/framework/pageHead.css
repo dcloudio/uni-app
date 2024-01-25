@@ -79,11 +79,11 @@ uni-page-head {
   word-break: keep-all;
   white-space: pre;
   cursor: pointer;
+  font-size: 0px;
 }
 
-.uni-page-head-btn svg {
-  margin-top: -2px;
-}
+/* .uni-page-head-btn svg {
+} */
 
 .uni-page-head-transparent .uni-page-head-btn {
   display: flex;
