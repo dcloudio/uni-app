@@ -1,0 +1,54 @@
+/// <reference types="@dcloudio/uni-app-x/types/native-global" />
+
+export const CHECKBOX_NAME = 'Checkbox'
+export const CHECKBOX_ROOT_ELEMENT = 'uni-checkbox-element'
+
+// export class UniCheckboxElement extends UniElement {}
+export class UniCheckboxElement extends UniElementImpl {}
+
+// UniElementImpl
+
+export const checkboxProps = {
+  checked: {
+    type: Boolean,
+    default: false,
+  },
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
+  value: {
+    type: Object,
+    default: '',
+  },
+  // 图标颜色
+  color: {
+    type: String,
+    default: '#007aff',
+  },
+  // 默认的背景颜色
+  backgroundColor: {
+    type: String,
+    default: '#ffffff',
+  },
+  // 默认的边框颜色
+  borderColor: {
+    type: String,
+    default: '#d1d1d1',
+  },
+  // 选中时的背景颜色
+  activeBackgroundColor: {
+    type: String,
+    default: '#ffffff',
+  },
+  // 选中时的边框颜色
+  activeBorderColor: {
+    type: String,
+    default: '#d1d1d1',
+  },
+  // 图标颜色,同color,优先级大于color
+  iconColor: {
+    type: String,
+    default: '',
+  },
+}
