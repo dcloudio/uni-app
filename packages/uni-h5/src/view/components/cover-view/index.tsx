@@ -58,7 +58,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
     //#if _X_ && !_NODE_JS_
     onMounted(() => {
-      const rootElement = content.value as UniCoverViewElement
+      const rootElement = root.value as UniCoverViewElement
       rootElement.attachVmProps(props)
     })
     //#endif
