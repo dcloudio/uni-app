@@ -61,7 +61,12 @@ function invokeSuccess(id: number, name: string, res: unknown) {
   return invokeCallback(id, extend((res || {}) as Object, result))
 }
 
-function invokeFail(id: number, name: string, errMsg?: string, errRes?: any) {
+function invokeFail(
+  id: number,
+  name: string,
+  errMsg?: string,
+  errRes: any = {}
+) {
   const apiErrMsg = name + ':fail' + (errMsg ? ' ' + errMsg : '')
 
   //#if !_X_
