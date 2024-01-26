@@ -125,7 +125,7 @@ export interface TransformContext
   cache<T extends JSChildNode>(exp: T, isVNode?: boolean): CacheExpression | T
   isMiniProgramComponent(
     name: string
-  ): 'plugin' | 'component' | 'dynamicLib' | undefined
+  ): 'plugin' | 'component' | 'dynamicLib' | 'ext' | undefined
   rootNode: TemplateChildNode | null
 }
 

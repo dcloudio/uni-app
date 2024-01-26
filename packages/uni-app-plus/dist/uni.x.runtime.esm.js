@@ -996,13 +996,17 @@ function formatApiArgs(args, options) {
   }
 }
 function invokeSuccess(id2, name, res) {
-  return invokeCallback(id2, extend(res || {}, {
+  var result = {
     errMsg: name + ":ok"
-  }));
+  };
+  return invokeCallback(id2, extend(res || {}, result));
 }
-function invokeFail(id2, name, errMsg, errRes) {
-  return invokeCallback(id2, extend({
-    errMsg: name + ":fail" + (errMsg ? " " + errMsg : "")
+function invokeFail(id2, name, errMsg) {
+  var errRes = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : {};
+  var apiErrMsg = name + ":fail" + (errMsg ? " " + errMsg : "");
+  delete errRes.errCode;
+  return invokeCallback(id2, typeof UniError !== "undefined" ? typeof errRes.errCode !== "undefined" ? new UniError(name, errRes.errCode, apiErrMsg) : new UniError(apiErrMsg, errRes) : extend({
+    errMsg: apiErrMsg
   }, errRes));
 }
 function beforeInvokeApi(name, args, protocol, options) {
@@ -2460,8 +2464,397 @@ const slider$1 = /* @__PURE__ */ Object.defineProperty({
   UniSliderElement,
   default: slider
 }, Symbol.toStringTag, { value: "Module" });
+var BUTTON_COMPONENT_NAME = "Button";
+var UNI_BUTTON_ELEMENT_NAME = "uni-button-element";
+var buttonProps = {
+  hoverClass: {
+    type: String,
+    default: "button-hover"
+  },
+  disabled: {
+    type: Boolean,
+    default: false
+  },
+  type: {
+    type: String,
+    default: "default"
+  },
+  size: {
+    type: String,
+    default: "default"
+  },
+  plain: {
+    type: Boolean,
+    default: false
+  },
+  // TODO: loading
+  loading: {
+    type: Boolean,
+    default: false
+  },
+  hoverStartTime: {
+    type: Number,
+    default: 20
+  },
+  hoverStayTime: {
+    type: Number,
+    default: 70
+  },
+  openType: {
+    type: String,
+    default: ""
+  },
+  formType: {
+    type: String,
+    default: ""
+  }
+};
+class UniButtonElement extends UniTextElementImpl {
+  // constructor(data: INodeData) {
+  //   super()
+  //   // super(data)
+  // }
+}
+var styleList = {
+  ub: {
+    position: "relative",
+    "text-align": "center",
+    "padding-left": "14px",
+    "padding-right": "14px",
+    "overflow-x": "hidden",
+    "overflow-y": "hidden",
+    color: "rgb(0, 0, 0)",
+    "background-color": "rgb(248, 248, 248)",
+    "border-top-left-radius": "5px",
+    "border-top-right-radius": "5px",
+    "border-bottom-right-radius": "5px",
+    "border-bottom-left-radius": "5px",
+    "border-top-style": "solid",
+    "border-right-style": "solid",
+    "border-bottom-style": "solid",
+    "border-left-style": "solid",
+    "border-top-width": "0.5px",
+    "border-right-width": "0.5px",
+    "border-bottom-width": "0.5px",
+    "border-left-width": "0.5px",
+    "border-top-color": "rgba(0, 0, 0, 0.2)",
+    "border-right-color": "rgba(0, 0, 0, 0.2)",
+    "border-bottom-color": "rgba(0, 0, 0, 0.2)",
+    "border-left-color": "rgba(0, 0, 0, 0.2)",
+    "font-size": "18px",
+    "line-height": "46px"
+    // 'line-height': 2.55556,
+  },
+  ["ub-default"]: {
+    color: "rgb(0, 0, 0)",
+    "background-color": "rgb(248, 248, 248)"
+  },
+  ["ub-primary"]: {
+    color: "rgb(255, 255, 255)",
+    "background-color": "rgb(0, 122, 255)"
+  },
+  ["ub-warn"]: {
+    color: "rgb(255, 255, 255)",
+    "background-color": "rgb(230, 67, 64)"
+  },
+  ["ub-default-plain"]: {
+    color: "rgb(53, 53, 53)",
+    "border-top-color": "rgb(53, 53, 53)",
+    "border-right-color": "rgb(53, 53, 53)",
+    "border-bottom-color": "rgb(53, 53, 53)",
+    "border-left-color": "rgb(53, 53, 53)",
+    "background-color": "rgba(0, 0, 0, 0)",
+    "border-top-width": "1px",
+    "border-right-width": "1px",
+    "border-bottom-width": "1px",
+    "border-left-width": "1px"
+  },
+  ["ub-primary-plain"]: {
+    color: "rgb(0, 122, 255)",
+    "border-top-color": "rgb(0, 122, 255)",
+    "border-right-color": "rgb(0, 122, 255)",
+    "border-bottom-color": "rgb(0, 122, 255)",
+    "border-left-color": "rgb(0, 122, 255)",
+    "background-color": "rgba(0, 0, 0, 0)",
+    "border-top-width": "1px",
+    "border-right-width": "1px",
+    "border-bottom-width": "1px",
+    "border-left-width": "1px"
+  },
+  ["ub-warn-plain"]: {
+    color: "rgb(230, 67, 64)",
+    "border-top-color": "rgb(230, 67, 64)",
+    "border-right-color": "rgb(230, 67, 64)",
+    "border-bottom-color": "rgb(230, 67, 64)",
+    "border-left-color": "rgb(230, 67, 64)",
+    "background-color": "rgba(0, 0, 0, 0)",
+    "border-top-width": "1px",
+    "border-right-width": "1px",
+    "border-bottom-width": "1px",
+    "border-left-width": "1px"
+  },
+  ["ub-default-disabled"]: {
+    color: "rgba(0, 0, 0, 0.3)",
+    "background-color": "rgb(247, 247, 247)"
+  },
+  ["ub-primary-disabled"]: {
+    color: "rgba(255, 255, 255, 0.6)",
+    "background-color": "rgba(0, 122, 255, 0.6)"
+  },
+  ["ub-warn-disabled"]: {
+    color: "rgba(255, 255, 255, 0.6)",
+    "background-color": "rgb(236, 139, 137)"
+  },
+  ["ub-default-disabled-plain"]: {
+    color: "rgba(0, 0, 0, 0.2)",
+    "border-top-color": "rgba(0, 0, 0, 0.2)",
+    "border-right-color": "rgba(0, 0, 0, 0.2)",
+    "border-bottom-color": "rgba(0, 0, 0, 0.2)",
+    "border-left-color": "rgba(0, 0, 0, 0.2)",
+    "background-color": "rgba(0, 0, 0, 0)",
+    "border-top-width": "1px",
+    "border-right-width": "1px",
+    "border-bottom-width": "1px",
+    "border-left-width": "1px"
+  },
+  ["ub-primary-disabled-plain"]: {
+    color: "rgba(0, 0, 0, 0.2)",
+    "border-top-color": "rgba(0, 0, 0, 0.2)",
+    "border-right-color": "rgba(0, 0, 0, 0.2)",
+    "border-bottom-color": "rgba(0, 0, 0, 0.2)",
+    "border-left-color": "rgba(0, 0, 0, 0.2)",
+    "background-color": "rgba(0, 0, 0, 0)",
+    "border-top-width": "1px",
+    "border-right-width": "1px",
+    "border-bottom-width": "1px",
+    "border-left-width": "1px"
+  },
+  ["ub-warn-disabled-plain"]: {
+    color: "rgba(0, 0, 0, 0.2)",
+    "border-top-color": "rgba(0, 0, 0, 0.2)",
+    "border-right-color": "rgba(0, 0, 0, 0.2)",
+    "border-bottom-color": "rgba(0, 0, 0, 0.2)",
+    "border-left-color": "rgba(0, 0, 0, 0.2)",
+    "background-color": "rgba(0, 0, 0, 0)",
+    "border-top-width": "1px",
+    "border-right-width": "1px",
+    "border-bottom-width": "1px",
+    "border-left-width": "1px"
+  },
+  ["ub-mini"]: {
+    "padding-top": "0px",
+    "padding-bottom": "0px",
+    "padding-right": "17.5px",
+    "padding-left": "17.5px",
+    // 'line-height': '2.3',
+    "line-height": "30px",
+    "font-size": "13px"
+  }
+};
+var hoverStyles = /* @__PURE__ */ new Map([["default", /* @__PURE__ */ new Map([["color", "rgba(0, 0, 0, 0.6)"], ["backgroundColor", "#dedede"]])], ["primary", /* @__PURE__ */ new Map([["color", "rgba(255, 255, 255, 0.6)"], ["backgroundColor", "#0062cc"]])], ["warn", /* @__PURE__ */ new Map([["color", "rgba(255, 255, 255, 0.6)"], ["backgroundColor", "#ce3c39"]])], ["default-plain", /* @__PURE__ */ new Map([["color", "rgba(53, 53, 53, 0.6)"], ["borderColor", "rgba(53, 53, 53, 0.6)"], ["backgroundColor", "rgba(0, 0, 0, 0)"]])], ["primary-plain", /* @__PURE__ */ new Map([["color", "rgba(0, 122, 255, 0.6)"], ["borderColor", "rgba(0, 122, 255, 0.6)"], ["backgroundColor", "rgba(0, 0, 0, 0)"]])], ["warn-plain", /* @__PURE__ */ new Map([["color", "rgba(230, 67, 64, 0.6)"], ["borderColor", "rgba(230, 67, 64, 0.6)"], ["backgroundColor", "rgba(0, 0, 0, 0)"]])]]);
+function $dispatch(context, componentName, eventName) {
+  var _parent, _parent$$options;
+  var parent = context.$parent;
+  var name = (_parent = parent) === null || _parent === void 0 ? void 0 : (_parent$$options = _parent.$options) === null || _parent$$options === void 0 ? void 0 : _parent$$options.name;
+  while (parent != null && (name == null || componentName != name)) {
+    parent = parent.$parent;
+    if (parent != null) {
+      var _parent2, _parent2$$options;
+      name = (_parent2 = parent) === null || _parent2 === void 0 ? void 0 : (_parent2$$options = _parent2.$options) === null || _parent2$$options === void 0 ? void 0 : _parent2$$options.name;
+    }
+  }
+  if (parent != null) {
+    for (var _len = arguments.length, do_not_transform_spread = new Array(_len > 3 ? _len - 3 : 0), _key = 3; _key < _len; _key++) {
+      do_not_transform_spread[_key - 3] = arguments[_key];
+    }
+    parent.$callMethod(eventName, ...do_not_transform_spread);
+  }
+}
+var FORM_TYPES = ["submit", "reset"];
+const button = /* @__PURE__ */ defineBuiltInComponent({
+  name: BUTTON_COMPONENT_NAME,
+  rootElement: {
+    name: UNI_BUTTON_ELEMENT_NAME,
+    // @ts-expect-error not web element
+    class: UniButtonElement
+  },
+  // styles: buttonStyle,
+  props: buttonProps,
+  emits: ["click"],
+  setup(props, _ref) {
+    var {
+      emit,
+      slots
+    } = _ref;
+    var $buttonEl = null;
+    var $originHoverStyle = /* @__PURE__ */ new Map();
+    var $hoverStyle = /* @__PURE__ */ new Map();
+    var $hoverClassStyle = /* @__PURE__ */ new Map();
+    var $hoverStartTimer = null;
+    var $hoverStayTimer = null;
+    var $hoverTouch = false;
+    var $hovering = false;
+    console.log($hoverStartTimer, $hoverStayTimer);
+    var btnCls = computed(() => {
+      var cl = "ub-" + props.type;
+      if (props.disabled) {
+        cl += "-disabled";
+      }
+      if (props.plain) {
+        cl += "-plain";
+      }
+      if (props.size == "mini") {
+        cl += " ub-mini";
+      }
+      return cl;
+    });
+    function parseHoverClass() {
+      var cl = props.hoverClass;
+      if (cl == "button-hover" || cl.length == 0) {
+        return;
+      }
+      var styles = $buttonEl.ext.get("styles");
+      if (styles != null) {
+        var style = styles[cl];
+        if (style != null) {
+          Object.keys(style).forEach((key) => {
+            $hoverClassStyle.set(key, style[key]);
+          });
+        }
+      }
+    }
+    onMounted(() => {
+      var instance = getCurrentInstance();
+      if (instance) {
+        instance.$waitNativeRender(() => {
+          var _instance$proxy;
+          $buttonEl = (_instance$proxy = instance.proxy) === null || _instance$proxy === void 0 ? void 0 : _instance$proxy.$el;
+          parseHoverClass();
+        });
+      }
+    });
+    function setHoverStyle() {
+      var hoverStyle;
+      if (props.hoverClass == "button-hover") {
+        var _hoverStyles$get;
+        var plain = props.plain ? "-plain" : "";
+        hoverStyle = (_hoverStyles$get = hoverStyles.get(props.type + plain)) !== null && _hoverStyles$get !== void 0 ? _hoverStyles$get : hoverStyles.get("default");
+      } else {
+        hoverStyle = $hoverClassStyle;
+      }
+      var currentStyle = $buttonEl.style;
+      $hoverStyle = /* @__PURE__ */ new Map();
+      $originHoverStyle = /* @__PURE__ */ new Map();
+      hoverStyle.forEach((val, key) => {
+        $hoverStyle.set(key, val);
+        $originHoverStyle.set(key, currentStyle.getPropertyValue(key));
+      });
+    }
+    function clearHoverStyle() {
+      var hoverStyle = $hoverStyle;
+      var currentStyle = $buttonEl.style;
+      hoverStyle.forEach((val, key) => {
+        currentStyle.getPropertyValue(key);
+        if (currentStyle.getPropertyValue(key) != val) {
+          hoverStyle.set(key, currentStyle.getPropertyValue(key));
+        } else {
+          hoverStyle.set(key, $originHoverStyle.get(key));
+        }
+      });
+    }
+    function updateStyle() {
+      if ($hoverStyle.size == 0) {
+        return;
+      }
+      var style = /* @__PURE__ */ new Map();
+      $hoverStyle.forEach((val, key) => {
+        style.set(key, val);
+      });
+      $buttonEl.updateStyle(style);
+    }
+    function touchstart() {
+      if (props.disabled || props.hoverClass == "none" || $hovering) {
+        return;
+      }
+      $hoverTouch = true;
+      setHoverStyle();
+      $hoverStartTimer = setTimeout(() => {
+        $hovering = true;
+        updateStyle();
+        if (!$hoverTouch) {
+          touchend();
+        }
+      }, props.hoverStartTime);
+    }
+    function touchend() {
+      $hoverTouch = false;
+      if ($hovering) {
+        $hoverStayTimer = setTimeout(() => {
+          $hovering = false;
+          clearHoverStyle();
+          updateStyle();
+        }, props.hoverStayTime);
+      }
+    }
+    function touchcancel() {
+      $hoverTouch = false;
+      $hovering = false;
+      clearHoverStyle();
+      updateStyle();
+    }
+    function touchmove(event) {
+      if (props.disabled || props.hoverClass == "none") {
+        return;
+      }
+    }
+    function _onClick($event) {
+      if (props.disabled) {
+        return;
+      }
+      emit("click", $event);
+      if (FORM_TYPES.indexOf(props.formType) > -1) {
+        var _instance$parent;
+        var instance = getCurrentInstance();
+        var ctx2 = instance === null || instance === void 0 ? void 0 : (_instance$parent = instance.parent) === null || _instance$parent === void 0 ? void 0 : _instance$parent.proxy;
+        $dispatch(ctx2, "Form", props.formType);
+      }
+    }
+    var styleText = computed(() => {
+      var classList = btnCls.value.split(" ");
+      var basicStyle = Object.assign({}, styleList.ub);
+      classList.forEach((cl) => {
+        var style = styleList[cl];
+        if (style) {
+          Object.assign(basicStyle, style);
+        }
+      });
+      return basicStyle;
+    });
+    return () => {
+      return createVNode(resolveComponent("uni-button-element"), {
+        "class": "ub",
+        "style": styleText.value,
+        "onTouchstart": touchstart,
+        "onTouchend": touchend,
+        "onTouchcancel": touchcancel,
+        "onTouchmove": touchmove,
+        "onClick": _onClick
+      }, {
+        default: () => {
+          var _slots$default;
+          return [(_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)];
+        }
+      }, 8, ["style", "onTouchstart", "onTouchend", "onTouchcancel", "onTouchmove", "onClick"]);
+    };
+  }
+});
+const button$1 = /* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  default: button
+}, Symbol.toStringTag, { value: "Module" });
 const components = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
+  Button: button$1,
   Slider: slider$1
 }, Symbol.toStringTag, { value: "Module" });
 const index = {

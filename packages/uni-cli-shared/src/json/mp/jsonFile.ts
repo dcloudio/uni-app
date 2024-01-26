@@ -145,7 +145,7 @@ export function isMiniProgramUsingComponent(
 }
 
 interface MiniProgramComponents {
-  [name: string]: 'plugin' | 'component' | 'dynamicLib'
+  [name: string]: 'plugin' | 'component' | 'dynamicLib' | 'ext'
 }
 
 export function findMiniProgramUsingComponents({
@@ -199,9 +199,14 @@ function findMiniProgramUsingComponent(
     (res, name) => {
       const path = usingComponents[name]
       if (path.includes('plugin://')) {
+        // mp-weixin & mp-alipay
         res[name] = 'plugin'
       } else if (path.includes('dynamicLib://')) {
+        // mp-baidu
         res[name] = 'dynamicLib'
+      } else if (path.includes('ext://')) {
+        // mp-toutiao
+        res[name] = 'ext'
       } else if (componentsDir && path.includes(componentsDir + '/')) {
         res[name] = 'component'
       }
