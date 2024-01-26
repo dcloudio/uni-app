@@ -376,10 +376,24 @@ function formatApiArgs(args, options) {
     }
 }
 function invokeSuccess(id, name, res) {
-    return invokeCallback(id, extend((res || {}), { errMsg: name + ':ok' }));
+    const result = {
+        errMsg: name + ':ok',
+    };
+    //#if _X_
+    result.errSubject = name;
+    //#endif
+    return invokeCallback(id, extend((res || {}), result));
 }
-function invokeFail(id, name, errMsg, errRes) {
-    return invokeCallback(id, extend({ errMsg: name + ':fail' + (errMsg ? ' ' + errMsg : '') }, errRes));
+function invokeFail(id, name, errMsg, errRes = {}) {
+    const apiErrMsg = name + ':fail' + (errMsg ? ' ' + errMsg : '');
+    //#if !_X_
+    delete errRes.errCode;
+    //#endif
+    return invokeCallback(id, typeof UniError !== 'undefined'
+        ? typeof errRes.errCode !== 'undefined'
+            ? new UniError(name, errRes.errCode, apiErrMsg)
+            : new UniError(apiErrMsg, errRes)
+        : extend({ errMsg: apiErrMsg }, errRes));
 }
 function beforeInvokeApi(name, args, protocol, options) {
     if ((process.env.NODE_ENV !== 'production')) {
@@ -1258,7 +1272,7 @@ function handleNetworkInfo(fromRes, toRes) {
 function handleSystemInfo(fromRes, toRes) {
     addSafeAreaInsets(fromRes, toRes);
     useDeviceId({
-        getStorageSync,
+        getStorageSync: getStorageSync,
     })(fromRes, toRes);
     populateParameters(fromRes, toRes);
     let platform = fromRes.platform ? fromRes.platform.toLowerCase() : 'devtools';

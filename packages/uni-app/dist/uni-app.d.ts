@@ -60,9 +60,13 @@ export declare const onNavigationBarSearchInputFocusChanged: (hook: onNavigation
 
 declare type onNavigationBarSearchInputFocusChangedHook = (options: NavigationBarSearchInputFocusChanged) => void;
 
+export declare const onPageHide: (hook: () => any, target?: ComponentInternalInstance | null) => void;
+
 export declare const onPageNotFound: (hook: (options: App.PageNotFoundOption) => void, target?: ComponentInternalInstance | null) => void;
 
 export declare const onPageScroll: (hook: (options: Page.PageScrollOption) => void, target?: ComponentInternalInstance | null) => void;
+
+export declare const onPageShow: (hook: ((options?: App.LaunchShowOption | undefined) => void) | (() => void), target?: ComponentInternalInstance | null) => void;
 
 export declare const onPullDownRefresh: (hook: () => any, target?: ComponentInternalInstance | null) => void;
 
