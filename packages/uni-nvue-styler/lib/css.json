@@ -7265,6 +7265,300 @@
           "unixVer": "4.0"
         }
       }
+    },
+    {
+      "name": "@charset",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "x",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@color-profile",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "x",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@container",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "x",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@counter-style",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "x",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@documentNon-standardDeprecated",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "x",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@font-feature-values",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "x",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@font-palette-values",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "x",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@keyframes",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "x",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@layer",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "x",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@media",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "x",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@namespace",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "x",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@page",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "x",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@property",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "x",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@supports",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "x",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
     }
   ]
 }
