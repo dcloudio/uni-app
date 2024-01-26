@@ -14640,6 +14640,7 @@ const chooseImage = defineAsyncApi(API_CHOOSE_IMAGE, ({ count, sizeType, sourceT
     initI18nChooseImageMsgsOnce();
     const { t } = useI18n();
     const errorCallback = warpPlusErrorCallback(reject);
+    let source = "album";
     function successCallback(paths) {
         const tempFiles = [];
         const tempFilePaths = [];
@@ -14653,11 +14654,13 @@ const chooseImage = defineAsyncApi(API_CHOOSE_IMAGE, ({ count, sizeType, sourceT
             resolve({
                 tempFilePaths,
                 tempFiles,
+                source,
             });
         })
             .catch(errorCallback);
     }
     function openCamera() {
+      source = "camera";
         const camera = plus.camera.getCamera();
         camera.captureImage((path) => successCallback([path]), errorCallback, {
             filename: TEMP_PATH + '/camera/',
@@ -14668,6 +14671,7 @@ const chooseImage = defineAsyncApi(API_CHOOSE_IMAGE, ({ count, sizeType, sourceT
         });
     }
     function openAlbum() {
+      source = "album";
         // @ts-ignore 5+此API分单选和多选，多选返回files:string[]
         plus.gallery.pick(({ files }) => successCallback(files), errorCallback, {
             maximum: count,
