@@ -61,7 +61,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     //#endif
 
     return () => (
-      <uni-label class={{ 'uni-label-pointer': pointer }} onClick={_onClick}>
+      <uni-label
+        ref={rootRef}
+        class={{ 'uni-label-pointer': pointer }}
+        onClick={_onClick}
+      >
         {slots.default && slots.default()}
       </uni-label>
     )
