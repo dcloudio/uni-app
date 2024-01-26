@@ -105,7 +105,7 @@ export interface TemplateCodegenOptions
   isBuiltInComponent: Required<TransformOptions>['isBuiltInComponent']
   isMiniProgramComponent(
     name: string
-  ): 'plugin' | 'component' | 'dynamicLib' | undefined
+  ): 'plugin' | 'component' | 'dynamicLib' | 'ext' | undefined
 }
 
 export type CompilerOptions = ParserOptions & TransformOptions & CodegenOptions
