@@ -18,7 +18,7 @@ export const checkboxProps = {
     default: false,
   },
   value: {
-    type: Object,
+    type: [Object, String],
     default: '',
   },
   // 图标颜色

@@ -14,7 +14,7 @@ const FORM_TYPES = ['submit', 'reset']
 
 // todo
 // 1 clearTimeout 不存在
-// 2  动态设置 updataStyle 不生效，hover-class 能读取，赋值不生效
+// 2  动态设置 updateStyle 不生效，hover-class 能读取，赋值不生效
 // 3 touchmove 的 event 没有 touches 属性
 // 4 后续表格设定 reset/submit 时候验证是否生效
 
