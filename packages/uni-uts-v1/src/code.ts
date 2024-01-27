@@ -61,6 +61,7 @@ type Types = {
   interface: Record<string, { returned: boolean; decl: TsInterfaceDeclaration }>
   class: Record<string, ClassMeta>
   fn: Record<string, Param[]>
+  alias: Record<string, {}>
 }
 
 interface Meta {
@@ -72,7 +73,7 @@ interface Meta {
       params?: Parameter[]
     }
   >
-  types: Record<string, 'function' | 'class' | 'interface'>
+  types: Record<string, 'function' | 'class' | 'interface' | 'typealias'>
   components: string[]
 }
 export interface GenProxyCodeOptions {
@@ -167,6 +168,9 @@ function parseMetaTypes(types: Types) {
   })
   Object.keys(types.interface).forEach((n) => {
     res[n] = 'interface'
+  })
+  Object.keys(types.alias).forEach((n) => {
+    res[n] = 'typealias'
   })
   return res
 }
@@ -399,6 +403,7 @@ async function parseInterfaceTypes(
       interface: {},
       class: {},
       fn: {},
+      alias: {},
     }
   }
   // 懒加载 uts 编译器
@@ -420,6 +425,7 @@ function parseAstTypes(ast: Module | null, isInterface: boolean) {
   const interfaceTypes: Types['interface'] = {}
   const classTypes: Types['class'] = {}
   const fnTypes: Types['fn'] = {}
+  const aliasTypes: Types['alias'] = {}
 
   const exportNamed: string[] = []
   if (ast) {
@@ -444,7 +450,7 @@ function parseAstTypes(ast: Module | null, isInterface: boolean) {
     ast.body.filter((node) => {
       if (node.type === 'ExportDeclaration') {
         if (node.declaration.type === 'TsTypeAliasDeclaration') {
-          parseTypes(node.declaration, classTypes, fnTypes)
+          parseTypes(node.declaration, classTypes, fnTypes, aliasTypes)
         } else if (node.declaration.type === 'TsInterfaceDeclaration') {
           interfaceTypes[node.declaration.id.value] = {
             returned: false,
@@ -455,7 +461,7 @@ function parseAstTypes(ast: Module | null, isInterface: boolean) {
         }
       } else if (node.type === 'TsTypeAliasDeclaration') {
         if (!isInterface || exportNamed.includes(node.id.value)) {
-          parseTypes(node, classTypes, fnTypes)
+          parseTypes(node, classTypes, fnTypes, aliasTypes)
         }
       } else if (node.type === 'TsInterfaceDeclaration') {
         interfaceTypes[node.id.value] = {
@@ -471,13 +477,15 @@ function parseAstTypes(ast: Module | null, isInterface: boolean) {
     interface: interfaceTypes,
     class: classTypes,
     fn: fnTypes,
+    alias: aliasTypes,
   }
 }
 
 function parseTypes(
   decl: TsTypeAliasDeclaration,
   classTypes: Record<string, ClassMeta>,
-  fnTypes: Record<string, Param[]>
+  fnTypes: Record<string, Param[]>,
+  aliasTypes: Record<string, {}>
 ) {
   switch (decl.typeAnnotation.type) {
     // export type ShowLoading = ()=>void
@@ -497,6 +505,8 @@ function parseTypes(
         typeParams: !!decl.typeParams,
       }
       break
+    default:
+      aliasTypes[decl.id.value] = {}
   }
 }
 

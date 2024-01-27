@@ -200,7 +200,9 @@ export function uniAppPlugin(options: {
             }
             if (modules) {
               modules.forEach((name) => {
-                app.distribute.modules[name] = {}
+                const value = app.distribute.modules[name]
+                app.distribute.modules[name] =
+                  typeof value === 'object' && value !== null ? value : {}
               })
             }
             fs.outputFileSync(

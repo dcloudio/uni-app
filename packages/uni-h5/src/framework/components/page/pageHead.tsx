@@ -112,7 +112,7 @@ function createBackButtonTsx(
           navigationBar.type === 'transparent'
             ? '#fff'
             : navigationBar.titleColor!,
-          27
+          26
         )}
       </div>
     )

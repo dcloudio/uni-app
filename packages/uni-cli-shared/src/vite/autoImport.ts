@@ -31,6 +31,11 @@ const uniPreset = {
     'onPullDownRefresh',
   ],
 }
+
+if (process.env.UNI_UTS_PLATFORM === 'web') {
+  uniPreset.imports.push('onPageShow', 'onPageHide')
+}
+
 const uniH5Preset = {
   from: '@dcloudio/uni-h5',
   imports: ['UniElement', 'UniElementImpl'],

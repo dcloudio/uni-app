@@ -26,7 +26,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -47,7 +47,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -68,7 +68,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -89,7 +89,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -109,13 +109,10 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "auto",
-        "w3c": "auto"
-      }
+      "defaultValue": "auto"
     },
     {
       "name": "min-width",
@@ -141,7 +138,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -162,7 +159,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -183,7 +180,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -204,7 +201,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -225,7 +222,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -245,11 +242,11 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
       "defaultValue": {
-        "app-uvue": "0px",
+        "uvue": "0px",
         "w3c": "auto"
       }
     },
@@ -277,7 +274,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -298,7 +295,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -319,7 +316,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -340,7 +337,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -361,7 +358,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -381,13 +378,10 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "none",
-        "w3c": "none"
-      }
+      "defaultValue": "none"
     },
     {
       "name": "height",
@@ -414,7 +408,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -435,7 +429,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -456,7 +450,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -477,7 +471,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -497,13 +491,10 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "auto",
-        "w3c": "auto"
-      }
+      "defaultValue": "auto"
     },
     {
       "name": "min-height",
@@ -529,7 +520,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -550,7 +541,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -571,7 +562,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -592,7 +583,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -613,7 +604,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -633,11 +624,11 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
       "defaultValue": {
-        "app-uvue": "0px",
+        "uvue": "0px",
         "w3c": "auto"
       }
     },
@@ -665,7 +656,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -686,7 +677,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -707,7 +698,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -728,7 +719,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -749,7 +740,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -769,13 +760,10 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "none",
-        "w3c": "none"
-      }
+      "defaultValue": "none"
     },
     {
       "name": "position",
@@ -801,7 +789,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -822,7 +810,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -843,7 +831,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -864,7 +852,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -885,7 +873,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -905,11 +893,11 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
       "defaultValue": {
-        "app-uvue": "relative",
+        "uvue": "relative",
         "w3c": "static"
       }
     },
@@ -935,11 +923,11 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
       "defaultValue": {
-        "app-uvue": "0",
+        "uvue": "0",
         "w3c": "auto"
       }
     },
@@ -968,7 +956,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -988,13 +976,10 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "auto",
-        "w3c": "auto"
-      }
+      "defaultValue": "auto"
     },
     {
       "name": "bottom",
@@ -1021,7 +1006,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -1041,13 +1026,10 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "auto",
-        "w3c": "auto"
-      }
+      "defaultValue": "auto"
     },
     {
       "name": "left",
@@ -1074,7 +1056,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -1094,13 +1076,10 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "auto",
-        "w3c": "auto"
-      }
+      "defaultValue": "auto"
     },
     {
       "name": "right",
@@ -1127,7 +1106,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -1147,13 +1126,10 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "auto",
-        "w3c": "auto"
-      }
+      "defaultValue": "auto"
     },
     {
       "name": "flex-direction",
@@ -1179,7 +1155,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -1200,7 +1176,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -1221,7 +1197,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -1242,7 +1218,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -1262,7 +1238,7 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
       "unixTags": [
@@ -1274,7 +1250,7 @@
         "navigator"
       ],
       "defaultValue": {
-        "app-uvue": "column",
+        "uvue": "column",
         "w3c": "row"
       }
     },
@@ -1303,7 +1279,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -1325,7 +1301,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -1347,7 +1323,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -1369,7 +1345,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -1391,7 +1367,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -1411,7 +1387,7 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
       "unixTags": [
@@ -1423,7 +1399,7 @@
         "navigator"
       ],
       "defaultValue": {
-        "app-uvue": "flex-start",
+        "uvue": "flex-start",
         "w3c": "normal"
       }
     },
@@ -1451,7 +1427,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -1472,7 +1448,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -1493,7 +1469,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -1513,7 +1489,7 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
       "unixTags": [
@@ -1524,10 +1500,7 @@
         "swiper-item",
         "navigator"
       ],
-      "defaultValue": {
-        "app-uvue": "nowrap",
-        "w3c": "nowrap"
-      }
+      "defaultValue": "nowrap"
     },
     {
       "name": "align-items",
@@ -1553,7 +1526,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -1574,7 +1547,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -1595,7 +1568,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -1616,7 +1589,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -1637,7 +1610,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -1657,7 +1630,7 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
       "unixTags": [
@@ -1669,7 +1642,7 @@
         "navigator"
       ],
       "defaultValue": {
-        "app-uvue": "stretch",
+        "uvue": "stretch",
         "w3c": "normal"
       }
     },
@@ -1697,7 +1670,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -1718,7 +1691,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -1739,7 +1712,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -1760,7 +1733,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -1781,7 +1754,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -1802,7 +1775,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -1822,13 +1795,10 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "auto",
-        "w3c": "auto"
-      }
+      "defaultValue": "auto"
     },
     {
       "name": "align-content",
@@ -1855,7 +1825,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -1876,7 +1846,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -1897,7 +1867,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -1918,7 +1888,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -1939,7 +1909,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -1960,7 +1930,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -1980,7 +1950,7 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
       "unixTags": [
@@ -1992,7 +1962,7 @@
         "navigator"
       ],
       "defaultValue": {
-        "app-uvue": "stretch",
+        "uvue": "stretch",
         "w3c": "normal"
       }
     },
@@ -2023,7 +1993,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -2044,7 +2014,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -2065,7 +2035,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -2085,11 +2055,11 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
       "defaultValue": {
-        "app-uvue": "none",
+        "uvue": "none",
         "w3c": "initial"
       }
     },
@@ -2114,13 +2084,10 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "0",
-        "w3c": "0"
-      }
+      "defaultValue": "0"
     },
     {
       "name": "flex-shrink",
@@ -2143,11 +2110,11 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
       "defaultValue": {
-        "app-uvue": "0",
+        "uvue": "0",
         "w3c": "1"
       }
     },
@@ -2177,7 +2144,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -2198,7 +2165,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -2218,13 +2185,10 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "auto",
-        "w3c": "auto"
-      }
+      "defaultValue": "auto"
     },
     {
       "name": "flex-flow",
@@ -2251,7 +2215,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -2272,7 +2236,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -2293,7 +2257,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -2314,7 +2278,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -2335,7 +2299,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -2356,7 +2320,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -2377,7 +2341,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -2397,7 +2361,7 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
       "unixTags": [
@@ -2434,7 +2398,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -2455,7 +2419,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -2475,11 +2439,11 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
       "defaultValue": {
-        "app-uvue": "flex",
+        "uvue": "flex",
         "w3c": "inline"
       }
     },
@@ -2508,7 +2472,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -2529,7 +2493,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -2550,7 +2514,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -2571,7 +2535,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -2592,7 +2556,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -2612,11 +2576,11 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
       "defaultValue": {
-        "app-uvue": "hidden",
+        "uvue": "hidden",
         "w3c": "visible"
       }
     },
@@ -2644,7 +2608,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -2665,7 +2629,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -2685,13 +2649,10 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "visible",
-        "w3c": "visible"
-      }
+      "defaultValue": "visible"
     },
     {
       "name": "opacity",
@@ -2714,13 +2675,10 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "1",
-        "w3c": "1"
-      }
+      "defaultValue": "1"
     },
     {
       "name": "box-sizing",
@@ -2746,7 +2704,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -2767,7 +2725,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -2787,11 +2745,11 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
       "defaultValue": {
-        "app-uvue": "border-box",
+        "uvue": "border-box",
         "w3c": "content-box"
       }
     },
@@ -2820,7 +2778,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -2841,7 +2799,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -2862,7 +2820,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -2883,7 +2841,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -2903,7 +2861,7 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       }
     },
@@ -2928,13 +2886,10 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "transparent",
-        "w3c": "transparent"
-      }
+      "defaultValue": "transparent"
     },
     {
       "name": "background-image",
@@ -2960,7 +2915,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -2980,7 +2935,7 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       }
     },
@@ -3008,7 +2963,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -3029,7 +2984,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -3050,7 +3005,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -3070,13 +3025,10 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "border-box",
-        "w3c": "border-box"
-      }
+      "defaultValue": "border-box"
     },
     {
       "name": "padding",
@@ -3101,7 +3053,7 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       }
     },
@@ -3127,13 +3079,10 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "0",
-        "w3c": "0"
-      }
+      "defaultValue": "0"
     },
     {
       "name": "padding-top",
@@ -3157,13 +3106,10 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "0",
-        "w3c": "0"
-      }
+      "defaultValue": "0"
     },
     {
       "name": "padding-right",
@@ -3187,13 +3133,10 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "0",
-        "w3c": "0"
-      }
+      "defaultValue": "0"
     },
     {
       "name": "padding-bottom",
@@ -3217,13 +3160,10 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "0",
-        "w3c": "0"
-      }
+      "defaultValue": "0"
     },
     {
       "name": "margin",
@@ -3251,7 +3191,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -3271,13 +3211,10 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "0",
-        "w3c": "0"
-      }
+      "defaultValue": "0"
     },
     {
       "name": "margin-left",
@@ -3304,7 +3241,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -3324,13 +3261,10 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "0",
-        "w3c": "0"
-      }
+      "defaultValue": "0"
     },
     {
       "name": "margin-top",
@@ -3357,7 +3291,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -3377,13 +3311,10 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "0",
-        "w3c": "0"
-      }
+      "defaultValue": "0"
     },
     {
       "name": "margin-right",
@@ -3410,7 +3341,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -3430,13 +3361,10 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "0",
-        "w3c": "0"
-      }
+      "defaultValue": "0"
     },
     {
       "name": "margin-bottom",
@@ -3464,7 +3392,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -3484,13 +3412,10 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "0",
-        "w3c": "0"
-      }
+      "defaultValue": "0"
     },
     {
       "name": "border",
@@ -3519,7 +3444,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -3540,7 +3465,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -3561,7 +3486,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -3582,7 +3507,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -3602,11 +3527,11 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
       "defaultValue": {
-        "app-uvue": "0"
+        "uvue": "0"
       }
     },
     {
@@ -3633,7 +3558,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -3654,7 +3579,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -3675,7 +3600,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -3696,7 +3621,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -3716,7 +3641,7 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       }
     },
@@ -3744,7 +3669,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -3765,7 +3690,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -3786,7 +3711,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -3807,7 +3732,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -3827,7 +3752,7 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       }
     },
@@ -3855,7 +3780,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -3876,7 +3801,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -3897,7 +3822,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -3918,7 +3843,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -3938,7 +3863,7 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       }
     },
@@ -3966,7 +3891,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -3987,7 +3912,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -4008,7 +3933,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -4029,7 +3954,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -4049,7 +3974,7 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       }
     },
@@ -4077,7 +4002,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -4098,7 +4023,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -4119,7 +4044,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -4140,7 +4065,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -4160,7 +4085,7 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       }
     },
@@ -4189,7 +4114,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -4210,7 +4135,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -4231,7 +4156,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -4251,13 +4176,10 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "medium",
-        "w3c": "medium"
-      }
+      "defaultValue": "medium"
     },
     {
       "name": "border-left-width",
@@ -4284,7 +4206,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -4305,7 +4227,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -4326,7 +4248,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -4346,13 +4268,10 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "medium",
-        "w3c": "medium"
-      }
+      "defaultValue": "medium"
     },
     {
       "name": "border-top-width",
@@ -4379,7 +4298,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -4400,7 +4319,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -4421,7 +4340,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -4441,13 +4360,10 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "medium",
-        "w3c": "medium"
-      }
+      "defaultValue": "medium"
     },
     {
       "name": "border-right-width",
@@ -4474,7 +4390,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -4495,7 +4411,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -4516,7 +4432,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -4536,13 +4452,10 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "medium",
-        "w3c": "medium"
-      }
+      "defaultValue": "medium"
     },
     {
       "name": "border-bottom-width",
@@ -4569,7 +4482,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -4590,7 +4503,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -4611,7 +4524,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -4631,13 +4544,10 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "medium",
-        "w3c": "medium"
-      }
+      "defaultValue": "medium"
     },
     {
       "name": "border-color",
@@ -4660,7 +4570,7 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       }
     },
@@ -4685,7 +4595,7 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       }
     },
@@ -4710,7 +4620,7 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       }
     },
@@ -4735,7 +4645,7 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       }
     },
@@ -4760,7 +4670,7 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       }
     },
@@ -4785,7 +4695,7 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       }
     },
@@ -4810,7 +4720,7 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       }
     },
@@ -4835,7 +4745,7 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       }
     },
@@ -4860,7 +4770,7 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       }
     },
@@ -4885,7 +4795,7 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       }
     },
@@ -4912,12 +4822,10 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "0"
-      }
+      "defaultValue": "0"
     },
     {
       "name": "border-bottom",
@@ -4942,12 +4850,10 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "0"
-      }
+      "defaultValue": "0"
     },
     {
       "name": "border-left",
@@ -4972,12 +4878,10 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "0"
-      }
+      "defaultValue": "0"
     },
     {
       "name": "border-right",
@@ -5002,12 +4906,10 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "0"
-      }
+      "defaultValue": "0"
     },
     {
       "name": "color",
@@ -5031,7 +4933,7 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
       "unixTags": [
@@ -5041,7 +4943,7 @@
         "textarea"
       ],
       "defaultValue": {
-        "app-uvue": "#000000",
+        "uvue": "#000000",
         "w3c": "canvastext"
       }
     },
@@ -5067,7 +4969,7 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
       "unixTags": [
@@ -5077,7 +4979,7 @@
         "textarea"
       ],
       "defaultValue": {
-        "app-uvue": "16px",
+        "uvue": "16px",
         "w3c": "medium"
       }
     },
@@ -5105,7 +5007,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -5126,7 +5028,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -5146,17 +5048,14 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
       "unixTags": [
         "text",
         "button"
       ],
-      "defaultValue": {
-        "app-uvue": "normal",
-        "w3c": "normal"
-      }
+      "defaultValue": "normal"
     },
     {
       "name": "font-weight",
@@ -5182,7 +5081,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -5203,7 +5102,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -5224,7 +5123,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -5245,7 +5144,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -5265,17 +5164,14 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
       "unixTags": [
         "text",
         "button"
       ],
-      "defaultValue": {
-        "app-uvue": "normal",
-        "w3c": "normal"
-      }
+      "defaultValue": "normal"
     },
     {
       "name": "text-decoration",
@@ -5300,7 +5196,7 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
       "unixTags": [
@@ -5332,7 +5228,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -5353,7 +5249,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -5374,7 +5270,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -5394,17 +5290,14 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
       "unixTags": [
         "text",
         "button"
       ],
-      "defaultValue": {
-        "app-uvue": "none",
-        "w3c": "none"
-      }
+      "defaultValue": "none"
     },
     {
       "name": "text-decoration-color",
@@ -5427,7 +5320,7 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
       "unixTags": [
@@ -5459,7 +5352,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -5480,7 +5373,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -5501,7 +5394,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -5522,7 +5415,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -5542,7 +5435,7 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
       "unixTags": [
@@ -5571,7 +5464,7 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
       "unixTags": [
@@ -5603,7 +5496,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -5624,7 +5517,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -5645,7 +5538,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -5665,7 +5558,7 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
       "unixTags": [
@@ -5675,7 +5568,7 @@
         "textarea"
       ],
       "defaultValue": {
-        "app-uvue": "left",
+        "uvue": "left",
         "w3c": "start"
       }
     },
@@ -5703,7 +5596,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -5724,7 +5617,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -5745,7 +5638,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -5766,7 +5659,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -5787,7 +5680,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -5807,7 +5700,7 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
       "unixTags": [
@@ -5841,7 +5734,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -5862,7 +5755,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -5882,17 +5775,14 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
       "unixTags": [
         "text",
         "button"
       ],
-      "defaultValue": {
-        "app-uvue": "clip",
-        "w3c": "clip"
-      }
+      "defaultValue": "clip"
     },
     {
       "name": "line-height",
@@ -5916,7 +5806,7 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
       "unixTags": [
@@ -5925,7 +5815,7 @@
         "textarea"
       ],
       "defaultValue": {
-        "app-uvue": "1.2",
+        "uvue": "1.2",
         "w3c": "normal"
       }
     },
@@ -5960,9 +5850,7 @@
         "input",
         "textarea"
       ],
-      "defaultValue": {
-        "app-uvue": "-1"
-      }
+      "defaultValue": "-1"
     },
     {
       "name": "letter-spacing",
@@ -5985,7 +5873,7 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
       "unixTags": [
@@ -5993,7 +5881,7 @@
         "button"
       ],
       "defaultValue": {
-        "app-uvue": "0",
+        "uvue": "0",
         "w3c": "normal"
       }
     },
@@ -6011,7 +5899,7 @@
               "android": {
                 "osVer": "5.0",
                 "uniVer": "√",
-                "unixVer": "4.0+"
+                "unixVer": "4.0"
               },
               "ios": {
                 "osVer": "9.0",
@@ -6021,7 +5909,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -6032,7 +5920,7 @@
               "android": {
                 "osVer": "5.0",
                 "uniVer": "√",
-                "unixVer": "4.0+"
+                "unixVer": "4.0"
               },
               "ios": {
                 "osVer": "9.0",
@@ -6042,7 +5930,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -6052,7 +5940,7 @@
           "android": {
             "osVer": "5.0",
             "uniVer": "√",
-            "unixVer": "4.0+"
+            "unixVer": "4.0"
           },
           "ios": {
             "osVer": "9.0",
@@ -6062,17 +5950,14 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
       "unixTags": [
         "text",
         "button"
       ],
-      "defaultValue": {
-        "app-uvue": "normal",
-        "w3c": "normal"
-      }
+      "defaultValue": "normal"
     },
     {
       "name": "box-shadow",
@@ -6100,7 +5985,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -6120,7 +6005,7 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       }
     },
@@ -6146,7 +6031,7 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       }
     },
@@ -6174,7 +6059,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -6195,7 +6080,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -6216,7 +6101,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -6237,7 +6122,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -6258,7 +6143,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -6279,7 +6164,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -6300,7 +6185,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -6321,7 +6206,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -6342,7 +6227,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -6363,7 +6248,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -6384,7 +6269,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -6405,7 +6290,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -6426,7 +6311,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -6447,7 +6332,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -6468,7 +6353,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -6489,7 +6374,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -6510,7 +6395,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -6531,7 +6416,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -6552,7 +6437,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -6573,7 +6458,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -6594,7 +6479,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -6615,7 +6500,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -6636,7 +6521,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -6657,7 +6542,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -6677,11 +6562,11 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
       "defaultValue": {
-        "app-uvue": "none",
+        "uvue": "none",
         "w3c": "all"
       }
     },
@@ -6706,13 +6591,10 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "0s",
-        "w3c": "0s"
-      }
+      "defaultValue": "0s"
     },
     {
       "name": "transition-timing-function",
@@ -6738,7 +6620,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -6759,7 +6641,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -6780,7 +6662,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -6801,7 +6683,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -6822,7 +6704,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -6843,7 +6725,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -6863,13 +6745,10 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "ease",
-        "w3c": "ease"
-      }
+      "defaultValue": "ease"
     },
     {
       "name": "transition-delay",
@@ -6892,13 +6771,10 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "0s",
-        "w3c": "0s"
-      }
+      "defaultValue": "0s"
     },
     {
       "name": "transform",
@@ -6924,7 +6800,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -6945,7 +6821,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -6966,7 +6842,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -6987,7 +6863,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -7008,7 +6884,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -7029,7 +6905,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -7050,7 +6926,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -7071,7 +6947,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -7092,7 +6968,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -7113,7 +6989,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -7133,7 +7009,7 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       }
     },
@@ -7164,7 +7040,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -7185,7 +7061,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -7206,7 +7082,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -7227,7 +7103,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -7248,7 +7124,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -7268,11 +7144,11 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
       "defaultValue": {
-        "app-uvue": "50% 50%",
+        "uvue": "50% 50%",
         "w3c": "50% 50% 0"
       }
     },
@@ -7300,7 +7176,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         },
@@ -7321,7 +7197,7 @@
             },
             "web": {
               "uniVer": "√",
-              "unixVer": "4.0+"
+              "unixVer": "4.0"
             }
           }
         }
@@ -7341,13 +7217,10 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "auto",
-        "w3c": "auto"
-      }
+      "defaultValue": "auto"
     }
   ],
   "atDirectives": [
@@ -7368,7 +7241,7 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
         }
       }
     },
@@ -7389,7 +7262,301 @@
         },
         "web": {
           "uniVer": "√",
-          "unixVer": "4.0+"
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@charset",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "x",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@color-profile",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "x",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@container",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "x",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@counter-style",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "x",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@documentNon-standardDeprecated",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "x",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@font-feature-values",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "x",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@font-palette-values",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "x",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@keyframes",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "x",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@layer",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "x",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@media",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "x",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@namespace",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "x",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@page",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "x",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@property",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "x",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@supports",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "x",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       }
     }

@@ -7604,26 +7604,21 @@ function parseStyleSheet(_ref21) {
     if (appContext && isArray(__globalStyles)) {
       appContext.provides.__globalStyles = useCssStyles(__globalStyles);
     }
-    if (component.mpType === 'page' && appContext) {
-      // 如果是页面组件，则直接使用全局样式
-      component.__styles = __globalStyles;
-    } else {
-      var styles = [];
-      if (appContext && __globalStyles) {
-        // 全局样式，包括 app.css 以及 page.css
-        styles.push(__globalStyles);
-      }
-      // 合并页面样式
-      // TODO 添加额外缓存
-      var page = root.type;
-      if (isArray(page.styles)) {
-        styles.push(...page.styles);
-      }
-      if (isArray(component.styles)) {
-        styles.push(...component.styles);
-      }
-      component.__styles = useCssStyles(styles);
+    var styles = [];
+    if (appContext && __globalStyles) {
+      // 全局样式，包括 app.css 以及 page.css
+      styles.push(__globalStyles);
     }
+    // 合并页面样式
+    // TODO 添加额外缓存
+    var page = root.type;
+    if (component !== page && isArray(page.styles)) {
+      styles.push(...page.styles);
+    }
+    if (isArray(component.styles)) {
+      styles.push(...component.styles);
+    }
+    component.__styles = useCssStyles(styles);
   }
   return component.__styles;
 }
