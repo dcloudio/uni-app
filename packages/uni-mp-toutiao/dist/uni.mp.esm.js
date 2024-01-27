@@ -458,6 +458,21 @@ function initDefaultProps(options, isBehavior = false) {
 }
 function initVirtualHostProps(options) {
     const properties = {};
+    {
+        if ((options && options.virtualHost)) {
+            {
+                options.applyFragment = true;
+            }
+            properties.virtualHostStyle = {
+                type: null,
+                value: '',
+            };
+            properties.virtualHostClass = {
+                type: null,
+                value: '',
+            };
+        }
+    }
     return properties;
 }
 /**
