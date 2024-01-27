@@ -1926,6 +1926,21 @@ function initProperties (props, isBehavior = false, file = '', options) {
         value: null
       };
     }
+    {
+      if ( options.virtualHost) {
+        {
+          options.applyFragment = true;
+        }
+        properties.virtualHostStyle = {
+          type: null,
+          value: ''
+        };
+        properties.virtualHostClass = {
+          type: null,
+          value: ''
+        };
+      }
+    }
     // scopedSlotsCompiler auto
     properties.scopedSlotsCompiler = {
       type: String,
@@ -2622,7 +2637,7 @@ function parseBaseComponent (vueComponentOptions, {
     options,
     data: initData(vueOptions, Vue.prototype),
     behaviors: initBehaviors(vueOptions, initBehavior),
-    properties: initProperties(vueOptions.props, false, vueOptions.__file),
+    properties: initProperties(vueOptions.props, false, vueOptions.__file, options),
     lifetimes: {
       attached () {
         const properties = this.properties;
