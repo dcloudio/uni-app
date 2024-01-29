@@ -8472,9 +8472,7 @@ function patchStyle(el, prev, next) {
         }
         for (const key in next) {
             const value = next[key];
-            if (value !== prev[key]) {
-                batchedStyles.set(camelize(key), value);
-            }
+            batchedStyles.set(camelize(key), value);
         }
     }
     else {
