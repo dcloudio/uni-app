@@ -6,10 +6,11 @@ import {
   BUTTON_COMPONENT_NAME,
   buttonProps,
   hoverStyles,
-  styleList,
+  // styleList,
   UNI_BUTTON_ELEMENT_NAME,
   UniButtonElement,
 } from './model'
+import { styleList } from './style'
 const FORM_TYPES = ['submit', 'reset']
 
 // todo
@@ -28,7 +29,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   emits: ['click'],
   setup(props, { emit, slots }) {
     // data
-    let $buttonEl = null as UniElement | null
+    let $buttonEl = null as UniButtonElement | null
     let $originHoverStyle = new Map<string, any | null>()
     let $hoverStyle = new Map<string, any | null>()
     let $hoverClassStyle = new Map<string, any | null>()
@@ -37,7 +38,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     let $hoverTouch = false
     let $hovering = false
 
-    const btnCls = computed((): string => {
+    const btnCls = computed(() => {
       let cl = 'ub-' + props.type
       if (props.disabled) {
         cl += '-disabled'
@@ -48,7 +49,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       if (props.size == 'mini') {
         cl += ' ub-mini'
       }
-      return cl
+      return cl as keyof typeof styleList
     })
 
     // 解析传入的hoverClass
@@ -57,15 +58,21 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       if (cl == 'button-hover' || cl.length == 0) {
         return
       }
-      const styles = ($buttonEl as any)!.ext.get('styles') as {
+      const styles = $buttonEl!.ext.get('styles') as {
         [key: string]: any
       }
       if (styles != null) {
         // 和 android 不同，这里是一个普通对象
-        let style = styles[cl]
+        // 用户填写一个不存在的 class name 兜底 {}
+        let style = styles[cl] ?? {}
+        // 先转成 Map 和 Android 一致
+        style = new Map(Object.entries(style))
+
         if (style != null) {
-          Object.keys(style).forEach((key) => {
-            $hoverClassStyle.set(key, style[key])
+          style.forEach((val: Map<string, any | null>) => {
+            // $hoverClassStyle.set(key, style[key])
+            val = new Map(Object.entries(val))
+            $hoverClassStyle = val
           })
         }
       }
@@ -75,7 +82,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       const instance = getCurrentInstance()
       if (instance) {
         instance.$waitNativeRender(() => {
-          $buttonEl = instance.proxy?.$el as UniElement
+          // $buttonEl = instance.proxy?.$el as UniElement
+          $buttonEl = instance.proxy?.$el as UniButtonElement
           parseHoverClass()
         })
       }
@@ -95,6 +103,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       const currentStyle = $buttonEl!.style
       $hoverStyle = new Map<string, any | null>()
       $originHoverStyle = new Map<string, any | null>()
+
       hoverStyle.forEach((val, key) => {
         $hoverStyle.set(key, val)
         // 记录hover前对应的默认样式
@@ -192,13 +201,13 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
     // ios 先使用 style 来完成样式
     const styleText = computed(() => {
-      const classList = btnCls.value.split(' ')
+      const classList = btnCls.value.split(' ') as Array<keyof typeof styleList>
 
       // .ub basic class style
-      const basicStyle = Object.assign({}, styleList.ub)
+      const basicStyle = Object.assign({}, styleList['ub'][''])
 
       classList.forEach((cl) => {
-        const style = (styleList as any)[cl]
+        const style = styleList[cl]?.[''] ?? {}
         if (style) {
           Object.assign(basicStyle, style)
         }
