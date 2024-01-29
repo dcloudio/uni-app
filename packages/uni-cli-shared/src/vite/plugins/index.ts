@@ -18,6 +18,7 @@ export {
   minifyCSS,
   cssLangRE,
   commonjsProxyRE,
+  rewriteScssReadFileSync,
 } from './vitejs/plugins/css'
 
 export {

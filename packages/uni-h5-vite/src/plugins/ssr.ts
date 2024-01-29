@@ -37,16 +37,16 @@ export function uniSSRPlugin(): Plugin {
           resolve: {
             alias: [
               {
+                find: 'vue/server-renderer',
+                replacement: resolveBuiltIn('@vue/server-renderer'),
+              },
+              {
                 find: 'vue',
                 replacement: resolveBuiltIn(
                   '@dcloudio/uni-h5-vue/' +
                     (process.env.UNI_APP_X === 'true' ? 'dist-x' : 'dist') +
                     '/vue.runtime.esm.js'
                 ),
-              },
-              {
-                find: 'vue/server-renderer',
-                replacement: resolveBuiltIn('@vue/server-renderer'),
               },
             ],
           },

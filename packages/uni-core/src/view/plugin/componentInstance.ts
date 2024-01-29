@@ -178,8 +178,10 @@ function normalizeTouchEvent(touches: TouchList, top: number) {
       clientX,
       clientY,
       force,
+      //#if _X_ && !_NODE_JS_
       screenX,
       screenY,
+      //#endif
     } = touches[i]
     res.push({
       identifier,

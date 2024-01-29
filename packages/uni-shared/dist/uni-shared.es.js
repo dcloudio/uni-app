@@ -44,6 +44,7 @@ const BUILT_IN_TAG_NAMES = [
     'video',
     'view',
     'web-view',
+    'cloud-db-element', // TODO暂时放在此处
 ];
 const BUILT_IN_TAGS = BUILT_IN_TAG_NAMES.map((tag) => 'uni-' + tag);
 const TAGS = [

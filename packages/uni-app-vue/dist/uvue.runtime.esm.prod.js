@@ -7895,9 +7895,7 @@ function patchStyle(el, prev, next) {
     }
     for (var _key13 in next) {
       var value = next[_key13];
-      if (value !== prev[_key13]) {
-        batchedStyles.set(camelize(_key13), value);
-      }
+      batchedStyles.set(camelize(_key13), value);
     }
   } else {
     for (var _key14 in next) {

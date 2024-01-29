@@ -75,7 +75,7 @@ export function parseUniExtApis(
 }
 
 type Inject = string | string[]
-type Injects = {
+export type Injects = {
   [name: string]:
     | string
     | [string, string]

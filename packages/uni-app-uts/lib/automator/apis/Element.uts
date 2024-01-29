@@ -145,18 +145,16 @@ export const getProperties = (
   if (params.nodeId != null) {
     component = getComponentVmByNodeId(params.pageId, params.nodeId!, callback)
   }
-  if (dom != null) {
-    const properties = params.names.map((name: string): any | null => {
-      const attribute =
-        dom.getAttribute(name) != null
-          ? dom.getAttribute(name)
-          : component != null
-            ? component.$props[toCamelCase(name)]
-            : null
-      return attribute
-    })
-    callback({ properties }, null)
-  }
+  const properties = params.names.map((name: string): any | null => {
+    if (component != null && component.$props[toCamelCase(name)] != null) {
+      return component.$props[toCamelCase(name)]
+    }
+    if (dom != null) {
+      return dom.getAttribute(name)
+    }
+    return null
+  })
+  callback({ properties }, null)
 }
 
 export type GetAttributesParams = {

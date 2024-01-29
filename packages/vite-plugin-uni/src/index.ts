@@ -18,7 +18,8 @@ import {
   initPreContext,
   parseUniExtApis,
   resolveSourceMapPath,
-  uniUTSExtApi,
+  rewriteScssReadFileSync,
+  uniUTSExtApiReplace,
   uniViteInjectPlugin,
 } from '@dcloudio/uni-cli-shared'
 
@@ -81,6 +82,9 @@ let isFirst = true
 export default function uniPlugin(
   rawOptions: VitePluginUniOptions = {}
 ): Plugin[] {
+  // 重写readFileSync，拦截.scss文件读取，实现条件编译
+  rewriteScssReadFileSync()
+
   // 三方插件（如vitest）可能提供了自己的入口命令，需要补充 env 初始化逻辑
   initEnv('unknown', { platform: process.env.UNI_PLATFORM || 'h5' })
 
@@ -132,7 +136,7 @@ function createPlugins(options: VitePluginUniResolvedOptions) {
 
   // uni x 需要插入到指定位置，此插件执行太早，又会引发 vue 文件的不支持，该插件是解析ast的，所以必须是合法的js或ts代码
   if (process.env.UNI_APP_X === 'true') {
-    plugins.push(uniUTSExtApi())
+    plugins.push(uniUTSExtApiReplace())
   } else {
     const injects = parseUniExtApis(
       true,

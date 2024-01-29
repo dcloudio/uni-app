@@ -376,10 +376,19 @@ function formatApiArgs(args, options) {
     }
 }
 function invokeSuccess(id, name, res) {
-    return invokeCallback(id, extend((res || {}), { errMsg: name + ':ok' }));
+    const result = {
+        errMsg: name + ':ok',
+    };
+    return invokeCallback(id, extend((res || {}), result));
 }
-function invokeFail(id, name, errMsg, errRes) {
-    return invokeCallback(id, extend({ errMsg: name + ':fail' + (errMsg ? ' ' + errMsg : '') }, errRes));
+function invokeFail(id, name, errMsg, errRes = {}) {
+    const apiErrMsg = name + ':fail' + (errMsg ? ' ' + errMsg : '');
+    delete errRes.errCode;
+    return invokeCallback(id, typeof UniError !== 'undefined'
+        ? typeof errRes.errCode !== 'undefined'
+            ? new UniError(name, errRes.errCode, apiErrMsg)
+            : new UniError(apiErrMsg, errRes)
+        : extend({ errMsg: apiErrMsg }, errRes));
 }
 function beforeInvokeApi(name, args, protocol, options) {
     if ((process.env.NODE_ENV !== 'production')) {
