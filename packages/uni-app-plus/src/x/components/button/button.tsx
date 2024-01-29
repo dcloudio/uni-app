@@ -13,9 +13,7 @@ import {
 const FORM_TYPES = ['submit', 'reset']
 
 // todo
-// 1 clearTimeout 不存在
 // 2  动态设置 updateStyle 不生效，hover-class 能读取，赋值不生效
-// 3 touchmove 的 event 没有 touches 属性
 // 4 后续表格设定 reset/submit 时候验证是否生效
 
 export default /*#__PURE__*/ defineBuiltInComponent({
@@ -38,8 +36,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     let $hoverStayTimer: NodeJS.Timeout | null = null
     let $hoverTouch = false
     let $hovering = false
-
-    console.log($hoverStartTimer, $hoverStayTimer)
 
     const btnCls = computed((): string => {
       let cl = 'ub-' + props.type
@@ -149,7 +145,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     function touchend() {
       $hoverTouch = false
       if ($hovering) {
-        // clearTimeout($hoverStayTimer as NodeJS.Timeout)
+        clearTimeout($hoverStayTimer as NodeJS.Timeout)
         $hoverStayTimer = setTimeout(() => {
           $hovering = false
           clearHoverStyle()
@@ -162,24 +158,23 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       $hovering = false
       clearHoverStyle()
       updateStyle()
-      // clearTimeout($hoverStartTimer as NodeJS.Timeout)
+      clearTimeout($hoverStartTimer as NodeJS.Timeout)
     }
     function touchmove(event: TouchEvent) {
       if (props.disabled || props.hoverClass == 'none') {
         return
       }
       // 这里有问题
-      // const { clientX, clientY } = event.touches[0]
-      // changedTouches
-      // const { height, width, left, top } = $buttonEl!.getBoundingClientRect()
-      // const isMovedOutside =
-      //   clientX < left ||
-      //   clientX > left + width ||
-      //   clientY < top ||
-      //   clientY > top + height
-      // if (isMovedOutside) {
-      //   touchcancel()
-      // }
+      const { clientX, clientY } = event.touches[0]
+      const { height, width, left, top } = $buttonEl!.getBoundingClientRect()
+      const isMovedOutside =
+        clientX < left ||
+        clientX > left + width ||
+        clientY < top ||
+        clientY > top + height
+      if (isMovedOutside) {
+        touchcancel()
+      }
     }
 
     function _onClick($event: PointerEvent) {
