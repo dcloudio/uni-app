@@ -62,6 +62,7 @@
     "postcss-selector-parser": "^6.0.6",
     "resolve": "^1.22.1",
     "tapable": "^2.2.0",
+    "unplugin-auto-import": "^0.16.7",
     "xregexp": "3.1.0"
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
