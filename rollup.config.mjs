@@ -2,6 +2,7 @@ import { createRequire } from 'module'
 import { fileURLToPath } from 'url'
 import fs from 'fs'
 import path from 'path'
+import jscc from 'rollup-plugin-jscc'
 import ts from 'rollup-plugin-typescript2'
 import replace from '@rollup/plugin-replace'
 import json from '@rollup/plugin-json'
@@ -121,6 +122,7 @@ function createConfig(entryFile, output, buildOption) {
           ...Object.keys(pkg.peerDependencies || {}),
           ...(buildOption.external || []),
         ]
+  const isX = process.env.UNI_APP_X === 'true'
   const plugins = [
     createAliasPlugin(buildOption),
     nodeResolve(),
@@ -131,6 +133,16 @@ function createConfig(entryFile, output, buildOption) {
     tsPlugin,
     createReplacePlugin(buildOption, output.format),
   ]
+  if (process.env.TARGET !== 'uni-push' && process.env.TARGET !== 'uni-stat') {
+    plugins.unshift(jscc({
+      values: {
+        // 该插件限制了不能以__开头
+        _NODE_JS_: 0,
+        _X_: isX ? 1 : 0,
+      },
+      exclude: ['**/node_modules/**']
+    }))
+  }
   if (buildOption.babel) {
     // TODO weex 使用了 buble 编译，暂时先通过 babel 编译一遍，避免 buble 编译失败
     plugins.push(

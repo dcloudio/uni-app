@@ -2266,6 +2266,7 @@ const index$v = /* @__PURE__ */ defineBuiltInComponent({
       rootElement.attachVmProps(props2);
     });
     return () => createVNode("uni-label", {
+      "ref": rootRef,
       "class": {
         "uni-label-pointer": pointer
       },
@@ -2434,8 +2435,9 @@ const index$u = /* @__PURE__ */ defineBuiltInComponent({
       return createVNode("uni-button", mergeProps({
         "ref": rootRef,
         "onClick": onClick,
+        "id": props2.id,
         "class": hasHoverClass && hovering.value ? hoverClass : ""
-      }, hasHoverClass && binding, booleanAttrs, loadingAttrs, plainAttrs), [slots.default && slots.default()], 16, ["onClick"]);
+      }, hasHoverClass && binding, booleanAttrs, loadingAttrs, plainAttrs), [slots.default && slots.default()], 16, ["onClick", "id"]);
     };
   }
 });
@@ -3157,15 +3159,17 @@ function formatApiArgs(args, options) {
   }
 }
 function invokeSuccess(id2, name, res) {
-  return invokeCallback(
-    id2,
-    extend(res || {}, { errMsg: name + ":ok" })
-  );
+  const result = {
+    errMsg: name + ":ok"
+  };
+  result.errSubject = name;
+  return invokeCallback(id2, extend(res || {}, result));
 }
-function invokeFail(id2, name, errMsg, errRes) {
+function invokeFail(id2, name, errMsg, errRes = {}) {
+  const apiErrMsg = name + ":fail" + (errMsg ? " " + errMsg : "");
   return invokeCallback(
     id2,
-    extend({ errMsg: name + ":fail" + (errMsg ? " " + errMsg : "") }, errRes)
+    typeof UniError !== "undefined" ? typeof errRes.errCode !== "undefined" ? new UniError(name, errRes.errCode, apiErrMsg) : new UniError(apiErrMsg, errRes) : extend({ errMsg: apiErrMsg }, errRes)
   );
 }
 function beforeInvokeApi(name, args, protocol, options) {
@@ -7961,6 +7965,7 @@ const index$q = /* @__PURE__ */ defineBuiltInComponent({
       let realCheckValue;
       realCheckValue = checkedCache.value;
       return createVNode("uni-checkbox", mergeProps(booleanAttrs, {
+        "id": props2.id,
         "onClick": _onClick,
         "ref": rootRef
       }), [createVNode("div", {
@@ -7973,7 +7978,7 @@ const index$q = /* @__PURE__ */ defineBuiltInComponent({
           "uni-checkbox-input-disabled": props2.disabled
         }],
         "style": checkboxStyle.value
-      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["onClick"]);
+      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["id", "onClick"]);
     };
   }
 });
@@ -13011,6 +13016,7 @@ const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
       return createVNode("uni-radio", mergeProps(booleanAttrs, {
         "onClick": _onClick,
         "ref": rootRef,
+        "id": props2.id,
         "class": "uni-radio-wrapper",
         "style": {
           "--HOVER-BD-COLOR": !radioChecked.value ? props2.activeBorderColor : radioStyle.value.borderColor
@@ -13020,7 +13026,7 @@ const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
           "uni-radio-input-disabled": props2.disabled
         }],
         "style": radioStyle.value
-      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.iconColor, 18) : ""], 6), slots.default && slots.default()], 16, ["onClick"]);
+      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.iconColor, 18) : ""], 6), slots.default && slots.default()], 16, ["onClick", "id"]);
     };
   }
 });
@@ -13910,6 +13916,8 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
     realScrollY
   };
 }
+const SLIDER_BLOCK_SIZE_MIN_VALUE = 12;
+const SLIDER_BLOCK_SIZE_MAX_VALUE = 28;
 const props$l = {
   name: {
     type: String,
@@ -14080,6 +14088,10 @@ function useSliderState(props2) {
   const _getActiveColor = () => {
     return props2.activeColor !== "#007aff" ? props2.activeColor : props2.selectedColor !== "#e9e9e9" ? props2.selectedColor : "#e9e9e9";
   };
+  const _getBlockSizeString = () => {
+    const blockSize = Math.min(Math.max(Number(props2.blockSize), SLIDER_BLOCK_SIZE_MIN_VALUE), SLIDER_BLOCK_SIZE_MAX_VALUE);
+    return blockSize + "px";
+  };
   const state2 = {
     setTrackBgColor: computed(() => ({
       backgroundColor: _getBgColor()
@@ -14088,11 +14100,11 @@ function useSliderState(props2) {
       backgroundColor: _getActiveColor()
     })),
     thumbTrackStyle: computed(() => ({
-      marginRight: props2.blockSize + "px"
+      marginRight: _getBlockSizeString()
     })),
     setThumbStyle: computed(() => ({
-      width: props2.blockSize + "px",
-      height: props2.blockSize + "px",
+      width: _getBlockSizeString(),
+      height: _getBlockSizeString(),
       backgroundColor: props2.blockColor
     }))
   };
@@ -15039,6 +15051,7 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
       let realCheckValue;
       realCheckValue = checkedCache.value;
       return createVNode("uni-switch", mergeProps({
+        "id": props2.id,
         "ref": rootRef
       }, booleanAttrs, {
         "onClick": _onClick
@@ -15049,7 +15062,7 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
         "style": switchInputStyle
       }, null, 6), [[vShow, type === "switch"]]), withDirectives(createVNode("div", {
         "class": "uni-checkbox-input"
-      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.color, 22) : ""], 512), [[vShow, type === "checkbox"]])])], 16, ["onClick"]);
+      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.color, 22) : ""], 512), [[vShow, type === "checkbox"]])])], 16, ["id", "onClick"]);
     };
   }
 });
@@ -20695,7 +20708,7 @@ const request = /* @__PURE__ */ defineTaskApi(
   ({
     url,
     data,
-    header,
+    header = {},
     method,
     dataType: dataType2,
     responseType,
@@ -20740,7 +20753,7 @@ const request = /* @__PURE__ */ defineTaskApi(
     const timer = setTimeout(function() {
       xhr.onload = xhr.onabort = xhr.onerror = null;
       requestTask.abort();
-      reject("timeout");
+      reject("timeout", { errCode: 5 });
     }, timeout);
     xhr.responseType = responseType;
     xhr.onload = function() {
@@ -20762,11 +20775,11 @@ const request = /* @__PURE__ */ defineTaskApi(
     };
     xhr.onabort = function() {
       clearTimeout(timer);
-      reject("abort");
+      reject("abort", { errCode: 600003 });
     };
     xhr.onerror = function() {
       clearTimeout(timer);
-      reject();
+      reject(void 0, { errCode: 5 });
     };
     xhr.withCredentials = withCredentials;
     xhr.send(body);
@@ -20857,7 +20870,7 @@ class DownloadTask {
 }
 const downloadFile = /* @__PURE__ */ defineTaskApi(
   API_DOWNLOAD_FILE,
-  ({ url, header, timeout = __uniConfig.networkTimeout.downloadFile }, { resolve, reject }) => {
+  ({ url, header = {}, timeout = __uniConfig.networkTimeout.downloadFile }, { resolve, reject }) => {
     var timer;
     var xhr = new XMLHttpRequest();
     var downloadTask = new DownloadTask(xhr);
@@ -20886,11 +20899,11 @@ const downloadFile = /* @__PURE__ */ defineTaskApi(
     };
     xhr.onabort = function() {
       clearTimeout(timer);
-      reject("abort");
+      reject("abort", { errCode: 600003 });
     };
     xhr.onerror = function() {
       clearTimeout(timer);
-      reject();
+      reject("", { errCode: 602001 });
     };
     xhr.onprogress = function(event) {
       downloadTask._callbacks.forEach((callback) => {
@@ -20910,7 +20923,7 @@ const downloadFile = /* @__PURE__ */ defineTaskApi(
     timer = setTimeout(function() {
       xhr.onprogress = xhr.onload = xhr.onabort = xhr.onerror = null;
       downloadTask.abort();
-      reject("timeout");
+      reject("timeout", { errCode: 5 });
     }, timeout);
     return downloadTask;
   },
@@ -20963,8 +20976,8 @@ const uploadFile = /* @__PURE__ */ defineTaskApi(
     filePath,
     name,
     files: files2,
-    header,
-    formData,
+    header = {},
+    formData = {},
     timeout = __uniConfig.networkTimeout.uploadFile
   }, { resolve, reject }) => {
     var uploadTask = new UploadTask();
@@ -21008,11 +21021,11 @@ const uploadFile = /* @__PURE__ */ defineTaskApi(
       };
       xhr.onerror = function() {
         clearTimeout(timer);
-        reject();
+        reject("", { errCode: 602001 });
       };
       xhr.onabort = function() {
         clearTimeout(timer);
-        reject("abort");
+        reject("abort", { errCode: 600003 });
       };
       xhr.onload = function() {
         clearTimeout(timer);
@@ -21026,12 +21039,12 @@ const uploadFile = /* @__PURE__ */ defineTaskApi(
         timer = setTimeout(function() {
           xhr.upload.onprogress = xhr.onload = xhr.onabort = xhr.onerror = null;
           uploadTask.abort();
-          reject("timeout");
+          reject("timeout", { errCode: 5 });
         }, timeout);
         xhr.send(form);
         uploadTask._xhr = xhr;
       } else {
-        reject("abort");
+        reject("abort", { errCode: 600003 });
       }
     }
     Promise.all(
@@ -21131,12 +21144,19 @@ ${e2};at socketTask.on${capitalize(
     const ws = this._webSocket;
     try {
       if (ws.readyState !== ws.OPEN) {
+        callOptions(options, {
+          errMsg: `sendSocketMessage:fail SocketTask.readyState is not OPEN`,
+          errCode: 10002
+        });
         throw new Error("SocketTask.readyState is not OPEN");
       }
       ws.send(data);
       callOptions(options, "sendSocketMessage:ok");
     } catch (error) {
-      callOptions(options, `sendSocketMessage:fail ${error}`);
+      callOptions(options, {
+        errMsg: `sendSocketMessage:fail ${error}`,
+        errCode: 602001
+      });
     }
   }
   /**
@@ -21180,7 +21200,9 @@ const connectSocket = /* @__PURE__ */ defineTaskApi(
       protocols,
       (error, socketTask) => {
         if (error) {
-          reject(error.toString());
+          reject(error.toString(), {
+            errCode: 600009
+          });
           return;
         }
         socketTasks.push(socketTask);
@@ -24367,7 +24389,7 @@ const index$9 = /* @__PURE__ */ defineBuiltInComponent({
       setScrollTop(props2.scrollTop);
     });
     onMounted(() => {
-      const rootElement = content.value;
+      const rootElement = root.value;
       rootElement.attachVmProps(props2);
     });
     return () => {
@@ -25355,7 +25377,7 @@ function createBackButtonTsx(navigationBar, isQuit) {
     return createVNode("div", {
       "class": "uni-page-head-btn",
       "onClick": onPageHeadBackButton
-    }, [createSvgIconVNode(ICON_PATH_BACK, navigationBar.type === "transparent" ? "#fff" : navigationBar.titleColor, 27)], 8, ["onClick"]);
+    }, [createSvgIconVNode(ICON_PATH_BACK, navigationBar.type === "transparent" ? "#fff" : navigationBar.titleColor, 26)], 8, ["onClick"]);
   }
 }
 function createButtonsTsx(btns) {

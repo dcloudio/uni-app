@@ -140,6 +140,7 @@ exports[`code genProxyCode 2`] = `
 
 exports[`code genProxyCode 3`] = `
 {
+  "alias": {},
   "class": {
     "User1": {
       "typeParams": false,

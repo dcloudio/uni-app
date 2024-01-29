@@ -148,6 +148,9 @@ const onNavigationBarSearchInputClicked = /*#__PURE__*/ createHook(uniShared.ON_
 const onNavigationBarSearchInputConfirmed = /*#__PURE__*/ createHook(uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED);
 const onNavigationBarSearchInputFocusChanged = 
 /*#__PURE__*/ createHook(uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED);
+// for uni-app-x web
+const onPageHide = onHide;
+const onPageShow = onShow;
 
 Object.defineProperty(exports, 'capitalize', {
   enumerable: true,
@@ -182,8 +185,10 @@ exports.onNavigationBarSearchInputChanged = onNavigationBarSearchInputChanged;
 exports.onNavigationBarSearchInputClicked = onNavigationBarSearchInputClicked;
 exports.onNavigationBarSearchInputConfirmed = onNavigationBarSearchInputConfirmed;
 exports.onNavigationBarSearchInputFocusChanged = onNavigationBarSearchInputFocusChanged;
+exports.onPageHide = onPageHide;
 exports.onPageNotFound = onPageNotFound;
 exports.onPageScroll = onPageScroll;
+exports.onPageShow = onPageShow;
 exports.onPullDownRefresh = onPullDownRefresh;
 exports.onReachBottom = onReachBottom;
 exports.onReady = onReady;
