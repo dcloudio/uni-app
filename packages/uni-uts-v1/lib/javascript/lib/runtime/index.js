@@ -387,6 +387,9 @@ function isInstanceOf(value, type) {
 function isBaseType(type) {
     return type === Number || type === String || type === Boolean;
 }
+function isUnknownType(type) {
+    return type === 'Unknown';
+}
 function isUTSType(type) {
     return type && type.prototype && type.prototype instanceof UTSType;
 }
@@ -408,6 +411,7 @@ class UTSType {
         if (isJSONParse) {
             const illegalGeneric = generics.find((item) => !(item === Array ||
                 isBaseType(item) ||
+                isUnknownType(item) ||
                 item === UTSJSONObject ||
                 (item.prototype && item.prototype instanceof UTSType)));
             if (illegalGeneric) {
@@ -427,7 +431,7 @@ class UTSType {
                     return options.map((item) => {
                         return item == null
                             ? null
-                            : isBaseType(generics[0])
+                            : isBaseType(generics[0]) || isUnknownType(generics[0])
                                 ? item
                                 : generics[0] === Array
                                     ? new Array(...item)
