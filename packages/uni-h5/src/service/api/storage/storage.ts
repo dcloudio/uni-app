@@ -34,7 +34,14 @@ function parseValue(value: any) {
       if (keys.length === 2 && 'data' in object) {
         // eslint-disable-next-line valid-typeof
         if (typeof object.data === type) {
+          //#if _X_
+          if (type === 'object' && !Array.isArray(object.data)) {
+            return new (globalThis as any).UTSJSONObject(object.data)
+          }
           return object.data
+          //#else
+          return object.data
+          //#endif
         }
         // eslint-disable-next-line no-useless-escape
         if (
