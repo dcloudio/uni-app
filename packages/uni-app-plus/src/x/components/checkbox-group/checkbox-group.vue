@@ -1,9 +1,17 @@
+<template>
+  <uni-checkbox-group-element ref="uniCheckboxGroupElementRef">
+    <slot></slot>
+  </uni-checkbox-group-element>
+</template>
+<script lang="ts">
 /// <reference types="@dcloudio/uni-app-x/types/native-global" />
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
 import {
   CHECKBOX_GROUP_NAME,
   CHECKBOX_GROUP_ROOT_ELEMENT,
   // UniCheckboxGroupChangeEvent,
+  checkboxGroupProps,
+  UniCheckboxGroupChangeEvent,
   UniCheckboxGroupElement,
 } from './model'
 import {
@@ -11,6 +19,7 @@ import {
   ComponentPublicInstance,
   getCurrentInstance,
   onMounted,
+  defineExpose,
   ref,
 } from 'vue'
 
@@ -21,8 +30,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     // @ts-expect-error not web element
     class: UniCheckboxGroupElement,
   },
+  props: checkboxGroupProps,
   emits: ['change'],
-  setup(props, { emit, slots }) {
+  setup(props, { emit }) {
     // data
     const $checkboxList = ref<ComponentPublicInstance[]>([])
     const uniCheckboxGroupElementRef = ref<UniCheckboxGroupElement | null>(null)
@@ -30,22 +40,29 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     let instance: ComponentInternalInstance | null = null
     instance = getCurrentInstance()
 
-    // const _checkboxGroupUpdateHandler = (
-    //   vm: ComponentPublicInstance,
-    //   type: string
-    // ) => {
-    //   if (type == 'add') {
-    //     $checkboxList.value.push(vm)
-    //   } else {
-    //     const index = $checkboxList.value.indexOf(vm)
-    //     if (index !== -1) {
-    //       $checkboxList.value.splice(index, 1)
-    //     }
-    //   }
-    // }
-    // const _changeHandler = () => {
-    //   emit('change', new UniCheckboxGroupChangeEvent(_getValue()))
-    // }
+    const _checkboxGroupUpdateHandler = (
+      vm: ComponentPublicInstance,
+      type: string
+    ) => {
+      if (type == 'add') {
+        $checkboxList.value.push(vm)
+      } else {
+        const index = $checkboxList.value.indexOf(vm)
+        if (index !== -1) {
+          $checkboxList.value.splice(index, 1)
+        }
+      }
+    }
+    const _changeHandler = () => {
+      emit('change', new UniCheckboxGroupChangeEvent(_getValue()))
+    }
+
+    // 目前不能用
+    defineExpose({
+      _checkboxGroupUpdateHandler,
+      _changeHandler,
+    })
+
     const _getValue = () => {
       let valueArray: string[] = []
       $checkboxList.value.forEach((vm) => {
@@ -81,12 +98,10 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       })
     })
 
-    return () => {
-      return (
-        <uni-checkbox-group-element ref={uniCheckboxGroupElementRef}>
-          {slots.default?.()}
-        </uni-checkbox-group-element>
-      )
+    return {
+      _checkboxGroupUpdateHandler,
+      _changeHandler,
     }
   },
 })
+</script>

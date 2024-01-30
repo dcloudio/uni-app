@@ -1,0 +1,70 @@
+/// <reference types="@dcloudio/uni-app-x/types/native-global" />
+
+export const RADIO_NAME = 'Radio'
+export const RADIO_ROOT_ELEMENT = 'uni-radio-element'
+
+// export class UniCheckboxElement extends UniElement {}
+export class UniRadioElement extends UniElementImpl {
+  // constructor(data: INodeData, pageNode: PageNode) {
+  //   super(data, pageNode)
+  // }
+
+  // override getAttribute(key: string): string | null {
+  //   const value = this._getAttribute(key)
+  //   if (value != null) {
+  //     return value
+  //   }
+  //   return super.getAttribute(key)
+  // }
+
+  _getAttribute = (key: string): string | null => {
+    return null
+  }
+}
+
+// UniElementImpl
+
+export const radioProps = {
+  checked: {
+    type: Boolean,
+    default: false,
+  },
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
+  value: {
+    type: Object,
+    default: '',
+  },
+  // 选中时的背景颜色
+  color: {
+    type: String,
+    default: '#007AFF',
+  },
+  // 默认的背景颜色
+  backgroundColor: {
+    type: String,
+    default: '#ffffff',
+  },
+  // 默认的边框颜色
+  borderColor: {
+    type: String,
+    default: '#d1d1d1',
+  },
+  // 选中时的背景颜色,同color,优先级大于color
+  activeBackgroundColor: {
+    type: String,
+    default: '',
+  },
+  // 选中时的边框颜色，默认为选中时的背景颜色
+  activeBorderColor: {
+    type: String,
+    default: '',
+  },
+  // 图标颜色
+  iconColor: {
+    type: String,
+    default: '#ffffff',
+  },
+}
