@@ -15,7 +15,6 @@ import {
   emptyDir,
   initAutoImportOptions,
   initModuleAlias,
-  initPreContext,
   parseUniExtApis,
   resolveSourceMapPath,
   rewriteScssReadFileSync,
@@ -100,13 +99,6 @@ export default function uniPlugin(
 
   options.platform = (process.env.UNI_PLATFORM as UniApp.PLATFORM) || 'h5'
   options.inputDir = process.env.UNI_INPUT_DIR
-
-  initPreContext(
-    options.platform,
-    process.env.UNI_CUSTOM_CONTEXT,
-    process.env.UNI_UTS_PLATFORM,
-    process.env.UNI_APP_X === 'true'
-  )
 
   const plugins =
     process.env.UNI_APP_X === 'true' &&

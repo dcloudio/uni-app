@@ -3,7 +3,6 @@ import fs from 'fs-extra'
 import type { BuildOptions, InlineConfig, ServerOptions } from 'vite'
 import { extend } from '@vue/shared'
 import {
-  initPreContext,
   normalizeAppManifestJson,
   parseManifestJsonOnce,
   parsePagesJsonOnce,
@@ -88,12 +87,6 @@ function buildManifestJson() {
     process.env.UNI_COMPILER_VERSION ||
     pkg['uni-app']?.['compilerVersion'] ||
     ''
-  initPreContext(
-    platform,
-    process.env.UNI_CUSTOM_CONTEXT,
-    process.env.UNI_UTS_PLATFORM,
-    process.env.UNI_APP_X === 'true'
-  )
 
   const manifestJson = normalizeAppManifestJson(
     parseManifestJsonOnce(inputDir),
