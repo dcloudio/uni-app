@@ -10,8 +10,11 @@ import { TraceMap, eachMapping } from '@jridgewell/trace-mapping'
 import type { EncodedSourceMap as GenEncodedSourceMap } from '@jridgewell/gen-mapping'
 import { addMapping, fromMap, toEncodedMap } from '@jridgewell/gen-mapping'
 import {
+  addUTSEasyComAutoImports,
   createResolveErrorMsg,
   createRollupError,
+  genUTSClassName,
+  genUTSComponentPublicInstanceImported,
   offsetToStartAndEnd,
   parseUTSComponent,
   removeExt,
@@ -22,15 +25,12 @@ import { createDescriptor, setSrcDescriptor } from '../descriptorCache'
 import { resolveScript } from './script'
 import type { ResolvedOptions } from './index'
 import {
-  addAutoImports,
   addExtApiComponents,
   createResolveError,
-  genClassName,
   parseImports,
   wrapResolve,
 } from '../../utils'
 import { genTemplateCode } from '../code/template'
-import { genComponentPublicInstanceImported } from '../compiler/utils'
 import { resolveGenTemplateCodeOptions } from './template'
 
 export async function transformMain(
@@ -57,7 +57,7 @@ export async function transformMain(
     return null
   }
 
-  const className = genClassName(relativeFilename, options.classNamePrefix)
+  const className = genUTSClassName(relativeFilename, options.classNamePrefix)
 
   // script
   const {
@@ -107,7 +107,7 @@ export async function transformMain(
     templateImportsCode = imports.join('\n')
 
     Object.keys(easyComponentAutoImports).forEach((source) => {
-      addAutoImports(source, easyComponentAutoImports[source])
+      addUTSEasyComAutoImports(source, easyComponentAutoImports[source])
     })
 
     if (process.env.NODE_ENV === 'production') {
@@ -222,7 +222,7 @@ export default {}
     jsCodes.push(stylesCode)
   }
   jsCodes.push(`export default "${className}"
-export const ${genComponentPublicInstanceImported(
+export const ${genUTSComponentPublicInstanceImported(
     options.root,
     relativeFilename
   )} = {}`)

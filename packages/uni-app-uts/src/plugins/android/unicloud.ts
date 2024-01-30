@@ -4,13 +4,14 @@ import path from 'path'
 import {
   normalizePath,
   resolveComponentsLibPath,
+  addUTSEasyComAutoImports,
 } from '@dcloudio/uni-cli-shared'
-import { ENTRY_FILENAME, addAutoImports, getUniCloudSpaceList } from './utils'
+import { ENTRY_FILENAME, getUniCloudSpaceList } from './utils'
 
 const uniCloudSpaceList = getUniCloudSpaceList()
 
 export function uniCloudPlugin(): Plugin {
-  addAutoImports(
+  addUTSEasyComAutoImports(
     normalizePath(
       path.resolve(resolveComponentsLibPath(), 'unicloud-db', 'index.uts')
     ),

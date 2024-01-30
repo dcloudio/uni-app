@@ -10,15 +10,8 @@ import {
   normalizePath,
   offsetToStartAndEnd,
   parseUniExtApiNamespacesJsOnce,
-  removeExt,
 } from '@dcloudio/uni-cli-shared'
-import {
-  camelize,
-  capitalize,
-  isArray,
-  isPlainObject,
-  isString,
-} from '@vue/shared'
+import { isArray, isPlainObject, isString } from '@vue/shared'
 
 import AutoImport from 'unplugin-auto-import/vite'
 import { once } from '@dcloudio/uni-shared'
@@ -371,57 +364,6 @@ export function getExtApiComponents() {
   return extApiComponents
 }
 
-export function genClassName(fileName: string, prefix: string = 'Gen') {
-  return (
-    prefix +
-    capitalize(
-      camelize(
-        verifySymbol(
-          removeExt(
-            normalizeNodeModules(fileName)
-              .replace(/[\/|_]/g, '-')
-              .replace(/-+/g, '-')
-          )
-        )
-      )
-    )
-  )
-}
-
-function isValidStart(c: string): boolean {
-  return !!c.match(/^[A-Za-z_-]$/)
-}
-
-function isValidContinue(c: string): boolean {
-  return !!c.match(/^[A-Za-z0-9_-]$/)
-}
-
-function verifySymbol(s: string) {
-  const chars = Array.from(s)
-
-  if (isValidStart(chars[0]) && chars.slice(1).every(isValidContinue)) {
-    return s
-  }
-
-  const buf: string[] = []
-  let hasStart = false
-
-  for (const c of chars) {
-    if (!hasStart && isValidStart(c)) {
-      hasStart = true
-      buf.push(c)
-    } else if (isValidContinue(c)) {
-      buf.push(c)
-    }
-  }
-
-  if (buf.length === 0) {
-    buf.push('_')
-  }
-
-  return buf.join('')
-}
-
 export const initAutoImportOnce = once(initAutoImport)
 
 function initAutoImport(autoImportOptions?: AutoImportOptions) {
@@ -451,20 +393,4 @@ function initAutoImport(autoImportOptions?: AutoImportOptions) {
     return { code }
   }
   return autoImport
-}
-
-const autoImports: Record<string, [[string, string]]> = {}
-
-export function getAutoImports() {
-  return autoImports
-}
-
-export function addAutoImports(source: string, imports: [string, string]) {
-  if (!autoImports[source]) {
-    autoImports[source] = [imports]
-  } else {
-    if (!autoImports[source].find((item) => item[0] === imports[0])) {
-      autoImports[source].push(imports)
-    }
-  }
 }

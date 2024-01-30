@@ -15,15 +15,16 @@ import {
   parseAssets,
   preUVueCss,
   normalizeNodeModules,
+  genUTSClassName,
 } from '@dcloudio/uni-cli-shared'
 import { parse } from '@dcloudio/uni-nvue-styler'
 
-import { genClassName, isVue } from './utils'
 import {
   ResolvedOptions,
   getDescriptor,
   getResolvedOptions,
 } from './uvue/descriptorCache'
+import { isVue } from './utils'
 
 export function uniAppCssPlugin(): Plugin {
   const mainUTS = resolveMainPathOnce(process.env.UNI_INPUT_DIR)
@@ -77,7 +78,7 @@ export function uniAppCssPlugin(): Plugin {
               resolvedConfig.logger.error(colors.red(msg))
             }
           })
-          return `export const ${genClassName(
+          return `export const ${genUTSClassName(
             filename.replace('.style.uts', '')
           )}Styles = ${code}`
         },

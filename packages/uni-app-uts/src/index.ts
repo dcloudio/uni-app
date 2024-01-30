@@ -7,6 +7,6 @@ export default (options: { autoImportOptions?: AutoImportOptions }) => {
     : initIOS()
 }
 
-export { genClassName } from './plugins/android/utils'
+export { genUTSClassName as genClassName } from '@dcloudio/uni-cli-shared'
 
 export { transformMain as transformVue } from './plugins/android/uvue/sfc/main'

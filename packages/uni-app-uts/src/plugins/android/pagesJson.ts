@@ -3,13 +3,14 @@ import fs from 'fs-extra'
 import {
   PAGES_JSON_UTS,
   createRollupError,
+  genUTSClassName,
   normalizeUniAppXAppPagesJson,
   parseArguments,
 } from '@dcloudio/uni-cli-shared'
 import type { OutputAsset } from 'rollup'
 import type { Plugin } from 'vite'
 
-import { ENTRY_FILENAME, genClassName, stringifyMap } from './utils'
+import { ENTRY_FILENAME, stringifyMap } from './utils'
 import { isPages } from '../utils'
 
 export function uniAppPagesPlugin(): Plugin {
@@ -71,7 +72,7 @@ export function uniAppPagesPlugin(): Plugin {
         process.env.UNI_APP_X_PAGE_COUNT = pagesJson.pages.length + ''
 
         pagesJson.pages.forEach((page, index) => {
-          const className = genClassName(page.path)
+          const className = genUTSClassName(page.path)
           let isQuit = index === 0
           imports.push(page.path)
           routes.push(
@@ -118,7 +119,7 @@ export function uniAppPagesPlugin(): Plugin {
           `
 ${imports
   .map((p) => {
-    const className = genClassName(p)
+    const className = genUTSClassName(p)
     return `import ${className}Class from './${p}.uvue?type=page'`
   })
   .join('\n')}

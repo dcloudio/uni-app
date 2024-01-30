@@ -22,11 +22,11 @@ import {
   getExtApiComponents,
   UVUE_CLASS_NAME_PREFIX,
   initAutoImportOnce,
-  getAutoImports,
   createTryResolve,
 } from './utils'
 import { getOutputManifestJson } from './manifestJson'
 import { configResolved, createUniOptions } from '../utils'
+import { getUTSEasyComAutoImports } from '@dcloudio/uni-cli-shared'
 
 const uniCloudSpaceList = getUniCloudSpaceList()
 
@@ -164,7 +164,7 @@ export function uniAppPlugin(options: {
           ),
           extApiComponents: [...getExtApiComponents()],
           uvueClassNamePrefix: UVUE_CLASS_NAME_PREFIX,
-          autoImports: getAutoImports(),
+          autoImports: getUTSEasyComAutoImports(),
         }
       )
       if (res) {
