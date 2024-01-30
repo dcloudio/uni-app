@@ -52,7 +52,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       }
 
       const color = props.iconColor.length > 0 ? props.iconColor : props.color
-      return Object.assign({}, styles['uni-icon'], color)
+      return Object.assign({}, styles['uni-icon'], { color })
     })
 
     const checkInputStyle = computed(() => {

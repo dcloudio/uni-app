@@ -2,6 +2,14 @@
 
 export const CHECKBOX_GROUP_NAME = 'CheckboxGroup'
 export const CHECKBOX_GROUP_ROOT_ELEMENT = 'uni-checkbox-group-element'
+
+export const checkboxGroupProps = {
+  name: {
+    type: String,
+    default: '',
+  },
+}
+
 export class UniCheckboxGroupElement extends UniFormControlElement<string[]> {
   _initialValue: string[] = []
 
