@@ -1,5 +1,7 @@
 export * as Slider from './slider/slider'
 export * as Button from './button/button'
 export * as Checkbox from './checkbox/checkbox'
-export * as CheckboxGroup from './checkbox-group/checkbox-group.vue'
+export * as CheckboxGroup from './checkbox-group/checkbox-group'
 export * as Radio from './radio/radio.vue'
+export * as RadioGroup from './radio-group/radio-group'
+export * as Navigator from './navigator/navigator'

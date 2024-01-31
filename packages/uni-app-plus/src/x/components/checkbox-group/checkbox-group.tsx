@@ -1,9 +1,3 @@
-<template>
-  <uni-checkbox-group-element ref="uniCheckboxGroupElementRef">
-    <slot></slot>
-  </uni-checkbox-group-element>
-</template>
-<script lang="ts">
 /// <reference types="@dcloudio/uni-app-x/types/native-global" />
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
 import {
@@ -32,12 +26,13 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   },
   props: checkboxGroupProps,
   emits: ['change'],
-  setup(props, { emit }) {
+  setup(props, { emit, expose, slots }) {
     // data
     const $checkboxList = ref<ComponentPublicInstance[]>([])
     const uniCheckboxGroupElementRef = ref<UniCheckboxGroupElement | null>(null)
 
     let instance: ComponentInternalInstance | null = null
+
     instance = getCurrentInstance()
 
     const _checkboxGroupUpdateHandler = (
@@ -98,10 +93,17 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       })
     })
 
-    return {
+    expose({
       _checkboxGroupUpdateHandler,
       _changeHandler,
+    })
+
+    return () => {
+      return (
+        <uni-checkbox-group-element ref="uniCheckboxGroupElementRef">
+          {slots.default?.()}
+        </uni-checkbox-group-element>
+      )
     }
   },
 })
-</script>

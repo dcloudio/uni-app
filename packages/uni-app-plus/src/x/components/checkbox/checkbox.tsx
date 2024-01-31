@@ -28,7 +28,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   },
   props: checkboxProps,
   emits: ['click'],
-  setup(props, { emit, slots }) {
+  setup(props, { emit, slots, expose }) {
     // data
     const icon = '\uEA08'
 
@@ -88,9 +88,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       }
     })
 
-    instance = getCurrentInstance()
-
     onMounted(() => {
+      instance = getCurrentInstance()
+
       const ctx = instance?.parent?.proxy
       $dispatch(ctx, 'CheckboxGroup', '_checkboxGroupUpdateHandler', ctx, 'add')
     })
