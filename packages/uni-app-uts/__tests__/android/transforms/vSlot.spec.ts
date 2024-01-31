@@ -97,7 +97,7 @@ function PagesIndexIndexRender(): any | null {
 const _ctx = this
 const _cache = this.$.renderCache
   return createElementVNode("view", null, [
-    renderSlot(_ctx.$internalSlots, "default", utsMapOf({ data: "data" }))
+    renderSlot(_ctx.$slots, "default", utsMapOf({ data: "data" }))
   ])
 }`,
       {
@@ -132,7 +132,7 @@ const _component_Foo = resolveComponent("Foo")
     assert(
       `<view><slot><view></view></slot></view>`,
       `createElementVNode("view", null, [
-  renderSlot(_ctx.$internalSlots, "default", {}, (): any[] => [
+  renderSlot(_ctx.$slots, "default", {}, (): any[] => [
     createElementVNode("view")
   ])
 ])`,

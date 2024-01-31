@@ -59,13 +59,13 @@ exports[`compiler: v-for codegen template v-for key injection with single child 
 
 exports[`compiler: v-for codegen template v-for w/ <slot/> 1`] = `
 "createElementVNode(Fragment, null, RenderHelpers.renderList(items, (item, _, _, _): VNode => {
-  return renderSlot($internalSlots, "default")
+  return renderSlot($slots, "default")
 }), 256 /* UNKEYED_FRAGMENT */)"
 `;
 
 exports[`compiler: v-for codegen v-for on <slot/> 1`] = `
 "createElementVNode(Fragment, null, RenderHelpers.renderList(items, (item, _, _, _): VNode => {
-  return renderSlot($internalSlots, "default")
+  return renderSlot($slots, "default")
 }), 256 /* UNKEYED_FRAGMENT */)"
 `;
 
