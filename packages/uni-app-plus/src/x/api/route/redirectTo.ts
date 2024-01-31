@@ -11,7 +11,7 @@ import { removePage } from '../../../service/framework/page/getCurrentPages'
 import { registerPage } from '../../framework/page'
 import { RouteOptions } from '../../../service/api/route/utils'
 import { showWebview } from './webview'
-import { getNativeApp } from '../../framework/app'
+import { getNativeApp } from '../../framework/app/app'
 
 export const redirectTo = defineAsyncApi<API_TYPE_REDIRECT_TO>(
   API_REDIRECT_TO,

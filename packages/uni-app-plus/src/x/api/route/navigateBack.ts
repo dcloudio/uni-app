@@ -12,7 +12,7 @@ import { ANI_CLOSE, ANI_DURATION } from '../../../service/constants'
 import { removePage } from '../../../service/framework/page/getCurrentPages'
 import { closeWebview } from './webview'
 import { IPage } from '@dcloudio/uni-app-x/types/native'
-import { getNativeApp } from '../../framework/app'
+import { getNativeApp } from '../../framework/app/app'
 
 export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
   API_NAVIGATE_BACK,

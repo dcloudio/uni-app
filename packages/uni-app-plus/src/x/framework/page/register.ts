@@ -18,7 +18,7 @@ import { initRouteOptions } from '../../../service/framework/page/routeOptions'
 import { pagesMap } from '../../../service/framework/page/define'
 import { getVueApp } from '../../../service/framework/app/vueApp'
 import { VuePageComponent } from '../../../service/framework/page/define'
-import { getNativeApp } from '../app'
+import { getPageManager } from '../app/app'
 import { ON_POP_GESTURE } from '../../constants'
 
 type PageNodeOptions = {}
@@ -69,11 +69,7 @@ export function registerPage({
   const id = genWebviewId()
   const routeOptions = initRouteOptions(path, openType)
   const pageStyle = parsePageStyle(routeOptions)
-  const nativePage = getNativeApp().pageManager.createPage(
-    url,
-    id.toString(),
-    pageStyle
-  )
+  const nativePage = getPageManager().createPage(url, id.toString(), pageStyle)
   routeOptions.meta.id = parseInt(nativePage.pageId)
   if (__DEV__) {
     console.log(formatLog('registerPage', path, nativePage.pageId))
