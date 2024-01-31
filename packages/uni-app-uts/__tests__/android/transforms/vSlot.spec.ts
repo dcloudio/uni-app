@@ -164,6 +164,32 @@ const _component_Foo = resolveComponent("Foo")
     )
   })
 
+  test('scoped slots with type', () => {
+    // TODO 待实现
+    assert(
+      // props:UTSJSONObject
+      `<view><Foo><template v-slot="props"><text>msg: {{props.msg}}</text></template></Foo></view>`,
+      `
+function PagesIndexIndexRender(): any | null {
+const _ctx = this
+const _cache = this.$.renderCache
+const _component_Foo = resolveComponent("Foo")
+
+  return createElementVNode("view", null, [
+    createVNode(_component_Foo, null, utsMapOf({
+      default: withScopedSlotCtx((props: Map<string, any | null>): any[] => [
+        createElementVNode("text", null, "msg: " + toDisplayString(props.msg), 1 /* TEXT */)
+      ]),
+      _: 1 /* STABLE */
+    }))
+  ])
+}`,
+      {
+        mode: 'module',
+      }
+    )
+  })
+
   test('scoped slots shorthand', () => {
     assert(
       `<view><Foo><template #default="props"><text>msg: {{props.msg}}</text></template></Foo></view>`,
