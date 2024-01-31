@@ -67,7 +67,7 @@ export function addEasyComponentAutoImports(
   if (fileName.includes('@dcloudio')) {
     return
   }
-  if (path.isAbsolute(fileName)) {
+  if (path.isAbsolute(fileName) && fileName.startsWith(rootDir)) {
     fileName = '@/' + normalizePath(path.relative(rootDir, fileName))
   }
   easyComponentAutoImports[fileName] = [

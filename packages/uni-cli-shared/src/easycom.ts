@@ -152,7 +152,7 @@ function initEasycom({
       Object.keys(autoEasyComObj).forEach((tagName) => {
         let source = autoEasyComObj[tagName]
         tagName = tagName.slice(1, -1)
-        if (path.isAbsolute(source)) {
+        if (path.isAbsolute(source) && source.startsWith(rootDir)) {
           source = '@/' + normalizePath(path.relative(rootDir, source))
         }
         addUTSEasyComAutoImports(source, [
@@ -345,7 +345,7 @@ export function genUTSComponentPublicInstanceImported(
   root: string,
   fileName: string
 ) {
-  if (path.isAbsolute(fileName)) {
+  if (path.isAbsolute(fileName) && fileName.startsWith(root)) {
     fileName = normalizePath(path.relative(root, fileName))
   }
   if (fileName.startsWith('@/')) {

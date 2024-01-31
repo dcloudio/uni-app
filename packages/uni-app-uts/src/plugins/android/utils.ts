@@ -2,10 +2,10 @@ import fs from 'fs'
 import path from 'path'
 import { ImportSpecifier, init, parse } from 'es-module-lexer'
 import {
-  AutoImportOptions,
+  // AutoImportOptions,
   createResolveErrorMsg,
   createRollupError,
-  initAutoImportOptions,
+  // initAutoImportOptions,
   normalizeNodeModules,
   normalizePath,
   offsetToStartAndEnd,
@@ -13,9 +13,9 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import { isArray, isPlainObject, isString } from '@vue/shared'
 
-import AutoImport from 'unplugin-auto-import/vite'
-import { once } from '@dcloudio/uni-shared'
-import type { SourceMapInput, PluginContext } from 'rollup'
+// import AutoImport from 'unplugin-auto-import/vite'
+// import { once } from '@dcloudio/uni-shared'
+import type { /*SourceMapInput, */ PluginContext } from 'rollup'
 import { Position, SourceLocation } from '@vue/compiler-core'
 
 import { createCompilerError } from './uvue/compiler/errors'
@@ -364,33 +364,33 @@ export function getExtApiComponents() {
   return extApiComponents
 }
 
-export const initAutoImportOnce = once(initAutoImport)
+// export const initAutoImportOnce = once(initAutoImport)
 
-function initAutoImport(autoImportOptions?: AutoImportOptions) {
-  const options = initAutoImportOptions(
-    process.env.UNI_UTS_PLATFORM,
-    autoImportOptions || {}
-  )
-  if ((options.imports as any[]).length === 0) {
-    return {
-      transform(code: string, id: string) {
-        return { code }
-      },
-    }
-  }
-  const autoImport = AutoImport(options) as {
-    transform(
-      code: string,
-      id: string
-    ): Promise<{ code: string; map?: SourceMapInput }>
-  }
-  const { transform } = autoImport
-  autoImport.transform = async function (code, id) {
-    const result = await transform.call(this, code, id)
-    if (result) {
-      return result
-    }
-    return { code }
-  }
-  return autoImport
-}
+// function initAutoImport(autoImportOptions?: AutoImportOptions) {
+//   const options = initAutoImportOptions(
+//     process.env.UNI_UTS_PLATFORM,
+//     autoImportOptions || {}
+//   )
+//   if ((options.imports as any[]).length === 0) {
+//     return {
+//       transform(code: string, id: string) {
+//         return { code }
+//       },
+//     }
+//   }
+//   const autoImport = AutoImport(options) as {
+//     transform(
+//       code: string,
+//       id: string
+//     ): Promise<{ code: string; map?: SourceMapInput }>
+//   }
+//   const { transform } = autoImport
+//   autoImport.transform = async function (code, id) {
+//     const result = await transform.call(this, code, id)
+//     if (result) {
+//       return result
+//     }
+//     return { code }
+//   }
+//   return autoImport
+// }
