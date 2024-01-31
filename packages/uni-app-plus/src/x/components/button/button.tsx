@@ -26,7 +26,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   },
   // styles: buttonStyle,
   props: buttonProps,
-  emits: ['click'],
+  // emits: ['click'],
   setup(props, { emit, slots }) {
     // data
     let $buttonEl = null as UniButtonElement | null
@@ -190,7 +190,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       if (props.disabled) {
         return
       }
-      emit('click', $event)
+      // emit('click', $event)
 
       if (FORM_TYPES.indexOf(props.formType) > -1) {
         const instance = getCurrentInstance()

@@ -48,7 +48,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   props: radioProps,
   styles: styleList,
 
-  setup(props, { emit }) {
+  setup(props, { emit, expose }) {
     const styleUniRadio = styleList['uni-radio']['']
 
     const styleUniRadioInput = computed(() => {
