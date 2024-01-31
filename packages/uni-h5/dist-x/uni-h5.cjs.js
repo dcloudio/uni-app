@@ -4996,20 +4996,20 @@ const index$o = /* @__PURE__ */ defineBuiltInComponent({
         url
       } = props2;
       const hasHoverClass = props2.hoverClass && props2.hoverClass !== "none";
-      const navigatorTsx = vue.createVNode("uni-navigator", vue.mergeProps({
+      const innerNode = props2.renderLink ? vue.createVNode("a", {
+        "class": "navigator-wrap",
+        "href": url,
+        "onClick": onEventPrevent,
+        "onMousedown": onEventPrevent
+      }, [slots.default && slots.default()], 40, ["href", "onClick", "onMousedown"]) : slots.default && slots.default();
+      return vue.createVNode("uni-navigator", vue.mergeProps({
         "class": hasHoverClass && hovering.value ? hoverClass : "",
         "ref": rootRef
       }, hasHoverClass && binding, vm ? vm.attrs : {}, {
         [__scopeId]: ""
       }, {
         "onClick": onClick
-      }), [slots.default && slots.default()], 16, ["onClick"]);
-      return props2.renderLink ? vue.createVNode("a", {
-        "class": "navigator-wrap",
-        "href": url,
-        "onClick": onEventPrevent,
-        "onMousedown": onEventPrevent
-      }, [navigatorTsx], 40, ["href", "onClick", "onMousedown"]) : navigatorTsx;
+      }), [innerNode], 16, ["onClick"]);
     };
   }
 });
@@ -6263,6 +6263,8 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
     realScrollY
   };
 }
+const SLIDER_BLOCK_SIZE_MIN_VALUE = 12;
+const SLIDER_BLOCK_SIZE_MAX_VALUE = 28;
 const props$e = {
   name: {
     type: String,
@@ -6427,6 +6429,10 @@ function useSliderState(props2) {
   const _getActiveColor = () => {
     return props2.activeColor !== "#007aff" ? props2.activeColor : props2.selectedColor !== "#e9e9e9" ? props2.selectedColor : "#e9e9e9";
   };
+  const _getBlockSizeString = () => {
+    const blockSize = Math.min(Math.max(Number(props2.blockSize), SLIDER_BLOCK_SIZE_MIN_VALUE), SLIDER_BLOCK_SIZE_MAX_VALUE);
+    return blockSize + "px";
+  };
   const state = {
     setTrackBgColor: vue.computed(() => ({
       backgroundColor: _getBgColor()
@@ -6435,11 +6441,11 @@ function useSliderState(props2) {
       backgroundColor: _getActiveColor()
     })),
     thumbTrackStyle: vue.computed(() => ({
-      marginRight: props2.blockSize + "px"
+      marginRight: _getBlockSizeString()
     })),
     setThumbStyle: vue.computed(() => ({
-      width: props2.blockSize + "px",
-      height: props2.blockSize + "px",
+      width: _getBlockSizeString(),
+      height: _getBlockSizeString(),
       backgroundColor: props2.blockColor
     }))
   };
@@ -11164,7 +11170,7 @@ const request = /* @__PURE__ */ defineTaskApi(
       let res = responseType === "text" ? xhr.responseText : xhr.response;
       if (responseType === "text" && dataType2 === "json") {
         try {
-          res = JSON.parse(res);
+          res = new globalThis.UTSJSONObject(JSON.parse(res));
         } catch (error) {
         }
       }
@@ -11247,6 +11253,9 @@ function parseValue(value) {
       const keys = Object.keys(object);
       if (keys.length === 2 && "data" in object) {
         if (typeof object.data === type) {
+          if (type === "object" && !Array.isArray(object.data)) {
+            return new globalThis.UTSJSONObject(object.data);
+          }
           return object.data;
         }
         if (type === "object" && /^\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}\.\d{3}Z$/.test(object.data)) {

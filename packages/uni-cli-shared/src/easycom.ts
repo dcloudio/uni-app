@@ -2,16 +2,17 @@ import fs from 'fs'
 import path from 'path'
 import debug from 'debug'
 
-import { extend } from '@vue/shared'
+import { camelize, capitalize, extend } from '@vue/shared'
 import { createFilter } from '@rollup/pluginutils'
 
 import { once } from '@dcloudio/uni-shared'
 import { normalizePath } from './utils'
 import { parsePagesJson, parsePagesJsonOnce } from './json/pages'
 import { M } from './messages'
-import { initUTSComponents } from './uts'
+import { genUTSClassName, initUTSComponents } from './uts'
 
 interface EasycomOption {
+  isX?: boolean
   dirs?: string[]
   rootDir: string
   extensions: string[]
@@ -57,6 +58,7 @@ export function initEasycoms(
     // 初始化时，从once中读取缓存，refresh时，实时读取
     const { easycom } = pagesJson || parsePagesJson(inputDir, platform, false)
     const easycomOptions: EasycomOption = {
+      isX,
       dirs:
         easycom && easycom.autoscan === false
           ? [...dirs] // 禁止自动扫描
@@ -135,11 +137,31 @@ function initUniModulesEasycomDirs(uniModulesDir: string) {
     .filter<string>(Boolean as any)
 }
 
-function initEasycom({ dirs, rootDir, custom, extensions }: EasycomOption) {
+function initEasycom({
+  isX,
+  dirs,
+  rootDir,
+  custom,
+  extensions,
+}: EasycomOption) {
   clearEasycom()
   const easycomsObj = Object.create(null)
   if (dirs && dirs.length && rootDir) {
-    extend(easycomsObj, initAutoScanEasycoms(dirs, rootDir, extensions))
+    const autoEasyComObj = initAutoScanEasycoms(dirs, rootDir, extensions)
+    if (isX) {
+      Object.keys(autoEasyComObj).forEach((tagName) => {
+        let source = autoEasyComObj[tagName]
+        tagName = tagName.slice(1, -1)
+        if (path.isAbsolute(source) && source.startsWith(rootDir)) {
+          source = '@/' + normalizePath(path.relative(rootDir, source))
+        }
+        addUTSEasyComAutoImports(source, [
+          genUTSComponentPublicInstanceImported(rootDir, source),
+          genUTSComponentPublicInstanceIdent(tagName),
+        ])
+      })
+    }
+    extend(easycomsObj, autoEasyComObj)
   }
   if (custom) {
     Object.keys(custom).forEach((name) => {
@@ -295,3 +317,41 @@ export function genResolveEasycomCode(
 }
 
 export const UNI_EASYCOM_EXCLUDE = [/App.vue$/, /@dcloudio\/uni-h5/]
+
+const utsEasyComAutoImports: Record<string, [[string, string]]> = {}
+
+export function getUTSEasyComAutoImports() {
+  return utsEasyComAutoImports
+}
+
+export function addUTSEasyComAutoImports(
+  source: string,
+  imports: [string, string]
+) {
+  if (!utsEasyComAutoImports[source]) {
+    utsEasyComAutoImports[source] = [imports]
+  } else {
+    if (!utsEasyComAutoImports[source].find((item) => item[0] === imports[0])) {
+      utsEasyComAutoImports[source].push(imports)
+    }
+  }
+}
+
+export function genUTSComponentPublicInstanceIdent(tagName: string) {
+  return capitalize(camelize(tagName)) + 'ComponentPublicInstance'
+}
+
+export function genUTSComponentPublicInstanceImported(
+  root: string,
+  fileName: string
+) {
+  if (path.isAbsolute(fileName) && fileName.startsWith(root)) {
+    fileName = normalizePath(path.relative(root, fileName))
+  }
+  if (fileName.startsWith('@/')) {
+    return (
+      genUTSClassName(fileName.replace('@/', '')) + 'ComponentPublicInstance'
+    )
+  }
+  return genUTSClassName(fileName) + 'ComponentPublicInstance'
+}

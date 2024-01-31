@@ -4,8 +4,13 @@ import type {
   RendererNode,
   VNode,
 } from '@vue/runtime-core'
-import { camelize, hyphenate } from '@vue/shared'
-
+import {
+  camelize,
+  hyphenate,
+  normalizeClass as vueNormalizeClass,
+  normalizeStyle as vueNormalizeStyle,
+} from '@vue/shared'
+import type { NormalizedStyle } from '@vue/shared'
 import { isBuiltInComponent } from './tags'
 import { SLOT_DEFAULT_NAME } from './constants'
 
@@ -80,4 +85,42 @@ const customizeRE = /:/g
 
 export function customizeEvent(str: string) {
   return camelize(str.replace(customizeRE, '-'))
+}
+
+export function normalizeStyle(
+  value: unknown
+): NormalizedStyle | string | undefined {
+  if (!(value instanceof Map)) {
+    return vueNormalizeStyle(value)
+  }
+  const styleObject: NormalizedStyle = {}
+  value.forEach((value, key) => {
+    styleObject[key] = value
+  })
+  return styleObject
+}
+
+export function normalizeClass(value: unknown): string {
+  if (!(value instanceof Map)) {
+    return vueNormalizeClass(value)
+  }
+  let res = ''
+  value.forEach((value, key) => {
+    if (value) {
+      res += key + ' '
+    }
+  })
+  return res.trim()
+}
+
+export function normalizeProps(props: Record<string, any> | null) {
+  if (!props) return null
+  let { class: klass, style } = props
+  if (klass && typeof klass !== 'string') {
+    props.class = normalizeClass(klass)
+  }
+  if (style) {
+    props.style = normalizeStyle(style)
+  }
+  return props
 }

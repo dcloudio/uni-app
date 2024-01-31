@@ -35,7 +35,7 @@ exports[`compiler: v-once transform on slot outlet 1`] = `
 "createElementVNode("view", null, [
   resolveCache(_cache, 0, (): VNode => {
     setBlockTracking(-1)
-    _cache[0] = renderSlot($internalSlots, "default")
+    _cache[0] = renderSlot($slots, "default")
     setBlockTracking(1)
     return _cache[0] as VNode
   })

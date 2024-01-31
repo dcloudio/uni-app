@@ -10,6 +10,9 @@ import {
 } from '../../helpers/useEvent'
 import { UniFormCtx, uniFormKey } from '../form'
 
+const SLIDER_BLOCK_SIZE_MIN_VALUE = 12
+const SLIDER_BLOCK_SIZE_MAX_VALUE = 28
+
 const props = {
   name: {
     type: String,
@@ -216,6 +219,13 @@ function useSliderState(props: SliderProps) {
       ? props.selectedColor
       : '#e9e9e9'
   }
+  const _getBlockSizeString = () => {
+    const blockSize = Math.min(
+      Math.max(Number(props.blockSize), SLIDER_BLOCK_SIZE_MIN_VALUE),
+      SLIDER_BLOCK_SIZE_MAX_VALUE
+    )
+    return blockSize + 'px'
+  }
 
   const state = {
     setTrackBgColor: computed(() => ({
@@ -225,11 +235,11 @@ function useSliderState(props: SliderProps) {
       backgroundColor: _getActiveColor(),
     })),
     thumbTrackStyle: computed(() => ({
-      marginRight: props.blockSize + 'px',
+      marginRight: _getBlockSizeString(),
     })),
     setThumbStyle: computed(() => ({
-      width: props.blockSize + 'px',
-      height: props.blockSize + 'px',
+      width: _getBlockSizeString(),
+      height: _getBlockSizeString(),
       backgroundColor: props.blockColor,
     })),
   }

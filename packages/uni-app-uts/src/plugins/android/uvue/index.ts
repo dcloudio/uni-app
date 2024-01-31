@@ -5,7 +5,7 @@ import { type SFCBlock } from '@vue/compiler-sfc'
 
 import { isString } from '@vue/shared'
 import {
-  AutoImportOptions,
+  genUTSClassName,
   normalizePath,
   parseVueRequest,
   resolveAppVue,
@@ -16,21 +16,18 @@ import {
   getResolvedOptions,
   getSrcDescriptor,
 } from './descriptorCache'
-import { genClassName, isVue } from '../utils'
+import { isVue } from '../utils'
 
 import { transformStyle } from './code/style'
 
 import { transformMain } from './sfc/main'
 
-export function uniAppUVuePlugin(opts: {
-  autoImportOptions?: AutoImportOptions
-}): Plugin {
+export function uniAppUVuePlugin(): Plugin {
   const options = getResolvedOptions()
   const appVue = resolveAppVue(process.env.UNI_INPUT_DIR)
   function isAppVue(id: string) {
     return normalizePath(id) === appVue
   }
-  // const autoImport = initAutoImportOnce(opts.autoImportOptions)
   return {
     name: 'uni:app-uvue',
     apply: 'build',
@@ -106,7 +103,7 @@ export function uniAppUVuePlugin(opts: {
           isString(file.source)
         ) {
           const fileName = normalizePath(file.fileName)
-          const classNameComment = `/*${genClassName(
+          const classNameComment = `/*${genUTSClassName(
             fileName,
             options.classNamePrefix
           )}Styles*/`

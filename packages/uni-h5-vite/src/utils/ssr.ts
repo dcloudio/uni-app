@@ -40,6 +40,7 @@ const SSR_ALIAS: Record<string, string> = {
   '@vue/server-renderer': '@vue/server-renderer',
   '@dcloudio/uni-cloud': '@dcloudio/uni-cloud',
   '@dcloudio/uni-h5': '@dcloudio/uni-h5',
+  '@dcloudio/uni-app': '@dcloudio/uni-app',
   '@dcloudio/uni-i18n': '@dcloudio/uni-i18n',
   '@dcloudio/uni-shared': '@dcloudio/uni-shared',
 }

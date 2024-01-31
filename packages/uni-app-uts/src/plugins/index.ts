@@ -1,12 +1,9 @@
-import { AutoImportOptions } from '@dcloudio/uni-cli-shared'
 import { init as initAndroidPlugins } from './android'
 import { init as initIOSPlugins } from './ios'
 
-export function initAndroid(options: {
-  autoImportOptions?: AutoImportOptions
-}) {
+export function initAndroid() {
   import('./errorReporting')
-  return initAndroidPlugins(options)
+  return initAndroidPlugins()
 }
 
 export function initIOS() {

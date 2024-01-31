@@ -1,3 +1,4 @@
+import nodeFs from 'fs'
 import fs from 'fs-extra'
 import path from 'path'
 import glob from 'fast-glob'
@@ -1192,6 +1193,8 @@ const scss: SassStylePreprocessor = async (
   isNVue
 ) => {
   const render = loadPreprocessor(PreprocessLang.sass, root).render
+  // NOTE: `sass` always runs it's own importer first, and only falls back to
+  // the `importer` option when it can't resolve a path
   const internalImporter: Sass.Importer = (url, importer, done) => {
     resolvers.sass(url, importer).then((resolved) => {
       if (resolved) {
@@ -1602,4 +1605,24 @@ const preProcessors = Object.freeze({
 
 function isPreProcessor(lang: any): lang is PreprocessLang {
   return lang && lang in preProcessors
+}
+
+/**
+ * 重写 readFileSync
+ * 目前主要解决 scss 文件被 @import 的条件编译
+ */
+export function rewriteScssReadFileSync() {
+  const { readFileSync } = nodeFs
+  nodeFs.readFileSync = ((filepath, options) => {
+    const content = readFileSync(filepath, options)
+    if (
+      isString(filepath) &&
+      path.extname(filepath) === '.scss' &&
+      isString(content) &&
+      content.includes('#endif')
+    ) {
+      return preCss(content)
+    }
+    return content
+  }) as typeof nodeFs['readFileSync']
 }

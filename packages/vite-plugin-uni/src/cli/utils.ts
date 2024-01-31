@@ -12,6 +12,7 @@ import {
   parseScripts,
   getPlatformDir,
   output,
+  initPreContext,
 } from '@dcloudio/uni-cli-shared'
 
 import { CliOptions } from '.'
@@ -179,6 +180,13 @@ export function initEnv(
   initModulePaths()
 
   initUVueEnv()
+
+  initPreContext(
+    process.env.UNI_PLATFORM,
+    process.env.UNI_CUSTOM_CONTEXT,
+    process.env.UNI_UTS_PLATFORM,
+    process.env.UNI_APP_X === 'true'
+  )
 
   if (
     process.env.UNI_PLATFORM === 'app' ||

@@ -152,6 +152,13 @@ const onNavigationBarSearchInputFocusChanged =
 const onPageHide = onHide;
 const onPageShow = onShow;
 
+function renderComponentSlot(slots, name, props = null) {
+    if (slots[name]) {
+        return slots[name](props);
+    }
+    return null;
+}
+
 Object.defineProperty(exports, 'capitalize', {
   enumerable: true,
   get: function () { return shared.capitalize; }
@@ -201,6 +208,7 @@ exports.onTabItemTap = onTabItemTap;
 exports.onThemeChange = onThemeChange;
 exports.onUnhandledRejection = onUnhandledRejection;
 exports.onUnload = onUnload;
+exports.renderComponentSlot = renderComponentSlot;
 exports.requireNativePlugin = requireNativePlugin;
 exports.resolveEasycom = resolveEasycom;
 exports.shallowSsrRef = shallowSsrRef;

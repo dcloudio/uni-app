@@ -26,6 +26,7 @@ declare module 'vue' {
   export interface ComponentCustomProperties {
     $data: Record<string, any | null>
     $callMethod: (methodName: string, ...args: (any | null)[]) => any | null
+    $children: ComponentPublicInstance[]
   }
   export type OnCleanup = (cleanupFn: () => void) => void;
   export function definePlugin<T extends Plugin = Plugin>(plugin: T): T

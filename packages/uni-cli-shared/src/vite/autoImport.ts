@@ -20,6 +20,8 @@ const uniPreset = {
     'onLastPageBackPress',
     'onExit',
     // Page
+    'onPageShow',
+    'onPageHide',
     'onLoad',
     'onReady',
     'onUnload',
@@ -29,13 +31,10 @@ const uniPreset = {
     'onTabItemTap',
     'onReachBottom',
     'onPullDownRefresh',
+    // 辅助
+    'renderComponentSlot',
   ],
 }
-
-if (process.env.UNI_UTS_PLATFORM === 'web') {
-  uniPreset.imports.push('onPageShow', 'onPageHide')
-}
-
 const uniH5Preset = {
   from: '@dcloudio/uni-h5',
   imports: ['UniElement', 'UniElementImpl'],
@@ -118,7 +117,7 @@ export function initAutoImportOptions(
   }
   return {
     ...userOptions,
-    include: [/\.[u]?ts$/, /\.[u]?vue$/, /\.[u]?vue\?vue/],
+    include: [/\.[u]?ts$/, /\.[u]?vue/],
     exclude: [/[\\/]\.git[\\/]/],
     imports: (imports as any[]).concat(
       // app-android 平台暂不注入其他

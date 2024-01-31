@@ -7289,6 +7289,7 @@
     },
     {
       "name": "@color-profile",
+      "description": "@color-profile CSS at-rule 定义并命名一个颜色配置文件，稍后可以在 color() 函数中使用该配置文件来指定颜色。",
       "uniPlatform": {
         "app": {
           "android": {
@@ -7310,6 +7311,7 @@
     },
     {
       "name": "@container",
+      "description": "@container CSS at-rule 是将样式应用于包含上下文的条件组规则。 样式声明按条件筛选，如果条件为 true，则应用于容器。 当容器更改大小时，将评估条件。你还可以给这个收纳盒贴上一个名字，这样它就会专门整理那些名字相同的容器。当它整理容器的时候，会仔细检查每个容器的所有细节，确保所有条件都符合才会应用样式。",
       "uniPlatform": {
         "app": {
           "android": {
@@ -7352,6 +7354,7 @@
     },
     {
       "name": "@documentNon-standardDeprecated",
+      "description": "@document CSS at 规则根据文档的 URL 限制其中包含的样式规则。它主要用于用户定义的样式表，但也可用于作者定义的样式表。",
       "uniPlatform": {
         "app": {
           "android": {
@@ -7394,6 +7397,7 @@
     },
     {
       "name": "@font-palette-values",
+      "description": "@font-palette-values CSS at-rule 允许您自定义字体制作者创建的字体调色板的默认值。",
       "uniPlatform": {
         "app": {
           "android": {

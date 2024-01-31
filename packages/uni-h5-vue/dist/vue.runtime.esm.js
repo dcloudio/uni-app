@@ -1,6 +1,7 @@
-import { extend, isArray, isMap, isIntegerKey, hasOwn, isSymbol, isObject, hasChanged, makeMap, capitalize, toRawType, def, isFunction, NOOP, isString, isPromise, getGlobalThis, EMPTY_OBJ, toHandlerKey, looseToNumber, hyphenate, camelize, isOn, isModelListener, toNumber, remove, isSet, isPlainObject, invokeArrayFns, isBuiltInDirective, isGloballyWhitelisted, isReservedProp, EMPTY_ARR, NO, normalizeClass, normalizeStyle, isSpecialBooleanAttr, includeBooleanAttr, looseIndexOf, looseEqual, isHTMLTag, isSVGTag } from '@vue/shared';
-export { camelize, capitalize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
-import { isRootHook, isRootImmediateHook, ON_LOAD, createRpx2Unit, defaultRpx2Unit } from '@dcloudio/uni-shared';
+import { extend, isArray, isMap, isIntegerKey, hasOwn, isSymbol, isObject, hasChanged, makeMap, capitalize, toRawType, def, isFunction, NOOP, isString, isPromise, getGlobalThis, EMPTY_OBJ, toHandlerKey, looseToNumber, hyphenate, camelize, isOn, isModelListener, toNumber, remove, isSet, isPlainObject, invokeArrayFns, isBuiltInDirective, isGloballyWhitelisted, isReservedProp, EMPTY_ARR, NO, isSpecialBooleanAttr, includeBooleanAttr, looseIndexOf, looseEqual, isHTMLTag, isSVGTag } from '@vue/shared';
+export { camelize, capitalize, toDisplayString, toHandlerKey } from '@vue/shared';
+import { isRootHook, isRootImmediateHook, ON_LOAD, normalizeClass, normalizeStyle, createRpx2Unit, defaultRpx2Unit } from '@dcloudio/uni-shared';
+export { normalizeClass, normalizeProps, normalizeStyle } from '@dcloudio/uni-shared';
 
 function warn$1(msg, ...args) {
     console.warn(`[Vue warn] ${msg}`, ...args);

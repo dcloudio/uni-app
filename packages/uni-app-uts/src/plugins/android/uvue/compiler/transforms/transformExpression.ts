@@ -9,7 +9,7 @@
 //   support and the code is wrapped in `with (this) { ... }`.
 import { NodeTransform, TransformContext } from '../transform'
 
-import { makeMap, hasOwn, isString } from '@vue/shared'
+import { makeMap, hasOwn, isString, isArray } from '@vue/shared'
 import {
   Node,
   Identifier,
@@ -367,8 +367,12 @@ function canPrefix(id: Identifier) {
   return true
 }
 
-export function stringifyExpression(exp: ExpressionNode | string): string {
-  if (isString(exp)) {
+export function stringifyExpression(
+  exp: ExpressionNode | string | (ExpressionNode | string)[]
+): string {
+  if (isArray(exp)) {
+    return exp.map(stringifyExpression).join('')
+  } else if (isString(exp)) {
     return exp
   } else if (exp.type === NodeTypes.SIMPLE_EXPRESSION) {
     return exp.content

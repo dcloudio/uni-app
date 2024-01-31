@@ -4946,20 +4946,20 @@ const index$r = /* @__PURE__ */ defineBuiltInComponent({
         url
       } = props2;
       const hasHoverClass = props2.hoverClass && props2.hoverClass !== "none";
-      const navigatorTsx = vue.createVNode("uni-navigator", vue.mergeProps({
+      const innerNode = props2.renderLink ? vue.createVNode("a", {
+        "class": "navigator-wrap",
+        "href": url,
+        "onClick": onEventPrevent,
+        "onMousedown": onEventPrevent
+      }, [slots.default && slots.default()], 40, ["href", "onClick", "onMousedown"]) : slots.default && slots.default();
+      return vue.createVNode("uni-navigator", vue.mergeProps({
         "class": hasHoverClass && hovering.value ? hoverClass : "",
         "ref": rootRef
       }, hasHoverClass && binding, vm ? vm.attrs : {}, {
         [__scopeId]: ""
       }, {
         "onClick": onClick
-      }), [slots.default && slots.default()], 16, ["onClick"]);
-      return props2.renderLink ? vue.createVNode("a", {
-        "class": "navigator-wrap",
-        "href": url,
-        "onClick": onEventPrevent,
-        "onMousedown": onEventPrevent
-      }, [navigatorTsx], 40, ["href", "onClick", "onMousedown"]) : navigatorTsx;
+      }), [innerNode], 16, ["onClick"]);
     };
   }
 });

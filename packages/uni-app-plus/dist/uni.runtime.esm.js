@@ -510,16 +510,11 @@ function invokeSuccess(id, name, res) {
     const result = {
         errMsg: name + ':ok',
     };
-    //#if _X_
-    result.errSubject = name;
-    //#endif
     return invokeCallback(id, extend((res || {}), result));
 }
 function invokeFail(id, name, errMsg, errRes = {}) {
     const apiErrMsg = name + ':fail' + (errMsg ? ' ' + errMsg : '');
-    //#if !_X_
     delete errRes.errCode;
-    //#endif
     return invokeCallback(id, typeof UniError !== 'undefined'
         ? typeof errRes.errCode !== 'undefined'
             ? new UniError(name, errRes.errCode, apiErrMsg)

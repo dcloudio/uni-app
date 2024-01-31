@@ -73,7 +73,11 @@ export const request = defineTaskApi<API_TYPE_REQUEST>(
       let res = responseType === 'text' ? xhr.responseText : xhr.response
       if (responseType === 'text' && dataType === 'json') {
         try {
+          //#if _X_
+          res = new (globalThis as any).UTSJSONObject(JSON.parse(res))
+          //#else
           res = JSON.parse(res)
+          //#endif
         } catch (error) {
           // 和微信一致解析失败不抛出错误
           // invoke(callbackId, {

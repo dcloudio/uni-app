@@ -150,18 +150,19 @@ export function normalizePagesJson(
 export function validatePages(pagesJson: Record<string, any>, jsonStr: string) {
   if (!isArray(pagesJson.pages)) {
     pagesJson.pages = []
-    throw new Error(`[uni-app] Error: pages.json->pages parse failed.`)
+    console.error(`[uni-app] Error: pages.json->pages parse failed.`)
+    process.exit(0)
   } else if (!pagesJson.pages.length) {
-    throw new Error(
+    console.error(
       `[uni-app] Error: pages.json->pages must contain at least 1 page.`
     )
+    process.exit(0)
   } else {
     const pages: string[] = []
     pagesJson.pages.forEach((page) => {
       if (pages.indexOf(page.path) !== -1) {
-        throw new Error(
-          `[uni-app] Error: pages.json->${page.path} duplication.`
-        )
+        console.error(`[uni-app] Error: pages.json->${page.path} duplication.`)
+        process.exit(0)
       }
       pages.push(page.path)
     })

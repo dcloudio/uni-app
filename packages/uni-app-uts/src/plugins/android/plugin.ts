@@ -1,8 +1,10 @@
 import path from 'path'
 import fs from 'fs-extra'
+import { OutputBundle, PluginContext } from 'rollup'
 import {
   UniVitePlugin,
   emptyDir,
+  getUTSEasyComAutoImports,
   normalizePath,
   parseManifestJsonOnce,
   parseUniExtApiNamespacesOnce,
@@ -10,7 +12,6 @@ import {
   resolveMainPathOnce,
   resolveUTSCompiler,
   utsPlugins,
-  AutoImportOptions,
 } from '@dcloudio/uni-cli-shared'
 import {
   DEFAULT_APPID,
@@ -21,19 +22,16 @@ import {
   getUniCloudObjectInfo,
   getExtApiComponents,
   UVUE_CLASS_NAME_PREFIX,
-  initAutoImportOnce,
-  getAutoImports,
   createTryResolve,
 } from './utils'
 import { getOutputManifestJson } from './manifestJson'
 import { configResolved, createUniOptions } from '../utils'
+import { genClassName } from '../..'
 
 const uniCloudSpaceList = getUniCloudSpaceList()
 
 let isFirst = true
-export function uniAppPlugin(options: {
-  autoImportOptions?: AutoImportOptions
-}): UniVitePlugin {
+export function uniAppPlugin(): UniVitePlugin {
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
   const mainUTS = resolveMainPathOnce(inputDir)
@@ -48,8 +46,6 @@ export function uniAppPlugin(options: {
     }
   }
   emptyOutDir()
-
-  const autoImport = initAutoImportOnce(options.autoImportOptions)
 
   return {
     name: 'uni:app-uts',
@@ -124,10 +120,7 @@ export function uniAppPlugin(options: {
         this.emitFile({
           type: 'asset',
           fileName: normalizeFilename(fileName, isMainUTS),
-          source: normalizeCode(
-            (await autoImport.transform!(code, id)).code,
-            isMainUTS
-          ),
+          source: normalizeCode(code, isMainUTS),
         })
       }
       code = await parseImports(
@@ -135,6 +128,10 @@ export function uniAppPlugin(options: {
         createTryResolve(id, this.resolve.bind(this))
       )
       return code
+    },
+    generateBundle(_, bundle) {
+      // 开发者仅在 script 中引入了 easyCom 类型，但模板里边没用到，此时额外生成一个辅助的.uvue文件
+      checkUTSEasyComAutoImports(inputDir, bundle, this)
     },
     async writeBundle() {
       let pageCount = 0
@@ -164,7 +161,7 @@ export function uniAppPlugin(options: {
           ),
           extApiComponents: [...getExtApiComponents()],
           uvueClassNamePrefix: UVUE_CLASS_NAME_PREFIX,
-          autoImports: getAutoImports(),
+          autoImports: getUTSEasyComAutoImports(),
         }
       )
       if (res) {
@@ -238,4 +235,28 @@ export function main(app: IApp) {
     (createApp()['app'] as VueApp).mount(app);
 }
 `
+}
+
+function checkUTSEasyComAutoImports(
+  inputDir: string,
+  bundle: OutputBundle,
+  ctx: PluginContext
+) {
+  const res = getUTSEasyComAutoImports()
+  Object.keys(res).forEach((fileName) => {
+    if (fileName.startsWith('@/')) {
+      fileName = fileName.slice(2)
+    }
+    const relativeFileName = parseUTSRelativeFilename(fileName, inputDir)
+    if (!bundle[relativeFileName]) {
+      const className = genClassName(relativeFileName, UVUE_CLASS_NAME_PREFIX)
+      ctx.emitFile({
+        type: 'asset',
+        fileName: relativeFileName,
+        source: `function ${className}Render(): any | null { return null }
+const ${className}Styles = []`,
+      })
+    }
+  })
+  return res
 }
