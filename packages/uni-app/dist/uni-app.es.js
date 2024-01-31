@@ -123,4 +123,11 @@ const onNavigationBarSearchInputFocusChanged =
 const onPageHide = onHide;
 const onPageShow = onShow;
 
-export { formatAppLog, formatH5Log, getCurrentSubNVue, getSsrGlobalData, onAddToFavorites, onBackPress, onError, onExit, onHide, onInit, onLaunch, onLoad, onNavigationBarButtonTap, onNavigationBarSearchInputChanged, onNavigationBarSearchInputClicked, onNavigationBarSearchInputConfirmed, onNavigationBarSearchInputFocusChanged, onPageHide, onPageNotFound, onPageScroll, onPageShow, onPullDownRefresh, onReachBottom, onReady, onResize, onSaveExitState, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, requireNativePlugin, resolveEasycom, shallowSsrRef, ssrRef };
+function renderComponentSlot(slots, name, props = null) {
+    if (slots[name]) {
+        return slots[name](props);
+    }
+    return null;
+}
+
+export { formatAppLog, formatH5Log, getCurrentSubNVue, getSsrGlobalData, onAddToFavorites, onBackPress, onError, onExit, onHide, onInit, onLaunch, onLoad, onNavigationBarButtonTap, onNavigationBarSearchInputChanged, onNavigationBarSearchInputClicked, onNavigationBarSearchInputConfirmed, onNavigationBarSearchInputFocusChanged, onPageHide, onPageNotFound, onPageScroll, onPageShow, onPullDownRefresh, onReachBottom, onReady, onResize, onSaveExitState, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, renderComponentSlot, requireNativePlugin, resolveEasycom, shallowSsrRef, ssrRef };

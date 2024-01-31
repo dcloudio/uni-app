@@ -7,6 +7,7 @@ import { hasOwn } from '@vue/shared';
 import { isPlainObject } from '@vue/shared';
 import { ref } from 'vue';
 import { shallowRef } from 'vue';
+import type { Slots } from 'vue';
 
 export { capitalize }
 
@@ -93,6 +94,8 @@ export declare const onThemeChange: (hook: (options: UniApp.OnThemeChangeCallbac
 export declare const onUnhandledRejection: (hook: (options: UniApp.OnUnhandledRejectionCallbackResult) => void, target?: ComponentInternalInstance | null) => void;
 
 export declare const onUnload: (hook: () => any, target?: ComponentInternalInstance | null) => void;
+
+export declare function renderComponentSlot(slots: Slots, name: string, props?: any): any;
 
 export declare function requireNativePlugin(name: string): any;
 

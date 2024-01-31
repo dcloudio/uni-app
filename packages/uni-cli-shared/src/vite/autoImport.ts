@@ -31,6 +31,8 @@ const uniPreset = {
     'onTabItemTap',
     'onReachBottom',
     'onPullDownRefresh',
+    // 辅助
+    'renderComponentSlot',
   ],
 }
 const uniH5Preset = {
