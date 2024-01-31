@@ -8134,7 +8134,7 @@ function _createVNode(type, props = null, children = null, patchFlag = 0, dynami
         props = guardReactiveProps(props);
         let { class: klass, style } = props;
         if (klass && !shared.isString(klass)) {
-            props.class = shared.normalizeClass(klass);
+            props.class = uniShared.normalizeClass(klass);
         }
         if (shared.isObject(style)) {
             // reactive state objects need to be cloned since they are likely to be
@@ -8142,7 +8142,7 @@ function _createVNode(type, props = null, children = null, patchFlag = 0, dynami
             if (isProxy(style) && !shared.isArray(style)) {
                 style = shared.extend({}, style);
             }
-            props.style = shared.normalizeStyle(style);
+            props.style = uniShared.normalizeStyle(style);
         }
     }
     // encode the vnode type information into a bitmap
@@ -8363,11 +8363,11 @@ function mergeProps(...args) {
         for (const key in toMerge) {
             if (key === 'class') {
                 if (ret.class !== toMerge.class) {
-                    ret.class = shared.normalizeClass([ret.class, toMerge.class]);
+                    ret.class = uniShared.normalizeClass([ret.class, toMerge.class]);
                 }
             }
             else if (key === 'style') {
-                ret.style = shared.normalizeStyle([ret.style, toMerge.style]);
+                ret.style = uniShared.normalizeStyle([ret.style, toMerge.style]);
             }
             else if (shared.isOn(key)) {
                 const existing = ret[key];
@@ -10983,11 +10983,11 @@ const compile = () => {
 
 exports.camelize = shared.camelize;
 exports.capitalize = shared.capitalize;
-exports.normalizeClass = shared.normalizeClass;
-exports.normalizeProps = shared.normalizeProps;
-exports.normalizeStyle = shared.normalizeStyle;
 exports.toDisplayString = shared.toDisplayString;
 exports.toHandlerKey = shared.toHandlerKey;
+exports.normalizeClass = uniShared.normalizeClass;
+exports.normalizeProps = uniShared.normalizeProps;
+exports.normalizeStyle = uniShared.normalizeStyle;
 exports.BaseTransition = BaseTransition;
 exports.BaseTransitionPropsValidators = BaseTransitionPropsValidators;
 exports.Comment = Comment;
