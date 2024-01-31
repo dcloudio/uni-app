@@ -262,8 +262,15 @@ export function initProperties (props, isBehavior = false, file = '', options) {
         value: null
       }
     }
-    if (__PLATFORM__ === 'mp-weixin' || __PLATFORM__ === 'mp-alipay') {
+    if (
+      __PLATFORM__ === 'mp-weixin' ||
+      __PLATFORM__ === 'mp-alipay' ||
+      __PLATFORM__ === 'mp-toutiao'
+    ) {
       if (__PLATFORM__ === 'mp-alipay' || options.virtualHost) {
+        if (__PLATFORM__ === 'mp-toutiao') {
+          options.applyFragment = true
+        }
         properties.virtualHostStyle = {
           type: null,
           value: ''
