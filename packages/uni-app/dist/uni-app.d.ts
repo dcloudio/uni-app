@@ -95,7 +95,7 @@ export declare const onUnhandledRejection: (hook: (options: UniApp.OnUnhandledRe
 
 export declare const onUnload: (hook: () => any, target?: ComponentInternalInstance | null) => void;
 
-export declare function renderComponentSlot(slots: Slots, name: string, props?: any): any;
+export declare function renderComponentSlot(slots: Slots, name: string, props?: any | null): any | null;
 
 export declare function requireNativePlugin(name: string): any;
 
