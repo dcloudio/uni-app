@@ -11533,20 +11533,20 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
         url
       } = props2;
       const hasHoverClass = props2.hoverClass && props2.hoverClass !== "none";
-      const navigatorTsx = createVNode("uni-navigator", mergeProps({
+      const innerNode = props2.renderLink ? createVNode("a", {
+        "class": "navigator-wrap",
+        "href": url,
+        "onClick": onEventPrevent,
+        "onMousedown": onEventPrevent
+      }, [slots.default && slots.default()], 40, ["href", "onClick", "onMousedown"]) : slots.default && slots.default();
+      return createVNode("uni-navigator", mergeProps({
         "class": hasHoverClass && hovering.value ? hoverClass : "",
         "ref": rootRef
       }, hasHoverClass && binding, vm ? vm.attrs : {}, {
         [__scopeId]: ""
       }, {
         "onClick": onClick
-      }), [slots.default && slots.default()], 16, ["onClick"]);
-      return props2.renderLink ? createVNode("a", {
-        "class": "navigator-wrap",
-        "href": url,
-        "onClick": onEventPrevent,
-        "onMousedown": onEventPrevent
-      }, [navigatorTsx], 40, ["href", "onClick", "onMousedown"]) : navigatorTsx;
+      }), [innerNode], 16, ["onClick"]);
     };
   }
 });
@@ -19925,6 +19925,9 @@ function parseValue(value) {
       const keys = Object.keys(object);
       if (keys.length === 2 && "data" in object) {
         if (typeof object.data === type) {
+          if (type === "object" && !Array.isArray(object.data)) {
+            return new globalThis.UTSJSONObject(object.data);
+          }
           return object.data;
         }
         if (type === "object" && /^\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}\.\d{3}Z$/.test(object.data)) {
@@ -20762,7 +20765,7 @@ const request = /* @__PURE__ */ defineTaskApi(
       let res = responseType === "text" ? xhr.responseText : xhr.response;
       if (responseType === "text" && dataType2 === "json") {
         try {
-          res = JSON.parse(res);
+          res = new globalThis.UTSJSONObject(JSON.parse(res));
         } catch (error) {
         }
       }

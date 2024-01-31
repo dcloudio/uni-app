@@ -5,6 +5,7 @@ import { ComponentOptionsBase as ComponentOptionsBase_2 } from 'vue';
 import type { ComponentPublicInstance } from '@vue/runtime-core';
 import { ComponentPublicInstance as ComponentPublicInstance_2 } from 'vue';
 import { createApp } from 'vue';
+import type { NormalizedStyle } from '@vue/shared';
 import type { RendererNode } from '@vue/runtime-core';
 
 export declare const ACTION_TYPE_ADD_EVENT = 8;
@@ -327,9 +328,15 @@ export declare const NODE_TYPE_PAGE = 0;
 
 export declare const NODE_TYPE_TEXT = 3;
 
+export declare function normalizeClass(value: unknown): string;
+
 export declare function normalizeDataset(el: Element): any;
 
 export declare function normalizeEventType(type: string, options?: AddEventListenerOptions): string;
+
+export declare function normalizeProps(props: Record<string, any> | null): Record<string, any> | null;
+
+export declare function normalizeStyle(value: unknown): NormalizedStyle | string | undefined;
 
 export declare function normalizeStyles<T extends Object>(pageStyle: T, themeConfig?: UniApp.ThemeJson, mode?: UniApp.ThemeMode): T;
 

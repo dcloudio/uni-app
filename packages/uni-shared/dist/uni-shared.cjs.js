@@ -345,6 +345,40 @@ const customizeRE = /:/g;
 function customizeEvent(str) {
     return shared.camelize(str.replace(customizeRE, '-'));
 }
+function normalizeStyle(value) {
+    if (!(value instanceof Map)) {
+        return shared.normalizeStyle(value);
+    }
+    const styleObject = {};
+    value.forEach((value, key) => {
+        styleObject[key] = value;
+    });
+    return styleObject;
+}
+function normalizeClass(value) {
+    if (!(value instanceof Map)) {
+        return shared.normalizeClass(value);
+    }
+    let res = '';
+    value.forEach((value, key) => {
+        if (value) {
+            res += key + ' ';
+        }
+    });
+    return res.trim();
+}
+function normalizeProps(props) {
+    if (!props)
+        return null;
+    let { class: klass, style } = props;
+    if (klass && typeof klass !== 'string') {
+        props.class = normalizeClass(klass);
+    }
+    if (style) {
+        props.style = normalizeStyle(style);
+    }
+    return props;
+}
 
 let lastLogTime = 0;
 function formatLog(module, ...args) {
@@ -1643,8 +1677,11 @@ exports.isRootHook = isRootHook;
 exports.isRootImmediateHook = isRootImmediateHook;
 exports.isUniLifecycleHook = isUniLifecycleHook;
 exports.isUniXElement = isUniXElement;
+exports.normalizeClass = normalizeClass;
 exports.normalizeDataset = normalizeDataset;
 exports.normalizeEventType = normalizeEventType;
+exports.normalizeProps = normalizeProps;
+exports.normalizeStyle = normalizeStyle;
 exports.normalizeStyles = normalizeStyles;
 exports.normalizeTabBarStyles = normalizeTabBarStyles;
 exports.normalizeTarget = normalizeTarget;
