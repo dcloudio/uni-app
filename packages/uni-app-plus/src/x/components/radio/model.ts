@@ -34,7 +34,7 @@ export const radioProps = {
     default: false,
   },
   value: {
-    type: Object,
+    type: [Object, String],
     default: '',
   },
   // 选中时的背景颜色

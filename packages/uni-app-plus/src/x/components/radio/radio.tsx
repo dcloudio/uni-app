@@ -1,33 +1,5 @@
-<template>
-  <uni-radio-element
-    dataUncType="uni-radio"
-    class="uni-radio"
-    :style="styleUniRadio"
-    @click="_onClick"
-  >
-    <view class="uni-radio-input" :style="styleUniRadioInput">
-      <text
-        v-if="radioChecked"
-        class="uni-radio-input-icon"
-        :style="styleUniRadioInputIcon"
-      >
-        {{ icon }}
-      </text>
-    </view>
-    <slot />
-  </uni-radio-element>
-</template>
-<script lang="ts">
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
-// import { $dispatch } from '../../utils'
-import {
-  watchEffect,
-  ref,
-  camelize,
-  computed,
-  onMounted,
-  ComponentInternalInstance,
-} from 'vue'
+import { watchEffect, ref, computed, onMounted, StyleValue } from 'vue'
 import {
   RADIO_NAME,
   RADIO_ROOT_ELEMENT,
@@ -37,6 +9,7 @@ import {
 import { onUnmounted } from 'vue'
 import { getCurrentInstance } from 'vue'
 import { styleList } from './style'
+import { $dispatch } from '../../utils'
 
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: RADIO_NAME,
@@ -47,16 +20,17 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   },
   props: radioProps,
   styles: styleList,
+  setup(props, { slots, expose }) {
+    const uniRadioElementRef = ref<UniRadioElement>()
 
-  setup(props, { emit, expose }) {
-    const styleUniRadio = styleList['uni-radio']['']
-
+    // style 样式
+    const styleUniRadio = computed(() => styleList['uni-radio'][''])
     const styleUniRadioInput = computed(() => {
       return Object.assign(
         {},
         styleList['uni-radio-input'][''],
         radioChecked.value ? checkedStyle.value : uncheckedStyle.value
-      )
+      ) as StyleValue
     })
     const styleUniRadioInputIcon = computed(() => {
       return Object.assign(
@@ -64,22 +38,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         styleList['uni-radio-input-icon'][''],
         iconStyle.value
       )
-    })
-
-    // data
-    let $uniRadioElement: null | UniRadioElement = null
-    const icon = '\uEA08'
-    const radioChecked = ref(props.checked)
-    const radioValue = ref(props.value.toString())
-
-    // this.radioValue = this.value.toString()
-
-    watchEffect(() => {
-      radioChecked.value = props.checked
-    })
-
-    watchEffect(() => {
-      radioValue.value = props.value.toString()
     })
     const checkedStyle = computed(() => {
       if (props.disabled) {
@@ -105,7 +63,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         borderColor: borderColor,
       }
     })
-
     const uncheckedStyle = computed(() => {
       if (props.disabled) {
         return {
@@ -118,24 +75,44 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         borderColor: props.borderColor,
       }
     })
-
     const iconStyle = computed(() => {
       return {
         color: props.disabled ? '#adadad' : props.iconColor,
       }
     })
 
-    let instance: ComponentInternalInstance | null = null
+    // data
+    const icon = '\uEA08'
+    const radioChecked = ref(props.checked)
+    const radioValue = ref(props.value.toString())
+
+    watchEffect(() => {
+      radioChecked.value = props.checked
+    })
+
+    const setRadioChecked = (value: boolean) => {
+      radioChecked.value = value
+    }
+
+    watchEffect(() => {
+      radioValue.value = props.value.toString()
+    })
+
+    expose({
+      radioValue,
+    })
+
+    let instance = getCurrentInstance()
 
     onMounted(() => {
-      instance = getCurrentInstance()
-
       instance?.$waitNativeRender(() => {
         if (instance === null) return
-        $uniRadioElement = instance.proxy?.$el as UniRadioElement
 
-        $uniRadioElement!._getAttribute = (key: string): string | null => {
-          const keyString = camelize(key)
+        uniRadioElementRef.value!._getAttribute = (
+          key: string
+        ): string | null => {
+          // const keyString = camelize(key)
+
           // if (this.$props.has(keyString)) {
           //       const value = this.$props.get(keyString)
           //       if (value != null) {
@@ -146,29 +123,78 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           return null
         }
       })
-      // $dispatch(this, 'RadioGroup', '_radioGroupUpdateHandler', this, 'add')
+
+      // 初始化提供值
+      const ctx = instance?.proxy
+      $dispatch(
+        ctx,
+        'RadioGroup',
+        '_radioGroupUpdateHandler',
+        {
+          name: radioValue.value,
+          checked: radioChecked.value,
+          setRadioChecked,
+        },
+        'add'
+      )
     })
 
     onUnmounted(() => {
-      // $dispatch(this, 'RadioGroup', '_radioGroupUpdateHandler', this, 'remove')
+      const ctx = instance?.proxy
+      $dispatch(
+        ctx,
+        'RadioGroup',
+        '_radioGroupUpdateHandler',
+        {
+          name: radioValue.value,
+          checked: radioChecked.value,
+          setRadioChecked,
+        },
+        'remove'
+      )
     })
 
     const _onClick = () => {
+      // 只允许点击一次，从不选中到选中
       if (props.disabled || radioChecked.value) return
       radioChecked.value = !radioChecked.value
-      // $dispatch(this, 'RadioGroup', '_changeHandler', this)
+
+      const ctx = instance?.proxy
+      // 通知 group 发生变化，需要携带当前的 name
+      $dispatch(
+        ctx,
+        'RadioGroup',
+        '_changeHandler',
+        // more info
+        {
+          name: radioValue.value,
+          checked: radioChecked.value,
+          setRadioChecked,
+        }
+      )
     }
-    return {
-      _onClick,
-      checkedStyle,
-      uncheckedStyle,
-      iconStyle,
-      icon,
-      styleUniRadio,
-      radioChecked,
-      styleUniRadioInput,
-      styleUniRadioInputIcon,
+    return () => {
+      return (
+        <uni-radio-element
+          dataUncType="uni-radio"
+          class="uni-radio"
+          style={styleUniRadio.value}
+          ref={uniRadioElementRef}
+          onClick={_onClick}
+        >
+          <view class="uni-radio-input" style={styleUniRadioInput.value}>
+            {radioChecked.value ? (
+              <text
+                class="uni-radio-input-icon"
+                style={styleUniRadioInputIcon.value}
+              >
+                {icon}
+              </text>
+            ) : null}
+          </view>
+          {slots.default?.()}
+        </uni-radio-element>
+      )
     }
   },
 })
-</script>
