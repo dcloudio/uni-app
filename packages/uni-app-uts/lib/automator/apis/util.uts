@@ -193,6 +193,7 @@ export function getValidComponentsOrNodes(
       })
     } else {
       list.push({
+        // @ts-expect-error
         elementId: (vnode.el as UniElementImpl).id,
         tagName: vnode.el!.tagName,
       })
@@ -292,7 +293,8 @@ export function getChildrenText(node: UniElement): string {
   let result = ''
   // @ts-ignore
   node.childNodes.forEach((child: UniElement) => {
-    if (child.tagName == 'TEXT' || child.tagName == 'UNI-BUTTON-ELEMENT') {
+    // @ts-expect-error
+    if (isTextElement(child)) {
       result += child.getAttribute('value')
     } else {
       result += getChildrenText(child)
