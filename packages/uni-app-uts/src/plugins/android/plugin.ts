@@ -244,18 +244,20 @@ function checkUTSEasyComAutoImports(
 ) {
   const res = getUTSEasyComAutoImports()
   Object.keys(res).forEach((fileName) => {
-    if (fileName.startsWith('@/')) {
-      fileName = fileName.slice(2)
-    }
-    const relativeFileName = parseUTSRelativeFilename(fileName, inputDir)
-    if (!bundle[relativeFileName]) {
-      const className = genClassName(relativeFileName, UVUE_CLASS_NAME_PREFIX)
-      ctx.emitFile({
-        type: 'asset',
-        fileName: relativeFileName,
-        source: `function ${className}Render(): any | null { return null }
+    if (fileName.endsWith('.vue') || fileName.endsWith('.uvue')) {
+      if (fileName.startsWith('@/')) {
+        fileName = fileName.slice(2)
+      }
+      const relativeFileName = parseUTSRelativeFilename(fileName, inputDir)
+      if (!bundle[relativeFileName]) {
+        const className = genClassName(relativeFileName, UVUE_CLASS_NAME_PREFIX)
+        ctx.emitFile({
+          type: 'asset',
+          fileName: relativeFileName,
+          source: `function ${className}Render(): any | null { return null }
 const ${className}Styles = []`,
-      })
+        })
+      }
     }
   })
   return res
