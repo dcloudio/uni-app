@@ -109,7 +109,7 @@ export async function buildUVue(
   return buildByVite(
     addConfigFile(
       extend(
-        { nvueAppService: true, nvue: true },
+        { nvueAppService: true, uvue: true },
         initBuildOptions(options, cleanOptions(options) as BuildOptions)
       )
     )

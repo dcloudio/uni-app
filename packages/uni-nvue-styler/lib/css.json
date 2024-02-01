@@ -6566,7 +6566,8 @@
         }
       },
       "defaultValue": {
-        "uvue": "none",
+        "uvue-app": "none",
+        "uvue-web": "all",
         "w3c": "all"
       }
     },
