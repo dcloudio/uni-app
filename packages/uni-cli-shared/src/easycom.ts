@@ -145,6 +145,7 @@ function initEasycom({
   extensions,
 }: EasycomOption) {
   clearEasycom()
+  rootDir = normalizePath(rootDir)
   const easycomsObj = Object.create(null)
   if (dirs && dirs.length && rootDir) {
     const autoEasyComObj = initAutoScanEasycoms(dirs, rootDir, extensions)
@@ -345,6 +346,7 @@ export function genUTSComponentPublicInstanceImported(
   root: string,
   fileName: string
 ) {
+  root = normalizePath(root)
   if (path.isAbsolute(fileName) && fileName.startsWith(root)) {
     fileName = normalizePath(path.relative(root, fileName))
   }
