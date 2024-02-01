@@ -6,7 +6,7 @@ import {
   computed,
   ref,
   watchEffect,
-  ComponentInternalInstance,
+  StyleValue,
 } from 'vue'
 
 import { $dispatch } from '../../utils'
@@ -28,14 +28,18 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   },
   props: checkboxProps,
   emits: ['click'],
-  setup(props, { emit, slots, expose }) {
+  setup(props, { emit, slots }) {
     // data
     const icon = '\uEA08'
 
-    let instance: ComponentInternalInstance | null = null
+    const instance = getCurrentInstance()
 
     const checkboxChecked = ref(props.checked)
     const checkboxValue = ref('')
+
+    const setCheckboxChecked = (checked: boolean) => {
+      checkboxChecked.value = checked
+    }
 
     watchEffect(() => {
       checkboxChecked.value = props.checked
@@ -45,7 +49,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       checkboxValue.value = props.value.toString()
     })
 
-    // computed
+    // styles
     const iconStyle = computed(() => {
       if (props.disabled) {
         return Object.assign({}, styles['uni-icon'])
@@ -56,10 +60,14 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     })
 
     const checkInputStyle = computed(() => {
-      const r = checkboxChecked.value
+      const style = checkboxChecked.value
         ? checkedStyle.value
         : uncheckedStyle.value
-      return Object.assign({}, styles['uni-checkbox-input'], r) as any
+      return Object.assign(
+        {},
+        styles['uni-checkbox-input'],
+        style
+      ) as StyleValue
     })
 
     const checkedStyle = computed(() => {
@@ -89,10 +97,18 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     })
 
     onMounted(() => {
-      instance = getCurrentInstance()
-
       const ctx = instance?.proxy
-      $dispatch(ctx, 'CheckboxGroup', '_checkboxGroupUpdateHandler', ctx, 'add')
+      $dispatch(
+        ctx,
+        'CheckboxGroup',
+        '_checkboxGroupUpdateHandler',
+        {
+          setCheckboxChecked,
+          name: checkboxValue.value,
+          checked: checkboxChecked.value,
+        },
+        'add'
+      )
     })
 
     onUnload(() => {
@@ -101,19 +117,26 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         ctx,
         'CheckboxGroup',
         '_checkboxGroupUpdateHandler',
-        ctx,
+        {
+          setCheckboxChecked,
+          name: checkboxValue.value,
+          checked: checkboxChecked.value,
+        },
         'remove'
       )
     })
 
-    // methods
     const _onClick = ($event: PointerEvent) => {
       if (props.disabled) return
       emit('click', $event)
       checkboxChecked.value = !checkboxChecked.value
 
       const ctx = instance?.proxy
-      $dispatch(ctx, 'CheckboxGroup', '_changeHandler')
+      $dispatch(ctx, 'CheckboxGroup', '_changeHandler', {
+        name: checkboxValue.value,
+        checked: checkboxChecked.value,
+        setCheckboxChecked,
+      })
     }
 
     return () => {
