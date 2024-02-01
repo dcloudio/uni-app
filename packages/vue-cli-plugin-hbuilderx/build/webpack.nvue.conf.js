@@ -397,7 +397,8 @@ module.exports = function () {
     }),
     output: {
       path: process.env.UNI_OUTPUT_DIR,
-      filename: '[name].js'
+      filename: '[name].js',
+      publicPath: '/'
     },
     resolve: {
       extensions: ['.ts', '.js', '.nvue', '.vue', '.json'],
