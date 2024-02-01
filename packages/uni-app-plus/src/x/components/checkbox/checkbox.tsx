@@ -91,12 +91,12 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     onMounted(() => {
       instance = getCurrentInstance()
 
-      const ctx = instance?.parent?.proxy
+      const ctx = instance?.proxy
       $dispatch(ctx, 'CheckboxGroup', '_checkboxGroupUpdateHandler', ctx, 'add')
     })
 
     onUnload(() => {
-      const ctx = instance?.parent?.proxy
+      const ctx = instance?.proxy
       $dispatch(
         ctx,
         'CheckboxGroup',
@@ -112,7 +112,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       emit('click', $event)
       checkboxChecked.value = !checkboxChecked.value
 
-      const ctx = instance?.parent?.proxy
+      const ctx = instance?.proxy
       $dispatch(ctx, 'CheckboxGroup', '_changeHandler')
     }
 

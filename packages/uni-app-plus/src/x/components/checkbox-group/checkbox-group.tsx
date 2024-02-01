@@ -16,6 +16,7 @@ import {
   defineExpose,
   ref,
 } from 'vue'
+import { $dispatch } from '../../utils'
 
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: CHECKBOX_GROUP_NAME,
@@ -81,15 +82,24 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     }
 
     onMounted(() => {
-      if (instance === null) return
+      instance?.$waitNativeRender(() => {
+        if (instance === null) return
 
-      instance.$waitNativeRender(() => {
         if (!uniCheckboxGroupElementRef.value) return
 
         uniCheckboxGroupElementRef.value._getValue = _getValue
         uniCheckboxGroupElementRef.value._setValue = _setValue
         uniCheckboxGroupElementRef.value._initialValue = _getValue()
-        // $dispatch(this, 'Form', 'formControlUpdate', this.$uniCheckboxGroupElement, 'add')
+
+        const ctx = instance.proxy
+
+        $dispatch(
+          ctx,
+          'Form',
+          'formControlUpdate',
+          uniCheckboxGroupElementRef,
+          'add'
+        )
       })
     })
 

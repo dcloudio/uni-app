@@ -1,6 +1,11 @@
 /// <reference types="@dcloudio/uni-app-x/types/native-global" />
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
-import { onMounted, getCurrentInstance, computed } from 'vue'
+import {
+  onMounted,
+  getCurrentInstance,
+  computed,
+  ComponentInternalInstance,
+} from 'vue'
 import {
   $dispatch,
   BUTTON_COMPONENT_NAME,
@@ -37,6 +42,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     let $hoverStayTimer: NodeJS.Timeout | null = null
     let $hoverTouch = false
     let $hovering = false
+
+    let instance: ComponentInternalInstance | null
 
     const btnCls = computed(() => {
       let cl = 'ub-' + props.type
@@ -79,14 +86,14 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     }
 
     onMounted(() => {
-      const instance = getCurrentInstance()
-      if (instance) {
-        instance.$waitNativeRender(() => {
-          // $buttonEl = instance.proxy?.$el as UniElement
-          $buttonEl = instance.proxy?.$el as UniButtonElement
-          parseHoverClass()
-        })
-      }
+      instance = getCurrentInstance()
+
+      instance?.$waitNativeRender(() => {
+        if (!instance) return
+        // $buttonEl = instance.proxy?.$el as UniElement
+        $buttonEl = instance.proxy?.$el as UniButtonElement
+        parseHoverClass()
+      })
     })
 
     function setHoverStyle() {
@@ -193,8 +200,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       // emit('click', $event)
 
       if (FORM_TYPES.indexOf(props.formType) > -1) {
-        const instance = getCurrentInstance()
-        const ctx = instance?.parent?.proxy
+        const ctx = instance?.proxy
         $dispatch(ctx, 'Form', props.formType)
       }
     }
