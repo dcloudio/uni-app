@@ -1607,6 +1607,7 @@ function isPreProcessor(lang: any): lang is PreprocessLang {
   return lang && lang in preProcessors
 }
 
+const preCssExtNames = ['.scss', '.sass', '.styl', '.stylus']
 /**
  * 重写 readFileSync
  * 目前主要解决 scss 文件被 @import 的条件编译
@@ -1617,8 +1618,8 @@ export function rewriteScssReadFileSync() {
     const content = readFileSync(filepath, options)
     if (
       isString(filepath) &&
-      path.extname(filepath) === '.scss' &&
       isString(content) &&
+      preCssExtNames.includes(path.extname(filepath)) &&
       content.includes('#endif')
     ) {
       return preCss(content)
