@@ -23,11 +23,6 @@ export function uniUTSExtApiReplace(): Plugin {
     configResolved(config) {
       const index = config.plugins.findIndex((p) => p.name === 'uts')
       if (index > -1) {
-        const injects = parseUniExtApisOnce(
-          true,
-          process.env.UNI_UTS_PLATFORM,
-          'javascript'
-        )
         if (Object.keys(injects).length) {
           // @ts-expect-error
           config.plugins.splice(
@@ -36,13 +31,7 @@ export function uniUTSExtApiReplace(): Plugin {
             AutoImport({
               include: [/\.[u]?ts$/, /\.[u]?vue/],
               exclude: [/[\\/]\.git[\\/]/],
-              imports: injectsToAutoImports(
-                parseUniExtApisOnce(
-                  true,
-                  process.env.UNI_UTS_PLATFORM,
-                  'javascript'
-                )
-              ),
+              imports: injectsToAutoImports(injects),
               dts: false,
             })
           )
