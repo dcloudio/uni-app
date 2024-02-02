@@ -7,6 +7,9 @@ import type {
 import {
   camelize,
   hyphenate,
+  isArray,
+  isString,
+  parseStringStyle,
   normalizeClass as vueNormalizeClass,
   normalizeStyle as vueNormalizeStyle,
 } from '@vue/shared'
@@ -90,33 +93,56 @@ export function customizeEvent(str: string) {
 export function normalizeStyle(
   value: unknown
 ): NormalizedStyle | string | undefined {
-  if (!(value instanceof Map)) {
+  if (value instanceof Map) {
+    const styleObject: NormalizedStyle = {}
+    value.forEach((value, key) => {
+      styleObject[key] = value
+    })
+    return vueNormalizeStyle(styleObject)
+  } else if (isArray(value)) {
+    const res: NormalizedStyle = {}
+    for (let i = 0; i < value.length; i++) {
+      const item = value[i]
+      const normalized = isString(item)
+        ? parseStringStyle(item)
+        : (normalizeStyle(item) as NormalizedStyle)
+      if (normalized) {
+        for (const key in normalized) {
+          res[key] = normalized[key]
+        }
+      }
+    }
+    return res
+  } else {
     return vueNormalizeStyle(value)
   }
-  const styleObject: NormalizedStyle = {}
-  value.forEach((value, key) => {
-    styleObject[key] = value
-  })
-  return styleObject
 }
 
 export function normalizeClass(value: unknown): string {
-  if (!(value instanceof Map)) {
-    return vueNormalizeClass(value)
-  }
   let res = ''
-  value.forEach((value, key) => {
-    if (value) {
-      res += key + ' '
+  if (value instanceof Map) {
+    value.forEach((value, key) => {
+      if (value) {
+        res += key + ' '
+      }
+    })
+  } else if (isArray(value)) {
+    for (let i = 0; i < value.length; i++) {
+      const normalized = normalizeClass(value[i])
+      if (normalized) {
+        res += normalized + ' '
+      }
     }
-  })
+  } else {
+    res = vueNormalizeClass(value)
+  }
   return res.trim()
 }
 
 export function normalizeProps(props: Record<string, any> | null) {
   if (!props) return null
   let { class: klass, style } = props
-  if (klass && typeof klass !== 'string') {
+  if (klass && !isString(klass)) {
     props.class = normalizeClass(klass)
   }
   if (style) {
