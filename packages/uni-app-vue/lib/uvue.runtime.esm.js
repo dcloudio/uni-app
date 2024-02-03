@@ -1,8 +1,9 @@
-import { isString, isFunction, isPromise, isArray, NOOP, getGlobalThis, extend as extend$1, EMPTY_OBJ, toHandlerKey, looseToNumber, hyphenate, camelize, isObject, isOn, hasOwn, isModelListener, toNumber, hasChanged, remove, isSet, isMap, isPlainObject, invokeArrayFns, isRegExp, isBuiltInDirective, capitalize, isGloballyWhitelisted, def, isReservedProp, EMPTY_ARR, toRawType, makeMap, NO, normalizeClass, normalizeStyle, parseStringStyle } from '@vue/shared';
-export { camelize, capitalize, hyphenate, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
+import { isString, isFunction, isPromise, isArray, NOOP, getGlobalThis, extend as extend$1, EMPTY_OBJ, toHandlerKey, looseToNumber, hyphenate, camelize, isObject, isOn, hasOwn, isModelListener, toNumber, hasChanged, remove, isSet, isMap, isPlainObject, invokeArrayFns, isRegExp, isBuiltInDirective, capitalize, isGloballyWhitelisted, def, isReservedProp, EMPTY_ARR, toRawType, makeMap, NO, parseStringStyle, normalizeStyle as normalizeStyle$1 } from '@vue/shared';
+export { camelize, capitalize, hyphenate, toDisplayString, toHandlerKey } from '@vue/shared';
+import { isRootHook, isRootImmediateHook, ON_LOAD, normalizeClass, normalizeStyle } from '@dcloudio/uni-shared';
+export { normalizeClass, normalizeProps, normalizeStyle } from '@dcloudio/uni-shared';
 import { pauseTracking, resetTracking, isRef, toRaw, getCurrentScope, isShallow as isShallow$1, isReactive, ReactiveEffect, ref, shallowReadonly, track, reactive, shallowReactive, trigger, isProxy, proxyRefs, markRaw, EffectScope, computed as computed$1, isReadonly } from '@vue/reactivity';
 export { EffectScope, ReactiveEffect, customRef, effect, effectScope, getCurrentScope, isProxy, isReactive, isReadonly, isRef, isShallow, markRaw, onScopeDispose, proxyRefs, reactive, readonly, ref, shallowReactive, shallowReadonly, shallowRef, stop, toRaw, toRef, toRefs, triggerRef, unref } from '@vue/reactivity';
-import { isRootHook, isRootImmediateHook, ON_LOAD } from '@dcloudio/uni-shared';
 
 const stack = [];
 function pushWarningContext(vnode) {
@@ -3101,7 +3102,7 @@ const publicPropertiesMap =
     $emit: i => i.emit,
     $options: i => (__VUE_OPTIONS_API__ ? resolveMergedOptions(i) : i.type),
     $forceUpdate: i => i.f || (i.f = () => queueJob(i.update)),
-    $nextTick: i => i.n || (i.n = nextTick.bind(i.proxy)),
+    $nextTick: i => i.n || (i.n = (fn) => nextTick.bind(i.proxy)(fn, i)),
     $watch: i => (__VUE_OPTIONS_API__ ? instanceWatch.bind(i) : NOOP)
 });
 const isReservedPrefix = (key) => key === '_' || key === '$';
@@ -7228,8 +7229,15 @@ function createComponentInstance(vnode, parent, suspense) {
         ec: null,
         sp: null,
         $waitNativeRender(fn) {
-            // TODO use native
-            setTimeout(fn, 150);
+            var _a, _b;
+            // TODO find document by ComponentInternalInstance props
+            const document = (_b = __pageManager.findPageById(((_a = this.root.proxy) === null || _a === void 0 ? void 0 : _a.$el).pageId)) === null || _b === void 0 ? void 0 : _b.document;
+            if (document) {
+                document.waitNativeRender(fn);
+            }
+            else {
+                fn();
+            }
         }
     };
     if ((process.env.NODE_ENV !== 'production')) {
@@ -8165,7 +8173,8 @@ function parseClassStyles(el) {
     return parseClassListWithStyleSheet(el.classList, styles, el);
 }
 function parseClassList(classList, instance, el = null) {
-    return parseClassListWithStyleSheet(classList, parseStyleSheet(instance), el);
+    return parseClassListWithStyleSheet(classList, parseStyleSheet(instance), el)
+        .styles;
 }
 function parseStyleSheet({ type, appContext, root }) {
     const component = type;
@@ -8372,7 +8381,7 @@ function transformAttr(el, key, value, instance) {
             if (isString(value)) {
                 return [camelized, parseStringStyle(value)];
             }
-            return [camelized, normalizeStyle(value)];
+            return [camelized, normalizeStyle$1(value)];
         }
     }
     return [key, value];

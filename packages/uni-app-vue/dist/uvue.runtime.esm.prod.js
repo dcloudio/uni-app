@@ -92,12 +92,12 @@ var getGlobalThis = () => {
 var GLOBALS_ALLOWED = "Infinity,undefined,NaN,isFinite,isNaN,parseFloat,parseInt,decodeURI,decodeURIComponent,encodeURI,encodeURIComponent,Math,Number,Date,Array,Object,Boolean,String,RegExp,Map,Set,JSON,Intl,BigInt,console";
 var isGloballyAllowed = /* @__PURE__ */makeMap(GLOBALS_ALLOWED);
 var isGloballyWhitelisted = isGloballyAllowed;
-function normalizeStyle(value) {
+function normalizeStyle$1(value) {
   if (isArray(value)) {
     var res = {};
     for (var i = 0; i < value.length; i++) {
       var item = value[i];
-      var normalized = isString(item) ? parseStringStyle(item) : normalizeStyle(item);
+      var normalized = isString(item) ? parseStringStyle(item) : normalizeStyle$1(item);
       if (normalized) {
         for (var key in normalized) {
           res[key] = normalized[key];
@@ -122,13 +122,13 @@ function parseStringStyle(cssText) {
   });
   return ret;
 }
-function normalizeClass(value) {
+function normalizeClass$1(value) {
   var res = "";
   if (isString(value)) {
     res = value;
   } else if (isArray(value)) {
     for (var i = 0; i < value.length; i++) {
-      var normalized = normalizeClass(value[i]);
+      var normalized = normalizeClass$1(value[i]);
       if (normalized) {
         res += normalized + " ";
       }
@@ -141,20 +141,6 @@ function normalizeClass(value) {
     }
   }
   return res.trim();
-}
-function normalizeProps(props) {
-  if (!props) return null;
-  var {
-    class: klass,
-    style
-  } = props;
-  if (klass && !isString(klass)) {
-    props.class = normalizeClass(klass);
-  }
-  if (style) {
-    props.style = normalizeStyle(style);
-  }
-  return props;
 }
 var toDisplayString = val => {
   return isString(val) ? val : val == null ? "" : isArray(val) || isObject(val) && (val.toString === objectToString || !isFunction(val.toString)) ? JSON.stringify(val, replacer, 2) : String(val);
@@ -186,6 +172,97 @@ var stringifySymbol = function (v) {
   var _a;
   return isSymbol(v) ? "Symbol(".concat((_a = v.description) != null ? _a : i, ")") : v;
 };
+
+// lifecycle
+// App and Page
+var ON_SHOW = 'onShow';
+var ON_HIDE = 'onHide';
+//Page
+var ON_LOAD = 'onLoad';
+var ON_UNLOAD = 'onUnload';
+// 百度特有
+var ON_INIT = 'onInit';
+// 微信特有
+var ON_SAVE_EXIT_STATE = 'onSaveExitState';
+var ON_BACK_PRESS = 'onBackPress';
+var ON_PAGE_SCROLL = 'onPageScroll';
+var ON_TAB_ITEM_TAP = 'onTabItemTap';
+var ON_REACH_BOTTOM = 'onReachBottom';
+var ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
+var ON_SHARE_TIMELINE = 'onShareTimeline';
+var ON_ADD_TO_FAVORITES = 'onAddToFavorites';
+var ON_SHARE_APP_MESSAGE = 'onShareAppMessage';
+// navigationBar
+var ON_NAVIGATION_BAR_BUTTON_TAP = 'onNavigationBarButtonTap';
+var ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED = 'onNavigationBarSearchInputClicked';
+var ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED = 'onNavigationBarSearchInputChanged';
+var ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED = 'onNavigationBarSearchInputConfirmed';
+var ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED = 'onNavigationBarSearchInputFocusChanged';
+function normalizeStyle(value) {
+  if (value instanceof Map) {
+    var styleObject = {};
+    value.forEach((value, key) => {
+      styleObject[key] = value;
+    });
+    return normalizeStyle$1(styleObject);
+  } else if (isArray(value)) {
+    var res = {};
+    for (var i = 0; i < value.length; i++) {
+      var item = value[i];
+      var normalized = isString(item) ? parseStringStyle(item) : normalizeStyle(item);
+      if (normalized) {
+        for (var key in normalized) {
+          res[key] = normalized[key];
+        }
+      }
+    }
+    return res;
+  } else {
+    return normalizeStyle$1(value);
+  }
+}
+function normalizeClass(value) {
+  var res = '';
+  if (value instanceof Map) {
+    value.forEach((value, key) => {
+      if (value) {
+        res += key + ' ';
+      }
+    });
+  } else if (isArray(value)) {
+    for (var i = 0; i < value.length; i++) {
+      var normalized = normalizeClass(value[i]);
+      if (normalized) {
+        res += normalized + ' ';
+      }
+    }
+  } else {
+    res = normalizeClass$1(value);
+  }
+  return res.trim();
+}
+function normalizeProps(props) {
+  if (!props) return null;
+  var {
+    class: klass,
+    style
+  } = props;
+  if (klass && !isString(klass)) {
+    props.class = normalizeClass(klass);
+  }
+  if (style) {
+    props.style = normalizeStyle(style);
+  }
+  return props;
+}
+var PAGE_HOOKS = [ON_INIT, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SHARE_TIMELINE, ON_SHARE_APP_MESSAGE, ON_ADD_TO_FAVORITES, ON_SAVE_EXIT_STATE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED];
+var PAGE_SYNC_HOOKS = [ON_LOAD, ON_SHOW];
+function isRootImmediateHook(name) {
+  return PAGE_SYNC_HOOKS.indexOf(name) > -1;
+}
+function isRootHook(name) {
+  return PAGE_HOOKS.indexOf(name) > -1;
+}
 var activeEffectScope;
 class EffectScope {
   constructor() {
@@ -1220,40 +1297,6 @@ function computed$1(getterOrOptions, debugOptions) {
   }
   var cRef = new ComputedRefImpl(getter, setter, onlyGetter || !setter, isSSR);
   return cRef;
-}
-
-// lifecycle
-// App and Page
-var ON_SHOW = 'onShow';
-var ON_HIDE = 'onHide';
-//Page
-var ON_LOAD = 'onLoad';
-var ON_UNLOAD = 'onUnload';
-// 百度特有
-var ON_INIT = 'onInit';
-// 微信特有
-var ON_SAVE_EXIT_STATE = 'onSaveExitState';
-var ON_BACK_PRESS = 'onBackPress';
-var ON_PAGE_SCROLL = 'onPageScroll';
-var ON_TAB_ITEM_TAP = 'onTabItemTap';
-var ON_REACH_BOTTOM = 'onReachBottom';
-var ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
-var ON_SHARE_TIMELINE = 'onShareTimeline';
-var ON_ADD_TO_FAVORITES = 'onAddToFavorites';
-var ON_SHARE_APP_MESSAGE = 'onShareAppMessage';
-// navigationBar
-var ON_NAVIGATION_BAR_BUTTON_TAP = 'onNavigationBarButtonTap';
-var ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED = 'onNavigationBarSearchInputClicked';
-var ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED = 'onNavigationBarSearchInputChanged';
-var ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED = 'onNavigationBarSearchInputConfirmed';
-var ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED = 'onNavigationBarSearchInputFocusChanged';
-var PAGE_HOOKS = [ON_INIT, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SHARE_TIMELINE, ON_SHARE_APP_MESSAGE, ON_ADD_TO_FAVORITES, ON_SAVE_EXIT_STATE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED];
-var PAGE_SYNC_HOOKS = [ON_LOAD, ON_SHOW];
-function isRootImmediateHook(name) {
-  return PAGE_SYNC_HOOKS.indexOf(name) > -1;
-}
-function isRootHook(name) {
-  return PAGE_HOOKS.indexOf(name) > -1;
 }
 function warn(msg) {
   return;
@@ -3674,7 +3717,7 @@ extend$1(Object.create(null), {
   $emit: i => i.emit,
   $options: i => resolveMergedOptions(i),
   $forceUpdate: i => i.f || (i.f = () => queueJob(i.update)),
-  $nextTick: i => i.n || (i.n = nextTick.bind(i.proxy)),
+  $nextTick: i => i.n || (i.n = fn => nextTick.bind(i.proxy)(fn, i)),
   $watch: i => instanceWatch.bind(i)
 });
 var hasSetupBinding = (state, key) => state !== EMPTY_OBJ && !state.__isScriptSetup && hasOwn(state, key);
@@ -7026,8 +7069,14 @@ function createComponentInstance(vnode, parent, suspense) {
     ec: null,
     sp: null,
     $waitNativeRender(fn) {
-      // TODO use native
-      setTimeout(fn, 150);
+      var _a, _b;
+      // TODO find document by ComponentInternalInstance props
+      var document = (_b = __pageManager.findPageById(((_a = this.root.proxy) === null || _a === void 0 ? void 0 : _a.$el).pageId)) === null || _b === void 0 ? void 0 : _b.document;
+      if (document) {
+        document.waitNativeRender(fn);
+      } else {
+        fn();
+      }
     }
   };
   {
@@ -7589,7 +7638,7 @@ function parseClassStyles(el) {
 }
 function parseClassList(classList, instance) {
   var el = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
-  return parseClassListWithStyleSheet(classList, parseStyleSheet(instance), el);
+  return parseClassListWithStyleSheet(classList, parseStyleSheet(instance), el).styles;
 }
 function parseStyleSheet(_ref21) {
   var {
@@ -7799,7 +7848,7 @@ function transformAttr(el, key, value, instance) {
       if (isString(value)) {
         return [camelized, parseStringStyle(value)];
       }
-      return [camelized, normalizeStyle(value)];
+      return [camelized, normalizeStyle$1(value)];
     }
   }
   return [key, value];
