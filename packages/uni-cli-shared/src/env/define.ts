@@ -40,6 +40,9 @@ export function initDefine(stringifyBoolean: boolean = false) {
     'process.env.UNI_AUTOMATOR_WS_ENDPOINT': JSON.stringify(
       process.env.UNI_AUTOMATOR_WS_ENDPOINT || ''
     ),
+    'process.env.UNI_AUTOMATOR_APP_WEBVIEW_SRC': JSON.stringify(
+      process.env.UNI_AUTOMATOR_APP_WEBVIEW_SRC || ''
+    ),
     'process.env.UNI_CLOUD_PROVIDER': JSON.stringify(
       process.env.UNI_CLOUD_PROVIDER || ''
     ),

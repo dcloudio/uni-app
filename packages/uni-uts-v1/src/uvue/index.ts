@@ -101,6 +101,8 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
         // 自动化测试
         NODE_ENV: process.env.NODE_ENV,
         UNI_AUTOMATOR_WS_ENDPOINT: process.env.UNI_AUTOMATOR_WS_ENDPOINT || '',
+        UNI_AUTOMATOR_APP_WEBVIEW_SRC:
+          process.env.UNI_AUTOMATOR_APP_WEBVIEW_SRC || '',
       },
     },
   }
