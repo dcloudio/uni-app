@@ -7357,7 +7357,7 @@
       }
     },
     {
-      "name": "@documentNon-standardDeprecated",
+      "name": "@document",
       "description": "@document CSS at 规则根据文档的 URL 限制其中包含的样式规则。它主要用于用户定义的样式表，但也可用于作者定义的样式表。",
       "uniPlatform": {
         "app": {
