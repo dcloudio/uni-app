@@ -228,7 +228,7 @@ export async function compile(
         await getCompiler('swift').runProd(filename, iosComponents, {
           isX,
           isSingleThread,
-          isPlugin,
+          isPlugin: true, // iOS 目前仅有 plugin 模式
           extApis,
           transform,
           sourceMap: !!sourceMap,
