@@ -1,6 +1,6 @@
 import { normalizeStyles, addLeadingSlash, invokeArrayFns, LINEFEED, parseQuery, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, EventChannel, once, ON_UNLOAD, ON_READY, parseUrl, ON_BACK_PRESS, ON_LAUNCH } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction, isArray, isPromise, hasOwn, capitalize } from "@vue/shared";
-import { createVNode, render, injectHook, getCurrentInstance, defineComponent, computed, ref, watch, onMounted, resolveComponent } from "vue";
+import { createVNode, render, injectHook, getCurrentInstance, defineComponent, computed, ref, watch, onMounted, resolveComponent, isInSSRComponentSetup, watchEffect, defineExpose, openBlock, createBlock, withCtx, renderSlot, camelize, onUnmounted, normalizeStyle, createElementVNode, createElementBlock, toDisplayString, createCommentVNode } from "vue";
 var _wks = { exports: {} };
 var _shared = { exports: {} };
 var _core = { exports: {} };
@@ -238,12 +238,12 @@ var hide$2 = _hide;
 var redefine$2 = _redefineExports;
 var ctx = _ctx;
 var PROTOTYPE$1 = "prototype";
-var $export$1 = function(type, name, source) {
-  var IS_FORCED = type & $export$1.F;
-  var IS_GLOBAL = type & $export$1.G;
-  var IS_STATIC = type & $export$1.S;
-  var IS_PROTO = type & $export$1.P;
-  var IS_BIND = type & $export$1.B;
+var $export$2 = function(type, name, source) {
+  var IS_FORCED = type & $export$2.F;
+  var IS_GLOBAL = type & $export$2.G;
+  var IS_STATIC = type & $export$2.S;
+  var IS_PROTO = type & $export$2.P;
+  var IS_BIND = type & $export$2.B;
   var target = IS_GLOBAL ? global$1 : IS_STATIC ? global$1[name] || (global$1[name] = {}) : (global$1[name] || {})[PROTOTYPE$1];
   var exports = IS_GLOBAL ? core : core[name] || (core[name] = {});
   var expProto = exports[PROTOTYPE$1] || (exports[PROTOTYPE$1] = {});
@@ -255,7 +255,7 @@ var $export$1 = function(type, name, source) {
     out = (own ? target : source)[key];
     exp = IS_BIND && own ? ctx(out, global$1) : IS_PROTO && typeof out == "function" ? ctx(Function.call, out) : out;
     if (target)
-      redefine$2(target, key, out, type & $export$1.U);
+      redefine$2(target, key, out, type & $export$2.U);
     if (exports[key] != out)
       hide$2(exports, key, exp);
     if (IS_PROTO && expProto[key] != out)
@@ -263,15 +263,15 @@ var $export$1 = function(type, name, source) {
   }
 };
 global$1.core = core;
-$export$1.F = 1;
-$export$1.G = 2;
-$export$1.S = 4;
-$export$1.P = 8;
-$export$1.B = 16;
-$export$1.W = 32;
-$export$1.U = 64;
-$export$1.R = 128;
-var _export = $export$1;
+$export$2.F = 1;
+$export$2.G = 2;
+$export$2.S = 4;
+$export$2.P = 8;
+$export$2.B = 16;
+$export$2.W = 32;
+$export$2.U = 64;
+$export$2.R = 128;
+var _export = $export$2;
 var ceil = Math.ceil;
 var floor = Math.floor;
 var _toInteger = function(it) {
@@ -289,12 +289,12 @@ var _toAbsoluteIndex = function(index2, length) {
   index2 = toInteger(index2);
   return index2 < 0 ? max(index2 + length, 0) : min(index2, length);
 };
-var toIObject$2 = _toIobject;
+var toIObject$3 = _toIobject;
 var toLength = _toLength;
 var toAbsoluteIndex = _toAbsoluteIndex;
 var _arrayIncludes = function(IS_INCLUDES) {
   return function($this, el, fromIndex) {
-    var O = toIObject$2($this);
+    var O = toIObject$3($this);
     var length = toLength(O.length);
     var index2 = toAbsoluteIndex(fromIndex, length);
     var value;
@@ -320,11 +320,11 @@ var _sharedKey = function(key) {
   return shared[key] || (shared[key] = uid(key));
 };
 var has$2 = _has;
-var toIObject$1 = _toIobject;
+var toIObject$2 = _toIobject;
 var arrayIndexOf = _arrayIncludes(false);
 var IE_PROTO$2 = _sharedKey("IE_PROTO");
 var _objectKeysInternal = function(object, names) {
-  var O = toIObject$1(object);
+  var O = toIObject$2(object);
   var i = 0;
   var result = [];
   var key;
@@ -347,10 +347,10 @@ var _objectKeys = Object.keys || function keys(O) {
 };
 var dP = _objectDp;
 var anObject$1 = _anObject;
-var getKeys$1 = _objectKeys;
+var getKeys$2 = _objectKeys;
 var _objectDps = _descriptors ? Object.defineProperties : function defineProperties(O, Properties) {
   anObject$1(O);
-  var keys2 = getKeys$1(Properties);
+  var keys2 = getKeys$2(Properties);
   var length = keys2.length;
   var i = 0;
   var P;
@@ -446,7 +446,7 @@ var _objectGpo = Object.getPrototypeOf || function(O) {
   }
   return O instanceof Object ? ObjectProto : null;
 };
-var $export = _export;
+var $export$1 = _export;
 var redefine$1 = _redefineExports;
 var hide$1 = _hide;
 var Iterators$2 = _iterators;
@@ -476,7 +476,7 @@ var _iterDefine = function(Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCE
           return new Constructor(this, kind);
         };
     }
-    return function entries() {
+    return function entries2() {
       return new Constructor(this, kind);
     };
   };
@@ -486,7 +486,7 @@ var _iterDefine = function(Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCE
   var proto = Base.prototype;
   var $native = proto[ITERATOR$1] || proto[FF_ITERATOR] || DEFAULT && proto[DEFAULT];
   var $default = $native || getMethod(DEFAULT);
-  var $entries = DEFAULT ? !DEF_VALUES ? $default : getMethod("entries") : void 0;
+  var $entries2 = DEFAULT ? !DEF_VALUES ? $default : getMethod("entries") : void 0;
   var $anyNative = NAME == "Array" ? proto.entries || $native : $native;
   var methods, key, IteratorPrototype2;
   if ($anyNative) {
@@ -512,7 +512,7 @@ var _iterDefine = function(Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCE
     methods = {
       values: DEF_VALUES ? $default : getMethod(VALUES),
       keys: IS_SET ? $default : getMethod(KEYS),
-      entries: $entries
+      entries: $entries2
     };
     if (FORCED)
       for (key in methods) {
@@ -520,16 +520,16 @@ var _iterDefine = function(Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCE
           redefine$1(proto, key, methods[key]);
       }
     else
-      $export($export.P + $export.F * (BUGGY || VALUES_BUG), NAME, methods);
+      $export$1($export$1.P + $export$1.F * (BUGGY || VALUES_BUG), NAME, methods);
   }
   return methods;
 };
 var addToUnscopables = _addToUnscopables;
 var step = _iterStep;
 var Iterators$1 = _iterators;
-var toIObject = _toIobject;
+var toIObject$1 = _toIobject;
 var es6_array_iterator = _iterDefine(Array, "Array", function(iterated, kind) {
-  this._t = toIObject(iterated);
+  this._t = toIObject$1(iterated);
   this._i = 0;
   this._k = kind;
 }, function() {
@@ -551,7 +551,7 @@ addToUnscopables("keys");
 addToUnscopables("values");
 addToUnscopables("entries");
 var $iterators = es6_array_iterator;
-var getKeys = _objectKeys;
+var getKeys$1 = _objectKeys;
 var redefine = _redefineExports;
 var global = _globalExports;
 var hide = _hide;
@@ -596,7 +596,7 @@ var DOMIterables = {
   TextTrackList: false,
   TouchList: false
 };
-for (var collections = getKeys(DOMIterables), i = 0; i < collections.length; i++) {
+for (var collections = getKeys$1(DOMIterables), i = 0; i < collections.length; i++) {
   var NAME = collections[i];
   var explicit = DOMIterables[NAME];
   var Collection = global[NAME];
@@ -1149,6 +1149,29 @@ function initLaunchOptions(_ref2) {
   extend(enterOptions, launchOptions);
   return extend({}, launchOptions);
 }
+var _objectPie = {};
+_objectPie.f = {}.propertyIsEnumerable;
+var DESCRIPTORS = _descriptors;
+var getKeys = _objectKeys;
+var toIObject = _toIobject;
+var isEnum = _objectPie.f;
+var _objectToArray = function(isEntries) {
+  return function(it) {
+    var O = toIObject(it);
+    var keys2 = getKeys(O);
+    var length = keys2.length;
+    var i = 0;
+    var result = [];
+    var key;
+    while (length > i) {
+      key = keys2[i++];
+      if (!DESCRIPTORS || isEnum.call(O, key)) {
+        result.push(isEntries ? [key, O[key]] : O[key]);
+      }
+    }
+    return result;
+  };
+};
 var appHooks = {
   [ON_UNHANDLE_REJECTION]: [],
   [ON_PAGE_NOT_FOUND]: [],
@@ -2697,6 +2720,31 @@ const slider$1 = /* @__PURE__ */ Object.defineProperty({
   UniSliderElement,
   default: slider
 }, Symbol.toStringTag, { value: "Module" });
+var $export = _export;
+var $entries = _objectToArray(true);
+$export($export.S, "Object", {
+  entries: function entries(it) {
+    return $entries(it);
+  }
+});
+function $dispatch(context, componentName, eventName) {
+  var _parent, _parent$$options;
+  var parent = context.$parent;
+  var name = (_parent = parent) === null || _parent === void 0 ? void 0 : (_parent$$options = _parent.$options) === null || _parent$$options === void 0 ? void 0 : _parent$$options.name;
+  while (parent != null && (name == null || componentName != name)) {
+    parent = parent.$parent;
+    if (parent != null) {
+      var _parent2, _parent2$$options;
+      name = (_parent2 = parent) === null || _parent2 === void 0 ? void 0 : (_parent2$$options = _parent2.$options) === null || _parent2$$options === void 0 ? void 0 : _parent2$$options.name;
+    }
+  }
+  if (parent != null) {
+    for (var _len = arguments.length, do_not_transform_spread = new Array(_len > 3 ? _len - 3 : 0), _key = 3; _key < _len; _key++) {
+      do_not_transform_spread[_key - 3] = arguments[_key];
+    }
+    parent.$callMethod(eventName, ...do_not_transform_spread);
+  }
+}
 var BUTTON_COMPONENT_NAME = "Button";
 var UNI_BUTTON_ELEMENT_NAME = "uni-button-element";
 var buttonProps = {
@@ -2748,161 +2796,121 @@ class UniButtonElement extends UniTextElementImpl {
   //   // super(data)
   // }
 }
-var styleList = {
+var hoverStyles = /* @__PURE__ */ new Map([["default", /* @__PURE__ */ new Map([["color", "rgba(0, 0, 0, 0.6)"], ["backgroundColor", "#dedede"]])], ["primary", /* @__PURE__ */ new Map([["color", "rgba(255, 255, 255, 0.6)"], ["backgroundColor", "#0062cc"]])], ["warn", /* @__PURE__ */ new Map([["color", "rgba(255, 255, 255, 0.6)"], ["backgroundColor", "#ce3c39"]])], ["default-plain", /* @__PURE__ */ new Map([["color", "rgba(53, 53, 53, 0.6)"], ["borderColor", "rgba(53, 53, 53, 0.6)"], ["backgroundColor", "rgba(0, 0, 0, 0)"]])], ["primary-plain", /* @__PURE__ */ new Map([["color", "rgba(0, 122, 255, 0.6)"], ["borderColor", "rgba(0, 122, 255, 0.6)"], ["backgroundColor", "rgba(0, 0, 0, 0)"]])], ["warn-plain", /* @__PURE__ */ new Map([["color", "rgba(230, 67, 64, 0.6)"], ["borderColor", "rgba(230, 67, 64, 0.6)"], ["backgroundColor", "rgba(0, 0, 0, 0)"]])]]);
+var _style_0$1$1 = {
   ub: {
-    position: "relative",
-    "text-align": "center",
-    "padding-left": "14px",
-    "padding-right": "14px",
-    "overflow-x": "hidden",
-    "overflow-y": "hidden",
-    color: "rgb(0, 0, 0)",
-    "background-color": "rgb(248, 248, 248)",
-    "border-top-left-radius": "5px",
-    "border-top-right-radius": "5px",
-    "border-bottom-right-radius": "5px",
-    "border-bottom-left-radius": "5px",
-    "border-top-style": "solid",
-    "border-right-style": "solid",
-    "border-bottom-style": "solid",
-    "border-left-style": "solid",
-    "border-top-width": "0.5px",
-    "border-right-width": "0.5px",
-    "border-bottom-width": "0.5px",
-    "border-left-width": "0.5px",
-    "border-top-color": "rgba(0, 0, 0, 0.2)",
-    "border-right-color": "rgba(0, 0, 0, 0.2)",
-    "border-bottom-color": "rgba(0, 0, 0, 0.2)",
-    "border-left-color": "rgba(0, 0, 0, 0.2)",
-    "font-size": "18px",
-    "line-height": "46px"
-    // 'line-height': 2.55556,
+    "": {
+      position: "relative",
+      textAlign: "center",
+      paddingLeft: "14px",
+      paddingRight: "14px",
+      overflow: "hidden",
+      color: "#000000",
+      backgroundColor: "#f8f8f8",
+      borderRadius: "5px",
+      borderStyle: "solid",
+      borderWidth: "0.5px",
+      borderColor: "rgba(0, 0, 0, 0.2)",
+      fontSize: "18px",
+      lineHeight: "2.55555556"
+    }
   },
-  ["ub-default"]: {
-    color: "rgb(0, 0, 0)",
-    "background-color": "rgb(248, 248, 248)"
+  "ub-default": {
+    "": {
+      color: "#000000",
+      backgroundColor: "#f8f8f8"
+    }
   },
-  ["ub-primary"]: {
-    color: "rgb(255, 255, 255)",
-    "background-color": "rgb(0, 122, 255)"
+  "ub-primary": {
+    "": {
+      color: "#ffffff",
+      backgroundColor: "#007aff"
+    }
   },
-  ["ub-warn"]: {
-    color: "rgb(255, 255, 255)",
-    "background-color": "rgb(230, 67, 64)"
+  "ub-warn": {
+    "": {
+      color: "#ffffff",
+      backgroundColor: "#e64340"
+    }
   },
-  ["ub-default-plain"]: {
-    color: "rgb(53, 53, 53)",
-    "border-top-color": "rgb(53, 53, 53)",
-    "border-right-color": "rgb(53, 53, 53)",
-    "border-bottom-color": "rgb(53, 53, 53)",
-    "border-left-color": "rgb(53, 53, 53)",
-    "background-color": "rgba(0, 0, 0, 0)",
-    "border-top-width": "1px",
-    "border-right-width": "1px",
-    "border-bottom-width": "1px",
-    "border-left-width": "1px"
+  "ub-default-plain": {
+    "": {
+      color: "#353535",
+      borderColor: "#353535",
+      backgroundColor: "rgba(0, 0, 0, 0)",
+      borderWidth: "1px"
+    }
   },
-  ["ub-primary-plain"]: {
-    color: "rgb(0, 122, 255)",
-    "border-top-color": "rgb(0, 122, 255)",
-    "border-right-color": "rgb(0, 122, 255)",
-    "border-bottom-color": "rgb(0, 122, 255)",
-    "border-left-color": "rgb(0, 122, 255)",
-    "background-color": "rgba(0, 0, 0, 0)",
-    "border-top-width": "1px",
-    "border-right-width": "1px",
-    "border-bottom-width": "1px",
-    "border-left-width": "1px"
+  "ub-primary-plain": {
+    "": {
+      color: "#007aff",
+      borderColor: "#007aff",
+      backgroundColor: "rgba(0, 0, 0, 0)",
+      borderWidth: "1px"
+    }
   },
-  ["ub-warn-plain"]: {
-    color: "rgb(230, 67, 64)",
-    "border-top-color": "rgb(230, 67, 64)",
-    "border-right-color": "rgb(230, 67, 64)",
-    "border-bottom-color": "rgb(230, 67, 64)",
-    "border-left-color": "rgb(230, 67, 64)",
-    "background-color": "rgba(0, 0, 0, 0)",
-    "border-top-width": "1px",
-    "border-right-width": "1px",
-    "border-bottom-width": "1px",
-    "border-left-width": "1px"
+  "ub-warn-plain": {
+    "": {
+      color: "#e64340",
+      borderColor: "#e64340",
+      backgroundColor: "rgba(0, 0, 0, 0)",
+      borderWidth: "1px"
+    }
   },
-  ["ub-default-disabled"]: {
-    color: "rgba(0, 0, 0, 0.3)",
-    "background-color": "rgb(247, 247, 247)"
+  "ub-default-disabled": {
+    "": {
+      color: "rgba(0, 0, 0, 0.3)",
+      backgroundColor: "#f7f7f7"
+    }
   },
-  ["ub-primary-disabled"]: {
-    color: "rgba(255, 255, 255, 0.6)",
-    "background-color": "rgba(0, 122, 255, 0.6)"
+  "ub-primary-disabled": {
+    "": {
+      color: "rgba(255, 255, 255, 0.6)",
+      backgroundColor: "rgba(0, 122, 255, 0.6)"
+    }
   },
-  ["ub-warn-disabled"]: {
-    color: "rgba(255, 255, 255, 0.6)",
-    "background-color": "rgb(236, 139, 137)"
+  "ub-warn-disabled": {
+    "": {
+      color: "rgba(255, 255, 255, 0.6)",
+      backgroundColor: "#ec8b89"
+    }
   },
-  ["ub-default-disabled-plain"]: {
-    color: "rgba(0, 0, 0, 0.2)",
-    "border-top-color": "rgba(0, 0, 0, 0.2)",
-    "border-right-color": "rgba(0, 0, 0, 0.2)",
-    "border-bottom-color": "rgba(0, 0, 0, 0.2)",
-    "border-left-color": "rgba(0, 0, 0, 0.2)",
-    "background-color": "rgba(0, 0, 0, 0)",
-    "border-top-width": "1px",
-    "border-right-width": "1px",
-    "border-bottom-width": "1px",
-    "border-left-width": "1px"
+  "ub-default-disabled-plain": {
+    "": {
+      color: "rgba(0, 0, 0, 0.2)",
+      borderColor: "rgba(0, 0, 0, 0.2)",
+      backgroundColor: "rgba(0, 0, 0, 0)",
+      borderWidth: "1px"
+    }
   },
-  ["ub-primary-disabled-plain"]: {
-    color: "rgba(0, 0, 0, 0.2)",
-    "border-top-color": "rgba(0, 0, 0, 0.2)",
-    "border-right-color": "rgba(0, 0, 0, 0.2)",
-    "border-bottom-color": "rgba(0, 0, 0, 0.2)",
-    "border-left-color": "rgba(0, 0, 0, 0.2)",
-    "background-color": "rgba(0, 0, 0, 0)",
-    "border-top-width": "1px",
-    "border-right-width": "1px",
-    "border-bottom-width": "1px",
-    "border-left-width": "1px"
+  "ub-primary-disabled-plain": {
+    "": {
+      color: "rgba(0, 0, 0, 0.2)",
+      borderColor: "rgba(0, 0, 0, 0.2)",
+      backgroundColor: "rgba(0, 0, 0, 0)",
+      borderWidth: "1px"
+    }
   },
-  ["ub-warn-disabled-plain"]: {
-    color: "rgba(0, 0, 0, 0.2)",
-    "border-top-color": "rgba(0, 0, 0, 0.2)",
-    "border-right-color": "rgba(0, 0, 0, 0.2)",
-    "border-bottom-color": "rgba(0, 0, 0, 0.2)",
-    "border-left-color": "rgba(0, 0, 0, 0.2)",
-    "background-color": "rgba(0, 0, 0, 0)",
-    "border-top-width": "1px",
-    "border-right-width": "1px",
-    "border-bottom-width": "1px",
-    "border-left-width": "1px"
+  "ub-warn-disabled-plain": {
+    "": {
+      color: "rgba(0, 0, 0, 0.2)",
+      borderColor: "rgba(0, 0, 0, 0.2)",
+      backgroundColor: "rgba(0, 0, 0, 0)",
+      borderWidth: "1px"
+    }
   },
-  ["ub-mini"]: {
-    "padding-top": "0px",
-    "padding-bottom": "0px",
-    "padding-right": "17.5px",
-    "padding-left": "17.5px",
-    // 'line-height': '2.3',
-    "line-height": "30px",
-    "font-size": "13px"
+  "ub-mini": {
+    "": {
+      paddingTop: "0",
+      paddingBottom: "0",
+      paddingRight: "17.5px",
+      paddingLeft: "17.5px",
+      lineHeight: "2.3",
+      fontSize: "13px"
+    }
   }
 };
-var hoverStyles = /* @__PURE__ */ new Map([["default", /* @__PURE__ */ new Map([["color", "rgba(0, 0, 0, 0.6)"], ["backgroundColor", "#dedede"]])], ["primary", /* @__PURE__ */ new Map([["color", "rgba(255, 255, 255, 0.6)"], ["backgroundColor", "#0062cc"]])], ["warn", /* @__PURE__ */ new Map([["color", "rgba(255, 255, 255, 0.6)"], ["backgroundColor", "#ce3c39"]])], ["default-plain", /* @__PURE__ */ new Map([["color", "rgba(53, 53, 53, 0.6)"], ["borderColor", "rgba(53, 53, 53, 0.6)"], ["backgroundColor", "rgba(0, 0, 0, 0)"]])], ["primary-plain", /* @__PURE__ */ new Map([["color", "rgba(0, 122, 255, 0.6)"], ["borderColor", "rgba(0, 122, 255, 0.6)"], ["backgroundColor", "rgba(0, 0, 0, 0)"]])], ["warn-plain", /* @__PURE__ */ new Map([["color", "rgba(230, 67, 64, 0.6)"], ["borderColor", "rgba(230, 67, 64, 0.6)"], ["backgroundColor", "rgba(0, 0, 0, 0)"]])]]);
-function $dispatch(context, componentName, eventName) {
-  var _parent, _parent$$options;
-  var parent = context.$parent;
-  var name = (_parent = parent) === null || _parent === void 0 ? void 0 : (_parent$$options = _parent.$options) === null || _parent$$options === void 0 ? void 0 : _parent$$options.name;
-  while (parent != null && (name == null || componentName != name)) {
-    parent = parent.$parent;
-    if (parent != null) {
-      var _parent2, _parent2$$options;
-      name = (_parent2 = parent) === null || _parent2 === void 0 ? void 0 : (_parent2$$options = _parent2.$options) === null || _parent2$$options === void 0 ? void 0 : _parent2$$options.name;
-    }
-  }
-  if (parent != null) {
-    for (var _len = arguments.length, do_not_transform_spread = new Array(_len > 3 ? _len - 3 : 0), _key = 3; _key < _len; _key++) {
-      do_not_transform_spread[_key - 3] = arguments[_key];
-    }
-    parent.$callMethod(eventName, ...do_not_transform_spread);
-  }
-}
+var styleList$1 = _style_0$1$1;
 var FORM_TYPES = ["submit", "reset"];
 const button = /* @__PURE__ */ defineBuiltInComponent({
   name: BUTTON_COMPONENT_NAME,
@@ -2927,7 +2935,6 @@ const button = /* @__PURE__ */ defineBuiltInComponent({
     var $hoverStayTimer = null;
     var $hoverTouch = false;
     var $hovering = false;
-    console.log($hoverStartTimer, $hoverStayTimer);
     var btnCls = computed(() => {
       var cl = "ub-" + props.type;
       if (props.disabled) {
@@ -2946,12 +2953,15 @@ const button = /* @__PURE__ */ defineBuiltInComponent({
       if (cl == "button-hover" || cl.length == 0) {
         return;
       }
-      var styles = $buttonEl.ext.get("styles");
-      if (styles != null) {
-        var style = styles[cl];
+      var styles2 = $buttonEl.ext.get("styles");
+      if (styles2 != null) {
+        var _styles$cl;
+        var style = (_styles$cl = styles2[cl]) !== null && _styles$cl !== void 0 ? _styles$cl : {};
+        style = new Map(Object.entries(style));
         if (style != null) {
-          Object.keys(style).forEach((key) => {
-            $hoverClassStyle.set(key, style[key]);
+          style.forEach((val) => {
+            val = new Map(Object.entries(val));
+            $hoverClassStyle = val;
           });
         }
       }
@@ -3022,6 +3032,7 @@ const button = /* @__PURE__ */ defineBuiltInComponent({
     function touchend() {
       $hoverTouch = false;
       if ($hovering) {
+        clearTimeout($hoverStayTimer);
         $hoverStayTimer = setTimeout(() => {
           $hovering = false;
           clearHoverStyle();
@@ -3034,10 +3045,25 @@ const button = /* @__PURE__ */ defineBuiltInComponent({
       $hovering = false;
       clearHoverStyle();
       updateStyle();
+      clearTimeout($hoverStartTimer);
     }
     function touchmove(event) {
       if (props.disabled || props.hoverClass == "none") {
         return;
+      }
+      var {
+        clientX,
+        clientY
+      } = event.touches[0];
+      var {
+        height,
+        width,
+        left,
+        top
+      } = $buttonEl.getBoundingClientRect();
+      var isMovedOutside = clientX < left || clientX > left + width || clientY < top || clientY > top + height;
+      if (isMovedOutside) {
+        touchcancel();
       }
     }
     function _onClick($event) {
@@ -3054,9 +3080,10 @@ const button = /* @__PURE__ */ defineBuiltInComponent({
     }
     var styleText = computed(() => {
       var classList = btnCls.value.split(" ");
-      var basicStyle = Object.assign({}, styleList.ub);
+      var basicStyle = Object.assign({}, styleList$1["ub"][""]);
       classList.forEach((cl) => {
-        var style = styleList[cl];
+        var _styleList$cl$, _styleList$cl;
+        var style = (_styleList$cl$ = (_styleList$cl = styleList$1[cl]) === null || _styleList$cl === void 0 ? void 0 : _styleList$cl[""]) !== null && _styleList$cl$ !== void 0 ? _styleList$cl$ : {};
         if (style) {
           Object.assign(basicStyle, style);
         }
@@ -3085,9 +3112,536 @@ const button$1 = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: button
 }, Symbol.toStringTag, { value: "Module" });
+var CHECKBOX_NAME = "Checkbox";
+var CHECKBOX_ROOT_ELEMENT = "uni-checkbox-element";
+class UniCheckboxElement extends UniElementImpl {
+}
+var checkboxProps = {
+  checked: {
+    type: Boolean,
+    default: false
+  },
+  disabled: {
+    type: Boolean,
+    default: false
+  },
+  value: {
+    type: [Object, String],
+    default: ""
+  },
+  // 图标颜色
+  color: {
+    type: String,
+    default: "#007aff"
+  },
+  // 默认的背景颜色
+  backgroundColor: {
+    type: String,
+    default: "#ffffff"
+  },
+  // 默认的边框颜色
+  borderColor: {
+    type: String,
+    default: "#d1d1d1"
+  },
+  // 选中时的背景颜色
+  activeBackgroundColor: {
+    type: String,
+    default: "#ffffff"
+  },
+  // 选中时的边框颜色
+  activeBorderColor: {
+    type: String,
+    default: "#d1d1d1"
+  },
+  // 图标颜色,同color,优先级大于color
+  iconColor: {
+    type: String,
+    default: ""
+  }
+};
+var styles = {
+  ["uni-checkbox"]: {
+    "flex-direction": "row",
+    "align-items": "center"
+  },
+  ["uni-checkbox-input"]: {
+    "justify-content": "center",
+    "align-items": "center",
+    position: "relative",
+    "border-top-width": "1px",
+    "border-right-width": "1px",
+    "border-bottom-width": "1px",
+    "border-left-width": "1px",
+    "border-top-style": "solid",
+    "border-right-style": "solid",
+    "border-bottom-style": "solid",
+    "border-left-style": "solid",
+    "border-top-left-radius": "3px",
+    "border-top-right-radius": "3px",
+    "border-bottom-right-radius": "3px",
+    "border-bottom-left-radius": "3px",
+    width: "22px",
+    height: "22px",
+    "margin-right": "5px",
+    "box-sizing": "content-box"
+  },
+  ["uni-icon"]: {
+    "font-family": "uniappx_components",
+    "font-size": "16px"
+  }
+};
+var createHook = (lifecycle) => function(hook) {
+  var target = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : getCurrentInstance();
+  !isInSSRComponentSetup && injectHook(lifecycle, hook, target);
+};
+var onUnload = /* @__PURE__ */ createHook(ON_UNLOAD);
+const checkbox = /* @__PURE__ */ defineBuiltInComponent({
+  name: CHECKBOX_NAME,
+  rootElement: {
+    name: CHECKBOX_ROOT_ELEMENT,
+    // @ts-expect-error not web element
+    class: UniCheckboxElement
+  },
+  props: checkboxProps,
+  emits: ["click"],
+  setup(props, _ref) {
+    var {
+      emit,
+      slots
+    } = _ref;
+    var icon = "";
+    var instance = null;
+    var checkboxChecked = ref(props.checked);
+    var checkboxValue = ref("");
+    watchEffect(() => {
+      checkboxChecked.value = props.checked;
+    });
+    watchEffect(() => {
+      checkboxValue.value = props.value.toString();
+    });
+    var iconStyle = computed(() => {
+      if (props.disabled) {
+        return Object.assign({}, styles["uni-icon"]);
+      }
+      var color = props.iconColor.length > 0 ? props.iconColor : props.color;
+      return Object.assign({}, styles["uni-icon"], {
+        color
+      });
+    });
+    var checkInputStyle = computed(() => {
+      var r = checkboxChecked.value ? checkedStyle.value : uncheckedStyle.value;
+      return Object.assign({}, styles["uni-checkbox-input"], r);
+    });
+    var checkedStyle = computed(() => {
+      if (props.disabled) {
+        return {
+          backgroundColor: "#e1e1e1",
+          borderColor: "#d1d1d1"
+        };
+      }
+      return {
+        backgroundColor: props.activeBackgroundColor,
+        borderColor: props.activeBorderColor
+      };
+    });
+    var uncheckedStyle = computed(() => {
+      if (props.disabled) {
+        return {
+          backgroundColor: "#e1e1e1",
+          borderColor: "#d1d1d1"
+        };
+      }
+      return {
+        backgroundColor: props.backgroundColor,
+        borderColor: props.borderColor
+      };
+    });
+    instance = getCurrentInstance();
+    onMounted(() => {
+      var _instance, _instance$parent;
+      var ctx2 = (_instance = instance) === null || _instance === void 0 ? void 0 : (_instance$parent = _instance.parent) === null || _instance$parent === void 0 ? void 0 : _instance$parent.proxy;
+      $dispatch(ctx2, "CheckboxGroup", "_checkboxGroupUpdateHandler", ctx2, "add");
+    });
+    onUnload(() => {
+      var _instance2, _instance2$parent;
+      var ctx2 = (_instance2 = instance) === null || _instance2 === void 0 ? void 0 : (_instance2$parent = _instance2.parent) === null || _instance2$parent === void 0 ? void 0 : _instance2$parent.proxy;
+      $dispatch(ctx2, "CheckboxGroup", "_checkboxGroupUpdateHandler", ctx2, "remove");
+    });
+    var _onClick = ($event) => {
+      var _instance3, _instance3$parent;
+      if (props.disabled)
+        return;
+      emit("click", $event);
+      checkboxChecked.value = !checkboxChecked.value;
+      var ctx2 = (_instance3 = instance) === null || _instance3 === void 0 ? void 0 : (_instance3$parent = _instance3.parent) === null || _instance3$parent === void 0 ? void 0 : _instance3$parent.proxy;
+      $dispatch(ctx2, "CheckboxGroup", "_changeHandler");
+    };
+    return () => {
+      return createVNode(resolveComponent("uni-checkbox-element"), {
+        "dataUncType": "uni-checkbox",
+        "onClick": _onClick,
+        "class": "uni-checkbox",
+        "style": styles["uni-checkbox"]
+      }, {
+        default: () => {
+          var _slots$default;
+          return [createVNode("view", {
+            "class": "uni-checkbox-input",
+            "style": checkInputStyle.value
+          }, [checkboxChecked.value ? createVNode("text", {
+            "class": "uni-icon",
+            "style": iconStyle.value
+          }, [icon], 4) : null], 4), (_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)];
+        },
+        _: 2
+      }, 8, ["onClick", "style"]);
+    };
+  }
+});
+const checkbox$1 = /* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  default: checkbox
+}, Symbol.toStringTag, { value: "Module" });
+var CHECKBOX_GROUP_NAME = "CheckboxGroup";
+var CHECKBOX_GROUP_ROOT_ELEMENT = "uni-checkbox-group-element";
+var checkboxGroupProps = {
+  name: {
+    type: String,
+    default: ""
+  }
+};
+class UniCheckboxGroupElement extends UniFormControlElement {
+  constructor(data, pageNode) {
+    super(data, pageNode);
+    this._initialValue = [];
+    this._getValue = () => {
+      return this._initialValue;
+    };
+    this._setValue = (value) => {
+    };
+  }
+  get value() {
+    return this._getValue();
+  }
+  set value(value) {
+    this._setValue(value);
+  }
+  reset() {
+    this.value = this._initialValue.slice(0);
+  }
+}
+class UniCheckboxGroupChangeEventDetail {
+  constructor(value) {
+    this.value = value;
+  }
+}
+class UniCheckboxGroupChangeEvent extends CustomEvent {
+  constructor(value) {
+    super("change", {
+      detail: new UniCheckboxGroupChangeEventDetail(value)
+    });
+  }
+}
+const _sfc_main$1 = /* @__PURE__ */ defineBuiltInComponent({
+  name: CHECKBOX_GROUP_NAME,
+  rootElement: {
+    name: CHECKBOX_GROUP_ROOT_ELEMENT,
+    // @ts-expect-error not web element
+    class: UniCheckboxGroupElement
+  },
+  props: checkboxGroupProps,
+  emits: ["change"],
+  setup(props, _ref) {
+    var {
+      emit
+    } = _ref;
+    var $checkboxList = ref([]);
+    var uniCheckboxGroupElementRef = ref(null);
+    var instance = null;
+    instance = getCurrentInstance();
+    var _checkboxGroupUpdateHandler = (vm, type) => {
+      if (type == "add") {
+        $checkboxList.value.push(vm);
+      } else {
+        var index2 = $checkboxList.value.indexOf(vm);
+        if (index2 !== -1) {
+          $checkboxList.value.splice(index2, 1);
+        }
+      }
+    };
+    var _changeHandler = () => {
+      emit("change", new UniCheckboxGroupChangeEvent(_getValue()));
+    };
+    defineExpose({
+      _checkboxGroupUpdateHandler,
+      _changeHandler
+    });
+    var _getValue = () => {
+      var valueArray = [];
+      $checkboxList.value.forEach((vm) => {
+        var data = vm.$data;
+        if (data.get("checkboxChecked")) {
+          valueArray.push(data.get("checkboxValue"));
+        }
+      });
+      return valueArray;
+    };
+    var _setValue = (valueArray) => {
+      $checkboxList.value.forEach((vm) => {
+        var data = vm.$data;
+        var value = data.get("checkboxValue");
+        if (valueArray.indexOf(value) !== -1) {
+          data.set("checkboxChecked", true);
+        } else {
+          data.set("checkboxChecked", false);
+        }
+      });
+    };
+    onMounted(() => {
+      if (instance === null)
+        return;
+      instance.$waitNativeRender(() => {
+        if (!uniCheckboxGroupElementRef.value)
+          return;
+        uniCheckboxGroupElementRef.value._getValue = _getValue;
+        uniCheckboxGroupElementRef.value._setValue = _setValue;
+        uniCheckboxGroupElementRef.value._initialValue = _getValue();
+      });
+    });
+    return {
+      _checkboxGroupUpdateHandler,
+      _changeHandler
+    };
+  }
+});
+const _export_sfc = (sfc, props) => {
+  const target = sfc.__vccOpts || sfc;
+  for (const [key, val] of props) {
+    target[key] = val;
+  }
+  return target;
+};
+function _sfc_render$1(_ctx2, _cache, $props, $setup, $data, $options) {
+  var _component_uni_checkbox_group_element = resolveComponent("uni-checkbox-group-element");
+  return openBlock(), createBlock(_component_uni_checkbox_group_element, {
+    ref: "uniCheckboxGroupElementRef"
+  }, {
+    default: withCtx(() => [renderSlot(_ctx2.$slots, "default")]),
+    _: 3
+  }, 512);
+}
+const checkboxGroup = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1]]);
+const checkboxGroup$1 = /* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  default: checkboxGroup
+}, Symbol.toStringTag, { value: "Module" });
+var RADIO_NAME = "Radio";
+var RADIO_ROOT_ELEMENT = "uni-radio-element";
+class UniRadioElement extends UniElementImpl {
+  constructor() {
+    super(...arguments);
+    this._getAttribute = (key) => {
+      return null;
+    };
+  }
+}
+var radioProps = {
+  checked: {
+    type: Boolean,
+    default: false
+  },
+  disabled: {
+    type: Boolean,
+    default: false
+  },
+  value: {
+    type: Object,
+    default: ""
+  },
+  // 选中时的背景颜色
+  color: {
+    type: String,
+    default: "#007AFF"
+  },
+  // 默认的背景颜色
+  backgroundColor: {
+    type: String,
+    default: "#ffffff"
+  },
+  // 默认的边框颜色
+  borderColor: {
+    type: String,
+    default: "#d1d1d1"
+  },
+  // 选中时的背景颜色,同color,优先级大于color
+  activeBackgroundColor: {
+    type: String,
+    default: ""
+  },
+  // 选中时的边框颜色，默认为选中时的背景颜色
+  activeBorderColor: {
+    type: String,
+    default: ""
+  },
+  // 图标颜色
+  iconColor: {
+    type: String,
+    default: "#ffffff"
+  }
+};
+var _style_0$1 = {
+  "uni-radio": {
+    "": {
+      flexDirection: "row",
+      alignItems: "center"
+    }
+  },
+  "uni-radio-input": {
+    "": {
+      position: "relative",
+      alignItems: "center",
+      justifyContent: "center",
+      marginRight: "5px",
+      borderStyle: "solid",
+      borderWidth: "1px",
+      borderRadius: "50px",
+      width: "22px",
+      height: "22px",
+      boxSizing: "content-box"
+    }
+  },
+  "uni-radio-input-icon": {
+    "": {
+      fontFamily: "uniappx_components",
+      fontSize: "14px"
+    }
+  }
+};
+var styleList = _style_0$1;
+const _sfc_main = /* @__PURE__ */ defineBuiltInComponent({
+  name: RADIO_NAME,
+  rootElement: {
+    name: RADIO_ROOT_ELEMENT,
+    // @ts-expect-error not web element
+    class: UniRadioElement
+  },
+  props: radioProps,
+  styles: styleList,
+  setup(props, _ref) {
+    var styleUniRadio = styleList["uni-radio"][""];
+    var styleUniRadioInput = computed(() => {
+      return Object.assign({}, styleList["uni-radio-input"][""], radioChecked.value ? checkedStyle.value : uncheckedStyle.value);
+    });
+    var styleUniRadioInputIcon = computed(() => {
+      return Object.assign({}, styleList["uni-radio-input-icon"][""], iconStyle.value);
+    });
+    var $uniRadioElement = null;
+    var icon = "";
+    var radioChecked = ref(props.checked);
+    var radioValue = ref(props.value.toString());
+    watchEffect(() => {
+      radioChecked.value = props.checked;
+    });
+    watchEffect(() => {
+      radioValue.value = props.value.toString();
+    });
+    var checkedStyle = computed(() => {
+      if (props.disabled) {
+        return {
+          backgroundColor: "#e1e1e1",
+          borderColor: "#d1d1d1"
+        };
+      }
+      var backgroundColor = props.activeBackgroundColor.length > 0 ? props.activeBackgroundColor : props.color;
+      var borderColor = props.activeBorderColor.length > 0 ? props.activeBorderColor : backgroundColor;
+      return {
+        backgroundColor,
+        borderColor
+      };
+    });
+    var uncheckedStyle = computed(() => {
+      if (props.disabled) {
+        return {
+          backgroundColor: "#e1e1e1",
+          borderColor: "#d1d1d1"
+        };
+      }
+      return {
+        backgroundColor: props.backgroundColor,
+        borderColor: props.borderColor
+      };
+    });
+    var iconStyle = computed(() => {
+      return {
+        color: props.disabled ? "#adadad" : props.iconColor
+      };
+    });
+    var instance = null;
+    onMounted(() => {
+      var _instance;
+      instance = getCurrentInstance();
+      (_instance = instance) === null || _instance === void 0 ? void 0 : _instance.$waitNativeRender(() => {
+        var _instance$proxy;
+        if (instance === null)
+          return;
+        $uniRadioElement = (_instance$proxy = instance.proxy) === null || _instance$proxy === void 0 ? void 0 : _instance$proxy.$el;
+        $uniRadioElement._getAttribute = (key) => {
+          camelize(key);
+          return null;
+        };
+      });
+    });
+    onUnmounted(() => {
+    });
+    var _onClick = () => {
+      if (props.disabled || radioChecked.value)
+        return;
+      radioChecked.value = !radioChecked.value;
+    };
+    return {
+      _onClick,
+      checkedStyle,
+      uncheckedStyle,
+      iconStyle,
+      icon,
+      styleUniRadio,
+      radioChecked,
+      styleUniRadioInput,
+      styleUniRadioInputIcon
+    };
+  }
+});
+function _sfc_render(_ctx2, _cache, $props, $setup, $data, $options) {
+  var _component_uni_radio_element = resolveComponent("uni-radio-element");
+  return openBlock(), createBlock(_component_uni_radio_element, {
+    dataUncType: "uni-radio",
+    class: "uni-radio",
+    style: normalizeStyle(_ctx2.styleUniRadio),
+    onClick: _ctx2._onClick
+  }, {
+    default: withCtx(() => [createElementVNode("view", {
+      class: "uni-radio-input",
+      style: normalizeStyle(_ctx2.styleUniRadioInput)
+    }, [_ctx2.radioChecked ? (openBlock(), createElementBlock("text", {
+      key: 0,
+      class: "uni-radio-input-icon",
+      style: normalizeStyle(_ctx2.styleUniRadioInputIcon)
+    }, toDisplayString(_ctx2.icon), 5)) : createCommentVNode("", true)], 4), renderSlot(_ctx2.$slots, "default")]),
+    _: 3
+  }, 8, ["style", "onClick"]);
+}
+const radio = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
+const radio$1 = /* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  default: radio
+}, Symbol.toStringTag, { value: "Module" });
 const components = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   Button: button$1,
+  Checkbox: checkbox$1,
+  CheckboxGroup: checkboxGroup$1,
+  Radio: radio$1,
   Slider: slider$1
 }, Symbol.toStringTag, { value: "Module" });
 const index = {

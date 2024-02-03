@@ -5688,7 +5688,9 @@ function vOn(value, key) {
     const ctx = instance.ctx;
     // 微信小程序，QQ小程序，当 setData diff 的时候，若事件不主动同步过去，会导致事件绑定不更新，（question/137217）
     const extraKey = typeof key !== 'undefined' &&
-        (ctx.$mpPlatform === 'mp-weixin' || ctx.$mpPlatform === 'mp-qq' || ctx.$mpPlatform === 'mp-xhs') &&
+        (ctx.$mpPlatform === 'mp-weixin' ||
+            ctx.$mpPlatform === 'mp-qq' ||
+            ctx.$mpPlatform === 'mp-xhs') &&
         (isString(key) || typeof key === 'number')
         ? '_' + key
         : '';
