@@ -29,6 +29,10 @@ exports.default = [
                 if (opts.filter(id)) {
                     const platform = process.env.UNI_PLATFORM;
                     if (platform === 'app' && process.env.UNI_APP_X === 'true') {
+                        // app-webview，不增加 initAutomator
+                        if (process.env.UNI_AUTOMATOR_APP_WEBVIEW === 'true') {
+                            return null;
+                        }
                         const automatorPath = (0, uni_cli_shared_1.normalizePath)((0, uni_cli_shared_1.resolveBuiltIn)(`@dcloudio/uni-app-uts/lib/automator/index.uts`));
                         return {
                             code: 

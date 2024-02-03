@@ -224,9 +224,11 @@ function normalizeCode(code: string, isMain = false) {
   if (!isMain) {
     return code
   }
-  const automatorCode = process.env.UNI_AUTOMATOR_WS_ENDPOINT
-    ? 'initAutomator();'
-    : ''
+  const automatorCode =
+    process.env.UNI_AUTOMATOR_WS_ENDPOINT &&
+    process.env.UNI_AUTOMATOR_APP_WEBVIEW !== 'true'
+      ? 'initAutomator();'
+      : ''
   return `${code}
 export function main(app: IApp) {
     definePageRoutes();
