@@ -1,11 +1,6 @@
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
 import { navigatorProps, UniNavigatorElement } from './model'
-import {
-  // camelize,
-  ComponentInternalInstance,
-  getCurrentInstance,
-  onMounted,
-} from 'vue'
+import { camelize, getCurrentInstance, onMounted, ref } from 'vue'
 
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Navigator',
@@ -17,35 +12,27 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   props: navigatorProps,
   emits: ['click'],
   setup(props, { emit, slots }) {
-    // data
-    let $uniNavigatorElement: null | UniNavigatorElement = null
+    const $uniNavigatorElement = ref<UniNavigatorElement>()
 
-    let instance: ComponentInternalInstance | null = null
+    const instance = getCurrentInstance()
 
     onMounted(() => {
-      instance = getCurrentInstance()
-
       instance?.$waitNativeRender(() => {
         if (!instance) return
-        $uniNavigatorElement = instance.proxy?.$el as UniNavigatorElement
-        $uniNavigatorElement!._getAttribute = (key: string): string | null => {
-          // const keyString = camelize(key)
-          // if (this.$props.has(keyString)) {
-          // if( props[keyString] != null){
-          // const value = this.$props.get(keyString)
-          //     if (value != null) {
-          //       return value.toString()
-          //     }
-          //     return ''
-          //   }
-          return null
+        $uniNavigatorElement!.value!._getAttribute = (
+          key: string
+        ): string | null => {
+          const keyString = camelize(key) as keyof typeof props
+          return props[keyString] !== null
+            ? props[keyString]?.toString() ?? null
+            : null
         }
       })
     })
 
     const _onClick = ($event: PointerEvent) => {
       const url = props.url
-      // emit('click', $event)
+      emit('click', $event)
 
       const animationDuration = props.animationDuration
       switch (props.openType) {
@@ -91,6 +78,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     return () => {
       return (
         <uni-navigator-element
+          ref={$uniNavigatorElement}
           onClick={_onClick}
           hoverClass={props.hoverClass}
           hoverStopPropagation={props.hoverStopPropagation}
