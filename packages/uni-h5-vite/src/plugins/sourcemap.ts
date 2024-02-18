@@ -1,4 +1,4 @@
-import { isInHBuilderX, normalizePath } from '@dcloudio/uni-cli-shared'
+import { normalizePath } from '@dcloudio/uni-cli-shared'
 import { isAbsolute, join, dirname } from 'path'
 import { Plugin, TransformResult, ViteDevServer } from 'vite'
 
@@ -9,14 +9,12 @@ export function uniPostSourceMapPlugin(): Plugin {
     enforce: 'post',
     configureServer(server) {
       // cli 工程呢？
-      if (isInHBuilderX()) {
-        // 重要：hack 了 _pendingRequests，来修改 map
-        const pendingRequests = new PendingRequests()
-        pendingRequests._server = server
-        pendingRequests._inputDir = normalizePath(process.env.UNI_INPUT_DIR)
-        // @ts-expect-error
-        server._pendingRequests = pendingRequests
-      }
+      // 重要：hack 了 _pendingRequests，来修改 map
+      const pendingRequests = new PendingRequests()
+      pendingRequests._server = server
+      pendingRequests._inputDir = normalizePath(process.env.UNI_INPUT_DIR)
+      // @ts-expect-error
+      server._pendingRequests = pendingRequests
     },
   }
 }
