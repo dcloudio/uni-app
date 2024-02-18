@@ -29,37 +29,43 @@ class PendingRequests extends Map<string, PendingRequest> {
   _inputDir!: string
   _server!: ViteDevServer
   set(key: string, value: PendingRequest) {
-    value.request = value.request
-      .then(async (request) => {
-        const map = request?.map
-        if (map) {
-          const mod = await this._server.moduleGraph.ensureEntryFromUrl(key)
-          if (mod.file && isAbsolute(mod.file)) {
-            const dir = normalizePath(dirname(mod.file))
-            if (dir.startsWith(this._inputDir)) {
-              for (
-                let sourcesIndex = 0;
-                sourcesIndex < map.sources.length;
-                ++sourcesIndex
-              ) {
-                const sourcePath = map.sources[sourcesIndex]
-                if (sourcePath) {
-                  // 将相对路径转换为绝对路径
-                  if (!isAbsolute(sourcePath)) {
-                    map.sources[sourcesIndex] = normalizePath(
-                      join(dir, sourcePath)
-                    )
+    const then = value.request.then
+    // @ts-expect-error
+    value.request.then = (onFulfilled, onRejected) => {
+      // @ts-expect-error
+      return then.call(
+        value.request,
+        (request) => {
+          const map = request?.map
+          if (map) {
+            // @ts-expect-error
+            const mod = this._server.moduleGraph._getUnresolvedUrlToModule(key)
+            if (mod && mod.file && isAbsolute(mod.file)) {
+              const dir = normalizePath(dirname(mod.file))
+              if (dir.startsWith(this._inputDir)) {
+                for (
+                  let sourcesIndex = 0;
+                  sourcesIndex < map.sources.length;
+                  ++sourcesIndex
+                ) {
+                  const sourcePath = map.sources[sourcesIndex]
+                  if (sourcePath) {
+                    // 将相对路径转换为绝对路径
+                    if (!isAbsolute(sourcePath)) {
+                      map.sources[sourcesIndex] = normalizePath(
+                        join(dir, sourcePath)
+                      )
+                    }
                   }
                 }
               }
             }
           }
-        }
-        return request
-      })
-      .catch(() => {
-        return null
-      })
+          return onFulfilled?.(request)
+        },
+        onRejected
+      )
+    }
     return super.set(key, value)
   }
 }
