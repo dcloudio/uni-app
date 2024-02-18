@@ -1,7 +1,8 @@
 export class UniNavigatorElement extends UniElementImpl {
-  // constructor(data: INodeData, pageNode: PageNode) {
-  // super(data, pageNode)
-  // }
+  constructor(data: INodeData, pageNode: PageNode) {
+    // @ts-ignore super call
+    super(data)
+  }
 
   // override getAttribute(key: string): string | null {
   //   const value = this._getAttribute(key)
