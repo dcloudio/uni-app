@@ -394,7 +394,7 @@ export default {
       loadingTitle = ''
     } = {}) {
       if (!needConfirm) {
-        this._doUpdate(id, action, success, fail, complete, needConfirm, needLoading, loadingTitle)
+        this._doUpdate(id, value, action, success, fail, complete, needConfirm, needLoading, loadingTitle)
         return
       }
       uni.showModal({
@@ -405,11 +405,11 @@ export default {
           if (!res.confirm) {
             return
           }
-          this._doUpdate(id, action, success, fail, complete, needConfirm, needLoading, loadingTitle)
+          this._doUpdate(id, value, action, success, fail, complete, needConfirm, needLoading, loadingTitle)
         }
       })
     },
-    _doUpdate (id, action, success, fail, complete, needConfirm, needLoading, loadingTitle) {
+    _doUpdate (id, value, action, success, fail, complete, needConfirm, needLoading, loadingTitle) {
       if (needLoading) {
         uni.showLoading({
           title: loadingTitle
