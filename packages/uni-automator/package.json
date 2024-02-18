@@ -23,13 +23,14 @@
     "postcss-selector-parser": "^6.0.2",
     "qrcode-reader": "^1.0.4",
     "qrcode-terminal": "^0.12.0",
-    "ws": "^7.2.3"
+    "ws": "^7.2.3",
+    "jimp": "^0.10.1"
   },
   "peerDependencies": {
     "adbkit": "^2.11.1",
-    "jimp": "^0.10.1",
     "node-simctl": "^6.1.0",
     "puppeteer": "^3.0.1"
   },
   "gitHead": "9e2d0f8e244724fcd64880316c57d837d1778cf8"
 }
+
