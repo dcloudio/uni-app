@@ -14,6 +14,6 @@ export function $dispatch(
     }
   }
   if (parent != null) {
-    parent.$callMethod(eventName, ...do_not_transform_spread)
+    parent[eventName](...do_not_transform_spread)
   }
 }
