@@ -395,8 +395,11 @@ function initUTSStaticMethod(async: boolean, opts: ProxyFunctionOptions) {
 
 export const initUTSProxyFunction = initUTSStaticMethod
 
-function parseClassMethodName(name: string, methods: Record<string, unknown>) {
-  if (hasOwn(methods, name + 'ByJs')) {
+function parseClassMethodName(
+  name: string | symbol,
+  methods: Record<string, unknown>
+) {
+  if (typeof name === 'string' && hasOwn(methods, name + 'ByJs')) {
     return name + 'ByJs'
   }
   return name
@@ -491,7 +494,7 @@ export function initUTSProxyClass(
           }
           if (!target[name as string]) {
             //实例方法
-            name = parseClassMethodName(name as string, methods)
+            name = parseClassMethodName(name, methods)
             if (hasOwn(methods, name)) {
               const { async, params, return: returnOptions } = methods[name]
               target[name] = initUTSInstanceMethod(
@@ -527,7 +530,7 @@ export function initUTSProxyClass(
   const staticMethodCache: Record<string, Function> = {}
   return new Proxy(ProxyClass, {
     get(target, name, receiver) {
-      name = parseClassMethodName(name as string, staticMethods)
+      name = parseClassMethodName(name, staticMethods)
       if (hasOwn(staticMethods, name)) {
         if (!staticMethodCache[name as string]) {
           const { async, params, return: returnOptions } = staticMethods[name]
