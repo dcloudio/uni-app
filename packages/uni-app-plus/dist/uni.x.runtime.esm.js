@@ -1,6 +1,6 @@
 import { normalizeStyles, addLeadingSlash, invokeArrayFns, LINEFEED, parseQuery, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, EventChannel, once, ON_UNLOAD, ON_READY, parseUrl, ON_BACK_PRESS, ON_LAUNCH } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction, isArray, isPromise, hasOwn, capitalize } from "@vue/shared";
-import { createVNode, render, injectHook, getCurrentInstance, defineComponent, computed, ref, watch, onMounted, resolveComponent, isInSSRComponentSetup, watchEffect, defineExpose, openBlock, createBlock, withCtx, renderSlot, camelize, onUnmounted, normalizeStyle, createElementVNode, createElementBlock, toDisplayString, createCommentVNode } from "vue";
+import { createVNode, render, injectHook, getCurrentInstance, defineComponent, computed, ref, watch, onMounted, resolveComponent, isInSSRComponentSetup, watchEffect, onUnmounted, camelize, reactive, withDirectives, resolveDirective } from "vue";
 var _wks = { exports: {} };
 var _shared = { exports: {} };
 var _core = { exports: {} };
@@ -2921,7 +2921,7 @@ const button = /* @__PURE__ */ defineBuiltInComponent({
   },
   // styles: buttonStyle,
   props: buttonProps,
-  emits: ["click"],
+  // emits: ['click'],
   setup(props, _ref) {
     var {
       emit,
@@ -2935,6 +2935,7 @@ const button = /* @__PURE__ */ defineBuiltInComponent({
     var $hoverStayTimer = null;
     var $hoverTouch = false;
     var $hovering = false;
+    var instance;
     var btnCls = computed(() => {
       var cl = "ub-" + props.type;
       if (props.disabled) {
@@ -2967,14 +2968,15 @@ const button = /* @__PURE__ */ defineBuiltInComponent({
       }
     }
     onMounted(() => {
-      var instance = getCurrentInstance();
-      if (instance) {
-        instance.$waitNativeRender(() => {
-          var _instance$proxy;
-          $buttonEl = (_instance$proxy = instance.proxy) === null || _instance$proxy === void 0 ? void 0 : _instance$proxy.$el;
-          parseHoverClass();
-        });
-      }
+      var _instance;
+      instance = getCurrentInstance();
+      (_instance = instance) === null || _instance === void 0 ? void 0 : _instance.$waitNativeRender(() => {
+        var _instance$proxy;
+        if (!instance)
+          return;
+        $buttonEl = (_instance$proxy = instance.proxy) === null || _instance$proxy === void 0 ? void 0 : _instance$proxy.$el;
+        parseHoverClass();
+      });
     });
     function setHoverStyle() {
       var hoverStyle;
@@ -3070,11 +3072,9 @@ const button = /* @__PURE__ */ defineBuiltInComponent({
       if (props.disabled) {
         return;
       }
-      emit("click", $event);
       if (FORM_TYPES.indexOf(props.formType) > -1) {
-        var _instance$parent;
-        var instance = getCurrentInstance();
-        var ctx2 = instance === null || instance === void 0 ? void 0 : (_instance$parent = instance.parent) === null || _instance$parent === void 0 ? void 0 : _instance$parent.proxy;
+        var _instance2;
+        var ctx2 = (_instance2 = instance) === null || _instance2 === void 0 ? void 0 : _instance2.proxy;
         $dispatch(ctx2, "Form", props.formType);
       }
     }
@@ -3211,9 +3211,12 @@ const checkbox = /* @__PURE__ */ defineBuiltInComponent({
       slots
     } = _ref;
     var icon = "";
-    var instance = null;
+    var instance = getCurrentInstance();
     var checkboxChecked = ref(props.checked);
     var checkboxValue = ref("");
+    var setCheckboxChecked = (checked) => {
+      checkboxChecked.value = checked;
+    };
     watchEffect(() => {
       checkboxChecked.value = props.checked;
     });
@@ -3230,8 +3233,8 @@ const checkbox = /* @__PURE__ */ defineBuiltInComponent({
       });
     });
     var checkInputStyle = computed(() => {
-      var r = checkboxChecked.value ? checkedStyle.value : uncheckedStyle.value;
-      return Object.assign({}, styles["uni-checkbox-input"], r);
+      var style = checkboxChecked.value ? checkedStyle.value : uncheckedStyle.value;
+      return Object.assign({}, styles["uni-checkbox-input"], style);
     });
     var checkedStyle = computed(() => {
       if (props.disabled) {
@@ -3257,25 +3260,33 @@ const checkbox = /* @__PURE__ */ defineBuiltInComponent({
         borderColor: props.borderColor
       };
     });
-    instance = getCurrentInstance();
     onMounted(() => {
-      var _instance, _instance$parent;
-      var ctx2 = (_instance = instance) === null || _instance === void 0 ? void 0 : (_instance$parent = _instance.parent) === null || _instance$parent === void 0 ? void 0 : _instance$parent.proxy;
-      $dispatch(ctx2, "CheckboxGroup", "_checkboxGroupUpdateHandler", ctx2, "add");
+      var ctx2 = instance === null || instance === void 0 ? void 0 : instance.proxy;
+      $dispatch(ctx2, "CheckboxGroup", "_checkboxGroupUpdateHandler", {
+        setCheckboxChecked,
+        name: checkboxValue.value,
+        checked: checkboxChecked.value
+      }, "add");
     });
     onUnload(() => {
-      var _instance2, _instance2$parent;
-      var ctx2 = (_instance2 = instance) === null || _instance2 === void 0 ? void 0 : (_instance2$parent = _instance2.parent) === null || _instance2$parent === void 0 ? void 0 : _instance2$parent.proxy;
-      $dispatch(ctx2, "CheckboxGroup", "_checkboxGroupUpdateHandler", ctx2, "remove");
+      var ctx2 = instance === null || instance === void 0 ? void 0 : instance.proxy;
+      $dispatch(ctx2, "CheckboxGroup", "_checkboxGroupUpdateHandler", {
+        setCheckboxChecked,
+        name: checkboxValue.value,
+        checked: checkboxChecked.value
+      }, "remove");
     });
     var _onClick = ($event) => {
-      var _instance3, _instance3$parent;
       if (props.disabled)
         return;
       emit("click", $event);
       checkboxChecked.value = !checkboxChecked.value;
-      var ctx2 = (_instance3 = instance) === null || _instance3 === void 0 ? void 0 : (_instance3$parent = _instance3.parent) === null || _instance3$parent === void 0 ? void 0 : _instance3$parent.proxy;
-      $dispatch(ctx2, "CheckboxGroup", "_changeHandler");
+      var ctx2 = instance === null || instance === void 0 ? void 0 : instance.proxy;
+      $dispatch(ctx2, "CheckboxGroup", "_changeHandler", {
+        name: checkboxValue.value,
+        checked: checkboxChecked.value,
+        setCheckboxChecked
+      });
     };
     return () => {
       return createVNode(resolveComponent("uni-checkbox-element"), {
@@ -3343,7 +3354,7 @@ class UniCheckboxGroupChangeEvent extends CustomEvent {
     });
   }
 }
-const _sfc_main$1 = /* @__PURE__ */ defineBuiltInComponent({
+const checkboxGroup = /* @__PURE__ */ defineBuiltInComponent({
   name: CHECKBOX_GROUP_NAME,
   rootElement: {
     name: CHECKBOX_GROUP_ROOT_ELEMENT,
@@ -3354,84 +3365,74 @@ const _sfc_main$1 = /* @__PURE__ */ defineBuiltInComponent({
   emits: ["change"],
   setup(props, _ref) {
     var {
-      emit
+      emit,
+      expose,
+      slots
     } = _ref;
     var $checkboxList = ref([]);
     var uniCheckboxGroupElementRef = ref(null);
-    var instance = null;
-    instance = getCurrentInstance();
-    var _checkboxGroupUpdateHandler = (vm, type) => {
+    var instance = getCurrentInstance();
+    var _checkboxGroupUpdateHandler = (info, type) => {
       if (type == "add") {
-        $checkboxList.value.push(vm);
+        $checkboxList.value.push(info);
       } else {
-        var index2 = $checkboxList.value.indexOf(vm);
+        var index2 = $checkboxList.value.findIndex((i) => i.name === info.name);
         if (index2 !== -1) {
           $checkboxList.value.splice(index2, 1);
         }
       }
     };
-    var _changeHandler = () => {
+    var _changeHandler = (info) => {
+      $checkboxList.value.forEach((i) => {
+        if (i.name === info.name) {
+          i.checked = info.checked;
+        }
+      });
       emit("change", new UniCheckboxGroupChangeEvent(_getValue()));
     };
-    defineExpose({
-      _checkboxGroupUpdateHandler,
-      _changeHandler
-    });
     var _getValue = () => {
       var valueArray = [];
-      $checkboxList.value.forEach((vm) => {
-        var data = vm.$data;
-        if (data.get("checkboxChecked")) {
-          valueArray.push(data.get("checkboxValue"));
+      $checkboxList.value.forEach((info) => {
+        if (info.checked) {
+          valueArray.push(info.name);
         }
       });
       return valueArray;
     };
     var _setValue = (valueArray) => {
-      $checkboxList.value.forEach((vm) => {
-        var data = vm.$data;
-        var value = data.get("checkboxValue");
-        if (valueArray.indexOf(value) !== -1) {
-          data.set("checkboxChecked", true);
-        } else {
-          data.set("checkboxChecked", false);
-        }
+      $checkboxList.value.forEach((info) => {
+        info.setCheckboxChecked(valueArray.includes(info.name));
       });
     };
     onMounted(() => {
-      if (instance === null)
-        return;
-      instance.$waitNativeRender(() => {
+      instance === null || instance === void 0 ? void 0 : instance.$waitNativeRender(() => {
+        if (instance === null)
+          return;
         if (!uniCheckboxGroupElementRef.value)
           return;
         uniCheckboxGroupElementRef.value._getValue = _getValue;
         uniCheckboxGroupElementRef.value._setValue = _setValue;
         uniCheckboxGroupElementRef.value._initialValue = _getValue();
+        var ctx2 = instance.proxy;
+        $dispatch(ctx2, "Form", "formControlUpdate", uniCheckboxGroupElementRef, "add");
       });
     });
-    return {
+    expose({
       _checkboxGroupUpdateHandler,
       _changeHandler
+    });
+    return () => {
+      return createVNode(resolveComponent("uni-checkbox-group-element"), {
+        "ref": "uniCheckboxGroupElementRef"
+      }, {
+        default: () => {
+          var _slots$default;
+          return [(_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)];
+        }
+      }, 512);
     };
   }
 });
-const _export_sfc = (sfc, props) => {
-  const target = sfc.__vccOpts || sfc;
-  for (const [key, val] of props) {
-    target[key] = val;
-  }
-  return target;
-};
-function _sfc_render$1(_ctx2, _cache, $props, $setup, $data, $options) {
-  var _component_uni_checkbox_group_element = resolveComponent("uni-checkbox-group-element");
-  return openBlock(), createBlock(_component_uni_checkbox_group_element, {
-    ref: "uniCheckboxGroupElementRef"
-  }, {
-    default: withCtx(() => [renderSlot(_ctx2.$slots, "default")]),
-    _: 3
-  }, 512);
-}
-const checkboxGroup = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1]]);
 const checkboxGroup$1 = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: checkboxGroup
@@ -3456,7 +3457,7 @@ var radioProps = {
     default: false
   },
   value: {
-    type: Object,
+    type: [Object, String],
     default: ""
   },
   // 选中时的背景颜色
@@ -3519,7 +3520,7 @@ var _style_0$1 = {
   }
 };
 var styleList = _style_0$1;
-const _sfc_main = /* @__PURE__ */ defineBuiltInComponent({
+const radio = /* @__PURE__ */ defineBuiltInComponent({
   name: RADIO_NAME,
   rootElement: {
     name: RADIO_ROOT_ELEMENT,
@@ -3529,22 +3530,17 @@ const _sfc_main = /* @__PURE__ */ defineBuiltInComponent({
   props: radioProps,
   styles: styleList,
   setup(props, _ref) {
-    var styleUniRadio = styleList["uni-radio"][""];
+    var {
+      slots,
+      expose
+    } = _ref;
+    var uniRadioElementRef = ref();
+    var styleUniRadio = computed(() => styleList["uni-radio"][""]);
     var styleUniRadioInput = computed(() => {
       return Object.assign({}, styleList["uni-radio-input"][""], radioChecked.value ? checkedStyle.value : uncheckedStyle.value);
     });
     var styleUniRadioInputIcon = computed(() => {
       return Object.assign({}, styleList["uni-radio-input-icon"][""], iconStyle.value);
-    });
-    var $uniRadioElement = null;
-    var icon = "";
-    var radioChecked = ref(props.checked);
-    var radioValue = ref(props.value.toString());
-    watchEffect(() => {
-      radioChecked.value = props.checked;
-    });
-    watchEffect(() => {
-      radioValue.value = props.value.toString();
     });
     var checkedStyle = computed(() => {
       if (props.disabled) {
@@ -3577,71 +3573,579 @@ const _sfc_main = /* @__PURE__ */ defineBuiltInComponent({
         color: props.disabled ? "#adadad" : props.iconColor
       };
     });
-    var instance = null;
+    var icon = "";
+    var radioChecked = ref(props.checked);
+    var radioValue = ref(props.value.toString());
+    watchEffect(() => {
+      radioChecked.value = props.checked;
+    });
+    var setRadioChecked = (value) => {
+      radioChecked.value = value;
+    };
+    watchEffect(() => {
+      radioValue.value = props.value.toString();
+    });
+    expose({
+      radioValue
+    });
+    var instance = getCurrentInstance();
     onMounted(() => {
-      var _instance;
-      instance = getCurrentInstance();
-      (_instance = instance) === null || _instance === void 0 ? void 0 : _instance.$waitNativeRender(() => {
-        var _instance$proxy;
+      instance === null || instance === void 0 ? void 0 : instance.$waitNativeRender(() => {
         if (instance === null)
           return;
-        $uniRadioElement = (_instance$proxy = instance.proxy) === null || _instance$proxy === void 0 ? void 0 : _instance$proxy.$el;
-        $uniRadioElement._getAttribute = (key) => {
-          camelize(key);
+        uniRadioElementRef.value._getAttribute = (key) => {
           return null;
         };
       });
+      var ctx2 = instance === null || instance === void 0 ? void 0 : instance.proxy;
+      $dispatch(ctx2, "RadioGroup", "_radioGroupUpdateHandler", {
+        name: radioValue.value,
+        checked: radioChecked.value,
+        setRadioChecked
+      }, "add");
     });
     onUnmounted(() => {
+      var ctx2 = instance === null || instance === void 0 ? void 0 : instance.proxy;
+      $dispatch(ctx2, "RadioGroup", "_radioGroupUpdateHandler", {
+        name: radioValue.value,
+        checked: radioChecked.value,
+        setRadioChecked
+      }, "remove");
     });
     var _onClick = () => {
       if (props.disabled || radioChecked.value)
         return;
       radioChecked.value = !radioChecked.value;
+      var ctx2 = instance === null || instance === void 0 ? void 0 : instance.proxy;
+      $dispatch(
+        ctx2,
+        "RadioGroup",
+        "_changeHandler",
+        // more info
+        {
+          name: radioValue.value,
+          checked: radioChecked.value,
+          setRadioChecked
+        }
+      );
     };
-    return {
-      _onClick,
-      checkedStyle,
-      uncheckedStyle,
-      iconStyle,
-      icon,
-      styleUniRadio,
-      radioChecked,
-      styleUniRadioInput,
-      styleUniRadioInputIcon
+    return () => {
+      return createVNode(resolveComponent("uni-radio-element"), {
+        "dataUncType": "uni-radio",
+        "class": "uni-radio",
+        "style": styleUniRadio.value,
+        "ref": uniRadioElementRef,
+        "onClick": _onClick
+      }, {
+        default: () => {
+          var _slots$default;
+          return [createVNode("view", {
+            "class": "uni-radio-input",
+            "style": styleUniRadioInput.value
+          }, [radioChecked.value ? createVNode("text", {
+            "class": "uni-radio-input-icon",
+            "style": styleUniRadioInputIcon.value
+          }, [icon], 4) : null], 4), (_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)];
+        },
+        _: 2
+      }, 8, ["style", "onClick"]);
     };
   }
 });
-function _sfc_render(_ctx2, _cache, $props, $setup, $data, $options) {
-  var _component_uni_radio_element = resolveComponent("uni-radio-element");
-  return openBlock(), createBlock(_component_uni_radio_element, {
-    dataUncType: "uni-radio",
-    class: "uni-radio",
-    style: normalizeStyle(_ctx2.styleUniRadio),
-    onClick: _ctx2._onClick
-  }, {
-    default: withCtx(() => [createElementVNode("view", {
-      class: "uni-radio-input",
-      style: normalizeStyle(_ctx2.styleUniRadioInput)
-    }, [_ctx2.radioChecked ? (openBlock(), createElementBlock("text", {
-      key: 0,
-      class: "uni-radio-input-icon",
-      style: normalizeStyle(_ctx2.styleUniRadioInputIcon)
-    }, toDisplayString(_ctx2.icon), 5)) : createCommentVNode("", true)], 4), renderSlot(_ctx2.$slots, "default")]),
-    _: 3
-  }, 8, ["style", "onClick"]);
-}
-const radio = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
 const radio$1 = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: radio
+}, Symbol.toStringTag, { value: "Module" });
+var RADIOGROUP_NAME = "RadioGroup";
+var RADIOGROUP_ROOT_ELEMENT = "uni-radio-group-element";
+class UniRadioGroupElement extends UniFormControlElement {
+  constructor(data, pageNode) {
+    super(data, pageNode);
+    this._initialValue = "";
+    this._getAttribute = (key) => {
+      return null;
+    };
+    this._getValue = () => {
+      return this._initialValue;
+    };
+    this._setValue = (value) => {
+    };
+  }
+  get value() {
+    return this._getValue();
+  }
+  set value(value) {
+    this._setValue(value);
+  }
+  reset() {
+    this.value = this._initialValue;
+  }
+}
+class UniRadioGroupChangeEventDetail {
+  constructor(value) {
+    this.value = value;
+  }
+}
+class UniRadioGroupChangeEvent extends CustomEvent {
+  constructor(value) {
+    super("change", {
+      detail: new UniRadioGroupChangeEventDetail(value)
+    });
+  }
+}
+const radioGroup = /* @__PURE__ */ defineBuiltInComponent({
+  name: RADIOGROUP_NAME,
+  rootElement: {
+    name: RADIOGROUP_ROOT_ELEMENT,
+    // @ts-expect-error not web element
+    class: UniRadioGroupElement
+  },
+  emits: ["change"],
+  setup(props, _ref) {
+    var {
+      emit,
+      slots,
+      expose
+    } = _ref;
+    var $radioList = ref([]);
+    var uniRadioGroupElementRef = ref();
+    var instance = null;
+    onMounted(() => {
+      var _instance;
+      instance = getCurrentInstance();
+      (_instance = instance) === null || _instance === void 0 ? void 0 : _instance.$waitNativeRender(() => {
+        var _instance2;
+        if (!uniRadioGroupElementRef.value)
+          return;
+        uniRadioGroupElementRef.value._getValue = _getValue;
+        uniRadioGroupElementRef.value._setValue = _setValue;
+        uniRadioGroupElementRef.value._initialValue = _getValue();
+        uniRadioGroupElementRef.value._getAttribute = (key) => {
+          return null;
+        };
+        if (!instance)
+          return;
+        var ctx2 = (_instance2 = instance) === null || _instance2 === void 0 ? void 0 : _instance2.proxy;
+        $dispatch(ctx2, "Form", "formControlUpdate", uniRadioGroupElementRef.value, "add");
+      });
+    });
+    onUnmounted(() => {
+      var _instance3;
+      var ctx2 = (_instance3 = instance) === null || _instance3 === void 0 ? void 0 : _instance3.proxy;
+      $dispatch(ctx2, "Form", "formControlUpdate", uniRadioGroupElementRef.value, "remove");
+    });
+    var _radioGroupUpdateHandler = (info, type) => {
+      if (type == "add") {
+        $radioList.value.push(info);
+      } else {
+        var index2 = $radioList.value.findIndex((i) => i.name == info.name);
+        if (index2 !== -1) {
+          $radioList.value.splice(index2, 1);
+        }
+      }
+    };
+    var _getValue = () => {
+      var value = "";
+      $radioList.value.forEach((info) => {
+        if (info.checked) {
+          value = info.name;
+        }
+      });
+      return value;
+    };
+    var _setValue = (name) => {
+      $radioList.value.forEach((info, _) => {
+        if (info.name == name) {
+          info.checked = true;
+          info.setRadioChecked(true);
+        } else {
+          info.checked = false;
+          info.setRadioChecked(false);
+        }
+      });
+    };
+    var _changeHandler = (data) => {
+      _setValue(data.name);
+      emit("change", new UniRadioGroupChangeEvent(data.name));
+    };
+    expose({
+      _radioGroupUpdateHandler,
+      _getValue,
+      _setValue,
+      _changeHandler
+    });
+    return () => {
+      return createVNode(resolveComponent("uni-radio-group-element"), {
+        "ref": uniRadioGroupElementRef.value
+      }, {
+        default: () => {
+          var _slots$default;
+          return [(_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)];
+        }
+      }, 512);
+    };
+  }
+});
+const radioGroup$1 = /* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  default: radioGroup
+}, Symbol.toStringTag, { value: "Module" });
+class UniNavigatorElement extends UniElementImpl {
+  constructor(data, pageNode) {
+    super(data);
+    this._getAttribute = (key) => {
+      return null;
+    };
+  }
+}
+var navigatorProps = {
+  url: {
+    type: String,
+    default: ""
+  },
+  openType: {
+    type: String,
+    default: "navigate"
+  },
+  delta: {
+    type: Number,
+    default: 1
+  },
+  animationType: {
+    type: String,
+    default: ""
+  },
+  animationDuration: {
+    type: Number,
+    default: 300
+  },
+  hoverClass: {
+    type: String,
+    default: "navigator-hover"
+  },
+  hoverStopPropagation: {
+    type: Boolean,
+    default: false
+  },
+  hoverStartTime: {
+    type: Number,
+    default: 50
+  },
+  hoverStayTime: {
+    type: Number,
+    default: 600
+  }
+};
+const navigator = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Navigator",
+  rootElement: {
+    name: "uni-navigator-element",
+    // @ts-expect-error not web element
+    class: UniNavigatorElement
+  },
+  props: navigatorProps,
+  emits: ["click"],
+  setup(props, _ref) {
+    var {
+      emit,
+      slots
+    } = _ref;
+    var $uniNavigatorElement = ref();
+    var instance = getCurrentInstance();
+    onMounted(() => {
+      instance === null || instance === void 0 ? void 0 : instance.$waitNativeRender(() => {
+        if (!instance)
+          return;
+        $uniNavigatorElement.value._getAttribute = (key) => {
+          var _props$keyString$toSt, _props$keyString;
+          var keyString = camelize(key);
+          return props[keyString] !== null ? (_props$keyString$toSt = (_props$keyString = props[keyString]) === null || _props$keyString === void 0 ? void 0 : _props$keyString.toString()) !== null && _props$keyString$toSt !== void 0 ? _props$keyString$toSt : null : null;
+        };
+      });
+    });
+    var _onClick = ($event) => {
+      var url = props.url;
+      emit("click", $event);
+      var animationDuration = props.animationDuration;
+      switch (props.openType) {
+        case "navigate":
+          uni.navigateTo({
+            url,
+            animationType: props.animationType.length > 0 ? props.animationType : "pop-in",
+            animationDuration
+          });
+          break;
+        case "redirect":
+          uni.redirectTo({
+            url
+          });
+          break;
+        case "switchTab":
+          uni.switchTab({
+            url
+          });
+          break;
+        case "reLaunch":
+          uni.reLaunch({
+            url
+          });
+          break;
+        case "navigateBack":
+          uni.navigateBack({
+            delta: props.delta,
+            animationType: props.animationType.length > 0 ? props.animationType : "pop-out",
+            animationDuration
+          });
+          break;
+        default:
+          console.log("<navigator/> openType attribute invalid");
+          break;
+      }
+    };
+    return () => {
+      return createVNode(resolveComponent("uni-navigator-element"), {
+        "ref": $uniNavigatorElement,
+        "onClick": _onClick,
+        "hoverClass": props.hoverClass,
+        "hoverStopPropagation": props.hoverStopPropagation,
+        "hoverStartTime": props.hoverStartTime,
+        "hoverStayTime": props.hoverStayTime
+      }, {
+        default: () => {
+          var _slots$default;
+          return [(_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)];
+        }
+      }, 8, ["onClick", "hoverClass", "hoverStopPropagation", "hoverStartTime", "hoverStayTime"]);
+    };
+  }
+});
+const navigator$1 = /* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  default: navigator
+}, Symbol.toStringTag, { value: "Module" });
+var BACKGROUND_COLOR = "#EBEBEB";
+var PRIMARY_COLOR = "#007AFF";
+var ANIMATE_INTERVAL_DEFAULT = 30;
+var FONT_SIZE = 16;
+var STROKE_WIDTH = 6;
+class UniProgressActiveendEventDetail {
+  constructor(value) {
+    this.curPercent = value;
+  }
+}
+class UniProgressActiveendEvent extends CustomEvent {
+  constructor(value) {
+    super("activeend", {
+      detail: new UniProgressActiveendEventDetail(value)
+    });
+  }
+}
+class UniProgressElement extends UniElementImpl {
+  constructor(data, pageNode) {
+    super();
+    this._getAttribute = (key) => {
+      return null;
+    };
+  }
+  getAttribute(key) {
+    var value = this._getAttribute(key);
+    if (value != null) {
+      return value;
+    }
+    return super.getAttribute(key);
+  }
+}
+var progressProps = {
+  percent: {
+    type: Number,
+    default: 0
+  },
+  showInfo: {
+    type: Boolean,
+    default: false
+  },
+  borderRadius: {
+    type: Number,
+    default: 0
+  },
+  fontSize: {
+    type: Number,
+    default: FONT_SIZE
+  },
+  strokeWidth: {
+    type: Number,
+    default: STROKE_WIDTH
+  },
+  active: {
+    type: Boolean,
+    default: false
+  },
+  activeColor: {
+    type: String,
+    default: PRIMARY_COLOR
+  },
+  activeMode: {
+    type: String,
+    default: "backwards"
+  },
+  backgroundColor: {
+    type: String,
+    default: BACKGROUND_COLOR
+  },
+  duration: {
+    type: Number,
+    default: ANIMATE_INTERVAL_DEFAULT
+  }
+};
+var _style = {
+  "uni-progress": {
+    "": {
+      flexDirection: "row",
+      alignItems: "center"
+    }
+  },
+  "uni-progress-bar": {
+    "": {
+      flex: "1",
+      overflow: "hidden"
+    }
+  },
+  "uni-progress-info": {
+    "": {
+      marginLeft: "15px"
+    }
+  }
+};
+const progress = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Progress",
+  rootElement: {
+    name: "uni-progress-element",
+    // @ts-expect-error not web element
+    class: UniProgressElement
+  },
+  emit: ["activeend"],
+  props: progressProps,
+  setup(props, _ref) {
+    var {
+      emit,
+      slots
+    } = _ref;
+    var data = reactive({
+      $uniProgressElement: null,
+      curPercent: 0,
+      _timerId: 0,
+      _lastPercent: 0
+    });
+    var textStr = "".concat(data.curPercent, "%");
+    var instance = getCurrentInstance();
+    var styleUniProgress = computed(() => _style["uni-progress"]);
+    var styleUniProgressBar = computed(() => _style["uni-progress-bar"]);
+    var barStyle = computed(() => {
+      var style = {
+        height: "".concat(props.strokeWidth, "px"),
+        borderRadius: "".concat(props.borderRadius, "px"),
+        backgroundColor: props.backgroundColor
+      };
+      return Object.assign({}, styleUniProgressBar.value[""], style);
+    });
+    var innerBarStyle = computed(() => {
+      var style = {
+        width: "".concat(data.curPercent, "%"),
+        height: "".concat(props.strokeWidth, "px"),
+        backgroundColor: "".concat(props.activeColor)
+      };
+      return Object.assign({}, style);
+    });
+    var textStyle = computed(() => {
+      var fontSize = props.fontSize;
+      var style = {
+        fontSize: "".concat(fontSize, "px"),
+        minWidth: "".concat(fontSize * 2, "px")
+      };
+      return Object.assign({}, style);
+    });
+    var finalPercent = computed(() => {
+      var percent = props.percent;
+      if (percent > 100)
+        percent = 100;
+      if (percent < 0)
+        percent = 0;
+      return percent;
+    });
+    watch(() => finalPercent.value, (_, oldVal) => {
+      data._lastPercent = oldVal;
+      clearTimer();
+      _animate();
+    });
+    var _animate = () => {
+      var percent = finalPercent.value;
+      if (!props.active) {
+        data.curPercent = percent;
+        return;
+      }
+      data.curPercent = props.activeMode === "forwards" ? data._lastPercent : 0;
+      data._timerId = setInterval(() => {
+        if (percent <= data.curPercent + 1) {
+          clearTimer();
+          data.curPercent = percent;
+          emit("activeend", new UniProgressActiveendEvent(percent));
+        } else {
+          ++data.curPercent;
+        }
+      }, props.duration);
+    };
+    var clearTimer = () => {
+      clearInterval(data._timerId);
+    };
+    onMounted(() => {
+      instance === null || instance === void 0 ? void 0 : instance.$waitNativeRender(() => {
+        var _instance$proxy;
+        if (!instance)
+          return;
+        data.$uniProgressElement = (_instance$proxy = instance.proxy) === null || _instance$proxy === void 0 ? void 0 : _instance$proxy.$el;
+        data.$uniProgressElement._getAttribute = (key) => {
+          var _props$keyString$toSt, _props$keyString;
+          var keyString = camelize(key);
+          return props[keyString] !== null ? (_props$keyString$toSt = (_props$keyString = props[keyString]) === null || _props$keyString === void 0 ? void 0 : _props$keyString.toString()) !== null && _props$keyString$toSt !== void 0 ? _props$keyString$toSt : null : null;
+        };
+      });
+    });
+    onUnmounted(() => {
+      clearTimer();
+    });
+    return () => {
+      return createVNode(resolveComponent("uni-progress-element"), {
+        "class": "uni-progress",
+        "style": styleUniProgress
+      }, {
+        default: () => [createVNode("view", {
+          "class": "uni-progress-bar",
+          "style": barStyle.value
+        }, [createVNode("view", {
+          "class": "uni-progress-inner-bar",
+          "style": innerBarStyle.value
+        }, null, 4)], 4), withDirectives(createVNode("text", {
+          "class": "uni-progress-info",
+          "style": textStyle.value
+        }, [textStr], 4), [[resolveDirective("if"), "showInfo"]])],
+        _: 2
+      }, 8, ["style"]);
+    };
+  }
+});
+const progress$1 = /* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  default: progress
 }, Symbol.toStringTag, { value: "Module" });
 const components = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   Button: button$1,
   Checkbox: checkbox$1,
   CheckboxGroup: checkboxGroup$1,
+  Navigator: navigator$1,
+  Progress: progress$1,
   Radio: radio$1,
+  RadioGroup: radioGroup$1,
   Slider: slider$1
 }, Symbol.toStringTag, { value: "Module" });
 const index = {
