@@ -154,7 +154,7 @@ function initUTSStaticMethod(async, opts) {
 }
 const initUTSProxyFunction = initUTSStaticMethod;
 function parseClassMethodName(name, methods) {
-    if (hasOwn(methods, name + 'ByJs')) {
+    if (typeof name === 'string' && hasOwn(methods, name + 'ByJs')) {
         return name + 'ByJs';
     }
     return name;
