@@ -270,7 +270,7 @@ export async function runKotlinDev(
       'uniapp-runextension'
     )
     if (!compilerServer) {
-      throw `项目使用了uts插件，正在安装 uts Android 运行扩展...`
+      throw new Error(`项目使用了uts插件，正在安装 uts Android 运行扩展...`)
     }
     const {
       getDefaultJar,

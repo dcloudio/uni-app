@@ -180,7 +180,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
       result.inject_apis &&
       result.inject_apis.find((api) => api.startsWith('uniCloud.'))
     ) {
-      throw `应用未关联服务空间，请在uniCloud目录右键关联服务空间`
+      throw new Error(`应用未关联服务空间，请在uniCloud目录右键关联服务空间`)
     }
     return runKotlinBuild(options, result)
   }
@@ -295,7 +295,7 @@ async function runKotlinDev(
         'uniapp-runextension'
       )
       if (!compilerServer) {
-        throw `项目使用了uts插件，正在安装 uts Android 运行扩展...`
+        throw new Error(`项目使用了uts插件，正在安装 uts Android 运行扩展...`)
       }
       // 检查是否有缓存文件
       if (isFirst) {
