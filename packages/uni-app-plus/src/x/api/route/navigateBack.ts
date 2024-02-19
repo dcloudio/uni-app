@@ -28,8 +28,13 @@ export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
     ) {
       return reject('cancel')
     }
-    uni.hideToast?.()
-    uni.hideLoading?.()
+    // TODO ext api
+    try {
+      uni.hideToast()
+      uni.hideLoading()
+    } catch (error) {
+      console.warn(error)
+    }
     if (page.$page.meta.isQuit) {
       // TODO quit()
     }
