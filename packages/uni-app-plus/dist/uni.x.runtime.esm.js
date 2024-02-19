@@ -1548,7 +1548,6 @@ function initAnimation(path, animationType, animationDuration) {
   return [animationType || meta.animationType || globalStyle.animationType || ANI_SHOW, animationDuration || meta.animationDuration || globalStyle.animationDuration || ANI_DURATION];
 }
 var navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, (args, _ref) => {
-  var _uni$hideToast, _uni, _uni$hideLoading, _uni2;
   var {
     resolve,
     reject
@@ -1562,8 +1561,12 @@ var navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, (args, _ref
   })) {
     return reject("cancel");
   }
-  (_uni$hideToast = (_uni = uni).hideToast) === null || _uni$hideToast === void 0 ? void 0 : _uni$hideToast.call(_uni);
-  (_uni$hideLoading = (_uni2 = uni).hideLoading) === null || _uni$hideLoading === void 0 ? void 0 : _uni$hideLoading.call(_uni2);
+  try {
+    uni.hideToast();
+    uni.hideLoading();
+  } catch (error) {
+    console.warn(error);
+  }
   if (page.$page.meta.isQuit)
     ;
   else {
