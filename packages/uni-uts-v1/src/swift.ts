@@ -138,7 +138,7 @@ export async function runSwiftDev(
     'uts-development-ios'
   )
   if (!compilerServer) {
-    throw `项目使用了uts插件，正在安装 uts iOS 运行扩展...`
+    throw new Error(`项目使用了uts插件，正在安装 uts iOS 运行扩展...`)
   }
   if (compilerServer.checkEnv) {
     const { code, msg } = compilerServer.checkEnv()
