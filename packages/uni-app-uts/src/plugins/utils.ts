@@ -77,7 +77,7 @@ const REMOVED_PLUGINS = [
   'vite:json',
   // 'vite:asset', // replace
   'vite:wasm-fallback',
-  'vite:define',
+  // 'vite:define',
   // 'vite:css-post', // iOS replace
   'vite:build-html',
   'vite:html-inline-proxy',
