@@ -2025,7 +2025,7 @@ function initUTSStaticMethod(async, opts) {
 }
 var initUTSProxyFunction = initUTSStaticMethod;
 function parseClassMethodName(name, methods) {
-  if (hasOwn(methods, name + "ByJs")) {
+  if (typeof name === "string" && hasOwn(methods, name + "ByJs")) {
     return name + "ByJs";
   }
   return name;
