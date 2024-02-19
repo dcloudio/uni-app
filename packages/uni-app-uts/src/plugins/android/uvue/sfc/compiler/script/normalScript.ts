@@ -3,6 +3,7 @@ import { analyzeScriptBindings } from './analyzeScriptBindings'
 import { ScriptCompileContext } from './context'
 import { hasConsole, rewriteConsole } from './rewriteConsole'
 import { hasDebugError, rewriteDebugError } from './rewriteDebugError'
+import { rewriteSourceMap } from './rewriteSourceMap'
 
 export function processNormalScript(
   ctx: ScriptCompileContext,
@@ -40,6 +41,11 @@ export function processNormalScript(
           startOffset,
         })
       }
+      rewriteSourceMap(scriptAst, s, {
+        fileName: relativeFilename,
+        startLine,
+        startOffset,
+      })
     }
 
     if (s.hasChanged()) {
