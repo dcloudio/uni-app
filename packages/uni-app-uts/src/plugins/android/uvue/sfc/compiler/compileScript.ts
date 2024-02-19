@@ -46,6 +46,7 @@ import { analyzeScriptBindings } from './script/analyzeScriptBindings'
 import { hasConsole, rewriteConsole } from './script/rewriteConsole'
 import { hasDebugError, rewriteDebugError } from './script/rewriteDebugError'
 import { TypeScope } from './script/resolveType'
+import { rewriteSourceMap } from './script/rewriteSourceMap'
 
 export const normalScriptDefaultVar = `__default__`
 
@@ -300,6 +301,11 @@ export function compileScript(
           startOffset,
         })
       }
+      rewriteSourceMap(scriptAst, ctx.s, {
+        fileName: relativeFilename,
+        startLine,
+        startOffset,
+      })
     }
     if (scriptSetupAst) {
       const scriptSetupContent = ctx.descriptor.scriptSetup!.content
@@ -319,6 +325,11 @@ export function compileScript(
           startOffset,
         })
       }
+      rewriteSourceMap(scriptSetupAst, ctx.s, {
+        fileName: relativeFilename,
+        startLine,
+        startOffset,
+      })
     }
   }
 
