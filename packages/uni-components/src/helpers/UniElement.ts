@@ -48,4 +48,12 @@ export class UniElement extends HTMLElement {
     }
     return super.style
   }
+
+  get tagName() {
+    return super.tagName.replace(/^UNI-/, '')
+  }
+
+  get nodeName() {
+    return super.nodeName.replace(/^UNI-/, '')
+  }
 }
