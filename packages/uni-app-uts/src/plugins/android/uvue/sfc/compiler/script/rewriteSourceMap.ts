@@ -16,7 +16,14 @@ export function rewriteSourceMap(
   }
 ) {
   // 暂时屏蔽
-  if (true) {
+  // if (true) {
+  //   return
+  // }
+  const isDev =
+    process.env.NODE_ENV === 'development' ||
+    // rust 测试使用
+    process.env.UNI_RUST_TEST_NODE_ENV === 'development'
+  if (!isDev) {
     return
   }
   if (fileName.includes('/@dcloudio/')) {
@@ -70,7 +77,7 @@ export function rewriteSourceMap(
             typeName.type === 'Identifier' &&
             typeName.name === 'UTSJSONObject'
           ) {
-            const start = init.loc!.start
+            const start = id.loc!.start
             s.appendRight(
               startOffset + init.start! + 1,
               `\n__$originalPosition: new UTSSourceMapPosition("${
@@ -86,12 +93,32 @@ export function rewriteSourceMap(
         node.typeAnnotation.type === 'TSTypeLiteral' &&
         node.id.type === 'Identifier'
       ) {
-        const start = node.loc!.start
+        const start = node.id.loc!.start
         s.appendRight(
           startOffset + node.typeAnnotation.start! + 1,
           `\n__$originalPosition: UTSSourceMapPosition<"${
             node.id.name
           }", "${fileName}", ${startLine + start.line}, ${start.column + 1}>\n`
+        )
+      } else if (node.type === 'ClassDeclaration') {
+        if (node.implements && node.implements.length > 0) {
+          // 已有接口
+          s.appendRight(startOffset + node.body.start! - 1, `, IUTSSourceMap`)
+        } else {
+          s.appendRight(
+            startOffset + node.body.start! - 1,
+            ` implements IUTSSourceMap`
+          )
+        }
+
+        const start = node.id.loc!.start
+        s.appendRight(
+          startOffset + node.body.start! + 1,
+          `\noverride __$getOriginalPosition(): UTSSourceMapPosition {
+  return new UTSSourceMapPosition("${node.id.name}", "${fileName}", ${
+            startLine + start.line
+          }, ${start.column + 1});
+}\n`
         )
       }
     },
