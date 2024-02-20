@@ -74,7 +74,7 @@ const REMOVED_PLUGINS = [
   'vite:esbuild',
   'vite:wasm-helper',
   'vite:worker',
-  'vite:json',
+  // 'vite:json',
   // 'vite:asset', // replace
   'vite:wasm-fallback',
   // 'vite:define',
