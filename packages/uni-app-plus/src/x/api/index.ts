@@ -3,6 +3,9 @@ export { navigateBack } from './route/navigateBack'
 export { redirectTo } from './route/redirectTo'
 export { switchTab } from './route/switchTab'
 
+export { setTabBarBadge } from './tabBar/setTabBarBadge'
+export { removeTabBarBadge } from './tabBar/removeTabBarBadge'
+
 export {
   initUTSProxyClass,
   initUTSProxyFunction,
