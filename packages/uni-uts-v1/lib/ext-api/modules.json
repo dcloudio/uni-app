@@ -409,6 +409,18 @@
       }
     }
   },
+  "uni-rpx2px": {
+    "uni": {
+      "rpx2px": {
+        "name": "rpx2px",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      }
+    }
+  },
   "uni-storage": {
     "uni": {
       "setStorage": {
