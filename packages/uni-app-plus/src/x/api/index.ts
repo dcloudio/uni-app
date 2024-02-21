@@ -5,6 +5,13 @@ export { switchTab } from './route/switchTab'
 
 export { setTabBarBadge } from './tabBar/setTabBarBadge'
 export { removeTabBarBadge } from './tabBar/removeTabBarBadge'
+export { setTabBarItem } from './tabBar/setTabBarItem'
+export { setTabBarStyle } from './tabBar/setTabBarStyle'
+export { hideTabBar } from './tabBar/hideTabBar'
+export { showTabBar } from './tabBar/showTabBar'
+export { showTabBarRedDot } from './tabBar/showTabBarRedDot'
+export { hideTabBarRedDot } from './tabBar/hideTabBarRedDot'
+// export { onTabBarMidButtonTap } from './tabBar/onTabBarMidButtonTap'
 
 export {
   initUTSProxyClass,

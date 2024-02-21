@@ -15,8 +15,7 @@ export const setTabBarItem = defineAsyncApi<API_TYPE_SET_TAB_BAR_ITEM>(
   ) => {
     const tabBar = getTabBar()
     if (tabBar === null) {
-      reject()
-      //  reject(new SetTabBarErrorImpl('tabBar is not exist'))
+      reject('tabBar is not exist')
       return
     }
     const item = new Map<string, any>([

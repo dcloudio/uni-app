@@ -13,8 +13,7 @@ export const showTabBar = defineAsyncApi<API_TYPE_SHOW_TAB_BAR>(
     const animation = args && args.animation
 
     if (tabBar === null) {
-      reject()
-      // reject(new SetTabBarErrorImpl('tabBar is not exist'))
+      reject('tabBar is not exist')
       return
     }
     tabBar!.showTabBar(new Map<string, any | null>([['animation', animation]]))
