@@ -267,8 +267,9 @@ function initDevtools({ devtools, devtoolsHost, devtoolsPort }: CliOptions) {
 }
 
 function initAutomator({ autoHost, autoPort }: CliOptions) {
+  const hasAutoHost = autoHost || process.env.UNI_AUTOMATOR_HOST
   // 发行分包,插件也不需要自动化测试
-  if (!autoPort || process.env.UNI_SUBPACKAGE || process.env.UNI_MP_PLUGIN) {
+  if (!hasAutoHost || process.env.UNI_SUBPACKAGE || process.env.UNI_MP_PLUGIN) {
     return
   }
   process.env.UNI_AUTOMATOR_WS_ENDPOINT =
